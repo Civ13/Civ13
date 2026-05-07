@@ -90,14 +90,14 @@ var/no_loop_tantive = FALSE
 			return FALSE
 		ticker.finished = TRUE
 		var/message = "The <b>Rebellion</b> has successfuly defended the Vantive IV bridge! The Rebels have halted the Imperial Shocktroopers from Boarding!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_tantive == FALSE)
 		ticker.finished = TRUE
 		var/message = "The <b>Imperials</b> have captured the Vantive IV Bridge!! The commandeering of the Vantive IV has been achieved!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_tantive = TRUE
@@ -140,7 +140,7 @@ var/no_loop_tantive = FALSE
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Rebellion</b> has recaptured the Vantive IV!</font>"
+			to_chat(world, "<font size = 3>The <b>Rebellion</b> has recaptured the Vantive IV!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1

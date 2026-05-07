@@ -548,7 +548,7 @@
 		..()
 		if (open)
 			if (do_after(H, 35, src))
-				H << "You close the port."
+				to_chat(H, "You close the port.")
 				open = FALSE
 				opacity = TRUE
 				protection_chance = 100
@@ -557,7 +557,7 @@
 
 		else
 			if (do_after(H, 35, src))
-				H << "You open the port."
+				to_chat(H, "You open the port.")
 				open = TRUE
 				opacity = FALSE
 				protection_chance = 60
@@ -577,7 +577,7 @@
 			return
 		if (open)
 			if (do_after(usr, 35, src))
-				usr << "You close the port."
+				to_chat(usr, "You close the port.")
 				open = FALSE
 				opacity = TRUE
 				protection_chance = 100
@@ -586,7 +586,7 @@
 
 		else
 			if (do_after(usr, 35, src))
-				usr << "You open the port."
+				to_chat(usr, "You open the port.")
 				open = TRUE
 				opacity = FALSE
 				protection_chance = 60
@@ -728,20 +728,20 @@
 			sailstat_t = "Reduced Sail"
 		else if (sailstat <= 0)
 			sailstat_t = "Retracted"
-		user << "Sails: <b>[sailstat_t]</b>"
-		user << "Sail Status: <b>[sailhealth]%</b>"
-		user << "Rigging Status: <b>[rigginghealth]%</b>"
+		to_chat(user, "Sails: <b>[sailstat_t]</b>")
+		to_chat(user, "Sail Status: <b>[sailhealth]%</b>")
+		to_chat(user, "Rigging Status: <b>[rigginghealth]%</b>")
 
 	attackby(obj/item/I, mob/living/human/H)
 		if (istype(I, /obj/item/stack/material))
 			var/obj/item/stack/material/M = I
 			if (istype(I,/obj/item/stack/material/cloth))
 				if (sailhealth < 100)
-					H << "You start patching the sails..."
+					to_chat(H, "You start patching the sails...")
 					if(do_after(H,30,src))
 						if(M.amount >= 1)
 							M.amount--
-							H << "You repair one of the holes."
+							to_chat(H, "You repair one of the holes.")
 							if (M.amount <= 0)
 								qdel(M)
 							sailhealth+=2
@@ -750,11 +750,11 @@
 
 			else if (istype(I,/obj/item/stack/material/rope))
 				if (rigginghealth < 100)
-					H << "You start replacing the damaged riggings..."
+					to_chat(H, "You start replacing the damaged riggings...")
 					if(do_after(H,30,src))
 						if(M.amount >= 1)
 							M.amount--
-							H << "You fix one of the ropes."
+							to_chat(H, "You fix one of the ropes.")
 							if (M.amount <= 0)
 								qdel(M)
 							rigginghealth+=2
@@ -762,10 +762,10 @@
 								rigginghealth = 100
 			else if (istype(I,/obj/item/stack/material/wood))
 				if (upgrade_mast < 500)
-					H << "You start upgrading the mast"
+					to_chat(H, "You start upgrading the mast")
 					if(do_after(H,30,src))
 						if(M.amount >= 1)
-							H << "You add some upgrades to the mast"
+							to_chat(H, "You add some upgrades to the mast")
 							if (M.amount <= 0)
 								qdel(M)
 							upgrade_mast+= M.amount

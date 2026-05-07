@@ -62,9 +62,9 @@
 	return FALSE
 
 /obj/map_metadata/african_warlords/proc/points_check()
-	world << "<big><b>Current Points:</b></big>"
-	world << "<big>Yellowagwana: [scores["Yellowagwana"]]</big>"
-	world << "<big>Blugisi: [scores["Blugisi"]]</big>"
+	to_chat(world, "<big><b>Current Points:</b></big>")
+	to_chat(world, "<big>Yellowagwana: [scores["Yellowagwana"]]</big>")
+	to_chat(world, "<big>Blugisi: [scores["Blugisi"]]</big>")
 	spawn(300)
 		points_check()
 
@@ -80,17 +80,17 @@
 		message = "The round has ended!"
 		if (scores["Yellowagwana"] > scores["Blugisi"])
 			message = "The battle is over! The <font color='yellow'><b>Yellowagwana</b></font> were victorious over the <b>Blugisi</b> tribe!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			win_condition_spam_check = TRUE
 			return FALSE
 		else if (scores["Blugisi"] > scores["Yellowagwana"])
 			message = "The battle is over! The <font color='blue'><b>Blugisi</b></font> were victorious over the <b>Yellowagwana</b> tribe!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			win_condition_spam_check = TRUE
 			return FALSE
 		else
 			message = "The battle has ended in a <b>stalemate</b>!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			win_condition_spam_check = TRUE
 			return FALSE
 	last_win_condition = win_condition.hash
@@ -150,7 +150,7 @@
 				AW.scores["Yellowagwana"] -= 1*/
 	//		if("Redkantu")
 	//			AW.scores["Redkantu"] -= 1
-		user << "You place the head on the shaman's altar."
+		to_chat(user, "You place the head on the shaman's altar.")
 		if	(prob(20))
 			var/randmed = rand(1,6)
 			switch (randmed)

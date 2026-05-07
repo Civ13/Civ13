@@ -25,11 +25,11 @@
 			if (pop_sound)
 				playsound(loc, pop_sound, 50, TRUE)
 			var/obj/item/weapon/reagent_containers/pill/pill = contents[1]
-			user << "<span class='notice'>You take one [pill.name] from [name].</span>"
+			to_chat(user, "<span class='notice'>You take one [pill.name] from [name].</span>")
 			user.put_in_active_hand(pill)
 			update_icon()
 		else
-			user << "<span class='warning'>It's empty!</span>"
+			to_chat(user, "<span class='warning'>It's empty!</span>")
 	else
 		..()
 
@@ -38,11 +38,11 @@
 		var/obj/item/weapon/reagent_containers/pill/pill = contents[1]
 		if (pop_sound)
 			playsound(loc, pop_sound, 50, TRUE)
-		user << "<span class='notice'>You take one [pill.name] from [name].</span>"
+		to_chat(user, "<span class='notice'>You take one [pill.name] from [name].</span>")
 		pill.loc = user.loc
 		update_icon()
 	else
-		user << "<span class='warning'>[name] is empty!</span>"
+		to_chat(user, "<span class='warning'>[name] is empty!</span>")
 
 /obj/item/weapon/pill_pack/update_icon()
 	icon_state = "[initial(icon_state)][contents.len]"

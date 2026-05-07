@@ -48,10 +48,10 @@
 					choiceinput2 = 10
 				map.custom_civs[user.civilization][9] = choiceinput1
 				map.custom_civs[user.civilization][10] = choiceinput2
-				user << "<b>Sales Tax</b> set to [choiceinput1]%. <b>Business Tax</b> set to [choiceinput2]%."
+				to_chat(user, "<b>Sales Tax</b> set to [choiceinput1]%. <b>Business Tax</b> set to [choiceinput2]%.")
 				return
 			else
-				user << "<span class='warning'>You do not have the permissions to do that!</span>"
+				to_chat(user, "<span class='warning'>You do not have the permissions to do that!</span>")
 				return
 		else if (choicefac == "Withdraw Taxes")
 			if (map.custom_civs[user.civilization][4] == user)
@@ -59,13 +59,13 @@
 					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
 					GC.amount = map.custom_civs[user.civilization][5]/4
 					map.custom_civs[user.civilization][5]=0
-					user << "You withdraw [GC.amount] gold coins in faction funds."
+					to_chat(user, "You withdraw [GC.amount] gold coins in faction funds.")
 					return
 				else
-					user << "<span class='notice'>There is no money to withdraw.</span>"
+					to_chat(user, "<span class='notice'>There is no money to withdraw.</span>")
 					return
 			else
-				user << "<span class='warning'>You do not have the permissions to do that!</span>"
+				to_chat(user, "<span class='warning'>You do not have the permissions to do that!</span>")
 				return
 	else if (choice1 == "Manage Company")
 		var/choice4 = WWinput(user, "What do you want to do?", "Stock Market", "View Members", list("View Members", "Distribute Profits", "Withdraw Profits","Cancel"))
@@ -76,7 +76,7 @@
 			if (find_company_member(user,cmp))
 				poss_list += cmp
 		if (isemptylist(poss_list))
-			user << "<span class='notice'>You do not own any stocks!</span>"
+			to_chat(user, "<span class='notice'>You do not own any stocks!</span>")
 			return
 		poss_list += "Cancel"
 		var/custom_company = WWinput(user, "Which company do you want to manage?", "Stock Market", "Cancel", poss_list)
@@ -97,10 +97,10 @@
 				map.custom_company_value[custom_company] = 0
 				for (var/i in map.custom_company[custom_company])
 					i[3]+=(i[2]/100)*tprof
-				user << "<span class='notice'>You distribute the profits of [custom_company].</span>"
+				to_chat(user, "<span class='notice'>You distribute the profits of [custom_company].</span>")
 				return
 			else
-				user << "<span class='notice'>There are no profits to distribute from [custom_company].</span>"
+				to_chat(user, "<span class='notice'>There are no profits to distribute from [custom_company].</span>")
 				return
 		else if (choice4 == "Withdraw Profits")
 			for (var/j in map.custom_company[custom_company])
@@ -114,12 +114,12 @@
 					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
 					GC.amount = price_without_tax/4
 					j[3] = 0
-					user << "<span class='notice'>You withdraw [GC.amount*4] silver coins in profit, paying [businesstax] silver coins ([map.custom_civs[user.civilization][10]]%) in Business Tax to your faction.</span>"
+					to_chat(user, "<span class='notice'>You withdraw [GC.amount*4] silver coins in profit, paying [businesstax] silver coins ([map.custom_civs[user.civilization][10]]%) in Business Tax to your faction.</span>")
 		return
 
 	else if (choice1 == "Buy Stock")
 		if (isemptylist(map.sales_registry))
-			user << "<span class='notice'>There are no stocks for sale!</span>"
+			to_chat(user, "<span class='notice'>There are no stocks for sale!</span>")
 			return
 		else
 			var/list/tempbuylist = list("Cancel")
@@ -129,7 +129,7 @@
 					tempbuylist += "[i[2]]% of [i[1]], at [i[3]] sc"
 					found = TRUE
 			if (!found)
-				user << "<span class='notice'>There are no stocks for sale!</span>"
+				to_chat(user, "<span class='notice'>There are no stocks for sale!</span>")
 				return
 			var/choice3 = WWinput(user, "Which stock do you want to buy?", "Stock Market", "Cancel", tempbuylist)
 			if (choice3 == "Cancel")
@@ -173,10 +173,10 @@
 											LL[5] = 0
 											map.sales_registry -= LL
 							else
-								user << "<span class='notice'>You do not have enough money. You need [map.sales_registry[ord][3]] sc and you only have [M.amount*M.value] sc.</span>"
+								to_chat(user, "<span class='notice'>You do not have enough money. You need [map.sales_registry[ord][3]] sc and you only have [M.amount*M.value] sc.</span>")
 								return
 				else
-					user << "<span class='notice'>You need to have money in your hands in order to buy stocks!</span>"
+					to_chat(user, "<span class='notice'>You need to have money in your hands in order to buy stocks!</span>")
 					return
 	else if (choice1 == "Sell Stock")
 		var/list/poss_list = list()
@@ -184,7 +184,7 @@
 			if (find_company_member(user,cmp))
 				poss_list += cmp
 		if (isemptylist(poss_list))
-			user << "<span class='notice'>You do not own any stocks!</span>"
+			to_chat(user, "<span class='notice'>You do not own any stocks!</span>")
 			return
 		poss_list += "Cancel"
 		var/choice2 = WWinput(user, "Which stock do you want to sell?", "Stock Market", "Cancel", poss_list)
@@ -204,5 +204,5 @@
 						return
 					else
 						map.sales_registry += list(list(choice2,compchoice_amt,saleprice/10,user,1))
-						user << "<span class='notice'>You sucessfully put up [compchoice_amt]% of [choice2] at [saleprice].</span>"
+						to_chat(user, "<span class='notice'>You sucessfully put up [compchoice_amt]% of [choice2] at [saleprice].</span>")
 						return

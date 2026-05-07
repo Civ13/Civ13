@@ -76,14 +76,14 @@
 			return FALSE
 		ticker.finished = TRUE
 		var/message = "The United Nations troops have managed to defend the clinic!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_rom == FALSE)
 		ticker.finished = TRUE
 		var/message = "The Warband Mercenaries have captured the clinic! The remaining United Nations troops have surrendered!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_rom = TRUE
@@ -126,7 +126,7 @@
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The United Nations troops have recaptured the clinic!</font>"
+			to_chat(world, "<font size = 3>The United Nations troops have recaptured the clinic!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -186,16 +186,16 @@
 /obj/structure/altar/darkstone/unsacrifice/attackby(obj/item/W, mob/living/human/user)
 	if (istype(W, /obj/item/organ/external/head) && map.ID == MAP_TADOJSVILLE)
 		if (!W)
-			user << "This is not even a head, it is worthless. Only Peacekeeper heads will do."
+			to_chat(user, "This is not even a head, it is worthless. Only Peacekeeper heads will do.")
 			return
 		var/obj/item/organ/external/head/HD = W
 		var/head_nationality = HD.nationality
 		qdel(W)
 		if (head_nationality != "United Nations")
-			user << "This head is worthless, only Peacekeeper heads will do."
+			to_chat(user, "This head is worthless, only Peacekeeper heads will do.")
 
 		else
-			user << "You place the Peacekeeper's head on the shaman's altar."
+			to_chat(user, "You place the Peacekeeper's head on the shaman's altar.")
 			if(prob(20))
 				var/randmed = rand(1,3)
 				switch (randmed)

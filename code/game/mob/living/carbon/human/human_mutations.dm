@@ -1,5 +1,5 @@
 /mob/living/human/proc/togglerace(targetraceinput)
-	src << "<span> You start to change....</span>"
+	to_chat(src, "<span> You start to change....</span>")
 	spawn(4000)
 		if (src && orc+goblin+ant+crab+wolfman+lizard+gorillaman<=0)
 			switch(targetraceinput)
@@ -31,51 +31,51 @@
 	if(radiation >= 300 && checkrace()) //If you are super irradiated, and somehow still alive.
 		if (prob(15))
 			if (prob(15))
-				src << "<span> You feel yourself getting more muscular and angry!</span>"
+				to_chat(src, "<span> You feel yourself getting more muscular and angry!</span>")
 			else
-				src << "<span> Your skin starts to turn a greenish hue!</span>"
+				to_chat(src, "<span> Your skin starts to turn a greenish hue!</span>")
 			togglerace("orc")
 			radiation -= radiation/8 //Reduce radiation a little.
 		else if (prob(10))
 			if (prob(10))
-				src << "<span> You feel yourself getting smaller and faster!</span>"
+				to_chat(src, "<span> You feel yourself getting smaller and faster!</span>")
 			else
-				src << "<span> Your skin starts to turn a greenish!</span>"
+				to_chat(src, "<span> Your skin starts to turn a greenish!</span>")
 			togglerace("goblin")
 			radiation -= radiation/8 //Reduce radiation a little.
 		else if (prob(15))
 			if (prob(50))
-				src << "<span> Your skin starts to get covered with an exoskeleton!</span>"
+				to_chat(src, "<span> Your skin starts to get covered with an exoskeleton!</span>")
 			else
-				src << "<span> You feel something sprout from your head!</span>"
+				to_chat(src, "<span> You feel something sprout from your head!</span>")
 			togglerace("ant")
 			radiation -= radiation/8 //Reduce radiation a little.
 		else if (prob(15))
 			if (prob(50))
-				src << "<span> You start to grow a shell!</span>"
+				to_chat(src, "<span> You start to grow a shell!</span>")
 			else
-				src << "<span> Your hands turn into claws!</span>"
+				to_chat(src, "<span> Your hands turn into claws!</span>")
 			togglerace("crab")
 			radiation -= radiation/8 //Reduce radiation a little.
 		else if (prob(10))
 			if (prob(50))
-				src << "<span> You start to grow fur all over your body!</span>"
+				to_chat(src, "<span> You start to grow fur all over your body!</span>")
 			else
-				src << "<span> You suddenly feel the urge to howl!</span>"
+				to_chat(src, "<span> You suddenly feel the urge to howl!</span>")
 			togglerace("wolfman")
 			radiation -= radiation/4 //Reduce radiation because you ain't resistant.
 		else if (prob(10))
 			if (prob(50))
-				src << "<span> Your skin starts to grow out scales!</span>"
+				to_chat(src, "<span> Your skin starts to grow out scales!</span>")
 			else
-				src << "<span> Your tongue becomes forked and long!</span>"
+				to_chat(src, "<span> Your tongue becomes forked and long!</span>")
 			togglerace("lizard")
 			radiation -= radiation/4 //Reduce radiation because you ain't resistant.
 		else if (prob(10))
 			if (prob(50))
-				src << "<span> You feel yourself craving bananas!</span>"
+				to_chat(src, "<span> You feel yourself craving bananas!</span>")
 			else
-				src << "<span> You notice dark fur spreading across your body!</span>"
+				to_chat(src, "<span> You notice dark fur spreading across your body!</span>")
 			togglerace("gorillaman")
 			radiation -= radiation/4 //Reduce radiation because you ain't resistant.
 	if(radiation >= 350) //Corpse gotta be pretty bad tbh.

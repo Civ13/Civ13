@@ -4,7 +4,7 @@
 	set category = "Special"
 
 	if (!check_rights(R_ADMIN))
-		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		to_chat(src, "<span class = 'danger'>You don't have the permissions.</span>")
 		return
 
 	var/list/jobs_linked_list = list()
@@ -37,5 +37,5 @@
 	var/datum/job/j = jobs_linked_list[jobtitle]
 	if (j)
 		j.enabled = !j.enabled
-		world << "<span class = 'warning'>[j.title] is now <b>[j.enabled ? "ENABLED" : "DISABLED"]</b>.</span>"
+		to_chat(world, "<span class = 'warning'>[j.title] is now <b>[j.enabled ? "ENABLED" : "DISABLED"]</b>.</span>")
 		message_admins("[key_name(src)] [j.enabled ? "enabled" : "disabled"] the [j.title] job.", key_name(usr))

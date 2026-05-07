@@ -96,7 +96,7 @@ var/no_loop_waco = FALSE
 				win_condition.hash = 0
 				last_win_condition = win_condition.hash
 				message = "20 minutes have passed! David Koresh is now safe!"
-				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+				to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 				win_condition_spam_check = TRUE
 				return FALSE
 			if (processes.ticker.playtime_elapsed >= 1800)
@@ -107,7 +107,7 @@ var/no_loop_waco = FALSE
 							count++
 					if (count == 0)
 						message = "The battle is over! <b>David Koresh is dead</b>!"
-						world << "<font size = 4 color='yellow'><span class = 'notice'>[message]</span></font>"
+						to_chat(world, "<font size = 4 color='yellow'><span class = 'notice'>[message]</span></font>")
 						win_condition_spam_check = TRUE
 						ticker.finished = TRUE
 						next_win = -1
@@ -121,14 +121,14 @@ var/no_loop_waco = FALSE
 					return FALSE
 				ticker.finished = TRUE
 				message = "The Branch Davidians have managed to defend Mount Carmel!"
-				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+				to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 				show_global_battle_report(null)
 				win_condition_spam_check = TRUE
 				return FALSE
 			if ((current_winner && current_loser && world.time > next_win) && no_loop_waco == FALSE)
 				ticker.finished = TRUE
 				message = "The ATF have captured Mount Carmel!"
-				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+				to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 				show_global_battle_report(null)
 				win_condition_spam_check = TRUE
 				no_loop_waco = TRUE
@@ -171,7 +171,7 @@ var/no_loop_waco = FALSE
 						current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 			else
 				if (current_win_condition != no_winner && current_winner && current_loser)
-					world << "<font size = 3>The Davidians have recaptured Mount Carmel!</font>"
+					to_chat(world, "<font size = 3>The Davidians have recaptured Mount Carmel!</font>")
 					current_winner = null
 					current_loser = null
 				next_win = -1

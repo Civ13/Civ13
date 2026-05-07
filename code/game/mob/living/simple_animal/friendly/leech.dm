@@ -18,10 +18,10 @@
 
 /mob/living/simple_animal/leech/attack_hand(mob/living/human/M as mob)
 	if (stat == DEAD)
-		M << "This leech is dead, no point in picking it up."
+		to_chat(M, "This leech is dead, no point in picking it up.")
 	else
 		M.put_in_hands(new/obj/item/weapon/leech)
-		M << "You pick up the leech."
+		to_chat(M, "You pick up the leech.")
 		qdel(src)
 
 /obj/item/weapon/leech

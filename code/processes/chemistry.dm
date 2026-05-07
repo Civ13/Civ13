@@ -29,9 +29,9 @@
 /process/chemistry/reset_current_list()
 	PROCESS_USE_FASTEST_LIST(active_holders)
 
-/process/chemistry/statProcess()
-	..()
-	stat(null, "[active_holders.len] reagent holder\s")
+/process/chemistry/statProcess(client/C)
+	..(C)
+	C.add_stat("[active_holders.len] reagent holder\s")
 
 /process/chemistry/htmlProcess()
 	return ..() + "[active_holders.len] reagent holders"

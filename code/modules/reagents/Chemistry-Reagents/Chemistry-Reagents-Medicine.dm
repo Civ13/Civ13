@@ -362,11 +362,11 @@
 /datum/reagent/methylphenidate/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (volume <= 0.1 && data != -1)
 		data = -1
-		M << "<span class='warning'>You lose focus...</span>"
+		to_chat(M, "<span class='warning'>You lose focus...</span>")
 	else
 		if (world.time > data + ANTIDEPRESSANT_MESSAGE_DELAY)
 			data = world.time
-			M << "<span class='notice'>Your mind feels focused and undivided.</span>"
+			to_chat(M, "<span class='notice'>Your mind feels focused and undivided.</span>")
 
 /datum/reagent/ketamine
 	name = "Ketamine"
@@ -381,11 +381,11 @@
 /datum/reagent/ketamine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (volume <= 0.1 && data != -1)
 		data = -1
-		M << "<span class='warning'>You lose focus...</span>"
+		to_chat(M, "<span class='warning'>You lose focus...</span>")
 	else
 		if (world.time > data + ANTIDEPRESSANT_MESSAGE_DELAY)
 			data = world.time
-			M << "<span class='notice'>Your mind feels happy and free.</span>"
+			to_chat(M, "<span class='notice'>Your mind feels happy and free.</span>")
 
 /datum/reagent/citalopram
 	name = "Citalopram"
@@ -400,11 +400,11 @@
 /datum/reagent/citalopram/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (volume <= 0.1 && data != -1)
 		data = -1
-		M << "<span class='warning'>Your mind feels a little less stable...</span>"
+		to_chat(M, "<span class='warning'>Your mind feels a little less stable...</span>")
 	else
 		if (world.time > data + ANTIDEPRESSANT_MESSAGE_DELAY)
 			data = world.time
-			M << "<span class='notice'>Your mind feels stable... a little stable.</span>"
+			to_chat(M, "<span class='notice'>Your mind feels stable... a little stable.</span>")
 	M.mood += removed*40
 
 /datum/reagent/paroxetine
@@ -419,14 +419,14 @@
 /datum/reagent/paroxetine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (volume <= 0.1 && data != -1)
 		data = -1
-		M << "<span class='warning'>Your mind feels much less stable...</span>"
+		to_chat(M, "<span class='warning'>Your mind feels much less stable...</span>")
 	else
 		if (world.time > data + ANTIDEPRESSANT_MESSAGE_DELAY)
 			data = world.time
 			if (prob(90))
-				M << "<span class='notice'>Your mind feels much more stable.</span>"
+				to_chat(M, "<span class='notice'>Your mind feels much more stable.</span>")
 			else
-				M << "<span class='warning'>Your mind breaks apart...</span>"
+				to_chat(M, "<span class='warning'>Your mind breaks apart...</span>")
 				M.hallucination += 200
 	M.mood += removed*50
 
@@ -632,7 +632,7 @@
 	M.hallucination = max(M.hallucination, 2)
 	M.AdjustWeakened(4)
 	M.make_dizzy(6)
-	M << "<span class='notice'>You feel weak.</span>"
+	to_chat(M, "<span class='notice'>You feel weak.</span>")
 	..()
 	return
 

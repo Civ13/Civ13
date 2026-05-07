@@ -96,7 +96,7 @@
 		human_user << browse(dat, "window=newspaper_main;size=300x400")
 		onclose(human_user, "newspaper_main")
 	else
-		user << "The paper is full of intelligible symbols!"
+		to_chat(user, "The paper is full of intelligible symbols!")
 */
 /obj/item/weapon/newspaper/Topic(href, href_list)
 	var/mob/living/U = usr
@@ -133,7 +133,7 @@
 obj/item/weapon/newspaper/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/pen))
 		if (scribble_page == curr_page)
-			user << "<span class = 'notice'>There's already a scribble in this page... You wouldn't want to make things too cluttered, would you?</span>"
+			to_chat(user, "<span class = 'notice'>There's already a scribble in this page... You wouldn't want to make things too cluttered, would you?</span>")
 		else
 			var/s = sanitize(input(user, "Write something", "Newspaper", ""))
 			s = sanitize(s)

@@ -22,7 +22,7 @@
 	active = TRUE
 
 /obj/structure/TV/active/examine(var/mob/living/L)
-	L << "There is nothing on television at the moment except static. Typical."
+	to_chat(L, "There is nothing on television at the moment except static. Typical.")
 	return
 
 /* Clocks*/
@@ -49,11 +49,11 @@
 	active = FALSE
 
 /obj/structure/TV/grandfather/inactive/examine(var/mob/living/L) //it would be fun to have nukes set clocks inactive or halt at a time.
-	L << "This clock's stopped running, you can't tell what time it is currently."
+	to_chat(L, "This clock's stopped running, you can't tell what time it is currently.")
 	return
 
 /obj/structure/TV/grandfather/examine(var/mob/living/L)
-	L << "<big>It is now [clock_time()].</big>"
+	to_chat(L, "<big>It is now [clock_time()].</big>")
 	return
 
 /obj/structure/TV/television //in prep for actually interesting and watchable tv's
@@ -78,7 +78,7 @@
 	active = TRUE
 
 /obj/structure/TV/television/active/examine(var/mob/living/L)
-	L << "There is nothing on television at the moment except static. Typical."
+	to_chat(L, "There is nothing on television at the moment except static. Typical.")
 	return
 
 /* TV Technical*/
@@ -143,22 +143,22 @@
 /obj/structure/TV/television/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
 		anchored = !anchored
 	else if (istype(O,/obj/item/weapon/hammer))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		user << "<span class='notice'>You begin smashing apart \the [src].</span>"
+		to_chat(user, "<span class='notice'>You begin smashing apart \the [src].</span>")
 		if (do_after(user,30,src))
-			user << "<span class='notice'>You roughly smash apart \the [src].</span>"
+			to_chat(user, "<span class='notice'>You roughly smash apart \the [src].</span>")
 			new /obj/item/stack/material/iron(loc)
 			new /obj/item/stack/material/iron(loc)
 			new /obj/item/stack/material/electronics(loc)
 			qdel(src)
 	else if (istype(O,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		user << "<span class='notice'>You begin dismantling \the [src].</span>"
+		to_chat(user, "<span class='notice'>You begin dismantling \the [src].</span>")
 		if (do_after(user,20,src))
-			user << "<span class='notice'>You carefully dismantle \the [src].</span>" //scavenging, the new proceeds auto-stack.
+			to_chat(user, "<span class='notice'>You carefully dismantle \the [src].</span>") //scavenging, the new proceeds auto-stack.
 			for (var/i=1, i<=4, i++)
 				new /obj/item/stack/material/iron(loc)
 			for (var/i=1, i<=3, i++)
@@ -171,21 +171,21 @@
 /obj/structure/TV/grandfather/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
 		anchored = !anchored
 	else if (istype(O,/obj/item/weapon/hammer))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		user << "<span class='notice'>You begin smashing apart \the [src].</span>"
+		to_chat(user, "<span class='notice'>You begin smashing apart \the [src].</span>")
 		if (do_after(user,30,src))
-			user << "<span class='notice'>You roughly smash apart \the [src].</span>"
+			to_chat(user, "<span class='notice'>You roughly smash apart \the [src].</span>")
 			for (var/i=1, i<=3, i++)
 				new /obj/item/stack/material/wood(loc)
 			qdel(src)
 	else if (istype(O,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		user << "<span class='notice'>You begin dismantling \the [src].</span>"
+		to_chat(user, "<span class='notice'>You begin dismantling \the [src].</span>")
 		if (do_after(user,20,src))
-			user << "<span class='notice'>You carefully dismantle \the [src].</span>"
+			to_chat(user, "<span class='notice'>You carefully dismantle \the [src].</span>")
 			for (var/i=1, i<=6, i++)
 				new /obj/item/stack/material/wood(loc)
 			new /obj/item/stack/material/glass(loc)
@@ -205,11 +205,11 @@
 
 /obj/structure/coolingfan/attack_hand(mob/user as mob)
 	if (on == FALSE)
-		usr << "You turn the cooling fan on."
+		to_chat(usr, "You turn the cooling fan on.")
 		icon_state = "fan_working"
 		on = TRUE
 	else
-		usr << "You turn the cooling fan off."
+		to_chat(usr, "You turn the cooling fan off.")
 		icon_state = "fan"
 		on = FALSE
 

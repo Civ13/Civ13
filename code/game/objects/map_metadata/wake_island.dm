@@ -116,9 +116,9 @@
 			jap_points++
 		if (a1_control != prev_control)
 			if (prev_control != "none")
-				world << "<font size=3>The [prev_control] have lost the <b>West Artillery Battery!</b><font>"
+				to_chat(world, "<font size=3>The [prev_control] have lost the <b>West Artillery Battery!</b><font>")
 			else
-				world << "<font size=3>The [a1_control] have captured the <b>West Artillery Battery!</b><font>"
+				to_chat(world, "<font size=3>The [a1_control] have captured the <b>West Artillery Battery!</b><font>")
 		c1 = 0
 		c2 = 0
 		prev_control = a2_control
@@ -139,9 +139,9 @@
 			jap_points++
 		if (a2_control != prev_control)
 			if (prev_control != "none")
-				world << "<font size=3>The [prev_control] have lost the <b>East Artillery Battery!</b><font>"
+				to_chat(world, "<font size=3>The [prev_control] have lost the <b>East Artillery Battery!</b><font>")
 			else
-				world << "<font size=3>The [a2_control] have captured the <b>East Artillery Battery!</b><font>"
+				to_chat(world, "<font size=3>The [a2_control] have captured the <b>East Artillery Battery!</b><font>")
 		c1 = 0
 		c2 = 0
 		prev_control = a3_control
@@ -162,12 +162,12 @@
 			jap_points++
 		if (a3_control != prev_control)
 			if (prev_control != "none")
-				world << "<font size=3>The [prev_control] have lost the <b>Village!</b><font>"
+				to_chat(world, "<font size=3>The [prev_control] have lost the <b>Village!</b><font>")
 			else
-				world << "<font size=3>The [a3_control] have captured the <b>Village!</b><font>"
-	world << "<big><b>Current Points:</b></big>"
-	world << "<big>Americans: [usa_points]</big>"
-	world << "<big>Japanese: [jap_points]</big>"
+				to_chat(world, "<font size=3>The [a3_control] have captured the <b>Village!</b><font>")
+	to_chat(world, "<big><b>Current Points:</b></big>")
+	to_chat(world, "<big>Americans: [usa_points]</big>")
+	to_chat(world, "<big>Japanese: [jap_points]</big>")
 	spawn(300)
 		points_check()
 
@@ -180,7 +180,7 @@
 				return FALSE
 			ticker.finished = TRUE
 			var/message = "The <b>Japanese</b> have reached [jap_points] points and won!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
@@ -189,7 +189,7 @@
 				return FALSE
 			ticker.finished = TRUE
 			var/message = "The <b>Americans</b> have reached [usa_points] points and won!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE

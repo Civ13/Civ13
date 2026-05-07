@@ -236,7 +236,7 @@
 			new/obj/item/ammo_casing/arrow/flint(user.loc)
 			qdel(F)
 			playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
-			user << "<span class = 'notice'>You attach the [F] to the [src]</span>"
+			to_chat(user, "<span class = 'notice'>You attach the [F] to the [src]</span>")
 			qdel(src)
 
 	if(istype(W, /obj/item/stack/arrowhead))
@@ -259,13 +259,13 @@
 		if (AH.amount<1)
 			qdel(AH)
 		playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
-		user << "<span class = 'notice'>You attach the [W] to the [src]</span>"
+		to_chat(user, "<span class = 'notice'>You attach the [W] to the [src]</span>")
 		qdel(src)
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		return //do nothing if not reagent container
 	else
 		if(volume < src.reagents)
-			user << "<span class = 'notice'>You dip the [W] into the [src]</span>"
+			to_chat(user, "<span class = 'notice'>You dip the [W] into the [src]</span>")
 			W.reagents.trans_to_obj(src, volume - src.reagents)
 	..()
 
@@ -276,7 +276,7 @@
 			new/obj/item/ammo_casing/bolt/flint(user.loc)
 			qdel(F)
 		playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
-		user << "<span class = 'notice'>You attach the [W] to the [src]</span>"
+		to_chat(user, "<span class = 'notice'>You attach the [W] to the [src]</span>")
 		qdel(src)
 
 	if(istype(W, /obj/item/stack/arrowhead))
@@ -299,13 +299,13 @@
 		if (AH.amount<1)
 			qdel(AH)
 		playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
-		user << "<span class = 'notice'>You attach the [W] to the [src]</span>"
+		to_chat(user, "<span class = 'notice'>You attach the [W] to the [src]</span>")
 		qdel(src)
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		return //do nothing if not reagent container
 	else
 		if(volume < src.reagents)
-			user << "<span class = 'notice'>You dip the [W] into the [src]</span>"
+			to_chat(user, "<span class = 'notice'>You dip the [W] into the [src]</span>")
 			W.reagents.trans_to_obj(src, volume - src.reagents)
 	..()
 

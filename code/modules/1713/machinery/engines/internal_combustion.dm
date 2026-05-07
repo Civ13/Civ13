@@ -57,7 +57,7 @@
 		user.drop_from_inventory(W)
 		fueltank = W
 		W.anchored = TRUE
-		user << "You connect \the [W] to the [src]."
+		to_chat(user, "You connect \the [W] to the [src].")
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		return
 	else
@@ -80,18 +80,18 @@
 				on = FALSE
 				power_off_connections()
 				fueltank.anchored = FALSE
-				usr << "You disconnect the fuel tank from the [src]."
+				to_chat(usr, "You disconnect the fuel tank from the [src].")
 				fueltank = null
 				update_icon()
 				return
 			else
-				usr << SPAN_WARNING("You do not know how to do this.")
+				to_chat(usr, SPAN_WARNING("You do not know how to do this."))
 				return
 
 		on = FALSE
 		power_off_connections()
 		fueltank.anchored = FALSE
-		usr << "You disconnect the fuel tank from the [src]."
+		to_chat(usr, "You disconnect the fuel tank from the [src].")
 		fueltank = null
 		update_icon()
 		return
@@ -100,7 +100,7 @@
 	if (on)
 		return
 	if (broken)
-		user << "\The [src] is broken, you can't turn it on!"
+		to_chat(user, "\The [src] is broken, you can't turn it on!")
 		return
 	if (fueltank != null)
 		var/done = FALSE

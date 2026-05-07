@@ -495,7 +495,7 @@
 /obj/item/weapon/weldingtool/process(var/mob/living/human/L, var/obj/item/weapon/reagent_containers/glass/welding_tank/FM = null)
 	if (welding)
 		if (!L.back || !istype(L.back,/obj/item/weapon/reagent_containers/glass/welding_tank))
-			L << "<span class='warning'>You need a fuel tank on your back in order to be able to use a welder!</span>"
+			to_chat(L, "<span class='warning'>You need a fuel tank on your back in order to be able to use a welder!</span>")
 			setWelding(0)
 			return
 
@@ -503,7 +503,7 @@
 			FM = L.back
 
 		if (!FM)
-			L << "<span class='warning'>You need a fuel tank on your back in order to be able to use a welder!</span>"
+			to_chat(L, "<span class='warning'>You need a fuel tank on your back in order to be able to use a welder!</span>")
 			setWelding(0)
 			return
 
@@ -533,7 +533,7 @@
 		return TRUE
 	else
 		if (M)
-			M << "<span class='notice'>You need more welding fuel to complete this task.</span>"
+			to_chat(M, "<span class='notice'>You need more welding fuel to complete this task.</span>")
 		return FALSE
 
 //Returns whether or not the welding tool is currently on.
@@ -556,7 +556,7 @@
 	if (set_welding && !welding)
 		if (get_fuel() > 0)
 			if (M)
-				M << "<span class='notice'>You switch the [src] on.</span>"
+				to_chat(M, "<span class='notice'>You switch the [src] on.</span>")
 			else if (T)
 				T.visible_message("<span class='danger'>\The [src] turns on.</span>")
 			force = WEAPON_FORCE_PAINFUL
@@ -568,13 +568,13 @@
 			processing_objects |= src
 		else
 			if (M)
-				M << "<span class='notice'>You need more welding fuel to complete this task.</span>"
+				to_chat(M, "<span class='notice'>You need more welding fuel to complete this task.</span>")
 			return
 	//Otherwise
 	else if (!set_welding && welding)
 		processing_objects -= src
 		if (M)
-			M << "<span class='notice'>You switch \the [src] off.</span>"
+			to_chat(M, "<span class='notice'>You switch \the [src] off.</span>")
 		else if (T)
 			T.visible_message("<span class='warning'>\The [src] turns off.</span>")
 		force = WEAPON_FORCE_WEAK
@@ -596,28 +596,28 @@
 		var/safety = H.eyecheck()
 		switch(safety)
 			if (FLASH_PROTECTION_MODERATE)
-				H << "<span class='warning'>Your eyes sting a little.</span>"
+				to_chat(H, "<span class='warning'>Your eyes sting a little.</span>")
 				E.damage += rand(1, 2)/2
 				if (E.damage > 12)
 					H.eye_blurry += rand(3,6)/2
 			if (FLASH_PROTECTION_NONE)
-				H << "<span class='warning'>Your eyes burn.</span>"
+				to_chat(H, "<span class='warning'>Your eyes burn.</span>")
 				E.damage += rand(2, 4)/2
 				if (E.damage > 10)
 					E.damage += rand(4,10)/2
 			if (FLASH_PROTECTION_REDUCED)
-				H << "<span class='danger'>Your equipment intensify the welder's glow. Your eyes itch and burn severely.</span>"
+				to_chat(H, "<span class='danger'>Your equipment intensify the welder's glow. Your eyes itch and burn severely.</span>")
 				H.eye_blurry += rand(12,20)/2
 				E.damage += rand(12, 16)/2
 		if (safety<FLASH_PROTECTION_MAJOR)
 			if (E.damage > 10)
-				user << "<span class='warning'>Your eyes are really starting to hurt. This can't be good for you!</span>"
+				to_chat(user, "<span class='warning'>Your eyes are really starting to hurt. This can't be good for you!</span>")
 
 			if (E.damage >= E.min_broken_damage)
-				H << "<span class='danger'>You go blind!</span>"
+				to_chat(H, "<span class='danger'>You go blind!</span>")
 				H.sdisabilities |= BLIND
 			else if (E.damage >= E.min_bruised_damage)
-				H << "<span class='danger'>You go blind!</span>"
+				to_chat(H, "<span class='danger'>You go blind!</span>")
 				H.eye_blind = 5
 				H.eye_blurry = 5
 				H.disabilities |= NEARSIGHTED
@@ -715,7 +715,7 @@ Shinobi's unfinished welder stuff - siro*/
 			pos_message = "You're in the <b>[pos_dir_y][pos_dir_x]</b> of the area."
 		else
 			pos_message = "You're in the <b>CENTER</b> of the area."
-		usr << "You estimate your position to be <b>[pos_x];[pos_y]</b>. [pos_message]"
+		to_chat(usr, "You estimate your position to be <b>[pos_x];[pos_y]</b>. [pos_message]")
 
 /obj/item/weapon/compass/modern
 	name = "navigation tablet"
@@ -729,7 +729,7 @@ Shinobi's unfinished welder stuff - siro*/
 
 /obj/item/weapon/compass/modern/attack_self(mob/user as mob)
 	if (!on)
-		usr << SPAN_WARNING("You need to turn the tablet on.")
+		to_chat(usr, SPAN_WARNING("You need to turn the tablet on."))
 		return
 	else
 		. = ..()

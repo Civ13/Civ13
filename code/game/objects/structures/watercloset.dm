@@ -125,7 +125,7 @@
 		var/obj/item/weapon/reagent_containers/O = user.get_active_hand()
 		if (O.reagents && O.reagents.total_volume)
 			O.reagents.clear_reagents()
-			user << "<span class='notice'>You empty the [O] into the [src].</span>"
+			to_chat(user, "<span class='notice'>You empty the [O] into the [src].</span>")
 
 /obj/structure/toilet/pit_latrine
 	name = "pit latrine"
@@ -529,7 +529,7 @@
 
 /obj/structure/shower/attackby(obj/item/I as obj, mob/user as mob)
 //	if (I.type == /obj/item/analyzer)
-	//	user << "<span class='notice'>The water temperature seems to be [watertemp].</span>"
+	//	to_chat(user, "<span class='notice'>The water temperature seems to be [watertemp].</span>")
 	if (istype(I, /obj/item/weapon/wrench))
 		var/newtemp = WWinput(user, "What setting would you like to set the temperature valve to?", "Water Temperature Valve", WWinput_first_choice(temperature_settings), WWinput_list_or_null(temperature_settings))
 		user.visible_message("<span class='notice'>[user] begins to adjust the temperature valve with \the [I].</span>", "<span class='notice'>You begin to adjust the temperature valve with \the [I].</span>", "<span class='notice'>You hear the sound of a valve being adjusted nearby.</span>")
@@ -815,7 +815,7 @@
 					H.water += rand(40,50)
 				H.water += 75
 				H.bladder += 25
-				H << "You drink some water from \the [src]."
+				to_chat(H, "You drink some water from \the [src].")
 				playsound(H.loc, "drink", rand(10, 50), TRUE)
 				return
 			else
@@ -844,10 +844,10 @@
 
 /obj/structure/sink/attackby(obj/item/O as obj, mob/living/user as mob)
 	if (busy && busy != user)
-		user << "<span class='warning'>Someone's already washing here.</span>"
+		to_chat(user, "<span class='warning'>Someone's already washing here.</span>")
 		return
 	if (dry || volume <= 0)
-		user << "<span class='warning'>\The [src] is dry!</span>"
+		to_chat(user, "<span class='warning'>\The [src] is dry!</span>")
 		return
 	var/obj/item/weapon/reagent_containers/RG = O
 	var/watertype = "water"
@@ -895,7 +895,7 @@
 
 	else if (istype(O, /obj/item/weapon/mop))
 		O.reagents.add_reagent(watertype, 5)
-		user << "<span class='notice'>You wet \the [O] in \the [src].</span>"
+		to_chat(user, "<span class='notice'>You wet \the [O] in \the [src].</span>")
 		playsound(loc, 'sound/effects/slosh.ogg', 25, TRUE)
 		return
 	
@@ -911,7 +911,7 @@
 	var/obj/item/I = O
 	if (!I || !istype(I,/obj/item)) return
 
-	usr << "<span class='notice'>You start washing \the [I].</span>"
+	to_chat(usr, "<span class='notice'>You start washing \the [I].</span>")
 
 	busy = TRUE
 	sleep(40)

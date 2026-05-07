@@ -40,9 +40,9 @@
 /process/dog/reset_current_list()
 	PROCESS_USE_FASTEST_LIST(dog_mob_list)
 
-/process/dog/statProcess()
-	..()
-	stat(null, "[dog_mob_list.len] mobs")
+/process/dog/statProcess(client/C)
+	..(C)
+	C.add_stat("[dog_mob_list.len] mobs")
 
 /process/dog/htmlProcess()
 	return ..() + "[dog_mob_list.len] mobs"

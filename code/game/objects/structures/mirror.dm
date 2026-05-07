@@ -48,7 +48,7 @@
 /obj/structure/mirror/attackby(obj/item/I as obj, mob/user as mob)
 	if ((istype(I, /obj/item/weapon/hammer)) && (!shattered))
 		var/obj/item/mirror/S = new(loc)
-		user << "You unfasten \the [S] with your [I]."
+		to_chat(user, "You unfasten \the [S] with your [I].")
 		qdel(src)
 		return
 	else if ((istype(I, /obj/item/weapon/hammer)) && (shattered))
@@ -116,6 +116,6 @@
 				if ("West")
 					S.pixel_x = -32
 				else return
-			user << "You fasten \the [S] with your [H]."
+			to_chat(user, "You fasten \the [S] with your [H].")
 			qdel(src)
 	else ..()

@@ -23,7 +23,7 @@
 //Arming
 /obj/item/mine/attack_self(mob/living/user as mob)
 	if (locate(/obj/item/mine) in get_turf(src))
-		src << "There's already a mine at this position!"
+		to_chat(user, "There's already a mine at this position!")
 		return
 
 	if (!anchored)
@@ -148,7 +148,7 @@
 		return
 	if (istype(AM, /mob/living))
 		for (var/mob/O in viewers(7, loc))
-			O << "<font color='red'>[AM] triggered the [src]!</font>"
+			to_chat(O, "<font color='red'>[AM] triggered the [src]!</font>")
 		triggered = TRUE
 		visible_message("<span class = 'red'><b>Click!</b></span>")
 		explosion(get_turf(src),1,2,6)
@@ -188,7 +188,7 @@
 		return
 	if (istype(AM, /mob/living))
 		for (var/mob/O in viewers(7, loc))
-			O << "<font color='red'>[AM] triggered the [src]!</font>"
+			to_chat(O, "<font color='red'>[AM] triggered the [src]!</font>")
 		triggered = TRUE
 		visible_message("<span class = 'red'><b>Click!</b></span>")
 		explosion(get_turf(src),1,2,4)
@@ -245,7 +245,7 @@
 
 /obj/item/mine/at/trigger(atom/movable/AM)
 	for (var/mob/O in viewers(7, loc))
-		O << "<font color='red'>[AM] triggered the [src]!</font>"
+		to_chat(O, "<font color='red'>[AM] triggered the [src]!</font>")
 	triggered = TRUE
 	visible_message("<span class = 'red'><b>Click!</b></span>")
 	for(var/obj/structure/vehicleparts/frame/F in range(1,src))
@@ -352,7 +352,7 @@
 		return
 	if (istype(AM, /mob/living))
 		for (var/mob/O in viewers(7, loc))
-			O << "<font color='red'>[AM] triggered the [src]!</font>"
+			to_chat(O, "<font color='red'>[AM] triggered the [src]!</font>")
 		triggered = TRUE
 		visible_message("<span class = 'red'><b>Click!</b></span>")
 		explosion(get_turf(src),1,2,4)
@@ -384,7 +384,7 @@
 			return
 		if (istype(AM, /mob/living))
 			for (var/mob/O in viewers(7, loc))
-				O << "<font color='red'>[AM] tripped over the [src]!</font>"
+				to_chat(O, "<font color='red'>[AM] tripped over the [src]!</font>")
 			triggered = TRUE
 			visible_message("<span class = 'red'><b>SSSShh!</b></span>")
 			explosion(get_turf(src),1,2,3)

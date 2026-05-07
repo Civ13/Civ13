@@ -59,14 +59,14 @@ obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 	for(var/obj/structure/carriage/C in world)
 		if (C.faction1val >= 700) // total value stored = 2191. So roughly 1/3rd
 			var/message = "The <b>West Side Gang</b> has sucessfully stolen over 700 dollars! The robbery was successful!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			ticker.finished = TRUE
 			return TRUE
 		else if (C.faction2val >= 700) // total value stored = 2191. So roughly 1/3rd
 			var/message = "The <b>East Side Gang</b> has sucessfully stolen over 700 dollars! The robbery was successful!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			ticker.finished = TRUE
@@ -74,7 +74,7 @@ obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 	if (processes.ticker.playtime_elapsed >= 72000)
 		ticker.finished = TRUE
 		var/message = "The Sheriff's troops have sucessfully defended the Bank! With the Army arriving, the Outlaws retreat!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return TRUE
@@ -110,7 +110,7 @@ obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 			else if (H.original_job_title == "East Side Gang")
 				faction2val += (W.value*W.amount)
 			desc = "West Side: [faction1val]. East Side: [faction2val]."
-			user << "You place \the [W] inside \the [src]."
+			to_chat(user, "You place \the [W] inside \the [src].")
 		qdel(W)
 		if (faction1val >= 750)
 			map.update_win_condition()
@@ -121,5 +121,5 @@ obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/structure/carriage/proc/timer()
 	spawn(4000)
-		world << "<big>Current status: West Side Gang: <b>[faction1val]/700</b>. East Side Gang: <b>[faction2val]/700</b>."
+		to_chat(world, "<big>Current status: West Side Gang: <b>[faction1val]/700</b>. East Side Gang: <b>[faction2val]/700</b>.")
 		timer()

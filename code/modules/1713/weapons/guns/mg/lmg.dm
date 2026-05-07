@@ -57,13 +57,13 @@
 
 /obj/item/weapon/gun/projectile/automatic/special_check(mob/user)
 	if (gun_safety && safetyon)
-		user << SPAN_WARNING("You can't fire \the [src] while the safety is on!")
+		to_chat(user, SPAN_WARNING("You can't fire \the [src] while the safety is on!"))
 		return FALSE
 	if (!user.has_empty_hand(both = FALSE))
-		user << SPAN_WARNING(">You need both hands to fire \the [src]!")
+		to_chat(user, SPAN_WARNING(">You need both hands to fire \the [src]!"))
 		return FALSE
 	if (jammed_until > world.time)
-		user << SPAN_DANGER("\The [src] has jammed! You can't fire it until it has unjammed.")
+		to_chat(user, SPAN_DANGER("\The [src] has jammed! You can't fire it until it has unjammed."))
 		return FALSE
 	return TRUE
 
@@ -202,7 +202,7 @@
 		folded = FALSE
 		recoil *= 1.5
 		icon_state = "[base_icon]_folded"
-		usr << "You extend the stock on \the [src]."
+		to_chat(usr, "You extend the stock on \the [src].")
 		equiptimer = 15
 		set_stock()
 		update_icon()
@@ -210,7 +210,7 @@
 		recoil /= 1.5
 		folded = TRUE
 		icon_state = "[base_icon]"
-		usr << "You collapse the stock on \the [src]."
+		to_chat(usr, "You collapse the stock on \the [src].")
 		equiptimer = 7
 		set_stock()
 		update_icon()
@@ -494,7 +494,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/breda30/special_check(mob/user)
 	if (cover_open)
-		user << SPAN_WARNING("\The [src]'s magazine latch is open! Close it before firing!")
+		to_chat(user, SPAN_WARNING("\The [src]'s magazine latch is open! Close it before firing!"))
 		return FALSE
 	return ..()
 
@@ -502,7 +502,7 @@
 	if (do_after(user, 12, src, can_move = TRUE))
 		cover_open ? playsound(loc, cover_close_sound, 100, TRUE) : playsound(loc, cover_open_sound, 100, TRUE)
 		cover_open = !cover_open
-		user << SPAN_NOTICE("You [cover_open ? "open" : "close"] \the [src]'s magazine latch.")
+		to_chat(user, SPAN_NOTICE("You [cover_open ? "open" : "close"] \the [src]'s magazine latch."))
 	update_icon()
 
 /obj/item/weapon/gun/projectile/automatic/breda30/attack_self(mob/user as mob)
@@ -519,13 +519,13 @@
 
 /obj/item/weapon/gun/projectile/automatic/breda30/load_ammo(var/obj/item/A, mob/user)
 	if (!cover_open)
-		user << SPAN_WARNING("You need to open the cover to load \the [src].")
+		to_chat(user, SPAN_WARNING("You need to open the cover to load \the [src]."))
 		return
 	..()
 
 /obj/item/weapon/gun/projectile/automatic/breda30/unload_ammo(mob/user, var/allow_dump=1)
 	if (!cover_open)
-		user << SPAN_WARNING("You need to open the magazine latch to unload \the [src].")
+		to_chat(user, SPAN_WARNING("You need to open the magazine latch to unload \the [src]."))
 		return
 	..()
 

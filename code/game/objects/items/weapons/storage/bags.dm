@@ -122,14 +122,14 @@
 	can_be_inserted(obj/item/W as obj, stop_messages = FALSE)
 		if (!istype(W,/obj/item/stack/material))
 			if (!stop_messages)
-				usr << "The snatcher does not accept [W]."
+				to_chat(usr, "The snatcher does not accept [W].")
 			return FALSE
 		var/current = FALSE
 		for (var/obj/item/stack/material/S in contents)
 			current += S.amount
 		if (capacity == current)//If it's full, you're done
 			if (!stop_messages)
-				usr << "<span class='warning'>The snatcher is full.</span>"
+				to_chat(usr, "<span class='warning'>The snatcher is full.</span>")
 			return FALSE
 		return TRUE
 

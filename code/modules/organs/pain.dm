@@ -45,7 +45,7 @@
 			flash_pain()
 	if (msg && (msg != last_pain_message || prob(10)))
 		last_pain_message = msg
-		src << msg
+		to_chat(src, msg)
 	next_pain_time = world.time + (100 - amount)
 
 

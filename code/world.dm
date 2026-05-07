@@ -230,81 +230,6 @@ var/world_topic_spam_protect_time = world.timeofday
 	handler = new handler()
 	return handler.TryRun(input)
 
-/*
-// Old code
-/world/Topic(T, addr, master, key)
-	diary << "TOPIC: \"[T]\", from:[addr], master:[master], key:[key][log_end]"
-
-	// normal ss13 stuff
-
-	if (T == "ping")
-		return clients.len + 1
-
-	else if (T == "players")
-		return clients.len
-
-	else if (copytext(T,1,7) == "status")
-		var/input[] = params2list(T)
-		var/list/s = list()
-		s["version"] = game_version
-		s["respawn"] = GLOB.abandon_allowed
-		s["enter"] = GLOB.enter_allowed
-		s["vote"] = config.allow_vote_mode
-		s["host"] = host ? host : null
-
-		// This is dumb, but spacestation13.com's banners break if player count isn't the 8th field of the reply, so... this has to go here.
-		s["players"] = 0
-		s["game_id"] = game_id
-		s["stationtime"] = stationtime2text()
-		s["roundduration"] = roundduration2text()
-		s["rounddurationinsecond"] = round((round_start_time ? world.time - round_start_time : FALSE) * 10)
-		s["rounddurationinticks"] = (round_start_time ? world.time - round_start_time : FALSE)
-
-		s["map"] = "unknown"
-		s["age"] = "unknown"
-		s["stationname"] = config.server_name
-
-		if (input["status"] == "2")
-			var/list/players = list()
-			var/list/admins = list()
-
-			for (var/client/C in clients)
-				if (C.holder)
-					if (C.holder.fakekey)
-						continue
-					admins[C.key] = C.holder.rank
-				players += C.key
-
-			s["players"] = players.len
-			s["playerlist"] = list2params(players)
-			s["admins"] = admins.len
-			s["adminlist"] = list2params(admins)
-			if (map)
-				s["map"] = map.title
-				s["age"] = map.age
-				s["gamemode"] = map.gamemode
-			s["season"] = season
-		else
-			var/n = FALSE
-			var/admins = FALSE
-
-			for (var/client/C in clients)
-				if (C.holder)
-					if (C.holder.fakekey)
-						continue	//so stealthmins aren't revealed by the hub
-					admins++
-				s["player[n]"] = C.key
-				n++
-
-			s["players"] = n
-			s["admins"] = admins
-			if (map)
-				s["map"] = map.title
-				s["age"] = map.age
-				s["gamemode"] = map.gamemode
-			s["season"] = season
-		return list2params(s)
-*/
 
 /world/Reboot(var/reason)
 
@@ -434,7 +359,7 @@ var/global/nextsave = 0
 					log_discord(dmsg)
 					//to_chat(world, "<span class = 'ping'><small>["\["]DISCORD["\]"]</small></span> <span class='deadsay'><b>[tempmsg[1]]</b>:</span> [tempmsg[2]]")
 			fdel(F)
-			F << ""
+			to_chat(F, "")
 
 		var/G = file("SQL/discord2admin.txt")
 		if (fexists(G))
@@ -445,10 +370,10 @@ var/global/nextsave = 0
 
 					for (var/client/C in admins)
 						if (R_MENTOR & C.holder.rights || R_MOD & C.holder.rights)
-							C << "<span class='admin_channel'><IMG src='\ref[text_tag_icons]' class='text_tag' iconstate='a-discord' alt='ASAY-Discord'> <span class='name'>[tempmsg[1]]</span>(Discord): <span class='message'>[tempmsg[2]]</span></span>"
+							to_chat(C, "<span class='admin_channel'><IMG src='\ref[text_tag_icons]' class='text_tag' iconstate='a-discord' alt='ASAY-Discord'> <span class='name'>[tempmsg[1]]</span>(Discord): <span class='message'>[tempmsg[2]]</span></span>")
 					log_discord_asay(msg)
 			fdel(G)
-			G << ""
+			to_chat(G, "")
 
 		var/H = file("SQL/discord2dm.txt")
 		if (fexists(H))
@@ -463,7 +388,7 @@ var/global/nextsave = 0
 						if (C.ckey == temp_ckey)
 							cmd_admin_pm_fromdiscord(C, tempmsg[3], tempmsg[1])
 			fdel(H)
-			H << ""
+			to_chat(H, "")
 
 		var/I = file("SQL/discord2ban.txt")
 		if (fexists(I))
@@ -478,7 +403,7 @@ var/global/nextsave = 0
 					if (quickBan_discord(temp_ckey, tempmsg[3], tempmsg[4], tempmsg[1]) == "successful.")
 						discord_admin_ban(tempmsg[1],temp_ckey,tempmsg[3],tempmsg[4])
 			fdel(I)
-			I << ""
+			to_chat(I, "")
 		var/J = file("SQL/discord2unban.txt")
 		if (fexists(J))
 			var/list/messages_read = splittext(file2text(J), "\n")
@@ -490,7 +415,7 @@ var/global/nextsave = 0
 					temp_ckey = replacetext(temp_ckey,"_", "")
 					discord_admin_unban(tempmsg[1],temp_ckey)
 			fdel(J)
-			J << ""
+			to_chat(J, "")
 		sleep (100)
 
 /proc/start_serverswap_loop()

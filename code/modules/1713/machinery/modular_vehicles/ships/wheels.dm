@@ -151,7 +151,7 @@
 		if (get_dist(src, user) > 1)
 			user = null
 	if (!anchored)
-		user << "<span class = 'danger'>You need to fix it to the floor before using.</span>"
+		to_chat(user, "<span class = 'danger'>You need to fix it to the floor before using.</span>")
 		user = null
 	if (user && user != m)
 		if (user.client)
@@ -172,15 +172,15 @@
 	user.face_atom(src)
 
 	if (!locate(user) in range(1,src))
-		user << "<span class = 'danger'>Get behind the wheel to use it.</span>"
+		to_chat(user, "<span class = 'danger'>Get behind the wheel to use it.</span>")
 		return FALSE
 
 	if (!user.can_use_hands())
-		user << "<span class = 'danger'>You have no hands to use this with.</span>"
+		to_chat(user, "<span class = 'danger'>You have no hands to use this with.</span>")
 		return FALSE
 
 	if (!anchored)
-		user << "<span class = 'danger'>You need to fix it to the floor before using.</span>"
+		to_chat(user, "<span class = 'danger'>You need to fix it to the floor before using.</span>")
 		return FALSE
 
 	if (href_list["set_anchor"])
@@ -206,28 +206,28 @@
 						M.sails_on = FALSE
 					M.update_icon()
 			if (!sails_on)
-				user << "You hoist the sails on the [ship]."
+				to_chat(user, "You hoist the sails on the [ship].")
 			else
-				user << "You retract the sails on the [ship]."
+				to_chat(user, "You retract the sails on the [ship].")
 			spamtimer = world.time + 20
 			sails_on = !sails_on
 
 	if (href_list["set_heading_left"])
 		if (turndir(user,"left"))
-			user << "You turn the ship to the left."
+			to_chat(user, "You turn the ship to the left.")
 			spamtimer = world.time + 20
 	if (href_list["set_heading_right"])
 		if (turndir(user,"right"))
-			user << "You turn the ship to the right."
+			to_chat(user, "You turn the ship to the right.")
 			spamtimer = world.time + 20
 	if (href_list["set_reversed"])
 		if (!reversed)
-			user << "You reverse the [ship]."
+			to_chat(user, "You reverse the [ship].")
 			spamtimer = world.time + 20
 			reversed = TRUE
 			ship.reverse = TRUE
 		else
-			user << "You return the [ship] to the heading."
+			to_chat(user, "You return the [ship] to the heading.")
 			spamtimer = world.time + 20
 			reversed = FALSE
 			ship.reverse = FALSE
@@ -268,18 +268,18 @@
 				ahead = "astern"
 			if (ship.currentspeed == 1)
 				ship.moving = TRUE
-				user << "You set the speed to <b>slow [ahead]</b>."
+				to_chat(user, "You set the speed to <b>slow [ahead]</b>.")
 				playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
 				ship.vehicle_m_delay = spd
 				ship.add_transporting()
 				ship.startmovementloop()
 			else if (ship.currentspeed == 2)
-				user << "You change the speed to <b>half-speed [ahead]</b>."
+				to_chat(user, "You change the speed to <b>half-speed [ahead]</b>.")
 				playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
 				ship.vehicle_m_delay = spd
 				return
 			else if (ship.currentspeed == 3)
-				user << "You change the speed to <b>full-speed [ahead]</b>."
+				to_chat(user, "You change the speed to <b>full-speed [ahead]</b>.")
 				playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
 				ship.vehicle_m_delay = spd
 				return
@@ -291,7 +291,7 @@
 			return
 		if (ship && ship.engine && ship.currentspeed <= 0)
 			if (ship.engine.on)
-				user << "You turn off the [ship.engine]."
+				to_chat(user, "You turn off the [ship.engine].")
 				ship.engine.on = FALSE
 				ship.moving = FALSE
 				ship.currentspeed = 0
@@ -303,7 +303,7 @@
 			var/spd = ship.get_speed()
 			if (spd <= 0 || ship.currentspeed == 0)
 				ship.moving = FALSE
-				user << "You stop the ship."
+				to_chat(user, "You stop the ship.")
 				for (var/obj/structure/vehicleparts/movement/W in ship.wheels)
 					W.update_icon()
 				return
@@ -313,18 +313,18 @@
 					ahead = "astern"
 				if (ship.currentspeed == 1)
 					ship.moving = TRUE
-					user << "You set the speed to <b>slow [ahead]</b>."
+					to_chat(user, "You set the speed to <b>slow [ahead]</b>.")
 					playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
 					ship.vehicle_m_delay = spd
 					ship.add_transporting()
 					ship.startmovementloop()
 				else if (ship.currentspeed == 2)
-					user << "You change the speed to <b>half-speed [ahead]</b>."
+					to_chat(user, "You change the speed to <b>half-speed [ahead]</b>.")
 					playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
 					ship.vehicle_m_delay = spd
 					return
 				else if (ship.currentspeed == 3)
-					user << "You change the speed to <b>full-speed [ahead]</b>."
+					to_chat(user, "You change the speed to <b>full-speed [ahead]</b>.")
 					playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
 					ship.vehicle_m_delay = spd
 					return
@@ -368,17 +368,17 @@
 		for(var/obj/structure/vehicleparts/frame/VP in O.loc)
 			if (!VP.axis.ship)
 				if (mob)
-					mob << "<span class='warning'>You can't turn, something is in the way!</span>"
+					to_chat(mob, "<span class='warning'>You can't turn, something is in the way!</span>")
 				return FALSE
 		for(var/obj/effect/pseudovehicle/PV in O.loc)
 			if (PV.link != ship)
 				if (mob)
-					mob << "<span class='warning'>You can't turn, something is in the way!</span>"
+					to_chat(mob, "<span class='warning'>You can't turn, something is in the way!</span>")
 				return FALSE
 /*
 		var/turf/TF = get_turf(O)
 		if (!istype(TF, /turf/floor/beach/water) && !istype(TF, /turf/floor/trench/flooded))
-			mob << "<span class='warning'>You can't turn, the ship will get stuck!</span>"
+			to_chat(mob, "<span class='warning'>You can't turn, the ship will get stuck!</span>")
 			return FALSE
 */
 	if (newdir == "left")
@@ -389,7 +389,7 @@
 
 /obj/structure/vehicleparts/shipwheel/attack_hand(var/mob/attacker)
 	if (!anchored || !ship)
-		attacker << "<span class = 'warning'>Fix the wheel in place first.</span>"
+		to_chat(attacker, "<span class = 'warning'>Fix the wheel in place first.</span>")
 		return
 	else
 		interact(attacker)

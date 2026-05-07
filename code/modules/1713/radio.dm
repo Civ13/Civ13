@@ -134,11 +134,11 @@ var/global/FREQM = rand(101,120)
 	user.face_atom(src)
 
 	if (!locate(user) in range(1,src))
-		user << "<span class = 'danger'>Get close to the [src] to use it.</span>"
+		to_chat(user, "<span class = 'danger'>Get close to the [src] to use it.</span>")
 		return FALSE
 
 	if (!user.can_use_hands())
-		user << "<span class = 'danger'>You have no hands to use this with.</span>"
+		to_chat(user, "<span class = 'danger'>You have no hands to use this with.</span>")
 		return FALSE
 
 	if (href_list["set_frequency"])
@@ -147,7 +147,7 @@ var/global/FREQM = rand(101,120)
 			if (!input || input == freq)
 				return
 			freq = input
-			user << "Frequency set to <b>[freq]</b>."
+			to_chat(user, "Frequency set to <b>[freq]</b>.")
 			do_html(user)
 			return
 
@@ -156,7 +156,7 @@ var/global/FREQM = rand(101,120)
 			if (!input)
 				return
 			freq = sanitize_integer(input, min=150, max=300, default=150)
-			user << "Frequency set to [freq]kHz."
+			to_chat(user, "Frequency set to [freq]kHz.")
 			desc = "Used to communicate with distant places. Set to [freq]kHz."
 			do_html(user)
 			return
@@ -418,7 +418,7 @@ var/global/FREQM = rand(101,120)
 
 	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (prob(20))
-			src << "<span class='warning'>You feel the radio vibrate but can hear nothing from it!</span>"
+			to_chat(src, "<span class='warning'>You feel the radio vibrate but can hear nothing from it!</span>")
 	else
 		var/fontsize = 2
 		var/full_message = ""
@@ -518,11 +518,11 @@ var/global/FREQM = rand(101,120)
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
 /obj/structure/radio/attackby(obj/item/W as obj, mob/user as mob)
 	if (!anchored && !istype(W, /obj/item/weapon/wrench))
-		user << "<span class='notice'>Fix the radio in place with a wrench first.</span>"
+		to_chat(user, "<span class='notice'>Fix the radio in place with a wrench first.</span>")
 		return
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (powersource)
-			user << "There's already a cable connected here! Split it further from the [src]."
+			to_chat(user, "There's already a cable connected here! Split it further from the [src].")
 			return
 		var/obj/item/stack/cable_coil/CC = W
 		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
@@ -546,7 +546,7 @@ var/global/FREQM = rand(101,120)
 						NCOO.connections += powersource
 					if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
 						powersource.connections += NCOO
-					user << "You connect the two cables."
+					to_chat(user, "You connect the two cables.")
 
 			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
 				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
@@ -554,7 +554,7 @@ var/global/FREQM = rand(101,120)
 						NCOC.connections += powersource
 					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
 						powersource.connections += NCOC
-		user << "You connect the cable to the [src]."
+		to_chat(user, "You connect the cable to the [src].")
 	else
 		..()
 
@@ -631,11 +631,11 @@ var/global/FREQM = rand(101,120)
 	user.face_atom(src)
 
 	if (!locate(user) in range(1,src))
-		user << "<span class = 'danger'>Get close to the [src] to use it.</span>"
+		to_chat(user, "<span class = 'danger'>Get close to the [src] to use it.</span>")
 		return FALSE
 
 	if (!user.can_use_hands())
-		user << "<span class = 'danger'>You have no hands to use this with.</span>"
+		to_chat(user, "<span class = 'danger'>You have no hands to use this with.</span>")
 		return FALSE
 
 	if (href_list["set_frequency"])
@@ -644,7 +644,7 @@ var/global/FREQM = rand(101,120)
 			if (!input || input == freq)
 				return
 			freq = input
-			user << "Frequency set to <b>[freq]</b>."
+			to_chat(user, "Frequency set to <b>[freq]</b>.")
 			do_html(user)
 			return
 		else
@@ -652,7 +652,7 @@ var/global/FREQM = rand(101,120)
 			if (!input)
 				return
 			freq = sanitize_integer(input, min=150, max=300, default=150)
-			user << "Frequency set to [freq]kHz."
+			to_chat(user, "Frequency set to [freq]kHz.")
 			desc = "Used to communicate with distant places. Set to [freq]kHz."
 			do_html(user)
 			return

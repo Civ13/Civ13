@@ -605,14 +605,14 @@
 	var/thirsty_percentage = "[round(thirsty_coeff*100)]%"
 
 	if (thirsty_coeff <= 0)
-		H << "<span class = 'danger'>You're dehydrating.</span>"
+		to_chat(H, "<span class = 'danger'>You're dehydrating.</span>")
 	else
-		H << "<span class = 'warning'>You're about [thirsty_percentage] hydrated.</span>"
+		to_chat(H, "<span class = 'warning'>You're about [thirsty_percentage] hydrated.</span>")
 
 	if (hungry_coeff <= 0)
-		H << "<span class = 'danger'>You're starving.</span>"
+		to_chat(H, "<span class = 'danger'>You're starving.</span>")
 	else
-		H << "<span class = 'warning'>You're about [hungry_percentage] full.</span>"
+		to_chat(H, "<span class = 'warning'>You're about [hungry_percentage] full.</span>")
 
 //--------------------------------------------------nutrition end---------------------------------------------------------
 
@@ -758,10 +758,10 @@
 		L.set_face_dir()
 
 		if (!L.facing_dir)
-			L << "You are no longer facing anything."
+			to_chat(L, "You are no longer facing anything.")
 			icon_state = "fixeye"
 		else
-			L << "You are now facing [dir2text(L.facing_dir)]."
+			to_chat(L, "You are now facing [dir2text(L.facing_dir)].")
 			icon_state = "fixeye_on"
 		update_icon()
 
@@ -806,25 +806,25 @@
 			if("charge") //10% damage buff
 				parentmob.tactic = "aim"
 				icon_state = "aim"
-				parentmob << "<span class='warning'>You will now focus on aiming.</span>"
+				to_chat(parentmob, "<span class='warning'>You will now focus on aiming.</span>")
 				update_icon()
 				return
 			if("aim") //10% accuracy buff
 				parentmob.tactic = "rush"
 				icon_state = "rush"
-				parentmob << "<span class='warning'>You will now focus on rushing.</span>"
+				to_chat(parentmob, "<span class='warning'>You will now focus on rushing.</span>")
 				update_icon()
 				return
 			if("rush") // 15% cooldown buff
 				parentmob.tactic = "defend"
 				icon_state = "defend"
-				parentmob << "<span class='warning'>You will now focus on defending.</span>"
+				to_chat(parentmob, "<span class='warning'>You will now focus on defending.</span>")
 				update_icon()
 				return
 			if("defend") //20% dodge/parry buff
 				parentmob.tactic = "charge"
 				icon_state = "charge"
-				parentmob << "<span class='warning'>You will now focus on charging.</span>"
+				to_chat(parentmob, "<span class='warning'>You will now focus on charging.</span>")
 				update_icon()
 				return
 
@@ -876,9 +876,9 @@
 				icon_state = "mood1"
 		if(old_icon && old_icon != icon_state)
 			if(L && old_mood > L.mood)
-				L << "<span class='warning'>My mood gets worse.</span>"
+				to_chat(L, "<span class='warning'>My mood gets worse.</span>")
 			else
-				L << "<span class='info'>My mood gets better.</span>"
+				to_chat(L, "<span class='info'>My mood gets better.</span>")
 //-----------------------mov_intent------------------------------
 /obj/screen/mov_intent
 	name = "mov_intent"
@@ -892,7 +892,7 @@
 	if (C.stat == DEAD)
 		return
 	if (C.legcuffed)
-		C << "<span class='notice'>You are legcuffed! You cannot run until you get [C.legcuffed] removed!</span>"
+		to_chat(C, "<span class='notice'>You are legcuffed! You cannot run until you get [C.legcuffed] removed!</span>")
 		C.m_intent = "walk"	//Just incase
 		update_icon()
 		return TRUE
@@ -1013,11 +1013,11 @@
 /obj/screen/mode/Click()
 	if (parentmob.defense_intent == I_DODGE)
 		parentmob.defense_intent = I_PARRY
-		parentmob << "<span class='warning'>You will now parry.</span>"
+		to_chat(parentmob, "<span class='warning'>You will now parry.</span>")
 		update_icon()
 	else
 		parentmob.defense_intent = I_DODGE
-		parentmob << "<span class='warning'>You will now dodge.</span>"
+		to_chat(parentmob, "<span class='warning'>You will now dodge.</span>")
 		update_icon()
 /obj/screen/mode/update_icon()
 	switch (parentmob.defense_intent)

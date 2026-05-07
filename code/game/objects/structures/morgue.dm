@@ -168,7 +168,7 @@
 	if (user != O)
 		for (var/mob/B in viewers(user, 3))
 			if ((B.client && !( B.blinded )))
-				B << "<span class='warning'>\The [user] stuffs [O] into [src]!</span>"
+				to_chat(B, "<span class='warning'>\The [user] stuffs [O] into [src]!</span>")
 	return
 
 //////////////
@@ -229,7 +229,7 @@
 
 /obj/structure/cremator/attack_hand(mob/user as mob)
 	if (cremating)
-		usr << "<span class='warning'>It's locked.</span>"
+		to_chat(usr, "<span class='warning'>It's locked.</span>")
 		return
 	if ((src.connected) && (src.locked == FALSE))
 		for (var/atom/movable/A as mob|obj in src.connected.loc)

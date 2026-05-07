@@ -269,7 +269,7 @@
 					to_chat(user, SPAN_WARNING("[src] requires another magazine.</span>")) //wrong magazine
 					return
 				if (ammo_magazine)
-					user << "<span class='warning'>[src] already has a magazine loaded.</span>" //already a magazine here
+					to_chat(user, "<span class='warning'>[src] already has a magazine loaded.</span>") //already a magazine here)
 					return
 				user.remove_from_mob(AM)
 				if (src.is_laser_mg == TRUE)
@@ -285,12 +285,12 @@
 				if (cliploader)
 					if (src.ammo_magazine)
 						if (loaded.len >= ammo_magazine.max_ammo)
-							user << "<span class='warning'>[src] is full!</span>"
+							to_chat(user, "<span class='warning'>[src] is full!</span>")
 							return
 						var/count = FALSE
 						for (var/obj/item/ammo_casing/C in AM.stored_ammo)
 							if (src.ammo_magazine.stored_ammo.len >= src.ammo_magazine.max_ammo)
-								user << "<span class='warning'>[src] is full!</span>"
+								to_chat(user, "<span class='warning'>[src] is full!</span>")
 								break
 							if (C.caliber == caliber)
 								C.loc = src
@@ -302,12 +302,12 @@
 							if (reload_sound) playsound(loc, reload_sound, 75, TRUE)
 							cock_gun(user)
 					else
-						user << "<span class='warning'>[src] has no magazine!</span>"
+						to_chat(user, "<span class='warning'>[src] has no magazine!</span>")
 						return
 
 				else
 					if (loaded.len >= max_shells)
-						user << "<span class='warning'>[src] is full!</span>"
+						to_chat(user, "<span class='warning'>[src] is full!</span>")
 						return
 					var/count = FALSE
 					for (var/obj/item/ammo_casing/C in AM.stored_ammo)
@@ -327,13 +327,13 @@
 	else if (istype(A, /obj/item/ammo_casing))
 		var/obj/item/ammo_casing/C = A
 		if (!(load_method & SINGLE_CASING))
-			user << "<span class='warning'>You can't load \the [src] with a single casing!</span>"
+			to_chat(user, "<span class='warning'>You can't load \the [src] with a single casing!</span>")
 			return
 		if (caliber != C.caliber)
-			user << "<span class='warning'>\The [C] is of the wrong caliber!</span>"
+			to_chat(user, "<span class='warning'>\The [C] is of the wrong caliber!</span>")
 			return //incompatible
 		if (loaded.len >= max_shells)
-			user << "<span class='warning'>[src] is full.</span>"
+			to_chat(user, "<span class='warning'>[src] is full.</span>")
 			return
 
 		user.remove_from_mob(C)
@@ -372,7 +372,7 @@
 			user.visible_message("[user] removes \a [C] from [src].", "<span class='notice'>You remove \a [C] from [src].</span>")
 			if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 	else
-		user << "<span class='warning'>[src] is empty.</span>"
+		to_chat(user, "<span class='warning'>[src] is empty.</span>")
 	update_icon()
 
 /obj/item/weapon/gun/projectile/proc/tactical_reload(var/obj/item/A as obj, mob/user)
@@ -455,14 +455,14 @@
 /obj/item/weapon/gun/projectile/examine(mob/user)
 	..(user)
 	if (ammo_magazine)
-		user << "<span class='notice'>It has \a [ammo_magazine] loaded.</span>"
+		to_chat(user, "<span class='notice'>It has \a [ammo_magazine] loaded.</span>")
 	if (!magazine_based)
-		user << "<span class='notice'>[inexactAmmo()]</span>"
+		to_chat(user, "<span class='notice'>[inexactAmmo()]</span>")
 	if (!(istype(src, /obj/item/weapon/gun/projectile/bow)))
 		if (serial == "")
-			user << "<span class='warning'><b>The serial number has been filed out.</b></span>"
+			to_chat(user, "<span class='warning'><b>The serial number has been filed out.</b></span>")
 		else
-			user << "<i>Serial no. <b>[serial]</b></i>"
+			to_chat(user, "<i>Serial no. <b>[serial]</b></i>")
 
 /obj/item/weapon/gun/projectile/proc/getAmmo()
 	var/bullets = FALSE

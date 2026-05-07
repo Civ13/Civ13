@@ -68,14 +68,14 @@ var/no_loop_clash = FALSE
 			return FALSE
 		ticker.finished = TRUE
 		var/message = "The Raven clan has managed to defend their settlement!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_clash == FALSE)
 		ticker.finished = TRUE
 		var/message = "The Bear clan has captured the King's cabin! The remaining Raven clansmen have surrendered!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_clash = TRUE
@@ -118,7 +118,7 @@ var/no_loop_clash = FALSE
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The Raven clan has recaptured the King's cabin!</font>"
+			to_chat(world, "<font size = 3>The Raven clan has recaptured the King's cabin!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -144,7 +144,7 @@ var/no_loop_clash = FALSE
 			return
 		if (!head_nationality || head_nationality == "none")
 			return
-		user << "You offer the head as a tribute to Odin."
+		to_chat(user, "You offer the head as a tribute to Odin.")
 
 		if	(prob(20))
 			var/randmed = rand(1,3)

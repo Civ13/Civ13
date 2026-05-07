@@ -536,7 +536,7 @@
 						snow_span = "danger"
 */
 				if (snow_message && world.time >= mob.next_snow_message)
-					mob << "<span class = '[snow_span]'>[snow_message]</span>"
+					to_chat(mob, "<span class = '[snow_span]'>[snow_message]</span>")
 					mob.next_snow_message = world.time+100
 
 			else if (F.muddy && !H.lizard && F_area.icon_state != "")
@@ -951,7 +951,7 @@
 				H.football.update_movement()
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				if (MW && MW.control && MW.control.axis && MW.control.axis.reverse && MW.control.axis.currentspeed == 0 && !MW.control.axis.moving)
-					H << "You switch into forward."
+					to_chat(H, "You switch into forward.")
 					playsound(H.loc, 'sound/effects/lever.ogg',65, TRUE)
 					MW.control.axis.reverse = FALSE
 			for(var/obj/item/turret_controls/C in H)
@@ -995,7 +995,7 @@
 				H.football.update_movement()
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				if (MW && MW.control && MW.control.axis && !MW.control.axis.reverse && MW.control.axis.currentspeed == 0 && !MW.control.axis.moving)
-					H << "You switch into reverse."
+					to_chat(H, "You switch into reverse.")
 					playsound(H.loc, 'sound/effects/lever.ogg',65, TRUE)
 					MW.control.axis.reverse = TRUE
 			for(var/obj/item/turret_controls/C in H)

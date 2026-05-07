@@ -37,12 +37,12 @@
 		var/vx = rand(25,world.maxx-25)
 		var/vy = rand(25,world.maxy-25)
 		var/turf/epicenter = get_turf(locate(vx,vy,2))
-		world << "<font size=3 color='red'><center>ATTENTION<br>A nuclear missile is incoming! Take cover!</center></font>"
+		to_chat(world, "<font size=3 color='red'><center>ATTENTION<br>A nuclear missile is incoming! Take cover!</center></font>")
 		var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 		for (var/mob/M in player_list)
 			M.client << warning_sound
 		spawn(330)
-			world << "<font size=4 color='red'>A nuclear explosion has happened! <br><i>(Game might freeze/lag for a while while processing, please wait)</i></font>"
+			to_chat(world, "<font size=4 color='red'>A nuclear explosion has happened! <br><i>(Game might freeze/lag for a while while processing, please wait)</i></font>")
 			nuke_map(epicenter, 200, 180, 0)
 			message_admins("Automatic nuke deployed at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
 			log_game("Automatic nuke deployed at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
@@ -58,32 +58,32 @@
 		var/turf/locationt = pick(supplydrop_turfs)
 		switch(droptype)
 			if("supplies")
-				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Supplies have been airdropped in the area!</center></font>"
+				to_chat(world, "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Supplies have been airdropped in the area!</center></font>")
 				new/obj/structure/closet/crate/airdrops/supplies(locationt)
 
 			if("food")
-				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Food has been airdropped in the area!</center></font>"
+				to_chat(world, "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Food has been airdropped in the area!</center></font>")
 				new/obj/structure/closet/crate/airdrops/food(locationt)
 				new/obj/item/weapon/reagent_containers/glass/barrel/modern/water(locationt)
 
 			if("weapons")
-				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Weapons and ammunition have been airdropped in the area!</center></font>"
+				to_chat(world, "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Weapons and ammunition have been airdropped in the area!</center></font>")
 				new/obj/structure/closet/crate/airdrops/weapons(locationt)
 
 			if("military")
-				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Military equipment has been airdropped in the area!</center></font>"
+				to_chat(world, "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Military equipment has been airdropped in the area!</center></font>")
 				new/obj/structure/closet/crate/airdrops/military(locationt)
 
 			if("medicine")
-				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Medicine has been airdropped in the area!</center></font>"
+				to_chat(world, "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Medicine has been airdropped in the area!</center></font>")
 				new/obj/structure/closet/crate/airdrops/medicine(locationt)
 
 			if("rad")
-				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Radiation equipment has been airdropped in the area!</center></font>"
+				to_chat(world, "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Radiation equipment has been airdropped in the area!</center></font>")
 				new/obj/structure/closet/crate/airdrops/rads(locationt)
 
 			if("cold")
-				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Cold weather equipment has been airdropped in the area!</center></font>"
+				to_chat(world, "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Cold weather equipment has been airdropped in the area!</center></font>")
 				new/obj/structure/closet/crate/airdrops/cold(locationt)
 	spawn(rand(36000, 72000))
 		supplydrop_proc()

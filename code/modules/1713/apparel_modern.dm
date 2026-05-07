@@ -69,7 +69,7 @@
 	..()
 
 /obj/item/clothing/accessory/armor/coldwar/plates/attack_self(mob/user as mob)
-	user << "<span class='notice'>You empty [src].</span>"
+	to_chat(user, "<span class='notice'>You empty [src].</span>")
 	var/turf/T = get_turf(src)
 	hold.hide_from(usr)
 	for (var/obj/item/I in hold.contents)
@@ -623,7 +623,7 @@
 			item_state = "multicam"
 			worn_state = "multicam"
 			item_state_slots["w_uniform"] = "multicam"
-			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 			rolled = FALSE
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 			update_clothing_icon()
@@ -631,7 +631,7 @@
 			item_state = "multicam_rolled"
 			worn_state = "multicam_rolled"
 			item_state_slots["w_uniform"] = "multicam_rolled"
-			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 			rolled = TRUE
 			heat_protection = ARMS
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
@@ -733,7 +733,7 @@
 			icon_state = "sovietfacehelmet_o"
 			worn_state = "sovietfacehelmet_o"
 			item_state_slots["slot_head"] = "sovietfacehelmet_o"
-			usr << "<span class = 'danger'>You put up your helmet's visor.</span>"
+			to_chat(usr, "<span class = 'danger'>You put up your helmet's visor.</span>")
 			toggled = FALSE
 			update_clothing_icon()
 			body_parts_covered = HEAD
@@ -743,7 +743,7 @@
 			icon_state = "sovietfacehelmet"
 			worn_state = "sovietfacehelmet"
 			item_state_slots["slot_head"] = "sovietfacehelmet"
-			usr << "<span class = 'danger'>You put down your helmet's visor.</span>"
+			to_chat(usr, "<span class = 'danger'>You put down your helmet's visor.</span>")
 			toggled = TRUE
 			update_clothing_icon()
 			body_parts_covered = HEAD|FACE
@@ -773,7 +773,7 @@
 			icon_state = "sovietface_weldhelmet_o"
 			worn_state = "sovietface_weldhelmet_o"
 			item_state_slots["slot_head"] = "sovietface_weldhelmet_o"
-			usr << "<span class = 'danger'>You put up your helmet's visor.</span>"
+			to_chat(usr, "<span class = 'danger'>You put up your helmet's visor.</span>")
 			toggled = FALSE
 			update_clothing_icon()
 			body_parts_covered = HEAD
@@ -783,7 +783,7 @@
 			icon_state = "sovietface_weldhelmet"
 			worn_state = "sovietface_weldhelmet"
 			item_state_slots["slot_head"] = "sovietface_weldhelmet"
-			usr << "<span class = 'danger'>You put down your helmet's visor.</span>"
+			to_chat(usr, "<span class = 'danger'>You put down your helmet's visor.</span>")
 			toggled = TRUE
 			update_clothing_icon()
 			body_parts_covered = HEAD|FACE|EYES
@@ -1662,7 +1662,7 @@
 	flipped = !flipped
 	update_icon()
 	update_clothing_icon()
-	usr << "You flip your cap around."
+	to_chat(usr, "You flip your cap around.")
 
 /obj/item/clothing/head/cap/update_icon()
 	..()
@@ -1822,13 +1822,13 @@
 			item_state = "mk6"
 			worn_state = "mk6"
 			item_state_slots["slot_head"] = "mk6"
-			usr << "<span class = 'danger'>you adjust your helmet's straps.</span>"
+			to_chat(usr, "<span class = 'danger'>you adjust your helmet's straps.</span>")
 			adjusted = FALSE
 		else if (!adjusted)
 			item_state = "mk6_straps"
 			worn_state = "mk6_straps"
 			item_state_slots["slot_head"] = "mk6_straps"
-			usr << "<span class = 'danger'>you adjust your helmet's straps.</span>"
+			to_chat(usr, "<span class = 'danger'>you adjust your helmet's straps.</span>")
 			adjusted = TRUE
 	update_clothing_icon()
 
@@ -1851,7 +1851,7 @@
 			item_state = "ukraine_acu"
 			worn_state = "ukraine_acu"
 			item_state_slots["w_uniform"] = "ukraine_acu"
-			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 			rolled = FALSE
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 			update_clothing_icon()
@@ -1859,7 +1859,7 @@
 			item_state = "ukraine_acu_rolled"
 			worn_state = "ukraine_acu_rolled"
 			item_state_slots["w_uniform"] = "ukraine_acu_rolled"
-			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 			rolled = TRUE
 			heat_protection = ARMS
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
@@ -1954,7 +1954,7 @@
 			item_state = "russian_emr_desert"
 			worn_state = "russian_emr_desert"
 			item_state_slots["w_uniform"] = "russian_emr_desert"
-			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 			rolled = FALSE
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 			update_clothing_icon()
@@ -1962,7 +1962,7 @@
 			item_state = "russian_emr_desert_rolled"
 			worn_state = "russian_emr_desert_rolled"
 			item_state_slots["w_uniform"] = "russian_emr_desert_rolled"
-			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 			rolled = TRUE
 			heat_protection = ARMS
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
@@ -1989,7 +1989,7 @@
 			item_state = "syr_army"
 			worn_state = "syr_army"
 			item_state_slots["w_uniform"] = "syr_army"
-			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 			rolled = FALSE
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 			update_clothing_icon()
@@ -1997,7 +1997,7 @@
 			item_state = "syr_army_rolled"
 			worn_state = "syr_army_rolled"
 			item_state_slots["w_uniform"] = "syr_army_rolled"
-			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 			rolled = TRUE
 			heat_protection = ARMS
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
@@ -2022,7 +2022,7 @@
 			item_state = "salv_army"
 			worn_state = "salv_army"
 			item_state_slots["w_uniform"] = "salv_army"
-			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 			rolled = FALSE
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 			update_clothing_icon()
@@ -2030,7 +2030,7 @@
 			item_state = "salv_army_rolled"
 			worn_state = "salv_army_rolled"
 			item_state_slots["w_uniform"] = "salv_army_rolled"
-			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 			rolled = TRUE
 			heat_protection = ARMS
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
@@ -2149,7 +2149,7 @@
 				item_state = "[base_icon]"
 				icon_state = "[base_icon]"
 				item_state_slots["w_uniform"] = "[base_icon]"
-				usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+				to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 				rolled = FALSE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 				update_clothing_icon()
@@ -2159,7 +2159,7 @@
 				item_state = "[base_icon]_rolled"
 				icon_state = "[base_icon]_rolled"
 				item_state_slots["w_uniform"] = "[base_icon]_rolled"
-				usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+				to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 				rolled = TRUE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 				update_clothing_icon()
@@ -2170,7 +2170,7 @@
 				item_state = "[base_icon]_stripped"
 				icon_state = "[base_icon]_stripped"
 				item_state_slots["w_uniform"] = "[base_icon]_stripped"
-				usr << "<span class = 'danger'>You have no sleeves.</span>"
+				to_chat(usr, "<span class = 'danger'>You have no sleeves.</span>")
 				rolled = FALSE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 				update_clothing_icon()
@@ -2180,7 +2180,7 @@
 				item_state = "[base_icon]_stripped"
 				icon_state = "[base_icon]_stripped"
 				item_state_slots["w_uniform"] = "[base_icon]_stripped"
-				usr << "<span class = 'danger'>You have no sleeves.</span>"
+				to_chat(usr, "<span class = 'danger'>You have no sleeves.</span>")
 				rolled = FALSE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 				update_clothing_icon()
@@ -2197,7 +2197,7 @@
 				item_state = "[base_icon]"
 				icon_state = "[base_icon]"
 				item_state_slots["w_uniform"] = "[base_icon]"
-				usr << "<span class = 'danger'>You put on your overshirt.</span>"
+				to_chat(usr, "<span class = 'danger'>You put on your overshirt.</span>")
 				stripped = FALSE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 				update_clothing_icon()
@@ -2207,7 +2207,7 @@
 				item_state = "[base_icon]_rolled"
 				icon_state = "[base_icon]_rolled"
 				item_state_slots["cad_pat_rolled"] = "[base_icon]_rolled"
-				usr << "<span class = 'danger'>You put on your overshirt.</span>"
+				to_chat(usr, "<span class = 'danger'>You put on your overshirt.</span>")
 				stripped = FALSE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 				update_clothing_icon()
@@ -2218,7 +2218,7 @@
 				item_state = "[base_icon]_stripped"
 				icon_state = "[base_icon]_stripped"
 				item_state_slots["w_uniform"] = "[base_icon]_stripped"
-				usr << "<span class = 'danger'>You strip to your under shirt.</span>"
+				to_chat(usr, "<span class = 'danger'>You strip to your under shirt.</span>")
 				stripped = TRUE
 				rolled = FALSE
 				heat_protection = ARMS
@@ -2230,7 +2230,7 @@
 				item_state = "[base_icon]_stripped"
 				icon_state = "[base_icon]_stripped"
 				item_state_slots["w_uniform"] = "[base_icon]_stripped"
-				usr << "<span class = 'danger'>You strip to your under shirt.</span>"
+				to_chat(usr, "<span class = 'danger'>You strip to your under shirt.</span>")
 				stripped = TRUE
 				rolled = FALSE
 				heat_protection = ARMS

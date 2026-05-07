@@ -676,11 +676,11 @@
 	if (do_after(user, 15, src, can_move = TRUE))
 		if (deployed)
 			deployed = FALSE
-			user << "<span class='notice'>You lift your [name] up, falling out of formation.</span>"
+			to_chat(user, "<span class='notice'>You lift your [name] up, falling out of formation.</span>")
 			return
 		else
 			deployed = TRUE
-			user << "<span class='notice'>You turn your [name] down, forming a spear wall!</span>"
+			to_chat(user, "<span class='notice'>You turn your [name] down, forming a spear wall!</span>")
 			update_icon()
 			check_dmg()
 			return

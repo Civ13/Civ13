@@ -69,9 +69,9 @@
 				ballas_points++
 			else
 				cust_color = "white"
-			world << "<big><font color='[cust_color]'><b>Basketball Court (South-West)</b>: [a1_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>Basketball Court (South-West)</b>: [a1_control]</font></big>")
 		else
-			world << "<big><b>Basketball Court (South-West)</b>: Nobody</big>"
+			to_chat(world, "<big><b>Basketball Court (South-West)</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -99,9 +99,9 @@
 				ballas_points++
 			else
 				cust_color = "white"
-			world << "<big><font color='[cust_color]'><b>Abandoned Lot (South-East)</b>: [a2_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>Abandoned Lot (South-East)</b>: [a2_control]</font></big>")
 		else
-			world << "<big><b>Abandoned Lot (South-East)</b>: Nobody</big>"
+			to_chat(world, "<big><b>Abandoned Lot (South-East)</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -129,9 +129,9 @@
 				ballas_points++
 			else
 				cust_color = "white"
-			world << "<big><font color='[cust_color]'><b>Rodriguez Steelworks</b>: [a3_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>Rodriguez Steelworks</b>: [a3_control]</font></big>")
 		else
-			world << "<big><b>Rodriguez Steelworks</b>: Nobody</big>"
+			to_chat(world, "<big><b>Rodriguez Steelworks</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -159,13 +159,13 @@
 				ballas_points++
 			else
 				cust_color = "white"
-			world << "<big><font color='[cust_color]'><b>Pig Pen Parking Lot (North-East)</b>: [a4_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>Pig Pen Parking Lot (North-East)</b>: [a4_control]</font></big>")
 		else
-			world << "<big><b>Pig Pen Parking Lot (North-East)</b>: Nobody</big>"
+			to_chat(world, "<big><b>Pig Pen Parking Lot (North-East)</b>: Nobody</big>")
 	spawn(300)
 		points_check()
-		world << "Ballas Influence: [ballas_points]/40"
-		world << "Grove Influence: [grove_points]/40"
+		to_chat(world, "Ballas Influence: [ballas_points]/40")
+		to_chat(world, "Grove Influence: [grove_points]/40")
 
 /obj/map_metadata/east_los_santos/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -223,7 +223,7 @@
 				return FALSE
 			ticker.finished = TRUE
 			var/message = "The <b><font color ='green'>Grove Street Families</font></b> have reached [grove_points] points and won! The hood is theirs!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
@@ -232,7 +232,7 @@
 				return FALSE
 			ticker.finished = TRUE
 			var/message = "The <b><font color ='purple'>Ballas</font></b> have reached [ballas_points] points and won! The hood is theirs!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
@@ -274,7 +274,7 @@
 						H.equip_to_slot_or_drop(new /obj/item/ammo_magazine/m9beretta(H), slot_l_store)
 						H.equip_to_slot_or_drop(new /obj/item/ammo_magazine/m9beretta(H), slot_r_store)
 				spam_check_g = 1
-				world << "The <b><font color = 'green'>Grove Street Families</font></b> are now strapped with <b>pistols</b>!"
+				to_chat(world, "The <b><font color = 'green'>Grove Street Families</font></b> are now strapped with <b>pistols</b>!")
 			else if ((grove_points >= 20 && grove_points < 30) && spam_check_g == 1)
 				var/rand_smg = rand(1,3)
 				switch(rand_smg)
@@ -291,7 +291,7 @@
 						H.equip_to_slot_or_drop(new /obj/item/ammo_magazine/mac10(H), slot_l_store)
 						H.equip_to_slot_or_drop(new /obj/item/ammo_magazine/mac10(H), slot_r_store)
 				spam_check_g = 2
-				world << "The <b><font color = 'green'> Grove Street Families</font></b> are now strapped with <b>SMGs</b>!"
+				to_chat(world, "The <b><font color = 'green'> Grove Street Families</font></b> are now strapped with <b>SMGs</b>!")
 			else if (grove_points >= 30 && spam_check_g == 2)
 				var/rand_rifle = pick(1,2)
 				switch(rand_rifle)
@@ -304,7 +304,7 @@
 						H.equip_to_slot_or_drop(new /obj/item/ammo_magazine/mp40/mp5(H), slot_l_store)
 						H.equip_to_slot_or_drop(new /obj/item/ammo_magazine/mp40/mp5(H), slot_r_store)
 				spam_check_g = 3
-				world << "The <b><font color = 'green'>Grove Street Families</font></b> are now strapped with <b>assault rifles</b>!"
+				to_chat(world, "The <b><font color = 'green'>Grove Street Families</font></b> are now strapped with <b>assault rifles</b>!")
 		else
 			if ((ballas_points >= 10 && ballas_points < 20) && spam_check_b == 0)
 				var/rand_pistol = rand(1,3)
@@ -322,7 +322,7 @@
 						H.equip_to_slot_or_drop(new /obj/item/ammo_magazine/m9beretta(H), slot_l_store)
 						H.equip_to_slot_or_drop(new /obj/item/ammo_magazine/m9beretta(H), slot_r_store)
 				spam_check_b = 1
-				world << "The <b><font color ='purple'>Ballas</font></b> are now strapped with <b>pistols</b>!"
+				to_chat(world, "The <b><font color ='purple'>Ballas</font></b> are now strapped with <b>pistols</b>!")
 			else if ((ballas_points >= 20 && ballas_points < 30) && spam_check_b == 1)
 				var/rand_smg = rand(1,3)
 				switch(rand_smg)
@@ -339,7 +339,7 @@
 						H.equip_to_slot_or_drop(new /obj/item/ammo_magazine/mac10(H), slot_l_store)
 						H.equip_to_slot_or_drop(new /obj/item/ammo_magazine/mac10(H), slot_r_store)
 				spam_check_b = 2
-				world << "The <b><font color ='purple'>Ballas</font></b> are now strapped with <b>SMGs</b>!"
+				to_chat(world, "The <b><font color ='purple'>Ballas</font></b> are now strapped with <b>SMGs</b>!")
 			else if (ballas_points >= 30 && spam_check_b == 2)
 				var/rand_rifle = pick(1,2)
 				switch(rand_rifle)
@@ -352,7 +352,7 @@
 						H.equip_to_slot_or_drop(new /obj/item/ammo_magazine/mp40/mp5(H), slot_l_store)
 						H.equip_to_slot_or_drop(new /obj/item/ammo_magazine/mp40/mp5(H), slot_r_store)
 				spam_check_b = 3
-				world << "The <b><font color ='purple'>Ballas</font></b> are now strapped with <b>assault rifles</b>!"
+				to_chat(world, "The <b><font color ='purple'>Ballas</font></b> are now strapped with <b>assault rifles</b>!")
 	spawn(300)
 		rewards()
 

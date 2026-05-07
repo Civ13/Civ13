@@ -159,11 +159,11 @@
 
 				if ("Priests")
 					if (U.getStatCoeff("philosophy") < 1.75)
-						U << "<span class='danger'>Your philosophy skill is too low. You need 1.75 or more to become a priest.</span>"
+						to_chat(U, "<span class='danger'>Your philosophy skill is too low. You need 1.75 or more to become a priest.</span>")
 						return
 					else
 						U.religious_clergy = "Priests"
-						U << "<big>You become a Priest for the [U.religion]!</big>"
+						to_chat(U, "<big>You become a Priest for the [U.religion]!</big>")
 						if (U.gender == "male")
 							U.fully_replace_character_name(U.real_name,"Priest [U.name]")
 						else
@@ -172,11 +172,11 @@
 
 				if ("Monks")
 					if (U.getStatCoeff("philosophy") < 1.5)
-						U << "<span class='danger'>Your philosophy skill is too low. You need 1.5 or more to become a monk.</span>"
+						to_chat(U, "<span class='danger'>Your philosophy skill is too low. You need 1.5 or more to become a monk.</span>")
 						return
 					else
 						U.religious_clergy = "Monks"
-						U << "<big>You become a Monk for the [U.religion]!</big>"
+						to_chat(U, "<big>You become a Monk for the [U.religion]!</big>")
 						if (U.gender == "male")
 							U.fully_replace_character_name(U.real_name,"Brother [U.name]")
 						else
@@ -185,11 +185,11 @@
 
 				if ("Clerics")
 					if (U.getStatCoeff("philosophy") < 2.2)
-						U << "<span class='danger'>Your philosophy skill is too low. You need 2.2 or more to become a cleric.</span>"
+						to_chat(U, "<span class='danger'>Your philosophy skill is too low. You need 2.2 or more to become a cleric.</span>")
 						return
 					else
 						U.religious_clergy = "Clerics"
-						U << "<big>You become a Cleric for the [U.religion]!</big>"
+						to_chat(U, "<big>You become a Cleric for the [U.religion]!</big>")
 						if (U.gender == "male")
 							U.fully_replace_character_name(U.real_name,"Venerable [U.name]")
 						else
@@ -198,7 +198,7 @@
 
 				if ("Cultists")
 					U.religious_clergy = "Cultists"
-					U << "<big>You become a Cultist of the [U.religion]!</big>"
+					to_chat(U, "<big>You become a Cultist of the [U.religion]!</big>")
 	else
 		to_chat(usr, SPAN_DANGER("You cannot join the clergy on this map."))
 		return

@@ -76,7 +76,7 @@
 	var/mob/living/human/user = usr
 
 	if (!cards.len)
-		usr << "There are no cards in the deck."
+		to_chat(usr, "There are no cards in the deck.")
 		return
 
 	var/obj/item/weapon/hand/H
@@ -107,7 +107,7 @@
 	if (usr.stat || !Adjacent(usr)) return
 
 	if (!cards.len)
-		usr << "There are no cards in the deck."
+		to_chat(usr, "There are no cards in the deck.")
 		return
 
 	var/list/players = list()
@@ -163,7 +163,7 @@
 	if (!ishuman(over) || !(over in viewers(3))) return
 
 	if (!cards.len)
-		usr << "There are no cards in the deck."
+		to_chat(usr, "There are no cards in the deck.")
 		return
 
 	deal_at(usr, over)

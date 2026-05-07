@@ -120,50 +120,50 @@ obj/item/weapon/gun/projectile/ancient/tanegashima
 			return
 	else if (istype(W, /obj/item/weapon/reagent_containers))
 		if (gunpowder)
-			user << "<span class='notice'>The [src] is already packed with gunpowder.</span>"
+			to_chat(user, "<span class='notice'>The [src] is already packed with gunpowder.</span>")
 			return
 		else if (!W.reagents.has_reagent("gunpowder",1))
-			user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill \the [src].</span>"
+			to_chat(user, "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill \the [src].</span>")
 			return
 		else
-			user << "<span class='notice'>You begin packing \the [src] with gunpowder...</span>"
+			to_chat(user, "<span class='notice'>You begin packing \the [src] with gunpowder...</span>")
 			if (ishuman(user))
 				var/mob/living/human/H = user
 				if (do_after(user, (60 / H.getStatCoeff(stat)), src, can_move = TRUE))
 					if (!gunpowder)
 						if (W.reagents.has_reagent("gunpowder",1))
-							user << "<span class='notice'>You finish packing \the [src] with gunpowder.</span>"
+							to_chat(user, "<span class='notice'>You finish packing \the [src] with gunpowder.</span>")
 							W.reagents.remove_reagent("gunpowder",1)
 							gunpowder = TRUE
 							return
 						else
-							user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill \the [src].</span>"
+							to_chat(user, "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill \the [src].</span>")
 							return
 			else
 				if (do_after(user, 60, src, can_move = TRUE))
 					if (!gunpowder)
 						if (W.reagents.has_reagent("gunpowder",1))
-							user << "<span class='notice'>You finish packing \the [src] with gunpowder.</span>"
+							to_chat(user, "<span class='notice'>You finish packing \the [src] with gunpowder.</span>")
 							W.reagents.remove_reagent("gunpowder",1)
 							gunpowder = TRUE
 							return
 						else
-							user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill \the [src].</span>"
+							to_chat(user, "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill \the [src].</span>")
 							return
 	else if (istype(W, /obj/item/stack/ammopart/stoneball))
 		var/obj/item/stack/ammopart/stoneball/ST = W
 		if (!gunpowder)
-			user << "<span class='notice'>You need to put in the gunpowder first.</span>"
+			to_chat(user, "<span class='notice'>You need to put in the gunpowder first.</span>")
 		else if (bullet)
-			user << "<span class='notice'>There is already a projectile inside.</span>"
+			to_chat(user, "<span class='notice'>There is already a projectile inside.</span>")
 			return
 		else if (!bullet && gunpowder)
-			user << "<span class='notice'>You begin loading \the [src] with \the [W]...</span>"
+			to_chat(user, "<span class='notice'>You begin loading \the [src] with \the [W]...</span>")
 			if (ishuman(user))
 				var/mob/living/human/H = user
 				if (do_after(user, (100 / H.getStatCoeff(stat)), src, can_move = TRUE))
 					if (!bullet)
-						user << "<span class='notice'>You load \the [src].</span>"
+						to_chat(user, "<span class='notice'>You load \the [src].</span>")
 						bullet = TRUE
 						var/obj/item/ammo_casing/stoneball/SBL = new/obj/item/ammo_casing/stoneball
 						loaded += SBL
@@ -184,7 +184,7 @@ obj/item/weapon/gun/projectile/ancient/tanegashima
 			else
 				if (do_after(user, 100, src, can_move = TRUE))
 					if (!bullet)
-						user << "<span class='notice'>You load \the [src].</span>"
+						to_chat(user, "<span class='notice'>You load \the [src].</span>")
 						bullet = TRUE
 						var/obj/item/ammo_casing/stoneball/SBL = new/obj/item/ammo_casing/stoneball
 						loaded += SBL
@@ -209,19 +209,19 @@ obj/item/weapon/gun/projectile/ancient/tanegashima
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		if (H.faction_text == INDIANS)
-			user << "<span class='warning'>You don't know how to use this.</span>"
+			to_chat(user, "<span class='warning'>You don't know how to use this.</span>")
 			return FALSE
 	if (!gunpowder)
-		user << "<span class='warning'>You can't fire \the [src] without gunpowder!</span>"
+		to_chat(user, "<span class='warning'>You can't fire \the [src] without gunpowder!</span>")
 		return FALSE
 	if (!bullet)
-		user << "<span class='warning'>You can't fire \the [src] without a projectile!</span>"
+		to_chat(user, "<span class='warning'>You can't fire \the [src] without a projectile!</span>")
 		return FALSE
 	if (!lighted && !istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock) && (/obj/item/weapon/gun/projectile/ancient/tanegashima))
-		user << "<span class='warning'>You can't fire \the [src] without lighting it!</span>"
+		to_chat(user, "<span class='warning'>You can't fire \the [src] without lighting it!</span>")
 		return FALSE
 	if (!(user.has_empty_hand(both = FALSE)) && istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock) && (/obj/item/weapon/gun/projectile/ancient/tanegashima))
-		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
+		to_chat(user, "<span class='warning'>You need both hands to fire \the [src]!</span>")
 		return FALSE
 	return ..()
 

@@ -43,7 +43,7 @@
 /obj/structure/buoy/examine(mob/user)
 	..()
 	if (message != "")
-		user << "It has a sign that says: <b>[message]</b>"
+		to_chat(user, "It has a sign that says: <b>[message]</b>")
 
 /obj/structure/buoy/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, /obj/item/weapon/pen))
@@ -73,14 +73,14 @@
 /obj/structure/fishing_cage/attack_hand(mob/user as mob)
 	if (found)
 		var/atom/FD = new found(loc)
-		user << "You open the cage and find there is [FD] inside!"
+		to_chat(user, "You open the cage and find there is [FD] inside!")
 		if (isitem(FD))
 			user.put_in_hands(FD)
 		found = null
 		generate_fish()
 		return
 	else
-		user << "There is nothing in the cage."
+		to_chat(user, "There is nothing in the cage.")
 		return
 
 /obj/structure/fishing_cage/proc/generate_fish()

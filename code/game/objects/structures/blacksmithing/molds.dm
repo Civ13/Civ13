@@ -25,21 +25,21 @@
 /obj/item/weapon/clay/mold/examine(mob/user)
 	..()
 	if (capacity > 0)
-		user << "Has [capacity] unit[capacity > 1 ? "s" : ""] of [current_material] in it."
+		to_chat(user, "Has [capacity] unit[capacity > 1 ? "s" : ""] of [current_material] in it.")
 	if (contents_materials.len)
 		for (var/i in contents_materials)
 			if (contents_materials[i]>0)
-				user << "Has <b>[contents_materials[i]]</b> unit[contents_materials[i] > 1 ? "s" : ""] of [i] in it."
+				to_chat(user, "Has <b>[contents_materials[i]]</b> unit[contents_materials[i] > 1 ? "s" : ""] of [i] in it.")
 	if (max_capacity > 0)
-		user << "Has a maximum capacity of <b>[max_capacity]</b> units."
+		to_chat(user, "Has a maximum capacity of <b>[max_capacity]</b> units.")
 /obj/item/weapon/clay/mold/attackby(obj/item/I as obj, mob/user as mob)
 	if (!fired)
-		user << "<span class='warning'>[src] is unfired!</span>"
+		to_chat(user, "<span class='warning'>[src] is unfired!</span>")
 		return
 	if (istype(I, /obj/item/weapon/clay/mold))
 		var/obj/item/weapon/clay/mold/ML = I
 		if (!ML.fired)
-			user << "<span class='warning'>[ML] is unfired!</span>"
+			to_chat(user, "<span class='warning'>[ML] is unfired!</span>")
 			return
 		if (ML.fired && ML.capacity > 0 && (src.capacity < src.max_capacity) && (src.current_material == ML.current_material || !src.current_material))
 			var/amt_to_transfer = min(max_capacity - capacity, ML.capacity)
@@ -65,7 +65,7 @@
 			for (var/i in contents_materials)
 				current_cap += contents_materials[i]
 			if (current_cap >= max_capacity)
-				user << "<span class='warning'>[src] is full!</span>"
+				to_chat(user, "<span class='warning'>[src] is full!</span>")
 				return
 			var/max_free_cap = max_capacity-current_cap
 			var/obj/item/stack/O = I
@@ -76,93 +76,93 @@
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
 						qdel(O)
-					user << "You put some [O] in \the [src]."
+					to_chat(user, "You put some [O] in \the [src].")
 				else if  (contents_materials.len == 1 && contents_materials["gold"])
 					contents_materials["gold"] += cap_to_add
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
 						qdel(O)
-					user << "You put some [O] in \the [src]."
+					to_chat(user, "You put some [O] in \the [src].")
 			else if (istype(O, /obj/item/stack/ore/silver))
 				if (contents_materials.len == 0)
 					contents_materials += list("silver" = cap_to_add)
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
 						qdel(O)
-					user << "You put some [O] in \the [src]."
+					to_chat(user, "You put some [O] in \the [src].")
 				else if  (contents_materials.len == 1 && contents_materials["silver"])
 					contents_materials["silver"] += cap_to_add
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
 						qdel(O)
-					user << "You put some [O] in \the [src]."
+					to_chat(user, "You put some [O] in \the [src].")
 			else if (istype(O, /obj/item/stack/ore/copper))
 				if (contents_materials.len == 0 || (contents_materials.len == 1 && contents_materials["tin"]))
 					contents_materials += list("copper" = cap_to_add)
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
 						qdel(O)
-					user << "You put some [O] in \the [src]."
+					to_chat(user, "You put some [O] in \the [src].")
 				else if ((contents_materials.len == 1 && contents_materials["copper"]) || (contents_materials.len == 2 && contents_materials["copper"]))
 					contents_materials["copper"] += cap_to_add
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
 						qdel(O)
-					user << "You put some [O] in \the [src]."
+					to_chat(user, "You put some [O] in \the [src].")
 			else if (istype(O, /obj/item/stack/ore/tin))
 				if (contents_materials.len == 0 || (contents_materials.len == 1 && contents_materials["copper"]))
 					contents_materials += list("tin" = cap_to_add)
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
 						qdel(O)
-					user << "You put some [O] in \the [src]."
+					to_chat(user, "You put some [O] in \the [src].")
 				else if ((contents_materials.len == 1 && contents_materials["tin"]) || (contents_materials.len == 2 && contents_materials["tin"]))
 					contents_materials["tin"] += cap_to_add
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
 						qdel(O)
-					user << "You put some [O] in \the [src]."
+					to_chat(user, "You put some [O] in \the [src].")
 			else if (istype(O, /obj/item/stack/ore/lead))
 				if (contents_materials.len == 0)
 					contents_materials += list("lead" = cap_to_add)
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
 						qdel(O)
-					user << "You put some [O] in \the [src]."
+					to_chat(user, "You put some [O] in \the [src].")
 				else if (contents_materials.len == 1 && contents_materials["lead"])
 					contents_materials["lead"] += cap_to_add
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
 						qdel(O)
-					user << "You put some [O] in \the [src]."
+					to_chat(user, "You put some [O] in \the [src].")
 			else if (istype(O, /obj/item/stack/material/iron))
 				if (contents_materials.len == 0)
 					contents_materials += list("iron" = cap_to_add)
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
 						qdel(O)
-					user << "You put some [O] in \the [src]."
+					to_chat(user, "You put some [O] in \the [src].")
 				else if (contents_materials.len == 1 && contents_materials["iron"])
 					contents_materials["iron"] += cap_to_add
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
 						qdel(O)
-					user << "You put some [O] in \the [src]."
+					to_chat(user, "You put some [O] in \the [src].")
 			else if (istype(O, /obj/item/stack/material/steel))
 				if (contents_materials.len == 0)
 					contents_materials += list("steel" = cap_to_add)
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
 						qdel(O)
-					user << "You put some [O] in \the [src]."
+					to_chat(user, "You put some [O] in \the [src].")
 				else if (contents_materials.len == 1 && contents_materials["steel"])
 					contents_materials["steel"] += cap_to_add
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
 						qdel(O)
-					user << "You put some [O] in \the [src]."
+					to_chat(user, "You put some [O] in \the [src].")
 			else
-				user << "You cannot use this material on a kiln."
+				to_chat(user, "You cannot use this material on a kiln.")
 				return
 			return
 /obj/item/weapon/clay/mold/axehead

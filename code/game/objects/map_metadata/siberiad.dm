@@ -158,11 +158,11 @@
 		if (!src.unlocked)
 			var/code = input(H, "Enter the activation code:", "Access Termninal") as num
 			if (code != SD.activation_code)
-				to_chat(H, SPAN_WARNING("\icon[src] Wrong password."))
+				to_chat(H, SPAN_WARNING("\icon[getFlatIcon(src)] Wrong password."))
 				return
-		src.visible_message(SPAN_NOTICE("\icon[src] Initiliazing protocols... Please wait."))
+		src.visible_message(SPAN_NOTICE("\icon[getFlatIcon(src)] Initiliazing protocols... Please wait."))
 		spawn(100)
-			src.visible_message(SPAN_WARNING("\icon[src] Security protocol terminated. Please insert the trajectory path disk."))
+			src.visible_message(SPAN_WARNING("\icon[getFlatIcon(src)] Security protocol terminated. Please insert the trajectory path disk."))
 			src.unlocked = TRUE
 
 /obj/structure/props/computerprops/tracking/siberiad/attackby(obj/item/O as obj, mob/living/human/user as mob)
@@ -179,15 +179,15 @@
 			destination = 1
 		else if (istype(O, /obj/item/weapon/disk/siberiad/nato))
 			destination = 2
-		src.visible_message(SPAN_NOTICE("\icon[src] Calibrating trajectory... Please wait."))
+		src.visible_message(SPAN_NOTICE("\icon[getFlatIcon(src)] Calibrating trajectory... Please wait."))
 		spawn(100)
 			src.active = TRUE
-			src.visible_message(SPAN_WARNING("\icon[src] Nuclear missile activated."))
+			src.visible_message(SPAN_WARNING("\icon[getFlatIcon(src)] Nuclear missile activated."))
 			switch(destination)
 				if (1)
-					src.visible_message(SPAN_WARNING("\icon[src] Target destination: SEATTLE <br>(LAT: 47.608013, LONG: -122.335167)."))
+					src.visible_message(SPAN_WARNING("\icon[getFlatIcon(src)] Target destination: SEATTLE <br>(LAT: 47.608013, LONG: -122.335167)."))
 				if (2)
-					src.visible_message(SPAN_WARNING("\icon[src] Target destination: NOVOSIBIRSK <br>(LAT: 55.018803, LONG: 82.933952)."))
+					src.visible_message(SPAN_WARNING("\icon[getFlatIcon(src)] Target destination: NOVOSIBIRSK <br>(LAT: 55.018803, LONG: 82.933952)."))
 
 /obj/item/weapon/disk/siberiad
 	name = "ballistic trajectory diskette"

@@ -82,14 +82,14 @@ var/no_loop_kar = FALSE
 			return FALSE
 		ticker.finished = TRUE
 		var/message = "The Arabic Caliphate have managed to defend the fortress!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_kar == FALSE)
 		ticker.finished = TRUE
 		var/message = "The Crusaders have captured the fortress! The remaining Arabs have surrendered!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_kar = TRUE
@@ -132,7 +132,7 @@ var/no_loop_kar = FALSE
 				current_loser = "Arabic Caliphate"
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The Arabs have recaptured the fortress!</font>"
+			to_chat(world, "<font size = 3>The Arabs have recaptured the fortress!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1

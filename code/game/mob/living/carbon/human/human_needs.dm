@@ -25,11 +25,11 @@
 				msg_hygiene = "You feel a bit dirty."
 			if(0 to HYGIENE_LEVEL_DIRTY)
 				msg_hygiene = "You feel very dirty!"
-		H << "<span class='info'>*---------*</span>"
-		H << "<span class='info'>[msg]</span>"
-		H << "<span class='info'>[msg_hygiene]</span>"
+		to_chat(H, "<span class='info'>*---------*</span>")
+		to_chat(H, "<span class='info'>[msg]</span>")
+		to_chat(H, "<span class='info'>[msg_hygiene]</span>")
 		H.print_excrement()
-		H << "<span class='info'>*---------*</span>"
+		to_chat(H, "<span class='info'>*---------*</span>")
 		return
 /mob/living/human/proc/handle_ptsd()
 	if (ptsd > 100)
@@ -121,7 +121,7 @@
 		if (prob(12))
 			for(var/mob/living/human/HM in range(3,src))
 				if (HM != src && !HM.orc)
-					HM << "<span class='notice'>You sense a strong, nasty smell coming from [src].</span>"
+					to_chat(HM, "<span class='notice'>You sense a strong, nasty smell coming from [src].</span>")
 					HM.mood -= 1.5
 	var/fleas_found = FALSE
 	for (var/obj/item/clothing/C in list(wear_suit,w_uniform,shoes))

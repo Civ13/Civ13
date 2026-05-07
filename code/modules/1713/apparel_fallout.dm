@@ -20,7 +20,7 @@
 				item_state = "ncr_fatigues"
 				icon_state = "ncr_fatigues"
 				item_state_slots["w_uniform"] = "ncr_fatigues"
-				usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+				to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 				rolled = FALSE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 				update_clothing_icon()
@@ -31,7 +31,7 @@
 				item_state = "ncr_fatigues_rolled"
 				icon_state = "ncr_fatigues_rolled"
 				item_state_slots["w_uniform"] = "ncr_fatigues_rolled"
-				usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+				to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 				rolled = TRUE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 				update_clothing_icon()
@@ -43,7 +43,7 @@
 				item_state = "ncr_fatigues_maskup"
 				icon_state = "ncr_fatigues_maskup"
 				item_state_slots["w_uniform"] = "ncr_fatigues_maskup"
-				usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+				to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 				rolled = FALSE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 				update_clothing_icon()
@@ -54,7 +54,7 @@
 				item_state = "ncr_fatigues_rolled_maskup"
 				icon_state = "ncr_fatigues_rolled_maskup"
 				item_state_slots["w_uniform"] = "ncr_fatigues_rolled_maskup"
-				usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+				to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 				rolled = TRUE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 				update_clothing_icon()
@@ -71,7 +71,7 @@
 				item_state = "ncr_fatigues"
 				icon_state = "ncr_fatigues"
 				item_state_slots["w_uniform"] = "ncr_fatigues"
-				usr << "<span class = 'danger'>You lower your mask.</span>"
+				to_chat(usr, "<span class = 'danger'>You lower your mask.</span>")
 				maskup = FALSE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 				update_clothing_icon()
@@ -81,7 +81,7 @@
 				item_state = "ncr_fatigues_rolled"
 				icon_state = "ncr_fatigues_rolled"
 				item_state_slots["w_uniform"] = "ncr_fatigues_rolled"
-				usr << "<span class = 'danger'>You lower your mask.</span>"
+				to_chat(usr, "<span class = 'danger'>You lower your mask.</span>")
 				maskup = FALSE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 				update_clothing_icon()
@@ -92,7 +92,7 @@
 				item_state = "ncr_fatigues_maskup"
 				icon_state = "ncr_fatigues_maskup"
 				item_state_slots["w_uniform"] = "ncr_fatigues_maskup"
-				usr << "<span class = 'danger'>You raise your mask.</span>"
+				to_chat(usr, "<span class = 'danger'>You raise your mask.</span>")
 				maskup = TRUE
 				heat_protection = ARMS
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
@@ -103,7 +103,7 @@
 				item_state = "ncr_fatigues_maskup_rolled"
 				icon_state = "ncr_fatigues_maskup_rolled"
 				item_state_slots["w_uniform"] = "ncr_fatigues_maskup_rolled"
-				usr << "<span class = 'danger'>You raise your mask.</span>"
+				to_chat(usr, "<span class = 'danger'>You raise your mask.</span>")
 				maskup = TRUE
 				heat_protection = ARMS
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
@@ -163,13 +163,13 @@
 			item_state = "ncr_helmet_goggles"
 			worn_state = "ncr_helmet_goggles"
 			item_state_slots["slot_head"] = "ncr_helmet_goggles"
-			usr << "<span class = 'danger'>You adjust your goggles.</span>"
+			to_chat(usr, "<span class = 'danger'>You adjust your goggles.</span>")
 			goggles = FALSE
 		else if (!goggles)
 			item_state = "ncr_helmet_goggles_down"
 			worn_state = "ncr_helmet_goggles_down"
 			item_state_slots["slot_head"] = "ncr_helmet_goggles_down"
-			usr << "<span class = 'danger'>You adjust your goggles.</span>"
+			to_chat(usr, "<span class = 'danger'>You adjust your goggles.</span>")
 			goggles = TRUE
 	update_clothing_icon()
 

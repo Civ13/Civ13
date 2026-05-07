@@ -19,19 +19,19 @@
 
 /obj/structure/gunbench/attackby(obj/item/P as obj, mob/living/human/user as mob)
 	if (istype(P, /obj/item/stack/material/wood))
-		user << "You begin cutting the wood..."
+		to_chat(user, "You begin cutting the wood...")
 		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
 		if (do_after(user,15*P.amount,src))
-			user << "<span class='notice'>You cut the wood.</span>"
+			to_chat(user, "<span class='notice'>You cut the wood.</span>")
 			wood_amt += P.amount
 			qdel(P)
 		return
 
 	else if (istype(P, /obj/item/stack/material/steel))
-		user << "You begin smithing the steel..."
+		to_chat(user, "You begin smithing the steel...")
 		playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
 		if (do_after(user,15*P.amount,src))
-			user << "<span class='notice'>You smite the steel.</span>"
+			to_chat(user, "<span class='notice'>You smite the steel.</span>")
 			steel_amt += P.amount
 			qdel(P)
 		return
@@ -44,7 +44,7 @@
 		assemble_from_blueprint(user,P)
 		return
 	else if (user.getStatCoeff("crafting") < 1.5)
-		user << "<span class='warning'>You are not skilled enough to do this.</span>"
+		to_chat(user, "<span class='warning'>You are not skilled enough to do this.</span>")
 		return
 /obj/item/weapon/gun/projectile
 	var/rechambered = FALSE
@@ -128,7 +128,7 @@
 	if (choice == "Cancel")
 		return
 	else
-		H << "You start converting \the [P] into [choice]..."
+		to_chat(H, "You start converting \the [P] into [choice]...")
 		playsound(loc, 'sound/effects/gunbench.ogg', 100, TRUE)
 		if (do_after(H, 100, src))
 			switch (choice)
@@ -178,7 +178,7 @@
 					P.caliber = "a762x38"
 					P.ammo_type = /obj/item/ammo_casing/a762x38
 
-			H << "You successfully convert \the [P]."
+			to_chat(H, "You successfully convert \the [P].")
 			if (!findtext(P.name,"(rechambered)"))
 				P.name = "[P.name] (rechambered)"
 			if (!findtext(P.desc,". Rechambered into"))
@@ -191,7 +191,7 @@
 	var/mob/living/human/H = user
 	desc = "A large wooden workbench. The gunsmith's main work tool. It has [steel_amt] steel and [wood_amt] wood on it."
 	if (H.getStatCoeff("crafting") < 2.5 && map.civilizations)
-		user << "You don't have the skills to design a new gun! Use an existing blueprint."
+		to_chat(user, "You don't have the skills to design a new gun! Use an existing blueprint.")
 		return FALSE
 	var/found = FALSE
 	if (istype(user.l_hand, /obj/item/stack/money))
@@ -203,7 +203,7 @@
 		if (M.value*M.amount >= 5)
 			found = TRUE
 	if (!found)
-		user << "You don't have enough money to make a new blueprint! You need 10 gold or equivalent in one of your hands."
+		to_chat(user, "You don't have enough money to make a new blueprint! You need 10 gold or equivalent in one of your hands.")
 		return FALSE
 
 ////////////////STOCK///////////////////////////////
@@ -240,7 +240,7 @@
 		return
 
 	if (using_wood > wood_amt || using_steel > steel_amt)
-		user << "Not enough resources!"
+		to_chat(user, "Not enough resources!")
 		current_gun = null
 		using_wood = 0
 		using_steel = 0
@@ -287,7 +287,7 @@
 		return
 
 	if (using_wood > wood_amt || using_steel > steel_amt)
-		user << "Not enough resources!"
+		to_chat(user, "Not enough resources!")
 		current_gun = null
 		using_wood = 0
 		using_steel = 0
@@ -339,7 +339,7 @@
 		return
 
 	if (using_wood > wood_amt || using_steel > steel_amt)
-		user << "Not enough resources!"
+		to_chat(user, "Not enough resources!")
 		current_gun = null
 		using_wood = 0
 		using_steel = 0
@@ -380,7 +380,7 @@
 		return
 
 	if (using_wood > wood_amt || using_steel > steel_amt)
-		user << "Not enough resources!"
+		to_chat(user, "Not enough resources!")
 		current_gun = null
 		using_wood = 0
 		using_steel = 0
@@ -581,7 +581,7 @@
 			newgunbp.cost_wood = using_wood
 			newgunbp.cost_steel = using_steel
 		else
-			user << "<span class='warning'>You do not have enough money to finish the blueprint!</span>"
+			to_chat(user, "<span class='warning'>You do not have enough money to finish the blueprint!</span>")
 			qdel(current_gun)
 			return
 		if (current_gun)
@@ -598,14 +598,14 @@
 			using_wood = 0
 			using_steel = 0
 			current_gun = null
-			user << "Canceled gun crafting."
+			to_chat(user, "Canceled gun crafting.")
 			return
 
 	else
 		using_wood = 0
 		using_steel = 0
 		current_gun = null
-		user << "Canceled gun crafting."
+		to_chat(user, "Canceled gun crafting.")
 		return
 
 /obj/structure/gunbench/proc/assemble_from_blueprint(var/mob/living/user = null, var/obj/item/blueprint/gun/bpsource = null)
@@ -613,27 +613,27 @@
 		return
 	if (wood_amt < bpsource.cost_wood)
 		if (user)
-			user << "Not enough wood!"
+			to_chat(user, "Not enough wood!")
 		return
 	if (steel_amt < bpsource.cost_steel)
 		if (user)
-			user << "Not enough steel!"
+			to_chat(user, "Not enough steel!")
 		return
 
 	using_wood = bpsource.cost_wood
 	using_steel = bpsource.cost_steel
-	user << "You begin crafting the [bpsource.custom_name]..."
+	to_chat(user, "You begin crafting the [bpsource.custom_name]...")
 	playsound(loc, 'sound/effects/gunbench.ogg', 100, TRUE)
 	if (do_after(user,200,src))
 		if (!bpsource)
 			return
 		if (wood_amt < bpsource.cost_wood)
 			if (user)
-				user << "Not enough wood!"
+				to_chat(user, "Not enough wood!")
 			return
 		if (steel_amt < bpsource.cost_steel)
 			if (user)
-				user << "Not enough steel!"
+				to_chat(user, "Not enough steel!")
 			return
 		wood_amt -= using_wood
 		steel_amt -= using_steel
@@ -654,7 +654,7 @@
 		NEWGUN.finish()
 
 		if (user)
-			user << "You assemble a new [NEWGUN.name]."
+			to_chat(user, "You assemble a new [NEWGUN.name].")
 		return
 
 /obj/item/weapon/gun/projectile/custom
@@ -1129,16 +1129,16 @@
 
 /obj/item/weapon/gun/projectile/custom/special_check(mob/user)
 	if (gun_safety && safetyon)
-		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		to_chat(user, "<span class='warning'>You can't fire \the [src] while the safety is on!</span>")
 		return FALSE
 	if (!user.has_empty_hand(both = FALSE) && (receiver_type != "Revolver" && receiver_type != "Semi-Auto (small)"))
-		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
+		to_chat(user, "<span class='warning'>You need both hands to fire \the [src]!</span>")
 		return FALSE
 	if (bolt_open && receiver_type == "Bolt-Action")
-		user << "<span class='warning'>You can't fire [src] while the bolt is open!</span>"
+		to_chat(user, "<span class='warning'>You can't fire [src] while the bolt is open!</span>")
 		return FALSE
 	if (jammed_until > world.time)
-		user << "<span class = 'danger'>\The [src] has jammed! You can't fire it until it has unjammed.</span>"
+		to_chat(user, "<span class = 'danger'>\The [src] has jammed! You can't fire it until it has unjammed.</span>")
 		return FALSE
 	update_icon()
 	return TRUE
@@ -1235,14 +1235,14 @@
 				return
 		else return
 		if (check_bolt_lock)
-			user << "<span class='notice'>The bolt won't move, the gun is empty!</span>"
+			to_chat(user, "<span class='notice'>The bolt won't move, the gun is empty!</span>")
 			check_bolt--
 			return
 		bolt_open = !bolt_open
 		if (bolt_open)
 			if (chambered)
 				playsound(loc, 'sound/weapons/guns/interact/bolt_open.ogg', 50, TRUE)
-				user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
+				to_chat(user, "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>")
 				chambered.loc = get_turf(src)
 				chambered.randomrotation()
 				loaded -= chambered
@@ -1250,13 +1250,13 @@
 				if (bolt_safety)
 					if (!loaded.len)
 						check_bolt_lock++
-						user << "<span class='notice'>The bolt is locked!</span>"
+						to_chat(user, "<span class='notice'>The bolt is locked!</span>")
 			else
 				playsound(loc, 'sound/weapons/guns/interact/bolt_open.ogg', 50, TRUE)
-				user << "<span class='notice'>You work the bolt open.</span>"
+				to_chat(user, "<span class='notice'>You work the bolt open.</span>")
 		else
 			playsound(loc, 'sound/weapons/guns/interact/bolt_close.ogg', 50, TRUE)
-			user << "<span class='notice'>You work the bolt closed.</span>"
+			to_chat(user, "<span class='notice'>You work the bolt closed.</span>")
 			bolt_open = FALSE
 		add_fingerprint(user)
 		update_icon()
@@ -1308,7 +1308,7 @@
 						B.check_bolt_lock++
 				if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 		else
-			user << "<span class='warning'>[src] is empty.</span>"
+			to_chat(user, "<span class='warning'>[src] is empty.</span>")
 	update_icon()
 	..()
 
@@ -1372,7 +1372,7 @@
 /obj/item/weapon/gun/projectile/custom/attackby(obj/W as obj, mob/user as mob)
 	if (receiver_type == "Revolver" || receiver_type == "Semi-Auto (small)")
 		if (istype(W, /obj/item/weapon/attachment/bayonet))
-			user << "<span class = 'danger'>That won't fit on there.</span>"
+			to_chat(user, "<span class = 'danger'>That won't fit on there.</span>")
 			return FALSE
 		else
 			return ..()
@@ -1390,19 +1390,19 @@
 	if (stock_type == "Folding Stock")
 		if (folded)
 			folded = FALSE
-			usr << "You extend the stock on \the [src]."
+			to_chat(usr, "You extend the stock on \the [src].")
 			equiptimer +=5
 			set_stock()
 			update_icon()
 		else
 			folded = TRUE
 			base_icon = "akms_folded"
-			usr << "You collapse the stock on \the [src]."
+			to_chat(usr, "You collapse the stock on \the [src].")
 			equiptimer -= 5
 			set_stock()
 			update_icon()
 	else
-		usr << "\The [src] has no stock to toggle."
+		to_chat(usr, "\The [src] has no stock to toggle.")
 	update_icon()
 
 /obj/item/weapon/gun/projectile/custom/proc/set_stock()

@@ -12,7 +12,7 @@
 	if (istype(I, /obj/item/clothing/accessory))
 
 		if (!valid_accessory_slots || !valid_accessory_slots.len)
-			usr << "<span class='warning'>You cannot attach accessories of any kind to \the [src].</span>"
+			to_chat(usr, "<span class='warning'>You cannot attach accessories of any kind to \the [src].</span>")
 			return
 
 		var/obj/item/clothing/accessory/A = I
@@ -38,10 +38,10 @@
 		var/obj/item/stack/material/rags/R = I
 		if (secondary_action && ripable && R.amount >= 1 && health < initial(health)*4)
 
-			user << "You start patching \the [src]..."
+			to_chat(user, "You start patching \the [src]...")
 			if (do_after(user, 100, user.loc))
 				playsound(user.loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
-				user << "You finish patching \the [src]."
+				to_chat(user, "You finish patching \the [src].")
 				health += 5
 				if (R.amount > 1)
 					R.amount--
@@ -52,10 +52,10 @@
 		var/obj/item/stack/material/cloth/R = I
 		if (secondary_action && ripable && R.amount >= 1 && health < initial(health)*4)
 
-			user << "You start patching \the [src]..."
+			to_chat(user, "You start patching \the [src]...")
 			if (do_after(user, 100, user.loc))
 				playsound(user.loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
-				user << "You finish patching \the [src]."
+				to_chat(user, "You finish patching \the [src].")
 				health += 10
 				if (R.amount > 1)
 					R.amount--
@@ -66,10 +66,10 @@
 		var/obj/item/stack/material/woolcloth/R = I
 		if (secondary_action && ripable && R.amount >= 1 && health < initial(health)*4)
 
-			user << "You start patching \the [src]..."
+			to_chat(user, "You start patching \the [src]...")
 			if (do_after(user, 100, user.loc))
 				playsound(user.loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
-				user << "You finish patching \the [src]."
+				to_chat(user, "You finish patching \the [src].")
 				health += 12
 				if (R.amount > 1)
 					R.amount--
@@ -112,7 +112,7 @@
 	..(user)
 	if (accessories.len)
 		for (var/obj/item/clothing/accessory/A in accessories)
-			user << "\A [A] is attached to it."
+			to_chat(user, "\A [A] is attached to it.")
 
 /obj/item/clothing/proc/remove_accessory(mob/user, obj/item/clothing/accessory/A)
 	if (!(A in accessories))

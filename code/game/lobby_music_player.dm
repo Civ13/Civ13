@@ -43,7 +43,7 @@
 		song_title = pick(random_order_songs)
 
 /datum/lobby_music_player/proc/announce(var/client/client)
-	client << "<span class = 'notice'><font size = 2>Now playing <b>[splittext(song_title, ":")[1]]</b></font></span>"
+	to_chat(client, "<span class = 'notice'><font size = 2>Now playing <b>[splittext(song_title, ":")[1]]</b></font></span>")
 
 /datum/lobby_music_player/proc/get_song()
 	var/F = file(songs[song_title])

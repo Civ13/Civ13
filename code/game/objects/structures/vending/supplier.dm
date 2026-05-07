@@ -55,7 +55,7 @@
 
 			if (do_after(user, 20, src))
 				if (!src) return
-				user << "<span class='notice'>You [anchored? "un" : ""]secured \the [src]!</span>"
+				to_chat(user, "<span class='notice'>You [anchored? "un" : ""]secured \the [src]!</span>")
 				anchored = !anchored
 			return
 	else if (find_company_member(user,owner))
@@ -63,7 +63,7 @@
 			var/obj/item/stack/money/M = W
 			moneyin += M.value*M.amount
 			qdel(W)
-			user << "You add the money to the stall. It now has [moneyin] silver coins to fulfill orders."
+			to_chat(user, "You add the money to the stall. It now has [moneyin] silver coins to fulfill orders.")
 			return
 		else if (!ordertype)
 			var/choice = WWinput(user,"Do you want to add a buying order for [W]?", "Stall Management", "Yes", list("Yes","No"))
@@ -90,7 +90,7 @@
 		if (W.type == ordertype)
 			if (istype(W, /obj/item/stack))
 				if (orderamount < 1)
-					user << "<span class='warning'>The [src] is not currently buying.</span>"
+					to_chat(user, "<span class='warning'>The [src] is not currently buying.</span>")
 					return
 				var/obj/item/stack/WS = W
 				if (moneyin >= orderprice*WS.amount)
@@ -112,14 +112,14 @@
 						NM.amount = (orderprice*WS.amount)/NM.value
 					moneyin -= orderprice*WS.amount
 					orderamount -= WS.amount
-					user << "<span class='notice'>You sell the [W].</span>"
+					to_chat(user, "<span class='notice'>You sell the [W].</span>")
 					return
 				else
-					user << "<span class='warning'>The [src] has no money left to buy from you!</span>"
+					to_chat(user, "<span class='warning'>The [src] has no money left to buy from you!</span>")
 					return
 			else
 				if (orderamount < 1)
-					user << "<span class='warning'>The [src] is not currently buying.</span>"
+					to_chat(user, "<span class='warning'>The [src] is not currently buying.</span>")
 					return
 				if (moneyin >= orderprice)
 					user.drop_from_inventory(W)
@@ -135,22 +135,22 @@
 						NM.amount = orderprice/NM.value
 					moneyin -= orderprice
 					orderamount -= 1
-					user << "<span class='notice'>You sell the [W].</span>"
+					to_chat(user, "<span class='notice'>You sell the [W].</span>")
 					return
 				else
-					user << "<span class='warning'>The [src] has no money left to buy from you!</span>"
+					to_chat(user, "<span class='warning'>The [src] has no money left to buy from you!</span>")
 					return
 	return
 /obj/structure/supplier/attack_hand(mob/living/human/H as mob)
 	if (find_company_member(H,owner))
 		var/choice = WWinput(H,"What do you want to do?", "Stall Management", "Cancel", list("Change Name", "Remove Products Inside", "Change Amount", "Change Price", "Remove Order", "Remove Money", "Cancel"))
 		if (choice == "Cancel")
-			H << "<big>This company is currently buying [orderamount] of [ordername] for [orderprice] per unit. It has [moneyin] silver coins inside.</big>"
+			to_chat(H, "<big>This company is currently buying [orderamount] of [ordername] for [orderprice] per unit. It has [moneyin] silver coins inside.</big>")
 			return
 		else if (choice == "Remove Products Inside")
 			for(var/obj/item/I in src)
 				I.forceMove(loc)
-			H << "<span class='notice'>You empty the stall.</span>"
+			to_chat(H, "<span class='notice'>You empty the stall.</span>")
 			return
 		else if (choice == "Change Name")
 			var/input1 = input(H,"What name do you want to give to this vendor?", "Vendor Name", name) as text
@@ -193,5 +193,5 @@
 			else
 				orderamount = choice3
 			return
-	H << "<big>This company is currently buying [orderamount] of [ordername] for [orderprice] sc per unit.</big>"
+	to_chat(H, "<big>This company is currently buying [orderamount] of [ordername] for [orderprice] sc per unit.</big>")
 	return

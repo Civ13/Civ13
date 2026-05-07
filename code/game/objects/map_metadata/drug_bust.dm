@@ -108,7 +108,7 @@
 	if (processes.ticker.playtime_elapsed >= 20000)
 		ticker.finished = TRUE
 		var/message = "SWAT retreat out of the Storage Depot with heavy casualties, Rednikov managed to stand their ground!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
@@ -119,13 +119,13 @@
 				if (istype(A,/area/caribbean/prison/jail))
 					ticker.finished = TRUE
 					var/message = "The HVT has been busted!"
-					world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+					to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 					show_global_battle_report(null)
 					win_condition_spam_check = TRUE
 					return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_o == FALSE)
 		ticker.finished = TRUE
-		world << "<font size = 4><span class = 'notice'>SWAT seized total control of the Storage Depot!</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>SWAT seized total control of the Storage Depot!</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_o = TRUE
@@ -164,7 +164,7 @@
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>Rednikov have regained control of the Storage Depot!</font>"
+			to_chat(world, "<font size = 3>Rednikov have regained control of the Storage Depot!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -259,13 +259,13 @@
 
 /obj/item/weapon/reagent_containers/cocaineblock/attackby(var/obj/item/I, var/mob/user)
 	if (istype(I, /obj/item/weapon/reagent_containers/cocaineblock/))
-		user << "You stack the blocks together."
+		to_chat(user, "You stack the blocks together.")
 		new /obj/item/weapon/reagent_containers/cocaineblocks(src.loc)
 		qdel(src)
 		qdel(I)
 		return
 	if (!istype(I, /obj/item/weapon/material/kitchen/utensil/knife))
-		user << "You need a knife to cut the [src]."
+		to_chat(user, "You need a knife to cut the [src].")
 		return
 	if (reagents.get_reagent_amount("cocaine") <= 0)
 		qdel(src)
@@ -277,7 +277,7 @@
 	if (!torn)
 		torn = TRUE
 		update_icon()
-	user << "You take out some cocaine from the [src]."
+	to_chat(user, "You take out some cocaine from the [src].")
 	reagents.remove_reagent("cocaine",25)
 	var/obj/item/weapon/reagent_containers/pill/cocaine/coca = new/obj/item/weapon/reagent_containers/pill/cocaine(user)
 	user.put_in_hands(coca)
@@ -285,7 +285,7 @@
 
 /*/obj/item/weapon/reagent_containers/cocaineblock/attackby(var/obj/item/I, var/mob/user)
 	if (istype(I, /obj/item/weapon/reagent_containers/pill/cocaine_line))
-		user << "You put \the [I] into \the [src]."
+		to_chat(user, "You put \the [I] into \the [src].")
 		reagents.add_reagent("cocaine",I.reagents.get_reagent_amount("cocaine"))
 		vol = reagents.get_reagent_amount("cocaine")/25
 		desc = "A pile of very pure cocaine. Contains [vol] grams."
@@ -347,7 +347,7 @@
 	if (src == user.l_hand || src == user.r_hand)
 		var/obj/item/weapon/reagent_containers/cocaineblock/block = new/obj/item/weapon/reagent_containers/cocaineblock(user)
 		user.put_in_hands(block)
-		user << "You split the [src] apart."
+		to_chat(user, "You split the [src] apart.")
 		if (blocks_amount > 2)
 			blocks_amount -= 1
 			update_icon()

@@ -66,7 +66,7 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 			return
 		src << link(config.websiteurl)
 	else
-		src << "<span class='warning'>The website URL is not set in the server configuration.</span>"
+		to_chat(src, "<span class='warning'>The website URL is not set in the server configuration.</span>")
 	return
 
 /client/verb/wiki()
@@ -78,7 +78,7 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 			return
 		src << link(config.wikiurl)
 	else
-		src << "<span class='warning'>The wiki URL is not set in the server configuration.</span>"
+		to_chat(src, "<span class='warning'>The wiki URL is not set in the server configuration.</span>")
 	return
 
 /client/verb/donate()
@@ -90,7 +90,7 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 			return
 		src << link(config.donationurl)
 	else
-		src << "<span class='warning'>The donation URL is not set in the server configuration.</span>"
+		to_chat(src, "<span class='warning'>The donation URL is not set in the server configuration.</span>")
 	return
 
 /client/verb/github()
@@ -102,7 +102,7 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 			return
 		src << link(config.githuburl)
 	else
-		src << "<span class='warning'>The Github URL is not set in the server configuration.</span>"
+		to_chat(src, "<span class='warning'>The Github URL is not set in the server configuration.</span>")
 	return
 
 /client/verb/discord()
@@ -114,7 +114,7 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 			return
 		src << link(config.discordurl)
 	else
-		src << "<span class='warning'>The Discord URL is not set in the server configuration.</span>"
+		to_chat(src, "<span class='warning'>The Discord URL is not set in the server configuration.</span>")
 	return
 
 #define RULES_FILE "config/rules.html"
@@ -127,7 +127,7 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 			return
 		src << link(config.rulesurl)
 	else
-		src << "<span class='warning'>The rules URL is not set in the server configuration.</span>"
+		to_chat(src, "<span class='warning'>The rules URL is not set in the server configuration.</span>")
 	return
 #undef RULES_FILE
 
@@ -135,7 +135,7 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 	set name = "Hotkeys Help"
 	set category = "OOC"
 
-	src << HOTKEY_MODE_OPTIONS
+	to_chat(src, HOTKEY_MODE_OPTIONS)
 
 /mob/verb/a_intent_change(input as text)
 	set name = "a-intent"

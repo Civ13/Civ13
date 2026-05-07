@@ -50,9 +50,9 @@
 /process/mob/reset_current_list()
 	PROCESS_USE_FASTEST_LIST(living_mob_list)
 
-/process/mob/statProcess()
-	..()
-	stat(null, "[mob_list.len] mobs")
+/process/mob/statProcess(client/C)
+	..(C)
+	C.add_stat(null, "[mob_list.len] mobs")
 
 /process/mob/htmlProcess()
 	return ..() + "[mob_list.len] mobs"

@@ -37,9 +37,9 @@
 			var/obj/item/projectile/P = current_list[i]
 			if (P) qdel(P)
 		current_list.len = 500
-/process/projectile/statProcess()
-	..()
-	stat(null, "[projectile_list.len] projectiles")
+/process/projectile/statProcess(client/C)
+	..(C)
+	C.add_stat("[projectile_list.len] projectiles")
 
 /process/projectile/htmlProcess()
 	return ..() + "[projectile_list.len] projectiles"

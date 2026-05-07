@@ -4,5 +4,5 @@
 /datum/subsystem_module/info/fire()
 	return
 
-/datum/subsystem_module/info/proc/statProcess()
-	stat(null, "Current BYOND tick: #[world.time/world.tick_lag]")
+/datum/subsystem_module/info/proc/statProcess(client/C)
+	C.add_stat("Current BYOND tick: #[world.time/world.tick_lag]")

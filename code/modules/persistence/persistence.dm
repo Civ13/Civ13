@@ -15,12 +15,12 @@
 			map.default_research = 19
 		map.gamemode = "Persistent (Auto-Research)"
 		config.allow_vote_restart = FALSE
-		world << "<big><b>The current round is now a Persistent Round.</b></big>"
+		to_chat(world, "<big><b>The current round is now a Persistent Round.</b></big>")
 	else
 		map.persistence = FALSE
 		map.gamemode = "Normal (Auto-Research)"
 		config.allow_vote_restart = TRUE
-		world << "<big><b>The current round is no longer a Persistent Round.</b></big>"
+		to_chat(world, "<big><b>The current round is no longer a Persistent Round.</b></big>")
 	return
 
 /datum/admins/proc/persistent_chad()
@@ -39,12 +39,12 @@
 		map.default_research = 0
 		map.gamemode = "Persistent Chad Mode +"
 		config.allow_vote_restart = FALSE
-		world << "<big><b>The current round is now a Persistent Chad Mode + Round.</b></big>"
+		to_chat(world, "<big><b>The current round is now a Persistent Chad Mode + Round.</b></big>")
 	else
 		map.perschadplus = FALSE
 		map.chad_mode = FALSE
 		map.chad_mode_plus = FALSE
 		map.gamemode = "Resource-Based Research"
 		config.allow_vote_restart = TRUE
-		world << "<big><b>The current round is no longer a Persistent Chad Mode + Round.</b></big>"
+		to_chat(world, "<big><b>The current round is no longer a Persistent Chad Mode + Round.</b></big>")
 	return

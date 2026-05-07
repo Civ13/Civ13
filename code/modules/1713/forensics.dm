@@ -76,15 +76,15 @@ proc/is_complete_print(var/print)
 			return
 
 	if(istype(I, /obj/item/weapon/evidencebag))
-		user << SPAN_NOTICE("You find putting an evidence bag in another evidence bag to be slightly absurd.")
+		to_chat(user, SPAN_NOTICE("You find putting an evidence bag in another evidence bag to be slightly absurd."))
 		return
 
 	if(I.w_class > 3)
-		user << SPAN_NOTICE("[I] won't fit in [src].")
+		to_chat(user, SPAN_NOTICE("[I] won't fit in [src]."))
 		return
 
 	if(contents.len)
-		user << SPAN_NOTICE("[src] already has something inside it.")
+		to_chat(user, SPAN_NOTICE("[src] already has something inside it."))
 		return
 
 	user.visible_message("[user] puts [I] into [src]", "You put [I] inside [src].",\
@@ -122,7 +122,7 @@ proc/is_complete_print(var/print)
 		icon_state = "evidenceobj"
 		desc = "An empty evidence bag."
 	else
-		user << "[src] is empty."
+		to_chat(user, "[src] is empty.")
 		icon_state = "evidenceobj"
 	return
 
@@ -207,7 +207,7 @@ proc/is_complete_print(var/print)
 		return 0
 	evidence |= supplied.evidence
 	name = "[initial(name)] (combined)"
-	user << SPAN_NOTICE("You transfer the contents of \the [supplied] into \the [src].")
+	to_chat(user, SPAN_NOTICE("You transfer the contents of \the [supplied] into \the [src]."))
 	return 1
 
 /obj/item/weapon/forensics/sample/print/merge_evidence(var/obj/item/weapon/forensics/sample/supplied, var/mob/user)
@@ -219,7 +219,7 @@ proc/is_complete_print(var/print)
 		else
 			evidence[print] = supplied.evidence[print]
 	name = "[initial(name)] (combined)"
-	user << SPAN_NOTICE("You overlay \the [src] and \the [supplied], combining the print records.")
+	to_chat(user, SPAN_NOTICE("You overlay \the [src] and \the [supplied], combining the print records."))
 	return 1
 
 /obj/item/weapon/forensics/sample/attackby(var/obj/O, var/mob/user)
@@ -243,10 +243,10 @@ proc/is_complete_print(var/print)
 		return
 	var/mob/living/human/H = user
 	if (H.gloves)
-		user << SPAN_WARNING("Take \the [H.gloves] off first.")
+		to_chat(user, SPAN_WARNING("Take \the [H.gloves] off first."))
 		return
 
-	user << SPAN_NOTICE("You firmly press your fingertips onto the card.")
+	to_chat(user, SPAN_NOTICE("You firmly press your fingertips onto the card."))
 	var/fullprint = H.get_full_print()
 	evidence[fullprint] = fullprint
 	name = "[initial(name)] (\the [H])"
@@ -311,7 +311,7 @@ proc/is_complete_print(var/print)
 
 /obj/item/weapon/forensics/sample_kit/proc/take_sample(var/mob/user, var/atom/supplied)
 	var/obj/item/weapon/forensics/sample/S = new evidence_path(get_turf(user), supplied)
-	user << SPAN_NOTICE("You transfer [S.evidence.len] [S.evidence.len > 1 ? "[evidence_type]s" : "[evidence_type]"] to \the [S].")
+	to_chat(user, SPAN_NOTICE("You transfer [S.evidence.len] [S.evidence.len > 1 ? "[evidence_type]s" : "[evidence_type]"] to \the [S]."))
 
 /obj/item/weapon/forensics/sample_kit/afterattack(var/atom/A, var/mob/user, var/proximity)
 	if(!proximity)
@@ -321,7 +321,7 @@ proc/is_complete_print(var/print)
 		take_sample(user,A)
 		return 1
 	else
-		user << SPAN_WARNING("You are unable to locate any [evidence_type]s on \the [A].")
+		to_chat(user, SPAN_WARNING("You are unable to locate any [evidence_type]s on \the [A]."))
 		return ..()
 
 
@@ -413,7 +413,7 @@ proc/is_complete_print(var/print)
 		return
 
 	if(is_used())
-		user << SPAN_WARNING("This swab has already been used.")
+		to_chat(user, SPAN_WARNING("This swab has already been used."))
 		return
 
 	add_fingerprint(user)
@@ -426,7 +426,7 @@ proc/is_complete_print(var/print)
 
 	var/choice
 	if(!choices.len)
-		user << SPAN_WARNING("There is no evidence on \the [A].")
+		to_chat(user, SPAN_WARNING("There is no evidence on \the [A]."))
 		return
 	else if(choices.len == 1)
 		choice = choices[1]
@@ -446,7 +446,7 @@ proc/is_complete_print(var/print)
 		if ("Gunshot Residue")
 			var/obj/item/clothing/B = A
 			if(!istype(B) || !B.gunshot_residue)
-				user << SPAN_WARNING("There is no residue on \the [A].")
+				to_chat(user, SPAN_WARNING("There is no residue on \the [A]."))
 				return
 			gsr = B.gunshot_residue
 			sample_type = "residue"
@@ -544,21 +544,21 @@ proc/is_complete_print(var/print)
 
 /obj/item/weapon/forensics/slide/attackby(var/obj/item/W, var/mob/living/human/user)
 	if(has_swab)
-		usr << SPAN_WARNING("There is already a sample in the slide.")
+		to_chat(usr, SPAN_WARNING("There is already a sample in the slide."))
 		return
 	if(istype (W, /obj/item/weapon/forensics/swab))
 		has_swab = W
 	else
-		usr << SPAN_WARNING("You don't think this will fit.")
+		to_chat(usr, SPAN_WARNING("You don't think this will fit."))
 		return
-	usr << SPAN_NOTICE("You insert the sample in the slide.")
+	to_chat(usr, SPAN_NOTICE("You insert the sample in the slide."))
 	user.unEquip(W)
 	W.forceMove(src)
 	update_icon()
 
 /obj/item/weapon/forensics/slide/attack_self(var/mob/user)
 	if(has_swab)
-		usr << SPAN_NOTICE("You remove the sample from the [src].")
+		to_chat(usr, SPAN_NOTICE("You remove the sample from the [src]."))
 		if(has_swab)
 			user.put_in_hands(has_swab)
 			has_swab = null
@@ -587,11 +587,11 @@ proc/is_complete_print(var/print)
 /obj/machinery/microscope/attackby(obj/item/weapon/W as obj, mob/user as mob)
 
 	if(sample)
-		user << SPAN_WARNING("There is already a slide in the microscope.")
+		to_chat(user, SPAN_WARNING("There is already a slide in the microscope."))
 		return
 
 	if(istype(W, /obj/item/weapon/forensics/slide) || istype(W, /obj/item/weapon/forensics/sample/print))
-		user << SPAN_NOTICE("You insert \the [W] into the microscope.")
+		to_chat(user, SPAN_NOTICE("You insert \the [W] into the microscope."))
 		user.unEquip(W)
 		W.forceMove(src)
 		sample = W
@@ -601,16 +601,16 @@ proc/is_complete_print(var/print)
 /obj/machinery/microscope/attack_hand(mob/user)
 
 	if(!sample)
-		user << SPAN_WARNING("The microscope has no sample to examine.")
+		to_chat(user, SPAN_WARNING("The microscope has no sample to examine."))
 		return
 
-	user << SPAN_NOTICE("The microscope whirrs as you examine \the [sample].")
+	to_chat(user, SPAN_NOTICE("The microscope whirrs as you examine \the [sample]."))
 
 	if(!do_after(user, 25) || !sample)
-		user << SPAN_NOTICE("You stop examining \the [sample].")
+		to_chat(user, SPAN_NOTICE("You stop examining \the [sample]."))
 		return
 
-	user << SPAN_NOTICE("Printing findings now...")
+	to_chat(user, SPAN_NOTICE("Printing findings now..."))
 	var/obj/item/weapon/paper/report = new(get_turf(src))
 	report.stamped = list(/obj/item/weapon/stamp)
 	report.overlays = list("paper_stamped")
@@ -651,7 +651,7 @@ proc/is_complete_print(var/print)
 	if(report)
 		report.update_icon()
 		if(report.info)
-			user << report.info
+			to_chat(user, report.info)
 	return
 
 /obj/machinery/microscope/proc/remove_sample(var/mob/living/remover)
@@ -701,11 +701,11 @@ proc/is_complete_print(var/print)
 /obj/machinery/dnaforensics/attackby(var/obj/item/W, mob/user as mob)
 
 	if(bloodsamp)
-		user << SPAN_WARNING("There is already a sample in the machine.")
+		to_chat(user, SPAN_WARNING("There is already a sample in the machine."))
 		return
 
 	if(closed)
-		user << SPAN_WARNING("Open the cover before inserting the sample.")
+		to_chat(user, SPAN_WARNING("Open the cover before inserting the sample."))
 		return
 
 	var/obj/item/weapon/forensics/swab/swab = W
@@ -713,13 +713,13 @@ proc/is_complete_print(var/print)
 		user.unEquip(W)
 		src.bloodsamp = swab
 		swab.loc = src
-		user << SPAN_NOTICE("You insert \the [W] into \the [src].")
+		to_chat(user, SPAN_NOTICE("You insert \the [W] into \the [src]."))
 	else
-		user << SPAN_WARNING("\The [src] only accepts used swabs.")
+		to_chat(user, SPAN_WARNING("\The [src] only accepts used swabs."))
 		return
 
 /obj/machinery/dnaforensics/proc/complete_scan()
-	src.visible_message(SPAN_NOTICE("\icon[src] makes an insistent chime."), 2)
+	src.visible_message(SPAN_NOTICE("\icon[getFlatIcon(src)] makes an insistent chime."), 2)
 	playsound(loc, 'sound/machines/computer/beep.ogg', 80, TRUE)
 	update_icon()
 	if(bloodsamp)

@@ -40,20 +40,20 @@
 	if (istype(I, /obj/item/weapon/weldingtool))
 		return
 	if (istype(I, /obj/item/sail) && !sails)
-		H << SPAN_NOTICE("You begin adding \the [I] to \the [src].")
+		to_chat(H, SPAN_NOTICE("You begin adding \the [I] to \the [src]."))
 		if (do_after(H,25,src))
 			sails = I
 			H.drop_from_inventory(I)
 			I.forceMove(src)
-			H <<  SPAN_NOTICE("You add \the [I] to \the [src].")
+			to_chat(H, SPAN_NOTICE("You add \the [I] to \the [src]."))
 			update_icon()
 	if (istype(I,/obj/item/weapon/hammer) && sails)
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		H << SPAN_NOTICE("You begin taking down \the [sails].")
+		to_chat(H, SPAN_NOTICE("You begin taking down \the [sails]."))
 		if (do_after(H,25,src))
 			sails = null
 			sails.forceMove(H)
-			H << SPAN_NOTICE("You take \the [sails] off of \the [src].")
+			to_chat(H, SPAN_NOTICE("You take \the [sails] off of \the [src]."))
 			update_icon()
 	else
 		..()

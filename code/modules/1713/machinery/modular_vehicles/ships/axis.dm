@@ -280,10 +280,10 @@
 	if (!ishuman(H))
 		return
 	for(var/obj/structure/vehicleparts/frame/F1 in get_turf(get_step(src, WEST)))
-		H << "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>"
+		to_chat(H, "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>")
 		return
 	for(var/obj/structure/vehicleparts/frame/F2 in get_turf(get_step(src, NORTH)))
-		H << "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>"
+		to_chat(H, "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>")
 		return
 	var/inp = WWinput(H, "Are you sure you wan't to assemble a ship here? This has to be the top left corner.", "Vehicle Assembly", "No", list("No", "Yes"))
 	if (inp == "No")
@@ -300,7 +300,7 @@
 			name = customname
 		dir = 1
 		new/obj/effect/autoassembler(locate(x+2,y-2,z))
-		H << "<span class='warning'>Vehicle assembled.</span>"
+		to_chat(H, "<span class='warning'>Vehicle assembled.</span>")
 		for (var/obj/O in components)
 			O.update_icon()
 		return
@@ -317,7 +317,7 @@
 			dir = 1
 			forceMove(F.loc)
 			new/obj/effect/autoassembler(locate(x+2,y-2,z))
-			H << "<span class='warning'>Vehicle assembled.</span>"
+			to_chat(H, "<span class='warning'>Vehicle assembled.</span>")
 			for (var/obj/O in components)
 				O.update_icon()
 			return

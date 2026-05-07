@@ -17,7 +17,7 @@
 			item_state = "cafr_afghanka_open"
 			icon_state = "cafr_afghanka_open"
 			item_state_slots["w_uniform"] = "cafr_afghanka_open"
-			usr << "You <b>open up</b> the collar of your uniform."
+			to_chat(usr, "You <b>open up</b> the collar of your uniform.")
 			adjusted = FALSE
 			update_clothing_icon()
 		else if (!adjusted)
@@ -25,7 +25,7 @@
 			item_state = "cafr_afghanka_closed"
 			icon_state = "cafr_afghanka_closed"
 			item_state_slots["w_uniform"] = "cafr_afghanka_closed"
-			usr << "You <b>close up</b> the collar of your uniform."
+			to_chat(usr, "You <b>close up</b> the collar of your uniform.")
 			adjusted = TRUE
 			update_clothing_icon()
 

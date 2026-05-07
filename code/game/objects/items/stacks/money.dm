@@ -616,12 +616,12 @@
 
 /obj/structure/oil_deposits/attack_hand(mob/living/human/user as mob)
 	if (user.civilization == "none")
-		user << "You are not part of a faction!"
+		to_chat(user, "You are not part of a faction!")
 		return
 	else if (faction == null)
 		faction = user.civilization
 		desc = "Belongs to the [faction]. Stored oil: [storedvalue]."
-		user << "You set the oil deposit faction as [faction]."
+		to_chat(user, "You set the oil deposit faction as [faction].")
 		return
 	else
 		..()

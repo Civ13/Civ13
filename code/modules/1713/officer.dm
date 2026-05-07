@@ -48,24 +48,24 @@ var/global/list/valid_coordinates = list()
 	var/mob/living/human/TSL = null
 	if (faction_text == map.faction1)
 		if (!map.faction1_squad_leaders[squad])
-			src << "<big>There is no squad leader!</big>"
+			to_chat(src, "<big>There is no squad leader!</big>")
 			return
 		else if (map.faction1_squad_leaders[squad] == src)
-			src << "<big>You are the squad leader!</big>"
+			to_chat(src, "<big>You are the squad leader!</big>")
 			return
 		TSL = map.faction1_squad_leaders[squad]
 	else if (faction_text == map.faction2)
 		if (!map.faction2_squad_leaders[squad])
-			src << "<big>There is no squad leader!</big>"
+			to_chat(src, "<big>There is no squad leader!</big>")
 			return
 		else if (map.faction2_squad_leaders[squad] == src)
-			src << "<big>You are the squad leader!</big>"
+			to_chat(src, "<big>You are the squad leader!</big>")
 			return
 		TSL = map.faction2_squad_leaders[squad]
 	if (TSL)
 		var/tdist = get_dist(src,TSL)
 		var/tdir = dir2text(get_dir(src,TSL))
-		src << "<big><font color='yellow'>Your squad leader is [tdist] meters [tdir] from you.</font></big>"
+		to_chat(src, "<big><font color='yellow'>Your squad leader is [tdist] meters [tdir] from you.</font></big>")
 
 /mob/living/human/proc/Squad_Announcement()
 	set category = "Officer"
@@ -84,7 +84,7 @@ var/global/list/valid_coordinates = list()
 		announcement_cooldown = world.time+600
 		log_admin("Squad Announcement: [key_name(usr)] - [messaget] : [message]")
 	else
-		usr << "You can't make an annoucement while you're dead!"
+		to_chat(usr, "You can't make an annoucement while you're dead!")
 
 /mob/living/human/proc/Commander_Announcement()
 	set category = "Officer"
@@ -109,37 +109,37 @@ var/global/list/valid_coordinates = list()
 		announcement_cooldown = world.time+1800
 		log_admin("Faction Announcement: [key_name(usr)] - [messaget] : [message]")
 	else
-		usr << "You can't make an annoucement while you're dead!"
+		to_chat(usr, "You can't make an annoucement while you're dead!")
 
 /mob/living/human/proc/Check_Coordinates()
 	set category = "Officer"
 	if (!check_coords_check())
-		usr << "<span class = 'warning'>You can't use this yet.</span>"
+		to_chat(usr, "<span class = 'warning'>You can't use this yet.</span>")
 		return
 	if (checking_coords[1] && checking_coords[2])
 		checking_coords[3] = x
 		checking_coords[4] = y
 		valid_coordinates["[x],[y]"] = TRUE
 		var/dist = "[checking_coords[3] - checking_coords[1]],[checking_coords[4] - checking_coords[2]]"
-		usr << "<span class = 'notice'>You finished tracking coordinates at <b>[x],[y]</b>. You moved an offset of <b>[dist]</b>.[kanonier_msg]</span>"
+		to_chat(usr, "<span class = 'notice'>You finished tracking coordinates at <b>[x],[y]</b>. You moved an offset of <b>[dist]</b>.[kanonier_msg]</span>")
 		checking_coords[3] = null
 		checking_coords[4] = null // continue to track from the same starting location
 	else
 		checking_coords[1] = x
 		checking_coords[2] = y
-		usr << "<span class = 'notice'>You've started checking coordinates at <b>[x], [y]</b>.</span>"
+		to_chat(usr, "<span class = 'notice'>You've started checking coordinates at <b>[x], [y]</b>.</span>")
 
 /mob/living/human/proc/Reset_Coordinates()
 	set category = "Officer"
 	if (!check_coords_check())
-		usr << "<span class = 'warning'>You can't use this yet.</span>"
+		to_chat(usr, "<span class = 'warning'>You can't use this yet.</span>")
 		return
 	if (checking_coords[1] && checking_coords[2])
 		var/x = checking_coords[1]
 		var/y = checking_coords[2]
 		checking_coords[1] = null
 		checking_coords[2] = null
-		usr << "<span class = 'notice'>You are no longer tracking from <b>[x],[y]</b>.</span>"
+		to_chat(usr, "<span class = 'notice'>You are no longer tracking from <b>[x],[y]</b>.</span>")
 		checking_coords[3] = null
 		checking_coords[4] = null
 
@@ -149,33 +149,33 @@ var/global/list/valid_coordinates = list()
 	set category = "Scout"
 	set name = "Check Coordinates"
 	if (!check_coords_check())
-		usr << "<span class = 'warning'>You can't use this yet.</span>"
+		to_chat(usr, "<span class = 'warning'>You can't use this yet.</span>")
 		return
 	if (checking_coords[1] && checking_coords[2])
 		checking_coords[3] = x
 		checking_coords[4] = y
 		valid_coordinates["[x],[y]"] = TRUE
 		var/dist = "[checking_coords[3] - checking_coords[1]],[checking_coords[4] - checking_coords[2]]"
-		usr << "<span class = 'notice'>You finished tracking coordinates at <b>[x],[y]</b>. You moved an offset of <b>[dist]</b>.[kanonier_msg]</span>"
+		to_chat(usr, "<span class = 'notice'>You finished tracking coordinates at <b>[x],[y]</b>. You moved an offset of <b>[dist]</b>.[kanonier_msg]</span>")
 		checking_coords[3] = null
 		checking_coords[4] = null // continue to track from the same starting location
 	else
 		checking_coords[1] = x
 		checking_coords[2] = y
-		usr << "<span class = 'notice'>You've started checking coordinates at <b>[x],[y]</b>.</span>"
+		to_chat(usr, "<span class = 'notice'>You've started checking coordinates at <b>[x],[y]</b>.</span>")
 
 /mob/living/human/proc/Reset_Coordinates_Chump()
 	set category = "Scout"
 	set name = "Reset Coordinates"
 	if (!check_coords_check())
-		usr << "<span class = 'warning'>You can't use this yet.</span>"
+		to_chat(usr, "<span class = 'warning'>You can't use this yet.</span>")
 		return
 	if (checking_coords[1] && checking_coords[2])
 		var/x = checking_coords[1]
 		var/y = checking_coords[2]
 		checking_coords[1] = null
 		checking_coords[2] = null
-		usr << "<span class = 'warning'>You are no longer tracking from <b>[x],[y]</b>.</span>"
+		to_chat(usr, "<span class = 'warning'>You are no longer tracking from <b>[x],[y]</b>.</span>")
 		checking_coords[3] = null
 		checking_coords[4] = null
 
@@ -185,7 +185,7 @@ var/global/list/valid_coordinates = list()
 		if (can_check_distant_coordinates && get_turf(src) != t)
 			var/offset_x = t.x - x
 			var/offset_y = t.y - y
-			src << "<span class = 'notice'>This turf has an offset of <b>[offset_x],[offset_y]</b> and coordinates of <b>[t.x],[t.y]</b>.[kanonier_msg]</span>"
+			to_chat(src, "<span class = 'notice'>This turf has an offset of <b>[offset_x],[offset_y]</b> and coordinates of <b>[t.x],[t.y]</b>.[kanonier_msg]</span>")
 			valid_coordinates["[t.x],[t.y]"] = TRUE
 	else
 		return ..()
@@ -208,10 +208,10 @@ var/global/list/valid_coordinates = list()
 			radio = getFlatIcon(R)
 			currfreq = R.freq
 	if (!currfreq)
-		src << SPAN_NOTICE("There is no radio nearby! You need one to order an airstrike.")
+		to_chat(src, SPAN_NOTICE("There is no radio nearby! You need one to order an airstrike."))
 		return
 	if (src.stat == DEAD)	
-		src << SPAN_WARNING("You're dead!")
+		to_chat(src, SPAN_WARNING("You're dead!"))
 		return
 	if (map.artillery_count > 0 && world.time >= map.artillery_last+map.artillery_timer)
 		var/list/validchoices = map.valid_artillery
@@ -243,13 +243,13 @@ var/global/list/valid_coordinates = list()
 							if (abs(coordy - inputy) <= 15)
 								valid_coords_check = TRUE
 				if (!valid_coords_check)
-					src << "\icon[radio] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Those coordinates were not reported by a scout or officer. Over.\"</font>"
+					to_chat(src, "\icon[getFlatIcon(radio)] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Those coordinates were not reported by a scout or officer. Over.\"</font>")
 					return
 				for (var/mob/living/human/friendlies in range(7, locate(inputx,inputy,src.z)))
 					if (friendlies.faction_text == faction_text && friendlies.stat != DEAD)
-						src << "\icon[radio] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Friendlies in the area. Choose another area. Over.\"</font>"
+						to_chat(src, "\icon[getFlatIcon(radio)] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Friendlies in the area. Choose another area. Over.\"</font>")
 						return
-				src << "\icon[radio] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2> <span class = 'small_message'>([default_language.name])</span> \"Roger, [name], [input1] artillery on the way on [inputx],[inputy]. Stay clear. Over.\"</font>"
+				to_chat(src, "\icon[getFlatIcon(radio)] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2> <span class = 'small_message'>([default_language.name])</span> \"Roger, [name], [input1] artillery on the way on [inputx],[inputy]. Stay clear. Over.\"</font>")
 				playsound(loc, "radio_chatter", 250, FALSE)
 				map.artillery_count--
 				map.artillery_last = world.time
@@ -284,13 +284,13 @@ var/global/list/valid_coordinates = list()
 							if (abs(coordy - inputy) <= 15)
 								valid_coords_check = TRUE
 				if (!valid_coords_check)
-					src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Those coordinates were not reported by a scout or officer. Over.\"</font>"
+					to_chat(src, "\icon[getFlatIcon(radio)] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Those coordinates were not reported by a scout or officer. Over.\"</font>")
 					return
 				for (var/mob/living/human/friendlies in range(7, locate(inputx,inputy,src.z)))
 					if (friendlies.faction_text == faction_text && friendlies.stat != DEAD)
-						src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Friendlies in the area. Choose another area. Over.\"</font>"
+						to_chat(src, "\icon[getFlatIcon(radio)] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Friendlies in the area. Choose another area. Over.\"</font>")
 						return
-				src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2> <span class = 'small_message'>([default_language.name])</span> \"Roger, [name], [input1] bombing run underway on [inputx],[inputy]. Stay clear. Over.\"</font>"
+				to_chat(src, "\icon[getFlatIcon(radio)] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2> <span class = 'small_message'>([default_language.name])</span> \"Roger, [name], [input1] bombing run underway on [inputx],[inputy]. Stay clear. Over.\"</font>")
 				playsound(loc, "radio_chatter", 250, FALSE)
 				map.artillery_count--
 				map.artillery_last = world.time
@@ -302,17 +302,17 @@ var/global/list/valid_coordinates = list()
 	else if (map.artillery_count <= 0)
 		map.artillery_count = 0
 		if (map.ID == MAP_GROZNY)
-			src << "<span class='warning'>There are no more artillery barrages available.</span>"
+			to_chat(src, "<span class='warning'>There are no more artillery barrages available.</span>")
 			return
 		else
-			src << "<span class='warning'>There are no more airstrikes available.</span>"
+			to_chat(src, "<span class='warning'>There are no more airstrikes available.</span>")
 			return	
 	else if (world.time < map.artillery_last+map.artillery_timer)
 		if (map.ID == MAP_GROZNY)
-			src << "<span class='warning'>You can't order an artillery barrage yet! Wait [round(((map.artillery_last+map.artillery_timer)-world.time)/600)] minutes.</span>"
+			to_chat(src, "<span class='warning'>You can't order an artillery barrage yet! Wait [round(((map.artillery_last+map.artillery_timer)-world.time)/600)] minutes.</span>")
 			return
 		else
-			src << "<span class='warning'>You can't order an airstrike yet! Wait [round(((map.artillery_last+map.artillery_timer)-world.time)/600)] minutes.</span>"
+			to_chat(src, "<span class='warning'>You can't order an airstrike yet! Wait [round(((map.artillery_last+map.artillery_timer)-world.time)/600)] minutes.</span>")
 			return
 /mob/living/human/proc/airstrike(var/type, var/inputx, var/inputy, var/inputz)
 	var/turf/T = get_turf(locate(inputx,inputy,inputz))
@@ -420,6 +420,6 @@ var/global/list/valid_coordinates = list()
 			var/tdist = get_dist(src,H)
 			var/tdir = dir2text(get_dir(src,H))
 			count++
-			src << "<big><font color='yellow'>The <b>HVT</b> (<i>[H.name]</i>) is [tdist] meters [tdir] from you.</font></big>"
+			to_chat(src, "<big><font color='yellow'>The <b>HVT</b> (<i>[H.name]</i>) is [tdist] meters [tdir] from you.</font></big>")
 	if (count <= 0)
-		src << "<big><font color='yellow'>No <b>HVT</b>s found!</font></big>"
+		to_chat(src, "<big><font color='yellow'>No <b>HVT</b>s found!</font></big>")

@@ -60,14 +60,14 @@
 			return
 	else return
 	if (check_bolt_lock)
-		user << "<span class='notice'>The bolt won't move, the gun is empty!</span>"
+		to_chat(user, "<span class='notice'>The bolt won't move, the gun is empty!</span>")
 		check_bolt--
 		return
 	bolt_open = !bolt_open
 	if (bolt_open)
 		if (chambered)
 			playsound(loc, bolt_open_sound, 50, TRUE)
-			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
+			to_chat(user, "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>")
 			chambered.loc = get_turf(src)
 			chambered.randomrotation()
 			loaded -= chambered
@@ -75,13 +75,13 @@
 			if (bolt_safety)
 				if (!loaded.len)
 					check_bolt_lock++
-					user << "<span class='notice'>The bolt is locked!</span>"
+					to_chat(user, "<span class='notice'>The bolt is locked!</span>")
 		else
 			playsound(loc, bolt_open_sound, 50, TRUE)
-			user << "<span class='notice'>You work the bolt open.</span>"
+			to_chat(user, "<span class='notice'>You work the bolt open.</span>")
 	else
 		playsound(loc, bolt_close_sound, 50, TRUE)
-		user << "<span class='notice'>You work the bolt closed.</span>"
+		to_chat(user, "<span class='notice'>You work the bolt closed.</span>")
 		bolt_open = FALSE
 	add_fingerprint(user)
 	update_icon()
@@ -89,13 +89,13 @@
 
 /obj/item/weapon/gun/projectile/boltaction/special_check(mob/user)
 	if (gun_safety && safetyon)
-		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		to_chat(user, "<span class='warning'>You can't fire \the [src] while the safety is on!</span>")
 		return FALSE
 	if (bolt_open)
-		user << "<span class='warning'>You can't fire [src] while the bolt is open!</span>"
+		to_chat(user, "<span class='warning'>You can't fire [src] while the bolt is open!</span>")
 		return FALSE
 	if (!user.has_empty_hand(both = FALSE) && !istype(src,/obj/item/weapon/gun/projectile/boltaction/mosin/obrez))
-		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
+		to_chat(user, "<span class='warning'>You need both hands to fire \the [src]!</span>")
 		return FALSE
 	return TRUE
 
@@ -371,7 +371,7 @@
 
 /obj/item/weapon/gun/projectile/boltaction/singleshot/special_check(mob/user)
 	if (bolt_open)
-		user << "<span class='warning'>You can't fire [src] while the breech is open!</span>"
+		to_chat(user, "<span class='warning'>You can't fire [src] while the breech is open!</span>")
 		return FALSE
 	return TRUE
 
@@ -386,17 +386,17 @@
 	if (bolt_open)
 		if (chambered)
 			playsound(loc, bolt_open_sound, 50, TRUE)
-			user << "<span class='notice'>You open the breech lever, ejecting [chambered]!</span>"
+			to_chat(user, "<span class='notice'>You open the breech lever, ejecting [chambered]!</span>")
 			chambered.loc = get_turf(src)
 			chambered.randomrotation()
 			loaded -= chambered
 			chambered = null
 		else
 			playsound(loc, bolt_open_sound, 50, TRUE)
-			user << "<span class='notice'>You open the breech lever.</span>"
+			to_chat(user, "<span class='notice'>You open the breech lever.</span>")
 	else
 		playsound(loc, bolt_close_sound, 50, TRUE)
-		user << "<span class='notice'>You close the breech lever.</span>"
+		to_chat(user, "<span class='notice'>You close the breech lever.</span>")
 		bolt_open = FALSE
 	add_fingerprint(user)
 	update_icon()

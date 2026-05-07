@@ -39,15 +39,15 @@
 
 		if (istype(target, /obj/item/weapon/reagent_containers/food/snacks)) // These are not opencontainers but we can transfer to them
 			if (!reagents || !reagents.total_volume)
-				user << "<span class='notice'>There is no condiment left in \the [src].</span>"
+				to_chat(user, "<span class='notice'>There is no condiment left in \the [src].</span>")
 				return
 
 			if (!target.reagents.get_free_space())
-				user << "<span class='notice'>You can't add more condiment to \the [target].</span>"
+				to_chat(user, "<span class='notice'>You can't add more condiment to \the [target].</span>")
 				return
 
 			var/trans = reagents.trans_to_obj(target, amount_per_transfer_from_this)
-			user << "<span class='notice'>You add [trans] units of the condiment to \the [target].</span>"
+			to_chat(user, "<span class='notice'>You add [trans] units of the condiment to \the [target].</span>")
 		else
 			..()
 
@@ -55,7 +55,7 @@
 		playsound(user.loc, "drink", rand(10, 50), TRUE)
 
 	self_feed_message(var/mob/user)
-		user << "<span class='notice'>You swallow some of contents of \the [src].</span>"
+		to_chat(user, "<span class='notice'>You swallow some of contents of \the [src].</span>")
 
 	on_reagent_change()
 		if (icon_state == "saltshakersmall" || icon_state == "peppermillsmall")
@@ -222,7 +222,7 @@
 	var/obj/item/weapon/reagent_containers/glass/WW
 	if (!istype(user.l_hand, /obj/item/weapon/reagent_containers/glass))
 		if(!istype(user.r_hand, /obj/item/weapon/reagent_containers/glass))
-			user << "<span class = 'warning'>You need to be holding water in the other hand to make dough.</span>"
+			to_chat(user, "<span class = 'warning'>You need to be holding water in the other hand to make dough.</span>")
 			return
 		else
 			WW = user.r_hand
@@ -245,10 +245,10 @@
 			new/obj/item/weapon/reagent_containers/food/snacks/dough(user.loc)
 			return
 		else
-			user << "<span class = 'warning'>You need more flour.</span>"
+			to_chat(user, "<span class = 'warning'>You need more flour.</span>")
 			return
 	else
-		user << "<span class = 'warning'>You need more water.</span>"
+		to_chat(user, "<span class = 'warning'>You need more water.</span>")
 		return
 
 /obj/item/weapon/reagent_containers/food/condiment/bsugar

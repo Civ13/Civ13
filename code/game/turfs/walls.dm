@@ -132,7 +132,7 @@ var/list/global/wall_cache = list()
 	if(istype(W, /obj/item/weapon/chisel))
 		var design = "smooth"
 		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
-			user << "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>"
+			to_chat(user, "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>")
 			return
 		else
 			var/display = list("Smooth", "Cave", "Underground Cave", "Brick", "Cobbled", "Tiled", "Cancel")
@@ -140,22 +140,22 @@ var/list/global/wall_cache = list()
 			if (input == "Cancel")
 				return
 			else if  (input == "Smooth")
-				user << "<span class='notice'>You will now carve the smooth design!</span>"
+				to_chat(user, "<span class='notice'>You will now carve the smooth design!</span>")
 				design = "smooth"
 			else if  (input == "Cave")
-				user << "<span class='notice'>You will now carve the cave design!</span>"
+				to_chat(user, "<span class='notice'>You will now carve the cave design!</span>")
 				design = "cave"
 			else if  (input == "Underground Cave")
-				user << "<span class='notice'>You will now carve the cave design!</span>"
+				to_chat(user, "<span class='notice'>You will now carve the cave design!</span>")
 				design = "undercave"
 			else if  (input == "Brick")
-				user << "<span class='notice'>You will now carve the brick design!</span>"
+				to_chat(user, "<span class='notice'>You will now carve the brick design!</span>")
 				design = "brick"
 			else if  (input == "Cobbled")
-				user << "<span class='notice'>You will now carve the cobbled design!</span>"
+				to_chat(user, "<span class='notice'>You will now carve the cobbled design!</span>")
 				design = "cobbled"
 			else if  (input == "Tiled")
-				user << "<span class='notice'>You will now carve the tiled design!</span>"
+				to_chat(user, "<span class='notice'>You will now carve the tiled design!</span>")
 				design = "tiled"
 			visible_message("<span class='danger'>[user] starts to chisel a design!</span>", "<span class='danger'>You start chiseling a design.</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',60,1)
@@ -240,16 +240,16 @@ var/list/global/wall_cache = list()
 	. = ..(user)
 
 	if (!damage && material)
-		user << "<span class='notice'>It looks fully intact.</span>"
+		to_chat(user, "<span class='notice'>It looks fully intact.</span>")
 	else
 		if (material)
 			var/dam = damage / material.integrity
 			if (dam <= 0.3)
-				user << "<span class='warning'>It looks slightly damaged.</span>"
+				to_chat(user, "<span class='warning'>It looks slightly damaged.</span>")
 			else if (dam <= 0.6)
-				user << "<span class='warning'>It looks moderately damaged.</span>"
+				to_chat(user, "<span class='warning'>It looks moderately damaged.</span>")
 			else
-				user << "<span class='danger'>It looks heavily damaged.</span>"
+				to_chat(user, "<span class='danger'>It looks heavily damaged.</span>")
 //Damage
 
 /turf/wall/proc/take_damage(dam)

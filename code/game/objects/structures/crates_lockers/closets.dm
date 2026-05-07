@@ -50,26 +50,26 @@
 		if(istype(src, /obj/structure/closet/crate/wall_mailbox))
 			var/obj/structure/closet/crate/wall_mailbox/WM = src
 			if (WM.contents_stored == 0)
-				user << "It is empty."
+				to_chat(user, "It is empty.")
 			else if  (WM.contents_stored <= 4 && WM.contents_stored != 0)
-				user << "There is something inside."
+				to_chat(user, "There is something inside.")
 			else if  (WM.contents_stored == 5)
-				user << "It is full."
+				to_chat(user, "It is full.")
 		else
 			var/content_size = FALSE
 			for (var/obj/item/I in contents)
 				if (!I.anchored)
 					content_size += ceil(I.w_class/2)
 			if (!content_size)
-				user << "It is empty."
+				to_chat(user, "It is empty.")
 			else if (storage_capacity > content_size*4)
-				user << "It is barely filled."
+				to_chat(user, "It is barely filled.")
 			else if (storage_capacity > content_size*2)
-				user << "It is less than half full."
+				to_chat(user, "It is less than half full.")
 			else if (storage_capacity > content_size)
-				user << "There is still some free space."
+				to_chat(user, "There is still some free space.")
 			else
-				user << "It is full."
+				to_chat(user, "It is full.")
 
 /obj/structure/closet/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (!istype(mover, /obj/item/projectile))
@@ -172,7 +172,7 @@
 
 /obj/structure/closet/proc/toggle(mob/user as mob)
 	if (!(opened ? close() : open()))
-		user << "<span class='notice'>It won't budge!</span>"
+		to_chat(user, "<span class='notice'>It won't budge!</span>")
 		return
 	update_icon()
 
@@ -250,14 +250,14 @@
 						visible_message("<span class = 'notice'>[user] unlocks the [src].</span>")
 						playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 						return
-			user << "No key in this keychain matches the lock!"
+			to_chat(user, "No key in this keychain matches the lock!")
 			return
 		if (istype(W, /obj/item/weapon/key) && W.code != custom_code)
-			user << "This key does not match this lock!"
+			to_chat(user, "This key does not match this lock!")
 			return
 	if (istype(W, /obj/item/weapon/hammer) && user.a_intent == I_HARM)
 		if (!opened)
-			user << "You need to open the crate first."
+			to_chat(user, "You need to open the crate first.")
 		else
 			visible_message("<span class='danger'>[user] begins to deconstruct the [src]!</span>")
 			playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
@@ -280,11 +280,11 @@
 					content_size += ceil(I.w_class/2)
 				if (content_size < storage_capacity)
 					W.forceMove(src)
-					user << "You throw \the [W] into \the [src]."
+					to_chat(user, "You throw \the [W] into \the [src].")
 					update_icon()
 					return
 				else
-					user << "<span class='warning'>\The [src] is too full!</span>"
+					to_chat(user, "<span class='warning'>\The [src] is too full!</span>")
 					return
 			else
 				W.forceMove(loc)
@@ -322,12 +322,12 @@
 			return
 
 		if (!open())
-			user << "<span class='notice'>It won't budge!</span>"
+			to_chat(user, "<span class='notice'>It won't budge!</span>")
 
 /obj/structure/closet/attack_hand(mob/user as mob)
 	add_fingerprint(user)
 	if (locked && !opened)
-		user << "<span class='notice'>\The [src] is locked.</span>"
+		to_chat(user, "<span class='notice'>\The [src] is locked.</span>")
 		return
 	else
 		toggle(user)
@@ -343,14 +343,14 @@
 			return
 
 		if (locked)
-			usr << "<span class='warning'>\The [src]is locked!</span>"
+			to_chat(usr, "<span class='warning'>\The [src]is locked!</span>")
 			return
 
 		if (ishuman(usr))
 			add_fingerprint(usr)
 			toggle(usr)
 		else
-			usr << "<span class='warning'>This mob type can't use this verb.</span>"
+			to_chat(usr, "<span class='warning'>This mob type can't use this verb.</span>")
 	else
 		set src in oview(1)
 		set category = null
@@ -360,14 +360,14 @@
 			return
 
 		if (locked)
-			usr << "<span class='warning'>\The [src]is locked!</span>"
+			to_chat(usr, "<span class='warning'>\The [src]is locked!</span>")
 			return
 
 		if (ishuman(usr))
 			add_fingerprint(usr)
-			usr << "<span class='warning'>you're gonna need to use something to open this</span>"
+			to_chat(usr, "<span class='warning'>you're gonna need to use something to open this</span>")
 		else
-			usr << "<span class='warning'>This mob type can't use this verb.</span>"
+			to_chat(usr, "<span class='warning'>This mob type can't use this verb.</span>")
 
 /obj/structure/closet/update_icon()//Putting the welded stuff in updateicon() so it's easy to overwrite for special cases (Fridges, cabinets, and whatnot)
 	overlays.Cut()
@@ -403,7 +403,7 @@
 	escapee.setClickCooldown(100)
 
 	//okay, so the closet is either welded or locked... resist!!!
-	escapee << "<span class='warning'>You lean on the back of \the [src] and start pushing the door open. (this will take about [breakout_time] minutes)</span>"
+	to_chat(escapee, "<span class='warning'>You lean on the back of \the [src] and start pushing the door open. (this will take about [breakout_time] minutes)</span>")
 
 	visible_message("<span class='danger'>\The [src] begins to shake violently!</span>")
 
@@ -426,7 +426,7 @@
 
 	//Well then break it!
 	breakout = FALSE
-	escapee << "<span class='warning'>You successfully break out!</span>"
+	to_chat(escapee, "<span class='warning'>You successfully break out!</span>")
 	visible_message("<span class='danger'>\The [escapee] successfully broke out of \the [src]!</span>")
 	playsound(loc, 'sound/effects/grillehit.ogg', 100, TRUE)
 	break_open()

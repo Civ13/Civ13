@@ -340,15 +340,15 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 			qdel(I)
 			return
 	else
-		user << "The [src] is full!"
+		to_chat(user, "The [src] is full!")
 	..()
 
 /obj/item/weapon/reagent_containers/glass/proc/update_name_label(mob/user)
 	var/tmp_label = sanitizeSafe(input(user, "Enter a label for [base_name]", "Label", label_text), MAX_NAME_LEN)
 	if (length(tmp_label) > 15)
-		user << "<span class='notice'>The label can be at most 15 characters long.</span>"
+		to_chat(user, "<span class='notice'>The label can be at most 15 characters long.</span>")
 	else
-		user << "<span class='notice'>You set the label to \"[tmp_label]\".</span>"
+		to_chat(user, "<span class='notice'>You set the label to \"[tmp_label]\".</span>")
 		label_text = tmp_label
 		playsound(src,'sound/effects/pen.ogg',40,1)
 		if (label_text == "")
@@ -476,10 +476,10 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 /obj/item/weapon/reagent_containers/glass/bucket/attackby(var/obj/D, mob/user as mob)
 	if (istype(D, /obj/item/weapon/mop))
 		if (reagents.total_volume < 1)
-			user << "<span class='warning'>\The [src] is empty!</span>"
+			to_chat(user, "<span class='warning'>\The [src] is empty!</span>")
 		else
 			reagents.trans_to_obj(D, 5)
-			user << "<span class='notice'>You wet \the [D] in \the [src].</span>"
+			to_chat(user, "<span class='notice'>You wet \the [D] in \the [src].</span>")
 			playsound(loc, 'sound/effects/slosh.ogg', 25, TRUE)
 		return
 	..(D, user)
@@ -1108,6 +1108,6 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 /obj/item/weapon/analyser/afterattack(obj/M, mob/user)
 	if (istype(M, /obj/item/weapon/reagent_containers))
 		var/obj/item/weapon/reagent_containers/RG = M
-		user << "<font color='yellow'><big><b>Reagents detected:</b></big></font>"
+		to_chat(user, "<font color='yellow'><big><b>Reagents detected:</b></big></font>")
 		for(var/i=1 to RG.reagents.reagent_list.len)
-			user << "<font color='yellow'><i><b>[RG.reagents.reagent_list[i].name]: </b>[RG.reagents.reagent_list[i].volume] units</i></font>"
+			to_chat(user, "<font color='yellow'><i><b>[RG.reagents.reagent_list[i].name]: </b>[RG.reagents.reagent_list[i].volume] units</i></font>")

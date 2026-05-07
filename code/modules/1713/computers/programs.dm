@@ -61,11 +61,11 @@
 	user.face_atom(origin)
 
 	if (!locate(user) in range(1,origin))
-		user << "<span class = 'danger'>Get next to \the [origin] to use it.</span>"
+		to_chat(user, "<span class = 'danger'>Get next to \the [origin] to use it.</span>")
 		return FALSE
 
 	if (!user.can_use_hands())
-		user << "<span class = 'danger'>You have no hands to use this with.</span>"
+		to_chat(user, "<span class = 'danger'>You have no hands to use this with.</span>")
 		return FALSE
 
 ///////////////////ORION TRAIL GAME//////////////////////////////////
@@ -307,7 +307,7 @@
 			killed_crew++
 
 			if(settlers.len == 0 || alive == 0)
-				usr << "The last crewmember [sheriff], shot themselves, GAME OVER!"
+				to_chat(usr, "The last crewmember [sheriff], shot themselves, GAME OVER!")
 				gameStatus = ORION_STATUS_GAMEOVER
 				event = null
 
@@ -1546,7 +1546,7 @@
 								qdel(SW)
 								for(var/mob/living/human/HP in player_list)
 									if (HP.civilization == "Sheriff Office")
-										HP << "<big><font color='yellow'>A suspect with a pending warrant has been dropped off at the station by a citizens arrest.</font></big>"
+										to_chat(HP, "<big><font color='yellow'>A suspect with a pending warrant has been dropped off at the station by a citizens arrest.</font></big>")
 					if (!done && found)
 						mainbody += "<font color='yellow'>There are no outstanding warrants for any of the suspects.</font>"
 					else if (!done && !found)

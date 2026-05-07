@@ -16,7 +16,7 @@
 		create_company_pr(choosename)
 		return
 	else
-		U << "<span class='danger'>You cannot create a company in this map.</span>"
+		to_chat(U, "<span class='danger'>You cannot create a company in this map.</span>")
 		return
 
 /mob/living/human/proc/create_company_pr(var/newname = "none")
@@ -99,8 +99,8 @@
 							map.custom_company[compchoice][l][2] = currb+compchoice_amt
 							return
 					map.custom_company[compchoice] += list(list(CM,compchoice_amt,0))
-					H << "<big>Transfered [compchoice_amt]% of [compchoice] to [CM].</big>"
-					CM << "<big>You received [compchoice_amt]% of [compchoice] from [H].</big>"
+					to_chat(H, "<big>Transfered [compchoice_amt]% of [compchoice] to [CM].</big>")
+					to_chat(CM, "<big>You received [compchoice_amt]% of [compchoice] from [H].</big>")
 					return
 	else
 		to_chat(usr, SPAN_DANGER("You cannot transfer company ownership on this map."))
@@ -141,8 +141,8 @@
 			map.custom_company[companyname][l][2] = currb+stock
 			return
 	map.custom_company[companyname] += list(list(target,stock,0))
-	src << "<big>Transfered [stock]% of [companyname] to [target].</big>"
-	target << "<big>You received [stock]% of [companyname] from [src].</big>"
+	to_chat(src, "<big>Transfered [stock]% of [companyname] to [target].</big>")
+	to_chat(target, "<big>You received [stock]% of [companyname] from [src].</big>")
 	return
 
 //to be used when the seller does not exist (normally if he died and theres no body)
@@ -162,5 +162,5 @@
 			map.custom_company[companyname][l][2] = currb+stock
 			return
 	map.custom_company[companyname] += list(list(target,stock,0))
-	target << "<big>You received [stock]% of [companyname] from the stock market.</big>"
+	to_chat(target, "<big>You received [stock]% of [companyname] from the stock market.</big>")
 	return

@@ -36,7 +36,7 @@
 		else
 
 			color = input
-//			user << "Color: [color]"
+//			to_chat(user, "Color: [color]")
 			uncolored1 = FALSE
 			return
 	else
@@ -385,7 +385,7 @@
 				return
 			else
 				topcolor = input
-	//			user << "Color: [color]"
+	//			to_chat(user, "Color: [color]")
 		if (!deccolor)
 			var/input = WWinput(user, "Decorations - Choose a color:", "Decorations Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
@@ -438,7 +438,7 @@
 				return
 			else
 				jacketcolor = input
-	//			user << "Color: [color]"
+	//			to_chat(user, "Color: [color]")
 		if (!crosscolor)
 			var/input = WWinput(user, "Bandolier - Choose a cross bandolier color:", "Bandolier Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
@@ -485,7 +485,7 @@
 				return
 			else
 				shirtcolor = input
-	//			user << "Color: [color]"
+	//			to_chat(user, "Color: [color]")
 		if (!pantscolor)
 			var/input = WWinput(user, "Decoration - Choose a color:", "Decoration Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
@@ -536,7 +536,7 @@
 				return
 			else
 				shirtcolor = input
-	//			user << "Color: [color]"
+	//			to_chat(user, "Color: [color]")
 		if (!buttonscolor)
 			var/input = WWinput(user, "Buttons - Choose a color:", "Buttons Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
@@ -610,7 +610,7 @@
 				return
 			else
 				capcolor = input
-	//			user << "Color: [color]"
+	//			to_chat(user, "Color: [color]")
 		if (!bandcolor)
 			var/input = WWinput(user, "Band - Choose a color:", "Band Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
@@ -654,7 +654,7 @@
 				return
 			else
 				capcolor = input
-	//			user << "Color: [color]"
+	//			to_chat(user, "Color: [color]")
 		if (capcolor)
 			uncolored1 = FALSE
 			var/image/cap = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "fieldcap_custom")
@@ -838,7 +838,7 @@
 				return
 			else
 				patterncolor = input
-	//			user << "Color: [color]"
+	//			to_chat(user, "Color: [color]")
 
 		if (patterncolor)
 			uncolored1 = FALSE
@@ -872,7 +872,7 @@
 				return
 			else
 				patterncolor = input
-	//			user << "Color: [color]"
+	//			to_chat(user, "Color: [color]")
 
 		if (patterncolor)
 			uncolored1 = FALSE
@@ -906,7 +906,7 @@
 				return
 			else
 				patterncolor = input
-	//			user << "Color: [color]"
+	//			to_chat(user, "Color: [color]")
 
 		if (patterncolor)
 			uncolored1 = FALSE
@@ -939,7 +939,7 @@
 				return
 			else
 				patterncolor = input
-	//			user << "Color: [color]"
+	//			to_chat(user, "Color: [color]")
 
 		if (patterncolor)
 			uncolored1 = FALSE
@@ -974,7 +974,7 @@
 				return
 			else
 				capcolor = input
-	//			user << "Color: [color]"
+	//			to_chat(user, "Color: [color]")
 		if (!bandcolor)
 			var/input = WWinput(user, "Feather - Choose a color:", "Feather Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
@@ -1059,7 +1059,7 @@
 				return
 			else
 				patterncolor = input
-	//			user << "Color: [color]"
+	//			to_chat(user, "Color: [color]")
 
 		if (patterncolor)
 			uncolored1 = FALSE
@@ -1097,7 +1097,7 @@
 				return
 			else
 				shirtcolor = input
-	//			user << "Color: [color]"
+	//			to_chat(user, "Color: [color]")
 		if (!pantscolor)
 			var/input = WWinput(user, "Pants - Choose a color:", "Pants Color" , "#FFFFFF", "color")
 			if (input == null || input == "")

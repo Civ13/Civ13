@@ -55,14 +55,14 @@ var/no_loop_rom = FALSE
 			return FALSE
 		ticker.finished = TRUE
 		var/message = "The Greek troops have managed to defend the fortress!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_rom == FALSE)
 		ticker.finished = TRUE
 		var/message = "The Roman Legion has captured the fortress! The remaining Greek troops have surrendered!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_rom = TRUE
@@ -105,7 +105,7 @@ var/no_loop_rom = FALSE
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The Greek troops have recaptured the fortress!</font>"
+			to_chat(world, "<font size = 3>The Greek troops have recaptured the fortress!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1

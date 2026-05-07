@@ -95,14 +95,14 @@
 			return FALSE
 		ticker.finished = TRUE
 		var/message = "The <b>Ruhr Red Army</b> has successfully defended the train station! The Weimar Republic has halted the attack!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_o == FALSE)
 		ticker.finished = TRUE
 		var/message = "The <b>Weimar Republic</b> has captured the train station! The Ruhr Uprising has been crushed!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_o = TRUE
@@ -145,7 +145,7 @@
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Ruhr Red Army</b> has recaptured the train station!</font>"
+			to_chat(world, "<font size = 3>The <b>Ruhr Red Army</b> has recaptured the train station!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1

@@ -45,13 +45,13 @@
 /obj/map_metadata/civilizations/proc/walldown()
 	for (var/turf/wall/rockwall/RW)
 		RW.ChangeTurf(/turf/floor/dirt/jungledirt)
-	world << "<font color=#CECE00><big><b>THE WALL HAS GONE DOWN!</b></big></font>"
+	to_chat(world, "<font color=#CECE00><big><b>THE WALL HAS GONE DOWN!</b></big></font>")
 	admin_ended_all_grace_periods = TRUE
 	return
 /obj/map_metadata/civilizations/proc/wallup()
 	for (var/turf/floor/dirt/jungledirt/JD)
 		JD.ChangeTurf(/turf/wall/rockwall)
-	world <<"<font color=#CECE00><big><b>THE WALL HAS GONE UP!</b></big></font>"
+	to_chat(world, "<font color=#CECE00><big><b>THE WALL HAS GONE UP!</b></big></font>")
 	admin_ended_all_grace_periods = FALSE
 	return
 

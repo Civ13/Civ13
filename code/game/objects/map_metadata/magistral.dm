@@ -99,14 +99,14 @@
 			return FALSE
 		ticker.finished = TRUE
 		var/message = "The <font color = 'black'>Mujahideen</font> have successfully defended the compound! The Soviets and DRA have failed their assault!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_o == FALSE)
 		ticker.finished = TRUE
 		var/message = "The <font color = 'red'>Soviets</font> and the <font color = 'green'> DRA </font> have captured the compound! The Mujahideen have been wiped out!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_o = TRUE
@@ -145,7 +145,7 @@
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <font color = 'black'>Mujahideen</font> have recaptured the Compound!</font>"
+			to_chat(world, "<font size = 3>The <font color = 'black'>Mujahideen</font> have recaptured the Compound!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1

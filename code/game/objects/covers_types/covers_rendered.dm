@@ -30,9 +30,9 @@
 
 /obj/covers/clay_wall/attackby(obj/item/W as obj, mob/user as mob)  //this list doesn't like multi arguements, single type per stucco catalyst unless you know what you're doing please.
 	if (istype(W, /obj/item/weapon/stucco/generic))
-		user << "You start adding stucco to the wall..."
+		to_chat(user, "You start adding stucco to the wall...")
 		if (do_after(user, 20, src))
-			user << "You finish adding stucco to the wall, rendering it."
+			to_chat(user, "You finish adding stucco to the wall, rendering it.")
 			qdel(W)
 			var/obj/covers/clay_wall/redearth/S = new /obj/covers/clay_wall/redearth(loc)
 			qdel(src)
@@ -61,9 +61,9 @@
 
 /obj/covers/claydoorway/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/stucco/generic))
-		user << "You start adding stucco to the doorway..."
+		to_chat(user, "You start adding stucco to the doorway...")
 		if (do_after(user, 20, src))
-			user << "You finish adding stucco to the doorway, rendering over it."
+			to_chat(user, "You finish adding stucco to the doorway, rendering over it.")
 			qdel(W)
 			new /obj/covers/clay_wall/redearth_doorway(loc)
 			qdel(src)
@@ -117,9 +117,9 @@
 
 /obj/covers/stone_wall/classic/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/stucco/roman))
-		user << "You start adding roman stucco to the wall..."
+		to_chat(user, "You start adding roman stucco to the wall...")
 		if (do_after(user, 20, src))
-			user << "You finish adding roman stucco to the wall, rendering it."
+			to_chat(user, "You finish adding roman stucco to the wall, rendering it.")
 			qdel(W)
 			var/obj/covers/stone_wall/classic/villa/S = new /obj/covers/stone_wall/classic/villa(loc)
 			qdel(src)
@@ -156,9 +156,9 @@
 
 /obj/covers/stone_wall/classic/archway/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/stucco/roman))
-		user << "You start adding roman stucco to the archway..."
+		to_chat(user, "You start adding roman stucco to the archway...")
 		if (do_after(user, 20, src))
-			user << "You finish adding roman stucco to the archway, rendering over it."
+			to_chat(user, "You finish adding roman stucco to the archway, rendering over it.")
 			qdel(W)
 			new /obj/covers/stone_wall/classic/villa_doorway(loc)
 			qdel(src)

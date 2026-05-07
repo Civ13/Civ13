@@ -218,7 +218,7 @@
 /obj/item/weapon/reagent_containers/food/drinks/bottle/proc/insert_rag(obj/item/weapon/reagent_containers/glass/rag/R, mob/user)
 	if (!isGlass || rag) return
 	if (user.unEquip(R))
-		user << "<span class='notice'>You stuff [R] into [src].</span>"
+		to_chat(user, "<span class='notice'>You stuff [R] into [src].</span>")
 		rag = R
 		rag.loc = src
 		flags &= ~OPENCONTAINER
@@ -230,7 +230,7 @@
 	rag = null
 	flags |= (initial(flags) & OPENCONTAINER)
 	update_icon()
-	user << "<span class='notice'>You remove the rag from [src].</span>"
+	to_chat(user, "<span class='notice'>You remove the rag from [src].</span>")
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/open(mob/user)
 	if (rag) return
@@ -708,7 +708,7 @@
 		icon_state = "mead_open"
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/mead/open(mob/user)
 		playsound(loc,'sound/effects/canopen.ogg', rand(10,50), TRUE)
-		user << "<span class='notice'>You pop the cork off of the [src]!</span>"
+		to_chat(user, "<span class='notice'>You pop the cork off of the [src]!</span>")
 		flags |= OPENCONTAINER
 		icon_state = "mead_open"
 		update_icon()
@@ -730,7 +730,7 @@
 		icon_state = "wine_open"
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/alto_wine/open(mob/user)
 		playsound(loc,'sound/effects/canopen.ogg', rand(10,50), TRUE)
-		user << "<span class='notice'>You pop the cork off of the [src]!</span>"
+		to_chat(user, "<span class='notice'>You pop the cork off of the [src]!</span>")
 		flags |= OPENCONTAINER
 		icon_state = "wine_open"
 

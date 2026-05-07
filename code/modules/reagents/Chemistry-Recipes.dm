@@ -28,14 +28,14 @@ datum/admins/proc/print_chemical_reactions()
 		fdel(recipe_list)
 	var/choice = WWinput(usr, "Which format to export?", "Chemical Recipe Export", "Plaintext", list("Plaintext", "Wiki"))
 	if (choice == "Wiki")
-		recipe_list <<"{| class=\"wikitable sortable\" style=\"text-align: left"
-		recipe_list <<"! Result"
-		recipe_list <<"! Ingredients"
-		recipe_list <<"! Catalysts"
-		recipe_list <<"! Inhibitors"
-		recipe_list <<"! Produced Amount"
-		recipe_list <<"! ID"
-		recipe_list << " "
+		to_chat(recipe_list, "{| class=\"wikitable sortable\" style=\"text-align: left")
+		to_chat(recipe_list, "! Result")
+		to_chat(recipe_list, "! Ingredients")
+		to_chat(recipe_list, "! Catalysts")
+		to_chat(recipe_list, "! Inhibitors")
+		to_chat(recipe_list, "! Produced Amount")
+		to_chat(recipe_list, "! ID")
+		to_chat(recipe_list, " ")
 		for (var/path in paths)
 			var/datum/chemical_reaction/D = new path()
 			var/in_reagents = ""
@@ -214,7 +214,7 @@ datum/admins/proc/print_chemical_reactions()
 		var/turf/T = get_turf(container)
 		var/list/seen = viewers(4, T)
 		for (var/mob/M in seen)
-			M.show_message("<span class='notice'>\icon[container] [mix_message]</span>", TRUE)
+			M.show_message("<span class='notice'>\icon[getFlatIcon(container)] [mix_message]</span>", TRUE)
 		playsound(T, reaction_sound, 80, TRUE)
 
 //obtains any special data that will be provided to the reaction products
@@ -801,7 +801,7 @@ datum/admins/proc/print_chemical_reactions()
 	var/exloc = get_turf(holder.my_atom)
 	if (created_volume >= 20)
 		for (var/mob/living/human/H in range(exloc,3))
-			H << "<big><span class = 'red'>The reagent begins to combust violenty, uh oh...</span></big>"
+			to_chat(H, "<big><span class = 'red'>The reagent begins to combust violenty, uh oh...</span></big>")
 		spawn(30)
 		explosion(exloc, 0, 1, 2, 6)
 

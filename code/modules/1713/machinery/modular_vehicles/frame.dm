@@ -79,20 +79,20 @@
 	..()
 	if (axis)
 		if (user in range(1,src))
-			user << "<span class='notice'>Current Weight: <b>[axis.get_weight()]</b>.</span>"
+			to_chat(user, "<span class='notice'>Current Weight: <b>[axis.get_weight()]</b>.</span>")
 
 /obj/structure/vehicleparts/frame/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis && !axis)
 		if (abs(VP.y-y) > VEHICLE_CONSTANTS.MAX_VEHICLE_SIZE || abs(VP.x-x) > VEHICLE_CONSTANTS.MAX_VEHICLE_SIZE)
-			usr << "<span class='notice'>Vehicles can't be more than [VEHICLE_CONSTANTS.MAX_VEHICLE_SIZE] tiles long or wide!</span>"
+			to_chat(usr, "<span class='notice'>Vehicles can't be more than [VEHICLE_CONSTANTS.MAX_VEHICLE_SIZE] tiles long or wide!</span>")
 			return
 		if (VP.axis.components.len > VEHICLE_CONSTANTS.MAX_COMPONENTS)
-			usr << "<span class='notice'>The vehicle is too big already!</span>"
+			to_chat(usr, "<span class='notice'>The vehicle is too big already!</span>")
 			return
 		for(var/obj/structure/vehicleparts/frame/FR in range(1,src))
 			if (FR != src && FR.axis == VP.axis)
 				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-				usr << "You connect \the [src] to \the [VP.axis]."
+				to_chat(usr, "You connect \the [src] to \the [VP.axis].")
 				axis = VP.axis
 				name = VP.axis.name
 				var/found = FALSE
@@ -108,7 +108,7 @@
 	if (istype(VP, /obj/structure/engine/internal) && axis && !axis.engine && !VP.anchored)
 		var/obj/structure/engine/internal/E = VP
 		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-		usr << "You connect \the [VP] to \the [axis]."
+		to_chat(usr, "You connect \the [VP] to \the [axis].")
 		axis.engine = VP
 		VP.forceMove(loc)
 		VP.anchored = TRUE
@@ -118,7 +118,7 @@
 		return
 	else if (istype(VP, /obj/structure/bed/chair/drivers) && axis && !VP.anchored && !axis.wheel)
 		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-		usr << "You place \the [VP] in \the [axis]."
+		to_chat(usr, "You place \the [VP] in \the [axis].")
 		VP.forceMove(loc)
 		VP.anchored = TRUE
 		var/obj/structure/bed/chair/drivers/VPP = VP
@@ -128,7 +128,7 @@
 	else if (istype(VP, /obj/structure/lamp/lamp_small/tank) && !VP.anchored)
 		var/obj/structure/lamp/lamp_small/tank/TL = VP
 		TL.connection = src
-		usr << "You place \the [VP] in \the [axis]."
+		to_chat(usr, "You place \the [VP] in \the [axis].")
 
 /obj/structure/vehicleparts/frame/CheckExit(atom/movable/O as mob|obj, target as turf)
 	var/chdir = get_dir(O.loc, target)
@@ -267,9 +267,9 @@
 	else if (istype(I,/obj/item/weapon/wrench) && !axis)
 		anchored = !anchored
 		if (anchored)
-			H << "You fix the frame in place."
+			to_chat(H, "You fix the frame in place.")
 		else
-			H << "You release the frame."
+			to_chat(H, "You release the frame.")
 		return
 	else if (istype(I,/obj/item/weapon/key))
 		var/obj/item/weapon/key/K = I
@@ -373,7 +373,7 @@
 					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 				update_icon()
 			else
-				H << "This key does not match this lock!"
+				to_chat(H, "This key does not match this lock!")
 				return
 		else
 			if(istype(src, /obj/structure/vehicleparts/frame/ship )) //adds routines to lock the boat
@@ -386,15 +386,15 @@
 				else if(src.w_front[1] == "boat_port2")
 					src.w_front[6] = TRUE
 				else
-					H << "This is not a door."
+					to_chat(H, "This is not a door.")
 					return
 				doorcode = K.code
-				H << "You assign this key to the lock."
+				to_chat(H, "You assign this key to the lock.")
 				return
 			else
 				if (src.w_front[6] || src.w_back[6] || src.w_left[6] || src.w_right[6])
 					doorcode = K.code		//Leave it as before if its not a boat
-					H << "You assign this key to the lock."
+					to_chat(H, "You assign this key to the lock.")
 				return
 	else
 		..()

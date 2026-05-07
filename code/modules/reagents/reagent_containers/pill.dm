@@ -62,9 +62,9 @@
 
 		if (target.is_open_container() && target.reagents)
 			if (!target.reagents.total_volume)
-				user << "<span class='notice'>[target] is empty. Can't dissolve \the [src].</span>"
+				to_chat(user, "<span class='notice'>[target] is empty. Can't dissolve \the [src].</span>")
 				return
-			user << "<span class='notice'>You dissolve \the [src] in [target].</span>"
+			to_chat(user, "<span class='notice'>You dissolve \the [src] in [target].</span>")
 
 			user.attack_log += text("\[[time_stamp()]\] <font color='red'>Spiked \a [target] with a pill. Reagents: [reagentlist()]</font>")
 			msg_admin_attack("[user.name] ([user.ckey]) spiked \a [target] with a pill. Reagents: [reagentlist()] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey, target) //Should target actually be target (key_name_admin(target)) ??
@@ -166,7 +166,7 @@
 /obj/item/weapon/reagent_containers/pill/cocaine/attack_hand(mob/living/user)
 	if (src == user.l_hand || src == user.r_hand)
 		if (reagents.get_reagent_amount("cocaine") >= 10)
-			user << "You split a line from the [src]."
+			to_chat(user, "You split a line from the [src].")
 			reagents.remove_reagent("cocaine",5)
 			var/obj/item/weapon/reagent_containers/pill/cocaine_line/coca = new/obj/item/weapon/reagent_containers/pill/cocaine_line(user)
 			user.put_in_hands(coca)
@@ -177,7 +177,7 @@
 
 /obj/item/weapon/reagent_containers/pill/cocaine/attackby(var/obj/item/I, var/mob/user)
 	if (istype(I, /obj/item/weapon/reagent_containers/pill/cocaine_line))
-		user << "You put \the [I] into \the [src]."
+		to_chat(user, "You put \the [I] into \the [src].")
 		reagents.add_reagent("cocaine",I.reagents.get_reagent_amount("cocaine"))
 		vol = reagents.get_reagent_amount("cocaine")/25
 		desc = "A pile of very pure cocaine. Contains [vol] grams."

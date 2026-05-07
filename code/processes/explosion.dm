@@ -209,9 +209,9 @@
 	if(islist(work_queue))
 		work_queue += data
 
-/process/explosion/statProcess()
-	..()
-	stat(null, "[work_queue.len] datums in explosion queue")
+/process/explosion/statProcess(client/C)
+	..(C)
+	C.add_stat("[work_queue.len] datums in explosion queue")
 
 /process/explosion/htmlProcess()
 	return ..() + "[work_queue.len] datums in explosion queue"

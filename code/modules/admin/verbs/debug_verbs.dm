@@ -33,7 +33,7 @@ var/global/say_disabled = FALSE
 	set category = "Mapping"
 	set name = "Disable all communication verbs"
 
-	usr << "<span class = 'red'>This proc is code-disabled.</span>"
+	to_chat(usr, "<span class = 'red'>This proc is code-disabled.</span>")
 
 	/*say_disabled = !say_disabled
 	if (say_disabled)
@@ -48,7 +48,7 @@ var/global/movement_disabled_exception //This is the client that calls the proc,
 	set category = "Mapping"
 	set name = "Disable all movement"
 
-	usr << "<span class = 'red'>This proc is code-disabled.</span>"
+	to_chat(usr, "<span class = 'red'>This proc is code-disabled.</span>")
 
 	/*movement_disabled = !movement_disabled
 	if (movement_disabled)
@@ -60,7 +60,7 @@ var/global/movement_disabled_exception //This is the client that calls the proc,
 /client/proc/see_world_realtime()
 	set category = "Debug"
 	set name = "See World Realtime"
-	usr << num2text(world.realtime, 20)
+	to_chat(usr, num2text(world.realtime, 20))
 
 /client/proc/see_processes()
 	set category = "Debug"

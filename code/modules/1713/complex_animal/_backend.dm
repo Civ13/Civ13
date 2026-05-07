@@ -36,7 +36,7 @@
 	if (friendly_mobs[H.name] && friendly_mobs[H.name][1] == H)
 		if (friendly_mobs[H.name][2] >= tameminimum && !owner && !tamed)
 			owner = H
-			H << "The [src] really likes you! It now sees you as it's owner!"
+			to_chat(H, "The [src] really likes you! It now sees you as it's owner!")
 			owner = H
 			if (map.civilizations)
 				faction = H.civilization
@@ -57,18 +57,18 @@
 				if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat))
 					var/obj/item/weapon/reagent_containers/food/snacks/meat/MT = W
 					if (MT.rotten)
-						H << "The meat is rotten! \The [src] doesn't want it..."
+						to_chat(H, "The meat is rotten! \The [src] doesn't want it...")
 						taming(H, -1)
 						return
 					else if (MT.reagents.has_reagent("protein",1))
 						nutrition += 18*MT.reagents.get_reagent_amount("protein")
-						H << "\The [src] eats \the [MT] and wags it's tail in happiness!"
+						to_chat(H, "\The [src] eats \the [MT] and wags it's tail in happiness!")
 						taming(H, 5)
 						H.drop_from_inventory(W)
 						qdel(W)
 						return
 				else
-					H << "\The [src] sniffs the [W] but does not eat it."
+					to_chat(H, "\The [src] sniffs the [W] but does not eat it.")
 					return
 	..(W, H)
 	onAttackedBy(H, W)

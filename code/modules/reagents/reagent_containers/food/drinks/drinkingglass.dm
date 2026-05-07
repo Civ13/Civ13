@@ -68,9 +68,9 @@
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/cocktail_stuff))
 		if (umbrella || cocktail_food)
-			user << "<span class='warning'>There's not enough room to add [W.name]!</span>"
+			to_chat(user, "<span class='warning'>There's not enough room to add [W.name]!</span>")
 			return
-		user << "<span class='notice'>You add [W.name] to [name].</span>"
+		to_chat(user, "<span class='notice'>You add [W.name] to [name].</span>")
 		if (istype(W, /obj/item/cocktail_stuff/maraschino_cherry))
 			cocktail_food = "cherry"
 		else if (istype(W, /obj/item/cocktail_stuff/cocktail_olive))
@@ -82,16 +82,16 @@
 		return
 	else if (W && W.reagents && istype(W, /obj/item/weapon/reagent_containers) && W.is_open_container() && W.reagents.has_reagent("sodiumchloride"))
 		if (salted)
-			user << "<span class='warning'>The rim of [name] is already salted!</span>"
+			to_chat(user, "<span class='warning'>The rim of [name] is already salted!</span>")
 			return
 		else if (W.reagents.get_reagent_amount("sodiumchloride") >= 5)
-			user << "<span class='notice'>You salt the rim of [name].</span>"
+			to_chat(user, "<span class='notice'>You salt the rim of [name].</span>")
 			W.reagents.remove_reagent("sodiumchloride", 5)
 			salted = TRUE
 			update_icon()
 			return
 		else
-			user << "<span class='warning'>There's not enough salt in [W.name] to salt the rim!</span>"
+			to_chat(user, "<span class='warning'>There's not enough salt in [W.name] to salt the rim!</span>")
 			return
 	else
 		return ..()
@@ -103,7 +103,7 @@
 	if (cocktail_food)
 		actions += "Remove the [cocktail_food]"
 	if (!actions.len)
-		user << "<span class='warning'>You can't think of anything to do with the glass.</span>"
+		to_chat(user, "<span class='warning'>You can't think of anything to do with the glass.</span>")
 		return
 
 	var/action = input(user, "What do you want to do with [src]?") as null|anything in actions

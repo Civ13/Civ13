@@ -39,7 +39,7 @@
 	if (istype(W,/obj/item/lightbulb) && !lamp_inside)
 		var/obj/item/lightbulb/L = W
 		if (!L.broken && L.ltype == ltype)
-			user << "You put the lightbulb in."
+			to_chat(user, "You put the lightbulb in.")
 			qdel(W)
 			lamp_inside = TRUE
 			lamp_broken = FALSE
@@ -48,23 +48,23 @@
 			return
 	if (istype(W,/obj/item/weapon/wrench) && !not_movable)
 		if (powersource)
-			user << "<span class='notice'>Remove the cables first.</span>"
+			to_chat(user, "<span class='notice'>Remove the cables first.</span>")
 			return
 		if (istype(src, /obj/structure/engine))
 			var/obj/structure/engine/EN = src
 			if (!isemptylist(EN.connections))
-				user << "<span class='notice'>Remove the cables first.</span>"
+				to_chat(user, "<span class='notice'>Remove the cables first.</span>")
 				return
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
 		anchored = !anchored
 		return
 	if (!anchored)
-		user << "<span class='notice'>Fix the lamp in place with a wrench first.</span>"
+		to_chat(user, "<span class='notice'>Fix the lamp in place with a wrench first.</span>")
 		return
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (powersource)
-			user << "There's already a cable connected here! Split it further from \the [src]."
+			to_chat(user, "There's already a cable connected here! Split it further from \the [src].")
 			return
 		var/obj/item/stack/cable_coil/CC = W
 		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
@@ -88,7 +88,7 @@
 						NCOO.connections += powersource
 					if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
 						powersource.connections += NCOO
-					user << "You connect the two cables."
+					to_chat(user, "You connect the two cables.")
 
 			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
 				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
@@ -96,7 +96,7 @@
 						NCOC.connections += powersource
 					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
 						powersource.connections += NCOC
-		user << "You connect the cable to \the [src]."
+		to_chat(user, "You connect the cable to \the [src].")
 	else
 		..()
 
@@ -199,7 +199,7 @@
 /obj/structure/lamp/attack_hand(mob/living/human/user as mob)
 	if (lamp_inside)
 		if (lamp_broken)
-			user << "You remove the broken lightbulb."
+			to_chat(user, "You remove the broken lightbulb.")
 			lamp_inside = FALSE
 			lamp_broken = FALSE
 			var/obj/item/lightbulb/broken/LP = new/obj/item/lightbulb/broken
@@ -209,7 +209,7 @@
 			user.put_in_active_hand(LP)
 
 		else
-			user << "You remove the lightbulb."
+			to_chat(user, "You remove the lightbulb.")
 			lamp_inside = FALSE
 			var/obj/item/lightbulb/LP = new/obj/item/lightbulb
 			LP.ltype = ltype

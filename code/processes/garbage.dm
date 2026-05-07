@@ -140,10 +140,10 @@ var/list/delayed_garbage = list()
 	destroyed -= "\ref[A]" // Removing any previous references that were GC'd so that the current object will be at the end of the list.
 	destroyed["\ref[A]"] = world.time+1
 
-/process/garbage/statProcess()
-	..()
-	stat(null, "[garbage_collect ? "On" : "Off"], [destroyed.len] queued")
-	stat(null, "Dels: [total_dels], [soft_dels] soft, [hard_dels] hard, [tick_dels] last run")
+/process/garbage/statProcess(client/C)
+	..(C)
+	C.add_stat("[garbage_collect ? "On" : "Off"], [destroyed.len] queued")
+	C.add_stat("Dels: [total_dels], [soft_dels] soft, [hard_dels] hard, [tick_dels] last run")
 
 /process/garbage/htmlProcess()
 	return ..() + "[garbage_collect ? "On" : "Off"], [destroyed.len] queued<br>Dels: [total_dels], [soft_dels] soft, [hard_dels] hard, [tick_dels] last run"

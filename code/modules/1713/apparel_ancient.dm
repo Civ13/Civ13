@@ -227,13 +227,13 @@
 			item_state = "ainu"
 			worn_state = "ainu"
 			item_state_slots["slot_w_head"] = "ainu"
-			usr << "<span class = 'danger'>You unfold your bandana.</span>"
+			to_chat(usr, "<span class = 'danger'>You unfold your bandana.</span>")
 			folded = FALSE
 		else if (!folded)
 			item_state = "ainu_smol"
 			worn_state = "ainu_smol"
 			item_state_slots["slot_w_head"] = "ainu_smol"
-			usr << "<span class = 'danger'>You fold your bandana.</span>"
+			to_chat(usr, "<span class = 'danger'>You fold your bandana.</span>")
 			folded = TRUE
 	update_clothing_icon()
 
@@ -939,7 +939,7 @@
 	if (ishuman(usr))
 		var/mob/living/human/H = usr
 		if (H.head)
-			usr << "<span class = 'warning'>You cannot put your hood up, the [H.head] is in the way!</span>"
+			to_chat(usr, "<span class = 'warning'>You cannot put your hood up, the [H.head] is in the way!</span>")
 			return
 	if (hood)
 		icon_state = "fur_jacket[colorn]"
@@ -948,7 +948,7 @@
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 		item_state_slots["slot_wear_suit"] = "fur_jacket[colorn]"
-		usr << "<span class = 'danger'>You take off your coat's hood.</span>"
+		to_chat(usr, "<span class = 'danger'>You take off your coat's hood.</span>")
 		update_icon()
 		hood = FALSE
 		usr.update_inv_head(1)
@@ -961,7 +961,7 @@
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
 		item_state_slots["slot_wear_suit"] = "fur_jacket[colorn]h"
-		usr << "<span class = 'danger'>You cover your head with your coat's hood.</span>"
+		to_chat(usr, "<span class = 'danger'>You cover your head with your coat's hood.</span>")
 		update_icon()
 		hood = TRUE
 		usr.update_inv_head(1)
@@ -1134,7 +1134,7 @@
 		worn_state = unusedstate
 		body_parts_covered = 0
 		flags_inv = 0
-		usr << "<span class = 'danger'>You adjust the [name].</span>"
+		to_chat(usr, "<span class = 'danger'>You adjust the [name].</span>")
 		update_icon()
 		toggled = FALSE
 		usr.update_inv_wear_mask(1)
@@ -1145,7 +1145,7 @@
 		worn_state = usedstate
 		body_parts_covered = partscovered
 		flags_inv = HIDEFACE
-		usr << "<span class = 'danger'>You adjust the [name].</span>"
+		to_chat(usr, "<span class = 'danger'>You adjust the [name].</span>")
 		update_icon()
 		toggled = TRUE
 		usr.update_inv_wear_mask(1)

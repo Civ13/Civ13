@@ -95,7 +95,7 @@
 			J.spawn_location = "JoinLateRed_Reinforcement"
 	switch (faction)
 		if (REDFACTION)
-			to_chat(world, sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3))
+			world << sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
 			return "<font size=4 color='red'>The battle has begun!</font>"
 		else
 			return ""
@@ -138,7 +138,7 @@
 		for (var/mob/living/simple_animal/civilian/CVL in T)
 			if(CVL.stat != DEAD)
 				if(istype(CVL, /mob/living/simple_animal/civilian/greenistani_ambassador) && CVL.stat != DEAD)
-					world << "<font size=4><font color='blue'><b>Blugoslavia</b></font> has sucessfully evacuated the Greenistani Ambassador!</font></font>"
+					to_chat(world, "<font size=4><font color='blue'><b>Blugoslavia</b></font> has sucessfully evacuated the Greenistani Ambassador!</font></font>")
 				else
 					civilians_evacuated["Blugoslavia"]++
 				qdel(CVL)
@@ -146,7 +146,7 @@
 		for (var/mob/living/simple_animal/civilian/CVL in T)
 			if(CVL.stat != DEAD)
 				if(istype(CVL, /mob/living/simple_animal/civilian/greenistani_ambassador))
-					world << "<font size=4><font color='red'><b>Redmenia</b></font> has sucessfully evacuated the Greenistani Ambassador!</font></font>"
+					to_chat(world, "<font size=4><font color='red'><b>Redmenia</b></font> has sucessfully evacuated the Greenistani Ambassador!</font></font>")
 				else
 					civilians_evacuated["Redmenia"]++
 				qdel(CVL)	
@@ -320,7 +320,7 @@
 			return FALSE
 		ticker.finished = TRUE
 		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
@@ -331,10 +331,10 @@
 		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
 		if (current_winner && current_loser)
 			message = "The battle is over! The [current_winner] was victorious [current_loser][battle_name ? "in the [battle_name]" : ""]!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		game_log(message)
-		world << "<big><b>Civilians Rescued:</b> <font color='blue'>Blugoslavia</font> [civilians_evacuated["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_evacuated["Redmenia"]]</big>"
-		world << "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
+		to_chat(world, "<big><b>Civilians Rescued:</b> <font color='blue'>Blugoslavia</font> [civilians_evacuated["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_evacuated["Redmenia"]]</big>")
+		to_chat(world, "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>")
 		game_log("Civilians Rescued: Blugoslavia [civilians_evacuated["Blugoslavia"]], Redmenia [civilians_evacuated["Redmenia"]]")
 		game_log("Civilians Killed: Blugoslavia [civilians_killed["Blugoslavia"]], Redmenia [civilians_killed["Redmenia"]]")
 		game_log("Scores: [scores["Blugoslavia"]], [scores["Redmenia"]]")
@@ -379,7 +379,7 @@
 
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The [current_winner] has lost control of the Objective!</font>"
+			to_chat(world, "<font size = 3>The [current_winner] has lost control of the Objective!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -454,7 +454,7 @@ var/no_loop_ca = FALSE
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Redmenians</b> have retaken control over the objective!</font>"
+			to_chat(world, "<font size = 3>The <b>Redmenians</b> have retaken control over the objective!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -515,7 +515,7 @@ var/no_loop_ca = FALSE
 	for (var/mob/M in player_list)
 		if (!new_player_mob_list.Find(M))
 			M.client << uploaded_sound
-			M << "<font size=4>You hear the blood-curdling sound of rocket artillery being fired!</font>"
+			to_chat(M, "<font size=4>You hear the blood-curdling sound of rocket artillery being fired!</font>")
 	spawn(40)
 		for (var/i = 1, i <= strikenum, i++)
 			spawn(i*4)
@@ -587,10 +587,10 @@ var/no_loop_ca = FALSE
 		switch(head_nationality)
 			if("Blugoslavia")
 				AW.scores["Blugoslavia"] += 1
-				user << "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>"
+				to_chat(user, "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>")
 			if("Redmenia")
 				AW.scores["Redmenia"] += 1
-				user << "Total heads inside: <b>[AW.scores["Redmenia"]]</b>"
+				to_chat(user, "Total heads inside: <b>[AW.scores["Redmenia"]]</b>")
 		return
 
 /obj/structure/altar/heads/examine(mob/user, distance)
@@ -648,25 +648,25 @@ var/no_loop_ca = FALSE
 		ring_phone(tgtnum,phonenumber, src, user)
 		spawn(200)
 			if (!connected || !origincall)
-				user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum]."
+				to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum].")
 				return
 	else if (connected)
 		connected = FALSE
 		if (origincall)
-			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
+			to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone.")
 			if (ishuman(origincall.loc))
-				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone."
+				to_chat(origincall.loc, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
 			else
 				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
 			origincall.connected = FALSE
 			origincall.origincall = null
 			origincall = null
 	else if (ringing && !ringingnum)
-		user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
+		to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone.")
 		ringing = FALSE
 		if (origincall)
 			if (ishuman(origincall.loc))
-				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone."
+				to_chat(origincall.loc, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
 			else
 				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
 			origincall.origincall = null
@@ -679,8 +679,8 @@ var/no_loop_ca = FALSE
 			origincall.connected = phonenumber
 			origincall.ringing = FALSE
 			origincall.origincall = src
-			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You pick up the phone."
+			to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You pick up the phone.")
 			if (ishuman(origincall.loc))
-				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone."
+				to_chat(origincall.loc, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone.")
 			else
 				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone.")

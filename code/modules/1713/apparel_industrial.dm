@@ -77,13 +77,13 @@
 			item_state = "union_cap"
 			worn_state = "union_cap"
 			item_state_slots["slot_head"] = "union_cap"
-			usr << "<span class = 'danger'>you adjust your cap's band.</span>"
+			to_chat(usr, "<span class = 'danger'>you adjust your cap's band.</span>")
 			adjusted = FALSE
 		else if (!adjusted)
 			item_state = "union_capad"
 			worn_state = "union_capad"
 			item_state_slots["slot_head"] = "union_capad"
-			usr << "<span class = 'danger'>you adjust your cap's band.</span>"
+			to_chat(usr, "<span class = 'danger'>you adjust your cap's band.</span>")
 			adjusted = TRUE
 	update_clothing_icon()
 
@@ -117,13 +117,13 @@
 			item_state = "confederate_cap"
 			worn_state = "confederate_cap"
 			item_state_slots["slot_head"] = "confederate_cap"
-			usr << "<span class = 'danger'>you adjust your cap's band.</span>"
+			to_chat(usr, "<span class = 'danger'>you adjust your cap's band.</span>")
 			adjusted = FALSE
 		else if (!adjusted)
 			item_state = "confederate_capad"
 			worn_state = "confederate_capad"
 			item_state_slots["slot_head"] = "confederate_capad"
-			usr << "<span class = 'danger'>you adjust your cap's band.</span>"
+			to_chat(usr, "<span class = 'danger'>you adjust your cap's band.</span>")
 			adjusted = TRUE
 	update_clothing_icon()
 
@@ -203,10 +203,10 @@
 
 /obj/item/weapon/watch/pocket/examine(mob/user)
 	..()
-	user << "<big>It is now [clock_time()].</big>"
+	to_chat(user, "<big>It is now [clock_time()].</big>")
 
 /obj/item/weapon/watch/pocket/attack_self(var/mob/living/L)
-	L << "<big>It is now [clock_time()].</big>"
+	to_chat(L, "<big>It is now [clock_time()].</big>")
 	return
 
 /* Industrial Uniforms*/
@@ -548,7 +548,7 @@ obj/item/clothing/under/confederate_uniform/New()
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 		item_state_slots["slot_wear_suit"] = "kozhanka[colorn]"
-		usr << "<span class = 'danger'>You take off your coat's hood.</span>"
+		to_chat(usr, "<span class = 'danger'>You take off your coat's hood.</span>")
 		update_icon()
 		hood = FALSE
 		usr.update_inv_head(1)
@@ -561,7 +561,7 @@ obj/item/clothing/under/confederate_uniform/New()
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
 		item_state_slots["slot_wear_suit"] = "kozhankah[colorn]"
-		usr << "<span class = 'danger'>You cover your head with your coat's hood.</span>"
+		to_chat(usr, "<span class = 'danger'>You cover your head with your coat's hood.</span>")
 		update_icon()
 		hood = TRUE
 		usr.update_inv_head(1)

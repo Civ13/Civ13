@@ -174,7 +174,7 @@
 /obj/item/weapon/gun/attack(atom/A, mob/living/user, def_zone)
 	var/mob/living/human/H = user
 	if (istype(H) && (H.faction_text == INDIANS) && (map && (!map.ID == MAP_AFRICAN_WARLORDS || !map.ID == MAP_TADOJSVILLE)))
-		user << SPAN_DANGER("You have no idea how this thing works.")
+		to_chat(user, SPAN_DANGER("You have no idea how this thing works."))
 		return
 	if (A == user)
 		var/tgt = user.targeted_organ
@@ -288,7 +288,7 @@
 
 		if (world.time < next_fire_time)
 			if (world.time % 3) //to prevent spam
-				user << SPAN_WARNING("[src] is not ready to fire again!")
+				to_chat(user, SPAN_WARNING("[src] is not ready to fire again!"))
 			return
 
 	//unpack firemode data
@@ -551,7 +551,7 @@
 			user.death()
 			M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> shot themselves in the mouth (committed suicide)"
 		else
-			user << "<span class = 'notice'>Ow...</span>"
+			to_chat(user, "<span class = 'notice'>Ow...</span>")
 			user.apply_effect(110,AGONY,0)
 
 		if (istype(src, /obj/item/weapon/gun/projectile))
@@ -610,7 +610,7 @@
 			if (in_chamber.damage_type != HALLOSS)
 				user.apply_damage(in_chamber.damage*damage_multiplier, in_chamber.damage_type, tgt, used_weapon = "Point blank shot in the [user.targeted_organ] with \a [in_chamber]", sharp=1)
 			else
-				user << "<span class = 'notice'>Ow...</span>"
+				to_chat(user, "<span class = 'notice'>Ow...</span>")
 				user.apply_effect(110,AGONY,0)
 
 
@@ -632,15 +632,15 @@
 		var/health_percentage = (health/maxhealth)*100
 		switch (health_percentage)
 			if (-100 to 21)
-				user << "<font color='#7f0000'>Is pratically falling apart!</font>"
+				to_chat(user, "<font color='#7f0000'>Is pratically falling apart!</font>")
 			if (22 to 49)
-				user << "<font color='#a74510'>Seems to be in very bad condition.</font>"
+				to_chat(user, "<font color='#a74510'>Seems to be in very bad condition.</font>")
 			if (50 to 69)
-				user << "<font color='#cccc00'>Seems to be in a rough condition.</font>"
+				to_chat(user, "<font color='#cccc00'>Seems to be in a rough condition.</font>")
 			if (70 to 84)
-				user << "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>"
+				to_chat(user, "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>")
 			if (85 to 200)
-				user << "<font color='#326327'>Seems to be in very good condition.</font>"
+				to_chat(user, "<font color='#326327'>Seems to be in very good condition.</font>")
 
 	if (firemodes.len > 1)
 		var/datum/firemode/current_mode = firemodes[sel_mode]
@@ -728,11 +728,11 @@
 	if (!G || !istype(G))
 		G = get_inactive_hand()
 		if (!G || !istype(G))
-			src << "<span class = 'red'>You can't unload magazine from anything in your hands.</span>"
+			to_chat(src, "<span class = 'red'>You can't unload magazine from anything in your hands.</span>")
 			return
 
 	if (G.load_method == MAGAZINE && G.ammo_magazine == null)
-		src << "<span class = 'red'>The [G.name] is already unloaded.</span>"
+		to_chat(src, "<span class = 'red'>The [G.name] is already unloaded.</span>")
 		return
 	if (G && G.ammo_magazine)
 		G.ammo_magazine.loc = get_turf(loc)

@@ -119,7 +119,7 @@
 							count++
 					if (count == 0)
 						message = "The battle is over! All the <b>HVT</b>s are dead!"
-						world << "<font size = 4 color='yellow'><span class = 'notice'>[message]</span></font>"
+						to_chat(world, "<font size = 4 color='yellow'><span class = 'notice'>[message]</span></font>")
 						win_condition_spam_check = TRUE
 						ticker.finished = TRUE
 						next_win = -1
@@ -136,7 +136,7 @@
 						return FALSE
 					ticker.finished = TRUE
 					message = "The <b>Soviets</b> have reached [sov_points] points and won!"
-					world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+					to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 					show_global_battle_report(null)
 					win_condition_spam_check = TRUE
 					return FALSE
@@ -145,7 +145,7 @@
 						return FALSE
 					ticker.finished = TRUE
 					message = "The <b>Germans</b> have reached [ger_points] points and won!"
-					world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+					to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 					show_global_battle_report(null)
 					win_condition_spam_check = TRUE
 					return FALSE
@@ -157,14 +157,14 @@
 					return FALSE
 				ticker.finished = TRUE
 				message = "The Militia has managed to defend the Parliament! The Russian Army retreats!"
-				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+				to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 				show_global_battle_report(null)
 				win_condition_spam_check = TRUE
 				return FALSE
 			if ((current_winner && current_loser && world.time > next_win) && no_loop_capitol == FALSE)
 				ticker.finished = TRUE
 				message = "The Russian Army has captured the Parliament!"
-				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+				to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 				show_global_battle_report(null)
 				win_condition_spam_check = TRUE
 				no_loop_capitol = TRUE
@@ -207,7 +207,7 @@
 						current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 			else
 				if (current_win_condition != no_winner && current_winner && current_loser)
-					world << "<font size = 3>The Militia has recaptured the Parliament!</font>"
+					to_chat(world, "<font size = 3>The Militia has recaptured the Parliament!</font>")
 					current_winner = null
 					current_loser = null
 				next_win = -1
@@ -224,17 +224,17 @@
 				message = "The round has ended!"
 				if (scores["Militia"] > scores["Russian Army"])
 					message = "The battle is over! The <b>Militia</b> was victorious over the <b>Russian Army</b>!"
-					world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+					to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 					win_condition_spam_check = TRUE
 					return FALSE
 				else if (scores["Russian Army"] > scores["Militia"])
 					message = "The battle is over! The <b>Russian Army</b> was victorious over the <b>Militia</b>!"
-					world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+					to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 					win_condition_spam_check = TRUE
 					return FALSE
 				else
 					message = "The battle has ended in a <b>stalemate</b>!"
-					world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+					to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 					win_condition_spam_check = TRUE
 					return FALSE
 			last_win_condition = win_condition.hash
@@ -267,9 +267,9 @@
 			sov_points++
 		if (a1_control != prev_control)
 			if (prev_control != "none")
-				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Central Processing</b>!</big>"
+				to_chat(world, "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Central Processing</b>!</big>")
 			else
-				world << "<big><font color='[cust_color]'>[a1_control]</font> captured the <b>Central Processing</b>!</big>"
+				to_chat(world, "<big><font color='[cust_color]'>[a1_control]</font> captured the <b>Central Processing</b>!</big>")
 		c1 = 0
 		c2 = 0
 		prev_control = a2_control
@@ -292,14 +292,14 @@
 			sov_points++
 		if (a2_control != prev_control)
 			if (prev_control != "none")
-				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Parliamental Hall</b>!</big>"
+				to_chat(world, "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Parliamental Hall</b>!</big>")
 			else
-				world << "<big><font color='[cust_color]'>[a2_control]</font> captured the <b>Parliamental Hall</b>!</big>"
-	world << "<big><b>Current Points:</b></big>"
-	world << "<big>Militia: [scores["Militia"]]</big>"
-	world << "<big>Russian Army: [scores["Russian Army"]]</big>"
-//	world << "<big>Militia: [ger_points]</big>"
-//	world << "<big>Soviet Army: [sov_points]</big>"
+				to_chat(world, "<big><font color='[cust_color]'>[a2_control]</font> captured the <b>Parliamental Hall</b>!</big>")
+	to_chat(world, "<big><b>Current Points:</b></big>")
+	to_chat(world, "<big>Militia: [scores["Militia"]]</big>")
+	to_chat(world, "<big>Russian Army: [scores["Russian Army"]]</big>")
+//	to_chat(world, "<big>Militia: [ger_points]</big>")
+//	to_chat(world, "<big>Soviet Army: [sov_points]</big>")
 	spawn(300)
 		points_check()
 

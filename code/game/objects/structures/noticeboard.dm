@@ -28,9 +28,9 @@
 			O.loc = src
 			notices++
 			icon_state = "nboard0[notices]"	//update sprite
-			user << "<span class='notice'>You pin the paper to the noticeboard.</span>"
+			to_chat(user, "<span class='notice'>You pin the paper to the noticeboard.</span>")
 		else
-			user << "<span class='notice'>You reach to pin your paper to the board but hesitate. You are certain your paper will not be seen among the many others already attached.</span>"
+			to_chat(user, "<span class='notice'>You reach to pin your paper to the board but hesitate. You are certain your paper will not be seen among the many others already attached.</span>")
 	else
 		..()
 /obj/structure/noticeboard/attack_hand(var/mob/user)
@@ -76,7 +76,7 @@
 					add_fingerprint(usr)
 					P.attackby(usr.l_hand, usr)
 				else
-					usr << "<span class='notice'>You'll need something to write with!</span>"
+					to_chat(usr, "<span class='notice'>You'll need something to write with!</span>")
 	if (href_list["read"])
 		var/obj/item/weapon/paper/P = locate(href_list["read"])
 		if ((P && P.loc == src))
@@ -135,7 +135,7 @@
 
 /obj/structure/mailbox/attackby(var/obj/item/weapon/paper/W as obj, var/mob/living/human/H as mob)
 	if (receive_only == TRUE)
-		H << "This is only for received letters! It wont be delivered if you put it here!"
+		to_chat(H, "This is only for received letters! It wont be delivered if you put it here!")
 		return
 	else
 		if (istype(W, /obj/item/weapon/paper))
@@ -156,8 +156,8 @@
 					if(W.ico)
 						NP.ico = W.ico
 					qdel(W)
-					H << "Your message has been sent and will be delivered soon."
+					to_chat(H, "Your message has been sent and will be delivered soon.")
 			return
 		else
-			H << "You cannot send this by mail. Only paper is accepted."
+			to_chat(H, "You cannot send this by mail. Only paper is accepted.")
 			return

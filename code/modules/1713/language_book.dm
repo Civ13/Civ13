@@ -27,10 +27,10 @@
 				if (i == lang2)
 					known2 = TRUE
 			if(!known1 && !known2)
-				user << "<span class = 'warning'>You can't read a language book without knowing one of the languages!</span>"
+				to_chat(user, "<span class = 'warning'>You can't read a language book without knowing one of the languages!</span>")
 				return
 			if(known1 && known2)
-				user << "<span class = 'warning'>You can't read a language book if you already know both languages!</span>"
+				to_chat(user, "<span class = 'warning'>You can't read a language book if you already know both languages!</span>")
 				return
 			var/datum/language/langtolearn = lang1
 			if (known1)
@@ -41,15 +41,15 @@
 				H.add_language(langtolearn.name, FALSE)
 				H.add_note("Known Languages", "[langtolearn.name]")
 	else
-		user << "<span class = 'warning'>You can't read a language book with nothing in it!</span>"
+		to_chat(user, "<span class = 'warning'>You can't read a language book with nothing in it!</span>")
 
 /obj/item/weapon/book/language_book/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if(istype(W, /obj/item/weapon/pen))
 		if(user.languages.len < 2)
-			user << "<span class = 'warning'>You can't write a language book if you only know one language!</span>"
+			to_chat(user, "<span class = 'warning'>You can't write a language book if you only know one language!</span>")
 			return
 		if(written)
-			user << "<span class = 'warning'>You can't write a language book that has already been written in!</span>"
+			to_chat(user, "<span class = 'warning'>You can't write a language book that has already been written in!</span>")
 			return
 		var/list/langcopy = user.languages.Copy() + "Cancel"
 		var/datum/language/language1 = WWinput(user, "What will your 1st language to translate be?", "Writing Translations", "text", langcopy)

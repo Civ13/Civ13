@@ -426,7 +426,7 @@
 	if (blockedhit == FALSE)
 		if (silenced)
 			if(hit_zone)
-				target_mob << "<span class='danger'>You've been hit in the [parse_zone(hit_zone)] by \the [src]!</span>"
+				to_chat(target_mob, "<span class='danger'>You've been hit in the [parse_zone(hit_zone)] by \the [src]!</span>")
 		else
 			if(hit_zone)
 				visible_message("<span class='danger'>\The [target_mob] is hit in the [parse_zone(hit_zone)]!</span>")//X has fired Y is now given by the guns so you cant tell who shot you if you could not see the shooter

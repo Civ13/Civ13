@@ -476,7 +476,7 @@
 		// check for exploits
 		for (var/bad in paper_blacklist)
 			if (findtext(t,bad))
-				usr << "<span class = 'notice'>You think to yourself, \"Hm.. this is only paper...\"</span>"
+				to_chat(usr, "<span class = 'notice'>You think to yourself, \"Hm.. this is only paper...\"</span>")
 				log_admin("PAPER: [usr] ([usr.ckey]) tried to use forbidden word in [src]: [bad].")
 				message_admins("PAPER: [usr] ([usr.ckey]) tried to use forbidden word in [src]: [bad].", usr.ckey)
 				return
@@ -543,7 +543,7 @@
 				loc = get_turf(h_user)
 				if (h_user.client)	h_user.client.screen -= src
 				h_user.put_in_hands(B)
-		user << "<span class='notice'>You clip the [P.name] to [(name == "paper") ? "the paper" : name].</span>"
+		to_chat(user, "<span class='notice'>You clip the [P.name] to [(name == "paper") ? "the paper" : name].</span>")
 		loc = B
 		P.loc = B
 

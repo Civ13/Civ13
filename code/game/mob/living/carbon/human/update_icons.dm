@@ -507,7 +507,7 @@ var/global/list/damage_icon_parts = list()
 		if (HUDinv.slot_id == slot_id)
 			return (HUDinv.invisibility == 101) ? null : HUDinv.screen_loc
 //	world.log << "DEBUG: [src] tried to find_inv_position for [slot_id], but does not have that slot!"
-//	src << "Some problem has occured, change UI style or notify the devs."
+//	to_chat(src, "Some problem has occured, change UI style or notify the devs.")
 	return "7,7"
 
 

@@ -558,7 +558,7 @@ obj/structure/religious/monument
 		playsound(src,'sound/effects/shovelling.ogg',100,1)
 		if (do_after(user, 100, src))
 			if (open)
-				user << "You fill up \the [src]."
+				to_chat(user, "You fill up \the [src].")
 				open = FALSE
 				icon_state = "grave_filled"
 				name = "grave"
@@ -597,7 +597,7 @@ obj/structure/religious/monument
 		playsound(src,'sound/effects/shovelling.ogg',100,1)
 		if (do_after(user, 100, src))
 			if (!open)
-				user << "You uncover \the [src]."
+				to_chat(user, "You uncover \the [src].")
 				open = TRUE
 				icon_state = "grave_overlay"
 				name = "open grave"
@@ -761,7 +761,7 @@ obj/structure/religious/monument
 							HH.disease_type = "plague"
 						HH.disease_progression = 0
 						diseasedone = TRUE
-//				world << "You feel a chill down your spine, something evil is close by..."
+//				to_chat(world, "You feel a chill down your spine, something evil is close by...")
 //				create_mobs()
 		//angry
 		else if (power >= 50 && power < 100)
@@ -778,7 +778,7 @@ obj/structure/religious/monument
 		//neutral
 		else if (power >= 100 && power < 150)
 			//nothing
-			world << ""
+			to_chat(world, "")
 
 		//pleased
 		else if (power >= 150 && power < 250)
@@ -933,10 +933,10 @@ obj/structure/religious/monument
 					power = (power - 150)
 					return
 				else
-					user << "Not enough favour points."
+					to_chat(user, "Not enough favour points.")
 					return
 	else
-		user << "You failed to communicate with the gods. You need drugs to connect yourself with the astral plane."
+		to_chat(user, "You failed to communicate with the gods. You need drugs to connect yourself with the astral plane.")
 		return
 
 ////////////////////STATUES///////////////////////

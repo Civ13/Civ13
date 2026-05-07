@@ -24,7 +24,7 @@
 	not_disassemblable = FALSE
 /obj/structure/table_frame/attackby(obj/item/I, mob/user, params)
 	if (istype(I, /obj/item/weapon/wrench))
-		user << "<span class='notice'>You start disassembling [src]...</span>"
+		to_chat(user, "<span class='notice'>You start disassembling [src]...</span>")
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
 		if (do_after(user, 30, target = src))
 			playsound(loc, 'sound/items/Deconstruct.ogg', 50, TRUE)
@@ -35,9 +35,9 @@
 	if (istype(I, /obj/item/stack/material/iron))
 		var/obj/item/stack/material/iron/M = I
 		if (M.amount < 1)
-			user << "<span class='warning'>You need one metal sheet to do this!</span>"
+			to_chat(user, "<span class='warning'>You need one metal sheet to do this!</span>")
 			return
-		user << "<span class='notice'>You start adding [M] to [src]...</span>"
+		to_chat(user, "<span class='notice'>You start adding [M] to [src]...</span>")
 		if (do_after(user, 20, target = src))
 			M.use(1)
 			new /obj/structure/table(loc)
@@ -46,9 +46,9 @@
 	if (istype(I, /obj/item/stack/material/glass))
 		var/obj/item/stack/material/glass/G = I
 		if (G.amount < 1)
-			user << "<span class='warning'>You need one glass sheet to do this!</span>"
+			to_chat(user, "<span class='warning'>You need one glass sheet to do this!</span>")
 			return
-		user << "<span class='notice'>You start adding [G] to [src]...</span>"
+		to_chat(user, "<span class='notice'>You start adding [G] to [src]...</span>")
 		if (do_after(user, 20, target = src))
 			G.use(1)
 
@@ -73,9 +73,9 @@
 	if (istype(I, /obj/item/stack/material/wood))
 		var/obj/item/stack/material/wood/W = I
 		if (W.amount < 1)
-			user << "<span class='warning'>You need one wood sheet to do this!</span>"
+			to_chat(user, "<span class='warning'>You need one wood sheet to do this!</span>")
 			return
-		user << "<span class='notice'>You start adding [W] to [src]...</span>"
+		to_chat(user, "<span class='notice'>You start adding [W] to [src]...</span>")
 		if (do_after(user, 20, target = src))
 			W.use(1)
 			new /obj/structure/table/wood(loc)

@@ -809,8 +809,8 @@
 /mob/living/simple_animal/Stat()
 	..()
 
-	if (statpanel("Status") && show_stat_health)
-		stat(null, "Health: [round((health / maxHealth) * 100)]%")
+	if ((client.add_stat_tab("Status") || client.statpanel_tab == "Status") && show_stat_health)
+		client.add_stat(null, "Health: [round((health / maxHealth) * 100)]%")
 
 /mob/living/simple_animal/proc/unregisterSpawner()
 	if (origin != null)
@@ -900,19 +900,19 @@
 	set src in view(1)
 
 	if (following_mob == null)
-		usr << "This animal is not leashed."
+		to_chat(usr, "This animal is not leashed.")
 		return
 	else if (istype(following_mob, /obj/structure/grille/fence) || istype(following_mob, /obj/structure/barricade/wood_pole))
 		following_mob = null
 		new/obj/item/weapon/leash(src.loc)
-		usr << "You free the [src]."
+		to_chat(usr, "You free the [src].")
 		stop_automated_movement = FALSE
 
 		return
 	else
 		following_mob = null
 		new/obj/item/weapon/leash(src.loc)
-		usr << "You free the [src]."
+		to_chat(usr, "You free the [src].")
 		stop_automated_movement = FALSE
 
 		return

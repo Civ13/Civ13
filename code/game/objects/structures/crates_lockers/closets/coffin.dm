@@ -55,7 +55,7 @@
 /obj/structure/closet/old_coffin/attack_hand(mob/user as mob)
 	add_fingerprint(user)
 	if (!opened)
-		user << "<span class='notice'>\The [src] is a big heavy stone... you're not gonna move this by hand</span>"
+		to_chat(user, "<span class='notice'>\The [src] is a big heavy stone... you're not gonna move this by hand</span>")
 		return
 	else
 		toggle(user)
@@ -77,11 +77,11 @@
 					content_size += ceil(I.w_class/2)
 				if (content_size < storage_capacity)
 					W.forceMove(src)
-					user << "You throw \the [W] into \the [src]."
+					to_chat(user, "You throw \the [W] into \the [src].")
 					update_icon()
 					return
 				else
-					user << "<span class='warning'>\The [src] is too full!</span>"
+					to_chat(user, "<span class='warning'>\The [src] is too full!</span>")
 					return
 			else
 				W.forceMove(loc)

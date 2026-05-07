@@ -85,7 +85,7 @@
 	if (!ismob(target))
 		return
 	// user.visible_message(SPAN_DANGER("[user] stabs [target] with \the [src]"), SPAN_DANGER("You stab [target] with \the [src]."))
-	//	M << "<span class = 'red'>You feel a tiny prick!</span>" //That's a whole lot of meta!
+	//	to_chat(M, "<span class = 'red'>You feel a tiny prick!</span>" //That's a whole lot of meta!)
 	target.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been stabbed with [name]  by [user.name] ([user.ckey])</font>")
 	user.attack_log += text("\[[time_stamp()]\] <font color='red'>Used the [name] to stab [target.name] ([target.ckey])</font>")
 	msg_admin_attack("[user.name] ([user.ckey]) Used the [name] to stab [target.name] ([target.ckey]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey, target.ckey)

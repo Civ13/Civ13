@@ -126,6 +126,8 @@
 		if (isemptylist(central.axis.corners))
 			central.axis.check_corners()
 		for (var/turf/T in rangeto)
+			if (!central.axis || !central.axis.corners)
+				continue
 			if (abs(T.x-central.axis.corners[1].x)<=central.axis.maxdist || abs(T.y-central.axis.corners[1].y)<=central.axis.maxdist)
 				var/doneps = FALSE
 				for (var/obj/structure/vehicleparts/frame/FRE in T)

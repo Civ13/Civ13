@@ -3,10 +3,10 @@
 	var/alt_name = ""
 	if (werewolf || gorillaman)
 		if (map && map.ID != MAP_TRIBES && map.ID != MAP_THREE_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_NOMADS_NEW_WORLD && !map.is_fantrace)
-			usr << "<span class = 'red'>You can't whisper.</span>"
+			to_chat(usr, "<span class = 'red'>You can't whisper.</span>")
 			return
 	if (say_disabled)	//This is here to try to identify lag problems
-		usr << "<span class = 'red'>Speech is currently admin-disabled.</span>"
+		to_chat(usr, "<span class = 'red'>Speech is currently admin-disabled.</span>")
 		return
 
 	message = sanitize(message)
@@ -16,7 +16,7 @@
 
 	if (client)
 		if (client.prefs.muted & MUTE_IC)
-			src << "<span class = 'red'>You cannot whisper (muted).</span>"
+			to_chat(src, "<span class = 'red'>You cannot whisper (muted).</span>")
 			return
 
 		if (client.handle_spam_prevention(message,MUTE_IC))
@@ -46,7 +46,7 @@
 /mob/living/human/proc/whisper_say(var/message, var/datum/language/speaking = null, var/alt_name="", var/verb="whispers")
 
 	if (istype(wear_mask, /obj/item/clothing/mask/muzzle) || istype(wear_mask, /obj/item/weapon/grenade))
-		src << "<span class='danger'>You're muzzled and cannot speak!</span>"
+		to_chat(src, "<span class='danger'>You're muzzled and cannot speak!</span>")
 		return
 
 	var/message_range = TRUE
@@ -146,13 +146,13 @@
 	spawn(30) qdel(speech_bubble)
 
 	for (var/mob/M in listening)
-		M << speech_bubble
+		to_chat(M, speech_bubble)
 		M.hear_say(message, verb, speaking, alt_name, italics, src)
 
 	if (eavesdropping.len)
 		var/new_message = stars(message)	//hopefully passing the message twice through stars() won't hurt... I guess if you already don't understand the language, when they speak it too quietly to hear normally you would be able to catch even less.
 		for (var/mob/M in eavesdropping)
-			M << speech_bubble
+			to_chat(M, speech_bubble)
 			M.hear_say(new_message, verb, speaking, alt_name, italics, src)
 
 	if (watching.len)

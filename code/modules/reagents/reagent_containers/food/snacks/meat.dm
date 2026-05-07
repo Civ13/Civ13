@@ -25,7 +25,7 @@
 	if (!roasted && !rotten && (istype(W,/obj/item/weapon/attachment/bayonet)  || istype(W, /obj/item/weapon/material/hatchet) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
-		user << "You cut the meat into thin strips."
+		to_chat(user, "You cut the meat into thin strips.")
 		qdel(src)
 	else
 		..()
@@ -65,7 +65,7 @@
 		CURRENT = user.l_hand
 	if (CURRENT)
 		if (istype(CURRENT, /obj/item/ammo_casing/arrow))
-			user << "You dip the arrow into the poisonous frog's skin."
+			to_chat(user, "You dip the arrow into the poisonous frog's skin.")
 			CURRENT.name = "poisoned arrow"
 			CURRENT.icon_state = "arrowp"
 			CURRENT.projectile_type = /obj/item/projectile/arrow/arrow/vial
@@ -74,7 +74,7 @@
 			CURRENT.contents = list(CURRENT.BB)
 			uses = (uses - 1)
 		else if (istype(CURRENT, /obj/item/ammo_casing/bolt))
-			user << "You dip the bolt into the poisonous frog's skin."
+			to_chat(user, "You dip the bolt into the poisonous frog's skin.")
 			CURRENT.name = "poisoned bolt"
 			CURRENT.icon_state = "boltp"
 			CURRENT.projectile_type = /obj/item/projectile/arrow/bolt/vial
@@ -135,7 +135,7 @@
 	if (!roasted && !istype(src,/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod) && !rotten && (istype(W,/obj/item/weapon/attachment/bayonet) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/hatchet)))
 		for (var/i=1, i<=3, i++)
 			new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
-		user << "You cut the fish into thin fillets."
+		to_chat(user, "You cut the fish into thin fillets.")
 		qdel(src)
 	else
 		..()
@@ -144,7 +144,7 @@
 	if (!roasted && !rotten && (istype(W,/obj/item/weapon/attachment/bayonet) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/hatchet)))
 		for (var/i=1, i<=3, i++)
 			new /obj/item/weapon/reagent_containers/food/snacks/salmonfillet(src)
-		user << "You cut the salmon into thin fillets."
+		to_chat(user, "You cut the salmon into thin fillets.")
 		qdel(src)
 	else
 		..()
@@ -299,7 +299,7 @@
 
 	attackby(obj/item/I, mob/user)
 		if (istype(I, /obj/item/weapon/attachment/bayonet) || istype(I, /obj/item/weapon/material/kitchen/utensil/knife) || istype(I, /obj/item/weapon/material/hatchet))
-			user << "You crack open \the [src]."
+			to_chat(user, "You crack open \the [src].")
 			new /obj/item/weapon/reagent_containers/food/snacks/cracked_shellfish(user.loc)
 			qdel(src)
 			return

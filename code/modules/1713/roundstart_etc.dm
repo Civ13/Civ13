@@ -29,7 +29,7 @@ var/GRACE_PERIOD_LENGTH = 7
 				spawn (0)
 					while (!processes.time_of_day_change || !processes.time_of_day_change.setup_lighting)
 						sleep(1)
-					world << "<br><font size=3><span class = 'notice'>It's <b>[lowertext(processes.time_of_day_change.changeto)]</b>, and the season is <b>[get_season()]</b>.</span></font>"
+					to_chat(world, "<br><font size=3><span class = 'notice'>It's <b>[lowertext(processes.time_of_day_change.changeto)]</b>, and the season is <b>[get_season()]</b>.</span></font>")
 
 	// open squad preparation doors
 	for (var/obj/structure/simple_door/key_door/keydoor in door_list)
@@ -81,7 +81,7 @@ var/GRACE_PERIOD_LENGTH = 7
 			new/obj/structure/anthill(areaspawn)
 // ditto
 /hook/roundstart/proc/do_seasonal_stuff()
-//		world << "<span class = 'notice'>Setting up seasons.</span>"
+//		to_chat(world, "<span class = 'notice'>Setting up seasons.</span>")
 	if (map.ID == MAP_NOMADS_DESERT || map.ID == MAP_NOMADS_JUNGLE || map.ID == MAP_ROAD_TO_DAK_TO || map.ID == MAP_ALLEYWAY)
 		season = "Wet Season"
 	else if (map.ID == MAP_NOMADS_ICE_AGE || map.ID == MAP_GULAG13)

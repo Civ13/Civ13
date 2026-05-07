@@ -69,7 +69,7 @@
 			break
 
 	if (protected)
-		M << "<span class='warning'>You get slammed in the face with the tray, against your mask!</span>"
+		to_chat(M, "<span class='warning'>You get slammed in the face with the tray, against your mask!</span>")
 		if (prob(33))
 			add_blood(H)
 			if (H.wear_mask)
@@ -97,7 +97,7 @@
 			return
 
 	else //No eye or head protection, tough luck!
-		M << "<span class='warning'>You get slammed in the face with the tray!</span>"
+		to_chat(M, "<span class='warning'>You get slammed in the face with the tray!</span>")
 		if (prob(33))
 			add_blood(M)
 			var/turf/location = H.loc

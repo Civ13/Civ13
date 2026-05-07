@@ -275,7 +275,7 @@ var/global/list/vehicle_walls = list( \
 			else if (choice2 > 200)
 				return
 			else if (choice2/10 > S.amount)
-				H << "<span class='warning'>Not enough steel!</span>"
+				to_chat(H, "<span class='warning'>Not enough steel!</span>")
 				return
 
 		var/choice3 = WWinput(H, "Which type of wall?", "Wall Creation", "Cancel", list("Cancel","wall","door","armoredfront","window","windshield"))

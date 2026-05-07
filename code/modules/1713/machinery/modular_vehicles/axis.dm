@@ -329,7 +329,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 /obj/structure/vehicleparts/axis/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && !VP.axis)
 		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-		usr << "You connect \the [src] to \the [VP]."
+		to_chat(usr, "You connect \the [src] to \the [VP].")
 		VP.axis = src
 		VP.anchored = TRUE
 		components += VP
@@ -633,7 +633,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 					dlocfind = rotation_matrixes4[tdir][loc2textv][1]
 				if (5)
 					dlocfind = rotation_matrixes5[tdir][loc2textv][1]
-//			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes5[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])"
+//			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes5[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])")
 			if (islist(matrix_current_locs[loc2textv][2]))
 				for (var/obj/effect/pseudovehicle/PV in matrix_current_locs[dlocfind][1])
 					var/turf/toget = matrix_current_locs[dlocfind][1]

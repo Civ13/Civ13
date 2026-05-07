@@ -17,7 +17,7 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 /obj/structure/teleporter_controller1/attackby(obj/item/C, mob/user)
 	if (do_once == FALSE)
 		for (var/obj/effect/area_teleporter/AT)
-			world << "<big>A ship will arrive at the island in 1 minute!</big>"
+			to_chat(world, "<big>A ship will arrive at the island in 1 minute!</big>")
 			do_once = TRUE
 			spawn(600) // 1 minute
 				AT.Simple_Down()
@@ -42,7 +42,7 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 /obj/structure/teleporter_controller2/attackby(obj/item/C, mob/user)
 	if (do_once == FALSE)
 		for (var/obj/effect/area_teleporter/AT)
-			world << "<big>A ship will arrive at the island in 1 minute!</big>"
+			to_chat(world, "<big>A ship will arrive at the island in 1 minute!</big>")
 			do_once = TRUE
 			spawn(600) // 1 minute
 				AT.Simple_Up()

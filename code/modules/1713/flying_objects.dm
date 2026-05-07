@@ -31,7 +31,7 @@
 		uploaded_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))
-				//M << SPAN_DANGER("<font size=3>A nuclear missile has been launched!</font>")
+				//to_chat(M, SPAN_DANGER("<font size=3>A nuclear missile has been launched!</font>"))
 				M.client << uploaded_sound
 		animate(src, pixel_y = flight_distance*32, time = flight_time, alpha = 150, easing = SINE_EASING | EASE_IN)
 		spawn(flight_time) // has to be equal to flight time else it'll look weird

@@ -134,24 +134,24 @@
 	..()
 	switch(crafting_quality)
 		if (-100 to 0.85)
-			user << "<b>Quality:</b> Very Crude"
+			to_chat(user, "<b>Quality:</b> Very Crude")
 		if (0.850001 to 0.95)
-			user << "<b>Quality:</b> Below Average"
+			to_chat(user, "<b>Quality:</b> Below Average")
 		if (0.950001 to 1.15)
-			user << "<b>Quality:</b> Decent"
+			to_chat(user, "<b>Quality:</b> Decent")
 		if (1.150001 to 100)
-			user << "<b>Quality:</b> Excellent"
+			to_chat(user, "<b>Quality:</b> Excellent")
 	if (health > 0 && maxhealth > 0)
 		var/health_percentage = (health/maxhealth)*100
 		switch (health_percentage)
 			if (-100 to 21)
-				user << "<font color='#7f0000'>Is practically falling apart!</font>"
+				to_chat(user, "<font color='#7f0000'>Is practically falling apart!</font>")
 			if (22 to 49)
-				user << "<font color='#a74510'>Seems to be in very bad condition.</font>"
+				to_chat(user, "<font color='#a74510'>Seems to be in very bad condition.</font>")
 			if (50 to 69)
-				user << "<font color='#cccc00'>Seems to be in a rough condition.</font>"
+				to_chat(user, "<font color='#cccc00'>Seems to be in a rough condition.</font>")
 			if (70 to 84)
-				user << "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>"
+				to_chat(user, "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>")
 			if (85 to 200)
-				user << "<font color='#245319'>Seems to be in very good condition.</font>"
+				to_chat(user, "<font color='#245319'>Seems to be in very good condition.</font>")
 

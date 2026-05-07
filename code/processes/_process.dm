@@ -347,11 +347,11 @@
 /process/proc/getTicks()
 	return ticks
 
-/process/proc/statProcess()
+/process/proc/statProcess(client/C)
 	var/averageRunTime = round(getAverageRunTime(), 0.1)/10
 	var/lastRunTime = round(getLastRunTime(), 0.1)/10
 	var/highestRunTime = round(getHighestRunTime(), 0.1)/10
-	stat("[name]", "T#[getTicks()] | AR [averageRunTime] | LR [lastRunTime] | HR [highestRunTime]")
+	C.add_stat("[name]", "T#[getTicks()] | AR [averageRunTime] | LR [lastRunTime] | HR [highestRunTime]")
 
 /process/proc/htmlProcess()
 	var/averageRunTime = round(getAverageRunTime(), 0.1)/10

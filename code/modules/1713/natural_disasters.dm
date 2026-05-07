@@ -4,9 +4,9 @@
 	if (severity>10)
 		severity=10
 	if(!severity || duration < 1) return FALSE
-	world << "<big><b>An earthquake has started!</b></big>"
+	to_chat(world, "<big><b>An earthquake has started!</b></big>")
 	spawn(duration)
-		world << "<big><i>The earthquake subsides.</i></big>"
+		to_chat(world, "<big><i>The earthquake subsides.</i></big>")
 	spawn(1)
 		for (var/mob/m in player_list)
 			if (m.client)
@@ -164,5 +164,5 @@
 	if (!isemptylist(lavalist))
 		var/turf/wall/rockwall/lavaspawner/T = pick(lavalist)
 		T.start_lava_flow()
-		world << "<font color='red'><big><b>The volcano erupts, with lava flowing down the mountain!</b></big></font>"
+		to_chat(world, "<font color='red'><big><b>The volcano erupts, with lava flowing down the mountain!</b></big></font>")
 		return TRUE

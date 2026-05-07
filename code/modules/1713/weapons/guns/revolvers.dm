@@ -97,10 +97,10 @@
 /obj/item/weapon/gun/projectile/revolver/special_check(mob/user)
 //	var/mob/living/human/H = user
 	if (gun_safety && safetyon)
-		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		to_chat(user, "<span class='warning'>You can't fire \the [src] while the safety is on!</span>")
 		return FALSE
 	if (!cocked && single_action)
-		user << "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>"
+		to_chat(user, "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>")
 		return FALSE
 	return TRUE
 
@@ -139,7 +139,7 @@
 					B.check_bolt_lock++
 			if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 	else
-		user << "<span class='warning'>[src] is empty.</span>"
+		to_chat(user, "<span class='warning'>[src] is empty.</span>")
 	update_icon()
 
 
@@ -565,7 +565,7 @@
 	if (world.time >= recentpump + 10)
 		if (open)
 			open = FALSE
-			user << "<span class='notice'>You close \the [src].</span>"
+			to_chat(user, "<span class='notice'>You close \the [src].</span>")
 			icon_state = "derringer"
 			if (loaded.len)
 				var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
@@ -573,25 +573,25 @@
 				chambered = AC
 		else
 			open = TRUE
-			user << "<span class='notice'>You break open \the [src].</span>"
+			to_chat(user, "<span class='notice'>You break open \the [src].</span>")
 			icon_state = "derringer_open"
 		recentpump = world.time
 
 /obj/item/weapon/gun/projectile/revolver/derringer/load_ammo(var/obj/item/A, mob/user)
 	if (!open)
-		user << "<span class='notice'>You need to open \the [src] first!</span>"
+		to_chat(user, "<span class='notice'>You need to open \the [src] first!</span>")
 		return
 	..()
 
 /obj/item/weapon/gun/projectile/revolver/derringer/unload_ammo(mob/user, var/allow_dump=1)
 	if (!open)
-		user << "<span class='notice'>You need to open \the [src] first!</span>"
+		to_chat(user, "<span class='notice'>You need to open \the [src] first!</span>")
 		return
 	..()
 
 /obj/item/weapon/gun/projectile/revolver/derringer/special_check(mob/user)
 	if (open)
-		user << "<span class='warning'>You can't fire \the [src] while it is break open!</span>"
+		to_chat(user, "<span class='warning'>You can't fire \the [src] while it is break open!</span>")
 		return FALSE
 	return ..()
 
@@ -684,10 +684,10 @@
 /obj/item/weapon/gun/projectile/revolving/special_check(mob/user)
 //	var/mob/living/human/H = user
 	if (!cocked && single_action)
-		user << "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>"
+		to_chat(user, "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>")
 		return FALSE
 	if (gun_safety && safetyon)
-		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		to_chat(user, "<span class='warning'>You can't fire \the [src] while the safety is on!</span>")
 		return FALSE
 	return TRUE
 
@@ -834,7 +834,7 @@
 /obj/item/weapon/gun/projectile/capnball/special_check(mob/user)
 //	var/mob/living/human/H = user
 	if (!cocked && single_action)
-		user << "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>"
+		to_chat(user, "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>")
 		return FALSE
 	return ..()
 
@@ -873,7 +873,7 @@
 					B.check_bolt_lock++
 			if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 	else
-		user << "<span class='warning'>[src] is empty.</span>"
+		to_chat(user, "<span class='warning'>[src] is empty.</span>")
 	update_icon()
 
 /obj/item/weapon/gun/projectile/capnball/dragoon

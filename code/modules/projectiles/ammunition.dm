@@ -60,7 +60,7 @@
 /obj/item/ammo_casing/examine(mob/user)
 	..()
 	if (!BB)
-		user << "This one is spent."
+		to_chat(user, "This one is spent.")
 
 //An item that holds casings and can be used to put them inside guns
 /obj/item/ammo_magazine
@@ -104,10 +104,10 @@
 
 /obj/item/ammo_magazine/secondary_attack_self(mob/living/human/user)
 	if (stored_ammo.len >= max_ammo)
-		user << "<span class='warning'>[src] is full!</span>"
+		to_chat(user, "<span class='warning'>[src] is full!</span>")
 		return
 	else if (!caliber)
-		user << "<span class='warning'>This [src] has no caliber associated - manually add ammunition first.</span>"
+		to_chat(user, "<span class='warning'>This [src] has no caliber associated - manually add ammunition first.</span>")
 		return
 	else
 		var/count = 0
@@ -117,7 +117,7 @@
 				stored_ammo.Insert(1, AC) //add to the head of the list
 				count = 1
 		if (count > 0)
-			user << "<span class='warning'>You fill the [src] with the ammunition on the floor.</span>"
+			to_chat(user, "<span class='warning'>You fill the [src] with the ammunition on the floor.</span>")
 			update_icon()
 		return
 
@@ -271,10 +271,10 @@
 		return FALSE
 	if (opened)
 		opened=FALSE
-		usr << "You close the [src]."
+		to_chat(usr, "You close the [src].")
 	else
 		opened=TRUE
-		usr << "You open the [src]."
+		to_chat(usr, "You open the [src].")
 	update_icon()
 	return
 
@@ -310,7 +310,7 @@
 			update_icon()
 			return
 	else
-		user << "<span class='warning'>[src] is empty.</span>"
+		to_chat(user, "<span class='warning'>[src] is empty.</span>")
 		update_icon()
 		return
 
@@ -382,10 +382,10 @@
 	if (istype(W, /obj/item/ammo_casing))
 		var/obj/item/ammo_casing/C = W
 		if (C.caliber != caliber && caliber != null)
-			user << "<span class='warning'>[C] does not fit into [src].</span>"
+			to_chat(user, "<span class='warning'>[C] does not fit into [src].</span>")
 			return
 		if (stored_ammo.len >= max_ammo)
-			user << "<span class='warning'>[src] is full!</span>"
+			to_chat(user, "<span class='warning'>[src] is full!</span>")
 			return
 		user.remove_from_mob(C)
 		C.loc = src
@@ -404,13 +404,13 @@
 	else if (istype(W, /obj/item/ammo_magazine))
 		var/obj/item/ammo_magazine/M = W
 		if (M.caliber != caliber && caliber != null)
-			user << "<span class='warning'>[M]'s ammo type does not fit into [src].</span>"
+			to_chat(user, "<span class='warning'>[M]'s ammo type does not fit into [src].</span>")
 			return
 		if (stored_ammo.len >= max_ammo)
-			user << "<span class='warning'>[src] is full!</span>"
+			to_chat(user, "<span class='warning'>[src] is full!</span>")
 			return
 		if (M.stored_ammo.len == FALSE)
-			user << "<span class='warning'>[M] is empty!</span>"
+			to_chat(user, "<span class='warning'>[M] is empty!</span>")
 			return
 
 		var/filled = FALSE
@@ -425,7 +425,7 @@
 				caliber = C.caliber
 				name = "bullet pouch ([C])"
 		if (filled)
-			user << "<span class = 'notice'>You fill [src] with [M]'s ammo.</span>"
+			to_chat(user, "<span class = 'notice'>You fill [src] with [M]'s ammo.</span>")
 
 		update_icon()
 		W.update_icon()
@@ -452,7 +452,7 @@
 
 /obj/item/ammo_magazine/examine(mob/user)
 	..()
-	user << "There [(stored_ammo.len == TRUE)? "is" : "are"] [stored_ammo.len] round\s left!"
+	to_chat(user, "There [(stored_ammo.len == TRUE)? "is" : "are"] [stored_ammo.len] round\s left!")
 
 //magazine icon state caching
 /var/global/list/magazine_icondata_keys = list()

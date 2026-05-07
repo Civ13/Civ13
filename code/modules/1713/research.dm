@@ -44,7 +44,7 @@
 			modif += 0.15
 		if (user.religious_clergy == "Monks")
 			modif += 0.3
-		user << "<span class='notice'>You begin to transpose your knowledge to the [name].</span>"
+		to_chat(user, "<span class='notice'>You begin to transpose your knowledge to the [name].</span>")
 		var/success = FALSE
 		switch (choice)
 			if ("Industry")
@@ -104,14 +104,14 @@
 			completed += user
 			icon_state = "[styleb]1"
 			desc = "A scientific [replacetext(styleb,"research_rock","slate")], with knowledge in [choice]."
-			user << "<span class='notice'>You finish the [name].</span>"
+			to_chat(user, "<span class='notice'>You finish the [name].</span>")
 			update_icon()
 	else
 		if (completed[1] == user)
-			user << "<span class='warning'>This book was written by you! You will not learn anything from reading it.</span>"
+			to_chat(user, "<span class='warning'>This book was written by you! You will not learn anything from reading it.</span>")
 			return
 		if (user in completed)
-			user << "<span class='warning'>You have already read this book and it is unlikely that it will bring you new knowledge.</span>"
+			to_chat(user, "<span class='warning'>You have already read this book and it is unlikely that it will bring you new knowledge.</span>")
 			return
 		var/choice = input("This is a book by [author] on [k_class]. Do you want to study it?") in list("Yes", "No")
 		if (choice == "No")
@@ -121,9 +121,9 @@
 			modif += 0.25
 		if (user.religious_clergy == "Monks")
 			modif += 0.3
-		user << "<span class='notice'>You begin reading the [name] attently...</span>"
+		to_chat(user, "<span class='notice'>You begin reading the [name] attently...</span>")
 		if (do_after(user, (600*k_level)/modif, src))
-			user << "<span class='notice'>You finish studying the [name]. You feel smarter already.</span>"
+			to_chat(user, "<span class='notice'>You finish studying the [name]. You feel smarter already.</span>")
 			if (k_class == "industry")
 				user.adaptStat("crafting", (16*k_level)/modif)
 			if (k_class == "medicine")
@@ -166,28 +166,28 @@
 		if (!map.civilizations || (map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES))
 			return
 		if (!completed.len)
-			user << "The book is blank."
+			to_chat(user, "The book is blank.")
 			return
 		if (user.original_job_title == "Nomad")
 			if (map.age1_done == FALSE)
 				if (world.time < 36000 && ( (map.custom_civs[user.civilization][1] >= 19) || (map.custom_civs[user.civilization][2] >= 19) || (map.custom_civs[user.civilization][3] >= 19)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(36000-world.time)/600] minutes."
+					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(36000-world.time)/600] minutes.")
 					return
 			else if (map.age1_done == TRUE && map.age2_done == FALSE)
 				if (world.time < map.age2_timer && ( (map.custom_civs[user.civilization][1] >= map.age1_top) || (map.custom_civs[user.civilization][2] >= map.age1_top) || (map.custom_civs[user.civilization][3] >= map.age1_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age2_timer-world.time)/600] minutes."
+					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(map.age2_timer-world.time)/600] minutes.")
 					return
 			if (map.age2_done == TRUE && map.age3_done == FALSE)
 				if (world.time < map.age3_timer && ( (map.custom_civs[user.civilization][1] >= map.age2_top) || (map.custom_civs[user.civilization][2] >= map.age2_top) || (map.custom_civs[user.civilization][3] >= map.age2_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age3_timer-world.time)/600] minutes."
+					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(map.age3_timer-world.time)/600] minutes.")
 					return
 			if (map.age3_done == TRUE && map.age4_done == FALSE)
 				if (world.time < map.age4_timer && ( (map.custom_civs[user.civilization][1] >= map.age3_top) || (map.custom_civs[user.civilization][2] >= map.age3_top) || (map.custom_civs[user.civilization][3] >= map.age3_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age4_timer-world.time)/600] minutes."
+					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(map.age4_timer-world.time)/600] minutes.")
 					return
 			if (map.age4_done == TRUE && map.age5_done == FALSE)
 				if (world.time < map.age5_timer && ( (map.custom_civs[user.civilization][1] >= map.age4_top) || (map.custom_civs[user.civilization][2] >= map.age4_top) || (map.custom_civs[user.civilization][3] >= map.age4_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age5_timer-world.time)/600] minutes."
+					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(map.age5_timer-world.time)/600] minutes.")
 					return
 
 		var/current_tribesmen = 0
@@ -199,7 +199,7 @@
 			modif += 0.3
 
 		var/displaytime = convert_to_textminute(studytime)
-		user << "Studying this document... This will take [displaytime] to finish."
+		to_chat(user, "Studying this document... This will take [displaytime] to finish.")
 		if (do_after(user,(studytime/user.getStatCoeff("philosophy"))/modif,src))
 
 			if (user.civilization != null && user.civilization != "none")
@@ -216,7 +216,7 @@
 				if (k_class == "industry" || k_class == "philosophy")
 					map.custom_civs[user.civilization][1] += k_level/current_tribesmen
 			else
-				user << "You don't belong to any faction."
+				to_chat(user, "You don't belong to any faction.")
 				return
 
 			if (user.civilization == civname_a)
@@ -268,7 +268,7 @@
 				if (k_class == "industry" || k_class == "philosophy")
 					map.civf_research[1] += k_level/current_tribesmen
 
-			user << "You finish studying this document. The knowledge gained will be useful in the development of our society."
+			to_chat(user, "You finish studying this document. The knowledge gained will be useful in the development of our society.")
 			user.adaptStat("philosophy", 1*k_level*modif)
 	else
 		..()

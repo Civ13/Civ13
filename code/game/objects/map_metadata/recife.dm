@@ -41,14 +41,14 @@ var/no_loop = FALSE
 			return FALSE
 		ticker.finished = TRUE
 		var/message = "The Portuguese colonial troops have managed to defend Recife!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop == FALSE)
 		ticker.finished = TRUE
 		var/message = "The Dutch have captured Recife! The remaining Portuguese troops have surrendered!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop = TRUE
@@ -91,7 +91,7 @@ var/no_loop = FALSE
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The Portuguese troops have recaptured the town!</font>"
+			to_chat(world, "<font size = 3>The Portuguese troops have recaptured the town!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1

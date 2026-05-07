@@ -47,7 +47,7 @@
 /obj/structure/catapult/attackby(obj/item/W as obj, mob/M as mob)
 	if (istype(W, /obj/item/catapult_ball))
 		if (loaded)
-			M << "<span class = 'warning'>There's already a projectile loaded.</span>"
+			to_chat(M, "<span class = 'warning'>There's already a projectile loaded.</span>")
 			return
 		// load first and only slot
 		M.remove_from_mob(W)
@@ -59,7 +59,7 @@
 			do_html(M)
 	else if (istype(W,/obj/item/weapon/hammer))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
 		anchored = !anchored
 	else
 		..()
@@ -71,7 +71,7 @@
 			user = null
 	restart:
 	if (!anchored)
-		user << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"
+		to_chat(user, "<span class = 'danger'>You need to fix it to the floor before firing.</span>")
 		user = null
 	if (user && user != m)
 		if (user.client)
@@ -94,19 +94,19 @@
 
 	var/mob/living/human/H = user
 	if (istype(H) && H.faction_text == INDIANS)
-		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
+		to_chat(user, "<span class = 'danger'>You have no idea how this thing works.</span>")
 		return FALSE
 
 	if (!locate(src) in get_step(user, user.dir))
-		user << "<span class = 'danger'>Get behind the catapult to use it.</span>"
+		to_chat(user, "<span class = 'danger'>Get behind the catapult to use it.</span>")
 		return FALSE
 
 	if (!user.can_use_hands())
-		user << "<span class = 'danger'>You have no hands to use this with.</span>"
+		to_chat(user, "<span class = 'danger'>You have no hands to use this with.</span>")
 		return FALSE
 
 	if (!anchored)
-		user << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"
+		to_chat(user, "<span class = 'danger'>You need to fix it to the floor before firing.</span>")
 		return FALSE
 
 	if (href_list["load"])
@@ -124,11 +124,11 @@
 
 		if (map)
 			if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
-				user << "<span class = 'danger'>You can't fire yet.</span>"
+				to_chat(user, "<span class = 'danger'>You can't fire yet.</span>")
 				return
 
 		if (!loaded)
-			user << "<span class = 'danger'>There's nothing in the catapult.</span>"
+			to_chat(user, "<span class = 'danger'>There's nothing in the catapult.</span>")
 			return
 
 
@@ -236,7 +236,7 @@
 							if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
 								for (var/mob/living/L in view(20, target))
 									shake_camera(L, 5, 5)
-									L << "<span class = 'danger'>You hear something violently smash into the ceiling!</span>"
+									to_chat(L, "<span class = 'danger'>You hear something violently smash into the ceiling!</span>")
 								message_admins("Catapult projectile hit the ceiling at [target.x], [target.y], [target.z].")
 								log_admin("Catapult projectile hit the ceiling at [target.x], [target.y], [target.z].")
 								return
@@ -297,7 +297,7 @@
 	set name = "Rotate Left"
 	set src in range(2, usr)
 	if (anchored)
-		user << "<span class='notice'>You need to unsecure the catapult first!</span>"
+		to_chat(user, "<span class='notice'>You need to unsecure the catapult first!</span>")
 	else
 		set_dir(turn(dir, 90))
 	return
@@ -307,7 +307,7 @@
 	set name = "Rotate Right"
 	set src in range(2, usr)
 	if (anchored)
-		user << "<span class='notice'>You need to unsecure the catapult first!</span>"
+		to_chat(user, "<span class='notice'>You need to unsecure the catapult first!</span>")
 	else
 		set_dir(turn(dir, -90))
 

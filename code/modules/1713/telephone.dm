@@ -194,30 +194,30 @@ var/list/global/phone_numbers = list()
 				ring_phone(tgtnum,phonenumber, src, user)
 				spawn(200)
 					if (!connected)
-						user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum]."
+						to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum].")
 						connected = FALSE
 						origincall = null
 						return
 			else
-				user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>No signal."
+				to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>No signal.")
 				return
 	else if (connected)
 		connected = FALSE
 		if (origincall)
-			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
+			to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone.")
 			if (ishuman(origincall.loc))
-				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone."
+				to_chat(origincall.loc, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
 			else
 				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
 			origincall.connected = FALSE
 			origincall.origincall = null
 			origincall = null
 	else if (ringing && !ringingnum)
-		user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
+		to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone.")
 		ringing = FALSE
 		if (origincall)
 			if (ishuman(origincall.loc))
-				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone."
+				to_chat(origincall.loc, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
 			else
 				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
 			origincall.origincall = null
@@ -230,9 +230,9 @@ var/list/global/phone_numbers = list()
 			origincall.connected = phonenumber
 			origincall.ringing = FALSE
 			origincall.origincall = src
-			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You pick up the phone."
+			to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You pick up the phone.")
 			if (ishuman(origincall.loc))
-				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone."
+				to_chat(origincall.loc, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone.")
 			else
 				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone.")
 
@@ -273,7 +273,7 @@ var/list/global/phone_numbers = list()
 			if (!input1)
 				return
 			if (input1 == phonenumber)
-				user << "<span class='notice'>You can't add your own number!</span>"
+				to_chat(user, "<span class='notice'>You can't add your own number!</span>")
 				return
 			var/addnum = 0
 			addnum = sanitize_integer(input1, min=1000, max=9999, default=0) //0 as a first digit doesnt really work
@@ -306,11 +306,11 @@ var/list/global/phone_numbers = list()
 					ring_phone(tgtnum,phonenumber, src, user)
 					spawn(200)
 						if (!connected)
-							user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum]."
+							to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum].")
 							ringing = FALSE
 							return
 				else
-					user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>No signal."
+					to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>No signal.")
 					return
 	else
 		..()
@@ -349,14 +349,14 @@ var/list/global/phone_numbers = list()
 					TLG.ringproc(origin, originphone)
 					if (user)
 						if (targetc != "")
-							user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Ringing <b>[targetc]</b> ([target])..."
+							to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Ringing <b>[targetc]</b> ([target])...")
 						else
-							user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Ringing [target]..."
+							to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Ringing [target]...")
 				else
-					user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Number occupied."
+					to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Number occupied.")
 					return
 		if (!found)
-			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Number not found."
+			to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Number not found.")
 /obj/item/weapon/telephone/wireless
 	name = "telephone"
 	desc = "Used to communicate with other telephones. No number."

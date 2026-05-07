@@ -28,13 +28,13 @@
 
 /obj/item/weapon/gun/projectile/special/special_check(mob/user)
 	if (gun_safety && safetyon)
-		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		to_chat(user, "<span class='warning'>You can't fire \the [src] while the safety is on!</span>")
 		return FALSE
 	if (!user.has_empty_hand(both = FALSE))
-		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
+		to_chat(user, "<span class='warning'>You need both hands to fire \the [src]!</span>")
 		return FALSE
 	if (jammed_until > world.time)
-		user << "<span class = 'danger'>\The [src] has jammed! You can't fire it until it has unjammed.</span>"
+		to_chat(user, "<span class = 'danger'>\The [src] has jammed! You can't fire it until it has unjammed.</span>")
 		return FALSE
 	return TRUE
 

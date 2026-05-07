@@ -29,11 +29,11 @@
 				running_sound()
 			return
 	else if (pwd && !hts)
-		user << "<span class = 'notice'>You need to light the heat source first.</span>"
+		to_chat(user, "<span class = 'notice'>You need to light the heat source first.</span>")
 		on = FALSE
 		return
 	else
-		user << "<span class = 'notice'>This engine needs an external heat source to work!</span>"
+		to_chat(user, "<span class = 'notice'>This engine needs an external heat source to work!</span>")
 		on = FALSE
 		return
 

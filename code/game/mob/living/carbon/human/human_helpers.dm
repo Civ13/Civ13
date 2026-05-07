@@ -20,9 +20,9 @@
 		return TRUE
 	if (feedback)
 		if (status[1] == HUMAN_EATING_NO_MOUTH)
-			src << "Where do you intend to put \the [food]? You don't have a mouth!"
+			to_chat(src, "Where do you intend to put \the [food]? You don't have a mouth!")
 		else if (status[1] == HUMAN_EATING_BLOCKED_MOUTH)
-			src << SPAN_WARNING("\The [status[2]] is in the way!")
+			to_chat(src, SPAN_WARNING("\The [status[2]] is in the way!"))
 	return FALSE
 
 /mob/living/human/can_force_feed(var/feeder, var/food, var/feedback = TRUE)
@@ -31,7 +31,7 @@
 		return TRUE
 	if (feedback)
 		if (status[1] == HUMAN_EATING_NO_MOUTH)
-			feeder << "Where do you intend to put \the [food]? \The [src] doesn't have a mouth!"
+			to_chat(feeder, "Where do you intend to put \the [food]? \The [src] doesn't have a mouth!")
 		else if (status[1] == HUMAN_EATING_BLOCKED_MOUTH)
 			feeder << SPAN_WARNING("\The [status[2]] is in the way!")
 	return FALSE
@@ -401,7 +401,7 @@
 					water_overlay = FALSE
 					return
 			drowning = TRUE
-			src << SPAN_WARNING("<font size='2'>You are drowning!</font>")
+			to_chat(src, SPAN_WARNING("<font size='2'>You are drowning!</font>"))
 			update_fire(1)
 			adjustOxyLoss(10)
 			return

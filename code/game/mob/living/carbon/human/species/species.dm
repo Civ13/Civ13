@@ -196,7 +196,7 @@
 		if (A.climate == "desert" && A.location == AREA_OUTSIDE)
 			if (!H.shoes)
 				if (prob(25))
-					H << SPAN_DANGER("The hot ground burns your feet!")
+					to_chat(H, SPAN_DANGER("The hot ground burns your feet!"))
 					H.adjustBurnLossByPart(0.3*dmod, pick("l_foot", "r_foot"))
 
 		//Check protected bodyparts
@@ -229,11 +229,11 @@
 			H.adjustBurnLossByPart(0.2*dmod, i)
 
 		if (prob(12))
-			H << SPAN_DANGER("[pick(heat_discomfort_strings)]")
+			to_chat(H, SPAN_DANGER("[pick(heat_discomfort_strings)]"))
 
 		if (A.weather == WEATHER_EXTREME && findtext(A,"sandstorm"))
 			if (prob(15))
-				H << SPAN_DANGER("The dust abrades your exposed flesh!")
+				to_chat(H, SPAN_DANGER("The dust abrades your exposed flesh!"))
 			for (var/i in exposed_bp)
 				H.adjustBurnLossByPart(1*dmod, i)
 
@@ -257,7 +257,7 @@
 		if (istype(T) && T.icon == 'icons/turf/snow.dmi' && H.shoes)
 			if (H.shoes.cold_protection != FEET)
 				if (prob(25 - (H.shoes ? 15 : 0)))
-					H << SPAN_DANGER("Your feet are freezing!")
+					to_chat(H, SPAN_DANGER("Your feet are freezing!"))
 					H.adjustBurnLossByPart(1*dmod, pick("l_foot", "r_foot"))
 
 		//Check protected bodyparts
@@ -290,21 +290,21 @@
 			H.adjustBurnLossByPart(0.5*dmod, i)
 
 		if (prob(12))
-			H << SPAN_DANGER("[pick(cold_discomfort_strings)]")
+			to_chat(H, SPAN_DANGER("[pick(cold_discomfort_strings)]"))
 
 		if (A.icon_state == "snow_storm" && A.location == AREA_OUTSIDE)
 			if (prob(12))
-				H << SPAN_DANGER("The blizzard chills you to the bone!")
+				to_chat(H, SPAN_DANGER("The blizzard chills you to the bone!"))
 			H.adjustBurnLoss(0.8*dmod)
 /*
 		var/area/A = get_area(H)
 		if (A.weather == WEATHER_WET && findtext(A,"rain"))
 			if (prob(15))
-				H << SPAN_DANGER("The cold rain chills you to the bone.")
+				to_chat(H, SPAN_DANGER("The cold rain chills you to the bone."))
 			H.adjustBurnLoss(3) // wet is bad
 		else if (A.weather == WEATHER_WET && findtext(A,"snow"))
 			if (prob(15))
-				H << SPAN_DANGER("The freezing snowfall chills you to the bone.")
+				to_chat(H, SPAN_DANGER("The freezing snowfall chills you to the bone."))
 			H.adjustBurnLoss(2)
 */
 /datum/species/proc/sanitize_name(var/name)

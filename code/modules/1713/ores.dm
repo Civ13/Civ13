@@ -48,7 +48,7 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
 			if (ET.reagents.total_volume > 0)
-				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
@@ -71,7 +71,7 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
 			if (ET.reagents.total_volume > 0)
-				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
@@ -93,7 +93,7 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
 			if (ET.reagents.total_volume > 0)
-				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
@@ -120,7 +120,7 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
 			if (ET.reagents.total_volume > 0)
-				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
@@ -142,7 +142,7 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
 			if (ET.reagents.total_volume > 0)
-				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
@@ -163,7 +163,7 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
 			if (ET.reagents.total_volume > 0)
-				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
@@ -184,7 +184,7 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
 			if (ET.reagents.total_volume > 0)
-				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
@@ -210,7 +210,7 @@
 		if (istype(W, /obj/item/weapon/chisel))
 			var/mob/living/human/H = user
 			if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
-				user << "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>"
+				to_chat(user, "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>")
 			else
 				visible_message("<span class='danger'>[user] starts to cut the obsidian!</span>", "<span class='danger'>You start cutting the obsidian.</span>")
 				if (do_after(H, min(src.amount*10, 200), H.loc))
@@ -233,7 +233,7 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
 			if (ET.reagents.total_volume > 0)
-				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
@@ -260,7 +260,7 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
 			if (ET.reagents.total_volume > 0)
-				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
@@ -284,7 +284,7 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
 			if (ET.reagents.total_volume > 0)
-				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
@@ -311,7 +311,7 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
 			if (ET.reagents.total_volume > 0)
-				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
 				visible_message("<span class = 'notice'>[H] starts to crumble \the [src] into  \the [W.name]...</span>", "<span class = 'notice'>You start to crumble \the [src] into \the [W.name].</span>")
@@ -334,7 +334,7 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
 			if (ET.reagents.total_volume > 0)
-				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
@@ -358,7 +358,7 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
 			if (ET.reagents.total_volume > 0)
-				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
@@ -382,7 +382,7 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
 			if (ET.reagents.total_volume > 0)
-				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")

@@ -205,9 +205,9 @@
 	//KEYPAD AND LOCKSAASDASD
 	if (istype(W,/obj/item/weapon/keypad))
 		if(haslock)
-			user << "This door already has a lock!"
+			to_chat(user, "This door already has a lock!")
 		else
-			user << "You attach the " + W.name + " to the door!"
+			to_chat(user, "You attach the " + W.name + " to the door!")
 			src.name = name + "("+W.name+")"
 			//LATER WE WILL ADD A SWITCH TO CHECK FOR EACH LOCKTYPE APPROPRIATELY
 			src.locktype = "KEYPAD"
@@ -215,7 +215,7 @@
 			src.lockstate = "keypad_door_overlay"
 			var/input_code = input(user, "Input a code, only the first four characters will be used.","Keypad Code", keycode) as text
 			keycode = sanitizeName(input_code, 4, TRUE)
-			user << "<span class='notice'> Code set to: " + keycode + "!</span>"
+			to_chat(user, "<span class='notice'> Code set to: " + keycode + "!</span>")
 			update_lock_overlay()
 			playsound(src, 'sound/machines/click.ogg', 60)
 	//If the door has a lock.
@@ -240,7 +240,7 @@
 
 	else if (istype(W,/obj/item/weapon)) //not sure, can't not just weapons get passed to this proc?
 		hardness -= W.force/100
-		user << "You hit the [name] with your [W.name]!"
+		to_chat(user, "You hit the [name] with your [W.name]!")
 		CheckHardness()
 	else
 		attack_hand(user)
@@ -298,7 +298,7 @@
 				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 				return
 		if (W.code != custom_code)
-			user << "This key does not match this lock!"
+			to_chat(user, "This key does not match this lock!")
 	else if (istype(W, /obj/item/weapon/storage/belt/keychain))
 		for (var/obj/item/weapon/key/KK in W.contents)
 			if (KK.code == custom_code)
@@ -312,14 +312,14 @@
 					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 					return
 		if (W.code != custom_code)
-			user << "None of the keys match this lock!"
+			to_chat(user, "None of the keys match this lock!")
 	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You pound the bars uselessly!"//sucker
+		to_chat(user, "You pound the bars uselessly!")
 	else if (istype(W,/obj/item/weapon/wrench) || istype(W,/obj/item/weapon/hammer))//if it is a wrench
 		if (state == 0)
-			user << "You need to open the door first."
+			to_chat(user, "You need to open the door first.")
 		else
-			user << "<span class='notice'>You start disassembling the [src]...</span>"
+			to_chat(user, "<span class='notice'>You start disassembling the [src]...</span>")
 			playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
 			if (do_after(user, 30, target = src))
 				for (var/i = TRUE, i <= buildstackamount, i++)
@@ -331,20 +331,20 @@
 			var/mob/living/human/H = user
 			visible_message("<span class = 'danger'>[user] starts picking the [src.name]'s lock with the [W]!</span>")
 			if (H.getStatCoeff("dexterity") < 1.7)
-				user << "You don't have the skills to use this."
+				to_chat(user, "You don't have the skills to use this.")
 				return
 			else
 				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
 					if(prob(H.getStatCoeff("dexterity")*35))
-						user << "<span class='notice'>You pick the lock.</span>"
+						to_chat(user, "<span class='notice'>You pick the lock.</span>")
 						src.locked = 0
 						return
 					else if (prob(60))
 						qdel(W)
-						user << "<span class='warning'>Your lockpick broke!</span>"
+						to_chat(user, "<span class='warning'>Your lockpick broke!</span>")
 						return
 					else
-						user << "<span class='warning'>You failed to pick the lock!</span>"
+						to_chat(user, "<span class='warning'>You failed to pick the lock!</span>")
 						return
 				return
 	else
@@ -364,7 +364,7 @@
 				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 				return
 		if (W.code != custom_code)
-			user << "This key does not match this lock!"
+			to_chat(user, "This key does not match this lock!")
 	else if (istype(W, /obj/item/weapon/storage/belt/keychain))
 		for (var/obj/item/weapon/key/KK in W.contents)
 			if (KK.code == custom_code)
@@ -378,14 +378,14 @@
 					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 					return
 		if (W.code != custom_code)
-			user << "None of the keys match this lock!"
+			to_chat(user, "None of the keys match this lock!")
 	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/weldingtool)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You pound the bars uselessly!"//sucker
+		to_chat(user, "You pound the bars uselessly!")
 	else if (istype(W,/obj/item/weapon/weldingtool))//if it is a welding tool
 		if (state == 0)
-			user << "You need to open the door first."
+			to_chat(user, "You need to open the door first.")
 		else
-			user << "<span class='notice'>You start disassembling the [src]...</span>"
+			to_chat(user, "<span class='notice'>You start disassembling the [src]...</span>")
 			playsound(loc, 'sound/effects/extinguish.ogg', 50, TRUE)
 			if (do_after(user, 30, target = src))
 				for (var/i = TRUE, i <= buildstackamount, i++)
@@ -397,20 +397,20 @@
 			var/mob/living/human/H = user
 			visible_message("<span class = 'danger'>[user] starts picking the [src.name]'s lock with the [W]!</span>")
 			if (H.getStatCoeff("dexterity") < 1.7)
-				user << "You don't have the skills to use this."
+				to_chat(user, "You don't have the skills to use this.")
 				return
 			else
 				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
 					if(prob(H.getStatCoeff("dexterity")*35))
-						user << "<span class='notice'>You pick the lock.</span>"
+						to_chat(user, "<span class='notice'>You pick the lock.</span>")
 						src.locked = 0
 						return
 					else if (prob(60))
 						qdel(W)
-						user << "<span class='warning'>Your lockpick broke!</span>"
+						to_chat(user, "<span class='warning'>Your lockpick broke!</span>")
 						return
 					else
-						user << "<span class='warning'>You failed to pick the lock!</span>"
+						to_chat(user, "<span class='warning'>You failed to pick the lock!</span>")
 						return
 				return
 	else

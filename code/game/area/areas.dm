@@ -191,7 +191,7 @@
 		else
 			H.AdjustStunned(1)
 			H.AdjustWeakened(1)
-		mob << "<span class='notice'>The sudden appearance of gravity makes you fall to the floor!</span>"
+		to_chat(mob, "<span class='notice'>The sudden appearance of gravity makes you fall to the floor!</span>")
 
 /area/proc/has_gravity()
 	return has_gravity
@@ -213,20 +213,20 @@
 			H.emote("gasp")
 			H.emote("cry")
 			H.emote("choke")
-			mob << "<span class='notice'>You gasp and shudder as the void boils you alive!!</span>"
+			to_chat(mob, "<span class='notice'>You gasp and shudder as the void boils you alive!!</span>")
 			spawn(100)
 				H.burn_skin(25)
 				H.adjustBurnLoss(30)
 				H.emote("gasp")
 				H.emote("choke")
 				H.adjustBodyTemp(-200)
-				mob << "<span class='notice'>You gasp and shudder as the void boils you alive!!</span>"
+				to_chat(mob, "<span class='notice'>You gasp and shudder as the void boils you alive!!</span>")
 				spawn(100)
 					H.burn_skin(25)
 					H.adjustBurnLoss(20)
 					H.emote("gasp")
 					H.emote("choke")
-					mob << "<span class='notice'>You gasp and shudder as the void boils you alive!!</span>"
+					to_chat(mob, "<span class='notice'>You gasp and shudder as the void boils you alive!!</span>")
 
 /area/proc/arty_act(loss)
 	if (prob(25))

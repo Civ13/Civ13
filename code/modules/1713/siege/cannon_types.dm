@@ -506,7 +506,7 @@
 	set name = "Retrieve"
 	set src in range(1, usr)
 	if (usr.l_hand && usr.r_hand)
-		usr << (SPAN_WARNING("You need to have a hand free to do this."))
+		to_chat(usr, (SPAN_WARNING("You need to have a hand free to do this.")))
 		return
 	usr.face_atom(src)
 	visible_message(SPAN_WARNING("[usr] starts to get \the [src] from the ground."))
@@ -526,7 +526,7 @@
 /obj/structure/cannon/mortar/foldable/attackby(obj/item/I as obj, mob/M as mob)
 	if (istype(I, ammotype))
 		if (loaded.len)
-			M << "<span class = 'warning'>There's already a [loaded[1]] loaded.</span>"
+			to_chat(M, "<span class = 'warning'>There's already a [loaded[1]] loaded.</span>")
 			return
 		// load first and only slot
 		if (do_after(M, 45, src, can_move = TRUE))

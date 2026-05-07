@@ -22,16 +22,16 @@
 			sandwich_limit += 4
 
 	if (contents.len > sandwich_limit)
-		user << "<span class = 'red'>If you put anything else on \the [src] it's going to collapse.</span>"
+		to_chat(user, "<span class = 'red'>If you put anything else on \the [src] it's going to collapse.</span>")
 		return
 	else if (istype(W,/obj/item/weapon/material/shard))
-		user << "<span class = 'notice'>You hide [W] in \the [src].</span>"
+		to_chat(user, "<span class = 'notice'>You hide [W] in \the [src].</span>")
 		user.drop_item()
 		W.loc = src
 		update()
 		return
 	else if (istype(W,/obj/item/weapon/reagent_containers/food/snacks))
-		user << "<span class = 'notice'>You layer [W] over \the [src].</span>"
+		to_chat(user, "<span class = 'notice'>You layer [W] over \the [src].</span>")
 		var/obj/item/weapon/reagent_containers/F = W
 		if (F && F.reagents)
 			F.reagents.trans_to_obj(src, F.reagents.total_volume)
@@ -82,7 +82,7 @@
 	..(user)
 	if (contents)
 		var/obj/item/O = pick(contents)
-		user << "<span class = 'notice'>You think you can see [O.name] in there.</span>"
+		to_chat(user, "<span class = 'notice'>You think you can see [O.name] in there.</span>")
 
 /obj/item/weapon/reagent_containers/food/snacks/csandwich/attack(mob/M as mob, mob/user as mob, def_zone)
 
@@ -97,6 +97,6 @@
 		H = M
 
 	if (H && shard && M == user) //This needs a check for feeding the food to other people, but that could be abusable.
-		H << "<span class = 'red'>You lacerate your mouth on a [shard.name] in the sandwich!</span>"
+		to_chat(H, "<span class = 'red'>You lacerate your mouth on a [shard.name] in the sandwich!</span>")
 		H.adjustBruteLoss(5) //TODO: Target head if human.
 	..()

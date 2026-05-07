@@ -33,13 +33,13 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/special_check(mob/user)
 	if (gun_safety && safetyon)
-		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		to_chat(user, "<span class='warning'>You can't fire \the [src] while the safety is on!</span>")
 		return FALSE
 	if (!user.has_empty_hand(both = FALSE) && one_handed == FALSE)
-		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
+		to_chat(user, "<span class='warning'>You need both hands to fire \the [src]!</span>")
 		return FALSE
 	if (jammed_until > world.time)
-		user << "<span class = 'danger'>\The [src] has jammed! You can't fire it until it has unjammed.</span>"
+		to_chat(user, "<span class = 'danger'>\The [src] has jammed! You can't fire it until it has unjammed.</span>")
 		return FALSE
 	return TRUE
 
@@ -681,7 +681,7 @@
 		folded = FALSE
 		recoil *= 1.5
 		icon_state = "[base_icon]_folded"
-		usr << "You extend the stock on \the [src]."
+		to_chat(usr, "You extend the stock on \the [src].")
 		equiptimer = 15
 		set_stock()
 		update_icon()
@@ -689,7 +689,7 @@
 		recoil /= 1.5
 		folded = TRUE
 		icon_state = "[base_icon]"
-		usr << "You collapse the stock on \the [src]."
+		to_chat(usr, "You collapse the stock on \the [src].")
 		equiptimer = 7
 		set_stock()
 		update_icon()
@@ -765,7 +765,7 @@
 		folded = FALSE
 		recoil *= 1.5
 		icon_state = "[base_icon]_folded"
-		usr << "You extend the stock on \the [src]."
+		to_chat(usr, "You extend the stock on \the [src].")
 		equiptimer = 15
 		set_stock()
 		update_icon()
@@ -773,7 +773,7 @@
 		recoil /= 1.5
 		folded = TRUE
 		icon_state = "[base_icon]"
-		usr << "You collapse the stock on \the [src]."
+		to_chat(usr, "You collapse the stock on \the [src].")
 		equiptimer = 7
 		set_stock()
 		update_icon()
@@ -819,7 +819,7 @@
 		folded = FALSE
 		recoil *= 1.5
 		icon_state = "[base_icon]_folded"
-		usr << "You extend the stock on \the [src]."
+		to_chat(usr, "You extend the stock on \the [src].")
 		equiptimer = 15
 		set_stock()
 		update_icon()
@@ -827,7 +827,7 @@
 		recoil /= 1.5
 		folded = TRUE
 		icon_state = "[base_icon]"
-		usr << "You collapse the stock on \the [src]."
+		to_chat(usr, "You collapse the stock on \the [src].")
 		equiptimer = 7
 		set_stock()
 		update_icon()
@@ -891,7 +891,7 @@
 		folded = FALSE
 		recoil *= 1.5
 		icon_state = "[base_icon]_folded"
-		usr << "You extend the stock on \the [src]."
+		to_chat(usr, "You extend the stock on \the [src].")
 		equiptimer = 15
 		set_stock()
 		update_icon()
@@ -899,7 +899,7 @@
 		recoil /= 1.5
 		folded = TRUE
 		icon_state = "[base_icon]"
-		usr << "You collapse the stock on \the [src]."
+		to_chat(usr, "You collapse the stock on \the [src].")
 		equiptimer = 7
 		set_stock()
 		update_icon()
@@ -1680,7 +1680,7 @@
 		folded = FALSE
 		recoil *= 1.5
 		icon_state = "[base_icon]_folded"
-		usr << "You extend the stock on \the [src]."
+		to_chat(usr, "You extend the stock on \the [src].")
 		equiptimer = 15
 		set_stock()
 		update_icon()
@@ -1688,7 +1688,7 @@
 		recoil /= 1.5
 		folded = TRUE
 		icon_state = "[base_icon]"
-		usr << "You collapse the stock on \the [src]."
+		to_chat(usr, "You collapse the stock on \the [src].")
 		equiptimer = 7
 		set_stock()
 		update_icon()

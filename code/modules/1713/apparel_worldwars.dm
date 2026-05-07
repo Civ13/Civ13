@@ -2017,13 +2017,13 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 				item_state = "geruni_ww2_winter"
 				worn_state = "geruni_ww2_winter"
 				item_state_slots["slot_w_uniform"] = "geruni_ww2_winter"
-				usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+				to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 				rolled = FALSE
 			else if (!rolled)
 				item_state = "geruni_ww2_winter_rolled"
 				worn_state = "geruni_ww2_winter_rolled"
 				item_state_slots["slot_w_uniform"] = "geruni_ww2_winter_rolled"
-				usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+				to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 				rolled = TRUE
 		else
 */
@@ -2269,7 +2269,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 			worn_state = "sovuni_rolled"
 			icon_state = "sovuni_rolled"
 			item_state_slots["w_uniform"] = "sovuni_rolled"
-			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 			usr.visible_message("<span class = 'notice'>[usr] rolls up their uniform's sleeves.</span>", "<span class = 'notice'>You roll up your uniform's sleeves.</span>" )
 			rolled = TRUE
 			heat_protection = ARMS
@@ -2704,11 +2704,11 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	if (icon_state == "ushanka")
 		icon_state = "ushanka_up"
 		item_state = "ushanka_up"
-		user << "You raise the ear flaps on the ushanka."
+		to_chat(user, "You raise the ear flaps on the ushanka.")
 	else
 		icon_state = "ushanka"
 		item_state = "ushanka"
-		user << "You lower the ear flaps on the ushanka."
+		to_chat(user, "You lower the ear flaps on the ushanka.")
 
 /obj/item/clothing/head/ww2/sov_ushanka/nomads
 	name = "ushanka"
@@ -2726,11 +2726,11 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	if (icon_state == "ushanka_plain")
 		icon_state = "ushanka_plain_up"
 		item_state = "ushanka_plain_up"
-		user << "You raise the ear flaps on the ushanka."
+		to_chat(user, "You raise the ear flaps on the ushanka.")
 	else
 		icon_state = "ushanka_plain"
 		item_state = "ushanka_plain"
-		user << "You lower the ear flaps on the ushanka."
+		to_chat(user, "You lower the ear flaps on the ushanka.")
 
 /obj/item/clothing/head/ww2/nkvd_cap
 	name = "NKVD cap"
@@ -2944,7 +2944,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	if (!istype(W)) return//I really don't understand why this check is needed
 	if (istype(W, /obj/item/stack/material/rope))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You put netting on the helmet.</span>"
+		to_chat(user, "<span class='notice'>You put netting on the helmet.</span>")
 		new/obj/item/clothing/head/helmet/ww2/ustannet(user.loc)
 		qdel(src)
 		qdel(W)
@@ -2959,7 +2959,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		worn_state = "m1_tan_netting"
 		body_parts_covered = HEAD
 		item_state_slots["slot_wear_head"] = "m1_tan_netting"
-		usr << "<span class = 'danger'>You switch out your tan netting for green netting.</span>"
+		to_chat(usr, "<span class = 'danger'>You switch out your tan netting for green netting.</span>")
 		update_icon()
 		color = FALSE
 		usr.update_inv_head(1)
@@ -2969,7 +2969,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		worn_state = "m1_green_netting"
 		body_parts_covered = HEAD
 		item_state_slots["slot_wear_head"] = "m1_green_netting"
-		usr << "<span class = 'danger'>You switch out your green netting for tan netting.</span>"
+		to_chat(usr, "<span class = 'danger'>You switch out your green netting for tan netting.</span>")
 		update_icon()
 		color = TRUE
 		usr.update_inv_head(1)
@@ -2988,7 +2988,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	if (!istype(W)) return//I really don't understand why this check is needed
 	if (istype(W, /obj/item/stack/material/leaf))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You put foliage on the helmet.</span>"
+		to_chat(user, "<span class='notice'>You put foliage on the helmet.</span>")
 		new/obj/item/clothing/head/helmet/ww2/usm1camogreen(user.loc)
 		qdel(src)
 		qdel(W)
@@ -3147,7 +3147,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		worn_state = "[base_state]"
 		icon_state = "[base_state]"
 		item_state_slots["w_uniform"] = "[base_state]"
-		usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+		to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 		rolled = FALSE
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 		update_clothing_icon()
@@ -3156,7 +3156,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		worn_state = "[base_state]_rolled"
 		icon_state = "[base_state]_rolled"
 		item_state_slots["w_uniform"] = "[base_state]_rolled"
-		usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+		to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 		rolled = TRUE
 		heat_protection = ARMS
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
@@ -3166,7 +3166,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		worn_state = "upa_uni_f"
 		icon_state = "[base_state]"
 		item_state_slots["w_uniform"] = "[base_state]"
-		usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+		to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 		rolled = FALSE
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 		update_clothing_icon()
@@ -3175,7 +3175,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		worn_state = "upa_uni_rolled_f"
 		icon_state = "[base_state]_rolled"
 		item_state_slots["w_uniform"] = "[base_state]_rolled"
-		usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+		to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 		rolled = TRUE
 		heat_protection = ARMS
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS

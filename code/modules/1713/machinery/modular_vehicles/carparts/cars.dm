@@ -879,7 +879,7 @@
 	if (!ishuman(H))
 		return
 	if (map.ID == MAP_THE_ART_OF_THE_DEAL && (H.civilization != "Sheriff Office" && H.civilization != "Paramedics"))
-		usr << "<span class ='warning'>You're not part of the emergency services.</span>"
+		to_chat(usr, "<span class ='warning'>You're not part of the emergency services.</span>")
 		return
 	on = !on
 	if (on)

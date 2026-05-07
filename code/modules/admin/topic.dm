@@ -1,3 +1,15 @@
+//probably a bit iffy - will hopefully figure out a better solution
+/proc/check_if_greater_rights_than(client/other)
+	if (usr && usr.client)
+		if (usr.client.holder)
+			if (!other || !other.holder)
+				return TRUE
+			if (usr.client.holder.rights != other.holder.rights)
+				if ( (usr.client.holder.rights & other.holder.rights) == other.holder.rights )
+					return TRUE	//we have all the rights they have and more
+		to_chat(usr, "<font color='red'>Error: Cannot proceed. They have more or equal rights to us.</font>")
+	return FALSE
+
 /datum/admins/Topic(href, href_list)
 	..()
 
@@ -95,7 +107,7 @@
 			D.rights ^= permissionlist[new_permission]
 
 			var/client/C = directory[adm_ckey]
-			C << "[key_name_admin(usr)] has toggled your permission: [new_permission]."
+			to_chat(C, "[key_name_admin(usr)] has toggled your permission: [new_permission].")
 			message_admins("[key_name_admin(usr)] toggled the [new_permission] permission of [adm_ckey]", key_name_admin(usr))
 			log_admin("[key_name(usr)] toggled the [new_permission] permission of [adm_ckey]")
 			log_admin_permission_modification(adm_ckey, permissionlist[new_permission])
@@ -407,9 +419,9 @@
 				return
 			var/reason = sanitize(input("Please enter reason"))
 			if (!reason)
-				M << "<span class = 'userdanger'>You have been kicked from the server.</span>"
+				to_chat(M, "<span class = 'userdanger'>You have been kicked from the server.</span>")
 			else
-				M << "<span class = 'userdanger'>You have been kicked from the server. ([reason])</span>"
+				to_chat(M, "<span class = 'userdanger'>You have been kicked from the server. ([reason])</span>")
 			log_admin("[key_name(usr)] booted [key_name(M)].")
 			message_admins(SPAN_NOTICE("[key_name_admin(usr)] booted [key_name_admin(M)]."), key_name_admin(usr))
 			//M.client = null

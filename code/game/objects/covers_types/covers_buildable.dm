@@ -51,18 +51,18 @@
 /obj/covers/dirt_wall/blocks/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (W.type == /obj/item/weapon/barrier)
 		if (stage == 3)
-			user << "You start adding dirt to the wall..."
+			to_chat(user, "You start adding dirt to the wall...")
 			if (do_after(user, 20, src) && W)
-				user << "You finish adding dirt to the wall, completing it."
+				to_chat(user, "You finish adding dirt to the wall, completing it.")
 				qdel(W)
 				new /obj/covers/dirt_wall/blocks(loc)
 				qdel(src)
 				return
 		else if (stage <= 2)
-			user << "You start adding dirt to the wall..."
+			to_chat(user, "You start adding dirt to the wall...")
 			if (do_after(user, 20, src))
 				if (stage <= 2)
-					user << "You finish adding dirt to the wall."
+					to_chat(user, "You finish adding dirt to the wall.")
 					stage = (stage+1)
 					icon_state = "drysod_wall_inc[stage]"
 					base_icon_state = icon_state
@@ -137,9 +137,9 @@
 /obj/covers/clay_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/claybricks/fired))
 		if (stage >= 2)
-			user << "You start adding clay blocks to the wall..."
+			to_chat(user, "You start adding clay blocks to the wall...")
 			if (do_after(user, 20, src) && W)
-				user << "You finish adding clay blocks to the wall, completing it."
+				to_chat(user, "You finish adding clay blocks to the wall, completing it.")
 				qdel(W)
 				var/obj/covers/clay_wall/S = new /obj/covers/clay_wall(loc)
 				qdel(src)
@@ -155,10 +155,10 @@
 					qdel(S)
 				return
 		else if (stage <= 1)
-			user << "You start adding clay blocks to the wall..."
+			to_chat(user, "You start adding clay blocks to the wall...")
 			if (do_after(user, 20, src))
 				if (stage <= 1)
-					user << "You finish clay block to the wall."
+					to_chat(user, "You finish clay block to the wall.")
 					stage += 1
 					icon_state = "claybrickwall_inc[stage]"
 					base_icon_state = icon_state
@@ -228,9 +228,9 @@
 /obj/covers/clay_wall/sumerian/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/claybricks/fired))
 		if (stage >= 2)
-			user << "You start adding clay to the wall..."
+			to_chat(user, "You start adding clay to the wall...")
 			if (do_after(user, 20, src) && W)
-				user << "You finish adding clay to the wall, completing it."
+				to_chat(user, "You finish adding clay to the wall, completing it.")
 				qdel(W)
 				var/obj/covers/clay_wall/sumerian/S = new /obj/covers/clay_wall/sumerian(loc)
 				qdel(src)
@@ -260,10 +260,10 @@
 						S.dir = WEST
 				return
 		else if (stage <= 1)
-			user << "You start adding clay blocks to the wall..."
+			to_chat(user, "You start adding clay blocks to the wall...")
 			if (do_after(user, 20, src))
 				if (stage <= 1)
-					user << "You finish adding clay to the wall."
+					to_chat(user, "You finish adding clay to the wall.")
 					stage += 1
 					icon_state = "sumerian-wall_inc[stage]"
 					base_icon_state = icon_state
@@ -303,7 +303,7 @@
 				U.drop_from_inventory(I)
 				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
 				U.put_in_hands(SHK)
-				U << "\The [I] turns into a shank."
+				to_chat(U, "\The [I] turns into a shank.")
 				qdel(I)
 	..()
 
@@ -337,7 +337,7 @@
 				U.drop_from_inventory(I)
 				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
 				U.put_in_hands(SHK)
-				U << "\The [I] turns into a shank."
+				to_chat(U, "\The [I] turns into a shank.")
 				qdel(I)
 	..()
 
@@ -372,7 +372,7 @@
 				U.drop_from_inventory(I)
 				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
 				U.put_in_hands(SHK)
-				U << "\The [I] turns into a shank."
+				to_chat(U, "\The [I] turns into a shank.")
 				qdel(I)
 	..()
 
@@ -424,9 +424,9 @@
 
 /obj/covers/cement_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired/cement))
-		user << "You start adding cement to the wall..."
+		to_chat(user, "You start adding cement to the wall...")
 		if (do_after(user, 20, src) && W)
-			user << "You finish adding cement to the wall, completing it."
+			to_chat(user, "You finish adding cement to the wall, completing it.")
 			qdel(W)
 			new /obj/covers/cement_wall(loc)
 			qdel(src)
@@ -470,9 +470,9 @@
 
 /obj/covers/brick_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired))
-		user << "You start adding bricks to the wall..."
+		to_chat(user, "You start adding bricks to the wall...")
 		if (do_after(user, 20, src) && W)
-			user << "You finish adding bricks to the wall, completing it."
+			to_chat(user, "You finish adding bricks to the wall, completing it.")
 			var/choice = WWinput(user, "What type of wall?","Brick Walls","Wall",list("Wall","Window","Full Window"))
 			if (choice == "Wall")
 				qdel(W)

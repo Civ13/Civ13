@@ -25,9 +25,9 @@
 /process/nanoUI/reset_current_list()
 	PROCESS_USE_FASTEST_LIST(GLOB.nanomanager.processing_uis)
 
-/process/nanoUI/statProcess()
-	..()
-	stat(null, "[GLOB.nanomanager.processing_uis.len] UIs")
+/process/nanoUI/statProcess(client/C)
+	..(C)
+	C.add_stat("[GLOB.nanomanager.processing_uis.len] UIs")
 
 /process/nanoUI/htmlProcess()
 	return ..() + "[GLOB.nanomanager.processing_uis.len] UIs"

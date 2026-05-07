@@ -64,12 +64,12 @@ default behaviour is:
 			for (var/mob/living/M in range(tmob, TRUE))
 				if (tmob.pinned.len ||  ((M.pulling == tmob && ( tmob.restrained() && !( M.restrained() ) && M.stat == FALSE)) || locate(/obj/item/weapon/grab, tmob.grabbed_by.len)) )
 					if ( !(world.time % 5) )
-						src << "<span class='warning'>[tmob] is restrained, you cannot push past.</span>"
+						to_chat(src, "<span class='warning'>[tmob] is restrained, you cannot push past.</span>")
 					now_pushing = FALSE
 					return
 				if ( tmob.pulling == M && ( M.restrained() && !( tmob.restrained() ) && tmob.stat == FALSE) )
 					if ( !(world.time % 5) )
-						src << "<span class='warning'>[tmob] is restraining [M], you cannot push past.</span>"
+						to_chat(src, "<span class='warning'>[tmob] is restraining [M], you cannot push past.</span>")
 					now_pushing = FALSE
 					return
 
@@ -186,10 +186,10 @@ default behaviour is:
 		if (WWinput(src, "Are you sure you want to succumb? You only live once.", "", "Cancel", list("Succumb", "Cancel")) == "Succumb")
 			adjustBrainLoss(300)
 			death()
-			src << "<span class = 'notice'>You have given up life and succumbed to death.</span>"
+			to_chat(src, "<span class = 'notice'>You have given up life and succumbed to death.</span>")
 			return
 	else
-		src << "<span class = 'notice'>You cannot succumb in this map unless you have very high damage!</span>"
+		to_chat(src, "<span class = 'notice'>You cannot succumb in this map unless you have very high damage!</span>")
 		return
 
 
@@ -699,9 +699,9 @@ default behaviour is:
 	qdel(possessor)
 /*
 	if (round_is_spooky(6)) // Six or more active cultists.
-		src << "<span class='notice'>You reach out with tendrils of ectoplasm and invade the mind of \the [src]...</span>"
-		src << "<b>You have assumed direct control of \the [src].</b>"
-		src << "<span class='notice'>Due to the spookiness of the round, you have taken control of the poor animal as an invading, possessing spirit - roleplay accordingly.</span>"
+		to_chat(src, "<span class='notice'>You reach out with tendrils of ectoplasm and invade the mind of \the [src]...</span>")
+		to_chat(src, "<b>You have assumed direct control of \the [src].</b>")
+		to_chat(src, "<span class='notice'>Due to the spookiness of the round, you have taken control of the poor animal as an invading, possessing spirit - roleplay accordingly.</span>")
 		universal_speak = TRUE
 		universal_understand = TRUE
 		//cultify() // Maybe another time.
@@ -801,7 +801,7 @@ default behaviour is:
 	if (ishuman(AM))
 		var/mob/living/human/H = AM
 		if (H.pull_damage())
-			src << SPAN_WARNING("<b>Pulling \the [H] in their current condition would probably be a bad idea.</b>")
+			to_chat(src, SPAN_WARNING("<b>Pulling \the [H] in their current condition would probably be a bad idea.</b>"))
 */
 	//Attempted fix for people flying away through space when cuffed and dragged.
 	if (ismob(AM))

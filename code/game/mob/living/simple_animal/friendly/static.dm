@@ -30,7 +30,7 @@
 		if (istype(W, /obj/item/weapon/fishing/modern))
 			if (do_after(H, 120, src))
 				if (prob(40))
-					H << "You got a fish!"
+					to_chat(H, "You got a fish!")
 					counter = (counter-1)
 					if (species == "salmon")
 						new/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon(H.loc)
@@ -43,12 +43,12 @@
 					get_fish()
 					return
 				else
-					H << "You can't seem to get anything to bite..."
+					to_chat(H, "You can't seem to get anything to bite...")
 					return
 		else
 			if (do_after(H, 150, src))
 				if (prob(30))
-					H << "You got a fish!"
+					to_chat(H, "You got a fish!")
 					counter = (counter-1)
 					if (species == "salmon")
 						new/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon(H.loc)
@@ -61,7 +61,7 @@
 					get_fish()
 					return
 				else
-					H << "You can't seem to get anything to bite..."
+					to_chat(H, "You can't seem to get anything to bite...")
 					return
 	else if (istype(W, /obj/item/weapon/branch) && counter > 0)
 		var/obj/item/weapon/branch/B = W
@@ -69,7 +69,7 @@
 			H.visible_message("[H] starts fishing.")
 			if (do_after(H, 120, src))
 				if (prob(20))
-					H << "You got a fish!"
+					to_chat(H, "You got a fish!")
 					counter = (counter-1)
 					if (species == "salmon")
 						new/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon(H.loc)
@@ -82,7 +82,7 @@
 					get_fish()
 					return
 				else
-					H << "You can't seem to get anything to bite..."
+					to_chat(H, "You can't seem to get anything to bite...")
 					return
 /obj/structure/fish/proc/get_fish()
 	if (counter < 2)

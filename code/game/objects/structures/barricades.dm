@@ -24,13 +24,13 @@
 		else if ("stone")
 			//Swords no work on stone, unga dunga no knify wifey the wall.
 			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
-				user << "Your [W.name] glances off the [src.name]!"
+				to_chat(user, "Your [W.name] glances off the [src.name]!")
 				return
 			else
 				//Damage the wall.
 		else if ("metal" || "steel")
 			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
-				user << "Your [W.name] glances off the [src.name]!"
+				to_chat(user, "Your [W.name] glances off the [src.name]!")
 				returns
 			else
 				//Damage the wall.
@@ -68,7 +68,7 @@
 			return //hitting things with the wrong type of stack usually doesn't produce messages, and probably doesn't need to.
 		if (health < maxhealth)
 			if (D.amount < 1)
-				user << SPAN_WARNING("You need one sheet of [material.display_name] to repair \the [src].")
+				to_chat(user, SPAN_WARNING("You need one sheet of [material.display_name] to repair \the [src]."))
 				return
 			visible_message(SPAN_NOTICE("[user] begins to repair \the [src]."))
 			if (do_after(user,8 SECONDS,src) && health < maxhealth)
@@ -99,7 +99,7 @@
 				SPAN_DANGER("You stop deploying \the [W.name]."))
 		return
 	if (istype(W, /obj/item/weapon/poster/religious))
-		user << SPAN_NOTICE("You start placing the [W] on \the [src]...")
+		to_chat(user, SPAN_NOTICE("You start placing the [W] on \the [src]..."))
 		if (do_after(user, 7 SECONDS, src))
 			visible_message("[user] places the [W] on \the [src].")
 			var/obj/structure/poster/religious/RP = new/obj/structure/poster/religious(get_turf(src))
@@ -112,7 +112,7 @@
 			qdel(W)
 		return
 	if (istype(W, /obj/item/weapon/poster/faction))
-		user << SPAN_NOTICE("You start placing the [W] on \the [src]...")
+		to_chat(user, SPAN_NOTICE("You start placing the [W] on \the [src]..."))
 		if (do_after(user, 7 SECONDS, src))
 			visible_message("[user] places \the [W] on the [src].")
 			var/obj/structure/poster/faction/RP = new/obj/structure/poster/faction(get_turf(src))
@@ -136,7 +136,7 @@
 		try_destroy()
 	else
 		if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-			user << "You uselessly hit the wall!"
+			to_chat(user, "You uselessly hit the wall!")
 		return
 	..()
 
@@ -901,7 +901,7 @@
 	if (user.a_intent == I_HELP)
 		user.drop_from_inventory(W)
 		W.forceMove(loc)
-		user << "You put \the [W] on the [src]."
+		to_chat(user, "You put \the [W] on the [src].")
 	else
 		..()
 

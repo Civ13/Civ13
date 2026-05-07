@@ -191,7 +191,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 /obj/item/weapon/reagent_containers/food/snacks/attack(mob/M as mob, mob/user as mob, def_zone)
 	if (reagents)
 		if (!reagents.total_volume)
-			user << "<span class='danger'>None of [src] left!</span>"
+			to_chat(user, "<span class='danger'>None of [src] left!</span>")
 			over(user)
 			return FALSE
 	if (istype(M, /mob/living/human))
@@ -202,29 +202,29 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 			if (istype(C,/mob/living/human))
 				var/mob/living/human/H = M
 				if (!H.check_has_mouth())
-					user << "Where do you intend to put \the [src]? You don't have a mouth!"
+					to_chat(user, "Where do you intend to put \the [src]? You don't have a mouth!")
 					return
 				var/obj/item/blocked = H.check_mouth_coverage()
 				if (blocked)
-					user << "<span class='warning'>\The [blocked] is in the way!</span>"
+					to_chat(user, "<span class='warning'>\The [blocked] is in the way!</span>")
 					return
 				if (H.gorillaman || H.find_trait("Vegan"))
 					if (non_vegetarian)
-						user << "<span class='warning'>You are a vegan/herbivore! You can't eat this!</span>"
+						to_chat(user, "<span class='warning'>You are a vegan/herbivore! You can't eat this!</span>")
 						return
 				else if (H.wolfman || H.crab || H.find_trait("Carnivore"))
 					if (!non_vegetarian)
-						user << "<span class='warning'>You are a carnivore! You can't eat this!</span>"
+						to_chat(user, "<span class='warning'>You are a carnivore! You can't eat this!</span>")
 						return
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) //puts a limit on how fast people can eat/drink things
 			if (fullness <= 50)
-				C << "<span class='danger'>You hungrily chew out a piece of [src] and gobble it!</span>"
+				to_chat(C, "<span class='danger'>You hungrily chew out a piece of [src] and gobble it!</span>")
 			if (fullness > 50 && fullness <= 150)
-				C << "<span class='notice'>You hungrily begin to eat [src].</span>"
+				to_chat(C, "<span class='notice'>You hungrily begin to eat [src].</span>")
 			if (fullness > 150 && fullness <= 580)
-				C << "<span class='notice'>You take a bite of [src].</span>"
+				to_chat(C, "<span class='notice'>You take a bite of [src].</span>")
 			if (fullness > 580)
-				C << "<span class='danger'>You cannot force any more of [src] to go down your throat.</span>"
+				to_chat(C, "<span class='danger'>You cannot force any more of [src] to go down your throat.</span>")
 				return FALSE
 		else //If you're feeding somebody
 			if (!M.can_force_feed(user, src))
@@ -233,11 +233,11 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 				var/mob/living/human/H = M
 				if (H.gorillaman)
 					if (non_vegetarian)
-						user << "<span class='warning'>[H] is an herbivore! They can't eat this!</span>"
+						to_chat(user, "<span class='warning'>[H] is an herbivore! They can't eat this!</span>")
 						return
 				else if (H.wolfman || H.crab)
 					if (!non_vegetarian)
-						user << "<span class='warning'>[H] is a carnivore! They can't eat this!</span>"
+						to_chat(user, "<span class='warning'>[H] is a carnivore! They can't eat this!</span>")
 						return
 			if (fullness <= 580)
 				user.visible_message("<span class='danger'>[user] attempts to feed [M] [src].</span>")
@@ -268,11 +268,11 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	if (bitecount == 0)
 		return
 	else if (bitecount == 1)
-		user << "<span class='notice'>\The [src] was bitten by someone!</span>"
+		to_chat(user, "<span class='notice'>\The [src] was bitten by someone!</span>")
 	else if (bitecount <= 3)
-		user << "<span class='notice'>\The [src] was bitten [bitecount] time\s!</span>"
+		to_chat(user, "<span class='notice'>\The [src] was bitten [bitecount] time\s!</span>")
 	else
-		user << "<span class='notice'>\The [src] was bitten multiple times!</span>"
+		to_chat(user, "<span class='notice'>\The [src] was bitten multiple times!</span>")
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/is_sliceable()
 	if (slice_path)
@@ -315,7 +315,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 			if (!U.reagents)
 				U.create_reagents(5)
 			if (U.reagents.total_volume > 0)
-				user << "<span class='warning'>You already have something on your [U].</span>"
+				to_chat(user, "<span class='warning'>You already have something on your [U].</span>")
 				return
 			user.visible_message( \
 				"\The [user] scoops up some [src] with \the [U]!", \
@@ -520,7 +520,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		return
 	if (!(proximity && O.is_open_container()))
 		return
-	user << "You crack \the [src] into \the [O]."
+	to_chat(user, "You crack \the [src] into \the [O].")
 	reagents.trans_to(O, reagents.total_volume)
 	user.drop_from_inventory(src)
 	qdel(src)
@@ -551,7 +551,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		return
 	if (!(proximity && O.is_open_container()))
 		return
-	user << "You crack \the [src] into \the [O]."
+	to_chat(user, "You crack \the [src] into \the [O].")
 	reagents.trans_to(O, reagents.total_volume)
 	user.drop_from_inventory(src)
 	qdel(src)
@@ -742,7 +742,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		A = new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
 		A.name = "bear meat cutlet"
 		A.desc = replacetext(desc, "slab", "cutlet")
-		user << "You cut the meat into thin strips."
+		to_chat(user, "You cut the meat into thin strips.")
 		qdel(src)
 	else
 		..()
@@ -861,7 +861,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 
 /obj/item/weapon/reagent_containers/food/snacks/spaghetti/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.sharp || W.edge)
-		user << "You make some noodles from the long spaghetti."
+		to_chat(user, "You make some noodles from the long spaghetti.")
 		for (var/v in 1 to pick(1,2))
 			new /obj/item/weapon/reagent_containers/food/snacks/noodles(get_turf(src))
 		qdel(src)
@@ -1850,10 +1850,10 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 /obj/item/weapon/reagent_containers/food/snacks/dough/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon/material/kitchen/rollingpin))
 		new /obj/item/weapon/reagent_containers/food/snacks/sliceable/flatdough(get_turf(src))
-		user << "You flatten the dough."
+		to_chat(user, "You flatten the dough.")
 		qdel(src)
 	else if (W.sharp || W.edge)
-		user << "You make some spaghetti from the dough."
+		to_chat(user, "You make some spaghetti from the dough.")
 		for (var/v in 1 to pick(2,3))
 			new /obj/item/weapon/reagent_containers/food/snacks/spaghetti(get_turf(src))
 		qdel(src)
@@ -1861,7 +1861,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 // Dough attack self = Bun
 /obj/item/weapon/reagent_containers/food/snacks/dough/attack_self(mob/user)
 	new /obj/item/weapon/reagent_containers/food/snacks/bun(get_turf(src))
-	user << "You form the dough into a bun."
+	to_chat(user, "You form the dough into a bun.")
 	qdel(src)
 
 // Slicable into 3xdoughslices
@@ -1935,28 +1935,28 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	// Bun + meatpatty = burger
 	if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/patty))
 		new /obj/item/weapon/reagent_containers/food/snacks/burger(src)
-		user << "You make a burger."
+		to_chat(user, "You make a burger.")
 		qdel(W)
 		qdel(src)
 
 	// Bun + cutlet = hamburger
 	else if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/cutlet))
 		new /obj/item/weapon/reagent_containers/food/snacks/burger(src)
-		user << "You make a burger."
+		to_chat(user, "You make a burger.")
 		qdel(W)
 		qdel(src)
 
 	// Bun + sausage = hotdog
 	if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/sausage))
 		new /obj/item/weapon/reagent_containers/food/snacks/hotdog(src)
-		user << "You make a hotdog."
+		to_chat(user, "You make a hotdog.")
 		qdel(W)
 		qdel(src)
 
 	// Bun + cocoa beans = cookie
 	if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/grown/cocoa))
 		new /obj/item/weapon/reagent_containers/food/snacks/cookie(src)
-		user << "You make a cookie!"
+		to_chat(user, "You make a cookie!")
 		qdel(W)
 		qdel(src)
 
@@ -1964,7 +1964,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 /obj/item/weapon/reagent_containers/food/snacks/burger/attackby(obj/item/weapon/reagent_containers/food/snacks/cheesewedge/W as obj, mob/user as mob)
 	if (istype(W))// && !istype(src,/obj/item/weapon/reagent_containers/food/snacks/cheesewedge))
 		new /obj/item/weapon/reagent_containers/food/snacks/cheeseburger(src)
-		user << "You make a cheeseburger."
+		to_chat(user, "You make a cheeseburger.")
 		qdel(W)
 		qdel(src)
 		return
@@ -1975,7 +1975,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 /obj/item/weapon/reagent_containers/food/snacks/human/burger/attackby(obj/item/weapon/reagent_containers/food/snacks/cheesewedge/W as obj, mob/user as mob)
 	if (istype(W))
 		new /obj/item/weapon/reagent_containers/food/snacks/cheeseburger(src)
-		user << "You make a cheeseburger."
+		to_chat(user, "You make a cheeseburger.")
 		qdel(W)
 		qdel(src)
 		return
@@ -2076,7 +2076,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 /obj/item/weapon/reagent_containers/food/snacks/grown/potato/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
 		new /obj/item/weapon/reagent_containers/food/snacks/rawsticks(src)
-		user << "You cut the potato."
+		to_chat(user, "You cut the potato.")
 		qdel(src)
 	else
 		..()

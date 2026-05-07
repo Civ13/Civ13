@@ -121,9 +121,9 @@
 			sov_points++
 		if (a1_control != prev_control)
 			if (prev_control != "none")
-				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Telephone Central</b>!</big>"
+				to_chat(world, "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Telephone Central</b>!</big>")
 			else
-				world << "<big><font color='[cust_color]'>[a1_control]</font> captured the <b>Telephone Central</b>!</big>"
+				to_chat(world, "<big><font color='[cust_color]'>[a1_control]</font> captured the <b>Telephone Central</b>!</big>")
 		c1 = 0
 		c2 = 0
 		prev_control = a2_control
@@ -147,9 +147,9 @@
 			sov_points++
 		if (a2_control != prev_control)
 			if (prev_control != "none")
-				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Train Station</b>!</big>"
+				to_chat(world, "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Train Station</b>!</big>")
 			else
-				world << "<big><font color='[cust_color]'>[a2_control]</font> captured the <b>Train Station</b>!</big>"
+				to_chat(world, "<big><font color='[cust_color]'>[a2_control]</font> captured the <b>Train Station</b>!</big>")
 		c1 = 0
 		c2 = 0
 		prev_control = a3_control
@@ -173,27 +173,27 @@
 			sov_points++
 		if (a3_control != prev_control)
 			if (prev_control != "none")
-				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>City Hall</b>!</big>"
+				to_chat(world, "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>City Hall</b>!</big>")
 			else
-				world << "<big><font color='[cust_color]'>[a3_control]</font> captured the <b>City Hall</b>!</big>"
+				to_chat(world, "<big><font color='[cust_color]'>[a3_control]</font> captured the <b>City Hall</b>!</big>")
 	if (a1_control == "Soviets")
 		cust_color = "red"
 	else
 		cust_color = "blue"
-	world << "<big><font color='[cust_color]'><b>Telephone Central</b>: [a1_control]</font></big>"
+	to_chat(world, "<big><font color='[cust_color]'><b>Telephone Central</b>: [a1_control]</font></big>")
 	if (a2_control == "Soviets")
 		cust_color = "red"
 	else
 		cust_color = "blue"
-	world << "<big><font color='[cust_color]'><b>Train Station</b>: [a2_control]</font></big>"
+	to_chat(world, "<big><font color='[cust_color]'><b>Train Station</b>: [a2_control]</font></big>")
 	if (a3_control == "Soviets")
 		cust_color = "red"
 	else
 		cust_color = "blue"
-	world << "<big><font color='[cust_color]'><b>City Hall</b>: [a3_control]</font></big>"
-	world << "<big><b>Current Points:</b></big>"
-	world << "<big>Germans: [ger_points]</big>"
-	world << "<big>Soviets: [sov_points]</big>"
+	to_chat(world, "<big><font color='[cust_color]'><b>City Hall</b>: [a3_control]</font></big>")
+	to_chat(world, "<big><b>Current Points:</b></big>")
+	to_chat(world, "<big>Germans: [ger_points]</big>")
+	to_chat(world, "<big>Soviets: [sov_points]</big>")
 	spawn(300)
 		points_check()
 
@@ -206,7 +206,7 @@
 				return FALSE
 			ticker.finished = TRUE
 			var/message = "The <b>Soviets</b> have reached [sov_points] points and won!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
@@ -215,7 +215,7 @@
 				return FALSE
 			ticker.finished = TRUE
 			var/message = "The <b>Germans</b> have reached [ger_points] points and won!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
@@ -295,9 +295,9 @@
 				cust_color = "red"
 			else
 				cust_color = "blue"
-			world << "<big><font color='[cust_color]'><b>Telephone Central</b>: [a1_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>Telephone Central</b>: [a1_control]</font></big>")
 		else
-			world << "<big><b>Telephone Central</b>: Nobody</big>"
+			to_chat(world, "<big><b>Telephone Central</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -323,9 +323,9 @@
 				cust_color = "red"
 			else
 				cust_color = "blue"
-			world << "<big><font color='[cust_color]'><b>Train Station</b>: [a2_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>Train Station</b>: [a2_control]</font></big>")
 		else
-			world << "<big><b>Train Station</b>: Nobody</big>"
+			to_chat(world, "<big><b>Train Station</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -351,9 +351,9 @@
 				cust_color = "red"
 			else
 				cust_color = "blue"
-			world << "<big><font color='[cust_color]'><b>City Hall</b>: [a3_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>City Hall</b>: [a3_control]</font></big>")
 		else
-			world << "<big><b>City Hall</b>: Nobody</big>"
+			to_chat(world, "<big><b>City Hall</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -379,12 +379,12 @@
 				cust_color = "red"
 			else
 				cust_color = "blue"
-			world << "<big><font color='[cust_color]'><b>Hospital</b>: [a4_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>Hospital</b>: [a4_control]</font></big>")
 		else
-			world << "<big><b>Hospital</b>: Nobody</big>"
-	world << "<big><b>Current Points:</b></big>"
-	world << "<big>Germans: [ger_points]</big>"
-	world << "<big>Soviets: [sov_points]</big>"
+			to_chat(world, "<big><b>Hospital</b>: Nobody</big>")
+	to_chat(world, "<big><b>Current Points:</b></big>")
+	to_chat(world, "<big>Germans: [ger_points]</big>")
+	to_chat(world, "<big>Soviets: [sov_points]</big>")
 	spawn(300)
 		points_check()
 

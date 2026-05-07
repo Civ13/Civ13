@@ -32,7 +32,7 @@
 /obj/structure/plant_pot/clay/light/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/material/trowel))
 		if (filled_type)
-			user << "You start removing the plant from the pot."
+			to_chat(user, "You start removing the plant from the pot.")
 			if (do_after(user, 15, src))
 				new filled_type(loc)
 				new /obj/structure/plant_pot/clay/light(loc)
@@ -40,9 +40,9 @@
 				return
 
 		else
-			user << "You start refilling the pot using the trowel..."
+			to_chat(user, "You start refilling the pot using the trowel...")
 			if (do_after(user, 15, src))
-				user << "You finish refilling the pot."
+				to_chat(user, "You finish refilling the pot.")
 				var/obj/structure/plant_pot/clay/light/filled/S = new /obj/structure/plant_pot/clay/light/filled(loc)
 				qdel(src)
 
@@ -153,12 +153,12 @@
 
 	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona))
 		if (filled_type || filled)
-			user << "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>"
+			to_chat(user, "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>")
 			return
 		else
-			user << "You start [plantverb] the cinchona..."
+			to_chat(user, "You start [plantverb] the cinchona...")
 			if (do_after(user, 15, src))
-				user << "You finish [plantverb] the cinchona."
+				to_chat(user, "You finish [plantverb] the cinchona.")
 				icon = 'icons/obj/flora/filled_plantpots.dmi'
 				icon_state = "[planttype]cinchona"
 				desc = "A pot with a cinchona plant."
@@ -170,12 +170,12 @@
 		var/obj/item/stack/farming/seeds/WS = W
 		if (WS.plant in list("peyote", "poppy", "bamboo", "coffee", "grapes", "apple", "orange", "lime", "lemon", "cherry", "apricot"))
 			if (filled_type || filled)
-				user << "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>"
+				to_chat(user, "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>")
 				return
 
-			user << "You start [plantverb] the [WS.name]..."
+			to_chat(user, "You start [plantverb] the [WS.name]...")
 			if (do_after(user, 15, src))
-				user << "You finish [plantverb] the [WS.name]..."
+				to_chat(user, "You finish [plantverb] the [WS.name]...")
 				var/obj/structure/plant_pot/clay/light/filled/S = new /obj/structure/plant_pot/clay/light/filled(loc)
 				S.icon_state = "[planttype][WS.plant]"
 				S.desc = "A pot with a purely decorative [WS.plant] plant."
@@ -188,12 +188,12 @@
 
 	if (istype(W, /obj/item/stack/material/plastic))
 		if (filled_type || filled)
-			user << "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>"
+			to_chat(user, "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>")
 			return
 
-		user << "You start to mould the plastic into a plant shape..."
+		to_chat(user, "You start to mould the plastic into a plant shape...")
 		if (do_after(user, 15, src))
-			user << "You finish moulding the plastic."
+			to_chat(user, "You finish moulding the plastic.")
 			var/obj/structure/plant_pot/clay/light/filled/S = new /obj/structure/plant_pot/clay/light/filled(loc)
 			var/choice = WWinput(user, "What type of plastic plant?","Choose a plant type","Normal",list("Plastic Tree", "Plastic Pine Tree", "Plastic Palm Tree", "Plastic Leaf Plant"))
 			if (choice == "Plastic Tree")
@@ -235,7 +235,7 @@
 /obj/structure/plant_pot/medium_planter/clay/yellow/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/material/trowel))
 		if (filled_type)
-			user << "You start removing the plant from the planter."
+			to_chat(user, "You start removing the plant from the planter.")
 			if (do_after(user, 15, src))
 				new filled_type(loc)
 				new /obj/structure/plant_pot/medium_planter/clay/yellow(loc)
@@ -243,9 +243,9 @@
 				return
 
 		else
-			user << "You start refilling the planter using the trowel..."
+			to_chat(user, "You start refilling the planter using the trowel...")
 			if (do_after(user, 15, src))
-				user << "You finish refilling the planter."
+				to_chat(user, "You finish refilling the planter.")
 				var/obj/structure/plant_pot/medium_planter/clay/yellow/filled/S = new /obj/structure/plant_pot/medium_planter/clay/yellow/filled(loc)
 				qdel(src)
 
@@ -371,12 +371,12 @@
 
 	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona))
 		if (filled_type || filled)
-			user << "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>"
+			to_chat(user, "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>")
 			return
 		else
-			user << "You start [plantverb] the cinchona..."
+			to_chat(user, "You start [plantverb] the cinchona...")
 			if (do_after(user, 15, src))
-				user << "You finish [plantverb] the cinchona."
+				to_chat(user, "You finish [plantverb] the cinchona.")
 				icon = 'icons/obj/flora/filled_plantpots.dmi'
 				icon_state = "[planttype]cinchona"
 				desc = "A pot with a cinchona plant."
@@ -388,12 +388,12 @@
 		var/obj/item/stack/farming/seeds/WS = W
 		if (WS.plant in list("peyote", "poppy", "bamboo", "coffee", "grapes", "apple", "orange", "lime", "lemon", "cherry", "apricot", "olives", "coconut", "pumpkin", "banana"))
 			if (filled_type || filled)
-				user << "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>"
+				to_chat(user, "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>")
 				return
 
-			user << "You start [plantverb] the [WS.name]..."
+			to_chat(user, "You start [plantverb] the [WS.name]...")
 			if (do_after(user, 15, src))
-				user << "You finish [plantverb] the [WS.name]..."
+				to_chat(user, "You finish [plantverb] the [WS.name]...")
 				var/obj/structure/plant_pot/medium_planter/clay/yellow/filled/S = new /obj/structure/plant_pot/medium_planter/clay/yellow/filled(loc)
 				if (WS.plant == "coconut")
 					var/choice = WWinput(user, "What type of plant?","Choose a plant type","Normal",list("Decorative Coconut Tree", "Wavy Coconut Tree"))						
@@ -413,12 +413,12 @@
 
 	if (istype(W, /obj/item/stack/material/plastic))
 		if (filled_type || filled)
-			user << "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>"
+			to_chat(user, "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>")
 			return
 
-		user << "You start to mould the plastic into a plant shape..."
+		to_chat(user, "You start to mould the plastic into a plant shape...")
 		if (do_after(user, 15, src))
-			user << "You finish moulding the plastic."
+			to_chat(user, "You finish moulding the plastic.")
 			var/obj/structure/plant_pot/medium_planter/clay/yellow/filled/S = new /obj/structure/plant_pot/medium_planter/clay/yellow/filled(loc)
 			var/choice = WWinput(user, "What type of plastic plant?","Choose a plant type","Normal",list("Plastic Tree", "Plastic Pine Tree", "Plastic Palm Tree", "Plastic Leaf Plant"))
 			if (choice == "Plastic Tree")
@@ -460,13 +460,13 @@
 /obj/structure/plant_pot/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
 		anchored = !anchored
 	else if (istype(O,/obj/item/weapon/hammer) || istype(O,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/weapons/smash.ogg', 75, 1)
-		user << "<span class='notice'>You begin smashing apart \the [src].</span>"
+		to_chat(user, "<span class='notice'>You begin smashing apart \the [src].</span>")
 		if (do_after(user,25,src))
-			user << "<span class='notice'>You smash apart \the [src].</span>"
+			to_chat(user, "<span class='notice'>You smash apart \the [src].</span>")
 			new /obj/item/weapon/clayshards(loc)
 			qdel(src)
 

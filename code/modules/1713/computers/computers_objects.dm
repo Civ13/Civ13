@@ -61,44 +61,44 @@
 				src.operatingsystem = OSD.operatingsystem
 				src.programs = list()
 				src.boot(OSD.operatingsystem)
-				H << "You sucessfully install \the [src.operatingsystem] on this machine."
+				to_chat(H, "You sucessfully install \the [src.operatingsystem] on this machine.")
 				playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
 			else
-				H << "You already have this operating system installed."
+				to_chat(H, "You already have this operating system installed.")
 			return
 		else if (istype(W, /obj/item/weapon/disk/program))
 			var/obj/item/weapon/disk/program/PD = W
 			if (!(operatingsystem in PD.compatible_os))
-				H << "This operating system is not supported."
+				to_chat(H, "This operating system is not supported.")
 				return
 			if (PD.included)
 				var/datum/program/NP = new PD.included
 				for(var/datum/program/EP in programs)
 					if (istype(EP,NP))
-						H << "This program is already installed on this machine."
+						to_chat(H, "This program is already installed on this machine.")
 						return
 				programs += NP
 				playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
-				H << "You load \the [NP.name] into this machine."
+				to_chat(H, "You load \the [NP.name] into this machine.")
 			return
 		var/obj/item/weapon/disk/D = W
 		if (D.faction == H.civilization)
-			H << "<span class='notice'>You can't read a disk belonging to your company.</span>"
+			to_chat(H, "<span class='notice'>You can't read a disk belonging to your company.</span>")
 			return
 		else if (src.faction != H.civilization)
-			H << "<span class='notice'>You can't read a disk on another's company computer.</span>"
+			to_chat(H, "<span class='notice'>You can't read a disk on another's company computer.</span>")
 			return
 		else if (H.civilization == "Sheriff Office")
-			H << "<span class='notice'>You do not know how to decrypt this... You should put it in the evidence room instead.</span>"
+			to_chat(H, "<span class='notice'>You do not know how to decrypt this... You should put it in the evidence room instead.</span>")
 			return
 		else if (H.civilization == "Paramedics")
-			H << "<span class='notice'>You do not know how to decrypt this... You should hand it over to the Sheriff Office instead.</span>"
+			to_chat(H, "<span class='notice'>You do not know how to decrypt this... You should hand it over to the Sheriff Office instead.</span>")
 			return
 		else if (H.civilization == "Government")
-			H << "<span class='notice'>You do not know how to decrypt this... You should hand it over to the Sheriff Office instead.</span>"
+			to_chat(H, "<span class='notice'>You do not know how to decrypt this... You should hand it over to the Sheriff Office instead.</span>")
 			return
 		else if (D.used)
-			H << "<span class='notice'>This disk has already been decrypted and wiped.</span>"
+			to_chat(H, "<span class='notice'>This disk has already been decrypted and wiped.</span>")
 			return
 		else
 			playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
@@ -270,29 +270,29 @@
 	..()
 	if (faction)
 		if (used)
-			user << "<font color='yellow'><i><b>The disk was already decrypted and wiped</b></i></font>."
+			to_chat(user, "<font color='yellow'><i><b>The disk was already decrypted and wiped</b></i></font>.")
 		if (exchange_state == -1)
-			user << "The disk is <b><font color='red'>inactive</font></b>."
+			to_chat(user, "The disk is <b><font color='red'>inactive</font></b>.")
 		else
-			user << "The disk is <b><font color='green'>active</font></b>."
+			to_chat(user, "The disk is <b><font color='green'>active</font></b>.")
 		if (ishuman(user))
 			var/mob/living/human/H = user
 			if (H.civilization == faction)
-				H << "This is a <b>[fake ? "<font color ='red'>fake</font>" : "<font color ='green'>real</font>"]</b> disk."
+				to_chat(H, "This is a <b>[fake ? "<font color ='red'>fake</font>" : "<font color ='green'>real</font>"]</b> disk.")
 		else if (isghost(user))
-			user << "This is a <b>[fake ? "<font color ='red'>fake</font>" : "<font color ='green'>real</font>"]</b> disk."
+			to_chat(user, "This is a <b>[fake ? "<font color ='red'>fake</font>" : "<font color ='green'>real</font>"]</b> disk.")
 
 /obj/item/weapon/disk/attackby(var/obj/item/weapon/disk/D, var/mob/living/human/H)
 	if (istype(D, /obj/item/weapon/disk))
 		H.setClickCooldown(20)
 		if (src.faction == D.faction)
-			H << "These disks are of the same faction, you need another faction's disk to activate them."
+			to_chat(H, "These disks are of the same faction, you need another faction's disk to activate them.")
 			return
 		else if (src.used)
-			H << "\The [src] has already been used and wiped."
+			to_chat(H, "\The [src] has already been used and wiped.")
 			return
 		else if (D.used)
-			H << "\The [src] has already been used and wiped."
+			to_chat(H, "\The [src] has already been used and wiped.")
 			return
 		else if (src.exchange_state != -1 && D.exchange_state != -1)
 			visible_message("<big><font color='red'>Both disks are already active.</font></big>")
@@ -514,24 +514,24 @@
 	var/found1 = FALSE
 	var/found2 = FALSE
 	if (faction && H.civilization != faction)
-		H << "You are not trained to operate this machine."
+		to_chat(H, "You are not trained to operate this machine.")
 		return
 	if (on)
-		H << "The assembler is busy, please wait..."
+		to_chat(H, "The assembler is busy, please wait...")
 		return
 	for(var/obj/structure/assembler/processor/A in locate(x+1,y,z))
 		found1 = TRUE
 	for(var/obj/structure/assembler/unloader/A in locate(x+2,y,z))
 		found2 = TRUE
 	if (!found1 && !found2)
-		H << "The assembler is incomplete and cannot be used."
+		to_chat(H, "The assembler is incomplete and cannot be used.")
 		return
 	if (istype(I, requires))
 		H.drop_from_inventory(I)
 		I.forceMove(locate(1,1,1))
 		manufacture(I,H)
 	else
-		H << "<span class='warning'>This is the wrong precursor!</span>"
+		to_chat(H, "<span class='warning'>This is the wrong precursor!</span>")
 		return
 /obj/structure/assembler/loader/manufacture(var/obj/item/stack/precursor/P,var/mob/living/human/H)
 	if (istype(P,/obj/item/stack/precursor))

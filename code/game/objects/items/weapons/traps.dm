@@ -89,7 +89,7 @@
 		set_dir(L.dir)
 		can_buckle = TRUE
 		buckle_mob(L)
-		L << "<span class='danger'>The steel jaws of \the [src] bite into you, trapping you in place!</span>"
+		to_chat(L, "<span class='danger'>The steel jaws of \the [src] bite into you, trapping you in place!</span>")
 		deployed = FALSE
 		can_buckle = initial(can_buckle)
 
@@ -194,7 +194,7 @@
 	set_dir(L.dir)
 	can_buckle = TRUE
 	buckle_mob(L)
-	L << "<span class='danger'>You fall into the punji sticks trap, and are stuck!</span>"
+	to_chat(L, "<span class='danger'>You fall into the punji sticks trap, and are stuck!</span>")
 	deployed = FALSE
 	can_buckle = initial(can_buckle)
 

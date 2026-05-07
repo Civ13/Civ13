@@ -38,7 +38,7 @@
 				line += " no.[i+10+j]@\[[temp_atom.x], [temp_atom.y], [temp_atom.z]\]; "
 		world << line*/
 
-	world << "There are [count] objects of type [type_path] on z-level [num_level]"
+	to_chat(world, "There are [count] objects of type [type_path] on z-level [num_level]")
 
 
 /client/proc/count_objects_all()
@@ -65,5 +65,5 @@
 				line += " no.[i+10+j]@\[[temp_atom.x], [temp_atom.y], [temp_atom.z]\]; "
 		world << line*/
 
-	world << "There are [count] objects of type [type_path] in the game world"
+	to_chat(world, "There are [count] objects of type [type_path] in the game world")
 

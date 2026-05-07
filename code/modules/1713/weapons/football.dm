@@ -335,7 +335,7 @@
 			MF.reset_ball()
 			MF.teams[team][2] += 1
 			var/obj/item/football/FB = A
-			world << "<font size=4 color='orange'>GOAL! <b>[FB.last_owner ? FB.last_owner : "Unknown"] [FB.last_owner ? "([FB.last_owner.ckey])" : ""]</b> scores for <b>[team]</b>!</font>"
+			to_chat(world, "<font size=4 color='orange'>GOAL! <b>[FB.last_owner ? FB.last_owner : "Unknown"] [FB.last_owner ? "([FB.last_owner.ckey])" : ""]</b> scores for <b>[team]</b>!</font>")
 			var/scorer = " [FB.last_owner.name] ([FB.last_owner.ckey]) <b>([FB.last_owner.team])</b>"
 			FB.last_owner = null
 			FB.owner = null
@@ -350,7 +350,7 @@
 			MF.reset_ball()
 			MF.teams[team][2] += 1
 			var/obj/item/football/FB = A
-			world << "<font size=4 color='orange'>GOAL! <b>[FB.last_owner ? FB.last_owner : "Unknown"] [FB.last_owner ? "([FB.last_owner.ckey])" : ""]</b> scores for <b>[team]</b>!</font>"
+			to_chat(world, "<font size=4 color='orange'>GOAL! <b>[FB.last_owner ? FB.last_owner : "Unknown"] [FB.last_owner ? "([FB.last_owner.ckey])" : ""]</b> scores for <b>[team]</b>!</font>")
 			var/scorer = " [FB.last_owner.name] ([FB.last_owner.ckey]) <b>([FB.last_owner.team])</b>"
 			FB.last_owner = null
 			FB.owner = null
@@ -405,7 +405,7 @@
 	if (!active)
 		return
 	mob.setClickCooldown(40)
-	mob << "You take a blank kit from the Terminal. You can now customise it."
+	to_chat(mob, "You take a blank kit from the Terminal. You can now customise it.")
 	new/obj/item/clothing/under/football/custom(loc)
 	return
 
@@ -564,7 +564,7 @@
 	if (istype(W, /obj/item/weapon/grab) && get_dist(src,user)<2)
 		var/obj/item/weapon/grab/G = W
 		if(G.state<2)
-			user << "<span class='warning'>You need a better grip to do that!</span>"
+			to_chat(user, "<span class='warning'>You need a better grip to do that!</span>")
 			return
 		G.affecting.loc = src.loc
 		G.affecting.Weaken(5)

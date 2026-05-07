@@ -441,10 +441,10 @@
 	if (get_dist(src, user) < 2)
 		var/obj/item/weapon/grab/G = I
 		if (G.affecting.buckled)
-			user << "<span class='warning'>[G.affecting] is buckled to [G.affecting.buckled]!</span>"
+			to_chat(user, "<span class='warning'>[G.affecting] is buckled to [G.affecting.buckled]!</span>")
 			return FALSE
 		if (G.state < GRAB_AGGRESSIVE)
-			user << "<span class='warning'>You need a better grip to do that!</span>"
+			to_chat(user, "<span class='warning'>You need a better grip to do that!</span>")
 			return FALSE
 		if (!G.confirm())
 			return FALSE
@@ -503,7 +503,7 @@
 		return
 
 	if (destroy_type == TBL_DISASSEMBLE)
-		user << "<span class='notice'>You start disassembling [src]...</span>"
+		to_chat(user, "<span class='notice'>You start disassembling [src]...</span>")
 		playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
 		if (do_after(user, 20, target = src))
 			new frame(loc)
@@ -513,7 +513,7 @@
 			return
 
 	if (destroy_type == TBL_DECONSTRUCT)
-		user << "<span class='notice'>You start deconstructing [src]...</span>"
+		to_chat(user, "<span class='notice'>You start deconstructing [src]...</span>")
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
 		if (do_after(user, 40, target = src))
 			for (var/i = TRUE, i <= framestackamount, i++)

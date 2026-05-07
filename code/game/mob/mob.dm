@@ -63,9 +63,9 @@
 					return
 	// Added voice muffling for Issue 41.
 	if (stat == UNCONSCIOUS || sleeping > 0)
-		src << "<I>... You can almost hear someone talking ...</I>"
+		to_chat(src, "<I>... You can almost hear someone talking ...</I>")
 	else
-		src << msg
+		to_chat(src, msg)
 	return
 
 // Show a message to all mobs and objects in sight of this one
@@ -370,7 +370,7 @@
 	if (mind)
 		mind.show_memory(src)
 	else
-		src << "The game appears to have misplaced your mind datum, so we can't show you your notes."
+		to_chat(src, "The game appears to have misplaced your mind datum, so we can't show you your notes.")
 
 
 /mob/verb/add_memory(msg as message)
@@ -461,21 +461,21 @@
 	set category = "IC"
 
 	if (!( config.abandon_allowed ))
-		to_chat(usr, SPAN_NOTICE("Respawn is disabled."))
+		to_chat(src, SPAN_NOTICE("Respawn is disabled."))
 		return
 
-	if ((stat != DEAD || !( ticker )))
-		to_chat(usr, SPAN_NOTICE("<b>You must be dead to use this!</b>"))
+	if ((src.stat != DEAD || !( ticker )))
+		to_chat(src, SPAN_NOTICE("<b>You must be dead to use this!</b>"))
 		return
 
 	src << browse(null, "window=memory")
 
 	to_chat(src, "You can respawn now, enjoy your new life!")
-	stop_ambience(usr)
+	stop_ambience(src)
 
 	log_game("[name]/[key] used abandon mob.")
 
-	to_chat(usr, SPAN_NOTICE("<b>Make sure to play a different character, and please roleplay correctly!</b>"))
+	to_chat(src, SPAN_NOTICE("<b>Make sure to play a different character, and please roleplay correctly!</b>"))
 
 	if (!client)
 		log_game("[key] AM failed due to disconnect.")
@@ -599,22 +599,22 @@
 		return
 
 	if (AM.anchored || istype(AM, /obj/item/football))
-		src << "<span class='warning'>It won't budge!</span>"
+		to_chat(src, "<span class='warning'>It won't budge!</span>")
 		return
 
 	var/mob/M = AM
 	if (ismob(AM))
 
 		if (!can_pull_mobs || !can_pull_size)
-			src << "<span class='warning'>It won't budge!</span>"
+			to_chat(src, "<span class='warning'>It won't budge!</span>")
 			return
 
 		if ((mob_size < M.mob_size) && (can_pull_mobs != MOB_PULL_LARGER))
-			src << "<span class='warning'>It won't budge!</span>"
+			to_chat(src, "<span class='warning'>It won't budge!</span>")
 			return
 
 		if ((mob_size == M.mob_size) && (can_pull_mobs == MOB_PULL_SMALLER))
-			src << "<span class='warning'>It won't budge!</span>"
+			to_chat(src, "<span class='warning'>It won't budge!</span>")
 			return
 
 		// If your size is larger than theirs and you have some
@@ -630,7 +630,7 @@
 		var/obj/I = AM
 		if(!istype(I, /obj/structure/cannon/modern/tank/voyage))
 			if (!can_pull_size || can_pull_size < I.w_class || istype(I, /obj/item/football))
-				src << "<span class='warning'>It won't budge!</span>"
+				to_chat(src, "<span class='warning'>It won't budge!</span>")
 				return
 
 	if (pulling)
@@ -649,7 +649,7 @@
 	if (ishuman(AM))
 		var/mob/living/human/H = AM
 		if (H.pull_damage())
-			src << SPAN_WARNING("<b>Pulling \the [H] in their current condition would probably be a bad idea.</b>")
+			to_chat(src, SPAN_WARNING("<b>Pulling \the [H] in their current condition would probably be a bad idea.</b>"))
 */
 	//Attempted fix for people flying away through space when cuffed and dragged.
 	if (ismob(AM))
@@ -674,7 +674,7 @@
 /mob/proc/see(message)
 	if (!is_active())
 		return FALSE
-	src << message
+	to_chat(src, message)
 	return TRUE
 
 /mob/proc/show_viewers(message)
@@ -689,15 +689,15 @@
 	..()
 	. = (is_client_active(10 MINUTES))
 	if (.)
-		if (client.status_tabs && statpanel("Status") && ticker)
-			stat("")
-			stat("Server")
-			stat("")
-			stat("Players Online:", "[clients.len]")
-			stat("Playing, Observing, Lobby:", "[human_clients_mob_list.len], [clients.len-human_clients_mob_list.len-new_player_mob_list.len], [new_player_mob_list.len]")
-			stat("Round Duration:", roundduration2text_days())
-			stat("Game ID:", "<b>[game_id]</b>")
-			stat("")
+		if (client.status_tabs && (client.add_stat_tab("Status") || client.statpanel_tab == "Status") && ticker)
+			client.add_stat("")
+			client.add_stat("Server")
+			client.add_stat("")
+			client.add_stat("Players Online:", "[clients.len]")
+			client.add_stat("Playing, Observing, Lobby:", "[human_clients_mob_list.len], [clients.len-human_clients_mob_list.len-new_player_mob_list.len], [new_player_mob_list.len]")
+			client.add_stat("Round Duration:", roundduration2text_days())
+			client.add_stat("Game ID:", "<b>[game_id]</b>")
+			client.add_stat("")
 
 			if (map && !map.civilizations)
 				var/grace_period_string = ""
@@ -717,8 +717,8 @@
 						else
 							grace_period_string += "The grace wall is in effect."
 
-				stat("Grace Period Status:", grace_period_string)
-				stat("Round End Condition:", map.current_stat_message())
+				client.add_stat("Grace Period Status:", grace_period_string)
+				client.add_stat("Round End Condition:", map.current_stat_message())
 			if (map)
 				var/gmd = map.gamemode
 				switch(map.gamemode)
@@ -728,13 +728,13 @@
 						gmd = "<font color='yellow'>Competitive</font>"
 					if ("Hardcore")
 						gmd = "<font color='red'>Hardcore</font>"
-				stat("Map:", map.title)
-				stat("Mode:", gmd)
-				stat("Epoch:", map.age)
-				stat("Season:", get_season())
-				stat("Wind:", map.winddesc)
-//				stat("Weather:", get_weather())
-				stat("Time of Day:", time_of_day)
+				client.add_stat("Map:", map.title)
+				client.add_stat("Mode:", gmd)
+				client.add_stat("Epoch:", map.age)
+				client.add_stat("Season:", get_season())
+				client.add_stat("Wind:", map.winddesc)
+//				client.add_stat("Weather:", get_weather())
+				client.add_stat("Time of Day:", time_of_day)
 
 			// give the client some information about how the server is running
 			if (processes.ping_track && client)
@@ -742,30 +742,34 @@
 				var/avg_ping = ceil(processes.ping_track.avg)
 				if (clients.len == 1)
 					avg_ping = our_ping
-				stat("Ping (Average):", "[our_ping] ms ([avg_ping] ms)")
-			stat("Time Dilation (Average):", processes.time_track ? "[ceil(processes.time_track.dilation)]% ([ceil(processes.time_track.stored_averages["dilation"])]%)" : "0% (0%)")
+				client.add_stat("Ping (Avg.):", "[our_ping] ms ([avg_ping] ms)")
+			client.add_stat("Time Dilation (Avg.):", processes.time_track ? "[ceil(processes.time_track.dilation)]% ([ceil(processes.time_track.stored_averages["dilation"])]%)" : "0% (0%)")
 
 		if (client.holder && client.status_tabs)
-			if (statpanel("Status"))
-				stat("")
-				stat("Developer")
-				stat("")
+			if ((client.add_stat_tab("Status") || client.statpanel_tab == "Status"))
+				client.add_stat("")
+				client.add_stat("Developer")
+				client.add_stat("")
 				if (processes.time_track && movementMachine)
-					stat("CPU (Average) (Movement Scheduler (Average)):","[world.cpu]% ([ceil(processes.time_track.stored_averages["cpu"])]%) ([ceil(movementMachine.last_cpu)]% ([ceil(movementMachine.average_cpu)]%))")
-					stat("Tick Usage (Average) (Movement Scheduler (Average)):","[ceil(world.tick_usage)]% ([ceil(processes.time_track.stored_averages["tick_usage"])]%) ([ceil(movementMachine.last_tick_usage)]% ([ceil(movementMachine.average_tick_usage)]%))")
+					client.add_stat("CPU (Avg.) (Mov. Sch. (Avg.)):","[world.cpu]% ([ceil(processes.time_track.stored_averages["cpu"])]%) ([ceil(movementMachine.last_cpu)]% ([ceil(movementMachine.average_cpu)]%))")
+					client.add_stat("Tick Use (Avg.) (Mov. Sch. (Avg.)):","[ceil(world.tick_usage)]% ([ceil(processes.time_track.stored_averages["tick_usage"])]%) ([ceil(movementMachine.last_tick_usage)]% ([ceil(movementMachine.average_tick_usage)]%))")
 				if (client.holder.rights & R_MOD)
-					stat("Location:", "([x], [y], [z]) - [loc ? loc : "nullspace"]")
-				stat("Object Count:","[world.contents.len] Datums")
-/*			if (statpanel("Processes"))
-				if (processScheduler)
-					processScheduler.statProcesses()*/
+					client.add_stat("Location:", "([x], [y], [z]) - [loc ? loc : "nullspace"]")
+				client.add_stat("Object Count:","[world.contents.len] Datums")
+
+/*
+		if (client.holder && (client.holder.rights & R_DEBUG))
+			client.add_stat_tab("Processes")
+			if (processScheduler && client.statpanel_tab == "Processes")
+				processScheduler.statProcesses(client)
+*/
 
 		if (listed_turf && client && client.status_tabs)
 			if (!TurfAdjacent(listed_turf))
 				listed_turf = null
 			else
-				if (statpanel("Turf"))
-					stat(listed_turf)
+				if ((client.add_stat_tab("Turf") || client.statpanel_tab == "Turf"))
+					client.add_stat(listed_turf)
 					for (var/atom/A in listed_turf)
 						if (!A.mouse_opacity)
 							continue
@@ -773,7 +777,7 @@
 							continue
 						if (is_type_in_list(A, shouldnt_see))
 							continue
-						stat(A)
+						client.add_stat(A)
 
 
 

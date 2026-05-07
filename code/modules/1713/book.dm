@@ -27,9 +27,9 @@
 	if (istype(W, /obj/item/weapon/book))
 		var/obj/item/weapon/book/B = W
 		if (!B.author && user.religious_clergy == "Monks")
-			user << "You start copying \the [src]..."
+			to_chat(user, "You start copying \the [src]...")
 			if (do_after(user, 200, src))
-				user << "You finish copying \the [src]."
+				to_chat(user, "You finish copying \the [src].")
 				if (istype(src, /obj/item/weapon/book) && !istype(src, /obj/item/weapon/book/holybook) && !istype(src, /obj/item/weapon/book/research))
 					var/obj/item/weapon/book/NC = src
 					var/obj/item/weapon/book/NB = new/obj/item/weapon/book(get_turf(user))
@@ -63,14 +63,14 @@
 					qdel(B)
 	if (istype(W, /obj/item/weapon/pen))
 		if (unique)
-			user << "Looks like you can't modify it."
+			to_chat(user, "Looks like you can't modify it.")
 			return
 		var/choice = input("What would you like to change?") in list("Title", "Contents", "Author", "Cancel")
 		switch(choice)
 			if ("Title")
 				var/newtitle = reject_bad_text(sanitizeSafe(input("Write a new title:")))
 				if (!newtitle)
-					usr << "The title is invalid."
+					to_chat(usr, "The title is invalid.")
 					return
 				else
 					name = newtitle
@@ -78,7 +78,7 @@
 			if ("Contents")
 				var/content = sanitize(input("Write your book's contents:") as message|null, MAX_BOOK_MESSAGE_LEN)
 				if (!content)
-					usr << "The content is invalid."
+					to_chat(usr, "The content is invalid.")
 					return
 				else
 					var/t = parsepencode(content, W, user)
@@ -86,7 +86,7 @@
 			if ("Author")
 				var/newauthor = sanitize(input(usr, "Write the author's name:"))
 				if (!newauthor)
-					usr << "The name is invalid."
+					to_chat(usr, "The name is invalid.")
 					return
 				else
 					author = newauthor
@@ -100,7 +100,7 @@
 	if (in_range(user, src) || isghost(user))
 		show_content(usr)
 	else
-		user << "<span class='notice'>You have to go closer if you want to read it.</span>"
+		to_chat(user, "<span class='notice'>You have to go closer if you want to read it.</span>")
 	return
 
 /obj/item/weapon/book/proc/show_content(var/mob/user, var/forceshow=0)

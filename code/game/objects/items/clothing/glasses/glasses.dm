@@ -15,7 +15,7 @@
 			user.update_inv_eyes()
 			flash_protection = FLASH_PROTECTION_NONE
 			tint = TINT_NONE
-			usr << "You deactivate the optics on the [src]."
+			to_chat(usr, "You deactivate the optics on the [src].")
 			if (overtype == "nvg")
 				user.nvg = FALSE
 				restricts_view = 0
@@ -32,7 +32,7 @@
 			user.update_inv_eyes()
 			flash_protection = initial(flash_protection)
 			tint = initial(tint)
-			usr << "You activate the optics on the [src]."
+			to_chat(usr, "You activate the optics on the [src].")
 			if (overtype == "nvg")
 				user.nvg = TRUE
 				restricts_view = 1

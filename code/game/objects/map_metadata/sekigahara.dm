@@ -37,9 +37,9 @@
 		. = FALSE
 
 /obj/map_metadata/sekigahara/proc/points_check()
-	world << "<big><b>Current Points:</b></big>"
-	world << "<big>Eastern Army: [scores["Eastern Army"]]</big>"
-	world << "<big>Western Army: [scores["Western Army"]]</big>"
+	to_chat(world, "<big><b>Current Points:</b></big>")
+	to_chat(world, "<big>Eastern Army: [scores["Eastern Army"]]</big>")
+	to_chat(world, "<big>Western Army: [scores["Western Army"]]</big>")
 	spawn(300)
 		points_check()
 
@@ -53,17 +53,17 @@
 		message = "The round has ended!"
 		if (scores["Western Army"] > scores["Eastern Army"])
 			message = "The battle is over! The <b>Western Army</b> were victorious over the <b>Eastern Army</b>!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			win_condition_spam_check = TRUE
 			return FALSE
 		else if (scores["Eastern Army"] > scores["Western Army"])
 			message = "The battle is over! The <b>Eastern Army</b> were victorious over the <b>Western Army</b>!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			win_condition_spam_check = TRUE
 			return FALSE
 		else
 			message = "The battle has ended in a <b>stalemate</b>!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			win_condition_spam_check = TRUE
 			return FALSE
 	last_win_condition = win_condition.hash

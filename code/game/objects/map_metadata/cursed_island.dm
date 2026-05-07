@@ -48,7 +48,7 @@
 	if (istype(treasure_location, /area/caribbean/british/ship))
 		ticker.finished = TRUE
 		var/message = "The treasure was retrieved! The curse is broken!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE

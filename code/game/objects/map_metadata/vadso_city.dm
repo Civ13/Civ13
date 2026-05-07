@@ -130,9 +130,9 @@
 				british_points++
 			else
 				cust_color = "white"
-			world << "<big><b>[a1_name]</b>: <font color='[cust_color]'>[a1_control]</font></big>"
+			to_chat(world, "<big><b>[a1_name]</b>: <font color='[cust_color]'>[a1_control]</font></big>")
 		else
-			world << "<big><b>[a1_name]</b>: Nobody</big>"
+			to_chat(world, "<big><b>[a1_name]</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -160,9 +160,9 @@
 				british_points++
 			else
 				cust_color = "white"
-			world << "<big><b>[a2_name]</b>: <font color='[cust_color]'>[a2_control]</font></big>"
+			to_chat(world, "<big><b>[a2_name]</b>: <font color='[cust_color]'>[a2_control]</font></big>")
 		else
-			world << "<big><b>[a2_name]</b>: Nobody</big>"
+			to_chat(world, "<big><b>[a2_name]</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -190,9 +190,9 @@
 				british_points++
 			else
 				cust_color = "white"
-			world << "<big><b>[a3_name]</b>: <font color='[cust_color]'>[a3_control]</font></big>"
+			to_chat(world, "<big><b>[a3_name]</b>: <font color='[cust_color]'>[a3_control]</font></big>")
 		else
-			world << "<big><b>[a3_name]</b>: Nobody</big>"
+			to_chat(world, "<big><b>[a3_name]</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -220,9 +220,9 @@
 				british_points++
 			else
 				cust_color = "white"
-			world << "<big><b>[a4_name]</b>: <font color='[cust_color]'>[a4_control]</font></big>"
+			to_chat(world, "<big><b>[a4_name]</b>: <font color='[cust_color]'>[a4_control]</font></big>")
 		else
-			world << "<big><b>[a4_name]</b>: Nobody</big>"
+			to_chat(world, "<big><b>[a4_name]</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -250,15 +250,15 @@
 				british_points++
 			else
 				cust_color = "white"
-			world << "<big><b>[a5_name]</b>: <font color='[cust_color]'>[a4_control]</font></big>"
+			to_chat(world, "<big><b>[a5_name]</b>: <font color='[cust_color]'>[a4_control]</font></big>")
 		else
-			world << "<big><b>[a5_name]</b>: Nobody</big>"
+			to_chat(world, "<big><b>[a5_name]</b>: Nobody</big>")
 	spawn(600) // 1 minute
 		points_check()
 		spawn(5)
-			world << "<big><b>Current Points:</b></big>"
-			world << "<big>British: [british_points]</big>"
-			world << "<big>Russian: [rus_points]</big>"
+			to_chat(world, "<big><b>Current Points:</b></big>")
+			to_chat(world, "<big>British: [british_points]</big>")
+			to_chat(world, "<big>Russian: [rus_points]</big>")
 	
 	switch (a1_control)
 		if ("British Armed Forces")
@@ -330,7 +330,7 @@
 				return FALSE
 			ticker.finished = TRUE
 			var/message = "The <b>Russians</b> have reached [rus_points] points and claimed victory in Operation Falcon!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
@@ -339,7 +339,7 @@
 				return FALSE
 			ticker.finished = TRUE
 			var/message = "The <b>British</b> have reached [british_points] points and claimed victory in Operation Falcon!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE

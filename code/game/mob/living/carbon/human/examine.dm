@@ -35,7 +35,7 @@
 		T = gender_datums[PLURAL]
 	else
 		if (icon)
-			msg += "\icon[icon] " //fucking BYOND: this should stop dreamseeker crashing if we -somehow- examine somebody before their icon is generated
+			msg += "\icon[getFlatIcon(icon)] " //fucking BYOND: this should stop dreamseeker crashing if we -somehow- examine somebody before their icon is generated
 
 	if (!T)
 		// Just in case someone VVs the gender to something strange. It'll runtime anyway when it hits usages, better to CRASH() now with a helpful message.
@@ -56,83 +56,83 @@
 				if (!wear_suit)
 					tie_msg += ". Attached to it is [english_list(U.accessories)]"
 		if (w_uniform.blood_DNA)
-			msg += "<span class='warning'>[T.He] [T.is] wearing \icon[w_uniform] [w_uniform.gender==PLURAL?"some":"a"] [(w_uniform.blood_color != "#030303") ? "blood" : "oil"]-stained [w_uniform.name][tie_msg]!</span>\n"
+			msg += "<span class='warning'>[T.He] [T.is] wearing \icon[getFlatIcon(w_uniform)] [w_uniform.gender==PLURAL?"some":"a"] [(w_uniform.blood_color != "#030303") ? "blood" : "oil"]-stained [w_uniform.name][tie_msg]!</span>\n"
 		else
-			msg += "[T.He] [T.is] wearing \icon[w_uniform] \a [w_uniform][tie_msg].\n"
+			msg += "[T.He] [T.is] wearing \icon[getFlatIcon(w_uniform)] \a [w_uniform][tie_msg].\n"
 
 	//head
 	if (head)
 		if (head.blood_DNA)
-			msg += "<span class='warning'>[T.He] [T.is] wearing \icon[head] [head.gender==PLURAL?"some":"a"] [(head.blood_color != "#030303") ? "blood" : "oil"]-stained [head.name] on [T.his] head!</span>\n"
+			msg += "<span class='warning'>[T.He] [T.is] wearing \icon[getFlatIcon(head)] [head.gender==PLURAL?"some":"a"] [(head.blood_color != "#030303") ? "blood" : "oil"]-stained [head.name] on [T.his] head!</span>\n"
 		else
-			msg += "[T.He] [T.is] wearing \icon[head] \a [head] on [T.his] head.\n"
+			msg += "[T.He] [T.is] wearing \icon[getFlatIcon(head)] \a [head] on [T.his] head.\n"
 
 	//suit/armor
 	if (wear_suit)
 		if (wear_suit.blood_DNA)
-			msg += "<span class='warning'>[T.He] [T.is] wearing \icon[wear_suit] [wear_suit.gender==PLURAL?"some":"a"] [(wear_suit.blood_color != "#030303") ? "blood" : "oil"]-stained [wear_suit.name]!</span>\n"
+			msg += "<span class='warning'>[T.He] [T.is] wearing \icon[getFlatIcon(wear_suit)] [wear_suit.gender==PLURAL?"some":"a"] [(wear_suit.blood_color != "#030303") ? "blood" : "oil"]-stained [wear_suit.name]!</span>\n"
 		else
-			msg += "[T.He] [T.is] wearing \icon[wear_suit] \a [wear_suit].\n"
+			msg += "[T.He] [T.is] wearing \icon[getFlatIcon(wear_suit)] \a [wear_suit].\n"
 
 	//back
 	if (back)
 		if (back.blood_DNA)
-			msg += "<span class='warning'>[T.He] [T.has] \icon[back] [back.gender==PLURAL?"some":"a"] [(back.blood_color != "#030303") ? "blood" : "oil"]-stained [back] on [T.his] back.</span>\n"
+			msg += "<span class='warning'>[T.He] [T.has] \icon[getFlatIcon(back)] [back.gender==PLURAL?"some":"a"] [(back.blood_color != "#030303") ? "blood" : "oil"]-stained [back] on [T.his] back.</span>\n"
 		else
-			msg += "[T.He] [T.has] \icon[back] \a [back] on [T.his] back.\n"
+			msg += "[T.He] [T.has] \icon[getFlatIcon(back)] \a [back] on [T.his] back.\n"
 
 	//shoulder
 	if (shoulder)
 		if (shoulder.blood_DNA)
-			msg += "<span class='warning'>[T.He] [T.has] \icon[shoulder] [shoulder.gender==PLURAL?"some":"a"] [(shoulder.blood_color != "#030303") ? "blood" : "oil"]-stained [shoulder] on [T.his] shoulder.</span>\n"
+			msg += "<span class='warning'>[T.He] [T.has] \icon[getFlatIcon(shoulder)] [shoulder.gender==PLURAL?"some":"a"] [(shoulder.blood_color != "#030303") ? "blood" : "oil"]-stained [shoulder] on [T.his] shoulder.</span>\n"
 		else
-			msg += "[T.He] [T.has] \icon[shoulder] \a [shoulder] on [T.his] shoulder.\n"
+			msg += "[T.He] [T.has] \icon[getFlatIcon(shoulder)] \a [shoulder] on [T.his] shoulder.\n"
 
 
 	//left hand
 	if (l_hand)
 		if (l_hand.blood_DNA)
-			msg += "<span class='warning'>[T.He] [T.is] holding \icon[l_hand] [l_hand.gender==PLURAL?"some":"a"] [(l_hand.blood_color != "#030303") ? "blood" : "oil"]-stained [l_hand.name] in [T.his] left hand!</span>\n"
+			msg += "<span class='warning'>[T.He] [T.is] holding \icon[getFlatIcon(l_hand)] [l_hand.gender==PLURAL?"some":"a"] [(l_hand.blood_color != "#030303") ? "blood" : "oil"]-stained [l_hand.name] in [T.his] left hand!</span>\n"
 		else
-			msg += "[T.He] [T.is] holding \icon[l_hand] \a [l_hand] in [T.his] left hand.\n"
+			msg += "[T.He] [T.is] holding \icon[getFlatIcon(l_hand)] \a [l_hand] in [T.his] left hand.\n"
 
 	//right hand
 	if (r_hand)
 		if (r_hand.blood_DNA)
-			msg += "<span class='warning'>[T.He] [T.is] holding \icon[r_hand] [r_hand.gender==PLURAL?"some":"a"] [(r_hand.blood_color != "#030303") ? "blood" : "oil"]-stained [r_hand.name] in [T.his] right hand!</span>\n"
+			msg += "<span class='warning'>[T.He] [T.is] holding \icon[getFlatIcon(r_hand)] [r_hand.gender==PLURAL?"some":"a"] [(r_hand.blood_color != "#030303") ? "blood" : "oil"]-stained [r_hand.name] in [T.his] right hand!</span>\n"
 		else
-			msg += "[T.He] [T.is] holding \icon[r_hand] \a [r_hand] in [T.his] right hand.\n"
+			msg += "[T.He] [T.is] holding \icon[getFlatIcon(r_hand)] \a [r_hand] in [T.his] right hand.\n"
 
 	//gloves
 	if (gloves && !skipgloves)
 		if (gloves.blood_DNA)
-			msg += "<span class='warning'>[T.He] [T.has] \icon[gloves] [gloves.gender==PLURAL?"some":"a"] [(gloves.blood_color != "#030303") ? "blood" : "oil"]-stained [gloves.name] on [T.his] hands!</span>\n"
+			msg += "<span class='warning'>[T.He] [T.has] \icon[getFlatIcon(gloves)] [gloves.gender==PLURAL?"some":"a"] [(gloves.blood_color != "#030303") ? "blood" : "oil"]-stained [gloves.name] on [T.his] hands!</span>\n"
 		else
-			msg += "[T.He] [T.has] \icon[gloves] \a [gloves] on [T.his] hands.\n"
+			msg += "[T.He] [T.has] \icon[getFlatIcon(gloves)] \a [gloves] on [T.his] hands.\n"
 	else if (blood_DNA)
 		msg += "<span class='warning'>[T.He] [T.has] [(hand_blood_color != "#030303") ? "blood" : "oil"]-stained hands!</span>\n"
 
 	//handcuffed?
 	if (handcuffed)
-		msg += "<span class='warning'>[T.He] [T.is] \icon[handcuffed] handcuffed!</span>\n"
+		msg += "<span class='warning'>[T.He] [T.is] \icon[getFlatIcon(handcuffed)] handcuffed!</span>\n"
 
 	//buckled
 	if (buckled)
-		msg += "<span class='warning'>[T.He] [T.is] \icon[buckled] buckled to [buckled]!</span>\n"
+		msg += "<span class='warning'>[T.He] [T.is] \icon[getFlatIcon(buckled)] buckled to [buckled]!</span>\n"
 
 	//belt
 	if (belt)
 		if (belt.blood_DNA)
-			msg += "<span class='warning'>[T.He] [T.has] \icon[belt] [belt.gender==PLURAL?"some":"a"] [(belt.blood_color != "#030303") ? "blood" : "oil"]-stained [belt.name] about [T.his] waist!</span>\n"
+			msg += "<span class='warning'>[T.He] [T.has] \icon[getFlatIcon(belt)] [belt.gender==PLURAL?"some":"a"] [(belt.blood_color != "#030303") ? "blood" : "oil"]-stained [belt.name] about [T.his] waist!</span>\n"
 		else
-			msg += "[T.He] [T.has] \icon[belt] \a [belt] about [T.his] waist.\n"
+			msg += "[T.He] [T.has] \icon[getFlatIcon(belt)] \a [belt] about [T.his] waist.\n"
 
 	//shoes
 	if (shoes && !skipshoes)
 		if (shoes.blood_DNA)
-			msg += "<span class='warning'>[T.He] [T.is] wearing \icon[shoes] [shoes.gender==PLURAL?"some":"a"] [(shoes.blood_color != "#030303") ? "blood" : "oil"]-stained [shoes.name] on [T.his] feet!</span>\n"
+			msg += "<span class='warning'>[T.He] [T.is] wearing \icon[getFlatIcon(shoes)] [shoes.gender==PLURAL?"some":"a"] [(shoes.blood_color != "#030303") ? "blood" : "oil"]-stained [shoes.name] on [T.his] feet!</span>\n"
 		else
-			msg += "[T.He] [T.is] wearing \icon[shoes] \a [shoes] on [T.his] feet.\n"
+			msg += "[T.He] [T.is] wearing \icon[getFlatIcon(shoes)] \a [shoes] on [T.his] feet.\n"
 	else if (feet_blood_DNA)
 		msg += "<span class='warning'>[T.He] [T.has] [(feet_blood_color != "#030303") ? "blood" : "oil"]-stained feet!</span>\n"
 
@@ -142,31 +142,21 @@
 		if (istype(wear_mask, /obj/item/weapon/grenade))
 			descriptor = "in [T.his] mouth"
 		if (wear_mask.blood_DNA)
-			msg += "<span class='warning'>[T.He] [T.has] \icon[wear_mask] [wear_mask.gender==PLURAL?"some":"a"] [(wear_mask.blood_color != "#030303") ? "blood" : "oil"]-stained [wear_mask.name] [descriptor]!</span>\n"
+			msg += "<span class='warning'>[T.He] [T.has] \icon[getFlatIcon(wear_mask)] [wear_mask.gender==PLURAL?"some":"a"] [(wear_mask.blood_color != "#030303") ? "blood" : "oil"]-stained [wear_mask.name] [descriptor]!</span>\n"
 		else
-			msg += "[T.He] [T.has] \icon[wear_mask] \a [wear_mask] [descriptor].\n"
+			msg += "[T.He] [T.has] \icon[getFlatIcon(wear_mask)] \a [wear_mask] [descriptor].\n"
 
 	//left ear
 	if (l_ear && !skipears)
-		msg += "[T.He] [T.has] \icon[l_ear] \a [l_ear] on [T.his] left ear.\n"
+		msg += "[T.He] [T.has] \icon[getFlatIcon(l_ear)] \a [l_ear] on [T.his] left ear.\n"
 
 	//right ear
 	if (r_ear && !skipears)
-		msg += "[T.He] [T.has] \icon[r_ear] \a [r_ear] on [T.his] right ear.\n"
+		msg += "[T.He] [T.has] \icon[getFlatIcon(r_ear)] \a [r_ear] on [T.his] right ear.\n"
 
 	//ID
 	if (wear_id)
-		/*var/id
-		if (istype(wear_id, /obj/item/pda))
-			var/obj/item/pda/pda = wear_id
-			id = pda.owner
-		else if (istype(wear_id, /obj/item/weapon/card/id)) //just in case something other than a PDA/ID card somehow gets in the ID slot :[
-			var/obj/item/weapon/card/id/idcard = wear_id
-			id = idcard.registered_name
-		if (id && (id != real_name) && (get_dist(src, usr) <= 1) && prob(10))
-			msg += "<span class='warning'>[T.He] [T.is] wearing \icon[wear_id] \a [wear_id] yet something doesn't seem right...</span>\n"
-		else*/
-		msg += "[T.He] [T.is] wearing \icon[wear_id] \a [wear_id].\n"
+		msg += "[T.He] [T.is] wearing \icon[getFlatIcon(wear_id)] \a [wear_id].\n"
 
 	//Jitters
 	if (is_jittery)

@@ -3,11 +3,11 @@
 	set category = "Server"
 
 	if (!check_rights(R_SERVER))
-		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		to_chat(src, "<span class = 'danger'>You don't have the permissions.</span>")
 		return
 
 	if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
-		src << "<span class = 'danger'>You can't end the round right now.</span>"
+		to_chat(src, "<span class = 'danger'>You can't end the round right now.</span>")
 		return
 
 	var/conf_1 = input("Are you absolutely positively sure you want to END THE ROUND?") in list ("Yes", "No")
@@ -31,7 +31,7 @@
 	set category = "Server"
 
 	if (!check_rights(R_SERVER))
-		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		to_chat(src, "<span class = 'danger'>You don't have the permissions.</span>")
 		return
 
 	if (map)
@@ -44,4 +44,4 @@
 				message_admins("[key_name(src)] undid the administrative lock on the round ending.", key_name(usr))
 				log_admin("[key_name(src)] undid the administrative lock on the round ending.")
 	else
-		src << "<span class = 'danger'>Something went wrong.</span>"
+		to_chat(src, "<span class = 'danger'>Something went wrong.</span>")

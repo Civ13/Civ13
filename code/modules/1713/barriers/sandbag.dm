@@ -327,7 +327,7 @@ var/set_dir = null // Set the variable outside of any scopes
 /obj/item/weapon/barrier/sandbag/empty/attackby(var/obj/item/stack/O as obj, mob/user as mob)
 	if (istype(O, /obj/item/stack/ore/glass) && sand_amount < 1)
 		O.amount--
-		user << "You fill the sandbag with sand."
+		to_chat(user, "You fill the sandbag with sand.")
 		sand_amount = TRUE
 		if (O.amount<=0)
 			qdel(O)

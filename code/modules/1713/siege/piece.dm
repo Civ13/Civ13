@@ -255,7 +255,7 @@
 					M.remove_from_mob(W)
 					W.loc = src
 					loaded += W
-					user << SPAN_NOTICE("You load \the [src].")
+					to_chat(user, SPAN_NOTICE("You load \the [src]."))
 					if (M == user)
 						do_html(M)
 		else if (istype(W,/obj/item/weapon/wrench))
@@ -454,7 +454,7 @@
 					loaded -= M
 					M.loc = get_turf(user)
 					user.put_in_active_hand(M)
-					user << SPAN_NOTICE("You unload \the [src].")
+					to_chat(user, SPAN_NOTICE("You unload \the [src]."))
 					if (istype(src, /obj/structure/cannon/modern/tank))
 						playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 					return
@@ -903,7 +903,7 @@
 										if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
 											for (var/mob/living/L in view(20, target))
 												shake_camera(L, 5, 5)
-												L << "<span class = 'danger'>You hear something violently smash into the ceiling!</span>"
+												to_chat(L, "<span class = 'danger'>You hear something violently smash into the ceiling!</span>")
 										else if (target_area_original_integrity)
 											target.visible_message("<span class = 'danger'>The ceiling collapses!</span>")
 										*/

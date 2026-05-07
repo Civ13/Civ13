@@ -400,12 +400,12 @@
 	map.gamemode = vote.voted_gamemode
 	switch (vote.voted_gamemode)
 		if ("Classic (Stone Age Start)")
-			world << "<big>Starting <b>Classic</b> mode. Starting epoch is the Stone Age, research active.</big>"
+			to_chat(world, "<big>Starting <b>Classic</b> mode. Starting epoch is the Stone Age, research active.</big>")
 			map.ordinal_age = 0
 			return
 
 		if ("Chad Mode")
-			world << "<font color=#CECE00><big>Starting <b>Chad Mode</b>. Game epoch is the Stone Age, research inactive. Reduced starting items and more hostile conditions.</big></font>"
+			to_chat(world, "<font color=#CECE00><big>Starting <b>Chad Mode</b>. Game epoch is the Stone Age, research inactive. Reduced starting items and more hostile conditions.</big></font>")
 			map.ordinal_age = 0
 			map.research_active = FALSE
 			map.chad_mode = TRUE
@@ -441,7 +441,7 @@
 			return
 
 		if ("Chad Mode +")
-			world << "<font color=#CECE00><big>Starting <b>Chad Mode +</b>. Starting epoch is the Stone Age, research is done by sacrificing players. Reduced starting items and more hostile conditions.</big></font>"
+			to_chat(world, "<font color=#CECE00><big>Starting <b>Chad Mode +</b>. Starting epoch is the Stone Age, research is done by sacrificing players. Reduced starting items and more hostile conditions.</big></font>")
 			map.ordinal_age = 0
 			map.research_active = TRUE
 			map.chad_mode = TRUE
@@ -478,7 +478,7 @@
 			return
 
 		if ("Bronze Age (No Research)")
-			world << "<big>Starting <b>Bronze Age</b> mode. Game epoch is the Bronze Age, research inactive.</big>"
+			to_chat(world, "<big>Starting <b>Bronze Age</b> mode. Game epoch is the Bronze Age, research inactive.</big>")
 			map.ordinal_age = 1
 			map.age = "313 B.C."
 			map.age1_done = TRUE
@@ -494,7 +494,7 @@
 			return
 
 		if ("Auto-Research Mode")
-			world << "<big>Starting <b>Auto-Research mode</b>. Starting epoch is the Stone Age, research active but automatic.</big>"
+			to_chat(world, "<big>Starting <b>Auto-Research mode</b>. Starting epoch is the Stone Age, research active but automatic.</big>")
 			map.research_active = FALSE //well, it is, but we dont get research kits.
 			map.autoresearch = TRUE
 			map.ordinal_age = 0
@@ -503,14 +503,14 @@
 			return
 
 		if ("Resource-Based Research")
-			world << "<big>Starting <b>Resource-Based Research</b>. Starting epoch is the Stone Age, research active and requires the sale of items through <b>Research Desks</b>.</big>"
+			to_chat(world, "<big>Starting <b>Resource-Based Research</b>. Starting epoch is the Stone Age, research active and requires the sale of items through <b>Research Desks</b>.</big>")
 			map.research_active = FALSE //well, it is, but we dont get research kits.
 			map.resourceresearch = TRUE
 			map.ordinal_age = 0
 			return
 
 		if ("Bronze Age Start")
-			world << "<big>Starting Classic mode with <b>Bronze Age</b> start. Starting epoch is the Bronze Age, research active.</big>"
+			to_chat(world, "<big>Starting Classic mode with <b>Bronze Age</b> start. Starting epoch is the Bronze Age, research active.</big>")
 			map.ordinal_age = 1
 			map.age = "313 B.C."
 			map.age1_done = TRUE
@@ -526,7 +526,7 @@
 			return
 
 		if ("Medieval (No Research)")
-			world << "<big>Starting <b>Medieval Age</b> mode. Game Epoch is the Medieval Age, research inactive.</big>"
+			to_chat(world, "<big>Starting <b>Medieval Age</b> mode. Game Epoch is the Medieval Age, research inactive.</big>")
 			map.ordinal_age = 2
 			map.age = "1013"
 			map.age1_done = TRUE
@@ -543,7 +543,7 @@
 			return
 
 		if ("Imperial Age (No Research)")
-			world << "<big>Starting <b>Imperial Age</b> mode. Game Epoch is the Imperial Age, research inactive.</big>"
+			to_chat(world, "<big>Starting <b>Imperial Age</b> mode. Game Epoch is the Imperial Age, research inactive.</big>")
 			map.ordinal_age = 3
 			map.age = "1713"
 			map.age1_done = TRUE
@@ -561,7 +561,7 @@
 			return
 
 		if ("Industrial Age (No Research)")
-			world << "<big>Starting <b>Industrial Age</b> mode. Game Epoch is the Industrial Age, research inactive.</big>"
+			to_chat(world, "<big>Starting <b>Industrial Age</b> mode. Game Epoch is the Industrial Age, research inactive.</big>")
 			map.ordinal_age = 4
 			map.age = "1873"
 			map.age1_done = TRUE
@@ -580,7 +580,7 @@
 			return
 
 		if ("Early Modern Age (No Research)")
-			world << "<big>Starting <b>Early Modern Age</b> mode. Game Epoch is the EarLy Modern Age, research inactive.</big>"
+			to_chat(world, "<big>Starting <b>Early Modern Age</b> mode. Game Epoch is the EarLy Modern Age, research inactive.</big>")
 			map.ordinal_age = 5
 			map.age = "1903"
 			map.age1_done = TRUE
@@ -600,7 +600,7 @@
 			return
 
 		if ("WW2 Age (No Research)")
-			world << "<big>Starting <b>WW2 Age</b> mode. Game Epoch is the WW2 Age, research inactive.</big>"
+			to_chat(world, "<big>Starting <b>WW2 Age</b> mode. Game Epoch is the WW2 Age, research inactive.</big>")
 			map.ordinal_age = 6
 			map.age = "1943"
 			map.age1_done = TRUE
@@ -621,7 +621,7 @@
 			return
 
 		if ("Modern Age (No Research)")
-			world << "<big>Starting <b>Modern Age</b> mode. Game Epoch is the Modern Age, research inactive.</big>"
+			to_chat(world, "<big>Starting <b>Modern Age</b> mode. Game Epoch is the Modern Age, research inactive.</big>")
 			map.ordinal_age = 8
 			map.age = "2013"
 			map.age1_done = TRUE
@@ -645,7 +645,7 @@
 
 		/// TDM MODES ///
 		if ("Normal")
-			world << "<font color='green'><big>Normal Mode</big><br>No respawn delays.</big></font>"
+			to_chat(world, "<font color='green'><big>Normal Mode</big><br>No respawn delays.</big></font>")
 			config.disable_fov = TRUE
 			config.no_respawn_delays = TRUE
 			map.gamemode = "Normal"
@@ -653,7 +653,7 @@
 			return
 
 		if ("Competitive")
-			world << "<font color='yellow'><big>Competitive Mode</big><br>Respawn delay enabled, increased damage.</big></font>"
+			to_chat(world, "<font color='yellow'><big>Competitive Mode</big><br>Respawn delay enabled, increased damage.</big></font>")
 			config.disable_fov = TRUE
 			config.no_respawn_delays = FALSE
 			map.gamemode = "Competitive"
@@ -661,7 +661,7 @@
 			return
 
 		if ("Hardcore")
-			world << "<font color='red'><big>HARDCORE Mode</big><br>No respawns, increased damage. Field of View enabled. Awards active.</big></font>"
+			to_chat(world, "<font color='red'><big>HARDCORE Mode</big><br>No respawns, increased damage. Field of View enabled. Awards active.</big></font>")
 			config.disable_fov = FALSE
 			config.no_respawn_delays = FALSE
 			map.gamemode = "Hardcore"
@@ -671,11 +671,11 @@
 		/// CAPITOL MODES //
 		if ("Siege")
 			if (map && map.ID == MAP_CAPITOL_HILL)
-				world << "<font color='yellow'><big>Siege</big><br>The <b>National Guard</b> must defend the Chambers of the <b>Congress</b> and the <b>Senate</b></big> for <b>40 minutes</b>!</font>"
+				to_chat(world, "<font color='yellow'><big>Siege</big><br>The <b>National Guard</b> must defend the Chambers of the <b>Congress</b> and the <b>Senate</b></big> for <b>40 minutes</b>!</font>")
 			else if (map && map.ID == MAP_YELTSIN)
-				world << "<font color='yellow'><big>Siege</big><br>The <b>Militia</b> must defend the <b>Parliamental Hall</b></big> until <b>40 minutes</b>!<br><font size=4>All factions have <b>10 minutes</b> to prepare before the battle.</font>"
+				to_chat(world, "<font color='yellow'><big>Siege</big><br>The <b>Militia</b> must defend the <b>Parliamental Hall</b></big> until <b>40 minutes</b>!<br><font size=4>All factions have <b>10 minutes</b> to prepare before the battle.</font>")
 			else if (map && map.ID == MAP_WACO)
-				world << "<font color='yellow'><big>Siege</big><br>The <b>Branch Davidians</b> must defend the <b>Mount Carmel Compound</b></big> until <b>20 minutes</b> have elapsed!<br><font size=4>All factions have <b>3 minutes</b> to prepare before the battle.</font>"
+				to_chat(world, "<font color='yellow'><big>Siege</big><br>The <b>Branch Davidians</b> must defend the <b>Mount Carmel Compound</b></big> until <b>20 minutes</b> have elapsed!<br><font size=4>All factions have <b>3 minutes</b> to prepare before the battle.</font>")
 			config.disable_fov = TRUE
 			config.no_respawn_delays = TRUE
 			map.gamemode = "Siege"
@@ -691,18 +691,18 @@
 
 		if ("Protect the VIP")
 			if (map && map.ID == MAP_CAPITOL_HILL)
-				world << "<font color='yellow'><big>Protect the VIP</big><br>The <b>HVT</b> is being guarded by the <b>FBI</b> inside the National Guard-controlled Capitol. Protestors must find him!<br>They have <b>25 minutes to do it!</b></big></font>"
+				to_chat(world, "<font color='yellow'><big>Protect the VIP</big><br>The <b>HVT</b> is being guarded by the <b>FBI</b> inside the National Guard-controlled Capitol. Protestors must find him!<br>They have <b>25 minutes to do it!</b></big></font>")
 			else if (map && map.ID == MAP_YELTSIN)
-				world << "<font color='yellow'><big>Protect the VIP</big><br>The <b>HVT</b> is being guarded by the <b>KGB</b> inside the Militia-controlled Capitol. The Soviet Army must find them!<br>They have <b>40 minutes to do it!</b></big></font>"
+				to_chat(world, "<font color='yellow'><big>Protect the VIP</big><br>The <b>HVT</b> is being guarded by the <b>KGB</b> inside the Militia-controlled Capitol. The Soviet Army must find them!<br>They have <b>40 minutes to do it!</b></big></font>")
 			if (map && map.ID == MAP_WACO)
-				world << "<font color='yellow'><big>Protect the VIP</big><br><b>David Koresh</b> is being guarded by the <b>Branch Davidians</b> inside the Mount Carmel Compound. The ATF must find him!<br>They have <b>20 minutes to do it!</b></big></font>"
+				to_chat(world, "<font color='yellow'><big>Protect the VIP</big><br><b>David Koresh</b> is being guarded by the <b>Branch Davidians</b> inside the Mount Carmel Compound. The ATF must find him!<br>They have <b>20 minutes to do it!</b></big></font>")
 			config.disable_fov = TRUE
 			config.no_respawn_delays = TRUE
 			map.gamemode = "Protect the VIP"
 			return
 
 		if ("Area Capture")
-			world << "<font color='yellow'><big>Area Capture</big><br>Capture the <b>Congress</b> and the <b>Senate</b> to gain points. First team to <b>40 points</b> wins!</big></font>"
+			to_chat(world, "<font color='yellow'><big>Area Capture</big><br>Capture the <b>Congress</b> and the <b>Senate</b> to gain points. First team to <b>40 points</b> wins!</big></font>")
 			config.disable_fov = TRUE
 			config.no_respawn_delays = TRUE
 			map.gamemode = "Area Capture"
@@ -712,11 +712,11 @@
 
 		if ("Kills")
 			if (map && map.ID == MAP_CAPITOL_HILL)
-				world << "<font color='yellow'><big>Kills</big><br>The <b>American Militia</b> storms the  <b>National Guard</b>-controlled Capitol!</b></big></font>"
+				to_chat(world, "<font color='yellow'><big>Kills</big><br>The <b>American Militia</b> storms the  <b>National Guard</b>-controlled Capitol!</b></big></font>")
 				var/obj/map_metadata/capitol_hill/CP = map
 				CP.points_check()
 			else if (map && map.ID == MAP_YELTSIN)
-				world << "<font color='yellow'><big>Kills</big><br>The <b>Soviet Army</b> storms the <b>Militia</b>-controlled Capitol!</b></big></font>"
+				to_chat(world, "<font color='yellow'><big>Kills</big><br>The <b>Soviet Army</b> storms the <b>Militia</b>-controlled Capitol!</b></big></font>")
 				var/obj/map_metadata/yeltsin/CP = map
 				CP.points_check()
 			config.disable_fov = TRUE
@@ -726,21 +726,21 @@
 
 		/// WASTELAND MODES //
 		if ("After the Fall")
-			world << "<font color='yellow'><big>After the Fall</big><br>The world has long since become lost and desolate. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+			to_chat(world, "<font color='yellow'><big>After the Fall</big><br>The world has long since become lost and desolate. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>")
 			map.gamemode = "After the Fall"
 			map.is_zombie = FALSE
 			map.hasnukes = FALSE
 			return
 
 		if ("Nuclear")
-			world << "<font color='yellow'><big>Nuclear</big><br>To make things worse sometime between 2 and 3.5 hours a nuclear missle will be hitting somewhere nearby. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+			to_chat(world, "<font color='yellow'><big>Nuclear</big><br>To make things worse sometime between 2 and 3.5 hours a nuclear missle will be hitting somewhere nearby. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>")
 			map.gamemode = "Nuclear"
 			map.is_zombie = FALSE
 			map.hasnukes = TRUE
 			return
 
 		if ("Zombie Apocalypse")
-			world << "<font color='yellow'><big>Zombie Apocalypse</big><br>Something has gone terribly wrong. Monsters roam the world and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+			to_chat(world, "<font color='yellow'><big>Zombie Apocalypse</big><br>Something has gone terribly wrong. Monsters roam the world and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>")
 			map.gamemode = "Zombie Apocalypse"
 			map.is_zombie = TRUE
 			map.hasnukes = FALSE

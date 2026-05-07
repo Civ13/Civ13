@@ -125,7 +125,7 @@ var/spam_check3 = FALSE
 			a1_control = "NVA"
 		if (a1_control == "NVA" && spam_check1 == FALSE)
 			spam_check1 = TRUE
-			world << "<big><font color='red'>The NVA has captured the Eastern Outpost!</font></big>"
+			to_chat(world, "<big><font color='red'>The NVA has captured the Eastern Outpost!</font></big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -139,10 +139,10 @@ var/spam_check3 = FALSE
 			a2_control = "NVA"
 		if (a2_control == "NVA" && spam_check2 == FALSE)
 			spam_check2 = TRUE
-			world << "<big><font color='red'>The NVA has captured the Western Outpost!</font></big>"
+			to_chat(world, "<big><font color='red'>The NVA has captured the Western Outpost!</font></big>")
 		if (a1_control == "NVA" && a2_control == "NVA" && spam_check3 == FALSE)
 			spam_check3 = TRUE
-			world << "<big><font color='red'>The NVA has captured BOTH outposts! <br>The US Army retreats back to their FOB!</font></big>"
+			to_chat(world, "<big><font color='red'>The NVA has captured BOTH outposts! <br>The US Army retreats back to their FOB!</font></big>")
 			viet_supplies()
 	spawn(600) // 1 minute
 		outpost_check()
@@ -155,8 +155,8 @@ var/spam_check3 = FALSE
 			cust_color1 = "red"
 		if (a2_control == "NVA")
 			cust_color2 = "red"
-		world << "<big><font color='[cust_color1]'><b>Eastern Outpost</b>: [a1_control]</font></big>"
-		world << "<big><font color='[cust_color2]'><b>Western Outpost</b>: [a2_control]</font></big>"
+		to_chat(world, "<big><font color='[cust_color1]'><b>Eastern Outpost</b>: [a1_control]</font></big>")
+		to_chat(world, "<big><font color='[cust_color2]'><b>Western Outpost</b>: [a2_control]</font></big>")
 	spawn(900)
 		outpost_status()
 
@@ -170,7 +170,7 @@ var/spam_check3 = FALSE
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		world << "<font size = 4><span class = 'notice'>The US Army has managed to defend their FOB! The NVA retreats back into the jungle!</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>The US Army has managed to defend their FOB! The NVA retreats back into the jungle!</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
@@ -178,7 +178,7 @@ var/spam_check3 = FALSE
 		if(a1_control == "NVA" && a2_control == "NVA")
 			if ((current_winner && current_loser && world.time > next_win) && no_loop_o == FALSE)
 				ticker.finished = TRUE
-				world << "<font size = 4><span class = 'notice'>The NVA has captured the FOB!</span></font>"
+				to_chat(world, "<font size = 4><span class = 'notice'>The NVA has captured the FOB!</span></font>")
 				show_global_battle_report(null)
 				win_condition_spam_check = TRUE
 				no_loop_o = TRUE
@@ -221,7 +221,7 @@ var/spam_check3 = FALSE
 						current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 			else
 				if (current_win_condition != no_winner && current_winner && current_loser)
-					world << "<font size = 3>The US Army has recaptured the FOB!</font>"
+					to_chat(world, "<font size = 3>The US Army has recaptured the FOB!</font>")
 					current_winner = null
 					current_loser = null
 				next_win = -1
@@ -242,7 +242,7 @@ var/spam_check3 = FALSE
 			if (H.faction_text == faction2)
 				if (a1_control != "NVA" || a2_control != "NVA")
 					if (world.time >= H.next_gracewall_message)
-						H << "<span class = 'warning'>You cannot advance further without having captured the outposts.</span>"
+						to_chat(H, "<span class = 'warning'>You cannot advance further without having captured the outposts.</span>")
 						H.next_gracewall_message = world.time + 10
 					return TRUE
 		else

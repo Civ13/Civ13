@@ -31,6 +31,26 @@
 
 #define MAX_CHAT_QUEUE 200
 
+/proc/extract_json_message(var/text_string)
+    // Make sure we actually have a string to work with
+    if(!istext(text_string))
+        return text_string
+
+    var/prefix = "{\"message\":"
+    var/prefix_len = length(prefix)
+
+    // Check if the string starts with {"message":
+    // copytext() end-index is exclusive, so we add 1 to the length
+    if(copytext(text_string, 1, prefix_len + 1) == prefix)
+        text_string = copytext(text_string, prefix_len + 1)
+
+    // Check if the string ends with }
+    // Modern BYOND & OpenDream allow negative indexing to grab from the end
+    if(copytext(text_string, -1) == "}")
+        text_string = copytext(text_string, 1, -1)
+
+    return text_string
+
 /datum/chat/proc/send_message(message)
 	if (!client)
 		return
@@ -42,8 +62,24 @@
 		return
 
 	// Escape message for JS
-	var/escaped_message = json_encode(list("message" = message))
+	var/escaped_message = extract_json_message(message)
 	client << output(escaped_message, "browser_chat:receiveMessage")
+
+//this skips sanitisation so make sure you use it on safe html ONLY
+//DO NOT use this for player inputs!
+/datum/chat/proc/send_message_html(message)
+	if (!client)
+		return
+	
+	if (!is_ready)
+		if (message_queue.len >= MAX_CHAT_QUEUE)
+			message_queue.Cut(1, 2) // drop oldest
+		message_queue += message
+		return
+
+	client << output(list2params(list(message,1)), "browser_chat:receiveMessage")
+
+
 
 /**
  * Global chat wrapper to replace the to_chat macro functionality.

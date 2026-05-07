@@ -581,7 +581,7 @@
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>"
+			to_chat(world, "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -704,7 +704,7 @@
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>"
+			to_chat(world, "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -808,7 +808,7 @@
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>"
+			to_chat(world, "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -970,7 +970,7 @@
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>"
+			to_chat(world, "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -1070,7 +1070,7 @@
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>"
+			to_chat(world, "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -1143,9 +1143,9 @@
 				cust_color = "red"
 			else
 				cust_color = "blue"
-			world << "<big><font color='[cust_color]'><b>Southern Road</b>: [a1_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>Southern Road</b>: [a1_control]</font></big>")
 		else
-			world << "<big><b>Southern Road</b>: Nobody</big>"
+			to_chat(world, "<big><b>Southern Road</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -1171,9 +1171,9 @@
 				cust_color = "red"
 			else
 				cust_color = "blue"
-			world << "<big><font color='[cust_color]'><b>Mountain Ledge</b>: [a2_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>Mountain Ledge</b>: [a2_control]</font></big>")
 		else
-			world << "<big><b>Mountain Ledge</b>: Nobody</big>"
+			to_chat(world, "<big><b>Mountain Ledge</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -1199,9 +1199,9 @@
 				cust_color = "red"
 			else
 				cust_color = "blue"
-			world << "<big><font color='[cust_color]'><b>Mountain Tunnels</b>: [a3_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>Mountain Tunnels</b>: [a3_control]</font></big>")
 		else
-			world << "<big><b>Mountain Tunnels</b>: Nobody</big>"
+			to_chat(world, "<big><b>Mountain Tunnels</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -1227,12 +1227,12 @@
 				cust_color = "red"
 			else
 				cust_color = "blue"
-			world << "<big><font color='[cust_color]'><b>Northern Road</b>: [a4_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>Northern Road</b>: [a4_control]</font></big>")
 		else
-			world << "<big><b>Northern Road</b>: Nobody</big>"
-	world << "<big><b>Current Points:</b></big>"
-	world << "<big>Central Asian Federal Republic: [cafr_points]</big>"
-	world << "<big>Turkestan Soviet Federative Socialist Republic: [tsfsr_points]</big>"
+			to_chat(world, "<big><b>Northern Road</b>: Nobody</big>")
+	to_chat(world, "<big><b>Current Points:</b></big>")
+	to_chat(world, "<big>Central Asian Federal Republic: [cafr_points]</big>")
+	to_chat(world, "<big>Turkestan Soviet Federative Socialist Republic: [tsfsr_points]</big>")
 	spawn(300)
 		points_check()
 
@@ -1251,7 +1251,7 @@
 				return FALSE
 			ticker.finished = TRUE
 			var/message = "The <b>TSFSR</b> has reached [tsfsr_points] points and won!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
@@ -1260,7 +1260,7 @@
 				return FALSE
 			ticker.finished = TRUE
 			var/message = "The <b>CAFR</b> has reached [cafr_points] points and won!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE

@@ -113,10 +113,10 @@
 /obj/structure/optable/proc/check_table(mob/living/human/patient as mob)
 	check_victim()
 	if (victim && get_turf(victim) == get_turf(src) && victim.lying)
-		usr << "<span class='warning'>\The [src] is already occupied!</span>"
+		to_chat(usr, "<span class='warning'>\The [src] is already occupied!</span>")
 		return FALSE
 	if (patient.buckled)
-		usr << "<span class='notice'>Unbuckle \the [patient] first!</span>"
+		to_chat(usr, "<span class='notice'>Unbuckle \the [patient] first!</span>")
 		return FALSE
 	return TRUE
 

@@ -18,14 +18,14 @@
 /obj/map_metadata/nomads/mountain/seasons()
 	if (real_season == "dry")
 		season = "Wet Season"
-		world << "<big>The <b>Wet Season</b> has started.</big>"
+		to_chat(world, "<big>The <b>Wet Season</b> has started.</big>")
 		change_weather_somehow()
 		for (var/turf/floor/beach/drywater/D)
 			D.ChangeTurf(/turf/floor/beach/water/swamp)
 		real_season = "wet"
 	else
 		season = "Dry Season"
-		world << "<big>The <b>Dry Season</b> has started.</big>"
+		to_chat(world, "<big>The <b>Dry Season</b> has started.</big>")
 		change_weather_somehow()
 		for (var/turf/floor/beach/water/swamp/D)
 			D.ChangeTurf(/turf/floor/beach/drywater)

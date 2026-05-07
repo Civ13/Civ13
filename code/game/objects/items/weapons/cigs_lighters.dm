@@ -140,7 +140,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		if (ismob(loc))
 			var/mob/living/M = loc
 			if (!nomessage)
-				M << "<span class='notice'>Your [name] goes out.</span>"
+				to_chat(M, "<span class='notice'>Your [name] goes out.</span>")
 			M.remove_from_mob(src) //un-equip it so the overlays can update
 			M.update_inv_wear_mask(0)
 			M.update_inv_l_hand(0)
@@ -152,7 +152,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		if (ismob(loc))
 			var/mob/living/M = loc
 			if (!nomessage)
-				M << "<span class='notice'>Your [name] goes out, and you empty the ash.</span>"
+				to_chat(M, "<span class='notice'>Your [name] goes out, and you empty the ash.</span>")
 			lit = FALSE
 			icon_state = icon_off
 			item_state = icon_off
@@ -214,12 +214,12 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	if (istype(glass)) //you can dip cigarettes into beakers
 		var/transfered = glass.reagents.trans_to_obj(src, chem_volume)
 		if (transfered)	//if reagents were transfered, show the message
-			user << "<span class='notice'>You dip \the [src] into \the [glass].</span>"
+			to_chat(user, "<span class='notice'>You dip \the [src] into \the [glass].</span>")
 		else			//if not, either the beaker was empty, or the cigarette was full
 			if (!glass.reagents.total_volume)
-				user << "<span class='notice'>[glass] is empty.</span>"
+				to_chat(user, "<span class='notice'>[glass] is empty.</span>")
 			else
-				user << "<span class='notice'>[src] is full.</span>"
+				to_chat(user, "<span class='notice'>[src] is full.</span>")
 
 /obj/item/clothing/mask/smokable/cigarette/attack_self(mob/user as mob)
 	if (lit == TRUE)
@@ -383,7 +383,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	if (istype(W, /obj/item/stack/material/tobacco))
 		var/obj/item/stack/material/tobacco/G = W
 		if (smoketime)
-			user << "<span class='notice'>[src] is already packed.</span>"
+			to_chat(user, "<span class='notice'>[src] is already packed.</span>")
 			return
 		smoketime = 1000
 		reagents.add_reagent("nicotine",15)
@@ -395,7 +395,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	else if (istype(W, /obj/item/weapon/reagent_containers/pill/opium))
 		var/obj/item/weapon/reagent_containers/pill/opium/G = W
 		if (smoketime)
-			user << "<span class='notice'>[src] is already packed.</span>"
+			to_chat(user, "<span class='notice'>[src] is already packed.</span>")
 			return
 		smoketime = 500
 		reagents.add_reagent("opium",5)
@@ -405,7 +405,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/peyote))
 		var/obj/item/weapon/reagent_containers/food/snacks/grown/peyote/G = W
 		if (smoketime)
-			user << "<span class='notice'>[src] is already packed.</span>"
+			to_chat(user, "<span class='notice'>[src] is already packed.</span>")
 			return
 		smoketime = 200
 		reagents.add_reagent("peyote", 5)
@@ -415,10 +415,10 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks))
 		var/obj/item/weapon/reagent_containers/food/snacks/grown/G = W
 		if (!G.dry)
-			user << "<span class='notice'>[G] must be dried before you stuff it into [src].</span>"
+			to_chat(user, "<span class='notice'>[G] must be dried before you stuff it into [src].</span>")
 			return
 		if (smoketime)
-			user << "<span class='notice'>[src] is already packed.</span>"
+			to_chat(user, "<span class='notice'>[src] is already packed.</span>")
 			return
 		smoketime = 1000
 		if (G.reagents)
@@ -464,7 +464,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	if (istype(W, /obj/item/weapon/reagent_containers/pill/crack))
 		var/obj/item/weapon/reagent_containers/pill/crack/G = W
 		if (smoketime)
-			user << "<span class='notice'>[src] is already stuffed.</span>"
+			to_chat(user, "<span class='notice'>[src] is already stuffed.</span>")
 			return
 		smoketime = 300
 		reagents.add_reagent("crack",5)
@@ -540,7 +540,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			item_state = "[base_state]on"
 			if (!istype(src, /obj/item/weapon/flame/lighter/zippo) )
 				if (prob(5))
-					user << "<span class='warning'>You burn yourself while lighting the lighter.</span>"
+					to_chat(user, "<span class='warning'>You burn yourself while lighting the lighter.</span>")
 					if (user.l_hand == src)
 						user.apply_damage(2,BURN,"l_hand")
 					else
