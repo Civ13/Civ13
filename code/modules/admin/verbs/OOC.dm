@@ -6,6 +6,6 @@
 		return
 	pingability = !pingability
 	if (pingability)
-		src << "<span class = 'good'>You can now be pinged in OOC.</span>"
+		to_chat(src, "<span class = 'good'>You can now be pinged in OOC.</span>")
 	else
-		src << "<span class = 'notice'>You can no longer be pinged in OOC.</span>"
+		to_chat(src, "<span class = 'notice'>You can no longer be pinged in OOC.</span>")

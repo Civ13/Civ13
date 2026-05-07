@@ -148,7 +148,7 @@
 				if (!driver)
 					if (wheeled)
 						if (M.put_in_active_hand(dwheel) == FALSE)
-							M << "Your hands are full!"
+							to_chat(M, "Your hands are full!")
 							return
 
 					M.driver = TRUE
@@ -233,7 +233,7 @@
 					engine.power_off_connections()
 					engine.currentspeed = 0
 					engine.currentpower = 0
-					user << "You turn off the engine."
+					to_chat(user, "You turn off the engine.")
 					set_light(0)
 					playsound(loc, engine.ending_snd, 65, FALSE, 2)
 					return
@@ -284,14 +284,14 @@
 		return FALSE
 	if (driver && istype(DT, /turf/floor/beach/water) || istype(DT, /turf/floor/trench/flooded))
 		if (istype(DT, /turf/floor/beach/water/deep/saltwater) && istype(DT.loc, /area/caribbean/sea))
-			driver << "<span class='danger'>You can't go further into the sea with a raft!</span>"
+			to_chat(driver, "<span class='danger'>You can't go further into the sea with a raft!</span>")
 			return FALSE
 		if (driver in get_turf(src))
 			return TRUE
 		else
 			driver.driver = FALSE
 			driver.driver_vehicle = null
-			driver << "You leave the [src]."
+			to_chat(driver, "You leave the [src].")
 			unbuckle_mob()
 			update_overlay()
 			update_icon()
@@ -303,9 +303,9 @@
 /obj/structure/vehicle/raft/attackby(obj/item/O as obj, mob/user as mob)
 	if (istype(O,/obj/item/weapon/hammer) && !not_disassemblable)
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		user << SPAN_NOTICE("You begin dismantling \the [src].")
+		to_chat(user, SPAN_NOTICE("You begin dismantling \the [src]."))
 		if (do_after(user,25,src))
-			user << SPAN_NOTICE("You dismantle \the [src].") //We lose some materials in the process. Some wood and rope is no longer useful as raw.
+			to_chat(user, SPAN_NOTICE("You dismantle \the [src].")) //We lose some materials in the process. Some wood and rope is no longer useful as raw.)
 			var /obj/item/stack/material/woodplank/W = new /obj/item/stack/material/woodplank(get_turf(src))
 			new /obj/item/stack/material/rope(get_turf(src))
 			W.amount += 4 //adds 4 boards to the stack, making it 5
@@ -553,9 +553,9 @@
 /obj/structure/vehicle/boat/sailboat/attackby(obj/item/O as obj, mob/user as mob)
 	if (istype(O,/obj/item/weapon/hammer) && !not_disassemblable)
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		user << SPAN_NOTICE("You begin dismantling \the [src].")
+		to_chat(user, SPAN_NOTICE("You begin dismantling \the [src]."))
 		if (do_after(user,25,src))
-			user << SPAN_NOTICE("You dismantle \the [src].") //We lose some materials in the process. Some wood is no longer useful as raw.
+			to_chat(user, SPAN_NOTICE("You dismantle \the [src].")) //We lose some materials in the process. Some wood is no longer useful as raw.)
 			new /obj/item/sail(get_turf(src))
 			var /obj/item/stack/material/woodplank/W = new /obj/item/stack/material/woodplank(get_turf(src))
 			W.amount += 9 //adds 9 boards to the stack, making it 10
@@ -577,7 +577,7 @@
 					if (!driver)
 						if (wheeled)
 							if (M.put_in_active_hand(dwheel) == FALSE)
-								M << SPAN_WARNING("Your hands are full!")
+								to_chat(M, SPAN_WARNING("Your hands are full!"))
 								return
 
 						M.driver = TRUE
@@ -595,7 +595,7 @@
 					update_icon()
 					return
 		else
-			user << SPAN_WARNING("\The [src] is full!")
+			to_chat(user, SPAN_WARNING("\The [src] is full!"))
 			return
 
 	else if (istype(A, /obj/structure) || istype(A, /obj/item/weapon/gun/projectile/automatic/stationary) && storagecapacity >= 1)
@@ -681,7 +681,7 @@
 				if (GC && GC.reagents && GC.reagents.has_reagent(i))
 					found = TRUE
 			if (!found)
-				user << "\The [W] has no acceptable fuel in it."
+				to_chat(user, "\The [W] has no acceptable fuel in it.")
 				update_customdesc()
 				return
 			for (var/i in engine.fuels)
@@ -689,18 +689,18 @@
 					if (GC.reagents.get_reagent_amount(i)<= fueltank.reagents.maximum_volume-fueltank.reagents.total_volume)
 						fueltank.reagents.add_reagent(i,GC.reagents.get_reagent_amount(i))
 						GC.reagents.del_reagent(i)
-						user << "You empty \the [W] into the fueltank."
+						to_chat(user, "You empty \the [W] into the fueltank.")
 						update_customdesc()
 						return
 					else
 						var/amttransf = fueltank.reagents.maximum_volume-fueltank.reagents.total_volume
 						fueltank.reagents.add_reagent(i,amttransf)
 						GC.reagents.remove_reagent(i,amttransf)
-						user << "You fill the fueltank completly with \the [W]."
+						to_chat(user, "You fill the fueltank completly with \the [W].")
 						update_customdesc()
 						return
 		else
-			user << "The fueltank is full already."
+			to_chat(user, "The fueltank is full already.")
 			update_customdesc()
 			return
 	else if (istype(W, /obj/item/vehicleparts/wheel))
@@ -711,7 +711,7 @@
 					engine.power_off_connections()
 					engine.currentspeed = 0
 					engine.currentpower = 0
-					user << "You turn off the engine."
+					to_chat(user, "You turn off the engine.")
 					moving = FALSE
 					set_light(0)
 					playsound(loc, engine.ending_snd, 65, FALSE, 2)
@@ -973,10 +973,10 @@
 			driver.Weaken(5)
 			driver.adjustBruteLoss(rand(8,19))
 			if (!driver.head)
-				driver << "<span class='warning'>Your head hits the ground!</span>"
+				to_chat(driver, "<span class='warning'>Your head hits the ground!</span>")
 				driver.adjustBrainLoss(rand(5,8))
 			if (driver.head && !istype(driver.head, /obj/item/clothing/head/helmet))
-				driver << "<span class='warning'>Your head hits the ground!</span>"
+				to_chat(driver, "<span class='warning'>Your head hits the ground!</span>")
 				driver.adjustBrainLoss(rand(3,6))
 			if (driver.l_hand == dwheel)
 				driver.remove_from_mob(dwheel)
@@ -1009,7 +1009,7 @@
 		else
 			driver.driver = FALSE
 			driver.driver_vehicle = null
-			driver << "You leave the [src]."
+			to_chat(driver, "You leave the [src].")
 			driver.buckled  = null
 			driver.pixel_x = 0
 			driver.pixel_y = 0
@@ -1045,19 +1045,19 @@
 	if (istype(W, /obj/item/weapon/reagent_containers/glass))
 		var/obj/item/weapon/reagent_containers/glass/GC = W
 		if (fueltank.reagents.total_volume >= fueltank.reagents.maximum_volume)
-			user << "The fueltank is full already."
+			to_chat(user, "The fueltank is full already.")
 		if (fueltank.reagents.total_volume < fueltank.reagents.maximum_volume)
 			if (!GC.reagents.has_reagent("gasoline"))
-				user << "\The [W] has no gasoline in it."
+				to_chat(user, "\The [W] has no gasoline in it.")
 			if (GC.reagents.get_reagent_amount("gasoline") <= fueltank.reagents.maximum_volume-fueltank.reagents.total_volume)
 				fueltank.reagents.add_reagent("gasoline",GC.reagents.get_reagent_amount("gasoline"))
 				GC.reagents.del_reagent("gasoline")
-				user << "You empty \the [W] into the fueltank."
+				to_chat(user, "You empty \the [W] into the fueltank.")
 			else
 				var/amttransf = fueltank.reagents.maximum_volume-fueltank.reagents.total_volume
 				fueltank.reagents.add_reagent("gasoline",amttransf)
 				GC.reagents.remove_reagent("gasoline",amttransf)
-				user << "You fill the fueltank completely with \the [W]."
+				to_chat(user, "You fill the fueltank completely with \the [W].")
 		update_customdesc()
 		return
 	..()
@@ -1216,7 +1216,7 @@
 				visible_message("<div class='notice'>[M] starts getting on \the driver seat of the [src]...</div>")
 				if (wheeled)
 					if (M.put_in_active_hand(dwheel) == FALSE)
-						M << "Your hands are full!"
+						to_chat(M, "Your hands are full!")
 						return
 				M.forceMove(get_turf(src))
 				M.driver = TRUE
@@ -1975,7 +1975,7 @@
 			driver.Weaken(3)
 			driver.adjustBruteLoss(rand(0,8))
 			if (prob(10)) //10% chance to hit the head hard, inside the 30% chance
-				driver << "<span class='warning'>Your head hits the ground!</span>"
+				to_chat(driver, "<span class='warning'>Your head hits the ground!</span>")
 				driver.adjustBrainLoss(rand(0,5))
 			if (driver.l_hand == dwheel)
 				driver.remove_from_mob(dwheel)
@@ -2009,7 +2009,7 @@
 		else
 			driver.driver = FALSE
 			driver.driver_vehicle = null
-			driver << "You leave the [src]."
+			to_chat(driver, "You leave the [src].")
 			driver.buckled = null
 			driver.pixel_x = 0
 			driver.pixel_y = 0

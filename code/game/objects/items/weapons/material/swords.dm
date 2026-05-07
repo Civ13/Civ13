@@ -59,7 +59,7 @@
 	..()
 	if(atk_mode == SLASH)
 		atk_mode = STAB
-		user << "<span class='notice'>You will now stab.</span>"
+		to_chat(user, "<span class='notice'>You will now stab.</span>")
 		edge = FALSE
 		sharp = TRUE
 		attack_verb = list("stabbed")
@@ -67,7 +67,7 @@
 
 	else if(atk_mode == STAB)
 		atk_mode = BASH
-		user << "<span class='notice'>You will now bash.</span>"
+		to_chat(user, "<span class='notice'>You will now bash.</span>")
 		edge = FALSE
 		sharp = FALSE
 		attack_verb = list("bashed", "smacked")
@@ -75,7 +75,7 @@
 
 	else if(atk_mode == BASH)
 		atk_mode = SLASH
-		user << "<span class='notice'>You will now slash.</span>"
+		to_chat(user, "<span class='notice'>You will now slash.</span>")
 		edge = TRUE
 		sharp = TRUE
 		attack_verb = list("slashed", "diced")

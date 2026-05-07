@@ -69,31 +69,31 @@ var/global/redirect_all_players = null
 
 	if (client)
 		if (client.prefs.muted & MUTE_DEADCHAT)
-			src << "<span class = 'red'>You cannot talk in lobbychat (muted).</span>"
+			to_chat(src, "<span class = 'red'>You cannot talk in lobbychat (muted).</span>")
 			return
 
 		if (client.handle_spam_prevention(message,MUTE_DEADCHAT))
 			return
 		if (!client.holder)
 			if (!config.ooc_allowed)
-				src << "<span class='danger'>OOC is globally muted.</span>"
+				to_chat(src, "<span class='danger'>OOC is globally muted.</span>")
 				return
 			if (!config.dooc_allowed && (stat == DEAD))
-				usr << "<span class='danger'>OOC for dead mobs has been turned off.</span>"
+				to_chat(usr, "<span class='danger'>OOC for dead mobs has been turned off.</span>")
 				return
 			if (client.prefs.muted & MUTE_OOC)
-				src << "<span class='danger'>You cannot use OOC (muted).</span>"
+				to_chat(src, "<span class='danger'>You cannot use OOC (muted).</span>")
 				return
 			if (client.handle_spam_prevention(message,MUTE_OOC))
 				return
 			if (findtext(message, "byond://"))
-				src << "<b>Advertising other servers is not allowed.</b>"
+				to_chat(src, "<b>Advertising other servers is not allowed.</b>")
 				log_admin("[key_name(client)] has attempted to advertise in OOC: [message]")
 				message_admins("[key_name_admin(client)] has attempted to advertise in OOC: [message]", key_name_admin(client))
 				return
 	for (var/new_player in new_player_mob_list)
 		if (new_player:client) // sanity check
-			to_chat(new_player, "<span class = 'ping'><small>["\["]LOBBY["\]"]</small></span> <span class='deadsay'><b>[capitalize(key)]</b>:</span> [capitalize(message)]")
+			to_chat(new_player, create_text_tag("lobby", "LOBBY:", new_player:client) + "<span class='deadsay'><b>[capitalize(key)]</b>:</span> [capitalize(message)]")
 
 	return TRUE
 
@@ -211,7 +211,7 @@ var/global/redirect_all_players = null
 			ready = FALSE
 
 	if (href_list["refresh"])
-		src << browse(null, "window=playersetup") //closes the player setup window
+		src << browse(null, "window=playersetup") //closes the player setup window)
 		new_player_panel_proc()
 
 	if (href_list["observe"])
@@ -238,7 +238,7 @@ var/global/redirect_all_players = null
 			if (T)
 				observer.loc = T
 			else
-				src << "<span class='danger'>Could not locate an observer spawn point. Use the Teleport verb to jump to another map point.</span>"
+				to_chat(src, "<span class='danger'>Could not locate an observer spawn point. Use the Teleport verb to jump to another map point.</span>")
 			observer.timeofdeath = world.time // Set the time of death so that the respawn timer works correctly.
 
 			announce_ghost_joinleave(src)
@@ -1173,15 +1173,15 @@ var/global/redirect_all_players = null
 				else
 					H.squad = rand(1,map.squads)
 				map.faction1_squads[H.squad] += list(H)
-				H << "<big><b>You have been assigned to Squad [H.squad]!</b></big>"
+				to_chat(H, "<big><b>You have been assigned to Squad [H.squad]!</b></big>")
 				if (H.original_job.is_squad_leader)
 					if (!map.faction1_squad_leaders[H.squad] || map.faction1_squad_leaders[H.squad] == H)
-						H << "<big><b>You are the new squad leader!</b></big>"
+						to_chat(H, "<big><b>You are the new squad leader!</b></big>")
 						map.faction1_squad_leaders[H.squad] = H
 					else if (map.faction1_squad_leaders[H.squad] && map.faction1_squad_leaders[H.squad] != H)
-						H << "<big><b>Your squad leader is [map.faction1_squad_leaders[H.squad]].</b></big>"
+						to_chat(H, "<big><b>Your squad leader is [map.faction1_squad_leaders[H.squad]].</b></big>")
 				else if (map.faction1_squad_leaders[H.squad])
-					H << "<big><b>Your squad leader is [map.faction1_squad_leaders[H.squad]].</b></big>"
+					to_chat(H, "<big><b>Your squad leader is [map.faction1_squad_leaders[H.squad]].</b></big>")
 			else if (H.faction_text == map.faction2)
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander)
 					if (map.ordinal_age >= 6 && map.ordinal_age < 8)
@@ -1200,15 +1200,15 @@ var/global/redirect_all_players = null
 				else
 					H.squad = rand(1,map.squads)
 				map.faction2_squads[H.squad] += list(H)
-				H << "<big><b>You have been assigned to Squad [H.squad]!</b></big>"
+				to_chat(H, "<big><b>You have been assigned to Squad [H.squad]!</b></big>")
 				if (H.original_job.is_squad_leader)
 					if (!map.faction2_squad_leaders[H.squad] || map.faction2_squad_leaders[H.squad] == H)
-						H << "<big><b>You are the new squad leader!</b></big>"
+						to_chat(H, "<big><b>You are the new squad leader!</b></big>")
 						map.faction2_squad_leaders[H.squad] = H
 					else if (map.faction2_squad_leaders[H.squad] && map.faction2_squad_leaders[H.squad] != H)
-						H << "<big><b>Your squad leader is [map.faction2_squad_leaders[H.squad]].</b></big>"
+						to_chat(H, "<big><b>Your squad leader is [map.faction2_squad_leaders[H.squad]].</b></big>")
 				else if (map.faction2_squad_leaders[H.squad])
-					H << "<big><b>Your squad leader is [map.faction2_squad_leaders[H.squad]].</b></big>"
+					to_chat(H, "<big><b>Your squad leader is [map.faction2_squad_leaders[H.squad]].</b></big>")
 	if(!map.fob_spawns)
 		job_master.relocate(character)
 	if (character.buckled && istype(character.buckled, /obj/structure/bed/chair/wheelchair))
@@ -1425,8 +1425,6 @@ var/global/redirect_all_players = null
 			continue
 
 		var/job_is_available = job && IsJobAvailable(job.title)
-
-		//	unavailable_message = " <span class = 'color: rgb(255,215,0);'>{WHITELISTED}</span> "
 
 		if (job_master.side_is_hardlocked(job.base_type_flag()))
 			job_is_available = FALSE
@@ -1799,8 +1797,8 @@ var/global/redirect_all_players = null
 	return FALSE
 
 /mob/new_player/proc/close_spawn_windows()
-	src << browse(null, "window=latechoices") //closes late choices window
-	src << browse(null, "window=playersetup") //closes the player setup window
+	src << browse(null, "window=latechoices") //closes late choices window)
+	src << browse(null, "window=playersetup") //closes the player setup window)
 	if (config && config.opendream)
 		client?.unload_pregame()
 

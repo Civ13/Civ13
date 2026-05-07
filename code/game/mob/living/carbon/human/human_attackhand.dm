@@ -124,7 +124,7 @@
 
 					if(organ.applied_pressure)
 						var/message = "<span class='warning'>[ismob(organ.applied_pressure)? "Someone" : "\A [organ.applied_pressure]"] is already applying pressure to [src == src? "your [organ.name]" : "[src]'s [organ.name]"].</span>"
-						M << "[message]"
+						to_chat(M, "[message]")
 						return FALSE
 					apply_pressure(src, tgt)
 					return

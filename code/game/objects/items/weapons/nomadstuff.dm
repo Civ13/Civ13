@@ -32,7 +32,7 @@
 	cover_overlay = image("icon" = 'icons/obj/items.dmi', "icon_state" = "bedroll_w", "layer" = MOB_LAYER + 2.1)
 
 /obj/item/weapon/bedroll/attack_self(mob/user as mob)
-	user << "You open the bedroll, extending it."
+	to_chat(user, "You open the bedroll, extending it.")
 	new/obj/structure/bed/bedroll(user.loc)
 	qdel(src)
 	return
@@ -49,7 +49,7 @@
 	set src in view(1)
 	set name = "Fold Bedroll"
 	if (used == FALSE)
-		usr << "You fold the bedroll."
+		to_chat(usr, "You fold the bedroll.")
 		running = FALSE
 		new/obj/item/weapon/bedroll(src.loc)
 		qdel(src)
@@ -125,11 +125,11 @@
 /obj/item/weapon/tent/attack_self(mob/user as mob)
 	for (var/obj/O in src.loc)
 		if (istype(O, /obj/structure/tent))
-			user << "There is already a structure here."
+			to_chat(user, "There is already a structure here.")
 			return
 	var/area/caribbean/oldarea = get_area(src)
 	if (oldarea.location == AREA_INSIDE)
-		user << "This location is covered already, you can't set up a tent here."
+		to_chat(user, "This location is covered already, you can't set up a tent here.")
 		return
 	visible_message("[user] starts unfolding the [src]...","You open the [src] and start unfolding it...")
 	if (do_after(user, 35, src))

@@ -900,19 +900,19 @@
 	set src in view(1)
 
 	if (following_mob == null)
-		usr << "This animal is not leashed."
+		to_chat(usr, "This animal is not leashed.")
 		return
 	else if (istype(following_mob, /obj/structure/grille/fence) || istype(following_mob, /obj/structure/barricade/wood_pole))
 		following_mob = null
 		new/obj/item/weapon/leash(src.loc)
-		usr << "You free the [src]."
+		to_chat(usr, "You free the [src].")
 		stop_automated_movement = FALSE
 
 		return
 	else
 		following_mob = null
 		new/obj/item/weapon/leash(src.loc)
-		usr << "You free the [src]."
+		to_chat(usr, "You free the [src].")
 		stop_automated_movement = FALSE
 
 		return

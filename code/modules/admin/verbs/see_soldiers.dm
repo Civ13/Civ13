@@ -3,7 +3,7 @@
 	set category = "Special"
 
 	if (!check_rights(R_MOD))
-		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		to_chat(src, "<span class = 'danger'>You don't have the permissions.</span>")
 		return
 
 	var/i2faction[27]
@@ -38,4 +38,4 @@
 	i2faction[29] = TSFSR
 	for (var/i in TRUE to 24)
 		var/faction = i2faction[i]
-		src << "<i># of [faction] total members:</i> <b>[soldiers[faction]]</b>"
+		to_chat(src, "<i># of [faction] total members:</i> <b>[soldiers[faction]]</b>")

@@ -28,7 +28,7 @@
 				M.amount -= inputamount
 				if(M.amount <= 0)
 					qdel(M)
-				user << "<span class='notice'>You insert [inputamount] [M.name] into the [name]!</span>"
+				to_chat(user, "<span class='notice'>You insert [inputamount] [M.name] into the [name]!</span>")
 				visible_message("<span class='notice'>The [M.name] starts [actiontext]ing.</span>")
 				icon_state = activesprite
 				playsound(src,activesound,60,1)
@@ -45,15 +45,15 @@
 					playsound(src,endsound,60,1)
 					filled = FALSE
 			else
-				user << "<span class='alert'> You need to insert [inputamount] [M.name]! </span>"
+				to_chat(user, "<span class='alert'> You need to insert [inputamount] [M.name]! </span>")
 		else if (istype(M, /obj/item/weapon/hammer) || istype(M, /obj/item/weapon/wrench))
 			..()
 			return
 		else
-			user << "<span class='alert'> That is not the right resource! </span>"
+			to_chat(user, "<span class='alert'> That is not the right resource! </span>")
 			return
 	/*else
-		user << "<span class='alert'> You empty the [name]. </span>"
+		to_chat(user, "<span class='alert'> You empty the [name]. </span>")
 		for(var/i=0,i<=inputamount,i++)
 			new input(src.loc)
 		icon_state = idlesprite

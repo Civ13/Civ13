@@ -17,7 +17,7 @@
 		SK.activated = 1
 	for (var/obj/effect/spawner/mobspawner/attacker/SKA)
 		SKA.activated = 1
-	user << "Skeleton spawners are now ENABLED."
+	to_chat(user, "Skeleton spawners are now ENABLED.")
 	return
 
 /obj/structure/skeleton_deactivator
@@ -33,7 +33,7 @@
 		SK.activated = 0
 	for (var/obj/effect/spawner/mobspawner/attacker/SKA)
 		SKA.activated = 0
-	user << "Skeleton spawners are now DISABLED."
+	to_chat(user, "Skeleton spawners are now DISABLED.")
 	return
 
 /obj/structure/skeleton_configurator
@@ -56,7 +56,7 @@
 	for (var/obj/effect/spawner/mobspawner/attacker/SKA)
 		SKA.max_number = maxamount
 		SKA.timer = timer
-	user << "Skeleton spawners have been configured to [timer/10] seconds, [maxamount] maximum number."
+	to_chat(user, "Skeleton spawners have been configured to [timer/10] seconds, [maxamount] maximum number.")
 	return
 
 //BRITISH
@@ -72,7 +72,7 @@
 /obj/structure/townmilitia_activator/attack_hand(mob/living/user)
 	for (var/obj/effect/spawner/mobspawner/townmilitia/RC)
 		RC.activated = 1
-	user << "Town militia spawners are now ENABLED."
+	to_chat(user, "Town militia spawners are now ENABLED.")
 	return
 
 /obj/structure/townmilitia_deactivator
@@ -86,7 +86,7 @@
 /obj/structure/townmilitia_deactivator/attack_hand(mob/living/user)
 	for (var/obj/effect/spawner/mobspawner/townmilitia/RC)
 		RC.activated = 0
-	user << "Town militia spawners are now DISABLED."
+	to_chat(user, "Town militia spawners are now DISABLED.")
 	return
 
 /obj/structure/townmilitia_configurator
@@ -106,5 +106,5 @@
 	for (var/obj/effect/spawner/mobspawner/townmilitia/RC)
 		RC.max_number = maxamount
 		RC.timer = timer
-	user << "Town militia spawners have been configured to [timer/10] seconds, [maxamount] maximum number."
+	to_chat(user, "Town militia spawners have been configured to [timer/10] seconds, [maxamount] maximum number.")
 	return

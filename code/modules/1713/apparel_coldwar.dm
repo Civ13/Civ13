@@ -149,7 +149,7 @@
 			item_state = "policejacket_open"
 			icon_state = "policejacket_open"
 			item_state_slots["w_uniform"] = "policejacket_open"
-			usr << "You <b>open up</b> your jacket."
+			to_chat(usr, "You <b>open up</b> your jacket.")
 			closed = FALSE
 			update_clothing_icon()
 		else if (!closed)
@@ -157,7 +157,7 @@
 			item_state = "policejacket"
 			icon_state = "policejacket"
 			item_state_slots["w_uniform"] = "policejacket"
-			usr << "You <b>close up</b> your jacket."
+			to_chat(usr, "You <b>close up</b> your jacket.")
 			closed = TRUE
 			update_clothing_icon()
 
@@ -181,7 +181,7 @@
 			item_state = "policejacket_black_open"
 			icon_state = "policejacket_black_open"
 			item_state_slots["w_uniform"] = "policejacket_open"
-			usr << "You <b>open up</b> your jacket."
+			to_chat(usr, "You <b>open up</b> your jacket.")
 			closed = FALSE
 			update_clothing_icon()
 		else if (!closed)
@@ -189,7 +189,7 @@
 			item_state = "policejacket_black"
 			icon_state = "policejacket_black"
 			item_state_slots["w_uniform"] = "policejacket_black"
-			usr << "You <b>close up</b> your jacket."
+			to_chat(usr, "You <b>close up</b> your jacket.")
 			closed = TRUE
 			update_clothing_icon()
 
@@ -517,7 +517,7 @@
 	if (!istype(W)) return//I really don't understand why this check is needed
 	if (istype(W, /obj/item/stack/material/rope))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You put netting on the helmet.</span>"
+		to_chat(user, "<span class='notice'>You put netting on the helmet.</span>")
 		new/obj/item/clothing/head/helmet/korean/ustannet(user.loc)
 		qdel(src)
 		qdel(W)
@@ -542,7 +542,7 @@
 		worn_state = "korea_m1_tan_netting"
 		body_parts_covered = HEAD
 		item_state_slots["slot_wear_head"] = "m1_tan_netting"
-		usr << "<span class = 'danger'>You switch out your tan netting for green netting.</span>"
+		to_chat(usr, "<span class = 'danger'>You switch out your tan netting for green netting.</span>")
 		update_icon()
 		color = FALSE
 		usr.update_inv_head(1)
@@ -552,7 +552,7 @@
 		worn_state = "korea_m1_green_netting"
 		body_parts_covered = HEAD
 		item_state_slots["slot_wear_head"] = "m1_green_netting"
-		usr << "<span class = 'danger'>You switch out your green netting for tan netting.</span>"
+		to_chat(usr, "<span class = 'danger'>You switch out your green netting for tan netting.</span>")
 		update_icon()
 		color = TRUE
 		usr.update_inv_head(1)
@@ -688,12 +688,12 @@
 	if (icon_state == "chinese_ushanka")
 		icon_state = "chinese_ushanka_up"
 		item_state = "chinese_ushanka_up"
-		user << "You raise the ear flaps on the ushanka."
+		to_chat(user, "You raise the ear flaps on the ushanka.")
 	else if (icon_state == "chinese_ushanka_up")
 		icon_state = "chinese_ushanka"
 		item_state = "chinese_ushanka"
 		flags_inv = BLOCKHEADHAIR
-		user << "You lower the ear flaps on the ushanka."
+		to_chat(user, "You lower the ear flaps on the ushanka.")
 
 /obj/item/clothing/head/helmet/modern/chi_korea_helmet
 	name = "Chinese helmet"
@@ -755,11 +755,11 @@
 	if (icon_state == "ushanka_new")
 		icon_state = "ushanka_new_up"
 		item_state = "ushanka_new_up"
-		user << "You raise the ear flaps on the ushanka."
+		to_chat(user, "You raise the ear flaps on the ushanka.")
 	else
 		icon_state = "ushanka_new"
 		item_state = "ushanka_new"
-		user << "You lower the ear flaps on the ushanka."
+		to_chat(user, "You lower the ear flaps on the ushanka.")
 
 /obj/item/clothing/head/ww2/nkvd_cap/kgb
 	name = "KGB cap"
@@ -2049,7 +2049,7 @@ obj/item/clothing/head/chinaguardcap
 			item_state = "afghanka_open"
 			icon_state = "afghanka_open"
 			item_state_slots["w_uniform"] = "afghanka_open"
-			usr << "You <b>open up</b> the collar of your uniform."
+			to_chat(usr, "You <b>open up</b> the collar of your uniform.")
 			adjusted = FALSE
 			update_clothing_icon()
 		else if (!adjusted)
@@ -2057,7 +2057,7 @@ obj/item/clothing/head/chinaguardcap
 			item_state = "afghanka_closed"
 			icon_state = "afghanka_closed"
 			item_state_slots["w_uniform"] = "afghanka_closed"
-			usr << "You <b>close up</b> the collar of your uniform."
+			to_chat(usr, "You <b>close up</b> the collar of your uniform.")
 			adjusted = TRUE
 			update_clothing_icon()
 

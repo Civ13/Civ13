@@ -95,7 +95,7 @@
 			D.rights ^= permissionlist[new_permission]
 
 			var/client/C = directory[adm_ckey]
-			C << "[key_name_admin(usr)] has toggled your permission: [new_permission]."
+			to_chat(C, "[key_name_admin(usr)] has toggled your permission: [new_permission].")
 			message_admins("[key_name_admin(usr)] toggled the [new_permission] permission of [adm_ckey]", key_name_admin(usr))
 			log_admin("[key_name(usr)] toggled the [new_permission] permission of [adm_ckey]")
 			log_admin_permission_modification(adm_ckey, permissionlist[new_permission])
@@ -407,9 +407,9 @@
 				return
 			var/reason = sanitize(input("Please enter reason"))
 			if (!reason)
-				M << "<span class = 'userdanger'>You have been kicked from the server.</span>"
+				to_chat(M, "<span class = 'userdanger'>You have been kicked from the server.</span>")
 			else
-				M << "<span class = 'userdanger'>You have been kicked from the server. ([reason])</span>"
+				to_chat(M, "<span class = 'userdanger'>You have been kicked from the server. ([reason])</span>")
 			log_admin("[key_name(usr)] booted [key_name(M)].")
 			message_admins(SPAN_NOTICE("[key_name_admin(usr)] booted [key_name_admin(M)]."), key_name_admin(usr))
 			//M.client = null

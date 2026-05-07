@@ -92,14 +92,14 @@
 			icon_state = "gorilla_suit"
 			worn_state = "gorilla_suit"
 			item_state_slots["slot_w_uniform"] = "gorilla_suit"
-			usr << "<span class = 'danger'>You take down your body suit's hood.</span>"
+			to_chat(usr, "<span class = 'danger'>You take down your body suit's hood.</span>")
 			adjusted = FALSE
 		else if (!adjusted)
 			item_state = "gorilla_suit_h"
 			icon_state = "gorilla_suit_h"
 			worn_state = "gorilla_suit_h"
 			item_state_slots["slot_w_uniform"] = "gorilla_suit_h"
-			usr << "<span class = 'danger'>You put up your body suit's hood.</span>"
+			to_chat(usr, "<span class = 'danger'>You put up your body suit's hood.</span>")
 			body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS|HEAD
 			flags_inv = BLOCKHEADHAIR
 			adjusted = TRUE

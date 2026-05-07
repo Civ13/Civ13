@@ -29,7 +29,7 @@
 			else if (choice2 > 50)
 				return
 			else if (choice2/5 > S.amount)
-				H << "<span class='warning'>Not enough [S]!</span>"
+				to_chat(H, "<span class='warning'>Not enough [S]!</span>")
 				return
 
 		var/choice3 = WWinput(H, "Which type of wall?", "Wall Creation", "Cancel", list("Cancel","wall","crenelated wall","open window"))

@@ -23,38 +23,38 @@
 	var/mob/living/human/H = user
 	if (istype(P,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
 		anchored = !anchored
 	if (H.getStatCoeff("crafting") < 1.7)
-		user << "You don't have the skills to use this."
+		to_chat(user, "You don't have the skills to use this.")
 		return
 	if (!map.civilizations && map.ID != MAP_TRIBES && map.ID != MAP_THREE_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID !=MAP_GULAG13 && (user.original_job_title != "Blacksmith" && user.original_job_title != "Pioneer Blacksmith" && user.original_job_title != "Town Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew" && user.original_job_title != "Schmied"))
-		user << "You don't have the skills to use this. Ask a blacksmith."
+		to_chat(user, "You don't have the skills to use this. Ask a blacksmith.")
 		return
 	if ((map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS) && (H.gorillaman || H.ant || H.wolfman || H.lizard || H.crab))
-		user << "You don't know how to use this."
+		to_chat(user, "You don't know how to use this.")
 		return
 	if (map.ID == MAP_FOUR_KINGDOMS && (H.gorillaman || H.ant || H.wolfman || H.lizard || H.crab))
-		user << "You don't know how to use this."
+		to_chat(user, "You don't know how to use this.")
 		return
 	else
 		if (istype(P, /obj/item/stack/material))
 			var/obj/item/stack/material/MTR = P
 			if (!(MTR.default_type in accepted_materials))
-				user << "<span class='warning'>You can't use this material on this anvil.</span>"
+				to_chat(user, "<span class='warning'>You can't use this material on this anvil.</span>")
 				return
 		if (istype(P, /obj/item/stack/ore/iron_pig))
 			if (!("iron" in accepted_materials))
-				user << "<span class='warning'>You can't use this material on this anvil.</span>"
+				to_chat(user, "<span class='warning'>You can't use this material on this anvil.</span>")
 				return
-			user << "You begin smithing the pig iron..."
+			to_chat(user, "You begin smithing the pig iron...")
 			icon_state = "[base_icon]_anvil_use"
 			in_use = TRUE
 			update_icon()
 			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
 			var/initial_amount = P.amount //no more speedhack
 			if (do_after(user,15*initial_amount,src) && P.amount == initial_amount)
-				user << "<span class='notice'>You smite the pig into steel.</span>"
+				to_chat(user, "<span class='notice'>You smite the pig into steel.</span>")
 				if (P && P.amount == initial_amount)
 					var/amt = P.amount
 					qdel(P)
@@ -65,14 +65,14 @@
 				in_use = FALSE
 			update_icon()
 		else if (istype(P, /obj/item/stack/ore/iron_sponge))
-			user << "You begin smithing the sponge iron..."
+			to_chat(user, "You begin smithing the sponge iron...")
 			icon_state = "[base_icon]_anvil_use"
 			in_use = TRUE
 			update_icon()
 			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
 			var/initial_amount = P.amount //no more speedhack
 			if (do_after(user,15*initial_amount,src) && P.amount == initial_amount)
-				user << "<span class='notice'>You smite the sponge iron into wrought iron.</span>"
+				to_chat(user, "<span class='notice'>You smite the sponge iron into wrought iron.</span>")
 				if (P && P.amount == initial_amount)
 					var/amt = P.amount
 					qdel(P)
@@ -98,7 +98,7 @@
 							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][6]] iron"
 							valid_recipes = TRUE // At least one valid recipe found
 				if (!valid_recipes) // No valid recipes found
-					user << "There is nothing that you can craft of this type."
+					to_chat(user, "There is nothing that you can craft of this type.")
 					return
 				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 				if (choice2 == "Cancel")
@@ -106,7 +106,7 @@
 				var/list/parsed_choice2 = splittext(choice2," - ")
 				if (anvil_recipes[parsed_choice2[1]])
 					if (P.amount >= anvil_recipes[parsed_choice2[1]][6])
-						user << "You begin crafting \the [parsed_choice2[1]]..."
+						to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][6],src,can_move=FALSE))
@@ -114,7 +114,7 @@
 								P.amount -= anvil_recipes[parsed_choice2[1]][6]
 								if (P.amount <= 0)
 									qdel(P)
-								user << "You finish crafting \the [parsed_choice2[1]]."
+								to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 								var/rtype = anvil_recipes[parsed_choice2[1]][9]
 								new rtype (loc,"iron")
 							in_use = FALSE
@@ -146,7 +146,7 @@
 							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][6]] iron"
 							valid_recipes = TRUE // At least one valid recipe found
 				if (!valid_recipes) // No valid recipes
-					user << "There is nothing that you can craft of this type."
+					to_chat(user, "There is nothing that you can craft of this type.")
 					return 
 				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 				if (choice2 == "Cancel")
@@ -154,7 +154,7 @@
 				var/list/parsed_choice2 = splittext(choice2," - ")
 				if (anvil_recipes[parsed_choice2[1]])
 					if (P.amount >= anvil_recipes[parsed_choice2[1]][6])
-						user << "You begin crafting \the [parsed_choice2[1]]..."
+						to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][6],src,can_move=FALSE))
@@ -162,7 +162,7 @@
 								P.amount -= anvil_recipes[parsed_choice2[1]][6]
 								if (P.amount <= 0)
 									qdel(P)
-								user << "You finish crafting \the [parsed_choice2[1]]."
+								to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 								var/rtype = anvil_recipes[parsed_choice2[1]][9]
 								new rtype (loc,"iron")
 							in_use = FALSE
@@ -186,7 +186,7 @@
 							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][5]] steel"
 							valid_recipes = TRUE // At least one valid recipe found
 				if (!valid_recipes) // No valid recipes found
-					user << "There is nothing that you can craft of this type."
+					to_chat(user, "There is nothing that you can craft of this type.")
 					return 
 				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 				if (choice2 == "Cancel")
@@ -194,7 +194,7 @@
 				var/list/parsed_choice2 = splittext(choice2," - ")
 				if (anvil_recipes[parsed_choice2[1]])
 					if (P.amount >= anvil_recipes[parsed_choice2[1]][5])
-						user << "You begin crafting \the [parsed_choice2[1]]..."
+						to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][5],src,can_move=FALSE))
@@ -202,7 +202,7 @@
 								P.amount -= anvil_recipes[parsed_choice2[1]][5]
 								if (P.amount <= 0)
 									qdel(P)
-								user << "You finish crafting \the [parsed_choice2[1]]."
+								to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 								var/rtype = anvil_recipes[parsed_choice2[1]][9]
 								new rtype (loc,"steel")
 							in_use = FALSE
@@ -237,7 +237,7 @@
 							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][5]] steel"
 							valid_recipes = TRUE // At least one valid recipe found
 				if (!valid_recipes) // No valid recipes found
-					user << "There is nothing that you can craft of this type."
+					to_chat(user, "There is nothing that you can craft of this type.")
 					return
 				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 				if (choice2 == "Cancel")
@@ -245,7 +245,7 @@
 				var/list/parsed_choice2 = splittext(choice2," - ")
 				if (anvil_recipes[parsed_choice2[1]])
 					if (P.amount >= anvil_recipes[parsed_choice2[1]][5])
-						user << "You begin crafting \the [parsed_choice2[1]]..."
+						to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][5],src,can_move=FALSE))
@@ -253,7 +253,7 @@
 								P.amount -= anvil_recipes[parsed_choice2[1]][5]
 								if (P.amount <= 0)
 									qdel(P)
-								user << "You finish crafting \the [parsed_choice2[1]]."
+								to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 								var/rtype = anvil_recipes[parsed_choice2[1]][9]
 								new rtype (loc,"steel")
 
@@ -279,7 +279,7 @@
 						newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][8]] kevlar"
 						valid_recipes = TRUE // At least one valid recipe found
 			if (!valid_recipes) // No valid recipes found
-				user << "There is nothing that you can craft of this type."
+				to_chat(user, "There is nothing that you can craft of this type.")
 				return 
 			var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 			if (choice2 == "Cancel")
@@ -287,7 +287,7 @@
 			var/list/parsed_choice2 = splittext(choice2," - ")
 			if (anvil_recipes[parsed_choice2[1]])
 				if (P.amount >= anvil_recipes[parsed_choice2[1]][8])
-					user << "You begin crafting \the [parsed_choice2[1]]..."
+					to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 					in_use = TRUE
 					update_icon()
 					if (do_after(user,10*anvil_recipes[parsed_choice2[1]][8],src,can_move=FALSE))
@@ -295,7 +295,7 @@
 							P.amount -= anvil_recipes[parsed_choice2[1]][8]
 							if (P.amount <= 0)
 								qdel(P)
-							user << "You finish crafting \the [parsed_choice2[1]]."
+							to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 							var/rtype = anvil_recipes[parsed_choice2[1]][9]
 							new rtype (loc,"kevlar")
 
@@ -323,7 +323,7 @@
 						newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][7]] bronze"
 						valid_recipes = TRUE // At least one valid recipe found
 			if (!valid_recipes) // No valid recipes found
-				user << "There is nothing that you can craft of this type."
+				to_chat(user, "There is nothing that you can craft of this type.")
 				return 
 			var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 			if (choice2 == "Cancel")
@@ -331,7 +331,7 @@
 			var/list/parsed_choice2 = splittext(choice2," - ")
 			if (anvil_recipes[parsed_choice2[1]])
 				if (P.amount >= anvil_recipes[parsed_choice2[1]][7])
-					user << "You begin crafting \the [parsed_choice2[1]]..."
+					to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 					in_use = TRUE
 					update_icon()
 					if (do_after(user,10*anvil_recipes[parsed_choice2[1]][7],src,can_move=FALSE))
@@ -339,7 +339,7 @@
 							P.amount -= anvil_recipes[parsed_choice2[1]][7]
 							if (P.amount <= 0)
 								qdel(P)
-							user << "You finish crafting \the [parsed_choice2[1]]."
+							to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 							var/rtype = anvil_recipes[parsed_choice2[1]][9]
 							new rtype (loc,"bronze")
 
@@ -351,18 +351,18 @@
 		else if (istype(P, /obj/item/weapon/clay/mold))
 			var/obj/item/weapon/clay/mold/ML = P
 			if (!ML.fired)
-				user << "<span class='warning'>This mold is not fired!</span>"
+				to_chat(user, "<span class='warning'>This mold is not fired!</span>")
 				return
 			else if (ML.capacity <= 0 || ML.current_material == null)
-				user << "<span class='warning'>This mold is empty!</span>"
+				to_chat(user, "<span class='warning'>This mold is empty!</span>")
 				return
 			else if (!(ML.current_material in accepted_materials))
-				user << "<span class='warning'>You can't use this material on this anvil.</span>"
+				to_chat(user, "<span class='warning'>You can't use this material on this anvil.</span>")
 				return
 			else if (ML.craftable_classes)
 				switch(ML.craftable_classes)
 					if ("ingots")
-						user << "You begin crafting the ingot..."
+						to_chat(user, "You begin crafting the ingot...")
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
@@ -374,56 +374,56 @@
 										ML.current_material = null
 										var/obj/item/stack/material/copper/NM = new/obj/item/stack/material/copper(loc)
 										NM.amount = tamt
-										user << "You finish crafting the ingot."
+										to_chat(user, "You finish crafting the ingot.")
 									if ("bronze")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
 										var/obj/item/stack/material/bronze/NM = new/obj/item/stack/material/bronze(loc)
 										NM.amount = tamt
-										user << "You finish crafting the ingot."
+										to_chat(user, "You finish crafting the ingot.")
 									if ("tin")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
 										var/obj/item/stack/material/tin/NM = new/obj/item/stack/material/tin(loc)
 										NM.amount = tamt
-										user << "You finish crafting the ingot."
+										to_chat(user, "You finish crafting the ingot.")
 									if ("gold")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
 										var/obj/item/stack/material/gold/NM = new/obj/item/stack/material/gold(loc)
 										NM.amount = tamt
-										user << "You finish crafting the ingot."
+										to_chat(user, "You finish crafting the ingot.")
 									if ("silver")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
 										var/obj/item/stack/material/silver/NM = new/obj/item/stack/material/silver(loc)
 										NM.amount = tamt
-										user << "You finish crafting the ingot."
+										to_chat(user, "You finish crafting the ingot.")
 									if ("lead")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
 										var/obj/item/stack/material/lead/NM = new/obj/item/stack/material/lead(loc)
 										NM.amount = tamt
-										user << "You finish crafting the ingot."
+										to_chat(user, "You finish crafting the ingot.")
 									if ("iron")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
 										var/obj/item/stack/material/iron/NM = new/obj/item/stack/material/iron(loc)
 										NM.amount = tamt
-										user << "You finish crafting the ingot."
+										to_chat(user, "You finish crafting the ingot.")
 									if ("steel")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
 										var/obj/item/stack/material/steel/NM = new/obj/item/stack/material/steel(loc)
 										NM.amount = tamt
-										user << "You finish crafting the steel sheet."
+										to_chat(user, "You finish crafting the steel sheet.")
 								ML.update_icon()
 
 							in_use = FALSE
@@ -477,13 +477,13 @@
 							if (ML.current_material == "steel")
 								mat = anvil_recipes[parsed_choice2[1]][5]
 							if (ML.capacity >= mat)
-								user << "You begin crafting \the [parsed_choice2[1]]..."
+								to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 								in_use = TRUE
 								update_icon()
 								if (do_after(user,10*mat,src,can_move=FALSE))
 									if (ML.capacity >= mat)
 										ML.capacity -= mat
-										user << "You finish crafting \the [parsed_choice2[1]]."
+										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
 										new rtype (loc,ML.current_material)
 										if (ML.capacity < 1)
@@ -542,13 +542,13 @@
 							if (ML.current_material == "steel")
 								mat = anvil_recipes[parsed_choice2[1]][5]
 							if (ML.capacity >= mat)
-								user << "You begin crafting \the [parsed_choice2[1]]..."
+								to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 								in_use = TRUE
 								update_icon()
 								if (do_after(user,10*mat,src,can_move=FALSE))
 									if (ML.capacity >= mat)
 										ML.capacity -= mat
-										user << "You finish crafting \the [parsed_choice2[1]]."
+										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
 										new rtype (loc,ML.current_material)
 										if (ML.capacity < 1)
@@ -592,7 +592,7 @@
 									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]"
 									valid_recipes = TRUE // At least one valid recipe found
 						if (!valid_recipes) // No valid recipes found
-							user << "There is nothing that you can craft of this type."
+							to_chat(user, "There is nothing that you can craft of this type.")
 							return 
 						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 						if (choice2 == "Cancel")
@@ -608,13 +608,13 @@
 							if (ML.current_material == "steel")
 								mat = anvil_recipes[parsed_choice2[1]][5]
 							if (ML.capacity >= mat)
-								user << "You begin crafting \the [parsed_choice2[1]]..."
+								to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 								in_use = TRUE
 								update_icon()
 								if (do_after(user,10*mat,src,can_move=FALSE))
 									if (ML.capacity >= mat)
 										ML.capacity -= mat
-										user << "You finish crafting \the [parsed_choice2[1]]."
+										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
 										new rtype (loc,ML.current_material)
 										if (ML.capacity < 1)
@@ -628,7 +628,7 @@
 								update_icon()
 								return
 					if ("spearheads")
-						user << "You begin crafting the [ML.current_material] spearheads..."
+						to_chat(user, "You begin crafting the [ML.current_material] spearheads...")
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
@@ -640,7 +640,7 @@
 									for (var/i=1, i<=tamt, i++)
 										new/obj/item/weapon/material/part/spearhead(loc,ML.current_material)
 									ML.current_material = null
-									user << "You finish crafting the [ML.current_material] spearheads."
+									to_chat(user, "You finish crafting the [ML.current_material] spearheads.")
 
 							in_use = FALSE
 						else
@@ -649,7 +649,7 @@
 						return
 
 					if ("pickaxes")
-						user << "You begin crafting the [ML.current_material] pickaxe heads..."
+						to_chat(user, "You begin crafting the [ML.current_material] pickaxe heads...")
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
@@ -661,7 +661,7 @@
 									for (var/i=1, i<=tamt, i++)
 										new/obj/item/weapon/material/part/pickaxe(loc,ML.current_material)
 									ML.current_material = null
-									user << "You finish crafting the [ML.current_material] pickaxe heads."
+									to_chat(user, "You finish crafting the [ML.current_material] pickaxe heads.")
 
 							in_use = FALSE
 						else
@@ -669,7 +669,7 @@
 						update_icon()
 						return
 					if ("shovels")
-						user << "You begin crafting the [ML.current_material] shovel head..."
+						to_chat(user, "You begin crafting the [ML.current_material] shovel head...")
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
@@ -681,7 +681,7 @@
 									for (var/i=1, i<=tamt, i++)
 										new/obj/item/weapon/material/part/shovel(loc,ML.current_material)
 									ML.current_material = null
-									user << "You finish crafting the [ML.current_material] shovel head."
+									to_chat(user, "You finish crafting the [ML.current_material] shovel head.")
 
 							in_use = FALSE
 						else
@@ -690,7 +690,7 @@
 						return
 					if ("arrowheads")
 						if (ML.current_material in list("copper", "bronze", "iron", "steel"))
-							user << "You begin crafting the [ML.current_material] arrowheads..."
+							to_chat(user, "You begin crafting the [ML.current_material] arrowheads...")
 							in_use = TRUE
 							update_icon()
 							if (do_after(user,10*ML.capacity,src,can_move=FALSE))
@@ -712,7 +712,7 @@
 											AH.amount = tamt*3
 									ML.current_material = null
 									ML.update_icon()
-									user << "You finish crafting the [ML.current_material] arrowheads."
+									to_chat(user, "You finish crafting the [ML.current_material] arrowheads.")
 
 								in_use = FALSE
 							else
@@ -765,13 +765,13 @@
 							if (ML.current_material == "steel")
 								mat = anvil_recipes[parsed_choice2[1]][5]
 							if (ML.capacity >= mat)
-								user << "You begin crafting \the [parsed_choice2[1]]..."
+								to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 								in_use = TRUE
 								update_icon()
 								if (do_after(user,10*mat,src,can_move=FALSE))
 									if (ML.capacity >= mat)
 										ML.capacity -= mat
-										user << "You finish crafting \the [parsed_choice2[1]]."
+										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
 										new rtype (loc,ML.current_material)
 										if (ML.capacity < 1)

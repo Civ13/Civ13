@@ -359,9 +359,9 @@
 
 /obj/item/weapon/chicken_carcass/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) && !rotten)
-		user << "You start separating the chicken parts..."
+		to_chat(user, "You start separating the chicken parts...")
 		if (do_after(user, 75, src))
-			user << "You finish cutting the chicken."
+			to_chat(user, "You finish cutting the chicken.")
 			new/obj/item/weapon/reagent_containers/food/snacks/chicken/breast(loc)
 			new/obj/item/weapon/reagent_containers/food/snacks/chicken/wing(loc)
 			new/obj/item/weapon/reagent_containers/food/snacks/chicken/drumstick(loc)
@@ -394,9 +394,9 @@
 
 	attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 		if (istype(W, /obj/item/weapon/hammer) && !findtext(icon_state, "flat") && !rotten)
-			user << "You start flattening the chicken breast..."
+			to_chat(user, "You start flattening the chicken breast...")
 			if (do_after(user, 50, src))
-				user << "You finish flattening the chicken breast."
+				to_chat(user, "You finish flattening the chicken breast.")
 				name = "flattened chicken breast"
 				icon_state = "chicken_breast_flat"
 			return
@@ -404,7 +404,7 @@
 			var/obj/item/weapon/reagent_containers/food/condiment/flour/F = W
 			if (F.reagents.has_reagent("flour", 5))
 				F.reagents.remove_reagent("flour", 5)
-			user << "You roll \the [src] in the flour."
+			to_chat(user, "You roll \the [src] in the flour.")
 			satisfaction = -4
 			icon_state = "[icon_state]_crumbed"
 			name = "crumbed [name]"
@@ -427,7 +427,7 @@
 			var/obj/item/weapon/reagent_containers/food/condiment/flour/F = W
 			if (F.reagents.has_reagent("flour", 5))
 				F.reagents.remove_reagent("flour", 5)
-			user << "You roll \the [src] in the flour."
+			to_chat(user, "You roll \the [src] in the flour.")
 			icon_state = "[icon_state]_crumbed"
 			name = "crumbed [name]"
 			satisfaction = -3
@@ -450,7 +450,7 @@
 			var/obj/item/weapon/reagent_containers/food/condiment/flour/F = W
 			if (F.reagents.has_reagent("flour", 5))
 				F.reagents.remove_reagent("flour", 5)
-			user << "You roll \the [src] in the flour."
+			to_chat(user, "You roll \the [src] in the flour.")
 			satisfaction = -3
 			icon_state = "[icon_state]_crumbed"
 			name = "crumbed [name]"
@@ -518,7 +518,7 @@
 	if (!rotten && istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
 		new /obj/item/weapon/reagent_containers/food/snacks/tripe(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/tripe(src)
-		user << "You cut the lining out of the stomach."
+		to_chat(user, "You cut the lining out of the stomach.")
 		if(map.ordinal_age >= 1)
 			var/obj/item/stack/sausagecasing/SC = new /obj/item/stack/sausagecasing(src)
 			SC.amount = 3
@@ -528,7 +528,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/pig/stomach/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (!rotten && istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
 		new /obj/item/weapon/reagent_containers/food/snacks/tripe(src)
-		user << "You cut the lining out of the stomach."
+		to_chat(user, "You cut the lining out of the stomach.")
 		if(map.ordinal_age >= 1)
 			var/obj/item/stack/sausagecasing/SC = new /obj/item/stack/sausagecasing(src)
 			SC.amount = 2
@@ -600,9 +600,9 @@
 
 /obj/item/stack/sausagecasing/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/mince))
-		user << "You start stuffing the casing with the mince."
+		to_chat(user, "You start stuffing the casing with the mince.")
 		if (do_after(user, 10))
-			user << "You stuff the casing with the mince."
+			to_chat(user, "You stuff the casing with the mince.")
 			new /obj/item/weapon/reagent_containers/food/snacks/sausage(user.loc)
 			qdel(W)
 			src.amount -= 1
@@ -629,7 +629,7 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
-		user << "You slice the salami up."
+		to_chat(user, "You slice the salami up.")
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
@@ -726,11 +726,11 @@
 
 /obj/structure/meat_grinder/attack_hand(mob/living/human/user as mob)
 	if (input != null)
-		user << "You start to crank the lever."
+		to_chat(user, "You start to crank the lever.")
 		icon_state = active_state
 		if (do_after(user, 35))
 			playsound(loc, 'sound/effects/rollermove.ogg', 35, TRUE)
-			user << "The grinder plops out some mince!"
+			to_chat(user, "The grinder plops out some mince!")
 			for(var/i=1, i<=output_amount, i++)
 				new /obj/item/weapon/reagent_containers/food/snacks/mince(get_turf(src))
 			input = null
@@ -744,21 +744,21 @@
 			input = W
 			output_amount = 4
 			icon_state = full_state
-			user << "You insert the [W] into the [src]."
+			to_chat(user, "You insert the [W] into the [src].")
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish/) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/chicken))
 			input = W
 			output_amount = 2
 			icon_state = full_state
-			user << "You insert the [W] into the [src]."
+			to_chat(user, "You insert the [W] into the [src].")
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/fishfillet))
 			input = W
 			output_amount = 1
 			icon_state = full_state
-			user << "You insert the [W] into the [src]."
+			to_chat(user, "You insert the [W] into the [src].")
 			qdel(W)
 			return
 		else
@@ -783,27 +783,27 @@
 /obj/structure/cutting_board/attack_hand(var/mob/living/human/H)
 	if(input != null)
 		if(do_after(H, 20))
-			H << "You scrape off the cutting board"
+			to_chat(H, "You scrape off the cutting board")
 			input = null
 			icon_state = "cutting_board_dirty"
 			return
 		else
-			H << "You stop scraping off the cutting board"
+			to_chat(H, "You stop scraping off the cutting board")
 			return
 	else if(input == null && icon_state == "cutting_board_dirty")
 		if(do_after(H, 15))
-			H << "You clean the cutting board of all it's filty grime"
+			to_chat(H, "You clean the cutting board of all it's filty grime")
 			icon_state = "cutting_board"
 			return
 		else
-			H << "You stop cleaning the cutting board"
+			to_chat(H, "You stop cleaning the cutting board")
 			return
 
 /obj/structure/cutting_board/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		if(input != null)
 			if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/fishfillet) || istype(input, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet))
-				user << "You begin to mince the [input]."
+				to_chat(user, "You begin to mince the [input].")
 				playsound(loc, 'sound/effects/chop.ogg', 60, TRUE)
 				if(do_after(user, 180))
 					playsound(loc, 'sound/effects/chop.ogg', 60, TRUE)
@@ -812,10 +812,10 @@
 					new /obj/item/weapon/reagent_containers/food/snacks/mince(src.loc)
 					return
 				else
-					user << "You stop mincing."
+					to_chat(user, "You stop mincing.")
 					return
 			else if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(input, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
-				user << "You begin to mince the [input]."
+				to_chat(user, "You begin to mince the [input].")
 				playsound(loc, 'sound/effects/chop.ogg', 60, TRUE)
 				if(do_after(user, 180))
 					playsound(loc, 'sound/effects/chop.ogg', 60, TRUE)
@@ -825,29 +825,29 @@
 					new /obj/item/weapon/reagent_containers/food/snacks/mince(src.loc)
 					return
 				else
-					user << "You stop mincing."
+					to_chat(user, "You stop mincing.")
 					return
 			else if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/mince))
 				playsound(loc, 'sound/effects/squishy.ogg', 10, TRUE)
 				if(do_after(user, 10))
 					playsound(loc, 'sound/effects/squishy.ogg', 10, TRUE)
-					user << "You form the [input] into a meatball!"
+					to_chat(user, "You form the [input] into a meatball!")
 					input = null
 					icon_state = "cutting_board_dirty"
 					new /obj/item/weapon/reagent_containers/food/snacks/meatball(src.loc)
 					return
 				else
-					user << "You stop forming the [input]."
+					to_chat(user, "You stop forming the [input].")
 					return
 			else if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/meatball))
-				user << "You smash the [input] into a patty!"
+				to_chat(user, "You smash the [input] into a patty!")
 				playsound(loc, 'sound/effects/squishy.ogg', 5, TRUE)
 				input = null
 				icon_state = "cutting_board_dirty"
 				new /obj/item/weapon/reagent_containers/food/snacks/patty(src.loc)
 				return
 			else if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/driedmeat))
-				user << "You begin to mince the [input]."
+				to_chat(user, "You begin to mince the [input].")
 				playsound(loc, 'sound/effects/chop.ogg', 60, TRUE)
 				if(do_after(user, 180))
 					playsound(loc, 'sound/effects/chop.ogg', 60, TRUE)
@@ -856,53 +856,53 @@
 					new /obj/item/weapon/reagent_containers/food/snacks/driedmeat/minced_driedmeat(src.loc)
 					return
 			else
-				user << "You need to put something on the cutting board!"
+				to_chat(user, "You need to put something on the cutting board!")
 				return
 	else if(input == null && istype(W, /obj/item/weapon/reagent_containers/food/snacks))
 		if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/fishfillet) || istype(input, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet))
 			input = W
-			user << "You place the [W] on the cutting board."
+			to_chat(user, "You place the [W] on the cutting board.")
 			icon_state = "cutting_board_cutlet"
 			qdel(W)
 			return
 		else if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/mince))
 			input = W
-			user << "You place the [W] on the cutting board."
+			to_chat(user, "You place the [W] on the cutting board.")
 			icon_state = "cutting_board_mince"
 			qdel(W)
 			return
 		else if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/mince))
 			input = W
-			user << "You place the [W] on the cutting board."
+			to_chat(user, "You place the [W] on the cutting board.")
 			icon_state = "cutting_board_mince"
 			qdel(W)
 			return
 		else if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat))
 			input = W
-			user << "You place the [W] on the cutting board."
+			to_chat(user, "You place the [W] on the cutting board.")
 			icon_state = "cutting_board_steak"
 			qdel(W)
 			return
 		else if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
 			input = W
-			user << "You place the [W] on the cutting board."
+			to_chat(user, "You place the [W] on the cutting board.")
 			icon_state = "cutting_board_fish"
 			qdel(W)
 			return
 		else if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/meatball))
 			input = W
-			user << "You place the [W] on the cutting board."
+			to_chat(user, "You place the [W] on the cutting board.")
 			icon_state = "cutting_board_meatball"
 			qdel(W)
 			return
 		else if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/driedmeat))
 			input = W
-			user << "You place the [W] on the cutting board."
+			to_chat(user, "You place the [W] on the cutting board.")
 			icon_state = "cutting_board_driedmeat"
 			qdel(W)
 			return
 		else
-			user << "You cannot put that on [src]!"
+			to_chat(user, "You cannot put that on [src]!")
 	else
 		..()
 	..()

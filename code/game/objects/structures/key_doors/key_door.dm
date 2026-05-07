@@ -145,12 +145,12 @@ var/list/nonbreaking_types = list(
 				visible_message(SPAN_DANGER("[user] starts picking the [src.name]'s lock with the [W]!"))
 				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
 					if(prob(H.getStatCoeff("dexterity")*35))
-						user << SPAN_NOTICE("You pick the lock.")
+						to_chat(user, SPAN_NOTICE("You pick the lock."))
 						src.locked = 0
 						return
 					else if (prob(60))
 						qdel(W)
-						user << SPAN_NOTICE("Your lockpick broke!")
+						to_chat(user, SPAN_NOTICE("Your lockpick broke!"))
 						return
 					else
 						return
@@ -194,15 +194,15 @@ var/list/nonbreaking_types = list(
 				visible_message(SPAN_DANGER("[user] starts picking the [src.name]'s lock with the [W]!"))
 				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
 					if(prob(H.getStatCoeff("dexterity")*35))
-						user << SPAN_NOTICE("You pick the lock.")
+						to_chat(user, SPAN_NOTICE("You pick the lock."))
 						keyslot.locked = FALSE
 						return
 					else if (prob(60))
 						qdel(W)
-						user << SPAN_WARNING("Your lockpick broke!")
+						to_chat(user, SPAN_WARNING("Your lockpick broke!"))
 						return
 					else
-						user << SPAN_WARNING("You failed to pick the lock!")
+						to_chat(user, SPAN_WARNING("You failed to pick the lock!"))
 						return
 				return
 	else if (istype(W, /obj/item/weapon/gun/projectile/shotgun/pump))
@@ -260,7 +260,7 @@ var/list/nonbreaking_types = list(
 			user.visible_message(SPAN_NOTICE("[user] knocks at the door."))
 			for (var/mob/living/L in view(7, src))
 				if (!viewers(7, L).Find(user))
-					L << SPAN_NOTICE("You hear a knock at the door.")
+					to_chat(L, SPAN_NOTICE("You hear a knock at the door."))
 			playsound(get_turf(src), "doorknock", 75, TRUE)
 		else if (user.a_intent == I_DISARM || user.a_intent == I_GRAB)
 			user.visible_message(SPAN_WARNING("[user] bangs on the door."), SPAN_WARNING("You bang on the door."))
@@ -289,13 +289,13 @@ var/list/nonbreaking_types = list(
 				user.visible_message(SPAN_NOTICE("[user] knocks at the door."))
 				for (var/mob/living/L in view(7, src))
 					if (!viewers(7, L).Find(user))
-						L << SPAN_NOTICE("You hear a knock at the door.")
+						to_chat(L, SPAN_NOTICE("You hear a knock at the door."))
 				playsound(get_turf(src), "doorknock", 75, TRUE)
 			else if (user.a_intent == I_DISARM || user.a_intent == I_GRAB)
 				user.visible_message(SPAN_WARNING("[user] bangs on the door."))
 				for (var/mob/living/L in view(7, src))
 					if (!viewers(7, L).Find(user))
-						L << SPAN_NOTICE("You hear a knock at the door.")
+						to_chat(L, SPAN_NOTICE("You hear a knock at the door."))
 				playsound(get_turf(src), "doorknock", 100, TRUE)
 			else
 				user.visible_message(SPAN_DANGER("[user] kicks the door!"))

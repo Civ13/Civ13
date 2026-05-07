@@ -103,14 +103,14 @@
 			return FALSE
 		ticker.finished = TRUE
 		var/message = "The <b>Wehrmacht</b> has sucessfuly defended the Reichflakturm! The Americans halted the attack!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_o == FALSE)
 		ticker.finished = TRUE
 		var/message = "The <b>Americans</b> have captured the anti-air guns! The Battle for the Reichflakturmis over!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_o = TRUE
@@ -153,7 +153,7 @@
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Germans</b> have recaptured the anti-air guns!</font>"
+			to_chat(world, "<font size = 3>The <b>Germans</b> have recaptured the anti-air guns!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1

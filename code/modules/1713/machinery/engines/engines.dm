@@ -57,11 +57,11 @@
 			for(var/obj/structure/vehicleparts/frame/ship/S in loc)
 				done = TRUE
 			if (done == FALSE)
-				user << "<span class='notice'>Max Power: <b>[maxpower*2]</b>.</span>"
+				to_chat(user, "<span class='notice'>Max Power: <b>[maxpower*2]</b>.</span>")
 			else
-				user << "<span class='notice'>Max Power: <b>[maxpower*20]</b>.</span>"
+				to_chat(user, "<span class='notice'>Max Power: <b>[maxpower*20]</b>.</span>")
 		else
-			user << "<span class='notice'>Max Power: <b>[maxpower*2]</b>.</span>"
+			to_chat(user, "<span class='notice'>Max Power: <b>[maxpower*2]</b>.</span>")
 /obj/structure/engine/proc/turn_on()
 	return
 
@@ -180,13 +180,13 @@
 			return
 	else if (istype(W,/obj/item/weapon/wrench) && !not_movable)
 		if (powersource)
-			user << "<span class='notice'>Remove the cables first.</span>"
+			to_chat(user, "<span class='notice'>Remove the cables first.</span>")
 			return
 		if (!isemptylist(connections))
-			user << "<span class='notice'>Remove the cables first.</span>"
+			to_chat(user, "<span class='notice'>Remove the cables first.</span>")
 			return
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
 		anchored = !anchored
 		for(var/obj/structure/vehicleparts/frame/F in src.loc)
 			if (F.axis)
@@ -199,17 +199,17 @@
 		return
 	else if (istype(W, /obj/item/stack/cable_coil))
 		if (!anchored)
-			user << "<span class='notice'>Fix the engine in place with a wrench first.</span>"
+			to_chat(user, "<span class='notice'>Fix the engine in place with a wrench first.</span>")
 			return
 		for(var/obj/structure/cable/EXC in connections)
-			user << "There's already a cable connected here! Split it further from the engine."
+			to_chat(user, "There's already a cable connected here! Split it further from the engine.")
 			return
 		var/obj/item/stack/cable_coil/CC = W
 		var/obj/structure/cable/NCC = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
 		if (!NCC) return
 		NCC.connections += src
 		connections += NCC
-		user << "You connect the cable to \the [src]."
+		to_chat(user, "You connect the cable to \the [src].")
 		var/opdir1 = 0
 		var/opdir2 = 0
 		if (NCC.tiledir == "horizontal")
@@ -227,7 +227,7 @@
 						NCOO.connections += NCC
 					if (!(NCOO in NCC.connections) && !list_cmp(NCC.connections, NCOO.connections))
 						NCC.connections += NCOO
-					user << "You connect the two cables."
+					to_chat(user, "You connect the two cables.")
 
 			for(var/obj/structure/cable/NCOC in get_turf(get_step(NCC,opdir2)))
 				if ((NCOC.tiledir == NCC.tiledir) && NCOC != NCC)
@@ -235,7 +235,7 @@
 						NCOC.connections += NCC
 					if (!(NCOC in NCC.connections) && !list_cmp(NCC.connections, NCOC.connections))
 						NCC.connections += NCOC
-					user << "You connect the two cables."
+					to_chat(user, "You connect the two cables.")
 	else
 		..()
 
@@ -254,7 +254,7 @@
 
 /obj/item/weapon/enginemaker/attack_self(mob/living/human/H)
 	if (!istype(H.l_hand, /obj/item/stack/material/steel) && !istype(H.r_hand, /obj/item/stack/material/steel))
-		H << "<span class = 'warning'>You need to have a steel stack in one of your hands in order to make this.</span>"
+		to_chat(H, "<span class = 'warning'>You need to have a steel stack in one of your hands in order to make this.</span>")
 		return
 	else
 		steelamt = 0
@@ -274,10 +274,10 @@
 			enginesize = input(H, "Choose the engine size, in cc: (minimum 200, maximum 45000)") as num
 			enginesize = Clamp(enginesize, 200, 45000)
 			if ((enginesize/1000)*33 > steelamt)
-				H << "You don't have enough steel. You need [(enginesize/1000)*66] and you have [steelamt]. Try building a smaller engine."
+				to_chat(H, "You don't have enough steel. You need [(enginesize/1000)*66] and you have [steelamt]. Try building a smaller engine.")
 				return
 			else
-				H << "You start building the engine..."
+				to_chat(H, "You start building the engine...")
 				done = TRUE
 				if (do_after(H,220,src))
 					if (done)
@@ -291,7 +291,7 @@
 						NEN.name = "[NEN.enginesize]cc hot bulb engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
-						H << "You finish building the engine."
+						to_chat(H, "You finish building the engine.")
 						done = FALSE
 						return
 				else
@@ -301,10 +301,10 @@
 			enginesize = input(H, "Choose the engine size, in cc: (minimum 250, maximum 18000)") as num
 			enginesize = Clamp(enginesize, 250, 18000)
 			if ((enginesize/1000)*73 > steelamt)
-				H << "You don't have enough steel. You need [(enginesize/1000)*136] and you have [steelamt]. Try building a smaller engine."
+				to_chat(H, "You don't have enough steel. You need [(enginesize/1000)*136] and you have [steelamt]. Try building a smaller engine.")
 				return
 			else
-				H << "You start building the engine..."
+				to_chat(H, "You start building the engine...")
 				done = TRUE
 				if (do_after(H,220,src))
 					if (done)
@@ -318,7 +318,7 @@
 						NEN.name = "[NEN.enginesize]cc turbine engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
-						H << "You finish building the engine."
+						to_chat(H, "You finish building the engine.")
 						done = FALSE
 						return
 				else
@@ -328,10 +328,10 @@
 			enginesize = input(H, "Choose the engine size, in cc: (minimum 49, maximum 1000)") as num
 			enginesize = Clamp(enginesize, 49, 1000)
 			if ((enginesize/1000)*40 > steelamt)
-				H << "You don't have enough steel. You need [(enginesize/1000)*90] and you have [steelamt]. Try building a smaller engine."
+				to_chat(H, "You don't have enough steel. You need [(enginesize/1000)*90] and you have [steelamt]. Try building a smaller engine.")
 				return
 			else
-				H << "You start building the engine..."
+				to_chat(H, "You start building the engine...")
 				done = TRUE
 				if (do_after(H,200,src))
 					if (done)
@@ -345,7 +345,7 @@
 						NEN.name = "[NEN.enginesize]cc 2-S gasoline engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
-						H << "You finish building the engine."
+						to_chat(H, "You finish building the engine.")
 						done = FALSE
 						return
 				else
@@ -355,10 +355,10 @@
 			enginesize = input(H, "Choose the engine size, in cc: (minimum 80, maximum 30000)") as num
 			enginesize = Clamp(enginesize, 80, 30000)
 			if ((enginesize/1000)*50 > steelamt)
-				H << "You don't have enough steel. You need [(enginesize/1000)*100] and you have [steelamt]. Try building a smaller engine."
+				to_chat(H, "You don't have enough steel. You need [(enginesize/1000)*100] and you have [steelamt]. Try building a smaller engine.")
 				return
 			else
-				H << "You start building the engine..."
+				to_chat(H, "You start building the engine...")
 				done = TRUE
 				if (do_after(H,200,src))
 					if (done)
@@ -372,7 +372,7 @@
 						NEN.name = "[NEN.enginesize]cc 4-S gasoline engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
-						H << "You finish building the engine."
+						to_chat(H, "You finish building the engine.")
 						done = FALSE
 						return
 				else
@@ -382,10 +382,10 @@
 			enginesize = input(H, "Choose the engine size, in cc: (minimum 100, maximum 30000)") as num
 			enginesize = Clamp(enginesize, 100, 30000)
 			if ((enginesize/1000)*100 > steelamt)
-				H << "You don't have enough steel. You need [(enginesize/1000)*100] and you have [steelamt]. Try building a smaller engine."
+				to_chat(H, "You don't have enough steel. You need [(enginesize/1000)*100] and you have [steelamt]. Try building a smaller engine.")
 				return
 			else
-				H << "You start building the engine..."
+				to_chat(H, "You start building the engine...")
 				done = TRUE
 				if (do_after(H,200,src))
 					if (done)
@@ -399,7 +399,7 @@
 						NEN.name = "[NEN.enginesize]cc 4-S gasoline engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
-						H << "You finish building the engine."
+						to_chat(H, "You finish building the engine.")
 						done = FALSE
 						return
 				else
@@ -409,10 +409,10 @@
 			enginesize = input(H, "Choose the engine size, in cc: (minimum 80, maximum 30000)") as num
 			enginesize = Clamp(enginesize, 80, 30000)
 			if ((enginesize/1000)*60 > steelamt)
-				H << "You don't have enough steel. You need [(enginesize/1000)*120] and you have [steelamt]. Try building a smaller engine."
+				to_chat(H, "You don't have enough steel. You need [(enginesize/1000)*120] and you have [steelamt]. Try building a smaller engine.")
 				return
 			else
-				H << "You start building the engine..."
+				to_chat(H, "You start building the engine...")
 				done = TRUE
 				if (do_after(H,200,src))
 					if (done)
@@ -426,7 +426,7 @@
 						NEN.name = "[NEN.enginesize]cc 4-S ethanol-gasoline engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
-						H << "You finish building the engine."
+						to_chat(H, "You finish building the engine.")
 						done = FALSE
 						return
 				else
@@ -436,10 +436,10 @@
 			enginesize = input(H, "Choose the engine size, in cc: (minimum 300, maximum 45000)") as num
 			enginesize = Clamp(enginesize, 300, 45000)
 			if ((enginesize/1000)*40 > steelamt)
-				H << "You don't have enough steel. You need [(enginesize/1000)*80] and you have [steelamt]. Try building a smaller engine."
+				to_chat(H, "You don't have enough steel. You need [(enginesize/1000)*80] and you have [steelamt]. Try building a smaller engine.")
 				return
 			else
-				H << "You start building the engine..."
+				to_chat(H, "You start building the engine...")
 				done = TRUE
 				if (do_after(H,270,src))
 					if (done)
@@ -453,7 +453,7 @@
 						NEN.name = "[NEN.enginesize]cc diesel engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
-						H << "You finish building the engine."
+						to_chat(H, "You finish building the engine.")
 						done = FALSE
 						return
 				else
@@ -463,10 +463,10 @@
 			enginesize = input(H, "Choose the engine size, in cc: (minimum 300, maximum 45000)") as num
 			enginesize = Clamp(enginesize, 300, 45000)
 			if ((enginesize/1000)*45 > steelamt)
-				H << "You don't have enough steel. You need [(enginesize/1000)*90] and you have [steelamt]. Try building a smaller engine."
+				to_chat(H, "You don't have enough steel. You need [(enginesize/1000)*90] and you have [steelamt]. Try building a smaller engine.")
 				return
 			else
-				H << "You start building the engine..."
+				to_chat(H, "You start building the engine...")
 				done = TRUE
 				if (do_after(H,270,src))
 					if (done)
@@ -480,7 +480,7 @@
 						NEN.name = "[NEN.enginesize]cc biodiesel engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
-						H << "You finish building the engine."
+						to_chat(H, "You finish building the engine.")
 						done = FALSE
 						return
 				else
@@ -490,10 +490,10 @@
 			enginesize = input(H, "Choose the engine size, in cc: (minimum 200, maximum 55000)") as num
 			enginesize = Clamp(enginesize, 200, 55000)
 			if ((enginesize/1000)*43 > steelamt)
-				H << "You don't have enough steel. You need [(enginesize/1000)*86] and you have [steelamt]. Try building a smaller engine."
+				to_chat(H, "You don't have enough steel. You need [(enginesize/1000)*86] and you have [steelamt]. Try building a smaller engine.")
 				return
 			else
-				H << "You start building the engine..."
+				to_chat(H, "You start building the engine...")
 				done = TRUE
 				if (do_after(H,240,src))
 					if (done)
@@ -507,7 +507,7 @@
 						NEN.name = "[NEN.enginesize]cc hesselman engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
-						H << "You finish building the engine."
+						to_chat(H, "You finish building the engine.")
 						done = FALSE
 						return
 				else

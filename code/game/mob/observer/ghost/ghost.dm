@@ -116,12 +116,12 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		var/attverb = pick("punches", "kicks", "slaps")
 		for(var/mob/observer/ghost/NG in range(7,src))
-			NG << "<span class='notice'>[G] [attverb] \the [src]!</span>"
+			to_chat(NG, "<span class='notice'>[G] [attverb] \the [src]!</span>")
 		user.do_attack_animation(src)
 		src.ghostlife = max(0, src.ghostlife - 15)
 		if (src.ghostlife <= 0)
 			var/anim = "dust-ghost"
-			src << "<span class='warning'>Your ethereal self vaporizes!</span>"
+			to_chat(src, "<span class='warning'>Your ethereal self vaporizes!</span>")
 			var/atom/movable/overlay/animation = null
 			animation = new(loc)
 			animation.icon_state = "blank"
@@ -176,7 +176,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		ghost.timeofdeath = stat == DEAD ? timeofdeath : world.time
 		ghost.key = key
 		if (!(ghost.started_as_observer))
-			ghost << "<span class = 'good'><font size = 4>Or click <a href='?src=\ref[ghost];respawn=1'>THIS</a> button to respawn!</font></span>"
+			to_chat(ghost, "<span class = 'good'><font size = 4>Or click <a href='?src=\ref[ghost];respawn=1'>THIS</a> button to respawn!</font></span>")
 		if (ishuman(src))
 			if (human_clients_mob_list.Find(src))
 				human_clients_mob_list -= src
@@ -190,10 +190,10 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	set name = "Re-enter Corpse"
 	if (!client)	return
 	if (!(mind && mind.current && can_reenter_corpse))
-		src << "<span class='warning'>You have no body.</span>"
+		to_chat(src, "<span class='warning'>You have no body.</span>")
 		return
 	if (mind.current.key && copytext(mind.current.key,1,2)!="@")	//makes sure we don't accidentally kick any clients
-		usr << "<span class='warning'>Another consciousness is in your body... it is resisting you.</span>"
+		to_chat(usr, "<span class='warning'>Another consciousness is in your body... it is resisting you.</span>")
 		return
 
 	stop_following()
@@ -420,11 +420,11 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	if (!icon)
 		icon = original_icon
 		overlays = original_overlays
-		src << "<span class = 'good'>You are now visible again.</span>"
+		to_chat(src, "<span class = 'good'>You are now visible again.</span>")
 	else
 		icon = null
 		overlays.Cut()
-		src << "<span class = 'good'>You are now invisible.</span>"
+		to_chat(src, "<span class = 'good'>You are now invisible.</span>")
 
 // This is the ghost's follow verb with an argument
 /mob/observer/ghost/proc/ManualFollow(var/atom/movable/target)
@@ -468,18 +468,18 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 
 /mob/observer/ghost/memory()
 	set hidden = TRUE
-	src << "<span class = 'red'>You are dead! You have no mind to store memory!</span>"
+	to_chat(src, "<span class = 'red'>You are dead! You have no mind to store memory!</span>")
 
 /mob/observer/ghost/add_memory()
 	set hidden = TRUE
-	src << "<span class = 'red'>You are dead! You have no mind to store memory!</span>"
+	to_chat(src, "<span class = 'red'>You are dead! You have no mind to store memory!</span>")
 
 /mob/observer/ghost/Post_Incorpmove()
 	stop_following()
 
 /mob/observer/ghost/proc/try_possession(var/mob/living/M)
 	if (!config.ghosts_can_possess_animals)
-		usr << "<span class='warning'>Ghosts are not permitted to possess animals.</span>"
+		to_chat(usr, "<span class='warning'>Ghosts are not permitted to possess animals.</span>")
 		return FALSE
 	if (!M.can_be_possessed_by(src))
 		return FALSE
@@ -505,7 +505,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	set category = "Ghost"
 	ghostvision = !(ghostvision)
 	updateghostsight()
-	usr << "You [(ghostvision?"now":"no longer")] have ghost vision."
+	to_chat(usr, "You [(ghostvision?"now":"no longer")] have ghost vision.")
 
 /mob/observer/ghost/verb/toggle_darkness()
 	set name = "Toggle Darkness"
@@ -539,13 +539,13 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		return FALSE
 	if (mind && mind.current && mind.current.stat != DEAD && can_reenter_corpse)
 		if (feedback)
-			src << "<span class='warning'>Your non-dead body prevent you from respawning.</span>"
+			to_chat(src, "<span class='warning'>Your non-dead body prevent you from respawning.</span>")
 		return FALSE
 
 	var/timedifference = world.time - timeofdeath
 	if (respawn_time && timeofdeath && timedifference < respawn_time MINUTES)
 		var/timedifference_text = time2text(respawn_time MINUTES - timedifference,"mm:ss")
-		src << "<span class='warning'>You must have been dead for [respawn_time] minute\s to respawn. You have [timedifference_text] left.</span>"
+		to_chat(src, "<span class='warning'>You must have been dead for [respawn_time] minute\s to respawn. You have [timedifference_text] left.</span>")
 		return FALSE
 
 	return TRUE

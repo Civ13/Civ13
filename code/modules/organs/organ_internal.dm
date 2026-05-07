@@ -56,7 +56,7 @@
 	var/oldbroken = is_broken()
 	..()
 	if (is_broken() && !oldbroken && owner && !owner.stat)
-		owner << "<span class='danger'>You go blind!</span>"
+		to_chat(owner, "<span class='danger'>You go blind!</span>")
 
 /obj/item/organ/eyes/process() //Eye damage replaces the old eye_stat var.
 	..()
@@ -83,7 +83,7 @@
 
 	if (germ_level > INFECTION_LEVEL_ONE)
 		if (prob(1))
-			owner << "<span class = 'red'>Your skin itches.</span>"
+			to_chat(owner, "<span class = 'red'>Your skin itches.</span>")
 	if (germ_level > INFECTION_LEVEL_TWO)
 		if (prob(1))
 			spawn owner.vomit()
@@ -141,7 +141,7 @@
 	if (inflamed && owner)
 		inflamed++
 		if (prob(5))
-			owner << "<span class='warning'>You feel a stinging pain in your abdomen!</span>"
+			to_chat(owner, "<span class='warning'>You feel a stinging pain in your abdomen!</span>")
 			owner.emote("me",1,"winces slightly.")
 		if (inflamed > 200)
 			if (prob(3))
@@ -154,11 +154,11 @@
 				if (owner.nutrition > 100)
 					owner.vomit()
 				else
-					owner << "<span class='danger'>You gag as you want to throw up, but there's nothing in your stomach!</span>"
+					to_chat(owner, "<span class='danger'>You gag as you want to throw up, but there's nothing in your stomach!</span>")
 					owner.Weaken(10)
 		if (inflamed > 600)
 			if (prob(1))
-				owner << "<span class='danger'>Your abdomen is a world of pain!</span>"
+				to_chat(owner, "<span class='danger'>Your abdomen is a world of pain!</span>")
 				owner.Weaken(10)
 
 				var/obj/item/organ/external/E = owner.get_organ(parent_organ)

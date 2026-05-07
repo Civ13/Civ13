@@ -25,17 +25,17 @@
 /obj/structure/wild/berrybush/attack_hand(mob/user as mob)
 	if (user.a_intent == I_GRAB && ishuman(user) && berries > 0)
 		var/mob/living/human/H = user
-		H << "You start foraging for some berries..."
+		to_chat(H, "You start foraging for some berries...")
 		if (do_after(user, 80, src))
 			if (src && berries >= 1)
-				H << "You collect some berries."
+				to_chat(H, "You collect some berries.")
 				new btype(get_turf(src))
 				berries--
 				berryproc()
 			else
-				user << "There are no berries to harvest here."
+				to_chat(user, "There are no berries to harvest here.")
 		else
-			user << "You stop foraging."
+			to_chat(user, "You stop foraging.")
 	else
 		..()
 /obj/structure/wild/berrybush/attackby(obj/item/weapon/W as obj, mob/user as mob)
@@ -43,7 +43,7 @@
 	if(istype(W, /obj/item/weapon/berriesgatherer))
 		if (ishuman(user) && berries > 0)
 			//var/mob/living/human/H = user
-			H << "You start gathering some berries..."
+			to_chat(H, "You start gathering some berries...")
 			if (do_after(user, 80, src))
 				if (src && berries >= 1)
 					new btype(get_turf(src))
@@ -54,9 +54,9 @@
 					berries--
 					berryproc()
 				else
-					user << "There are no berries to harvest here."
+					to_chat(user, "There are no berries to harvest here.")
 			else
-				user << "You stop gathering berries."
+				to_chat(user, "You stop gathering berries.")
 	else
 		..()
 

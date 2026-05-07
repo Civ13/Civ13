@@ -314,7 +314,7 @@
 
 /mob/living/UnarmedAttack(var/atom/A, var/proximity_flag, icon_x, icon_y)
 	if (!ticker)
-		src << "You cannot attack people before the game has started."
+		to_chat(src, "You cannot attack people before the game has started.")
 		return FALSE
 	if (stat)
 		return FALSE
@@ -454,7 +454,7 @@
 	if (stat || buckled || paralysis || stunned || sleeping || (status_flags & FAKEDEATH) || restrained() || (weakened > 10))
 		return FALSE
 	if (!has_limbs)
-		src << "<span class = 'red'>You can't even move yourself - you have no limbs!</span>"
+		to_chat(src, "<span class = 'red'>You can't even move yourself - you have no limbs!</span>")
 		return FALSE
 	if (scrambling)
 		return FALSE
@@ -477,7 +477,7 @@
 	if (stat || buckled || paralysis || stunned || sleeping || (status_flags & FAKEDEATH) || restrained() || (weakened > 10))
 		return FALSE
 	if (!has_limbs)
-		src << "<span class = 'red'>You can't even move yourself - you have no limbs!</span>"
+		to_chat(src, "<span class = 'red'>You can't even move yourself - you have no limbs!</span>")
 		return FALSE
 	if (scrambling)
 		return FALSE

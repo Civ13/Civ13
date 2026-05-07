@@ -19,7 +19,7 @@
 /obj/structure/closet/fridge/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wrench))
 		if (powersource)
-			user << "<span class='notice'>Remove the cables first.</span>"
+			to_chat(user, "<span class='notice'>Remove the cables first.</span>")
 			return
 		visible_message("<span class='warning'>[user] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
 		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
@@ -29,7 +29,7 @@
 			return
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (powersource)
-			user << "There's already a cable connected here! Split it further from the [src]."
+			to_chat(user, "There's already a cable connected here! Split it further from the [src].")
 			return
 		var/obj/item/stack/cable_coil/CC = W
 		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
@@ -53,7 +53,7 @@
 						NCOO.connections += powersource
 					if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
 						powersource.connections += NCOO
-					user << "You connect the two cables."
+					to_chat(user, "You connect the two cables.")
 
 			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
 				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
@@ -61,7 +61,7 @@
 						NCOC.connections += powersource
 					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
 						powersource.connections += NCOC
-		user << "You connect the cable to the [src]."
+		to_chat(user, "You connect the cable to the [src].")
 	else
 		..()
 

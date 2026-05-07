@@ -109,15 +109,15 @@ var/list/sky_drop_map = list()
 		if (isliving(mover))
 			var/mob/living/L = mover
 			if (!ishuman(mover))
-				L << "<span class = 'good'>You land softly onto the ground.</span>"
+				to_chat(L, "<span class = 'good'>You land softly onto the ground.</span>")
 			else
 				var/mob/living/human/H = mover
 				var/client/C = H.client
 				if (!H.back || !istype(H.back, /obj/item/weapon/storage/backpack/paratrooper))
 					if (prob(10))
-						H << "<span class = 'userdanger'><b>You smack face first onto the ground, damn.</b></span>"
+						to_chat(H, "<span class = 'userdanger'><b>You smack face first onto the ground, damn.</b></span>")
 					else
-						H << "<span class = 'userdanger'><b>You land hard on the ground!</b></span>"
+						to_chat(H, "<span class = 'userdanger'><b>You land hard on the ground!</b></span>")
 					H.adjustBruteLossByPart(300, "l_leg")
 					H.adjustBruteLossByPart(300, "r_leg")
 					if (hasorgans(H))

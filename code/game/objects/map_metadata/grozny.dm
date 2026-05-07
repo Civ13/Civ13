@@ -109,14 +109,14 @@ var/no_loop_groz = FALSE
 			return FALSE
 		ticker.finished = TRUE
 		var/message = "The <b>Chechens</b> have successfuly deterred the withdrawal! The Russian Federal Forces failed their retreat!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_groz == FALSE)
 		ticker.finished = TRUE
 		var/message = "The <b>Russian Federal Forces</b> have secured the bridge into friendly territory! The retreat is succesful!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_groz = TRUE
@@ -159,7 +159,7 @@ var/no_loop_groz = FALSE
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Russian Federal Forces</b> abandonned the bridge!</font>"
+			to_chat(world, "<font size = 3>The <b>Russian Federal Forces</b> abandonned the bridge!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1

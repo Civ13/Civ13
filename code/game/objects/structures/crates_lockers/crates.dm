@@ -251,18 +251,18 @@
 		return
 	add_fingerprint(user)
 	if (locked && !opened)
-		user << "<span class='notice'>\The [src] is locked.</span>"
+		to_chat(user, "<span class='notice'>\The [src] is locked.</span>")
 		return
 	else
 		if (user.a_intent == I_GRAB && opened)
 			if (!contents.len)
-				user << "<span class='notice'>\The [src] is empty.</span>"
+				to_chat(user, "<span class='notice'>\The [src] is empty.</span>")
 				return
-			user << "You start rummaging through \the [src]..."
+			to_chat(user, "You start rummaging through \the [src]...")
 			if (do_after(user,40,src) && contents.len)
 				var/obj/item/picked = pick(contents)
 				picked.forceMove(user.loc)
-				user << "You take out \the [picked]."
+				to_chat(user, "You take out \the [picked].")
 				update_icon()
 				return
 			else

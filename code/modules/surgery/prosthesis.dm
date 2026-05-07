@@ -31,7 +31,7 @@
 		return ..()
 
 	if (user.getStatCoeff("medical") < 1.5)
-		user << "Your medical skill is too low for a such complicated procedure!"
+		to_chat(user, "Your medical skill is too low for a such complicated procedure!")
 		return
 	
 	var/mod = 1
@@ -41,7 +41,7 @@
 		if ("leg")
 			var/obj/item/organ/external/GR = C.get_organ("groin")
 			if (GR.is_stump())
-				user << "The whole lower body is missing! You have nowhere to attach \the [src] to!"
+				to_chat(user, "The whole lower body is missing! You have nowhere to attach \the [src] to!")
 				return
 			var/obj/item/organ/external/LL = C.get_organ("l_leg")
 			var/obj/item/organ/external/RL = C.get_organ("r_leg")
@@ -72,7 +72,7 @@
 			var/obj/item/organ/external/RL = C.get_organ("r_leg")
 			if ((RL && RL.is_stump() && RL.prosthesis == FALSE) || !RL)
 				if ((LL && LL.is_stump() && LL.prosthesis == FALSE) || !LL)
-					user << "Both legs are missing! There is nowhere to attach the [src]!"
+					to_chat(user, "Both legs are missing! There is nowhere to attach the [src]!")
 					return
 
 			var/obj/item/organ/external/LF = C.get_organ("l_foot")

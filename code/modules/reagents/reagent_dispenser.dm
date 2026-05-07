@@ -29,9 +29,9 @@
 		if (istype(W, /obj/item/weapon/pen))
 			var/tmp_label = sanitizeSafe(input(user, "Enter a label for [name]", "Label", label_text), MAX_NAME_LEN)
 			if (length(tmp_label) > 15)
-				user << "<span class='notice'>The label can be at most 15 characters long.</span>"
+				to_chat(user, "<span class='notice'>The label can be at most 15 characters long.</span>")
 			else
-				user << "<span class='notice'>You set the label to \"[tmp_label]\".</span>"
+				to_chat(user, "<span class='notice'>You set the label to \"[tmp_label]\".</span>")
 				label_text = tmp_label
 				update_name_label()
 			return
@@ -40,7 +40,7 @@
 		else if (istype(W, /obj/item/weapon/key))
 			var/obj/item/weapon/key/K = W
 			if (W.code != custom_code)
-				user << "This key does not match this lock!"
+				to_chat(user, "This key does not match this lock!")
 				return
 			if (custom_code == 0 && K.code != 0)
 				var/choice = WWinput(user, "Are you sure you want to assign this key to \the [src]?", "Lock", "No", list("Yes","No"))
@@ -74,7 +74,7 @@
 						visible_message("<span class = 'notice'>[user] unlocks \the [src].</span>")
 						playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 						return
-			user << "No key in this keychain matches the lock!"
+			to_chat(user, "No key in this keychain matches the lock!")
 			return
 		else
 			return
@@ -90,7 +90,7 @@
 	examine(mob/user)
 		if (!..(user, 2))
 			return
-		user << "<span class = 'notice'>It contains:</span>"
+		to_chat(user, "<span class = 'notice'>It contains:</span>")
 		if (reagents && reagents.reagent_list.len)
 			var/g_name = "nothing"
 			var/g_amount = 0
@@ -99,11 +99,11 @@
 					g_name = R.name
 					g_amount = R.volume
 			if (g_amount)
-				user << "<span class = 'notice'>[g_amount] units of [g_name]</span>"
+				to_chat(user, "<span class = 'notice'>[g_amount] units of [g_name]</span>")
 			else
-				user << "<span class = 'notice'>Nothing.</span>"
+				to_chat(user, "<span class = 'notice'>Nothing.</span>")
 		else
-			user << "<span class = 'notice'>Nothing.</span>"
+			to_chat(user, "<span class = 'notice'>Nothing.</span>")
 
 	verb/set_APTFT() //set amount_per_transfer_from_this
 		set name = "Set transfer amount"
@@ -142,10 +142,10 @@
 
 	if (dmode=="dispense")
 		dmode = "refill"
-		usr << "[src] switched to refill mode."
+		to_chat(usr, "[src] switched to refill mode.")
 	else if (dmode=="refill")
 		dmode = "dispense"
-		usr << "[src] switched to dispense mode."
+		to_chat(usr, "[src] switched to dispense mode.")
 
 /obj/structure/reagent_dispensers/largebarrel
 	name = "large barrel"

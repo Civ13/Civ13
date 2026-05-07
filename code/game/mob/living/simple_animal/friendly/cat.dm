@@ -213,7 +213,7 @@
 		say("Meow!")
 		return
 
-	usr << "<span class='notice'>[src] ignores you.</span>"
+	to_chat(usr, "<span class='notice'>[src] ignores you.</span>")
 	return
 
 

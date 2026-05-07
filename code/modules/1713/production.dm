@@ -16,14 +16,14 @@
 	//checking mood for doing anything
 	if (world.timeofday<src.last_mood_check) //prevent mood check spam
 		src.mood -= 0.25
-		src << "<span class='warning'>You are far too upset to work, restore your mood first! Wait 5 seconds at minimum before trying again.</span>"
+		to_chat(src, "<span class='warning'>You are far too upset to work, restore your mood first! Wait 5 seconds at minimum before trying again.</span>")
 		return FALSE
 	if (src.mood > no_mood_check_treshold)
 		return TRUE
 	if (prob(src.mood * 1.5))
 		return TRUE
 	else
-		src << "<span class='warning'>You are not in the mood to do this. Relax first.</span>"
+		to_chat(src, "<span class='warning'>You are not in the mood to do this. Relax first.</span>")
 		src.last_mood_check = world.timeofday + 45
 		return FALSE
 */
@@ -85,11 +85,11 @@
 					src.mood += this_exp * change_mood_coefficient * 2 //10 times more than usual
 					if(!no_msg)
 						if (exp_skills_list[I] in list ("crafting", "swords", "bows", "farming", "throwing", "magic", "philosophy"))
-							src << "<span class='good'>EUREKA!</span> <span class='notice'>You have learned much more about [exp_skills_list[I]].</span>"
+							to_chat(src, "<span class='good'>EUREKA!</span> <span class='notice'>You have learned much more about [exp_skills_list[I]].</span>")
 						if (exp_skills_list[I] in list ("rifle", "pistol", "machinegun"))
-							src << "<span class='good'>EUREKA!</span> <span class='notice'>You have learned much more about [exp_skills_list[I]]s.</span>"
+							to_chat(src, "<span class='good'>EUREKA!</span> <span class='notice'>You have learned much more about [exp_skills_list[I]]s.</span>")
 						if (exp_skills_list[I] == "medical")
-							src << "<span class='good'>EUREKA!</span> <span class='notice'>You have learned much more about medicine.</span>"
+							to_chat(src, "<span class='good'>EUREKA!</span> <span class='notice'>You have learned much more about medicine.</span>")
 				if (1) // breaktrough
 					if (exp_skills_list[I] in list ("strength", "dexterity", "stamina"))
 						src.adaptStat(exp_skills_list[I],this_exp) //no boost for physical stats
@@ -99,11 +99,11 @@
 					src.mood += this_exp * change_mood_coefficient / 5 * 2 //2 times more than usual
 					if(!no_msg)
 						if (exp_skills_list[I] in list ("crafting", "swords", "bows", "farming", "throwing", "magic", "philosophy"))
-							src << "<span class='notice'>You learned little more about [exp_skills_list[I]].</span>"
+							to_chat(src, "<span class='notice'>You learned little more about [exp_skills_list[I]].</span>")
 						if (exp_skills_list[I] in list ("rifle", "pistol", "machinegun"))
-							src << "<span class='notice'>You learned little more about [exp_skills_list[I]]s.</span>"
+							to_chat(src, "<span class='notice'>You learned little more about [exp_skills_list[I]]s.</span>")
 						if (exp_skills_list[I] == "medical")
-							src << "<span class='notice'>You learned little more about medicine.</span>"
+							to_chat(src, "<span class='notice'>You learned little more about medicine.</span>")
 				if (-1) // fail
 					src.adaptStat(exp_skills_list[I],this_exp/2) //small mood decreasing, 1/2 exp gain
 					src.mood -= this_exp * change_mood_coefficient / 5
@@ -115,11 +115,11 @@
 					src.mood -= this_exp * change_mood_coefficient / 5 * 5 //5x mood decreasing for intellectual skills
 					if(!no_msg)
 						if (exp_skills_list[I] in list ("crafting", "swords", "bows", "farming", "throwing", "magic", "philosophy"))
-							src << "<span class='notice'>You've lost a bit of [exp_skills_list[I]] skill.</span>"
+							to_chat(src, "<span class='notice'>You've lost a bit of [exp_skills_list[I]] skill.</span>")
 						if (exp_skills_list[I] in list ("rifle", "pistol", "machinegun"))
-							src << "<span class='notice'>You've lost a bit of [exp_skills_list[I]]s skill.</span>"
+							to_chat(src, "<span class='notice'>You've lost a bit of [exp_skills_list[I]]s skill.</span>")
 						if (exp_skills_list[I] == "medical")
-							src << "<span class='notice'>You've lost a bit of medicine skill.</span>"
+							to_chat(src, "<span class='notice'>You've lost a bit of medicine skill.</span>")
 				else // all as usual
 					src.adaptStat(exp_skills_list[I],this_exp)
 					src.mood += this_exp * change_mood_coefficient / 5 //small happiness boost, when succeeded (1*coefficient for each 10 seconds of work)
@@ -138,7 +138,7 @@
 			"<span class='notice'>Somebody fasten or unfasten something.</span>")
 		anchored = !anchored
 	else
-		H << "<span class='warning'>\The [src] is not movable.</span>"
+		to_chat(H, "<span class='warning'>\The [src] is not movable.</span>")
 
 //TO DO TODO: make this procedure global using
 /obj/structure/proc/hammer_action(var/mob/living/human/H, var/obj/item/weapon/W, var/work_amount = 50, var/list/components = list(), var/list/quantities = list())
@@ -155,7 +155,7 @@
 		I = clamp(I, 10, 300)
 		if (H.stats["stamina"][1]<H.stats["stamina"][2])
 			if (H.stats["stamina"][1]<I*STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK)
-				H << "<span class='warning'>You must restore your stamina before dismantling [src].</span>"
+				to_chat(H, "<span class='warning'>You must restore your stamina before dismantling [src].</span>")
 				return
 		playsound(src.loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		H.visible_message(
@@ -184,7 +184,7 @@
 				"<span class='notice'>You stops dismantling \the [src].</span>",
 				"<span class='notice'>The ratchetting sounds are gone.</span>")
 	else
-		H << "<span class='warning'>\The [src] is not dissasemblable.</span>"
+		to_chat(H, "<span class='warning'>\The [src] is not dissasemblable.</span>")
 
 ////////////////////////////////////////////////////////////////////////
 //  Loom  //////////////////////////////////////////////////////////////
@@ -220,7 +220,7 @@
 		if (current_user.give_exp(list("crafting","dexterity"), list(67,33), work_time_amount) == -2)
 			var/newamount = clamp(ceil(this_production.amount/2+rand(1,ceil(this_production.amount/2))),ceil(this_production.amount/2),this_production.amount)
 			if (newamount < this_production.amount)
-				current_user << "<span class='bad'>You produced [this_production.amount - newamount] less [this_production.name].</span>"
+				to_chat(current_user, "<span class='bad'>You produced [this_production.amount - newamount] less [this_production.name].</span>")
 				this_production.amount = newamount
 		current_user.mood -= work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK*0.67
 		current_user.mood -= work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK*0.33
@@ -234,10 +234,10 @@
 	if (!H.in_mood())
 		return
 	if(!anchored)
-		H << "<span class='warning'>\The [src] needs to be fixed in place before anything can be woven.</span>"
+		to_chat(H, "<span class='warning'>\The [src] needs to be fixed in place before anything can be woven.</span>")
 		return
 	if (current_work)
-		H << "<span class='warning'>\The [src.name] is busy, wait for the weaver to finish work.</span>"
+		to_chat(H, "<span class='warning'>\The [src.name] is busy, wait for the weaver to finish work.</span>")
 		return
 	current_work = new P(null, W.amount, FALSE) //in fact for information purpose only we really need new object
 	current_material = W
@@ -264,11 +264,11 @@
 				if (prob(25)) //5% to lose or gain some skill
 					if (prob(80)) //4% to lose
 						H.emote("sigh")
-						H << "<span class='notice'>You've lost a bit of crafting skill.</span>"
+						to_chat(H, "<span class='notice'>You've lost a bit of crafting skill.</span>")
 						H.adaptStat("crafting", -1)
 					else //1% to gain
 						H.emote("giggle")
-						H << "<span class='notice'>You learned a little more about the craft.</span>"
+						to_chat(H, "<span class='notice'>You learned a little more about the craft.</span>")
 						H.adaptStat("crafting", 1)
 			if (21 to 50) //30% little mood decreasing
 				H.visible_message(
@@ -289,15 +289,15 @@
 					"<span class='notice'>You pull \the [W.name] from \the [src.name], stopping work. You are upset.</span>",
 					"<span class='notice'>The sounds of \the [src.name] gone.</span>")
 				W.amount = round(W.amount/2 + W.amount/10*rand(1,10))
-				H << "<span class='bad'>You lose [current_work.amount - W.amount] [W.name]].</span>"
+				to_chat(H, "<span class='bad'>You lose [current_work.amount - W.amount] [W.name]].</span>")
 				H.emote("cry")
 				H.mood -= 8
 				if (prob(33)) //5% to lose or gain some skill
 					if (prob(80)) //4% to gain
-						H << "<span class='notice'>You learned a little more about the craft.</span>"
+						to_chat(H, "<span class='notice'>You learned a little more about the craft.</span>")
 						H.adaptStat("crafting", rand(1, clamp(current_work.amount-W.amount,1,5)))
 					else //1% to lose
-						H << "<span class='notice'>You've lost a bit of crafting skill.</span>"
+						to_chat(H, "<span class='notice'>You've lost a bit of crafting skill.</span>")
 						H.adaptStat("crafting", -1)
 			else //10% to lose all material
 				H.visible_message(
@@ -306,10 +306,10 @@
 					"<span class='notice'>The sounds of \the [src.name] gone.</span>")
 				if (prob(50)) //5% to breakthrough
 					if (prob(10)) //0.5% EUREKA!
-						H << "<span class='notice'>But...</span> <span class='good'>EUREKA!</span> <span class='notice'>You have learned several times more about the craft.</span>"
+						to_chat(H, "<span class='notice'>But...</span> <span class='good'>EUREKA!</span> <span class='notice'>You have learned several times more about the craft.</span>")
 						H.adaptStat("crafting", current_work.amount*2) //20 times more than usual. EUREKA!
 					else // 4.5% breakthrough
-						H << "<span class='notice'>But... You learned a little more about the craft.</span>"
+						to_chat(H, "<span class='notice'>But... You learned a little more about the craft.</span>")
 						H.adaptStat("crafting", rand(1, clamp(current_work.amount-W.amount,1,20))) //In fact three times more.
 				W.amount = 0
 				qdel(W)
@@ -387,12 +387,12 @@
 					if (75 to 85)	msg += " more than a three quarters"
 					else			msg += " and need a bit of work to complete"
 				msg += ".</span>"
-			user << msg
+			to_chat(user, msg)
 		else
-			user << "<span class='notice'>It's empty.</span>"
+			to_chat(user, "<span class='notice'>It's empty.</span>")
 	else
 		if (current_material)
-			user << "<span class='notice'>Some grain are in.</span>"
+			to_chat(user, "<span class='notice'>Some grain are in.</span>")
 
 /obj/structure/mill/proc/finish_work()
 	if (current_work)
@@ -419,17 +419,17 @@
 
 /obj/structure/mill/proc/produce(var/obj/item/weapon/reagent_containers/W, var/mob/living/human/H, var/obj/item/weapon/reagent_containers/P)
 	if(!anchored)
-		H << "<span class='warning'>\The [src] needs to be locked in place before anything can be ground.</span>"
+		to_chat(H, "<span class='warning'>\The [src] needs to be locked in place before anything can be ground.</span>")
 		return
 	if (!istype(src, /obj/structure/mill/large))
 		if (H.stats["stamina"][1] < H.stats["stamina"][2]*0.1)
-			H << "<span class='warning'>You must restore your stamina before mill on [src].</span>"
+			to_chat(H, "<span class='warning'>You must restore your stamina before mill on [src].</span>")
 			return
 		if (!H.in_mood())
 			return
 	if (current_work)
 		if (istype(src, /obj/structure/mill/large))
-			H << "<span class='warning'>\The [src.name] is busy, wait for [src.name] finish work.</span>"
+			to_chat(H, "<span class='warning'>\The [src.name] is busy, wait for [src.name] finish work.</span>")
 			return
 		if (workers_list.len == 0)
 			H.visible_message(
@@ -742,7 +742,7 @@
 		return TRUE
 	if (!hang_on(W))
 		if (H)
-			H << "<span class='warning'>There is not enough room for \the [W.name]!</span>"
+			to_chat(H, "<span class='warning'>There is not enough room for \the [W.name]!</span>")
 		return TRUE
 	if (H)
 		H.visible_message(
@@ -944,7 +944,7 @@
 
 /obj/item/weapon/starterjar/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (fermenting != 0)
-		user << "<span class='warning'>This jar already has a starter culture inside!</span>"
+		to_chat(user, "<span class='warning'>This jar already has a starter culture inside!</span>")
 		return
 	if (istype(O, /obj/item/weapon/reagent_containers/food/condiment/flour))
 		user.visible_message("<span class='notice'>[user.name] adds some flour to the jar.</span>",
@@ -975,9 +975,9 @@
 		return
 	else if (istype(O,/obj/item/weapon/hammer) || istype(O,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/weapons/smash.ogg', 75, 1)
-		user << "<span class='notice'>You begin smashing apart \the [src].</span>"
+		to_chat(user, "<span class='notice'>You begin smashing apart \the [src].</span>")
 		if (do_after(user, 25, src))
-			user << "<span class='notice'>You smash apart \the [src].</span>"
+			to_chat(user, "<span class='notice'>You smash apart \the [src].</span>")
 			new /obj/item/weapon/material/shard/glass(loc)
 			qdel(src)
 	else
@@ -1006,7 +1006,7 @@
 
 /obj/item/weapon/starterjar/attack_self(var/mob/living/human/user as mob)
 	if (fermenting==2 && fermenting_contents>0)
-		user << "You take some yeast out of the jar."
+		to_chat(user, "You take some yeast out of the jar.")
 		var/obj/item/weapon/reagent_containers/food/condiment/enzyme/Y = new/obj/item/weapon/reagent_containers/food/condiment/enzyme(null)
 		if (!user.put_in_any_hand_if_possible(Y))
 			Y.loc = usr.loc
@@ -1075,7 +1075,7 @@
 				if (S.amount+G.amount<=S.max_amount)
 					S.amount += G.amount
 					S.update_icon()
-					user << "<span class='notice'>You put \the [S.name] into [src][S.amount==S.max_amount ? " to full stack" : ""].</span>"
+					to_chat(user, "<span class='notice'>You put \the [S.name] into [src][S.amount==S.max_amount ? " to full stack" : ""].</span>")
 					qdel(G)
 					collected = TRUE
 					some_collected = TRUE
@@ -1084,16 +1084,16 @@
 					G.amount -= S.max_amount - S.amount
 					S.amount = S.max_amount
 					some_collected = TRUE
-					user << "<span class='notice'>You put \the [S.name] into [src] to full stack.</span>"
+					to_chat(user, "<span class='notice'>You put \the [S.name] into [src] to full stack.</span>")
 		if (!collected)
 			if (can_be_inserted(G, TRUE))
-				user << "<span class='notice'>You put \the [G.name] into [src], starting new stack[G.amount==G.max_amount ? " to full stack" : ""].</span>"
+				to_chat(user, "<span class='notice'>You put \the [G.name] into [src], starting new stack[G.amount==G.max_amount ? " to full stack" : ""].</span>")
 				handle_item_insertion(G,TRUE)
 				some_collected = TRUE
 			else
 				some_not_collected = TRUE
 	if (some_not_collected)
-		user << "<span class='warning'>Some seeds not fit into [src], make some space.</span>"
+		to_chat(user, "<span class='warning'>Some seeds not fit into [src], make some space.</span>")
 	if (src == user.s_active)
 		orient2hud(user)
 	return some_collected || some_not_collected
@@ -1162,7 +1162,7 @@
 				if (S.amount+G.amount<=S.max_amount)
 					S.amount += G.amount
 					S.update_icon()
-					user << "<span class='notice'>You put \the [S.name] into [src][S.amount==S.max_amount ? " to full stack" : ""].</span>"
+					to_chat(user, "<span class='notice'>You put \the [S.name] into [src][S.amount==S.max_amount ? " to full stack" : ""].</span>")
 					qdel(G)
 					collected = TRUE
 					some_collected = TRUE
@@ -1171,10 +1171,10 @@
 					G.amount -= S.max_amount - S.amount
 					S.amount = S.max_amount
 					some_collected = TRUE
-					user << "<span class='notice'>You put \the [S.name] into [src] to full stack.</span>"
+					to_chat(user, "<span class='notice'>You put \the [S.name] into [src] to full stack.</span>")
 		if (!collected)
 			if (can_be_inserted(G, TRUE))
-				user << "<span class='notice'>You put \the [G.name] into [src], starting new stack[G.amount==G.max_amount ? " to full stack" : ""].</span>"
+				to_chat(user, "<span class='notice'>You put \the [G.name] into [src], starting new stack[G.amount==G.max_amount ? " to full stack" : ""].</span>")
 				handle_item_insertion(G,TRUE)
 				some_collected = TRUE
 			else
@@ -1186,7 +1186,7 @@
 					if (!("stone" in not_collected))
 						not_collected += "stone"
 	if (some_not_collected)
-		user << "<span class='warning'>Some [english_list(not_collected)] not fit into [src], make some space.</span>"
+		to_chat(user, "<span class='warning'>Some [english_list(not_collected)] not fit into [src], make some space.</span>")
 	if (src == user.s_active)
 		orient2hud(user)
 	return some_collected || some_not_collected
@@ -1378,7 +1378,7 @@
 					"<span class='notice'>You put \the [W] in \the [src].</span>")
 				load_barrel()
 		else
-			user << "<span class='warning'>There is already a connected [work_barrel].</span>"
+			to_chat(user, "<span class='warning'>There is already a connected [work_barrel].</span>")
 		return
 	if (istype(W,/obj/item/weapon/hammer))
 		hammer_action(user, W, 270, list("/obj/item/stack/material/wood"), list(30))
@@ -1387,13 +1387,13 @@
 
 /obj/structure/oilwell/attack_hand(var/mob/living/human/H)
 	if (work_barrel)
-		H << "You start taking \the barrel from \the [src]..."
+		to_chat(H, "You start taking \the barrel from \the [src]...")
 		if (do_after(H, 35, src))
 			H.visible_message("<span class='notice'>[H] removes \the [work_barrel] from \the [src].</span>",
 				"<span class='notice'>You remove \the [work_barrel] from \the [src].</span>",)
 			unload_barrel()
 	else
-		H << "There is no container to remove from \the [src]."
+		to_chat(H, "There is no container to remove from \the [src].")
 
 /obj/structure/oilwell/Destroy()
 	unload_barrel()
@@ -1487,7 +1487,7 @@
 
 /obj/structure/printingpress/attack_hand(var/mob/living/human/H)
 	if (copying)
-		H << "<span class='warning'>The [src] is busy now.</span>"
+		to_chat(H, "<span class='warning'>The [src] is busy now.</span>")
 		return
 	var/msg = "Printing press slots [!(base||copy) ? "are empty." : "contains:"]\n"
 	var/obj/item/weapon/paper/PO
@@ -1520,22 +1520,22 @@
 			BO = copy
 
 	if ((!base) && (!copy))
-		H << "<span class='warning'>There is nothing inside the press.</span>"
+		to_chat(H, "<span class='warning'>There is nothing inside the press.</span>")
 		return
 	if (!copy)
 		base.alpha = 255
 		H.put_in_active_hand(base)
-		H << "<span class='notice'>You remove \the [base] from original slot.</span>"
+		to_chat(H, "<span class='notice'>You remove \the [base] from original slot.</span>")
 		base = null
 		return
 	if (!base)
 		copy.alpha = 255
 		H.put_in_active_hand(copy)
-		H << "<span class='notice'>You remove \the [copy] from copy slot.</span>"
+		to_chat(H, "<span class='notice'>You remove \the [copy] from copy slot.</span>")
 		copy = null
 		return
 	if (base.type <> copy.type) //TO DO TODO: Rework to not accept wrong item type to second slot (in attackby proc)
-		H << "<span class='warning'>Both documents must be of the same type. They are dropped for [src].</span>"
+		to_chat(H, "<span class='warning'>Both documents must be of the same type. They are dropped for [src].</span>")
 		unload_inv()
 		return
 	var/spawntimer = 90
@@ -1650,7 +1650,7 @@
 			if (istype(W, /obj/item/weapon/book/language_book))
 				var/obj/item/weapon/book/language_book/LB = W
 				if (!LB.written)
-					user << "<span class = 'warning'>You can't copy a language book with nothing in it!</span>"
+					to_chat(user, "<span class = 'warning'>You can't copy a language book with nothing in it!</span>")
 					return
 			base += W
 			user.drop_from_inventory(W)
@@ -1661,7 +1661,7 @@
 			if (istype(W, /obj/item/weapon/book/language_book))
 				var/obj/item/weapon/book/language_book/LB = W
 				if (LB.written)
-					user << "<span class = 'warning'>You can't copy over a written language book!</span>"
+					to_chat(user, "<span class = 'warning'>You can't copy over a written language book!</span>")
 					return
 			copy += W
 			user.drop_from_inventory(W)
@@ -1670,13 +1670,13 @@
 
 	if (istype(W,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
 		anchored = !anchored
 	else if (istype(W,/obj/item/weapon/hammer) || istype(W,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		user << "<span class='notice'>You begin dismantling \the [src].</span>"
+		to_chat(user, "<span class='notice'>You begin dismantling \the [src].</span>")
 		if (do_after(user,60,src))
-			user << "<span class='notice'>You dismantle \the [src].</span>"
+			to_chat(user, "<span class='notice'>You dismantle \the [src].</span>")
 			for (var/i=1, i<=5, i++)
 				new /obj/item/stack/material/wood(loc) //5 out of 12 to craft
 			qdel(src)
@@ -1689,25 +1689,25 @@
 		return
 
 	if (isemptylist(base) && isemptylist(copy))
-		H << "There is nothing inside the press."
+		to_chat(H, "There is nothing inside the press.")
 		return
 
 	if (isemptylist(copy))
 		for(var/obj/item/weapon/B in base)
-			H << "You remove \the [B]."
+			to_chat(H, "You remove \the [B].")
 			B.loc = get_turf(src)
 			base -= B
 		return
 
 	if (isemptylist(base))
 		for(var/obj/item/weapon/C in copy)
-			H << "You remove \the [C]."
+			to_chat(H, "You remove \the [C].")
 			C.loc = get_turf(src)
 			copy -= C
 		return
 	if (!isemptylist(base) && !isemptylist(copy))
 		if (base[1].type != copy[1].type)
-			H << "Both documents must be of the same type."
+			to_chat(H, "Both documents must be of the same type.")
 			for(var/obj/item/weapon/C in copy)
 				C.loc = get_turf(src)
 				copy -= C
@@ -1816,10 +1816,10 @@
 	if (istype(W, /obj/item/weapon/can))
 		var/obj/item/weapon/can/C = W
 		if (C.stored.len)
-			H << "You start sealing \the [C]..."
+			to_chat(H, "You start sealing \the [C]...")
 			icon_state = "canner_active"
 			if (do_after(H, 50, H.loc))
-				H << "You finish sealing \the [C]."
+				to_chat(H, "You finish sealing \the [C].")
 				C.open = FALSE
 				C.sealed = TRUE
 				C.update_icon()
@@ -1829,14 +1829,14 @@
 		return
 	if (istype(W, /obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		H << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		to_chat(H, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
 		anchored = !anchored
 		return
 	if (istype(W, /obj/item/weapon/hammer))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		H << "<span class='notice'>You begin dismantling \the [src].</span>"
+		to_chat(H, "<span class='notice'>You begin dismantling \the [src].</span>")
 		if (do_after(H, 50, src))
-			H << "<span class='notice'>You dismantle \the [src].</span>"
+			to_chat(H, "<span class='notice'>You dismantle \the [src].</span>")
 			var/P = "/obj/item/stack/material/iron"
 			new P(loc, 4) //4 out of 7 to craft
 			qdel(src)
@@ -1896,7 +1896,7 @@
 			stored += W
 			H.drop_from_inventory(W)
 			W.forceMove(src)
-			H << "You put \the [W] in \the [src]."
+			to_chat(H, "You put \the [W] in \the [src].")
 			icon_state = "[base_icon]_open"
 			if (stored.len==1)
 				name = "[brand]canned [W]"
@@ -1916,13 +1916,13 @@
 			else
 				S.satisfaction *= 1.5 //food that is already bad will taste worse when canned
 		else
-			H << "<span class='notice'>\the [src] is full!</span>"
+			to_chat(H, "<span class='notice'>\the [src] is full!</span>")
 		return
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet))
 		if (!open)
 			open = TRUE
 			update_icon()
-			H << "You open \the [src]."
+			to_chat(H, "You open \the [src].")
 		return
 	..()
 
@@ -1932,7 +1932,7 @@
 			I.loc = user.loc
 			stored -= I
 			user.put_in_active_hand(I)
-			user << "You remove \the [I] from \the [src]."
+			to_chat(user, "You remove \the [I] from \the [src].")
 			if (!stored.len)
 				name = "empty [brand]can"
 				icon_state = "[base_icon]_empty"
@@ -2062,23 +2062,23 @@
 	if (!..(user, TRUE))
 		return
 	if (current==0)
-		user << "<span class='notice'>It's empty</span>"
+		to_chat(user, "<span class='notice'>It's empty</span>")
 	else if (current<1)
-		user << "<span class='notice'>There is mixed waste, but not enough to start the composting process.</span>"
+		to_chat(user, "<span class='notice'>There is mixed waste, but not enough to start the composting process.</span>")
 	else if (current<2.5)
-		user << "<span class='notice'>The [src] is less than a quarter full, the composting process is in progress.</span>"
+		to_chat(user, "<span class='notice'>The [src] is less than a quarter full, the composting process is in progress.</span>")
 	else if (current<3.3)
-		user << "<span class='notice'>The [src] is less than a third full, the composting process is in progress.</span>"
+		to_chat(user, "<span class='notice'>The [src] is less than a third full, the composting process is in progress.</span>")
 	else if (current>=10)
-		user << "<span class='notice'>The [src] is full and the composting process is in progress.</span>"
+		to_chat(user, "<span class='notice'>The [src] is full and the composting process is in progress.</span>")
 	else if (current>7.5)
-		user << "<span class='notice'>The [src] is more than three-quarters full and the composting process is in progress.</span>"
+		to_chat(user, "<span class='notice'>The [src] is more than three-quarters full and the composting process is in progress.</span>")
 	else if (current>6.6)
-		user << "<span class='notice'>The [src] is more than two-thirds full and the composting process is in progress.</span>"
+		to_chat(user, "<span class='notice'>The [src] is more than two-thirds full and the composting process is in progress.</span>")
 	else if (current>5)
-		user << "<span class='notice'>The [src] is more than half full and the composting process is in progress.</span>"
+		to_chat(user, "<span class='notice'>The [src] is more than half full and the composting process is in progress.</span>")
 	else
-		user << "<span class='notice'>The [src] is less than half full and the composting process is in progress.</span>"
+		to_chat(user, "<span class='notice'>The [src] is less than half full and the composting process is in progress.</span>")
 
 /obj/structure/compost/New()
 	..()
@@ -2093,7 +2093,7 @@
 
 /obj/structure/compost/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (current>=10)
-		H << "<span class='warning'>The compost bin is full!</span>"
+		to_chat(H, "<span class='warning'>The compost bin is full!</span>")
 		return
 	var/list/allow_types = list(/obj/item/weapon/reagent_containers/food, /obj/item/stack/material/leaf, /obj/item/stack/farming/seeds,
 		/obj/item/stack/material/poppy, /obj/item/stack/material/tobacco, /obj/item/stack/material/tobacco_green, /obj/item/stack/material/coca,
@@ -2110,13 +2110,13 @@
 	if (istype(W,/obj/item/weapon/hammer))
 		hammer_action(H, W, 150, list("/obj/item/stack/material/wood"), list(7))
 		return TRUE
-	H << "<span class='warning'>\the [W] is not suitable for compost.</span>"
+	to_chat(H, "<span class='warning'>\the [W] is not suitable for compost.</span>")
 
 /obj/structure/compost/proc/auto_load(var/mob/living/human/H)
 	for (var/obj/item/W in src.loc)
 		if (current>=10)
 			if (H)
-				H << "<span class='warning'>The compost bin is full!</span>"
+				to_chat(H, "<span class='warning'>The compost bin is full!</span>")
 			break
 		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/poo)) //poo and fertilizer not need compost, but we have now storage for poo
 			if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer))
@@ -2255,7 +2255,7 @@
 		if (current_user.give_exp(list("crafting","dexterity"), list(67,33), work_time_amount) == -2)
 			var/newamount = clamp(ceil(this_production.amount/2+rand(1,ceil(this_production.amount/2))),ceil(this_production.amount/2),this_production.amount)
 			if (newamount < this_production.amount)
-				current_user << "<span class='bad'>You produced [this_production.amount - newamount] less [this_production.name] due epic fail.</span>"
+				to_chat(current_user, "<span class='bad'>You produced [this_production.amount - newamount] less [this_production.name] due epic fail.</span>")
 				this_production.amount = newamount
 		current_user.mood -= work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK*0.67
 		current_user.mood -= work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK*0.33
@@ -2270,13 +2270,13 @@
 	if (!H.in_mood())
 		return
 	if(!anchored)
-		H << "<span class='warning'>\The [src] needs to be fixed in place before anything can be cut.</span>"
+		to_chat(H, "<span class='warning'>\The [src] needs to be fixed in place before anything can be cut.</span>")
 		return
 	if(istype(src, /obj/structure/sawmill/powered) && powered == FALSE)
-		H << "<span class='warning'>\The [src] needs to be powered before anything can be cut.</span>"
+		to_chat(H, "<span class='warning'>\The [src] needs to be powered before anything can be cut.</span>")
 		return
 	if (current_work)
-		H << "<span class='warning'>\The [src.name] is busy, wait for the saw blade to finish cutting.</span>"
+		to_chat(H, "<span class='warning'>\The [src.name] is busy, wait for the saw blade to finish cutting.</span>")
 		return
 	if (istype(src, /obj/structure/sawmill/large))
 		current_work = new P(null, W.amount * 10, FALSE) //in fact for information purpose only we really need new object
@@ -2320,11 +2320,11 @@
 				if (prob(25)) //5% to lose or gain some skill
 					if (prob(80)) //4% to lose
 						H.emote("sigh")
-						H << "<span class='notice'>You've lost a bit of crafting skill.</span>"
+						to_chat(H, "<span class='notice'>You've lost a bit of crafting skill.</span>")
 						H.adaptStat("crafting", -1)
 					else //1% to gain
 						H.emote("giggle")
-						H << "<span class='notice'>You learned a little more about the craft.</span>"
+						to_chat(H, "<span class='notice'>You learned a little more about the craft.</span>")
 						H.adaptStat("crafting", 1)
 			if (21 to 50) //30% little mood decreasing
 				H.visible_message(
@@ -2345,15 +2345,15 @@
 					"<span class='notice'>You pull \the [W.name] from \the [src.name], stopping work. You are upset.</span>",
 					"<span class='notice'>The sounds of \the [src.name] gone.</span>")
 				W.amount = round(W.amount/2 + W.amount/10*rand(1,10))
-				H << "<span class='bad'>You lose [current_work.amount - W.amount] [W.name]].</span>"
+				to_chat(H, "<span class='bad'>You lose [current_work.amount - W.amount] [W.name]].</span>")
 				H.emote("cry")
 				H.mood -= 8
 				if (prob(33)) //5% to lose or gain some skill
 					if (prob(80)) //4% to gain
-						H << "<span class='notice'>You learned a little more about the craft.</span>"
+						to_chat(H, "<span class='notice'>You learned a little more about the craft.</span>")
 						H.adaptStat("crafting", rand(1, clamp(current_work.amount-W.amount,1,5)))
 					else //1% to lose
-						H << "<span class='notice'>You've lost a bit of crafting skill.</span>"
+						to_chat(H, "<span class='notice'>You've lost a bit of crafting skill.</span>")
 						H.adaptStat("crafting", -1)
 			else //10% to lose all material
 				H.visible_message(
@@ -2362,10 +2362,10 @@
 					"<span class='notice'>The sounds of \the [src.name] gone.</span>")
 				if (prob(50)) //5% to breakthrough
 					if (prob(10)) //0.5% EUREKA!
-						H << "<span class='notice'>But...</span> <span class='good'>EUREKA!</span> <span class='notice'>You have learned several times more about the craft.</span>"
+						to_chat(H, "<span class='notice'>But...</span> <span class='good'>EUREKA!</span> <span class='notice'>You have learned several times more about the craft.</span>")
 						H.adaptStat("crafting", current_work.amount*2) //20 times more than usual. EUREKA!
 					else // 4.5% breakthrough
-						H << "<span class='notice'>But... You learned a little more about the craft.</span>"
+						to_chat(H, "<span class='notice'>But... You learned a little more about the craft.</span>")
 						H.adaptStat("crafting", rand(1, clamp(current_work.amount-W.amount,1,20))) //In fact three times more.
 				W.amount = 0
 				qdel(W)
@@ -2389,7 +2389,7 @@
 		return
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (powersource)
-			H << "There's already a cable connected here! Split it further from the [src]."
+			to_chat(H, "There's already a cable connected here! Split it further from the [src].")
 			return
 		var/obj/item/stack/cable_coil/CC = W
 		powersource = CC.place_turf(get_turf(src), H, turn(get_dir(H,src),180))
@@ -2413,7 +2413,7 @@
 						NCOO.connections += powersource
 					if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
 						powersource.connections += NCOO
-					H << "You connect the two cables."
+					to_chat(H, "You connect the two cables.")
 
 			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
 				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
@@ -2421,7 +2421,7 @@
 						NCOC.connections += powersource
 					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
 						powersource.connections += NCOC
-		H << "You connect the cable to the [src]."
+		to_chat(H, "You connect the cable to the [src].")
 	else
 		..()
 	..(W, H)

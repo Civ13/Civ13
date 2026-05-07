@@ -56,7 +56,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 /mob/living/say(var/message, var/datum/language/speaking = null, var/verb="says", var/alt_name = "", var/alt_message=null, var/animal = FALSE, var/howl = FALSE, var/original_message = "")
 	if (client)
 		if (client.prefs.muted & MUTE_IC)
-			src << "<span class = 'red'>You cannot speak in IC (Muted).</span>"
+			to_chat(src, "<span class = 'red'>You cannot speak in IC (Muted).</span>")
 			return
 
 	if (stat)
@@ -163,7 +163,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 	for (var/mob/M in listening)
 		if (howl)
 			verb = "howls"
-		M << speech_bubble
+		to_chat(M, speech_bubble)
 		M.hear_say(message, verb, speaking, alt_name, italics, src, speech_sound, sound_vol, alt_message, animal, original_message)
 
 	for (var/obj/O in listening_obj)

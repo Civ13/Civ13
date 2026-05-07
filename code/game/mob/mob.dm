@@ -63,9 +63,9 @@
 					return
 	// Added voice muffling for Issue 41.
 	if (stat == UNCONSCIOUS || sleeping > 0)
-		src << "<I>... You can almost hear someone talking ...</I>"
+		to_chat(src, "<I>... You can almost hear someone talking ...</I>")
 	else
-		src << msg
+		to_chat(src, msg)
 	return
 
 // Show a message to all mobs and objects in sight of this one
@@ -370,7 +370,7 @@
 	if (mind)
 		mind.show_memory(src)
 	else
-		src << "The game appears to have misplaced your mind datum, so we can't show you your notes."
+		to_chat(src, "The game appears to have misplaced your mind datum, so we can't show you your notes.")
 
 
 /mob/verb/add_memory(msg as message)
@@ -599,22 +599,22 @@
 		return
 
 	if (AM.anchored || istype(AM, /obj/item/football))
-		src << "<span class='warning'>It won't budge!</span>"
+		to_chat(src, "<span class='warning'>It won't budge!</span>")
 		return
 
 	var/mob/M = AM
 	if (ismob(AM))
 
 		if (!can_pull_mobs || !can_pull_size)
-			src << "<span class='warning'>It won't budge!</span>"
+			to_chat(src, "<span class='warning'>It won't budge!</span>")
 			return
 
 		if ((mob_size < M.mob_size) && (can_pull_mobs != MOB_PULL_LARGER))
-			src << "<span class='warning'>It won't budge!</span>"
+			to_chat(src, "<span class='warning'>It won't budge!</span>")
 			return
 
 		if ((mob_size == M.mob_size) && (can_pull_mobs == MOB_PULL_SMALLER))
-			src << "<span class='warning'>It won't budge!</span>"
+			to_chat(src, "<span class='warning'>It won't budge!</span>")
 			return
 
 		// If your size is larger than theirs and you have some
@@ -630,7 +630,7 @@
 		var/obj/I = AM
 		if(!istype(I, /obj/structure/cannon/modern/tank/voyage))
 			if (!can_pull_size || can_pull_size < I.w_class || istype(I, /obj/item/football))
-				src << "<span class='warning'>It won't budge!</span>"
+				to_chat(src, "<span class='warning'>It won't budge!</span>")
 				return
 
 	if (pulling)
@@ -649,7 +649,7 @@
 	if (ishuman(AM))
 		var/mob/living/human/H = AM
 		if (H.pull_damage())
-			src << SPAN_WARNING("<b>Pulling \the [H] in their current condition would probably be a bad idea.</b>")
+			to_chat(src, SPAN_WARNING("<b>Pulling \the [H] in their current condition would probably be a bad idea.</b>"))
 */
 	//Attempted fix for people flying away through space when cuffed and dragged.
 	if (ismob(AM))
@@ -674,7 +674,7 @@
 /mob/proc/see(message)
 	if (!is_active())
 		return FALSE
-	src << message
+	to_chat(src, message)
 	return TRUE
 
 /mob/proc/show_viewers(message)

@@ -10,7 +10,7 @@ var/global/floorIsLava = FALSE
 	log_adminwarn(msg)
 	
 	for (var/client/C in admins)
-		C << msg
+		to_chat(C, msg)
 
 /proc/msg_admin_attack(var/text, var/ckey = "", var/ckey2 = "") //Toggleable Attack Messages
 	webhook_send_attacklog("ATTACK LOG: [text]", ckey, ckey2)
@@ -20,13 +20,13 @@ var/global/floorIsLava = FALSE
 		if (R_ADMIN & C.holder.rights)
 			if (C.is_preference_enabled(/datum/client_preference/admin/show_attack_logs))
 				var/msg = rendered
-				C << msg
+				to_chat(C, msg)
 
 proc/admin_notice(var/message, var/rights)
 	webhook_send_runtime("ADMIN NOTICE: [message]")
 	for (var/mob/M in mob_list)
 		if (check_rights(rights, FALSE, M))
-			M << message
+			to_chat(M, message)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////Panels
 
@@ -36,13 +36,13 @@ proc/admin_notice(var/message, var/rights)
 	set desc = "Edit player (respawn, ban, heal, etc)"
 
 	if (!M)
-		usr << "You seem to be selecting a mob that doesn't exist anymore."
+		to_chat(usr, "You seem to be selecting a mob that doesn't exist anymore.")
 		return
 
 	if (!istype(src,/datum/admins))
 		src = usr.client.holder
 	if (!istype(src,/datum/admins))
-		usr << "Error: you are not an admin!"
+		to_chat(usr, "Error: you are not an admin!")
 		return
 
 	var/body = "<html>[common_browser_style]<head><title>Options for [M.key]</title></head>"
@@ -161,7 +161,7 @@ proc/admin_notice(var/message, var/rights)
 	if (!istype(src,/datum/admins))
 		src = usr.client.holder
 	if (!istype(src,/datum/admins))
-		usr << "Error: you are not an admin!"
+		to_chat(usr, "Error: you are not an admin!")
 		return
 	PlayerNotesPage(1)
 
@@ -220,7 +220,7 @@ proc/admin_notice(var/message, var/rights)
 	if (!istype(src,/datum/admins))
 		src = usr.client.holder
 	if (!istype(src,/datum/admins))
-		usr << "Error: you are not an admin!"
+		to_chat(usr, "Error: you are not an admin!")
 		return
 	var/dat = "<html>[common_browser_style]<head><title>Info on [key]</title></head>"
 	dat += "<body>"
@@ -307,7 +307,7 @@ proc/admin_notice(var/message, var/rights)
 		if (unconfirm == "No")
 			return
 	if (confirm == "Yes")
-		world << "<span class='danger'>Restarting world!</span> <span class='notice'>Initiated by <b>[usr.client.holder.fakekey ? "Admin" : usr.key]</b>!</span>"
+		to_chat(world, "<span class='danger'>Restarting world!</span> <span class='notice'>Initiated by <b>[usr.client.holder.fakekey ? "Admin" : usr.key]</b>!</span>")
 		log_admin("[key_name(usr)] initiated a reboot.")
 		sleep(50)
 		world.Reboot()
@@ -324,7 +324,7 @@ proc/admin_notice(var/message, var/rights)
 			message = sanitize(message, 500, extra = FALSE)
 		message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
 		if (usr && usr.client)
-			world << "<big><span class=notice><b>[usr.client.holder.fakekey ? "Administrator" : usr.key] Announces:</b></big><p style='text-indent: 50px'>[message]</p></span>"
+			to_chat(world, "<big><span class=notice><b>[usr.client.holder.fakekey ? "Administrator" : usr.key] Announces:</b></big><p style='text-indent: 50px'>[message]</p></span>")
 			log_admin("Announce: [key_name(usr)] : [message]")
 
 /datum/admins/proc/ic_announce()
@@ -338,7 +338,7 @@ proc/admin_notice(var/message, var/rights)
 		if (!check_rights(R_SERVER,0))
 			message = sanitize(message, 500, extra = FALSE)
 		message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
-		world << "<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 30px'>[message]</p></span>"
+		to_chat(world, "<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 30px'>[message]</p></span>")
 		log_admin("Announce: [key_name(usr)] - [messaget] : [message]")
 
 /datum/admins/proc/custom_faction_announce()
@@ -379,9 +379,9 @@ proc/admin_notice(var/message, var/rights)
 
 	config.ooc_allowed = !(config.ooc_allowed)
 	if (config.ooc_allowed)
-		world << "<b>The OOC channel has been globally enabled!</b>"
+		to_chat(world, "<b>The OOC channel has been globally enabled!</b>")
 	else
-		world << "<b>The OOC channel has been globally disabled!</b>"
+		to_chat(world, "<b>The OOC channel has been globally disabled!</b>")
 	log_and_message_admins("toggled OOC.")
 
 
@@ -395,9 +395,9 @@ proc/admin_notice(var/message, var/rights)
 
 	config.looc_allowed = !(config.looc_allowed)
 	if (config.looc_allowed)
-		world << "<b>The LOOC channel has been globally enabled!</b>"
+		to_chat(world, "<b>The LOOC channel has been globally enabled!</b>")
 	else
-		world << "<b>The LOOC channel has been globally disabled!</b>"
+		to_chat(world, "<b>The LOOC channel has been globally disabled!</b>")
 	log_and_message_admins("toggled LOOC.")
 
 
@@ -411,9 +411,9 @@ proc/admin_notice(var/message, var/rights)
 
 	config.dsay_allowed = !(config.dsay_allowed)
 	if (config.dsay_allowed)
-		world << "<b>Deadchat has been globally enabled!</b>"
+		to_chat(world, "<b>Deadchat has been globally enabled!</b>")
 	else
-		world << "<b>Deadchat has been globally disabled!</b>"
+		to_chat(world, "<b>Deadchat has been globally disabled!</b>")
 	log_admin("[key_name(usr)] toggled deadchat.")
 	message_admins("[key_name_admin(usr)] toggled deadchat.", key_name_admin(usr))
 
@@ -430,7 +430,7 @@ proc/admin_notice(var/message, var/rights)
 	log_admin("[key_name(usr)] toggled Dead OOC.")
 	message_admins("[key_name_admin(usr)] toggled Dead OOC.", key_name_admin(usr))
 
-/datum/admins/proc/startnow()
+/datum/admins/verb/startnow()
 	set category = "Server"
 	set desc = "Start the round immediately"
 	set name = "Start Now"
@@ -446,7 +446,7 @@ proc/admin_notice(var/message, var/rights)
 		message_admins("[usr.key] has started the game.", usr.key)
 		return TRUE
 	else
-		usr << "<font color='red'>Error: Start Now: Game has already started</font>"
+		to_chat(usr, "<font color='red'>Error: Start Now: Game has already started</font>")
 		return FALSE
 
 /datum/admins/proc/toggleenter()
@@ -456,9 +456,9 @@ proc/admin_notice(var/message, var/rights)
 	set desc = "People can't enter"
 	GLOB.enter_allowed = !(GLOB.enter_allowed)
 	if (!(GLOB.enter_allowed))
-		world << "<b>New players may no longer enter the game.</b>"
+		to_chat(world, "<b>New players may no longer enter the game.</b>")
 	else
-		world << "<b>New players may now enter the game.</b>"
+		to_chat(world, "<b>New players may now enter the game.</b>")
 	log_admin("[key_name(usr)] toggled new player game entering.")
 	message_admins("<span class = 'notice'>[key_name_admin(usr)] toggled new player game entering.</span>", key_name_admin(usr))
 	world.update_status()
@@ -470,9 +470,9 @@ proc/admin_notice(var/message, var/rights)
 	set name = "Toggle Respawn"
 	GLOB.abandon_allowed = !(GLOB.abandon_allowed)
 	if (GLOB.abandon_allowed)
-		world << "<b>You may now respawn.</b>"
+		to_chat(world, "<b>You may now respawn.</b>")
 	else
-		world << "<b>You may no longer respawn :(</b>"
+		to_chat(world, "<b>You may no longer respawn :(</b>")
 	message_admins("<span class = 'notice'>[key_name_admin(usr)] toggled respawn to [GLOB.abandon_allowed ? "On" : "Off"].</span>", key_name_admin(usr))
 	log_admin("[key_name(usr)] toggled respawn to [GLOB.abandon_allowed ? "On" : "Off"].")
 	world.update_status()
@@ -494,13 +494,13 @@ proc/admin_notice(var/message, var/rights)
 			ticker.pregame_timeleft += round(GAMETICKER_PREGAME_TIME/2)
 			ticker.pregame_timeleft = min(ticker.pregame_timeleft, GAMETICKER_PREGAME_TIME)
 			round_progressing = TRUE
-			world << "<b>The game start has been delayed by 90 seconds.</b>"
+			to_chat(world, "<b>The game start has been delayed by 90 seconds.</b>")
 			log_admin("[key_name(usr)] delayed the game by 90 seconds.")
 		else
-			world << "<b>The game start has been delayed.</b>"
+			to_chat(world, "<b>The game start has been delayed.</b>")
 			log_admin("[key_name(usr)] delayed the game.")
 	else
-		world << "<b>The game will start soon.</b>"
+		to_chat(world, "<b>The game will start soon.</b>")
 		log_admin("[key_name(usr)] removed the roundstart delay.")
 
 /datum/admins/proc/adjump()
@@ -534,7 +534,7 @@ proc/admin_notice(var/message, var/rights)
 	if (!usr.client.holder)	return
 	if (WWinput(usr, "Reboot the server?", "Reboot", "Yes", list("Yes","No")) == "No")
 		return
-	world << "<span class = 'red'><b>Rebooting world!</b> <span class = 'notice'>Initiated by [usr.client.holder.fakekey ? "Admin" : usr.key]!</span></span>"
+	to_chat(world, "<span class = 'red'><b>Rebooting world!</b> <span class = 'notice'>Initiated by [usr.client.holder.fakekey ? "Admin" : usr.key]!</span></span>")
 	log_admin("[key_name(usr)] initiated an immediate reboot.")
 	world.Reboot()
 /datum/admins/proc/set_research()
@@ -542,16 +542,16 @@ proc/admin_notice(var/message, var/rights)
 	set desc = "Activates or Deactivates research."
 	set name = "Toggle Research"
 	if ((!map.civilizations && !map.nomads) || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
-		usr << "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>"
+		to_chat(usr, "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>")
 		return
 	if (!(map.research_active))
 		map.research_active = TRUE
-		world << "<big>Research has been <b>activated.</b></big>"
+		to_chat(world, "<big>Research has been <b>activated.</b></big>")
 		log_admin("[key_name(usr)] has activated the Research.")
 		return
 	else
 		map.research_active = FALSE
-		world << "<big>Research has been <b>deactivated.</b></big>"
+		to_chat(world, "<big>Research has been <b>deactivated.</b></big>")
 		log_admin("[key_name(usr)] has deactivated the Research.")
 		return
 /datum/admins/proc/redirect_all_players()
@@ -574,9 +574,9 @@ proc/admin_notice(var/message, var/rights)
 	set desc = "Changes research speed in Auto-Research mode."
 	set name = "Set Research Speed"
 	if (!map.civilizations && !map.nomads)
-		usr << "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>"
+		to_chat(usr, "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>")
 	if (!(map.autoresearch))
-		usr << "<font color='red'>Error: This is only available within the Auto-Research Gamemode.</font>"
+		to_chat(usr, "<font color='red'>Error: This is only available within the Auto-Research Gamemode.</font>")
 		return
 	else
 		var/customresearchsp = input("How many Research Points to increase per minute?", "Auto-Research Multiplier") as num|null
@@ -587,7 +587,7 @@ proc/admin_notice(var/message, var/rights)
 		if (customresearchsp > 230)
 			customresearchsp = 230
 		map.autoresearch_mult = customresearchsp
-		world << "<big>Research increase per minute has been changed to <b>[map.autoresearch_mult]</b></big>"
+		to_chat(world, "<big>Research increase per minute has been changed to <b>[map.autoresearch_mult]</b></big>")
 		log_admin("[key_name(usr)] has changed the research modifier to [map.autoresearch_mult].")
 		return
 
@@ -596,7 +596,7 @@ proc/admin_notice(var/message, var/rights)
 	set desc = "Changes the research."
 	set name = "Set Custom Research"
 	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_THREE_TRIBES)
-		usr << "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>"
+		to_chat(usr, "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>")
 		return
 	else
 		var/customresearch = input("What do you want the research to be?", "Custom Research") as num|null
@@ -614,7 +614,7 @@ proc/admin_notice(var/message, var/rights)
 		map.civd_research = list(customresearch,customresearch,customresearch,null)
 		map.cive_research = list(customresearch,customresearch,customresearch,null)
 		map.civf_research = list(customresearch,customresearch,customresearch,null)
-		world << "<big>The research has been set to  <b>[customresearch]</b>.</big>"
+		to_chat(world, "<big>The research has been set to  <b>[customresearch]</b>.</big>")
 		log_admin("[key_name(usr)] set the research to [customresearch].")
 		return
 /datum/admins/proc/set_custom_age()
@@ -622,7 +622,7 @@ proc/admin_notice(var/message, var/rights)
 	set desc = "Changes the starting age."
 	set name = "Set Custom Age"
 	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES && map.ID != MAP_THREE_TRIBES && map.ID != MAP_FOUR_KINGDOMS)
-		usr << "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>"
+		to_chat(usr, "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>")
 		return
 	else
 		var/customage = WWinput(src, "Choose the starting age:", "Starting Age", "5000 B.C.", list("5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903","1943","1969","2013", "Cancel"))
@@ -701,7 +701,7 @@ proc/admin_notice(var/message, var/rights)
 				map.age8_done = TRUE
 				map.default_research = 210
 
-		world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+		to_chat(world, "<big>The Epoch has been changed to <b>[map.age]</b></big>")
 		log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
 		return
 ////////////////////////////////////////////////////////////////////////////////////////////////ADMIN HELPER PROCS
@@ -751,18 +751,18 @@ proc/admin_notice(var/message, var/rights)
 	if (!check_rights(R_SPAWN))	return
 
 	if (!custom_items)
-		usr << "Custom item list is null."
+		to_chat(usr, "Custom item list is null.")
 		return
 
 	if (!custom_items.len)
-		usr << "Custom item list not populated."
+		to_chat(usr, "Custom item list not populated.")
 		return
 
 	for (var/assoc_key in custom_items)
-		usr << "[assoc_key] has:"
+		to_chat(usr, "[assoc_key] has:")
 		var/list/current_items = custom_items[assoc_key]
 		for (var/datum/custom_item/item in current_items)
-			usr << "- name: [item.name] icon: [item.item_icon] path: [item.item_path] desc: [item.item_desc]"
+			to_chat(usr, "- name: [item.name] icon: [item.item_icon] path: [item.item_path] desc: [item.item_desc]")
 */
 
 /datum/admins/proc/spawn_atom(var/object as text)
@@ -834,9 +834,9 @@ proc/admin_notice(var/message, var/rights)
 	set name = "Toggle tinted welding helmets."
 	config.welder_vision = !( config.welder_vision )
 	if (config.welder_vision)
-		world << "<b>Reduced welder vision has been enabled!</b>"
+		to_chat(world, "<b>Reduced welder vision has been enabled!</b>")
 	else
-		world << "<b>Reduced welder vision has been disabled!</b>"
+		to_chat(world, "<b>Reduced welder vision has been disabled!</b>")
 	log_admin("[key_name(usr)] toggled welder vision.")
 	message_admins("[key_name_admin(usr)] toggled welder vision.", key_name_admin(usr))
 
@@ -848,9 +848,9 @@ proc/admin_notice(var/message, var/rights)
 	set name = "Toggle guests"
 	config.guests_allowed = !(config.guests_allowed)
 	if (!(config.guests_allowed))
-		world << "<b>Guests may no longer enter the game.</b>"
+		to_chat(world, "<b>Guests may no longer enter the game.</b>")
 	else
-		world << "<b>Guests may now enter the game.</b>"
+		to_chat(world, "<b>Guests may now enter the game.</b>")
 	log_admin("[key_name(usr)] toggled guests game entering [config.guests_allowed?"":"dis"]allowed.")
 	message_admins("<span class = 'notice'>[key_name_admin(usr)] toggled guests game entering [config.guests_allowed?"":"dis"]allowed.</span>", key_name_admin(usr))
 
@@ -864,7 +864,7 @@ proc/admin_notice(var/message, var/rights)
 	set desc = "Should fix any mob sprite update errors."
 
 	if (!holder)
-		src << "Only administrators may use this command."
+		to_chat(src, "Only administrators may use this command.")
 		return
 
 	if (istype(H))
@@ -1240,14 +1240,14 @@ proc/admin_notice(var/message, var/rights)
 	if (map)
 		if (map.orespawners == 1)
 			map.orespawners = FALSE
-			world << "[usr] toggled the ore spawners OFF."
+			to_chat(world, "[usr] toggled the ore spawners OFF.")
 			for (var/obj/effect/spawner/orespawner/O in world)
 				O.active = FALSE
 				O.do_spawn()
 			return
 		else
 			map.orespawners = TRUE
-			world << "[usr] toggled the ore spawners ON."
+			to_chat(world, "[usr] toggled the ore spawners ON.")
 			for (var/obj/effect/spawner/orespawner/O in world)
 				O.active = TRUE
 				O.do_spawn()
@@ -1283,18 +1283,18 @@ proc/admin_notice(var/message, var/rights)
 	set desc = "Display some of the global vars."
 	set name = "Display Worldvars"
 
-	src << "<b>World Variables:</b>"
-	src << "Radiation: [get_global_radiation()]"
-	src << "Pollution: [get_global_pollution()]"
-	src << "Chickens: [chicken_count.len]"
-	src << "Turkeys: [turkey_count.len]"
-	src << "Cows: [cow_count.len]"
-	src << "Goats: [goat_count.len]"
-	src << "Sheep: [sheep_count.len]"
-	src << "Pigs: [pig_count.len]"
-	src << "Deer: [deer_count.len]"
-	src << "Wolves: [wolf_count.len]"
-	src << "Bears: [bear_count.len]"
+	to_chat(src, "<b>World Variables:</b>")
+	to_chat(src, "Radiation: [get_global_radiation()]")
+	to_chat(src, "Pollution: [get_global_pollution()]")
+	to_chat(src, "Chickens: [chicken_count.len]")
+	to_chat(src, "Turkeys: [turkey_count.len]")
+	to_chat(src, "Cows: [cow_count.len]")
+	to_chat(src, "Goats: [goat_count.len]")
+	to_chat(src, "Sheep: [sheep_count.len]")
+	to_chat(src, "Pigs: [pig_count.len]")
+	to_chat(src, "Deer: [deer_count.len]")
+	to_chat(src, "Wolves: [wolf_count.len]")
+	to_chat(src, "Bears: [bear_count.len]")
 
 
 /datum/admins/proc/set_radiation()
@@ -1352,10 +1352,10 @@ proc/admin_notice(var/message, var/rights)
 
 	if (map && !map.is_zombie)
 		map.is_zombie = TRUE
-		world << "<big><b>Zombie mechanics have been enabled in the current round.</b></big>"
+		to_chat(world, "<big><b>Zombie mechanics have been enabled in the current round.</b></big>")
 	else
 		map.is_zombie = FALSE
-		world << "<big><b>Zombie mechanics have been disabled in the current round.</b></big>"
+		to_chat(world, "<big><b>Zombie mechanics have been disabled in the current round.</b></big>")
 	return
 
 /datum/admins/proc/fantasy_races()
@@ -1365,8 +1365,8 @@ proc/admin_notice(var/message, var/rights)
 
 	if (map && !map.is_fantrace)
 		map.is_fantrace = TRUE
-		world << "<big><b>Fantasy race selection has been enabled in the current round.</b></big>"
+		to_chat(world, "<big><b>Fantasy race selection has been enabled in the current round.</b></big>")
 	else
 		map.is_fantrace = FALSE
-		world << "<big><b>Fantasy race selection has been disabled in the current round.</b></big>"
+		to_chat(world, "<big><b>Fantasy race selection has been disabled in the current round.</b></big>")
 	return

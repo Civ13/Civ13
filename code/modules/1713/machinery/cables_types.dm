@@ -75,12 +75,12 @@
 				CLC.connections += CLD
 	user.drop_from_inventory(src)
 	anchored = TRUE
-	user << "You connect the cables on this tile."
+	to_chat(user, "You connect the cables on this tile.")
 	return
 /obj/item/connector/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
 		anchored = !anchored
 		return
 
@@ -115,16 +115,16 @@
 		return
 
 	if(!isturf(T))
-		user << "<span class='warning'>You can't lay a cable here!"
+		to_chat(user, "<span class='warning'>You can't lay a cable here!")
 		return
 
 	if(amount < 1) // Out of cable
-		user << "<span class='warning'>There is no cable left!</span>"
+		to_chat(user, "<span class='warning'>There is no cable left!</span>")
 		qdel(src)
 		return
 
 	if(get_dist(T,user) > 1) // Too far
-		user << "<span class='warning'>You can't lay cable at a place that far away!</span>"
+		to_chat(user, "<span class='warning'>You can't lay cable at a place that far away!</span>")
 		return
 
 	var/dirn
@@ -142,7 +142,7 @@
 		currdir = "vertical"
 	for(var/obj/structure/cable/LC in T)
 		if(LC.tiledir == currdir)
-			user << "<span class='warning'>There's already a cable at that position with the same direction!</span>"
+			to_chat(user, "<span class='warning'>There's already a cable at that position with the same direction!</span>")
 			return
 
 	var/obj/structure/cable/C = new /obj/structure/cable(T)
@@ -170,7 +170,7 @@
 					NCOO.connections += C
 				if (!(NCOO in C.connections) && !list_cmp(C.connections, NCOO.connections))
 					C.connections += NCOO
-				user << "You connect the two cables."
+				to_chat(user, "You connect the two cables.")
 
 		for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir2)))
 			if ((NCOC.tiledir == C.tiledir) && NCOC != C)
@@ -178,7 +178,7 @@
 					NCOC.connections += C
 				if (!(NCOC in C.connections) && !list_cmp(C.connections, NCOC.connections))
 					C.connections += NCOC
-				user << "You connect the two cables."
+				to_chat(user, "You connect the two cables.")
 	var/list/turflist = list()
 	for(var/obj/structure/cable/CL in get_turf(user))
 		turflist += CL
@@ -189,7 +189,7 @@
 			if (!(CLD in CLC.connections) && CLC != CLD)
 				CLC.connections += CLD
 	if (turflist.len > 1)
-		user << "You connect the cables on this tile."
+		to_chat(user, "You connect the cables on this tile.")
 	return C
 
 //////////////////////////////

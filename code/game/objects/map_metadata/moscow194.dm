@@ -84,14 +84,14 @@
 			return FALSE
 		ticker.finished = TRUE
 		var/message = "The <b>Soviets</b> have sucessfuly defended Moscow! The Germans stopped the attack!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_r == FALSE) //Needs to be looked into to prevent the bug of Germans "winning" by getting wiped and not respawning after 10 seconds.
 		ticker.finished = TRUE
 		var/message = "The <b>Germans</b> have captured Moscow! The Siege of Moscow is over!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_r = TRUE
@@ -134,7 +134,7 @@
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Soviets</b> have recaptured the Politburo!</font>"
+			to_chat(world, "<font size = 3>The <b>Soviets</b> have recaptured the Politburo!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -245,14 +245,14 @@
 			return FALSE
 		ticker.finished = TRUE
 		var/message = "The <b>Soviets</b> have sucessfuly defended Moscow! The Germans stopped the attack!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_r == FALSE) //Needs to be looked into to prevent the bug of Germans "winning" by getting wiped and not respawning after 10 seconds.
 		ticker.finished = TRUE
 		var/message = "The <b>Germans</b> have captured Moscow! The Siege of Moscow is over!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_r = TRUE
@@ -295,7 +295,7 @@
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Soviets</b> have recaptured the Politburo!</font>"
+			to_chat(world, "<font size = 3>The <b>Soviets</b> have recaptured the Politburo!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1

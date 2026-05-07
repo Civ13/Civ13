@@ -19,6 +19,6 @@
 			if ("Yes")	config.Tickcomp = TRUE
 			else		config.Tickcomp = FALSE
 	else
-		src << "<span class = 'red'>Error: ticklag(): Invalid world.ticklag value. No changes made.</span>"
+		to_chat(src, "<span class = 'red'>Error: ticklag(): Invalid world.ticklag value. No changes made.</span>")
 
 

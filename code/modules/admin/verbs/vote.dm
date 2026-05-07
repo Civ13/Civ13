@@ -11,7 +11,7 @@
 		log_admin("[key_name(usr)] triggered a map vote.")
 		message_admins("[key_name(usr)] triggered a map vote.")
 	else
-		src << "<span class = 'notice'>There is no processes.mapswap datum, or it is not ready.</span>"
+		to_chat(src, "<span class = 'notice'>There is no processes.mapswap datum, or it is not ready.</span>")
 
 /client/proc/start_epochswap_vote()
 	set category = "Server"
@@ -25,4 +25,4 @@
 		log_admin("[key_name(usr)] triggered am epoch vote.")
 		message_admins("[key_name(usr)] triggered an epoch vote.")
 	else
-		src << "<span class = 'notice'>There is no processes.epochswap datum, or it is not ready.</span>"
+		to_chat(src, "<span class = 'notice'>There is no processes.epochswap datum, or it is not ready.</span>")

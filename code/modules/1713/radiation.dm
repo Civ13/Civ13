@@ -173,13 +173,13 @@
 		radiation_count = 0
 		return
 	if (radiation_count >= 1000)
-		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count/1000] Sv/s</b></span>"
+		to_chat(user, "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count/1000] Sv/s</b></span>")
 	else if (radiation_count <= 0.001)
-		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>0 uSv/s</b></span>"
+		to_chat(user, "<font size=2>\icon[getFlatIcon(src)] Reading: <b>0 uSv/s</b></span>")
 	else if (radiation_count <= 0.1)
-		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count*1000] uSv/s</b></span>"
+		to_chat(user, "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count*1000] uSv/s</b></span>")
 	else
-		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count] mSv/s</b></span>"
+		to_chat(user, "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count] mSv/s</b></span>")
 	radiation_count = 0
 	checked = FALSE
 	return
@@ -192,7 +192,7 @@
 /obj/item/weapon/geiger_counter/attack(atom/M, mob/user)
 	if(user.a_intent == I_HELP)
 		user.visible_message("<span class='notice'>[user] scans [M] with [src].</span>", "<span class='notice'>You scan [M]'s radiation levels with [src]...</span>")
-		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[M.radiation/100] Gy</b></span>"
+		to_chat(user, "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[M.radiation/100] Gy</b></span>")
 		return
 	..()
 
@@ -203,7 +203,7 @@
 
 	scanning = !scanning
 	update_icon()
-	usr << "<span class='notice'>You switch [scanning ? "on" : "off"] \the [src].</span>"
+	to_chat(usr, "<span class='notice'>You switch [scanning ? "on" : "off"] \the [src].</span>")
 	if (!scanning)
 		radiation_count = 0
 	if (scanning)

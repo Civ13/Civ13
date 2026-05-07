@@ -60,7 +60,7 @@
 			icon_state = "sterile"
 			worn_state = "sterile"
 			item_state_slots["slot_mask"] = "sterile"
-			usr << "<span class = 'danger'>You put up your mask.</span>"
+			to_chat(usr, "<span class = 'danger'>You put up your mask.</span>")
 			toggled = FALSE
 			update_clothing_icon()
 		else if (!toggled)
@@ -69,6 +69,6 @@
 			icon_state = "sterile_down"
 			worn_state = "sterile_down"
 			item_state_slots["slot_mask"] = "sterile_down"
-			usr << "<span class = 'danger'>You put down your mask flaps.</span>"
+			to_chat(usr, "<span class = 'danger'>You put down your mask flaps.</span>")
 			toggled = TRUE
 			update_clothing_icon()

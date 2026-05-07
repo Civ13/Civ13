@@ -239,16 +239,16 @@
 
 /obj/item/weapon/matchbox/examine(mob/user)
 	..(user)
-	user << "It has [currcap] matches out of a maximum of [maxcap]."
+	to_chat(user, "It has [currcap] matches out of a maximum of [maxcap].")
 
 /obj/item/weapon/matchbox/attack_hand(mob/living/human/H)
 	if (currcap>=1 && (src == H.l_hand || src == H.r_hand))
-		H << "You take a match from the matchbox."
+		to_chat(H, "You take a match from the matchbox.")
 		H.put_in_hands(new/obj/item/weapon/flame/match(H))
 		currcap--
 		return
 	else if (currcap <= 0)
-		H << "<span class='notice'>The matchbox is empty!</span>"
+		to_chat(H, "<span class='notice'>The matchbox is empty!</span>")
 		currcap = 0
 		return
 	else

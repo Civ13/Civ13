@@ -75,7 +75,7 @@
 					message_admins("[key_name(callers)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.", key_name(callers))
 					for (var/client/C in clients)
 						if (C.ckey == ckey)
-							C << "<span class = 'good'>href_list["Your ban has been lifted."]</span>"
+							to_chat(C, "<span class = 'good'>href_list["Your ban has been lifted."]</span>")
 	if (href_list["chat_ready"])
 		if (chat)
 			chat.on_ready()
@@ -97,11 +97,11 @@
 	if (config.automute_on && !holder && last_message == message)
 		last_message_count++
 		if (last_message_count >= SPAM_TRIGGER_AUTOMUTE)
-			src << "<span class = 'red'>You have exceeded the spam filter limit for identical messages. An auto-mute was applied.</span>"
+			to_chat(src, "<span class = 'red'>You have exceeded the spam filter limit for identical messages. An auto-mute was applied.</span>")
 			cmd_admin_mute(mob, mute_type, TRUE)
 			return TRUE
 		if (last_message_count >= SPAM_TRIGGER_WARNING)
-			src << "<span class = 'red'>You are nearing the spam filter limit for identical messages.</span>"
+			to_chat(src, "<span class = 'red'>You are nearing the spam filter limit for identical messages.</span>")
 			return FALSE
 	else
 		last_message = message
@@ -111,13 +111,13 @@
 //This stops files larger than UPLOAD_LIMIT being sent from client to server via input(), client.Import() etc.
 /client/AllowUpload(filename, filelength)
 	if (filelength > UPLOAD_LIMIT)
-		src << "<font color='red'>Error: AllowUpload(): File Upload too large. Upload Limit: [UPLOAD_LIMIT/1024]KiB.</font>"
+		to_chat(src, "<font color='red'>Error: AllowUpload(): File Upload too large. Upload Limit: [UPLOAD_LIMIT/1024]KiB.</font>")
 		return FALSE
 /*	//Don't need this at the moment. But it's here if it's needed later.
 	//Helps prevent multiple files being uploaded at once. Or right after eachother.
 	var/time_to_wait = fileaccess_timer - world.time
 	if (time_to_wait > 0)
-		src << "<font color='red'>Error: AllowUpload(): Spam prevention. Please wait [round(time_to_wait/10)] seconds.</font>"
+		to_chat(src, "<font color='red'>Error: AllowUpload(): Spam prevention. Please wait [round(time_to_wait/10)] seconds.</font>")
 		return FALSE
 	fileaccess_timer = world.time + FTPDELAY	*/
 	return TRUE
@@ -171,7 +171,7 @@
 		return FALSE
 
 	if (byond_version < REAL_MIN_CLIENT_VERSION)		//Out of date client.
-		src << "<span class = 'danger'><font size = 4>Please upgrade to BYOND [REAL_MIN_CLIENT_VERSION] to play.</font></span>"
+		to_chat(src, "<span class = 'danger'><font size = 4>Please upgrade to BYOND [REAL_MIN_CLIENT_VERSION] to play.</font></span>")
 		del(src)
 		return FALSE
 
@@ -200,7 +200,7 @@
 
 	if (clients.len >= PLAYERCAP)
 		if (!holder)
-			src << "<span class = 'danger'><font size = 4>The server is full right now, sorry.</font></span>"
+			to_chat(src, "<span class = 'danger'><font size = 4>The server is full right now, sorry.</font></span>")
 			del(src)
 			return
 
@@ -218,17 +218,17 @@
 	if (!holder)
 
 		if (!world_is_open)
-			src << "<span class = 'userdanger'>The server is currently closed to non-admins.</span>"
+			to_chat(src, "<span class = 'userdanger'>The server is currently closed to non-admins.</span>")
 			message_admins("[src] tried to log in, but was rejected, the server is closed to non-admins.", src)
 			del(src)
 			return
 
 
 	if (custom_event_msg && custom_event_msg != "")
-		src << "<h1 class='alert'>Custom Event</h1>"
-		src << "<h2 class='alert'>A custom event is taking place. OOC Info:</h2>"
-		src << "<span class='alert'>[custom_event_msg]</span>"
-		src << "<br>"
+		to_chat(src, "<h1 class='alert'>Custom Event</h1>")
+		to_chat(src, "<h2 class='alert'>A custom event is taking place. OOC Info:</h2>")
+		to_chat(src, "<span class='alert'>[custom_event_msg]</span>")
+		to_chat(src, "<br>")
 
 	if (holder)
 		add_admin_verbs()
@@ -259,7 +259,7 @@
 
 	spawn (1)
 		if (!istype(mob, /mob/new_player))
-			src << browse(null, "window=playersetup;")
+			usr << browse(null, "window=playersetup;")
 
 		if (istype(mob, /mob/living/human))
 			human_clients_mob_list |= mob

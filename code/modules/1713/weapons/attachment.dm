@@ -27,7 +27,7 @@ Current Defines (_defines/attachment.dm)
 	var/ergonomics = 1
 
 /obj/item/weapon/attachment/proc/attached(mob/user, obj/item/weapon/gun/G)
-	user << "<span class = 'notice'>You start to attach [src] to the [G].</span>"
+	to_chat(user, "<span class = 'notice'>You start to attach [src] to the [G].</span>")
 	if (do_after(user, 15, user))
 		user.unEquip(src)
 		A_attached = TRUE
@@ -38,7 +38,7 @@ Current Defines (_defines/attachment.dm)
 		G.attachments += src
 		G.update_attachment_actions(user)
 		G.ergonomics *= src.ergonomics
-		user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+		to_chat(user, "<span class = 'notice'>You attach [src] to the [G].</span>")
 	else
 		return
 
@@ -52,7 +52,7 @@ Current Defines (_defines/attachment.dm)
 		dropped(user)
 		A_attached = FALSE
 		loc = get_turf(src)
-		user << "You remove [src] from the [G]."
+		to_chat(user, "You remove [src] from the [G].")
 	else
 		return//
 
@@ -65,7 +65,7 @@ Current Defines (_defines/attachment.dm)
 	if (attachments.len)
 		for (var/obj/item/weapon/attachment/A in attachments)
 			if (!(istype(A,/obj/item/weapon/attachment/scope/iron_sights)))
-				user << "<span class='notice'>It has [A] attached.</span>"
+				to_chat(user, "<span class='notice'>It has [A] attached.</span>")
 
 /obj/item/weapon/gun/dropped(mob/user)
 	..()
@@ -108,7 +108,7 @@ Current Defines (_defines/attachment.dm)
 	if (!I || !user)
 		return
 	if (user.get_inactive_hand() != src)
-		user << "You must be holding the [src] to add attachments."
+		to_chat(user, "You must be holding the [src] to add attachments.")
 		return
 	attach_A(I, user)
 
@@ -121,22 +121,22 @@ Current Defines (_defines/attachment.dm)
 				if (attachment_slots & ATTACH_IRONSIGHTS)
 					A.attached(user, src)
 				else
-					user << "You already have iron sights."
+					to_chat(user, "You already have iron sights.")
 			if (ATTACH_SCOPE)
 				if (attachment_slots & ATTACH_SCOPE)
 					A.attached(user, src, FALSE)
 				else
-					user << "You fumble around with the attachment."
+					to_chat(user, "You fumble around with the attachment.")
 			if (ATTACH_STOCK)
 				if (attachment_slots & ATTACH_STOCK)
 					A.attached(user, src, FALSE)
 				else
-					user << "You fumble around with the attachment."
+					to_chat(user, "You fumble around with the attachment.")
 			if (ATTACH_BARREL)
 				if (attachment_slots & ATTACH_BARREL)
 					A.attached(user, src, FALSE)
 				else
-					user << "You fumble around with the attachment."
+					to_chat(user, "You fumble around with the attachment.")
 			if (ATTACH_UNDER)
 				if (attachment_slots & ATTACH_UNDER)
 					A.attached(user, src, FALSE)
@@ -172,7 +172,7 @@ Current Defines (_defines/attachment.dm)
 	..()
 	if(atk_mode == SLASH)
 		atk_mode = STAB
-		user << "<span class='notice'>You will now stab.</span>"
+		to_chat(user, "<span class='notice'>You will now stab.</span>")
 		edge = FALSE
 		sharp = TRUE
 		attack_verb = list("stabbed")
@@ -181,7 +181,7 @@ Current Defines (_defines/attachment.dm)
 
 	else if(atk_mode == STAB)
 		atk_mode = SLASH
-		user << "<span class='notice'>You will now slash.</span>"
+		to_chat(user, "<span class='notice'>You will now slash.</span>")
 		attack_verb = list("slashed", "diced")
 		hitsound = "slash_sound"
 		edge = TRUE
@@ -198,12 +198,12 @@ Current Defines (_defines/attachment.dm)
 		G.verbs += verbs
 		G.attachments += src
 		if (user)
-			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+			to_chat(user, "<span class = 'notice'>You attach [src] to the [G].</span>")
 		G.bayonet = src
 		G.update_icon()
 	else
 		if (user)
-			user << "<span class = 'notice'>You start to attach [src] to the [G].</span>"
+			to_chat(user, "<span class = 'notice'>You start to attach [src] to the [G].</span>")
 		if (do_after(user, 15, user))
 			A_attached = TRUE
 			G.attachment_slots -= attachment_type
@@ -213,7 +213,7 @@ Current Defines (_defines/attachment.dm)
 			if (user)
 				user.unEquip(src)
 				G.update_attachment_actions(user)
-				user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+				to_chat(user, "<span class = 'notice'>You attach [src] to the [G].</span>")
 			loc = G
 			G.bayonet = src
 			G.update_icon()
@@ -229,7 +229,7 @@ Current Defines (_defines/attachment.dm)
 		dropped(user)
 		A_attached = FALSE
 		loc = get_turf(src)
-		user << "You remove [src] from the [G]."
+		to_chat(user, "You remove [src] from the [G].")
 		G.bayonet = null
 		G.update_icon()
 	else
@@ -260,7 +260,7 @@ Current Defines (_defines/attachment.dm)
 		dropped(user)
 		A_attached = FALSE
 		loc = get_turf(src)
-		user << "You remove [src] from the [G]."
+		to_chat(user, "You remove [src] from the [G].")
 		G.shake_strength = initial(G.shake_strength)
 		G.update_icon()
 	else
@@ -404,7 +404,7 @@ Current Defines (_defines/attachment.dm)
 		dropped(user)
 		A_attached = FALSE
 		loc = get_turf(src)
-		user << "You remove [src] from the [G]."
+		to_chat(user, "You remove [src] from the [G].")
 		//This should only be temporary until more attachment icons are made, then we switch to adding/removing icon masks
 		if (istype(G, /obj/item/weapon/gun/projectile))
 			var/obj/item/weapon/gun/projectile/W = G
@@ -441,7 +441,7 @@ Current Defines (_defines/attachment.dm)
 			G.attachments += src
 			G.update_attachment_actions(user)
 			G.ergonomics *= src.ergonomics
-			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+			to_chat(user, "<span class = 'notice'>You attach [src] to the [G].</span>")
 			if (istype(G, /obj/item/weapon/gun/projectile))
 				var/obj/item/weapon/gun/projectile/W = G
 				W.update_icon()
@@ -463,7 +463,7 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment/scope/adjustable/advanced/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
 	if(!G.scope_mounts.Find(src.mount))
-		user << "[src.name] can't be attached!"
+		to_chat(user, "[src.name] can't be attached!")
 		return
 	if (quick)
 		A_attached = TRUE
@@ -485,7 +485,7 @@ Current Defines (_defines/attachment.dm)
 			G.verbs += verbs
 			G.attachments += src
 			G.update_attachment_actions(user)
-			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+			to_chat(user, "<span class = 'notice'>You attach [src] to the [G].</span>")
 			G.ergonomics *= src.ergonomics
 			G.scope = src
 			G.update_icon()
@@ -500,7 +500,7 @@ Current Defines (_defines/attachment.dm)
 		dropped(user)
 		A_attached = FALSE
 		loc = get_turf(src)
-		user << "You remove [src] from the [G]."
+		to_chat(user, "You remove [src] from the [G].")
 		G.scope = null
 		G.ergonomics /= src.ergonomics
 		G.update_icon()
@@ -540,7 +540,7 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment/under/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
 	if(!G.under_mounts.Find(src.mount))
-		user << "[src.name] can't be attached!"
+		to_chat(user, "[src.name] can't be attached!")
 		return
 	if (quick)
 		A_attached = TRUE
@@ -563,7 +563,7 @@ Current Defines (_defines/attachment.dm)
 			G.attachments += src
 			G.update_attachment_actions(user)
 			G.ergonomics *= src.ergonomics
-			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+			to_chat(user, "<span class = 'notice'>You attach [src] to the [G].</span>")
 			G.under = src
 			G.update_icon()
 		else
@@ -578,7 +578,7 @@ Current Defines (_defines/attachment.dm)
 		dropped(user)
 		A_attached = FALSE
 		loc = get_turf(src)
-		user << "You remove [src] from the [G]."
+		to_chat(user, "You remove [src] from the [G].")
 		G.under = null
 		G.ergonomics /= src.ergonomics
 		G.update_icon()
@@ -604,7 +604,7 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/gun/launcher/grenade/underslung/proc/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
 	if(!G.under_mounts.Find(src.mount))
-		user << "[src.name] can't be attached!"
+		to_chat(user, "[src.name] can't be attached!")
 		return
 	if (quick)
 		A_attached = TRUE
@@ -621,7 +621,7 @@ Current Defines (_defines/attachment.dm)
 			loc = G
 			G.attachments += src
 			G.update_attachment_actions(user)
-			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+			to_chat(user, "<span class = 'notice'>You attach [src] to the [G].</span>")
 			G.launcher = src
 			G.update_icon()
 		else
@@ -634,7 +634,7 @@ Current Defines (_defines/attachment.dm)
 		dropped(user)
 		A_attached = FALSE
 		loc = get_turf(src)
-		user << "You remove [src] from the [G]."
+		to_chat(user, "You remove [src] from the [G].")
 		G.launcher = null
 		G.update_icon()
 	else

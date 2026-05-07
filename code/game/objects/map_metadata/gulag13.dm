@@ -132,15 +132,15 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/gulag13/proc/check_points_msg()
 	check_points()
 	spawn(1)
-		world << "<font size = 4><span class = 'notice'><b>Current Score:</b></font></span>"
+		to_chat(world, "<font size = 4><span class = 'notice'><b>Current Score:</b></font></span>")
 		for (var/i=1,i<=points.len,i++)
-			world << "<br><font size = 3><span class = 'notice'>[points[i][1]]: <b>[points[i][2]+points[i][3]]</b></span></font>"
+			to_chat(world, "<br><font size = 3><span class = 'notice'>[points[i][1]]: <b>[points[i][2]+points[i][3]]</b></span></font>")
 		var/donecheck = FALSE
 		for(var/mob/living/human/H in player_list)
 			if(H.stat!=DEAD && H.original_job && istype(H.original_job, /datum/job/civilian/prisoner) && !donecheck)
 				var/area/A = get_area(H)
 				if (istype(A, /area/caribbean/nomads/ice/target))
-					world << "<br><font size = 3><span class = 'warning'>There are prisoners currently escaping!</span></font>"
+					to_chat(world, "<br><font size = 3><span class = 'warning'>There are prisoners currently escaping!</span></font>")
 					donecheck = TRUE
 
 	spawn(2400)
@@ -217,21 +217,21 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 							crimereason = pick("Insubordination in the Imperial Japanese Army during the [pick("Russo-Japanese War", "Sino-Japanese War")].", "Murder", "Resisting Assimilation to Japanese Society")
 					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32),P.original_eyes, P.randrole)
 /obj/item/weapon/prisoner_passport/examine(mob/user)
-	user << "<span class='info'>*---------*</span>"
+	to_chat(user, "<span class='info'>*---------*</span>")
 	..(user)
 	if (document_details.len >= 9)
-		user << "<b><span class='info'>Hair:</b> [document_details[1]], [document_details[2]] color</span>"
+		to_chat(user, "<b><span class='info'>Hair:</b> [document_details[1]], [document_details[2]] color</span>")
 		if (document_details[6] == "male")
-			user << "<b><span class='info'>Face:</b> [document_details[3]], [document_details[4]] color</span>"
-		user << "<b><span class='info'>Eyes:</b> [document_details[8]]</span>"
-		user << "<b><span class='info'>Detained for:</b> [document_details[5]]</span>"
-		user << "<b><span class='info'>Sentence:</b> [document_details[7]] years</span>"
-		user << "<b><span class='info'>Assigned:</b> [document_details[9]]</span>"
-	user << "<span class='info'>*---------*</span>"
+			to_chat(user, "<b><span class='info'>Face:</b> [document_details[3]], [document_details[4]] color</span>")
+		to_chat(user, "<b><span class='info'>Eyes:</b> [document_details[8]]</span>")
+		to_chat(user, "<b><span class='info'>Detained for:</b> [document_details[5]]</span>")
+		to_chat(user, "<b><span class='info'>Sentence:</b> [document_details[7]] years</span>")
+		to_chat(user, "<b><span class='info'>Assigned:</b> [document_details[9]]</span>")
+	to_chat(user, "<span class='info'>*---------*</span>")
 	if (guardnotes.len)
 		for(var/i in guardnotes)
-			user << "NOTE: [i]"
-	user << "<span class='info'>*---------*</span>"
+			to_chat(user, "NOTE: [i]")
+	to_chat(user, "<span class='info'>*---------*</span>")
 
 /obj/item/weapon/prisoner_passport/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!ishuman(H))
@@ -255,15 +255,15 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	set name = "Sound the Siren"
 	set category = "Officer"
 	if (!map || (map.ID != MAP_GULAG13 && map.ID != MAP_ABASHIRI))
-		usr << "You cannot use this in this map."
+		to_chat(usr, "You cannot use this in this map.")
 		return
 	if (!original_job || (!(istype(original_job, /datum/job/russian)) && !(istype(original_job, /datum/job/japanese/abashiri/guard))))
-		usr << "You cannot use this."
+		to_chat(usr, "You cannot use this.")
 		return
 	if (istype(map, /obj/map_metadata/gulag13))
 		var/obj/map_metadata/gulag13/G13 = map
 		if (!G13.siren)
-			world << "<font size=3 color='red'><center><b>ALARM</b><br>The siren has been activated, all prisoners must stop what they are doing and lay on the floor until the alarm is lifted!</center></font>"
+			to_chat(world, "<font size=3 color='red'><center><b>ALARM</b><br>The siren has been activated, all prisoners must stop what they are doing and lay on the floor until the alarm is lifted!</center></font>")
 			var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 			for (var/mob/M in player_list)
 				M.client << warning_sound
@@ -275,7 +275,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(map, /obj/map_metadata/abashiri))
 		var/obj/map_metadata/abashiri/ABA = map
 		if (!ABA.siren)
-			world << "<font size=3 color='red'><center><b>ALARM</b><br>The siren has been activated, all prisoners must stop what they are doing and lay on the floor until the alarm is lifted!</center></font>"
+			to_chat(world, "<font size=3 color='red'><center><b>ALARM</b><br>The siren has been activated, all prisoners must stop what they are doing and lay on the floor until the alarm is lifted!</center></font>")
 			var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 			for (var/mob/M in player_list)
 				M.client << warning_sound
@@ -288,15 +288,15 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	set name = "Stop the Siren"
 	set category = "Officer"
 	if (!map || (map.ID != MAP_GULAG13 && map.ID != MAP_ABASHIRI))
-		usr << "You cannot use this in this map."
+		to_chat(usr, "You cannot use this in this map.")
 		return
 	if (!original_job || (!(istype(original_job, /datum/job/russian)) && !(istype(original_job, /datum/job/japanese/abashiri/guard))))
-		usr << "You cannot use this."
+		to_chat(usr, "You cannot use this.")
 		return
 	if (istype(map, /obj/map_metadata/gulag13))
 		var/obj/map_metadata/gulag13/G13 = map
 		if (G13.siren)
-			world << "<font size=3 color='green'><center><b>ALARM LIFTED</b><br>The siren has been stopped, prisoners can get back up.</center></font>"
+			to_chat(world, "<font size=3 color='green'><center><b>ALARM LIFTED</b><br>The siren has been stopped, prisoners can get back up.</center></font>")
 			var/warning_sound = sound(null, channel = 777)
 			for (var/mob/M in player_list)
 				M.client << warning_sound
@@ -304,7 +304,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(map, /obj/map_metadata/abashiri))
 		var/obj/map_metadata/abashiri/ABA = map
 		if (ABA.siren)
-			world << "<font size=3 color='green'><center><b>ALARM LIFTED</b><br>The siren has been stopped, prisoners can get back up.</center></font>"
+			to_chat(world, "<font size=3 color='green'><center><b>ALARM LIFTED</b><br>The siren has been stopped, prisoners can get back up.</center></font>")
 			var/warning_sound = sound(null, channel = 777)
 			for (var/mob/M in player_list)
 				M.client << warning_sound
@@ -315,7 +315,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 		for (var/mob/M in player_list)
 			M.client << warning_sound
-		world << "<font size=3 color='red'><center><b>ALARM</b><br>The alarm is still on!</center></font>"
+		to_chat(world, "<font size=3 color='red'><center><b>ALARM</b><br>The alarm is still on!</center></font>")
 
 		spawn(285)
 			if (siren)
@@ -342,7 +342,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 			for(var/i in G.points)
 				if (i[1]=="Guards")
 					i[2]+=S.amount*S.value
-					H << "You export \the [S]."
+					to_chat(H, "You export \the [S].")
 					qdel(S)
 					new/obj/item/stack/money/rubles(src.loc, round(S.amount*S.value))
 					return
@@ -352,7 +352,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 			for(var/i in AB.points)
 				if (i[1]=="Guards")
 					i[2]+=S.amount*S.value
-					H << "You export \the [S]."
+					to_chat(H, "You export \the [S].")
 					qdel(S)
 					new/obj/item/stack/money/yen(src.loc, round(S.amount*S.value))
 					return

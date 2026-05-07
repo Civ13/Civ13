@@ -44,15 +44,15 @@
 	if (gun_safety)
 		if (safetyon)
 			safetyon = FALSE
-			user << "<span class='notice'>You toggle \the [src]'s safety <b>OFF</b>.</span>"
+			to_chat(user, "<span class='notice'>You toggle \the [src]'s safety <b>OFF</b>.</span>")
 			return
 		else
 			safetyon = TRUE
-			user << "<span class='notice'>You toggle \the [src]'s safety <b>ON</b>.</span>"
+			to_chat(user, "<span class='notice'>You toggle \the [src]'s safety <b>ON</b>.</span>")
 			return
 
 /obj/item/weapon/gun/projectile/special_check(var/mob/user)
 	if (gun_safety && safetyon)
-		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		to_chat(user, "<span class='warning'>You can't fire \the [src] while the safety is on!</span>")
 		return FALSE
 	return ..()

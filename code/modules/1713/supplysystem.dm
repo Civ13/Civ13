@@ -81,7 +81,7 @@
 	not_disassemblable = TRUE
 /obj/structure/supplybook/attack_hand(var/mob/living/human/user as mob)
 	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" && user.original_job_title != "British Merchant"  && user.original_job_title != "Merchant" && user.original_job_title != "Trader" && user.original_job_title != "Mercador" && user.original_job_title != "Comerciante" && user.original_job_title != "Marchand" && user.original_job_title != "Mayor" && user.original_job_title != "Kaufmann" && user.original_job_title != "Freiherr" && user.original_job_title != "Pirate Quartermaster")
-		user << "Only the merchants have access to the international shipping companies. Negotiate with one."
+		to_chat(user, "Only the merchants have access to the international shipping companies. Negotiate with one.")
 		return
 
 	var/list/final_list = list()
@@ -101,7 +101,7 @@
 	else
 		import_tax_rate = input(user, "Set the import tax rate: (0%-100%)") as num
 		import_tax_rate = Clamp(import_tax_rate, 0, 100)
-		user << "Setting import tax to [import_tax_rate]%"
+		to_chat(user, "Setting import tax to [import_tax_rate]%")
 		change_import_tax(import_tax_rate)
 		New()
 		for (var/list/i in items_for_sale)
@@ -124,10 +124,10 @@
 	var/final_cost = (final_list[4]/age_modifier)+((final_list[4]/age_modifier)*(import_tax_rate/100))
 
 	if (isemptylist(final_list))
-		user << "Uh oh - something went wrong! Ping an admin!"
+		to_chat(user, "Uh oh - something went wrong! Ping an admin!")
 		return
 	if(final_list[4] > money)
-		user << "You don't have enough money to buy that crate!"
+		to_chat(user, "You don't have enough money to buy that crate!")
 // giving change back
 		if (money <= 50 && money > 0)
 			if (map.ordinal_age >= 4)
@@ -190,11 +190,11 @@
 		else if (money == 0)
 			return
 		else if (money > 1600)
-			user << "Too much money to pay you back! Buy something else to reduce the money deposited."
+			to_chat(user, "Too much money to pay you back! Buy something else to reduce the money deposited.")
 			return
 	else if (final_cost <= money)
 		money -= final_cost
-		user << "You have successfully purchased the crate. It will arrive soon."
+		to_chat(user, "You have successfully purchased the crate. It will arrive soon.")
 		spawn(600) // 1 minute
 			var/list/turfs = list()
 			if (faction_treasury != "craftable")
@@ -212,7 +212,7 @@
 				spawnpoint = pick(turfs)
 			var/tpath = final_list[3]
 			new tpath(get_turf(spawnpoint))
-			user << "A shipment has arrived."
+			to_chat(user, "A shipment has arrived.")
 
 // giving change back, and taxes
 		if (money <= 50 && money > 0)
@@ -320,7 +320,7 @@
 		else if (money == 0)
 			return
 		else if (money > 10000)
-			user << "Too much money to pay you back! Buy something else to reduce the money deposited."
+			to_chat(user, "Too much money to pay you back! Buy something else to reduce the money deposited.")
 			return
 
 /obj/structure/supplybook/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
@@ -329,18 +329,18 @@
 		qdel(W)
 		return
 	else
-		H << "You need to use either money or another form of currency (gold, pearls, valuable items)."
+		to_chat(H, "You need to use either money or another form of currency (gold, pearls, valuable items).")
 		return
 
 /obj/structure/exportbook/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Trader" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand" && H.original_job_title != "Kaufmann")
 		if (H.original_job_title != "Gobernador" && H.original_job_title != "Governador" && H.original_job_title != "Governeur" && H.original_job_title != "Governor" && H.original_job_title != "British Governor" && H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Trader" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand" && H.original_job_title != "Mayor" && H.original_job_title != "Kaufmann" && H.original_job_title != "Freiherr" && H.original_job_title != "Pirate Quartermaster")
-			H << "Only the merchants have access to the international shipping companies. Negotiate with one."
+			to_chat(H, "Only the merchants have access to the international shipping companies. Negotiate with one.")
 			return
 	else
 		New() //Updating the export tax
 		if (W.value == 0)
-			H << "There is no demand for this item."
+			to_chat(H, "There is no demand for this item.")
 			return
 		else
 			if (istype(W, /obj/item/stack/money) && done == FALSE)
@@ -409,7 +409,7 @@
 						done = FALSE
 						return
 					else if (moneyin > 1600 && W && marketval > 0)
-						H << "Too much money! Split it into smaller stacks first."
+						to_chat(H, "Too much money! Split it into smaller stacks first.")
 						marketval = 0
 						done = FALSE
 						return
@@ -533,7 +533,7 @@
 						done = FALSE
 						return
 					else if (moneyin > 1600 && W && marketval > 0)
-						H << "This item is too expensive! You can't find a buyer for it."
+						to_chat(H, "This item is too expensive! You can't find a buyer for it.")
 						marketval = 0
 						done = FALSE
 						return
@@ -545,12 +545,12 @@
 /obj/structure/exportbook/attack_hand(var/mob/living/human/H as mob)
 	if (H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Trader" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand" && H.original_job_title != "Banker" && H.original_job_title != "Kaufmann" && H.original_job_title != "Pirate Quartermaster")
 		if (H.original_job_title != "Gobernador" && H.original_job_title != "Governador" && H.original_job_title != "Governeur" && H.original_job_title != "Governor" && H.original_job_title != "British Governor" && H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Trader" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand" && H.original_job_title != "Mayor"&& H.original_job_title != "Freiherr" && H.original_job_title != "Kaufmann")
-			H << "Only the merchants have access to the international shipping companies. Negotiate with one."
+			to_chat(H, "Only the merchants have access to the international shipping companies. Negotiate with one.")
 			return
 		else
 			var/set_export_tax = input(H, "Set the export tax rate: (0%-100%)") as num
 			set_export_tax = Clamp(set_export_tax, 0, 100)
-			H << "Setting export tax to [set_export_tax]%"
+			to_chat(H, "Setting export tax to [set_export_tax]%")
 			change_export_tax(set_export_tax)
 			New()
 			return

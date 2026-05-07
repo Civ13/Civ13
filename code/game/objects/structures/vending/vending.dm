@@ -128,7 +128,7 @@
 
 		if (do_after(user, 20, src))
 			if (!src) return
-			user << "<span class='notice'>You [anchored? "un" : ""]secured \the [src]!</span>"
+			to_chat(user, "<span class='notice'>You [anchored? "un" : ""]secured \the [src]!</span>")
 			anchored = !anchored
 		return
 
@@ -143,7 +143,7 @@
 		if (istype(src, /obj/structure/vending/craftable))
 			var/obj/structure/vending/craftable/CTB = src
 			if (product_records.len >= CTB.max_products)
-				user << "<span class='notice'>\The [src] is full!</span>"
+				to_chat(user, "<span class='notice'>\The [src] is full!</span>")
 				return FALSE
 			else
 				var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state, M = W)
@@ -259,7 +259,7 @@
 	if (!user.unEquip(W))
 		return
 
-	user << "<span class='notice'>You insert \the [W] in \the [src].</span>"
+	to_chat(user, "<span class='notice'>You insert \the [W] in \the [src].</span>")
 	R.amount++
 	qdel(W)
 

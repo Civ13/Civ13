@@ -2,12 +2,12 @@
 	set category = "Debug"
 	set name = "Change Time of Day"
 	if (!processes.time_of_day || !processes.time_of_day.fires_at_gamestates.Find(ticker.current_state))
-		src << "<span class = 'warning'>You can't change the time of day right now.</span>"
+		to_chat(src, "<span class = 'warning'>You can't change the time of day right now.</span>")
 		return
 	if (!check_rights(R_ADMIN))
-		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		to_chat(src, "<span class = 'danger'>You don't have the permissions.</span>")
 		return
-	src << "<span class = 'warning'>Updating lights, please wait...</span>"
+	to_chat(src, "<span class = 'warning'>Updating lights, please wait...</span>")
 	progress_time_of_day(caller_ref = src, force = TRUE)
 
 /client/proc/toggle_time_of_day()
@@ -15,11 +15,11 @@
 	set name = "Toggle Time of Day"
 	if (config.daynight_on)
 		config.daynight_on = FALSE
-		src << "<span class = 'good'>Time of Day is now <b>disabled.</span>"
+		to_chat(src, "<span class = 'good'>Time of Day is now <b>disabled.</span>")
 		message_admins("[key_name(src)] disabled time of day change.", key_name(src))
 	else
 		config.daynight_on = TRUE
-		src << "<span class = 'good'>Time of Day is now <b>enabled.</span>"
+		to_chat(src, "<span class = 'good'>Time of Day is now <b>enabled.</span>")
 		message_admins("[key_name(src)] enabled time of day change.", key_name(src))
 		
 /client/proc/change_wind_dir()
@@ -27,7 +27,7 @@
 	set name = "Change Wind Direction (USE VAR EDIT!)"
 
 	if (!check_rights(R_ADMIN))
-		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		to_chat(src, "<span class = 'danger'>You don't have the permissions.</span>")
 		return
 	var/oldwind = map.winddirection
 	map.winddirection = pick("North", "South", "East", "West")
@@ -49,14 +49,14 @@
 			map.winddesc = "A [map.winddirection]ern gale."
 
 	if (map.winddirection != oldwind)
-		world << "<big>The wind changes direction. It is now blowing from the <b>[map.winddirection]</b>.</big>"
+		to_chat(world, "<big>The wind changes direction. It is now blowing from the <b>[map.winddirection]</b>.</big>")
 
 /client/proc/change_wind_spd()
 	set category = "Debug"
 	set name = "Change Wind Speed (USE VAR EDIT!)"
 
 	if (!check_rights(R_ADMIN))
-		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		to_chat(src, "<span class = 'danger'>You don't have the permissions.</span>")
 		return
 
 	var/oldspeed = map.windspeedvar
@@ -84,4 +84,4 @@
 			map.winddesc = "A [map.winddirection]ern gale."
 
 	if (map.windspeedvar != oldspeed)
-		world << "<big>The wind changes strength. It is now <b>[map.windspeed]</b>.</big>"
+		to_chat(world, "<big>The wind changes strength. It is now <b>[map.windspeed]</b>.</big>")

@@ -41,7 +41,7 @@
 			src.health += 200
 			qdel(W)
 		else
-			user << "<span class='notice'>That doesn't fit on [src]</span>"
+			to_chat(user, "<span class='notice'>That doesn't fit on [src]</span>")
 	//Flavor text when hitting the dummy with weapons.
 	if (istype(W, /obj/item/weapon/material))
 		user.setClickCooldown(W.cooldownw)
@@ -110,7 +110,7 @@
 					if(ranged)
 						H.adaptStat("bows", 1)
 		visible_message("<span class='notice'>[H] hits \the [src] with \the [proj]!</span>","<span class='notice'>You hit \the [src] with \the [proj]!</span>")
-		H << "<font size=4><b>You hit the target!</b></font>"
+		to_chat(H, "<font size=4><b>You hit the target!</b></font>")
 		//If the user shoots at a target, check if it's an arrow or a bolt and have a chance of dropping the arrow/bolt.
 		if(istype(src, /obj/structure/practice_dummy/target))
 			if (istype(proj, /obj/item/projectile/arrow/arrow))

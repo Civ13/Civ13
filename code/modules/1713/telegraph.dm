@@ -85,18 +85,18 @@
 	if (istype(W, /obj/item/weapon/paper))
 		if (isemptylist(inpaper))
 			inpaper += W
-			user << "You put the paper in the teleprinter."
+			to_chat(user, "You put the paper in the teleprinter.")
 			user.drop_from_inventory(W)
 			W.forceMove(locate(0,0,0))
 			icon_state = "teleprinter1"
 			update_icon()
 		else
-			user << "There already is a paper inside! Remove it first."
+			to_chat(user, "There already is a paper inside! Remove it first.")
 			return
 
 /obj/structure/teleprinter/attack_hand(var/mob/user as mob)
 	for(var/obj/item/weapon/C in inpaper)
-		user << "You remove \the [C]."
+		to_chat(user, "You remove \the [C].")
 		C.loc = get_turf(src)
 		inpaper -= C
 		icon_state = "teleprinter0"
@@ -299,12 +299,12 @@
 	set src in view(1)
 
 	if (on)
-		usr << "You turn the [src] off."
+		to_chat(usr, "You turn the [src] off.")
 		on = FALSE
 		update_icon()
 		return
 	else
-		usr << "You turn the [src] on."
+		to_chat(usr, "You turn the [src] on.")
 		on = TRUE
 		update_icon()
 		owner = usr

@@ -12,7 +12,7 @@
 
 /obj/structure/oil_spring/attackby(obj/item/O as obj, mob/living/user as mob)
 	if (counter <= 0)
-		user << "<span class='warning'>\The [src] is dry!</span>"
+		to_chat(user, "<span class='warning'>\The [src] is dry!</span>")
 		if (counter < 0)
 			counter = 0
 		return

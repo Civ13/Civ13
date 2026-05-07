@@ -67,7 +67,7 @@
 				A.on_mob_jump()
 				A.loc = T
 			else
-				A << "This mob is not located in the game world."
+				to_chat(A, "This mob is not located in the game world.")
 	else
 		WWalert(src, "Admin jumping is disabled", "Admin Jump")
 
@@ -104,7 +104,7 @@
 			keys += M.client
 		var/selection = input("Please, select a player!", "Admin Jumping", null, null) as null|anything in sortKey(keys)
 		if (!selection)
-			src << "No keys found."
+			to_chat(src, "No keys found.")
 			return
 		var/mob/M = selection:mob
 		log_admin("[key_name(usr)] jumped to [key_name(M)]")
@@ -160,7 +160,7 @@ var/turf/default_adminzone_turf = null
 
 	var/area/caribbean/admin/admin_zone = locate() in area_list
 	if (!admin_zone)
-		src << "There is no admin zone in this map!"
+		to_chat(src, "There is no admin zone in this map!")
 		return FALSE
 	for (var/turf/T in admin_zone.contents)
 		if (!T.density && !locate(/obj/structure) in T)

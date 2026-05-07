@@ -482,21 +482,21 @@
 
 					document_details = list(H.h_style, H.f_style, crimereason, H.gender, rand(6,32))
 /obj/item/weapon/civilian_passport/examine(mob/user)
-	user << "<span class='info'>*---------*</span>"
+	to_chat(user, "<span class='info'>*---------*</span>")
 	..(user)
 	if (document_details.len >= 9)
-		user << "<b><span class='info'>Hair:</b> [document_details[1]], [document_details[2]] color</span>"
+		to_chat(user, "<b><span class='info'>Hair:</b> [document_details[1]], [document_details[2]] color</span>")
 		if (document_details[6] == "male")
-			user << "<b><span class='info'>Face:</b> [document_details[3]], [document_details[4]] color</span>"
-		user << "<b><span class='info'>Eyes:</b> [document_details[8]]</span>"
-		user << "<b><span class='info'>Detained for:</b> [document_details[5]]</span>"
-		user << "<b><span class='info'>Sentence:</b> [document_details[7]] years</span>"
-		user << "<b><span class='info'>Assigned Job:</b> [document_details[9]]</span>"
-	user << "<span class='info'>*---------*</span>"
+			to_chat(user, "<b><span class='info'>Face:</b> [document_details[3]], [document_details[4]] color</span>")
+		to_chat(user, "<b><span class='info'>Eyes:</b> [document_details[8]]</span>")
+		to_chat(user, "<b><span class='info'>Detained for:</b> [document_details[5]]</span>")
+		to_chat(user, "<b><span class='info'>Sentence:</b> [document_details[7]] years</span>")
+		to_chat(user, "<b><span class='info'>Assigned Job:</b> [document_details[9]]</span>")
+	to_chat(user, "<span class='info'>*---------*</span>")
 	if (guardnotes.len)
 		for(var/i in guardnotes)
-			user << "NOTE: [i]"
-	user << "<span class='info'>*---------*</span>"
+			to_chat(user, "NOTE: [i]")
+	to_chat(user, "<span class='info'>*---------*</span>")
 
 /obj/item/weapon/civilian_passport/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!ishuman(H))
@@ -535,11 +535,11 @@
 /obj/item/weapon/visa/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/pen) && !owner && duration == 0)
 		if (user.civilization == "none")
-			user << "You are not in a faction!"
+			to_chat(user, "You are not in a faction!")
 			return
 		else
 			if (user.faction_perms[4] == 0)
-				user << "You don't have the recruitment permissions to issue visas!"
+				to_chat(user, "You don't have the recruitment permissions to issue visas!")
 				return
 			else
 				var/mob/living/human/U = null
@@ -571,7 +571,7 @@
 						else
 							cdur = "[duration] minutes"
 						desc = "A visa issued by <b>[user.civilization]</b> to <b>[owner]</b>.<br>Issued on <b>[roundduration2text_days()]</b> and valid for <b>[cdur]</b> starting then.<br>Signed by: <b><i>[user]</i></b>."
-						user << "You issue the visa."
+						to_chat(user, "You issue the visa.")
 						update_icon()
 						do_duration()
 						return

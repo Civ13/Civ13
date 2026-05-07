@@ -54,9 +54,9 @@
 	return FALSE
 
 /obj/map_metadata/alleyway/proc/points_check()
-	world << "<big><b>Current Points:</b></big>"
-	world << "<big>Yamaguchi-Gumi: [scores["Yamaguchi-Gumi"]]</big>"
-	world << "<big>Ichiwa-Kai: [scores["Ichiwa-Kai"]]</big>"
+	to_chat(world, "<big><b>Current Points:</b></big>")
+	to_chat(world, "<big>Yamaguchi-Gumi: [scores["Yamaguchi-Gumi"]]</big>")
+	to_chat(world, "<big>Ichiwa-Kai: [scores["Ichiwa-Kai"]]</big>")
 	spawn(300)
 		points_check()
 
@@ -70,17 +70,17 @@
 		message = "The round has ended!"
 		if (scores["Ichiwa-Kai"] > scores["Yamaguchi-Gumi"])
 			message = "The battle is over! The <b>Ichiwa-Kai</b> were victorious over the <b>Yamaguchi-Gumi</b>!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			win_condition_spam_check = TRUE
 			return FALSE
 		else if (scores["Yamaguchi-Gumi"] > scores["Ichiwa-Kai"])
 			message = "The battle is over! The <b>Yamaguchi-Gumi</b> were victorious over the <b>Ichiwa-Kai</b>!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			win_condition_spam_check = TRUE
 			return FALSE
 		else
 			message = "The battle has ended in a <b>stalemate</b>!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			win_condition_spam_check = TRUE
 			return FALSE
 	last_win_condition = win_condition.hash

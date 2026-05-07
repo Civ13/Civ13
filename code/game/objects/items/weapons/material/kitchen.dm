@@ -43,7 +43,7 @@
 			if (!M.can_eat(loaded))
 				return
 			else if (M.get_fullness() > 580)
-				user << "<span class='danger'>You cannot force any more food to go down your throat.</span>"
+				to_chat(user, "<span class='danger'>You cannot force any more food to go down your throat.</span>")
 				return
 			M.visible_message("<span class='notice'>\The [user] eats some [loaded] from \the [src].</span>")
 		else
@@ -51,14 +51,14 @@
 			if (!(M.can_force_feed(user, loaded) && do_mob(user, M, 5 SECONDS)))
 				return
 			else if (M.get_fullness() > 580)
-				user << "<span class='danger'>You cannot force any more food to go down [M]'s throat.</span>"
+				to_chat(user, "<span class='danger'>You cannot force any more food to go down [M]'s throat.</span>")
 				return
 			M.visible_message("<span class='notice'>\The [user] feeds some [loaded] to \the [M] with \the [src].</span>")
 		playsound(M.loc,"eat", rand(20,45), TRUE)
 		overlays.Cut()
 		return
 	else
-		user << "<span class='warning'>You don't have anything on \the [src].</span>"	//if we have help intent and no food scooped up DON'T STAB OURSELVES WITH THE FORK
+		to_chat(user, "<span class='warning'>You don't have anything on \the [src].</span>")	//if we have help intent and no food scooped up DON'T STAB OURSELVES WITH THE FORK)
 		return
 
 /obj/item/weapon/material/kitchen/utensil/fork
@@ -110,7 +110,7 @@
 		suicide = FALSE
 		return
 	else
-		user << "<span class = 'notice'>Ow...</span>"
+		to_chat(user, "<span class = 'notice'>Ow...</span>")
 		user.apply_effect(110,AGONY,0)
 		user.apply_damage(src.sharpness*2.5, "brute", "groin")
 		user.death()
@@ -138,7 +138,7 @@
 	..()
 	if(atk_mode == SLASH)
 		atk_mode = STAB
-		user << "<span class='notice'>You will now stab.</span>"
+		to_chat(user, "<span class='notice'>You will now stab.</span>")
 		edge = FALSE
 		sharp = TRUE
 		attack_verb = list("stabbed")
@@ -147,7 +147,7 @@
 
 	else if(atk_mode == STAB)
 		atk_mode = SLASH
-		user << "<span class='notice'>You will now slash.</span>"
+		to_chat(user, "<span class='notice'>You will now slash.</span>")
 		attack_verb = list("slashed", "diced")
 		hitsound = "slash_sound"
 		edge = TRUE
@@ -477,7 +477,7 @@
 		var/mob/living/human/H = target
 		if (user.a_intent == I_HELP && H.gender == MALE)
 			if (H.circumcised)
-				user << "<span class = 'notice'>[H] is already circumcised!</span>"
+				to_chat(user, "<span class = 'notice'>[H] is already circumcised!</span>")
 				return
 			else
 				visible_message("<span class = 'notice'>[user] starts to circumcise [H]...</span>")

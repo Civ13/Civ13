@@ -1198,7 +1198,7 @@
 /obj/structure/flag/campaign/attack_hand(var/mob/living/human/user)
 	if (faction_text != user.faction_text)
 		if (original_faction == user.faction_text)
-			user << SPAN_NOTICE("You begin hoisting your own flag...")
+			to_chat(user, SPAN_NOTICE("You begin hoisting your own flag..."))
 			if (do_after(user, 10 SECONDS, src))
 				faction_text = user.faction_text
 				switch(faction_text)
@@ -1209,7 +1209,7 @@
 						var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 						for (var/mob/M in player_list)
 							M.client << warning_sound
-						world << "<font size = 5><b>REDMENIA HAS RECAPTURED THEIR CAPITAL.</b></font>"
+						to_chat(world, "<font size = 5><b>REDMENIA HAS RECAPTURED THEIR CAPITAL.</b></font>")
 					if (BLUEFACTION)
 						icon_state = "blugoslavia"
 						name = "Blugoslavia Flag"
@@ -1217,10 +1217,10 @@
 						var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 						for (var/mob/M in player_list)
 							M.client << warning_sound
-						world << "<font size = 5><b>BLUGOSLAVIA HAS RECAPTURED THEIR CAPITAL.</b></font>"
-				user << "You succesfully hoist your own flag! <br><font size = 5><span class = 'good'>Long live [capitalize(icon_state)]!</span></font>"
+						to_chat(world, "<font size = 5><b>BLUGOSLAVIA HAS RECAPTURED THEIR CAPITAL.</b></font>")
+				to_chat(user, "You succesfully hoist your own flag! <br><font size = 5><span class = 'good'>Long live [capitalize(icon_state)]!</span></font>")
 		else
-			user << SPAN_NOTICE("You begin hoisting your own flag...")
+			to_chat(user, SPAN_NOTICE("You begin hoisting your own flag..."))
 			if (do_after(user, 10 SECONDS, src))
 				faction_text = user.faction_text
 				switch(faction_text)
@@ -1231,7 +1231,7 @@
 						var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 						for (var/mob/M in player_list)
 							M.client << warning_sound
-						world << "<font size = 5><b>REDMENIA HAS CAPTURED THE BLUGOSLAVIAN CAPITAL.</b></font>"
+						to_chat(world, "<font size = 5><b>REDMENIA HAS CAPTURED THE BLUGOSLAVIAN CAPITAL.</b></font>")
 					if (BLUEFACTION)
 						icon_state = "blugoslavia"
 						name = "Blugoslavia Flag"
@@ -1239,10 +1239,10 @@
 						var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 						for (var/mob/M in player_list)
 							M.client << warning_sound
-						world << "<font size = 5><b>BLUGOSLAVIA HAS CAPTURED THE REDMENIAN CAPITAL.</b></font>"
-				user << "You succesfully hoist your own flag! <br><font size = 5><span class = 'good'>Long live [capitalize(icon_state)]!</span></font>"
+						to_chat(world, "<font size = 5><b>BLUGOSLAVIA HAS CAPTURED THE REDMENIAN CAPITAL.</b></font>")
+				to_chat(user, "You succesfully hoist your own flag! <br><font size = 5><span class = 'good'>Long live [capitalize(icon_state)]!</span></font>")
 	else
-		user << SPAN_WARNING("Long live [capitalize(icon_state)]!")
+		to_chat(user, SPAN_WARNING("Long live [capitalize(icon_state)]!"))
 
 /obj/structure/flag/campaign/redmenia
 	icon_state = "redmenia"
@@ -1267,7 +1267,7 @@
 				qdel(W)
 			qdel(src)
 		else
-			H << "You need atleast five cloth to do that!"
+			to_chat(H, "You need atleast five cloth to do that!")
 	else if(istype(W, /obj/item/flagmaker))
 		new /obj/structure/flag/pole/custom(src.loc)
 		qdel(src)
@@ -1286,7 +1286,7 @@
 /obj/structure/flag/pole/custom/attackby(obj/item/W as obj, var/mob/living/human/H)
 	if(istype(W, /obj/item/weapon))
 		if(W.sharp)
-			H << "You tear down the flag!"
+			to_chat(H, "You tear down the flag!")
 			new/obj/structure/flag/pole(src.loc)
 			qdel(src)
 
@@ -1319,7 +1319,7 @@
 		else if(input == "None")
 			symbol = "cust_f_blank"
 		else
-			H << "<span class='notice'>That does not exist!</span>"
+			to_chat(H, "<span class='notice'>That does not exist!</span>")
 	if (!symbolcolor)
 		var/input = WWinput(H, "Symbol Color - Choose a color:", "Symbol Color" , "#000000", "color")
 		if (input == null || input == "")
@@ -1375,7 +1375,7 @@
 					qdel(src)
 					W.amount -= 6
 		else
-			H << "<span class='notice'>That does not exist!</span>"
+			to_chat(H, "<span class='notice'>That does not exist!</span>")
 	else if(istype(W, /obj/item/weapon/paper))
 		var/input
 		var/display = list("Shoji Door - 1", "Shoji Wall - 1", "Shoji Divider - 1", "Shoji Window - 1", "Cancel")
@@ -1408,7 +1408,7 @@
 					qdel(src)
 					qdel(W)
 		else
-			H << "<span class='notice'>That does not exist!</span>"
+			to_chat(H, "<span class='notice'>That does not exist!</span>")
 	else if(istype(W, /obj/item/stack/material/bamboo))
 		var/input = WWinput(H, "What wall would you like to make?", "Building", "Cancel",list ("Bamboo Wall - 3", "Bamboo Doorway - 2", "Bamboo Window - 2", "Cancel"))
 		if (input == "Cancel")
@@ -1437,7 +1437,7 @@
 					qdel(src)
 					W.amount -= 2
 		else
-			H << "<span class='notice'>That does not exist!</span>"
+			to_chat(H, "<span class='notice'>That does not exist!</span>")
 	else if(istype(W, /obj/item/stack/material/woodplank))
 		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE) //rip_pack.ogg
 		if(W.amount >= 10)
@@ -1446,7 +1446,7 @@
 				qdel(src)
 				W.amount -= 10
 		else
-			H << "<span class='notice'>You need 10 planks to build the wall!</span>"
+			to_chat(H, "<span class='notice'>You need 10 planks to build the wall!</span>")
 
 /* Bamboo Wall-Frame*/
 
@@ -1518,7 +1518,7 @@
 					qdel(src)
 					W.amount -= 6
 		else
-			H << "<span class='notice'>That does not exist!</span>"
+			to_chat(H, "<span class='notice'>That does not exist!</span>")
 	else if(istype(W, /obj/item/weapon/paper))
 		var/input
 		var/display = list("Shoji Door - 1", "Shoji Wall - 1", "Shoji Divider - 1", "Shoji Window - 1", "Cancel")
@@ -1551,7 +1551,7 @@
 					qdel(src)
 					qdel(W)
 		else
-			H << "<span class='notice'>That does not exist!</span>"
+			to_chat(H, "<span class='notice'>That does not exist!</span>")
 	else if(istype(W, /obj/item/stack/material/bamboo))
 		var/input = WWinput(H, "What wall would you like to make?", "Building", "Cancel",list ("Bamboo Wall - 3", "Bamboo Doorway - 2", "Bamboo Window - 2", "Cancel"))
 		if (input == "Cancel")
@@ -1580,7 +1580,7 @@
 					qdel(src)
 					W.amount -= 2
 		else
-			H << "<span class='notice'>That does not exist!</span>"
+			to_chat(H, "<span class='notice'>That does not exist!</span>")
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////SHIP////////////////////////////////////////////////////////////////////////////////////////////////////////

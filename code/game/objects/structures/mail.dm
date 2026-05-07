@@ -61,21 +61,21 @@
 
 /obj/structure/closet/crate/wall_mailbox/attackby(var/obj/item/W as obj, mob/user as mob)
 	if (!istype(W, /obj/item/weapon/storage/envelope) && !istype(W, /obj/item/weapon/paper) && !istype(W, /obj/item/weapon/key) && !istype(W, /obj/item/weapon/storage/belt/keychain) && !istype(W, /obj/item/weapon/photo) && !istype(W, /obj/item/weapon/hammer))
-		user << "<span class='notice'>You can't put it in the mailbox!</span>"
+		to_chat(user, "<span class='notice'>You can't put it in the mailbox!</span>")
 		return TRUE
 	if (istype(W, /obj/item/weapon/paper) || istype(W, /obj/item/weapon/photo) || istype(W, /obj/item/weapon/storage/envelope))
 		if(!opened)
 			if (contents_stored >= storagecap)
-				user << "<span class='notice'>The mailbox is full!</span>"
+				to_chat(user, "<span class='notice'>The mailbox is full!</span>")
 				return TRUE
 			else
 				if (istype(W, /obj/item/weapon/storage/envelope))
 					var/obj/item/weapon/storage/envelope/E = W
 					if (E.opened == TRUE || E.knifed == TRUE)
-						user << "<span class='notice'>You change your mind about sending an opened envelope - better use a closed one instead.</span>"
+						to_chat(user, "<span class='notice'>You change your mind about sending an opened envelope - better use a closed one instead.</span>")
 						return TRUE
 				user.remove_from_mob(W)
-				user << "<span class='notice'>You slip the [W.name] into the mailbox slot.</span>"
+				to_chat(user, "<span class='notice'>You slip the [W.name] into the mailbox slot.</span>")
 				W.forceMove(src)
 				contents_stored++
 				return TRUE
@@ -155,17 +155,17 @@
 /obj/item/weapon/storage/envelope/attack_self(mob/user as mob)
 	if(opened && !knifed)
 		if (do_after(user, 15, src))
-			user << "You close the envelope."
+			to_chat(user, "You close the envelope.")
 			opened = FALSE
 			icon_state = "envelope_closed"
 			return TRUE
 	if(!opened && user.a_intent == I_HARM)
-		usr << "<span class='warning'>You start tearing up the envelope...</span>"
+		to_chat(usr, "<span class='warning'>You start tearing up the envelope...</span>")
 		playsound(loc,'sound/items/poster_ripped.ogg',100, TRUE)
 		spawn(10)
 			playsound(loc,'sound/items/poster_ripped.ogg',100, TRUE)
 		if (do_after(user, 25, src))
-			usr << "<span class='warning'>You tear the envelope into pieces!</span>"
+			to_chat(usr, "<span class='warning'>You tear the envelope into pieces!</span>")
 			visible_message("[user] tears the envelope into pieces!")
 			qdel(src)
 			return TRUE
@@ -186,7 +186,7 @@
 		if (opened)
 			open(user)
 		else
-			usr << "<span class='warning'>The envelope is closed! Use a knife to open it.</span>"
+			to_chat(usr, "<span class='warning'>The envelope is closed! Use a knife to open it.</span>")
 			return TRUE
 	else
 		..()
@@ -200,14 +200,14 @@
 	if(!opened)
 		if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 			if (do_after(usr, 15, src))
-				usr << "You knife the envelope."
+				to_chat(usr, "You knife the envelope.")
 				opened = TRUE
 				knifed = TRUE
 				icon_state = "envelope_knifed"
 				return TRUE
 		if(istype(W, /obj/item/weapon/pen))
 			if(addressee && sender)
-				usr << "<span class='warning'>The addressee and sender fields are already filled!</span>"
+				to_chat(usr, "<span class='warning'>The addressee and sender fields are already filled!</span>")
 				return TRUE
 			else
 				var/write_to = sanitize(input(user, "TO: Who is the addressee?", "Addressee", null)  as text, 128)
@@ -216,13 +216,13 @@
 				sender = write_from
 				if (!addressee || !sender)
 					desc = desc
-					usr << "<span class='warning'>You need to fill both fields at the same time!</span>"
+					to_chat(usr, "<span class='warning'>You need to fill both fields at the same time!</span>")
 				else
 					desc += "<br>= = = = =<br><u><b>TO:</b></u> [addressee]<br>- - - - -<br><u><b>FROM:</b></u> [sender]<br>= = = = ="
 				return TRUE
 		if(istype(W, /obj/item/weapon/stamp/mail))
 			if(sealed)
-				usr << "<span class='warning'>There is a wax seal already!</span>"
+				to_chat(usr, "<span class='warning'>There is a wax seal already!</span>")
 				return TRUE
 			var/wax = WWinput(user, "What color should the wax seal be?","Wax seal","Normal",list("cancel", "red", "black", "blue", "green", "pink", "white"))
 			if (wax == "cancel")
@@ -238,7 +238,7 @@
 			else
 				desc += "<br>There is a name on the seal - <b>[usr.real_name]</b>."
 			return TRUE
-		usr << "<span class='warning'>The envelope is closed! Use a knife to open it.</span>"
+		to_chat(usr, "<span class='warning'>The envelope is closed! Use a knife to open it.</span>")
 		return TRUE
 	return..()
  

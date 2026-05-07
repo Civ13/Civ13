@@ -143,7 +143,7 @@
 	title = ""
 	leader = FALSE
 	faction_perms = list(0,0,0,0)
-	src << "You left your faction. You are now a Nomad."
+	to_chat(src, "You left your faction. You are now a Nomad.")
 	remove_commander()
 	return TRUE
 

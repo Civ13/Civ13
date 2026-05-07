@@ -39,7 +39,7 @@
 
 /obj/item/organ/brain/examine(mob/user) // -- TLE
 	..(user)
-	user << "This one seems particularly lifeless. Perhaps it will regain some of its luster later.."
+	to_chat(user, "This one seems particularly lifeless. Perhaps it will regain some of its luster later..")
 
 /obj/item/organ/brain/removed(var/mob/living/user)
 

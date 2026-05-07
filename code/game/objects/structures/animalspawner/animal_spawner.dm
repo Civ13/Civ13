@@ -22,7 +22,7 @@
 /obj/structure/animalspawner/attackby(obj/W as obj, mob/user as mob)
 	if(istype(W,/obj/item/weapon/material/pickaxe) && empty)
 		if (do_after(user,65,src))
-			user << "<span class='notice'>You break apart \the [src].</span>"
+			to_chat(user, "<span class='notice'>You break apart \the [src].</span>")
 			new /obj/item/stack/material/stone(loc)
 			new /obj/item/stack/material/stone(loc)
 			new /obj/item/stack/material/stone(loc)

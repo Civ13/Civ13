@@ -434,7 +434,7 @@ var/global/nextsave = 0
 					log_discord(dmsg)
 					//to_chat(world, "<span class = 'ping'><small>["\["]DISCORD["\]"]</small></span> <span class='deadsay'><b>[tempmsg[1]]</b>:</span> [tempmsg[2]]")
 			fdel(F)
-			F << ""
+			to_chat(F, "")
 
 		var/G = file("SQL/discord2admin.txt")
 		if (fexists(G))
@@ -445,10 +445,10 @@ var/global/nextsave = 0
 
 					for (var/client/C in admins)
 						if (R_MENTOR & C.holder.rights || R_MOD & C.holder.rights)
-							C << "<span class='admin_channel'><IMG src='\ref[text_tag_icons]' class='text_tag' iconstate='a-discord' alt='ASAY-Discord'> <span class='name'>[tempmsg[1]]</span>(Discord): <span class='message'>[tempmsg[2]]</span></span>"
+							to_chat(C, "<span class='admin_channel'><IMG src='\ref[text_tag_icons]' class='text_tag' iconstate='a-discord' alt='ASAY-Discord'> <span class='name'>[tempmsg[1]]</span>(Discord): <span class='message'>[tempmsg[2]]</span></span>")
 					log_discord_asay(msg)
 			fdel(G)
-			G << ""
+			to_chat(G, "")
 
 		var/H = file("SQL/discord2dm.txt")
 		if (fexists(H))
@@ -463,7 +463,7 @@ var/global/nextsave = 0
 						if (C.ckey == temp_ckey)
 							cmd_admin_pm_fromdiscord(C, tempmsg[3], tempmsg[1])
 			fdel(H)
-			H << ""
+			to_chat(H, "")
 
 		var/I = file("SQL/discord2ban.txt")
 		if (fexists(I))
@@ -478,7 +478,7 @@ var/global/nextsave = 0
 					if (quickBan_discord(temp_ckey, tempmsg[3], tempmsg[4], tempmsg[1]) == "successful.")
 						discord_admin_ban(tempmsg[1],temp_ckey,tempmsg[3],tempmsg[4])
 			fdel(I)
-			I << ""
+			to_chat(I, "")
 		var/J = file("SQL/discord2unban.txt")
 		if (fexists(J))
 			var/list/messages_read = splittext(file2text(J), "\n")
@@ -490,7 +490,7 @@ var/global/nextsave = 0
 					temp_ckey = replacetext(temp_ckey,"_", "")
 					discord_admin_unban(tempmsg[1],temp_ckey)
 			fdel(J)
-			J << ""
+			to_chat(J, "")
 		sleep (100)
 
 /proc/start_serverswap_loop()

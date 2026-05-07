@@ -16,7 +16,7 @@
 
 /obj/item/weapon/storage/belt/keychain/examine(mob/user)
 	if (locate(src) in get_step(user, user.dir) || user.contents.Find(src))
-		user << "<span class = 'notice'>[desc]. Right now it's holding [print_keys()].</span>"
+		to_chat(user, "<span class = 'notice'>[desc]. Right now it's holding [print_keys()].</span>")
 
 /obj/item/weapon/storage/belt/keychain/proc/print_keys()
 	if (keys.len == FALSE)
@@ -66,4 +66,4 @@
 			update_icon_state()
 			visible_message("<span class = 'notice'>[user] puts a key in their keychain.</span>", "<span class = 'notice'>You put a key in your keychain.</span>")
 		else
-			user << "<span class = 'danger'>There's not enough space in the keychain!</span>"
+			to_chat(user, "<span class = 'danger'>There's not enough space in the keychain!</span>")

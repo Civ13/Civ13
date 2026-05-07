@@ -112,7 +112,7 @@
 					usr.drop_item()
 					W.loc = src
 					haspen = W
-					usr << "<span class='notice'>You slot the pen into \the [src].</span>"
+					to_chat(usr, "<span class='notice'>You slot the pen into \the [src].</span>")
 
 		else if (href_list["write"])
 			var/obj/item/weapon/P = locate(href_list["write"])
@@ -172,7 +172,7 @@
 			var/obj/item/P = locate(href_list["top"])
 			if (P && (P.loc == src) && istype(P, /obj/item/weapon/paper) )
 				toppaper = P
-				usr << "<span class='notice'>You move [P.name] to the top.</span>"
+				to_chat(usr, "<span class='notice'>You move [P.name] to the top.</span>")
 
 		//Update everything
 		attack_self(usr)

@@ -33,9 +33,9 @@
 		else
 			moneyin += M.amount*M.value
 		if (map.ID == MAP_KANDAHAR || istype(src, /obj/structure/vending/sales/pepelsibirsk))
-			user << "You give \the [W] to the [src]."
+			to_chat(user, "You give \the [W] to the [src].")
 		else
-			user << "You put \the [W] in the [src]."
+			to_chat(user, "You put \the [W] in the [src].")
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/wrench))
@@ -48,7 +48,7 @@
 
 			if (do_after(user, 20, src))
 				if (!src) return
-				user << "<span class='notice'>You [anchored? "un" : ""]secured \the [src]!</span>"
+				to_chat(user, "<span class='notice'>You [anchored? "un" : ""]secured \the [src]!</span>")
 				anchored = !anchored
 			return
 
@@ -70,7 +70,7 @@
 					if (R.amount <= 0)
 						free=R
 				if (!free)
-					user << "<span class='notice'>This [src] has too many different products already!</span>"
+					to_chat(user, "<span class='notice'>This [src] has too many different products already!</span>")
 					return FALSE
 				else
 					product_records -= free
@@ -142,7 +142,7 @@
 
 
 	else
-		usr << "You do not have permission to manage this vendor."
+		to_chat(usr, "You do not have permission to manage this vendor.")
 		return FALSE
 
 /obj/structure/vending/sales/vend(datum/data/vending_product/R, mob/user, var/p_amount=1)
@@ -240,7 +240,7 @@
 		if ((href_list["vend"]) && (vend_ready) && (!currently_vending))
 
 			if (find_company_member(usr,owner))
-				usr << "<span class='warning'>You can't buy from your own company. Remove the product instead.</span>"
+				to_chat(usr, "<span class='warning'>You can't buy from your own company. Remove the product instead.</span>")
 				status_error = FALSE
 				currently_vending = null
 			else
@@ -650,7 +650,7 @@
 	if (!user.unEquip(W))
 		return
 
-	user << "<span class='notice'>You insert \the [W] in \the [src].</span>"
+	to_chat(user, "<span class='notice'>You insert \the [W] in \the [src].</span>")
 	if (istype(W, /obj/item/stack))
 		var/obj/item/stack/S = W
 		R.amount += S.amount

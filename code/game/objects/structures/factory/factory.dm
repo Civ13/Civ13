@@ -51,91 +51,91 @@
 		if (istype(I, /obj/item/stack/))
 			if (istype(I, /obj/item/stack/material/wood))	//FUEL NORMAL (without * multiplication or + addition, only input)
 				fuel += I.amount
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/material/bamboo))
 				fuel += I.amount
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/weapon/branch))	// FUEL +0.5 (adds a flat numerical addition ontop of the input reagent's baseline fuel, recommended for non stack objects)
 				fuel += I.amount+0.5
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/material/leaf))
 				fuel += I.amount+0.5
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/dung))	// FUEL +1
 				fuel += I.amount+1
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/charcoal))	//FUEL *2.5 (multiplies it by 2 and a half)
 				fuel += I.amount*2.5
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/coal))	//FUEL *3
 				fuel += I.amount*3
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 
 			else if (istype(I, /obj/item/stack/ore/iron) || istype(I, /obj/item/stack/material/iron))
 				iron += I.amount
-				H << "You place \the [I] in \the [src], smelting it."
+				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/copper) || istype(I, /obj/item/stack/material/copper))
 				copper += I.amount
-				H << "You place \the [I] in \the [src], smelting it."
+				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/tin) || istype(I, /obj/item/stack/material/tin))
 				tin += I.amount
-				H << "You place \the [I] in \the [src], smelting it."
+				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/material/woodplank))
 				fuel += I.amount
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else
-				H << "<span class = 'warning'>You can't smelt this.</span>"
+				to_chat(H, "<span class = 'warning'>You can't smelt this.</span>")
 				return
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
 			if (MT.get_material_name() == "wood")
 				fuel += 1
-				H << "You break \the [MT] and put it into the [src], refueling it."
+				to_chat(H, "You break \the [MT] and put it into the [src], refueling it.")
 				qdel(I)
 			else if (MT.get_material_name() == "bronze")
-				H << "You smelt \the [MT] into bronze ingots."
+				to_chat(H, "You smelt \the [MT] into bronze ingots.")
 				new/obj/item/stack/material/bronze(src.loc)
 				qdel(I)
 			else if (MT.get_material_name() == "copper")
-				H << "You smelt \the [MT] into copper ingots."
+				to_chat(H, "You smelt \the [MT] into copper ingots.")
 				new/obj/item/stack/material/copper(src.loc)
 				qdel(I)
 			else if (MT.get_material_name() == "tin")
-				H << "You smelt \the [MT] into tin ingots."
+				to_chat(H, "You smelt \the [MT] into tin ingots.")
 				new/obj/item/stack/material/tin(src.loc)
 				qdel(I)
 			else if (MT.get_material_name() == "iron")
-				H << "You smelt \the [MT] into iron ingots."
+				to_chat(H, "You smelt \the [MT] into iron ingots.")
 				new/obj/item/stack/material/iron(src.loc)
 				qdel(I)
 			else if (MT.get_material_name() == "steel")
-				H << "You smelt \the [MT] into steel sheets."
+				to_chat(H, "You smelt \the [MT] into steel sheets.")
 				new/obj/item/stack/material/steel(src.loc)
 				qdel(I)
 		else if (istype(I, /obj/item) && I.basematerials.len)
-			H << "You put \the [I] into \the [src] to recycle it."
+			to_chat(H, "You put \the [I] into \the [src] to recycle it.")
 			if (I.basematerials[1] == "tin")
 				tin += I.basematerials[2]
 			qdel(I)
@@ -157,7 +157,7 @@
 			visible_message("<span class = 'notice'>The [name] finishes smelting.</span>")
 			process()
 	else
-		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
+		to_chat(H, "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>")
 
 
 /obj/structure/machinery/factory/process()
@@ -256,101 +256,101 @@
 		if (istype(I, /obj/item/stack/))
 			if (istype(I, /obj/item/stack/material/wood))
 				fuel += I.amount
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/material/bamboo))
 				fuel += I.amount
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/weapon/branch))
 				fuel += I.amount+0.5
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/material/leaf))
 				fuel += I.amount+0.5
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/dung))
 				fuel += I.amount+1
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/charcoal))
 				fuel += I.amount*2.5
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/coal))
 				fuel += I.amount*3
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return				  //INPUT 1
 
 			else if (istype(I, /obj/item/stack/money/goldcoin))
 				gold += I.amount/5
-				H << "You place \the [I] in \the [src], smelting it."
+				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/material/gold))
 				gold += I.amount
-				H << "You place \the [I] in \the [src], smelting it."
+				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 				qdel(I)
 				return
 
 			else if (istype(I, /obj/item/stack/money/coppercoin))
 				copper += I.amount/5
-				H << "You place \the [I] in \the [src], smelting it."
+				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/material/copper))
 				copper += I.amount
-				H << "You place \the [I] in \the [src], smelting it."
+				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 				qdel(I)
 				return
 
 			else if (istype(I, /obj/item/stack/money/silvercoin))
 				silver += I.amount/10
-				H << "You place \the [I] in \the [src], smelting it."
+				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/material/silver))
 				silver += I.amount
-				H << "You place \the [I] in \the [src], smelting it."
+				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/material/woodplank))
 				fuel += I.amount
-				H << "You place \the [I] in \the [src], refueling it."
+				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 
 			else
-				H << "<span class = 'warning'>You can't smelt this.</span>"
+				to_chat(H, "<span class = 'warning'>You can't smelt this.</span>")
 				return
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
 			if (MT.get_material_name() == "wood")
 				fuel += 1
-				H << "You break \the [MT] and put it into the [src], refueling it."
+				to_chat(H, "You break \the [MT] and put it into the [src], refueling it.")
 				qdel(I)
 			else if (MT.get_material_name() == "copper")
-				H << "You smelt \the [MT] into copper ingots."
+				to_chat(H, "You smelt \the [MT] into copper ingots.")
 				new/obj/item/stack/material/copper(src.loc)
 				qdel(I)
 			else if (MT.get_material_name() == "silver")
-				H << "You smelt \the [MT] into silver ingots."
+				to_chat(H, "You smelt \the [MT] into silver ingots.")
 				new/obj/item/stack/material/silver(src.loc)
 				qdel(I)
 			else if (MT.get_material_name() == "gold")
-				H << "You smelt \the [MT] into gold ingots."
+				to_chat(H, "You smelt \the [MT] into gold ingots.")
 				new/obj/item/stack/material/gold(src.loc)
 				qdel(I)
 		else if (istype(I, /obj/item) && I.basematerials.len)
-			H << "You put \the [I] into \the [src] to recycle it."
+			to_chat(H, "You put \the [I] into \the [src] to recycle it.")
 			if (I.basematerials[1] == "tin")
 				tin += I.basematerials[2]
 			qdel(I)
@@ -372,7 +372,7 @@
 			visible_message("<span class = 'notice'>The [name] finishes smelting.</span>")
 			process()
 	else
-		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
+		to_chat(H, "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>")
 
 
 /obj/structure/machinery/factory/coinsmelter/process()

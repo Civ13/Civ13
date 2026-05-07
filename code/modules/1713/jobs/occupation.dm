@@ -48,20 +48,20 @@
 							crimereason = "Polish civilian. Original city inhabitant."
 					document_details = list(H.h_style, H.f_style, crimereason, H.gender, rand(6,32),P.original_eyes, P.randrole)
 /obj/item/weapon/civilian_passport/examine(mob/user)
-	user << "<span class='info'>*---------*</span>"
+	to_chat(user, "<span class='info'>*---------*</span>")
 	..(user)
 	if (document_details.len >= 7)
-		user << "<b><span class='info'>Hair:</b> [document_details[1]]</span>"
+		to_chat(user, "<b><span class='info'>Hair:</b> [document_details[1]]</span>")
 		if (document_details[4] == "male")
-			user << "<b><span class='info'>Face:</b> [document_details[2]]</span>"
-		user << "<b><span class='info'>Eyes:</b> [document_details[6]]</span>"
-		user << "<b><span class='info'>Extra Info:</b> [document_details[3]]</span>"
-		user << "<b><span class='info'>Job:</b> [document_details[7]]</span>"
-	user << "<span class='info'>*---------*</span>"
+			to_chat(user, "<b><span class='info'>Face:</b> [document_details[2]]</span>")
+		to_chat(user, "<b><span class='info'>Eyes:</b> [document_details[6]]</span>")
+		to_chat(user, "<b><span class='info'>Extra Info:</b> [document_details[3]]</span>")
+		to_chat(user, "<b><span class='info'>Job:</b> [document_details[7]]</span>")
+	to_chat(user, "<span class='info'>*---------*</span>")
 	if (guardnotes.len)
 		for(var/i in guardnotes)
-			user << "NOTE: [i]"
-		user << "<span class='info'>*---------*</span>"
+			to_chat(user, "NOTE: [i]")
+		to_chat(user, "<span class='info'>*---------*</span>")
 
 /obj/item/weapon/civilian_passport/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!ishuman(H))
@@ -480,7 +480,7 @@
 	uniform.attackby(SS_hauptsturmfuhrer, H)
 	uniform.attackby(ss_sadler, H)
 	give_random_name(H)
-	world << "<big><b>[H.real_name] is the Hauptsturmfuhrer of the German Forces!</b></big>"
+	to_chat(world, "<big><b>[H.real_name] is the Hauptsturmfuhrer of the German Forces!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the SS troops and organize them to find and apprehend the UPA partisans.")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)

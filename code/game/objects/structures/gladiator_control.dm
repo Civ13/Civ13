@@ -46,7 +46,7 @@
 								statlist = "[GLAD1.stats["strength"][1]],[GLAD1.stats["crafting"][1]],[GLAD1.stats["rifle"][1]],[GLAD1.stats["dexterity"][1]],[GLAD1.stats["swords"][1]],[GLAD1.stats["pistol"][1]],[GLAD1.stats["bows"][1]],[GLAD1.stats["medical"][1]],[GLAD1.stats["philosophy"][1]],[GLAD1.stats["machinegun"][1]],[GLAD1.stats["stamina"][1]]"
 						GD.gladiator_stats += list(list(splitdata[2],splitdata[1],statlist,0,1,1))
 					timer = world.time + 600
-					world << "<big>[splitdata[1]] ([splitdata[2]]) was victorious!</big>"
+					to_chat(world, "<big>[splitdata[1]] ([splitdata[2]]) was victorious!</big>")
 					GD.save_gladiators()
 			else
 				show_content(user)
@@ -191,7 +191,7 @@
 			if (world.time > cooldown_timer)
 				pick_combat()
 				combat_running = TRUE
-				world << "<font size=3 color='yellow'>The next combat at the [arena] is going to be a <b>[current_style] match</b>!</font>"
+				to_chat(world, "<font size=3 color='yellow'>The next combat at the [arena] is going to be a <b>[current_style] match</b>!</font>")
 		else if (combat_running == 2)
 			check_combat()
 	spawn(10)
@@ -236,7 +236,7 @@
 				G.gracedown3 = FALSE
 			if ("Arena IV")
 				G.gracedown4 = FALSE
-		world << "<font size=3 color='yellow'>The combat has started at <b>[arena]</b>!</font>"
+		to_chat(world, "<font size=3 color='yellow'>The combat has started at <b>[arena]</b>!</font>")
 		if (!teams)
 			var/list/currlist = list()
 			for(var/mob/living/human/H in A)
@@ -250,7 +250,7 @@
 				flist += "[currlist[i]], "
 			flist += "."
 			flist = replacetext(flist,", .",".")
-			world << "<font size=2 color='yellow'>Fighters: [flist]</font>"
+			to_chat(world, "<font size=2 color='yellow'>Fighters: [flist]</font>")
 		else
 			for(var/mob/living/human/H in A)
 				if (H.original_job_title == "Gladiator" && H.stat == CONSCIOUS)
@@ -268,7 +268,7 @@
 			for(var/i=1,i<=team2.len,i++)
 				flist += "[team2[i]], "
 			flist = replacetext(flist,", .",".")
-			world << "<font size=2 color='yellow'>[flist]</font>"
+			to_chat(world, "<font size=2 color='yellow'>[flist]</font>")
 
 		for(var/obj/structure/gate/GATES in A)
 			playsound(GATES, 'sound/effects/castle_gate.ogg', 100)
@@ -282,7 +282,7 @@
 				DOORS.Close()
 		return
 	else if (count > count_max && prob(10))
-		world << "<font size=2 color='yellow'>Too many people at [arena]. There should be a maximum of <b>[count_max]</b>!</font>"
+		to_chat(world, "<font size=2 color='yellow'>Too many people at [arena]. There should be a maximum of <b>[count_max]</b>!</font>")
 		return
 	return
 
@@ -318,7 +318,7 @@
 			GD.gladiator_stats += list(list(WINNER.client.ckey,WINNER.name,statlist,0,1,1))
 
 		GD.save_gladiators()
-		world << "<font size=3 color='yellow'>The combat in [arena] has ended! [WINNER] ([WINNER.client.ckey]) was victorious!</font>"
+		to_chat(world, "<font size=3 color='yellow'>The combat in [arena] has ended! [WINNER] ([WINNER.client.ckey]) was victorious!</font>")
 		switch(arena)
 			if ("Arena I")
 				GD.gracedown1 = TRUE
@@ -363,7 +363,7 @@
 				flist += "[H] ([H.client.ckey]), "
 			flist += "."
 			flist = replacetext(flist,", .",".")
-			world << "<font size=3 color='yellow'>The combat in [arena] has ended! Winners: [flist]</font>"
+			to_chat(world, "<font size=3 color='yellow'>The combat in [arena] has ended! Winners: [flist]</font>")
 
 		for(var/obj/structure/gate/GATES in A)
 			playsound(GATES, 'sound/effects/castle_gate.ogg', 100)
@@ -397,7 +397,7 @@
 					return
 				else
 					automode = !automode
-					user << "<font size=2 color='yellow'>Auto-Matchmaking mode turned <b>[automode ? "ON" : "OFF"]</b>.</font>"
+					to_chat(user, "<font size=2 color='yellow'>Auto-Matchmaking mode turned <b>[automode ? "ON" : "OFF"]</b>.</font>")
 					return
 */
 /obj/structure/gladiator_control/ranged
@@ -431,7 +431,7 @@
 			if ("Arena IV")
 				G.gracedown4 = FALSE
 
-		world << "<font size=3 color='yellow'>The [current_style] combat has started at <b>[arena]</b>!</font>"
+		to_chat(world, "<font size=3 color='yellow'>The [current_style] combat has started at <b>[arena]</b>!</font>")
 		var/list/currlist = list()
 		for(var/mob/living/human/H in A)
 			if (H.original_job_title == "Gladiator" && H.stat == CONSCIOUS)
@@ -444,10 +444,10 @@
 			flist += "[currlist[i]], "
 		flist += "."
 		flist = replacetext(flist,", .",".")
-		world << "<font size=2 color='yellow'>Fighters: [flist]</font>"
+		to_chat(world, "<font size=2 color='yellow'>Fighters: [flist]</font>")
 		return
 	else if (count > count_max && prob(10))
-		world << "<font size=2 color='yellow'>Too many people at [arena]. There should be a maximum of <b>[count_max]</b>!</font>"
+		to_chat(world, "<font size=2 color='yellow'>Too many people at [arena]. There should be a maximum of <b>[count_max]</b>!</font>")
 		return
 	return
 
@@ -478,7 +478,7 @@
 
 			GD.save_gladiators()
 			combat_running = 0
-			world << "<font size=3 color='yellow'>The [current_style] match in [arena] has ended! [WINNER] ([WINNER.client.ckey]) was victorious!</font>"
+			to_chat(world, "<font size=3 color='yellow'>The [current_style] match in [arena] has ended! [WINNER] ([WINNER.client.ckey]) was victorious!</font>")
 			var/obj/map_metadata/gladiators/G = map
 
 			switch(arena)
@@ -534,7 +534,7 @@
 			if ("Arena IV")
 				G.gracedown4 = FALSE
 
-		world << "<font size=3 color='yellow'>The [current_style] combat has started at <b>[arena]</b>!</font>"
+		to_chat(world, "<font size=3 color='yellow'>The [current_style] combat has started at <b>[arena]</b>!</font>")
 		var/list/currlist = list()
 		for(var/mob/living/human/H in A)
 			if (H.original_job_title == "Gladiator" && H.stat == CONSCIOUS)
@@ -547,10 +547,10 @@
 			flist += "[currlist[i]], "
 		flist += "."
 		flist = replacetext(flist,", .",".")
-		world << "<font size=2 color='yellow'>Fighters: [flist]</font>"
+		to_chat(world, "<font size=2 color='yellow'>Fighters: [flist]</font>")
 		return
 	else if (count > count_max && prob(10))
-		world << "<font size=2 color='yellow'>Too many people at [arena]. There should be a maximum of <b>[count_max]</b>!</font>"
+		to_chat(world, "<font size=2 color='yellow'>Too many people at [arena]. There should be a maximum of <b>[count_max]</b>!</font>")
 		return
 	return
 
@@ -602,7 +602,7 @@
 				GD.gladiator_stats += list(list(WINNER.client.ckey,WINNER.name,statlist,0,1,1))
 
 			GD.save_gladiators()
-			world << "<font size=3 color='yellow'>The [current_style] match in [arena] has ended! [WINNER] ([WINNER.client.ckey]) was victorious!</font>"
+			to_chat(world, "<font size=3 color='yellow'>The [current_style] match in [arena] has ended! [WINNER] ([WINNER.client.ckey]) was victorious!</font>")
 			var/obj/map_metadata/gladiators/G = map
 			switch(arena)
 				if ("Arena I")
@@ -666,7 +666,7 @@
 				for (var/obj/effect/decal/cleanable/C in B)
 					qdel(C)
 	if (user)
-		user << "[arena] cleared."
+		to_chat(user, "[arena] cleared.")
 	return
 /obj/structure/functions/clean_arena1/proc/clean_proc_nomob()
 	var/area/A = get_area(src.loc)
@@ -712,7 +712,7 @@
 	if (user.original_job_title != "Gladiator")
 		return
 	if ((user.getOxyLoss() + user.getToxLoss() + user.getBurnLoss() + user.getBruteLoss() > 35))
-		user << "You are too damaged to save your character. Get surgery first."
+		to_chat(user, "You are too damaged to save your character. Get surgery first.")
 		return
 	var/choice = WWinput(user, "Do you want to save this character named [user.name]?", "Character Saving", "Yes", list("Yes","No"))
 	if (choice == "No")
@@ -731,14 +731,14 @@
 				done = TRUE
 				GD.save_gladiators()
 				qdel(user)
-				user << "Saved sucessfully."
+				to_chat(user, "Saved sucessfully.")
 				return
 		if (done == FALSE && user.client)
 			var/statlist = "[user.stats["strength"][1]],[user.stats["crafting"][1]],[user.stats["rifle"][1]],[user.stats["dexterity"][1]],[user.stats["swords"][1]],[user.stats["pistol"][1]],[user.stats["bows"][1]],[user.stats["medical"][1]],[user.stats["philosophy"][1]],[user.stats["machinegun"][1]],[user.stats["stamina"][1]]"
 			GD.gladiator_stats += list(list(user.client.ckey, user.name, statlist, 0,0,0))
 			GD.save_gladiators()
 			qdel(user)
-			user << "Saved sucessfully."
+			to_chat(user, "Saved sucessfully.")
 			return
 
 /////////////////////////////////////////////////////////////
@@ -785,7 +785,7 @@
 							stats["philosophy"][2] = text2num(statsplit[9])
 							stats["machinegun"][1] = text2num(statsplit[10])
 							stats["machinegun"][2] = text2num(statsplit[10])
-							src << "<font size=2><b>Successfully loaded <b>[name]</b>.</font>"
+							to_chat(src, "<font size=2><b>Successfully loaded <b>[name]</b>.</font>")
 							return
 			if (done == FALSE)
 				var/input_msg = WWinput(src, "Welcome, [client.ckey]. You have spawned as a gladiator named [name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))

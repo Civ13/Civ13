@@ -80,14 +80,14 @@ var/no_loop_lm = FALSE
 			return FALSE
 		ticker.finished = TRUE
 		var/message = "The <b>National Army</b> have sucessfuly stopped the Red Army's retreat into the mountains."
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_lm == TRUE)
 		ticker.finished = TRUE
 		var/message = "The <b>Red Army</b> managed to reach their destination in time! The retreat has been succesful!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_nk = TRUE
@@ -130,7 +130,7 @@ var/no_loop_lm = FALSE
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>National Army</b> has pushed back the Red Army!</font>"
+			to_chat(world, "<font size = 3>The <b>National Army</b> has pushed back the Red Army!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1

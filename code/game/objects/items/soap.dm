@@ -81,10 +81,10 @@
 						S.update_icon()
 					if((world.time - src.soap_cooldown >= S.mood_boost_wait) || !soap_cooldown)
 						src.mood += 10 //Same mood boost as eating a delicious food
-						src << "You really enjoy bathing with the [W.name]. You feel much better!"
+						to_chat(src, "You really enjoy bathing with the [W.name]. You feel much better!")
 						src.soap_cooldown = world.time
 					else
-						src << "You dont really enjoy bathing with the [W.name], you did that not long ago."
+						to_chat(src, "You dont really enjoy bathing with the [W.name], you did that not long ago.")
 				else
 					S.washing = FALSE //Moved before finishing the do_after
 			else

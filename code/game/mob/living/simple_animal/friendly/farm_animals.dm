@@ -355,7 +355,7 @@
 											"[src] looks at you pleadingly",
 											"[src] looks at you with a resigned expression.",
 											"[src] seems resigned to its fate.")
-				M << pick(responses)
+				to_chat(M, pick(responses))
 	else
 		..()
 
@@ -1104,7 +1104,7 @@
 	set name = "Remove Pack"
 	set src in range(2, usr)
 	if (!content_size)
-		usr << "The camel is not carrying anything."
+		to_chat(usr, "The camel is not carrying anything.")
 		return
 	else
 		var/list/choicelist = list("Cancel")

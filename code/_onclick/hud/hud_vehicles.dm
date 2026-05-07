@@ -31,13 +31,13 @@
 			if (this_chair.axis && istype(this_chair.axis, /obj/structure/vehicleparts/axis))
 				var/obj/structure/vehicleparts/axis/this_axis = this_chair.axis
 				if (!this_axis.reverse)
-					parentmob << "You switch into reverse."
+					to_chat(parentmob, "You switch into reverse.")
 					playsound(parentmob.loc, 'sound/effects/lever.ogg',65, TRUE)
 					this_axis.reverse = TRUE
 					icon_state = "reverse"
 					update_icon()
 				else
-					parentmob << "You switch into forward."
+					to_chat(parentmob, "You switch into forward.")
 					playsound(parentmob.loc, 'sound/effects/lever.ogg',65, TRUE)
 					this_axis.reverse = FALSE
 					icon_state = "forward"

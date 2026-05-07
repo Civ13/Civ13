@@ -66,5 +66,5 @@
 		M.loc = H.loc
 		qdel(HANDLE)
 		qdel(src)
-		H << "You finish assembling the [result_name]."
+		to_chat(H, "You finish assembling the [result_name].")
 		return

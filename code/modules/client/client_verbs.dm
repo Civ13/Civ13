@@ -5,7 +5,7 @@
 		GLOB.nanomanager.close_uis(mob)
 	cache.Cut()
 	sending.Cut()
-	src << "<span class = 'good'>Cache successfully cleared!</span>"
+	to_chat(src, "<span class = 'good'>Cache successfully cleared!</span>")
 
 /client/verb/open_embed_wiki()
 	set category = "OOC"
@@ -211,7 +211,7 @@
 				num_mentors_online++
 /* todo: discord bot
 	if (config.admin_irc)
-		src << "<span class='info'>Adminhelps are also sent to IRC. If no admins are available in game try anyway and an admin on IRC may see it and respond.</span>"*/
+		to_chat(src, "<span class='info'>Adminhelps are also sent to IRC. If no admins are available in game try anyway and an admin on IRC may see it and respond.</span>"*/
 
 	var/msg = "<b>Current High Staff ([num_highstaff_online]):</b>\n" + highstaff_message
 
@@ -225,7 +225,7 @@
 
 //	msg += "\n<b> Current Developers ([num_devs_online]):</b>\n" + devmsg
 
-	src << msg
+	to_chat(src, msg)
 
 // OOC
 
@@ -234,20 +234,20 @@
 	set category = "OOC"
 
 	if (say_disabled)	//This is here to try to identify lag problems
-		usr << "<span class='warning'>Speech is currently admindisabled.</span>"
+		to_chat(usr, "<span class='warning'>Speech is currently admindisabled.</span>")
 		return
 
 	if (!mob)	return
 	if (IsGuestKey(key))
-		src << "Guests may not use OOC."
+		to_chat(src, "Guests may not use OOC.")
 		return
 
 	if (!is_preference_enabled(/datum/client_preference/show_ooc))
-		src << "<span class='warning'>You have OOC muted.</span>"
+		to_chat(src, "<span class='warning'>You have OOC muted.</span>")
 		return
 
 	if (quickBan_isbanned("OOC"))
-		src << "<span class = 'danger'>You're banned from OOC.</span>"
+		to_chat(src, "<span class = 'danger'>You're banned from OOC.</span>")
 		return
 
 	var/msg_prefix = ""
@@ -259,18 +259,18 @@
 
 	if (!holder)
 		if (!config.ooc_allowed)
-			src << "<span class='danger'>OOC is globally muted.</span>"
+			to_chat(src, "<span class='danger'>OOC is globally muted.</span>")
 			return
 		if (!config.dooc_allowed && (mob.stat == DEAD))
-			usr << "<span class='danger'>OOC for dead mobs has been turned off.</span>"
+			to_chat(usr, "<span class='danger'>OOC for dead mobs has been turned off.</span>")
 			return
 		if (prefs.muted & MUTE_OOC)
-			src << "<span class='danger'>You cannot use OOC (muted).</span>"
+			to_chat(src, "<span class='danger'>You cannot use OOC (muted).</span>")
 			return
 		if (handle_spam_prevention(msg,MUTE_OOC))
 			return
 		if (findtext(msg, "byond://"))
-			src << "<b>Advertising other servers is not allowed.</b>"
+			to_chat(src, "<b>Advertising other servers is not allowed.</b>")
 			log_admin("[key_name(src)] has attempted to advertise in OOC: [msg]")
 			message_admins("[key_name_admin(src)] has attempted to advertise in OOC: [msg]", key_name_admin(src))
 			return
@@ -354,14 +354,14 @@
 	set category = "OOC"
 
 	if (say_disabled)	//This is here to try to identify lag problems
-		usr << "<span class='danger'>Speech is currently admindisabled.</span>"
+		to_chat(usr, "<span class='danger'>Speech is currently admindisabled.</span>")
 		return
 
 	if (!mob)
 		return
 
 	if (IsGuestKey(key))
-		src << "Guests may not use OOC."
+		to_chat(src, "Guests may not use OOC.")
 		return
 
 	msg = sanitize(msg)
@@ -369,27 +369,27 @@
 		return
 
 	if (!is_preference_enabled(/datum/client_preference/show_looc))
-		src << "<span class='danger'>You have LOOC muted.</span>"
+		to_chat(src, "<span class='danger'>You have LOOC muted.</span>")
 		return
 
 	if (quickBan_isbanned("OOC"))
-		src << "<span class = 'danger'>You're banned from OOC.</span>"
+		to_chat(src, "<span class = 'danger'>You're banned from OOC.</span>")
 		return
 
 	if (!holder)
 		if (!config.looc_allowed)
-			src << "<span class='danger'>LOOC is globally muted.</span>"
+			to_chat(src, "<span class='danger'>LOOC is globally muted.</span>")
 			return
 		if (!config.dooc_allowed && (mob.stat == DEAD))
-			usr << "<span class='danger'>OOC for dead mobs has been turned off.</span>"
+			to_chat(usr, "<span class='danger'>OOC for dead mobs has been turned off.</span>")
 			return
 		if (prefs.muted & MUTE_OOC)
-			src << "<span class='danger'>You cannot use OOC (muted).</span>"
+			to_chat(src, "<span class='danger'>You cannot use OOC (muted).</span>")
 			return
 		if (handle_spam_prevention(msg, MUTE_OOC))
 			return
 		if (findtext(msg, "byond://"))
-			src << "<b>Advertising other servers is not allowed.</b>"
+			to_chat(src, "<b>Advertising other servers is not allowed.</b>")
 			log_admin("[key_name(src)] has attempted to advertise in OOC: [msg]")
 			message_admins("[key_name_admin(src)] has attempted to advertise in OOC: [msg]", key_name_admin(src))
 			return

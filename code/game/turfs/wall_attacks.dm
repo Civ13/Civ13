@@ -56,7 +56,7 @@
 		F.try_build(src)
 		return*/
 	if (istype(W, /obj/item/weapon/poster/religious))
-		user << "You start placing the [W] on the [src]..."
+		to_chat(user, "You start placing the [W] on the [src]...")
 		if (do_after(user, 70, src))
 			visible_message("[user] places the [W] on the [src].")
 			var/obj/structure/poster/religious/RP = new/obj/structure/poster/religious(get_turf(src))
@@ -69,7 +69,7 @@
 			qdel(W)
 			return
 	if (istype(W, /obj/item/weapon/poster/faction))
-		user << "You start placing the [W] on the [src]..."
+		to_chat(user, "You start placing the [W] on the [src]...")
 		if (do_after(user, 70, src))
 			visible_message("[user] places the [W] on the [src].")
 			var/obj/structure/poster/faction/RP = new/obj/structure/poster/faction(get_turf(src))

@@ -18,8 +18,6 @@ body {
     scrollbar-face-color: #a68b7d;
     scrollbar-shadow-color: #271a0c;
     scrollbar-highlight-color: #e1e1d7;
-    scrollbar-3dlight-color: #a68b7d;
-    scrollbar-darkshadow-color: #000000;
     scrollbar-track-color: #392611;
     scrollbar-arrow-color: #271a0c;
 }
@@ -67,12 +65,82 @@ body {
 .danger { color: #d9534f; font-weight: bold; }
 .admin { color: #9b59b6; font-weight: bold; }
 .ooc { color: #3498db; font-weight: bold; }
+.prefix					{font-weight: bold;}
+.log_message			{color: #A9B6E7;	font-weight: bold;}
+.small_message			{color: #E1E1FF;	font-weight: bold; font-size: 0.66em;}
 
-a {
-    color: #a68b7d;
-    text-decoration: underline;
-}
+a, a:link, a:visited, :active, a:hover
+						{color: #CD4C6C;}
 
-a:hover {
-    color: #e1e1d7;
-}
+/* OOC */
+.ooc					{font-weight: bold;}
+.ooc img.text_tag		{width: 32px; height: 10px;}
+
+.ooc .everyone			{color: #1E8CBE;}
+.ooc .looc				{color: #75B5B5;}
+.ooc .elevated			{color: #2e78d9;}
+.ooc .mentor			{color: #2e78d9;}
+.ooc .moderator			{color: #2ed9ab;}
+.ooc .developer			{color: #a649bf;}
+.ooc .admin				{color: #39ac41;}
+.ooc .highstaff			{color: #b82e00;}
+
+/* Admin: Private Messages */
+.pm  .howto				{color: #ff0000;	font-weight: bold;		font-size: 200%;}
+.pm  .in				{color: #ff0000;}
+.pm  .out				{color: #ff0000;}
+.pm  .other				{color: #1E8CBE;}
+
+/* Admin: Channels */
+.mod_channel			{color: #735638;	font-weight: bold;}
+.mod_channel .admin		{color: #b82e00;	font-weight: bold;}
+.admin_channel			{color: #9611D4;	font-weight: bold;}
+
+/* Radio: Misc */
+.deadsay				{color: #8657C5;}
+.radio					{color: #4CA64C;}
+
+/* Radio Channels */
+.blueradio				{color: #6A80A9;}
+.SSradio				{color: #466194;}
+.redradio				{color: #B53232;}
+.brownradio				{color: #7E6A46;}
+
+/* Miscellaneous */
+.name					{font-weight: bold;}
+.alert					{color: #ff0000;}
+h1.alert, h2.alert		{color: #ff0000;}
+.ghostalert				{color: #5c00e6;	font-style: italic; font-weight: bold;}
+
+.emote					{font-style: italic;}
+
+/* Game Messages */
+
+.attack					{color: #ff0000;}
+.moderate				{color: #CC0000;}
+.disarm					{color: #990000;}
+.passive				{color: #660000;}
+
+.red					{color: #ff3737}
+.green					{color: #289120}
+.green_bold				{color: #289120; font-weight: bold;}
+.danger					{color: #ff3737; font-weight: bold;}
+.userdanger				{color: #ff3737; font-weight: bold; font-size: 2.0em;}
+.userdanger_yellow		{color: #ffff00; font-weight: bold; font-size: 2.5em;}
+.hugedanger				{color: #ff3737; font-weight: bold; font-size: 3.0em;}
+.warning				{color: #ff3737; font-style: italic;}
+.rose					{color: #ff5050;}
+.notice					{color: #5a6d8d;}
+.ping					{color: #E1E1FF; font-weight: bold;}
+
+.reflex_shoot			{color: #000099; font-style: italic;}
+
+/* Languages */
+
+.rough					{font-family: "Trebuchet MS", cursive, sans-serif;}
+.say_quote				{font-family: Georgia, Verdana, sans-serif;}
+
+.interface				{color: #704C70;}
+
+.good				   {color: #839E69; font-weight: bold;}
+.bad					{color: #ff3737; font-weight: bold;}

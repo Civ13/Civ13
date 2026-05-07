@@ -70,7 +70,7 @@
 		..()
 		return
 	else
-		user << "<span class='notice'>You cannot [actiontext] this with a [src.name]!</span>"
+		to_chat(user, "<span class='notice'>You cannot [actiontext] this with a [src.name]!</span>")
 		return
 
 /obj/structure/repair/grindstone
@@ -127,9 +127,9 @@
 			if ("No")
 				return
 			if ("Yes")
-				user << "You start scratching the serial number of \the [src]..."
+				to_chat(user, "You start scratching the serial number of \the [src]...")
 				if (do_after(user,100,src))
-					user << "You successfully scratch the serial number, making the gun untraceable."
+					to_chat(user, "You successfully scratch the serial number, making the gun untraceable.")
 					serial = ""
 					return
 	else if (istype(M, /obj/item/weapon/gun_cleaning_kit))

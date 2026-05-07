@@ -132,7 +132,7 @@ var/list/vocal_emotes = list(
 
 				if (client)
 					if (client.prefs.muted & MUTE_IC)
-						src << "<span class = 'red'>You cannot send IC messages (muted).</span>"
+						to_chat(src, "<span class = 'red'>You cannot send IC messages (muted).</span>")
 						return
 					if (client.handle_spam_prevention(message,MUTE_IC))
 						return
@@ -796,17 +796,17 @@ var/list/vocal_emotes = list(
 				handle_shit()
 
 			if ("help")
-				src << {"blink, blink_r, blush, bow-(none)/mob, burp, choke, chuckle, clap, collapse, cough,
+				to_chat(src, {"blink, blink_r, blush, bow-(none)/mob, burp, choke, chuckle, clap, collapse, cough,)
 	cry, drool, eyebrow, frown, gasp, giggle, groan, grumble, handshake, hug-(none)/mob,
 	grin, laugh, look-(none)/mob, moan, mumble, nod, point-atom, raise, salute, shake, shiver, shrug,
 	sigh, signal-#1-10, smile, sneeze, sniff, snore, stare-(none)/mob, scream, surrender, tremble, twitch,
-	wink, yawn, charge, piss, poop"}
+	wink, yawn, charge, piss, poop"})
 
 			else
-				src << "<span class = 'notice'>Unusable emote '[act]'. Say *help for a list.</span>"
+				to_chat(src, "<span class = 'notice'>Unusable emote '[act]'. Say *help for a list.</span>")
 
 		if (muzzled && m_type == 2)
-			src << "<span class = 'warning'>You are unable to make noises while something is in your mouth.</span>"
+			to_chat(src, "<span class = 'warning'>You are unable to make noises while something is in your mouth.</span>")
 			return
 
 		if (message)

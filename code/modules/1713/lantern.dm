@@ -49,7 +49,7 @@
 
 /obj/item/flashlight/lantern/attack_self(mob/user)
 	if (!isturf(user.loc))
-		user << "You cannot turn the light on while in this [user.loc]." //To prevent some lighting anomalities.
+		to_chat(user, "You cannot turn the light on while in this [user.loc].") //To prevent some lighting anomalities.)
 		return FALSE
 	if (fuel > 0)
 		on = !on
@@ -66,19 +66,19 @@
 			var/regamt = W.reagents.get_reagent_amount("petroleum")
 			W.reagents.remove_reagent("petroleum", regamt)
 			fuel += (regamt*120)
-			user << "You refuel the lantern with petroleum."
+			to_chat(user, "You refuel the lantern with petroleum.")
 			return
 		else if (W.reagents.has_reagent("olive_oil", 1))
 			var/regamt = W.reagents.get_reagent_amount("olive_oil")
 			W.reagents.remove_reagent("olive_oil", regamt)
 			fuel += (regamt*120)
-			user << "You refuel the lantern with olive oil."
+			to_chat(user, "You refuel the lantern with olive oil.")
 			return
 		else if (W.reagents.has_reagent("fat_oil", 1))
 			var/regamt = W.reagents.get_reagent_amount("fat_oil")
 			W.reagents.remove_reagent("fat_oil", regamt)
 			fuel += (regamt*120)
-			user << "You refuel the lantern with fat oil."
+			to_chat(user, "You refuel the lantern with fat oil.")
 			return
 /obj/item/flashlight/lantern/attack_hand(mob/user as mob)
 	if (loc != user && anchored)
@@ -283,7 +283,7 @@
 			light_color = "#ad2005"
 			on_state = "militarylight_on_red"
 			lens = 1
-			user << "<span class='notice'>You put on a <b><font color =#960000>red</font color></b> lens on your flashlight.</span>"
+			to_chat(user, "<span class='notice'>You put on a <b><font color =#960000>red</font color></b> lens on your flashlight.</span>")
 			update_icon()
 			return
 		if (2)
@@ -293,7 +293,7 @@
 			on_state ="militarylight_on_green"
 			lens = 2
 			update_icon()
-			user << "<span class='notice'>You put on a <b><font color=#006400>green</font color></b> lens on your flashlight.</span>"
+			to_chat(user, "<span class='notice'>You put on a <b><font color=#006400>green</font color></b> lens on your flashlight.</span>")
 			return
 		if (3)
 			light_range = 5
@@ -301,7 +301,7 @@
 			light_color = "#fcffd6"
 			on_state ="militarylight_on"
 			lens = 3
-			user << "<span class='notice'>You <b>remove</b> the lens from your flashlight.</span>"
+			to_chat(user, "<span class='notice'>You <b>remove</b> the lens from your flashlight.</span>")
 			update_icon()
 			return
 
@@ -325,7 +325,7 @@
 			light_color = "#ad2005"
 			on_state = "militarylightalt_on_red"
 			lens = 1
-			user << "<span class='notice'>You put on a <b><font color =#960000>red</font color></b> lens on your flashlight.</span>"
+			to_chat(user, "<span class='notice'>You put on a <b><font color =#960000>red</font color></b> lens on your flashlight.</span>")
 			update_icon()
 			return
 		if (2)
@@ -335,7 +335,7 @@
 			on_state ="militarylightalt_on_green"
 			lens = 2
 			update_icon()
-			user << "<span class='notice'>You put on a <b><font color=#006400>green</font color></b> lens on your flashlight.</span>"
+			to_chat(user, "<span class='notice'>You put on a <b><font color=#006400>green</font color></b> lens on your flashlight.</span>")
 			return
 		if (3)
 			light_range = 5
@@ -343,7 +343,7 @@
 			light_color = "#fcffd6"
 			on_state ="militarylightalt_on"
 			lens = 3
-			user << "<span class='notice'>You <b>remove</b> the lens from your flashlight.</span>"
+			to_chat(user, "<span class='notice'>You <b>remove</b> the lens from your flashlight.</span>")
 			update_icon()
 			return
 
@@ -371,17 +371,17 @@
 			light_range = 3
 			brightness_on = 3
 			intensity = 1
-			user << "<span class='notice'>You <b>reduce</b> the intensity of your flashlight.</span>"
+			to_chat(user, "<span class='notice'>You <b>reduce</b> the intensity of your flashlight.</span>")
 			return
 		if (2)
 			light_range = 2
 			brightness_on = 2
 			intensity = 2
-			user << "<span class='notice'>You <b>reduce further</b> the intensity of your flashlight.</span>"
+			to_chat(user, "<span class='notice'>You <b>reduce further</b> the intensity of your flashlight.</span>")
 			return
 		if (3)
 			light_range = 5
 			brightness_on = 5
 			intensity = 3
-			user << "<span class='notice'>You switch back the intensity to <b>normal</b> on your flashlight.</span>"
+			to_chat(user, "<span class='notice'>You switch back the intensity to <b>normal</b> on your flashlight.</span>")
 			return

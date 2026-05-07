@@ -418,7 +418,7 @@
 	if(istype(W, /obj/item/weapon/chisel))
 		var design = "smooth"
 		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
-			user << "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>"
+			to_chat(user, "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>")
 			return
 		else
 			var/display = list("Smooth", "Carved Brick", "Cobbled", "Tiled", "Cancel")
@@ -426,16 +426,16 @@
 			if (input == "Cancel")
 				return
 			else if  (input == "Smooth")
-				user << "<span class='notice'>You will now carve the smooth design!</span>"
+				to_chat(user, "<span class='notice'>You will now carve the smooth design!</span>")
 				design = "smooth"
 			else if  (input == "Carved Brick")
-				user << "<span class='notice'>You will now carve the brick design!</span>"
+				to_chat(user, "<span class='notice'>You will now carve the brick design!</span>")
 				design = "carvedbrick"
 			else if  (input == "Cobbled")
-				user << "<span class='notice'>You will now carve the cobbled design!</span>"
+				to_chat(user, "<span class='notice'>You will now carve the cobbled design!</span>")
 				design = "cobbled"
 			else if  (input == "Tiled")
-				user << "<span class='notice'>You will now carve the tiled design!</span>"
+				to_chat(user, "<span class='notice'>You will now carve the tiled design!</span>")
 				design = "tiled"
 			visible_message("<span class='danger'>[user] starts to chisel a design!</span>", "<span class='danger'>You start chiseling a design.</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',60,1)
@@ -473,7 +473,7 @@
 				U.drop_from_inventory(I)
 				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
 				U.put_in_hands(SHK)
-				U << "\The [I] turns into a shank."
+				to_chat(U, "\The [I] turns into a shank.")
 				qdel(I)
 	..()
 
@@ -506,7 +506,7 @@
 				U.drop_from_inventory(I)
 				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
 				U.put_in_hands(SHK)
-				U << "\The [I] turns into a shank."
+				to_chat(U, "\The [I] turns into a shank.")
 				qdel(I)
 	..()
 
@@ -539,7 +539,7 @@
 				U.drop_from_inventory(I)
 				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
 				U.put_in_hands(SHK)
-				U << "\The [I] turns into a shank."
+				to_chat(U, "\The [I] turns into a shank.")
 				qdel(I)
 	..()
 
@@ -552,7 +552,7 @@
 	if(istype(W, /obj/item/weapon/chisel))
 		var design = "smooth"
 		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
-			user << "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>"
+			to_chat(user, "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>")
 			return
 		else
 			var/display = list("Smooth", "Cobbled", "Tiled", "Cancel")
@@ -560,13 +560,13 @@
 			if (input == "Cancel")
 				return
 			else if  (input == "Smooth")
-				user << "<span class='notice'>You will now carve the smooth design!</span>"
+				to_chat(user, "<span class='notice'>You will now carve the smooth design!</span>")
 				design = "smooth"
 			else if  (input == "Cobbled")
-				user << "<span class='notice'>You will now carve the cobbled design!</span>"
+				to_chat(user, "<span class='notice'>You will now carve the cobbled design!</span>")
 				design = "cobbled"
 			else if  (input == "Tiled")
-				user << "<span class='notice'>You will now carve the tiled design!</span>"
+				to_chat(user, "<span class='notice'>You will now carve the tiled design!</span>")
 				design = "tiled"
 			visible_message("<span class='danger'>[user] starts to chisel a design!</span>", "<span class='danger'>You start chiseling a design.</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',60,1)

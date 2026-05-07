@@ -2,7 +2,7 @@
 	set category = null
 	set name = "Drop Everything"
 	if (!holder)
-		src << "Only administrators may use this command."
+		to_chat(src, "Only administrators may use this command.")
 		return
 
 	var/confirm = WWinput(src, "Make [M] drop everything?", null, "Yes", list("Yes", "No"))
@@ -22,7 +22,7 @@
 
 	if (!ismob(M))	return
 	if (!holder)
-		src << "Only administrators may use this command."
+		to_chat(src, "Only administrators may use this command.")
 		return
 
 	var/msg = sanitize(input("Message:", text("Subtle PM to [M.key]")) as text)
@@ -32,7 +32,7 @@
 	if (usr)
 		if (usr.client)
 			if (usr.client.holder)
-				M << "\bold You hear a voice in your head... \italic [msg]"
+				to_chat(M, "\bold You hear a voice in your head... \italic [msg]")
 
 	log_admin("SubtlePM: [key_name(usr)] -> [key_name(M)] : [msg]")
 	message_admins("<span class = 'notice'>\bold SubtleMessage: [key_name_admin(usr)] -> [key_name_admin(M)] : [msg]</span>", key_name_admin(usr))
@@ -42,7 +42,7 @@
 	set category = "Admin"
 	set name = "Check new Players"
 	if (!holder)
-		src << "Only staff members may use this command."
+		to_chat(src, "Only staff members may use this command.")
 
 	var/age = WWinput(src, "Age check", "Show accounts yonger then ___ days", "7", list("7", "30" , "All"))
 
@@ -63,12 +63,12 @@
 			msg += "[key_name(C, TRUE, TRUE, highlight_special_characters)]: account is [C.player_age] days old.<br>"
 
 	if (missing_ages)
-		src << "Some accounts did not have proper ages set in their clients.  This function requires database to be present."
+		to_chat(src, "Some accounts did not have proper ages set in their clients.  This function requires database to be present.")
 
 	if (msg != "")
 		src << browse(msg, "window=Player_age_check")
 	else
-		src << "No matches for that age range found."
+		to_chat(src, "No matches for that age range found.")
 
 
 /client/proc/cmd_admin_world_narrate() // Allows administrators to fluff events a little easier -- TLE
@@ -76,14 +76,14 @@
 	set name = "Global Narrate"
 
 	if (!holder)
-		src << "Only administrators may use this command."
+		to_chat(src, "Only administrators may use this command.")
 		return
 
 	var/msg = sanitize(input("Message:", text("Enter the text you wish to appear to everyone:")) as text)
 
 	if (!msg)
 		return
-	world << "[msg]"
+	to_chat(world, "[msg]")
 	log_admin("GlobalNarrate: [key_name(usr)] : [msg]")
 	message_admins("<span class = 'notice'>\bold GlobalNarrate: [key_name_admin(usr)] : [msg]</span><br>", key_name_admin(usr))
 
@@ -93,7 +93,7 @@
 	set name = "Direct Narrate"
 
 	if (!holder)
-		src << "Only administrators may use this command."
+		to_chat(src, "Only administrators may use this command.")
 		return
 
 	if (!M)
@@ -107,7 +107,7 @@
 	if ( !msg )
 		return
 
-	M << msg
+	to_chat(M, msg)
 	log_admin("DirectNarrate: [key_name(usr)] to ([M.name]/[M.key]): [msg]")
 	message_admins("<span class = 'notice'>\bold DirectNarrate: [key_name(usr)] to ([M.name]/[M.key]): [msg]</span><BR>", key_name(usr))
 
@@ -116,10 +116,10 @@
 	set category = "Special"
 	set name = "Godmode"
 	if (!holder)
-		src << "Only administrators may use this command."
+		to_chat(src, "Only administrators may use this command.")
 		return
 	M.status_flags ^= GODMODE
-	usr << "<span class = 'notice'>Toggled [(M.status_flags & GODMODE) ? "ON" : "OFF"]</span>"
+	to_chat(usr, "<span class = 'notice'>Toggled [(M.status_flags & GODMODE) ? "ON" : "OFF"]</span>")
 
 	log_admin("[key_name(usr)] has toggled [key_name(M)]'s nodamage to [(M.status_flags & GODMODE) ? "On" : "Off"]")
 	message_admins("[key_name_admin(usr)] has toggled [key_name_admin(M)]'s nodamage to [(M.status_flags & GODMODE) ? "On" : "Off"]", key_name_admin(usr))
@@ -132,12 +132,12 @@ proc/cmd_admin_mute(mob/M as mob, mute_type, automute = FALSE)
 		if (!usr || !usr.client)
 			return
 		if (!usr.client.holder)
-			usr << "<font color='red'>Error: cmd_admin_mute: You don't have permission to do this.</font>"
+			to_chat(usr, "<font color='red'>Error: cmd_admin_mute: You don't have permission to do this.</font>")
 			return
 		if (!M.client)
-			usr << "<font color='red'>Error: cmd_admin_mute: This mob doesn't have a client tied to it.</font>"
+			to_chat(usr, "<font color='red'>Error: cmd_admin_mute: This mob doesn't have a client tied to it.</font>")
 		if (M.client.holder)
-			usr << "<font color='red'>Error: cmd_admin_mute: You cannot mute an admin/mod.</font>"
+			to_chat(usr, "<font color='red'>Error: cmd_admin_mute: You cannot mute an admin/mod.</font>")
 	if (!M.client)		return
 	if (M.client.holder)	return
 
@@ -158,7 +158,7 @@ proc/cmd_admin_mute(mob/M as mob, mute_type, automute = FALSE)
 		M.client.prefs.muted |= mute_type
 		log_admin("SPAM AUTOMUTE: [muteunmute] [key_name(M)] from [mute_string]")
 		message_admins("SPAM AUTOMUTE: [muteunmute] [key_name_admin(M)] from [mute_string].", key_name_admin(M))
-		M << "<span class='alert'>You have been [muteunmute] from [mute_string] by the SPAM AUTOMUTE system. Contact an admin.</span>"
+		to_chat(M, "<span class='alert'>You have been [muteunmute] from [mute_string] by the SPAM AUTOMUTE system. Contact an admin.</span>")
 
 		return
 
@@ -171,7 +171,7 @@ proc/cmd_admin_mute(mob/M as mob, mute_type, automute = FALSE)
 
 	log_admin("[key_name(usr)] has [muteunmute] [key_name(M)] from [mute_string]")
 	message_admins("[key_name_admin(usr)] has [muteunmute] [key_name_admin(M)] from [mute_string].", key_name_admin(usr))
-	M << "<span class = 'alert'>You have been [muteunmute] from [mute_string].</span>"
+	to_chat(M, "<span class = 'alert'>You have been [muteunmute] from [mute_string].</span>")
 
 /*
 Allow admins to set players to be able to respawn/bypass 30 min wait, without the admin having to edit variables directly
@@ -191,7 +191,7 @@ Ccomp's first proc.
 		any = TRUE												 //if no ghosts show up, any will just be FALSE
 	if (!any)
 		if (notify)
-			src << "There doesn't appear to be any ghosts for you to select."
+			to_chat(src, "There doesn't appear to be any ghosts for you to select.")
 		return
 
 	for (var/mob/M in mobs)
@@ -208,7 +208,7 @@ Ccomp's first proc.
 	set name = "Allow player to respawn"
 	set desc = "Let's the player bypass the wait to respawn or allow them to re-enter their corpse."
 	if (!holder)
-		src << "Only administrators may use this command."
+		to_chat(src, "Only administrators may use this command.")
 	var/list/ghosts= get_ghosts(1,1)
 
 	var/target = input("Please, select a ghost!", "COME BACK TO LIFE!", null, null) as null|anything in ghosts
@@ -236,7 +236,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set name = "Respawn Character"
 	set desc = "Respawn a person that has been gibbed/dusted/killed. They must be a ghost for this to work and preferably should not have a body to go back into."
 	if (!holder)
-		src << "Only administrators may use this command."
+		to_chat(src, "Only administrators may use this command.")
 		return
 	var/input = ckey(input(src, "Please specify which key will be respawned.", "Key", ""))
 	if (!input)
@@ -249,7 +249,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 			break
 
 	if (!G_found)//If a ghost was not found.
-		usr << "<font color='red'>There is no active key like that in the game or the person is not currently a ghost.</font>"
+		to_chat(usr, "<font color='red'>There is no active key like that in the game or the person is not currently a ghost.</font>")
 		return
 
 	var/mob/living/human/new_character = new(pick(latejoin))//The mob being spawned.
@@ -293,7 +293,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 
 	message_admins("<span class = 'notice'>[admin] has respawned [player_key] as [new_character.real_name].</span>", admin)
 
-	new_character << "You have been fully respawned. Enjoy the game."
+	to_chat(new_character, "You have been fully respawned. Enjoy the game.")
 
 
 	return new_character
@@ -302,7 +302,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set category = "Special"
 	set name = "Rejuvenate"
 	if (!holder)
-		src << "Only administrators may use this command."
+		to_chat(src, "Only administrators may use this command.")
 		return
 	if (!mob)
 		return
@@ -327,7 +327,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set name = "Delete"
 
 	if (!holder)
-		src << "Only administrators may use this command."
+		to_chat(src, "Only administrators may use this command.")
 		return
 
 	if (WWinput(src, "Are you sure you want to delete:\n[O]\nat ([O.x], [O.y], [O.z])?", "Deletion Confirmation", "Yes", list("Yes", "No")) == "Yes")
@@ -341,11 +341,11 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set name = "Get"
 
 	if (!holder)
-		src << "Only administrators may use this command."
+		to_chat(src, "Only administrators may use this command.")
 		return
 
 	if (!mob || !mob.loc)
-		src << "You need a mob to get something."
+		to_chat(src, "You need a mob to get something.")
 		return
 
 	if (WWinput(src, "Are you sure you want to get:\n[O]\nat ([O.x], [O.y], [O.z])?", "Get Confirmation", "Yes", list("Yes", "No")) == "Yes")
@@ -356,11 +356,11 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set name = "List free slots"
 
 	if (!holder)
-		src << "Only administrators may use this command."
+		to_chat(src, "Only administrators may use this command.")
 		return
 	if (job_master)
 		for (var/datum/job/job in job_master.occupations)
-			src << "[job.title]: [job.total_positions]"
+			to_chat(src, "[job.title]: [job.total_positions]")
 
 
 /client/proc/cmd_admin_explosion(atom/O as obj|mob|turf in range(7))
@@ -471,7 +471,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 
 	var/list/L = M.get_contents()
 	for (var/t in L)
-		usr << "[t]"
+		to_chat(usr, "[t]")
 
 
 /client/proc/toggle_view_range()
@@ -492,9 +492,9 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set category = "Special"
 	set name = "Attack Log"
 
-	usr << text("<span class = 'red'><b>Attack Log for []</b></span>", mob)
+	to_chat(usr, text("<span class = 'red'><b>Attack Log for []</b></span>", mob))
 	for (var/t in M.attack_log)
-		usr << t
+		to_chat(usr, t)
 
 //A verb so that admins can toggle right click if they need to use debug stuff. - Matt
 /client/proc/toggle_right_click()

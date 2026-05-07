@@ -132,10 +132,10 @@ datum/admins/proc/print_crafting_recipes()
 			matlist |= matname
 		matlist = sortTim(matlist,/proc/cmp_text_asc,FALSE)
 		for (var/m in matlist)
-			recipe_list <<"## [m]"
-			recipe_list <<"\n"
-			recipe_list <<"| Item | Cost| Material | Category | Research Needed | Available Until |"
-			recipe_list <<"| -------- | ---- | ---------- | -------- | ------------------------- | ------------------------------- |"
+			to_chat(recipe_list, "## [m]")
+			to_chat(recipe_list, "\n")
+			to_chat(recipe_list, "| Item | Cost| Material | Category | Research Needed | Available Until |")
+			to_chat(recipe_list, "| -------- | ---- | ---------- | -------- | ------------------------- | ------------------------------- |")
 			for (var/i in craftlist_lists["global"])
 				var/matname = replacetext(i[1], "/material/", "")
 				matname = replacetext(matname, "/", "")
@@ -181,7 +181,7 @@ datum/admins/proc/print_crafting_recipes()
 						requirements = "[requirements] research points."
 					var/crafting_print_var = "| [i[2]] | [i[4]] | [matname] | [subcategory] | [requirements] | Available until [av_age]. |"
 					recipe_list << crafting_print_var
-			recipe_list <<"\n"
+			to_chat(recipe_list, "\n")
 		world.log << "Finished saving all crafting recipes into \"recipes.txt\" with Wiki format."
 	else
 		for (var/i in craftlist_lists["global"])

@@ -74,15 +74,15 @@
 				tally += M.value*M.amount
 			for(var/obj/item/stack/money/M1 in S.loc)
 				tally += M1.value*M1.amount
-	world << "<font size=4 color='yellow'>Total Treasure: [tally]</font>"
-	world << "<font size=4 color='yellow'>Islands Visited: [statistics[2]]</font>"
-	world << "<font size=4 color='yellow'>Ships Defeated:</font>"
-	world << "<font size=4 color='yellow'>	Xebecs (lvl 1): [statistics[3][1]]</font>"
-	world << "<font size=4 color='yellow'>	Schooners (lvl 2): [statistics[3][2]]</font>"
-	world << "<font size=4 color='yellow'>	Flutes (lvl 3): [statistics[3][3]]</font>"
-	world << "<font size=4 color='yellow'>	Brigs (lvl 4): [statistics[3][4]]</font>"
-	world << "<font size=4 color='yellow'>	Galleons (lvl 5): [statistics[3][5]]</font>"
-	world << "<font size=4 color='yellow'>	Man-O-Wars (lvl 6): [statistics[3][6]]</font>"
+	to_chat(world, "<font size=4 color='yellow'>Total Treasure: [tally]</font>")
+	to_chat(world, "<font size=4 color='yellow'>Islands Visited: [statistics[2]]</font>")
+	to_chat(world, "<font size=4 color='yellow'>Ships Defeated:</font>")
+	to_chat(world, "<font size=4 color='yellow'>	Xebecs (lvl 1): [statistics[3][1]]</font>")
+	to_chat(world, "<font size=4 color='yellow'>	Schooners (lvl 2): [statistics[3][2]]</font>")
+	to_chat(world, "<font size=4 color='yellow'>	Flutes (lvl 3): [statistics[3][3]]</font>")
+	to_chat(world, "<font size=4 color='yellow'>	Brigs (lvl 4): [statistics[3][4]]</font>")
+	to_chat(world, "<font size=4 color='yellow'>	Galleons (lvl 5): [statistics[3][5]]</font>")
+	to_chat(world, "<font size=4 color='yellow'>	Man-O-Wars (lvl 6): [statistics[3][6]]</font>")
 	no_spam = TRUE
 /obj/map_metadata/voyage/proc/nav()
 	check_roundend_conditions()
@@ -131,7 +131,7 @@
 /obj/map_metadata/voyage/proc/check_ships()
 	for(var/list/L in ships)
 		if (L[3] == latitude && L[4] == longitude)
-			world << "<font size=4 color='yellow'>A ship approaches!</font>"
+			to_chat(world, "<font size=4 color='yellow'>A ship approaches!</font>")
 			navmoving = FALSE
 			for(var/obj/effect/sailing_effect/S in world)
 				S.icon_state = "sailing_effect_stopped"
@@ -187,7 +187,7 @@
 	ship_anchored = TRUE
 	for(var/obj/structure/voyage/anchor_capstan/AC in world)
 		AC.update_icon()
-	world << "<font size=4 color='yellow'>The ship arrives at the destination.</font>"
+	to_chat(world, "<font size=4 color='yellow'>The ship arrives at the destination.</font>")
 	if (navdirection == "island")
 		if (prob(50))
 			load_map(pick("island1","island2","island3","piratetown","cursed_island"),"north")
@@ -209,7 +209,7 @@
 	ship_anchored = FALSE
 	for(var/obj/structure/voyage/anchor_capstan/AC in world)
 		AC.update_icon()
-	world << "<font size=4 color='yellow'>The ship returns to the high seas.</font>"
+	to_chat(world, "<font size=4 color='yellow'>The ship returns to the high seas.</font>")
 	for(var/obj/structure/grapplehook/G in world)
 		G.undeploy()
 	clear_map()
@@ -309,7 +309,7 @@
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		world << "<font size=4>[roundend_msg]</font>"
+		to_chat(world, "<font size=4>[roundend_msg]</font>")
 		win_condition_spam_check = TRUE
 		return FALSE
 
@@ -360,7 +360,7 @@
 		return "OBJECT;[nx];[ny];[nz];[A.type];[list2text(.)]"
 
 /obj/map_metadata/voyage/proc/do_export(saveloc = "maps/test")
-	world << "<i><b>Saving the game... Might lag for a few seconds.</b></i>"
+	to_chat(world, "<i><b>Saving the game... Might lag for a few seconds.</b></i>")
 	world.log << "Started saving at [time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]."
 	var/F = file("[saveloc]/mobs.txt")
 	if (fexists(F))
@@ -393,7 +393,7 @@
 						text2file(list2text_assoc(O),F2)
 	sleep(1)
 	world.log << "Finished saving at [time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]."
-	world << "<i><b>Finished saving.</b></i>"
+	to_chat(world, "<i><b>Finished saving.</b></i>")
 	return saveloc
 
 /////////////////////////////////////////////////////////////////
@@ -711,11 +711,11 @@
 		if (map.ID == MAP_VOYAGE)
 			var/obj/map_metadata/voyage/nmap = map
 			if (nmap)
-				H << "The ship is currently at <b>[nmap.latitude]</b>°N, <b>[nmap.longitude]</b>°W."
-				H << "The ship is heading to the <b>[nmap.navdirection]</b>, progress: <b>[nmap.navprogress]%</b>"
-				H << "Sinking progress: <b>[nmap.get_sink()]%</b>"
+				to_chat(H, "The ship is currently at <b>[nmap.latitude]</b>°N, <b>[nmap.longitude]</b>°W.")
+				to_chat(H, "The ship is heading to the <b>[nmap.navdirection]</b>, progress: <b>[nmap.navprogress]%</b>")
+				to_chat(H, "Sinking progress: <b>[nmap.get_sink()]%</b>")
 				if(nmap.ship_anchored)
-					H << "The ship is <font color='red'><b>anchored</b></font>."
+					to_chat(H, "The ship is <font color='red'><b>anchored</b></font>.")
 
 /obj/structure/voyage/shipbell
 	name = "ship's bell"
@@ -737,7 +737,7 @@
 		if (world.time >= cooldown_bell_stand)
 			for (var/mob/M in player_list)
 				M.client << sound('sound/effects/bell_stand.ogg', repeat = FALSE, wait = TRUE, channel = 777)
-			world << "<font size=4 color='yellow'>You hear the ship's bell!</font>"
+			to_chat(world, "<font size=4 color='yellow'>You hear the ship's bell!</font>")
 			cooldown_bell_stand = world.time+50
 			icon_state = "bell_stand_ringing"
 			spawn(15)
@@ -786,7 +786,7 @@
 	proc/raise_anchor()
 		if(map.ID == MAP_VOYAGE)
 			var/obj/map_metadata/voyage/nmap = map
-			world << "<font size=3 color='yellow'>The ship starts moving.</font>"
+			to_chat(world, "<font size=3 color='yellow'>The ship starts moving.</font>")
 			nmap.ship_anchored = FALSE
 			nmap.navmoving = TRUE
 			for(var/obj/effect/sailing_effect/S in world)
@@ -811,25 +811,25 @@
 					if (resp == "No")
 						return
 					else
-						world << "<font size=4 color='yellow'>The ship is getting ready to leave, ALL crew outside must return within <b>2</b> minutes or be left behind!</font>"
+						to_chat(world, "<font size=4 color='yellow'>The ship is getting ready to leave, ALL crew outside must return within <b>2</b> minutes or be left behind!</font>")
 						spawn(600) // 1 minute
-							world << "<font size=4 color='yellow'>The ship is leaving, ALL crew outside must return within <b>1</b> minute or be left behind!</font>"
+							to_chat(world, "<font size=4 color='yellow'>The ship is leaving, ALL crew outside must return within <b>1</b> minute or be left behind!</font>")
 						spawn(1200)
 							raise_anchor()
 							nmap.abandon_event()
 				else
-					user << "You start [nmap.ship_anchored ? "raising" : "lowering"] the anchor..."
+					to_chat(user, "You start [nmap.ship_anchored ? "raising" : "lowering"] the anchor...")
 					if (do_after(user, 60, src))
-						user << "You lower the anchor."
+						to_chat(user, "You lower the anchor.")
 						lower_anchor()
 			else
-				user << "You start [nmap.ship_anchored ? "raising" : "lowering"] the anchor..."
+				to_chat(user, "You start [nmap.ship_anchored ? "raising" : "lowering"] the anchor...")
 				if (do_after(user, 60, src))
 					if (nmap.ship_anchored)
-						user << "You raise the anchor."
+						to_chat(user, "You raise the anchor.")
 						raise_anchor()
 					else
-						user << "You lower the anchor."
+						to_chat(user, "You lower the anchor.")
 						lower_anchor()
 
 /obj/structure/voyage/ropeladder/thin

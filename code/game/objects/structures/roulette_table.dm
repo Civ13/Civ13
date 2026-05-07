@@ -26,7 +26,7 @@
 
 /obj/item/weapon/roulette/chip/examine(mob/user, distance)
 	. = ..()
-	user << "Has a value of <b>[value]</b>."
+	to_chat(user, "Has a value of <b>[value]</b>.")
 
 /obj/structure/roulette
 	name = "roulette table"
@@ -50,11 +50,11 @@
 /obj/structure/roulette/examine(mob/user, distance)
 	. = ..()
 	if(win_number && !can_bet)
-		user << "The last number was <b>[win_number]</b>."
+		to_chat(user, "The last number was <b>[win_number]</b>.")
 	if(spinning)
-		user << "<b>The roulette is spinning!</b>"
+		to_chat(user, "<b>The roulette is spinning!</b>")
 	for(var/list/L in current_bets)
-		user << "<b>[L[1]]</b> has placed a <b>[L[3]]</b> bet on <b>[L[2]]</b>."
+		to_chat(user, "<b>[L[1]]</b> has placed a <b>[L[3]]</b> bet on <b>[L[2]]</b>.")
 /obj/structure/roulette/initialize()
 	reset_wheel()
 	..()
@@ -122,7 +122,7 @@
 	var/list/newlist = list()
 	for(var/list/L in current_bets)
 		if(L[1] == H && L[2] == "won")
-			H << "You remove your bet from the table."
+			to_chat(H, "You remove your bet from the table.")
 			var/obj/item/weapon/roulette/chip/newchips = new/obj/item/weapon/roulette/chip(loc)
 			newchips.value = L[3]
 			H.put_in_any_hand_if_possible(newchips,FALSE,TRUE,TRUE,TRUE)

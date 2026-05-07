@@ -42,13 +42,13 @@
 			item_state = "ac_armor"
 			worn_state = "ac_armor"
 			item_state_slots["slot_w_uniform"] = "ac_armor"
-			usr << "<span class = 'danger'>You take down your armor's hood.</span>"
+			to_chat(usr, "<span class = 'danger'>You take down your armor's hood.</span>")
 			adjusted = FALSE
 		else if (!adjusted)
 			item_state = "ac_armor_hood"
 			worn_state = "ac_armor_hood"
 			item_state_slots["slot_w_uniform"] = "ac_armor_hood"
-			usr << "<span class = 'danger'>You put up your armor's hood.</span>"
+			to_chat(usr, "<span class = 'danger'>You put up your armor's hood.</span>")
 			body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
 			adjusted = TRUE
 	update_clothing_icon()
@@ -75,13 +75,13 @@
 			item_state = "ac_armor_1713"
 			worn_state = "ac_armor_1713"
 			item_state_slots["slot_w_uniform"] = "ac_armor_1713"
-			usr << "<span class = 'danger'>You take down your armor's hood.</span>"
+			to_chat(usr, "<span class = 'danger'>You take down your armor's hood.</span>")
 			adjusted = FALSE
 		else if (!adjusted)
 			item_state = "ac_armor_1713_hood"
 			worn_state = "ac_armor_1713_hood"
 			item_state_slots["slot_w_uniform"] = "ac_armor_1713_hood"
-			usr << "<span class = 'danger'>You put up your armor's hood.</span>"
+			to_chat(usr, "<span class = 'danger'>You put up your armor's hood.</span>")
 			body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
 			adjusted = TRUE
 	update_clothing_icon()
@@ -108,13 +108,13 @@
 			item_state = "ac_armor_napol"
 			worn_state = "ac_armor_napol"
 			item_state_slots["slot_w_uniform"] = "ac_armor_napol"
-			usr << "<span class = 'danger'>You take down your armor's hood.</span>"
+			to_chat(usr, "<span class = 'danger'>You take down your armor's hood.</span>")
 			adjusted = FALSE
 		else if (!adjusted)
 			item_state = "ac_armor_napol_hood"
 			worn_state = "ac_armor_napol_hood"
 			item_state_slots["slot_w_uniform"] = "ac_armor_napol_hood"
-			usr << "<span class = 'danger'>You put up your armor's hood.</span>"
+			to_chat(usr, "<span class = 'danger'>You put up your armor's hood.</span>")
 			body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
 			adjusted = TRUE
 	update_clothing_icon()
@@ -151,7 +151,7 @@
 		flags_inv = initial(flags_inv)
 		body_parts_covered = initial(body_parts_covered)
 		item_state_slots["slot_wear_suit"] = "ac_hood"
-		usr << "<span class = 'danger'>You take off your hood.</span>"
+		to_chat(usr, "<span class = 'danger'>You take off your hood.</span>")
 		update_icon()
 		hood = FALSE
 		usr.update_inv_head(1)
@@ -163,7 +163,7 @@
 		flags_inv = BLOCKHAIR|HIDEFACE
 		body_parts_covered = HEAD|FACE
 		item_state_slots["slot_wear_suit"] = "ac_hood_up"
-		usr << "<span class = 'danger'>You cover your head with your hood.</span>"
+		to_chat(usr, "<span class = 'danger'>You cover your head with your hood.</span>")
 		update_icon()
 		hood = TRUE
 		usr.update_inv_head(1)

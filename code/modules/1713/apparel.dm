@@ -722,7 +722,7 @@
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 		item_state_slots["slot_wear_suit"] = "wise_tutor_robe"
-		usr << "<span class = 'danger'>you take off your robes' hood.</span>"
+		to_chat(usr, "<span class = 'danger'>you take off your robes' hood.</span>")
 		update_icon()
 		hood = FALSE
 		usr.update_inv_head(1)
@@ -735,7 +735,7 @@
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
 		item_state_slots["slot_wear_suit"] = "wise_tutor_hooded"
-		usr << "<span class = 'danger'>you cover your head with your robes' hood.</span>"
+		to_chat(usr, "<span class = 'danger'>you cover your head with your robes' hood.</span>")
 		update_icon()
 		hood = TRUE
 		usr.update_inv_head(1)
@@ -765,7 +765,7 @@
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 		item_state_slots["slot_wear_suit"] = "arrogant_student_robe"
-		usr << "<span class = 'danger'>you take off your robes' hood.</span>"
+		to_chat(usr, "<span class = 'danger'>you take off your robes' hood.</span>")
 		update_icon()
 		hood = FALSE
 		usr.update_inv_head(1)
@@ -778,7 +778,7 @@
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
 		item_state_slots["slot_wear_suit"] = "arrogant_student_robe_hooded"
-		usr << "<span class = 'danger'>you cover your head with your robes' hood.</span>"
+		to_chat(usr, "<span class = 'danger'>you cover your head with your robes' hood.</span>")
 		update_icon()
 		hood = TRUE
 		usr.update_inv_head(1)

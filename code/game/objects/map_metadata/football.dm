@@ -69,7 +69,7 @@
 			team2_kit = "secondary uniform"
 		team1 = t_team1
 		team2 = t_team2
-		world << "<font size=4>This match will be between [team1] and [team2]!</font>"
+		to_chat(world, "<font size=4>This match will be between [team1] and [team2]!</font>")
 		for (var/obj/structure/banner/faction/team/team1/T1 in world)
 			T1.team = team1
 			T1.assign_team(team1)
@@ -131,8 +131,8 @@
 		. = FALSE
 
 /obj/map_metadata/football/proc/points_check()
-	world << "<font size=4 color='yellow'><b>Current Score:</font></b>"
-	world << "<font size=3 color=[teams[team1][team1_kit]["shirt_color"]]><b>[teams[team1][1]]</font><font size=3 color='#FFF'> [teams[team1][2]] - [teams[team2][2]] </font><font size=3 color=[teams[team2][team2_kit]["shirt_color"]]>[teams[team2][1]]</b></font>"
+	to_chat(world, "<font size=4 color='yellow'><b>Current Score:</font></b>")
+	to_chat(world, "<font size=3 color=[teams[team1][team1_kit]["shirt_color"]]><b>[teams[team1][1]]</font><font size=3 color='#FFF'> [teams[team1][2]] - [teams[team2][2]] </font><font size=3 color=[teams[team2][team2_kit]["shirt_color"]]>[teams[team2][1]]</b></font>")
 	spawn(300)
 		points_check()
 
@@ -141,9 +141,9 @@
 		var/list/tmplistc = sortTim(scorers, /proc/cmp_numeric_dsc,TRUE)
 		for (var/i in tmplistc)
 			if (tmplistc[i]>1)
-				world << "<font size=3>[i]: <b>[tmplistc[i]]</b> goals</font>"
+				to_chat(world, "<font size=3>[i]: <b>[tmplistc[i]]</b> goals</font>")
 			else
-				world << "<font size=3>[i]: <b>[tmplistc[i]]</b> goal</font>"
+				to_chat(world, "<font size=3>[i]: <b>[tmplistc[i]]</b> goal</font>")
 /obj/map_metadata/football/update_win_condition()
 
 	if (processes.ticker.playtime_elapsed >= 12 MINUTES || world.time >= next_win && next_win != -1)
@@ -154,7 +154,7 @@
 		message = "The round has ended!"
 		if (teams[team1][2] > teams[team2][2])
 			message = "<b>[team1]</b> have won the match!"
-			world << "<font size=4 color=[teams[team1][team1_kit]["shirt_color"]]>[message]</font>"
+			to_chat(world, "<font size=4 color=[teams[team1][team1_kit]["shirt_color"]]>[message]</font>")
 			win_condition_spam_check = TRUE
 			points_check()
 			scorers_check()
@@ -162,14 +162,14 @@
 
 		else if (teams[team2][2] > teams[team1][2])
 			message = "<b>[team2]</b> have won the match!"
-			world << "<font size=4 color=[teams[team2][team2_kit]["shirt_color"]]>[message]</font>"
+			to_chat(world, "<font size=4 color=[teams[team2][team2_kit]["shirt_color"]]>[message]</font>")
 			win_condition_spam_check = TRUE
 			points_check()
 			scorers_check()
 			return FALSE
 		else
 			message = "The match ended in a draw!"
-			world << "<font size=4>[message]</font>"
+			to_chat(world, "<font size=4>[message]</font>")
 			win_condition_spam_check = TRUE
 			points_check()
 			scorers_check()
@@ -396,7 +396,7 @@
 			team2_kit = "secondary uniform"
 		team1 = t_team1
 		team2 = t_team2
-		world << "<font size=4>This match will be between [team1] and [team2]!</font>"
+		to_chat(world, "<font size=4>This match will be between [team1] and [team2]!</font>")
 		for (var/obj/structure/banner/faction/team/team1/T1 in world)
 			T1.team = team1
 			T1.assign_team(team1)
@@ -460,8 +460,8 @@
 		. = FALSE
 
 /obj/map_metadata/football_cmp/proc/points_check()
-	world << "<font size=4 color='yellow'><b>Current Score:</font></b>"
-	world << "<font size=3 color=[teams[team1][team1_kit]["shirt_color"]]><b>[teams[team1][1]]</font><font size=3 color='#FFF'> [teams[team1][2]] - [teams[team2][2]] </font><font size=3 color=[teams[team2][team2_kit]["shirt_color"]]>[teams[team2][1]]</b></font>"
+	to_chat(world, "<font size=4 color='yellow'><b>Current Score:</font></b>")
+	to_chat(world, "<font size=3 color=[teams[team1][team1_kit]["shirt_color"]]><b>[teams[team1][1]]</font><font size=3 color='#FFF'> [teams[team1][2]] - [teams[team2][2]] </font><font size=3 color=[teams[team2][team2_kit]["shirt_color"]]>[teams[team2][1]]</b></font>")
 	spawn(300)
 		points_check()
 
@@ -470,9 +470,9 @@
 		var/list/tmplistc = sortTim(scorers, /proc/cmp_numeric_dsc,TRUE)
 		for (var/i in tmplistc)
 			if (tmplistc[i]>1)
-				world << "<font size=3>[i]: <b>[tmplistc[i]]</b> goals</font>"
+				to_chat(world, "<font size=3>[i]: <b>[tmplistc[i]]</b> goals</font>")
 			else
-				world << "<font size=3>[i]: <b>[tmplistc[i]]</b> goal</font>"
+				to_chat(world, "<font size=3>[i]: <b>[tmplistc[i]]</b> goal</font>")
 /obj/map_metadata/football_cmp/update_win_condition()
 
 	if (processes.ticker.playtime_elapsed >= 17 MINUTES || world.time >= next_win && next_win != -1)
@@ -483,7 +483,7 @@
 		message = "The round has ended!"
 		if (teams[team1][2] > teams[team2][2])
 			message = "<b>[team1]</b> have won the match!"
-			world << "<font size=4 color=[teams[team1][team1_kit]["shirt_color"]]>[message]</font>"
+			to_chat(world, "<font size=4 color=[teams[team1][team1_kit]["shirt_color"]]>[message]</font>")
 			win_condition_spam_check = TRUE
 			points_check()
 			scorers_check()
@@ -491,14 +491,14 @@
 
 		else if (teams[team2][2] > teams[team1][2])
 			message = "<b>[team2]</b> have won the match!"
-			world << "<font size=4 color=[teams[team2][team2_kit]["shirt_color"]]>[message]</font>"
+			to_chat(world, "<font size=4 color=[teams[team2][team2_kit]["shirt_color"]]>[message]</font>")
 			win_condition_spam_check = TRUE
 			points_check()
 			scorers_check()
 			return FALSE
 		else
 			message = "The match ended in a draw!"
-			world << "<font size=4>[message]</font>"
+			to_chat(world, "<font size=4>[message]</font>")
 			win_condition_spam_check = TRUE
 			points_check()
 			scorers_check()

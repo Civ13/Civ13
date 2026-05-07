@@ -27,7 +27,7 @@
 
 	if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot))
 		var/obj/item/weapon/reagent_containers/glass/small_pot/POT = I
-		H << "You place the [POT] on top of the [src]."
+		to_chat(H, "You place the [POT] on top of the [src].")
 		H.remove_from_mob(POT)
 		POT.loc = src.loc
 		POT.on_stove = TRUE
@@ -35,37 +35,37 @@
 
 	if (istype(I, /obj/item/stack/material/wood))	//FUEL NORMAL (without * multiplication or + addition, only input)
 		fuel += I.amount
-		H << "You place \the [I] in \the [src], refueling it."
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/stack/material/bamboo))
 		fuel += I.amount
-		H << "You place \the [I] in \the [src], refueling it."
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/weapon/branch))	// FUEL +0.5 (adds a flat numerical addition ontop of the input reagent's baseline fuel, recommended for non stack objects)
 		fuel += I.amount+0.5
-		H << "You place \the [I] in \the [src], refueling it."
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/stack/material/leaf))
 		fuel += I.amount+0.5
-		H << "You place \the [I] in \the [src], refueling it."
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/stack/dung))	// FUEL +1
 		fuel += I.amount+1
-		H << "You place \the [I] in \the [src], refueling it."
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/stack/ore/charcoal))	//FUEL *2.5 (multiplies it by 2 and a half)
 		fuel += I.amount*2.5
-		H << "You place \the [I] in \the [src], refueling it."
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/stack/ore/coal))	//FUEL *3
 		fuel += I.amount*3
-		H << "You place \the [I] in \the [src], refueling it."
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
 		return
 
@@ -90,7 +90,7 @@
 	for (var/obj/item/II in contents)
 		space -= II.w_class
 	if (space <= 0 || space - I.w_class < 0)
-		H << "<span class = 'warning'>The [name] is full.</span>"
+		to_chat(H, "<span class = 'warning'>The [name] is full.</span>")
 		return
 	H.remove_from_mob(I)
 	I.loc = src
@@ -103,7 +103,7 @@
 		on = TRUE
 		fire_loop()
 	else
-		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
+		to_chat(H, "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>")
 
 /obj/structure/oven/proc/fire_loop()
 	if (on && fuel > 0)
@@ -301,7 +301,7 @@
 
 /obj/structure/oven/fireplace/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (on && (istype(I, /obj/item/stack/material/leather) || istype(I, /obj/item/stack/material/cloth)))
-		H << "You produce some smoke signals."
+		to_chat(H, "You produce some smoke signals.")
 		smoke_signals()
 	else
 		..()

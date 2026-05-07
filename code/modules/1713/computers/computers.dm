@@ -18,10 +18,10 @@
 /obj/structure/base_powered_object/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (!anchored)
-			H << "<span class='notice'>Fix the [src] in place with a wrench first.</span>"
+			to_chat(H, "<span class='notice'>Fix the [src] in place with a wrench first.</span>")
 			return
 		if (powersource)
-			H << "There's already a cable connected here! Split it further from the [src]."
+			to_chat(H, "There's already a cable connected here! Split it further from the [src].")
 			return
 		var/obj/item/stack/cable_coil/CC = W
 		powersource = CC.place_turf(get_turf(src), H, turn(get_dir(H,src),180))
@@ -44,7 +44,7 @@
 						NCOO.connections += powersource
 					if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
 						powersource.connections += NCOO
-					H << "You connect the two cables."
+					to_chat(H, "You connect the two cables.")
 
 			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
 				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
@@ -52,8 +52,8 @@
 						NCOC.connections += powersource
 					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
 						powersource.connections += NCOC
-					H << "You connect the two cables."
-		H << "You connect the cable to the [src]."
+					to_chat(H, "You connect the two cables.")
+		to_chat(H, "You connect the cable to the [src].")
 
 	else
 		..()
@@ -66,12 +66,12 @@
 		powersource.update_power(powerneeded,1)
 		powersource.currentflow -= powerneeded
 		powersource.lastupdate2 = world.time
-		H << "You power off the [src]."
+		to_chat(H, "You power off the [src].")
 		update_icon()
 		return
 
 	else if (!active && !powersource.powered)
-		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
+		to_chat(H, "<span class = 'notice'>There is not enough power to start the [src].</span>")
 		update_icon()
 		return
 	else if (!active && powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
@@ -81,11 +81,11 @@
 		powersource.currentflow += powerneeded
 		powersource.lastupdate2 = world.time
 		power_on()
-		H << "You power the [src]."
+		to_chat(H, "You power the [src].")
 		update_icon()
 		return
 	else
-		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
+		to_chat(H, "<span class = 'notice'>There is not enough power to start the [src].</span>")
 		return
 
 /obj/structure/base_powered_object/proc/power_on()
@@ -132,10 +132,10 @@
 /obj/structure/computer/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (!anchored)
-			H << "<span class='notice'>Fix the [src] in place with a wrench first.</span>"
+			to_chat(H, "<span class='notice'>Fix the [src] in place with a wrench first.</span>")
 			return
 		if (powersource)
-			H << "There's already a cable connected here! Split it further from the [src]."
+			to_chat(H, "There's already a cable connected here! Split it further from the [src].")
 			return
 		var/obj/item/stack/cable_coil/CC = W
 		powersource = CC.place_turf(get_turf(src), H, turn(get_dir(H,src),180))
@@ -158,7 +158,7 @@
 						NCOO.connections += powersource
 					if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
 						powersource.connections += NCOO
-					H << "You connect the two cables."
+					to_chat(H, "You connect the two cables.")
 
 			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
 				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
@@ -166,8 +166,8 @@
 						NCOC.connections += powersource
 					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
 						powersource.connections += NCOC
-					H << "You connect the two cables."
-		H << "You connect the cable to the [src]."
+					to_chat(H, "You connect the two cables.")
+		to_chat(H, "You connect the cable to the [src].")
 
 	else
 		if (istype(W, /obj/item/weapon/disk/os))
@@ -177,25 +177,25 @@
 				src.programs = list()
 				src.boot(OSD.operatingsystem)
 				playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
-				H << "You sucessfully install \the [src.operatingsystem] on this machine."
+				to_chat(H, "You sucessfully install \the [src.operatingsystem] on this machine.")
 			else
-				H << "You already have this operating system installed."
+				to_chat(H, "You already have this operating system installed.")
 				return
 		else if (istype(W, /obj/item/weapon/disk/program))
 			var/obj/item/weapon/disk/program/PD = W
 			if (!(operatingsystem in PD.compatible_os))
-				H << "This operating system is not supported."
+				to_chat(H, "This operating system is not supported.")
 				return
 			if (PD.included)
 				var/datum/program/NP = new PD.included
 				for(var/datum/program/EP in programs)
 					if (istype(EP,NP))
-						H << "This program is already installed on this machine."
+						to_chat(H, "This program is already installed on this machine.")
 						return
 				programs += NP
 				NP.origin = src
 				playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
-				H << "You load \the [NP.name] into this machine."
+				to_chat(H, "You load \the [NP.name] into this machine.")
 				return
 		else
 			..()
@@ -207,7 +207,7 @@
 	if(src.active)
 		name = "Turn Off"
 	if(!powersource)
-		H << "<span class = 'notice'>You need to plug in the [src].</span>"
+		to_chat(H, "<span class = 'notice'>You need to plug in the [src].</span>")
 		return
 	if (active)
 		active = FALSE
@@ -215,11 +215,11 @@
 		powersource.update_power(powerneeded,1)
 		powersource.currentflow -= powerneeded
 		powersource.lastupdate2 = world.time
-		H << "You power off the [src]."
+		to_chat(H, "You power off the [src].")
 		update_icon()
 		return
 	else if (!active && !powersource.powered)
-		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
+		to_chat(H, "<span class = 'notice'>There is not enough power to start the [src].</span>")
 		update_icon()
 		return
 	else if (!active && powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
@@ -229,18 +229,18 @@
 		powersource.currentflow += powerneeded
 		powersource.lastupdate2 = world.time
 		power_on()
-		H << "You power the [src]."
+		to_chat(H, "You power the [src].")
 		update_icon()
 		return
 	else
-		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
+		to_chat(H, "<span class = 'notice'>There is not enough power to start the [src].</span>")
 		return
 /obj/structure/computer/attack_hand(var/mob/living/human/H)
 	if(!src.active)
 		boot(operatingsystem)
 		do_html(user)
 	else
-		H << "<span class = 'notice'>You need to turn the [src] on first!</span>"
+		to_chat(H, "<span class = 'notice'>You need to turn the [src] on first!</span>")
 /obj/structure/computer/proc/power_on()
 	if (powered && active)
 		update_icon()

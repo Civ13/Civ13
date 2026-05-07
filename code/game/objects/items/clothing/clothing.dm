@@ -415,7 +415,7 @@ BLIND	 // can't see anything
 	 istype(I, /obj/item/weapon/gun/projectile/revolver/derringer) || \
 	 istype(I, /obj/item/weapon/attachment/bayonet))
 		if (holding)
-			user << "<span class='warning'>\The [src] is already holding \a [holding].</span>"
+			to_chat(user, "<span class='warning'>\The [src] is already holding \a [holding].</span>")
 			return
 		user.unEquip(I)
 		I.forceMove(src)
@@ -492,9 +492,9 @@ BLIND	 // can't see anything
 	if (accessories && accessories.len && (src == user.r_hand || src == user.l_hand))
 		if (istype(accessories[1], /obj/item/clothing/accessory/storage/webbing))
 			var/obj/item/clothing/accessory/storage/webbing/webbing = accessories[1]
-			user << "<span class = 'warning'>You start to remove the webbing from [src].</span>"
+			to_chat(user, "<span class = 'warning'>You start to remove the webbing from [src].</span>")
 			if (do_after(user, 50, get_turf(user)))
-				user << "<span class = 'warning'>You finish removing the webbing from [src].</span>"
+				to_chat(user, "<span class = 'warning'>You finish removing the webbing from [src].</span>")
 				accessories -= webbing
 				if (overlays.len == TRUE) // hack
 					overlays.Cut()

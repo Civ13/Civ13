@@ -197,7 +197,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 	set name = "Spawn Modular Vehicle"
 
 	if (!holder)
-		src << "<font color='red'>Error: Admin-PM-Panel: Only administrators may use this command.</font>"
+		to_chat(src, "<font color='red'>Error: Admin-PM-Panel: Only administrators may use this command.</font>")
 		return
 
 	var/list/templates = list("jeep", "truck", "btr80", "mtlb", "t34", "bradley")

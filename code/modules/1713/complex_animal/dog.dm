@@ -216,10 +216,10 @@
 	if (!dd_hassuffix(message, "!"))
 		return
 	message = copytext(message, TRUE, length(message))
-//	world << "1. [message]"
+//	to_chat(world, "1. [message]")
 	// parse message into a command
 	if (stat == CONSCIOUS)
-	//	world << "2. [src]"
+	//	to_chat(world, "2. [src]")
 		for (var/command in commands)
 			var/list/parts = splittext(command, ";")
 			var/req_word = lowertext(parts[1])
@@ -230,7 +230,7 @@
 				req_ranks = .
 
 			for (var/RR in req_ranks)
-			//	world << "2.5: [RR]"
+			//	to_chat(world, "2.5: [RR]")
 				req_ranks += lowertext(RR)
 				req_ranks -= RR
 
@@ -239,7 +239,7 @@
 			for (var/RR in req_ranks)
 				d1 += RR
 				d1 += ";"
-		//	world << "2.6: [d1]"
+		//	to_chat(world, "2.6: [d1]")
 			// END DEBUG BLOCK
 
 			for (var/RR in req_ranks)
@@ -252,11 +252,8 @@
 			for (var/RR in req_ranks)
 				d1 += RR
 				d1 += ";"
-		//	world << "2.7: [d1]"
-			// END DEBUG BLOCK
 
 			var/_call = parts[3]
-		//	world << "3. [req_word];[req_ranks[1]];[_call]"
 
 			var/list/command_types = list(
 				"attack_mode" = list("attack", "kill", "guard"),
@@ -265,7 +262,7 @@
 					"follow", "stop following"))
 
 			if (dd_hasprefix(lowertext(message), req_word) || lowertext(message) == req_word)
-			//	world << "4. [message] v. [req_word]"
+			//	to_chat(world, "4. [message] v. [req_word]")
 
 				var/command_type_sublist = null
 				for (var/key in command_types)

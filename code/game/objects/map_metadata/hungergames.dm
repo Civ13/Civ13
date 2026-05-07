@@ -56,7 +56,7 @@
 		win_condition.hash = 0
 		last_win_condition = win_condition.hash
 		message = "90 minutes have passed! The hunger games have ended without a winner!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		win_condition_spam_check = TRUE
 		return FALSE
 	if (processes.ticker.playtime_elapsed >= 1800)
@@ -71,7 +71,7 @@
 						for (var/mob/M in player_list)
 							M.client << warning_sound
 						message = "The hunger games are over! <b>[winner_ckey]</b> is the victor!"
-						world << "<font size = 4 color='yellow'><span class = 'notice'>[message]</span></font>"
+						to_chat(world, "<font size = 4 color='yellow'><span class = 'notice'>[message]</span></font>")
 						win_condition_spam_check = TRUE
 			ticker.finished = TRUE
 			next_win = -1
@@ -200,7 +200,7 @@
 			if ("none")
 				ar_to_close_string = "None"
 		ar_to_close_timeleft = 30
-		world << "<big><b>The [ar_to_close_string] Area will close in 60 seconds!</b></big>"
+		to_chat(world, "<big><b>The [ar_to_close_string] Area will close in 60 seconds!</b></big>")
 		spawn(275)
 			warn_closing_areas(ar_to_close,30)
 			spawn(100)
@@ -209,7 +209,7 @@
 					warn_closing_areas(ar_to_close,10)
 		spawn(300)
 			ar_to_close_timeleft = 15
-			world << "<big><b>The [ar_to_close_string] Area will close in 30 seconds!</b></big>"
+			to_chat(world, "<big><b>The [ar_to_close_string] Area will close in 30 seconds!</b></big>")
 			spawn(300)
 				close_area(ar_to_close)
 				closing_areas()
@@ -279,7 +279,7 @@
 						H.crush()
 					else if (istype(A, /area/caribbean/no_mans_land/invisible_wall) && A.name == "North-Western Area")
 						H.crush()
-			world << "<big>The <b>North-Western</b> Area has been closed!</big>"
+			to_chat(world, "<big>The <b>North-Western</b> Area has been closed!</big>")
 			closed_areas += list("one")
 			return
 		if ("two")
@@ -296,7 +296,7 @@
 						H.crush()
 					else if (istype(A, /area/caribbean/no_mans_land/invisible_wall) && A.name == "North-Eastern Area")
 						H.crush()
-			world << "<big>The <b>North-Eastern</b> Area has been closed!</big>"
+			to_chat(world, "<big>The <b>North-Eastern</b> Area has been closed!</big>")
 			closed_areas += list("two")
 			return
 		if ("three")
@@ -313,7 +313,7 @@
 						H.crush()
 					else if (istype(A, /area/caribbean/no_mans_land/invisible_wall) && A.name == "Western Area")
 						H.crush()
-			world << "<big>The <b>Western</b> Area has been closed!</big>"
+			to_chat(world, "<big>The <b>Western</b> Area has been closed!</big>")
 			closed_areas += list("three")
 			return
 		if ("four")
@@ -330,7 +330,7 @@
 						H.crush()
 					else if (istype(A, /area/caribbean/no_mans_land/invisible_wall) && A.name == "Eastern Area")
 						H.crush()
-			world << "<big>The <b>Eastern</b> Area has been closed!</big>"
+			to_chat(world, "<big>The <b>Eastern</b> Area has been closed!</big>")
 			closed_areas += list("four")
 			return
 		if ("five")
@@ -347,7 +347,7 @@
 						H.crush()
 					else if (istype(A,/area/caribbean/no_mans_land/invisible_wall) && A.name == "South-Western Area")
 						H.crush()
-			world << "<big>The <b>South-Western</b> Area has been closed!</big>"
+			to_chat(world, "<big>The <b>South-Western</b> Area has been closed!</big>")
 			closed_areas += list("five")
 			return
 		if ("six")
@@ -364,7 +364,7 @@
 						H.crush()
 					else if (istype(A, /area/caribbean/no_mans_land/invisible_wall) && A.name == "South-Eastern Area")
 						H.crush()
-			world << "<big>The <b>South-Eastern</b> Area has been closed!</big>"
+			to_chat(world, "<big>The <b>South-Eastern</b> Area has been closed!</big>")
 			closed_areas += list("six")
 			return
 
@@ -390,7 +390,7 @@
 				place2text = "5th"
 			else
 				place2text = "[awards[i][3]]th"
-			world << "[awards[i][2]] ([awards[i][1]]) placed <b>[place2text]</b>!"
+			to_chat(world, "[awards[i][2]] ([awards[i][1]]) placed <b>[place2text]</b>!")
 	return TRUE
 
 /obj/map_metadata/hunger_games/give_award(var/_ckey, var/charname, var/place)

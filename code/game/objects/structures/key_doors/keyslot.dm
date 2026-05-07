@@ -19,9 +19,9 @@
 
 	if (msg && . == FALSE)
 		if (istype(H.get_active_hand(), /obj/item/weapon/key))
-			H << "<span class = 'danger'>Your key doesn't match this lock.</span>"
+			to_chat(H, "<span class = 'danger'>Your key doesn't match this lock.</span>")
 		else
-			H << "<span class = 'danger'>You don't have a key which matches this lock.</span>"
+			to_chat(H, "<span class = 'danger'>You don't have a key which matches this lock.</span>")
 
 	return .
 
@@ -55,9 +55,9 @@
 
 	if (msg)
 		if (istype(H.get_active_hand(), /obj/item/weapon/key))
-			H << "<span class = 'danger'>Your key doesn't match this lock.</span>"
+			to_chat(H, "<span class = 'danger'>Your key doesn't match this lock.</span>")
 		else
-			H << "<span class = 'danger'>You don't have a key which matches this lock.</span>"
+			to_chat(H, "<span class = 'danger'>You don't have a key which matches this lock.</span>")
 
 	return FALSE
 

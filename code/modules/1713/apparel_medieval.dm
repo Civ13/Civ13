@@ -339,7 +339,7 @@
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 		item_state_slots["slot_wear_suit"] = "monk_robes"
-		usr << "<span class = 'danger'>you take off your robes' hood.</span>"
+		to_chat(usr, "<span class = 'danger'>you take off your robes' hood.</span>")
 		update_icon()
 		hood = FALSE
 		usr.update_inv_head(1)
@@ -352,7 +352,7 @@
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
 		item_state_slots["slot_wear_suit"] = "monk_robes_hood"
-		usr << "<span class = 'danger'>you cover your head with your robes' hood.</span>"
+		to_chat(usr, "<span class = 'danger'>you cover your head with your robes' hood.</span>")
 		update_icon()
 		hood = TRUE
 		usr.update_inv_head(1)
@@ -809,7 +809,7 @@
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/diamond))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You place the diamond in the crown.</span>"
+		to_chat(user, "<span class='notice'>You place the diamond in the crown.</span>")
 		if(W.amount <= 1)
 			qdel(src)
 			qdel(W)
@@ -823,7 +823,7 @@
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/diamond))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You place the diamond in the crown.</span>"
+		to_chat(user, "<span class='notice'>You place the diamond in the crown.</span>")
 		if(W.amount <= 1)
 			qdel(src)
 			qdel(W)
@@ -890,7 +890,7 @@
 			icon_state = "italian_sallet_o"
 			worn_state = "italian_sallet_o"
 			item_state_slots["slot_head"] = "italian_sallet_o"
-			usr << "<span class = 'danger'>You put up your helmet's visor.</span>"
+			to_chat(usr, "<span class = 'danger'>You put up your helmet's visor.</span>")
 			toggled = FALSE
 			update_clothing_icon()
 			body_parts_covered = HEAD
@@ -900,7 +900,7 @@
 			icon_state = "italian_sallet"
 			worn_state = "italian_sallet"
 			item_state_slots["slot_head"] = "italian_sallet"
-			usr << "<span class = 'danger'>You put down your helmet's visor.</span>"
+			to_chat(usr, "<span class = 'danger'>You put down your helmet's visor.</span>")
 			toggled = TRUE
 			update_clothing_icon()
 			body_parts_covered = HEAD|FACE
@@ -928,7 +928,7 @@
 			icon_state = "german_sallet_o"
 			worn_state = "german_sallet_o"
 			item_state_slots["slot_head"] = "german_sallet_o"
-			usr << "<span class = 'danger'>You put up your helmet's visor.</span>"
+			to_chat(usr, "<span class = 'danger'>You put up your helmet's visor.</span>")
 			toggled = FALSE
 			update_clothing_icon()
 			body_parts_covered = HEAD
@@ -938,7 +938,7 @@
 			icon_state = "german_sallet"
 			worn_state = "german_sallet"
 			item_state_slots["slot_head"] = "german_sallet"
-			usr << "<span class = 'danger'>You put down your helmet's visor.</span>"
+			to_chat(usr, "<span class = 'danger'>You put down your helmet's visor.</span>")
 			toggled = TRUE
 			update_clothing_icon()
 			body_parts_covered = HEAD|FACE
@@ -966,7 +966,7 @@
 			icon_state = "burg_sallet_o"
 			worn_state = "burg_sallet_o"
 			item_state_slots["slot_head"] = "burg_sallet_o"
-			usr << "<span class = 'danger'>You put up your helmet's visor.</span>"
+			to_chat(usr, "<span class = 'danger'>You put up your helmet's visor.</span>")
 			toggled = FALSE
 			update_clothing_icon()
 			body_parts_covered = HEAD
@@ -976,7 +976,7 @@
 			icon_state = "burg_sallet"
 			worn_state = "burg_sallet"
 			item_state_slots["slot_head"] = "burg_sallet"
-			usr << "<span class = 'danger'>You put down your helmet's visor.</span>"
+			to_chat(usr, "<span class = 'danger'>You put down your helmet's visor.</span>")
 			toggled = TRUE
 			update_clothing_icon()
 			body_parts_covered = HEAD|FACE
@@ -1006,7 +1006,7 @@
 			icon_state = "bascinet_o"
 			worn_state = "bascinet_o"
 			item_state_slots["slot_head"] = "bascinet_o"
-			usr << "<span class = 'danger'>You put up your helmet's visor.</span>"
+			to_chat(usr, "<span class = 'danger'>You put up your helmet's visor.</span>")
 			toggled = FALSE
 			update_clothing_icon()
 			body_parts_covered = HEAD
@@ -1016,7 +1016,7 @@
 			icon_state = "bascinet_hounskull"
 			worn_state = "bascinet_hounskull"
 			item_state_slots["slot_head"] = "bascinet_hounskull"
-			usr << "<span class = 'danger'>You put down your helmet's visor.</span>"
+			to_chat(usr, "<span class = 'danger'>You put down your helmet's visor.</span>")
 			toggled = TRUE
 			update_clothing_icon()
 			body_parts_covered = HEAD|FACE
@@ -1252,7 +1252,7 @@
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/gold ))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You embellish the gold ingots upon the crusader helm</span>"
+		to_chat(user, "<span class='notice'>You embellish the gold ingots upon the crusader helm</span>")
 		if(W.amount <= 5)
 			qdel(src)
 			qdel(W)
@@ -1277,7 +1277,7 @@
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/gold ))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You embellish a gold crown upon the templar crusader helm</span>"
+		to_chat(user, "<span class='notice'>You embellish a gold crown upon the templar crusader helm</span>")
 		if(W.amount <= 10)
 			qdel(src)
 			qdel(W)
@@ -1306,7 +1306,7 @@
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/bone ))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You affix the bone horns upon the crusader helm.</span>"
+		to_chat(user, "<span class='notice'>You affix the bone horns upon the crusader helm.</span>")
 		if(W.amount <= 3)
 			qdel(src)
 			qdel(W)
@@ -1332,7 +1332,7 @@
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/silver ))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You begin to decorate the baltic crusader helm in grandmaster patterns.</span>"
+		to_chat(user, "<span class='notice'>You begin to decorate the baltic crusader helm in grandmaster patterns.</span>")
 		if(W.amount <= 5)
 			qdel(src)
 			qdel(W)
@@ -1358,7 +1358,7 @@
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/silver))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You embellish a silver crown upon the grandmaster helm!</span>"
+		to_chat(user, "<span class='notice'>You embellish a silver crown upon the grandmaster helm!</span>")
 		if(W.amount <= 10)
 			qdel(src)
 			qdel(W)
@@ -1386,7 +1386,7 @@
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/cloth)) //unsure if this will take wool at the moment, just ret some cloth.
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You begin to anoint & sow the cloth dome to your helmet.</span>"
+		to_chat(user, "<span class='notice'>You begin to anoint & sow the cloth dome to your helmet.</span>")
 		if(W.amount <= 3)
 			qdel(src)
 			qdel(W)
@@ -1412,7 +1412,7 @@
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/cloth)) //unsure if this will take wool at the moment, just ret some cloth.
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You begin to anoint & sow the cloth dome to your helmet.</span>"
+		to_chat(user, "<span class='notice'>You begin to anoint & sow the cloth dome to your helmet.</span>")
 		if(W.amount <= 3)
 			qdel(src)
 			qdel(W)
@@ -1513,7 +1513,7 @@
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/gold))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You decorate the soon to be royal helmet carefully with gold.</span>"
+		to_chat(user, "<span class='notice'>You decorate the soon to be royal helmet carefully with gold.</span>")
 		if(W.amount <= 5)
 			qdel(src)
 			qdel(W)
@@ -1549,7 +1549,7 @@
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/gold))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You decorate the soon to be royal helmet carefully with gold.</span>"
+		to_chat(user, "<span class='notice'>You decorate the soon to be royal helmet carefully with gold.</span>")
 		if(W.amount <= 5)
 			qdel(src)
 			qdel(W)
@@ -1650,7 +1650,7 @@
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/gold))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You decorate the lordly helmet carefully with gold.</span>"
+		to_chat(user, "<span class='notice'>You decorate the lordly helmet carefully with gold.</span>")
 		if(W.amount <= 5)
 			qdel(src)
 			qdel(W)
@@ -2022,7 +2022,7 @@
 			icon_state = "samurai_lord3_o"
 			worn_state = "samurai_lord3_o"
 			item_state_slots["slot_head"] = "samurai_lord3_o"
-			usr << "<span class = 'danger'>You put up your helmet's faceguard.</span>"
+			to_chat(usr, "<span class = 'danger'>You put up your helmet's faceguard.</span>")
 			toggled = FALSE
 			update_clothing_icon()
 			body_parts_covered = HEAD
@@ -2032,7 +2032,7 @@
 			icon_state = "samurai_lord3"
 			worn_state = "samurai_lord3"
 			item_state_slots["slot_head"] = "samurai_lord3"
-			usr << "<span class = 'danger'>You put down your helmet's faceguard.</span>"
+			to_chat(usr, "<span class = 'danger'>You put down your helmet's faceguard.</span>")
 			toggled = TRUE
 			update_clothing_icon()
 			body_parts_covered = HEAD|FACE
@@ -2059,13 +2059,13 @@
 			item_state = "jingasa"
 			worn_state = "jingasa"
 			item_state_slots["slot_head"] = "jingasa"
-			usr << "<span class = 'danger'>You adjust your jingasa's flaps.</span>"
+			to_chat(usr, "<span class = 'danger'>You adjust your jingasa's flaps.</span>")
 			adjusted = FALSE
 		else if (!adjusted)
 			item_state = "jingasa_flaps"
 			worn_state = "jingasa_flaps"
 			item_state_slots["slot_head"] = "jingasa_flaps"
-			usr << "<span class = 'danger'>You adjust your jingasa's flaps.</span>"
+			to_chat(usr, "<span class = 'danger'>You adjust your jingasa's flaps.</span>")
 			adjusted = TRUE
 	update_clothing_icon()
 
@@ -2150,7 +2150,7 @@ obj/item/clothing/head/helmet/samurai/black
 			icon_state = "samurai_lord1_o"
 			worn_state = "samurai_lord1_o"
 			item_state_slots["slot_head"] = "samurai_lord1_o"
-			usr << "<span class = 'danger'>You put up your helmet's faceguard.</span>"
+			to_chat(usr, "<span class = 'danger'>You put up your helmet's faceguard.</span>")
 			toggled = FALSE
 			update_clothing_icon()
 			body_parts_covered = HEAD
@@ -2160,7 +2160,7 @@ obj/item/clothing/head/helmet/samurai/black
 			icon_state = "samurai_lord1"
 			worn_state = "samurai_lord1"
 			item_state_slots["slot_head"] = "samurai_lord1"
-			usr << "<span class = 'danger'>You put down your helmet's faceguard.</span>"
+			to_chat(usr, "<span class = 'danger'>You put down your helmet's faceguard.</span>")
 			toggled = TRUE
 			update_clothing_icon()
 			body_parts_covered = HEAD|FACE
@@ -2185,7 +2185,7 @@ obj/item/clothing/head/helmet/samurai/black
 			icon_state = "samurai_lord2_o"
 			worn_state = "samurai_lord2_o"
 			item_state_slots["slot_head"] = "samurai_lord2_o"
-			usr << "<span class = 'danger'>You put up your helmet's faceguard.</span>"
+			to_chat(usr, "<span class = 'danger'>You put up your helmet's faceguard.</span>")
 			toggled = FALSE
 			update_clothing_icon()
 			body_parts_covered = HEAD
@@ -2195,7 +2195,7 @@ obj/item/clothing/head/helmet/samurai/black
 			icon_state = "samurai_lord2"
 			worn_state = "samurai_lord2"
 			item_state_slots["slot_head"] = "samurai_lord2"
-			usr << "<span class = 'danger'>You put down your helmet's faceguard.</span>"
+			to_chat(usr, "<span class = 'danger'>You put down your helmet's faceguard.</span>")
 			toggled = TRUE
 			update_clothing_icon()
 			body_parts_covered = HEAD|FACE
@@ -2220,7 +2220,7 @@ obj/item/clothing/head/helmet/samurai/black
 			icon_state = "samurai_lord4_o"
 			worn_state = "samurai_lord4_o"
 			item_state_slots["slot_head"] = "samurai_lord4_o"
-			usr << "<span class = 'danger'>You put up your helmet's faceguard.</span>"
+			to_chat(usr, "<span class = 'danger'>You put up your helmet's faceguard.</span>")
 			toggled = FALSE
 			update_clothing_icon()
 			body_parts_covered = HEAD
@@ -2230,7 +2230,7 @@ obj/item/clothing/head/helmet/samurai/black
 			icon_state = "samurai_lord4"
 			worn_state = "samurai_lord4"
 			item_state_slots["slot_head"] = "samurai_lord4"
-			usr << "<span class = 'danger'>You put down your helmet's faceguard.</span>"
+			to_chat(usr, "<span class = 'danger'>You put down your helmet's faceguard.</span>")
 			toggled = TRUE
 			update_clothing_icon()
 			body_parts_covered = HEAD|FACE

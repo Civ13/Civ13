@@ -382,19 +382,19 @@ var/list/global/slot_flags_enumeration = list(
 		if (slot_wear_id)
 			if (!H.w_uniform && (slot_w_uniform in mob_equip))
 				if (!disable_warning)
-					H << "<span class='warning'>You need clothes before you can hang this [name].</span>"
+					to_chat(H, "<span class='warning'>You need clothes before you can hang this [name].</span>")
 				return FALSE
 		if (slot_l_store, slot_r_store)
 			if (!H.w_uniform && (slot_w_uniform in mob_equip))
 				if (!disable_warning)
-					H << "<span class='warning'>You need clothes to put things in your pockets.</span>"
+					to_chat(H, "<span class='warning'>You need clothes to put things in your pockets.</span>")
 				return FALSE
 			if (w_class > ITEM_SIZE_SMALL && (!(slot_flags & SLOT_POCKET)))
 				return FALSE
 			if (istype(src, /obj/item/weapon/gun))
 				var/obj/item/weapon/gun/G = src
 				if (G.silencer || !G.pocket)
-					H << "<span class='warning'>[G] doesn't fit in your pockets!</span>"
+					to_chat(H, "<span class='warning'>[G] doesn't fit in your pockets!</span>")
 					return
 		if (slot_handcuffed)
 			if (!istype(src, /obj/item/weapon/handcuffs))
@@ -413,11 +413,11 @@ var/list/global/slot_flags_enumeration = list(
 		if (slot_accessory)
 			if (!H.w_uniform && (slot_w_uniform in mob_equip))
 				if (!disable_warning)
-					H << "<span class='warning'>You need clothes before you can attach this [name].</span>"
+					to_chat(H, "<span class='warning'>You need clothes before you can attach this [name].</span>")
 				return FALSE
 			if (uniform.accessories.len && !uniform.can_attach_accessory(src))
 				if (!disable_warning)
-					H << "<span class='warning'>You already have an accessory of this type attached to your [uniform].</span>"
+					to_chat(H, "<span class='warning'>You already have an accessory of this type attached to your [uniform].</span>")
 				return FALSE
 	return TRUE
 
@@ -442,22 +442,22 @@ var/list/global/slot_flags_enumeration = list(
 	if (!usr.canmove || usr.stat || usr.restrained() || !Adjacent(usr))
 		return
 	if ((!istype(usr, /mob/living/human)))//Is humanoid, and is not a brain
-		usr << "<span class='warning'>You can't pick things up!</span>"
+		to_chat(usr, "<span class='warning'>You can't pick things up!</span>")
 		return
 	if ( usr.stat || usr.restrained() )//Is not asleep/dead and is not restrained
-		usr << "<span class='warning'>You can't pick things up!</span>"
+		to_chat(usr, "<span class='warning'>You can't pick things up!</span>")
 		return
 	if (anchored) //Object isn't anchored
-		usr << "<span class='warning'>You can't pick that up!</span>"
+		to_chat(usr, "<span class='warning'>You can't pick that up!</span>")
 		return
 	if (!usr.hand && usr.r_hand) //Right hand is not full
-		usr << "<span class='warning'>Your right hand is full.</span>"
+		to_chat(usr, "<span class='warning'>Your right hand is full.</span>")
 		return
 	if (usr.hand && usr.l_hand) //Left hand is not full
-		usr << "<span class='warning'>Your left hand is full.</span>"
+		to_chat(usr, "<span class='warning'>Your left hand is full.</span>")
 		return
 	if (!istype(loc, /turf)) //Object is on a turf
-		usr << "<span class='warning'>You can't pick that up!</span>"
+		to_chat(usr, "<span class='warning'>You can't pick that up!</span>")
 		return
 	//All checks are done, time to pick it up!
 	usr.UnarmedAttack(src)

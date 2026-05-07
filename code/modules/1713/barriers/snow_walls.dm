@@ -67,18 +67,18 @@
 	flags = FALSE
 
 /obj/item/weapon/snowwall/attack_self(mob/user)
-	user << "You start building the snow blocks wall..."
+	to_chat(user, "You start building the snow blocks wall...")
 	if (do_after(user, 25, src))
-		user << "You finish the placement of the snow blocks wall foundation."
+		to_chat(user, "You finish the placement of the snow blocks wall foundation.")
 		new /obj/covers/snow_wall/blocks/incomplete(user.loc)
 		qdel(src)
 		return
 
 /obj/item/weapon/snowwall/attack_hand(mob/user)
 	if (user.a_intent == I_GRAB)
-		user << "You start moulding the snow into some snowballs..."
+		to_chat(user, "You start moulding the snow into some snowballs...")
 		if (do_after(user,40,user.loc))
-			user << "You finish the snowballs."
+			to_chat(user, "You finish the snowballs.")
 			new/obj/item/weapon/snowball(user.loc)
 			new/obj/item/weapon/snowball(user.loc)
 			new/obj/item/weapon/snowball(user.loc)
@@ -124,18 +124,18 @@
 /obj/covers/snow_wall/blocks/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/snowwall))
 		if (stage == 3)
-			user << "You start adding snow to the wall..."
+			to_chat(user, "You start adding snow to the wall...")
 			if (do_after(user, 20, src) && W)
-				user << "You finish adding snow to the wall, completing it."
+				to_chat(user, "You finish adding snow to the wall, completing it.")
 				qdel(W)
 				new /obj/covers/snow_wall/blocks(loc)
 				qdel(src)
 				return
 		else if (stage <= 2)
-			user << "You start adding snow to the wall..."
+			to_chat(user, "You start adding snow to the wall...")
 			if (do_after(user, 20, src))
 				if (stage <= 2)
-					user << "You finish adding snow to the wall."
+					to_chat(user, "You finish adding snow to the wall.")
 					stage = (stage+1)
 					icon_state = "igloo_wall_inc[stage]"
 					health = (20*stage)

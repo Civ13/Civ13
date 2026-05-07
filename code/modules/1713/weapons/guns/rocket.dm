@@ -110,9 +110,9 @@
 	if(!..(user, 2))
 		return
 	if (rockets)
-		user << SPAN_NOTICE("<b>LOADED</B>")
+		to_chat(user, SPAN_NOTICE("<b>LOADED</B>"))
 	else
-		user << SPAN_NOTICE("<b>UNLOADED</B>")
+		to_chat(user, SPAN_NOTICE("<b>UNLOADED</B>"))
 
 /obj/item/weapon/gun/launcher/rocket/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))
@@ -124,7 +124,7 @@
 			to_chat(user, "You put the [I] into the [src].") // We don't include \the here as all of the rockets are proper-nouned, so it would output badly, e.g: "You put PG-7V rocket in RPG-7.".
 			update_icon()
 		else
-			usr << "\The [src] cannot hold more rockets."
+			to_chat(usr, "\The [src] cannot hold more rockets.")
 
 /obj/item/weapon/gun/launcher/rocket/proc/unload(mob/user)
 	if(rockets.len)
@@ -231,10 +231,10 @@
 		if(istype(I, good_flare))
 			var/obj/item/flashlight/flare/F = I
 			if(F.on)
-				user << SPAN_WARNING("You can't put a lit flare in [src]!")
+				to_chat(user, SPAN_WARNING("You can't put a lit flare in [src]!"))
 				return
 			if(!F.fuel)
-				user << SPAN_WARNING("You can't put a burnt out flare in [src]!")
+				to_chat(user, SPAN_WARNING("You can't put a burnt out flare in [src]!"))
 				return
 			if(flares.len < max_flares && do_after(user, load_delay, src, can_move = TRUE))
 				user.remove_from_mob(I)
@@ -349,11 +349,11 @@
 				user.visible_message("[user] load \the [F] into \the [src].",SPAN_NOTICE("You load \the [F] into \the [src]."))
 				update_icon()
 			else
-				user << SPAN_WARNING("\The [src] is already loaded!")
+				to_chat(user, SPAN_WARNING("\The [src] is already loaded!"))
 		else
-			user << SPAN_WARNING("That's not a flare casing!")
+			to_chat(user, SPAN_WARNING("That's not a flare casing!"))
 	else
-		user << SPAN_WARNING("\The [src] is closed!")
+		to_chat(user, SPAN_WARNING("\The [src] is closed!"))
 
 /obj/item/weapon/gun/launcher/flaregun/civilian/consume_next_projectile()
 	if(flares.len)
@@ -388,15 +388,15 @@
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))
-		user << SPAN_WARNING("You can't reload a [src]!")
+		to_chat(user, SPAN_WARNING("You can't reload a [src]!"))
 		return
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/unload(mob/user)
 	if(rockets.len)
-		user << SPAN_WARNING("You can't unload a [src]!")
+		to_chat(user, SPAN_WARNING("You can't unload a [src]!"))
 		return
 	else
-		user << SPAN_WARNING("\The [src] is already used.")
+		to_chat(user, SPAN_WARNING("\The [src] is already used."))
 		return
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/attack_hand(mob/user)

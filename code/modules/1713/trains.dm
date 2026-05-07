@@ -138,7 +138,7 @@
 	for (var/obj/structure/trains/TR in loc)
 		TR.dir = dir
 	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-	usr << "You rotate the platform to the left."
+	to_chat(usr, "You rotate the platform to the left.")
 	return
 
 /obj/structure/rails/rotate/verb/rotate_right()
@@ -154,7 +154,7 @@
 	for (var/obj/structure/trains/TR in loc)
 		TR.dir = dir
 	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-	usr << "You rotate the platform to the right."
+	to_chat(usr, "You rotate the platform to the right.")
 	return
 
 /obj/structure/rails/rotate/attack_hand(mob/living/user as mob)
@@ -170,7 +170,7 @@
 	for (var/obj/structure/trains/TR in loc)
 		TR.dir = dir
 	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-	user << "You rotate the platform to the [dir2text(dir)]."
+	to_chat(user, "You rotate the platform to the [dir2text(dir)].")
 	return
 /////////////////////////////////////////////////////////////////////////////////
 /obj/structure/train_lever
@@ -247,16 +247,16 @@
 	for (var/obj/structure/trains/TR in get_step(src, dir))
 		if (TR.connected && TR.connected == src)
 			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-			usr << "You unhitch \the [src] from \the [connected]."
+			to_chat(usr, "You unhitch \the [src] from \the [connected].")
 			connected = null
 			return TRUE
 		else if (!TR.connected)
 			if (dir == TR.dir || dir == OPPOSITE_DIR(TR.dir))
 				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-				usr << "You hitch \the [src] to \the [TR]."
+				to_chat(usr, "You hitch \the [src] to \the [TR].")
 				TR.connected = src
 				return TRUE
-	usr << "There is no wagon to hitch \the [src] to."
+	to_chat(usr, "There is no wagon to hitch \the [src] to.")
 	return FALSE
 
 /obj/structure/trains/proc/check_connections()
@@ -367,7 +367,7 @@
 			else if (L.on)
 				L.fuel--
 				L.set_speed()
-//				world.log << "[L.train_speed]"
+//				world.log << "[L.train_speed]")
 		var/obj/structure/rails/RT = null
 		for (var/obj/structure/rails/RTT in loc)
 			RT = RTT
@@ -393,24 +393,24 @@
 					if (8)
 						tgtt = get_step(RT, 1)
 		else if (RT && istype(RT, /obj/structure/rails/turn) && RT.turn_dir)
-//			world.log << "d: [dir]"
-//			world.log << "od: [OPPOSITE_DIR(dir)]"
-//			world.log << "rd: [RT.dir]"
-//			world.log << "td: [RT.turn_dir]"
+//			world.log << "d: [dir]")
+//			world.log << "od: [OPPOSITE_DIR(dir)]")
+//			world.log << "rd: [RT.dir]")
+//			world.log << "td: [RT.turn_dir]")
 			if (RT.turn_dir == dir)
-//				world.log << "a"
+//				world.log << "a")
 				fdir = RT.dir
 				tgtt = get_step(RT, RT.dir)
 			else if (RT.turn_dir == OPPOSITE_DIR(dir))
-//				world.log << "b"
+//				world.log << "b")
 				fdir = OPPOSITE_DIR(RT.dir)
 				tgtt = get_step(RT, OPPOSITE_DIR(RT.dir))
 			else if (RT.dir == dir)
-//				world.log << "c"
+//				world.log << "c")
 				fdir = RT.turn_dir
 				tgtt = get_step(RT, RT.turn_dir)
 			else if (RT.dir == OPPOSITE_DIR(dir))
-//				world.log << "d"
+//				world.log << "d")
 				fdir = OPPOSITE_DIR(RT.turn_dir)
 				tgtt = get_step(RT, OPPOSITE_DIR(RT.turn_dir))
 		if (!rail_canmove(fdir))
@@ -542,18 +542,18 @@
 	if (M.loc == src.loc)
 		buckle_mob(M)
 		if (user == M)
-			user << "You buckle yourself to \the [src]."
+			to_chat(user, "You buckle yourself to \the [src].")
 		else
 			visible_message("[user] buckles [M] to \the [src].","You buckle [M] to \the [src].")
 		return
 	else
 		if (user == M)
-			user << "You start climbing into \the [src]..."
+			to_chat(user, "You start climbing into \the [src]...")
 		else
 			visible_message("[user] starts dragging [M] into \the [src]...", "You start dragging [M] into \the [src]...")
 		if (do_after(user, 50, src))
 			if (user == M)
-				user << "You climb into \the [src]."
+				to_chat(user, "You climb into \the [src].")
 			else
 				visible_message("[user] drags [M] into \the [src].", "You drag [M] into \the [src].")
 			M.forceMove(src.loc)
@@ -700,15 +700,15 @@
 	..()
 	var/aprfuel = fuel/max_fuel
 	if (aprfuel >= 0.8)
-		user << "The combustion chamber seems full!"
+		to_chat(user, "The combustion chamber seems full!")
 	else if (aprfuel < 0.8 && aprfuel >= 0.6)
-		user << "The combustion chamber seems to be suficiently fueled."
+		to_chat(user, "The combustion chamber seems to be suficiently fueled.")
 	else if (aprfuel < 0.6 && aprfuel >= 0.4)
-		user << "The combustion chamber seems to be stable."
+		to_chat(user, "The combustion chamber seems to be stable.")
 	else if (aprfuel < 0.4 && aprfuel >= 0.2)
-		user << "The combustion chamber seems to be emptying."
+		to_chat(user, "The combustion chamber seems to be emptying.")
 	else
-		user << "The combustion chamber seems to be almost empty!"
+		to_chat(user, "The combustion chamber seems to be almost empty!")
 	return TRUE
 
 /obj/structure/trains/locomotive/coal/attackby(obj/item/W as obj, mob/user as mob)
@@ -716,36 +716,36 @@
 		var/obj/item/stack/S = W
 		if (istype(S, /obj/item/stack/ore/coal))
 			if (fuel>=max_fuel)
-				user << "<span class = 'notice'>The combustion chamber is full!</span>"
+				to_chat(user, "<span class = 'notice'>The combustion chamber is full!</span>")
 				return
 			else if ((S.amount*15)+fuel>max_fuel)
-				user << "<span class = 'notice'>The combustion chamber can't fit that much fuel! Try with a smaller amount.</span>"
+				to_chat(user, "<span class = 'notice'>The combustion chamber can't fit that much fuel! Try with a smaller amount.</span>")
 				return
 			fuel+= S.amount*15
 			qdel(W)
-			user << "You refuel \the [src]."
+			to_chat(user, "You refuel \the [src].")
 			return
 		else if (istype(S, /obj/item/stack/material/wood || /material/wood/soft))
 			if (fuel>=max_fuel)
-				user << "<span class = 'notice'>The combustion chamber is full!</span>"
+				to_chat(user, "<span class = 'notice'>The combustion chamber is full!</span>")
 				return
 			else if ((S.amount*3)+fuel>max_fuel)
-				user << "<span class = 'notice'>The combustion chamber can't fit that much fuel! Try with a smaller amount.</span>"
+				to_chat(user, "<span class = 'notice'>The combustion chamber can't fit that much fuel! Try with a smaller amount.</span>")
 				return
 			fuel+= S.amount*3
 			qdel(W)
-			user << "You refuel \the [src]."
+			to_chat(user, "You refuel \the [src].")
 			return
 		else if (istype(S, /obj/item/weapon/branch))
 			if (fuel>=max_fuel)
-				user << "<span class = 'notice'>The combustion chamber is full!</span>"
+				to_chat(user, "<span class = 'notice'>The combustion chamber is full!</span>")
 				return
 			else if ((S.amount*3)+fuel>max_fuel)
-				user << "<span class = 'notice'>The combustion chamber can't fit that much fuel! Try with a smaller amount.</span>"
+				to_chat(user, "<span class = 'notice'>The combustion chamber can't fit that much fuel! Try with a smaller amount.</span>")
 				return
 			fuel+= S.amount*3
 			qdel(W)
-			user << "You refuel \the [src]."
+			to_chat(user, "You refuel \the [src].")
 			return
 	else
 		..()

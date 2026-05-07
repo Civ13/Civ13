@@ -124,7 +124,7 @@
 	var/mob/living/human/H = user
 	if (src.is_medical)
 		if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
-			H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
+			to_chat(H, "<span class = 'danger'>These chemicals are too complex for you to understand.</span>")
 			return
 	// this is the data which will be sent to the ui
 	var/data[0]
@@ -197,7 +197,7 @@
 /obj/structure/chemical_dispenser/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/user as mob)
 	if (beaker)
 		if (B && B.reagents && B.reagents.reagent_list.len)
-			user << "You transfer the reagents to the dispenser."
+			to_chat(user, "You transfer the reagents to the dispenser.")
 			for(var/datum/reagent/R in B.reagents.reagent_list)
 				var/done = FALSE
 				for (var/list/r in dispensable_reagents)
@@ -211,15 +211,15 @@
 			sanitize_reagents()
 			return
 		else
-			user << "A beaker is already placed in the dispenser."
+			to_chat(user, "A beaker is already placed in the dispenser.")
 			return
 	if (istype(B, /obj/item/weapon/reagent_containers/glass) || istype(B, /obj/item/weapon/reagent_containers/food))
 		if (!accept_glass && istype(B,/obj/item/weapon/reagent_containers/food))
-			user << "<span class='notice'>You should only use beakers to manage chemicals.</span>"
+			to_chat(user, "<span class='notice'>You should only use beakers to manage chemicals.</span>")
 		beaker =  B
 		user.drop_item()
 		B.loc = src
-		user << "You place [B] in the dispenser."
+		to_chat(user, "You place [B] in the dispenser.")
 		GLOB.nanomanager.update_uis(src) // update all UIs attached to src
 		return
 	..()
@@ -271,16 +271,16 @@
 
 /obj/structure/lab_distillery/attack_hand(var/mob/living/human/H)
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
-		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
+		to_chat(H, "<span class = 'danger'>These chemicals are too complex for you to understand.</span>")
 		return
 	if (reagents.total_volume <= 0)
-		H << "The distiller is empty."
+		to_chat(H, "The distiller is empty.")
 		return
 	if (!collector && !active)
-		H << "You cannot turn the distiller active without a collector."
+		to_chat(H, "You cannot turn the distiller active without a collector.")
 		return
 	if (collector && !active)
-		H << "You turn the distiller active."
+		to_chat(H, "You turn the distiller active.")
 		active = TRUE
 		update_icon()
 		process_machine()
@@ -288,20 +288,20 @@
 
 /obj/structure/lab_distillery/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/living/human/H as mob)
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
-		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
+		to_chat(H, "<span class = 'danger'>These chemicals are too complex for you to understand.</span>")
 		return
 	if (B.reagents)
 		if (B.reagents.total_volume > 0)
 			var/tamt = B.reagents.trans_to_holder(src.reagents, 10, TRUE, FALSE)
-			H << "You pour [tamt] units from \the [B] into the distiller."
+			to_chat(H, "You pour [tamt] units from \the [B] into the distiller.")
 			update_icon()
 			return
 	if (istype(B, /obj/item/weapon/reagent_containers/glass/beaker) && !collector)
 		if (B.reagents.total_volume > 0)
-			H << "The collector must be empty!"
+			to_chat(H, "The collector must be empty!")
 			return
 		else
-			H << "You place [B] as the collector for the distiller."
+			to_chat(H, "You place [B] as the collector for the distiller.")
 			collector =  B
 			H.drop_item()
 			B.loc = src
@@ -315,11 +315,11 @@
 	set src in range(1, usr)
 
 	if (!collector)
-		usr << "There is no beaker to remove from \the [src]."
+		to_chat(usr, "There is no beaker to remove from \the [src].")
 		return
 
 	if (active)
-		usr << "<span class = 'danger'>You cannot remove the beaker while the distiller is running!</span>"
+		to_chat(usr, "<span class = 'danger'>You cannot remove the beaker while the distiller is running!</span>")
 		return
 
 	if (collector && !active)
@@ -402,22 +402,22 @@
 
 /obj/structure/centrifuge/attack_hand(var/mob/living/human/H)
 	if (!anchored)
-		H << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		to_chat(H, SPAN_NOTICE("Fix \the [src] in place with a wrench first."))
 		return
 	else if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
-		H << SPAN_DANGER("These chemicals are too complex for you to understand.")
+		to_chat(H, SPAN_DANGER("These chemicals are too complex for you to understand."))
 		return
 	else if (!check_power())
-		H << SPAN_WARNING("\The [src] doesn't have any power!")
+		to_chat(H, SPAN_WARNING("\The [src] doesn't have any power!"))
 		return
 	else if (reagents.total_volume <= 0)
-		H << SPAN_NOTICE("\The [src] is empty.")
+		to_chat(H, SPAN_NOTICE("\The [src] is empty."))
 		return
 	else if (!collector && !active)
-		H << SPAN_NOTICE("You cannot turn \the [src] active without a collector.")
+		to_chat(H, SPAN_NOTICE("You cannot turn \the [src] active without a collector."))
 		return
 	else if (collector && !active)
-		H << SPAN_NOTICE("You turn \the [src] active.")
+		to_chat(H, SPAN_NOTICE("You turn \the [src] active."))
 		active = TRUE
 		update_icon()
 		process_machine()
@@ -427,26 +427,26 @@
 	..()
 
 	if (!anchored)
-		user << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		to_chat(user, SPAN_NOTICE("Fix \the [src] in place with a wrench first."))
 		return
 
 	else if (istype(W,/obj/item/weapon/reagent_containers))
 		if (istype(user) && user.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
-			user << SPAN_DANGER("These chemicals are too complex for you to understand")
+			to_chat(user, SPAN_DANGER("These chemicals are too complex for you to understand"))
 			return
 		var/obj/item/weapon/reagent_containers/B = W
 		if (B.reagents)
 			if (B.reagents.total_volume > 0)
 				var/tamt = B.reagents.trans_to_holder(src.reagents, 10, TRUE, FALSE)
-				user << "You pour [tamt] units from \the [B] into \the [src]."
+				to_chat(user, "You pour [tamt] units from \the [B] into \the [src].")
 				update_icon()
 				return
 		if (istype(B, /obj/item/weapon/reagent_containers/glass/beaker/vial) && !collector)
 			if (B.reagents.total_volume > 0)
-				user << "The collector must be empty!"
+				to_chat(user, "The collector must be empty!")
 				return
 			else
-				user << "You place [B] as the collector for \the [src]."
+				to_chat(user, "You place [B] as the collector for \the [src].")
 				collector =  B
 				user.drop_item()
 				B.loc = src
@@ -463,11 +463,11 @@
 	set src in range(1, usr)
 
 	if (!collector)
-		usr << "There is no vial to remove from \the [src]."
+		to_chat(usr, "There is no vial to remove from \the [src].")
 		return
 
 	if (active)
-		usr << "<span class = 'danger'>You cannot remove the vial while \the [src] is running!</span>"
+		to_chat(usr, "<span class = 'danger'>You cannot remove the vial while \the [src] is running!</span>")
 		return
 
 	if (collector && !active)
@@ -552,16 +552,16 @@
 
 /obj/structure/grinder/attack_hand(var/mob/living/human/H)
 	if (!anchored)
-		H << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		to_chat(H, SPAN_NOTICE("Fix \the [src] in place with a wrench first."))
 		return
 	else if (!check_power())
-		H << SPAN_WARNING("\The [src] doesn't have any power!")
+		to_chat(H, SPAN_WARNING("\The [src] doesn't have any power!"))
 		return
 	else if (!inserted && !active)
-		H << SPAN_NOTICE("\The [src] is empty.")
+		to_chat(H, SPAN_NOTICE("\The [src] is empty."))
 		return
 	else if (inserted && !active)
-		H << SPAN_NOTICE("You turn \the [src] active.")
+		to_chat(H, SPAN_NOTICE("You turn \the [src] active."))
 		active = TRUE
 		update_icon()
 		process_machine()
@@ -572,7 +572,7 @@
 	..()
 
 	if (!anchored)
-		user << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		to_chat(user, SPAN_NOTICE("Fix \the [src] in place with a wrench first."))
 		return
 
 	if (istype(W, /obj/item/stack/cable_coil))
@@ -580,7 +580,7 @@
 		return
 
 	else if (istype(W, /obj/item/stack) && !inserted)
-		user << "You place \the [W] in \the [src] for grinding."
+		to_chat(user, "You place \the [W] in \the [src] for grinding.")
 		inserted =  W
 		user.drop_item()
 		W.loc = src
@@ -593,11 +593,11 @@
 	set src in range(1, usr)
 
 	if (!inserted)
-		usr << "There is no object to remove from \the [src]."
+		to_chat(usr, "There is no object to remove from \the [src].")
 		return
 
 	if (active)
-		usr << SPAN_DANGER(">You cannot remove \the [inserted] while \the [src] is running!</span>")
+		to_chat(usr, SPAN_DANGER(">You cannot remove \the [inserted] while \the [src] is running!</span>"))
 		return
 
 	if (inserted && !active)
@@ -681,35 +681,35 @@
 	..()
 
 	if (!anchored && !istype(B,/obj/item/weapon/wrench))
-		user << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		to_chat(user, SPAN_NOTICE("Fix \the [src] in place with a wrench first."))
 		return
 	if (istype(B,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
 		anchored = !anchored
 
 	if (istype(B, /obj/item/weapon/reagent_containers/glass))
 
 		if (beaker)
-			user << "A beaker is already loaded into the machine."
+			to_chat(user, "A beaker is already loaded into the machine.")
 			return
 		beaker = B
 		user.drop_item()
 		B.loc = src
-		user << "You add the beaker to the machine!"
+		to_chat(user, "You add the beaker to the machine!")
 		updateUsrDialog()
 		icon_state = "mixer1b"
 
 	else if (istype(B, /obj/item/weapon/storage/pill_bottle))
 
 		if (loaded_pill_bottle)
-			user << "A pill bottle is already loaded into the machine."
+			to_chat(user, "A pill bottle is already loaded into the machine.")
 			return
 
 		loaded_pill_bottle = B
 		user.drop_item()
 		B.loc = src
-		user << "You add the pill bottle into the dispenser slot!"
+		to_chat(user, "You add the pill bottle into the dispenser slot!")
 		updateUsrDialog()
 	return
 
@@ -869,7 +869,7 @@
 		spawn()
 			has_sprites += user.client
 			for (var/i = TRUE to MAX_PILL_SPRITE)
-				usr << browse_rsc(icon('icons/obj/chemical.dmi', "pill" + num2text(i)), "pill[i].png")
+				usr << browse_rsc(icon('icons/obj/chemical.dmi', "pill" + num2text(i), "pill[i].png"))
 			for (var/sprite in BOTTLE_SPRITES)
 				usr << browse_rsc(icon('icons/obj/chemical.dmi', sprite), "[sprite].png")
 	var/dat = ""
@@ -950,37 +950,37 @@
 
 /obj/structure/distillery/attack_hand(var/mob/living/human/H)
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_NORMAL))
-		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
+		to_chat(H, "<span class = 'danger'>These chemicals are too complex for you to understand.</span>")
 		return
 	if (reagents.total_volume <= 0)
-		H << "The distiller is empty."
+		to_chat(H, "The distiller is empty.")
 		return
 	if (!collector && !active)
-		H << "You cannot turn the distiller active without a collector."
+		to_chat(H, "You cannot turn the distiller active without a collector.")
 		return
 	if (collector && !active)
-		H << "You turn the distiller active."
+		to_chat(H, "You turn the distiller active.")
 		active = TRUE
 		update_icon()
 		process_machine()
 	..()
 /obj/structure/distillery/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/living/human/H as mob)
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
-		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
+		to_chat(H, "<span class = 'danger'>These chemicals are too complex for you to understand.</span>")
 		return
 	if (B.reagents)
 		if (B.reagents.total_volume > 0 && collector && collector.reagents.get_free_space() > 0)
 			var/amt_transf = collector.reagents.get_free_space()
 			var/tamt = B.reagents.trans_to_holder(src.reagents, min(10, amt_transf), TRUE, FALSE)
-			H << "You pour [tamt] units from \the [B] into the distiller."
+			to_chat(H, "You pour [tamt] units from \the [B] into the distiller.")
 			update_icon()
 			return
 	if (istype(B, /obj/item/weapon/reagent_containers/glass/) && !collector)
 		if (B.reagents.total_volume > 0)
-			H << "The collector must be empty!"
+			to_chat(H, "The collector must be empty!")
 			return
 		else
-			H << "You place [B] as the collector for the distiller."
+			to_chat(H, "You place [B] as the collector for the distiller.")
 			collector =  B
 			H.drop_item()
 			B.loc = src
@@ -994,11 +994,11 @@
 	set src in range(1, usr)
 
 	if (!collector)
-		usr << "There is nothing to remove from \the [src]."
+		to_chat(usr, "There is nothing to remove from \the [src].")
 		return
 
 	if (active)
-		usr << "<span class = 'danger'>You cannot remove the [collector] while the distiller is running!</span>"
+		to_chat(usr, "<span class = 'danger'>You cannot remove the [collector] while the distiller is running!</span>")
 		return
 
 	if (collector && !active)

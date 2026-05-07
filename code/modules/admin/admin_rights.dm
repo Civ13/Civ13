@@ -8,7 +8,7 @@ generally it would be used like so:
 
 proc/admin_proc()
 	if (!check_rights(R_ADMIN)) return
-	world << "you have enough rights!"
+	to_chat(world, "you have enough rights!")
 
 NOTE: It checks usr by default. Supply the "user" argument if you wish to check for a specific mob.
 */
@@ -20,13 +20,13 @@ NOTE: It checks usr by default. Supply the "user" argument if you wish to check 
 					return TRUE
 				else
 					if (show_msg)
-						user << "<font color='red'>Error: You do not have sufficient rights to do that. You require one of the following flags:[rights2text(rights_required," ")].</font>"
+						to_chat(user, "<font color='red'>Error: You do not have sufficient rights to do that. You require one of the following flags:[rights2text(rights_required," ")].</font>")
 		else
 			if (user.client.holder)
 				return TRUE
 			else
 				if (show_msg)
-					user << "<font color='red'>Error: You are not an admin.</font>"
+					to_chat(user, "<font color='red'>Error: You are not an admin.</font>")
 	return FALSE
 
 //probably a bit iffy - will hopefully figure out a better solution
@@ -38,6 +38,6 @@ NOTE: It checks usr by default. Supply the "user" argument if you wish to check 
 			if (usr.client.holder.rights != other.holder.rights)
 				if ( (usr.client.holder.rights & other.holder.rights) == other.holder.rights )
 					return TRUE	//we have all the rights they have and more
-		usr << "<font color='red'>Error: Cannot proceed. They have more or equal rights to us.</font>"
+		to_chat(usr, "<font color='red'>Error: Cannot proceed. They have more or equal rights to us.</font>")
 	return FALSE
 

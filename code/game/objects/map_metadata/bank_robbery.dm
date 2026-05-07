@@ -124,7 +124,7 @@
 	if (processes.ticker.playtime_elapsed >= 18000)
 		ticker.finished = TRUE
 		var/message = "The Police Department has surrounded the whole neighborhood and are going in after each robber, one by one. The Robbers have failed their heist!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
@@ -132,7 +132,7 @@
 		for(var/obj/structure/money_bag/C in world)
 			if (C.storedvalue >= 10000) // total value stored = 12400+. So roughly 3/4th
 				var/message = "The Robbers have sucessfully stolen over 10.000 dollars! The robbery was successful!"
-				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+				to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 				show_global_battle_report(null)
 				win_condition_spam_check = TRUE
 				ticker.finished = TRUE
@@ -140,7 +140,7 @@
 		if (civilians_alive == 0 || civilians_evacuated == 12-total_killed || total_killed == 12)
 			if ((current_winner && current_loser && world.time > next_win) && no_loop_o == FALSE)
 				ticker.finished = TRUE
-				world << "<font size = 4><span class = 'notice'>The Police Department seized total control of the Bank!</span></font>"
+				to_chat(world, "<font size = 4><span class = 'notice'>The Police Department seized total control of the Bank!</span></font>")
 				show_global_battle_report(null)
 				win_condition_spam_check = TRUE
 				no_loop_o = TRUE
@@ -179,7 +179,7 @@
 						current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 			else
 				if (current_win_condition != no_winner && current_winner && current_loser)
-					world << "<font size = 3>The Robbers managed to regain control of the Vault Room!</font>"
+					to_chat(world, "<font size = 3>The Robbers managed to regain control of the Vault Room!</font>")
 					current_winner = null
 					current_loser = null
 				next_win = -1
@@ -252,10 +252,10 @@
 
 /obj/map_metadata/bank_robbery/proc/civ_status()
 	spawn(1200)
-		world << "<big>Evacuated hostages: [civilians_evacuated] </big>"
-		world << "<big>Alive hostages: [civilians_alive] </big>"
-		world << "<big>Dead hostages: [12-civilians_alive] </big>"
-		world << "<big>Arrested criminals: [arrested_criminals] </big>"
+		to_chat(world, "<big>Evacuated hostages: [civilians_evacuated] </big>")
+		to_chat(world, "<big>Alive hostages: [civilians_alive] </big>")
+		to_chat(world, "<big>Dead hostages: [12-civilians_alive] </big>")
+		to_chat(world, "<big>Arrested criminals: [arrested_criminals] </big>")
 		civ_status()
 
 //Shitty temporary solution, to be refactored if possible
@@ -268,25 +268,25 @@ var/message_spam_check_6 = FALSE
 
 /obj/map_metadata/bank_robbery/proc/round_status()
 	if ((civilians_evacuated == civilians_alive && civilians_alive != 0) && message_spam_check_1 == FALSE)
-		world << "<big><span class ='warning'>All remaining alive hostages have been evacuated! The Police is now securing the building with more units!</span></big>"
+		to_chat(world, "<big><span class ='warning'>All remaining alive hostages have been evacuated! The Police is now securing the building with more units!</span></big>")
 		message_spam_check_1 = TRUE
 	else if (civilians_alive == 0 && message_spam_check_2 == FALSE)
-		world << "<big><span class = 'danger'>All the hostages have been killed! What a blood bath! The Police is now aggressively securing the building with more units!</danger></big>"
+		to_chat(world, "<big><span class = 'danger'>All the hostages have been killed! What a blood bath! The Police is now aggressively securing the building with more units!</danger></big>")
 		message_spam_check_2 = TRUE
 	if (civilians_killed["Robbers"] == kill_treshold-1 && message_spam_check_3 == FALSE)
-		world << "<big><font size=3><span class = 'warning'>At least [kill_treshold-1] additional civilians have been killed: the situation is critical!</span></font></big>"
+		to_chat(world, "<big><font size=3><span class = 'warning'>At least [kill_treshold-1] additional civilians have been killed: the situation is critical!</span></font></big>")
 		message_spam_check_3 = TRUE
 	if ((civilians_killed["Robbers"] >= kill_treshold) && message_spam_check_4 == FALSE)
-		world << "<big><span class = 'danger'>Too many civilians have been killed: Additional SWAT units are on the way!</span></big>"
+		to_chat(world, "<big><span class = 'danger'>Too many civilians have been killed: Additional SWAT units are on the way!</span></big>")
 		message_spam_check_4 = TRUE
 
 	if (civilians_killed["Police"] == kill_treshold-1 && message_spam_check_5 == FALSE)
 		for(var/mob/living/human/H in player_list)
 			if (H.faction_text == "CIVILIAN" && H.stat != DEAD)
-				H << "<big><span class = 'danger'>We're making too much civilian casualties: the situation is critical!</span></big>"
+				to_chat(H, "<big><span class = 'danger'>We're making too much civilian casualties: the situation is critical!</span></big>")
 		message_spam_check_5 = TRUE
 	if ((civilians_killed["Police"] >= kill_treshold) && message_spam_check_6 == FALSE)
-		world << "<big><span class = 'danger'>The Police killed too many civilians: Robbers are bringing out the heavy artillery!</span></big>"
+		to_chat(world, "<big><span class = 'danger'>The Police killed too many civilians: Robbers are bringing out the heavy artillery!</span></big>")
 		message_spam_check_6 = TRUE
 	spawn(10)
 		round_status()
@@ -312,7 +312,7 @@ var/message_spam_check_6 = FALSE
 		next_level_robbers = 1
 		return
 	if (civilians_evacuated >= civilians_alive/2 && civilians_alive != 0 && next_level_police == 0)
-		world << "<big><span class = 'notice'>Half of the hostages have been evacuated, additional equipment is issued to the Police.</span></big>"
+		to_chat(world, "<big><span class = 'notice'>Half of the hostages have been evacuated, additional equipment is issued to the Police.</span></big>")
 		for (var/obj/structure/altar/stone/D in world)
 			if (D.name == "police drop")
 				var/turf/T = get_turf(D)
@@ -326,7 +326,7 @@ var/message_spam_check_6 = FALSE
 		next_level_police = 1
 		return
 	if (civilians_evacuated >= civilians_alive && civilians_alive != 0 && next_level_police == 1)
-		world << "<big><span class = 'notice'>All of the hostages have been evacuated, additional equipment is issued to the Police as more SWAT units are on the way.</span></big>"
+		to_chat(world, "<big><span class = 'notice'>All of the hostages have been evacuated, additional equipment is issued to the Police as more SWAT units are on the way.</span></big>")
 		for (var/obj/structure/altar/stone/D in world)
 			if (D.name == "police drop")
 				var/turf/T = get_turf(D)
@@ -343,7 +343,7 @@ var/message_spam_check_6 = FALSE
 	if (istype(M, /mob/living/human))
 		var/mob/living/human/H = M
 		if (H.faction_text != "RUSSIAN")
-			H << "<span class = 'warning'>You can't figure out the hatch!</span>"
+			to_chat(H, "<span class = 'warning'>You can't figure out the hatch!</span>")
 			return
 		else
 			..()
@@ -354,16 +354,16 @@ var/message_spam_check_6 = FALSE
 	if (istype(M, /mob/living/human))
 		var/mob/living/human/H = M
 		if (H.faction_text != "RUSSIAN")
-			H << "<span class = 'warning'>You can't figure out the hatch!</span>"
+			to_chat(H, "<span class = 'warning'>You can't figure out the hatch!</span>")
 			return
 		else
 			if (processes.ticker.playtime_elapsed >= 6000) //To prevent from stalling the round
-				H << "<span class = 'warning'>I can't go down now, I need to focus on my objective!</span>"
+				to_chat(H, "<span class = 'warning'>I can't go down now, I need to focus on my objective!</span>")
 				return
 			else
 				if (ismob(H.pulling)) //To prevent from taking hostages and handcuffed policemen to the sewers
 					H.stop_pulling()
-					H << "<span class = 'warning'>The hostage refuses to go down with you!</span>"
+					to_chat(H, "<span class = 'warning'>The hostage refuses to go down with you!</span>")
 				for (var/obj/item/weapon/grab/G in (H.r_hand||H.l_hand))
 					qdel(G)
 				..()
@@ -393,7 +393,7 @@ var/message_spam_check_6 = FALSE
 	if (istype(W,/obj/item/stack/money) || istype(W,/obj/item/stack/material/gold) || istype(W,/obj/item/stack/material/silver) || istype(W,/obj/item/stack/material/diamond))
 		storedvalue += (W.value*W.amount)
 		desc = "Stored Value: [storedvalue]."
-		user << "You place \the [W] inside \the [src]."
+		to_chat(user, "You place \the [W] inside \the [src].")
 		qdel(W)
 		if (storedvalue >= 1500)
 			map.update_win_condition()
@@ -401,5 +401,5 @@ var/message_spam_check_6 = FALSE
 		return
 /obj/structure/money_bag/proc/timer()
 	spawn(1200)
-		world << "<big>Stolen money: <b>[storedvalue]/10'000 Dollars</b></big>"
+		to_chat(world, "<big>Stolen money: <b>[storedvalue]/10'000 Dollars</b></big>")
 		timer()

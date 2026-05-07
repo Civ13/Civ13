@@ -138,9 +138,9 @@ By design, d1 is the smallest direction and d2 is the highest
 /*
 	else if(W.tool_behaviour == TOOL_MULTITOOL)
 		if(powernet && (powernet.avail > 0))		// is it powered?
-			user <<"<span class='danger'>Total power: [DisplayPower(powernet.avail)]\nLoad: [DisplayPower(powernet.load)]\nExcess power: [DisplayPower(surplus())]</span>"
+			to_chat(user, "<span class='danger'>Total power: [DisplayPower(powernet.avail)]\nLoad: [DisplayPower(powernet.load)]\nExcess power: [DisplayPower(surplus())]</span>")
 		else
-			user <<"<span class='danger'>The cable is not powered.</span>"
+			to_chat(user, "<span class='danger'>The cable is not powered.</span>")
 		shock(user, 5, 0.2)
 */
 	else
@@ -149,7 +149,7 @@ By design, d1 is the smallest direction and d2 is the highest
 			for(var/obj/structure/cable/CBL in connections)
 				count+=1
 			if (count >= 2)
-				user << "Too many connections! Use a connector."
+				to_chat(user, "Too many connections! Use a connector.")
 				return
 */
 //		handlecable(W, user, params)

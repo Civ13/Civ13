@@ -95,7 +95,7 @@ Get the ultimate area of `A`, similarly to [get_turf].
 #define forrange(x) for (var/v = 1 to x)
 
 #define to_chat(target, message)						to_chat_wrapper(target, message)
-#define to_world(message)								world << message
+#define to_world(message)								to_chat_wrapper(world, message)
 #define to_world_log(message)							world.log << message
 #define sound_to(target, sound)							 target << sound
 #define show_browser(target, browser_content, browser_name) target << browse(browser_content, browser_name)

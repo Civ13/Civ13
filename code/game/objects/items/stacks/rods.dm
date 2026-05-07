@@ -31,15 +31,15 @@
 
 	else if (!in_use)
 		if (amount < 2)
-			user << "<span class='warning'>You need at least two rods to do this.</span>"
+			to_chat(user, "<span class='warning'>You need at least two rods to do this.</span>")
 			return
-		usr << "<span class='notice'>Assembling grille...</span>"
+		to_chat(usr, "<span class='notice'>Assembling grille...</span>")
 		in_use = TRUE
 		if (!do_after(usr, 10))
 			in_use = FALSE
 			return
 		var/obj/structure/grille/F = new /obj/structure/grille/ ( usr.loc )
-		usr << "<span class='notice'>You assemble a grille</span>"
+		to_chat(usr, "<span class='notice'>You assemble a grille</span>")
 		in_use = FALSE
 		F.add_fingerprint(usr)
 		use(2)

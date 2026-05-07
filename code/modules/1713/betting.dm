@@ -27,7 +27,7 @@
 
 /obj/structure/betting_box/examine(mob/user)
 	..()
-	user << "<b>There is a total of [process_totals()] [moneyname] inside.</b>"
+	to_chat(user, "<b>There is a total of [process_totals()] [moneyname] inside.</b>")
 
 /obj/structure/betting_box/proc/clear_bets()
 	odd = 2.0
@@ -72,7 +72,7 @@
 			RB.amount = i[2]
 			H.put_in_active_hand(RB)
 			i[2]=0
-			H << "You withdraw [RB] rubles."
+			to_chat(H, "You withdraw [RB] rubles.")
 			return
 /obj/structure/betting_box/attackby(var/obj/item/I,var/mob/living/human/H)
 	if (!istype(I, /obj/item/stack/money))

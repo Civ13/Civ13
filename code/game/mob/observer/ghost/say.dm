@@ -8,13 +8,13 @@
 
 	if (client)
 		if (client.prefs.muted & MUTE_DEADCHAT)
-			src << "<span class = 'red'>You cannot talk in deadchat (muted).</span>"
+			to_chat(src, "<span class = 'red'>You cannot talk in deadchat (muted).</span>")
 			return
 
 		if (client.handle_spam_prevention(message,MUTE_DEADCHAT))
 			return
 		if (client && client.quickBan_isbanned("OOC"))
-			src << "<span class = 'danger'>You're banned from OOC.</span>"
+			to_chat(src, "<span class = 'danger'>You're banned from OOC.</span>")
 			return
 	. = say_dead(message)
 
@@ -30,7 +30,7 @@
 
 	if (client)
 		if (client.prefs.muted & MUTE_DEADCHAT)
-			src << "<span class = 'red'>You cannot emote in deadchat (muted).</span>"
+			to_chat(src, "<span class = 'red'>You cannot emote in deadchat (muted).</span>")
 			return
 
 		if (client.handle_spam_prevention(message, MUTE_DEADCHAT))

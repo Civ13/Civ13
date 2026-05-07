@@ -837,7 +837,7 @@
 	else if (H.driver_vehicle.moving == TRUE)
 		H.driver_vehicle.moving = FALSE
 		H.driver_vehicle.stopmovementloop()
-		H << "You brake."
+		to_chat(H, "You brake.")
 		return
 */
 
@@ -932,7 +932,7 @@
 /obj/item/vehicleparts/frame/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/sail) && istype(src, /obj/item/vehicleparts/frame/boat) && step == 1)
 		if (do_after(user,130,src) && src && W)
-			user << SPAN_NOTICE("You attach \the [W] to \the [src].")
+			to_chat(user, SPAN_NOTICE("You attach \the [W] to \the [src]."))
 			user.drop_from_inventory(W)
 			qdel(W)
 			var/obj/structure/vehicle/boat/sailboat/N = new/obj/structure/vehicle/boat/sailboat(get_turf(user))
@@ -945,7 +945,7 @@
 		if (NF.reagents.maximum_volume <= maxfueltank)
 			if (do_after(user,100,src))
 				if (fueltank == null)
-					user << SPAN_NOTICE("You attach \the [W] to \the [src].")
+					to_chat(user, SPAN_NOTICE("You attach \the [W] to \the [src]."))
 					user.drop_from_inventory(W)
 					fueltank = W
 					W.forceMove(src)
@@ -953,7 +953,7 @@
 					check_step()
 					return
 		else
-			user << SPAN_NOTICE("This fuel tank is too big for \the [src]!")
+			to_chat(user, SPAN_NOTICE("This fuel tank is too big for \the [src]!"))
 			return
 	else
 		..()
@@ -962,10 +962,10 @@
 	if (istype(O, /obj/structure/engine/internal) && step == 1)
 		var/obj/structure/engine/internal/NE = O
 		if (NE.enginesize <= maxengine && NE.enginesize >= maxengine/4)
-			user << SPAN_NOTICE("You start placing \the [O].")
+			to_chat(user, SPAN_NOTICE("You start placing \the [O]."))
 			if (do_after(user,130,src))
 				if (engine == null)
-					user << SPAN_NOTICE("You attach \the [O] to \the [src].")
+					to_chat(user, SPAN_NOTICE("You attach \the [O] to \the [src]."))
 					engine = O
 					O.forceMove(src)
 					step = 2
@@ -973,10 +973,10 @@
 					update_icon()
 					return
 		else if (NE.enginesize > maxengine)
-			user << SPAN_NOTICE("This engine is too big for \the [src]!")
+			to_chat(user, SPAN_NOTICE("This engine is too big for \the [src]!"))
 			return
 		else if (NE.enginesize <= maxengine && NE.enginesize < maxengine/4)
-			user << SPAN_NOTICE("This engine is too small for \the [src]!")
+			to_chat(user, SPAN_NOTICE("This engine is too small for \the [src]!"))
 			return
 
 /obj/item/vehicleparts/frame/proc/check_step()

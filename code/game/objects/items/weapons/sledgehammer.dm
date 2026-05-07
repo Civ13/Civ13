@@ -16,7 +16,7 @@
 			//Orcs and Apes can use it onehanded.
 		else*/
 	if (!(user.has_empty_hand(both = FALSE)))
-		user << "<span class='warning'>You need both hands to swing the [src]!</span>"
+		to_chat(user, "<span class='warning'>You need both hands to swing the [src]!</span>")
 		return FALSE
 
 /obj/item/weapon/sledgehammer/stone/sledgehammer

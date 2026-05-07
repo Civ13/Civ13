@@ -268,7 +268,7 @@
 			for (var/mob/living/human/M in range(1, src))
 				M.adjustBruteLoss(rand(17,27))
 				M.Weaken(15)
-				M << "The roof collapses!"
+				to_chat(M, "The roof collapses!")
 			Destroy()
 			qdel(src)
 

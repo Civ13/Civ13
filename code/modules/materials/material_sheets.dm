@@ -323,7 +323,7 @@
 	if (map.ID == MAP_GULAG13)
 		if (!istype(W)) return//I really don't understand why this check is needed
 		if (istype(W, /obj/item/weapon/key/soviet/guard))
-			user << "<span class='notice'>You make the clay into a mold of the key.</span>"
+			to_chat(user, "<span class='notice'>You make the clay into a mold of the key.</span>")
 			new/obj/item/weapon/clay/mold/key(user.loc)
 			qdel(src)
 	if (istype(W, type))

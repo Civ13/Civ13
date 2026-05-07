@@ -137,7 +137,7 @@
 		Paralyse(100)
 		L.adjustOxyLoss(25)
 		L.adjustBrainLoss(5)
-		L << "<span class='danger'>You can't breathe!</span>"
+		to_chat(L, "<span class='danger'>You can't breathe!</span>")
 		if (L.stat == DEAD)
 			constricting = FALSE
 			stop_automated_movement = FALSE

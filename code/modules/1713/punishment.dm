@@ -55,7 +55,7 @@
 				playsound(loc, 'sound/effects/gore/bullethit3.ogg')
 				hanging.death()
 			else if (prob(33))
-				hanging << "<span class = 'danger'>You're suffocating!</span>"
+				to_chat(hanging, "<span class = 'danger'>You're suffocating!</span>")
 	else
 		icon_state = ""
 		density = FALSE
@@ -169,7 +169,7 @@
 				playsound(loc, 'sound/effects/gore/bullethit3.ogg')
 				hanging.death()
 			else if (prob(33))
-				hanging << "<span class = 'danger'>You're suffocating!</span>"
+				to_chat(hanging, "<span class = 'danger'>You're suffocating!</span>")
 	else if (roped == FALSE)
 		icon_state = "gallows0"
 		density = FALSE
@@ -258,7 +258,7 @@
 				icon_state = "gallows1"
 				return
 		else
-			H << "There already is a noose here."
+			to_chat(H, "There already is a noose here.")
 			return
 	else
 		..()

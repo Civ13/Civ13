@@ -55,11 +55,11 @@
 			return
 		var/datum/reagent/R = I.reagents.get_master_reagent()
 		if (!R || !I.reagents.reagent_list.len)
-			H << "<span class = 'warning'>There's nothing in \the [I].</span>"
+			to_chat(H, "<span class = 'warning'>There's nothing in \the [I].</span>")
 			return
 		if (!istype(R, /datum/reagent/water))
 			if (I.reagents.total_volume >= reagents.maximum_volume)
-				H << "<span class = 'notice'>The pot can't hold any more reagents.</span>"
+				to_chat(H, "<span class = 'notice'>The pot can't hold any more reagents.</span>")
 			else
 				for (var/datum/reagent/RR in I.reagents.reagent_list)
 					reagents.add_reagent(RR.id, RR.volume)
@@ -73,7 +73,7 @@
 			if (fullness == 100)
 				state = STATE_WATER
 				update_icon()
-			H << "<span class = 'notice'>[H] fills the pot with some water. It's about [fullness]% full.</span>"
+			to_chat(H, "<span class = 'notice'>[H] fills the pot with some water. It's about [fullness]% full.</span>")
 			return
 	else if (!istype(I, /obj/item/kitchen/snack_bowl) || !istype(I, /obj/item/kitchen/wood_bowl))
 		if (istype(I, /obj/item/weapon/reagent_containers/food))
@@ -83,7 +83,7 @@
 			if (istype(I, /obj/item/weapon/reagent_containers/food/drinks))
 				if (I.reagents && I.reagents.reagent_list.len)
 					if (I.reagents.total_volume >= reagents.maximum_volume)
-						H << "<span class = 'notice'>The pot can't hold any more reagents.</span>"
+						to_chat(H, "<span class = 'notice'>The pot can't hold any more reagents.</span>")
 					else
 						for (var/datum/reagent/R in I.reagents.reagent_list)
 							reagents.add_reagent(R.id, R.volume)
@@ -94,10 +94,10 @@
 				C.standard_pour_into(H, src)
 			else
 				if (contents.len >= 15)
-					H << "<span class = 'warning'>There's too much in the pot already.</span>"
+					to_chat(H, "<span class = 'warning'>There's too much in the pot already.</span>")
 					return
 				if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/stew))
-					H << "<span class = 'warning'>This won't fit in the pot.</span>"
+					to_chat(H, "<span class = 'warning'>This won't fit in the pot.</span>")
 					return
 				H.remove_from_mob(I)
 				I.loc = src
@@ -233,13 +233,13 @@
 /obj/structure/pot/examine(mob/user)
 	..(user)
 	if (state == STATE_STEWING && stew_desc)
-		user << "<span class = 'notice'>You can see a [lowertext(stew_desc)].</span>"
+		to_chat(user, "<span class = 'notice'>You can see a [lowertext(stew_desc)].</span>")
 	else if (state == STATE_EMPTY)
-		user << "<span class = 'notice'>It's an empty pot.</span>"
+		to_chat(user, "<span class = 'notice'>It's an empty pot.</span>")
 	else if (state == STATE_WATER)
-		user << "<span class = 'notice'>It's a pot full of water.</span>"
+		to_chat(user, "<span class = 'notice'>It's a pot full of water.</span>")
 	else if (state == STATE_BOILING)
-		user << "<span class = 'notice'>It's a pot with some things boiling inside.</span>"
+		to_chat(user, "<span class = 'notice'>It's a pot with some things boiling inside.</span>")
 		var/message = "You can see "
 		for (var/obj/item/I in contents)
 			message += I.name
@@ -252,7 +252,7 @@
 				else
 					message += ", "
 		message += " in the water."
-		user << "<span class = 'notice'>[message]</span>"
+		to_chat(user, "<span class = 'notice'>[message]</span>")
 
 /obj/structure/pot/verb/empty()
 	set src in range(1, usr)

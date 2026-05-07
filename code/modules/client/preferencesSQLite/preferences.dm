@@ -103,7 +103,7 @@ var/list/preferences_datums = list()
 	if (!user || !user.client)	return
 
 	if (!get_mob_by_key(client_ckey))
-		user << "<span class='danger'>No mob exists for the given client!</span>"
+		to_chat(user, "<span class='danger'>No mob exists for the given client!</span>")
 		return
 
 	var/dat = {"

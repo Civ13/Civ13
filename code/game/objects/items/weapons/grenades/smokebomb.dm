@@ -98,7 +98,7 @@
 					var/choice = input(user,"What type of supply drop?") as null|anything in options
 					if(src && choice)
 						things_to_spawn = options[choice]
-						user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
+						to_chat(user, "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>")
 						firer = user
 						activate(user)
 						add_fingerprint(user)
@@ -120,7 +120,7 @@
 					var/choice = input(user,"What type of supply drop?") as null|anything in options
 					if(src && choice)
 						things_to_spawn = options[choice]
-						user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
+						to_chat(user, "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>")
 						firer = user
 						activate(user)
 						add_fingerprint(user)
@@ -142,7 +142,7 @@
 					var/choice = input(user,"What type of supply drop?") as null|anything in options
 					if(src && choice)
 						things_to_spawn = options[choice]
-						user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
+						to_chat(user, "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>")
 						firer = user
 						activate(user)
 						add_fingerprint(user)

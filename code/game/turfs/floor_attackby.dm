@@ -211,7 +211,7 @@
 						else
 							H.shoveling = FALSE
 					else
-						user << "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>"
+						to_chat(user, "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>")
 				else if (istype(T, /turf/floor/beach/sand) && istype(H))
 					if (T.available_sand > 0)
 						H.shoveling = TRUE
@@ -980,7 +980,7 @@
 					else
 						H.shoveling = FALSE
 				else
-					user << "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>"
+					to_chat(user, "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>")
 			else if (istype(T, /turf/floor/beach/sand) && istype(H) && !H.shoveling)
 				if (T.available_sand > 0)
 					H.shoveling = TRUE
@@ -1042,7 +1042,7 @@
 			return
 		else
 			if (user.z <= 1)
-				user << "<span class='notice'>You can't dig a tunnel here, the bedrock is right below.</span>"
+				to_chat(user, "<span class='notice'>You can't dig a tunnel here, the bedrock is right below.</span>")
 				return
 			var/digging_tunnel_time = 200
 			digging_tunnel_time /= user.getStatCoeff("strength")
@@ -1063,10 +1063,10 @@
 					H.adaptStat("strength", 1)
 			return
 	else if (locate(/obj/structure/multiz/) in user.loc)
-		user << "<span class='warning'>There already is something here.</span>"
+		to_chat(user, "<span class='warning'>There already is something here.</span>")
 		return
 	else if (!TO.is_diggable)
-		user << "<span class='warning'>You cannot dig a hole here!</span>"
+		to_chat(user, "<span class='warning'>You cannot dig a hole here!</span>")
 		return
 
 /turf/floor/beach/water/attack_hand(var/mob/living/human/H)

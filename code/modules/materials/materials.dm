@@ -116,10 +116,10 @@ var/list/material/name_to_material
 // Placeholders for light tiles and rglass.
 /material/proc/build_rod_product(var/mob/user, var/obj/item/stack/used_stack, var/obj/item/stack/target_stack)
 	if (!rod_product)
-		user << "<span class='warning'>You cannot make anything out of \the [target_stack]</span>"
+		to_chat(user, "<span class='warning'>You cannot make anything out of \the [target_stack]</span>")
 		return
 	if (used_stack.amount < 1 || target_stack.amount < 1)
-		user << "<span class='warning'>You need one rod and one sheet of [display_name] to make anything useful.</span>"
+		to_chat(user, "<span class='warning'>You need one rod and one sheet of [display_name] to make anything useful.</span>")
 		return
 	used_stack.use(1)
 	target_stack.use(1)
@@ -131,15 +131,15 @@ var/list/material/name_to_material
 
 /material/proc/build_wired_product(var/mob/user, var/obj/item/stack/used_stack, var/obj/item/stack/target_stack)
 	if (!wire_product)
-		user << "<span class='warning'>You cannot make anything out of \the [target_stack]</span>"
+		to_chat(user, "<span class='warning'>You cannot make anything out of \the [target_stack]</span>")
 		return
 	if (used_stack.amount < 5 || target_stack.amount < 1)
-		user << "<span class='warning'>You need five wires and one sheet of [display_name] to make anything useful.</span>"
+		to_chat(user, "<span class='warning'>You need five wires and one sheet of [display_name] to make anything useful.</span>")
 		return
 
 	used_stack.use(5)
 	target_stack.use(1)
-	user << "<span class='notice'>You attach wire to the [name].</span>"
+	to_chat(user, "<span class='notice'>You attach wire to the [name].</span>")
 	var/obj/item/product = new wire_product(get_turf(user))
 	if (!(user.l_hand && user.r_hand))
 		user.put_in_hands(product)

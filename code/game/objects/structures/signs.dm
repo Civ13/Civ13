@@ -29,7 +29,7 @@
 		//var/icon/I = icon('icons/obj/decals.dmi', icon_state)
 		//S.icon = I.Scale(24, 24)
 		S.sign_state = icon_state
-		user << "You unfasten \the [S] with your [tool]."
+		to_chat(user, "You unfasten \the [S] with your [tool].")
 		qdel(src)
 	else ..()
 
@@ -58,7 +58,7 @@
 			S.name = name
 			S.desc = desc
 			S.icon_state = sign_state
-			user << "You fasten \the [S] with your [tool]."
+			to_chat(user, "You fasten \the [S] with your [tool].")
 			qdel(src)
 	else ..()
 

@@ -97,9 +97,9 @@
 		message_admins("[banner] unbanned '[banned]' using the Discord.")
 		for (var/client/C in clients)
 			if (C.ckey == banned)
-				C << "<span class = 'good'>href_list["Your ban has been lifted."]</span>"
+				to_chat(C, "<span class = 'good'>href_list["Your ban has been lifted."]</span>")
 /proc/attack_log(category, text)
-	attack_log << "\[[time_stamp()]] [game_id] [category]: [text][log_end]"
+	to_chat(attack_log, "\[[time_stamp()]] [game_id] [category]: [text][log_end]")
 
 /proc/log_admin(text)
 	admin_log.Add(text)
@@ -120,7 +120,7 @@
 
 	for (var/client/C in admins)
 		if (C.is_preference_enabled(/datum/client_preference/admin/show_debug_logs))
-			C << "<span class=\"log_message\">DEBUG: [text]</span>"
+			to_chat(C, "<span class=\"log_message\">DEBUG: [text]</span>")
 
 /proc/log_game(text)
 	if (config.log_game)

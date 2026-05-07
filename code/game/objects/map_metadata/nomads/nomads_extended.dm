@@ -28,14 +28,14 @@
 /obj/map_metadata/nomads/extended/proc/check_oil()
 	if (processes.ticker.playtime_elapsed >= 24000 || admin_ended_all_grace_periods)
 		if (custom_faction_nr.len >= 1)
-			world << "<big><b>Current Status:</b></big>"
+			to_chat(world, "<big><b>Current Status:</b></big>")
 		for(var/i = 1, i <= custom_faction_nr.len, i++)
 			custom_civs[custom_faction_nr[i]][5]=0
 			for (var/obj/structure/oil_deposits/OD in world)
 				if (OD.faction == custom_faction_nr[i])
 					custom_civs[custom_faction_nr[i]][5] += OD.storedvalue
 			if (custom_civs[custom_faction_nr[i]][5] > 0)
-				world << "<b>[custom_faction_nr[i]]:</b> [custom_civs[custom_faction_nr[i]][5]] of 3000"
+				to_chat(world, "<b>[custom_faction_nr[i]]:</b> [custom_civs[custom_faction_nr[i]][5]] of 3000")
 
 	spawn(1200)
 		check_oil()
@@ -49,7 +49,7 @@
 	for(var/i = 1, i <= custom_faction_nr.len, i++)
 		if (custom_civs[custom_faction_nr[i]][5] >= oiltarget)
 			var/message = "[custom_faction_nr[i]] has reached [oiltarget] liters of oil! They have won!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			ticker.finished = TRUE

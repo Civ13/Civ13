@@ -365,7 +365,7 @@
 /obj/map_metadata/battle_ships/cross_message(faction)
 	switch (faction)
 		if (REDFACTION)
-			to_chat(world, sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3))
+			world << sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
 			return "<font size=4 color='red'>The battle has begun!</font>"
 		else
 			return ""

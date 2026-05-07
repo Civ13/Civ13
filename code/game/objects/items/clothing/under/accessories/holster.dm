@@ -10,20 +10,20 @@
 	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;holstered;holstered2"
 /obj/item/clothing/accessory/holster/proc/holster(var/obj/item/I, var/mob/living/user)
 	if (holstered && istype(user) && capacity == 1)
-		user << "<span class='warning'>There is already \a [holstered] holstered here!</span>"
+		to_chat(user, "<span class='warning'>There is already \a [holstered] holstered here!</span>")
 		return
 
 	if (holstered && holstered2 && istype(user) && capacity == 2)
-		user << "<span class='warning'>There are already \a [holstered] and \a [holstered2] holstered here!</span>"
+		to_chat(user, "<span class='warning'>There are already \a [holstered] and \a [holstered2] holstered here!</span>")
 		return
 
 	if (!(I.slot_flags & SLOT_HOLSTER))
-		user << "<span class='warning'>[I] won't fit in [src]!</span>"
+		to_chat(user, "<span class='warning'>[I] won't fit in [src]!</span>")
 		return
 	/*if (istype(I, /obj/item/weapon/gun))
 		var/obj/item/weapon/gun/G = I
 		if (G.silencer)
-			user << "<span class='warning'>[I] won't fit in [src]!</span>"
+			to_chat(user, "<span class='warning'>[I] won't fit in [src]!</span>")
 			return*/ //Comments it out until special holsters for silenced pistols can be made
 	if (istype(user))
 		user.stop_aiming(no_message=1)
@@ -71,7 +71,7 @@
 
 	if (holstered && capacity == 1)
 		if (istype(user.get_active_hand(),/obj) && istype(user.get_inactive_hand(),/obj))
-			user << "<span class='warning'>You need an empty hand to draw \the [holstered]!</span>"
+			to_chat(user, "<span class='warning'>You need an empty hand to draw \the [holstered]!</span>")
 		else
 			if (user.a_intent == I_HARM)
 				usr.visible_message(
@@ -90,7 +90,7 @@
 			return
 	else if (holstered2 && capacity == 2)
 		if (istype(user.get_active_hand(),/obj) && istype(user.get_inactive_hand(),/obj))
-			user << "<span class='warning'>You need an empty hand to draw \the [holstered2]!</span>"
+			to_chat(user, "<span class='warning'>You need an empty hand to draw \the [holstered2]!</span>")
 		else
 			if (user.a_intent == I_HARM)
 				usr.visible_message(
@@ -109,7 +109,7 @@
 
 	else if (holstered && capacity == 2)
 		if (istype(user.get_active_hand(),/obj) && istype(user.get_inactive_hand(),/obj))
-			user << "<span class='warning'>You need an empty hand to draw \the [holstered]!</span>"
+			to_chat(user, "<span class='warning'>You need an empty hand to draw \the [holstered]!</span>")
 		else
 			if (user.a_intent == I_HARM)
 				usr.visible_message(
@@ -149,18 +149,18 @@
 	..(user)
 	if (capacity == 1)
 		if (holstered)
-			user << "A [holstered] is holstered here."
+			to_chat(user, "A [holstered] is holstered here.")
 		else
-			user << "It is empty."
+			to_chat(user, "It is empty.")
 	else if (capacity == 2)
 		if (holstered && !holstered2)
-			user << "A [holstered] is holstered here."
+			to_chat(user, "A [holstered] is holstered here.")
 		else if (holstered && holstered2)
-			user << "A [holstered] and a [holstered2] are holstered here."
+			to_chat(user, "A [holstered] and a [holstered2] are holstered here.")
 		else if (!holstered && holstered2)
-			user << "A [holstered2] is holstered here."
+			to_chat(user, "A [holstered2] is holstered here.")
 		else
-			user << "It is empty."
+			to_chat(user, "It is empty.")
 /obj/item/clothing/accessory/holster/on_attached(obj/item/clothing/under/S, mob/user as mob)
 	..()
 	has_suit.verbs += /obj/item/clothing/accessory/holster/verb/holster_verb
@@ -187,12 +187,12 @@
 			H = locate() in S.accessories
 
 	if (!H)
-		usr << "<span class='warning'>Something is very wrong.</span>"
+		to_chat(usr, "<span class='warning'>Something is very wrong.</span>")
 
 	if (!H.holstered)
 		var/obj/item/W = usr.get_active_hand()
 		if (!istype(W, /obj/item))
-			usr << "<span class='warning'>You need your gun equiped to holster it.</span>"
+			to_chat(usr, "<span class='warning'>You need your gun equiped to holster it.</span>")
 			return
 		H.holster(W, usr)
 	else

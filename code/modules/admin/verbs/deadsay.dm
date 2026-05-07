@@ -3,23 +3,23 @@
 	set name = "Dsay" //Gave this shit a shorter name so you only have to time out "dsay" rather than "dead say" to use it --NeoFite
 	set hidden = TRUE
 	if (!holder)
-		src << "Only administrators may use this command."
+		to_chat(src, "Only administrators may use this command.")
 		return
 	if (!mob)
 		return
 	if (prefs.muted & MUTE_DEADCHAT)
-		src << "<span class='warning'>You cannot send DSAY messages (muted).</span>"
+		to_chat(src, "<span class='warning'>You cannot send DSAY messages (muted).</span>")
 		return
 
 	if (!is_preference_enabled(/datum/client_preference/show_dsay))
-		src << "<span class='warning'>You have deadchat muted.</span>"
+		to_chat(src, "<span class='warning'>You have deadchat muted.</span>")
 		return
 
 	if (handle_spam_prevention(msg,MUTE_DEADCHAT))
 		return
 
 	if (quickBan_isbanned("OOC"))
-		src << "<span class = 'danger'>You're banned from OOC.</span>"
+		to_chat(src, "<span class = 'danger'>You're banned from OOC.</span>")
 		return
 
 	var/stafftype = uppertext(holder.rank)

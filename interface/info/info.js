@@ -126,5 +126,5 @@ function notifyServerTabChange(newTab) {
 	window.location.href = `byond://?action=statpanel_tab&tab=${encodeURIComponent(newTab)}`;
 }
 
-// In BYOND, we expose the function to the global scope so client << output can call it.
-window.updateStats = receiveStats;
+// In BYOND, we expose the function to the global scope so the output() command can call it.
+window.receiveStats = receiveStats;

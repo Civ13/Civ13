@@ -5,7 +5,7 @@
 
 	if (usr && stat || !use_me && usr == src)
 		if (usr.stat != DEAD && usr.stat != UNCONSCIOUS) // fixes spam when you die? - Kachnov
-			src << "You are unable to emote."
+			to_chat(src, "You are unable to emote.")
 		return
 
 	var/muzzled = istype(wear_mask, /obj/item/clothing/mask/muzzle) || istype(wear_mask, /obj/item/weapon/grenade)
@@ -68,16 +68,16 @@
 /mob/proc/emote_dead(var/message)
 
 	if (client.prefs.muted & MUTE_DEADCHAT)
-		src << "<span class='danger'>You cannot send deadchat emotes (muted).</span>"
+		to_chat(src, "<span class='danger'>You cannot send deadchat emotes (muted).</span>")
 		return
 
 	if (!is_preference_enabled(/datum/client_preference/show_dsay))
-		src << "<span class='danger'>You have deadchat muted.</span>"
+		to_chat(src, "<span class='danger'>You have deadchat muted.</span>")
 		return
 
 	if (!client.holder)
 		if (!config.dsay_allowed)
-			src << "<span class='danger'>Deadchat is globally muted.</span>"
+			to_chat(src, "<span class='danger'>Deadchat is globally muted.</span>")
 			return
 
 

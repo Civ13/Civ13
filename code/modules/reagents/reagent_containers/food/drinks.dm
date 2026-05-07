@@ -21,7 +21,7 @@
 
 	proc/open(mob/user)
 		playsound(loc,'sound/effects/canopen.ogg', rand(10,50), TRUE)
-		user << "<span class='notice'>You open [src] with an audible pop!</span>"
+		to_chat(user, "<span class='notice'>You open [src] with an audible pop!</span>")
 		flags |= OPENCONTAINER
 
 	attack(mob/M as mob, mob/user as mob, def_zone)
@@ -47,9 +47,9 @@
 		if (istype(W, /obj/item/weapon/pen))
 			var/tmp_label = sanitizeSafe(input(user, "Enter a label for [name]", "Label", label_text), MAX_NAME_LEN)
 			if (length(tmp_label) > 15)
-				user << "<span class='notice'>The label can be at most 15 characters long.</span>"
+				to_chat(user, "<span class='notice'>The label can be at most 15 characters long.</span>")
 			else
-				user << "<span class='notice'>You set the label to \"[tmp_label]\".</span>"
+				to_chat(user, "<span class='notice'>You set the label to \"[tmp_label]\".</span>")
 				label_text = tmp_label
 				update_name_label()
 		else
@@ -65,26 +65,26 @@
 	standard_feed_mob(var/mob/user, var/mob/target)
 		if (!is_open_container())
 			if (istype(target))
-				user << "<span class='notice'>You need to open [src]!</span>"
+				to_chat(user, "<span class='notice'>You need to open [src]!</span>")
 			return TRUE
 		return ..()
 
 	standard_dispenser_refill(var/mob/user, var/obj/structure/reagent_dispensers/target)
 		if (!is_open_container())
 			if (istype(target))
-				user << "<span class='notice'>You need to open [src]!</span>"
+				to_chat(user, "<span class='notice'>You need to open [src]!</span>")
 			return TRUE
 		return ..()
 
 	standard_pour_into(var/mob/user, var/atom/target)
 		if (!is_open_container())
 			if (istype(target) && !istype(target, /obj/structure/table)) // setting on a table
-				user << "<span class='notice'>You need to open [src]!</span>"
+				to_chat(user, "<span class='notice'>You need to open [src]!</span>")
 			return TRUE
 		return ..()
 
 	self_feed_message(var/mob/user)
-		user << "<span class='notice'>You swallow a gulp from \the [src].</span>"
+		to_chat(user, "<span class='notice'>You swallow a gulp from \the [src].</span>")
 
 	feed_sound(var/mob/user)
 		playsound(user.loc, "drink", rand(10, 50), TRUE)
@@ -93,15 +93,15 @@
 		if (!..(user, TRUE))
 			return
 		if (!reagents || reagents.total_volume == FALSE)
-			user << "<span class='notice'>\The [src] is empty!</span>"
+			to_chat(user, "<span class='notice'>\The [src] is empty!</span>")
 		else if (reagents.total_volume <= volume * 0.25)
-			user << "<span class='notice'>\The [src] is almost empty!</span>"
+			to_chat(user, "<span class='notice'>\The [src] is almost empty!</span>")
 		else if (reagents.total_volume <= volume * 0.66)
-			user << "<span class='notice'>\The [src] is half full!</span>"
+			to_chat(user, "<span class='notice'>\The [src] is half full!</span>")
 		else if (reagents.total_volume <= volume * 0.90)
-			user << "<span class='notice'>\The [src] is almost full!</span>"
+			to_chat(user, "<span class='notice'>\The [src] is almost full!</span>")
 		else
-			user << "<span class='notice'>\The [src] is full!</span>"
+			to_chat(user, "<span class='notice'>\The [src] is full!</span>")
 
 	New()
 		..()
@@ -327,10 +327,10 @@
 	if (!is_edible)
 		return
 	if (user == M)
-		user << "<span class='notice'>You eat [src]. Yum!</span>"
+		to_chat(user, "<span class='notice'>You eat [src]. Yum!</span>")
 		user.visible_message("<b>[user]</b> eats [src].")
 	else
-		M << "<span class='notice'>You eat [src]. Yum!</span>"
+		to_chat(M, "<span class='notice'>You eat [src]. Yum!</span>")
 		user.visible_message("<span class='warning'><b>[user]</b> sticks [src] into <b>[M]</b>'s mouth.</span>")
 	playsound(usr.loc,"eat", rand(20,45), TRUE)
 	qdel(src)

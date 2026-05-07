@@ -180,15 +180,15 @@ obj/structure/boiling_oil/attackby(var/obj/item/O, mob/user)
 	if (!istype(O, /obj/item/weapon/reagent_containers))
 		return ..()
 	if (timer <> 0)
-		user << "<span class='warning'>The oil is already in the pot!</span>"
+		to_chat(user, "<span class='warning'>The oil is already in the pot!</span>")
 		return ..()
 	var/obj/item/weapon/reagent_containers/W = O
 	var/total_oil = W.reagents.get_reagent_amount("olive_oil") + W.reagents.get_reagent_amount("fat_oil")
 	if (total_oil == 0)
-		user << "<span class='warning'>This barrel has no any oil inside!</span>"
+		to_chat(user, "<span class='warning'>This barrel has no any oil inside!</span>")
 		return TRUE
 	if (total_oil < 50)
-		user << "<span class='warning'>There isn't enough oil in this barrel! Minimum is 50.</span>"
+		to_chat(user, "<span class='warning'>There isn't enough oil in this barrel! Minimum is 50.</span>")
 		return TRUE
 	var/part = total_oil / 50
 	W.reagents.remove_reagent("olive_oil", W.reagents.get_reagent_amount("olive_oil") / part)

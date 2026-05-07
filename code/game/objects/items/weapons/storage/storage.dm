@@ -109,15 +109,15 @@
 							usr.u_equip(src)
 							usr.put_in_r_hand(src)
 						else
-							usr << "<span class='notice'>Your right hand is already holding the [usr.r_hand].</span>"
+							to_chat(usr, "<span class='notice'>Your right hand is already holding the [usr.r_hand].</span>")
 					if (slot_l_hand)
 						if (!usr.l_hand)
 							usr.u_equip(src)
 							usr.put_in_l_hand(src)
 						else
-							usr << "<span class='notice'>Your left hand is already holding the [usr.l_hand].</span>"
+							to_chat(usr, "<span class='notice'>Your left hand is already holding the [usr.l_hand].</span>")
 			else
-				usr << "<span class='notice'>Your hand is too busy to grab the [src].</span>"
+				to_chat(usr, "<span class='notice'>Your hand is too busy to grab the [src].</span>")
 
 		add_fingerprint(usr)
 
@@ -370,7 +370,7 @@
 
 	if (storage_slots != null && contents.len >= storage_slots)
 		if (!stop_messages)
-			usr << "<span class='notice'>[src] is full, make some space.</span>"
+			to_chat(usr, "<span class='notice'>[src] is full, make some space.</span>")
 		return FALSE //Storage item is full
 
 	if (W.anchored)
@@ -379,22 +379,22 @@
 	if (can_hold.len)
 		if (!is_type_in_list(W, can_hold))
 			if (!stop_messages)
-				usr << "<span class='notice'>[src] cannot hold \the [W].</span>"
+				to_chat(usr, "<span class='notice'>[src] cannot hold \the [W].</span>")
 			return FALSE
 		var/max_instances = can_hold[W.type]
 		if (max_instances && instances_of_type_in_list(W, contents) >= max_instances)
 			if (!stop_messages)
-				usr << "<span class='notice'>[src] has no more space specifically for \the [W].</span>"
+				to_chat(usr, "<span class='notice'>[src] has no more space specifically for \the [W].</span>")
 			return FALSE
 
 	if (cant_hold.len && is_type_in_list(W, cant_hold))
 		if (!stop_messages)
-			usr << "<span class='notice'>[src] cannot hold [W].</span>"
+			to_chat(usr, "<span class='notice'>[src] cannot hold [W].</span>")
 		return FALSE
 
 	if (max_w_class != null && W.w_class > max_w_class)
 		if (!stop_messages)
-			usr << "<span class='notice'>[W] is too long for this [src].</span>"
+			to_chat(usr, "<span class='notice'>[W] is too long for this [src].</span>")
 		return FALSE
 
 	var/total_storage_space = W.get_storage_cost()
@@ -403,12 +403,12 @@
 
 	if (total_storage_space > max_storage_space)
 		if (!stop_messages)
-			usr << "<span class='notice'>[src] is too full, make some space.</span>"
+			to_chat(usr, "<span class='notice'>[src] is too full, make some space.</span>")
 		return FALSE
 
 	if (W.w_class >= w_class && (istype(W, /obj/item/weapon/storage)))
 		if (!stop_messages)
-			usr << "<span class='notice'>[src] cannot hold [W] as it's a storage item of the same size.</span>"
+			to_chat(usr, "<span class='notice'>[src] cannot hold [W] as it's a storage item of the same size.</span>")
 		return FALSE //To prevent the stacking of same sized storage items.
 
 	return TRUE
@@ -432,7 +432,7 @@
 		if (!prevent_warning)
 			for (var/mob/M in viewers(usr, null))
 				if (M == usr)
-					usr << "<span class='notice'>You put \the [W] into [src].</span>"
+					to_chat(usr, "<span class='notice'>You put \the [W] into [src].</span>")
 				else if (M in range(1)) //If someone is standing close enough, they can tell what it is...
 					M.show_message("<span class='notice'>\The [usr] puts [W] into [src].</span>")
 				else if (W && W.w_class >= 3) //Otherwise they can only see large or normal items from a distance...
@@ -499,14 +499,14 @@
 		var/obj/item/weapon/tray/T = W
 		if (T.calc_carry() > 0)
 			if (prob(85))
-				user << "<span class='warning'>The tray won't fit in [src].</span>"
+				to_chat(user, "<span class='warning'>The tray won't fit in [src].</span>")
 				return
 			else
 				W.loc = user.loc
 				if ((user.client && user.s_active != src))
 					user.client.screen -= W
 				W.dropped(user)
-				user << "<span class='warning'>God damnit!</span>"
+				to_chat(user, "<span class='warning'>God damnit!</span>")
 
 	W.add_fingerprint(user)
 	return handle_item_insertion(W)
@@ -543,9 +543,9 @@
 	collection_mode = !collection_mode
 	switch (collection_mode)
 		if (1)
-			usr << "[src] now picks up all items in a tile at once."
+			to_chat(usr, "[src] now picks up all items in a tile at once.")
 		if (0)
-			usr << "[src] now picks up one item at a time."
+			to_chat(usr, "[src] now picks up one item at a time.")
 
 
 /obj/item/weapon/storage/verb/quick_empty()

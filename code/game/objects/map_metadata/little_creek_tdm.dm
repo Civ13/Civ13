@@ -54,7 +54,7 @@ obj/map_metadata/little_creek_tdm/job_enabled_specialcheck(var/datum/job/J)
 	for(var/obj/structure/carriage_tdm/C in world)
 		if (C.storedvalue >= 1500) // total value stored = 2191. So roughly 2/3rds
 			var/message = "The Outlaws have sucessfully stolen over 1500 dollars! The robbery was successful!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			ticker.finished = TRUE
@@ -62,7 +62,7 @@ obj/map_metadata/little_creek_tdm/job_enabled_specialcheck(var/datum/job/J)
 	if (processes.ticker.playtime_elapsed >= 18000)
 		ticker.finished = TRUE
 		var/message = "The Sheriff's troops have sucessfully defended the Bank! With the Army arriving, the Outlaws retreat!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return TRUE
@@ -107,7 +107,7 @@ obj/map_metadata/little_creek_tdm/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(W,/obj/item/stack/money) || istype(W,/obj/item/stack/material/gold) || istype(W,/obj/item/stack/material/silver) || istype(W,/obj/item/stack/material/diamond))
 		storedvalue += (W.value*W.amount)
 		desc = "Stored Value: [storedvalue]."
-		user << "You place \the [W] inside \the [src]."
+		to_chat(user, "You place \the [W] inside \the [src].")
 		qdel(W)
 		if (storedvalue >= 1500)
 			map.update_win_condition()
@@ -116,5 +116,5 @@ obj/map_metadata/little_creek_tdm/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/structure/carriage_tdm/proc/timer()
 	spawn(4000)
-		world << "<big>Current status: Outlaws: <b>[storedvalue]/1500 Dollars</b></big>."
+		to_chat(world, "<big>Current status: Outlaws: <b>[storedvalue]/1500 Dollars</b></big>.")
 		timer()

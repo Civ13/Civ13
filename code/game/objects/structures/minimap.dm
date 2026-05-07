@@ -93,7 +93,7 @@
 
 	if (!ishuman(usr))
 		return
-	usr << "You clear the map."
+	to_chat(usr, "You clear the map.")
 	overlay_list = list()
 	img.overlays.Cut()
 

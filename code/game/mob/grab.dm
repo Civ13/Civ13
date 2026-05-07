@@ -303,7 +303,7 @@
 			switch(assailant.a_intent)
 				if (I_HELP)
 					if (force_down)
-						assailant << "<span class='warning'>You are no longer pinning [affecting] to the ground.</span>"
+						to_chat(assailant, "<span class='warning'>You are no longer pinning [affecting] to the ground.</span>")
 						force_down = FALSE
 						return
 					if(state >= GRAB_AGGRESSIVE)

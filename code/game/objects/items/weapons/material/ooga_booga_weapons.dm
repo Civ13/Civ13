@@ -20,13 +20,13 @@
 
 /obj/structure/branch/attack_hand(mob/living/human/H)
 	if (H.a_intent == I_GRAB && leaves)
-		H << "You start picking the leaves from the branch..."
+		to_chat(H, "You start picking the leaves from the branch...")
 		if (do_after(H, 60, src))
 			if (src && leaves)
 				var /obj/item/stack/material/leaf/dropleaves = new /obj/item/stack/material/leaf(get_turf(src))
 				dropleaves.amount = 3
 				dropleaves.update_strings()
-				H << "You pick up some leaves from the branch."
+				to_chat(H, "You pick up some leaves from the branch.")
 				name = "cleared branch"
 				desc = "A tree branch with all the leaves picked out."
 				icon_state = "cleared_stick"
@@ -34,11 +34,11 @@
 				return
 		return
 	else if (H.a_intent == I_HARM && !leaves && branched)
-		H << "You start removing the small twigs..."
+		to_chat(H, "You start removing the small twigs...")
 		if (do_after(H, 60, src))
 			if (src && branched)
 				new /obj/item/weapon/branch(get_turf(src))
-				H << "You finish clearing the stick."
+				to_chat(H, "You finish clearing the stick.")
 				branched = FALSE
 				qdel(src)
 				return
@@ -88,10 +88,10 @@
 
 /obj/item/weapon/branch/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.edge && !sharpened)
-		user << "You start sharpening the stick..."
+		to_chat(user, "You start sharpening the stick...")
 		if (do_after(user, 80, src))
 			if (src && !sharpened)
-				user << "You finish sharpening the stick."
+				to_chat(user, "You finish sharpening the stick.")
 				name = "sharpened stick"
 				desc = "A sharpened stick, to be used against bad apes."
 				icon_state = "sharpened_stick"
@@ -103,10 +103,10 @@
 	else if (sharpened && istype(W, /obj/item/weapon/flint))
 		var/obj/item/weapon/flint/F = W
 		if (F.sharpened)
-			user << "You start attaching the flint to the stick..."
+			to_chat(user, "You start attaching the flint to the stick...")
 			if (do_after(user, 100, src))
 				if (src && F && F.sharpened)
-					user << "You finish making the flint axe."
+					to_chat(user, "You finish making the flint axe.")
 					new/obj/item/weapon/material/hatchet/tribal/flint(user.loc)
 					qdel(F)
 					qdel(src)

@@ -49,7 +49,7 @@
 			else if (percent <= 15)
 				continue
 			out.Add("[size][tastes[i]]")
-	usr << "<span class='notice'>You can smell [english_list(out,"something indescribable")].</span>" //no taste means there are too many tastes and not enough flavor.
+	to_chat(usr, "<span class='notice'>You can smell [english_list(out,"something indescribable")].</span>") //no taste means there are too many tastes and not enough flavor.)
 
 /obj/item/weapon/reagent_containers/secondary_attack_self(mob/living/human/user)
 	if(user.a_intent == I_HARM)
@@ -68,7 +68,7 @@
 				new/obj/effect/flooding(TGT)
 			reagents.splash(TGT, reagents.total_volume)
 			playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
-			user << "<span class='notice'>You spill \the [src] into the tile in front of you.</span>"
+			to_chat(user, "<span class='notice'>You spill \the [src] into the tile in front of you.</span>")
 	else
 		smell()
 
@@ -101,28 +101,28 @@
 	if (!istype(target))
 		return FALSE
 	if (target.locked && target.custom_code != 0)
-		user << "<span class='notice'>\The [target] is locked.</span>"
+		to_chat(user, "<span class='notice'>\The [target] is locked.</span>")
 		return FALSE
 	if (target.dmode=="dispense")
 		if (!target.reagents || !target.reagents.total_volume)
-			user << "<span class='notice'>[target] is empty.</span>"
+			to_chat(user, "<span class='notice'>[target] is empty.</span>")
 			return TRUE
 		if (reagents && !reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='notice'>[src] is full.</span>")
 			return TRUE
 		var/trans = target.reagents.trans_to_obj(src, target:amount_per_transfer_from_this)
-		user << "<span class='notice'>You fill [src] with [trans] units of the contents of [target].</span>"
+		to_chat(user, "<span class='notice'>You fill [src] with [trans] units of the contents of [target].</span>")
 		playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 		return TRUE
 	else
 		if (!reagents || !reagents.total_volume)
-			user << "<span class='notice'>[src] is empty.</span>"
+			to_chat(user, "<span class='notice'>[src] is empty.</span>")
 			return TRUE
 		if (target.reagents && !target.reagents.get_free_space())
-			user << "<span class='notice'>[target] is full.</span>"
+			to_chat(user, "<span class='notice'>[target] is full.</span>")
 			return TRUE
 		var/trans = src.reagents.trans_to_obj(target, target.amount_per_transfer_from_this)
-		user << "<span class='notice'>You fill \the [target] with [trans] units of the contents of [src].</span>"
+		to_chat(user, "<span class='notice'>You fill \the [target] with [trans] units of the contents of [src].</span>")
 		playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 		return TRUE
 
@@ -157,7 +157,7 @@
 	if (!istype(target))
 		return
 	if (!reagents || !reagents.total_volume)
-		user << "<span class='notice'>[src] is empty.</span>"
+		to_chat(user, "<span class='notice'>[src] is empty.</span>")
 		return TRUE
 	var/contained = reagentlist()
 	target.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been splashed with [name] by [user.name] ([user.ckey]). Reagents: [contained]</font>")
@@ -200,16 +200,16 @@
 	if (!istype(target))
 		return FALSE
 	if (!reagents || !reagents.total_volume)
-		user << "<span class='notice'>\The [src] is empty.</span>"
+		to_chat(user, "<span class='notice'>\The [src] is empty.</span>")
 		return TRUE
 	if (ishuman(target))
 		var/mob/living/human/H = target
 		if (!H.check_has_mouth())
-			user << "Where do you intend to put \the [src]? \The [H] doesn't have a mouth!"
+			to_chat(user, "Where do you intend to put \the [src]? \The [H] doesn't have a mouth!")
 			return TRUE
 		var/obj/item/blocked = H.check_mouth_coverage()
 		if (blocked)
-			user << "<span class='warning'>\The [blocked] is in the way!</span>"
+			to_chat(user, "<span class='warning'>\The [blocked] is in the way!</span>")
 			return TRUE
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) //puts a limit on how fast people can eat/drink things
 	if (target == user)
@@ -254,19 +254,19 @@
 		return FALSE
 	if (!target.is_open_container() && istype(target, /obj/item/weapon/reagent_containers)) // Ensure we don't splash beakers and similar containers.
 		if (istype(target, /obj/item/weapon/reagent_containers/food) && !(istype(target, /obj/item/weapon/reagent_containers/food/drinks) || istype(target, /obj/item/weapon/reagent_containers/food/condiment)))
-			user << "<span class='notice'>\The [target] is not a container. What were you thinking?</span>"
+			to_chat(user, "<span class='notice'>\The [target] is not a container. What were you thinking?</span>")
 		else
-			user << "<span class='notice'>\The [target] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [target] is closed.</span>")
 		return FALSE
 	if (!target.is_open_container()) // Otherwise don't care about splashing.
 		if(!ishuman(target)) //Bugfix: Humans appearing as containers when using condiments
-			user << "<span class='notice'>\The [target] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [target] is closed.</span>")
 			return FALSE
 	if (!reagents || !reagents.total_volume)
-		user << "<span class='notice'>[src] is empty.</span>"
+		to_chat(user, "<span class='notice'>[src] is empty.</span>")
 		return TRUE
 	if (!target.reagents.get_free_space())
-		user << "<span class='notice'>[target] is full.</span>"
+		to_chat(user, "<span class='notice'>[target] is full.</span>")
 		return TRUE
 	var/trans = reagents.trans_to(target, amount_per_transfer_from_this)
 	if(!ishuman(target)) //Bugfix: Humans appearing as containers when using condiments

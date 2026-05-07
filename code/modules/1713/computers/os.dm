@@ -49,11 +49,11 @@
 	user.face_atom(src)
 
 	if (!locate(user) in range(1,src))
-		user << "<span class = 'danger'>Get next to \the [src] to use it.</span>"
+		to_chat(user, "<span class = 'danger'>Get next to \the [src] to use it.</span>")
 		return FALSE
 
 	if (!user.can_use_hands())
-		user << "<span class = 'danger'>You have no hands to use this with.</span>"
+		to_chat(user, "<span class = 'danger'>You have no hands to use this with.</span>")
 		return FALSE
 	var/datum/program/loadedprogram
 	if (href_list["program"])

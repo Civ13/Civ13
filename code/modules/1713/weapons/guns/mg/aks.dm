@@ -36,13 +36,13 @@
 	set src in usr
 	if (folded)
 		folded = FALSE
-		usr << "You extend the stock on \the [src]."
+		to_chat(usr, "You extend the stock on \the [src].")
 		equiptimer = 15
 		set_stock()
 		update_icon()
 	else
 		folded = TRUE
-		usr << "You collapse the stock on \the [src]."
+		to_chat(usr, "You collapse the stock on \the [src].")
 		equiptimer = 7
 		set_stock()
 		update_icon()

@@ -6,7 +6,7 @@
 		return
 
 	if (!mob || !mob.loc)
-		src << "<span class = 'red'>You can't create a crate here.</span>"
+		to_chat(src, "<span class = 'red'>You can't create a crate here.</span>")
 		return
 
 	var/list/types = list()
@@ -19,7 +19,7 @@
 			return
 
 		if (!ispath(text2path(_type)))
-			src << "<span class = 'red'>Invalid path.</span>"
+			to_chat(src, "<span class = 'red'>Invalid path.</span>")
 			goto retype
 
 		var/amount = input(src, "How much of this item do you want? (1 - 50, stacks merge") as num

@@ -128,9 +128,9 @@
 				dutch_points++
 			else
 				cust_color = "white"
-			world << "<big><b>[a1_name]</b>: <font color='[cust_color]'>[a1_control]</font></big>"
+			to_chat(world, "<big><b>[a1_name]</b>: <font color='[cust_color]'>[a1_control]</font></big>")
 		else
-			world << "<big><b>[a1_name]</b>: Nobody</big>"
+			to_chat(world, "<big><b>[a1_name]</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -158,9 +158,9 @@
 				dutch_points++
 			else
 				cust_color = "white"
-			world << "<big><b>[a2_name]</b>: <font color='[cust_color]'>[a2_control]</font></big>"
+			to_chat(world, "<big><b>[a2_name]</b>: <font color='[cust_color]'>[a2_control]</font></big>")
 		else
-			world << "<big><b>[a2_name]</b>: Nobody</big>"
+			to_chat(world, "<big><b>[a2_name]</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -188,9 +188,9 @@
 				dutch_points++
 			else
 				cust_color = "white"
-			world << "<big><b>[a3_name]</b>: <font color='[cust_color]'>[a3_control]</font></big>"
+			to_chat(world, "<big><b>[a3_name]</b>: <font color='[cust_color]'>[a3_control]</font></big>")
 		else
-			world << "<big><b>[a3_name]</b>: Nobody</big>"
+			to_chat(world, "<big><b>[a3_name]</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -218,9 +218,9 @@
 				dutch_points++
 			else
 				cust_color = "white"
-			world << "<big><b>[a4_name]</b>: <font color='[cust_color]'>[a4_control]</font></big>"
+			to_chat(world, "<big><b>[a4_name]</b>: <font color='[cust_color]'>[a4_control]</font></big>")
 		else
-			world << "<big><b>[a4_name]</b>: Nobody</big>"
+			to_chat(world, "<big><b>[a4_name]</b>: Nobody</big>")
 
 	switch (a1_control)
 		if ("Dutch Royal Army")
@@ -274,9 +274,9 @@
 	spawn(600) // 1 minute
 		points_check()
 		spawn(5)
-			world << "<big><b>Current Points:</b></big>"
-			world << "<big>Dutch: [dutch_points]</big>"
-			world << "<big>Russian: [rus_points]</big>"
+			to_chat(world, "<big><b>Current Points:</b></big>")
+			to_chat(world, "<big>Dutch: [dutch_points]</big>")
+			to_chat(world, "<big>Russian: [rus_points]</big>")
 
 /obj/map_metadata/operation_falcon/update_win_condition()
 	if (processes.ticker.playtime_elapsed > 3000)
@@ -287,7 +287,7 @@
 				return FALSE
 			ticker.finished = TRUE
 			var/message = "The <b>Russians</b> have reached [rus_points] points and claimed victory in Operation Falcon!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 
 			var/anthem = sound('sound/music/russian_anthem.ogg', repeat = FALSE, wait = FALSE, volume = 100, channel = 775)
 			for (var/mob/M in player_list)
@@ -302,7 +302,7 @@
 				return FALSE
 			ticker.finished = TRUE
 			var/message = "The <b>Dutch</b> have reached [dutch_points] points and claimed victory in Operation Falcon!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			
 			var/anthem = sound('sound/music/dutch_anthem.ogg', repeat = FALSE, wait = FALSE, volume = 100, channel = 775)
 			for (var/mob/M in player_list)
@@ -345,7 +345,7 @@
 			uploaded_sound.priority = 250
 			for (var/mob/M in player_list)
 				if (!new_player_mob_list.Find(M))
-					M << SPAN_NOTICE("<font size=3>The air rumbles as a F-16 flies overhead.</font>")
+					to_chat(M, SPAN_NOTICE("<font size=3>The air rumbles as a F-16 flies overhead.</font>"))
 					if (M.client)
 						M.client << uploaded_sound
 		if(2)
@@ -361,7 +361,7 @@
 			uploaded_sound.priority = 250
 			for (var/mob/M in player_list)
 				if (!new_player_mob_list.Find(M))
-					M << SPAN_NOTICE("<font size=3>The air rumbles as a Su-25 flies overhead.</font>")
+					to_chat(M, SPAN_NOTICE("<font size=3>The air rumbles as a Su-25 flies overhead.</font>"))
 					if (M.client)
 						M.client << uploaded_sound
 		if(3)
@@ -385,7 +385,7 @@
 			uploaded_sound2.priority = 250
 			for (var/mob/M in player_list)
 				if (!new_player_mob_list.Find(M))
-					M << SPAN_DANGER("<font size=4>The air lights up as a Su-25 and a pursuing F-16 fly overhead.</font>")
+					to_chat(M, SPAN_DANGER("<font size=4>The air lights up as a Su-25 and a pursuing F-16 fly overhead.</font>"))
 					if (M.client)
 						M.client << uploaded_sound1
 					spawn(5 SECONDS)

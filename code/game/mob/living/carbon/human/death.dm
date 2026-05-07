@@ -65,7 +65,7 @@
 					if (GD.gladiator_stats[i][1] == client.ckey && GD.gladiator_stats[i][2] == name)
 						GD.gladiator_stats[i][4] = 1
 						GD.save_gladiators()
-				src << "<big><b>[name]'s life fades away into history...</b></big>"
+				to_chat(src, "<big><b>[name]'s life fades away into history...</b></big>")
 
 			if (MAP_GULAG13)
 				var/obj/map_metadata/gulag13/GD = map
@@ -426,26 +426,26 @@
 				map.faction1_squad_leaders[squad] = null
 				for(var/mob/living/human/HSM in map.faction1_squads[squad])
 					if (HSM != src)
-						HSM << "<big><b><font color='red'>Your squad leader has been killed!</font></b></big>"
+						to_chat(HSM, "<big><b><font color='red'>Your squad leader has been killed!</font></b></big>")
 						if (HSM.original_job.is_squad_leader && (!map.faction1_squad_leaders[squad] || map.faction1_squad_leaders[squad] == src))
-							HSM << "<big><b><font color='green'>You are the new squad leader!</font></b></big>"
+							to_chat(HSM, "<big><b><font color='green'>You are the new squad leader!</font></b></big>")
 							map.faction1_squad_leaders[squad] = HSM
 							for(var/mob/living/human/HSM2 in map.faction2_squads[squad])
 								if (HSM2 != HSM)
-									HSM2 << "<big><b>[HSM] is your new squad leader.</b></big>"
+									to_chat(HSM2, "<big><b>[HSM] is your new squad leader.</b></big>")
 		else if (faction_text == map.faction2)
 			map.faction2_squads[squad] -= src
 			if (map.faction2_squad_leaders[squad] == src)
 				map.faction2_squad_leaders[squad] = null
 				for(var/mob/living/human/HSM in map.faction2_squads[squad])
 					if (HSM != src)
-						HSM << "<big><b><font color='red'>Your squad leader has been killed!</font></b></big>"
+						to_chat(HSM, "<big><b><font color='red'>Your squad leader has been killed!</font></b></big>")
 						if (HSM.original_job.is_squad_leader && (!map.faction2_squad_leaders[squad] || map.faction2_squad_leaders[squad] == src))
-							HSM << "<big><b><font color='green'>You are the new squad leader!</font></b></big>"
+							to_chat(HSM, "<big><b><font color='green'>You are the new squad leader!</font></b></big>")
 							map.faction2_squad_leaders[squad] = HSM
 							for(var/mob/living/human/HSM2 in map.faction2_squads[squad])
 								if (HSM2 != HSM)
-									HSM2 << "<big><b>[HSM] is your new squad leader.</b></big>"
+									to_chat(HSM2, "<big><b>[HSM] is your new squad leader.</b></big>")
 	handle_hud_list()
 	var/list/poss_list = list()
 	if (map)

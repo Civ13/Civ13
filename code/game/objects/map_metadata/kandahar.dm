@@ -170,9 +170,9 @@
 				sov_points++
 			else
 				cust_color = "white"
-			world << "<big><font color='[cust_color]'><b>Bridge Outpost</b>: [a1_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>Bridge Outpost</b>: [a1_control]</font></big>")
 		else
-			world << "<big><b>Bridge Outpost</b>: Nobody</big>"
+			to_chat(world, "<big><b>Bridge Outpost</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		c3 = 0
@@ -209,9 +209,9 @@
 				sov_points++
 			else
 				cust_color = "white"
-			world << "<big><font color='[cust_color]'><b>South Border Checkpoint</b>: [a2_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>South Border Checkpoint</b>: [a2_control]</font></big>")
 		else
-			world << "<big><b>South Border Checkpoint</b>: Nobody</big>"
+			to_chat(world, "<big><b>South Border Checkpoint</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		c3 = 0
@@ -248,9 +248,9 @@
 				sov_points++
 			else
 				cust_color = "white"
-			world << "<big><font color='[cust_color]'><b>Palace</b>: [a3_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>Palace</b>: [a3_control]</font></big>")
 		else
-			world << "<big><b>Palace</b>: Nobody</big>"
+			to_chat(world, "<big><b>Palace</b>: Nobody</big>")
 		c1 = 0
 		c2 = 0
 		c3 = 0
@@ -287,12 +287,12 @@
 				sov_points++
 			else
 				cust_color = "white"
-			world << "<big><font color='[cust_color]'><b>North West Village Outpost</b>: [a4_control]</font></big>"
+			to_chat(world, "<big><font color='[cust_color]'><b>North West Village Outpost</b>: [a4_control]</font></big>")
 		else
-			world << "<big><b>North West Village Outpost</b>: Nobody</big>"
+			to_chat(world, "<big><b>North West Village Outpost</b>: Nobody</big>")
 	if (a1_control == "Mujahideen" && a2_control == "Mujahideen" && a3_control == "Mujahideen" && a4_control == "Mujahideen")
 		muj_points++
-		world << "<big><font color='yellow'><b>The Mujahideen control all points!</b></font></big>"
+		to_chat(world, "<big><font color='yellow'><b>The Mujahideen control all points!</b></font></big>")
 	for (var/mob/living/human/H in player_list)
 		if (H.original_job.is_soviet == TRUE || H.original_job.is_dra == TRUE)
 			var/area/A = get_area(H)
@@ -301,22 +301,22 @@
 					switch(H.original_job.title)
 						if ("Soviet Army Captain")
 							muj_points += 4
-							world << "<font color='orange' size=2>The <b><font color='red'>Soviet Army Captain</font></b> is in captivity!</font>"
+							to_chat(world, "<font color='orange' size=2>The <b><font color='red'>Soviet Army Captain</font></b> is in captivity!</font>")
 						if ("Soviet Army Lieutenant")
 							muj_points += 3
-							world << "<font color='orange' size=2>A <b><font color='red'>Soviet Army Lieutenant</font></b> is in captivity!</font>"
+							to_chat(world, "<font color='orange' size=2>A <b><font color='red'>Soviet Army Lieutenant</font></b> is in captivity!</font>")
 						if ("Soviet Army Sergeant")
 							muj_points += 2
-							world << "<font color='orange' size=2>A <b><font color='red'>Soviet Army Sergeant</font></b> is in captivity!</font>"
+							to_chat(world, "<font color='orange' size=2>A <b><font color='red'>Soviet Army Sergeant</font></b> is in captivity!</font>")
 						if ("DRA Governor")
 							muj_points += 5
-							world << "<font color='orange' size=2>The <b><font color='green'>DRA Governor</font></b> is in captivity!</font>"
+							to_chat(world, "<font color='orange' size=2>The <b><font color='green'>DRA Governor</font></b> is in captivity!</font>")
 						if ("DRA Lieutenant")
 							muj_points += 3
-							world << "<font color='orange' size=2>A <b><font color='green'>DRA Lieutenant</font></b> is in captivity!</font>"
+							to_chat(world, "<font color='orange' size=2>A <b><font color='green'>DRA Lieutenant</font></b> is in captivity!</font>")
 						if ("DRA Sergeant")
 							muj_points += 2
-							world << "<font color='orange' size=2>A <b><font color='green'>DRA Sergeant</font></b> is in captivity!</font>"
+							to_chat(world, "<font color='orange' size=2>A <b><font color='green'>DRA Sergeant</font></b> is in captivity!</font>")
 		if (H.original_job.is_muj == TRUE)
 			var/area/B = get_area(H)
 			if (istype(B, /area/caribbean/prison/jail))
@@ -324,17 +324,17 @@
 					switch(H.original_job_title)
 						if ("Mujahideen Warchief")
 							sov_points += 4
-							world << "<font color='orange' size=2>The <b><font color='black'>Mujahideen Warchief</font></b> is in captivity!</font>"
+							to_chat(world, "<font color='orange' size=2>The <b><font color='black'>Mujahideen Warchief</font></b> is in captivity!</font>")
 						if ("Mujahideen Group Leader")
 							sov_points += 2
-							world << "<font color='orange' size=2>A <b><font color='black'>Mujahideen Group Leader</font></b> is in captivity!</font>"
+							to_chat(world, "<font color='orange' size=2>A <b><font color='black'>Mujahideen Group Leader</font></b> is in captivity!</font>")
 	handle_flags()
 	spawn(600) // 1 minute
 		points_check()
 		spawn(300)
-			world << "<big><b>Current Points:</b></big>"
-			world << "<big>Mujahideen: [muj_points]</big>"
-			world << "<big>Soviets and DRA: [sov_points]</big>"
+			to_chat(world, "<big><b>Current Points:</b></big>")
+			to_chat(world, "<big>Mujahideen: [muj_points]</big>")
+			to_chat(world, "<big>Soviets and DRA: [sov_points]</big>")
 
 /obj/map_metadata/kandahar/update_win_condition()
 	if (processes.ticker.playtime_elapsed > 4800)
@@ -345,7 +345,7 @@
 				return FALSE
 			ticker.finished = TRUE
 			var/message = "The <b><font color ='red'>Soviets</font></b> and <b><font color ='green'>DRA</font></b> have reached [sov_points] points and won! The Kandahar region remains under the <b><font color ='green'>DRA</font></b> control"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
@@ -354,7 +354,7 @@
 				return FALSE
 			ticker.finished = TRUE
 			var/message = "The <b><font color ='black'>Mujahideen</font></b> have reached [muj_points] points and won! The Kandahar province is under their control!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
@@ -417,12 +417,12 @@
 	)
 	attack_hand(mob/living/human/user as mob)
 		if (user.faction_text != "ARAB")
-			user << "You are not part of the Mujahideen, you should really leave the area."
+			to_chat(user, "You are not part of the Mujahideen, you should really leave the area.")
 			return
 		..()
 	attackby(obj/item/I, mob/living/human/user)
 		if (user.faction_text != "ARAB")
-			user << "You are not part of the Mujahideen, you should really leave the area."
+			to_chat(user, "You are not part of the Mujahideen, you should really leave the area.")
 			return
 		..()
 
@@ -443,21 +443,21 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/pill/opium))
 			if (!W)
 				return
-			user << "Here's your payment, pleasure doing business with you, brother."
+			to_chat(user, "Here's your payment, pleasure doing business with you, brother.")
 			new/obj/item/stack/money/dollar/five(loc)
 			if (prob(5))
-				user << "Here's also a little extra to get you going."
+				to_chat(user, "Here's also a little extra to get you going.")
 				new/obj/item/stack/money/dollar/five(loc)
 			if (prob(5))
 				var/obj/map_metadata/kandahar/MP = map
 				var/randevent = rand(1,2)
 				switch (randevent)
 					if (1)
-						world << "A shipment of heroin has successfully left the Afghan border! The authorities are furious!"
+						to_chat(world, "A shipment of heroin has successfully left the Afghan border! The authorities are furious!")
 						MP.muj_points += 1
 						MP.sov_points -= 1
 					if (2)
-						world << "A shipment of heroin was intercepted by the authorities at the Afghan border!"
+						to_chat(world, "A shipment of heroin was intercepted by the authorities at the Afghan border!")
 						MP.muj_points -= 1
 						MP.sov_points += 1
 			qdel(W)
@@ -466,16 +466,16 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/pill/opium))
 			if (!W)
 				return
-			user << "Here's your payment, there's more where it came from, if you bring me the stuff, of course."
+			to_chat(user, "Here's your payment, there's more where it came from, if you bring me the stuff, of course.")
 			new/obj/item/stack/money/dollar(loc)
 			new/obj/item/stack/money/dollar(loc)
 			if (prob(5))
-				user << "Here's also a little extra to get you going."
+				to_chat(user, "Here's also a little extra to get you going.")
 				new/obj/item/stack/money/dollar/five(loc)
 			qdel(W)
 			return
 	else
-		user << "I've got no business with you! Get lost, you dog!"
+		to_chat(user, "I've got no business with you! Get lost, you dog!")
 		return
 
 /obj/item/weapon/package/humanitarian
@@ -501,7 +501,7 @@
 	if (!user.is_officer && !user.is_squad_leader)
 		return
 	if (map.supply_points["Soviet Army"] <= 0)
-		user << SPAN_NOTICE("No supply points.")
+		to_chat(user, SPAN_NOTICE("No supply points."))
 		return
 	var/choice1 == WWinput(user, "Which supplies to order:", "Order Supplies", "Cancel", options)
 	switch(choice1)
@@ -530,15 +530,15 @@
 		if (user.faction_text == "ARAB")
 			if (user.a_intent == I_HELP)
 				if (already_coerced)
-					user << SPAN_WARNING("\icon[getFlatIcon(src)] No way! Leave me alone!")
+					to_chat(user, SPAN_WARNING("\icon[getFlatIcon(src)] No way! Leave me alone!"))
 					return
 				if (package_given)
-					user << SPAN_WARNING("\icon[getFlatIcon(src)] You blood-thirsty savages, the Soviets and the DRA are actually helping this country!")
+					to_chat(user, SPAN_WARNING("\icon[getFlatIcon(src)] You blood-thirsty savages, the Soviets and the DRA are actually helping this country!"))
 					already_coerced = TRUE
 					return
 				if (user.original_job_title != "Mujahideen Imam" && user.original_job_title != "Mujahideen Warchief")
 					if (prob(50))
-						user << SPAN_WARNING("\icon[getFlatIcon(src)] I refuse!")
+						to_chat(user, SPAN_WARNING("\icon[getFlatIcon(src)] I refuse!"))
 						already_coerced = TRUE
 						return
 					if (prob(30))
@@ -548,7 +548,7 @@
 					qdel(src)
 					return
 				if (prob(30))
-					user << SPAN_WARNING("\icon[getFlatIcon(src)] I refuse!")
+					to_chat(user, SPAN_WARNING("\icon[getFlatIcon(src)] I refuse!"))
 					already_coerced = TRUE
 					return
 				if (prob(50))
@@ -556,7 +556,7 @@
 				else
 					new /mob/living/simple_animal/hostile/human/muj_insurgent/akm(loc)
 				if (prob(50))
-					world << "The Mujahideen coerced some of the local population into their ranks."
+					to_chat(world, "The Mujahideen coerced some of the local population into their ranks.")
 				qdel(src)
 				return
 	..()

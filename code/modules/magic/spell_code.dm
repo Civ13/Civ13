@@ -319,9 +319,9 @@
 			if(mind.learned_spells.len > 0)
 				src << browse(dat, "window=checkspells")
 			else
-				src << "<span class='warning'>You know no spells!</span>"
+				to_chat(src, "<span class='warning'>You know no spells!</span>")
 	else
-		src << "<span class='warning'>This verb may only be used while alive.</span>"
+		to_chat(src, "<span class='warning'>This verb may only be used while alive.</span>")
 	return
 
 
