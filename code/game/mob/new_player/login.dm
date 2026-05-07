@@ -4,7 +4,7 @@
 /mob/new_player/Login()
 	winset(src, null, "mainwindow.title='[customserver_name()]'")//For displaying the server name.
 	update_Login_details()	//handles setting lastKnownIP and computer_id for use by the ban systems as well as checking for multikeying
-
+	
 	/* if our client was deleted (for example if we're banned), don't show the MOTD */
 	if (join_motd)
 		spawn (10)

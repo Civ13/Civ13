@@ -1,8 +1,63 @@
+///////////////////////////////
+//////////// CivUI ////////////
+///////////////////////////////
+// This replaces the native BYOND statspanel
+// and infopanel with a HTML-based menu
+
 /client
 	var/statpanel_loaded = FALSE
 	var/statpanel_tab = "Status"
 	var/list/statpanel_data = list()
 	var/list/statpanel_tabs = list()
+
+/client/proc/run_verb(verb_name as text)
+	// 1) Collect all available verbs
+	var/list/all_verbs = list()
+	all_verbs += verbs
+	if (mob)
+		all_verbs += mob.verbs
+
+	// 2) Try to find and execute by name or path
+	for (var/v in all_verbs)
+		if (!v) continue
+		// Match against display name or path string
+		if (v:name == verb_name || "[v]" == verb_name)
+			call(src, v)()
+			return TRUE
+		
+		// If verb_name has spaces, try matching against underscored version
+		if (findtext(verb_name, " "))
+			var/und_name = replacetext(verb_name, " ", "_")
+			if (v:name == und_name || "[v]" == und_name || findtext("[v]", und_name))
+				call(src, v)()
+				return TRUE
+
+	// 3) Try direct proc calls as fallback
+	// No spaces: try direct match
+	if (!findtext(verb_name, " "))
+		if (hascall(src, verb_name))
+			call(src, verb_name)()
+			return TRUE
+		
+		var/datum/admins/A = holder
+		if (A && hascall(A, verb_name))
+			if (check_rights(R_ADMIN, FALSE, src))
+				call(A, verb_name)()
+				return TRUE
+
+	// Spaces: try underscored version as proc name
+	else
+		var/und_name = lowertext(replacetext(verb_name, " ", "_"))
+		if (hascall(src, und_name))
+			call(src, und_name)()
+			return TRUE
+		var/datum/admins/A = holder
+		if (A && hascall(A, und_name))
+			if (check_rights(R_ADMIN, FALSE, src))
+				call(A, und_name)()
+				return TRUE
+
+	return FALSE
 
 /client/proc/init_statpanel()
 	src << browse(file("interface/info/info.css"), "display=0")
@@ -27,7 +82,8 @@
 	if (mob)
 		all_verbs += mob.verbs
 
-	var/list/admin_categories = list("Server", "Admin", "Debug", "Bans", "Special", "Fun", "Nomads")
+	var/list/admin_categories = list("Admin", "Debug", "Bans", "Special", "Fun")
+	var/list/server_categories = list("Server","Nomads")
 	var/target_tab = lowertext(statpanel_tab)
 
 	for (var/v in all_verbs)
@@ -47,6 +103,8 @@
 		var/display_category = v_category
 		if (v_category in admin_categories)
 			display_category = "Admin"
+		if (v_category in server_categories)
+			display_category = "Server"
 		
 		if (lowertext(display_category) == target_tab)
 			v_name = replacetext(v_name, "\"", "'")
@@ -64,7 +122,7 @@
 		"verbs" = verbs_data
 	)
 	var/json = json_encode(payload)
-	src << output(json, "browser_info:updateStats")
+	src << output(json, "browser_info:receiveStats")
 	
 	statpanel_data.Cut()
 	statpanel_tabs.Cut()
@@ -78,6 +136,6 @@
 		return
 	if (href_list["action"] == "execute_verb")
 		var/verb_name = href_list["verb"]
-		winset(src, null, "command=[verb_name]")
+		run_verb(verb_name)
 		return
 	return ..()

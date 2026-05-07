@@ -1,3 +1,15 @@
+//probably a bit iffy - will hopefully figure out a better solution
+/proc/check_if_greater_rights_than(client/other)
+	if (usr && usr.client)
+		if (usr.client.holder)
+			if (!other || !other.holder)
+				return TRUE
+			if (usr.client.holder.rights != other.holder.rights)
+				if ( (usr.client.holder.rights & other.holder.rights) == other.holder.rights )
+					return TRUE	//we have all the rights they have and more
+		to_chat(usr, "<font color='red'>Error: Cannot proceed. They have more or equal rights to us.</font>")
+	return FALSE
+
 /datum/admins/Topic(href, href_list)
 	..()
 

@@ -602,7 +602,6 @@ window "outputwindow"
 		background-color = #392611
 		saved-params = "pos;size;is-minimized;is-maximized"
 		is-pane = true
-		can-scroll = vertical
 	elem "browser_chat"
 		type = BROWSER
 		pos = 0,0
