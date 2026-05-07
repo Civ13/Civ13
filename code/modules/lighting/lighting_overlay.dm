@@ -18,9 +18,7 @@
 	blend_mode	   = BLEND_MULTIPLY
 
 	var/needs_update = FALSE
-
 	var/TOD = "Midday"
-
 	var/list/last_color
 	var/last_luminosity
 
@@ -29,6 +27,8 @@
 
 /atom/movable/lighting_overlay/New(var/atom/loc, var/no_update = FALSE)
 	. = ..()
+	if (config.opendream)
+		blend_mode = BLEND_ADD
 	verbs.Cut()
 
 	layer			  = 13 // The lighting overlay should appear above everything including weather effects
@@ -80,9 +80,11 @@
 		qdel(src)
 		return
 	var/TOD_lum = time_of_day2luminosity[time_of_day] * T.get_window_coeff()
-	blend_mode = BLEND_MULTIPLY
+	blend_mode = config.opendream ? BLEND_ADD : BLEND_MULTIPLY
 
 	var/list/L = color ? copylist(color) : list()
+	if (config.opendream && !color)
+		L = LIGHTING_BASE_MATRIX.Copy()
 
 	var/anylums = FALSE
 
