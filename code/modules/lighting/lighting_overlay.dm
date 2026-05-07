@@ -29,6 +29,7 @@
 	. = ..()
 	if (config.opendream)
 		blend_mode = BLEND_ADD
+		invisibility = 0
 	verbs.Cut()
 
 	layer			  = 13 // The lighting overlay should appear above everything including weather effects
@@ -45,6 +46,8 @@
 	// so observers can actually see things
 	if (!ticker || ticker.current_state == GAME_STATE_PREGAME)
 		invisibility = 100
+	if (config.opendream)
+		invisibility = 0
 
 	lighting_overlay_list += src
 

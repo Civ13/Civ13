@@ -31,8 +31,9 @@
 	..()
 	if (config.opendream)
 		appearance_flags |= KEEP_TOGETHER
+		invisibility = 0
 
-// Removed OpenDream specific backdrop logic for lighting plane master
+// Removed backdrop logic for multiplicative model
 
 /obj/screen/plane_master/hud
 	name = "hud plane master"
