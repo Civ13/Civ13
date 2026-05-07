@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Info Panels</title>
     <style>
-        html, body {
+        html,
+        body {
             margin: 0;
             padding: 0;
             background-color: #392611;
@@ -23,7 +25,34 @@
             border-bottom: 1px solid #1a1108;
             overflow-x: auto;
             flex-shrink: 0;
+            scrollbar-face-color: #a68b7d;
+            scrollbar-shadow-color: #271a0c;
+            scrollbar-highlight-color: #e1e1d7;
+            scrollbar-3dlight-color: #a68b7d;
+            scrollbar-darkshadow-color: #000000;
+            scrollbar-track-color: #392611;
+            scrollbar-arrow-color: #271a0c;
         }
+
+        /* Modern scrollbar for Chromium-based BYOND */
+        #tabs::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        #tabs::-webkit-scrollbar-track {
+            background: #392611;
+        }
+
+        #tabs::-webkit-scrollbar-thumb {
+            background: #a68b7d;
+            border: 2px solid #392611;
+            border-radius: 4px;
+        }
+
+        #tabs::-webkit-scrollbar-thumb:hover {
+            background: #bda294;
+        }
+
 
         .tab {
             padding: 6px 12px;
@@ -47,6 +76,32 @@
             flex-grow: 1;
             overflow-y: auto;
             padding: 8px;
+            scrollbar-face-color: #a68b7d;
+            scrollbar-shadow-color: #271a0c;
+            scrollbar-highlight-color: #e1e1d7;
+            scrollbar-3dlight-color: #a68b7d;
+            scrollbar-darkshadow-color: #000000;
+            scrollbar-track-color: #392611;
+            scrollbar-arrow-color: #271a0c;
+        }
+
+        /* Modern scrollbar for Chromium-based BYOND */
+        #content::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        #content::-webkit-scrollbar-track {
+            background: #392611;
+        }
+
+        #content::-webkit-scrollbar-thumb {
+            background: #a68b7d;
+            border: 2px solid #392611;
+            border-radius: 4px;
+        }
+
+        #content::-webkit-scrollbar-thumb:hover {
+            background: #bda294;
         }
 
         table.stat-table {
@@ -119,6 +174,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="tabs"></div>
     <div id="content">
@@ -129,7 +185,7 @@
         </div>
         <div id="verbs-container"></div>
     </div>
-    
+
     <script>
         let currentTab = "Status";
         let lastTabsJSON = "";
@@ -283,4 +339,5 @@
         };
     </script>
 </body>
+
 </html>
