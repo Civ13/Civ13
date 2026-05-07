@@ -5,7 +5,7 @@
 // and infopanel with a HTML-based menu
 
 /client
-	var/statpanel_loaded = FALSE
+	var/statpanel_ready = FALSE
 	var/statpanel_tab = "Status"
 	var/list/statpanel_data = list()
 	var/list/statpanel_tabs = list()
@@ -60,10 +60,7 @@
 	return FALSE
 
 /client/proc/init_statpanel()
-	src << browse(file("interface/info/info.css"), "display=0")
-	src << browse(file("interface/info/info.js"), "display=0")
-	src << browse(file("interface/info/info.html"), "window=browser_info")
-	statpanel_loaded = TRUE
+	src << browse('interface/info/info.html', "window=browser_info")
 
 /client/proc/add_stat(name, value = "")
 	statpanel_data += list(list("name" = name, "value" = value))
@@ -73,7 +70,7 @@
 		statpanel_tabs += tab
 
 /client/proc/update_statpanel()
-	if (!statpanel_loaded)
+	if (!statpanel_ready)
 		return
 	
 	var/list/verbs_data = list()
@@ -128,6 +125,12 @@
 	statpanel_tabs.Cut()
 
 /client/Topic(href, href_list)
+	if (href_list["action"] == "statpanel_ready")
+		statpanel_ready = TRUE
+		if (mob)
+			mob.Stat()
+		update_statpanel()
+		return
 	if (href_list["action"] == "statpanel_tab")
 		statpanel_tab = href_list["tab"]
 		if (mob)
