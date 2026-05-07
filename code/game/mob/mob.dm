@@ -460,11 +460,11 @@
 	set name = "Respawn"
 	set category = "IC"
 
-	if (!( config.abandon_allowed ))
+	if (!( global.config.abandon_allowed ))
 		to_chat(src, SPAN_NOTICE("Respawn is disabled."))
 		return
 
-	if ((src.stat != DEAD || !( ticker )))
+	if ((src.stat != DEAD || !( global.ticker )))
 		to_chat(src, SPAN_NOTICE("<b>You must be dead to use this!</b>"))
 		return
 
