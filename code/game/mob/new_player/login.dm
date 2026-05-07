@@ -9,7 +9,7 @@
 	if (join_motd)
 		spawn (10)
 			if (src && src.client)
-				to_chat(src, "<div class='info'>Game ID: <span style='color:#ff3737'>[game_id ? game_id : "Unknown"]</span></div>")
+				to_chat(src, "<div class='info'>Game ID: <span style='color:#ff3737'><b>[game_id ? game_id : "Unknown"]</b></span></div>")
 				see_personalized_MOTD()
 
 	if (!mind)

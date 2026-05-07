@@ -65,6 +65,20 @@
 	var/escaped_message = extract_json_message(message)
 	client << output(escaped_message, "browser_chat:receiveMessage")
 
+//this skips sanitisation so make sure you use it on safe html ONLY
+//DO NOT use this for player inputs!
+/datum/chat/proc/send_message_html(message)
+	if (!client)
+		return
+	
+	if (!is_ready)
+		if (message_queue.len >= MAX_CHAT_QUEUE)
+			message_queue.Cut(1, 2) // drop oldest
+		message_queue += message
+		return
+
+	client << output(list2params(list(message,1)), "browser_chat:receiveMessage")
+
 
 
 /**

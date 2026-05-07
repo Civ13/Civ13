@@ -584,7 +584,7 @@ window "rpane"
 	elem "rpanewindow"
 		type = CHILD
 		pos = 0,0
-		size = 480x445
+		size = 480x480
 		anchor1 = 0,0
 		anchor2 = 100,100
 		saved-params = "splitter"
@@ -605,7 +605,7 @@ window "outputwindow"
 	elem "browser_chat"
 		type = BROWSER
 		pos = 0,0
-		size = 480x450
+		size = 480x460
 		anchor1 = 0,0
 		anchor2 = 100,100
 		background-color = #392611
@@ -613,13 +613,13 @@ window "outputwindow"
 		saved-params = ""
 	elem "input"
 		type = INPUT
-		pos = 2,452
+		pos = 2,460
 		size = 496x20
 		anchor1 = 0,100
 		anchor2 = 100,100
 		font-family = "Book Antiqua"
 		font-size = 8
-		text-color = #e1e1d7
+		text-color = #1c1c1c
 		background-color = #a68b7d
 		is-default = true
 		border = sunken

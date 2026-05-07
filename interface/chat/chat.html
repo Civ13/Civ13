@@ -462,6 +462,8 @@
         .motd h4,
         .motd h5,
         .motd h6 {
+            margin-top: 0.2em;
+            margin-bottom: 0.2em;
             color: #E1E1FF;
         }
 
@@ -492,7 +494,7 @@
         let lastMessage = '';
         let lastMessageTime = 0;
 
-        function receiveMessage(data) {
+        function receiveMessage(data, skip_purify = false) {
             let messageHtml = '';
 
             if (typeof data === 'string' && data.charAt(0) === '{') {
@@ -517,7 +519,12 @@
 
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message';
-            messageDiv.innerHTML = DOMPurify.sanitize(messageHtml, { USE_PROFILES: { html: true } });
+            if (skip_purify) {
+                messageDiv.innerHTML = messageHtml;
+            } else {
+                messageDiv.innerHTML = DOMPurify.sanitize(messageHtml, { USE_PROFILES: { html: true } });
+            }
+
             messagesContainer.appendChild(messageDiv);
 
             // Smooth auto-scroll
