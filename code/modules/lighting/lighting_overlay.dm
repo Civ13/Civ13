@@ -87,7 +87,7 @@
 
 	var/list/L = color ? copylist(color) : list()
 	if (config.opendream && !color)
-		L = LIGHTING_BASE_MATRIX.Copy()
+		L = LIGHTING_BASE_MATRIX
 
 	var/anylums = FALSE
 
