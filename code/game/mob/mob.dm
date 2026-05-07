@@ -461,21 +461,21 @@
 	set category = "IC"
 
 	if (!( config.abandon_allowed ))
-		to_chat(usr, SPAN_NOTICE("Respawn is disabled."))
+		to_chat(src, SPAN_NOTICE("Respawn is disabled."))
 		return
 
-	if ((stat != DEAD || !( ticker )))
-		to_chat(usr, SPAN_NOTICE("<b>You must be dead to use this!</b>"))
+	if ((src.stat != DEAD || !( ticker )))
+		to_chat(src, SPAN_NOTICE("<b>You must be dead to use this!</b>"))
 		return
 
 	src << browse(null, "window=memory")
 
 	to_chat(src, "You can respawn now, enjoy your new life!")
-	stop_ambience(usr)
+	stop_ambience(src)
 
 	log_game("[name]/[key] used abandon mob.")
 
-	to_chat(usr, SPAN_NOTICE("<b>Make sure to play a different character, and please roleplay correctly!</b>"))
+	to_chat(src, SPAN_NOTICE("<b>Make sure to play a different character, and please roleplay correctly!</b>"))
 
 	if (!client)
 		log_game("[key] AM failed due to disconnect.")

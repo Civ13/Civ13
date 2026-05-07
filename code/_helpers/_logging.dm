@@ -99,7 +99,7 @@
 			if (C.ckey == banned)
 				to_chat(C, "<span class = 'good'>href_list["Your ban has been lifted."]</span>")
 /proc/attack_log(category, text)
-	to_chat(attack_log, "\[[time_stamp()]] [game_id] [category]: [text][log_end]")
+	attack_log << "\[[time_stamp()]] [game_id] [category]: [text][log_end]"
 
 /proc/log_admin(text)
 	admin_log.Add(text)

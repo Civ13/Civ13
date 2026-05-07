@@ -23,7 +23,7 @@
 //Arming
 /obj/item/mine/attack_self(mob/living/user as mob)
 	if (locate(/obj/item/mine) in get_turf(src))
-		to_chat(src, "There's already a mine at this position!")
+		to_chat(user, "There's already a mine at this position!")
 		return
 
 	if (!anchored)

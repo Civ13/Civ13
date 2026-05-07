@@ -158,7 +158,7 @@
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, "<span class='notice'>You begin dismantling \the [src].</span>")
 		if (do_after(user,20,src))
-			to_chat(user, "<span class='notice'>You carefully dismantle \the [src].</span>") //scavenging, the new proceeds auto-stack.)
+			to_chat(user, "<span class='notice'>You carefully dismantle \the [src].</span>") //scavenging, the new proceeds auto-stack.
 			for (var/i=1, i<=4, i++)
 				new /obj/item/stack/material/iron(loc)
 			for (var/i=1, i<=3, i++)

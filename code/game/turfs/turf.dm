@@ -154,7 +154,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 
 /turf/Enter(atom/movable/mover as mob|obj, atom/forget as mob|obj|turf|area)
 	if (movement_disabled && usr.ckey != movement_disabled_exception)
-		to_chat(usr, "<span class='warning'>Movement is admin-disabled.</span>") //This is to identify lag problems)
+		to_chat(usr, "<span class='warning'>Movement is admin-disabled.</span>") //This is to identify lag problems
 		return
 
 	..()
@@ -200,7 +200,7 @@ var/const/enterloopsanity = 100
 /turf/Entered(atom/atom as mob|obj)
 
 	if (movement_disabled)
-		to_chat(usr, "<span class='warning'>Movement is admin-disabled.</span>") //This is to identify lag problems)
+		to_chat(usr, "<span class='warning'>Movement is admin-disabled.</span>") //This is to identify lag problems
 		return
 	..()
 
@@ -319,7 +319,7 @@ var/const/enterloopsanity = 100
 
 /turf/Entered(atom/A, atom/OL)
 	if (movement_disabled && usr.ckey != movement_disabled_exception)
-		to_chat(usr, "<span class='danger'>Movement is admin-disabled.</span>") //This is to identify lag problems)
+		to_chat(usr, "<span class='danger'>Movement is admin-disabled.</span>") //This is to identify lag problems
 		return
 
 	if (istype(A,/mob/living))

@@ -300,7 +300,7 @@
 		return
 /obj/item/garrote/proc/stop_garroting(mob/living/human/user,mob/living/human/target)
 	garroting = FALSE
-	to_chat(user, "<span class='notice'>You release the garrote on your victim.</span>") //Not the grab, though. Only the garrote.)
+	to_chat(user, "<span class='notice'>You release the garrote on your victim.</span>") //Not the grab, though. Only the garrote.
 	update_icon()
 	return
 /obj/item/garrote/attack_self(mob/living/human/user)
