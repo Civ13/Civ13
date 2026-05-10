@@ -429,6 +429,7 @@
 	if(user.incapacitated()  || !user.Adjacent(src))
 		return
 	user.set_using_object(src)
+	var/window_name = "mob[ckey(name)]"
 	var/dat = {"
 	<b><HR><FONT size=3>[name]</FONT></b>
 	<BR><HR>
@@ -438,10 +439,10 @@
 	<BR><b>Back:</b> <A href='?src=\ref[src];item=back'>[(back ? back : "Nothing")]</A>
 	<BR><A href='?src=\ref[src];item=pockets'>Empty Pockets</A>
 	<BR><A href='?src=\ref[user];refresh=1'>Refresh</A>
-	<BR><A href='?src=\ref[user];mach_close=mob[name]'>Close</A>
+	<BR><A href='?src=\ref[user];mach_close=[window_name]'>Close</A>
 	<BR>"}
-	user << browse(dat, text("window=mob[];size=325x500", name))
-	onclose(user, "mob[name]")
+	user << browse(dat, "window=[window_name];size=325x500")
+	onclose(user, window_name)
 	return
 
 /mob/living/human/proc/get_fullness()

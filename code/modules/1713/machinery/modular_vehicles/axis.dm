@@ -456,7 +456,8 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 						corners[3] = F
 					if (EAST) // FL
 						corners[2] = F
-	maxdist=1+max(abs(corners[1].x-corners[2].x),abs(corners[1].y-corners[3].y),abs(corners[1].y-corners[2].y),abs(corners[1].x-corners[3].x))
+	if (corners[1] && corners[2] && corners[3])
+		maxdist=1+max(abs(corners[1].x-corners[2].x),abs(corners[1].y-corners[3].y),abs(corners[1].y-corners[2].y),abs(corners[1].x-corners[3].x))
 	for(var/obj/structure/vehicleparts/frame/FM in components)
 		for(var/obj/structure/vehicleparts/movement/MV in wheels)
 			if (!MV.axis && MV.x == FM.x && MV.y == FM.y && MV.z == FM.z)

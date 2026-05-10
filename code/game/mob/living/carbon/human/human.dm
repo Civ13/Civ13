@@ -302,6 +302,7 @@ var/list/coefflist = list()
 		suit = w_uniform
 
 	user.set_using_object(src)
+	var/window_name = "mob[ckey(name)]"
 	var/dat = "<B><HR><FONT size=3>[name]</FONT></B><BR><HR>"
 
 	for (var/entry in species.hud.gear)
@@ -330,10 +331,10 @@ var/list/coefflist = list()
 	dat += "<BR><A href='?src=\ref[src];item=splints'>Remove splints</A>"
 	dat += "<BR><A href='?src=\ref[src];item=pockets'>Empty pockets</A>"
 	dat += "<BR><A href='?src=\ref[user];refresh=1'>Refresh</A>"
-	dat += "<BR><A href='?src=\ref[user];mach_close=mob[name]'>Close</A>"
+	dat += "<BR><A href='?src=\ref[user];mach_close=[window_name]'>Close</A>"
 
-	user << browse(dat, text("window=mob[name];size=340x540"))
-	onclose(user, "mob[name]")
+	user << browse(dat, "window=[window_name];size=340x540")
+	onclose(user, window_name)
 	return
 
 //repurposed proc. Now it combines get_id_name() and get_face_name() to determine a mob's name variable. Made into a seperate proc as it'll be useful elsewhere

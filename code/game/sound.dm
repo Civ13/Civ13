@@ -507,6 +507,8 @@ var/const/FALLOFF_SOUNDS = 0.5
 	return rand(32000, 55000) //Frequency stuff only works with 45kbps oggs.
 
 /proc/get_sfx(soundin)
+	if (islist(soundin))
+		soundin = pick(soundin)
 	if (istext(soundin))
 		switch(soundin)
 			if ("shatter") soundin = pick(shatter_sound)
