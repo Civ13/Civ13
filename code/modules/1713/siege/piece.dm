@@ -312,7 +312,7 @@
 	else
 		user = M
 		user.use_cannon(src)
-		draw_aiming_line(user)
+		update_icon()
 		do_html(user)
 
 
@@ -508,7 +508,7 @@
 	// 360 = 0 east
 
 	get_target_coords()
-	draw_aiming_line(user)
+	update_icon()
 
 	if(azimuth >= 45 && azimuth < 135)
 		dir = EAST
@@ -965,7 +965,7 @@
 		azimuth = 0
 	dir = new_dir
 	get_target_coords()
-	draw_aiming_line(user)
+	update_icon()
 
 /obj/structure/cannon/proc/get_target_coords()
 	var/actual_azimuth = azimuth - 90
@@ -981,17 +981,20 @@
 		return (-1 * target_x)
 	else
 		return (-1 * target_y)
+/obj/structure/cannon/update_icon()
+	..()
+	if (user)
+		draw_aiming_line(user)
 
 /obj/structure/cannon/proc/clear_aiming_line(var/mob/user)
-	if(!user)
+	if(!user || !user.client)
 		return
-	if(!user.client)
-		return
+	var/list/to_remove = list()
 	for (var/image/img in user.client.images)
-		if (img.icon_state == "point")
-			user.client.images.Remove(img)
-		if (img.icon_state == "cannon_target")
-			user.client.images.Remove(img)
+		if (img.icon_state == "point" || img.icon_state == "cannon_target")
+			to_remove += img
+	if (to_remove.len)
+		user.client.images -= to_remove
 
 /obj/structure/cannon/proc/draw_aiming_line(var/mob/user)
 	if(!user)
@@ -1180,7 +1183,7 @@
 				chair_found.buckled_mob.loc = new_behind
 
 	get_target_coords()
-	draw_aiming_line(user)
+	update_icon()
 	return
 
 /obj/structure/cannon/verb/rotate_right()
@@ -1326,7 +1329,7 @@
 				chair_found.buckled_mob.loc = new_behind
 	
 	get_target_coords()
-	draw_aiming_line(user)
+	update_icon()
 	return
 /obj/structure/cannon/relaymove(var/mob/mob, direction)
 	if (direction)
