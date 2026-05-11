@@ -429,7 +429,6 @@
 	if(user.incapacitated()  || !user.Adjacent(src))
 		return
 	user.set_using_object(src)
-	var/window_name = "inventory"
 	var/dat = {"
 	<b><HR><FONT size=3>[name]</FONT></b>
 	<BR><HR>

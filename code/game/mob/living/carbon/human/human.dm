@@ -302,7 +302,6 @@ var/list/coefflist = list()
 		suit = w_uniform
 
 	user.set_using_object(src)
-	var/window_name = "inventory"
 	var/dat = "<B><HR><FONT size=3>[name]</FONT></B><BR><HR>"
 
 	for (var/entry in species.hud.gear)
@@ -813,7 +812,7 @@ var/list/coefflist = list()
 		if (!fail_msg)
 			fail_msg = "There is no exposed flesh or thin material [target_zone == "head" ? "on their head" : "on their body"] to inject into."
 		to_chat(user, "<span class='alert'>[fail_msg]</span>")
-		
+
 
 /mob/living/human/proc/exam_self()
 	var/organpain = FALSE
