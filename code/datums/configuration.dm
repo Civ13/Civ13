@@ -140,7 +140,9 @@ var/list/gamemode_cache = list()
 
 	// if the server is running on opendream instead of byond
 	var/opendream = FALSE
-
+	var/secret_key = "0"
+	var/civauth = FALSE
+	
 	// dumb memes
 	var/allow_dabbing = FALSE
 
@@ -242,6 +244,10 @@ var/list/gamemode_cache = list()
 					config.hub_banner_url = value
 				if ("opendream")
 					config.opendream = text2num(value)
+				if ("civauth")
+					config.civauth = text2num(value)
+				if ("secret_key")
+					config.secret_key = "[value]"
 
 				if ("use_recursive_explosions")
 					use_recursive_explosions = TRUE

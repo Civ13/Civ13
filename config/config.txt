@@ -29,6 +29,12 @@ HUB
 ## Is the server running on OpenDream (1) or BYOND (0)?
 OPENDREAM 0
 
+## Is the server using in-game authentication from api.civ13.com?
+CIVAUTH 0
+
+## If the above is true, what is the secret key? DO NOT SHARE THIS ON GITHUB. Use a long string
+SECRET_KEY 0
+
 # Lobby time: This is the amount of time between rounds that players have to setup their characters and be ready.
 LOBBY_COUNTDOWN 90
 
