@@ -330,10 +330,10 @@ var/list/coefflist = list()
 	dat += "<BR><A href='?src=\ref[src];item=splints'>Remove splints</A>"
 	dat += "<BR><A href='?src=\ref[src];item=pockets'>Empty pockets</A>"
 	dat += "<BR><A href='?src=\ref[user];refresh=1'>Refresh</A>"
-	dat += "<BR><A href='?src=\ref[user];mach_close=mob[name]'>Close</A>"
+	dat += "<BR><A href='?src=\ref[user];mach_close=inventory'>Close</A>"
 
-	user << browse(dat, text("window=mob[name];size=340x540"))
-	onclose(user, "mob[name]")
+	user << browse(dat, "window=inventory;size=340x540")
+	onclose(user, "inventory")
 	return
 
 //repurposed proc. Now it combines get_id_name() and get_face_name() to determine a mob's name variable. Made into a seperate proc as it'll be useful elsewhere
@@ -812,7 +812,7 @@ var/list/coefflist = list()
 		if (!fail_msg)
 			fail_msg = "There is no exposed flesh or thin material [target_zone == "head" ? "on their head" : "on their body"] to inject into."
 		to_chat(user, "<span class='alert'>[fail_msg]</span>")
-		
+
 
 /mob/living/human/proc/exam_self()
 	var/organpain = FALSE

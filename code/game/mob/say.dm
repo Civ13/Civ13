@@ -139,6 +139,8 @@
 	return get_turf(src)
 
 /mob/proc/say_test(var/text)
+	if (!text || !length_char(text))
+		return "0"
 	var/ending = copytext(text, length_char(text))
 	if (ending == "?")
 		return "1"

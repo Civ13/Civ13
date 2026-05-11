@@ -11,6 +11,7 @@
 	var/high_distance = 0
 	var/high = TRUE
 	var/mob/user = null
+	var/list/aiming_images = list()
 	var/list/obj/item/cannon_ball/loaded = new/list()
 	var/max_loaded = 1
 	bound_height = 64
@@ -210,6 +211,8 @@
 
 /obj/structure/cannon/Destroy()
 	cannon_piece_list -= src
+	if (user)
+		clear_aiming_line(user)
 	..()
 
 /obj/structure/cannon/ex_act(severity)
@@ -312,7 +315,7 @@
 	else
 		user = M
 		user.use_cannon(src)
-		draw_aiming_line(user)
+		update_icon()
 		do_html(user)
 
 
@@ -508,7 +511,7 @@
 	// 360 = 0 east
 
 	get_target_coords()
-	draw_aiming_line(user)
+	update_icon()
 
 	if(azimuth >= 45 && azimuth < 135)
 		dir = EAST
@@ -965,7 +968,7 @@
 		azimuth = 0
 	dir = new_dir
 	get_target_coords()
-	draw_aiming_line(user)
+	update_icon()
 
 /obj/structure/cannon/proc/get_target_coords()
 	var/actual_azimuth = azimuth - 90
@@ -981,17 +984,17 @@
 		return (-1 * target_x)
 	else
 		return (-1 * target_y)
+/obj/structure/cannon/update_icon()
+	..()
+	if (user)
+		draw_aiming_line(user)
 
 /obj/structure/cannon/proc/clear_aiming_line(var/mob/user)
-	if(!user)
+	if(!user || !user.client)
 		return
-	if(!user.client)
-		return
-	for (var/image/img in user.client.images)
-		if (img.icon_state == "point")
-			user.client.images.Remove(img)
-		if (img.icon_state == "cannon_target")
-			user.client.images.Remove(img)
+	if (aiming_images.len)
+		user.client.images -= aiming_images
+		aiming_images.Cut()
 
 /obj/structure/cannon/proc/draw_aiming_line(var/mob/user)
 	if(!user)
@@ -1014,6 +1017,7 @@
 			aiming_line.layer = 14
 			aiming_line.alpha = 255 - (i / 1.15)
 			user.client.images += aiming_line
+			aiming_images += aiming_line
 
 /obj/structure/cannon/modern/tank/draw_aiming_line(var/mob/user)
 	if(!user)
@@ -1036,11 +1040,13 @@
 			aiming_line.layer = 14
 			aiming_line.alpha = 255 - (i / 4)
 			user.client.images += aiming_line
+			aiming_images += aiming_line
 	aiming_line = new('icons/effects/Targeted.dmi', src, "cannon_target")
 	aiming_line.pixel_x = point_x
 	aiming_line.pixel_y = point_y
 	aiming_line.layer = 14
 	user.client.images += aiming_line
+	aiming_images += aiming_line
 
 /obj/structure/cannon/verb/rotate_left()
 	set category = null
@@ -1180,7 +1186,7 @@
 				chair_found.buckled_mob.loc = new_behind
 
 	get_target_coords()
-	draw_aiming_line(user)
+	update_icon()
 	return
 
 /obj/structure/cannon/verb/rotate_right()
@@ -1326,7 +1332,7 @@
 				chair_found.buckled_mob.loc = new_behind
 	
 	get_target_coords()
-	draw_aiming_line(user)
+	update_icon()
 	return
 /obj/structure/cannon/relaymove(var/mob/mob, direction)
 	if (direction)

@@ -123,10 +123,10 @@
 //			world.log << "<b>Driver's Seat error! ([x],[y])</b>"
 //			return FALSE
 		sleep(2)
-		if (isemptylist(central.axis.corners))
+		if (isemptylist(central.axis.corners) || !central.axis.corners[1])
 			central.axis.check_corners()
 		for (var/turf/T in rangeto)
-			if (!central.axis || !central.axis.corners)
+			if (!central.axis || !central.axis.corners || !central.axis.corners.len || !central.axis.corners[1])
 				continue
 			if (abs(T.x-central.axis.corners[1].x)<=central.axis.maxdist || abs(T.y-central.axis.corners[1].y)<=central.axis.maxdist)
 				var/doneps = FALSE

@@ -618,7 +618,7 @@ proc/getFlatIcon(image/A, defdir=2, deficon=null, defstate="", defblend=BLEND_DE
 	var/icon/flat = icon(flat_template)
 	flat.Insert(icon('icons/effects/effects.dmi', "nothing"), "", SOUTH, 1, 0)
 	flat.Scale(32, 32) // Force into memory as single state
-	if (!A || A.alpha <= 0)
+	if (!A || !istype(A) || A.alpha <= 0)
 		return flat
 	var/noIcon = FALSE
 

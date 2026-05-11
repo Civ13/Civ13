@@ -438,10 +438,10 @@
 	<BR><b>Back:</b> <A href='?src=\ref[src];item=back'>[(back ? back : "Nothing")]</A>
 	<BR><A href='?src=\ref[src];item=pockets'>Empty Pockets</A>
 	<BR><A href='?src=\ref[user];refresh=1'>Refresh</A>
-	<BR><A href='?src=\ref[user];mach_close=mob[name]'>Close</A>
+	<BR><A href='?src=\ref[user];mach_close=inventory'>Close</A>
 	<BR>"}
-	user << browse(dat, text("window=mob[];size=325x500", name))
-	onclose(user, "mob[name]")
+	user << browse(dat, "window=inventory;size=325x500")
+	onclose(user, "inventory")
 	return
 
 /mob/living/human/proc/get_fullness()

@@ -495,6 +495,18 @@
         let lastMessageTime = 0;
 
         function receiveMessage(data, skip_purify = false) {
+            if (!data) return;
+
+            if (typeof data === 'string') {
+                try {
+                    data = decodeURIComponent(data);
+                } catch (e) {
+                    // world.log << "DEBUG: receiveMessage decode error: " + e.message;
+                }
+            }
+                // world.log << "DEBUG: receiveMessage decode error: " + e.message;
+            }
+
             let messageHtml = '';
 
             if (typeof data === 'string' && data.charAt(0) === '{') {

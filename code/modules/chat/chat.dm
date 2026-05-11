@@ -63,7 +63,7 @@
 
 	// Escape message for JS
 	var/escaped_message = extract_json_message(message)
-	client << output(escaped_message, "browser_chat:receiveMessage")
+	client << output(url_encode(escaped_message), "browser_chat:receiveMessage")
 
 //this skips sanitisation so make sure you use it on safe html ONLY
 //DO NOT use this for player inputs!
@@ -77,7 +77,7 @@
 		message_queue += message
 		return
 
-	client << output(list2params(list(message,1)), "browser_chat:receiveMessage")
+	client << output("[url_encode(message)];1", "browser_chat:receiveMessage")
 
 
 
