@@ -496,14 +496,9 @@
 
         function receiveMessage(data, skip_purify = false) {
             if (!data) return;
-
-            if (typeof data === 'string') {
-                try {
-                    data = decodeURIComponent(data);
-                } catch (e) {
-                    // world.log << "DEBUG: receiveMessage decode error: " + e.message;
-                }
-            }
+            try {
+                data = decodeURIComponent(data);
+            } catch (e) {
                 // world.log << "DEBUG: receiveMessage decode error: " + e.message;
             }
 
