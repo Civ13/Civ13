@@ -448,6 +448,17 @@
 		..()
 		reagents.del_reagents()
 
+/obj/item/weapon/reagent_containers/food/drinks/bottle/quinine
+	name = "quinine"
+	desc = "Used to treat fever and malaria."
+	icon_state = "oldstyle_beer"
+	item_state = "beer"
+	value = 25
+	center_of_mass = list("x"=16, "y"=8)
+	New()
+		..()
+		reagents.add_reagent("quinine", 80)
+
 /obj/item/weapon/reagent_containers/food/drinks/bottle/large
 	name = "large bottle"
 	desc = "A large, 80 unit bottle."

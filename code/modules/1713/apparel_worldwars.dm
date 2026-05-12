@@ -369,6 +369,13 @@
 	item_state = "gulagprisoner"
 	worn_state = "gulagprisoner"
 
+/obj/item/clothing/under/ww2/bagne_prisoner
+	name = "Bagne prisoner clothing"
+	desc = "A worn out prisoner outfit, commonly used by prisoners of the French Bagnes."
+	icon_state = "bagneprisoner"
+	item_state = "bagneprisoner"
+	worn_state = "bagneprisoner"
+
 ////////////////////////////////////////////////////////////////////////
 ///////////////////////////////WW2 JAPS/////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
@@ -1337,6 +1344,11 @@
 			usr.visible_message("<span class = 'notice'>[usr] rolls up their uniform's sleeves.</span>", "<span class = 'notice'>You roll up your uniform's sleeves.</span>" )
 			rolled = TRUE
 			update_clothing_icon()
+
+//this is just a renamed uniform for the french colonial forces
+/obj/item/clothing/under/ww2/british/french
+	name = "French colonial uniform"
+	desc = "A khaki uniform, worn by French forces in the tropical colonies."
 
 /obj/item/clothing/under/ww2/british_off
 	name = "British officer uniform"

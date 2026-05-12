@@ -411,9 +411,64 @@
 	code = FR_CODE
 	name = "French key"
 
+/obj/item/weapon/key/french/guard
+	code = FR_CODE
+	name = "Bagne guard key"
+	health = 90000
+/obj/item/weapon/key/french/guard/max
+	code = FR_CODE+2
+	name = "Maximum Security guard key"
+/obj/item/weapon/key/french/guard/max/command
+	code = FR_CODE+8
+	name = "Maximum Security commander key"
+
+/datum/keyslot/french/guard
+	code = FR_CODE
+
+/datum/keyslot/french/guard/max
+	code = FR_CODE+2
+
+/datum/keyslot/french/guard/max/command
+	code = FR_CODE+8
+
 /obj/structure/simple_door/key_door/french
 	keyslot_type = /datum/keyslot/french
 	unique_door_name = "French locked"
+
+/obj/structure/simple_door/key_door/french/guard
+	keyslot_type = /datum/keyslot/french/guard
+	unique_door_name = "Bagne locked"
+/obj/structure/simple_door/key_door/french/guard/chainlink
+	icon_state = "chainlink"
+	basic_icon = "chainlink"
+	override_opacity = TRUE
+	override_material = TRUE
+/obj/structure/simple_door/key_door/french/guard/max
+	keyslot_type = /datum/keyslot/french/guard/max
+	unique_door_name = "Maximum Security locked"
+/obj/structure/simple_door/key_door/french/guard/max/command
+	keyslot_type = /datum/keyslot/french/guard/max/command
+	unique_door_name = "Maximum Security - Command Only locked"
+/obj/structure/simple_door/key_door/custom/jail/steeljail/guard/bagne
+	unique_door_name = "Bagne locked"
+	locked = TRUE
+	custom_code = FR_CODE
+/obj/structure/simple_door/key_door/custom/jail/steeljail/guard/bagne/max
+	unique_door_name = "Maximum Security locked"
+	custom_code = FR_CODE+2
+/obj/structure/simple_door/key_door/custom/jail/steeljail/guard/bagne/max/command
+	unique_door_name = "Maximum Security - Command Only locked"
+	custom_code = FR_CODE+8
+
+/obj/structure/simple_door/key_door/custom/jail/steeljail/guard/bagne/open
+	starts_open = TRUE
+	locked = FALSE
+	custom_code = FR_CODE
+	New()
+		..()
+		icon_state = "cellopen"
+		density = FALSE
+
 #undef FR_CODE
 
 #define PT_CODE 995 * 5
