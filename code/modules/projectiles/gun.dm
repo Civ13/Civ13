@@ -298,6 +298,12 @@
 	var/_fire_delay = isnull(firemode.fire_delay) ? fire_delay : firemode.fire_delay
 	var/_move_delay = firemode.move_delay
 
+	if (config && config.opendream && full_auto && _burst == 1)
+		// OpenDream clients don't send MouseDown/MouseUp correctly for hold-to-fire.
+		// Translate full-auto into a burst mechanism per-click.
+		// Calculate burst size so it shoots roughly 0.5 seconds worth of bullets.
+		_burst = max(3, round(10 / max(1, _burst_delay*2)))
+
 	if (forceburst != -1)
 		_burst = forceburst
 
