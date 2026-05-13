@@ -1,3 +1,4 @@
+var/global/list/npc_appearance_cache = list()
 
 /mob/living/simple_animal/hostile/human
 	attack_verb = "hits"
@@ -6,8 +7,12 @@
 	icon = 'icons/mob/npcs.dmi'
 	icon_state = "pirate_friendly1"
 	icon_dead = "pirate_friendly_dead"
+	gender = MALE
 
 	var/corpse = null
+	var/use_generated_appearance = FALSE
+	var/corpse_job = ""
+	var/corpse_s_tone = 0
 	var/weapon = null
 	var/idle_counter = 0
 
@@ -37,12 +42,81 @@
 		"enemy_sighted" = list(),
 		"grenade" = list(),
 	)
+/mob/living/simple_animal/hostile/human/New()
+	..()
+	if (use_generated_appearance)
+		invisibility = 101
+		spawn(5)
+			initialize_npc_appearance()
+
+/mob/living/simple_animal/hostile/human/proc/initialize_npc_appearance()
+	var/job_to_use = corpse_job
+	var/s_tone_to_use = corpse_s_tone
+
+	if (job_to_use == "" && ispath(corpse, /mob/living/human/corpse))
+		var/mob/living/human/corpse/cp = corpse
+		job_to_use = initial(cp.corpse_job)
+		s_tone_to_use = initial(cp.corpse_s_tone)
+		if (s_tone_to_use == 0)
+			var/s_min = initial(cp.s_tone_min)
+			var/s_max = initial(cp.s_tone_max)
+			if (s_min != 0 || s_max != 0)
+				s_tone_to_use = rand(s_min, s_max)
+
+	if (job_to_use == "")
+		return
+
+	var/cache_key = "[job_to_use]-[s_tone_to_use]-[gender]"
+	if (npc_appearance_cache[cache_key])
+		var/list/cached = npc_appearance_cache[cache_key]
+		src.appearance = cached["appearance"]
+		invisibility = 0
+		icon_dead = cached["icon_dead"]
+		return
+
+	var/mob/living/human/dummy = new(null)
+	dummy.gender = gender
+	dummy.s_tone = s_tone_to_use
+	dummy.invisibility = 101
+	dummy.icon_state = "blank"
+	dummy.layer = 4
+
+	if (job_master)
+		job_master.EquipRank(dummy, job_to_use)
+		for (var/obj/item/weapon/gun/G in dummy.contents)
+			if (G.loc == dummy)
+				dummy.drop_from_inventory(G)
+				dummy.equip_to_slot_or_del(G, slot_l_hand)
+				break
+
+	spawn(15)
+		if (!dummy) return
+		dummy.regenerate_icons()
+
+		src.appearance = dummy.appearance
+		invisibility = 0
+		icon_state = ""
+
+		var/icon/flat = getFlatIcon(src)
+		var/icon/dead = new(flat)
+		dead.BecomeLying()
+
+		npc_appearance_cache[cache_key] = list("appearance" = dummy.appearance, "icon_dead" = dead)
+
+		icon_dead = dead
+
+		qdel(dummy)
+
 /mob/living/simple_animal/hostile/human/death()
 	..()
 	if(corpse)
 		new corpse (src.loc)
 	else
-		icon_state = icon_dead
+		if (istype(icon_dead, /icon))
+			icon = icon_dead
+			icon_state = ""
+		else
+			icon_state = icon_dead
 	if(weapon)
 		new weapon (src.loc)
 	if(gun)

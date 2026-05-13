@@ -1157,6 +1157,7 @@
 	walk_away(Trg, Max, Lag, Speed)
 	return
 	#endif
+	#ifdef OPENDREAM
 	walk(src, 0) // Halts any built-in walk loop to mimic BYOND
 	
 	if(!Trg) return
@@ -1176,3 +1177,4 @@
 			sleep(Lag)
 		else
 			sleep(world.tick_lag)
+	#endif

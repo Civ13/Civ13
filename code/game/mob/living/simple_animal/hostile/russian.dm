@@ -1,6 +1,7 @@
 /mob/living/simple_animal/hostile/human/rf_soldier
 	name = "Russian Federal Forces soldier"
 	desc = "A soldier serving for the Russian Federation."
+	use_generated_appearance = TRUE
 	icon_state = "rus_che1_ng"
 	icon_dead = "rus_che1_dead"
 	response_help = "pushes"
