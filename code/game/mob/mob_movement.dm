@@ -1144,3 +1144,34 @@
 		for(var/obj/item/drone_controller/RC in mob.contents)
 			if(mob.using_drone)
 				RC.stop_move_drone()
+
+
+// this is a wrapper that checks if the game is running in OpenDream,
+// if YES: Run our own implementation of walk_away(), since it is not implemented
+// if NO: Run the normal walk_away() proc
+/atom/var/walk_id = 0
+
+/atom/proc/walk_away_od(atom/Trg, Max=5, Lag=0, Speed=0)
+	set waitfor = FALSE
+	if (config && !config.opendream)
+		walk_away(Trg, Max, Lag, Speed)
+		return
+	walk(src, 0) // Halts any built-in walk loop to mimic BYOND
+	
+	if(!Trg) return
+	
+	var/current_walk_id = rand(1, 100000)
+	src.walk_id = current_walk_id
+	
+	// Loop continuously in the background
+	while(src && Trg && src.walk_id == current_walk_id)
+		if(get_dist(src, Trg) > Max)
+			break
+		
+		step_away(src, Trg)
+		
+		// Wait for the lag, or fallback to world.tick_lag if 0 
+		if(Lag > 0)
+			sleep(Lag)
+		else
+			sleep(world.tick_lag)

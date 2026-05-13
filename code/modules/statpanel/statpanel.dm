@@ -9,6 +9,7 @@
 	var/statpanel_tab = "Status"
 	var/list/statpanel_data = list()
 	var/list/statpanel_tabs = list()
+	var/statpanel_next_update = 0
 
 /client/proc/run_verb(verb_name as text)
 	// 1) Collect all available verbs
@@ -78,6 +79,8 @@
 /client/proc/update_statpanel()
 	if (!statpanel_ready)
 		return
+	
+	statpanel_next_update = world.time + 10
 	
 	var/list/verbs_data = list()
 	var/list/all_verbs = list()

@@ -101,7 +101,7 @@
 	if (flee_target)
 		if (prob(25)) say("HSSSSS")
 		stop_automated_movement = TRUE
-		walk_away(src, flee_target, 7, 2)
+		walk_away_od(src, flee_target, 7, 2)
 
 /mob/living/simple_animal/cat/proc/set_flee_target(atom/A)
 	if (A)

@@ -442,6 +442,8 @@
 	return is_active_non_observer
 
 /client/Stat()
+	if (world.time < statpanel_next_update)
+		return
 	..()
 	update_statpanel()
 /*

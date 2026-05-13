@@ -283,7 +283,7 @@
 				walk(src,0)
 				OpenFire(target_mob)
 			else if (get_dist(src, target_mob) <= 3)
-				walk_away(src, target_mob, 5, 7)
+				walk_away_od(src, target_mob, 5, 7)
 				spawn(10)
 					walk(src,0)
 					do_movement(loc)
@@ -323,7 +323,7 @@
 			take_cover(target_mob)
 	for(var/obj/item/weapon/grenade/G in view(2,src))
 		if (G.active)
-			walk_away(src, G, 5, 7)
+			walk_away_od(src, G, 5, 7)
 			spawn(20)
 				walk(src,0)
 				do_movement(loc)
@@ -506,7 +506,7 @@
 
 /mob/living/simple_animal/hostile/human/proc/retreat()
 	if (target_mob)
-		walk_away(src,target_mob.loc,10,5)
+		walk_away_od(src,target_mob.loc,10,5)
 		target_mob = null
 		spawn(80)
 			walk(src,0)
@@ -521,7 +521,7 @@
 			if (PEN.faction != faction && PEN.stat != DEAD)
 				EN = PEN
 				break
-		walk_away(src,EN,10,5)
+		walk_away_od(src,EN,10,5)
 		spawn(40)
 			target_mob = null
 		spawn(45)

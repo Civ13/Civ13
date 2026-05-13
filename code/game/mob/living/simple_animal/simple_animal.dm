@@ -237,7 +237,7 @@
 		t_behaviour = behaviour
 	if (t_behaviour == "scared")
 		for (var/mob/living/human/H in range(7, src))
-			walk_away(src, H, 7, 2)
+			walk_away_od(src, H, 7, 2)
 			spawn(50)
 				walk(src,0)
 			return "scared"
