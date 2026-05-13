@@ -12,6 +12,10 @@
 	return
 
 /process/python/proc/execute(var/command, var/list/py_args = list())
+	#ifdef OPENDREAM
+	log_debug("Opendream cannot run shell() commands yet.")
+	return
+	#endif
 	if (! shell())
 		return FALSE
 	if (world.realtime - last < 300)

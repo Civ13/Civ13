@@ -808,12 +808,12 @@
 		before_move()
 		forceMove(location.return_turf())
 		update_icon()
-		if (config && !config.opendream)
-			if (!did_muzzle_effect)
-				muzzle_effect()
-			else if (!bumped && loc)
-				tracer_effect()
-
+		#ifndef OPENDREAM
+		if (!did_muzzle_effect)
+			muzzle_effect()
+		else if (!bumped && loc)
+			tracer_effect()
+		#endif
 /obj/item/projectile/proc/do_bullet_act(var/atom/A, var/zone)
 	if (A && A != firer && A != firedfrom)
 		A.pre_bullet_act(src)

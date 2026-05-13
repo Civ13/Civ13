@@ -1153,9 +1153,10 @@
 
 /atom/proc/walk_away_od(atom/Trg, Max=5, Lag=0, Speed=0)
 	set waitfor = FALSE
-	if (config && !config.opendream)
-		walk_away(Trg, Max, Lag, Speed)
-		return
+	#ifndef OPENDREAM
+	walk_away(Trg, Max, Lag, Speed)
+	return
+	#endif
 	walk(src, 0) // Halts any built-in walk loop to mimic BYOND
 	
 	if(!Trg) return

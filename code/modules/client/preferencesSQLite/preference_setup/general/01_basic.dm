@@ -38,23 +38,26 @@
 		for (var/v in TRUE to pref.preview_icons.len)
 			if (isicon(pref.preview_icons_front[v]))
 				user << browse_rsc(pref.preview_icons_front[v], "previewicon_[v]_front.png")
-			if (config && !config.opendream)
+			#ifndef OPENDREAM
 				if (isicon(pref.preview_icons_back[v]))
 					user << browse_rsc(pref.preview_icons_back[v], "previewicon_[v]_back.png")
 				if (isicon(pref.preview_icons_east[v]))
 					user << browse_rsc(pref.preview_icons_east[v], "previewicon_[v]_east.png")
 				if (isicon(pref.preview_icons_west[v]))
 					user << browse_rsc(pref.preview_icons_west[v], "previewicon_[v]_west.png")
+			#endif
 		. += "<b>Preview</b><br>"
 
 		for (var/v in TRUE to pref.preview_icons.len)
-			if (config && !config.opendream)
-				. += "<img src=previewicon_[v]_front.png height=64 width=64>"
-				. += "<img src=previewicon_[v]_back.png height=64 width=64>"
-				. += "<img src=previewicon_[v]_east.png height=64 width=64>"
-				. += "<img src=previewicon_[v]_west.png height=64 width=64>"
-			else
-				. += "<img src=previewicon_[v]_front.png height=64 width=256>"
+			#ifndef OPENDREAM
+			. += "<img src=previewicon_[v]_front.png height=64 width=64>"
+			. += "<img src=previewicon_[v]_back.png height=64 width=64>"
+			. += "<img src=previewicon_[v]_east.png height=64 width=64>"
+			. += "<img src=previewicon_[v]_west.png height=64 width=64>"
+			#endif
+			#ifdef OPENDREAM
+			. += "<img src=previewicon_[v]_front.png height=64 width=256>"
+			#endif
 			. += "<br><br>"
 		// name
 		. += "<b>Name:</b> "

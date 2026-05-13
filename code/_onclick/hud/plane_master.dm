@@ -29,10 +29,10 @@
 
 /obj/screen/plane_master/lighting/New()
 	..()
-	if (config.opendream)
-		appearance_flags |= KEEP_TOGETHER
-		invisibility = 0
-
+	#ifdef OPENDREAM
+	appearance_flags |= KEEP_TOGETHER
+	invisibility = 0
+	#endif
 // Removed backdrop logic for multiplicative model
 
 /obj/screen/plane_master/hud
