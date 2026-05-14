@@ -204,8 +204,9 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 							crimereason = "Fighting for the Armia Krajowa in [pick("Grodno","Wroclaw", "Lodz", "Lvov")]."
 						if ("Japanese")
 							crimereason = "Fighting for the Imperial Japanese Army in [pick("Khalkhyn Gol", "Mongolia", "the Krillin Islands", "Sakhalinsk")]."
-
-					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32),P.original_eyes, P.randrole)
+					if (istype(H.original_job, /datum/job/civilian/prisoner/bagne_kitchen) || istype(H.original_job, /datum/job/civilian/prisoner/bagne_nurse) || istype(H.original_job, /datum/job/civilian/prisoner/bagne_logger))
+						crimereason = pick("Arson", "Armed Robbery", "Pimping", "Desertion", "Treason", "Military Insubordination")
+					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32), P.original_eyes, P.randrole)
 				else if (istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing1) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing3) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing3_danger))
 					var/datum/job/civilian/abashiri/prisoner/P = H.original_job
 					switch(H.nationality)
@@ -224,7 +225,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		if (document_details[6] == "male")
 			to_chat(user, "<b><span class='info'>Face:</b> [document_details[3]], [document_details[4]] color</span>")
 		to_chat(user, "<b><span class='info'>Eyes:</b> [document_details[8]]</span>")
-		to_chat(user, "<b><span class='info'>Detained for:</b> [document_details[5]]</span>")
+		to_chat(user, "<b><span class='info'>Convicted of:</b> [document_details[5]]</span>")
 		to_chat(user, "<b><span class='info'>Sentence:</b> [document_details[7]] years</span>")
 		to_chat(user, "<b><span class='info'>Assigned:</b> [document_details[9]]</span>")
 	to_chat(user, "<span class='info'>*---------*</span>")

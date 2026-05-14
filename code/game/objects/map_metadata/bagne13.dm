@@ -164,7 +164,7 @@
 
 /obj/structure/camp_exportbook/bagne
 	name = "camp exports"
-	desc = "Use this to export products from the camp, get paid, and gain points. 5 units of wood equals 5 Francs."
+	desc = "Use this to export products from the camp, get paid, and gain points. 5 units of wood equals 5 francs."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "supplybook2"
 	density = TRUE
@@ -178,7 +178,7 @@
 		G = map
 		if (istype(S, /obj/item/stack/material/wood))
 			G.score_guards+=floor(S.amount/5)
-			to_chat(H, "You export \the [S]. You will be paid [floor(S.amount/5)] Francs for this.")
+			to_chat(H, "You export \the [S]. You will be paid [floor(S.amount/5)] francs for this.")
 			qdel(S)
 			new/obj/item/stack/money/francs(src.loc, floor(S.amount/5))
 			return
@@ -200,3 +200,23 @@
 	var/obj/map_metadata/bagne13/G = null
 	if (istype(map, /obj/map_metadata/bagne13))
 		G = map
+		var/accepted = FALSE
+		var/accepted_item = ""
+		if (G.prisoner_scores[H] && H.original_job_title == "Bucheron")
+			if (istype(I, /obj/item/clothing/mask/smokable/cigarette) && G.prisoner_scores[H][1] == "cigarettes")
+				G.prisoner_scores[H][3] += 1
+				accepted = TRUE
+				accepted_item = "cigarettes"
+			else if (istype(I, /obj/item/weapon/reagent_containers/pill/opium) && G.prisoner_scores[H][1] == "opium")
+				G.prisoner_scores[H][3] += 1
+				accepted = TRUE
+				accepted_item = "opium"
+		else
+			to_chat(H, "You have no personal objective, so stashing items will not increase your score.")
+			return
+
+		if (accepted)
+			to_chat(H, "You stash the [accepted_item]. Your score is currently [G.prisoner_scores[H][3]] out of [G.prisoner_scores[H][2]].")
+		else
+			to_chat(H, "This item cannot be stashed for points.")
+			return

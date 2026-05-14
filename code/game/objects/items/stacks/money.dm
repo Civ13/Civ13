@@ -106,8 +106,8 @@
 	amount = 500
 
 /obj/item/stack/money/francs
-	name = "French Franc"
-	desc = "A French 5 Franc banknote."
+	name = "French franc"
+	desc = "A French 1 franc banknote."
 	singular_name = "franc"
 	icon_state = "franc_1"
 	amount = 1

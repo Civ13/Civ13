@@ -112,14 +112,10 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/bagne_prisoner(H), slot_w_uniform)
 
 		H.equip_to_slot_or_del(new /obj/item/weapon/prisoner_passport(H), slot_wear_id)
-		var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(H)
-		RUB.amount = 25
+		var/obj/item/stack/money/francs/RUB = new /obj/item/stack/money/francs(H)
+		RUB.amount = 2
 		H.equip_to_slot_or_del(RUB, slot_r_store)
-		if (prob(5))
-			if (prob(70))
-				H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/shank(H), slot_r_store)
-			else
-				H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/shank/glass(H), slot_r_store)
+
 		H.setStat("strength", STAT_MEDIUM_HIGH)
 		H.setStat("crafting", STAT_NORMAL)
 		H.setStat("rifle", STAT_NORMAL)
@@ -138,6 +134,8 @@
 		uniform.attackby(armband, H)
 		H.add_note("Role", "You are a <b>Logger</b>. Your job is to collect wood from the nearby forest, as instructed by the guards.")
 		randrole = title
+		set_prisoner(H)
+		give_objective(H, "Easy")
 
 /datum/job/civilian/prisoner/bagne_nurse
 	title = "Infirmier"
@@ -153,14 +151,10 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/bagne_prisoner(H), slot_w_uniform)
 
 		H.equip_to_slot_or_del(new /obj/item/weapon/prisoner_passport(H), slot_wear_id)
-		var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(H)
-		RUB.amount = 25
+		var/obj/item/stack/money/francs/RUB = new /obj/item/stack/money/francs(H)
+		RUB.amount = 2
 		H.equip_to_slot_or_del(RUB, slot_r_store)
-		if (prob(5))
-			if (prob(70))
-				H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/shank(H), slot_r_store)
-			else
-				H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/shank/glass(H), slot_r_store)
+
 		H.setStat("strength", STAT_MEDIUM_HIGH)
 		H.setStat("crafting", STAT_NORMAL)
 		H.setStat("rifle", STAT_NORMAL)
@@ -179,11 +173,11 @@
 		uniform.attackby(armband, H)
 		H.add_note("Role", "You are a <b>Nurse Helper</b>. Keep other prisoners alive with the sparse supplies you have...")
 		randrole = title
+		set_prisoner(H)
 
 /datum/job/civilian/prisoner/bagne_kitchen
 	title = "Cuistot"
 	en_meaning = "Prisoner - Kitchen"
-
 
 	min_positions = 3
 	max_positions = 25
@@ -195,14 +189,10 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/bagne_prisoner(H), slot_w_uniform)
 
 		H.equip_to_slot_or_del(new /obj/item/weapon/prisoner_passport(H), slot_wear_id)
-		var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(H)
-		RUB.amount = 25
+		var/obj/item/stack/money/francs/RUB = new /obj/item/stack/money/francs(H)
+		RUB.amount = 2
 		H.equip_to_slot_or_del(RUB, slot_r_store)
-		if (prob(5))
-			if (prob(70))
-				H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/shank(H), slot_r_store)
-			else
-				H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/shank/glass(H), slot_r_store)
+
 		H.setStat("strength", STAT_MEDIUM_HIGH)
 		H.setStat("crafting", STAT_NORMAL)
 		H.setStat("rifle", STAT_NORMAL)
@@ -221,3 +211,62 @@
 		uniform.attackby(armband, H)
 		H.add_note("Role", "You are on <b>Kitchen Duty</b>. Your job is to manage the prisoner's stock of food (if the guards actually deliver it...) and keep everyone fed.")
 		randrole = title
+		set_prisoner(H)
+
+/datum/job/civilian/prisoner/proc/set_prisoner(mob/living/human/H)
+	if (istype(H.original_job, /datum/job/civilian/prisoner/bagne_kitchen) || istype(H.original_job, /datum/job/civilian/prisoner/bagne_logger) || istype(H.original_job, /datum/job/civilian/prisoner/bagne_nurse))
+		var/datum/job/civilian/prisoner/PJ = H.original_job
+		H.add_language("French",TRUE)
+		H.remove_language("English")
+		PJ.original_hair = pick("Black", "Light Brown", "Dark Brown", "Red", "Orange", "Light Blond", "Blond", "Dirty Blond", "Light Grey", "Grey")
+		PJ.original_facial = PJ.original_hair
+		var/hex_hair = hair_colors[PJ.original_hair]
+		var/red = hex2num(copytext(hex_hair, 2, 4))
+		var/green = hex2num(copytext(hex_hair, 4, 6))
+		var/blue = hex2num(copytext(hex_hair, 6, 8))
+		H.r_hair = red
+		H.g_hair = green
+		H.b_hair = blue
+		H.r_facial = red
+		H.g_facial = green
+		H.b_facial = blue
+		PJ.original_eyes = pick("Black", "Brown", "Dark Brown", "Green", "Blue")
+		var/hex_eyes = eye_colors[PJ.original_eyes]
+		red = hex2num(copytext(hex_eyes, 2, 4))
+		green = hex2num(copytext(hex_eyes, 4, 6))
+		blue = hex2num(copytext(hex_eyes, 6, 8))
+		H.r_eyes = red
+		H.g_eyes = green
+		H.b_eyes = blue
+		if (H.gender == FEMALE)
+			H.h_style = pick("Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
+			H.f_style = pick("Shaved")
+		else
+			H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
+			H.f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
+		H.update_body()
+
+/datum/job/civilian/prisoner/proc/give_objective(mob/living/human/H, difficulty = "Easy")
+	if (!H)	return FALSE
+	var/obj/map_metadata/bagne13/G = null
+	if (istype(map, /obj/map_metadata/bagne13))
+		G = map
+	else
+		return FALSE
+	var/multiplier = 1
+	switch (difficulty)
+		if ("Easy")
+			multiplier = 1
+		if ("Medium")
+			multiplier = 2
+		if ("Hard")
+			multiplier = 3
+
+	var/list/objective = pick(list("cigarettes",20), list("opium",6))
+	G.prisoner_scores[H] = list(objective[1], objective[2]*multiplier, 0)
+	switch(objective[1])
+		if ("cigarettes")
+			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/pill/opium(H), slot_l_store)
+		if ("opium")
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/fancy/cigarettes/randompack(H), slot_l_store)
+	H.add_note("Objective", "Your personal objective is to collect <b>[G.prisoner_scores[H][2]] [G.prisoner_scores[H][1]]</b>. You will gain points for every item you stash in a hidden stash around the prison camp.")
