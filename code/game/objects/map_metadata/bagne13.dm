@@ -7,6 +7,8 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle, /area/caribbean/no_mans_land/invisible_wall/one)
 	respawn_delay = 3600
 	has_hunger = TRUE
+	//this follows the format mob = list(item to score, target amount, current amount)
+	var/list/prisoner_scores = list()
 
 	faction_organization = list(
 		FRENCH,
@@ -27,13 +29,12 @@
 	songs = list(
 		"Red Army Choir - Slavery and Suffering:1" = 'sound/music/slavery_and_suffering.ogg')
 	gamemode = "Prison Simulation"
-	var/list/points = list(
-		list("Guards",0,0),
-	)
+	var/score_guards = 0
 	is_RP = TRUE
 	var/gracedown1 = TRUE
 	var/siren = FALSE
 	grace_wall_timer = 2400
+
 /obj/map_metadata/bagne13/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/french))
@@ -97,38 +98,16 @@
 		check_points_msg()
 		config.no_respawn_delays = FALSE
 
-/obj/map_metadata/bagne13/proc/check_points()
-	for(var/i in points)
-		if (i[1] != "Guards")
-			i[2]=0
-	for (var/mob/living/human/H in player_list)
-		if (H.stat!=DEAD && H.original_job && istype(H.original_job, /datum/job/civilian/prisoner))
-			var/curval = 0
-			var/area/A = get_area(H)
-			if (istype(A, /area/caribbean/nomads/ice/target))
-				for(var/i in points)
-					if (i[1]==H.nationality)
-						i[3]+=4
-					else if (i[1]!="Guards")
-						i[3]+=2
-			for(var/obj/item/stack/money/rubles/R in H)
-				curval += R.amount
-			if (H.wear_suit && istype(H.wear_suit, /obj/item/clothing/suit/storage))
-				var/obj/item/clothing/suit/storage/ST = H.wear_suit
-				for(var/obj/item/stack/money/rubles/R in ST.pockets)
-					curval += R.amount
-			for(var/i in points)
-				if (i[1]==H.nationality)
-					i[2]+=curval
-	return
-
 /obj/map_metadata/bagne13/proc/check_points_msg()
-	check_points()
 	spawn(1)
-		to_chat(world, "<font size = 4><span class = 'notice'><b>Current Score:</b></font></span>")
-		for (var/i=1,i<=points.len,i++)
-			to_chat(world, "<br><font size = 3><span class = 'notice'>[points[i][1]]: <b>[points[i][2]+points[i][3]]</b></span></font>")
-
+		to_chat(world, "<font size = 4><span class = 'notice'><b>Guards Score:</b> </span>[score_guards]</font>")
+		
+		for (var/mob/living/human/H in prisoner_scores)
+			if (H && H.stat != DEAD && H.client)
+				var/score = prisoner_scores[H][3]
+				var/score_tgt = prisoner_scores[H][2]
+				var/score_item = prisoner_scores[H][1]
+				to_chat(H, "<font size = 4>Your current score is: <b>[score]</b> out of <b>[score_tgt]</b> [score_item].</font>")
 	spawn(2400)
 		check_points_msg()
 	return
@@ -159,10 +138,33 @@
 				alarm_proc()
 			return
 
+/obj/map_metadata/bagne13/update_win_condition()
+	if (processes.ticker.playtime_elapsed > 45000) //75 mins
+		ticker.finished = TRUE
+		var/message = "The round has ended! Guards score: <b>[score_guards]</b>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
+		for (var/mob/living/human/H in prisoner_scores)
+			if (H && H.stat != DEAD && H.client)
+				var/score = prisoner_scores[H][3]
+				var/score_tgt = prisoner_scores[H][2]
+				var/score_item = prisoner_scores[H][1]
+				if (score == score_tgt)
+					to_chat(H, "<font size = 4><b>Congratulations! You have achieved your personal objective!</b></font>")
+					if (H.client && H.client.ckey)
+						to_chat(world, "[H.ckey]: <span style='color:green'><b>SUCESS</b></span>!")
+				else
+					to_chat(H, "<font size = 4><b>You did not achieve your personal objective.</b></font>")
+					if (H.client && H.client.ckey)
+						to_chat(world, "[H.ckey]: <span style='color:red'><b>FAILED</b></span>")
+				to_chat(H, "<font size = 4>Your final score is: <b>[score]</b> out of <b>[score_tgt]</b> [score_item].</font>")
+				
+		return FALSE
+	last_win_condition = win_condition.hash
+	return TRUE
 
 /obj/structure/camp_exportbook/bagne
 	name = "camp exports"
-	desc = "Use this to export products from the camp and gain points for the guards."
+	desc = "Use this to export products from the camp, get paid, and gain points. 5 units of wood equals 5 Francs."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "supplybook2"
 	density = TRUE
@@ -175,12 +177,26 @@
 	if (istype(map, /obj/map_metadata/bagne13))
 		G = map
 		if (istype(S, /obj/item/stack/material/wood))
-			for(var/i in G.points)
-				if (i[1]=="Guards")
-					i[2]+=S.amount*S.value
-					to_chat(H, "You export \the [S].")
-					qdel(S)
-					new/obj/item/stack/money/rubles(src.loc, round(S.amount*S.value))
-					return
+			G.score_guards+=floor(S.amount/5)
+			to_chat(H, "You export \the [S]. You will be paid [floor(S.amount/5)] Francs for this.")
+			qdel(S)
+			new/obj/item/stack/money/francs(src.loc, floor(S.amount/5))
+			return
 	else
 		return
+
+
+/obj/structure/camp_exportbook/bagne/hideout
+	name = "hidden stash"
+	desc = "Use this to stash your contraband and increase your score."
+	icon = 'icons/obj/hideout.dmi'
+	icon_state = "beach_closed"
+	density = FALSE
+	anchored = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/camp_exportbook/bagne/hideout/attackby(var/obj/item/I, var/mob/living/human/H)
+	var/obj/map_metadata/bagne13/G = null
+	if (istype(map, /obj/map_metadata/bagne13))
+		G = map
