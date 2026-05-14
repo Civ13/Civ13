@@ -918,74 +918,71 @@
 		return
 
 /mob/living/simple_animal/proc/check_food()
-
 	var/totalcount = herbivore+granivore+carnivore+predatory_carnivore+scavenger
 	if (totalcount <= 0)
 		return
+	
+	// Evaluate all diet types sequentially to allow for omnivores.
+	// We no longer prob() abort the entire check, allowing fallback to other food sources.
+	
 	if (herbivore)
-		if (prob(100/totalcount))
-			for(var/turf/floor/grass/GT in range(2,src))
-				walk_towards(src,0)
-				eat()
-				return
-			for(var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/WT in range(2,src))
-				walk_towards(src,0)
-				eat()
-				return
-			for(var/turf/floor/grass/GT in range(6,src))
-				walk_towards(src, GT, move_to_delay)
-				return
-		else
+		for(var/turf/floor/grass/GT in range(2,src))
+			walk(src, 0)
+			eat()
+			return
+		for(var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/WT in range(2,src))
+			walk(src, 0)
+			eat()
+			return
+		for(var/turf/floor/grass/GT in range(6,src))
+			step_towards(src, GT)
 			return
 
 	if (granivore)
-		if (prob(100/totalcount))
-			for(var/obj/item/stack/farming/seeds/WT in range(2,src))
-				walk_towards(src,0)
-				eat()
-				return
-			for(var/obj/structure/farming/plant/PL in range(2,src))
-				walk_towards(src,0)
-				eat()
-				return
-			for(var/obj/structure/farming/plant/PL in range(8,src))
-				walk_towards(src, PL, move_to_delay)
-				return
+		for(var/obj/item/stack/farming/seeds/WT in range(2,src))
+			walk(src, 0)
+			eat()
+			return
+		for(var/obj/structure/farming/plant/PL in range(2,src))
+			walk(src, 0)
+			eat()
+			return
+		for(var/obj/structure/farming/plant/PL in range(8,src))
+			step_towards(src, PL)
+			return
 
 	if (carnivore)
-		if (prob(100/totalcount))
-			for(var/mob/living/ML in range(2,src))
-				walk_towards(src,0)
+		for(var/mob/living/ML in range(2,src))
+			if (ML.stat == DEAD)
+				walk(src, 0)
 				eat()
 				return
-			for(var/mob/living/ML in range(9,src))
-				if (ML.stat == DEAD)
-					walk_towards(src, ML, move_to_delay)
-					return
+		for(var/mob/living/ML in range(9,src))
+			if (ML.stat == DEAD)
+				step_towards(src, ML)
+				return
 
 	if (predatory_carnivore)
-		if (prob(100/totalcount))
-			for(var/mob/living/ML in range(2,src))
-				if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type))
-					walk_towards(src,0)
-					eat()
-					return
-			for(var/mob/living/ML in range(9,src))
-				if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type))
-					walk_towards(src, ML, move_to_delay)
-					return
+		for(var/mob/living/ML in range(2,src))
+			if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type))
+				walk(src, 0)
+				eat()
+				return
+		for(var/mob/living/ML in range(9,src))
+			if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type))
+				step_towards(src, ML)
+				return
 
 	if (scavenger)
-		if (prob(100/totalcount))
-			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(2,src))
-				if(!istype(FD, /obj/item/weapon/reagent_containers/food/snacks/poo))
-					walk_towards(src,0)
-					eat()
-					return
-			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(8,src))
-				if(!istype(FD, /obj/item/weapon/reagent_containers/food/snacks/poo))
-					walk_towards(src, FD, move_to_delay)
-					return
+		for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(2,src))
+			if(!istype(FD, /obj/item/weapon/reagent_containers/food/snacks/poo))
+				walk(src, 0)
+				eat()
+				return
+		for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(8,src))
+			if(!istype(FD, /obj/item/weapon/reagent_containers/food/snacks/poo))
+				step_towards(src, FD)
+				return
 
 /mob/living/simple_animal/proc/eat()
 	var/totalcount = herbivore+granivore+carnivore+predatory_carnivore+scavenger
@@ -993,8 +990,8 @@
 		return
 
 	if (herbivore)
+		var/fed = FALSE
 		if (prob(33))
-			var/fed = FALSE
 			for(var/turf/floor/grass/GT in range(1,src))
 				GT.grassamt -= 1
 				if (GT.grassamt <= 0)
@@ -1021,7 +1018,6 @@
 				qdel(WT)
 				return
 
-
 	if (granivore)
 		for(var/obj/item/stack/farming/seeds/SD in range(2,src))
 			if (prob(35))
@@ -1043,8 +1039,6 @@
 				simplehunger += 400
 				adjustBruteLoss(-4)
 				qdel(PL)
-				return
-			else
 				return
 
 

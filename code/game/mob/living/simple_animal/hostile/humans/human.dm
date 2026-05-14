@@ -9,6 +9,9 @@ var/global/list/npc_appearance_cache = list()
 	icon_dead = "pirate_friendly_dead"
 	gender = MALE
 
+	idle_vision_range = 14
+	aggro_vision_range = 14
+
 	var/corpse = null
 	var/use_generated_appearance = FALSE
 	var/corpse_job = ""
@@ -41,7 +44,18 @@ var/global/list/npc_appearance_cache = list()
 		"injured" = list(),
 		"enemy_sighted" = list(),
 		"grenade" = list(),
+		"flanking" = list(),
+		"suppressing" = list(),
+		"reloading" = list(),
+		"medic_drag" = list(),
 	)
+
+	var/turf/cover_turf = null
+	var/peeking = FALSE
+	var/suppressing = FALSE
+	var/last_retreat = 0
+	var/moving = FALSE
+	var/last_pathfound = 0
 /mob/living/simple_animal/hostile/human/New()
 	..()
 	if (use_generated_appearance)
@@ -108,6 +122,8 @@ var/global/list/npc_appearance_cache = list()
 		qdel(dummy)
 
 /mob/living/simple_animal/hostile/human/death()
+	moving = FALSE
+	found_path = list()
 	..()
 	if(corpse)
 		new corpse (src.loc)
@@ -124,6 +140,53 @@ var/global/list/npc_appearance_cache = list()
 	if (corpse)
 		qdel(src)
 	return
+
+/mob/living/simple_animal/hostile/human/FindTarget()
+	var/atom/T = null
+	var/list/potential_targets = ListTargets(aggro_vision_range)
+	var/best_score = -9999
+	
+	for(var/atom/A in potential_targets)
+		if(A == src || !SA_attackable(A)) continue
+		
+		var/score = 100
+		var/dist = get_dist(src, A)
+		score -= dist * 5 // Less penalty for distance than default to allow for more strategic picking
+		
+		if(isliving(A))
+			var/mob/living/L = A
+			
+			// Faction check
+			if(ishuman(L))
+				var/mob/living/human/RH = L
+				if(RH.faction_text == faction || (RH in friends))
+					continue
+			else if(L.faction == faction || (L in friends))
+				continue
+
+			// Health factor: prioritize targets that are easier to finish off
+			score += ((L.maxHealth - L.health) / L.maxHealth) * 30
+			
+			// Threat factor: prioritize targets that can fight back
+			if(ishuman(L))
+				var/mob/living/human/H = L
+				var/obj/item/held = H.get_active_hand()
+				if(held)
+					if(istype(held, /obj/item/weapon/gun))
+						score += 60
+					else if(istype(held, /obj/item/weapon/melee))
+						score += 30
+			else if(istype(L, /mob/living/simple_animal/hostile))
+				score += 20
+				
+		if(score > best_score)
+			best_score = score
+			T = A
+			
+	if (T && messages["enemy_sighted"] && prob(15))
+		say(messages["enemy_sighted"], language)
+
+	return T
 /mob/living/simple_animal/hostile/human/Life()
 	..()
 	do_human_behaviour()
@@ -255,8 +318,11 @@ var/global/list/npc_appearance_cache = list()
 /////////////////////////////////////////////////////////
 ////////////////////RANGED///////////////////////////////
 
-/mob/living/simple_animal/hostile/human/proc/OpenFire(target_mob)
-	if (grenades && prob(5) && (target_mob in view(7,src)))
+/mob/living/simple_animal/hostile/human/proc/OpenFire(target, var/suppress = FALSE)
+	var/atom/final_target = target
+	if (suppress && !final_target) return
+	
+	if (grenades && prob(5) && (target_mob in view(7,src)) && !suppress)
 		var/enemies_in_sight = 0
 		for(var/mob/living/L in range(3,target_mob))
 			if (L.faction == src.faction)
@@ -274,38 +340,35 @@ var/global/list/npc_appearance_cache = list()
 			var/obj/item/weapon/grenade/GN = new grenade_type(loc)
 			GN.activate(src)
 			throw_item(GN,target_mob)
+	
 	spawn(1)
 		if (world.time>last_fire+firedelay)
 			last_fire = world.time
+			var/shots_to_fire = 1
+			var/burst_delay = 2
 			switch(rapid)
-				if (0) //singe-shot
-					Shoot(target_mob)
-					if(casingtype)
-						new casingtype
-				if (1) //semi-auto
-					var/shots = rand(1,3)
-					var/s_timer = 1
-					for(var/i = 1, i<= shots, i++)
-						spawn(s_timer)
-							Shoot(target_mob)
-							if(casingtype)
-								new casingtype(get_turf(src))
-						s_timer += 3
-				if (2) //automatic
-					var/shots = rand(3,5)
-					var/s_timer = 1
-					for(var/i = 1, i<= shots, i++)
-						spawn(s_timer)
-							Shoot(target_mob)
-							if(casingtype)
-								new casingtype(get_turf(src))
-						s_timer += 2
-	return
+				if (1) // semi-auto
+					shots_to_fire = rand(1,3)
+					burst_delay = 3
+				if (2) // automatic
+					shots_to_fire = rand(3,5)
+					burst_delay = 2
+			
+			if(suppress)
+				shots_to_fire += 2
+				burst_delay = 1 // Spray and pray
+				
+			for(var/i = 1, i <= shots_to_fire, i++)
+				spawn((i-1) * burst_delay)
+					if(src && final_target)
+						Shoot(final_target)
+						if(casingtype)
+							new casingtype(get_turf(src))
 
 /mob/living/simple_animal/hostile/human/proc/Shoot(var/target)
-	if(!gun)	return
+	if(!gun) return
 	var/obj/item/projectile/projectile = new projectiletype(get_turf(src))
-	if(!projectile)	return
+	if(!projectile) return
 	playsound(src, gun.fire_sound, 100, TRUE)
 
 	var/target_zone = "chest"
@@ -313,6 +376,11 @@ var/global/list/npc_appearance_cache = list()
 		target_zone = "head"
 	else if (prob(15))
 		target_zone = pick("l_arm","r_arm","r_leg","l_leg")
+	
+	// If suppressing a turf, add some randomness
+	if(!isliving(target))
+		target_zone = null
+		
 	gun.process_projectile(projectile, src, target, target_zone)
 	set_light(3)
 	spawn(5)
@@ -323,22 +391,67 @@ var/global/list/npc_appearance_cache = list()
 	if (!target_mob || !SA_attackable(target_mob))
 		LoseTarget()
 		return "lost"
-	if (!(target_mob in ListTargets(12)))
-		spawn(50)
-		if (!(target_mob in ListTargets(12)))
-			LostTarget()
-			return "lost"
+	
+	var/has_los = (target_mob in view(14, src))
+	
 	if (ranged)
-		if (get_dist(src, target_mob) <= 6)
-			walk(src,0)
-			do_movement(loc)
-			OpenFire(target_mob)
-			return "fire"
+		var/dist = get_dist(src, target_mob)
+		if (dist <= 1)
+			AttackingTarget()
+			return "melee"
+		else if (dist <= 12)
+			if(has_los)
+				if(check_friendly_fire(target_mob))
+					// Line of fire blocked by friendlies. Try to step to the side.
+					var/list/possible_steps = list()
+					for(var/d in cardinal)
+						var/turf/T = get_step(src, d)
+						if(T && !T.density)
+							possible_steps += T
+					if(possible_steps.len > 0)
+						do_movement(pick(possible_steps))
+						return "repositioning"
+					else
+						walk(src, 0)
+						do_movement(loc)
+						return "blocked"
+				else
+					walk(src, 0)
+					do_movement(loc)
+					OpenFire(target_mob)
+					return "fire"
+			else
+				// Peek and shoot logic
+				if(cover_turf && get_dist(src, cover_turf) <= 1 && !peeking)
+					for(var/dir in cardinal)
+						var/turf/peek_step = get_step(src, dir)
+						if(peek_step && !peek_step.density && ai_check_los(peek_step, target_mob))
+							peeking = TRUE
+							var/turf/old_loc = loc
+							do_movement(peek_step)
+							spawn(2)
+								if(src && target_mob)
+									OpenFire(target_mob)
+								spawn(5)
+									if(src && old_loc)
+										do_movement(old_loc)
+										peeking = FALSE
+							return "peeking"
+				
+				// If no LOS and can't peek, maybe suppress last known location?
+				if(prob(20))
+					if (!isemptylist(messages["suppressing"]) && prob(40))
+						say(pick(messages["suppressing"]), language)
+					OpenFire(get_turf(target_mob), TRUE)
+					return "suppressing"
+					
+				MoveToTarget()
+				return "move"
 		else
 			MoveToTarget()
 			return "move"
 	else
-		if (get_dist(src, target_mob) <= 1)	//Attacking
+		if (get_dist(src, target_mob) <= 1)
 			AttackingTarget()
 			return "melee"
 		else
@@ -349,26 +462,24 @@ var/global/list/npc_appearance_cache = list()
 	if (!target_mob || !SA_attackable(target_mob))
 		stance = HOSTILE_STANCE_IDLE
 		wander = TRUE
-	if (target_mob in ListTargets(11))
-		stance = HOSTILE_STANCE_ATTACK
-		wander = FALSE
-		if(ranged)
-			if(get_dist(src, target_mob) <= 7)
-				walk(src,0)
-				OpenFire(target_mob)
-			else if (get_dist(src, target_mob) <= 3)
-				walk_away_od(src, target_mob, 5, 7)
-				spawn(10)
-					walk(src,0)
-					do_movement(loc)
-			else
-				if (!istype(loc, /turf/floor/trench))
-					do_movement(target_mob)
+		return
+		
+	stance = HOSTILE_STANCE_ATTACK
+	wander = FALSE
+	
+	var/dist = get_dist(src, target_mob)
+	if(ranged)
+		if(dist <= 12 && (target_mob in view(14, src)))
+			walk(src, 0)
+			do_movement(loc)
+			return
+			
+		if(dist <= 3)
+			walk_away_od(src, target_mob, 5, 7)
 		else
 			if (!istype(loc, /turf/floor/trench))
 				do_movement(target_mob)
-	else if (target_mob in ListTargets(12))
-		wander = FALSE
+	else
 		if (!istype(loc, /turf/floor/trench))
 			do_movement(target_mob)
 
@@ -388,13 +499,37 @@ var/global/list/npc_appearance_cache = list()
 	else
 		idle_counter = 0
 		wander = FALSE
-	if (prob(33))
-		var/enemy_found = 0
-		for(var/mob/living/simple_animal/hostile/human/HH in view(5,target_mob))
-			if (HH.faction != faction && HH.stat != DEAD)
-				enemy_found++
-		if (enemy_found >= 3)
-			take_cover(target_mob)
+
+	// Tactical Retreat
+	if (health < maxHealth * 0.3 && world.time > last_retreat + 100)
+		last_retreat = world.time
+		if (prob(60))
+			say(pick("!! I'm hit!", "!! Need a medic!", "!! Falling back!"), language)
+			retreat()
+			return "retreating"
+
+	// Advanced Cover Seeking
+	if (target_mob && !peeking)
+		var/should_seek_cover = FALSE
+		var/enemies_nearby = 0
+		for(var/mob/living/L in view(7, src))
+			if(L.faction != faction && L.stat != DEAD)
+				enemies_nearby++
+		
+		if(enemies_nearby >= 2 || (ishuman(target_mob) && target_mob:get_active_hand()))
+			should_seek_cover = TRUE
+			
+		if(should_seek_cover && (!cover_turf || get_dist(src, cover_turf) > 1))
+			var/turf/best = find_best_cover(target_mob)
+			if(best && best != loc)
+				var/current_dir = get_dir(src, target_mob)
+				var/new_dir = get_dir(best, target_mob)
+				if(current_dir != new_dir && !isemptylist(messages["flanking"]) && prob(40))
+					say(pick(messages["flanking"]), language)
+				cover_turf = best
+				do_movement(cover_turf)
+				return "seeking cover"
+
 	for(var/obj/item/weapon/grenade/G in view(2,src))
 		if (G.active)
 			walk_away_od(src, G, 5, 7)
@@ -404,6 +539,7 @@ var/global/list/npc_appearance_cache = list()
 			if (!isemptylist(messages["grenade"]))
 				say(pick(messages["grenade"]),language)
 			return "grenade"
+	
 	if (health < maxHealth*0.6)
 		if (prob(8))
 			if (prob(75))
@@ -459,19 +595,29 @@ var/global/list/npc_appearance_cache = list()
 		target_action = "helping"
 
 	var/enemy_detected = FALSE
-/*
-	for(var/mob/living/simple_animal/hostile/human/SA in view(7,src))
-		if (SA.stat != DEAD && SA.faction != src.faction)
+	for(var/mob/living/L_enemy in view(7,src))
+		var/is_enemy = FALSE
+		if (ishuman(L_enemy))
+			var/mob/living/human/H_enemy = L_enemy
+			if (H_enemy.faction_text != src.faction && H_enemy.stat != DEAD)
+				is_enemy = TRUE
+		else if (istype(L_enemy, /mob/living/simple_animal/hostile))
+			var/mob/living/simple_animal/hostile/SA_enemy = L_enemy
+			if (SA_enemy.faction != src.faction && SA_enemy.stat != DEAD)
+				is_enemy = TRUE
+				
+		if (is_enemy)
 			target_action = "drag"
 			enemy_detected = TRUE
-			drag_patient(SA)
+			drag_patient(L_enemy)
 			action_running = FALSE
 			return
 
 	if (!enemy_detected && target_action=="drag")
 		walk(src,0)
 		target_action = "helping"
-*/
+		if(pulling)
+			stop_pulling()
 	if (!enemy_detected && !action_running && target_action=="helping")
 		target_action = "bandaging"
 		action_running = TRUE
@@ -520,11 +666,24 @@ var/global/list/npc_appearance_cache = list()
 
 
 /mob/living/simple_animal/hostile/human/proc/drag_patient(var/mob/living/MB)
-	if (MB.stat != DEAD && MB.faction != src.faction)
-		var/tdir = OPPOSITE_DIR(get_dir(src,MB))
-		MB.forceMove(loc)
-		walk_to(src,get_step(src,tdir),10)
-		visible_message("<span class='warning'>[src] drags [MB]!</span>")
+	if (MB && target_obj && isliving(target_obj))
+		var/mob/living/patient = target_obj
+		
+		if (!isemptylist(messages["medic_drag"]))
+			say(pick(messages["medic_drag"]), language)
+			
+		src.start_pulling(patient)
+		
+		var/turf/best_cover = find_best_cover(MB)
+		if(best_cover && best_cover != loc)
+			cover_turf = best_cover
+			do_movement(cover_turf)
+		else
+			// Fallback: just walk away from the enemy
+			var/tdir = OPPOSITE_DIR(get_dir(src,MB))
+			do_movement(get_step(src,tdir))
+			
+		visible_message("<span class='warning'>[src] drags [patient] away!</span>")
 
 
 
@@ -737,39 +896,101 @@ var/global/list/npc_appearance_cache = list()
 	return
 
 /mob/living/simple_animal/hostile/human/get_objective()
-	var/turf/t_turf = null
-	var/t_distance = 1000
-	//check all the targets and choose the closest one that has enemies nearby.
+	var/turf/best_turf = null
+	var/best_score = -999999
+	
 	for(var/list/LT in map.faction_targets)
 		if (LT[2] == src.faction || LT[2] == "all")
-			var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
-			for(var/mob/living/simple_animal/hostile/human/HH in range(7,t_turf2))
-				if (HH.faction != src.faction && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
-					t_turf = t_turf2
-					t_distance = get_dist(src,t_turf2)
-					break
-			for(var/mob/living/human/HH in range(7,t_turf2))
-				if (HH.faction_text != src.faction && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
-					t_turf = t_turf2
-					t_distance = get_dist(src,t_turf2)
-					break
-	return t_turf
+			var/turf/T = locate(LT[3],LT[4],LT[5])
+			if(!T) continue
+			
+			var/score = 0
+			var/dist = get_dist(src, T)
+			
+			// 1. Distance penalty (closer is better)
+			score -= dist * 2 
+			
+			var/allies_present = 0
+			var/enemies_present = 0
+			
+			// Scan the objective area
+			for(var/mob/living/L in range(7, T))
+				if(L.stat == DEAD) continue
+				
+				if(ishuman(L))
+					var/mob/living/human/H = L
+					if(H.faction_text == src.faction)
+						allies_present++
+					else
+						enemies_present++
+				else if(istype(L, /mob/living/simple_animal/hostile/human))
+					var/mob/living/simple_animal/hostile/human/HH = L
+					if(HH.faction == src.faction)
+						allies_present++
+					else
+						enemies_present++
+
+			// 2. Enemy presence bonus (Action is happening here, attack/defend it)
+			if(enemies_present > 0)
+				score += 50
+				
+			// 3. Allied presence evaluation (Garrison logic)
+			if(allies_present == 0)
+				// Empty objective! Very desirable to capture or guard.
+				score += 80 
+			else
+				// Penalize if it's already heavily guarded to encourage spreading out
+				score -= (allies_present * 10)
+				
+			if(score > best_score)
+				best_score = score
+				best_turf = T
+				
+	return best_turf
 
 /mob/living/human/get_objective()
-	var/turf/t_turf = null
-	var/t_distance = 1000
-	//check all the targets and choose the closest one that has enemies nearby.
+	var/turf/best_turf = null
+	var/best_score = -999999
+	
 	for(var/list/LT in map.faction_targets)
 		if (LT[2] == src.faction_text || LT[2] == "all")
-			var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
-			for(var/mob/living/simple_animal/hostile/human/HH in range(7,t_turf2))
-				if (HH.faction != src.faction_text && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
-					t_turf = t_turf2
-					t_distance = get_dist(src,t_turf2)
-					break
-			for(var/mob/living/human/HH in range(7,t_turf2))
-				if (HH.faction_text != src.faction_text && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
-					t_turf = t_turf2
-					t_distance = get_dist(src,t_turf2)
-					break
-	return t_turf
+			var/turf/T = locate(LT[3],LT[4],LT[5])
+			if(!T) continue
+			
+			var/score = 0
+			var/dist = get_dist(src, T)
+			
+			score -= dist * 2
+			
+			var/allies_present = 0
+			var/enemies_present = 0
+			
+			for(var/mob/living/L in range(7, T))
+				if(L.stat == DEAD) continue
+				
+				if(ishuman(L))
+					var/mob/living/human/H = L
+					if(H.faction_text == src.faction_text)
+						allies_present++
+					else
+						enemies_present++
+				else if(istype(L, /mob/living/simple_animal/hostile/human))
+					var/mob/living/simple_animal/hostile/human/HH = L
+					if(HH.faction == src.faction_text)
+						allies_present++
+					else
+						enemies_present++
+
+			if(enemies_present > 0)
+				score += 50
+				
+			if(allies_present == 0)
+				score += 80 
+			else
+				score -= (allies_present * 10)
+				
+			if(score > best_score)
+				best_score = score
+				best_turf = T
+				
+	return best_turf

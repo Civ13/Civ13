@@ -35,7 +35,7 @@
 		else if (s_tone_min != 0 || s_tone_max != 0)
 			s_tone = rand(s_tone_min, s_tone_max)
 		invisibility = 0
-		spawn (50)
+		spawn (5)
 			death()
 
 /mob/living/human/corpse/pirate
@@ -380,3 +380,43 @@ mob/living/human/corpse/russian_soviet_tanker
 	h_style = "Short Hair"
 	corpse_job = "Heer Soldat"
 	corpse_name = "German Soldier"
+
+/mob/living/human/corpse/ww2_german
+	gender = MALE
+	corpse_job = "Schutze"
+	corpse_name = "German Soldier"
+
+/mob/living/human/corpse/ww2_german_mg
+	gender = MALE
+	corpse_job = "MG-Schutze"
+	corpse_name = "German Machinegunner"
+
+/mob/living/human/corpse/ww2_german_medic
+	gender = MALE
+	corpse_job = "Feldmediziner"
+	corpse_name = "German Medic"
+
+/mob/living/human/corpse/ww2_german_sl
+	gender = MALE
+	corpse_job = "Unteroffizier"
+	corpse_name = "German Squad Leader"
+
+/mob/living/human/corpse/ww2_soviet
+	gender = MALE
+	corpse_job = "K.A. Soldat"
+	corpse_name = "Soviet Soldier"
+
+/mob/living/human/corpse/ww2_soviet_mg
+	gender = MALE
+	corpse_job = "K.A. Pulemetchik"
+	corpse_name = "Soviet Machinegunner"
+
+/mob/living/human/corpse/ww2_soviet_medic
+	gender = MALE
+	corpse_job = "K.A. Voynenvrach"
+	corpse_name = "Soviet Medic"
+
+/mob/living/human/corpse/ww2_soviet_sl
+	gender = MALE
+	corpse_job = "K.A. Serjant"
+	corpse_name = "Soviet Squad Leader"
