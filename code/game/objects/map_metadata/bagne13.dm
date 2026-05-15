@@ -123,7 +123,8 @@
 	if (siren)
 		var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 		for (var/mob/M in player_list)
-			M.client << warning_sound
+			if (M && M.client)
+				M.client << warning_sound
 		to_chat(world, "<font size=3 color='red'><center><b>ALARM</b><br>The alarm is still on!</center></font>")
 
 		spawn(285)
@@ -170,7 +171,7 @@
 	var/obj/map_metadata/bagne13/G = null
 	if (istype(map, /obj/map_metadata/bagne13))
 		G = map
-		if (istype(S, /obj/item/stack/material/wood))
+		if (istype(S, /obj/item/stack/material/wood) && S.amount >= 5)
 			G.score_guards+=floor(S.amount/5)
 			to_chat(H, "You export \the [S]. You will be paid [floor(S.amount/5)] francs for this.")
 			qdel(S)
@@ -201,10 +202,12 @@
 				G.prisoner_scores[H][3] += 1
 				accepted = TRUE
 				accepted_item = "cigarettes"
+				qdel(I)
 			else if (istype(I, /obj/item/weapon/reagent_containers/pill/opium) && G.prisoner_scores[H][1] == "opium")
 				G.prisoner_scores[H][3] += 1
 				accepted = TRUE
 				accepted_item = "opium"
+				qdel(I)
 		else
 			to_chat(H, "You have no personal objective, so stashing items will not increase your score.")
 			return

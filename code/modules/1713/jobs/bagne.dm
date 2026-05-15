@@ -31,9 +31,9 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/melee/nightbaton/sandman(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8x27(H), slot_r_store)
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
-	var/obj/item/weapon/key/soviet/guard/G1 = new/obj/item/weapon/key/french/guard(null)
-	var/obj/item/weapon/key/soviet/guard/G2 = new/obj/item/weapon/key/french/guard/max(null)
-	var/obj/item/weapon/key/soviet/guard/G3 = new/obj/item/weapon/key/french/guard/max/command(null)
+	var/obj/item/weapon/key/french/guard/G1 = new/obj/item/weapon/key/french/guard(null)
+	var/obj/item/weapon/key/french/guard/G2 = new/obj/item/weapon/key/french/guard/max(null)
+	var/obj/item/weapon/key/french/guard/G3 = new/obj/item/weapon/key/french/guard/max/command(null)
 	KC.attackby(G1,H)
 	KC.attackby(G2,H)
 	KC.attackby(G3,H)
@@ -76,7 +76,6 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/lebel(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/french(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/french/guard(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filled(H), slot_belt)
 

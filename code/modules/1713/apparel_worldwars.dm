@@ -1325,7 +1325,7 @@
 /obj/item/clothing/under/ww2/british/verb/roll_sleeves()
 	set category = null
 	set src in usr
-	if (type != /obj/item/clothing/under/ww2/british)
+	if (!istype(src, /obj/item/clothing/under/ww2/british))
 		return
 	else
 		if (rolled)
