@@ -244,7 +244,7 @@ var/global/datum/external_relations/external_relations = new()
 /obj/map_metadata/pepelsibirsk/proc/relations_subsystem()
 	spawn(3 SECONDS)
 		for(var/relation in external_relations.npc_faction_relations)
-			if (external_relations.npc_faction_relations > 100)
+			if (external_relations.npc_faction_relations[relation] > 100)
 				external_relations.npc_faction_relations[relation] = 100
 			else if (external_relations.npc_faction_relations[relation] < 0)
 				external_relations.npc_faction_relations[relation] = 0

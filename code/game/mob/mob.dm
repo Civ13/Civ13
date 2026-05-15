@@ -200,6 +200,7 @@
 /mob/verb/interact(atom/A as mob|obj|turf in view(1))
 	set name = "Interact"
 	set category = "IC"
+	if(!A) return
 	if (ishuman(src))
 		if(A in range(1,src))
 			src.ClickOn(A)
@@ -210,6 +211,7 @@
 /mob/verb/examinate(atom/A as mob|obj|turf in view())
 	set name = "Examine"
 	set category = "IC"
+	if(!A) return
 
 	if ((is_blind(src) || stat) && !isobserver(src))
 		to_chat(src, SPAN_NOTICE("Something is there but you can't see it."))

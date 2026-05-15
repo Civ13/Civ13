@@ -246,7 +246,8 @@ var/list/global_huds = list(
 	if (H && H.client)
 		H.client.screen -= vehicle_hud
 	for (var/obj/screen/vehicle/V in vehicle_hud)
-		H.HUDprocess -= V
+		if (H)
+			H.HUDprocess -= V
 		qdel(V)
 	vehicle_hud.Cut()
 

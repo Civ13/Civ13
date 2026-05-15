@@ -286,11 +286,17 @@
 /client/proc/UpdateMouseScreenLoc(var/params)
 	var/list/click_params = params2list(params)
 
-	mouse_screen_x = text2num(splittext(splittext(click_params["screen-loc"], ",")[1], ":")[1])
-	mouse_screen_y = text2num(splittext(splittext(click_params["screen-loc"], ",")[2], ":")[1])
-
-	mouse_screen_pixel_x = text2num(splittext(splittext(click_params["screen-loc"], ",")[1], ":")[2])
-	mouse_screen_pixel_y = text2num(splittext(splittext(click_params["screen-loc"], ",")[2], ":")[2])
+	if (click_params["screen-loc"])
+		var/list/screen_loc_split = splittext(click_params["screen-loc"], ",")
+		if (length(screen_loc_split) >= 2)
+			var/list/x_split = splittext(screen_loc_split[1], ":")
+			var/list/y_split = splittext(screen_loc_split[2], ":")
+			if (length(x_split) >= 2)
+				mouse_screen_x = text2num(x_split[1])
+				mouse_screen_pixel_x = text2num(x_split[2])
+			if (length(y_split) >= 2)
+				mouse_screen_y = text2num(y_split[1])
+				mouse_screen_pixel_y = text2num(y_split[2])
 
 /client/MouseMove(object, location, control, params)
 	UpdateMouseScreenLoc(params)

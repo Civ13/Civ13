@@ -425,7 +425,7 @@ var/const/FALLOFF_SOUNDS = 0.5
 	if (!vol || vol <= 0)
 		return
 	soundin = get_sfx(soundin)
-
+	#ifdef OPENDREAM
 	if (!soundin || soundin == "/sound")
 		return	// Invalid sound, don't play anything
 
@@ -434,7 +434,7 @@ var/const/FALLOFF_SOUNDS = 0.5
 	if (!isfile(soundin))
 		world.log << "Tried to play invalid sound: [soundin]"
 		return
-
+	#endif
 	var/distance = -1
 
 	var/sound/S = sound(soundin)
