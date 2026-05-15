@@ -219,9 +219,12 @@
 
 /datum/job/civilian/prisoner/proc/set_prisoner(mob/living/human/H)
 	if (istype(H.original_job, /datum/job/civilian/prisoner/bagne_kitchen) || istype(H.original_job, /datum/job/civilian/prisoner/bagne_logger) || istype(H.original_job, /datum/job/civilian/prisoner/bagne_nurse))
+		H.remove_language("Russian")
+		H.add_language("French",FALSE)
 		var/datum/job/civilian/prisoner/PJ = H.original_job
-		H.add_language("French",TRUE)
 		H.remove_language("English")
+		for (var/datum/language/french/A in H.languages)
+			H.default_language = A
 		PJ.original_hair = pick("Black", "Light Brown", "Dark Brown", "Red", "Orange", "Light Blond", "Blond", "Dirty Blond", "Light Grey", "Grey")
 		PJ.original_facial = PJ.original_hair
 		var/hex_hair = hair_colors[PJ.original_hair]
