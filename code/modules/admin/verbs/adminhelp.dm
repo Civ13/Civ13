@@ -49,8 +49,8 @@
 
 			if (X.is_preference_enabled(/datum/client_preference/holder/play_adminhelp_ping))
 				X << 'sound/effects/adminhelp.ogg'
-			X << msg
+			to_chat(X,msg)
 		else if (R_MENTOR & X.holder.rights)
 			if (X.is_preference_enabled(/datum/client_preference/holder/play_adminhelp_ping))
 				X << 'sound/effects/adminhelp.ogg'
-			X << mentormsg
+			to_chat(X,mentormsg)
