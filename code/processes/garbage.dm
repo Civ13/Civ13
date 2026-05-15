@@ -23,6 +23,8 @@ var/list/delayed_garbage = list()
 	name = "garbage"
 	schedule_interval = 5 SECONDS
 	start_delay = 0.3 SECONDS
+	priority = PROCESS_PRIORITY_HIGH
+	processes.garbage = src
 
 	for (var/garbage in delayed_garbage)
 		qdel(garbage)
@@ -31,8 +33,6 @@ var/list/delayed_garbage = list()
 	delayed_garbage = null
 
 	fires_at_gamestates = list(GAME_STATE_PREGAME, GAME_STATE_SETTING_UP, GAME_STATE_PLAYING, GAME_STATE_FINISHED)
-	priority = PROCESS_PRIORITY_HIGH
-	processes.garbage = src
 
 #ifdef GC_FINDREF
 /world/loop_checks = FALSE
@@ -200,6 +200,7 @@ var/list/delayed_garbage = list()
 	if (IsPooled(src))
 		PlaceInPool(src)
 	else
+		gcDestroyed = world.time
 		del(src)
 
 /atom/finalize_qdel()
@@ -212,15 +213,19 @@ var/list/delayed_garbage = list()
 			delayed_garbage |= src
 
 /icon/finalize_qdel()
+	gcDestroyed = world.time
 	del(src)
 
 /image/finalize_qdel()
+	gcDestroyed = world.time
 	del(src)
 
 /mob/finalize_qdel()
+	gcDestroyed = world.time
 	del(src)
 
 /turf/finalize_qdel()
+	gcDestroyed = world.time
 	del(src)
 
 /client/proc/purge_all_destroyed_objects()

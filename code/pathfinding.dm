@@ -26,28 +26,40 @@
 			return
 
 /proc/cirrAstar(var/turf/start, var/turf/goal, var/min_dist=1, var/maxtraverse = 50)
-
+	if(!start || !goal) return list()
 	var/list/closedSet = list()
 	var/list/openSet = list(start)
 	var/list/cameFrom = list()
 
 	var/list/gScore = list()
 	var/list/fScore = list()
+	var/list/passableCache = list() // Cache passability within this search
+	
 	gScore[start] = 0
 	fScore[start] = heuristic(start, goal)
 	var/traverse = 0
 
 	while(openSet.len > 0)
 		var/turf/current = pickLowest(openSet, fScore)
-		if(distance(current, goal) <= min_dist)
+		if(!current) break
+		
+		if(get_dist(current, goal) <= min_dist)
 			return reconstructPath(cameFrom, current)
+			
 		openSet -= current
-		closedSet += current
-		var/list/neighbors = getNeighbors(current, alldirs)
-		for(var/neighbor in neighbors)
-			if(neighbor in closedSet)
+		closedSet[current] = TRUE
+		
+		var/list/neighbors = getNeighbors(current, alldirs, passableCache)
+		for(var/turf/neighbor in neighbors)
+			if(closedSet[neighbor])
 				continue // already checked this one
-			var/tentativeGScore = gScore[current] + distance(current, neighbor)
+				
+			// Use 10 for cardinal, 14 for diagonal to avoid floating point/sqrt if possible?
+			// Current code uses 1.0/1.414 or similar via distance().
+			// Let's stick to consistent distance metric but optimize adjacency.
+			var/dist = (current.x == neighbor.x || current.y == neighbor.y) ? 1 : 1.414
+			var/tentativeGScore = gScore[current] + dist
+			
 			if(!(neighbor in openSet))
 				openSet += neighbor
 			else if(tentativeGScore >= (gScore[neighbor] || 1.#INF))
@@ -55,7 +67,8 @@
 
 			cameFrom[neighbor] = current
 			gScore[neighbor] = tentativeGScore
-			fScore[neighbor] = gScore[neighbor] + heuristic(neighbor, goal)
+			fScore[neighbor] = tentativeGScore + heuristic(neighbor, goal)
+			
 		traverse += 1
 		if(traverse > maxtraverse)
 			return list() // it's taking too long, abandon
@@ -75,17 +88,14 @@
 	return sqrt(dx*dx + dy*dy)
 
 /proc/pickLowest(list/options, list/values)
-	if(options.len == 0)
-		return null // you idiot
 	var/lowestScore = 1.#INF
+	var/best_option = null
 	for(var/option in options)
-		if(option in values)
-			var/score = values[option]
-			if(score < lowestScore)
-				lowestScore = score
-				. = option
-		else
-			continue // if we have no score for an option, ignore it
+		var/score = values[option]
+		if(score < lowestScore)
+			lowestScore = score
+			best_option = option
+	return best_option
 
 /proc/reconstructPath(list/cameFrom, turf/current)
 	var/list/totalPath = list(current)
@@ -98,55 +108,64 @@
 		tlist += totalPath[i]
 	return tlist
 
-/proc/getNeighbors(turf/current, list/directions)
+/proc/getNeighbors(turf/current, list/directions, list/passableCache)
 	. = list()
+	var/cardinal_bits = 0
+	
 	// handle cardinals straightforwardly
-	var/list/cardinalTurfs = list()
 	for(var/direction in cardinal)
 		if(direction in directions)
 			var/turf/T = get_step(current, direction)
-			cardinalTurfs["[direction]"] = 0 // can't pass
-			if(T && checkTurfPassable(T))
-				. += T
-				cardinalTurfs["[direction]"] = 1 // can pass
+			if(T)
+				var/passable = passableCache[T]
+				if(isnull(passable))
+					passable = checkTurfPassable(T)
+					passableCache[T] = passable
+				if(passable)
+					. += T
+					cardinal_bits |= direction
+
 	 //diagonals need to avoid the leaking problem
 	for(var/direction in ordinal)
 		if(direction in directions)
 			var/turf/T = get_step(current, direction)
-			if(T && checkTurfPassable(T))
-				// check relevant cardinals
-				var/clear = 1
-				for(var/cardinal in cardinal)
-					if(direction & cardinal)
-						// this used to check each cardinal turf again but that's completely unnecessary
-						if(!cardinalTurfs["[direction]"])
-							clear = 0
-				if(clear)
-					. += T
+			if(T)
+				var/passable = passableCache[T]
+				if(isnull(passable))
+					passable = checkTurfPassable(T)
+					passableCache[T] = passable
+				if(passable)
+					// check relevant cardinals
+					var/clear = TRUE
+					for(var/c_dir in cardinal)
+						if(direction & c_dir)
+							if(!(cardinal_bits & c_dir))
+								clear = FALSE
+								break
+					if(clear)
+						. += T
 
 /proc/checkTurfPassable(turf/T)
-	if(!T)
-		return FALSE // can't go on a turf that doesn't exist!!
-	if(T.density) // simplest case
+	if(!T || T.density)
 		return FALSE
 	if(istype(T, /turf/floor/broken_floor) && !T.iscovered())
 		return FALSE
-	for(var/atom/O in T.contents)
-		if (O.density) // && !(O.flags & ON_BORDER)) -- fuck you, windows, you're dead to me
+	for(var/obj/O in T)
+		if (O.density)
 			if (istype(O, /obj/structure/simple_door))
 				var/obj/structure/simple_door/D = O
 				if (D.locked)
-					return FALSE // a blocked door is a blocking door
+					return FALSE
+				continue
 			if (istype(O, /obj/covers))
 				var/obj/covers/W = O
 				if (W.passable == FALSE)
-					return FALSE // walls specificed as not passable shouldn't be passable now
-			if (ismob(O))
-				var/mob/M = O
-				if (M.anchored)
-					return FALSE // an anchored mob is a blocking mob
-				else
-			return FALSE // not a special case, so this is a blocking object
+					return FALSE
+				continue
+			return FALSE
+	for(var/mob/M in T)
+		if (M.density && M.anchored)
+			return FALSE
 	return TRUE
 
 /******************************************************************/
@@ -166,39 +185,78 @@
 	return L
 
 /mob/living/simple_animal/hostile/human/proc/do_movement(var/atom/tgt = null)
-	if (stat == 2)
+	if (stat == 2) //dead
+		moving = FALSE
 		return FALSE
 	if (tgt)
+		// Retargeting: invalidate stale path and allow re-entry
+		if(tgt != target_obj)
+			found_path = list()
 		target_obj = tgt
 	if (!target_obj)
 		found_path = list()
+		moving = FALSE
 		return FALSE
-	if (get_dist(src,target_obj)<=1)
+	if (get_dist(src, target_obj) <= 1)
 		target_obj = null
 		found_path = list()
+		moving = FALSE
 		return FALSE
-//	walk(src, 0)
+
+	// Loop protection: block external re-entry when a loop is already running.
+	// We release the lock (moving = FALSE) before each spawn() so the next
+	// iteration of THIS loop is not blocked by the guard.
+	if(moving && !tgt)
+		return TRUE
+	moving = TRUE
+
+	// Check if path is stale (target moved too far from path's end)
 	if(found_path.len > 0)
-		// follow the path
-		found_path.Cut(1, 2)
-		var/turf/next = null
-		if(found_path.len >= 1)
-			next = src.found_path[1]
-		else
-			next = get_turf(target_obj)
-		walk_to(src, next, TRUE, move_to_delay)
+		var/turf/path_end = found_path[found_path.len]
+		if(get_dist(path_end, get_turf(target_obj)) > 2)
+			found_path = list()
+
+	if(found_path.len > 0)
+		var/turf/next = found_path[1]
+
+		// If we reached the next node, remove it
+		if(loc == next)
+			found_path.Cut(1, 2)
+			if(found_path.len >= 1)
+				next = found_path[1]
+			else
+				next = get_turf(target_obj)
+		// If we are too far from the path, it's invalid – recalculate
+		else if(get_dist(src, next) > 1)
+			found_path = list()
+			moving = FALSE
+			spawn(1)
+				do_movement()
+			return FALSE
+
+		if(next)
+			var/move_dir = get_dir(src, next)
+			if(move_dir)
+				step(src, move_dir)
+
+		moving = FALSE
 		spawn(move_to_delay)
 			do_movement()
 		return found_path.len
 	else
-		// get a path
+		// No cached path – calculate one
 		found_path = list()
 		if (get_path())
+			moving = FALSE
 			spawn(move_to_delay)
 				do_movement()
 			return found_path.len
 		else
-			walk_towards(src,target_obj,move_to_delay)
+			// Fallback: step_towards handles bumping natively
+			step_towards(src, target_obj)
+			moving = FALSE
+			spawn(move_to_delay)
+				do_movement()
 			return FALSE
 
 /mob/living/simple_animal/hostile/human/proc/get_path(var/atom/tgt = null)
@@ -206,11 +264,17 @@
 		target_obj = tgt
 	if(!target_obj)
 		return FALSE
+
+	// Pathfinding rate limiting
+	if(world.time < last_pathfound + 10)
+		return FALSE
+	last_pathfound = world.time
+
 	var/turf/ta = get_turf(src)
 	var/turf/tb = get_turf(target_obj)
 	if (!ta || !tb)
 		return FALSE
 	found_path = cirrAstar(ta, tb, 1, 250)
-	if(!found_path.len) // no path :C
+	if(!found_path || !found_path.len) // no path
 		return FALSE
 	return found_path.len

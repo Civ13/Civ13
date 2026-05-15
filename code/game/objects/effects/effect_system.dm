@@ -81,10 +81,14 @@ steam.start() -- spawns the effect
 					direction = pick(cardinal)
 				else
 					direction = pick(alldirs)
-				for (i=0, i<pick(1,2,3), i++)
+				for (var/j=0, j<pick(1,2,3), j++)
 					sleep(5)
+					if (!steam || steam.gcDestroyed || !steam.loc)
+						break
 					step(steam,direction)
-				spawn(20)
+				// Hold reference until qdel to prevent OpenDream GC calling del() directly
+				sleep(20)
+				if (steam && !steam.gcDestroyed)
 					qdel(steam)
 
 /////////////////////////////////////////////
@@ -142,13 +146,16 @@ steam.start() -- spawns the effect
 					direction = pick(cardinal)
 				else
 					direction = pick(alldirs)
-				for (i=0, i<pick(1,2,3), i++)
+				for (var/j=0, j<pick(1,2,3), j++)
 					sleep(5)
+					if (!sparks || sparks.gcDestroyed || !sparks.loc)
+						break
 					step(sparks,direction)
-				spawn(20)
-					if (sparks)
-						qdel(sparks)
-					total_sparks--
+				// Hold reference here - nested spawn() would let it escape scope before GC can be stopped
+				sleep(20)
+				if (sparks && !sparks.gcDestroyed)
+					qdel(sparks)
+				total_sparks--
 
 
 
@@ -177,7 +184,10 @@ steam.start() -- spawns the effect
 
 /obj/effect/effect/smoke/New()
 	..()
-	processes.callproc.queue(src, /datum/proc/qdeleted, null, time_to_live)
+	if (processes.callproc)
+		processes.callproc.queue(src, /datum/proc/qdeleted, null, time_to_live)
+	else
+		spawn(time_to_live) qdel(src)
 
 /obj/effect/effect/smoke/Crossed(mob/living/human/M as mob )
 	..()
@@ -248,7 +258,10 @@ steam.start() -- spawns the effect
 		for (var/v in 1 to time_to_live/10)
 			spawn (v * 5)
 				step_rand(src)
-	processes.callproc.queue(src, /datum/proc/qdeleted, null, time_to_live)
+	if (processes.callproc)
+		processes.callproc.queue(src, /datum/proc/qdeleted, null, time_to_live)
+	else
+		spawn(time_to_live) qdel(src)
 
 /obj/effect/effect/smoke/bad/Move()
 	..()
@@ -360,12 +373,17 @@ steam.start() -- spawns the effect
 					src_direction = pick(cardinal)
 				else
 					src_direction = pick(alldirs)
-			for (i=0, i<pick(0,1,1,1,2,2,2,3), i++)
+			for (var/j=0, j<pick(0,1,1,1,2,2,2,3), j++)
 				sleep(10)
+				if (!smoke || smoke.gcDestroyed || !smoke.loc)
+					break
 				step(smoke,src_direction)
-			spawn(smoke.time_to_live*0.75+rand(10,30))
-				if (smoke) qdel(smoke)
-				total_smoke--
+			// Hold reference here - nested spawn() would let it escape scope before GC can be stopped
+			var/ttl = smoke ? smoke.time_to_live*0.75+rand(10,30) : 10
+			sleep(ttl)
+			if (smoke && !smoke.gcDestroyed)
+				qdel(smoke)
+			total_smoke--
 
 
 /datum/effect/effect/system/smoke_spread/bad

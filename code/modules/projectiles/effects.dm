@@ -23,12 +23,14 @@
 /obj/effect/projectile/proc/update()
 	var/dt = world.time - call_time
 	if(dt > life_time)
-		loc = null
 		qdel(src)
 		return
 	alpha *= alpha_modifier
+	var/my_call_time = call_time
 	spawn(update_time)
-		update()
+		if (call_time == my_call_time)
+			update()
+
 
 //----------------------------
 // Bullet
@@ -67,7 +69,6 @@
 /obj/effect/projectile/bullet/muzzle/gunsmoke/update()
 	var/dt = world.time - call_time
 	if(dt > life_time)
-		loc = null
 		qdel(src)
 		return
 	alpha *= alpha_modifier
@@ -78,8 +79,11 @@
 		ds /= dt 
 	pixel_x += cos(angle) * sqrt(ds)
 	pixel_y += sin(angle) * sqrt(ds)
+	var/my_call_time = call_time
 	spawn(update_time)
-		update()
+		if (call_time == my_call_time)
+			update()
+
 
 //----------------------------
 // Impact
@@ -104,7 +108,6 @@
 /obj/effect/projectile/impact/update()
 	var/dt = world.time - call_time
 	if(dt > life_time)
-		loc = null
 		qdel(src)
 		return
 	alpha *= alpha_modifier
@@ -115,8 +118,11 @@
 		ds /= dt 
 	pixel_x += cos(angle) * sqrt(ds)
 	pixel_y += sin(angle) * sqrt(ds)
+	var/my_call_time = call_time
 	spawn(update_time)
-		update()
+		if (call_time == my_call_time)
+			update()
+
 
 /obj/effect/projectile/impact/heavy
 	icon_state = "dust_heavy_cloud_generic"
@@ -147,12 +153,14 @@
 /obj/effect/projectile/tracer/update()
 	var/dt = world.time - call_time
 	if(dt > life_time)
-		loc = null
 		qdel(src)
 		return
 	alpha *= alpha_modifier
+	var/my_call_time = call_time
 	spawn(update_time)
-		update()
+		if (call_time == my_call_time)
+			update()
+
 
 /obj/effect/projectile/tracer/minor
 	alpha = 64
@@ -188,7 +196,6 @@
 /obj/effect/projectile/tracer/missile/update()
 	var/dt = world.time - call_time
 	if(dt > life_time)
-		loc = null
 		qdel(src)
 		return
 	alpha *= alpha_modifier
@@ -197,5 +204,7 @@
 		ds /= dt * speed_modifier
 	pixel_x += cos(angle) * sqrt(ds)
 	pixel_y += sin(angle) * sqrt(ds)
+	var/my_call_time = call_time
 	spawn(update_time)
-		update()
+		if (call_time == my_call_time)
+			update()

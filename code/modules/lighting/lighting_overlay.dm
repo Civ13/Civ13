@@ -27,9 +27,10 @@
 
 /atom/movable/lighting_overlay/New(var/atom/loc, var/no_update = FALSE)
 	. = ..()
-	if (config.opendream)
-		blend_mode = BLEND_ADD
-		invisibility = 0
+	#ifdef OPENDREAM
+	blend_mode = BLEND_ADD
+	invisibility = 0
+	#endif
 	verbs.Cut()
 
 	layer			  = 13 // The lighting overlay should appear above everything including weather effects
@@ -46,8 +47,9 @@
 	// so observers can actually see things
 	if (!ticker || ticker.current_state == GAME_STATE_PREGAME)
 		invisibility = 100
-	if (config.opendream)
-		invisibility = 0
+	#ifdef OPENDREAM
+	invisibility = 0
+	#endif
 
 	lighting_overlay_list += src
 
@@ -83,11 +85,17 @@
 		qdel(src)
 		return
 	var/TOD_lum = time_of_day2luminosity[time_of_day] * T.get_window_coeff()
-	blend_mode = config.opendream ? BLEND_ADD : BLEND_MULTIPLY
-
+	#ifdef OPENDREAM
+	blend_mode = BLEND_ADD
+	#endif
+	#ifndef OPENDREAM
+	blend_mode = BLEND_MULTIPLY
+	#endif
 	var/list/L = color ? copylist(color) : list()
-	if (config.opendream && !color)
+	#ifdef OPENDREAM
+	if (!color)
 		L = LIGHTING_BASE_MATRIX
+	#endif
 
 	var/anylums = FALSE
 

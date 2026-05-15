@@ -45,7 +45,7 @@
 	M.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	visible_message("[M] swats away the [src]!","You swat away the [src]!")
 	if (prob(40))
-		walk_away(src, M, 3, 3)
+		walk_away_od(src, M, 3, 3)
 		return
 	if (prob(10))
 		if (origin)

@@ -138,9 +138,6 @@ var/list/gamemode_cache = list()
 	var/hub_body = ""
 	var/hub_banner_url = "https://i.imgur.com/napac0L.png"
 
-	// if the server is running on opendream instead of byond
-	var/opendream = FALSE
-
 	// dumb memes
 	var/allow_dabbing = FALSE
 
@@ -240,8 +237,6 @@ var/list/gamemode_cache = list()
 					config.hub_body = value
 				if ("hub_banner_url")
 					config.hub_banner_url = value
-				if ("opendream")
-					config.opendream = text2num(value)
 
 				if ("use_recursive_explosions")
 					use_recursive_explosions = TRUE
@@ -496,10 +491,8 @@ var/list/gamemode_cache = list()
 		world.visibility = TRUE
 	else
 		world.visibility = FALSE
-	if (config.opendream)
-		log_world("Running in OpenDream mode")
-
+	#ifdef OPENDREAM
+	log_world("Running in OpenDream mode")
+	#endif
 /datum/configuration/proc/post_load()
 	return
-
-#define OPENDREAM config.opendream

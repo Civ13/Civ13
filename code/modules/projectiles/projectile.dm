@@ -502,7 +502,6 @@
 		return FALSE
 
 	var/direction = get_direction()
-
 	var/turf/previous_step = starting
 	if(T!= starting && permutated.len)
 		previous_step = permutated[permutated.len]
@@ -511,78 +510,122 @@
 	var/passthrough_message = null
 	var/is_trench = istype(T, /turf/floor/trench)
 
-	if(fired_from_turret && fired_from_axis) // A bullet fired from a turret has no obstacles inside the vehicle where it was fired
-		for (var/obj/structure/vehicleparts/frame/F in T)
-			if(fired_from_axis && fired_from_axis == F.axis)
-				forceMove(T)
-				permutated += T
-				return TRUE
-			else
-				fired_from_turret = FALSE
-
 	if(is_trench)
 		passed_trenches += 1
 	else
 		passed_trenches = 0
 
-	if (!is_trench && launch_from_trench && firer.prone && !overcoming_trench) // shooting while lying down from trench to trench is impossible [translated]
+	if (!is_trench && launch_from_trench && firer.prone && !overcoming_trench)
 		T.visible_message(SPAN_WARNING("\The [name] hits the wall of the trench!"))
 		on_impact(previous_step)
 		qdel(src)
 		return
 
-	// Checking for vehicle penetration
-	if (T != starting)
-		for (var/obj/structure/vehicleparts/frame/F in T.contents)
-			var/penloc = F.get_wall_name(direction)
-			if (!F.CheckPen(src,penloc))
-				F.bullet_act(src,penloc)
-				passthrough = FALSE
-				visible_message(SPAN_WARNING("\The [name] fails to penetrate \the [penloc] wall"))
-				bumped = TRUE
-				if (istype(src, /obj/item/projectile/shell))
-					var/obj/item/projectile/shell/S = src
-					if (!istype(src, /obj/item/projectile/shell/missile))
-						S.initiate(previous_step)
-					else
-						forceMove(T)
-						permutated += T
-						on_impact(T)
-						S.initiate(T)
-				else
-					on_impact(T)
-					loc = null
-					qdel(src)
-				return FALSE
-			else
-				if (istype(src, /obj/item/projectile/shell))
-					var/obj/item/projectile/shell/S = src
-					on_impact(T)
-					if(S.initiated)
-						F.bullet_act(src,penloc)
-						passthrough = TRUE
-						forceMove(T)
-						permutated += T
-						S.initiate(T)
-					else
-						visible_message(SPAN_DANGER("\The [name] penetrates \the [penloc] wall!"))
-
 	if (!is_trench && launch_from_trench && !overcoming_trench)
 		overcoming_trench = TRUE
 
-	if (T.density)
-		passthrough = FALSE
-	else
-		// needs to be its own loop for reasons
-		for (var/obj/O in T.contents)
-			var/hitchance = 0 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
+	var/T_density = T.density
+	for (var/atom/movable/AM in T.contents)
+		if (untouchable.Find(AM))
+			continue
+
+		if (istype(AM, /obj/structure/vehicleparts/frame))
+			var/obj/structure/vehicleparts/frame/F = AM
+			// Turret axis handling
+			if (fired_from_turret && fired_from_axis && fired_from_axis == F.axis)
+				forceMove(T)
+				permutated += T
+				return TRUE
+			
+			// Embrasure handling (flying out)
+			var/back_penloc = F.get_wall_name(opposite_direction(direction))
+			if (F.is_ambrasure(back_penloc) && T == starting)
+				if(!istype(src, /obj/item/projectile/shell/missile))
+					visible_message(SPAN_WARNING("A bullet flies out of the embrasure"))
+				else
+					var/obj/item/projectile/shell/missile/M = src
+					M.initiate(T)
+			else if (T != starting) // Checking for vehicle penetration (flying in)
+				var/penloc = F.get_wall_name(direction)
+				if (!F.CheckPen(src,penloc))
+					F.bullet_act(src,penloc)
+					passthrough = FALSE
+					visible_message(SPAN_WARNING("\The [name] fails to penetrate \the [penloc] wall"))
+					bumped = TRUE
+					if (istype(src, /obj/item/projectile/shell))
+						var/obj/item/projectile/shell/S = src
+						if (!istype(src, /obj/item/projectile/shell/missile))
+							S.initiate(previous_step)
+						else
+							forceMove(T)
+							permutated += T
+							on_impact(T)
+							S.initiate(T)
+					else
+						on_impact(T)
+						loc = null
+						qdel(src)
+					return FALSE
+				else
+					if (istype(src, /obj/item/projectile/shell))
+						var/obj/item/projectile/shell/S = src
+						on_impact(T)
+						if(S.initiated)
+							F.bullet_act(src,penloc)
+							passthrough = TRUE
+							forceMove(T)
+							permutated += T
+							S.initiate(T)
+						else
+							visible_message(SPAN_DANGER("\The [name] penetrates \the [penloc] wall!"))
+
+
+		if (isliving(AM) && AM != firer)
+			var/mob/living/L = AM
+			if ((!L.lying || T == get_turf(original) || execution))
+				var/obj/item/weapon/grab/G = locate() in L
+				if (G && G.state >= GRAB_NECK && G.affecting.stat < UNCONSCIOUS)
+					visible_message(SPAN_DANGER("[L] uses [G.affecting] as a shield!"))
+					G.affecting.pre_bullet_act(src)
+					attack_mob(G.affecting)
+					if (!G.affecting.lying)
+						passthrough = FALSE
+				else
+					var/firer_dist = get_dist(firer,T)
+					var/hit_chace = 100
+					var/tmp_zone = def_zone
+
+					if (L.lying || L.prone)
+						if (firer_dist > 3)
+							hit_chace = 100 - (sqrt(firer_dist) * 15)
+
+					if (is_trench)
+						if (passed_trenches * 2 <= firer_dist)
+							hit_chace = 100 - (sqrt(firer_dist) * 10)
+							def_zone = "head"
+							if (L.lying || L.prone)
+								hit_chace = 0
+
+					if (firer_dist <= 3)
+						hit_chace = 100
+
+					if (prob(hit_chace))
+						passthrough = !attack_mob(L, firer_dist)
+						return
+					else
+						visible_message(SPAN_WARNING("\The [name] flies over \the [AM]!"))
+					def_zone = tmp_zone
+
+		else if (isobj(AM) && AM != firedfrom)
+			var/obj/O = AM
 			if (O == original)
+				var/hitchance = 0
 				if (O.density)
 					if (istype(O, /obj/covers/jail))
 						hitchance = 0
 					else
 						hitchance = 100
-				else if (isitem(O) && !density) // any item
+				else if (isitem(O) && !density)
 					hitchance = 0
 				if (prob(hitchance))
 					if (istype(O, /obj/structure))
@@ -599,110 +642,56 @@
 						qdel(src)
 						return FALSE
 					O.visible_message(SPAN_WARNING("\The [name] flies over \the [O]!"))
-					break
-	for (var/atom/movable/AM in T.contents)
-		if (!untouchable.Find(AM))
-			if (isliving(AM) && AM != firer)
-				var/mob/living/L = AM
-				if ((!L.lying || T == get_turf(original) || execution))
-					// if they have a neck grab on someone, that person gets hit instead
-					var/obj/item/weapon/grab/G = locate() in L
-					if (G && G.state >= GRAB_NECK && G.affecting.stat < UNCONSCIOUS)
-						visible_message(SPAN_DANGER("[L] uses [G.affecting] as a shield!"))
-						G.affecting.pre_bullet_act(src)
-						attack_mob(G.affecting)
-						if (!G.affecting.lying)
-							passthrough = FALSE
-					else
-						var/firer_dist = get_dist(firer,T)
-						var/hit_chace = 100
-						var/tmp_zone = def_zone
 
-						if (L.lying || L.prone)
-							if (firer_dist > 3)
-								hit_chace = 100 - (sqrt(firer_dist) * 15)
-
-						// Check for trench protection
-						if (is_trench)
-							if (passed_trenches * 2 <= firer_dist)
-								hit_chace = 100 - (sqrt(firer_dist) * 10)
-								def_zone = "head"
-								if (L.lying || L.prone)
-									hit_chace = 0
-
-						if (firer_dist <= 3)
-							hit_chace = 100
-
-						if (prob(hit_chace))
-							passthrough = !attack_mob(L, firer_dist)
-							return
-						else
-							visible_message(SPAN_WARNING("\The [name] flies over \the [AM]!"))
-						def_zone = tmp_zone
-
-			else if (isobj(AM) && AM != firedfrom)
-				var/obj/O = AM
-				if (!(istype(O, /obj/structure/vehicleparts/frame) && O.loc == src.loc))
-					if (O.density || istype(O, /obj/structure/window/classic) || istype(O, /obj/structure/table)) // hack
+			if (!(istype(O, /obj/structure/vehicleparts/frame) && O.loc == src.loc))
+				if (O.density || istype(O, /obj/structure/window/classic) || istype(O, /obj/structure/table))
+					O.pre_bullet_act(src)
+					if (O.bullet_act(src, def_zone) != PROJECTILE_CONTINUE)
+						if (O && !O.gcDestroyed)
+							if (O.density && !istype(O, /obj/structure))
+								if (istype(O, /obj/covers))
+									var/obj/covers/CVR = O
+									if (prob(100-CVR.hardness) && CVR.density)
+										passthrough = TRUE
+										passthrough_message = SPAN_WARNING("\The [name] penetrates through \the [CVR]!")
+									else
+										passthrough = FALSE
+								else if (istype(O, /obj/item/weapon/gun/projectile/automatic/stationary))
+									var/obj/covers/MG = O
+									if (prob(100-MG.hardness))
+										passthrough = TRUE
+									else
+										passthrough = FALSE
+								else
+									passthrough = FALSE
+							else if (istype(O, /obj/structure))
+								var/obj/structure/S = O
+								if (!S.CanPass(src, original))
+									passthrough = FALSE
+								else if (S.density)
+									if (!S.climbable && !istype(S, /obj/structure/vehicleparts/frame))
+										passthrough_message = SPAN_WARNING("\The [name] penetrates through \the [S]!")
+				if (istype(O, /obj/covers/repairedfloor) && istype(src, /obj/item/projectile/shell))
+					if ((src.atype == "cannonball" && prob(18)) || src.atype != "cannonball")
 						O.pre_bullet_act(src)
 						if (O.bullet_act(src, def_zone) != PROJECTILE_CONTINUE)
 							if (O && !O.gcDestroyed)
-								if (O.density && !istype(O, /obj/structure))
-									if (istype(O, /obj/covers))
-										var/obj/covers/CVR = O
-										if (prob(100-CVR.hardness) && CVR.density)
-											passthrough = TRUE
-											passthrough_message = SPAN_WARNING("\The [name] penetrates through \the [CVR]!")
-										else
-											passthrough = FALSE
-									else if (istype(O, /obj/item/weapon/gun/projectile/automatic/stationary))
-										var/obj/covers/MG = O
-										if (prob(100-MG.hardness))
-											passthrough = TRUE
-										else
-											passthrough = FALSE
-									else
-										passthrough = FALSE
-								else if (istype(O, /obj/structure))
-									var/obj/structure/S = O
-									if (!S.CanPass(src, original))
-										passthrough = FALSE
-									else if (S.density)
-										if (!S.climbable && !istype(S, /obj/structure/vehicleparts/frame))
-											passthrough_message = SPAN_WARNING("\The [name] penetrates through \the [S]!")
-					if (istype(O, /obj/covers/repairedfloor) && istype(src, /obj/item/projectile/shell))
-						if ((src.atype == "cannonball" && prob(18)) || src.atype != "cannonball")
-							O.pre_bullet_act(src)
-							if (O.bullet_act(src, def_zone) != PROJECTILE_CONTINUE)
-								if (O && !O.gcDestroyed)
-									passthrough = FALSE
+								passthrough = FALSE
 
-	for(var/obj/structure/window/barrier/S in T)
-		if (!S.CanPassOut(src))
-			do_bullet_act(T)
-			passthrough = FALSE
+		if (istype(AM, /obj/structure/window/barrier))
+			var/obj/structure/window/barrier/S = AM
+			if (!S.CanPassOut(src))
+				do_bullet_act(T)
+				passthrough = FALSE
+
+	if (T_density)
+		passthrough = FALSE
 
 	if (istype(src, /obj/item/projectile/shell))
 		var/obj/item/projectile/shell/S = src
 		if(S.initiated)
 			on_impact(T)
 			S.initiate(T)
-
-	for (var/obj/structure/vehicleparts/frame/F in loc)
-		var/penloc = F.get_wall_name(opposite_direction(direction))
-		if (F.is_ambrasure(penloc) && loc == starting)
-			if(!istype(src, /obj/item/projectile/shell/missile))
-				visible_message(SPAN_WARNING("A bullet flies out of the embrasure"))
-			else
-				var/obj/item/projectile/shell/missile/M = src
-				M.initiate(T)
-		else if (!F.CheckPen(src,penloc))
-			passthrough = FALSE
-			T.visible_message(passthrough_message)
-			F.bullet_act(src,penloc)
-			bumped = TRUE
-			loc = null
-			qdel(src)
 
 	//penetrating projectiles can pass through things that otherwise would not let them
 	++penetrating
@@ -739,6 +728,7 @@
 	qdel(src)
 
 	return FALSE
+
 
 /obj/item/projectile/ex_act()
 	return //explosions probably shouldn't delete projectiles
@@ -818,12 +808,12 @@
 		before_move()
 		forceMove(location.return_turf())
 		update_icon()
-
+		#ifndef OPENDREAM
 		if (!did_muzzle_effect)
 			muzzle_effect()
 		else if (!bumped && loc)
 			tracer_effect()
-
+		#endif
 /obj/item/projectile/proc/do_bullet_act(var/atom/A, var/zone)
 	if (A && A != firer && A != firedfrom)
 		A.pre_bullet_act(src)
@@ -857,24 +847,24 @@
 		did_muzzle_effect = TRUE
 		return
 	if (ispath(muzzle_type) && !did_muzzle_effect)
-		var/obj/effect/projectile/M = new muzzle_type(starting)
+		var/obj/effect/projectile/M = PoolOrNew(muzzle_type, starting)
 		if (istype(M))
 			M.activate(get_angle())
 	if(!istype(muzzle_type, /obj/effect/projectile/laser))
-		for(var/i = 0, i < 15, i++)
+		for(var/i = 0, i < 5, i++)
 			spawn (i * 0.3)
-				var/obj/effect/projectile/bullet/muzzle/gunsmoke/S = new/obj/effect/projectile/bullet/muzzle/gunsmoke(starting)
+				var/obj/effect/projectile/bullet/muzzle/gunsmoke/S = PoolOrNew(/obj/effect/projectile/bullet/muzzle/gunsmoke, starting)
 				S.activate(get_angle())
 	did_muzzle_effect = TRUE
 
+
 /obj/item/projectile/proc/tracer_effect()
 	if (ispath(tracer_type))
-		for(var/i = 1, i <= 2, i++)
-			var/obj/effect/projectile/P = new tracer_type(starting)
-			if (istype(P))
-				P.alpha *= 0.6 / i
-				var/px_dist = ((permutated.len - 1) * world.icon_size) + (i * 16)
-				P.activate(get_angle(), px_dist, starting)
+		var/obj/effect/projectile/P = PoolOrNew(tracer_type, starting)
+		if (istype(P))
+			var/px_dist = ((permutated.len - 1) * world.icon_size) + 16
+			P.activate(get_angle(), px_dist, starting)
+
 
 /obj/item/projectile/proc/impact_effect()
 	if (ispath(impact_type))
@@ -884,9 +874,10 @@
 		else
 			effect_loc = starting
 		for(var/i = 0, i < 5, i++)
-			var/obj/effect/projectile/P = new impact_type(effect_loc)
+			var/obj/effect/projectile/P = PoolOrNew(impact_type, effect_loc)
 			if (istype(P))
 				P.activate(get_angle())
+
 
 //Helper proc to check if you can hit them or not.
 

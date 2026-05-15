@@ -127,10 +127,10 @@
 				client.seen_chat_text += CT
 				if(speaker.client)
 					speaker.client.stored_chat_text += CT
-			if (!config.opendream)
+			#ifndef OPENDREAM
 				if (config.tts_on && ishuman(src) && client.is_preference_enabled(/datum/client_preference/play_chat_tts))
 					play_tts(message2, speaker)
-
+			#endif
 /mob/proc/hear_radio(var/message, var/verb="says", var/datum/language/language=null, var/mob/speaker = null, var/obj/destination=null, var/obj/origin=null)
 
 	if (!client || !message)

@@ -98,7 +98,7 @@
 	if (flee_target)
 		if (prob(25)) say("Wip wip!")
 		stop_automated_movement = TRUE
-		walk_away(src, flee_target, 7, 2)
+		walk_away_od(src, flee_target, 7, 2)
 
 /mob/living/simple_animal/dog/proc/set_flee_target(atom/A)
 	if (A)

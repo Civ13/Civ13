@@ -1,3 +1,4 @@
+
 /obj/effect/expl_particles
 	name = "explosive particles"
 	icon = 'icons/effects/effects.dmi'
@@ -8,7 +9,7 @@
 
 /obj/effect/expl_particles/New()
 	..()
-	processes.callproc.queue(src, /datum/proc/qdeleted, null, 15)
+	// No callproc timer - lifecycle is fully managed by datum/effect/system/expl_particles/start()
 	return
 
 /obj/effect/expl_particles/Move()
@@ -28,12 +29,11 @@
 /datum/effect/system/expl_particles/proc/start()
 	var/i = FALSE
 	for (i=0, i<number, i++)
-		spawn(0)
-			var/obj/effect/expl_particles/expl = new /obj/effect/expl_particles(location)
-			var/direct = pick(alldirs)
-			for (i=0, i<pick(1;25,2;50,3,4;200), i++)
-				sleep(1)
-				step(expl,direct)
+		var/obj/effect/expl_particles/expl = new /obj/effect/expl_particles(location)
+		var/direct = pick(alldirs)
+		walk(expl, direct, 1)
+		schedule_task_in(pick(1;25,2;50,3,4;200), /proc/qdel, list(expl))
+
 
 /obj/effect/explosion
 	name = "explosive particles"
@@ -47,7 +47,10 @@
 
 /obj/effect/explosion/New()
 	..()
-	processes.callproc.queue(src, /datum/proc/qdeleted, null, 10)
+	if (processes.callproc)
+		processes.callproc.queue(src, /datum/proc/qdeleted, null, 10)
+	else
+		spawn(10) qdel(src)
 	return
 
 /datum/effect/system/explosion
