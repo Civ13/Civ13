@@ -142,7 +142,7 @@
 				var/score = prisoner_scores[H][3]
 				var/score_tgt = prisoner_scores[H][2]
 				var/score_item = prisoner_scores[H][1]
-				if (score == score_tgt)
+				if (score >= score_tgt)
 					to_chat(H, "<font size = 4><span style='color:green'><b>Congratulations! You have achieved your personal objective!</b></span></font>")
 					to_chat(H, "<font size = 4>Your final score is: <b>[score]</b> out of <b>[score_tgt]</b> [score_item].</font>")
 					if (H.client && H.client.ckey)
