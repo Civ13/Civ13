@@ -23,20 +23,14 @@
 		if (!v) continue
 		// Match against display name or path string
 		if (v:name == verb_name || "[v]" == verb_name)
-			if (mob && (v in mob.verbs))
-				call(mob, v)()
-			else
-				call(src, v)()
+			winset(src, null, "command='[verb_name]'")
 			return TRUE
 		
 		// If verb_name has spaces, try matching against underscored version
 		if (findtext(verb_name, " "))
 			var/und_name = replacetext(verb_name, " ", "_")
 			if (v:name == und_name || "[v]" == und_name || findtext("[v]", und_name))
-				if (mob && (v in mob.verbs))
-					call(mob, v)()
-				else
-					call(src, v)()
+				winset(src, null, "command='[v:name]'")
 				return TRUE
 
 	// 3) Try direct proc calls as fallback

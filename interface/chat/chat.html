@@ -529,7 +529,10 @@
             if (skip_purify) {
                 messageDiv.innerHTML = messageHtml;
             } else {
-                messageDiv.innerHTML = DOMPurify.sanitize(messageHtml, { USE_PROFILES: { html: true } });
+                messageDiv.innerHTML = DOMPurify.sanitize(messageHtml, { 
+                    USE_PROFILES: { html: true },
+                    ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|ftp|tel|file|sms|byond):|[^&:\/?#]*(?:[\/?#]|$))/i
+                });
             }
 
             messagesContainer.appendChild(messageDiv);
