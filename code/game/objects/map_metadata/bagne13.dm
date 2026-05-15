@@ -22,7 +22,7 @@
 	ordinal_age = 6
 	faction_distribution_coeffs = list(FRENCH = 0.25, CIVILIAN = 0.75)
 	battle_name = "Bagne de L'Enfer Vert"
-	mission_start_message = "<font size=4>The guards have <b>4 minutes</b> to prepare before the grace wall is removed for the Guards, the Prisoners won't be able to cross until 30 minutes have elapsed.<br>The <b>Guards</b> must keep the prisoners contained, and make them serve the French Republic with forced labor. The <b>Prisoners</b> must try to survive, work, and fulfill their personal objectives.</font>"
+	mission_start_message = "<font size=4>You have <b>4 minutes</b> to prepare before the grace wall is removed.<br>The <b>Guards</b> must keep the prisoners contained, and make them serve the French Republic with forced labor. The <b>Prisoners</b> must try to survive, work, and fulfill their personal objectives.</font>"
 	faction1 = FRENCH
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -31,7 +31,6 @@
 	gamemode = "Prison Simulation"
 	var/score_guards = 0
 	is_RP = TRUE
-	var/gracedown1 = TRUE
 	var/siren = FALSE
 	grace_wall_timer = 2400
 
@@ -107,7 +106,7 @@
 				var/score = prisoner_scores[H][3]
 				var/score_tgt = prisoner_scores[H][2]
 				var/score_item = prisoner_scores[H][1]
-				to_chat(H, "<font size = 4>Your current score is: <b>[score]</b> out of <b>[score_tgt]</b> [score_item].</font>")
+				to_chat(H, "<font size = 4><span class = 'notice'>Your current score is: </span><b>[score]</b> out of <b>[score_tgt]</b> [score_item].</font>")
 	spawn(2400)
 		check_points_msg()
 	return
@@ -117,13 +116,7 @@
 		return FALSE
 	var/area/A = get_area(T)
 	if (caribbean_blocking_area_types.Find(A.type))
-		if (A.name == "I grace wall")
-			if (!gracedown1)
-				return TRUE
-			else
-				return FALSE
-		else
-			return (!faction1_can_cross_blocks() || !faction2_can_cross_blocks())
+		return (!faction1_can_cross_blocks() || !faction2_can_cross_blocks())
 	return FALSE
 
 /obj/map_metadata/bagne13/proc/alarm_proc()
@@ -139,32 +132,33 @@
 			return
 
 /obj/map_metadata/bagne13/update_win_condition()
-	if (processes.ticker.playtime_elapsed > 45000) //75 mins
+	if (win_condition_spam_check)
+		return FALSE
+	if (processes.ticker.playtime_elapsed > 45000 || map.round_finished) //75 mins
 		ticker.finished = TRUE
-		var/message = "The round has ended! Guards score: <b>[score_guards]</b>"
-		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
+		to_chat(world, "<font size = 4><span class = 'notice'>The round has ended! Guards score: </span><b>[score_guards]</b></font>")
 		for (var/mob/living/human/H in prisoner_scores)
 			if (H && H.stat != DEAD && H.client)
 				var/score = prisoner_scores[H][3]
 				var/score_tgt = prisoner_scores[H][2]
 				var/score_item = prisoner_scores[H][1]
 				if (score == score_tgt)
-					to_chat(H, "<font size = 4><b>Congratulations! You have achieved your personal objective!</b></font>")
+					to_chat(H, "<font size = 4><span style='color:green'><b>Congratulations! You have achieved your personal objective!</b></span></font>")
+					to_chat(H, "<font size = 4>Your final score is: <b>[score]</b> out of <b>[score_tgt]</b> [score_item].</font>")
 					if (H.client && H.client.ckey)
 						to_chat(world, "[H.ckey]: <span style='color:green'><b>SUCESS</b></span>!")
 				else
-					to_chat(H, "<font size = 4><b>You did not achieve your personal objective.</b></font>")
+					to_chat(H, "<font size = 4><span style='color:red'><b>You did not achieve your personal objective.</b></span></font>")
 					if (H.client && H.client.ckey)
 						to_chat(world, "[H.ckey]: <span style='color:red'><b>FAILED</b></span>")
-				to_chat(H, "<font size = 4>Your final score is: <b>[score]</b> out of <b>[score_tgt]</b> [score_item].</font>")
-				
+		win_condition_spam_check = TRUE
 		return FALSE
 	last_win_condition = win_condition.hash
 	return TRUE
 
 /obj/structure/camp_exportbook/bagne
 	name = "camp exports"
-	desc = "Use this to export products from the camp, get paid, and gain points. 5 units of wood equals 5 francs."
+	desc = "Use this to export products from the camp, get paid, and gain points. 5 units of wood equals 1 franc."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "supplybook2"
 	density = TRUE

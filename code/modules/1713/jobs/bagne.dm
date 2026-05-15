@@ -17,10 +17,14 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
+	var/obj/item/clothing/under/civ2/UN = new /obj/item/clothing/under/civ2(H)
+	H.equip_to_slot_or_del(UN, slot_w_uniform)
+	var/obj/item/clothing/accessory/armband/yellow_scarf/YS = new /obj/item/clothing/accessory/armband/yellow_scarf(null)
+	UN.attackby(YS,H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/white_suit(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/abashiri_guard/french(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/m1892(H), slot_l_hand)
@@ -38,7 +42,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, the commander of <b></b>. Organize your squad leaders and make sure all the prisoners are kept in their place!")
+	H.add_note("Role", "You are a <b>[title]</b>, the commander of the <b>Bagne</b>. Organize your squad leaders and make sure all the prisoners are kept in their place!")
 	H.setStat("strength", STAT_MAX)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_MAX)
@@ -70,6 +74,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pith(H), slot_head)
 //back
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/lebel(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/french(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/french/guard(H), slot_l_store)
@@ -100,7 +105,7 @@
 
 /datum/job/civilian/prisoner/bagne_logger
 	title = "Bucheron"
-	en_meaning = "Prisoner - Logger"
+	en_meaning = "Prisoner"
 
 	min_positions = 10
 	max_positions = 100
