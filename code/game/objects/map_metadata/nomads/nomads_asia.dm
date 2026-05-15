@@ -1,7 +1,7 @@
 /obj/map_metadata/nomads/asia
 	ID = MAP_NOMADS_ASIA
 	title = "Nomads (Asia)"
-	mission_start_message = "<big>After the collapse of the previous civilizations inhabiting this continent, people are starting to form groups and settle down. Will they be able to work together?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	mission_start_message = "<big>After the collapse of the previous civilizations inhabiting this continent, people are starting to form groups and settle down. Will they be able to work together?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
 	research_active = TRUE
 
 /obj/map_metadata/nomads/asia/seasons()

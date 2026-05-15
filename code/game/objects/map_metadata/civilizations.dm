@@ -16,7 +16,7 @@
 	civilizations = TRUE
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the kingdoms"
-	mission_start_message = "<big>Two medieval kingdoms rule this land. They have <b>24 hours</b> to fortify and build a military. Who will win?</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	mission_start_message = "<big>Two medieval kingdoms rule this land. They have <b>24 hours</b> to fortify and build a military. Who will win?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
 	availablefactions_run = TRUE

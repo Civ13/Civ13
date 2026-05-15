@@ -3,7 +3,7 @@
 	ID = MAP_NOMADS_WASTELAND
 	title = "Wasteland"
 	age = "2013"
-	mission_start_message = "<big>The world is on the verge of nuclear war... The nukes will drop in 2 to 3:30 hours. Then the world will become a wasteland. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	mission_start_message = "<big>The world is on the verge of nuclear war... The nukes will drop in 2 to 3:30 hours. Then the world will become a wasteland. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
 	
 	research_active = TRUE
@@ -98,7 +98,7 @@
 	hasnukes = FALSE
 	is_zombie = TRUE
 	lobby_icon = 'icons/lobby/wasteland2.png'
-	mission_start_message = "<big>Something has gone terribly wrong. The undead roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	mission_start_message = "<big>Something has gone terribly wrong. The undead roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
 	songs = list(
 		"Blawan - Why They Hide Their Bodies Under My Garage?:1" = 'sound/music/whytheyhidetheirbodies.ogg',)
@@ -119,7 +119,7 @@
 	hasnukes = FALSE
 	is_zombie = FALSE
 	lobby_icon = 'icons/lobby/wasteland3.png'
-	mission_start_message = "<big>The Great Radiance has rewritten the DNA of the survivors. In the ruins of the old world, the line between man and beast has blurred. Adapt to your new form, scavenge the toxic wastes, and prove that you are the one meant to inherit the earth.</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	mission_start_message = "<big>The Great Radiance has rewritten the DNA of the survivors. In the ruins of the old world, the line between man and beast has blurred. Adapt to your new form, scavenge the toxic wastes, and prove that you are the one meant to inherit the earth.</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
 	songs = list(
 		"Blawan - Why They Hide Their Bodies Under My Garage?:1" = 'sound/music/whytheyhidetheirbodies.ogg',)

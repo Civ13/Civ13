@@ -3,7 +3,7 @@
 	ID = MAP_NOMADS_EXTENDED
 	title = "Nomads: Oil Rush"
 
-	mission_start_message = "<big>To win, your faction must collect <b>3000</b> liters of Oil! The grace wall will be up for 40 minutes.</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	mission_start_message = "<big>To win, your faction must collect <b>3000</b> liters of Oil! The grace wall will be up for 40 minutes.</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
 
 	songs = list("Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	gamemode = "Oil Rush"

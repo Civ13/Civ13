@@ -3,7 +3,7 @@
 	title = "Nomads (stranded)"
 	age = "2015 A.D."
 	battle_name = "Stranded Island"
-	mission_start_message = "<big>The ship has crashed and people are still washing ashore. Will they be able to work together to survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	mission_start_message = "<big>The ship has crashed and people are still washing ashore. Will they be able to work together to survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
 	research_active = FALSE
 
 	gamemode = "Stranded Island (Modern)"
