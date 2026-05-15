@@ -105,7 +105,7 @@
 /datum/job/civilian/prisoner/bagne_logger
 	title = "Bucheron"
 	en_meaning = "Prisoner"
-
+	default_language = "French"
 	min_positions = 10
 	max_positions = 100
 	equip(var/mob/living/human/H)
@@ -144,9 +144,9 @@
 /datum/job/civilian/prisoner/bagne_nurse
 	title = "Infirmier"
 	en_meaning = "Prisoner - Nurse"
-
+	default_language = "French"
 	min_positions = 3
-	max_positions = 30
+	max_positions = 10
 	equip(var/mob/living/human/H)
 		if (!H)	return FALSE
 	//shoes
@@ -182,9 +182,9 @@
 /datum/job/civilian/prisoner/bagne_kitchen
 	title = "Cuistot"
 	en_meaning = "Prisoner - Kitchen"
-
+	default_language = "French"
 	min_positions = 3
-	max_positions = 25
+	max_positions = 10
 	equip(var/mob/living/human/H)
 		if (!H)	return FALSE
 	//shoes

@@ -528,39 +528,28 @@
 			img = image(icon = 'icons/minimaps.dmi', icon_state = "voyage")
 			get_updated_img()
 	proc/get_updated_img()
-		img.overlays.Cut()
+		img_flattened = new /icon('icons/minimaps.dmi', "voyage")
 		if(map.ID == MAP_VOYAGE)
 			var/obj/map_metadata/voyage/nmap = map
 			for(var/list/L in nmap.islands)
-				var/image/newisland = image(icon='icons/minimap_effects.dmi', icon_state=L[1],layer=src.layer+1)
-				newisland.pixel_x = 49+((L[3]-71)*69)
-				newisland.pixel_y = 81+((L[2]-21)*68)
-				img.overlays+=newisland
+				var/icon/newisland = new /icon('icons/minimap_effects.dmi', L[1])
+				img_flattened.Blend(newisland, ICON_OVERLAY, 1 + 49+((L[3]-71)*69), 1 + 81+((L[2]-21)*68))
 			for(var/list/L in nmap.forts)
-				var/image/newfort = image(icon='icons/minimap_effects.dmi', icon_state=L[1],layer=src.layer+1)
-				newfort.pixel_x = 49+((L[3]-71)*69)
-				newfort.pixel_y = 81+((L[2]-21)*68)
-				img.overlays+=newfort
+				var/icon/newfort = new /icon('icons/minimap_effects.dmi', L[1])
+				img_flattened.Blend(newfort, ICON_OVERLAY, 1 + 49+((L[3]-71)*69), 1 + 81+((L[2]-21)*68))
 			for(var/list/L in nmap.ships)
-				var/image/newship = image(icon='icons/minimap_effects.dmi', icon_state="ship[L[1]]",layer=src.layer+1.1)
-				newship.pixel_x = 49+((L[4]-71)*69)
-				newship.pixel_y = 81+((L[3]-21)*68)
-				var/image/newship_s = image(icon='icons/minimap_effects.dmi', icon_state="size[L[1]]",layer=src.layer+1.11)
-				newship_s.pixel_x = 49+((L[4]-71)*69)
-				newship_s.pixel_y = 81+((L[3]-21)*68)
-				var/image/newship_f = image(icon='icons/minimap_effects.dmi', icon_state=L[2],layer=src.layer+1.12)
-				newship_f.pixel_x = 49+((L[4]-71)*69)
-				newship_f.pixel_y = 81+((L[3]-21)*68)
-				img.overlays+=newship
-				img.overlays+=newship_s
-				img.overlays+=newship_f
+				var/icon/newship = new /icon('icons/minimap_effects.dmi', "ship[L[1]]")
+				img_flattened.Blend(newship, ICON_OVERLAY, 1 + 49+((L[4]-71)*69), 1 + 81+((L[3]-21)*68))
+				var/icon/newship_s = new /icon('icons/minimap_effects.dmi', "size[L[1]]")
+				img_flattened.Blend(newship_s, ICON_OVERLAY, 1 + 49+((L[4]-71)*69), 1 + 81+((L[3]-21)*68))
+				var/icon/newship_f = new /icon('icons/minimap_effects.dmi', L[2])
+				img_flattened.Blend(newship_f, ICON_OVERLAY, 1 + 49+((L[4]-71)*69), 1 + 81+((L[3]-21)*68))
 
 	examine(mob/user)
-		update_icon()
-		user << browse(getFlatIcon(img),"window=popup;size=630x630")
+		get_updated_img()
+		user << browse(img_flattened,"window=popup;size=630x630")
 
 	attack_hand(mob/user)
-		update_icon()
 		examine(user)
 
 /obj/structure/voyage/boatswain_book
