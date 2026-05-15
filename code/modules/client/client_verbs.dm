@@ -7,6 +7,19 @@
 	sending.Cut()
 	to_chat(src, "<span class = 'good'>Cache successfully cleared!</span>")
 
+/client/verb/reload_chat()
+	set category = "OOC"
+	set name = "Reload Chat"
+	if (chat)
+		chat.load()
+		to_chat(src, "<span class = 'good'>Chat reloaded!</span>")
+
+/client/verb/clear_chat_verb()
+	set category = "OOC"
+	set name = "Clear Chat"
+	src << output(null, "browser_chat:clearChat")
+	to_chat(src, "<span class = 'good'>Chat cleared!</span>")
+
 /client/verb/open_embed_wiki()
 	set category = "OOC"
 	set name = "Open Wiki"

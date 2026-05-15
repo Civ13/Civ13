@@ -495,59 +495,86 @@
         let lastMessageTime = 0;
 
         function receiveMessage(data, skip_purify = false) {
-            if (!data) return;
             try {
-                data = decodeURIComponent(data);
-            } catch (e) {
-                // world.log << "DEBUG: receiveMessage decode error: " + e.message;
-            }
+                if (!data) return;
 
-            let messageHtml = '';
-
-            if (typeof data === 'string' && data.charAt(0) === '{') {
-                try {
-                    const parsed = JSON.parse(data);
-                    messageHtml = parsed.message || data;
-                } catch (e) {
-                    messageHtml = data;
+                // Handle the skip_purify flag if it was passed as part of a string (e.g., "message;1")
+                // but also respect the second argument if BYOND passed it correctly.
+                if (typeof data === 'string' && data.endsWith(';1')) {
+                    skip_purify = true;
+                    data = data.substring(0, data.length - 2);
                 }
-            } else {
-                messageHtml = data;
+
+                let decodedData = data;
+                try {
+                    decodedData = decodeURIComponent(data);
+                } catch (e) {
+                    console.warn("Chat: Failed to decode message", e);
+                }
+
+                let messageHtml = '';
+                if (typeof decodedData === 'string' && decodedData.charAt(0) === '{') {
+                    try {
+                        const parsed = JSON.parse(decodedData);
+                        messageHtml = parsed.message || decodedData;
+                    } catch (e) {
+                        messageHtml = decodedData;
+                    }
+                } else {
+                    messageHtml = decodedData;
+                }
+
+                if (!messageHtml) return;
+
+                // Deduplication for OpenDream/BYOND glitches
+                if (messageHtml === lastMessage && (Date.now() - lastMessageTime) < 100) {
+                    return;
+                }
+                lastMessage = messageHtml;
+                lastMessageTime = Date.now();
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                
+                // Robust sanitization with fallback
+                if (skip_purify || typeof DOMPurify === 'undefined') {
+                    messageDiv.innerHTML = messageHtml;
+                } else {
+                    try {
+                        messageDiv.innerHTML = DOMPurify.sanitize(messageHtml, { 
+                            USE_PROFILES: { html: true },
+                            ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|ftp|tel|file|sms|byond):|[^&:\/?#]*(?:[\/?#]|$))/i
+                        });
+                    } catch (e) {
+                        console.error("Chat: Sanitization failed", e);
+                        messageDiv.innerText = messageHtml; // Fallback to plain text on failure
+                    }
+                }
+
+                messagesContainer.appendChild(messageDiv);
+
+                // Auto-scroll
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+
+                // Keep memory usage in check by trimming old messages
+                if (messagesContainer.children.length > 250) {
+                    messagesContainer.removeChild(messagesContainer.firstChild);
+                }
+            } catch (err) {
+                console.error("Chat Fatal Error:", err);
             }
+        }
 
-            if (!messageHtml) return;
-
-            // Deduplication for OpenDream/BYOND glitches
-            if (messageHtml === lastMessage && (Date.now() - lastMessageTime) < 100) {
-                return;
-            }
-            lastMessage = messageHtml;
-            lastMessageTime = Date.now();
-
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message';
-            if (skip_purify) {
-                messageDiv.innerHTML = messageHtml;
-            } else {
-                messageDiv.innerHTML = DOMPurify.sanitize(messageHtml, { 
-                    USE_PROFILES: { html: true },
-                    ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|ftp|tel|file|sms|byond):|[^&:\/?#]*(?:[\/?#]|$))/i
-                });
-            }
-
-            messagesContainer.appendChild(messageDiv);
-
-            // Smooth auto-scroll
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-
-            // Keep memory usage in check by trimming old messages (optional, set to 500)
-            if (messagesContainer.children.length > 500) {
-                messagesContainer.removeChild(messagesContainer.firstChild);
-            }
+        /**
+         * Clears all messages from the chat.
+         */
+        function clearChat() {
+            messagesContainer.innerHTML = '';
         }
 
         // Expose to global scope for BYOND
         window.receiveMessage = receiveMessage;
+        window.clearChat = clearChat;
 
         // Notify BYOND that we are ready
         window.location.href = 'byond://?chat_ready=1';
