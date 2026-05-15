@@ -97,7 +97,7 @@
 
 	recipes = list()
 	var/chosen_list = craftlist_lists[faction]
-	if (hardness>=40 && current_res[1] > 8 && (map && map.ID != MAP_GULAG13))
+	if (hardness>=40 && current_res[1] > 8 && (map && map.ID != MAP_GULAG13 && map.ID != MAP_BAGNE13))
 		recipes += new/datum/stack_recipe("[display_name] fork", /obj/item/weapon/material/kitchen/utensil/fork, TRUE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name] spoon", /obj/item/weapon/material/kitchen/utensil/spoon, TRUE, _on_floor = TRUE, _supplied_material = "[name]")
 	for(var/i in chosen_list)

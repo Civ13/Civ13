@@ -3,7 +3,7 @@
 	title = "Frozen Wasteland"
 	is_wasteland = TRUE
 	age = "2013"
-	mission_start_message = "<big>The world has become desolate and frozen.</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	mission_start_message = "<big>The world has become desolate and frozen.</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
 	research_active = TRUE
 

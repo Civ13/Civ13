@@ -204,8 +204,9 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 							crimereason = "Fighting for the Armia Krajowa in [pick("Grodno","Wroclaw", "Lodz", "Lvov")]."
 						if ("Japanese")
 							crimereason = "Fighting for the Imperial Japanese Army in [pick("Khalkhyn Gol", "Mongolia", "the Krillin Islands", "Sakhalinsk")]."
-
-					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32),P.original_eyes, P.randrole)
+					if (istype(H.original_job, /datum/job/civilian/prisoner/bagne_kitchen) || istype(H.original_job, /datum/job/civilian/prisoner/bagne_nurse) || istype(H.original_job, /datum/job/civilian/prisoner/bagne_logger))
+						crimereason = pick("Arson", "Armed Robbery", "Pimping", "Desertion", "Treason", "Military Insubordination")
+					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32), P.original_eyes, P.randrole)
 				else if (istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing1) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing2) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing3) || istype(H.original_job, /datum/job/civilian/abashiri/prisoner/wing3_danger))
 					var/datum/job/civilian/abashiri/prisoner/P = H.original_job
 					switch(H.nationality)
@@ -224,7 +225,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		if (document_details[6] == "male")
 			to_chat(user, "<b><span class='info'>Face:</b> [document_details[3]], [document_details[4]] color</span>")
 		to_chat(user, "<b><span class='info'>Eyes:</b> [document_details[8]]</span>")
-		to_chat(user, "<b><span class='info'>Detained for:</b> [document_details[5]]</span>")
+		to_chat(user, "<b><span class='info'>Convicted of:</b> [document_details[5]]</span>")
 		to_chat(user, "<b><span class='info'>Sentence:</b> [document_details[7]] years</span>")
 		to_chat(user, "<b><span class='info'>Assigned:</b> [document_details[9]]</span>")
 	to_chat(user, "<span class='info'>*---------*</span>")
@@ -254,10 +255,10 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 /mob/living/human/proc/Sound_Alarm()
 	set name = "Sound the Siren"
 	set category = "Officer"
-	if (!map || (map.ID != MAP_GULAG13 && map.ID != MAP_ABASHIRI))
+	if (!map || (map.ID != MAP_GULAG13 && map.ID != MAP_ABASHIRI && map.ID != MAP_BAGNE13))
 		to_chat(usr, "You cannot use this in this map.")
 		return
-	if (!original_job || (!(istype(original_job, /datum/job/russian)) && !(istype(original_job, /datum/job/japanese/abashiri/guard))))
+	if (!original_job || (!(istype(original_job, /datum/job/russian)) && !(istype(original_job, /datum/job/japanese/abashiri/guard)) && !(istype(original_job, /datum/job/french/bagnedirecteur))))
 		to_chat(usr, "You cannot use this.")
 		return
 	if (istype(map, /obj/map_metadata/gulag13))
@@ -283,6 +284,18 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 			spawn(285)
 				if (ABA.siren)
 					ABA.alarm_proc()
+				return
+	if (istype(map, /obj/map_metadata/abashiri))
+		var/obj/map_metadata/bagne13/BG = map
+		if (!BG.siren)
+			to_chat(world, "<font size=3 color='red'><center><b>ALARM</b><br>The siren has been activated, all prisoners must stop what they are doing and lay on the floor until the alarm is lifted!</center></font>")
+			var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			for (var/mob/M in player_list)
+				M.client << warning_sound
+			BG.siren = TRUE
+			spawn(285)
+				if (BG.siren)
+					BG.alarm_proc()
 				return
 /mob/living/human/proc/Stop_Alarm()
 	set name = "Stop the Siren"

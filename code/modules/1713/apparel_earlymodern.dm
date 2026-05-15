@@ -85,6 +85,13 @@
 	desc = "A cap worn by the Abashiri Head Guard."
 	icon_state = "abashiri_guard_head"
 	item_state = "abashiri_guard_head"
+
+/obj/item/clothing/head/abashiri_guard/french
+	name = "Governeur Cap"
+	desc = "A cap worn by the prison governeur."
+	icon_state = "abashiri_guard_head"
+	item_state = "abashiri_guard_head"
+
 /obj/item/clothing/head/abashiri_guard/head_guard/warden
 	name = "Abashiri Warden Cap"
 	desc = "A cap worn by the Abashiri Warden."
@@ -1004,6 +1011,15 @@
 	icon_state = "burgundy_suit"
 	item_state = "burgundy_suit"
 	worn_state = "burgundy_suit"
+
+
+/obj/item/clothing/suit/storage/jacket/white_suit
+	name = "white suit"
+	desc = "A formal white colored suit."
+	icon_state = "white_suit"
+	item_state = "white_suit"
+	worn_state = "white_suit"
+
 
 /obj/item/clothing/accessory/tie
 	name = "black tie"

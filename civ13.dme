@@ -471,6 +471,7 @@
 #include "code\game\objects\map_metadata\alleyway.dm"
 #include "code\game\objects\map_metadata\arab_town.dm"
 #include "code\game\objects\map_metadata\ardennes.dm"
+#include "code\game\objects\map_metadata\bagne13.dm"
 #include "code\game\objects\map_metadata\bank_robbery.dm"
 #include "code\game\objects\map_metadata\barbarossa.dm"
 #include "code\game\objects\map_metadata\battle_ships.dm"
@@ -798,6 +799,7 @@
 #include "code\modules\1713\jobs\american.dm"
 #include "code\modules\1713\jobs\ancient.dm"
 #include "code\modules\1713\jobs\badguys.dm"
+#include "code\modules\1713\jobs\bagne.dm"
 #include "code\modules\1713\jobs\british.dm"
 #include "code\modules\1713\jobs\capitol.dm"
 #include "code\modules\1713\jobs\chinese.dm"
@@ -1179,5 +1181,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\WIP\smallingrad_ai.dmm"
+#include "maps\WIP\bagne13.dmm"
 // END_INCLUDE

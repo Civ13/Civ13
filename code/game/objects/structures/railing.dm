@@ -73,7 +73,7 @@
 		visible_message("<span class='warning'>\The [src] breaks down!</span>")
 		playsound(loc, 'sound/effects/grillehit.ogg', 50, TRUE)
 		qdel(src)
-		if (map.ID != MAP_GULAG13) //disabled due to abuse in gulag rounds
+		if (map.ID != MAP_GULAG13 && map.ID != MAP_BAGNE13) //disabled due to abuse in gulag rounds
 			if (flammable == TRUE)
 				new /obj/item/stack/material/wood(get_turf(usr))
 			else
