@@ -14,11 +14,9 @@
 	-1	* analgesic
 
 	// broken or ripped off organs will add quite a bit of pain
-	if (istype(src,/mob/living/human))
-		var/mob/living/human/M = src
-		for (var/obj/item/organ/external/organ in M.organs)
-			if (organ && (organ.is_broken() || organ.open))
-				traumatic_shock += 30
+	for (var/obj/item/organ/external/organ in organs)
+		if (organ && (organ.is_broken() || organ.open))
+			traumatic_shock += 30
 
 	if (bloodstr)
 		for (var/datum/reagent/ethanol/E in ingested.reagent_list)
