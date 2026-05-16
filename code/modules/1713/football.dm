@@ -92,8 +92,9 @@
 		var/mob/living/human/NEAR = null
 		for (var/mob/living/human/PNEAR in range(1,src))
 			if (!NEAR && PNEAR != src && PNEAR.civilization == src.civilization)
-				NEAR = PNEAR
-				break
+				if (NEAR.football)
+					NEAR = PNEAR
+					break
 		if (NEAR)
 			A = NEAR
 		else
