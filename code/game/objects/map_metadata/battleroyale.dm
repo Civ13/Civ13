@@ -500,7 +500,7 @@
 	mission_start_message = "<font size=4><b>Last player standing wins!</b><br>TWO MINUTES UNTIL THE INVISIBLE WALL DISAPPEARS!</font>"
 
 /obj/map_metadata/battleroyale/four/job_enabled_specialcheck(var/datum/job/J)
-	if (J.is_deathmatch && J.is_cowboy)
+	if (istype(J, /datum/job/pirates/battleroyale/wildwest))
 		J.total_positions = 32
 		J.min_positions = 32
 		J.max_positions = 32

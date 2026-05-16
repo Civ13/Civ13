@@ -8,9 +8,9 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 
-	is_cowboy = TRUE
+	
 	is_law = TRUE
-
+	allowed_maps = list(MAP_LITTLE_CREEK_TDM, MAP_LITTLE_CREEK)
 
 	min_positions = 1
 	max_positions = 1
@@ -71,8 +71,9 @@
 	rank_abbreviation = "Dep."
 
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_LITTLE_CREEK)
 
-	is_cowboy = TRUE
+	
 	is_law = TRUE
 
 	min_positions = 3
@@ -132,8 +133,9 @@
 	rank_abbreviation = "Dep."
 
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_LITTLE_CREEK_TDM)
 
-	is_cowboy = TRUE
+	
 	is_law = TRUE
 
 	min_positions = 6
@@ -194,7 +196,8 @@
 
 	spawn_location = "JoinLatePT"
 	can_be_female = TRUE
-	is_cowboy = TRUE
+	
+	allowed_maps = list(MAP_LITTLE_CREEK)
 
 
 	min_positions = 1
@@ -236,7 +239,8 @@
 
 	spawn_location = "JoinLateCiv"
 	can_be_female = TRUE
-	is_cowboy = TRUE
+	
+	allowed_maps = list(MAP_LITTLE_CREEK)
 
 
 	min_positions = 8
@@ -320,7 +324,8 @@
 
 	spawn_location = "JoinLateCiv"
 	is_medic = TRUE
-	is_cowboy = TRUE
+	
+	allowed_maps = list(MAP_LITTLE_CREEK)
 
 
 	min_positions = 1
@@ -388,7 +393,8 @@
 
 	spawn_location = "JoinLateCiv"
 	can_be_female = TRUE
-	is_cowboy = TRUE
+	
+	allowed_maps = list(MAP_LITTLE_CREEK)
 
 
 	min_positions = 1
@@ -425,7 +431,8 @@
 
 	spawn_location = "JoinLateCiv"
 	can_be_female = TRUE
-	is_cowboy = TRUE
+	
+	allowed_maps = list(MAP_LITTLE_CREEK)
 
 
 	min_positions = 2
@@ -489,8 +496,9 @@
 
 	spawn_location = "JoinLateCiv"
 
-	is_cowboy = TRUE
+	
 	can_be_female = TRUE
+	allowed_maps = list(MAP_LITTLE_CREEK)
 
 
 	min_positions = 2
@@ -548,7 +556,8 @@
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
 
-	is_cowboy = TRUE
+	
+	allowed_maps = list(MAP_LITTLE_CREEK)
 
 
 	min_positions = 1
@@ -589,7 +598,8 @@
 
 	spawn_location = "JoinLateCiv"
 	can_be_female = TRUE
-	is_cowboy = TRUE
+	
+	allowed_maps = list(MAP_LITTLE_CREEK)
 
 
 	min_positions = 1
@@ -651,8 +661,9 @@
 
 	spawn_location = "JoinLatePirate"
 	can_be_female = TRUE
-	is_cowboy = TRUE
+	
 	is_outlaw = TRUE
+	allowed_maps = list(MAP_LITTLE_CREEK_TDM)
 
 	min_positions = 6
 	max_positions = 100
@@ -737,8 +748,9 @@
 
 	spawn_location = "JoinLatePirate"
 	can_be_female = TRUE
-	is_cowboy = TRUE
+	
 	is_outlaw = TRUE
+	allowed_maps = list(MAP_LITTLE_CREEK)
 
 	min_positions = 2
 	max_positions = 9
@@ -820,7 +832,7 @@
 	can_be_female = TRUE
 	spawn_location = "JoinLatePirate2"
 
-	is_cowboy = TRUE
+	
 	is_outlaw = TRUE
 
 	min_positions = 2

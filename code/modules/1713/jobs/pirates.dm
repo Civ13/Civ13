@@ -609,8 +609,7 @@
 	spawn_location = "JoinLateDM"
 
 	is_deathmatch = TRUE
-	is_cowboy = TRUE
-
+	allowed_maps = list(MAP_BATTLEROYALE_WILDWEST)
 	can_be_female = TRUE
 	min_positions = 0
 	max_positions = 0

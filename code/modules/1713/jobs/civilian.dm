@@ -1065,8 +1065,7 @@
 	whitelisted = TRUE
 
 	is_governor = TRUE
-	is_pioneer = TRUE
-
+	allowed_maps = list(MAP_PIONEERS)
 
 	min_positions = 1
 	max_positions = 1
@@ -1114,7 +1113,7 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_officer = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 
 
 	min_positions = 1
@@ -1179,7 +1178,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 	is_vip = TRUE
 
 
@@ -1225,7 +1224,7 @@
 	is_merchant = TRUE
 	can_be_female = TRUE
 	whitelisted = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 
 	min_positions = 1
 	max_positions = 2
@@ -1287,7 +1286,7 @@
 	whitelisted = TRUE
 	is_vip = TRUE
 
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 
 
 	min_positions = 1
@@ -1331,7 +1330,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 
 
 	min_positions = 1
@@ -1376,7 +1375,7 @@
 
 	spawn_location = "JoinLateCivC"
 	whitelisted = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 
 
 	min_positions = 1
@@ -1425,7 +1424,7 @@
 	spawn_location = "JoinLateCiv"
 
 	is_medic = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 
 
 	min_positions = 1
@@ -1486,7 +1485,7 @@
 	is_merchant = TRUE
 	can_be_female = TRUE
 	whitelisted = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 
 	min_positions = 1
 	max_positions = 3
@@ -1542,7 +1541,7 @@
 	spawn_location = "JoinLateCiv"
 	can_be_female = TRUE
 	is_religious = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 
 	min_positions = 1
 	max_positions = 20
@@ -1580,7 +1579,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 
 	can_be_female = TRUE
 	min_positions = 3
@@ -1646,7 +1645,7 @@
 
 	spawn_location = "JoinLateCiv"
 	can_be_female = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 
 
 	min_positions = 3
@@ -1703,7 +1702,7 @@
 
 	spawn_location = "JoinLateCiv"
 
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 	can_be_female = TRUE
 
 	min_positions = 3
@@ -1776,7 +1775,7 @@
 	spawn_location = "JoinLateCiv"
 	whitelisted = TRUE
 
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 	can_be_female = TRUE
 
 	min_positions = 2
@@ -1849,7 +1848,7 @@
 
 	spawn_location = "JoinLateCivD"
 
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 	can_be_female = TRUE
 
 	min_positions = 1
@@ -1905,7 +1904,7 @@
 
 	spawn_location = "JoinLateCiv"
 
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 	can_be_female = TRUE
 
 	min_positions = 1
@@ -1959,7 +1958,7 @@
 
 	spawn_location = "JoinLateCiv"
 
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS)
 	can_be_female = TRUE
 
 	min_positions = 10
@@ -3247,7 +3246,7 @@
 	title = "United Nations Lieutenant"
 	rank_abbreviation = "UN Lt."
 	spawn_location = "JoinLateUNLt"
-	allowed_maps = list(MAP_AFRICAN_WARLORDS, MAP_TADOJSVILLE)
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 	is_officer = TRUE
 	is_commander = TRUE
@@ -3304,7 +3303,7 @@
 /datum/job/civilian/unitednations/sergeant
 	title = "United Nations Sergeant"
 	rank_abbreviation = "UN Sgt."
-	allowed_maps = list(MAP_AFRICAN_WARLORDS, MAP_TADOJSVILLE)
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 	spawn_location = "JoinLateUNSgt"
 	is_squad_leader = TRUE
@@ -3367,7 +3366,7 @@
 	selection_color = "#53ADD0"
 	additional_languages = list("Zulu" = 15)
 	uses_squads = TRUE
-	allowed_maps = list(MAP_AFRICAN_WARLORDS, MAP_TADOJSVILLE)
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 	min_positions = 2
 	max_positions = 102
@@ -3424,7 +3423,7 @@
 	selection_color = "#53ADD0"
 	additional_languages = list("Zulu" = 30)
 	uses_squads = TRUE
-	allowed_maps = list(MAP_AFRICAN_WARLORDS, MAP_TADOJSVILLE)
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 	min_positions = 1
 	max_positions = 5
@@ -3482,7 +3481,7 @@
 	can_be_female = TRUE
 	selection_color = "#53ADD0"
 	additional_languages = list("Zulu" = 15)
-	allowed_maps = list(MAP_AFRICAN_WARLORDS, MAP_TADOJSVILLE)
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 	min_positions = 2
 	max_positions = 12
@@ -3533,7 +3532,7 @@
 	can_be_female = TRUE
 	selection_color = "#53ADD0"
 	additional_languages = list("Zulu" = 15)
-	allowed_maps = list(MAP_AFRICAN_WARLORDS, MAP_TADOJSVILLE)
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 	min_positions = 2
 	max_positions = 6
@@ -3588,7 +3587,7 @@
 	max_positions = 4
 	additional_languages = list("Zulu" = 60)
 	whitelisted = FALSE
-	allowed_maps = list(MAP_AFRICAN_WARLORDS, MAP_TADOJSVILLE)
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 /datum/job/civilian/unitednations/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -3627,7 +3626,7 @@
 	rank_abbreviation = "UN Eng."
 	spawn_location = "JoinLateUNEng"
 	is_un = TRUE
-	allowed_maps = list(MAP_AFRICAN_WARLORDS, MAP_TADOJSVILLE)
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 	can_be_female = TRUE
 	selection_color = "#53ADD0"

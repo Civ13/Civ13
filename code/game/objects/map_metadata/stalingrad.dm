@@ -237,15 +237,9 @@
 	..()
 	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew) || istype(J, /datum/job/russian/antitank_soldier_soviet) || istype(J, /datum/job/russian/antitank_assistant_soldier_soviet) || istype(J, /datum/job/german/german_antitank) || istype(J, /datum/job/german/german_antitankassitant))
 		. = FALSE
-	else if (J.is_ss_panzer == TRUE)
-		. = FALSE
 	else if (J.is_occupation == TRUE)
 		. = FALSE
 	else if (J.is_tanker == TRUE)
-		. = FALSE
-	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
-		. = TRUE
-	else if (J.is_reichstag == TRUE)
 		. = FALSE
 	else
 		. = FALSE

@@ -444,7 +444,7 @@
 	whitelisted = TRUE
 
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	is_occupation = TRUE
 
 	min_positions = 1
@@ -512,7 +512,7 @@
 	whitelisted = TRUE
 	is_commander = TRUE
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	is_occupation = TRUE
 
 	min_positions = 1
@@ -576,7 +576,7 @@
 	whitelisted = TRUE
 	is_commander = TRUE
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	is_occupation = TRUE
 	min_positions = 1
 	max_positions = 1
@@ -637,7 +637,7 @@
 	spawn_location = "JoinLateGE"
 	is_squad_leader = TRUE
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	uses_squads = TRUE
 	is_occupation = TRUE
 
@@ -697,7 +697,7 @@
 
 	is_ww2 = TRUE
 	is_occupation = TRUE
-	is_reichstag = FALSE
+	
 	uses_squads = TRUE
 
 	min_positions = 8

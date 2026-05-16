@@ -622,29 +622,7 @@ var/civmax_research = list(230,230,230)
 	if (J.allowed_maps.len > 0)
 		. = (ID in J.allowed_maps)
 		return .
-	// old logic (fallback for jobs not yet migrated to allowed_maps)
-	if (age == "1013" && !civilizations)
-		if (J.is_medieval)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		if (!J.is_medieval)
-			. = TRUE
-		else
-			. = FALSE
-	if (civilizations)
-		if (J.is_civilizations)
-			. = TRUE
-		else
-			. = FALSE
-	else if (!civilizations)
-		if (!J.is_civilizations)
-			. = TRUE
-		else
-			. = FALSE
-	if (J.is_nomad)
-		. = FALSE
+
 /obj/map_metadata/proc/cross_message(faction)
 	return "<font size = 4>The [faction_const2name(faction,ordinal_age)] may now cross the invisible wall!</font>"
 

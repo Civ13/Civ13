@@ -347,7 +347,7 @@
 	whitelisted = TRUE
 
 	is_ww2 = TRUE
-	is_reichstag = TRUE
+
 
 
 	min_positions = 1
@@ -399,7 +399,7 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_ww2 = TRUE
-	is_reichstag = TRUE
+
 
 	min_positions = 1
 	max_positions = 6
@@ -453,7 +453,7 @@
 
 	is_medic = TRUE
 	is_ww2 = TRUE
-	is_reichstag = TRUE
+
 
 	min_positions = 1
 	max_positions = 4
@@ -503,7 +503,7 @@
 
 	is_ww2 = TRUE
 	whitelisted = TRUE
-	is_reichstag = TRUE
+
 	uses_squads = TRUE
 
 	min_positions = 6
@@ -568,7 +568,7 @@
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
-	is_reichstag = TRUE
+
 	uses_squads = TRUE
 
 	min_positions = 6
@@ -638,7 +638,7 @@
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
-	is_reichstag = TRUE
+
 	uses_squads = TRUE
 	can_be_female = TRUE
 
@@ -705,7 +705,7 @@
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
-	is_reichstag = TRUE
+
 	uses_squads = TRUE
 	can_be_minor = TRUE
 
@@ -755,11 +755,11 @@
 	title = "Volkssturm"
 	en_meaning = "Militia"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_BERLIN)
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = FALSE
-	is_reichstag = FALSE
+	
 	uses_squads = TRUE
 	can_be_female = TRUE
 
@@ -841,7 +841,7 @@
 	whitelisted = TRUE
 
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	is_borderger = TRUE
 	is_warsawger = TRUE
 	is_ardennes = TRUE
@@ -899,7 +899,7 @@
 	whitelisted = TRUE
 
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	is_borderger = TRUE
 	is_ardennes = TRUE
 
@@ -955,7 +955,7 @@
 	whitelisted = TRUE
 
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	is_borderger = TRUE
 	is_warsawger = TRUE
 
@@ -1008,7 +1008,7 @@
 	spawn_location = "JoinLateGE"
 	is_squad_leader = TRUE
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	uses_squads = TRUE
 	is_borderger = TRUE
 	is_warsawger = TRUE
@@ -1064,7 +1064,7 @@
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	uses_squads = TRUE
 	is_borderger = TRUE
 
@@ -1153,8 +1153,7 @@
 
 	spawn_location = "JoinLateGE"
 	is_ardennes = TRUE
-	is_ss_panzer = FALSE
-	is_reichstag = FALSE
+	
 	is_ww2 = FALSE
 	uses_squads = TRUE
 	is_warsawger = FALSE
@@ -1235,7 +1234,7 @@
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	uses_squads = TRUE
 	is_borderger = TRUE
 	is_warsawger = TRUE
@@ -1299,7 +1298,7 @@
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	uses_squads = TRUE
 	is_borderger = TRUE
 	is_warsawger = TRUE
@@ -1359,7 +1358,7 @@
 
 	spawn_location = "JoinLateGE"
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	uses_squads = TRUE
 	is_borderger = TRUE
 	is_warsawger = TRUE
@@ -1421,7 +1420,7 @@
 
 	spawn_location = "JoinLateGE"
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	uses_squads = TRUE
 	is_borderger = TRUE
 	is_warsawger = TRUE
@@ -1490,7 +1489,7 @@
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	uses_squads = TRUE
 	is_ardennes = TRUE
 
@@ -1544,13 +1543,13 @@
 	title = "Mediziner"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Dr."
-	allowed_maps = list(MAP_ARDENNES, MAP_BARBAROSSA, MAP_BIGSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KURSK, MAP_OMAHA, MAP_PAVLOV_HOUSE, MAP_REICHFLAKTURM, MAP_STALINGRAD, MAP_VITEBSK, MAP_WARSAW)
+	allowed_maps = list(MAP_ARDENNES, MAP_BERLIN, MAP_SMALLSIEGEMOSCOW, MAP_BARBAROSSA, MAP_BIGSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KURSK, MAP_OMAHA, MAP_PAVLOV_HOUSE, MAP_REICHFLAKTURM, MAP_STALINGRAD, MAP_VITEBSK, MAP_WARSAW)
 
 	spawn_location = "JoinLateGEDoc"
 
 	is_medic = TRUE
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	is_borderger = TRUE
 	is_warsawger = TRUE
 	is_ardennes = TRUE
@@ -1601,7 +1600,7 @@
 
 	is_medic = TRUE
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	uses_squads = TRUE
 	is_borderger = TRUE
 	is_warsawger = TRUE
@@ -1660,7 +1659,7 @@
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	is_tanker = TRUE
 	whitelisted = TRUE
 	is_squad_leader = TRUE
@@ -1716,7 +1715,7 @@
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	is_tanker = TRUE
 	uses_squads = TRUE
 	is_ardennes = TRUE
@@ -1761,14 +1760,13 @@
 	title = "Waffen-SS Unterscharfuhrer Panzergrenadier"
 	en_meaning = "Mechanized Infantry Squad Leader"
 	rank_abbreviation = "Uscha."
-	allowed_maps = list(MAP_ARDENNES, MAP_BIGSIEGEMOSCOW, MAP_KURSK, MAP_VITEBSK, MAP_WARSAW)
+	allowed_maps = list(MAP_ARDENNES, MAP_BERLIN, MAP_BIGSIEGEMOSCOW, MAP_KURSK, MAP_VITEBSK, MAP_WARSAW)
 
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	is_ss_panzer = TRUE
 	is_warsawger = TRUE
 	is_ardennes = TRUE
 
@@ -1815,10 +1813,9 @@
 	title = "Waffen-SS Panzergrenadier"
 	en_meaning = "Mechanized Infantry"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_ARDENNES, MAP_BIGSIEGEMOSCOW, MAP_KURSK, MAP_VITEBSK, MAP_WARSAW)
+	allowed_maps = list(MAP_ARDENNES, MAP_BERLIN, MAP_BIGSIEGEMOSCOW, MAP_KURSK, MAP_VITEBSK, MAP_WARSAW)
 
 	spawn_location = "JoinLateGE"
-	is_ss_panzer = TRUE
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
@@ -1886,10 +1883,9 @@
 	title = "Waffen-SS Pionier"
 	en_meaning = "Sapper"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_ARDENNES, MAP_BIGSIEGEMOSCOW, MAP_KURSK, MAP_VITEBSK, MAP_WARSAW)
+	allowed_maps = list(MAP_ARDENNES, MAP_BERLIN, MAP_BIGSIEGEMOSCOW, MAP_KURSK, MAP_VITEBSK, MAP_WARSAW)
 
 	spawn_location = "JoinLateGESap"
-	is_ss_panzer = TRUE
 	is_ww2 = TRUE
 	is_warsawger = TRUE
 	is_ardennes = TRUE
@@ -2059,7 +2055,6 @@
 	allowed_maps = list(MAP_WARSAW)
 
 	spawn_location = "JoinLateGE"
-	is_ss_panzer = FALSE
 	is_ww2 = FALSE
 	uses_squads = TRUE
 	is_warsawger = TRUE

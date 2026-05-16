@@ -32,7 +32,7 @@
 	)
 
 	var/list/scorers = list()
-	
+
 	var/match_duration = 12 MINUTES
 
 	var/stopped = FALSE
@@ -98,7 +98,7 @@
 		for (var/obj/effect/step_trigger/goal/red/GR in world)
 			GR.assign()
 		for (var/obj/effect/step_trigger/goal/blue/GB in world)
-			GB.assign()	
+			GB.assign()
 /obj/map_metadata/football/proc/save_teams()
 	var/F = file("SQL/sports_teams.txt")
 	if (fexists(F))
@@ -214,7 +214,7 @@
 	max_positions = 10
 	is_football = TRUE
 	selection_color = "#AE001A"
-	allowed_maps(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
+	allowed_maps = list(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
 
 /datum/job/civilian/football_red/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -241,7 +241,7 @@
 	max_positions = 1
 	is_football = TRUE
 	selection_color = "#AE001A"
-	allowed_maps(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
+	allowed_maps = list(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
 
 /datum/job/civilian/football_red/goalkeeper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -272,7 +272,7 @@
 	max_positions = 10
 	is_football = TRUE
 	selection_color = "#6f8bb6"
-	allowed_maps(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
+	allowed_maps = list(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
 
 
 /datum/job/civilian/football_blue/equip(var/mob/living/human/H)
@@ -301,7 +301,7 @@
 	max_positions = 1
 	is_football = TRUE
 	selection_color = "#6f8bb6"
-	allowed_maps(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
+	allowed_maps = list(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
 
 
 /datum/job/civilian/football_blue/goalkeeper/equip(var/mob/living/human/H)

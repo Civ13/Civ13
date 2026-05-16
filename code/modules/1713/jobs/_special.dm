@@ -16,7 +16,6 @@
 /datum/job/var/is_governor = FALSE
 /datum/job/var/is_merchant = FALSE
 /datum/job/var/is_religious = FALSE
-/datum/job/var/is_pioneer = FALSE
 /datum/job/var/is_1713 = FALSE
 /datum/job/var/is_RP = FALSE //to enable civilian jobs per faction
 /datum/job/var/is_army = FALSE //land troops
@@ -27,12 +26,10 @@
 /datum/job/var/is_nomad = FALSE //self explanatory
 /datum/job/var/is_gladiator = FALSE
 /datum/job/var/is_civilizations = FALSE //if the job is for civilization maps
-/datum/job/var/is_cowboy = FALSE
 /datum/job/var/is_law = FALSE
 /datum/job/var/is_outlaw = FALSE
 /datum/job/var/is_ww1 = FALSE
 /datum/job/var/is_ww2 = FALSE
-/datum/job/var/is_reichstag = FALSE
 /datum/job/var/is_coldwar = FALSE
 /datum/job/var/is_radioman = FALSE
 /datum/job/var/is_specops = FALSE
@@ -44,7 +41,6 @@
 /datum/job/var/is_navy = FALSE
 /datum/job/var/is_rp = FALSE
 /datum/job/var/is_medic = FALSE
-/datum/job/var/is_ss_panzer = FALSE
 /datum/job/var/is_deal = FALSE
 /datum/job/var/is_heist = FALSE
 /datum/job/var/is_eft = FALSE
@@ -86,7 +82,6 @@
 /datum/job/var/is_stormcloak = FALSE
 /datum/job/var/is_ukrainerussowar = FALSE
 /datum/job/var/is_russojapwar = FALSE
-/datum/job/var/is_smallsiegemoscow = FALSE
 /datum/job/var/mosinonly = FALSE
 /datum/job/var/is_sovaprif = FALSE
 /datum/job/var/is_lab = FALSE

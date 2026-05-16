@@ -26,19 +26,6 @@
 	songs = list(
 		"The Good, the Bad, and the Ugly Theme:1" = 'sound/music/good_bad_ugly.ogg',)
 	is_singlefaction = TRUE
-obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_cowboy == TRUE)
-		if (J.title == "Outlaw" || J.title == "Sheriffs Deputy")
-			. = FALSE
-		else if (J.is_deathmatch == TRUE)
-			. = FALSE
-		else if (J.is_heist == TRUE)
-			. = FALSE
-		else
-			. = TRUE
-	else
-		. = FALSE
 
 /obj/map_metadata/little_creek/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)

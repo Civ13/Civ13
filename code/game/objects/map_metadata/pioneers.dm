@@ -36,23 +36,6 @@
 		seasons()
 
 
-obj/map_metadata/pioneers/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/civilian))
-		if (J.is_pioneer == TRUE)
-			. = TRUE
-		else if (J.is_deal == TRUE)
-			. = FALSE
-		else
-			. = FALSE
-	else if (istype(J, /datum/job/indians))
-		if (J.is_1713 && !J.is_deathmatch)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/pioneers/cross_message(faction)
 	return ""
 

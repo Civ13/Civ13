@@ -288,7 +288,7 @@
 
 
 	return TRUE
-	
+
 /datum/job/russian/infantry
 	title = "Ryadovoy"
 	en_meaning = "Soldier Second-class"
@@ -514,7 +514,7 @@
 	title = "K.A. Voynenvrach"
 	en_meaning = "Combat Medic"
 	rank_abbreviation = "Srj."
-	allowed_maps = list(MAP_BIGSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_KURSK, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_VITEBSK)
+	allowed_maps = list(MAP_BIGSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_KURSK, MAP_PAVLOV_HOUSE, MAP_BERLIN, MAP_REICHSTAG, MAP_STALINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRUDoc"
 	is_ww2 = TRUE
@@ -522,7 +522,7 @@
 
 	is_karelia = TRUE
 	is_bordersov = FALSE
-	
+
 	min_positions = 1
 	max_positions = 4
 
@@ -1976,7 +1976,7 @@
 	spawn_location = "JoinLateRU"
 	is_karelia = TRUE
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	uses_squads = TRUE
 	is_tanker = TRUE
 	whitelisted = TRUE
@@ -2029,7 +2029,7 @@
 	spawn_location = "JoinLateRU"
 	is_karelia = TRUE
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	is_tanker = TRUE
 	uses_squads = TRUE
 	allowed_maps = list(MAP_FOREST, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_KURSK, MAP_STALINGRAD, MAP_VITEBSK)
@@ -2073,10 +2073,9 @@
 	title = "Gvardii Serjant"
 	en_meaning = "Guards Mechanized Squad Leader"
 	rank_abbreviation = "Srj."
-	allowed_maps = list(MAP_BIGSIEGEMOSCOW, MAP_KURSK, MAP_VITEBSK)
+	allowed_maps = list(MAP_BIGSIEGEMOSCOW, MAP_BERLIN, MAP_KURSK, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
-	is_ss_panzer = TRUE
 	is_karelia = FALSE
 	is_ww2 = TRUE
 	is_squad_leader = TRUE
@@ -2126,13 +2125,12 @@
 	title = "Gvardii Krasnoarmeyets"
 	en_meaning = "Guards Mechanized Infantry"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_BIGSIEGEMOSCOW, MAP_KURSK, MAP_VITEBSK)
+	allowed_maps = list(MAP_BIGSIEGEMOSCOW, MAP_BERLIN, MAP_KURSK, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	is_ss_panzer = TRUE
 	is_karelia = FALSE
 	min_positions = 6
 	max_positions = 30
@@ -2185,10 +2183,9 @@
 	title = "Gvardii Sapyor"
 	en_meaning = "Guards Sapper"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_BIGSIEGEMOSCOW, MAP_KARELIA, MAP_KURSK, MAP_VITEBSK)
+	allowed_maps = list(MAP_BIGSIEGEMOSCOW, MAP_BERLIN, MAP_KARELIA, MAP_KURSK, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRUSap"
-	is_ss_panzer = TRUE
 	is_karelia = TRUE
 	is_ww2 = TRUE
 
@@ -2238,10 +2235,10 @@
 /datum/job/russian/mosmil
 	title = "Opolchenets"
 	en_meaning = "Soviet Militia"
-	is_smallsiegemoscow = TRUE
 	spawn_location = "JoinEarlyMilita"
 	min_positions = 10
 	max_positions = 55
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW)
 
 /datum/job/russian/mosmil/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
