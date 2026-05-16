@@ -6,17 +6,62 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Info Panels</title>
     <style>
+        @font-face {
+            font-family: 'Civ13Custom';
+            src: url('Alegreya-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Civ13Custom';
+            src: url('Alegreya-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Civ13Custom';
+            src: url('Alegreya-Italic.ttf') format('truetype');
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'Civ13Custom';
+            src: url('Alegreya-BoldItalic.ttf') format('truetype');
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'Civ13Custom';
+            src: url('Alegreya-Black.ttf') format('truetype');
+            font-weight: 900;
+            font-style: normal;
+        }
+
         html,
         body {
             margin: 0;
             padding: 0;
             background-color: #392611;
             color: #e1e1d7;
-            font-family: "Book Antiqua", "Palatino Linotype", serif;
+            font-family: 'Civ13Custom', "Book Antiqua", "Palatino Linotype", serif;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             font-size: 14px;
             height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: bold;
+            padding-bottom: 2px;
+            border-bottom: 1px solid;
         }
 
         #tabs {

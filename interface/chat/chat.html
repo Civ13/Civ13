@@ -6,10 +6,48 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <style>
         /* Civilization 13 Modern Chat Styling */
+        @font-face {
+            font-family: 'Civ13Custom';
+            src: url('Alegreya-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Civ13Custom';
+            src: url('Alegreya-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Civ13Custom';
+            src: url('Alegreya-Italic.ttf') format('truetype');
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'Civ13Custom';
+            src: url('Alegreya-BoldItalic.ttf') format('truetype');
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'Civ13Custom';
+            src: url('Alegreya-Black.ttf') format('truetype');
+            font-weight: 900;
+            font-style: normal;
+        }
+
         body {
             background-color: #392611;
             color: #e1e1d7;
-            font-family: "Book Antiqua", "Bookman Old Style", serif;
+            font-family: 'Civ13Custom', "Book Antiqua", "Bookman Old Style", serif;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             font-size: 14px;
             margin: 0;
             padding: 0;
@@ -453,7 +491,7 @@
 
         .motd {
             color: #E1E1FF;
-            font-family: "Book Antiqua", Verdana, sans-serif;
+            font-family: "Civ13Custom", "Book Antiqua", Verdana, sans-serif;
         }
 
         .motd h1,
@@ -535,15 +573,15 @@
 
                 const messageDiv = document.createElement('div');
                 messageDiv.className = 'message';
-                
+
                 // Robust sanitization with fallback
                 if (skip_purify || typeof DOMPurify === 'undefined') {
                     messageDiv.innerHTML = messageHtml;
                 } else {
                     try {
-                        messageDiv.innerHTML = DOMPurify.sanitize(messageHtml, { 
+                        messageDiv.innerHTML = DOMPurify.sanitize(messageHtml, {
                             USE_PROFILES: { html: true },
-                            ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|ftp|tel|file|sms|byond):|[^&:\/?#]*(?:[\/?#]|$))/i
+                            ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|ftp|tel|file|sms|byond):|[^&:/?#]*(?:[/?#]|$))/i
                         });
                     } catch (e) {
                         console.error("Chat: Sanitization failed", e);

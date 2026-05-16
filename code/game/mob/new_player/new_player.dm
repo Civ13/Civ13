@@ -174,24 +174,21 @@ var/global/redirect_all_players = null
 				player.updateTimeToStart()*/
 
 	if (client.status_tabs && (client.add_stat_tab("Status") || client.statpanel_tab == "Status") && ticker)
-		client.add_stat("")
-		client.add_stat("Lobby")
-		client.add_stat("")
+		client.add_stat("<h3>Lobby</h3>")
 
 		// by counting observers, our playercount now looks more impressive - Kachnov
 		if (ticker.current_state == GAME_STATE_PREGAME)
-			client.add_stat("Time Until Joining Allowed:", "[ticker.pregame_timeleft][round_progressing ? "" : " (DELAYED)"]")
+			client.add_stat("<b>Time Until Joining Allowed:</b>", "[ticker.pregame_timeleft][round_progressing ? "" : " (DELAYED)"]")
 
-		client.add_stat("Players in lobby:", totalPlayers)
-		client.add_stat("")
-		client.add_stat("")
+		client.add_stat("<b>Players in lobby:</b>", totalPlayers)
 
 		totalPlayers = 0
-
-		for (var/player in new_player_mob_list)
-			client.add_stat(player:key)
-			++totalPlayers
-
+		var/list/player_keys = list()
+		for (var/mob/new_player/player in new_player_mob_list)
+			if (player.client)
+				player_keys += player.client.key
+				++totalPlayers
+		client.add_stat("<b>Player List:</b>", jointext(player_keys, ", "))
 		client.add_stat("")
 
 	..()

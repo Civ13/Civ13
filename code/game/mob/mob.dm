@@ -263,70 +263,16 @@
 	set src = usr
 	if (ishuman(src))
 		var/mob/living/human/H = src
-		if (H.football && H.shoes && istype(H.shoes, /obj/item/clothing/shoes/football)) //if we have the ball, pass it to nearest friendly player
-			var/mob/living/human/NEAR = null
-			for (var/mob/living/human/PNEAR in range(1,H))
-				if (!NEAR && PNEAR != H && PNEAR.civilization == H.civilization)
-					NEAR = PNEAR
-					break
-			if (!NEAR)
-				for (var/mob/living/human/PNEAR in range(2,H))
-					if (!NEAR && PNEAR != H && PNEAR.civilization == H.civilization)
-						NEAR = PNEAR
-						break
-				if (!NEAR)
-					for (var/mob/living/human/PNEAR in range(3,H))
-						if (!NEAR && PNEAR != H && PNEAR.civilization == H.civilization)
-							NEAR = PNEAR
-							break
-					if (!NEAR)
-						for (var/mob/living/human/PNEAR in range(3,H))
-							if (!NEAR && PNEAR != H && PNEAR.civilization == H.civilization)
-								NEAR = PNEAR
-								break
-			if (NEAR)
-				var/obj/item/football/FB = H.football
-				H.do_attack_animation(H.football)
-				H.football = null
-				FB.owner = null
-				FB.last_owner = H
-				FB.throw_at(NEAR, FB.throw_range, FB.throw_speed, H)
-				H.do_attack_animation(get_step(H,H.dir))
-				playsound(loc, 'sound/effects/football_kick.ogg', 100, 1)
-				visible_message("[H] passes \the [FB] to [NEAR].")
-				return
-		else if (!H.football && H.gloves && istype(H.gloves, /obj/item/clothing/gloves/goalkeeper))
-			var/area/A = get_area(H.loc)
-			if (istype(A, /area/caribbean/football/blue/goalkeeper) || istype(A, /area/caribbean/football/red/goalkeeper))
-				for(var/obj/item/football/FB in range(1,H))
-					if ((!FB.owner || FB.owner == H || H.football == FB) && isturf(FB.loc))
-						H.put_in_active_hand(FB)
-						FB.pickup(H)
-						H.football = null
-						FB.owner = null
-						visible_message("<font color='yellow'>[H] picks up the ball!</font>")
-						return
-		else if (!H.football && H.shoes && istype(H.shoes, /obj/item/clothing/shoes/football) && H.stats["stamina"][1] >= 15) //proceed to tackle whoever is in front
-			H.stats["stamina"][1] = max(H.stats["stamina"][1] - 15, 0)
-			src.do_attack_animation(get_step(src,dir))
-			Weaken(1)
-			for (var/mob/living/human/HM in range(1,H))
-				if (HM.civilization != H.civilization) //no tackling on same team
-					if (prob(60))
-						visible_message("<font color='red'>[src] tackles [HM]!</font>")
-						playsound(loc, 'sound/weapons/punch1.ogg', 50, 1)
-						H.do_attack_animation(get_step(H,H.dir))
-						HM.Weaken(1)
-						if (HM.football)
-							HM.football.last_owner = HM
-							HM.football.owner = null
-							HM.football.throw_at(get_step(HM.loc,HM.dir), 1, 1, HM)
-							HM.football = null
-						return
-					else
-						visible_message("<font color='yellow'>[src] tries to tackle [HM] but fails!</font>")
-						playsound(loc, 'sound/weapons/punchmiss.ogg', 50, 1)
-					return
+		//ball possession, kick
+		if (H.football && istype(H.shoes, /obj/item/clothing/shoes/football))
+			H.football_shoot(null)
+		//no ball & GK, pick ball up
+		else if (!H.football)
+			if (H.gloves && istype(H.gloves, /obj/item/clothing/gloves/goalkeeper))
+				H.football_gk_pickup()
+		//no ball, tackle
+			else if (H.shoes && istype(H.shoes, /obj/item/clothing/shoes/football) && H.stats["stamina"][1] >= 15) //proceed to tackle whoever is in front
+				H.football_tackle()
 	if (hand)
 		var/obj/item/W = l_hand
 		if (W)
@@ -344,6 +290,14 @@
 	set name = "Activate Secondary Object"
 	set category = null
 	set src = usr
+	if (ishuman(src))
+		var/mob/living/human/H = src
+		//ball possession, pass to nearest
+		if (H.football && H.shoes && istype(H.shoes, /obj/item/clothing/shoes/football)) //if we have the ball, pass it to nearest friendly player
+			H.football_pass()
+		//no ball, pressure nearest player with ball
+		else if (!H.football && H.shoes && istype(H.shoes, /obj/item/clothing/shoes/football))
+			H.football_pressure(null)
 	if (hand)
 		var/obj/item/W = l_hand
 		if (W)
@@ -693,13 +647,11 @@
 	. = (is_client_active(10 MINUTES))
 	if (.)
 		if (client.status_tabs && (client.add_stat_tab("Status") || client.statpanel_tab == "Status") && ticker)
-			client.add_stat("")
-			client.add_stat("Server")
-			client.add_stat("")
-			client.add_stat("Players Online:", "[clients.len]")
-			client.add_stat("Playing, Observing, Lobby:", "[human_clients_mob_list.len], [clients.len-human_clients_mob_list.len-new_player_mob_list.len], [new_player_mob_list.len]")
-			client.add_stat("Round Duration:", roundduration2text_days())
-			client.add_stat("Game ID:", "<b>[game_id]</b>")
+			client.add_stat("<h3>Server</h3>")
+			client.add_stat("<b>Players Online:</b>", "[clients.len]")
+			client.add_stat("<b>Playing, Observing, Lobby:</b>", "[human_clients_mob_list.len], [clients.len-human_clients_mob_list.len-new_player_mob_list.len], [new_player_mob_list.len]")
+			client.add_stat("<b>Round Duration:</b>", roundduration2text_days())
+			client.add_stat("<b>Game ID:</b>", "<b>[game_id]</b>")
 			client.add_stat("")
 
 			if (map && !map.civilizations)
@@ -711,17 +663,17 @@
 						grace_period_string += ", "
 					if (!map.civilizations)
 						if (map.last_crossing_block_status[faction])
-							grace_period_string += "[faction_const2name(faction,map.ordinal_age)] may cross"
+							grace_period_string += "<font color='green'>[faction_const2name(faction,map.ordinal_age)] may cross</font>"
 						else
-							grace_period_string += "[faction_const2name(faction,map.ordinal_age)] may not cross"
+							grace_period_string += "<font color='red'>[faction_const2name(faction,map.ordinal_age)] may not cross</font>"
 					else
 						if (map.last_crossing_block_status[faction])
 							grace_period_string += "The grace wall has been removed."
 						else
 							grace_period_string += "The grace wall is in effect."
 
-				client.add_stat("Grace Period Status:", grace_period_string)
-				client.add_stat("Round End Condition:", map.current_stat_message())
+				client.add_stat("<b>Grace Period Status:</b>", grace_period_string)
+				client.add_stat("<b>Round End Condition:</b>", map.current_stat_message())
 			if (map)
 				var/gmd = map.gamemode
 				switch(map.gamemode)
@@ -731,13 +683,13 @@
 						gmd = "<font color='yellow'>Competitive</font>"
 					if ("Hardcore")
 						gmd = "<font color='red'>Hardcore</font>"
-				client.add_stat("Map:", map.title)
-				client.add_stat("Mode:", gmd)
-				client.add_stat("Epoch:", map.age)
-				client.add_stat("Season:", get_season())
-				client.add_stat("Wind:", map.winddesc)
+				client.add_stat("<b>Map:</b>", map.title)
+				client.add_stat("<b>Mode:</b>", gmd)
+				client.add_stat("<b>Epoch:</b>", map.age)
+				client.add_stat("<b>Season:</b>", get_season())
+				client.add_stat("<b>Wind:</b>", map.winddesc)
 //				client.add_stat("Weather:", get_weather())
-				client.add_stat("Time of Day:", time_of_day)
+				client.add_stat("<b>Time of Day:</b>", time_of_day)
 
 			// give the client some information about how the server is running
 			if (processes.ping_track && client)
@@ -745,20 +697,19 @@
 				var/avg_ping = ceil(processes.ping_track.avg)
 				if (clients.len == 1)
 					avg_ping = our_ping
-				client.add_stat("Ping (Avg.):", "[our_ping] ms ([avg_ping] ms)")
-			client.add_stat("Time Dilation (Avg.):", processes.time_track ? "[ceil(processes.time_track.dilation)]% ([ceil(processes.time_track.stored_averages["dilation"])]%)" : "0% (0%)")
+				client.add_stat("<b>Ping (Avg.):</b>", "[our_ping] ms ([avg_ping] ms)")
+			client.add_stat("<b>Time Dilation (Avg.):</b>", processes.time_track ? "[ceil(processes.time_track.dilation)]% ([ceil(processes.time_track.stored_averages["dilation"])]%)" : "0% (0%)")
 
 		if (client.holder && client.status_tabs)
 			if ((client.add_stat_tab("Status") || client.statpanel_tab == "Status"))
 				client.add_stat("")
-				client.add_stat("Developer")
-				client.add_stat("")
+				client.add_stat("<h3>Developer</h3>")
 				if (processes.time_track && movementMachine)
-					client.add_stat("CPU (Avg.) (Mov. Sch. (Avg.)):","[world.cpu]% ([ceil(processes.time_track.stored_averages["cpu"])]%) ([ceil(movementMachine.last_cpu)]% ([ceil(movementMachine.average_cpu)]%))")
-					client.add_stat("Tick Use (Avg.) (Mov. Sch. (Avg.)):","[ceil(world.tick_usage)]% ([ceil(processes.time_track.stored_averages["tick_usage"])]%) ([ceil(movementMachine.last_tick_usage)]% ([ceil(movementMachine.average_tick_usage)]%))")
+					client.add_stat("<b>CPU (Avg.) (Mov. Sch. (Avg.)):</b>","[world.cpu]% ([ceil(processes.time_track.stored_averages["cpu"])]%) ([ceil(movementMachine.last_cpu)]% ([ceil(movementMachine.average_cpu)]%))")
+					client.add_stat("<b>Tick Use (Avg.) (Mov. S0ch. (Avg.)):</b>","[ceil(world.tick_usage)]% ([ceil(processes.time_track.stored_averages["tick_usage"])]%) ([ceil(movementMachine.last_tick_usage)]% ([ceil(movementMachine.average_tick_usage)]%))")
 				if (client.holder.rights & R_MOD)
-					client.add_stat("Location:", "([x], [y], [z]) - [loc ? loc : "nullspace"]")
-				client.add_stat("Object Count:","[world.contents.len] Datums")
+					client.add_stat("<b>Location:</b>", "([x], [y], [z]) - [loc ? loc : "nullspace"]")
+				client.add_stat("<b>Object Count:</b>","[world.contents.len] Datums")
 
 /*
 		if (client.holder && (client.holder.rights & R_DEBUG))

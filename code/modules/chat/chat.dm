@@ -19,6 +19,12 @@
 		return
 	
 	client << browse_rsc('code/js/purify.min.js', "purify.min.js")
+	client << browse_rsc('interface/fonts/Alegreya-Regular.ttf', "Alegreya-Regular.ttf")
+	client << browse_rsc('interface/fonts/Alegreya-Bold.ttf', "Alegreya-Bold.ttf")
+	client << browse_rsc('interface/fonts/Alegreya-Italic.ttf', "Alegreya-Italic.ttf")
+	client << browse_rsc('interface/fonts/Alegreya-BoldItalic.ttf', "Alegreya-BoldItalic.ttf")
+	client << browse_rsc('interface/fonts/Alegreya-Black.ttf', "Alegreya-Black.ttf")
+	
 	// No longer sending individual CSS/JS as they are inlined for reliability
 	client << browse('interface/chat/chat.html', "window=browser_chat")
 	// world.log << "DEBUG: Chat loading for [client.ckey]"

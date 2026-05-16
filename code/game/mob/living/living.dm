@@ -156,7 +156,7 @@ default behaviour is:
 			return TRUE
 
 /mob/living/proc/can_swap_with(var/mob/living/tmob)
-	if (map && (map.ID == MAP_FOOTBALL || map.ID == MAP_FOOTBALL_CMP))
+	if (map && istype(map, /obj/map_metadata/football))
 		return FALSE
 	if (ishuman(src))
 		var/mob/living/human/H = src

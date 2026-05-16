@@ -108,7 +108,7 @@ var/list/coefflist = list()
 		// the loc.density short circuits 95% of the time and bypasses an expensive typecheck - Kachnov
 		if (client.status_tabs && (client.add_stat_tab("Character") || client.statpanel_tab == "Character"))
 			client.add_stat("")
-			client.add_stat("Character", "")
+			client.add_stat("<h3>Character</h3>", "")
 			client.add_stat("", "")
 			client.add_stat("Attack Intent:", a_intent)
 			client.add_stat("Move Mode:", m_intent)

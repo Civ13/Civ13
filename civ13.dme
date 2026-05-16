@@ -747,6 +747,7 @@
 #include "code\modules\1713\doctor_handbook.dm"
 #include "code\modules\1713\equip_box.dm"
 #include "code\modules\1713\flying_objects.dm"
+#include "code\modules\1713\football.dm"
 #include "code\modules\1713\forensics.dm"
 #include "code\modules\1713\helmet.dm"
 #include "code\modules\1713\language_book.dm"
@@ -1181,5 +1182,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\WIP\bagne13.dmm"
+#include "maps\special\football.dmm"
 // END_INCLUDE

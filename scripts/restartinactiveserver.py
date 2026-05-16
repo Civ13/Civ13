@@ -22,7 +22,7 @@ for pid in pids:
         # due to BUGS we need to make sure the file we use as a reference is newer than the other
         # todo: add test server support
         may_restart_server = []
-        may_restart_server.append("1714")
+        may_restart_server.append(port)
 
         if len(may_restart_server) == 0:
             may_restart_server.append("notathing")
@@ -33,8 +33,8 @@ for pid in pids:
 
                 # main server logic: for some reason I could get a valid string/int for port so we're just using "in"
 
-                # 1714-1 is the active server; restart 1714-1
-                if "1714" in name and may_restart_server[0] == port:
+                # civ13 is the active server; restart civ13
+                if port in name and may_restart_server[0] == port:
                     if os.path.isfile("{}{}serverdata.txt".format(mdir, cdir)):
                         process = psutil.Process(int(pid))
                         if process is not None:

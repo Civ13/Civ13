@@ -2,7 +2,7 @@
 
 /process/throwing/setup()
 	name = "throwing"
-	schedule_interval = 0.1 SECONDS
+	schedule_interval = 0.05 SECONDS
 	start_delay = 10
 	fires_at_gamestates = list(GAME_STATE_PREGAME, GAME_STATE_SETTING_UP, GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	priority = PROCESS_PRIORITY_VERY_HIGH
