@@ -25,18 +25,6 @@
 		"The Good the Bad the Ugly Theme:1" = 'sound/music/good_bad_ugly.ogg')
 	gamemode = "Siege"
 	grace_wall_timer = 3000
-/obj/map_metadata/missionary_ridge/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/american))
-		if (J.is_civil_war)
-			. = TRUE
-		else
-			. = FALSE
-	if (istype(J, /datum/job/civilian))
-		if (J.is_civil_war)
-			. = TRUE
-		else
-			. = FALSE
 
 /obj/map_metadata/missionary_ridge/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))

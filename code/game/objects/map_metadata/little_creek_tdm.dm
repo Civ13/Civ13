@@ -35,8 +35,6 @@ obj/map_metadata/little_creek_tdm/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 		else if (J.is_heist == TRUE)
 			. = FALSE
-		else if (J.is_civil_war == TRUE)
-			. = FALSE
 		else
 			. = FALSE
 	else

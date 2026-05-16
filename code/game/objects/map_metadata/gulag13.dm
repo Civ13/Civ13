@@ -41,8 +41,6 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/civilian/fantasy))
 		. = FALSE
-	if (J.is_civil_war == TRUE)
-		. = FALSE
 	if (J.is_abashiri)
 		. = FALSE
 	if (istype(J, /datum/job/russian))

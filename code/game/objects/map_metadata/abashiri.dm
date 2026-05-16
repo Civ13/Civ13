@@ -40,8 +40,6 @@
 	..()
 	if (istype(J, /datum/job/civilian/fantasy))
 		. = FALSE
-	if (J.is_civil_war == TRUE)
-		. = FALSE
 	if (istype(J, /datum/job/japanese/abashiri))
 		if (J.is_abashiri)
 			. = TRUE

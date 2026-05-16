@@ -2,7 +2,6 @@
 	title = "Colonellus"
 	en_meaning = "Colonel (Latin-Italian)"
 	rank_abbreviation = "Col."
-	is_latin = TRUE
 	spawn_location = "JoinLateRO"
 	additional_languages = list("English" = 5, "Greek" = 100, "French" = 100, "Russian" = 5, "Arabic" = 10)
 	is_commander = TRUE
@@ -11,6 +10,7 @@
 	whitelisted = TRUE
 	min_positions = 1
 	max_positions = 1
+	allowed_maps = list(MAP_CONSTANTINOPOLI)
 
 /datum/job/roman/colonel/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -69,7 +69,6 @@
 	title = "Sergento"
 	en_meaning = "Sergeant (Latin-Italian)"
 	rank_abbreviation = "Sgt."
-	is_latin = TRUE
 	spawn_location = "JoinLateRO"
 	additional_languages = list("English" = 5, "Greek" = 75, "French" = 100, "Russian" = 5, "Arabic" = 10)
 	uses_squads = TRUE
@@ -77,6 +76,7 @@
 	is_radioman = FALSE
 	min_positions = 2
 	max_positions = 10
+	allowed_maps = list(MAP_CONSTANTINOPOLI)
 
 /datum/job/roman/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -138,7 +138,7 @@
 	min_positions = 1
 	max_positions = 100
 	uses_squads = TRUE
-	is_latin = TRUE
+	allowed_maps = list(MAP_CONSTANTINOPOLI)
 
 /datum/job/roman/stratiotes/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -192,7 +192,7 @@
 	uses_squads = TRUE
 	min_positions = 1
 	max_positions = 80
-	is_latin = TRUE
+	allowed_maps = list(MAP_CONSTANTINOPOLI)
 
 /datum/job/roman/fante/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -254,7 +254,7 @@
 	uses_squads = TRUE
 	min_positions = 1
 	max_positions = 12
-	is_latin = TRUE
+	allowed_maps = list(MAP_CONSTANTINOPOLI)
 
 /datum/job/roman/latinsniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -316,7 +316,7 @@
 	uses_squads = TRUE
 	min_positions = 1
 	max_positions = 4
-	is_latin = TRUE
+	allowed_maps = list(MAP_CONSTANTINOPOLI)
 
 /datum/job/roman/ceremonialguard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

@@ -43,8 +43,6 @@
 		. = TRUE
 	if (istype(J, /datum/job/civilian/fantasy))
 		. = FALSE
-	if (J.is_civil_war)
-		. = FALSE
 	if (J.is_abashiri)
 		. = FALSE
 	if (istype(J, /datum/job/german))

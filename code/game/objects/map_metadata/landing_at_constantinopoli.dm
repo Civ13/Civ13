@@ -30,15 +30,6 @@
 	no_hardcore = TRUE
 	var/faction2_flag = "russian"
 
-/obj/map_metadata/landing_at_constantinopoli/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_grozny == TRUE)
-		. = TRUE
-	else if (J.is_latin == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/landing_at_constantinopoli/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
