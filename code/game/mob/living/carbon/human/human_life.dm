@@ -1365,7 +1365,7 @@
 		shock_stage = 0
 		return
 
-	traumatic_shock = updateshock()
+	var/traumatic_shock = updateshock()
 	if (traumatic_shock >= 80 && shock_stage < 160)
 		shock_stage += 1
 	else
