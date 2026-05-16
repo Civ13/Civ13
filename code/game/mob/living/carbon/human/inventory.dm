@@ -49,6 +49,16 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!istype(mob,/mob/living/human))
 		return
 
+	if (ishuman(mob))
+		var/mob/living/human/H = mob
+		//ball possession, pass to nearest
+		if (H.football && H.shoes && istype(H.shoes, /obj/item/clothing/shoes/football)) //if we have the ball, pass it to nearest friendly player
+			H.football_pass()
+			return
+		//no ball, pressure nearest player with ball
+		else if (!H.football && H.shoes && istype(H.shoes, /obj/item/clothing/shoes/football))
+			H.football_pressure(null)
+			return
 	var/obj/item/I = mob.get_active_hand()
 	if (!I)
 		return
