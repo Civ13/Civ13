@@ -15,19 +15,19 @@
 			for (var/datum/job/job in job_master.faction_organized_occupations)
 				if (istype(job, /datum/job/civilian/football_red/goalkeeper))
 					job.title = "[FM.teams[FM.team1][1]] goalkeeper"
-					job.selection_color = FM.teams[FM.team1][FM.team1_kit]["shirt_color"]
+					job.selection_color = FM.teams[FM.team1]["main uniform"]["shirt_color"]
 
 				else if (istype(job, /datum/job/civilian/football_red))
 					job.title = FM.teams[FM.team1][1]
-					job.selection_color = FM.teams[FM.team1][FM.team1_kit]["shirt_color"]
+					job.selection_color = FM.teams[FM.team1]["main uniform"]["shirt_color"]
 
 				else if (istype(job, /datum/job/civilian/football_blue/goalkeeper))
 					job.title = "[FM.teams[FM.team2][1]] goalkeeper"
-					job.selection_color = FM.teams[FM.team2][FM.team2_kit]["shirt_color"]
+					job.selection_color = FM.teams[FM.team2]["main uniform"]["shirt_color"]
 
 				else if (istype(job, /datum/job/civilian/football_blue))
 					job.title = FM.teams[FM.team2][1]
-					job.selection_color = FM.teams[FM.team2][FM.team2_kit]["shirt_color"]
+					job.selection_color = FM.teams[FM.team2]["main uniform"]["shirt_color"]
 			for (var/obj/effect/step_trigger/goal/red/GR in world)
 				GR.assign()
 			for (var/obj/effect/step_trigger/goal/blue/GB in world)
