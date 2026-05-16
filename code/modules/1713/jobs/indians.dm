@@ -153,7 +153,7 @@
 
 	spawn_location = "JoinLateIND1"
 	can_be_female = TRUE
-
+	allowed_maps = list(MAP_HUNT)
 
 	min_positions = 60
 	max_positions = 300

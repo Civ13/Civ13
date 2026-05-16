@@ -37,8 +37,6 @@
 		. = FALSE
 	else if (J.is_medieval)
 		. = FALSE
-	else if (J.is_marooned == TRUE)
-		. = FALSE
 	else if (J.is_event == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale))

@@ -4,11 +4,8 @@
 	title = "US HVT"
 	en_meaning = "High Value Target"
 	rank_abbreviation = "Mr."
-	allowed_maps = list(MAP_CAPITOL_HILL)
-
+	allowed_maps = list()
 	spawn_location = "JoinLateFeds"
-	is_whitehouse = TRUE
-	is_capitol = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	can_be_female = TRUE
@@ -51,9 +48,7 @@
 	title = "President of the USA"
 	en_meaning = "VIP"
 	rank_abbreviation = "President"
-
-	is_whitehouse = TRUE
-	is_capitol = FALSE
+	allowed_maps = list(MAP_CAPITOL_HILL, MAP_CAPITOL_HILL_PLA)
 	whitelisted = FALSE
 	can_be_female = FALSE
 
@@ -115,7 +110,7 @@
 	en_meaning = "VIP"
 	rank_abbreviation = "Speaker"
 	can_be_female = FALSE
-
+	allowed_maps = list(MAP_CAPITOL_HILL_PLA)
 	equip(var/mob/living/human/H)
 		H.gender = MALE
 		H.f_style = "Shaved"
@@ -141,18 +136,17 @@
 			var/obj/map_metadata/capitol_hill/pla_offensive/CP = map
 			CP.HVT_list |= H
 		return TRUE
-	
+
 
 // National Guard
 
 /datum/job/american/ng_lieutenant
 	title = "National Guard Lieutenant"
 	rank_abbreviation = "Lt."
-	allowed_maps = list(MAP_CAPITOL_HILL)
+	allowed_maps = list(MAP_CAPITOL_HILL, MAP_CAPITOL_HILL_PLA)
 
 	spawn_location = "JoinLateRNCap"
 
-	is_capitol = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -195,11 +189,10 @@
 /datum/job/american/ng_sergeant
 	title = "National Guard Sergeant"
 	rank_abbreviation = "Sgt."
-	allowed_maps = list(MAP_CAPITOL_HILL)
+	allowed_maps = list(MAP_CAPITOL_HILL, MAP_CAPITOL_HILL_PLA)
 
 	spawn_location = "JoinLateRNCap"
 
-	is_capitol = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_radioman = TRUE
@@ -246,12 +239,11 @@
 /datum/job/american/ng_medic
 	title = "National Guard Field Medic"
 	rank_abbreviation = "Cpl."
-	allowed_maps = list(MAP_CAPITOL_HILL)
+	allowed_maps = list(MAP_CAPITOL_HILL, MAP_CAPITOL_HILL_PLA)
 
 	spawn_location = "JoinLateRN"
 
 	is_medic = TRUE
-	is_capitol = TRUE
 	can_be_female = TRUE
 
 	min_positions = 2
@@ -297,11 +289,9 @@
 /datum/job/american/ng_soldier
 	title = "National Guard Rifleman"
 	rank_abbreviation = "Pvt."
-	allowed_maps = list(MAP_CAPITOL_HILL)
+	allowed_maps = list(MAP_CAPITOL_HILL, MAP_CAPITOL_HILL_PLA)
 
 	spawn_location = "JoinLateRN"
-
-	is_capitol = TRUE
 
 	uses_squads = TRUE
 	can_be_female = TRUE
@@ -344,12 +334,10 @@
 /datum/job/american/fbi
 	title = "FBI officer"
 	rank_abbreviation = "FBI"
-	allowed_maps = list(MAP_CAPITOL_HILL)
+	allowed_maps = list(MAP_CAPITOL_HILL, MAP_CAPITOL_HILL_PLA)
 
 	spawn_location = "JoinLateFeds"
 
-	is_whitehouse = TRUE
-	is_capitol = TRUE
 	whitelisted = TRUE
 	can_be_female = TRUE
 
@@ -399,7 +387,6 @@
 	spawn_location = "JoinLateCiv"
 	min_positions = 10
 	max_positions = 150
-	is_capitol = TRUE
 	can_be_female = TRUE
 	allowed_maps = list(MAP_CAPITOL_HILL)
 
@@ -466,7 +453,6 @@
 	spawn_location = "JoinLateCiv"
 	min_positions = 10
 	max_positions = 150
-	is_capitol = TRUE
 	can_be_female = TRUE
 	allowed_maps = list(MAP_CAPITOL_HILL)
 
@@ -519,7 +505,6 @@
 	spawn_location = "JoinLateCiv"
 
 	is_medic = TRUE
-	is_capitol = TRUE
 
 	min_positions = 3
 	max_positions = 10

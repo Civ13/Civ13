@@ -212,7 +212,6 @@
 	spawn_location = "JoinLateCivA"
 	min_positions = 10
 	max_positions = 10
-	is_football = TRUE
 	selection_color = "#AE001A"
 	allowed_maps = list(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
 
@@ -239,7 +238,6 @@
 	spawn_location = "JoinLateCivA"
 	min_positions = 1
 	max_positions = 1
-	is_football = TRUE
 	selection_color = "#AE001A"
 	allowed_maps = list(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
 
@@ -270,7 +268,6 @@
 	spawn_location = "JoinLateCivB"
 	min_positions = 10
 	max_positions = 10
-	is_football = TRUE
 	selection_color = "#6f8bb6"
 	allowed_maps = list(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
 
@@ -299,7 +296,6 @@
 	spawn_location = "JoinLateCivB"
 	min_positions = 1
 	max_positions = 1
-	is_football = TRUE
 	selection_color = "#6f8bb6"
 	allowed_maps = list(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
 

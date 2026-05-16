@@ -41,6 +41,15 @@
 	var/a2_control = "none"
 	grace_wall_timer = 2400
 
+/obj/map_metadata/capitol_hill/job_enabled_specialcheck(var/datum/job/J)
+	..()
+	if (gamemode != "Protect the VIP")
+		if (J.title == "President of the USA")
+			. = FALSE
+		else
+			. = TRUE
+
+
 /obj/map_metadata/capitol_hill/New()
 	..()
 	spawn(2500)
@@ -320,18 +329,6 @@ var/no_loop_capitol = FALSE
 		"National Guard" = 0,
 	)
 
-/obj/map_metadata/capitol_hill/pla_offensive/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if(istype(J, /datum/job/american))
-		if (J.is_capitol == TRUE && !(J.title == "US HVT"))
-			. = TRUE
-		else
-			if (istype(J, /datum/job/american/hvt/specials))
-				. = TRUE
-			else
-				. = FALSE
-	else if (istype(J, /datum/job/chinese/pla))
-		. = TRUE
 
 /obj/map_metadata/capitol_hill/pla_offensive/roundend_condition_def2name(define)
 	..()

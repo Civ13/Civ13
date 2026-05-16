@@ -681,7 +681,6 @@
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
 	is_ww2 = TRUE
-	is_sovaprif = TRUE
 	uses_squads = TRUE
 	is_karelia = FALSE
 
@@ -742,7 +741,6 @@
 	is_ww2 = TRUE
 	uses_squads = TRUE
 	is_karelia = FALSE
-	is_sovaprif = TRUE
 
 	min_positions = 2
 	max_positions = 4

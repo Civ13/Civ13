@@ -19,7 +19,6 @@
 /datum/job/var/is_1713 = FALSE
 /datum/job/var/is_RP = FALSE //to enable civilian jobs per faction
 /datum/job/var/is_army = FALSE //land troops
-/datum/job/var/is_marooned = FALSE //marooned pirate
 /datum/job/var/is_medieval = FALSE //self explanatory
 /datum/job/var/is_crusader = FALSE //self explanatory
 /datum/job/var/is_arabcaliph = FALSE
@@ -43,7 +42,6 @@
 /datum/job/var/is_medic = FALSE
 /datum/job/var/is_deal = FALSE
 /datum/job/var/is_heist = FALSE
-/datum/job/var/is_eft = FALSE
 /datum/job/var/is_pacific = FALSE
 /datum/job/var/is_korean_war = FALSE
 /datum/job/var/is_ancient = FALSE
@@ -51,7 +49,6 @@
 /datum/job/var/is_yakuza = FALSE
 /datum/job/var/is_yama = FALSE
 /datum/job/var/is_ichi = FALSE
-/datum/job/var/is_football = FALSE
 /datum/job/var/is_samurai = FALSE
 /datum/job/var/is_eastern = FALSE
 /datum/job/var/is_western = FALSE
@@ -62,7 +59,6 @@
 /datum/job/var/is_blugi = FALSE
 /datum/job/var/is_yellowag = FALSE
 /datum/job/var/is_un = FALSE
-/datum/job/var/is_capitol = FALSE
 /datum/job/var/is_paratrooper = FALSE
 /datum/job/var/is_vietcong = FALSE
 /datum/job/var/is_upa = FALSE
@@ -71,7 +67,6 @@
 /datum/job/var/squad = 0
 /datum/job/var/uses_squads = FALSE
 /datum/job/var/is_yeltsin = FALSE
-/datum/job/var/is_whitehouse = FALSE
 /datum/job/var/is_kremlin = FALSE
 /datum/job/var/can_be_minor = FALSE
 /datum/job/var/is_karelia = FALSE
@@ -83,7 +78,6 @@
 /datum/job/var/is_ukrainerussowar = FALSE
 /datum/job/var/is_russojapwar = FALSE
 /datum/job/var/mosinonly = FALSE
-/datum/job/var/is_sovaprif = FALSE
 /datum/job/var/is_lab = FALSE
 /datum/job/var/is_afghan = FALSE
 /datum/job/var/is_soviet = FALSE
@@ -108,7 +102,6 @@
 /datum/job/var/is_permfr = FALSE
 /datum/job/var/is_permfrb = FALSE
 /datum/job/var/is_warsawger = FALSE
-/datum/job/var/is_warpol = FALSE
 /datum/job/var/is_siberiad = FALSE
 /datum/job/var/is_sinosovbor = FALSE
 /datum/job/var/is_spainciv = FALSE

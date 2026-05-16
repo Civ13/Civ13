@@ -14,7 +14,6 @@
 	allowed_maps = list(MAP_WARSAW)
 
 	can_be_female = TRUE
-	is_warpol = TRUE
 	whitelisted = TRUE
 	is_commander = TRUE
 	additional_languages = list("English" = 50, "German" = 75, "Russian" = 50, "Ukrainian" = 50)
@@ -80,7 +79,7 @@
 	uses_squads = TRUE
 	can_be_female = TRUE
 	whitelisted = TRUE
-	is_warpol = TRUE
+
 	additional_languages = list("Russian" = 20, "German" = 45, "Ukrainian" = 20)
 	spawn_location = "JoinLatePol"
 	min_positions = 2
@@ -140,7 +139,7 @@
 	uses_squads = TRUE
 	can_be_female = TRUE
 	whitelisted = TRUE
-	is_warpol = TRUE
+
 	is_medic = TRUE
 
 	additional_languages = list("Russian" = 20, "German" = 25, "Ukrainian" = 20)
@@ -208,7 +207,7 @@
 
 	uses_squads = TRUE
 	can_be_female = TRUE
-	is_warpol = TRUE
+
 	additional_languages = list("Russian" = 5, "German" = 25, "Ukrainian" = 20)
 	spawn_location = "JoinLatePol"
 	min_positions = 10
@@ -331,7 +330,7 @@
 	allowed_maps = list(MAP_WARSAW)
 
 	uses_squads = TRUE
-	is_warpol = TRUE
+
 	can_be_female = TRUE
 	additional_languages = list("Russian" = 15, "German" = 15, "Ukrainian" = 10)
 	spawn_location = "JoinLatePol"
@@ -419,7 +418,7 @@
 
 	uses_squads = TRUE
 	can_be_female = TRUE
-	is_warpol = TRUE
+
 	can_be_minor = TRUE
 	additional_languages = list("Russian" = 15, "German" = 15, "Ukrainian" = 15)
 	spawn_location = "JoinLatePol"
@@ -494,7 +493,7 @@
 	spawn_location = "JoinLatePol"
 	uses_squads = TRUE
 	whitelisted = TRUE
-	is_warpol = TRUE
+
 	is_squad_leader = TRUE
 
 	can_be_female = TRUE
@@ -553,7 +552,7 @@
 	spawn_location = "JoinLatePol"
 	uses_squads = TRUE
 	whitelisted = TRUE
-	is_warpol = TRUE
+
 	can_be_female = TRUE
 	additional_languages = list("Ukrainian" = 5, "German" = 15, "Russian" = 100)
 

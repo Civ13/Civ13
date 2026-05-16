@@ -36,8 +36,3 @@
 /obj/map_metadata/nomads/cross_message(faction)
 	return ""
 
-/obj/map_metadata/nomads/job_enabled_specialcheck(var/datum/job/J)
-	if (J.is_nomad == TRUE)
-		. = TRUE
-	else
-		. = FALSE

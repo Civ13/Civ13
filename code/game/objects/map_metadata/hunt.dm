@@ -39,20 +39,7 @@
 			new/obj/structure/piranha(areaspawn)
 	spawn(18000)
 		seasons()
-obj/map_metadata/hunt/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/pirates))
-		if (istype(J, /datum/job/pirates/marooned))
-			. = TRUE
-		else
-			. = FALSE
-	if (istype(J, /datum/job/indians))
-		if (istype(J, /datum/job/indians/tribes/red))
-			. = TRUE
-		else
-			. = FALSE
-		if (J.is_warlords)
-			. = FALSE
+
 
 /obj/map_metadata/hunt/cross_message(faction)
 	return "The gracewall is now removed."
