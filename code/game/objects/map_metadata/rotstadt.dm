@@ -43,22 +43,6 @@
 		"none" = list("Doctor" = 2, "Commander" = 1)
 	)
 
-/obj/map_metadata/rotstadt/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/bluefaction))
-		if (J.is_event)
-			if(findtext(J.title, "BAF"))
-				. = TRUE
-			else
-				. = FALSE
-	else if (istype(J, /datum/job/redfaction))
-		if (J.is_rotstadt)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/rotstadt/cross_message(faction)
 	if (faction == REDFACTION)
 		return "<font size = 4><font color='red'>The battle has begun!</font>"

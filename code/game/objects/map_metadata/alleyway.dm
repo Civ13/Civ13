@@ -29,12 +29,6 @@
 		..()
 		spawn(600) // 1 minute 
 			points_check()
-/obj/map_metadata/alleyway/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if ((J.is_yakuza == TRUE && J.is_yama == TRUE) || (J.is_yakuza == TRUE && J.is_ichi == TRUE))
-		. = TRUE
-	else
-		. = FALSE
 /obj/map_metadata/alleyway/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 

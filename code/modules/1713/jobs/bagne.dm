@@ -8,6 +8,7 @@
 	whitelisted = TRUE
 	is_commander = TRUE
 	is_prison = TRUE
+	allowed_maps = list(MAP_BAGNE13)
 
 	min_positions = 1
 	max_positions = 1
@@ -63,6 +64,7 @@
 	min_positions = 10
 	max_positions = 50
 	is_prison = TRUE
+	allowed_maps = list(MAP_BAGNE13)
 
 /datum/job/french/bagneguard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -108,6 +110,8 @@
 	default_language = "French"
 	min_positions = 10
 	max_positions = 100
+	allowed_maps = list(MAP_BAGNE13)
+
 	equip(var/mob/living/human/H)
 		if (!H)	return FALSE
 	//shoes
@@ -147,6 +151,7 @@
 	default_language = "French"
 	min_positions = 3
 	max_positions = 10
+	allowed_maps = list(MAP_BAGNE13)
 	equip(var/mob/living/human/H)
 		if (!H)	return FALSE
 	//shoes
@@ -185,6 +190,7 @@
 	default_language = "French"
 	min_positions = 3
 	max_positions = 10
+	allowed_maps = list(MAP_BAGNE13)
 	equip(var/mob/living/human/H)
 		if (!H)	return FALSE
 	//shoes

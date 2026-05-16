@@ -58,16 +58,6 @@
 	spawn(4800)
 		points_check()
 
-/obj/map_metadata/kandahar/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_afghan)
-		. = TRUE
-		if (clients.len <= 25)
-			if (J.title == "Industrial Worker" || J.title == "Mine Worker" || J.title == "Waiter" || J.title == "Cook" || J.title == "Civilian" || J.title == "Villager")
-				. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/kandahar/roundend_condition_def2name(define)
 	..()
 	switch (define)

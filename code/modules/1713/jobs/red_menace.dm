@@ -2,6 +2,7 @@
 /datum/job/russian/coldwar/captain
 	title = "Soviet Armed Forces Captain"
 	rank_abbreviation = "Kapt."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRUCap"
 
@@ -57,6 +58,7 @@
 /datum/job/russian/coldwar/lieutenant
 	title = "Soviet Armed Forces Lieutenant"
 	rank_abbreviation = "Leyt."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRUCap"
 
@@ -118,6 +120,7 @@
 /datum/job/russian/coldwar/sergeant
 	title = "Soviet Armed Forces Sergeant"
 	rank_abbreviation = "Srj."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRUCap"
 
@@ -189,6 +192,7 @@
 /datum/job/russian/coldwar/medic
 	title = "Soviet Armed Forces Field Medic"
 	rank_abbreviation = "Efr."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRU"
 	selection_color = "#CC0000"
@@ -244,6 +248,7 @@
 /datum/job/russian/coldwar/radop
 	title = "Soviet Armed Forces Radio Operator"
 	rank_abbreviation = "Efr."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRU"
 	selection_color = "#CC0000"
@@ -307,6 +312,7 @@
 /datum/job/russian/coldwar/soldier
 	title = "Soviet Armed Forces Private"
 	rank_abbreviation = "Ryad."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRU"
 	selection_color = "#CC0000"
@@ -382,6 +388,7 @@
 /datum/job/russian/coldwar/tanker
 	title = "Soviet Armed Forces Tanker"
 	rank_abbreviation = "Efr."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRU"
 
@@ -449,6 +456,7 @@
 /datum/job/russian/coldwar/spez
 	title = "Spetsnaz GRU"
 	rank_abbreviation = "Spz."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
@@ -518,6 +526,7 @@
 /datum/job/american/coldwar/captain
 	title = "US Army Captain"
 	rank_abbreviation = "Cpt."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRNSL2"
 
@@ -559,6 +568,7 @@
 /datum/job/american/coldwar/lieutenant
 	title = "US Army Lieutenant"
 	rank_abbreviation = "Lt."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRNSL2"
 
@@ -600,6 +610,7 @@
 /datum/job/american/coldwar/ssergeant
 	title = "US Army Staff Sergeant"
 	rank_abbreviation = "SSgt."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRNSL"
 
@@ -643,6 +654,7 @@
 /datum/job/american/coldwar/radop
 	title = "US Army Radio Operator"
 	rank_abbreviation = "Cpl."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRN2"
 
@@ -682,6 +694,7 @@
 /datum/job/american/coldwar/dmr
 	title = "US Army Designated Marksman"
 	rank_abbreviation = "Spc."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRN2"
 
@@ -720,6 +733,7 @@
 /datum/job/american/coldwar/mgunner
 	title = "US Army Automatic Rifleman"
 	rank_abbreviation = "Pfc."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRN2"
 
@@ -759,6 +773,7 @@
 /datum/job/american/coldwar/private
 	title = "US Army Rifleman"
 	rank_abbreviation = "Pvt."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRN2"
 
@@ -797,6 +812,7 @@
 /datum/job/american/coldwar/tanker
 	title = "US Army Crewman"
 	rank_abbreviation = "Cpl."
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRNT"
 
@@ -850,6 +866,7 @@
 /datum/job/american/american_cop
 	title = "Policeman"
 	rank_abbreviation = "Officer"
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRN"
 
@@ -889,6 +906,7 @@
 /datum/job/american/american_paramedic
 	title = "EMS Worker"
 	rank_abbreviation = "Paramedic"
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRN"
 
@@ -924,6 +942,7 @@
 /datum/job/american/modernciv
 	title = "American Citizen"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_RED_MENACE)
 
 	spawn_location = "JoinLateRN"
 

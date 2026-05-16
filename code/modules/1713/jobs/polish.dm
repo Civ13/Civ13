@@ -11,6 +11,7 @@
 	title = "Dowódca Armii Krajowej"
 	en_meaning = "Polish Home Army Commander"
 	rank_abbreviation = "Maj."
+	allowed_maps = list(MAP_WARSAW)
 
 	can_be_female = TRUE
 	is_warpol = TRUE
@@ -73,6 +74,7 @@
 	title = "Dowódca Drużyny Polskiej Armii Krajowej"
 	en_meaning = "Polish Home Army Squad Leader"
 	rank_abbreviation = "Srj."
+	allowed_maps = list(MAP_WARSAW)
 
 	is_squad_leader = TRUE
 	uses_squads = TRUE
@@ -133,6 +135,7 @@
 	title = "Medyk Armii Krajowej"
 	en_meaning = "Polish Home Army Medic"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_WARSAW)
 
 	uses_squads = TRUE
 	can_be_female = TRUE
@@ -201,6 +204,7 @@
 	title = "Uzbrojona Milicja"
 	en_meaning = "Polish Home Army Armed Militia"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_WARSAW)
 
 	uses_squads = TRUE
 	can_be_female = TRUE
@@ -324,6 +328,7 @@
 	title = "Nieuzbrojona Milicja"
 	en_meaning = "Civilian Unarmed Milita"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_WARSAW)
 
 	uses_squads = TRUE
 	is_warpol = TRUE
@@ -410,6 +415,7 @@
 	title = "Szare Szeregi"
 	en_meaning = "Grey Rank"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_WARSAW)
 
 	uses_squads = TRUE
 	can_be_female = TRUE
@@ -483,6 +489,7 @@
 	title = "Polski Sierżant Armii Czerwonej"
 	en_meaning = "Polish Red Army Sergeant"
 	rank_abbreviation = "Srj."
+	allowed_maps = list(MAP_WARSAW)
 
 	spawn_location = "JoinLatePol"
 	uses_squads = TRUE
@@ -541,6 +548,7 @@
 	title = "Polski Żołnierz Armii Czerwonej"
 	en_meaning = "Polish Red Army Soldier"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_WARSAW)
 
 	spawn_location = "JoinLatePol"
 	uses_squads = TRUE

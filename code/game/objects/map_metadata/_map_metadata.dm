@@ -618,12 +618,11 @@ var/civmax_research = list(230,230,230)
 	return (faction1_can_cross_blocks() && faction2_can_cross_blocks())
 
 /obj/map_metadata/proc/job_enabled_specialcheck(var/datum/job/J)
-	// new logic
-	if (ID in J.allowed_maps)
-		. = TRUE
-	else
-		. = FALSE
-	// old logic
+	// new logic: if the job specifies which maps it belongs to, use that exclusively
+	if (J.allowed_maps.len > 0)
+		. = (ID in J.allowed_maps)
+		return .
+	// old logic (fallback for jobs not yet migrated to allowed_maps)
 	if (age == "1013" && !civilizations)
 		if (J.is_medieval)
 			. = TRUE

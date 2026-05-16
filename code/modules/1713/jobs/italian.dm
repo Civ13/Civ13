@@ -54,6 +54,7 @@
 	title = "Caposquadra"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Srg."
+	allowed_maps = list(MAP_ELAIA)
 
 	spawn_location = "JoinLateIT"
 	is_squad_leader = TRUE
@@ -99,6 +100,7 @@
 	title = "Soldato"
 	en_meaning = "Soldier"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_ELAIA)
 
 	spawn_location = "JoinLateIT"
 
@@ -161,6 +163,7 @@
 	title = "Medico dell Esercito"
 	en_meaning = "Medic"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_ELAIA)
 
 	spawn_location = "JoinLateITDoc"
 
@@ -215,6 +218,7 @@
 	title = "Mitragliere"
 	en_meaning = "Machinegunner"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_ELAIA)
 
 	spawn_location = "JoinLateIT"
 
@@ -263,6 +267,7 @@
 	title = "Porta munizioni"
 	en_meaning = "Ammo Bearer"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_ELAIA)
 
 	spawn_location = "JoinLateIT"
 	uses_squads = TRUE
@@ -311,6 +316,7 @@
 	title = "Cisterna"
 	en_meaning = "Tanker"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_ELAIA)
 
 	spawn_location = "JoinLateIT"
 	is_ww2 = TRUE

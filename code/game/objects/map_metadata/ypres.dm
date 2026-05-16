@@ -76,13 +76,6 @@
 			french_toggled = FALSE
 	spawn(30)
 		to_chat(world, "<font size=3>This battle will feature <b>[faction1]</b> and <b>[faction2]</b> troops.</font>")
-/obj/map_metadata/ypres/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_ww1 == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/ypres/update_win_condition()
 
 	if (world.time >= next_win && next_win != -1)

@@ -27,27 +27,6 @@
 		"Red Army Choir - Cossacks Song:1" = 'sound/music/cossacksong.ogg',)
 	gamemode = "Siege"
 
-/obj/map_metadata/barbarossa/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/russian/tank_crew))
-		. = FALSE
-	else if (J.is_ss_panzer == TRUE)
-		. = FALSE
-	else if (J.is_occupation == TRUE)
-		. = FALSE
-	else if (istype(J, /datum/job/german/tank_crew_leader))
-		. = TRUE
-	else if (istype(J, /datum/job/german/tank_crew))
-		. = TRUE
-	else if (J.is_ww2 == TRUE && J.is_reichstag == TRUE)
-		. = FALSE
-	else if (J.is_bordersov == TRUE)
-		. = TRUE
-	else if (J.is_borderger == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/barbarossa/roundend_condition_def2name(define)
 	..()
 	switch (define)

@@ -26,17 +26,6 @@
 		"Mugi to Heitai:1" = 'sound/music/mugi_to_heitai.ogg',)
 	grace_wall_timer = 3000
 
-/obj/map_metadata/nankou/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_prison == TRUE || istype(J, /datum/job/japanese/ija_ww2ATunit) || J.is_pacific == TRUE || J.is_navy == TRUE || J.is_tanker == TRUE || J.is_samurai)
-		. = FALSE
-	else if (J.is_ww2 == TRUE)
-		. = TRUE
-	else if (istype(J, /datum/job/chinese/captain) || istype(J, /datum/job/chinese/lieutenant) || istype(J, /datum/job/chinese/sergeant) || istype(J, /datum/job/chinese/doctor) || istype(J, /datum/job/chinese/infantry) || istype(J, /datum/job/chinese/sniper))
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/nankou/roundend_condition_def2name(define)
 	..()
 	switch (define)

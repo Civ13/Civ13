@@ -23,14 +23,6 @@
 	gamemode = "Hunt"
 	required_players = 9
 
-/obj/map_metadata/event_city/job_enabled_specialcheck(var/datum/job/J)
-
-	..()
-	if (J.is_event_role == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/event_city/cross_message(faction)
 	if (faction == PIRATES)
 		return ""

@@ -10,6 +10,7 @@
 	title = "Pirate Captain"
 	en_meaning = "Ship Captain"
 	rank_abbreviation = "Captain"
+	allowed_maps = list(MAP_FOUR_COLONIES, MAP_SKULLISLAND)
 
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirateCap"
@@ -59,6 +60,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 	can_be_female = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES, MAP_SKULLISLAND)
 
 	min_positions = 1
 	max_positions = 1
@@ -94,6 +96,7 @@
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Boatswain"
 	is_1713 = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES, MAP_SKULLISLAND)
 
 	spawn_location = "JoinLatePirateBoatswain"
 	whitelisted = TRUE
@@ -140,6 +143,7 @@
 	spawn_location = "JoinLatePirateMidshipman"
 	is_officer = TRUE
 	can_be_female = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES, MAP_SKULLISLAND)
 
 
 	min_positions = 1
@@ -179,6 +183,7 @@
 	is_medic = TRUE
 	min_positions = 1
 	max_positions = 10
+	allowed_maps = list(MAP_FOUR_COLONIES, MAP_SKULLISLAND)
 
 /datum/job/pirates/surgeon/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -214,6 +219,7 @@
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirateCarpenter"
 	can_be_female = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES, MAP_SKULLISLAND)
 
 
 	min_positions = 1
@@ -266,6 +272,7 @@
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirateCook"
 	can_be_female = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES, MAP_SKULLISLAND)
 
 
 	min_positions = 1
@@ -322,6 +329,7 @@
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 	can_be_female = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES, MAP_SKULLISLAND)
 
 
 	min_positions = 6
@@ -390,6 +398,7 @@
 	title = "Battle Royale Fighter"
 	en_meaning = ""
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_BATTLEROYALE_IMPERIAL)
 
 	spawn_location = "JoinLateDM"
 

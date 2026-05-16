@@ -90,6 +90,7 @@
 	title = " UPA Khorunzhyj"
 	en_meaning = " UPA 2nd Lieutenant"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_OCCUPATION)
 
 	spawn_location = "JoinLateCiv"
 
@@ -178,6 +179,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateCivD"
+	allowed_maps = list(MAP_OCCUPATION)
 
 	is_medic = TRUE
 	is_ww2 = TRUE
@@ -256,6 +258,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
+	allowed_maps = list(MAP_OCCUPATION)
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
@@ -342,6 +345,7 @@
 	title = " UPA Strilets"
 	en_meaning = "UPA Partisan"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_OCCUPATION)
 
 	spawn_location = "JoinLateCiv"
 	can_be_female = TRUE
@@ -431,6 +435,7 @@
 	title = "SS Hauptsturmfuhrer"
 	en_meaning = "SS Captain"
 	rank_abbreviation = "Hptsrmfhr."
+	allowed_maps = list(MAP_OCCUPATION)
 
 
 	spawn_location = "JoinLateGECap"
@@ -499,6 +504,7 @@
 	title = "SS Obersturmmfuhrer"
 	en_meaning = "SS First Lieutenant"
 	rank_abbreviation = "Obstmfhr."
+	allowed_maps = list(MAP_OCCUPATION)
 
 
 	spawn_location = "JoinLateGECap"
@@ -562,6 +568,7 @@
 	title = "SS Untersturmmfuhrer"
 	en_meaning = "SS Second Lieutenant"
 	rank_abbreviation = "Untstmfhr."
+	allowed_maps = list(MAP_OCCUPATION)
 
 
 	spawn_location = "JoinLateGECap"
@@ -625,6 +632,7 @@
 	title = "SS Scharfuhrer"
 	en_meaning = "SS Squad Leader"
 	rank_abbreviation = "Schfhr."
+	allowed_maps = list(MAP_OCCUPATION)
 
 	spawn_location = "JoinLateGE"
 	is_squad_leader = TRUE
@@ -683,6 +691,7 @@
 	title = "SS Sturmman"
 	en_meaning = "SS Soldier"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_OCCUPATION)
 
 	spawn_location = "JoinLateGE"
 

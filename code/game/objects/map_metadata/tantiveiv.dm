@@ -26,20 +26,6 @@
 		"Battle of Heroes (Galactic Battles):1" = 'sound/music/battle_of_heroes.ogg',)
 	gamemode = "Siege"
 	grace_wall_timer = 2400
-/obj/map_metadata/tantiveiv/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/american))
-		if (J.is_starwars && J.is_empire)
-			. = TRUE
-		else
-			.= FALSE
-	if (istype(J, /datum/job/civilian))
-		if (J.is_starwars && J.is_rebel)
-			. = TRUE
-		else
-			. = FALSE
-
-
 /obj/map_metadata/tantiveiv/roundend_condition_def2name(define)
 	..()
 	switch (define)

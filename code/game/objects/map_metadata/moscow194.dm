@@ -26,17 +26,6 @@
 	gamemode = "Siege"
 	grace_wall_timer = 4800
 
-/obj/map_metadata/siegemoscow/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if ((J.is_ww2 == TRUE && J.is_reichstag == FALSE && J.is_occupation == FALSE) || J.is_smallsiegemoscow == TRUE)
-		. = TRUE
-	else if (J.is_ss_panzer == TRUE)
-		. = TRUE
-	else if (istype(J, /datum/job/german/mediziner) || istype(J, /datum/job/russian/doctor_soviet))
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/siegemoscow/roundend_condition_def2name(define)
 	..()
 	switch (define)

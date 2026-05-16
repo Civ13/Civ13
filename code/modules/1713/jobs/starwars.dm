@@ -1,6 +1,7 @@
 /datum/job/civilian/starwars/rebel/lieutenant
 	title = "Rebel Lieutenant"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	spawn_location = "JoinLateJP"
 
@@ -49,6 +50,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateJPDoc"
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	is_medic = TRUE
 	is_starwars = TRUE
@@ -91,6 +93,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateJP"
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	is_starwars = TRUE
 	is_rebel = TRUE
@@ -137,6 +140,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateJP"
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	uses_squads = TRUE
 	is_squad_leader = TRUE
@@ -181,6 +185,7 @@
 /datum/job/civilian/starwars/rebel/soldierheavy
 	title = "Heavy Rebel"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	spawn_location = "JoinLateJP"
 	can_be_female = TRUE
@@ -220,6 +225,7 @@
 /datum/job/civilian/starwars/rebel/soldier
 	title = "Rebel Marine"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	spawn_location = "JoinLateJP"
 	can_be_female = TRUE
@@ -266,6 +272,7 @@
 /datum/job/american/starwars/empire/lieutenant
 	title = "Imperial Navy Lieutenant"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	spawn_location = "JoinLateRUCap"
 
@@ -314,6 +321,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateRUDoc"
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	is_medic = TRUE
 	is_starwars = TRUE
@@ -358,6 +366,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	is_medic = FALSE
 	is_starwars = TRUE
@@ -403,6 +412,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateRUSg"
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	uses_squads = TRUE
 	is_squad_leader = TRUE
@@ -446,6 +456,7 @@
 /datum/job/american/starwars/empire/soldierheavy
 	title = "Heavy Shocktrooper"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
@@ -485,6 +496,7 @@
 /datum/job/american/starwars/empire/soldier
 	title = "Shocktrooper"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE

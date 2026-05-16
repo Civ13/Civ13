@@ -5,6 +5,7 @@
 	spawn_location = "JoinLatePMC"
 	is_eft = TRUE
 	is_outlaw = TRUE
+	allowed_maps = list(MAP_EFT_FACTORY)
 
 	min_positions = 1
 	max_positions = 5
@@ -44,6 +45,7 @@
 	spawn_location = "JoinLatePMC"
 	is_eft = TRUE
 	is_outlaw = TRUE
+	allowed_maps = list(MAP_EFT_FACTORY)
 
 	min_positions = 1
 	max_positions = 5

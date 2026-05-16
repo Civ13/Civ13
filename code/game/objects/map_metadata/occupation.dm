@@ -35,21 +35,6 @@
 	)
 	is_RP = TRUE
 	var/gracedown1 = TRUE
-/obj/map_metadata/occupation/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_occupation && istype(J, /datum/job/civilian/occupation) && J.title != "DONT USE")
-		. = TRUE
-	if (J.is_occupation && J.is_upa)
-		. = TRUE
-	if (istype(J, /datum/job/civilian/fantasy))
-		. = FALSE
-	if (J.is_abashiri)
-		. = FALSE
-	if (istype(J, /datum/job/german))
-		if (J.is_occupation)
-			. = TRUE
-		else
-			. = FALSE
 /obj/map_metadata/occupation/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 12000 || admin_ended_all_grace_periods)
 

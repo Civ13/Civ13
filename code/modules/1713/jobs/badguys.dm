@@ -4,6 +4,7 @@
 	title = "Bank Robber"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_BANK_ROBBERY)
 
 	is_heist = TRUE
 	is_outlaw = TRUE
@@ -102,6 +103,7 @@
 	title = "Vyacheslav Grigoriev"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateTatarin"
+	allowed_maps = list(MAP_DRUG_BUST)
 
 	is_officer = TRUE
 	is_vip = TRUE
@@ -156,6 +158,7 @@
 	title = "Rednikov Guard"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_DRUG_BUST)
 
 	is_heist = TRUE
 	is_outlaw = TRUE

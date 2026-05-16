@@ -1187,6 +1187,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
+	allowed_maps = list(MAP_JUNGLE_OF_THE_CHADS, MAP_PEPELSIBIRSK, MAP_TESTING)
 
 	is_nomad = TRUE
 
@@ -1215,12 +1216,14 @@
 	return TRUE
 //////////////////////////////////////SPECIES/////////////////////////
 /datum/job/civilian/fantasy
+	allowed_maps = list(MAP_FOUR_KINGDOMS)
 
 /datum/job/civilian/fantasy/orc
 	title = "Orc tribesman"
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateIND1"
+	allowed_maps = list(MAP_FOUR_KINGDOMS, MAP_TRIBES)
 
 
 	min_positions = 9999
@@ -1255,6 +1258,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateIND2"
+	allowed_maps = list(MAP_FOUR_KINGDOMS, MAP_TRIBES)
 
 
 	min_positions = 9999
@@ -1290,6 +1294,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateIND3"
+	allowed_maps = list(MAP_FOUR_KINGDOMS, MAP_TRIBES)
 
 
 	min_positions = 9999
@@ -1324,6 +1329,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateIND4"
+	allowed_maps = list(MAP_FOUR_KINGDOMS, MAP_TRIBES)
 
 
 	min_positions = 9999
@@ -1357,6 +1363,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateIND5"
+	allowed_maps = list(MAP_FOUR_KINGDOMS, MAP_TRIBES)
 
 
 	min_positions = 9999
@@ -1391,6 +1398,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateIND6"
+	allowed_maps = list(MAP_FOUR_KINGDOMS, MAP_TRIBES)
 
 
 	min_positions = 9999
@@ -1423,6 +1431,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateIND7"
+	allowed_maps = list(MAP_FOUR_KINGDOMS, MAP_TRIBES)
 
 
 	min_positions = 9999

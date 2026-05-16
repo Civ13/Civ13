@@ -177,6 +177,7 @@
 	title = "Dekaneas"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Di."
+	allowed_maps = list(MAP_ELAIA)
 
 	spawn_location = "JoinLateGR"
 	is_squad_leader = TRUE
@@ -220,6 +221,7 @@
 	title = "Stratiotis"
 	en_meaning = "Soldier"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_ELAIA)
 
 	spawn_location = "JoinLateGR"
 
@@ -282,6 +284,7 @@
 	title = "Midikí"
 	en_meaning = "Medic"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_ELAIA)
 
 	spawn_location = "JoinLateGRDoc"
 

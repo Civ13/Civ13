@@ -34,21 +34,6 @@
 	var/siren = FALSE
 	grace_wall_timer = 2400
 
-/obj/map_metadata/bagne13/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/french))
-		if (J.is_prison)
-			. = TRUE
-		else
-			. = FALSE
-	else if (istype(J, /datum/job/civilian))
-		if (J.title == "Cuistot" || J.title == "Infirmier" || J.title == "Bucheron")
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/bagne13/roundend_condition_def2name(define)
 	..()
 	switch (define)

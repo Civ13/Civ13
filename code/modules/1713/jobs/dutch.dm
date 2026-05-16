@@ -556,6 +556,7 @@
 	en_meaning = "Commander"
 	rank_abbreviation = "Com."
 	spawn_location = "JoinLateRNCap"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
 	is_operation_falcon = TRUE
 	is_commander = TRUE
@@ -611,6 +612,7 @@
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Sgt."
 	spawn_location = "JoinLateRNSL"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
 	is_operation_falcon = TRUE
 	is_squad_leader = TRUE
@@ -664,6 +666,7 @@
 	en_meaning = "Doctor"
 	rank_abbreviation = "Ar."
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
 	is_operation_falcon = TRUE
 	is_medic = TRUE
@@ -720,6 +723,7 @@
 	en_meaning = "Radioman"
 	rank_abbreviation = "Kpl1."
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
 	is_operation_falcon = TRUE
 	is_radioman = TRUE
@@ -772,6 +776,7 @@
 	en_meaning = "Breacher"
 	rank_abbreviation = "Sld1."
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
 	is_operation_falcon = TRUE
 	uses_squads = TRUE
@@ -825,6 +830,7 @@
 	en_meaning = "Soldier First Class"
 	rank_abbreviation = "Sld1."
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
 	is_operation_falcon = TRUE
 	uses_squads = TRUE
@@ -875,6 +881,7 @@
 	en_meaning = "Tanker"
 	rank_abbreviation = "Sgt."
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
 	is_operation_falcon = TRUE
 
@@ -922,6 +929,7 @@
 	en_meaning = "Emplaced Weapons Specialist"
 	rank_abbreviation = "Kpl"
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
 	is_operation_falcon = TRUE
 
@@ -968,6 +976,7 @@
 	en_meaning = "Weapons Specialist"
 	rank_abbreviation = "Kpl."
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
 	is_operation_falcon = TRUE
 

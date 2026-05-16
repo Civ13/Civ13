@@ -4,6 +4,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateDM"
+	allowed_maps = list(MAP_EVENT_CITY, MAP_HUNGERGAMES)
 
 	is_event_role = TRUE
 

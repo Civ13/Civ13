@@ -31,13 +31,6 @@
 	gamemode = "King of the Hill"
 	grace_wall_timer = 2400
 
-/obj/map_metadata/twotribes/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_twotribes)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/twotribes/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 1200

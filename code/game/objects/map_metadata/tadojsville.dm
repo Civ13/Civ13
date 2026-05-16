@@ -29,19 +29,6 @@
 	songs = list(
 		"The Hygrades - Rough Rider:1" = 'sound/music/roughrider.ogg',)
 
-/obj/map_metadata/tadojsville/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_un)
-		. = TRUE
-	else if (J.is_warlords)
-		if (J.is_tadoj)
-			if (J.title != "Mercenary (do not use)")
-				. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/tadojsville/roundend_condition_def2name(define)
 	..()
 	switch (define)

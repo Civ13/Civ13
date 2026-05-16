@@ -14,6 +14,7 @@
 	en_meaning = "Ship Captain"
 	rank_abbreviation = "Captain"
 	is_navy = TRUE
+	allowed_maps = list(MAP_CURSED_ISLAND, MAP_SKULLISLAND)
 
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
@@ -61,6 +62,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
+	allowed_maps = list(MAP_CURSED_ISLAND, MAP_SKULLISLAND)
 
 
 
@@ -98,6 +100,7 @@
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Boatswain"
 	is_navy = TRUE
+	allowed_maps = list(MAP_CURSED_ISLAND, MAP_SKULLISLAND)
 
 	spawn_location = "JoinLateRNBoatswain"
 	whitelisted = TRUE
@@ -144,6 +147,7 @@
 	is_navy = TRUE
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
+	allowed_maps = list(MAP_CURSED_ISLAND, MAP_SKULLISLAND)
 
 
 
@@ -182,6 +186,7 @@
 	is_navy = TRUE
 	spawn_location = "JoinLateRNSurgeon"
 	is_medic = TRUE
+	allowed_maps = list(MAP_CURSED_ISLAND, MAP_SKULLISLAND)
 
 	min_positions = 1
 	max_positions = 10
@@ -218,6 +223,7 @@
 	rank_abbreviation = "Carpenter"
 	is_navy = TRUE
 	spawn_location = "JoinLateRNCarpenter"
+	allowed_maps = list(MAP_CURSED_ISLAND, MAP_SKULLISLAND)
 
 
 
@@ -266,6 +272,7 @@
 	rank_abbreviation = "Cook"
 	is_navy = TRUE
 	spawn_location = "JoinLateRNCook"
+	allowed_maps = list(MAP_CURSED_ISLAND, MAP_SKULLISLAND)
 
 
 
@@ -315,6 +322,7 @@
 	rank_abbreviation = ""
 	is_navy = TRUE
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_CURSED_ISLAND, MAP_SKULLISLAND)
 
 
 
@@ -607,6 +615,7 @@
 /datum/job/british/ww1captain
 	title = "Army Captain"
 	rank_abbreviation = "Cap."
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 
 	spawn_location = "JoinLateRNCap"
@@ -655,6 +664,7 @@
 /datum/job/british/ww1lieutenant
 	title = "Army 1st Lieutenant"
 	rank_abbreviation = "1Lt."
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 
 	spawn_location = "JoinLateRNCap"
@@ -701,6 +711,7 @@
 /datum/job/british/ww1second_lieutenant
 	title = "Army 2nd Lieutenant"
 	rank_abbreviation = "2Lt."
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 
 	spawn_location = "JoinLateRNCap"
@@ -747,6 +758,7 @@
 /datum/job/british/ww1sergeant
 	title = "Army Sergeant"
 	rank_abbreviation = "Sgt."
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 	spawn_location = "JoinLateRN"
 
@@ -793,6 +805,7 @@
 /datum/job/british/ww1doctor
 	title = "Army Doctor"
 	rank_abbreviation = "Dr."
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 	spawn_location = "JoinLateRNSurgeon"
 
@@ -837,6 +850,7 @@
 /datum/job/british/ww1shocktroop
 	title = "Shock Troop"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 	spawn_location = "JoinLateRN" //for testing!
 	uses_squads = TRUE
@@ -879,6 +893,7 @@
 /datum/job/british/ww1infantry
 	title = "Army Private"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 	spawn_location = "JoinLateRN" //for testing!
 	uses_squads = TRUE
@@ -926,6 +941,7 @@
 /datum/job/british/ww2lieutenant_pow
 	title = "POW Lieutenant"
 	rank_abbreviation = "Lt."
+	allowed_maps = list()
 
 
 	spawn_location = "JoinLateRNCap"
@@ -967,6 +983,7 @@
 /datum/job/british/ww2sergeant_pow
 	title = "POW Sergeant"
 	rank_abbreviation = "Sgt."
+	allowed_maps = list()
 
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
@@ -1005,6 +1022,7 @@
 /datum/job/british/ww2pow
 	title = "British P.O.W."
 	rank_abbreviation = ""
+	allowed_maps = list()
 
 	spawn_location = "JoinLateRN" //for testing!
 
@@ -1049,6 +1067,7 @@
 /datum/job/british/ww2doctor_pow
 	title = "POW Doctor"
 	rank_abbreviation = "Dr."
+	allowed_maps = list()
 
 	spawn_location = "JoinLateRNSurgeon"
 

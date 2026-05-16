@@ -1,8 +1,10 @@
 /datum/job/russian/ra
 	title = "Russian Army (DO NOT USE)"
+	allowed_maps = list()
 /datum/job/russian/ra/lieutenant
 	title = "Russian Army Lieutenant"
 	rank_abbreviation = "Leyt."
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLateRUCap"
 
@@ -61,6 +63,7 @@
 /datum/job/russian/ra/sergeant
 	title = "Russian Army Sergeant"
 	rank_abbreviation = "Srj."
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLateRUCap"
 
@@ -127,6 +130,7 @@
 /datum/job/russian/ra/medic
 	title = "Russian Army Corpsman"
 	rank_abbreviation = "Efr."
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLateRU"
 
@@ -188,6 +192,7 @@
 	title = "OMON Officer"
 	en_meaning = "Riot Police"
 	rank_abbreviation = "OMON ofc."
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLateRUswat"
 
@@ -238,6 +243,7 @@
 /datum/job/russian/ra/soldier
 	title = "Russian Army Private"
 	rank_abbreviation = "Ryad."
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLateRU"
 
@@ -303,6 +309,7 @@
 /datum/job/russian/ra/spetsnaz
 	title = "Spetsnaz"
 	rank_abbreviation = "Jr. Srj."
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLateRUsptz"
 	whitelisted = TRUE
@@ -371,6 +378,7 @@
 	is_yeltsin = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
+	allowed_maps = list(MAP_YELTSIN)
 
 	min_positions = 1
 	max_positions = 3
@@ -414,6 +422,7 @@
 /datum/job/civilian/russian/kgb
 	title = "KGB Officer"
 	rank_abbreviation = "KGB"
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLatessm"
 	is_kremlin = TRUE
@@ -473,6 +482,7 @@
 	spawn_location = "JoinLateCiv"
 	min_positions = 1
 	max_positions = 250
+	allowed_maps = list(MAP_YELTSIN)
 	
 	is_yeltsin = TRUE
 
@@ -624,6 +634,7 @@
 	title = "Militia Medic"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Dr."
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLateCiv"
 

@@ -20,6 +20,7 @@
 /datum/job/roman/skyrim/imperial/balgruuf	//imperial - captain
 	title = "Jarl Balgruuf"
 	rank_abbreviation = "Jarl"
+	allowed_maps = list()
 
 	spawn_location = "JoinLateRUCap"
 
@@ -270,6 +271,7 @@
 /datum/job/roman/skyrim/imperial/guard_captain
 	title = "Whiterun Head Guard"
 	rank_abbreviation = ""
+	allowed_maps = list()
 
 	spawn_location = "JoinLateRU"
 
@@ -319,6 +321,7 @@
 /datum/job/roman/skyrim/imperial/guard
 	title = "Whiterun Guard"
 	rank_abbreviation = ""
+	allowed_maps = list()
 
 	spawn_location = "JoinLateRU"
 

@@ -33,14 +33,6 @@
 	..()
 	load_gladiators()
 
-/obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/roman))
-		if (J.is_gladiator == TRUE)
-			. = TRUE
-		else
-			. = FALSE
-
 /obj/map_metadata/gladiators/cross_message(faction)
 	return ""
 

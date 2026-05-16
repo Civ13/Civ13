@@ -2,6 +2,7 @@
 /datum/job/american/atf_lieutenant
 	title = "ATF Lieutenant"
 	rank_abbreviation = "Lt."
+	allowed_maps = list(MAP_WACO)
 
 	spawn_location = "JoinLateJPCap"
 
@@ -50,6 +51,7 @@
 /datum/job/american/atf_sergeant
 	title = "ATF Sergeant"
 	rank_abbreviation = "Sgt."
+	allowed_maps = list(MAP_WACO)
 
 	spawn_location = "JoinLateJP"
 
@@ -103,6 +105,7 @@
 /datum/job/american/atf_soldier
 	title = "ATF Agent"
 	rank_abbreviation = "Agent"
+	allowed_maps = list(MAP_WACO)
 
 	spawn_location = "JoinLateJP"
 
@@ -160,6 +163,7 @@
 /datum/job/american/negotiator
 	title = "ATF Negotiator"
 	rank_abbreviation = "Agent"
+	allowed_maps = list(MAP_WACO)
 
 	spawn_location = "JoinLateNegotiator"
 
@@ -206,6 +210,7 @@
 /datum/job/american/atf_medic
 	title = "ATF Medic"
 	rank_abbreviation = "Medic"
+	allowed_maps = list(MAP_WACO)
 
 	spawn_location = "JoinLateJPDoc"
 
@@ -258,6 +263,7 @@
 	title = "Messiah"
 	en_meaning = ""
 	rank_abbreviation = "Great Prophet"
+	allowed_maps = list(MAP_WACO)
 
 	spawn_location = "JoinLateRUCap"
 	is_waco = TRUE
@@ -325,6 +331,7 @@
 	max_positions = 150
 	is_waco = TRUE
 	can_be_female = TRUE
+	allowed_maps = list(MAP_WACO)
 
 /datum/job/civilian/believer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -397,6 +404,7 @@
 	max_positions = 150
 	is_waco = TRUE
 	can_be_female = TRUE
+	allowed_maps = list(MAP_WACO)
 
 /datum/job/civilian/disciple/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -470,6 +478,7 @@
 	title = "Healer"
 	en_meaning = ""
 	rank_abbreviation = "Healer"
+	allowed_maps = list(MAP_WACO)
 
 	spawn_location = "JoinLateRUDoc"
 

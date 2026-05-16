@@ -222,6 +222,7 @@
 	title = "Gladiator"
 	en_meaning = ""
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_GLADIATORS)
 
 	spawn_location = "JoinLateRO"
 
@@ -260,6 +261,7 @@
 	title = "Medicus"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Medicus"
+	allowed_maps = list(MAP_GLADIATORS)
 
 	spawn_location = "JoinLateROG"
 
@@ -294,6 +296,7 @@
 	title = "Custos"
 	en_meaning = "Arena Guard"
 	rank_abbreviation = "Custos"
+	allowed_maps = list(MAP_GLADIATORS)
 
 	spawn_location = "JoinLateROG"
 
@@ -331,6 +334,7 @@
 	title = "Imperator"
 	en_meaning = "Emperor"
 	rank_abbreviation = "Imperator"
+	allowed_maps = list(MAP_GLADIATORS)
 
 	spawn_location = "JoinLateROG"
 

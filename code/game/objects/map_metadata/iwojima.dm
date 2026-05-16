@@ -27,15 +27,6 @@
 		"Over There!:1" = 'sound/music/overthere.ogg',
 		"I Hate These Classes:2" = 'sound/music/i_hate_these_classes.ogg',)
 	gamemode = "Siege"
-/obj/map_metadata/iwojima/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_ww2 == TRUE || J.is_navy == TRUE)
-		. = TRUE
-	else if (J.is_tanker == TRUE || J.is_prison == TRUE || J.is_yakuza || istype(J, /datum/job/japanese/ija_sergeant_tanker) || istype(J, /datum/job/japanese/ija_ww2_tanker) || istype(J, /datum/job/american/soldier_ww2_filipino) || J.is_samurai == TRUE)
-		. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/iwojima/roundend_condition_def2name(define)
 	..()
 	switch (define)

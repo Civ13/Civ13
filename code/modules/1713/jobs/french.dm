@@ -587,6 +587,7 @@
 	title = "Capitaine de l'Armee"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Cap."
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 
 	spawn_location = "JoinLateRNCap"
@@ -639,6 +640,7 @@
 	title = "Lieutenant de l'Armee"
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "Lt."
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 
 	spawn_location = "JoinLateRNCap"
@@ -689,6 +691,7 @@
 	title = "Sous-Lieutenant de l'Armee"
 	en_meaning = "2nd Lieutenant"
 	rank_abbreviation = "Slt."
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 
 	spawn_location = "JoinLateRNCap"
@@ -739,6 +742,7 @@
 	title = "Sergent de l'Armee"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Sgt."
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 	spawn_location = "JoinLateRN"
 	
@@ -787,6 +791,7 @@
 	title = "Docteur de l'Armee"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Dr."
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 	spawn_location = "JoinLateRNSurgeon"
 
@@ -831,6 +836,7 @@
 	title = "Chasseur Leger"
 	en_meaning = "Shock Trooper"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 	spawn_location = "JoinLateRN" //for testing!
 	uses_squads = TRUE
@@ -876,6 +882,7 @@
 	title = "Soldat d'infanterie"
 	en_meaning = "Private"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 	spawn_location = "JoinLateRN" //for testing!
 	uses_squads = TRUE

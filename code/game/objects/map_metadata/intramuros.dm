@@ -27,21 +27,6 @@
 		"Tokkutai Bushi (Koji Tsuruta):1" = 'sound/music/tokkutai_bushi.ogg',
 		"I Hate These Classes:2" = 'sound/music/i_hate_these_classes.ogg',)
 	gamemode = "Siege"
-/obj/map_metadata/intramuros/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/american))
-		if (J.is_navy == TRUE || (istype(J, /datum/job/american/sailor_ww2)) || (istype(J, /datum/job/american/mp_ww2)) || (istype(J, /datum/job/american/chef_ww2)))
-			. = FALSE
-		else if (J.is_ww2 == TRUE || J.is_tanker == TRUE || (istype(J, /datum/job/american/soldier_ww2_filipino)))
-			. = TRUE
-		else
-			. = FALSE
-	if (istype(J, /datum/job/japanese))
-		if (J.is_ww2 == TRUE && !J.is_navy && !J.is_prison && !J.is_tanker)
-			. = TRUE
-		else
-			. = FALSE
-
 /obj/map_metadata/intramuros/roundend_condition_def2name(define)
 	..()
 	switch (define)

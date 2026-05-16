@@ -1,6 +1,7 @@
 
 /datum/job/vietnamese
 	faction = "Human"
+	allowed_maps = list()
 
 /datum/job/vietnamese/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_vietnamese_name(H.gender)
@@ -32,6 +33,7 @@
 	is_coldwar = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
+	allowed_maps = list(MAP_HUE)
 
 	min_positions = 2
 	max_positions = 8
@@ -99,6 +101,7 @@
 	rank_abbreviation = "Bac Si"
 	can_be_female = TRUE
 	spawn_location = "JoinLateJP"
+	allowed_maps = list(MAP_HUE)
 
 	is_medic = TRUE
 	is_coldwar = TRUE
@@ -173,6 +176,7 @@
 	title = "Tuy Phai"
 	en_meaning = "Vietcong Courer/Runner"
 	rank_abbreviation = "Tuy Phai"
+	allowed_maps = list(MAP_HUE)
 
 	spawn_location = "JoinLateJP"
 
@@ -253,6 +257,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateJP"
+	allowed_maps = list(MAP_HUE)
 
 	is_coldwar = TRUE
 	uses_squads = TRUE
@@ -344,6 +349,7 @@
 /////////////////////////////////////////////////////VIETNAMESE NVA/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /datum/job/vietnamese/vietcong_officer_nva
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
 	title = "NVA Si Quan"
 	en_meaning = "NVA Officer"
 	rank_abbreviation = "Si Quan"
@@ -405,6 +411,7 @@
 	return TRUE
 
 /datum/job/vietnamese/vietcong_sl_nva
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
 	title = "NVA Trung Si"
 	en_meaning = "NVA Sergeant"
 	rank_abbreviation = "Trung Si"
@@ -472,6 +479,7 @@
 	return TRUE
 
 /datum/job/vietnamese/vietcong_doctor_nva
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
 	title = "NVA Bac Si"
 	en_meaning = "NVA Medic"
 	rank_abbreviation = "Bac Si"
@@ -534,6 +542,7 @@
 	title = "NVA Binh Ni"
 	en_meaning = "NVA Soldier"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
 
 	spawn_location = "JoinLateJP"
 
@@ -643,6 +652,7 @@
 /datum/job/american/american_lieutenant
 	title = "USA Lieutenant"
 	rank_abbreviation = "Lt."
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
 
 	spawn_location = "JoinLateRNCap"
 
@@ -697,6 +707,7 @@
 /datum/job/american/american_sergeant
 	title = "USA Sergeant"
 	rank_abbreviation = "Sgt."
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
 
 	spawn_location = "JoinLateRNSL"
 
@@ -749,6 +760,7 @@
 /datum/job/american/american_sf
 	title = "USA Commando"
 	rank_abbreviation = "Cpl."
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
 
 	spawn_location = "JoinLateRN"
 
@@ -797,6 +809,7 @@
 /datum/job/american/american_medic
 	title = "USA Corpsman"
 	rank_abbreviation = "Cpl."
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
 
 	spawn_location = "JoinLateRNMed"
 
@@ -860,6 +873,7 @@
 /datum/job/american/american_radioman
 	title = "USA Radio Operator"
 	rank_abbreviation = "Cpl."
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
 
 	spawn_location = "JoinLateRN"
 
@@ -922,6 +936,7 @@
 /datum/job/american/american_marksman
 	title = "USA Marksman"
 	rank_abbreviation = "Spc."
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
 
 	spawn_location = "JoinLateRN"
 
@@ -976,6 +991,7 @@
 /datum/job/american/american_grenadier
 	title = "USA Grenadier"
 	rank_abbreviation = "Pfc."
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
 
 	spawn_location = "JoinLateRN"
 
@@ -1028,6 +1044,7 @@
 /datum/job/american/american_lmg
 	title = "USA Automatic Rifleman"
 	rank_abbreviation = "Pfc."
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
 
 	spawn_location = "JoinLateRN"
 
@@ -1095,6 +1112,7 @@
 /datum/job/american/american_soldier
 	title = "USA Rifleman"
 	rank_abbreviation = "Pvt."
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
 
 	spawn_location = "JoinLateRN"
 
@@ -1285,6 +1303,7 @@
 	title = "Insurgent Leader"
 	en_meaning = ""
 	rank_abbreviation = "Leader"
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
 
 	spawn_location = "JoinLateAR"
 
@@ -1363,6 +1382,7 @@
 	title = "Insurgent Field Medic"
 	en_meaning = ""
 	rank_abbreviation = "Medic"
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
 
 	spawn_location = "JoinLateAR"
 
@@ -1459,6 +1479,7 @@
 	title = "Insurgent"
 	en_meaning = ""
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
 
 	spawn_location = "JoinLateAR"
 

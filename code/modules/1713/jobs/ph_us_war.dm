@@ -1,6 +1,7 @@
 /datum/job/american/fp_captain
 	title = " Army Captain"
 	rank_abbreviation = "Cpt."
+	allowed_maps = list(MAP_CALOOCAN, MAP_SANTO_TOMAS)
 
 	spawn_location = "JoinLateRNCap"
 	is_ph_us_war = TRUE
@@ -44,6 +45,7 @@
 /datum/job/american/fp_lieutenant
 	title = " Army Lieutenant"
 	rank_abbreviation = "Lt."
+	allowed_maps = list(MAP_CALOOCAN, MAP_SANTO_TOMAS)
 
 	spawn_location = "JoinLateRNBoatswain"
 	is_ph_us_war = TRUE
@@ -87,6 +89,7 @@
 /datum/job/american/fp_sergeant
 	title = " Army Sergeant"
 	rank_abbreviation = "Sgt."
+	allowed_maps = list(MAP_CALOOCAN, MAP_SANTO_TOMAS)
 
 	spawn_location = "JoinLateRN"
 	is_squad_leader = TRUE
@@ -132,6 +135,7 @@
 /datum/job/american/fp_soldier
 	title = " Army Rifleman"
 	rank_abbreviation = "Pvt."
+	allowed_maps = list(MAP_CALOOCAN, MAP_SANTO_TOMAS)
 
 	spawn_location = "JoinLateRN"
 	is_ww2 = FALSE
@@ -169,6 +173,7 @@
 /datum/job/american/fp_doctor
 	title = " Army Doctor"
 	rank_abbreviation = "2lt."
+	allowed_maps = list(MAP_CALOOCAN, MAP_SANTO_TOMAS)
 
 	spawn_location = "JoinLateRNSurgeon"
 	is_ph_us_war = TRUE
@@ -214,6 +219,7 @@
 /datum/job/american/fp_sniper
 	title = " Army Sharpshooter"
 	rank_abbreviation = "Cpl."
+	allowed_maps = list(MAP_CALOOCAN, MAP_SANTO_TOMAS)
 
 	spawn_location = "JoinLateRN"
 	is_ww2 = FALSE
@@ -269,6 +275,7 @@
 	title = " Kapitan"
 	en_meaning = "captain"
 	rank_abbreviation = "Kpt."
+	allowed_maps = list(MAP_CALOOCAN, MAP_SANTO_TOMAS)
 
 	spawn_location = "JoinLateFPCap"
 	is_ph_us_war = TRUE
@@ -315,6 +322,7 @@
 	title = "Tenyente"
 	en_meaning = "Lieutenant"
 	rank_abbreviation = "Ty."
+	allowed_maps = list(MAP_CALOOCAN, MAP_SANTO_TOMAS)
 
 	spawn_location = "JoinLateFPLt"
 	is_ph_us_war = TRUE
@@ -361,6 +369,7 @@
 	title = "Serhente"
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Sht."
+	allowed_maps = list(MAP_CALOOCAN, MAP_SANTO_TOMAS)
 
 	spawn_location = "JoinLateFP"
 	is_squad_leader = TRUE
@@ -409,6 +418,7 @@
 	title = "Kawal"
 	en_meaning = "Soldier"
 	rank_abbreviation = "Kl."
+	allowed_maps = list(MAP_CALOOCAN, MAP_SANTO_TOMAS)
 
 	spawn_location = "JoinLateFP"
 	is_ww2 = FALSE
@@ -468,6 +478,7 @@
 	title = "Manggagamot"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Ty."
+	allowed_maps = list(MAP_CALOOCAN, MAP_SANTO_TOMAS)
 
 	spawn_location = "JoinLateFPSurgeon"
 	is_ph_us_war = TRUE
@@ -517,6 +528,7 @@
 	title = "Tiradores"
 	en_meaning = "Sharp Shooter"
 	rank_abbreviation = "Ko."
+	allowed_maps = list(MAP_CALOOCAN, MAP_SANTO_TOMAS)
 
 	spawn_location = "JoinLateFP"
 	is_ww2 = FALSE

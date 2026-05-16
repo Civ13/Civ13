@@ -14,6 +14,7 @@
 /datum/job/norwegian/bear_clan/king
 	title = "Bear Clan King"
 	rank_abbreviation = "King"
+	allowed_maps = list(MAP_CLASH)
 
 	spawn_location = "JoinLateRO"
 
@@ -54,6 +55,7 @@
 /datum/job/norwegian/bear_clan/jarl
 	title = "Bear Clan Jarl"
 	rank_abbreviation = "Jarl"
+	allowed_maps = list(MAP_CLASH)
 
 	spawn_location = "JoinLateRO"
 
@@ -96,6 +98,7 @@
 /datum/job/norwegian/bear_clan/berserker
 	title = "Berserker"
 	rank_abbreviation = "Berserker"
+	allowed_maps = list(MAP_CLASH)
 
 	spawn_location = "JoinLateRO"
 
@@ -151,6 +154,7 @@
 /datum/job/norwegian/bear_clan/warrior
 	title = "Bear Clan Warrior"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_CLASH)
 
 	spawn_location = "JoinLateRO"
 
@@ -207,6 +211,7 @@
 	title = "Laekir"
 	en_meaning = "Healer"
 	rank_abbreviation = "Herbalist"
+	allowed_maps = list(MAP_CLASH)
 
 	spawn_location = "JoinLateRO"
 
@@ -265,6 +270,7 @@
 	title = "Raven King"
 	en_meaning = ""
 	rank_abbreviation = "King"
+	allowed_maps = list(MAP_CLASH)
 
 	spawn_location = "JoinLateGRK"
 
@@ -302,6 +308,7 @@
 /datum/job/danish/raven_clan/jarl
 	title = "Raven Clan Jarl"
 	rank_abbreviation = "Jarl"
+	allowed_maps = list(MAP_CLASH)
 
 	spawn_location = "JoinLateGR"
 
@@ -348,6 +355,7 @@
 /datum/job/danish/raven_clan/huntsman
 	title = "Huntsman"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_CLASH)
 
 	spawn_location = "JoinLateGR"
 
@@ -401,6 +409,7 @@
 /datum/job/danish/raven_clan/warrior
 	title = "Raven Clan Warrior"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_CLASH)
 
 	spawn_location = "JoinLateGR"
 
@@ -457,6 +466,7 @@
 	title = "Seidmadr"
 	en_meaning = "Shaman"
 	rank_abbreviation = "Seer"
+	allowed_maps = list(MAP_CLASH)
 
 	spawn_location = "JoinLateGR"
 

@@ -32,23 +32,6 @@
 	ambience = list('sound/ambience/battle1.ogg')
 	no_hardcore = TRUE
 
-/obj/map_metadata/warsaw/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/german/tank_crew))
-		. = TRUE
-	else if (J.is_warsawger == TRUE)
-		. = TRUE
-	else if (J.is_warpol == TRUE)
-		. = TRUE
-	else if (J.is_tanker == TRUE)
-		. = FALSE
-	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
-		. = FALSE
-	else if (J.is_reichstag == TRUE)
-		. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/warsaw/roundend_condition_def2name(define)
 	..()
 	switch (define)

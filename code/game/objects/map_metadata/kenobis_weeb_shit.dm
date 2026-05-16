@@ -37,9 +37,3 @@
 	age6_done = TRUE
 	age7_done = FALSE
 	age8_done = FALSE
-
-/obj/map_metadata/kenobi_weeb_shit/job_enabled_specialcheck(var/datum/job/J)
-	if (J.is_ww2 == TRUE && J.is_tanker == TRUE)
-		. = TRUE
-	else
-		. = FALSE

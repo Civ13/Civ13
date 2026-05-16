@@ -3,6 +3,7 @@
 /datum/job/american/usmc_lieutenant
 	title = "USMC Lieutenant"
 	rank_abbreviation = "Lt."
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
 
 	spawn_location = "JoinLateRNCap"
 
@@ -53,6 +54,7 @@
 /datum/job/american/usmc_sergeant
 	title = "USMC Sergeant"
 	rank_abbreviation = "Sgt."
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
 
 	spawn_location = "JoinLateRNCap"
 
@@ -104,6 +106,7 @@
 /datum/job/american/usmc_medic
 	title = "USMC Field Medic"
 	rank_abbreviation = "Cpl."
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
 
 	spawn_location = "JoinLateRN"
 
@@ -155,6 +158,7 @@
 /datum/job/american/usmc_marksman
 	title = "USMC Designated Marksman"
 	rank_abbreviation = "Spc."
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
 
 	spawn_location = "JoinLateRN"
 
@@ -204,6 +208,7 @@
 /datum/job/american/usmc_lmg
 	title = "USMC Automatic Rifleman"
 	rank_abbreviation = "Spc."
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
 
 	spawn_location = "JoinLateRN"
 
@@ -256,6 +261,7 @@
 /datum/job/american/usmc_soldier
 	title = "USMC Rifleman"
 	rank_abbreviation = "Pvt."
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
 
 	spawn_location = "JoinLateRN"
 
@@ -310,6 +316,7 @@
 
 /datum/job/american/idf
 	default_language = "Hebrew"
+	allowed_maps = list(MAP_ARAB_TOWN)
 	additional_languages = list("English" = 25, "Russian" = 25, "Arabic" = 10)
 
 /datum/job/american/idf/give_random_name(var/mob/living/human/H)
@@ -626,6 +633,7 @@
 	title = "Hezbollah Squad Leader"
 	en_meaning = ""
 	rank_abbreviation = "Leader"
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateAR"
 
@@ -694,6 +702,7 @@
 	title = "Hezbollah Field Medic"
 	en_meaning = ""
 	rank_abbreviation = "Dr."
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateAR"
 
@@ -764,6 +773,7 @@
 	title = "Hezbollah Sniper"
 	en_meaning = ""
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateAR"
 
@@ -830,6 +840,7 @@
 	title = "Hezbollah Soldier"
 	en_meaning = ""
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateAR"
 
@@ -904,6 +915,7 @@
 	title = "J.A. Alqayid"
 	en_meaning = "Syrian Goverment Army Commander"
 	rank_abbreviation = "Alq."
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateSYR"
 
@@ -965,6 +977,7 @@
 	title = "J.A. Qayid Firqa"
 	en_meaning = "Syrian Goverment Army Squadleader"
 	rank_abbreviation = "Q.F."
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateSYR"
 
@@ -1029,6 +1042,7 @@
 	title = "J.A. Sulydir"
 	en_meaning = "Syrian Goverment Army Soldier"
 	rank_abbreviation = "S."
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateSYR"
 
@@ -1117,6 +1131,7 @@
 	title = "J.A. Museif Qitaliun"
 	en_meaning = "Syrian Goverment Army Combat Medic"
 	rank_abbreviation = "Med."
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateSYR"
 
@@ -1178,6 +1193,7 @@
 	default_language = "Russian"
 	additional_languages = list("English" = 25, "Ukrainian" = 50)
 	spawn_location = "JoinLateSYR"
+	allowed_maps = list(MAP_SYRIA)
 
 	is_coldwar = FALSE
 	is_modernday = FALSE
@@ -1280,6 +1296,7 @@
 	title = "C.C. Qayid Almutamaridin"
 	en_meaning = "Free Syrian Army Commander"
 	rank_abbreviation = "Q.A."
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateREB"
 
@@ -1339,6 +1356,7 @@
 	title = "C.C. Qayid Firqa"
 	en_meaning = "Free Syrian Army Squadleader"
 	rank_abbreviation = "Q.F."
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateREB"
 
@@ -1402,6 +1420,7 @@
 /datum/job/american/free_syrian_army/soldier
 	title = "C.C. Sulydir"
 	en_meaning = "Free Syrian Army Soldier"
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateREB"
 
@@ -1485,6 +1504,7 @@
 	title = "C.C. Museif Qitaliun"
 	en_meaning = "Free Syrian Army Combat Medic"
 	rank_abbreviation = "Med."
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateREB"
 
@@ -1542,6 +1562,7 @@
 /datum/job/american/free_syrian_army/insurgent
 	title = "Milishya Suria"
 	en_meaning = "Syrian Insurgent Militia"
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateREB"
 
@@ -1623,6 +1644,7 @@
 	default_language = "English"
 	additional_languages = list("Arabic" = 60)
 	spawn_location = "JoinLateREB"
+	allowed_maps = list(MAP_SYRIA)
 
 	is_coldwar = FALSE
 	is_modernday = FALSE

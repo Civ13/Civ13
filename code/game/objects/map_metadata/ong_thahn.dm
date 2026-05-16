@@ -38,21 +38,6 @@
 		outpost_check()
 		outpost_status()
 
-/obj/map_metadata/ong_thahn/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/vietnamese))
-		if (J.is_nva)
-			. = TRUE
-		else
-			. = FALSE
-	else if (istype(J, /datum/job/american))
-		if (J.is_coldwar && !J.is_specops && !J.is_modernday)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/ong_thahn/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600

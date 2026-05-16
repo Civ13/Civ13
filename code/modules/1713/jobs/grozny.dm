@@ -7,6 +7,7 @@
 /datum/job/arab/civilian/chechen/leader
 	title = "Chechen Warlord"
 	spawn_location = "JoinLateCCWL"
+	allowed_maps = list(MAP_GROZNY)
 	
 	is_commander = TRUE
 	is_officer = TRUE
@@ -77,6 +78,7 @@
 	max_positions = 200
 	is_grozny = TRUE
 	is_modernday = TRUE
+	allowed_maps = list(MAP_GROZNY)
 
 /datum/job/arab/civilian/chechen/militia/equip(var/mob/living/human/H)
 
@@ -251,6 +253,7 @@
 /datum/job/arab/civilian/chechen/medic
 	title = "Chechen Militia Medic"
 	rank_abbreviation = "Dr."
+	allowed_maps = list(MAP_GROZNY)
 
 	spawn_location = "JoinLateCC"
 
@@ -319,6 +322,7 @@
 /datum/job/russian/ruff_lieutenant
 	title = "Russian Federal Forces Lieutenant"
 	rank_abbreviation = "Leyt."
+	allowed_maps = list(MAP_GROZNY)
 
 	spawn_location = "JoinLateRUCap"
 
@@ -388,6 +392,7 @@
 /datum/job/russian/ruff_sergeant
 	title = "Russian Federal Forces Sergeant"
 	rank_abbreviation = "Sgt."
+	allowed_maps = list(MAP_GROZNY)
 
 	spawn_location = "JoinLateRUSgt"
 
@@ -462,6 +467,7 @@
 /datum/job/russian/ruff_medic
 	title = "Russian Federal Forces Corpsman"
 	rank_abbreviation = "Efr."
+	allowed_maps = list(MAP_GROZNY)
 
 	spawn_location = "JoinLateRUMedic"
 
@@ -536,6 +542,7 @@
 /datum/job/russian/ruff_radioman
 	title = "Russian Federal Forces Radio Operator"
 	rank_abbreviation = "Efr."
+	allowed_maps = list(MAP_GROZNY)
 
 	spawn_location = "JoinLateRURadop"
 
@@ -630,6 +637,7 @@
 /datum/job/russian/ruff_soldier
 	title = "Russian Federal Forces Private"
 	rank_abbreviation = "Ryad."
+	allowed_maps = list(MAP_GROZNY)
 
 	spawn_location = "JoinLateRU"
 
@@ -731,6 +739,7 @@
 /datum/job/russian/ruff_spetsnaz
 	title = "Spetsnaz GRU Operative"
 	rank_abbreviation = "Spz. Op."
+	allowed_maps = list(MAP_GROZNY)
 
 	spawn_location = "JoinLateRUsptz"
 	whitelisted = TRUE

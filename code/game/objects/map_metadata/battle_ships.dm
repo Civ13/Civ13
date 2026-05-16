@@ -331,21 +331,6 @@
 		for (var/obj/effect/flooding/F in T)
 			qdel(F)
 
-/obj/map_metadata/battle_ships/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/redfaction))
-		if (J.is_navy)
-			. = TRUE
-		else
-			. = FALSE
-	else if (istype(J, /datum/job/bluefaction))
-		if (J.is_navy)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/battle_ships/New()
 	..()
 	spawn(100)

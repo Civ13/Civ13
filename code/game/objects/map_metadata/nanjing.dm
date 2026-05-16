@@ -27,17 +27,6 @@
 	songs = list(
 		"Mugi to Heitai:1" = 'sound/music/mugi_to_heitai.ogg',)
 
-/obj/map_metadata/nanjing/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_prison == TRUE || istype(J, /datum/job/japanese/ija_ww2ATunit) || J.is_pacific == TRUE || J.is_navy == TRUE)
-		. = FALSE
-	else if (J.is_ww2 == TRUE)
-		. = TRUE
-	else if (istype(J, /datum/job/chinese/captain) || istype(J, /datum/job/chinese/lieutenant) || istype(J, /datum/job/chinese/sergeant) || istype(J, /datum/job/chinese/doctor) || istype(J, /datum/job/chinese/infantry) || istype(J, /datum/job/chinese/sniper) || istype(J, /datum/job/japanese/ija_ww2_tanker))
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/nanjing/roundend_condition_def2name(define)
 	..()
 	switch (define)

@@ -28,16 +28,6 @@
 	gamemode = "Player vs NPCs"
 	grace_wall_timer = 1200
 
-/obj/map_metadata/cursed_island/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/british))
-		if (J.is_navy)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/cursed_island/cross_message(faction)
 	return ""
 

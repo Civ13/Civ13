@@ -93,13 +93,6 @@
 		if (istype(A, /area/caribbean/nomads/forest))
 			A.weather = 3
 			A.icon_state = "monsoon"
-/obj/map_metadata/verdun/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_ww1 == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/verdun/roundend_condition_def2name(define)
 	..()
 	switch (define)

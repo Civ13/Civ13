@@ -6,6 +6,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_commander = TRUE
+	allowed_maps = list(MAP_TWOTRIBES)
 	
 	is_twotribes = TRUE
 	spawn_location = "JoinLateRChief"
@@ -37,6 +38,7 @@
 	title = "Red Tribe Shaman"
 	en_meaning = FALSE
 	rank_abbreviation = "Shaman"
+	allowed_maps = list(MAP_TWOTRIBES)
 	
 	is_twotribes = TRUE
 	spawn_location = "JoinLateRShaman"
@@ -68,6 +70,7 @@
 	title = "Red Tribe Tribesperson"
 	en_meaning = FALSE
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_TWOTRIBES)
 	
 	is_twotribes = TRUE
 	spawn_location = "JoinLateRTribesperson"
@@ -94,6 +97,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_commander = TRUE
+	allowed_maps = list(MAP_TWOTRIBES)
 	
 	is_twotribes = TRUE
 	spawn_location = "JoinLateBChief"
@@ -126,6 +130,7 @@
 	title = "Blue Tribe Shaman"
 	en_meaning = FALSE
 	rank_abbreviation = "Shaman"
+	allowed_maps = list(MAP_TWOTRIBES)
 	
 	is_twotribes = TRUE
 	spawn_location = "JoinLateBShaman"
@@ -157,6 +162,7 @@
 	title = "Blue Tribe Tribesperson"
 	en_meaning = FALSE
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_TWOTRIBES)
 	
 	is_twotribes = TRUE
 	spawn_location = "JoinLateBTribesperson"

@@ -3,6 +3,7 @@
 	title = "Reichsheer Unteroffizier"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Uffz."
+	allowed_maps = list(MAP_RUHR_UPRISING)
 
 	spawn_location = "JoinLateWR"
 	is_squad_leader = TRUE
@@ -16,6 +17,7 @@
 	title = "Reichsheer Soldat"
 	en_meaning = "Soldier"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_RUHR_UPRISING)
 
 	spawn_location = "JoinLateWR"
 
@@ -91,6 +93,7 @@
 	title = "Freikorps Unteroffizier"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Uffz."
+	allowed_maps = list(MAP_RUHR_UPRISING)
 
 	spawn_location = "JoinLateFK"
 	is_squad_leader = TRUE
@@ -104,6 +107,7 @@
 	title = "Freikorps Soldat"
 	en_meaning = "Soldier"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_RUHR_UPRISING)
 
 	spawn_location = "JoinLateFK"
 
@@ -219,6 +223,7 @@
 	title = "Sicherheitspolizei"
 	en_meaning = "Security Police"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_RUHR_UPRISING)
 
 	spawn_location = "JoinLateWR"
 
@@ -269,6 +274,7 @@
 	rank_abbreviation = "Uffz."
 	default_language = "German"
 	spawn_location = "JoinLateCiv"
+	allowed_maps = list(MAP_RUHR_UPRISING)
 
 	is_interwar = TRUE
 	is_squad_leader = TRUE
@@ -280,6 +286,7 @@
 /datum/job/civilian/ruhrsoldat
 	title = "Ruhr Red Army Soldat"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_RUHR_UPRISING)
 
 	spawn_location = "JoinLateCiv"
 	default_language = "German"

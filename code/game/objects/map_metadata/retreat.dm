@@ -26,19 +26,6 @@
 	artillery_count = 5
 	grace_wall_timer = 4800
 
-/obj/map_metadata/retreat/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/american))
-		if (J.is_korean_war == TRUE)
-			. = TRUE
-		else
-			. = FALSE
-	if (istype(J, /datum/job/chinese))
-		if (J.is_korean_war == TRUE)
-			. = TRUE
-		else
-			. = FALSE
-
 /obj/map_metadata/retreat/roundend_condition_def2name(define)
 	..()
 	switch (define)

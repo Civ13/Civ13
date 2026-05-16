@@ -4,6 +4,7 @@
 	title = "US HVT"
 	en_meaning = "High Value Target"
 	rank_abbreviation = "Mr."
+	allowed_maps = list(MAP_CAPITOL_HILL)
 
 	spawn_location = "JoinLateFeds"
 	is_whitehouse = TRUE
@@ -147,6 +148,7 @@
 /datum/job/american/ng_lieutenant
 	title = "National Guard Lieutenant"
 	rank_abbreviation = "Lt."
+	allowed_maps = list(MAP_CAPITOL_HILL)
 
 	spawn_location = "JoinLateRNCap"
 
@@ -193,6 +195,7 @@
 /datum/job/american/ng_sergeant
 	title = "National Guard Sergeant"
 	rank_abbreviation = "Sgt."
+	allowed_maps = list(MAP_CAPITOL_HILL)
 
 	spawn_location = "JoinLateRNCap"
 
@@ -243,6 +246,7 @@
 /datum/job/american/ng_medic
 	title = "National Guard Field Medic"
 	rank_abbreviation = "Cpl."
+	allowed_maps = list(MAP_CAPITOL_HILL)
 
 	spawn_location = "JoinLateRN"
 
@@ -293,6 +297,7 @@
 /datum/job/american/ng_soldier
 	title = "National Guard Rifleman"
 	rank_abbreviation = "Pvt."
+	allowed_maps = list(MAP_CAPITOL_HILL)
 
 	spawn_location = "JoinLateRN"
 
@@ -339,6 +344,7 @@
 /datum/job/american/fbi
 	title = "FBI officer"
 	rank_abbreviation = "FBI"
+	allowed_maps = list(MAP_CAPITOL_HILL)
 
 	spawn_location = "JoinLateFeds"
 
@@ -395,6 +401,7 @@
 	max_positions = 150
 	is_capitol = TRUE
 	can_be_female = TRUE
+	allowed_maps = list(MAP_CAPITOL_HILL)
 
 /datum/job/civilian/us_militia/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -461,6 +468,7 @@
 	max_positions = 150
 	is_capitol = TRUE
 	can_be_female = TRUE
+	allowed_maps = list(MAP_CAPITOL_HILL)
 
 /datum/job/civilian/us_patriot/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -506,6 +514,7 @@
 	title = "Shaman"
 	en_meaning = "Field Medic"
 	rank_abbreviation = "Shaman"
+	allowed_maps = list(MAP_CAPITOL_HILL)
 
 	spawn_location = "JoinLateCiv"
 

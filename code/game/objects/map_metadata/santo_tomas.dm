@@ -24,13 +24,6 @@
 	faction2 = FILIPINO
 	ambience = list('sound/ambience/jungle1.ogg')
 
-/obj/map_metadata/santo_tomas/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_ph_us_war == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/santo_tomas/cross_message(faction)
 	if (faction == AMERICAN)
 		return "<font size = 4>The Americans may now cross the invisible wall!</font>"

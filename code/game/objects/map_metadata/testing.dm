@@ -39,9 +39,3 @@
 	age6_done = TRUE
 	age7_done = TRUE
 	age8_done = TRUE
-
-/obj/map_metadata/testing/job_enabled_specialcheck(var/datum/job/J)
-	if (J.is_nomad == TRUE)
-		. = TRUE
-	else
-		. = FALSE

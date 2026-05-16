@@ -35,19 +35,6 @@
 	spawn(1800)
 		handle_reinforcements()
 
-/obj/map_metadata/red_menace/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_reds)
-		if (J.title == "US Army Lieutenant" || J.title == "US Army Captain")
-			if (processes.ticker.playtime_elapsed  < us_reinforcements_time)
-				. = FALSE
-			else
-				. = TRUE
-		else
-			. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/red_menace/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600

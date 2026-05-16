@@ -196,6 +196,7 @@
 	var/original_eyes = "Black"
 	var/original_facial = "Shaved"
 	var/original_hair = "Short Hair"
+	allowed_maps = list()
 /datum/job/civilian/prisoner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_nationality()
@@ -648,6 +649,7 @@
 /datum/job/civilian/abashiri/prisoner/wing1
 	title = "Wing1 Prisoner"
 	en_meaning = ""
+	allowed_maps = list(MAP_ABASHIRI)
 
 
 	spawn_location = "JoinLateCivB"
@@ -666,6 +668,7 @@
 /datum/job/civilian/abashiri/prisoner/wing2
 	title = "Wing2 Prisoner"
 	en_meaning = ""
+	allowed_maps = list(MAP_ABASHIRI)
 
 
 	spawn_location = "JoinLateCivC"
@@ -701,6 +704,7 @@
 /datum/job/civilian/abashiri/prisoner/wing3_danger
 	title = "Maximum Security Inmate"
 	en_meaning = ""
+	allowed_maps = list(MAP_ABASHIRI)
 
 
 	spawn_location = "JoinLateCiv"
@@ -727,6 +731,7 @@
 	title = "Abashiri Kanshi-in"
 	en_meaning = "Abashiri Warden"
 	rank_abbreviation = "Kan."
+	allowed_maps = list(MAP_ABASHIRI)
 
 
 	spawn_location = "JoinLateCivD"
@@ -778,6 +783,7 @@
 	title = "Abashiri Shocho Keimu-kan"
 	en_meaning = "Abashiri Head Guard"
 	rank_abbreviation = "Sho."
+	allowed_maps = list(MAP_ABASHIRI)
 
 	is_abashiri = TRUE
 	spawn_location = "JoinLateJPCap"
@@ -833,6 +839,7 @@
 	is_abashiri = TRUE
 	is_medic = TRUE
 	is_prison = TRUE
+	allowed_maps = list(MAP_ABASHIRI)
 
 	min_positions = 1
 	max_positions = 2
@@ -877,6 +884,7 @@
 	spawn_location = "JoinLateJP"
 	whitelisted = TRUE
 	is_prison = TRUE
+	allowed_maps = list(MAP_ABASHIRI)
 
 	min_positions = 8
 	max_positions = 10
