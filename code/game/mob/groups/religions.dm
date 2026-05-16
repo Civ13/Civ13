@@ -17,17 +17,17 @@
 		return
 	if (map.nomads == TRUE || map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
 		if (U.religion != "none")
-			to_chat(usr, SPAN_DANGER("You are already member of a religion. Abandon it first."))
+			to_chat(usr, SPAN_WARNING("You are already member of a religion. Abandon it first."))
 			return
 		else
 			if (U.getStatCoeff("philosophy") < 2.49)
-				to_chat(usr, SPAN_DANGER("Your philosophy skill is too low. You need 2.5 or more to create a religion."))
+				to_chat(usr, SPAN_WARNING("Your philosophy skill is too low. You need 2.5 or more to create a religion."))
 				return
 			var/choosename = input(src, "Choose a name for the new religion:") as text|null
 			create_religion_pr(choosename)
 			return
 	else
-		to_chat(usr, SPAN_DANGER("You cannot create a religion in this map."))
+		to_chat(usr, SPAN_WARNING("You cannot create a religion in this map."))
 		return
 
 /mob/living/human/proc/create_religion_pr(var/newname = "none")
@@ -36,7 +36,7 @@
 	var/mob/living/human/H = src
 	for(var/i = 1, i <= map.custom_religion_nr.len, i++)
 		if (map.custom_religion_nr[i] == newname)
-			to_chat(usr, SPAN_DANGER("That religion already exists. Choose another name."))
+			to_chat(usr, SPAN_WARNING("That religion already exists. Choose another name."))
 			return
 	if (newname != null && newname != "none")
 		var/choosetype = "Knowledge"
@@ -109,10 +109,10 @@
 		return
 	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
 		if (U.religion == "none")
-			to_chat(usr, SPAN_DANGER("You are not part of any religion."))
+			to_chat(usr, SPAN_WARNING("You are not part of any religion."))
 			return
 		else if (U.religious_leader || U.religious_clergy != FALSE)
-			to_chat(usr, SPAN_DANGER("You cannot leave a religion while part of its clergy!"))
+			to_chat(usr, SPAN_WARNING("You cannot leave a religion while part of its clergy!"))
 			return
 		else
 			var/list/rel_data = map.custom_religions[U.religion]
@@ -126,7 +126,7 @@
 			U.religious_leader = FALSE
 			to_chat(usr, "You left your religion. You are now an atheist.")
 	else
-		to_chat(usr, SPAN_DANGER("You cannot leave your religion in this map."))
+		to_chat(usr, SPAN_WARNING("You cannot leave your religion in this map."))
 		return
 
 /mob/living/human/proc/clergy()
@@ -140,10 +140,10 @@
 		return
 	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
 		if (U.religion == "none")
-			to_chat(usr, SPAN_DANGER("You are not part of any religion."))
+			to_chat(usr, SPAN_WARNING("You are not part of any religion."))
 			return
 		else if (U.religious_leader || U.religious_clergy != FALSE)
-			to_chat(usr, SPAN_DANGER("You are already part of the clergy!"))
+			to_chat(usr, SPAN_WARNING("You are already part of the clergy!"))
 			return
 		else if (WWinput(src, "Are you sure you want to join the clergy? The membership is for life.", "", "Cancel", list("Join the clergy", "Cancel")) == "Join the clergy")
 			switch(map.custom_religions[U.religion][7])
@@ -200,7 +200,7 @@
 					U.religious_clergy = "Cultists"
 					to_chat(U, "<big>You become a Cultist of the [U.religion]!</big>")
 	else
-		to_chat(usr, SPAN_DANGER("You cannot join the clergy on this map."))
+		to_chat(usr, SPAN_WARNING("You cannot join the clergy on this map."))
 		return
 /mob/living/human/proc/religion_check()
 	for (var/obj/item/clothing/CT in contents)
@@ -395,7 +395,7 @@ obj/structure/altar
 
 /obj/structure/altar/proc/try_destroy()
 	if (health <= 0)
-		visible_message(SPAN_DANGER("[src] is broken into pieces!"))
+		visible_message(SPAN_WARNING("[src] is broken into pieces!"))
 		qdel(src)
 		return
 

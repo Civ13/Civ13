@@ -119,19 +119,6 @@
         }
 
         /* Standard SS13 styles fallback */
-        .notice {
-            color: #5cb85c;
-        }
-
-        .warning {
-            color: #f0ad4e;
-            font-weight: bold;
-        }
-
-        .danger {
-            color: #d9534f;
-            font-weight: bold;
-        }
 
         .admin {
             color: #9b59b6;
@@ -333,15 +320,24 @@
             font-weight: bold;
         }
 
+        @keyframes danger-blink {
+            0%, 100% {
+                color: #b30000;
+            }
+            50% {
+                color: #ff3737;
+            }
+        }
+
         .danger {
-            color: #ff3737;
             font-weight: bold;
+            animation: danger-blink 1s infinite;
         }
 
         .userdanger {
-            color: #ff3737;
             font-weight: bold;
             font-size: 2.0em;
+            animation: danger-blink 1s infinite;
         }
 
         .userdanger_yellow {
@@ -351,9 +347,9 @@
         }
 
         .hugedanger {
-            color: #ff3737;
             font-weight: bold;
             font-size: 3.0em;
+            animation: danger-blink 1s infinite;
         }
 
         .warning {

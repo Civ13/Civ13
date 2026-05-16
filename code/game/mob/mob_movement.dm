@@ -640,11 +640,11 @@
 
 		if (mob_is_human)
 			if (H.getStat("stamina") == (H.getMaxStat("stamina")/2) && H.m_intent == "run" && world.time >= H.next_stamina_message)
-				to_chat(H, SPAN_DANGER("You're starting to tire from running so much."))
+				to_chat(H, SPAN_WARNING("You're starting to tire from running so much."))
 				H.next_stamina_message = world.time + 20
 
 			if (H.getStat("stamina") <= 0 && H.m_intent == "run")
-				to_chat(H, SPAN_DANGER("You're too tired to keep running."))
+				to_chat(H, SPAN_WARNING("You're too tired to keep running."))
 				if (H.m_intent != "walk")
 					H.m_intent = "walk" // Incase we don't set the intent to walk somehow, force-set it here...
 					if (mob.HUDneed.Find("m_intent")) // Find the movement intent in the HUDneed list() on mob_defines.

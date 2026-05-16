@@ -405,7 +405,7 @@
 		to_chat(H, SPAN_NOTICE("Fix \the [src] in place with a wrench first."))
 		return
 	else if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
-		to_chat(H, SPAN_DANGER("These chemicals are too complex for you to understand."))
+		to_chat(H, SPAN_WARNING("These chemicals are too complex for you to understand."))
 		return
 	else if (!check_power())
 		to_chat(H, SPAN_WARNING("\The [src] doesn't have any power!"))
@@ -432,7 +432,7 @@
 
 	else if (istype(W,/obj/item/weapon/reagent_containers))
 		if (istype(user) && user.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
-			to_chat(user, SPAN_DANGER("These chemicals are too complex for you to understand"))
+			to_chat(user, SPAN_WARNING("These chemicals are too complex for you to understand"))
 			return
 		var/obj/item/weapon/reagent_containers/B = W
 		if (B.reagents)
@@ -597,7 +597,7 @@
 		return
 
 	if (active)
-		to_chat(usr, SPAN_DANGER(">You cannot remove \the [inserted] while \the [src] is running!</span>"))
+		to_chat(usr, SPAN_WARNING(">You cannot remove \the [inserted] while \the [src] is running!</span>"))
 		return
 
 	if (inserted && !active)

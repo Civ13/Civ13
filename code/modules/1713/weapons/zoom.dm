@@ -204,7 +204,7 @@ Parts of code courtesy of Super3222
 			to_chat(H, "<b>Payload type: <red>[payload ? payload : "None selected"]</red></b>")
 			to_chat(H, "<b>Payload type remaining: <red>[payload ? payload_remaining : "None selected"]</red></b>")
 		else // Failsafe for if a faction that does not have a jet or a faction which is not defined uses a designator
-			to_chat(H, SPAN_DANGER("<b>There's no friendly CAS that you can call in.</b>"))
+			to_chat(H, SPAN_WARNING("<b>There's no friendly CAS that you can call in.</b>"))
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/attack_self(var/mob/living/human/H)
 	var/selection_type = WWinput(H, "What do you want to change?", "Category selection", "Attack direction", list("Attack direction", "Payload type"))
@@ -253,7 +253,7 @@ Parts of code courtesy of Super3222
 							checking = TRUE
 							var/distcon = max(abs(H.x-target.x),abs(H.y-target.y))
 							var/gdir = get_dir(H, target)
-							to_chat(H, SPAN_DANGER("<big>You begin calling in the target, stay still...</big>"))
+							to_chat(H, SPAN_WARNING("<big>You begin calling in the target, stay still...</big>"))
 
 							if (do_after(H, call_in_time, src, can_move = FALSE))
 								to_chat(H, "<big><b><font color='#ADD8E6'>Calling in airstrike: [distcon] meters [dir2text(gdir)].</font></b></big>")
@@ -292,10 +292,10 @@ Parts of code courtesy of Super3222
 								to_chat(H, "<big><b><font color='#ADD8E6'>CAS is [faction2_aircraft_rearming ? "re-arming" : "making their way back around"], try again in [ceil((faction2_aircraft_cooldown - world.time)/10)] seconds.</font></b></big>")
 						return
 				else
-					to_chat(H, SPAN_DANGER("<big><b>Select a payload first.</b></big>"))
+					to_chat(H, SPAN_WARNING("<big><b>Select a payload first.</b></big>"))
 					return
 			else
-				to_chat(H, SPAN_DANGER("<big><b>There's no friendly CAS that you can call in.</b></big>"))
+				to_chat(H, SPAN_WARNING("<big><b>There's no friendly CAS that you can call in.</b></big>"))
 				return
 
 /obj/item/weapon/attachment/scope/adjustable/verb/adjust_scope_verb()

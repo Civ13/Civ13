@@ -23,9 +23,9 @@
 /obj/structure/window/barrier/attack_hand(var/mob/user as mob)
 	if (locate(src) in range(user, 1)) // TODO: Somehow make the user face what they are dismantling.
 		if (dismantlable && user.a_intent == I_HARM)
-			user.visible_message(SPAN_DANGER("[user] starts dismantling the [src]."), SPAN_DANGER("You start dismantling the [src]."))
+			user.visible_message(SPAN_WARNING("[user] starts dismantling the [src]."), SPAN_WARNING("You start dismantling the [src]."))
 			if (do_after(user, 200, src))
-				user.visible_message(SPAN_DANGER("[user] finishes dismantling the [src]."), SPAN_DANGER("You finish dismantling the [src]."))
+				user.visible_message(SPAN_WARNING("[user] finishes dismantling the [src]."), SPAN_WARNING("You finish dismantling the [src]."))
 				var/turf = get_turf(src)
 
 				if (!istype(src, /obj/structure/window/barrier/incomplete))
@@ -114,7 +114,7 @@ var/set_dir = null // Set the variable outside of any scopes
 				icon_state = "dirt_wall"
 				new/obj/structure/window/barrier(loc, user, dir)
 				qdel(src)
-			user.visible_message(SPAN_DANGER("[user] adds dirt onto \the [src]."), SPAN_DANGER("You add dirt onto \the [src]."))
+			user.visible_message(SPAN_WARNING("[user] adds dirt onto \the [src]."), SPAN_WARNING("You add dirt onto \the [src]."))
 			qdel(O)
 			return
 	..()
@@ -142,7 +142,7 @@ var/set_dir = null // Set the variable outside of any scopes
 				icon_state = "sandbag"
 				new/obj/structure/window/barrier/sandbag(loc, user, dir)
 				qdel(src)
-			user.visible_message(SPAN_DANGER("[user] puts the sandbag onto \the [src]."), SPAN_DANGER("You put the sandbag onto \the [src]."))
+			user.visible_message(SPAN_WARNING("[user] puts the sandbag onto \the [src]."), SPAN_WARNING("You put the sandbag onto \the [src]."))
 			qdel(O)
 	else if (istype(O, /obj/item/weapon/material/shovel))
 		user.visible_message(SPAN_WARNING("[user] starts dismantling the [src] using the [O.name]."), SPAN_WARNING("You start dismantling the [src] using the [O.name]."))
@@ -151,7 +151,7 @@ var/set_dir = null // Set the variable outside of any scopes
 			var/mob/living/human/H = user
 			decon_time /= 1.5*H.getStatCoeff("crafting")
 		if (do_after(user, decon_time, src))
-			user.visible_message(SPAN_DANGER("[user] finishes dismantling the [src] using the [O.name]."), SPAN_DANGER("You finish dismantling the [src] using the [O.name]."))
+			user.visible_message(SPAN_WARNING("[user] finishes dismantling the [src] using the [O.name]."), SPAN_WARNING("You finish dismantling the [src] using the [O.name]."))
 			var/turf = get_turf(src)
 			new /obj/item/weapon/barrier/sandbag(turf)
 			qdel(src)
@@ -382,9 +382,9 @@ var/set_dir = null // Set the variable outside of any scopes
 /obj/structure/window/barrier/sandbag/attack_hand(var/mob/user as mob)
 	if (user.a_intent == I_HARM)
 		user.dir = get_dir(user, src)
-		visible_message(SPAN_DANGER("[user] starts dismantling the sandbag wall."), SPAN_DANGER("You start dismantling the sandbag wall."))
+		visible_message(SPAN_WARNING("[user] starts dismantling the sandbag wall."), SPAN_WARNING("You start dismantling the sandbag wall."))
 		if (do_after(user, 200, src))
-			visible_message(SPAN_DANGER("[user] finishes dismantling the sandbag wall"), SPAN_DANGER("You finish dismantling the sandbag wall."))
+			visible_message(SPAN_WARNING("[user] finishes dismantling the sandbag wall"), SPAN_WARNING("You finish dismantling the sandbag wall."))
 			var/turf = get_turf(src)
 			new /obj/item/weapon/barrier/sandbag(turf)
 			qdel(src)
@@ -397,9 +397,9 @@ var/set_dir = null // Set the variable outside of any scopes
 /obj/structure/window/barrier/rock/attack_hand(var/mob/user as mob)
 	if (user.a_intent == I_HARM)
 		user.dir = get_dir(user, src)
-		visible_message(SPAN_DANGER("[user] starts dismantling the rock wall."), SPAN_DANGER("You start dismantling the rock wall."))
+		visible_message(SPAN_WARNING("[user] starts dismantling the rock wall."), SPAN_WARNING("You start dismantling the rock wall."))
 		if (do_after(user, 200, src))
-			visible_message(SPAN_DANGER("[user] finishes dismantling the rock wall"), SPAN_DANGER("You finish dismantling the rock wall."))
+			visible_message(SPAN_WARNING("[user] finishes dismantling the rock wall"), SPAN_WARNING("You finish dismantling the rock wall."))
 			var/turf = get_turf(src)
 			new /obj/item/stack/material/stone(turf)
 			qdel(src)

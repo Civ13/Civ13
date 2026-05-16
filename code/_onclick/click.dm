@@ -106,7 +106,7 @@
 		if (istype(H.get_active_hand(), /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator))
 			if (istype(H.back, /obj/item/weapon/radio) || istype(H.wear_id, /obj/item/weapon/radio/walkietalkie))
 				if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
-					to_chat(H, SPAN_DANGER("You can't use this yet."))
+					to_chat(H, SPAN_WARNING("You can't use this yet."))
 					return
 				else
 					var/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/P = H.get_active_hand()
@@ -114,11 +114,11 @@
 						if (istype(H.get_inactive_hand(), /obj/item/weapon/compass))
 							P.rangecheck(H,A)
 						else
-							to_chat(H, SPAN_DANGER("You need to have a compass in your other hand to this!"))
+							to_chat(H, SPAN_WARNING("You need to have a compass in your other hand to this!"))
 					else
 						P.rangecheck(H,A)
 			else
-				to_chat(H, SPAN_DANGER("You need to have a radio to use this!"))
+				to_chat(H, SPAN_WARNING("You need to have a radio to use this!"))
 				return
 		if (istype(H.get_active_hand(), /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars))
 			var/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/P = H.get_active_hand()

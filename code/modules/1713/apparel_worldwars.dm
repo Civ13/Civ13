@@ -444,7 +444,7 @@
 			icon_state = "japhelm"
 			worn_state = "japhelm"
 			item_state_slots["slot_w_uniform"] = "japhelm"
-			to_chat(usr, SPAN_DANGER("You have nothing attached to your helmet!"))
+			to_chat(usr, SPAN_WARNING("You have nothing attached to your helmet!"))
 			update_clothing_icon()
 
 
@@ -513,7 +513,7 @@
 			icon_state = "japhelm_snlf"
 			worn_state = "japhelm_snlf"
 			item_state_slots["slot_w_uniform"] = "japhelm_snlf"
-			to_chat(usr, SPAN_DANGER("You have nothing attached to the helmet!"))
+			to_chat(usr, SPAN_WARNING("You have nothing attached to the helmet!"))
 			update_clothing_icon()
 
 /obj/item/clothing/head/helmet/ww2/japhelm_snlf/attackby(obj/item/W as obj, mob/user as mob)
@@ -562,7 +562,7 @@
 			icon_state = "japhelm_medic"
 			worn_state = "japhelm_medic"
 			item_state_slots["slot_w_uniform"] = "japhelm_medic"
-			to_chat(usr, SPAN_DANGER("You have nothing attached to the helmet!"))
+			to_chat(usr, SPAN_WARNING("You have nothing attached to the helmet!"))
 			update_clothing_icon()
 
 /obj/item/clothing/head/helmet/ww2/japhelm_med/attackby(obj/item/W as obj, mob/user as mob)
@@ -622,7 +622,7 @@
 			icon_state = "ww2_japcap"
 			worn_state = "ww2_japcap"
 			item_state_slots["slot_w_uniform"] = "ww2_japcap"
-			to_chat(usr, SPAN_DANGER("You have nothing attached to the cap!"))
+			to_chat(usr, SPAN_WARNING("You have nothing attached to the cap!"))
 			update_clothing_icon()
 
 /obj/item/clothing/head/ww2/japcap/attackby(obj/item/W as obj, mob/user as mob)
@@ -666,7 +666,7 @@
 			icon_state = "ww2_japoffcap"
 			worn_state = "ww2_japoffcap"
 			item_state_slots["slot_w_uniform"] = "ww2_japoffcap"
-			to_chat(usr, SPAN_DANGER("You have nothing attached to the cap!"))
+			to_chat(usr, SPAN_WARNING("You have nothing attached to the cap!"))
 			update_clothing_icon()
 /obj/item/clothing/head/ww2/japoffcap/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
@@ -730,7 +730,7 @@
 			icon_state = "ww2_japcap_snlf"
 			worn_state = "ww2_japcap_snlf"
 			item_state_slots["slot_w_uniform"] = "ww2_japcap_snlf"
-			to_chat(usr, SPAN_DANGER("You have nothing attached to the cap!"))
+			to_chat(usr, SPAN_WARNING("You have nothing attached to the cap!"))
 			update_clothing_icon()
 
 /obj/item/clothing/head/ww2/japcap_snlf/attackby(obj/item/W as obj, mob/user as mob)
@@ -1183,7 +1183,7 @@
 			icon_state = "japboots_ww2"
 			worn_state = "japboots_ww2"
 			item_state_slots["slot_w_uniform"] = "japboots_ww2"
-			to_chat(usr, SPAN_DANGER("You haven't any puttees on the boots!"))
+			to_chat(usr, SPAN_WARNING("You haven't any puttees on the boots!"))
 			puttees = FALSE
 			update_clothing_icon()
 

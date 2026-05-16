@@ -56,7 +56,7 @@
 
 	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
 		if (U.civilization != "none")
-			to_chat(usr, SPAN_DANGER("You are already in a faction. Abandon it first."))
+			to_chat(usr, SPAN_WARNING("You are already in a faction. Abandon it first."))
 			return
 		else
 			var/choosename = input(src, "Choose a name for the faction:") as text|null
@@ -66,7 +66,7 @@
 				make_title_changer()
 				return
 	else
-		to_chat(usr, SPAN_DANGER("You cannot create a faction in this map."))
+		to_chat(usr, SPAN_WARNING("You cannot create a faction in this map."))
 		return
 
 /mob/living/human/proc/create_faction_pr(var/newname = "none")
@@ -75,7 +75,7 @@
 	var/mob/living/human/H = src
 	for(var/i = 1, i <= map.custom_faction_nr.len, i++)
 		if (map.custom_faction_nr[i] == newname)
-			to_chat(usr, SPAN_DANGER("That faction already exists. Choose another name."))
+			to_chat(usr, SPAN_WARNING("That faction already exists. Choose another name."))
 			return
 	if (newname != null && newname != "none")
 		var/choosecolor1 = "#000000"
@@ -125,7 +125,7 @@
 			else
 				faction_leaving_proc()
 	else
-		to_chat(usr, SPAN_DANGER("You cannot leave a faction in this map."))
+		to_chat(usr, SPAN_WARNING("You cannot leave a faction in this map."))
 		return
 
 
@@ -185,13 +185,13 @@
 						U.remove_title_changer()
 						U.remove_commander()
 				else
-					to_chat(usr, SPAN_DANGER("You are not the Leader, so you can't transfer the faction's leadership."))
+					to_chat(usr, SPAN_WARNING("You are not the Leader, so you can't transfer the faction's leadership."))
 					return
 			else
-				to_chat(usr, SPAN_DANGER("There is no Leader, so you can't transfer the faction's leadership."))
+				to_chat(usr, SPAN_WARNING("There is no Leader, so you can't transfer the faction's leadership."))
 
 	else
-		to_chat(usr, SPAN_DANGER("You cannot transfer leadership of a faction in this map."))
+		to_chat(usr, SPAN_WARNING("You cannot transfer leadership of a faction in this map."))
 		return
 
 /mob/living/human/proc/become_leader()
@@ -209,7 +209,7 @@
 			return
 		else
 			if (map.custom_civs[U.civilization][4] != null)
-				to_chat(usr, SPAN_DANGER("There already is a Leader of the faction. He must transfer the leadership or be removed first."))
+				to_chat(usr, SPAN_WARNING("There already is a Leader of the faction. He must transfer the leadership or be removed first."))
 				return
 
 			else if (map.custom_civs[U.civilization][4] == null)
@@ -220,7 +220,7 @@
 				U.make_title_changer()
 				make_commander()
 	else
-		to_chat(usr, SPAN_DANGER("You cannot become a Leader in this map."))
+		to_chat(usr, SPAN_WARNING("You cannot become a Leader in this map."))
 		return
 
 
@@ -237,7 +237,7 @@
 				return
 			else
 				if (H.faction_perms[3] == 0)
-					to_chat(usr, SPAN_DANGER("You don't have the permissions to give titles."))
+					to_chat(usr, SPAN_WARNING("You don't have the permissions to give titles."))
 					return
 
 				else
@@ -287,7 +287,7 @@
 				WWalert(U, job_msg, "Job Assignment")
 				return
 	else
-		to_chat(usr, SPAN_DANGER("You cannot give titles in this map."))
+		to_chat(usr, SPAN_WARNING("You cannot give titles in this map."))
 		return
 
 /mob/living/human/proc/Remove_Title()
@@ -303,7 +303,7 @@
 				return
 			else
 				if (H.faction_perms[3] == 0)
-					to_chat(usr, SPAN_DANGER("You don't have the permissions to remove titles."))
+					to_chat(usr, SPAN_WARNING("You don't have the permissions to remove titles."))
 					return
 
 				else
@@ -345,7 +345,7 @@
 				to_chat(usr, "[U] has no job assigned.")
 				return
 	else
-		to_chat(usr, SPAN_DANGER("You cannot give titles in this map."))
+		to_chat(usr, SPAN_WARNING("You cannot give titles in this map."))
 		return
 
 ////////////////POSTERS, BANNERS, ETC//////////////////////////////
