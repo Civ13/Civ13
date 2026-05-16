@@ -41,14 +41,6 @@
 	var/a2_control = "none"
 	grace_wall_timer = 2400
 
-/obj/map_metadata/capitol_hill/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (gamemode != "Protect the VIP")
-		if (J.title == "President of the USA")
-			. = FALSE
-		else
-			. = TRUE
-
 
 /obj/map_metadata/capitol_hill/New()
 	..()
