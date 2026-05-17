@@ -1,4 +1,16 @@
 var/global/obj/map_metadata/map = null
+var/global/list/map_id_to_title = list()
+var/global/list/map_title_to_id = list()
+
+/hook/startup/proc/init_map_titles()
+	for (var/map_type in typesof(/obj/map_metadata))
+		var/obj/map_metadata/M = map_type
+		var/id = initial(M.ID)
+		var/title = initial(M.title)
+		if (id && title)
+			map_id_to_title[id] = title
+			map_title_to_id[title] = id
+	return TRUE
 //Max levels showing players how far to advance, appears on the Character tab
 var/civmax_research = list(230,230,230)
 
