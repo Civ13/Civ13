@@ -945,7 +945,7 @@
 	en_meaning = "PLA Captain"
 	rank_abbreviation = "Shang."
 	spawn_location = "JoinLateRUSgt"
-
+	allowed_maps = list(MAP_CAPITOL_HILL_PLA)
 	is_pla = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
@@ -992,7 +992,7 @@
 	en_meaning = "PLA Lieutenant"
 	rank_abbreviation = "Zh."
 	spawn_location = "JoinLateRUSgt"
-
+	allowed_maps = list(MAP_CAPITOL_HILL_PLA)
 	is_pla = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -1039,7 +1039,7 @@
 	en_meaning = "PLA Sergeant"
 	rank_abbreviation = "Zh."
 	spawn_location = "JoinLateRUSgt"
-
+	allowed_maps = list(MAP_CAPITOL_HILL_PLA)
 	is_pla = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
@@ -1086,7 +1086,7 @@
 	rank_abbreviation = "Sdb."
 	en_meaning = "PLA Corpsman"
 	spawn_location = "JoinLateRUMedic"
-
+	allowed_maps = list(MAP_CAPITOL_HILL_PLA)
 	is_medic = TRUE
 	is_pla = TRUE
 
@@ -1135,7 +1135,7 @@
 	spawn_location = "JoinLateRU"
 	is_pla = TRUE
 	uses_squads = TRUE
-
+	allowed_maps = list(MAP_CAPITOL_HILL_PLA)
 	min_positions = 25
 	max_positions = 100
 
@@ -1173,7 +1173,7 @@
 	spawn_location = "JoinLateRU"
 	uses_squads = TRUE
 	is_pla = TRUE
-
+	allowed_maps = list(MAP_CAPITOL_HILL_PLA)
 	min_positions = 5
 	max_positions = 10
 

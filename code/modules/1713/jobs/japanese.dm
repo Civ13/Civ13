@@ -1262,7 +1262,7 @@
 	title = "Horyoshuyojo-Cho"
 	en_meaning = "POW Camp Director"
 	rank_abbreviation = "Cho."
-	allowed_maps = list(MAP_IWO_JIMA)
+	allowed_maps = list(MAP_RIVER_KWAI)
 
 
 	spawn_location = "JoinLateJPCap"
@@ -1320,7 +1320,7 @@
 	title = "Horyoshuyojo Gunso"
 	en_meaning = "POW Camp Sergeant"
 	rank_abbreviation = "Gu."
-	allowed_maps = list(MAP_IWO_JIMA)
+	allowed_maps = list(MAP_RIVER_KWAI)
 
 	spawn_location = "JoinLateJP"
 	is_officer = TRUE
@@ -1374,7 +1374,7 @@
 	title = "Horyoshuyojo Sento-i"
 	en_meaning = "Camp Medic"
 	rank_abbreviation = "Sen-i"
-	allowed_maps = list(MAP_IWO_JIMA)
+	allowed_maps = list(MAP_RIVER_KWAI)
 
 	spawn_location = "JoinLateJPDoc"
 
@@ -1423,7 +1423,7 @@
 	title = "Horyoshuyojo Anchisukiru"
 	en_meaning = "POW Camp Guard"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_IWO_JIMA)
+	allowed_maps = list(MAP_RIVER_KWAI)
 
 	spawn_location = "JoinLateJP"
 

@@ -474,7 +474,7 @@
 	title = "Medieval Battle Royale Fighter"
 	en_meaning = ""
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_BATTLEROYALE_MEDIEVAL)
 	spawn_location = "JoinLateDM"
 
 	is_deathmatch = TRUE
@@ -533,6 +533,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateDM"
+	allowed_maps = list(MAP_BATTLEROYALE_MODERN)
 
 	is_deathmatch = TRUE
 	is_modernday = TRUE

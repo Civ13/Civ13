@@ -6,7 +6,6 @@
 	spawn_location = "JoinLateCiv"
 
 	is_yeltsin = FALSE
-	is_grozny = FALSE
 	is_squad_leader = TRUE
 	is_permfr = TRUE
 
@@ -74,7 +73,6 @@
 	spawn_location = "JoinLateCiv"
 
 	is_yeltsin = FALSE
-	is_grozny = FALSE
 	is_permfr = TRUE
 
 	uses_squads = TRUE
@@ -156,7 +154,6 @@
 	spawn_location = "JoinLateBunk"
 	is_kremlin = FALSE
 	is_yeltsin = FALSE
-	is_grozny = FALSE
 	is_permfrb = TRUE
 	is_squad_leader = TRUE
 
@@ -210,7 +207,6 @@
 	max_positions = 35
 	is_kremlin = FALSE
 	is_yeltsin = FALSE
-	is_grozny = FALSE
 	is_permfrb = TRUE
 	uses_squads = TRUE
 

@@ -33,7 +33,7 @@
 	is_coldwar = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
-	allowed_maps = list(MAP_HUE)
+	allowed_maps = list(MAP_HUE, MAP_COMPOUND, MAP_ROAD_TO_DAK_TO)
 
 	min_positions = 2
 	max_positions = 8
@@ -101,7 +101,7 @@
 	rank_abbreviation = "Bac Si"
 	can_be_female = TRUE
 	spawn_location = "JoinLateJP"
-	allowed_maps = list(MAP_HUE)
+	allowed_maps = list(MAP_HUE, MAP_COMPOUND, MAP_ROAD_TO_DAK_TO)
 
 	is_medic = TRUE
 	is_coldwar = TRUE
@@ -176,7 +176,7 @@
 	title = "Tuy Phai"
 	en_meaning = "Vietcong Courer/Runner"
 	rank_abbreviation = "Tuy Phai"
-	allowed_maps = list(MAP_HUE)
+	allowed_maps = list(MAP_HUE, MAP_COMPOUND, MAP_ROAD_TO_DAK_TO)
 
 	spawn_location = "JoinLateJP"
 
@@ -257,7 +257,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateJP"
-	allowed_maps = list(MAP_HUE)
+	allowed_maps = list(MAP_HUE, MAP_COMPOUND, MAP_ROAD_TO_DAK_TO)
 
 	is_coldwar = TRUE
 	uses_squads = TRUE
@@ -1195,6 +1195,7 @@
 
 	min_positions = 1
 	max_positions = 1
+	allowed_maps = list(MAP_HOSTAGES)
 
 /datum/job/american/specops_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -1233,6 +1234,7 @@
 	is_medic = TRUE
 	is_coldwar = TRUE
 	is_specops = TRUE
+	allowed_maps = list(MAP_HOSTAGES)
 
 	min_positions = 1
 	max_positions = 3
@@ -1270,6 +1272,7 @@
 	can_be_female = TRUE
 	is_coldwar = TRUE
 	is_specops = TRUE
+	allowed_maps = list(MAP_HOSTAGES)
 
 	min_positions = 6
 	max_positions = 33
@@ -1303,7 +1306,7 @@
 	title = "Insurgent Leader"
 	en_meaning = ""
 	rank_abbreviation = "Leader"
-	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2, MAP_HOSTAGES)
 
 	spawn_location = "JoinLateAR"
 
@@ -1382,7 +1385,7 @@
 	title = "Insurgent Field Medic"
 	en_meaning = ""
 	rank_abbreviation = "Medic"
-	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2, MAP_HOSTAGES)
 
 	spawn_location = "JoinLateAR"
 
@@ -1479,7 +1482,7 @@
 	title = "Insurgent"
 	en_meaning = ""
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2, MAP_HOSTAGES)
 
 	spawn_location = "JoinLateAR"
 

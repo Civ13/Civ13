@@ -25,19 +25,6 @@
 	grace_wall_timer = 3000
 	songs = list(
 		"Divinitus:1" = 'sound/music/divinitus.ogg',)
-obj/map_metadata/teutoburg/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/roman))
-		if (J.is_gladiator == TRUE || J.is_skyrim == TRUE)
-			. = FALSE
-		else
-			. = TRUE
-	else if (istype(J, /datum/job/german))
-		if (J.is_ancient == TRUE)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
+
 
 

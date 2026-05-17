@@ -76,6 +76,7 @@
 	en_meaning = "VIP"
 	rank_abbreviation = "Vice-President"
 	can_be_female = FALSE
+	allowed_maps = list(MAP_CAPITOL_HILL_PLA)
 
 	equip(var/mob/living/human/H)
 		H.gender = MALE

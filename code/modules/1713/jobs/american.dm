@@ -1,7 +1,7 @@
 /datum/job/american/captain_ww2
 	title = "US Captain"
 	rank_abbreviation = "Cpt."
-	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
+	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRNCap"
 
@@ -50,7 +50,7 @@
 /datum/job/american/lieutenant_ww2
 	title = "US Lieutenant"
 	rank_abbreviation = "Lt."
-	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRNBoatswain"
 
@@ -99,7 +99,7 @@
 /datum/job/american/sergeant_ww2
 	title = "US Sergeant"
 	rank_abbreviation = "Sgt."
-	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRN"
 
@@ -155,7 +155,7 @@
 /datum/job/american/medic_ww2
 	title = "US Field Medic"
 	rank_abbreviation = "Cpl."
-	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRNSurgeon"
 	is_medic = TRUE
@@ -216,7 +216,7 @@
 /datum/job/american/doctor_ww2
 	title = "US Doctor"
 	rank_abbreviation = "2lt."
-	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRNSurgeon"
 	is_ardennes = TRUE
@@ -265,7 +265,7 @@
 /datum/job/american/sniper_ww2
 	title = "US Sniper"
 	rank_abbreviation = "Pfc."
-	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRN"
 
@@ -322,7 +322,7 @@
 /datum/job/american/flamethrower_ww2
 	title = "Flamethrower Unit"
 	rank_abbreviation = "Pfc."
-	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRN"
 
@@ -377,7 +377,7 @@
 /datum/job/american/machine_gunner_ww2
 	title = "US Machine Gunner"
 	rank_abbreviation = "Pfc."
-	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRN"
 
@@ -436,7 +436,7 @@
 /datum/job/american/ammo_bearer_ww2
 	title = "Ammo Bearer"
 	rank_abbreviation = "Pfc."
-	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRN"
 
@@ -494,7 +494,7 @@
 /datum/job/american/soldier_ww2
 	title = "US Rifleman"
 	rank_abbreviation = "Pvt."
-	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRN"
 
@@ -606,7 +606,7 @@
 /datum/job/american/mp_ww2
 	title = "US Military Police"
 	rank_abbreviation = "Ssgt."
-	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
@@ -653,7 +653,7 @@
 /datum/job/american/chef_ww2
 	title = "US Chef"
 	rank_abbreviation = "Pfc."
-	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
+	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRNCook"
 
@@ -694,7 +694,7 @@
 /datum/job/american/soldier_ww2_filipino
 	title = "Filipino Scout"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
+	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRN"
 	is_pacific = TRUE

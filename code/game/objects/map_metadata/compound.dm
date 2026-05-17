@@ -29,20 +29,6 @@
 	artillery_count = 3
 	grace_wall_timer = 3000
 
-obj/map_metadata/compound/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/vietnamese))
-		if (J.is_nva)
-			. = FALSE
-		else
-			. = TRUE
-	else if (istype(J, /datum/job/american))
-		if (J.is_coldwar && !J.is_specops && !J.is_modernday)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
 
 /obj/map_metadata/compound/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"

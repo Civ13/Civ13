@@ -29,20 +29,6 @@
 	gamemode = "Siege"
 	grace_wall_timer = 3600
 
-obj/map_metadata/whiterun/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/roman))
-		if (J.is_skyrim && J.is_imperial)
-			. = TRUE
-		else
-			. = FALSE
-	else if (istype(J, /datum/job/civilian))
-		if (J.is_skyrim == TRUE && J.is_stormcloak == TRUE)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
 
 /obj/map_metadata/whiterun/roundend_condition_def2name(define)
 	..()

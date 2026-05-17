@@ -49,9 +49,6 @@
 /datum/job/var/is_yakuza = FALSE
 /datum/job/var/is_yama = FALSE
 /datum/job/var/is_ichi = FALSE
-/datum/job/var/is_samurai = FALSE
-/datum/job/var/is_eastern = FALSE
-/datum/job/var/is_western = FALSE
 /datum/job/var/is_abashiri = FALSE
 /datum/job/var/is_nva = FALSE
 /datum/job/var/is_warlords = FALSE
@@ -70,11 +67,6 @@
 /datum/job/var/is_kremlin = FALSE
 /datum/job/var/can_be_minor = FALSE
 /datum/job/var/is_karelia = FALSE
-/datum/job/var/is_grozny = FALSE
-/datum/job/var/is_operation_falcon = FALSE
-/datum/job/var/is_skyrim = FALSE
-/datum/job/var/is_imperial = FALSE
-/datum/job/var/is_stormcloak = FALSE
 /datum/job/var/is_ukrainerussowar = FALSE
 /datum/job/var/is_russojapwar = FALSE
 /datum/job/var/mosinonly = FALSE
@@ -98,13 +90,11 @@
 /datum/job/var/is_ccw = FALSE
 /datum/job/var/is_tadoj = FALSE
 /datum/job/var/is_bordersov = FALSE
-/datum/job/var/is_borderger = FALSE
 /datum/job/var/is_permfr = FALSE
 /datum/job/var/is_permfrb = FALSE
 /datum/job/var/is_warsawger = FALSE
 /datum/job/var/is_siberiad = FALSE
 /datum/job/var/is_sinosovbor = FALSE
-/datum/job/var/is_spainciv = FALSE
 /datum/job/var/is_ardennes = FALSE
 /datum/job/var/is_syria = FALSE
 /datum/job/var/is_rotstadt = FALSE

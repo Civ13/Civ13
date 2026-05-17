@@ -8,7 +8,6 @@
 
 	spawn_location = "JoinLateRUCap"
 
-	is_grozny = FALSE
 	is_yeltsin = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
@@ -68,7 +67,6 @@
 	spawn_location = "JoinLateRUCap"
 
 	is_yeltsin = TRUE
-	is_grozny = FALSE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -136,7 +134,6 @@
 
 	is_medic = TRUE
 	is_yeltsin = TRUE
-	is_grozny = FALSE
 
 	min_positions = 1
 	max_positions = 8
@@ -248,7 +245,6 @@
 	spawn_location = "JoinLateRU"
 
 	is_yeltsin = TRUE
-	is_grozny = FALSE
 
 	uses_squads = TRUE
 

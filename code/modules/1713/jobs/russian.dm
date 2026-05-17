@@ -343,7 +343,7 @@
 	title = "K.A. Kapitan"
 	en_meaning = "Red Army Captain"
 	rank_abbreviation = "Kpt."
-	allowed_maps = list(MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_VITEBSK)
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 
 	spawn_location = "JoinLateRUCap"
@@ -396,7 +396,7 @@
 	title = "NKVD Leytenant"
 	en_meaning = "NKVD Officer"
 	rank_abbreviation = "NKVD Leyt."
-	allowed_maps = list(MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_VITEBSK)
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 
 	spawn_location = "JoinLateRUCap"
@@ -446,7 +446,7 @@
 	title = "K.A. Serjant"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Srj."
-	allowed_maps = list(MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_VITEBSK)
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	is_squad_leader = TRUE
@@ -514,7 +514,7 @@
 	title = "K.A. Voynenvrach"
 	en_meaning = "Combat Medic"
 	rank_abbreviation = "Srj."
-	allowed_maps = list(MAP_BIGSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_KURSK, MAP_PAVLOV_HOUSE, MAP_BERLIN, MAP_REICHSTAG, MAP_STALINGRAD, MAP_VITEBSK)
+	allowed_maps = list(MAP_BIGSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_KURSK, MAP_PAVLOV_HOUSE, MAP_BERLIN, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRUDoc"
 	is_ww2 = TRUE
@@ -564,7 +564,7 @@
 	title = "K.A. Pulemetchik"
 	en_meaning = "Red Army Machinegunner"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_VITEBSK)
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	is_ww2 = TRUE
@@ -616,7 +616,7 @@
 	title = "K.A. Pomoshnik Pulemetchika"
 	en_meaning = "Red Army Machinegunner Assistant"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_VITEBSK)
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	is_ww2 = TRUE
@@ -676,7 +676,7 @@
 	title = "K.A. Protivotankovyy Strelok"
 	en_meaning = "Red Army AT Rifleman"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_FOREST, MAP_KURSK, MAP_PAVLOV_HOUSE, MAP_STALINGRAD, MAP_VITEBSK)
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_KURSK, MAP_PAVLOV_HOUSE, MAP_STALINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
@@ -734,7 +734,7 @@
 	title = "K.A. Pomoshnik Protivotankovo Strelka"
 	en_meaning = "Red Army Assistant AT Rifleman"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_FOREST, MAP_KURSK, MAP_PAVLOV_HOUSE, MAP_STALINGRAD, MAP_VITEBSK)
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_KURSK, MAP_PAVLOV_HOUSE, MAP_STALINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
@@ -809,7 +809,7 @@
 	title = "K.A. Ognemetchik"
 	en_meaning = "Red Army Flamethrower Unit"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_VITEBSK)
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
@@ -860,7 +860,7 @@
 	title = "K.A. Snaiper"
 	en_meaning = "Red Army Sniper"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_KURSK, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_VITEBSK)
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_KURSK, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	is_karelia = TRUE
@@ -918,7 +918,7 @@
 	title = "K.A. Soldat"
 	en_meaning = "Red Army Private"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_VITEBSK)
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
@@ -2030,7 +2030,7 @@
 	
 	is_tanker = TRUE
 	uses_squads = TRUE
-	allowed_maps = list(MAP_FOREST, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_KURSK, MAP_STALINGRAD, MAP_VITEBSK)
+	allowed_maps = list(MAP_FOREST, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_KURSK, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	min_positions = 4
 	max_positions = 32
@@ -2389,7 +2389,7 @@
 	spawn_location = "JoinLateRUCap"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -2447,7 +2447,7 @@
 	spawn_location = "JoinLateRUSL"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -2507,7 +2507,7 @@
 	spawn_location = "JoinLateRU"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	is_medic = TRUE
 	uses_squads = TRUE
 
@@ -2566,7 +2566,7 @@
 	spawn_location = "JoinLateRU"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	is_radioman = TRUE
 	uses_squads = TRUE
 
@@ -2621,7 +2621,7 @@
 	spawn_location = "JoinLateRU"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	uses_squads = TRUE
 
 	min_positions = 1
@@ -2680,7 +2680,7 @@
 	spawn_location = "JoinLateRU"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	uses_squads = TRUE
 
 	min_positions = 5
@@ -2737,7 +2737,7 @@
 	spawn_location = "JoinLateRU"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 
 	min_positions = 1
 	max_positions = 6
@@ -2785,7 +2785,7 @@
 	spawn_location = "JoinLateRU"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 
 	min_positions = 1
 	max_positions = 6
@@ -2836,7 +2836,7 @@
 	spawn_location = "JoinLateRU"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 
 	min_positions = 1
 	max_positions = 10
@@ -2890,7 +2890,7 @@
 	spawn_location = "ParadropRU"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	is_paratrooper = TRUE
 
 	min_positions = 1

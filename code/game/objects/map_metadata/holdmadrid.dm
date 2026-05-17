@@ -27,12 +27,6 @@
 		"Banda Bassotti - Luna rossa:1" = 'sound/music/lunarossa.ogg',)
 	gamemode = "Siege"
 
-obj/map_metadata/holdmadrid/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_spainciv == TRUE)
-		. = TRUE
-	else
-		. = FALSE
 
 /obj/map_metadata/holdmadrid/roundend_condition_def2name(define)
 	..()

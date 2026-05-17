@@ -10,6 +10,7 @@
 	is_commander = TRUE
 	can_be_female = TRUE
 	is_prison = TRUE
+	allowed_maps = list(MAP_GULAG13)
 
 	min_positions = 1
 	max_positions = 1
@@ -61,7 +62,7 @@
 	whitelisted = TRUE
 	can_be_female = TRUE
 	is_prison = TRUE
-
+	allowed_maps = list(MAP_GULAG13)
 	min_positions = 2
 	max_positions = 10
 
@@ -111,6 +112,7 @@
 	can_be_female = TRUE
 	is_medic = TRUE
 	is_prison = TRUE
+	allowed_maps = list(MAP_GULAG13)
 
 	min_positions = 1
 	max_positions = 4
@@ -151,6 +153,7 @@
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
 	is_prison = TRUE
+	allowed_maps = list(MAP_GULAG13)
 
 	min_positions = 10
 	max_positions = 50
@@ -489,6 +492,7 @@
 /datum/job/civilian/prisoner/janitor
 	title = "Janitor"
 	en_meaning = ""
+	allowed_maps = list(MAP_GULAG13)
 
 
 	min_positions = 2
@@ -509,6 +513,7 @@
 /datum/job/civilian/prisoner/miner
 	title = "Miner"
 	en_meaning = ""
+	allowed_maps = list(MAP_GULAG13)
 
 
 	min_positions = 10
@@ -568,6 +573,7 @@
 /datum/job/civilian/prisoner/nurse
 	title = "Nurse Helper"
 	en_meaning = ""
+	allowed_maps = list(MAP_GULAG13)
 
 
 	min_positions = 3
@@ -589,6 +595,7 @@
 /datum/job/civilian/prisoner/kitchen
 	title = "Kitchen Duty"
 	en_meaning = ""
+	allowed_maps = list(MAP_GULAG13)
 
 
 	min_positions = 3

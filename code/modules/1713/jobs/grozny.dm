@@ -11,7 +11,6 @@
 	
 	is_commander = TRUE
 	is_officer = TRUE
-	is_grozny = TRUE
 	is_modernday = TRUE
 	whitelisted = TRUE
 
@@ -76,7 +75,6 @@
 	spawn_location = "JoinLateCC"
 	min_positions = 10
 	max_positions = 200
-	is_grozny = TRUE
 	is_modernday = TRUE
 	allowed_maps = list(MAP_GROZNY)
 
@@ -258,7 +256,6 @@
 	spawn_location = "JoinLateCC"
 
 	is_medic = TRUE
-	is_grozny = TRUE
 	is_modernday = TRUE
 
 	min_positions = 3
@@ -326,7 +323,7 @@
 
 	spawn_location = "JoinLateRUCap"
 
-	is_grozny = TRUE
+	allowed_maps = list(MAP_CONSTANTINOPOLI)
 	is_officer = TRUE
 	is_commander = TRUE
 	is_modernday = TRUE
@@ -396,7 +393,7 @@
 
 	spawn_location = "JoinLateRUSgt"
 
-	is_grozny = TRUE
+	allowed_maps = list(MAP_CONSTANTINOPOLI)
 	is_modernday = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
@@ -472,7 +469,7 @@
 	spawn_location = "JoinLateRUMedic"
 
 	is_medic = TRUE
-	is_grozny = TRUE
+	allowed_maps = list(MAP_CONSTANTINOPOLI)
 	is_modernday = TRUE
 
 	min_positions = 2
@@ -546,7 +543,7 @@
 
 	spawn_location = "JoinLateRURadop"
 
-	is_grozny = TRUE
+	allowed_maps = list(MAP_CONSTANTINOPOLI)
 	is_radioman = TRUE
 	uses_squads = TRUE
 	is_modernday = TRUE
@@ -641,7 +638,7 @@
 
 	spawn_location = "JoinLateRU"
 
-	is_grozny = TRUE
+	allowed_maps = list(MAP_CONSTANTINOPOLI)
 	is_modernday = TRUE
 
 	uses_squads = TRUE
@@ -743,7 +740,7 @@
 
 	spawn_location = "JoinLateRUsptz"
 	whitelisted = TRUE
-	is_grozny = TRUE
+	allowed_maps = list(MAP_CONSTANTINOPOLI)
 	is_modernday = TRUE
 
 	uses_squads = TRUE

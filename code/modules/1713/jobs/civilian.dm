@@ -19,7 +19,7 @@
 	whitelisted = TRUE
 	is_governor = TRUE
 	is_1713 = TRUE
-	allowed_maps = list()
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	min_positions = 1
 	max_positions = 1
@@ -56,7 +56,7 @@
 	title = "Architect"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Architect"
-	allowed_maps = list()
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	spawn_location = "JoinLateCivA"
 
@@ -245,7 +245,7 @@
 	title = "Town Guard Officer"
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Officer"
-	allowed_maps = list()
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	spawn_location = "JoinLateCivC"
 
@@ -300,7 +300,7 @@
 	title = "Town Guard"
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
-	allowed_maps = list()
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	spawn_location = "JoinLateCivC"
 
@@ -354,8 +354,7 @@
 	title = "Doctor"
 	en_meaning = "Colony Medic"
 	rank_abbreviation = "Doctor"
-	allowed_maps = list()
-
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 	spawn_location = "JoinLateCiv"
 
 	is_medic = TRUE
@@ -416,7 +415,7 @@
 	title = "Merchant"
 	en_meaning = "Colony Trader"
 	rank_abbreviation = "Merchant"
-	allowed_maps = list()
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	spawn_location = "JoinLateCiv"
 	is_merchant = TRUE
@@ -479,7 +478,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
-	allowed_maps = list()
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	is_religious = TRUE
 	is_1713 = TRUE
@@ -521,7 +520,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
-	allowed_maps = list()
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	is_1713 = TRUE
 
@@ -580,7 +579,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
-	allowed_maps = list()
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	is_1713 = TRUE
 
@@ -641,7 +640,7 @@
 	rank_abbreviation = "Carpenter"
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
-	allowed_maps = list()
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	is_1713 = TRUE
 
@@ -715,7 +714,7 @@
 	title = "Blacksmith"
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Blacksmith"
-	allowed_maps = list()
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	spawn_location = "JoinLateCiv"
 	whitelisted = TRUE
@@ -793,7 +792,7 @@
 	rank_abbreviation = "Innkeeper"
 	can_be_female = TRUE
 	spawn_location = "JoinLateCivD"
-	allowed_maps = list()
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	is_1713 = TRUE
 
@@ -869,7 +868,7 @@
 	rank_abbreviation = "Waiter"
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
-	allowed_maps = list()
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	is_1713 = TRUE
 
@@ -947,7 +946,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
-	allowed_maps = list()
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	is_1713 = TRUE
 
@@ -1020,7 +1019,7 @@
 	title = "Beggar"
 	en_meaning = "Poor Colonist"
 	rank_abbreviation = ""
-	allowed_maps = list()
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	spawn_location = "JoinLateCiv"
 	can_be_female = TRUE
@@ -1065,7 +1064,7 @@
 	whitelisted = TRUE
 
 	is_governor = TRUE
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 	min_positions = 1
 	max_positions = 1
@@ -1113,7 +1112,7 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_officer = TRUE
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 
 	min_positions = 1
@@ -1178,7 +1177,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 	is_vip = TRUE
 
 
@@ -1224,7 +1223,7 @@
 	is_merchant = TRUE
 	can_be_female = TRUE
 	whitelisted = TRUE
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 	min_positions = 1
 	max_positions = 2
@@ -1286,7 +1285,7 @@
 	whitelisted = TRUE
 	is_vip = TRUE
 
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 
 	min_positions = 1
@@ -1330,7 +1329,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 
 	min_positions = 1
@@ -1375,7 +1374,7 @@
 
 	spawn_location = "JoinLateCivC"
 	whitelisted = TRUE
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 
 	min_positions = 1
@@ -1424,7 +1423,7 @@
 	spawn_location = "JoinLateCiv"
 
 	is_medic = TRUE
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 
 	min_positions = 1
@@ -1485,7 +1484,7 @@
 	is_merchant = TRUE
 	can_be_female = TRUE
 	whitelisted = TRUE
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 	min_positions = 1
 	max_positions = 3
@@ -1541,7 +1540,7 @@
 	spawn_location = "JoinLateCiv"
 	can_be_female = TRUE
 	is_religious = TRUE
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 	min_positions = 1
 	max_positions = 20
@@ -1579,7 +1578,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 	can_be_female = TRUE
 	min_positions = 3
@@ -1645,7 +1644,7 @@
 
 	spawn_location = "JoinLateCiv"
 	can_be_female = TRUE
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 
 	min_positions = 3
@@ -1702,7 +1701,7 @@
 
 	spawn_location = "JoinLateCiv"
 
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 	can_be_female = TRUE
 
 	min_positions = 3
@@ -1775,7 +1774,7 @@
 	spawn_location = "JoinLateCiv"
 	whitelisted = TRUE
 
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 	can_be_female = TRUE
 
 	min_positions = 2
@@ -1848,7 +1847,7 @@
 
 	spawn_location = "JoinLateCivD"
 
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 	can_be_female = TRUE
 
 	min_positions = 1
@@ -1904,7 +1903,7 @@
 
 	spawn_location = "JoinLateCiv"
 
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 	can_be_female = TRUE
 
 	min_positions = 1
@@ -1958,7 +1957,7 @@
 
 	spawn_location = "JoinLateCiv"
 
-	allowed_maps = list(MAP_PIONEERS)
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 	can_be_female = TRUE
 
 	min_positions = 10
@@ -3673,7 +3672,7 @@
 
 /////////////////////////////////////spanish civil war republicans/////////////////////////////////////////
 /datum/job/civilian/spanish
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 	faction = "RepSpain"
 	default_language = "Spanish"
 
@@ -3691,7 +3690,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 
 	min_positions = 1
 	max_positions = 1
@@ -3739,7 +3738,7 @@
 	is_officer = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 
 	min_positions = 2
 	max_positions = 8
@@ -3786,7 +3785,7 @@
 
 	spawn_location = "JoinLateSP"
 
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 	is_medic = TRUE
 	can_be_female = TRUE
 	min_positions = 1
@@ -3830,7 +3829,7 @@
 
 	spawn_location = "JoinLateSP"
 	can_be_female = FALSE
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 	uses_squads = TRUE
 
 	min_positions = 20
@@ -3897,7 +3896,7 @@
 
 	spawn_location = "JoinLateSP"
 	can_be_female = TRUE
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 	uses_squads = TRUE
 
 

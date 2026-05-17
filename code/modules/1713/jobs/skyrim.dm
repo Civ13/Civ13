@@ -20,14 +20,12 @@
 /datum/job/roman/skyrim/imperial/balgruuf	//imperial - captain
 	title = "Jarl Balgruuf"
 	rank_abbreviation = "Jarl"
-	allowed_maps = list()
+	allowed_maps = list(MAP_WHITERUN)
 
 	spawn_location = "JoinLateRUCap"
 
 	is_commander = TRUE
 	is_officer = TRUE
-	is_skyrim = TRUE
-	is_imperial = TRUE
 	is_medieval = TRUE
 	selection_color = "#9A662C"
 	min_positions = 1
@@ -70,10 +68,9 @@
 	rank_abbreviation = "Cen."
 
 	spawn_location = "JoinLateRO"
+	allowed_maps = list(MAP_WHITERUN)
 
 	is_commander = TRUE
-	is_skyrim = TRUE
-	is_imperial = TRUE
 	is_officer = TRUE
 	selection_color = "#7c0006"
 
@@ -113,8 +110,8 @@
 	spawn_location = "JoinLateRO"
 
 	is_commander = TRUE
-	is_skyrim = TRUE
-	is_imperial = TRUE
+
+	allowed_maps = list(MAP_WHITERUN)
 	is_officer = TRUE
 	selection_color = "#7c0006"
 
@@ -153,8 +150,8 @@
 
 	spawn_location = "JoinLateRO"
 
-	is_skyrim = TRUE
-	is_imperial = TRUE
+
+	allowed_maps = list(MAP_WHITERUN)
 	is_squad_leader = TRUE
 	is_officer = TRUE
 	uses_squads = TRUE
@@ -194,8 +191,8 @@
 
 	spawn_location = "JoinLateRO"
 
-	is_skyrim = TRUE
-	is_imperial = TRUE
+
+	allowed_maps = list(MAP_WHITERUN)
 	uses_squads = TRUE
 	selection_color = "#7c0006"
 
@@ -233,8 +230,8 @@
 
 	spawn_location = "JoinLateRO"
 
-	is_skyrim = TRUE
-	is_imperial = TRUE
+
+	allowed_maps = list(MAP_WHITERUN)
 	uses_squads = TRUE
 	selection_color = "#7c0006"
 
@@ -276,8 +273,8 @@
 	spawn_location = "JoinLateRU"
 
 	is_medieval = TRUE
-	is_skyrim = TRUE
-	is_imperial = TRUE
+
+	allowed_maps = list(MAP_WHITERUN)
 	selection_color = "#9A662C"
 	is_officer = TRUE
 
@@ -326,8 +323,8 @@
 	spawn_location = "JoinLateRU"
 
 	is_medieval = TRUE
-	is_skyrim = TRUE
-	is_imperial = TRUE
+
+	allowed_maps = list(MAP_WHITERUN)
 	selection_color = "#9A662C"
 
 	min_positions = 5
@@ -381,8 +378,8 @@
 	spawn_location = "JoinLateGECap"
 
 	is_commander = TRUE
-	is_skyrim = TRUE
-	is_stormcloak = TRUE
+
+	allowed_maps = list(MAP_WHITERUN)
 	is_officer = TRUE
 	selection_color = "#315972"
 
@@ -428,9 +425,9 @@
 	spawn_location = "JoinLateGECap"
 
 	is_commander = TRUE
-	is_skyrim = TRUE
+
+	allowed_maps = list(MAP_WHITERUN)
 	is_officer = TRUE
-	is_stormcloak = TRUE
 	selection_color = "#315972"
 
 	min_positions = 1
@@ -467,9 +464,8 @@
 
 	spawn_location = "JoinLateGE"
 
-	is_skyrim = TRUE
-	is_stormcloak = TRUE
-	is_imperial = FALSE
+
+	allowed_maps = list(MAP_WHITERUN)
 	is_squad_leader = TRUE
 	is_officer = TRUE
 	uses_squads = TRUE
@@ -519,8 +515,8 @@
 
 	spawn_location = "JoinLateGE"
 
-	is_skyrim = TRUE
-	is_stormcloak = TRUE
+
+	allowed_maps = list(MAP_WHITERUN)
 	uses_squads = TRUE
 	selection_color = "#315972"
 
@@ -568,8 +564,8 @@
 
 	spawn_location = "JoinLateGE"
 
-	is_skyrim = TRUE
-	is_stormcloak = TRUE
+
+	allowed_maps = list(MAP_WHITERUN)
 	uses_squads = TRUE
 	selection_color = "#315972"
 

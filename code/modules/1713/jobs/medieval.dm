@@ -702,7 +702,7 @@
 	title = "Grand Master"
 	en_meaning = "Crusader Leader"
 	rank_abbreviation = "Grand Master"
-	allowed_maps = list(MAP_SAMMIRHAYEED)
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 
 	spawn_location = "JoinLateFR"
@@ -764,7 +764,7 @@
 	title = "Templar Knight"
 	en_meaning = "Crusader Noble Knight"
 	rank_abbreviation = "Templar Knight"
-	allowed_maps = list(MAP_SAMMIRHAYEED)
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateFR"
 	is_officer = TRUE
@@ -820,7 +820,7 @@
 	title = "Crusader Sergeant"
 	en_meaning = "Crusader Heavy Infantry"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_SAMMIRHAYEED)
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateFR"
 
@@ -875,7 +875,7 @@
 	title = "Crusader Squire"
 	en_meaning = "Crusader Light Infantry"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_SAMMIRHAYEED)
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateFR"
 
@@ -938,7 +938,7 @@
 	title = "Templar Priest"
 	en_meaning = "Priest"
 	rank_abbreviation = "Father"
-	allowed_maps = list(MAP_SAMMIRHAYEED)
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateFR"
 
@@ -1002,7 +1002,7 @@
 	en_meaning = "Lord"
 	rank_abbreviation = "Emir"
 	is_arabcaliph = TRUE
-	allowed_maps = list(MAP_SAMMIRHAYEED)
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
@@ -1066,7 +1066,7 @@
 	en_meaning = "Heavy Infantry"
 	rank_abbreviation = "Mamluk"
 	is_arabcaliph = TRUE
-	allowed_maps = list(MAP_SAMMIRHAYEED)
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
@@ -1122,7 +1122,7 @@
 	en_meaning = "Swordsman"
 	rank_abbreviation = ""
 	is_arabcaliph = TRUE
-	allowed_maps = list(MAP_SAMMIRHAYEED)
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateAR"
 
@@ -1187,7 +1187,7 @@
 	en_meaning = "Spearman"
 	rank_abbreviation = ""
 	is_arabcaliph = TRUE
-	allowed_maps = list(MAP_SAMMIRHAYEED)
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateAR"
 
@@ -1249,7 +1249,7 @@
 	en_meaning = "Archer"
 	rank_abbreviation = ""
 	is_arabcaliph = TRUE
-	allowed_maps = list(MAP_SAMMIRHAYEED)
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateAR"
 
@@ -1307,7 +1307,7 @@
 	en_meaning = "Priest"
 	rank_abbreviation = "Imam"
 	is_arabcaliph = TRUE
-	allowed_maps = list(MAP_SAMMIRHAYEED)
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateAR"
 

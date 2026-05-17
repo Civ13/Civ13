@@ -316,7 +316,7 @@
 
 /datum/job/american/idf
 	default_language = "Hebrew"
-	allowed_maps = list(MAP_ARAB_TOWN)
+	allowed_maps = list()
 	additional_languages = list("English" = 25, "Russian" = 25, "Arabic" = 10)
 
 /datum/job/american/idf/give_random_name(var/mob/living/human/H)
@@ -328,6 +328,7 @@
 	title = "Segen"
 	rank_abbreviation = "Seg."
 	en_meaning = "IDF Lieutenant"
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateRN"
 
@@ -377,6 +378,7 @@
 	title = "Samal"
 	rank_abbreviation = "Sam."
 	en_meaning = "IDF Sergeant"
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateRN"
 
@@ -431,6 +433,7 @@
 	title = "Chovesh"
 	en_meaning = "IDF Field Medic"
 	rank_abbreviation = "Chovesh"
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateRN"
 
@@ -481,6 +484,7 @@
 	title = "Tzalaf"
 	en_meaning = "IDF Sniper"
 	rank_abbreviation = "Rav."
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateRN"
 
@@ -529,6 +533,7 @@
 	title = "Miqla"
 	en_meaning = "IDF Squad LMG"
 	rank_abbreviation = "Rav."
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateRN"
 
@@ -583,6 +588,7 @@
 	en_meaning = "IDF Private"
 	rank_abbreviation = ""
 
+	allowed_maps = list(MAP_ARAB_TOWN)
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE

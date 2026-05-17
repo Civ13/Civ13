@@ -15,6 +15,7 @@
 	is_yakuza = TRUE
 	is_yama = TRUE
 	can_be_female = TRUE
+	allowed_maps = list(MAP_ALLEYWAY)
 /datum/job/japanese/yakuza_underboss/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -106,6 +107,7 @@
 	max_positions = 2
 	is_yama = TRUE
 	can_be_female = TRUE
+	allowed_maps = list(MAP_ALLEYWAY)
 /datum/job/japanese/yakuza_underboss_deputy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -197,6 +199,7 @@
 	is_yakuza = TRUE
 	is_yama = TRUE
 	can_be_female = TRUE
+	allowed_maps = list(MAP_ALLEYWAY)
 /datum/job/japanese/yakuza/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -295,6 +298,7 @@
 	is_yakuza = TRUE
 	is_ichi = TRUE
 	can_be_female = TRUE
+	allowed_maps = list(MAP_ALLEYWAY)
 /datum/job/japanese/yakuza_underboss_ichi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -386,6 +390,7 @@
 	is_yakuza = TRUE
 	is_ichi = TRUE
 	can_be_female = TRUE
+	allowed_maps = list(MAP_ALLEYWAY)
 /datum/job/japanese/yakuza_underboss_deputy_ichi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -476,6 +481,7 @@
 	is_yakuza = TRUE
 	is_ichi = TRUE
 	can_be_female = TRUE
+	allowed_maps = list(MAP_ALLEYWAY)
 /datum/job/japanese/yakuza_ichi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes

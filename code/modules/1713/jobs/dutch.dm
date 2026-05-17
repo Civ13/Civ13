@@ -558,7 +558,7 @@
 	spawn_location = "JoinLateRNCap"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -614,7 +614,7 @@
 	spawn_location = "JoinLateRNSL"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -668,7 +668,7 @@
 	spawn_location = "JoinLateRN"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	is_medic = TRUE
 	uses_squads = TRUE
 
@@ -725,7 +725,7 @@
 	spawn_location = "JoinLateRN"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	is_radioman = TRUE
 	uses_squads = TRUE
 
@@ -778,7 +778,7 @@
 	spawn_location = "JoinLateRN"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	uses_squads = TRUE
 
 	min_positions = 1
@@ -832,7 +832,7 @@
 	spawn_location = "JoinLateRN"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	uses_squads = TRUE
 
 	min_positions = 5
@@ -883,7 +883,7 @@
 	spawn_location = "JoinLateRN"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 
 	min_positions = 1
 	max_positions = 6
@@ -931,7 +931,7 @@
 	spawn_location = "JoinLateRN"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 
 	min_positions = 1
 	max_positions = 6
@@ -978,7 +978,7 @@
 	spawn_location = "JoinLateRN"
 	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 
 	min_positions = 1
 	max_positions = 10
