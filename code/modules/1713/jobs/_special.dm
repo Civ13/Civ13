@@ -90,6 +90,9 @@
 /datum/job/var/is_rotstadt = FALSE
 /datum/job/var/is_twotribes = FALSE
 /datum/job/var/is_latin = FALSE
+/datum/job/var/is_samurai = FALSE
+/datum/job/var/is_western = FALSE
+/datum/job/var/is_eastern = FALSE
 
 //list of maps where this job is available
 /datum/job/var/list/allowed_maps = list()
