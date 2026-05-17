@@ -1,6 +1,7 @@
 /obj/map_metadata/retreat
 	ID = MAP_RETREAT
 	title = "Retreat"
+	description = "The Chinese Army will win if they hold out for 30 minutes. The Americans will win if they manage to cross the bridge to friendly territory!"
 	lobby_icon = 'icons/lobby/retreat.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two,/area/caribbean/no_mans_land/invisible_wall/inside)
 	respawn_delay = 1200

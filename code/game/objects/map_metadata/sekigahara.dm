@@ -1,6 +1,7 @@
 /obj/map_metadata/sekigahara
 	ID = MAP_SEKIGAHARA
 	title = "Sekigahara"
+	description = "The Eastern Army and Western Army are facing each other outside of Sekigahara! It will start in 2 minutes"
 	lobby_icon = 'icons/lobby/medieval.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300

@@ -1,6 +1,7 @@
 /obj/map_metadata/forest
 	ID = MAP_FOREST
 	title = "Forest"
+	description = "The Wehrmacht and Red Army are facing each other in the forests of Ukraine! The russians may cross after 15 minutes! It will start in 7 minutes."
 	lobby_icon = 'icons/lobby/ww2.png'
 	no_winner ="The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/not_dynamic, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)

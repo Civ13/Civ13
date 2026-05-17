@@ -1,6 +1,7 @@
 /obj/map_metadata/ruhr_uprising
 	ID = MAP_RUHR_UPRISING
 	title = "The Ruhr Uprising"
+	description = "The Ruhr Red Army will win if they hold out for 45 minutes.The Weimar Republic will win if they manage to capture the train station!"
 	lobby_icon = 'icons/lobby/ruhr.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200

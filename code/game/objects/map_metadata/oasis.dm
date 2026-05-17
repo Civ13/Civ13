@@ -1,6 +1,7 @@
 /obj/map_metadata/oasis
 	ID = MAP_OASIS
 	title = "Trouble at the Oasis"
+	description = "The Crusader and Arabic Caliphate armies have found each other by chance in the desert as they searched for a water source."
 	lobby_icon = 'icons/lobby/medieval.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0

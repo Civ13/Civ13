@@ -1,6 +1,7 @@
 /obj/map_metadata/camp
 	ID = MAP_CAMP
 	title = "Camp"
+	description = "The French and English armies are facing each other in Northern France! There is a Castle in the middle of the map, that must be captured and held for 8 minutes!"
 	lobby_icon = 'icons/lobby/medieval.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0

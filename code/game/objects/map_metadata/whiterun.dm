@@ -2,6 +2,7 @@
 /obj/map_metadata/whiterun
 	ID = MAP_WHITERUN
 	title = "Whiterun"
+	description = "The Stormcloaks troops are besieging the Imperial City of Whiterun! The Imperials will win if they manage to hold the city for 30 minutes."
 	lobby_icon = 'icons/lobby/tes13.png'
 	no_winner ="The fighting is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall)

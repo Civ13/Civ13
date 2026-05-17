@@ -1,6 +1,7 @@
 /obj/map_metadata/intramuros
 	ID = MAP_INTRAMUROS
 	title = "Intramuros"
+	description = "The Japanese Army will win if they hold out for 35 minutes. The Americans will win if they manage to capture Japanese Command within Fort Santiago!"
 	lobby_icon = 'icons/lobby/pacific.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200

@@ -2,6 +2,7 @@
 /obj/map_metadata/pioneers
 	ID = MAP_PIONEERS
 	title = "Pioneers"
+	description = "Pioneers have reached the frontier! The Pioneers must build their town. The gracewall will be up after 25 minutes.THIS IS A RP MAP - PLAYERS ARE FRIENDLY BY DEFAULT."
 	lobby_icon = 'icons/lobby/wildwest.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!

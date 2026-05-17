@@ -2,6 +2,7 @@
 /obj/map_metadata/nomads
 	ID = MAP_NOMADS
 	title = "Nomads (Temperate)"
+	description = "After ages as hunter-gatherers, people are starting to form groups and settle down."
 	lobby_icon = ""
 	no_winner ="The round is proceeding normally."
 	//there isn't really an invisible wall on nomads but still

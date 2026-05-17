@@ -2,6 +2,7 @@
 /obj/map_metadata/little_creek_tdm
 	ID = MAP_LITTLE_CREEK_TDM
 	title = "Big Trouble in Little Creek (TDM)"
+	description = "At the small frontier town of Little Creek, the Sheriff recieves a warning: A group of outlaws is about to rob the town's bank!"
 	lobby_icon = 'icons/lobby/wildwest.png'
 	no_winner ="The fighting for the town is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)

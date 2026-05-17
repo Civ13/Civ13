@@ -1,15 +1,19 @@
 var/global/obj/map_metadata/map = null
 var/global/list/map_id_to_title = list()
 var/global/list/map_title_to_id = list()
+var/global/list/map_id_to_desc = list()
 
 /hook/startup/proc/init_map_titles()
 	for (var/map_type in typesof(/obj/map_metadata))
 		var/obj/map_metadata/M = map_type
 		var/id = initial(M.ID)
 		var/title = initial(M.title)
+		var/desc = initial(M.description)
 		if (id && title)
 			map_id_to_title[id] = title
 			map_title_to_id[title] = id
+			if (desc)
+				map_id_to_desc[id] = desc
 	return TRUE
 //Max levels showing players how far to advance, appears on the Character tab
 var/civmax_research = list(230,230,230)
@@ -24,6 +28,7 @@ var/civmax_research = list(230,230,230)
 	var/ID = null // MUST be text, or aspects will break
 	var/no_winner = "Neither side has captured the other side's base."
 	var/title = null
+	var/description = ""
 	var/lobby_icon = ""
 	var/list/caribbean_blocking_area_types = list()
 	var/list/allow_bullets_through_blocks = list()

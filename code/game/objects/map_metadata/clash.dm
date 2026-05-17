@@ -1,6 +1,7 @@
 /obj/map_metadata/clash
 	ID = MAP_CLASH
 	title = "Clash"
+	description = "The Bear clan is sieging the Raven clan's settlement hidden away in the snowy fjords! The Bear clan will win if they manage to capture the Raven King's Cabin."
 	lobby_icon = 'icons/lobby/clash.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	victory_time = 21600

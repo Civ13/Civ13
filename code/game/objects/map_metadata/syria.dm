@@ -1,6 +1,7 @@
 /obj/map_metadata/syria
 	ID = MAP_SYRIA
 	title = "Syrian Civil War"
+	description = "The Free Syrian Army and the Syrian Goverment forces are battling against each other for the control of the Tadmur town!Both sides have to capture and hold the Goverme..."
 	lobby_icon = 'icons/lobby/syria.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two, /area/caribbean/no_mans_land/invisible_wall/three)
 	respawn_delay = 1200

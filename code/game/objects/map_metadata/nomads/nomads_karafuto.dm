@@ -2,6 +2,7 @@
 /obj/map_metadata/nomads/karafuto
 	ID = MAP_NOMADS_KARAFUTO
 	title = "Nomads Karafuto (Temperate)"
+	description = "Battle on the Nomads Karafuto (Temperate) map."
 	research_active = TRUE
 	grace_wall_timer = 18000
 

@@ -1,6 +1,7 @@
 /obj/map_metadata/hill203
 	ID = MAP_HILL_203
 	title = "Hill 203"
+	description = "The Imperial Japanese Army and the Russian Army are battling for the control of Hill 203! Each side will win if they manage to hold the hilltop for 6 minutes."
 	lobby_icon = 'icons/lobby/ww1.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0

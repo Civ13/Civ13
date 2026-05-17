@@ -2,6 +2,7 @@
 /obj/map_metadata/reichstag
 	ID = MAP_REICHSTAG
 	title = "Reichstag"
+	description = "The Germans will win if they hold out for 40 minutes. The Soviets will win if they manage to reach the top of the Reichstag."
 	lobby_icon = 'icons/lobby/reichstag.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200

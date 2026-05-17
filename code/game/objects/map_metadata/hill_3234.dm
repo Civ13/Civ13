@@ -1,6 +1,7 @@
 /obj/map_metadata/hill_3234
 	ID = MAP_HILL_3234
 	title = "Battle for Hill 3234"
+	description = "The Soviets will win if they hold out the hill for 40 minutes.The Mujahideen will win if they manage to capture the radio station on the top of the hill!"
 	no_winner = "Hill 3234 is still under Soviet control."
 	lobby_icon = 'icons/lobby/sovafghan.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)

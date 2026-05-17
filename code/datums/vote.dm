@@ -367,7 +367,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 			for (var/client/C in clients)
 				if (C)
-					C << browse(interface(C), "window=vote;size=400x600")
+					C << browse(interface(C), "window=vote;size=500x800")
 
 			callback = _callback
 			return TRUE
@@ -392,18 +392,21 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				. += "<tr>"
 
 				var/display_name = choices[i]
+				var/display_desc = ""
 				if (mode == "map")
 					if (map_id_to_title[choices[i]])
 						display_name = map_id_to_title[choices[i]]
 					else
 						display_name = capitalize(lowertext(choices[i]))
+					if (map_id_to_desc[choices[i]])
+						display_desc = "<br><span style='font-size: 0.85em; color: #b0a080; font-style: italic;'>[map_id_to_desc[choices[i]]]</span>"
 
 				if (disabled.Find(choices[i]))
-					. += "<td><font color = 'grey'>DISABLED ([disabled[choices[i]]]): [display_name]</td><td align = 'center'>[votes]</font></td>"
+					continue
 				else if (current_votes[C.ckey] == i)
-					. += "<td><b><a href='?src=\ref[src];vote=[i]'>[display_name]</a></b></td><td align = 'center'>[votes]</td>"
+					. += "<td><b><a href='?src=\ref[src];vote=[i]'>[display_name]</a></b>[display_desc]</td><td align = 'center'>[votes]</td>"
 				else
-					. += "<td><a href='?src=\ref[src];vote=[i]'>[display_name]</a></td><td align = 'center'>[votes]</td>"
+					. += "<td><a href='?src=\ref[src];vote=[i]'>[display_name]</a>[display_desc]</td><td align = 'center'>[votes]</td>"
 				if (additional_text.len >= i)
 					. += additional_text[i]
 				. += "</tr>"
@@ -476,4 +479,4 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 	set name = "Vote"
 
 	if (vote)
-		src << browse(vote.interface(client),"window=vote;size=400x600")
+		src << browse(vote.interface(client),"window=vote;size=500x800")

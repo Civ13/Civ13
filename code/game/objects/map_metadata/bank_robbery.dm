@@ -1,6 +1,7 @@
 /obj/map_metadata/bank_robbery
 	ID = MAP_BANK_ROBBERY
 	title = "The Goldstein Bank Heist"
+	description = "The Robbers have 5 minutes to prepare before the negotiations end!The Police Department will win if they capture the Vault Room inside the bank AFTER evacuating all al..."
 	lobby_icon = 'icons/lobby/bank_robbery.png'
 	no_winner ="The robbery is still underway."
 	caribbean_blocking_area_types = list(

@@ -1,6 +1,7 @@
 /obj/map_metadata/battleroyale
 	ID = MAP_BATTLEROYALE_IMPERIAL
 	title = "Battle Royale: Imperial"
+	description = "You and several other pirates were abandoned at this forsaken island. Only one can survive! Last player standing wins!"
 	lobby_icon = 'icons/lobby/battleroyale.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0

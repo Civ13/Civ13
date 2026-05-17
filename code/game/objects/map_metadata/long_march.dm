@@ -1,6 +1,7 @@
 /obj/map_metadata/long_march
 	ID = MAP_LONG_MARCH
 	title = "The Long March"
+	description = "The Red Army will win if they manage to reach their destination up North, in the Mountains."
 	lobby_icon = 'icons/lobby/longmarch.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra/one,/area/caribbean/no_mans_land/invisible_wall/inside,/area/caribbean/no_mans_land/invisible_wall/two)
 	no_hardcore = TRUE

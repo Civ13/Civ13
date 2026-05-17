@@ -1,6 +1,7 @@
 /obj/map_metadata/wake_island
 	ID = MAP_WAKE_ISLAND
 	title = "Wake Island"
+	description = "Points are added to each team for each minute they control the Coastal Artillery Batteries, and the Village.First team to reach 40 points wins!"
 	lobby_icon = 'icons/lobby/pacific.png'
 	no_winner ="The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)

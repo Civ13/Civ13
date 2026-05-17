@@ -2,6 +2,7 @@
 /obj/map_metadata/jungle_colony
 	ID = MAP_JUNGLE_COLONY
 	title = "Jungle Colony"
+	description = "Europeans have reached the shore! The Colonists must build their villages."
 	no_winner ="The round is proceeding normally."
 	lobby_icon = 'icons/lobby/imperial.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)

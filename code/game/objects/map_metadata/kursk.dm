@@ -2,6 +2,7 @@
 /obj/map_metadata/kursk
 	ID = MAP_KURSK
 	title = "Kursk"
+	description = "Battle on the Kursk map."
 	lobby_icon = 'icons/lobby/kursk.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1200

@@ -2,6 +2,7 @@
 /obj/map_metadata/karak
 	ID = MAP_KARAK
 	title = "Karak"
+	description = "A medieval siege scenario where the Arabic Caliphate besieges the Crusader fortress of Karak."
 	lobby_icon = 'icons/lobby/medieval.png'
 	no_winner ="The fighting is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)

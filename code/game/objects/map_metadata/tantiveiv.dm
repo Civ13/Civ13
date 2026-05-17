@@ -1,6 +1,7 @@
 /obj/map_metadata/tantiveiv
 	ID = MAP_TANTIVEIV
 	title = "VantiveIV"
+	description = "The Alliance to Restore the Democracy will win if they hold out for 20 minutes."
 	lobby_icon = 'icons/lobby/galacticbattles.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200

@@ -1,6 +1,7 @@
 /obj/map_metadata/capitol_hill
 	ID = MAP_CAPITOL_HILL
 	title = "Capitol Hill"
+	description = "A modern siege scenario where the Militia attempts to capture the U.S. Capitol from the defending National Guard."
 	lobby_icon = 'icons/lobby/capitol.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200

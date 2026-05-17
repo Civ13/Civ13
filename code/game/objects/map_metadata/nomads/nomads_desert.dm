@@ -2,6 +2,7 @@
 /obj/map_metadata/nomads/desert
 	ID = MAP_NOMADS_DESERT
 	title = "Nomads (Desert)"
+	description = "Battle on the Nomads (Desert) map."
 	ambience = list('sound/ambience/desert.ogg')
 	research_active = TRUE
 	var/real_season = "wet"

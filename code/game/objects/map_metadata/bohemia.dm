@@ -1,6 +1,7 @@
 /obj/map_metadata/bohemia
 	ID = MAP_BOHEMIA
 	title = "Bohemia"
+	description = "Europeans have built a kingdom! The People must thrive on their industry and live peacefully!.THIS IS AN HRP MAP - No griefing will be tolerated."
 	lobby_icon = 'icons/lobby/medieval.png'
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)

@@ -2,6 +2,7 @@
 /obj/map_metadata/nomads/wasteland
 	ID = MAP_NOMADS_WASTELAND
 	title = "Wasteland"
+	description = "The world is on the verge of nuclear war... The nukes will drop in 2 to 3:30 hours. Then the world will become a wasteland."
 	age = "2013"
 	mission_start_message = "<big>The world is on the verge of nuclear war... The nukes will drop in 2 to 3:30 hours. Then the world will become a wasteland. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')

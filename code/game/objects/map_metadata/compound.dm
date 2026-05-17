@@ -2,6 +2,7 @@
 /obj/map_metadata/compound
 	ID = MAP_COMPOUND
 	title = "Compound"
+	description = "The Vietcong must defend the village from the Americans. The US Army must defend their base."
 	lobby_icon = 'icons/lobby/vietnam.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300

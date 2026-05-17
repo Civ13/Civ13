@@ -1,6 +1,7 @@
 /obj/map_metadata/missionary_ridge
 	ID = MAP_MISSIONARY_RIDGE
 	title = "Missionary Ridge"
+	description = "The Union Army and the Confederate Army are battling for the control of Missionary ridge!"
 	lobby_icon = 'icons/lobby/missionary.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0

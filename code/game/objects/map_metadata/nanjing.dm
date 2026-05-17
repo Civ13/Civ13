@@ -2,6 +2,7 @@
 /obj/map_metadata/nanjing
 	ID = MAP_NANJING
 	title = "Nanjing"
+	description = "The Japanese will win if they capture the Chinese command. The Chinese will win if they manage to defend their command for 30 minutes!."
 	lobby_icon = 'icons/lobby/china.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200

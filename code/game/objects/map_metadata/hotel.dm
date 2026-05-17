@@ -1,6 +1,7 @@
 /obj/map_metadata/hotel
 	ID = MAP_HOTEL
 	title = "Hotel"
+	description = "The Wehrmacht and the Red Army are battling for the control of the Grand Hotel! Capture the Upstairs Lounge in order to control the Hotel!"
 	lobby_icon = 'icons/lobby/ww2.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0

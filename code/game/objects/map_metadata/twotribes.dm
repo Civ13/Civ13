@@ -1,6 +1,7 @@
 /obj/map_metadata/twotribes
 	ID = MAP_TWOTRIBES
 	title = "Two Tribes"
+	description = "The Red and Blue tribes are engaged in battle, both attempting to capture the central shrine."
 	lobby_icon = 'icons/lobby/civ13.gif'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle)
 	respawn_delay = 0

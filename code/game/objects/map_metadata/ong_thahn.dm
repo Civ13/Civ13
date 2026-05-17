@@ -1,6 +1,7 @@
 /obj/map_metadata/ong_thahn
 	ID = MAP_ONG_THAHN
 	title = "Battle of Ong Thahn"
+	description = "The NVA must capture the American outposts BEFORE the main FOB. The US Army must defend their base for 40 minutes."
 	lobby_icon = 'icons/lobby/vietnam.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle/one, /area/caribbean/no_mans_land/invisible_wall/jungle, /area/caribbean/no_mans_land/invisible_wall/jungle/three)
 	victory_time = 24000

@@ -1,6 +1,7 @@
 /obj/map_metadata/hunt
 	ID = MAP_HUNT
 	title = "Hunt"
+	description = "After a major storm, a Pirate shipwreck has washed ashore on an unknown Island. However, they are not alone..."
 	lobby_icon = 'icons/lobby/hunt.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!

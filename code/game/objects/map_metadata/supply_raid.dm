@@ -2,6 +2,7 @@
 /obj/map_metadata/supply_raid
 	ID = MAP_SUPPLY_RAID
 	title = "Supply Raid"
+	description = "In order to win the Carib must capture the British Ship and the British must capture the Carib Altar."
 	lobby_icon = 'icons/lobby/imperial.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 900
