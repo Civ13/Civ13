@@ -1,7 +1,7 @@
 /datum/job/american/captain_ww2
 	title = "US Captain"
 	rank_abbreviation = "Cpt."
-	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRNCap"
 
