@@ -25,15 +25,6 @@
 		"Red Sun Up in the Sky:1" = 'sound/music/redsun.ogg',)
 	grace_wall_timer = 4800
 
-/obj/map_metadata/long_march/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/chinese/captain) || istype(J, /datum/job/chinese/lieutenant) || istype(J, /datum/job/chinese/sergeant) || istype(J, /datum/job/chinese/doctor) || istype(J, /datum/job/chinese/infantry) || istype(J, /datum/job/chinese/sniper))
-		. = TRUE
-	else if (J.is_ccw == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/long_march/roundend_condition_def2name(define)
 	..()
 	switch (define)

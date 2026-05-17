@@ -31,17 +31,6 @@
 /obj/map_metadata/marco_polo_bridge/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/marco_polo_bridge/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_prison == TRUE || istype(J, /datum/job/japanese/ija_ww2ATunit) || J.is_pacific == TRUE || J.is_navy == TRUE || J.is_tanker == TRUE)
-		. = FALSE
-	else if (J.is_ww2 == TRUE)
-		. = TRUE
-	else if (istype(J, /datum/job/chinese/captain) || istype(J, /datum/job/chinese/lieutenant) || istype(J, /datum/job/chinese/sergeant) || istype(J, /datum/job/chinese/doctor) || istype(J, /datum/job/chinese/infantry) || istype(J, /datum/job/chinese/sniper))
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/marco_polo_bridge/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 2400

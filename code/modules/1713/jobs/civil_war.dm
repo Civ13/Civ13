@@ -3,7 +3,7 @@
 	rank_abbreviation = "Cpt."
 
 	spawn_location = "JoinLateRNCap"
-	is_civil_war = TRUE
+	allowed_maps = list(MAP_MISSIONARY_RIDGE)
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -46,7 +46,7 @@
 	rank_abbreviation = "Lt."
 
 	spawn_location = "JoinLateRNBoatswain"
-	is_civil_war = TRUE
+	allowed_maps = list(MAP_MISSIONARY_RIDGE)
 	is_officer = TRUE
 	is_commander = FALSE
 	whitelisted = TRUE
@@ -94,7 +94,7 @@
 	is_radioman = FALSE
 	can_get_coordinates = FALSE
 	is_ww2 = FALSE
-	is_civil_war = TRUE
+	allowed_maps = list(MAP_MISSIONARY_RIDGE)
 
 	min_positions = 2
 	max_positions = 10
@@ -135,7 +135,7 @@
 	spawn_location = "JoinLateRN"
 	is_ww2 = FALSE
 	uses_squads = TRUE
-	is_civil_war = TRUE
+	allowed_maps = list(MAP_MISSIONARY_RIDGE)
 
 	min_positions = 8
 	max_positions = 100
@@ -181,7 +181,7 @@
 	rank_abbreviation = "2lt."
 
 	spawn_location = "JoinLateRNSurgeon"
-	is_civil_war = TRUE
+	allowed_maps = list(MAP_MISSIONARY_RIDGE)
 	is_medic = TRUE
 	is_ww2 = FALSE
 
@@ -229,7 +229,7 @@
 	rank_abbreviation = "Cpt."
 
 	spawn_location = "JoinLateRUCap"
-	is_civil_war = TRUE
+	allowed_maps = list(MAP_MISSIONARY_RIDGE)
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -276,7 +276,7 @@
 	rank_abbreviation = "Lt."
 
 	spawn_location = "JoinLateRUSap"
-	is_civil_war = TRUE
+	allowed_maps = list(MAP_MISSIONARY_RIDGE)
 	is_officer = TRUE
 	is_commander = FALSE
 	whitelisted = TRUE
@@ -332,7 +332,7 @@
 	is_radioman = FALSE
 	can_get_coordinates = FALSE
 	is_ww2 = FALSE
-	is_civil_war = TRUE
+	allowed_maps = list(MAP_MISSIONARY_RIDGE)
 
 	min_positions = 2
 	max_positions = 10
@@ -381,7 +381,7 @@
 	spawn_location = "JoinLateRU"
 	is_ww2 = FALSE
 	uses_squads = TRUE
-	is_civil_war = TRUE
+	allowed_maps = list(MAP_MISSIONARY_RIDGE)
 
 	min_positions = 8
 	max_positions = 100
@@ -433,7 +433,7 @@
 	rank_abbreviation = "2lt."
 
 	spawn_location = "JoinLateRUDoc"
-	is_civil_war = TRUE
+	allowed_maps = list(MAP_MISSIONARY_RIDGE)
 	is_medic = TRUE
 	is_ww2 = FALSE
 

@@ -34,13 +34,6 @@
 		if (gamemode == "Siege")
 			for (var/turf/T in get_area_turfs(/area/caribbean/british/land/inside/objective))
 				new /area/caribbean/no_mans_land/capturable(T)
-/obj/map_metadata/waco/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_waco == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/waco/roundend_condition_def2name(define)
 	..()
 	switch (define)

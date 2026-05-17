@@ -175,24 +175,25 @@
 	female_tts_voice = "Zhiyu" //chinese
 
 /datum/job/civilian/businessman/green
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 	default_language = "English"
 	additional_languages = list("Japanese" = 100, "Chinese" = 15)
 	male_tts_voice = "Takumi"
 	female_tts_voice = "Mizuki"
-
 /datum/job/civilian/businessman/red
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 	default_language = "English"
 	additional_languages = list("Russian" = 100, "Ukrainian" = 15)
 	male_tts_voice = "Maxim"
 	female_tts_voice = "Tatyana"
-
 /datum/job/civilian/businessman/yellow
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 	default_language = "English"
 	additional_languages = list("Hebrew" = 100, "Arabic" = 15)
 	male_tts_voice = "Maxim"
 	female_tts_voice = "Tatyana"
-
 /datum/job/civilian/businessman/blue
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 	default_language = "English"
 	additional_languages = list("Latin" = 100)
 	male_tts_voice = "Giorgio" //italian

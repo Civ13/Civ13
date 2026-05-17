@@ -9,6 +9,7 @@
 	max_positions = 999
 	additional_languages = list("Redmenian" = 15)
 	selection_color = "#102f44"
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/bluefaction/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_bluefaction_name(H.gender)
@@ -18,36 +19,43 @@
 	is_commander = TRUE
 	title = "BAF Commander"
 	rank_abbreviation = "CO-Cpt."
+	allowed_maps = list(MAP_CAMPAIGN)
 	additional_languages = list("Redmenian" = 100)
 /datum/job/bluefaction/officer
 	is_commander = TRUE
 	title = "BAF Officer"
 	rank_abbreviation = "XO-Lt."
 	additional_languages = list("Redmenian" = 100)
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/bluefaction/doctor
 	title = "BAF Doctor"
 	is_medic = TRUE
 	rank_abbreviation = "Dr."
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/bluefaction/s1/sl
 	title = "BAF Squad 1 Squadleader"
 	squad = 1
 	is_squad_leader = TRUE
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "1-Sgt"
 /datum/job/bluefaction/s1/pvt
 	title = "BAF Squad 1 Private"
 	squad = 1
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "1-Pvt"
 /datum/job/bluefaction/s1/corpsman
 	title = "BAF Squad 1 Corpsman"
 	is_medic = TRUE
 	squad = 1
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "1-Corpsman"
 /datum/job/bluefaction/s1/machinegunner
 	title = "BAF Squad 1 Machinegunner"
 	squad = 1
 	rank_abbreviation = "1-MG"
+	allowed_maps = list(MAP_CAMPAIGN)
 /*
 /datum/job/bluefaction/s1/marksman
 	title = "BAF Squad 1 Des. Marksman"
@@ -59,20 +67,24 @@
 	title = "BAF Squad 2 Squadleader"
 	squad = 2
 	is_squad_leader = TRUE
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "2-Sgt"
 /datum/job/bluefaction/s2/pvt
 	title = "BAF Squad 2 Private"
 	squad = 2
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "2-Pvt"
 /datum/job/bluefaction/s2/corpsman
 	title = "BAF Squad 2 Corpsman"
 	is_medic = TRUE
 	squad = 2
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "2-Corpsman"
 /datum/job/bluefaction/s2/machinegunner
 	title = "BAF Squad 2 Machinegunner"
 	squad = 2
 	rank_abbreviation = "2-MG"
+	allowed_maps = list(MAP_CAMPAIGN)
 /*
 /datum/job/bluefaction/s2/marksman
 	title = "BAF Squad 2 Des. Marksman"
@@ -84,20 +96,24 @@
 	title = "BAF Squad 3 Squadleader"
 	squad = 3
 	is_squad_leader = TRUE
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "3-Sgt"
 /datum/job/bluefaction/s3/pvt
 	title = "BAF Squad 3 Private"
 	squad = 3
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "3-Pvt"
 /datum/job/bluefaction/s3/corpsman
 	title = "BAF Squad 3 Corpsman"
 	is_medic = TRUE
 	squad = 3
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "3-Corpsman"
 /datum/job/bluefaction/s3/machinegunner
 	title = "BAF Squad 3 Machinegunner"
 	squad = 3
 	rank_abbreviation = "3-MG"
+	allowed_maps = list(MAP_CAMPAIGN)
 /*
 /datum/job/bluefaction/s3/marksman
 	title = "BAF Squad 3 Des. Marksman"
@@ -109,26 +125,31 @@
 	title = "BAF Recon"
 	squad = 4
 	rank_abbreviation = "4-Recon"
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/bluefaction/armored/sl
 	title = "BAF Armored Squadleader"
 	is_squad_leader = TRUE
 	squad = 5
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "5-Tank Sgt"
 /datum/job/bluefaction/armored/crew
 	title = "BAF Armored Crew"
 	squad = 5
 	rank_abbreviation = "5-Tank"
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/bluefaction/at
 	title = "BAF Anti-Tank"
 	squad = 6
 	rank_abbreviation = "6-AT"
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/bluefaction/engineer
 	title = "BAF Engineer"
 	squad = 7
 	rank_abbreviation = "7-Engineer"
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/bluefaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -282,6 +303,7 @@
 	max_positions = 1
 	rank_abbreviation = "Captain"
 	additional_languages = list("Redmenian" = 100)
+	allowed_maps = list(MAP_BATTLE_SHIPS, MAP_CAMPAIGN)
 	
 /datum/job/bluefaction/navy/petty
 	title = "BNF Petty Officer"
@@ -289,12 +311,14 @@
 	is_navy = TRUE
 	max_positions = 10
 	rank_abbreviation = "PO"
+	allowed_maps = list(MAP_BATTLE_SHIPS, MAP_CAMPAIGN)
 	squad = 1
 /datum/job/bluefaction/navy/one
 	is_navy = TRUE
 	title = "BNF Sailor"
 	squad = 1
 	rank_abbreviation = "Sailor"
+	allowed_maps = list(MAP_BATTLE_SHIPS, MAP_CAMPAIGN)
 
 /datum/job/bluefaction/navy/marine/sl
 	is_navy = TRUE
@@ -302,12 +326,14 @@
 	is_squad_leader = TRUE
 	max_positions = 5
 	rank_abbreviation = "Sgt."
+	allowed_maps = list(MAP_BATTLE_SHIPS, MAP_CAMPAIGN)
 	squad = 2
 /datum/job/bluefaction/navy/marine/soldier
 	is_navy = TRUE
 	title = "BNF Marine"
 	max_positions = 20
 	rank_abbreviation = "Pvt."
+	allowed_maps = list(MAP_BATTLE_SHIPS, MAP_CAMPAIGN)
 	squad = 2
 /datum/job/bluefaction/navy/doctor
 	is_navy = TRUE
@@ -315,6 +341,7 @@
 	rank_abbreviation = "Dr."
 	max_positions = 6
 	is_medic = TRUE
+	allowed_maps = list(MAP_BATTLE_SHIPS, MAP_CAMPAIGN)
 	
 /datum/job/bluefaction/navy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -396,6 +423,7 @@
 	additional_languages = list("Redmenian" = 15)
 	min_positions = 999
 	max_positions = 999
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/bluefaction/civilian/equip(mob/living/human/H)
 	if (!H)	return FALSE

@@ -68,7 +68,7 @@
 		toplist = list()
 		if (!GD.gladiator_stats.len)
 			return
-		var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head><b>GLADIATORIAL LEDGER</b><br><br>"
+		var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head>[common_browser_style]<b>GLADIATORIAL LEDGER</b><br><br>"
 		switch(showing)
 			if ("Characters")
 				body += "<b>Characters</b> | <a href='?src=\ref[src];players=1'>Players</a><br><hr><br>"

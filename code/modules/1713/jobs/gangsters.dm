@@ -11,6 +11,7 @@
 	max_positions = 100
 	default_language = "English"
 	additional_languages = list()
+	allowed_maps = list(MAP_EAST_LOS_SANTOS)
 
 /datum/job/indians/ballas/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -110,6 +111,7 @@
 	max_positions = 100
 	default_language = "English"
 	additional_languages = list()
+	allowed_maps = list(MAP_EAST_LOS_SANTOS)
 
 /datum/job/american/grove/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

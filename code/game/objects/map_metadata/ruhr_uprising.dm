@@ -28,13 +28,6 @@
 		"Argonnerwaldlied:1" = 'sound/music/argonnerwaldlied.ogg',)
 	gamemode = "Siege"
 
-/obj/map_metadata/ruhr_uprising/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_interwar)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/ruhr_uprising/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600

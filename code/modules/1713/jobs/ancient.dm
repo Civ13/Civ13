@@ -16,12 +16,10 @@
 	title = "Centurion"
 	en_meaning = "Roman Commander"
 	rank_abbreviation = "Cen."
-
 	spawn_location = "JoinLateRO"
-
 	is_commander = TRUE
-
 	is_officer = TRUE
+	allowed_maps = list(MAP_SIEGE, MAP_HERACLEA, MAP_TEUTOBURG)
 
 	min_positions = 1
 	max_positions = 1
@@ -57,11 +55,9 @@
 	title = "Decurion"
 	en_meaning = "Roman Squad Leader"
 	rank_abbreviation = "Dec."
-
 	spawn_location = "JoinLateRO"
-
+	allowed_maps = list(MAP_SIEGE, MAP_HERACLEA, MAP_TEUTOBURG)
 	is_officer = TRUE
-
 
 	min_positions = 2
 	max_positions = 10
@@ -96,9 +92,8 @@
 	title = "Signifer"
 	en_meaning = "Roman Standard Bearer"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_SIEGE, MAP_HERACLEA, MAP_TEUTOBURG)
 	spawn_location = "JoinLateRO"
-
 
 	min_positions = 1
 	max_positions = 6
@@ -139,9 +134,8 @@
 	title = "Legionarius"
 	en_meaning = "Main Infantry"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_SIEGE, MAP_HERACLEA, MAP_TEUTOBURG)
 	spawn_location = "JoinLateRO"
-
 
 	min_positions = 12
 	max_positions = 200
@@ -179,9 +173,8 @@
 	title = "Saggitarius"
 	en_meaning = "Light Archer"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_SIEGE, MAP_HERACLEA, MAP_TEUTOBURG)
 	spawn_location = "JoinLateRO"
-
 
 	min_positions = 8
 	max_positions = 100
@@ -222,6 +215,7 @@
 	title = "Gladiator"
 	en_meaning = ""
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_GLADIATORS)
 
 	spawn_location = "JoinLateRO"
 
@@ -260,6 +254,7 @@
 	title = "Medicus"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Medicus"
+	allowed_maps = list(MAP_GLADIATORS)
 
 	spawn_location = "JoinLateROG"
 
@@ -294,6 +289,7 @@
 	title = "Custos"
 	en_meaning = "Arena Guard"
 	rank_abbreviation = "Custos"
+	allowed_maps = list(MAP_GLADIATORS)
 
 	spawn_location = "JoinLateROG"
 
@@ -331,6 +327,7 @@
 	title = "Imperator"
 	en_meaning = "Emperor"
 	rank_abbreviation = "Imperator"
+	allowed_maps = list(MAP_GLADIATORS)
 
 	spawn_location = "JoinLateROG"
 
@@ -375,6 +372,7 @@
 
 	spawn_location = "JoinLateGE"
 	is_ancient = TRUE
+	allowed_maps = list(MAP_TEUTOBURG)
 	is_commander = TRUE
 	is_officer = TRUE
 	can_be_female = TRUE
@@ -417,6 +415,7 @@
 
 	spawn_location = "JoinLateGE"
 	is_ancient = TRUE
+	allowed_maps = list(MAP_TEUTOBURG)
 
 	min_positions = 10
 	max_positions = 100
@@ -459,6 +458,7 @@
 
 	spawn_location = "JoinLateGE"
 	is_ancient = TRUE
+	allowed_maps = list(MAP_TEUTOBURG)
 
 	min_positions = 10
 	max_positions = 100
@@ -500,6 +500,7 @@
 
 	spawn_location = "JoinLateGE"
 	is_ancient = TRUE
+	allowed_maps = list(MAP_TEUTOBURG)
 
 	min_positions = 20
 	max_positions = 200
@@ -544,6 +545,7 @@
 
 	spawn_location = "JoinLateGE"
 	is_ancient = TRUE
+	allowed_maps = list(MAP_TEUTOBURG)
 
 	min_positions = 10
 	max_positions = 100

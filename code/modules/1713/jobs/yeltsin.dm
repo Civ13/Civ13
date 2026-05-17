@@ -1,13 +1,13 @@
 /datum/job/russian/ra
 	title = "Russian Army (DO NOT USE)"
+	allowed_maps = list()
 /datum/job/russian/ra/lieutenant
 	title = "Russian Army Lieutenant"
 	rank_abbreviation = "Leyt."
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLateRUCap"
 
-	is_grozny = FALSE
-	is_yeltsin = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -61,11 +61,10 @@
 /datum/job/russian/ra/sergeant
 	title = "Russian Army Sergeant"
 	rank_abbreviation = "Srj."
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLateRUCap"
 
-	is_yeltsin = TRUE
-	is_grozny = FALSE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -127,12 +126,11 @@
 /datum/job/russian/ra/medic
 	title = "Russian Army Corpsman"
 	rank_abbreviation = "Efr."
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLateRU"
 
 	is_medic = TRUE
-	is_yeltsin = TRUE
-	is_grozny = FALSE
 
 	min_positions = 1
 	max_positions = 8
@@ -188,10 +186,10 @@
 	title = "OMON Officer"
 	en_meaning = "Riot Police"
 	rank_abbreviation = "OMON ofc."
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLateRUswat"
 
-	is_yeltsin = TRUE
 
 	uses_squads = TRUE
 
@@ -238,11 +236,10 @@
 /datum/job/russian/ra/soldier
 	title = "Russian Army Private"
 	rank_abbreviation = "Ryad."
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLateRU"
 
-	is_yeltsin = TRUE
-	is_grozny = FALSE
 
 	uses_squads = TRUE
 
@@ -303,10 +300,10 @@
 /datum/job/russian/ra/spetsnaz
 	title = "Spetsnaz"
 	rank_abbreviation = "Jr. Srj."
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLateRUsptz"
 	whitelisted = TRUE
-	is_yeltsin = TRUE
 
 	uses_squads = TRUE
 
@@ -368,9 +365,9 @@
 	rank_abbreviation = "Chairman"
 	spawn_location = "JoinLatessm"
 	is_kremlin = TRUE
-	is_yeltsin = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
+	allowed_maps = list(MAP_YELTSIN)
 
 	min_positions = 1
 	max_positions = 3
@@ -414,10 +411,10 @@
 /datum/job/civilian/russian/kgb
 	title = "KGB Officer"
 	rank_abbreviation = "KGB"
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLatessm"
 	is_kremlin = TRUE
-	is_yeltsin = TRUE
 	whitelisted = TRUE
 
 	min_positions = 6
@@ -473,8 +470,8 @@
 	spawn_location = "JoinLateCiv"
 	min_positions = 1
 	max_positions = 250
+	allowed_maps = list(MAP_YELTSIN)
 	
-	is_yeltsin = TRUE
 
 /datum/job/civilian/russian/sov_militia/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -624,11 +621,11 @@
 	title = "Militia Medic"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Dr."
+	allowed_maps = list(MAP_YELTSIN)
 
 	spawn_location = "JoinLateCiv"
 
 	is_medic = TRUE
-	is_yeltsin = TRUE
 
 	min_positions = 1
 	max_positions = 10

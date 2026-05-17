@@ -3,6 +3,7 @@
 	title = "Lord"
 	en_meaning = "Lord"
 	rank_abbreviation = "Lord"
+	allowed_maps = list(MAP_CAMP)
 
 
 	spawn_location = "JoinLateRN"
@@ -58,6 +59,7 @@
 	title = "Knight"
 	en_meaning = "Knight"
 	rank_abbreviation = "Knight"
+	allowed_maps = list(MAP_CAMP)
 
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
@@ -107,6 +109,7 @@
 	title = "Men-at-Arms"
 	en_meaning = "Swordsman"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_CAMP)
 
 	spawn_location = "JoinLateRN"
 
@@ -162,6 +165,7 @@
 	title = "Levy Pikeman"
 	en_meaning = "Levy Pikeman"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_CAMP)
 
 	spawn_location = "JoinLateRN"
 
@@ -224,6 +228,7 @@
 	title = "Levy Archer"
 	en_meaning = "Levy Archer"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_CAMP)
 
 	spawn_location = "JoinLateRN"
 
@@ -276,6 +281,7 @@
 	title = "Levy Militia"
 	en_meaning = "Levy Militia"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_CAMP)
 
 	spawn_location = "JoinLateRN"
 
@@ -346,6 +352,7 @@
 	title = "Seigneur"
 	en_meaning = "Lord"
 	rank_abbreviation = "Seigneur"
+	allowed_maps = list(MAP_CAMP)
 
 
 	spawn_location = "JoinLateFR"
@@ -403,6 +410,7 @@
 	title = "Chevalier"
 	en_meaning = "Knight"
 	rank_abbreviation = "Chevalier"
+	allowed_maps = list(MAP_CAMP)
 
 	spawn_location = "JoinLateFR"
 	is_officer = TRUE
@@ -454,6 +462,7 @@
 	title = "Homme dArme"
 	en_meaning = "Swordsman"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_CAMP)
 
 	spawn_location = "JoinLateFR"
 
@@ -506,6 +515,7 @@
 	title = "Paysan avec Pique"
 	en_meaning = "Levy Pikeman"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_CAMP)
 
 	spawn_location = "JoinLateFR"
 
@@ -567,6 +577,7 @@
 	title = "Paysan Archer"
 	en_meaning = "Levy Archer"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_CAMP)
 
 	spawn_location = "JoinLateFR"
 
@@ -619,6 +630,7 @@
 	title = "Milice"
 	en_meaning = "Levy Militia"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_CAMP)
 
 	spawn_location = "JoinLateFR"
 
@@ -690,6 +702,7 @@
 	title = "Grand Master"
 	en_meaning = "Crusader Leader"
 	rank_abbreviation = "Grand Master"
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 
 	spawn_location = "JoinLateFR"
@@ -751,6 +764,7 @@
 	title = "Templar Knight"
 	en_meaning = "Crusader Noble Knight"
 	rank_abbreviation = "Templar Knight"
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateFR"
 	is_officer = TRUE
@@ -806,6 +820,7 @@
 	title = "Crusader Sergeant"
 	en_meaning = "Crusader Heavy Infantry"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateFR"
 
@@ -860,6 +875,7 @@
 	title = "Crusader Squire"
 	en_meaning = "Crusader Light Infantry"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateFR"
 
@@ -922,6 +938,7 @@
 	title = "Templar Priest"
 	en_meaning = "Priest"
 	rank_abbreviation = "Father"
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateFR"
 
@@ -985,6 +1002,7 @@
 	en_meaning = "Lord"
 	rank_abbreviation = "Emir"
 	is_arabcaliph = TRUE
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
@@ -1048,6 +1066,7 @@
 	en_meaning = "Heavy Infantry"
 	rank_abbreviation = "Mamluk"
 	is_arabcaliph = TRUE
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
@@ -1103,6 +1122,7 @@
 	en_meaning = "Swordsman"
 	rank_abbreviation = ""
 	is_arabcaliph = TRUE
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateAR"
 
@@ -1167,6 +1187,7 @@
 	en_meaning = "Spearman"
 	rank_abbreviation = ""
 	is_arabcaliph = TRUE
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateAR"
 
@@ -1228,6 +1249,7 @@
 	en_meaning = "Archer"
 	rank_abbreviation = ""
 	is_arabcaliph = TRUE
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateAR"
 
@@ -1285,6 +1307,7 @@
 	en_meaning = "Priest"
 	rank_abbreviation = "Imam"
 	is_arabcaliph = TRUE
+	allowed_maps = list(MAP_SAMMIRHAYEED, MAP_OASIS, MAP_KARAK)
 
 	spawn_location = "JoinLateAR"
 
@@ -1336,16 +1359,14 @@
 	title = "Freiherr"
 	en_meaning = "Baron"
 	rank_abbreviation = "Freiherr"
-
-
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
-
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = FALSE
 	is_rp = TRUE
 	is_medieval = TRUE
+	allowed_maps = list(MAP_BOHEMIA)
 
 
 	min_positions = 1
@@ -1387,16 +1408,14 @@
 	title = "Dienstmann"
 	en_meaning = "Retainer"
 	rank_abbreviation = "Dienstmann"
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
-
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = FALSE
 	is_rp = TRUE
 	is_medieval = TRUE
-
 
 	min_positions = 1
 	max_positions = 1
@@ -1436,15 +1455,13 @@
 	title = "Ritter"
 	en_meaning = "Knight"
 	rank_abbreviation = "Herr"
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateGE"
 	is_officer = TRUE
 	whitelisted = TRUE
-
 	is_medieval = TRUE
 	is_rp = TRUE
 	is_squad_leader = TRUE
-
 
 	min_positions = 1
 	max_positions = 3
@@ -1482,12 +1499,10 @@
 	title = "Wachmann"
 	en_meaning = "Guardsman"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateGE"
-
 	is_medieval = TRUE
 	is_rp = TRUE
-
 
 	min_positions = 5
 	max_positions = 15
@@ -1533,9 +1548,8 @@
 	title = "Pfaffe"
 	en_meaning = "Church Priest"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCivC"
-
 	is_religious = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
@@ -1575,9 +1589,8 @@
 	title = "Kumpel"
 	en_meaning = "Miner/Explorer"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCiv"
-
 	is_medieval = TRUE
 	is_rp = TRUE
 	can_be_female = TRUE
@@ -1634,9 +1647,8 @@
 	title = "Bauer"
 	en_meaning = "Farmer/Rancher"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCiv"
-
 	is_medieval = TRUE
 	is_rp = TRUE
 	can_be_female = TRUE
@@ -1696,10 +1708,9 @@
 	title = "Schmied"
 	en_meaning = "Blacksmith"
 	rank_abbreviation = "Blacksmith"
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCivB"
 	whitelisted = TRUE
-
 	is_medieval = TRUE
 	is_rp = TRUE
 	can_be_female = TRUE
@@ -1757,9 +1768,8 @@
 	title = "Gastwirst"
 	en_meaning = "Innkeeper"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCivD"
-
 	is_medieval = TRUE
 	is_rp = TRUE
 	can_be_female = TRUE
@@ -1817,9 +1827,8 @@
 	title = "Kneiper"
 	en_meaning = "Taverner/Barkeeper"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCiv"
-
 	is_medieval = TRUE
 	is_rp = TRUE
 	can_be_female = TRUE
@@ -1878,9 +1887,8 @@
 	title = "Kleinbauer"
 	en_meaning = "Basic Peasant"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCiv"
-
 	is_medieval = TRUE
 	is_rp = TRUE
 	can_be_female = TRUE
@@ -1937,10 +1945,9 @@
 	title = "Kaufmann"
 	en_meaning = "Merchant/Trader"
 	rank_abbreviation = "Kaufmann"
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCivA"
 	is_merchant = TRUE
-
 	whitelisted = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
@@ -1998,13 +2005,11 @@
 	title = "Arzt"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Arzt"
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateRNSurgeon"
-
 	is_medic = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
-
 
 	min_positions = 1
 	max_positions = 20

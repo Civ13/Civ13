@@ -2,6 +2,7 @@
 /datum/job/russian/sovafghan/captain
 	title = "Soviet Army Captain"
 	rank_abbreviation = "Kapt."
+	allowed_maps = list(MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateRUCap"
 
@@ -62,6 +63,7 @@
 /datum/job/russian/sovafghan/lieutenant
 	title = "Soviet Army Lieutenant"
 	rank_abbreviation = "Leyt."
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateRULt"
 
@@ -133,6 +135,7 @@
 /datum/job/russian/sovafghan/sergeant
 	title = "Soviet Army Sergeant"
 	rank_abbreviation = "Srj."
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateRUSL"
 
@@ -202,6 +205,7 @@
 /datum/job/russian/sovafghan/medic
 	title = "Soviet Army Field Medic"
 	rank_abbreviation = "Efr."
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateRU"
 
@@ -259,6 +263,7 @@
 /datum/job/russian/sovafghan/radop
 	title = "Soviet Army Radio Operator"
 	rank_abbreviation = "Efr."
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateRU"
 	is_afghan = TRUE
@@ -327,6 +332,7 @@
 /datum/job/russian/sovafghan/soldier
 	title = "Soviet Army Private"
 	rank_abbreviation = "Ryad."
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateRU"
 	is_afghan = TRUE
@@ -423,6 +429,7 @@
 /datum/job/russian/sovafghan/sapper
 	title = "Soviet Army Sapper"
 	rank_abbreviation = "Efr."
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateRUSap"
 	is_afghan = TRUE
@@ -502,6 +509,7 @@
 /datum/job/russian/sovafghan/tank_com
 	title = "Soviet Army Tank Commander"
 	rank_abbreviation = "Jr. Sgt."
+	allowed_maps = list(MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateRUTank"
 
@@ -576,6 +584,7 @@
 /datum/job/russian/sovafghan/tanker
 	title = "Soviet Army Tanker"
 	rank_abbreviation = "Efr."
+	allowed_maps = list(MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateRUTank"
 	uses_squads = TRUE
@@ -642,6 +651,7 @@
 /datum/job/russian/sovafghan/spez
 	title = "Spetznaz GRU"
 	rank_abbreviation = "Jr. Sgt."
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
@@ -712,6 +722,7 @@
 	title = "DRA Governor"
 	rank_abbreviation = "Gov."
 	spawn_location = "JoinLateDRAGov"
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR)
 
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -777,6 +788,7 @@
 /datum/job/civilian/afghan/dra/lieutenant
 	title = "DRA Lieutenant"
 	rank_abbreviation = "DRA Lt."
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateDRALt"
 
@@ -854,6 +866,7 @@
 /datum/job/civilian/afghan/dra/sergeant
 	title = "DRA Sergeant"
 	rank_abbreviation = "DRA Sgt."
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateDRACap"
 
@@ -930,6 +943,7 @@
 /datum/job/civilian/afghan/dra/soldier
 	title = "DRA Soldier"
 	rank_abbreviation = "DRA Pvt."
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateDRA"
 	is_afghan = TRUE
@@ -1005,6 +1019,7 @@
 /datum/job/civilian/afghan/doctor
 	title = "Hospital Doctor"
 	rank_abbreviation = "Dr."
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR)
 
 	spawn_location = "JoinLateDoc"
 	is_afghan = TRUE
@@ -1215,6 +1230,7 @@
 
 /datum/job/civilian/afghan/miner
 	title = "Mine Worker"
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR)
 
 	spawn_location = "JoinLateCivMW"
 	is_afghan = TRUE
@@ -1312,6 +1328,7 @@
 /datum/job/civilian/afghan/waiter
 	title = "Waiter"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR)
 
 	spawn_location = "JoinLateCivWaiter"
 	is_afghan = TRUE
@@ -1381,6 +1398,7 @@
 /datum/job/civilian/afghan/cook
 	title = "Cook"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR)
 
 	spawn_location = "JoinLateCivCook"
 	is_afghan = TRUE
@@ -1445,6 +1463,7 @@
 /datum/job/civilian/afghan/urbanciv
 	title = "Civilian"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR)
 
 	spawn_location = "JoinLateCiv"
 	is_afghan = TRUE
@@ -1554,6 +1573,7 @@
 /datum/job/civilian/afghan/villager
 	title = "Villager"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR)
 
 	spawn_location = "JoinLateVil"
 	is_afghan = TRUE
@@ -1655,6 +1675,7 @@
 /datum/job/arab/mujahideen/warchief
 	title = "Mujahideen Warchief"
 	rank_abbreviation = "Malik"
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
@@ -1743,6 +1764,7 @@
 /datum/job/arab/mujahideen/group_leader
 	title = "Mujahideen Group Leader"
 	rank_abbreviation = "Jameedar"
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateAR"
 	is_squad_leader = TRUE
@@ -1829,6 +1851,7 @@
 	title = "Mujahideen Imam"
 	rank_abbreviation = ""
 	en_meaning = "Chaplain/Medic"
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateAR"
 	is_afghan = TRUE
@@ -1887,6 +1910,7 @@
 /datum/job/arab/mujahideen/insurgent
 	title = "Mujahideen Insurgent"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_HILL_3234, MAP_KANDAHAR, MAP_MAGISTRAL)
 
 	spawn_location = "JoinLateAR"
 	is_afghan = TRUE

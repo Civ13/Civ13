@@ -24,19 +24,5 @@
 
 	ambience = list('sound/ambience/jungle1.ogg')
 
-obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/indians))
-		if (J.is_1713 && !J.is_deathmatch)
-			. = TRUE
-		else
-			. = FALSE
-	else if (istype(J, /datum/job/british))
-		if (J.is_navy)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
 
 

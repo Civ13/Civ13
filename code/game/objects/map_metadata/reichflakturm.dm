@@ -26,17 +26,6 @@
 	songs = list(
 		"Over There!:1" = 'sound/music/overthere.ogg',)
 	gamemode = "Siege"
-/obj/map_metadata/reichflakturm/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_tanker == TRUE || J.is_occupation == TRUE || J.is_reichstag == TRUE || J.is_ss_panzer == TRUE || J.is_navy == TRUE || (istype(J, /datum/job/american/soldier_ww2_filipino)))
-		. = FALSE
-	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
-		. = TRUE
-	else if (istype(J, /datum/job/german/german_antitank) || istype(J, /datum/job/german/german_antitankassitant))
-		. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/reichflakturm/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 

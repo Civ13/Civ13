@@ -30,13 +30,6 @@
 		"Song of Zhenbao Island - Sino-Soviet War Song:1" = 'sound/music/zhenbao.ogg',)
 	gamemode = "Siege"
 
-/obj/map_metadata/zhenbao/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_sinosovbor == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/zhenbao/roundend_condition_def2name(define)
 	..()
 	switch (define)

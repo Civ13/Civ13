@@ -37,13 +37,6 @@
 	spawn(18000)
 		seasons()
 
-obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_1713 && !J.is_deathmatch)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/colony/cross_message(faction)
 	return ""
 

@@ -3,6 +3,7 @@
 /datum/job/american/usmc_lieutenant
 	title = "USMC Lieutenant"
 	rank_abbreviation = "Lt."
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
 
 	spawn_location = "JoinLateRNCap"
 
@@ -10,7 +11,6 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_modernday = TRUE
 	is_radioman = TRUE
 	can_be_female = TRUE
 
@@ -53,6 +53,7 @@
 /datum/job/american/usmc_sergeant
 	title = "USMC Sergeant"
 	rank_abbreviation = "Sgt."
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
 
 	spawn_location = "JoinLateRNCap"
 
@@ -60,7 +61,6 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_radioman = TRUE
-	is_modernday = TRUE
 	can_be_female = TRUE
 	can_get_coordinates = TRUE
 
@@ -104,13 +104,13 @@
 /datum/job/american/usmc_medic
 	title = "USMC Field Medic"
 	rank_abbreviation = "Cpl."
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
 
 	spawn_location = "JoinLateRN"
 
 	is_medic = TRUE
 	is_coldwar = TRUE
 	can_be_female = TRUE
-	is_modernday = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -155,11 +155,11 @@
 /datum/job/american/usmc_marksman
 	title = "USMC Designated Marksman"
 	rank_abbreviation = "Spc."
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
 
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 	can_be_female = TRUE
 
@@ -204,11 +204,11 @@
 /datum/job/american/usmc_lmg
 	title = "USMC Automatic Rifleman"
 	rank_abbreviation = "Spc."
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
 
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	can_be_female = TRUE
 
 	min_positions = 2
@@ -256,11 +256,11 @@
 /datum/job/american/usmc_soldier
 	title = "USMC Rifleman"
 	rank_abbreviation = "Pvt."
+	allowed_maps = list(MAP_FALLUJAH, MAP_ARAB_TOWN_2)
 
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	can_be_female = TRUE
 	uses_squads = TRUE
 
@@ -310,6 +310,7 @@
 
 /datum/job/american/idf
 	default_language = "Hebrew"
+	allowed_maps = list()
 	additional_languages = list("English" = 25, "Russian" = 25, "Arabic" = 10)
 
 /datum/job/american/idf/give_random_name(var/mob/living/human/H)
@@ -321,6 +322,7 @@
 	title = "Segen"
 	rank_abbreviation = "Seg."
 	en_meaning = "IDF Lieutenant"
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateRN"
 
@@ -328,7 +330,6 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_modernday = TRUE
 	is_radioman = TRUE
 
 	min_positions = 1
@@ -370,6 +371,7 @@
 	title = "Samal"
 	rank_abbreviation = "Sam."
 	en_meaning = "IDF Sergeant"
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateRN"
 
@@ -377,7 +379,6 @@
 	uses_squads = TRUE
 	is_squad_leader = TRUE
 	is_radioman = TRUE
-	is_modernday = TRUE
 	can_get_coordinates = TRUE
 	uses_squads = TRUE
 
@@ -424,12 +425,12 @@
 	title = "Chovesh"
 	en_meaning = "IDF Field Medic"
 	rank_abbreviation = "Chovesh"
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateRN"
 
 	is_medic = TRUE
 	is_coldwar = TRUE
-	is_modernday = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -474,11 +475,11 @@
 	title = "Tzalaf"
 	en_meaning = "IDF Sniper"
 	rank_abbreviation = "Rav."
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
@@ -522,11 +523,11 @@
 	title = "Miqla"
 	en_meaning = "IDF Squad LMG"
 	rank_abbreviation = "Rav."
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
@@ -576,10 +577,10 @@
 	en_meaning = "IDF Private"
 	rank_abbreviation = ""
 
+	allowed_maps = list(MAP_ARAB_TOWN)
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 
 	min_positions = 10
@@ -626,12 +627,12 @@
 	title = "Hezbollah Squad Leader"
 	en_meaning = ""
 	rank_abbreviation = "Leader"
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateAR"
 
 	is_coldwar = TRUE
 	is_officer = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 	is_squad_leader = TRUE
 
@@ -694,12 +695,12 @@
 	title = "Hezbollah Field Medic"
 	en_meaning = ""
 	rank_abbreviation = "Dr."
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateAR"
 
 	is_medic = TRUE
 	is_coldwar = TRUE
-	is_modernday = TRUE
 
 	min_positions = 2
 	max_positions = 10
@@ -764,11 +765,11 @@
 	title = "Hezbollah Sniper"
 	en_meaning = ""
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateAR"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 
 	min_positions = 3
@@ -830,11 +831,11 @@
 	title = "Hezbollah Soldier"
 	en_meaning = ""
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_ARAB_TOWN)
 
 	spawn_location = "JoinLateAR"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 
 	min_positions = 12
@@ -904,11 +905,11 @@
 	title = "J.A. Alqayid"
 	en_meaning = "Syrian Goverment Army Commander"
 	rank_abbreviation = "Alq."
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateSYR"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	is_officer = TRUE
 	is_commander = FALSE
@@ -965,11 +966,11 @@
 	title = "J.A. Qayid Firqa"
 	en_meaning = "Syrian Goverment Army Squadleader"
 	rank_abbreviation = "Q.F."
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateSYR"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 	is_squad_leader = TRUE
@@ -1029,11 +1030,11 @@
 	title = "J.A. Sulydir"
 	en_meaning = "Syrian Goverment Army Soldier"
 	rank_abbreviation = "S."
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateSYR"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 
@@ -1117,11 +1118,11 @@
 	title = "J.A. Museif Qitaliun"
 	en_meaning = "Syrian Goverment Army Combat Medic"
 	rank_abbreviation = "Med."
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateSYR"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 	is_medic = TRUE
@@ -1178,9 +1179,9 @@
 	default_language = "Russian"
 	additional_languages = list("English" = 25, "Ukrainian" = 50)
 	spawn_location = "JoinLateSYR"
+	allowed_maps = list(MAP_SYRIA)
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 
@@ -1280,11 +1281,11 @@
 	title = "C.C. Qayid Almutamaridin"
 	en_meaning = "Free Syrian Army Commander"
 	rank_abbreviation = "Q.A."
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateREB"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	is_commander = TRUE
 	is_radioman = FALSE
@@ -1339,11 +1340,11 @@
 	title = "C.C. Qayid Firqa"
 	en_meaning = "Free Syrian Army Squadleader"
 	rank_abbreviation = "Q.F."
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateREB"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 	is_squad_leader = TRUE
@@ -1402,11 +1403,11 @@
 /datum/job/american/free_syrian_army/soldier
 	title = "C.C. Sulydir"
 	en_meaning = "Free Syrian Army Soldier"
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateREB"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 
@@ -1485,12 +1486,12 @@
 	title = "C.C. Museif Qitaliun"
 	en_meaning = "Free Syrian Army Combat Medic"
 	rank_abbreviation = "Med."
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateREB"
 
 	is_medic = TRUE
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 
@@ -1542,11 +1543,11 @@
 /datum/job/american/free_syrian_army/insurgent
 	title = "Milishya Suria"
 	en_meaning = "Syrian Insurgent Militia"
+	allowed_maps = list(MAP_SYRIA)
 
 	spawn_location = "JoinLateREB"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 
@@ -1623,9 +1624,9 @@
 	default_language = "English"
 	additional_languages = list("Arabic" = 60)
 	spawn_location = "JoinLateREB"
+	allowed_maps = list(MAP_SYRIA)
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 

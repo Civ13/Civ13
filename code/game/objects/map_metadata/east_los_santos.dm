@@ -167,13 +167,6 @@
 		to_chat(world, "Ballas Influence: [ballas_points]/40")
 		to_chat(world, "Grove Influence: [grove_points]/40")
 
-/obj/map_metadata/east_los_santos/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_gta == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/east_los_santos/roundend_condition_def2name(define)
 	..()
 	switch (define)

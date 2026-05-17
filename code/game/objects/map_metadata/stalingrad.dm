@@ -38,23 +38,6 @@
 	spawn(3000)
 		points_check()
 
-/obj/map_metadata/stalingrad/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew))
-		. = TRUE
-	else if (J.is_ss_panzer == TRUE)
-		. = FALSE
-	else if (J.is_occupation == TRUE)
-		. = FALSE
-	else if (J.is_tanker == TRUE)
-		. = FALSE
-	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
-		. = TRUE
-	else if (J.is_reichstag == TRUE)
-		. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/stalingrad/roundend_condition_def2name(define)
 	..()
 	switch (define)
@@ -249,23 +232,6 @@
 	faction_distribution_coeffs = list(GERMAN = 0.5, RUSSIAN = 0.5)
 	battle_name = "battle of Stalingrad"
 	mission_start_message = "<font size=4>All factions have <b>3 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Train Station, Telephone Central, Hospital, and City Hall</b>.<br>First team to reach <b>40</b> points wins!</big>"
-
-/obj/map_metadata/stalingrad/minigrad/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew) || istype(J, /datum/job/russian/antitank_soldier_soviet) || istype(J, /datum/job/russian/antitank_assistant_soldier_soviet) || istype(J, /datum/job/german/german_antitank) || istype(J, /datum/job/german/german_antitankassitant))
-		. = FALSE
-	else if (J.is_ss_panzer == TRUE)
-		. = FALSE
-	else if (J.is_occupation == TRUE)
-		. = FALSE
-	else if (J.is_tanker == TRUE)
-		. = FALSE
-	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
-		. = TRUE
-	else if (J.is_reichstag == TRUE)
-		. = FALSE
-	else
-		. = FALSE
 
 /obj/map_metadata/stalingrad/minigrad/points_check()
 	if (processes.ticker.playtime_elapsed > 2100)

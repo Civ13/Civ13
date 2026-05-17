@@ -59,6 +59,7 @@
 	min_positions = 1
 	max_positions = 999
 	selection_color = "#102f44"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/give_random_name(var/mob/living/human/H)
 	switch(rand(1,3))
@@ -77,109 +78,129 @@
 	title = "CAFR Commander"
 	rank_abbreviation = "CO-Cpt."
 	spawn_location = "JoinLateCAFRCpt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/officer
 	is_commander = TRUE
 	title = "CAFR Officer"
 	rank_abbreviation = "XO-Lt."
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/doctor
 	title = "CAFR Doctor"
 	is_medic = TRUE
 	rank_abbreviation = "Dr."
 	spawn_location = "JoinLateCAFRDoc"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/s1/sl
 	title = "CAFR Squad 1 Squad Leader"
 	squad = 1
 	is_squad_leader = TRUE
 	rank_abbreviation = "1-Sgt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/s1/pvt
 	title = "CAFR Squad 1 Private"
 	squad = 1
 	rank_abbreviation = "1-Pvt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/s1/corpsman
 	title = "CAFR Squad 1 Corpsman"
 	is_medic = TRUE
 	squad = 1
 	rank_abbreviation = "1-Corpsman"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/s1/machinegunner
 	title = "CAFR Squad 1 Machinegunner"
 	squad = 1
 	rank_abbreviation = "1-MG"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/s2/sl
 	title = "CAFR Squad 2 Squad Leader"
 	squad = 2
 	is_squad_leader = TRUE
 	rank_abbreviation = "2-Sgt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/s2/pvt
 	title = "CAFR Squad 2 Private"
 	squad = 2
 	rank_abbreviation = "2-Pvt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/s2/corpsman
 	title = "CAFR Squad 2 Corpsman"
 	is_medic = TRUE
 	squad = 2
 	rank_abbreviation = "2-Corpsman"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/s2/machinegunner
 	title = "CAFR Squad 2 Machinegunner"
 	squad = 2
 	rank_abbreviation = "2-MG"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/s3/sl
 	title = "CAFR Squad 3 Squad Leader"
 	squad = 3
 	is_squad_leader = TRUE
 	rank_abbreviation = "3-Sgt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/s3/pvt
 	title = "CAFR Squad 3 Private"
 	squad = 3
 	rank_abbreviation = "3-Pvt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/s3/corpsman
 	title = "CAFR Squad 3 Corpsman"
 	is_medic = TRUE
 	squad = 3
 	rank_abbreviation = "3-Corpsman"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/s3/machinegunner
 	title = "CAFR Squad 3 Machinegunner"
 	squad = 3
 	rank_abbreviation = "3-MG"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/recon
 	title = "CAFR Recon"
 	squad = 4
 	rank_abbreviation = "4-Recon"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/armored/sl
 	title = "CAFR Armored Squad Leader"
 	squad = 5
 	is_squad_leader = TRUE
 	rank_abbreviation = "5-Tank Sgt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/armored/crew
 	title = "CAFR Armored Crew"
 	squad = 5
 	rank_abbreviation = "5-Tank"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/at
 	title = "CAFR Anti-Tank"
 	squad = 6
 	rank_abbreviation = "6-AT"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/engineer
 	title = "CAFR Engineer"
 	squad = 7
 	rank_abbreviation = "7-Engineer"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/cafr/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

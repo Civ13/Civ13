@@ -11,9 +11,9 @@
 	title = "Dowódca Armii Krajowej"
 	en_meaning = "Polish Home Army Commander"
 	rank_abbreviation = "Maj."
+	allowed_maps = list(MAP_WARSAW)
 
 	can_be_female = TRUE
-	is_warpol = TRUE
 	whitelisted = TRUE
 	is_commander = TRUE
 	additional_languages = list("English" = 50, "German" = 75, "Russian" = 50, "Ukrainian" = 50)
@@ -73,12 +73,13 @@
 	title = "Dowódca Drużyny Polskiej Armii Krajowej"
 	en_meaning = "Polish Home Army Squad Leader"
 	rank_abbreviation = "Srj."
+	allowed_maps = list(MAP_WARSAW)
 
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	can_be_female = TRUE
 	whitelisted = TRUE
-	is_warpol = TRUE
+
 	additional_languages = list("Russian" = 20, "German" = 45, "Ukrainian" = 20)
 	spawn_location = "JoinLatePol"
 	min_positions = 2
@@ -133,11 +134,12 @@
 	title = "Medyk Armii Krajowej"
 	en_meaning = "Polish Home Army Medic"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_WARSAW)
 
 	uses_squads = TRUE
 	can_be_female = TRUE
 	whitelisted = TRUE
-	is_warpol = TRUE
+
 	is_medic = TRUE
 
 	additional_languages = list("Russian" = 20, "German" = 25, "Ukrainian" = 20)
@@ -201,10 +203,11 @@
 	title = "Uzbrojona Milicja"
 	en_meaning = "Polish Home Army Armed Militia"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_WARSAW)
 
 	uses_squads = TRUE
 	can_be_female = TRUE
-	is_warpol = TRUE
+
 	additional_languages = list("Russian" = 5, "German" = 25, "Ukrainian" = 20)
 	spawn_location = "JoinLatePol"
 	min_positions = 10
@@ -324,9 +327,10 @@
 	title = "Nieuzbrojona Milicja"
 	en_meaning = "Civilian Unarmed Milita"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_WARSAW)
 
 	uses_squads = TRUE
-	is_warpol = TRUE
+
 	can_be_female = TRUE
 	additional_languages = list("Russian" = 15, "German" = 15, "Ukrainian" = 10)
 	spawn_location = "JoinLatePol"
@@ -410,10 +414,11 @@
 	title = "Szare Szeregi"
 	en_meaning = "Grey Rank"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_WARSAW)
 
 	uses_squads = TRUE
 	can_be_female = TRUE
-	is_warpol = TRUE
+
 	can_be_minor = TRUE
 	additional_languages = list("Russian" = 15, "German" = 15, "Ukrainian" = 15)
 	spawn_location = "JoinLatePol"
@@ -483,11 +488,12 @@
 	title = "Polski Sierżant Armii Czerwonej"
 	en_meaning = "Polish Red Army Sergeant"
 	rank_abbreviation = "Srj."
+	allowed_maps = list(MAP_WARSAW)
 
 	spawn_location = "JoinLatePol"
 	uses_squads = TRUE
 	whitelisted = TRUE
-	is_warpol = TRUE
+
 	is_squad_leader = TRUE
 
 	can_be_female = TRUE
@@ -541,11 +547,12 @@
 	title = "Polski Żołnierz Armii Czerwonej"
 	en_meaning = "Polish Red Army Soldier"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_WARSAW)
 
 	spawn_location = "JoinLatePol"
 	uses_squads = TRUE
 	whitelisted = TRUE
-	is_warpol = TRUE
+
 	can_be_female = TRUE
 	additional_languages = list("Ukrainian" = 5, "German" = 15, "Russian" = 100)
 

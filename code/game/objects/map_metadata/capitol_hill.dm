@@ -41,6 +41,7 @@
 	var/a2_control = "none"
 	grace_wall_timer = 2400
 
+
 /obj/map_metadata/capitol_hill/New()
 	..()
 	spawn(2500)
@@ -49,20 +50,6 @@
 				new /area/caribbean/british/land/inside/objective(T)
 			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/two))
 				new /area/caribbean/british/land/inside/objective(T)
-
-/obj/map_metadata/capitol_hill/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_capitol == TRUE)
-		if (gamemode != "Protect the VIP")
-			if (J.is_whitehouse == TRUE)
-				. = FALSE
-			else
-				. = TRUE
-		else
-			. = TRUE
-	else
-		. = FALSE
-
 
 /obj/map_metadata/capitol_hill/roundend_condition_def2name(define)
 	..()
@@ -334,18 +321,6 @@ var/no_loop_capitol = FALSE
 		"National Guard" = 0,
 	)
 
-/obj/map_metadata/capitol_hill/pla_offensive/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if(istype(J, /datum/job/american))
-		if (J.is_capitol == TRUE && !(J.title == "US HVT"))
-			. = TRUE
-		else
-			if (istype(J, /datum/job/american/hvt/specials))
-				. = TRUE
-			else
-				. = FALSE
-	else if (istype(J, /datum/job/chinese/pla))
-		. = TRUE
 
 /obj/map_metadata/capitol_hill/pla_offensive/roundend_condition_def2name(define)
 	..()

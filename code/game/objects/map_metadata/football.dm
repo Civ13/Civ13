@@ -32,7 +32,7 @@
 	)
 
 	var/list/scorers = list()
-	
+
 	var/match_duration = 12 MINUTES
 
 	var/stopped = FALSE
@@ -98,7 +98,7 @@
 		for (var/obj/effect/step_trigger/goal/red/GR in world)
 			GR.assign()
 		for (var/obj/effect/step_trigger/goal/blue/GB in world)
-			GB.assign()	
+			GB.assign()
 /obj/map_metadata/football/proc/save_teams()
 	var/F = file("SQL/sports_teams.txt")
 	if (fexists(F))
@@ -125,13 +125,6 @@
 				teamlist += temp_stats2[1]
 				world.log << "Finished loading teams."
 	return
-/obj/map_metadata/football/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_football == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/football/proc/points_check()
 	to_chat(world, "<font size=4 color='yellow'><b>Current Score:</font></b>")
 	to_chat(world, "<font size=3 color=[teams[team1][team1_kit]["shirt_color"]]><b>[teams[team1][1]]</font><font size=3 color='#FFF'> [teams[team1][2]] - [teams[team2][2]] </font><font size=3 color=[teams[team2][team2_kit]["shirt_color"]]>[teams[team2][1]]</b></font>")
@@ -219,8 +212,8 @@
 	spawn_location = "JoinLateCivA"
 	min_positions = 10
 	max_positions = 10
-	is_football = TRUE
 	selection_color = "#AE001A"
+	allowed_maps = list(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
 
 /datum/job/civilian/football_red/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -245,8 +238,8 @@
 	spawn_location = "JoinLateCivA"
 	min_positions = 1
 	max_positions = 1
-	is_football = TRUE
 	selection_color = "#AE001A"
+	allowed_maps = list(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
 
 /datum/job/civilian/football_red/goalkeeper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -275,8 +268,8 @@
 	spawn_location = "JoinLateCivB"
 	min_positions = 10
 	max_positions = 10
-	is_football = TRUE
 	selection_color = "#6f8bb6"
+	allowed_maps = list(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
 
 
 /datum/job/civilian/football_blue/equip(var/mob/living/human/H)
@@ -303,8 +296,8 @@
 	spawn_location = "JoinLateCivB"
 	min_positions = 1
 	max_positions = 1
-	is_football = TRUE
 	selection_color = "#6f8bb6"
+	allowed_maps = list(MAP_FOOTBALL, MAP_FOOTBALL_CMP)
 
 
 /datum/job/civilian/football_blue/goalkeeper/equip(var/mob/living/human/H)

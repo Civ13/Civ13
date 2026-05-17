@@ -10,14 +10,11 @@
 	title = "Capitan"
 	en_meaning = "Ship Captain"
 	rank_abbreviation = "Capitan"
-
-
+	allowed_maps = list(MAP_ROBUSTA)
 	spawn_location = "JoinLateSPCap"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-
-
 
 	min_positions = 1
 	max_positions = 1
@@ -53,13 +50,11 @@
 	title = "Intendente"
 	en_meaning = "2IC / Supplies Officer"
 	rank_abbreviation = "Intendente"
-
+	allowed_maps = list(MAP_ROBUSTA)
 	spawn_location = "JoinLateSPQM"
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
-
-
 
 	min_positions = 1
 	max_positions = 1
@@ -94,14 +89,11 @@
 	title = "Contramaestre"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Contramaestre"
-
-
+	allowed_maps = list(MAP_ROBUSTA)
 	spawn_location = "JoinLateSPBoatswain"
 	whitelisted = TRUE
-
 	is_commander = TRUE
 	is_officer = TRUE
-
 
 	min_positions = 1
 	max_positions = 1
@@ -137,11 +129,9 @@
 	title = "Guardiamarina"
 	en_meaning = "Petty Officer"
 	rank_abbreviation = "Guardiamarina"
-
+	allowed_maps = list(MAP_ROBUSTA)
 	spawn_location = "JoinLateSPMidshipman"
 	is_officer = TRUE
-
-
 
 	min_positions = 1
 	max_positions = 10
@@ -174,9 +164,9 @@
 	title = "Cirujano"
 	en_meaning = "Medic"
 	rank_abbreviation = "Cirujano"
-
 	spawn_location = "JoinLateSPSurgeon"
 	is_medic = TRUE
+	allowed_maps = list(MAP_ROBUSTA)
 
 	min_positions = 1
 	max_positions = 10
@@ -210,10 +200,8 @@
 	title = "Carpintero Naval"
 	en_meaning = "Carpenter"
 	rank_abbreviation = "Carpintero"
-
 	spawn_location = "JoinLateSPCarpenter"
-
-
+	allowed_maps = list(MAP_ROBUSTA)
 
 	min_positions = 1
 	max_positions = 10
@@ -251,10 +239,8 @@
 	title = "Cocinero"
 	en_meaning = "Cook"
 	rank_abbreviation = "Cocinero"
-
 	spawn_location = "JoinLateSPCook"
-
-
+	allowed_maps = list(MAP_ROBUSTA)
 
 	min_positions = 1
 	max_positions = 10
@@ -299,10 +285,8 @@
 	title = "Marinero"
 	en_meaning = "Seaman"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_ROBUSTA)
 	spawn_location = "JoinLateSP"
-
-
 
 	min_positions = 6
 	max_positions = 200
@@ -431,7 +415,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 
 	min_positions = 1
 	max_positions = 1
@@ -481,7 +465,7 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_ww2 = FALSE
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 
 
 	min_positions = 2
@@ -534,7 +518,7 @@
 
 	is_ww2 = FALSE
 	is_medic = TRUE
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 	min_positions = 1
 	max_positions = 5
 
@@ -579,7 +563,7 @@
 	spawn_location = "JoinLateFSP"
 	is_ww2 = FALSE
 	uses_squads = TRUE
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 
 	min_positions = 10
 	max_positions = 75
@@ -646,7 +630,7 @@
 	spawn_location = "JoinLateFSP"
 	is_ww2 = FALSE
 	uses_squads = FALSE
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 
 	min_positions = 2
 	max_positions = 4

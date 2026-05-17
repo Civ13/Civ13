@@ -36,23 +36,6 @@
 	is_RP = TRUE
 	var/gracedown1 = TRUE
 	var/siren = FALSE
-/obj/map_metadata/abashiri/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/civilian/fantasy))
-		. = FALSE
-	if (J.is_civil_war == TRUE)
-		. = FALSE
-	if (istype(J, /datum/job/japanese/abashiri))
-		if (J.is_abashiri)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		if (J.is_abashiri && J.title != "DO NOT USE")
-			. = TRUE
-		else
-			. = FALSE
-
 /obj/map_metadata/abashiri/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 12000 || admin_ended_all_grace_periods)
 

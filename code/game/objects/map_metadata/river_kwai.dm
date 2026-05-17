@@ -29,18 +29,6 @@
 	var/gracedown1 = TRUE
 	var/siren = FALSE
 	grace_wall_timer = 2400
-obj/map_metadata/river_kwai/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/japanese))
-		if (J.is_prison == TRUE && J.is_ww2 == TRUE && J.is_abashiri == FALSE)
-			. = TRUE
-		else
-			. = FALSE
-	else if (istype(J, /datum/job/british))
-		if (J.is_prison)
-			. = TRUE
-		else
-			. = FALSE
 
 /obj/map_metadata/river_kwai/roundend_condition_def2name(define)
 	..()

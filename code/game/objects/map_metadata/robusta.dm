@@ -27,28 +27,6 @@
 	faction2 = SPANISH
 	grace_wall_timer = 7200
 
-/obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_RP)
-		. = FALSE
-	else if (J.is_warlords)
-		. = FALSE
-	else if (J.is_army)
-		. = FALSE
-	else if (J.is_medieval)
-		. = FALSE
-	else if (istype(J, /datum/job/pirates/battleroyale))
-		. = FALSE
-	else if (istype(J, /datum/job/indians/tribes))
-		. = FALSE
-	else if (J.is_gta)
-		. = FALSE
-	else if (J.is_blugi)
-		. = FALSE
-	else
-		. = TRUE
-	return .
-
 /obj/map_metadata/robusta/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
 

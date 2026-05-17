@@ -1,6 +1,7 @@
 /datum/job/american/captain_ww2
 	title = "US Captain"
 	rank_abbreviation = "Cpt."
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRNCap"
 
@@ -49,6 +50,7 @@
 /datum/job/american/lieutenant_ww2
 	title = "US Lieutenant"
 	rank_abbreviation = "Lt."
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRNBoatswain"
 
@@ -97,6 +99,7 @@
 /datum/job/american/sergeant_ww2
 	title = "US Sergeant"
 	rank_abbreviation = "Sgt."
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRN"
 
@@ -152,6 +155,7 @@
 /datum/job/american/medic_ww2
 	title = "US Field Medic"
 	rank_abbreviation = "Cpl."
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRNSurgeon"
 	is_medic = TRUE
@@ -212,6 +216,7 @@
 /datum/job/american/doctor_ww2
 	title = "US Doctor"
 	rank_abbreviation = "2lt."
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRNSurgeon"
 	is_ardennes = TRUE
@@ -260,6 +265,7 @@
 /datum/job/american/sniper_ww2
 	title = "US Sniper"
 	rank_abbreviation = "Pfc."
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRN"
 
@@ -316,6 +322,7 @@
 /datum/job/american/flamethrower_ww2
 	title = "Flamethrower Unit"
 	rank_abbreviation = "Pfc."
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRN"
 
@@ -370,6 +377,7 @@
 /datum/job/american/machine_gunner_ww2
 	title = "US Machine Gunner"
 	rank_abbreviation = "Pfc."
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRN"
 
@@ -428,6 +436,7 @@
 /datum/job/american/ammo_bearer_ww2
 	title = "Ammo Bearer"
 	rank_abbreviation = "Pfc."
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRN"
 
@@ -485,6 +494,7 @@
 /datum/job/american/soldier_ww2
 	title = "US Rifleman"
 	rank_abbreviation = "Pvt."
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRN"
 
@@ -544,6 +554,7 @@
 /datum/job/american/tanker_ww2
 	title = "US Tanker"
 	rank_abbreviation = "Cpl."
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_RIZAL_STADIUM)
 
 	spawn_location = "JoinLateRN"
 
@@ -595,6 +606,7 @@
 /datum/job/american/mp_ww2
 	title = "US Military Police"
 	rank_abbreviation = "Ssgt."
+	allowed_maps = list(MAP_ARDENNES, MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
@@ -641,6 +653,7 @@
 /datum/job/american/chef_ww2
 	title = "US Chef"
 	rank_abbreviation = "Pfc."
+	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRNCook"
 
@@ -681,9 +694,9 @@
 /datum/job/american/soldier_ww2_filipino
 	title = "Filipino Scout"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRN"
-	is_pacific = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
 	can_be_female = TRUE
@@ -750,6 +763,7 @@
 /datum/job/american/sailor_ww2
 	title = "US Sailor"
 	rank_abbreviation = "Pvt."
+	allowed_maps = list(MAP_IWO_JIMA)
 
 	spawn_location = "JoinLateRNNavy"
 
@@ -789,6 +803,7 @@
 /datum/job/american/captain_korean_war
 	title = " US Captain"
 	rank_abbreviation = "Cpt."
+	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRNCap"
 
@@ -796,7 +811,6 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_radioman = FALSE
-	is_korean_war = TRUE
 	min_positions = 1
 	max_positions = 1
 
@@ -837,13 +851,13 @@
 /datum/job/american/lieutenant_korean_war
 	title = " US Lieutenant"
 	rank_abbreviation = "Lt."
+	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRNBoatswain"
 
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_radioman = FALSE
-	is_korean_war = TRUE
 
 	min_positions = 1
 	max_positions = 2
@@ -882,6 +896,7 @@
 /datum/job/american/sergeant_korean_war
 	title = " US Sergeant"
 	rank_abbreviation = "Sgt."
+	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRN"
 
@@ -889,7 +904,6 @@
 	uses_squads = TRUE
 	is_radioman = FALSE
 	can_get_coordinates = TRUE
-	is_korean_war = TRUE
 
 	min_positions = 2
 	max_positions = 10
@@ -937,10 +951,10 @@
 /datum/job/american/medic_korean_war
 	title = " US Field Medic"
 	rank_abbreviation = "Cpl."
+	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRNSurgeon"
 	is_medic = TRUE
-	is_korean_war = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
@@ -993,11 +1007,11 @@
 /datum/job/american/doctor_korean_war
 	title = " US Doctor"
 	rank_abbreviation = "2lt."
+	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRNSurgeon"
 
 	is_medic = TRUE
-	is_korean_war = TRUE
 	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 4
@@ -1040,10 +1054,10 @@
 /datum/job/american/sniper_korean_war
 	title = " US Sniper"
 	rank_abbreviation = "Pfc."
+	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRN"
 
-	is_korean_war = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
@@ -1083,10 +1097,10 @@
 /datum/job/american/machine_gunner_korean_war
 	title = " US Machine Gunner"
 	rank_abbreviation = "Pfc."
+	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRN"
 
-	is_korean_war = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
@@ -1136,10 +1150,10 @@
 /datum/job/american/soldier_korean_war
 	title = " US Rifleman"
 	rank_abbreviation = "Pvt."
+	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRN"
 
-	is_korean_war = TRUE
 	uses_squads = TRUE
 
 	min_positions = 8
@@ -1177,10 +1191,10 @@
 /datum/job/american/american_radioman_korea
 	title = " USA Radio Operator"
 	rank_abbreviation = "Cpl."
+	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRN"
 
-	is_korean_war = TRUE
 	is_radioman = TRUE
 	uses_squads = TRUE
 

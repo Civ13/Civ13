@@ -69,13 +69,6 @@
 		seasons()
 	..()
 
-/obj/map_metadata/tribes/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/civilian/fantasy))
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/tribes/cross_message(faction)
 	return ""
 

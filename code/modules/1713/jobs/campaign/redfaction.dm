@@ -9,6 +9,7 @@
 	min_positions = 1
 	max_positions = 999
 	selection_color = "#CC0000"
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/redfaction/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_redfaction_name(H.gender)
@@ -18,120 +19,144 @@
 	is_commander = TRUE
 	title = "RDF Commander"
 	rank_abbreviation = "CO-Cpt."
+	allowed_maps = list(MAP_CAMPAIGN)
 	additional_languages = list("Blugoslavian" = 100)
 /datum/job/redfaction/officer
 	is_commander = TRUE
 	title = "RDF Officer"
 	rank_abbreviation = "XO-Lt."
 	additional_languages = list("Blugoslavian" = 100)
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/redfaction/doctor
 	title = "RDF Doctor"
 	is_medic = TRUE
 	rank_abbreviation = "Dr."
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/redfaction/s1/sl
 	title = "RDF Squad 1 Squadleader"
 	squad = 1
 	is_squad_leader = TRUE
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "1-Sgt"
 /datum/job/redfaction/s1/pvt
 	title = "RDF Squad 1 Private"
 	squad = 1
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "1-Pvt"
 /datum/job/redfaction/s1/corpsman
 	title = "RDF Squad 1 Corpsman"
 	is_medic = TRUE
 	squad = 1
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "1-Corpsman"
 /datum/job/redfaction/s1/machinegunner
 	title = "RDF Squad 1 Machinegunner"
 	squad = 1
 	rank_abbreviation = "1-MG"
+	allowed_maps = list(MAP_CAMPAIGN)
 /*
 /datum/job/bluefaction/s1/marksman
 	title = "RDF Squad 1 Des. Marksman"
 	squad = 1
 	rank_abbreviation = "1-DM"
 */
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/redfaction/s2/sl
 	title = "RDF Squad 2 Squadleader"
 	squad = 2
 	is_squad_leader = TRUE
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "2-Sgt"
 /datum/job/redfaction/s2/pvt
 	title = "RDF Squad 2 Private"
 	squad = 2
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "2-Pvt"
 /datum/job/redfaction/s2/corpsman
 	title = "RDF Squad 2 Corpsman"
 	is_medic = TRUE
 	squad = 2
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "2-Corpsman"
 /datum/job/redfaction/s2/machinegunner
 	title = "RDF Squad 2 Machinegunner"
 	squad = 2
 	rank_abbreviation = "2-MG"
+	allowed_maps = list(MAP_CAMPAIGN)
 /*
 /datum/job/bluefaction/s2/marksman
 	title = "RDF Squad 2 Des. Marksman"
 	squad = 2
 	rank_abbreviation = "2-DM"
 */
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/redfaction/s3/sl
 	title = "RDF Squad 3 Squadleader"
 	squad = 3
 	is_squad_leader = TRUE
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "3-Sgt"
 /datum/job/redfaction/s3/pvt
 	title = "RDF Squad 3 Private"
 	squad = 3
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "3-Pvt"
 /datum/job/redfaction/s3/corpsman
 	title = "RDF Squad 3 Corpsman"
 	is_medic = TRUE
 	squad = 3
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "3-Corpsman"
 /datum/job/redfaction/s3/machinegunner
 	title = "RDF Squad 3 Machinegunner"
 	squad = 3
 	rank_abbreviation = "3-MG"
+	allowed_maps = list(MAP_CAMPAIGN)
 /*
 /datum/job/bluefaction/s3/marksman
 	title = "RDF Squad 3 Des. Marksman"
 	squad = 3
 	rank_abbreviation = "3-DM"
 */
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/redfaction/recon
 	title = "RDF Recon"
 	squad = 4
 	rank_abbreviation = "4-Recon"
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/redfaction/armored // Remember to remove this later
 	spawn_location = "JoinLateRed_Reinforcement"
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/redfaction/armored/sl
 	title = "RDF Armored Squadleader"
 	squad = 5
 	is_squad_leader = TRUE
+	allowed_maps = list(MAP_CAMPAIGN)
 	rank_abbreviation = "5-Tank Sgt"
 /datum/job/redfaction/armored/crew
 	title = "RDF Armored Crew"
 	squad = 5
 	rank_abbreviation = "5-Tank"
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/redfaction/at
 	title = "RDF Anti-Tank"
 	squad = 6
 	rank_abbreviation = "6-AT"
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/redfaction/engineer
 	title = "RDF Engineer"
 	squad = 7
 	rank_abbreviation = "7-Engineer"
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/redfaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -287,6 +312,7 @@
 	max_positions = 1
 	rank_abbreviation = "Captain"
 	additional_languages = list("Blugoslavian" = 100)
+	allowed_maps = list(MAP_BATTLE_SHIPS, MAP_CAMPAIGN)
 	
 /datum/job/redfaction/navy/petty
 	title = "IRN Petty Officer"
@@ -294,12 +320,14 @@
 	is_navy = TRUE
 	max_positions = 10
 	rank_abbreviation = "PO"
+	allowed_maps = list(MAP_BATTLE_SHIPS, MAP_CAMPAIGN)
 	squad = 1
 /datum/job/redfaction/navy/one
 	is_navy = TRUE
 	title = "IRN Sailor"
 	squad = 1
 	rank_abbreviation = "Sailor"
+	allowed_maps = list(MAP_BATTLE_SHIPS, MAP_CAMPAIGN)
 
 /datum/job/redfaction/navy/marine/sl
 	is_navy = TRUE
@@ -307,12 +335,14 @@
 	is_squad_leader = TRUE
 	max_positions = 5
 	rank_abbreviation = "Sgt."
+	allowed_maps = list(MAP_BATTLE_SHIPS, MAP_CAMPAIGN)
 	squad = 2
 /datum/job/redfaction/navy/marine/soldier
 	is_navy = TRUE
 	title = "IRN Marine"
 	max_positions = 20
 	rank_abbreviation = "Pvt."
+	allowed_maps = list(MAP_BATTLE_SHIPS, MAP_CAMPAIGN)
 	squad = 2
 /datum/job/redfaction/navy/doctor
 	is_navy = TRUE
@@ -320,6 +350,7 @@
 	max_positions = 6
 	rank_abbreviation = "Dr."
 	is_medic = TRUE
+	allowed_maps = list(MAP_BATTLE_SHIPS, MAP_CAMPAIGN)
 
 /datum/job/redfaction/navy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -400,6 +431,7 @@
 	additional_languages = list("Blugoslavian" = 89)
 	min_positions = 999
 	max_positions = 999
+	allowed_maps = list(MAP_CAMPAIGN, MAP_ROTSTADT)
 
 /datum/job/redfaction/rotstadt_fighter/equip(mob/living/human/H)
 	if (!H)	return FALSE
@@ -443,6 +475,7 @@
 	additional_languages = list("Blugoslavian" = 89)
 	min_positions = 1
 	max_positions = 2
+	allowed_maps = list(MAP_CAMPAIGN, MAP_ROTSTADT)
 
 /datum/job/redfaction/rotstadt_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -489,6 +522,7 @@
 	additional_languages = list("Blugoslavian" = 89)
 	min_positions = 1
 	max_positions = 1
+	allowed_maps = list(MAP_CAMPAIGN, MAP_ROTSTADT)
 
 /datum/job/redfaction/rotstadt_commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -542,6 +576,7 @@
 	additional_languages = list("Blugoslavian" = 15)
 	min_positions = 999
 	max_positions = 999
+	allowed_maps = list(MAP_CAMPAIGN)
 
 /datum/job/redfaction/civilian/equip(mob/living/human/H)
 	if (!H)	return FALSE

@@ -24,13 +24,6 @@
 	songs = list(
 		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
 
-/obj/map_metadata/karelia/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_karelia == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/karelia/roundend_condition_def2name(define)
 	..()
 	switch (define)

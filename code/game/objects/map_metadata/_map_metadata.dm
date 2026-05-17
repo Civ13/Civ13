@@ -618,28 +618,11 @@ var/civmax_research = list(230,230,230)
 	return (faction1_can_cross_blocks() && faction2_can_cross_blocks())
 
 /obj/map_metadata/proc/job_enabled_specialcheck(var/datum/job/J)
-	if (age == "1013" && !civilizations)
-		if (J.is_medieval)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		if (!J.is_medieval)
-			. = TRUE
-		else
-			. = FALSE
-	if (civilizations)
-		if (J.is_civilizations)
-			. = TRUE
-		else
-			. = FALSE
-	else if (!civilizations)
-		if (!J.is_civilizations)
-			. = TRUE
-		else
-			. = FALSE
-	if (J.is_nomad)
-		. = FALSE
+	// new logic: if the job specifies which maps it belongs to, use that exclusively
+	if (J.allowed_maps.len > 0)
+		. = (ID in J.allowed_maps)
+		return .
+
 /obj/map_metadata/proc/cross_message(faction)
 	return "<font size = 4>The [faction_const2name(faction,ordinal_age)] may now cross the invisible wall!</font>"
 

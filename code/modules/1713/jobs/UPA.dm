@@ -14,6 +14,7 @@
 	title = "UPA Khorunzhyj"
 	en_meaning = "UPA 2nd Lieutenant"
 	rank_abbreviation = "Khj."
+	allowed_maps = list(MAP_FOREST)
 
 	spawn_location = "JoinLateCiv"
 
@@ -65,6 +66,7 @@
 	rank_abbreviation = "Buj."
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
+	allowed_maps = list(MAP_FOREST)
 
 	is_medic = TRUE
 	is_ww2 = TRUE
@@ -117,6 +119,7 @@
 	rank_abbreviation = "Vtn."
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
+	allowed_maps = list(MAP_FOREST)
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
@@ -169,6 +172,7 @@
 	title = "UPA Strilets"
 	en_meaning = "UPA Infantry"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_FOREST)
 
 	spawn_location = "JoinLateCiv"
 	can_be_female = TRUE

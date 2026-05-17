@@ -9,6 +9,7 @@
 	title = "Shangwei"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Shang."
+	allowed_maps = list(MAP_LONG_MARCH, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU)
 
 
 	spawn_location = "JoinLateRUCap"
@@ -69,6 +70,7 @@
 	title = "Zhongwei"
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "Zhong."
+	allowed_maps = list(MAP_LONG_MARCH, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU)
 
 
 	spawn_location = "JoinLateRUCap"
@@ -129,6 +131,7 @@
 	title = "Shangshi"
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Shi."
+	allowed_maps = list(MAP_LONG_MARCH, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU)
 
 	spawn_location = "JoinLateRU"
 	is_ww2 = TRUE
@@ -184,6 +187,7 @@
 	title = "Shaowei"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Shao."
+	allowed_maps = list(MAP_LONG_MARCH, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU)
 
 	spawn_location = "JoinLateRUDoc"
 	is_ww2 = TRUE
@@ -235,6 +239,7 @@
 	title = "Erdeng Bing"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Erd."
+	allowed_maps = list(MAP_LONG_MARCH, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU)
 
 	spawn_location = "JoinLateRU"
 	is_ww2 = TRUE
@@ -285,6 +290,7 @@
 	title = "Yideng Bing"
 	en_meaning = "Soldier First-class"
 	rank_abbreviation = "Yi."
+	allowed_maps = list(MAP_LONG_MARCH, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU)
 
 	spawn_location = "JoinLateRU"
 	is_ww2 = TRUE
@@ -335,13 +341,13 @@
 	title = " Shangwei"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Shang."
+	allowed_maps = list(MAP_RETREAT)
 
 
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_korean_war = TRUE
 
 
 
@@ -391,11 +397,11 @@
 	title = " Zhongwei"
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "Zhong."
+	allowed_maps = list(MAP_RETREAT)
 
 
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
-	is_korean_war = TRUE
 
 	is_commander = TRUE
 	is_officer = TRUE
@@ -447,9 +453,9 @@
 	title = " Shangshi"
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Shi."
+	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRU"
-	is_korean_war = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -500,9 +506,9 @@
 	title = " Shaowei"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Shao."
+	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRUDoc"
-	is_korean_war = TRUE
 
 
 	is_medic = TRUE
@@ -547,9 +553,9 @@
 	title = " Erdeng Bing"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Erd."
+	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRU"
-	is_korean_war = TRUE
 	uses_squads = TRUE
 
 
@@ -602,9 +608,9 @@
 	title = " Yideng Bing"
 	en_meaning = "Soldier First-Class"
 	rank_abbreviation = "Yi."
+	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRU"
-	is_korean_war = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
@@ -659,10 +665,10 @@
 	title = "Ji Qiangshou"
 	en_meaning = "Machine Gunner"
 	rank_abbreviation = "Yi."
+	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRU"
 	uses_squads = TRUE
-	is_korean_war = TRUE
 
 	min_positions = 2
 	max_positions = 10
@@ -734,6 +740,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	is_ccw = TRUE
+	allowed_maps = list(MAP_LONG_MARCH)
 
 	min_positions = 1
 	max_positions = 2
@@ -770,6 +777,7 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_ccw = TRUE
+	allowed_maps = list(MAP_LONG_MARCH)
 
 	min_positions = 2
 	max_positions = 10
@@ -818,6 +826,7 @@
 	spawn_location = "JoinLateCiv"
 	uses_squads = TRUE
 	is_ccw = TRUE
+	allowed_maps = list(MAP_LONG_MARCH)
 
 	min_positions = 2
 	max_positions = 100
@@ -863,6 +872,7 @@
 	spawn_location = "JoinLateCiv"
 	uses_squads = TRUE
 	is_ccw = TRUE
+	allowed_maps = list(MAP_LONG_MARCH)
 
 	min_positions = 2
 	max_positions = 100
@@ -928,7 +938,7 @@
 	en_meaning = "PLA Captain"
 	rank_abbreviation = "Shang."
 	spawn_location = "JoinLateRUSgt"
-
+	allowed_maps = list(MAP_CAPITOL_HILL_PLA)
 	is_pla = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
@@ -975,7 +985,7 @@
 	en_meaning = "PLA Lieutenant"
 	rank_abbreviation = "Zh."
 	spawn_location = "JoinLateRUSgt"
-
+	allowed_maps = list(MAP_CAPITOL_HILL_PLA)
 	is_pla = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -1022,7 +1032,7 @@
 	en_meaning = "PLA Sergeant"
 	rank_abbreviation = "Zh."
 	spawn_location = "JoinLateRUSgt"
-
+	allowed_maps = list(MAP_CAPITOL_HILL_PLA)
 	is_pla = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
@@ -1069,7 +1079,7 @@
 	rank_abbreviation = "Sdb."
 	en_meaning = "PLA Corpsman"
 	spawn_location = "JoinLateRUMedic"
-
+	allowed_maps = list(MAP_CAPITOL_HILL_PLA)
 	is_medic = TRUE
 	is_pla = TRUE
 
@@ -1118,7 +1128,7 @@
 	spawn_location = "JoinLateRU"
 	is_pla = TRUE
 	uses_squads = TRUE
-
+	allowed_maps = list(MAP_CAPITOL_HILL_PLA)
 	min_positions = 25
 	max_positions = 100
 
@@ -1156,7 +1166,7 @@
 	spawn_location = "JoinLateRU"
 	uses_squads = TRUE
 	is_pla = TRUE
-
+	allowed_maps = list(MAP_CAPITOL_HILL_PLA)
 	min_positions = 5
 	max_positions = 10
 
@@ -1194,6 +1204,7 @@
 	en_meaning = "PLA Political Commissar"
 	rank_abbreviation = "Zhe."
 	spawn_location = "JoinLateCH"
+	allowed_maps = list(MAP_ZHENBAO)
 
 	is_pla = FALSE
 	is_officer = TRUE
@@ -1241,6 +1252,7 @@
 	en_meaning = "PLA Sergeant"
 	rank_abbreviation = "Ju."
 	spawn_location = "JoinLateCH"
+	allowed_maps = list(MAP_ZHENBAO)
 
 	is_pla = FALSE
 	is_squad_leader = TRUE
@@ -1293,6 +1305,7 @@
 	rank_abbreviation = "Sdb."
 	en_meaning = "PLA Combat Doctor"
 	spawn_location = "JoinLateCH"
+	allowed_maps = list(MAP_ZHENBAO)
 
 	is_pla = FALSE
 	is_medic = TRUE
@@ -1348,6 +1361,7 @@
 	uses_squads = TRUE
 	is_sinosovbor = TRUE
 	can_be_female = TRUE
+	allowed_maps = list(MAP_ZHENBAO)
 
 	min_positions = 10
 	max_positions = 120
@@ -1426,6 +1440,7 @@
 	uses_squads = TRUE
 	is_sinosovbor = TRUE
 	can_be_female = TRUE
+	allowed_maps = list(MAP_ZHENBAO)
 
 	min_positions = 10
 	max_positions = 90

@@ -50,13 +50,6 @@
 			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/capturable/two))
 				new /area/caribbean/british/land/inside/objective(T)
 
-/obj/map_metadata/yeltsin/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_yeltsin == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/yeltsin/roundend_condition_def2name(define)
 	..()
 	switch (define)

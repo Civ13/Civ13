@@ -25,18 +25,5 @@
 	songs = list(
 		"Divinitus:1" = 'sound/music/divinitus.ogg',)
 	grace_wall_timer = 3000
-obj/map_metadata/heraclea/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/roman))
-		if (J.is_gladiator == TRUE || J.is_skyrim == TRUE)
-			. = FALSE
-		else
-			. = TRUE
-	if (istype(J, /datum/job/greek))
-		if (J.is_ancient == TRUE)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
+
 

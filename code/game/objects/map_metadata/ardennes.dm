@@ -29,20 +29,14 @@
 
 /obj/map_metadata/ardennes/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (istype(J, /datum/job/german))
-		if (J.is_ardennes)
-			. = TRUE
-		else
-			. = FALSE
-	else if (istype(J, /datum/job/american))
+
+	if (istype(J, /datum/job/american))
 		if (J.is_ardennes)
 			. = TRUE
 			if (istype(J, /datum/job/american/tanker_ww2))
 				J.spawn_location = "JoinLateRN2" // Doing this because changing the spawn_loc in the job file will bust other maps
 		else
 			. = FALSE
-	else
-		. = FALSE
 
 /obj/map_metadata/ardennes/roundend_condition_def2name(define)
 	..()

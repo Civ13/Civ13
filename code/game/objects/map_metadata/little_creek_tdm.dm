@@ -26,21 +26,7 @@
 	songs = list(
 		"The Good, the Bad, and the Ugly Theme:1" = 'sound/music/good_bad_ugly.ogg',)
 	is_singlefaction = TRUE
-obj/map_metadata/little_creek_tdm/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_cowboy == TRUE)
-		if (J.title == "Outlaw" || J.title == "Sheriffs Deputy" || J.title == "Sheriff")
-			. = TRUE
-		else if (J.is_deathmatch == TRUE)
-			. = FALSE
-		else if (J.is_heist == TRUE)
-			. = FALSE
-		else if (J.is_civil_war == TRUE)
-			. = FALSE
-		else
-			. = FALSE
-	else
-		. = FALSE
+
 
 /obj/map_metadata/little_creek_tdm/cross_message(faction)
 	return "<font size = 4>The grace wall is lifted!</font>"

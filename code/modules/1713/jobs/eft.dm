@@ -3,8 +3,8 @@
 	title = "USEC PMC"
 	rank_abbreviation = ""
 	spawn_location = "JoinLatePMC"
-	is_eft = TRUE
 	is_outlaw = TRUE
+	allowed_maps = list(MAP_EFT_FACTORY)
 
 	min_positions = 1
 	max_positions = 5
@@ -42,8 +42,8 @@
 	title = "BEAR PMC"
 	rank_abbreviation = ""
 	spawn_location = "JoinLatePMC"
-	is_eft = TRUE
 	is_outlaw = TRUE
+	allowed_maps = list(MAP_EFT_FACTORY)
 
 	min_positions = 1
 	max_positions = 5
@@ -80,7 +80,6 @@
 	title = "Scavenger"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateScav"
-	is_eft = TRUE
 	is_outlaw = TRUE
 
 	min_positions = 1

@@ -556,7 +556,7 @@ obj/structure/altar/iron
 	set category = "Faction"
 	if (map && map.civilizations)
 
-		var/body = "<html><head><title>Religion List</title></head><b>RELIGION LIST</b><br><br>"
+		var/body = "<html><head><title>Religion List</title></head>[common_browser_style]<b>RELIGION LIST</b><br><br>"
 		for (var/rel in map.custom_religions)
 			body += "<b>[rel]</b>: [map.custom_religions[rel][3]] points.</br>"
 		body += {"<br>

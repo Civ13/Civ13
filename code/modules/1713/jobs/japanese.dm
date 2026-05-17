@@ -21,6 +21,7 @@
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Ri-Tai"
 	is_russojapwar = TRUE
+	allowed_maps = list(MAP_HILL_203, MAP_PORT_ARTHUR)
 
 	spawn_location = "JoinLateJPCap"
 	is_officer = TRUE
@@ -71,6 +72,7 @@
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "1lt."
 	is_russojapwar = TRUE
+	allowed_maps = list(MAP_HILL_203, MAP_PORT_ARTHUR)
 
 	spawn_location = "JoinLateJPCap"
 	whitelisted = TRUE
@@ -122,6 +124,7 @@
 	en_meaning = "2nd Lieutenant"
 	rank_abbreviation = "2lt."
 	is_russojapwar = TRUE
+	allowed_maps = list(MAP_HILL_203, MAP_PORT_ARTHUR)
 
 	spawn_location = "JoinLateJPCap"
 	whitelisted = TRUE
@@ -176,6 +179,7 @@
 	spawn_location = "JoinLateJP"
 	is_squad_leader = TRUE
 	uses_squads = TRUE
+	allowed_maps = list(MAP_HILL_203, MAP_PORT_ARTHUR)
 
 	min_positions = 1
 	max_positions = 10
@@ -221,6 +225,7 @@
 	rank_abbreviation = "Gun-i"
 	is_russojapwar = TRUE
 	spawn_location = "JoinLateJPDoc"
+	allowed_maps = list(MAP_HILL_203, MAP_PORT_ARTHUR)
 
 	is_medic = TRUE
 
@@ -349,6 +354,7 @@
 	is_russojapwar = TRUE
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
+	allowed_maps = list(MAP_HILL_203, MAP_PORT_ARTHUR)
 
 
 	min_positions = 3
@@ -394,6 +400,7 @@
 	is_russojapwar = TRUE
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
+	allowed_maps = list(MAP_HILL_203, MAP_PORT_ARTHUR)
 
 
 	min_positions = 6
@@ -439,6 +446,7 @@
 	title = "IJA Rikugun-Tai-i"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Ri-Tai"
+	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_KHALKHYN_GOL, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU, MAP_RIZAL_STADIUM)
 
 
 	spawn_location = "JoinLateJPCap"
@@ -496,6 +504,7 @@
 	title = "IJA Rikugun-Chui"
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "1lt."
+	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_KHALKHYN_GOL, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU, MAP_RIZAL_STADIUM)
 
 
 	spawn_location = "JoinLateJPCap"
@@ -553,6 +562,7 @@
 	title = "IJA Rikugun-Shoi"
 	en_meaning = "2nd Lieutenant"
 	rank_abbreviation = "2lt."
+	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_KHALKHYN_GOL, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU, MAP_RIZAL_STADIUM)
 
 
 	spawn_location = "JoinLateJPCap"
@@ -610,6 +620,7 @@
 	title = "IJA Gunso"
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Gu."
+	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_KHALKHYN_GOL, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU, MAP_RIZAL_STADIUM)
 
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
@@ -670,6 +681,7 @@
 	title = "IJA Gun-i"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Gun-i"
+	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_KHALKHYN_GOL, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU, MAP_RIZAL_STADIUM)
 
 	spawn_location = "JoinLateJPDoc"
 
@@ -723,6 +735,7 @@
 	title = "Sento-i"
 	en_meaning = "Medic"
 	rank_abbreviation = "Sen-i"
+	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_KHALKHYN_GOL, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU, MAP_RIZAL_STADIUM)
 
 	spawn_location = "JoinLateJPDoc"
 	uses_squads = TRUE
@@ -784,6 +797,7 @@
 	title = "Ittohei"
 	en_meaning = "Soldier First-class"
 	rank_abbreviation = "Itto."
+	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_KHALKHYN_GOL, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU, MAP_RIZAL_STADIUM)
 
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
@@ -870,6 +884,7 @@
 	title = "Nitohei Taisensha"
 	en_meaning = "Anti Tank Unit"
 	rank_abbreviation = "Ni."
+	allowed_maps = list(MAP_IWO_JIMA, MAP_KENOBI, MAP_KHALKHYN_GOL, MAP_RIZAL_STADIUM)
 
 	spawn_location = "JoinLateJP"
 	is_ww2 = TRUE
@@ -921,6 +936,7 @@
 	title = "Taiho"
 	en_meaning = "Machinegunner"
 	rank_abbreviation = "Itto."
+	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_KHALKHYN_GOL, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU, MAP_RIZAL_STADIUM)
 
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
@@ -992,6 +1008,7 @@
 	title = " Fuku Taiho"
 	en_meaning = "Assistant Machinegunner"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_KHALKHYN_GOL, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU, MAP_RIZAL_STADIUM)
 
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
@@ -1061,6 +1078,7 @@
 	title = "Senmeina no Hito"
 	en_meaning = "Sniper"
 	rank_abbreviation = "Jo."
+	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_KHALKHYN_GOL, MAP_MARCO_POLO_BRIDGE, MAP_NANJING, MAP_NANKOU, MAP_RIZAL_STADIUM)
 
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
@@ -1126,6 +1144,7 @@
 	title = "Sensha Gunso"
 	en_meaning = "Tank Sergeant"
 	rank_abbreviation = "Gu."
+	allowed_maps = list(MAP_IWO_JIMA, MAP_KENOBI, MAP_NANJING, MAP_RIZAL_STADIUM)
 
 	spawn_location = "JoinLateJP"
 	is_officer = TRUE
@@ -1187,6 +1206,7 @@
 	title = "Senshahei"
 	en_meaning = "Tanker"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_IWO_JIMA, MAP_KENOBI, MAP_NANJING, MAP_RIZAL_STADIUM)
 
 	spawn_location = "JoinLateJP"
 	is_tanker = TRUE
@@ -1242,6 +1262,7 @@
 	title = "Horyoshuyojo-Cho"
 	en_meaning = "POW Camp Director"
 	rank_abbreviation = "Cho."
+	allowed_maps = list(MAP_RIVER_KWAI)
 
 
 	spawn_location = "JoinLateJPCap"
@@ -1299,6 +1320,7 @@
 	title = "Horyoshuyojo Gunso"
 	en_meaning = "POW Camp Sergeant"
 	rank_abbreviation = "Gu."
+	allowed_maps = list(MAP_RIVER_KWAI)
 
 	spawn_location = "JoinLateJP"
 	is_officer = TRUE
@@ -1352,6 +1374,7 @@
 	title = "Horyoshuyojo Sento-i"
 	en_meaning = "Camp Medic"
 	rank_abbreviation = "Sen-i"
+	allowed_maps = list(MAP_RIVER_KWAI)
 
 	spawn_location = "JoinLateJPDoc"
 
@@ -1400,6 +1423,7 @@
 	title = "Horyoshuyojo Anchisukiru"
 	en_meaning = "POW Camp Guard"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_RIVER_KWAI)
 
 	spawn_location = "JoinLateJP"
 
@@ -1451,6 +1475,7 @@
 	title = "Kaigun-Dai-i"
 	en_meaning = "Navy Lieutenant"
 	rank_abbreviation = "Ka-Dai"
+	allowed_maps = list(MAP_IWO_JIMA, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 
 	spawn_location = "JoinLateJPCap"
@@ -1508,6 +1533,7 @@
 	title = "Kaigun-Chui"
 	en_meaning = "Sub-Lieutenant"
 	rank_abbreviation = "Slt."
+	allowed_maps = list(MAP_IWO_JIMA, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 
 	spawn_location = "JoinLateJPCap"
@@ -1565,6 +1591,7 @@
 	title = "Kaigun-Shoi"
 	en_meaning = "Ensign"
 	rank_abbreviation = "En."
+	allowed_maps = list(MAP_IWO_JIMA, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 
 	spawn_location = "JoinLateJPCap"
@@ -1622,6 +1649,7 @@
 	title = "Kaigun Nitoheiso"
 	en_meaning = "Petty Officer 2nd Class"
 	rank_abbreviation = "Niso."
+	allowed_maps = list(MAP_IWO_JIMA, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
@@ -1675,6 +1703,7 @@
 	title = "Kaigun Gun-i"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Gun-i"
+	allowed_maps = list(MAP_IWO_JIMA, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateJPDoc"
 
@@ -1723,6 +1752,7 @@
 	title = "Kaigun Sento-i"
 	en_meaning = "Medic"
 	rank_abbreviation = "Sen-i"
+	allowed_maps = list(MAP_IWO_JIMA, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateJPDoc"
 	uses_squads = TRUE
@@ -1777,6 +1807,7 @@
 	title = "Santosuihei"
 	en_meaning = "Seaman First Class"
 	rank_abbreviation = "San."
+	allowed_maps = list(MAP_IWO_JIMA, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
@@ -1831,6 +1862,7 @@
 	title = "Hoshu"
 	en_meaning = "Machinegunner"
 	rank_abbreviation = "Nisu."
+	allowed_maps = list(MAP_IWO_JIMA, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
@@ -1883,6 +1915,7 @@
 	title = " Danyaku Mochinushi"
 	en_meaning = " Ammo Bearer"
 	rank_abbreviation = "Nisu."
+	allowed_maps = list(MAP_IWO_JIMA, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
@@ -1936,6 +1969,7 @@
 	title = "Kaigun Senmeina no Hito"
 	en_meaning = "Sniper"
 	rank_abbreviation = "Nisu."
+	allowed_maps = list(MAP_IWO_JIMA, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE

@@ -4,8 +4,8 @@
 	title = "Coalition Commander"
 	rank_abbreviation = "Capt."
 	spawn_location = "JoinLateFAR"
+	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -64,8 +64,8 @@
 	title = "Coalition Squad Leader"
 	rank_abbreviation = "Sgt."
 	spawn_location = "JoinLateFAR"
+	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 	is_squad_leader = TRUE
 
 	uses_squads = TRUE
@@ -147,8 +147,8 @@
 	title = "Coalition Weapons Specialist"
 	rank_abbreviation = "Spc."
 	spawn_location = "JoinLateFAR"
+	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 
 	uses_squads = TRUE
 
@@ -220,8 +220,8 @@
 	title = "Coalition Corpsman"
 	rank_abbreviation = "Cpl."
 	spawn_location = "JoinLateFAR"
+	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 
 	is_medic = TRUE
 
@@ -282,8 +282,8 @@
 	title = "Coalition Rifleman"
 	rank_abbreviation = "Pfc."
 	spawn_location = "JoinLateFAR"
+	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 
 	uses_squads = TRUE
 
@@ -358,8 +358,8 @@
 	title = "Soviet Army Commander"
 	rank_abbreviation = "Kapt."
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -421,8 +421,8 @@
 	title = "Soviet Army Squad Leader"
 	rank_abbreviation = "Snr Srj."
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 	is_squad_leader = TRUE
 
 	uses_squads = TRUE
@@ -494,8 +494,8 @@
 	title = "Soviet Army Heavy Weapons Specialist"
 	rank_abbreviation = "Efr."
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 
 	uses_squads = TRUE
 
@@ -562,8 +562,8 @@
 	title = "Soviet Army Corpsman"
 	rank_abbreviation = "Efr."
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 
 	is_medic = TRUE
 
@@ -620,8 +620,8 @@
 	title = "Soviet Army Rifleman"
 	rank_abbreviation = "Ryad."
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 
 	uses_squads = TRUE
 

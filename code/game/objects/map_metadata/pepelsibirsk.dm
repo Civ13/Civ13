@@ -233,14 +233,6 @@ var/global/datum/external_relations/external_relations = new()
 /obj/map_metadata/pepelsibirsk/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/pepelsibirsk/job_enabled_specialcheck(var/datum/job/J)
-	if (J.is_nomad == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
-////// DIPLOMATIC RELATIONS MANAGEMENT //////
-
 /obj/map_metadata/pepelsibirsk/proc/relations_subsystem()
 	spawn(3 SECONDS)
 		for(var/relation in external_relations.npc_faction_relations)

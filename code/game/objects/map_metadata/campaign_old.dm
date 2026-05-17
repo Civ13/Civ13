@@ -80,15 +80,6 @@
 	..()
 	civ_collector()
 
-/obj/map_metadata/campaign/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/redfaction))
-		. = TRUE
-	else if (istype(J, /datum/job/bluefaction))
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/campaign/cross_message(faction)
 	for (var/datum/job/J in job_master.occupations)
 		if (istype(J, /datum/job/redfaction))

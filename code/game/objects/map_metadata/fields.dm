@@ -24,12 +24,6 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	grace_wall_timer = 3000
 
-obj/map_metadata/fields/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_army == TRUE)
-		. = TRUE
-	else
-		. = FALSE
 
 /obj/map_metadata/fields/bridge
 	ID = MAP_BRIDGE

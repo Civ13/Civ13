@@ -31,20 +31,7 @@
 /obj/map_metadata/siege/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
-obj/map_metadata/siege/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/roman))
-		if (J.is_gladiator == TRUE || J.is_skyrim == TRUE)
-			. = FALSE
-		else
-			. = TRUE
-	if (istype(J, /datum/job/greek))
-		if (J.is_ancient == TRUE)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
+
 
 var/no_loop_rom = FALSE
 

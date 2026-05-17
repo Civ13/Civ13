@@ -30,16 +30,6 @@
 	artillery_count = 3
 	grace_wall_timer = 3000
 
-/obj/map_metadata/magistral/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_afghan)
-		if (J.is_soviet || J.is_dra || J.is_muj)
-			. = TRUE
-		if (J.title == "DRA Governor")
-			. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/magistral/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600

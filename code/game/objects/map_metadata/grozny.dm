@@ -44,13 +44,6 @@
 				NC.opacity = FALSE
 
 
-/obj/map_metadata/grozny/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_grozny == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/grozny/roundend_condition_def2name(define)
 	..()
 	switch (define)

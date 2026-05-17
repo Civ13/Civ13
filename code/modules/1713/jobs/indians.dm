@@ -10,6 +10,7 @@
 	title = "Carib Elder"
 	en_meaning = "Native Elder/Leader"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_FOUR_COLONIES, MAP_PIONEERS, MAP_SUPPLY_RAID, MAP_ROBUSTA)
 
 	spawn_location = "JoinLateIND"
 	can_be_female = TRUE
@@ -53,6 +54,7 @@
 	title = "Carib Shaman"
 	en_meaning = "Native Shaman"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_FOUR_COLONIES, MAP_PIONEERS, MAP_SUPPLY_RAID, MAP_ROBUSTA)
 
 	spawn_location = "JoinLateIND"
 	can_be_female = TRUE
@@ -96,6 +98,7 @@
 	title = "Carib Tribesman"
 	en_meaning = "Native Tribesman"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_FOUR_COLONIES, MAP_PIONEERS, MAP_SUPPLY_RAID, MAP_ROBUSTA)
 
 	spawn_location = "JoinLateIND"
 	can_be_female = TRUE
@@ -150,7 +153,7 @@
 
 	spawn_location = "JoinLateIND1"
 	can_be_female = TRUE
-
+	allowed_maps = list(MAP_HUNT)
 
 	min_positions = 60
 	max_positions = 300
@@ -671,6 +674,7 @@ datum/job/indians/tribes/black
 	is_squad_leader = TRUE
 	min_positions = 1
 	max_positions = 12
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 /datum/job/indians/warlords/tadojsville/sergeant/equip(var/mob/living/human/H)
 	H.nationality = "Katnegwa"
@@ -698,6 +702,7 @@ datum/job/indians/tribes/black
 	is_tadoj = TRUE
 	is_medic = TRUE
 	max_positions = 10
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 /datum/job/indians/warlords/tadojsville/shaman/equip(mob/living/human/H)
 	equip_shaman(H)
@@ -715,6 +720,7 @@ datum/job/indians/tribes/black
 	is_tadoj = TRUE
 	uses_squads = TRUE
 	max_positions = 300
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 /datum/job/indians/warlords/tadojsville/soldier/equip(var/mob/living/human/H)
 	..()
@@ -840,6 +846,7 @@ datum/job/indians/tribes/black
 	title = "Yellowagwana Brave"
 	spawn_location = "JoinLateIND3"
 	selection_color = "#969607"
+	allowed_maps = list(MAP_AFRICAN_WARLORDS)
 	is_yellowag = TRUE
 /datum/job/civilian/warlords/yellow/equip(var/mob/living/human/H)
 	..()
@@ -883,6 +890,7 @@ datum/job/indians/tribes/black
 	title = "Yellowagwana Shaman"
 	min_positions = 5
 	max_positions = 15
+	allowed_maps = list(MAP_AFRICAN_WARLORDS)
 	is_yellowag = TRUE
 /datum/job/civilian/warlords/yellow/shaman/equip(mob/living/human/H)
 	equip_shaman(H)
@@ -902,6 +910,7 @@ datum/job/indians/tribes/black
 	selection_color = "#2a28b6"
 	is_blugi = TRUE
 	min_positions = 40
+	allowed_maps = list(MAP_AFRICAN_WARLORDS)
 	max_positions = 100
 /datum/job/indians/warlords/bluevp/equip(var/mob/living/human/H)
 	..()
@@ -945,6 +954,7 @@ datum/job/indians/tribes/black
 	title = "Blugisi Shaman"
 	min_positions = 5
 	max_positions = 15
+	allowed_maps = list(MAP_AFRICAN_WARLORDS)
 	is_blugi = TRUE
 /datum/job/indians/warlords/bluevp/shaman/equip(mob/living/human/H)
 	equip_shaman(H)

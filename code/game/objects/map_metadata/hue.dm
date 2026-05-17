@@ -44,21 +44,6 @@
 		if ("United States")
 			return "American"
 
-/obj/map_metadata/hue/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/vietnamese))
-		if (J.is_vietcong)
-			. = FALSE
-		else
-			. = TRUE
-	else if (istype(J, /datum/job/american))
-		if (J.is_coldwar && !J.is_specops && !J.is_modernday)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/hue/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
 

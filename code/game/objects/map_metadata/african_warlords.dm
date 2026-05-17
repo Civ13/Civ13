@@ -33,17 +33,6 @@
 		spawn(600) // 1 minute 
 			points_check()
 
-/obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_blugi)
-		if (J.title != "warlord (do not use)")
-			. = TRUE
-	else if (J.is_yellowag)
-		if (J.title != "warlord (do not use)")
-			. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/african_warlords/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
 

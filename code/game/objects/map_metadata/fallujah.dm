@@ -28,14 +28,6 @@
 	artillery_count = 3
 	valid_artillery = list("Explosive")
 
-/obj/map_metadata/fallujah/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_modernday && istype(J, /datum/job/american) && !istype(J, /datum/job/american/idf))
-		. = TRUE
-	else if (J.is_specops && istype(J, /datum/job/arab))
-		. = TRUE
-	else
-		. = FALSE
 /obj/map_metadata/fallujah/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 30000 || admin_ended_all_grace_periods)
 

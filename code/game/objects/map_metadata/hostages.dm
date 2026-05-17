@@ -46,16 +46,7 @@
 	spawn(3000)
 		hostage_msg()
 
-obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/american))
-		if (J.is_specops && !J.is_modernday)
-			. = TRUE
-	else
-		if (J.is_specops)
-			. = TRUE
-		else
-			. = FALSE
+
 
 /obj/map_metadata/hostages/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 30000 || admin_ended_all_grace_periods)

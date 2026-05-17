@@ -10,6 +10,7 @@
 	min_positions = 1
 	max_positions = 999
 	selection_color = "#CC0000"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/give_random_name(var/mob/living/human/H)
 	switch(rand(1,2))
@@ -25,109 +26,129 @@
 	title = "TSFSR Commander"
 	rank_abbreviation = "CO-Cpt."
 	spawn_location = "JoinLateTSFSRCpt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/officer
 	is_commander = TRUE
 	title = "TSFSR Officer"
 	rank_abbreviation = "XO-Lt."
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/doctor
 	title = "TSFSR Doctor"
 	is_medic = TRUE
 	rank_abbreviation = "Dr."
 	spawn_location = "JoinLateTSFSRDoc"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/s1/sl
 	title = "TSFSR Squad 1 Squad Leader"
 	squad = 1
 	is_squad_leader = TRUE
 	rank_abbreviation = "1-Sgt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/s1/pvt
 	title = "TSFSR Squad 1 Private"
 	squad = 1
 	rank_abbreviation = "1-Pvt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/s1/corpsman
 	title = "TSFSR Squad 1 Corpsman"
 	is_medic = TRUE
 	squad = 1
 	rank_abbreviation = "1-Corpsman"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/s1/machinegunner
 	title = "TSFSR Squad 1 Machinegunner"
 	squad = 1
 	rank_abbreviation = "1-MG"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/s2/sl
 	title = "TSFSR Squad 2 Squad Leader"
 	squad = 2
 	is_squad_leader = TRUE
 	rank_abbreviation = "2-Sgt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/s2/pvt
 	title = "TSFSR Squad 2 Private"
 	squad = 2
 	rank_abbreviation = "2-Pvt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/s2/corpsman
 	title = "TSFSR Squad 2 Corpsman"
 	is_medic = TRUE
 	squad = 2
 	rank_abbreviation = "2-Corpsman"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/s2/machinegunner
 	title = "TSFSR Squad 2 Machinegunner"
 	squad = 2
 	rank_abbreviation = "2-MG"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/s3/sl
 	title = "TSFSR Squad 3 Squad Leader"
 	squad = 3
 	is_squad_leader = TRUE
 	rank_abbreviation = "3-Sgt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/s3/pvt
 	title = "TSFSR Squad 3 Private"
 	squad = 3
 	rank_abbreviation = "3-Pvt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/s3/corpsman
 	title = "TSFSR Squad 3 Corpsman"
 	is_medic = TRUE
 	squad = 3
 	rank_abbreviation = "3-Corpsman"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/s3/machinegunner
 	title = "TSFSR Squad 3 Machinegunner"
 	squad = 3
 	rank_abbreviation = "3-MG"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/recon
 	title = "TSFSR Recon"
 	squad = 4
 	rank_abbreviation = "4-Recon"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/armored/sl
 	title = "TSFSR Armored Squad Leader"
 	squad = 5
 	is_squad_leader = TRUE
 	rank_abbreviation = "5-Tank Sgt"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/armored/crew
 	title = "TSFSR Armored Crew"
 	squad = 5
 	rank_abbreviation = "5-Tank"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/at
 	title = "TSFSR Anti-Tank"
 	squad = 6
 	rank_abbreviation = "6-AT"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/engineer
 	title = "TSFSR Engineer"
 	squad = 7
 	rank_abbreviation = "7-Engineer"
+	allowed_maps = list(MAP_CAMPAIGN_NEW)
 
 /datum/job/tsfsr/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

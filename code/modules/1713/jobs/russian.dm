@@ -14,6 +14,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
+	allowed_maps = list(MAP_HILL_203, MAP_OSOWIEC, MAP_PORT_ARTHUR)
 
 	min_positions = 1
 	max_positions = 1
@@ -57,6 +58,7 @@
 	en_meaning = "Lieutenant"
 	rank_abbreviation = "Po."
 	is_russojapwar = TRUE
+	allowed_maps = list(MAP_HILL_203, MAP_OSOWIEC, MAP_PORT_ARTHUR)
 
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
@@ -111,6 +113,7 @@
 	is_russojapwar = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
+	allowed_maps = list(MAP_HILL_203, MAP_OSOWIEC, MAP_PORT_ARTHUR)
 
 
 	min_positions = 1
@@ -158,6 +161,7 @@
 	spawn_location = "JoinLateRU"
 	is_squad_leader = TRUE
 	uses_squads = TRUE
+	allowed_maps = list(MAP_HILL_203, MAP_OSOWIEC, MAP_PORT_ARTHUR)
 
 
 	min_positions = 2
@@ -202,6 +206,7 @@
 	rank_abbreviation = "Dr."
 	is_russojapwar = TRUE
 	spawn_location = "JoinLateRUDoc"
+	allowed_maps = list(MAP_HILL_203, MAP_OSOWIEC, MAP_PORT_ARTHUR, MAP_REICHSTAG)
 
 	is_medic = TRUE
 	min_positions = 1
@@ -242,6 +247,7 @@
 	is_russojapwar = TRUE
 	spawn_location = "JoinLateRU" //for testing!
 	uses_squads = TRUE
+	allowed_maps = list(MAP_HILL_203, MAP_OSOWIEC, MAP_PORT_ARTHUR)
 
 
 	min_positions = 6
@@ -282,7 +288,7 @@
 
 
 	return TRUE
-	
+
 /datum/job/russian/infantry
 	title = "Ryadovoy"
 	en_meaning = "Soldier Second-class"
@@ -290,6 +296,7 @@
 	is_russojapwar = TRUE
 	spawn_location = "JoinLateRU" //for testing!
 	uses_squads = TRUE
+	allowed_maps = list(MAP_HILL_203, MAP_OSOWIEC, MAP_PORT_ARTHUR)
 
 
 	min_positions = 6
@@ -336,6 +343,7 @@
 	title = "K.A. Kapitan"
 	en_meaning = "Red Army Captain"
 	rank_abbreviation = "Kpt."
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 
 	spawn_location = "JoinLateRUCap"
@@ -388,6 +396,7 @@
 	title = "NKVD Leytenant"
 	en_meaning = "NKVD Officer"
 	rank_abbreviation = "NKVD Leyt."
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 
 	spawn_location = "JoinLateRUCap"
@@ -437,6 +446,7 @@
 	title = "K.A. Serjant"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Srj."
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	is_squad_leader = TRUE
@@ -504,6 +514,7 @@
 	title = "K.A. Voynenvrach"
 	en_meaning = "Combat Medic"
 	rank_abbreviation = "Srj."
+	allowed_maps = list(MAP_BIGSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_KURSK, MAP_PAVLOV_HOUSE, MAP_BERLIN, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRUDoc"
 	is_ww2 = TRUE
@@ -511,7 +522,7 @@
 
 	is_karelia = TRUE
 	is_bordersov = FALSE
-	
+
 	min_positions = 1
 	max_positions = 4
 
@@ -553,6 +564,7 @@
 	title = "K.A. Pulemetchik"
 	en_meaning = "Red Army Machinegunner"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	is_ww2 = TRUE
@@ -604,6 +616,7 @@
 	title = "K.A. Pomoshnik Pulemetchika"
 	en_meaning = "Red Army Machinegunner Assistant"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	is_ww2 = TRUE
@@ -663,11 +676,11 @@
 	title = "K.A. Protivotankovyy Strelok"
 	en_meaning = "Red Army AT Rifleman"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_KURSK, MAP_PAVLOV_HOUSE, MAP_STALINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
 	is_ww2 = TRUE
-	is_sovaprif = TRUE
 	uses_squads = TRUE
 	is_karelia = FALSE
 
@@ -721,13 +734,13 @@
 	title = "K.A. Pomoshnik Protivotankovo Strelka"
 	en_meaning = "Red Army Assistant AT Rifleman"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_KURSK, MAP_PAVLOV_HOUSE, MAP_STALINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
 	is_karelia = FALSE
-	is_sovaprif = TRUE
 
 	min_positions = 2
 	max_positions = 4
@@ -796,6 +809,7 @@
 	title = "K.A. Ognemetchik"
 	en_meaning = "Red Army Flamethrower Unit"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
@@ -846,6 +860,7 @@
 	title = "K.A. Snaiper"
 	en_meaning = "Red Army Sniper"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_KURSK, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	is_karelia = TRUE
@@ -903,6 +918,7 @@
 	title = "K.A. Soldat"
 	en_meaning = "Red Army Private"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW, MAP_FOREST, MAP_HOTEL, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_PAVLOV_HOUSE, MAP_REICHSTAG, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
@@ -1004,6 +1020,7 @@
 	title = "NKVD Pogranichnik Leytenant"
 	en_meaning = "NKVD Border Guard Lieutenant"
 	rank_abbreviation = "NKVD Leyt."
+	allowed_maps = list(MAP_BARBAROSSA)
 
 
 	spawn_location = "JoinLateRUCap"
@@ -1054,6 +1071,7 @@
 	title = "NKVD pogranichnik"
 	en_meaning = "NKVD Border guard"
 	rank_abbreviation = "NKVD Pgr."
+	allowed_maps = list(MAP_BARBAROSSA)
 
 	spawn_location = "JoinLateRU"
 	is_squad_leader = TRUE
@@ -1107,6 +1125,7 @@
 	title = "Razvedchik"
 	en_meaning = "Soviet Scout"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_BARBAROSSA)
 
 	spawn_location = "JoinLateRU"
 	uses_squads = TRUE
@@ -1168,6 +1187,7 @@
 	title = "K.A. Opolchenets Serjant"
 	en_meaning = "Milita Squad Leader"
 	rank_abbreviation = "Srj."
+	allowed_maps = list(MAP_BARBAROSSA)
 
 	spawn_location = "JoinLateRU"
 	is_squad_leader = TRUE
@@ -1229,6 +1249,7 @@
 	title = "Opolchenets medik"
 	en_meaning = "Soviet Milita Medic"
 	rank_abbreviation = "Doc."
+	allowed_maps = list(MAP_BARBAROSSA)
 
 	spawn_location = "JoinLateRUDoc"
 	can_be_female = TRUE
@@ -1297,6 +1318,7 @@
 	title = "Protivotankovyy Prizyvnik"
 	en_meaning = "Anti tank conscript"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_BARBAROSSA)
 
 	spawn_location = "JoinLateRU"
 	is_squad_leader = FALSE
@@ -1361,6 +1383,7 @@
 	title = "Granitsa Opolchenets"
 	en_meaning = "Soviet Border Militia"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_BARBAROSSA)
 
 	spawn_location = "JoinLateRU"
 	uses_squads = TRUE
@@ -1464,8 +1487,7 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_rcw = TRUE
-
-
+	allowed_maps = list(MAP_TSARITSYN, MAP_SIBERSYN)
 
 	min_positions = 1
 	max_positions = 2
@@ -1511,6 +1533,7 @@
 	uses_squads = TRUE
 
 	is_rcw = TRUE
+	allowed_maps = list(MAP_TSARITSYN, MAP_SIBERSYN)
 
 
 	min_positions = 2
@@ -1555,6 +1578,7 @@
 
 	is_rcw = TRUE
 	is_medic = TRUE
+	allowed_maps = list(MAP_TSARITSYN, MAP_SIBERSYN)
 
 	min_positions = 1
 	max_positions = 10
@@ -1600,6 +1624,7 @@
 
 	is_rcw = TRUE
 	uses_squads = TRUE
+	allowed_maps = list(MAP_TSARITSYN, MAP_SIBERSYN)
 
 
 	min_positions = 6
@@ -1650,6 +1675,7 @@
 	is_squad_leader = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
+	allowed_maps = list(MAP_TSARITSYN, MAP_SIBERSYN)
 
 
 	min_positions = 1
@@ -1697,6 +1723,7 @@
 
 	is_rcw = TRUE
 	uses_squads = TRUE
+	allowed_maps = list(MAP_TSARITSYN, MAP_SIBERSYN)
 
 	min_positions = 6
 	max_positions = 70
@@ -1748,6 +1775,7 @@
 	is_rcw = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
+	allowed_maps = list(MAP_TSARITSYN, MAP_SIBERSYN)
 
 
 	min_positions = 1
@@ -1795,7 +1823,7 @@
 	uses_squads = TRUE
 	is_rcw = TRUE
 	is_squad_leader = TRUE
-
+	allowed_maps = list(MAP_TSARITSYN, MAP_SIBERSYN)
 
 	min_positions = 2
 	max_positions = 12
@@ -1840,6 +1868,7 @@
 	spawn_location = "JoinLateRU3"
 	is_rcw = TRUE
 	is_medic = TRUE
+	allowed_maps = list(MAP_TSARITSYN, MAP_SIBERSYN)
 
 	min_positions = 1
 	max_positions = 10
@@ -1884,7 +1913,7 @@
 
 	is_rcw = TRUE
 	uses_squads = TRUE
-
+	allowed_maps = list(MAP_TSARITSYN, MAP_SIBERSYN)
 
 	min_positions = 10
 	max_positions = 100
@@ -1940,11 +1969,12 @@
 	title = "Komandir Tanka"
 	en_meaning = "Armored Squad Leader"
 	rank_abbreviation = "Kom."
+	allowed_maps = list(MAP_KARELIA, MAP_KURSK, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	is_karelia = TRUE
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	uses_squads = TRUE
 	is_tanker = TRUE
 	whitelisted = TRUE
@@ -1997,9 +2027,10 @@
 	spawn_location = "JoinLateRU"
 	is_karelia = TRUE
 	is_ww2 = TRUE
-	is_reichstag = FALSE
+	
 	is_tanker = TRUE
 	uses_squads = TRUE
+	allowed_maps = list(MAP_FOREST, MAP_KARELIA, MAP_KHALKHYN_GOL, MAP_KURSK, MAP_STALINGRAD, MAP_SMALLINGRAD, MAP_VITEBSK)
 
 	min_positions = 4
 	max_positions = 32
@@ -2040,9 +2071,9 @@
 	title = "Gvardii Serjant"
 	en_meaning = "Guards Mechanized Squad Leader"
 	rank_abbreviation = "Srj."
+	allowed_maps = list(MAP_BIGSIEGEMOSCOW, MAP_BERLIN, MAP_KURSK, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
-	is_ss_panzer = TRUE
 	is_karelia = FALSE
 	is_ww2 = TRUE
 	is_squad_leader = TRUE
@@ -2092,12 +2123,12 @@
 	title = "Gvardii Krasnoarmeyets"
 	en_meaning = "Guards Mechanized Infantry"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_BIGSIEGEMOSCOW, MAP_BERLIN, MAP_KURSK, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	is_ss_panzer = TRUE
 	is_karelia = FALSE
 	min_positions = 6
 	max_positions = 30
@@ -2150,9 +2181,9 @@
 	title = "Gvardii Sapyor"
 	en_meaning = "Guards Sapper"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_BIGSIEGEMOSCOW, MAP_BERLIN, MAP_KARELIA, MAP_KURSK, MAP_VITEBSK)
 
 	spawn_location = "JoinLateRUSap"
-	is_ss_panzer = TRUE
 	is_karelia = TRUE
 	is_ww2 = TRUE
 
@@ -2202,10 +2233,10 @@
 /datum/job/russian/mosmil
 	title = "Opolchenets"
 	en_meaning = "Soviet Militia"
-	is_smallsiegemoscow = TRUE
 	spawn_location = "JoinEarlyMilita"
 	min_positions = 10
 	max_positions = 55
+	allowed_maps = list(MAP_SMALLSIEGEMOSCOW)
 
 /datum/job/russian/mosmil/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2356,8 +2387,9 @@
 	en_meaning = "Commander"
 	rank_abbreviation = "Kom."
 	spawn_location = "JoinLateRUCap"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -2413,8 +2445,9 @@
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Srj."
 	spawn_location = "JoinLateRUSL"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -2472,8 +2505,9 @@
 	en_meaning = "Doctor"
 	rank_abbreviation = "Efr."
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	is_medic = TRUE
 	uses_squads = TRUE
 
@@ -2530,8 +2564,9 @@
 	title = "Radio Operator"
 	rank_abbreviation = "Efr."
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	is_radioman = TRUE
 	uses_squads = TRUE
 
@@ -2584,8 +2619,9 @@
 	en_meaning = "Breacher"
 	rank_abbreviation = "Ryad."
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	uses_squads = TRUE
 
 	min_positions = 1
@@ -2642,8 +2678,9 @@
 	title = "Private"
 	rank_abbreviation = "Ryad."
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	uses_squads = TRUE
 
 	min_positions = 5
@@ -2698,8 +2735,9 @@
 	en_meaning = "Armored Crewman"
 	rank_abbreviation = "Efr."
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 
 	min_positions = 1
 	max_positions = 6
@@ -2745,8 +2783,9 @@
 	en_meaning = "Emplaced Weapons Specialist"
 	rank_abbreviation = "Ryad."
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 
 	min_positions = 1
 	max_positions = 6
@@ -2795,8 +2834,9 @@
 	en_meaning = "Weapons Specialist"
 	rank_abbreviation = "Efr."
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 
 	min_positions = 1
 	max_positions = 10
@@ -2848,8 +2888,9 @@
 	en_meaning = "Paratrooper"
 	rank_abbreviation = "Efr."
 	spawn_location = "ParadropRU"
+	allowed_maps = list(MAP_OPERATION_FALCON, MAP_VADSO_CITY)
 
-	is_operation_falcon = TRUE
+
 	is_paratrooper = TRUE
 
 	min_positions = 1
@@ -2901,6 +2942,7 @@
 	title = "Leytenant Pogranichnikh Voysk KGB"
 	en_meaning = "Soviet Border Troops Lieutenant"
 	rank_abbreviation = "KGB Leyt."
+	allowed_maps = list(MAP_ZHENBAO)
 
 	spawn_location = "JoinLateRUCap"
 
@@ -2953,6 +2995,7 @@
 	title = "Serzhant Pogranichnikh Voysk KGB"
 	en_meaning = "Soviet Border Troops Sergeant"
 	rank_abbreviation = "Srz."
+	allowed_maps = list(MAP_ZHENBAO)
 
 	spawn_location = "JoinLateRU"
 
@@ -3008,6 +3051,7 @@
 	title = "Ryadovoy Pogranichnikh Voysk KGB"
 	en_meaning = "Soviet Border Troops Private"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_ZHENBAO)
 
 	spawn_location = "JoinLateRU"
 
@@ -3079,6 +3123,7 @@
 	title = "Pulemetchik Pogranichnikh Voysk KGB"
 	en_meaning = "Soviet Border Troops Machinegunner"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_ZHENBAO)
 
 	spawn_location = "JoinLateRU"
 	uses_squads = TRUE
@@ -3148,6 +3193,7 @@
 	title = "Sanitar Pogranichnikh Voysk KGB"
 	en_meaning = "Soviet Border Troops Corpsman"
 	rank_abbreviation = "Efr."
+	allowed_maps = list(MAP_ZHENBAO)
 
 	spawn_location = "JoinLateRU"
 

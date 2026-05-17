@@ -29,21 +29,6 @@
 	var/done = FALSE
 	grace_wall_timer = 3000
 
-/obj/map_metadata/skullisland/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/pirates))
-		if (J.is_1713 && !J.is_deathmatch)
-			. = TRUE
-		else
-			. = FALSE
-	else if (istype(J, /datum/job/british))
-		if (J.is_navy)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/skullisland/tick()
 	..()
 	if (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)

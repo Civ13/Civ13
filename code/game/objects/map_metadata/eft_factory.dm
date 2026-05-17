@@ -34,20 +34,6 @@
 	show_extractees()
 
 
-/obj/map_metadata/eft_factory/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_eft == TRUE)
-		. = FALSE
-		if (J.is_outlaw == TRUE)
-			. = TRUE
-			if (J.title == "Scavenger")
-				if(processes.ticker.playtime_elapsed >= 5 MINUTES)
-					. = TRUE
-				else
-					. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/eft_factory/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 2 MINUTES || admin_ended_all_grace_periods)
 

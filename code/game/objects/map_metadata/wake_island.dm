@@ -37,23 +37,6 @@
 	spawn(3000)
 		points_check()
 
-/obj/map_metadata/wake_island/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/american))
-		if (J.is_navy == TRUE || (istype(J, /datum/job/american/sailor_ww2)) || (istype(J, /datum/job/american/mp_ww2)) || (istype(J, /datum/job/american/chef_ww2)) || J.is_tanker == TRUE || (istype(J, /datum/job/american/soldier_ww2_filipino)))
-			. = FALSE
-		else if (J.is_ww2 == TRUE)
-			. = TRUE
-		else
-			. = FALSE
-	else if (istype(J, /datum/job/japanese))
-		if (J.is_ww2 == TRUE && J.is_navy == TRUE || (istype(J, /datum/job/japanese/ija_ww2_tanker)))
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/wake_island/roundend_condition_def2name(define)
 	..()
 	switch (define)

@@ -28,13 +28,6 @@
 		"Danheim - Ivar's Revenge:1" = 'sound/music/ivars_revenge.ogg',)
 	gamemode = "Siege"
 
-/obj/map_metadata/clash/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_clash == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/clash/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 21600 || admin_ended_all_grace_periods)
 

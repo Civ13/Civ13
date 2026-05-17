@@ -69,12 +69,6 @@
 		seasons()
 	..()
 
-/obj/map_metadata/four_kingdoms/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/civilian/fantasy))
-		. = TRUE
-	else
-		. = FALSE
 /obj/map_metadata/four_kingdoms/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1500 || admin_ended_all_grace_periods)
 

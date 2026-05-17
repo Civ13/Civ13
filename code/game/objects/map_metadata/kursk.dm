@@ -26,23 +26,6 @@
 	songs = list(
 		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
 
-/obj/map_metadata/kursk/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_ww2 == TRUE && J.is_tanker == TRUE)
-		. = TRUE
-	else if (J.is_ss_panzer == TRUE)
-		. = TRUE
-	else if (istype(J, /datum/job/german/mediziner) || istype(J, /datum/job/russian/doctor_soviet))
-		. = TRUE
-	else if (istype(J, /datum/job/russian/sniper_soviet))
-		. = TRUE
-	else if (istype(J, /datum/job/russian/antitank_soldier_soviet) || istype(J, /datum/job/russian/antitank_assistant_soldier_soviet))
-		. = TRUE
-	else if (istype(J, /datum/job/german/german_antitank) || istype(J, /datum/job/german/german_antitankassitant))
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/kursk/roundend_condition_def2name(define)
 	..()
 	switch (define)

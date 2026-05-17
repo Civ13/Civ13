@@ -9,6 +9,7 @@
 	title = "Kapteeni"
 	en_meaning = "Captain"
 	rank_abbreviation = "Kap."
+	allowed_maps = list(MAP_KARELIA)
 
 
 	spawn_location = "JoinLateGECap"
@@ -55,6 +56,7 @@
 	title = " Luutnantti"
 	en_meaning = "First Lieutenant"
 	rank_abbreviation = "Luut."
+	allowed_maps = list(MAP_KARELIA)
 
 
 	spawn_location = "JoinLateGECap"
@@ -100,6 +102,7 @@
 	title = "Vanrikki"
 	en_meaning = "Second Lieutenant"
 	rank_abbreviation = "Lt."
+	allowed_maps = list(MAP_KARELIA)
 
 
 	spawn_location = "JoinLateGECap"
@@ -148,6 +151,7 @@
 	title = "Kersantti"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Ker."
+	allowed_maps = list(MAP_KARELIA)
 
 	spawn_location = "JoinLateGE"
 	is_squad_leader = TRUE
@@ -192,6 +196,7 @@
 	title = "Sotamies"
 	en_meaning = "Soldier"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_KARELIA)
 
 	spawn_location = "JoinLateGE"
 
@@ -241,6 +246,7 @@
 	title = "Ampuja"
 	en_meaning = "Sniper"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_KARELIA)
 
 	spawn_location = "JoinLateGE"
 
@@ -290,6 +296,7 @@
 	title = "Taistelulaakari"
 	en_meaning = "Combat Medic"
 	rank_abbreviation = "Dr."
+	allowed_maps = list(MAP_KARELIA)
 
 	spawn_location = "JoinLateGEDoc"
 
@@ -339,6 +346,7 @@
 	title = "Pioneeri"
 	en_meaning = "Sapper"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_KARELIA)
 
 	spawn_location = "JoinLateGESap"
 	is_karelia = TRUE

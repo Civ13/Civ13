@@ -1,14 +1,13 @@
 /datum/job/civilian/starwars/rebel/lieutenant
 	title = "Rebel Lieutenant"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	spawn_location = "JoinLateJP"
 
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_commander = TRUE
-	is_starwars = TRUE
-	is_rebel = TRUE
 	can_be_female = TRUE
 
 	min_positions = 1
@@ -49,10 +48,9 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateJPDoc"
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	is_medic = TRUE
-	is_starwars = TRUE
-	is_rebel = TRUE
 	min_positions = 1
 	max_positions = 2
 
@@ -91,9 +89,8 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateJP"
+	allowed_maps = list(MAP_TANTIVEIV)
 
-	is_starwars = TRUE
-	is_rebel = TRUE
 	can_be_female = TRUE
 	uses_squads = TRUE
 	min_positions = 1
@@ -137,11 +134,10 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateJP"
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	uses_squads = TRUE
 	is_squad_leader = TRUE
-	is_starwars = TRUE
-	is_rebel = TRUE
 	min_positions = 4
 	max_positions = 8
 
@@ -181,12 +177,11 @@
 /datum/job/civilian/starwars/rebel/soldierheavy
 	title = "Heavy Rebel"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	spawn_location = "JoinLateJP"
 	can_be_female = TRUE
 	uses_squads = TRUE
-	is_starwars = TRUE
-	is_rebel = TRUE
 	min_positions = 1
 	max_positions = 10
 
@@ -220,12 +215,11 @@
 /datum/job/civilian/starwars/rebel/soldier
 	title = "Rebel Marine"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	spawn_location = "JoinLateJP"
 	can_be_female = TRUE
 	uses_squads = TRUE
-	is_starwars = TRUE
-	is_rebel = TRUE
 	min_positions = 24
 	max_positions = 124
 
@@ -266,14 +260,13 @@
 /datum/job/american/starwars/empire/lieutenant
 	title = "Imperial Navy Lieutenant"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	spawn_location = "JoinLateRUCap"
 
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_commander = TRUE
-	is_starwars = TRUE
-	is_empire = TRUE
 	can_be_female = TRUE
 
 	min_positions = 1
@@ -314,10 +307,9 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateRUDoc"
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	is_medic = TRUE
-	is_starwars = TRUE
-	is_empire = TRUE
 	min_positions = 1
 	max_positions = 2
 
@@ -358,10 +350,9 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateRU"
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	is_medic = FALSE
-	is_starwars = TRUE
-	is_empire = TRUE
 	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 10
@@ -403,11 +394,10 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateRUSg"
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	uses_squads = TRUE
 	is_squad_leader = TRUE
-	is_starwars = TRUE
-	is_empire = TRUE
 	min_positions = 4
 	max_positions = 8
 
@@ -446,12 +436,11 @@
 /datum/job/american/starwars/empire/soldierheavy
 	title = "Heavy Shocktrooper"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
 	uses_squads = TRUE
-	is_starwars = TRUE
-	is_empire = TRUE
 	min_positions = 1
 	max_positions = 10
 
@@ -485,12 +474,11 @@
 /datum/job/american/starwars/empire/soldier
 	title = "Shocktrooper"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_TANTIVEIV)
 
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
 	uses_squads = TRUE
-	is_starwars = TRUE
-	is_empire = TRUE
 	min_positions = 24
 	max_positions = 124
 

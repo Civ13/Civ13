@@ -56,13 +56,6 @@
 		spawn(rand(500,800))
 			jet_flyby()
 
-/obj/map_metadata/operation_falcon/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_operation_falcon == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/operation_falcon/roundend_condition_def2name(define)
 	..()
 	switch (define)

@@ -19,6 +19,7 @@
 	whitelisted = TRUE
 	is_governor = TRUE
 	is_1713 = TRUE
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	min_positions = 1
 	max_positions = 1
@@ -55,6 +56,7 @@
 	title = "Architect"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Architect"
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	spawn_location = "JoinLateCivA"
 
@@ -124,6 +126,7 @@
 	can_be_female = TRUE
 	spawn_location = "JoinLateCivB"
 	is_merchant = TRUE
+	allowed_maps = list()
 
 	whitelisted = TRUE
 	is_1713 = TRUE
@@ -140,6 +143,7 @@
 	is_merchant = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
+	allowed_maps = list()
 
 	whitelisted = TRUE
 	is_1713 = TRUE
@@ -241,6 +245,7 @@
 	title = "Town Guard Officer"
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Officer"
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	spawn_location = "JoinLateCivC"
 
@@ -295,6 +300,7 @@
 	title = "Town Guard"
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	spawn_location = "JoinLateCivC"
 
@@ -348,7 +354,7 @@
 	title = "Doctor"
 	en_meaning = "Colony Medic"
 	rank_abbreviation = "Doctor"
-
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 	spawn_location = "JoinLateCiv"
 
 	is_medic = TRUE
@@ -409,6 +415,7 @@
 	title = "Merchant"
 	en_meaning = "Colony Trader"
 	rank_abbreviation = "Merchant"
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	spawn_location = "JoinLateCiv"
 	is_merchant = TRUE
@@ -471,6 +478,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	is_religious = TRUE
 	is_1713 = TRUE
@@ -512,6 +520,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	is_1713 = TRUE
 
@@ -570,6 +579,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	is_1713 = TRUE
 
@@ -630,6 +640,7 @@
 	rank_abbreviation = "Carpenter"
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	is_1713 = TRUE
 
@@ -703,6 +714,7 @@
 	title = "Blacksmith"
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Blacksmith"
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	spawn_location = "JoinLateCiv"
 	whitelisted = TRUE
@@ -780,6 +792,7 @@
 	rank_abbreviation = "Innkeeper"
 	can_be_female = TRUE
 	spawn_location = "JoinLateCivD"
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	is_1713 = TRUE
 
@@ -855,6 +868,7 @@
 	rank_abbreviation = "Waiter"
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	is_1713 = TRUE
 
@@ -932,6 +946,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	is_1713 = TRUE
 
@@ -1004,6 +1019,7 @@
 	title = "Beggar"
 	en_meaning = "Poor Colonist"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	spawn_location = "JoinLateCiv"
 	can_be_female = TRUE
@@ -1048,8 +1064,7 @@
 	whitelisted = TRUE
 
 	is_governor = TRUE
-	is_pioneer = TRUE
-
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 	min_positions = 1
 	max_positions = 1
@@ -1097,7 +1112,7 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_officer = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 
 	min_positions = 1
@@ -1162,7 +1177,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 	is_vip = TRUE
 
 
@@ -1208,7 +1223,7 @@
 	is_merchant = TRUE
 	can_be_female = TRUE
 	whitelisted = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 	min_positions = 1
 	max_positions = 2
@@ -1270,7 +1285,7 @@
 	whitelisted = TRUE
 	is_vip = TRUE
 
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 
 	min_positions = 1
@@ -1314,7 +1329,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 
 	min_positions = 1
@@ -1359,7 +1374,7 @@
 
 	spawn_location = "JoinLateCivC"
 	whitelisted = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 
 	min_positions = 1
@@ -1408,7 +1423,7 @@
 	spawn_location = "JoinLateCiv"
 
 	is_medic = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 
 	min_positions = 1
@@ -1469,7 +1484,7 @@
 	is_merchant = TRUE
 	can_be_female = TRUE
 	whitelisted = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 	min_positions = 1
 	max_positions = 3
@@ -1525,7 +1540,7 @@
 	spawn_location = "JoinLateCiv"
 	can_be_female = TRUE
 	is_religious = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 	min_positions = 1
 	max_positions = 20
@@ -1563,7 +1578,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateCiv"
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 	can_be_female = TRUE
 	min_positions = 3
@@ -1629,7 +1644,7 @@
 
 	spawn_location = "JoinLateCiv"
 	can_be_female = TRUE
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 
 
 	min_positions = 3
@@ -1686,7 +1701,7 @@
 
 	spawn_location = "JoinLateCiv"
 
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 	can_be_female = TRUE
 
 	min_positions = 3
@@ -1759,7 +1774,7 @@
 	spawn_location = "JoinLateCiv"
 	whitelisted = TRUE
 
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 	can_be_female = TRUE
 
 	min_positions = 2
@@ -1832,7 +1847,7 @@
 
 	spawn_location = "JoinLateCivD"
 
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 	can_be_female = TRUE
 
 	min_positions = 1
@@ -1888,7 +1903,7 @@
 
 	spawn_location = "JoinLateCiv"
 
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 	can_be_female = TRUE
 
 	min_positions = 1
@@ -1942,7 +1957,7 @@
 
 	spawn_location = "JoinLateCiv"
 
-	is_pioneer = TRUE
+	allowed_maps = list(MAP_PIONEERS, MAP_PIONEERS_WASTELAND_2)
 	can_be_female = TRUE
 
 	min_positions = 10
@@ -2066,13 +2081,14 @@
 		if (H.client)
 			H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 /datum/job/civilian/businessman/yellow
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 	title = "Goldstein Solutions"
 	selection_color = "#7e7e06"
 	spawn_location = "JoinLateCivA"
 	min_positions = 3
 	max_positions = 50
-
 /datum/job/civilian/businessman/yellow/CEO
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 	title = "Goldstein Solutions CEO"
 	spawn_location = "JoinLateCivACEO"
 	is_officer = TRUE
@@ -2131,12 +2147,14 @@
 	return TRUE
 
 /datum/job/civilian/businessman/green
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 	title = "Kogama Kraftsmen"
 	selection_color = "#2D632D"
 	spawn_location = "JoinLateCivB"
 	min_positions = 3
 	max_positions = 50
 /datum/job/civilian/businessman/green/CEO
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 	title = "Kogama Kraftsmen CEO"
 	is_officer = TRUE
 	min_positions = 1
@@ -2145,7 +2163,6 @@
 	spawn_location = "JoinLateCivBCEO"
 	whitelisted = TRUE
 	is_vip = TRUE
-
 /datum/job/civilian/businessman/green/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
@@ -2186,13 +2203,14 @@
 	return TRUE
 
 /datum/job/civilian/businessman/blue
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 	title = "Giovanni Blu Stocks"
 	selection_color = "#353575"
 	spawn_location = "JoinLateCivC"
 	min_positions = 3
 	max_positions = 50
-
 /datum/job/civilian/businessman/blue/CEO
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 	title = "Giovanni Blu Stocks CEO"
 	spawn_location = "JoinLateCivCCEO"
 	is_officer = TRUE
@@ -2201,7 +2219,6 @@
 	rank_abbreviation = "CEO"
 	whitelisted = TRUE
 	is_vip = TRUE
-
 /datum/job/civilian/businessman/blue/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
@@ -2243,13 +2260,14 @@
 	return TRUE
 
 /datum/job/civilian/businessman/red
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 	title = "Rednikov Industries"
 	selection_color = "#632D2D"
 	spawn_location = "JoinLateCivD"
 	min_positions = 3
 	max_positions = 50
-
 /datum/job/civilian/businessman/red/CEO
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 	title = "Rednikov Industries CEO"
 	is_officer = TRUE
 	spawn_location = "JoinLateCivDCEO"
@@ -2308,6 +2326,7 @@
 	additional_languages = list("Gaelic" = 100)
 	can_be_female = TRUE
 	is_deal = TRUE
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 
 /datum/job/civilian/businessman/mckellen/manager
 	title = "McKellen Manager"
@@ -2438,6 +2457,7 @@
 	rank_abbreviation = "Officer"
 	spawn_location = "JoinLateCiv"
 	selection_color = "#353575"
+	allowed_maps = list(MAP_BANK_ROBBERY, MAP_DRUG_BUST)
 
 	is_heist = TRUE
 	is_law = TRUE
@@ -2533,6 +2553,7 @@
 	rank_abbreviation = "Sergeant"
 	spawn_location = "JoinLateSwat"
 	selection_color = "#1d1d42"
+	allowed_maps = list(MAP_BANK_ROBBERY, MAP_DRUG_BUST)
 
 	is_heist = TRUE
 	is_law = TRUE
@@ -2590,6 +2611,7 @@
 	rank_abbreviation = "Agent"
 	spawn_location = "JoinLateCiv"
 	selection_color = "#000117"
+	allowed_maps = list(MAP_DRUG_BUST)
 
 	is_heist = TRUE
 	is_law = TRUE
@@ -2652,6 +2674,7 @@
 	selection_color = "#c5a562"
 	can_be_female = TRUE
 	is_deal = TRUE
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 
 	min_positions = 5
 	max_positions = 50
@@ -2725,6 +2748,7 @@
 	selection_color = "#c5a562"
 	can_be_female = TRUE
 	is_deal = TRUE
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 
 	min_positions = 1
 	max_positions = 2
@@ -2819,6 +2843,7 @@
 	is_deal = TRUE
 	is_officer = TRUE
 	is_vip = TRUE
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 
 	min_positions = 1
 	max_positions = 1
@@ -2876,6 +2901,7 @@
 /datum/job/civilian/judge_aotd
 	title = "County Judge"
 	rank_abbreviation = "Judge"
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 
 	spawn_location = "JoinLateCivJud"
 	is_officer = TRUE
@@ -2936,6 +2962,7 @@
 	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 3
+	allowed_maps = list(MAP_BANK_ROBBERY, MAP_THE_ART_OF_THE_DEAL)
 
 /datum/job/civilian/paramedic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2982,6 +3009,7 @@
 	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 2
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 
 /datum/job/civilian/hospital_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -3020,6 +3048,7 @@
 	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 2
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 
 /datum/job/civilian/hospital_nurse/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -3055,6 +3084,7 @@
 	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 4
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 
 /datum/job/civilian/mechanic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -3085,6 +3115,7 @@
 	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 3
+	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 
 /datum/job/civilian/hobo/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -3214,6 +3245,7 @@
 	title = "United Nations Lieutenant"
 	rank_abbreviation = "UN Lt."
 	spawn_location = "JoinLateUNLt"
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 	is_officer = TRUE
 	is_commander = TRUE
@@ -3270,6 +3302,7 @@
 /datum/job/civilian/unitednations/sergeant
 	title = "United Nations Sergeant"
 	rank_abbreviation = "UN Sgt."
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 	spawn_location = "JoinLateUNSgt"
 	is_squad_leader = TRUE
@@ -3332,6 +3365,7 @@
 	selection_color = "#53ADD0"
 	additional_languages = list("Zulu" = 15)
 	uses_squads = TRUE
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 	min_positions = 2
 	max_positions = 102
@@ -3388,6 +3422,7 @@
 	selection_color = "#53ADD0"
 	additional_languages = list("Zulu" = 30)
 	uses_squads = TRUE
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 	min_positions = 1
 	max_positions = 5
@@ -3445,6 +3480,7 @@
 	can_be_female = TRUE
 	selection_color = "#53ADD0"
 	additional_languages = list("Zulu" = 15)
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 	min_positions = 2
 	max_positions = 12
@@ -3495,6 +3531,7 @@
 	can_be_female = TRUE
 	selection_color = "#53ADD0"
 	additional_languages = list("Zulu" = 15)
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 	min_positions = 2
 	max_positions = 6
@@ -3549,6 +3586,7 @@
 	max_positions = 4
 	additional_languages = list("Zulu" = 60)
 	whitelisted = FALSE
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 /datum/job/civilian/unitednations/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -3587,6 +3625,7 @@
 	rank_abbreviation = "UN Eng."
 	spawn_location = "JoinLateUNEng"
 	is_un = TRUE
+	allowed_maps = list(MAP_TADOJSVILLE)
 
 	can_be_female = TRUE
 	selection_color = "#53ADD0"
@@ -3633,7 +3672,7 @@
 
 /////////////////////////////////////spanish civil war republicans/////////////////////////////////////////
 /datum/job/civilian/spanish
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 	faction = "RepSpain"
 	default_language = "Spanish"
 
@@ -3651,7 +3690,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 
 	min_positions = 1
 	max_positions = 1
@@ -3699,7 +3738,7 @@
 	is_officer = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 
 	min_positions = 2
 	max_positions = 8
@@ -3746,7 +3785,7 @@
 
 	spawn_location = "JoinLateSP"
 
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 	is_medic = TRUE
 	can_be_female = TRUE
 	min_positions = 1
@@ -3790,7 +3829,7 @@
 
 	spawn_location = "JoinLateSP"
 	can_be_female = FALSE
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 	uses_squads = TRUE
 
 	min_positions = 20
@@ -3857,7 +3896,7 @@
 
 	spawn_location = "JoinLateSP"
 	can_be_female = TRUE
-	is_spainciv = TRUE
+	allowed_maps = list(MAP_HOLDMADRID)
 	uses_squads = TRUE
 
 

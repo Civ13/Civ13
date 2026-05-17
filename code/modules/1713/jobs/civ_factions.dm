@@ -5,6 +5,7 @@
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governor"
 	is_1713 = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
@@ -51,6 +52,7 @@
 	rank_abbreviation = "Architect"
 	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -116,6 +118,7 @@
 	rank_abbreviation = "Officer"
 	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_officer = TRUE
 	is_commander = TRUE
@@ -162,6 +165,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 
@@ -205,6 +209,7 @@
 	rank_abbreviation = "Doctor"
 	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_medic = TRUE
 	is_RP = TRUE
@@ -269,6 +274,7 @@
 	can_be_female = TRUE
 	is_RP = TRUE
 	is_merchant = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	min_positions = 1
 	max_positions = 20
@@ -328,6 +334,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	is_religious = TRUE
@@ -370,6 +377,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -428,6 +436,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -489,6 +498,7 @@
 	rank_abbreviation = "Carpenter"
 	is_1713 = TRUE
 	spawn_location = "JoinLateRN"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -566,6 +576,7 @@
 	can_be_female = TRUE
 	whitelisted = TRUE
 	is_RP = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 
 	min_positions = 2
@@ -641,6 +652,7 @@
 	spawn_location = "JoinLateRN"
 	can_be_female = TRUE
 	is_RP = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	min_positions = 1
 	max_positions = 2
@@ -715,6 +727,7 @@
 	spawn_location = "JoinLateRN"
 	can_be_female = TRUE
 	is_RP = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	min_positions = 10
 	max_positions = 150
@@ -786,6 +799,7 @@
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Gobernador"
 	is_1713 = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	spawn_location = "JoinLateSP"
 	is_officer = TRUE
@@ -832,6 +846,7 @@
 	rank_abbreviation = "Arquitecto"
 	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -897,6 +912,7 @@
 	rank_abbreviation = "Oficial"
 	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_officer = TRUE
 	is_commander = TRUE
@@ -943,6 +959,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 
@@ -986,6 +1003,7 @@
 	rank_abbreviation = "Doctor"
 	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_medic = TRUE
 	is_RP = TRUE
@@ -1050,6 +1068,7 @@
 	can_be_female = TRUE
 	is_RP = TRUE
 	is_merchant = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	min_positions = 1
 	max_positions = 20
@@ -1107,6 +1126,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	is_religious = TRUE
@@ -1149,6 +1169,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -1208,6 +1229,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -1269,6 +1291,7 @@
 	rank_abbreviation = "Carpenter"
 	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -1343,6 +1366,7 @@
 	rank_abbreviation = "Ferrero"
 	is_1713 = TRUE
 	spawn_location = "JoinLateSP"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	whitelisted = TRUE
 	is_RP = TRUE
@@ -1421,6 +1445,7 @@
 	spawn_location = "JoinLateSP"
 	can_be_female = TRUE
 	is_RP = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	min_positions = 1
 	max_positions = 2
@@ -1495,6 +1520,7 @@
 	spawn_location = "JoinLateSP"
 	can_be_female = TRUE
 	is_RP = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	min_positions = 10
 	max_positions = 150
@@ -1566,6 +1592,7 @@
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governador"
 	is_1713 = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	spawn_location = "JoinLatePT"
 	is_officer = TRUE
@@ -1612,6 +1639,7 @@
 	rank_abbreviation = "Arquiteto"
 	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -1677,6 +1705,7 @@
 	rank_abbreviation = "Comandante"
 	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_officer = TRUE
 	is_commander = TRUE
@@ -1723,6 +1752,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 
@@ -1766,6 +1796,7 @@
 	rank_abbreviation = "Medico"
 	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_medic = TRUE
 	is_RP = TRUE
@@ -1827,6 +1858,7 @@
 	rank_abbreviation = "Mercador"
 	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	is_merchant = TRUE
@@ -1888,6 +1920,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_religious = TRUE
 	is_RP = TRUE
@@ -1930,6 +1963,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -1989,6 +2023,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -2050,6 +2085,7 @@
 	rank_abbreviation = "Carpinteiro"
 	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -2125,6 +2161,7 @@
 	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
 	whitelisted = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -2200,6 +2237,7 @@
 	rank_abbreviation = "Taberneiro"
 	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -2274,6 +2312,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLatePT"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -2348,6 +2387,7 @@
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governeur"
 	is_1713 = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	spawn_location = "JoinLatePirate"
 	is_officer = TRUE
@@ -2394,6 +2434,7 @@
 	rank_abbreviation = "Architecte"
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -2459,6 +2500,7 @@
 	rank_abbreviation = "Officier"
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_officer = TRUE
 	is_commander = TRUE
@@ -2505,6 +2547,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 
@@ -2548,6 +2591,7 @@
 	rank_abbreviation = "Docteur"
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_medic = TRUE
 	is_RP = TRUE
@@ -2609,6 +2653,7 @@
 	rank_abbreviation = "Marchand"
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_merchant = TRUE
 	is_RP = TRUE
@@ -2670,6 +2715,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	is_religious = TRUE
@@ -2712,6 +2758,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -2771,6 +2818,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -2832,6 +2880,7 @@
 	rank_abbreviation = "Charpentier"
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -2907,6 +2956,7 @@
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 	whitelisted = TRUE
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 
@@ -2982,6 +3032,7 @@
 	rank_abbreviation = "Aubergiste"
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE
@@ -3056,6 +3107,7 @@
 	rank_abbreviation = ""
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
+	allowed_maps = list(MAP_FOUR_COLONIES)
 
 	is_RP = TRUE
 	can_be_female = TRUE

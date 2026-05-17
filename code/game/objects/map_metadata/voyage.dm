@@ -399,33 +399,6 @@
 /////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 
-/obj/map_metadata/voyage/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_RP == TRUE)
-		. = FALSE
-	else if (J.is_army == TRUE)
-		. = FALSE
-	else if (J.is_prison == TRUE)
-		. = FALSE
-	else if (J.is_ww1 == TRUE)
-		. = FALSE
-	else if (J.is_coldwar == TRUE)
-		. = FALSE
-	else if (J.is_medieval == TRUE)
-		. = FALSE
-	else if (J.is_marooned == TRUE)
-		. = FALSE
-	else if (J.is_event == TRUE)
-		. = FALSE
-	else if (J.is_event_role == TRUE)
-		. = FALSE
-	else if (istype(J, /datum/job/pirates/battleroyale))
-		. = FALSE
-	else if (istype(J, /datum/job/pirates/captain) || istype(J, /datum/job/pirates/boatswain) || istype(J, /datum/job/pirates/qm) || istype(J, /datum/job/pirates/cook) || istype(J, /datum/job/pirates/carpenter) || istype(J, /datum/job/pirates/midshipman))
-		. = FALSE
-	else
-		. = TRUE
-
 /obj/map_metadata/voyage/New()
 	..()
 	nav()

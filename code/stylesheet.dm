@@ -7,15 +7,30 @@
 // .info					{color: #E1E1FF;} -> this is removed because it was the same as .notice
 
 client/script = {"<style>
-body					{font-family: "Book Antiqua", Verdana, sans-serif; font-size: 1em; background-color: #271a0c; color: #E1E1D7}
+body {
+	font-family: "Civ13Custom", "Book Antiqua", "Bookman Old Style", serif;
+	font-size: 14px;
+	background-color: #392611;
+	color: #e1e1d7;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	scrollbar-face-color: #a68b7d;
+	scrollbar-shadow-color: #271a0c;
+	scrollbar-highlight-color: #e1e1d7;
+	scrollbar-3dlight-color: #a68b7d;
+	scrollbar-darkshadow-color: #000000;
+	scrollbar-track-color: #392611;
+	scrollbar-arrow-color: #271a0c;
+}
 
 h1, h2, h3, h4, h5, h6	{color: #E1E1FF; font-family: "Book Antiqua", Georgia, Verdana, sans-serif;}
 
 em						{font-style: normal;font-weight: bold;}
 
-.motd					{color: #E1E1FF; font-family: "Book Antiqua", Verdana, sans-serif;}
+.motd					{color: #E1E1FF; font-family: "Civ13Custom", "Book Antiqua", Verdana, sans-serif;}
 .motd h1, .motd h2, .motd h3, .motd h4, .motd h5, .motd h6
-						{color: #E1E1FF;}
+						{margin-top: 0.2em; margin-bottom: 0.2em; color: #E1E1FF;}
 .motd a, .motd a:link, .motd a:visited, .motd a:active, .motd a:hover
 						{color: #CD4C6C;}
 
@@ -23,8 +38,8 @@ em						{font-style: normal;font-weight: bold;}
 .log_message			{color: #A9B6E7;	font-weight: bold;}
 .small_message			{color: #E1E1FF;	font-weight: bold; font-size: 0.66em;}
 
-a, a:link, a:visited, :active, a:hover
-						{color: #CD4C6C;}
+a { color: #a68b7d; text-decoration: underline; }
+a:hover { color: #e1e1d7; }
 
 /* OOC */
 .ooc					{font-weight: bold;}
@@ -38,6 +53,33 @@ a, a:link, a:visited, :active, a:hover
 .ooc .developer			{color: #a649bf;}
 .ooc .admin				{color: #39ac41;}
 .ooc .highstaff			{color: #b82e00;}
+
+/* Chat Tags */
+.text_tag {
+	display: inline-block;
+	padding: 1px 4px;
+	border-radius: 3px;
+	font-size: 10px;
+	font-weight: bold;
+	text-transform: uppercase;
+	margin-right: 4px;
+	vertical-align: middle;
+	font-family: Arial, sans-serif;
+	line-height: 1;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tag-ooc { background-color: #1a56f0; color: white; border-color: #0d41bc; }
+.tag-looc { background-color: #36b6a6; color: white; border-color: #2a8d81; }
+.tag-dead, .tag-lobby { background-color: #6326c0; color: white; border-color: #4a1d8f; }
+.tag-asay, .tag-admin, .tag-a-discord { background-color: #a123f0; color: white; border-color: #7b1ab8; }
+.tag-mentor { background-color: #3986f0; color: white; border-color: #2b65b6; }
+.tag-pm_in { background-color: #f01a1a; color: white; border-color: #b81414; }
+.tag-pm_out_alt { background-color: #b04343; color: white; border-color: #8a3434; }
+.tag-pm_other { background-color: #5092c0; color: white; border-color: #3d6f92; }
+.tag-help { background-color: #ff0000; color: white; border-color: #cc0000; }
+.tag-discord, .tag-discord2 { background-color: #00b0f0; color: white; border-color: #0089bc; }
+.tag-ping { background-color: #f1c40f; color: #2c3e50; border-color: #f39c12; font-size: 9px; }
 
 /* Admin: Private Messages */
 .pm  .howto				{color: #ff0000;	font-weight: bold;		font-size: 200%;}

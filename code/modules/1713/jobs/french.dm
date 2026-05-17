@@ -9,14 +9,11 @@
 	title = "Capitaine"
 	en_meaning = "Ship Captain"
 	rank_abbreviation = "Capitaine"
-
-
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-
-
+	allowed_maps = list(MAP_NAVAL)
 
 	min_positions = 1
 	max_positions = 1
@@ -49,16 +46,15 @@
 	return TRUE
 
 /datum/job/french/qm
-	title = "Quartier-Ma�tre"
+	title = "Quartier-Maitre"
 	en_meaning = "2IC / Supplies Officer"
-	rank_abbreviation = "Qua.-Ma�."
+	rank_abbreviation = "Qua.-Mai."
 
 	spawn_location = "JoinLateRNQM"
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
-
-
+	allowed_maps = list(MAP_NAVAL)
 
 	min_positions = 1
 	max_positions = 1
@@ -93,7 +89,7 @@
 	title = "Chef dequipage"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Chef deq."
-
+	allowed_maps = list(MAP_NAVAL)
 
 	spawn_location = "JoinLateRNBoatswain"
 	whitelisted = TRUE
@@ -139,7 +135,7 @@
 
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
-
+	allowed_maps = list(MAP_NAVAL)
 
 
 	min_positions = 1
@@ -177,6 +173,7 @@
 	spawn_location = "JoinLateRNSurgeon"
 
 	is_medic = TRUE
+	allowed_maps = list(MAP_NAVAL)
 
 
 	min_positions = 1
@@ -213,8 +210,7 @@
 	rank_abbreviation = "Charpentier"
 
 	spawn_location = "JoinLateRNCarpenter"
-
-
+	allowed_maps = list(MAP_NAVAL)
 
 	min_positions = 1
 	max_positions = 10
@@ -252,6 +248,7 @@
 	title = "Cuisinier"
 	en_meaning = "Cook"
 	rank_abbreviation = "Cuisinier"
+	allowed_maps = list(MAP_NAVAL)
 
 	spawn_location = "JoinLateRNCook"
 
@@ -302,8 +299,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRN" //for testing!
-
-
+	allowed_maps = list(MAP_NAVAL)
 
 	min_positions = 6
 	max_positions = 200
@@ -355,7 +351,7 @@
 
 	is_army = TRUE
 	is_commander = TRUE
-
+	allowed_maps = list(MAP_BRIDGE, MAP_FIELDS)
 
 	min_positions = 1
 	max_positions = 1
@@ -401,6 +397,7 @@
 	title = "Sergent"
 	en_meaning = "Infantry Squad Leader"
 	rank_abbreviation = "Srg."
+	allowed_maps = list(MAP_BRIDGE, MAP_FIELDS)
 
 	spawn_location = "JoinLatePTMidshipman"
 	is_officer = TRUE
@@ -449,6 +446,7 @@
 	title = " Docteur"
 	en_meaning = "Infantry Field Medic"
 	rank_abbreviation = "Doc."
+	allowed_maps = list(MAP_BRIDGE, MAP_FIELDS)
 
 	spawn_location = "JoinLatePTSurgeon"
 	is_medic = TRUE
@@ -493,6 +491,7 @@
 	title = "Soldat"
 	en_meaning = "Infantry Soldier"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_BRIDGE, MAP_FIELDS)
 
 	spawn_location = "JoinLatePT"
 	uses_squads = TRUE
@@ -539,6 +538,7 @@
 	title = "Chasseur"
 	en_meaning = "Light Infantry"
 	rank_abbreviation = "Cha."
+	allowed_maps = list(MAP_BRIDGE, MAP_FIELDS)
 
 	spawn_location = "JoinLatePT"
 	uses_squads = TRUE
@@ -587,6 +587,7 @@
 	title = "Capitaine de l'Armee"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Cap."
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 
 	spawn_location = "JoinLateRNCap"
@@ -639,6 +640,7 @@
 	title = "Lieutenant de l'Armee"
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "Lt."
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 
 	spawn_location = "JoinLateRNCap"
@@ -689,6 +691,7 @@
 	title = "Sous-Lieutenant de l'Armee"
 	en_meaning = "2nd Lieutenant"
 	rank_abbreviation = "Slt."
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 
 	spawn_location = "JoinLateRNCap"
@@ -739,6 +742,7 @@
 	title = "Sergent de l'Armee"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Sgt."
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 	spawn_location = "JoinLateRN"
 	
@@ -787,6 +791,7 @@
 	title = "Docteur de l'Armee"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Dr."
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 	spawn_location = "JoinLateRNSurgeon"
 
@@ -831,6 +836,7 @@
 	title = "Chasseur Leger"
 	en_meaning = "Shock Trooper"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 	spawn_location = "JoinLateRN" //for testing!
 	uses_squads = TRUE
@@ -876,6 +882,7 @@
 	title = "Soldat d'infanterie"
 	en_meaning = "Private"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_VERDUN, MAP_YPRES)
 
 	spawn_location = "JoinLateRN" //for testing!
 	uses_squads = TRUE

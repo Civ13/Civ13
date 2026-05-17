@@ -10,12 +10,10 @@
 	title = "Lochagos"
 	en_meaning = "Greek Commander"
 	rank_abbreviation = "Lo."
-
 	spawn_location = "JoinLateGR"
-
 	is_commander = TRUE
 	is_officer = TRUE
-
+	allowed_maps = list(MAP_SIEGE, MAP_HERACLEA)
 	is_ancient = TRUE
 
 	min_positions = 1
@@ -49,9 +47,8 @@
 	title = "Dimoerites"
 	en_meaning = "Greek Squad Leader"
 	rank_abbreviation = "Di."
-
+	allowed_maps = list(MAP_SIEGE, MAP_HERACLEA)
 	spawn_location = "JoinLateGR"
-
 	is_officer = TRUE
 	is_ancient = TRUE
 
@@ -94,9 +91,8 @@
 	title = "Hoplites"
 	en_meaning = "Greek Spear Infantry"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_SIEGE, MAP_HERACLEA)
 	spawn_location = "JoinLateGR"
-
 	is_ancient = TRUE
 
 	min_positions = 12
@@ -139,9 +135,8 @@
 	title = "Toxotai"
 	en_meaning = "Greek Light Archer"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_SIEGE, MAP_HERACLEA)
 	spawn_location = "JoinLateGR"
-
 	is_ancient = TRUE
 
 	min_positions = 8
@@ -177,6 +172,7 @@
 	title = "Dekaneas"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Di."
+	allowed_maps = list(MAP_ELAIA)
 
 	spawn_location = "JoinLateGR"
 	is_squad_leader = TRUE
@@ -220,6 +216,7 @@
 	title = "Stratiotis"
 	en_meaning = "Soldier"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_ELAIA)
 
 	spawn_location = "JoinLateGR"
 
@@ -282,6 +279,7 @@
 	title = "Midikí"
 	en_meaning = "Medic"
 	rank_abbreviation = ""
+	allowed_maps = list(MAP_ELAIA)
 
 	spawn_location = "JoinLateGRDoc"
 

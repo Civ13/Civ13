@@ -38,21 +38,6 @@
 /obj/map_metadata/siberiad/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/siberiad/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/american))
-		if (J.is_siberiad)
-			. = TRUE
-		else
-			. = FALSE
-	else if (istype(J, /datum/job/russian))
-		if (J.is_siberiad)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/siberiad/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600

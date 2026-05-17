@@ -14,6 +14,7 @@
 	max_positions = 1
 	is_samurai = TRUE
 	is_eastern = TRUE
+	allowed_maps = list(MAP_SEKIGAHARA)
 
 /datum/job/japanese/eastern_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -61,6 +62,7 @@
 	min_positions = 1
 	max_positions = 2
 	is_eastern = TRUE
+	allowed_maps = list(MAP_SEKIGAHARA)
 
 /datum/job/japanese/samurai_eastern/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -107,6 +109,7 @@
 	max_positions = 24
 	is_samurai = TRUE
 	is_eastern = TRUE
+	allowed_maps = list(MAP_SEKIGAHARA)
 /datum/job/japanese/ashigaru_ranged/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -152,6 +155,7 @@
 	max_positions = 48
 	is_samurai = TRUE
 	is_eastern = TRUE
+	allowed_maps = list(MAP_SEKIGAHARA)
 /datum/job/japanese/ashigaru/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -200,6 +204,8 @@
 	max_positions = 1
 	is_samurai = TRUE
 	is_western = TRUE
+	allowed_maps = list(MAP_SEKIGAHARA)
+	
 
 /datum/job/japanese/western_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -249,6 +255,7 @@
 	min_positions = 1
 	max_positions = 2
 	is_western = TRUE
+	allowed_maps = list(MAP_SEKIGAHARA)
 
 /datum/job/japanese/samurai_western/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -294,6 +301,7 @@
 	max_positions = 24
 	is_samurai = TRUE
 	is_western = TRUE
+	allowed_maps = list(MAP_SEKIGAHARA)
 /datum/job/japanese/ashigaru_ranged_western/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -338,6 +346,7 @@
 	max_positions = 48
 	is_samurai = TRUE
 	is_western = TRUE
+	allowed_maps = list(MAP_SEKIGAHARA)
 /datum/job/japanese/ashigaru_western/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes

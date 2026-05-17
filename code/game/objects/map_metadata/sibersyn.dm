@@ -27,21 +27,6 @@
 	gamemode = "Siege"
 	grace_wall_timer = 4200
 
-obj/map_metadata/sibersyn/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/russian))
-		if (J.is_rcw == TRUE)
-			. = TRUE
-		else
-			. = FALSE
-	else if (istype(J, /datum/job/civilian))
-		if (J.is_rcw == TRUE)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/sibersyn/roundend_condition_def2name(define)
 	..()
 	switch (define)

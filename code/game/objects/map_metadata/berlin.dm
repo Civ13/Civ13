@@ -26,19 +26,6 @@
 		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
 	gamemode = "Siege"
 
-obj/map_metadata/berlin/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_ww2 == TRUE && J.is_reichstag == FALSE && J.is_occupation == FALSE)
-		. = TRUE
-	else if (J.is_ss_panzer == TRUE)
-		. = TRUE
-	else if (istype(J, /datum/job/german/mediziner) || istype(J, /datum/job/russian/doctor_soviet))
-		. = TRUE
-	else if (istype(J, /datum/job/german/volksturm_berlin))
-		. = TRUE
-	else
-		. = FALSE
-
 
 /obj/map_metadata/berlin/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 60000 || admin_ended_all_grace_periods)

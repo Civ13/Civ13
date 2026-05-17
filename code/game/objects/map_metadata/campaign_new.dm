@@ -362,15 +362,6 @@
 /obj/map_metadata/campaign_new/New()
 	..()
 
-/obj/map_metadata/campaign_new/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/tsfsr))
-		. = TRUE
-	else if (istype(J, /datum/job/cafr))
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/campaign_new/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= grace_wall_timer || admin_ended_all_grace_periods)
 

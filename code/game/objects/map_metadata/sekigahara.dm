@@ -29,13 +29,6 @@
 		..()
 		spawn(600) // 1 minute
 			points_check()
-/obj/map_metadata/sekigahara/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if ((J.is_samurai == TRUE && J.is_western == TRUE) || (J.is_samurai == TRUE && J.is_eastern == TRUE))
-		. = TRUE
-	else
-		. = FALSE
-
 /obj/map_metadata/sekigahara/proc/points_check()
 	to_chat(world, "<big><b>Current Points:</b></big>")
 	to_chat(world, "<big>Eastern Army: [scores["Eastern Army"]]</big>")

@@ -37,9 +37,3 @@
 
 /obj/map_metadata/chad_jungle/cross_message(faction)
 	return ""
-
-/obj/map_metadata/chad_jungle/job_enabled_specialcheck(var/datum/job/J)
-	if (J.is_nomad == TRUE)
-		. = TRUE
-	else
-		. = FALSE

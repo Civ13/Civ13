@@ -28,16 +28,6 @@
 	gamemode = "Siege"
 	grace_wall_timer = 3600
 
-obj/map_metadata/karak/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_crusader && J.is_medieval)
-		. = TRUE
-	else if (J.is_arabcaliph && J.is_medieval)
-		. = TRUE
-	else
-		. = FALSE
-
-
 
 /obj/map_metadata/karak/roundend_condition_def2name(define)
 	..()

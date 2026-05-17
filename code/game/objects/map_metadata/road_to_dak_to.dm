@@ -28,19 +28,6 @@
 		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
 	artillery_count = 3
 
-obj/map_metadata/road_to_dak_to/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/vietnamese))
-		if (J.is_nva)
-			. = FALSE
-		else
-			. = TRUE
-	if (istype(J, /datum/job/american))
-		if (J.is_coldwar && !J.is_specops && !J.is_modernday)
-			. = TRUE
-		else
-			. = FALSE
-
 /obj/map_metadata/road_to_dak_to/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
 
