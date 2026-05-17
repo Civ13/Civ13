@@ -18,7 +18,7 @@
 		return
 	else if (choice1 == "Check Companies")
 		var/list/tmplistc = sortTim(map.custom_company_value, /proc/cmp_numeric_dsc,TRUE)
-		var/body = "<html><head><title>Stock Market Companies</title></head><b>STOCK MARKET</b><br><br>"
+		var/body = "<html><head><title>Stock Market Companies</title></head>[common_browser_style]<b>STOCK MARKET</b><br><br>"
 		for (var/relf in map.custom_company_nr)
 			var/vm_owned = 0
 			for(var/obj/structure/vending/sales/S in vending_machine_list)
@@ -83,7 +83,7 @@
 		if (custom_company == "Cancel")
 			return
 		if (choice4 == "View Members")
-			var/body = "<html><head><title>[custom_company]</title></head><b>STOCK MARKET</b><br><br>"
+			var/body = "<html><head><title>[custom_company]</title></head>[common_browser_style]<b>STOCK MARKET</b><br><br>"
 			for(var/list/i in map.custom_company[custom_company])
 				body += "<b>[i[1]]</b> owns [i[2]]%.</br>"
 			body += {"<br>

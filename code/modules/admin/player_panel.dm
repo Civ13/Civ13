@@ -2,7 +2,7 @@
 /datum/admins/proc/player_panel_new()//The new one
 	if (!usr.client.holder)
 		return
-	var/dat = "<html><head><title>Admin Player Panel</title></head>"
+	var/dat = "<html><head><title>Admin Player Panel</title></head>[common_browser_style]"
 
 	//javascript, the part that does most of the work~
 	dat += {"
@@ -303,7 +303,7 @@
 	if (!usr.client.holder)
 		return
 
-	var/dat = "<html><head><title>Player Menu</title></head>"
+	var/dat = "<html><head><title>Player Menu</title></head>[common_browser_style]"
 	dat += "<body><table border=1 cellspacing=5><b><tr><th>Name</th><th>Real Name</th><th>Assigned Job</th><th>Key</th><th>Options</th><th>PM</th><th>Traitor?</th></tr></b>"
 	//add <th>IP:</th> to this if wanting to add back in IP checking
 	//add <td>(IP: [M.lastKnownIP])</td> if you want to know their ip to the lists below

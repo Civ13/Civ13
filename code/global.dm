@@ -62,30 +62,30 @@ var/global/datum/titlecard/lobby_titlecard
 
 // "convenient" (shitcode) way to make normal windows look like nanoUI, since BYOND won't load stylesheets normally - Kachnov
 var/common_browser_style = {"
-<meta charset='utf-8'>
 <style>
 body
 {
 	padding: 0;
 	margin: 0;
-	background-color: #271a0c;
-	font-size: 16px;
-	color: #ffffff;
+	background-color: #392611;
+	font-family: "Civ13Custom", "Book Antiqua", "Bookman Old Style", serif;
+	font-size: 14px;
+	color: #e1e1d7;
 	line-height: 170%;
 }
 
 hr
 {
-	background-color: #271a0c;
+	background-color: #1a1108;
 	height: 1px;
 }
 
 a, a:link, a:visited, a:active, .linkOn, .linkOff
 {
-	color: #ffffff;
+	color: #e1e1d7;
 	text-decoration: none;
-	background: #404040;
-	border: 1px solid #3d3d29;
+	background: #271a0c;
+	border: 1px solid #1a1108;
 	padding: 1px 4px 1px 4px;
 	margin: 0 2px 0 0;
 	cursor:default;
@@ -93,8 +93,8 @@ a, a:link, a:visited, a:active, .linkOn, .linkOff
 
 a:hover
 {
-	color: #ebebe0;
-	background: #7a7a52;
+	color: #ff8040;
+	background: #3f2a13;
 }
 
 a.white, a.white:link, a.white:visited, a.white:active
@@ -102,7 +102,7 @@ a.white, a.white:link, a.white:visited, a.white:active
 	color: #ebebe0;
 	text-decoration: none;
 	background: #ffffff;
-	border: 1px solid #3d3d29;
+	border: 1px solid #1a1108;
 	padding: 1px 4px 1px 4px;
 	margin: 0 2px 0 0;
 	cursor:default;
@@ -116,16 +116,16 @@ a.white:hover
 
 .linkOn, a.linkOn:link, a.linkOn:visited, a.linkOn:active, a.linkOn:hover
 {
-	color: #ffffff;
-	background: #595959;
-	border-color: #888888;
+	color: #e1e1d7;
+	background: #3f2a13;
+	border-color: #ff8040;
 }
 
 .linkOff, a.linkOff:link, a.linkOff:visited, a.linkOff:active, a.linkOff:hover
 {
-	color: #ffffff;
-	background: #999999;
-	border-color: #888888;
+	color: #a68b7d;
+	background: #271a0c;
+	border-color: #1a1108;
 }
 
 a.icon, .linkOn.icon, .linkOff.icon
@@ -199,9 +199,9 @@ h4
 {
 	clear: both;
 	padding: 6px 8px 6px 8px;
-	border-bottom: 2px solid #3d3d29;
-	background: #383838;
-	color: #98B0C3;
+	border-bottom: 2px solid #1a1108;
+	background: #271a0c;
+	color: #ff8040;
 	font-size: 22px;
 }
 
@@ -234,7 +234,7 @@ h4
 {
 	clear: both;
 	padding: 8px;
-	font-family: Verdana, Geneva, sans-serif;
+	font-family: "Civ13Custom", "Book Antiqua", "Bookman Old Style", serif;
 }
 
 .good
@@ -305,8 +305,8 @@ div.notice
 {
 	padding: 8px;
 	margin: 10px 4px 4px 4px;
-	border: 1px solid #ebebe0;
-	background-color: #3e2a14;
+	border: 1px solid #1a1108;
+	background-color: #271a0c;
 }
 
 .block h3
