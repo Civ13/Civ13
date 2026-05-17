@@ -11,7 +11,6 @@
 	
 	is_commander = TRUE
 	is_officer = TRUE
-	is_modernday = TRUE
 	whitelisted = TRUE
 
 	min_positions = 1
@@ -75,7 +74,6 @@
 	spawn_location = "JoinLateCC"
 	min_positions = 10
 	max_positions = 200
-	is_modernday = TRUE
 	allowed_maps = list(MAP_GROZNY)
 
 /datum/job/arab/civilian/chechen/militia/equip(var/mob/living/human/H)
@@ -256,7 +254,6 @@
 	spawn_location = "JoinLateCC"
 
 	is_medic = TRUE
-	is_modernday = TRUE
 
 	min_positions = 3
 	max_positions = 10
@@ -326,7 +323,6 @@
 	allowed_maps = list(MAP_CONSTANTINOPOLI)
 	is_officer = TRUE
 	is_commander = TRUE
-	is_modernday = TRUE
 	whitelisted = TRUE
 
 	min_positions = 1
@@ -394,7 +390,6 @@
 	spawn_location = "JoinLateRUSgt"
 
 	allowed_maps = list(MAP_CONSTANTINOPOLI)
-	is_modernday = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -470,7 +465,6 @@
 
 	is_medic = TRUE
 	allowed_maps = list(MAP_CONSTANTINOPOLI)
-	is_modernday = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -546,7 +540,6 @@
 	allowed_maps = list(MAP_CONSTANTINOPOLI)
 	is_radioman = TRUE
 	uses_squads = TRUE
-	is_modernday = TRUE
 
 	min_positions = 1
 	max_positions = 5
@@ -639,7 +632,6 @@
 	spawn_location = "JoinLateRU"
 
 	allowed_maps = list(MAP_CONSTANTINOPOLI)
-	is_modernday = TRUE
 
 	uses_squads = TRUE
 
@@ -741,7 +733,6 @@
 	spawn_location = "JoinLateRUsptz"
 	whitelisted = TRUE
 	allowed_maps = list(MAP_CONSTANTINOPOLI)
-	is_modernday = TRUE
 
 	uses_squads = TRUE
 

@@ -10,7 +10,7 @@
 	title = "Carib Elder"
 	en_meaning = "Native Elder/Leader"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_FOUR_COLONIES, MAP_PIONEERS)
+	allowed_maps = list(MAP_FOUR_COLONIES, MAP_PIONEERS, MAP_SUPPLY_RAID, MAP_ROBUSTA)
 
 	spawn_location = "JoinLateIND"
 	can_be_female = TRUE
@@ -54,7 +54,7 @@
 	title = "Carib Shaman"
 	en_meaning = "Native Shaman"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_FOUR_COLONIES, MAP_PIONEERS)
+	allowed_maps = list(MAP_FOUR_COLONIES, MAP_PIONEERS, MAP_SUPPLY_RAID, MAP_ROBUSTA)
 
 	spawn_location = "JoinLateIND"
 	can_be_female = TRUE
@@ -98,7 +98,7 @@
 	title = "Carib Tribesman"
 	en_meaning = "Native Tribesman"
 	rank_abbreviation = ""
-	allowed_maps = list(MAP_FOUR_COLONIES, MAP_PIONEERS)
+	allowed_maps = list(MAP_FOUR_COLONIES, MAP_PIONEERS, MAP_SUPPLY_RAID, MAP_ROBUSTA)
 
 	spawn_location = "JoinLateIND"
 	can_be_female = TRUE

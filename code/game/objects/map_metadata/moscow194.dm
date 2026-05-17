@@ -177,13 +177,6 @@
 	gamemode = "Siege"
 	grace_wall_timer = 4800
 
-/obj/map_metadata/smallsiegemoscow/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if ((J.is_ww2 == TRUE && J.is_occupation == FALSE))
-		. = TRUE
-
-	else
-		. = FALSE
 
 /obj/map_metadata/smallsiegemoscow/roundend_condition_def2name(define)
 	..()

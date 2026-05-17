@@ -462,7 +462,7 @@
 
 /obj/map_metadata/battleroyale/two/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_deathmatch && J.is_modernday)
+	if (istype(J, /datum/job/pirates/battleroyale/modern))
 		J.total_positions = 32
 		J.min_positions = 32
 		J.max_positions = 32
@@ -481,7 +481,7 @@
 	mission_start_message = "<font size=4><b>Last player standing wins!</b><br>TWO MINUTES UNTIL THE INVISIBLE WALL DISAPPEARS!</font>"
 
 /obj/map_metadata/battleroyale/three/job_enabled_specialcheck(var/datum/job/J)
-	if (J.is_deathmatch && J.is_medieval)
+	if (istype(J, /datum/job/pirates/battleroyale/medieval))
 		J.total_positions = 32
 		J.min_positions = 32
 		J.max_positions = 32

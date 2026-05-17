@@ -842,7 +842,7 @@
 
 	is_ww2 = TRUE
 	
-	is_warsawger = TRUE
+
 
 	min_positions = 1
 	max_positions = 1
@@ -952,7 +952,7 @@
 
 	is_ww2 = TRUE
 	
-	is_warsawger = TRUE
+
 
 	min_positions = 1
 	max_positions = 2
@@ -1005,7 +1005,7 @@
 	is_ww2 = TRUE
 	
 	uses_squads = TRUE
-	is_warsawger = TRUE
+
 
 	min_positions = 2
 	max_positions = 12
@@ -1142,12 +1142,9 @@
 	en_meaning = "Soldier"
 	rank_abbreviation = ""
 	allowed_maps = list(MAP_ARDENNES)
-
 	spawn_location = "JoinLateGE"
-	
 	is_ww2 = FALSE
 	uses_squads = TRUE
-	is_warsawger = FALSE
 
 	min_positions = 10
 	max_positions = 90
@@ -1227,7 +1224,7 @@
 	is_ww2 = TRUE
 	
 	uses_squads = TRUE
-	is_warsawger = TRUE
+
 
 	min_positions = 2
 	max_positions = 5
@@ -1289,7 +1286,7 @@
 	is_ww2 = TRUE
 	
 	uses_squads = TRUE
-	is_warsawger = TRUE
+
 
 	min_positions = 2
 	max_positions = 5
@@ -1347,7 +1344,7 @@
 	is_ww2 = TRUE
 	
 	uses_squads = TRUE
-	is_warsawger = TRUE
+
 
 	min_positions = 2
 	max_positions = 4
@@ -1408,7 +1405,7 @@
 	is_ww2 = TRUE
 	
 	uses_squads = TRUE
-	is_warsawger = TRUE
+
 
 	min_positions = 2
 	max_positions = 4
@@ -1534,7 +1531,7 @@
 	is_medic = TRUE
 	is_ww2 = TRUE
 	
-	is_warsawger = TRUE
+
 
 	min_positions = 2
 	max_positions = 4
@@ -1584,7 +1581,7 @@
 	is_ww2 = TRUE
 	
 	uses_squads = TRUE
-	is_warsawger = TRUE
+
 
 	min_positions = 2
 	max_positions = 12
@@ -1745,7 +1742,7 @@
 	is_ww2 = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	is_warsawger = TRUE
+
 
 	min_positions = 2
 	max_positions = 6
@@ -1796,7 +1793,7 @@
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	is_warsawger = TRUE
+
 
 	min_positions = 6
 	max_positions = 30
@@ -1863,7 +1860,7 @@
 
 	spawn_location = "JoinLateGESap"
 	is_ww2 = TRUE
-	is_warsawger = TRUE
+
 
 	min_positions = 2
 	max_positions = 12
@@ -1917,7 +1914,7 @@
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	is_warsawger = TRUE
+
 
 	min_positions = 1
 	max_positions = 3
@@ -2031,7 +2028,7 @@
 	spawn_location = "JoinLateGE"
 	is_ww2 = FALSE
 	uses_squads = TRUE
-	is_warsawger = TRUE
+
 
 	min_positions = 5
 	max_positions = 90
@@ -2080,7 +2077,7 @@
 
 	is_ww2 = FALSE
 	uses_squads = TRUE
-	is_warsawger = TRUE
+
 
 	min_positions = 1
 	max_positions = 5

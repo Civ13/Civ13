@@ -11,7 +11,6 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_modernday = TRUE
 	is_radioman = TRUE
 	can_be_female = TRUE
 
@@ -62,7 +61,6 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_radioman = TRUE
-	is_modernday = TRUE
 	can_be_female = TRUE
 	can_get_coordinates = TRUE
 
@@ -113,7 +111,6 @@
 	is_medic = TRUE
 	is_coldwar = TRUE
 	can_be_female = TRUE
-	is_modernday = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -163,7 +160,6 @@
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 	can_be_female = TRUE
 
@@ -213,7 +209,6 @@
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	can_be_female = TRUE
 
 	min_positions = 2
@@ -266,7 +261,6 @@
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	can_be_female = TRUE
 	uses_squads = TRUE
 
@@ -336,7 +330,6 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_modernday = TRUE
 	is_radioman = TRUE
 
 	min_positions = 1
@@ -386,7 +379,6 @@
 	uses_squads = TRUE
 	is_squad_leader = TRUE
 	is_radioman = TRUE
-	is_modernday = TRUE
 	can_get_coordinates = TRUE
 	uses_squads = TRUE
 
@@ -439,7 +431,6 @@
 
 	is_medic = TRUE
 	is_coldwar = TRUE
-	is_modernday = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -489,7 +480,6 @@
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
@@ -538,7 +528,6 @@
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
@@ -592,7 +581,6 @@
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 
 	min_positions = 10
@@ -645,7 +633,6 @@
 
 	is_coldwar = TRUE
 	is_officer = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 	is_squad_leader = TRUE
 
@@ -714,7 +701,6 @@
 
 	is_medic = TRUE
 	is_coldwar = TRUE
-	is_modernday = TRUE
 
 	min_positions = 2
 	max_positions = 10
@@ -784,7 +770,6 @@
 	spawn_location = "JoinLateAR"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 
 	min_positions = 3
@@ -851,7 +836,6 @@
 	spawn_location = "JoinLateAR"
 
 	is_coldwar = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 
 	min_positions = 12
@@ -926,7 +910,6 @@
 	spawn_location = "JoinLateSYR"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	is_officer = TRUE
 	is_commander = FALSE
@@ -988,7 +971,6 @@
 	spawn_location = "JoinLateSYR"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 	is_squad_leader = TRUE
@@ -1053,7 +1035,6 @@
 	spawn_location = "JoinLateSYR"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 
@@ -1142,7 +1123,6 @@
 	spawn_location = "JoinLateSYR"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 	is_medic = TRUE
@@ -1202,7 +1182,6 @@
 	allowed_maps = list(MAP_SYRIA)
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 
@@ -1307,7 +1286,6 @@
 	spawn_location = "JoinLateREB"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	is_commander = TRUE
 	is_radioman = FALSE
@@ -1367,7 +1345,6 @@
 	spawn_location = "JoinLateREB"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 	is_squad_leader = TRUE
@@ -1431,7 +1408,6 @@
 	spawn_location = "JoinLateREB"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 
@@ -1516,7 +1492,6 @@
 
 	is_medic = TRUE
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 
@@ -1573,7 +1548,6 @@
 	spawn_location = "JoinLateREB"
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 
@@ -1653,7 +1627,6 @@
 	allowed_maps = list(MAP_SYRIA)
 
 	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_syria = TRUE
 	uses_squads = TRUE
 

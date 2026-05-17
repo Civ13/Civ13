@@ -983,7 +983,7 @@
 	spawn_location = "JoinLateCivA"
 
 	is_civilizations = TRUE
-	allowed_maps = list(MAP_CIVILIZATIONS)
+	allowed_maps = list(MAP_CIVILIZATIONS, MAP_NATIONSRP, MAP_NATIONSRPMED, MAP_NATIONSRP_COLDWAR, MAP_NATIONSRP_COLDWAR_CMP, MAP_NATIONSRP_TRIPLE, MAP_NATIONSRP_WW2)
 	min_positions = 9999
 	max_positions = 9999
 
@@ -1017,7 +1017,7 @@
 	spawn_location = "JoinLateCivB"
 	can_be_female = TRUE
 	is_civilizations = TRUE
-	allowed_maps = list(MAP_CIVILIZATIONS)
+	allowed_maps = list(MAP_CIVILIZATIONS, MAP_NATIONSRP, MAP_NATIONSRPMED, MAP_NATIONSRP_COLDWAR, MAP_NATIONSRP_COLDWAR_CMP, MAP_NATIONSRP_TRIPLE, MAP_NATIONSRP_WW2)
 
 	min_positions = 9999
 	max_positions = 9999
@@ -1052,7 +1052,7 @@
 	spawn_location = "JoinLateCivC"
 	can_be_female = TRUE
 	is_civilizations = TRUE
-	allowed_maps = list(MAP_CIVILIZATIONS)
+	allowed_maps = list(MAP_CIVILIZATIONS, MAP_NATIONSRP_TRIPLE)
 
 	min_positions = 9999
 	max_positions = 9999

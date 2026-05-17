@@ -380,7 +380,7 @@
 
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
-
+	allowed_maps = list(MAP_BRIDGE, MAP_FIELDS, MAP_SUPPLY_RAID)
 	is_army = TRUE
 	is_commander = TRUE
 
@@ -428,10 +428,9 @@
 	title = "British Sergeant"
 	en_meaning = "Infantry Squad Leader"
 	rank_abbreviation = "Sgt."
-
+	allowed_maps = list(MAP_BRIDGE, MAP_FIELDS, MAP_SUPPLY_RAID)
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
-
 	is_army = TRUE
 	uses_squads = TRUE
 
@@ -477,12 +476,10 @@
 	title = "British Army Doctor"
 	en_meaning = "Infantry Field Medic"
 	rank_abbreviation = "Doc."
-
+	allowed_maps = list(MAP_BRIDGE, MAP_FIELDS, MAP_SUPPLY_RAID)
 	spawn_location = "JoinLateRNSurgeon"
-
 	is_medic = TRUE
 	is_army = TRUE
-
 
 	min_positions = 1
 	max_positions = 6
@@ -522,9 +519,8 @@
 	title = "British Army Soldier"
 	en_meaning = "Infantry Soldier"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_BRIDGE, MAP_FIELDS, MAP_SUPPLY_RAID)
 	spawn_location = "JoinLateRN"
-
 	is_army = TRUE
 	uses_squads = TRUE
 
@@ -566,7 +562,7 @@
 	title = "British Light Infantry"
 	en_meaning = "Light Infantry"
 	rank_abbreviation = "Cha."
-
+	allowed_maps = list(MAP_BRIDGE, MAP_FIELDS, MAP_SUPPLY_RAID)
 	spawn_location = "JoinLateRN"
 
 	is_army = TRUE

@@ -67,38 +67,6 @@
 	spawn(rand(3000, 6000))
 		supplydrop_proc()
 
-/obj/map_metadata/hill_3234/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_afghan)
-		. = TRUE
-		if (J.title == "Soviet Army Tanker")
-			. = FALSE
-		if (J.title == "Soviet Army Tank Commander")
-			. = FALSE
-		if (J.title == "Soviet Army Captain")
-			. = FALSE
-		if (J.title == "Soviet Army Lieutenant")
-			J.max_positions = 1
-			J.total_positions = 1
-			J.is_commander = TRUE
-		if (J.title == "Soviet Army Sergeant")
-			J.max_positions = 5
-			J.total_positions = 5
-		if (J.title == "Soviet Army Field Medic")
-			J.max_positions = 4
-			J.total_positions = 4
-		if (J.title == "Soviet Army Radio Operator")
-			J.max_positions = 4
-			J.total_positions = 4
-		if (J.title == "Soviet Army Private")
-			J.max_positions = 60
-			J.total_positions = 60
-		if (J.title == "Spetznaz GRU")
-			J.max_positions = 2
-			J.total_positions = 2
-	else
-		. = FALSE
-
 /obj/map_metadata/hill_3234/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600

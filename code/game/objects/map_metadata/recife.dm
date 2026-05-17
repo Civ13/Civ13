@@ -25,12 +25,6 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	gamemode = "Siege"
 	grace_wall_timer = 6000
-obj/map_metadata/recife/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (J.is_army == TRUE)
-		. = TRUE
-	else
-		. = FALSE
 
 var/no_loop = FALSE
 

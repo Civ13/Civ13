@@ -697,7 +697,6 @@
 	allowed_maps = list(MAP_INTRAMUROS, MAP_IWO_JIMA, MAP_OMAHA, MAP_MICROMAHA, MAP_REICHFLAKTURM, MAP_RIZAL_STADIUM, MAP_WAKE_ISLAND)
 
 	spawn_location = "JoinLateRN"
-	is_pacific = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
 	can_be_female = TRUE
@@ -812,7 +811,6 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_radioman = FALSE
-	is_korean_war = TRUE
 	min_positions = 1
 	max_positions = 1
 
@@ -860,7 +858,6 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_radioman = FALSE
-	is_korean_war = TRUE
 
 	min_positions = 1
 	max_positions = 2
@@ -907,7 +904,6 @@
 	uses_squads = TRUE
 	is_radioman = FALSE
 	can_get_coordinates = TRUE
-	is_korean_war = TRUE
 
 	min_positions = 2
 	max_positions = 10
@@ -959,7 +955,6 @@
 
 	spawn_location = "JoinLateRNSurgeon"
 	is_medic = TRUE
-	is_korean_war = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
@@ -1017,7 +1012,6 @@
 	spawn_location = "JoinLateRNSurgeon"
 
 	is_medic = TRUE
-	is_korean_war = TRUE
 	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 4
@@ -1064,7 +1058,6 @@
 
 	spawn_location = "JoinLateRN"
 
-	is_korean_war = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
@@ -1108,7 +1101,6 @@
 
 	spawn_location = "JoinLateRN"
 
-	is_korean_war = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
@@ -1162,7 +1154,6 @@
 
 	spawn_location = "JoinLateRN"
 
-	is_korean_war = TRUE
 	uses_squads = TRUE
 
 	min_positions = 8
@@ -1204,7 +1195,6 @@
 
 	spawn_location = "JoinLateRN"
 
-	is_korean_war = TRUE
 	is_radioman = TRUE
 	uses_squads = TRUE
 

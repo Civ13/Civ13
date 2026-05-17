@@ -1313,7 +1313,6 @@
 	is_coldwar = TRUE
 	is_officer = TRUE
 	is_specops = TRUE
-	is_modernday = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -1392,7 +1391,6 @@
 	is_medic = TRUE
 	is_coldwar = TRUE
 	is_specops = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
@@ -1488,7 +1486,6 @@
 
 	is_coldwar = TRUE
 	is_specops = TRUE
-	is_modernday = TRUE
 	uses_squads = TRUE
 
 	min_positions = 22

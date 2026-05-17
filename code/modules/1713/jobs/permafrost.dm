@@ -5,7 +5,6 @@
 
 	spawn_location = "JoinLateCiv"
 
-	is_yeltsin = FALSE
 	is_squad_leader = TRUE
 	is_permfr = TRUE
 
@@ -71,8 +70,6 @@
 	rank_abbreviation = "Bd."
 
 	spawn_location = "JoinLateCiv"
-
-	is_yeltsin = FALSE
 	is_permfr = TRUE
 
 	uses_squads = TRUE
@@ -153,7 +150,6 @@
 	rank_abbreviation = "Chairman"
 	spawn_location = "JoinLateBunk"
 	is_kremlin = FALSE
-	is_yeltsin = FALSE
 	is_permfrb = TRUE
 	is_squad_leader = TRUE
 
@@ -205,8 +201,6 @@
 	spawn_location = "JoinLateCiv"
 	min_positions = 10
 	max_positions = 35
-	is_kremlin = FALSE
-	is_yeltsin = FALSE
 	is_permfrb = TRUE
 	uses_squads = TRUE
 

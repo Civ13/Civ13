@@ -6,7 +6,6 @@
 
 	spawn_location = "JoinLateJPCap"
 
-	is_waco = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -55,7 +54,6 @@
 
 	spawn_location = "JoinLateJP"
 
-	is_waco = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_radioman = TRUE
@@ -109,7 +107,6 @@
 
 	spawn_location = "JoinLateJP"
 
-	is_waco = TRUE
 
 	uses_squads = TRUE
 	can_be_female = TRUE
@@ -167,7 +164,6 @@
 
 	spawn_location = "JoinLateNegotiator"
 
-	is_waco = TRUE
 	whitelisted = TRUE
 	can_be_female = TRUE
 
@@ -215,7 +211,6 @@
 	spawn_location = "JoinLateJPDoc"
 
 	is_medic = TRUE
-	is_waco = TRUE
 	can_be_female = TRUE
 
 	min_positions = 2
@@ -266,7 +261,6 @@
 	allowed_maps = list(MAP_WACO)
 
 	spawn_location = "JoinLateRUCap"
-	is_waco = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	can_be_female = FALSE
@@ -329,7 +323,6 @@
 	spawn_location = "JoinLateRU"
 	min_positions = 10
 	max_positions = 150
-	is_waco = TRUE
 	can_be_female = TRUE
 	allowed_maps = list(MAP_WACO)
 
@@ -402,7 +395,6 @@
 	spawn_location = "JoinLateRU"
 	min_positions = 10
 	max_positions = 150
-	is_waco = TRUE
 	can_be_female = TRUE
 	allowed_maps = list(MAP_WACO)
 
@@ -483,7 +475,6 @@
 	spawn_location = "JoinLateRUDoc"
 
 	is_medic = TRUE
-	is_waco = TRUE
 
 	min_positions = 3
 	max_positions = 10

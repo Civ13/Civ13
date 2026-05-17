@@ -32,7 +32,6 @@
 /datum/job/var/is_coldwar = FALSE
 /datum/job/var/is_radioman = FALSE
 /datum/job/var/is_specops = FALSE
-/datum/job/var/is_modernday = FALSE
 /datum/job/var/is_rcw = FALSE
 /datum/job/var/is_tanker = FALSE
 /datum/job/var/is_tankcom = FALSE
@@ -42,8 +41,6 @@
 /datum/job/var/is_medic = FALSE
 /datum/job/var/is_deal = FALSE
 /datum/job/var/is_heist = FALSE
-/datum/job/var/is_pacific = FALSE
-/datum/job/var/is_korean_war = FALSE
 /datum/job/var/is_ancient = FALSE
 /datum/job/var/is_ph_us_war = FALSE
 /datum/job/var/is_yakuza = FALSE
@@ -63,7 +60,6 @@
 /datum/job/var/is_occupation = FALSE
 /datum/job/var/squad = 0
 /datum/job/var/uses_squads = FALSE
-/datum/job/var/is_yeltsin = FALSE
 /datum/job/var/is_kremlin = FALSE
 /datum/job/var/can_be_minor = FALSE
 /datum/job/var/is_karelia = FALSE
@@ -76,12 +72,8 @@
 /datum/job/var/is_muj = FALSE
 /datum/job/var/is_dra = FALSE
 /datum/job/var/can_be_afro = FALSE
-/datum/job/var/is_waco = FALSE
 /datum/job/var/is_clash = FALSE
 /datum/job/var/is_event_role = FALSE
-/datum/job/var/is_starwars = FALSE
-/datum/job/var/is_rebel = FALSE
-/datum/job/var/is_empire = FALSE
 /datum/job/var/is_reds = FALSE
 /datum/job/var/is_interwar = FALSE
 /datum/job/var/is_pla = FALSE
@@ -92,8 +84,6 @@
 /datum/job/var/is_bordersov = FALSE
 /datum/job/var/is_permfr = FALSE
 /datum/job/var/is_permfrb = FALSE
-/datum/job/var/is_warsawger = FALSE
-/datum/job/var/is_siberiad = FALSE
 /datum/job/var/is_sinosovbor = FALSE
 /datum/job/var/is_ardennes = FALSE
 /datum/job/var/is_syria = FALSE

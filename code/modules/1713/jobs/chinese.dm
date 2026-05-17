@@ -348,7 +348,6 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_korean_war = TRUE
 
 
 
@@ -403,7 +402,6 @@
 
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
-	is_korean_war = TRUE
 
 	is_commander = TRUE
 	is_officer = TRUE
@@ -458,7 +456,6 @@
 	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRU"
-	is_korean_war = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -512,7 +509,6 @@
 	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRUDoc"
-	is_korean_war = TRUE
 
 
 	is_medic = TRUE
@@ -560,7 +556,6 @@
 	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRU"
-	is_korean_war = TRUE
 	uses_squads = TRUE
 
 
@@ -616,7 +611,6 @@
 	allowed_maps = list(MAP_RETREAT)
 
 	spawn_location = "JoinLateRU"
-	is_korean_war = TRUE
 	uses_squads = TRUE
 
 	min_positions = 2
@@ -675,7 +669,6 @@
 
 	spawn_location = "JoinLateRU"
 	uses_squads = TRUE
-	is_korean_war = TRUE
 
 	min_positions = 2
 	max_positions = 10

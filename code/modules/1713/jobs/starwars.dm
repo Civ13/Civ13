@@ -8,8 +8,6 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_commander = TRUE
-	is_starwars = TRUE
-	is_rebel = TRUE
 	can_be_female = TRUE
 
 	min_positions = 1
@@ -53,8 +51,6 @@
 	allowed_maps = list(MAP_TANTIVEIV)
 
 	is_medic = TRUE
-	is_starwars = TRUE
-	is_rebel = TRUE
 	min_positions = 1
 	max_positions = 2
 
@@ -95,8 +91,6 @@
 	spawn_location = "JoinLateJP"
 	allowed_maps = list(MAP_TANTIVEIV)
 
-	is_starwars = TRUE
-	is_rebel = TRUE
 	can_be_female = TRUE
 	uses_squads = TRUE
 	min_positions = 1
@@ -144,8 +138,6 @@
 
 	uses_squads = TRUE
 	is_squad_leader = TRUE
-	is_starwars = TRUE
-	is_rebel = TRUE
 	min_positions = 4
 	max_positions = 8
 
@@ -190,8 +182,6 @@
 	spawn_location = "JoinLateJP"
 	can_be_female = TRUE
 	uses_squads = TRUE
-	is_starwars = TRUE
-	is_rebel = TRUE
 	min_positions = 1
 	max_positions = 10
 
@@ -230,8 +220,6 @@
 	spawn_location = "JoinLateJP"
 	can_be_female = TRUE
 	uses_squads = TRUE
-	is_starwars = TRUE
-	is_rebel = TRUE
 	min_positions = 24
 	max_positions = 124
 
@@ -279,8 +267,6 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_commander = TRUE
-	is_starwars = TRUE
-	is_empire = TRUE
 	can_be_female = TRUE
 
 	min_positions = 1
@@ -324,8 +310,6 @@
 	allowed_maps = list(MAP_TANTIVEIV)
 
 	is_medic = TRUE
-	is_starwars = TRUE
-	is_empire = TRUE
 	min_positions = 1
 	max_positions = 2
 
@@ -369,8 +353,6 @@
 	allowed_maps = list(MAP_TANTIVEIV)
 
 	is_medic = FALSE
-	is_starwars = TRUE
-	is_empire = TRUE
 	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 10
@@ -416,8 +398,6 @@
 
 	uses_squads = TRUE
 	is_squad_leader = TRUE
-	is_starwars = TRUE
-	is_empire = TRUE
 	min_positions = 4
 	max_positions = 8
 
@@ -461,8 +441,6 @@
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
 	uses_squads = TRUE
-	is_starwars = TRUE
-	is_empire = TRUE
 	min_positions = 1
 	max_positions = 10
 
@@ -501,8 +479,6 @@
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
 	uses_squads = TRUE
-	is_starwars = TRUE
-	is_empire = TRUE
 	min_positions = 24
 	max_positions = 124
 

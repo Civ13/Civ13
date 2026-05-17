@@ -8,7 +8,6 @@
 
 	spawn_location = "JoinLateRUCap"
 
-	is_yeltsin = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -66,7 +65,6 @@
 
 	spawn_location = "JoinLateRUCap"
 
-	is_yeltsin = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -133,7 +131,6 @@
 	spawn_location = "JoinLateRU"
 
 	is_medic = TRUE
-	is_yeltsin = TRUE
 
 	min_positions = 1
 	max_positions = 8
@@ -193,7 +190,6 @@
 
 	spawn_location = "JoinLateRUswat"
 
-	is_yeltsin = TRUE
 
 	uses_squads = TRUE
 
@@ -244,7 +240,6 @@
 
 	spawn_location = "JoinLateRU"
 
-	is_yeltsin = TRUE
 
 	uses_squads = TRUE
 
@@ -309,7 +304,6 @@
 
 	spawn_location = "JoinLateRUsptz"
 	whitelisted = TRUE
-	is_yeltsin = TRUE
 
 	uses_squads = TRUE
 
@@ -371,7 +365,6 @@
 	rank_abbreviation = "Chairman"
 	spawn_location = "JoinLatessm"
 	is_kremlin = TRUE
-	is_yeltsin = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	allowed_maps = list(MAP_YELTSIN)
@@ -422,7 +415,6 @@
 
 	spawn_location = "JoinLatessm"
 	is_kremlin = TRUE
-	is_yeltsin = TRUE
 	whitelisted = TRUE
 
 	min_positions = 6
@@ -480,7 +472,6 @@
 	max_positions = 250
 	allowed_maps = list(MAP_YELTSIN)
 	
-	is_yeltsin = TRUE
 
 /datum/job/civilian/russian/sov_militia/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -635,7 +626,6 @@
 	spawn_location = "JoinLateCiv"
 
 	is_medic = TRUE
-	is_yeltsin = TRUE
 
 	min_positions = 1
 	max_positions = 10

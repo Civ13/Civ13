@@ -6,7 +6,6 @@
 	spawn_location = "JoinLateFAR"
 	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -67,7 +66,6 @@
 	spawn_location = "JoinLateFAR"
 	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 	is_squad_leader = TRUE
 
 	uses_squads = TRUE
@@ -151,7 +149,6 @@
 	spawn_location = "JoinLateFAR"
 	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 
 	uses_squads = TRUE
 
@@ -225,7 +222,6 @@
 	spawn_location = "JoinLateFAR"
 	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 
 	is_medic = TRUE
 
@@ -288,7 +284,6 @@
 	spawn_location = "JoinLateFAR"
 	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 
 	uses_squads = TRUE
 
@@ -365,7 +360,6 @@
 	spawn_location = "JoinLateRU"
 	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -429,7 +423,6 @@
 	spawn_location = "JoinLateRU"
 	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 	is_squad_leader = TRUE
 
 	uses_squads = TRUE
@@ -503,7 +496,6 @@
 	spawn_location = "JoinLateRU"
 	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 
 	uses_squads = TRUE
 
@@ -572,7 +564,6 @@
 	spawn_location = "JoinLateRU"
 	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 
 	is_medic = TRUE
 
@@ -631,7 +622,6 @@
 	spawn_location = "JoinLateRU"
 	allowed_maps = list(MAP_SIBERIAD)
 
-	is_siberiad = TRUE
 
 	uses_squads = TRUE
 

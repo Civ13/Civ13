@@ -29,21 +29,6 @@
 		"Korobushka:1" = 'sound/music/korobushka.ogg')
 	gamemode = "Siege"
 
-obj/map_metadata/tsaritsyn/job_enabled_specialcheck(var/datum/job/J)
-	..()
-	if (istype(J, /datum/job/russian))
-		if (J.is_rcw == TRUE)
-			. = TRUE
-		else
-			. = FALSE
-	else if (istype(J, /datum/job/civilian))
-		if (J.is_rcw == TRUE)
-			. = TRUE
-		else
-			. = FALSE
-	else
-		. = FALSE
-
 /obj/map_metadata/tsaritsyn/roundend_condition_def2name(define)
 	..()
 	switch (define)

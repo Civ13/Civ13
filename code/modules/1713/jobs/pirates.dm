@@ -10,7 +10,7 @@
 	title = "Pirate Captain"
 	en_meaning = "Ship Captain"
 	rank_abbreviation = "Captain"
-	allowed_maps = list(MAP_SKULLISLAND)
+	allowed_maps = list(MAP_SKULLISLAND, MAP_NAVAL)
 
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirateCap"
@@ -60,7 +60,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 	can_be_female = TRUE
-	allowed_maps = list(MAP_SKULLISLAND)
+	allowed_maps = list(MAP_SKULLISLAND, MAP_NAVAL)
 
 	min_positions = 1
 	max_positions = 1
@@ -96,7 +96,7 @@
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Boatswain"
 	is_1713 = TRUE
-	allowed_maps = list(MAP_SKULLISLAND)
+	allowed_maps = list(MAP_SKULLISLAND, MAP_NAVAL)
 
 	spawn_location = "JoinLatePirateBoatswain"
 	whitelisted = TRUE
@@ -143,7 +143,7 @@
 	spawn_location = "JoinLatePirateMidshipman"
 	is_officer = TRUE
 	can_be_female = TRUE
-	allowed_maps = list(MAP_SKULLISLAND)
+	allowed_maps = list(MAP_SKULLISLAND, MAP_NAVAL)
 
 
 	min_positions = 1
@@ -183,7 +183,7 @@
 	is_medic = TRUE
 	min_positions = 1
 	max_positions = 10
-	allowed_maps = list(MAP_SKULLISLAND, MAP_VOYAGE)
+	allowed_maps = list(MAP_SKULLISLAND, MAP_VOYAGE, MAP_NAVAL)
 
 /datum/job/pirates/surgeon/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -219,7 +219,7 @@
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirateCarpenter"
 	can_be_female = TRUE
-	allowed_maps = list(MAP_SKULLISLAND)
+	allowed_maps = list(MAP_SKULLISLAND, MAP_NAVAL)
 
 
 	min_positions = 1
@@ -272,7 +272,7 @@
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirateCook"
 	can_be_female = TRUE
-	allowed_maps = list(MAP_SKULLISLAND)
+	allowed_maps = list(MAP_SKULLISLAND, MAP_NAVAL)
 
 
 	min_positions = 1
@@ -329,7 +329,7 @@
 	is_1713 = TRUE
 	spawn_location = "JoinLatePirate"
 	can_be_female = TRUE
-	allowed_maps = list(MAP_SKULLISLAND, MAP_VOYAGE)
+	allowed_maps = list(MAP_SKULLISLAND, MAP_VOYAGE, MAP_NAVAL)
 
 
 	min_positions = 6
@@ -536,7 +536,6 @@
 	allowed_maps = list(MAP_BATTLEROYALE_MODERN)
 
 	is_deathmatch = TRUE
-	is_modernday = TRUE
 
 	can_be_female = TRUE
 	min_positions = 0

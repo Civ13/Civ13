@@ -10,7 +10,6 @@
 	en_meaning = "Ship Captain"
 	rank_abbreviation = "Kapitein"
 
-
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -354,10 +353,9 @@
 	title = "Luitenant"
 	en_meaning = "Infantry Commander"
 	rank_abbreviation = "Luit."
-
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
-
+	allowed_maps = list(MAP_RECIFE)
 	is_army = TRUE
 	is_commander = TRUE
 
@@ -397,12 +395,10 @@
 	title = "Sergeant"
 	en_meaning = "Infantry Squad Leader"
 	rank_abbreviation = "Srg."
-
+	allowed_maps = list(MAP_RECIFE)
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
-
 	is_army = TRUE
-
 
 	min_positions = 2
 	max_positions = 20
@@ -437,12 +433,10 @@
 	title = "Veld Dokter"
 	en_meaning = "Infantry Field Medic"
 	rank_abbreviation = "V. Dk."
-
+	allowed_maps = list(MAP_RECIFE)
 	spawn_location = "JoinLateRNSurgeon"
-
 	is_medic = TRUE
 	is_army = TRUE
-
 
 	min_positions = 1
 	max_positions = 6
@@ -476,11 +470,9 @@
 	title = "Soldaat"
 	en_meaning = "Infantry Soldier"
 	rank_abbreviation = ""
-
+	allowed_maps = list(MAP_RECIFE)
 	spawn_location = "JoinLateRN"
-
 	is_army = TRUE
-
 
 	min_positions = 12
 	max_positions = 100
@@ -515,9 +507,8 @@
 	title = "Jager"
 	en_meaning = "Light Infantry"
 	rank_abbreviation = "Jag."
-
+	allowed_maps = list(MAP_RECIFE)
 	spawn_location = "JoinLateRN"
-
 	is_army = TRUE
 
 	min_positions = 4

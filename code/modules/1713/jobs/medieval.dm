@@ -1359,17 +1359,14 @@
 	title = "Freiherr"
 	en_meaning = "Baron"
 	rank_abbreviation = "Freiherr"
-	allowed_maps = list()
-
-
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
-
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = FALSE
 	is_rp = TRUE
 	is_medieval = TRUE
+	allowed_maps = list(MAP_BOHEMIA)
 
 
 	min_positions = 1
@@ -1411,17 +1408,14 @@
 	title = "Dienstmann"
 	en_meaning = "Retainer"
 	rank_abbreviation = "Dienstmann"
-	allowed_maps = list()
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
-
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = FALSE
 	is_rp = TRUE
 	is_medieval = TRUE
-
 
 	min_positions = 1
 	max_positions = 1
@@ -1461,16 +1455,13 @@
 	title = "Ritter"
 	en_meaning = "Knight"
 	rank_abbreviation = "Herr"
-	allowed_maps = list()
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateGE"
 	is_officer = TRUE
 	whitelisted = TRUE
-
 	is_medieval = TRUE
 	is_rp = TRUE
 	is_squad_leader = TRUE
-
 
 	min_positions = 1
 	max_positions = 3
@@ -1508,13 +1499,10 @@
 	title = "Wachmann"
 	en_meaning = "Guardsman"
 	rank_abbreviation = ""
-	allowed_maps = list()
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateGE"
-
 	is_medieval = TRUE
 	is_rp = TRUE
-
 
 	min_positions = 5
 	max_positions = 15
@@ -1560,10 +1548,8 @@
 	title = "Pfaffe"
 	en_meaning = "Church Priest"
 	rank_abbreviation = ""
-	allowed_maps = list()
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCivC"
-
 	is_religious = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
@@ -1603,10 +1589,8 @@
 	title = "Kumpel"
 	en_meaning = "Miner/Explorer"
 	rank_abbreviation = ""
-	allowed_maps = list()
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCiv"
-
 	is_medieval = TRUE
 	is_rp = TRUE
 	can_be_female = TRUE
@@ -1663,10 +1647,8 @@
 	title = "Bauer"
 	en_meaning = "Farmer/Rancher"
 	rank_abbreviation = ""
-	allowed_maps = list()
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCiv"
-
 	is_medieval = TRUE
 	is_rp = TRUE
 	can_be_female = TRUE
@@ -1726,11 +1708,9 @@
 	title = "Schmied"
 	en_meaning = "Blacksmith"
 	rank_abbreviation = "Blacksmith"
-	allowed_maps = list()
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCivB"
 	whitelisted = TRUE
-
 	is_medieval = TRUE
 	is_rp = TRUE
 	can_be_female = TRUE
@@ -1788,10 +1768,8 @@
 	title = "Gastwirst"
 	en_meaning = "Innkeeper"
 	rank_abbreviation = ""
-	allowed_maps = list()
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCivD"
-
 	is_medieval = TRUE
 	is_rp = TRUE
 	can_be_female = TRUE
@@ -1849,10 +1827,8 @@
 	title = "Kneiper"
 	en_meaning = "Taverner/Barkeeper"
 	rank_abbreviation = ""
-	allowed_maps = list()
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCiv"
-
 	is_medieval = TRUE
 	is_rp = TRUE
 	can_be_female = TRUE
@@ -1911,10 +1887,8 @@
 	title = "Kleinbauer"
 	en_meaning = "Basic Peasant"
 	rank_abbreviation = ""
-	allowed_maps = list()
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCiv"
-
 	is_medieval = TRUE
 	is_rp = TRUE
 	can_be_female = TRUE
@@ -1971,11 +1945,9 @@
 	title = "Kaufmann"
 	en_meaning = "Merchant/Trader"
 	rank_abbreviation = "Kaufmann"
-	allowed_maps = list()
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateCivA"
 	is_merchant = TRUE
-
 	whitelisted = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
@@ -2033,14 +2005,11 @@
 	title = "Arzt"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Arzt"
-	allowed_maps = list()
-
+	allowed_maps = list(MAP_BOHEMIA)
 	spawn_location = "JoinLateRNSurgeon"
-
 	is_medic = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
-
 
 	min_positions = 1
 	max_positions = 20
