@@ -2,6 +2,7 @@
 /obj/map_metadata/nomads/continental
 	ID = MAP_NOMADS_CONTINENTAL
 	title = "Nomads (Continents)"
+	description = "Battle on the Nomads (Continents) map."
 	research_active = TRUE
 
 /obj/map_metadata/nomads/continental/New()

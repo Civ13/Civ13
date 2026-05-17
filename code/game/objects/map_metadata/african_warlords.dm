@@ -2,6 +2,7 @@
 /obj/map_metadata/african_warlords
 	ID = MAP_AFRICAN_WARLORDS
 	title = "African Warlords"
+	description = "Two African warlords are fighting to humiliate the other's tribe. They will need to collect Enemy Skulls and bring them to their camp shaman's altar to score."
 	lobby_icon = 'icons/lobby/africanwarlords.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one,/area/caribbean/no_mans_land/invisible_wall/jungle/two,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 	respawn_delay = 300

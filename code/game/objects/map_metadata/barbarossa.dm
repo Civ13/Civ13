@@ -1,6 +1,7 @@
 /obj/map_metadata/barbarossa
 	ID = MAP_BARBAROSSA
 	title = "Start of operation Barbarossa"
+	description = "The Soviets will win if they hold out for 40 minutes. The Germans will win if they manage to reach the NKVD HQ in the middle eastern part of the map."
 	lobby_icon = 'icons/lobby/barbarossa.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200

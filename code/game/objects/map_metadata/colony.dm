@@ -2,6 +2,7 @@
 /obj/map_metadata/colony
 	ID = MAP_COLONY
 	title = "Colony"
+	description = "Europeans have reached the shore! The Colonists must build their villages."
 	lobby_icon = 'icons/lobby/imperial.png'
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)

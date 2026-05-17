@@ -1,6 +1,7 @@
 /obj/map_metadata/yeltsin
 	ID = MAP_YELTSIN
 	title = "Battle for the Russian Parliament"
+	description = "A Protect the VIP. match on the Battle for the Russian Parliament map."
 	lobby_icon = 'icons/lobby/yeltsin.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200

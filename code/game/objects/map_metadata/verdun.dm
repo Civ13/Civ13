@@ -2,6 +2,7 @@
 /obj/map_metadata/verdun
 	ID = MAP_VERDUN
 	title = "Battle of Verdun"
+	description = "The German and the Allied forces are facing eachother at the Douaumont Fort in Verdun! It will start in 5 minutes. The French Army must defend for 20 minutes!"
 	lobby_icon = 'icons/lobby/ww1.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one)
 	respawn_delay = 300

@@ -131,14 +131,20 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			//	if (mode != "gamemode") // Here we are making sure we don't announce potential game modes
 				text = "<b>Vote Tied Between:</b>\n"
 				for (var/option in winners)
-					text += "\t[option]\n"
+					var/display_opt = option
+					if (mode == "map" && map_id_to_title[option])
+						display_opt = map_id_to_title[option]
+					text += "\t[display_opt]\n"
 			var/newwinner = pick(winners)
 			. = newwinner
 
 			for (var/key in current_votes)
 				if (choices[current_votes[key]] == newwinner)
 					round_voters += key // Keep track of who voted for the winning round.
-			text += "<b>Vote Result: <span class = 'ping'>[newwinner]</span></b><br>"
+			var/display_winner = newwinner
+			if (mode == "map" && map_id_to_title[newwinner])
+				display_winner = map_id_to_title[newwinner]
+			text += "<b>Vote Result: <span class = 'ping'>[display_winner]</span></b><br>"
 			text += "<b>The vote has ended. </b>"
 			if (callback)
 				if (callback.len == 2)
@@ -235,12 +241,11 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					for (var/map in processes.mapswap.maps)
 						if (!default)
 							default = map
-						map = capitalize(lowertext(map))
 						choices.Add(map)
 						choices[map] = 0
 					for (var/map in processes.mapswap.maps)
 						if (clients.len < processes.mapswap.maps[map])
-							disabled[capitalize(lowertext(map))] = "[processes.mapswap.maps[map]] players needed"
+							disabled[map] = "[processes.mapswap.maps[map]] players needed"
 				if ("custom")
 					question = input(usr,"What is the vote for?") as text|null
 					if (!question)	return FALSE
@@ -362,7 +367,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 			for (var/client/C in clients)
 				if (C)
-					C << browse(interface(C), "window=vote;size=400x600")
+					C << browse(interface(C), "window=vote;size=500x800")
 
 			callback = _callback
 			return TRUE
@@ -386,12 +391,22 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				if (!votes)	votes = 0
 				. += "<tr>"
 
+				var/display_name = choices[i]
+				var/display_desc = ""
+				if (mode == "map")
+					if (map_id_to_title[choices[i]])
+						display_name = map_id_to_title[choices[i]]
+					else
+						display_name = capitalize(lowertext(choices[i]))
+					if (map_id_to_desc[choices[i]])
+						display_desc = "<br><span style='font-size: 0.85em; color: #b0a080; font-style: italic;'>[map_id_to_desc[choices[i]]]</span>"
+
 				if (disabled.Find(choices[i]))
-					. += "<td><font color = 'grey'>DISABLED ([disabled[choices[i]]]): [choices[i]]</td><td align = 'center'>[votes]</font></td>"
+					continue
 				else if (current_votes[C.ckey] == i)
-					. += "<td><b><a href='?src=\ref[src];vote=[i]'>[choices[i]]</a></b></td><td align = 'center'>[votes]</td>"
+					. += "<td><b><a href='?src=\ref[src];vote=[i]'>[display_name]</a></b>[display_desc]</td><td align = 'center'>[votes]</td>"
 				else
-					. += "<td><a href='?src=\ref[src];vote=[i]'>[choices[i]]</a></td><td align = 'center'>[votes]</td>"
+					. += "<td><a href='?src=\ref[src];vote=[i]'>[display_name]</a>[display_desc]</td><td align = 'center'>[votes]</td>"
 				if (additional_text.len >= i)
 					. += additional_text[i]
 				. += "</tr>"
@@ -464,4 +479,4 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 	set name = "Vote"
 
 	if (vote)
-		src << browse(vote.interface(client),"window=vote;size=400x600")
+		src << browse(vote.interface(client),"window=vote;size=500x800")

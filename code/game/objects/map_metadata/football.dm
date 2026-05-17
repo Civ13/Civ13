@@ -36,6 +36,7 @@
 	var/match_duration = 12 MINUTES
 
 	var/stopped = FALSE
+	var/stopped_until = 0
 	var/list/player_count_red = list(1,2,3,4,5,6,7,8,9,10,11)
 	var/list/player_count_blue = list(1,2,3,4,5,6,7,8,9,10,11)
 	New()
@@ -186,6 +187,7 @@
 
 /obj/map_metadata/football/proc/reset_ball()
 	stopped = TRUE
+	stopped_until = world.time + 200
 	for (var/mob/living/human/H in player_list)
 		var/turf/spawnpoint = null
 		var/list/turfs = latejoin_turfs[H.original_job.spawn_location]

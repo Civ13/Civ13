@@ -2,6 +2,7 @@
 /obj/map_metadata/sibersyn
 	ID = MAP_SIBERSYN
 	title = "Battle of the Bridges"
+	description = "The Soviets will win if they capture the White Army's command post in 40 minutes. The White Army will win if they capture the Soviets' command post in 40 minutes."
 	lobby_icon = 'icons/lobby/rcw.png'
 	no_winner ="The battle ends in stalemate."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)

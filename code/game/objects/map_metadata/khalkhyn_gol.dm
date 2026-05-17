@@ -2,6 +2,7 @@
 /obj/map_metadata/khalkhyn
 	ID = MAP_KHALKHYN_GOL
 	title = "Khalkhyn Gol"
+	description = "The Japanese will win if they capture the Soviet command. The Soviets will win if they manage to capture the Japanese command."
 	lobby_icon = 'icons/lobby/ww2.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200

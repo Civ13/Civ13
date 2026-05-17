@@ -2,6 +2,7 @@
 /obj/map_metadata/operation_falcon
 	ID = MAP_OPERATION_FALCON
 	title = "Operation Falcon"
+	description = "Points are added to each team for each minute they control the different objectives. First team to reach 100 points wins!"
 	lobby_icon = 'icons/lobby/operation_falcon.png'
 	no_winner = "The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)

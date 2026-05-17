@@ -1,6 +1,7 @@
 /obj/map_metadata/occupation
 	ID = MAP_OCCUPATION
 	title = "Occupation"
+	description = "After 20 minutes civilians (including UPA) will be able to access the SS base and UPA armoury unlocks."
 	no_winner ="The round is proceeding normally."
 	lobby_icon = 'icons/lobby/ww2.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)

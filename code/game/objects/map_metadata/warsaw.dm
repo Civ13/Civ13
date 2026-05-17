@@ -1,6 +1,7 @@
 /obj/map_metadata/warsaw
 	ID = MAP_WARSAW
 	title = "Warsaw Uprising"
+	description = "The Polish Home Army will win if they hold out for 45 minutes.The Wehrmacht will win if they manage to reach the Radio Station inside the Polish HQ."
 	lobby_icon = 'icons/lobby/warsawup.png'
 	no_winner = "The battle for the city of Warsaw is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)

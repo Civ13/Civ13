@@ -350,10 +350,12 @@
 	return .
 
 /process/mapswap/proc/swap(var/winner = "Karak")
-	next_map_title = winner
+	if (map_title_to_id[winner])
+		winner = map_title_to_id[winner]
+	next_map_title = (map_id_to_title[winner] ? map_id_to_title[winner] : winner)
 	winner = uppertext(winner)
 	if (!maps.Find(winner))
-		winner = maps[rand(0,1)]
+		winner = pick(maps)
 	if (!done)
 		processes.python.execute("mapswap.py", list(winner))
 		done = TRUE

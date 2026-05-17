@@ -1,6 +1,7 @@
 /obj/map_metadata/pavlov_house
 	ID = MAP_PAVLOV_HOUSE
 	title = "Pavlov House"
+	description = "The Soviets will win if they hold out for 30 minutes. The Germans will win if they manage to reach the Radio Station in the building."
 	lobby_icon = 'icons/lobby/stalingrad.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200

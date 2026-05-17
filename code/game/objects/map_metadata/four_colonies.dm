@@ -1,6 +1,7 @@
 /obj/map_metadata/four_colonies
 	ID = MAP_FOUR_COLONIES
 	title = "Four Colonies"
+	description = "Four countries have reached this Island! The Colonists must build their villages. After 30 minutes, THIS IS A RP MAP - ALL FACTIONS ARE FRIENDLY BY DEFAULT."
 	lobby_icon = 'icons/lobby/imperial.png'
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)

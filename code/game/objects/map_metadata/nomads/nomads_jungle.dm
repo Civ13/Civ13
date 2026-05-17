@@ -2,6 +2,7 @@
 /obj/map_metadata/nomads/jungle
 	ID = MAP_NOMADS_JUNGLE
 	title = "Nomads (Jungle)"
+	description = "Battle on the Nomads (Jungle) map."
 	research_active = TRUE
 
 	var/real_season = "wet"

@@ -2,6 +2,7 @@
 /obj/map_metadata/siege
 	ID = MAP_SIEGE
 	title = "Siege"
+	description = "The Roman troops are sieging a Greek fortress near Syracuse! The Greeks will win if they manage to hold the fortress for 35 minutes."
 	lobby_icon = 'icons/lobby/ancient.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300

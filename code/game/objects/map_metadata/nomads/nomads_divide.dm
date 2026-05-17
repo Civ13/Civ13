@@ -2,6 +2,7 @@
 /obj/map_metadata/nomads/divide
 	ID = MAP_NOMADS_DIVIDE
 	title = "Nomads (Jungle-Desert)"
+	description = "Battle on the Nomads (Jungle-Desert) map."
 	research_active = TRUE
 
 	var/real_season = "wet"

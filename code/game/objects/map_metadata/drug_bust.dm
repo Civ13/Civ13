@@ -1,6 +1,7 @@
 /obj/map_metadata/drug_bust
 	ID = MAP_DRUG_BUST
 	title = "The Rednikov Drug Bust"
+	description = "Rednikov have 5 minutes to prepare before the SWAT raid the building!The Police will win if they capture the Storage Depot in time!"
 	lobby_icon = 'icons/lobby/policestories.png'
 	no_winner ="The drug bust is still underway."
 	caribbean_blocking_area_types = list(

@@ -1,6 +1,7 @@
 /obj/map_metadata/gladiators
 	ID = MAP_GLADIATORS
 	title = "Gladiators"
+	description = "AVE IMPERATOR, MORITVRI TE SALVTANT!Organize gladiatoral fights and become the best!"
 	lobby_icon = 'icons/lobby/gladiators.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two,/area/caribbean/no_mans_land/invisible_wall/three,/area/caribbean/no_mans_land/invisible_wall/four)
 	respawn_delay = 0

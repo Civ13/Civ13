@@ -1,6 +1,7 @@
 /obj/map_metadata/waco
 	ID = MAP_WACO
 	title = "Waco Siege"
+	description = "The ATF will win if they capture the North Third Story Tower. The Davidians will win if they manage to defend their home for 20 minutes!"
 	lobby_icon = 'icons/lobby/waco.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two, /area/caribbean/no_mans_land/invisible_wall/inside)
 	respawn_delay = 1200

@@ -1,6 +1,7 @@
 /obj/map_metadata/fields
 	ID = MAP_FIELDS
 	title = "Fields"
+	description = "The French and British armies are facing each other in Canada! Get ready for the line battle! It will start in 5 minutes"
 	lobby_icon = 'icons/lobby/imperial.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300

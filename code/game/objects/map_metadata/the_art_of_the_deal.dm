@@ -1,6 +1,7 @@
 /obj/map_metadata/art_of_the_deal
 	ID = MAP_THE_ART_OF_THE_DEAL
 	title = "The Art of the Deal"
+	description = "4 corporations are fighting for control of the disks.Please read the manual: https://civ13.github.io/civ13-wiki/gamemodes/The_Art_of_the_Deal"
 	lobby_icon = 'icons/lobby/taotd.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 3000

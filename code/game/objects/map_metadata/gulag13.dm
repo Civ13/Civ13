@@ -2,6 +2,7 @@
 /obj/map_metadata/gulag13
 	ID = MAP_GULAG13
 	title = "GULAG 13"
+	description = "A prison simulation where the NKVD must keep the prisoners contained and working, while the prisoners must survive, gain power, and attempt escape."
 	no_winner ="The round is proceeding normally."
 	lobby_icon = 'icons/lobby/gulag.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra, /area/caribbean/no_mans_land/invisible_wall/one)

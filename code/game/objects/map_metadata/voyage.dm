@@ -2,6 +2,7 @@
 /obj/map_metadata/voyage
 	ID = MAP_VOYAGE
 	title = "Voyage"
+	description = "Your crew of pirates assembles for the first voyage. Will you get rich, or perish like the others?"
 	no_winner ="The ship is on the way."
 	lobby_icon = 'icons/lobby/imperial.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)

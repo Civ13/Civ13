@@ -1,6 +1,7 @@
 /obj/map_metadata/port_arthur
 	ID = MAP_PORT_ARTHUR
 	title = "Port Arthur"
+	description = "The Imperial Japanese Army and the Russian Army are battling for the control of Port Arthur!"
 	lobby_icon = 'icons/lobby/ww1.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0

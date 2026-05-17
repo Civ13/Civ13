@@ -1,6 +1,7 @@
 /obj/map_metadata/reichflakturm
 	ID = MAP_REICHFLAKTURM
 	title = "Reichflakturm"
+	description = "The Germans will win if they hold out for 40 minutes. The Americans will win if they manage to capture the anti-air guns at the top of the tower!"
 	lobby_icon = 'icons/lobby/ww2.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200

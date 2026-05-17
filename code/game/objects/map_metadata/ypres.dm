@@ -2,6 +2,7 @@
 /obj/map_metadata/ypres
 	ID = MAP_YPRES
 	title = "2nd Battle of Ypres"
+	description = "The German and the Allied forces are facing eachother in the trenches near Ypres! It will start in 5 minutes."
 	lobby_icon = 'icons/lobby/ww1.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300

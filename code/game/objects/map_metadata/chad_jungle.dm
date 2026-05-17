@@ -2,6 +2,7 @@
 /obj/map_metadata/chad_jungle
 	ID = MAP_JUNGLE_OF_THE_CHADS
 	title = "JUNGLE OF THE CHADS"
+	description = "Starting Chad Mode +. Starting epoch is the Stone Age, research is done by sacrificing players. Reduced starting items and more hostile conditions."
 
 	respawn_delay = 6000 // 10 minutes!
 	has_hunger = TRUE

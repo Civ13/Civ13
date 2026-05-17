@@ -1,6 +1,7 @@
 /obj/map_metadata/magistral
 	ID = MAP_MAGISTRAL
 	title = "Operation Magistral"
+	description = "The Soviets and the DRA will win if they capture the control room of the compound. The Mujahideen will win if they manage to hold out for 35 minutes!"
 	no_winner = "The compound is still under the Mujahideen's control."
 	lobby_icon = 'icons/lobby/magistral.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)

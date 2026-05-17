@@ -1,6 +1,7 @@
 /obj/map_metadata/four_kingdoms
 	ID = MAP_FOUR_KINGDOMS
 	title = "Four Kingdoms"
+	description = "Several tribes are settling in this land. Will they be able to get along?."
 	no_winner ="The round is proceeding normally."
 	lobby_icon = 'icons/lobby/fantasy.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/temperate,/area/caribbean/no_mans_land/invisible_wall/desert,/area/caribbean/no_mans_land/invisible_wall/semiarid,/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall)
