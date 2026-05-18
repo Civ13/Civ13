@@ -2,7 +2,7 @@
 	ID = MAP_VITEBSK
 	title = "Vitebsk"
 	description = "Battle on the Vitebsk map."
-	lobby_icon = 'icons/lobby/vitebsk.png'
+	lobby_icon = "icons/lobby/vitebsk.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1200
 	no_hardcore = FALSE
@@ -24,7 +24,7 @@
 	grace_wall_timer = 3600
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
+		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
 
 /obj/map_metadata/vitebsk/roundend_condition_def2name(define)
 	..()

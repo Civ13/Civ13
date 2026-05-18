@@ -2,7 +2,7 @@
 	ID = MAP_REICHFLAKTURM
 	title = "Reichflakturm"
 	description = "The Germans will win if they hold out for 40 minutes. The Americans will win if they manage to capture the anti-air guns at the top of the tower!"
-	lobby_icon = 'icons/lobby/ww2.png'
+	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
 	no_hardcore = TRUE
@@ -25,7 +25,7 @@
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Over There!:1" = 'sound/music/overthere.ogg',)
+		"Over There!:1" = "sound/music/overthere.ogg",)
 	gamemode = "Siege"
 /obj/map_metadata/reichflakturm/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)

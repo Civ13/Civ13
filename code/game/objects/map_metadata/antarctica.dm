@@ -2,7 +2,7 @@
 	ID = MAP_ANTARCTICA
 	title = "Antarctica"
 	description = "Survive and keep the furnace alive!"
-	lobby_icon = 'icons/lobby/antarctica.png'
+	lobby_icon = "icons/lobby/antarctica.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle, /area/caribbean/no_mans_land/invisible_wall/inside, /area/caribbean/no_mans_land/invisible_wall/inside/one, /area/caribbean/no_mans_land/invisible_wall/inside/two)
 	respawn_delay = 300
 	no_winner ="The furnace is burning."
@@ -18,7 +18,7 @@
 	mission_start_message = "<font size=4>RUN!</font>"
 	faction1 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET)
-	songs = list("Akira:1" = 'sound/music/akira.ogg',)
+	songs = list("Akira:1" = "sound/music/akira.ogg",)
 	is_singlefaction = TRUE
 	is_RP = TRUE
 	var/no_loop = FALSE
@@ -50,13 +50,13 @@
 
 /////////////////////////////////////////////////
 
-/datum/job/civilian/survivor
-	title = "Survivor"
+/datum/job/civilian/survivor/antarctica
+	title = "Antarctic Survivor"
 	spawn_location = "JoinLateCiv"
 	min_positions = 60
 	max_positions = 60
 	can_be_female = TRUE
-	allowed_maps = list(MAP_ANTARCRICA)
+	allowed_maps = list(MAP_ANTARCTICA)
 
 /datum/job/civilian/survivor/antarctica/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

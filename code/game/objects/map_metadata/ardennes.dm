@@ -2,7 +2,7 @@
 	ID = MAP_ARDENNES
 	title = "Ardennes Offensive"
 	description = "The Americans will win if they hold out for 45 minutes. The Germans will win if they manage to reach the HQ in the middle of the city."
-	lobby_icon = 'icons/lobby/ardennes.png'
+	lobby_icon = "icons/lobby/ardennes.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall/tundra/one,/area/caribbean/no_mans_land/invisible_wall/tundra/two)
 	respawn_delay = 1200
 	no_winner = "The HQ stays under American control, stalling the German offense."
@@ -25,7 +25,7 @@
 	grace_wall_timer = 3600
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Over There!:1" = 'sound/music/overthere.ogg',)
+		"Over There!:1" = "sound/music/overthere.ogg",)
 	gamemode = "Siege"
 
 /obj/map_metadata/ardennes/job_enabled_specialcheck(var/datum/job/J)

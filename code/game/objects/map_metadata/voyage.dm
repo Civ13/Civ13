@@ -4,7 +4,7 @@
 	title = "Voyage"
 	description = "Your crew of pirates assembles for the first voyage. Will you get rich, or perish like the others?"
 	no_winner ="The ship is on the way."
-	lobby_icon = 'icons/lobby/imperial.png'
+	lobby_icon = "icons/lobby/imperial.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	faction_organization = list(PIRATES)
 	roundend_condition_sides = list(list(PIRATES) = /area/caribbean/no_mans_land)
@@ -699,7 +699,7 @@
 	proc/play()
 		if (world.time >= cooldown_bell_stand)
 			for (var/mob/M in player_list)
-				M.client << sound('sound/effects/bell_stand.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+				M.client << sound("sound/effects/bell_stand.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 			to_chat(world, "<font size=4 color='yellow'>You hear the ship's bell!</font>")
 			cooldown_bell_stand = world.time+50
 			icon_state = "bell_stand_ringing"
@@ -862,7 +862,7 @@
 			if(istype(S.loc, /turf/floor/broken_floor) && S.opened)
 				for(var/atom/movable/AT in S.loc)
 					S.loc.Entered(AT)
-		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+		playsound(loc, "sound/effects/lever.ogg",100, TRUE)
 		return
 
 /obj/structure/voyage/voicepipe
@@ -993,7 +993,7 @@
 						I.reagents.add_reagent("sodiumchloride", 8)
 						I.reagents.add_reagent("water", 42)
 						user.visible_message(SPAN_NOTICE("[user] fills \the [I] with water."), SPAN_NOTICE("You fill \the [I] with water."))
-						playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
+						playsound(loc, "sound/effects/watersplash.ogg", 100, TRUE)
 						flood_level--
 						if (flood_level <= 0)
 							qdel(src)

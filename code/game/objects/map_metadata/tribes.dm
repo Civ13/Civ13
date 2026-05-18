@@ -4,7 +4,7 @@
 	title = "Tribes"
 	description = "Several tribes are settling in this land. Will they be able to get along?"
 	no_winner ="The round is proceeding normally."
-	lobby_icon = 'icons/lobby/fantasy.png'
+	lobby_icon = "icons/lobby/fantasy.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/temperate,/area/caribbean/no_mans_land/invisible_wall/desert,/area/caribbean/no_mans_land/invisible_wall/semiarid,/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 3600 // 6 minutes!
 	force_mapgen = FALSE
@@ -20,7 +20,7 @@
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "The Four Tribes"
 	mission_start_message = "<big>Several tribes are settling in this land. Will they be able to get along?<br>The grace wall will be up for <b>25 minutes</b>.</big>"
-	ambience = list('sound/ambience/jungle1.ogg')
+	ambience = list("sound/ambience/jungle1.ogg")
 	faction1 = CIVILIAN
 	is_singlefaction = TRUE
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME, WEATHER_SMOG)
@@ -29,7 +29,7 @@
 	civilizations = TRUE
 	is_RP = TRUE
 	songs = list(
-		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
+		"Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg",)
 	gamemode = "Faction-Based RP"
 	nomads = TRUE
 	grace_wall_timer = 15000

@@ -2,7 +2,7 @@
 	ID = MAP_ROTSTADT
 	title = "Rotstadt Counter Insurgency"
 	description = "The Blugoslavian Armed Forces are launching an counter-insurgency operation in the occupied city of Rotstadt.Their objective is to capture the RPR militia's Commanding..."
-	lobby_icon = 'icons/lobby/rotstadt.png'
+	lobby_icon = "icons/lobby/rotstadt.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1800
 	no_winner = "The battle is still going on."
@@ -27,7 +27,7 @@
 	faction2 = BLUEFACTION
 	valid_weather_types = list(WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Noisia - Shellshock:1" = 'sound/music/shellshock.ogg',)
+		"Noisia - Shellshock:1" = "sound/music/shellshock.ogg",)
 	artillery_count = 0
 	no_hardcore = TRUE
 	var/list/squad_jobs_blue = list(

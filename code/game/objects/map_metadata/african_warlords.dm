@@ -3,7 +3,7 @@
 	ID = MAP_AFRICAN_WARLORDS
 	title = "African Warlords"
 	description = "Two African warlords are fighting to humiliate the other's tribe. They will need to collect Enemy Skulls and bring them to their camp shaman's altar to score."
-	lobby_icon = 'icons/lobby/africanwarlords.png'
+	lobby_icon = "icons/lobby/africanwarlords.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one,/area/caribbean/no_mans_land/invisible_wall/jungle/two,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 	respawn_delay = 300
 	no_winner ="No warband has won yet."
@@ -24,7 +24,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Barrington Levy - Murderer:1" = 'sound/music/murderer.ogg',)
+		"Barrington Levy - Murderer:1" = "sound/music/murderer.ogg",)
 	scores = list(
 		"Blugisi" = 0,
 		"Yellowagwana" = 0,

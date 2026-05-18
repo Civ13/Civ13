@@ -2,7 +2,7 @@
 	ID = MAP_TANTIVEIV
 	title = "VantiveIV"
 	description = "The Alliance to Restore the Democracy will win if they hold out for 20 minutes."
-	lobby_icon = 'icons/lobby/galacticbattles.png'
+	lobby_icon = "icons/lobby/galacticbattles.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_hardcore = TRUE
@@ -24,7 +24,7 @@
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Battle of Heroes (Galactic Battles):1" = 'sound/music/battle_of_heroes.ogg',)
+		"Battle of Heroes (Galactic Battles):1" = "sound/music/battle_of_heroes.ogg",)
 	gamemode = "Siege"
 	grace_wall_timer = 2400
 /obj/map_metadata/tantiveiv/roundend_condition_def2name(define)

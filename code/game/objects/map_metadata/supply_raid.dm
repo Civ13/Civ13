@@ -3,7 +3,7 @@
 	ID = MAP_SUPPLY_RAID
 	title = "Supply Raid"
 	description = "In order to win the Carib must capture the British Ship and the British must capture the Carib Altar."
-	lobby_icon = 'icons/lobby/imperial.png'
+	lobby_icon = "icons/lobby/imperial.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 900
 	grace_wall_timer = 3000
@@ -23,7 +23,7 @@
 	faction1 = BRITISH
 	faction2 = INDIANS
 
-	ambience = list('sound/ambience/jungle1.ogg')
+	ambience = list("sound/ambience/jungle1.ogg")
 
 
 

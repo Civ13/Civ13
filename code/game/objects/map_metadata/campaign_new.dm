@@ -306,7 +306,7 @@
 /obj/map_metadata/campaign_new
 	ID = MAP_CAMPAIGN_NEW
 	title = "Campaign"
-	lobby_icon = 'icons/lobby/campaign2.png'
+	lobby_icon = "icons/lobby/campaign2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 2 MINUTES
 	no_winner = "The battle is going on."
@@ -331,7 +331,7 @@
 	faction2 = CAFR
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Black Vortex - Kevin Macleod:1" = 'sound/music/black-vortex.ogg',)
+		"Black Vortex - Kevin Macleod:1" = "sound/music/black-vortex.ogg",)
 	artillery_count = 0
 
 	scores = list(

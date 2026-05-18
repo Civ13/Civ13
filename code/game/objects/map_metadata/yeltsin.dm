@@ -2,7 +2,7 @@
 	ID = MAP_YELTSIN
 	title = "Battle for the Russian Parliament"
 	description = "A Protect the VIP. match on the Battle for the Russian Parliament map."
-	lobby_icon = 'icons/lobby/yeltsin.png'
+	lobby_icon = "icons/lobby/yeltsin.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
@@ -29,7 +29,7 @@
 	grace_wall_timer = 6000
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Kino - I Want Changes:1" = 'sound/music/want_changes.ogg',)
+		"Kino - I Want Changes:1" = "sound/music/want_changes.ogg",)
 	artillery_count = 0
 	valid_artillery = list()
 	scores = list(

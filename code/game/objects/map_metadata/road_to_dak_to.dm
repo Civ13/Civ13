@@ -3,7 +3,7 @@
 	ID = MAP_ROAD_TO_DAK_TO
 	title = "Road to Dak To"
 	description = "The Vietcong must defend the village from the Americans. The US Army must defend their base."
-	lobby_icon = 'icons/lobby/vietnam.png'
+	lobby_icon = "icons/lobby/vietnam.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two,/area/caribbean/no_mans_land/invisible_wall/inside)
 	respawn_delay = 300
 
@@ -26,7 +26,7 @@
 	grace_wall_timer = 3000
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
+		"Fortunate Son:1" = "sound/music/fortunate_son.ogg",)
 	artillery_count = 3
 
 /obj/map_metadata/road_to_dak_to/cross_message(faction)

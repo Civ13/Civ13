@@ -3,7 +3,7 @@
 	ID = MAP_TSARITSYN
 	title = "Tsaritsyn"
 	description = "The Soviets will win if they hold out for 40 minutes. The White Army will win if they manage to capture the centre of the church."
-	lobby_icon = 'icons/lobby/rcw.png'
+	lobby_icon = "icons/lobby/rcw.png"
 	no_winner ="The church is under Soviet control."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600
@@ -27,7 +27,7 @@
 	ordinal_age = 5
 	grace_wall_timer = 4200
 	songs = list(
-		"Korobushka:1" = 'sound/music/korobushka.ogg')
+		"Korobushka:1" = "sound/music/korobushka.ogg")
 	gamemode = "Siege"
 
 /obj/map_metadata/tsaritsyn/roundend_condition_def2name(define)

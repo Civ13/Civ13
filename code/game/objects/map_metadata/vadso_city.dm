@@ -2,7 +2,7 @@
 /obj/map_metadata/vadso_city
 	ID = MAP_VADSO_CITY
 	title = "Vadso City"
-	lobby_icon = 'icons/lobby/operation_falcon.png'
+	lobby_icon = "icons/lobby/operation_falcon.png"
 	no_winner = "The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/sea,/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/taiga/one,/area/caribbean/no_mans_land/invisible_wall/taiga/two)
 	respawn_delay = 600
@@ -24,9 +24,9 @@
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Doe Maar - The Bomb (De Bom):1" = 'sound/music/de_bom.ogg',)
+		"Doe Maar - The Bomb (De Bom):1" = "sound/music/de_bom.ogg",)
 	gamemode = "Area Control"
-	ambience = list('sound/ambience/battle1.ogg')
+	ambience = list("sound/ambience/battle1.ogg")
 	var/rus_points = 0
 	var/british_points = 0
 	var/win_points = 100 // Amount of points needed to win
@@ -82,7 +82,7 @@
 
 
 /obj/map_metadata/vadso_city/cross_message(faction)
-	var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 780)
+	var/warning_sound = sound("sound/effects/siren_once.ogg", repeat = FALSE, wait = TRUE, channel = 780)
 	for (var/mob/M in player_list)
 		M.client << warning_sound
 

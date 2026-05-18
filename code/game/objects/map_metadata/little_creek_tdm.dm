@@ -3,7 +3,7 @@
 	ID = MAP_LITTLE_CREEK_TDM
 	title = "Big Trouble in Little Creek (TDM)"
 	description = "At the small frontier town of Little Creek, the Sheriff recieves a warning: A group of outlaws is about to rob the town's bank!"
-	lobby_icon = 'icons/lobby/wildwest.png'
+	lobby_icon = "icons/lobby/wildwest.png"
 	no_winner ="The fighting for the town is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600
@@ -22,10 +22,10 @@
 	mission_start_message = "<font size=3>At the small frontier town of <b>Little Creek</b>, the Sheriff recieves a warning: A group of outlaws is about to rob the town's bank! He must organize the bank's defense and prevent them...</font><br><br><big><i>The grace wall will go down in <b>6 minutes</b>. The Outlaws have <b>30 minutes</b> to collect <b>1500 dollars</b> before the Army arrives!</big></i>"
 	faction1 = CIVILIAN
 	grace_wall_timer = 3600
-	ambience = list('sound/ambience/desert.ogg')
+	ambience = list("sound/ambience/desert.ogg")
 	gamemode = "Bank Robbery (TDM)"
 	songs = list(
-		"The Good, the Bad, and the Ugly Theme:1" = 'sound/music/good_bad_ugly.ogg',)
+		"The Good, the Bad, and the Ugly Theme:1" = "sound/music/good_bad_ugly.ogg",)
 	is_singlefaction = TRUE
 
 

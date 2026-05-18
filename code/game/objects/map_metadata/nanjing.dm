@@ -3,7 +3,7 @@
 	ID = MAP_NANJING
 	title = "Nanjing"
 	description = "The Japanese will win if they capture the Chinese command. The Chinese will win if they manage to defend their command for 30 minutes!."
-	lobby_icon = 'icons/lobby/china.png'
+	lobby_icon = "icons/lobby/china.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_hardcore = TRUE
@@ -26,7 +26,7 @@
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	grace_wall_timer = 4800
 	songs = list(
-		"Mugi to Heitai:1" = 'sound/music/mugi_to_heitai.ogg',)
+		"Mugi to Heitai:1" = "sound/music/mugi_to_heitai.ogg",)
 
 /obj/map_metadata/nanjing/roundend_condition_def2name(define)
 	..()

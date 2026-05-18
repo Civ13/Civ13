@@ -5,7 +5,7 @@
 	description = "The world is on the verge of nuclear war... The nukes will drop in 2 to 3:30 hours. Then the world will become a wasteland."
 	age = "2013"
 	mission_start_message = "<big>The world is on the verge of nuclear war... The nukes will drop in 2 to 3:30 hours. Then the world will become a wasteland. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
-	ambience = list('sound/ambience/desert.ogg')
+	ambience = list("sound/ambience/desert.ogg")
 	
 	research_active = TRUE
 	gamemode = "Nuclear Wasteland"
@@ -38,7 +38,7 @@
 		var/vy = rand(25,world.maxy-25)
 		var/turf/epicenter = get_turf(locate(vx,vy,2))
 		to_chat(world, "<font size=4 color='red'><center>ATTENTION<br>A nuclear missile is incoming! Take cover!</center></font>")
-		var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		var/warning_sound = sound("sound/misc/siren.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 		for (var/mob/M in player_list)
 			M.client << warning_sound
 		spawn(330)
@@ -98,11 +98,11 @@
 	gamemode = "Wasteland"
 	hasnukes = FALSE
 	is_zombie = TRUE
-	lobby_icon = 'icons/lobby/wasteland2.png'
+	lobby_icon = "icons/lobby/wasteland2.png"
 	mission_start_message = "<big>Something has gone terribly wrong. The undead roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
-	ambience = list('sound/ambience/desert.ogg')
+	ambience = list("sound/ambience/desert.ogg")
 	songs = list(
-		"Blawan - Why They Hide Their Bodies Under My Garage?:1" = 'sound/music/whytheyhidetheirbodies.ogg',)
+		"Blawan - Why They Hide Their Bodies Under My Garage?:1" = "sound/music/whytheyhidetheirbodies.ogg",)
 
 /obj/map_metadata/nomads/wasteland/two/proc/zombies(var/start = TRUE)
 	for(var/obj/effect/spawner/mobspawner/zombies/special/S in world)
@@ -119,8 +119,8 @@
 	gamemode = "Wasteland"
 	hasnukes = FALSE
 	is_zombie = FALSE
-	lobby_icon = 'icons/lobby/wasteland3.png'
+	lobby_icon = "icons/lobby/wasteland3.png"
 	mission_start_message = "<big>The Great Radiance has rewritten the DNA of the survivors. In the ruins of the old world, the line between man and beast has blurred. Adapt to your new form, scavenge the toxic wastes, and prove that you are the one meant to inherit the earth.</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
-	ambience = list('sound/ambience/desert.ogg')
+	ambience = list("sound/ambience/desert.ogg")
 	songs = list(
-		"Blawan - Why They Hide Their Bodies Under My Garage?:1" = 'sound/music/whytheyhidetheirbodies.ogg',)
+		"Blawan - Why They Hide Their Bodies Under My Garage?:1" = "sound/music/whytheyhidetheirbodies.ogg",)
