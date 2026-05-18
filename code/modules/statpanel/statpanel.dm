@@ -137,6 +137,7 @@
 /client/Topic(href, href_list)
 	if(href_list["action"] == "refocus_map")
 		winset(src, "mapwindow.map", "focus=true")
+		return
 
 	if (href_list["action"] == "statpanel_ready")
 		statpanel_ready = TRUE

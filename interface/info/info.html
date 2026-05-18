@@ -387,6 +387,7 @@
         document.addEventListener("click", function (e) {
             // hopefully don't trigger when clicking on the chat
             if (e.target.closest("input, textarea")) return;
+            if (e.target.closest("a[href^='byond://']")) return;
 
             window.location.href = "byond://?action=refocus_map";
         });
