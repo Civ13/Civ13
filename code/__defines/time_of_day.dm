@@ -10,7 +10,8 @@ var/list/time_of_day2luminosity = list(
 	"Afternoon" = BASIC_LIGHT_AMOUNT * 18,
 	"Midday" = MAX_LIGHT_AMOUNT,
 	"Evening" = BASIC_LIGHT_AMOUNT * 7,
-	"Night" = BASIC_LIGHT_AMOUNT * 2,)
+	"Night" = BASIC_LIGHT_AMOUNT * 2,
+	"Dark Night" = 0)
 
 var/list/time_of_day2ticks = list(
 	"Early Morning" = 20*60,

@@ -523,6 +523,7 @@
 #include "code\game\objects\map_metadata\khalkhyn_gol.dm"
 #include "code\game\objects\map_metadata\kursk.dm"
 #include "code\game\objects\map_metadata\landing_at_constantinopoli.dm"
+#include "code\game\objects\map_metadata\lights_out.dm"
 #include "code\game\objects\map_metadata\little_creek.dm"
 #include "code\game\objects\map_metadata\little_creek_tdm.dm"
 #include "code\game\objects\map_metadata\long_march.dm"
@@ -1182,5 +1183,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\football.dmm"
+#include "maps\special\lights_out.dmm"
 // END_INCLUDE

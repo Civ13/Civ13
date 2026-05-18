@@ -258,6 +258,16 @@
 	off_state = "modernlight_off"
 	slot_flags = SLOT_BELT | SLOT_ID | SLOT_POCKET
 
+//"spooky" version of the flashlight, reduced range, red tint
+/obj/item/flashlight/modern/darknight
+	icon_state = "militarylight_off"
+	item_state = "militarylight"
+	on_state = "militarylight_on_red"
+	off_state = "militarylight_off"
+	light_range = 2.5
+	brightness_on = 3
+	light_color = "#ad2005"
+
 /obj/item/flashlight/militarylight
 	unlimited = TRUE
 	name = "military flashlight"

@@ -24,6 +24,8 @@ var/GRACE_PERIOD_LENGTH = 7
 						time_of_day = "Night"
 					if (MAP_DRUG_BUST)
 						time_of_day = "Night"
+					if (MAP_LIGHTS_OUT)
+						time_of_day = "Dark Night"
 			update_lighting(time_of_day, null, FALSE)
 			if (!map || !map.no_time_of_day_cycle)
 				spawn (0)
