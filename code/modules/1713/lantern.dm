@@ -265,7 +265,7 @@
 	on_state = "militarylight_on_red"
 	off_state = "militarylight_off"
 	light_range = 2.5
-	brightness_on = 3
+	brightness_on = 5
 	light_color = "#ad2005"
 
 /obj/item/flashlight/militarylight

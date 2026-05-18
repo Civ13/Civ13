@@ -30,6 +30,14 @@ var/list/seed_list_jungle
 	var/branches = 0
 	var/max_branches = 0
 
+/obj/structure/wild/New()
+	..()
+	//ridiculous hack to make sure we don't get artifacts on empty tiles
+	//please dont get mad at me -Taislin
+	spawn(15)
+		if (map && map.ID == MAP_LIGHTS_OUT)
+			opacity = FALSE
+
 /obj/structure/wild/proc/grow_branch()
 	if (max_branches <= 0)
 		return
