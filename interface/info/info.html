@@ -385,9 +385,9 @@
 
         // forces focus back to the game after clicking something on the statpanel
         document.addEventListener("click", function (e) {
-            // hopefully don't trigger when clicking on the chat
-            if (e.target.closest("input, textarea")) return;
-            if (e.target.closest("a[href^='byond://']")) return;
+        document.addEventListener("click", function (e) {
+            // Ignore if we clicked an interactive element that handles its own Topic call or input
+            if (e.target.closest("input, textarea, a, .tab")) return;
 
             window.location.href = "byond://?action=refocus_map";
         });
