@@ -1,7 +1,7 @@
 /obj/map_metadata/hunger_games
 	ID = MAP_HUNGERGAMES
 	title = "Hunger Games (need staff)"
-	lobby_icon = 'icons/lobby/battleroyale.png'
+	lobby_icon = "icons/lobby/battleroyale.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one)
 	respawn_delay = 0
 	is_singlefaction = TRUE
@@ -67,7 +67,7 @@
 						winner_name =  H.name
 						winner_ckey = H.ckey
 						give_award(winner_ckey,winner_name,1)
-						var/warning_sound = sound('sound/effects/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+						var/warning_sound = sound("sound/effects/siren.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 						for (var/mob/M in player_list)
 							M.client << warning_sound
 						message = "The hunger games are over! <b>[winner_ckey]</b> is the victor!"
@@ -221,12 +221,12 @@
 
 	// Define corresponding sounds to the map parts
 	var/area_sound_map = list(
-		"one"   = 'sound/voice/battleroyale/close_nw.ogg',
-		"two"   = 'sound/voice/battleroyale/close_ne.ogg',
-		"three" = 'sound/voice/battleroyale/close_w.ogg',
-		"four"  = 'sound/voice/battleroyale/close_e.ogg',
-		"five"  = 'sound/voice/battleroyale/close_sw.ogg',
-		"six"   = 'sound/voice/battleroyale/close_se.ogg'
+		"one"   = "sound/voice/battleroyale/close_nw.ogg",
+		"two"   = "sound/voice/battleroyale/close_ne.ogg",
+		"three" = "sound/voice/battleroyale/close_w.ogg",
+		"four"  = "sound/voice/battleroyale/close_e.ogg",
+		"five"  = "sound/voice/battleroyale/close_sw.ogg",
+		"six"   = "sound/voice/battleroyale/close_se.ogg"
 		)
 
 	// Define corresponding area names to the map parts

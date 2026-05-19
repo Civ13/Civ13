@@ -1,5 +1,4 @@
 /obj/covers
-
 	name = "floor covers"
 	desc = ""
 	icon = 'icons/turf/floors.dmi'
@@ -56,6 +55,14 @@
 		else
 			//Do nothing, you're not important.
 			..()*/
+
+//for mapmaking purposes
+/obj/covers/invisible
+	wood = FALSE
+	opacity = FALSE
+	flammable = FALSE
+	density = TRUE
+	invisibility = 101
 
 /obj/covers/proc/run_decay()
 	if (!src || !wall)

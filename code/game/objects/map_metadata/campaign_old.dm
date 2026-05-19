@@ -2,7 +2,7 @@
 /obj/map_metadata/campaign
 	ID = MAP_CAMPAIGN
 	title = "Campaign"
-	lobby_icon = 'icons/lobby/campaign1.png'
+	lobby_icon = "icons/lobby/campaign1.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 3 MINUTES
 	no_winner = "The battle is going on."
@@ -26,7 +26,7 @@
 	faction2 = BLUEFACTION
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Emma:1" = 'sound/music/emma.ogg',)
+		"Emma:1" = "sound/music/emma.ogg",)
 	artillery_count = 0
 
 	scores = list(
@@ -86,7 +86,7 @@
 			J.spawn_location = "JoinLateRed_Reinforcement"
 	switch (faction)
 		if (REDFACTION)
-			world << sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
+			world << sound("sound/effects/siren_once.ogg", repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
 			return "<font size=4 color='red'>The battle has begun!</font>"
 		else
 			return ""
@@ -501,7 +501,7 @@ var/no_loop_ca = FALSE
 		mrl_strike(5,97,105,34,73,2)
 
 /obj/map_metadata/campaign/proc/mrl_strike(var/strikenum = 18, var/xoffsetmin, var/xoffsetmax, var/yoffsetmin, var/yoffsetmax, var/inputz)
-	var/sound/uploaded_sound = sound('sound/weapons/Explosives/mrls.ogg', repeat = FALSE, wait = TRUE, channel = 780)
+	var/sound/uploaded_sound = sound("sound/weapons/Explosives/mrls.ogg", repeat = FALSE, wait = TRUE, channel = 780)
 	uploaded_sound.priority = 250
 	for (var/mob/M in player_list)
 		if (!new_player_mob_list.Find(M))

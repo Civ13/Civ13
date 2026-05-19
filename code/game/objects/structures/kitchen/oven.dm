@@ -15,6 +15,7 @@
 	var/consume_itself = FALSE
 	var/looping = FALSE //for campfires
 	var/cooking_time = 50
+
 /obj/structure/oven/update_icon()
 	if (on)
 		icon_state = "[base_state]_on"
@@ -109,7 +110,7 @@
 	if (on && fuel > 0)
 		fuel -=1
 		update_icon()
-		if (name == "campfire")
+		if (name == "campfire" || name == "furnace")
 			set_light(5)
 		else if (name == "wood stove")
 			set_light(2)
@@ -412,3 +413,49 @@
 	on = FALSE
 	max_space = 4
 	fuel = 0
+
+//for the survival objective in antarctica
+/obj/structure/oven/big
+	name = "furnace"
+	desc = "Your survival hangs on this - keep the furnace on!"
+	icon = 'icons/obj/kitchen_big.dmi'
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/oven/big/New()
+	..()
+	on = TRUE
+	fuel = 10 // 10 mins
+	update_icon()
+	keep_fire_on()
+	spawn(100)
+		if (map && map.ID == MAP_ANTARCTICA)
+			var/obj/map_metadata/antarctica/ANT = map
+			ANT.furnace = src
+
+/obj/structure/oven/big/proc/keep_sound_on()
+	if (on && looping && fuel > 0)
+		playsound(get_turf(src), "sound/effects/fireplace-[rand(1, 6)].ogg", 75, TRUE, -1)
+		spawn(50) // 6 seconds
+			keep_sound_on()
+
+/obj/structure/oven/big/proc/keep_fire_on()
+	if (on && looping && fuel > 0)
+		set_light(5)
+		update_icon()
+		fire_loop()
+		spawn(600) // 1 minute
+			keep_fire_on()
+	else
+		on = FALSE
+		set_light(0)
+		return
+
+/obj/structure/oven/big/attack_hand(var/mob/living/human/H)
+	if (!on && fuel > 0)
+		H.visible_message(SPAN_NOTICE("[H] lights \the [name]."), SPAN_NOTICE("You light \the [name]."))
+		on = TRUE
+		keep_fire_on()
+		keep_sound_on()
+	//no manual turning off
+	H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)

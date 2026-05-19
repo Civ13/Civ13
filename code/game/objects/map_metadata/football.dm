@@ -1,7 +1,7 @@
 /obj/map_metadata/football
 	ID = MAP_FOOTBALL
 	title = "Football Match"
-	lobby_icon = 'icons/lobby/football.png'
+	lobby_icon = "icons/lobby/football.png"
 	caribbean_blocking_area_types = list(/area/caribbean/football/midfield, /area/caribbean/football/nopass)
 	respawn_delay = 0
 	no_winner ="The game is still going on."
@@ -16,10 +16,10 @@
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "football game"
 	mission_start_message = "Two minutes untill the game starts!"
-	ambience = list('sound/ambience/football.ogg')
+	ambience = list("sound/ambience/football.ogg")
 	faction1 = CIVILIAN
 	songs = list(
-		"Forever Blowing Bubbles:1" = 'sound/music/forever_blowing_bubbles.ogg',)
+		"Forever Blowing Bubbles:1" = "sound/music/forever_blowing_bubbles.ogg",)
 	is_singlefaction = TRUE
 	var/team1 = "Unga Utd."
 	var/team2 = "Chad Town F.C."
@@ -177,7 +177,7 @@
 	return ((processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods) && !stopped)
 
 /obj/map_metadata/football/cross_message(faction)
-	var/warning_sound = sound('sound/effects/football_whistle.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+	var/warning_sound = sound("sound/effects/football_whistle.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 	for (var/mob/M in player_list)
 		M.client << warning_sound
 	return "<font size=4>The match has started!</font>"

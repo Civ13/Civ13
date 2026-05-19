@@ -24,7 +24,9 @@
 		else // If the file doesn't exist, log an error and fall back to the default
 			log_admin("Lobby image file not found: [map.lobby_icon]")
 			icon = 'icons/lobby/civ13.dmi' // Fallback to the default lobby image
-
+	if (map && map.ID == MAP_LIGHTS_OUT)
+		icon = 'icons/lobby/lights_out.dmi'
+		icon_state = "lights_out"
 /obj/screen/lobby_image/proc/update_icon_proc()
 	spawn(100)
 		update_icon()

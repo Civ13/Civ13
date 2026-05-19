@@ -20,11 +20,11 @@
 	faction1 = CIVILIAN
 	availablefactions = list("Civilization A Citizen", "Civilization B Citizen")
 	mission_start_message = "<big>Two industrial towns govern this land. The grace wall will end in <b>90 minutes</b>. This is an RP focused map; people of both nations start friendly by default.</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
-	ambience = list('sound/ambience/jungle1.ogg')
+	ambience = list("sound/ambience/jungle1.ogg")
 	nomads = FALSE
 	availablefactions_run = FALSE
 	songs = list(
-		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
+		"Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg",)
 	default_research = 105
 	gamemode = "Nations RP"
 	ordinal_age = 4
@@ -103,11 +103,11 @@
 /obj/map_metadata/nationsrp/coldwar
 	ID = MAP_NATIONSRP_COLDWAR
 	title = "Nations RP Cold War"
-	lobby_icon = 'icons/lobby/coldwar.png'
+	lobby_icon = "icons/lobby/coldwar.png"
 	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>24 hours</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
 	age = "Cold War Era"
 	songs = list(
-		"Tears For Fears - Everybody Wants To Rule The World:1" = 'sound/music/everybodywantstoruletheworld.ogg',)
+		"Tears For Fears - Everybody Wants To Rule The World:1" = "sound/music/everybodywantstoruletheworld.ogg",)
 	default_research = 175
 	ordinal_age = 7
 	age1_done = TRUE
@@ -133,11 +133,11 @@
 /obj/map_metadata/nationsrp/coldwar_cmp
 	ID = MAP_NATIONSRP_COLDWAR_CMP
 	title = "Nations RP Cold War"
-	lobby_icon = 'icons/lobby/campaign.png'
+	lobby_icon = "icons/lobby/campaign.png"
 	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>2 days</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
 	age = "the Cold War"
 	songs = list(
-		"Emma:1" = 'sound/music/emma.ogg',)
+		"Emma:1" = "sound/music/emma.ogg",)
 	is_singlefaction = FALSE
 	availablefactions = list("Redmenian Civilian", "Blugoslavian Civilian")
 	faction_organization = list(
@@ -174,7 +174,7 @@
 	civb_research = list(default_research,default_research,default_research,null)
 
 /obj/map_metadata/nationsrp/coldwar_cmp/cross_message(faction)
-	var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+	var/warning_sound = sound("sound/effects/siren_once.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 	for (var/mob/M in player_list)
 		M.client << warning_sound
 

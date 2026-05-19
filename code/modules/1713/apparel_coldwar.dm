@@ -2031,7 +2031,7 @@ obj/item/clothing/head/chinaguardcap
 
 /obj/item/clothing/under/afghanka
 	name = "afghanka uniform"
-	desc = "A standard soviet uniform developped and issued in the early 80's, still in use after the collapse of the Soviet Union."
+	desc = "A standard soviet uniform developed and issued in the early 80's, still in use after the collapse of the Soviet Union."
 	icon_state = "afghanka_open"
 	item_state = "afghanka_open"
 	worn_state = "afghanka_open"

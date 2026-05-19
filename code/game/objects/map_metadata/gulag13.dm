@@ -4,7 +4,7 @@
 	title = "GULAG 13"
 	description = "A prison simulation where the NKVD must keep the prisoners contained and working, while the prisoners must survive, gain power, and attempt escape."
 	no_winner ="The round is proceeding normally."
-	lobby_icon = 'icons/lobby/gulag.png'
+	lobby_icon = "icons/lobby/gulag.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra, /area/caribbean/no_mans_land/invisible_wall/one)
 	respawn_delay = 3600
 	has_hunger = TRUE
@@ -26,7 +26,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Red Army Choir - Slavery and Suffering:1" = 'sound/music/slavery_and_suffering.ogg')
+		"Red Army Choir - Slavery and Suffering:1" = "sound/music/slavery_and_suffering.ogg")
 	gamemode = "Prison Simulation"
 	var/list/points = list(
 		list("Guards",0,0),
@@ -248,7 +248,7 @@
 		var/obj/map_metadata/gulag13/G13 = map
 		if (!G13.siren)
 			to_chat(world, "<font size=3 color='red'><center><b>ALARM</b><br>The siren has been activated, all prisoners must stop what they are doing and lay on the floor until the alarm is lifted!</center></font>")
-			var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			var/warning_sound = sound("sound/misc/siren.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 			for (var/mob/M in player_list)
 				M.client << warning_sound
 			G13.siren = TRUE
@@ -260,7 +260,7 @@
 		var/obj/map_metadata/abashiri/ABA = map
 		if (!ABA.siren)
 			to_chat(world, "<font size=3 color='red'><center><b>ALARM</b><br>The siren has been activated, all prisoners must stop what they are doing and lay on the floor until the alarm is lifted!</center></font>")
-			var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			var/warning_sound = sound("sound/misc/siren.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 			for (var/mob/M in player_list)
 				M.client << warning_sound
 			ABA.siren = TRUE
@@ -272,7 +272,7 @@
 		var/obj/map_metadata/bagne13/BG = map
 		if (!BG.siren)
 			to_chat(world, "<font size=3 color='red'><center><b>ALARM</b><br>The siren has been activated, all prisoners must stop what they are doing and lay on the floor until the alarm is lifted!</center></font>")
-			var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			var/warning_sound = sound("sound/misc/siren.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 			for (var/mob/M in player_list)
 				M.client << warning_sound
 			BG.siren = TRUE
@@ -308,7 +308,7 @@
 
 /obj/map_metadata/gulag13/proc/alarm_proc()
 	if (siren)
-		var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		var/warning_sound = sound("sound/misc/siren.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 		for (var/mob/M in player_list)
 			M.client << warning_sound
 		to_chat(world, "<font size=3 color='red'><center><b>ALARM</b><br>The alarm is still on!</center></font>")

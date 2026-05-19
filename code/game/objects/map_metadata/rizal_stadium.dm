@@ -2,7 +2,7 @@
 	ID = MAP_RIZAL_STADIUM
 	title = "Rizal Stadium"
 	description = "The Japanese Army will win if they hold out for 20 minutes. The Americans will win if they manage to capture Japanese Command within Rizal Stadium!"
-	lobby_icon = 'icons/lobby/pacific.png'
+	lobby_icon = "icons/lobby/pacific.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 
@@ -24,7 +24,7 @@
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Tokkutai Bushi (Koji Tsuruta):1" = 'sound/music/tokkutai_bushi.ogg',)
+		"Tokkutai Bushi (Koji Tsuruta):1" = "sound/music/tokkutai_bushi.ogg",)
 	gamemode = "Siege"
 	grace_wall_timer = 3600
 /obj/map_metadata/rizal_stadium/roundend_condition_def2name(define)

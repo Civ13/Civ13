@@ -3,7 +3,7 @@
 	title = "Soviet-Afghan War"
 	description = "The Soviets, along with the DRA, have to remain in control of the Kandahar province, arrest or eliminate the Mujahideen leaders that are turning the local populace against the government. The Mujahideen must get rid of the communist oppressors in the region by capturing and holding their outposts or by killing/capturing their officers."
 	no_winner ="The region of Kandahar is still contested."
-	lobby_icon = 'icons/lobby/sovafghan.png'
+	lobby_icon = "icons/lobby/sovafghan.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600
 	has_hunger = TRUE
@@ -26,7 +26,7 @@
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Swallowing Dust:1" = 'sound/music/swallowingdust.ogg')
+		"Swallowing Dust:1" = "sound/music/swallowingdust.ogg")
 	gamemode = "Afghan"
 	artillery_count = 3
 	var/sov_points = 0

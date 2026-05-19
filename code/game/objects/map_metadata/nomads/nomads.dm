@@ -26,8 +26,8 @@
 	battle_name = "conflict of the nomads"
 	mission_start_message = "<big>After ages as hunter-gatherers, people are starting to form groups and settle down. Will they be able to work together?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>"
 
-	ambience = list('sound/ambience/jungle1.ogg')
-	songs = list("Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg')
+	ambience = list("sound/ambience/jungle1.ogg")
+	songs = list("Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg")
 
 /obj/map_metadata/nomads/New()
 	..()

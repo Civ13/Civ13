@@ -3,7 +3,7 @@
 	ID = MAP_WHITERUN
 	title = "Whiterun"
 	description = "The Stormcloaks troops are besieging the Imperial City of Whiterun! The Imperials will win if they manage to hold the city for 30 minutes."
-	lobby_icon = 'icons/lobby/tes13.png'
+	lobby_icon = "icons/lobby/tes13.png"
 	no_winner ="The fighting is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 300
@@ -24,9 +24,9 @@
 	mission_start_message = "<font size=4>The <b>Stormcloaks</b> troops are besieging the <b>Imperial</b> City of <b>Whiterun</b>! The Imperials will win if they manage to hold the city for 30 minutes. <br> The siege will start in <b>6 minutes</b>.</font>"
 	faction1 = ROMAN
 	faction2 = CIVILIAN
-	ambience = list('sound/ambience/desert.ogg')
+	ambience = list("sound/ambience/desert.ogg")
 	songs = list(
-		"One They Fear:1" = 'sound/music/tesonetheyfear.ogg',)
+		"One They Fear:1" = "sound/music/tesonetheyfear.ogg",)
 	gamemode = "Siege"
 	grace_wall_timer = 3600
 

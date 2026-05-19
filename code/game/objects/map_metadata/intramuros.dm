@@ -2,7 +2,7 @@
 	ID = MAP_INTRAMUROS
 	title = "Intramuros"
 	description = "The Japanese Army will win if they hold out for 35 minutes. The Americans will win if they manage to capture Japanese Command within Fort Santiago!"
-	lobby_icon = 'icons/lobby/pacific.png'
+	lobby_icon = "icons/lobby/pacific.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_hardcore = TRUE
@@ -25,8 +25,8 @@
 	grace_wall_timer = 4800
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Tokkutai Bushi (Koji Tsuruta):1" = 'sound/music/tokkutai_bushi.ogg',
-		"I Hate These Classes:2" = 'sound/music/i_hate_these_classes.ogg',)
+		"Tokkutai Bushi (Koji Tsuruta):1" = "sound/music/tokkutai_bushi.ogg",
+		"I Hate These Classes:2" = "sound/music/i_hate_these_classes.ogg",)
 	gamemode = "Siege"
 /obj/map_metadata/intramuros/roundend_condition_def2name(define)
 	..()

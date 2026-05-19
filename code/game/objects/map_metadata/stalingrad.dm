@@ -3,7 +3,7 @@
 	ID = MAP_STALINGRAD
 	title = "Stalingrad"
 	description = "Points are added to each team for each minute they control the Train Station, Telephone Central and City Hall.First team to reach 40 points wins!"
-	lobby_icon = 'icons/lobby/stalingrad.png'
+	lobby_icon = "icons/lobby/stalingrad.png"
 	no_winner = "The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/taiga/one,/area/caribbean/no_mans_land/invisible_wall/taiga/two)
 	respawn_delay = 600 // 1 minute
@@ -25,7 +25,7 @@
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
+		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
 	gamemode = "Area Control"
 	var/sov_points = 0
 	var/ger_points = 0

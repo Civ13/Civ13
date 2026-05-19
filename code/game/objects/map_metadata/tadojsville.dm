@@ -2,7 +2,7 @@
 	ID = MAP_TADOJSVILLE
 	title = "Tadojsville Siege"
 	description = "The Katnegwa Mercenaries have been hired together to capture the local clinic!"
-	lobby_icon = 'icons/lobby/tadojsville.png'
+	lobby_icon = "icons/lobby/tadojsville.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one)
 	respawn_delay = 300
 	no_winner ="No warband has captured the clinic yet."
@@ -23,12 +23,12 @@
 	mission_start_message = "<font size=4><b>The Katnegwa Mercenaries</b> have been hired together to capture the local clinic! It will take <b>5 minutes</b> for the Warbands to capture the clinic but the <b>United Nations Peacekeepers</b> garrisoned there will be reinforced and drive off the attackers if they manage to hold out for 35 minutes. <br> The Warbands will start to cross the river in <b>6 minutes!</b></font>"
 	faction1 = CIVILIAN
 	faction2 = INDIANS
-	ambience = list('sound/ambience/jungle1.ogg')
+	ambience = list("sound/ambience/jungle1.ogg")
 	gamemode = "Siege"
 	grace_wall_timer = 3600
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"The Hygrades - Rough Rider:1" = 'sound/music/roughrider.ogg',)
+		"The Hygrades - Rough Rider:1" = "sound/music/roughrider.ogg",)
 
 /obj/map_metadata/tadojsville/roundend_condition_def2name(define)
 	..()

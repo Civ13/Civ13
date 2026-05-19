@@ -2,7 +2,7 @@
 	ID = MAP_GROZNY
 	title = "Retreat From Grozny"
 	description = "The Chechen Militia will win if they hold out the retreat for 35 minutes."
-	lobby_icon = 'icons/lobby/grozny.png'
+	lobby_icon = "icons/lobby/grozny.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_hardcore = TRUE
@@ -24,12 +24,12 @@
 	faction1 = CHECHEN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Just don't tell mom I'm in Chechnya:1" = 'sound/music/just_dont_tell_mom_im_in_chechnya.ogg',)
+		"Just don't tell mom I'm in Chechnya:1" = "sound/music/just_dont_tell_mom_im_in_chechnya.ogg",)
 	artillery_count = 3 //they really need it to get anywhere, but now it's some OP shit
 	artillery_timer = 2400 //and they need it just slightly quicker. It's artillery supposedly, not CAS.
 	valid_artillery = list("Explosive","Napalm","Creeping Barrage")
 	grace_wall_timer = 4800
-	ambience = list('sound/ambience/battle1.ogg')
+	ambience = list("sound/ambience/battle1.ogg")
 /obj/map_metadata/grozny/New()
 	..()
 	spawn(20)

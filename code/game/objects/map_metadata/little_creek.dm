@@ -3,7 +3,7 @@
 	ID = MAP_LITTLE_CREEK
 	title = "Big Trouble in Little Creek (RP)"
 	description = "At the small frontier town of Little Creek, the Sheriff recieves a warning: Two groups of outlaws are about to rob the town's bank!"
-	lobby_icon = 'icons/lobby/wildwest.png'
+	lobby_icon = "icons/lobby/wildwest.png"
 	no_winner ="The fighting for the town is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 3600
@@ -21,11 +21,11 @@
 	battle_name = "Little Creek"
 	mission_start_message = "<font size=3>At the small frontier town of <b>Little Creek</b>, the Sheriff recieves a warning: Two groups of outlaws are about to rob the town's bank! He must organize the bank's defense and prevent them...</font><br><br><big><i>The grace wall will go down in <b>4 minutes</b>. The Outlaws have <b>30 minutes</b> to collect <b>750 dollars</b>!</big></i>"
 	faction1 = CIVILIAN
-	ambience = list('sound/ambience/desert.ogg')
+	ambience = list("sound/ambience/desert.ogg")
 	gamemode = "Bank Robbery (RP)"
 	is_RP = TRUE
 	songs = list(
-		"The Good, the Bad, and the Ugly Theme:1" = 'sound/music/good_bad_ugly.ogg',)
+		"The Good, the Bad, and the Ugly Theme:1" = "sound/music/good_bad_ugly.ogg",)
 	is_singlefaction = TRUE
 
 /obj/map_metadata/little_creek/faction1_can_cross_blocks()

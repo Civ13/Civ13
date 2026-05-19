@@ -3,7 +3,7 @@
 	title = "Battle for Hill 3234"
 	description = "The Soviets will win if they hold out the hill for 40 minutes.The Mujahideen will win if they manage to capture the radio station on the top of the hill!"
 	no_winner = "Hill 3234 is still under Soviet control."
-	lobby_icon = 'icons/lobby/sovafghan.png'
+	lobby_icon = "icons/lobby/sovafghan.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600 // 1 minute.
 	victory_time = 24000 // 40 minutes to hold out for soviets.
@@ -25,7 +25,7 @@
 	faction2 = ARAB
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Kino - Gruppa Krovi (Blood Group):1" = 'sound/music/gruppakrovi.ogg',)
+		"Kino - Gruppa Krovi (Blood Group):1" = "sound/music/gruppakrovi.ogg",)
 	gamemode = "Siege"
 	artillery_count = 3
 	grace_wall_timer = 4800 // 8 minutes.

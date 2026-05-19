@@ -2,7 +2,7 @@
 	ID = MAP_BARBAROSSA
 	title = "Start of operation Barbarossa"
 	description = "The Soviets will win if they hold out for 40 minutes. The Germans will win if they manage to reach the NKVD HQ in the middle eastern part of the map."
-	lobby_icon = 'icons/lobby/barbarossa.png'
+	lobby_icon = "icons/lobby/barbarossa.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_winner ="The Border stays under Soviet control, stalling the German advance."
@@ -25,7 +25,7 @@
 	grace_wall_timer = 3000
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Red Army Choir - Cossacks Song:1" = 'sound/music/cossacksong.ogg',)
+		"Red Army Choir - Cossacks Song:1" = "sound/music/cossacksong.ogg",)
 	gamemode = "Siege"
 
 /obj/map_metadata/barbarossa/roundend_condition_def2name(define)

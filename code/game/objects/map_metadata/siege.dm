@@ -3,7 +3,7 @@
 	ID = MAP_SIEGE
 	title = "Siege"
 	description = "The Roman troops are sieging a Greek fortress near Syracuse! The Greeks will win if they manage to hold the fortress for 35 minutes."
-	lobby_icon = 'icons/lobby/ancient.png'
+	lobby_icon = "icons/lobby/ancient.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
 	no_hardcore = TRUE
@@ -22,9 +22,9 @@
 	mission_start_message = "<font size=4>The <b>Roman</b> troops are sieging a <b>Greek</b> fortress near Syracuse! The Greeks will win if they manage to hold the fortress for 35 minutes. <br> The siege will start in <b>6 minutes</b>.</font>"
 	faction1 = GREEK
 	faction2 = ROMAN
-	ambience = list('sound/ambience/jungle1.ogg')
+	ambience = list("sound/ambience/jungle1.ogg")
 	songs = list(
-		"Divinitus:1" = 'sound/music/divinitus.ogg',)
+		"Divinitus:1" = "sound/music/divinitus.ogg",)
 	gamemode = "Siege"
 /obj/map_metadata/siege/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)

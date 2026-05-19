@@ -2,7 +2,7 @@
 	ID = MAP_BERLIN
 	title = "Berlin"
 	description = "The Germans will win if they hold out for 40 minutes. The Soviets will win if they manage to reach and hold past the Branderburg Gate for 5 minutes."
-	lobby_icon = 'icons/lobby/ww2.png'
+	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
 	no_winner ="The Branderburg Gate is under German control."
@@ -24,7 +24,7 @@
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
+		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
 	gamemode = "Siege"
 
 

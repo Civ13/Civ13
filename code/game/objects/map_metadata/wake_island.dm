@@ -2,7 +2,7 @@
 	ID = MAP_WAKE_ISLAND
 	title = "Wake Island"
 	description = "Points are added to each team for each minute they control the Coastal Artillery Batteries, and the Village.First team to reach 40 points wins!"
-	lobby_icon = 'icons/lobby/pacific.png'
+	lobby_icon = "icons/lobby/pacific.png"
 	no_winner ="The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
@@ -25,7 +25,7 @@
 	faction2 = JAPANESE
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Tokkutai Bushi (Koji Tsuruta):1" = 'sound/music/tokkutai_bushi.ogg',)
+		"Tokkutai Bushi (Koji Tsuruta):1" = "sound/music/tokkutai_bushi.ogg",)
 	gamemode = "Area Control"
 	var/jap_points = 0
 	var/usa_points = 0

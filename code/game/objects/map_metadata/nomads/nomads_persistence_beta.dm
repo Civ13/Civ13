@@ -1,7 +1,7 @@
 /obj/map_metadata/nomads/persistence_beta
 	ID = MAP_NOMADS_PERSISTENCE_BETA
 	title = "Nations RP (Persistence BETA)"
-	lobby_icon = 'icons/lobby/campaign.png'
+	lobby_icon = "icons/lobby/campaign.png"
 	
 	respawn_delay = 3000 // 5 minutes
 
@@ -27,7 +27,7 @@
 	nomads = FALSE
 	availablefactions_run = FALSE
 	songs = list(
-		"Emma:1" = 'sound/music/emma.ogg',)
+		"Emma:1" = "sound/music/emma.ogg",)
 	default_research = 210
 	gamemode = "Nations RP (Persistence)"
 	ordinal_age = 8
@@ -57,7 +57,7 @@
 		config.no_respawn_delays = FALSE
 
 /obj/map_metadata/nomads/persistence_beta/cross_message(faction)
-	var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+	var/warning_sound = sound("sound/effects/siren_once.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 	for (var/mob/M in player_list)
 		M.client << warning_sound
 
@@ -86,12 +86,12 @@
 /obj/map_metadata/nomads/persistence_beta/proc/captured_enemy_capital(var/faction)
 	switch (faction)
 		if ("Redmenia")
-			var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			var/warning_sound = sound("sound/effects/siren_once.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 			for (var/mob/M in player_list)
 				M.client << warning_sound
 			to_chat(world, "<font size = 5><b>REDMENIA HAS CAPTURED THE BLUGOSLAVIAN CAPITAL.</b></font>")
 		if ("Blugoslavia")
-			var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			var/warning_sound = sound("sound/effects/siren_once.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 			for (var/mob/M in player_list)
 				M.client << warning_sound
 			to_chat(world, "<font size = 5><b>BLUGOSLAVIA HAS CAPTURED THE REDMENIAN CAPITAL.</b></font>")
@@ -100,12 +100,12 @@
 /obj/map_metadata/nomads/persistence_beta/proc/lost_control_enemy_capital(var/faction)
 	switch (faction)
 		if ("Redmenia")
-			var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			var/warning_sound = sound("sound/effects/siren_once.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 			for (var/mob/M in player_list)
 				M.client << warning_sound
 			to_chat(world, "<font size = 5><b>REDMENIA HAS LOST CONTROL OVER THE BLUGOSLAVIAN CAPITAL.</b></font>")
 		if ("Blugoslavia")
-			var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			var/warning_sound = sound("sound/effects/siren_once.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 			for (var/mob/M in player_list)
 				M.client << warning_sound
 			to_chat(world, "<font size = 5><b>BLUGOSLAVIA HAS LOST CONTROL OVER THE REDMENIAN CAPITAL.</b></font>")

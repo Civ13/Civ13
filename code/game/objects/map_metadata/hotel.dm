@@ -2,7 +2,7 @@
 	ID = MAP_HOTEL
 	title = "Hotel"
 	description = "The Wehrmacht and the Red Army are battling for the control of the Grand Hotel! Capture the Upstairs Lounge in order to control the Hotel!"
-	lobby_icon = 'icons/lobby/ww2.png'
+	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
 	can_spawn_on_base_capture = TRUE
@@ -24,8 +24,8 @@
 	ordinal_age = 6
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg')
-	ambience = list('sound/ambience/battle1.ogg')
+		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg")
+	ambience = list("sound/ambience/battle1.ogg")
 	gamemode = "King of the Hill"
 	grace_wall_timer = 1800
 
