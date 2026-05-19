@@ -461,3 +461,7 @@
 		keep_sound_on()
 	//no manual turning off
 	H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+
+/obj/structure/oven/big/examine(mob/user)
+	..()
+	to_chat(user, "It has <b>[fuel] minutes</b> of fuel remaining.")

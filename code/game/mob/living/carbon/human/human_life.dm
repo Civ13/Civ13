@@ -779,7 +779,7 @@
 			temp_adj = -0.1
 		if (loc_temp > bodytemperature)
 			temp_adj = 0.1
-	if (map && map.civilizations)
+	if ((map && map.civilizations) || map.ID == MAP_ANTARCTICA)
 		bodytemperature += temp_adj
 	// +/- 50 degrees from 310.15K is the 'safe' zone, where no damage is dealt.
 

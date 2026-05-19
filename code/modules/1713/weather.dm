@@ -474,7 +474,12 @@
 			loc_temp = (min(10,loc_temp+40))
 		if (mob_area.weather == WEATHER_EXTREME && season == "WINTER" && (mob_area.climate == "temperate" || mob_area.climate == "taiga" || mob_area.climate == "tundra"))
 			loc_temp = -10
-
+		if (map && map.ID == MAP_ANTARCTICA)
+			for (var/obj/structure/oven/big/FN in range(5, A))
+				if (FN.on)
+					if (loc_temp < 19)
+						loc_temp = 19
+						break
 	for (var/obj/structure/brazier/BR in range(3, A))
 		if (BR.on)
 			if (loc_temp < 22)
@@ -495,4 +500,5 @@
 			if (loc_temp < 22)
 				loc_temp = 22
 				break
+
 	return loc_temp
