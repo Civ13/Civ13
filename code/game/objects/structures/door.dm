@@ -33,6 +33,7 @@
 	var/lockstate = "" //Icon_state
 	var/keycode
 
+	screen_loc = E3D_TYPE_DOOR
 	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;keycode;haslock;custom;custom_code;locked"
 
 /obj/structure/simple_door/fire_act(temperature)

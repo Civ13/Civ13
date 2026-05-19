@@ -4,6 +4,7 @@
 #else
 #define LIBCALL call_ext
 #endif
+#define WEBCLIENT_PATCHES (world.system_type == MS_WINDOWS ? "webclient_patches.dll" : "libwebclient_patches.so")
 
 // Taken from FarWeb
 
@@ -21,6 +22,8 @@
 	. = ..()
 
 /world/Del()
+	if(fexists(WEBCLIENT_PATCHES))
+		call(WEBCLIENT_PATCHES, "remove_webclient_patches")()
 	var/debug_server = world.GetConfig("env", "AUXTOOLS_DEBUG_DLL")
 	if (debug_server)
 		LIBCALL(debug_server, "auxtools_shutdown")()

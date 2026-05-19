@@ -36,7 +36,7 @@
 	not_disassemblable = FALSE
 	mouse_drop_zone = TRUE
 	var/fixedsprite
-
+	screen_loc = E3D_TYPE_TABLE
 /obj/structure/table/New()
 	..()
 	if(!fixedsprite)

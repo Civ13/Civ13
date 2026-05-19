@@ -9,6 +9,7 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;notices"
+	screen_loc = E3D_TYPE_WALLMOUNT
 	
 /obj/structure/noticeboard/initialize()
 	for (var/obj/item/I in loc)

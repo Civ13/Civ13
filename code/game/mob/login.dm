@@ -41,7 +41,8 @@
 	player_list |= src
 	update_Login_details()
 	world.update_status()
-
+	
+	e3d_update_client()
 	update_client_colour(0)
 	if (src && client)
 		client.images = null				//remove the images such as AIs being unable to see runes

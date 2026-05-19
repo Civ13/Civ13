@@ -37,14 +37,14 @@
 	else
 		for (var/v in TRUE to pref.preview_icons.len)
 			if (isicon(pref.preview_icons_front[v]))
-				user << browse_rsc(pref.preview_icons_front[v], "previewicon_[v]_front.png")
+				browse_rsc_web(user, pref.preview_icons_front[v], "previewicon_[v]_front.png")
 			#ifndef OPENDREAM
 				if (isicon(pref.preview_icons_back[v]))
-					user << browse_rsc(pref.preview_icons_back[v], "previewicon_[v]_back.png")
+					browse_rsc_web(user, pref.preview_icons_back[v], "previewicon_[v]_back.png")
 				if (isicon(pref.preview_icons_east[v]))
-					user << browse_rsc(pref.preview_icons_east[v], "previewicon_[v]_east.png")
+					browse_rsc_web(user, pref.preview_icons_east[v], "previewicon_[v]_east.png")
 				if (isicon(pref.preview_icons_west[v]))
-					user << browse_rsc(pref.preview_icons_west[v], "previewicon_[v]_west.png")
+					browse_rsc_web(user, pref.preview_icons_west[v], "previewicon_[v]_west.png")
 			#endif
 		. += "<b>Preview</b><br>"
 

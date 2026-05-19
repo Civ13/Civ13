@@ -155,6 +155,7 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	crushable = FALSE
+	screen_loc = E3D_TYPE_DOOR
 
 /obj/structure/gate/open
 	name = "gate"

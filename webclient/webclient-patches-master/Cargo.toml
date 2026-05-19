@@ -1,0 +1,15 @@
+[package]
+name = "webclient-patches"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+region = "3.0.0"
+skidscan = "2.0.1"
+
+[dependencies.detour]
+version = "0.8.1"
+default-features = false

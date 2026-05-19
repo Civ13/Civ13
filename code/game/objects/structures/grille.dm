@@ -14,6 +14,7 @@
 	flammable = TRUE
 	not_movable = TRUE
 	not_disassemblable = FALSE
+	screen_loc = E3D_TYPE_FLOOR
 /obj/structure/grille/ex_act(severity)
 	qdel(src)
 

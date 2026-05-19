@@ -102,7 +102,6 @@
 /obj/item/projectile/New()
 	..()
 	damage *=global_damage_modifier
-
 /obj/item/projectile/proc/checktype()
 	if (btype == "AP")
 		damage *= 0.70

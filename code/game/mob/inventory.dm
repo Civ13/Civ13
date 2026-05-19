@@ -352,7 +352,7 @@ var/list/slot_equipment_priority = list( \
 		client.screen -= O
 	O.layer = initial(O.layer)
 	O.plane = GAME_PLANE
-	O.screen_loc = null
+	CLEAR_SCREEN_LOC(O)
 	if (istype(O, /obj/item))
 		var/obj/item/I = O
 		if (I.scoped_invisible)

@@ -94,3 +94,14 @@
 
 /datum/world_topic/players/Run(list/input)
     . = "no."//clients.len
+
+/datum/world_topic/webclient_login
+	keyword = "webclient_login_token"
+
+/datum/world_topic/webclient_login/Run(list/input)
+	var/token = input["webclient_login_token"]
+	var/info = input["webclient_login_info"]
+	if(fexists(WEBCLIENT_PATCHES))
+		var/result = call(WEBCLIENT_PATCHES, "set_webclient_auth")(token, info)
+		if(result)
+			log_world("webclient_patches error: [result]")

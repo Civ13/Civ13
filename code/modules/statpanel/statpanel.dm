@@ -63,11 +63,11 @@
 	return FALSE
 
 /client/proc/init_statpanel()
-	src << browse_rsc('interface/fonts/Alegreya-Regular.ttf', "Alegreya-Regular.ttf")
-	src << browse_rsc('interface/fonts/Alegreya-Bold.ttf', "Alegreya-Bold.ttf")
-	src << browse_rsc('interface/fonts/Alegreya-Italic.ttf', "Alegreya-Italic.ttf")
-	src << browse_rsc('interface/fonts/Alegreya-BoldItalic.ttf', "Alegreya-BoldItalic.ttf")
-	src << browse_rsc('interface/fonts/Alegreya-Black.ttf', "Alegreya-Black.ttf")
+	browse_rsc_web(src, 'interface/fonts/Alegreya-Regular.ttf', "Alegreya-Regular.ttf")
+	browse_rsc_web(src, 'interface/fonts/Alegreya-Bold.ttf', "Alegreya-Bold.ttf")
+	browse_rsc_web(src, 'interface/fonts/Alegreya-Italic.ttf', "Alegreya-Italic.ttf")
+	browse_rsc_web(src, 'interface/fonts/Alegreya-BoldItalic.ttf', "Alegreya-BoldItalic.ttf")
+	browse_rsc_web(src, 'interface/fonts/Alegreya-Black.ttf', "Alegreya-Black.ttf")
 	src << browse('interface/info/info.html', "window=browser_info")
 
 /client/proc/add_stat(name, value = "")

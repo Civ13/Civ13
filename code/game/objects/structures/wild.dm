@@ -225,8 +225,8 @@ var/list/seed_list_jungle
 /obj/structure/wild/tree/New()
 	..()
 	if (!istype(src, /obj/structure/wild/tree/anchored))
-		pixel_x = rand(-24,-8)
-		pixel_y = rand(0,16)
+		pixel_w = rand(-24,-8)
+		pixel_z = rand(0,16)
 
 /obj/structure/wild/tree/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
@@ -249,7 +249,7 @@ var/list/seed_list_jungle
 	amount = 0
 	health = 50
 	maxhealth = 50
-	pixel_x = -16
+	pixel_w = -16
 
 /obj/structure/wild/tree/dead_tree
 	name = "dead tree"
@@ -262,7 +262,7 @@ var/list/seed_list_jungle
 	branches = 3
 	max_branches = 3
 	leaves = 0
-	pixel_x = -16
+	pixel_w = -16
 
 /obj/structure/wild/tree/dead_tree/destroyed/New()
 	..()
@@ -306,7 +306,7 @@ var/list/seed_list_jungle
 	max_leaves = 2
 	branches = 3
 	max_branches = 3
-	pixel_x = -16
+	pixel_w = -16
 	var/current_icon = 'icons/obj/flora/deadtrees.dmi'
 
 /obj/structure/wild/tree/live_tree/New()
@@ -797,12 +797,12 @@ var/list/seed_list_jungle
 	max_leaves = 3
 	branches = 3
 	max_branches = 3
-	pixel_x = -16
+	pixel_w = -16
 
 /obj/structure/wild/jungle/New()
 	..()
-	pixel_x = rand(-24,-8)
-	pixel_y = rand(0,16)
+	pixel_w = rand(-24,-8)
+	pixel_z = rand(0,16)
 
 /obj/structure/wild/jungle/fire_act(temperature)
 	if (prob(25 * (temperature/500)))

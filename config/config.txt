@@ -90,7 +90,7 @@ VOTE_PERIOD 600
 NO_DEAD_VOTE
 
 ## Uncomment this to stop people connecting to your server without a registered ckey. (i.e. guest-* are all blocked from connecting)
-GUEST_BAN
+#GUEST_BAN
 
 ## Comment to disable checking for the cid randomizer dll. (disabled if database isn't enabled or connected)
 CHECK_RANDOMIZER
@@ -167,7 +167,7 @@ TICKLAG 0.4
 #AUTOMUTE_ON
 
 ## Communication key for receiving data through world/Topic(), you don't want to give this out
-#COMMS_KEY default_pwd
+COMMS_KEY default_pwd
 
 ## World address and port for server recieving cross server messages
 #CROSS_SERVER_ADDRESS byond:\\address:port

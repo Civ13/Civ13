@@ -389,6 +389,8 @@ Turf and target are seperate in case you want to teleport some distance from a t
 
 	for (, i <= len, ++i)
 		ch = text2ascii(key, i)
+		if(ch == 87 && i == 7) // W
+			continue
 		if (ch < 48 || ch > 57)
 			return FALSE
 	return TRUE

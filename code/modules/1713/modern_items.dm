@@ -20,6 +20,8 @@
 	var/lamp_inside = TRUE
 	var/lamp_broken = FALSE
 	var/ltype = "lbulb"
+	screen_loc = E3D_TYPE_LIGHTFIXTURE
+	
 /obj/structure/lamp/New()
 	..()
 	do_light()

@@ -5,7 +5,7 @@
 	density = FALSE
 	layer = 3.5
 	w_class = ITEM_SIZE_NORMAL
-
+	screen_loc = E3D_TYPE_WALLMOUNT_SIGN
 /obj/structure/sign/ex_act(severity)
 	switch(severity)
 		if (1.0)

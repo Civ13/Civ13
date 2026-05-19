@@ -1,3 +1,5 @@
+/obj/effect/decal
+	screen_loc = E3D_TYPE_FLOOR
 /obj/effect/decal/cleanable
 	var/list/random_icon_states = list()
 	var/decay_timer = 0

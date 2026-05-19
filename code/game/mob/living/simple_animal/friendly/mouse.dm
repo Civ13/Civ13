@@ -40,6 +40,7 @@
 	melee_damage_lower = 2
 	melee_damage_upper = 5
 
+	e3d_eye_height = 0.1
 /mob/living/simple_animal/mouse/New()
 	..()
 

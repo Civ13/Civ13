@@ -22,7 +22,7 @@ var/list/global/wall_cache = list()
 	var/list/wall_connections = list("0", "0", "0", "0")
 	var/ref_state = "generic"
 	var/tank_destroyable = TRUE
-
+	screen_loc = E3D_TYPE_SMOOTHWALL
 // Extracts ricochet angle's tan if ischance = 1.
 // In other case it just makes bullets and lazorz go where they're supposed to.
 /turf/wall/proc/bullet_ricochet(var/obj/item/projectile/Proj, var/ischance = 0)

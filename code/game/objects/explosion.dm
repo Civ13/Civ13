@@ -51,6 +51,7 @@
 
 /turf
 	var/explosion_resistance
+	var/screen_loc
 
 /turf/floor
 	explosion_resistance = TRUE

@@ -239,7 +239,7 @@ proc/isInSight(var/atom/A, var/atom/B)
 	O.maptext = maptext
 	O.maptext_height = maptext_height
 	O.maptext_width = maptext_width
-	O.screen_loc = screen_loc
+	SET_SCREEN_LOC(O, screen_loc)
 	return O
 
 /proc/Show2Group4Delay(obj/O, list/group, delay=0)

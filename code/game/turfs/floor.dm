@@ -2,7 +2,7 @@
 	name = "plating"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "plating"
-
+	screen_loc = E3D_TYPE_FLOOR
 	// Damage to flooring.
 	var/broken
 	var/burnt

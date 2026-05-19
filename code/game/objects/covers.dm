@@ -33,6 +33,7 @@
 	var/adjusts = FALSE //if it adjusts acording to neighbouring sprites
 
 	var/hardness = 50 //for projectile penetration
+	screen_loc = E3D_TYPE_FLOOR
 /*
 
 /obj/covers/attackby(obj/item/W as obj, mob/user as mob)
@@ -56,6 +57,10 @@
 			//Do nothing, you're not important.
 			..()*/
 
+/obj/covers/New()
+	if (wall)
+		screen_loc = E3D_TYPE_BASICWALL
+
 //for mapmaking purposes
 /obj/covers/invisible
 	wood = FALSE
@@ -63,6 +68,7 @@
 	flammable = FALSE
 	density = TRUE
 	invisibility = 101
+	screen_loc = E3D_TYPE_BASICWALL
 
 /obj/covers/proc/run_decay()
 	if (!src || !wall)

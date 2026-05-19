@@ -55,7 +55,8 @@ By design, d1 is the smallest direction and d2 is the highest
 	var/currentflow = 0 //corrent power used by all the nodes in the network (cant be > powerflow)
 	var/tilepos = "under"
 	var/tiledir = "horizontal"
-
+	screen_loc = E3D_TYPE_FLOOR
+	
 /obj/structure/cable/verb/hiding()
 	set category = null
 	set name = "Under/Over tiles"
