@@ -54,17 +54,16 @@
 /mob/living/simple_animal/hostile/wendigo/death()
 	visible_message("\The [src] collapses with an ear-splitting shriek, its form dissolving into frost and shadow.")
 	..()
-
-
 // --------------------------------
-// FAITHLESS
-// A fast but fragile eldritch hunter. Unnerving and quick.
+// LIGHTSEEKER
+// A fast but fragile eldritch hunter. Hunts light sources.
+// Only targets mobs carrying an active light, or anyone within 1 tile.
 // Icons: faithless / faithless_dead in monsters/monsters.dmi
 // --------------------------------
 
-/mob/living/simple_animal/hostile/faithless
-	name = "faithless one"
-	desc = "A wretched, eyeless thing that moves with nauseating speed. It hunts by sound and scent."
+/mob/living/simple_animal/hostile/lightseeker
+	name = "lightseeker"
+	desc = "A wretched, eyeless thing that moves with nauseating speed. It hunts light, so stay in the dark!"
 	icon = 'icons/mob/monsters/monsters.dmi'
 	icon_state = "faithless"
 	icon_living = "faithless"
@@ -73,9 +72,8 @@
 	speak = list("*skittering hiss*", "*wet clicking*", "*guttural screech*")
 	speak_emote = list("hisses", "shrieks", "clicks")
 	emote_hear = list("hisses", "clicks", "skitters")
-	emote_see = list("cocks its eyeless head", "twitches violently", "sniffs the air")
+	emote_see = list("cocks its head toward the light", "twitches violently", "sniffs the air")
 	speak_chance = TRUE
-	// Fast hunter, lightly built
 	move_to_delay = 2
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
@@ -83,7 +81,6 @@
 	response_disarm = "shoves away"
 	response_harm   = "strikes"
 	stop_automated_movement_when_pulled = FALSE
-	// Fast and aggressive but dies relatively easily
 	maxHealth = 55
 	health = 55
 	melee_damage_lower = 8
@@ -94,15 +91,66 @@
 	attacktext = "slashes"
 	attack_sound = 'sound/weapons/demon_attack1.ogg'
 	faction = "neutral"
+	behaviour = "hunt" // use standard hunt engine; we gate targets via FindTarget()
+	idle_vision_range = 9
 
-/mob/living/simple_animal/hostile/faithless/New()
+/mob/living/simple_animal/hostile/lightseeker/New()
 	..()
 	custom_emote(1, "slinks out of the darkness, twitching erratically.")
 
-/mob/living/simple_animal/hostile/faithless/death()
+/mob/living/simple_animal/hostile/lightseeker/death()
 	visible_message("\The [src] lets out one final, wet shriek before going still.")
 	..()
 
+// Returns TRUE if M is carrying an active (lit) light source.
+// Checks hands (base mob), and belt + ID slot (human-only).
+/mob/living/simple_animal/hostile/lightseeker/proc/is_carrying_light(var/mob/living/M)
+	// Hands — defined on base /mob, works for all mobs
+	for (var/obj/item/flashlight/FL in list(M.r_hand, M.l_hand))
+		if (FL && FL.on)
+			return TRUE
+	// Belt and ID slot — human-only vars
+	if (ishuman(M))
+		var/mob/living/human/H = M
+		for (var/obj/item/flashlight/FL in list(H.belt, H.wear_id))
+			if (FL && FL.on)
+				return TRUE
+	return FALSE
+
+// Override FindTarget() — the standard hunt AI calls this to pick a target.
+// We only allow mobs carrying an active light, or anyone already adjacent (1 tile).
+/mob/living/simple_animal/hostile/lightseeker/FindTarget()
+	stop_automated_movement = FALSE
+	var/mob/living/best = null
+	var/best_priority = 0 // 2 = light carrier (chase across room), 1 = adjacent (bumped into)
+
+	for (var/mob/living/L in view(idle_vision_range, src))
+		if (L == src || L.stat == DEAD)
+			continue
+		if (!ishuman(L) && (L.faction == faction || (L in friends)))
+			continue
+		var/priority = 0
+		if (is_carrying_light(L))
+			priority = 2
+		else if (get_dist(src, L) <= 1)
+			priority = 1
+		if (priority > best_priority)
+			best_priority = priority
+			best = L
+
+	if (best)
+		custom_emote(1, "snaps its head toward [best].")
+		stance = HOSTILE_STANCE_ATTACK
+	return best
+
+// Drop the current target if they extinguish their light and step away.
+/mob/living/simple_animal/hostile/lightseeker/Life()
+	..()
+	if (stat == DEAD || stat == UNCONSCIOUS)
+		return
+	if (target_mob && stance == HOSTILE_STANCE_ATTACK)
+		if (!is_carrying_light(target_mob) && get_dist(src, target_mob) > 1)
+			LoseTarget()
 
 // --------------------------------
 // ALIEN XENOMORPH
