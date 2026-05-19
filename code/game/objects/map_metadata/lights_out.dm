@@ -3,7 +3,7 @@
 	title = "Lights Out"
 	description = "Survive a hostile and pitch black jungle armed only with a pistol, flashlight and your courage."
 
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle, /area/caribbean/no_mans_land/invisible_wall/inside, /area/caribbean/no_mans_land/invisible_wall/inside/one, /area/caribbean/no_mans_land/invisible_wall/inside/two)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle)
 	respawn_delay = 300
 	no_winner ="The sun is still out."
 	faction_organization = list(CIVILIAN)
@@ -30,15 +30,8 @@
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
-	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside/one))
-			if (H.original_job.is_yama == TRUE && !H.original_job.is_ichi == TRUE)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside/two))
-			if (H.original_job.is_ichi == TRUE && !H.original_job.is_yama == TRUE)
-				return TRUE
-		else
-			return !faction1_can_cross_blocks()
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall/jungle))
+		return !faction1_can_cross_blocks()
 	return FALSE
 
 
