@@ -421,14 +421,16 @@
 	icon = 'icons/obj/kitchen_big.dmi'
 	not_movable = TRUE
 	not_disassemblable = TRUE
+	looping = TRUE
 
 /obj/structure/oven/big/New()
 	..()
-	on = TRUE
 	fuel = 10 // 10 mins
-	update_icon()
+	on = TRUE
+	set_light(5)
 	keep_fire_on()
-	spawn(100)
+	keep_sound_on()
+	spawn(50)
 		if (map && map.ID == MAP_ANTARCTICA)
 			var/obj/map_metadata/antarctica/ANT = map
 			ANT.furnace = src

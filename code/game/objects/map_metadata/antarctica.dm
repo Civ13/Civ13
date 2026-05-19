@@ -8,6 +8,7 @@
 	no_winner ="The furnace is burning."
 	faction_organization = list(CIVILIAN)
 	times_of_day = list("Night")
+	valid_weather_types = list(WEATHER_WET, WEATHER_EXTREME)
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/colonies/british
 		)
@@ -23,6 +24,12 @@
 	is_RP = TRUE
 	var/no_loop = FALSE
 	var/obj/structure/oven/big/furnace = null
+
+/obj/map_metadata/antarctica/New()
+	..()
+	spawn(200)
+		change_weather(WEATHER_WET,TRUE)
+		update_lighting("Night",null,FALSE)
 
 /obj/map_metadata/antarctica/faction1_can_cross_blocks()
 	return TRUE
