@@ -2,7 +2,7 @@
 	ID = MAP_PAVLOV_HOUSE
 	title = "Pavlov House"
 	description = "The Soviets will win if they hold out for 30 minutes. The Germans will win if they manage to reach the Radio Station in the building."
-	lobby_icon = 'icons/lobby/stalingrad.png'
+	lobby_icon = "icons/lobby/stalingrad.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_winner ="The House stays under Soviet control, stalling the German advance."
@@ -25,7 +25,7 @@
 	grace_wall_timer = 3000
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
+		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
 	gamemode = "Siege"
 
 /obj/map_metadata/pavlov_house/roundend_condition_def2name(define)

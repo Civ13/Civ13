@@ -2,7 +2,7 @@
 	ID = MAP_SEKIGAHARA
 	title = "Sekigahara"
 	description = "The Eastern Army and Western Army are facing each other outside of Sekigahara! It will start in 2 minutes"
-	lobby_icon = 'icons/lobby/medieval.png'
+	lobby_icon = "icons/lobby/medieval.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 	no_winner ="The fighting for sekigahara is still going on."
@@ -19,7 +19,7 @@
 	mission_start_message = "<font size=4>The <b>Eastern Army</b> and <b>Western Army</b> are facing each other outside of Sekigahara! It will start in <b>2 minutes</b></font>"
 	faction1 = JAPANESE
 	songs = list(
-		"Tokkutai Bushi (Koji Tsuruta):1" = 'sound/music/tokkutai_bushi.ogg',)
+		"Tokkutai Bushi (Koji Tsuruta):1" = "sound/music/tokkutai_bushi.ogg",)
 	is_singlefaction = TRUE
 	grace_wall_timer = 1200
 	scores = list(

@@ -24,6 +24,8 @@ var/GRACE_PERIOD_LENGTH = 7
 						time_of_day = "Night"
 					if (MAP_DRUG_BUST)
 						time_of_day = "Night"
+					if (MAP_LIGHTS_OUT)
+						time_of_day = "Dark Night"
 			update_lighting(time_of_day, null, FALSE)
 			if (!map || !map.no_time_of_day_cycle)
 				spawn (0)
@@ -84,7 +86,7 @@ var/GRACE_PERIOD_LENGTH = 7
 //		to_chat(world, "<span class = 'notice'>Setting up seasons.</span>")
 	if (map.ID == MAP_NOMADS_DESERT || map.ID == MAP_NOMADS_JUNGLE || map.ID == MAP_ROAD_TO_DAK_TO || map.ID == MAP_ALLEYWAY || map.ID == MAP_BAGNE13)
 		season = "Wet Season"
-	else if (map.ID == MAP_NOMADS_ICE_AGE || map.ID == MAP_GULAG13)
+	else if (map.ID == MAP_NOMADS_ICE_AGE || map.ID == MAP_GULAG13 || map.ID == MAP_ANTARCTICA)
 		season = "WINTER"
 	else if (map.ID == MAP_HILL_203)
 		season = "FALL"

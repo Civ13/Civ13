@@ -2,14 +2,14 @@
 	ID = MAP_THE_ART_OF_THE_DEAL
 	title = "The Art of the Deal"
 	description = "4 corporations are fighting for control of the disks.Please read the manual: https://civ13.github.io/civ13-wiki/gamemodes/The_Art_of_the_Deal"
-	lobby_icon = 'icons/lobby/taotd.png'
+	lobby_icon = "icons/lobby/taotd.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 3000
 	is_singlefaction = TRUE
 	has_hunger = TRUE
 	no_winner = "The fighting is still going."
 	songs = list(
-		"Woke Up This Morning:1" = 'sound/music/woke_up_this_morning.ogg',)
+		"Woke Up This Morning:1" = "sound/music/woke_up_this_morning.ogg",)
 	faction_organization = list(
 		CIVILIAN)
 

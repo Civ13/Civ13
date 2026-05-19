@@ -54,9 +54,9 @@ var/civmax_research = list(230,230,230)
 	var/list/roundend_condition_sides = list(
 		list(PIRATES) = /area/caribbean/pirates,
 		list(BRITISH) = /area/caribbean/british)
-	var/list/ambience = list('sound/ambience/ship1.ogg')
+	var/list/ambience = list("sound/ambience/ship1.ogg")
 	var/list/songs = list(
-		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
+		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
 	var/mission_start_message = "Round will start soon!"
 	var/is_RP = FALSE
 	var/mosinonly = FALSE
@@ -475,7 +475,7 @@ var/civmax_research = list(230,230,230)
 		if (faction2_can_cross_blocks() && cross_message(faction2) != "")
 			to_chat(world, cross_message(faction2))
 			if (battleroyale)
-				var/warning_sound = sound('sound/effects/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+				var/warning_sound = sound("sound/effects/siren.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 				for (var/mob/M in player_list)
 					M.client << warning_sound
 

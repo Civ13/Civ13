@@ -2,7 +2,7 @@
 	ID = MAP_CLASH
 	title = "Clash"
 	description = "The Bear clan is sieging the Raven clan's settlement hidden away in the snowy fjords! The Bear clan will win if they manage to capture the Raven King's Cabin."
-	lobby_icon = 'icons/lobby/clash.png'
+	lobby_icon = "icons/lobby/clash.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	victory_time = 21600
 	no_winner = "The settlement is still held by the Raven Clan."
@@ -26,7 +26,7 @@
 	faction2 = NORWEGIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Danheim - Ivar's Revenge:1" = 'sound/music/ivars_revenge.ogg',)
+		"Danheim - Ivar's Revenge:1" = "sound/music/ivars_revenge.ogg",)
 	gamemode = "Siege"
 
 /obj/map_metadata/clash/faction1_can_cross_blocks()

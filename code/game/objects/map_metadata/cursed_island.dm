@@ -3,7 +3,7 @@
 	ID = MAP_CURSED_ISLAND
 	title = "Cursed Island"
 	description = "After a storm your battered ship had to beach at this island for repairs."
-	lobby_icon = 'icons/lobby/cursed.png'
+	lobby_icon = "icons/lobby/cursed.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,
 		/area/caribbean/no_mans_land/invisible_wall/inside)
 	respawn_delay = 0
@@ -20,12 +20,12 @@
 	faction_distribution_coeffs = list(BRITISH = 1)
 	battle_name = "battle of the cursed island"
 	mission_start_message = "<big>After a storm your battered ship had to beach at this island for repairs. Only then did the crew notice something was wrong about this place...<br><b>Retrieve the cursed treasure and bring it back to the ship to break the curse!</b></big>"
-	ambience = list('sound/ambience/rain.ogg')
+	ambience = list("sound/ambience/rain.ogg")
 	faction1 = BRITISH
 	is_singlefaction = TRUE
 	availablefactions_run = TRUE
 	songs = list(
-		"Words Trough the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
+		"Words Trough the Sky:1" = "sound/music/words_through_the_sky.ogg",)
 	gamemode = "Player vs NPCs"
 	grace_wall_timer = 1200
 

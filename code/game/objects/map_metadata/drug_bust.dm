@@ -2,7 +2,7 @@
 	ID = MAP_DRUG_BUST
 	title = "The Rednikov Drug Bust"
 	description = "Rednikov have 5 minutes to prepare before the SWAT raid the building!The Police will win if they capture the Storage Depot in time!"
-	lobby_icon = 'icons/lobby/policestories.png'
+	lobby_icon = "icons/lobby/policestories.png"
 	no_winner ="The drug bust is still underway."
 	caribbean_blocking_area_types = list(
 		/area/caribbean/no_mans_land/invisible_wall,
@@ -29,7 +29,7 @@
 	grace_wall_timer = 5 MINUTES
 	gamemode = "Drug Bust"
 	songs = list(
-		"D.A.V.E. The Drummer - Amphetamine or Cocaine:1" = 'sound/music/amphetamine_cocaine.ogg',)
+		"D.A.V.E. The Drummer - Amphetamine or Cocaine:1" = "sound/music/amphetamine_cocaine.ogg",)
 	var/list/HVT_list = list()
 
 /obj/map_metadata/drug_bust/New()

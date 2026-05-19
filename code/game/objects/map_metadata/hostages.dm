@@ -3,7 +3,7 @@
 	ID = MAP_HOSTAGES
 	title = "Hostage Rescue"
 	description = "The insurgents are holding American embassy staff hostage! The Special Forces must rescue them within 35 minutes."
-	lobby_icon = 'icons/lobby/modern.png'
+	lobby_icon = "icons/lobby/modern.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
 	no_hardcore = TRUE
@@ -26,7 +26,7 @@
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Al-Qussam:1" = 'sound/music/alqassam.ogg',)
+		"Al-Qussam:1" = "sound/music/alqassam.ogg",)
 	artillery_count = 0
 
 	var/total_hostages = 6

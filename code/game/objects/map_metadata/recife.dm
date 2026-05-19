@@ -3,7 +3,7 @@
 	ID = MAP_RECIFE
 	title = "Recife"
 	description = "Dutch forces are sieging the Portuguese town of Recife! They have 40 minutes to capture it."
-	lobby_icon = 'icons/lobby/imperial.png'
+	lobby_icon = "icons/lobby/imperial.png"
 	no_winner ="The fighting for the town is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 900
@@ -23,7 +23,7 @@
 	mission_start_message = "<font size=4>Dutch forces are sieging the Portuguese town of Recife! They have <b>40 minutes</b> to capture it. Dutch may attack after <b>10 minutes</b>.</font><br><font size=2>The key points that need to be captured are: <b>Governors Office, Army Barracks (Fortress)</b></font>"
 	faction1 = PORTUGUESE
 	faction2 = DUTCH
-	ambience = list('sound/ambience/jungle1.ogg')
+	ambience = list("sound/ambience/jungle1.ogg")
 	gamemode = "Siege"
 	grace_wall_timer = 6000
 

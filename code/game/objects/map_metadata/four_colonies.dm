@@ -2,7 +2,7 @@
 	ID = MAP_FOUR_COLONIES
 	title = "Four Colonies"
 	description = "Four countries have reached this Island! The Colonists must build their villages. After 30 minutes, THIS IS A RP MAP - ALL FACTIONS ARE FRIENDLY BY DEFAULT."
-	lobby_icon = 'icons/lobby/imperial.png'
+	lobby_icon = "icons/lobby/imperial.png"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
@@ -26,11 +26,11 @@
 	faction_distribution_coeffs = list(BRITISH = 0.25, SPANISH = 0.25, FRENCH = 0.25, PORTUGUESE = 0.25)
 	battle_name = "Colonization"
 	mission_start_message = "<big>Four countries have reached this Island! The <b>Colonists</b> must build their villages. After <b>30</b> minutes, the grace wall will end.</big><br><span class = 'notice'><i>THIS IS A RP MAP - ALL FACTIONS ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event
-	ambience = list('sound/ambience/jungle1.ogg')
+	ambience = list("sound/ambience/jungle1.ogg")
 	faction1 = INDIANS
 	faction2 = CIVILIAN
 	songs = list(
-		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
+		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
 	gamemode = "Faction-Based RP"
 	is_RP = TRUE
 	grace_wall_timer = 18000

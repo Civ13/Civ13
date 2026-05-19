@@ -1,7 +1,7 @@
 /obj/map_metadata/elaia
 	ID = MAP_ELAIA
 	title = "Elaia"
-	lobby_icon = 'icons/lobby/ww2.png'
+	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
 	no_hardcore = TRUE
@@ -22,7 +22,7 @@
 	faction2 = ITALIAN
 	ordinal_age = 5
 	songs = list(
-		"Bella Ciao:1" = 'sound/music/bella_ciao.ogg')
+		"Bella Ciao:1" = "sound/music/bella_ciao.ogg")
 	gamemode = "Siege"
 	grace_wall_timer = 3000
 	var/no_loop_elaia = FALSE

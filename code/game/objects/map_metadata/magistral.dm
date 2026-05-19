@@ -3,7 +3,7 @@
 	title = "Operation Magistral"
 	description = "The Soviets and the DRA will win if they capture the control room of the compound. The Mujahideen will win if they manage to hold out for 35 minutes!"
 	no_winner = "The compound is still under the Mujahideen's control."
-	lobby_icon = 'icons/lobby/magistral.png'
+	lobby_icon = "icons/lobby/magistral.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600 // 1 minute
 	victory_time = 21000
@@ -26,7 +26,7 @@
 	faction2 = ARAB
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Kaskad - Afgan:1" = 'sound/music/afgan.ogg',)
+		"Kaskad - Afgan:1" = "sound/music/afgan.ogg",)
 	gamemode = "Siege"
 	artillery_count = 3
 	grace_wall_timer = 3000

@@ -3,7 +3,7 @@
 	ID = MAP_BAGNE13
 	title = "Bagne 13"
 	no_winner ="The round is proceeding normally."
-	lobby_icon = 'icons/lobby/bagne.png'
+	lobby_icon = "icons/lobby/bagne.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle, /area/caribbean/no_mans_land/invisible_wall/one)
 	respawn_delay = 3600
 	has_hunger = TRUE
@@ -27,7 +27,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Red Army Choir - Slavery and Suffering:1" = 'sound/music/slavery_and_suffering.ogg')
+		"Red Army Choir - Slavery and Suffering:1" = "sound/music/slavery_and_suffering.ogg")
 	gamemode = "Prison Simulation"
 	var/score_guards = 0
 	is_RP = TRUE
@@ -106,7 +106,7 @@
 
 /obj/map_metadata/bagne13/proc/alarm_proc()
 	if (siren)
-		var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		var/warning_sound = sound("sound/misc/siren.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 		for (var/mob/M in player_list)
 			if (M && M.client)
 				M.client << warning_sound

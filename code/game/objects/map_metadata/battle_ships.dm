@@ -2,7 +2,7 @@
 	ID = MAP_BATTLE_SHIPS
 	title = "Battle Ships"
 	no_winner = "The battle is still going on."
-	lobby_icon = 'icons/lobby/battleships.png'
+	lobby_icon = "icons/lobby/battleships.png"
 	can_spawn_on_base_capture = TRUE
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/sea)
 	faction_organization = list(
@@ -22,7 +22,7 @@
 	faction2 = BLUEFACTION
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"In the Navy - Village People:1" = 'sound/music/inthenavy.ogg',)
+		"In the Navy - Village People:1" = "sound/music/inthenavy.ogg",)
 	var/ship_faction1 = null
 	var/ship_faction2 = null
 	var/island = null
@@ -90,7 +90,7 @@
 	if (!faction1_engines_killed)
 		if (faction1_engine_amount <= 0)
 			faction1_engines_killed = TRUE
-			var/sound/uploaded_sound = sound('sound/machines/atomic_turbine_exterior_ending.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			var/sound/uploaded_sound = sound("sound/machines/atomic_turbine_exterior_ending.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 			uploaded_sound.priority = 250
 			for (var/mob/living/human/M in get_area_all_atoms(/area/caribbean/faction1/ship))
 				to_chat(M, SPAN_DANGER("<font size=4>The ship grumbles as the last engine shut down.</font><br><font size=5>RESPAWNS ARE NOW DELAYED</font>"))
@@ -125,7 +125,7 @@
 	if (!faction2_engines_killed)
 		if (faction2_engine_amount <= 0)
 			faction2_engines_killed = TRUE
-			var/sound/uploaded_sound = sound('sound/machines/atomic_turbine_exterior_ending.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			var/sound/uploaded_sound = sound("sound/machines/atomic_turbine_exterior_ending.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 			uploaded_sound.priority = 250
 			for (var/mob/living/human/M in get_area_all_atoms(/area/caribbean/faction2/ship))
 				to_chat(M, SPAN_DANGER("<font size=4>The ship grumbles as the last engine shut down.<br><font size=5>RESPAWNS ARE NOW DELAYED</font>"))
@@ -350,7 +350,7 @@
 /obj/map_metadata/battle_ships/cross_message(faction)
 	switch (faction)
 		if (REDFACTION)
-			world << sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
+			world << sound("sound/effects/siren_once.ogg", repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
 			return "<font size=4 color='red'>The battle has begun!</font>"
 		else
 			return ""

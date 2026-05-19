@@ -3,7 +3,7 @@
 	ID = MAP_KARAK
 	title = "Karak"
 	description = "A medieval siege scenario where the Arabic Caliphate besieges the Crusader fortress of Karak."
-	lobby_icon = 'icons/lobby/medieval.png'
+	lobby_icon = "icons/lobby/medieval.png"
 	no_winner ="The fighting is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
@@ -23,9 +23,9 @@
 	mission_start_message = "<font size=4>The <b>Caliphate</b> troops are besieging the <b>Crusader</b> fortress of Karak! The Crusaders will win if they manage to hold the fortress for 35 minutes. <br> The siege will start in <b>6 minutes</b>.</font>"
 	faction1 = FRENCH
 	faction2 = ARAB
-	ambience = list('sound/ambience/desert.ogg')
+	ambience = list("sound/ambience/desert.ogg")
 	songs = list(
-		"Crusaders:1" = 'sound/music/crusaders.ogg')
+		"Crusaders:1" = "sound/music/crusaders.ogg")
 	gamemode = "Siege"
 	grace_wall_timer = 3600
 

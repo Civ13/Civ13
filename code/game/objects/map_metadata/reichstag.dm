@@ -3,7 +3,7 @@
 	ID = MAP_REICHSTAG
 	title = "Reichstag"
 	description = "The Germans will win if they hold out for 40 minutes. The Soviets will win if they manage to reach the top of the Reichstag."
-	lobby_icon = 'icons/lobby/reichstag.png'
+	lobby_icon = "icons/lobby/reichstag.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_winner = "The Reichstag is still under German control."
@@ -26,7 +26,7 @@
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	grace_wall_timer = 3600 // 6 minutes
 	songs = list(
-		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
+		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
 	gamemode = "Siege"
 
 /obj/map_metadata/reichstag/roundend_condition_def2name(define)

@@ -2,7 +2,7 @@
 	ID = MAP_SYRIA
 	title = "Syrian Civil War"
 	description = "The Free Syrian Army and the Syrian Goverment forces are battling against each other for the control of the Tadmur town!Both sides have to capture and hold the Goverme..."
-	lobby_icon = 'icons/lobby/syria.png'
+	lobby_icon = "icons/lobby/syria.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two, /area/caribbean/no_mans_land/invisible_wall/three)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
@@ -24,7 +24,7 @@
 	faction1 = ARAB
 	faction2 = AMERICAN
 	songs = list(
-		"God, Syria and Bashar!:1" = 'sound/music/godsyriabashar.ogg')
+		"God, Syria and Bashar!:1" = "sound/music/godsyriabashar.ogg")
 	gamemode = "King of the Hill"
 
 /obj/map_metadata/syria/faction2_can_cross_blocks()

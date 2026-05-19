@@ -2,7 +2,7 @@
 	ID = MAP_GLADIATORS
 	title = "Gladiators"
 	description = "AVE IMPERATOR, MORITVRI TE SALVTANT!Organize gladiatoral fights and become the best!"
-	lobby_icon = 'icons/lobby/gladiators.png'
+	lobby_icon = "icons/lobby/gladiators.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two,/area/caribbean/no_mans_land/invisible_wall/three,/area/caribbean/no_mans_land/invisible_wall/four)
 	respawn_delay = 0
 
@@ -18,10 +18,10 @@
 	faction_distribution_coeffs = list(ROMAN = 1)
 	battle_name = "gladiator fights"
 	mission_start_message = "<big><font color='yellow' size=3><B>AVE IMPERATOR, MORITVRI TE SALVTANT!</font><br>Organize gladiatoral fights and become the best!</B></font>" // to be replaced with the round's main event
-	ambience = list('sound/ambience/jungle1.ogg')
+	ambience = list("sound/ambience/jungle1.ogg")
 	faction1 = ROMAN
 	songs = list(
-		"Divinitus:1" = 'sound/music/divinitus.ogg',)
+		"Divinitus:1" = "sound/music/divinitus.ogg",)
 	gamemode = "Gladiatorial Combat"
 	is_singlefaction = TRUE
 	valid_weather_types = list(WEATHER_NONE)

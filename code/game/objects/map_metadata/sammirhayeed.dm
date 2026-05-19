@@ -2,7 +2,7 @@
 	ID = MAP_SAMMIRHAYEED
 	title = "Sammir Hayeed"
 	description = "The Crusaders are besieging the Arab fortress of Sammir Hayeed! The Arabs will win if they manage to hold the fortress for 35 minutes."
-	lobby_icon = 'icons/lobby/medieval.png'
+	lobby_icon = "icons/lobby/medieval.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 	no_hardcore = TRUE
@@ -21,9 +21,9 @@
 	mission_start_message = "<font size=4>The <b>Crusaders</b> are besieging the <b>Arab</b> fortress of Sammir Hayeed! The Arabs will win if they manage to hold the fortress for 35 minutes. <br> The siege will start in <b>6 minutes</b>.</font>"
 	faction1 = ARAB
 	faction2 = FRENCH
-	ambience = list('sound/ambience/desert.ogg')
+	ambience = list("sound/ambience/desert.ogg")
 	songs = list(
-		"Crusaders:1" = 'sound/music/crusaders.ogg')
+		"Crusaders:1" = "sound/music/crusaders.ogg")
 	gamemode = "Siege"
 	grace_wall_timer = 3600
 

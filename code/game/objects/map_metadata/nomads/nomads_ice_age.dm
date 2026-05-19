@@ -3,7 +3,7 @@
 	ID = MAP_NOMADS_ICE_AGE
 	title = "Nomads (Ice Age)"
 	description = "Battle on the Nomads (Ice Age) map."
-	ambience = list('sound/ambience/desert.ogg')
+	ambience = list("sound/ambience/desert.ogg")
 	research_active = TRUE
 	var/real_season = "WINTER"
 

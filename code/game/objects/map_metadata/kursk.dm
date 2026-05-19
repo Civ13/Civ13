@@ -3,7 +3,7 @@
 	ID = MAP_KURSK
 	title = "Kursk"
 	description = "Battle on the Kursk map."
-	lobby_icon = 'icons/lobby/kursk.png'
+	lobby_icon = "icons/lobby/kursk.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1200
 
@@ -25,7 +25,7 @@
 	grace_wall_timer = 3600
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
+		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
 
 /obj/map_metadata/kursk/roundend_condition_def2name(define)
 	..()

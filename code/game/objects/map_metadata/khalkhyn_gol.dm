@@ -3,7 +3,7 @@
 	ID = MAP_KHALKHYN_GOL
 	title = "Khalkhyn Gol"
 	description = "The Japanese will win if they capture the Soviet command. The Soviets will win if they manage to capture the Japanese command."
-	lobby_icon = 'icons/lobby/ww2.png'
+	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
 
@@ -26,8 +26,8 @@
 	grace_wall_timer = 4800
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Mugi to Heitai:1" = 'sound/music/mugi_to_heitai.ogg',
-		"I Hate These Classes:2" = 'sound/music/i_hate_these_classes.ogg',)
+		"Mugi to Heitai:1" = "sound/music/mugi_to_heitai.ogg",
+		"I Hate These Classes:2" = "sound/music/i_hate_these_classes.ogg",)
 
 /obj/map_metadata/khalkhyn/roundend_condition_def2name(define)
 	..()

@@ -33,11 +33,11 @@ var/global/datum/external_relations/external_relations = new()
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
 	mission_start_message = "<big><b>Following a limited thermonuclear exchange which saw most central authorities in the northern hemisphere collapse, it appears Pepelsibirsk was left mostly untouched. You must bring the city to prosperity!</b></big>"
-	ambience = list('sound/ambience/desert.ogg')
+	ambience = list("sound/ambience/desert.ogg")
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
-		"Molchat Doma - Toska:1" = 'sound/music/toska.ogg',)
+		"Molchat Doma - Toska:1" = "sound/music/toska.ogg",)
 	gamemode = "Cold War"
 	age1_done = TRUE
 	age2_done = TRUE
@@ -926,11 +926,11 @@ var/global/datum/external_relations/external_relations = new()
 					xoffset = rand(0,1)
 					yoffset = rand(-2,2)
 			spawn(i*8)
-				explosion(locate((T.x + xoffset + direction_xoffset),(T.y + yoffset + direction_yoffset),T.z),0,1,5,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
+				explosion(locate((T.x + xoffset + direction_xoffset),(T.y + yoffset + direction_yoffset),T.z),0,1,5,3,sound="sound/weapons/Explosives/FragGrenade.ogg")
 
 /obj/map_metadata/pepelsibirsk/proc/try_shoot_down_aircraft(var/turf/T, direction, aircraft_name)
 	spawn(8 SECONDS)
-		var/sound/sam_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 777)
+		var/sound/sam_sound = sound("sound/effects/aircraft/sa6_sam_site.ogg", repeat = FALSE, wait = FALSE, channel = 777)
 		sam_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))
@@ -938,7 +938,7 @@ var/global/datum/external_relations/external_relations = new()
 				M.client << sam_sound
 		spawn(5 SECONDS)
 			if (prob(95)) // Shoot down the jet
-				var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/metal1.ogg','sound/effects/aircraft/effects/metal2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
+				var/sound/uploaded_sound = sound((pick("sound/effects/aircraft/effects/metal1.ogg","sound/effects/aircraft/effects/metal2.ogg")), repeat = FALSE, wait = FALSE, channel = 777)
 				uploaded_sound.priority = 250
 				for (var/mob/M in player_list)
 					if (!new_player_mob_list.Find(M))
@@ -948,7 +948,7 @@ var/global/datum/external_relations/external_relations = new()
 				log_game("Aircraft [aircraft_name] has been shot down.")
 				return
 			else // Evade the Anti-Air
-				var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
+				var/sound/uploaded_sound = sound((pick("sound/effects/aircraft/effects/missile1.ogg","sound/effects/aircraft/effects/missile2.ogg")), repeat = FALSE, wait = FALSE, channel = 777)
 				uploaded_sound.priority = 250
 				for (var/mob/M in player_list)
 					if (!new_player_mob_list.Find(M))
