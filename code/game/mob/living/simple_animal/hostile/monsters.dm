@@ -247,7 +247,6 @@
 	icon_gib = "fata_morgana"
 	maxHealth = 1
 	health = 1
-	alpha = 150
 	faction = "neutral"
 	stop_automated_movement = TRUE
 	stance = HOSTILE_STANCE_IDLE
@@ -260,8 +259,8 @@
 	disguise_type = pick("crate", "loot")
 	switch(disguise_type)
 		if ("crate")
-			name = "crate"
-			desc = "A rectangular crate."
+			name = "wooden crate"
+			desc = "A wooden crate."
 			icon = 'icons/obj/storage.dmi'
 			icon_state = "wood_crate"
 		if ("loot")
@@ -274,25 +273,19 @@
 
 /mob/living/simple_animal/hostile/fata_morgana/Life()
 	..()
-	if (stat == DEAD || !creator_player || creator_player.stat == DEAD)
+	if (stat == DEAD)
 		qdel(src)
 		return
 
-	var/dist = get_dist(src, creator_player)
-	if (dist <= 1)
+/mob/living/simple_animal/hostile/fata_morgana/attack_hand(mob/user as mob)
+	if (istype(user, /mob/living/human))
+		var/mob/living/human/H = user
 		visible_message("<span class='warning'>\The [src] vanishes in a freezing burst of wind!</span>")
 		playsound(src, 'sound/effects/extinguish.ogg', 70, TRUE)
-		creator_player.bodytemperature = 100
-		creator_player.cold_protection_disabled_timer = 60 // 2 minutes (60 ticks of Life)
+		H.bodytemperature = 100
+		H.cold_protection_disabled_timer = 60 // 2 minutes (60 ticks of Life)
 		qdel(src)
 		return
-
-	if (dist > 12)
-		qdel(src)
-		return
-
-	var/step_dir = get_dir(creator_player, src)
-	step(src, step_dir)
 
 // --------------------------------
 // BOREAS (Hearth-Eater)
@@ -311,6 +304,7 @@
 	move_to_delay = 12
 	faction = "neutral"
 	behaviour = "hunt"	
+	var/obj/structure/oven/closest_oven = null
 
 /mob/living/simple_animal/hostile/boreas/bullet_act(var/obj/item/projectile/P)
 	return FALSE
@@ -350,14 +344,19 @@
 				visible_message("<span class='danger'>\The [O]'s fire is being vacuumed by the freezing presence of [src]!</span>")
 
 	if (!target_mob)
-		var/obj/structure/oven/closest_oven = null
-		var/closest_dist = 999
-		for (var/obj/structure/oven/O in view(9, src))
-			if (O.on && O.fuel > 0)
-				var/d = get_dist(src, O)
-				if (d < closest_dist)
-					closest_dist = d
-					closest_oven = O
+		if (!closest_oven && map && map.ID == MAP_ANTARCTICA)
+			var/obj/map_metadata/antarctica/AN = map
+			if (AN.furnace)
+				closest_oven = AN.furnace
+		else
+			if (!closest_oven || closest_oven.fuel <= 0)
+				var/closest_dist = 999
+				for (var/obj/structure/oven/O in range(9, src))
+					if (O.on && O.fuel > 0)
+						var/d = get_dist(src, O)
+						if (d < closest_dist)
+							closest_dist = d
+							closest_oven = O
 		if (closest_oven)
 			walk_to(src, closest_oven, 1, move_to_delay)
 		else
@@ -450,13 +449,11 @@
 		var/mob/living/human/H = AM
 		if (H.stat == DEAD)
 			return
-		var/turf/T = get_turf(src)
-		if (T && T.get_lumcount() < 0.25)
-			choking_mob = H
-			H.choked_by = src
-			icon_state = "vine_strangler"
-			visible_message("<span class='danger'>A loop of thick vine drops around [H]'s neck, lifting them slightly!</span>")
-			to_chat(H, "<span class='userdanger'>A strangling vine tightens around your neck! You can't speak or move!</span>")
+		choking_mob = H
+		H.choked_by = src
+		icon_state = "vine_strangler"
+		visible_message("<span class='danger'>A loop of thick vine drops around [H]'s neck, lifting them slightly!</span>")
+		to_chat(H, "<span class='danger'>A strangling vine tightens around your neck! You can't move!</span>")
 
 /mob/living/simple_animal/hostile/canopy_strangler/Life()
 	..()
@@ -470,8 +467,8 @@
 	if (T)
 		if (choking_mob)
 			alpha = 255
-		else if (T.get_lumcount() < 0.25)
-			alpha = 0
+		else if (T.get_lumcount() < 0.5)
+			alpha = 60
 		else
 			alpha = 255
 
@@ -480,7 +477,7 @@
 			release_mob()
 			return
 		choking_mob.apply_damage(5, BURN, "head")
-		choking_mob.Paralyse(3)
+		choking_mob.anchored = TRUE
 
 /mob/living/simple_animal/hostile/canopy_strangler/death()
 	release_mob()
@@ -490,7 +487,7 @@
 /mob/living/simple_animal/hostile/canopy_strangler/proc/release_mob()
 	if (choking_mob)
 		choking_mob.choked_by = null
-		choking_mob.SetParalysis(0)
+		choking_mob.anchored = FALSE
 		choking_mob = null
 	icon_state = "vine_strangler_static"
 
@@ -533,16 +530,4 @@
 	H.phosphor_dye_timer = 60
 	H.set_light(3, 1, "#00FF00")
 	H.apply_damage(5, BURN, "chest")
-	qdel(src)
-
-/mob/living/human/proc/spawn_fata_morgana()
-	var/list/valid_turfs = list()
-	for (var/turf/T in range(8, src))
-		if (get_dist(src, T) >= 5)
-			var/area/A = get_area(T)
-			if (A && A.location == AREA_OUTSIDE && !T.density)
-				valid_turfs += T
-	if (valid_turfs.len)
-		var/turf/spawn_turf = pick(valid_turfs)
-		var/mob/living/simple_animal/hostile/fata_morgana/FM = new(spawn_turf)
-		FM.creator_player = src
+	death()

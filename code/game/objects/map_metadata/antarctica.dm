@@ -39,7 +39,7 @@
 	if (furnace)
 		if (furnace.fuel <= 0 || !furnace.on)
 			if (furnace_timer_check == 0)
-				to_chat(world, "<font size = 4><span class = 'warning'>The furnace has ran out of fuel!</span></font>")
+				to_chat(world, "<font size = 4><span class = 'danger'>The furnace has ran out of fuel!</span></font>")
 				current_win_condition = "<font style='color:yellow'>The furnace is off!</font>"
 			furnace_timer_check += 1
 		else
