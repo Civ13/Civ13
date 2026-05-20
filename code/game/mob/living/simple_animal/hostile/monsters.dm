@@ -238,7 +238,7 @@
 // FATA MORGANA (Blizzard Mirage)
 // --------------------------------
 /mob/living/simple_animal/hostile/fata_morgana
-	name = "blizzard mirage"
+	name = "fata morgana"
 	desc = "A shifting, translucent shape born of the ice."
 	icon = 'icons/mob/monsters/monsters.dmi'
 	icon_state = "fata_morgana"
@@ -328,8 +328,7 @@
 /mob/living/simple_animal/hostile/boreas/Bump(atom/A)
 	if (istype(A, /obj/structure/simple_door))
 		var/obj/structure/simple_door/D = A
-		if (!D.opened)
-			D.open()
+		D.Bumped()
 	..()
 
 /mob/living/simple_animal/hostile/boreas/Life()
@@ -339,8 +338,7 @@
 
 	// Open nearby doors so we can reach fire sources inside
 	for (var/obj/structure/simple_door/D in range(1, src))
-		if (!D.opened)
-			D.open()
+		D.Bumped()
 
 	for (var/obj/structure/oven/O in range(3, src))
 		if (O.on && O.fuel > 0 && prob(50))
