@@ -152,6 +152,7 @@ var/civmax_research = list(230,230,230)
 	var/list/list/custom_company = list() //name; percentage; realized (withdrawable) profits
 	var/list/custom_company_nr = list()
 	var/list/custom_company_value = list()
+	var/list/custom_company_fiat_value = list()
 	var/list/sales_registry = list()
 	var/list/custom_company_colors = list("Global" = list("#000000","#FFFFFF")) //1st color, 2nd color
 	var/is_singlefaction = FALSE

@@ -1997,6 +1997,7 @@ RECIPE: /material/wood/,primitive saw mill,/obj/structure/sawmill,28,60,1,1,econ
 RECIPE: /material/wood/soft/,market stall,/obj/structure/vending/sales/market_stall,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,supply stall,/obj/structure/supplier,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,stock market,/obj/structure/stockmarket,25,150,1,1,economy & production,24,0,0,8,null
+RECIPE: /material/wood/soft/,money printer,/obj/structure/money_printer,50,150,1,1,economy & production,27,0,0,8,null
 
 //*********************| WOOD CONSTRUCTIONS |**************************
 

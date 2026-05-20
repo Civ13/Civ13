@@ -12,8 +12,8 @@
 	flammable = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
-
 	var/moneyin = 0
+	var/accepted_currency = "standard"
 	var/owner = "Global"
 	var/max_products = 5
 	var/sound_type = 'sound/machines/vending_drop.ogg'
@@ -23,21 +23,40 @@
 
 /obj/structure/vending/sales/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/money))
-		var/obj/item/stack/money/M = W
-		if (istype(src, /obj/structure/vending/sales/pepelsibirsk))
-			if (istype(W, /obj/item/stack/money/rubles))
-				moneyin += M.amount*M.value
-			else
-				to_chat(user, "Foreign traders only accept the Soviet ruble.")
+		if (accepted_currency == "standard")
+			if (istype(W, /obj/item/stack/money/fiat))
+				to_chat(user, "This vending machine does not accept fiat money.")
 				return
+			var/obj/item/stack/money/M = W
+			if (istype(src, /obj/structure/vending/sales/pepelsibirsk))
+				if (istype(W, /obj/item/stack/money/rubles))
+					moneyin += M.amount*M.value
+				else
+					to_chat(user, "Foreign traders only accept the Soviet ruble.")
+					return
+			else
+				moneyin += M.amount*M.value
+			if (map.ID == MAP_KANDAHAR || istype(src, /obj/structure/vending/sales/pepelsibirsk))
+				user << "You give \the [W] to the [src]."
+			else
+				user << "You put \the [W] in the [src]."
+			qdel(W)
+			return
 		else
-			moneyin += M.amount*M.value
-		if (map.ID == MAP_KANDAHAR || istype(src, /obj/structure/vending/sales/pepelsibirsk))
-			to_chat(user, "You give \the [W] to the [src].")
-		else
-			to_chat(user, "You put \the [W] in the [src].")
-		qdel(W)
-		return
+			if (!istype(W, /obj/item/stack/money/fiat))
+				to_chat(user, "This vending machine only accepts fiat money.")
+				return
+			var/obj/item/stack/money/fiat/F = W
+			if (F.fiat_id != accepted_currency)
+				to_chat(user, "This vending machine does not accept this currency.")
+				return
+			moneyin += F.amount
+			if (map.ID == MAP_KANDAHAR || istype(src, /obj/structure/vending/sales/pepelsibirsk))
+				to_chat(user, "You give \the [W] to the [src].")
+			else
+				to_chat(user, "You put \the [W] in the [src].")
+			qdel(W)
+			return
 	else if (istype(W, /obj/item/weapon/wrench))
 		if (owner != "Global" && find_company_member(user,owner))
 			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
@@ -76,7 +95,7 @@
 					product_records -= free
 			user.unEquip(W)
 			var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state, M = W)
-			var/inputp = input(user, "What price do you want to set for \the [W]? (in silver coins)") as num
+			var/inputp = input(user, "What price do you want to set for \the [W]?", "Product Price") as num
 			if (!inputp)
 				inputp = 0
 			if (inputp < 0)
@@ -101,7 +120,7 @@
 		return
 
 	if (owner != "Global" && find_company_member(usr,owner))
-		var/choice1 = WWinput(usr, "What do you want to do?", "Vendor Management", "Exit", list("Exit", "Change Name", "Change Prices", "Remove Product"))
+		var/choice1 = WWinput(usr, "What do you want to do?", "Vendor Management", "Exit", list("Exit", "Change Name", "Change Prices", "Remove Product", "Change Currency"))
 		if (choice1 == "Exit")
 			return TRUE
 		else if (choice1 == "Change Name")
@@ -121,7 +140,7 @@
 			else
 				for(var/datum/data/vending_product/VP in product_records)
 					if (VP.product_name == choice2)
-						var/input3 = input("The current price for [VP.product_name] is [VP.price] silver coins. What should the new price be?", "Product Price", VP.price) as num
+						var/input3 = input("The current price for [VP.product_name] is [VP.price]. What should the new price be?", "Product Price", VP.price) as num
 						if (input3 < 0 || input3 == null)
 							return FALSE
 						else
@@ -139,6 +158,22 @@
 					if (VP.product_name == choice2)
 						vend(VP, usr, VP.amount)
 						return TRUE
+		else if (choice1 == "Change Currency")
+			if (moneyin > 0)
+				usr << "<span class='warning'>You must empty the vendor of all funds before changing its accepted currency.</span>"
+				return FALSE
+			var/list/curr_list = list("Standard Coins")
+			var/list/curr_map = list("Standard Coins" = "standard")
+			for(var/cid in fiat.currency_list)
+				if (fiat.currency_list[cid][5])
+					curr_list += fiat.currency_list[cid][1]
+					curr_map[fiat.currency_list[cid][1]] = cid
+			var/curr_choice = WWinput(usr, "Which currency should this vendor accept?", "Vendor Management", "Cancel", curr_list)
+			if (curr_choice == "Cancel" || !curr_choice)
+				return FALSE
+			accepted_currency = curr_map[curr_choice]
+			usr << "<span class='notice'>This vendor now accepts [curr_choice].</span>"
+			return TRUE
 
 
 	else
@@ -172,10 +207,23 @@
 	user.set_using_object(src)
 
 	var/list/data = list()
+	var/cur_name = "silver coins"
+	var/cur_short = "sc"
+	if (accepted_currency != "standard")
+		cur_name = fiat.currency_list[accepted_currency][1]
+		cur_short = fiat.currency_list[accepted_currency][2]
+	else if (map.ID == MAP_THE_ART_OF_THE_DEAL || map.ID == MAP_KANDAHAR)
+		cur_name = "dollars"
+		cur_short = "$"
+	else if (map.ID == MAP_GULAG13 || map.ID == MAP_PEPELSIBIRSK)
+		cur_name = "rubles"
+		cur_short = "rubles"
 	if (currently_vending)
 		data["mode"] = TRUE
 		data["company"] = owner
 		data["product"] = currently_vending.product_name
+		data["currency_name"] = cur_name
+		data["currency_short"] = cur_short
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 			data["price"] = currently_vending.price/4
 		else
@@ -190,6 +238,8 @@
 	else
 		data["mode"] = FALSE
 		data["company"] = owner
+		data["currency_name"] = cur_name
+		data["currency_short"] = cur_short
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 			data["moneyin"] = moneyin/4
 		else
@@ -278,10 +328,20 @@
 								to_chat(usr, "Relations have increased by [price_with_tax*inp*0.02].")
 						moneyin -= price_with_tax*inp
 						if (owner != "Global")
-							map.custom_company_value[owner] += price_with_tax*inp
-							if (map.custom_civs[H.civilization])
-								map.custom_civs[H.civilization][5] += salestax*inp
-						if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+							if (accepted_currency == "standard")
+								map.custom_company_value[owner] += price_with_tax*inp
+								if (map.custom_civs[H.civilization])
+									map.custom_civs[H.civilization][5] += salestax*inp
+							else
+								if (!map.custom_company_fiat_value[owner])
+									map.custom_company_fiat_value[owner] = list()
+								if (!map.custom_company_fiat_value[owner][accepted_currency])
+									map.custom_company_fiat_value[owner][accepted_currency] = 0
+								map.custom_company_fiat_value[owner][accepted_currency] += price_with_tax*inp
+						if (accepted_currency != "standard")
+							if (moneyin > 0)
+								new/obj/item/stack/money/fiat(loc, moneyin, accepted_currency)
+						else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 							var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
 							D.amount = moneyin/D.value
 							if (D.amount == 0)
@@ -325,7 +385,10 @@
 			currently_vending = null
 
 		else if (href_list["remove_money"])
-			if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			if (accepted_currency != "standard")
+				if (moneyin > 0)
+					new/obj/item/stack/money/fiat(loc, moneyin, accepted_currency)
+			else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 				var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
 				D.amount = moneyin/D.value
 				if (D.amount == 0)
