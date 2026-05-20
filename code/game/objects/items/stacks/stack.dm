@@ -173,10 +173,10 @@
 		src.update_icon()
 		src.update_strings()
 		spawn(0) //give the stacks a chance to delete themselves if necessary
-		if (S && usr.using_object == S)
-			S.interact(usr)
-		if (src && usr.using_object == src)
-			interact(usr)
+			if (S && usr.using_object == S)
+				S.interact(usr)
+			if (src && usr.using_object == src)
+				interact(usr)
 	else
 		return ..()
 
