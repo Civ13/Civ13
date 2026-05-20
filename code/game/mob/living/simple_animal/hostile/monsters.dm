@@ -93,6 +93,9 @@
 	faction = "neutral"
 	behaviour = "hunt" // use standard hunt engine; we gate targets via FindTarget()
 	idle_vision_range = 9
+	light_power = 1
+	light_range = 1
+	light_color = "#FF0000"
 
 /mob/living/simple_animal/hostile/lightseeker/New()
 	..()
@@ -100,6 +103,7 @@
 
 /mob/living/simple_animal/hostile/lightseeker/death()
 	visible_message("\The [src] lets out one final, wet shriek before going still.")
+	set_light(0)
 	..()
 
 // Returns TRUE if M is carrying an active (lit) light source.

@@ -70,6 +70,11 @@
 				if (istype(original_job, /datum/job/civilian/prisoner))
 					nutrition = max_nutrition*0.1
 					water = max_water*0.2
+		else if (map.ID == MAP_ANTARCTICA)
+			spawn(10)
+				if (istype(original_job, /datum/job/civilian/prisoner))
+					nutrition = max_nutrition*0.5
+					water = max_water*0.5
 		else
 			nutrition = max_nutrition
 			water = max_water

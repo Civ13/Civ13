@@ -22,6 +22,7 @@
 	songs = list("The Thing:1" = "sound/music/the_thing.ogg")
 	is_singlefaction = TRUE
 	is_RP = TRUE
+	has_hunger = TRUE
 	var/no_loop = FALSE
 	var/obj/structure/oven/big/furnace = null
 	var/furnace_timer_check = 0
