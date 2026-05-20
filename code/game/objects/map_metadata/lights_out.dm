@@ -18,7 +18,8 @@
 	mission_start_message = "<font size=4>RUN!</font>"
 	faction1 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET)
-	songs = list("Akira:1" = "sound/music/akira.ogg",)
+	songs = list("Youngblood:1" = "sound/music/youngblood.ogg")
+	ambience = list('sound/ambience/jungle1.ogg')
 	is_singlefaction = TRUE
 	is_RP = TRUE
 	var/no_loop = FALSE

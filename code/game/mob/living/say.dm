@@ -54,6 +54,10 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 	return verb
 
 /mob/living/say(var/message, var/datum/language/speaking = null, var/verb="says", var/alt_name = "", var/alt_message=null, var/animal = FALSE, var/howl = FALSE, var/original_message = "")
+	if (choked_by)
+		to_chat(src, "<span class='warning'>You cannot speak while being choked!</span>")
+		return
+
 	if (client)
 		if (client.prefs.muted & MUTE_IC)
 			to_chat(src, "<span class = 'red'>You cannot speak in IC (Muted).</span>")

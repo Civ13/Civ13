@@ -13,13 +13,14 @@
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/colonies/british
 		)
-	age = "2013"
-	ordinal_age = 8
+	age = "1953"
+	ordinal_age = 7
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "antarctica survival"
 	mission_start_message = "<font size=4>Keep the furnace running until rescue arrives in 90 minutes!</font>"
 	faction1 = CIVILIAN
 	songs = list("The Thing:1" = "sound/music/the_thing.ogg")
+	ambience = list('sound/ambience/winter.ogg')
 	is_singlefaction = TRUE
 	is_RP = TRUE
 	has_hunger = TRUE

@@ -1323,6 +1323,24 @@ var/list/coefflist = list()
 	..()
 	handle_looks_with_movement()
 
+	if (phosphor_dye_timer > 0)
+		var/turf/T = get_turf(src)
+		if (istype(T, /turf/floor))
+			var/turf/floor/F = T
+			if (F.watertile)
+				phosphor_dye_timer = 0
+				set_light(0)
+				visible_message("<span class='notice'>The water washes the glowing phosphor dye off of [src]!</span>")
+
+	if (m_intent != "stealth")
+		var/range_val = 6
+		if (m_intent == "run")
+			range_val = 12
+		var/turf/T = get_turf(src)
+		if (T)
+			for (var/mob/living/simple_animal/hostile/echofiend/EF in range(range_val, T))
+				EF.hear_sound(T)
+
 /mob/living/human/proc/handle_looks_with_movement()
 
 	if (client && actions.len)

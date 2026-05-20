@@ -857,6 +857,8 @@
 /mob/living/human/get_cold_protection(temperature)
 
 	temperature = max(temperature, 2.7) //There is an occasional bug where the temperature is miscalculated in ares with a small amount of gas on them, so this is necessary to ensure that that bug does not affect this calculation. Space's temperature is 2.7K and most suits that are intended to protect against any cold, protect down to 2.0K.
+	if (cold_protection_disabled_timer > 0)
+		return 0
 	var/thermal_protection_flags = get_cold_protection_flags(temperature)
 	return get_thermal_protection(thermal_protection_flags)
 
@@ -1023,6 +1025,16 @@
 		if (gloves && germ_level > gloves.germ_level && prob(10))
 			gloves.germ_level += 1
 
+		if (cold_protection_disabled_timer > 0)
+			cold_protection_disabled_timer = max(0, cold_protection_disabled_timer - 1)
+			if (cold_protection_disabled_timer <= 0)
+				to_chat(src, "<span class='notice'>You feel your body heat starting to stabilize.</span>")
+
+		if (phosphor_dye_timer > 0)
+			phosphor_dye_timer = max(0, phosphor_dye_timer - 1)
+			if (phosphor_dye_timer <= 0)
+				set_light(0)
+				to_chat(src, "<span class='notice'>The glowing phosphor dye has finally faded.</span>")
 	return TRUE
 
 /mob/living/human/handle_regular_hud_updates()

@@ -306,9 +306,9 @@
 #define COMSIG_ITEM_TOGGLE_ACTIVE "item_toggle_active"			//from base of /obj/item/toggle_active(): (new_state)
 #define COMSIG_ITEM_EXCLUSIVE_TOGGLE "item_exclusive_toggle"
 
-#define COMSIG_ITEM_MIDDLECLICKON "item_middleclickon"					//from base of mob/living/carbon/human/MiddleClickOn(): (/atom, /mob)
-#define COMSIG_ITEM_SHIFTCLICKON "item_shiftclickon"					//from base of mob/living/carbon/human/ShiftClickOn(): (/atom, /mob)
-#define COMSIG_ITEM_RIGHTCLICKON "item_rightclickon"					//from base of mob/living/carbon/human/RightClickOn(): (/atom, /mob)
+#define COMSIG_ITEM_MIDDLECLICKON "item_middleclickon"					//from base of mob/living/human/MiddleClickOn(): (/atom, /mob)
+#define COMSIG_ITEM_SHIFTCLICKON "item_shiftclickon"					//from base of mob/living/human/ShiftClickOn(): (/atom, /mob)
+#define COMSIG_ITEM_RIGHTCLICKON "item_rightclickon"					//from base of mob/living/human/RightClickOn(): (/atom, /mob)
 	#define COMPONENT_ITEM_CLICKON_BYPASS (1<<0)
 #define COMSIG_ITEM_TOGGLE_BUMP_ATTACK "item_toggle_bump_attack"		//from base of obj/item/proc/toggle_item_bump_attack(): (/mob/user, enable_bump_attack)
 
@@ -483,21 +483,21 @@
 #define COMSIG_CARBON_SWAPPED_HANDS "carbon_swapped_hands"
 #define COMSIG_CARBON_SETAFKSTATUS "carbon_setafkstatus"		//from base of /mob/living/set_afk_status(): (new_status, afk_timer)
 
-// /mob/living/carbon/human signals
-#define COMSIG_HUMAN_MELEE_UNARMED_ATTACK "human_melee_unarmed_attack"	//from mob/living/carbon/human/UnarmedAttack(): (atom/target)
+// /mob/living/human signals
+#define COMSIG_HUMAN_MELEE_UNARMED_ATTACK "human_melee_unarmed_attack"	//from mob/living/human/UnarmedAttack(): (atom/target)
 #define COMSIG_HUMAN_MELEE_UNARMED_ATTACK_ALTERNATE "human_melee_unarmed_attack_alternate"	//same as above, but right click
-#define COMSIG_HUMAN_DAMAGE_TAKEN "human_damage_taken"					//from human damage receiving procs: (mob/living/carbon/human/wearer, damage)
-#define COMSIG_HUMAN_LIMB_FRACTURED "human_limb_fractured"				//from [datum/limb/proc/fracture]: (mob/living/carbon/human/wearer, datum/limb/limb)
-///from [/mob/living/carbon/human/proc/apply_overlay]: (cache_index, list/overlays_to_apply)
+#define COMSIG_HUMAN_DAMAGE_TAKEN "human_damage_taken"					//from human damage receiving procs: (mob/living/human/wearer, damage)
+#define COMSIG_HUMAN_LIMB_FRACTURED "human_limb_fractured"				//from [datum/limb/proc/fracture]: (mob/living/human/wearer, datum/limb/limb)
+///from [/mob/living/human/proc/apply_overlay]: (cache_index, list/overlays_to_apply)
 #define COMSIG_HUMAN_APPLY_OVERLAY "human_overlay_applied"
-///from [/mob/living/carbon/human/proc/remove_overlay]: (cache_index, list/overlays_to_remove)
+///from [/mob/living/human/proc/remove_overlay]: (cache_index, list/overlays_to_remove)
 #define COMSIG_HUMAN_REMOVE_OVERLAY "human_overlay_removed"
 
 #define COMSIG_HUMAN_SET_UNDEFIBBABLE "human_set_undefibbable"
 
 #define COMSIG_HUMAN_MARKSMAN_AURA_CHANGED "human_marksman_aura_changed"
 
-/// From /mob/living/carbon/human/ExtinguishMob()
+/// From /mob/living/human/ExtinguishMob()
 #define COMSIG_HUMAN_EXTINGUISH "human_extinguish"
 
 /// From /datum/flaying_datum

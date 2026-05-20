@@ -619,6 +619,13 @@ default behaviour is:
 
 /mob/living/proc/resist_grab()
 	var/resisting = FALSE
+	if (choked_by)
+		resisting++
+		if (prob(15))
+			visible_message("<span class='warning'>[src] has struggled and broken free from [choked_by]'s strangling vine!</span>", "<span class='warning'>You have successfully struggled and broken free from [choked_by]'s strangling vine!</span>")
+			choked_by.release_mob()
+		else
+			visible_message("<span class='warning'>[src] struggles desperately against [choked_by]'s strangling vine!</span>", "<span class='warning'>You struggle desperately but fail to break free from [choked_by]'s strangling vine!</span>")
 	for (var/obj/O in requests)
 		requests.Remove(O)
 		qdel(O)

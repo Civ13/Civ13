@@ -394,6 +394,10 @@ var/list/charge_sounds_generic_female = list(
 	var/frequency = get_rand_frequency() // Same frequency for everybody
 	var/turf/turf_source = get_turf(source)
 
+	if (turf_source)
+		for (var/mob/living/simple_animal/hostile/echofiend/EF in range(15, turf_source))
+			EF.hear_sound(turf_source)
+
 	var/list/players_who_heard = list()
  	// Looping through the player list has the added bonus of working for mobs inside containers
 	for (var/P in player_list)

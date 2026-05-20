@@ -280,6 +280,10 @@
 
 	if (!user || !target) return
 
+	if (user.choked_by)
+		to_chat(user, SPAN_WARNING("You cannot fire a gun while being choked!"))
+		return
+
 	add_fingerprint(user)
 
 	if (!force)
