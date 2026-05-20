@@ -92,29 +92,65 @@
 
 			usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
 		else if (choice4 == "Distribute Profits")
+			var/distributed_something = FALSE
 			if (map.custom_company_value[custom_company]>0)
 				var/tprof = map.custom_company_value[custom_company]
 				map.custom_company_value[custom_company] = 0
 				for (var/i in map.custom_company[custom_company])
 					i[3]+=(i[2]/100)*tprof
+				distributed_something = TRUE
+			if (map.custom_company_fiat_value[custom_company])
+				for(var/fid in map.custom_company_fiat_value[custom_company])
+					var/tprof_fiat = map.custom_company_fiat_value[custom_company][fid]
+					if (tprof_fiat > 0)
+						map.custom_company_fiat_value[custom_company][fid] = 0
+						for (var/list/j in map.custom_company[custom_company])
+							if (j.len < 4 || !istype(j[4], /list))
+								j.len = max(j.len, 4)
+								j[4] = list()
+							if (!j[4][fid])
+								j[4][fid] = 0
+							j[4][fid] += (j[2]/100)*tprof_fiat
+						distributed_something = TRUE
+			if (distributed_something)
 				user << "<span class='notice'>You distribute the profits of [custom_company].</span>"
 				return
 			else
 				user << "<span class='notice'>There are no profits to distribute from [custom_company].</span>"
 				return
 		else if (choice4 == "Withdraw Profits")
-			for (var/j in map.custom_company[custom_company])
-				if (j[1]==user && j[3]>0)
-					var/businesstax = 0
-					var/price_without_tax = j[3]
-					if (user.civilization != "none" && map.custom_civs[user.civilization])
-						businesstax = (map.custom_civs[user.civilization][10]/100)*j[3]
-						price_without_tax = j[3]-businesstax
-						map.custom_civs[user.civilization][5] += businesstax
-					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-					GC.amount = price_without_tax/4
-					j[3] = 0
-					user << "<span class='notice'>You withdraw [GC.amount*4] silver coins in profit, paying [businesstax] silver coins ([map.custom_civs[user.civilization][10]]%) in Business Tax to your faction.</span>"
+			for (var/list/j in map.custom_company[custom_company])
+				if (j[1]==user)
+					var/withdrew_something = FALSE
+					if (j[3]>0)
+						var/businesstax = 0
+						var/price_without_tax = j[3]
+						if (user.civilization != "none" && map.custom_civs[user.civilization])
+							businesstax = (map.custom_civs[user.civilization][10]/100)*j[3]
+							price_without_tax = j[3]-businesstax
+							map.custom_civs[user.civilization][5] += businesstax
+						var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
+						GC.amount = round(price_without_tax/4)
+						j[3] = 0
+						user << "<span class='notice'>You withdraw [GC.amount*4] silver coins in profit, paying [businesstax] silver coins ([map.custom_civs[user.civilization][10]]%) in Business Tax to your faction.</span>"
+						withdrew_something = TRUE
+					if (j.len >= 4 && istype(j[4], /list))
+						var/list/fiat_profits = j[4]
+						for(var/fid in fiat_profits)
+							if (fiat_profits[fid] > 0)
+								var/amt = fiat_profits[fid]
+								var/businesstax = 0
+								var/price_without_tax = amt
+								if (user.civilization != "none" && map.custom_civs[user.civilization])
+									businesstax = (map.custom_civs[user.civilization][10]/100)*amt
+									price_without_tax = amt - businesstax
+									// Can't pay fiat tax to faction treasury directly without breaking custom_civs[5] which is 'real' money. We just delete the fiat tax.
+								new/obj/item/stack/money/fiat(loc, round(price_without_tax), fid)
+								fiat_profits[fid] = 0
+								user << "<span class='notice'>You withdraw [round(price_without_tax)] [fiat.currency_list[fid][1]] in profit, paying [businesstax] as tax to your faction.</span>"
+								withdrew_something = TRUE
+					if (!withdrew_something)
+						user << "<span class='notice'>You have no profits to withdraw.</span>"
 		return
 
 	else if (choice1 == "Buy Stock")
@@ -123,10 +159,16 @@
 			return
 		else
 			var/list/tempbuylist = list("Cancel")
+			var/list/choice_to_reg = list()
 			var/found = FALSE
 			for(var/list/i in map.sales_registry)
 				if (i[5])
-					tempbuylist += "[i[2]]% of [i[1]], at [i[3]] sc"
+					var/curr_name = "sc"
+					if (i.len >= 6 && i[6] != "standard")
+						curr_name = fiat.currency_list[i[6]][1]
+					var/choice_str = "[i[2]]% of [i[1]], at [i[3]*10] [curr_name]"
+					tempbuylist += choice_str
+					choice_to_reg[choice_str] = i
 					found = TRUE
 			if (!found)
 				user << "<span class='notice'>There are no stocks for sale!</span>"
@@ -135,45 +177,79 @@
 			if (choice3 == "Cancel")
 				return
 			else
-				var/ord_perc = splittext(choice3,"% of ")[1]
-				var/ord = splittext(choice3,"% of ")[2]
-				var/ord_price = splittext(ord,", at ")[2]
-				ord = splittext(ord,", at ")[1]
-				ord_price = replacetext(ord_price, " sc", "")
-				ord_price = text2num(ord_price)/10
-				ord_perc = text2num(ord_perc)
+				var/list/L = choice_to_reg[choice3]
+				var/ord = L[1]
+				var/ord_perc = L[2]
+				var/ord_price = L[3]*10
+				var/req_currency = L.len >= 6 ? L[6] : "standard"
+
 				if (istype(user.get_inactive_hand(), /obj/item/stack/money))
 					var/obj/item/stack/money/M = user.get_inactive_hand()
-					for(var/list/L in map.sales_registry)
-						if (L[5] && L[1] == ord && text2num(L[2]) == ord_perc && text2num(L[3]) == ord_price)
-							if (M.amount*M.value >= ord_price)
-								var/tma = M.amount*M.value
-								var/tmb = ord_price
-								var/tmc = (tma - tmb)/4
-								qdel(M)
-								var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-								GC.amount = tmc
-								if (GC.amount <= 0)
-									qdel(GC)
-								if (ishuman(L[4]))
-									var/mob/living/human/SELLER = L[4]
-									SELLER.transfer_stock_proc(ord,ord_perc,user)
-									L[5] = 0
-									map.sales_registry -= L
-									for(var/list/LL in map.sales_registry)
-										if (LL[1] == ord && LL[4]==SELLER)
-											LL[5] = 0
-											map.sales_registry -= LL
+					var/valid_money = FALSE
+					var/money_val = 0
+					var/money_return = 0
+
+					if (req_currency == "standard")
+						if (!istype(M, /obj/item/stack/money/fiat))
+							valid_money = TRUE
+							money_val = M.amount * M.value
+							money_return = money_val - ord_price
+					else
+						if (istype(M, /obj/item/stack/money/fiat) && M:fiat_id == req_currency)
+							valid_money = TRUE
+							money_val = M.amount
+							money_return = money_val - ord_price
+
+					for(var/list/reg_check in map.sales_registry)
+						if (reg_check == L && L[5])
+							if (valid_money)
+								if (money_val >= ord_price)
+									qdel(M)
+									if (money_return > 0)
+										if (req_currency == "standard")
+											var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
+											GC.amount = round(money_return/GC.value)
+											if (GC.amount <= 0)
+												qdel(GC)
+										else
+											new/obj/item/stack/money/fiat(loc, money_return, req_currency)
+
+									if (ishuman(L[4]))
+										var/mob/living/human/SELLER = L[4]
+										SELLER.transfer_stock_proc(ord,ord_perc,user)
+										for(var/list/j in map.custom_company[ord])
+											if (j[1] == SELLER)
+												if (j.len < 4)
+													j.len = 4
+													j[4] = list()
+												if (req_currency == "standard")
+													j[3] += ord_price
+												else
+													if (!j[4][req_currency])
+														j[4][req_currency] = 0
+													j[4][req_currency] += ord_price
+												break
+
+										L[5] = 0
+										map.sales_registry -= L
+										for(var/list/LL in map.sales_registry)
+											if (LL[1] == ord && LL[4]==SELLER)
+												LL[5] = 0
+												map.sales_registry -= LL
+									else
+										transfer_stock_nomob(ord,ord_perc,user)
+										L[5] = 0
+										map.sales_registry -= L
+										for(var/list/LL in map.sales_registry)
+											if (LL[1]==ord && LL[2]==ord_perc && LL[3]==ord_price && LL[4]==null)
+												LL[5] = 0
+												map.sales_registry -= LL
 								else
-									transfer_stock_nomob(ord,ord_perc,user)
-									L[5] = 0
-									map.sales_registry -= L
-									for(var/list/LL in map.sales_registry)
-										if (LL[1]==ord && LL[2]==ord_perc && LL[3]==ord_price && LL[4]==null)
-											LL[5] = 0
-											map.sales_registry -= LL
+									var/req_name = req_currency == "standard" ? "sc" : fiat.currency_list[req_currency][1]
+									user << "<span class='notice'>You do not have enough money. You need [ord_price] [req_name] and you only have [money_val] [req_name].</span>"
+									return
 							else
-								user << "<span class='notice'>You do not have enough money. You need [map.sales_registry[ord][3]] sc and you only have [M.amount*M.value] sc.</span>"
+								user << "<span class='notice'>You are not holding the requested currency!</span>"
 								return
 				else
 					user << "<span class='notice'>You need to have money in your hands in order to buy stocks!</span>"
@@ -199,10 +275,23 @@
 						compchoice_amt = i[2]
 					else if (compchoice_amt <= 0)
 						return
-					var/saleprice = input(user, "At what price do you want to sell the [compchoice_amt]% of [choice2]? In silver coins.") as num|null
+					var/saleprice = input(user, "At what price do you want to sell the [compchoice_amt]% of [choice2]?") as num|null
 					if (saleprice <=0)
 						return
 					else
-						map.sales_registry += list(list(choice2,compchoice_amt,saleprice/10,user,1))
-						user << "<span class='notice'>You sucessfully put up [compchoice_amt]% of [choice2] at [saleprice].</span>"
+						var/list/currency_options = list("Standard Coins")
+						for(var/fid in fiat.currency_list)
+							currency_options += fiat.currency_list[fid][1]
+						var/currency_choice = WWinput(user,"What currency do you want to be paid in?", "Stock Market", "Cancel", currency_options)
+						if (currency_choice == "Cancel")
+							return
+						var/requested_currency = "standard"
+						if (currency_choice != "Standard Coins")
+							for(var/fid in fiat.currency_list)
+								if (fiat.currency_list[fid][1] == currency_choice)
+									requested_currency = fid
+									break
+
+						map.sales_registry += list(list(choice2,compchoice_amt,saleprice/10,user,1,requested_currency))
+						user << "<span class='notice'>You sucessfully put up [compchoice_amt]% of [choice2] at [saleprice] [currency_choice].</span>"
 						return

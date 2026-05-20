@@ -41,10 +41,12 @@
 	return
 
 //If a stack is pulled over another stack, this proc is called.
-/obj/item/stack/Crossed(var/obj/item/stack/S)
-	//Checking if stack types match and if it isn't thrown to avoid scooping up stacks in flight.
-	if(amount > 0 && S.amount > 0 && istype(S, stacktype) && !S.throwing)
-		merge(S)
+/obj/item/stack/Crossed(var/atom/movable/AM)
+	if(istype(AM, /obj/item/stack))
+		var/obj/item/stack/S = AM
+		//Checking if stack types match and if it isn't thrown to avoid scooping up stacks in flight.
+		if(amount > 0 && S.amount > 0 && istype(S, stacktype) && !S.throwing)
+			merge(S)
 	. = ..()
 
 //Merging two stacks, logic to avoid going over the max_amount cap.
