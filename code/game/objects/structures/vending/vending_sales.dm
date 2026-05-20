@@ -21,6 +21,7 @@
 /obj/structure/vending/ex_act(severity)
 	return
 
+/** Handles payment insertion, maintenance (wrenching), and product restocking by authorized company members. */
 /obj/structure/vending/sales/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/money))
 		if (accepted_currency == "standard")
@@ -111,6 +112,8 @@
 			product_records.Add(product)
 			update_icon()
 			return TRUE
+
+/** Management menu for owners to change the vendor name, adjust prices, remove stock, or change accepted currency. */
 /obj/structure/vending/sales/verb/Manage()
 	set category = null
 	set src in range(1, usr)
@@ -180,6 +183,7 @@
 		to_chat(usr, "You do not have permission to manage this vendor.")
 		return FALSE
 
+/** Internal procedure to deliver the selected product after successful payment and update the vendor status. */
 /obj/structure/vending/sales/vend(datum/data/vending_product/R, mob/user, var/p_amount=1)
 	vend_ready = FALSE //One thing at a time!!
 	status_message = "Vending..."
@@ -203,6 +207,7 @@
  * calling. W is the item being inserted, R is the associated vending_product entry.
  */
 
+/** Displays the NanoUI purchase interface to customers. */
 /obj/structure/vending/sales/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
 	user.set_using_object(src)
 
@@ -278,6 +283,7 @@
 		ui.set_initial_data(data)
 		ui.open()
 
+/** Processes signals from the NanoUI, including purchase requests, cancellations, and withdrawal of inserted funds. */
 /obj/structure/vending/sales/Topic(href, href_list)
 	if (isliving(usr))
 		if (usr.stat || usr.restrained())

@@ -25,6 +25,7 @@
 	var/image/overlay_primary = null
 	var/image/overlay_secondary = null
 
+/** Initializes the supplier stall and sets up company-colored visual overlays. */
 /obj/structure/supplier/New()
 	..()
 	invisibility = 101
@@ -38,6 +39,7 @@
 		update_icon()
 		invisibility = 0
 
+/** Refreshes the visual overlays based on the current company colors of the owner. */
 /obj/structure/supplier/update_icon()
 	overlays.Cut()
 	if (overlay_primary && overlay_secondary)
@@ -46,6 +48,7 @@
 		overlays += overlay_primary
 		overlays += overlay_secondary
 
+/** Logic for stall maintenance, adding operating funds, configuring new buy orders, or selling items to the stall. */
 /obj/structure/supplier/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wrench))
 		if (owner != "Global" && find_company_member(user,owner))
@@ -226,6 +229,8 @@
 					to_chat(user, "<span class='warning'>The [src] has no money left to buy from you!</span>")
 					return
 	return
+
+/** Management interface for company members to configure buy orders, name, currency, and withdraw operating funds. */
 /obj/structure/supplier/attack_hand(mob/living/human/H as mob)
 	if (find_company_member(H,owner))
 		var/choice = WWinput(H,"What do you want to do?", "Stall Management", "Cancel", list("Change Name", "Remove Products Inside", "Change Amount", "Change Price", "Change Accepted Currency", "Remove Order", "Remove Money", "Cancel"))

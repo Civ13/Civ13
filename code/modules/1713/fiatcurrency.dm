@@ -21,6 +21,7 @@ var/global/datum/currency_list/fiat = new()
 	var/fiat_id
 	flags = CONDUCT
 
+/** Constructor for fiat currency stacks. Initializes name, description, and icon_state based on the global fiat registry. */
 /obj/item/stack/money/fiat/New(loc, _amount, _fiat_id)
 	..()
 	if(_fiat_id)
@@ -40,6 +41,7 @@ var/global/datum/currency_list/fiat = new()
 		desc = "This is broken, contact an admin."
 		message_admins("Fiat currency was created without a valid fiat_id var!")
 
+/** Handles merging this fiat stack with another stack of the same currency type. */
 /obj/item/stack/money/fiat/attackby(obj/item/stack/money/fiat/W as obj, mob/user as mob)
 	if (istype(W, type) && W.fiat_id == src.fiat_id)
 		var/obj/item/stack/S = W
@@ -56,6 +58,7 @@ var/global/datum/currency_list/fiat = new()
 	else
 		return
 
+/** Creates a new stack with a specified amount, subtracting it from the current stack's total. */
 /obj/item/stack/money/fiat/split(var/_amount)
 	if (!amount)
 		return null
@@ -90,6 +93,7 @@ var/global/datum/currency_list/fiat = new()
 	var/real_money_inside = 0
 	var/exchange_rate = 1
 
+/** Prompts the user for an amount to print and converts stored cloth into new fiat currency banknotes. */
 /obj/structure/money_printer/proc/print_money(user)
 	var/nm
 	var/num = input(user, "How much money do you want to print?","Printing", nm) as num
@@ -111,6 +115,7 @@ var/global/datum/currency_list/fiat = new()
 			to_chat(user, "That currency does not exist or the printer is not configured.")
 			return
 
+/** Spawns physical currency (gold, silver, or dollars/rubles) equivalent to the provided value based on map and era. */
 /obj/structure/money_printer/proc/dispense_real_money(dispense_value)
 	if (dispense_value <= 0)
 		return
@@ -141,6 +146,7 @@ var/global/datum/currency_list/fiat = new()
 			if (NM.amount <= 0)
 				qdel(NM)
 
+/** Renders the management menu for money printers, allowing for printing, withdrawals, and rate adjustment. */
 /obj/structure/money_printer/proc/display_ui(user)
 	var/list/choices = list("Cancel", "Print money", "Change Exchange Rate")
 	if (real_money_inside > 0)
@@ -164,6 +170,7 @@ var/global/datum/currency_list/fiat = new()
 			to_chat(user, "The exchange rate is now set to [exchange_rate].")
 		return
 
+/** Configures a new currency for an uninitialized printer or opens the management menu for configured ones. */
 /obj/structure/money_printer/attack_hand(var/mob/living/human/user as mob)
 	if(fiat_id)
 		display_ui(user)
@@ -224,6 +231,7 @@ var/global/datum/currency_list/fiat = new()
 				return
 		return
 
+/** Handles inserting cloth for printing, fiat for exchange, or real money (gold/silver) to serve as reserves. */
 /obj/structure/money_printer/attackby(var/obj/item/stack/I as obj, var/mob/living/human/user as mob)
 	if (I.amount && istype(I, /obj/item/stack/material/cloth))
 		cloth += I.amount

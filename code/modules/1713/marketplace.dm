@@ -8,6 +8,7 @@
 	flammable = FALSE
 	not_movable = FALSE
 
+/** Main interaction menu for checking companies, buying/selling stocks, managing your owned companies, and faction treasury access. */
 /obj/structure/stockmarket/attack_hand(var/mob/living/human/user as mob)
 	var/list/optlist = list("Check Companies","Buy Stock","Sell Stock","Manage Company")
 	if (user.leader && user.civilization != "none")
