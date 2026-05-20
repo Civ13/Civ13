@@ -299,7 +299,7 @@
 // --------------------------------
 /mob/living/simple_animal/hostile/boreas
 	name = "boreas"
-	desc = "A massive elemental beast of dark blue glacial ice."
+	desc = "A massive elemental beast of dark blue glacial ice. Drawn to fires. Can only be harmed by fire."
 	icon = 'icons/mob/monsters/monsters.dmi'
 	icon_state = "ice_demon"
 	icon_living = "ice_demon"
@@ -323,23 +323,24 @@
 	return ..()
 
 /mob/living/simple_animal/hostile/boreas/FindTarget()
-	stop_automated_movement = FALSE
-	var/mob/living/best = null
-	var/best_dist = 999
-	for (var/mob/living/human/H in view(9, src))
-		if (H.stat != DEAD)
-			var/d = get_dist(src, H)
-			if (d < best_dist)
-				best_dist = d
-				best = H
-	if (best)
-		stance = HOSTILE_STANCE_ATTACK
-	return best
+	return null
+
+/mob/living/simple_animal/hostile/boreas/Bump(atom/A)
+	if (istype(A, /obj/structure/simple_door))
+		var/obj/structure/simple_door/D = A
+		if (!D.opened)
+			D.open()
+	..()
 
 /mob/living/simple_animal/hostile/boreas/Life()
 	..()
 	if (stat == DEAD || stat == UNCONSCIOUS)
 		return
+
+	// Open nearby doors so we can reach fire sources inside
+	for (var/obj/structure/simple_door/D in range(1, src))
+		if (!D.opened)
+			D.open()
 
 	for (var/obj/structure/oven/O in range(3, src))
 		if (O.on && O.fuel > 0 && prob(50))
@@ -350,7 +351,7 @@
 				O.update_icon()
 				visible_message("<span class='danger'>\The [O]'s fire is being vacuumed by the freezing presence of [src]!</span>")
 
-	if (!target_mob && stance == HOSTILE_STANCE_IDLE)
+	if (!target_mob)
 		var/obj/structure/oven/closest_oven = null
 		var/closest_dist = 999
 		for (var/obj/structure/oven/O in view(9, src))
@@ -360,7 +361,9 @@
 					closest_dist = d
 					closest_oven = O
 		if (closest_oven)
-			walk_to(src, closest_oven, TRUE, move_to_delay)
+			walk_to(src, closest_oven, 1, move_to_delay)
+		else
+			walk(src, 0)
 
 // --------------------------------
 // ECHOFIEND (Jungle Sound Hunter)
