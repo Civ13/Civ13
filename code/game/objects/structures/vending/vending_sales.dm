@@ -343,22 +343,22 @@
 								new/obj/item/stack/money/fiat(loc, moneyin, accepted_currency)
 						else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 							var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
-							D.amount = moneyin/D.value
+							D.amount = round(moneyin/D.value)
 							if (D.amount == 0)
 								qdel(D)
 						else if (map.ID == MAP_GULAG13)
 							var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
-							D.amount = moneyin/D.value
+							D.amount = round(moneyin/D.value)
 							if (D.amount == 0)
 								qdel(D)
 						else if (map.ID == MAP_PEPELSIBIRSK)
 							var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
-							D.amount = moneyin/D.value
+							D.amount = round(moneyin/D.value)
 							if (D.amount == 0)
 								qdel(D)
 						else if (map.ID == MAP_KANDAHAR)
 							var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
-							D.amount = moneyin/D.value
+							D.amount = round(moneyin/D.value)
 							if (D.amount == 0)
 								qdel(D)
 						else
@@ -390,22 +390,22 @@
 					new/obj/item/stack/money/fiat(loc, moneyin, accepted_currency)
 			else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 				var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
-				D.amount = moneyin/D.value
+				D.amount = round(moneyin/D.value)
 				if (D.amount == 0)
 					qdel(D)
 			else if (map.ID == MAP_GULAG13)
 				var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
-				D.amount = moneyin/D.value
+				D.amount = round(moneyin/D.value)
 				if (D.amount == 0)
 					qdel(D)
 			else if (map.ID == MAP_PEPELSIBIRSK)
 				var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
-				D.amount = moneyin/D.value
+				D.amount = round(moneyin/D.value)
 				if (D.amount == 0)
 					qdel(D)
 			else if (map.ID == MAP_KANDAHAR)
 				var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
-				D.amount = moneyin/D.value
+				D.amount = round(moneyin/D.value)
 				if (D.amount == 0)
 					qdel(D)
 			else

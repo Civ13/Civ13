@@ -55,15 +55,24 @@
 				return
 		else if (choicefac == "Withdraw Taxes")
 			if (map.custom_civs[user.civilization][4] == user)
+				var/withdrew_something = FALSE
 				if (map.custom_civs[user.civilization][5]>0)
 					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
 					GC.amount = map.custom_civs[user.civilization][5]/4
-					map.custom_civs[user.civilization][5]=0
+					map.custom_civs[user.civilization][5] = 0
 					to_chat(user, "You withdraw [GC.amount] gold coins in faction funds.")
-					return
-				else
+					withdrew_something = TRUE
+				if (map.custom_civs[user.civilization].len >= 11 && istype(map.custom_civs[user.civilization][11], /list))
+					var/list/fiat_treasury = map.custom_civs[user.civilization][11]
+					for (var/fid in fiat_treasury)
+						var/amt = fiat_treasury[fid]
+						if (amt > 0)
+							new/obj/item/stack/money/fiat(loc, round(amt), fid)
+							to_chat(user, "You withdraw [round(amt)] [fiat.currency_list[fid][1]] in faction funds.")
+							fiat_treasury[fid] = 0
+							withdrew_something = TRUE
+				if (!withdrew_something)
 					to_chat(user, "<span class='notice'>There is no money to withdraw.</span>")
-					return
 			else
 				to_chat(user, "<span class='warning'>You do not have the permissions to do that!</span>")
 				return
@@ -144,10 +153,18 @@
 								if (user.civilization != "none" && map.custom_civs[user.civilization])
 									businesstax = (map.custom_civs[user.civilization][10]/100)*amt
 									price_without_tax = amt - businesstax
-									// Can't pay fiat tax to faction treasury directly without breaking custom_civs[5] which is 'real' money. We just delete the fiat tax.
+									// Credit fiat tax to the faction treasury (index 11).
+									if (businesstax > 0)
+										if (map.custom_civs[user.civilization].len < 11)
+											map.custom_civs[user.civilization].len = 11
+										if (!istype(map.custom_civs[user.civilization][11], /list))
+											map.custom_civs[user.civilization][11] = list()
+										if (!map.custom_civs[user.civilization][11][fid])
+											map.custom_civs[user.civilization][11][fid] = 0
+										map.custom_civs[user.civilization][11][fid] += businesstax
 								new/obj/item/stack/money/fiat(loc, round(price_without_tax), fid)
 								fiat_profits[fid] = 0
-								to_chat(user, "<span class='notice'>You withdraw [round(price_without_tax)] [fiat.currency_list[fid][1]] in profit, paying [businesstax] as tax to your faction.</span>")
+								to_chat(user, "<span class='notice'>You withdraw [round(price_without_tax)] [fiat.currency_list[fid][1]] in profit, paying [businesstax] [fiat.currency_list[fid][1]] in Business Tax to your faction.</span>")
 								withdrew_something = TRUE
 					if (!withdrew_something)
 						to_chat(user, "<span class='notice'>You have no profits to withdraw.</span>")
@@ -161,12 +178,13 @@
 			var/list/tempbuylist = list("Cancel")
 			var/list/choice_to_reg = list()
 			var/found = FALSE
+			var/sale_id = 1
 			for(var/list/i in map.sales_registry)
 				if (i[5])
 					var/curr_name = "sc"
 					if (i.len >= 6 && i[6] != "standard")
 						curr_name = fiat.currency_list[i[6]][1]
-					var/choice_str = "[i[2]]% of [i[1]], at [i[3]*10] [curr_name]"
+					var/choice_str = "[i[2]]% of [i[1]], at [i[3]*10] [curr_name] #[sale_id++]"
 					tempbuylist += choice_str
 					choice_to_reg[choice_str] = i
 					found = TRUE
@@ -195,10 +213,12 @@
 							money_val = M.amount * M.value
 							money_return = money_val - ord_price
 					else
-						if (istype(M, /obj/item/stack/money/fiat) && M:fiat_id == req_currency)
-							valid_money = TRUE
-							money_val = M.amount
-							money_return = money_val - ord_price
+						if (istype(M, /obj/item/stack/money/fiat))
+							var/obj/item/stack/money/fiat/M_fiat = M
+							if (M_fiat.fiat_id == req_currency)
+								valid_money = TRUE
+								money_val = M_fiat.amount
+								money_return = money_val - ord_price
 
 					for(var/list/reg_check in map.sales_registry)
 						if (reg_check == L && L[5])

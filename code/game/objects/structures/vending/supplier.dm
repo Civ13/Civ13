@@ -103,12 +103,13 @@
 				FI.forceMove(src)
 				user << "<span class='notice'>You store the [FI] in the stall's inventory.</span>"
 				return
-			else if (accepted_currency != "standard" && istype(W, /obj/item/stack/money/fiat) && W:fiat_id != accepted_currency)
+			else if (accepted_currency != "standard" && istype(W, /obj/item/stack/money/fiat))
 				var/obj/item/stack/money/fiat/FI = W
-				user.drop_from_inventory(FI)
-				FI.forceMove(src)
-				to_chat(user, "<span class='notice'>You store the [FI] in the stall's inventory.</span>")
-				return
+				if (FI.fiat_id != accepted_currency)
+					user.drop_from_inventory(FI)
+					FI.forceMove(src)
+					to_chat(user, "<span class='notice'>You store the [FI] in the stall's inventory.</span>")
+					return
 			else if (accepted_currency != "standard" && !istype(W, /obj/item/stack/money/fiat))
 				to_chat(user, "<span class='warning'>This stall only accepts [fiat.currency_list[accepted_currency][1]] as operating funds. Use standard coins to stock inventory.</span>")
 				return
@@ -156,7 +157,7 @@
 					to_chat(user, "<span class='warning'>The [src] is not currently buying.</span>")
 					return
 				var/obj/item/stack/WS = W
-				var/max_affordable = orderprice > 0 ? round(moneyin / orderprice) : orderamount
+				var/max_affordable = orderprice > 0 ? floor(moneyin / orderprice) : orderamount
 				var/limit_qty = min(orderamount, max_affordable)
 				if (limit_qty < 1)
 					if (moneyin < orderprice)
@@ -184,13 +185,13 @@
 				if (accepted_currency == "standard")
 					if (payment > 0 && payment <= 3)
 						var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
-						NM.amount = payment/NM.value
+						NM.amount = floor(payment/NM.value)
 					else if (payment > 3 && payment <= 40)
 						var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
-						NM.amount = payment/NM.value
+						NM.amount = floor(payment/NM.value)
 					else if (payment > 40)
 						var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
-						NM.amount = payment/NM.value
+						NM.amount = floor(payment/NM.value)
 				else
 					new/obj/item/stack/money/fiat(loc, payment, accepted_currency)
 
@@ -250,7 +251,8 @@
 				return
 			var/list/currency_options = list("Standard Coins")
 			for(var/fid in fiat.currency_list)
-				currency_options += fiat.currency_list[fid][1]
+				if (fiat.currency_list[fid][5])
+					currency_options += fiat.currency_list[fid][1]
 			var/currency_choice = WWinput(H,"What currency should this stall accept?", "Stall Management", "Cancel", currency_options)
 			if (currency_choice == "Cancel")
 				return

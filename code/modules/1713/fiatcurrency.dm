@@ -1,5 +1,5 @@
 /datum/currency_list //A list of all the custom fiat currencies in the world, structured as a list of lists.
-	var/list/currency_list = list()
+	var/list/list/currency_list = list()
 
 /* an example of what the list looks like
 /datum/currency_list
@@ -22,6 +22,7 @@ var/global/datum/currency_list/fiat = new()
 	flags = CONDUCT
 
 /obj/item/stack/money/fiat/New(loc, _amount, _fiat_id)
+	..()
 	if(_fiat_id)
 		fiat_id = _fiat_id
 	if (_amount)
@@ -59,6 +60,9 @@ var/global/datum/currency_list/fiat = new()
 	if (!amount)
 		return null
 	if (_amount)
+		_amount = min(_amount, amount)
+		if (_amount <= 0)
+			return FALSE
 		var/obj/item/stack/money/fiat/S = new(src.loc, _amount, src.fiat_id)
 		S.color = color
 		if (prob(_amount/amount * 100))
@@ -93,20 +97,19 @@ var/global/datum/currency_list/fiat = new()
 	if (num <= 0)
 		return
 	else
-		for(var/i in fiat.currency_list)
-			var/cloth_remaining = (cloth - num*0.01)
-			if (fiat_id && cloth_remaining >= 0)
-				cloth = cloth_remaining
-				desc = "This prints money. It currently contains [cloth] cloth."
-				new/obj/item/stack/money/fiat(loc, num, fiat_id)
-				playsound(loc, 'sound/machines/vending_drop.ogg', 100, TRUE)
-				return
-			else if (cloth_remaining < 0)
-				to_chat(user, "You do not have enough cloth in the machine to produce that much currency! The maximum you can currently produce is [cloth*100]")
-				return
-			else if (!fiat_id)
-				to_chat(user, "That currency does not exist.")
-				return
+		var/cloth_remaining = (cloth - num*0.01)
+		if (fiat_id && (fiat_id in fiat.currency_list) && cloth_remaining >= 0)
+			cloth = cloth_remaining
+			desc = "This prints money. It currently contains [cloth] cloth."
+			new/obj/item/stack/money/fiat(loc, num, fiat_id)
+			playsound(loc, 'sound/machines/vending_drop.ogg', 100, TRUE)
+			return
+		else if (cloth_remaining < 0)
+			to_chat(user, "You do not have enough cloth in the machine to produce that much currency! The maximum you can currently produce is [cloth*100]")
+			return
+		else
+			to_chat(user, "That currency does not exist or the printer is not configured.")
+			return
 
 /obj/structure/money_printer/proc/dispense_real_money(dispense_value)
 	if (dispense_value <= 0)
@@ -260,6 +263,6 @@ var/global/datum/currency_list/fiat = new()
 
 /obj/structure/money_printer/Destroy()
 	if(fiat_id)
-		fiat.currency_list[fiat_id][5] = 0
-	qdel(src)
+		if (fiat_id in fiat.currency_list)
+			fiat.currency_list[fiat_id][5] = 0
 	return ..()
