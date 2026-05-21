@@ -458,7 +458,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						to_chat(usr, "You can't start restart votes if you are not playing.")
 						return FALSE
 					if (!config.allowedgamemodes == "TDM")
-						if ((map.nomads || map.is_RP) && clients.len < 5 && ((world.time-round_start_time)>108000) && !usr.client.holder)
+						if (map.nomads && clients.len < 5 && ((world.time-round_start_time)>108000) && !usr.client.holder)
 							to_chat(usr, "You can't start restart votes if the server population is lower than <b>five</b> and the round has been going for over <b>three</b> hours.")
 							return FALSE
 					initiate_vote("restart",usr.key)

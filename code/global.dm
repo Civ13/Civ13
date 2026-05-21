@@ -376,6 +376,34 @@ div.notice
 	width: 100%;
 	clear: both;
 }
+
+/* Late choices job tiers */
+a.job-commander
+{
+	font-size: 1.35em;
+	border-left: 4px solid #ffd700;
+	font-weight: bold;
+	letter-spacing: 0.04em;
+}
+
+a.job-officer
+{
+	font-size: 1.15em;
+	border-left: 4px solid #c0c0c0;
+	font-weight: bold;
+}
+
+a.job-squad-leader
+{
+	font-size: 1.1em;
+	border-left: 4px solid #cd7f32;
+	font-weight: bold;
+}
+
+a.job-normal
+{
+	font-size: 1.0em;
+}
 </style>
 "}
 //green on black

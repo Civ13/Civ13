@@ -3,8 +3,8 @@
 
 	var/list/epochs = list(
 		//"Stone Age (?-3000 B.C.)" = 0,
-		"Chad Mode" = 0,
 		"PvE (Voyage, Antarctica, etc)" = 0,
+		"Chad Mode" = 0,
 		"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
 		//"Bronze Age (3000 B.C.-400 A.D.)" = 0,
 		//"Dark Ages (400-700)" = 0,
@@ -28,17 +28,17 @@
 	)
 	var/list/epoch_desc = list(
 		"Chad Mode"                              = "Stone Age survival with scarce resources, hostile wildlife, and no research. A brutal, unforgiving experience.",
-		"Pre-Firearms (3000 B.C-1650 A.D.)"      = "Ancient to early-medieval warfare — swords, spears, bows, and siege weapons across iconic historical battlefields.",
+		"Pre-Firearms (3000 B.C-1650 A.D.)"      = "Ancient to early-medieval warfare: swords, spears, bows, and siege weapons across iconic historical battlefields.",
 		"PvE (Voyage, Antarctica, etc)"          = "Co-operative PvE adventures. Lowpop friendly maps.",
 		"Early Fire Arms (1650-1930)"            = "Muskets, rifles, and early artillery spanning the colonial era, Napoleonic wars, and WWI.",
-		"World War II (1931-1948)"               = "Full-scale industrial warfare across iconic WWII theatres — from Stalingrad to Normandy.",
+		"World War II (1931-1948)"               = "Full-scale industrial warfare across iconic WWII theatres, from Stalingrad to Normandy.",
 		"Modern Fire Arms (1949-2021)"           = "Post-war conflicts from Vietnam to modern-day special operations and urban combat.",
 		"HRP TDM (Gulag, Occupation, AOTD, etc)" = "Heavy roleplay scenarios: prison camps, occupied territories, and narrative-driven missions.",
 		"Civilization 13 (Nomads)"               = "Open-ended civilization-building starting from the Stone Age across diverse landscapes.",
-		"Civilization 13 (Colony & Pioneers)"    = "Colonial-era settlement and frontier expansion — carve out a new world.",
+		"Civilization 13 (Colony & Pioneers)"    = "Colonial-era settlement and frontier expansion: carve out a new world.",
 		"Civilization 13 (Others)"               = "Miscellaneous Civ13 scenarios including tribal conflicts, hunts, and kingdom struggles.",
 		"Battle Royale"                          = "Last-man-standing combat across multiple historical eras. Only one survives.",
-		"Fiction"                                = "Fictional and fantasy settings — space battles, Skyrim, and beyond.",
+		"Fiction"                                = "Fictional and fantasy settings: space battles, Skyrim, and beyond.",
 	)
 	var/ready = TRUE
 	var/restart_triggered = FALSE
@@ -301,9 +301,9 @@
 				)
 			if ("PvE (Voyage, Antarctica, etc)")
 				maps = list(
-					MAP_CURSED_ISLAND = 0,
 					MAP_ANTARCTICA = 0,
 					MAP_LIGHTS_OUT = 0,
+					//MAP_HUNT = 4,
 					MAP_VOYAGE = 6,
 				)
 

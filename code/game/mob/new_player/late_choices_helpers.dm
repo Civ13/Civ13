@@ -277,7 +277,7 @@
 	for (var/line in dat)
 		if (line != null)
 			if (line != "<br>")
-				data += "<span style = 'font-size:2.0rem;'>[line]</span>"
+				data += "[line]"
 			data += "<br>"
 
 	data = {"

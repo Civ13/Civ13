@@ -1280,25 +1280,21 @@ var/global/redirect_all_players = null
 				if (side_name)
 					dat += "<br>[side_name]<br><hr>"
 
-			var/extra_span = "<b><font size=3 style='margin-bottom:0.5em'>"
-			var/end_extra_span = "</font></b>"
-			if (job.is_officer && !job.is_commander)
-				extra_span = "<b><font size=4 style='margin-bottom:0.5em'>"
-				end_extra_span = "</font></b>"
-			else if (job.is_commander)
-				extra_span = "<b><font size=5 style='margin-bottom:0.5em'>"
-				end_extra_span = "</font></b>"
+			var/job_class = "job-normal"
+			if (job.is_commander)
+				job_class = "job-commander"
+			else if (job.is_officer)
+				job_class = "job-officer"
 			else if (job.is_squad_leader)
-				extra_span = "<b><font size=4 style='margin-bottom:0.5em'>"
-				end_extra_span = "</font></b>"
+				job_class = "job-squad-leader"
 
 			if (!job.en_meaning)
 				if (job_is_available)
-					dat += "&[job.base_type_flag()]&[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.current_positions]/[job.total_positions]) (Active: [active])</a>[end_extra_span]"
+					dat += "&[job.base_type_flag()]&<a class=\"[job_class]\" style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.current_positions]/[job.total_positions]) (Active: [active])</a>"
 					++available_jobs_per_side[job.base_type_flag()]
 			else
 				if (job_is_available)
-					dat += "&[job.base_type_flag()]&[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.en_meaning]) ([job.current_positions]/[job.total_positions]) (Active: [active])</a>[end_extra_span]"
+					dat += "&[job.base_type_flag()]&<a class=\"[job_class]\" style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.en_meaning]) ([job.current_positions]/[job.total_positions]) (Active: [active])</a>"
 					++available_jobs_per_side[job.base_type_flag()]
 
 	if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
