@@ -434,6 +434,7 @@
 	icon_gib = "vine_strangler_static"
 	maxHealth = 80
 	health = 80
+	layer = 6 // above mobs
 	density = FALSE
 	anchored = TRUE
 	faction = "neutral"
@@ -451,6 +452,7 @@
 			return
 		choking_mob = H
 		H.choked_by = src
+		H.update_canmove()
 		icon_state = "vine_strangler"
 		visible_message("<span class='danger'>A loop of thick vine drops around [H]'s neck, lifting them slightly!</span>")
 		to_chat(H, "<span class='danger'>A strangling vine tightens around your neck! You can't move!</span>")
@@ -476,8 +478,8 @@
 		if (choking_mob.stat == DEAD || get_turf(choking_mob) != T)
 			release_mob()
 			return
-		choking_mob.apply_damage(5, BURN, "head")
-		choking_mob.anchored = TRUE
+		choking_mob.apply_damage(5, OXY, "head")
+		choking_mob.apply_damage(5, BRUTE, pick("l_leg","r_leg","chest","groin","l_arm","r_arm"))
 
 /mob/living/simple_animal/hostile/canopy_strangler/death()
 	release_mob()
@@ -486,10 +488,27 @@
 
 /mob/living/simple_animal/hostile/canopy_strangler/proc/release_mob()
 	if (choking_mob)
+		var/mob/living/M = choking_mob
 		choking_mob.choked_by = null
 		choking_mob.anchored = FALSE
 		choking_mob = null
+		M.update_canmove()
 	icon_state = "vine_strangler_static"
+
+/mob/living/simple_animal/hostile/canopy_strangler/attack_hand(mob/living/human/M as mob)
+	if (M.a_intent == I_DISARM)
+		if (choking_mob == M)
+			M.setClickCooldown(20)
+			M.resist_grab()
+			return TRUE
+		else if (choking_mob)
+			M.setClickCooldown(20)
+			M.visible_message("<span class='warning'>[M] tries to pull [choking_mob] free from [src]!</span>", "<span class='warning'>You try to pull [choking_mob] free from [src]!</span>")
+			if (prob(30))
+				visible_message("<span class='warning'>[M] successfully pulls [choking_mob] free from [src]!</span>")
+				release_mob()
+			return TRUE
+	return ..()
 
 // --------------------------------
 // PHOSPHOR BEETLE (Jungle Light Dye)

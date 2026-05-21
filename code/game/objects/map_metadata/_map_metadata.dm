@@ -1250,3 +1250,13 @@ var/civmax_research = list(230,230,230)
 		if (entry[7]==0 && entry[5]=="bank" && entry[2] && entry[1]==tfaction)
 			if (istype(entry[2],/mob/living/human))
 				map.marketplaceaccounts[entry[1]] += value/2.5
+
+/obj/map_metadata/proc/spawn_canopy_stranglers(var/chance = 3)
+	if (grass_turf_list && grass_turf_list.len)
+		for (var/turf/floor/grass/jungle/T in grass_turf_list)
+			if (prob(chance))
+				new /mob/living/simple_animal/hostile/canopy_strangler(T)
+	else
+		for (var/turf/floor/grass/jungle/T in world)
+			if (prob(chance))
+				new /mob/living/simple_animal/hostile/canopy_strangler(T)

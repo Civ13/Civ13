@@ -197,6 +197,18 @@
 	climate = "jungle"
 	ambience = list("sound/ambience/jungle1.ogg")
 
+/area/caribbean/nomads/forest/Jungle/extraction1
+	name = "Extraction Point 1"
+	icon_state = "red1"
+
+/area/caribbean/nomads/forest/Jungle/extraction2
+	name = "Extraction Point 2"
+	icon_state = "red2"
+
+/area/caribbean/nomads/forest/Jungle/extraction3
+	name = "Extraction Point 3"
+	icon_state = "red3"
+
 /area/caribbean/nomads/forest/Jungle/sea
 	base_turf = /turf/floor/beach/water/deep/saltwater
 	icon_state = "blue1"

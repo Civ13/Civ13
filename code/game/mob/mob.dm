@@ -794,7 +794,16 @@
 			prone = FALSE
 			update_icons()
 	if (!gallows)
-		if (buckled)
+		var/choked = FALSE
+		if (isliving(src))
+			var/mob/living/L = src
+			if (L.choked_by)
+				choked = TRUE
+		if (choked)
+			anchored = TRUE
+			canmove = FALSE
+			lying = FALSE
+		else if (buckled)
 			anchored = TRUE
 			canmove = FALSE
 			if (istype(buckled))

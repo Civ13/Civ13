@@ -291,6 +291,10 @@
 
 			if (I_DISARM)
 				if (M == src)
+					if (M.choked_by)
+						M.setClickCooldown(20)
+						M.resist_grab()
+						return TRUE
 					to_chat(M, SPAN_WARNING("I can't manage to shove myself."))
 					return FALSE
 
