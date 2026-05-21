@@ -410,12 +410,7 @@
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text_days()]"
 	dat += "<br>"
-	dat += "<b>Current Autobalance Status</b>: "
-	if (CAFR in map.faction_organization)
-		dat += "[alive_bluefaction.len] CAFR soldiers "
-	if (TSFSR in map.faction_organization)
-		dat += "[alive_redfaction.len] Turkestan SFSR soldiers "
-
+	dat += "<b>Current Autobalance Status</b>: [get_autobalance_status_html()]"
 	dat += "<br>"
 	switch (factjob)
 		if ("blue")
@@ -489,28 +484,7 @@
 
 	dat += "</center>"
 
-	var/data = ""
-	for (var/line in dat)
-		if (line != null)
-			if (line != "<br>")
-				data += "<span style = 'font-size:2.0rem;'>[line]</span>"
-			data += "<br>"
-
-	data = {"
-		<br>
-		<html>
-		<head>
-		[common_browser_style]
-		</head>
-		<body>
-		[data]
-		</body>
-		</html>
-		<br>
-	"}
-
-	spawn (1)
-		src << browse(data, "window=latechoices;size=600x640;can_close=1")
+	show_latechoices_window(dat)
 
 /obj/map_metadata/campaign_new/update_win_condition()
 	// Win when timer reaches zero

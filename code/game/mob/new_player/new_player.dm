@@ -1230,188 +1230,17 @@ var/global/redirect_all_players = null
 
 	src << browse(null, "window=latechoices")
 
-	//<body style='background-color:#1D2951; color:#ffffff'>
 	var/list/dat = list("<center>")
 	dat += "<font size=5><b>Welcome, [key].</b></font>"
 	dat += "<br>"
 	dat += "<font size=4>Round Duration: [roundduration2text_days()]</font>"
 	dat += "<br>"
-	dat += "<font size=4><b>Current Autobalance Status</b>:</font>"
-	if (BRITISH in map.faction_organization)
-		if (map && istype(map, /obj/map_metadata/twotribes))
-			dat += "<font size=4>[alive_french.len] Red Tribesmen </font>"
-		else
-			dat += "<font size=4>[alive_british.len] British </font>"
-	if (PORTUGUESE in map.faction_organization)
-		dat += "<font size=4>[alive_portuguese.len] Portuguese </font>"
-	if (FRENCH in map.faction_organization)
-		if (map && istype(map, /obj/map_metadata/twotribes))
-			dat += "<font size=4>[alive_french.len] Blue Tribesmen </font>"
-		else
-			dat += "<font size=4>[alive_french.len] French </font>"
-	if (SPANISH in map.faction_organization)
-		dat += "<font size=4>[alive_spanish.len] Spanish </font>"
-	if (DUTCH in map.faction_organization)
-		dat += "<font size=4>[alive_dutch.len] Dutch </font>"
-	if (ITALIAN in map.faction_organization)
-		dat += "<font size=4>[alive_dutch.len] Italian </font>"
-	if (PIRATES in map.faction_organization)
-		dat += "<font size=4>[alive_pirates.len] Pirates </font>"
-	if (INDIANS in map.faction_organization)
-		if (map && istype(map, /obj/map_metadata/african_warlords))
-			dat += "<font size=4>[alive_indians.len] Blugisi </font>"
-		else if (map && istype(map, /obj/map_metadata/tadojsville))
-			dat += "<font size=4>[alive_indians.len] Wartribe Mercenary </font>"
-		else if (map && istype(map, /obj/map_metadata/east_los_santos))
-			dat += "<font size=4>[alive_indians.len] Ballas </font>"
-		else
-			dat += "<font size=4>[alive_indians.len] Natives </font>"
-	if (CIVILIAN in map.faction_organization)
-		if (map && istype(map, /obj/map_metadata/tsaritsyn))
-			dat += "<font size=4>[alive_civilians.len] Soviets </font>"
-		else if (map && istype(map, /obj/map_metadata/african_warlords))
-			dat += "<font size=4>[alive_civilians.len] Yellowagwana </font>"
-		else if (map && istype(map, /obj/map_metadata/tadojsville))
-			dat += "<font size=4>[alive_civilians.len] UN Peacekeepers </font>"
-		else if (map && istype(map, /obj/map_metadata/capitol_hill))
-			dat += "<font size=4>[alive_civilians.len] Rioters </font>"
-		else if (map && istype(map, /obj/map_metadata/yeltsin))
-			dat += "<font size=4>[alive_civilians.len] Soviet Remnants </font>"
-		else if (map && istype(map, /obj/map_metadata/missionary_ridge))
-			dat += "<font size=4>[alive_civilians.len] Confederates </font>"
-		else if (map && istype(map, /obj/map_metadata/tantiveiv))
-			dat += "<font size=4>[alive_civilians.len] Rebels </font>"
-		else if (map && istype(map, /obj/map_metadata/ruhr_uprising))
-			dat += "<font size=4>[alive_civilians.len] Revolutionaries </font>"
-		else if (map && istype(map, /obj/map_metadata/bank_robbery))
-			dat += "<font size=4>[alive_civilians.len] Policemen </font>"
-		else if (map && istype(map, /obj/map_metadata/drug_bust))
-			dat += "<font size=4>[alive_civilians.len] Policemen and Federal Agents </font>"
-		else if (map && istype(map, /obj/map_metadata/long_march))
-			dat += "<font size=4>[alive_civilians.len] Chinese Red Army </font>"
-		else if (map && istype(map, /obj/map_metadata/holdmadrid))
-			dat += "<font size=4>[alive_civilians.len] Republican </font>"
-		else
-			dat += "<font size=4>[alive_civilians.len] Civilians </font>"
-	if (GREEK in map.faction_organization)
-		dat += "<font size=4>[alive_greek.len] Greeks </font>"
-	if (ROMAN in map.faction_organization)
-		dat += "<font size=4>[alive_roman.len] Romans </font>"
-	if (ARAB in map.faction_organization)
-		if (map && (istype(map, /obj/map_metadata/kandahar) || istype(map, /obj/map_metadata/hill_3234) || istype(map, /obj/map_metadata/magistral)))
-			dat += "<font size=4>[alive_arab.len] Mujahideen </font>"
-		else if (map && istype(map, /obj/map_metadata/syria))
-			dat += "<font size=4>[alive_arab.len] Syrian Government Soldiers </font>"
-		else
-			dat += "<font size=4>[alive_arab.len] Arabs </font>"
-	if (JAPANESE in map.faction_organization)
-		dat += "<font size=4>[alive_japanese.len] Japanese </font>"
-	if (RUSSIAN in map.faction_organization)
-		if (map && istype(map, /obj/map_metadata/yeltsin))
-			dat += "<font size=4>[alive_russian.len] Russian Army </font>"
-		else if (map && istype(map, /obj/map_metadata/bank_robbery))
-			dat +="<font size=4>[alive_russian.len] Robbers </font>"
-		else if (map && istype(map, /obj/map_metadata/drug_bust))
-			dat +="<font size=4>[alive_russian.len] Rednikov Mobsters </font>"
-		else if (map && istype(map, /obj/map_metadata/eft_factory))
-			dat +="<font size=4>[alive_russian.len] BEAR PMCs </font>"
-		else
-			if (map && (map.ordinal_age == 6 || map.ordinal_age == 7))
-				dat += "<font size=4>[alive_russian.len] Soviets </font>"
-			else
-				dat += "<font size=4>[alive_russian.len] Russians </font>"
-	if (CHECHEN in map.faction_organization)
-		dat += "<font size=4>[alive_chechen.len] Chechens </font>"
-	if (FINNISH in map.faction_organization)
-		dat += "<font size=4>[alive_finnish.len] Finnish </font>"
-	if (NORWEGIAN in map.faction_organization)
-		if (map && istype(map, /obj/map_metadata/clash))
-			dat += "<font size=4>[alive_norwegian.len] Bear Clan Vikings </font>"
-		else
-			dat += "<font size=4>[alive_norwegian.len] Norwegians </font>"
-	if (SWEDISH in map.faction_organization)
-		dat += "<font size=4>[alive_swedish.len] Swedes </font>"
-	if (DANISH in map.faction_organization)
-		if (map && istype(map, /obj/map_metadata/clash))
-			dat += "<font size=4>[alive_danish.len] Raven Clan Vikings </font>"
-		else
-			dat += "<font size=4>[alive_danish.len] Danes </font>"
-	if (GERMAN in map.faction_organization)
-		if (map && istype(map, /obj/map_metadata/ruhr_uprising))
-			dat += "<font size=4>[alive_german.len] Reactionaries </font>"
-		else
-			dat += "<font size=4>[alive_german.len] German </font>"
-	if (AMERICAN in map.faction_organization)
-		if (map && istype(map, /obj/map_metadata/arab_town))
-			dat += "<font size=4>[alive_american.len] Israeli </font>"
-		else if (map && istype(map, /obj/map_metadata/capitol_hill))
-			dat += "<font size=4>[alive_american.len] American Government </font>"
-		else if (map && istype(map, /obj/map_metadata/missionary_ridge))
-			dat += "<font size=4>[alive_american.len] Union Soldiers </font>"
-		else if (map && istype(map, /obj/map_metadata/tantiveiv))
-			dat += "<font size=4>[alive_american.len] Imperials </font>"
-		else if (map && istype(map, /obj/map_metadata/east_los_santos))
-			dat += "<font size=4>[alive_american.len] Grove Street </font>"
-		else if (map && istype(map, /obj/map_metadata/eft_factory))
-			dat += "<font size=4>[alive_american.len] USEC PMCs </font>"
-		else if (map && istype(map, /obj/map_metadata/syria))
-			dat += "<font size=4>[alive_american.len] Syrian Rebels </font>"
-		else
-			dat += "<font size=4>[alive_american.len] American </font>"
-	if (VIETNAMESE in map.faction_organization)
-		dat += "<font size=4>[alive_vietnamese.len] Vietnamese </font>"
-	if (CHINESE in map.faction_organization)
-		if (map && istype(map, /obj/map_metadata/long_march))
-			dat += "<font size=4>[alive_chinese.len] Chinese National Army </font>"
-		else
-			dat += "<font size=4>[alive_chinese.len] Chinese </font>"
-	if (FILIPINO in map.faction_organization)
-		dat += "<font size=4>[alive_filipino.len] Filipino </font>"
-	if (POLISH in map.faction_organization)
-		dat += "<font size=4>[alive_polish.len] Poles </font>"
-	if (BLUEFACTION in map.faction_organization)
-		dat += "<font size=4>[alive_bluefaction.len] Blugoslavians </font>"
-	if (REDFACTION in map.faction_organization)
-		dat += "<font size=4>[alive_redfaction.len] Redmenians </font>"
-	if (CAFR in map.faction_organization)
-		dat += "<font size=4>[alive_cafr.len] CAFR soldiers </font>"
-	if (TSFSR in map.faction_organization)
-		dat += "<font size=4>[alive_tsfsr.len] TSFSR soldiers </font>"
-//	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
-//	dat += "<br>"
+	dat += "<font size=4><b>Current Autobalance Status</b>: [get_autobalance_status_html()]</font>"
+	dat += "<br>"
 
-//	var/list/restricted_choices = list()
-
-	var/list/available_jobs_per_side = list(
-		CIVILIAN = FALSE,
-		PIRATES = FALSE,
-		SPANISH = FALSE,
-		FRENCH = FALSE,
-		INDIANS = FALSE,
-		PORTUGUESE = FALSE,
-		DUTCH = FALSE,
-		ITALIAN = FALSE,
-		BRITISH = FALSE,
-		ROMAN = FALSE,
-		GREEK = FALSE,
-		ARAB = FALSE,
-		RUSSIAN = FALSE,
-		CHECHEN = FALSE,
-		FINNISH = FALSE,
-		NORWEGIAN = FALSE,
-		SWEDISH = FALSE,
-		DANISH = FALSE,
-		JAPANESE = FALSE,
-		GERMAN = FALSE,
-		AMERICAN = FALSE,
-		VIETNAMESE = FALSE,
-		CHINESE = FALSE,
-		POLISH = FALSE,
-		BLUEFACTION = FALSE,
-		REDFACTION = FALSE,
-		CAFR = FALSE,
-		TSFSR = FALSE,
-		)
+	var/list/available_jobs_per_side = list()
+	for (var/faction in map.faction_organization)
+		available_jobs_per_side[faction] = 0
 
 	var/prev_side = FALSE
 	for (var/datum/job/job in job_master.faction_organized_occupations)
@@ -1436,227 +1265,31 @@ var/global/redirect_all_players = null
 		if (map && !map.job_enabled_specialcheck(job))
 			job_is_available = FALSE
 
-		if (istype(job, /datum/job/british) && !british_toggled)
+		if (is_faction_toggled_off(job.base_type_flag()))
 			job_is_available = FALSE
-
-		if (istype(job, /datum/job/pirates) && !pirates_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/indians) && !indians_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/civilian) && !civilians_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/portuguese) && !portuguese_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/french) && !french_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/spanish) && !spanish_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/dutch) && !dutch_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/italian) && !italian_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/roman) && !roman_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/greek) && !greek_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/arab) && !arab_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/russian) && !russian_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/arab/civilian/chechen) && !chechen_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/finnish) && !finnish_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/norwegian) && !norwegian_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/swedish) && !swedish_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/danish) && !danish_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/german) && !german_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/american) && !american_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/vietnamese) && !vietnamese_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/chinese) && !chinese_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/polish) && !polish_toggled)
-			job_is_available = FALSE
-		
-		if (istype(job, /datum/job/bluefaction) && !bluefaction_toggled)
-			job_is_available = FALSE
-		
-		if (istype(job, /datum/job/redfaction) && !redfaction_toggled)
-			job_is_available = FALSE
-
-		if (istype(job, /datum/job/cafr) && !cafr_toggled)
-			job_is_available = FALSE
-		
-		if (istype(job, /datum/job/tsfsr) && !tsfsr_toggled)
-			job_is_available = FALSE
-
-		// check if the job is admin-locked or disabled codewise
 
 		if (!job.enabled)
 			job_is_available = FALSE
-
-		// check if the job is autobalance-locked
 
 		if (job)
 			var/active = processes.job_data.get_active_positions(job)
 			if (job.base_type_flag() != prev_side)
 				prev_side = job.base_type_flag()
-				var/temp_name = job.get_side_name()
-				if (map)
-					switch (map.ID)
-						if (MAP_ARAB_TOWN)
-							if (temp_name == "American")
-								temp_name = "Israeli"
-						if (MAP_AFRICAN_WARLORDS)
-							if (temp_name == "Indians")
-								temp_name = "Blugisi"
-							else if (temp_name == "Civilian")
-								temp_name = "Yellowagwana"
-						if (MAP_TADOJSVILLE)
-							if (temp_name == "Indians")
-								temp_name = "Mercenary Warband"
-							else if (temp_name == "Civilian")
-								temp_name = "United Nations Peacekeepers"
-						if (MAP_MISSIONARY_RIDGE)
-							if (temp_name == "American")
-								temp_name = "Union"
-							else if (temp_name == "Civilian")
-								temp_name = "Confederate"
-						if (MAP_WHITERUN)
-							if (temp_name == "Roman")
-								temp_name = "Imperials"
-							else if (temp_name == "Civilian")
-								temp_name = "Stormcloaks"
-						if (MAP_SYRIA)
-							if (temp_name == "American")
-								temp_name = "Free Syrian Army"
-							else if (temp_name == "Arab")
-								temp_name = "Syrian Arab Republic"
-						if (MAP_CAPITOL_HILL)
-							if (temp_name == "American")
-								temp_name = "American Government"
-							else if (temp_name == "Civilian")
-								temp_name = "Rioters"
-						if (MAP_YELTSIN)
-							if (temp_name == "Russian")
-								temp_name = "Russian Army"
-							else if (temp_name == "Civilian")
-								temp_name = "Soviet Militia"
-
-						if (MAP_KANDAHAR)
-							if (temp_name == "Russian")
-								temp_name = "Soviet Army"
-							else if (temp_name == "Arab")
-								temp_name = "Mujahideen"
-							else if (temp_name == "Civilian")
-								temp_name = "DRA and Civilians"
-						if (MAP_HILL_3234)
-							if (temp_name == "Russian")
-								temp_name = "Soviet Army"
-							else if (temp_name == "Arab")
-								temp_name = "Mujahideen"
-							else if (temp_name == "Civilian")
-								temp_name = "DRA and Civilians"
-						if (MAP_MAGISTRAL)
-							if (temp_name == "Russian")
-								temp_name = "Soviet Army"
-							else if (temp_name == "Arab")
-								temp_name = "Mujahideen"
-							else if (temp_name == "Civilian")
-								temp_name = "DRA and Civilians"
-
-						if (MAP_RED_MENACE)
-							if (temp_name == "Russian")
-								temp_name = "Soviets"
-						if (MAP_TANTIVEIV)
-							if (temp_name == "Civilian")
-								temp_name = "Rebels"
-							else if (temp_name == "American")
-								temp_name = "Imperials"
-						if (MAP_RUHR_UPRISING)
-							if (temp_name == "German")
-								temp_name = "Reactionaries"
-							if (temp_name == "Civilian")
-								temp_name = "Revolutionaries"
-						if (MAP_BANK_ROBBERY)
-							if (temp_name == "Civilian")
-								temp_name = "Police Department"
-							if (temp_name == "Russian")
-								temp_name = "Robbers"
-						if (MAP_DRUG_BUST)
-							if (temp_name == "Civilian")
-								temp_name = "Police and Federal Agents"
-							if (temp_name == "Russian")
-								temp_name = "Rednikov Mobsters"
-						if (MAP_CLASH)
-							if (temp_name == "Norwegian")
-								temp_name = "Bear Clan"
-							if (temp_name == "Danish")
-								temp_name = "Raven Clan"
-						if (MAP_EAST_LOS_SANTOS)
-							if (temp_name == "Indians")
-								temp_name = "Ballas"
-							if (temp_name == "American")
-								temp_name = "Grove Street Families"
-						if (MAP_LONG_MARCH)
-							if (temp_name == "Civilian")
-								temp_name = "Chinese Red Army"
-							if (temp_name == "Chinese")
-								temp_name = "Chinese National Army"
-						
-						if (MAP_ROTSTADT)
-							if (temp_name == "Redmenia")
-								temp_name = "Rotstadt People's Republic"
-							if (temp_name == "Blugoslavia")
-								temp_name = "Blugoslavian Armed Forces"
-							
-						if (MAP_HOLDMADRID)
-							if (temp_name == "Civilian")
-								temp_name = "Republican"
-							if (temp_name == "Spanish")
-								temp_name = "Spanish"
-
+				var/temp_name = get_faction_custom_name(job.base_type_flag())
 				var/side_name = "<b><big>[temp_name]</big></b>&&[job.base_type_flag()]&&"
 				if (side_name)
 					dat += "<br>[side_name]<br><hr>"
 
-			var/extra_span = "<b><font size=3>"
+			var/extra_span = "<b><font size=3 style='margin-bottom:0.5em'>"
 			var/end_extra_span = "</font></b>"
 			if (job.is_officer && !job.is_commander)
-				extra_span = "<b><font size=4>"
+				extra_span = "<b><font size=4 style='margin-bottom:0.5em'>"
 				end_extra_span = "</font></b>"
 			else if (job.is_commander)
-				extra_span = "<b><font size=5>"
+				extra_span = "<b><font size=5 style='margin-bottom:0.5em'>"
 				end_extra_span = "</font></b>"
 			else if (job.is_squad_leader)
-				extra_span = "<br><b><font size=4>"
+				extra_span = "<b><font size=4 style='margin-bottom:0.5em'>"
 				end_extra_span = "</font></b>"
 
 			if (!job.en_meaning)
@@ -1667,11 +1300,13 @@ var/global/redirect_all_players = null
 				if (job_is_available)
 					dat += "&[job.base_type_flag()]&[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.en_meaning]) ([job.current_positions]/[job.total_positions]) (Active: [active])</a>[end_extra_span]"
 					++available_jobs_per_side[job.base_type_flag()]
+
 	if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		dat += "&[CIVILIAN]&<b><a style=\"background-color:#010203;\" href='byond://?src=\ref[src];SelectedJob=Company Member'>Company Member (Random) </b><br>"
+		if (CIVILIAN in available_jobs_per_side)
+			++available_jobs_per_side[CIVILIAN]
 	dat += "</center>"
 
-	// shitcode to hide jobs that aren't available
 	var/any_available_jobs = FALSE
 	for (var/key in available_jobs_per_side)
 		var/val = available_jobs_per_side[key]
@@ -1686,7 +1321,7 @@ var/global/redirect_all_players = null
 		else
 			any_available_jobs = TRUE
 			var/replaced_faction_title = FALSE
-			for (var/v in TRUE to dat.len)
+			for (var/v in 1 to dat.len)
 				if (findtext(dat[v], "&[key]&") && !findtext(dat[v], "&&[key]&&"))
 					dat[v] = replacetext(dat[v], "&[key]&", "")
 				else if (!replaced_faction_title && findtext(dat[v], "&&[key]&&"))
@@ -1701,29 +1336,7 @@ var/global/redirect_all_players = null
 		WWalert(usr,"All roles are disabled by autobalance!","Error")
 		return
 
-	var/data = ""
-	for (var/line in dat)
-		if (line != null)
-			if (line != "<br>")
-				data += "<span style = 'font-size:2.0rem;'>[line]</span>"
-			data += "<br>"
-
-	//<link rel='stylesheet' type='text/css' href='html/browser/common.css'>
-	data = {"
-		<br>
-		<html>
-		<head>
-		[common_browser_style]
-		</head>
-		<body>
-		[data]
-		</body>
-		</html>
-		<br>
-	"}
-
-	spawn (1)
-		src << browse(data, "window=latechoices;size=600x640;can_close=1")
+	show_latechoices_window(dat)
 
 /mob/new_player/proc/create_character(mobtype)
 

@@ -316,6 +316,7 @@
 #include "code\game\mob\new_player\login.dm"
 #include "code\game\mob\new_player\logout.dm"
 #include "code\game\mob\new_player\new_player.dm"
+#include "code\game\mob\new_player\late_choices_helpers.dm"
 #include "code\game\mob\new_player\preferences_setup.dm"
 #include "code\game\mob\observer\observer.dm"
 #include "code\game\mob\observer\ghost\ghost.dm"
@@ -1186,5 +1187,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1713\cursed_island.dmm"
+#include "maps\1943\smallingrad.dmm"
 // END_INCLUDE

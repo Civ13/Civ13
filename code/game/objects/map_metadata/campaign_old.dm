@@ -160,12 +160,7 @@
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text_days()]"
 	dat += "<br>"
-	dat += "<b>Current Autobalance Status</b>: "
-	if (BLUEFACTION in map.faction_organization)
-		dat += "[alive_bluefaction.len] Blugoslavians "
-	if (REDFACTION in map.faction_organization)
-		dat += "[alive_redfaction.len] Redmenians "
-
+	dat += "<b>Current Autobalance Status</b>: [get_autobalance_status_html()]"
 	dat += "<br>"
 	if (istype(map, /obj/map_metadata/nationsrp/coldwar_cmp))
 		switch (factjob)
@@ -273,28 +268,7 @@
 
 	dat += "</center>"
 
-	var/data = ""
-	for (var/line in dat)
-		if (line != null)
-			if (line != "<br>")
-				data += "<span style = 'font-size:2.0rem;'>[line]</span>"
-			data += "<br>"
-
-	data = {"
-		<br>
-		<html>
-		<head>
-		[common_browser_style]
-		</head>
-		<body>
-		[data]
-		</body>
-		</html>
-		<br>
-	"}
-
-	spawn (1)
-		src << browse(data, "window=latechoices;size=600x640;can_close=1")
+	show_latechoices_window(dat)
 
 /obj/item/weapon/key/redfaction
 	code = 668643

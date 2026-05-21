@@ -381,6 +381,30 @@
 	var/ready = TRUE
 	var/restart_triggered = FALSE
 	var/finished_at = -1
+	var/list/gamemode_desc = list(
+		"Normal"                         = "No respawn delays, standard damage.",
+		"Competitive"                    = "Respawn delay enabled, increased damage.",
+		"Hardcore"                       = "No respawns, increased damage. Field of View enabled. Awards active.",
+		"Classic (Stone Age Start)"      = "Starting epoch is the Stone Age, research active.",
+		"Auto-Research Mode"             = "Starting epoch is the Stone Age, research active but automatic.",
+		"Resource-Based Research"        = "Starting epoch is the Stone Age, research requires the sale of items through Research Desks.",
+		"Chad Mode"                      = "Stone Age survival with scarce resources, hostile wildlife, and no research.",
+		"Chad Mode +"                    = "Stone Age survival where research is fueled by player sacrifice.",
+		"Bronze Age (No Research)"       = "The game starts in the Bronze Age. Research is disabled.",
+		"Medieval (No Research)"         = "The game starts in the Medieval Age. Research is disabled.",
+		"Imperial Age (No Research)"     = "The game starts in the Imperial Age. Research is disabled.",
+		"Industrial Age (No Research)"   = "The game starts in the Industrial Age. Research is disabled.",
+		"Early Modern Age (No Research)" = "The game starts in the Early Modern Age. Research is disabled.",
+		"WW2 Age (No Research)"          = "The game starts in the World War II era. Research is disabled.",
+		"Modern Age (No Research)"       = "The game starts in the Modern Age. Research is disabled.",
+		"Siege"                          = "Defend a strategic objective against an attacking force within a time limit.",
+		"Protect the VIP"                = "Defenders must protect a High-Value Target from attackers.",
+		"Area Capture"                   = "Teams compete to control strategic areas and gain points.",
+		"Kills"                          = "A direct confrontation where teams compete for the most eliminations.",
+		"After the Fall"                 = "Survival in a desolate, post-apocalyptic world.",
+		"Nuclear"                        = "Survival mode where a nuclear strike is imminent.",
+		"Zombie Apocalypse"              = "Survive against the undead horde in a fallen society."
+	)
 
 /process/gamemode/setup()
 	name = "gamemode"
