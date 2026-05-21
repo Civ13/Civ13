@@ -12,7 +12,7 @@
 		//"Imperial Age (1650-1780)" = 0,
 		//"Industrial Age (1850-1895)" = 0,
 		//"Early Modern Era (1896-1930)" = 0,
-		"PvE (Voyage & Cursed Island)" = 0,
+		"PvE (Voyage, Antarctica, etc)" = 0,
 		"Early Fire Arms (1650-1930)" = 0,
 		"World War II (1931-1948)" = 0,
 		//"Cold War Era (1949-1984)" = 0,
@@ -25,6 +25,20 @@
 		"Civilization 13 (Others)" = 0,
 		"Battle Royale" = 0,
 		"Fiction" = 0,
+	)
+	var/list/epoch_desc = list(
+		"Chad Mode"                              = "Stone Age survival with scarce resources, hostile wildlife, and no research. A brutal, unforgiving experience.",
+		"Pre-Firearms (3000 B.C-1650 A.D.)"      = "Ancient to early-medieval warfare — swords, spears, bows, and siege weapons across iconic historical battlefields.",
+		"PvE (Voyage, Antarctica, etc)"          = "Co-operative PvE adventures. Lowpop friendly maps.",
+		"Early Fire Arms (1650-1930)"            = "Muskets, rifles, and early artillery spanning the colonial era, Napoleonic wars, and WWI.",
+		"World War II (1931-1948)"               = "Full-scale industrial warfare across iconic WWII theatres — from Stalingrad to Normandy.",
+		"Modern Fire Arms (1949-2021)"           = "Post-war conflicts from Vietnam to modern-day special operations and urban combat.",
+		"HRP TDM (Gulag, Occupation, AOTD, etc)" = "Heavy roleplay scenarios: prison camps, occupied territories, and narrative-driven missions.",
+		"Civilization 13 (Nomads)"               = "Open-ended civilization-building starting from the Stone Age across diverse landscapes.",
+		"Civilization 13 (Colony & Pioneers)"    = "Colonial-era settlement and frontier expansion — carve out a new world.",
+		"Civilization 13 (Others)"               = "Miscellaneous Civ13 scenarios including tribal conflicts, hunts, and kingdom struggles.",
+		"Battle Royale"                          = "Last-man-standing combat across multiple historical eras. Only one survives.",
+		"Fiction"                                = "Fictional and fantasy settings — space battles, Skyrim, and beyond.",
 	)
 	var/ready = TRUE
 	var/restart_triggered = FALSE
@@ -55,6 +69,7 @@
 						break
 				if (moderator_present == TRUE)
 					epochs = list(
+						"PvE (Voyage, Antarctica, etc)" = 0,
 						"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
 						"Early Fire Arms (1650-1930)" = 0,
 						"World War II (1931-1948)" = 0,
@@ -62,12 +77,12 @@
 						"Fiction" = 0,
 						"Battle Royale" = 6,
 						"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
-//						"PvE (Voyage & Cursed Island)" = 0,
 						"Chad Mode" = 30,
 //						"MilSim (BETA TESTING)" = 20,
 					)
 				else
 					epochs = list(
+						"PvE (Voyage, Antarctica, etc)" = 0,
 						"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
 						"Early Fire Arms (1650-1930)" = 0,
 						"World War II (1931-1948)" = 0,
@@ -79,6 +94,7 @@
 					)
 			else
 				epochs = list(
+					"PvE (Voyage, Antarctica, etc)" = 0,
 					"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
 					"Early Fire Arms (1650-1930)" = 0,
 					"World War II (1931-1948)" = 0,
@@ -86,7 +102,6 @@
 					"Fiction" = 0,
 					"Battle Royale" = 6,
 					"HRP TDM (Gulag, Occupation, AOTD, etc)" = 20,
-//					"PvE (Voyage & Cursed Island)" = 0,
 //					"MilSim (BETA TESTING)" = 20,
 				)
 
@@ -284,9 +299,11 @@
 				maps = list(
 					MAP_JUNGLE_OF_THE_CHADS = 0,
 				)
-			if ("PvE (Voyage & Cursed Island)")
+			if ("PvE (Voyage, Antarctica, etc)")
 				maps = list(
 					MAP_CURSED_ISLAND = 0,
+					MAP_ANTARCTICA = 0,
+					MAP_LIGHTS_OUT = 0,
 					MAP_VOYAGE = 6,
 				)
 

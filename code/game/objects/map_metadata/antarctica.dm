@@ -1,7 +1,7 @@
 /obj/map_metadata/antarctica
 	ID = MAP_ANTARCTICA
 	title = "Antarctica"
-	description = "Survive and keep the furnace alive!"
+	description = "Survive a desolate tundra environment while keeping the furnace alive!"
 	lobby_icon = "icons/lobby/antarctica.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle, /area/caribbean/no_mans_land/invisible_wall/inside, /area/caribbean/no_mans_land/invisible_wall/inside/one, /area/caribbean/no_mans_land/invisible_wall/inside/two)
 	respawn_delay = 300

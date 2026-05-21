@@ -2,7 +2,7 @@
 /obj/map_metadata/cursed_island
 	ID = MAP_CURSED_ISLAND
 	title = "Cursed Island"
-	description = "After a storm your battered ship had to beach at this island for repairs."
+	description = "You and your crew have been shipwrecked on a mysterious island. Retrieve the cursed treasure and bring it back to the ship to break the curse!"
 	lobby_icon = "icons/lobby/cursed.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,
 		/area/caribbean/no_mans_land/invisible_wall/inside)

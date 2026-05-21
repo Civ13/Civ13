@@ -400,6 +400,9 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						display_name = capitalize(lowertext(choices[i]))
 					if (map_id_to_desc[choices[i]])
 						display_desc = "<br><span style='font-size: 0.85em; color: #b0a080; font-style: italic;'>[map_id_to_desc[choices[i]]]</span>"
+				else if (mode == "epoch")
+					if (processes.epochswap.epoch_desc[choices[i]])
+						display_desc = "<br><span style='font-size: 0.85em; color: #b0a080; font-style: italic;'>[processes.epochswap.epoch_desc[choices[i]]]</span>"
 
 				if (disabled.Find(choices[i]))
 					continue
