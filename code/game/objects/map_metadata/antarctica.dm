@@ -24,6 +24,7 @@
 	is_singlefaction = TRUE
 	is_RP = TRUE
 	has_hunger = TRUE
+	gamemode_vote = FALSE
 	var/no_loop = FALSE
 	var/obj/structure/oven/big/furnace = null
 	var/furnace_timer_check = 0

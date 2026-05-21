@@ -305,6 +305,7 @@
 
 /obj/map_metadata/campaign_new
 	ID = MAP_CAMPAIGN_NEW
+	gamemode_vote = FALSE
 	title = "Campaign"
 	lobby_icon = "icons/lobby/campaign2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)

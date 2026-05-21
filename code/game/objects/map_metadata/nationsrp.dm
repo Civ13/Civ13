@@ -39,6 +39,7 @@
 	research_active = FALSE
 	is_singlefaction = TRUE
 	grace_wall_timer = 90 MINUTES
+	gamemode_vote = FALSE
 
 /obj/map_metadata/nationsrp/New()
 	..()

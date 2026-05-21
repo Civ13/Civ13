@@ -62,6 +62,7 @@ var/civmax_research = list(230,230,230)
 	var/mosinonly = FALSE
 	var/squads = 1
 	var/fob_spawns = FALSE
+	var/gamemode_vote = TRUE
 	var/list/list/faction1_squads = alist(
 		1 = list(),
 		2 = list(),

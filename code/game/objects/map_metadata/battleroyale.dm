@@ -7,6 +7,7 @@
 	respawn_delay = 0
 	is_singlefaction = TRUE
 	battleroyale = TRUE
+	gamemode_vote = FALSE
 
 	no_winner ="The fighting is still going."
 

@@ -21,6 +21,7 @@
 	age7_done = TRUE
 	age8_done = TRUE
 	hasnukes = TRUE
+	gamemode_vote = FALSE
 
 /obj/map_metadata/nomads/wasteland/New()
 	..()

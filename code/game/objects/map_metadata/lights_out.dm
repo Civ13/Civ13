@@ -22,6 +22,7 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	is_singlefaction = TRUE
 	is_RP = TRUE
+	gamemode_vote = FALSE
 	var/no_loop = FALSE
 	var/area/real_extraction_zone = null
 	var/extraction_timer = 0 // Counts ticks a human has been in the zone

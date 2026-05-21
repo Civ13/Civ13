@@ -9,6 +9,7 @@
 	gamemode = "Siege"
 	no_hardcore = TRUE
 	can_spawn_on_base_capture = TRUE
+	gamemode_vote = TRUE
 	var/list/HVT_list = list()
 
 	faction_organization = list(
@@ -300,6 +301,7 @@ var/no_loop_capitol = FALSE
 	no_winner = "The operation is still underway."
 	no_hardcore = TRUE
 	gamemode = "Protect the VIP"
+	gamemode_vote = FALSE
 	faction_organization = list(
 		AMERICAN,
 		CHINESE)

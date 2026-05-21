@@ -30,6 +30,7 @@
 
 	chad_mode = TRUE
 	chad_mode_plus = TRUE
+	gamemode_vote = FALSE
 
 /obj/map_metadata/chad_jungle/New()
 	..()

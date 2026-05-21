@@ -30,6 +30,7 @@
 	var/gracedown2 = TRUE
 	var/gracedown3 = TRUE
 	var/gracedown4 = TRUE
+	gamemode_vote = FALSE
 /obj/map_metadata/gladiators/New()
 	..()
 	load_gladiators()

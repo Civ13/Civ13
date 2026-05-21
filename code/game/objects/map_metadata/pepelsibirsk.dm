@@ -48,6 +48,7 @@ var/global/datum/external_relations/external_relations = new()
 	age7_done = TRUE
 	default_research = 180
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
+	gamemode_vote = FALSE
 	var/real_season = "FALL"
 	var/quarter = 1
 	var/year = 1976

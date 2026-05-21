@@ -39,3 +39,4 @@
 	age6_done = TRUE
 	age7_done = TRUE
 	age8_done = TRUE
+	gamemode_vote = FALSE

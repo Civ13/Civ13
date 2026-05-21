@@ -62,7 +62,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						C << browse(vote.interface(C),"window=vote")
 
 	proc/autogamemode()
-		if (map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP || map.ID == MAP_CAMPAIGN || map.ID == MAP_GLADIATORS || map.ID == MAP_ALLEYWAY || map.ID == MAP_FOOTBALL || map.ID == MAP_FOOTBALL_CMP || map.ID == MAP_NOMADS_EXTENDED || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES || map.ID == MAP_JUNGLE_OF_THE_CHADS || map.ID == MAP_NOMADS_WASTELAND || map.ID == MAP_NOMADS_WASTELAND_2 || map.ID == MAP_NOMADS_WASTELAND_3 || map.ID == MAP_TESTING || map.battleroyale || map.ID == MAP_THE_ART_OF_THE_DEAL || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_PEPELSIBIRSK || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+		if (!map.gamemode_vote)
 			return
 		if (map.persistence)
 			return
@@ -72,13 +72,8 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			else if (faction <= 2)
 				initiate_vote("ship selection","the server", TRUE)
 			return
-		if (map.ID == MAP_CAPITOL_HILL && istype(map, /obj/map_metadata/capitol_hill/pla_offensive))
-			return
-		if (map.ID == MAP_CAPITOL_HILL || map.ID == MAP_YELTSIN)
-			initiate_vote("gamemode","the server", TRUE)
-			return
 		if (!map.is_RP && autogamemode_triggered == FALSE)
-			initiate_vote("gamemode","the server", TRUE)
+			initiate_vote("gamemode", "the server", TRUE)
 			log_debug("The server has called a gamemode vote.")
 			autogamemode_triggered = TRUE
 			return

@@ -21,6 +21,7 @@
 	songs = list(
 		"Forever Blowing Bubbles:1" = "sound/music/forever_blowing_bubbles.ogg",)
 	is_singlefaction = TRUE
+	gamemode_vote = FALSE
 	var/team1 = "Unga Utd."
 	var/team2 = "Chad Town F.C."
 	var/team1_kit = "main uniform"

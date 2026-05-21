@@ -22,6 +22,7 @@
 	songs = list(
 		"Akira:1" = "sound/music/akira.ogg",)
 	is_singlefaction = TRUE
+	gamemode_vote = FALSE
 	scores = list(
 		"Yamaguchi-Gumi" = 0,
 		"Ichiwa-Kai" = 0,

@@ -28,6 +28,7 @@
 	age1_done = TRUE
 	age2_done = TRUE
 	research_active = FALSE
+	gamemode_vote = FALSE
 
 /obj/map_metadata/civilizations/New()
 	var/newnamea = list("West Kingdom" = list(default_research,default_research,default_research,null,0,"saltire","#D4AF37","#660000"))

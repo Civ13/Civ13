@@ -33,6 +33,7 @@
 	gamemode = "Faction-Based RP"
 	nomads = TRUE
 	grace_wall_timer = 15000
+	gamemode_vote = FALSE
 /obj/map_metadata/tribes/New()
 	var/newnamea = list("Orc Horde" = list(48,48,48,null,0,"skull","#9A1313","#000000",0,0))
 	var/newnameb = list("Ant Colony" = list(35,35,35,null,0,"star","#0C1EA7","#67A7CE",0,0))

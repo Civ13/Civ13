@@ -4,6 +4,7 @@
 	var/list/epochs = list(
 		//"Stone Age (?-3000 B.C.)" = 0,
 		"Chad Mode" = 0,
+		"PvE (Voyage, Antarctica, etc)" = 0,
 		"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
 		//"Bronze Age (3000 B.C.-400 A.D.)" = 0,
 		//"Dark Ages (400-700)" = 0,
@@ -12,7 +13,6 @@
 		//"Imperial Age (1650-1780)" = 0,
 		//"Industrial Age (1850-1895)" = 0,
 		//"Early Modern Era (1896-1930)" = 0,
-		"PvE (Voyage, Antarctica, etc)" = 0,
 		"Early Fire Arms (1650-1930)" = 0,
 		"World War II (1931-1948)" = 0,
 		//"Cold War Era (1949-1984)" = 0,

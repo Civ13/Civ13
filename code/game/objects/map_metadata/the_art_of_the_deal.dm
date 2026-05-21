@@ -41,6 +41,7 @@
 	var/list/delivery_orders = list()
 	var/maxpoints = 4000
 	grace_wall_timer = 3000
+	gamemode_vote = FALSE
 	availablefactions = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
 	var/list/heat = list("Rednikov Industries" = 0, "Giovanni Blu Stocks" = 0, "Kogama Kraftsmen" = 0, "Goldstein Solutions" = 0)
 

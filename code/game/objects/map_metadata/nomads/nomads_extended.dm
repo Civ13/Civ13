@@ -17,6 +17,7 @@
 	research_active = FALSE
 	default_research = 135
 	grace_wall_timer = 24000
+	gamemode_vote = FALSE
 
 	var/oiltarget = 3000
 
