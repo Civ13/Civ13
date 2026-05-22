@@ -1439,8 +1439,6 @@
 
 		if (base_faction)
 			var/image/holder = hud_list[FACTION_TO_ENEMIES]
-			holder.icon = null
-			holder.icon_state = null
 			hud_list[FACTION_TO_ENEMIES] = holder
 
 			var/image/holder2 = hud_list[BASE_FACTION]

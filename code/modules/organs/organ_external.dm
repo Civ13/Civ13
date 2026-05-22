@@ -253,8 +253,6 @@
 	if((brute <= 0) && (burn <= 0))
 		return 0
 
-	var/blunt = brute && !sharp && !edge
-
 	/*
 	if(used_weapon)
 		add_autopsy_data("[used_weapon]", brute + burn)

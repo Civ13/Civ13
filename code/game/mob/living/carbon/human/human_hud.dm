@@ -175,10 +175,8 @@ the HUD updates properly! */
 				shared_job_check = FALSE
 			else if (M.original_job_title == perp.original_job_title && map.civilizations == TRUE && perp.original_job_title != "Nomad")
 				shared_job_check = TRUE
-			if (((perp.original_job_title == "Nomad" && viewer.civilization == perp.civilization)) && !perp.civilization == "none")
+			if ((perp.original_job_title == "Nomad" && viewer.civilization == perp.civilization) && perp.civilization != "none")
 				shared_job_check = TRUE
-			else
-				shared_job_check = FALSE
 		if(!map.nomads)
 			if (map.ID == MAP_AFRICAN_WARLORDS)
 				if(viewer.nationality == perp.nationality)

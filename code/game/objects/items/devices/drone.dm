@@ -215,13 +215,13 @@
 	if (flying)
 		if (prob(60))
 			health -= proj.damage * 0.1
-			visible_message(SPAN_DANGER("\The [src] is hit by \the [proj.name]!"))
+			visible_message(SPAN_WARNING("\The [src] is hit by \the [proj.name]!"))
 		else if (prob(10))
 			visible_message(SPAN_DANGER("\The [src]\'s propeller is hit, shooting it down!"))
 			toggle_state()
 	else
 		health -= proj.damage * 0.1
-		visible_message(SPAN_DANGER("\The [src] is hit by \the [proj.name]!"))
+		visible_message(SPAN_WARNING("\The [src] is hit by \the [proj.name]!"))
 		try_destroy()
 
 /obj/structure/drone/Destroy()
