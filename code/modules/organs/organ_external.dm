@@ -302,7 +302,8 @@
 		if(can_feel_pain() && prob(40))
 			//getting hit on broken hand hurts
 			owner.emote("scream")
-	if(blunt_dam > min_broken_damage && prob(blunt_dam + brute * (1+blunt)) ) //blunt damage is gud at fracturing
+	//if the damage from this event is high enough OR the accumulated blunt damage is high enough
+	if(brute >= min_broken_damage || prob(blunt_dam) ) //blunt damage is gud at fracturing
 		if (istype(used_weapon, /obj/item/projectile))
 			if (prob(35))
 				fracture()
@@ -726,12 +727,12 @@ Note that amputating the affected organ does in fact remove the infection from t
 	//things tend to bleed if they are CUT OPEN
 	if (open && !clamped && (H && !(H.species.flags & NO_BLOOD)))
 		status |= ORGAN_BLEEDING
-
+/* Maybe bones shouldnt randomly break when stacking damage?
 	//Bone fractures
 	if (blunt_dam >= min_broken_damage * config.organ_health_multiplier && !H.buckled && !H.resting)
 		if (blunt_dam > fracturetimer+20)
 			fracture()
-
+*/
 	if (!(brute_dam+burn_dam) || !number_wounds)
 		disfigured = FALSE
 

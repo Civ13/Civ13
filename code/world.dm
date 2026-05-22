@@ -74,11 +74,6 @@ var/world_is_open = TRUE
 	#warn USE_BYOND_TRACY is enabled
 	init_byond_tracy()
 #endif
-#ifdef USE_EXTOOLS
-	var/extools = world.GetConfig("env", "EXTOOLS_DLL") || (world.system_type == MS_WINDOWS ? "./byond-extools.dll" : "./libbyond-extools.so")
-	if(fexists(extools))
-		LIBCALL(extools, "maptick_initialize")()
-#endif
 
 	if (map && istype(map,/obj/map_metadata/nomads/persistence_beta))
 		loop_checks = FALSE
