@@ -66,7 +66,7 @@ var/global/datum/currency_list/fiat = new()
 		_amount = min(_amount, amount)
 		if (_amount <= 0)
 			return FALSE
-		var/obj/item/stack/money/fiat/S = new(src.loc, _amount, src.fiat_id)
+		var/obj/item/stack/money/fiat/S = new(null, _amount, src.fiat_id)
 		S.color = color
 		if (prob(_amount/amount * 100))
 			transfer_fingerprints_to(S)
