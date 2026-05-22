@@ -5,7 +5,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
-
+	description = "The IDF has launched an operation to capture a town held by Hezbollah. The IDF must capture the Hezbollah HQ (SW corner) within 40 minutes!"
 	faction_organization = list(
 		ARAB,
 		AMERICAN)
@@ -150,7 +150,7 @@ var/no_loop_arab = FALSE
 	lobby_icon = "icons/lobby/modern.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
-	
+	description = "US Marines have launched an operation to capture a town held by insurgents. The Marines must capture the insurgent HQ (SW corner) within 40 minutes!"
 	faction_organization = list(
 		AMERICAN,
 		ARAB)
