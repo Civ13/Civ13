@@ -11,9 +11,9 @@ echo "Setting up BYOND."
 rm -rf "BYOND"
 mkdir -p "BYOND"
 cd "BYOND"
-wget -O 516.1681_byond_linux.zip "https://civ13.com/downloads/516.1681_byond_linux.zip"
+wget -O 514.1589_byond_linux.zip "https://civ13.com/downloads/514.1589_byond_linux.zip"
 ls
-unzip -o 516.1681_byond_linux.zip
+unzip -o 514.1589_byond_linux.zip
 cd byond
 make here
 echo "Compiling the dme..."

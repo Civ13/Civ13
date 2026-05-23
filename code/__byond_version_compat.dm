@@ -1,16 +1,20 @@
 // This file contains defines allowing targeting byond versions newer than the supported
 
 //Update this whenever you need to take advantage of more recent byond features
-#define MIN_COMPILER_VERSION 516
-#define MIN_COMPILER_BUILD 1681
+#define MIN_COMPILER_VERSION 514
+#define MIN_COMPILER_BUILD 1589
 #if (DM_VERSION < MIN_COMPILER_VERSION || DM_BUILD < MIN_COMPILER_BUILD) && !defined(SPACEMAN_DMM)
 //Don't forget to update this part
 #error Your version of BYOND is too out-of-date to compile this project. Go to https://secure.byond.com/download and update.
-#error You need version 516.1681 or higher
+#error You need version 514.1589 or higher
+#endif
+
+#if DM_VERSION < 516
+#define nameof(X) (X)
 #endif
 
 // Keep savefile compatibilty at minimum supported level
-/savefile/byond_version = MIN_COMPILER_VERSION
+var/byond_version = MIN_COMPILER_VERSION
 
 // So we want to have compile time guarantees these methods exist on local type
 // We use wrappers for this in case some part of the api ever changes, and to make their function more clear

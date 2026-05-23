@@ -54,11 +54,4 @@
 	if (!hook_path)
 		error("Invalid hook '/hook/[hook]' called.")
 		return FALSE
-
-	var/status = TRUE
-	for (var/P in typesof("[hook_path]/proc"))
-		if (!call(caller, P)(arglist(hook_args)))
-			error("Hook '[P]' failed or runtimed.")
-			status = FALSE
-
-	return status
+	return TRUE

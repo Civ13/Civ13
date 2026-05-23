@@ -197,22 +197,6 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	var/list/filtering_whitelist = config.topic_filtering_whitelist
 	var/host = splittext_char(addr, ":")
-	if(!filtering_whitelist[host[1]]) // We only ever check the host, not the port (if provided)
-		if(length_char(T) >= MAX_TOPIC_LEN)
-			/*log_admin_private("*/
-			diary << "TOPIC: [addr] banned from topic calls for a round for too long status message"
-			bannedsourceaddrs[addr] = TOPIC_BANNED
-			return
-
-		if(lasttimeaddr[addr])
-			var/lasttime = lasttimeaddr[addr]
-			if(world.time < lasttime)
-				/*log_admin_private("*/
-				diary << "TOPIC: [addr] banned from topic calls for a round for too frequent messages"
-				bannedsourceaddrs[addr] = TOPIC_BANNED
-				return
-
-		lasttimeaddr[addr] = world.time + 1200 //2 секунды
 
 	var/list/input = params2list(T)
 	var/datum/world_topic/handler
@@ -223,6 +207,7 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	if((!handler || initial(handler.log)) && config) //&& CONFIG_GET(flag/log_world_topic))
 		diary << "TOPIC: \"[T]\", from:[addr], master:[master], key:[key]"
+
 
 	if(!handler)
 		return

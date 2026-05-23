@@ -9,7 +9,7 @@
 	currentspeed = 0
 	speeds = 3
 	maxpower = 1200
-	speedlist = alist(1=15,2=11,3=7)
+	speedlist= list(1=15,2=11,3=7)
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	ship = TRUE
@@ -18,7 +18,7 @@
 	name = "heavy rudder control"
 	speeds = 3
 	maxpower = 2500
-	speedlist = alist(1=18,2=14,3=10)
+	speedlist= list(1=18,2=14,3=10)
 
 /obj/structure/vehicleparts/axis/ship/movementsound()
 	if (!moving)

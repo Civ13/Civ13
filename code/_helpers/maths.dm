@@ -256,3 +256,13 @@ proc/n_inrange(var/num, var/min=-1, var/max=1)
 			log_misc("[buf]")
 		buf+=copytext(haystack,lastReadPos, FALSE)
 		return buf
+
+//helpers for <= 514.1589, can be removed once we no longer support that version
+#if DM_VERSION < 516
+/proc/trunc(A)
+	if(isnum(A))
+		return (A >= 0) ? round(A) : -round(-A)
+/proc/floor(A)
+	if(isnum(A))
+		return round(A) // Native round() in BYOND already rounds down towards negative infinity
+#endif

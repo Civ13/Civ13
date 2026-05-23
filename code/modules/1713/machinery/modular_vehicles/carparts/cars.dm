@@ -505,7 +505,7 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 700
-	speedlist = alist(1=8,2=6,3=4.5,4=3)
+	speedlist= list(1=8,2=6,3=4.5,4=3)
 	turntimer = 5
 
 /obj/structure/vehicleparts/axis/car/quattroporte
@@ -515,7 +515,7 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 800
-	speedlist = alist(1=7,2=5,3=3.5,4=2.5)
+	speedlist= list(1=7,2=5,3=3.5,4=2.5)
 	turntimer = 7
 
 /obj/structure/vehicleparts/axis/car/erstenklasse
@@ -525,7 +525,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 1100
-	speedlist = alist(1=7,2=6,3=5,4=4,5=3)
+	speedlist= list(1=7,2=6,3=5,4=4,5=3)
 	turntimer = 6
 
 /obj/structure/vehicleparts/axis/car/cv
@@ -535,7 +535,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 1900
-	speedlist = alist(1=7,2=6,3=5,4=4,5=3)
+	speedlist= list(1=7,2=6,3=5,4=4,5=3)
 	turntimer = 6
 
 /obj/structure/vehicleparts/axis/car/falcon
@@ -545,13 +545,13 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 1000
-	speedlist = alist(1=7,2=6,3=5,4=2)
+	speedlist= list(1=7,2=6,3=5,4=2)
 	turntimer = 5
 
 /obj/structure/vehicleparts/axis/car/falcon/police
 	speeds = 5
 	maxpower = 1000
-	speedlist = alist(1=7,2=6,3=5,4=3,5=2.5)
+	speedlist= list(1=7,2=6,3=5,4=3,5=2.5)
 	turntimer = 4
 	New()
 		..()
@@ -569,7 +569,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
-	speedlist = alist(1=5,2=4,3=3,4=2,5=1.2)
+	speedlist= list(1=5,2=4,3=3,4=2,5=1.2)
 	turntimer = 4
 
 /obj/structure/vehicleparts/axis/car/shinobu/police
@@ -591,7 +591,7 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 800
-	speedlist = alist(1=6,2=5,3=4,4=2.5)
+	speedlist= list(1=6,2=5,3=4,4=2.5)
 	turntimer = 5
 /obj/structure/vehicleparts/axis/car/type95
 	name = "Kurogane Type 95"
@@ -600,7 +600,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
-	speedlist = alist(1=5,2=4,3=2.5,4=1.5,5=1)
+	speedlist= list(1=5,2=4,3=2.5,4=1.5,5=1)
 	turntimer = 4
 
 /obj/structure/vehicleparts/axis/car/type94
@@ -610,7 +610,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
-	speedlist = alist(1=5,2=4,3=2.5,4=1.5,5=1)
+	speedlist= list(1=5,2=4,3=2.5,4=1.5,5=1)
 	turntimer = 5
 
 /obj/structure/vehicleparts/axis/car/falcon/police
@@ -629,7 +629,7 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 1200
-	speedlist = alist(1=8,2=6.5,3=4.5,4=2.5)
+	speedlist= list(1=8,2=6.5,3=4.5,4=2.5)
 	turntimer = 9
 
 /obj/structure/vehicleparts/axis/car/wyoming
@@ -639,7 +639,7 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 1300
-	speedlist = alist(1=7,2=5.5,3=4.5,4=3)
+	speedlist= list(1=7,2=5.5,3=4.5,4=3)
 	turntimer = 9
 
 /obj/structure/vehicleparts/axis/car/toyota
@@ -650,7 +650,7 @@
 	color = "#BDB76B"
 	speeds = 5
 	maxpower = 1580
-	speedlist = alist(1=10,2=6.5,3=4.5,4=3,5=2)
+	speedlist= list(1=10,2=6.5,3=4.5,4=3,5=2)
 	turntimer = 7
 
 /obj/structure/vehicleparts/axis/car/daf
@@ -660,7 +660,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 1800
-	speedlist = alist(1=8,2=5,3=4,4=3,5=2)
+	speedlist= list(1=8,2=5,3=4,4=3,5=2)
 	turntimer = 8
 
 /obj/structure/vehicleparts/axis/car/mercedes
@@ -670,7 +670,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 1000
-	speedlist = alist(1=7,2=4,3=3,4=2,5=1)
+	speedlist= list(1=7,2=4,3=3,4=2,5=1)
 	turntimer = 8
 
 /obj/structure/vehicleparts/axis/car/tigr
@@ -680,7 +680,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 1000
-	speedlist = alist(1=7,2=4,3=3,4=2,5=1)
+	speedlist= list(1=7,2=4,3=3,4=2,5=1)
 	turntimer = 8
 
 /obj/structure/vehicleparts/axis/car/ba64
@@ -690,7 +690,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
-	speedlist = alist(1=10,2=6,3=4,4=3)
+	speedlist= list(1=10,2=6,3=4,4=3)
 	turntimer = 7
 	reg_number = ""
 	color = "#3d5931"
@@ -707,7 +707,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
-	speedlist = alist(1=10,2=6,3=4,4=3,5=2)
+	speedlist= list(1=10,2=6,3=4,4=3,5=2)
 	turntimer = 6
 	reg_number = ""
 	color = "#3d5931"
@@ -724,7 +724,7 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 1000
-	speedlist = alist(1=10,2=6,3=4,4=3)
+	speedlist= list(1=10,2=6,3=4,4=3)
 	turntimer = 6
 	reg_number = ""
 	color = "#ffffff"
@@ -741,7 +741,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 1800
-	speedlist = alist(1=8,2=5,3=4,4=3,5=2)
+	speedlist= list(1=8,2=5,3=4,4=3,5=2)
 	turntimer = 8
 
 /obj/structure/vehicleparts/axis/car/volle/ambulance
