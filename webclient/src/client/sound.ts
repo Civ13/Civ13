@@ -10,7 +10,16 @@ const SOUND_STREAM = 4;
 const SOUND_UPDATE = 16;
 
 export class SoundPlayer {
-	ctx = new AudioContext();
+	private _ctx: AudioContext | null = null;
+	get ctx(): AudioContext {
+		if (!this._ctx) {
+			this._ctx = new AudioContext();
+		}
+		if (this._ctx.state === 'suspended') {
+			this._ctx.resume().catch(() => {});
+		}
+		return this._ctx;
+	}
 	constructor(public client : ByondClient) {
 	}
 

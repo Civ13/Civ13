@@ -102,6 +102,7 @@
 	wall = TRUE
 	flammable = FALSE
 	buildstack = /obj/item/weapon/snowwall
+	screen_loc = E3D_TYPE_BASICWALL
 
 /obj/covers/snow_wall/blocks/incomplete
 	name = "snow blocks wall"

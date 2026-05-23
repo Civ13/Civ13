@@ -195,9 +195,6 @@ var/world_topic_spam_protect_time = world.timeofday
 	if (bannedsourceaddrs[addr])
 		return
 
-	var/list/filtering_whitelist = config.topic_filtering_whitelist
-	var/host = splittext_char(addr, ":")
-
 	var/list/input = params2list(T)
 	var/datum/world_topic/handler
 	for(var/I in topic_handlers)

@@ -77,6 +77,7 @@
 	explosion_resistance = 5
 	material = "Wood"
 	hardness = 75
+	screen_loc = E3D_TYPE_BASICWALL
 
 /obj/covers/wood_wall/nonadjustable
 	icon_state = "new_wood0"
@@ -286,6 +287,7 @@
 	hardness = 100
 	buildstack = /obj/item/stack/material/stone
 	adjusts=FALSE
+	screen_loc = E3D_TYPE_BASICWALL
 
 /obj/covers/stone_wall/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/human/H = user
@@ -400,6 +402,7 @@
 	hardness = 100
 	buildstack = /obj/item/stack/material/marble
 	adjusts=FALSE
+	screen_loc = E3D_TYPE_BASICWALL
 
 /obj/covers/marble_wall/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/human/H = user
@@ -496,6 +499,7 @@
 	material = "Stone"
 	hardness = 100
 	buildstack = /obj/item/stack/material/sandstone
+	screen_loc = E3D_TYPE_BASICWALL
 
 /obj/covers/sandstone_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
 	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
@@ -529,6 +533,7 @@
 	material = "Stone"
 	hardness = 100
 	buildstack = /obj/item/stack/material/sandstone
+	screen_loc = E3D_TYPE_BASICWALL
 
 /obj/covers/sandstone_smooth_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
 	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
@@ -662,6 +667,7 @@
 	explosion_resistance = 3
 	hardness = 65
 	buildstack = /obj/item/weapon/barrier
+	screen_loc = E3D_TYPE_BASICWALL
 
 /obj/covers/straw_wall
 	name = "straw wall"

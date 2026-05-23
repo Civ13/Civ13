@@ -14,6 +14,7 @@
 	explosion_resistance = 100
 	material = "Wood"
 	hardness = 15
+	screen_loc = E3D_TYPE_BASICWALL
 
 /obj/covers/jail/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)

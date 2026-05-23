@@ -4,7 +4,6 @@
 	w_class = ITEM_SIZE_NORMAL
 	layer = 3.01 // stops supply drop items from appearing under their crate
 	mouse_drag_pointer = MOUSE_ACTIVE_POINTER
-	screen_loc = E3D_TYPE_ITEM
 	var/nodrop = FALSE
 	var/list/actions = list() //list of /datum/action's that this item has.
 	var/image/blood_overlay = null //this saves our blood splatter overlay, which will be processed not to go over the edges of the sprite
@@ -83,7 +82,7 @@
 	var/dry_size = null //How many units will a drying item take in a dehydrator or dryer; dehydrator have 4 rows with 3 units each
 	
 	var/is_contraband = FALSE //For now, used by dogs to detect the contraband item
-
+	screen_loc = E3D_TYPE_ITEM
 /obj/item/New()
 	maxhealth = health
 	..()

@@ -90,6 +90,7 @@
 	material = "Stone"
 	hardness = 75
 	buildstack = /obj/item/weapon/clay/claybricks/fired
+	screen_loc = E3D_TYPE_BASICWALL
 
 /obj/covers/clay_wall/claydoorway //if you actually wanted to summon one.
 	name = "clay block doorway"
@@ -293,6 +294,7 @@
 	material = "Stone"
 	hardness = 92
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired
+	screen_loc = E3D_TYPE_BASICWALL
 
 /obj/covers/brick_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
 	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
@@ -327,6 +329,7 @@
 	hardness = 95
 	adjusts = TRUE
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement //For now, until proper crafting materials are done
+	screen_loc = E3D_TYPE_BASICWALL
 
 /obj/covers/tiled_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
 	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
@@ -362,6 +365,7 @@
 	hardness = 95
 	adjusts = TRUE
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
+	screen_loc = E3D_TYPE_BASICWALL
 
 /obj/covers/cement_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
 	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
@@ -512,8 +516,7 @@
 	hardness = 95
 	adjusts = TRUE
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
-
-
+	screen_loc = E3D_TYPE_BASICWALL
 
 /obj/covers/metal
 	name = "metal wall"

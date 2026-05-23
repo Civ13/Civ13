@@ -4,6 +4,24 @@ if(base) {
 	base.parentElement?.removeChild(base);
 }
 
+// Polyfill IE-era attachEvent/detachEvent used by legacy BYOND browser scripts
+function attachEventPolyfill(this: EventTarget, eventName: string, handler: EventListenerOrEventListenerObject) {
+	const name = eventName.startsWith("on") ? eventName.slice(2) : eventName;
+	this.addEventListener(name, handler);
+}
+function detachEventPolyfill(this: EventTarget, eventName: string, handler: EventListenerOrEventListenerObject) {
+	const name = eventName.startsWith("on") ? eventName.slice(2) : eventName;
+	this.removeEventListener(name, handler);
+}
+// @ts-ignore
+if (!document.attachEvent) (document as any).attachEvent = attachEventPolyfill.bind(document);
+// @ts-ignore
+if (!document.detachEvent) (document as any).detachEvent = detachEventPolyfill.bind(document);
+// @ts-ignore
+if (!(window as any).attachEvent) (window as any).attachEvent = attachEventPolyfill.bind(window);
+// @ts-ignore
+if (!(window as any).detachEvent) (window as any).detachEvent = detachEventPolyfill.bind(window);
+
 const elementMouseDownEvents = new Map<EventListenerOrEventListenerObject, EventListener>();
 const originalElementAddEventListener = Element.prototype.addEventListener;
 const originalElementRemoveEventListener = Element.prototype.removeEventListener;
