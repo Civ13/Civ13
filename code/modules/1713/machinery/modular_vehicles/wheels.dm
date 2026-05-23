@@ -16,13 +16,13 @@
 	..()
 
 /obj/item/vehicleparts/wheel/modular/proc/turndir(var/mob/living/mob = null, var/newdir = "left")
+	if (!control || !control.axis || isnull(control.axis.turntimer))
+		return FALSE
 	if (world.time <= lastdirchange)
 		return FALSE
-	lastdirchange = world.time+control.axis.turntimer
-	if (control && control.axis && (control.axis.moving == FALSE || control.axis.currentspeed == 0))
+	lastdirchange = world.time + control.axis.turntimer
+	if (control.axis.moving == FALSE || control.axis.currentspeed == 0)
 		return FALSE
-	if (!control || !control.axis)
-		return
 	for(var/obj/effect/pseudovehicle/O in control.axis.components)
 		for(var/obj/structure/vehicleparts/frame/VP in O.loc)
 			if (VP.axis != control.axis)
@@ -57,7 +57,8 @@
 
 /obj/structure/bed/chair/drivers/Destroy()
 	if (wheel)
-		wheel.control.axis.wheel = null
+		if (wheel.control && wheel.control.axis)
+			wheel.control.axis.wheel = null
 		wheel.Destroy()
 		wheel = null
 	visible_message("<span class='danger'>The [name] gets destroyed!</span>")

@@ -503,14 +503,18 @@
 
 	// Calculate desired pixel width using window size and aspect ratio
 	var/sizes = params2list(winget(src, "mainwindow.mainvsplit;mapwindow", "size"))
-	var/map_size = splittext(sizes["mapwindow.size"], "x")
+	var/list/map_size = splittext(sizes["mapwindow.size"], "x")
+	if (length(map_size) < 2)
+		return
 	var/height = text2num(map_size[2])
 	var/desired_width = round(height * aspect_ratio)
 	if (text2num(map_size[1]) == desired_width)
 		// Nothing to do
 		return
 
-	var/split_size = splittext(sizes["mainwindow.mainvsplit.size"], "x")
+	var/list/split_size = splittext(sizes["mainwindow.mainvsplit.size"], "x")
+	if (!length(split_size))
+		return
 	var/split_width = text2num(split_size[1])
 
 	// Calculate and apply a best estimate
