@@ -76,9 +76,6 @@
 					for (var/client/C in clients)
 						if (C.ckey == ckey)
 							to_chat(C, "<span class = 'good'>href_list["Your ban has been lifted."]</span>")
-	if (href_list["chat_ready"])
-		if (chat)
-			chat.on_ready()
 		return
 
 	//Logs all hrefs
@@ -498,20 +495,34 @@
 	set desc = "Fit the width of the map window to match the viewport"
 
 	// Fetch aspect ratio
-	var/view_size = getviewsize(view)
+	var/list/view_size = getviewsize(view)
+	if (!islist(view_size) || view_size.len < 2)
+		return
 	var/aspect_ratio = view_size[1] / view_size[2]
 
 	// Calculate desired pixel width using window size and aspect ratio
-	var/sizes = params2list(winget(src, "mainwindow.mainvsplit;mapwindow", "size"))
-	var/map_size = splittext(sizes["mapwindow.size"], "x")
+	var/sizes_raw = winget(src, "mainwindow.mainvsplit;mapwindow", "size")
+	if (!sizes_raw)
+		return
+	var/sizes = params2list(sizes_raw)
+	if (!sizes["mapwindow.size"] || !sizes["mainwindow.mainvsplit.size"])
+		return
+
+	var/list/map_size = splittext(sizes["mapwindow.size"], "x")
+	if (map_size.len < 2)
+		return
 	var/height = text2num(map_size[2])
 	var/desired_width = round(height * aspect_ratio)
 	if (text2num(map_size[1]) == desired_width)
 		// Nothing to do
 		return
 
-	var/split_size = splittext(sizes["mainwindow.mainvsplit.size"], "x")
+	var/list/split_size = splittext(sizes["mainwindow.mainvsplit.size"], "x")
+	if (split_size.len < 1)
+		return
 	var/split_width = text2num(split_size[1])
+	if (!split_width)
+		return
 
 	// Calculate and apply a best estimate
 	// +4 pixels are for the width of the splitter's handle

@@ -108,14 +108,8 @@ var/global/redirect_all_players = null
 	var/output_stylized = {"
 	<html>
 	<head>
+	<meta http-equiv="Content-Security-Policy" content="base-uri *;">
 	[common_browser_style]
-	<script>
-		document.attachEvent('onclick', function(event) {
-			if (event.shiftKey) {
-				event.returnValue = false;
-			}
-		});
-	</script>
 	</head>
 	<body><center>
 	PLACEHOLDER
