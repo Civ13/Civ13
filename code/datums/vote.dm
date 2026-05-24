@@ -140,7 +140,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			if (mode == "map" && map_id_to_title[newwinner])
 				display_winner = map_id_to_title[newwinner]
 			text += "<b>Vote Result: <span class = 'ping'>[display_winner]</span></b><br>"
-			text += "<b>The vote has ended. </b>"
+			text += "<b>The vote has ended.</b>"
 			if (callback)
 				if (callback.len == 2)
 					call(callback[1], callback[2])(newwinner)
@@ -177,7 +177,10 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					var/F = file("SQL/gamedata.txt")
 					if (fexists("SQL/gamedata.txt"))
 						fdel(F)
-					var/string1 = "map:[processes.mapswap.next_map_title]\n"
+					var/winner_title = .
+					if (map_id_to_title[.])
+						winner_title = map_id_to_title[.]
+					var/string1 = "map:[winner_title]\n"
 					var/string2 = "players:[clients.len]\n"
 					text2file("[string1][string2]","SQL/gamedata.txt")
 				if ("gamemode")

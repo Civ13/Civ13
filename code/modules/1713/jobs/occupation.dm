@@ -823,6 +823,8 @@
 	var/original_facial = "Shaved"
 	var/original_hair = "Black"
 	can_be_female = TRUE
+	allowed_maps = list()
+
 /datum/job/civilian/occupation/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.nationality = "none"
@@ -892,6 +894,7 @@
 	max_positions = 8
 	can_be_female = TRUE
 	spawn_location = "JoinLateCivA"
+	allowed_maps = list(MAP_OCCUPATION)
 	equip(var/mob/living/human/H)
 		..()
 		if (prob(80))
@@ -914,6 +917,7 @@
 	min_positions = 1
 	max_positions = 4
 	can_be_female = TRUE
+	allowed_maps = list(MAP_OCCUPATION)
 	equip(var/mob/living/human/H)
 		..()
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/leather/occinn(H), slot_belt)
@@ -931,6 +935,7 @@
 	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 3
+	allowed_maps = list(MAP_OCCUPATION)
 	equip(var/mob/living/human/H)
 		..()
 		H.add_note("Role", "You are a <b>Farmer</b>. Your job is to work for the german occupiers in either the fields or the woods. Misbehaviour can be met with severe punishment.")
@@ -945,6 +950,7 @@
 	en_meaning = ""
 	min_positions = 2
 	max_positions = 4
+	allowed_maps = list(MAP_OCCUPATION)
 /datum/job/civilian/occupation/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.nationality = "none"
@@ -995,6 +1001,7 @@
 
 	min_positions = 2
 	max_positions = 5
+	allowed_maps = list(MAP_OCCUPATION)
 /datum/job/civilian/occupation/collaborator/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1034,6 +1041,7 @@
 	en_meaning = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
+	allowed_maps = list(MAP_OCCUPATION)
 
 	min_positions = 8
 	max_positions = 30

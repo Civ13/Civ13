@@ -43,6 +43,7 @@ print("Updating git...")
 os.chdir("{}civ13-git".format(mdir))
 os.system("git pull")
 os.system("git reset --hard origin/master")
+os.system("git pull")
 
 map = sys.argv[1]
 dmms = []

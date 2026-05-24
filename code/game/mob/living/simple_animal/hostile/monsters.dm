@@ -158,6 +158,24 @@
 		if (!is_carrying_light(target_mob) && get_dist(src, target_mob) > 1)
 			LoseTarget()
 
+	switch(stance)
+		if (HOSTILE_STANCE_TIRED)
+			stance = HOSTILE_STANCE_IDLE
+
+		if (HOSTILE_STANCE_IDLE)
+			if (prob(10))
+				var/snd = pick('sound/animals/monsters/growl1.ogg', 'sound/animals/monsters/growl2.ogg')
+				playsound(src.loc, snd, 100, TRUE)
+
+		if (HOSTILE_STANCE_ALERT)
+			if (prob(10))
+				var/snd = pick('sound/animals/monsters/hiss1.ogg', 'sound/animals/monsters/hiss2.ogg')
+				playsound(src.loc, snd, 100, TRUE)
+
+		if (HOSTILE_STANCE_ATTACK)
+			if (prob(10))
+				var/snd = pick('sound/animals/monsters/roar1.ogg', 'sound/animals/monsters/roar2.ogg')
+				playsound(src.loc, snd, 100, TRUE)
 // --------------------------------
 // ALIEN XENOMORPH
 // Based on the Alien franchise. A deadly, calculating hunter.
@@ -208,6 +226,29 @@
 	visible_message("\The [src] lets out a final screech as acid blood pools beneath it.")
 	..()
 
+/mob/living/simple_animal/hostile/alien/Life()
+	..()
+	if (stat == DEAD || stat == UNCONSCIOUS)
+		return
+	switch(stance)
+		if (HOSTILE_STANCE_TIRED)
+			stance = HOSTILE_STANCE_IDLE
+
+		if (HOSTILE_STANCE_IDLE)
+			if (prob(10))
+				var/snd = pick('sound/animals/monsters/growl1.ogg', 'sound/animals/monsters/growl2.ogg')
+				playsound(src.loc, snd, 100, TRUE)
+
+		if (HOSTILE_STANCE_ALERT)
+			if (prob(10))
+				var/snd = pick('sound/animals/monsters/hiss1.ogg', 'sound/animals/monsters/hiss2.ogg')
+				playsound(src.loc, snd, 100, TRUE)
+
+		if (HOSTILE_STANCE_ATTACK)
+			if (prob(10))
+				var/snd = pick('sound/animals/monsters/roar1.ogg', 'sound/animals/monsters/roar2.ogg')
+				playsound(src.loc, snd, 100, TRUE)
+
 // Drone subtype — lighter, faster scout variant
 /mob/living/simple_animal/hostile/alien/drone
 	name = "alien drone"
@@ -215,8 +256,8 @@
 	move_to_delay = 2
 	maxHealth = 90
 	health = 90
-	melee_damage_lower = 12
-	melee_damage_upper = 22
+	melee_damage_lower = 15
+	melee_damage_upper = 25
 	mob_size = MOB_MEDIUM
 	can_bite_limbs_off = 0
 	icon_state = "Drone Front Half"
@@ -381,6 +422,7 @@
 	faction = "neutral"
 	flying = TRUE
 	var/turf/investigate_turf = null
+	var/sound_spam_timer = 0
 
 /mob/living/simple_animal/hostile/echofiend/FindTarget()
 	return null
@@ -390,6 +432,25 @@
 	if (stat == DEAD || stat == UNCONSCIOUS)
 		return
 
+	switch(stance)
+		if (HOSTILE_STANCE_TIRED)
+			stance = HOSTILE_STANCE_IDLE
+
+		if (HOSTILE_STANCE_IDLE)
+			if (prob(10))
+				var/snd = pick('sound/animals/monsters/growl1.ogg', 'sound/animals/monsters/growl2.ogg')
+				playsound(src.loc, snd, 100, TRUE)
+
+		if (HOSTILE_STANCE_ALERT)
+			if (prob(10))
+				var/snd = pick('sound/animals/monsters/hiss1.ogg', 'sound/animals/monsters/hiss2.ogg')
+				playsound(src.loc, snd, 100, TRUE)
+
+		if (HOSTILE_STANCE_ATTACK)
+			if (prob(10))
+				var/snd = pick('sound/animals/monsters/roar1.ogg', 'sound/animals/monsters/roar2.ogg')
+				playsound(src.loc, snd, 100, TRUE)
+				
 	if (!target_mob)
 		for (var/mob/living/human/H in range(1, src))
 			if (H.stat != DEAD)
@@ -416,7 +477,11 @@
 	if (stat != CONSCIOUS || target_mob)
 		return
 	investigate_turf = T
+	if (sound_spam_timer <= 10)
+		sound_spam_timer++
+		return
 	custom_emote(1, "twitches its ears and turns toward the sound.")
+	sound_spam_timer = 0
 
 /mob/living/simple_animal/hostile/echofiend/hear_say(var/message, var/verb, var/datum/language/speaking, var/alt_name, var/italics, var/mob/speaker, var/sound/speech_sound, var/sound_vol, var/alt_message, var/animal, var/original_message)
 	hear_sound(get_turf(speaker))
@@ -549,5 +614,14 @@
 	playsound(src, 'sound/effects/extinguish.ogg', 60, TRUE)
 	H.phosphor_dye_timer = 60
 	H.set_light(3, 1, "#00FF00")
-	H.apply_damage(5, BURN, "chest")
+	H.apply_damage(7, BURN, "chest")
+	H.acid_damage(world.time+600)
 	death()
+
+/mob/living/human/proc/acid_damage(end_timer = 0)
+	spawn(70)
+		if (end_timer > world.time)
+			src.apply_damage(7, BURN, pick("chest","groin", "l_hand", "r_hand", "l_foot", "r_foot", "l_arm", "r_arm", "l_leg", "r_leg"))
+			to_chat(src, "<span class='danger'>The acid continues to burn you!</span>")
+			src.acid_damage(end_timer)
+			return

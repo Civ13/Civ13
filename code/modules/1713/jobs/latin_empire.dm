@@ -63,8 +63,6 @@
 			H.real_name = H.name
 	return TRUE
 
-
-
 /datum/job/roman/sergeant	//Latin Empire - Squad Leader
 	title = "Sergento"
 	en_meaning = "Sergeant (Latin-Italian)"

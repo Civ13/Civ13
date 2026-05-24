@@ -652,7 +652,7 @@
 /datum/job/american/american_lieutenant
 	title = "USA Lieutenant"
 	rank_abbreviation = "Lt."
-	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN, MAP_ROAD_TO_DAK_TO)
 
 	spawn_location = "JoinLateRNCap"
 
@@ -707,7 +707,7 @@
 /datum/job/american/american_sergeant
 	title = "USA Sergeant"
 	rank_abbreviation = "Sgt."
-	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN, MAP_ROAD_TO_DAK_TO)
 
 	spawn_location = "JoinLateRNSL"
 
@@ -760,7 +760,7 @@
 /datum/job/american/american_sf
 	title = "USA Commando"
 	rank_abbreviation = "Cpl."
-	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN, MAP_ROAD_TO_DAK_TO)
 
 	spawn_location = "JoinLateRN"
 
@@ -809,7 +809,7 @@
 /datum/job/american/american_medic
 	title = "USA Corpsman"
 	rank_abbreviation = "Cpl."
-	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN, MAP_ROAD_TO_DAK_TO)
 
 	spawn_location = "JoinLateRNMed"
 
@@ -873,7 +873,7 @@
 /datum/job/american/american_radioman
 	title = "USA Radio Operator"
 	rank_abbreviation = "Cpl."
-	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN, MAP_ROAD_TO_DAK_TO)
 
 	spawn_location = "JoinLateRN"
 
@@ -936,7 +936,7 @@
 /datum/job/american/american_marksman
 	title = "USA Marksman"
 	rank_abbreviation = "Spc."
-	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN, MAP_ROAD_TO_DAK_TO)
 
 	spawn_location = "JoinLateRN"
 
@@ -991,7 +991,7 @@
 /datum/job/american/american_grenadier
 	title = "USA Grenadier"
 	rank_abbreviation = "Pfc."
-	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN, MAP_ROAD_TO_DAK_TO)
 
 	spawn_location = "JoinLateRN"
 
@@ -1044,7 +1044,7 @@
 /datum/job/american/american_lmg
 	title = "USA Automatic Rifleman"
 	rank_abbreviation = "Pfc."
-	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN, MAP_ROAD_TO_DAK_TO)
 
 	spawn_location = "JoinLateRN"
 
@@ -1112,7 +1112,7 @@
 /datum/job/american/american_soldier
 	title = "USA Rifleman"
 	rank_abbreviation = "Pvt."
-	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN)
+	allowed_maps = list(MAP_HUE, MAP_ONG_THAHN, MAP_ROAD_TO_DAK_TO)
 
 	spawn_location = "JoinLateRN"
 
