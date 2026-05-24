@@ -93,7 +93,7 @@
 "Mk" = (/obj/structure/bell_stand,/turf/floor/grass/jungle,/area/caribbean/sea/bottom)
 "Mv" = (/obj/item/weapon/stool/wood,/turf/floor/dirt/jungledirt,/area/caribbean/sea/bottom)
 "MS" = (/obj/structure/wild/berrybush/azul,/turf/floor/grass/jungle,/area/caribbean/sea/bottom)
-"MX" = (/obj/structure/cannon/modern/tank/voyage/autofire{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/sea/bottom)
+"MX" = (/obj/structure/cannon/modern/voyage/autofire{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/sea/bottom)
 "Nr" = (/obj/covers/wood,/obj/structure/table/rack/coatrack,/turf/floor/grass/jungle,/area/caribbean/sea/bottom/roofed)
 "Nt" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/sea/bottom)
 "NI" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/sea/bottom)

@@ -585,7 +585,7 @@
 
 	else if (isobj(AM))
 		var/obj/I = AM
-		if(!istype(I, /obj/structure/cannon/modern/tank/voyage))
+		if(!istype(I, /obj/structure/cannon/modern/voyage))
 			if (!can_pull_size || can_pull_size < I.w_class || istype(I, /obj/item/football))
 				to_chat(src, "<span class='warning'>It won't budge!</span>")
 				return

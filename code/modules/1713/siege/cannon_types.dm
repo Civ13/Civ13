@@ -130,7 +130,7 @@
 	desc = "A barebones cannon made to be carried by vehicles."
 	autoloader = TRUE
 
-/obj/structure/cannon/modern/tank/voyage
+/obj/structure/cannon/modern/voyage
 	spritemod = TRUE
 	w_class = ITEM_SIZE_HUGE
 	maxrange = 35
@@ -147,7 +147,7 @@
 	anchored = TRUE
 	ammotype = /obj/item/cannon_ball
 
-/obj/structure/cannon/modern/tank/voyage/autofire //npc cannon
+/obj/structure/cannon/modern/voyage/autofire //npc cannon
 	var/stopfiring = FALSE
 	attack_hand(mob/user)
 		return

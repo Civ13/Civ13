@@ -215,8 +215,8 @@
 		G.undeploy()
 	clear_map()
 	//convert looted autofire cannons to normal cannons and looted grappling hooks to normal hooks
-	for(var/obj/structure/cannon/modern/tank/voyage/autofire/C in world)
-		new/obj/structure/cannon/modern/tank/voyage(C.loc)
+	for(var/obj/structure/cannon/modern/voyage/autofire/C in world)
+		new/obj/structure/cannon/modern/voyage(C.loc)
 		qdel(C)
 	for(var/obj/structure/grapplehook/auto/D in world)
 		new/obj/structure/grapplehook(D.loc)

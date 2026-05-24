@@ -298,7 +298,7 @@
 	var/found_gunner = FALSE
 	for (var/obj/structure/bed/chair/gunner/G in M.loc)
 		found_gunner = TRUE
-	if (!found_gunner && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+	if (!found_gunner && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/voyage))
 		to_chat(M, SPAN_WARNING("You need to be at the gunner's position to operate \the [src]."))
 		user = null
 		return
@@ -371,7 +371,7 @@
 		to_chat(user, SPAN_DANGER("You have no hands to use this with."))
 		return FALSE
 
-	if (istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+	if (istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/voyage))
 		var/found_gunner = FALSE
 		for (var/obj/structure/bed/chair/gunner/G in user.loc)
 			found_gunner = TRUE
@@ -396,7 +396,7 @@
 					var/found_loader = FALSE
 					for (var/obj/structure/bed/chair/loader/L in user.loc)
 						found_loader = TRUE
-					if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+					if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/voyage))
 						to_chat(user, SPAN_WARNING("You need to be at the loader's position to load \the [src]."))
 						return FALSE
 					var/loadtime = caliber/2
