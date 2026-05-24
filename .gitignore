@@ -40,3 +40,4 @@ extractor.py
 webclient/node_modules/
 webclient/dist/
 webclient/package-lock.json
+webclient/config.json

@@ -389,6 +389,10 @@
 	else if (istype(mover, /obj/item/projectile))
 		return TRUE
 	else if (istype(mover, /mob) && !iscovered())
+		if (istype(mover, /mob/living/simple_animal))
+			var/mob/living/simple_animal/SA = mover
+			if (SA.flying)
+				return TRUE
 		if (ishuman(mover))
 			var/mob/living/human/H = mover
 			if(istype(H.wear_suit, /obj/item/clothing/suit/lifejacket))

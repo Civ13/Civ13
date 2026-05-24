@@ -118,8 +118,6 @@
 	H.equip_to_slot_or_del(U, slot_w_uniform)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	U.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/nomads/kevlarblack/KV = new /obj/item/clothing/accessory/armor/nomads/kevlarblack(null)
-	U.attackby(KV, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/flashlight/modern/darknight(H), slot_belt)
 	var/obj/item/weapon/storage/backpack/BP = new /obj/item/weapon/storage/backpack(null)

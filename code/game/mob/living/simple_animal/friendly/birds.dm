@@ -16,6 +16,7 @@
 	response_harm   = "hits"
 	meat_amount = 2
 	mob_size = MOB_SMALL
+	flying = TRUE
 	possession_candidate = TRUE
 	granivore = 1
 	behaviour = "wander"
@@ -44,6 +45,7 @@
 	var/amount_grown = FALSE
 	pass_flags = PASSTABLE
 	mob_size = MOB_MINISCULE
+	flying = TRUE
 	granivore = 1
 	behaviour = "wander"
 	has_fat =  FALSE
@@ -97,6 +99,7 @@
 	var/egg_timer = FALSE
 	pass_flags = PASSTABLE
 	mob_size = MOB_SMALL
+	flying = TRUE
 	granivore = 1
 	behaviour = "wander"
 	wandersounds = list('sound/animals/bird/chicken_1.ogg','sound/animals/bird/chicken_2.ogg')
@@ -204,6 +207,7 @@
 	var/egg_timer = FALSE
 	pass_flags = PASSTABLE
 	mob_size = MOB_SMALL
+	flying = TRUE
 	granivore = 1
 	behaviour = "wander"
 	wandersounds = list('sound/animals/bird/chicken_1.ogg','sound/animals/bird/chicken_2.ogg')
@@ -257,6 +261,7 @@
 	health = 12
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
+	flying = TRUE
 	eggsleft = 5
 	var/egg_timer = FALSE
 	granivore = 1
@@ -285,6 +290,7 @@
 	harm_intent_damage = 4
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
+	flying = TRUE
 	granivore = 1
 	behaviour = "wander"
 	wandersounds = list('sound/animals/turkey/turkey_1.ogg','sound/animals/turkey/turkey_2.ogg','sound/animals/turkey/turkey_3.ogg')
@@ -311,6 +317,7 @@
 	harm_intent_damage = 7
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
+	flying = TRUE
 	granivore = 1
 	behaviour = "defends"
 	melee_damage_lower = 3
@@ -338,6 +345,7 @@
 	harm_intent_damage = 7
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
+	flying = TRUE
 	granivore = 1
 	behaviour = "defends"
 	melee_damage_lower = 3
@@ -365,6 +373,7 @@
 	harm_intent_damage = 7
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
+	flying = TRUE
 	granivore = 1
 	scavenger = 1
 	behaviour = "wander"
@@ -393,6 +402,7 @@
 	harm_intent_damage = 7
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
+	flying = TRUE
 	granivore = 1
 	carnivore = 1
 	scavenger = 1
@@ -425,6 +435,7 @@
 	var/amount_grown = FALSE
 	pass_flags = PASSTABLE
 	mob_size = MOB_MINISCULE
+	flying = TRUE
 	granivore = 1
 	behaviour = "wanders"
 

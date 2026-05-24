@@ -83,8 +83,8 @@
 	stop_automated_movement_when_pulled = FALSE
 	maxHealth = 55
 	health = 55
-	melee_damage_lower = 8
-	melee_damage_upper = 16
+	melee_damage_lower = 10
+	melee_damage_upper = 18
 	mob_size = MOB_MEDIUM
 	predatory_carnivore = 1
 	carnivore = 1
@@ -367,7 +367,7 @@
 // --------------------------------
 /mob/living/simple_animal/hostile/echofiend
 	name = "echofiend"
-	desc = "A blind, hunched monstrosity with massive ears. It reacts to the slightest sound."
+	desc = "A bat-like monstrosity with massive ears. It reacts to the slightest sound."
 	icon = 'icons/mob/monsters/monsters.dmi'
 	icon_state = "echofiend"
 	icon_living = "echofiend"
@@ -379,6 +379,7 @@
 	melee_damage_upper = 25
 	move_to_delay = 3
 	faction = "neutral"
+	flying = TRUE
 	var/turf/investigate_turf = null
 
 /mob/living/simple_animal/hostile/echofiend/FindTarget()

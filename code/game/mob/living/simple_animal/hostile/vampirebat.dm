@@ -21,6 +21,7 @@
 	health = 10
 	maxHealth = 10
 	mob_size = MOB_SMALL
+	flying = TRUE
 	stop_automated_movement_when_pulled = FALSE
 	stop_automated_movement = TRUE
 	wander = TRUE
