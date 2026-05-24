@@ -38,7 +38,7 @@
 	title = "BAF Squad 1 Squadleader"
 	squad = 1
 	is_squad_leader = TRUE
-	allowed_maps = list(MAP_CAMPAIGN), MAP_ROTSTADT
+	allowed_maps = list(MAP_CAMPAIGN, MAP_ROTSTADT)
 	rank_abbreviation = "1-Sgt"
 /datum/job/bluefaction/s1/pvt
 	title = "BAF Squad 1 Private"
