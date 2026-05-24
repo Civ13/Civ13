@@ -81,18 +81,20 @@ export class ByondClient {
 				return;
 			}
 			if (this.is_test_env) {
-				if (e.code == "ArrowUp") this.command(".north");
-				if (e.code == "ArrowDown") this.command(".south");
-				if (e.code == "ArrowRight") this.command(".east");
-				if (e.code == "ArrowLeft") this.command(".west");
+				if (e.code == "ArrowUp") this.command(".startmovingup");
+				if (e.code == "ArrowDown") this.command(".startmovingdown");
+				if (e.code == "ArrowRight") this.command(".startmovingright");
+				if (e.code == "ArrowLeft") this.command(".startmovingleft");
 			}
-			const key = this.js_keycode_to_byond(e.which);
+			const key = this.keyboard_event_to_byond(e);
 			if (key) {
 				if (!e.repeat) {
-					for (const macro of this.macros.values()) {
-						if (macro.get("name") == key) {
-							this.command(macro.get("command") ?? "");
-						}
+					const macro = this.find_macro(key);
+					if (macro) {
+						this.command(macro);
+					} else {
+						const fallback = this.direct_movement_command(key, true);
+						if (fallback) this.command(fallback);
 					}
 					this.command(`KeyDown "${key}"`);
 				}
@@ -100,8 +102,12 @@ export class ByondClient {
 			}
 		});
 		window.addEventListener("keyup", (e) => {
-			const key = this.js_keycode_to_byond(e.which);
-			if (key) this.command(`KeyUp "${key}"`);
+			const key = this.keyboard_event_to_byond(e);
+			if (key) {
+				const fallback = this.direct_movement_command(key, false);
+				if (fallback && !this.find_macro(key)) this.command(fallback);
+				this.command(`KeyUp "${key}"`);
+			}
 		});
 		window.addEventListener("message", (e) => {
 			if (typeof e.data == "string") {
@@ -180,10 +186,15 @@ export class ByondClient {
 			}
 		});
 		this.gl_holder = new GlHolder(this);
+		this.gl_holder.canvas.tabIndex = 0;
+		this.focus_game_canvas();
 		this.ui = new SvgUi(this);
 		this.sound_player = new SoundPlayer(this);
 		this.ui.set_status_overlay("Connecting...");
 		this.frameLoop();
+		this.gl_holder.canvas.addEventListener("mousedown", () => {
+			this.focus_game_canvas();
+		});
 		this.gl_holder.canvas.addEventListener("dblclick", (e) => {
 			if (
 				!e.defaultPrevented &&
@@ -1351,6 +1362,10 @@ export class ByondClient {
 		}
 		this.websocket.send(new MessageBuilder(209).write_string(str).collapse());
 	}
+	focus_game_canvas() {
+		(document.activeElement as HTMLElement | undefined)?.blur?.();
+		this.gl_holder.canvas.focus();
+	}
 	topic(str: string): void {
 		this.websocket.send(new MessageBuilder(129).write_string(str).collapse());
 	}
@@ -1412,6 +1427,169 @@ export class ByondClient {
 			this.resource_blobs.set(resource + "", promise);
 		}
 		return promise;
+	}
+
+	keyboard_event_to_byond(e: KeyboardEvent) {
+		if (e.code) {
+			switch (e.code) {
+				case "KeyA":
+					return "A";
+				case "KeyB":
+					return "B";
+				case "KeyC":
+					return "C";
+				case "KeyD":
+					return "D";
+				case "KeyE":
+					return "E";
+				case "KeyF":
+					return "F";
+				case "KeyG":
+					return "G";
+				case "KeyH":
+					return "H";
+				case "KeyI":
+					return "I";
+				case "KeyJ":
+					return "J";
+				case "KeyK":
+					return "K";
+				case "KeyL":
+					return "L";
+				case "KeyM":
+					return "M";
+				case "KeyN":
+					return "N";
+				case "KeyO":
+					return "O";
+				case "KeyP":
+					return "P";
+				case "KeyQ":
+					return "Q";
+				case "KeyR":
+					return "R";
+				case "KeyS":
+					return "S";
+				case "KeyT":
+					return "T";
+				case "KeyU":
+					return "U";
+				case "KeyV":
+					return "V";
+				case "KeyW":
+					return "W";
+				case "KeyX":
+					return "X";
+				case "KeyY":
+					return "Y";
+				case "KeyZ":
+					return "Z";
+				case "ArrowUp":
+					return "North";
+				case "ArrowDown":
+					return "South";
+				case "ArrowLeft":
+					return "West";
+				case "ArrowRight":
+					return "East";
+				case "Numpad1":
+					return "Numpad1";
+				case "Numpad2":
+					return "Numpad2";
+				case "Numpad3":
+					return "Numpad3";
+				case "Numpad4":
+					return "Numpad4";
+				case "Numpad5":
+					return "Numpad5";
+				case "Numpad6":
+					return "Numpad6";
+				case "Numpad7":
+					return "Numpad7";
+				case "Numpad8":
+					return "Numpad8";
+				case "Numpad9":
+					return "Numpad9";
+				case "Numpad0":
+					return "Numpad0";
+				case "Space":
+					return "Space";
+				case "Tab":
+					return "Tab";
+				case "Escape":
+					return "Escape";
+				case "Insert":
+					return "Insert";
+				case "Delete":
+					return "Delete";
+				case "Home":
+					return "Northwest";
+				case "End":
+					return "Southwest";
+				case "PageUp":
+					return "Northeast";
+				case "PageDown":
+					return "Southeast";
+				case "Comma":
+					return ",";
+				case "Period":
+					return ".";
+				case "Minus":
+					return "-";
+			}
+		}
+		if (e.key) {
+			const key = e.key.toUpperCase();
+			if ((key >= "A" && key <= "Z") || (key >= "0" && key <= "9")) {
+				return key;
+			}
+			if (key === "ARROWUP") return "North";
+			if (key === "ARROWDOWN") return "South";
+			if (key === "ARROWLEFT") return "West";
+			if (key === "ARROWRIGHT") return "East";
+			if (key === "CONTROL") return "Ctrl";
+			if (key === "ALT") return "Alt";
+			if (key === "SHIFT") return "Shift";
+			if (key === "INSERT") return "Insert";
+			if (key === "DELETE") return "Delete";
+			if (key === "HOME") return "Northwest";
+			if (key === "END") return "Southwest";
+			if (key === "PAGEUP") return "Northeast";
+			if (key === "PAGEDOWN") return "Southeast";
+			if (key === ",") return ",";
+			if (key === ".") return ".";
+			if (key === "-") return "-";
+			if (key === "SPACE") return "Space";
+			if (key === "TAB") return "Tab";
+			if (key === "ESCAPE") return "Escape";
+		}
+		return this.js_keycode_to_byond(e.which || e.keyCode || 0);
+	}
+
+	find_macro(key: string) {
+		for (const macro of this.macros.values()) {
+			if (macro.get("name") == key) {
+				return macro.get("command") ?? "";
+			}
+		}
+		return undefined;
+	}
+
+	direct_movement_command(key: string, is_down: boolean) {
+		switch (key) {
+			case "W":
+			case "North":
+				return is_down ? ".startmovingdown" : ".stopmovingdown";
+			case "S":
+			case "South":
+				return is_down ? ".startmovingup" : ".stopmovingup";
+			case "A":
+			case "West":
+				return is_down ? ".startmovingright" : ".stopmovingright";
+			case "D":
+			case "East":
+				return is_down ? ".startmovingleft" : ".stopmovingleft";
+		}
 	}
 
 	js_keycode_to_byond(num: number) {

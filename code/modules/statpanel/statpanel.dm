@@ -63,12 +63,16 @@
 	return FALSE
 
 /client/proc/init_statpanel()
-	browse_rsc_web(src, 'interface/fonts/Alegreya-Regular.ttf', "Alegreya-Regular.ttf")
-	browse_rsc_web(src, 'interface/fonts/Alegreya-Bold.ttf', "Alegreya-Bold.ttf")
-	browse_rsc_web(src, 'interface/fonts/Alegreya-Italic.ttf', "Alegreya-Italic.ttf")
-	browse_rsc_web(src, 'interface/fonts/Alegreya-BoldItalic.ttf', "Alegreya-BoldItalic.ttf")
-	browse_rsc_web(src, 'interface/fonts/Alegreya-Black.ttf', "Alegreya-Black.ttf")
-	src << browse('interface/info/info.html', "window=browser_info")
+	src << browse(info_template, "window=browser_info")
+	// Set ready after a short delay so the page has time to load.
+	// We avoid the window.onload Topic handshake because it is unreliable
+	// in the BYOND 514 webclient.
+	spawn(20)
+		if (!src) return
+		statpanel_ready = TRUE
+		if (mob)
+			mob.Stat()
+		update_statpanel()
 
 /client/proc/add_stat(name, value = "")
 	statpanel_data += list(list("name" = name, "value" = value))
@@ -130,9 +134,17 @@
 	)
 	var/json = json_encode(payload)
 	src << output(json, "browser_info:receiveStats")
-	
 	statpanel_data.Cut()
 	statpanel_tabs.Cut()
+
+/client/proc/update_chatpanel()
+	// Push only the newest message into the already-open browser window via output().
+	// The window is initialised once by chat.load() using browse(); after that we
+	// only append individual messages so we never re-browse the full page.
+	if (!chat || !chat.message_queue.len)
+		return
+	var/msg = chat.message_queue[chat.message_queue.len]
+	src << output("<div class=\"message\">[msg]</div>", "browser_chat:addMessage")
 
 /client/Topic(href, href_list)
 	if(href_list["action"] == "refocus_map")
@@ -156,3 +168,4 @@
 		run_verb(verb_name)
 		return
 	return ..()
+

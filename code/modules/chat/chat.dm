@@ -498,6 +498,17 @@ var/global/chat_template = {"
 			var container = document.getElementById('chat-container');
 			container.scrollTop = container.scrollHeight;
 		};
+
+		// Called by the server via output() to append a single message HTML string.
+		function addMessage(html) {
+			var messages = document.getElementById('messages');
+			var div = document.createElement('div');
+			div.innerHTML = html;
+			var node = div.firstChild || div;
+			messages.appendChild(node);
+			var container = document.getElementById('chat-container');
+			container.scrollTop = container.scrollHeight;
+		}
 	</script>
 </body>
 

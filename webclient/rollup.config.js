@@ -1,13 +1,13 @@
-import rimraf from "rimraf";
-import typescript from '@rollup/plugin-typescript';
-import htmlPlugin from "./lib/html.js";
-import nodeResolve from "@rollup/plugin-node-resolve";
-import pnpResolve from "rollup-plugin-pnp-resolve";
-import postcss from 'rollup-plugin-postcss';
-import terser from "@rollup/plugin-terser";
-import {readFileSync} from "fs";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
+import nodeResolve from "@rollup/plugin-node-resolve";
+import terser from "@rollup/plugin-terser";
+import typescript from "@rollup/plugin-typescript";
+import { readFileSync } from "fs";
+import rimraf from "rimraf";
+import pnpResolve from "rollup-plugin-pnp-resolve";
+import postcss from "rollup-plugin-postcss";
+import htmlPlugin from "./lib/html.js";
 
 rimraf.sync("dist");
 
@@ -21,22 +21,20 @@ const config = [
 			dir: "dist/res",
 			entryFileNames: "[name].js",
 			format: "iife",
+			name: "browserfill",
 		},
-		plugins: [
-			typescript(),
-			terser()
-		]
+		plugins: [typescript(), terser()],
 	},
 	{
-		input:
-		{
-			main: "src/client/index.ts"
+		input: {
+			main: "src/client/index.ts",
 		},
 		output: {
 			dir: "dist/res",
 			chunkFileNames: "[name]-[hash].js",
 			entryFileNames: "[name]-[hash].js",
-			format: "iife"
+			format: "iife",
+			name: "ByondWebclient",
 		},
 		plugins: [
 			typescript(),
@@ -47,39 +45,32 @@ const config = [
 			htmlPlugin(),
 			terser(),
 			{
-				name: 'files-plugin',
+				name: "files-plugin",
 				buildStart() {
-					this.addWatchFile('CNAME');
+					this.addWatchFile("CNAME");
 				},
 				async generateBundle(options, bundle) {
 					this.emitFile({
-						fileName: 'favicon.ico',
-						type: 'asset',
-						source: readFileSync('favicon.ico')
+						fileName: "favicon.ico",
+						type: "asset",
+						source: readFileSync("favicon.ico"),
 					});
-				}
-			}
-		]
-	},{
-		input:
-		{
-			proxy: "src/proxy/index.ts"
+				},
+			},
+		],
+	},
+	{
+		input: {
+			proxy: "src/proxy/index.ts",
 		},
 		output: {
 			dir: "dist",
 			chunkFileNames: "[name]-[hash].js",
 			entryFileNames: "[name].js",
-			format: "esm"
+			format: "esm",
 		},
-		plugins: [
-			typescript(),
-			json(),
-			pnpResolve(),
-			nodeResolve(),
-			commonjs()
-		],
-		external: ["express", "openid-client", "ws","node-fetch", "ip-matching"]
-	}
+		plugins: [typescript(), json(), pnpResolve(), nodeResolve(), commonjs()],
+		external: ["express", "openid-client", "ws", "node-fetch", "ip-matching"],
+	},
 ];
 export default config;
-
