@@ -22,6 +22,8 @@
 	var/list/emote_see = list()		//Unlike speak_emote, the list of things in this variable only show by themselves with no spoken text. IE: Ian barks, Ian yaps
 
 	var/turns_since_move = FALSE
+	var/stuck_ticks = 0
+	var/turf/last_loc = null
 	universal_speak = FALSE		//No, just no.
 	var/meat_amount = FALSE
 	var/meat_type
@@ -248,10 +250,14 @@
 	if (istype(src, /mob/living/simple_animal/hostile/human/voyage/pirate/friendly))
 		faction = CIVILIAN
 		behaviour = "hostile"
-	if (behaviour == "hunt")
+	if (behaviour == "hunt" || behaviour == "hostile")
+		if (stance == HOSTILE_STANCE_ATTACK && target_mob && target_mob != M)
+			if (prob(75))
+				target_mob = M
+		else
+			target_mob = M
 		stance = HOSTILE_STANCE_ATTACK
 		stance_step = 6
-		target_mob = M
 	else if (behaviour == "scared")
 		do_behaviour("scared")
 
@@ -269,9 +275,13 @@
 
 		if (I_DISARM)
 			if (behaviour == "defends")
+				if (stance == HOSTILE_STANCE_ATTACK && target_mob && target_mob != M)
+					if (prob(75))
+						target_mob = M
+				else
+					target_mob = M
 				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
-				target_mob = M
 			M.visible_message("<span class = 'notice'>[M] [response_disarm] \the [src].</span>")
 			M.do_attack_animation(src)
 			playsound(get_turf(M), 'sound/weapons/punchmiss.ogg', 50, TRUE, -1)
@@ -279,9 +289,13 @@
 
 		if (I_GRAB)
 			if (behaviour == "defends")
+				if (stance == HOSTILE_STANCE_ATTACK && target_mob && target_mob != M)
+					if (prob(75))
+						target_mob = M
+				else
+					target_mob = M
 				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
-				target_mob = M
 			if (M == src)
 				return
 			if (!(status_flags & CANPUSH))
@@ -300,9 +314,13 @@
 
 		if (I_HARM)
 			if (behaviour == "defends")
+				if (stance == HOSTILE_STANCE_ATTACK && target_mob && target_mob != M)
+					if (prob(75))
+						target_mob = M
+				else
+					target_mob = M
 				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
-				target_mob = M
 			adjustBruteLoss(harm_intent_damage*M.getStatCoeff("strength"))
 			M.visible_message("<span class = 'red'>[M] [response_harm] \the [src].</span>")
 			M.do_attack_animation(src)
@@ -630,9 +648,13 @@
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 			O.attack(src, user, tgt)
 	if (behaviour == "defends" || behaviour == "hunt" || behaviour == "hostile")
+		if (stance == HOSTILE_STANCE_ATTACK && target_mob && target_mob != user)
+			if (prob(75))
+				target_mob = user
+		else
+			target_mob = user
 		stance = HOSTILE_STANCE_ATTACK
 		stance_step = 6
-		target_mob = user
 		..()
 	else
 		if (behaviour == "scared" || (behaviour == "wander" && mob_size < user.mob_size))

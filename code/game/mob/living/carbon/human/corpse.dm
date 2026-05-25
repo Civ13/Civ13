@@ -43,6 +43,10 @@
 	corpse_job = "Pirate"
 	corpse_name = "Pirate"
 
+/mob/living/human/corpse/pirate/ranged
+	corpse_job = "Pirate Ranged"
+	corpse_name = "Pirate"
+
 /mob/living/human/corpse/spanish
 	gender = MALE
 	corpse_job = "Marinero"
@@ -94,6 +98,9 @@ mob/living/human/corpse/british_sailor
 	gender = MALE
 	corpse_job = "British Town Guard"
 	corpse_name = "Redcoat Soldier"
+	
+/mob/living/human/corpse/british/ranged
+	corpse_job = "Redcoat Soldier"
 
 /mob/living/human/corpse/japanese
 	gender = MALE
@@ -420,3 +427,90 @@ mob/living/human/corpse/russian_soviet_tanker
 	gender = MALE
 	corpse_job = "K.A. Serjant"
 	corpse_name = "Soviet Squad Leader"
+
+// Jobs for npcs only
+
+/datum/job/british/civilian/veteran/ranged
+	title = "Redcoat Soldier"
+	en_meaning = "Colony Security"
+	rank_abbreviation = ""
+	spawn_location = "JoinLateRN"
+	allowed_maps = list()
+
+/datum/job/british/civilian/veteran/ranged/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	give_random_name(H)
+
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_soldier(H), slot_wear_suit)
+
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/musket(H), slot_l_hand)
+
+
+	H.add_note("Role", "You are a <b>[title]</b>, a veteran of past wars. Your job is to organize the colony defense and hunting parties, according to the orders of the <b>Town Guard Officer</b>.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	return TRUE
+
+/datum/job/pirates/seaman/ranged
+	title = "Pirate Ranged"
+	spawn_location = "JoinLatePirate"
+	allowed_maps = list()
+	min_positions = 6
+	max_positions = 200
+
+/datum/job/pirates/seaman/ranged/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
+//clothes
+	var/randcloth = rand(1,5)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate3(H), slot_w_uniform)
+	else if (randcloth == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate4(H), slot_w_uniform)
+	else if (randcloth == 5)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate5(H), slot_w_uniform)
+//jacket
+	if (prob(35))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket4(H), slot_wear_suit)
+	else if (prob(25))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket3(H), slot_wear_suit)
+
+//head
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/piratebandana1(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/musket(H), slot_l_hand)
+
+
+	H.add_note("Role", "You are a <b>[title]</b>, a simple pirate. Follow your Captain's orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE

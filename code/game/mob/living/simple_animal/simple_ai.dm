@@ -34,11 +34,13 @@
 	if (stance == HOSTILE_STANCE_ATTACK || stance == HOSTILE_STANCE_ALERT)
 		ai_tick_delay = 0
 		do_behaviour()
+		turns_since_move = 0
 	else
 		ai_tick_delay++
 		if (ai_tick_delay >= ai_tick_delay_max)
 			do_behaviour()
 			ai_tick_delay = 0
+			turns_since_move = 0
 
 /mob/living/simple_animal/proc/do_behaviour(var/t_behaviour = null)
 	if (stat == DEAD || stat == UNCONSCIOUS)

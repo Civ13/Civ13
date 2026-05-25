@@ -25,6 +25,7 @@
 
 	corpse = /mob/living/human/corpse/pirate
 	weapon = /obj/item/weapon/material/sword/cutlass
+	use_generated_appearance = TRUE
 
 ///mob/living/simple_animal/hostile/human/voyage/pirate/New()
 //	..()

@@ -268,12 +268,36 @@
 /mob/living/simple_animal/proc/MoveToTarget()
 	if (!target_mob || !SA_attackable(target_mob))
 		stance = HOSTILE_STANCE_IDLE
+		walk(src, 0)
 		return
+
+	// Stuck detection
+	if (loc == last_loc)
+		stuck_ticks++
+	else
+		stuck_ticks = 0
+		last_loc = loc
+
 	if (target_mob in view(aggro_vision_range, src))
 		stance = HOSTILE_STANCE_ATTACK
-		walk_to(src, target_mob, TRUE, move_to_delay)
+		
+		if (stuck_ticks >= 3)
+			// Try to find a way around by stepping perpendicular to target
+			var/dir_to_target = get_dir(src, target_mob)
+			var/side_step_dir = pick(turn(dir_to_target, 90), turn(dir_to_target, -90))
+			if (!step(src, side_step_dir))
+				step(src, turn(side_step_dir, 180))
+			
+			// If really stuck, maybe try to break things
+			if (stuck_ticks >= 6 && destroy_surroundings)
+				DestroySurroundings()
+				
+			stuck_ticks = 0 // Reset counter after attempt
+		else
+			walk_to(src, target_mob, 1, move_to_delay)
+
 	else if (target_mob in view(idle_vision_range, src))
-		walk_to(src, target_mob, TRUE, move_to_delay)
+		walk_to(src, target_mob, 1, move_to_delay)
 
 /mob/living/simple_animal/proc/AttackTarget()
 	if (!target_mob || !SA_attackable(target_mob))

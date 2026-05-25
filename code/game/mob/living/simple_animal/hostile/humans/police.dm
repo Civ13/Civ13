@@ -30,7 +30,7 @@
 	projectiletype = /obj/item/projectile/bullet/pistol/a9x19
 	corpse = /mob/living/human/corpse/police
 	casingtype = null
-
+	use_generated_appearance = TRUE
 
 	New()
 		..()

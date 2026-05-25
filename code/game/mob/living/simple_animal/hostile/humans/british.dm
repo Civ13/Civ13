@@ -24,6 +24,7 @@
 	base_icon = "britishmelee1"
 
 	corpse = /mob/living/human/corpse/british
+	use_generated_appearance = TRUE
 
 	faction = BRITISH
 	New()
@@ -64,6 +65,7 @@
 	casingtype = null
 	attack_verb = "slashes"
 	base_icon = "britishmelee1"
+	use_generated_appearance = TRUE
 
 	New()
 		..()
