@@ -462,7 +462,8 @@
 			if (t != src)
 				admin_stuff += "([admin_jump_link(mob, t.holder)])"
 		to_chat(t, "<span class='ooc'><span class='looc'>" + create_text_tag("looc", "LOOC:", t) + " <span class='prefix'>[prefix]</span><EM>[display_name][admin_stuff]:</EM> <span class='message'>[msg]</span></span></span>")
-
+		if (t.mob)
+			t.mob.show_chat_overlay(mob, "[key] (LOOC): [msg]", "#A8D8FF")
 
 	for (var/client/adm in admins)	//Now send to all admins that weren't in range.
 		if (!(adm in listening))
@@ -470,6 +471,8 @@
 			var/prefix = "(R)"
 
 			to_chat(adm, "<span class='ooc'><span class='looc'>" + create_text_tag("looc", "LOOC:", adm) + " <span class='prefix'>[prefix]</span><EM>[display_name][admin_stuff]:</EM> <span class='message'>[msg]</span></span></span>")
+			if (adm.mob)
+				adm.mob.show_chat_overlay(mob, "[key] (LOOC): [msg]", "#A8D8FF")
 
 /mob/proc/get_looc_source()
 	return src

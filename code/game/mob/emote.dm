@@ -40,6 +40,7 @@
 				break
 			if (M.stat == DEAD && M.is_preference_enabled(/datum/client_preference/ghost_sight) && !(M in viewers(src,null)))
 				M.show_message(message, m_type)
+				M.show_chat_overlay(src, message, "#FFC0CB")
 
 		if (m_type & TRUE)
 			var/list/see = get_mobs_or_objects_in_view(7,src) | viewers(get_turf(src), null)
@@ -52,6 +53,7 @@
 				else if (ismob(I))
 					var/mob/M = I
 					M.show_message(message, TRUE)
+					M.show_chat_overlay(src, message, "#FFC0CB")
 
 		else if (m_type & 2)
 			var/list/hear = get_mobs_or_objects_in_view(7,src)
@@ -64,6 +66,7 @@
 				else if (ismob(I))
 					var/mob/M = I
 					M.show_message(message, 2)
+					M.show_chat_overlay(src, message, "#FFC0CB")
 
 /mob/proc/emote_dead(var/message)
 

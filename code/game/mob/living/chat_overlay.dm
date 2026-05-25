@@ -77,6 +77,21 @@
 
 	return FALSE
 
+/mob/proc/show_chat_overlay(var/mob/speaker, var/text, var/color = null)
+	if (!client || !speaker || !speaker.client || !text)
+		return
+	if (!client.is_preference_enabled(/datum/client_preference/show_chat_overlays))
+		return
+
+	var/overlay_text = text
+	if (color)
+		overlay_text = "<span style=\"color:[color];\">[overlay_text]</span>"
+
+	var/obj/chat_text/CT = new/obj/chat_text(speaker, overlay_text, src)
+	client.seen_chat_text += CT
+	if (speaker.client)
+		speaker.client.stored_chat_text += CT
+
 //TTS stuff
 
 var/global/sound_tts_num = 0

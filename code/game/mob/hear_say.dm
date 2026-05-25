@@ -121,16 +121,12 @@
 	to_chat(src, message)
 	if (speaker && message2 != "")
 		if (client && speaker.client && ((speaker in view(7,src)) || speaker == src))
+			show_chat_overlay(speaker, message2)
 
-			if (client.is_preference_enabled(/datum/client_preference/show_chat_overlays))
-				var/obj/chat_text/CT = new/obj/chat_text(speaker,message2,src)
-				client.seen_chat_text += CT
-				if(speaker.client)
-					speaker.client.stored_chat_text += CT
-			#ifndef OPENDREAM
-				if (config.tts_on && ishuman(src) && client.is_preference_enabled(/datum/client_preference/play_chat_tts))
-					play_tts(message2, speaker)
-			#endif
+			if (config.tts_on && ishuman(src) && client.is_preference_enabled(/datum/client_preference/play_chat_tts))
+				play_tts(message2, speaker)
+
+
 /mob/proc/hear_radio(var/message, var/verb="says", var/datum/language/language=null, var/mob/speaker = null, var/obj/destination=null, var/obj/origin=null)
 
 	if (!client || !message)
