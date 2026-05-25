@@ -164,17 +164,17 @@
 
 		if (HOSTILE_STANCE_IDLE)
 			if (prob(10))
-				var/snd = pick('sound/animals/monsters/growl1.ogg', 'sound/animals/monsters/growl2.ogg')
+				var/snd = 'sound/animals/monsters/drool1.ogg'
 				playsound(src.loc, snd, 100, TRUE)
 
 		if (HOSTILE_STANCE_ALERT)
 			if (prob(10))
-				var/snd = pick('sound/animals/monsters/hiss1.ogg', 'sound/animals/monsters/hiss2.ogg')
+				var/snd = 'sound/animals/monsters/predalien_hiss.ogg'
 				playsound(src.loc, snd, 100, TRUE)
 
 		if (HOSTILE_STANCE_ATTACK)
 			if (prob(10))
-				var/snd = pick('sound/animals/monsters/roar1.ogg', 'sound/animals/monsters/roar2.ogg')
+				var/snd = 'sound/animals/monsters/predalien_growl.ogg'
 				playsound(src.loc, snd, 100, TRUE)
 // --------------------------------
 // ALIEN XENOMORPH
@@ -443,7 +443,7 @@
 
 		if (HOSTILE_STANCE_ALERT)
 			if (prob(10))
-				var/snd = pick('sound/animals/monsters/hiss1.ogg', 'sound/animals/monsters/hiss2.ogg')
+				var/snd = pick('sound/animals/monsters/predator_click1.ogg', 'sound/animals/monsters/predator_click2.ogg')
 				playsound(src.loc, snd, 100, TRUE)
 
 		if (HOSTILE_STANCE_ATTACK)

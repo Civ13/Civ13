@@ -251,6 +251,7 @@
 #include "code\game\mob\living\carbon\human\species\species_attack.dm"
 #include "code\game\mob\living\carbon\human\species\species_hud.dm"
 #include "code\game\mob\living\simple_animal\riding.dm"
+#include "code\game\mob\living\simple_animal\simple_ai.dm"
 #include "code\game\mob\living\simple_animal\simple_animal.dm"
 #include "code\game\mob\living\simple_animal\simple_animal_mutated.dm"
 #include "code\game\mob\living\simple_animal\friendly\bats.dm"

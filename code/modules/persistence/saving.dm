@@ -47,7 +47,9 @@
 	log_startup_progress("Finished saving.")
 	return 1
 
-/map_storage/proc/BuildVarDirectory(savefile/savefile, atom/A, var/contents = 0)
+/map_storage/proc/BuildVarDirectory(savefile/savefile, datum/A, var/contents = 0)
+	if(!A || istype(A, /client))
+		return 0
 	if(!A.should_save)
 		return 0
 	var/ind = saving_references.Find(A)
