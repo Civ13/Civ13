@@ -304,6 +304,7 @@
 					MAP_ANTARCTICA = 0,
 					MAP_LIGHTS_OUT = 0,
 					//MAP_HUNT = 4,
+					MAP_CURSED_ISLAND = 4,
 					MAP_VOYAGE = 6,
 				)
 
