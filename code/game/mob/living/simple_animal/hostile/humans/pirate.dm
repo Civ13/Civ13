@@ -62,7 +62,7 @@
 	rapid = FALSE
 	firedelay = 100
 	projectiletype = /obj/item/projectile/bullet/rifle/musketball_pistol
-	corpse = /mob/living/human/corpse/pirate
+	corpse = /mob/living/human/corpse/pirate/ranged
 	casingtype = null
 	role = "soldier"
 
@@ -99,7 +99,7 @@
 	attack_sound = 'sound/weapons/punch3.ogg'
 	behaviour = "wander"
 	firedelay = 60
-
+	use_generated_appearance = FALSE
 	corpse = /mob/living/human/corpse/pirate
 	New()
 		..()
@@ -139,6 +139,7 @@
 	fire_cannons = FALSE
 	attack_verb = "hits"
 	role = "soldier"
+	use_generated_appearance = FALSE
 	New()
 		..()
 		if(prob(33))
@@ -155,7 +156,6 @@
 
 		icon_state = "pirate_friendly[rand(1,3)]"
 
-
 /mob/living/simple_animal/hostile/human/voyage/pirate/friendly/captain
 	name = "Pirate Captain"
 	desc = "Does what he wants cause a pirate is free. But isn't hostile at first. This one has a flaming beard, pretty cool."
@@ -168,7 +168,7 @@
 	speak_emote = list("grumbles", "screams")
 	emote_hear = list("curses","grumbles","screams")
 	emote_see = list("stares ferociously", "stomps")
-
+	use_generated_appearance = FALSE
 	maxHealth = 200
 	role = "officer"
 	health = 200
@@ -203,7 +203,7 @@
 	speak_emote = list("grumbles", "screams")
 	emote_hear = list("curses","grumbles","screams")
 	emote_see = list("stares ferociously", "stomps")
-
+	use_generated_appearance = FALSE
 	maxHealth = 200
 	role = "medic"
 	health = 500
@@ -223,7 +223,6 @@
 		messages["enemy_sighted"] = list("!!Cripple abuser!","!!Enemy in my sights! Even though I cant see!")
 		messages["grenade"] = list("!!OOO, A SCARY GRENADE!!!", "!!AHARGH, I EAT GRENADES FOR BREAKFAST!!")
 		icon_state = "pirate_friendly_blind"
-
 /mob/living/simple_animal/hostile/human/voyage/pirate/friendly/female
 	name = "Pirate Woman"
 	desc = "Does what she wants cause a pirate is free. But isn't hostile at first.."
@@ -236,7 +235,7 @@
 	speak_emote = list("grumbles", "screams")
 	emote_hear = list("curses","grumbles","screams")
 	emote_see = list("stares ferociously", "stomps")
-
+	use_generated_appearance = FALSE
 	maxHealth = 200
 	role = "officer"
 	health = 200
@@ -292,7 +291,7 @@
 		messages["backup"] =list( "!!I need help!","!!Help me!")
 		messages["enemy_sighted"] = list("!!Landlubber ahead!","!!Enemy in my sights!")
 		messages["grenade"] = list("!!GRENADE!!!", "!!Grenade, run!!")
-
+	use_generated_appearance = FALSE
 /mob/living/simple_animal/hostile/human/voyage/slaver/club
 	name = "slaver"
 	desc = "A slave owner and conductor."

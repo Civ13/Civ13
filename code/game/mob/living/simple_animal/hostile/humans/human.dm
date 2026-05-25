@@ -85,31 +85,86 @@ var/global/list/npc_appearance_cache = list()
 		var/list/cached = npc_appearance_cache[cache_key]
 		src.appearance = cached["appearance"]
 		invisibility = 0
+		src.transform = matrix()
+		// Ensure mob is standing
+		stat = CONSCIOUS
+		resting = FALSE
+		lying = FALSE
+		transform = matrix()
 		icon_dead = cached["icon_dead"]
 		return
 
-	var/mob/living/human/dummy = new(null)
+	var/mob/living/human/dummy = new(src.loc)
 	dummy.gender = gender
 	dummy.s_tone = s_tone_to_use
-	dummy.invisibility = 101
-	dummy.icon_state = "blank"
+	dummy.stat = CONSCIOUS
+	dummy.resting = FALSE
+	dummy.lying = FALSE
+	// Ensure the dummy human uses a standing icon state as the base
+	dummy.icon_state = "human_[gender == FEMALE ? "f" : "m"]_s"
+	dummy.transform = matrix()
+	dummy.invisibility = 101 // Keep the dummy invisible to players
 	dummy.layer = 4
 
 	if (job_master)
 		job_master.EquipRank(dummy, job_to_use)
-		for (var/obj/item/weapon/gun/G in dummy.contents)
-			if (G.loc == dummy)
-				dummy.drop_from_inventory(G)
-				dummy.equip_to_slot_or_del(G, slot_l_hand)
-				break
+		
+		// Force the dummy to use the NPC's actual specific weapon if defined
+		if (src.gun || src.weapon)
+			// Remove generic weapons given by job_master to make room in hands
+			var/obj/item/H1 = dummy.get_active_hand()
+			if (H1) qdel(H1)
+			var/obj/item/H2 = dummy.get_inactive_hand()
+			if (H2) qdel(H2)
+
+			if (src.gun)
+				dummy.equip_to_slot_or_del(new src.gun.type(dummy), slot_l_hand)
+			else if (src.weapon)
+				var/weapon_path = ispath(src.weapon) ? src.weapon : null
+				dummy.equip_to_slot_or_del(new weapon_path(dummy), slot_l_hand)
+
+		// Fallback/Ensure: Make sure the dummy is visually holding its weapon
+		dummy.hand = 1 // Switch to left hand
+		var/obj/item/W = dummy.get_active_hand()
+		if (!W)
+			W = dummy.get_inactive_hand()
+		if (!W)
+			// Search recursive (belt/back/contents)
+			if (ranged)
+				W = locate(/obj/item/weapon/gun) in dummy
+			if (!W)
+				W = locate(/obj/item/weapon/material/sword) in dummy
+			if (!W)
+				W = locate(/obj/item/weapon/melee) in dummy
+			if (!W)
+				W = locate(/obj/item/weapon/material) in dummy
+
+		if (W && dummy.get_active_hand() != W)
+			dummy.drop_from_inventory(W)
+			dummy.equip_to_slot_or_del(W, slot_l_hand)
+		
+		// Update the dummy's hand overlays immediately
+		if (dummy.get_active_hand())
+			dummy.update_inv_l_hand()
+		if (dummy.get_inactive_hand())
+			dummy.update_inv_r_hand()
 
 	spawn(15)
 		if (!dummy) return
+		// Final refresh of dummy visuals
+		dummy.update_icons()
 		dummy.regenerate_icons()
 
 		src.appearance = dummy.appearance
+		// Force the NPC to be standing and conscious
+		src.stat = CONSCIOUS
+		src.resting = FALSE
+		src.lying = FALSE
+		src.icon = dummy.icon
+		src.icon_state = dummy.icon_state
+		src.overlays = dummy.overlays
+		src.transform = matrix()
 		invisibility = 0
-		icon_state = ""
 
 		var/icon/flat = getFlatIcon(src)
 		var/icon/dead = new(flat)

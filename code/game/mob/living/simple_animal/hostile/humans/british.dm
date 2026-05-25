@@ -61,7 +61,7 @@
 	rapid = FALSE
 	firedelay = 80
 	projectiletype = /obj/item/projectile/bullet/rifle/musketball_pistol
-	corpse = /mob/living/human/corpse/british
+	corpse = /mob/living/human/corpse/british/ranged
 	casingtype = null
 	attack_verb = "slashes"
 	base_icon = "britishmelee1"
