@@ -136,6 +136,7 @@
 //Wizard mode, but can be used in other modes thanks to the brand new "Give Spell" badmin button
 	//Reused for Magic
 	var/list/spell_list = list()
+	var/magic_shield = FALSE
 
 	mouse_drag_pointer = MOUSE_ACTIVE_POINTER
 	mouse_drop_pointer = MOUSE_ACTIVE_POINTER

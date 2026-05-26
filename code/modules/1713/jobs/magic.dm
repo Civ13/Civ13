@@ -5,7 +5,7 @@
 	spawn_location = "JoinLateCiv"
 	min_positions = 100
 	max_positions = 100
-	allowed_maps = list(MAP_TESTING)
+	allowed_maps = list(MAP_WIZARD_BOY)
 
 /datum/job/civilian/magic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -29,6 +29,11 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
+
+	// Grant all base spells
+	for (var/spell_name in all_spells)
+		if (all_spells[spell_name].learnable == TRUE)
+			H.add_spell(all_spells[spell_name])
 
 /obj/item/clothing/under/civ2/wizard
 	name = "wizard clothing"
@@ -63,8 +68,3 @@
 
 /obj/item/clothing/suit/storage/jacket/wizard/yellow
 	house_colors = "#cbb600"
-
-
-/obj/item/weapon/material/magic/wand/wizard
-	name = "wizard's wand"
-	desc = "Use with care."

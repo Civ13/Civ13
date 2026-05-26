@@ -266,7 +266,7 @@ h4
 {
 	position: relative;
 	background: #E9C183;
-	color: #15345A;
+	color: #356197;
 	font-size: 14px;
 	font-style: italic;
 	padding: 2px 4px 0 4px;
@@ -613,7 +613,7 @@ h4
 {
 	position: relative;
 	background: #E9C183;
-	color: #15345A;
+	color: #356197;
 	font-size: 14px;
 	font-style: italic;
 	padding: 2px 4px 0 4px;

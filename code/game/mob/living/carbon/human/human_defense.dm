@@ -586,7 +586,22 @@ bullet_act
 			return gear
 	return null
 
+/mob/living/human/proc/apply_magic_shield(duration)
+	magic_shield = TRUE
+	var/image/I = image('icons/obj/magic_projectiles.dmi', src, "spell", MOB_LAYER + 1)
+	I.color = "#00ffff"
+	I.alpha = 150
+	src.overlays += I
+	spawn(duration)
+		if (src)
+			magic_shield = FALSE
+			src.overlays -= I
+			to_chat(src, SPAN_NOTICE("Your shimmering bubble of denial fades away."))
+
 /mob/living/human/proc/check_shields(var/damage = FALSE, var/atom/damage_source = null, var/mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
+	if (magic_shield)
+		visible_message("<span class='warning'>The shimmering bubble of denial around [src] blocks [attack_text]!</span>")
+		return TRUE
 	for (var/obj/item/shield in list(l_hand, r_hand, wear_suit))
 		if (!shield) continue
 		. = shield.handle_shield(src, damage, damage_source, attacker, def_zone, attack_text)

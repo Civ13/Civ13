@@ -150,7 +150,12 @@
 		stats[statname][1] *= (1 + round(multiplier/100, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/100, increase_multiple))
 
-	// stats may not go over 250
+	// stats may not go over 250, magic 100
 	for (var/sname in stats)
-		stats[sname][1] = min(stats[sname][1], 250.00)
-		stats[sname][2] = min(stats[sname][1], 250.00)
+		if (statname == "magic")
+			stats[sname][1] = min(stats[sname][1], 100.00)
+			stats[sname][2] = min(stats[sname][1], 100.00)
+		else
+			stats[sname][1] = min(stats[sname][1], 250.00)
+			stats[sname][2] = min(stats[sname][1], 250.00)
+		

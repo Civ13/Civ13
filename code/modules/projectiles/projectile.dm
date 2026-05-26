@@ -231,7 +231,11 @@
 	xo = targloc.x - curloc.x + x_offset
 
 	shot_from = launcher
-	silenced = launcher.silencer
+	if (istype(launcher, /obj/item/weapon/gun))
+		if (launcher.silencer)
+			silenced = TRUE
+		else
+			silenced = FALSE
 
 	projectile_list += src
 
@@ -288,10 +292,11 @@
 	firer_turf = get_turf(firer)
 	firedfrom = launcher
 	shot_from = launcher.name
-	if (launcher.silencer)
-		silenced = TRUE
-	else
-		silenced = FALSE
+	if (istype(launcher, /obj/item/weapon/gun))
+		if (launcher.silencer)
+			silenced = TRUE
+		else
+			silenced = FALSE
 
 	projectile_list += src
 
