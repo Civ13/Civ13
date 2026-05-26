@@ -171,8 +171,6 @@ var/no_loop_rot = FALSE
 	dat += "<br>"
 
 	for (var/datum/job/job in job_master.faction_organized_occupations)
-		if (!job.is_event)
-			continue
 		if (istype(job, /datum/job/bluefaction))
 			if(!findtext(job.title, "BAF"))
 				continue
