@@ -68,12 +68,8 @@ var/world_is_open = TRUE
 	view = 7
 	cache_lifespan = FALSE	//stops player uploaded stuff from being kept in the rsc past the current session
 
-#define RECOMMENDED_VERSION 514
+#define RECOMMENDED_VERSION 516
 /world/New()
-#ifdef USE_BYOND_TRACY
-	#warn USE_BYOND_TRACY is enabled
-	init_byond_tracy()
-#endif
 
 	if (map && istype(map,/obj/map_metadata/nomads/persistence_beta))
 		loop_checks = FALSE
@@ -456,17 +452,3 @@ var/global/nextsave = 0
 
 	fps = new_value
 	on_tickrate_change()
-
-/world/proc/init_byond_tracy()
-	var/library
-
-	switch (system_type)
-		if (MS_WINDOWS)
-			library = "prof.dll"
-		if (UNIX)
-			library = "libprof.so"
-		else
-			CRASH("Unsupported platform: [system_type]")
-	var/init_result = LIBCALL(library, "init")()
-	if (init_result != "0")
-		CRASH("Error initializing byond-tracy: [init_result]")
