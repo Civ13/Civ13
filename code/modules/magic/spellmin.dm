@@ -13,7 +13,7 @@ var/list/admin_verbs_magic = list(
 	if (!check_rights(R_ADMIN))
 		return
 
-	var/dat = "<b><font size = 5>Spells</font></b><hr>"
+	var/dat = "[common_browser_style]<b><font size = 5>Spells</font></b><hr>"
 	for (var/spell/S in all_spells)
 		dat += {"
 			<b>[S.name]</b> - <i>[S.school]</i><br>

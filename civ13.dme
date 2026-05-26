@@ -448,6 +448,7 @@
 #include "code\game\objects\items\weapons\material\ashtray.dm"
 #include "code\game\objects\items\weapons\material\kitchen.dm"
 #include "code\game\objects\items\weapons\material\knives.dm"
+#include "code\game\objects\items\weapons\material\light_weapons.dm"
 #include "code\game\objects\items\weapons\material\magic_weapons.dm"
 #include "code\game\objects\items\weapons\material\material_weapons.dm"
 #include "code\game\objects\items\weapons\material\misc.dm"
@@ -830,6 +831,7 @@
 #include "code\modules\1713\jobs\italian.dm"
 #include "code\modules\1713\jobs\japanese.dm"
 #include "code\modules\1713\jobs\latin_empire.dm"
+#include "code\modules\1713\jobs\magic.dm"
 #include "code\modules\1713\jobs\medieval.dm"
 #include "code\modules\1713\jobs\modern.dm"
 #include "code\modules\1713\jobs\nomads.dm"
@@ -1189,5 +1191,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\voyage.dmm"
+#include "maps\WIP\testing.dmm"
 // END_INCLUDE
