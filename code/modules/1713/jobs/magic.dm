@@ -3,8 +3,8 @@
 	en_meaning = ""
 	rank_abbreviation = ""
 	spawn_location = "JoinLateCiv"
-	min_positions = 0
-	max_positions = 0
+	min_positions = 100
+	max_positions = 100
 	allowed_maps = list(MAP_TESTING)
 
 /datum/job/civilian/magic/equip(var/mob/living/human/H)
@@ -42,6 +42,15 @@
 	icon_state = "magic_boy_robe"
 	item_state = "magic_boy_robe"
 	var/house_colors = "#000000"
+	var/uncolored = TRUE
+
+	New()
+		..()
+		spawn(1)
+			var/image/lines = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "magic_boy_robe_decoration")
+			lines.color = house_colors
+			overlays += lines
+			update_icon()
 
 /obj/item/clothing/suit/storage/jacket/wizard/red
 	house_colors = "#7F0000"
