@@ -29,15 +29,18 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
+	H.setStat("magic", STAT_NORMAL)
 
 	// Grant all base spells
 	for (var/spell_name in all_spells)
-		if (all_spells[spell_name].learnable == TRUE)
-			H.add_spell(all_spells[spell_name])
+		if (istype(all_spells[spell_name], /datum/spell))
+			var/datum/spell/S = all_spells[spell_name]
+			if (S.learnable == TRUE)
+				H.add_spell(S)
 
 /obj/item/clothing/under/civ2/wizard
 	name = "wizard clothing"
-	desc = "A white shirt used by wizards."
+	desc = "An old-school white shirt and black trousers, commonly used by wizards."
 	icon_state = "civuni2"
 	item_state = "civuni2"
 	

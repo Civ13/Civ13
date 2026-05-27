@@ -16,7 +16,7 @@
 	var/def_zone = ""							// Aiming at
 	var/mob/firer = null						// Who shot it
 	var/firer_original_dir = null
-	var/obj/item/weapon/gun/firedfrom = null	// gun which shot it
+	var/obj/item/firedfrom = null	// object which shot it
 	var/silenced = FALSE						// Attack message
 	var/yo = null
 	var/xo = null
@@ -131,9 +131,10 @@
 	L.apply_effects(stun, weaken, paralyze, irradiate, stutter, eyeblur, drowsy, agony, poisonous, blocked)
 	return TRUE
 
-/obj/item/projectile/proc/on_impact(var/atom/A)
+/obj/item/projectile/proc/on_impact(var/atom/A, play_sound = TRUE)
 	impact_effect()		// generate impact effect
-	playsound(src, "ric_sound", 50, TRUE, -2)
+	if (!istype(src, /obj/item/projectile/magic) && play_sound)
+		playsound(src, "ric_sound", 50, TRUE, -2)
 
 	spawn(25)
 		if (src)
@@ -177,7 +178,7 @@
 		p_y = between(0, p_y + rand(-radius, radius), world.icon_size)
 
 //called to launch a projectile from a gun
-/obj/item/projectile/proc/launch(atom/target, mob/user, obj/item/weapon/gun/launcher, var/target_zone, var/x_offset=0, var/y_offset=0)
+/obj/item/projectile/proc/launch(atom/target, mob/user, obj/item/launcher, var/target_zone, var/x_offset=0, var/y_offset=0)
 
 	var/turf/curloc = get_turf(launcher)
 	var/turf/targloc = get_turf(target)
@@ -232,7 +233,8 @@
 
 	shot_from = launcher
 	if (istype(launcher, /obj/item/weapon/gun))
-		if (launcher.silencer)
+		var/obj/item/weapon/gun/G = launcher
+		if (G.silencer)
 			silenced = TRUE
 		else
 			silenced = FALSE
@@ -279,7 +281,7 @@
 	return FALSE
 
 //called to launch a projectile from a gun
-/obj/item/projectile/proc/launch_from_gun(atom/target, mob/user, obj/item/weapon/gun/launcher, var/target_zone, var/x_offset=0, var/y_offset=0)
+/obj/item/projectile/proc/launch_from_gun(atom/target, mob/user, obj/item/launcher, var/target_zone, var/x_offset=0, var/y_offset=0)
 	if (user == target) //Shooting yourself
 		do_bullet_act(user, target_zone)
 		qdel(src)
@@ -293,7 +295,8 @@
 	firedfrom = launcher
 	shot_from = launcher.name
 	if (istype(launcher, /obj/item/weapon/gun))
-		if (launcher.silencer)
+		var/obj/item/weapon/gun/G = launcher
+		if (G.silencer)
 			silenced = TRUE
 		else
 			silenced = FALSE
@@ -351,11 +354,8 @@
 	if (!istype(target_mob))
 		return FALSE
 
-	if (!firedfrom)
-		return FALSE
-
-	// non-projectile gun types will be removed soon, this code doesn't support them anymore - Kachnov
-	if (!istype(firedfrom, /obj/item/weapon/gun/projectile))
+	// Only allow projectile guns and magic to hit mobs. - Kachnov / magic fix
+	if ((!firedfrom || !istype(firedfrom, /obj/item/weapon/gun/projectile)) && !istype(src, /obj/item/projectile/magic))
 		return FALSE
 
 	if (!def_zone)
@@ -616,6 +616,8 @@
 
 					if (prob(hit_chace))
 						passthrough = !attack_mob(L, firer_dist)
+						if (!passthrough)
+							on_impact(L, FALSE)
 						return
 					else
 						visible_message(SPAN_WARNING("\The [name] flies over \the [AM]!"))

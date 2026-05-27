@@ -231,13 +231,15 @@
 			return //we can't hit the animals we are riding
 		var/mob/living/human/H = proj.firer
 		if (prob(40) && proj.firedfrom)
-			switch (proj.firedfrom.gun_type)
-				if (GUN_TYPE_RIFLE)
-					H.adaptStat("rifle", 1)
-				if (GUN_TYPE_PISTOL)
-					H.adaptStat("pistol", 1)
-				if (GUN_TYPE_BOW)
-					H.adaptStat("bows", 1)
+			if (istype(proj.firedfrom, /obj/item/weapon/gun))
+				var/obj/item/weapon/gun/G = proj.firedfrom
+				switch (G.gun_type)
+					if (GUN_TYPE_RIFLE)
+						H.adaptStat("rifle", 1)
+					if (GUN_TYPE_PISTOL)
+						H.adaptStat("pistol", 1)
+					if (GUN_TYPE_BOW)
+						H.adaptStat("bows", 1)
 
 	if (!proj || proj.nodamage)
 		return FALSE

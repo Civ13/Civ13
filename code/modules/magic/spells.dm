@@ -60,13 +60,6 @@
 	learnable = TRUE
 	proj_type = /obj/item/projectile/magic/freezum
 
-/datum/spell/barrelus
-	name = "Barrelus"
-	description = "Turns your foes into a highly unstable wooden barrel. Hilarious until someone drops a match."
-	skill_level = 65
-	cast_time = 35
-	learnable = TRUE
-
 /// Destruction (Expert Magic) ///
 
 /datum/spell/burnus

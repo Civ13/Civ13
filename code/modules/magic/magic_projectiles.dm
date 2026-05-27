@@ -13,7 +13,7 @@
 	light_color = "#cbd600"
 	light_range = 3
 	tracer_type = /obj/effect/projectile/tracer/magic/yellow
-
+	impact_type = /obj/effect/projectile/impact/magic
 /obj/item/projectile/magic/spark
 	name = "spark"
 	icon_state = "spark"
@@ -22,8 +22,9 @@
 	color = "#cbd600"
 	light_color = "#cbd600"
 	tracer_type = /obj/effect/projectile/tracer/magic/yellow
+	impact_type = /obj/effect/projectile/impact/magic/electricity
 
-/obj/item/projectile/magic/spark/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/spark/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
@@ -37,8 +38,9 @@
 	color = "#7f0000"
 	light_color = "#7f0000"
 	tracer_type = /obj/effect/projectile/tracer/magic/red
+	impact_type = /obj/effect/projectile/impact/magic/fire
 
-/obj/item/projectile/magic/flare/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/flare/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (ishuman(target))
 			var/mob/living/human/H = target
@@ -52,9 +54,9 @@
 	nodamage = TRUE
 	color = "#00bf33"
 	light_color = "#00bf33"
-	tracer_type = /obj/effect/projectile/tracer/magic/green
+	tracer_type = /obj/effect/projectile/tracer/magic
 
-/obj/item/projectile/magic/root/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/root/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
@@ -70,8 +72,9 @@
 	color = "#5ca8ff"
 	light_color = "#5ca8ff"
 	tracer_type = /obj/effect/projectile/tracer/magic/white
+	impact_type = /obj/effect/projectile/impact/magic/ice
 
-/obj/item/projectile/magic/ice_shard/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/ice_shard/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
@@ -86,8 +89,9 @@
 	color = "#cbd600"
 	light_color = "#cbd600"
 	tracer_type = /obj/effect/projectile/tracer/magic/yellow
+	impact_type = /obj/effect/projectile/impact/magic/electricity
 
-/obj/item/projectile/magic/shock_bolt/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/shock_bolt/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
@@ -101,8 +105,9 @@
 	color = "#7f0000"
 	light_color = "#7f0000"
 	tracer_type = /obj/effect/projectile/tracer/magic/red
+	impact_type = /obj/effect/projectile/impact/magic/fire
 
-/obj/item/projectile/magic/fire_bolt/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/fire_bolt/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (ishuman(target))
 			var/mob/living/human/H = target
@@ -116,9 +121,9 @@
 	damage_type = BRUTE
 	color = "#38a100"
 	light_color = "#38a100"
-	tracer_type = /obj/effect/projectile/tracer/magic/green
+	tracer_type = /obj/effect/projectile/tracer/magic
 
-/obj/item/projectile/magic/vine_shot/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/vine_shot/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
@@ -133,8 +138,9 @@
 	color = "#5ca8ff"
 	light_color = "#5ca8ff"
 	tracer_type = /obj/effect/projectile/tracer/magic/white
+	impact_type = /obj/effect/projectile/impact/magic/ice
 
-/obj/item/projectile/magic/ice_blast/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/ice_blast/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
@@ -149,8 +155,9 @@
 	color = "#cbd600"
 	light_color = "#cbd600"
 	tracer_type = /obj/effect/projectile/tracer/magic/yellow
+	impact_type = /obj/effect/projectile/impact/magic/electricity
 
-/obj/item/projectile/magic/lightning_strike/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/lightning_strike/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
@@ -161,6 +168,10 @@
 	icon_state = "fireball"
 	damage = 30
 	damage_type = BURN
+	color = "#7f0000"
+	light_color = "#7f0000"
+	tracer_type = /obj/effect/projectile/tracer/magic/red
+	impact_type = /obj/effect/projectile/impact/magic/fire
 
 /obj/item/projectile/magic/fire_ball/on_impact(var/atom/A)
 	var/turf/T = get_turf(A)
@@ -175,9 +186,9 @@
 	damage_type = BRUTE
 	color = "#38a100"
 	light_color = "#38a100"
-	tracer_type = /obj/effect/projectile/tracer/magic/green
+	tracer_type = /obj/effect/projectile/tracer/magic
 
-/obj/item/projectile/magic/ensnare/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/ensnare/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
@@ -190,7 +201,7 @@
 	damage = 30
 	damage_type = BURN
 
-/obj/item/projectile/magic/frozen_rain/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/frozen_rain/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
@@ -205,6 +216,7 @@
 	color = "#cbd600"
 	light_color = "#cbd600"
 	tracer_type = /obj/effect/projectile/tracer/magic/yellow
+	impact_type = /obj/effect/projectile/impact/magic/electricity
 
 /obj/item/projectile/magic/explodus
 	name = "explodus"
@@ -214,6 +226,7 @@
 	damage = 0
 	nodamage = TRUE
 	tracer_type = /obj/effect/projectile/tracer/magic/red
+	impact_type = /obj/effect/projectile/impact/magic/fire
 
 /obj/item/projectile/magic/explodus/on_impact(var/atom/A)
 	var/turf/T = get_turf(A)
@@ -226,11 +239,12 @@
 	icon_state = "spell"
 	color = "#00FF00"
 	light_color = "#00FF00"
-	tracer_type = /obj/effect/projectile/tracer/magic/green
+	tracer_type = /obj/effect/projectile/tracer/magic
+	impact_type = /obj/effect/projectile/impact/magic/poison
 	damage = 0
 	nodamage = TRUE
 
-/obj/item/projectile/magic/deadum/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/deadum/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (isliving(target))
 		var/mob/living/L = target
 		L.stat = DEAD // Bypasses health math and critical state
@@ -246,8 +260,9 @@
 	color = "#939393"
 	light_color = "#939393"
 	tracer_type = /obj/effect/projectile/tracer/magic/white
+	impact_type = /obj/effect/projectile/impact/magic/slash
 
-/obj/item/projectile/magic/sliceum/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/sliceum/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (ishuman(target))
 			var/mob/living/human/H = target
@@ -262,8 +277,9 @@
 	color = "#5ca8ff"
 	light_color = "#5ca8ff"
 	tracer_type = /obj/effect/projectile/tracer/magic/white
+	impact_type = /obj/effect/projectile/impact/magic/ice
 
-/obj/item/projectile/magic/freezum/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/freezum/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
@@ -278,16 +294,43 @@
 	color = "#f400bf"
 	light_color = "#f400bf"
 	tracer_type = /obj/effect/projectile/tracer/magic/pink
+	impact_type = /obj/effect/projectile/impact/magic/kinetic
 
-/obj/item/projectile/magic/pushum/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/pushum/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
-		if (isliving(target))
-			var/mob/living/L = target
-			var/atom/f = firer ? firer : src
-			var/turf/T = get_edge_target_turf(L, get_dir(f, L))
-			if (T)
-				L.throw_at(T, 5, 2, f)
-				to_chat(L, SPAN_DANGER("You are violently pushed back by magical force!"))
+		if (ishuman(target))
+			var/mob/living/human/L = target
+			if (L.anchored) return
+			L.SpinAnimation(5,1)
+			// Get the turf behind by getting the dir from the firer to us
+			var/turf/behind = get_step(target, src.firer_original_dir ? src.firer_original_dir : src.dir) 
+			if (behind)
+				if (behind.density || (locate(/obj/structure) in behind) || (locate(/obj/covers) in behind))
+					var/turf/slammed_into = behind
+					if (!slammed_into.density)
+						for (var/obj/structure/S in slammed_into.contents)
+							if (S.density)
+								slammed_into = S
+								break
+						for (var/obj/covers/CC in slammed_into.contents)
+							if (CC.density)
+								slammed_into = CC
+								break
+					if (slammed_into.density)
+						spawn (1)
+							L.visible_message("<span class = 'danger'>[L] flies back from the force of the blast and slams into \the [slammed_into]!</span>")
+						L.Weaken(3)
+						L.adjustBruteLoss(rand(20,30))
+						if (L.client)
+							shake_camera(L, rand(2,3), rand(2,3))
+						playsound(get_turf(L), 'sound/effects/gore/fallsmash.ogg', 100, TRUE)
+						for (var/obj/structure/window/W in get_turf(slammed_into))
+							W.shatter()
+				else
+					if (!map || !map.check_caribbean_block(L, behind))
+						L.forceMove(behind)
+						spawn (1)
+							to_chat(L, SPAN_DANGER("You are violently pushed back by magical force!"))
 
 /obj/item/projectile/magic/pullus
 	name = "pullus"
@@ -297,16 +340,43 @@
 	color = "#f400bf"
 	light_color = "#f400bf"
 	tracer_type = /obj/effect/projectile/tracer/magic/pink
+	impact_type = /obj/effect/projectile/impact/magic/kinetic
 
-/obj/item/projectile/magic/pullus/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/pullus/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
-		if (isliving(target))
-			var/mob/living/L = target
-			var/atom/f = firer ? firer : src
-			var/turf/T = get_turf(f)
-			if (T)
-				L.throw_at(T, 5, 2, f)
-				to_chat(L, SPAN_DANGER("You are pulled by magical force!"))
+		if (ishuman(target))
+			var/mob/living/human/L = target
+			if (L.anchored) return
+			L.SpinAnimation(5,1)
+			// Get the turf in front by getting the dir from the firer to us
+			var/turf/front = get_step(target, src.firer_original_dir ? reverse_direction(src.firer_original_dir) : reverse_direction(src.dir)) 
+			if (front)
+				if (front.density || (locate(/obj/structure) in front) || (locate(/obj/covers) in front))
+					var/turf/slammed_into = front
+					if (!slammed_into.density)
+						for (var/obj/structure/S in slammed_into.contents)
+							if (S.density)
+								slammed_into = S
+								break
+						for (var/obj/covers/CC in slammed_into.contents)
+							if (CC.density)
+								slammed_into = CC
+								break
+					if (slammed_into.density)
+						spawn (1)
+							L.visible_message("<span class = 'danger'>[L] is violently pulled forward and slams into \the [slammed_into]!</span>")
+						L.Weaken(3)
+						L.adjustBruteLoss(rand(20,30))
+						if (L.client)
+							shake_camera(L, rand(2,3), rand(2,3))
+						playsound(get_turf(L), 'sound/effects/gore/fallsmash.ogg', 100, TRUE)
+						for (var/obj/structure/window/W in get_turf(slammed_into))
+							W.shatter()
+				else
+					if (!map || !map.check_caribbean_block(L, front))
+						L.forceMove(front)
+						spawn (1)
+							to_chat(L, SPAN_DANGER("You are violently pulled forward by magical force!"))
 
 /obj/item/projectile/magic/blockum
 	name = "blockum"
@@ -316,8 +386,9 @@
 	tracer_type = /obj/effect/projectile/tracer/magic/white
 	damage = 0
 	nodamage = TRUE
+	impact_type = null
 
-/obj/item/projectile/magic/blockum/launch(atom/target, mob/user, obj/item/projectile_source, var/target_zone, var/x_offset = 0, var/y_offset = 0)
+/obj/item/projectile/magic/blockum/launch(atom/target, mob/user, obj/item/launcher, var/target_zone, var/x_offset = 0, var/y_offset = 0)
 	if (user && ishuman(user))
 		var/mob/living/human/H = user
 		H.apply_magic_shield(40)
@@ -329,11 +400,12 @@
 	icon_state = "spell"
 	color = "#37530a"
 	light_color = "#37530a"
-	tracer_type = /obj/effect/projectile/tracer/magic/green
+	tracer_type = /obj/effect/projectile/tracer/magic
 	damage = 10
 	damage_type = BURN
+	impact_type = /obj/effect/projectile/impact/magic/poison
 
-/obj/item/projectile/magic/painum/on_hit(var/atom/target, var/blocked = FALSE)
+/obj/item/projectile/magic/painum/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
@@ -349,19 +421,23 @@
 	color = "#6800a0"
 	light_color = "#6800a0"
 	tracer_type = /obj/effect/projectile/tracer/magic/purple
-
-/obj/item/projectile/magic/dropus/on_hit(var/atom/target, var/blocked = FALSE)
+	impact_type = /obj/effect/projectile/impact/magic/kinetic
+/obj/item/projectile/magic/dropus/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
 			if (L.l_hand)
 				// Disarm left hand
-				L.visible_message("<span class='danger'>[target] drops \the [target.l_hand]!</span>")
+				L.visible_message("<span class='danger'>[target] drops \the [L.l_hand]!</span>")
 				L.drop_l_hand()
 			if (L.r_hand)
 				// Disarm right hand
-				L.visible_message("<span class='danger'>[target] drops \the [target.r_hand]!</span>")
+				L.visible_message("<span class='danger'>[target] drops \the [L.r_hand]!</span>")
 				L.drop_r_hand()
+
+///////////////////////////////////////////////
+//////////// Projectile Tracers////////////////
+///////////////////////////////////////////////
 
 /obj/effect/projectile/tracer/magic
 	icon_state = "tracer_green"
@@ -388,3 +464,29 @@
 /obj/effect/projectile/tracer/magic/white
 	icon_state = "tracer_white"
 	color = "#ffffff"
+
+///////////////////////////////////////////////
+//////////// Projectile Impacts////////////////
+///////////////////////////////////////////////
+
+/obj/effect/projectile/impact/magic
+	icon = 'icons/obj/magic_overlay.dmi'
+	icon_state = "impact"
+
+/obj/effect/projectile/impact/magic/poison
+	icon_state = "poison_generic"
+
+/obj/effect/projectile/impact/magic/fire
+	icon_state = "firewave"
+
+/obj/effect/projectile/impact/magic/ice
+	icon_state = "ice_generic"
+
+/obj/effect/projectile/impact/magic/electricity
+	icon_state = "electricity_generic"
+
+/obj/effect/projectile/impact/magic/slash
+	icon_state = "slash"
+
+/obj/effect/projectile/impact/magic/kinetic
+	icon_state = "kinetic_blast_transp"
