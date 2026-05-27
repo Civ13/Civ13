@@ -304,30 +304,39 @@
 			L.SpinAnimation(5,1)
 			// Get the turf behind by getting the dir from the firer to us
 			var/projectile_dir = get_dir(starting, target) || firer_original_dir || get_direction()
-			var/turf/behind = get_step(target, projectile_dir) 
-			if (behind)
-				var/atom/slammed_into = null
-				if (behind.density)
-					slammed_into = behind
-				else
-					slammed_into = (locate(/obj/structure) in behind) || (locate(/obj/covers) in behind)
-					if (slammed_into && !slammed_into.density) slammed_into = null
+			var/pushed_tiles = 0
+			for(var/i=1; i<=3; i++)
+				var/turf/behind = get_step(L, projectile_dir) 
+				if (behind)
+					var/atom/slammed_into = null
+					if (behind.density)
+						slammed_into = behind
+					else
+						slammed_into = (locate(/obj/structure) in behind) || (locate(/obj/covers) in behind)
+						if (slammed_into && !slammed_into.density) slammed_into = null
 
-				if (slammed_into)
-					spawn (1)
-						L.visible_message("<span class = 'danger'>[L] flies back from the force of the blast and slams into \the [slammed_into]!</span>")
-					L.Weaken(3)
-					L.adjustBruteLoss(rand(20,30))
-					if (L.client)
-						shake_camera(L, rand(2,3), rand(2,3))
-					playsound(get_turf(L), 'sound/effects/gore/fallsmash.ogg', 100, TRUE)
-					for (var/obj/structure/window/W in get_turf(slammed_into))
-						W.shatter()
-				else
-					if (!map || !map.check_caribbean_block(L, behind))
-						L.forceMove(behind)
+					if (slammed_into)
 						spawn (1)
-							to_chat(L, SPAN_DANGER("You are violently pushed back by magical force!"))
+							L.visible_message("<span class = 'danger'>[L] flies back from the force of the blast and slams into \the [slammed_into]!</span>")
+						L.Weaken(3)
+						L.adjustBruteLoss(rand(20,30))
+						if (L.client)
+							shake_camera(L, rand(2,3), rand(2,3))
+						playsound(get_turf(L), 'sound/effects/gore/fallsmash.ogg', 100, TRUE)
+						for (var/obj/structure/window/W in get_turf(slammed_into))
+							W.shatter()
+						break
+					else
+						if (!map || !map.check_caribbean_block(L, behind))
+							L.forceMove(behind)
+							pushed_tiles++
+						else
+							break
+				else
+					break
+			if (pushed_tiles)
+				spawn (1)
+					to_chat(L, SPAN_DANGER("You are violently pushed back by magical force!"))
 
 /obj/item/projectile/magic/pullus
 	name = "pullus"
@@ -347,30 +356,40 @@
 			L.SpinAnimation(5,1)
 			// Get the turf in front by getting the dir from the firer to us
 			var/projectile_dir = get_dir(starting, target) || firer_original_dir || get_direction()
-			var/turf/front = get_step(target, turn(projectile_dir, 180)) 
-			if (front)
-				var/atom/slammed_into = null
-				if (front.density)
-					slammed_into = front
-				else
-					slammed_into = (locate(/obj/structure) in front) || (locate(/obj/covers) in front)
-					if (slammed_into && !slammed_into.density) slammed_into = null
+			var/pull_dir = turn(projectile_dir, 180)
+			var/pulled_tiles = 0
+			for(var/i=1; i<=3; i++)
+				var/turf/front = get_step(L, pull_dir) 
+				if (front)
+					var/atom/slammed_into = null
+					if (front.density)
+						slammed_into = front
+					else
+						slammed_into = (locate(/obj/structure) in front) || (locate(/obj/covers) in front)
+						if (slammed_into && !slammed_into.density) slammed_into = null
 
-				if (slammed_into)
-					spawn (1)
-						L.visible_message("<span class = 'danger'>[L] is violently pulled forward and slams into \the [slammed_into]!</span>")
-					L.Weaken(3)
-					L.adjustBruteLoss(rand(20,30))
-					if (L.client)
-						shake_camera(L, rand(2,3), rand(2,3))
-					playsound(get_turf(L), 'sound/effects/gore/fallsmash.ogg', 100, TRUE)
-					for (var/obj/structure/window/W in get_turf(slammed_into))
-						W.shatter()
-				else
-					if (!map || !map.check_caribbean_block(L, front))
-						L.forceMove(front)
+					if (slammed_into)
 						spawn (1)
-							to_chat(L, SPAN_DANGER("You are violently pulled forward by magical force!"))
+							L.visible_message("<span class = 'danger'>[L] is violently pulled forward and slams into \the [slammed_into]!</span>")
+						L.Weaken(3)
+						L.adjustBruteLoss(rand(20,30))
+						if (L.client)
+							shake_camera(L, rand(2,3), rand(2,3))
+						playsound(get_turf(L), 'sound/effects/gore/fallsmash.ogg', 100, TRUE)
+						for (var/obj/structure/window/W in get_turf(slammed_into))
+							W.shatter()
+						break
+					else
+						if (!map || !map.check_caribbean_block(L, front))
+							L.forceMove(front)
+							pulled_tiles++
+						else
+							break
+				else
+					break
+			if (pulled_tiles)
+				spawn (1)
+					to_chat(L, SPAN_DANGER("You are violently pulled forward by magical force!"))
 /obj/item/projectile/magic/blockum
 	name = "blockum"
 	icon_state = "spell"

@@ -135,7 +135,7 @@ var/global/redirect_all_players = null
 			output += "<p><a href='byond://?src=\ref[src];join_campaign=1'>Join Game!</a></p>"
 		else if (map.civilizations && !map.nomads)
 			output += "<p><a href='byond://?src=\ref[src];civilizations=1'>Join a Civilization!</a></p>"
-		else if (map.nomads || map.ID == MAP_ANTARCTICA || map.ID == MAP_LIGHTS_OUT)
+		else if (map.nomads || map.ID == MAP_ANTARCTICA || map.ID == MAP_LIGHTS_OUT || map.ID == MAP_WIZARD_BOY)
 			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
 		else
 			output += "<p><a href='byond://?src=\ref[src];late_join=1'>["Join Game!"]</a></p>"
@@ -422,6 +422,17 @@ var/global/redirect_all_players = null
 		else if (map && map.ID == MAP_LIGHTS_OUT)
 			close_spawn_windows()
 			AttemptLateSpawn("Survivor")
+		else if (map && map.ID == MAP_WIZARD_BOY)
+			if (istype(map, /obj/map_metadata/wizard_boy))
+				var/obj/map_metadata/wizard_boy/WB = map
+				var/house_result = WB.check_house(client.ckey)
+				if (house_result != "Unknown")
+					close_spawn_windows()
+					AttemptLateSpawn("Wizard Boy")
+				else
+					if (WB.house_test(client))
+						close_spawn_windows()
+						AttemptLateSpawn("Wizard Boy")
 		else
 			return
 

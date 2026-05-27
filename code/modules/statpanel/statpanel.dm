@@ -156,7 +156,7 @@
 		var/verb_name = href_list["verb"]
 		run_verb(verb_name)
 		return
-	if (href_list["select_spell"])
+	if (href_list["select_spell"] || href_list["action"] == "select_spell")
 		var/datum/spell/S = locate(href_list["select_spell"])
 		if (istype(S) && ishuman(mob))
 			var/mob/living/human/H = mob

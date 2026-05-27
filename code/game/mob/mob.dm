@@ -766,13 +766,11 @@
 					client.add_stat("<h3>Available Spells</h3>")
 					for (var/datum/spell/S in usable)
 						var/spell_link = S.name
-//						if (W)
-//							spell_link = "<a href='byond://?src=\ref[src.client];select_spell=\ref[S]'>[S.name]</a>"
+						if (W)
+							spell_link = "<a class='verb-button' href='byond://?action=select_spell&select_spell=\ref[S]'>[S.name]</a>"
 						client.add_stat(spell_link, "[S.description] (Level [S.skill_level], Cast time: [S.cast_time]ds)")
 				else
 					client.add_stat("No spells available.")
-
-
 
 // facing verbs
 /mob/proc/canface()
