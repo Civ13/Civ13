@@ -722,16 +722,55 @@
 			if (!TurfAdjacent(listed_turf))
 				listed_turf = null
 			else
-				if ((client.add_stat_tab("Turf") || client.statpanel_tab == "Turf"))
-					client.add_stat(listed_turf)
+				if (client.add_stat_tab("Turf"))
+					client.add_stat("[listed_turf]")
 					for (var/atom/A in listed_turf)
 						if (!A.mouse_opacity)
 							continue
 						if (A.invisibility > see_invisible)
 							continue
-						if (is_type_in_list(A, shouldnt_see))
+						if (is_type_in_list(A, shouldnt_see) || !A.name)
 							continue
-						client.add_stat(A)
+						client.add_stat("[A.name]")
+
+		if (client && client.status_tabs && spell_list && spell_list.len)
+			client.add_stat_tab("Spells")
+			if (client.statpanel_tab == "Spells")
+				var/obj/item/weapon/material/magic/wand/W = null
+				if (ishuman(src))
+					var/mob/living/human/H = src
+					if (H.l_hand && istype(H.l_hand, /obj/item/weapon/material/magic/wand))
+						W = H.l_hand
+					else if (H.r_hand && istype(H.r_hand, /obj/item/weapon/material/magic/wand))
+						W = H.r_hand
+
+				if (W)
+					client.add_stat("Active Wand:", "[W.name] ([W.charges]/[W.maxcharges] charges)")
+					client.add_stat("Active Spell:", W.active_spell ? "<b>[W.active_spell.name]</b>" : "<i>None</i>")
+					client.add_stat("")
+				else
+					client.add_stat("Active Wand:", "<i>None</i>")
+					client.add_stat("")
+
+				var/list/usable = list()
+				var/magic_lvl = 0
+				if (ishuman(src))
+					var/mob/living/human/H = src
+					magic_lvl = H.getStat("magic")
+
+				for (var/datum/spell/S in spell_list)
+					if (magic_lvl >= S.skill_level)
+						usable += S
+
+				if (usable.len)
+					client.add_stat("<h3>Available Spells</h3>")
+					for (var/datum/spell/S in usable)
+						var/spell_link = S.name
+//						if (W)
+//							spell_link = "<a href='byond://?src=\ref[src.client];select_spell=\ref[S]'>[S.name]</a>"
+						client.add_stat(spell_link, "[S.description] (Level [S.skill_level], Cast time: [S.cast_time]ds)")
+				else
+					client.add_stat("No spells available.")
 
 
 

@@ -76,6 +76,7 @@
 /client/proc/add_stat_tab(tab)
 	if (!(tab in statpanel_tabs))
 		statpanel_tabs += tab
+	return (statpanel_tab == tab)
 
 /client/proc/update_statpanel()
 	if (!statpanel_ready)
@@ -154,5 +155,26 @@
 	if (href_list["action"] == "execute_verb")
 		var/verb_name = href_list["verb"]
 		run_verb(verb_name)
+		return
+	if (href_list["select_spell"])
+		var/datum/spell/S = locate(href_list["select_spell"])
+		if (istype(S) && ishuman(mob))
+			var/mob/living/human/H = mob
+			var/obj/item/weapon/material/magic/wand/W = null
+			if (H.l_hand && istype(H.l_hand, /obj/item/weapon/material/magic/wand))
+				W = H.l_hand
+			else if (H.r_hand && istype(H.r_hand, /obj/item/weapon/material/magic/wand))
+				W = H.r_hand
+			if (W)
+				var/list/usable = W.get_usable_spells(mob)
+				if (S in usable)
+					W.active_spell = S
+					to_chat(mob, SPAN_NOTICE("Spell set to <b>[S.name]</b>!"))
+					mob.Stat()
+					update_statpanel()
+				else
+					to_chat(mob, SPAN_WARNING("You cannot use that spell!"))
+			else
+				to_chat(mob, SPAN_WARNING("You need to hold a magic wand to select a spell!"))
 		return
 	return ..()

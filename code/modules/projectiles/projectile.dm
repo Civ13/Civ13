@@ -303,7 +303,7 @@
 
 	projectile_list += src
 
-	return launch(target, target_zone, x_offset, y_offset)
+	return launch(target, user, launcher, target_zone, x_offset, y_offset)
 
 //Used to change the direction of the projectile in flight.
 /obj/item/projectile/proc/redirect(var/turf/new_target, var/atom/starting_loc)

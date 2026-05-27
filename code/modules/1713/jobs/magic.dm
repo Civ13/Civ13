@@ -18,6 +18,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/red(H), slot_wear_suit)
 //glasses
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular/circle(H), slot_eyes)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/magic/wand/wizard(H), slot_belt)
 	H.add_note("Role", "You're a wizard boy with magic powers. What shenanigans will you get up to?")
@@ -71,3 +73,9 @@
 
 /obj/item/clothing/suit/storage/jacket/wizard/yellow
 	house_colors = "#cbb600"
+
+/obj/item/clothing/head/wizard
+	name = "wizard's hat"
+	desc = "A wide brim black wizard's hat."
+	icon_state = "blackwizard"
+	item_state = "blackwizard"
