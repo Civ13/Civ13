@@ -625,6 +625,11 @@
 
 		else if (isobj(AM) && AM != firedfrom)
 			var/obj/O = AM
+			if ((istype(src, /obj/item/projectile/magic/pushum) || istype(src, /obj/item/projectile/magic/pullus)) && !O.anchored)
+				do_bullet_act(O)
+				on_impact(T)
+				qdel(src)
+				return FALSE
 			if (O == original)
 				var/hitchance = 0
 				if (O.density)

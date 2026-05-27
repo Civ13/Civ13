@@ -427,6 +427,17 @@ var/global/redirect_all_players = null
 				var/obj/map_metadata/wizard_boy/WB = map
 				var/house_result = WB.check_house(client.ckey)
 				if (house_result != "Unknown")
+					var/_color = "#FFFFFF"
+					switch(house_result)
+						if("Rubywyrm")
+							_color = "#CF0000"
+						if("Mintysnek")
+							_color = "#00CF00"
+						if("Slatepie")
+							_color = "#0000CF"
+						if("Mustardweasel")
+							_color = "#FFD700"
+					to_chat(src, "<font size=6 class='wizard'>You are a member of <span style='color:[_color]'>[house_result]</span>.</font>")
 					close_spawn_windows()
 					AttemptLateSpawn("Wizard Boy")
 				else

@@ -1609,6 +1609,17 @@
 						holder2.icon_state = "sov_basic"
 					else if (map.ID == MAP_EFT_FACTORY)
 						holder2.icon_state = "none"
+					else if (map.ID == MAP_WIZARD_BOY)
+						switch(faction)
+							if("Rubywyrm")
+								holder2.icon_state = "civ1"
+							if("Mintysnek")
+								holder2.icon_state = "civ2"
+							if("Slatepie")
+								holder2.icon_state = "civ3"
+							if("Mustardweasel")
+								holder2.icon_state = "civ4"
+
 					else if (map.ID == MAP_GULAG13)
 						if(nationality == "Polish")
 							holder2.icon_state = "pol_basic"

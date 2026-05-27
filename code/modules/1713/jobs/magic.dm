@@ -15,7 +15,28 @@
 //uniform
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2/wizard(H), slot_w_uniform)
 //suit
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/red(H), slot_wear_suit)
+	if (map && istype(map, /obj/map_metadata/wizard_boy))
+		var/obj/map_metadata/wizard_boy/WB = map
+		if (WB.house_info[H.ckey])
+			switch(WB.house_info[H.ckey])
+				if("Rubywyrm")
+					H.faction = "Rubywyrm"
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/red(H), slot_wear_suit)
+				if("Mintysnek")
+					H.faction = "Mintysnek"
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/green(H), slot_wear_suit)
+				if("Slatepie")
+					H.faction = "Slatepie"
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/blue(H), slot_wear_suit)
+				if("Mustardweasel")
+					H.faction = "Mustardweasel"
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/yellow(H), slot_wear_suit)
+				else
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard(H), slot_wear_suit)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard(H), slot_wear_suit)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/red(H), slot_wear_suit)
 //glasses
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular/circle(H), slot_eyes)
 //head
@@ -63,15 +84,19 @@
 			update_icon()
 
 /obj/item/clothing/suit/storage/jacket/wizard/red
+	name = "Rubywyrm wizard robe"
 	house_colors = "#7F0000"
 
 /obj/item/clothing/suit/storage/jacket/wizard/green
+	name = "Mintysnek wizard robe"
 	house_colors = "#007F00"
 
 /obj/item/clothing/suit/storage/jacket/wizard/blue
+	name = "Slatepie wizard robe"
 	house_colors = "#0000c8"
 
 /obj/item/clothing/suit/storage/jacket/wizard/yellow
+	name = "Mustardweasel wizard robe"
 	house_colors = "#cbb600"
 
 /obj/item/clothing/head/wizard

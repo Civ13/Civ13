@@ -298,15 +298,15 @@
 
 /obj/item/projectile/magic/pushum/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
-		if (ishuman(target))
-			var/mob/living/human/L = target
-			if (L.anchored) return
-			L.SpinAnimation(5,1)
+		if (ismovable(target))
+			var/atom/movable/AM = target
+			if (AM.anchored) return
+			AM.SpinAnimation(5,1)
 			// Get the turf behind by getting the dir from the firer to us
 			var/projectile_dir = get_dir(starting, target) || firer_original_dir || get_direction()
 			var/pushed_tiles = 0
 			for(var/i=1; i<=3; i++)
-				var/turf/behind = get_step(L, projectile_dir) 
+				var/turf/behind = get_step(AM, projectile_dir) 
 				if (behind)
 					var/atom/slammed_into = null
 					if (behind.density)
@@ -317,18 +317,20 @@
 
 					if (slammed_into)
 						spawn (1)
-							L.visible_message("<span class = 'danger'>[L] flies back from the force of the blast and slams into \the [slammed_into]!</span>")
-						L.Weaken(3)
-						L.adjustBruteLoss(rand(20,30))
-						if (L.client)
-							shake_camera(L, rand(2,3), rand(2,3))
-						playsound(get_turf(L), 'sound/effects/gore/fallsmash.ogg', 100, TRUE)
+							AM.visible_message("<span class = 'danger'>[AM] flies back from the force of the blast and slams into \the [slammed_into]!</span>")
+						if (isliving(AM))
+							var/mob/living/L = AM
+							L.Weaken(3)
+							L.adjustBruteLoss(rand(20,30))
+							if (L.client)
+								shake_camera(L, rand(2,3), rand(2,3))
+						playsound(get_turf(AM), 'sound/effects/gore/fallsmash.ogg', 100, TRUE)
 						for (var/obj/structure/window/W in get_turf(slammed_into))
 							W.shatter()
 						break
 					else
-						if (!map || !map.check_caribbean_block(L, behind))
-							L.forceMove(behind)
+						if (!map || !map.check_caribbean_block(AM, behind))
+							AM.forceMove(behind)
 							pushed_tiles++
 						else
 							break
@@ -336,7 +338,8 @@
 					break
 			if (pushed_tiles)
 				spawn (1)
-					to_chat(L, SPAN_DANGER("You are violently pushed back by magical force!"))
+					if (isliving(AM))
+						to_chat(AM, SPAN_DANGER("You are violently pushed back by magical force!"))
 
 /obj/item/projectile/magic/pullus
 	name = "pullus"
@@ -350,16 +353,16 @@
 
 /obj/item/projectile/magic/pullus/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
-		if (ishuman(target))
-			var/mob/living/human/L = target
-			if (L.anchored) return
-			L.SpinAnimation(5,1)
+		if (ismovable(target))
+			var/atom/movable/AM = target
+			if (AM.anchored) return
+			AM.SpinAnimation(5,1)
 			// Get the turf in front by getting the dir from the firer to us
 			var/projectile_dir = get_dir(starting, target) || firer_original_dir || get_direction()
 			var/pull_dir = turn(projectile_dir, 180)
 			var/pulled_tiles = 0
 			for(var/i=1; i<=3; i++)
-				var/turf/front = get_step(L, pull_dir) 
+				var/turf/front = get_step(AM, pull_dir) 
 				if (front)
 					var/atom/slammed_into = null
 					if (front.density)
@@ -370,18 +373,20 @@
 
 					if (slammed_into)
 						spawn (1)
-							L.visible_message("<span class = 'danger'>[L] is violently pulled forward and slams into \the [slammed_into]!</span>")
-						L.Weaken(3)
-						L.adjustBruteLoss(rand(20,30))
-						if (L.client)
-							shake_camera(L, rand(2,3), rand(2,3))
-						playsound(get_turf(L), 'sound/effects/gore/fallsmash.ogg', 100, TRUE)
+							AM.visible_message("<span class = 'danger'>[AM] is violently pulled forward and slams into \the [slammed_into]!</span>")
+						if (isliving(AM))
+							var/mob/living/L = AM
+							L.Weaken(3)
+							L.adjustBruteLoss(rand(20,30))
+							if (L.client)
+								shake_camera(L, rand(2,3), rand(2,3))
+						playsound(get_turf(AM), 'sound/effects/gore/fallsmash.ogg', 100, TRUE)
 						for (var/obj/structure/window/W in get_turf(slammed_into))
 							W.shatter()
 						break
 					else
-						if (!map || !map.check_caribbean_block(L, front))
-							L.forceMove(front)
+						if (!map || !map.check_caribbean_block(AM, front))
+							AM.forceMove(front)
 							pulled_tiles++
 						else
 							break
@@ -389,7 +394,8 @@
 					break
 			if (pulled_tiles)
 				spawn (1)
-					to_chat(L, SPAN_DANGER("You are violently pulled forward by magical force!"))
+					if (isliving(AM))
+						to_chat(AM, SPAN_DANGER("You are violently pulled forward by magical force!"))
 /obj/item/projectile/magic/blockum
 	name = "blockum"
 	icon_state = "spell"

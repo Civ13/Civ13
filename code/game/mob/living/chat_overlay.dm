@@ -62,7 +62,7 @@
 		message.maptext_x = (maptext_width * -0.5)-TILE_SIZE*2.5
 		#endif
 		message.maptext_y = TILE_SIZE*1
-		message.maptext = "<center><span style=\"font-family: 'Small Fonts'; -dm-text-outline: 1 black;\">[desired_text]</span></center>"
+		message.maptext = "<center><span style=\"-dm-text-outline: 1 black;\">[desired_text]</span></center>"
 		if(target)
 			if (!(message in target.images))
 				target.images += message
