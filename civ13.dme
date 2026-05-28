@@ -1189,5 +1189,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\rotstadt.dmm"
+#include "maps\special\lights_out.dmm"
 // END_INCLUDE

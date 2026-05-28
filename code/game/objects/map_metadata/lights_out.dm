@@ -41,6 +41,10 @@
 				qdel(O)
 	spawn(10) // Start checking victory condition after a short delay
 		src.check_victory_condition()
+	spawn(100)
+		for (var/i = 1, i <= 50, i++)
+			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/nomads/forest/Jungle/river))
+			new/obj/structure/piranha(areaspawn)
 
 /obj/map_metadata/lightsout/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
