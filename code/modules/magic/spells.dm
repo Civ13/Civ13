@@ -7,6 +7,7 @@
 	var/learnable = FALSE
 	var/juice_cost = 0
 	var/screen_obj = null
+	var/sound_effect = null
 
 /// The Fundamentals (Beginner Magic) ///
 
@@ -19,6 +20,7 @@
 	learnable = TRUE
 	juice_cost = 5
 	screen_obj = /obj/screen/spell/zappus
+	sound_effect = 'sound/effects/spells/zappus.ogg'
 
 /datum/spell/blockum
 	name = "Blockum"
@@ -29,6 +31,7 @@
 	learnable = TRUE
 	juice_cost = 15
 	screen_obj = /obj/screen/spell/blockum
+	sound_effect = 'sound/effects/spells/blockum.ogg'
 
 /datum/spell/lightus
 	name = "Lightus"
@@ -38,6 +41,7 @@
 	learnable = TRUE
 	juice_cost = 15
 	screen_obj = /obj/screen/spell/lightus
+	sound_effect = 'sound/effects/spells/lightus.ogg'
 
 /datum/spell/dropus
 	name = "Dropus"
@@ -48,6 +52,7 @@
 	learnable = TRUE
 	juice_cost = 15
 	screen_obj = /obj/screen/spell/dropus
+	sound_effect = 'sound/effects/spells/dropus.ogg'
 
 /datum/spell/stinkaeum
 	name = "Stinkaeum"
@@ -58,6 +63,7 @@
 	learnable = TRUE
 	juice_cost = 15
 	screen_obj = /obj/screen/spell/stinkaeum
+	sound_effect = 'sound/effects/spells/stinkaeum.ogg'
 
 /// Force & Physics (Intermediate Magic) ///
 
@@ -70,6 +76,7 @@
 	learnable = TRUE
 	juice_cost = 20
 	screen_obj = /obj/screen/spell/pushum
+	sound_effect = 'sound/effects/spells/pushum.ogg'
 
 /datum/spell/pullus
 	name = "Pullus"
@@ -80,6 +87,7 @@
 	learnable = TRUE
 	juice_cost = 20
 	screen_obj = /obj/screen/spell/pullus
+	sound_effect = 'sound/effects/spells/pullus.ogg'
 
 /datum/spell/wallus
 	name = "Wallus"
@@ -90,6 +98,7 @@
 	learnable = TRUE
 	juice_cost = 30
 	screen_obj = /obj/screen/spell/wallus
+	sound_effect = 'sound/effects/spells/wallus.ogg'
 
 /datum/spell/floatus
 	name = "Floatus"
@@ -100,6 +109,7 @@
 	learnable = TRUE
 	juice_cost = 35
 	screen_obj = /obj/screen/spell/floatus
+	sound_effect = 'sound/effects/spells/floatus.ogg'
 
 /// Control & Chaos (Advanced Magic) ///
 
@@ -112,6 +122,7 @@
 	proj_type = /obj/item/projectile/magic/freezum
 	juice_cost = 35
 	screen_obj = /obj/screen/spell/freezeum
+	sound_effect = 'sound/effects/spells/freezeum.ogg'
 
 /datum/spell/blinkae
 	name = "Blinkae"
@@ -121,6 +132,7 @@
 	learnable = TRUE
 	juice_cost = 30
 	screen_obj = /obj/screen/spell/blinkae
+	sound_effect = 'sound/effects/spells/blinkae.ogg'
 /// Destruction (Expert Magic) ///
 
 /datum/spell/burnus
@@ -132,6 +144,7 @@
 	proj_type = /obj/item/projectile/magic/fire_bolt
 	juice_cost = 40
 	screen_obj = /obj/screen/spell/burnus
+	sound_effect = 'sound/effects/spells/burnus.ogg'
 
 /datum/spell/barrelus
 	name = "Barrelus"
@@ -142,6 +155,7 @@
 	learnable = TRUE
 	juice_cost = 65
 	screen_obj = /obj/screen/spell/barrelus
+	sound_effect = 'sound/effects/spells/barrelus.ogg'
 
 /datum/spell/sliceum
 	name = "Sliceum"
@@ -152,6 +166,7 @@
 	learnable = TRUE
 	juice_cost = 50
 	screen_obj = /obj/screen/spell/sliceum
+	sound_effect = 'sound/effects/spells/sliceum.ogg'
 
 /datum/spell/fixae
 	name = "Fixae"
@@ -162,6 +177,7 @@
 	learnable = TRUE
 	juice_cost = 80
 	screen_obj = /obj/screen/spell/fixae
+	sound_effect = 'sound/effects/spells/fixae.ogg'
 
 /datum/spell/explodus
 	name = "Explodus"
@@ -172,6 +188,7 @@
 	learnable = TRUE
 	juice_cost = 60
 	screen_obj = /obj/screen/spell/explodus
+	sound_effect = 'sound/effects/spells/explodus.ogg'
 
 /// The \"Naughty\" Curses (Dark Arts) ///
 
@@ -184,6 +201,7 @@
 	learnable = TRUE
 	juice_cost = 85
 	screen_obj = /obj/screen/spell/painum
+	sound_effect = 'sound/effects/spells/painum.ogg'
 
 /datum/spell/deadum
 	name = "Deadum"
@@ -194,6 +212,7 @@
 	learnable = TRUE
 	juice_cost = 100
 	screen_obj = /obj/screen/spell/deadum
+	sound_effect = 'sound/effects/spells/deadum.ogg'
 
 /// Previously Existing Spells ///
 

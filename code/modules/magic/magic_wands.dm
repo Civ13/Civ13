@@ -153,8 +153,11 @@
 			if (H.juice >= S.juice_cost && user.get_active_hand() == src)
 				H.juice -= S.juice_cost
 				H.show_chat_overlay(H, "<i>[S.name]!</i>", "#dea30d")
-				H.visible_message("<span style=color:'#dea30d'><b<[H.name]</b> uses <i>[S.name]!</i></span>")
-				playsound(user.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
+				if (S.sound_effect)
+					playsound(user.loc, S.sound_effect, 75, FALSE)
+				H.visible_message("<span style=color:'#dea30d'><b>[user]</b> uses <i>[S.name]!</i></span>")
+				spawn(5)
+					playsound(user.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
 
 				// Handle non-projectile spells directly
 				if (S.name == "Wallus")
