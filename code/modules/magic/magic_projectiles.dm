@@ -453,6 +453,82 @@
 				L.visible_message("<span class='danger'>[target] drops \the [L.r_hand]!</span>")
 				L.drop_r_hand()
 
+/obj/item/projectile/magic/floatus
+	name = "floatus"
+	icon_state = "spell"
+	color = "#ffffff"
+	light_color = "#ffffff"
+	tracer_type = /obj/effect/projectile/tracer/magic/white
+	damage = 0
+	nodamage = TRUE
+
+/obj/item/projectile/magic/floatus/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
+	if (..())
+		if (isliving(target))
+			var/mob/living/L = target
+			L.visible_message(SPAN_DANGER("[L] begins to float and slide around uncontrollably!"))
+			L.apply_effects(stun = 1, blocked = blocked)
+			L.Weaken(10) // Mechanical proxy for 10 seconds of "zero-friction" sliding
+			L.SpinAnimation(10,4)
+			var/drc = pick(NORTH, SOUTH, EAST, WEST)
+			if (istype(get_step(L, drc),/turf/floor))
+				to_chat(L, SPAN_DANGER("You lose your footing and start sliding around uncontrollably!"))
+				L.forceMove(get_step(L, drc))
+			spawn(10)
+				drc = pick(NORTH, SOUTH, EAST, WEST)
+				if (istype(get_step(L, drc),/turf/floor))
+					L.forceMove(get_step(L, drc))
+			spawn(20)
+				drc = pick(NORTH, SOUTH, EAST, WEST)
+				if (istype(get_step(L, drc),/turf/floor))
+					L.forceMove(get_step(L, drc))
+			spawn(30)
+				drc = pick(NORTH, SOUTH, EAST, WEST)
+				if (istype(get_step(L, drc),/turf/floor))
+					L.forceMove(get_step(L, drc))
+/obj/item/projectile/magic/barrelus
+	name = "barrelus"
+	icon_state = "spell"
+	color = "#7b4b2a"
+	light_color = "#7b4b2a"
+	tracer_type = /obj/effect/projectile/tracer/magic
+	damage = 0
+	nodamage = TRUE
+
+/obj/item/projectile/magic/barrelus/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
+	if (..())
+		if (isliving(target) && isturf(target.loc))
+			var/mob/living/L = target
+			L.visible_message(SPAN_DANGER("[L] has been turned into a wooden barrel!"))
+			var/obj/structure/closet/crate/barrel/B = new(L.loc)
+			if (B)
+				L.forceMove(B)
+				B.name = "suspicious barrel"
+				spawn(40)
+					if (B && L && (B in L.contents))
+						L.forceMove(B.loc)
+						qdel(B)
+					else if (B)
+						qdel(B)
+
+/obj/item/projectile/magic/stinkaeum
+	name = "stinkaeum"
+	icon_state = "spell"
+	color = "#654413"
+	light_color = "#654413"
+	tracer_type = /obj/effect/projectile/tracer/magic/brown
+	damage = 0
+	nodamage = TRUE
+
+/obj/item/projectile/magic/stinkaeum/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
+	if (..())
+		if (ishuman(target))
+			var/mob/living/human/H = target
+			H.bladder = max(H.bladder, 30)
+			H.bowels = max(H.bowels, 30)
+			H.handle_piss()
+			H.handle_shit()
+			
 ///////////////////////////////////////////////
 //////////// Projectile Tracers////////////////
 ///////////////////////////////////////////////
@@ -482,6 +558,10 @@
 /obj/effect/projectile/tracer/magic/white
 	icon_state = "tracer_white"
 	color = "#ffffff"
+	
+/obj/effect/projectile/tracer/magic/brown
+	icon_state = "tracer_white"
+	color = "#6f3900"
 
 ///////////////////////////////////////////////
 //////////// Projectile Impacts////////////////

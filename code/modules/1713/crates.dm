@@ -198,6 +198,14 @@ obj/structure/closet/crate/loottreasurechest/New()
 	icon_closed = "densecrate"
 	storagecap = 20
 
+/obj/structure/closet/crate/barrel
+	name = "wood barrel"
+	desc = "A wood barrel."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood1"
+	icon_opened = "barrel_wood_open1"
+	icon_closed = "barrel_wood1"
+
 /obj/structure/closet/crate/cash_register
 	name = "cash register"
 	desc = "Used to hold money at a shop."

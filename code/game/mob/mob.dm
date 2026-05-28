@@ -744,13 +744,16 @@
 					else if (H.r_hand && istype(H.r_hand, /obj/item/weapon/material/magic/wand))
 						W = H.r_hand
 
-				if (W)
-					client.add_stat("Active Wand:", "[W.name] ([W.charges]/[W.maxcharges] charges)")
-					client.add_stat("Active Spell:", W.active_spell ? "<b>[W.active_spell.name]</b>" : "<i>None</i>")
-					client.add_stat("")
-				else
-					client.add_stat("Active Wand:", "<i>None</i>")
-					client.add_stat("")
+					if (W)
+						client.add_stat("<b>Active Wand:</b>", "[W.name] ([W.charges]/[W.maxcharges] charges)")
+						client.add_stat("<b>Active Spell:</b>", W.active_spell ? "<b>[W.active_spell.name]</b>" : "<i>None</i>")
+						client.add_stat("<b>Juice:</b>", "[H.juice] / 100")
+						client.add_stat("")
+					else
+						client.add_stat("<b>Active Wand:</b>", "<span color='red'><i>None</i></span>")
+						client.add_stat("<b>Active Spell:</b>", "<span color='red'><i>None</i></span>")
+						client.add_stat("<b>Juice:</b>", "[H.juice] / 100")
+						client.add_stat("")
 
 				var/list/usable = list()
 				var/magic_lvl = 0

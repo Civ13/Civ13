@@ -597,6 +597,10 @@
 	// recover stamina
 	stats["stamina"][1] = min(stats["stamina"][1] + round(stats["stamina"][2] * 0.02), stats["stamina"][2])
 
+	// recover juice (mana) — ~5 per second at standard 2ds Life() ticks
+	if (juice < max_juice)
+		juice = min(juice + 1, max_juice)
+
 	voice = GetVoice()
 
 	//No need to update all of these procs if the guy is dead.

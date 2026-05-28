@@ -5,6 +5,7 @@
 	var/skill_level = 0
 	var/cast_time = 8
 	var/learnable = FALSE
+	var/juice_cost = 0
 
 /// The Fundamentals (Beginner Magic) ///
 
@@ -15,6 +16,7 @@
 	skill_level = 0
 	cast_time = 5
 	learnable = TRUE
+	juice_cost = 5
 
 /datum/spell/blockum
 	name = "Blockum"
@@ -23,6 +25,7 @@
 	skill_level = 10
 	cast_time = 2
 	learnable = TRUE
+	juice_cost = 15
 
 /datum/spell/dropus
 	name = "Dropus"
@@ -31,6 +34,16 @@
 	skill_level = 15
 	cast_time = 10
 	learnable = TRUE
+	juice_cost = 15
+
+/datum/spell/stinkaeum
+	name = "Stinkaeum"
+	description = "A subtle but sinister override of the target's will, making them urinate and defecate."
+	proj_type = /obj/item/projectile/magic/stinkaeum
+	skill_level = 20
+	cast_time = 10
+	learnable = TRUE
+	juice_cost = 15
 
 /// Force & Physics (Intermediate Magic) ///
 
@@ -41,6 +54,7 @@
 	skill_level = 25
 	cast_time = 12
 	learnable = TRUE
+	juice_cost = 20
 
 /datum/spell/pullus
 	name = "Pullus"
@@ -49,6 +63,16 @@
 	skill_level = 30
 	cast_time = 15
 	learnable = TRUE
+	juice_cost = 20
+
+/datum/spell/floatus
+	name = "Floatus"
+	description = "Removes the burden of gravity. Watch them slide away into the sunset."
+	proj_type = /obj/item/projectile/magic/floatus
+	skill_level = 40
+	cast_time = 20
+	learnable = TRUE
+	juice_cost = 35
 
 /// Control & Chaos (Advanced Magic) ///
 
@@ -59,6 +83,7 @@
 	cast_time = 25
 	learnable = TRUE
 	proj_type = /obj/item/projectile/magic/freezum
+	juice_cost = 35
 
 /// Destruction (Expert Magic) ///
 
@@ -69,6 +94,16 @@
 	cast_time = 20
 	learnable = TRUE
 	proj_type = /obj/item/projectile/magic/fire_bolt
+	juice_cost = 40
+
+/datum/spell/barrelus
+	name = "Barrelus"
+	description = "The ultimate prank. Turns the target into a wooden barrel. Handle with care."
+	proj_type = /obj/item/projectile/magic/barrelus
+	skill_level = 65
+	cast_time = 35
+	learnable = TRUE
+	juice_cost = 65
 
 /datum/spell/sliceum
 	name = "Sliceum"
@@ -77,6 +112,7 @@
 	skill_level = 70
 	cast_time = 30
 	learnable = TRUE
+	juice_cost = 50
 
 /datum/spell/explodus
 	name = "Explodus"
@@ -85,6 +121,7 @@
 	skill_level = 80
 	cast_time = 45
 	learnable = TRUE
+	juice_cost = 60
 
 /// The \"Naughty\" Curses (Dark Arts) ///
 
@@ -95,6 +132,7 @@
 	skill_level = 85
 	cast_time = 50
 	learnable = TRUE
+	juice_cost = 85
 
 /datum/spell/deadum
 	name = "Deadum"
@@ -103,6 +141,7 @@
 	skill_level = 100
 	cast_time = 80
 	learnable = TRUE
+	juice_cost = 100
 
 /// Previously Existing Spells ///
 

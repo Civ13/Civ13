@@ -69,24 +69,24 @@
 		else
 			to_chat(user, SPAN_NOTICE("No spell is selected. Use the secondary action to pick one."))
 
-		// charge display
+		// juice display
 		var/fullness
 		if (H.getStat("magic") < 100)
-			if (charges >= maxcharges)
+			if (H.juice >= 100)
 				fullness = "full"
-			else if (charges >= maxcharges*0.75)
+			else if (H.juice >= 75)
 				fullness = "almost full"
-			else if (charges >= maxcharges*0.50)
+			else if (H.juice >= 50)
 				fullness = "mostly full"
-			else if (charges >= maxcharges*0.25)
+			else if (H.juice >= 25)
 				fullness = "partially empty"
-			else if (charges > 0)
+			else if (H.juice > 0)
 				fullness = "almost empty"
 			else
 				fullness = "empty"
-			to_chat(user, SPAN_NOTICE("The wand looks <font color=#9fe6f5>[fullness]!</font>"))
+			to_chat(user, SPAN_NOTICE("The magic within you feels <font color=#9fe6f5>[fullness]!</font>"))
 		else
-			to_chat(user, SPAN_NOTICE("The wand has <font color=#9fe6f5>[charges]</font> out of <font color=#9fe6f5>[maxcharges] charges left!</font>"))
+			to_chat(user, SPAN_NOTICE("You have <font color=#9fe6f5>[H.juice]</font> out of <font color=#9fe6f5>100 units of magical juice left!</font>"))
 
 		// list known usable spells
 		var/list/usable = get_usable_spells(user)
@@ -122,9 +122,6 @@
 		return
 	if (casting)
 		return
-	if (charges <= 0)
-		to_chat(user, SPAN_WARNING("The wand is empty! It needs to recharge."))
-		return
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		if (H.getStat("magic") < minimum_level)
@@ -142,24 +139,28 @@
 
 	var/datum/spell/S = active_spell
 
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		if (H.juice < S.juice_cost)
+			to_chat(user, SPAN_WARNING("You don't have enough magical juice to cast this spell!"))
+			return
+
 	casting = TRUE
 
 	if (do_after(user, S.cast_time, target))
-		if (charges > 0 && user.get_active_hand() == src)
-			charges--
-			if (ishuman(user))
-				var/mob/living/human/H = user
-				H.say("[S.name]!")
-			playsound(user.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
+		if (ishuman(user))
+			var/mob/living/human/H = user
+			if (H.juice >= S.juice_cost && user.get_active_hand() == src)
+				H.juice -= S.juice_cost
+				H.show_chat_overlay(H, "<i>[S.name]!</i>", "#dea30d")
+				H.visible_message("<b<[H]</b> uses <i>[S.name]!</i>")
+				playsound(user.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
 
-			if (S.proj_type)
-				var/obj/item/projectile/P = new S.proj_type(user.loc)
-				if (P)
-					var/tgt_zone = "chest"
-					if (ishuman(user))
-						var/mob/living/human/H = user
-						tgt_zone = H.targeted_organ
-					process_projectile(P, user, target, tgt_zone, params)
+				if (S.proj_type)
+					var/obj/item/projectile/P = new S.proj_type(user.loc)
+					if (P)
+						var/tgt_zone = H.targeted_organ || "chest"
+						process_projectile(P, user, target, tgt_zone, params)
 
 	casting = FALSE
 

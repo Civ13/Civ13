@@ -104,3 +104,29 @@
 	desc = "A wide brim black wizard's hat."
 	icon_state = "blackwizard"
 	item_state = "blackwizard"
+
+/obj/structure/sign/crest
+	name = "house crest"
+	desc = "The crest of one of the houses."
+	icon = 'icons/misc/crests.dmi'
+	icon_state = ""
+
+/obj/structure/sign/crest/mintysnek
+	name = "Mintysnek crest"
+	desc = "The crest of the Mintysnek house. A minty green lizard and a leek."
+	icon_state = "mintysnek"
+
+/obj/structure/sign/crest/rubywyrm
+	name = "Rubywyrm crest"
+	desc = "The crest of the Rubywyrm house. A welsh dragon coiled around a ruby."
+	icon_state = "rubywyrm"
+
+/obj/structure/sign/crest/slatepie
+	name = "Slatepie crest"
+	desc = "The crest of the Slatepie house. A magpie sitting on top of welsh slate."
+	icon_state = "slatepie"
+
+/obj/structure/sign/crest/mustardweasel
+	name = "Mustardweasel crest"
+	desc = "The crest of the Mustardweasel house. A ferret with a daffodil over its ear."
+	icon_state = "mustardweasel"

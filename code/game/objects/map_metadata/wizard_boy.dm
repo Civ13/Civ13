@@ -1,7 +1,7 @@
 
 /obj/map_metadata/wizard_boy
 	ID = MAP_WIZARD_BOY
-	title = "Test Map"
+	title = "Wizard Boy"
 	description = "Welcome to Llanboarwart Academy of Magical Education!"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
