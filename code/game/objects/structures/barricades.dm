@@ -216,7 +216,8 @@
 	maxhealth = 80
 	New()
 		..()
-		icon_state = "magic_baricade"
+		icon_state = "magic_barricade"
+		name = "magical barrier"
 
 /obj/structure/barricade/vertical
 	name = "wood barrier"

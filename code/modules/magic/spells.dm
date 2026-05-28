@@ -6,6 +6,7 @@
 	var/cast_time = 8
 	var/learnable = FALSE
 	var/juice_cost = 0
+	var/screen_obj = null
 
 /// The Fundamentals (Beginner Magic) ///
 
@@ -17,6 +18,7 @@
 	cast_time = 5
 	learnable = TRUE
 	juice_cost = 5
+	screen_obj = /obj/screen/spell/zappus
 
 /datum/spell/blockum
 	name = "Blockum"
@@ -26,6 +28,7 @@
 	cast_time = 2
 	learnable = TRUE
 	juice_cost = 15
+	screen_obj = /obj/screen/spell/blockum
 
 /datum/spell/lightus
 	name = "Lightus"
@@ -34,6 +37,7 @@
 	cast_time = 5
 	learnable = TRUE
 	juice_cost = 15
+	screen_obj = /obj/screen/spell/lightus
 
 /datum/spell/dropus
 	name = "Dropus"
@@ -43,6 +47,7 @@
 	cast_time = 10
 	learnable = TRUE
 	juice_cost = 15
+	screen_obj = /obj/screen/spell/dropus
 
 /datum/spell/stinkaeum
 	name = "Stinkaeum"
@@ -52,6 +57,7 @@
 	cast_time = 10
 	learnable = TRUE
 	juice_cost = 15
+	screen_obj = /obj/screen/spell/stinkaeum
 
 /// Force & Physics (Intermediate Magic) ///
 
@@ -63,6 +69,7 @@
 	cast_time = 12
 	learnable = TRUE
 	juice_cost = 20
+	screen_obj = /obj/screen/spell/pushum
 
 /datum/spell/pullus
 	name = "Pullus"
@@ -72,6 +79,7 @@
 	cast_time = 15
 	learnable = TRUE
 	juice_cost = 20
+	screen_obj = /obj/screen/spell/pullus
 
 /datum/spell/wallus
 	name = "Wallus"
@@ -81,6 +89,7 @@
 	cast_time = 20
 	learnable = TRUE
 	juice_cost = 30
+	screen_obj = /obj/screen/spell/wallus
 
 /datum/spell/floatus
 	name = "Floatus"
@@ -90,6 +99,7 @@
 	cast_time = 20
 	learnable = TRUE
 	juice_cost = 35
+	screen_obj = /obj/screen/spell/floatus
 
 /// Control & Chaos (Advanced Magic) ///
 
@@ -101,6 +111,7 @@
 	learnable = TRUE
 	proj_type = /obj/item/projectile/magic/freezum
 	juice_cost = 35
+	screen_obj = /obj/screen/spell/freezeum
 
 /datum/spell/blinkae
 	name = "Blinkae"
@@ -109,6 +120,7 @@
 	cast_time = 20
 	learnable = TRUE
 	juice_cost = 30
+	screen_obj = /obj/screen/spell/blinkae
 /// Destruction (Expert Magic) ///
 
 /datum/spell/burnus
@@ -119,6 +131,7 @@
 	learnable = TRUE
 	proj_type = /obj/item/projectile/magic/fire_bolt
 	juice_cost = 40
+	screen_obj = /obj/screen/spell/burnus
 
 /datum/spell/barrelus
 	name = "Barrelus"
@@ -128,6 +141,7 @@
 	cast_time = 35
 	learnable = TRUE
 	juice_cost = 65
+	screen_obj = /obj/screen/spell/barrelus
 
 /datum/spell/sliceum
 	name = "Sliceum"
@@ -137,6 +151,7 @@
 	cast_time = 30
 	learnable = TRUE
 	juice_cost = 50
+	screen_obj = /obj/screen/spell/sliceum
 
 /datum/spell/fixae
 	name = "Fixae"
@@ -146,6 +161,7 @@
 	cast_time = 40
 	learnable = TRUE
 	juice_cost = 80
+	screen_obj = /obj/screen/spell/fixae
 
 /datum/spell/explodus
 	name = "Explodus"
@@ -155,6 +171,7 @@
 	cast_time = 45
 	learnable = TRUE
 	juice_cost = 60
+	screen_obj = /obj/screen/spell/explodus
 
 /// The \"Naughty\" Curses (Dark Arts) ///
 
@@ -166,6 +183,7 @@
 	cast_time = 50
 	learnable = TRUE
 	juice_cost = 85
+	screen_obj = /obj/screen/spell/painum
 
 /datum/spell/deadum
 	name = "Deadum"
@@ -175,6 +193,7 @@
 	cast_time = 80
 	learnable = TRUE
 	juice_cost = 100
+	screen_obj = /obj/screen/spell/deadum
 
 /// Previously Existing Spells ///
 

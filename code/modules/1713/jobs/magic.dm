@@ -60,6 +60,14 @@
 			var/datum/spell/S = all_spells[spell_name]
 			if (S.learnable == TRUE)
 				H.add_spell(S)
+	spawn(30)
+		H.client.screen += new/obj/screen/spellshow("Spell","7,14", H, null, "")
+
+/mob/living/human/corpse/wizard
+	gender = MALE
+	h_style = "Fade"
+	corpse_job = "Wizard Boy"
+	corpse_name = "wizard boy"
 
 /obj/item/clothing/under/civ2/wizard
 	name = "wizard clothing"

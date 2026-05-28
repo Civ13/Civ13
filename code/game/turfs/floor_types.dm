@@ -111,8 +111,6 @@
 	icon = 'icons/turf/flooring/carpet.dmi'
 	flooring = null
 	New()
-		if (!icon_state)
-			icon_state = "carpet"
 		..()
 		spawn(4)
 			if (src)
