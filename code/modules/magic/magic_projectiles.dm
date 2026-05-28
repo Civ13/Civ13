@@ -247,7 +247,7 @@
 /obj/item/projectile/magic/deadum/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (isliving(target))
 		var/mob/living/L = target
-		L.stat = DEAD // Bypasses health math and critical state
+		L.gib()
 	return ..()
 
 /obj/item/projectile/magic/sliceum
@@ -528,7 +528,71 @@
 			H.bowels = max(H.bowels, 30)
 			H.handle_piss()
 			H.handle_shit()
-			
+
+// New Projectiles
+/obj/item/projectile/magic/fixae
+	name = "fixae bolt"
+	icon_state = "spell"
+	damage = 0
+	nodamage = TRUE
+	color = "#00FF00"
+	light_color = "#00FF00"
+	tracer_type = /obj/effect/projectile/tracer/magic
+	impact_type = /obj/effect/projectile/impact/magic/heal
+	var/heal_amount = 50
+
+/obj/item/projectile/magic/fixae/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
+	if (..())
+		if (isliving(target))
+			var/mob/living/L = target
+			L.adjustBruteLoss(-heal_amount)
+			L.adjustBurnLoss(-heal_amount)
+			L.adjustToxLoss(-heal_amount / 2)
+			L.adjustOxyLoss(-heal_amount / 2)
+			L.stunned = 0
+			L.weakened = 0
+			to_chat(L, SPAN_NOTICE("You feel a surge of restorative energy!"))
+
+/obj/item/projectile/magic/wallus
+	name = "wallus bolt"
+	icon_state = "spell"
+	nodamage = TRUE
+	color = "#8B4513" // Brown
+	light_color = "#8B4513"
+	tracer_type = /obj/effect/projectile/tracer/magic/brown
+	impact_type = /obj/effect/projectile/impact/magic
+
+/obj/item/projectile/magic/wallus/on_impact(var/atom/A)
+	var/turf/T = get_turf(A)
+	if (T && !T.density) // Ensure the target tile is not dense
+		new /obj/structure/barricade/magic(T)
+		T.visible_message(SPAN_NOTICE("A magical barricade suddenly appears!"))
+	return ..()
+
+// New temporary light effect object for Lightus!
+/obj/effect/magic_light_effect
+	name = "magical glow"
+	icon = 'icons/effects/effects.dmi'
+	icon_state = "sparks" // Assuming this icon_state exists in magic_overlay.dmi
+	layer = MOB_LAYER + 0.1 // Render slightly above the mob
+	light_range = 5
+	light_power = 5
+	light_color = "#FFFFFF"
+	var/mob/living/human/target_mob = null
+
+	New(loc, mob/living/human/user_mob)
+		..()
+		target_mob = user_mob
+		if (target_mob)
+			target_mob.overlays += src
+			spawn(100) // 10 seconds (100 deciseconds)
+				qdel(src)
+
+	Destroy()
+		if (target_mob && target_mob.overlays)
+			target_mob.overlays -= src
+		return ..()
+
 ///////////////////////////////////////////////
 //////////// Projectile Tracers////////////////
 ///////////////////////////////////////////////
@@ -588,3 +652,6 @@
 
 /obj/effect/projectile/impact/magic/kinetic
 	icon_state = "kinetic_blast_transp"
+
+/obj/effect/projectile/impact/magic/heal
+	icon_state = "heal"

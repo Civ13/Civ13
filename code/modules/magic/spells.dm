@@ -27,6 +27,14 @@
 	learnable = TRUE
 	juice_cost = 15
 
+/datum/spell/lightus
+	name = "Lightus"
+	description = "Emits a temporary magical light from the caster."
+	skill_level = 10
+	cast_time = 5
+	learnable = TRUE
+	juice_cost = 15
+
 /datum/spell/dropus
 	name = "Dropus"
 	description = "The signature spell of Barry Hatter. Politely asks the target to drop whatever they are holding."
@@ -65,6 +73,15 @@
 	learnable = TRUE
 	juice_cost = 20
 
+/datum/spell/wallus
+	name = "Wallus"
+	description = "Summons a sturdy wooden barricade at the target location."
+	proj_type = null
+	skill_level = 35
+	cast_time = 20
+	learnable = TRUE
+	juice_cost = 30
+
 /datum/spell/floatus
 	name = "Floatus"
 	description = "Removes the burden of gravity. Watch them slide away into the sunset."
@@ -85,6 +102,13 @@
 	proj_type = /obj/item/projectile/magic/freezum
 	juice_cost = 35
 
+/datum/spell/blinkae
+	name = "Blinkae"
+	description = "Teleports the caster to a nearby clicked location."
+	skill_level = 55
+	cast_time = 20
+	learnable = TRUE
+	juice_cost = 30
 /// Destruction (Expert Magic) ///
 
 /datum/spell/burnus
@@ -113,6 +137,15 @@
 	cast_time = 30
 	learnable = TRUE
 	juice_cost = 50
+
+/datum/spell/fixae
+	name = "Fixae"
+	description = "A powerful healing spell that rejuvenates the target."
+	proj_type = /obj/item/projectile/magic/fixae
+	skill_level = 75
+	cast_time = 40
+	learnable = TRUE
+	juice_cost = 80
 
 /datum/spell/explodus
 	name = "Explodus"

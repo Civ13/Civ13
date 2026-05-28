@@ -156,6 +156,37 @@
 				H.visible_message("<b<[H]</b> uses <i>[S.name]!</i>")
 				playsound(user.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
 
+				// Handle non-projectile spells directly
+				if (S.name == "Wallus")
+					var/turf/T = get_turf(target)
+					if (T && !T.density)
+						new /obj/structure/barricade/magic(T)
+						T.visible_message(SPAN_NOTICE("A magical barricade suddenly appears!"))
+					else
+						to_chat(H, SPAN_WARNING("You cannot summon a barricade there!"))
+						// Refund juice if creation fails
+						H.juice += S.juice_cost
+
+				else if (S.name == "Lightus")
+					// Spawns a temporary light effect on the caster
+					new /obj/effect/magic_light_effect(H, H)
+					to_chat(H, SPAN_NOTICE("You glow with a soft magical light!"))
+				else if (S.name == "Blinkae")
+					// Teleport user to target tile
+					var/turf/T = get_turf(target)
+					// Check if target is a valid, walkable tile within range
+					if (T && get_dist(H, T) <= 7 && !T.density)
+						H.forceMove(T)
+						to_chat(H, SPAN_NOTICE("You blink to [T]!"))
+						H.visible_message(SPAN_NOTICE("[H] suddenly disappears and reappears!"))
+					else
+						to_chat(H, SPAN_WARNING("You cannot blink there!"))
+						// Refund juice if teleport fails
+						H.juice += S.juice_cost
+				// End non-projectile spell handling
+
+
+
 				if (S.proj_type)
 					var/obj/item/projectile/P = new S.proj_type(user.loc)
 					if (P)

@@ -204,6 +204,20 @@
 	protection_chance = 85
 	layer = 2.98
 
+/obj/structure/barricade/magic
+	name = "magical barrier"
+	desc = "A spell-spawned magical barricade. It shimmers with arcane energy."
+	icon_state = "magic_barricade"
+	flammable = TRUE
+	protection_chance = 90
+	layer = 2.98
+	alpha = 110
+	health = 80
+	maxhealth = 80
+	New()
+		..()
+		icon_state = "magic_baricade"
+
 /obj/structure/barricade/vertical
 	name = "wood barrier"
 	desc = "A wood wall constructed from interwoven logs."
