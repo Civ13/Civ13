@@ -1,6 +1,9 @@
 
 /hook/roundstart/proc/mainstuff()
-	to_chat(world, "<big><b>The round has started!</b></big>")
+	if (map && map.ID == MAP_WIZARD_BOY)
+		to_world("<font class='wizard' size=6>Welcome to <span style='color:red'>Llanboarwart</span>!</font>")
+	else
+		to_world("<big><b>The round has started!</b></big>")
 
 	for (var/C in clients)
 		winset(C, null, "mainwindow.flash=1")

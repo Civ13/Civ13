@@ -38,9 +38,9 @@
 			else
 				moneyin += M.amount*M.value
 			if (map.ID == MAP_KANDAHAR || istype(src, /obj/structure/vending/sales/pepelsibirsk))
-				user << "You give \the [W] to the [src]."
+				to_chat(user, "You give \the [W] to the [src].")
 			else
-				user << "You put \the [W] in the [src]."
+				to_chat(user, "You put \the [W] in the [src].")
 			qdel(W)
 			return
 		else
@@ -163,7 +163,7 @@
 						return TRUE
 		else if (choice1 == "Change Currency")
 			if (moneyin > 0)
-				usr << "<span class='warning'>You must empty the vendor of all funds before changing its accepted currency.</span>"
+				to_chat(usr, "<span class='warning'>You must empty the vendor of all funds before changing its accepted currency.</span>")
 				return FALSE
 			var/list/curr_list = list("Standard Coins")
 			var/list/curr_map = list("Standard Coins" = "standard")
@@ -175,7 +175,7 @@
 			if (curr_choice == "Cancel" || !curr_choice)
 				return FALSE
 			accepted_currency = curr_map[curr_choice]
-			usr << "<span class='notice'>This vendor now accepts [curr_choice].</span>"
+			to_chat(usr, "<span class='notice'>This vendor now accepts [curr_choice].</span>")
 			return TRUE
 
 

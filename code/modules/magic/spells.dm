@@ -13,7 +13,7 @@
 
 /datum/spell/zappus
 	name = "Zappus"
-	description = "A weak but reliable spark of magic. Good for annoying Nuggles and breaking pots."
+	description = "A weak but reliable spark of magic."
 	proj_type = /obj/item/projectile/magic/zappus
 	skill_level = 0
 	cast_time = 5
@@ -24,7 +24,7 @@
 
 /datum/spell/blockum
 	name = "Blockum"
-	description = "Creates a shimmering bubble of denial around the caster. Simply say 'Nuh-Uh!' to danger."
+	description = "Creates a bubble of magic denial around the caster."
 	proj_type = /obj/item/projectile/magic/blockum
 	skill_level = 10
 	cast_time = 2
@@ -45,7 +45,7 @@
 
 /datum/spell/dropus
 	name = "Dropus"
-	description = "The signature spell of Barry Hatter. Politely asks the target to drop whatever they are holding."
+	description = "Makes the target to drop whatever they are holding."
 	proj_type = /obj/item/projectile/magic/dropus
 	skill_level = 15
 	cast_time = 10
@@ -56,7 +56,7 @@
 
 /datum/spell/stinkaeum
 	name = "Stinkaeum"
-	description = "A subtle but sinister override of the target's will, making them urinate and defecate."
+	description = "Makes the target urinate and defecate."
 	proj_type = /obj/item/projectile/magic/stinkaeum
 	skill_level = 20
 	cast_time = 10
@@ -69,7 +69,7 @@
 
 /datum/spell/pushum
 	name = "Pushum"
-	description = "A rude, invisible shove. Excellent for tavern brawls and pushing prefects down the stairs."
+	description = "Pushes the target away."
 	proj_type = /obj/item/projectile/magic/pushum
 	skill_level = 25
 	cast_time = 12
@@ -80,7 +80,7 @@
 
 /datum/spell/pullus
 	name = "Pullus"
-	description = "Lazily drags a person, or that sandwich across the room, right to your feet."
+	description = "Pulls the target towards the caster."
 	proj_type = /obj/item/projectile/magic/pullus
 	skill_level = 30
 	cast_time = 15
@@ -91,7 +91,7 @@
 
 /datum/spell/wallus
 	name = "Wallus"
-	description = "Summons a sturdy wooden barricade at the target location."
+	description = "Summons a sturdy barricade at the target location."
 	proj_type = null
 	skill_level = 35
 	cast_time = 20
@@ -102,7 +102,7 @@
 
 /datum/spell/floatus
 	name = "Floatus"
-	description = "Removes the burden of gravity. Watch them slide away into the sunset."
+	description = "Makes the target float around for a short period."
 	proj_type = /obj/item/projectile/magic/floatus
 	skill_level = 40
 	cast_time = 20
@@ -115,7 +115,7 @@
 
 /datum/spell/freezeum
 	name = "Freezeum"
-	description = "Encases the target in a block of suspiciously unmelting ice."
+	description = "Freezes the target in a block of ice."
 	skill_level = 50
 	cast_time = 25
 	learnable = TRUE
@@ -126,7 +126,7 @@
 
 /datum/spell/blinkae
 	name = "Blinkae"
-	description = "Teleports the caster to a nearby clicked location."
+	description = "Teleports the caster to a nearby location."
 	skill_level = 55
 	cast_time = 20
 	learnable = TRUE
@@ -137,7 +137,7 @@
 
 /datum/spell/burnus
 	name = "Burnus"
-	description = "A reckless burst of flame. Do not use near the Shrieking Shrub or in the library."
+	description = "Sets the target on fire."
 	skill_level = 55
 	cast_time = 20
 	learnable = TRUE
@@ -148,7 +148,7 @@
 
 /datum/spell/barrelus
 	name = "Barrelus"
-	description = "The ultimate prank. Turns the target into a wooden barrel. Handle with care."
+	description = "Creates a wooden barrel and shoves the target inside it."
 	proj_type = /obj/item/projectile/magic/barrelus
 	skill_level = 65
 	cast_time = 35
@@ -181,7 +181,7 @@
 
 /datum/spell/explodus
 	name = "Explodus"
-	description = "A highly illegal compression of explosive magical force. The janitors hate this one."
+	description = "Creates an explosion at the target location, damaging everything in the area."
 	proj_type = /obj/item/projectile/magic/explodus
 	skill_level = 80
 	cast_time = 45
@@ -194,7 +194,7 @@
 
 /datum/spell/painum
 	name = "Painum"
-	description = "A forbidden curse that causes unimaginable agony. Usually results in expulsion and/or jail time."
+	description = "A forbidden curse that causes unimaginable agony."
 	proj_type = /obj/item/projectile/magic/painum
 	skill_level = 85
 	cast_time = 50
@@ -205,7 +205,7 @@
 
 /datum/spell/deadum
 	name = "Deadum"
-	description = "The ultimate forbidden spell. A blinding green light that simply deletes life."
+	description = "The ultimate forbidden spell. Gibs the target into a bloody mess."
 	proj_type = /obj/item/projectile/magic/deadum
 	skill_level = 100
 	cast_time = 80

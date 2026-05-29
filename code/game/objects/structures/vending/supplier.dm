@@ -97,14 +97,14 @@
 						ordertype = /obj/item/stack/money
 						ordername = "standard coins"
 						orderfiat_id = null
-					user << "<span class='notice'>Buy order created: buying [orderamount] [ordername] at [orderprice] [price_unit_label] each.</span>"
+					to_chat(user, "<span class='notice'>Buy order created: buying [orderamount] [ordername] at [orderprice] [price_unit_label] each.</span>")
 					return
 
 			if (accepted_currency == "standard" && istype(W, /obj/item/stack/money/fiat))
 				var/obj/item/stack/money/fiat/FI = W
 				user.drop_from_inventory(FI)
 				FI.forceMove(src)
-				user << "<span class='notice'>You store the [FI] in the stall's inventory.</span>"
+				to_chat(user, "<span class='notice'>You store the [FI] in the stall's inventory.</span>")
 				return
 			else if (accepted_currency != "standard" && istype(W, /obj/item/stack/money/fiat))
 				var/obj/item/stack/money/fiat/FI = W
@@ -153,7 +153,7 @@
 			if (istype(W, /obj/item/stack/money/fiat))
 				var/obj/item/stack/money/fiat/WF = W
 				if (WF.fiat_id != orderfiat_id)
-					user << "<span class='warning'>The [src] is buying [ordername], not [WF.name].</span>"
+					to_chat(user, "<span class='warning'>The [src] is buying [ordername], not [WF.name].</span>")
 					return
 			if (istype(W, /obj/item/stack))
 				if (orderamount < 1)
@@ -164,9 +164,9 @@
 				var/limit_qty = min(orderamount, max_affordable)
 				if (limit_qty < 1)
 					if (moneyin < orderprice)
-						user << "<span class='warning'>The [src] has no money left to buy from you!</span>"
+						to_chat(user, "<span class='warning'>The [src] has no money left to buy from you!</span>")
 					else
-						user << "<span class='warning'>The [src] is not currently buying.</span>"
+						to_chat(user, "<span class='warning'>The [src] is not currently buying.</span>")
 					return
 
 				var/buy_qty = min(WS.amount, limit_qty)
@@ -252,7 +252,7 @@
 				return TRUE
 		else if (choice == "Change Accepted Currency")
 			if (moneyin > 0)
-				H << "<span class='warning'>You must remove all money from the stall before changing the accepted currency!</span>"
+				to_chat(H,"<span class='warning'>You must remove all money from the stall before changing the accepted currency!</span>")
 				return
 			var/list/currency_options = list("Standard Coins")
 			for(var/fid in fiat.currency_list)
