@@ -359,6 +359,15 @@
 /area/caribbean/desert/buildings{
 	name = "Buildings"
 	})
+"ev" = (
+/obj/structure/closet/crate{
+	color = "#bcc625"
+	},
+/obj/item/stack/money/rubles{
+	amount = 1500
+	},
+/turf/floor/beach/sand/desert,
+/area/caribbean/nomads/desert)
 "ez" = (
 /obj/covers/wood/alt,
 /obj/structure/closet/crate/pepelsibirsk/ppsh,
@@ -573,9 +582,11 @@
 /turf/floor/beach/sand/dark,
 /area/caribbean/nomads/desert)
 "gJ" = (
-/obj/structure/closet/crate/empty,
 /obj/item/stack/money/rubles{
 	amount = 1500
+	},
+/obj/structure/closet/crate{
+	color = "#bcc625"
 	},
 /turf/floor/beach/sand/desert,
 /area/caribbean/british/land/inside/objective)
@@ -1488,9 +1499,11 @@
 /turf/floor/beach/sand/desert,
 /area/caribbean/british/land/inside/objective)
 "sn" = (
-/obj/structure/closet/crate/empty,
 /obj/item/stack/money/rubles{
 	amount = 1500
+	},
+/obj/structure/closet/crate{
+	color = "#bcc625"
 	},
 /turf/floor/beach/sand,
 /area/caribbean/tribes/caves)
@@ -2613,6 +2626,7 @@
 	pixel_x = 3
 	},
 /obj/structure/table/rack/shelf/wooden,
+/obj/item/weapon/flame/lighter/random,
 /turf/floor/beach/sand/desert,
 /area/caribbean/nomads/desert)
 "EV" = (
@@ -2702,6 +2716,15 @@
 	dir = 8
 	},
 /turf/floor/beach/sand/dark,
+/area/caribbean/nomads/desert)
+"Gu" = (
+/obj/structure/closet/crate{
+	color = "#bcc625"
+	},
+/obj/item/stack/money/rubles{
+	amount = 1500
+	},
+/turf/floor/dirt/dust,
 /area/caribbean/nomads/desert)
 "Gw" = (
 /obj/effect/floor_decal/desert_edge{
@@ -3185,9 +3208,11 @@
 	},
 /area/caribbean/nomads/desert)
 "LZ" = (
-/obj/structure/closet/crate/empty,
 /obj/item/stack/money/rubles{
 	amount = 1500
+	},
+/obj/structure/closet/crate{
+	color = "#bcc625"
 	},
 /turf/floor/beach/sand/dark,
 /area/caribbean/nomads/desert)
@@ -4054,9 +4079,11 @@
 /turf/floor/dirt/dust,
 /area/caribbean/nomads/desert)
 "VH" = (
-/obj/structure/closet/crate/empty,
 /obj/item/stack/money/rubles{
 	amount = 1500
+	},
+/obj/structure/closet/crate{
+	color = "#bcc625"
 	},
 /turf/floor/beach/sand/dark,
 /area/caribbean/tribes/caves)
@@ -13210,7 +13237,7 @@ Tu
 BO
 BO
 Tu
-Ni
+Gu
 Ni
 Ni
 Ni
@@ -19990,7 +20017,7 @@ GQ
 GQ
 GQ
 pR
-GQ
+ev
 DP
 GQ
 GQ

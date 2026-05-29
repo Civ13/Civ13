@@ -19,7 +19,7 @@
 /////////////////////////////////
 
 ///CAFR military crate costs ///
-#define GUNPOWDERCOST_CAFR 22.5 // Level 1/10 gunpowder factory in Tajikistan
+#define GUNPOWDERCOST_CAFR 25
 #define SUICIDEVESTCOST_CAFR 400
 #define SKSCOST_CAFR 500
 #define AKMCOST_CAFR 1000
@@ -31,18 +31,18 @@
 #define PKMCOST_CAFR 300
 #define WW2SURPLUSUNIFORMCOST_CAFR 200
 #define AFGHANKACOST_CAFR 250
-#define RGD5COST_CAFR 720 // Level 1/10 RGD-5 grenade factory in Tajikistan
+#define RGD5COST_CAFR 800
 #define AKAMMOCOST_CAFR 100
 #define MOSINAMMOCOST_CAFR 100
 #define MAKAROVAMMOCOST_CAFR 50
 #define SIXB1COST_CAFR 300
 #define SIXB2COST_CAFR 1000
 #define PUCOST_CAFR 500
-#define PSO1COST_CAFR 720 // Level 1/10 PSO-1 factory in Kyrgyzstan
+#define PSO1COST_CAFR 800
 #define ARTILLERYCOST_CAFR 1500
 #define SHELLCOST_CAFR 1000
 #define MORTARCOST_CAFR 1200
-#define MSHELLCOST_CAFR 720 // Level 1/10 mortar shell factory in Kyrgyzstan
+#define MSHELLCOST_CAFR 800
 #define KAMAZCOST_CAFR 1500
 #define BMD2COST_CAFR 5000
 #define T55COST_CAFR 8000
@@ -73,7 +73,7 @@
 #define GUNPOWDERCOST_TSFSR 25
 #define SUICIDEVESTCOST_TSFSR 400
 #define SKSCOST_TSFSR 500
-#define AKMCOST_TSFSR 900 // Level 1/10 AKM factory in Uzbekistan
+#define AKMCOST_TSFSR 1000
 #define AK74COST_TSFSR 1200
 #define SVDCOST_TSFSR 1000
 #define MOSINCOST_TSFSR 500
@@ -87,7 +87,7 @@
 #define MOSINAMMOCOST_TSFSR 100
 #define MAKAROVAMMOCOST_TSFSR 50
 #define SIXB1COST_TSFSR 300
-#define SIXB2COST_TSFSR 900 // Level 1/10 6B2 factory in Kazakhstan
+#define SIXB2COST_TSFSR 1000
 #define PUCOST_TSFSR 500
 #define PSO1COST_TSFSR 800
 #define ARTILLERYCOST_TSFSR 1500
@@ -97,7 +97,7 @@
 #define KAMAZCOST_TSFSR 1500
 #define BMD2COST_TSFSR 5000
 #define T55COST_TSFSR 8000
-#define T72COST_TSFSR 9000 // Level 1/10 T-72 factory in Kazakhstan
+#define T72COST_TSFSR 10000
 /////////////////////////////////
 
 /obj/structure/pepelsibirsk_radio/supply_radio/no_scam/campaign
@@ -467,19 +467,7 @@
 					continue
 		if (job)
 			var/active = processes.job_data.get_active_positions(job)
-			var/extra_span = "<b>"
-			var/end_extra_span = "</b>"
-			if (job.is_squad_leader)
-				extra_span = "<br><b><font size=2>"
-				end_extra_span = "</font></b>"
-			else if (job.is_commander)
-				extra_span = "<br><font size=3>"
-				end_extra_span = "</font>"
-			else if ((job.is_medic && !findtext(job.title, "Corpsman")) || !findtext(job.title, "Squad"))
-				extra_span = "<br>"
-				end_extra_span = ""
-
-			dat += "[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] (Active: [active])</a>[end_extra_span]"
+			dat += "<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] (Active: [active])</a><br>"
 			++available_jobs_per_side[job.base_type_flag()]
 
 	dat += "</center>"

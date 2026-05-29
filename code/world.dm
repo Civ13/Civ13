@@ -17,6 +17,8 @@ var/global/list/whitelist_list = list()
 var/global/list/faction_list_blue = list()
 var/global/list/faction_list_red = list()
 var/global/list/faction_list_organizer = list()
+var/global/disable_campaign_whitelist = FALSE
+var/global/list/player_faction_list = list()
 var/global/list/craftlist_lists = list("global" = list())
 var/global/list/dictionary_list = list()
 
