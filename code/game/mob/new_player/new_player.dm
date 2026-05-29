@@ -470,12 +470,24 @@ var/global/redirect_all_players = null
 				temp_ckey = replacetext(temp_ckey,"_", "")
 				if (temp_ckey == client.ckey)
 					factjob = "organizer"
-
 		if (factjob)
 			if (map.ID == MAP_CAMPAIGN)
 				LateChoicesCampaign(factjob)
 			if (map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
 				LateChoicesCampaignNew(factjob)
+		else if (disable_campaign_whitelist != FALSE)
+			for (var/list/i in global.player_faction_list)
+				if (i[1] == client.ckey)
+					factjob = i[2]
+					break
+			if (factjob)
+				if (map.ID == MAP_CAMPAIGN)
+					LateChoicesCampaign(factjob)
+				if (map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+					LateChoicesCampaignNew(factjob)
+			else
+				factjob = WWinput(src, "This round is part of a campaign, but the whitelist has been disabled. Which faction do you want to join?", "Faction Choice", "blue", list("blue", "red"))
+				global.player_faction_list += list(list(client.ckey, factjob))
 		else
 			if (config.discordurl)
 				WWalert(src, "This round is part of an event. You need to be part of one of the two factions to participate. Visit the discord for more information: [config.discordurl]")
