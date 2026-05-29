@@ -920,7 +920,7 @@ var/global/list/global_colour_matrix = null
 		return
 	else
 		disable_campaign_whitelist = new_state
-		to_chat(world, "<font size=3>Campaign faction whitelist has been <b>[new_state ? "disabled" : "enabled"]</b>. Anyone can now [new_state ? "join as any job." : "only join as whitelisted factions."]</font>")
+		to_chat(world, "<font size=3>Campaign faction whitelist has been <b>[new_state ? "disabled" : "enabled"]</b>. Anyone can now [new_state ? "pick their campaign faction." : "only join as whitelisted factions."]</font>")
 
 
 /client/proc/enable_fov()
