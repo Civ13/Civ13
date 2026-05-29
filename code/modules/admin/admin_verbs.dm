@@ -916,7 +916,7 @@ var/global/list/global_colour_matrix = null
 
 	var/new_state = !disable_campaign_whitelist
 	var/conf_1 = input("Are you sure you want to [new_state ? "enable" : "disable"] unrestricted campaign joining?") in list ("Yes", "No")
-	if (conf_1 == "No")
+	if (conf_1 != "Yes")
 		return
 	else
 		disable_campaign_whitelist = new_state
