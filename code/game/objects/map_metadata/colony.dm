@@ -6,7 +6,7 @@
 	lobby_icon = "icons/lobby/imperial.png"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 7200 // 12 minutes!
+	respawn_delay = 3000 // 5 minutes!
 	has_hunger = TRUE
 
 	faction_organization = list(
@@ -22,7 +22,7 @@
 		)
 	age = "1713"
 	ordinal_age = 3
-	faction_distribution_coeffs = list(INDIANS = 0.4, CIVILIAN = 0.4, PIRATE = 0.1, SPANISH = 0.1)
+	faction_distribution_coeffs = list(INDIANS = 0.5, CIVILIAN = 0.5,)
 	battle_name = "new colony"
 	mission_start_message = "<big>Europeans</b> have reached the shore! The <b>Colonists</b> must build their villages. The gracewall will be up after 25 minutes.</big><br><span class = 'notice'><i>THIS IS A RP MAP - NATIVES AND COLONISTS ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event
 	ambience = list("sound/ambience/jungle1.ogg")
@@ -33,12 +33,32 @@
 	gamemode = "Colony Building RP"
 	is_RP = TRUE
 	grace_wall_timer = 15000
+	var/first_event_done = FALSE
+	var/do_first_event = 12000//20 mins
+
 /obj/map_metadata/colony/New()
 	..()
 	spawn(18000)
 		seasons()
 
+/obj/map_metadata/colony/faction2_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
+
+/obj/map_metadata/colony/faction1_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
+
 /obj/map_metadata/colony/cross_message(faction)
 	return ""
 
 
+/obj/map_metadata/colony/check_events()
+	if ((world.time >= do_first_event) && !first_event_done)
+		world << "<big>The ship will depart in <b>5</b> minutes! Finish unloading it and get ashore!</big>"
+		first_event_done = TRUE
+		spawn(3000)
+			for (var/obj/effect/area_teleporter/AT)
+				if (AT.id == "one")
+					AT.Activated()
+					world << "<big>The ship is departing!</big>"
+					return TRUE
+	else return FALSE
