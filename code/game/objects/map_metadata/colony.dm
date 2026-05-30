@@ -60,5 +60,4 @@
 				if (AT.id == "one")
 					AT.Activated()
 					world << "<big>The ship is departing!</big>"
-					return TRUE
 	else return FALSE
