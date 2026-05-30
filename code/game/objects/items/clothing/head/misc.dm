@@ -136,3 +136,11 @@
 	worn_state = "dunce_cap"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHAIR
+
+/obj/item/clothing/head/dunce_cap/attack_hand(mob/M)
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
+		if (H.head == src)
+			to_chat(H, "You try and fail to remove your Dunce cap.")
+			return
+	..()

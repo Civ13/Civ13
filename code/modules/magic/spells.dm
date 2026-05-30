@@ -15,7 +15,7 @@
 	name = "Zappus"
 	description = "A weak but reliable spark of magic."
 	proj_type = /obj/item/projectile/magic/zappus
-	skill_level = 0
+	skill_level = 1
 	cast_time = 5
 	learnable = TRUE
 	juice_cost = 5
@@ -36,7 +36,7 @@
 /datum/spell/lightus
 	name = "Lightus"
 	description = "Emits a temporary magical light from the caster."
-	skill_level = 10
+	skill_level = 5
 	cast_time = 5
 	learnable = TRUE
 	juice_cost = 15

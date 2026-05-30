@@ -13,7 +13,7 @@
 	age = "2013"
 
 	faction_distribution_coeffs = list(CIVILIAN = 1)
-	battle_name = "duel of the wizards"
+	battle_name = "Llanboarwart Academy of Magical Education"
 	mission_start_message = "<font size=6 class='wizard'>Welcome to <b>LAME</b>, the <b>Llanboarwart Academy of Magical Education</b>! Get sorted into a house and duel your fellow wizards!</font>"
 	mission_start_message = ""
 	ambience = list("sound/ambience/desert.ogg")
@@ -26,7 +26,7 @@
 	default_research = 230
 	research_active = FALSE
 	gamemode_vote = FALSE
-	var/list/house_info = list()
+	var/list/list/house_info = list()
 
 	New()
 		..()
@@ -40,26 +40,122 @@
 /obj/map_metadata/wizard_boy/proc/load_houses()
 	if (fexists("SQL/houses.txt"))
 		house_info = list()
-		//load a txt file from config/houses.txt, format is ckey;housename
+		//load a txt file from config/houses.txt, format is ckey;housename;level
 		var/list/houses = file2list("SQL/houses.txt")
 		for(var/i = 1, i <= length(houses), i++)
 			var/list/parts = splittext(houses[i], ";")
-			if(length(parts) != 2)
+			if(length(parts) != 3)
 				continue
 			var/ckey = parts[1]
 			var/housename = parts[2]
-			house_info[ckey] = housename
+			var/levels = parts[3]
+			house_info[ckey] = list(housename,levels)
+
+/obj/map_metadata/wizard_boy/proc/save_houses()
+	if (fexists("SQL/houses.txt"))
+		if (fexists("SQL/houses_backup.txt"))
+			fdel("SQL/houses_backup.txt")
+		fcopy("SQL/houses.txt", "SQL/houses_backup.txt")
+		fdel("SQL/houses.txt")
+
+	for (var/ckey in house_info)
+		var/list/data = house_info[ckey]
+		if (islist(data) && data.len >= 2)
+			text2file("[ckey];[data[1]];[data[2]]", "SQL/houses.txt")
+
+/obj/map_metadata/wizard_boy/proc/change_level(ckey, new_level = "1")
+	if(!house_info[ckey])
+		load_houses()
+		if(!house_info[ckey])
+			return FALSE
+	if (islist(house_info[ckey]) && house_info[ckey].len >= 2)
+		house_info[ckey][2] = new_level
+		save_houses()
+		return TRUE
+	return FALSE
+
 /obj/map_metadata/wizard_boy/proc/check_house(ckey)
 	if(!house_info[ckey])
 		load_houses()
 		if(!house_info[ckey])
 			return "Unknown"
-	return house_info[ckey]
+	if (islist(house_info[ckey]) && house_info[ckey].len >= 1)
+		return house_info[ckey][1]
+	return "Unknown"
+
+/obj/map_metadata/wizard_boy/proc/check_level(ckey)
+	if(!house_info[ckey])
+		load_houses()
+		if(!house_info[ckey])
+			return "1" //return U.N.G.A. level by default
+	if (islist(house_info[ckey]) && house_info[ckey].len >= 2)
+		return house_info[ckey][2]
+	return "1" //return U.N.G.A. level by default
+
+/obj/map_metadata/wizard_boy/proc/remove_from_house(ckey)
+	if(!house_info[ckey])
+		load_houses()
+		if(!house_info[ckey])
+			return FALSE
+	delete house_info[ckey]
+	save_houses()
+	return TRUE
+
+/obj/map_metadata/wizard_boy/proc/change_house(ckey, new_house)
+	if(!house_info[ckey])
+		load_houses()
+		if(!house_info[ckey])
+			return FALSE
+	if (islist(house_info[ckey]) && house_info[ckey].len >= 2)
+		house_info[ckey][1] = new_house
+		save_houses()
+		return TRUE
+	return FALSE
+
+/obj/map_metadata/wizard_boy/proc/level_to_text(level)
+	switch(level)
+		if ("0")
+			return "I.D.I.O.T."
+		if("1")
+			return "U.N.G.A."
+		if("2")
+			return "C.O.A.L."
+		if("3")
+			return "G.E.M."
+		if("4")
+			return "B.A.S.E.D."
+		if("5")
+			return "C.H.A.D."
+		if ("R")
+			return "L.O.S.E.R."
+		if ("T")
+			return "Professor of Magical Arts"
+	return "Unknown"
+
+/obj/map_metadata/wizard_boy/proc/level_to_formatted_text(level)
+	switch(level)
+		if ("0")
+			return "<b>I.D.I.O.T. - <span style='color:#b1b1b1'><i>Inept & Deficient Individual's Ordinary Test</i></span> (qualification level 0)"
+		if ("1")
+			return "<b>U.N.G.A. - <span style='color:#818181'><i>Underperforming Numpty General Assessment</i></span> (qualification level 1)"
+		if ("2")
+			return "<b>C.O.A.L. - <span style='color:#5c5c5c'><i>Community Ordinary Amateur License</i></span> (qualification level 2)"
+		if ("3")
+			return "<b>G.E.M. - <span style='color:#ff966c'><i>Gravity & Elemental Manipulation</i></span> (qualification level 3)"
+		if ("4")
+			return "<b>B.A.S.E.D. - <span style='color: #5c5c5c'><i>Boarwart Advanced Sorcery & Experimental Deeds</i></span> (qualification level 4)"
+		if ("5")
+			return "<b>C.H.A.D. - <span style='color:#EFBF04'><i>Classified High-level Arcane Destruction</i></span> (qualification level 5)"
+		if ("R")
+			return "<b>L.O.S.E.R.</b> - <span style='color:#FF8DA1'><i>Llanboarwart Outcast & Sub-standard Educational Reject</i></span>"
+		if ("T")
+			return "<b><i>Professor of Magical Arts</i></b>"
+	return "Unknown"
 
 /obj/map_metadata/wizard_boy/proc/add_to_house(ckey, house)
 	//sanitise first
 	if (house == "Rubywyrm" || house == "Mintysnek" || house == "Slatepie" || house == "Mustardweasel")
-		var/txtexport = ckey + ";" + house
+		var/txtexport = ckey + ";" + house + ";" + "1"
 
 		//save to houses.txt
 		if (fexists("SQL/houses.txt"))
@@ -67,7 +163,7 @@
 		else
 			var/F = file("SQL/houses.txt")
 			text2file(txtexport, F)
-		house_info[ckey] = house
+		house_info[ckey] = list(house, "1")
 
 var/wizard_style = {"
 <style>
