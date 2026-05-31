@@ -120,7 +120,7 @@
 /mob/proc/on_hear_say(var/message, var/mob/speaker = null, var/message2 = "")
 	to_chat(src, message)
 	if (speaker && message2 != "")
-		if (client && speaker.client && ((speaker in view(7,src)) || speaker == src))
+		if (client && ((speaker in view(7,src)) || speaker == src))
 			show_chat_overlay(speaker, message2)
 
 			if (config.tts_on && ishuman(src) && client.is_preference_enabled(/datum/client_preference/play_chat_tts))

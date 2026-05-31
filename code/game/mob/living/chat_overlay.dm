@@ -40,12 +40,12 @@
 /obj/chat_text/New(var/mob/origin_loc, var/desired_text, var/mob/target_mob)
 	..()
 	loc = null
-	if(isliving(origin_loc) && origin_loc.client && target_mob && target_mob.client)
+	if(isliving(origin_loc) && target_mob && target_mob.client)
 		owner = origin_loc.client
 		target = target_mob.client
 
 		for (var/image/CT in target.images)
-			if(CT.plane == CHAT_PLANE && CT.owner == owner)
+			if(CT.plane == CHAT_PLANE && (CT.loc == origin_loc || (owner && CT.owner == owner)))
 				animate(CT,pixel_y = CT.pixel_y + 11,time = 1)
 
 		message = image(loc = origin_loc)
@@ -78,7 +78,7 @@
 	return FALSE
 
 /mob/proc/show_chat_overlay(var/mob/speaker, var/text, var/color = null)
-	if (!client || !speaker || !speaker.client || !text)
+	if (!client || !speaker || !text)
 		return
 	if (!client.is_preference_enabled(/datum/client_preference/show_chat_overlays))
 		return

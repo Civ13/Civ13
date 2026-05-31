@@ -223,6 +223,13 @@
 	retaliation_cooldown = world.time + 100
 	spawn(20) // brief dramatic pause before the bolt fires
 		if (src && user && !user.stat)
+			for (var/mob/M in player_list)
+				if (M.client && (M in view(7, src)))
+					M.show_chat_overlay(src, "<i>Floatus!</i>", "#dea30d")
+			playsound(src.loc, 'sound/effects/spells/floatus.ogg', 75, FALSE)
+			visible_message("<span style=color:'#dea30d'><b>Headmaster Tumbledoor</b> uses <i>Floatus!</i></span>")
+			spawn(5)
+				playsound(src.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
 			var/obj/item/projectile/magic/floatus/bolt = new(src.loc)
 			bolt.firer = src
 			bolt.firer_original_dir = src.dir
@@ -291,12 +298,27 @@
 		return
 	var/chosen_spell_type = pick(moldy_spells)
 	var/spell_name = moldy_spell_names[chosen_spell_type]
-	src.say(spell_name)
-	playsound(src.loc, pick(
-		'sound/effects/spells/floatus.ogg',
-		'sound/effects/spells/burnus.ogg',
-		'sound/effects/spells/painum.ogg'), 70, TRUE)
-	visible_message(SPAN_DANGER("<b>[src]</b> raises a gnarled wand at [target]!"))
+	
+	for (var/mob/M in player_list)
+		if (M.client && (M in view(7, src)))
+			M.show_chat_overlay(src, "<i>[spell_name]</i>", "#dea30d")
+	
+	var/sound_file = null
+	switch(spell_name)
+		if("Floatus!")
+			sound_file = 'sound/effects/spells/floatus.ogg'
+		if("Burnus!")
+			sound_file = 'sound/effects/spells/burnus.ogg'
+		if("Painum!")
+			sound_file = 'sound/effects/spells/painum.ogg'
+	if(sound_file)
+		playsound(src.loc, sound_file, 75, FALSE)
+
+	visible_message("<span style=color:'#dea30d'><b>[src]</b> uses <i>[spell_name]</i></span>")
+	
+	spawn(5)
+		playsound(src.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
+
 	var/obj/item/projectile/magic/bolt = new chosen_spell_type(src.loc)
 	bolt.firer = src
 	bolt.firer_original_dir = src.dir
@@ -412,9 +434,19 @@
 /mob/living/simple_animal/hostile/moldywart/proc/fire_spell(spell_type, spell_call, sound_file, mob/living/target)
 	if (!target || target.stat || !src || src.stat)
 		return
-	src.say(spell_call)
-	playsound(src.loc, sound_file, 90, TRUE)
-	visible_message(SPAN_DANGER("<b>Lord Moldywart</b> levels his staff at [target] with cold fury!"))
+	
+	for (var/mob/M in player_list)
+		if (M.client && (M in view(7, src)))
+			M.show_chat_overlay(src, "<i>[spell_call]</i>", "#dea30d")
+	
+	if(sound_file)
+		playsound(src.loc, sound_file, 90, TRUE)
+
+	visible_message("<span style=color:'#dea30d'><b>Lord Moldywart</b> uses <i>[spell_call]</i></span>")
+
+	spawn(5)
+		playsound(src.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
+
 	var/obj/item/projectile/magic/bolt = new spell_type(src.loc)
 	bolt.firer = src
 	bolt.firer_original_dir = src.dir
