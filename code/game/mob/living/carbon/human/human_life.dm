@@ -1629,7 +1629,8 @@
 								holder2.icon_state = "civ3"
 							if("Mustardweasel")
 								holder2.icon_state = "civ4"
-
+						if(nationality == "T") // teacher/professor
+							holder2.icon_state = "wizard_teacher"
 					else if (map.ID == MAP_GULAG13)
 						if(nationality == "Polish")
 							holder2.icon_state = "pol_basic"
@@ -1667,6 +1668,22 @@
 				if (TSFSR)
 					holder2.icon_state = "sov_basic"
 			holder2.overlays.Cut()
+			if (map.ID == MAP_WIZARD_BOY && faction_text == CIVILIAN)
+				switch(nationality)
+					if("R") // loser
+						holder2.overlays += icon(holder2.icon,"wizard_loser")
+					if("0") // idiot
+						holder2.overlays += icon(holder2.icon,"wizard_idiot")
+					if("1") // unga
+						holder2.overlays += icon(holder2.icon,"wizard_unga")
+					if("2") // coal
+						holder2.overlays += icon(holder2.icon,"wizard_coal")
+					if("3") // slate
+						holder2.overlays += icon(holder2.icon,"wizard_gem")
+					if("4") // based
+						holder2.overlays += icon(holder2.icon,"wizard_based")
+					if("5") // chad
+						holder2.overlays += icon(holder2.icon,"wizard_chad")
 			if (faction_text == CIVILIAN && map.ID == MAP_GULAG13)
 				switch(original_job_title)
 					if ("Janitor")

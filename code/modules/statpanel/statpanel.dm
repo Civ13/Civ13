@@ -91,7 +91,7 @@
 		all_verbs += mob.verbs
 
 	var/list/admin_categories = list("Admin", "Debug", "Bans", "Special", "Fun")
-	var/list/server_categories = list("Server","Nomads")
+	var/list/server_categories = list("Server","Nomads","Magic")
 	var/target_tab = lowertext(statpanel_tab)
 
 	for (var/v in all_verbs)

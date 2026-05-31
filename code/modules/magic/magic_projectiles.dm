@@ -14,6 +14,14 @@
 	light_range = 3
 	tracer_type = /obj/effect/projectile/tracer/magic/yellow
 	impact_type = /obj/effect/projectile/impact/magic
+
+/obj/item/projectile/magic/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
+	if (blocked >= 2)		return FALSE//Full block
+	if (isliving(target))
+		var/mob/living/L = target
+		L.apply_effects(stun, weaken, paralyze, irradiate, stutter, eyeblur, drowsy, agony, poisonous, blocked)
+	return TRUE
+
 /obj/item/projectile/magic/spark
 	name = "spark"
 	icon_state = "spark"

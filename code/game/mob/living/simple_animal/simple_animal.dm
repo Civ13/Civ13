@@ -242,9 +242,12 @@
 						H.adaptStat("bows", 1)
 
 	if (!proj || proj.nodamage)
+		if (proj)
+			proj.on_hit(src, FALSE)
 		return FALSE
 
 	adjustBruteLoss(proj.damage)
+	proj.on_hit(src, FALSE)
 	return FALSE
 
 /mob/living/simple_animal/attack_hand(mob/living/human/M as mob)

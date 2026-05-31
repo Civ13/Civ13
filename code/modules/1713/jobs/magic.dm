@@ -33,6 +33,7 @@
 					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/yellow(H), slot_wear_suit)
 				else
 					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard(H), slot_wear_suit)
+			H.nationality = WB.house_info[H.ckey][2]
 			switch(WB.house_info[H.ckey][2])
 				if("R") // loser
 					H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/loser(H), slot_wear_id)
@@ -235,7 +236,7 @@
 /obj/item/weapon/magic_id/slate
 	name = "G.E.M. licence"
 	desc = "The 'Gravity & Elemental Manipulation'. Granted to those proven unlikely to accidentally collapse the school's slate roofs."
-	icon_state = "wizard_slate"
+	icon_state = "wizard_gem"
 	worn_state = "nationalist_party_pin"
 	item_state = "nationalist_party_pin"
 

@@ -71,8 +71,84 @@
 	if (islist(house_info[ckey]) && house_info[ckey].len >= 2)
 		house_info[ckey][2] = new_level
 		save_houses()
+		for (var/mob/living/human/H in player_list)
+			if (H.client && H.client.ckey == ckey)
+				H.nationality = new_level
+				switch(new_level)
+					if("R") // loser
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.wear_suit) qdel(H.wear_suit)
+						if(H.head) qdel(H.head)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/loser(H), slot_wear_id)
+						H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/pinkrobe(H), slot_wear_suit)
+						H.equip_to_slot_or_del(new /obj/item/clothing/head/dunce_cap(H), slot_head)
+						H.setStat("magic", 10)
+						H.refresh_spells()
+					if("0") // idiot
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.wear_suit) qdel(H.wear_suit)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/idiot(H), slot_wear_id)
+						H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/greyrobe(H), slot_wear_suit)
+						H.setStat("magic", 0)
+						H.refresh_spells()
+					if("1") // unga
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.head) qdel(H.head)
+						if(H.eyes) qdel(H.eyes)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/unga(H), slot_wear_id)
+						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
+						H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular/circle(H), slot_eyes)
+						H.setStat("magic", 10)
+						H.refresh_spells()
+					if("2") // coal
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.head) qdel(H.head)
+						if(H.eyes) qdel(H.eyes)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/coal(H), slot_wear_id)
+						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
+						H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular/circle(H), slot_eyes)
+						H.setStat("magic", 20)
+						H.refresh_spells()
+					if("3") // slate
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.head) qdel(H.head)
+						if(H.eyes) qdel(H.eyes)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/slate(H), slot_wear_id)
+						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
+						H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular/circle(H), slot_eyes)
+						H.setStat("magic", 40)
+						H.refresh_spells()
+					if("4") // based
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.head) qdel(H.head)
+						if(H.eyes) qdel(H.eyes)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/based(H), slot_wear_id)
+						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
+						H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
+						H.setStat("magic", 70)
+						H.refresh_spells()
+					if("5") // chad
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.head) qdel(H.head)
+						if(H.eyes) qdel(H.eyes)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/chad(H), slot_wear_id)
+						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
+						H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
+						H.setStat("magic", 100)
+						H.refresh_spells()
+					if("T") // teacher/professor
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.head) qdel(H.head)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id(H), slot_wear_id)
+						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
+						H.setStat("magic", 100)
+						H.refresh_spells()
 		return TRUE
 	return FALSE
+
+/mob/living/human/proc/refresh_spells()
+	hud_used.remove_wizard_hud(src)
+	hud_used.add_wizard_hud(src)
 
 /obj/map_metadata/wizard_boy/proc/check_house(ckey)
 	if(!house_info[ckey])
@@ -97,7 +173,7 @@
 		load_houses()
 		if(!house_info[ckey])
 			return FALSE
-	delete house_info[ckey]
+	house_info.Remove(ckey)
 	save_houses()
 	return TRUE
 

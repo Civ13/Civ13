@@ -31,7 +31,7 @@
 	var/list/flavour_text = list(
 	"They say the deep slate mines are strictly off-limits to all students because of mortal danger. Which is weird, because we serve detention down there literally every Tuesday.",
 	"I tried to prune the Shrieking Shrub yesterday for Madame Shrub's class. I haven't been able to hear out of my left ear since.",
-	"I accidentally cast Barrelus! on my roommate last week. Honestly? He makes a much better wooden barrel than he ever did a student.",
+	"I accidentally cast Barrelus on my roommate last week. Honestly? He makes a much better wooden barrel than he ever did a student.",
 	"The ghost that haunts the third-floor boys' lavatory won't stop complaining about the damp. We're in Wales! Everything is damp!",
 	"One does not simply walk into the Headmaster's office. Mainly because the stairs move randomly and usually dump you straight into a coal chute.",
 	"Everyone makes fun of Mustardweasel, but our common room is right next to the kitchens. Who's laughing at 2 AM when we have infinite cheese sandwiches?",
@@ -44,11 +44,29 @@
 	"Someone told me the Deadum! spell is unforgivable, but I saw Hagrag use it on a particularly large swamp rat just yesterday.",
 	"I bought a pet from Hagrag. He said it was a rare Welsh Fire-Hound, but I'm pretty sure it's just a badger glued to a lighter.",
 	"Don't drink more than three mugs of I-Can't-Believe-It's-Not-Butter-Beer. It doesn't actually have alcohol, it's just pure fermented corn syrup and green food dye.",
-	"I used to be a star Mop Ball player for Rubywyrm, until I fell off my O-Cedar Master-Sweep and took a Sliceum! spell to the kneecap.",
+	"I used to be a star Mop Ball player for Rubywyrm, until I fell off my O-Cedar Master-Sweep and took a Sliceum spell to the kneecap.",
 	"People are so afraid of He-Who-Must-Not-Be-Named-For-Legal-Reasons. Just call him by his name! It's Gary! Oh wait, no, it's Lord Moldywart.",
 	"I bought the 'Whippy Switch' wand because it looked cool, but it drained my Juice so fast I passed out face-first into my soup in the Great Hall.",
-	"I keep trying to hold my wand, but some Mintysnek jerk keeps casting Dropus! from a balcony and stealing my lunch money.",
-	"Harmonica Ranger corrected my pronunciation of Floatus! so harshly I actually felt my maximum health decrease from sheer embarrassment."
+	"I keep trying to hold my wand, but some Mintysnek jerk keeps casting Dropus from a balcony and stealing my lunch money.",
+	"Harmonica Ranger corrected my pronunciation of Floatus so harshly I actually felt my maximum health decrease from sheer embarrassment.",
+		"I asked Hagrag what kind of meat was in the Great Hall stew today. He just winked and told me not to count the stray dogs in the village.",
+	"I tried to use Fixae! on my broken glasses, but my wand is so cheap it just glued them permanently to my eyebrows.",
+	"Madame McGronk made the Rubywyrm team practice Mop Ball in a thunderstorm. Half of them got struck by lightning, and she just told them to 'walk it off'.",
+	"A Slatepie student tried to cast Blinkae! to skip the stairs, but he teleported directly into a brick wall. He's been in the hospital wing since Thursday.",
+	"Someone cast Stinkaeum during the morning assembly. Headmaster Tumbledoor just laughed and gave Mustardweasel twenty points.",
+	"I told my Nuggle parents that I was learning to manipulate the very fabric of reality. I didn't tell them I was using a stick I found in a parking lot.",
+	"I accidentally stepped on a Mintysnek's shoe, and they cast Barrelus on me. I spent three hours as a wooden cask before a janitor kicked me over.",
+	"Madame Shrub says the Shrieking Shrub is just 'misunderstood'. It literally tried to bite my face off when I watered it.",
+	"I swear Professor Flickum sleeps under his desk. I came in early for class and he was wrapped in an old rug, crying about his stolen wand.",
+	"If you mix I-Can't-Believe-It's-Not-Butter-Beer with a Choco-Toad, it creates a chemical reaction that can blow a hole in a stone wall. Don't ask how I know.",
+	"I tried to use Pullus to grab a sandwich from the kitchen, but I accidentally dragged a feral badger through three walls.",
+	"There's a rumor that Lord Moldywart lost his nose because he tried to cast Burnus while sneezing. Serves him right.",
+	"I'm saving up to buy a 'Stiff Log' wand. This 'Standard Twig' takes so much Juice I get winded just casting Lightus.",
+	"Never challenge a Rubywyrm to a duel. They won't even use their wands, they'll just tackle you into the mud and steal your lunch.",
+	"I saw Harmonica Ranger carrying a book so heavy it was bending the floorboards. Who even reads that much?",
+	"They say the dungeons are haunted by the ghost of a health and safety inspector who died of a heart attack the second he walked into the school.",
+	"I tried to cast Floatus to get my kite out of a tree, but I missed and hit a sheep. It's still drifting somewhere over Cardiff.",
+	"If one more person casts Wallus in the main corridor to block the lunch line, I am dropping out and becoming an accountant."
 )
 /mob/living/simple_animal/wizard/New()
 	..()

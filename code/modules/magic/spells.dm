@@ -71,7 +71,7 @@
 	name = "Pushum"
 	description = "Pushes the target away."
 	proj_type = /obj/item/projectile/magic/pushum
-	skill_level = 25
+	skill_level = 30
 	cast_time = 12
 	learnable = TRUE
 	juice_cost = 20

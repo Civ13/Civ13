@@ -354,7 +354,17 @@ var/list/admin_verbs_host = list(
 				/datum/admins/proc/persistent,
 				/datum/admins/proc/persistent_chad,
 			)
-
+		if(map && map.ID == MAP_WIZARD_BOY && (holder.rights & R_ADMIN))
+			verbs += list(
+				/datum/admins/proc/load_houses,
+				/datum/admins/proc/save_houses,
+				/datum/admins/proc/check_house,
+				/datum/admins/proc/add_to_house,
+				/datum/admins/proc/remove_from_house,
+				/datum/admins/proc/change_house,
+				/datum/admins/proc/check_level,
+				/datum/admins/proc/change_level,
+			)
 /client/proc/remove_admin_verbs()
 	verbs.Remove(
 		admin_verbs_default,

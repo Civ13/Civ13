@@ -127,7 +127,7 @@ h1.alert, h2.alert		{color: #ff0000;}
 .hugedanger				{color: #ff3737; font-weight: bold; font-size: 3.0em;}
 .warning				{color: #ff3737; font-style: italic;}
 .rose					{color: #ff5050;}
-.notice					{color: #5a6d8d;}
+.notice					{color: #89a2d8;}
 .ping					{color: #E1E1FF; font-weight: bold;}
 
 .reflex_shoot			{color: #000099; font-style: italic;}
