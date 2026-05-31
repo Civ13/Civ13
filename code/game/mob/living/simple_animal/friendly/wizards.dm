@@ -113,3 +113,347 @@
 /mob/living/simple_animal/wizard/mustardweasel
 	faction = "Mustardweasel"
 	name = "Mustardweasel student"
+
+// ============================================================
+// GOBLIN HEALER
+// ============================================================
+
+/mob/living/simple_animal/wizard/goblin_healer
+	name = "Goblin Healer"
+	desc = "A small, warty creature in a filthy apron that smells of mildew and strong herbs. It eyes you with a businesslike squint."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "goblin_healer" // placeholder
+	icon_living = "goblin_healer"
+	icon_dead = "goblin_healer_dead"
+	faction = "Unknown"
+	maxHealth = 80
+	health = 80
+	melee_damage_lower = 2
+	melee_damage_upper = 4
+	var/heal_cooldown = 0
+
+/mob/living/simple_animal/wizard/goblin_healer/New()
+	// Override the base wizard New() so we don't randomly recolour or use the flavour_text speak list.
+	clothing_colours = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "magic_boy_robe_decoration")
+	icon_living = icon_state
+	icon_dead = "goblin_healer_dead"
+	speak = list()
+	update_icons()
+
+/mob/living/simple_animal/wizard/goblin_healer/attack_hand(mob/user)
+	if (!ishuman(user))
+		return
+	var/mob/living/human/H = user
+	if (world.time < heal_cooldown)
+		src.say("Grak! Too soon, too soon! Come back when the poultice has set, yes?")
+		return
+	var/choice = alert(user, "\"Need healing, does yous?\" the goblin rasps, eyeing your wounds.", "Goblin Healer", "Yes please!", "No thanks.")
+	if (choice == "Yes please!")
+		if (H.health >= H.maxHealth)
+			src.say("You looks fine to Grub! No waste the good medicine on the healthy, yes?")
+			return
+		src.say("Grub fixes! Hold still, yes? Grub's poultice is very old, very strong!")
+		playsound(src.loc, 'sound/effects/spells/fixae.ogg', 60, FALSE)
+		H.adjustBruteLoss(-40)
+		H.adjustBurnLoss(-40)
+		H.adjustToxLoss(-20)
+		H.adjustOxyLoss(-20)
+		if (H.stunned)  H.stunned = 0
+		if (H.weakened) H.weakened = 0
+		to_chat(H, SPAN_NOTICE("The goblin slaps a foul-smelling poultice on you and mutters a chant. You feel considerably less dead."))
+		heal_cooldown = world.time + 1200 // 2 min cooldown
+	else
+		src.say("Hmph! Grub's time is precious, yes? Go away then!")
+
+// ============================================================
+// HEADMASTER TUMBLEDOOR
+// ============================================================
+
+/mob/living/simple_animal/wizard/tumbledoor
+	name = "Headmaster Tumbledoor"
+	desc = "An ancient wizard with a magnificent silver beard, half-moon spectacles, and the unsettling air of someone who already knows what you are about to say."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "tumbledoor"
+	icon_living = "tumbledoor"
+	icon_dead = "tumbledoor_dead"
+	faction = "Unknown"
+	maxHealth = 300
+	health = 300
+	melee_damage_lower = 1
+	melee_damage_upper = 2
+	var/retaliation_cooldown = 0
+
+	var/list/tumbledoor_lines = list(
+		"It is our choices that show what we truly are, far more than our abilities. Unless, of course, we choose to turn our roommate into a badger. That is mostly just ability.",
+		"I have found that it is the small everyday deed of ordinary folk that keeps the darkness at bay. That, and a good stock of I-Can't-Believe-It's-Not-Butter-Beer.",
+		"To the well-organised mind, death is but the next great adventure. Though I confess I have been putting it off. The paperwork alone is ghastly.",
+		"Nitwit! Blubber! Oddment! Tweak! These were the Houses' mascots before the Fedora complained. We're working on something more dignified.",
+		"Words are, in my not so humble opinion, our most inexhaustible source of magic. Especially the word 'Floatus'. Floatus has got a wonderful ring to it.",
+		"Happiness can be found even in the darkest of times, if one only remembers to turn on the light. We have a cantrip for that. It costs forty Juice.",
+		"I sometimes think we Sort too soon. A Slatepie student once borrowed three quills from a Rubywyrm and returned them sharpened. I cried, frankly.",
+		"One must never be afraid to sit down and discuss a plate of biscuits. Most of this school's problems could be solved by a decent biscuit.",
+		"I am not entirely certain the Placing Fedora is sentient. I am, however, entirely certain that it has opinions, and that they are mostly wrong.",
+		"Do not pity the dead, nor those who live without love. Pity the student who cast Barrelus in the great hall during the Autumn Feast. The stew went everywhere.",
+		"It matters not what someone is born, but what they grow to be. In Mr. Badfaith's case, we are still waiting on the verdict.",
+		"Age is foolish and forgetful when it underestimates youth. I, however, have never underestimated youth. I have, however, profoundly underestimated the Welsh weather.",
+		"Time is making fools of us again. Mostly it is making fools of the Mintysnek students who keep trying to steal examination papers. I let them. The papers are wrong.",
+		"Curiosity is not a sin. But one ought to exercise caution with it. Yes. Particularly around the third-floor boys' lavatory. I cannot stress this enough.",
+		"The truth is a beautiful and terrible thing, and should therefore be treated with great caution. Especially the truth about what Hagrag puts in the stew.",
+	)
+
+/mob/living/simple_animal/wizard/tumbledoor/New()
+	clothing_colours = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "magic_boy_robe_decoration")
+	icon_living = icon_state
+	icon_dead = "tumbledoor_dead"
+	speak = tumbledoor_lines
+	update_icons()
+
+/mob/living/simple_animal/wizard/tumbledoor/attack_hand(mob/user)
+	var/spoken_text = pick(tumbledoor_lines)
+	src.say(spoken_text)
+
+/mob/living/simple_animal/wizard/tumbledoor/attackby(obj/item/W, mob/living/user)
+	// Tumbledoor does not appreciate being struck.
+	if (world.time < retaliation_cooldown)
+		src.say("I would advise you not to try that again.")
+		return
+	src.say("LISTEN HERE YOU LITTLE SHIT.")
+	playsound(src.loc, 'sound/effects/spells/deadum.ogg', 80, TRUE)
+	visible_message(SPAN_DANGER("<b>Headmaster Tumbledoor</b> raises his wand with terrifying calm!"))
+	retaliation_cooldown = world.time + 100
+	spawn(20) // brief dramatic pause before the bolt fires
+		if (src && user && !user.stat)
+			var/obj/item/projectile/magic/floatus/bolt = new(src.loc)
+			bolt.firer = src
+			bolt.firer_original_dir = src.dir
+			bolt.def_zone = "chest"
+			bolt.launch(user, src, src, "chest")
+
+// ============================================================
+// MOLDY MEN — Moldywart's Followers
+// Hostile simple_animal NPCs that cast Floatus, Burnus and Painum at players.
+// ============================================================
+
+/mob/living/simple_animal/hostile/moldy_man
+	name = "Moldy Man"
+	desc = "A grey, damp figure in a dark robe that smells powerfully of mildew and old cheese. One of Lord Moldywart's followers."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "moldyman"
+	icon_living = "moldyman"
+	icon_dead = "moldyman_dead"
+	faction = "Moldywart"
+	maxHealth = 80
+	health = 80
+	melee_damage_lower = 3
+	melee_damage_upper = 6
+	mob_size = MOB_MEDIUM
+	stop_automated_movement = TRUE
+	stop_automated_movement_when_pulled = TRUE
+	wander = FALSE
+	speed = 3
+	move_to_delay = 5
+	possession_candidate = FALSE
+	attacktext = "claws"
+	var/spell_cooldown = 0
+	var/list/moldy_spells = list(
+		/obj/item/projectile/magic/floatus,
+		/obj/item/projectile/magic/fire_bolt,
+		/obj/item/projectile/magic/painum,
+	)
+	var/list/moldy_spell_names = list(
+		/obj/item/projectile/magic/floatus   = "Floatus!",
+		/obj/item/projectile/magic/fire_bolt = "Burnus!",
+		/obj/item/projectile/magic/painum    = "Painum!",
+	)
+
+/mob/living/simple_animal/hostile/moldy_man/New()
+	..(  )
+	processing_objects |= src
+
+/mob/living/simple_animal/hostile/moldy_man/Destroy()
+	processing_objects -= src
+	return ..(  )
+
+/mob/living/simple_animal/hostile/moldy_man/proc/find_nearest_player()
+	var/mob/living/closest = null
+	var/best_dist = 10 // only attack within 10 tiles
+	for (var/mob/living/human/H in view(10, src))
+		if (!H || H.stat || H.client == null)
+			continue
+		var/d = get_dist(src, H)
+		if (d < best_dist)
+			best_dist = d
+			closest = H
+	return closest
+
+/mob/living/simple_animal/hostile/moldy_man/proc/cast_at(mob/living/target)
+	if (!target || target.stat)
+		return
+	var/chosen_spell_type = pick(moldy_spells)
+	var/spell_name = moldy_spell_names[chosen_spell_type]
+	src.say(spell_name)
+	playsound(src.loc, pick(
+		'sound/effects/spells/floatus.ogg',
+		'sound/effects/spells/burnus.ogg',
+		'sound/effects/spells/painum.ogg'), 70, TRUE)
+	visible_message(SPAN_DANGER("<b>[src]</b> raises a gnarled wand at [target]!"))
+	var/obj/item/projectile/magic/bolt = new chosen_spell_type(src.loc)
+	bolt.firer = src
+	bolt.firer_original_dir = src.dir
+	bolt.def_zone = "chest"
+	bolt.launch(target, src, src, "chest")
+
+/mob/living/simple_animal/hostile/moldy_man/proc/process()
+	if (stat || !loc)
+		return
+	// Attack nearby human players periodically.
+	if (world.time >= spell_cooldown)
+		var/mob/living/target = find_nearest_player()
+		if (target)
+			cast_at(target)
+			spell_cooldown = world.time + rand(60, 120) // 6-12 second cooldown between spells
+
+/mob/living/simple_animal/hostile/moldy_man/attack_hand(mob/user)
+	src.say(pick(
+		"The mold... it spreads...",
+		"Moldywart sees all!",
+		"You reek of Nuggle-blood.",
+		"Lord Moldywart will reclaim his nose! ...Eventually.",
+		"Mold. Damp. Darkness. This is the true magic.",
+	))
+
+// Named lieutenant variant — a bit tougher
+/mob/living/simple_animal/hostile/moldy_man/lieutenant
+	name = "Moldy Lieutenant"
+	desc = "A senior follower of Lord Moldywart, more mold than man at this point."
+	icon_state = "moldy_lt"
+	icon_living = "moldy_lt"
+	icon_dead = "moldy_lt"
+	maxHealth = 150
+	health = 150
+	melee_damage_lower = 6
+	melee_damage_upper = 12
+
+// ============================================================
+// LORD MOLDYWART — Boss NPC
+// Casts Painum, Deadum, and Explodus at players.
+// Sprites provided: moldywart / moldywart_dead
+// ============================================================
+
+/mob/living/simple_animal/hostile/moldywart
+	name = "Lord Moldywart"
+	desc = "He-Who-Must-Not-Be-Named-For-Legal-Reasons. A massive masked figure, radiating a cold and ancient malice."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "moldywart"
+	icon_living = "moldywart"
+	icon_dead = "moldywart_dead"
+	faction = "Moldywart"
+	maxHealth = 500
+	health = 500
+	melee_damage_lower = 10
+	melee_damage_upper = 20
+	mob_size = MOB_MEDIUM
+	stop_automated_movement = TRUE
+	stop_automated_movement_when_pulled = TRUE
+	wander = FALSE
+	speed = 2
+	move_to_delay = 4
+	possession_candidate = FALSE
+	attacktext = "strikes"
+	meat_amount = 0
+
+	// Per-spell cooldowns so he can mix up his attack pattern
+	var/cooldown_painum   = 0
+	var/cooldown_deadum   = 0
+	var/cooldown_explodus = 0
+
+	// Thresholds (deciseconds)
+	var/cd_painum_time   = 80  // ~8 sec
+	var/cd_deadum_time   = 300 // ~30 sec
+	var/cd_explodus_time = 200 // ~20 sec
+
+	var/list/taunt_lines = list(
+		"There is no good and evil. There is only power... and those too weak to seek it. Also, my nose.",
+		"I have gone further than anybody along the path that leads to immortality. You will not stop me. You are also standing on my robe.",
+		"I fashioned myself a new name, a name I knew wizards everywhere would one day fear to speak, when I had become the greatest sorcerer in the world! ...I miss having a nose.",
+		"Nyehehehe.",
+		"You dare? YOU DARE?! I defeated the greatest wizards of my age! I am the heir of Merlin himself! I am— ...one moment, I appear to have stepped in something.",
+		"Kill the spare.",
+		"I cannot be killed. I am the Dark Lord. I am eternal. I am—... does anyone have a tissue? I think I have a cold. I cannot tell.",
+		"You think you can stand against me? I have horcruxes. Eleven of them. One of them is a sock. Don't ask.",
+		"Join me. Or don't. I'll be honest, the Moldy Men could use the numbers, they keep getting Floatus'd into the ceiling.",
+		"My followers are utterly loyal! Mostly because I hexed them. Details.",
+	)
+
+/mob/living/simple_animal/hostile/moldywart/New()
+	..(  )
+	processing_objects |= src
+	// A booming entrance announcement visible to all nearby
+	spawn(5)
+		src.say("I have returned.")
+		visible_message(SPAN_DANGER("<b>The air grows cold. <b>Lord Moldywart</b> has arrived.</b>"))
+
+/mob/living/simple_animal/hostile/moldywart/Destroy()
+	processing_objects -= src
+	return ..(  )
+
+/mob/living/simple_animal/hostile/moldywart/proc/find_nearest_player()
+	var/mob/living/closest = null
+	var/best_dist = 12
+	for (var/mob/living/human/H in view(12, src))
+		if (!H || H.stat || H.client == null)
+			continue
+		var/d = get_dist(src, H)
+		if (d < best_dist)
+			best_dist = d
+			closest = H
+	return closest
+
+/mob/living/simple_animal/hostile/moldywart/proc/fire_spell(spell_type, spell_call, sound_file, mob/living/target)
+	if (!target || target.stat || !src || src.stat)
+		return
+	src.say(spell_call)
+	playsound(src.loc, sound_file, 90, TRUE)
+	visible_message(SPAN_DANGER("<b>Lord Moldywart</b> levels his staff at [target] with cold fury!"))
+	var/obj/item/projectile/magic/bolt = new spell_type(src.loc)
+	bolt.firer = src
+	bolt.firer_original_dir = src.dir
+	bolt.def_zone = "chest"
+	bolt.launch(target, src, src, "chest")
+
+/mob/living/simple_animal/hostile/moldywart/proc/process()
+	if (stat || !loc)
+		return
+
+	var/mob/living/target = find_nearest_player()
+	if (!target)
+		// No player nearby — taunt occasionally
+		if (prob(2))
+			src.say(pick(taunt_lines))
+		return
+
+	var/now = world.time
+
+	// Priority order: Deadum > Explodus > Painum
+	if (now >= cooldown_deadum)
+		fire_spell(/obj/item/projectile/magic/deadum, "Deadum!", 'sound/effects/spells/deadum.ogg', target)
+		cooldown_deadum = now + cd_deadum_time
+		return
+
+	if (now >= cooldown_explodus)
+		fire_spell(/obj/item/projectile/magic/explodus, "Explodus!", 'sound/effects/spells/explodus.ogg', target)
+		cooldown_explodus = now + cd_explodus_time
+		return
+
+	if (now >= cooldown_painum)
+		fire_spell(/obj/item/projectile/magic/painum, "Painum!", 'sound/effects/spells/painum.ogg', target)
+		cooldown_painum = now + cd_painum_time
+		return
+
+/mob/living/simple_animal/hostile/moldywart/attack_hand(mob/user)
+	src.say(pick(taunt_lines))
+
+/mob/living/simple_animal/hostile/moldywart/death(gibbed)
+	src.visible_message(SPAN_NOTICE("<b>Lord Moldywart</b> lets out a bloodcurdling shriek and collapses."))
+	src.say("I... shall return... again... it is... really getting... old...")
+	..(gibbed)

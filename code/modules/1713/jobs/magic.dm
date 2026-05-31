@@ -263,3 +263,4 @@
 	icon_state = "wizard_loser"
 	worn_state = "globalist_pin"
 	item_state = "globalist_pin"
+
