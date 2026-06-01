@@ -26,7 +26,7 @@
 				return
 		if ( findtext(memo,"<script",1,0) )
 			return
-		to_chat(F[ckey],"Admin Memo from <b>[capitalize(key)]</b> on [time2text(world.realtime,"(DDD) DD MMM hh:mm")]<br><i>[memo]</i>")
+		F[ckey] << "Admin Memo from <b>[capitalize(key)]</b> on [time2text(world.realtime,"(DDD) DD MMM hh:mm")]<br><i>[memo]</i>"
 		message_admins("[key] has set an admin memo:<br>[memo]", key)
 
 //show all memos
