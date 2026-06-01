@@ -423,7 +423,8 @@ var/list/global_huds = list(
 		// Only show spells the user has learned and meets the skill requirement for
 		if(H.getStat("magic") < SP.skill_level)
 			continue
-
+		if (!SP.screen_obj)
+			continue
 		var/obj/screen/spell/S = new SP.screen_obj
 		S.parentmob = H
 		wizard_hud += S

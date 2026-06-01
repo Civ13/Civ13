@@ -17,23 +17,24 @@
 //suit
 	if (map && istype(map, /obj/map_metadata/wizard_boy))
 		var/obj/map_metadata/wizard_boy/WB = map
+		H.nationality = WB.house_info[H.ckey][2]
 		if (WB.house_info[H.ckey])
-			switch(WB.house_info[H.ckey][1])
-				if("Rubywyrm")
-					H.faction = "Rubywyrm"
-					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/red(H), slot_wear_suit)
-				if("Mintysnek")
-					H.faction = "Mintysnek"
-					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/green(H), slot_wear_suit)
-				if("Slatepie")
-					H.faction = "Slatepie"
-					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/blue(H), slot_wear_suit)
-				if("Mustardweasel")
-					H.faction = "Mustardweasel"
-					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/yellow(H), slot_wear_suit)
-				else
-					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard(H), slot_wear_suit)
-			H.nationality = WB.house_info[H.ckey][2]
+			if (H.nationalty != "R")
+				switch(WB.house_info[H.ckey][1])
+					if("Rubywyrm")
+						H.faction = "Rubywyrm"
+						H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/red(H), slot_wear_suit)
+					if("Mintysnek")
+						H.faction = "Mintysnek"
+						H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/green(H), slot_wear_suit)
+					if("Slatepie")
+						H.faction = "Slatepie"
+						H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/blue(H), slot_wear_suit)
+					if("Mustardweasel")
+						H.faction = "Mustardweasel"
+						H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/yellow(H), slot_wear_suit)
+					else
+						H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard(H), slot_wear_suit)
 			switch(WB.house_info[H.ckey][2])
 				if("R") // loser
 					H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/loser(H), slot_wear_id)
@@ -42,7 +43,21 @@
 					H.setStat("magic", 10)
 				if("0") // idiot
 					H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/idiot(H), slot_wear_id)
-					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/greyrobe(H), slot_wear_suit)
+					switch(WB.house_info[H.ckey][1])
+						if("Rubywyrm")
+							H.faction = "Rubywyrm"
+							H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/greyrobe/red(H), slot_wear_suit)
+						if("Mintysnek")
+							H.faction = "Mintysnek"
+							H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/greyrobe/green(H), slot_wear_suit)
+						if("Slatepie")
+							H.faction = "Slatepie"
+							H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/greyrobe/blue(H), slot_wear_suit)
+						if("Mustardweasel")
+							H.faction = "Mustardweasel"
+							H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/greyrobe/yellow(H), slot_wear_suit)
+						else
+							H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/greyrobe(H), slot_wear_suit)
 					H.setStat("magic", 0)
 				if("1") // unga
 					H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/unga(H), slot_wear_id)
@@ -96,7 +111,8 @@
 			if (S.learnable == TRUE)
 				H.add_spell(S)
 	spawn(30)
-		H.client.screen += new/obj/screen/spellshow("Spell","7,14", H, null, "")
+		if (H && H.client)
+			H.client.screen += new/obj/screen/spellshow("Spell","7,14", H, null, "")
 
 /mob/living/human/corpse/wizard
 	gender = MALE
@@ -151,6 +167,22 @@
 	name = "I.D.I.O.T. wizard robe"
 	desc = "A grey wizard's robe used by those who have received the 'Inept & Deficient Individual's Ordinary Test' certificate. Not to be left unnatended near crayons."
 	house_colors = "#000000"
+
+/obj/item/clothing/suit/storage/jacket/wizard/greyrobe/red
+	name = "Rubywyrm I.D.I.O.T. wizard robe"
+	house_colors = "#7F0000"
+
+/obj/item/clothing/suit/storage/jacket/wizard/greyrobe/green
+	name = "Mintysnek I.D.I.O.T. wizard robe"
+	house_colors = "#007F00"
+
+/obj/item/clothing/suit/storage/jacket/wizard/greyrobe/blue
+	name = "Slatepie I.D.I.O.T. wizard robe"
+	house_colors = "#0000c8"
+
+/obj/item/clothing/suit/storage/jacket/wizard/greyrobe/yellow
+	name = "Mustardweasel I.D.I.O.T. wizard robe"
+	house_colors = "#cbb600"
 
 /obj/item/clothing/head/wizard
 	name = "wizard's hat"

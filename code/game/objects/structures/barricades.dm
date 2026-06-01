@@ -38,7 +38,7 @@
 
 /obj/structure/barricade/New(var/newloc)
 	..(newloc)
-	if(!istype(src, /obj/structure/barricade/ship))
+	if(!istype(src, /obj/structure/barricade/ship) && !istype(src, /obj/structure/barricade/magic))
 		if (!material_name)
 			material_name = "wood"
 		material = get_material_by_name("[material_name]")
@@ -214,10 +214,8 @@
 	alpha = 110
 	health = 80
 	maxhealth = 80
-	New()
-		..()
-		icon_state = "magic_barricade"
-		name = "magical barrier"
+	applies_material_colour = FALSE
+
 
 /obj/structure/barricade/vertical
 	name = "wood barrier"

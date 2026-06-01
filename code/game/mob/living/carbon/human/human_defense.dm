@@ -589,17 +589,18 @@ bullet_act
 	return null
 
 /mob/living/human/proc/apply_magic_shield(duration)
-	magic_shield = TRUE
+	magic_shield++
 	var/image/I = image('icons/obj/magic_overlay.dmi', src, "protection", MOB_LAYER + 1)
 	I.color = "#00ffff"
 	I.alpha = 110
 	src.overlays += I
 	spawn(duration)
 		if (src)
-			magic_shield = FALSE
+			magic_shield = max(0, magic_shield - 1)
 			src.overlays -= I
-			to_chat(src, SPAN_NOTICE("Your shimmering bubble of denial fades away."))
-
+			if (!magic_shield)
+				to_chat(src, SPAN_NOTICE("Your shimmering bubble of denial fades away."))
+				
 /mob/living/human/proc/check_shields(var/damage = FALSE, var/atom/damage_source = null, var/mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	if (magic_shield)
 		visible_message("<span class='warning'>The shimmering bubble of denial around [src] blocks [attack_text]!</span>")

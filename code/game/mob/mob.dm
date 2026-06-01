@@ -722,7 +722,7 @@
 			if (!TurfAdjacent(listed_turf))
 				listed_turf = null
 			else
-				if (client.add_stat_tab("Turf"))
+				if (client.add_stat_tab("Turf") || client.statpanel_tab == "Turf")
 					client.add_stat("[listed_turf]")
 					for (var/atom/A in listed_turf)
 						if (!A.mouse_opacity)
@@ -747,13 +747,11 @@
 					if (W)
 						client.add_stat("<b>Active Wand:</b>", "[W.name] ([W.charges]/[W.maxcharges] charges)")
 						client.add_stat("<b>Active Spell:</b>", W.active_spell ? "<b>[W.active_spell.name]</b>" : "<i>None</i>")
-						client.add_stat("<b>Juice:</b>", "[H.juice] / 100")
-						client.add_stat("")
 					else
 						client.add_stat("<b>Active Wand:</b>", "<span color='red'><i>None</i></span>")
 						client.add_stat("<b>Active Spell:</b>", "<span color='red'><i>None</i></span>")
-						client.add_stat("<b>Juice:</b>", "[H.juice] / 100")
-						client.add_stat("")
+					client.add_stat("<b>Juice:</b>", "[H.juice] / [H.max_juice]")
+					client.add_stat("")
 
 				var/list/usable = list()
 				var/magic_lvl = 0

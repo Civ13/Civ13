@@ -15,7 +15,6 @@
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "Llanboarwart Academy of Magical Education"
 	mission_start_message = "<font size=6 class='wizard'>Welcome to <b>LAME</b>, the <b>Llanboarwart Academy of Magical Education</b>! Get sorted into a house and duel your fellow wizards!</font>"
-	mission_start_message = ""
 	ambience = list("sound/ambience/desert.ogg")
 	faction1 = CIVILIAN
 	is_singlefaction = TRUE
@@ -229,18 +228,21 @@
 	return "Unknown"
 
 /obj/map_metadata/wizard_boy/proc/add_to_house(ckey, house)
+	if (house_info[ckey])
+		return FALSE
 	//sanitise first
 	if (house == "Rubywyrm" || house == "Mintysnek" || house == "Slatepie" || house == "Mustardweasel")
-		var/txtexport = ckey + ";" + house + ";" + "1"
+		var/txtexport = "[ckey];[house];1"
 
 		//save to houses.txt
 		if (fexists("SQL/houses.txt"))
-			text2file(txtexport,"SQL/houses.txt")
+			text2file(txtexport, "SQL/houses.txt")
 		else
 			var/F = file("SQL/houses.txt")
 			text2file(txtexport, F)
 		house_info[ckey] = list(house, "1")
-
+		return TRUE
+	return FALSE
 var/wizard_style = {"
 <style>
 	@font-face {

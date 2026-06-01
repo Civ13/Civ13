@@ -440,13 +440,15 @@ var/global/redirect_all_players = null
 					to_chat(src, "<font size=6 class='wizard'>You are a member of <span style='color:[_color]'>[house_result]</span>.</font>")
 					var/skill_result = WB.check_level(client.ckey)
 					var/skill_string = WB.level_to_formatted_text(skill_result)
-					to_chat(src, "<font size=6 class='wizard'>Your are a [skill_string].</font>")
+					to_chat(src, "<font size=6 class='wizard'>You are a [skill_string].</font>")
 					close_spawn_windows()
-					AttemptLateSpawn("Wizard Boy")
+					if (AttemptLateSpawn("Wizard Boy"))
+						return TRUE
 				else
 					if (WB.house_test(client))
 						close_spawn_windows()
-						AttemptLateSpawn("Wizard Boy")
+						if (AttemptLateSpawn("Wizard Boy"))
+							return TRUE
 		else
 			return
 

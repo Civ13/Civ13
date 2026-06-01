@@ -318,6 +318,17 @@ var/list/admin_verbs_host = list(
 	/client/proc/toggle_pingability
 )
 
+var/list/admin_verbs_magic = list(
+	/datum/admins/proc/load_houses,
+	/datum/admins/proc/save_houses,
+	/datum/admins/proc/check_house,
+	/datum/admins/proc/add_to_house,
+	/datum/admins/proc/remove_from_house,
+	/datum/admins/proc/change_house,
+	/datum/admins/proc/check_level,
+	/datum/admins/proc/change_level,
+)
+
 /client/proc/add_admin_verbs()
 	if (holder)
 //		to_chat(world, "[src] getting [holder]([holder.rights]) admin verbs.")
@@ -382,7 +393,8 @@ var/list/admin_verbs_host = list(
 		admin_verbs_spawn,
 		debug_verbs,
 		admin_verbs_manager,
-		admin_verbs_host
+		admin_verbs_host,
+		admin_verbs_magic
 		)
 
 /client/proc/hide_most_verbs()//Allows you to keep some functionality while hiding some verbs

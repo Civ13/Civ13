@@ -513,7 +513,7 @@
 				L.forceMove(B)
 				B.name = "suspicious barrel"
 				spawn(40)
-					if (B && L && (B in L.contents))
+					if (B && L && (L.loc == B))
 						L.forceMove(B.loc)
 						qdel(B)
 					else if (B)

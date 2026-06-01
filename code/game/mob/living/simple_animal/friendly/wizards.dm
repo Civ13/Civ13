@@ -133,6 +133,7 @@
 	var/heal_cooldown = 0
 
 /mob/living/simple_animal/wizard/goblin_healer/New()
+	..()
 	// Override the base wizard New() so we don't randomly recolour or use the flavour_text speak list.
 	clothing_colours = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "magic_boy_robe_decoration")
 	icon_living = icon_state
@@ -150,6 +151,8 @@
 	var/choice = alert(user, "\"Need healing, does yous?\" the goblin rasps, eyeing your wounds.", "Goblin Healer", "Yes please!", "No thanks.")
 	if (choice == "Yes please!")
 		if (H.health >= H.maxHealth)
+			if (!H || H.stat || !src || src.stat || get_dist(H, src) > 1)
+				return
 			src.say("You looks fine to Grub! No waste the good medicine on the healthy, yes?")
 			return
 		src.say("Grub fixes! Hold still, yes? Grub's poultice is very old, very strong!")
@@ -202,6 +205,7 @@
 	)
 
 /mob/living/simple_animal/wizard/tumbledoor/New()
+	..()
 	clothing_colours = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "magic_boy_robe_decoration")
 	icon_living = icon_state
 	icon_dead = "tumbledoor_dead"

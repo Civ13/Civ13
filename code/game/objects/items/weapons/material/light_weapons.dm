@@ -20,10 +20,10 @@
 	var/old_sharpness = 0
 	var/old_block_chance = 25
 
-	var/new_force_divisor = 15
-	var/new_thrown_force_divisor = 0.55 // 10 when thrown with weight 20 (steel)
-	var/new_block_chance = 96
-	var/new_sharpness = 500
+	var/new_force_divisor = 10
+	var/new_thrown_force_divisor = 0.25 // 10 when thrown with weight 20 (steel)
+	var/new_block_chance = 95
+	var/new_sharpness = 100
 
 	var/hitsound_off = 'sound/weapons/punch1.ogg' //default
 	var/drawsound_off = 'sound/weapons/punch1.ogg' //temp
