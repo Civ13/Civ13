@@ -96,7 +96,8 @@
 			if (S.learnable == TRUE)
 				H.add_spell(S)
 	spawn(30)
-		H.client.screen += new/obj/screen/spellshow("Spell","7,14", H, null, "")
+		if (H && H.client)
+			H.client.screen += new/obj/screen/spellshow("Spell","7,14", H, null, "")
 
 /mob/living/human/corpse/wizard
 	gender = MALE
