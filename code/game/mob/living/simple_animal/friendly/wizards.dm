@@ -26,7 +26,9 @@
 	stop_automated_movement = TRUE
 	wander = FALSE
 	faction = "Unknown"
+	universal_speak = TRUE
 	var/image/clothing_colours = null
+	var/response_timer = 0
 
 	var/list/flavour_text = list(
 	"They say the deep slate mines are strictly off-limits to all students because of mortal danger. Which is weird, because we serve detention down there literally every Tuesday.",
@@ -40,7 +42,7 @@
 	"I wanted to be in Mintysnek, but The Placing Fedora told me I wasn't 'edgy' enough and dumped me in Mustardweasel.",
 	"Madame McGronk just gave Rubywyrm fifty points because Barry Hatter tied his rugby boots correctly. This whole school is rigged.",
 	"I paid three gold coins for a Choco-Toad and the stupid thing hopped right into a puddle of mud before I could eat it. What a scam.",
-	"My parents are Nuggles. My dad still thinks I go to a highly exclusive boarding school for junior tax attorneys, not a leaky castle in Cwm-Pimple.",
+	"My parents are Nuggles. My dad still thinks I go to a highly exclusive boarding school for junior tax attorneys, not a leaky castle in Cwm-Tlawd.",
 	"Someone told me the Deadum! spell is unforgivable, but I saw Hagrag use it on a particularly large swamp rat just yesterday.",
 	"I bought a pet from Hagrag. He said it was a rare Welsh Fire-Hound, but I'm pretty sure it's just a badger glued to a lighter.",
 	"Don't drink more than three mugs of I-Can't-Believe-It's-Not-Butter-Beer. It doesn't actually have alcohol, it's just pure fermented corn syrup and green food dye.",
@@ -89,14 +91,16 @@
 			src.overlays += clothing_colours
 	update_icons()
 
+/mob/living/simple_animal/wizard/proc/respond_to_attack(mob/living/user)
+	return
+
 /mob/living/simple_animal/wizard/death()
 	..()
 	src.overlays -= clothing_colours
 	update_icons()
 
 /mob/living/simple_animal/wizard/attack_hand(mob/user)
-	var/spoken_text = pick(flavour_text)
-	src.say(spoken_text)
+	src.say(pick(flavour_text))
 
 /mob/living/simple_animal/wizard/rubywyrm
 	faction = "Rubywyrm"
@@ -122,7 +126,7 @@
 	name = "Goblin Healer"
 	desc = "A small, warty creature in a filthy apron that smells of mildew and strong herbs. It eyes you with a businesslike squint."
 	icon = 'icons/mob/npcs.dmi'
-	icon_state = "goblin_healer" // placeholder
+	icon_state = "goblin_healer"
 	icon_living = "goblin_healer"
 	icon_dead = "goblin_healer_dead"
 	faction = "Unknown"
@@ -135,8 +139,9 @@
 /mob/living/simple_animal/wizard/goblin_healer/New()
 	..()
 	// Override the base wizard New() so we don't randomly recolour or use the flavour_text speak list.
-	clothing_colours = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "magic_boy_robe_decoration")
-	icon_living = icon_state
+	clothing_colours = null
+	icon_state = "goblin_healer"
+	icon_living = "goblin_healer"
 	icon_dead = "goblin_healer_dead"
 	speak = list()
 	update_icons()
@@ -184,6 +189,7 @@
 	health = 300
 	melee_damage_lower = 1
 	melee_damage_upper = 2
+	voice_pitch = 70
 	var/retaliation_cooldown = 0
 
 	var/list/tumbledoor_lines = list(
@@ -206,32 +212,45 @@
 
 /mob/living/simple_animal/wizard/tumbledoor/New()
 	..()
-	clothing_colours = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "magic_boy_robe_decoration")
-	icon_living = icon_state
+	clothing_colours = null
+	icon_state = "tumbledoor"
+	icon_living = "tumbledoor"
 	icon_dead = "tumbledoor_dead"
 	speak = tumbledoor_lines
 	update_icons()
 
 /mob/living/simple_animal/wizard/tumbledoor/attack_hand(mob/user)
-	var/spoken_text = pick(tumbledoor_lines)
-	src.say(spoken_text)
+	src.say(pick(tumbledoor_lines))
+
+/mob/living/simple_animal/wizard/tumbledoor/bullet_act(var/obj/item/projectile/P)
+	if (P && P.invisibility <= 0) // Only react to real bullets, not aiming traces
+		respond_to_attack(P.firer)
+	return ..()
 
 /mob/living/simple_animal/wizard/tumbledoor/attackby(obj/item/W, mob/living/user)
+	respond_to_attack(user)
+
+/mob/living/simple_animal/wizard/tumbledoor/respond_to_attack(mob/living/user)
+	if (world.time < response_timer)
+		return
 	// Tumbledoor does not appreciate being struck.
-	if (world.time < retaliation_cooldown)
+	if (world.time > retaliation_cooldown)
 		src.say("I would advise you not to try that again.")
+		retaliation_cooldown = world.time + 300
+		response_timer = world.time + 20
 		return
 	src.say("LISTEN HERE YOU LITTLE SHIT.")
 	playsound(src.loc, 'sound/effects/spells/deadum.ogg', 80, TRUE)
 	visible_message(SPAN_DANGER("<b>Headmaster Tumbledoor</b> raises his wand with terrifying calm!"))
 	retaliation_cooldown = world.time + 100
+	response_timer = world.time + 20
 	spawn(20) // brief dramatic pause before the bolt fires
 		if (src && user && !user.stat)
 			for (var/mob/M in player_list)
 				if (M.client && (M in view(7, src)))
 					M.show_chat_overlay(src, "<i>Floatus!</i>", "#dea30d")
 			playsound(src.loc, 'sound/effects/spells/floatus.ogg', 75, FALSE)
-			visible_message("<span style=color:'#dea30d'><b>Headmaster Tumbledoor</b> uses <i>Floatus!</i></span>")
+			visible_message("<span style=color:'#dea30d'><b>Headmaster Tumbledoor</b> says, \"<i>Floatus!</i>\"</span>")
 			spawn(5)
 				playsound(src.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
 			var/obj/item/projectile/magic/floatus/bolt = new(src.loc)
@@ -245,7 +264,10 @@
 // Hostile simple_animal NPCs that cast Floatus, Burnus and Painum at players.
 // ============================================================
 
-/mob/living/simple_animal/hostile/moldy_man
+/mob/living/simple_animal/hostile/wizard
+	name = "DO NOT USE"
+
+/mob/living/simple_animal/hostile/wizard/moldy_man
 	name = "Moldy Man"
 	desc = "A grey, damp figure in a dark robe that smells powerfully of mildew and old cheese. One of Lord Moldywart's followers."
 	icon = 'icons/mob/npcs.dmi'
@@ -264,6 +286,7 @@
 	speed = 3
 	move_to_delay = 5
 	possession_candidate = FALSE
+	universal_speak = TRUE
 	attacktext = "claws"
 	var/spell_cooldown = 0
 	var/list/moldy_spells = list(
@@ -277,15 +300,15 @@
 		/obj/item/projectile/magic/painum    = "Painum!",
 	)
 
-/mob/living/simple_animal/hostile/moldy_man/New()
+/mob/living/simple_animal/hostile/wizard/moldy_man/New()
 	..(  )
 	processing_objects |= src
 
-/mob/living/simple_animal/hostile/moldy_man/Destroy()
+/mob/living/simple_animal/hostile/wizard/moldy_man/Destroy()
 	processing_objects -= src
 	return ..(  )
 
-/mob/living/simple_animal/hostile/moldy_man/proc/find_nearest_player()
+/mob/living/simple_animal/hostile/wizard/moldy_man/proc/find_nearest_player()
 	var/mob/living/closest = null
 	var/best_dist = 10 // only attack within 10 tiles
 	for (var/mob/living/human/H in view(10, src))
@@ -297,7 +320,7 @@
 			closest = H
 	return closest
 
-/mob/living/simple_animal/hostile/moldy_man/proc/cast_at(mob/living/target)
+/mob/living/simple_animal/hostile/wizard/moldy_man/proc/cast_at(mob/living/target)
 	if (!target || target.stat)
 		return
 	var/chosen_spell_type = pick(moldy_spells)
@@ -329,7 +352,7 @@
 	bolt.def_zone = "chest"
 	bolt.launch(target, src, src, "chest")
 
-/mob/living/simple_animal/hostile/moldy_man/proc/process()
+/mob/living/simple_animal/hostile/wizard/moldy_man/proc/process()
 	if (stat || !loc)
 		return
 	// Attack nearby human players periodically.
@@ -339,7 +362,7 @@
 			cast_at(target)
 			spell_cooldown = world.time + rand(60, 120) // 6-12 second cooldown between spells
 
-/mob/living/simple_animal/hostile/moldy_man/attack_hand(mob/user)
+/mob/living/simple_animal/hostile/wizard/moldy_man/attack_hand(mob/user)
 	src.say(pick(
 		"The mold... it spreads...",
 		"Moldywart sees all!",
@@ -349,7 +372,7 @@
 	))
 
 // Named lieutenant variant — a bit tougher
-/mob/living/simple_animal/hostile/moldy_man/lieutenant
+/mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant
 	name = "Moldy Lieutenant"
 	desc = "A senior follower of Lord Moldywart, more mold than man at this point."
 	icon_state = "moldy_lt"
@@ -366,7 +389,7 @@
 // Sprites provided: moldywart / moldywart_dead
 // ============================================================
 
-/mob/living/simple_animal/hostile/moldywart
+/mob/living/simple_animal/hostile/wizard/moldywart
 	name = "Lord Moldywart"
 	desc = "He-Who-Must-Not-Be-Named-For-Legal-Reasons. A massive masked figure, radiating a cold and ancient malice."
 	icon = 'icons/mob/npcs.dmi'
@@ -374,6 +397,7 @@
 	icon_living = "moldywart"
 	icon_dead = "moldywart_dead"
 	faction = "Moldywart"
+	voice_pitch = 60
 	maxHealth = 500
 	health = 500
 	melee_damage_lower = 10
@@ -385,6 +409,7 @@
 	speed = 2
 	move_to_delay = 4
 	possession_candidate = FALSE
+	universal_speak = TRUE
 	attacktext = "strikes"
 	meat_amount = 0
 
@@ -411,7 +436,7 @@
 		"My followers are utterly loyal! Mostly because I hexed them. Details.",
 	)
 
-/mob/living/simple_animal/hostile/moldywart/New()
+/mob/living/simple_animal/hostile/wizard/moldywart/New()
 	..(  )
 	processing_objects |= src
 	// A booming entrance announcement visible to all nearby
@@ -419,11 +444,11 @@
 		src.say("I have returned.")
 		visible_message(SPAN_DANGER("<b>The air grows cold. <b>Lord Moldywart</b> has arrived.</b>"))
 
-/mob/living/simple_animal/hostile/moldywart/Destroy()
+/mob/living/simple_animal/hostile/wizard/moldywart/Destroy()
 	processing_objects -= src
 	return ..(  )
 
-/mob/living/simple_animal/hostile/moldywart/proc/find_nearest_player()
+/mob/living/simple_animal/hostile/wizard/moldywart/proc/find_nearest_player()
 	var/mob/living/closest = null
 	var/best_dist = 12
 	for (var/mob/living/human/H in view(12, src))
@@ -435,7 +460,7 @@
 			closest = H
 	return closest
 
-/mob/living/simple_animal/hostile/moldywart/proc/fire_spell(spell_type, spell_call, sound_file, mob/living/target)
+/mob/living/simple_animal/hostile/wizard/moldywart/proc/fire_spell(spell_type, spell_call, sound_file, mob/living/target)
 	if (!target || target.stat || !src || src.stat)
 		return
 	
@@ -457,7 +482,7 @@
 	bolt.def_zone = "chest"
 	bolt.launch(target, src, src, "chest")
 
-/mob/living/simple_animal/hostile/moldywart/proc/process()
+/mob/living/simple_animal/hostile/wizard/moldywart/proc/process()
 	if (stat || !loc)
 		return
 
@@ -486,10 +511,205 @@
 		cooldown_painum = now + cd_painum_time
 		return
 
-/mob/living/simple_animal/hostile/moldywart/attack_hand(mob/user)
+/mob/living/simple_animal/hostile/wizard/moldywart/attack_hand(mob/user)
 	src.say(pick(taunt_lines))
 
-/mob/living/simple_animal/hostile/moldywart/death(gibbed)
+/mob/living/simple_animal/hostile/wizard/moldywart/death(gibbed)
 	src.visible_message(SPAN_NOTICE("<b>Lord Moldywart</b> lets out a bloodcurdling shriek and collapses."))
 	src.say("I... shall return... again... it is... really getting... old...")
 	..(gibbed)
+
+/obj/effect/spawner/mobspawner/moldymen
+	name = "moldymen spawner"
+	create_path = /mob/living/simple_animal/hostile/wizard/moldy_man
+	timer = 600
+	icon_state = "npc"
+	max_number = 5
+
+/obj/effect/spawner/mobspawner/moldymen/inactive
+	activated = FALSE
+
+// ============================================================
+// THE ARCANE BOBBIES (The Magical Police)
+// ============================================================
+
+/mob/living/simple_animal/wizard/bobby
+	name = "Arcane Bobby"
+	desc = "An underfunded, highly bureaucratic officer of the C.A.P., the Constabulary for Arcane Practices. Don't cast illegal magic around them."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "wizard_police"
+	icon_living = "wizard_police"
+	icon_dead = "wizard_police_dead"
+	maxHealth = 200
+	health = 200
+	melee_damage_lower = 8
+	melee_damage_upper = 12
+	faction = "Ministry"
+	wander = TRUE
+	var/spell_cooldown = 0
+	var/list/flavour_text_bobbies = list(
+		"Oi! You got a license for that glowing stick, mate?",
+		"Put the wand down and step away from the transformed barrel, sonny.",
+		"I don't care if you're the 'Chosen One', you're parked in a loading zone. That's a twenty-quid fine.",
+		"We had to trade our patrol brooms in for bicycles because of budget cuts. Don't laugh, it's very degrading.",
+		"Did you just cast Explodus without filling out Ministry Form 4-B in triplicate? Right, you're nicked.",
+		"Look, mate, I'm just a C.A.P. officer trying to make it to his tea break. Please stop blowing up the pavement.",
+		"'I was chased by a Moldy Man' isn't a valid excuse for speeding on a mop. Show me your C.O.A.L. license.",
+		"You're looking at six months in the magical slammer for possession of unlicensed Choco-Toads.",
+		"Oi! Mind where you're pointing that 'Stiff Log'. You'll take someone's eye out, you will.",
+		"I've been patrolling Cwm-Tlawd for twenty years, and I've never seen such a blatant misuse of a Floatus charm.",
+		"If I catch one more student casting Stinkaeum on my patrol bike, I'm arresting the whole lot of you.",
+		"No, you can't bribe me with I-Can't-Believe-It's-Not-Butter-Beer. It's against regulations, and it gives me terrible heartburn.",
+		"Are you the one who turned the Mayor's cat into a teacup? You're coming down to the station.",
+		"Keep walking, lad. Nothing to see here, just a routine inspection of an illegally imported Welsh Fire-Hound.",
+		"We don't get paid enough for this. Last week I had to break up a massive brawl over a high school Mop Ball match.",
+		"I'll have you know, assaulting an officer of the C.A.P. with a Sliceum spell carries a mandatory life sentence.",
+		"Is that an unregistered Shrieking Shrub in your pocket, or are you just happy to see me? No, wait, that's definitely a shrub. Hands on the wall!",
+		"Sir, I'm going to have to ask you to step out of the floating bathtub.",
+		"Dispatch, we got a 10-33 in progress: Unauthorized use of Barrelus outside the pub. Send backup and a crowbar.",
+		"You kids think you're so smart with your magic, but try filling out a paranormal incident report in triplicate with a leaky biro.",
+		"Move along. The Dark Woods are currently closed due to an ongoing investigation into a stolen goblin."
+	)
+
+/mob/living/simple_animal/wizard/bobby/New()
+	..()
+	processing_objects |= src
+	speak = flavour_text_bobbies
+	clothing_colours = null
+	icon_state = "wizard_police"
+	icon_living = "wizard_police"
+	icon_dead = "wizard_police_dead"
+	update_icons()
+
+/mob/living/simple_animal/wizard/bobby/Destroy()
+	processing_objects -= src
+	return ..()
+
+/mob/living/simple_animal/wizard/bobby/attack_hand(mob/user)
+	src.say(pick(flavour_text_bobbies))
+
+/mob/living/simple_animal/wizard/bobby/proc/witness_spell(mob/living/caster, var/datum/spell/S)
+	if (caster == src || stat || caster.stat)
+		return
+	if (behaviour == "hostile" && target_mob == caster)
+		return
+	
+	target_mob = caster
+	behaviour = "hostile"
+	stance = HOSTILE_STANCE_ATTACK
+	
+	src.say(pick("Oi! That's an unlicensed Tier 5 spell! Right, you're nicked!", "Hold it right there! That's a class-A magical felony!", "Stop casting! Put the wand down!"))
+
+/mob/living/simple_animal/wizard/bobby/proc/process()
+	if (stat || !loc)
+		return
+	
+	if (behaviour == "hostile")
+		if (!target_mob || target_mob.stat == DEAD || get_dist(src, target_mob) > 10)
+			target_mob = null
+			behaviour = "defends"
+			stance = HOSTILE_STANCE_IDLE
+			walk(src, 0)
+			return
+
+		if (world.time >= spell_cooldown)
+			cast_spell_at(target_mob)
+			spell_cooldown = world.time + rand(40, 80) // 4-8 second cooldown
+
+/mob/living/simple_animal/wizard/bobby/proc/cast_spell_at(mob/living/target)
+	if (!target || target.stat)
+		return
+	
+	var/spell_type = pick(/obj/item/projectile/magic/freezum, /obj/item/projectile/magic/dropus)
+	var/spell_name = "Freezum!"
+	var/sound_file = 'sound/effects/spells/freezeum.ogg'
+	if (spell_type == /obj/item/projectile/magic/dropus)
+		spell_name = "Dropus!"
+		sound_file = 'sound/effects/spells/dropus.ogg'
+	
+	for (var/mob/M in player_list)
+		if (M.client && (M in view(7, src)))
+			M.show_chat_overlay(src, "<i>[spell_name]</i>", "#dea30d")
+			
+	if (sound_file)
+		playsound(src.loc, sound_file, 75, FALSE)
+		
+	visible_message("<span style=color:'#dea30d'><b>[src]</b> uses <i>[spell_name]</i></span>")
+	
+	spawn(5)
+		playsound(src.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
+		
+	var/obj/item/projectile/magic/bolt = new spell_type(src.loc)
+	bolt.firer = src
+	bolt.firer_original_dir = src.dir
+	bolt.def_zone = "chest"
+	bolt.launch(target, src, src, "chest")
+
+
+// ============================================================
+// GENERIC PROFESSORS & FACULTY
+// ============================================================
+
+/mob/living/simple_animal/wizard/professor
+	name = "L.A.M.E. Professor"
+	desc = "A miserable, underpaid teaching staff member who just wants to get through the day without a student exploding."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "wizard_professor1"
+	icon_living = "wizard_professor1"
+	icon_dead = "wizard_professor1_dead"
+	maxHealth = 180
+	health = 180
+	speak_chance = 2
+	var/list/flavour_text_professors = list(
+		"The school board slashed our budget again. If you want to learn Burnus, you'll have to share a single matchstick with the student next to you.",
+		"I hold a C.H.A.D. degree in Arcane Destruction, yet here I am, telling 11-year-olds to stop eating the potion ingredients.",
+		"If I catch one more student casting Stinkaeum! in the corridors, the entire year-group is getting an automatic I.D.I.O.T. certificate.",
+		"Due to health and safety regulations, all magical duels must now take place in the mud outside. It builds character and saves on floor wax.",
+		"Please open your textbooks to page 394. If your textbook is missing page 394 because the school bought them used in 1982, just guess.",
+		"I don't get paid enough to deal with Dark Lords. If a Moldy Man walks in here, I am hiding under the desk and letting you sort it out.",
+		"Who replaced my morning tea with Funny Juice? I've been burping up sheep's wool for three hours!",
+		"I've been marking essays for five hours. If I read one more parchment citing 'magic' as the reason a cauldron exploded, I'm quitting.",
+		"Stop tapping your wands on the desks! Do you know how hard it is to get scorch marks out of ancient Welsh oak?",
+		"To whoever cast Pullus! on my chalk: very funny. Now bring it back before I dock fifty points from Slatepie.",
+		"No, Franco, your father cannot buy you a passing grade in this class. Though, for fifty Pounds, I might look the other way.",
+		"I asked for a simple levitation charm, and you managed to set the ceiling on fire. Ten points to Rubywyrm for sheer audacity, I suppose.",
+		"If you can't manage a basic Blockum shield, I highly suggest investing in a good helmet before the Mop Ball game.",
+		"The staff room ran out of coffee. I am running entirely on spite and a mild stimulating hex.",
+		"I remember when this school used to have actual brooms. Now look at us, scrubbing the sky with O-Cedar Master-Sweeps.",
+		"I don't care if a ghost ate your homework. You still have to sit the U.N.G.A. exam on Friday.",
+		"Please stop asking me how to cast Deadum. I am a History of Stuff teacher, not a bloody assassin.",
+		"Why is it always the Mintysnek students who figure out how to bypass the locks on the dangerous supply closet?",
+		"I haven't felt my toes since October. The heating in this academy is an absolute joke.",
+		"Class dismissed. If anyone needs me, I'll be at The Leaky Sheep drinking until I forget I chose teaching as a career."
+	)
+
+/mob/living/simple_animal/wizard/professor/New()
+	..()
+	speak = flavour_text_professors
+	clothing_colours = null
+	icon_state = "wizard_professor[rand(1,2)]"
+	icon_living = icon_state
+	icon_dead = "[icon_state]_dead"
+	update_icons()
+
+/mob/living/simple_animal/wizard/professor/attack_hand(mob/user)
+	src.say(pick(flavour_text_professors))
+
+
+// ============================================================
+// SPAWNERS
+// ============================================================
+
+/obj/effect/spawner/mobspawner/bobby
+	name = "bobby spawner"
+	create_path = /mob/living/simple_animal/wizard/bobby
+	timer = 600
+	icon_state = "npc"
+	max_number = 3
+
+/obj/effect/spawner/mobspawner/professor
+	name = "professor spawner"
+	create_path = /mob/living/simple_animal/wizard/professor
+	timer = 600
+	icon_state = "npc"
+	max_number = 3

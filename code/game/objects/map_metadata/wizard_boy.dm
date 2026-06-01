@@ -14,7 +14,7 @@
 
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "Llanboarwart Academy of Magical Education"
-	mission_start_message = "<font size=6 class='wizard'>Welcome to <b>LAME</b>, the <b>Llanboarwart Academy of Magical Education</b>! Get sorted into a house and duel your fellow wizards!</font>"
+	mission_start_message = "<font size=6 class='wizard'>Welcome to <b>L.A.M.E.</b>, the <span style='color:grey'>Llanboarwart Academy of Magical Education</span>! Get sorted into a house and duel your fellow wizards!</font>"
 	ambience = list("sound/ambience/desert.ogg")
 	faction1 = CIVILIAN
 	is_singlefaction = TRUE
@@ -26,7 +26,12 @@
 	research_active = FALSE
 	gamemode_vote = FALSE
 	var/list/list/house_info = list()
-
+	var/list/list/house_points = list(
+		"Mustardweasel" = 0,
+		"Mintysnek" = 0,
+		"Slatepie" = 0,
+		"Rubywyrm" = 0,
+	)
 	New()
 		..()
 		spawn(30)

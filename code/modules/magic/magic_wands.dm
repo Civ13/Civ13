@@ -116,6 +116,8 @@
 
 	active_spell = usable[idx]
 	to_chat(user, SPAN_NOTICE("Spell set to <b>[active_spell.name]</b>!"))
+	if (user.hud_used)
+		user.hud_used.update_spell_selector(user)
 
 /obj/item/weapon/material/magic/wand/afterattack(atom/target, mob/user, proximity_flag, params)
 	if (!user || !target)
@@ -136,6 +138,8 @@
 	if (!active_spell || !(active_spell in usable))
 		active_spell = usable[1]
 		to_chat(user, SPAN_NOTICE("Spell auto-selected: <b>[active_spell.name]</b>."))
+		if (user.hud_used)
+			user.hud_used.update_spell_selector(user)
 
 	var/datum/spell/S = active_spell
 
@@ -158,6 +162,10 @@
 				H.visible_message("<span style=color:'#dea30d'><b>[user]</b> uses <i>[S.name]!</i></span>")
 				spawn(5)
 					playsound(user.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
+
+				if (S.skill_level >= 80)
+					for (var/mob/living/simple_animal/wizard/bobby/B in view(7, H))
+						B.witness_spell(H, S)
 
 				// Handle non-projectile spells directly
 				if (S.name == "Wallus")

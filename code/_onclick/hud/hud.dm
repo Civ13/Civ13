@@ -207,6 +207,7 @@ var/list/global_huds = list(
 	var/list/obj/screen/plane_master/plane_masters = list()
 	var/list/obj/screen/vehicle/vehicle_hud = list()
 	var/list/wizard_hud = list()
+	var/obj/screen/spell_selector/spell_selector = null
 
 /datum/hud/proc/add_vehicle_hud(var/mob/living/human/H)
 	if (vehicle_hud.len)
@@ -274,6 +275,11 @@ var/list/global_huds = list(
 		remove_wizard_hud()
 	return ..()
 
+/obj/screen/spell_selector
+	icon = 'icons/obj/magic_icon.dmi'
+	icon_state = "selected"
+	layer = 21
+
 /obj/screen/spell
 	icon = 'icons/obj/magic_icon.dmi'
 	layer = 20
@@ -296,6 +302,8 @@ var/list/global_huds = list(
 			if (SP.type == spell_path)
 				W.active_spell = SP
 				to_chat(H, SPAN_NOTICE("Spell set to <b>[W.active_spell.name]</b>!"))
+				if (H.hud_used)
+					H.hud_used.update_spell_selector(H)
 				return
 
 /// Top Left Spells (Row 15) ///
@@ -412,6 +420,7 @@ var/list/global_huds = list(
 
 /datum/hud/proc/add_wizard_hud(mob/living/human/H)
 	if (wizard_hud.len)
+		update_spell_selector(H)
 		return
 
 	var/obj/item/weapon/material/magic/wand/W = H.get_active_hand()
@@ -429,17 +438,49 @@ var/list/global_huds = list(
 		S.parentmob = H
 		wizard_hud += S
 
+	if (!spell_selector)
+		spell_selector = new()
+		spell_selector.parentmob = H
+	wizard_hud += spell_selector
+
 	if (mymob && mymob.client)
 		mymob.client.screen |= wizard_hud
+
+	update_spell_selector(H)
 
 /datum/hud/proc/remove_wizard_hud(mob/living/human/H)
 	if (!wizard_hud.len)
 		return
 	if (H && H.client)
 		H.client.screen -= wizard_hud
-	for (var/obj/screen/spell/S in wizard_hud)
+	for (var/obj/screen/S in wizard_hud)
 		qdel(S)
+	spell_selector = null
 	wizard_hud.Cut()
+
+/datum/hud/proc/update_spell_selector(mob/living/human/H)
+	if (!spell_selector)
+		return
+
+	var/obj/item/weapon/material/magic/wand/W = null
+	if (H)
+		if (istype(H.get_active_hand(), /obj/item/weapon/material/magic/wand))
+			W = H.get_active_hand()
+
+	if (!W || !W.active_spell)
+		spell_selector.screen_loc = null
+		return
+
+	var/found = FALSE
+	for (var/obj/screen/spell/S in wizard_hud)
+		if (S.spell_path == W.active_spell.type)
+			spell_selector.screen_loc = S.screen_loc
+			found = TRUE
+			break
+
+	if (!found)
+		spell_selector.screen_loc = null
+
 
 //////////////////SCREEN HELPERS////////////////////////////
 /obj/screen/spellshow

@@ -62,7 +62,8 @@
 		message.maptext_x = (maptext_width * -0.5)-TILE_SIZE*2.5
 		#endif
 		message.maptext_y = TILE_SIZE*1
-		message.maptext = "<center><span style=\"-dm-text-outline: 1 black;\">[desired_text]</span></center>"
+		message.maptext_height = TILE_SIZE*3
+		message.maptext = "<center><span style=\"-dm-text-outline: 1 black; vertical-align: bottom;\">[desired_text]</span></center>"
 		if(target)
 			if (!(message in target.images))
 				target.images += message
@@ -96,13 +97,15 @@
 
 var/global/sound_tts_num = 0
 
-/mob/proc/play_tts(message,var/mob/living/human/speaker)
+/mob/proc/play_tts(message,var/mob/living/speaker)
 	if (!message || message == "" || !client || !speaker)
 		return
 	message = replacetext(message, "&#39", "'")
 	var/voice = "ap --setf duration_stretch=0.9 --setf int_f0_target_mean=100"
-	if (!speaker.original_job)
-		return
+	if (ishuman(speaker))
+		if (!speaker.original_job)
+			return
+
 	if (speaker.gender == MALE)
 		voice = "ap --setf duration_stretch=0.9 --setf int_f0_target_mean=[speaker.voice_pitch]"
 	else
