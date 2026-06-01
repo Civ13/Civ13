@@ -31,6 +31,8 @@
 	New()
 		..()
 		spawn(30)
+			while (!ticker)
+				sleep(1)
 			ticker.pregame_timeleft = 5
 
 	update_win_condition()
