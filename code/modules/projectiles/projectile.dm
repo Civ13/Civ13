@@ -617,8 +617,12 @@
 					if (prob(hit_chace))
 						passthrough = !attack_mob(L, firer_dist)
 						if (!passthrough)
+							bumped = TRUE
+							loc = null
 							on_impact(L, FALSE)
-						return
+							qdel(src)
+							return FALSE
+						return TRUE
 					else
 						visible_message(SPAN_WARNING("\The [name] flies over \the [AM]!"))
 					def_zone = tmp_zone
