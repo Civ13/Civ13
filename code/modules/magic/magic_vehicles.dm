@@ -93,11 +93,15 @@
 		return
 
 	var/mob/living/human/H = A
+	if (H != user)
+		return
 	if (H.anchored || H.driver || (H in ontop) || ontop.len >= mobcapacity)
 		return
 
 	user.visible_message(SPAN_NOTICE("[H] begins to mount \the [src]..."), SPAN_NOTICE("You begin to mount \the [src]..."))
 	if (do_after(user, 20, src))
+		if (H != user || H.anchored || H.driver || (H in ontop) || ontop.len >= mobcapacity)
+			return
 		if (H.put_in_active_hand(dwheel) == FALSE)
 			to_chat(H, SPAN_WARNING("You need a free hand to hold the [dwheel.name]!"))
 			return
@@ -109,7 +113,6 @@
 		ontop += H
 		to_chat(H, SPAN_NOTICE("Click \the [src] to start flying!"))
 		update_icon()
-
 /obj/structure/vehicle/magic/mop/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if (user == driver && istype(W, /obj/item/vehicleparts/wheel))
 		user.visible_message(SPAN_NOTICE("[user] hops off \the [src]."), SPAN_NOTICE("You hop off \the [src]."))
