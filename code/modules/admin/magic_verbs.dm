@@ -255,3 +255,26 @@
 	to_chat(usr, "Added [target_ckey] to house [house].")
 	log_admin("[key_name(usr)] added [target_ckey] to house [house].")
 	message_admins("[key_name(usr)] added [target_ckey] to house [house].", key_name(usr))
+
+/datum/admins/proc/set_house_points()
+	set category = "Magic"
+	set name = "Set House Points"
+	if (!check_rights(R_ADMIN))
+		return
+	var/obj/map_metadata/wizard_boy/W = map
+	if (!istype(W))
+		to_chat(usr, "The current map is not Wizard Boy.")
+		return
+
+	var/house = input(usr, "Select house", "Set House Points") in list("Rubywyrm", "Mintysnek", "Slatepie", "Mustardweasel")
+	if (!house)
+		return
+
+	var/new_points = input(usr, "Enter the points to add/subtract to [house]:", "Set House Points", W.house_points[house]) as num
+	if (isnull(new_points))
+		return
+
+	W.house_points[house] += new_points
+	to_chat(usr, "Changed [house] points by [new_points] (new value: [W.house_points[house]]).")
+	log_admin("[key_name(usr)] changed [house] points by [new_points] (new value: [W.house_points[house]]).")
+	message_admins("[key_name(usr)] changed [house] points by [new_points] (new value: [W.house_points[house]]).", key_name(usr))

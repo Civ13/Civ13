@@ -327,6 +327,7 @@ var/list/admin_verbs_magic = list(
 	/datum/admins/proc/change_house,
 	/datum/admins/proc/check_level,
 	/datum/admins/proc/change_level,
+	/datum/admins/proc/set_house_points,
 )
 
 /client/proc/add_admin_verbs()
@@ -375,6 +376,7 @@ var/list/admin_verbs_magic = list(
 				/datum/admins/proc/change_house,
 				/datum/admins/proc/check_level,
 				/datum/admins/proc/change_level,
+				/datum/admins/proc/set_house_points,
 			)
 /client/proc/remove_admin_verbs()
 	verbs.Remove(

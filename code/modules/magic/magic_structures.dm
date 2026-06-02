@@ -108,6 +108,7 @@
 	name = "Arcane Supplies vending machine"
 	desc = "An overpriced vending machine that sells various magical items. It accepts coins, but it seems to have a strange fondness for chocolate."
 	icon_state = "arcane"
+	owner = "Arcane Supplies Co."
 	products = list(
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/small/not_butter_beer = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/small/green_goop = 15,

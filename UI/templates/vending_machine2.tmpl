@@ -2,29 +2,33 @@
 	Interface for vending machines 
 	See: code/game/machinery/vending.dm
 -->
-<h1><center>{{:data.company}}</center></h1>
+<h1>
+	<center>{{:data.company}}</center>
+</h1>
 {{if data.mode == 0}} <!-- Listing -->
 <h2>Money</h2>
 <div class='item'>
-	<div class='itemLabel'>Money deposited ({{:data.currency_name}}):</div> 
-	<div class='itemContent'>{{:helper.link(data.moneyin + ' ' + data.currency_short, 'eject', {'remove_money' : 1})}}</div>
+	<div class='itemLabel'>Money deposited ({{:data.currency_name}}):</div>
+	<div class='itemContent'>{{:helper.link(data.moneyin + ' ' + data.currency_short, 'eject', {'remove_money' : 1})}}
+	</div>
 </div>
 <h2>Items available</h2>
 <div class='item'>
 	{{for data.products}}
 	<div class='item'>
-			<div style='float'>
-				{{if value.price > 0}}
-					{{:helper.link('Buy (' + value.price + ' ' + data.currency_short + ')', 'cart', { "vend" : value.key }, value.amount > 0 ? null : 'disabled')}}
-				{{else}}
-					{{:helper.link('Vend', 'circle-arrow-s', { "vend" : value.key }, value.amount > 0 ? null : 'disabled')}}
-				{{/if}}
-			</div>
+		<div style='float'>
+			{{if value.price > 0}}
+			{{:helper.link('Buy (' + value.price + ' ' + data.currency_short + ')', 'cart', { "vend" : value.key },
+			value.amount > 0 ? null : 'disabled')}}
+			{{else}}
+			{{:helper.link('Vend', 'circle-arrow-s', { "vend" : value.key }, value.amount > 0 ? null : 'disabled')}}
+			{{/if}}
+		</div>
 		<div class='itemContent'>
-		{{if value.color}}<span style='color:{{:value.color}}'>{{:value.name}}</span>
-		{{else}}{{:value.name}}
-		{{/if}}
-			 ({{:value.amount ? value.amount : "NONE LEFT"}})
+			{{if value.color}}<span style='color:{{:value.color}}'>{{:value.name}}</span>
+			{{else}}{{:value.name}}
+			{{/if}}
+			({{:value.amount ? value.amount : "NONE LEFT"}})
 		</div>
 	</div>
 	{{empty}}
@@ -34,17 +38,19 @@
 {{else data.mode == 1}} <!-- Payment screen -->
 <h2>Money</h2>
 <div class='item'>
-	<div class='itemLabel'>Money deposited:</div> 
+	<div class='itemLabel'>Money deposited:</div>
 	<div class='itemContent'>{{:helper.link(data.moneyin, 'eject', {'remove_money' : 1})}}</div>
 </div>
 <h2>Item selected</h2>
 <div class='item'>
 	<div class='item'>
-		<div class='itemLabel'>Item selected:</div> <div class='itemContent'>{{:data.product}}</div>
-		<div class='itemLabel'>Charge:</div> <div class='itemContent'>{{:data.price}}</div>
+		<div class='itemLabel'>Item selected:</div>
+		<div class='itemContent'>{{:data.product}}</div>
+		<div class='itemLabel'>Charge:</div>
+		<div class='itemContent'>{{:data.price}}</div>
 	</div>
 	<div class='statusDisplay' style='overflow: auto;'>
-		{{if data.message_err}} <span class='uiIcon16 icon-alert' ></span>{{/if}} {{:data.message}}
+		{{if data.message_err}} <span class='uiIcon16 icon-alert'></span>{{/if}} {{:data.message}}
 	</div>
 	<div class='item'>
 		{{:helper.link('Cancel', 'arrowreturn-1-w', {'cancelpurchase' : 1})}}
@@ -54,6 +60,7 @@
 {{if data.panel}}
 <h2>Maintenance panel</h2>
 <div class='item'>
-	<div class='itemLabel'>Speaker</div><div class='item'>{{:helper.link(data.speaker ? 'Enabled' : 'Disabled',  'gear', {'togglevoice' : 1})}}</div>
+	<div class='itemLabel'>Speaker</div>
+	<div class='item'>{{:helper.link(data.speaker ? 'Enabled' : 'Disabled', 'gear', {'togglevoice' : 1})}}</div>
 </div>
 {{/if}}
