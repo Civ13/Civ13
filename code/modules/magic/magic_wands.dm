@@ -118,6 +118,7 @@
 	to_chat(user, SPAN_NOTICE("Spell set to <b>[active_spell.name]</b>!"))
 	if (user.hud_used)
 		user.hud_used.update_spell_selector(user)
+		user.hud_used.update_spellshow(user)
 
 // Cycle through the user's known spells with secondary action
 /obj/item/weapon/material/magic/wand/attack_self(mob/living/human/user)
@@ -137,6 +138,7 @@
 	to_chat(user, SPAN_NOTICE("Spell set to <b>[active_spell.name]</b>!"))
 	if (user.hud_used)
 		user.hud_used.update_spell_selector(user)
+		user.hud_used.update_spellshow(user)
 
 /obj/item/weapon/material/magic/wand/afterattack(atom/target, mob/user, proximity_flag, params)
 	if (!user || !target)
@@ -159,6 +161,7 @@
 		to_chat(user, SPAN_NOTICE("Spell auto-selected: <b>[active_spell.name]</b>."))
 		if (user.hud_used)
 			user.hud_used.update_spell_selector(user)
+			user.hud_used.update_spellshow(user)
 
 	var/datum/spell/S = active_spell
 

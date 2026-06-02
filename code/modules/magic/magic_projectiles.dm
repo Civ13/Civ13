@@ -23,7 +23,13 @@
 	return TRUE
 /obj/item/projectile/magic/proc/deduct_house_points_for_illegal_spell(var/atom/target, var/points, var/spell_name = "")
 	if (!firer || !ishuman(firer) || !firer.client) return
+	if (!target) return
 	if (istype(get_area(firer), /area/caribbean/houses/nml_one) && istype(get_area(target), /area/caribbean/houses/nml_one))
+		return
+	var/mob/living/human/target_human = null
+	if (istype(target, /mob/living/human))
+		target_human = target
+	if (!(target_human && target_human.client) && !istype(target, /mob/living/simple_animal/wizard))
 		return
 	var/mob/living/human/Hfirer = firer
 	if (!Hfirer.nationality) return
@@ -270,6 +276,8 @@
 	nodamage = TRUE
 
 /obj/item/projectile/magic/deadum/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
+	if (!..())
+		return FALSE
 	if (isliving(target))
 		var/mob/living/L = target
 		deduct_house_points_for_illegal_spell(target, 100, "Deadum")
@@ -285,7 +293,7 @@
 					Hfirer.strip() // Adjust equipment by stripping them
 					to_chat(Hfirer, SPAN_DANGER("You have cast an unforgivable curse on a fellow student! You have been demoted to a L.O.S.E.R. and removed from your house!"))
 		L.gib()
-	return ..()
+	return TRUE
 
 /obj/item/projectile/magic/sliceum
 	name = "sliceum"

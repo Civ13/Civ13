@@ -154,9 +154,9 @@
 		return
 	var/choice = alert(user, "\"Need healing, does yous?\" the goblin rasps, eyeing your wounds.", "Goblin Healer", "Yes please!", "No thanks.")
 	if (choice == "Yes please!")
+		if (!H || !src || src.stat || get_dist(H, src) > 1)
+			return
 		if (H.getOxyLoss() + H.getToxLoss() + H.getBurnLoss() + H.getBruteLoss() < 5)
-			if (!H || H.stat || !src || src.stat || get_dist(H, src) > 1)
-				return
 			src.say("You looks fine to Grub! No waste the good medicine on the healthy, yes?")
 			return
 		src.say("Grub fixes! Hold still, yes? Grub's poultice is very old, very strong!")
@@ -226,17 +226,16 @@
 /mob/living/simple_animal/wizard/tumbledoor/respond_to_attack(mob/living/user)
 	if (world.time < response_timer)
 		return
+	response_timer = world.time + 20
 	// Tumbledoor does not appreciate being struck.
 	if (world.time > retaliation_cooldown)
-		src.say("I would advise you not to try that again.")
 		retaliation_cooldown = world.time + 300
-		response_timer = world.time + 20
+		src.say("I would advise you not to try that again.")
 		return
+	retaliation_cooldown = world.time + 100
 	src.say("LISTEN HERE YOU LITTLE SHIT.")
 	playsound(src.loc, 'sound/effects/spells/deadum.ogg', 80, TRUE)
 	visible_message(SPAN_DANGER("<b>Headmaster Tumbledoor</b> raises his wand with terrifying calm!"))
-	retaliation_cooldown = world.time + 100
-	response_timer = world.time + 20
 	spawn(20) // brief dramatic pause before the bolt fires
 		if (src && user && !user.stat)
 			for (var/mob/M in player_list)

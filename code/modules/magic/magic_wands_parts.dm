@@ -105,7 +105,10 @@
 	apply_wood_stats()
 	apply_core_stats()
 	apply_length_stats()
-	update_name_and_desc()
+	var/default_name = (name == "crafted wand" || name == null || name == "")
+	var/default_desc = (desc == "A wand assembled from whatever was lying around. It hums with uncertain potential." || desc == null || desc == "")
+	if (default_name || default_desc)
+		update_name_and_desc()
 
 
 // ============================================================
@@ -287,8 +290,10 @@
 		if (WAND_LENGTH_TELESCOPIC)
 			len_str = telescopic_extended ? "extended telescopic" : "collapsed telescopic"
 
-	name = "[len_str] [wood_str] wand"
-	desc = "A [len_str] wand made of [wood_str] with a [core_str] core. It crackles with dubious magical potential."
+	if (name == "crafted wand" || name == null || name == "")
+		name = "[len_str] [wood_str] wand"
+	if (desc == "A wand assembled from whatever was lying around. It hums with uncertain potential." || desc == null || desc == "")
+		desc = "A [len_str] wand made of [wood_str] with a [core_str] core. It crackles with dubious magical potential."
 
 
 // ============================================================
@@ -392,8 +397,8 @@
 	// Pine: 5% chance for a splinter to the active hand
 	if (wand_wood == WAND_WOOD_PINE && prob(splinter_chance))
 		to_chat(H, SPAN_DANGER("You get a splinter from \the [src]! Ow!"))
-		H.apply_damage(2, BRUTE, (H.get_active_hand() ? "r_hand" : "l_hand"))
-
+		var/target_hand = (H.l_hand == src) ? "l_hand" : "r_hand"
+		H.apply_damage(3, BRUTE, target_hand)
 	// Fibreglass: wand snaps back and lacerates the caster's arm
 	if (lash_on_overcast)
 		to_chat(H, SPAN_DANGER("\The [src] snaps back violently and lacerates your arm!"))
@@ -459,6 +464,7 @@
 		to_chat(user, SPAN_NOTICE("Spell auto-selected: <b>[active_spell.name]</b>."))
 		if (user.hud_used)
 			user.hud_used.update_spell_selector(user)
+			user.hud_used.update_spellshow(user)
 
 	var/datum/spell/S = active_spell
 

@@ -8,11 +8,11 @@
 	attack_self(mob/user)
 		if(istype(origin, /obj/structure/vehicle/magic/mop))
 			var/obj/structure/vehicle/magic/mop/M = origin
-			M.toggle_power()
+			M.toggle_power(user)
 	secondary_attack_self(mob/user)
 		if(istype(origin, /obj/structure/vehicle/magic/mop))
 			var/obj/structure/vehicle/magic/mop/M = origin
-			M.dismount_driver()
+			M.dismount_driver(user)
 
 /obj/structure/vehicle/magic/mop
 	name = "flying mop"
@@ -117,8 +117,10 @@
 		return
 	..()
 
-/obj/structure/vehicle/magic/mop/proc/toggle_power()
-	if (!driver) return
+/obj/structure/vehicle/magic/mop/proc/toggle_power(mob/user)
+	
+	if (!driver || user != driver)
+		return
 	on = !on
 	to_chat(driver, SPAN_NOTICE("You [on ? "focus your energy into" : "stop channeling magic into"] \the [src]."))
 	if (on)
@@ -135,7 +137,9 @@
 	else
 		..()
 
-/obj/structure/vehicle/magic/mop/proc/dismount_driver()
+/obj/structure/vehicle/magic/mop/proc/dismount_driver(mob/user)
+	if (user && user != driver)
+		return
 	if (!driver)
 		return
 
@@ -179,8 +183,9 @@
 
 /obj/structure/vehicle/magic/mop/do_move(var/m_dir = null)
 	if (driver && ishuman(driver))
-		driver.juice = max(0, driver.juice - 0.7)
-		if (driver.juice <= 0)
+		var/mob/living/human/H = driver
+		H.juice = max(0, H.juice - 0.7)
+		if (H.juice <= 0)
 			on = FALSE
 			stopmovementloop()
 			do_vehicle_check()

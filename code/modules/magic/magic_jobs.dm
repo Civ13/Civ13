@@ -21,7 +21,7 @@
 			WB.load_houses()
 		if (WB.house_info[H.ckey])
 			H.nationality = WB.house_info[H.ckey][2]
-			if (H.nationality != "R")
+			if (H.nationality != "R" && WB.house_info[H.ckey][2] != "0")
 				switch(WB.house_info[H.ckey][1])
 					if("Rubywyrm")
 						H.faction = "Rubywyrm"

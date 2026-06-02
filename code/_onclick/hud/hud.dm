@@ -305,9 +305,8 @@ var/list/global_huds = list(
 				to_chat(H, SPAN_NOTICE("Spell set to <b>[W.active_spell.name]</b>!"))
 				if (H.hud_used)
 					H.hud_used.update_spell_selector(H)
+				H.hud_used.update_spellshow(H)
 				return
-
-/// Top Left Spells (Row 15) ///
 /obj/screen/spell/zappus
 	name = "Zappus"
 	icon_state = "zappus"
@@ -421,8 +420,7 @@ var/list/global_huds = list(
 
 /datum/hud/proc/add_wizard_hud(mob/living/human/H)
 	if (wizard_hud.len)
-		update_spell_selector(H)
-		return
+		remove_wizard_hud(H)
 
 	var/obj/item/weapon/material/magic/wand/W = H.get_active_hand()
 	if (!istype(W))
@@ -482,6 +480,12 @@ var/list/global_huds = list(
 	if (!found)
 		spell_selector.screen_loc = null
 
+/datum/hud/proc/update_spellshow(mob/living/human/H)
+	if (!H || !H.client)
+		return
+	for (var/obj/screen/spellshow/S in H.client.screen)
+		S.update()
+
 
 //////////////////SCREEN HELPERS////////////////////////////
 /obj/screen/spellshow
@@ -504,8 +508,6 @@ var/list/global_huds = list(
 		else
 			maptext = "<center><font color='red'>No Spell</font></center>"
 	icon_state = "blank"
-	spawn(30)
-		update(TRUE)
 
 /obj/screen/spellshow/proc/update(loop = FALSE)
 	if (!parentmob || !src)
@@ -520,6 +522,3 @@ var/list/global_huds = list(
 			maptext = "<center><font color='yellow'><b>[W.active_spell.name]</b></font></center>"
 		else
 			maptext = "<center><font color='red'>No Spell</font></center>"
-	if (loop)
-		spawn(5)
-			update(TRUE)
