@@ -279,6 +279,7 @@ var/list/global_huds = list(
 	icon = 'icons/obj/magic_icon.dmi'
 	icon_state = "selected"
 	layer = 21
+	mouse_opacity = FALSE
 
 /obj/screen/spell
 	icon = 'icons/obj/magic_icon.dmi'

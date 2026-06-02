@@ -17,8 +17,10 @@
 //suit
 	if (map && istype(map, /obj/map_metadata/wizard_boy))
 		var/obj/map_metadata/wizard_boy/WB = map
-		H.nationality = WB.house_info[H.ckey][2]
+		if (!WB.house_info[H.ckey])
+			WB.load_houses()
 		if (WB.house_info[H.ckey])
+			H.nationality = WB.house_info[H.ckey][2]
 			if (H.nationality != "R")
 				switch(WB.house_info[H.ckey][1])
 					if("Rubywyrm")
