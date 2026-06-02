@@ -164,7 +164,7 @@
 	skill_level = 70
 	cast_time = 20
 	learnable = TRUE
-	juice_cost = 50
+	juice_cost = 40
 	screen_obj = /obj/screen/spell/sliceum
 	sound_effect = 'sound/effects/spells/sliceum.ogg'
 
@@ -175,7 +175,7 @@
 	skill_level = 75
 	cast_time = 15
 	learnable = TRUE
-	juice_cost = 80
+	juice_cost = 50
 	screen_obj = /obj/screen/spell/fixae
 	sound_effect = 'sound/effects/spells/fixae.ogg'
 
