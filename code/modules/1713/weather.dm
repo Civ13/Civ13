@@ -305,6 +305,8 @@
 /// Returns TRUE if the given area icon_state represents precipitation
 /// (rain, snow, monsoon) that would soak an MDF wand.
 /proc/is_wet_weather_icon(var/icon_state_str)
+	if (copytext(icon_state_str, 1, 5) == "rad_")
+		icon_state_str = copytext(icon_state_str, 5)
 	switch (icon_state_str)
 		if ("rain", "rain1", "rain2", "rain3", "monsoon", "snow1", "snow2", "snow_storm")
 			return TRUE
