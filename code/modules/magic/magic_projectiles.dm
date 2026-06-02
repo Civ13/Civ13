@@ -540,6 +540,22 @@
 			H.handle_piss()
 			H.handle_shit()
 
+/obj/item/projectile/magic/zappus/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
+	// on_hit is only called for living targets (base proc returns FALSE for non-living).
+	// Bottle shattering is handled in on_impact instead.
+	return ..()
+
+/obj/item/projectile/magic/zappus/on_impact(var/atom/A, play_sound = TRUE)
+	// Shatter any glass or clay bottles on the impact turf
+	var/turf/T = get_turf(A)
+	if (T)
+		for (var/obj/item/weapon/reagent_containers/food/drinks/bottle/B in T)
+			if (B.isGlass)
+				B.shatter(B.loc, B, 0)
+		for (var/obj/item/weapon/reagent_containers/food/drinks/clay/C in T)
+			C.shatter(C.loc, C, 0)
+	return ..(A, play_sound)
+
 // New Projectiles
 /obj/item/projectile/magic/fixae
 	name = "fixae bolt"

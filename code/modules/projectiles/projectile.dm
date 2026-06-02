@@ -641,7 +641,10 @@
 					else
 						hitchance = 100
 				else if (isitem(O) && !density)
-					hitchance = 0
+					if (istype(O, /obj/item/weapon/reagent_containers/food/drinks/bottle) || istype(O, /obj/item/weapon/reagent_containers/food/drinks/clay))
+						hitchance = 100
+					else
+						hitchance = 0
 				if (prob(hitchance))
 					if (istype(O, /obj/structure))
 						var/obj/structure/S = O

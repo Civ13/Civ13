@@ -119,3 +119,21 @@
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/small/green_goop = 20,
 		/obj/item/weapon/reagent_containers/food/snacks/chocotoad = 20,
 	)
+
+/obj/structure/sign/signpost/llanboarwart/New()
+	..()
+	desc = "<b>NORTH:</b>Main Hall. <b>EAST:</b> Mop Ball Field & Gardens. <b>SOUTH:</b> Main Entrance (to Cwm-Tlawd Valley)."
+	spawn(1)
+//		overlays += icon(icon, "signpost_west")
+		overlays += icon(icon, "signpost_north")
+		overlays += icon(icon, "signpost_east")
+		overlays += icon(icon, "signpost_south")
+
+/obj/structure/sign/signpost/llanboarwart/outside/New()
+	..()
+	desc = "<b>NORTH:</b>Llanboardwart Academy of Magical Education. <b>EAST:</b> Dark Forest. <b>WEST:</b> Cwm-Tlawd Village."
+	spawn(1)
+		overlays += icon(icon, "signpost_west")
+		overlays += icon(icon, "signpost_north")
+		overlays += icon(icon, "signpost_east")
+//		overlays += icon(icon, "signpost_south")
