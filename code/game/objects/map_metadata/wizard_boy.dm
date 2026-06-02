@@ -35,7 +35,6 @@
 	New()
 		..()
 		spawn(30)
-			//ticker.pregame_timeleft = 5
 			load_houses()
 
 	update_win_condition()

@@ -119,6 +119,25 @@
 	if (user.hud_used)
 		user.hud_used.update_spell_selector(user)
 
+// Cycle through the user's known spells with secondary action
+/obj/item/weapon/material/magic/wand/attack_self(mob/living/human/user)
+	var/list/usable = get_usable_spells(user)
+	if (!usable.len)
+		to_chat(user, SPAN_WARNING("You don't know any spells you can cast with this wand!"))
+		return
+
+	// find current index in usable list
+	var/idx = usable.len
+	if (active_spell && (active_spell in usable))
+		idx = usable.Find(active_spell) - 1
+		if (idx < 1)
+			idx = usable.len
+
+	active_spell = usable[idx]
+	to_chat(user, SPAN_NOTICE("Spell set to <b>[active_spell.name]</b>!"))
+	if (user.hud_used)
+		user.hud_used.update_spell_selector(user)
+
 /obj/item/weapon/material/magic/wand/afterattack(atom/target, mob/user, proximity_flag, params)
 	if (!user || !target)
 		return
