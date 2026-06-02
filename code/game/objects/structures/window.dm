@@ -820,6 +820,7 @@
 	maxhealth = 200.0
 	not_movable = TRUE
 	not_disassemblable = TRUE
+	density = TRUE
 /obj/structure/window/clean/reinforced/metal
 	icon_state = "windowmetal"
 /obj/structure/window/clean/reinforced/bank_glass

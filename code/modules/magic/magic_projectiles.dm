@@ -117,10 +117,10 @@
 
 /obj/item/projectile/magic/fire_bolt/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
-		if (ishuman(target))
-			var/mob/living/human/H = target
-			H.fire_stacks += 2
-			H.IgniteMob()
+		if (ismob(target))
+			var/mob/living/M = target
+			M.fire_stacks += 2
+			M.IgniteMob()
 
 /obj/item/projectile/magic/vine_shot
 	name = "vine shot"
@@ -435,7 +435,7 @@
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
-			L.apply_effects(agony = 80, stun = 3, blocked = blocked)
+			L.apply_effects(agony = 80, stun = 6, blocked = blocked)
 			L.emote("painscream")
 			to_chat(L, SPAN_DANGER("You feel unimaginable agony!"))
 
@@ -515,7 +515,7 @@
 			if (B)
 				L.forceMove(B)
 				B.name = "suspicious barrel"
-				spawn(40)
+				spawn(70)
 					if (B && L && (L.loc == B))
 						L.forceMove(B.loc)
 						qdel(B)
@@ -572,12 +572,7 @@
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
-			L.adjustBruteLoss(-heal_amount)
-			L.adjustBurnLoss(-heal_amount)
-			L.adjustToxLoss(-heal_amount / 2)
-			L.adjustOxyLoss(-heal_amount / 2)
-			L.stunned = 0
-			L.weakened = 0
+			L.revive()
 			to_chat(L, SPAN_NOTICE("You feel a surge of restorative energy!"))
 
 /obj/item/projectile/magic/wallus

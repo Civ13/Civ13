@@ -19,7 +19,7 @@
 	desc = "A sturdy cleaning mop etched with silver runes. It hums with a faint, magical energy and smells of lavender soap."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "mop"
-	vehicle_m_delay = 3
+	vehicle_m_delay = 1
 	health = 50
 	not_movable = TRUE
 	not_disassemblable = FALSE

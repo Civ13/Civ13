@@ -154,19 +154,14 @@
 		return
 	var/choice = alert(user, "\"Need healing, does yous?\" the goblin rasps, eyeing your wounds.", "Goblin Healer", "Yes please!", "No thanks.")
 	if (choice == "Yes please!")
-		if (H.health >= H.maxHealth)
+		if (H.getOxyLoss() + H.getToxLoss() + H.getBurnLoss() + H.getBruteLoss() < 5)
 			if (!H || H.stat || !src || src.stat || get_dist(H, src) > 1)
 				return
 			src.say("You looks fine to Grub! No waste the good medicine on the healthy, yes?")
 			return
 		src.say("Grub fixes! Hold still, yes? Grub's poultice is very old, very strong!")
 		playsound(src.loc, 'sound/effects/spells/fixae.ogg', 60, FALSE)
-		H.adjustBruteLoss(-40)
-		H.adjustBurnLoss(-40)
-		H.adjustToxLoss(-20)
-		H.adjustOxyLoss(-20)
-		if (H.stunned)  H.stunned = 0
-		if (H.weakened) H.weakened = 0
+		H.revive()
 		to_chat(H, SPAN_NOTICE("The goblin slaps a foul-smelling poultice on you and mutters a chant. You feel considerably less dead."))
 		heal_cooldown = world.time + 1200 // 2 min cooldown
 	else

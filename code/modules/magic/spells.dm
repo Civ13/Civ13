@@ -27,7 +27,7 @@
 	description = "Creates a bubble of magic denial around the caster."
 	proj_type = /obj/item/projectile/magic/blockum
 	skill_level = 10
-	cast_time = 2
+	cast_time = 0
 	learnable = TRUE
 	juice_cost = 15
 	screen_obj = /obj/screen/spell/blockum
@@ -37,7 +37,7 @@
 	name = "Lightus"
 	description = "Emits a temporary magical light from the caster."
 	skill_level = 5
-	cast_time = 5
+	cast_time = 0
 	learnable = TRUE
 	juice_cost = 15
 	screen_obj = /obj/screen/spell/lightus
@@ -48,7 +48,7 @@
 	description = "Makes the target to drop whatever they are holding."
 	proj_type = /obj/item/projectile/magic/dropus
 	skill_level = 15
-	cast_time = 10
+	cast_time = 5
 	learnable = TRUE
 	juice_cost = 15
 	screen_obj = /obj/screen/spell/dropus
@@ -59,7 +59,7 @@
 	description = "Makes the target urinate and defecate."
 	proj_type = /obj/item/projectile/magic/stinkaeum
 	skill_level = 20
-	cast_time = 10
+	cast_time = 5
 	learnable = TRUE
 	juice_cost = 15
 	screen_obj = /obj/screen/spell/stinkaeum
@@ -72,7 +72,7 @@
 	description = "Pushes the target away."
 	proj_type = /obj/item/projectile/magic/pushum
 	skill_level = 30
-	cast_time = 12
+	cast_time = 7
 	learnable = TRUE
 	juice_cost = 20
 	screen_obj = /obj/screen/spell/pushum
@@ -83,7 +83,7 @@
 	description = "Pulls the target towards the caster."
 	proj_type = /obj/item/projectile/magic/pullus
 	skill_level = 30
-	cast_time = 15
+	cast_time = 7
 	learnable = TRUE
 	juice_cost = 20
 	screen_obj = /obj/screen/spell/pullus
@@ -94,7 +94,7 @@
 	description = "Summons a sturdy barricade at the target location."
 	proj_type = null
 	skill_level = 35
-	cast_time = 20
+	cast_time = 15
 	learnable = TRUE
 	juice_cost = 30
 	screen_obj = /obj/screen/spell/wallus
@@ -105,7 +105,7 @@
 	description = "Makes the target float around for a short period."
 	proj_type = /obj/item/projectile/magic/floatus
 	skill_level = 40
-	cast_time = 20
+	cast_time = 12
 	learnable = TRUE
 	juice_cost = 35
 	screen_obj = /obj/screen/spell/floatus
@@ -117,7 +117,7 @@
 	name = "Freezeum"
 	description = "Freezes the target in a block of ice."
 	skill_level = 50
-	cast_time = 25
+	cast_time = 15
 	learnable = TRUE
 	proj_type = /obj/item/projectile/magic/freezum
 	juice_cost = 35
@@ -128,7 +128,7 @@
 	name = "Blinkae"
 	description = "Teleports the caster to a nearby location."
 	skill_level = 55
-	cast_time = 20
+	cast_time = 15
 	learnable = TRUE
 	juice_cost = 30
 	screen_obj = /obj/screen/spell/blinkae
@@ -139,7 +139,7 @@
 	name = "Burnus"
 	description = "Sets the target on fire."
 	skill_level = 55
-	cast_time = 20
+	cast_time = 15
 	learnable = TRUE
 	proj_type = /obj/item/projectile/magic/fire_bolt
 	juice_cost = 40
@@ -151,9 +151,9 @@
 	description = "Creates a wooden barrel and shoves the target inside it."
 	proj_type = /obj/item/projectile/magic/barrelus
 	skill_level = 65
-	cast_time = 35
+	cast_time = 15
 	learnable = TRUE
-	juice_cost = 65
+	juice_cost = 25
 	screen_obj = /obj/screen/spell/barrelus
 	sound_effect = 'sound/effects/spells/barrelus.ogg'
 
@@ -162,7 +162,7 @@
 	description = "An invisible, incredibly sharp slashing strike."
 	proj_type = /obj/item/projectile/magic/sliceum
 	skill_level = 70
-	cast_time = 30
+	cast_time = 20
 	learnable = TRUE
 	juice_cost = 50
 	screen_obj = /obj/screen/spell/sliceum
@@ -173,7 +173,7 @@
 	description = "A powerful healing spell that rejuvenates the target."
 	proj_type = /obj/item/projectile/magic/fixae
 	skill_level = 75
-	cast_time = 40
+	cast_time = 15
 	learnable = TRUE
 	juice_cost = 80
 	screen_obj = /obj/screen/spell/fixae
@@ -184,7 +184,7 @@
 	description = "Creates an explosion at the target location, damaging everything in the area."
 	proj_type = /obj/item/projectile/magic/explodus
 	skill_level = 80
-	cast_time = 45
+	cast_time = 30
 	learnable = TRUE
 	juice_cost = 60
 	screen_obj = /obj/screen/spell/explodus
@@ -197,7 +197,7 @@
 	description = "A forbidden curse that causes unimaginable agony."
 	proj_type = /obj/item/projectile/magic/painum
 	skill_level = 85
-	cast_time = 50
+	cast_time = 30
 	learnable = TRUE
 	juice_cost = 85
 	screen_obj = /obj/screen/spell/painum
@@ -208,7 +208,7 @@
 	description = "The ultimate forbidden spell. Gibs the target into a bloody mess."
 	proj_type = /obj/item/projectile/magic/deadum
 	skill_level = 100
-	cast_time = 80
+	cast_time = 50
 	learnable = TRUE
 	juice_cost = 100
 	screen_obj = /obj/screen/spell/deadum
