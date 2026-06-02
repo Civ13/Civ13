@@ -5,7 +5,28 @@
 	icon = 'icons/misc/crests.dmi'
 	icon_state = ""
 
+/obj/structure/sign/crest/small
+	name = "house crest"
+	desc = "The crest of one of the houses."
+	icon = 'icons/misc/crests_small.dmi'
+	icon_state = ""
+
+/obj/structure/sign/crest/llanboarwart
+	name = "Llanboarwart crest"
+	desc = "The crest of L.A.M.E., Llanboarwart Academy of Magical Education."
+	icon_state = "llanboarwart"
+
+/obj/structure/sign/crest/small/llanboarwart
+	name = "Llanboarwart crest"
+	desc = "The crest of L.A.M.E., Llanboarwart Academy of Magical Education."
+	icon_state = "llanboarwart"
+
 /obj/structure/sign/crest/mintysnek
+	name = "Mintysnek crest"
+	desc = "The crest of the Mintysnek house. A minty green lizard and a leek."
+	icon_state = "mintysnek"
+
+/obj/structure/sign/crest/small/mintysnek
 	name = "Mintysnek crest"
 	desc = "The crest of the Mintysnek house. A minty green lizard and a leek."
 	icon_state = "mintysnek"
@@ -15,12 +36,27 @@
 	desc = "The crest of the Rubywyrm house. A welsh dragon coiled around a ruby."
 	icon_state = "rubywyrm"
 
+/obj/structure/sign/crest/small/rubywyrm
+	name = "Rubywyrm crest"
+	desc = "The crest of the Rubywyrm house. A welsh dragon coiled around a ruby."
+	icon_state = "rubywyrm"
+
 /obj/structure/sign/crest/slatepie
 	name = "Slatepie crest"
 	desc = "The crest of the Slatepie house. A magpie sitting on top of welsh slate."
 	icon_state = "slatepie"
 
+/obj/structure/sign/crest/small/slatepie
+	name = "Slatepie crest"
+	desc = "The crest of the Slatepie house. A magpie sitting on top of welsh slate."
+	icon_state = "slatepie"
+
 /obj/structure/sign/crest/mustardweasel
+	name = "Mustardweasel crest"
+	desc = "The crest of the Mustardweasel house. A ferret with a daffodil over its ear."
+	icon_state = "mustardweasel"
+
+/obj/structure/sign/crest/small/mustardweasel
 	name = "Mustardweasel crest"
 	desc = "The crest of the Mustardweasel house. A ferret with a daffodil over its ear."
 	icon_state = "mustardweasel"
@@ -66,3 +102,19 @@
 				to_chat(user, "<font size=4 class='wizard' style='color:#FFD700'>Mustardweasel: [score]</font>")
 
 	return TRUE
+
+
+/obj/structure/vending/sales/wizards
+	name = "Arcane Supplies vending machine"
+	desc = "An overpriced vending machine that sells various magical items. It accepts coins, but it seems to have a strange fondness for chocolate."
+	icon_state = "arcane"
+	products = list(
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/small/not_butter_beer = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/small/green_goop = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/chocotoad = 15,
+	)
+	prices = list(
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/small/not_butter_beer = 20,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/small/green_goop = 20,
+		/obj/item/weapon/reagent_containers/food/snacks/chocotoad = 20,
+	)

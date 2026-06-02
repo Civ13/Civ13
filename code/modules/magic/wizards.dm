@@ -1,7 +1,7 @@
 /mob/living/simple_animal/wizard
 	name = "Llanboarwart Student"
 	desc = "They look tired and damp."
-	icon = 'icons/mob/npcs.dmi'
+	icon = 'icons/mob/npcs_wizards.dmi'
 	icon_state = "wizard_base1"
 	icon_living = "wizard_base1"
 	icon_dead = "wizard_boy_dead"
@@ -125,7 +125,6 @@
 /mob/living/simple_animal/wizard/goblin_healer
 	name = "Goblin Healer"
 	desc = "A small, warty creature in a filthy apron that smells of mildew and strong herbs. It eyes you with a businesslike squint."
-	icon = 'icons/mob/npcs.dmi'
 	icon_state = "goblin_healer"
 	icon_living = "goblin_healer"
 	icon_dead = "goblin_healer_dead"
@@ -180,7 +179,6 @@
 /mob/living/simple_animal/wizard/tumbledoor
 	name = "Headmaster Tumbledoor"
 	desc = "An ancient wizard with a magnificent silver beard, half-moon spectacles, and the unsettling air of someone who already knows what you are about to say."
-	icon = 'icons/mob/npcs.dmi'
 	icon_state = "tumbledoor"
 	icon_living = "tumbledoor"
 	icon_dead = "tumbledoor_dead"
@@ -266,11 +264,11 @@
 
 /mob/living/simple_animal/hostile/wizard
 	name = "DO NOT USE"
+	icon = 'icons/mob/npcs_wizards.dmi'
 
 /mob/living/simple_animal/hostile/wizard/moldy_man
 	name = "Moldy Man"
 	desc = "A grey, damp figure in a dark robe that smells powerfully of mildew and old cheese. One of Lord Moldywart's followers."
-	icon = 'icons/mob/npcs.dmi'
 	icon_state = "moldyman"
 	icon_living = "moldyman"
 	icon_dead = "moldyman_dead"
@@ -392,7 +390,6 @@
 /mob/living/simple_animal/hostile/wizard/moldywart
 	name = "Lord Moldywart"
 	desc = "He-Who-Must-Not-Be-Named-For-Legal-Reasons. A massive masked figure, radiating a cold and ancient malice."
-	icon = 'icons/mob/npcs.dmi'
 	icon_state = "moldywart"
 	icon_living = "moldywart"
 	icon_dead = "moldywart_dead"
@@ -537,7 +534,6 @@
 /mob/living/simple_animal/wizard/bobby
 	name = "Arcane Bobby"
 	desc = "An underfunded, highly bureaucratic officer of the C.A.P., the Constabulary for Arcane Practices. Don't cast illegal magic around them."
-	icon = 'icons/mob/npcs.dmi'
 	icon_state = "wizard_police"
 	icon_living = "wizard_police"
 	icon_dead = "wizard_police_dead"
@@ -654,7 +650,6 @@
 /mob/living/simple_animal/wizard/professor
 	name = "L.A.M.E. Professor"
 	desc = "A miserable, underpaid teaching staff member who just wants to get through the day without a student exploding."
-	icon = 'icons/mob/npcs.dmi'
 	icon_state = "wizard_professor1"
 	icon_living = "wizard_professor1"
 	icon_dead = "wizard_professor1_dead"
