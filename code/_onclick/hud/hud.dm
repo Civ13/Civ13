@@ -519,5 +519,6 @@ var/list/global_huds = list(
 			maptext = "<center><font color='yellow'><b>[W.active_spell.name]</b></font></center>"
 		else
 			maptext = "<center><font color='red'>No Spell</font></center>"
-	spawn(5)
-		update()
+	if (loop)
+		spawn(5)
+			update(TRUE)

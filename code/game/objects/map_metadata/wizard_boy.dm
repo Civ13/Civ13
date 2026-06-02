@@ -491,9 +491,11 @@ var/wizard_style = {"
 		return FALSE
 
 	var/datum/wizard_sorting/WS = new(C)
-	while (WS && !WS.done)
+	var/timeout = 600 // 2 minutes max timeout
+	while (WS && !WS.done && timeout > 0)
 		if (!C)
 			break
+		timeout--
 		sleep(2)
 
 	if (!WS || !WS.result)

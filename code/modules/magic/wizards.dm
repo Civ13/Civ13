@@ -78,7 +78,7 @@
 	icon_dead = "[icon_state]_dead"
 	speak = flavour_text
 	spawn(5)
-		if (faction != "Unknown")
+		if (src && faction != "Unknown")
 			switch(faction)
 				if ("Mintysnek")
 					clothing_colours.color = "#007F00"
@@ -441,8 +441,9 @@
 	processing_objects |= src
 	// A booming entrance announcement visible to all nearby
 	spawn(5)
-		src.say("I have returned.")
-		visible_message(SPAN_DANGER("<b>The air grows cold. <b>Lord Moldywart</b> has arrived.</b>"))
+		if(src)
+			src.say("I have returned.")
+			visible_message(SPAN_DANGER("<b>The air grows cold. <b>Lord Moldywart</b> has arrived.</b>"))
 
 /mob/living/simple_animal/hostile/wizard/moldywart/Destroy()
 	processing_objects -= src

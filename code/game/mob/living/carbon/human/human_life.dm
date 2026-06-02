@@ -1085,13 +1085,13 @@
 	else
 		hud_used.remove_vehicle_hud(src)
 
+	if (hud_used)
+		if ((l_hand && istype(l_hand, /obj/item/weapon/material/magic/wand)) || (r_hand && istype(r_hand, /obj/item/weapon/material/magic/wand)))
+			hud_used.add_wizard_hud(src)
+		else
+			hud_used.remove_wizard_hud(src)
 
-	if ((l_hand && istype(l_hand, /obj/item/weapon/material/magic/wand)) || (r_hand && istype(r_hand, /obj/item/weapon/material/magic/wand)))
-		hud_used.add_wizard_hud(src)
-	else
-		hud_used.remove_wizard_hud(src)
-
-	return TRUE
+		return TRUE
 
 /mob/living/human/handle_random_events()
 

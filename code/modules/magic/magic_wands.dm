@@ -171,6 +171,9 @@
 	casting = TRUE
 
 	if (do_after(user, S.cast_time, target))
+		if (!src || !user || !target || !S)
+			casting = FALSE
+			return
 		if (ishuman(user))
 			var/mob/living/human/H = user
 			if (H.juice >= S.juice_cost && user.get_active_hand() == src)
@@ -179,49 +182,48 @@
 				if (S.sound_effect)
 					playsound(user.loc, S.sound_effect, 75, FALSE)
 				H.visible_message("<span style=color:'#dea30d'><b>[user]</b> uses <i>[S.name]!</i></span>")
-				spawn(5)
-					playsound(user.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
+				playsound(user.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
 
 				if (S.skill_level >= 80)
 					for (var/mob/living/simple_animal/wizard/bobby/B in view(7, H))
 						B.witness_spell(H, S)
+				spawn(5)
+					if (!src || !user || !target || !S)
+						casting = FALSE
+						return
+					// Handle non-projectile spells directly
+					if (S.name == "Wallus")
+						var/turf/T = get_turf(target)
+						if (T && !T.density)
+							new /obj/structure/barricade/magic(T)
+							T.visible_message(SPAN_NOTICE("A magical barricade suddenly appears!"))
+						else
+							to_chat(H, SPAN_WARNING("You cannot summon a barricade there!"))
+							// Refund juice if creation fails
+							H.juice += S.juice_cost
 
-				// Handle non-projectile spells directly
-				if (S.name == "Wallus")
-					var/turf/T = get_turf(target)
-					if (T && !T.density)
-						new /obj/structure/barricade/magic(T)
-						T.visible_message(SPAN_NOTICE("A magical barricade suddenly appears!"))
-					else
-						to_chat(H, SPAN_WARNING("You cannot summon a barricade there!"))
-						// Refund juice if creation fails
-						H.juice += S.juice_cost
-
-				else if (S.name == "Lightus")
-					// Spawns a temporary light effect on the caster
-					new /obj/effect/magic_light_effect(H, H)
-					to_chat(H, SPAN_NOTICE("You glow with a soft magical light!"))
-				else if (S.name == "Blinkae")
-					// Teleport user to target tile
-					var/turf/T = get_turf(target)
-					// Check if target is a valid, walkable tile within range
-					if (T && get_dist(H, T) <= 7 && !T.density)
-						H.forceMove(T)
-						to_chat(H, SPAN_NOTICE("You blink to [T]!"))
-						H.visible_message(SPAN_NOTICE("[H] suddenly disappears and reappears!"))
-					else
-						to_chat(H, SPAN_WARNING("You cannot blink there!"))
-						// Refund juice if teleport fails
-						H.juice += S.juice_cost
-				// End non-projectile spell handling
-
-
-
-				if (S.proj_type)
-					var/obj/item/projectile/P = new S.proj_type(user.loc)
-					if (P)
-						var/tgt_zone = H.targeted_organ || "chest"
-						process_projectile(P, user, target, tgt_zone, params)
+					else if (S.name == "Lightus")
+						// Spawns a temporary light effect on the caster
+						new /obj/effect/magic_light_effect(H, H)
+						to_chat(H, SPAN_NOTICE("You glow with a soft magical light!"))
+					else if (S.name == "Blinkae")
+						// Teleport user to target tile
+						var/turf/T = get_turf(target)
+						// Check if target is a valid, walkable tile within range
+						if (T && get_dist(H, T) <= 7 && !T.density)
+							H.forceMove(T)
+							to_chat(H, SPAN_NOTICE("You blink to [T]!"))
+							H.visible_message(SPAN_NOTICE("[H] suddenly disappears and reappears!"))
+						else
+							to_chat(H, SPAN_WARNING("You cannot blink there!"))
+							// Refund juice if teleport fails
+							H.juice += S.juice_cost
+					// End non-projectile spell handling
+					if (S.proj_type)
+						var/obj/item/projectile/P = new S.proj_type(user.loc)
+						if (P)
+							var/tgt_zone = H.targeted_organ || "chest"
+							process_projectile(P, user, target, tgt_zone, params)
 
 	casting = FALSE
 

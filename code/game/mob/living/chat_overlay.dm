@@ -98,7 +98,7 @@
 var/global/sound_tts_num = 0
 
 /mob/proc/play_tts(message,var/mob/living/speaker)
-	if (!message || message == "" || !client || !speaker)
+	if (!message || message == "" || !client || !speaker || !istype(speaker))
 		return
 	message = replacetext(message, "&#39", "'")
 	var/voice = "ap --setf duration_stretch=0.9 --setf int_f0_target_mean=100"

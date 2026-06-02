@@ -16,10 +16,11 @@
 	New()
 		..()
 		spawn(1)
-			var/image/lines = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "magic_boy_robe_decoration")
-			lines.color = house_colors
-			overlays += lines
-			update_icon()
+			if (src)
+				var/image/lines = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "magic_boy_robe_decoration")
+				lines.color = house_colors
+				overlays += lines
+				update_icon()
 
 /obj/item/clothing/suit/storage/jacket/wizard/red
 	name = "Rubywyrm wizard robe"

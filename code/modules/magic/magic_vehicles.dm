@@ -178,7 +178,7 @@
 	return TRUE
 
 /obj/structure/vehicle/magic/mop/do_move(var/m_dir = null)
-	if (driver)
+	if (driver && ishuman(driver))
 		driver.juice = max(0, driver.juice - 0.7)
 		if (driver.juice <= 0)
 			on = FALSE

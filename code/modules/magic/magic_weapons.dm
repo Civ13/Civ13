@@ -45,6 +45,8 @@
 
 /obj/item/weapon/material/sword/magic/attack(mob/living/human/M as mob, mob/living/user as mob)
 	..()
+	if (!M)
+		return
 	if(prob(weakens))
 		M.Weaken(weakenpower)
 	if(prob(flames))
