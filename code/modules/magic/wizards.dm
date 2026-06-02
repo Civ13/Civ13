@@ -222,7 +222,7 @@
 
 /mob/living/simple_animal/wizard/tumbledoor/attackby(obj/item/W, mob/living/user)
 	respond_to_attack(user)
-
+	return ..()
 /mob/living/simple_animal/wizard/tumbledoor/respond_to_attack(mob/living/user)
 	if (world.time < response_timer)
 		return
