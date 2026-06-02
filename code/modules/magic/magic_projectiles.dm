@@ -21,7 +21,21 @@
 		var/mob/living/L = target
 		L.apply_effects(stun, weaken, paralyze, irradiate, stutter, eyeblur, drowsy, agony, poisonous, blocked)
 	return TRUE
-
+/obj/item/projectile/magic/proc/deduct_house_points_for_illegal_spell(var/atom/target, var/points, var/spell_name = "")
+	if (!firer || !ishuman(firer) || !firer.client) return
+	if (istype(get_area(firer), /area/caribbean/houses/nml_one) && istype(get_area(target), /area/caribbean/houses/nml_one))
+		return
+	var/mob/living/human/Hfirer = firer
+	if (!Hfirer.nationality) return
+	if (!map || !istype(map, /obj/map_metadata/wizard_boy)) return
+	var/obj/map_metadata/wizard_boy/WB = map
+	if (!WB || !WB.house_info[Hfirer.ckey]) return
+	var/house = WB.house_info[Hfirer.ckey][1]
+	if (!house) return
+	if (!WB.house_points[house]) WB.house_points[house] = 0
+	WB.house_points[house] -= points
+	if (Hfirer.client)
+		to_chat(Hfirer, SPAN_WARNING("Your house loses [points] points for casting [spell_name] at a protected target."))
 /obj/item/projectile/magic/spark
 	name = "spark"
 	icon_state = "spark"
@@ -121,6 +135,7 @@
 			var/mob/living/M = target
 			M.fire_stacks += 2
 			M.IgniteMob()
+		deduct_house_points_for_illegal_spell(target, 50, "Burnus")
 
 /obj/item/projectile/magic/vine_shot
 	name = "vine shot"
@@ -237,6 +252,8 @@
 	impact_type = /obj/effect/projectile/impact/magic/fire
 
 /obj/item/projectile/magic/explodus/on_impact(var/atom/A)
+	if (A && (ishuman(A) || istype(A, /mob/living/simple_animal/wizard)))
+		deduct_house_points_for_illegal_spell(A, 50, "Explodus")
 	var/turf/T = get_turf(A)
 	if (T)
 		explosion(T, 0, 1, 2, 3)
@@ -255,6 +272,18 @@
 /obj/item/projectile/magic/deadum/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (isliving(target))
 		var/mob/living/L = target
+		deduct_house_points_for_illegal_spell(target, 100, "Deadum")
+		if (ishuman(L) && L.client)
+			if (firer && ishuman(firer) && firer.client)
+				if (!(istype(get_area(firer), /area/caribbean/houses/nml_one) && istype(get_area(target), /area/caribbean/houses/nml_one)))
+					var/mob/living/human/Hfirer = firer
+					Hfirer.nationality = "R" // Demote caster to L.O.S.E.R.
+					if (istype(map, /obj/map_metadata/wizard_boy))
+						var/obj/map_metadata/wizard_boy/WB = map
+						if (WB.house_info[Hfirer.ckey])
+							WB.house_info[Hfirer.ckey][1] = "LOSER"
+					Hfirer.strip() // Adjust equipment by stripping them
+					to_chat(Hfirer, SPAN_DANGER("You have cast an unforgivable curse on a fellow student! You have been demoted to a L.O.S.E.R. and removed from your house!"))
 		L.gib()
 	return ..()
 
@@ -276,6 +305,7 @@
 			var/mob/living/human/H = target
 			H.apply_damage(0, BRUTE, "chest", blocked, 0, 0, 1) // Force bleeding
 			to_chat(H, SPAN_DANGER("An invisible blade slices through you!"))
+			deduct_house_points_for_illegal_spell(target, 50, "Sliceum")
 
 /obj/item/projectile/magic/freezum
 	name = "freezum"
@@ -438,6 +468,7 @@
 			L.apply_effects(agony = 80, stun = 6, blocked = blocked)
 			L.emote("painscream")
 			to_chat(L, SPAN_DANGER("You feel unimaginable agony!"))
+			deduct_house_points_for_illegal_spell(target, 50, "Painum")
 
 /obj/item/projectile/magic/dropus
 	name = "dropus"

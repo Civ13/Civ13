@@ -23,8 +23,8 @@
 	maxHealth = 150
 	health = 150
 	stop_automated_movement_when_pulled = TRUE
-	stop_automated_movement = TRUE
-	wander = FALSE
+	stop_automated_movement = FALSE
+	wander = TRUE
 	faction = "Unknown"
 	universal_speak = TRUE
 	var/image/clothing_colours = null
@@ -260,6 +260,7 @@
 /mob/living/simple_animal/hostile/wizard
 	name = "DO NOT USE"
 	icon = 'icons/mob/npcs_wizards.dmi'
+	stop_automated_movement_when_pulled = FALSE
 
 /mob/living/simple_animal/hostile/wizard/moldy_man
 	name = "Moldy Man"
@@ -273,9 +274,8 @@
 	melee_damage_lower = 3
 	melee_damage_upper = 6
 	mob_size = MOB_MEDIUM
-	stop_automated_movement = TRUE
-	stop_automated_movement_when_pulled = TRUE
-	wander = FALSE
+	stop_automated_movement = FALSE
+	wander = TRUE
 	speed = 3
 	move_to_delay = 5
 	possession_candidate = FALSE
@@ -395,9 +395,9 @@
 	melee_damage_lower = 10
 	melee_damage_upper = 20
 	mob_size = MOB_MEDIUM
-	stop_automated_movement = TRUE
+	stop_automated_movement = FALSE
 	stop_automated_movement_when_pulled = TRUE
-	wander = FALSE
+	wander = TRUE
 	speed = 2
 	move_to_delay = 4
 	possession_candidate = FALSE
@@ -538,6 +538,7 @@
 	melee_damage_upper = 12
 	faction = "Ministry"
 	wander = TRUE
+	stop_automated_movement = FALSE
 	var/spell_cooldown = 0
 	var/list/flavour_text_bobbies = list(
 		"Oi! You got a license for that glowing stick, mate?",
