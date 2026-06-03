@@ -271,10 +271,10 @@
 		to_chat(H, SPAN_WARNING("Cannot find the training dummy spawner nearby!"))
 		return
 
-	var/mob/living/simple_animal/hostile/wizard/training_dummy/existing_dummy in range(7, src)
-	if (existing_dummy)
-		to_chat(H, SPAN_WARNING("A trial is already in progress!"))
-		return
+	for (var/mob/living/simple_animal/hostile/wizard/training_dummy/existing_dummy in range(7, src))
+		if (existing_dummy)
+			to_chat(H, SPAN_WARNING("A trial is already in progress!"))
+			return
 
 	cooldown = world.time + 100 // 10s cooldown
 
@@ -283,30 +283,30 @@
 	spawner.spawnTarget()
 	spawner.activated = FALSE
 
-	var/mob/living/simple_animal/hostile/wizard/training_dummy/TD in range(7, spawner)
-	if (!TD)
-		to_chat(H, SPAN_WARNING("Failed to spawn the training dummy. Please try again."))
-		return
+	for (var/mob/living/simple_animal/hostile/wizard/training_dummy/TD in range(7, spawner))
+		if (!TD)
+			to_chat(H, SPAN_WARNING("Failed to spawn the training dummy. Please try again."))
+			return
 
-	TD.active_student = H
-	TD.phase = 1
-	TD.blocks_done = 0
-	TD.dir = get_dir(TD, H)
-	H.dir = get_dir(H, TD)
+		TD.active_student = H
+		TD.phase = 1
+		TD.blocks_done = 0
+		TD.dir = get_dir(TD, H)
+		H.dir = get_dir(H, TD)
 
-	to_chat(H, SPAN_NOTICE("<b>Trial started!</b> Deflect 3 spells with <b>Blockum!</b>, then disarm the dummy with <b>Dropus!</b>. Do NOT leave the circle!"))
+		to_chat(H, SPAN_NOTICE("<b>Trial started!</b> Deflect 3 spells with <b>Blockum!</b>, then disarm the dummy with <b>Dropus!</b>. Do NOT leave the circle!"))
 
-	// Monitor student position — abort if they leave the dueling square
-	spawn(0)
-		while (TD && !isnull(TD.loc) && TD.active_student == H)
-			sleep(5) // check every 0.5 seconds
-			if (!TD || isnull(TD.loc))
-				break // trial already finished naturally
-			if (TD.active_student != H)
-				break // trial ended another way
-			if (get_turf(H) != gem_turf || H.stat)
-				TD.abort_trial()
-				break
+		// Monitor student position — abort if they leave the dueling square
+		spawn(0)
+			while (TD && !isnull(TD.loc) && TD.active_student == H)
+				sleep(5) // check every 0.5 seconds
+				if (!TD || isnull(TD.loc))
+					break // trial already finished naturally
+				if (TD.active_student != H)
+					break // trial ended another way
+				if (get_turf(H) != gem_turf || H.stat)
+					TD.abort_trial()
+					break
 
 /obj/structure/chemical_dispenser/potions
 	amount = 5
