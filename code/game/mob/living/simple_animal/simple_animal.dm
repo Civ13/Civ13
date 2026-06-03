@@ -246,12 +246,17 @@
 			proj.on_hit(src, FALSE)
 		return FALSE
 
+	if (proj.firer)
+		lastattacker = proj.firer
+
 	adjustBruteLoss(proj.damage)
 	proj.on_hit(src, FALSE)
 	return FALSE
 
 /mob/living/simple_animal/attack_hand(mob/living/human/M as mob)
 	..()
+	if (M)
+		lastattacker = M
 	if (istype(src, /mob/living/simple_animal/hostile/human/voyage/pirate/friendly))
 		faction = CIVILIAN
 		behaviour = "hostile"
@@ -723,6 +728,15 @@
 	walk(src,0) // stops movement
 	unregisterSpawner()
 	delayed_decay(src,3000)
+
+	if (istype(src, /mob/living/simple_animal/hostile) && lastattacker && ishuman(lastattacker))
+		var/mob/living/human/H = lastattacker
+		if (H.client && map && istype(map, /obj/map_metadata/wizard_boy))
+			var/obj/map_metadata/wizard_boy/WB = map
+			if (WB.check_level(H.client.ckey) == "3")
+				WB.change_level(H.client.ckey, "4")
+				to_chat(world, "<font size=3 class='wizard'><b>[H.real_name]</b> ([H.key]) has progressed to qualification level 4 (<b>B.A.S.E.D.</b>) by slaying \a [src]!</font>")
+
 	return ..(gibbed,deathmessage)
 
 /mob/living/simple_animal/ex_act(severity)

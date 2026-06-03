@@ -24,6 +24,7 @@
 #define WAND_WOOD_BOGOAK      "bogoak"      // Driftwood chassis; elemental discount; emits stink.
 
 // -- Core types (engine) --
+#define WAND_CORE_NONE     "none"      // No bonuses or penalties.
 #define WAND_CORE_BADGER   "badger"    // Combat boosted; defensive penalised.
 #define WAND_CORE_PIGEON   "pigeon"    // Movement near-instant; panic auto-blink.
 #define WAND_CORE_COPPER   "copper"    // -25% all costs; lethal overcast.
@@ -134,7 +135,7 @@
 				else if (istype(core_part, /obj/item/wand_part/fox_fur))
 					new_wand.wand_core = WAND_CORE_FOX
 				else
-					new_wand.wand_core = WAND_CORE_PIGEON
+					new_wand.wand_core = WAND_CORE_NONE
 				new_wand.wand_length = selected_wand_length
 				new_wand.apply_wood_stats()
 				new_wand.apply_core_stats()
@@ -145,6 +146,12 @@
 				playsound(get_turf(src), 'sound/effects/woodfile.ogg', 75, TRUE)
 				qdel(wood_part)
 				qdel(core_part)
+				if (user && ishuman(user) && user.client && map && istype(map, /obj/map_metadata/wizard_boy))
+					var/obj/map_metadata/wizard_boy/WB = map
+					if (WB.check_level(user.client.ckey) == "0")
+						WB.change_level(user.client.ckey, "1")
+						WB.save_wand_mob(user)
+						to_chat(world, "<font size=3 class='wizard'><b>[user.real_name]</b> ([user.key]) has progressed to qualification level 1 (<b>U.N.G.A.</b>) by assembling a wand!</font>")
 			else
 				to_chat(user, "<span class='notice'>The bench needs one wand chassis and one wand core to assemble a wand.</span>")
 			do_html(user)
@@ -386,6 +393,9 @@
 	pigeon_movement  = FALSE
 
 	switch (wand_core)
+		if (WAND_CORE_NONE)
+			return // Baseline stats remain unchanged
+
 		if (WAND_CORE_BADGER)
 			// Aggressive: combat spells 20% faster; defensive spells 50% costlier.
 			badger_combat    = TRUE
@@ -483,6 +493,7 @@
 
 	var/core_str = ""
 	switch (wand_core)
+		if (WAND_CORE_NONE)     core_str = "no"
 		if (WAND_CORE_BADGER)   core_str = "badger hair"
 		if (WAND_CORE_PIGEON)   core_str = "pigeon feather"
 		if (WAND_CORE_COPPER)   core_str = "copper wire"
@@ -499,7 +510,7 @@
 			len_str = telescopic_extended ? "extended telescopic" : "collapsed telescopic"
 
 	name = "[len_str] [wood_str] wand"
-	desc = "A [len_str] wand made of [wood_str] with a [core_str] core. It crackles with dubious magical potential."
+	desc = "A [len_str] wand made of [wood_str] with [core_str] core. It crackles with dubious magical potential."
 
 	var/wood_icon = ""
 	switch (wand_wood)
@@ -516,7 +527,7 @@
 		if (WAND_LENGTH_STANDARD)  len_icon = "long"
 		if (WAND_LENGTH_OVERCOMP)  len_icon = "longest"
 		if (WAND_LENGTH_TELESCOPIC)
-			len_icon = telescopic_extended ? "long" : "short"
+			len_icon = telescopic_extended ? "longest" : "short"
 
 	if (wood_icon != "" && len_icon != "")
 		icon_state = "[wood_icon]_[len_icon]"
@@ -932,13 +943,13 @@
 // ============================================================
 
 // ----- The Regulation Wand -----
-// Pine + Pigeon Feather + Standard: solid all-rounder with panic escape
+// Pine + no core + Standard length: solid all-rounder with panic escape
 /obj/item/weapon/material/magic/wand/crafted/standard
 	name = "standard wizard's wand"
 	desc = "A standard school-issue wand. Smells of pine resin and floor wax. Reliable, if uninspiring."
 	icon_state  = "wand_pine_long"
 	wand_wood   = WAND_WOOD_PINE
-	wand_core   = WAND_CORE_PIGEON
+	wand_core   = WAND_CORE_NONE
 	wand_length = WAND_LENGTH_STANDARD
 
 // ----- The Sniper -----

@@ -47,12 +47,13 @@
 		var/list/houses = file2list("SQL/houses.txt")
 		for(var/i = 1, i <= length(houses), i++)
 			var/list/parts = splittext(houses[i], ";")
-			if(length(parts) != 3)
+			if(length(parts) < 3)
 				continue
 			var/ckey = parts[1]
 			var/housename = parts[2]
 			var/levels = parts[3]
-			house_info[ckey] = list(housename,levels)
+			var/wand_data = (parts.len >= 4) ? parts[4] : ""
+			house_info[ckey] = list(housename, levels, wand_data)
 
 /obj/map_metadata/wizard_boy/proc/save_houses()
 	if (fexists("SQL/houses.txt"))
@@ -64,19 +65,38 @@
 	for (var/ckey in house_info)
 		var/list/data = house_info[ckey]
 		if (islist(data) && data.len >= 2)
-			text2file("[ckey];[data[1]];[data[2]]", "SQL/houses.txt")
+			var/wand_data = (data.len >= 3) ? data[3] : ""
+			text2file("[ckey];[data[1]];[data[2]];[wand_data]", "SQL/houses.txt")
 
-/obj/map_metadata/wizard_boy/proc/change_level(ckey, new_level = "1")
+/obj/map_metadata/wizard_boy/proc/change_level(ckey, new_level = "0")
 	if(!house_info[ckey])
 		load_houses()
 		if(!house_info[ckey])
 			return FALSE
 	if (islist(house_info[ckey]) && house_info[ckey].len >= 2)
 		house_info[ckey][2] = new_level
+		var/house = house_info[ckey][1]
 		save_houses()
 		for (var/mob/living/human/H in player_list)
 			if (H.client && H.client.ckey == ckey)
 				H.nationality = new_level
+				H.never_set_faction_huds = TRUE
+				H.handle_hud_list()
+				var/robe_type = /obj/item/clothing/suit/storage/jacket/wizard
+				var/grey_robe_type = /obj/item/clothing/suit/storage/jacket/wizard/greyrobe
+				switch(house)
+					if("Rubywyrm")
+						robe_type = /obj/item/clothing/suit/storage/jacket/wizard/red
+						grey_robe_type = /obj/item/clothing/suit/storage/jacket/wizard/greyrobe/red
+					if("Mintysnek")
+						robe_type = /obj/item/clothing/suit/storage/jacket/wizard/green
+						grey_robe_type = /obj/item/clothing/suit/storage/jacket/wizard/greyrobe/green
+					if("Slatepie")
+						robe_type = /obj/item/clothing/suit/storage/jacket/wizard/blue
+						grey_robe_type = /obj/item/clothing/suit/storage/jacket/wizard/greyrobe/blue
+					if("Mustardweasel")
+						robe_type = /obj/item/clothing/suit/storage/jacket/wizard/yellow
+						grey_robe_type = /obj/item/clothing/suit/storage/jacket/wizard/greyrobe/yellow
 				switch(new_level)
 					if("R") // loser
 						if(H.wear_id) qdel(H.wear_id)
@@ -91,59 +111,71 @@
 						if(H.wear_id) qdel(H.wear_id)
 						if(H.wear_suit) qdel(H.wear_suit)
 						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/idiot(H), slot_wear_id)
-						H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/greyrobe(H), slot_wear_suit)
+						H.equip_to_slot_or_del(new grey_robe_type(H), slot_wear_suit)
 						H.setStat("magic", 0)
 						H.refresh_spells()
 					if("1") // unga
 						if(H.wear_id) qdel(H.wear_id)
 						if(H.head) qdel(H.head)
 						if(H.eyes) qdel(H.eyes)
+						if(H.wear_suit) qdel(H.wear_suit)
 						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/unga(H), slot_wear_id)
 						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
 						H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular/circle(H), slot_eyes)
+						H.equip_to_slot_or_del(new robe_type(H), slot_wear_suit)
 						H.setStat("magic", 10)
 						H.refresh_spells()
 					if("2") // coal
 						if(H.wear_id) qdel(H.wear_id)
 						if(H.head) qdel(H.head)
 						if(H.eyes) qdel(H.eyes)
+						if(H.wear_suit) qdel(H.wear_suit)
 						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/coal(H), slot_wear_id)
 						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
 						H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular/circle(H), slot_eyes)
+						H.equip_to_slot_or_del(new robe_type(H), slot_wear_suit)
 						H.setStat("magic", 20)
 						H.refresh_spells()
 					if("3") // slate
 						if(H.wear_id) qdel(H.wear_id)
 						if(H.head) qdel(H.head)
 						if(H.eyes) qdel(H.eyes)
+						if(H.wear_suit) qdel(H.wear_suit)
 						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/slate(H), slot_wear_id)
 						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
 						H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular/circle(H), slot_eyes)
+						H.equip_to_slot_or_del(new robe_type(H), slot_wear_suit)
 						H.setStat("magic", 40)
 						H.refresh_spells()
 					if("4") // based
 						if(H.wear_id) qdel(H.wear_id)
 						if(H.head) qdel(H.head)
 						if(H.eyes) qdel(H.eyes)
+						if(H.wear_suit) qdel(H.wear_suit)
 						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/based(H), slot_wear_id)
 						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
 						H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
+						H.equip_to_slot_or_del(new robe_type(H), slot_wear_suit)
 						H.setStat("magic", 70)
 						H.refresh_spells()
 					if("5") // chad
 						if(H.wear_id) qdel(H.wear_id)
 						if(H.head) qdel(H.head)
 						if(H.eyes) qdel(H.eyes)
+						if(H.wear_suit) qdel(H.wear_suit)
 						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/chad(H), slot_wear_id)
 						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
 						H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
+						H.equip_to_slot_or_del(new robe_type(H), slot_wear_suit)
 						H.setStat("magic", 100)
 						H.refresh_spells()
 					if("T") // teacher/professor
 						if(H.wear_id) qdel(H.wear_id)
 						if(H.head) qdel(H.head)
+						if(H.wear_suit) qdel(H.wear_suit)
 						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id(H), slot_wear_id)
 						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
+						H.equip_to_slot_or_del(new robe_type(H), slot_wear_suit)
 						H.setStat("magic", 100)
 						H.refresh_spells()
 		return TRUE
@@ -166,10 +198,10 @@
 	if(!house_info[ckey])
 		load_houses()
 		if(!house_info[ckey])
-			return "1" //return U.N.G.A. level by default
+			return "0" //return I.D.I.O.T. level by default
 	if (islist(house_info[ckey]) && house_info[ckey].len >= 2)
 		return house_info[ckey][2]
-	return "1" //return U.N.G.A. level by default
+	return "0" //return I.D.I.O.T. level by default
 
 /obj/map_metadata/wizard_boy/proc/remove_from_house(ckey)
 	if(!house_info[ckey])
@@ -236,17 +268,55 @@
 		return FALSE
 	//sanitise first
 	if (house == "Rubywyrm" || house == "Mintysnek" || house == "Slatepie" || house == "Mustardweasel")
-		var/txtexport = "[ckey];[house];1"
-
-		//save to houses.txt
-		if (fexists("SQL/houses.txt"))
-			text2file(txtexport, "SQL/houses.txt")
-		else
-			var/F = file("SQL/houses.txt")
-			text2file(txtexport, F)
-		house_info[ckey] = list(house, "1")
+		house_info[ckey] = list(house, "0", "")
+		save_houses()
 		return TRUE
 	return FALSE
+
+/obj/map_metadata/wizard_boy/proc/save_wand(ckey, wand_data)
+	if(!house_info[ckey])
+		load_houses()
+		if(!house_info[ckey])
+			return FALSE
+	if (islist(house_info[ckey]) && house_info[ckey].len >= 3)
+		house_info[ckey][3] = wand_data
+		save_houses()
+		return TRUE
+	return FALSE
+
+/obj/map_metadata/wizard_boy/proc/load_wand(mob/living/human/H)
+	if (!H || !H.client || !house_info[H.client.ckey])
+		return null
+	var/list/data = house_info[H.client.ckey]
+	if (data.len < 3 || !data[3])
+		return null
+	var/list/parts = splittext(data[3], ",")
+	if (parts.len < 3)
+		return null
+	var/obj/item/weapon/material/magic/wand/crafted/W = new /obj/item/weapon/material/magic/wand/crafted(H)
+	W.wand_wood = parts[1]
+	W.wand_core = parts[2]
+	W.wand_length = parts[3]
+	W.apply_wood_stats()
+	W.apply_core_stats()
+	W.apply_length_stats()
+	W.update_name_and_desc()
+	return W
+
+/obj/map_metadata/wizard_boy/proc/save_wand_mob(mob/living/human/H)
+	if (!H || !ishuman(H) || !H.client)
+		return
+	var/obj/item/weapon/material/magic/wand/crafted/W = null
+	if (istype(H.get_active_hand(), /obj/item/weapon/material/magic/wand/crafted))
+		W = H.get_active_hand()
+	else if (istype(H.get_inactive_hand(), /obj/item/weapon/material/magic/wand/crafted))
+		W = H.get_inactive_hand()
+	
+	if (!W)
+		return
+	
+	var/wand_data = "[W.wand_wood],[W.wand_core],[W.wand_length]"
+	save_wand(H.client.ckey, wand_data)
 var/wizard_style = {"
 <style>
 	@font-face {

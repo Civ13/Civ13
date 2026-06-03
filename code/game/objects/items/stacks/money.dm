@@ -769,6 +769,9 @@
 			icon_suffix = "_5"
 	icon_state = "silvercoin_pile[icon_suffix]"
 
+/obj/item/stack/money/silvercoin/twenty
+	amount = 20
+
 /obj/item/stack/money/silvercoin/twohundred
 	amount = 200
 

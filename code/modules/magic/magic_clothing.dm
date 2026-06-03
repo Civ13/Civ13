@@ -47,6 +47,8 @@
 	name = "I.D.I.O.T. wizard robe"
 	desc = "A grey wizard's robe used by those who have received the 'Inept & Deficient Individual's Ordinary Test' certificate. Not to be left unnatended near crayons."
 	house_colors = "#000000"
+	icon_state = "magic_boy_robe_grey"
+	item_state = "magic_boy_robe_grey"
 
 /obj/item/clothing/suit/storage/jacket/wizard/greyrobe/red
 	name = "Rubywyrm I.D.I.O.T. wizard robe"

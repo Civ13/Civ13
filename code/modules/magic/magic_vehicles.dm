@@ -98,7 +98,7 @@
 	if (H.anchored || H.driver || (H in ontop) || ontop.len >= mobcapacity)
 		return
 	if (map && map.ID == MAP_WIZARD_BOY && H.client)
-		var/obj/structure/map_metadata/WB = map
+		var/obj/map_metadata/wizard_boy/WB = map
 		var/lvl = WB.check_level(H.client.ckey)
 		if (lvl != "3" && lvl != "4" && lvl != "5" && lvl != "T")
 			to_chat(H, SPAN_WARNING("You need at least a G.E.M. licence to be allowed to fly mops."))

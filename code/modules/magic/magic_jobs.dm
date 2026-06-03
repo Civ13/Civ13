@@ -65,37 +65,42 @@
 					H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/unga(H), slot_wear_id)
 					H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
 					H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular/circle(H), slot_eyes)
+					H.equip_to_slot_or_del(WB.load_wand(H) || new /obj/item/weapon/material/magic/wand/crafted/standard(H), slot_belt)
 					H.setStat("magic", 10)
 				if("2") // coal
 					H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/coal(H), slot_wear_id)
 					H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
 					H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular/circle(H), slot_eyes)
+					H.equip_to_slot_or_del(WB.load_wand(H) || new /obj/item/weapon/material/magic/wand/crafted/standard(H), slot_belt)
 					H.setStat("magic", 20)
-				if("3") // slate
+				if("3") // gem
 					H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/slate(H), slot_wear_id)
 					H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
 					H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular/circle(H), slot_eyes)
+					H.equip_to_slot_or_del(WB.load_wand(H) || new /obj/item/weapon/material/magic/wand/crafted/standard(H), slot_belt)
 					H.setStat("magic", 40)
 				if("4") // based
 					H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/based(H), slot_wear_id)
 					H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
 					H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
+					H.equip_to_slot_or_del(WB.load_wand(H) || new /obj/item/weapon/material/magic/wand/crafted/standard(H), slot_belt)
 					H.setStat("magic", 70)
 				if("5") // chad
 					H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/chad(H), slot_wear_id)
 					H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
 					H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
+					H.equip_to_slot_or_del(WB.load_wand(H) || new /obj/item/weapon/material/magic/wand/crafted/standard(H), slot_belt)
 					H.setStat("magic", 100)
 				if("T") // teacher/professor
 					H.equip_to_slot_or_del(new /obj/item/weapon/magic_id(H), slot_wear_id)
 					H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
+					H.equip_to_slot_or_del(WB.load_wand(H) || new /obj/item/weapon/material/magic/wand/crafted/standard(H), slot_belt)
 					H.setStat("magic", 100)
 		else
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard(H), slot_wear_suit)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard(H), slot_wear_suit)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/magic/wand/wizard(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/stack/money/silvercoin/twenty(H), slot_l_store)
 	H.add_note("Role", "You're a wizard boy with magic powers. What shenanigans will you get up to?")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)

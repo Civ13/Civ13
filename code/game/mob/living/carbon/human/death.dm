@@ -51,6 +51,19 @@
 	water_overlay = FALSE
 	update_fire(1)
 	if (stat == DEAD) return
+
+	if (map && istype(map, /obj/map_metadata/wizard_boy))
+		var/obj/map_metadata/wizard_boy/WB = map
+		var/mob/living/human/killer = last_harmed
+		if (!killer && lastattacker && ishuman(lastattacker))
+			killer = lastattacker
+		if (killer && ishuman(killer) && killer != src)
+			if (istype(get_area(src), /area/caribbean/houses/nml_one))
+				if (killer.client)
+					if (WB.check_level(killer.client.ckey) == "4")
+						WB.change_level(killer.client.ckey, "5")
+						to_chat(world, "<font size=3 class='wizard'><b>[killer.real_name]</b> ([killer.key]) has progressed to qualification level 5 (<b>C.H.A.D.</b>) by defeating <b>[real_name]</b> ([key]) in the Arena!</font>")
+
 	if (map && client)
 		if (map.battleroyale && alive_n_of_side(PIRATES) > 1)
 			var/obj/map_metadata/battleroyale/BR = map
