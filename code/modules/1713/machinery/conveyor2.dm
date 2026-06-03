@@ -34,7 +34,9 @@
 		operating = 1
 		setmove()
 
-
+/obj/machinery/conveyor/Destroy()
+	processing_objects -= src
+	..()
 
 /obj/machinery/conveyor/proc/setmove()
 	if(operating == 1)
@@ -54,6 +56,8 @@
 	// machine process
 	// move items to the target location
 /obj/machinery/conveyor/process()
+	if(!loc)
+		return
 	affecting = loc.contents - src		// moved items will be all in loc
 	spawn(1)	// slight delay to prevent infinite propagation due to map order	//TODO: please no spawn() in process(). It's a very bad idea
 		var/items_moved = 0
@@ -79,7 +83,7 @@
 	if(I.loc != user)
 		return
 
-	user.drop_item(get_turf(src))
+	user.drop_item(I, get_turf(src))
 	return
 
 // attack with hand, move pulled object onto conveyor
@@ -120,7 +124,7 @@
 
 /obj/machinery/conveyor/proc/set_operable(stepdir, match_id, op)
 
-	if(id != match_id)
+	if(id != match_id || operable == op)
 		return
 	operable = op
 
@@ -159,7 +163,7 @@
 
 	spawn(5)		// allow map load
 		conveyors = list()
-		for(var/obj/machinery/conveyor/C in world)
+		for(var/obj/machinery/conveyor/C in processing_objects)
 			if(C.id == id)
 				conveyors += C
 
@@ -209,7 +213,7 @@
 	update()
 
 	// find any switches with same id as this one, and set their positions to match us
-	for(var/obj/machinery/conveyor_switch/S in world)
+	for(var/obj/machinery/conveyor_switch/S in processing_objects)
 		if(S.id == src.id)
 			S.position = position
 			S.update()
@@ -239,11 +243,10 @@
 	update()
 
 	// find any switches with same id as this one, and set their positions to match us
-	for(var/obj/machinery/conveyor_switch/S in world)
+	for(var/obj/machinery/conveyor_switch/S in processing_objects)
 		if(S.id == src.id)
 			S.position = position
 			S.update()
-
 
 
 //

@@ -1011,8 +1011,10 @@ var/global/datum/external_relations/external_relations = new()
 	var/direction = rand(1, 4)
 	var/turf/T
 	// Keep trying until we get a valid turf
-	while(T==null)
+	var/attempts = 0
+	while(T==null && attempts < 100)
 		T = locate(rand(1, 255), rand(1, 255), 2)
+		attempts++
 	try_bombing(T, direction, faction)
 
 /obj/map_metadata/pepelsibirsk/proc/enemy_attacks()

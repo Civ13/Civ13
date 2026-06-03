@@ -176,8 +176,11 @@
 			if (turns_since_move >= move_to_delay && stance == HOSTILE_STANCE_IDLE)
 				if(istype(src, /mob/living/simple_animal/hostile))
 					var/mob/living/simple_animal/hostile/H = src
-					if(H.pathfind_target && get_dist(src, H.pathfind_target) > 2)
-						walk_to(src, H.pathfind_target, 2, move_to_delay)
+					if(H.pathfind_target)
+						if(get_dist(src, H.pathfind_target) > 2)
+							walk_to(src, H.pathfind_target, 2, move_to_delay)
+						else
+							H.pathfind_target = null
 					else
 						var/moving_to = pick(cardinal)
 						var/turf/move_to_turf = get_step(src, moving_to)

@@ -543,9 +543,13 @@ var/global/list/npc_appearance_cache = list()
 /mob/living/simple_animal/hostile/human/proc/do_human_behaviour()
 	if (!target_mob && !stop_automated_movement)
 		wander = TRUE
-		if (pathfind_target && get_dist(src, pathfind_target) > 2 && !moving)
-			do_movement(pathfind_target)
-			wander = FALSE
+		if (pathfind_target)
+			if (get_dist(src, pathfind_target) > 2)
+				if (!moving)
+					do_movement(pathfind_target)
+					wander = FALSE
+			else
+				pathfind_target = null
 		if (role == "officer")
 			idle_counter++
 			if (idle_counter >= 120)
