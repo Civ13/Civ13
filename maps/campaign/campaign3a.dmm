@@ -493,6 +493,10 @@
 /obj/structure/lamp/lamp_small,
 /turf/floor/wood,
 /area/caribbean/roofed/semiarid)
+"dM" = (
+/mob/living/simple_animal/civilian/afghan,
+/turf/floor/beach/sand/dark,
+/area/caribbean/no_mans_land/semiarid)
 "dS" = (
 /obj/structure/table/rack/shelf/store,
 /obj/item/weapon/reagent_containers/food/snacks/grown/potato,
@@ -1040,6 +1044,12 @@
 	},
 /turf/floor/beach/sand/dark,
 /area/caribbean/no_mans_land/semiarid)
+"hP" = (
+/obj/structure/bed/chair/wood,
+/obj/roof,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood/alt,
+/area/caribbean/no_mans_land/semiarid)
 "hV" = (
 /obj/covers/cement_wall{
 	color = "#f3dd78"
@@ -1113,6 +1123,7 @@
 	dir = 1
 	},
 /obj/roof/clay,
+/mob/living/simple_animal/civilian,
 /turf/floor/wood/alt/four,
 /area/caribbean/no_mans_land/semiarid)
 "iy" = (
@@ -1521,6 +1532,13 @@
 	},
 /obj/roof/clay/blue,
 /turf/floor/wood/alt/ten,
+/area/caribbean/no_mans_land/semiarid)
+"lU" = (
+/obj/roof/clay,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood{
+	icon_state = "wood-broken3"
+	},
 /area/caribbean/no_mans_land/semiarid)
 "lV" = (
 /obj/effect/floor_decal/spline/fancy/wood{
@@ -2248,6 +2266,15 @@
 /obj/roof/thatch,
 /turf/floor/wood,
 /area/caribbean/no_mans_land/semiarid)
+"rT" = (
+/obj/structure/bed/chair/wood{
+	icon_state = "wooden_chair";
+	dir = 8
+	},
+/obj/roof,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood/alt,
+/area/caribbean/no_mans_land/semiarid)
 "rU" = (
 /obj/structure/bed/wood,
 /obj/item/weapon/bedsheet/brown,
@@ -2342,6 +2369,12 @@
 /obj/structure/noticeboard,
 /obj/roof/clay,
 /turf/floor/wood,
+/area/caribbean/no_mans_land/semiarid)
+"sO" = (
+/obj/structure/bed/chair/wood,
+/obj/roof/clay,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood/alt,
 /area/caribbean/no_mans_land/semiarid)
 "sQ" = (
 /obj/roof/thatch,
@@ -2615,6 +2648,16 @@
 	},
 /turf/floor/grass,
 /area/caribbean/no_mans_land/semiarid)
+"uI" = (
+/obj/structure/farming/plant/hemp{
+	layer = 5;
+	stage = 7;
+	icon_state = "hemp-harvest";
+	vstatic = 1
+	},
+/mob/living/simple_animal/civilian/afghan,
+/turf/floor/dirt/ploughed,
+/area/caribbean/no_mans_land/semiarid)
 "uM" = (
 /obj/structure/printingpress,
 /obj/roof/clay,
@@ -2795,6 +2838,14 @@
 /obj/roof,
 /turf/floor/wood/alt,
 /area/caribbean/no_mans_land/semiarid)
+"vE" = (
+/obj/structure/bed/chair/wood/alt{
+	dir = 1
+	},
+/obj/roof/clay/blue,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood/alt/ten,
+/area/caribbean/no_mans_land/semiarid)
 "vH" = (
 /obj/structure/wild/bush/big,
 /obj/structure/wild/smallbush{
@@ -2865,6 +2916,12 @@
 /area/caribbean/no_mans_land/semiarid)
 "vX" = (
 /turf/floor/dirt,
+/area/caribbean/no_mans_land/semiarid)
+"vZ" = (
+/obj/effect/floor_decal/corner/black/diagonal,
+/obj/roof/clay/blue,
+/mob/living/simple_animal/civilian,
+/turf/floor/plating/white,
 /area/caribbean/no_mans_land/semiarid)
 "wc" = (
 /obj/structure/window/classic/brick,
@@ -2958,6 +3015,12 @@
 /obj/covers/sidewalk,
 /obj/item/weapon/storage/toolbox/mechanical,
 /turf/floor/dirt,
+/area/caribbean/no_mans_land/semiarid)
+"wT" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/roof/clay,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood,
 /area/caribbean/no_mans_land/semiarid)
 "xb" = (
 /obj/covers/road,
@@ -3432,6 +3495,10 @@
 /obj/roof/clay,
 /turf/floor/wood,
 /area/caribbean/no_mans_land/semiarid)
+"BH" = (
+/mob/living/simple_animal/civilian/afghan,
+/turf/floor/dirt/dust,
+/area/caribbean/no_mans_land/semiarid)
 "BP" = (
 /obj/structure/closet/crate/pepelsibirsk/rgd5,
 /turf/floor/beach/sand/dark,
@@ -3644,6 +3711,12 @@
 /obj/structure/barricade,
 /obj/roof/clay,
 /turf/floor/wood/ship,
+/area/caribbean/no_mans_land/semiarid)
+"Dz" = (
+/obj/covers/wood,
+/obj/roof/thatch,
+/mob/living/simple_animal/civilian,
+/turf/floor/grass,
 /area/caribbean/no_mans_land/semiarid)
 "DG" = (
 /obj/structure/filingcabinet,
@@ -4195,6 +4268,12 @@
 /obj/roof/clay,
 /turf/floor/wood,
 /area/caribbean/no_mans_land/semiarid)
+"Io" = (
+/obj/structure/bed/chair/wood,
+/obj/roof/clay,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood/alt/two,
+/area/caribbean/no_mans_land/semiarid)
 "Iq" = (
 /obj/structure/window/barrier/sandbag{
 	icon_state = "sandbag";
@@ -4282,6 +4361,11 @@
 /obj/covers/carpet/redcarpet,
 /obj/roof/clay,
 /turf/floor/wood,
+/area/caribbean/no_mans_land/semiarid)
+"IV" = (
+/obj/roof/concrete,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood/alt,
 /area/caribbean/no_mans_land/semiarid)
 "IZ" = (
 /obj/structure/window/barrier/sandbag{
@@ -4574,6 +4658,11 @@
 /obj/roof/clay,
 /turf/floor/wood,
 /area/caribbean/no_mans_land/semiarid)
+"Lm" = (
+/obj/roof/clay,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood,
+/area/caribbean/no_mans_land/semiarid)
 "Ls" = (
 /obj/structure/mine_support/stone/concrete,
 /obj/covers/cement_wall{
@@ -4657,6 +4746,14 @@
 /obj/roof/clay,
 /obj/structure/closet/crate/pepelsibirsk/ppsh,
 /turf/floor/wood,
+/area/caribbean/no_mans_land/semiarid)
+"LX" = (
+/obj/structure/bed/chair/wood{
+	dir = 1
+	},
+/obj/roof,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood/alt,
 /area/caribbean/no_mans_land/semiarid)
 "Mc" = (
 /obj/covers/steelplating,
@@ -4827,6 +4924,10 @@
 /obj/roof/clay/black,
 /obj/structure/closet/crate/rublecrate,
 /turf/floor/dirt,
+/area/caribbean/no_mans_land/semiarid)
+"Nh" = (
+/mob/living/simple_animal/civilian/afghan,
+/turf/floor/beach/sand/desert,
 /area/caribbean/no_mans_land/semiarid)
 "Ni" = (
 /obj/covers/wood,
@@ -5055,6 +5156,14 @@
 /obj/roof/concrete,
 /turf/floor/beach/water/deep,
 /area/caribbean/no_mans_land/semiarid)
+"OM" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/roof/clay,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood{
+	icon_state = "wood-broken3"
+	},
+/area/caribbean/no_mans_land/semiarid)
 "ON" = (
 /obj/structure/lamp/lamp_small,
 /obj/roof,
@@ -5120,6 +5229,16 @@
 "Ps" = (
 /obj/roof,
 /turf/floor/wood/alt,
+/area/caribbean/no_mans_land/semiarid)
+"Pt" = (
+/obj/structure/bed/chair/office/light{
+	icon_state = "officechair_white";
+	dir = 4
+	},
+/obj/covers/carpet,
+/obj/roof/clay,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood,
 /area/caribbean/no_mans_land/semiarid)
 "Pw" = (
 /obj/structure/table/rack/shelf/store,
@@ -5570,6 +5689,11 @@
 	},
 /turf/floor/grass,
 /area/caribbean/no_mans_land/semiarid)
+"Sy" = (
+/obj/roof/clay,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood/alt,
+/area/caribbean/no_mans_land/semiarid)
 "Sz" = (
 /obj/effect/floor_decal/desert_edge{
 	dir = 9
@@ -5728,6 +5852,14 @@
 /obj/roof/clay,
 /turf/floor/wood/alt,
 /area/caribbean/no_mans_land/semiarid)
+"TF" = (
+/obj/structure/bed/chair/wood{
+	dir = 1
+	},
+/obj/roof/clay,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood/alt,
+/area/caribbean/no_mans_land/semiarid)
 "TG" = (
 /obj/structure/closet/safe,
 /obj/item/stack/money/rubles{
@@ -5834,6 +5966,11 @@
 	},
 /obj/roof/clay/blue,
 /turf/floor/wood/alt/two,
+/area/caribbean/no_mans_land/semiarid)
+"Ut" = (
+/obj/roof,
+/mob/living/simple_animal/civilian,
+/turf/floor/plating/tiled/woodh,
 /area/caribbean/no_mans_land/semiarid)
 "Uw" = (
 /obj/structure/wild/tallgrass2,
@@ -6122,6 +6259,12 @@
 	},
 /turf/floor/dirt,
 /area/caribbean/no_mans_land/semiarid)
+"Xl" = (
+/obj/covers/wood,
+/obj/roof/clay/black,
+/mob/living/simple_animal/civilian,
+/turf/floor/beach/sand/dark,
+/area/caribbean/no_mans_land/semiarid)
 "Xn" = (
 /obj/structure/window/classic/sandstonefull,
 /obj/covers/sandstone/brick,
@@ -6156,6 +6299,12 @@
 /obj/structure/table/modern/table,
 /obj/roof/clay/blue,
 /turf/floor/wood/alt/seven,
+/area/caribbean/no_mans_land/semiarid)
+"XH" = (
+/obj/structure/railing,
+/obj/roof/clay,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood,
 /area/caribbean/no_mans_land/semiarid)
 "XL" = (
 /obj/structure/bed/chair/wood{
@@ -6257,6 +6406,16 @@
 	dir = 1
 	},
 /turf/floor/beach/sand/dark,
+/area/caribbean/no_mans_land/semiarid)
+"Yz" = (
+/obj/structure/bed/chair/office/light{
+	icon_state = "officechair_white";
+	dir = 8
+	},
+/obj/covers/carpet,
+/obj/roof/clay,
+/mob/living/simple_animal/civilian,
+/turf/floor/wood,
 /area/caribbean/no_mans_land/semiarid)
 "YJ" = (
 /obj/covers/carpet/redcarpet,
@@ -65167,7 +65326,7 @@ Py
 pG
 HJ
 Sn
-fF
+TF
 vy
 Uc
 dq
@@ -65187,7 +65346,7 @@ Py
 pG
 HJ
 Sn
-fF
+TF
 vy
 Uc
 dq
@@ -65506,7 +65665,7 @@ rj
 vb
 vb
 Py
-pG
+sO
 hB
 NM
 fF
@@ -65745,7 +65904,7 @@ wc
 La
 lZ
 lZ
-La
+Sy
 La
 La
 ft
@@ -66018,7 +66177,7 @@ tY
 tv
 tY
 tv
-Cy
+Lm
 Cy
 Cy
 tv
@@ -67148,7 +67307,7 @@ Cy
 Cy
 Cy
 Cy
-Cy
+Lm
 Cy
 Cy
 Cy
@@ -67602,7 +67761,7 @@ tn
 WP
 tT
 tT
-oA
+LX
 Ps
 Xe
 dj
@@ -67680,7 +67839,7 @@ IT
 qu
 cJ
 IT
-cK
+Io
 cJ
 IT
 go
@@ -67904,7 +68063,7 @@ Py
 pG
 HJ
 Sn
-fF
+TF
 vy
 Uc
 dq
@@ -68223,7 +68382,7 @@ vb
 vb
 vb
 Py
-pG
+sO
 hB
 NM
 fF
@@ -68321,7 +68480,7 @@ vb
 vb
 Py
 IT
-cK
+Io
 cJ
 Nn
 cK
@@ -68376,7 +68535,7 @@ PU
 tP
 PU
 PU
-TL
+vZ
 TL
 PU
 PU
@@ -68405,7 +68564,7 @@ vb
 vb
 Yg
 gF
-gF
+Ut
 gF
 Yg
 gF
@@ -68467,7 +68626,7 @@ mB
 vb
 rj
 OB
-dy
+IV
 Kh
 Cm
 mB
@@ -68531,7 +68690,7 @@ vb
 PU
 Rl
 fE
-xk
+vE
 Us
 Ct
 kf
@@ -68770,7 +68929,7 @@ vb
 vb
 vb
 vb
-vb
+BH
 vb
 vb
 vb
@@ -69558,7 +69717,7 @@ Um
 zZ
 go
 Cy
-Cy
+Lm
 Cy
 Cy
 Cy
@@ -69880,7 +70039,7 @@ vw
 Py
 EV
 re
-GV
+Pt
 re
 Py
 Cy
@@ -71818,7 +71977,7 @@ Py
 kZ
 Py
 re
-Yr
+Yz
 re
 wn
 Py
@@ -72271,7 +72430,7 @@ bo
 zw
 mB
 tn
-WP
+hP
 tT
 tT
 oA
@@ -72512,7 +72671,7 @@ mB
 Qv
 vb
 vb
-vb
+BH
 vb
 vb
 Qv
@@ -72595,7 +72754,7 @@ bo
 QP
 Ps
 hv
-hv
+rT
 Ps
 Ps
 Ps
@@ -73146,7 +73305,7 @@ mB
 mB
 eJ
 zw
-mB
+dM
 mB
 mB
 mB
@@ -74525,7 +74684,7 @@ mG
 vb
 mD
 Og
-oD
+Dz
 HB
 mD
 oD
@@ -78669,7 +78828,7 @@ vo
 vb
 jc
 dy
-dy
+IV
 wJ
 Cm
 vb
@@ -79705,7 +79864,7 @@ rj
 vb
 Cm
 kn
-dy
+IV
 dy
 jc
 vb
@@ -80276,7 +80435,7 @@ XL
 Py
 iU
 Cy
-jp
+OM
 vn
 UW
 Py
@@ -80378,7 +80537,7 @@ Py
 KL
 xJ
 xd
-pf
+wT
 Py
 Py
 KL
@@ -80519,7 +80678,7 @@ IT
 cK
 cJ
 Nn
-cK
+Io
 cJ
 IT
 Py
@@ -80549,7 +80708,7 @@ UW
 Py
 iU
 Cy
-Wc
+lU
 pf
 XL
 Py
@@ -80703,7 +80862,7 @@ Cy
 ED
 Py
 Nl
-OW
+XH
 MP
 jp
 ED
@@ -80743,7 +80902,7 @@ mB
 mB
 mB
 mB
-mB
+dM
 mB
 mB
 mB
@@ -81683,7 +81842,7 @@ Tx
 Tx
 Tx
 Tx
-Tx
+Nh
 Tx
 rV
 tc
@@ -96676,7 +96835,7 @@ ZX
 ZX
 ZX
 HL
-mB
+dM
 Ey
 HD
 xx
@@ -99386,7 +99545,7 @@ mB
 mB
 sn
 GU
-ZF
+Xl
 Bs
 Ol
 Ol
@@ -103890,7 +104049,7 @@ mB
 mB
 sn
 mu
-ZF
+Xl
 Bs
 Ol
 Ol
@@ -107604,7 +107763,7 @@ gN
 bi
 Cm
 vb
-vb
+BH
 vb
 vb
 Ae
@@ -114688,7 +114847,7 @@ Xx
 mG
 Op
 Op
-Op
+uI
 Op
 Op
 mG
@@ -119517,7 +119676,7 @@ Xx
 Xx
 mG
 Op
-Op
+uI
 Op
 Op
 Op

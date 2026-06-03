@@ -560,10 +560,7 @@
 /turf/floor/beach/sand/dark,
 /area/caribbean/nomads/desert)
 "gJ" = (
-/obj/structure/closet/crate/empty,
-/obj/item/stack/money/rubles{
-	amount = 2000
-	},
+/obj/structure/closet/crate/rublecrate,
 /turf/floor/beach/sand/desert,
 /area/caribbean/british/land/inside/objective)
 "gL" = (
@@ -819,10 +816,7 @@
 /turf/floor/dirt/dust,
 /area/caribbean/nomads/desert)
 "jF" = (
-/obj/structure/closet/crate/empty,
-/obj/item/stack/money/rubles{
-	max_amount = 1500
-	},
+/obj/structure/closet/crate/rublecrate,
 /turf/floor/beach/sand,
 /area/caribbean/nomads/desert)
 "jH" = (
@@ -1376,6 +1370,10 @@
 /obj/structure/wild/tree/dead_tree,
 /turf/floor/beach/sand/desert,
 /area/caribbean/nomads/desert)
+"pV" = (
+/obj/structure/closet/crate/rublecrate,
+/turf/floor/beach/sand/desert,
+/area/caribbean/nomads/desert)
 "qi" = (
 /obj/structure/railing{
 	dir = 1
@@ -1498,10 +1496,7 @@
 /turf/floor/beach/sand/desert,
 /area/caribbean/british/land/inside/objective)
 "sn" = (
-/obj/structure/closet/crate/empty,
-/obj/item/stack/money/rubles{
-	max_amount = 1500
-	},
+/obj/structure/closet/crate/rublecrate,
 /turf/floor/beach/sand,
 /area/caribbean/tribes/caves)
 "ss" = (
@@ -2588,6 +2583,7 @@
 	pixel_x = 3
 	},
 /obj/structure/table/rack/shelf/wooden,
+/obj/item/weapon/flame/lighter/random,
 /turf/floor/beach/sand/desert,
 /area/caribbean/nomads/desert)
 "EV" = (
@@ -3739,6 +3735,10 @@
 	},
 /turf/floor/dirt/dust,
 /area/caribbean/nomads/desert)
+"Su" = (
+/obj/structure/closet/crate/rublecrate,
+/turf/floor/dirt/dust,
+/area/caribbean/nomads/desert)
 "Sw" = (
 /obj/effect/floor_decal/desert_edge{
 	dir = 6
@@ -4040,10 +4040,7 @@
 /turf/floor/dirt/dust,
 /area/caribbean/nomads/desert)
 "VH" = (
-/obj/structure/closet/crate/empty,
-/obj/item/stack/money/rubles{
-	max_amount = 1500
-	},
+/obj/structure/closet/crate/rublecrate,
 /turf/floor/beach/sand/dark,
 /area/caribbean/tribes/caves)
 "VJ" = (
@@ -13208,7 +13205,7 @@ Tu
 BO
 BO
 Tu
-Ni
+Su
 Ni
 Ni
 Ni
@@ -22196,7 +22193,7 @@ GQ
 GQ
 GQ
 pR
-GQ
+pV
 Hh
 Hh
 GQ

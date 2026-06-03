@@ -1607,6 +1607,12 @@
 	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/no_mans_land/semiarid)
+"lo" = (
+/obj/structure/table/modern/table,
+/obj/roof/clay,
+/obj/item/weapon/material/kitchen/utensil/fork,
+/turf/floor/wood/alt/four,
+/area/caribbean/no_mans_land/semiarid)
 "lr" = (
 /obj/structure/bed/chair/wood/alt{
 	dir = 1
@@ -2128,6 +2134,19 @@
 /obj/covers/carpet/redcarpet,
 /obj/roof/concrete,
 /turf/floor/wood,
+/area/caribbean/no_mans_land/semiarid)
+"oA" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/structure/curtain/open/shower,
+/obj/structure/shower,
+/obj/roof,
+/obj/structure/closet/crate{
+	color = "#bcc625"
+	},
+/obj/item/stack/money/rubles{
+	amount = 1500
+	},
+/turf/floor/plating/steel,
 /area/caribbean/no_mans_land/semiarid)
 "oB" = (
 /obj/structure/bed/chair/wood/bleacher/r{
@@ -3421,6 +3440,12 @@
 /obj/covers/sandstone_wall/brick,
 /turf/wall/sandstone,
 /area/caribbean/pirates/ship/voyage/lower/storage)
+"wh" = (
+/obj/structure/table/modern/table,
+/obj/roof/clay,
+/obj/item/kitchen/wood_bowl,
+/turf/floor/wood/alt/four,
+/area/caribbean/no_mans_land/semiarid)
 "wi" = (
 /obj/structure/closet/crate/empty,
 /obj/item/ammo_magazine/makarov,
@@ -6292,6 +6317,14 @@
 /obj/structure/table/modern/table,
 /obj/roof/clay,
 /turf/floor/plating/tiled/woodh,
+/area/caribbean/no_mans_land/semiarid)
+"Nt" = (
+/obj/structure/railing,
+/obj/structure/table/modern,
+/obj/effect/floor_decal/spline/fancy/wood,
+/obj/roof/clay,
+/obj/item/kitchen/wood_bowl,
+/turf/floor/wood/alt/four,
 /area/caribbean/no_mans_land/semiarid)
 "Nu" = (
 /obj/covers/sandstone/slab,
@@ -20398,7 +20431,7 @@ bj
 YG
 GF
 mU
-io
+oA
 mU
 YL
 AY
@@ -25575,8 +25608,8 @@ Mu
 Mu
 bX
 pG
-pG
-pG
+wh
+lo
 TZ
 YD
 Fy
@@ -25773,7 +25806,7 @@ Au
 Mu
 Mu
 bX
-pG
+lo
 pG
 pG
 TZ
@@ -25968,7 +26001,7 @@ DS
 nn
 nn
 oT
-Ld
+Nt
 Mu
 Mu
 ck
@@ -37649,7 +37682,7 @@ uL
 DZ
 uL
 uL
-uL
+DZ
 uL
 uL
 Tt
@@ -38246,7 +38279,7 @@ uL
 DZ
 uL
 uL
-uL
+DZ
 uL
 uL
 Tt
