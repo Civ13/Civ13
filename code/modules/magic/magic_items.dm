@@ -234,3 +234,271 @@
 	max_range = 7
 	create_path = /obj/item/wand_part/fox_fur
 	timer = 1800
+
+
+
+/obj/item/weapon/book/manual/barman_recipes
+	name = "Barman Recipes"
+	icon_state = "barbook"
+	author = "Sir John Rose"
+	title = "Barman Recipes"
+
+	dat = {"<html>
+				<head>
+				<style>
+				h1 {font-size: 18px; margin: 15px FALSEpx 5px;}
+				h2 {font-size: 15px; margin: 15px FALSEpx 5px;}
+				h3 {font-size: 13px; margin: 15px FALSEpx 5px;}
+				li {margin: 2px FALSEpx 2px 15px;}
+				ul {margin: 5px; padding: FALSEpx;}
+				ol {margin: 5px; padding: FALSEpx 15px;}
+				body {font-size: 13px; font-family: Verdana;}
+				</style>
+				</head>
+				<body>
+
+				<h1>Drinks for Dummies</h1>
+				Here's a guide for some basic drinks.
+
+				<h3>Black Russian:</h3>
+				Mix vodka and Kahlua into a glass.
+
+				<h3>Cafe Latte:</h3>
+				Mix milk and coffee into a glass.
+
+				<h3>Classic Martini:</h3>
+				Mix vermouth and gin into a glass.
+
+				<h3>Gin Tonic:</h3>
+				Mix gin and tonic into a glass.
+
+				<h3>Grog:</h3>
+				Mix rum and water into a glass.
+
+				<h3>Irish Cream:</h3>
+				Mix cream and whiskey into a glass.
+
+				<h3>The Manly Dorf:</h3>
+				Mix ale and beer into a glass.
+
+				<h3>Mead:</h3>
+				Mix enzyme, water, and sugar into a glass.
+
+				<h3>Screwdriver:</h3>
+				Mix vodka and orange juice into a glass.
+
+				</body>
+			</html>
+			"}
+
+/obj/item/weapon/book/manual/potions
+	name = "Professor Snip's Cauldron-Stirring Syllabus"
+	icon_state = "grimoire0"
+	author = "Professor Snip"
+	title = "Professor Snip's Cauldron-Stirring Syllabus"
+
+	dat = {"<html>
+				<head>
+				<style>
+				h1 {font-size: 18px; margin: 15px 0px 5px; color: #800000;}
+				h2 {font-size: 15px; margin: 15px 0px 5px; color: #4b0082;}
+				h3 {font-size: 13px; margin: 10px 0px 3px; color: #006400;}
+				li {margin: 2px 0px 2px 15px;}
+				ul {margin: 5px; padding: 0px;}
+				ol {margin: 5px; padding: 0px 15px;}
+				body {font-size: 13px; font-family: Verdana; background-color: #fadb6f;}
+				</style>
+				</head>
+				<body>
+
+				<h1>Cauldron-Stirring Syllabus</h1>
+				<p><i>Compiled by Professor Snip, Department of Potions and Disappointment.</i></p>
+				<p>Pay close attention. I will not repeat these instructions. If you manage to blow up the laboratory or poison yourself, you will receive a grade of Zero and serve detention until the end of the semester. Stir counter-clockwise unless you desire a sudden trip to the hospital wing.</p>
+
+				<h2>Standard Curricular Potions</h2>
+
+				<h3>1. Skele-Bones Broth</h3>
+				<ul>
+					<li><b>Ingredients:</b> 2 units Milk, 2 units Paracetamol, 1 unit Sugar.</li>
+					<li><b>Properties:</b> Knits broken bones back together and acts as a powerful painkiller.</li>
+					<li><b>Notes:</b> Tastes like chalk and despair. Do not complain to me about the flavor.</li>
+				</ul>
+
+				<h3>2. Welsh Instant Darkness Powder</h3>
+				<ul>
+					<li><b>Ingredients:</b> 1 unit Potassium, 1 unit Phosphorus, 1 unit Sugar.</li>
+					<li><b>Properties:</b> Fizzes into a dense, throwable powder. When thrown and shattered, it releases a massive, billowing cloud of absolute darkness.</li>
+					<li><b>Notes:</b> Completely inert if ingested, though it tastes like Swansea coal dust.</li>
+				</ul>
+
+				<h3>3. Liquid Gamble</h3>
+				<ul>
+					<li><b>Ingredients:</b> 2 units Adrenaline, 1 unit Mindbreaker, 2 units Goldschlager.</li>
+					<li><b>Properties:</b> Induces terrifying speed, total pain relief, and overrides paralysis or stunning.</li>
+					<li><b>Notes:</b> Banned before exams. Side effects include severe jitters, dizziness, and intense hallucinations (primarily of non-existent spiders).</li>
+				</ul>
+
+				<h3>4. Heart-Throb Syrup</h3>
+				<ul>
+					<li><b>Ingredients:</b> 1 unit Chloral Hydrate, 1 unit Sugar, 1 unit Wine.</li>
+					<li><b>Properties:</b> Induces severe drowsiness, rapidly followed by deep unconsciousness.</li>
+					<li><b>Notes:</b> Rumoured by idiots to induce romance. In reality, it only induces sleep. Excellent for keeping rowdy students quiet.</li>
+				</ul>
+
+				<h3>5. Polysoup Paste</h3>
+				<ul>
+					<li><b>Ingredients:</b> 1 unit Blood, 1 unit Ammonia, 1 unit Protein.</li>
+					<li><b>Properties:</b> A vile grey-green sludge. Does NOT change your appearance, despite what schoolyard rumours claim.</li>
+					<li><b>Notes:</b> Causes immediate toxin poisoning, vomiting, and a highly hazardous slippery mess on the floor. Grade: Automatic F.</li>
+				</ul>
+
+				<h3>6. Pep-Up Juice</h3>
+				<ul>
+					<li><b>Ingredients:</b> 3 units Coffee, 1 unit Condensed Capsaicin, 1 unit Ethanol.</li>
+					<li><b>Properties:</b> Warms the consumer instantly and heals internal organ damage.</li>
+					<li><b>Notes:</b> Over-consumption will lead to excessive body heat, resulting in severe internal throat burns. Sip, do not chug.</li>
+				</ul>
+
+				<h3>7. Toad Mixture (The Exploding Toad)</h3>
+				<ul>
+					<li><b>Ingredients:</b> 2 units Water, 2 units Potassium.</li>
+					<li><b>Properties:</b> A metallic silver, highly unstable liquid. Explosive on impact when thrown and shattered.</li>
+					<li><b>Notes:</b> Under NO circumstances are you to drink this, unless you wish to disintegrate your digestive tract. Do NOT place this container on my desk.</li>
+				</ul>
+
+				</body>
+			</html>
+			"}
+
+/obj/item/weapon/book/manual/wand_crafting
+	name = "Splinters' Guide to Bootleg Wands"
+	icon_state = "book18"
+	author = "Seamus 'Splinters' O'Shaughnessy"
+	title = "Splinters' Guide to Bootleg Wands"
+
+	dat = {"<html>
+				<head>
+				<style>
+				h1 {font-size: 18px; margin: 15px 0px 5px; color: #800000;}
+				h2 {font-size: 15px; margin: 15px 0px 5px; color: #4b0082;}
+				h3 {font-size: 13px; margin: 10px 0px 3px; color: #006400;}
+				li {margin: 2px 0px 2px 15px;}
+				ul {margin: 5px; padding: 0px;}
+				ol {margin: 5px; padding: 0px 15px;}
+				body {font-size: 13px; font-family: Verdana; background-color: #fadb6f;}
+				</style>
+				</head>
+				<body>
+
+				<h1>Splinters' Guide to Bootleg Wands</h1>
+				<p><i>Written by Seamus 'Splinters' O'Shaughnessy, 7th Year Mintysnek.</i></p>
+				<p>Listen up, first-years. The wands the school issues are made of cheap pine and cotton thread. They snap if you look at them funny. If you want a wand that actually does damage, or one that fits in your boot, you have to build it yourself. Bring me the parts behind the greenhouse, and I'll assemble it for ten Francs. Here's what you need to know.</p>
+
+				<h2>The Three Components</h2>
+				<ul>
+					<li><b>The Wood (The Body):</b> Determines how fast you can wave the thing, and how hard it hits if you just smack someone with it. (e.g., Balsa, Fibreglass, Bog Oak, Snooker Cue).</li>
+					<li><b>The Core (The Engine):</b> Determines Juice efficiency, misfire chance, and special quirks. (e.g., Badger Hair, Pigeon Feather, Copper Wire, Fox Fur).</li>
+					<li><b>The Length (The Chassis):</b> Determines your spell range and whether the P.L.O.D. can see it in your pocket. (Stubby, Standard, Overcompensator, Telescopic).</li>
+				</ul>
+
+				<h2>Splinters' Recommended Builds</h2>
+
+				<h3>1. The Hallway Ghost</h3>
+				<ul>
+					<li><b>Parts:</b> Balsa Wood + Fox Fur Core + Stubby Length.</li>
+					<li><b>The Vibe:</b> The ultimate smuggler's wand. Fits perfectly in a sock.</li>
+					<li><b>Performance:</b> The Balsa makes it cast incredibly fast, while the Fox Fur makes your spells completely invisible and silent. Perfect for casting <i>Dropus!</i> on a prefect and walking away. Just don't hit anyone with it—it will snap in half instantly.</li>
+				</ul>
+
+				<h3>2. The Pub Brawler</h3>
+				<ul>
+					<li><b>Parts:</b> Broken Snooker Cue + Badger Hair + Standard Length.</li>
+					<li><b>The Vibe:</b> A heavy, brutal piece of work. For the Rubywyrm who prefers violence over magic.</li>
+					<li><b>Performance:</b> Takes forever to cast a spell because it's so heavy, but the Badger Hair makes your offensive curses hit harder. If you run out of Juice, it functions as a highly lethal bludgeoning weapon.</li>
+				</ul>
+
+				<h3>3. The Copper Sniper</h3>
+				<ul>
+					<li><b>Parts:</b> Fibreglass Tent Pole + Copper Wire + Overcompensator Length.</li>
+					<li><b>The Vibe:</b> Looks like a radioactive fishing rod. Shoots like a cannon.</li>
+					<li><b>Performance:</b> The Fibreglass and Copper combo makes casting lightning-fast and highly Juice-efficient, while the massive length increases your maximum spell range. <b>WARNING:</b> If you overcast with copper wire, the wand will violently electrocute you.</li>
+				</ul>
+
+				<h3>4. The Puddle-Jumper (The Desperation Build)</h3>
+				<ul>
+					<li><b>Parts:</b> MDF Board + Pocket Lint + Telescopic Length.</li>
+					<li><b>The Vibe:</b> Made of literal garbage. Cost you zero Francs to build.</li>
+					<li><b>Performance:</b> The pocket lint means every cast is a gamble—it might cost double Juice, it might cost zero. Because it's made of cheap MDF, if you use it in the rain, it will swell up like a sponge, double your cast time, and likely blow your eyebrows off. You have been warned.</li>
+				</ul>
+
+				</body>
+			</html>
+			"}
+
+/obj/item/weapon/book/manual/student_handbook
+	name = "The L.A.M.E. Student Handbook"
+	icon_state = "book_lame"
+	author = "Ministry of Arcane Standards & Practices"
+	title = "L.A.M.E. Student Handbook: A Guide to Academic Progression"
+
+	dat = {"<html>
+				<head>
+				<style>
+				h1 {font-size: 18px; margin: 15px 0px 5px; color: #000080;}
+				h2 {font-size: 15px; margin: 15px 0px 5px; color: #8b0000;}
+				h3 {font-size: 13px; margin: 10px 0px 3px; color: #2f4f4f;}
+				li {margin: 2px 0px 2px 15px;}
+				ul {margin: 5px; padding: 0px;}
+				ol {margin: 5px; padding: 0px 15px;}
+				body {font-size: 13px; font-family: Verdana; background-color: #f0f8ff;}
+				</style>
+				</head>
+				<body>
+
+				<h1>The L.A.M.E. Student Handbook</h1>
+				<p><i>Published by the Ministry of Arcane Standards & Practices.</i></p>
+				<p>Welcome to the Llanboarwart Academy of Magical Education. Statistically speaking, you are currently a hazard to yourself and everyone around you. To ensure the school continues to receive its government funding, you must progress through the standardized academic tiers. Failure to do so will result in a life of sweeping floors.</p>
+				
+				<p>Below are the official examinations required to upgrade your magical license.</p>
+
+				<h2>1. Escaping the U.N.G.A. Bracket</h2>
+				<p>If you have recently arrived, you are classified as an <b>U.N.G.A.</b> (Underperforming Numpty General Assessment). You cannot cast proper spells, but you can swing a cricket bat quite hard.</p>
+				<ul>
+					<li><b>The Exam: Wand Assembly.</b></li>
+					<li><b>The Task:</b> We do not hand out free wands. You must scavenge the grounds to find a piece of Wood (e.g., Pine, MDF) and a Core (e.g., Pigeon Feather, Badger Hair). Combine them at a crafting workbench to create your first functional wand.</li>
+					<li><b>The Reward:</b> Upgrades you to the <b>C.O.A.L.</b> (Cwm-Pimple Ordinary Amateur License) tier, granting you access to basic defensive magic.</li>
+				</ul>
+
+				<h2>2. Upgrading to G.E.M.</h2>
+				<p>Now that you have a wand, we must ensure you will not blow up the castle.</p>
+				<ul>
+					<li><b>The Exam: The Cauldron-Stirring Certification.</b></li>
+					<li><b>The Task:</b> Report to the dungeons. Using the chemistry dispensers, successfully brew a bottle of <i>Skele-Bones Broth</i> (Milk, Paracetamol, Sugar). You must deliver this bottle to Nurse Pomme-Frites without causing a chemical explosion.</li>
+					<li><b>The Reward:</b> Upgrades you to the <b>G.E.M.</b> (Gravity & Elemental Manipulation) tier. You may now cast <i>Pushum!</i> and <i>Floatus!</i>.</li>
+				</ul>
+
+				<h2>3. Achieving the B.A.S.E.D. Degree</h2>
+				<p>To access high-level elemental magic, you must prove you have the reflexes to survive a real magical duel.</p>
+				<ul>
+					<li><b>The Exam: The Defense Trial.</b></li>
+					<li><b>The Task:</b> Enter the Defense Against the Dark Farts training ring. Activate the Training Dummy. You must successfully cast <i>Blockum!</i> to deflect three incoming spells, and then cast <i>Dropus!</i> to disarm the dummy of its wooden sword.</li>
+					<li><b>The Reward:</b> Upgrades you to the <b>B.A.S.E.D.</b> (Boarwart Advanced Sorcery & Experimental Deeds) tier. You are now authorized to cast <i>Burnus!</i> and <i>Freezeum!</i>.</li>
+				</ul>
+
+				<h2>4. Reaching C.H.A.D. Status</h2>
+				<p>Only the absolute elite reach the final tier. The Ministry does not officially endorse this exam, but Madame McGronk enforces it anyway.</p>
+				<ul>
+					<li><b>The Exam: The Wilderness Hunt & The Duel.</b></li>
+					<li><b>The Task:</b> First, venture into the Dark Woods and slay a hostile beast (e.g., a Welsh Fire-Hound or Giant Spider) to prove your PvE survival skills. Second, you must formally challenge another B.A.S.E.D. ranked student to a 1v1 duel in the courtyard and emerge victorious.</li>
+					<li><b>The Reward:</b> You become a certified <b>C.H.A.D.</b> (Classified High-level Arcane Destruction). You are a master wizard.</li>
+				</ul>
+
+				<hr>
+
+				<h2>WARNING: Disciplinary Action</h2>
+				<p>Any student caught casting Forbidden Spells (<i>Painum!</i> or <i>Deadum!</i>), attacking a Professor, or bringing the school into disrepute will be immediately stripped of their rank. You will be permanently downgraded to <b>L.O.S.E.R.</b> (Llanboarwart Outcast & Sub-standard Educational Reject) status. You will wear a grey sack, and your wand privileges will be severely restricted.</p>
+				<p><i>Ignorance of the rules is not an excuse. Neither is being turned into a wooden barrel.</i></p>
+
+				</body>
+			</html>
+			"}

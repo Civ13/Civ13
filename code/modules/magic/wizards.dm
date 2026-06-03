@@ -266,6 +266,7 @@
 	melee_damage_lower = 1
 	melee_damage_upper = 2
 	voice_pitch = 70
+	wander = FALSE
 	var/retaliation_cooldown = 0
 
 	var/list/tumbledoor_lines = list(
@@ -789,7 +790,7 @@ var/list/flavour_text_normies = list(
 /mob/living/simple_animal/wizard/normie_farmer
 	name = "Normie Farmer"
 	desc = "A local farmer, probably fed up with magical shenanigans."
-	icon = 'icons/mob/npc.dmi'
+	icon = 'icons/mob/npcs.dmi'
 	faction = "Civilians"
 	maxHealth = 100
 	health = 100
@@ -812,8 +813,154 @@ var/list/flavour_text_normies = list(
 /mob/living/simple_animal/wizard/normie_farmer/attack_hand(mob/user)
 	src.say(pick(flavour_text_normies))
 
+// ============================================================
+// PROFESSOR SNIP
+// Potions & Cauldron-Stirring class teacher.
+// Hand him a container with ≥10u of Welsh Darkness Powder to
+// advance from U.N.G.A. (level 1) to C.O.A.L. (level 2).
+// ============================================================
 
+/mob/living/simple_animal/wizard/professor_snip
+	name = "Professor Snip"
+	desc = "A gaunt, perpetually unimpressed potions professor. His robes are permanently stained with at least seven identifiable chemicals and several unidentifiable ones. He smells faintly of sulphur and disappointment."
+	icon_state = "professor_snip"
+	icon_living = "professor_snip"
+	icon_dead = "professor_snip_dead"
+	faction = "School"
+	maxHealth = 200
+	health = 200
+	melee_damage_lower = 2
+	melee_damage_upper = 4
+	wander = FALSE
+	stop_automated_movement = TRUE
+	speak_chance = 3
+	voice_pitch = 80
+	var/retaliation_cooldown = 0
+	var/submission_cooldown = 0
 
+	var/list/snip_lines = list(
+		"If you blow up my dungeon, you will be scrubbing the mortar with your own toothbrush. This is not a hypothetical.",
+		"I have been teaching Cauldron-Stirring for thirty-four years. I have never, not once, been impressed. I do not expect today to be different.",
+		"Pay attention. I will not repeat myself. I barely tolerate saying things once.",
+		"The correct temperature for a Skele-Bones reduction is 'simmering'. Not 'boiling'. Not 'violently erupting'. Simmering.",
+		"Phosphorus is not a toy. Potassium is not a toy. Sugar, in the context of Chemsmoke production, is also not a toy. None of these are toys.",
+		"Someone in the third-year class last term brewed Polysoup Paste and poured it on the floor. The dungeon still smells. I know who it was. I am biding my time.",
+		"The difference between a Soporific and a Draught of Living Death is the difference between a detention and a funeral. Take notes.",
+		"You there. Stop stirring clockwise. I specifically said counter-clockwise. What part of 'specifically' was unclear?",
+		"Ten points from whichever house is making that smell. I don't need to know who. I just need it to stop.",
+		"The correct response to a cauldron fire is a fire-suppression charm, not screaming. Write that down.",
+		"I do not grade on effort. I grade on results. If your result is a crater, you have failed.",
+		"Bring me a properly-brewed Skele-Bones Broth and perhaps I'll consider you marginally less of a liability. Perhaps.",
+		"Condensed Capsaicin has a flash point. I suggest you learn what that means before your next practical.",
+		"I did not become a potions professor to watch children attempt to brew Liquid Gamble before they've mastered basic filtration. Yet here we are.",
+		"If I find one more improperly labelled beaker in this laboratory, I will assign every student present detention until the heat death of the universe.",
+		"The reason we use glass stirring rods and not metal ones is because of a very specific incident in 1987. I will not be discussing that incident.",
+		"Ammonia and protein-based compounds will react. They will always react. This is chemistry, not a negotiation.",
+	)
+
+/mob/living/simple_animal/wizard/professor_snip/New()
+	..()
+	clothing_colours = null
+	icon_state = "professor_snip"
+	icon_living = "professor_snip"
+	icon_dead = "professor_snip_dead"
+	speak = snip_lines
+	update_icons()
+
+/mob/living/simple_animal/wizard/professor_snip/attack_hand(mob/user)
+	src.say(pick(snip_lines))
+
+/mob/living/simple_animal/wizard/professor_snip/bullet_act(var/obj/item/projectile/P)
+	if (P && P.invisibility <= 0) // Only react to real projectiles, not aiming traces
+		respond_to_attack(P.firer)
+	return ..()
+
+/mob/living/simple_animal/wizard/professor_snip/respond_to_attack(mob/living/user)
+	if (world.time < response_timer)
+		return
+	response_timer = world.time + 20
+
+	if (world.time > retaliation_cooldown)
+		retaliation_cooldown = world.time + 300
+		src.say(pick("Detention is too good for you.", "I suggest you put that away before I find a use for your spleen in a potion.", "Do not test my patience."))
+		return
+
+	retaliation_cooldown = world.time + 100
+	src.say(pick("I have brewed things more dangerous than you.", "Right. Ten points from your life expectancy."))
+
+	visible_message(SPAN_DANGER("<b>Professor Snip</b> flickers his wand with surgical precision!"))
+
+	spawn(15) // Brief dramatic pause before the bolt fires
+		if (src && user && !user.stat)
+			var/spell_type = pick(/obj/item/projectile/magic/painum, /obj/item/projectile/magic/freezum)
+			var/spell_name = "Painum!"
+			var/sound_file = 'sound/effects/spells/painum.ogg'
+			if (spell_type == /obj/item/projectile/magic/freezum)
+				spell_name = "Freezum!"
+				sound_file = 'sound/effects/spells/freezeum.ogg'
+
+			for (var/mob/M in player_list)
+				if (M.client && (M in view(7, src)))
+					M.show_chat_overlay(src, "<i>[spell_name]</i>", "#dea30d")
+			playsound(src.loc, sound_file, 75, FALSE)
+			visible_message("<span style=color:'#dea30d'><b>Professor Snip</b> says, \"<i>[spell_name]</i>\"</span>")
+			spawn(5)
+				playsound(src.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
+			var/obj/item/projectile/magic/bolt = new spell_type(src.loc)
+			bolt.firer = src
+			bolt.firer_original_dir = src.dir
+			bolt.def_zone = "chest"
+			bolt.launch(user, src, src, "chest")
+
+// Hand Professor Snip a container with ≥10u of darkness_powder to advance U.N.G.A. → C.O.A.L.
+/mob/living/simple_animal/wizard/professor_snip/attackby(var/obj/item/O, var/mob/user)
+	if (!ishuman(user) || !istype(map, /obj/map_metadata/wizard_boy))
+		respond_to_attack(user)
+		return ..()
+
+	// Only check reagent containers
+	if (!istype(O, /obj/item/weapon/reagent_containers))
+		respond_to_attack(user)
+		src.say(pick(snip_lines))
+		return ..()
+
+	var/obj/item/weapon/reagent_containers/RC = O
+	if (!RC.reagents || RC.reagents.get_reagent_amount("darkness_powder") < 10)
+		src.say(pick(
+			"That is not Welsh Instant Darkness Powder. That is whatever you have concocted in here, and I want it nowhere near my desk.",
+			"Insufficient quantity. Ten units, minimum. Brew it properly or don't bother.",
+			"I can see that is not what I asked for. Did you even read the recipe?",
+			"That smells nothing like a correctly-brewed Welsh Instant Darkness Powder. Try again. And this time, read the instructions.",
+		))
+		return
+
+	var/mob/living/human/H = user
+	if (!H.client)
+		return
+
+	if (world.time < submission_cooldown)
+		src.say("I have already assessed a submission recently. Come back in a moment.")
+		return
+
+	var/obj/map_metadata/wizard_boy/WB = map
+	var/level = WB.check_level(H.client.ckey)
+
+	if (level != "1")
+		if (level == "0")
+			src.say("You haven't even passed your U.N.G.A. examination yet. Sort that out first before wasting my time.")
+		else
+			src.say("You have already progressed beyond this assessment. Congratulations. Now stop bothering me.")
+		return
+
+	// Valid submission — advance U.N.G.A. → C.O.A.L.
+	submission_cooldown = world.time + 300 // 30-second cooldown between submissions
+
+	RC.reagents.remove_reagent("darkness_powder", 10) // consume the reagent
+
+	WB.change_level(H.client.ckey, "2")
+	to_chat(world, "<font size=3 class='wizard'><b>[H.real_name]</b> ([H.key]) has passed Professor Snip's practical assessment and progressed to qualification level 2 (<b>C.O.A.L.</b>)!</font>")
+	src.say("...Acceptable. Barely. The consistency was off and your colour was wrong, but the active compounds are present in adequate quantity. C.O.A.L. qualification granted. Do not celebrate. You have a long way to go.")
+	playsound(src.loc, 'sound/effects/spells/fixae.ogg', 50, FALSE)
 
 
 // ============================================================
@@ -840,3 +987,159 @@ var/list/flavour_text_normies = list(
 	timer = 600
 	icon_state = "npc"
 	max_number = 5
+
+/obj/effect/spawner/mobspawner/professor_snip
+	name = "Professor Snip spawner"
+	create_path = /mob/living/simple_animal/wizard/professor_snip
+	timer = 0      // Snip is a permanent fixture, not a respawner
+	icon_state = "npc"
+	max_number = 1
+
+/mob/living/simple_animal/hostile/wizard/training_dummy
+	name = "Animated Training Dummy"
+	desc = "A straw-filled training dummy enchanted to test defensive magic."
+	icon = 'icons/mob/npcs_wizards.dmi'
+	icon_state = "training_dummy"
+	icon_living = "training_dummy"
+	icon_dead = "training_dummy_dead"
+	maxHealth = 9999
+	health = 9999
+	wander = FALSE
+	stop_automated_movement = TRUE
+	faction = "School"
+	var/mob/living/human/active_student = null
+	var/phase = 1
+	var/blocks_done = 0
+	var/spell_cooldown = 0
+
+/mob/living/simple_animal/hostile/wizard/training_dummy/Move()
+	return FALSE
+
+/mob/living/simple_animal/hostile/wizard/training_dummy/handle_ai()
+	if (stat || !loc)
+		return
+	if (!active_student || active_student.stat || get_dist(src, active_student) > 10)
+		active_student = null
+		phase = 1
+		blocks_done = 0
+		if (l_hand) qdel(l_hand)
+		if (r_hand) qdel(r_hand)
+		l_hand = null
+		r_hand = null
+		overlays.Cut()
+		return
+
+	dir = get_dir(src, active_student)
+
+	if (phase == 1)
+		if (world.time >= spell_cooldown)
+			spell_cooldown = world.time + 40
+			
+			for (var/mob/M in player_list)
+				if (M.client && (M in view(7, src)))
+					M.show_chat_overlay(src, "<i>Zappus!</i>", "#6800a0")
+			playsound(src.loc, 'sound/effects/spells/zappus.ogg', 75, FALSE)
+			visible_message("<span style=color:'#6800a0'><b>[src]</b> uses <i>Zappus!</i></span>")
+			
+			var/obj/item/projectile/magic/zappus/slow_purple/bolt = new(src.loc)
+			bolt.firer = src
+			bolt.firer_original_dir = src.dir
+			bolt.def_zone = "chest"
+			bolt.launch(active_student, src, src, "chest")
+			
+	else if (phase == 2)
+		if (!r_hand && !l_hand)
+			var/obj/item/weapon/material/sword/training/W = new(src)
+			r_hand = W
+			overlays += image('icons/mob/items/lefthand_weapons.dmi', "wood_sword")
+			visible_message(SPAN_WARNING("<b>[src]</b> draws a wooden sword! Use Dropus! to disarm it!"))
+
+/mob/living/simple_animal/hostile/wizard/training_dummy/proc/register_deflection(mob/living/human/H)
+	if (phase != 1 || active_student != H)
+		return
+	blocks_done++
+	to_chat(H, SPAN_NOTICE("Successfully deflected [blocks_done]/3 spells!"))
+	playsound(src.loc, 'sound/effects/spells/blockum.ogg', 75, FALSE)
+	if (blocks_done >= 3)
+		phase = 2
+		to_chat(H, SPAN_NOTICE("Defensive trial complete! The dummy draws a wooden sword. Cast Dropus! to disarm the dummy!"))
+		var/obj/item/weapon/material/sword/training/W = new(src)
+		r_hand = W
+		overlays += image('icons/mob/items/lefthand_weapons.dmi', "wood_sword")
+
+/mob/living/simple_animal/hostile/wizard/training_dummy/proc/register_hit(mob/living/human/H)
+	if (phase != 1 || active_student != H)
+		return
+	to_chat(H, SPAN_WARNING("You were hit! Try to time your Blockum! cast better. (Requires 3 successful deflections)"))
+
+/mob/living/simple_animal/hostile/wizard/training_dummy/drop_l_hand()
+	if (l_hand)
+		l_hand.loc = get_turf(src)
+		l_hand = null
+		update_inv_l_hand()
+		check_disarmed()
+
+/mob/living/simple_animal/hostile/wizard/training_dummy/drop_r_hand()
+	if (r_hand)
+		r_hand.loc = get_turf(src)
+		r_hand = null
+		update_inv_r_hand()
+		check_disarmed()
+
+/mob/living/simple_animal/hostile/wizard/training_dummy/update_inv_l_hand()
+	overlays.Cut()
+	update_icons()
+
+/mob/living/simple_animal/hostile/wizard/training_dummy/update_inv_r_hand()
+	overlays.Cut()
+	update_icons()
+
+/mob/living/simple_animal/hostile/wizard/training_dummy/proc/check_disarmed()
+	if (phase != 2 || active_student == null)
+		return
+	if (!r_hand && !l_hand)
+		var/mob/living/human/H = active_student
+		active_student = null
+		phase = 1
+		blocks_done = 0
+		
+		if (H && H.client && map && istype(map, /obj/map_metadata/wizard_boy))
+			var/obj/map_metadata/wizard_boy/WB = map
+			if (WB.check_level(H.client.ckey) == "2")
+				WB.change_level(H.client.ckey, "3")
+				to_chat(world, "<font size=3 class='wizard'><b>[H.real_name]</b> ([H.key]) has completed the G.E.M. trial and progressed to qualification level 3 (<b>G.E.M.</b>)!</font>")
+			else
+				to_chat(H, SPAN_NOTICE("You have completed the trial! (You are not at C.O.A.L. level so you did not advance to G.E.M.)"))
+		else if (H)
+			to_chat(H, SPAN_NOTICE("You have successfully completed the trial!"))
+		
+		visible_message(SPAN_NOTICE("<b>[src]</b> powers down, its trial completed."))
+		qdel(src)
+
+/mob/living/simple_animal/hostile/wizard/training_dummy/proc/abort_trial()
+	if (!active_student)
+		qdel(src)
+		return
+	var/mob/living/human/H = active_student
+	active_student = null
+	phase = 1
+	blocks_done = 0
+	if (l_hand)
+		qdel(l_hand)
+		l_hand = null
+	if (r_hand)
+		qdel(r_hand)
+		r_hand = null
+	overlays.Cut()
+	to_chat(H, SPAN_WARNING("<b>Trial failed!</b> You must remain in the dueling circle throughout the trial!"))
+	visible_message(SPAN_WARNING("<b>[src]</b> powers down as the student left the dueling circle."))
+	qdel(src)
+
+/obj/effect/spawner/mobspawner/training_dummy
+	name = "training dummy spawner"
+	create_path = /mob/living/simple_animal/hostile/wizard/training_dummy
+	max_number = 1
+	max_range = 0
+	timer = 600
+	icon_state = "npc"
+	activated = FALSE

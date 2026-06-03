@@ -109,7 +109,7 @@
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
 
 	// Grant all base spells
 	for (var/spell_name in all_spells)

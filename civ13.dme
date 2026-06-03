@@ -1027,6 +1027,7 @@
 #include "code\modules\magic\magic_items.dm"
 #include "code\modules\magic\magic_jobs.dm"
 #include "code\modules\magic\magic_projectiles.dm"
+#include "code\modules\magic\magic_recipes.dm"
 #include "code\modules\magic\magic_structures.dm"
 #include "code\modules\magic\magic_vehicles.dm"
 #include "code\modules\magic\magic_wands.dm"

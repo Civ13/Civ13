@@ -24,6 +24,8 @@
 /obj/item/projectile/magic/proc/deduct_house_points_for_illegal_spell(var/atom/target, var/points, var/spell_name = "")
 	if (!firer || !ishuman(firer) || !firer.client) return
 	if (!target) return
+	if (istype(target, /mob/living/simple_animal/hostile/wizard/training_dummy))
+		return
 	if (istype(get_area(firer), /area/caribbean/houses/nml_one) && istype(get_area(target), /area/caribbean/houses/nml_one))
 		return
 	var/mob/living/human/target_human = null
@@ -246,6 +248,40 @@
 	light_color = "#cbd600"
 	tracer_type = /obj/effect/projectile/tracer/magic/yellow
 	impact_type = /obj/effect/projectile/impact/magic/electricity
+
+/obj/item/projectile/magic/zappus/slow_purple
+	name = "slow zappus"
+	color = "#a000c8"
+	light_color = "#a000c8"
+	tracer_type = /obj/effect/projectile/tracer/magic/purple
+	damage = 0
+	nodamage = TRUE
+	var/process_delay = 3
+	var/process_counter = 0
+
+/obj/item/projectile/magic/zappus/slow_purple/process()
+	process_counter++
+	if (process_counter < process_delay)
+		return
+	process_counter = 0
+	..()
+
+/obj/item/projectile/magic/zappus/slow_purple/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
+	if (blocked >= 2)
+		if (ishuman(target))
+			var/mob/living/human/H = target
+			if (istype(firer, /mob/living/simple_animal/hostile/wizard/training_dummy))
+				var/mob/living/simple_animal/hostile/wizard/training_dummy/TD = firer
+				if (TD.active_student == H)
+					TD.register_deflection(H)
+		return FALSE
+	if (ishuman(target))
+		var/mob/living/human/H = target
+		if (istype(firer, /mob/living/simple_animal/hostile/wizard/training_dummy))
+			var/mob/living/simple_animal/hostile/wizard/training_dummy/TD = firer
+			if (TD.active_student == H)
+				TD.register_hit(H)
+	return ..()
 
 /obj/item/projectile/magic/explodus
 	name = "explodus"

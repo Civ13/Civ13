@@ -209,3 +209,120 @@
 		overlays += icon(icon, "signpost_north")
 		overlays += icon(icon, "signpost_east")
 //		overlays += icon(icon, "signpost_south")
+
+/obj/structure/gem_lever
+	name = "G.E.M. Trial Lever"
+	desc = "Pull this lever to start the dueling club defense trial. You must be qualification level 2 (C.O.A.L.) to take the test."
+	icon = 'icons/obj/vehicles/train_lever.dmi'
+	icon_state = "lever_wood_none"
+	anchored = TRUE
+	density = TRUE
+	var/cooldown = 0
+
+/obj/structure/gem_lever/attack_hand(mob/user)
+	if (!ishuman(user))
+		return
+	var/mob/living/human/H = user
+	if (!H.client)
+		return
+	if (world.time < cooldown)
+		to_chat(H, SPAN_WARNING("The trial is resetting. Please wait a moment."))
+		return
+
+	if (!map || !istype(map, /obj/map_metadata/wizard_boy))
+		to_chat(H, SPAN_WARNING("The trial is only available at Llanboarwart Academy."))
+		return
+
+	var/obj/map_metadata/wizard_boy/WB = map
+	var/level = WB.check_level(H.client.ckey)
+	if (level != "2")
+		if (level == "0" || level == "1")
+			to_chat(H, SPAN_WARNING("You must be qualification level 2 (C.O.A.L.) to start this trial!"))
+		else
+			to_chat(H, SPAN_WARNING("You have already completed this qualification level!"))
+		return
+
+	// Resolve the designated dueling square landmark
+	var/turf/gem_turf = null
+	if (latejoin_turfs && latejoin_turfs["GEM_location"])
+		var/turfs_entry = latejoin_turfs["GEM_location"]
+		if (islist(turfs_entry) && length(turfs_entry) > 0)
+			gem_turf = turfs_entry[1]
+		else if (istype(turfs_entry, /turf))
+			gem_turf = turfs_entry
+
+	if (!gem_turf)
+		to_chat(H, SPAN_WARNING("The dueling circle landmark is missing. Please contact an administrator."))
+		return
+
+	// Player must be standing on the GEM_location turf to start
+	if (get_turf(H) != gem_turf)
+		to_chat(H, SPAN_WARNING("You must stand in the designated dueling circle before pulling the lever!"))
+		return
+
+	// Check for an existing active dummy
+	var/obj/effect/spawner/mobspawner/training_dummy/spawner = null
+	for(var/obj/effect/spawner/mobspawner/training_dummy/S in world)
+		if(S.z == src.z && get_dist(src, S) <= 8)
+			spawner = S
+			break
+
+	if (!spawner)
+		to_chat(H, SPAN_WARNING("Cannot find the training dummy spawner nearby!"))
+		return
+
+	var/mob/living/simple_animal/hostile/wizard/training_dummy/existing_dummy in range(7, src)
+	if (existing_dummy)
+		to_chat(H, SPAN_WARNING("A trial is already in progress!"))
+		return
+
+	cooldown = world.time + 100 // 10s cooldown
+
+	// Activate spawner to produce the dummy
+	spawner.activated = TRUE
+	spawner.spawnTarget()
+	spawner.activated = FALSE
+
+	var/mob/living/simple_animal/hostile/wizard/training_dummy/TD in range(7, spawner)
+	if (!TD)
+		to_chat(H, SPAN_WARNING("Failed to spawn the training dummy. Please try again."))
+		return
+
+	TD.active_student = H
+	TD.phase = 1
+	TD.blocks_done = 0
+	TD.dir = get_dir(TD, H)
+	H.dir = get_dir(H, TD)
+
+	to_chat(H, SPAN_NOTICE("<b>Trial started!</b> Deflect 3 spells with <b>Blockum!</b>, then disarm the dummy with <b>Dropus!</b>. Do NOT leave the circle!"))
+
+	// Monitor student position — abort if they leave the dueling square
+	spawn(0)
+		while (TD && !isnull(TD.loc) && TD.active_student == H)
+			sleep(5) // check every 0.5 seconds
+			if (!TD || isnull(TD.loc))
+				break // trial already finished naturally
+			if (TD.active_student != H)
+				break // trial ended another way
+			if (get_turf(H) != gem_turf || H.stat)
+				TD.abort_trial()
+				break
+
+/obj/structure/chemical_dispenser/potions
+	amount = 5
+	is_medical = FALSE
+	New()
+		..()
+		var/list/elements = list("hydrogen", "helium", "lithium", "nitrogen", "oxygen", "fluorine", "sodium", "magnesium", "aluminum", "silicon", "phosphorus", "chlorine", "potassium", "calcium", "arsenic", "iodine", "tungsten", "radium", "thorium", "bromine", "ammonia", "adrenaline", "blood", "chloralhydrate", "coffee", "condensedcapsaicin", "ethanol", "goldschlager", "milk", "mindbreaker", "paracetamol", "protein", "sugar", "water", "wine")
+		for (var/i in elements)
+			dispensable_reagents += list(list(i,100))
+
+/obj/structure/bookcase/filled_magic/initialize()
+	new /obj/item/weapon/book/manual/wand_crafting(src)
+	new /obj/item/weapon/book/manual/wand_crafting(src)
+	new /obj/item/weapon/book/manual/potions(src)
+	new /obj/item/weapon/book/manual/potions(src)
+	new /obj/item/weapon/book/manual/student_handbook(src)
+	new /obj/item/weapon/book/manual/student_handbook(src)
+	update_icon()
+	..()

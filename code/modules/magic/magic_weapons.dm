@@ -228,3 +228,4 @@
 	name = "Mjolnir"
 	shocks = 45
 	shockpower = 15
+
