@@ -21,7 +21,7 @@
 #define WAND_WOOD_BALSA       "balsa"       // Fast but fragile; snaps on melee.
 #define WAND_WOOD_SNOOKER     "snooker"     // Slow caster; excellent bludgeon.
 #define WAND_WOOD_FIBREGLASS  "fibreglass"  // Whippy fast; lashes you on overcast.
-#define WAND_WOOD_BOGOAK      "bogoak"      // Elemental discount; emits stink.
+#define WAND_WOOD_BOGOAK      "bogoak"      // Driftwood chassis; elemental discount; emits stink.
 
 // -- Core types (engine) --
 #define WAND_CORE_BADGER   "badger"    // Combat boosted; defensive penalised.
@@ -41,6 +41,216 @@
 #define WAND_CAT_COMBAT    "combat"    // Pushum, Sliceum, Explodus, Zappus, Burnus, Painum, Deadum
 #define WAND_CAT_DEFENSIVE "defensive" // Blockum, Wallus, Fixae
 #define WAND_CAT_MOVEMENT  "movement"  // Floatus, Blinkae
+
+
+/obj/structure/magic/wand_assembly_bench
+	name = "wand assembly bench"
+	desc = "A sturdy workbench used to assemble magical wand parts into a functioning wand."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "gunbench1"
+	density = TRUE
+	anchored = TRUE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	var/selected_wand_length = WAND_LENGTH_STANDARD
+
+	attack_hand(mob/user as mob)
+		if (!user || user.lying)
+			return
+		do_html(user)
+		return
+
+	attackby(obj/item/W as obj, mob/user as mob)
+		if (!istype(W, /obj/item/wand_part))
+			to_chat(user, "<span class='notice'>This bench only assembles wand parts.</span>")
+			return
+
+		user.drop_item()
+		W.loc = src
+		to_chat(user, "<span class='notice'>You place [W] on the wand assembly bench.</span>")
+		do_html(user)
+		return
+
+	Topic(href, href_list, hsrc)
+		var/mob/user = usr
+		if (!user || user.lying)
+			return
+
+		if (href_list["eject_wood"])
+			var/obj/item/wand_part/wood_part = get_bench_wood_part()
+			if (wood_part)
+				if (!user.get_active_hand() && user.put_in_active_hand(wood_part))
+					to_chat(user, "<span class='notice'>You take [wood_part] from the bench.</span>")
+				else
+					wood_part.loc = get_turf(user)
+					to_chat(user, "<span class='notice'>You remove [wood_part] from the bench.</span>")
+			else
+				to_chat(user, "<span class='notice'>There is no wood part on the bench.</span>")
+			do_html(user)
+			return
+
+		if (href_list["eject_core"])
+			var/obj/item/wand_part/core_part = get_bench_core_part()
+			if (core_part)
+				if (!user.get_active_hand() && user.put_in_active_hand(core_part))
+					to_chat(user, "<span class='notice'>You take [core_part] from the bench.</span>")
+				else
+					core_part.loc = get_turf(user)
+					to_chat(user, "<span class='notice'>You remove [core_part] from the bench.</span>")
+			else
+				to_chat(user, "<span class='notice'>There is no core part on the bench.</span>")
+			do_html(user)
+			return
+
+		if (href_list["assemble"])
+			var/obj/item/wand_part/wood_part = get_bench_wood_part()
+			var/obj/item/wand_part/core_part = get_bench_core_part()
+			if (wood_part && core_part)
+				var/obj/item/weapon/material/magic/wand/crafted/new_wand = new /obj/item/weapon/material/magic/wand/crafted(get_turf(src))
+				if (istype(wood_part, /obj/item/wand_part/pine_wood))
+					new_wand.wand_wood = WAND_WOOD_PINE
+				else if (istype(wood_part, /obj/item/wand_part/mdf_board))
+					new_wand.wand_wood = WAND_WOOD_MDF
+				else if (istype(wood_part, /obj/item/wand_part/balsa_wood))
+					new_wand.wand_wood = WAND_WOOD_BALSA
+				else if (istype(wood_part, /obj/item/wand_part/snooker_cue))
+					new_wand.wand_wood = WAND_WOOD_SNOOKER
+				else if (istype(wood_part, /obj/item/wand_part/fibreglass))
+					new_wand.wand_wood = WAND_WOOD_FIBREGLASS
+				else if (istype(wood_part, /obj/item/wand_part/driftwood))
+					new_wand.wand_wood = WAND_WOOD_BOGOAK
+				else
+					new_wand.wand_wood = WAND_WOOD_PINE
+				if (istype(core_part, /obj/item/wand_part/badger_hair))
+					new_wand.wand_core = WAND_CORE_BADGER
+				else if (istype(core_part, /obj/item/wand_part/pigeon_feather))
+					new_wand.wand_core = WAND_CORE_PIGEON
+				else if (istype(core_part, /obj/item/wand_part/copper_wire))
+					new_wand.wand_core = WAND_CORE_COPPER
+				else if (istype(core_part, /obj/item/wand_part/pocket_lint))
+					new_wand.wand_core = WAND_CORE_LINT
+				else if (istype(core_part, /obj/item/wand_part/asbestos))
+					new_wand.wand_core = WAND_CORE_ASBESTOS
+				else if (istype(core_part, /obj/item/wand_part/fox_fur))
+					new_wand.wand_core = WAND_CORE_FOX
+				else
+					new_wand.wand_core = WAND_CORE_PIGEON
+				new_wand.wand_length = selected_wand_length
+				new_wand.apply_wood_stats()
+				new_wand.apply_core_stats()
+				new_wand.apply_length_stats()
+				new_wand.update_name_and_desc()
+
+				to_chat(user, "<span class='notice'>The wand assembly bench finishes assembling a [new_wand.name].</span>")
+				playsound(get_turf(src), 'sound/effects/woodfile.ogg', 75, TRUE)
+				qdel(wood_part)
+				qdel(core_part)
+			else
+				to_chat(user, "<span class='notice'>The bench needs one wand chassis and one wand core to assemble a wand.</span>")
+			do_html(user)
+			return
+
+		if (href_list["length_stubby"])
+			selected_wand_length = WAND_LENGTH_STUBBY
+			do_html(user)
+			return
+
+		if (href_list["length_standard"])
+			selected_wand_length = WAND_LENGTH_STANDARD
+			do_html(user)
+			return
+
+		if (href_list["length_overcomp"])
+			selected_wand_length = WAND_LENGTH_OVERCOMP
+			do_html(user)
+			return
+
+		if (href_list["length_telescopic"])
+			selected_wand_length = WAND_LENGTH_TELESCOPIC
+			do_html(user)
+			return
+
+		if (href_list["refresh"])
+			do_html(user)
+			return
+
+		return
+
+	proc/get_bench_wood_part()
+		for (var/obj/item/O in contents)
+			if (istype(O, /obj/item/wand_part/pine_wood) || istype(O, /obj/item/wand_part/mdf_board) || istype(O, /obj/item/wand_part/balsa_wood) || istype(O, /obj/item/wand_part/snooker_cue) || istype(O, /obj/item/wand_part/fibreglass) || istype(O, /obj/item/wand_part/driftwood))
+				return O
+		return null
+
+	proc/get_bench_core_part()
+		for (var/obj/item/O in contents)
+			if (istype(O, /obj/item/wand_part/badger_hair) || istype(O, /obj/item/wand_part/pigeon_feather) || istype(O, /obj/item/wand_part/copper_wire) || istype(O, /obj/item/wand_part/pocket_lint) || istype(O, /obj/item/wand_part/asbestos) || istype(O, /obj/item/wand_part/fox_fur))
+				return O
+		return null
+
+	proc/do_html(var/mob/m)
+		if (!m || m.lying)
+			return
+
+		var/obj/item/wand_part/wood_part = get_bench_wood_part()
+		var/obj/item/wand_part/core_part = get_bench_core_part()
+		var/wood_name = wood_part ? wood_part.name : "<span style='color:#888'>None</span>"
+		var/core_name = core_part ? core_part.name : "<span style='color:#888'>None</span>"
+		var/wood_action = wood_part ? " <a href='?src=\ref[src];eject_wood=1'>Eject</a>" : ""
+		var/core_action = core_part ? " <a href='?src=\ref[src];eject_core=1'>Eject</a>" : ""
+		var/len = selected_wand_length
+		var/stubby_btn = (len == WAND_LENGTH_STUBBY) ? "<b>Stubby</b>" : "<a href='?src=\ref[src];length_stubby=1'>Stubby</a>"
+		var/standard_btn = (len == WAND_LENGTH_STANDARD) ? "<b>Standard</b>" : "<a href='?src=\ref[src];length_standard=1'>Standard</a>"
+		var/overcomp_btn = (len == WAND_LENGTH_OVERCOMP) ? "<b>Overcomp</b>" : "<a href='?src=\ref[src];length_overcomp=1'>Overcomp</a>"
+		var/telescopic_btn = (len == WAND_LENGTH_TELESCOPIC) ? "<b>Telescopic</b>" : "<a href='?src=\ref[src];length_telescopic=1'>Telescopic</a>"
+		var/assembly_button = (wood_part && core_part) ? "<center><a href='?src=\ref[src];assemble=1'><big><b>Assemble Wand</b></big></a></center>" : "<center><span style='color:#888'>Place both a chassis and a core, then assemble the wand.</span></center>"
+
+		m << browse({"
+
+		<br>
+		<html>
+
+		<head>
+		[common_browser_style]
+		</head>
+
+		<body>
+
+		<center>
+		<font size=6 style='font-family: "HarryP"'>Wand Assembly Bench</font><br><br>
+		</center>
+
+		<table width='100%' style='border-collapse:collapse;'>
+		<tr><td><b>Wood chassis</b></td><td>[wood_name]</td><td>[wood_action]</td></tr>
+		<tr><td><b>Core engine</b></td><td>[core_name]</td><td>[core_action]</td></tr>
+		<tr><td><b>Length</b></td><td colspan='2'>[stubby_btn] | [standard_btn] | [overcomp_btn] | [telescopic_btn]</td></tr>
+		</table>
+
+		<br>
+		[assembly_button]
+		<br><br>
+		<div style='font-size:90%; color:#cccccc; text-align:center;'>
+		Click this bench with a wand part in your hand to place it here.<br>
+		Then use the interface to assemble or remove parts.
+		</div>
+
+		</body>
+		</html>
+		<br>
+		"}, "window=wandbench;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=520x520")
+		return
+
+	examine(mob/user)
+		..(user, 2)
+		var/list/wood_items = list()
+		var/list/core_items = list()
+		for (var/obj/item/O in contents)
+			if (istype(O, /obj/item/wand_part/badger_hair) || istype(O, /obj/item/wand_part/pigeon_feather) || istype(O, /obj/item/wand_part/copper_wire) || istype(O, /obj/item/wand_part/pocket_lint) || istype(O, /obj/item/wand_part/asbestos) || istype(O, /obj/item/wand_part/fox_fur))
+				core_items += O.name
+			else if (istype(O, /obj/item/wand_part/pine_wood) || istype(O, /obj/item/wand_part/mdf_board) || istype(O, /obj/item/wand_part/balsa_wood) || istype(O, /obj/item/wand_part/snooker_cue) || istype(O, /obj/item/wand_part/fibreglass) || istype(O, /obj/item/wand_part/driftwood))
+				wood_items += O.name
+		if (wood_items.len || core_items.len)
+			to_chat(user, "<span class='notice'>On the bench: [list(wood_items, core_items)]</span>")
 
 
 // ============================================================
@@ -99,16 +309,14 @@
 /obj/item/weapon/material/magic/wand/crafted
 	name = "crafted wand"
 	desc = "A wand assembled from whatever was lying around. It hums with uncertain potential."
+	icon = 'icons/obj/magic_weapons.dmi'
 
 /obj/item/weapon/material/magic/wand/crafted/New()
 	..()
 	apply_wood_stats()
 	apply_core_stats()
 	apply_length_stats()
-	var/default_name = (name == "crafted wand" || name == null || name == "")
-	var/default_desc = (desc == "A wand assembled from whatever was lying around. It hums with uncertain potential." || desc == null || desc == "")
-	if (default_name || default_desc)
-		update_name_and_desc()
+	update_name_and_desc()
 
 
 // ============================================================
@@ -271,7 +479,7 @@
 		if (WAND_WOOD_BALSA)      wood_str = "balsa"
 		if (WAND_WOOD_SNOOKER)    wood_str = "snooker cue"
 		if (WAND_WOOD_FIBREGLASS) wood_str = "fibreglass"
-		if (WAND_WOOD_BOGOAK)     wood_str = "bog oak"
+		if (WAND_WOOD_BOGOAK)     wood_str = "driftwood"
 
 	var/core_str = ""
 	switch (wand_core)
@@ -290,10 +498,28 @@
 		if (WAND_LENGTH_TELESCOPIC)
 			len_str = telescopic_extended ? "extended telescopic" : "collapsed telescopic"
 
-	if (name == "crafted wand" || name == null || name == "")
-		name = "[len_str] [wood_str] wand"
-	if (desc == "A wand assembled from whatever was lying around. It hums with uncertain potential." || desc == null || desc == "")
-		desc = "A [len_str] wand made of [wood_str] with a [core_str] core. It crackles with dubious magical potential."
+	name = "[len_str] [wood_str] wand"
+	desc = "A [len_str] wand made of [wood_str] with a [core_str] core. It crackles with dubious magical potential."
+
+	var/wood_icon = ""
+	switch (wand_wood)
+		if (WAND_WOOD_PINE)       wood_icon = "wand_pinewood"
+		if (WAND_WOOD_MDF)        wood_icon = "wand_mdf"
+		if (WAND_WOOD_BALSA)      wood_icon = "wand_balsa"
+		if (WAND_WOOD_SNOOKER)    wood_icon = "wand_snooker"
+		if (WAND_WOOD_FIBREGLASS) wood_icon = "wand_fibreglass"
+		if (WAND_WOOD_BOGOAK)     wood_icon = "wand_driftwood"
+
+	var/len_icon = ""
+	switch (wand_length)
+		if (WAND_LENGTH_STUBBY)    len_icon = "short"
+		if (WAND_LENGTH_STANDARD)  len_icon = "long"
+		if (WAND_LENGTH_OVERCOMP)  len_icon = "longest"
+		if (WAND_LENGTH_TELESCOPIC)
+			len_icon = telescopic_extended ? "long" : "short"
+
+	if (wood_icon != "" && len_icon != "")
+		icon_state = "[wood_icon]_[len_icon]"
 
 
 // ============================================================
@@ -710,6 +936,7 @@
 /obj/item/weapon/material/magic/wand/crafted/standard
 	name = "standard wizard's wand"
 	desc = "A standard school-issue wand. Smells of pine resin and floor wax. Reliable, if uninspiring."
+	icon_state  = "wand_pine_long"
 	wand_wood   = WAND_WOOD_PINE
 	wand_core   = WAND_CORE_PIGEON
 	wand_length = WAND_LENGTH_STANDARD
@@ -717,6 +944,9 @@
 // ----- The Sniper -----
 // Fibreglass + Copper Wire + Overcompensator: blazing fast, long-range, cheap — but violent on overcast
 /obj/item/weapon/material/magic/wand/crafted/sniper
+	name = "The Sniper"
+	desc = "A ridiculously long, bright green fibreglass rod wrapped in stolen copper wire. It acts like a magical sniper rifle, but one wrong move and you'll electrocute yourself."
+	icon_state  = "wand_fibreglass_longest"
 	wand_wood   = WAND_WOOD_FIBREGLASS
 	wand_core   = WAND_CORE_COPPER
 	wand_length = WAND_LENGTH_OVERCOMP
@@ -724,6 +954,9 @@
 // ----- The Mugger -----
 // Snooker Cue + Badger Hair + Stubby: fast-draw, awful cast speed, exceptional bludgeoning
 /obj/item/weapon/material/magic/wand/crafted/mugger
+	name = "The Mugger"
+	desc = "A sawed-off chunk of a pub snooker cue stuffed with angry badger hair. It takes ages to cast a spell, but it fits in your boot and is perfect for caving someone's head in."
+	icon_state  = "wand_snooker_short"
 	wand_wood   = WAND_WOOD_SNOOKER
 	wand_core   = WAND_CORE_BADGER
 	wand_length = WAND_LENGTH_STUBBY
@@ -731,6 +964,9 @@
 // ----- The Ghost -----
 // Balsa + Fox Fur + Stubby: pocket-sized, invisible lightning casts — but snaps if you sneeze on it
 /obj/item/weapon/material/magic/wand/crafted/ghost
+	name = "The Ghost"
+	desc = "A terrifyingly fragile balsa wood splinter wrapped in smelly fox fur. It casts completely invisible spells, assuming it doesn't snap in your hand first."
+	icon_state  = "wand_balsa_short"
 	wand_wood   = WAND_WOOD_BALSA
 	wand_core   = WAND_CORE_FOX
 	wand_length = WAND_LENGTH_STUBBY
@@ -738,6 +974,9 @@
 // ----- The Gambler -----
 // MDF + Pocket Lint + Telescopic: chaotic, cheap, and likely to kill you in the rain
 /obj/item/weapon/material/magic/wand/crafted/gambler
+	name = "The Gambler"
+	desc = "A modified TV aerial glued to a cheap MDF handle, powered by lint. You have no idea what a spell will cost, and if it rains, it turns into soggy, useless cardboard."
+	icon_state  = "wand_mdf_long"
 	wand_wood   = WAND_WOOD_MDF
 	wand_core   = WAND_CORE_LINT
 	wand_length = WAND_LENGTH_TELESCOPIC
@@ -745,6 +984,9 @@
 // ----- The Swamp Thing -----
 // Bog Oak + Asbestos Fibre + Overcompensator: long-range elemental supremacy at personal cost
 /obj/item/weapon/material/magic/wand/crafted/swamp_thing
+	name = "The Swamp Thing"
+	desc = "A massive, rotting branch of bog oak packed with highly illegal asbestos. It smells like dead fish, but it lets you lob massive fireballs from a mile away... while slowly poisoning you."
+	icon_state  = "wand_driftwood_longest"
 	wand_wood   = WAND_WOOD_BOGOAK
 	wand_core   = WAND_CORE_ASBESTOS
 	wand_length = WAND_LENGTH_OVERCOMP
@@ -752,6 +994,9 @@
 // ----- The Chaos Stick -----
 // MDF + Asbestos Fibre + Stubby: fire-immune, toxin-dripping, swells in rain — pocket chaos
 /obj/item/weapon/material/magic/wand/crafted/chaos_stick
+	name = "The Chaos Stick"
+	desc = "A stubby block of cheap fiberboard stuffed with toxic insulation. It fits in your pocket and makes you entirely fireproof, but it acts as a localized health hazard."
+	icon_state  = "wand_mdf_short"
 	wand_wood   = WAND_WOOD_MDF
 	wand_core   = WAND_CORE_ASBESTOS
 	wand_length = WAND_LENGTH_STUBBY
@@ -759,6 +1004,39 @@
 // ----- The Coward's Out -----
 // Fibreglass + Pigeon Feather + Standard: fastest movement spells in the game, at the cost of pain
 /obj/item/weapon/material/magic/wand/crafted/cowards_out
+	name = "The Coward's Out"
+	desc = "A whippy fibreglass rod powered by a nervous pigeon feather. Perfect for panic-teleporting away from trouble, though the overcast backlash might slice your arm open."
+	icon_state  = "wand_fibreglass_long"
 	wand_wood   = WAND_WOOD_FIBREGLASS
+	wand_core   = WAND_CORE_PIGEON
+	wand_length = WAND_LENGTH_STANDARD
+
+// ----- Headmaster Tumbledoor's Wand -----
+// The legendary bootleg Elder Wand.
+/obj/item/weapon/material/magic/wand/special/elderly_wand
+	name = "The Elderly Wand"
+	desc = "An incredibly old, knobby walking stick. Legend says Tumbledoor won it from Death himself in a high-stakes game of Go Fish."
+	icon_state = "elderly_wand"
+	wand_wood   = WAND_WOOD_BOGOAK      // Ancient and slightly damp
+	wand_core   = WAND_CORE_BADGER      // Extremely powerful combat casts
+	wand_length = WAND_LENGTH_OVERCOMP  // Huge range
+
+// ----- Lord Moldywart's Wand -----
+// The villain's weapon. Toxic, fast, and silent.
+/obj/item/weapon/material/magic/wand/special/the_pale_stick
+	name = "The Pale Stick"
+	desc = "A chillingly smooth wand carved from bleached bone... or maybe just PVC piping. It hums with dark magic and smells faintly of hairspray."
+	icon_state = "moldy_wand"
+	wand_wood   = WAND_WOOD_FIBREGLASS  // Lethally fast cast speed
+	wand_core   = WAND_CORE_FOX         // Completely silent/invisible casts (terrifying for Deadum!)
+	wand_length = WAND_LENGTH_STANDARD
+
+// ----- The Moldy Men Standard Issue -----
+// Pine + Pigeon Feather + Standard: Unreliable, panic-prone, splinters easily.
+/obj/item/weapon/material/magic/wand/crafted/henchman_twig
+	name = "The Henchman's Twig"
+	desc = "A mass-produced, poorly sanded pine stick issued to all Moldy Men. The pigeon feather core makes it highly prone to misfiring whenever the user gets scared."
+	icon_state = "wand4"
+	wand_wood   = WAND_WOOD_PINE
 	wand_core   = WAND_CORE_PIGEON
 	wand_length = WAND_LENGTH_STANDARD
