@@ -305,7 +305,7 @@ var/list/global_huds = list(
 				to_chat(H, SPAN_NOTICE("Spell set to <b>[W.active_spell.name]</b>!"))
 				if (H.hud_used)
 					H.hud_used.update_spell_selector(H)
-				H.hud_used.update_spellshow(H)
+					H.hud_used.update_spellshow(H)
 				return
 /obj/screen/spell/zappus
 	name = "Zappus"
