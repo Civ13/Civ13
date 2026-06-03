@@ -178,7 +178,7 @@
 						H.equip_to_slot_or_del(new robe_type(H), slot_wear_suit)
 						H.setStat("magic", 100)
 						H.refresh_spells()
-		update_icons()
+				H.update_icons()
 		return TRUE
 	return FALSE
 

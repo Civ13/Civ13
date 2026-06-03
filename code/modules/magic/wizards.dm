@@ -42,7 +42,7 @@
 	"I wanted to be in Mintysnek, but The Placing Fedora told me I wasn't 'edgy' enough and dumped me in Mustardweasel.",
 	"Madame McGronk just gave Rubywyrm fifty points because Barry Hatter tied his rugby boots correctly. This whole school is rigged.",
 	"I paid three gold coins for a Choco-Toad and the stupid thing hopped right into a puddle of mud before I could eat it. What a scam.",
-	"My parents are Nuggles. My dad still thinks I go to a highly exclusive boarding school for junior tax attorneys, not a leaky castle in Cwm-Tlawd.",
+	"My parents are Normies. My dad still thinks I go to a highly exclusive boarding school for junior tax attorneys, not a leaky castle in Cwm-Tlawd.",
 	"Someone told me the Deadum! spell is unforgivable, but I saw Hagrag use it on a particularly large swamp rat just yesterday.",
 	"I bought a pet from Hagrag. He said it was a rare Welsh Fire-Hound, but I'm pretty sure it's just a badger glued to a lighter.",
 	"Don't drink more than three mugs of I-Can't-Believe-It's-Not-Butter-Beer. It doesn't actually have alcohol, it's just pure fermented corn syrup and green food dye.",
@@ -56,7 +56,7 @@
 	"Madame McGronk made the Rubywyrm team practice Mop Ball in a thunderstorm. Half of them got struck by lightning, and she just told them to 'walk it off'.",
 	"A Slatepie student tried to cast Blinkae! to skip the stairs, but he teleported directly into a brick wall. He's been in the hospital wing since Thursday.",
 	"Someone cast Stinkaeum during the morning assembly. Headmaster Tumbledoor just laughed and gave Mustardweasel twenty points.",
-	"I told my Nuggle parents that I was learning to manipulate the very fabric of reality. I didn't tell them I was using a stick I found in a parking lot.",
+	"I told my Normie parents that I was learning to manipulate the very fabric of reality. I didn't tell them I was using a stick I found in a parking lot.",
 	"I accidentally stepped on a Mintysnek's shoe, and they cast Barrelus on me. I spent three hours as a wooden cask before a janitor kicked me over.",
 	"Madame Shrub says the Shrieking Shrub is just 'misunderstood'. It literally tried to bite my face off when I watered it.",
 	"I swear Professor Flickum sleeps under his desk. I came in early for class and he was wrapped in an old rug, crying about his stolen wand.",
@@ -441,7 +441,7 @@
 	src.say(pick(
 		"The mold... it spreads...",
 		"Moldywart sees all!",
-		"You reek of Nuggle-blood.",
+		"You reek of Normie-blood.",
 		"Lord Moldywart will reclaim his nose! ...Eventually.",
 		"Mold. Damp. Darkness. This is the true magic.",
 	))
@@ -769,6 +769,52 @@
 /mob/living/simple_animal/wizard/professor/attack_hand(mob/user)
 	src.say(pick(flavour_text_professors))
 
+// ============================================================
+// NORMIE FARMERS
+// ============================================================
+
+var/list/flavour_text_normies = list(
+	"I saw a boy from Rubywyrm crash his O-Cedar mop right through my greenhouse roof yesterday. I had to threaten him with a coal shovel just to get him down.",
+	"One of those kids turned my prize-winning ram into a ceramic teapot. I don't care about your 'L.A.M.E.' degree, change it back or I'm calling the regular police!",
+	"I'm just a normal bloke. I work at the slate quarry. I don't need to see some teenager in a wet bathrobe floating over the high street while I'm trying to buy milk.",
+	"The magical static from that castle completely ruined the TV reception for the rugby match last night. All we got on the screen was purple static and faint chanting.",
+	"I don't mind the students buying crisps at the corner shop, but when they start casting Stinkaeum! near the pub's dart-board, that's where I draw the line.",
+	"I saw that Barry Hatter lad in the village. He's got a lightning bolt on his forehead. It looks like he just drew it on with a permanent marker, to be honest.",
+	"They call it an 'Academy of Magical Education,' but the roof is falling in and the kids are wearing old curtains for robes. Looks pretty L.A.M.E. to me.",
+	"Why do they fly on mops? Back in my day, we used mops to clean the floor. Now teenagers are using them to play 'Mop Ball' in the mud.",
+	"The C.A.P. gave me a ticket because my sheep was grazing on 'Ministry Land.' It's a mountain! It's just grass! What a joke.",
+	"My nephew went to Llanboarwart. He came home for the holidays and tried to turn a turnip into a gold coin. He just ended up setting his sleeve on fire. Waste of tuition."
+)
+
+/mob/living/simple_animal/wizard/normie_farmer
+	name = "Normie Farmer"
+	desc = "A local farmer, probably fed up with magical shenanigans."
+	icon = 'icons/mob/npc.dmi'
+	faction = "Civilians"
+	maxHealth = 100
+	health = 100
+	melee_damage_lower = 5
+	melee_damage_upper = 8
+	wander = TRUE
+	stop_automated_movement = FALSE
+	speak_chance = 5
+
+/mob/living/simple_animal/wizard/normie_farmer/New()
+	..()
+	clothing_colours = null
+	var/list/icon_states = list("civilian_1", "civilian_2", "civilian_6", "hostage_m1", "civilian_8", "civilian_9", "afghciv5")
+	icon_state = pick(icon_states)
+	icon_living = icon_state
+	icon_dead = "[icon_state]_dead" // Assuming a consistent naming convention for dead states
+	speak = flavour_text_normies
+	update_icons()
+
+/mob/living/simple_animal/wizard/normie_farmer/attack_hand(mob/user)
+	src.say(pick(flavour_text_normies))
+
+
+
+
 
 // ============================================================
 // SPAWNERS
@@ -787,3 +833,10 @@
 	timer = 600
 	icon_state = "npc"
 	max_number = 3
+
+/obj/effect/spawner/mobspawner/normie_farmer
+	name = "normie farmer spawner"
+	create_path = /mob/living/simple_animal/wizard/normie_farmer
+	timer = 600
+	icon_state = "npc"
+	max_number = 5
