@@ -198,6 +198,9 @@
 		moving = FALSE
 		return FALSE
 	if (get_dist(src, target_obj) <= 1)
+		// Clear pathfind_target if we're moving to it
+		if (target_obj == pathfind_target)
+			pathfind_target = null
 		target_obj = null
 		found_path = list()
 		moving = FALSE
@@ -237,7 +240,9 @@
 		if(next)
 			var/move_dir = get_dir(src, next)
 			if(move_dir)
-				step(src, move_dir)
+				if(!step(src, move_dir))
+					// Stuck on an obstacle (likely barricade), try to destroy it
+					DestroySurroundings()
 
 		moving = FALSE
 		spawn(move_to_delay)
@@ -253,7 +258,9 @@
 			return found_path.len
 		else
 			// Fallback: step_towards handles bumping natively
-			step_towards(src, target_obj)
+			if(!step_towards(src, target_obj))
+				// Failed to move (stuck on barricade), try to destroy obstacle
+				DestroySurroundings()
 			moving = FALSE
 			spawn(move_to_delay)
 				do_movement()

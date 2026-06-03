@@ -5,7 +5,7 @@
 		"faction_2_relations" = 50,
 		"faction_3_relations" = 50,
 		"faction_4_relations" = 50,
-		"faction_5_relations" = 50,
+		"faction_5_relations" = 0,
 	)
 
 var/global/datum/external_relations/external_relations = new()
@@ -64,6 +64,7 @@ var/global/datum/external_relations/external_relations = new()
 /obj/map_metadata/pepelsibirsk/New()
 	..()
 	relations_subsystem()
+	invasion_subsystem()
 	send_traders()
 	enemy_attacks()
 	recover_relations()
@@ -242,6 +243,35 @@ var/global/datum/external_relations/external_relations = new()
 			else if (external_relations.npc_faction_relations[relation] < 0)
 				external_relations.npc_faction_relations[relation] = 0
 		relations_subsystem()
+	return
+
+/obj/map_metadata/pepelsibirsk/proc/invasion_subsystem()
+	spawn(50)
+		if (MIL_RELATIONS <= 25)
+			var/list/turf/invasion_routes = latejoin_turfs["InvasionRoute"]
+			var/list/turf/city_centers = latejoin_turfs["CityCenter"]
+			var/turf/city_center = null
+			
+			if (city_centers && city_centers.len)
+				city_center = pick(city_centers)
+			
+			if (invasion_routes && invasion_routes.len && city_center)
+				var/num_to_spawn = rand(1, 10)
+				for(var/i = 1 to num_to_spawn)
+					var/turf/spawn_loc = pick(invasion_routes)
+					var/mob/living/simple_animal/hostile/human/ww2_soviet/S
+					
+					if (i == 1 && num_to_spawn >= 2)
+						S = new /mob/living/simple_animal/hostile/human/ww2_soviet/medic(spawn_loc)
+					else if (i == 2 && num_to_spawn >= 3)
+						S = new /mob/living/simple_animal/hostile/human/ww2_soviet/mg(spawn_loc)
+					else if (i == 3 && num_to_spawn > 7)
+						S = new /mob/living/simple_animal/hostile/human/ww2_soviet/squad_leader(spawn_loc)
+					else
+						S = new /mob/living/simple_animal/hostile/human/ww2_soviet(spawn_loc)
+					S.pathfind_target = city_center
+				to_chat(world, "<br><font size =3><span class='user'>An invasion from Pepelsibirsk-1 has started!</font></span>")
+		invasion_subsystem()
 	return
 
 /obj/map_metadata/pepelsibirsk/proc/check_relations_msg()
@@ -478,7 +508,6 @@ var/global/datum/external_relations/external_relations = new()
 		/obj/item/weapon/grenade/frag/ugl/shell40mm = 3,
 		/obj/item/ammo_casing/rocket/pg7v = 2,
 		/obj/item/ammo_casing/rocket/og7v = 2,
-		/obj/item/weapon/grenade/frag/ugl/shell40mm = 3,
 		/obj/item/weapon/plastique/russian = 1,
 
 		//Food and Drink
@@ -535,7 +564,7 @@ var/global/datum/external_relations/external_relations = new()
 			new product_key(get_turf(src))
 	new /mob/living/human/corpse(get_turf(src))
 	SOVIET_RELATIONS -= rand(10, 25)
-	to_chat(world, "<font size = 3><span class = 'notice'><b>A Soviet trader has died. Relations with the Union of Soviet Socialist Republics have dropped to [MIL_RELATIONS]!</b></font></span>")
+	to_chat(world, "<font size = 3><span class = 'notice'><b>A Soviet trader has died. Relations with the Union of Soviet Socialist Republics have dropped to [SOVIET_RELATIONS]!</b></font></span>")
 
 ////// TRAVELING MERCHANTS MANAGEMENT //////
 /obj/map_metadata/pepelsibirsk/proc/send_traders() //Picks a turf from trader_spawnpoint and sends traders there if relations are high enough.
@@ -980,7 +1009,10 @@ var/global/datum/external_relations/external_relations = new()
 
 /obj/map_metadata/pepelsibirsk/proc/bombing_location(faction)
 	var/direction = rand(1, 4)
-	var/turf/T = locate(rand(1, 255),rand(1, 255),2)
+	var/turf/T
+	// Keep trying until we get a valid turf
+	while(T==null)
+		T = locate(rand(1, 255), rand(1, 255), 2)
 	try_bombing(T, direction, faction)
 
 /obj/map_metadata/pepelsibirsk/proc/enemy_attacks()
@@ -1065,13 +1097,28 @@ var/global/datum/external_relations/external_relations = new()
 	anchored = TRUE
 
 	attack_hand(mob/living/human/H)
-		var/list/supplies = get_supplies()
-		var/dat = "<center><h2>Warehouse Contents</h2></center>"
-		var/i2 = 1
-		for(var/i in supplies)
-			dat += "<b>[supplies[i2]]:</b> [supplies[i]]<br>" //example: Cloth: 50
-			i2++
-		H << browse(dat, "window=Warehouse Contents")
+		ui_interact(H)
+
+/obj/structure/warehouse_book/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	user.set_using_object(src)
+
+	var/list/data = list()
+	var/list/supplies = get_supplies()
+	
+	// Convert supplies into proper format for NanoUI
+	var/list/item_list = list()
+	for(var/item_name in supplies)
+		item_list.Add(list(list(
+			"name" = item_name,
+			"amount" = supplies[item_name])))
+	
+	data["items"] = item_list
+
+	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
+	if (!ui)
+		ui = new(user, src, ui_key, "warehouse_book.tmpl", name, 400, 500)
+		ui.set_initial_data(data)
+		ui.open()
 
 /obj/structure/warehouse_book/proc/get_supplies()
 	var/list/supplies = list()
