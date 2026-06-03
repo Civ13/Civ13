@@ -412,6 +412,39 @@
 	melee_damage_upper = 7
 	wandersounds = list('sound/animals/bird/crow_1.ogg','sound/animals/bird/crow_2.ogg','sound/animals/bird/crow_3.ogg')
 
+
+/mob/living/simple_animal/pigeon
+	name = "pigeon"
+	desc = "A common bird."
+	icon_state = "pigeon_grey"
+	icon_living = "pigeon_grey"
+	icon_dead = "pigeon_grey_dead"
+	speak = list("coo","coo coo coo!")
+	speak_emote = list("coos")
+	emote_hear = list("coos")
+	emote_see = list("pecks at the ground","flaps its wings viciously")
+	speak_chance = 2
+	move_to_delay = 3
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 1
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	health = 12
+	harm_intent_damage = 7
+	pass_flags = PASSTABLE
+	mob_size = MOB_MEDIUM
+	flying = TRUE
+	granivore = 1
+	carnivore = 0
+	scavenger = 1
+	density = 0
+	behaviour = "scared"
+	melee_damage_lower = 3
+	melee_damage_upper = 7
+	wandersounds = list('sound/animals/bird/dove.ogg')
+
 /mob/living/simple_animal/turkeychick
 	name = "\improper turkey chick"
 	desc = "Adorable! They make such a racket though."

@@ -19,11 +19,13 @@
 
 /datum/reagent/drink/not_butter_beer/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
-	if (M.juice < M.max_juice)
-		M.juice = min(M.max_juice, M.juice + 1.0 * removed)
-	M.eye_blurry = max(M.eye_blurry, 3)
-	if (M.dizziness < 108)
-		M.make_dizzy(108 - M.dizziness)
+	if (ishuman(M))
+		var/mob/living/human/H = M
+		if (H.juice < H.max_juice)
+			H.juice = min(H.max_juice, H.juice + 1.0 * removed)
+		H.eye_blurry = max(H.eye_blurry, 3)
+		if (H.dizziness < 108)
+			H.make_dizzy(108 - H.dizziness)
 
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/green_goop
@@ -47,11 +49,12 @@
 
 /datum/reagent/drink/green_goop/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
-	if (M.juice < M.max_juice)
-		M.juice = min(M.max_juice, M.juice + 20.0 * removed)
-	M.stats["stamina"][1] = M.stats["stamina"][2]
+	if (ishuman(M))
+		var/mob/living/human/H = M
+		if (H.juice < H.max_juice)
+			H.juice = min(H.max_juice, H.juice + 20.0 * removed)
+		H.stats["stamina"][1] = H.stats["stamina"][2]
 	M.adjustToxLoss(1.0 * removed)
-
 
 /obj/item/weapon/reagent_containers/food/snacks/chocotoad
 	name = "Choco-Toad"
@@ -136,3 +139,98 @@
 	desc = "A piece of bleached driftwood with elemental resonance. It smells faintly of the sea and enhances spell efficiency."
 	icon_state = "driftwood"
 
+/obj/effect/spawner/objspawner/wandpart/pine_wood
+	name = "wand part spawner"
+	icon_state = "f2"
+	max_number = 5
+	max_range = 7
+	create_path = /obj/item/wand_part/pine_wood
+	timer = 1800
+
+/obj/effect/spawner/objspawner/wandpart/mdf_board
+	name = "wand part spawner"
+	icon_state = "f2"
+	max_number = 5
+	max_range = 7
+	create_path = /obj/item/wand_part/mdf_board
+	timer = 1800
+
+/obj/effect/spawner/objspawner/wandpart/balsa_wood
+	name = "wand part spawner"
+	icon_state = "f2"
+	max_number = 5
+	max_range = 7
+	create_path = /obj/item/wand_part/balsa_wood
+	timer = 1800
+
+/obj/effect/spawner/objspawner/wandpart/fibreglass
+	name = "wand part spawner"
+	icon_state = "f2"
+	max_number = 5
+	max_range = 7
+	create_path = /obj/item/wand_part/fibreglass
+	timer = 1800
+
+/obj/effect/spawner/objspawner/wandpart/driftwood
+	name = "wand part spawner"
+	icon_state = "f2"
+	max_number = 5
+	max_range = 7
+	create_path = /obj/item/wand_part/driftwood
+	timer = 1800
+
+/obj/effect/spawner/objspawner/wandpart/snooker_cue
+	name = "wand part spawner"
+	icon_state = "f2"
+	max_number = 5
+	max_range = 7
+	create_path = /obj/item/wand_part/snooker_cue
+	timer = 1800
+
+/obj/effect/spawner/objspawner/wandpart/badger_hair
+	name = "wand part spawner"
+	icon_state = "f3"
+	max_number = 5
+	max_range = 7
+	create_path = /obj/item/wand_part/badger_hair
+	timer = 1800
+
+/obj/effect/spawner/objspawner/wandpart/pigeon_feather
+	name = "wand part spawner"
+	icon_state = "f3"
+	max_number = 5
+	max_range = 7
+	create_path = /obj/item/wand_part/pigeon_feather
+	timer = 1800
+
+/obj/effect/spawner/objspawner/wandpart/copper_wire
+	name = "wand part spawner"
+	icon_state = "f3"
+	max_number = 5
+	max_range = 7
+	create_path = /obj/item/wand_part/copper_wire
+	timer = 1800
+
+/obj/effect/spawner/objspawner/wandpart/pocket_lint
+	name = "wand part spawner"
+	icon_state = "f3"
+	max_number = 5
+	max_range = 7
+	create_path = /obj/item/wand_part/pocket_lint
+	timer = 1800
+
+/obj/effect/spawner/objspawner/wandpart/asbestos
+	name = "wand part spawner"
+	icon_state = "f3"
+	max_number = 5
+	max_range = 7
+	create_path = /obj/item/wand_part/asbestos
+	timer = 1800
+
+/obj/effect/spawner/objspawner/wandpart/fox_fur
+	name = "wand part spawner"
+	icon_state = "f3"
+	max_number = 5
+	max_range = 7
+	create_path = /obj/item/wand_part/fox_fur
+	timer = 1800

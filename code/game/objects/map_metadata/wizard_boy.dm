@@ -498,7 +498,7 @@ var/wizard_style = {"
 		timeout--
 		sleep(2)
 
-	if (!WS || !WS.result)
+	if (!C || !WS || !WS.result)
 		if (WS)
 			qdel(WS)
 		return FALSE

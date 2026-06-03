@@ -285,11 +285,12 @@
 			if (firer && ishuman(firer) && firer.client)
 				if (!(istype(get_area(firer), /area/caribbean/houses/nml_one) && istype(get_area(target), /area/caribbean/houses/nml_one)))
 					var/mob/living/human/Hfirer = firer
-					Hfirer.nationality = "R" // Demote caster to L.O.S.E.R.
 					if (istype(map, /obj/map_metadata/wizard_boy))
 						var/obj/map_metadata/wizard_boy/WB = map
-						if (WB.house_info[Hfirer.ckey])
-							WB.house_info[Hfirer.ckey][1] = "LOSER"
+						WB.change_house(Hfirer.ckey, "LOSER")
+						WB.change_level(Hfirer.ckey, "R")
+					else
+						Hfirer.nationality = "R"
 					Hfirer.strip() // Adjust equipment by stripping them
 					to_chat(Hfirer, SPAN_DANGER("You have cast an unforgivable curse on a fellow student! You have been demoted to a L.O.S.E.R. and removed from your house!"))
 		L.gib()
@@ -572,12 +573,37 @@
 
 /obj/item/projectile/magic/stinkaeum/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
-		if (ishuman(target))
+		var/turf/T = get_turf(target)
+		var/atom/clean_target = null
+		if (istype(target, /mob/living/human))
 			var/mob/living/human/H = target
 			H.bladder = max(H.bladder, 30)
 			H.bowels = max(H.bowels, 30)
 			H.handle_piss()
 			H.handle_shit()
+		if (isturf(T))
+			clean_target = locate(/obj/effect/decal/cleanable, T)
+		if (istype(target, /mob/living/human) && prob(50))
+			var/obj/item/weapon/reagent_containers/food/snacks/poo/P = new(target.loc)
+			if (P)
+				clean_target = P
+		if (clean_target)
+			for (var/mob/living/simple_animal/wizard/goblin_cleaner/GC in view(10, T))
+				GC.clean_target = clean_target
+				if (GC.loc && clean_target.loc)
+					walk_towards(GC, clean_target, 6)
+
+/obj/item/projectile/magic/stinkaeum/on_impact(var/atom/A)
+	var/turf/T = get_turf(A)
+	if (T)
+		new /obj/effect/decal/cleanable/poo(T)
+		var/atom/clean_target = locate(/obj/effect/decal/cleanable, T)
+		if (clean_target)
+			for (var/mob/living/simple_animal/wizard/goblin_cleaner/GC in view(10, T))
+				GC.clean_target = clean_target
+				if (GC.loc && clean_target.loc)
+					walk_towards(GC, clean_target, 6)
+	return ..(A)
 
 /obj/item/projectile/magic/zappus/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	// on_hit is only called for living targets (base proc returns FALSE for non-living).

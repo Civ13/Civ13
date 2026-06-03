@@ -25,7 +25,7 @@
 	stop_automated_movement_when_pulled = TRUE
 	stop_automated_movement = FALSE
 	wander = TRUE
-	faction = "Unknown"
+	faction = "School"
 	universal_speak = TRUE
 	var/image/clothing_colours = null
 	var/response_timer = 0
@@ -128,7 +128,7 @@
 	icon_state = "goblin_healer"
 	icon_living = "goblin_healer"
 	icon_dead = "goblin_healer_dead"
-	faction = "Unknown"
+	faction = "School"
 	maxHealth = 80
 	health = 80
 	melee_damage_lower = 2
@@ -167,6 +167,89 @@
 	else
 		src.say("Hmph! Grub's time is precious, yes? Go away then!")
 
+/mob/living/simple_animal/wizard/goblin_cleaner
+	name = "Cleaner Goblin"
+	desc = "A miserable little goblin in a damp apron. It looks like it has cleaned more mud than magic and wants nothing to do with the rain."
+	icon_state = "goblin_cleaner"
+	icon_living = "goblin_cleaner"
+	icon_dead = "goblin_cleaner_dead"
+	faction = "School"
+	maxHealth = 60
+	health = 60
+	melee_damage_lower = 1
+	melee_damage_upper = 2
+	move_to_delay = 4
+	wander = TRUE
+	speak_chance = 5
+	var/atom/clean_target = null
+	var/cleaning_cooldown = 0
+	var/list/flavour_text_goblins = list(
+		"A first-year threw a dirty gym sock at me to 'free' me. I threw it back. It's raining outside, I'm not leaving the boiler room.",
+		"Do you know how hard it is to scrub exploded barrel splinters out of the slate grout? Stop casting Barrelus!",
+		"You lot literally have a Cleanum spell, yet you still make me do this with a rusty bucket and dirty river water. It's just cruel.",
+		"Mr. Puddle says if I don't get the boot-marks out of the Great Hall, he's taking away my sleeping bucket.",
+		"I mopped this corridor five minutes ago. Then thirty U.N.G.A.s walked through with muddy rugby boots. My existence is pain.",
+		"Lunch Lady Doris pays me in leftover Mystery Stew to scrub the cauldrons. Honestly, I think I'd rather starve.",
+		"If I find the Mintysnek student who keeps casting Barfus! outside the library, I'm going to wring my mop out over their pillow.",
+		"I get paid two and a half pebbles an hour to clean up your magical messes. At least the damp keeps my skin properly clammy.",
+		"Oh look, another sticky puddle of spilled I-Can't-Believe-It's-Not-Butter-Beer. I'm going on strike."
+	)
+	speak = list()
+	var/list/flavour_text_goblins_waste = list(
+		"Fecks sake, I'm not paid enough for this.",
+		"I am a proud Llanboarwart union worker, not a sewage treatment plant! I am demanding extra hazard pay from Mr. Puddle for this.",
+		"You lot have wands that can bend the laws of gravity, but you still make a goblin manually mop up your accidents. I hate wizards.",
+		"The next student I catch casting Stinkaeum is getting their mop shoved where the sun doesn't shine."
+	)
+/mob/living/simple_animal/wizard/goblin_cleaner/New()
+	..()
+	clothing_colours = null
+	icon_state = "goblin_cleaner"
+	icon_living = "goblin_cleaner"
+	icon_dead = "goblin_cleaner_dead"
+	speak = flavour_text_goblins
+	speak_chance = 5
+	update_icons()
+
+/mob/living/simple_animal/wizard/goblin_cleaner/proc/FindAndClean()
+	if (world.time < cleaning_cooldown)
+		return FALSE
+	if (!clean_target || clean_target.loc == null)
+		clean_target = null
+		for (var/obj/effect/decal/cleanable/C in range(7, src))
+			if (!clean_target || get_dist(src, C) < get_dist(src, clean_target))
+				clean_target = C
+		for (var/obj/item/weapon/reagent_containers/food/snacks/poo/P in range(7, src))
+			if (!clean_target || get_dist(src, P) < get_dist(src, clean_target))
+				clean_target = P
+	if (!clean_target)
+		return FALSE
+
+	if (get_dist(src, clean_target) <= 1)
+		playsound(src.loc, 'sound/effects/watersplash.ogg', 80, FALSE)
+		if (istype(clean_target, /obj/item/weapon/reagent_containers/food/snacks/poo) || istype(clean_target, /obj/effect/decal/cleanable/urine))
+			var/saying = pick(flavour_text_goblins_waste)
+			src.say(saying)
+		else
+			src.say(pick(flavour_text_goblins))
+		qdel(clean_target)
+		clean_target = null
+		cleaning_cooldown = world.time + 100
+		return TRUE
+
+	walk_towards(src, clean_target, 6)
+	return TRUE
+/mob/living/simple_animal/wizard/goblin_cleaner/handle_ai()
+	if (FindAndClean())
+		return
+	..()
+/mob/living/simple_animal/wizard/goblin_cleaner/do_behaviour(var/t_behaviour = null)
+	if (!t_behaviour)
+		t_behaviour = behaviour
+	if (FindAndClean())
+		return "cleaning"
+	return ..(t_behaviour)
+
 // ============================================================
 // HEADMASTER TUMBLEDOOR
 // ============================================================
@@ -177,7 +260,7 @@
 	icon_state = "tumbledoor"
 	icon_living = "tumbledoor"
 	icon_dead = "tumbledoor_dead"
-	faction = "Unknown"
+	faction = "School"
 	maxHealth = 300
 	health = 300
 	melee_damage_lower = 1
@@ -589,7 +672,7 @@
 	target_mob = caster
 	behaviour = "hostile"
 	stance = HOSTILE_STANCE_ATTACK
-	
+	walk_to(src, target_mob, 1, 3)
 	src.say(pick("Oi! That's an unlicensed Tier 5 spell! Right, you're nicked!", "Hold it right there! That's a class-A magical felony!", "Stop casting! Put the wand down!"))
 
 /mob/living/simple_animal/wizard/bobby/proc/process()
@@ -654,14 +737,14 @@
 	var/list/flavour_text_professors = list(
 		"The school board slashed our budget again. If you want to learn Burnus, you'll have to share a single matchstick with the student next to you.",
 		"I hold a C.H.A.D. degree in Arcane Destruction, yet here I am, telling 11-year-olds to stop eating the potion ingredients.",
-		"If I catch one more student casting Stinkaeum! in the corridors, the entire year-group is getting an automatic I.D.I.O.T. certificate.",
+		"If I catch one more student casting Stinkaeum in the corridors, the entire year-group is getting an automatic I.D.I.O.T. certificate.",
 		"Due to health and safety regulations, all magical duels must now take place in the mud outside. It builds character and saves on floor wax.",
 		"Please open your textbooks to page 394. If your textbook is missing page 394 because the school bought them used in 1982, just guess.",
 		"I don't get paid enough to deal with Dark Lords. If a Moldy Man walks in here, I am hiding under the desk and letting you sort it out.",
 		"Who replaced my morning tea with Funny Juice? I've been burping up sheep's wool for three hours!",
 		"I've been marking essays for five hours. If I read one more parchment citing 'magic' as the reason a cauldron exploded, I'm quitting.",
 		"Stop tapping your wands on the desks! Do you know how hard it is to get scorch marks out of ancient Welsh oak?",
-		"To whoever cast Pullus! on my chalk: very funny. Now bring it back before I dock fifty points from Slatepie.",
+		"To whoever cast Pullus on my chalk: very funny. Now bring it back before I dock fifty points from Slatepie.",
 		"No, Franco, your father cannot buy you a passing grade in this class. Though, for fifty Pounds, I might look the other way.",
 		"I asked for a simple levitation charm, and you managed to set the ceiling on fire. Ten points to Rubywyrm for sheer audacity, I suppose.",
 		"If you can't manage a basic Blockum shield, I highly suggest investing in a good helmet before the Mop Ball game.",

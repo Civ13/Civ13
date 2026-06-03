@@ -272,7 +272,7 @@ var/list/global_huds = list(
 	if(vehicle_hud.len)
 		remove_vehicle_hud()
 	if(wizard_hud.len)
-		remove_wizard_hud()
+		remove_wizard_hud(mymob)
 	return ..()
 
 /obj/screen/spell_selector
@@ -495,7 +495,10 @@ var/list/global_huds = list(
 	maptext_y = 32*0.75
 	icon_state = "blank"
 
-/obj/screen/spellshow/New()
+/obj/screen/spellshow/New(var/name, var/screen_loc, var/mob/M)
+	src.name = name
+	src.screen_loc = screen_loc
+	src.parentmob = M
 	..()
 	if (parentmob)
 		var/obj/item/weapon/material/magic/wand/W
