@@ -5,7 +5,7 @@
 		"faction_2_relations" = 50,
 		"faction_3_relations" = 50,
 		"faction_4_relations" = 50,
-		"faction_5_relations" = 0,
+		"faction_5_relations" = 50,
 	)
 
 var/global/datum/external_relations/external_relations = new()
@@ -246,7 +246,7 @@ var/global/datum/external_relations/external_relations = new()
 	return
 
 /obj/map_metadata/pepelsibirsk/proc/invasion_subsystem()
-	spawn(50)
+	spawn(36000)
 		if (MIL_RELATIONS <= 25)
 			var/list/turf/invasion_routes = latejoin_turfs["InvasionRoute"]
 			var/list/turf/city_centers = latejoin_turfs["CityCenter"]
