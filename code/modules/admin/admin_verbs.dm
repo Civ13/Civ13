@@ -22,6 +22,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/disable_approved_only,
 	/client/proc/enable_whitelist,
 	/client/proc/disable_whitelist,
+	/client/proc/disable_campaign_whitelist,
 	/client/proc/player_panel_new,		//shows an interface for all players, with links to various panels,
 	/client/proc/invisimin,				//allows our mob to go invisible/visible,
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
@@ -925,6 +926,23 @@ var/global/list/global_colour_matrix = null
 	else
 		world << SPAN_NOTICE("<font size=3>Job whitelists have been <b>disabled</b>.</font>")
 		config.use_job_whitelist = FALSE
+
+
+/client/proc/disable_campaign_whitelist()
+	set name = "Disable Campaign Whitelist"
+	set category = "Server"
+
+	if (!check_rights(R_ADMIN))
+		to_chat(src, "<span class = 'danger'>You don't have the permissions.</span>")
+		return
+
+	var/new_state = !disable_campaign_whitelist
+	var/conf_1 = input("Are you sure you want to [new_state ? "enable" : "disable"] unrestricted campaign joining?") in list ("Yes", "No")
+	if (conf_1 != "Yes")
+		return
+	else
+		disable_campaign_whitelist = new_state
+		to_chat(world, "<font size=3>Campaign faction whitelist has been <b>[new_state ? "disabled" : "enabled"]</b>. Anyone can now [new_state ? "pick their campaign faction." : "only join as whitelisted factions."]</font>")
 
 
 /client/proc/enable_fov()

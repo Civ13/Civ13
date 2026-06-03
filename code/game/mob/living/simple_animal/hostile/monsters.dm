@@ -38,7 +38,7 @@
 	melee_damage_lower = 30
 	melee_damage_upper = 45
 	mob_size = MOB_LARGE
-	can_bite_limbs_off = 1
+	can_bite_limbs_off = TRUE
 	predatory_carnivore = 1
 	carnivore = 1
 	fat_penalty = 1
@@ -96,6 +96,7 @@
 	light_power = 1
 	light_range = 1
 	light_color = "#FF0000"
+	can_bite_limbs_off = TRUE
 
 /mob/living/simple_animal/hostile/lightseeker/New()
 	..()
@@ -210,7 +211,7 @@
 	melee_damage_lower = 20
 	melee_damage_upper = 35
 	mob_size = MOB_LARGE
-	can_bite_limbs_off = 1
+	can_bite_limbs_off = TRUE
 	predatory_carnivore = 1
 	carnivore = 1
 	break_stuff_probability = 20
@@ -259,7 +260,7 @@
 	melee_damage_lower = 15
 	melee_damage_upper = 25
 	mob_size = MOB_MEDIUM
-	can_bite_limbs_off = 0
+	can_bite_limbs_off = FALSE
 	icon_state = "Drone Front Half"
 	icon_living = "Drone Front Half"
 	icon_dead = "alienh_dead"

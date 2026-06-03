@@ -736,7 +736,7 @@
 			H.adaptStat("strength", 1)
 		change_the_turf()
 		return
-	if (prob(25))
+	if (prob(25) && map.ID != MAP_ANTARCTICA)
 		if (map.ordinal_age >= 2)
 			var/pickperc = pick(1,2,3,4)
 			switch (pickperc)
