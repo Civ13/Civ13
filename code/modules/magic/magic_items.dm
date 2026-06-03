@@ -396,35 +396,53 @@
 
 				<h2>The Three Components</h2>
 				<ul>
-					<li><b>The Wood (The Body):</b> Determines how fast you can wave the thing, and how hard it hits if you just smack someone with it. (e.g., Balsa, Fibreglass, Bog Oak, Snooker Cue).</li>
-					<li><b>The Core (The Engine):</b> Determines Juice efficiency, misfire chance, and special quirks. (e.g., Badger Hair, Pigeon Feather, Copper Wire, Fox Fur).</li>
+					<li><b>The Wood (The Body):</b> Determines how fast you can wave the thing, and how hard it hits if you just smack someone with it. (e.g., Balsa, Fibreglass, Driftwood, Snooker Cue).</li>
+					<li><b>The Core (The Engine):</b> Determines Juice efficiency, misfire chance, and special quirks. (e.g., Badger Hair, Pigeon Feather, Copper Wire, Fox Fur, Asbestos).</li>
 					<li><b>The Length (The Chassis):</b> Determines your spell range and whether the P.L.O.D. can see it in your pocket. (Stubby, Standard, Overcompensator, Telescopic).</li>
+				</ul>
+
+				<h2>Advanced Materials</h2>
+				<ul>
+					<li><b>Driftwood:</b> Picked up from the shores of Cwm-Tlawd. It's soggy and smells of salt, but it has a natural resonance with the elements. Very efficient, though it lacks the 'snap' of drier woods.</li>
+					<li><b>Asbestos Fibre:</b> A core for the truly reckless. It makes the wand almost entirely immune to catching fire during a botched <i>Burnus!</i> cast, but the dust will slowly rot your lungs. A fair trade.</li>
 				</ul>
 
 				<h2>Splinters' Recommended Builds</h2>
 
-				<h3>1. The Hallway Ghost</h3>
+				<h3>1. The Sea-Shanty</h3>
+				<ul>
+					<li><b>Parts:</b> Driftwood + Pigeon Feather + Standard Length.</li>
+					<li><b>The Vibe:</b> Reliable, rhythmic, and smells like a wet dog. Great for students who want to keep moving without running out of Juice.</li>
+				</ul>
+
+				<h3>2. The Hallway Ghost</h3>
 				<ul>
 					<li><b>Parts:</b> Balsa Wood + Fox Fur Core + Stubby Length.</li>
 					<li><b>The Vibe:</b> The ultimate smuggler's wand. Fits perfectly in a sock.</li>
 					<li><b>Performance:</b> The Balsa makes it cast incredibly fast, while the Fox Fur makes your spells completely invisible and silent. Perfect for casting <i>Dropus!</i> on a prefect and walking away. Just don't hit anyone with it—it will snap in half instantly.</li>
 				</ul>
 
-				<h3>2. The Pub Brawler</h3>
+				<h3>3. The Pub Brawler</h3>
 				<ul>
 					<li><b>Parts:</b> Broken Snooker Cue + Badger Hair + Standard Length.</li>
 					<li><b>The Vibe:</b> A heavy, brutal piece of work. For the Rubywyrm who prefers violence over magic.</li>
 					<li><b>Performance:</b> Takes forever to cast a spell because it's so heavy, but the Badger Hair makes your offensive curses hit harder. If you run out of Juice, it functions as a highly lethal bludgeoning weapon.</li>
 				</ul>
 
-				<h3>3. The Copper Sniper</h3>
+				<h3>4. The Copper Sniper</h3>
 				<ul>
 					<li><b>Parts:</b> Fibreglass Tent Pole + Copper Wire + Overcompensator Length.</li>
 					<li><b>The Vibe:</b> Looks like a radioactive fishing rod. Shoots like a cannon.</li>
 					<li><b>Performance:</b> The Fibreglass and Copper combo makes casting lightning-fast and highly Juice-efficient, while the massive length increases your maximum spell range. <b>WARNING:</b> If you overcast with copper wire, the wand will violently electrocute you.</li>
 				</ul>
 
-				<h3>4. The Puddle-Jumper (The Desperation Build)</h3>
+				<h3>5. The Fire-Breather</h3>
+				<ul>
+					<li><b>Parts:</b> Pine Wood + Asbestos Core + Overcompensator.</li>
+					<li><b>The Vibe:</b> For the pyromaniac who wants to cast <i>Burnus!</i> all day without their wand melting. Try not to breathe in while casting.</li>
+				</ul>
+
+				<h3>6. The Puddle-Jumper (The Desperation Build)</h3>
 				<ul>
 					<li><b>Parts:</b> MDF Board + Pocket Lint + Telescopic Length.</li>
 					<li><b>The Vibe:</b> Made of literal garbage. Cost you zero Francs to build.</li>
@@ -461,36 +479,34 @@
 				
 				<p>Below are the official examinations required to upgrade your magical license.</p>
 
-				<h2>1. Escaping the U.N.G.A. Bracket</h2>
-				<p>If you have recently arrived, you are classified as an <b>U.N.G.A.</b> (Underperforming Numpty General Assessment). You cannot cast proper spells, but you can swing a cricket bat quite hard.</p>
+				<h2>1. The I.D.I.O.T. Phase</h2>
+				<p>If you have recently arrived, you are classified as an <b>I.D.I.O.T.</b> (Incompetent Dunderhead In Official Training). You cannot cast proper spells, but you can swing a cricket bat quite hard.</p>
 				<ul>
 					<li><b>The Exam: Wand Assembly.</b></li>
 					<li><b>The Task:</b> We do not hand out free wands. You must scavenge the grounds to find a piece of Wood (e.g., Pine, MDF) and a Core (e.g., Pigeon Feather, Badger Hair). Combine them at a crafting workbench to create your first functional wand.</li>
-					<li><b>The Reward:</b> Upgrades you to the <b>C.O.A.L.</b> (Cwm-Pimple Ordinary Amateur License) tier, granting you access to basic defensive magic.</li>
+					<li><b>The Reward:</b> Upgrades you to the <b>U.N.G.A.</b> (Underperforming Numpty General Assessment) tier, granting you the right to carry a wand and cast Level 1 charms.</li>
 				</ul>
 
-				<h2>2. Upgrading to G.E.M.</h2>
-				<p>Now that you have a wand, we must ensure you will not blow up the castle.</p>
+				<h2>2. The Cauldron Practical</h2>
+				<p>To advance from <b>U.N.G.A.</b> to <b>C.O.A.L.</b>, you must prove you can handle volatile reagents without erasing the dungeon from the map.</p>
 				<ul>
-					<li><b>The Exam: The Cauldron-Stirring Certification.</b></li>
-					<li><b>The Task:</b> Report to the dungeons. Using the chemistry dispensers, successfully brew a bottle of <i>Skele-Bones Broth</i> (Milk, Paracetamol, Sugar). You must deliver this bottle to Nurse Pomme-Frites without causing a chemical explosion.</li>
-					<li><b>The Reward:</b> Upgrades you to the <b>G.E.M.</b> (Gravity & Elemental Manipulation) tier. You may now cast <i>Pushum!</i> and <i>Floatus!</i>.</li>
+					<li><b>The Exam: Professor Snip's Potion Assessment.</b></li>
+					<li><b>The Task:</b> Brew at least 10 units of <i>Welsh Instant Darkness Powder</i> (Potassium, Phosphorus, Sugar). Hand the container directly to Professor Snip in the Potions Dungeon.</li>
+					<li><b>The Reward:</b> Upgrades you to the <b>C.O.A.L.</b> (Cwm-Tlawd Ordinary Amateur License) tier. You are now authorized to cast Level 2 spells and use the vending machines.</li>
 				</ul>
 
-				<h2>3. Achieving the B.A.S.E.D. Degree</h2>
-				<p>To access high-level elemental magic, you must prove you have the reflexes to survive a real magical duel.</p>
+				<h2>3. The Dueling Trial</h2>
+				<p>To achieve <b>G.E.M.</b> status, you must prove you have the reflexes to survive a real magical duel.</p>
 				<ul>
 					<li><b>The Exam: The Defense Trial.</b></li>
-					<li><b>The Task:</b> Enter the Defense Against the Dark Farts training ring. Activate the Training Dummy. You must successfully cast <i>Blockum!</i> to deflect three incoming spells, and then cast <i>Dropus!</i> to disarm the dummy of its wooden sword.</li>
-					<li><b>The Reward:</b> Upgrades you to the <b>B.A.S.E.D.</b> (Boarwart Advanced Sorcery & Experimental Deeds) tier. You are now authorized to cast <i>Burnus!</i> and <i>Freezeum!</i>.</li>
+					<li><b>The Task:</b> Enter the training ring and pull the G.E.M. Lever. You must successfully cast <i>Blockum!</i> to deflect three incoming spells, and then cast <i>Dropus!</i> to disarm the dummy.</li>
+					<li><b>The Reward:</b> Upgrades you to the <b>G.E.M.</b> (Gravity & Elemental Manipulation) tier. You may now cast <i>Pushum!</i>, <i>Floatus!</i>, and <i>Blinkae!</i>.</li>
 				</ul>
 
-				<h2>4. Reaching C.H.A.D. Status</h2>
-				<p>Only the absolute elite reach the final tier. The Ministry does not officially endorse this exam, but Madame McGronk enforces it anyway.</p>
+				<h2>4. Reaching the Apex</h2>
+				<p>The final tiers, <b>B.A.S.E.D.</b> and <b>C.H.A.D.</b>, are reserved for those who have mastered both the wilderness and the arena.</p>
 				<ul>
-					<li><b>The Exam: The Wilderness Hunt & The Duel.</b></li>
-					<li><b>The Task:</b> First, venture into the Dark Woods and slay a hostile beast (e.g., a Welsh Fire-Hound or Giant Spider) to prove your PvE survival skills. Second, you must formally challenge another B.A.S.E.D. ranked student to a 1v1 duel in the courtyard and emerge victorious.</li>
-					<li><b>The Reward:</b> You become a certified <b>C.H.A.D.</b> (Classified High-level Arcane Destruction). You are a master wizard.</li>
+					<li><b>The Task:</b> Slay Lord Moldywart or his lieutenants to achieve <b>B.A.S.E.D.</b> status. Those who demonstrate absolute dominance in the Great Hall duels may eventually be recognized as a <b>C.H.A.D.</b> (Classified High-level Arcane Destruction).</li>
 				</ul>
 
 				<hr>

@@ -240,17 +240,16 @@ bullet_act
 	if (client && stat == CONSCIOUS && P.firer && ishuman(P.firer) && istype(P.firedfrom, /obj/item/weapon/gun))
 		var/mob/living/human/H = P.firer
 		if (!H.original_job || !original_job || H.original_job.base_type_flag() != original_job.base_type_flag())
-			if (istype(P.firedfrom, /obj/item/weapon/gun))
-				var/obj/item/weapon/gun/G = P.firedfrom
-				switch (G.gun_type)
-					if (GUN_TYPE_RIFLE)
-						H.adaptStat("rifle", 1)
-					if (GUN_TYPE_PISTOL)
-						H.adaptStat("pistol", 1)
-					if (GUN_TYPE_BOW)
-						H.adaptStat("bows", 1)
-					if (GUN_TYPE_MG)
-						H.adaptStat("machinegun", 1)
+			var/obj/item/weapon/gun/G = P.firedfrom
+			switch (G.gun_type)
+				if (GUN_TYPE_RIFLE)
+					H.adaptStat("rifle", 1)
+				if (GUN_TYPE_PISTOL)
+					H.adaptStat("pistol", 1)
+				if (GUN_TYPE_BOW)
+					H.adaptStat("bows", 1)
+				if (GUN_TYPE_MG)
+					H.adaptStat("machinegun", 1)
 
 
 	def_zone = check_zone(def_zone)

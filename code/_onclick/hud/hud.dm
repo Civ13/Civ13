@@ -419,6 +419,8 @@ var/list/global_huds = list(
 	spell_path = /datum/spell/deadum
 
 /datum/hud/proc/add_wizard_hud(mob/living/human/H)
+	if (!H)
+		return
 	if (wizard_hud.len)
 		remove_wizard_hud(H)
 
