@@ -13,7 +13,7 @@
 	title = "Governor"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governor"
-	spawn_location = "JoinLateCivA"
+	spawn_location = "JoinLateCiv"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -58,7 +58,7 @@
 	rank_abbreviation = "Architect"
 	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
-	spawn_location = "JoinLateCivA"
+	spawn_location = "JoinLateCiv"
 
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -247,7 +247,7 @@
 	rank_abbreviation = "Officer"
 	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
-	spawn_location = "JoinLateCivC"
+	spawn_location = "JoinLateCiv"
 
 	is_officer = TRUE
 	is_commander = TRUE
@@ -302,7 +302,7 @@
 	rank_abbreviation = ""
 	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
-	spawn_location = "JoinLateCivC"
+	spawn_location = "JoinLateCiv"
 
 	is_1713 = TRUE
 
@@ -791,7 +791,7 @@
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Innkeeper"
 	can_be_female = TRUE
-	spawn_location = "JoinLateCivD"
+	spawn_location = "JoinLateCiv"
 	allowed_maps = list(MAP_COLONY, MAP_JUNGLE_COLONY)
 
 	is_1713 = TRUE

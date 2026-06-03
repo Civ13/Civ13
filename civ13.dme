@@ -1190,5 +1190,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\lights_out.dmm"
+#include "maps\1713\colony_classic.dmm"
 // END_INCLUDE
