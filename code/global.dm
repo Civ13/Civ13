@@ -63,6 +63,58 @@ var/global/datum/titlecard/lobby_titlecard
 // "convenient" (shitcode) way to make normal windows look like nanoUI, since BYOND won't load stylesheets normally - Kachnov
 var/common_browser_style = {"
 <style>
+@font-face {
+	font-family: 'Civ13Custom';
+	src: url('Alegreya-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Civ13Custom';
+	src: url('Alegreya-Bold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Civ13Custom';
+	src: url('Alegreya-Italic.ttf') format('truetype');
+	font-weight: normal;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Civ13Custom';
+	src: url('Alegreya-BoldItalic.ttf') format('truetype');
+	font-weight: bold;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Civ13Custom';
+	src: url('Alegreya-Black.ttf') format('truetype');
+	font-weight: 900;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'MagicSchoolOne';
+	src: url('MagicSchoolOne.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'HarryP';
+	src: url('harryp.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Pixelated';
+	src: url('Grand9K_Pixel.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
 body
 {
 	padding: 0;
@@ -266,7 +318,7 @@ h4
 {
 	position: relative;
 	background: #E9C183;
-	color: #15345A;
+	color: #89a2d8;
 	font-size: 14px;
 	font-style: italic;
 	padding: 2px 4px 0 4px;
@@ -613,7 +665,7 @@ h4
 {
 	position: relative;
 	background: #E9C183;
-	color: #15345A;
+	color: #89a2d8;
 	font-size: 14px;
 	font-style: italic;
 	padding: 2px 4px 0 4px;

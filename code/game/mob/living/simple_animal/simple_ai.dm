@@ -13,14 +13,20 @@
 	if (stop_automated_movement_when_pulled && pulledby)
 		return
 
-	// Specific landmark-based movement for skeletal attackers
+	// Specific landmark-based movement for skeletal attackers and moldy men
 	if (istype(src, /mob/living/simple_animal/hostile/human/skeleton/attacker))
-		if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
+		if (stance == HOSTILE_STANCE_IDLE && prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
 			walk_towards(src, locate(/obj/effect/landmark/npctarget), 6)
 			return
+	if (istype(src, /mob/living/simple_animal/hostile/wizard/moldy_man))
+		var/obj/map_metadata/wizard_boy/WB = map
+		if (istype(WB) && WB.moldy_invasion)
+			if (stance == HOSTILE_STANCE_IDLE && prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
+				walk_towards(src, locate(/obj/effect/landmark/npctarget), 6)
+				return
 	if (istype(src, /mob/living/simple_animal/hostile/human/skeleton/attacker_gods))
 		var/mob/living/simple_animal/hostile/human/skeleton/attacker_gods/A = src
-		if (prob(20) && get_dist(src, A.target_loc) > 11)
+		if (stance == HOSTILE_STANCE_IDLE && prob(20) && get_dist(src, A.target_loc) > 11)
 			walk_towards(src, A.target_loc, 6)
 			return
 
@@ -71,8 +77,8 @@
 					
 			var/moving_to = pick(cardinal)
 			set_dir(moving_to)
-			Move(get_step(src, moving_to))
-			turns_since_move = 0
+			if (Move(get_step(src, moving_to)))
+				turns_since_move = 0
 			return "wander"
 
 		if ("hunt", "defends", "hostile")

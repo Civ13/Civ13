@@ -41,6 +41,17 @@
             font-style: normal;
         }
 
+        @font-face {
+            font-family: 'HarryP';
+            src: url('harryp.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        .wizard {
+            font-family: "HarryP", "Civ13Custom", serif;
+        }
+
         body {
             background-color: #392611;
             color: #e1e1d7;
@@ -321,9 +332,12 @@
         }
 
         @keyframes danger-blink {
-            0%, 100% {
+
+            0%,
+            100% {
                 color: #b30000;
             }
+
             50% {
                 color: #ff3737;
             }
@@ -362,7 +376,7 @@
         }
 
         .notice {
-            color: #5a6d8d;
+            color: #89a2d8;
         }
 
         .ping {

@@ -319,13 +319,24 @@ var/list/admin_verbs_host = list(
 	/client/proc/toggle_pingability
 )
 
+var/list/admin_verbs_magic = list(
+	/datum/admins/proc/load_houses,
+	/datum/admins/proc/save_houses,
+	/datum/admins/proc/check_house,
+	/datum/admins/proc/add_to_house,
+	/datum/admins/proc/remove_from_house,
+	/datum/admins/proc/change_house,
+	/datum/admins/proc/check_level,
+	/datum/admins/proc/change_level,
+	/datum/admins/proc/set_house_points,
+)
+
 /client/proc/add_admin_verbs()
 	if (holder)
 //		to_chat(world, "[src] getting [holder]([holder.rights]) admin verbs.")
 		verbs += admin_verbs_default
 	//	if (holder.rights & R_BUILDMODE)		verbs += /client/proc/togglebuildmodeself
 		if (holder.rights & R_ADMIN)			verbs += admin_verbs_admin
-		if (holder.rights & R_ADMIN)			verbs += admin_verbs_magic //magic lol
 		if (holder.rights & R_FUN)			verbs += admin_verbs_fun
 		if (holder.rights & R_SERVER)		verbs += admin_verbs_server
 		if (holder.rights & R_DEBUG)
@@ -356,7 +367,18 @@ var/list/admin_verbs_host = list(
 				/datum/admins/proc/persistent,
 				/datum/admins/proc/persistent_chad,
 			)
-
+		if(map && map.ID == MAP_WIZARD_BOY && (holder.rights & R_ADMIN))
+			verbs += list(
+				/datum/admins/proc/load_houses,
+				/datum/admins/proc/save_houses,
+				/datum/admins/proc/check_house,
+				/datum/admins/proc/add_to_house,
+				/datum/admins/proc/remove_from_house,
+				/datum/admins/proc/change_house,
+				/datum/admins/proc/check_level,
+				/datum/admins/proc/change_level,
+				/datum/admins/proc/set_house_points,
+			)
 /client/proc/remove_admin_verbs()
 	verbs.Remove(
 		admin_verbs_default,
@@ -374,8 +396,8 @@ var/list/admin_verbs_host = list(
 		admin_verbs_spawn,
 		debug_verbs,
 		admin_verbs_manager,
-		admin_verbs_magic,
-		admin_verbs_host
+		admin_verbs_host,
+		admin_verbs_magic
 		)
 
 /client/proc/hide_most_verbs()//Allows you to keep some functionality while hiding some verbs

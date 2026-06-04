@@ -111,10 +111,6 @@
 	var/mood_modifier = 1
 	var/surrendered = FALSE
 
-	var/bank_dollar = 0 //How many dollars they have in the bank
-	var/bank_rubles = 0 //How many rubles they have in the bank
-	var/bank_hold = FALSE
-
 	var/werewolf = FALSE
 	var/gorillaman = FALSE
 	var/ant = FALSE
@@ -146,6 +142,9 @@
 		"stamina" = list(100,100),
 		"throwing" = list(100,100),
 		"magic" = list(0,0))
+
+	var/juice = 100          // Mana pool for wizard spells — max 100, regens ~5/sec
+	var/max_juice = 100
 
 	var/has_hunger_and_thirst = TRUE
 

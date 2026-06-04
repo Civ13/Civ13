@@ -56,7 +56,7 @@
 	var/tactic = "charge"
 	var/life_forced = FALSE
 	var/datum/language/default_language
-
+	var/voice_pitch = 100
 	var/body_part_size = list( // Size of body parts as a percentage of body size
 		"head" = 10,
 		"eyes" = 1,

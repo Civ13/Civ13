@@ -40,12 +40,12 @@
 /obj/chat_text/New(var/mob/origin_loc, var/desired_text, var/mob/target_mob)
 	..()
 	loc = null
-	if(isliving(origin_loc) && origin_loc.client && target_mob && target_mob.client)
+	if(isliving(origin_loc) && target_mob && target_mob.client)
 		owner = origin_loc.client
 		target = target_mob.client
 
 		for (var/image/CT in target.images)
-			if(CT.plane == CHAT_PLANE && CT.owner == owner)
+			if(CT.plane == CHAT_PLANE && (CT.loc == origin_loc || (owner && CT.owner == owner)))
 				animate(CT,pixel_y = CT.pixel_y + 11,time = 1)
 
 		message = image(loc = origin_loc)
@@ -62,7 +62,8 @@
 		message.maptext_x = (maptext_width * -0.5)-TILE_SIZE*2.5
 		#endif
 		message.maptext_y = TILE_SIZE*1
-		message.maptext = "<center><span style=\"font-family: 'Small Fonts'; -dm-text-outline: 1 black;\">[desired_text]</span></center>"
+		message.maptext_height = TILE_SIZE*3
+		message.maptext = "<center><span style=\"-dm-text-outline: 1 black; vertical-align: bottom;\">[desired_text]</span></center>"
 		if(target)
 			if (!(message in target.images))
 				target.images += message
@@ -78,7 +79,7 @@
 	return FALSE
 
 /mob/proc/show_chat_overlay(var/mob/speaker, var/text, var/color = null)
-	if (!client || !speaker || !speaker.client || !text)
+	if (!client || !speaker || !text)
 		return
 	if (!client.is_preference_enabled(/datum/client_preference/show_chat_overlays))
 		return
@@ -96,31 +97,34 @@
 
 var/global/sound_tts_num = 0
 
-/mob/proc/play_tts(message,var/mob/living/human/speaker)
-	if (!message || message == "" || !client || !speaker)
+/mob/proc/play_tts(message,var/mob/living/speaker)
+	if (!message || message == "" || !client || !speaker || !istype(speaker))
 		return
 	message = replacetext(message, "&#39", "'")
 	var/voice = "ap --setf duration_stretch=0.9 --setf int_f0_target_mean=100"
-	if (!speaker.original_job)
-		return
+	if (ishuman(speaker))
+		var/mob/living/human/H = speaker
+		if (!H.original_job)
+			return
+
 	if (speaker.gender == MALE)
 		voice = "ap --setf duration_stretch=0.9 --setf int_f0_target_mean=[speaker.voice_pitch]"
 	else
 		voice = "slt --setf duration_stretch=0.9 --setf int_f0_target_mean=[speaker.voice_pitch]"
 	sound_tts_num += 1
 	var/genUID = sound_tts_num
-	if (world.system_type != UNIX)
-		shell("./tts/mimic -t \"[message]\" -voice [voice] -o [genUID].wav")
-	else
-		shell("mimic -t \"[message]\" -voice [voice] -o [genUID].wav")
-	spawn(2)
+	spawn(-1) // Run in background thread to avoid blocking the main server loop
+		if (world.system_type != UNIX)
+			shell("./tts/mimic -t \"[message]\" -voice [voice] -o [genUID].wav")
+		else
+			shell("mimic -t \"[message]\" -voice [voice] -o [genUID].wav")
 		var/fpath = "[genUID].wav"
 		if (fexists(fpath))
-			if (client)
+			if (src && client)
 				src.playsound_local(loc, fpath, 100)
 			spawn(50)
 				fdel(fpath)
-		return
+	return
 
 
 /////AMAZON AWS POLLY VOICES///////////////

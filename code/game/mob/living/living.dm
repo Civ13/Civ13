@@ -248,6 +248,8 @@ default behaviour is:
 		if (H.takes_less_damage)
 			amount /= H.getStatCoeff("strength")
 	bruteloss = min(max(bruteloss + amount, FALSE),(maxHealth*2))
+	if (amount > 0)
+		check_arena_promotion()
 	return TRUE
 
 /mob/living/proc/getBurnLoss()
@@ -260,6 +262,9 @@ default behaviour is:
 		if (H.takes_less_damage)
 			amount /= H.getStatCoeff("strength")
 	burnloss = min(max(burnloss + amount, FALSE),(maxHealth*2))
+	if (amount > 0)
+		check_arena_promotion()
+	return TRUE
 
 /mob/living/proc/getOxyLoss()
 	return oxyloss
@@ -290,7 +295,9 @@ default behaviour is:
 		if (H.takes_less_damage)
 			amount /= H.getStatCoeff("strength")
 	toxloss = min(max(toxloss + amount, FALSE),(maxHealth*2))
-
+	if (amount > 0)
+		check_arena_promotion()
+	return TRUE
 /mob/living/proc/setToxLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	if (ishuman(src))
@@ -320,6 +327,9 @@ default behaviour is:
 /mob/living/proc/adjustBrainLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	brainloss = min(max(brainloss + amount, FALSE),(maxHealth*2))
+	if (amount > 0)
+		check_arena_promotion()
+	return TRUE
 
 /mob/living/proc/setBrainLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
@@ -345,6 +355,24 @@ default behaviour is:
 
 /mob/living/proc/setMaxHealth(var/newMaxHealth)
 	maxHealth = newMaxHealth
+
+/**
+ * Performance-optimized check for arena promotions based on damage thresholds.
+ */
+/mob/living/proc/check_arena_promotion()
+	if (!map || map.ID != MAP_WIZARD_BOY || !ishuman(src) || !lastattacker || lastattacker == src || !ishuman(lastattacker))
+		return
+	if (getTotalDmg() < 90)
+		return
+	var/mob/living/human/H = lastattacker
+	if (!H.client)
+		return
+	if (!istype(get_area(src), /area/caribbean/houses/nml_one))
+		return
+	var/obj/map_metadata/wizard_boy/WB = map
+	if (WB.check_level(H.client.ckey) == "4")
+		WB.change_level(H.client.ckey, "5")
+		to_chat(world, "<font size=3 class='wizard'><b>[H.real_name]</b> ([H.key]) has progressed to qualification level 5 (<b>C.H.A.D.</b>) by defeating <b>[real_name]</b> ([key]) in the Arena!</font>")
 
 // ++++ROCKDTBEN++++ MOB PROCS //END
 
@@ -498,14 +526,15 @@ default behaviour is:
 
 /mob/living/Move(a, b, flag)
 	if (buckled)
-		return
+		return FALSE
 	if (using_drone)
-		return
+		return FALSE
 
 	if (restrained())
 		stop_pulling()
 
 
+	var/moved = FALSE
 	var/t7 = TRUE
 	if (restrained())
 		for (var/mob/living/M in range(src, TRUE))
@@ -513,19 +542,17 @@ default behaviour is:
 				t7 = null
 	if ((t7 && (pulling && ((get_dist(src, pulling) <= 1 || pulling.loc == loc) && (client && client.moving)))))
 		var/turf/T = loc
-		. = ..()
+		moved = ..()
 
 		if (pulling && pulling.loc)
 			if (!( isturf(pulling.loc) ))
 				stop_pulling()
-				return
+				return FALSE
 
-		/////
-		if (pulling && pulling.anchored)
-			stop_pulling()
-			return
-
-		if (!restrained())
+			/////
+			if (pulling && pulling.anchored)
+				stop_pulling()
+				return FALSE
 			var/diag = get_dir(src, pulling)
 			if ((diag - 1) & diag)
 			else
@@ -573,7 +600,7 @@ default behaviour is:
 						step(pulling, get_dir(pulling.loc, T))
 	else
 		stop_pulling()
-		. = ..()
+		moved = ..()
 
 	if (s_active && !( s_active in contents ) && get_turf(s_active) != get_turf(src))	//check !( s_active in contents ) first so we hopefully don't have to call get_turf() so much.
 		s_active.close(src)
@@ -585,6 +612,7 @@ default behaviour is:
 			CT.glide_size = src.glide_size
 			CT.forceMove(src.loc)
 
+	return moved
 
 /mob/living/verb/resist()
 	set name = "Resist"

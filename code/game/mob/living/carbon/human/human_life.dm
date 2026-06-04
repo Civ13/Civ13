@@ -597,6 +597,10 @@
 	// recover stamina
 	stats["stamina"][1] = min(stats["stamina"][1] + round(stats["stamina"][2] * 0.02), stats["stamina"][2])
 
+	// recover juice (mana) — ~0.5 per second at standard 2ds Life() ticks
+	if (juice < max_juice)
+		juice = min(juice + 1, max_juice)
+
 	voice = GetVoice()
 
 	//No need to update all of these procs if the guy is dead.
@@ -1081,7 +1085,16 @@
 	else
 		hud_used.remove_vehicle_hud(src)
 
-	return TRUE
+	if (hud_used)
+		var/holding_wand = (l_hand && istype(l_hand, /obj/item/weapon/material/magic/wand)) || (r_hand && istype(r_hand, /obj/item/weapon/material/magic/wand))
+		if (holding_wand)
+			if (!hud_used.wizard_hud.len)
+				hud_used.add_wizard_hud(src)
+		else
+			if (hud_used.wizard_hud.len)
+				hud_used.remove_wizard_hud(src)
+
+		return TRUE
 
 /mob/living/human/handle_random_events()
 
@@ -1609,6 +1622,18 @@
 						holder2.icon_state = "sov_basic"
 					else if (map.ID == MAP_EFT_FACTORY)
 						holder2.icon_state = "none"
+					else if (map.ID == MAP_WIZARD_BOY)
+						switch(faction)
+							if("Rubywyrm")
+								holder2.icon_state = "civ1"
+							if("Mintysnek")
+								holder2.icon_state = "civ2"
+							if("Slatepie")
+								holder2.icon_state = "civ3"
+							if("Mustardweasel")
+								holder2.icon_state = "civ4"
+						if(nationality == "T") // teacher/professor
+							holder2.icon_state = "wizard_teacher"
 					else if (map.ID == MAP_GULAG13)
 						if(nationality == "Polish")
 							holder2.icon_state = "pol_basic"
@@ -1646,6 +1671,22 @@
 				if (TSFSR)
 					holder2.icon_state = "sov_basic"
 			holder2.overlays.Cut()
+			if (map.ID == MAP_WIZARD_BOY && faction_text == CIVILIAN)
+				switch(nationality)
+					if("R") // loser
+						holder2.overlays += icon(holder2.icon,"wizard_loser")
+					if("0") // idiot
+						holder2.overlays += icon(holder2.icon,"wizard_idiot")
+					if("1") // unga
+						holder2.overlays += icon(holder2.icon,"wizard_unga")
+					if("2") // coal
+						holder2.overlays += icon(holder2.icon,"wizard_coal")
+					if("3") // slate
+						holder2.overlays += icon(holder2.icon,"wizard_gem")
+					if("4") // based
+						holder2.overlays += icon(holder2.icon,"wizard_based")
+					if("5") // chad
+						holder2.overlays += icon(holder2.icon,"wizard_chad")
 			if (faction_text == CIVILIAN && map.ID == MAP_GULAG13)
 				switch(original_job_title)
 					if ("Janitor")

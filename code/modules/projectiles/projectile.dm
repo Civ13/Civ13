@@ -16,7 +16,7 @@
 	var/def_zone = ""							// Aiming at
 	var/mob/firer = null						// Who shot it
 	var/firer_original_dir = null
-	var/obj/item/weapon/gun/firedfrom = null	// gun which shot it
+	var/obj/item/firedfrom = null	// object which shot it
 	var/silenced = FALSE						// Attack message
 	var/yo = null
 	var/xo = null
@@ -131,9 +131,10 @@
 	L.apply_effects(stun, weaken, paralyze, irradiate, stutter, eyeblur, drowsy, agony, poisonous, blocked)
 	return TRUE
 
-/obj/item/projectile/proc/on_impact(var/atom/A)
+/obj/item/projectile/proc/on_impact(var/atom/A, play_sound = TRUE)
 	impact_effect()		// generate impact effect
-	playsound(src, "ric_sound", 50, TRUE, -2)
+	if (!istype(src, /obj/item/projectile/magic) && play_sound)
+		playsound(src, "ric_sound", 50, TRUE, -2)
 
 	spawn(25)
 		if (src)
@@ -177,7 +178,7 @@
 		p_y = between(0, p_y + rand(-radius, radius), world.icon_size)
 
 //called to launch a projectile from a gun
-/obj/item/projectile/proc/launch(atom/target, mob/user, obj/item/weapon/gun/launcher, var/target_zone, var/x_offset=0, var/y_offset=0)
+/obj/item/projectile/proc/launch(atom/target, mob/user, obj/item/launcher, var/target_zone, var/x_offset=0, var/y_offset=0)
 
 	var/turf/curloc = get_turf(launcher)
 	var/turf/targloc = get_turf(target)
@@ -231,7 +232,12 @@
 	xo = targloc.x - curloc.x + x_offset
 
 	shot_from = launcher
-	silenced = launcher.silencer
+	if (istype(launcher, /obj/item/weapon/gun))
+		var/obj/item/weapon/gun/G = launcher
+		if (G.silencer)
+			silenced = TRUE
+		else
+			silenced = FALSE
 
 	projectile_list += src
 
@@ -275,7 +281,7 @@
 	return FALSE
 
 //called to launch a projectile from a gun
-/obj/item/projectile/proc/launch_from_gun(atom/target, mob/user, obj/item/weapon/gun/launcher, var/target_zone, var/x_offset=0, var/y_offset=0)
+/obj/item/projectile/proc/launch_from_gun(atom/target, mob/user, obj/item/launcher, var/target_zone, var/x_offset=0, var/y_offset=0)
 	if (user == target) //Shooting yourself
 		do_bullet_act(user, target_zone)
 		qdel(src)
@@ -288,14 +294,16 @@
 	firer_turf = get_turf(firer)
 	firedfrom = launcher
 	shot_from = launcher.name
-	if (launcher.silencer)
-		silenced = TRUE
-	else
-		silenced = FALSE
+	if (istype(launcher, /obj/item/weapon/gun))
+		var/obj/item/weapon/gun/G = launcher
+		if (G.silencer)
+			silenced = TRUE
+		else
+			silenced = FALSE
 
 	projectile_list += src
 
-	return launch(target, target_zone, x_offset, y_offset)
+	return launch(target, user, launcher, target_zone, x_offset, y_offset)
 
 //Used to change the direction of the projectile in flight.
 /obj/item/projectile/proc/redirect(var/turf/new_target, var/atom/starting_loc)
@@ -346,11 +354,8 @@
 	if (!istype(target_mob))
 		return FALSE
 
-	if (!firedfrom)
-		return FALSE
-
-	// non-projectile gun types will be removed soon, this code doesn't support them anymore - Kachnov
-	if (!istype(firedfrom, /obj/item/weapon/gun/projectile))
+	// Only allow projectile guns and magic to hit mobs. - Kachnov / magic fix
+	if ((!firedfrom || !istype(firedfrom, /obj/item/weapon/gun/projectile)) && !istype(src, /obj/item/projectile/magic))
 		return FALSE
 
 	if (!def_zone)
@@ -437,7 +442,6 @@
 	if (istype(target_mob, /mob/living/simple_animal/hostile/human) && target_mob.stat != DEAD && prob(33))
 		var/list/screamlist = list('sound/voice/screams/scream1.ogg','sound/voice/screams/scream2.ogg','sound/voice/screams/scream3.ogg','sound/voice/screams/scream4.ogg','sound/voice/screams/scream5.ogg','sound/voice/screams/scream6.ogg',)
 		playsound(loc, pick(screamlist), 100, extrarange = 50)
-
 	//admin logs
 	if (!no_attack_log)
 		if (istype(firer, /mob))
@@ -611,13 +615,24 @@
 
 					if (prob(hit_chace))
 						passthrough = !attack_mob(L, firer_dist)
-						return
+						if (!passthrough)
+							bumped = TRUE
+							loc = null
+							on_impact(L, FALSE)
+							qdel(src)
+							return FALSE
+						return TRUE
 					else
 						visible_message(SPAN_WARNING("\The [name] flies over \the [AM]!"))
 					def_zone = tmp_zone
 
 		else if (isobj(AM) && AM != firedfrom)
 			var/obj/O = AM
+			if ((istype(src, /obj/item/projectile/magic/pushum) || istype(src, /obj/item/projectile/magic/pullus)) && !O.anchored)
+				do_bullet_act(O)
+				on_impact(T)
+				qdel(src)
+				return FALSE
 			if (O == original)
 				var/hitchance = 0
 				if (O.density)
@@ -626,7 +641,10 @@
 					else
 						hitchance = 100
 				else if (isitem(O) && !density)
-					hitchance = 0
+					if (istype(O, /obj/item/weapon/reagent_containers/food/drinks/bottle) || istype(O, /obj/item/weapon/reagent_containers/food/drinks/clay))
+						hitchance = 100
+					else
+						hitchance = 0
 				if (prob(hitchance))
 					if (istype(O, /obj/structure))
 						var/obj/structure/S = O

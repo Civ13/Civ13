@@ -54,7 +54,10 @@ var/global/redirect_all_players = null
 			var/htmlfile = "<!DOCTYPE html><HTML><HEAD><TITLE>Wiki Guide</TITLE><META http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"></HEAD> \
 			<BODY><iframe src=\"https://civ13.github.io/civ13-wiki/maps/Pepelsibirsk\"  style=\"position: absolute; height: 97%; width: 97%; border: none\"></iframe></BODY></HTML>"
 			src << browse(htmlfile,"window=wiki;size=820x650")
-
+		if (map && map.ID == MAP_WIZARD_BOY)
+			var/htmlfile = "<!DOCTYPE html><HTML><HEAD><TITLE>Wiki Guide</TITLE><META http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"></HEAD> \
+			<BODY><iframe src=\"https://civ13.github.io/civ13-wiki/gamemodes/wizard_boy_quickstart\"  style=\"position: absolute; height: 97%; width: 97%; border: none\"></iframe></BODY></HTML>"
+			src << browse(htmlfile,"window=wiki;size=820x650")
 /mob/new_player/Destroy()
 	new_player_mob_list -= src
 	..()
@@ -135,7 +138,7 @@ var/global/redirect_all_players = null
 			output += "<p><a href='byond://?src=\ref[src];join_campaign=1'>Join Game!</a></p>"
 		else if (map.civilizations && !map.nomads)
 			output += "<p><a href='byond://?src=\ref[src];civilizations=1'>Join a Civilization!</a></p>"
-		else if (map.nomads || map.ID == MAP_ANTARCTICA || map.ID == MAP_LIGHTS_OUT)
+		else if (map.nomads || map.ID == MAP_ANTARCTICA || map.ID == MAP_LIGHTS_OUT || map.ID == MAP_WIZARD_BOY)
 			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
 		else
 			output += "<p><a href='byond://?src=\ref[src];late_join=1'>["Join Game!"]</a></p>"
@@ -422,6 +425,33 @@ var/global/redirect_all_players = null
 		else if (map && map.ID == MAP_LIGHTS_OUT)
 			close_spawn_windows()
 			AttemptLateSpawn("Survivor")
+		else if (map && map.ID == MAP_WIZARD_BOY)
+			if (istype(map, /obj/map_metadata/wizard_boy))
+				var/obj/map_metadata/wizard_boy/WB = map
+				var/house_result = WB.check_house(client.ckey)
+				if (house_result != "Unknown")
+					var/_color = "#FFFFFF"
+					switch(house_result)
+						if("Rubywyrm")
+							_color = "#CF0000"
+						if("Mintysnek")
+							_color = "#00CF00"
+						if("Slatepie")
+							_color = "#0000CF"
+						if("Mustardweasel")
+							_color = "#FFD700"
+					to_chat(src, "<font size=6 class='wizard'>You are a member of <span style='color:[_color]'>[house_result]</span>.</font>")
+					var/skill_result = WB.check_level(client.ckey)
+					var/skill_string = WB.level_to_formatted_text(skill_result)
+					to_chat(src, "<font size=6 class='wizard'>You are a [skill_string].</font>")
+					close_spawn_windows()
+					if (AttemptLateSpawn("Wizard Boy"))
+						return TRUE
+				else
+					if (WB.house_test(client))
+						close_spawn_windows()
+						if (AttemptLateSpawn("Wizard Boy"))
+							return TRUE
 		else
 			return
 

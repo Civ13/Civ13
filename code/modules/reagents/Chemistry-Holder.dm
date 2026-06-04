@@ -107,10 +107,24 @@
 		for (var/datum/reagent/R in reagent_list)
 			eligible_reactions |= chemical_reactions_list[R.id]
 
+		var/list/highest_priority_reactions = list()
+		var/max_priority = -1
+
+		// First, identify all reactions that can actually happen and find the highest priority tier available
 		for (var/datum/chemical_reaction/C in eligible_reactions)
-			if (C.can_happen(src) && C.process(src))
-				effect_reactions |= C
-				reaction_occured = TRUE
+			if (C.can_happen(src))
+				if (C.priority > max_priority)
+					max_priority = C.priority
+					highest_priority_reactions = list(C)
+				else if (C.priority == max_priority)
+					highest_priority_reactions |= C
+
+		// Process only the reactions from the highest priority tier found
+		if (highest_priority_reactions.len)
+			for (var/datum/chemical_reaction/C in highest_priority_reactions)
+				if (C.process(src))
+					effect_reactions |= C
+					reaction_occured = TRUE
 
 		eligible_reactions.Cut()
 

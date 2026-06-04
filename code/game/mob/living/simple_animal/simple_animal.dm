@@ -154,8 +154,9 @@
 		if (get_dist(src, following_mob) > 2)
 			turns_since_move++
 			if (turns_since_move >= move_to_delay)
-				walk_to(src, following_mob,1, 6)
-				turns_since_move = FALSE
+				if (get_dist(src, following_mob) > 1)
+					walk_to(src, following_mob, 1, 6)
+					turns_since_move = FALSE
 		if (get_dist(src, following_mob) > 6)
 			following_mob = null
 			stop_automated_movement = FALSE
@@ -231,22 +232,32 @@
 			return //we can't hit the animals we are riding
 		var/mob/living/human/H = proj.firer
 		if (prob(40) && proj.firedfrom)
-			switch (proj.firedfrom.gun_type)
-				if (GUN_TYPE_RIFLE)
-					H.adaptStat("rifle", 1)
-				if (GUN_TYPE_PISTOL)
-					H.adaptStat("pistol", 1)
-				if (GUN_TYPE_BOW)
-					H.adaptStat("bows", 1)
+			if (istype(proj.firedfrom, /obj/item/weapon/gun))
+				var/obj/item/weapon/gun/G = proj.firedfrom
+				switch (G.gun_type)
+					if (GUN_TYPE_RIFLE)
+						H.adaptStat("rifle", 1)
+					if (GUN_TYPE_PISTOL)
+						H.adaptStat("pistol", 1)
+					if (GUN_TYPE_BOW)
+						H.adaptStat("bows", 1)
 
 	if (!proj || proj.nodamage)
+		if (proj)
+			proj.on_hit(src, FALSE)
 		return FALSE
 
+	if (proj.firer)
+		lastattacker = proj.firer
+
 	adjustBruteLoss(proj.damage)
+	proj.on_hit(src, FALSE)
 	return FALSE
 
 /mob/living/simple_animal/attack_hand(mob/living/human/M as mob)
 	..()
+	if (M)
+		lastattacker = M
 	if (istype(src, /mob/living/simple_animal/hostile/human/voyage/pirate/friendly))
 		faction = CIVILIAN
 		behaviour = "hostile"
@@ -718,6 +729,15 @@
 	walk(src,0) // stops movement
 	unregisterSpawner()
 	delayed_decay(src,3000)
+
+	if (istype(src, /mob/living/simple_animal/hostile) && lastattacker && ishuman(lastattacker))
+		var/mob/living/human/H = lastattacker
+		if (H.client && map && istype(map, /obj/map_metadata/wizard_boy))
+			var/obj/map_metadata/wizard_boy/WB = map
+			if (WB.check_level(H.client.ckey) == "3")
+				WB.change_level(H.client.ckey, "4")
+				to_chat(world, "<font size=3 class='wizard'><b>[H.real_name]</b> ([H.key]) has progressed to qualification level 4 (<b>B.A.S.E.D.</b>) by slaying \a [src]!</font>")
+
 	return ..(gibbed,deathmessage)
 
 /mob/living/simple_animal/ex_act(severity)

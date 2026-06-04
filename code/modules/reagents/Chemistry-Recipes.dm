@@ -115,6 +115,7 @@ datum/admins/proc/print_chemical_reactions()
 	var/list/catalysts = list()
 	var/list/inhibitors = list()
 	var/result_amount = 0
+	var/priority = 0
 
 	//how far the reaction proceeds each time it is processed. Used with either REACTION_RATE or HALF_LIFE macros.
 	var/reaction_rate = HALF_LIFE(0)

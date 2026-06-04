@@ -150,8 +150,8 @@ bullet_act
 	var/mob/living/human/last_harmed = null
 
 /mob/living/human/bullet_act(var/obj/item/projectile/P, var/def_zone)
-	if (P.damage == 0)
-		return // fix for strange bug
+	if (P.damage == 0 && !istype(P, /obj/item/projectile/magic))
+		return // fix for strange bug, but allow magic projectiles
 	if (P.firer && ishuman(P.firer))
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)// To be optimized in the future
 			var/mob/living/human/Huser = P.firer
@@ -237,10 +237,11 @@ bullet_act
 				G.prime()
 
 	// if we hit a client who's not on our team, increase our stats
-	if (client && stat == CONSCIOUS && P.firer && ishuman(P.firer) && P.firedfrom)
+	if (client && stat == CONSCIOUS && P.firer && ishuman(P.firer) && istype(P.firedfrom, /obj/item/weapon/gun))
 		var/mob/living/human/H = P.firer
 		if (!H.original_job || !original_job || H.original_job.base_type_flag() != original_job.base_type_flag())
-			switch (P.firedfrom.gun_type)
+			var/obj/item/weapon/gun/G = P.firedfrom
+			switch (G.gun_type)
 				if (GUN_TYPE_RIFLE)
 					H.adaptStat("rifle", 1)
 				if (GUN_TYPE_PISTOL)
@@ -586,7 +587,23 @@ bullet_act
 			return gear
 	return null
 
+/mob/living/human/proc/apply_magic_shield(duration)
+	magic_shield++
+	var/image/I = image('icons/obj/magic_overlay.dmi', src, "protection", MOB_LAYER + 1)
+	I.color = "#00ffff"
+	I.alpha = 110
+	src.overlays += I
+	spawn(duration)
+		if (src)
+			magic_shield = max(0, magic_shield - 1)
+			src.overlays -= I
+			if (!magic_shield)
+				to_chat(src, SPAN_NOTICE("Your shimmering bubble of denial fades away."))
+				
 /mob/living/human/proc/check_shields(var/damage = FALSE, var/atom/damage_source = null, var/mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
+	if (magic_shield)
+		visible_message("<span class='warning'>The shimmering bubble of denial around [src] blocks [attack_text]!</span>")
+		return TRUE
 	for (var/obj/item/shield in list(l_hand, r_hand, wear_suit))
 		if (!shield) continue
 		. = shield.handle_shield(src, damage, damage_source, attacker, def_zone, attack_text)

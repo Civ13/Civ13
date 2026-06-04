@@ -139,7 +139,7 @@
 
 /obj/structure/boat_spawn_lever/attack_hand(var/mob/user as mob)
 	if (world.time < next_activation)
-		user << SPAN_NOTICE("This boat spawner is cooling down, try again in a bit.")
+		to_chat(user,SPAN_NOTICE("This boat spawner is cooling down, try again in a bit."))
 		return
 	else
 		next_activation = world.time + cooldown

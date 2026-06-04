@@ -461,6 +461,14 @@
 	create_path = /mob/living/simple_animal/frog
 	timer = 4800
 
+/obj/effect/spawner/mobspawner/pigeon
+	name = "pigeon spawner"
+	hostile = FALSE
+	max_number = 4
+	max_range = 12
+	create_path = /mob/living/simple_animal/pigeon
+	timer = 4800
+
 /obj/effect/spawner/mobspawner/mouse
 	name = "mouse spawner"
 	max_number = 2

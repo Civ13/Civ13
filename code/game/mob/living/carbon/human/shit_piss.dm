@@ -324,7 +324,7 @@
 			reagents.trans_to(V, rand(1,5))
 	playsound(src.loc, 'sound/effects/poo2.ogg', 60, 1)
 	bowels -= rand(120,150)
-	visible_message("[message]")
+	visible_message("<span class='warning'>[message]</span>")
 
 //Peeing
 /mob/living/human/proc/handle_piss()
@@ -377,4 +377,4 @@
 		message = "<B>[src]</B> pisses on \the [TT.name]."
 
 	bladder -= rand(100,130)
-	visible_message("[message]")
+	visible_message("<span class='warning'>[message]</span>")

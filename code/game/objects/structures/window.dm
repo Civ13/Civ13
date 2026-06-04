@@ -820,8 +820,16 @@
 	maxhealth = 200.0
 	not_movable = TRUE
 	not_disassemblable = TRUE
+	density = TRUE
 /obj/structure/window/clean/reinforced/metal
 	icon_state = "windowmetal"
+
+
+/obj/structure/window/clean/reinforced/metal/indestructible
+	name = "indestructible glass"
+	icon_state = "windowmetal"
+	maxhealth = 6000
+
 /obj/structure/window/clean/reinforced/bank_glass
 	name = "reinforced glass"
 	icon = 'icons/obj/structures.dmi'

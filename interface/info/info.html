@@ -384,9 +384,10 @@
         };
 
         // forces focus back to the game after clicking something on the statpanel
-        document.addEventListener("click", function (e) {
+        document.addEventListener("click", (e) => {
             // Ignore if we clicked an interactive element that handles its own Topic call or input
-            if (e.target.closest("input, textarea")) return;
+            // Also ignore anchor links so byond:// hrefs can navigate without being overridden
+            if (e.target.closest("input, textarea, a")) return;
 
             window.location.href = "byond://?action=refocus_map";
         });

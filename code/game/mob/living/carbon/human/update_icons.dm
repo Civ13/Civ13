@@ -723,6 +723,7 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays += shirt
 				standing.overlays += belt
 				standing.overlays += epaulettes
+
 		//apply blood overlay
 		if (w_uniform.blood_DNA)
 			var/image/bloodsies	= image(icon = species.blood_mask, icon_state = "uniformblood")
@@ -1087,7 +1088,11 @@ var/global/list/damage_icon_parts = list()
 				secondary.color = CS.linescolor
 				standing.overlays += base
 				standing.overlays += secondary
-
+		else if (istype(wear_suit, /obj/item/clothing/suit/storage/jacket/wizard))
+			var/obj/item/clothing/suit/storage/jacket/wizard/WZ = wear_suit
+			base = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "magic_boy_robe_decoration")
+			base.color = WZ.house_colors
+			standing.overlays += base
 		if (wear_suit.blood_DNA)
 			var/obj/item/clothing/suit/S = wear_suit
 			var/image/bloodsies = image("icon" = species.blood_mask, "icon_state" = "[S.blood_overlay_type]blood")

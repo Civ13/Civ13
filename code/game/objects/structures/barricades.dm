@@ -38,7 +38,7 @@
 
 /obj/structure/barricade/New(var/newloc)
 	..(newloc)
-	if(!istype(src, /obj/structure/barricade/ship))
+	if(!istype(src, /obj/structure/barricade/ship) && !istype(src, /obj/structure/barricade/magic))
 		if (!material_name)
 			material_name = "wood"
 		material = get_material_by_name("[material_name]")
@@ -203,6 +203,19 @@
 	flammable = TRUE
 	protection_chance = 85
 	layer = 2.98
+
+/obj/structure/barricade/magic
+	name = "magical barrier"
+	desc = "A spell-spawned magical barricade. It shimmers with arcane energy."
+	icon_state = "magic_barricade"
+	flammable = TRUE
+	protection_chance = 90
+	layer = 2.98
+	alpha = 110
+	health = 80
+	maxhealth = 80
+	applies_material_colour = FALSE
+
 
 /obj/structure/barricade/vertical
 	name = "wood barrier"
