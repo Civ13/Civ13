@@ -1015,6 +1015,9 @@ var/global/datum/external_relations/external_relations = new()
 	while(T==null && attempts < 100)
 		T = locate(rand(1, 255), rand(1, 255), 2)
 		attempts++
+	if (!T)
+		world.log << "bombing_location(): failed to find a valid turf after [attempts] attempts."
+		return
 	try_bombing(T, direction, faction)
 
 /obj/map_metadata/pepelsibirsk/proc/enemy_attacks()

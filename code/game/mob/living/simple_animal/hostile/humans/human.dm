@@ -545,9 +545,9 @@ var/global/list/npc_appearance_cache = list()
 		wander = TRUE
 		if (pathfind_target)
 			if (get_dist(src, pathfind_target) > 2)
-				if (!moving)
-					do_movement(pathfind_target)
-					wander = FALSE
++				wander = FALSE
++				if (!moving)
++					do_movement(pathfind_target)
 			else
 				pathfind_target = null
 		if (role == "officer")

@@ -43,7 +43,9 @@
 		movedir = forwards
 	else if(operating == -1)
 		movedir = backwards
-	else operating = 0
+	else
+		operating = 0
+		movedir = 0
 	update()
 
 /obj/machinery/conveyor/proc/update()
@@ -57,6 +59,8 @@
 	// move items to the target location
 /obj/machinery/conveyor/process()
 	if(!loc)
+		return
+	if(operating == 0 || !movedir)
 		return
 	affecting = loc.contents - src		// moved items will be all in loc
 	spawn(1)	// slight delay to prevent infinite propagation due to map order	//TODO: please no spawn() in process(). It's a very bad idea
@@ -186,7 +190,11 @@
 	if(!operated)
 		return
 	operated = 0
-
+	// refresh by id to include newly constructed conveyors
+	conveyors = list()
+	for(var/obj/machinery/conveyor/C in processing_objects)
+		if(C.id == id)
+			conveyors += C
 	for(var/obj/machinery/conveyor/C in conveyors)
 		C.operating = position
 		C.setmove()
@@ -233,6 +241,8 @@
 
 // attack with hand, switch position
 /obj/machinery/conveyor_switch/oneway/attack_hand(mob/user)
+	if(user.incapacitated())
+		return
 	playsound(user, 'sound/machines/Conveyor_switch.wav', 100, TRUE)
 	if(position == 0)
 		position = convdir
