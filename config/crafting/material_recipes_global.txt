@@ -1860,6 +1860,8 @@ RECIPE: /material/steel/,petroleum refinery,/obj/structure/refinery,22,230,1,1,p
 RECIPE: /material/steel/,biofuel refinery,/obj/structure/refinery/biofuel,18,200,1,1,production,115,0,0,8,null
 
 RECIPE: /material/steel/,steam engine,/obj/structure/engine/external/steam,15,250,1,1,production,95,0,0,8,null
+RECIPE: /material/steel/,conveyor belt,/obj/item/conveyor_construct,5,250,1,1,production,95,0,0,8,null
+RECIPE: /material/steel/,conveyor switch,/obj/item/conveyor_switch_construct,5,250,1,1,production,95,0,0,8,null
 
 RECIPE: /material/steel/,IV drip,/obj/structure/iv_drip,6,140,0,1,production,95,0,95,8,null
 

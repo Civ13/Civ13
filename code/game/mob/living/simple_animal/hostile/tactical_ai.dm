@@ -193,11 +193,33 @@
 						moved = TRUE
 				if (moved)
 					turns_since_move = 0
+				if(istype(src, /mob/living/simple_animal/hostile))
+					var/mob/living/simple_animal/hostile/H = src
+					if(H.pathfind_target)
+						if(get_dist(src, H.pathfind_target) > 2)
+							walk_to(src, H.pathfind_target, 2, move_to_delay)
+						else
+							H.pathfind_target = null
+					else
+						var/moving_to = pick(cardinal)
+						var/turf/move_to_turf = get_step(src, moving_to)
+						if (!(istype(loc, /turf/floor/trench) && !istype(move_to_turf, /turf/floor/trench)))
+							set_dir(moving_to)
+							Move(move_to_turf)
+					turns_since_move = 0
+				else
+					var/moving_to = pick(cardinal)
+					var/turf/move_to_turf = get_step(src, moving_to)
+					if (!(istype(loc, /turf/floor/trench) && !istype(move_to_turf, /turf/floor/trench)))
+						set_dir(moving_to)
+						Move(move_to_turf)
+				turns_since_move = 0
 		switch(stance)
 			if (HOSTILE_STANCE_IDLE)
 				if (!target_mob || !(target_mob in view(idle_vision_range, src)) || target_mob.stat != CONSCIOUS)
 					target_mob = FindTarget()
 					if (target_mob)
+						walk(src, 0) // Stop the pathfinding walk before entering combat
 						stance = HOSTILE_STANCE_ATTACK
 						if (target_mob && get_dist(target_mob, src) > 1)
 							AttackTarget()
