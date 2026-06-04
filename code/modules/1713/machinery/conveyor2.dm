@@ -204,7 +204,7 @@
 	if(user.incapacitated())
 		return
 
-	playsound(user, 'sound/machines/Conveyor_switch.wav', 100, TRUE)
+	playsound(user, 'sound/machines/Conveyor_switch.ogg', 100, TRUE)
 	if(position == 0)
 		if(last_pos < 0)
 			position = 1
@@ -243,7 +243,7 @@
 /obj/machinery/conveyor_switch/oneway/attack_hand(mob/user)
 	if(user.incapacitated())
 		return
-	playsound(user, 'sound/machines/Conveyor_switch.wav', 100, TRUE)
+	playsound(user, 'sound/machines/Conveyor_switch.ogg', 100, TRUE)
 	if(position == 0)
 		position = convdir
 	else
