@@ -71,7 +71,7 @@
 	if (map.ID == MAP_WIZARD_BOY)
 		var/obj/map_metadata/wizard_boy/WB = map
 		var/leading_house = "None"
-		var/max_score = 0
+		var/max_score = -9999
 		var/leading_house_color = "#FFFFFF" // Default white for "None"
 		for(var/house in list("Rubywyrm", "Mintysnek", "Slatepie", "Mustardweasel")) // Iterate to find the leading house
 			var/score = WB.house_points[house]

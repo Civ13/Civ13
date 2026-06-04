@@ -119,8 +119,7 @@
 				for (var/direction in list(1,2,4,8,5,6,9,10))
 					if (istype(get_step(src,direction),/turf/floor))
 						var/turf/floor/FF = get_step(src,direction)
-						if (FF.type == /turf/floor/carpet || FF.type == /turf/floor/carpet/redcarpet) // Only update icon for base carpet and red carpet neighbors
-							FF.update_icon() //so siding get updated properly
+						FF.update_icon() //so siding get updated properly
 
 //Carpets - To be Expanded Upon
 

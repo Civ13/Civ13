@@ -597,7 +597,7 @@
 	// recover stamina
 	stats["stamina"][1] = min(stats["stamina"][1] + round(stats["stamina"][2] * 0.02), stats["stamina"][2])
 
-	// recover juice (mana) — ~5 per second at standard 2ds Life() ticks
+	// recover juice (mana) — ~0.5 per second at standard 2ds Life() ticks
 	if (juice < max_juice)
 		juice = min(juice + 1, max_juice)
 
@@ -1086,10 +1086,13 @@
 		hud_used.remove_vehicle_hud(src)
 
 	if (hud_used)
-		if ((l_hand && istype(l_hand, /obj/item/weapon/material/magic/wand)) || (r_hand && istype(r_hand, /obj/item/weapon/material/magic/wand)))
-			hud_used.add_wizard_hud(src)
+		var/holding_wand = (l_hand && istype(l_hand, /obj/item/weapon/material/magic/wand)) || (r_hand && istype(r_hand, /obj/item/weapon/material/magic/wand))
+		if (holding_wand)
+			if (!hud_used.wizard_hud.len)
+				hud_used.add_wizard_hud(src)
 		else
-			hud_used.remove_wizard_hud(src)
+			if (hud_used.wizard_hud.len)
+				hud_used.remove_wizard_hud(src)
 
 		return TRUE
 

@@ -203,7 +203,7 @@
 						else
 							to_chat(H, SPAN_WARNING("You cannot summon a barricade there!"))
 							// Refund juice if creation fails
-							H.juice += S.juice_cost
+							H.juice = min(H.max_juice, H.juice + S.juice_cost)
 
 					else if (S.name == "Lightus")
 						// Spawns a temporary light effect on the caster
@@ -220,7 +220,7 @@
 						else
 							to_chat(H, SPAN_WARNING("You cannot blink there!"))
 							// Refund juice if teleport fails
-							H.juice += S.juice_cost
+							H.juice = min(H.max_juice, H.juice + S.juice_cost)
 					// End non-projectile spell handling
 					if (S.proj_type)
 						var/obj/item/projectile/P = new S.proj_type(user.loc)
