@@ -281,15 +281,18 @@
 /obj/item/conveyor_construct/afterattack(atom/A, mob/user, proximity)
 	if(!proximity || user.incapacitated())
 		return
-	var/cdir = get_dir(A, user)
-	if(!(cdir in cardinal) || A == user.loc)
+	var/turf/T = get_turf(A)
+	if(!T)
 		return
-	for(var/obj/machinery/conveyor/CB in A)
+	var/cdir = get_dir(T, user)
+	if(!(cdir in cardinal) || T == user.loc)
+		return
+	for(var/obj/machinery/conveyor/CB in T)
 		if(CB.dir == cdir || CB.dir == turn(cdir,180))
 			return
 		cdir |= CB.dir
 		qdel(CB)
-	var/obj/machinery/conveyor/C = new/obj/machinery/conveyor(A,cdir)
+	var/obj/machinery/conveyor/C = new/obj/machinery/conveyor(T,cdir)
 	C.id = id
 	transfer_fingerprints_to(C)
 	qdel(src)
@@ -310,6 +313,9 @@
 /obj/item/conveyor_switch_construct/afterattack(atom/A, mob/user, proximity)
 	if(!proximity || user.incapacitated())
 		return
+	var/turf/T = get_turf(A)
+	if(!T)
+		return
 	var/found = 0
 	for(var/obj/machinery/conveyor/C in view())
 		if(C.id == src.id)
@@ -318,6 +324,6 @@
 	if(!found)
 		to_chat(user, "<span class='notice'>The conveyor switch did not detect any linked conveyor belts in range.</span>")
 		return
-	var/obj/machinery/conveyor_switch/NC = new/obj/machinery/conveyor_switch(A, id)
+	var/obj/machinery/conveyor_switch/NC = new/obj/machinery/conveyor_switch(T, id)
 	transfer_fingerprints_to(NC)
 	qdel(src)
