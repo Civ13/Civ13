@@ -753,13 +753,16 @@ var/global/list/npc_appearance_cache = list()
 	if (isturf(loc) && !resting && !buckled && canmove && !stop_automated_movement)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 		turns_since_move++
 		if (turns_since_move >= move_to_delay && stance==HOSTILE_STANCE_IDLE)
+			var/moved = FALSE
 			var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
 			moving_to = pick(cardinal)
 			var/turf/move_to_turf = get_step(src,moving_to)
 			if (!(istype(loc, /turf/floor/trench) && !istype(move_to_turf, /turf/floor/trench)))
 				set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
-				Move(move_to_turf)
-			turns_since_move = FALSE
+				if (Move(move_to_turf))
+					moved = TRUE
+				if (moved)
+					turns_since_move = FALSE
 	switch(stance)
 		if (HOSTILE_STANCE_IDLE)
 			if (!target_mob || !(target_mob in ListTargets(12)) || target_mob.stat != CONSCIOUS)

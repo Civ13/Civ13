@@ -308,6 +308,54 @@
 					TD.abort_trial()
 					break
 
+/obj/structure/moldymen_lever
+	name = "Moldy Men Alarm Lever"
+	desc = "A lever used by professors to warn the school and toggle the moldy men spawners."
+	icon = 'icons/obj/vehicles/train_lever.dmi'
+	icon_state = "lever_wood_none"
+	anchored = TRUE
+	density = TRUE
+	var/cooldown = 0
+
+/obj/structure/moldymen_lever/attack_hand(mob/user)
+	if (!ishuman(user))
+		return
+	var/mob/living/human/H = user
+	if (!H.client)
+		return
+	if (H.nationality != "T")
+		to_chat(H, SPAN_WARNING("Only professors may pull this lever."))
+		return
+	if (world.time < cooldown)
+		to_chat(H, SPAN_WARNING("The moldy men alarm is resetting. Please wait a moment."))
+		return
+
+	var/any_active = FALSE
+	for (var/obj/effect/spawner/mobspawner/moldymen/inactive/S in world)
+		if (S.activated)
+			any_active = TRUE
+			break
+
+	var/new_state = !any_active
+	var/changed = FALSE
+	for (var/obj/effect/spawner/mobspawner/moldymen/inactive/S in world)
+		if (S.activated != new_state)
+			S.activated = new_state
+			changed = TRUE
+
+	if (!changed)
+		to_chat(H, SPAN_WARNING("No moldy men spawners were found to toggle."))
+		return
+
+	cooldown = world.time + 100 // 10s cooldown
+	if (map && istype(map, /obj/map_metadata/wizard_boy))
+		var/obj/map_metadata/wizard_boy/WB = map
+		WB.moldy_invasion = new_state
+	if (new_state)
+		to_chat(world, SPAN_DANGER("<big>The Moldy Men are attacking the school!</big>"))
+	else
+		to_chat(world, SPAN_NOTICE("<big>The Moldy Men are retreating from the attack.</big>"))
+
 /obj/structure/chemical_dispenser/potions
 	amount = 5
 	is_medical = FALSE

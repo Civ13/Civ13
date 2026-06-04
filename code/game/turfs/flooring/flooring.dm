@@ -219,6 +219,30 @@ var/list/flooring_types
 	damage_temperature = T0C+200
 	flags = TURF_HAS_EDGES | TURF_HAS_CORNERS | TURF_REMOVE_CROWBAR | TURF_CAN_BURN | SMOOTH_ONLY_WITH_ITSELF
 
+/decl/flooring/carpet/blue
+	icon_base = "blucarpet"
+
+/decl/flooring/carpet/green
+	icon_base = "turcarpet"
+
+/decl/flooring/carpet/black
+	icon_base = "bcarpet"
+
+/decl/flooring/carpet/bluelight
+	icon_base = "sblucarpet"
+
+/decl/flooring/carpet/pink
+	icon_base = "gaycarpet"
+
+/decl/flooring/carpet/purple
+	icon_base = "purcarpet"
+
+/decl/flooring/carpet/orange
+	icon_base = "oracarpet"
+
+/decl/flooring/carpet/white
+	icon_base = "wcarpet"
+
 /decl/flooring/wood
 	name = "wooden floor"
 	desc = "Polished redwood planks."

@@ -17,6 +17,8 @@
 // ============================================================
 
 /datum/chemical_reaction/wizard_boy_recipe
+	priority = 1 // Ensure wizard recipes override generic reactions (priority 0) when on the Wizard Boy map
+
 /datum/chemical_reaction/wizard_boy_recipe/can_happen(var/datum/reagents/holder)
 	if (!map || map.ID != MAP_WIZARD_BOY)
 		return FALSE

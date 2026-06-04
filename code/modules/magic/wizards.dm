@@ -18,7 +18,7 @@
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
-	speak_chance = FALSE
+	speak_chance = 1
 	speed = 4
 	maxHealth = 150
 	health = 150
@@ -91,16 +91,67 @@
 			src.overlays += clothing_colours
 	update_icons()
 
+/mob/living/simple_animal/wizard/bullet_act(var/obj/item/projectile/P)
+	if (P && P.invisibility <= 0) // Only react to real projectiles, not aiming traces
+		respond_to_attack(P.firer)
+	return ..()
+
+/mob/living/simple_animal/wizard/attackby(obj/item/W, mob/living/user)
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		if (H.a_intent == I_HARM || H.a_intent == I_DISARM)
+			respond_to_attack(user)
+	return ..()
+
+/mob/living/simple_animal/wizard/attack_hand(mob/user)
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		if (H.a_intent == I_HARM || H.a_intent == I_DISARM)
+			respond_to_attack(user)
+			return ..()
+	if (speak.len)
+		src.say(pick(speak))
+
 /mob/living/simple_animal/wizard/proc/respond_to_attack(mob/living/user)
-	return
+	if (stat || !user || !ishuman(user) || user.stat)
+		return
+	if (world.time < response_timer)
+		return
+	response_timer = world.time + 30
+
+	if (behaviour != "hostile")
+		behaviour = "defends"
+	target_mob = user
+	stance = HOSTILE_STANCE_ATTACK
+
+	// Students (base wizard) cast a minor spell occasionally
+	if (prob(40))
+		var/spell_type = pick(/obj/item/projectile/magic/zappus, /obj/item/projectile/magic/dropus)
+		var/spell_name = (spell_type == /obj/item/projectile/magic/dropus) ? "Dropus!" : "Zappus!"
+		var/sound_file = (spell_type == /obj/item/projectile/magic/dropus) ? 'sound/effects/spells/dropus.ogg' : 'sound/effects/spells/zappus.ogg'
+		fire_magic_at(user, spell_type, spell_name, sound_file)
+
+/mob/living/simple_animal/wizard/proc/fire_magic_at(mob/living/target, spell_type, spell_name, sound_file)
+	if (!target || target.stat || !src || src.stat)
+		return
+	for (var/mob/M in player_list)
+		if (M.client && (M in view(7, src)))
+			M.show_chat_overlay(src, "<i>[spell_name]</i>", "#dea30d")
+	if(sound_file)
+		playsound(src.loc, sound_file, 75, FALSE)
+	visible_message("<span style=color:'#dea30d'><b>[src]</b> says, \"<i>[spell_name]</i>\"</span>")
+	spawn(5)
+		playsound(src.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
+	var/obj/item/projectile/magic/bolt = new spell_type(src.loc)
+	bolt.firer = src
+	bolt.firer_original_dir = src.dir
+	bolt.def_zone = "chest"
+	bolt.launch(target, src, src, "chest")
 
 /mob/living/simple_animal/wizard/death()
 	..()
 	src.overlays -= clothing_colours
 	update_icons()
-
-/mob/living/simple_animal/wizard/attack_hand(mob/user)
-	src.say(pick(flavour_text))
 
 /mob/living/simple_animal/wizard/rubywyrm
 	faction = "Rubywyrm"
@@ -149,6 +200,8 @@
 	if (!ishuman(user))
 		return
 	var/mob/living/human/H = user
+	if (H.a_intent == I_HARM || H.a_intent == I_DISARM)
+		return ..()
 	if (world.time < heal_cooldown)
 		src.say("Grak! Too soon, too soon! Come back when the poultice has set, yes?")
 		return
@@ -167,6 +220,15 @@
 	else
 		src.say("Hmph! Grub's time is precious, yes? Go away then!")
 
+/mob/living/simple_animal/wizard/goblin_healer/respond_to_attack(mob/living/user)
+	if (stat || !user || !ishuman(user) || user.stat)
+		return
+	if (behaviour != "hostile")
+		behaviour = "defends"
+	target_mob = user
+	stance = HOSTILE_STANCE_ATTACK
+	custom_emote(1, "snarls at [user]!")
+
 /mob/living/simple_animal/wizard/goblin_cleaner
 	name = "Cleaner Goblin"
 	desc = "A miserable little goblin in a damp apron. It looks like it has cleaned more mud than magic and wants nothing to do with the rain."
@@ -180,7 +242,7 @@
 	melee_damage_upper = 2
 	move_to_delay = 4
 	wander = TRUE
-	speak_chance = 5
+	speak_chance = 4
 	var/atom/clean_target = null
 	var/cleaning_cooldown = 0
 	var/list/flavour_text_goblins = list(
@@ -208,20 +270,20 @@
 	icon_living = "goblin_cleaner"
 	icon_dead = "goblin_cleaner_dead"
 	speak = flavour_text_goblins
-	speak_chance = 5
 	update_icons()
 
 /mob/living/simple_animal/wizard/goblin_cleaner/proc/FindAndClean()
 	if (world.time < cleaning_cooldown)
 		return FALSE
-	if (!clean_target || clean_target.loc == null)
+	if (!clean_target || !isturf(clean_target.loc))
 		clean_target = null
 		for (var/obj/effect/decal/cleanable/C in range(7, src))
 			if (!clean_target || get_dist(src, C) < get_dist(src, clean_target))
 				clean_target = C
 		for (var/obj/item/weapon/reagent_containers/food/snacks/poo/P in range(7, src))
-			if (!clean_target || get_dist(src, P) < get_dist(src, clean_target))
-				clean_target = P
+			if (isturf(P.loc))
+				if (!clean_target || get_dist(src, P) < get_dist(src, clean_target))
+					clean_target = P
 	if (!clean_target)
 		return FALSE
 
@@ -249,6 +311,15 @@
 	if (FindAndClean())
 		return "cleaning"
 	return ..(t_behaviour)
+
+/mob/living/simple_animal/wizard/goblin_cleaner/respond_to_attack(mob/living/user)
+	if (stat || !user || !ishuman(user) || user.stat)
+		return
+	if (behaviour != "hostile")
+		behaviour = "defends"
+	target_mob = user
+	stance = HOSTILE_STANCE_ATTACK
+	custom_emote(1, "waves a dirty mop threateningly!")
 
 // ============================================================
 // HEADMASTER TUMBLEDOOR
@@ -297,16 +368,10 @@
 	update_icons()
 
 /mob/living/simple_animal/wizard/tumbledoor/attack_hand(mob/user)
+	if (ishuman(user) && (user.a_intent == I_HARM || user.a_intent == I_DISARM))
+		return ..()
 	src.say(pick(tumbledoor_lines))
 
-/mob/living/simple_animal/wizard/tumbledoor/bullet_act(var/obj/item/projectile/P)
-	if (P && P.invisibility <= 0) // Only react to real bullets, not aiming traces
-		respond_to_attack(P.firer)
-	return ..()
-
-/mob/living/simple_animal/wizard/tumbledoor/attackby(obj/item/W, mob/living/user)
-	respond_to_attack(user)
-	return ..()
 /mob/living/simple_animal/wizard/tumbledoor/respond_to_attack(mob/living/user)
 	if (world.time < response_timer)
 		return
@@ -437,6 +502,41 @@
 		if (target)
 			cast_at(target)
 			spell_cooldown = world.time + rand(60, 120) // 6-12 second cooldown between spells
+
+/mob/living/simple_animal/hostile/wizard/moldy_man/AttackTarget()
+	if (!target_mob || !SA_attackable(target_mob))
+		LoseTarget()
+		return FALSE
+	if (!(target_mob in view(aggro_vision_range, src)))
+		LostTarget()
+		return FALSE
+	
+	var/dist = get_dist(src, target_mob)
+	if (dist <= 1)
+		AttackingTarget()
+		return TRUE
+
+	if (world.time >= spell_cooldown)
+		cast_at(target_mob)
+		spell_cooldown = world.time + rand(60, 120)
+
+	MoveToTarget()
+	return TRUE
+
+/mob/living/simple_animal/hostile/wizard/moldy_man/MoveToTarget()
+	if (!target_mob || !SA_attackable(target_mob))
+		stance = HOSTILE_STANCE_IDLE
+		walk(src, 0)
+		return
+
+	stance = HOSTILE_STANCE_ATTACK
+	var/dist = get_dist(src, target_mob)
+	if (dist <= 3)
+		walk_away_od(src, target_mob, 5, speed)
+	else if (dist > 7)
+		walk_to(src, target_mob, 5, speed)
+	else
+		walk(src, 0)
 
 /mob/living/simple_animal/hostile/wizard/moldy_man/attack_hand(mob/user)
 	src.say(pick(
@@ -587,6 +687,49 @@
 		cooldown_painum = now + cd_painum_time
 		return
 
+/mob/living/simple_animal/hostile/wizard/moldywart/AttackTarget()
+	if (!target_mob || !SA_attackable(target_mob))
+		LoseTarget()
+		return FALSE
+	if (!(target_mob in view(aggro_vision_range, src)))
+		LostTarget()
+		return FALSE
+	
+	var/dist = get_dist(src, target_mob)
+	if (dist <= 1)
+		AttackingTarget()
+		return TRUE
+
+	var/now = world.time
+	// Priority order: Deadum > Explodus > Painum
+	if (now >= cooldown_deadum)
+		fire_spell(/obj/item/projectile/magic/deadum, "Deadum!", 'sound/effects/spells/deadum.ogg', target_mob)
+		cooldown_deadum = now + cd_deadum_time
+	else if (now >= cooldown_explodus)
+		fire_spell(/obj/item/projectile/magic/explodus, "Explodus!", 'sound/effects/spells/explodus.ogg', target_mob)
+		cooldown_explodus = now + cd_explodus_time
+	else if (now >= cooldown_painum)
+		fire_spell(/obj/item/projectile/magic/painum, "Painum!", 'sound/effects/spells/painum.ogg', target_mob)
+		cooldown_painum = now + cd_painum_time
+
+	MoveToTarget()
+	return TRUE
+
+/mob/living/simple_animal/hostile/wizard/moldywart/MoveToTarget()
+	if (!target_mob || !SA_attackable(target_mob))
+		stance = HOSTILE_STANCE_IDLE
+		walk(src, 0)
+		return
+
+	stance = HOSTILE_STANCE_ATTACK
+	var/dist = get_dist(src, target_mob)
+	if (dist <= 3)
+		walk_away_od(src, target_mob, 5, speed)
+	else if (dist > 8)
+		walk_to(src, target_mob, 5, speed)
+	else
+		walk(src, 0)
+
 /mob/living/simple_animal/hostile/wizard/moldywart/attack_hand(mob/user)
 	src.say(pick(taunt_lines))
 
@@ -692,6 +835,41 @@
 			cast_spell_at(target_mob)
 			spell_cooldown = world.time + rand(40, 80) // 4-8 second cooldown
 
+/mob/living/simple_animal/wizard/bobby/AttackTarget()
+	if (!target_mob || !SA_attackable(target_mob))
+		LoseTarget()
+		return FALSE
+	if (!(target_mob in view(aggro_vision_range, src)))
+		LostTarget()
+		return FALSE
+	
+	var/dist = get_dist(src, target_mob)
+	if (dist <= 1)
+		AttackingTarget()
+		return TRUE
+
+	if (world.time >= spell_cooldown)
+		cast_spell_at(target_mob)
+		spell_cooldown = world.time + rand(40, 80)
+
+	MoveToTarget()
+	return TRUE
+
+/mob/living/simple_animal/wizard/bobby/MoveToTarget()
+	if (!target_mob || !SA_attackable(target_mob))
+		stance = HOSTILE_STANCE_IDLE
+		walk(src, 0)
+		return
+
+	stance = HOSTILE_STANCE_ATTACK
+	var/dist = get_dist(src, target_mob)
+	if (dist <= 3)
+		walk_away_od(src, target_mob, 5, speed)
+	else if (dist > 7)
+		walk_to(src, target_mob, 5, speed)
+	else
+		walk(src, 0)
+
 /mob/living/simple_animal/wizard/bobby/proc/cast_spell_at(mob/living/target)
 	if (!target || target.stat)
 		return
@@ -767,8 +945,22 @@
 	icon_dead = "[icon_state]_dead"
 	update_icons()
 
-/mob/living/simple_animal/wizard/professor/attack_hand(mob/user)
-	src.say(pick(flavour_text_professors))
+/mob/living/simple_animal/wizard/professor/respond_to_attack(mob/living/user)
+	if (stat || !user || !ishuman(user) || user.stat)
+		return
+	if (world.time < response_timer)
+		return
+	response_timer = world.time + 30
+
+	if (behaviour != "hostile")
+		behaviour = "defends"
+	target_mob = user
+	stance = HOSTILE_STANCE_ATTACK
+
+	if (prob(60))
+		fire_magic_at(user, /obj/item/projectile/magic/freezum, "Freezum!", 'sound/effects/spells/freezeum.ogg')
+	else
+		src.say(pick("Detention for you!", "Right, that's a fifty-point deduction!", "I am far too busy for this nonsense!"))
 
 // ============================================================
 // NORMIE FARMERS
@@ -794,11 +986,11 @@ var/list/flavour_text_normies = list(
 	faction = "Civilians"
 	maxHealth = 100
 	health = 100
-	melee_damage_lower = 5
-	melee_damage_upper = 8
+	melee_damage_lower = 6
+	melee_damage_upper = 12
 	wander = TRUE
 	stop_automated_movement = FALSE
-	speak_chance = 5
+	speak_chance = 4
 
 /mob/living/simple_animal/wizard/normie_farmer/New()
 	..()
@@ -810,8 +1002,14 @@ var/list/flavour_text_normies = list(
 	speak = flavour_text_normies
 	update_icons()
 
-/mob/living/simple_animal/wizard/normie_farmer/attack_hand(mob/user)
-	src.say(pick(flavour_text_normies))
+/mob/living/simple_animal/wizard/normie_farmer/respond_to_attack(mob/living/user)
+	if (stat || !user || !ishuman(user) || user.stat)
+		return
+	if (behaviour != "hostile")
+		behaviour = "defends"
+	target_mob = user
+	stance = HOSTILE_STANCE_ATTACK
+	src.say(pick("Get off my land!", "I've had enough of you wizards!", "That's it, you're getting a thrashing!"))
 
 // ============================================================
 // PROFESSOR SNIP
@@ -868,12 +1066,9 @@ var/list/flavour_text_normies = list(
 	update_icons()
 
 /mob/living/simple_animal/wizard/professor_snip/attack_hand(mob/user)
+	if (ishuman(user) && (user.a_intent == I_HARM || user.a_intent == I_DISARM))
+		return ..()
 	src.say(pick(snip_lines))
-
-/mob/living/simple_animal/wizard/professor_snip/bullet_act(var/obj/item/projectile/P)
-	if (P && P.invisibility <= 0) // Only react to real projectiles, not aiming traces
-		respond_to_attack(P.firer)
-	return ..()
 
 /mob/living/simple_animal/wizard/professor_snip/respond_to_attack(mob/living/user)
 	if (world.time < response_timer)
@@ -979,7 +1174,22 @@ var/list/flavour_text_normies = list(
 	create_path = /mob/living/simple_animal/wizard/professor
 	timer = 600
 	icon_state = "npc"
-	max_number = 3
+	max_number = 1
+
+/obj/effect/spawner/mobspawner/healer_goblin
+	name = "healer goblin spawner"
+	create_path = /mob/living/simple_animal/wizard/goblin_healer
+	timer = 600
+	icon_state = "npc"
+	max_number = 1
+
+
+/obj/effect/spawner/mobspawner/cleaner_goblin
+	name = "cleaner goblin spawner"
+	create_path = /mob/living/simple_animal/wizard/goblin_cleaner
+	timer = 600
+	icon_state = "npc"
+	max_number = 1
 
 /obj/effect/spawner/mobspawner/normie_farmer
 	name = "normie farmer spawner"

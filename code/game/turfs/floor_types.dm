@@ -110,6 +110,7 @@
 	icon_state = "carpet"
 	icon = 'icons/turf/flooring/carpet.dmi'
 	flooring = null
+	initial_flooring = /decl/flooring/carpet
 	New()
 		..()
 		spawn(4)
@@ -118,45 +119,56 @@
 				for (var/direction in list(1,2,4,8,5,6,9,10))
 					if (istype(get_step(src,direction),/turf/floor))
 						var/turf/floor/FF = get_step(src,direction)
-						FF.update_icon() //so siding get updated properly
+						if (FF.type == /turf/floor/carpet || FF.type == /turf/floor/carpet/redcarpet) // Only update icon for base carpet and red carpet neighbors
+							FF.update_icon() //so siding get updated properly
 
 //Carpets - To be Expanded Upon
 
 /turf/floor/carpet/pinkcarpet
 	name = "Pink Carpet"
 	icon_state = "gaycarpet"
+	initial_flooring = /decl/flooring/carpet/pink
 
 /turf/floor/carpet/redcarpet
 	name = "Red Carpet"
 	icon_state = "carpet"
+	initial_flooring = /decl/flooring/carpet
 
 /turf/floor/carpet/orangecarpet
 	name = "Orange Carpet"
 	icon_state = "oracarpet"
+	initial_flooring = /decl/flooring/carpet/orange
 
 /turf/floor/carpet/purplecarpet
 	name = "Purple Carpet"
 	icon_state = "purcarpet"
+	initial_flooring = /decl/flooring/carpet/purple
 
 /turf/floor/carpet/bluecarpet
 	name = "Blue Carpet"
 	icon_state = "blucarpet"
+	initial_flooring = /decl/flooring/carpet/blue
 
 /turf/floor/carpet/tealcarpet
 	name = "Teal Carpet"
 	icon_state = "sblucarpet"
+	initial_flooring = /decl/flooring/carpet/bluelight
 
 /turf/floor/carpet/greencarpet
 	name = "Green Carpet"
 	icon_state = "turcarpet"
+	initial_flooring = /decl/flooring/carpet/green
 
 /turf/floor/carpet/blackcarpet
 	name = "Black Carpet"
 	icon_state = "bcarpet"
+	initial_flooring = /decl/flooring/carpet/black
 
 /turf/floor/carpet/whitecarpet
 	name = "White Carpet"
 	icon_state = "wcarpet"
+	initial_flooring = /decl/flooring/carpet/white
+
 //Continue
 
 /turf/floor/plating/ironsand/New()

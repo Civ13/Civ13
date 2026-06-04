@@ -32,11 +32,14 @@
 		"Slatepie" = 0,
 		"Rubywyrm" = 0,
 	)
+	var/moldy_invasion = FALSE
 	New()
 		..()
 		spawn(30)
 			load_houses()
-
+		spawn(100)
+		load_new_recipes("config/crafting/material_recipes_camp.txt")
+		override_global_recipes = "camp"
 	update_win_condition()
 		return
 
@@ -286,7 +289,11 @@
 	return FALSE
 
 /obj/map_metadata/wizard_boy/proc/load_wand(mob/living/human/H)
-	if (!H || !H.client || !house_info[H.client.ckey])
+	if (!H || !H.client)
+		return null
+	if (!house_info[H.client.ckey])
+		load_houses()
+	if (!house_info[H.client.ckey])
 		return null
 	var/list/data = house_info[H.client.ckey]
 	if (data.len < 3 || !data[3])

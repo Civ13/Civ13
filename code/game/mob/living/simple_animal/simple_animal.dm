@@ -154,8 +154,9 @@
 		if (get_dist(src, following_mob) > 2)
 			turns_since_move++
 			if (turns_since_move >= move_to_delay)
-				walk_to(src, following_mob,1, 6)
-				turns_since_move = FALSE
+				if (get_dist(src, following_mob) > 1)
+					walk_to(src, following_mob, 1, 6)
+					turns_since_move = FALSE
 		if (get_dist(src, following_mob) > 6)
 			following_mob = null
 			stop_automated_movement = FALSE
