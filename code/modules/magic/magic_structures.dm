@@ -203,7 +203,7 @@
 
 /obj/structure/sign/signpost/llanboarwart/outside/New()
 	..()
-	desc = "<b>NORTH:</b>Llanboarwart Academy of Magical Education. <b>EAST:</b> Dark Forest. <b>WEST:</b> Cwm-Tlawd Village."
+	desc = "<b>NORTH:</b> Llanboarwart Academy of Magical Education. <b>EAST:</b> Dark Forest. <b>WEST:</b> Cwm-Tlawd Village."
 	spawn(1)
 		overlays += icon(icon, "signpost_west")
 		overlays += icon(icon, "signpost_north")

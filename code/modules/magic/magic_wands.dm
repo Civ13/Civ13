@@ -181,12 +181,13 @@
 			var/mob/living/human/H = user
 			if (H.juice >= S.juice_cost && user.get_active_hand() == src)
 				H.juice -= S.juice_cost
-				H.show_chat_overlay(H, "<i>[S.name]!</i>", "#dea30d")
+				for (var/mob/living/human/M in view(7, H))
+					if (M.client)
+						M.show_chat_overlay(H, "<i>[S.name]!</i>", "#dea30d")
 				if (S.sound_effect)
 					playsound(user.loc, S.sound_effect, 75, FALSE)
-				H.visible_message("<span style=color:'#dea30d'><b>[user]</b> uses <i>[S.name]!</i></span>")
-				playsound(user.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
-
+					H.visible_message("<span style=color:'#dea30d'><b>[user]</b> uses <i>[S.name]!</i></span>")
+					playsound(user.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
 				if (S.skill_level >= 80)
 					for (var/mob/living/simple_animal/wizard/bobby/B in view(7, H))
 						B.witness_spell(H, S)

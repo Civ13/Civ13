@@ -242,7 +242,7 @@
 	melee_damage_upper = 2
 	move_to_delay = 4
 	wander = TRUE
-	speak_chance = 4
+	speak_chance = 1
 	var/atom/clean_target = null
 	var/cleaning_cooldown = 0
 	var/list/flavour_text_goblins = list(
@@ -483,7 +483,7 @@
 		playsound(src.loc, sound_file, 75, FALSE)
 
 	visible_message("<span style=color:'#dea30d'><b>[src]</b> uses <i>[spell_name]</i></span>")
-	
+
 	spawn(5)
 		playsound(src.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
 
@@ -492,6 +492,31 @@
 	bolt.firer_original_dir = src.dir
 	bolt.def_zone = "chest"
 	bolt.launch(target, src, src, "chest")
+
+/mob/living/simple_animal/wizard/AttackTarget()
+	if (!target_mob || !SA_attackable(target_mob))
+		LoseTarget()
+		return FALSE
+	if (!(target_mob in view(aggro_vision_range, src)))
+		LostTarget()
+		return FALSE
+	MoveToTarget()
+	return TRUE
+
+/mob/living/simple_animal/wizard/MoveToTarget()
+	if (!target_mob || !SA_attackable(target_mob))
+		stance = HOSTILE_STANCE_IDLE
+		walk(src, 0)
+		return
+
+	stance = HOSTILE_STANCE_ATTACK
+	var/dist = get_dist(src, target_mob)
+	if (dist <= 3)
+		walk_away_od(src, target_mob, 5, speed)
+	else if (dist > 7)
+		walk_to(src, target_mob, 5, speed)
+	else
+		walk(src, 0)
 
 /mob/living/simple_animal/hostile/wizard/moldy_man/proc/process()
 	if (stat || !loc)
@@ -912,7 +937,7 @@
 	icon_dead = "wizard_professor1_dead"
 	maxHealth = 180
 	health = 180
-	speak_chance = 2
+	speak_chance = 1
 	var/list/flavour_text_professors = list(
 		"The school board slashed our budget again. If you want to learn Burnus, you'll have to share a single matchstick with the student next to you.",
 		"I hold a C.H.A.D. degree in Arcane Destruction, yet here I am, telling 11-year-olds to stop eating the potion ingredients.",
@@ -990,7 +1015,7 @@ var/list/flavour_text_normies = list(
 	melee_damage_upper = 12
 	wander = TRUE
 	stop_automated_movement = FALSE
-	speak_chance = 4
+	speak_chance = 1
 
 /mob/living/simple_animal/wizard/normie_farmer/New()
 	..()
@@ -1031,7 +1056,7 @@ var/list/flavour_text_normies = list(
 	melee_damage_upper = 4
 	wander = FALSE
 	stop_automated_movement = TRUE
-	speak_chance = 3
+	speak_chance = 1
 	voice_pitch = 80
 	var/retaliation_cooldown = 0
 	var/submission_cooldown = 0
@@ -1167,7 +1192,7 @@ var/list/flavour_text_normies = list(
 	create_path = /mob/living/simple_animal/wizard/bobby
 	timer = 600
 	icon_state = "npc"
-	max_number = 3
+	max_number = 1
 
 /obj/effect/spawner/mobspawner/professor
 	name = "professor spawner"
