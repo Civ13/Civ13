@@ -208,7 +208,8 @@
 /obj/structure/bed/proc/dismantle()
 	if (map.ID == MAP_WIZARD_BOY && material && (material.name == "woodplank" || material.name == "hardwood" || material.name == "wood"))
 		new /obj/item/wand_part/mdf_board(loc)
-	material.place_sheet(get_turf(src))
+	else
+		material.place_sheet(get_turf(src))
 	if (padding_material)
 		padding_material.place_sheet(get_turf(src))
 
