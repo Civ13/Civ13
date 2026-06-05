@@ -37,7 +37,10 @@
 		to_chat(H, "You start removing the small twigs...")
 		if (do_after(H, 60, src))
 			if (src && branched)
-				new /obj/item/weapon/branch(get_turf(src))
+				if (map.ID == MAP_WIZARD_BOY)
+					new /obj/item/wand_part/pine_wood(get_turf(src))
+				else
+					new /obj/item/weapon/branch(get_turf(src))
 				to_chat(H, "You finish clearing the stick.")
 				branched = FALSE
 				qdel(src)
