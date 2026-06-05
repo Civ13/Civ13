@@ -541,7 +541,6 @@
 	
 	var/dist = get_dist(src, target_mob)
 	if (dist <= 1)
-		AttackingTarget()
 		return TRUE
 
 	if (world.time >= spell_cooldown)
@@ -725,7 +724,6 @@
 	
 	var/dist = get_dist(src, target_mob)
 	if (dist <= 1)
-		AttackingTarget()
 		return TRUE
 
 	var/now = world.time
@@ -874,7 +872,6 @@
 	
 	var/dist = get_dist(src, target_mob)
 	if (dist <= 1)
-		AttackingTarget()
 		return TRUE
 
 	if (world.time >= spell_cooldown)
@@ -927,7 +924,24 @@
 	bolt.firer_original_dir = src.dir
 	bolt.def_zone = "chest"
 	bolt.launch(target, src, src, "chest")
-
+	if (spell_type == /obj/item/projectile/magic/dropus)
+		spawn(30)
+			if (target && (target in range(6,src)))
+				for (var/mob/M in player_list)
+					if (M.client && (M in view(7, src)))
+						M.show_chat_overlay(src, "<i>Teleportum Prisonem!</i>", "#dea30d")
+						spawn(15)
+							if (target)
+								src.say("Off to the slammer with you!")
+								send_to_jail(target)
+/mob/living/simple_animal/wizard/bobby/proc/send_to_jail(mob/living/target)
+	var/turf/spawnpoint = pick(latejoin_turfs["PoliceTeleporter"])
+	if (target && target.client && isturf(spawnpoint))
+		target.forceMove(spawnpoint)
+	if (map && map.ID == MAP_WIZARD_BOY)
+		visible_message(SPAN_DANGER("<b>[target]</b> has been arrested and thrown into the magical slammer!"))
+		var/obj/map_metadata/wizard_boy/WB = map
+		WB.process_arest(target, 5)
 
 // ============================================================
 // GENERIC PROFESSORS & FACULTY

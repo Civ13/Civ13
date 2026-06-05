@@ -146,6 +146,12 @@
 	if (casting)
 		return
 	if (ishuman(user))
+		var/area/H_area = get_area(user)
+		if (H_area && istype(H_area, /area/caribbean/houses/nml_three))
+			to_chat(user, SPAN_DANGER("There's a charm in the police station preventing magic from being cast."))
+			casting = FALSE
+			return
+
 		var/mob/living/human/H = user
 		if (H.getStat("magic") < minimum_level)
 			to_chat(user, SPAN_WARNING("You do not have the magical knowledge required to use this wand!"))

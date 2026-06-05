@@ -217,8 +217,8 @@
 /obj/structure/gem_lever
 	name = "G.E.M. Trial Lever"
 	desc = "Pull this lever to start the dueling club defense trial. You must be qualification level 2 (C.O.A.L.) to take the test."
-	icon = 'icons/obj/vehicles/train_lever.dmi'
-	icon_state = "lever_wood_none"
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "gate_control"
 	anchored = TRUE
 	density = TRUE
 	var/cooldown = 0

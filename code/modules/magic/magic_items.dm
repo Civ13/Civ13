@@ -518,3 +518,7 @@
 				</body>
 			</html>
 			"}
+
+/obj/item/weapon/basketball/mopball
+	name = "mop ball"
+	desc = "A ball used for playing mop ball. It is slightly bouncy and very dirty."
