@@ -381,3 +381,89 @@
 	new /obj/item/weapon/book/manual/student_handbook(src)
 	update_icon()
 	..()
+
+////////////////////////////////////////////////////
+///////////////// FIREPLACE PORTAL //////////////////
+////////////////////////////////////////////////////
+
+/obj/structure/fireplace_portal
+	name = "fireplace portal"
+	desc = "A magical portal disguised as a fireplace. It can transport you to different locations around the world."
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "wall_fireplace0"
+	opacity = FALSE
+	density = FALSE
+	anchored = TRUE
+	var/enabled = TRUE
+	var/random = FALSE
+	var/identification = "unknown" // a unique key that identifies this portal for pairing with destinations
+	var/list/destination = list("unknown") // the unique keys for the destinations
+
+/obj/structure/fireplace_portal/random
+	random = TRUE
+
+/obj/structure/fireplace_portal/attack_hand(mob/user)
+	if (!enabled)
+		to_chat(user, SPAN_NOTICE("The fireplace is cold and inactive."))
+		return
+
+	if (distance(get_turf(user),get_turf(src)) > 1)
+		to_chat(user, SPAN_WARNING("You must be standing next to the fireplace to use it!"))
+		return
+
+	if (map && map.ID == MAP_WIZARD_BOY && user && user.client)
+		var/obj/map_metadata/wizard_boy/WB = map
+		var/lvl = WB.check_level(user.client.ckey)
+		if (lvl == "0" || lvl == "1" || lvl == "2" || lvl == "R")
+			to_chat(user, SPAN_WARNING("The fireplace doesn't seem to respond to your touch. Perhaps you need to be more qualified to use it?"))
+			return
+
+	teleport(user, destination)
+
+/obj/structure/fireplace_portal/proc/teleport(mob/user, _destination)
+	if (!user)
+		return
+
+	var/final_dest = _destination
+	if (istype(_destination, /list))
+		var/list/dest_list = _destination
+		if (!dest_list.len)
+			return
+		if (random)
+			final_dest = pick(dest_list)
+		else
+			final_dest = WWinput(user, "Where would you like to travel?", "Fireplace Portal", dest_list[1], dest_list)
+		if (!final_dest || !user || get_dist(user, src) > 1 || user.stat)
+			return
+
+	if (!final_dest)
+		return
+
+	var/list/potential_destinations = list()
+	for (var/obj/structure/fireplace_portal/FP in world)
+		if (FP != src && FP.enabled && final_dest == FP.identification)
+			potential_destinations += FP
+
+	if (!potential_destinations.len)
+		to_chat(user, SPAN_NOTICE("The magical flames flicker, but lead nowhere."))
+		return
+
+	var/obj/structure/fireplace_portal/target_fp = pick(potential_destinations)
+	var/turf/target_turf = get_turf(target_fp)
+
+	if (target_turf)
+		to_chat(user, SPAN_NOTICE("You step into the blue flames and vanish!"))
+		icon_state = "wall_fireplace2"
+		spawn(30)
+			if (src)
+				icon_state = "wall_fireplace0"
+		playsound(src.loc, 'sound/weapons/magic/spell2.ogg', 75, TRUE)
+		user.forceMove(target_turf)
+		to_chat(user, SPAN_NOTICE("You emerge from another fireplace."))
+		playsound(target_turf, 'sound/weapons/magic/spell2.ogg', 75, TRUE)
+		if (target_fp) // Visual feedback for the exit portal
+			target_fp.icon_state = "wall_fireplace2"
+			spawn(30)
+				if (target_fp)
+					target_fp.icon_state = "wall_fireplace0"
+			target_fp.visible_message(SPAN_NOTICE("[user] emerges from the fireplace flames!"))
