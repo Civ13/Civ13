@@ -182,6 +182,12 @@ default behaviour is:
 	set name = "Succumb"
 	set desc = "Succumb to death."
 	set category = "IC"
+
+	if (map.ID == MAP_WIZARD_BOY)
+		var/area/H_area = get_area(src)
+		if (H_area && istype(H_area, /area/caribbean/houses/nml_three))
+			to_chat(src, "<span class = 'notice'>You cannot succumb while in prison.</span>")
+			return
 	if (getTotalDmg() > 50)
 		if (WWinput(src, "Are you sure you want to succumb? You only live once.", "", "Cancel", list("Succumb", "Cancel")) == "Succumb")
 			adjustBrainLoss(300)

@@ -708,7 +708,7 @@
 		target_mob = user_mob
 		if (target_mob)
 			target_mob.overlays += src
-			spawn(100) // 10 seconds (100 deciseconds)
+			spawn(200) // 20 seconds
 				qdel(src)
 
 	Destroy()

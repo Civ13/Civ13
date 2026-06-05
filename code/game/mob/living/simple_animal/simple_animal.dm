@@ -505,6 +505,8 @@
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 								meat.name = "[name] meat"
 								meat.radiation = radiation/2
+						if (map.ID == MAP_WIZARD_BOY && istype(src, /mob/living/simple_animal/pigeon))
+							new /obj/item/wand_part/pigeon_feather(loc)
 					else
 						for (var/i=0, i<=namt, i++)
 							var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))

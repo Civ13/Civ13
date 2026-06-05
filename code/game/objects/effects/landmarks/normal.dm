@@ -13,7 +13,7 @@
 /obj/effect/landmark/New()
 	..()
 	tag = text("landmark*[]", name)
-	if (name != "landmark" && !istype(src,/obj/effect/landmark/npctarget/squad_spawner))
+	if (name != "landmark" && !istype(src,/obj/effect/landmark/npctarget) && !istype(src,/obj/effect/landmark/npctarget/squad_spawner))
 		if (name == "supplydrop")
 			supplydrop_turfs += get_turf(src)
 			qdel(src)

@@ -346,8 +346,8 @@ var/wizard_style = {"
 		font-style: italic;
 	}
 	@font-face {
-		font-family: 'MagicSchoolOne';
-		src: url('MagicSchoolOne.ttf') format('truetype');
+		font-family: 'Wizard';
+		src: url('Wizard.ttf') format('truetype');
 		font-weight: normal;
 		font-style: normal;
 	}
@@ -376,7 +376,7 @@ var/wizard_style = {"
 		margin-top: 0;
 	}
 	.wizard {
-		font-family: "MagicSchoolOne", "Civ13Custom", serif;
+		font-family: "Wizard", "Civ13Custom", serif;
 	}
 	.btn {
 		display: block;
@@ -597,3 +597,30 @@ var/wizard_style = {"
 			color = "#FFD700"
 	to_chat(C, "<font size=4>You have been sorted into <b><span style='color:[color];'>[winning_house]</span></b>!</font>")
 	return TRUE
+
+/obj/map_metadata/wizard_boy/proc/process_arest(mob/living/target, time = 5)
+	if (!target || !target.client)
+		return
+	
+	to_chat(target, "<span class='danger'>You have been sentenced to [time] minutes in the magical slammer!</span>")
+	
+	spawn(0)
+		var/remaining = time
+		while (remaining > 0)
+			sleep(1 MINUTE)
+			remaining--
+			
+			if (!target || !target.client)
+				break
+			
+			if (remaining > 0)
+				to_chat(target, "<span class='notice'>You have [remaining] minutes remaining in your sentence.</span>")
+		
+		if (target && target.client)
+			var/list/release_turfs = latejoin_turfs["PoliceTeleporterRelease"]
+			if (release_turfs && length(release_turfs))
+				var/turf/release_point = pick(release_turfs)
+				if (isturf(release_point))
+					target.forceMove(release_point)
+			
+			to_chat(target, "<span class='notice'>Your sentence is complete. You have been released from the magical slammer.</span>")

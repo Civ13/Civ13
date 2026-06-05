@@ -91,18 +91,17 @@
 /obj/structure/vehicle/magic/mop/MouseDrop_T(atom/A, mob/living/human/user)
 	if (!istype(A, /mob/living/human))
 		return
-
 	var/mob/living/human/H = A
 	if (H != user)
 		return
-	if (H.anchored || H.driver || (H in ontop) || ontop.len >= mobcapacity)
+	if (H.anchored || H.driver)
 		return
 	if (map && map.ID == MAP_WIZARD_BOY && H.client)
 		var/obj/map_metadata/wizard_boy/WB = map
 		var/lvl = WB.check_level(H.client.ckey)
 		if (lvl != "3" && lvl != "4" && lvl != "5" && lvl != "T")
 			to_chat(H, SPAN_WARNING("You need at least a G.E.M. licence to be allowed to fly mops."))
-		return
+			return
 	user.visible_message(SPAN_NOTICE("[H] begins to mount \the [src]..."), SPAN_NOTICE("You begin to mount \the [src]..."))
 	if (do_after(user, 20, src))
 		if (H != user || H.anchored || H.driver || (H in ontop) || ontop.len >= mobcapacity)

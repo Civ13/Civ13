@@ -67,6 +67,10 @@
 	icon = 'icons/obj/decals_wide.dmi'
 	icon_state = "house_points"
 
+/obj/structure/sign/house_points/attack_hand(mob/user)
+	..()
+	examine(user, 1)
+
 /obj/structure/sign/house_points/examine(mob/user, distance)
 	if (map.ID == MAP_WIZARD_BOY)
 		var/obj/map_metadata/wizard_boy/WB = map
@@ -203,7 +207,7 @@
 
 /obj/structure/sign/signpost/llanboarwart/outside/New()
 	..()
-	desc = "<b>NORTH:</b>Llanboarwart Academy of Magical Education. <b>EAST:</b> Dark Forest. <b>WEST:</b> Cwm-Tlawd Village."
+	desc = "<b>NORTH:</b> Llanboarwart Academy of Magical Education. <b>EAST:</b> Dark Forest. <b>WEST:</b> Cwm-Tlawd Village."
 	spawn(1)
 		overlays += icon(icon, "signpost_west")
 		overlays += icon(icon, "signpost_north")
@@ -213,8 +217,8 @@
 /obj/structure/gem_lever
 	name = "G.E.M. Trial Lever"
 	desc = "Pull this lever to start the dueling club defense trial. You must be qualification level 2 (C.O.A.L.) to take the test."
-	icon = 'icons/obj/vehicles/train_lever.dmi'
-	icon_state = "lever_wood_none"
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "gate_control"
 	anchored = TRUE
 	density = TRUE
 	var/cooldown = 0

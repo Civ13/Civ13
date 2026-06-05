@@ -150,7 +150,7 @@
 					var/obj/map_metadata/wizard_boy/WB = map
 					if (WB.check_level(user.client.ckey) == "0")
 						WB.change_level(user.client.ckey, "1")
-						WB.save_wand_mob(user)
+						WB.save_wand(user.client.ckey,"[new_wand.wand_wood],[new_wand.wand_core],[new_wand.wand_length]")
 						to_chat(world, "<font size=3 class='wizard'><b>[user.real_name]</b> ([user.key]) has progressed to qualification level 1 (<b>U.N.G.A.</b>) by assembling a wand!</font>")
 			else
 				to_chat(user, "<span class='notice'>The bench needs one wand chassis and one wand core to assemble a wand.</span>")
@@ -224,7 +224,7 @@
 		<body>
 
 		<center>
-		<font size=6 style='font-family: "HarryP"'>Wand Assembly Bench</font><br><br>
+		<font size=6 style='font-family: "Wizard"'>Wand Assembly Bench</font><br><br>
 		</center>
 
 		<table width='100%' style='border-collapse:collapse;'>
@@ -684,6 +684,13 @@
 		if (F_area && F_area.location == AREA_OUTSIDE && is_wet_weather_icon(F_area.icon_state))
 			get_wet()
 
+	if (map && map.ID == MAP_WIZARD_BOY)
+		var/area/A = get_area(user)
+		if (A && istype(A, /area/caribbean/houses/nml_three))
+			to_chat(user, SPAN_DANGER("There's a charm in the police station preventing magic from being cast."))
+			casting = FALSE
+			return
+
 	// Skill gate
 	if (ishuman(user))
 		var/mob/living/human/H = user
@@ -755,12 +762,14 @@
 
 				// Cast feedback — suppressed for Fox fur silent cast
 				if (!silent_cast)
-					H.show_chat_overlay(H, "<i>[S.name]!</i>", "#dea30d")
+					for (var/mob/living/human/M in view(7, H))
+						if (M.client)
+							M.show_chat_overlay(H, "<i>[S.name]!</i>", "#dea30d")
 					if (S.sound_effect)
 						playsound(user.loc, S.sound_effect, 75, FALSE)
 					H.visible_message("<span style=color:'#dea30d'><b>[user]</b> uses <i>[S.name]!</i></span>")
 					playsound(user.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
-
+				
 				// Bobby wizard witness alert
 				if (S.skill_level >= 80)
 					for (var/mob/living/simple_animal/wizard/bobby/B in view(7, H))
