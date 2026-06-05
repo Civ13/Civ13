@@ -109,6 +109,41 @@
 	desc = "A strip of fox fur with a cunning sheen. It silences a wand's magic while slowing its spellcasting."
 	icon_state = "fox_fur"
 
+/obj/item/wand_part/chewing_gum
+	name = "Used chewing gum"
+	desc = "Scraped from the underside of Professor Snip's desk. Highly unhygienic and incredibly sticky."
+	icon_state = "chewing_gum"
+
+/obj/item/wand_part/cassette_tape
+	name = "Tangled cassette tape"
+	desc = "Magnetic tape ripped from a confiscated 1980s synth-pop mixtape. It crackles with unstable, looping energy."
+	icon_state = "cassette_tape"
+
+/obj/item/wand_part/sheep_wool
+	name = "Damp sheep wool"
+	desc = "Snagged on a barbed-wire fence near the Mop Ball pitch. Smells strongly of rain and lanolin."
+	icon_state = "sheep_wool"
+
+/obj/item/wand_part/rat_tail
+	name = "Feral rat tail"
+	desc = "Found in the dark corners of the Slatepie common room. The essence of a true survivor, but ultimately a coward."
+	icon_state = "frat_tail"
+
+/obj/item/wand_part/spark_plug
+	name = "Rusted spark plug"
+	desc = "Plucked from a broken-down tractor in Farmer Evans' field. Heavy, metallic, and surges with raw kinetic energy."
+	icon_state = "spark_plug"
+
+/obj/item/wand_part/gnat_wing
+	name = "Golden gnat wing"
+	desc = "So fast it hums. It wants to fly away, even when stuffed inside a piece of wood."
+	icon_state = "gnat_wing"
+
+/obj/item/wand_part/gloom_thread
+	name = "Gloom-weave thread"
+	desc = "Freezing cold to the touch. It feels like holding pure depression."
+	icon_state = "gloom_thread"
+
 /obj/item/wand_part/pine_wood
 	name = "Pine wood"
 	desc = "A splinter-prone pine branch. It is a common wand chassis with balanced magic traits."
@@ -138,6 +173,21 @@
 	name = "Driftwood"
 	desc = "A piece of bleached driftwood with elemental resonance. It smells faintly of the sea and enhances spell efficiency."
 	icon_state = "driftwood"
+
+/obj/item/wand_part/stale_chip
+	name = "Stale chip (French fry)"
+	desc = "Dropped during Tuesday's lunch service by Lunch Lady Doris and hardened over months into an indestructible, rock-like substance."
+	icon_state = "stale_chip"
+
+/obj/item/wand_part/shrub_root
+	name = "Shrieking shrub root"
+	desc = "A thick, vibrating root that constantly emits a faint, high-pitched whimper. It is incredibly magically volatile."
+	icon_state = "shrub_root"
+
+/obj/item/wand_part/cap_truncheon
+	name = "C.A.P. truncheon"
+	desc = "Standard-issue Ministry police baton. Carved from dense, magic-resistant mahogany and weighted with lead."
+	icon_state = "cap_truncheon"
 
 /obj/effect/spawner/objspawner/wandpart/pine_wood
 	name = "wand part spawner"

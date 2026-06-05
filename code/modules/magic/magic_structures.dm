@@ -394,6 +394,9 @@
 	opacity = FALSE
 	density = FALSE
 	anchored = TRUE
+	light_color = "#52bad9"
+	light_range = 3
+
 	var/enabled = TRUE
 	var/random = FALSE
 	var/identification = "unknown" // a unique key that identifies this portal for pairing with destinations
@@ -454,16 +457,20 @@
 	if (target_turf)
 		to_chat(user, SPAN_NOTICE("You step into the blue flames and vanish!"))
 		icon_state = "wall_fireplace2"
+		set_light(3)
 		spawn(30)
 			if (src)
 				icon_state = "wall_fireplace0"
+				set_light(0)
 		playsound(src.loc, 'sound/weapons/magic/spell2.ogg', 75, TRUE)
 		user.forceMove(target_turf)
 		to_chat(user, SPAN_NOTICE("You emerge from another fireplace."))
 		playsound(target_turf, 'sound/weapons/magic/spell2.ogg', 75, TRUE)
 		if (target_fp) // Visual feedback for the exit portal
 			target_fp.icon_state = "wall_fireplace2"
+			target_fp.set_light(3)
 			spawn(30)
 				if (target_fp)
 					target_fp.icon_state = "wall_fireplace0"
+					target_fp.set_light(0)
 			target_fp.visible_message(SPAN_NOTICE("[user] emerges from the fireplace flames!"))

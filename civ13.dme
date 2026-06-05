@@ -1033,6 +1033,7 @@
 #include "code\modules\magic\magic_vehicles.dm"
 #include "code\modules\magic\magic_wands.dm"
 #include "code\modules\magic\magic_wands_parts.dm"
+#include "code\modules\magic\magic_wands_premade.dm"
 #include "code\modules\magic\magic_weapons.dm"
 #include "code\modules\magic\spells.dm"
 #include "code\modules\magic\wizards.dm"

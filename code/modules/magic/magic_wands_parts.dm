@@ -22,6 +22,9 @@
 #define WAND_WOOD_SNOOKER     "snooker"     // Slow caster; excellent bludgeon.
 #define WAND_WOOD_FIBREGLASS  "fibreglass"  // Whippy fast; lashes you on overcast.
 #define WAND_WOOD_BOGOAK      "bogoak"      // Driftwood chassis; elemental discount; emits stink.
+#define WAND_WOOD_CHIP        "stale_chip"  // Stale Chip / French Fry.
+#define WAND_WOOD_SHRUB       "shrub_root"  // Shrieking Shrub Root.
+#define WAND_WOOD_TRUNCHEON   "truncheon"   // C.A.P. Truncheon.
 
 // -- Core types (engine) --
 #define WAND_CORE_NONE     "none"      // No bonuses or penalties.
@@ -31,6 +34,13 @@
 #define WAND_CORE_LINT     "lint"      // Wildly random juice cost per cast.
 #define WAND_CORE_ASBESTOS "asbestos"  // Fire immunity; passive toxin damage.
 #define WAND_CORE_FOX      "fox"       // Silent casts; +2 s cast delay.
+#define WAND_CORE_GUM        "chewing_gum" // Used Chewing Gum.
+#define WAND_CORE_TAPE       "cassette_tape" // Tangled Cassette Tape.
+#define WAND_CORE_WOOL       "sheep_wool"  // Damp Sheep Wool.
+#define WAND_CORE_RAT        "rat_tail"    // Feral Rat Tail.
+#define WAND_CORE_SPARKPLUG  "spark_plug"  // Rusted Spark Plug.
+#define WAND_CORE_GNAT       "gnat_wing"   // Golden Gnat Wing.
+#define WAND_CORE_GLOOM      "gloom_thread" // Gloom-Weave Thread.
 
 // -- Length types (form factor) --
 #define WAND_LENGTH_STUBBY      "stubby"       // Tiny, fast-draw, -2 tile range.
@@ -120,6 +130,12 @@
 					new_wand.wand_wood = WAND_WOOD_FIBREGLASS
 				else if (istype(wood_part, /obj/item/wand_part/driftwood))
 					new_wand.wand_wood = WAND_WOOD_BOGOAK
+				else if (istype(wood_part, /obj/item/wand_part/stale_chip))
+					new_wand.wand_wood = WAND_WOOD_CHIP
+				else if (istype(wood_part, /obj/item/wand_part/shrub_root))
+					new_wand.wand_wood = WAND_WOOD_SHRUB
+				else if (istype(wood_part, /obj/item/wand_part/cap_truncheon))
+					new_wand.wand_wood = WAND_WOOD_TRUNCHEON
 				else
 					new_wand.wand_wood = WAND_WOOD_PINE
 				if (istype(core_part, /obj/item/wand_part/badger_hair))
@@ -134,6 +150,20 @@
 					new_wand.wand_core = WAND_CORE_ASBESTOS
 				else if (istype(core_part, /obj/item/wand_part/fox_fur))
 					new_wand.wand_core = WAND_CORE_FOX
+				else if (istype(core_part, /obj/item/wand_part/chewing_gum))
+					new_wand.wand_core = WAND_CORE_GUM
+				else if (istype(core_part, /obj/item/wand_part/cassette_tape))
+					new_wand.wand_core = WAND_CORE_TAPE
+				else if (istype(core_part, /obj/item/wand_part/sheep_wool))
+					new_wand.wand_core = WAND_CORE_WOOL
+				else if (istype(core_part, /obj/item/wand_part/rat_tail))
+					new_wand.wand_core = WAND_CORE_RAT
+				else if (istype(core_part, /obj/item/wand_part/spark_plug))
+					new_wand.wand_core = WAND_CORE_SPARKPLUG
+				else if (istype(core_part, /obj/item/wand_part/gnat_wing))
+					new_wand.wand_core = WAND_CORE_GNAT
+				else if (istype(core_part, /obj/item/wand_part/gloom_thread))
+					new_wand.wand_core = WAND_CORE_GLOOM
 				else
 					new_wand.wand_core = WAND_CORE_NONE
 				new_wand.wand_length = selected_wand_length
@@ -185,15 +215,47 @@
 
 	proc/get_bench_wood_part()
 		for (var/obj/item/O in contents)
-			if (istype(O, /obj/item/wand_part/pine_wood) || istype(O, /obj/item/wand_part/mdf_board) || istype(O, /obj/item/wand_part/balsa_wood) || istype(O, /obj/item/wand_part/snooker_cue) || istype(O, /obj/item/wand_part/fibreglass) || istype(O, /obj/item/wand_part/driftwood))
+			if (istype(O, /obj/item/wand_part/pine_wood) || istype(O, /obj/item/wand_part/mdf_board) || istype(O, /obj/item/wand_part/balsa_wood) || istype(O, /obj/item/wand_part/snooker_cue) || istype(O, /obj/item/wand_part/fibreglass) || istype(O, /obj/item/wand_part/driftwood) || istype(O, /obj/item/wand_part/stale_chip) || istype(O, /obj/item/wand_part/shrub_root) || istype(O, /obj/item/wand_part/cap_truncheon))
 				return O
 		return null
 
 	proc/get_bench_core_part()
 		for (var/obj/item/O in contents)
-			if (istype(O, /obj/item/wand_part/badger_hair) || istype(O, /obj/item/wand_part/pigeon_feather) || istype(O, /obj/item/wand_part/copper_wire) || istype(O, /obj/item/wand_part/pocket_lint) || istype(O, /obj/item/wand_part/asbestos) || istype(O, /obj/item/wand_part/fox_fur))
+			if (istype(O, /obj/item/wand_part/badger_hair) || istype(O, /obj/item/wand_part/pigeon_feather) || istype(O, /obj/item/wand_part/copper_wire) || istype(O, /obj/item/wand_part/pocket_lint) || istype(O, /obj/item/wand_part/asbestos) || istype(O, /obj/item/wand_part/fox_fur) || istype(O, /obj/item/wand_part/chewing_gum) || istype(O, /obj/item/wand_part/cassette_tape) || istype(O, /obj/item/wand_part/sheep_wool) || istype(O, /obj/item/wand_part/rat_tail) || istype(O, /obj/item/wand_part/spark_plug) || istype(O, /obj/item/wand_part/gnat_wing) || istype(O, /obj/item/wand_part/gloom_thread))
 				return O
 		return null
+
+	proc/get_wood_effects(var/obj/item/wand_part/wood_part)
+		if (!wood_part)
+			return ""
+		if (istype(wood_part, /obj/item/wand_part/pine_wood)) return "Baseline balance; 5% splinter chance on overcast."
+		if (istype(wood_part, /obj/item/wand_part/mdf_board)) return "-10% juice cost. Swells and misfires when wet."
+		if (istype(wood_part, /obj/item/wand_part/balsa_wood)) return "-40% cast time, +20% juice cost. Snaps in melee."
+		if (istype(wood_part, /obj/item/wand_part/snooker_cue)) return "+20% cast time. Lethal melee bludgeoning power."
+		if (istype(wood_part, /obj/item/wand_part/fibreglass)) return "-25% cast time. Lashes caster on overcast."
+		if (istype(wood_part, /obj/item/wand_part/driftwood)) return "-20% elemental juice cost. Emits a passive stink cloud."
+		if (istype(wood_part, /obj/item/wand_part/stale_chip)) return "+30% healing speed. May crumble on non-healing spells."
+		if (istype(wood_part, /obj/item/wand_part/shrub_root)) return "-20% cast time. Stun-shriek nearby mobs on every cast."
+		if (istype(wood_part, /obj/item/wand_part/cap_truncheon)) return "+20% cast time. High melee force and impossible to dislodge."
+		return "Unknown wood effects."
+
+	proc/get_core_effects(var/obj/item/wand_part/core_part)
+		if (!core_part)
+			return ""
+		if (istype(core_part, /obj/item/wand_part/badger_hair)) return "+20% combat spell speed; +50% defensive juice cost."
+		if (istype(core_part, /obj/item/wand_part/pigeon_feather)) return "Near-instant movement spells. Critical HP panic-blink."
+		if (istype(core_part, /obj/item/wand_part/copper_wire)) return "-25% all juice costs. Lethal electrical backlash on overcast."
+		if (istype(core_part, /obj/item/wand_part/pocket_lint)) return "Chaos energy: Spells cost 0x or 2x juice at random."
+		if (istype(core_part, /obj/item/wand_part/asbestos)) return "Fire immunity while held. Slow passive toxin damage."
+		if (istype(core_part, /obj/item/wand_part/fox_fur)) return "Silent spells with no visual cues. Adds +2s cast delay."
+		if (istype(core_part, /obj/item/wand_part/chewing_gum)) return "Extremely sticky; very difficult to drop or unequip."
+		if (istype(core_part, /obj/item/wand_part/cassette_tape)) return "15% chance to echo cast. 5% chance to jumble spell choice."
+		if (istype(core_part, /obj/item/wand_part/sheep_wool)) return "+20% defensive speed; -25% juice cost. Scalding steam hazard."
+		if (istype(core_part, /obj/item/wand_part/rat_tail)) return "Projectiles deal backstab damage. Misfires when user is injured."
+		if (istype(core_part, /obj/item/wand_part/spark_plug)) return "Projectiles fly twice as fast. Shatters hand bones on overcast."
+		if (istype(core_part, /obj/item/wand_part/gnat_wing)) return "-80% cast time and 0% misfire chance."
+		if (istype(core_part, /obj/item/wand_part/gloom_thread)) return "-50% juice cost. Projectiles slow targets on hit."
+		return "Unknown core effects."
 
 	proc/do_html(var/mob/m)
 		if (!m || m.lying)
@@ -201,8 +263,13 @@
 
 		var/obj/item/wand_part/wood_part = get_bench_wood_part()
 		var/obj/item/wand_part/core_part = get_bench_core_part()
+
 		var/wood_name = wood_part ? wood_part.name : "<span style='color:#888'>None</span>"
 		var/core_name = core_part ? core_part.name : "<span style='color:#888'>None</span>"
+
+		var/wood_effects = wood_part ? "<br><small><i>[get_wood_effects(wood_part)]</i></small>" : ""
+		var/core_effects = core_part ? "<br><small><i>[get_core_effects(core_part)]</i></small>" : ""
+
 		var/wood_action = wood_part ? " <a href='?src=\ref[src];eject_wood=1'>Eject</a>" : ""
 		var/core_action = core_part ? " <a href='?src=\ref[src];eject_core=1'>Eject</a>" : ""
 		var/len = selected_wand_length
@@ -228,8 +295,8 @@
 		</center>
 
 		<table width='100%' style='border-collapse:collapse;'>
-		<tr><td><b>Wood chassis</b></td><td>[wood_name]</td><td>[wood_action]</td></tr>
-		<tr><td><b>Core engine</b></td><td>[core_name]</td><td>[core_action]</td></tr>
+		<tr><td width='30%'><b>Wood chassis</b></td><td width='50%'>[wood_name][wood_effects]</td><td width='20%'>[wood_action]</td></tr>
+		<tr><td><b>Core engine</b></td><td>[core_name][core_effects]</td><td>[core_action]</td></tr>
 		<tr><td><b>Length</b></td><td colspan='2'>[stubby_btn] | [standard_btn] | [overcomp_btn] | [telescopic_btn]</td></tr>
 		</table>
 
@@ -252,12 +319,12 @@
 		var/list/wood_items = list()
 		var/list/core_items = list()
 		for (var/obj/item/O in contents)
-			if (istype(O, /obj/item/wand_part/badger_hair) || istype(O, /obj/item/wand_part/pigeon_feather) || istype(O, /obj/item/wand_part/copper_wire) || istype(O, /obj/item/wand_part/pocket_lint) || istype(O, /obj/item/wand_part/asbestos) || istype(O, /obj/item/wand_part/fox_fur))
+			if (istype(O, /obj/item/wand_part/badger_hair) || istype(O, /obj/item/wand_part/pigeon_feather) || istype(O, /obj/item/wand_part/copper_wire) || istype(O, /obj/item/wand_part/pocket_lint) || istype(O, /obj/item/wand_part/asbestos) || istype(O, /obj/item/wand_part/fox_fur) || istype(O, /obj/item/wand_part/chewing_gum) || istype(O, /obj/item/wand_part/cassette_tape) || istype(O, /obj/item/wand_part/sheep_wool) || istype(O, /obj/item/wand_part/rat_tail) || istype(O, /obj/item/wand_part/spark_plug) || istype(O, /obj/item/wand_part/gnat_wing) || istype(O, /obj/item/wand_part/gloom_thread))
 				core_items += O.name
-			else if (istype(O, /obj/item/wand_part/pine_wood) || istype(O, /obj/item/wand_part/mdf_board) || istype(O, /obj/item/wand_part/balsa_wood) || istype(O, /obj/item/wand_part/snooker_cue) || istype(O, /obj/item/wand_part/fibreglass) || istype(O, /obj/item/wand_part/driftwood))
+			else if (istype(O, /obj/item/wand_part/pine_wood) || istype(O, /obj/item/wand_part/mdf_board) || istype(O, /obj/item/wand_part/balsa_wood) || istype(O, /obj/item/wand_part/snooker_cue) || istype(O, /obj/item/wand_part/fibreglass) || istype(O, /obj/item/wand_part/driftwood) || istype(O, /obj/item/wand_part/stale_chip) || istype(O, /obj/item/wand_part/shrub_root) || istype(O, /obj/item/wand_part/cap_truncheon))
 				wood_items += O.name
 		if (wood_items.len || core_items.len)
-			to_chat(user, "<span class='notice'>On the bench: [list(wood_items, core_items)]</span>")
+			to_chat(user, "<span class='notice'>On the bench: [english_list(wood_items + core_items)]</span>")
 
 
 // ============================================================
@@ -286,6 +353,9 @@
 	var/bog_elem_discount   = FALSE // -20% juice on elemental spells (Bog Oak)
 	var/wand_wet            = FALSE // MDF swelling state
 	var/wand_wet_timer      = 0     // ds counter for drying
+	var/carb_loaded         = FALSE // stale chip
+	var/shrub_shriek        = FALSE // shrieking shrub root
+	var/truncheon_grip      = FALSE // C.A.P. truncheon
 
 	// Core flags
 	var/silent_cast         = FALSE // suppress VFX/SFX (Fox)
@@ -298,6 +368,14 @@
 	var/badger_combat       = FALSE // combat spells 20% faster (Badger)
 	var/badger_defensive    = FALSE // defensive spells 50% costlier (Badger)
 	var/pigeon_movement     = FALSE // movement spells near-instant (Pigeon)
+	var/chewing_gum_sticky  = FALSE // Used chewing gum
+	var/echo_tape_chance    = 0     // cassette tape echo chance
+	var/jumble_tape_chance  = 0     // cassette tape jumble chance
+	var/wool_damp           = FALSE // damp sheep wool
+	var/backstabber         = FALSE // feral rat tail
+	var/sparkplug_overdrive = FALSE // rusted spark plug
+	var/gnat_wing_speed     = FALSE // golden gnat wing
+	var/gloom_weave         = FALSE // gloom-weave thread
 
 	// Length flags
 	var/fast_draw           = FALSE // no equip delay (Stubby)
@@ -342,6 +420,9 @@
 	lash_on_overcast = FALSE
 	emit_stink       = FALSE
 	bog_elem_discount = FALSE
+	carb_loaded      = FALSE
+	shrub_shriek     = FALSE
+	truncheon_grip   = FALSE
 
 	switch (wand_wood)
 		if (WAND_WOOD_PINE)
@@ -377,6 +458,18 @@
 			bog_elem_discount = TRUE
 			emit_stink        = TRUE
 
+		if (WAND_WOOD_CHIP)
+			carb_loaded = TRUE
+
+		if (WAND_WOOD_SHRUB)
+			shrub_shriek = TRUE
+			cast_time_mod = 0.8
+
+		if (WAND_WOOD_TRUNCHEON)
+			truncheon_grip = TRUE
+			wand_melee_force = 30
+			cast_time_mod = 1.2
+
 
 /// Apply core-specific modifiers. Call after setting wand_core.
 /obj/item/weapon/material/magic/wand/crafted/proc/apply_core_stats()
@@ -391,6 +484,14 @@
 	badger_combat    = FALSE
 	badger_defensive = FALSE
 	pigeon_movement  = FALSE
+	chewing_gum_sticky = FALSE
+	echo_tape_chance   = 0
+	jumble_tape_chance = 0
+	wool_damp          = FALSE
+	backstabber        = FALSE
+	sparkplug_overdrive = FALSE
+	gnat_wing_speed     = FALSE
+	gloom_weave         = FALSE
 
 	switch (wand_core)
 		if (WAND_CORE_NONE)
@@ -424,6 +525,31 @@
 			// Silent casts with no visual/audio cues; +2 s cast time to "sneak" magic out.
 			silent_cast       = TRUE
 			fox_extra_cast_ds = 20  // 2 seconds in deciseconds
+
+		if (WAND_CORE_GUM)
+			chewing_gum_sticky = TRUE
+
+		if (WAND_CORE_TAPE)
+			echo_tape_chance = 15
+			jumble_tape_chance = 5
+
+		if (WAND_CORE_WOOL)
+			wool_damp = TRUE
+
+		if (WAND_CORE_RAT)
+			backstabber = TRUE
+
+		if (WAND_CORE_SPARKPLUG)
+			sparkplug_overdrive = TRUE
+
+		if (WAND_CORE_GNAT)
+			gnat_wing_speed = TRUE
+			cast_time_mod = cast_time_mod * 0.2
+			misfire_chance = 0
+
+		if (WAND_CORE_GLOOM)
+			gloom_weave = TRUE
+			juice_cost_mod = max(0.1, juice_cost_mod * 0.5)
 
 
 /// Apply length-specific modifiers. Call after setting wand_length.
@@ -490,6 +616,9 @@
 		if (WAND_WOOD_SNOOKER)    wood_str = "snooker cue"
 		if (WAND_WOOD_FIBREGLASS) wood_str = "fibreglass"
 		if (WAND_WOOD_BOGOAK)     wood_str = "driftwood"
+		if (WAND_WOOD_CHIP)       wood_str = "stale chip"
+		if (WAND_WOOD_SHRUB)      wood_str = "shrieking shrub root"
+		if (WAND_WOOD_TRUNCHEON)  wood_str = "C.A.P. truncheon"
 
 	var/core_str = ""
 	switch (wand_core)
@@ -500,6 +629,13 @@
 		if (WAND_CORE_LINT)     core_str = "pocket lint"
 		if (WAND_CORE_ASBESTOS) core_str = "asbestos fibre"
 		if (WAND_CORE_FOX)      core_str = "fox fur"
+		if (WAND_CORE_GUM)      core_str = "chewing gum"
+		if (WAND_CORE_TAPE)     core_str = "tangled cassette tape"
+		if (WAND_CORE_WOOL)     core_str = "damp sheep wool"
+		if (WAND_CORE_RAT)      core_str = "feral rat tail"
+		if (WAND_CORE_SPARKPLUG) core_str = "rusted spark plug"
+		if (WAND_CORE_GNAT)     core_str = "golden gnat wing"
+		if (WAND_CORE_GLOOM)    core_str = "gloom-weave thread"
 
 	var/len_str = ""
 	switch (wand_length)
@@ -520,6 +656,9 @@
 		if (WAND_WOOD_SNOOKER)    wood_icon = "wand_snooker"
 		if (WAND_WOOD_FIBREGLASS) wood_icon = "wand_fibreglass"
 		if (WAND_WOOD_BOGOAK)     wood_icon = "wand_driftwood"
+		if (WAND_WOOD_CHIP)       wood_icon = "wand_mdf"
+		if (WAND_WOOD_SHRUB)      wood_icon = "wand_driftwood"
+		if (WAND_WOOD_TRUNCHEON)  wood_icon = "wand_snooker"
 
 	var/len_icon = ""
 	switch (wand_length)
@@ -549,6 +688,14 @@
 	if (pigeon_movement && _is_movement_spell(S))
 		mod *= 0.1
 
+	// Damp Sheep Wool: defensive/structural spells cast 20% faster
+	if (wool_damp && (S.name == "Blockum" || S.name == "Wallus"))
+		mod *= 0.8
+
+	// Stale Chip: healing spells cast 30% faster
+	if (carb_loaded && S.name == "Fixae")
+		mod *= 0.7
+
 	// MDF wet: cast time doubled
 	if (wand_wood == WAND_WOOD_MDF && wand_wet)
 		mod *= 2.0
@@ -576,6 +723,10 @@
 	// Overcompensator: projectile spells cost 15% less
 	if (overcomp_proj_disc && S.proj_type)
 		mod *= 0.85
+
+	// Damp Sheep Wool: defensive/structural spells cost 25% less
+	if (wool_damp && (S.name == "Blockum" || S.name == "Wallus"))
+		mod *= 0.75
 
 	// Lint core: random modifier — 0x (free!) or 2x (ouch)
 	if (lint_random_cost)
@@ -652,6 +803,19 @@
 		H.fire_stacks += 3
 		H.IgniteMob()
 
+	// Rusted Spark Plug: instantly shatters active hand bones, deals 30 brute, forces drop
+	if (sparkplug_overdrive)
+		to_chat(H, SPAN_DANGER("\The [src]'s kinetic overdrive backfires! The violent surge shatters the bones in your hand!"))
+		H.visible_message(SPAN_DANGER("[H]'s wand backfires with a sickening crunch!"))
+		var/target_hand = (H.l_hand == src) ? "l_hand" : "r_hand"
+		H.apply_damage(30, BRUTE, target_hand)
+		var/obj/item/organ/external/E = H.organs_by_name[target_hand]
+		if (E)
+			E.fracture()
+		playsound(H.loc, 'sound/effects/snap.ogg', 80, TRUE)
+		H.unEquip(src, force = TRUE)
+		return
+
 
 // ============================================================
 //  WET THE WAND (called by rain/mop systems)
@@ -712,6 +876,14 @@
 
 	var/datum/spell/S = active_spell
 
+	// Tangled Cassette Tape: jumble check
+	if (jumble_tape_chance && prob(jumble_tape_chance))
+		usable = get_usable_spells(user)
+		if (usable.len)
+			var/datum/spell/jumbled_S = pick(usable)
+			to_chat(user, SPAN_WARNING("\The [src] crackles with unstable looping energy! The spell jumbles!"))
+			S = jumbled_S
+
 	// Calculate effective stats for this cast
 	var/eff_cast_time  = get_effective_cast_time(S)
 	var/eff_juice_cost = get_effective_juice_cost(S)
@@ -722,6 +894,10 @@
 	var/total_misfire = misfire_chance
 	if (wand_wood == WAND_WOOD_MDF && wand_wet)
 		total_misfire += 20
+	if (backstabber && ishuman(user))
+		var/mob/living/human/H = user
+		if (H.health < (H.maxHealth * 0.5))
+			total_misfire += 30
 	if (prob(total_misfire))
 		to_chat(user, SPAN_WARNING("\The [src] fizzles! The spell half-forms and dissipates uselessly."))
 		playsound(user.loc, 'sound/items/matchstick_lit.ogg', 40, TRUE)
@@ -812,10 +988,48 @@
 
 					// --- PROJECTILE SPELLS ---
 					if (S.proj_type)
-						var/obj/item/projectile/P = new S.proj_type(user.loc)
+						var/obj/item/projectile/magic/P = new S.proj_type(user.loc)
 						if (P)
+							// Apply per-cast trait flags to the projectile
+							if (istype(P, /obj/item/projectile/magic))
+								P.backstabber_damage  = backstabber
+								P.frostbite_effect    = gloom_weave
+								P.shrub_shriek_effect = shrub_shriek
+								P.overdrive           = sparkplug_overdrive
 							var/tgt_zone = H.targeted_organ || "chest"
 							process_projectile(P, user, target, tgt_zone, params)
+
+							// Shrieking Shrub Root: scream at nearby mobs on every cast
+							if (shrub_shriek)
+								playsound(user.loc, 'sound/weapons/magic/spell4.ogg', 100, TRUE)
+								H.visible_message(SPAN_DANGER("\The [src] lets out a horrible, ear-splitting SHRIEK!"))
+								for (var/mob/living/M in view(4, H))
+									if (M != H)
+										M.apply_effects(agony = 5)
+										to_chat(M, SPAN_WARNING("Your ears ring from the terrible shriek!"))
+
+							// Tangled Cassette Tape: 15% chance to echo a second identical projectile
+							if (echo_tape_chance && prob(echo_tape_chance))
+								to_chat(H, SPAN_NOTICE("\The [src] crackles with a looping echo — the spell fires twice!"))
+								var/obj/item/projectile/magic/P2 = new S.proj_type(user.loc)
+								if (P2 && istype(P2, /obj/item/projectile/magic))
+									P2.backstabber_damage  = backstabber
+									P2.frostbite_effect    = gloom_weave
+									P2.shrub_shriek_effect = shrub_shriek
+									P2.overdrive           = sparkplug_overdrive
+									process_projectile(P2, user, target, tgt_zone, params)
+
+					// Damp Sheep Wool: Burnus scorches the caster's lungs
+					if (wool_damp && S.name == "Burnus")
+						to_chat(H, SPAN_DANGER("The wet wool superheats from the fire spell — you inhale scalding steam and start coughing!"))
+						H.cough_duration = max(H.cough_duration, 40)  // 4 seconds of coughing
+						H.apply_damage(5, BURN, "chest")
+
+					// Stale Chip: non-healing casts have a 20% chance to crumble a bit
+					if (carb_loaded && S.name != "Fixae" && prob(20))
+						to_chat(H, SPAN_WARNING("\The [src]'s chip crumbles slightly from the magical strain! It's getting weaker..."))
+						// Gradually reduce the cast time bonus as the chip degrades
+						cast_time_mod = min(1.0, cast_time_mod + 0.05)
 
 	casting = FALSE
 
@@ -945,118 +1159,49 @@
 					holder.forceMove(dest)
 
 
-// ============================================================
-//  PRE-MADE WAND VARIANTS
-//  Ready-to-spawn named wand combinations. Add to loot tables,
-//  shop inventories, or wizard spawns as desired.
-// ============================================================
+/obj/item/weapon/material/magic/wand/nodrop_special_check()
+	if (chewing_gum_sticky || truncheon_grip)
+		return TRUE
+	return ..()
 
-// ----- The Regulation Wand -----
-// Pine + no core + Standard length: solid all-rounder with panic escape
-/obj/item/weapon/material/magic/wand/crafted/standard
-	name = "standard wizard's wand"
-	desc = "A standard school-issue wand. Smells of pine resin and floor wax. Reliable, if uninspiring."
-	icon_state  = "wand_pine_long"
-	wand_wood   = WAND_WOOD_PINE
-	wand_core   = WAND_CORE_NONE
-	wand_length = WAND_LENGTH_STANDARD
+/obj/item/weapon/material/magic/wand/var/peeling_gum = FALSE
 
-// ----- The Sniper -----
-// Fibreglass + Copper Wire + Overcompensator: blazing fast, long-range, cheap — but violent on overcast
-/obj/item/weapon/material/magic/wand/crafted/sniper
-	name = "The Sniper"
-	desc = "A ridiculously long, bright green fibreglass rod wrapped in stolen copper wire. It acts like a magical sniper rifle, but one wrong move and you'll electrocute yourself."
-	icon_state  = "wand_fibreglass_longest"
-	wand_wood   = WAND_WOOD_FIBREGLASS
-	wand_core   = WAND_CORE_COPPER
-	wand_length = WAND_LENGTH_OVERCOMP
+/obj/item/weapon/material/magic/wand/mob_can_unequip(mob/M, slot, disable_warning = FALSE)
+	if (chewing_gum_sticky && ishuman(M))
+		var/mob/living/human/H = M
+		if (peeling_gum)
+			return TRUE
+		peeling_gum = TRUE
+		to_chat(H, SPAN_WARNING("You start peeling \the [src] off your fingers... it's incredibly sticky!"))
+		var/old_loc = H.loc
+		spawn(0)
+			if (do_after(H, 30, old_loc))
+				if ((H.get_active_hand() == src || H.get_inactive_hand() == src) && H.loc == old_loc)
+					to_chat(H, SPAN_NOTICE("You finally peel \the [src] off your sticky fingers."))
+					peeling_gum = TRUE
+					H.unEquip(src, force = TRUE)
+				else
+					peeling_gum = FALSE
+			else
+				peeling_gum = FALSE
+		return FALSE
+	return ..()
 
-// ----- The Mugger -----
-// Snooker Cue + Badger Hair + Stubby: fast-draw, awful cast speed, exceptional bludgeoning
-/obj/item/weapon/material/magic/wand/crafted/mugger
-	name = "The Mugger"
-	desc = "A sawed-off chunk of a pub snooker cue stuffed with angry badger hair. It takes ages to cast a spell, but it fits in your boot and is perfect for caving someone's head in."
-	icon_state  = "wand_snooker_short"
-	wand_wood   = WAND_WOOD_SNOOKER
-	wand_core   = WAND_CORE_BADGER
-	wand_length = WAND_LENGTH_STUBBY
 
-// ----- The Ghost -----
-// Balsa + Fox Fur + Stubby: pocket-sized, invisible lightning casts — but snaps if you sneeze on it
-/obj/item/weapon/material/magic/wand/crafted/ghost
-	name = "The Ghost"
-	desc = "A terrifyingly fragile balsa wood splinter wrapped in smelly fox fur. It casts completely invisible spells, assuming it doesn't snap in your hand first."
-	icon_state  = "wand_balsa_short"
-	wand_wood   = WAND_WOOD_BALSA
-	wand_core   = WAND_CORE_FOX
-	wand_length = WAND_LENGTH_STUBBY
+/mob/living/human/var/cough_duration = 0
+/mob/living/human/var/frostbitten = FALSE
 
-// ----- The Gambler -----
-// MDF + Pocket Lint + Telescopic: chaotic, cheap, and likely to kill you in the rain
-/obj/item/weapon/material/magic/wand/crafted/gambler
-	name = "The Gambler"
-	desc = "A modified TV aerial glued to a cheap MDF handle, powered by lint. You have no idea what a spell will cost, and if it rains, it turns into soggy, useless cardboard."
-	icon_state  = "wand_mdf_long"
-	wand_wood   = WAND_WOOD_MDF
-	wand_core   = WAND_CORE_LINT
-	wand_length = WAND_LENGTH_TELESCOPIC
+/mob/living/human/Life()
+	..()
+	if (cough_duration > 0)
+		cough_duration = max(0, cough_duration - 2)
+		emote("cough")
+		stats["stamina"][1] = max(0, stats["stamina"][1] - 15)
 
-// ----- The Swamp Thing -----
-// Bog Oak + Asbestos Fibre + Overcompensator: long-range elemental supremacy at personal cost
-/obj/item/weapon/material/magic/wand/crafted/swamp_thing
-	name = "The Swamp Thing"
-	desc = "A massive, rotting branch of bog oak packed with highly illegal asbestos. It smells like dead fish, but it lets you lob massive fireballs from a mile away... while slowly poisoning you."
-	icon_state  = "wand_driftwood_longest"
-	wand_wood   = WAND_WOOD_BOGOAK
-	wand_core   = WAND_CORE_ASBESTOS
-	wand_length = WAND_LENGTH_OVERCOMP
-
-// ----- The Chaos Stick -----
-// MDF + Asbestos Fibre + Stubby: fire-immune, toxin-dripping, swells in rain — pocket chaos
-/obj/item/weapon/material/magic/wand/crafted/chaos_stick
-	name = "The Chaos Stick"
-	desc = "A stubby block of cheap fiberboard stuffed with toxic insulation. It fits in your pocket and makes you entirely fireproof, but it acts as a localized health hazard."
-	icon_state  = "wand_mdf_short"
-	wand_wood   = WAND_WOOD_MDF
-	wand_core   = WAND_CORE_ASBESTOS
-	wand_length = WAND_LENGTH_STUBBY
-
-// ----- The Coward's Out -----
-// Fibreglass + Pigeon Feather + Standard: fastest movement spells in the game, at the cost of pain
-/obj/item/weapon/material/magic/wand/crafted/cowards_out
-	name = "The Coward's Out"
-	desc = "A whippy fibreglass rod powered by a nervous pigeon feather. Perfect for panic-teleporting away from trouble, though the overcast backlash might slice your arm open."
-	icon_state  = "wand_fibreglass_long"
-	wand_wood   = WAND_WOOD_FIBREGLASS
-	wand_core   = WAND_CORE_PIGEON
-	wand_length = WAND_LENGTH_STANDARD
-
-// ----- Headmaster Tumbledoor's Wand -----
-// The legendary bootleg Elder Wand.
-/obj/item/weapon/material/magic/wand/special/elderly_wand
-	name = "The Elderly Wand"
-	desc = "An incredibly old, knobby walking stick. Legend says Tumbledoor won it from Death himself in a high-stakes game of Go Fish."
-	icon_state = "elderly_wand"
-	wand_wood   = WAND_WOOD_BOGOAK      // Ancient and slightly damp
-	wand_core   = WAND_CORE_BADGER      // Extremely powerful combat casts
-	wand_length = WAND_LENGTH_OVERCOMP  // Huge range
-
-// ----- Lord Moldywart's Wand -----
-// The villain's weapon. Toxic, fast, and silent.
-/obj/item/weapon/material/magic/wand/special/the_pale_stick
-	name = "The Pale Stick"
-	desc = "A chillingly smooth wand carved from bleached bone... or maybe just PVC piping. It hums with dark magic and smells faintly of hairspray."
-	icon_state = "moldy_wand"
-	wand_wood   = WAND_WOOD_FIBREGLASS  // Lethally fast cast speed
-	wand_core   = WAND_CORE_FOX         // Completely silent/invisible casts (terrifying for Deadum!)
-	wand_length = WAND_LENGTH_STANDARD
-
-// ----- The Moldy Men Standard Issue -----
-// Pine + Pigeon Feather + Standard: Unreliable, panic-prone, splinters easily.
-/obj/item/weapon/material/magic/wand/crafted/henchman_twig
-	name = "The Henchman's Twig"
-	desc = "A mass-produced, poorly sanded pine stick issued to all Moldy Men. The pigeon feather core makes it highly prone to misfiring whenever the user gets scared."
-	icon_state = "wand4"
-	wand_wood   = WAND_WOOD_PINE
-	wand_core   = WAND_CORE_PIGEON
-	wand_length = WAND_LENGTH_STANDARD
+/mob/living/human/get_run_delay()
+	. = ..()
+	if (frostbitten)
+		. += 1.5
+	if (cough_duration > 0)
+		. += 0.8
+	return .
