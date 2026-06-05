@@ -684,6 +684,13 @@
 		if (F_area && F_area.location == AREA_OUTSIDE && is_wet_weather_icon(F_area.icon_state))
 			get_wet()
 
+	if (map && map.ID == MAP_WIZARD_BOY)
+		var/area/A = get_area(user)
+		if (A && istype(A, /area/caribbean/houses/nml_three))
+			to_chat(user, SPAN_DANGER("There's a charm in the police station preventing magic from being cast."))
+			casting = FALSE
+			return
+
 	// Skill gate
 	if (ishuman(user))
 		var/mob/living/human/H = user
