@@ -67,6 +67,10 @@
 	icon = 'icons/obj/decals_wide.dmi'
 	icon_state = "house_points"
 
+/obj/structure/sign/house_points/attack_hand(mob/user)
+	..()
+	examine(user, 1)
+
 /obj/structure/sign/house_points/examine(mob/user, distance)
 	if (map.ID == MAP_WIZARD_BOY)
 		var/obj/map_metadata/wizard_boy/WB = map

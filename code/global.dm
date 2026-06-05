@@ -98,14 +98,8 @@ var/common_browser_style = {"
 	font-style: normal;
 }
 @font-face {
-	font-family: 'MagicSchoolOne';
-	src: url('MagicSchoolOne.ttf') format('truetype');
-	font-weight: normal;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'HarryP';
-	src: url('harryp.ttf') format('truetype');
+	font-family: 'Wizard';
+	src: url('Wizard.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }

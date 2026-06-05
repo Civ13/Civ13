@@ -91,11 +91,13 @@
 /obj/structure/vehicle/magic/mop/MouseDrop_T(atom/A, mob/living/human/user)
 	if (!istype(A, /mob/living/human))
 		return
-
+	to_world("here")
 	var/mob/living/human/H = A
 	if (H != user)
+		to_world("here1")
 		return
-	if (H.anchored || H.driver || (H in ontop) || ontop.len >= mobcapacity)
+	if (H.anchored || H.driver)
+		to_world("here2")
 		return
 	if (map && map.ID == MAP_WIZARD_BOY && H.client)
 		var/obj/map_metadata/wizard_boy/WB = map

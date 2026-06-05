@@ -24,8 +24,7 @@
 	client << browse_rsc('interface/fonts/Alegreya-Italic.ttf', "Alegreya-Italic.ttf")
 	client << browse_rsc('interface/fonts/Alegreya-BoldItalic.ttf', "Alegreya-BoldItalic.ttf")
 	client << browse_rsc('interface/fonts/Alegreya-Black.ttf', "Alegreya-Black.ttf")
-	client << browse_rsc('interface/fonts/MagicSchoolOne.ttf', "MagicSchoolOne.ttf")
-	client << browse_rsc('interface/fonts/harryp.ttf', "harryp.ttf")
+	client << browse_rsc('interface/fonts/Wizard.ttf', "Wizard.ttf")
 	client << browse_rsc('interface/fonts/Grand9K_Pixel.ttf', "Grand9K_Pixel.ttf")
 	
 	// No longer sending individual CSS/JS as they are inlined for reliability

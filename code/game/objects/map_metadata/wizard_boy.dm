@@ -346,8 +346,8 @@ var/wizard_style = {"
 		font-style: italic;
 	}
 	@font-face {
-		font-family: 'MagicSchoolOne';
-		src: url('MagicSchoolOne.ttf') format('truetype');
+		font-family: 'Wizard';
+		src: url('Wizard.ttf') format('truetype');
 		font-weight: normal;
 		font-style: normal;
 	}
@@ -376,7 +376,7 @@ var/wizard_style = {"
 		margin-top: 0;
 	}
 	.wizard {
-		font-family: "MagicSchoolOne", "Civ13Custom", serif;
+		font-family: "Wizard", "Civ13Custom", serif;
 	}
 	.btn {
 		display: block;

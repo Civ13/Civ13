@@ -441,6 +441,9 @@
 		/obj/item/projectile/magic/painum    = "Painum!",
 	)
 
+// these will attack the npctarget tile
+/mob/living/simple_animal/hostile/wizard/moldy_man/attacker
+
 /mob/living/simple_animal/hostile/wizard/moldy_man/New()
 	..(  )
 	processing_objects |= src
@@ -771,6 +774,7 @@
 	max_number = 5
 
 /obj/effect/spawner/mobspawner/moldymen/inactive
+	create_path = /mob/living/simple_animal/hostile/wizard/moldy_man/attacker
 	activated = FALSE
 
 // ============================================================

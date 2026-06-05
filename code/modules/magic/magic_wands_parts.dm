@@ -150,7 +150,7 @@
 					var/obj/map_metadata/wizard_boy/WB = map
 					if (WB.check_level(user.client.ckey) == "0")
 						WB.change_level(user.client.ckey, "1")
-						WB.save_wand_mob(user)
+						WB.save_wand(user.client.ckey,"[new_wand.wand_wood],[new_wand.wand_core],[new_wand.wand_length]")
 						to_chat(world, "<font size=3 class='wizard'><b>[user.real_name]</b> ([user.key]) has progressed to qualification level 1 (<b>U.N.G.A.</b>) by assembling a wand!</font>")
 			else
 				to_chat(user, "<span class='notice'>The bench needs one wand chassis and one wand core to assemble a wand.</span>")
@@ -224,7 +224,7 @@
 		<body>
 
 		<center>
-		<font size=6 style='font-family: "HarryP"'>Wand Assembly Bench</font><br><br>
+		<font size=6 style='font-family: "Wizard"'>Wand Assembly Bench</font><br><br>
 		</center>
 
 		<table width='100%' style='border-collapse:collapse;'>
