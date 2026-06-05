@@ -935,7 +935,10 @@
 								src.say("Off to the slammer with you!")
 								send_to_jail(target)
 /mob/living/simple_animal/wizard/bobby/proc/send_to_jail(mob/living/target)
-	var/turf/spawnpoint = pick(latejoin_turfs["PoliceTeleporter"])
+	var/list/jail_turfs = latejoin_turfs["PoliceTeleporter"]
+	if (!jail_turfs || !length(jail_turfs))
+		return
+	var/turf/spawnpoint = pick(jail_turfs)
 	if (target && target.client && isturf(spawnpoint))
 		target.forceMove(spawnpoint)
 	if (map && map.ID == MAP_WIZARD_BOY)
