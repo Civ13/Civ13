@@ -156,7 +156,7 @@
 	if (spinning)
 		return
 
-	if (map && map.ID == MAP_WIZARD_BOY && istype(W, /obj/item/stack/money/silvercoin))
+	if (map && map.ID == MAP_WIZARD_BOY && (istype(W, /obj/item/stack/money/goldcoin) || istype(W, /obj/item/stack/money/silvercoin)))
 		var/obj/item/stack/money/silvercoin/D = W
 		var/worth = D.value * D.amount
 		if ((worth > 0) && (bet + worth <= 1000))
