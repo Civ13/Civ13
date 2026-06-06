@@ -492,7 +492,9 @@ var/list/global/floor_cache = list()
 			var/choice = WWinput(user, "Do you want to fill up the irrigation channel with \the [C]?","Irrigation Channel","Yes",list("Yes","No"))
 			if (choice == "Yes")
 				to_chat(user, SPAN_NOTICE("You shove some dirt into the irrigation channel."))
-				ChangeTurf(get_base_turf_by_area(src))
+				irrigation = 0
+				irrigation_overlay = null
+				update_icon()
 				qdel(C)
 				return
 		else if (istype(C, /obj/item/weapon/reagent_containers/glass) || istype(C, /obj/item/weapon/reagent_containers/food/drinks))
