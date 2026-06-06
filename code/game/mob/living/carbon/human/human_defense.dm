@@ -587,7 +587,7 @@ bullet_act
 			return gear
 	return null
 
-/mob/living/human/proc/apply_magic_shield(duration)
+/mob/living/proc/apply_magic_shield(duration)
 	magic_shield++
 	var/image/I = image('icons/obj/magic_overlay.dmi', src, "protection", MOB_LAYER + 1)
 	I.color = "#00ffff"
