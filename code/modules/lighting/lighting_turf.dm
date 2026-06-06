@@ -157,8 +157,6 @@
 		window_coeff = 1.0
 	else
 		window_coeff = 0.5
-	else
-		window_coeff = 0.5
 
 	for (var/datum/lighting_corner/C in corners)
 		C.window_coeff = window_coeff
