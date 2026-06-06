@@ -113,15 +113,15 @@
 
 /// Control & Chaos (Advanced Magic) ///
 
-/datum/spell/freezeum
-	name = "Freezeum"
+/datum/spell/freezum
+	name = "Freezum"
 	description = "Freezes the target in a block of ice."
 	skill_level = 50
 	cast_time = 15
 	learnable = TRUE
 	proj_type = /obj/item/projectile/magic/freezum
 	juice_cost = 35
-	screen_obj = /obj/screen/spell/freezeum
+	screen_obj = /obj/screen/spell/freezum
 	sound_effect = 'sound/effects/spells/freezeum.ogg'
 
 /datum/spell/blinkae

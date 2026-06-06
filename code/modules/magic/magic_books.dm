@@ -367,7 +367,7 @@
 				<h3>2. The Gloom (Class-S Despair Entity)</h3>
 				<p><b>Description:</b> Hooded, floating rags of concentrated depression. They radiate a soul-chilling cold.</p>
 				<p><b>Threat Profile:</b> Direct contact drains body heat and hope. Statistics show that 90% of students who encounter a Gloom decide to drop out and become accountants within thirty seconds.</p>
-				<p><b>Counter-Measures:</b> <b>WARNING:</b> Most standard projectiles (including <i>Deadum!</i> and <i>Freezeum!</i>) pass through a Gloom harmlessly. Do not waste Juice. Maintain a distance of at least five tiles and pray for dawn.</p>
+				<p><b>Counter-Measures:</b> <b>WARNING:</b> Most standard projectiles (including <i>Deadum!</i> and <i>Freezum!</i>) pass through a Gloom harmlessly. Do not waste Juice. Maintain a distance of at least five tiles and pray for dawn.</p>
 
 				<h3>3. Lord Moldywart (The Dark Lord Gary)</h3>
 				<p><b>Description:</b> A masked, ancient menace with a tragic lack of nasal cartilage. Do not call him Gary to his face.</p>

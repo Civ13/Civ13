@@ -363,11 +363,11 @@ var/list/global_huds = list(
 	spell_path = /datum/spell/floatus
 
 /// Top Right Spells (Row 15) ///
-/obj/screen/spell/freezeum
-	name = "Freezeum"
-	icon_state = "freezeum"
+/obj/screen/spell/freezum
+	name = "Freezum"
+	icon_state = "freezum"
 	screen_loc = "15,15"
-	spell_path = /datum/spell/freezeum
+	spell_path = /datum/spell/freezum
 
 /obj/screen/spell/blinkae
 	name = "Blinkae"

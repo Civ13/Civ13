@@ -601,9 +601,14 @@ bullet_act
 			if (!magic_shield)
 				to_chat(src, SPAN_NOTICE("Your shimmering bubble of denial fades away."))
 				
-/mob/living/human/proc/check_shields(var/damage = FALSE, var/atom/damage_source = null, var/mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
+/mob/living/proc/check_shields(var/damage = FALSE, var/atom/damage_source = null, var/mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	if (magic_shield)
 		visible_message("<span class='warning'>The shimmering bubble of denial around [src] blocks [attack_text]!</span>")
+		return TRUE
+	return FALSE
+
+/mob/living/human/check_shields(var/damage = FALSE, var/atom/damage_source = null, var/mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
+	if (..())
 		return TRUE
 	for (var/obj/item/shield in list(l_hand, r_hand, wear_suit))
 		if (!shield) continue
@@ -638,9 +643,6 @@ bullet_act
 	return hit_zone
 
 /mob/living/human/hit_with_weapon(obj/item/I, mob/living/user, var/effective_force, var/hit_zone)
-	if (check_shields(I.force, I, user, hit_zone, "the [I.name]"))
-		return 0
-
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if (!affecting)
 		return //should be prevented by attacked_with_item() but for sanity.

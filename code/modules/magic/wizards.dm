@@ -326,7 +326,7 @@
 	..()
 	custom_emote(1, "waves a dirty mop threateningly!")
 
-/mob/living/simple_animal/wizard/goblin_healer/proactive_magic_check(mob/living/target)
+/mob/living/simple_animal/wizard/goblin_cleaner/proactive_magic_check(mob/living/target)
 	return
 
 // ============================================================
@@ -631,10 +631,10 @@
 	melee_damage_upper = 12
 	cd_blockum_time = 150
 
-	death()
-		var/loot_path = pick(/obj/item/wand_part/spark_plug,/obj/item/wand_part/cassette_tape,/obj/item/wand_part/chewing_gum)
-		new loot_path(src.loc)
-		..()
+mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
+	var/loot_path = pick(/obj/item/wand_part/spark_plug,/obj/item/wand_part/cassette_tape,/obj/item/wand_part/chewing_gum)
+	new loot_path(src.loc)
+	..()
 
 // ============================================================
 // LORD MOLDYWART — Boss NPC
@@ -841,7 +841,7 @@
 	src.say(pick(taunt_lines))
 
 /mob/living/simple_animal/hostile/wizard/moldywart/death(gibbed)
-	new /obj/item/weapon/material/magic/wand/special/the_pale_stick(src.loc)
+	new /obj/item/weapon/material/magic/wand/crafted/the_pale_stick(src.loc)
 	src.visible_message(SPAN_NOTICE("<b>Lord Moldywart</b> lets out a bloodcurdling shriek and collapses."))
 	src.say("I... shall return... again... it is... really getting... old...")
 	playsound(src.loc, 'sound/voice/wizard_boy/moldywart_death.ogg', 75, FALSE)
@@ -1501,7 +1501,7 @@ var/list/flavour_text_normies = list(
 
 /mob/living/simple_animal/hostile/wizard/gloom/bullet_act(var/obj/item/projectile/P)
 	if (istype(P, /obj/item/projectile/magic))
-		if (P.name in list("Dropus!", "Stinkaeum!", "Freezeum!", "Barrelus!", "Painum!", "Deadum!"))
+		if (P.name in list("Dropus!", "Stinkaeum!", "Freezum!", "Barrelus!", "Painum!", "Deadum!"))
 			visible_message(SPAN_NOTICE("The magical bolt passes through \the [src] harmlessly!"))
 			return PROJECTILE_FORCE_MISS
 	return ..()

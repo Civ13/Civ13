@@ -1671,7 +1671,7 @@
 				if (TSFSR)
 					holder2.icon_state = "sov_basic"
 			holder2.overlays.Cut()
-			if (map.ID == MAP_WIZARD_BOY && faction_text == CIVILIAN)
+			if (map && map.ID == MAP_WIZARD_BOY && faction_text == CIVILIAN)
 				switch(nationality)
 					if("R") // loser
 						holder2.overlays += icon(holder2.icon,"wizard_loser")

@@ -1200,7 +1200,7 @@
 
 /mob/living/human/get_run_delay()
 	. = ..()
-	if (frostbitten)
+	if (frostbitten > world.time)
 		. += 1.5
 	if (cough_duration > 0)
 		. += 0.8

@@ -42,10 +42,7 @@
 			var/mob/living/human/H = L
 			to_chat(H, SPAN_DANGER("You feel a freezing chill slow you down!"))
 			H.stats["stamina"][1] = max(0, H.stats["stamina"][1] - 30)
-			H.frostbitten = TRUE
-			spawn(30)
-				if (H)
-					H.frostbitten = FALSE
+			H.frostbitten = max(H.frostbitten, world.time + 30)
 	return TRUE
 
 /obj/item/projectile/magic/proc/deduct_house_points_for_illegal_spell(var/atom/target, var/points, var/spell_name = "")

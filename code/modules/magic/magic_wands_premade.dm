@@ -87,7 +87,7 @@
 
 // ----- Headmaster Tumbledoor's Wand -----
 // The legendary bootleg Elder Wand.
-/obj/item/weapon/material/magic/wand/special/elderly_wand
+/obj/item/weapon/material/magic/wand/crafted/elderly_wand
 	name = "The Elderly Wand"
 	desc = "An incredibly old, knobby walking stick. Legend says Tumbledoor won it from Death himself in a high-stakes game of Go Fish."
 	icon_state = "elderly_wand"
@@ -97,7 +97,7 @@
 
 // ----- Lord Moldywart's Wand -----
 // The villain's weapon. Toxic, fast, and silent.
-/obj/item/weapon/material/magic/wand/special/the_pale_stick
+/obj/item/weapon/material/magic/wand/crafted/the_pale_stick
 	name = "The Pale Stick"
 	desc = "A chillingly smooth wand carved from shrieking shrub wood. It hums with dark magic and smells faintly of hairspray."
 	icon_state = "moldy_wand"

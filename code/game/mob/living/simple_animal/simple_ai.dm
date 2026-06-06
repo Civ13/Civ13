@@ -33,7 +33,7 @@
 		if (stance == HOSTILE_STANCE_IDLE && prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
 			walk_towards(src, locate(/obj/effect/landmark/npctarget), 6)
 			return
-	if (map.ID == MAP_WIZARD_BOY && istype(src, /mob/living/simple_animal/hostile/wizard/moldy_man/attacker))
+	if (map && map.ID == MAP_WIZARD_BOY && istype(src, /mob/living/simple_animal/hostile/wizard/moldy_man/attacker))
 		var/obj/map_metadata/wizard_boy/WB = map
 		if (WB.moldy_invasion)
 			if (stance == HOSTILE_STANCE_IDLE && prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
