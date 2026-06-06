@@ -365,7 +365,7 @@ var/list/global_huds = list(
 /// Top Right Spells (Row 15) ///
 /obj/screen/spell/freezum
 	name = "Freezum"
-	icon_state = "freezum"
+	icon_state = "freezeum"
 	screen_loc = "15,15"
 	spell_path = /datum/spell/freezum
 

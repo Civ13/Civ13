@@ -36,6 +36,8 @@
 				return (stats[lowertext(statname)][1]/100)*mood_modifier*dex_mod
 			if ("crafting")
 				return (stats[lowertext(statname)][1]/100)*mood_modifier*craft_mod
+			if ("magic")
+				return (stats[lowertext(statname)][1]/100)
 			else
 				return (stats[lowertext(statname)][1]/100)*mood_modifier
 	else
