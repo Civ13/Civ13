@@ -928,6 +928,8 @@ var/global/datum/external_relations/external_relations = new()
 ////// ENEMY AIR BOMBING //////
 
 /obj/map_metadata/pepelsibirsk/proc/bombing(var/turf/T, direction, aircraft_name)
+	if (!T)
+		return
 	var/strikenum = rand(1, 10)
 	var/xoffset = 0
 	var/yoffset = 0
