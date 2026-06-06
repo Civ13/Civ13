@@ -610,30 +610,30 @@
 /obj/item/weapon/material/magic/wand/crafted/proc/update_name_and_desc()
 	var/wood_str = ""
 	switch (wand_wood)
-		if (WAND_WOOD_PINE)       wood_str = "distressed pine"
-		if (WAND_WOOD_MDF)        wood_str = "MDF"
+		if (WAND_WOOD_PINE)       wood_str = "pine"
+		if (WAND_WOOD_MDF)        wood_str = "MDF fibreboard"
 		if (WAND_WOOD_BALSA)      wood_str = "balsa"
 		if (WAND_WOOD_SNOOKER)    wood_str = "snooker cue"
 		if (WAND_WOOD_FIBREGLASS) wood_str = "fibreglass"
 		if (WAND_WOOD_BOGOAK)     wood_str = "driftwood"
 		if (WAND_WOOD_CHIP)       wood_str = "stale chip"
-		if (WAND_WOOD_SHRUB)      wood_str = "shrieking shrub root"
+		if (WAND_WOOD_SHRUB)      wood_str = "shrieking shrub"
 		if (WAND_WOOD_TRUNCHEON)  wood_str = "C.A.P. truncheon"
 
 	var/core_str = ""
 	switch (wand_core)
-		if (WAND_CORE_NONE)     core_str = "no"
+		if (WAND_CORE_NONE)     core_str = "no core"
 		if (WAND_CORE_BADGER)   core_str = "badger hair"
 		if (WAND_CORE_PIGEON)   core_str = "pigeon feather"
 		if (WAND_CORE_COPPER)   core_str = "copper wire"
 		if (WAND_CORE_LINT)     core_str = "pocket lint"
-		if (WAND_CORE_ASBESTOS) core_str = "asbestos fibre"
+		if (WAND_CORE_ASBESTOS) core_str = "asbestos"
 		if (WAND_CORE_FOX)      core_str = "fox fur"
 		if (WAND_CORE_GUM)      core_str = "chewing gum"
-		if (WAND_CORE_TAPE)     core_str = "tangled cassette tape"
-		if (WAND_CORE_WOOL)     core_str = "damp sheep wool"
-		if (WAND_CORE_RAT)      core_str = "feral rat tail"
-		if (WAND_CORE_SPARKPLUG) core_str = "rusted spark plug"
+		if (WAND_CORE_TAPE)     core_str = "cassette tape"
+		if (WAND_CORE_WOOL)     core_str = "sheep wool"
+		if (WAND_CORE_RAT)      core_str = "rat tail"
+		if (WAND_CORE_SPARKPLUG) core_str = "spark plug"
 		if (WAND_CORE_GNAT)     core_str = "golden gnat wing"
 		if (WAND_CORE_GLOOM)    core_str = "gloom-weave thread"
 
@@ -645,7 +645,9 @@
 		if (WAND_LENGTH_TELESCOPIC)
 			len_str = telescopic_extended ? "extended telescopic" : "collapsed telescopic"
 
-	name = "[len_str] [wood_str] wand"
+	name = "[len_str] [wood_str] [core_str] wand"
+	if (core_str == "no core")
+		core_str = "no"
 	desc = "A [len_str] wand made of [wood_str] with [core_str] core. It crackles with dubious magical potential."
 
 	var/wood_icon = ""
@@ -656,9 +658,9 @@
 		if (WAND_WOOD_SNOOKER)    wood_icon = "wand_snooker"
 		if (WAND_WOOD_FIBREGLASS) wood_icon = "wand_fibreglass"
 		if (WAND_WOOD_BOGOAK)     wood_icon = "wand_driftwood"
-		if (WAND_WOOD_CHIP)       wood_icon = "wand_mdf"
-		if (WAND_WOOD_SHRUB)      wood_icon = "wand_driftwood"
-		if (WAND_WOOD_TRUNCHEON)  wood_icon = "wand_snooker"
+		if (WAND_WOOD_CHIP)       wood_icon = "wand_chip"
+		if (WAND_WOOD_SHRUB)      wood_icon = "wand_shrub"
+		if (WAND_WOOD_TRUNCHEON)  wood_icon = "wand_truncheon"
 
 	var/len_icon = ""
 	switch (wand_length)
@@ -1164,26 +1166,32 @@
 		return TRUE
 	return ..()
 
-/obj/item/weapon/material/magic/wand/var/peeling_gum = FALSE
+/obj/item/weapon/material/magic/wand/var/peeling_gum = 0
 
 /obj/item/weapon/material/magic/wand/mob_can_unequip(mob/M, slot, disable_warning = FALSE)
 	if (chewing_gum_sticky && ishuman(M))
 		var/mob/living/human/H = M
-		if (peeling_gum)
+		if (peeling_gum == 2)
+			peeling_gum = 0
 			return TRUE
-		peeling_gum = TRUE
+		if (peeling_gum == 1)
+			if (!disable_warning)
+				to_chat(H, SPAN_WARNING("You are already peeling \the [src]!"))
+			return FALSE
+
+		peeling_gum = 1
 		to_chat(H, SPAN_WARNING("You start peeling \the [src] off your fingers... it's incredibly sticky!"))
 		var/old_loc = H.loc
 		spawn(0)
-			if (do_after(H, 30, old_loc))
-				if ((H.get_active_hand() == src || H.get_inactive_hand() == src) && H.loc == old_loc)
+			if (H && src && do_after(H, 30, old_loc))
+				if (H && src && (H.get_active_hand() == src || H.get_inactive_hand() == src) && H.loc == old_loc)
 					to_chat(H, SPAN_NOTICE("You finally peel \the [src] off your sticky fingers."))
-					peeling_gum = TRUE
+					peeling_gum = 2
 					H.unEquip(src, force = TRUE)
 				else
-					peeling_gum = FALSE
+					peeling_gum = 0
 			else
-				peeling_gum = FALSE
+				peeling_gum = 0
 		return FALSE
 	return ..()
 

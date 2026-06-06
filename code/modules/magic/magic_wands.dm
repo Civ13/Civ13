@@ -68,35 +68,35 @@
 			to_chat(user, SPAN_NOTICE("The currently active spell is <b>[active_spell.name]</b>."))
 		else
 			to_chat(user, SPAN_NOTICE("No spell is selected. Use the secondary action to pick one."))
-
-		// juice display
-		var/fullness
-		if (H.getStat("magic") < 100)
-			if (H.juice >= 100)
-				fullness = "full"
-			else if (H.juice >= 75)
-				fullness = "almost full"
-			else if (H.juice >= 50)
-				fullness = "mostly full"
-			else if (H.juice >= 25)
-				fullness = "partially empty"
-			else if (H.juice > 0)
-				fullness = "almost empty"
+		if (!istype(src, /obj/item/weapon/material/magic/wand/crafted))
+			// juice display
+			var/fullness
+			if (H.getStat("magic") < 100)
+				if (H.juice >= 100)
+					fullness = "full"
+				else if (H.juice >= 75)
+					fullness = "almost full"
+				else if (H.juice >= 50)
+					fullness = "mostly full"
+				else if (H.juice >= 25)
+					fullness = "partially empty"
+				else if (H.juice > 0)
+					fullness = "almost empty"
+				else
+					fullness = "empty"
+				to_chat(user, SPAN_NOTICE("The magic within you feels <font color=#9fe6f5>[fullness]!</font>"))
 			else
-				fullness = "empty"
-			to_chat(user, SPAN_NOTICE("The magic within you feels <font color=#9fe6f5>[fullness]!</font>"))
-		else
-			to_chat(user, SPAN_NOTICE("You have <font color=#9fe6f5>[H.juice]</font> out of <font color=#9fe6f5>100 units of magical juice left!</font>"))
+				to_chat(user, SPAN_NOTICE("You have <font color=#9fe6f5>[H.juice]</font> out of <font color=#9fe6f5>100 units of magical juice left!</font>"))
 
-		// list known usable spells
-		var/list/usable = get_usable_spells(user)
-		if (usable.len)
-			var/spell_names = ""
-			for (var/datum/spell/S in usable)
-				spell_names += "[S.name], "
-			to_chat(user, SPAN_NOTICE("Known spells available: [copytext(spell_names, 1, length(spell_names)-1)]"))
-		else
-			to_chat(user, SPAN_NOTICE("You do not know any spells usable with this wand."))
+			// list known usable spells
+			var/list/usable = get_usable_spells(user)
+			if (usable.len)
+				var/spell_names = ""
+				for (var/datum/spell/S in usable)
+					spell_names += "[S.name], "
+				to_chat(user, SPAN_NOTICE("Known spells available: [copytext(spell_names, 1, length(spell_names)-1)]"))
+			else
+				to_chat(user, SPAN_NOTICE("You do not know any spells usable with this wand."))
 	else
 		to_chat(user, SPAN_NOTICE("Eugh, magic disgusts you. Leave it to humans."))
 

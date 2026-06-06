@@ -413,6 +413,20 @@
 	name = "DO NOT USE"
 	icon = 'icons/mob/npcs_wizards.dmi'
 	stop_automated_movement_when_pulled = FALSE
+	var/house_point_value = 0 // points awarded for killing this NPC
+
+/mob/living/simple_animal/hostile/wizard/death(gibbed)
+	if (map && istype(map, /obj/map_metadata/wizard_boy) && house_point_value > 0)
+		var/obj/map_metadata/wizard_boy/WB = map
+		var/mob/living/human/killer = lastattacker
+		if (!killer && lastattacker && ishuman(lastattacker))
+			killer = lastattacker
+		if (killer && ishuman(killer) && killer.client)
+			var/house = WB.check_house(killer.client.ckey)
+			if (house != "Unknown" && house != "LOSER")
+				WB.house_points[house] += house_point_value
+				to_chat(killer, SPAN_NOTICE("Your house gains [house_point_value] points for defeating [name]!"))
+	..()
 
 /mob/living/simple_animal/hostile/wizard/moldy_man
 	name = "Moldy Man"
@@ -433,6 +447,7 @@
 	possession_candidate = FALSE
 	universal_speak = TRUE
 	attacktext = "claws"
+	house_point_value = 10
 	var/spell_cooldown = 0
 	var/cooldown_blockum = 0
 	var/cd_blockum_time = 200 // 20 seconds between blocks to allow for an attack window
@@ -664,6 +679,7 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 	universal_speak = TRUE
 	attacktext = "strikes"
 	meat_amount = 0
+	house_point_value = 250
 
 	// Per-spell cooldowns so he can mix up his attack pattern
 	var/cooldown_painum   = 0
@@ -1009,7 +1025,11 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 					if (M.client && (M in view(7, src)))
 						M.show_chat_overlay(src, "<i>Teleportum Prisonem!</i>", "#dea30d")
 						spawn(15)
-							if (target)
+							if (src && !stat && target && isliving(target))
+								var/mob/living/L = target
+								if (L.magic_shield > 0)
+									visible_message(SPAN_WARNING("The Teleportum Prisonem spell reflects off [L]'s shield!"))
+									return
 								src.say("Off to the slammer with you!")
 								send_to_jail(target)
 /mob/living/simple_animal/wizard/bobby/proc/send_to_jail(mob/living/target)
@@ -1489,6 +1509,7 @@ var/list/flavour_text_normies = list(
 	possession_candidate = FALSE
 	universal_speak = TRUE
 	meat_amount = 0
+	house_point_value = 50
 
 /mob/living/simple_animal/hostile/wizard/gloom/death()
 	new /obj/item/wand_part/gloom_thread(src.loc)

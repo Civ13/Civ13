@@ -30,6 +30,8 @@
 		damage = round(damage * 1.5)
 	if (isliving(target))
 		var/mob/living/L = target
+		if (firer)
+			L.lastattacker = firer
 		L.apply_effects(stun, weaken, paralyze, irradiate, stutter, eyeblur, drowsy, agony, poisonous, blocked)
 		if (backstabber_damage)
 			var/proj_dir = get_dir(starting, target)

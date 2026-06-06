@@ -375,7 +375,7 @@
 /mob/living/human/can_use_hands()
 	if (handcuffed)
 		return FALSE
-	if (buckled && !istype(buckled, /obj/structure/bed/chair)) // buckling does not restrict hands
+	if (buckled && !istype(buckled, /obj/structure/bed/chair) && !istype(buckled, /obj/structure/vehicle/magic/mop)) // buckling does not restrict hands
 		return FALSE
 	return TRUE
 
