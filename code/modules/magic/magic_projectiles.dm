@@ -517,9 +517,9 @@
 	impact_type = null
 
 /obj/item/projectile/magic/blockum/launch(atom/target, mob/user, obj/item/launcher, var/target_zone, var/x_offset = 0, var/y_offset = 0)
-	if (user && ishuman(user))
-		var/mob/living/human/H = user
-		H.apply_magic_shield(40)
+	if (user && isliving(user))
+		var/mob/living/L = user
+		L.apply_magic_shield(50)
 	qdel(src)
 	return TRUE
 

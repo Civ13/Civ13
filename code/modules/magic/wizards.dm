@@ -380,9 +380,11 @@
 	if (world.time > retaliation_cooldown)
 		retaliation_cooldown = world.time + 300
 		src.say("I would advise you not to try that again.")
+		playsound(src.loc, 'sound/voice/wizard_boy/tumbledoor_warning1.ogg', 100, FALSE)
 		return
 	retaliation_cooldown = world.time + 100
 	src.say("LISTEN HERE YOU LITTLE SHIT.")
+	playsound(src.loc, 'sound/voice/wizard_boy/tumbledoor_warning2.ogg', 100, FALSE)
 	playsound(src.loc, 'sound/effects/spells/deadum.ogg', 80, TRUE)
 	visible_message(SPAN_DANGER("<b>Headmaster Tumbledoor</b> raises his wand with terrifying calm!"))
 	spawn(20) // brief dramatic pause before the bolt fires
@@ -430,6 +432,8 @@
 	universal_speak = TRUE
 	attacktext = "claws"
 	var/spell_cooldown = 0
+	var/cooldown_blockum = 0
+	var/cd_blockum_time = 200 // 20 seconds between blocks to allow for an attack window
 	var/list/moldy_spells = list(
 		/obj/item/projectile/magic/floatus,
 		/obj/item/projectile/magic/fire_bolt,
@@ -463,6 +467,23 @@
 			best_dist = d
 			closest = H
 	return closest
+
+/mob/living/simple_animal/hostile/wizard/moldy_man/proc/fire_blockum()
+	if (stat || !src)
+		return
+	for (var/mob/M in player_list)
+		if (M.client && (M in view(7, src)))
+			M.show_chat_overlay(src, "<i>Blockum!</i>", "#dea30d")
+	
+	playsound(src.loc, 'sound/effects/spells/blockum.ogg', 75, FALSE)
+	visible_message("<span style=color:'#dea30d'><b>[src]</b> uses <i>Blockum!</i></span>")
+
+	spawn(5)
+		playsound(src.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
+
+	var/obj/item/projectile/magic/blockum/bolt = new(src.loc)
+	bolt.firer = src
+	bolt.launch(src, src, src, "chest")
 
 /mob/living/simple_animal/hostile/wizard/moldy_man/proc/cast_at(mob/living/target)
 	if (!target || target.stat)
@@ -524,12 +545,19 @@
 /mob/living/simple_animal/hostile/wizard/moldy_man/proc/process()
 	if (stat || !loc)
 		return
-	// Attack nearby human players periodically.
+
+	var/mob/living/target = find_nearest_player()
+	if (!target)
+		return
+
+	if (world.time >= cooldown_blockum && prob(15))
+		fire_blockum()
+		cooldown_blockum = world.time + cd_blockum_time
+		return
+
 	if (world.time >= spell_cooldown)
-		var/mob/living/target = find_nearest_player()
-		if (target)
-			cast_at(target)
-			spell_cooldown = world.time + rand(60, 120) // 6-12 second cooldown between spells
+		cast_at(target)
+		spell_cooldown = world.time + rand(60, 120)
 
 /mob/living/simple_animal/hostile/wizard/moldy_man/AttackTarget()
 	if (!target_mob || !SA_attackable(target_mob))
@@ -541,6 +569,11 @@
 	
 	var/dist = get_dist(src, target_mob)
 	if (dist <= 1)
+		return TRUE
+
+	if (world.time >= cooldown_blockum && prob(20))
+		fire_blockum()
+		cooldown_blockum = world.time + cd_blockum_time
 		return TRUE
 
 	if (world.time >= spell_cooldown)
@@ -619,11 +652,13 @@
 	var/cooldown_painum   = 0
 	var/cooldown_deadum   = 0
 	var/cooldown_explodus = 0
+	var/cooldown_blockum  = 0
 
 	// Thresholds (deciseconds)
 	var/cd_painum_time   = 80  // ~8 sec
 	var/cd_deadum_time   = 300 // ~30 sec
 	var/cd_explodus_time = 200 // ~20 sec
+	var/cd_blockum_time  = 200 // 20 seconds between blocks to allow for an attack window
 
 	var/list/taunt_lines = list(
 		"There is no good and evil. There is only power... and those too weak to seek it. Also, my nose.",
@@ -645,6 +680,7 @@
 	spawn(5)
 		if(src)
 			src.say("I have returned.")
+			playsound(src.loc, 'sound/voice/wizard_boy/moldywart_entrance.ogg', 75, FALSE)
 			visible_message(SPAN_DANGER("<b>The air grows cold. <b>Lord Moldywart</b> has arrived.</b>"))
 
 /mob/living/simple_animal/hostile/wizard/moldywart/Destroy()
@@ -662,6 +698,23 @@
 			best_dist = d
 			closest = H
 	return closest
+
+/mob/living/simple_animal/hostile/wizard/moldywart/proc/fire_blockum()
+	if (stat || !src)
+		return
+	for (var/mob/M in player_list)
+		if (M.client && (M in view(7, src)))
+			M.show_chat_overlay(src, "<i>Blockum!</i>", "#dea30d")
+	
+	playsound(src.loc, 'sound/effects/spells/blockum.ogg', 75, FALSE)
+	visible_message("<span style=color:'#dea30d'><b>[src]</b> uses <i>Blockum!</i></span>")
+
+	spawn(5)
+		playsound(src.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
+
+	var/obj/item/projectile/magic/blockum/bolt = new(src.loc)
+	bolt.firer = src
+	bolt.launch(src, src, src, "chest")
 
 /mob/living/simple_animal/hostile/wizard/moldywart/proc/fire_spell(spell_type, spell_call, sound_file, mob/living/target)
 	if (!target || target.stat || !src || src.stat)
@@ -698,6 +751,11 @@
 
 	var/now = world.time
 
+	if (now >= cooldown_blockum && prob(15))
+		fire_blockum()
+		cooldown_blockum = now + cd_blockum_time
+		return
+
 	// Priority order: Deadum > Explodus > Painum
 	if (now >= cooldown_deadum)
 		fire_spell(/obj/item/projectile/magic/deadum, "Deadum!", 'sound/effects/spells/deadum.ogg', target)
@@ -727,6 +785,12 @@
 		return TRUE
 
 	var/now = world.time
+
+	if (now >= cooldown_blockum && prob(20))
+		fire_blockum()
+		cooldown_blockum = now + cd_blockum_time
+		return TRUE
+
 	// Priority order: Deadum > Explodus > Painum
 	if (now >= cooldown_deadum)
 		fire_spell(/obj/item/projectile/magic/deadum, "Deadum!", 'sound/effects/spells/deadum.ogg', target_mob)
@@ -762,6 +826,7 @@
 /mob/living/simple_animal/hostile/wizard/moldywart/death(gibbed)
 	src.visible_message(SPAN_NOTICE("<b>Lord Moldywart</b> lets out a bloodcurdling shriek and collapses."))
 	src.say("I... shall return... again... it is... really getting... old...")
+	playsound(src.loc, 'sound/voice/wizard_boy/moldywart_death.ogg', 75, FALSE)
 	..(gibbed)
 
 /obj/effect/spawner/mobspawner/moldymen

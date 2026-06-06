@@ -123,7 +123,7 @@
 		if (client && ((speaker in view(7,src)) || speaker == src))
 			show_chat_overlay(speaker, message2)
 
-			if (config.tts_on && ishuman(src) && client.is_preference_enabled(/datum/client_preference/play_chat_tts))
+			if (config.tts_on && ishuman(src) && ishuman(speaker) && client.is_preference_enabled(/datum/client_preference/play_chat_tts))
 				play_tts(message2, speaker)
 
 
