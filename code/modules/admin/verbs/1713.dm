@@ -1147,3 +1147,5 @@ var/tsfsr_forceEnabled = FALSE
 			shower << msg26
 		if (msg27)
 			shower << msg27
+	if (map)
+		map.show_map_report()

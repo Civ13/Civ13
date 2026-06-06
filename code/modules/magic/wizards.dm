@@ -29,6 +29,7 @@
 	universal_speak = TRUE
 	var/image/clothing_colours = null
 	var/response_timer = 0
+	var/spell_cooldown = 0
 
 	var/list/flavour_text = list(
 	"They say the deep slate mines are strictly off-limits to all students because of mortal danger. Which is weird, because we serve detention down there literally every Tuesday.",
@@ -51,7 +52,7 @@
 	"I bought the 'Whippy Switch' wand because it looked cool, but it drained my Juice so fast I passed out face-first into my soup in the Great Hall.",
 	"I keep trying to hold my wand, but some Mintysnek jerk keeps casting Dropus from a balcony and stealing my lunch money.",
 	"Harmonica Ranger corrected my pronunciation of Floatus so harshly I actually felt my maximum health decrease from sheer embarrassment.",
-		"I asked Hagrag what kind of meat was in the Great Hall stew today. He just winked and told me not to count the stray dogs in the village.",
+	"I asked Hagrag what kind of meat was in the Great Hall stew today. He just winked and told me not to count the stray dogs in the village.",
 	"I tried to use Fixae! on my broken glasses, but my wand is so cheap it just glued them permanently to my eyebrows.",
 	"Madame McGronk made the Rubywyrm team practice Mop Ball in a thunderstorm. Half of them got struck by lightning, and she just told them to 'walk it off'.",
 	"A Slatepie student tried to cast Blinkae! to skip the stairs, but he teleported directly into a brick wall. He's been in the hospital wing since Thursday.",
@@ -115,21 +116,28 @@
 /mob/living/simple_animal/wizard/proc/respond_to_attack(mob/living/user)
 	if (stat || !user || !ishuman(user) || user.stat)
 		return
-	if (world.time < response_timer)
-		return
-	response_timer = world.time + 30
-
 	if (behaviour != "hostile")
 		behaviour = "defends"
 	target_mob = user
 	stance = HOSTILE_STANCE_ATTACK
 
-	// Students (base wizard) cast a minor spell occasionally
-	if (prob(40))
+	if (world.time < response_timer)
+		return
+	
+	proactive_magic_check(user)
+
+/mob/living/simple_animal/wizard/proc/proactive_magic_check(mob/living/target)
+	if (stat || !target || target.stat || world.time < spell_cooldown)
+		return
+	
+	// Students fire a minor spell occasionally
+	if (prob(50))
 		var/spell_type = pick(/obj/item/projectile/magic/zappus, /obj/item/projectile/magic/dropus)
 		var/spell_name = (spell_type == /obj/item/projectile/magic/dropus) ? "Dropus!" : "Zappus!"
 		var/sound_file = (spell_type == /obj/item/projectile/magic/dropus) ? 'sound/effects/spells/dropus.ogg' : 'sound/effects/spells/zappus.ogg'
-		fire_magic_at(user, spell_type, spell_name, sound_file)
+		fire_magic_at(target, spell_type, spell_name, sound_file)
+		spell_cooldown = world.time + rand(40, 80)
+		response_timer = world.time + 20
 
 /mob/living/simple_animal/wizard/proc/fire_magic_at(mob/living/target, spell_type, spell_name, sound_file)
 	if (!target || target.stat || !src || src.stat)
@@ -223,11 +231,11 @@
 /mob/living/simple_animal/wizard/goblin_healer/respond_to_attack(mob/living/user)
 	if (stat || !user || !ishuman(user) || user.stat)
 		return
-	if (behaviour != "hostile")
-		behaviour = "defends"
-	target_mob = user
-	stance = HOSTILE_STANCE_ATTACK
+	..()
 	custom_emote(1, "snarls at [user]!")
+
+/mob/living/simple_animal/wizard/goblin_healer/proactive_magic_check(mob/living/target)
+	return
 
 /mob/living/simple_animal/wizard/goblin_cleaner
 	name = "Cleaner Goblin"
@@ -315,11 +323,11 @@
 /mob/living/simple_animal/wizard/goblin_cleaner/respond_to_attack(mob/living/user)
 	if (stat || !user || !ishuman(user) || user.stat)
 		return
-	if (behaviour != "hostile")
-		behaviour = "defends"
-	target_mob = user
-	stance = HOSTILE_STANCE_ATTACK
+	..()
 	custom_emote(1, "waves a dirty mop threateningly!")
+
+/mob/living/simple_animal/wizard/goblin_cleaner/proactive_magic_check(mob/living/target)
+	return
 
 // ============================================================
 // HEADMASTER TUMBLEDOOR
@@ -373,32 +381,28 @@
 	src.say(pick(tumbledoor_lines))
 
 /mob/living/simple_animal/wizard/tumbledoor/respond_to_attack(mob/living/user)
-	if (world.time < response_timer)
-		return
-	response_timer = world.time + 20
 	// Tumbledoor does not appreciate being struck.
 	if (world.time > retaliation_cooldown)
 		retaliation_cooldown = world.time + 300
 		src.say("I would advise you not to try that again.")
+		playsound(src.loc, 'sound/voice/wizard_boy/tumbledoor_warning1.ogg', 100, FALSE)
+		response_timer = world.time + 20
 		return
+	..()
+
+/mob/living/simple_animal/wizard/tumbledoor/proactive_magic_check(mob/living/target)
+	if (stat || !target || target.stat || world.time < spell_cooldown)
+		return
+	
 	retaliation_cooldown = world.time + 100
 	src.say("LISTEN HERE YOU LITTLE SHIT.")
+	playsound(src.loc, 'sound/voice/wizard_boy/tumbledoor_warning2.ogg', 100, FALSE)
 	playsound(src.loc, 'sound/effects/spells/deadum.ogg', 80, TRUE)
 	visible_message(SPAN_DANGER("<b>Headmaster Tumbledoor</b> raises his wand with terrifying calm!"))
-	spawn(20) // brief dramatic pause before the bolt fires
-		if (src && user && !user.stat)
-			for (var/mob/M in player_list)
-				if (M.client && (M in view(7, src)))
-					M.show_chat_overlay(src, "<i>Floatus!</i>", "#dea30d")
-			playsound(src.loc, 'sound/effects/spells/floatus.ogg', 75, FALSE)
-			visible_message("<span style=color:'#dea30d'><b>Headmaster Tumbledoor</b> says, \"<i>Floatus!</i>\"</span>")
-			spawn(5)
-				playsound(src.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
-			var/obj/item/projectile/magic/floatus/bolt = new(src.loc)
-			bolt.firer = src
-			bolt.firer_original_dir = src.dir
-			bolt.def_zone = "chest"
-			bolt.launch(user, src, src, "chest")
+	spawn(20)
+		if (src && target && !target.stat)
+			fire_magic_at(target, /obj/item/projectile/magic/floatus, "Floatus!", 'sound/effects/spells/floatus.ogg')
+	spell_cooldown = world.time + 120
 
 // ============================================================
 // MOLDY MEN — Moldywart's Followers
@@ -430,6 +434,8 @@
 	universal_speak = TRUE
 	attacktext = "claws"
 	var/spell_cooldown = 0
+	var/cooldown_blockum = 0
+	var/cd_blockum_time = 200 // 20 seconds between blocks to allow for an attack window
 	var/list/moldy_spells = list(
 		/obj/item/projectile/magic/floatus,
 		/obj/item/projectile/magic/fire_bolt,
@@ -452,6 +458,14 @@
 	processing_objects -= src
 	return ..(  )
 
+
+/mob/living/simple_animal/hostile/wizard/moldy_man/death()
+	var/obj/item/stack/money/silvercoin/SC = new /obj/item/stack/money/silvercoin(src.loc)
+	SC.amount = rand(28,38)
+	if (prob(15))
+		new /obj/item/weapon/material/magic/wand/crafted/henchman_twig(src.loc)
+	..()
+
 /mob/living/simple_animal/hostile/wizard/moldy_man/proc/find_nearest_player()
 	var/mob/living/closest = null
 	var/best_dist = 10 // only attack within 10 tiles
@@ -463,6 +477,23 @@
 			best_dist = d
 			closest = H
 	return closest
+
+/mob/living/simple_animal/hostile/wizard/moldy_man/proc/fire_blockum()
+	if (stat || !src)
+		return
+	for (var/mob/M in player_list)
+		if (M.client && (M in view(7, src)))
+			M.show_chat_overlay(src, "<i>Blockum!</i>", "#dea30d")
+	
+	playsound(src.loc, 'sound/effects/spells/blockum.ogg', 75, FALSE)
+	visible_message("<span style=color:'#dea30d'><b>[src]</b> uses <i>Blockum!</i></span>")
+
+	spawn(5)
+		playsound(src.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
+
+	var/obj/item/projectile/magic/blockum/bolt = new(src.loc)
+	bolt.firer = src
+	bolt.launch(src, src, src, "chest")
 
 /mob/living/simple_animal/hostile/wizard/moldy_man/proc/cast_at(mob/living/target)
 	if (!target || target.stat)
@@ -503,6 +534,7 @@
 	if (!(target_mob in view(aggro_vision_range, src)))
 		LostTarget()
 		return FALSE
+	proactive_magic_check(target_mob)
 	MoveToTarget()
 	return TRUE
 
@@ -524,12 +556,19 @@
 /mob/living/simple_animal/hostile/wizard/moldy_man/proc/process()
 	if (stat || !loc)
 		return
-	// Attack nearby human players periodically.
+
+	var/mob/living/target = find_nearest_player()
+	if (!target)
+		return
+
+	if (world.time >= cooldown_blockum && prob(15))
+		fire_blockum()
+		cooldown_blockum = world.time + cd_blockum_time
+		return
+
 	if (world.time >= spell_cooldown)
-		var/mob/living/target = find_nearest_player()
-		if (target)
-			cast_at(target)
-			spell_cooldown = world.time + rand(60, 120) // 6-12 second cooldown between spells
+		cast_at(target)
+		spell_cooldown = world.time + rand(60, 120)
 
 /mob/living/simple_animal/hostile/wizard/moldy_man/AttackTarget()
 	if (!target_mob || !SA_attackable(target_mob))
@@ -541,6 +580,11 @@
 	
 	var/dist = get_dist(src, target_mob)
 	if (dist <= 1)
+		return TRUE
+
+	if (world.time >= cooldown_blockum && prob(20))
+		fire_blockum()
+		cooldown_blockum = world.time + cd_blockum_time
 		return TRUE
 
 	if (world.time >= spell_cooldown)
@@ -585,6 +629,12 @@
 	health = 150
 	melee_damage_lower = 6
 	melee_damage_upper = 12
+	cd_blockum_time = 150
+
+mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
+	var/loot_path = pick(/obj/item/wand_part/spark_plug,/obj/item/wand_part/cassette_tape,/obj/item/wand_part/chewing_gum)
+	new loot_path(src.loc)
+	..()
 
 // ============================================================
 // LORD MOLDYWART — Boss NPC
@@ -619,11 +669,13 @@
 	var/cooldown_painum   = 0
 	var/cooldown_deadum   = 0
 	var/cooldown_explodus = 0
+	var/cooldown_blockum  = 0
 
 	// Thresholds (deciseconds)
 	var/cd_painum_time   = 80  // ~8 sec
 	var/cd_deadum_time   = 300 // ~30 sec
 	var/cd_explodus_time = 200 // ~20 sec
+	var/cd_blockum_time  = 200 // 20 seconds between blocks to allow for an attack window
 
 	var/list/taunt_lines = list(
 		"There is no good and evil. There is only power... and those too weak to seek it. Also, my nose.",
@@ -645,6 +697,7 @@
 	spawn(5)
 		if(src)
 			src.say("I have returned.")
+			playsound(src.loc, 'sound/voice/wizard_boy/moldywart_entrance.ogg', 75, FALSE)
 			visible_message(SPAN_DANGER("<b>The air grows cold. <b>Lord Moldywart</b> has arrived.</b>"))
 
 /mob/living/simple_animal/hostile/wizard/moldywart/Destroy()
@@ -662,6 +715,23 @@
 			best_dist = d
 			closest = H
 	return closest
+
+/mob/living/simple_animal/hostile/wizard/moldywart/proc/fire_blockum()
+	if (stat || !src)
+		return
+	for (var/mob/M in player_list)
+		if (M.client && (M in view(7, src)))
+			M.show_chat_overlay(src, "<i>Blockum!</i>", "#dea30d")
+	
+	playsound(src.loc, 'sound/effects/spells/blockum.ogg', 75, FALSE)
+	visible_message("<span style=color:'#dea30d'><b>[src]</b> uses <i>Blockum!</i></span>")
+
+	spawn(5)
+		playsound(src.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
+
+	var/obj/item/projectile/magic/blockum/bolt = new(src.loc)
+	bolt.firer = src
+	bolt.launch(src, src, src, "chest")
 
 /mob/living/simple_animal/hostile/wizard/moldywart/proc/fire_spell(spell_type, spell_call, sound_file, mob/living/target)
 	if (!target || target.stat || !src || src.stat)
@@ -698,6 +768,11 @@
 
 	var/now = world.time
 
+	if (now >= cooldown_blockum && prob(15))
+		fire_blockum()
+		cooldown_blockum = now + cd_blockum_time
+		return
+
 	// Priority order: Deadum > Explodus > Painum
 	if (now >= cooldown_deadum)
 		fire_spell(/obj/item/projectile/magic/deadum, "Deadum!", 'sound/effects/spells/deadum.ogg', target)
@@ -727,6 +802,12 @@
 		return TRUE
 
 	var/now = world.time
+
+	if (now >= cooldown_blockum && prob(20))
+		fire_blockum()
+		cooldown_blockum = now + cd_blockum_time
+		return TRUE
+
 	// Priority order: Deadum > Explodus > Painum
 	if (now >= cooldown_deadum)
 		fire_spell(/obj/item/projectile/magic/deadum, "Deadum!", 'sound/effects/spells/deadum.ogg', target_mob)
@@ -760,8 +841,10 @@
 	src.say(pick(taunt_lines))
 
 /mob/living/simple_animal/hostile/wizard/moldywart/death(gibbed)
+	new /obj/item/weapon/material/magic/wand/crafted/the_pale_stick(src.loc)
 	src.visible_message(SPAN_NOTICE("<b>Lord Moldywart</b> lets out a bloodcurdling shriek and collapses."))
 	src.say("I... shall return... again... it is... really getting... old...")
+	playsound(src.loc, 'sound/voice/wizard_boy/moldywart_death.ogg', 75, FALSE)
 	..(gibbed)
 
 /obj/effect/spawner/mobspawner/moldymen
@@ -769,7 +852,21 @@
 	create_path = /mob/living/simple_animal/hostile/wizard/moldy_man
 	timer = 600
 	icon_state = "npc"
-	max_number = 5
+	max_number = 3
+
+/obj/effect/spawner/mobspawner/moldymen_lt
+	name = "moldymen lieutenant spawner"
+	create_path = /mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant
+	timer = 600
+	icon_state = "npc"
+	max_number = 1
+
+/obj/effect/spawner/mobspawner/moldywart
+	name = "moldywart"
+	create_path = /mob/living/simple_animal/hostile/wizard/moldywart
+	timer = 12000
+	icon_state = "npc"
+	max_number = 1
 
 /obj/effect/spawner/mobspawner/moldymen/inactive
 	create_path = /mob/living/simple_animal/hostile/wizard/moldy_man/attacker
@@ -792,7 +889,6 @@
 	faction = "Ministry"
 	wander = TRUE
 	stop_automated_movement = FALSE
-	var/spell_cooldown = 0
 	var/list/flavour_text_bobbies = list(
 		"Oi! You got a license for that glowing stick, mate?",
 		"Put the wand down and step away from the transformed barrel, sonny.",
@@ -830,6 +926,10 @@
 /mob/living/simple_animal/wizard/bobby/Destroy()
 	processing_objects -= src
 	return ..()
+/mob/living/simple_animal/wizard/bobby/death()
+	if (prob(25))
+		new /obj/item/wand_part/cap_truncheon(src.loc)
+	..()
 
 /mob/living/simple_animal/wizard/bobby/attack_hand(mob/user)
 	src.say(pick(flavour_text_bobbies))
@@ -852,15 +952,9 @@
 	
 	if (behaviour == "hostile")
 		if (!target_mob || target_mob.stat == DEAD || get_dist(src, target_mob) > 10)
-			target_mob = null
-			behaviour = "defends"
-			stance = HOSTILE_STANCE_IDLE
-			walk(src, 0)
+			LoseTarget()
 			return
-
-		if (world.time >= spell_cooldown)
-			cast_spell_at(target_mob)
-			spell_cooldown = world.time + rand(40, 80) // 4-8 second cooldown
+		proactive_magic_check(target_mob)
 
 /mob/living/simple_animal/wizard/bobby/AttackTarget()
 	if (!target_mob || !SA_attackable(target_mob))
@@ -874,9 +968,7 @@
 	if (dist <= 1)
 		return TRUE
 
-	if (world.time >= spell_cooldown)
-		cast_spell_at(target_mob)
-		spell_cooldown = world.time + rand(40, 80)
+	proactive_magic_check(target_mob)
 
 	MoveToTarget()
 	return TRUE
@@ -896,8 +988,8 @@
 	else
 		walk(src, 0)
 
-/mob/living/simple_animal/wizard/bobby/proc/cast_spell_at(mob/living/target)
-	if (!target || target.stat)
+/mob/living/simple_animal/wizard/bobby/proactive_magic_check(mob/living/target)
+	if (stat || !target || target.stat || world.time < spell_cooldown)
 		return
 	
 	var/spell_type = pick(/obj/item/projectile/magic/freezum, /obj/item/projectile/magic/dropus)
@@ -906,24 +998,10 @@
 	if (spell_type == /obj/item/projectile/magic/dropus)
 		spell_name = "Dropus!"
 		sound_file = 'sound/effects/spells/dropus.ogg'
-	
-	for (var/mob/M in player_list)
-		if (M.client && (M in view(7, src)))
-			M.show_chat_overlay(src, "<i>[spell_name]</i>", "#dea30d")
-			
-	if (sound_file)
-		playsound(src.loc, sound_file, 75, FALSE)
-		
-	visible_message("<span style=color:'#dea30d'><b>[src]</b> uses <i>[spell_name]</i></span>")
-	
-	spawn(5)
-		playsound(src.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
-		
-	var/obj/item/projectile/magic/bolt = new spell_type(src.loc)
-	bolt.firer = src
-	bolt.firer_original_dir = src.dir
-	bolt.def_zone = "chest"
-	bolt.launch(target, src, src, "chest")
+
+	fire_magic_at(target, spell_type, spell_name, sound_file)
+	spell_cooldown = world.time + rand(40, 80)
+
 	if (spell_type == /obj/item/projectile/magic/dropus)
 		spawn(30)
 			if (target && (target in range(6,src)))
@@ -994,19 +1072,20 @@
 /mob/living/simple_animal/wizard/professor/respond_to_attack(mob/living/user)
 	if (stat || !user || !ishuman(user) || user.stat)
 		return
-	if (world.time < response_timer)
-		return
-	response_timer = world.time + 30
-
-	if (behaviour != "hostile")
-		behaviour = "defends"
-	target_mob = user
-	stance = HOSTILE_STANCE_ATTACK
-
-	if (prob(60))
-		fire_magic_at(user, /obj/item/projectile/magic/freezum, "Freezum!", 'sound/effects/spells/freezeum.ogg')
-	else
+	..()
+	if (prob(30))
 		src.say(pick("Detention for you!", "Right, that's a fifty-point deduction!", "I am far too busy for this nonsense!"))
+
+/mob/living/simple_animal/wizard/professor/proactive_magic_check(mob/living/target)
+	if (stat || !target || target.stat || world.time < spell_cooldown)
+		return
+	
+	if (prob(60))
+		fire_magic_at(target, /obj/item/projectile/magic/freezum, "Freezum!", 'sound/effects/spells/freezeum.ogg')
+		spell_cooldown = world.time + rand(50, 100)
+	else if (prob(30))
+		src.say(pick("Detention for you!", "Right, that's a fifty-point deduction!", "I am far too busy for this nonsense!"))
+		spell_cooldown = world.time + 50
 
 // ============================================================
 // NORMIE FARMERS
@@ -1051,11 +1130,12 @@ var/list/flavour_text_normies = list(
 /mob/living/simple_animal/wizard/normie_farmer/respond_to_attack(mob/living/user)
 	if (stat || !user || !ishuman(user) || user.stat)
 		return
-	if (behaviour != "hostile")
-		behaviour = "defends"
-	target_mob = user
-	stance = HOSTILE_STANCE_ATTACK
-	src.say(pick("Get off my land!", "I've had enough of you wizards!", "That's it, you're getting a thrashing!"))
+	..()
+	if (prob(50))
+		src.say(pick("Get off my land!", "I've had enough of you wizards!", "That's it, you're getting a thrashing!"))
+
+/mob/living/simple_animal/wizard/normie_farmer/proactive_magic_check(mob/living/target)
+	return
 
 // ============================================================
 // PROFESSOR SNIP
@@ -1117,41 +1197,27 @@ var/list/flavour_text_normies = list(
 	src.say(pick(snip_lines))
 
 /mob/living/simple_animal/wizard/professor_snip/respond_to_attack(mob/living/user)
-	if (world.time < response_timer)
-		return
-	response_timer = world.time + 20
-
 	if (world.time > retaliation_cooldown)
 		retaliation_cooldown = world.time + 300
 		src.say(pick("Detention is too good for you.", "I suggest you put that away before I find a use for your spleen in a potion.", "Do not test my patience."))
+		response_timer = world.time + 20
 		return
+	..()
 
+/mob/living/simple_animal/wizard/professor_snip/proactive_magic_check(mob/living/target)
+	if (stat || !target || target.stat || world.time < spell_cooldown)
+		return
+	
 	retaliation_cooldown = world.time + 100
 	src.say(pick("I have brewed things more dangerous than you.", "Right. Ten points from your life expectancy."))
-
 	visible_message(SPAN_DANGER("<b>Professor Snip</b> flickers his wand with surgical precision!"))
-
-	spawn(15) // Brief dramatic pause before the bolt fires
-		if (src && user && !user.stat)
+	spawn(15)
+		if (src && target && !target.stat)
 			var/spell_type = pick(/obj/item/projectile/magic/painum, /obj/item/projectile/magic/freezum)
-			var/spell_name = "Painum!"
-			var/sound_file = 'sound/effects/spells/painum.ogg'
-			if (spell_type == /obj/item/projectile/magic/freezum)
-				spell_name = "Freezum!"
-				sound_file = 'sound/effects/spells/freezeum.ogg'
-
-			for (var/mob/M in player_list)
-				if (M.client && (M in view(7, src)))
-					M.show_chat_overlay(src, "<i>[spell_name]</i>", "#dea30d")
-			playsound(src.loc, sound_file, 75, FALSE)
-			visible_message("<span style=color:'#dea30d'><b>Professor Snip</b> says, \"<i>[spell_name]</i>\"</span>")
-			spawn(5)
-				playsound(src.loc, pick('sound/weapons/magic/spell1.ogg','sound/weapons/magic/spell2.ogg','sound/weapons/magic/spell3.ogg','sound/weapons/magic/spell4.ogg'), 50, TRUE)
-			var/obj/item/projectile/magic/bolt = new spell_type(src.loc)
-			bolt.firer = src
-			bolt.firer_original_dir = src.dir
-			bolt.def_zone = "chest"
-			bolt.launch(user, src, src, "chest")
+			var/spell_name = (spell_type == /obj/item/projectile/magic/freezum) ? "Freezum!" : "Painum!"
+			var/sound_file = (spell_type == /obj/item/projectile/magic/freezum) ? 'sound/effects/spells/freezeum.ogg' : 'sound/effects/spells/painum.ogg'
+			fire_magic_at(target, spell_type, spell_name, sound_file)
+	spell_cooldown = world.time + 100
 
 // Hand Professor Snip a container with ≥10u of darkness_powder to advance U.N.G.A. → C.O.A.L.
 /mob/living/simple_animal/wizard/professor_snip/attackby(var/obj/item/O, var/mob/user)
@@ -1399,3 +1465,68 @@ var/list/flavour_text_normies = list(
 	timer = 600
 	icon_state = "npc"
 	activated = FALSE
+
+// ============================================================
+// THE GLOOM — Bootleg Dementors
+// Floating entities of pure despair that drain heat and hope.
+// ============================================================
+
+/mob/living/simple_animal/hostile/wizard/gloom
+	name = "Gloom"
+	desc = "A terrifying, hooded figure cloaked in tattered black rags. A soul-chilling cold radiates from its presence, and all hope seems to wither near it."
+	icon = 'icons/mob/monsters_wizards.dmi'
+	icon_state = "gloom"
+	icon_living = "gloom"
+	icon_dead = "gloom"
+	faction = "Moldywart"
+	maxHealth = 250
+	health = 250
+	melee_damage_lower = 15
+	melee_damage_upper = 25
+	attacktext = "chills"
+	speed = 1
+	move_to_delay = 5
+	possession_candidate = FALSE
+	universal_speak = TRUE
+	meat_amount = 0
+
+/mob/living/simple_animal/hostile/wizard/gloom/death()
+	new /obj/item/wand_part/gloom_thread(src.loc)
+	visible_message(SPAN_DANGER("The [name] lets out a painful hiss as it fades away!"))
+	playsound(src.loc, 'sound/animals/monsters/hiss2.ogg', 100, TRUE)
+	spawn(10)
+		if (src)
+			qdel(src)
+	..()
+
+/mob/living/simple_animal/hostile/wizard/gloom/bullet_act(var/obj/item/projectile/P)
+	if (istype(P, /obj/item/projectile/magic))
+		if (P.name in list("Dropus!", "Stinkaeum!", "Freezum!", "Barrelus!", "Painum!", "Deadum!"))
+			visible_message(SPAN_NOTICE("The magical bolt passes through \the [src] harmlessly!"))
+			return PROJECTILE_FORCE_MISS
+	return ..()
+
+/mob/living/simple_animal/hostile/wizard/gloom/AttackTarget()
+	. = ..()
+	if (. && ishuman(target_mob))
+		var/mob/living/human/H = target_mob
+		
+		// Despair effect: significantly lower mood
+		H.mood = max(10, H.mood-10)
+		
+		// Freeze damage: applied as BURN damage to simulate frostbite
+		H.apply_damage(rand(10, 15), BURN)
+		
+		// Lowering body temperature
+		H.bodytemperature = max(0, H.bodytemperature - 10)
+		
+		to_chat(H, SPAN_DANGER("You feel a soul-chilling dread as \the [src] drains your very warmth and hope!"))
+		if (prob(50))
+			playsound(H.loc, 'sound/animals/monsters/shriek1.ogg', 100, TRUE)
+
+/obj/effect/spawner/mobspawner/gloom
+	name = "gloom spawner"
+	create_path = /mob/living/simple_animal/hostile/wizard/gloom
+	timer = 1800
+	icon_state = "npc"
+	max_number = 1

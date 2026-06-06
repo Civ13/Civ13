@@ -151,7 +151,9 @@
 
 /turf/proc/calculate_window_coeff()
 	var/area/src_area = loc
-	if (src_area && src_area.location == AREA_OUTSIDE)
+	if (src_area && istype(src_area, /area/caribbean/dark))
+		window_coeff = 0.5
+	else if (src_area && src_area.location == AREA_OUTSIDE)
 		window_coeff = 1.0
 	else
 		window_coeff = 0.5

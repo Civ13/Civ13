@@ -14,13 +14,37 @@
 	light_range = 3
 	tracer_type = /obj/effect/projectile/tracer/magic/yellow
 	impact_type = /obj/effect/projectile/impact/magic
+	var/overdrive = FALSE
+	var/backstabber_damage = FALSE
+	var/frostbite_effect = FALSE
+	var/shrub_shriek_effect = FALSE
+
+/obj/item/projectile/magic/process()
+	..()
+	if (overdrive && !isDeleted(src))
+		..()
 
 /obj/item/projectile/magic/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (blocked >= 2)		return FALSE//Full block
+	if (shrub_shriek_effect)
+		damage = round(damage * 1.5)
 	if (isliving(target))
 		var/mob/living/L = target
 		L.apply_effects(stun, weaken, paralyze, irradiate, stutter, eyeblur, drowsy, agony, poisonous, blocked)
+		if (backstabber_damage)
+			var/proj_dir = get_dir(starting, target)
+			if (L.dir == proj_dir)
+				L.apply_damage(15, BRUTE, def_zone || "chest")
+				to_chat(L, SPAN_DANGER("You were hit from behind for bonus damage!"))
+				if (firer)
+					to_chat(firer, SPAN_NOTICE("Backstab! +15 bonus damage!"))
+		if (frostbite_effect && ishuman(L))
+			var/mob/living/human/H = L
+			to_chat(H, SPAN_DANGER("You feel a freezing chill slow you down!"))
+			H.stats["stamina"][1] = max(0, H.stats["stamina"][1] - 30)
+			H.frostbitten = max(H.frostbitten, world.time + 30)
 	return TRUE
+
 /obj/item/projectile/magic/proc/deduct_house_points_for_illegal_spell(var/atom/target, var/points, var/spell_name = "")
 	if (!firer || !ishuman(firer) || !firer.client) return
 	if (!target) return
@@ -490,9 +514,9 @@
 	impact_type = null
 
 /obj/item/projectile/magic/blockum/launch(atom/target, mob/user, obj/item/launcher, var/target_zone, var/x_offset = 0, var/y_offset = 0)
-	if (user && ishuman(user))
-		var/mob/living/human/H = user
-		H.apply_magic_shield(40)
+	if (user && isliving(user))
+		var/mob/living/L = user
+		L.apply_magic_shield(50)
 	qdel(src)
 	return TRUE
 
@@ -524,18 +548,26 @@
 	light_color = "#6800a0"
 	tracer_type = /obj/effect/projectile/tracer/magic/purple
 	impact_type = /obj/effect/projectile/impact/magic/kinetic
+
 /obj/item/projectile/magic/dropus/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
 			if (L.l_hand)
-				// Disarm left hand
-				L.visible_message("<span class='danger'>[target] drops \the [L.l_hand]!</span>")
-				L.drop_l_hand()
+				// Chewing Gum / Truncheon: wand is glued/locked to hand — Dropus cannot dislodge it
+				var/obj/item/weapon/material/magic/wand/WL = L.l_hand
+				if (istype(WL) && (WL.chewing_gum_sticky || WL.truncheon_grip))
+					to_chat(L, SPAN_NOTICE("The Dropus! spell tries to wrench \the [L.l_hand] free — but it won't budge!"))
+				else
+					L.visible_message("<span class='danger'>[target] drops \the [L.l_hand]!</span>")
+					L.drop_l_hand()
 			if (L.r_hand)
-				// Disarm right hand
-				L.visible_message("<span class='danger'>[target] drops \the [L.r_hand]!</span>")
-				L.drop_r_hand()
+				var/obj/item/weapon/material/magic/wand/WR = L.r_hand
+				if (istype(WR) && (WR.chewing_gum_sticky || WR.truncheon_grip))
+					to_chat(L, SPAN_NOTICE("The Dropus! spell tries to wrench \the [L.r_hand] free — but it won't budge!"))
+				else
+					L.visible_message("<span class='danger'>[target] drops \the [L.r_hand]!</span>")
+					L.drop_r_hand()
 
 /obj/item/projectile/magic/floatus
 	name = "floatus"

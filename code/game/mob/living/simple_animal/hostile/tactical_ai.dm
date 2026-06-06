@@ -234,51 +234,50 @@
 	var/atom/T = null
 	if(!istype(src, /mob/living/simple_animal/hostile/human))
 		stop_automated_movement = FALSE
-	var/list/the_targets = ListTargets(idle_vision_range)
+	var/vision_range = (stance == HOSTILE_STANCE_IDLE) ? (idle_vision_range || 7) : (aggro_vision_range || 9)
+	var/list/the_targets = ListTargets(vision_range)
+
 	if (behaviour == "hostile")
 		stance = HOSTILE_STANCE_ATTACK
-		for(var/mob/living/ML in the_targets)
-			if (ishuman(ML))
-				var/mob/living/human/H = ML
-				if (H.faction_text == src.faction)
-					the_targets -= ML
-			if (istype(ML, /mob/living/simple_animal/hostile/human) && ML.faction == src.faction)
-				the_targets -= ML
-
 	for (var/atom/A in the_targets)
 		if (A == src)
 			continue
 		if (isliving(A))
 			var/mob/living/L = A
+			if (L.stat == DEAD)
+				continue
+
+			var/target_faction = null
 			if (istype(L, /mob/living/human))
 				var/mob/living/human/RH = L
-				if (RH.faction_text == faction)
+				target_faction = RH.faction_text
+			else if (istype(L, /mob/living/simple_animal))
+				var/mob/living/simple_animal/SA = L
+				target_faction = SA.faction
+
+			if (!target_faction) continue
+
+			if (target_faction == faction)
+				continue
+
+			// Special initiation rule: School and Ministry only attack Moldywart faction on sight.
+			if (faction == "School" || faction == "Ministry")
+				if (target_faction != "Moldywart")
 					continue
-				else if (RH in friends)
-					continue
-				else if (RH.wolfman && istype(src, /mob/living/simple_animal/hostile/wolf))
-					continue
-				else if (RH.lizard && istype(src, /mob/living/simple_animal/hostile/alligator))
-					continue
-				else
-					if (RH.stat != DEAD)
-						stance = HOSTILE_STANCE_ATTACK
-						T = RH
-						break
+			
+			if (ishuman(L))
+				var/mob/living/human/RH = L
+				if (RH in friends) continue
+				if (RH.wolfman && istype(src, /mob/living/simple_animal/hostile/wolf)) continue
+				if (RH.lizard && istype(src, /mob/living/simple_animal/hostile/alligator)) continue
 			else
-				if (istype(L, /mob/living/simple_animal/civilian) && istype(src, /mob/living/simple_animal/hostile/human/redmenian_ng))
-					continue
-				if (L.faction == faction)
-					continue
-				else if (L in friends)
-					continue
-				else if (map.ID == MAP_VOYAGE)
-					continue
-				else
-					if (L.stat != DEAD)
-						stance = HOSTILE_STANCE_ATTACK
-						T = L
-						break
+				if (istype(L, /mob/living/simple_animal/civilian) && istype(src, /mob/living/simple_animal/hostile/human/redmenian_ng)) continue
+				if (L in friends) continue
+				if (map.ID == MAP_VOYAGE) continue
+
+			stance = HOSTILE_STANCE_ATTACK
+			T = L
+			break
 	if (T)
 		if (!istype(src, /mob/living/simple_animal/hostile/human))
 			custom_emote(1, "stares alertly at [T].")

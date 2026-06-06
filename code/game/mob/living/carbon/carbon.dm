@@ -113,6 +113,31 @@
 	return shock_damage
 
 /mob/living/human/swap_hand()
+	var/obj/item/weapon/material/magic/wand/W = get_active_hand()
+	if (!istype(W))
+		W = get_inactive_hand()
+	if (istype(W) && W.chewing_gum_sticky)
+		if (W.peeling_gum == 2)
+			W.peeling_gum = 0
+		else if (W.peeling_gum == 1)
+			to_chat(src, SPAN_WARNING("You are already peeling \the [W]!"))
+			return
+		else
+			W.peeling_gum = 1
+			to_chat(src, SPAN_WARNING("You start peeling \the [W] off your fingers to swap hands... it's incredibly sticky!"))
+			var/old_loc = loc
+			spawn(0)
+				if (do_after(src, 30, old_loc))
+					if ((get_active_hand() == W || get_inactive_hand() == W) && loc == old_loc)
+						to_chat(src, SPAN_NOTICE("You finally peel \the [W] off and swap hands."))
+						W.peeling_gum = 2
+						swap_hand()
+					else
+						W.peeling_gum = 0
+				else
+					W.peeling_gum = 0
+			return
+
 	hand = !( hand )
 	for (var/obj/screen/inventory/hand/H in HUDinventory)
 		H.update_icon()

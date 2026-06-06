@@ -242,6 +242,15 @@
 					if (GUN_TYPE_BOW)
 						H.adaptStat("bows", 1)
 
+	var/shield_check = check_shields(proj.damage*5, proj, null, null, "the [proj.name]")
+	if (shield_check)
+		proj.blockedhit = TRUE
+		if (shield_check < 0)
+			return shield_check
+		else
+			proj.on_hit(src, 2)
+			return 2
+
 	if (!proj || proj.nodamage)
 		if (proj)
 			proj.on_hit(src, FALSE)
@@ -505,7 +514,7 @@
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 								meat.name = "[name] meat"
 								meat.radiation = radiation/2
-						if (map.ID == MAP_WIZARD_BOY && istype(src, /mob/living/simple_animal/pigeon))
+						if (map && map.ID == MAP_WIZARD_BOY && istype(src, /mob/living/simple_animal/pigeon))
 							new /obj/item/wand_part/pigeon_feather(loc)
 					else
 						for (var/i=0, i<=namt, i++)
@@ -677,6 +686,9 @@
 		..()
 
 /mob/living/simple_animal/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
+
+	if (check_shields(effective_force, O, user, hit_zone, "the [O.name]"))
+		return 0
 
 	visible_message("<span class='danger'>\The [src] has been attacked with \the [O] by [user].</span>")
 

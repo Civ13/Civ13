@@ -2,7 +2,7 @@
 /obj/map_metadata/wizard_boy
 	ID = MAP_WIZARD_BOY
 	title = "Wizard Boy"
-	description = "Welcome to Llanboarwart Academy of Magical Education!"
+	description = "Raise through the ranks of the Llanboarwart Academy of Magical Education, craft wands and potions, and fight Moldywart's minions!"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0
@@ -42,7 +42,36 @@
 		override_global_recipes = "camp"
 	update_win_condition()
 		return
-
+/obj/map_metadata/wizard_boy/show_map_report()
+	var/leading_house = "None"
+	var/max_score = -9999
+	var/leading_house_color = "#FFFFFF" // Default white for "None"
+	for(var/house in list("Rubywyrm", "Mintysnek", "Slatepie", "Mustardweasel")) // Iterate to find the leading house
+		var/score = house_points[house]
+		if (score > max_score)
+			max_score = score
+			leading_house = house
+			switch(house) // Determine color for the leading house
+				if("Rubywyrm")
+					leading_house_color = "#CF0000"
+				if("Mintysnek")
+					leading_house_color = "#00CF00"
+				if("Slatepie")
+					leading_house_color = "#0000CF"
+				if("Mustardweasel")
+					leading_house_color = "#FFD700"
+	to_world("<font size=4 class='wizard'>Current Leading House: <span style='color:[leading_house_color]'><b>[leading_house]</b></span></font>")
+	for(var/house in list("Rubywyrm", "Mintysnek", "Slatepie", "Mustardweasel")) // Iterate to display all house scores
+		var/score = house_points[house]
+		if (house == "Rubywyrm")
+			to_world("<font size=4 class='wizard' style='color:#CF0000'>Rubywyrm: [score]</font>")
+		else if (house == "Mintysnek")
+			to_world("<font size=4 class='wizard' style='color:#00CF00'>Mintysnek: [score]</font>")
+		else if (house == "Slatepie")
+			to_world("<font size=4 class='wizard' style='color:#0000CF'>Slatepie: [score]</font>")
+		else if (house == "Mustardweasel")
+			to_world("<font size=4 class='wizard' style='color:#FFD700'>Mustardweasel: [score]</font>")
+	return
 /obj/map_metadata/wizard_boy/proc/load_houses()
 	if (fexists("SQL/houses.txt"))
 		house_info = list()

@@ -328,6 +328,7 @@ bullet_act
 				else
 					visible_message("<span class = 'warning'>The bolt shatters!</span>")
 	if (shield_check)
+		P.blockedhit = TRUE
 		if (shield_check < 0)
 			return shield_check
 		else
@@ -587,7 +588,7 @@ bullet_act
 			return gear
 	return null
 
-/mob/living/human/proc/apply_magic_shield(duration)
+/mob/living/proc/apply_magic_shield(duration)
 	magic_shield++
 	var/image/I = image('icons/obj/magic_overlay.dmi', src, "protection", MOB_LAYER + 1)
 	I.color = "#00ffff"
@@ -600,9 +601,14 @@ bullet_act
 			if (!magic_shield)
 				to_chat(src, SPAN_NOTICE("Your shimmering bubble of denial fades away."))
 				
-/mob/living/human/proc/check_shields(var/damage = FALSE, var/atom/damage_source = null, var/mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
+/mob/living/proc/check_shields(var/damage = FALSE, var/atom/damage_source = null, var/mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	if (magic_shield)
 		visible_message("<span class='warning'>The shimmering bubble of denial around [src] blocks [attack_text]!</span>")
+		return TRUE
+	return FALSE
+
+/mob/living/human/check_shields(var/damage = FALSE, var/atom/damage_source = null, var/mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
+	if (..())
 		return TRUE
 	for (var/obj/item/shield in list(l_hand, r_hand, wear_suit))
 		if (!shield) continue

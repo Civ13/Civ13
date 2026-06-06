@@ -425,7 +425,7 @@
 	var/list/shards = list()
 	var/obj/item/weapon/material/shard/S = null
 	if (buildstack)
-		if (map.ID == MAP_WIZARD_BOY && (buildstack == /obj/item/stack/material/wood || buildstack == /obj/item/stack/material/woodplank))
+		if (map && map.ID == MAP_WIZARD_BOY && (buildstack == /obj/item/stack/material/wood || buildstack == /obj/item/stack/material/woodplank))
 			new /obj/item/wand_part/mdf_board(loc)
 		else
 			new buildstack (loc)

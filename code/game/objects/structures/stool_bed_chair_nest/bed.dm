@@ -206,7 +206,7 @@
 	update_icon()
 
 /obj/structure/bed/proc/dismantle()
-	if (map.ID == MAP_WIZARD_BOY && material && (material.name == "woodplank" || material.name == "hardwood" || material.name == "wood"))
+	if (map && map.ID == MAP_WIZARD_BOY && material && (material.name == "woodplank" || material.name == "hardwood" || material.name == "wood"))
 		new /obj/item/wand_part/mdf_board(loc)
 	else
 		material.place_sheet(get_turf(src))

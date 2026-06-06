@@ -1261,3 +1261,7 @@ var/civmax_research = list(230,230,230)
 		for (var/turf/floor/grass/jungle/T in world)
 			if (prob(chance))
 				new /mob/living/simple_animal/hostile/canopy_strangler(T)
+
+//this shows up alongside the global report of X alive, X injured etc
+/obj/map_metadata/proc/show_map_report()
+	return
