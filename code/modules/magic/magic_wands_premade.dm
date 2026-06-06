@@ -99,9 +99,9 @@
 // The villain's weapon. Toxic, fast, and silent.
 /obj/item/weapon/material/magic/wand/special/the_pale_stick
 	name = "The Pale Stick"
-	desc = "A chillingly smooth wand carved from bleached bone... or maybe just PVC piping. It hums with dark magic and smells faintly of hairspray."
+	desc = "A chillingly smooth wand carved from shrieking shrub wood. It hums with dark magic and smells faintly of hairspray."
 	icon_state = "moldy_wand"
-	wand_wood   = WAND_WOOD_FIBREGLASS  // Lethally fast cast speed
+	wand_wood   = WAND_WOOD_SHRUB  // Lethally fast cast speed
 	wand_core   = WAND_CORE_FOX         // Completely silent/invisible casts (terrifying for Deadum!)
 	wand_length = WAND_LENGTH_STANDARD
 

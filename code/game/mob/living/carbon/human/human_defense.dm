@@ -328,6 +328,7 @@ bullet_act
 				else
 					visible_message("<span class = 'warning'>The bolt shatters!</span>")
 	if (shield_check)
+		P.blockedhit = TRUE
 		if (shield_check < 0)
 			return shield_check
 		else
@@ -637,6 +638,9 @@ bullet_act
 	return hit_zone
 
 /mob/living/human/hit_with_weapon(obj/item/I, mob/living/user, var/effective_force, var/hit_zone)
+	if (check_shields(I.force, I, user, hit_zone, "the [I.name]"))
+		return 0
+
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if (!affecting)
 		return //should be prevented by attacked_with_item() but for sanity.

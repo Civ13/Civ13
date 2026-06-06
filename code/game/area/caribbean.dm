@@ -14,6 +14,12 @@
  * to slow down dramatically. The forest area reached this limit, but only
  * when there were snow objects, so its been split into 9 separate areas.
 */
+
+/area/caribbean/dark
+	base_turf = /turf/floor/dirt
+	icon_state = "blue4"
+	climate = "temperate"
+
 /area/caribbean/roofed
 	name = "Roofed Area"
 	base_turf = /turf/floor/dirt

@@ -369,19 +369,6 @@
 		for (var/i in elements)
 			dispensable_reagents += list(list(i,100))
 
-/obj/structure/bookcase/filled_magic
-	icon_state = "book-3"
-
-/obj/structure/bookcase/filled_magic/initialize()
-	new /obj/item/weapon/book/manual/wand_crafting(src)
-	new /obj/item/weapon/book/manual/wand_crafting(src)
-	new /obj/item/weapon/book/manual/potions(src)
-	new /obj/item/weapon/book/manual/potions(src)
-	new /obj/item/weapon/book/manual/student_handbook(src)
-	new /obj/item/weapon/book/manual/student_handbook(src)
-	update_icon()
-	..()
-
 ////////////////////////////////////////////////////
 ///////////////// FIREPLACE PORTAL //////////////////
 ////////////////////////////////////////////////////

@@ -1,8 +1,23 @@
 // Simple AI logic for non-hostile behaviors (wandering, feeding, etc.)
 
 /mob/living/simple_animal/proc/handle_ai()
-	if (client || stop_automated_movement || !wander || anchored || clients.len <= 0)
+	if (client || anchored || clients.len <= 0)
 		return
+
+	if (stop_automated_movement || !wander)
+		if (stance == HOSTILE_STANCE_ATTACK || stance == HOSTILE_STANCE_ALERT)
+			ai_tick_delay = 0
+			do_behaviour()
+			return
+		if ((faction == "School" || faction == "Ministry") && stance == HOSTILE_STANCE_IDLE)
+			target_mob = FindTarget()
+			if (target_mob)
+				behaviour = "hostile"
+				stance = HOSTILE_STANCE_ATTACK
+				handle_combat_behaviour("hostile")
+				return
+		return
+
 	if (!isturf(loc) || resting || buckled || !canmove)
 		return
 
@@ -18,9 +33,9 @@
 		if (stance == HOSTILE_STANCE_IDLE && prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
 			walk_towards(src, locate(/obj/effect/landmark/npctarget), 6)
 			return
-	if (istype(src, /mob/living/simple_animal/hostile/wizard/moldy_man))
+	if (map.ID == MAP_WIZARD_BOY && istype(src, /mob/living/simple_animal/hostile/wizard/moldy_man/attacker))
 		var/obj/map_metadata/wizard_boy/WB = map
-		if (istype(WB) && WB.moldy_invasion)
+		if (WB.moldy_invasion)
 			if (stance == HOSTILE_STANCE_IDLE && prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
 				walk_towards(src, locate(/obj/effect/landmark/npctarget), 6)
 				return
@@ -75,6 +90,13 @@
 					else
 						H.pathfind_target = null
 					
+			if (faction == "School" || faction == "Ministry")
+				target_mob = FindTarget()
+				if (target_mob)
+					behaviour = "hostile"
+					stance = HOSTILE_STANCE_ATTACK
+					return handle_combat_behaviour("hostile")
+
 			var/moving_to = pick(cardinal)
 			set_dir(moving_to)
 			if (Move(get_step(src, moving_to)))
