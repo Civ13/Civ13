@@ -369,3 +369,259 @@
 /obj/item/weapon/basketball/mopball
 	name = "mop ball"
 	desc = "A ball used for playing mop ball. It is slightly bouncy and very dirty."
+
+// ============================================================
+// BRENDA'S "SPECIAL RESERVE" WELSH RUM
+// ============================================================
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/welsh_rum
+	name = "Brenda's \"Special Reserve\" Welsh Rum"
+	desc = "A grimy bottle with a handwritten label that reads 'Property of B. Brenda — Touch this and I'll break your wand arm.' The liquid inside is the colour of strong tea and smells like regret and industrial solvent."
+	icon_state = "oldstyle_rum"
+	item_state = "beer"
+	volume = 60
+	value = 50
+	New()
+		..()
+		reagents.add_reagent("welsh_rum", 60)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/welsh_rum/empty
+	name = "empty bottle of Brenda's rum"
+	desc = "An empty bottle. The smell of cheap rum and despair still lingers."
+	icon_state = "oldstyle_rum_empty"
+	value = 1
+	New()
+		..()
+		reagents.del_reagents()
+
+/datum/reagent/drink/welsh_rum
+	name = "Brenda's \"Special Reserve\" Welsh Rum"
+	id = "welsh_rum"
+	description = "Bathtub-brewed in 1982. Strips paint, but gets you through an exam."
+	taste_description = "burning rubber and defiance"
+	color = "#8B4513"
+	metabolism = REM * 6
+
+/datum/reagent/drink/welsh_rum/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+	..()
+	if (ishuman(M))
+		var/mob/living/human/H = M
+		if (H.juice < H.max_juice)
+			H.juice = min(H.max_juice, H.juice + 1.0 * removed)
+		H.add_chemical_effect(CE_PAINKILLER, 250)
+		H.slurring = max(H.slurring, 45)
+
+// ============================================================
+// THE "CHAMELEON" MAC (Bootleg Invisibility Cloak)
+// ============================================================
+
+/obj/item/clothing/suit/chameleon_mac
+	name = "\"Chameleon\" Mac"
+	desc = "A smelly, translucent 1980s plastic raincoat. Brenda swears it's woven from invisible beasts; it's actually highly reflective Ministry-grade plastic. Stand still and you'll vanish."
+	icon_state = "ruscoat"
+	item_state = "ruscoat"
+	worn_state = "ruscoat"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 5, arrow = 0, gun = FALSE, energy = 0, bomb = 0, bio = 0, rad = 0)
+	slot_flags = SLOT_OCLOTHING
+	value = 200
+	var/mob/living/human/wearer = null
+	var/last_x = 0
+	var/last_y = 0
+	var/last_z = 0
+	var/stand_still_time = 0
+	var/hidden = FALSE
+	var/normal_alpha = 101
+
+/obj/item/clothing/suit/chameleon_mac/equipped(var/mob/user, var/slot)
+	..()
+	if (slot == slot_wear_suit && ishuman(user))
+		wearer = user
+		normal_alpha = wearer.alpha
+		processing_objects |= src
+
+/obj/item/clothing/suit/chameleon_mac/dropped(var/mob/user)
+	if (wearer)
+		wearer.alpha = normal_alpha
+		wearer = null
+	processing_objects -= src
+	..()
+
+/obj/item/clothing/suit/chameleon_mac/Destroy()
+	if (wearer)
+		wearer.alpha = normal_alpha
+		wearer = null
+	processing_objects -= src
+	return ..()
+
+/obj/item/clothing/suit/chameleon_mac/process()
+	if (!wearer || wearer.stat || !isturf(wearer.loc))
+		return
+	if (wearer.loc != loc)
+		return
+
+	if (wearer.x != last_x || wearer.y != last_y || wearer.z != last_z)
+		last_x = wearer.x
+		last_y = wearer.y
+		last_z = wearer.z
+		stand_still_time = world.time
+		if (hidden)
+			hidden = FALSE
+			wearer.alpha = normal_alpha
+		return
+
+	if (world.time - stand_still_time >= 50 && !hidden)
+		hidden = TRUE
+		wearer.alpha = 0
+
+// ============================================================
+// CWM-PLWD DITCH-WEED (Bootleg Night-Vision)
+// ============================================================
+
+/obj/item/weapon/reagent_containers/food/snacks/ditch_weed
+	name = "Cwm-Plwd Ditch-Weed"
+	desc = "A glowing, radioactive-looking weed harvested from the toxic runoff pipe behind the potion dungeons. Eating it will violently mutate your eyes."
+	icon = 'icons/obj/magic_items.dmi'
+	icon_state = "chocotoad"
+	volume = 5
+	bitesize = 5
+	biteamount = 1
+	nutriment_amt = 0
+	value = 40
+
+/obj/item/weapon/reagent_containers/food/snacks/ditch_weed/On_Consume(var/mob/M)
+	..()
+	if (ishuman(M))
+		var/mob/living/human/H = M
+		H.thermal = TRUE
+		H.handle_vision()
+		to_chat(H, SPAN_NOTICE("Your eyes burn and warp — the world shimmers in green and heat!"))
+		spawn(2400)
+			if (H && ishuman(H))
+				H.thermal = FALSE
+				H.handle_vision()
+				to_chat(H, SPAN_NOTICE("The thermal shimmer fades from your vision."))
+
+// ============================================================
+// THE "BOTTOMLESS" TESCO CARRIER BAG
+// ============================================================
+
+/obj/item/weapon/storage/tesco_bag
+	name = "\"Bottomless\" Tesco Carrier Bag"
+	desc = "A crinkled, slightly sticky plastic grocery bag from a non-magical supermarket. Brenda charmed it herself in the pub's cellar. It can hold a ludicrous amount of stuff — but sharp objects might tear it."
+	icon_state = "bag"
+	item_state = "bag"
+	w_class = ITEM_SIZE_SMALL
+	max_w_class = ITEM_SIZE_HUGE
+	max_storage_space = 200
+	storage_slots = null
+	slot_flags = SLOT_BELT | SLOT_POCKET
+	value = 80
+
+/obj/item/weapon/storage/tesco_bag/handle_item_insertion(obj/item/W, prevent_warning = FALSE)
+	. = ..()
+	if (. && is_sharp(W) && prob(5))
+		rip_bag()
+
+/obj/item/weapon/storage/tesco_bag/proc/rip_bag()
+	var/turf/center = get_turf(src)
+	playsound(center, 'sound/effects/rip_pack.ogg', 100, TRUE)
+	visible_message(SPAN_DANGER("[src] tears apart violently, scattering its contents everywhere!"))
+	for (var/obj/item/I in contents)
+		remove_from_storage(I, center)
+		var/turf/target = locate(center.x + rand(-2, 2), center.y + rand(-2, 2), center.z)
+		if (target && !target.density)
+			I.loc = target
+		else
+			I.loc = center
+	qdel(src)
+
+// ============================================================
+// THE "DEAD-ZONE" CAR BATTERY
+// ============================================================
+
+/obj/item/weapon/dead_zone_battery
+	name = "\"Dead-Zone\" Car Battery"
+	desc = "A rusted, leaking lead-acid battery pulled from a 1983 Ford Cortina. Anti-magic copper runes are crudely etched into the casing. When activated, it grounds out all arcane frequencies in a wide area."
+	icon_state = "car_battery"
+	item_state = "car_battery"
+	w_class = ITEM_SIZE_LARGE
+	value = 120
+	var/cooldown_time = 0
+	var/active = FALSE
+
+/obj/item/weapon/dead_zone_battery/attack_self(mob/user)
+	if (!ishuman(user))
+		return
+	var/mob/living/human/H = user
+	if (active)
+		to_chat(H, SPAN_WARNING("The battery is already discharging!"))
+		return
+	if (world.time < cooldown_time)
+		var/remaining = round((cooldown_time - world.time) / 10)
+		to_chat(H, SPAN_WARNING("The battery needs to recharge. Wait [remaining] seconds."))
+		return
+
+	H.visible_message(SPAN_DANGER("[H] slams \the [src] onto the ground! A pulse of invisible energy expands outward!"))
+	playsound(H.loc, 'sound/effects/spells/blockum.ogg', 80, TRUE)
+
+	H.drop_from_inventory(src)
+	loc = get_turf(H)
+
+	new /obj/effect/null_zone(loc, H)
+
+	active = TRUE
+	cooldown_time = world.time + 900
+	spawn(300)
+		if (src)
+			active = FALSE
+
+/obj/effect/null_zone
+	name = "null zone"
+	desc = "The air feels dead and heavy here."
+	invisibility = 101
+	anchored = TRUE
+	density = FALSE
+	var/created_time = 0
+	var/mob/living/human/owner = null
+	var/list/affected_mobs = list()
+
+/obj/effect/null_zone/New(loc, var/mob/living/human/setter)
+	..()
+	created_time = world.time
+	owner = setter
+	processing_objects |= src
+
+/obj/effect/null_zone/Destroy()
+	for (var/mob/living/human/H in affected_mobs)
+		H.no_magic = FALSE
+		to_chat(H, SPAN_NOTICE("The null zone dissipates. You can feel magic again."))
+	affected_mobs.Cut()
+	processing_objects -= src
+	. = ..()
+
+/obj/effect/null_zone/process()
+	if (world.time - created_time >= 300)
+		qdel(src)
+		return
+
+	for (var/mob/living/human/H in range(3, src))
+		if (H.stat || H == owner)
+			continue
+		if (H.faction == "Moldywart")
+			continue
+		if (!(H in affected_mobs))
+			affected_mobs += H
+			H.no_magic = TRUE
+			to_chat(H, SPAN_DANGER("An oppressive numbness floods your body — the null zone suppresses all magic!"))
+
+	var/i = 1
+	while (i <= affected_mobs.len)
+		var/mob/living/human/H = affected_mobs[i]
+		if (!H || H.stat || get_dist(H, src) > 3)
+			H.no_magic = FALSE
+			if (H)
+				to_chat(H, SPAN_NOTICE("You step out of the null zone. Magic feels possible again."))
+			affected_mobs.Cut(i, i + 1)
+		else
+			i++

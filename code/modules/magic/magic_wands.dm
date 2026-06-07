@@ -209,6 +209,14 @@
 			casting = FALSE
 			return
 
+	// Prevent casting within a Dead-Zone null field
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		if (H.no_magic)
+			to_chat(user, SPAN_DANGER("The arcane frequencies are grounded out here. You cannot cast spells in this null zone!"))
+			casting = FALSE
+			return
+
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		if (H.getStat("magic") < minimum_level)
