@@ -376,8 +376,9 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/welsh_rum
 	name = "Brenda's \"Special Reserve\" Welsh Rum"
-	desc = "A grimy bottle with a handwritten label that reads 'Property of B. Brenda — Touch this and I'll break your wand arm.' The liquid inside is the colour of strong tea and smells like regret and industrial solvent."
-	icon_state = "oldstyle_rum"
+	desc = "A grimy bottle with a handwritten label that reads 'Property of B. Brenda — Touch this and I'll break your wand arm.'"
+	icon = 'icons/obj/magic_items.dmi'
+	icon_state = "rumbottle"
 	item_state = "beer"
 	volume = 60
 	value = 50
@@ -388,7 +389,7 @@
 /obj/item/weapon/reagent_containers/food/drinks/bottle/welsh_rum/empty
 	name = "empty bottle of Brenda's rum"
 	desc = "An empty bottle. The smell of cheap rum and despair still lingers."
-	icon_state = "oldstyle_rum_empty"
+	icon_state = "rumbottle"
 	value = 1
 	New()
 		..()
@@ -397,7 +398,7 @@
 /datum/reagent/drink/welsh_rum
 	name = "Brenda's \"Special Reserve\" Welsh Rum"
 	id = "welsh_rum"
-	description = "Bathtub-brewed in 1982. Strips paint, but gets you through an exam."
+	description = "Bathtub-brewed since 1982. Strips paint, but gets you through an exam."
 	taste_description = "burning rubber and defiance"
 	color = "#8B4513"
 	metabolism = REM * 6
@@ -418,9 +419,10 @@
 /obj/item/clothing/suit/chameleon_mac
 	name = "\"Chameleon\" Mac"
 	desc = "A smelly, translucent 1980s plastic raincoat. Brenda swears it's woven from invisible beasts; it's actually highly reflective Ministry-grade plastic. Stand still and you'll vanish."
-	icon_state = "ruscoat"
-	item_state = "ruscoat"
-	worn_state = "ruscoat"
+	icon = 'icons/obj/magic_items.dmi'
+	icon_state = "mac_jacket"
+	item_state = "mac_jacket"
+	worn_state = "mac_jacket"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 5, arrow = 0, gun = FALSE, energy = 0, bomb = 0, bio = 0, rad = 0)
 	slot_flags = SLOT_OCLOTHING
@@ -482,7 +484,7 @@
 	name = "Cwm-Plwd Ditch-Weed"
 	desc = "A glowing, radioactive-looking weed harvested from the toxic runoff pipe behind the potion dungeons. Eating it will violently mutate your eyes."
 	icon = 'icons/obj/magic_items.dmi'
-	icon_state = "chocotoad"
+	icon_state = "ditch_weed"
 	volume = 5
 	bitesize = 5
 	biteamount = 1
@@ -509,8 +511,9 @@
 /obj/item/weapon/storage/tesco_bag
 	name = "\"Bottomless\" Tesco Carrier Bag"
 	desc = "A crinkled, slightly sticky plastic grocery bag from a non-magical supermarket. Brenda charmed it herself in the pub's cellar. It can hold a ludicrous amount of stuff — but sharp objects might tear it."
-	icon_state = "bag"
-	item_state = "bag"
+	icon = 'icons/obj/magic_items.dmi'
+	icon_state = "tesco_bag"
+	item_state = "plasticbag"
 	w_class = ITEM_SIZE_SMALL
 	max_w_class = ITEM_SIZE_HUGE
 	max_storage_space = 200
@@ -542,7 +545,8 @@
 
 /obj/item/weapon/dead_zone_battery
 	name = "\"Dead-Zone\" Car Battery"
-	desc = "A rusted, leaking lead-acid battery pulled from a 1983 Ford Cortina. Anti-magic copper runes are crudely etched into the casing. When activated, it grounds out all arcane frequencies in a wide area."
+	desc = "A rusted lead-acid battery pulled from an old car. Anti-magic copper runes are crudely etched into the casing. When activated, it grounds out all arcane frequencies in a wide area."
+	icon = 'icons/obj/magic_items.dmi'
 	icon_state = "car_battery"
 	item_state = "car_battery"
 	w_class = ITEM_SIZE_LARGE

@@ -887,13 +887,13 @@ var/list/flavour_text_normies = list(
 	playsound(src.loc, 'sound/effects/spells/fixae.ogg', 50, FALSE)
 
 // ============================================================
-// BIG BRENDA — The Leaky Sheep Pub Owner
+// BIG BRENDA - The Leaky Sheep Pub Owner
 // ============================================================
 
 /mob/living/simple_animal/wizard/big_brenda
 	name = "Big Brenda"
 	desc = "The no-nonsense owner of The Leaky Sheep. Her forearms are thicker than most wizards' thighs, and her tolerance for magical nonsense is thinner than a wet paper towel."
-	icon = 'icons/mob/npcs_wizards.dmi'
+	icon = 'icons/mob/npcs.dmi'
 	icon_state = "big_brenda"
 	icon_living = "big_brenda"
 	icon_dead = "big_brenda_dead"
@@ -902,8 +902,10 @@ var/list/flavour_text_normies = list(
 	health = 300
 	melee_damage_lower = 12
 	melee_damage_upper = 18
+	attacktext = "cleavered"
+	attack_sound = 'sound/weapons/bladeslice.ogg'
 	stop_automated_movement = FALSE
-	wander = TRUE
+	wander = FALSE
 	speak_chance = 2
 	var/cooldown_shop = 0
 
@@ -922,6 +924,22 @@ var/list/flavour_text_normies = list(
 		"I've seen three Dark Lords try to recruit in my pub. I threw all of them out. Moldywart still owes me for a spilled pint.",
 	)
 	update_icons()
+
+/mob/living/simple_animal/wizard/big_brenda/proactive_magic_check(mob/living/target)
+	return
+
+/mob/living/simple_animal/wizard/big_brenda/handle_combat_behaviour(t_behaviour)
+	if (stat || !target_mob || target_mob.stat)
+		stance = HOSTILE_STANCE_IDLE
+		target_mob = null
+		return FALSE
+	if (get_dist(src, target_mob) <= 1)
+		AttackingTarget()
+	else
+		var/moving_to = get_dir(src, target_mob)
+		set_dir(moving_to)
+		Move(get_step(src, moving_to))
+	return TRUE
 
 /mob/living/simple_animal/wizard/big_brenda/attack_hand(mob/user)
 	if (!ishuman(user))
@@ -953,26 +971,26 @@ h2 { color: #ffd700; border-bottom: 2px solid #5a3a1a; padding-bottom: 8px; marg
 .coins { color: #ffd700; text-align: right; margin-bottom: 16px; font-size: 14px; }
 </style></head>
 <body>
-<h2>The Leaky Sheep — Under The Counter</h2>
+<h2>The Leaky Sheep <i>"Under The Counter"</i></h2>
 <div class="item">
 	<div><span class="name">Brenda's "Special Reserve" Welsh Rum</span><br><span class="desc">Restores 100 Juice. 60 seconds of pain immunity. Makes you slur.</span></div>
-	<div><span class="price">50\u00a2</span> <button class="buy-btn" onclick="window.location='byond://?src=\ref[src];buy=1'">Buy</button></div>
+	<div><span class="price">50 s.c.</span><br><button class="buy-btn" onclick="window.location='byond://?src=\ref[src];buy=1'">Buy</button></div>
 </div>
 <div class="item">
 	<div><span class="name">The "Chameleon" Mac</span><br><span class="desc">A coat that turns you invisible when you stand still.</span></div>
-	<div><span class="price">200\u00a2</span> <button class="buy-btn" onclick="window.location='byond://?src=\ref[src];buy=2'">Buy</button></div>
+	<div><span class="price">200 s.c.</span><br><button class="buy-btn" onclick="window.location='byond://?src=\ref[src];buy=2'">Buy</button></div>
 </div>
 <div class="item">
 	<div><span class="name">Cwm-Plwd Ditch-Weed</span><br><span class="desc">Eat to gain 4 minutes of thermal vision.</span></div>
-	<div><span class="price">40\u00a2</span> <button class="buy-btn" onclick="window.location='byond://?src=\ref[src];buy=3'">Buy</button></div>
+	<div><span class="price">40 s.c.</span><br><button class="buy-btn" onclick="window.location='byond://?src=\ref[src];buy=3'">Buy</button></div>
 </div>
 <div class="item">
 	<div><span class="name">"Bottomless" Tesco Carrier Bag</span><br><span class="desc">Holds huge amounts of items. Sharp objects might tear it.</span></div>
-	<div><span class="price">80\u00a2</span> <button class="buy-btn" onclick="window.location='byond://?src=\ref[src];buy=4'">Buy</button></div>
+	<div><span class="price">80 s.c.</span><br><button class="buy-btn" onclick="window.location='byond://?src=\ref[src];buy=4'">Buy</button></div>
 </div>
 <div class="item">
 	<div><span class="name">"Dead-Zone" Car Battery</span><br><span class="desc">Creates a 7x7 null zone for 30s. No spells inside. 90s cooldown.</span></div>
-	<div><span class="price">120\u00a2</span> <button class="buy-btn" onclick="window.location='byond://?src=\ref[src];buy=5'">Buy</button></div>
+	<div><span class="price">120 s.c.</span><br><button class="buy-btn" onclick="window.location='byond://?src=\ref[src];buy=5'">Buy</button></div>
 </div>
 </body>
 </html>
@@ -1050,6 +1068,7 @@ h2 { color: #ffd700; border-bottom: 2px solid #5a3a1a; padding-bottom: 8px; marg
 	timer = 600
 	icon_state = "npc"
 	max_number = 1
+	max_range = 4
 
 /obj/effect/spawner/mobspawner/professor
 	name = "professor spawner"
@@ -1057,6 +1076,7 @@ h2 { color: #ffd700; border-bottom: 2px solid #5a3a1a; padding-bottom: 8px; marg
 	timer = 600
 	icon_state = "npc"
 	max_number = 1
+	max_range = 3
 
 /obj/effect/spawner/mobspawner/healer_goblin
 	name = "healer goblin spawner"
@@ -1064,6 +1084,7 @@ h2 { color: #ffd700; border-bottom: 2px solid #5a3a1a; padding-bottom: 8px; marg
 	timer = 600
 	icon_state = "npc"
 	max_number = 1
+	max_range = 3
 
 /obj/effect/spawner/mobspawner/cleaner_goblin
 	name = "cleaner goblin spawner"
@@ -1071,6 +1092,7 @@ h2 { color: #ffd700; border-bottom: 2px solid #5a3a1a; padding-bottom: 8px; marg
 	timer = 600
 	icon_state = "npc"
 	max_number = 1
+	max_range = 3
 
 /obj/effect/spawner/mobspawner/normie_farmer
 	name = "normie farmer spawner"
@@ -1078,6 +1100,7 @@ h2 { color: #ffd700; border-bottom: 2px solid #5a3a1a; padding-bottom: 8px; marg
 	timer = 600
 	icon_state = "npc"
 	max_number = 5
+	max_range = 3
 
 /obj/effect/spawner/mobspawner/huw_pugh
 	name = "Huw Pugh spawner"
@@ -1085,6 +1108,7 @@ h2 { color: #ffd700; border-bottom: 2px solid #5a3a1a; padding-bottom: 8px; marg
 	timer = 600
 	icon_state = "npc"
 	max_number = 1
+	max_range = 1
 
 /obj/effect/spawner/mobspawner/professor_snip
 	name = "Professor Snip spawner"
@@ -1092,10 +1116,12 @@ h2 { color: #ffd700; border-bottom: 2px solid #5a3a1a; padding-bottom: 8px; marg
 	timer = 0
 	icon_state = "npc"
 	max_number = 1
+	max_range = 1
 
 /obj/effect/spawner/mobspawner/big_brenda
 	name = "Big Brenda spawner"
 	create_path = /mob/living/simple_animal/wizard/big_brenda
-	timer = 0
+	timer = 600
 	icon_state = "npc"
 	max_number = 1
+	max_range = 1
