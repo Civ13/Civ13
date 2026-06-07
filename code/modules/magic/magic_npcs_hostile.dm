@@ -618,6 +618,7 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 	melee_damage_lower = 15
 	melee_damage_upper = 25
 	attacktext = "chills"
+	attack_verb = "chills"
 	speed = 1
 	move_to_delay = 5
 	possession_candidate = FALSE

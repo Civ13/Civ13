@@ -726,10 +726,15 @@ var/list/flavour_text_normies = list(
 	icon_living = icon_state
 	icon_dead = "[icon_state]_dead"
 	speak = list(
+		// "Which one of you magical idiots stole the spark plugs from my tractor? I'll shove that stick up your nose!"
 		"Pa un ohonoch chi twmffatiaid hudol ddygodd y plygiau gwreichionen o fy nhractor? Wna i stwffio'r ffon yna i fyny dy drwyn di!",
+		// "Bring my pig down right this minute! Pigs aren't supposed to float, you little devils!"
 		"Dewch â fy mochyn i lawr rŵan y funud yma! Dydy moch ddim i fod i arnofio, y cythreuliaid bach!",
+		// "Don't pull my leeks, you little sods! They're not magical, they're for Sunday soup!"
 		"Peidiwch â thynnu fy nghennin, yr hen gontiau bach! Dydyn nhw ddim yn hudol, i'r cawl dydd Sul maen nhw!",
+		// "Why are you all wearing grey dresses and saying silly words? Can't you afford trousers?"
 		"Pam ydych chi i gyd yn gwisgo ffrogiau llwyd a dweud geiriau gwirion? Ydych chi ddim yn gallu fforddio trowsus?",
+		// "If one more soap-ball hits my workshop ceiling, I'm calling the police! The real ones, not those C.A.P. ploncers!"
 		"Os bydd un bêl-sebon arall yn taro nenfwd fy ngweithdy, dwi'n ffonio'r heddlu! Y rhai go iawn, nid y ploncers C.A.P. yna!"
 	)
 	update_icons()
@@ -737,6 +742,7 @@ var/list/flavour_text_normies = list(
 /mob/living/simple_animal/wizard/huw_pugh/respond_to_attack(mob/living/user)
 	if (stat || !user || !ishuman(user) || user.stat)
 		return
+	// "Try that again and I'll shove that stick so far up your arse, they'll be able to see it in Scotland!"
 	src.say("Tria hynna eto ac mi wna i stwffio'r ffon yna mor bell i fyny dy din di, byddan nhw'n gallu ei gweld yn yr Alban!")
 	..()
 
@@ -903,6 +909,7 @@ var/list/flavour_text_normies = list(
 	melee_damage_lower = 12
 	melee_damage_upper = 18
 	attacktext = "cleavered"
+	attack_verb = "cleavers"
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 	stop_automated_movement = FALSE
 	wander = FALSE
@@ -941,6 +948,12 @@ var/list/flavour_text_normies = list(
 		Move(get_step(src, moving_to))
 	return TRUE
 
+/mob/living/simple_animal/wizard/big_brenda/respond_to_attack(mob/living/user)
+	if (stat || !user || !ishuman(user) || user.stat)
+		return
+	..()
+	src.say(pick("Right, that's enough out of you!", "I'll cleaver you good!", "Don't make me come over that counter!", "You're barred!"))
+
 /mob/living/simple_animal/wizard/big_brenda/attack_hand(mob/user)
 	if (!ishuman(user))
 		return
@@ -962,7 +975,9 @@ var/list/flavour_text_normies = list(
 <head><style>
 body { font-family: 'Segoe UI', monospace; background: #2b1e0e; color: #f0e0c0; margin: 0; padding: 20px; }
 h2 { color: #ffd700; border-bottom: 2px solid #5a3a1a; padding-bottom: 8px; margin-top: 0; }
-.item { background: #3d2b14; border: 1px solid #5a3a1a; border-radius: 4px; padding: 10px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+.item { background: #3d2b14; border: 1px solid #5a3a1a; border-radius: 4px; padding: 10px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.item .icon { width: 32px; height: 32px; flex-shrink: 0; image-rendering: pixelated; }
+.item .info { flex: 1; }
 .item .name { font-weight: bold; color: #f0e0c0; }
 .item .desc { font-size: 11px; color: #b09070; }
 .item .price { color: #ffd700; }
@@ -973,29 +988,39 @@ h2 { color: #ffd700; border-bottom: 2px solid #5a3a1a; padding-bottom: 8px; marg
 <body>
 <h2>The Leaky Sheep <i>"Under The Counter"</i></h2>
 <div class="item">
-	<div><span class="name">Brenda's "Special Reserve" Welsh Rum</span><br><span class="desc">Restores 100 Juice. 60 seconds of pain immunity. Makes you slur.</span></div>
+	<img class="icon" src="shop_item1.png">
+	<div class="info"><span class="name">Brenda's "Special Reserve" Welsh Rum</span><br><span class="desc">Restores 100 Juice. 60 seconds of pain immunity. Makes you slur.</span></div>
 	<div><span class="price">50 s.c.</span><br><button class="buy-btn" onclick="window.location='byond://?src=\ref[src];buy=1'">Buy</button></div>
 </div>
 <div class="item">
-	<div><span class="name">The "Chameleon" Mac</span><br><span class="desc">A coat that turns you invisible when you stand still.</span></div>
+	<img class="icon" src="shop_item2.png">
+	<div class="info"><span class="name">The "Chameleon" Mac</span><br><span class="desc">A coat that turns you invisible when you stand still.</span></div>
 	<div><span class="price">200 s.c.</span><br><button class="buy-btn" onclick="window.location='byond://?src=\ref[src];buy=2'">Buy</button></div>
 </div>
 <div class="item">
-	<div><span class="name">Cwm-Plwd Ditch-Weed</span><br><span class="desc">Eat to gain 4 minutes of thermal vision.</span></div>
+	<img class="icon" src="shop_item3.png">
+	<div class="info"><span class="name">Cwm-Plwd Ditch-Weed</span><br><span class="desc">Eat to gain 4 minutes of thermal vision.</span></div>
 	<div><span class="price">40 s.c.</span><br><button class="buy-btn" onclick="window.location='byond://?src=\ref[src];buy=3'">Buy</button></div>
 </div>
 <div class="item">
-	<div><span class="name">"Bottomless" Tesco Carrier Bag</span><br><span class="desc">Holds huge amounts of items. Sharp objects might tear it.</span></div>
+	<img class="icon" src="shop_item4.png">
+	<div class="info"><span class="name">"Bottomless" Tesco Carrier Bag</span><br><span class="desc">Holds huge amounts of items. Sharp objects might tear it.</span></div>
 	<div><span class="price">80 s.c.</span><br><button class="buy-btn" onclick="window.location='byond://?src=\ref[src];buy=4'">Buy</button></div>
 </div>
 <div class="item">
-	<div><span class="name">"Dead-Zone" Car Battery</span><br><span class="desc">Creates a 7x7 null zone for 30s. No spells inside. 90s cooldown.</span></div>
+	<img class="icon" src="shop_item5.png">
+	<div class="info"><span class="name">"Dead-Zone" Car Battery</span><br><span class="desc">Creates a 7x7 null zone for 30s. No spells inside. 90s cooldown.</span></div>
 	<div><span class="price">120 s.c.</span><br><button class="buy-btn" onclick="window.location='byond://?src=\ref[src];buy=5'">Buy</button></div>
 </div>
 </body>
 </html>
 "}
-	H << browse(dat, "window=leaky_sheep;size=470x420")
+	H << browse_rsc(icon('icons/obj/magic_items.dmi', "rumbottle"), "shop_item1.png")
+	H << browse_rsc(icon('icons/obj/magic_items.dmi', "mac_jacket"), "shop_item2.png")
+	H << browse_rsc(icon('icons/obj/magic_items.dmi', "ditch_weed"), "shop_item3.png")
+	H << browse_rsc(icon('icons/obj/magic_items.dmi', "tesco_bag"), "shop_item4.png")
+	H << browse_rsc(icon('icons/obj/magic_items.dmi', "car_battery"), "shop_item5.png")
+	H << browse(dat, "window=leaky_sheep;size=520x420")
 
 /mob/living/simple_animal/wizard/big_brenda/Topic(href, href_list)
 	if (!usr || !usr.client)
