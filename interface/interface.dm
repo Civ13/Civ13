@@ -1,5 +1,5 @@
 
-	#define HOTKEY_MODE_OPTIONS {"<font color='purple'> \
+	#define HOTKEY_MODE_OPTIONS {"<font color='#7FFFD4'> \
 Hotkey-Mode: (hotkey-mode must be on)\n \
 \tTAB = toggle hotkey-mode\n \
 \tA = Left\n \
@@ -22,6 +22,8 @@ Hotkey-Mode: (hotkey-mode must be on)\n \
 \t2 = Disarm-intent\n \
 \t3 = Grab-intent\n \
 \t4 = Harm-intent\n \
+\t5-9 = Quick-cast wand spells\n \
+\t. = Cycle movement mode\n \
 \tPgUp = Go up\n \
 \tPgDwn = Do down\n \
 \tCtrl click= drag\n \
@@ -47,6 +49,7 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 \tCtrl+2 = Disarm-intent\n \
 \tCtrl+3 = Grab-intent\n \
 \tCtrl+4 = Harm-intent\n \
+\t5-9 = Quick-cast wand spells\n \
 \tDEL = Pull\n \
 \tINS = Cycle-intents-right\n \
 \tHOME = Drop\n \

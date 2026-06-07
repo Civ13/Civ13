@@ -17,7 +17,7 @@
 	parent_type = /obj/item/weapon/material/magic/wand/crafted/premade
 	name = "standard wizard's wand"
 	desc = "A standard school-issue wand. Smells of pine resin and floor wax. Reliable, if uninspiring."
-	icon_state  = "wand_pine_long"
+	icon_state  = "wand_pinewood_long"
 	wand_wood   = WAND_WOOD_PINE
 	wand_core   = WAND_CORE_NONE
 	wand_length = WAND_LENGTH_STANDARD

@@ -329,6 +329,12 @@ var/list/admin_verbs_magic = list(
 	/datum/admins/proc/check_level,
 	/datum/admins/proc/change_level,
 	/datum/admins/proc/set_house_points,
+	/datum/admins/proc/assign_moldy_man,
+	/datum/admins/proc/remove_moldy_man,
+	/datum/admins/proc/check_moldy_men,
+	/datum/admins/proc/award_sabotage_points,
+	/datum/admins/proc/check_sabotage_progress,
+	/datum/admins/proc/trigger_moldy_reveal,
 )
 
 /client/proc/add_admin_verbs()
@@ -378,6 +384,12 @@ var/list/admin_verbs_magic = list(
 				/datum/admins/proc/check_level,
 				/datum/admins/proc/change_level,
 				/datum/admins/proc/set_house_points,
+				/datum/admins/proc/assign_moldy_man,
+				/datum/admins/proc/remove_moldy_man,
+				/datum/admins/proc/check_moldy_men,
+				/datum/admins/proc/award_sabotage_points,
+				/datum/admins/proc/check_sabotage_progress,
+				/datum/admins/proc/trigger_moldy_reveal,
 			)
 /client/proc/remove_admin_verbs()
 	verbs.Remove(

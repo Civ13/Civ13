@@ -19,6 +19,11 @@
 	default_material = null
 	secondary_action = TRUE
 	var/datum/spell/active_spell = null // currently selected spell datum
+	var/datum/spell/quick_spell_5 = null // hotkey 5 quick-select
+	var/datum/spell/quick_spell_6 = null // hotkey 6 quick-select
+	var/datum/spell/quick_spell_7 = null // hotkey 7 quick-select
+	var/datum/spell/quick_spell_8 = null // hotkey 8 quick-select
+	var/datum/spell/quick_spell_9 = null // hotkey 9 quick-select
 	var/maxcharges = 10               // max charge pool
 	var/chargetime = 60               // deciseconds per charge tick
 	var/casting = FALSE
@@ -67,7 +72,21 @@
 		if (active_spell)
 			to_chat(user, SPAN_NOTICE("The currently active spell is <b>[active_spell.name]</b>."))
 		else
-			to_chat(user, SPAN_NOTICE("No spell is selected. Use the secondary action to pick one."))
+			to_chat(user, SPAN_NOTICE("No spell is selected. Use the action button <b>(Z)</b> to pick one."))
+		
+		// Show quick-select bindings
+		var/has_quick = FALSE
+		if (quick_spell_5 || quick_spell_6 || quick_spell_7 || quick_spell_8 || quick_spell_9)
+			has_quick = TRUE
+			to_chat(user, SPAN_NOTICE("<b>Quick-select spells:</b>"))
+			if (quick_spell_5) to_chat(user, SPAN_NOTICE("  5: <b>[quick_spell_5.name]</b>"))
+			if (quick_spell_6) to_chat(user, SPAN_NOTICE("  6: <b>[quick_spell_6.name]</b>"))
+			if (quick_spell_7) to_chat(user, SPAN_NOTICE("  7: <b>[quick_spell_7.name]</b>"))
+			if (quick_spell_8) to_chat(user, SPAN_NOTICE("  8: <b>[quick_spell_8.name]</b>"))
+			if (quick_spell_9) to_chat(user, SPAN_NOTICE("  9: <b>[quick_spell_9.name]</b>"))
+		if (!has_quick)
+			to_chat(user, SPAN_NOTICE("No quick-select spells bound. Use secondary action <b>(C)</b> to set them."))
+		
 		if (!istype(src, /obj/item/weapon/material/magic/wand/crafted))
 			// juice display
 			var/fullness
@@ -107,15 +126,52 @@
 		to_chat(user, SPAN_WARNING("You don't know any spells you can cast with this wand!"))
 		return
 
-	// find current index in usable list
-	var/idx = 1
-	if (active_spell && (active_spell in usable))
-		idx = usable.Find(active_spell) + 1
-		if (idx > usable.len)
-			idx = 1
+	// Build list of spell names for WWinput
+	var/list/spell_names = list()
+	for (var/datum/spell/S in usable)
+		spell_names += S.name
+	spell_names += "Clear slot" // Option to clear a hotkey slot
 
-	active_spell = usable[idx]
-	to_chat(user, SPAN_NOTICE("Spell set to <b>[active_spell.name]</b>!"))
+	// Ask for each hotkey 5-9
+	var/hotkey_num = 5
+	while (hotkey_num <= 9)
+		var/datum/spell/current_spell = null
+		switch (hotkey_num)
+			if (5) current_spell = quick_spell_5
+			if (6) current_spell = quick_spell_6
+			if (7) current_spell = quick_spell_7
+			if (8) current_spell = quick_spell_8
+			if (9) current_spell = quick_spell_9
+
+		var/current_name = "None"
+		if (current_spell)
+			current_name = current_spell.name
+
+		var/chosen = WWinput(user, "Current hotkey [hotkey_num]: [current_name]\nSelect spell for hotkey [hotkey_num]:", "Wand Quick-Select Setup", current_name, spell_names)
+		if (!chosen || chosen == "Cancel")
+			return
+
+		var/datum/spell/selected_spell = null
+		if (chosen != "Clear slot")
+			for (var/datum/spell/S in usable)
+				if (S.name == chosen)
+					selected_spell = S
+					break
+
+		switch (hotkey_num)
+			if (5) quick_spell_5 = selected_spell
+			if (6) quick_spell_6 = selected_spell
+			if (7) quick_spell_7 = selected_spell
+			if (8) quick_spell_8 = selected_spell
+			if (9) quick_spell_9 = selected_spell
+
+		if (selected_spell)
+			to_chat(user, SPAN_NOTICE("Hotkey [hotkey_num] set to <b>[selected_spell.name]</b>!"))
+		else
+			to_chat(user, SPAN_NOTICE("Hotkey [hotkey_num] cleared!"))
+
+		hotkey_num++
+
 	if (user.hud_used)
 		user.hud_used.update_spell_selector(user)
 		user.hud_used.update_spellshow(user)
@@ -150,6 +206,14 @@
 		var/area/A = get_area(user)
 		if (A && istype(A, /area/caribbean/houses/nml_three))
 			to_chat(user, SPAN_DANGER("There's a charm in the police station preventing magic from being cast."))
+			casting = FALSE
+			return
+
+	// Prevent casting within a Dead-Zone null field
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		if (H.no_magic)
+			to_chat(user, SPAN_DANGER("The arcane frequencies are grounded out here. You cannot cast spells in this null zone!"))
 			casting = FALSE
 			return
 
@@ -267,3 +331,109 @@
 /obj/item/weapon/material/magic/wand/wizard
 	name = "wizard's wand"
 	desc = "Use with care."
+
+// Hotkey verbs for quick-casting spells (bound to keys 5-9 via macros)
+/mob/living/human/verb/cast_quick_spell_5()
+	set name = "cast_quick_spell_5"
+	set hidden = TRUE
+	var/obj/item/weapon/material/magic/wand/W = null
+	if (istype(src.l_hand, /obj/item/weapon/material/magic/wand))
+		W = src.l_hand
+	else if (istype(src.r_hand, /obj/item/weapon/material/magic/wand))
+		W = src.r_hand
+	if (!W)
+		to_chat(src, SPAN_WARNING("You must be holding a wand to use quick-cast!"))
+		return
+	if (!W.quick_spell_5)
+		to_chat(src, SPAN_WARNING("No spell bound to hotkey 5!"))
+		return
+
+	W.active_spell = W.quick_spell_5
+	if (src.hud_used)
+		src.hud_used.update_spell_selector(src)
+		src.hud_used.update_spellshow(src)
+	to_chat(src, SPAN_NOTICE("Spell set to <b>[W.active_spell.name]</b>!"))
+
+/mob/living/human/verb/cast_quick_spell_6()
+	set name = "cast_quick_spell_6"
+	set hidden = TRUE
+	var/obj/item/weapon/material/magic/wand/W = null
+	if (istype(src.l_hand, /obj/item/weapon/material/magic/wand))
+		W = src.l_hand
+	else if (istype(src.r_hand, /obj/item/weapon/material/magic/wand))
+		W = src.r_hand
+	if (!W)
+		to_chat(src, SPAN_WARNING("You must be holding a wand to use quick-cast!"))
+		return
+	if (!W.quick_spell_6)
+		to_chat(src, SPAN_WARNING("No spell bound to hotkey 6!"))
+		return
+
+	W.active_spell = W.quick_spell_6
+	if (src.hud_used)
+		src.hud_used.update_spell_selector(src)
+		src.hud_used.update_spellshow(src)
+	to_chat(src, SPAN_NOTICE("Spell set to <b>[W.active_spell.name]</b>!"))
+
+/mob/living/human/verb/cast_quick_spell_7()
+	set name = "cast_quick_spell_7"
+	set hidden = TRUE
+	var/obj/item/weapon/material/magic/wand/W = null
+	if (istype(src.l_hand, /obj/item/weapon/material/magic/wand))
+		W = src.l_hand
+	else if (istype(src.r_hand, /obj/item/weapon/material/magic/wand))
+		W = src.r_hand
+	if (!W)
+		to_chat(src, SPAN_WARNING("You must be holding a wand to use quick-cast!"))
+		return
+	if (!W.quick_spell_7)
+		to_chat(src, SPAN_WARNING("No spell bound to hotkey 7!"))
+		return
+
+	W.active_spell = W.quick_spell_7
+	if (src.hud_used)
+		src.hud_used.update_spell_selector(src)
+		src.hud_used.update_spellshow(src)
+	to_chat(src, SPAN_NOTICE("Spell set to <b>[W.active_spell.name]</b>!"))
+
+/mob/living/human/verb/cast_quick_spell_8()
+	set name = "cast_quick_spell_8"
+	set hidden = TRUE
+	var/obj/item/weapon/material/magic/wand/W = null
+	if (istype(src.l_hand, /obj/item/weapon/material/magic/wand))
+		W = src.l_hand
+	else if (istype(src.r_hand, /obj/item/weapon/material/magic/wand))
+		W = src.r_hand
+	if (!W)
+		to_chat(src, SPAN_WARNING("You must be holding a wand to use quick-cast!"))
+		return
+	if (!W.quick_spell_8)
+		to_chat(src, SPAN_WARNING("No spell bound to hotkey 8!"))
+		return
+
+	W.active_spell = W.quick_spell_8
+	if (src.hud_used)
+		src.hud_used.update_spell_selector(src)
+		src.hud_used.update_spellshow(src)
+	to_chat(src, SPAN_NOTICE("Spell set to <b>[W.active_spell.name]</b>!"))
+
+/mob/living/human/verb/cast_quick_spell_9()
+	set name = "cast_quick_spell_9"
+	set hidden = TRUE
+	var/obj/item/weapon/material/magic/wand/W = null
+	if (istype(src.l_hand, /obj/item/weapon/material/magic/wand))
+		W = src.l_hand
+	else if (istype(src.r_hand, /obj/item/weapon/material/magic/wand))
+		W = src.r_hand
+	if (!W)
+		to_chat(src, SPAN_WARNING("You must be holding a wand to use quick-cast!"))
+		return
+	if (!W.quick_spell_9)
+		to_chat(src, SPAN_WARNING("No spell bound to hotkey 9!"))
+		return
+
+	W.active_spell = W.quick_spell_9
+	if (src.hud_used)
+		src.hud_used.update_spell_selector(src)
+		src.hud_used.update_spellshow(src)
+	to_chat(src, SPAN_NOTICE("Spell set to <b>[W.active_spell.name]</b>!"))

@@ -271,7 +271,7 @@
 		if ( findtext(pose,".",length(pose)) == FALSE && findtext(pose,"!",length(pose)) == FALSE && findtext(pose,"?",length(pose)) == FALSE )
 			pose = addtext(pose,".") //Makes sure all emotes end with a period.
 		msg += "\n[T.He] [T.is] [pose]"
-	if (map && !map.civilizations && map.ID != MAP_LITTLE_CREEK && map.ID != MAP_GULAG13 && map.ID != MAP_THE_ART_OF_THE_DEAL && map.ID != MAP_OCCUPATION)
+	if (map && !map.civilizations && map.ID != MAP_LITTLE_CREEK && map.ID != MAP_GULAG13 && map.ID != MAP_THE_ART_OF_THE_DEAL && map.ID != MAP_OCCUPATION && map.ID != MAP_WIZARD_BOY)
 		if (original_job)
 			if (ishuman(user) && user != src)
 				var/mob/living/human/H = user
@@ -328,6 +328,13 @@
 					msg += "<br><i>You recognize [T.him] as a fellow <b>Auxillary Police</b>!</i>"
 			if (H.faction_text == "GERMAN" && original_job_title == "Auxillary Police")
 				msg += "<br><i>You recognize [T.him] as a <b>collaborator</b>!</i>"
+
+	else if (map.ID == MAP_WIZARD_BOY)
+		if (ishuman(user) && user != src)
+			var/mob/living/human/H = user
+			var/obj/map_metadata/wizard_boy/WB = map
+			if (istype(WB) && H.ckey && src.ckey && WB.is_moldy_man(H.ckey) && WB.is_moldy_man(src.ckey))
+				msg += "<br><i>You recognise [T.him] as a fellow moldy man!</i>"
 
 	else if (map.civilizations)
 		if (ishuman(user) && user != src)
