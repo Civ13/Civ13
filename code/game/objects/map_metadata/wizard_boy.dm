@@ -37,6 +37,7 @@
 	var/stats_loaded = FALSE
 	var/stats_dirty = FALSE
 	var/saving_stats = FALSE
+	var/list/moldy_men = list()
 	New()
 		..()
 		spawn(30)
@@ -77,6 +78,16 @@
 			to_world("<font size=4 class='wizard' style='color:#0000CF'>Slatepie: [score]</font>")
 		else if (house == "Mustardweasel")
 			to_world("<font size=4 class='wizard' style='color:#FFD700'>Mustardweasel: [score]</font>")
+	if (moldy_men.len)
+		to_world("<font size=4 class='wizard'>--- Moldy Men ---</font>")
+		for (var/mob/living/human/H in player_list)
+			if (H.ckey && (H.ckey in moldy_men))
+				var/status = "Alive"
+				if (H.stat == DEAD)
+					status = "DEAD"
+				else if (H.stat == UNCONSCIOUS)
+					status = "Unconscious"
+				to_world("<font size=3 class='wizard'>[H.ckey] ([H.real_name]) - [status]</font>")
 	return
 /obj/map_metadata/wizard_boy/proc/load_houses()
 	if (fexists("SQL/houses.txt"))
@@ -334,6 +345,47 @@
 	house_info.Remove(ckey)
 	save_houses()
 	return TRUE
+
+/obj/map_metadata/wizard_boy/proc/is_moldy_man(ckey)
+	return (ckey in moldy_men)
+
+/obj/map_metadata/wizard_boy/proc/make_moldy_man(ckey)
+	if (ckey in moldy_men)
+		return FALSE
+	for (var/mob/living/human/H in player_list)
+		if (H.client && H.client.ckey == ckey)
+			if (!H.mind)
+				H.mind = new
+				H.mind.current = H
+				H.mind.key = H.key
+			H.mind.special_role = "Moldy Man"
+			moldy_men += ckey
+			to_chat(H, "<span class='danger'>A dark presence fills you... You are now a <b>Moldy Man</b>, an agent of Lord Moldywart! Survive until the round ends to claim victory. Other Moldy Men can recognise you by examining you.</span>")
+			log_admin("[ckey] has been made a Moldy Man.")
+			return TRUE
+	return FALSE
+
+/obj/map_metadata/wizard_boy/proc/remove_moldy_man(ckey)
+	if (!(ckey in moldy_men))
+		return FALSE
+	moldy_men -= ckey
+	for (var/mob/living/human/H in player_list)
+		if (H.client && H.client.ckey == ckey)
+			if (H.mind)
+				H.mind.special_role = null
+			to_chat(H, "<span class='notice'>The dark presence leaves you. You are no longer a Moldy Man.</span>")
+	return TRUE
+
+/obj/map_metadata/wizard_boy/proc/get_moldy_man_info()
+	. = list()
+	for (var/mob/living/human/H in player_list)
+		if (H.ckey && (H.ckey in moldy_men))
+			var/status = "Alive"
+			if (H.stat == DEAD)
+				status = "DEAD"
+			else if (H.stat == UNCONSCIOUS)
+				status = "Unconscious"
+			. += "[H.ckey] ([H.real_name]) - [status]"
 
 /obj/map_metadata/wizard_boy/proc/change_house(ckey, new_house)
 	if(!house_info[ckey])
