@@ -714,6 +714,7 @@ var/global/datum/external_relations/external_relations = new()
 	var/faction_treasury = "TreasuryRN"
 	not_movable = TRUE
 	not_disassemblable = TRUE
+	var/can_scam = TRUE
 	var/list/civ_catalogue = list( //type name, path, price
 		list("wood crate", /obj/structure/closet/crate/wood,50),
 		list("iron crate", /obj/structure/closet/crate/iron,50),
@@ -758,6 +759,7 @@ var/global/datum/external_relations/external_relations = new()
 /obj/structure/pepelsibirsk_radio/supply_radio/no_scam
 	name = "long range high-sensitivity supply radio"
 	desc = "Use this to request supplies to be delivered to the city. It appears like the microphone on it is set to much too high sensitivity for you to safely arrange a scam."
+	can_scam = FALSE
 
 /obj/structure/pepelsibirsk_radio/supply_radio/proc/update_cost(final_list, final_cost, choice, user, scam)
 	if (choice == "Pepelsibirsk 1 (MIL)" && scam != "Yes, scam them!")
@@ -801,7 +803,7 @@ var/global/datum/external_relations/external_relations = new()
 		display += "[i[1]], [i[3]] rubles"
 		display += "Cancel Purchase"
 	var/choice2 = WWinput(user, "Current Rubles: [money]", "Order a crate", "Cancel Purchase", display)
-	if(istype(src, /obj/structure/pepelsibirsk_radio/supply_radio/no_scam))
+	if(can_scam == FALSE)
 		scam = "No, we're honest."
 	else
 		scam = WWinput(user, "Current Rubles: [money]", "Shall we scam them?", "No, we're honest.", scamornot)
