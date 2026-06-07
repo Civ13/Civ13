@@ -748,6 +748,7 @@
 		var/mob/living/human/H = lastattacker
 		if (H.client && map && istype(map, /obj/map_metadata/wizard_boy))
 			var/obj/map_metadata/wizard_boy/WB = map
+			WB.record_npc_kill(H.client.ckey, src.name)
 			if (WB.check_level(H.client.ckey) == "3")
 				WB.change_level(H.client.ckey, "4")
 				to_chat(world, "<font size=3 class='wizard'><b>[H.real_name]</b> ([H.key]) has progressed to qualification level 4 (<b>B.A.S.E.D.</b>) by slaying \a [src]!</font>")
