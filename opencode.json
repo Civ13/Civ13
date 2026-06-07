@@ -1,0 +1,9 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "command": {
+    "newbranch": {
+      "description": "Rebase to master with latest upstream, then create a new branch named opencode-<HHMMSS> (GMT). Warns if there are uncommitted changes.",
+      "prompt": "Run /newbranch. First check `git status --porcelain` for uncommitted changes. If any exist, list them and ask the user 'There are uncommitted changes. Proceed? (they will be carried to the new branch)'. Wait for explicit confirmation. Then run `git fetch origin` and `git rebase origin/master`. Then get the current GMT time with `date -u +%H%M%S` and create a branch named `opencode-<output>` using `git checkout -b opencode-<output>`. Report the branch name to the user."
+    }
+  }
+}
