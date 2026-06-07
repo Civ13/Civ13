@@ -38,8 +38,10 @@
 	var/stats_dirty = FALSE
 	var/saving_stats = FALSE
 	var/list/moldy_men = list()
+	var/datum/moldy_sabotage/sabotage
 	New()
 		..()
+		sabotage = new /datum/moldy_sabotage(src)
 		spawn(30)
 			load_houses()
 		spawn(35)
@@ -360,7 +362,9 @@
 				H.mind.key = H.key
 			H.mind.special_role = "Moldy Man"
 			moldy_men += ckey
-			to_chat(H, "<span class='danger'>A dark presence fills you... You are now a <b>Moldy Man</b>, an agent of Lord Moldywart! Survive until the round ends to claim victory. Other Moldy Men can recognise you by examining you.</span>")
+			if (sabotage)
+				sabotage.add_member(ckey)
+			to_chat(H, "<span class='danger'>A dark presence fills you... You are now a <b>Moldy Man</b>, an agent of Lord Moldywart! Survive until the round ends to claim victory. Other Moldy Men can recognise you by examining you. Sabotage the school to earn points for the Grand Ritual!</span>")
 			log_admin("[ckey] has been made a Moldy Man.")
 			return TRUE
 	return FALSE
@@ -369,6 +373,8 @@
 	if (!(ckey in moldy_men))
 		return FALSE
 	moldy_men -= ckey
+	if (sabotage)
+		sabotage.remove_member(ckey)
 	for (var/mob/living/human/H in player_list)
 		if (H.client && H.client.ckey == ckey)
 			if (H.mind)

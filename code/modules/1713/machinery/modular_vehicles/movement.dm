@@ -18,7 +18,7 @@
 	/// Initialize movement with a wheel configuration
 	New()
 		..()
-		if (!istype(/obj/structure/vehicleparts/movement/sail))
+		if (!istype(src, /obj/structure/vehicleparts/movement/sail))
 			if (!wconfig)
 				// Default to standard wheel if none provided
 				wconfig = get_wheel_config("standard_wheel")

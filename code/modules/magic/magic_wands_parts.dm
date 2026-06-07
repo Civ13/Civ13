@@ -858,7 +858,6 @@
 
 	// Skill gate
 	if (ishuman(user))
-		var/mob/living/human/H = user
 		if (H.getStat("magic") < minimum_level)
 			to_chat(user, SPAN_WARNING("You do not have the magical knowledge required to use this wand!"))
 			return
@@ -913,7 +912,6 @@
 
 	// Juice check: Refuse to cast if not enough juice for the effective spell cost.
 	if (ishuman(user))
-		var/mob/living/human/H = user
 		if (H.juice < eff_juice_cost)
 			to_chat(user, SPAN_WARNING("You don't have enough magical juice to cast this spell!"))
 			return
@@ -931,8 +929,6 @@
 			return
 
 		if (ishuman(user))
-			var/mob/living/human/H = user
-
 			if (user.get_active_hand() == src) // H.juice > 0 is guaranteed by the checks above if eff_juice_cost > 0
 				H.juice -= eff_juice_cost // Deduct juice
 				// Cast feedback — suppressed for Fox fur silent cast

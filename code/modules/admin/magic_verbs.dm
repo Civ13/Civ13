@@ -357,3 +357,70 @@
 	to_chat(usr, "<b>Current Moldy Men:</b>")
 	for (var/entry in W.get_moldy_man_info())
 		to_chat(usr, entry)
+
+/datum/admins/proc/award_sabotage_points()
+	set category = "Magic"
+	set name = "Award Sabotage Points"
+	if (!check_rights(R_ADMIN))
+		return
+	var/obj/map_metadata/wizard_boy/W = map
+	if (!istype(W))
+		to_chat(usr, "The current map is not Wizard Boy.")
+		return
+	if (!W.sabotage)
+		to_chat(usr, "Sabotage system not initialized.")
+		return
+
+	var/amount = input(usr, "Enter points to award:", "Award Sabotage Points") as num
+	if (isnull(amount) || amount <= 0)
+		return
+
+	var/source = input(usr, "Enter source description:", "Award Sabotage Points", "Admin Award") as text
+	if (!source)
+		source = "Admin Award"
+
+	W.sabotage.award_points(amount, source)
+	log_admin("[key_name(usr)] awarded [amount] sabotage point\s. Source: [source].")
+	message_admins("[key_name(usr)] awarded [amount] sabotage point\s. Source: [source].", key_name(usr))
+
+/datum/admins/proc/check_sabotage_progress()
+	set category = "Magic"
+	set name = "Check Sabotage Progress"
+	if (!check_rights(R_ADMIN))
+		return
+	var/obj/map_metadata/wizard_boy/W = map
+	if (!istype(W))
+		to_chat(usr, "The current map is not Wizard Boy.")
+		return
+	if (!W.sabotage)
+		to_chat(usr, "Sabotage system not initialized.")
+		return
+
+	var/datum/moldy_sabotage/S = W.sabotage
+	to_chat(usr, "<b>Sabotage Progress:</b>")
+	to_chat(usr, "Points: [S.sabotage_points]/[S.max_threshold]")
+	to_chat(usr, "Ritual Unlocked: [S.ritual_unlocked]")
+	to_chat(usr, "Members ([S.member_ckeys.len]):")
+	for (var/ckey in S.member_ckeys)
+		to_chat(usr, "  - [ckey]")
+
+/datum/admins/proc/trigger_moldy_reveal()
+	set category = "Magic"
+	set name = "Trigger Moldy Reveal"
+	if (!check_rights(R_ADMIN))
+		return
+	var/obj/map_metadata/wizard_boy/W = map
+	if (!istype(W))
+		to_chat(usr, "The current map is not Wizard Boy.")
+		return
+	if (!W.sabotage)
+		to_chat(usr, "Sabotage system not initialized.")
+		return
+
+	if (alert(usr, "This will reveal ALL Moldy Men to the entire server. Continue?", "Trigger Moldy Reveal", "Yes", "No") != "Yes")
+		return
+
+	W.sabotage.reveal_all()
+	to_chat(world, "<span class='danger'><font size=4>\"The Moldy Men have been exposed!\"</font></span>")
+	log_admin("[key_name(usr)] triggered the Moldy Men global reveal.")
+	message_admins("[key_name(usr)] triggered the Moldy Men global reveal.", key_name(usr))
