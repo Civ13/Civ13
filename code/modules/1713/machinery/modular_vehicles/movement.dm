@@ -18,18 +18,19 @@
 	/// Initialize movement with a wheel configuration
 	New()
 		..()
-		if (!wconfig)
-			// Default to standard wheel if none provided
-			wconfig = get_wheel_config("standard_wheel")
+		if (!istype(/obj/structure/vehicleparts/movement/sail))
+			if (!wconfig)
+				// Default to standard wheel if none provided
+				wconfig = get_wheel_config("standard_wheel")
 
-		if (wconfig)
-			src.name = wconfig.name
-			src.icon = wconfig.icon
-			src.icon_state = wconfig.icon_state
-			src.type_name = wconfig.type_name  // Set for compatibility
-			src.ntype = wconfig.type_name      // Set ntype for rendering logic
-			src.reversed = wconfig.is_reversed
-			broken = FALSE
+			if (wconfig)
+				src.name = wconfig.name
+				src.icon = wconfig.icon
+				src.icon_state = wconfig.icon_state
+				src.type_name = wconfig.type_name  // Set for compatibility
+				src.ntype = wconfig.type_name      // Set ntype for rendering logic
+				src.reversed = wconfig.is_reversed
+				broken = FALSE
 
 	/// Get movement component type (wheel or track)
 	proc/get_type()
