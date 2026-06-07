@@ -15,6 +15,11 @@
 		qdel(src)
 		return
 
+	if (!W.sabotage.ritual_unlocked || W.sabotage.ritual_completed)
+		to_chat(user, "<span class='warning'>The scroll crumbles to dust. The ritual has already been completed.</span>")
+		qdel(src)
+		return
+
 	if (!(user.client && (user.client.ckey in W.sabotage.member_ckeys)))
 		to_chat(user, "<span class='warning'>The scroll crumbles to dust. You are not worthy.</span>")
 		qdel(src)

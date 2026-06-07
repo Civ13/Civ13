@@ -10,17 +10,18 @@
 	var/house_point_value = 0
 
 /mob/living/simple_animal/hostile/wizard/death(gibbed)
-	if (map && istype(map, /obj/map_metadata/wizard_boy) && house_point_value > 0)
-		var/obj/map_metadata/wizard_boy/WB = map
-		var/mob/living/human/killer = lastattacker
-		if (!killer && lastattacker && ishuman(lastattacker))
-			killer = lastattacker
-		if (killer && ishuman(killer) && killer.client)
-			var/house = WB.check_house(killer.client.ckey)
-			if (house != "Unknown" && house != "LOSER")
-				WB.house_points[house] += house_point_value
-				to_chat(killer, SPAN_NOTICE("Your house gains [house_point_value] points for defeating [name]!"))
-
+	if (stat != DEAD)
+		if (map && istype(map, /obj/map_metadata/wizard_boy) && house_point_value > 0)
+			var/obj/map_metadata/wizard_boy/WB = map
+			var/mob/living/human/killer = lastattacker
+			if (!killer && lastattacker && ishuman(lastattacker))
+				killer = lastattacker
+			if (killer && ishuman(killer) && killer.client)
+				var/house = WB.check_house(killer.client.ckey)
+				if (house != "Unknown" && house != "LOSER")
+					WB.house_points[house] += house_point_value
+					to_chat(killer, SPAN_NOTICE("Your house gains [house_point_value] points for defeating [name]!"))
+	..(gibbed)
 /mob/living/simple_animal/hostile/wizard/moldy_man
 	name = "Moldy Man"
 	desc = "A grey, damp figure in a dark robe that smells powerfully of mildew and old cheese. One of Lord Moldywart's followers."
@@ -66,10 +67,11 @@
 	return ..()
 
 /mob/living/simple_animal/hostile/wizard/moldy_man/death()
-	var/obj/item/stack/money/silvercoin/SC = new /obj/item/stack/money/silvercoin(src.loc)
-	SC.amount = rand(28,38)
-	if (prob(15))
-		new /obj/item/weapon/material/magic/wand/crafted/henchman_twig(src.loc)
+	if (stat != DEAD)
+		var/obj/item/stack/money/silvercoin/SC = new /obj/item/stack/money/silvercoin(src.loc)
+		SC.amount = rand(28,38)
+		if (prob(15))
+			new /obj/item/weapon/material/magic/wand/crafted/henchman_twig(src.loc)
 	..()
 
 /mob/living/simple_animal/hostile/wizard/moldy_man/proc/find_nearest_player()
@@ -211,8 +213,9 @@
 	cd_blockum_time = 150
 
 mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
-	var/loot_path = pick(/obj/item/wand_part/spark_plug,/obj/item/wand_part/cassette_tape,/obj/item/wand_part/chewing_gum)
-	new loot_path(src.loc)
+	if (stat != DEAD)
+		var/loot_path = pick(/obj/item/wand_part/spark_plug,/obj/item/wand_part/cassette_tape,/obj/item/wand_part/chewing_gum)
+		new loot_path(src.loc)
 	..()
 
 // ============================================================
@@ -416,10 +419,11 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 	src.say(pick(taunt_lines))
 
 /mob/living/simple_animal/hostile/wizard/moldywart/death(gibbed)
-	new /obj/item/weapon/material/magic/wand/crafted/the_pale_stick(src.loc)
-	src.visible_message(SPAN_NOTICE("<b>Lord Moldywart</b> lets out a bloodcurdling shriek and collapses."))
-	src.say("I... shall return... again... it is... really getting... old...")
-	playsound(src.loc, 'sound/voice/wizard_boy/moldywart_death.ogg', 75, FALSE)
+	if (stat != DEAD)
+		new /obj/item/weapon/material/magic/wand/crafted/the_pale_stick(src.loc)
+		src.visible_message(SPAN_NOTICE("<b>Lord Moldywart</b> lets out a bloodcurdling shriek and collapses."))
+		src.say("I... shall return... again... it is... really getting... old...")
+		playsound(src.loc, 'sound/voice/wizard_boy/moldywart_death.ogg', 75, FALSE)
 	..(gibbed)
 
 /obj/effect/spawner/mobspawner/moldymen
@@ -627,13 +631,14 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 	house_point_value = 50
 
 /mob/living/simple_animal/hostile/wizard/gloom/death()
-	new /obj/item/wand_part/gloom_thread(src.loc)
-	visible_message(SPAN_DANGER("The [name] lets out a painful hiss as it fades away!"))
-	playsound(src.loc, 'sound/animals/monsters/hiss2.ogg', 100, TRUE)
-	spawn(10)
-		if (src)
-			qdel(src)
-	..()
+	if (stat != DEAD)
+		new /obj/item/wand_part/gloom_thread(src.loc)
+		visible_message(SPAN_DANGER("The [name] lets out a painful hiss as it fades away!"))
+		playsound(src.loc, 'sound/animals/monsters/hiss2.ogg', 100, TRUE)
+		spawn(10)
+			if (src)
+				qdel(src)
+		..()
 
 /mob/living/simple_animal/hostile/wizard/gloom/bullet_act(var/obj/item/projectile/P)
 	if (istype(P, /obj/item/projectile/magic))

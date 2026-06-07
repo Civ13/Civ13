@@ -482,8 +482,9 @@
 	processing_objects -= src
 	return ..()
 /mob/living/simple_animal/wizard/bobby/death()
-	if (prob(25))
-		new /obj/item/wand_part/cap_truncheon(src.loc)
+	if (stat != DEAD)
+		if (prob(25))
+			new /obj/item/wand_part/cap_truncheon(src.loc)
 	..()
 
 /mob/living/simple_animal/wizard/bobby/attack_hand(mob/user)
@@ -1068,13 +1069,15 @@ h2 { color: #ffd700; border-bottom: 2px solid #5a3a1a; padding-bottom: 8px; marg
 				to_deduct -= stack_value
 				qdel(S)
 			else
-				var/remove_amount = istype(S, /obj/item/stack/money/goldcoin) ? round(to_deduct / 4) : to_deduct
+				var/remove_amount = istype(S, /obj/item/stack/money/goldcoin) ? round((to_deduct + 3) / 4) : to_deduct
 				if (istype(S, /obj/item/stack/money/goldcoin))
 					S.amount -= remove_amount
 					to_deduct -= remove_amount * 4
-				else
-					S.amount -= remove_amount
-					to_deduct -= remove_amount
+					if (to_deduct < 0)
+						var/obj/item/stack/money/silvercoin/change = new(get_turf(H))
+						change.amount = -to_deduct
+						H.put_in_hands(change)
+						to_deduct = 0
 				S.update_icon()
 				break
 

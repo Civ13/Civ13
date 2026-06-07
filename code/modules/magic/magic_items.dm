@@ -459,7 +459,7 @@
 /obj/item/clothing/suit/chameleon_mac/process()
 	if (!wearer || wearer.stat || !isturf(wearer.loc))
 		return
-	if (wearer.loc != loc)
+	if (loc != wearer)
 		return
 
 	if (wearer.x != last_x || wearer.y != last_y || wearer.z != last_z)
@@ -598,8 +598,9 @@
 
 /obj/effect/null_zone/Destroy()
 	for (var/mob/living/human/H in affected_mobs)
-		H.no_magic = FALSE
-		to_chat(H, SPAN_NOTICE("The null zone dissipates. You can feel magic again."))
+		if (H)
+			H.no_magic = FALSE
+			to_chat(H, SPAN_NOTICE("The null zone dissipates. You can feel magic again."))
 	affected_mobs.Cut()
 	processing_objects -= src
 	. = ..()
@@ -622,10 +623,11 @@
 	var/i = 1
 	while (i <= affected_mobs.len)
 		var/mob/living/human/H = affected_mobs[i]
-		if (!H || H.stat || get_dist(H, src) > 3)
+		if (!H)
+			affected_mobs.Cut(i, i + 1)
+		else if (H.stat || get_dist(H, src) > 3)
 			H.no_magic = FALSE
-			if (H)
-				to_chat(H, SPAN_NOTICE("You step out of the null zone. Magic feels possible again."))
+			to_chat(H, SPAN_NOTICE("You step out of the null zone. Magic feels possible again."))
 			affected_mobs.Cut(i, i + 1)
 		else
 			i++

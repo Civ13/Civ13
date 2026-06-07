@@ -2,6 +2,7 @@
 	var/sabotage_points = 0
 	var/max_threshold = 100
 	var/ritual_unlocked = FALSE
+	var/ritual_completed = FALSE
 	var/list/member_ckeys = list()
 	var/obj/map_metadata/wizard_boy/owner
 
@@ -47,9 +48,12 @@
 			H << sound('sound/effects/siren_once.ogg')
 
 /datum/moldy_sabotage/proc/complete_ritual(mob/living/user)
+	if (!ritual_unlocked || ritual_completed)
+		return
 	if (!user || !isturf(user.loc))
 		return
 
+	ritual_completed = TRUE
 	var/turf/T = get_turf(user)
 	var/mob/living/simple_animal/hostile/wizard/moldywart/B = new(T)
 	B.name = "Lord Moldywart"

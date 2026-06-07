@@ -125,6 +125,23 @@
 	stats_loaded = TRUE
 	if (fexists("SQL/wizard_boy_stats.txt"))
 		player_stats = list()
+		var/file_content = file2text("SQL/wizard_boy_stats.txt")
+		var/list/lines = splittext(file_content, "\n")
+		for (var/line in lines)
+			if (!line)
+				continue
+			var/list/parts = splittext(line, ";")
+			if (parts.len < 3)
+				continue
+			var/ckey = parts[1]
+			var/wins = text2num(parts[2])
+			var/losses = text2num(parts[3])
+			var/list/kills = list()
+			for (var/i = 4 to parts.len)
+				var/list/kill_data = splittext(parts[i], ",")
+				if (kill_data.len == 2)
+					kills[kill_data[1]] = text2num(kill_data[2])
+			player_stats[ckey] = list(wins, losses, kills)
 
 /obj/map_metadata/wizard_boy/proc/save_stats()
 	if (saving_stats)
@@ -154,17 +171,6 @@
 		saving_stats = FALSE
 		if (stats_dirty)
 			save_stats()
-
-	for (var/ckey in player_stats)
-		var/list/data = player_stats[ckey]
-		if (!islist(data) || data.len < 2)
-			continue
-		var/line = "[ckey];[data[1]];[data[2]]"
-		if (data.len >= 3 && islist(data[3]))
-			var/list/kills = data[3]
-			for(var/enemy in kills)
-				line += ";[enemy],[kills[enemy]]"
-		text2file(line, "SQL/wizard_boy_stats.txt")
 
 /obj/map_metadata/wizard_boy/proc/ensure_stats_loaded(ckey)
 	if(!stats_loaded)
