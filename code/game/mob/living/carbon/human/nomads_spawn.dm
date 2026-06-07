@@ -1006,6 +1006,7 @@
 		possible_h_list = list("Light Brown","Dark Brown")
 		possible_e_list = list("Green","Brown","Black")
 		possible_s_range = list(-35,-60)
+		update_character_appearance(possible_e_list, possible_h_list, possible_s_range)
 
 	else if (map.ID == MAP_NATIONSRP_TRIPLE)
 		//west

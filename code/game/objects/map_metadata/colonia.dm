@@ -43,12 +43,12 @@
 	..()
 	relations_subsystem()
 	recover_relations()
-	check_relations_msg()
 	invasion_subsystem()
 	time_update(age, quarter, year)
 	BARBARIAN_RELATIONS = 0
 	ROMAN_RELATIONS = 100
 	LOCAL_TRIBES_RELATIONS = 50
+	check_relations_msg()
 
 /////////////////////////////////SEASONS//////////////////////////
 /obj/map_metadata/colonia/seasons()
@@ -463,61 +463,10 @@
 	///Display the menu asking for what you want to purchase
 	for (var/list/i in catalogue)
 		display += "[i[1]], [i[3]] coins"
-		display += "Cancel Purchase"
+	display += "Cancel Purchase"
 	var/choice2 = WWinput(user, "Current money: [money]", "Order a crate", "Cancel Purchase", display)
-	if(can_scam == FALSE)
-		scam = "No, we're honest."
-	else
-		scam = WWinput(user, "Current money: [money]", "Shall we scam them?", "No, we're honest.", scamornot)
-	var/list/choicename = splittext(choice2, ", ")
-
-	///ACTUAL PURCHASING LOGIC///
-	if (choice2 != "Cancel Purchase")
-		for(var/list/i2 in catalogue) //Goes through everything in the chosen catalogue
-			if (i2[1]== choicename[1]) //Checks if each item it goes through is the correct item
-				final_list = i2 //If it is, set that to final_list
-				world.log << "A purchase has been made: [final_list[1]], [final_list[2]], [final_list[3]]"
-				final_cost = (final_list[3]) //Set the cost of the item based on the cost value in the list
-				if (final_list[3] <= money || scam == "Yes, scam them!" )
-					if (scam != "Yes, scam them!")
-						money -= final_cost
-					update_cost(final_list, final_cost, choice, user, scam)
-					if (money > 0 && money <= 3)
-						var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
-						NM.amount = money/NM.value
-						if (NM.amount <= 0)
-							qdel(NM)
-					else if (money > 3 && money <= 40)
-						var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
-						NM.amount = money/NM.value
-						if (NM.amount <= 0)
-							qdel(NM)
-					else
-						var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
-						NM.amount = money/NM.value
-						if (NM.amount <= 0)
-							qdel(NM)
-					money = 0					
-				else // you're broke
-					if (money > 0 && money <= 3)
-						var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
-						NM.amount = money/NM.value
-						if (NM.amount <= 0)
-							qdel(NM)
-					else if (money > 3 && money <= 40)
-						var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
-						NM.amount = money/NM.value
-						if (NM.amount <= 0)
-							qdel(NM)
-					else
-						var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
-						NM.amount = money/NM.value
-						if (NM.amount <= 0)
-							qdel(NM)
-					money = 0
-					to_chat(user, "You don't have enough money for this item.")
-				break
-	else
+	if (choice2 == "Cancel Purchase")
+		///Giving your money back///
 		if (money > 0 && money <= 3)
 			var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
 			NM.amount = money/NM.value
@@ -535,7 +484,56 @@
 				qdel(NM)
 		money = 0
 		return
-
+	if(can_scam == FALSE)
+		scam = "No, we're honest."
+	else
+		scam = WWinput(user, "Current money: [money]", "Shall we scam them?", "No, we're honest.", scamornot)
+	var/list/choicename = splittext(choice2, ", ")
+	///ACTUAL PURCHASING LOGIC///
+	for(var/list/i2 in catalogue) //Goes through everything in the chosen catalogue
+		if (i2[1]== choicename[1]) //Checks if each item it goes through is the correct item
+			final_list = i2 //If it is, set that to final_list
+			world.log << "A purchase has been made: [final_list[1]], [final_list[2]], [final_list[3]]"
+			final_cost = (final_list[3]) //Set the cost of the item based on the cost value in the list
+			if (final_list[3] <= money || scam == "Yes, scam them!" )
+				if (scam != "Yes, scam them!")
+					money -= final_cost
+				update_cost(final_list, final_cost, choice, user, scam)
+				if (money > 0 && money <= 3)
+					var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
+					NM.amount = money/NM.value
+					if (NM.amount <= 0)
+						qdel(NM)
+				else if (money > 3 && money <= 40)
+					var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
+					NM.amount = money/NM.value
+					if (NM.amount <= 0)
+						qdel(NM)
+				else
+					var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
+					NM.amount = money/NM.value
+					if (NM.amount <= 0)
+						qdel(NM)
+				money = 0					
+			else // you're broke
+				if (money > 0 && money <= 3)
+					var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
+					NM.amount = money/NM.value
+					if (NM.amount <= 0)
+						qdel(NM)
+				else if (money > 3 && money <= 40)
+					var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
+					NM.amount = money/NM.value
+					if (NM.amount <= 0)
+						qdel(NM)
+				else
+					var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
+					NM.amount = money/NM.value
+					if (NM.amount <= 0)
+						qdel(NM)
+				money = 0
+				to_chat(user, "You don't have enough money for this item.")
+			break
 /obj/structure/pepelsibirsk_radio/export_radio/colonia
 	name = "export book"
 	desc = "Use this to export resources to the Romans."
@@ -585,6 +583,8 @@
 	else if (scam == "Yes, scam them!")
 		to_chat(user, "Your item will arrive in 60 seconds. Relations with [choice] have decreased by [final_cost*0.08].")
 	spawn(1 MINUTE)
+		if(!src)
+			return
 		var/list/turfs = list()
 		if (faction_treasury != "craftable")
 			turfs = latejoin_turfs[factionarea]
