@@ -80,6 +80,21 @@ macro "macro"
 	elem 
 		name = "CTRL+4"
 		command = "a-intent harm"
+	elem 
+		name = "5"
+		command = "cast_quick_spell_5"
+	elem 
+		name = "6"
+		command = "cast_quick_spell_6"
+	elem 
+		name = "7"
+		command = "cast_quick_spell_7"
+	elem 
+		name = "8"
+		command = "cast_quick_spell_8"
+	elem 
+		name = "9"
+		command = "cast_quick_spell_9"
 	elem "secondaryactivation"
 		name = "CTRL+C"
 		command = "secondary_activation"
@@ -219,6 +234,21 @@ macro "hotkeymode"
 		command = "a-intent harm"
 	elem 
 		name = "5"
+		command = "cast_quick_spell_5"
+	elem 
+		name = "6"
+		command = "cast_quick_spell_6"
+	elem 
+		name = "7"
+		command = "cast_quick_spell_7"
+	elem 
+		name = "8"
+		command = "cast_quick_spell_8"
+	elem 
+		name = "9"
+		command = "cast_quick_spell_9"
+	elem 
+		name = "."
 		command = "m-intent-change"
 	elem 
 		name = "A"

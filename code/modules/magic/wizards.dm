@@ -1158,6 +1158,65 @@ var/list/flavour_text_normies = list(
 	return
 
 // ============================================================
+// HUW PUGH - Welsh Farmer
+// ============================================================
+
+/mob/living/simple_animal/wizard/huw_pugh
+	name = "Farmer Huw Pugh"
+	desc = "A Welsh farmer whose fields border the L.A.M.E. grounds. He absolutely despises the students. His name is Huw, son of Huw."
+	icon = 'icons/mob/npcs.dmi'
+	faction = "Civilians"
+	maxHealth = 200
+	health = 200
+	melee_damage_lower = 15
+	melee_damage_upper = 25
+	attacktext = "pitchforked"
+	attack_sound = 'sound/weapons/bladeslice.ogg'
+	attack_verb = "stabs"
+	wander = TRUE
+	stop_automated_movement = FALSE
+	speak_chance = 2
+
+/mob/living/simple_animal/wizard/huw_pugh/New()
+	..()
+	clothing_colours = null
+	var/list/icon_states = list("civilian_1", "civilian_2", "civilian_6", "hostage_m1", "civilian_8", "civilian_9", "afghciv5")
+	icon_state = pick(icon_states)
+	icon_living = icon_state
+	icon_dead = "[icon_state]_dead"
+	speak = list(
+		"Pa un ohonoch chi twmffatiaid hudol ddygodd y plygiau gwreichionen o fy nhractor? Wna i stwffio'r ffon yna i fyny dy drwyn di!",
+		"Dewch â fy mochyn i lawr rŵan y funud yma! Dydy moch ddim i fod i arnofio, y cythreuliaid bach!",
+		"Peidiwch â thynnu fy nghennin, yr hen gontiau bach! Dydyn nhw ddim yn hudol, i'r cawl dydd Sul maen nhw!",
+		"Pam ydych chi i gyd yn gwisgo ffrogiau llwyd a dweud geiriau gwirion? Ydych chi ddim yn gallu fforddio trowsus?",
+		"Os bydd un bêl-sebon arall yn taro nenfwd fy ngweithdy, dwi'n ffonio'r heddlu! Y rhai go iawn, nid y ploncers C.A.P. yna!"
+	)
+	update_icons()
+
+/mob/living/simple_animal/wizard/huw_pugh/respond_to_attack(mob/living/user)
+	if (stat || !user || !ishuman(user) || user.stat)
+		return
+	src.say("Tria hynna eto ac mi wna i stwffio'r ffon yna mor bell i fyny dy din di, byddan nhw'n gallu ei gweld yn yr Alban!")
+	..()
+
+/mob/living/simple_animal/wizard/huw_pugh/proactive_magic_check(mob/living/target)
+	return
+
+/mob/living/simple_animal/wizard/huw_pugh/handle_combat_behaviour(t_behaviour)
+	if (stat || !target_mob || target_mob.stat)
+		stance = HOSTILE_STANCE_IDLE
+		target_mob = null
+		return FALSE
+
+	if (get_dist(src, target_mob) <= 1)
+		AttackingTarget()
+	else
+		var/moving_to = get_dir(src, target_mob)
+		set_dir(moving_to)
+		Move(get_step(src, moving_to))
+	return TRUE
+
+// ============================================================
 // PROFESSOR SNIP
 // Potions & Cauldron-Stirring class teacher.
 // Hand him a container with ≥10u of Welsh Darkness Powder to
@@ -1329,6 +1388,13 @@ var/list/flavour_text_normies = list(
 	timer = 600
 	icon_state = "npc"
 	max_number = 5
+
+/obj/effect/spawner/mobspawner/huw_pugh
+	name = "Huw Pugh spawner"
+	create_path = /mob/living/simple_animal/wizard/huw_pugh
+	timer = 600
+	icon_state = "npc"
+	max_number = 1
 
 /obj/effect/spawner/mobspawner/professor_snip
 	name = "Professor Snip spawner"
