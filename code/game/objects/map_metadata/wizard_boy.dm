@@ -34,6 +34,9 @@
 	)
 	var/moldy_invasion = FALSE
 	var/list/player_stats = list()
+	var/stats_loaded = FALSE
+	var/stats_dirty = FALSE
+	var/saving_stats = FALSE
 	New()
 		..()
 		spawn(30)
@@ -104,24 +107,19 @@
 			text2file("[ckey];[data[1]];[data[2]];[wand_data]", "SQL/houses.txt")
 
 /obj/map_metadata/wizard_boy/proc/load_stats()
+	if (stats_loaded)
+		return
+	stats_loaded = TRUE
 	if (fexists("SQL/wizard_boy_stats.txt"))
 		player_stats = list()
-		var/list/lines = file2list("SQL/wizard_boy_stats.txt")
-		for(var/i = 1, i <= length(lines), i++)
-			var/list/parts = splittext(lines[i], ";")
-			if(length(parts) < 3)
-				continue
-			var/ckey = parts[1]
-			var/wins = text2num(parts[2])
-			var/losses = text2num(parts[3])
-			var/list/kills = list()
-			for(var/j = 4, j <= length(parts), j++)
-				var/list/kill_parts = splittext(parts[j], ",")
-				if(length(kill_parts) >= 2)
-					kills[kill_parts[1]] = text2num(kill_parts[2])
-			player_stats[ckey] = list(wins, losses, kills)
 
 /obj/map_metadata/wizard_boy/proc/save_stats()
+	if (saving_stats)
+		stats_dirty = TRUE
+		return
+	saving_stats = TRUE
+	stats_dirty = FALSE
+
 	if (fexists("SQL/wizard_boy_stats.txt"))
 		if (fexists("SQL/wizard_boy_stats_backup.txt"))
 			fdel("SQL/wizard_boy_stats_backup.txt")
@@ -139,11 +137,27 @@
 				line += ";[enemy],[kills[enemy]]"
 		text2file(line, "SQL/wizard_boy_stats.txt")
 
+	spawn(100) // 10-second cooldown to prevent disk thrashing
+		saving_stats = FALSE
+		if (stats_dirty)
+			save_stats()
+
+	for (var/ckey in player_stats)
+		var/list/data = player_stats[ckey]
+		if (!islist(data) || data.len < 2)
+			continue
+		var/line = "[ckey];[data[1]];[data[2]]"
+		if (data.len >= 3 && islist(data[3]))
+			var/list/kills = data[3]
+			for(var/enemy in kills)
+				line += ";[enemy],[kills[enemy]]"
+		text2file(line, "SQL/wizard_boy_stats.txt")
+
 /obj/map_metadata/wizard_boy/proc/ensure_stats_loaded(ckey)
-	if(!player_stats[ckey])
+	if(!stats_loaded)
 		load_stats()
-		if(!player_stats[ckey])
-			player_stats[ckey] = list(0, 0, list())
+	if(!player_stats[ckey])
+		player_stats[ckey] = list(0, 0, list())
 
 /obj/map_metadata/wizard_boy/proc/record_pvp_win(winner_ckey, loser_ckey)
 	ensure_stats_loaded(winner_ckey)
@@ -151,11 +165,12 @@
 
 	var/list/winner_data = player_stats[winner_ckey]
 	winner_data[1]++
-	if (winner_data.len < 3 || !islist(winner_data[3]))
+	if (winner_data.len < 3)
+		winner_data.len = 3
+	if (!islist(winner_data[3]))
 		winner_data[3] = list()
 	var/list/winner_kills = winner_data[3]
 	winner_kills[loser_ckey] = (winner_kills[loser_ckey] || 0) + 1
-
 	var/list/loser_data = player_stats[loser_ckey]
 	loser_data[2]++
 
@@ -165,11 +180,14 @@
 	ensure_stats_loaded(killer_ckey)
 
 	var/list/killer_data = player_stats[killer_ckey]
-	if (killer_data.len < 3 || !islist(killer_data[3]))
+	if (killer_data.len < 3)
+		killer_data.len = 3
+	if (!islist(killer_data[3]))
 		killer_data[3] = list()
 	var/list/kills = killer_data[3]
-	kills[enemy_name] = (kills[enemy_name] || 0) + 1
-
+	var/sanitized_enemy = replacetext(enemy_name, ";", "_")
+	sanitized_enemy = replacetext(sanitized_enemy, ",", "_")
+	kills[sanitized_enemy] = (kills[sanitized_enemy] || 0) + 1
 	save_stats()
 
 /obj/map_metadata/wizard_boy/proc/change_level(ckey, new_level = "0")
