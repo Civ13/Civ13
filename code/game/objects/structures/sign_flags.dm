@@ -803,6 +803,11 @@
 	desc = "The flag of Finland."
 	icon_state = "flag_finland"
 
+/obj/structure/sign/flag/wales
+	name = "Wales flag"
+	desc = "The flag of Wales."
+	icon_state = "flag_wales"
+
 /obj/structure/sign/flag/warpact
 	name = "WARPACT flag"
 	desc = "The flag of the Wasrsaw Pact."

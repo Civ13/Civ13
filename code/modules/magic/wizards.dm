@@ -1183,8 +1183,7 @@ var/list/flavour_text_normies = list(
 /mob/living/simple_animal/wizard/huw_pugh/New()
 	..()
 	clothing_colours = null
-	var/list/icon_states = list("civilian_1", "civilian_2", "civilian_6", "hostage_m1", "civilian_8", "civilian_9", "afghciv5")
-	icon_state = pick(icon_states)
+	icon_state = "farmer"
 	icon_living = icon_state
 	icon_dead = "[icon_state]_dead"
 	speak = list(
