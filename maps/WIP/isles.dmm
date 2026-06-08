@@ -335,7 +335,7 @@
 "gw" = (/mob/living/simple_animal/goat,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "gx" = (/obj/item/remains/human{icon_state = "u_dangerous_l"},/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)
 "gy" = (/obj/structure/wild/junglebush{icon_state = "11"},/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
-"gz" = (/obj/effect/decal/cleanable/blood/writing,/mob/living/simple_animal/cat,/turf/floor/plating/stone_old,/area/caribbean/nomads/forest/Jungle)
+"gz" = (/obj/effect/decal/cleanable/blood/writing,/mob/living/simple_animal/pet/cat,/turf/floor/plating/stone_old,/area/caribbean/nomads/forest/Jungle)
 "gA" = (/obj/effect/spawner/objspawner/jungle,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "gB" = (/obj/structure/fish,/turf/floor/beach/water/deep/saltwater,/area/caribbean/nomads/forest/Jungle)
 "gC" = (/obj/structure/fish/cod,/turf/floor/beach/water/deep/saltwater,/area/caribbean/nomads/forest/Jungle)

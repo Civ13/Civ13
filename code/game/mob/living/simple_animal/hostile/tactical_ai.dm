@@ -104,9 +104,9 @@
 // Combat-specific AI behaviors and stance handling
 
 /mob/living/simple_animal/handle_combat_behaviour(t_behaviour)
-	a_intent = I_HARM
 	if (stat == DEAD || stat == UNCONSCIOUS)
 		return FALSE
+	a_intent = I_HARM
 
 	if (t_behaviour == "hunt" || (t_behaviour == "defends" && target_mob))
 		if(prob(50))
@@ -160,7 +160,7 @@
 						set_dir(get_dir(src, target_mob))
 
 						if (stance_step in list(0, 3, 5))
-							var/action = pick(list("stares alertly at [target_mob].", "closely watches [target_mob]."))
+							var/action = pick("stares alertly at [target_mob].", "closely watches [target_mob].")
 							if (action)
 								custom_emote(1, action)
 								if(!isemptylist(hostilesounds))
@@ -354,14 +354,7 @@
 		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
 		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
 		if (istype(src, /mob/living/simple_animal/mouse))
-			var/dmod = 1
-			if (H.find_trait("Weak Immune System"))
-				dmod = 2
-			if (H.find_trait("Strong Immune System"))
-				dmod = 0.2
-			if (prob(3*dmod))
-				H.disease = TRUE
-				H.disease_type = "plague"
+			try_infect(H, 3, "plague")
 
 		if (prob(95) || !can_bite_limbs_off)
 			H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)

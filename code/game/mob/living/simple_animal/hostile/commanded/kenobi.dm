@@ -161,19 +161,7 @@
 			user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 			if (do_after(user, 30, src))
 				user.visible_message("<span class = 'notice'>[user] butchers [src].</span>")
-				var/amt = 0
-				if (mob_size == MOB_MINISCULE)
-					amt = 1
-				if (mob_size == MOB_TINY)
-					amt = 2
-				if (mob_size == MOB_SMALL)
-					amt = 3
-				if (mob_size == MOB_MEDIUM)
-					amt = 4
-				if (mob_size == MOB_LARGE)
-					amt = 5
-				if (mob_size == MOB_HUGE)
-					amt = 8
+				var/amt = butcher_yield()
 				var/namt = amt-2
 				if (namt <= 0)
 					namt = 1
@@ -245,19 +233,7 @@
 			user.visible_message("<span class = 'notice'>[user] starts to skin and butcher [src].</span>")
 			if (do_after(user, 100, src))
 				user.visible_message("<span class = 'notice'>[user] skins and butchers [src].</span>")
-				var/amt = 0
-				if (mob_size == MOB_MINISCULE)
-					amt = 1
-				if (mob_size == MOB_TINY)
-					amt = 2
-				if (mob_size == MOB_SMALL)
-					amt = 3
-				if (mob_size == MOB_MEDIUM)
-					amt = 4
-				if (mob_size == MOB_LARGE)
-					amt = 5
-				if (mob_size == MOB_HUGE)
-					amt = 8
+				var/amt = butcher_yield()
 				var/namt = amt-2
 				if (namt <= 0)
 					namt = 1
@@ -274,11 +250,10 @@
 				if ((amt-2) >= 1)
 					var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
 					bone.name = "[name] bone"
-					bone.amount = amt
-				else
+					bone.amount = (amt-2)
 					var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
 					leather.name = "[name] leather"
-					leather.amount = amt
+					leather.amount = (amt-2)
 				crush()
 				qdel(src)
 		else
@@ -302,19 +277,3 @@
 		else if (behaviour == "hostile")
 			do_behaviour("wander")
 		..()
-
-/mob/living/simple_animal/hostile/human/kenobi/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
-
-	visible_message(SPAN_DANGER("\The [src] has been attacked with \the [O] by [user]."))
-
-	if (O.force <= resistance)
-		to_chat(user, SPAN_DANGER("This weapon is ineffective, it does no damage."))
-		return 2
-
-	var/damage = O.force
-	if (O.damtype == HALLOSS)
-		damage = FALSE
-
-	adjustBruteLoss(damage)
-
-	return FALSE

@@ -315,9 +315,10 @@
 
 /mob/living/simple_animal/hostile/fata_morgana/Life()
 	..()
-	if (stat == DEAD)
-		qdel(src)
-		return
+
+/mob/living/simple_animal/hostile/fata_morgana/death()
+	..()
+	qdel(src)
 
 /mob/living/simple_animal/hostile/fata_morgana/attack_hand(mob/user as mob)
 	if (istype(user, /mob/living/human))
@@ -550,8 +551,8 @@
 
 /mob/living/simple_animal/hostile/canopy_strangler/death()
 	release_mob()
-	qdel(src)
 	..()
+	qdel(src)
 
 /mob/living/simple_animal/hostile/canopy_strangler/proc/release_mob()
 	if (choking_mob)
@@ -621,8 +622,7 @@
 
 /mob/living/human/proc/acid_damage(end_timer = 0)
 	spawn(70)
-		if (end_timer > world.time)
+		if (end_timer > world.time && src.stat != DEAD)
 			src.apply_damage(7, BURN, pick("chest","groin", "l_hand", "r_hand", "l_foot", "r_foot", "l_arm", "r_arm", "l_leg", "r_leg"))
 			to_chat(src, "<span class='danger'>The acid continues to burn you!</span>")
 			src.acid_damage(end_timer)
-			return

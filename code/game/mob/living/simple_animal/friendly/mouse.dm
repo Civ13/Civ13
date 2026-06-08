@@ -166,18 +166,3 @@
 	..()
 	// Change my name back, don't want to be named Tom (666)
 	name = initial(name)
-
-//Here temporarally until animals act as reagent containers.
-/obj/item/weapon/reagent_containers/food/snacks/attack_generic(var/mob/living/user)
-	/*
-	..()
-	if(istype(user, /mob/living/simple_animal/mouse))
-		var/mob/living/simple_animal/mouse/PM = src
-		if(istype(src, /obj/item/weapon/reagent_containers/food/snacks))
-			var/obj/item/weapon/reagent_containers/food/snacks/S = src
-			if(PM.plaguemouse)
-				S.reagents.add_reagent("plague", 0.05)
-		else if(istype(src, /mob/living/human))
-			var/mob/living/human/M = src
-			if(PM.plaguemouse)
-				M.reagents.add_reagent("plague", 0.05)*/

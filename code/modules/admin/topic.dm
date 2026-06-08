@@ -148,7 +148,7 @@
 			if ("observer")			M.change_mob_type( /mob/observer/ghost , null, null, delmob )
 			if ("human")			New = M.change_mob_type( /mob/living/human , null, null, FALSE, href_list["species"])
 			if ("monkey")			M.change_mob_type( /mob/living/simple_animal/monkey , null, null, delmob )
-			if ("cat")				M.change_mob_type( /mob/living/simple_animal/cat , null, null, delmob )
+			if ("cat")				M.change_mob_type( /mob/living/simple_animal/pet/cat , null, null, delmob )
 			if ("parrot")			M.change_mob_type( /mob/living/simple_animal/parrot , null, null, delmob )
 			if ("chicken")			M.change_mob_type( /mob/living/simple_animal/chicken , null, null, delmob )
 			if ("turkey")			M.change_mob_type( /mob/living/simple_animal/turkey_m , null, null, delmob )

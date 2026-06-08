@@ -1,3 +1,17 @@
+/mob/living/simple_animal/proc/try_milk(var/obj/item/O, var/mob/user, var/datum/reagents/udder)
+	if (!udder)
+		return FALSE
+	var/obj/item/weapon/reagent_containers/glass/G = O
+	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
+		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
+		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
+		if (G.reagents.total_volume >= G.volume)
+			to_chat(user, SPAN_RED("The [O] is full."))
+		if (!transfered)
+			to_chat(user, SPAN_RED("The udder is dry. Wait a bit."))
+		return TRUE
+	return FALSE
+
 /mob/living/simple_animal/cattle
 	var/plough = FALSE
 	var/plough_raised = TRUE		//Lets make people access the Cattle Pulled Plough menu at first to familiarize
@@ -151,15 +165,7 @@
 				mob_size = MOB_LARGE
 
 /mob/living/simple_animal/cattle/cow/attackby(var/obj/item/O as obj, var/mob/user as mob)
-	var/obj/item/weapon/reagent_containers/glass/G = O
-	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
-		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
-		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
-		if (G.reagents.total_volume >= G.volume)
-			to_chat(user, SPAN_RED("The [O] is full."))
-		if (!transfered)
-			to_chat(user, SPAN_RED("The udder is dry. Wait a bit."))
-	else
+	if (!try_milk(O, user, udder))
 		..()
 									// \/ port the ploughting for the whole cattle family
 /mob/living/simple_animal/cattle/attackby(obj/item/weapon/plough/O as obj, var/mob/user as mob)
@@ -477,15 +483,7 @@
 				mob_size = MOB_MEDIUM
 
 /mob/living/simple_animal/pig_gilt/attackby(var/obj/item/O as obj, var/mob/user as mob)
-	var/obj/item/weapon/reagent_containers/glass/G = O
-	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
-		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
-		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
-		if (G.reagents.total_volume >= G.volume)
-			to_chat(user, SPAN_RED("The [O] is full."))
-		if (!transfered)
-			to_chat(user, SPAN_RED("The udder is dry. Wait a bit."))
-	else
+	if (!try_milk(O, user, udder))
 		..()
 
 /mob/living/simple_animal/pig_gilt/Life()
@@ -613,27 +611,6 @@
 
 	boar_count &= src
 	..()
-/mob/living/simple_animal/boar_gilt/Destroy()
-
-	boar_count &= src
-	..()
-/mob/living/simple_animal/boar_gilt/New()
-	boar_count |= src
-	..()
-	spawn(1)
-		if (piglet)
-			icon_state = "boar_piglet"
-			icon_living = "boar_piglet"
-			icon_dead = "pig_piglet_dead"
-			meat_amount = 1
-			mob_size = MOB_SMALL
-			spawn(3000)
-				piglet = FALSE
-				icon_state = "boar_boar"
-				icon_living = "boar_boar"
-				icon_dead = "boar_dead"
-				mob_size = MOB_MEDIUM
-
 /mob/living/simple_animal/boar_gilt/New()
 	boar_count |= src
 	udder = new(50)
@@ -655,15 +632,7 @@
 				mob_size = MOB_MEDIUM
 
 /mob/living/simple_animal/boar_gilt/attackby(var/obj/item/O as obj, var/mob/user as mob)
-	var/obj/item/weapon/reagent_containers/glass/G = O
-	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
-		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
-		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
-		if (G.reagents.total_volume >= G.volume)
-			to_chat(user, SPAN_RED("The [O] is full."))
-		if (!transfered)
-			to_chat(user, SPAN_RED("The udder is dry. Wait a bit."))
-	else
+	if (!try_milk(O, user, udder))
 		..()
 
 /mob/living/simple_animal/boar_gilt/Life()
@@ -803,17 +772,9 @@
 				icon_dead = "goat_ewe_dead"
 				mob_size = MOB_MEDIUM
 /mob/living/simple_animal/goat/female/attackby(var/obj/item/O as obj, var/mob/user as mob)
-	var/obj/item/weapon/reagent_containers/glass/G = O
-	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
-		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
-		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
-		if (G.reagents.total_volume >= G.volume)
-			to_chat(user, SPAN_RED("The [O] is full."))
-		if (!transfered)
-			to_chat(user, SPAN_RED("The udder is dry. Wait a bit."))
+	if (try_milk(O, user, udder))
 		return
-	else
-		..()
+	..()
 
 /mob/living/simple_animal/goat/female/Life()
 	. = ..()
@@ -973,14 +934,7 @@
 
 /mob/living/simple_animal/sheep/female/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	if (istype(O, /obj/item/weapon/reagent_containers/glass))
-		var/obj/item/weapon/reagent_containers/glass/G = O
-		if (stat == CONSCIOUS && istype(G) && G.is_open_container())
-			user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
-			var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
-			if (G.reagents.total_volume >= G.volume)
-				to_chat(user, SPAN_RED("The [O] is full."))
-			if (!transfered)
-				to_chat(user, SPAN_RED("The udder is dry. Wait a bit."))
+		if (try_milk(O, user, udder))
 			return
 	else if (istype(O, /obj/item/weapon/shears) && sheared == FALSE)
 		to_chat(user, "You start shearing \the [src]...")

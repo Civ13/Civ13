@@ -72,7 +72,7 @@
 "bE" = (/obj/effect/spawner/mobspawner/snake,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "bF" = (/mob/living/simple_animal/sheep,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "bG" = (/mob/living/simple_animal/sheep/female,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
-"bH" = (/mob/living/simple_animal/cat,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"bH" = (/mob/living/simple_animal/pet/cat,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "bI" = (/turf/wall/old_stone,/area/caribbean/nomads/forest/Jungle)
 "bJ" = (/turf/floor/beach/sand/dark,/area/caribbean/nomads/forest/Jungle)
 "bK" = (/turf/floor/plating/stone_old,/area/caribbean/nomads/forest/Jungle)

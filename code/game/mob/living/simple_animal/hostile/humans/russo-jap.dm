@@ -1,6 +1,3 @@
-/mob/living/simple_animal/hostile/human
-	move_to_delay = 3
-
 /mob/living/simple_animal/hostile/human/japanese
 	name = "Japanese Soldier"
 	desc = "A japanese soldier."
@@ -198,7 +195,6 @@
 	emote_see = list("raises his fists")
 	New()
 		..()
-		icon_state = "japnavy_dead"
 		messages["injured"] = list("!!Medic!","!!AAARGH!")
 		messages["backup"] =list( "!!Help me!","!!On me!")
 		messages["enemy_sighted"] = list("!!Contact!","!!Enemy spotted!")
@@ -216,7 +212,6 @@
 	emote_see = list("aims", "raises his rifle")
 	New()
 		..()
-		icon_state = "japnavy_dead"
 		gun = new/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet(src)
 
 /mob/living/simple_animal/hostile/human/ww2_jap/seaman/po
@@ -232,7 +227,6 @@
 	role = "officer"
 	New()
 		..()
-		icon_state = "japnavy_dead"
 		messages["injured"] = list("!!Medic!","!!AAARGH!")
 		messages["backup"] =list( "!!Get over here!","!!On me!")
 		messages["enemy_sighted"] = list("!!Contact!","!!Enemy spotted!")
@@ -252,7 +246,6 @@
 	projectiletype = /obj/item/projectile/bullet/pistol/c8mmnambu
 	New()
 		..()
-		icon_state = "japnavy_dead"
 		messages["injured"] = list("!!You bastard!","!!AAARGH!")
 		messages["backup"] =list( "!!Get over here!","!!On me!")
 		messages["enemy_sighted"] = list("!!Contact!","!!Enemy spotted!")

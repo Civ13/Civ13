@@ -165,7 +165,7 @@
 "tT" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "uI" = (/obj/structure/window/barrier/ship/blue/bport0,/obj/covers/repairedfloor/ship,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper)
 "uT" = (/obj/covers/repairedfloor/ship,/obj/structure/dehydrator,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
-"vr" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/cat/salem,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
+"vr" = (/obj/covers/repairedfloor/ship,/mob/living/simple_animal/pet/cat/salem,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "vS" = (/obj/structure/barricade/ship/wall2{dir = 8},/obj/covers/repairedfloor/ship,/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/saltwater,/area/caribbean/pirates/ship/voyage/lower)
 "wN" = (/turf/floor/broken_floor{push_dir = 2},/area/caribbean/sea/sea)
 "xl" = (/obj/structure/barricade/ship/blue/b19,/turf/floor/broken_floor,/area/caribbean/pirates/ship/voyage/upper/inside)

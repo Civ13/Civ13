@@ -284,7 +284,7 @@
 "fx" = (/obj/structure/radio,/obj/structure/table/wood,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "fy" = (/obj/item/weapon/stool/wood,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "fz" = (/obj/structure/pot,/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
-"fA" = (/mob/living/simple_animal/cat/salem,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"fA" = (/mob/living/simple_animal/pet/cat/salem,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "fB" = (/obj/covers/fancywood,/obj/structure/mine_support/stone/sandstone,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/roofed/jungle)
 "fC" = (/obj/covers/wood_ship,/obj/structure/bed/chair/wood{dir = 4; icon_state = "wooden_chair"},/obj/effect/landmark{name = "JoinLateLP"},/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "fD" = (/obj/covers/wood_ship,/obj/structure/table/modern/table,/obj/item/weapon/paper_bundle,/obj/item/weapon/pen/pencil,/turf/floor/dirt,/area/caribbean/roofed/jungle)

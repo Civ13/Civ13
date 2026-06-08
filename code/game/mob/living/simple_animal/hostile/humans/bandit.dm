@@ -12,7 +12,6 @@
 	emote_see = list("stares", "draws firearm")
 	speak_chance = TRUE
 	speed = 6
-	move_to_delay = 3
 	stop_automated_movement_when_pulled = 0
 	maxHealth = 150
 	health = 150

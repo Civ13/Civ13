@@ -17,7 +17,7 @@
 	mob_size = MOB_MINISCULE
 	possession_candidate = TRUE
 
-/mob/living/simple_animal/lizard/Life()
+/mob/living/simple_animal/proc/eat_insects()
 	for (var/mob/living/simple_animal/mosquito/M in range(1,src))
 		visible_message("\The [src] eats \the [M]!")
 		qdel(M)
@@ -30,6 +30,9 @@
 		visible_message("\The [src] eats \the [C]!")
 		qdel(C)
 		adjustBruteLoss(-1)
+
+/mob/living/simple_animal/lizard/Life()
+	eat_insects()
 	..()
 
 /mob/living/simple_animal/frog
@@ -77,21 +80,9 @@
 /mob/living/simple_animal/frog/poisonous
 	name = "poisonous frog"
 	desc = "A tiny, colorful frog. Poisonous!"
-	icon = 'icons/mob/animal.dmi'
 	icon_state = "frog_poisonous"
 	icon_living = "frog_poisonous"
 	icon_dead = "frog_poisonous-dead"
-	speak_emote = list("croaks")
-	health = 5
-	maxHealth = 5
-	attacktext = "bitten"
-	melee_damage_lower = TRUE
-	melee_damage_upper = 2
-	response_help  = "pets"
-	response_disarm = "shoos"
-	response_harm   = "stomps on"
-	mob_size = MOB_MINISCULE
-	possession_candidate = TRUE
 
 /obj/item/weapon/reagent_containers/food/snacks/frogegg
 	name = "frog eggs"
@@ -160,18 +151,7 @@
 	scavenger = 1
 
 /mob/living/simple_animal/ianthasaurus/Life()
-	for (var/mob/living/simple_animal/mosquito/M in range(1,src))
-		visible_message("\The [src] eats \the [M]!")
-		qdel(M)
-		adjustBruteLoss(-1)
-	for (var/mob/living/simple_animal/fly/F in range(1,src))
-		visible_message("\The [src] eats \the [F]!")
-		qdel(F)
-		adjustBruteLoss(-1)
-	for (var/mob/living/simple_animal/cockroach/C in range(1,src))
-		visible_message("\The [src] eats \the [C]!")
-		qdel(C)
-		adjustBruteLoss(-1)
+	eat_insects()
 	..()
 
 
@@ -195,18 +175,7 @@
 	possession_candidate = TRUE
 
 /mob/living/simple_animal/tiktaalik/Life()
-	for (var/mob/living/simple_animal/mosquito/M in range(1,src))
-		visible_message("\The [src] eats \the [M]!")
-		qdel(M)
-		adjustBruteLoss(-1)
-	for (var/mob/living/simple_animal/fly/F in range(1,src))
-		visible_message("\The [src] eats \the [F]!")
-		qdel(F)
-		adjustBruteLoss(-1)
-	for (var/mob/living/simple_animal/cockroach/C in range(1,src))
-		visible_message("\The [src] eats \the [C]!")
-		qdel(C)
-		adjustBruteLoss(-1)
+	eat_insects()
 	..()
 
 /mob/living/simple_animal/ichthyostega
@@ -229,18 +198,7 @@
 	possession_candidate = TRUE
 
 /mob/living/simple_animal/ichthyostega/Life()
-	for (var/mob/living/simple_animal/mosquito/M in range(1,src))
-		visible_message("\The [src] eats \the [M]!")
-		qdel(M)
-		adjustBruteLoss(-1)
-	for (var/mob/living/simple_animal/fly/F in range(1,src))
-		visible_message("\The [src] eats \the [F]!")
-		qdel(F)
-		adjustBruteLoss(-1)
-	for (var/mob/living/simple_animal/cockroach/C in range(1,src))
-		visible_message("\The [src] eats \the [C]!")
-		qdel(C)
-		adjustBruteLoss(-1)
+	eat_insects()
 	..()
 
 /mob/living/simple_animal/beelzebufo
@@ -252,7 +210,7 @@
 	icon_dead = "beelzebufo-dead"
 	speak_emote = list("croaks", "grumbles")
 	health = 15
-	maxHealth = 5
+	maxHealth = 15
 	attacktext = "bitten"
 	melee_damage_lower = TRUE
 	melee_damage_upper = 2
@@ -263,16 +221,5 @@
 	possession_candidate = TRUE
 
 /mob/living/simple_animal/beelzebufo/Life()
-	for (var/mob/living/simple_animal/mosquito/M in range(1,src))
-		visible_message("\The [src] eats \the [M]!")
-		qdel(M)
-		adjustBruteLoss(-1)
-	for (var/mob/living/simple_animal/fly/F in range(1,src))
-		visible_message("\The [src] eats \the [F]!")
-		qdel(F)
-		adjustBruteLoss(-1)
-	for (var/mob/living/simple_animal/cockroach/C in range(1,src))
-		visible_message("\The [src] eats \the [C]!")
-		qdel(C)
-		adjustBruteLoss(-1)
+	eat_insects()
 	..()

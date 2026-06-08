@@ -683,8 +683,8 @@ var/global/list/npc_appearance_cache = list()
 	if (!enemy_detected && !action_running && target_action=="helping")
 		target_action = "bandaging"
 		action_running = TRUE
-		if (ishuman(target_mob))
-			var/mob/living/human/H = target_mob
+		if (ishuman(target_obj))
+			var/mob/living/human/H = target_obj
 			if (H.getTotalDmg()>95)
 				say(pick("!!Hang on buddy, you will be fine!","!!You'll be fine kid, don't worry."), language)
 		visible_message("<span class='notice'>[src] starts bandaging [target_obj]...</span>")
@@ -819,7 +819,8 @@ var/global/list/npc_appearance_cache = list()
 			if (PEN.faction != faction && PEN.stat != DEAD)
 				EN = PEN
 				break
-		walk_away_od(src,EN,10,5)
+		if (EN)
+			walk_away_od(src,EN,10,5)
 		spawn(40)
 			target_mob = null
 		spawn(45)
