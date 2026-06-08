@@ -41,7 +41,6 @@
 
 	var/azimuth = 180
 	var/distance = 5
-	var/scope_mod = TRUE
 	var/target_x = 0
 	var/target_y = -5
 
@@ -332,7 +331,6 @@
 		to_chat(src, "You stopped using [using_cannon.name].")
 		using_cannon.clear_aiming_line(src)
 		src << browse(null, "window=artillery_window")
-		using_cannon.scope_mod = FALSE
 		using_cannon.user = null
 		using_cannon = null
 

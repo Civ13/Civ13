@@ -255,7 +255,6 @@
 	name = "Diego 'El Diablo' Morales"
 	desc = "Plata or plomo? I've got the product."
 	icon_state = "cartel"
-	var/cartel_cooldown = 0
 	var/heat_message_cooldown = list(
 		"Rednikov Industries" = 0,
 		"Giovanni Blu Stocks" = 0,

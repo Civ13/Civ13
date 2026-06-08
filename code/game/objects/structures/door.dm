@@ -16,10 +16,7 @@
 	var/state = FALSE //closed, TRUE == open
 	var/isSwitchingStates = FALSE
 	var/hardness = TRUE
-	var/oreAmount = 7
 	var/basic_icon = "metal"
-
-	var/override_material_state = null
 
 	var/health = 400
 	var/initial_health = 400

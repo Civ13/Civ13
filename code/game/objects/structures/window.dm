@@ -16,7 +16,6 @@
 	var/state = 2
 	var/reinf = FALSE
 	var/basestate
-	var/shardtype = /obj/item/weapon/material/shard
 	var/glasstype = null // Set this in subtypes. Null is assumed strange or otherwise impossible to dismantle, such as for shuttle glass.
 	var/silicate = FALSE // number of units of silicate
 	not_movable = FALSE
@@ -450,7 +449,6 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
-	var/windowglass
 	var/stucco_window = TRUE
 	icon = 'icons/obj/windows.dmi'
 /obj/structure/window_frame/abashiri

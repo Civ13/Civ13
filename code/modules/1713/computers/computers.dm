@@ -107,7 +107,6 @@
 	desc = "A simplistic computer. This is the parent object."
 	icon = 'icons/obj/computers.dmi'
 	icon_state = "ibm_off"
-	var/peripherals = list()
 	var/internals = list()
 	var/operatingsystem = "unga OS"
 	var/memory = list()

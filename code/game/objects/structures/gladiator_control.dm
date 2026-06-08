@@ -147,7 +147,6 @@
 
 	var/combat_running = FALSE
 	var/current_style = "1 vs 1"
-	var/current_participants = 0
 	var/automode = FALSE
 
 	var/cooldown_timer = 0

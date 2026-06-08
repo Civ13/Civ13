@@ -1079,7 +1079,6 @@ obj/structure/vending/idfammo
 */
 
 /obj/structure/vending/craftable
-	var/product_type = /obj/item/weapon/gun/projectile
 	var/max_products = 5
 
 /obj/structure/vending/craftable/update_icon()

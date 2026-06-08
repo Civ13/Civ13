@@ -541,8 +541,6 @@
 	layer = MOB_LAYER + 1 //just above mobs
 	density = TRUE
 	icon_state = "m29_davy_crockett_empty"
-	var/icon_state_unloaded = "m29_davy_crockett_empty"
-	var/icon_state_loaded = "m29_davy_crockett_loaded"
 	pixel_x = 0
 	pixel_y = 0
 	bound_height = 32

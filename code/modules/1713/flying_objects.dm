@@ -53,10 +53,6 @@
 	anchored = TRUE
 	var/flight_time = 12 SECONDS
 	var/flight_distance = 15 // in tiles
-	var/start_point_x = 0
-	var/start_point_y = 0
-	var/end_point_x = 0
-	var/end_point_y = 0
 	layer = 30
 
 /obj/structure/plane/proc/fly()
