@@ -1,6 +1,7 @@
 // Simple AI logic for non-hostile behaviors (wandering, feeding, etc.)
 
 /mob/living/simple_animal/proc/handle_ai()
+
 	if (stat == DEAD || stat == UNCONSCIOUS)
 		return
 	if (client || anchored || clients.len <= 0)
@@ -33,18 +34,18 @@
 	// Specific landmark-based movement for skeletal attackers and moldy men
 	if (istype(src, /mob/living/simple_animal/hostile/human/skeleton/attacker))
 		if (stance == HOSTILE_STANCE_IDLE && prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
-			walk_towards(src, locate(/obj/effect/landmark/npctarget), 6)
+			src.do_movement(locate(/obj/effect/landmark/npctarget))
 			return
 	if (map && map.ID == MAP_WIZARD_BOY && istype(src, /mob/living/simple_animal/hostile/wizard/moldy_man/attacker))
 		var/obj/map_metadata/wizard_boy/WB = map
 		if (WB.moldy_invasion)
 			if (stance == HOSTILE_STANCE_IDLE && prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
-				walk_towards(src, locate(/obj/effect/landmark/npctarget), 6)
+				src.do_movement(locate(/obj/effect/landmark/npctarget))
 				return
 	if (istype(src, /mob/living/simple_animal/hostile/human/skeleton/attacker_gods))
 		var/mob/living/simple_animal/hostile/human/skeleton/attacker_gods/A = src
 		if (stance == HOSTILE_STANCE_IDLE && prob(20) && get_dist(src, A.target_loc) > 11)
-			walk_towards(src, A.target_loc, 6)
+			src.do_movement(A.target_loc)
 			return
 
 	// Hunger/Food check takes priority for idle animals

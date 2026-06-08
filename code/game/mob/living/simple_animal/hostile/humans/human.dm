@@ -31,8 +31,7 @@ var/global/list/npc_appearance_cache = list()
 	var/grenade_type = /obj/item/weapon/grenade
 
 	var/role = "soldier" //soldier, medic, officer, recon, guard...
-	var/list/found_path = list()
-	var/atom/target_obj = null //for some roles (i.e. guard)
+	//for some roles (i.e. guard)
 	var/action_running = FALSE
 	var/target_action = null
 	var/datum/language/language = new/datum/language/english
@@ -54,8 +53,7 @@ var/global/list/npc_appearance_cache = list()
 	var/peeking = FALSE
 	var/suppressing = FALSE
 	var/last_retreat = 0
-	var/moving = FALSE
-	var/last_pathfound = 0
+	//moving and last_pathfound inherited from /mob/living/simple_animal
 /mob/living/simple_animal/hostile/human/New()
 	..()
 	if (use_generated_appearance)

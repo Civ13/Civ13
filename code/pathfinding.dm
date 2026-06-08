@@ -168,12 +168,12 @@
 			return FALSE
 	return TRUE
 
-/mob/living/simple_animal/hostile/human/proc/do_movement(var/atom/tgt = null)
-	if (stat == 2) //dead
+/mob/living/simple_animal/proc/do_movement(var/atom/tgt = null)
+	if (stat == 2 || stat == 1) // DEAD or UNCONSCIOUS
 		moving = FALSE
 		return FALSE
 	if (tgt)
-		// Retargeting: invalidate stale path and allow re-entry
+		// Retargeting: invalidate stale path
 		if(tgt != target_obj)
 			found_path = list()
 		target_obj = tgt
@@ -181,109 +181,76 @@
 		found_path = list()
 		moving = FALSE
 		return FALSE
-	if (get_dist(src, target_obj) <= 1)
-		// Clear pathfind_target if we're moving to it
-		if (target_obj == pathfind_target)
-			pathfind_target = null
-		target_obj = null
-		found_path = list()
-		moving = FALSE
-		return FALSE
 
-	// Loop protection: block re-entry when a loop is already running.
-	// We release the lock (moving = FALSE) before each spawn() so the next
-	// iteration of THIS loop is not blocked by the guard.
+	// Loop protection: block re-entry when a movement cycle is already running.
 	if(moving)
-		// External callers may pass a new target – just retarget, don't re-enter
-		if(tgt && tgt != target_obj)
-			found_path = list()
-			target_obj = tgt
 		return TRUE
+
 	moving = TRUE
-
-	// Stuck detection – not making any movement at all
-	if (loc == last_loc)
-		stuck_ticks++
-	else
-		stuck_ticks = 0
-		last_loc = loc
-
-	// If stuck for several ticks, try to recover
-	if (stuck_ticks >= 6 && destroy_surroundings)
-		DestroySurroundings()
-		stuck_ticks = 0
-	else if (stuck_ticks >= 4)
-		// Clear path so it recalculates on next iteration (fall through)
-		found_path = list()
-
-	// Check if path is stale (target moved too far from path's end)
-	if(found_path.len > 0)
-		var/turf/path_end = found_path[found_path.len]
-		if(get_dist(path_end, get_turf(target_obj)) > 2)
-			found_path = list()
-
-	if(found_path.len > 0)
-		var/turf/next = found_path[1]
-
-		// If we reached the next node, remove it
-		if(loc == next)
-			found_path.Cut(1, 2)
-			if(found_path.len >= 1)
-				next = found_path[1]
+	spawn(0)
+		while(moving && target_obj && get_dist(src, target_obj) > 1 && stat != 2)
+			// Stuck detection
+			if (loc == last_loc)
+				stuck_ticks++
 			else
-				next = get_turf(target_obj)
-		// If we are too far from the path, it's invalid – recalculate
-		else if(get_dist(src, next) > 1)
+				stuck_ticks = 0
+				last_loc = loc
+
+			if (stuck_ticks >= 6 && destroy_surroundings)
+				DestroySurroundings()
+				stuck_ticks = 0
+			else if (stuck_ticks >= 4)
+				found_path = list()
+
+			// Check if path is stale
+			if(found_path.len > 0)
+				var/turf/path_end = found_path[found_path.len]
+				if(get_dist(path_end, get_turf(target_obj)) > 2)
+					found_path = list()
+
+			if(found_path.len > 0)
+				var/turf/next = found_path[1]
+				if(loc == next)
+					found_path.Cut(1, 2)
+					next = found_path.len ? found_path[1] : get_turf(target_obj)
+				else if(get_dist(src, next) > 1)
+					found_path = list()
+
+				if(next)
+					var/move_dir = get_dir(src, next)
+					if(move_dir)
+						if(!step(src, move_dir))
+							if (stuck_ticks < 3)
+								var/side_dir = pick(turn(move_dir, 90), turn(move_dir, -90))
+								if (!step(src, side_dir))
+									step(src, turn(side_dir, 180))
+							else
+								DestroySurroundings()
+			else
+				// No path, try to find one or fallback
+				if (!get_path())
+					if(!step_towards(src, target_obj))
+						if (stuck_ticks < 3)
+							var/dir_to_target = get_dir(src, target_obj)
+							var/side_dir = pick(turn(dir_to_target, 90), turn(dir_to_target, -90))
+							if (!step(src, side_dir))
+								step(src, turn(side_dir, 180))
+						else
+							DestroySurroundings()
+			
+			var/delay = (found_path.len == 0) ? max(move_to_delay, 10) : move_to_delay
+			sleep(delay)
+
+		// Clean up on exit
+		if (target_obj && get_dist(src, target_obj) <= 1)
+			if (target_obj == pathfind_target)
+				pathfind_target = null
+			target_obj = null
 			found_path = list()
-			moving = FALSE
-			spawn(move_to_delay)
-				do_movement()
-			return FALSE
-
-		if(next)
-			var/move_dir = get_dir(src, next)
-			if(move_dir)
-				if(!step(src, move_dir))
-					// Stuck on an obstacle – try perpendicular directions first
-					if (stuck_ticks < 3)
-						var/side_dir = pick(turn(move_dir, 90), turn(move_dir, -90))
-						if (!step(src, side_dir))
-							step(src, turn(side_dir, 180))
-					else
-						DestroySurroundings()
-
 		moving = FALSE
-		spawn(move_to_delay)
-			do_movement()
-		return found_path.len
-	else
-		// No cached path – calculate one
-		found_path = list()
-		if (get_path())
-			moving = FALSE
-			spawn(move_to_delay)
-				do_movement()
-			return found_path.len
-		else
-			// Fallback: step_towards handles bumping natively
-			if(!step_towards(src, target_obj))
-				// Stuck on an obstacle – try perpendicular directions
-				if (stuck_ticks < 3)
-					var/dir_to_target = get_dir(src, target_obj)
-					var/side_dir = pick(turn(dir_to_target, 90), turn(dir_to_target, -90))
-					if (!step(src, side_dir))
-						step(src, turn(side_dir, 180))
-				else
-					DestroySurroundings()
-			moving = FALSE
-			// Use a longer delay in fallback mode to prevent rapid oscillation
-			// when no valid path exists (e.g. mob on wrong side of river)
-			var/fallback_delay = max(move_to_delay, 10)
-			spawn(fallback_delay)
-				do_movement()
-			return FALSE
+	return TRUE
 
-/mob/living/simple_animal/hostile/human/proc/get_path(var/atom/tgt = null)
+/mob/living/simple_animal/proc/get_path(var/atom/tgt = null)
 	if (tgt)
 		target_obj = tgt
 	if(!target_obj)

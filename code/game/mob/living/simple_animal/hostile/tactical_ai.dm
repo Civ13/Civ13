@@ -193,10 +193,9 @@
 					var/mob/living/simple_animal/hostile/H = src
 					if(H.pathfind_target)
 						if(get_dist(src, H.pathfind_target) > 2)
-							// Mobs with targeting use do_movement() via do_human_behaviour()
-							// instead of walk_to() to avoid double-movement conflicts
-							if(!targeting)
-								walk_to(src, H.pathfind_target, 2, move_to_delay)
+							/// Mobs with targeting use do_movement()
+							if(!targeting) // Call do_movement directly
+								src.do_movement(H.pathfind_target)
 							moved = TRUE
 						else
 							H.pathfind_target = null
@@ -327,10 +326,10 @@
 				
 			stuck_ticks = 0 // Reset counter after attempt
 		else
-			walk_to(src, target_mob, 1, move_to_delay)
+			src.do_movement(target_mob) // Use do_movement for consistent pathfinding
 
 	else if (target_mob in view(idle_vision_range, src))
-		walk_to(src, target_mob, 1, move_to_delay)
+		src.do_movement(target_mob) // Use do_movement for consistent pathfinding
 
 /mob/living/simple_animal/proc/AttackTarget()
 	if (!target_mob || !SA_attackable(target_mob))

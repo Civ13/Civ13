@@ -36,6 +36,13 @@
 	var/flying = FALSE
 	var/targeting = FALSE // If TRUE, uses A* waypoint navigation toward pathfind_target. Only for specific mob types.
 
+	// Pathfinding vars (used by do_movement / get_path in code/pathfinding.dm)
+	var/moving = FALSE
+	var/atom/target_obj = null
+	var/list/found_path = list()
+	var/atom/pathfind_target = null
+	var/last_pathfound = 0
+
 	//Interaction
 	var/response_help   = "tries to help"
 	var/response_disarm = "tries to disarm"
