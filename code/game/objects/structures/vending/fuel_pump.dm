@@ -106,13 +106,16 @@
 /obj/structure/fuelpump/attack_hand(var/mob/living/human/user)
 	if (unlocked)
 		if (unlockedvol>0)
-			var/ch3 = WWinput("This pump still has [unlockedvol] inside! Are you sure you want to finish?","[name]","No",list("No","Yes"))
-			if (ch3 == "Yes")
-				unlocked = 0
-				unlockedvol = 0
-				return
-			else
-				return
+			var/dat = {"<html><head>
+[common_browser_style]
+</head><body>
+<h2>[name]</h2>
+<p>This pump still has [unlockedvol] units of [fueltype] inside! Are you sure you want to finish?</p>
+<a href='?src=\ref[src];action=finish_yes'>Yes</a>
+<a href='?src=\ref[src];action=finish_no'>No</a>
+</body></html>"}
+			user << browse(dat, "window=fuelpump_confirm;size=350x200")
+			return
 		else
 			to_chat(user, "You lock the pump, finishing the transaction.")
 			unlocked = 0
@@ -131,19 +134,16 @@
 		var/obj/item/stack/money/MN = W
 		var/valp = MN.amount*MN.value
 		if (price > 0 && (valp/price) <= vol)
-			var/ch2 = WWinput(user, "You can buy [(valp/price)] units of [fueltype] with this amount. Confirm?", "[name]", "No", list("No","Yes"))
-			if (ch2 == "No")
-				return
-			else if (ch2 == "Yes" && (user.l_hand == W || user.r_hand == W))
-				user.drop_from_inventory(W)
-				storedval += W
-				W.forceMove(locate(0,0,0))
-				unlockedvol = (valp/price)
-				to_chat(user, "<span class = 'notice'>You can now withdraw [unlockedvol] units of [fueltype] from this pump.</span>")
-				unlocked = 1
-				return
-			else
-				return
+			var/dat = {"<html><head>
+[common_browser_style]
+</head><body>
+<h2>[name]</h2>
+<p>You can buy [round(valp/price, 0.1)] units of [fueltype] with this amount. Confirm?</p>
+<a href='?src=\ref[src];action=buy_yes'>Yes</a>
+<a href='?src=\ref[src];action=buy_no'>No</a>
+</body></html>"}
+			user << browse(dat, "window=fuelpump_buy;size=350x200")
+			return
 		else
 			to_chat(user, "<span class = 'notice'>The fuelpump doesn't have that much fuel inside! Try with a smaller amount. This pump has [vol] units of [fueltype] inside.</span>")
 
@@ -215,44 +215,169 @@
 		if (unlocked)
 			to_chat(user, "The pump is being used! Finish it first.")
 			return
-		var/input = WWinput(user, "What do you want to do?", "Fuel Pump Management", "Cancel", list("Change Name", "Change Fuel", "Change Price", "Cancel"))
-		if (input == "Cancel")
-			return
-
-		else if (input == "Change Name")
-			var/custn = input(user, "Choose a name for this pump:") as text|null
-			if (custn == "" || custn == null)
-				return
-			else
-				name = custn
-				updatedesc()
-				return
-
-		else if (input == "Change Fuel")
-			if (vol > 0)
-				to_chat(user, "<span class = 'notice'>The [src] still has fuel inside! Empty it before changing!</span>")
-				return
-			else
-				var/choice = WWinput(user, "What fuel to set this pump to?", "Fuel Pump Management", "cancel", list("cancel","gasoline","diesel","biodiesel","pethanol","petroleum"))
-				if (choice == "cancel")
-					return
-				else
-					fueltype = choice
-					updatedesc()
-					return
-
-		else if (input == "Change Price")
-			var/custp = input(user, "What should the price be, in silver coins? Will be automatically converted. (Default: 0.3, Min: 0, Max: 50):") as num|null
-			if (!isnum(custp))
-				return
-			if (custp < 0)
-				custp = 0
-			else if (custp > 50)
-				custp = 50
-			price = (custp) //to standartize
-			updatedesc()
-		else
-			return
+		show_manage_ui(user)
 	else
 		to_chat(user, "<span class = 'notice'>You are not part of [owner]!</span>")
 		return
+
+/obj/structure/fuelpump/proc/show_manage_ui(mob/user)
+	var/dat = {"<html><head>
+[common_browser_style]
+<script language="javascript">
+function changeName() {
+	var n = prompt('Choose a name for this pump:');
+	if (n && n.trim()!='') window.location='byond://?src=\ref[src];action=change_name&name='+encodeURIComponent(n.trim());
+}
+function changePrice() {
+	var p = prompt('Enter price in silver coins (0-50):', '0.3');
+	var n = parseFloat(p);
+	if (!isNaN(n) && n>=0 && n<=50) window.location='byond://?src=\ref[src];action=change_price&price='+n;
+}
+</script>
+</head><body>
+<h2>[name] Management</h2>
+<p>Current fuel: [fueltype] &mdash; Price: [price] silver/unit</p>
+<p><a href='?src=\ref[src];action=change_name_direct'>Change Name</a></p>
+<p><a href='?src=\ref[src];action=change_fuel'>Change Fuel Type</a></p>
+<p><a href='?src=\ref[src];action=change_price_direct'>Change Price</a></p>
+<p><a href='?src=\ref[src];action=close_manage'>Close</a></p>
+</body></html>"}
+	user << browse(dat, "window=fuelpump_manage;size=350x300")
+
+/obj/structure/fuelpump/Topic(href, href_list)
+	if (!usr || !usr.client)
+		return
+	var/mob/living/human/user = usr
+	if (!istype(user) || user.stat || get_dist(src, user) > 2)
+		return
+
+	// Purchase confirmation
+	if (href_list["action"] == "buy_yes")
+		user << browse(null, "window=fuelpump_buy")
+		var/obj/item/stack/money/MN = null
+		if (istype(user.l_hand, /obj/item/stack/money))
+			MN = user.l_hand
+		else if (istype(user.r_hand, /obj/item/stack/money))
+			MN = user.r_hand
+		if (!MN)
+			to_chat(user, "You no longer have the money in your hand.")
+			return
+		if (unlocked)
+			to_chat(user, "The pump is being used! Finish it first.")
+			return
+		var/valp = MN.amount*MN.value
+		if (price > 0 && (valp/price) <= vol)
+			user.drop_from_inventory(MN)
+			storedval += MN
+			MN.forceMove(locate(0,0,0))
+			unlockedvol = (valp/price)
+			to_chat(user, "<span class = 'notice'>You can now withdraw [unlockedvol] units of [fueltype] from this pump.</span>")
+			unlocked = 1
+			return
+		else
+			to_chat(user, "<span class = 'notice'>The fuelpump doesn't have that much fuel inside! Try with a smaller amount.</span>")
+			return
+
+	if (href_list["action"] == "buy_no")
+		user << browse(null, "window=fuelpump_buy")
+		return
+
+	// Finish confirmation
+	if (href_list["action"] == "finish_yes")
+		user << browse(null, "window=fuelpump_confirm")
+		unlocked = 0
+		unlockedvol = 0
+		return
+
+	if (href_list["action"] == "finish_no")
+		user << browse(null, "window=fuelpump_confirm")
+		return
+
+	// Management
+	if (href_list["action"] == "close_manage")
+		user << browse(null, "window=fuelpump_manage")
+		return
+
+	if (href_list["action"] == "change_name_direct")
+		if (unlocked)
+			to_chat(user, "The pump is being used! Finish it first.")
+			return
+		var/custn = input(user, "Choose a name for this pump:") as text|null
+		if (custn == "" || custn == null)
+			return
+		name = custn
+		updatedesc()
+		show_manage_ui(user)
+		return
+
+	if (href_list["action"] == "change_name")
+		if (unlocked)
+			to_chat(user, "The pump is being used! Finish it first.")
+			return
+		var/custn = href_list["name"]
+		if (custn && custn != "")
+			name = custn
+			updatedesc()
+		show_manage_ui(user)
+		return
+
+	if (href_list["action"] == "change_fuel")
+		if (unlocked)
+			to_chat(user, "The pump is being used! Finish it first.")
+			return
+		if (vol > 0)
+			to_chat(user, "<span class = 'notice'>The [src] still has fuel inside! Empty it before changing!</span>")
+			return
+		var/dat = {"<html><head>
+[common_browser_style]
+</head><body>
+<h2>Choose Fuel Type</h2>
+<a href='?src=\ref[src];action=set_fuel&fuel=gasoline'>Gasoline</a><br>
+<a href='?src=\ref[src];action=set_fuel&fuel=diesel'>Diesel</a><br>
+<a href='?src=\ref[src];action=set_fuel&fuel=biodiesel'>Biodiesel</a><br>
+<a href='?src=\ref[src];action=set_fuel&fuel=pethanol'>Pethanol</a><br>
+<a href='?src=\ref[src];action=set_fuel&fuel=petroleum'>Petroleum</a><br>
+<br><a href='?src=\ref[src];action=close_manage'>Cancel</a>
+</body></html>"}
+		user << browse(dat, "window=fuelpump_fuel;size=300x300")
+		return
+
+	if (href_list["action"] == "set_fuel")
+		var/fuel = href_list["fuel"]
+		if (fuel && vol <= 0)
+			fueltype = fuel
+			updatedesc()
+		user << browse(null, "window=fuelpump_fuel")
+		show_manage_ui(user)
+		return
+
+	if (href_list["action"] == "change_price_direct")
+		if (unlocked)
+			to_chat(user, "The pump is being used! Finish it first.")
+			return
+		var/custp = input(user, "What should the price be, in silver coins? (Min: 0, Max: 50):") as num|null
+		if (!isnum(custp))
+			return
+		if (custp < 0)
+			custp = 0
+		else if (custp > 50)
+			custp = 50
+		price = custp
+		updatedesc()
+		show_manage_ui(user)
+		return
+
+	if (href_list["action"] == "change_price")
+		var/custp = text2num(href_list["price"])
+		if (!isnum(custp))
+			return
+		if (custp < 0)
+			custp = 0
+		else if (custp > 50)
+			custp = 50
+		price = custp
+		updatedesc()
+		show_manage_ui(user)
+		return
+
+	show_manage_ui(user)
