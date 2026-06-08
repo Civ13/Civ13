@@ -606,8 +606,6 @@ Turf and target are seperate in case you want to teleport some distance from a t
 					continue
 				cant_pass = TRUE
 				break
-			if (istype(A, /obj/covers) && !A.density)
-				continue
 	return cant_pass
 
 /proc/get_step_towards2(var/atom/ref , var/atom/trg)

@@ -56,7 +56,7 @@
 				
 			// Scale base distance by terrain difficulty (move_delay) so the
 			// pathfinder naturally avoids slow terrain (water, swamp, trenches).
-			var/terrain_cost = 1 + (neighbor.move_delay / 10)
+			var/terrain_cost = 1 + (neighbor.move_delay ? neighbor.move_delay / 10 : 0)
 			var/dist = ((current.x == neighbor.x || current.y == neighbor.y) ? 1 : 1.414) * terrain_cost
 			var/tentativeGScore = gScore[current] + dist
 			
@@ -227,12 +227,8 @@
 		DestroySurroundings()
 		stuck_ticks = 0
 	else if (stuck_ticks >= 4)
-		// Clear path so it recalculates on next iteration
+		// Clear path so it recalculates on next iteration (fall through)
 		found_path = list()
-		moving = FALSE
-		spawn(1)
-			do_movement()
-		return FALSE
 
 	// Check if path is stale (target moved too far from path's end)
 	if(found_path.len > 0)
@@ -263,7 +259,7 @@
 			if(move_dir)
 				if(!step(src, move_dir))
 					// Stuck on an obstacle – try perpendicular directions first
-					if (stuck_ticks >= 2)
+					if (stuck_ticks < 3)
 						var/side_dir = pick(turn(move_dir, 90), turn(move_dir, -90))
 						if (!step(src, side_dir))
 							step(src, turn(side_dir, 180))
@@ -286,7 +282,7 @@
 			// Fallback: step_towards handles bumping natively
 			if(!step_towards(src, target_obj))
 				// Stuck on an obstacle – try perpendicular directions
-				if (stuck_ticks >= 2)
+				if (stuck_ticks < 3)
 					var/dir_to_target = get_dir(src, target_obj)
 					var/side_dir = pick(turn(dir_to_target, 90), turn(dir_to_target, -90))
 					if (!step(src, side_dir))
