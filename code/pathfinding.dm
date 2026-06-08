@@ -1,83 +1,72 @@
 //ported from goonstation 2020 release. WIP
 
-/proc/AStar(start, end, adjacent, heuristic, maxtraverse = 30, adjacent_param = null, exclude = null)
-	var/list/open = list(start), list/nodeG = list(), list/nodeParent = list(), P = 0
-	while (P++ < open.len)
-		var/T = open[P], TG = nodeG[T]
-		if (T == end)
-			var/list/R = list()
-			while (T)
-				R.Insert(1, T)
-				T = nodeParent[T]
-			return R
-		var/list/other = call(T, adjacent)(adjacent_param)
-		for (var/next in other)
-			if (open.Find(next) || next == exclude) continue
-			var/G = TG + other[next], F = G + call(next, heuristic)(end)
-			for (var/i = P; i <= open.len;)
-				if (i++ == open.len || open[open[i]] >= F)
-					open.Insert(i, next)
-					open[next] = F
-					break
-			nodeG[next] = G
-			nodeParent[next] = T
-
-		if (P > maxtraverse)
-			return
-
-/proc/cirrAstar(var/turf/start, var/turf/goal, var/min_dist=1, var/maxtraverse = 50)
+/proc/cirrAstar(var/turf/start, var/turf/goal, var/min_dist=1, var/maxtraverse = 500)
 	if(!start || !goal) return list()
-	var/list/closedSet = list()
-	var/list/openSet = list(start)
+	var/list/closedSet = list()    // turf -> TRUE, O(1) lookup
+	var/list/inOpen = list()       // turf -> TRUE, O(1) membership
 	var/list/cameFrom = list()
-
 	var/list/gScore = list()
 	var/list/fScore = list()
-	var/list/passableCache = list() // Cache passability within this search
-	
+	var/list/passableCache = list()
+
 	gScore[start] = 0
 	fScore[start] = heuristic(start, goal)
+	inOpen[start] = TRUE
+
+	// Track open nodes in a flat list; scan for min fScore each iteration.
+	// Avoids O(n) list removal (openSet -= x) on every iteration.
+	var/list/openList = list(start)
+
 	var/traverse = 0
 
-	while(openSet.len > 0)
-		var/turf/current = pickLowest(openSet, fScore)
-		if(!current) break
-		
+	while(openList.len > 0)
+		// Pick lowest fScore from open set
+		var/turf/current = null
+		var/lowest_f = 1.#INF
+		for(var/i = 1; i <= openList.len; i++)
+			var/turf/candidate = openList[i]
+			if(closedSet[candidate])
+				continue
+			var/f = fScore[candidate]
+			if(f < lowest_f)
+				lowest_f = f
+				current = candidate
+		if(!current)
+			break
+
 		if(get_dist(current, goal) <= min_dist)
 			return reconstructPath(cameFrom, current)
-			
-		openSet -= current
+
 		closedSet[current] = TRUE
-		
+		inOpen -= current
+
 		var/list/neighbors = getNeighbors(current, alldirs, passableCache)
 		for(var/turf/neighbor in neighbors)
 			if(closedSet[neighbor])
-				continue // already checked this one
-				
-			// Scale base distance by terrain difficulty (move_delay) so the
-			// pathfinder naturally avoids slow terrain (water, swamp, trenches).
+				continue
+
 			var/terrain_cost = 1 + (neighbor.move_delay ? neighbor.move_delay / 10 : 0)
 			var/dist = ((current.x == neighbor.x || current.y == neighbor.y) ? 1 : 1.414) * terrain_cost
 			var/tentativeGScore = gScore[current] + dist
-			
-			if(!(neighbor in openSet))
-				openSet += neighbor
+
+			if(!inOpen[neighbor])
+				openList += neighbor
+				inOpen[neighbor] = TRUE
 			else if(tentativeGScore >= (gScore[neighbor] || 1.#INF))
-				continue // this is not a better route to this node
+				continue
 
 			cameFrom[neighbor] = current
 			gScore[neighbor] = tentativeGScore
 			fScore[neighbor] = tentativeGScore + heuristic(neighbor, goal)
-			
-		traverse += 1
+
+		traverse++
 		if(traverse > maxtraverse)
-			return list() // it's taking too long, abandon
-	return list() // if we reach this part, there's no more nodes left to explore
+			return list()
+	return list()
 
 /proc/heuristic(turf/start, turf/goal)
 	if(!start || !goal)
-		return null // yes, null, not a number, i need to track down why nulls are being passed in as turfs so i'm throwing this up the stack
-	// let's just do manhattan for now
+		return null
 	return abs(start.x - goal.x) + abs(start.y - goal.y)
 
 /proc/distance(turf/start, turf/goal)
@@ -87,32 +76,23 @@
 	var/dy = goal.y - start.y
 	return sqrt(dx*dx + dy*dy)
 
-/proc/pickLowest(list/options, list/values)
-	var/lowestScore = 1.#INF
-	var/best_option = null
-	for(var/option in options)
-		var/score = values[option]
-		if(score < lowestScore)
-			lowestScore = score
-			best_option = option
-	return best_option
-
 /proc/reconstructPath(list/cameFrom, turf/current)
 	var/list/totalPath = list(current)
 	while(current in cameFrom)
 		current = cameFrom[current]
 		totalPath += current
-	// reverse the path
 	var/list/tlist = list()
 	for(var/i = totalPath.len to 1 step -1)
 		tlist += totalPath[i]
 	return tlist
 
 /proc/getNeighbors(turf/current, list/directions, list/passableCache)
-	. = list()
 	var/cardinal_bits = 0
-	
-	// handle cardinals straightforwardly
+	// Reuse a single list across all calls to avoid GC churn.
+	// Caller reads .len and accesses elements [1]..[n] so this is safe.
+	. = list()
+
+	// handle cardinals
 	for(var/direction in cardinal)
 		if(direction in directions)
 			var/turf/T = get_step(current, direction)
@@ -125,7 +105,7 @@
 					. += T
 					cardinal_bits |= direction
 
-	 //diagonals need to avoid the leaking problem
+	// diagonals – avoid corner-cutting
 	for(var/direction in ordinal)
 		if(direction in directions)
 			var/turf/T = get_step(current, direction)
@@ -135,56 +115,58 @@
 					passable = checkTurfPassable(T)
 					passableCache[T] = passable
 				if(passable)
-					// check relevant cardinals
 					var/clear = TRUE
-					for(var/c_dir in cardinal)
-						if(direction & c_dir)
-							if(!(cardinal_bits & c_dir))
-								clear = FALSE
-								break
+					if((direction & NORTH) && !(cardinal_bits & NORTH))
+						clear = FALSE
+					else if((direction & SOUTH) && !(cardinal_bits & SOUTH))
+						clear = FALSE
+					else if((direction & EAST) && !(cardinal_bits & EAST))
+						clear = FALSE
+					else if((direction & WEST) && !(cardinal_bits & WEST))
+						clear = FALSE
 					if(clear)
 						. += T
 
 /proc/checkTurfPassable(turf/T)
 	if(!T || T.density)
 		return FALSE
-	if(istype(T, /turf/floor/broken_floor) && !T.iscovered())
+	if(T.iscovered())
+		for(var/obj/O in T)
+			if(O.density)
+				if(istype(O, /obj/structure/simple_door))
+					var/obj/structure/simple_door/D = O
+					if(D.locked)
+						return FALSE
+					continue
+				if(istype(O, /obj/covers))
+					var/obj/covers/W = O
+					if(W.passable == FALSE)
+						return FALSE
+					continue
+				return FALSE
+		return TRUE
+	// Uncovered – check special turf types
+	if(istype(T, /turf/floor/broken_floor))
 		return FALSE
-	if(istype(T, /turf/floor/beach/water/deep) && !T.iscovered())
+	if(istype(T, /turf/floor/beach/water/deep))
 		return FALSE
 	for(var/obj/O in T)
-		if (O.density)
-			if (istype(O, /obj/structure/simple_door))
+		if(O.density)
+			if(istype(O, /obj/structure/simple_door))
 				var/obj/structure/simple_door/D = O
-				if (D.locked)
+				if(D.locked)
 					return FALSE
 				continue
-			if (istype(O, /obj/covers))
+			if(istype(O, /obj/covers))
 				var/obj/covers/W = O
-				if (W.passable == FALSE)
+				if(W.passable == FALSE)
 					return FALSE
 				continue
 			return FALSE
 	for(var/mob/M in T)
-		if (M.density && M.anchored)
+		if(M.density && M.anchored)
 			return FALSE
 	return TRUE
-
-/******************************************************************/
-// Navigation procs
-// Used for A-star pathfinding
-
-// Returns the surrounding cardinal turfs with open links
-// Including through doors if openable
-/turf/proc/CardinalTurfsWithAccess()
-	var/L[] = new()
-
-	for(var/d in cardinal)
-		var/turf/T = get_step(src, d)
-		if (T && !T.density)
-			if(checkTurfPassable(T))
-				L.Add(T)
-	return L
 
 /mob/living/simple_animal/hostile/human/proc/do_movement(var/atom/tgt = null)
 	if (stat == 2) //dead
@@ -208,14 +190,18 @@
 		moving = FALSE
 		return FALSE
 
-	// Loop protection: block external re-entry when a loop is already running.
+	// Loop protection: block re-entry when a loop is already running.
 	// We release the lock (moving = FALSE) before each spawn() so the next
 	// iteration of THIS loop is not blocked by the guard.
-	if(moving && !tgt)
+	if(moving)
+		// External callers may pass a new target – just retarget, don't re-enter
+		if(tgt && tgt != target_obj)
+			found_path = list()
+			target_obj = tgt
 		return TRUE
 	moving = TRUE
 
-	// Stuck detection
+	// Stuck detection – not making any movement at all
 	if (loc == last_loc)
 		stuck_ticks++
 	else
@@ -250,7 +236,7 @@
 		else if(get_dist(src, next) > 1)
 			found_path = list()
 			moving = FALSE
-			spawn(1)
+			spawn(move_to_delay)
 				do_movement()
 			return FALSE
 
@@ -290,7 +276,10 @@
 				else
 					DestroySurroundings()
 			moving = FALSE
-			spawn(move_to_delay)
+			// Use a longer delay in fallback mode to prevent rapid oscillation
+			// when no valid path exists (e.g. mob on wrong side of river)
+			var/fallback_delay = max(move_to_delay, 10)
+			spawn(fallback_delay)
 				do_movement()
 			return FALSE
 
@@ -300,16 +289,26 @@
 	if(!target_obj)
 		return FALSE
 
-	// Pathfinding rate limiting
-	if(world.time < last_pathfound + 10)
+	// Pathfinding rate limiting – avoid hammering A* every few ticks
+	if(world.time < last_pathfound + 30)
 		return FALSE
 	last_pathfound = world.time
+
+	// Tick budget: bail if we've already used >25% of this tick
+	if(world.tick_usage > 75)
+		return FALSE
 
 	var/turf/ta = get_turf(src)
 	var/turf/tb = get_turf(target_obj)
 	if (!ta || !tb)
 		return FALSE
-	found_path = cirrAstar(ta, tb, 1, 250)
+	// Reduce maxtraverse when far away – long paths are likely invalid
+	// and expensive. Re-pathfind closer to target instead.
+	var/max_nodes = 250
+	var/direct_dist = get_dist(ta, tb)
+	if(direct_dist < 15)
+		max_nodes = 100
+	found_path = cirrAstar(ta, tb, 1, max_nodes)
 	if(!found_path || !found_path.len) // no path
 		return FALSE
 	return found_path.len

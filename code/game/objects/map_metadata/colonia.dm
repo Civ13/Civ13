@@ -265,7 +265,7 @@
 /obj/map_metadata/colonia/proc/invasion_subsystem()
 	spawn(1 HOUR)
 		var/playercount = 0
-		for (var/mob/new_player/player in new_player_mob_list)
+		for (var/mob/player in human_clients_mob_list)
 			if (player.client)
 				++playercount
 		if (BARBARIAN_RELATIONS <= 25 && playercount >= 10)
@@ -282,15 +282,13 @@
 					num_to_spawn = num_to_spawn * 2
 				for(var/i = 1 to num_to_spawn)
 					var/turf/spawn_loc = pick(invasion_routes)
-					var/mob/living/simple_animal/hostile/human/barbarian/S
-					S = new /mob/living/simple_animal/hostile/human/barbarian(spawn_loc)
-					S.pathfind_target = city_center
+					new /mob/living/simple_animal/hostile/human/barbarian(spawn_loc)
 			if (LOCAL_TRIBES_RELATIONS <= 25 && BARBARIAN_RELATIONS <= 25)
-				to_chat(world, "<br><font size =3><span class='user'>The barbarians are launching an attack on the colony, and the local tribes have joined in!</font></span>")
+				to_chat(world, "<br><font size =3><span class='danger'>The barbarians are launching an attack on the colony, and the local tribes have joined in!</font></span>")
 			else
-				to_chat(world, "<br><font size =3><span class='user'>The barbarians are launching an attack on the colony!</font></span>")
+				to_chat(world, "<br><font size =3><span class='danger'>The barbarians are launching an attack on the colony!</font></span>")
 		if (ROMAN_RELATIONS <= 25 && playercount >= 10)
-			to_chat(world, "<br><font size =3><span class='user'>The Roman Empire is invading the colony!</font></span>")
+			to_chat(world, "<br><font size =3><span class='danger'>The Roman Empire is invading the colony!</font></span>")
 			var/list/turf/invasion_routes = latejoin_turfs["InvasionRouteRoman"]
 			var/list/turf/city_centers = latejoin_turfs["CityCenter"]
 			var/turf/city_center = null

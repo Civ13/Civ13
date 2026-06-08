@@ -80,18 +80,6 @@
 				return "scared"
 
 		if ("wander")
-			if(istype(src, /mob/living/simple_animal/hostile))
-				var/mob/living/simple_animal/hostile/H = src
-				if(H.pathfind_target)
-					if(get_dist(src, H.pathfind_target) > 2)
-						var/moving_to = get_dir(src, H.pathfind_target)
-						set_dir(moving_to)
-						step(src, moving_to)
-						turns_since_move = 0
-						return "wander"
-					else
-						H.pathfind_target = null
-					
 			if (faction == "School" || faction == "Ministry")
 				target_mob = FindTarget()
 				if (target_mob)

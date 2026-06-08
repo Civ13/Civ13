@@ -117,7 +117,7 @@
 			if (turns_since_move >= move_to_delay && stance == HOSTILE_STANCE_IDLE)
 				if (!(stop_automated_movement_when_pulled && pulledby))
 					var/moved = FALSE
-					if (istype(src, /mob/living/simple_animal/hostile/human/skeleton/attacker) || istype(src, /mob/living/simple_animal/hostile/wizard/moldy_man))
+					if (istype(src, /mob/living/simple_animal/hostile/human/skeleton/attacker) || istype(src, /mob/living/simple_animal/hostile/wizard/moldy_man/attacker))
 						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
 							walk_to(src, locate(/obj/effect/landmark/npctarget), TRUE, move_to_delay)
 							moved = TRUE
@@ -193,7 +193,10 @@
 					var/mob/living/simple_animal/hostile/H = src
 					if(H.pathfind_target)
 						if(get_dist(src, H.pathfind_target) > 2)
-							walk_to(src, H.pathfind_target, 2, move_to_delay)
+							// Mobs with targeting use do_movement() via do_human_behaviour()
+							// instead of walk_to() to avoid double-movement conflicts
+							if(!targeting)
+								walk_to(src, H.pathfind_target, 2, move_to_delay)
 							moved = TRUE
 						else
 							H.pathfind_target = null

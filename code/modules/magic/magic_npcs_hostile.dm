@@ -57,6 +57,7 @@
 	)
 
 /mob/living/simple_animal/hostile/wizard/moldy_man/attacker
+	targeting = TRUE
 
 /mob/living/simple_animal/hostile/wizard/moldy_man/New()
 	..()

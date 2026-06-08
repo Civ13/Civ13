@@ -34,6 +34,7 @@
 	var/wander = TRUE	// Does the mob wander around when idle?
 	var/stop_automated_movement_when_pulled = TRUE //When set to TRUE this stops the animal from moving when someone is pulling it.
 	var/flying = FALSE
+	var/targeting = FALSE // If TRUE, uses A* waypoint navigation toward pathfind_target. Only for specific mob types.
 
 	//Interaction
 	var/response_help   = "tries to help"

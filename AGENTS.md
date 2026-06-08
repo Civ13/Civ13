@@ -5,7 +5,7 @@
 - **DM** (DreamMaker) — BYOND's proprietary language. Sources have `.dm` extension.
 - **Entry point**: `civ13.dme` — the DM Environment file.
 - **Build**: `dm civ13.dme` (Windows) or `DreamMaker civ13.dme` (Linux). Outputs `civ13.dmb` + `civ13.rsc`.
-- **Lint**: `dreamchecker.exe` (SpacemanDMM static analyzer). Config in `SpacemanDMM.toml` (sets `dreamchecker = true` for the langserver).
+- **Lint**: `./dreamchecker.exe` (SpacemanDMM static analyzer). Config in `SpacemanDMM.toml` (sets `dreamchecker = true` for the langserver).
 - **Required BYOND version**: 516.1681 (enforced in CI and `.vscode/tasks.json`).
 - **CI** (`.github/workflows/test.yml`): installs BYOND 516.1681 on Ubuntu, runs `DreamMaker -max_errors 0 civ13.dme`, fails on any errors or warnings. That's the only CI check — no unit tests.
 
