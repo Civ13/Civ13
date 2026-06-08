@@ -29,15 +29,8 @@
 				to_chat(user, "This vending machine does not accept fiat money.")
 				return
 			var/obj/item/stack/money/M = W
-			if (istype(src, /obj/structure/vending/sales/pepelsibirsk))
-				if (istype(W, /obj/item/stack/money/rubles))
-					moneyin += M.amount*M.value
-				else
-					to_chat(user, "Foreign traders only accept the Soviet ruble.")
-					return
-			else
-				moneyin += M.amount*M.value
-			if (map.ID == MAP_KANDAHAR || istype(src, /obj/structure/vending/sales/pepelsibirsk))
+			moneyin += M.amount*M.value
+			if (map.ID == MAP_KANDAHAR)
 				to_chat(user, "You give \the [W] to the [src].")
 			else
 				to_chat(user, "You put \the [W] in the [src].")
@@ -52,7 +45,7 @@
 				to_chat(user, "This vending machine does not accept this currency.")
 				return
 			moneyin += F.amount
-			if (map.ID == MAP_KANDAHAR || istype(src, /obj/structure/vending/sales/pepelsibirsk))
+			if (map.ID == MAP_KANDAHAR)
 				to_chat(user, "You give \the [W] to the [src].")
 			else
 				to_chat(user, "You put \the [W] in the [src].")
@@ -274,7 +267,7 @@
 	if (!ui)
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 440, 600)
-		else if (map.ID == MAP_GULAG13 || istype(src, /obj/structure/vending/sales/pepelsibirsk))
+		else if (map.ID == MAP_GULAG13)
 			ui = new(user, src, ui_key, "vending_machine_gulag.tmpl", name, 440, 600)
 		else if (map.ID == MAP_KANDAHAR)
 			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 440, 600)
@@ -327,11 +320,6 @@
 						status_message = "Please insert money to pay for the item."
 						status_error = FALSE
 					else
-						if (istype(src, /obj/structure/vending/sales/pepelsibirsk))
-							var/obj/structure/vending/sales/pepelsibirsk/faction_trader = src
-							if (istype(faction_trader))
-								external_relations.npc_faction_relations[faction_trader.faction_relations] += price_with_tax*inp*0.02
-								to_chat(usr, "Relations have increased by [price_with_tax*inp*0.02].")
 						moneyin -= price_with_tax*inp
 						if (owner != "Global")
 							if (accepted_currency == "standard")

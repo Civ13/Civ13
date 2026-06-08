@@ -58,11 +58,12 @@
 		if (!killer && lastattacker && ishuman(lastattacker))
 			killer = lastattacker
 		if (killer && ishuman(killer) && killer != src)
+			if (killer.client && client)
+				WB.record_pvp_win(killer.client.ckey, client.ckey)
 			if (istype(get_area(src), /area/caribbean/houses/nml_one))
-				if (killer.client)
-					if (WB.check_level(killer.client.ckey) == "4")
-						WB.change_level(killer.client.ckey, "5")
-						to_chat(world, "<font size=3 class='wizard'><b>[killer.real_name]</b> ([killer.key]) has progressed to qualification level 5 (<b>C.H.A.D.</b>) by defeating <b>[real_name]</b> ([key]) in the Arena!</font>")
+				if (killer.client && WB.check_level(killer.client.ckey) == "4")
+					WB.change_level(killer.client.ckey, "5")
+					to_chat(world, "<font size=3 class='wizard'><b>[killer.real_name]</b> ([killer.key]) has progressed to qualification level 5 (<b>C.H.A.D.</b>) by defeating <b>[real_name]</b> ([key]) in the Arena!</font>")
 
 	if (map && client)
 		if (map.battleroyale && alive_n_of_side(PIRATES) > 1)

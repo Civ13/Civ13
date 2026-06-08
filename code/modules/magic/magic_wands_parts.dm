@@ -386,6 +386,9 @@
 	var/stink_timer         = 0
 	var/tox_timer           = 0
 
+// Define a threshold for "low juice" to trigger overcast effects.
+#define LOW_JUICE_THRESHOLD 10
+
 
 // ============================================================
 //  CRAFTED WAND — THE MODULAR SUBTYPE
@@ -841,25 +844,20 @@
 /obj/item/weapon/material/magic/wand/crafted/afterattack(atom/target, mob/user, proximity_flag, params)
 	if (!user || !target) return
 	if (casting) return
+	var/mob/living/human/H = null // Declare H at the top for wider scope
+	if (ishuman(user))
+		H = user
 
 	// MDF wet check: soak the wand if the caster is outside in precipitation.
 	// Checked at cast time so it catches anyone already standing in rain,
 	// not just people present when the weather first changed.
 	if (wand_wood == WAND_WOOD_MDF && !wand_wet)
-		var/area/F_area = get_area(user)
+		var/area/F_area = get_area(H || user) // Use H if available, otherwise user
 		if (F_area && F_area.location == AREA_OUTSIDE && is_wet_weather_icon(F_area.icon_state))
 			get_wet()
 
-	if (map && map.ID == MAP_WIZARD_BOY)
-		var/area/A = get_area(user)
-		if (A && istype(A, /area/caribbean/houses/nml_three))
-			to_chat(user, SPAN_DANGER("There's a charm in the police station preventing magic from being cast."))
-			casting = FALSE
-			return
-
 	// Skill gate
 	if (ishuman(user))
-		var/mob/living/human/H = user
 		if (H.getStat("magic") < minimum_level)
 			to_chat(user, SPAN_WARNING("You do not have the magical knowledge required to use this wand!"))
 			return
@@ -896,8 +894,7 @@
 	var/total_misfire = misfire_chance
 	if (wand_wood == WAND_WOOD_MDF && wand_wet)
 		total_misfire += 20
-	if (backstabber && ishuman(user))
-		var/mob/living/human/H = user
+	if (backstabber && H) // Use the globally declared H
 		if (H.health < (H.maxHealth * 0.5))
 			total_misfire += 30
 	if (prob(total_misfire))
@@ -913,13 +910,16 @@
 		to_chat(user, SPAN_WARNING("\The [src] collapses back on itself mid-cast! The spell fizzles!"))
 		return
 
-	// Juice check — must have at least 1 juice to attempt a cast
+	// Juice check: Refuse to cast if not enough juice for the effective spell cost.
 	if (ishuman(user))
-		var/mob/living/human/H = user
-		if (H.juice <= 0)
+		if (H.juice < eff_juice_cost)
 			to_chat(user, SPAN_WARNING("You don't have enough magical juice to cast this spell!"))
 			return
 
+		// NEW: Trigger overcast effects if juice is low (below threshold), even if sufficient to cast.
+		if (H.juice > 0 && H.juice < LOW_JUICE_THRESHOLD)
+			to_chat(user, SPAN_WARNING("Your magical reserves are dangerously low! Casting now is risky."))
+			on_overcast(H) // Apply the penalties for low juice.
 	// --- CASTING ---
 	casting = TRUE
 
@@ -929,15 +929,8 @@
 			return
 
 		if (ishuman(user))
-			var/mob/living/human/H = user
-
-			if (H.juice > 0 && user.get_active_hand() == src)
-				// Deduct juice; flag overcast if we go negative
-				H.juice -= eff_juice_cost
-				var/overcasting = (H.juice < 0)
-				if (overcasting)
-					H.juice = 0  // Floor juice at 0
-
+			if (user.get_active_hand() == src) // H.juice > 0 is guaranteed by the checks above if eff_juice_cost > 0
+				H.juice -= eff_juice_cost // Deduct juice
 				// Cast feedback — suppressed for Fox fur silent cast
 				if (!silent_cast)
 					for (var/mob/living/human/M in view(7, H))
@@ -952,10 +945,6 @@
 				if (S.skill_level >= 80)
 					for (var/mob/living/simple_animal/wizard/bobby/B in view(7, H))
 						B.witness_spell(H, S)
-
-				// Trigger overcast penalties if juice went below 0
-				if (overcasting)
-					on_overcast(H)
 
 				spawn(5)
 					if (!src || !user || !target || !S)

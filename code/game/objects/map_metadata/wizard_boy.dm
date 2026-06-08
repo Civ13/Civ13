@@ -33,10 +33,19 @@
 		"Rubywyrm" = 0,
 	)
 	var/moldy_invasion = FALSE
+	var/list/player_stats = list()
+	var/stats_loaded = FALSE
+	var/stats_dirty = FALSE
+	var/saving_stats = FALSE
+	var/list/moldy_men = list()
+	var/datum/moldy_sabotage/sabotage
 	New()
 		..()
+		sabotage = new /datum/moldy_sabotage(src)
 		spawn(30)
 			load_houses()
+		spawn(35)
+			load_stats()
 		spawn(100)
 		load_new_recipes("config/crafting/material_recipes_camp.txt")
 		override_global_recipes = "camp"
@@ -71,6 +80,16 @@
 			to_world("<font size=4 class='wizard' style='color:#0000CF'>Slatepie: [score]</font>")
 		else if (house == "Mustardweasel")
 			to_world("<font size=4 class='wizard' style='color:#FFD700'>Mustardweasel: [score]</font>")
+	if (moldy_men.len)
+		to_world("<font size=4 class='wizard'>--- Moldy Men ---</font>")
+		for (var/mob/living/human/H in player_list)
+			if (H.ckey && (H.ckey in moldy_men))
+				var/status = "Alive"
+				if (H.stat == DEAD)
+					status = "DEAD"
+				else if (H.stat == UNCONSCIOUS)
+					status = "Unconscious"
+				to_world("<font size=3 class='wizard'>[H.ckey] ([H.real_name]) - [status]</font>")
 	return
 /obj/map_metadata/wizard_boy/proc/load_houses()
 	if (fexists("SQL/houses.txt"))
@@ -99,6 +118,96 @@
 		if (islist(data) && data.len >= 2)
 			var/wand_data = (data.len >= 3) ? data[3] : ""
 			text2file("[ckey];[data[1]];[data[2]];[wand_data]", "SQL/houses.txt")
+
+/obj/map_metadata/wizard_boy/proc/load_stats()
+	if (stats_loaded)
+		return
+	stats_loaded = TRUE
+	if (fexists("SQL/wizard_boy_stats.txt"))
+		player_stats = list()
+		var/file_content = file2text("SQL/wizard_boy_stats.txt")
+		var/list/lines = splittext(file_content, "\n")
+		for (var/line in lines)
+			if (!line)
+				continue
+			var/list/parts = splittext(line, ";")
+			if (parts.len < 3)
+				continue
+			var/ckey = parts[1]
+			var/wins = text2num(parts[2])
+			var/losses = text2num(parts[3])
+			var/list/kills = list()
+			for (var/i = 4 to parts.len)
+				var/list/kill_data = splittext(parts[i], ",")
+				if (kill_data.len == 2)
+					kills[kill_data[1]] = text2num(kill_data[2])
+			player_stats[ckey] = list(wins, losses, kills)
+
+/obj/map_metadata/wizard_boy/proc/save_stats()
+	if (saving_stats)
+		stats_dirty = TRUE
+		return
+	saving_stats = TRUE
+	stats_dirty = FALSE
+
+	if (fexists("SQL/wizard_boy_stats.txt"))
+		if (fexists("SQL/wizard_boy_stats_backup.txt"))
+			fdel("SQL/wizard_boy_stats_backup.txt")
+		fcopy("SQL/wizard_boy_stats.txt", "SQL/wizard_boy_stats_backup.txt")
+		fdel("SQL/wizard_boy_stats.txt")
+
+	for (var/ckey in player_stats)
+		var/list/data = player_stats[ckey]
+		if (!islist(data) || data.len < 2)
+			continue
+		var/line = "[ckey];[data[1]];[data[2]]"
+		if (data.len >= 3 && islist(data[3]))
+			var/list/kills = data[3]
+			for(var/enemy in kills)
+				line += ";[enemy],[kills[enemy]]"
+		text2file(line, "SQL/wizard_boy_stats.txt")
+
+	spawn(100) // 10-second cooldown to prevent disk thrashing
+		saving_stats = FALSE
+		if (stats_dirty)
+			save_stats()
+
+/obj/map_metadata/wizard_boy/proc/ensure_stats_loaded(ckey)
+	if(!stats_loaded)
+		load_stats()
+	if(!player_stats[ckey])
+		player_stats[ckey] = list(0, 0, list())
+
+/obj/map_metadata/wizard_boy/proc/record_pvp_win(winner_ckey, loser_ckey)
+	ensure_stats_loaded(winner_ckey)
+	ensure_stats_loaded(loser_ckey)
+
+	var/list/winner_data = player_stats[winner_ckey]
+	winner_data[1]++
+	if (winner_data.len < 3)
+		winner_data.len = 3
+	if (!islist(winner_data[3]))
+		winner_data[3] = list()
+	var/list/winner_kills = winner_data[3]
+	winner_kills[loser_ckey] = (winner_kills[loser_ckey] || 0) + 1
+	var/list/loser_data = player_stats[loser_ckey]
+	loser_data[2]++
+
+	save_stats()
+
+/obj/map_metadata/wizard_boy/proc/record_npc_kill(killer_ckey, enemy_name)
+	ensure_stats_loaded(killer_ckey)
+
+	var/list/killer_data = player_stats[killer_ckey]
+	if (killer_data.len < 3)
+		killer_data.len = 3
+	if (!islist(killer_data[3]))
+		killer_data[3] = list()
+	var/list/kills = killer_data[3]
+	var/sanitized_enemy = replacetext(enemy_name, ";", "_")
+	sanitized_enemy = replacetext(sanitized_enemy, ",", "_")
+	kills[sanitized_enemy] = (kills[sanitized_enemy] || 0) + 1
+	save_stats()
 
 /obj/map_metadata/wizard_boy/proc/change_level(ckey, new_level = "0")
 	if(!house_info[ckey])
@@ -244,6 +353,51 @@
 	house_info.Remove(ckey)
 	save_houses()
 	return TRUE
+
+/obj/map_metadata/wizard_boy/proc/is_moldy_man(ckey)
+	return (ckey in moldy_men)
+
+/obj/map_metadata/wizard_boy/proc/make_moldy_man(ckey)
+	if (ckey in moldy_men)
+		return FALSE
+	for (var/mob/living/human/H in player_list)
+		if (H.client && H.client.ckey == ckey)
+			if (!H.mind)
+				H.mind = new
+				H.mind.current = H
+				H.mind.key = H.key
+			H.mind.special_role = "Moldy Man"
+			moldy_men += ckey
+			if (sabotage)
+				sabotage.add_member(ckey)
+			to_chat(H, "<span class='danger'>A dark presence fills you... You are now a <b>Moldy Man</b>, an agent of Lord Moldywart! Survive until the round ends to claim victory. Other Moldy Men can recognise you by examining you. Sabotage the school to earn points for the Grand Ritual!</span>")
+			log_admin("[ckey] has been made a Moldy Man.")
+			return TRUE
+	return FALSE
+
+/obj/map_metadata/wizard_boy/proc/remove_moldy_man(ckey)
+	if (!(ckey in moldy_men))
+		return FALSE
+	moldy_men -= ckey
+	if (sabotage)
+		sabotage.remove_member(ckey)
+	for (var/mob/living/human/H in player_list)
+		if (H.client && H.client.ckey == ckey)
+			if (H.mind)
+				H.mind.special_role = null
+			to_chat(H, "<span class='notice'>The dark presence leaves you. You are no longer a Moldy Man.</span>")
+	return TRUE
+
+/obj/map_metadata/wizard_boy/proc/get_moldy_man_info()
+	. = list()
+	for (var/mob/living/human/H in player_list)
+		if (H.ckey && (H.ckey in moldy_men))
+			var/status = "Alive"
+			if (H.stat == DEAD)
+				status = "DEAD"
+			else if (H.stat == UNCONSCIOUS)
+				status = "Unconscious"
+			. += "[H.ckey] ([H.real_name]) - [status]"
 
 /obj/map_metadata/wizard_boy/proc/change_house(ckey, new_house)
 	if(!house_info[ckey])

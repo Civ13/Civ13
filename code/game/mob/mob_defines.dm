@@ -137,6 +137,7 @@
 	//Reused for Magic
 	var/list/spell_list = list()
 	var/magic_shield = FALSE
+	var/no_magic = FALSE
 
 	mouse_drag_pointer = MOUSE_ACTIVE_POINTER
 	mouse_drop_pointer = MOUSE_ACTIVE_POINTER
