@@ -188,12 +188,12 @@
 				return
 			if (PD.included)
 				var/datum/program/NP = new PD.included
+				NP.origin = src
 				for(var/datum/program/EP in programs)
 					if (istype(EP,NP))
 						to_chat(H, "This program is already installed on this machine.")
 						return
 				programs += NP
-				NP.origin = src
 				playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
 				to_chat(H, "You load \the [NP.name] into this machine.")
 				return
@@ -236,15 +236,14 @@
 		to_chat(H, "<span class = 'notice'>There is not enough power to start the [src].</span>")
 		return
 /obj/structure/computer/attack_hand(var/mob/living/human/H)
-	if(!src.active)
+	if(src.active)
 		boot(operatingsystem)
-		do_html(user)
+		do_html(H)
 	else
 		to_chat(H, "<span class = 'notice'>You need to turn the [src] on first!</span>")
 /obj/structure/computer/proc/power_on()
 	if (powered && active)
 		update_icon()
-		//do somethin
 	else
 		update_icon()
 		return
@@ -257,7 +256,6 @@
 
 /obj/structure/computer/proc/program_checker()
 	for(var/datum/program/P in programs)
-		P.origin = src
 		if (P.does_checks)
 			P.does_checks_proc()
 	spawn(600) // 1 minute
