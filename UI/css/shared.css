@@ -2,10 +2,10 @@ body {
     padding: 0;
     margin: 0;
     font-size: 14px;
-    color: #ffffff;
+    color: #f0e0c0;
     line-height: 170%;
-    font-family: Verdana, Geneva, sans-serif;
-    background: #272727;
+    font-family: 'Segoe UI', monospace;
+    background: #2b1e0e;
 }
 
 #uiNoScript {
@@ -26,7 +26,7 @@ body {
 }
 
 hr {
-    background-color: #40628a;
+    background-color: #5a3a1a;
     height: 1px;
 }
 
@@ -35,10 +35,10 @@ hr {
     min-width: 15px;
     height: 16px;
     text-align: center;
-    color: #ffffff;
+    color: #ffd700;
     text-decoration: none;
-    background: #40628a;
-    border: 1px solid #161616;
+    background: #5a3a1a;
+    border: 1px solid #5a3a1a;
     padding: 0px 4px 4px 4px;
     margin: 0 2px 2px 0;
     cursor: default;
@@ -50,7 +50,7 @@ hr {
 }
 
 a:hover, .zoomLink:hover, .linkActive:hover {
-    background: #507aac;
+    background: #8a6a3a;
 }
 
 .linkPending, .linkPending:hover {
@@ -59,18 +59,18 @@ a:hover, .zoomLink:hover, .linkActive:hover {
 }
 
 a.white, a.white:link, a.white:visited, a.white:active {
-    color: #40628a;
+    color: #ffd700;
     text-decoration: none;
-    background: #ffffff;
-    border: 1px solid #161616;
+    background: #5a3a1a;
+    border: 1px solid #5a3a1a;
     padding: 1px 4px 1px 4px;
     margin: 0 2px 0 0;
     cursor: default;
 }
 
 a.white:hover {
-    color: #ffffff;
-    background: #40628a;
+    color: #ffd700;
+    background: #8a6a3a;
 }
 
 .hidden {
@@ -128,7 +128,7 @@ img, a img {
 h1, h2, h3, h4, h5, h6 {
     margin: 0;
     padding: 12px 0 6px 0;
-    color: #FFFFFF;
+    color: #ffd700;
     clear: both;
 }
 
@@ -188,7 +188,7 @@ abbr {
 }
 
 .highlight {
-    color: #8BA5C4;
+    color: #ffd700;
 }
 
 .dark {
@@ -242,8 +242,8 @@ div.notice {
 }
 
 .itemGroup {
-    border: 1px solid #e9c183;
-    background: #2c2c2c;
+    border: 1px solid #5a3a1a;
+    background: #3d2b14;
     padding: 4px;
     clear: both;
 }
@@ -269,7 +269,7 @@ div.notice {
 
 .itemLabelNarrow, .itemLabel, .itemLabelWide, .itemLabelWider, .itemLabelWidest {
     float: left;
-    color: #e9c183;
+    color: #ffd700;
 }
 
 .itemLabelNarrow {
@@ -309,8 +309,8 @@ div.notice {
 
 .statusDisplay {
     background: #000000;
-    color: #ffffff;
-    border: 1px solid #40628a;
+    color: #f0e0c0;
+    border: 1px solid #5a3a1a;
     padding: 4px;
     margin: 3px 0;
 	overflow: hidden;
@@ -318,8 +318,8 @@ div.notice {
 
 .statusDisplayRecords {
     background: #000000;
-    color: #ffffff;
-    border: 1px solid #40628a;
+    color: #f0e0c0;
+    border: 1px solid #5a3a1a;
     padding: 4px;
     margin: 3px 0;
     overflow-x: hidden;
@@ -329,12 +329,12 @@ div.notice {
 .statusDisplayComm {
 	width: 100%;
     background: rgba(0, 0, 0, 0.5);
-    color: #ffffff;
+    color: #f0e0c0;
 	padding-bottom: 4px;
 	border-top: 0 none;
 	border-left: 0 none;
 	border-right: 0 none;
-	border-bottom: 2px inset #40628a;
+	border-bottom: 2px inset #5a3a1a;
     margin: 3px 0;
 	overflow: hidden;
 }
@@ -343,7 +343,7 @@ div.notice {
     width: 138px;
     float: left;
     overflow: hidden;
-    color: #98B0C3;
+    color: #ffd700;
 }
 
 .statusValue {
@@ -353,8 +353,8 @@ div.notice {
 .block {
     padding: 8px;
     margin: 10px 4px 4px 4px;
-    border: 1px solid #40628a;
-    background-color: #202020;
+    border: 1px solid #5a3a1a;
+    background-color: #3d2b14;
 }
 
 .block h3 {
@@ -385,7 +385,7 @@ div.notice {
 .displayBarFill {
     width: 0%;
     height: 100%;
-    background: #40628a;
+    background: #5a3a1a;
     overflow: hidden;
     float: left;
 }
@@ -398,7 +398,7 @@ div.notice {
     float: left;
     margin: 0 5px 0 0;
     overflow: hidden;
-	background: #40628a;
+	background: #5a3a1a;
 }
 
 .displayBarVerticalFill {

@@ -83,7 +83,7 @@
 <head><style>
 body { font-family: Verdana, Geneva, sans-serif; background: #1a1a1a; color: #ffffff; margin: 0; padding: 20px; font-size: 14px; line-height: 170%; }
 h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; margin-top: 0; font-size: 18px; letter-spacing: 1px; }
-.item { background: #272727; border: 1px solid #cc0000; padding: 8px 12px; margin-bottom: 6px; overflow: auto; }
+.item { background: #272727; border: 1px solid #cc0000; padding: 8px 12px; margin-bottom: 8px; overflow: auto; }
 .item .info { float: left; width: 65%; }
 .item .name { font-weight: bold; color: #ffffff; }
 .item .desc { font-size: 11px; color: #999999; }

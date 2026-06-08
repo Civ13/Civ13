@@ -2,6 +2,74 @@
 	Interface for vending machines 
 	See: code/game/machinery/vending.dm
 -->
+{{if data.modern}}
+<style>
+	body {
+		background: #1a1a1a !important;
+		color: #ffffff !important;
+		font-family: Verdana, Geneva, sans-serif !important;
+	}
+
+	h1,
+	h2,
+	h3 {
+		color: #aa0000 !important;
+		border-bottom: 2px solid #aa0000 !important;
+	}
+
+	.link,
+	.linkOn,
+	.linkOff,
+	.selected,
+	.disabled {
+		background: #aa0000 !important;
+		border-color: #770000 !important;
+		color: #ffffff !important;
+	}
+
+	.link:hover,
+	.linkActive:hover,
+	a:hover {
+		background: #ff3333 !important;
+	}
+
+	.linkOn,
+	.selected {
+		background: #2f943c !important;
+		border-color: #2f943c !important;
+	}
+
+	.linkOff,
+	.disabled {
+		background: #666666 !important;
+		border-color: #444444 !important;
+	}
+
+	.itemLabel {
+		color: #ffd700 !important;
+	}
+
+	.statusDisplay {
+		border-color: #aa0000 !important;
+	}
+
+	.item {
+		margin-bottom: 8px !important;
+		overflow: hidden !important;
+	}
+</style>
+{{else}}
+<style>
+	body {
+		background: #2b1e0e !important;
+	}
+
+	.item {
+		margin-bottom: 8px;
+		overflow: hidden;
+	}
+</style>
+{{/if}}
 <h1>
 	<center>{{:data.company}}</center>
 </h1>

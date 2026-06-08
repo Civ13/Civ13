@@ -2,24 +2,92 @@
 	Interface for vending machines 
 	See: code/game/machinery/vending.dm
 -->
+{{if data.modern}}
+<style>
+	body {
+		background: #1a1a1a !important;
+		color: #ffffff !important;
+		font-family: Verdana, Geneva, sans-serif !important;
+	}
 
+	h1,
+	h2,
+	h3 {
+		color: #aa0000 !important;
+		border-bottom: 2px solid #aa0000 !important;
+	}
+
+	.link,
+	.linkOn,
+	.linkOff,
+	.selected,
+	.disabled {
+		background: #aa0000 !important;
+		border-color: #770000 !important;
+		color: #ffffff !important;
+	}
+
+	.link:hover,
+	.linkActive:hover,
+	a:hover {
+		background: #ff3333 !important;
+	}
+
+	.linkOn,
+	.selected {
+		background: #2f943c !important;
+		border-color: #2f943c !important;
+	}
+
+	.linkOff,
+	.disabled {
+		background: #666666 !important;
+		border-color: #444444 !important;
+	}
+
+	.itemLabel {
+		color: #ffd700 !important;
+	}
+
+	.statusDisplay {
+		border-color: #aa0000 !important;
+	}
+
+	.item {
+		margin-bottom: 8px !important;
+		overflow: hidden !important;
+	}
+</style>
+{{else}}
+<style>
+	body {
+		background: #2b1e0e !important;
+	}
+
+	.item {
+		margin-bottom: 8px;
+		overflow: hidden;
+	}
+</style>
+{{/if}}
 {{if data.mode == 0}} <!-- Listing -->
 <h2>Items available</h2>
 <div class='item'>
 	{{for data.products}}
 	<div class='item'>
-			<div style='float'>
-				{{if value.price > 0}}
-					{{:helper.link('Buy (' + value.price + ')', 'cart', { "vend" : value.key }, value.amount > 0 ? null : 'disabled')}}
-				{{else}}
-					{{:helper.link('Vend', 'circle-arrow-s', { "vend" : value.key }, value.amount > 0 ? null : 'disabled')}}
-				{{/if}}
-			</div>
+		<div style='float'>
+			{{if value.price > 0}}
+			{{:helper.link('Buy (' + value.price + ')', 'cart', { "vend" : value.key }, value.amount > 0 ? null :
+			'disabled')}}
+			{{else}}
+			{{:helper.link('Vend', 'circle-arrow-s', { "vend" : value.key }, value.amount > 0 ? null : 'disabled')}}
+			{{/if}}
+		</div>
 		<div class='itemContent'>
-		{{if value.color}}<span style='color:{{:value.color}}'>{{:value.name}}</span>
-		{{else}}{{:value.name}}
-		{{/if}}
-			 ({{:value.amount ? value.amount : "NONE LEFT"}})
+			{{if value.color}}<span style='color:{{:value.color}}'>{{:value.name}}</span>
+			{{else}}{{:value.name}}
+			{{/if}}
+			({{:value.amount ? value.amount : "NONE LEFT"}})
 		</div>
 	</div>
 	{{empty}}
@@ -29,7 +97,7 @@
 {{if data.coin}}
 <h2>Coin</h2>
 <div class='item'>
-	<div class='itemLabel'>Coin deposited:</div> 
+	<div class='itemLabel'>Coin deposited:</div>
 	<div class='itemContent'>{{:helper.link(data.coin, 'eject', {'remove_coin' : 1})}}</div>
 </div>
 {{/if}}
@@ -37,11 +105,13 @@
 <h2>Item selected</h2>
 <div class='item'>
 	<div class='item'>
-		<div class='itemLabel'>Item selected:</div> <div class='itemContent'>{{:data.product}}</div>
-		<div class='itemLabel'>Charge:</div> <div class='itemContent'>{{:data.price}}</div>
+		<div class='itemLabel'>Item selected:</div>
+		<div class='itemContent'>{{:data.product}}</div>
+		<div class='itemLabel'>Charge:</div>
+		<div class='itemContent'>{{:data.price}}</div>
 	</div>
 	<div class='statusDisplay' style='overflow: auto;'>
-		{{if data.message_err}} <span class='uiIcon16 icon-alert' ></span>{{/if}} {{:data.message}}
+		{{if data.message_err}} <span class='uiIcon16 icon-alert'></span>{{/if}} {{:data.message}}
 	</div>
 	<div class='item'>
 		{{:helper.link('Cancel', 'arrowreturn-1-w', {'cancelpurchase' : 1})}}
@@ -51,6 +121,7 @@
 {{if data.panel}}
 <h2>Maintenance panel</h2>
 <div class='item'>
-	<div class='itemLabel'>Speaker</div><div class='item'>{{:helper.link(data.speaker ? 'Enabled' : 'Disabled',  'gear', {'togglevoice' : 1})}}</div>
+	<div class='itemLabel'>Speaker</div>
+	<div class='item'>{{:helper.link(data.speaker ? 'Enabled' : 'Disabled', 'gear', {'togglevoice' : 1})}}</div>
 </div>
 {{/if}}
