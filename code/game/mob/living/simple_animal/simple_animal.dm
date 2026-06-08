@@ -717,6 +717,25 @@
 	if ((client.add_stat_tab("Status") || client.statpanel_tab == "Status") && show_stat_health)
 		client.add_stat(null, "Health: [round((health / maxHealth) * 100)]%")
 
+/mob/living/simple_animal/proc/get_valid_move_dirs()
+	var/list/valid = list()
+	for (var/d in cardinal)
+		var/turf/T = get_step(src, d)
+		if (!T || T.density)
+			continue
+		if (istype(T, /turf/floor/beach/water/deep) && !T.iscovered() && !flying)
+			continue
+		if (istype(T, /turf/floor/broken_floor) && !T.iscovered())
+			continue
+		valid += d
+	return valid
+
+/mob/living/simple_animal/proc/smart_step_towards(atom/target)
+	var/turf/next = get_step_towards2(src, target)
+	if (isturf(next) && next != loc)
+		return step(src, get_dir(src, next))
+	return FALSE
+
 /mob/living/simple_animal/proc/unregisterSpawner()
 	if (origin != null)
 		if (istype(origin, /obj/effect/spawner/mobspawner))

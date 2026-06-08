@@ -97,10 +97,12 @@
 					stance = HOSTILE_STANCE_ATTACK
 					return handle_combat_behaviour("hostile")
 
-			var/moving_to = pick(cardinal)
-			set_dir(moving_to)
-			if (Move(get_step(src, moving_to)))
-				turns_since_move = 0
+			var/list/valid_dirs = get_valid_move_dirs()
+			if (valid_dirs.len)
+				var/moving_to = pick(valid_dirs)
+				set_dir(moving_to)
+				if (Move(get_step(src, moving_to)))
+					turns_since_move = 0
 			return "wander"
 
 		if ("hunt", "defends", "hostile")
@@ -129,7 +131,7 @@
 			eat()
 			return
 		for(var/turf/floor/grass/GT in range(6,src))
-			step_towards(src, GT)
+			smart_step_towards(GT)
 			return
 
 	if (granivore)
@@ -142,7 +144,7 @@
 			eat()
 			return
 		for(var/obj/structure/farming/plant/PL in range(8,src))
-			step_towards(src, PL)
+			smart_step_towards(PL)
 			return
 
 	if (carnivore)
@@ -153,7 +155,7 @@
 				return
 		for(var/mob/living/ML in range(9,src))
 			if (ML.stat == DEAD)
-				step_towards(src, ML)
+				smart_step_towards(ML)
 				return
 
 	if (predatory_carnivore)
@@ -164,7 +166,7 @@
 				return
 		for(var/mob/living/ML in range(9,src))
 			if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type))
-				step_towards(src, ML)
+				smart_step_towards(ML)
 				return
 
 	if (scavenger)
@@ -175,7 +177,7 @@
 				return
 		for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(8,src))
 			if(!istype(FD, /obj/item/weapon/reagent_containers/food/snacks/poo))
-				step_towards(src, FD)
+				smart_step_towards(FD)
 				return
 
 /mob/living/simple_animal/proc/eat()

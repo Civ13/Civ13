@@ -54,10 +54,10 @@
 			if(closedSet[neighbor])
 				continue // already checked this one
 				
-			// Use 10 for cardinal, 14 for diagonal to avoid floating point/sqrt if possible?
-			// Current code uses 1.0/1.414 or similar via distance().
-			// Let's stick to consistent distance metric but optimize adjacency.
-			var/dist = (current.x == neighbor.x || current.y == neighbor.y) ? 1 : 1.414
+			// Scale base distance by terrain difficulty (move_delay) so the
+			// pathfinder naturally avoids slow terrain (water, swamp, trenches).
+			var/terrain_cost = 1 + (neighbor.move_delay / 10)
+			var/dist = ((current.x == neighbor.x || current.y == neighbor.y) ? 1 : 1.414) * terrain_cost
 			var/tentativeGScore = gScore[current] + dist
 			
 			if(!(neighbor in openSet))
@@ -150,6 +150,8 @@
 		return FALSE
 	if(istype(T, /turf/floor/broken_floor) && !T.iscovered())
 		return FALSE
+	if(istype(T, /turf/floor/beach/water/deep) && !T.iscovered())
+		return FALSE
 	for(var/obj/O in T)
 		if (O.density)
 			if (istype(O, /obj/structure/simple_door))
@@ -213,6 +215,25 @@
 		return TRUE
 	moving = TRUE
 
+	// Stuck detection
+	if (loc == last_loc)
+		stuck_ticks++
+	else
+		stuck_ticks = 0
+		last_loc = loc
+
+	// If stuck for several ticks, try to recover
+	if (stuck_ticks >= 6 && destroy_surroundings)
+		DestroySurroundings()
+		stuck_ticks = 0
+	else if (stuck_ticks >= 4)
+		// Clear path so it recalculates on next iteration
+		found_path = list()
+		moving = FALSE
+		spawn(1)
+			do_movement()
+		return FALSE
+
 	// Check if path is stale (target moved too far from path's end)
 	if(found_path.len > 0)
 		var/turf/path_end = found_path[found_path.len]
@@ -241,8 +262,13 @@
 			var/move_dir = get_dir(src, next)
 			if(move_dir)
 				if(!step(src, move_dir))
-					// Stuck on an obstacle (likely barricade), try to destroy it
-					DestroySurroundings()
+					// Stuck on an obstacle – try perpendicular directions first
+					if (stuck_ticks >= 2)
+						var/side_dir = pick(turn(move_dir, 90), turn(move_dir, -90))
+						if (!step(src, side_dir))
+							step(src, turn(side_dir, 180))
+					else
+						DestroySurroundings()
 
 		moving = FALSE
 		spawn(move_to_delay)
@@ -259,8 +285,14 @@
 		else
 			// Fallback: step_towards handles bumping natively
 			if(!step_towards(src, target_obj))
-				// Failed to move (stuck on barricade), try to destroy obstacle
-				DestroySurroundings()
+				// Stuck on an obstacle – try perpendicular directions
+				if (stuck_ticks >= 2)
+					var/dir_to_target = get_dir(src, target_obj)
+					var/side_dir = pick(turn(dir_to_target, 90), turn(dir_to_target, -90))
+					if (!step(src, side_dir))
+						step(src, turn(side_dir, 180))
+				else
+					DestroySurroundings()
 			moving = FALSE
 			spawn(move_to_delay)
 				do_movement()

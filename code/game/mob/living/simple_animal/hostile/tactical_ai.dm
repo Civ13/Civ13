@@ -122,15 +122,19 @@
 							walk_to(src, locate(/obj/effect/landmark/npctarget), TRUE, move_to_delay)
 							moved = TRUE
 						else
-							var/moving_to = pick(cardinal)
+							var/list/valid_dirs = get_valid_move_dirs()
+							if (valid_dirs.len)
+								var/moving_to = pick(valid_dirs)
+								set_dir(moving_to)
+								if (Move(get_step(src, moving_to)))
+									moved = TRUE
+					else
+						var/list/valid_dirs = get_valid_move_dirs()
+						if (valid_dirs.len)
+							var/moving_to = pick(valid_dirs)
 							set_dir(moving_to)
 							if (Move(get_step(src, moving_to)))
 								moved = TRUE
-					else
-						var/moving_to = pick(cardinal)
-						set_dir(moving_to)
-						if (Move(get_step(src, moving_to)))
-							moved = TRUE
 					if (moved)
 						turns_since_move = 0
 		switch(stance)
@@ -195,12 +199,14 @@
 							H.pathfind_target = null
 				
 				if(!moved)
-					var/moving_to = pick(cardinal)
-					var/turf/move_to_turf = get_step(src, moving_to)
-					if (!(istype(loc, /turf/floor/trench) && !istype(move_to_turf, /turf/floor/trench)))
-						set_dir(moving_to)
-						if (Move(move_to_turf))
-							moved = TRUE
+					var/list/valid_dirs = get_valid_move_dirs()
+					if (valid_dirs.len)
+						var/moving_to = pick(valid_dirs)
+						var/turf/move_to_turf = get_step(src, moving_to)
+						if (!(istype(loc, /turf/floor/trench) && !istype(move_to_turf, /turf/floor/trench)))
+							set_dir(moving_to)
+							if (Move(move_to_turf))
+								moved = TRUE
 				
 				if (moved)
 					turns_since_move = 0
