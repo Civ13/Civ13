@@ -2604,7 +2604,7 @@
 "xrQ" = (/obj/structure/table/glass,/obj/item/weapon/paper_bin,/obj/item/weapon/pen,/turf/floor/plating/marble/decorative_tile,/area/caribbean/roofed)
 "xtj" = (/obj/structure/sign/nosmoking2{pixel_y = 32},/obj/structure/vending/sales/food/snacks,/obj/effect/floor_decal/corner/paleblue/border{dir = 1},/turf/floor/plating/white,/area/caribbean/roofed/temperate)
 "xty" = (/obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door{name = "Gunstore"; unique_door_name = "Gunstore"},/turf/floor/plating/tiled/woodh,/area/caribbean/roofed/temperate)
-"xuV" = (/mob/living/simple_animal/dog,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"xuV" = (/mob/living/simple_animal/pet/dog,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "xvk" = (/obj/structure/window/barrier/railing/stone{dir = 8; icon_state = "stone"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/forest)
 "xvS" = (/obj/structure/lamp/lamp_big/alwayson/white{dir = 1; icon_state = "tube"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/forest)
 "xwZ" = (/obj/structure/gatecontrol/blastcontrol/garage{pixel_x = -28; dir = 4},/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/road,/area/caribbean/roofed/temperate)

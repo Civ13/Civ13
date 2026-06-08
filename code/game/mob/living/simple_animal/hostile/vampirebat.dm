@@ -30,10 +30,6 @@
 	wandersounds = list('sound/animals/bat/bats_1.ogg','sound/animals/bat/bats_2.ogg','sound/animals/bat/bats_3.ogg')
 	hostilesounds = list('sound/animals/bat/bats_1.ogg','sound/animals/bat/bats_2.ogg','sound/animals/bat/bats_3.ogg')
 
-/mob/living/simple_animal/vampirebatblack/New()
-	..()
-
-
 /mob/living/simple_animal/vampirebatblack/Life()
 	..()
 	if (stat != DEAD)
@@ -67,15 +63,10 @@
 			for (var/mob/living/human/TG in range(1,src))
 				visible_message("<span class = 'danger'>\The [src] bites [TG]!")
 				TG.adjustBruteLoss(1,2)
-				var/dmod = 1
-				if (TG.find_trait("Weak Immune System"))
-					dmod = 2
-				if (TG.find_trait("Strong Immune System"))
-					dmod = 0.2
-				if (prob(25*dmod) && TG.disease == 0)
-					TG.disease_progression = 0
-					TG.disease_type ="malaria"
-					TG.disease = 1
+				if (TG.disease == 0)
+					try_infect(TG, 25, "malaria")
+					if (TG.disease)
+						TG.disease_progression = 0
 
 /mob/living/simple_animal/vampirebatblack/bullet_act(var/obj/item/projectile/Proj)
 	return

@@ -27,10 +27,6 @@
 	density = FALSE
 	layer = 4.1
 
-/mob/living/simple_animal/mosquito/New()
-	..()
-
-
 /mob/living/simple_animal/mosquito/Life()
 	..()
 	if (weather == WEATHER_EXTREME || weather == WEATHER_WET)
@@ -62,16 +58,11 @@
 			for (var/mob/living/human/TG in range(1,src))
 				if (map && ((map.ID == MAP_NOMADS_AFRICA && TG.s_tone > -175) || map.ID != MAP_NOMADS_AFRICA))
 					visible_message("<span class = 'danger'>\The [src] bite [TG]!")
-					var/dmod = 1
-					if (TG.find_trait("Weak Immune System"))
-						dmod = 2
-					if (TG.find_trait("Strong Immune System"))
-						dmod = 0.2
 					TG.adjustBruteLoss(1,2)
-					if (prob(20*dmod) && TG.disease == 0)
-						TG.disease_progression = 0
-						TG.disease_type ="malaria"
-						TG.disease = 1
+					if (TG.disease == 0)
+						try_infect(TG, 20, "malaria")
+						if (TG.disease)
+							TG.disease_progression = 0
 /mob/living/simple_animal/mosquito/bullet_act(var/obj/item/projectile/Proj)
 	return
 

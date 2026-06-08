@@ -35,7 +35,6 @@
 	health = 350
 	maxHealth = 350
 	move_to_delay = 5
-	attacktext = "charges into"
 	melee_damage_lower = 25
 	melee_damage_upper = 30
 	response_help  = "pets"
@@ -68,7 +67,6 @@
 	health = 350
 	maxHealth = 350
 	move_to_delay = 5
-	attacktext = "charges into"
 	melee_damage_lower = 35
 	melee_damage_upper = 50
 	response_help  = "pets"

@@ -598,7 +598,7 @@
 "Wz" = (/obj/covers/road,/turf/floor/beach/water,/area/caribbean)
 "WE" = (/obj/structure/heatsource,/obj/effect/floor_decal/borderfloor/full,/obj/roof/concrete,/turf/floor/plating/steel,/area/caribbean/russian/land/inside)
 "WF" = (/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; pixel_y = 0; layer = 2.99},/obj/structure/closet/crate/ww2,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/turf/floor/plating/road,/area/caribbean/british/land/inside)
-"WJ" = (/mob/living/simple_animal/cattle/cow,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/two)
+"WJ" = (/mob/living/simple_animal/pet/cattle/cow,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/two)
 "WR" = (/turf/floor/plating/road/yellowline{dir = 8; icon_state = "road_yellowline"},/area/caribbean/no_mans_land/capturable/four/outside)
 "WS" = (/turf/wall/cement,/area/caribbean/russian/land/inside)
 "WX" = (/obj/structure/table/rack/shelf,/turf/floor/plating/white,/area/caribbean/no_mans_land/capturable/four)

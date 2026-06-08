@@ -584,10 +584,28 @@ Turf and target are seperate in case you want to teleport some distance from a t
 
 /proc/is_blocked_turf(var/turf/T)
 	var/cant_pass = FALSE
-	if (T.density) cant_pass = TRUE
-	for (var/atom/A in T)
-		if (A.density)//&&A.anchored
-			cant_pass = TRUE
+	if (!T || T.density) cant_pass = TRUE
+	else if (istype(T, /turf/floor/beach/water/deep) && !T.iscovered())
+		cant_pass = TRUE
+	else if (istype(T, /turf/floor/broken_floor) && !T.iscovered())
+		cant_pass = TRUE
+	else
+		for (var/atom/A in T)
+			if (A.density)
+				if (istype(A, /obj/structure/simple_door))
+					var/obj/structure/simple_door/D = A
+					if (D.locked)
+						cant_pass = TRUE
+						break
+					continue
+				if (istype(A, /obj/covers))
+					var/obj/covers/W = A
+					if (W.passable == FALSE)
+						cant_pass = TRUE
+						break
+					continue
+				cant_pass = TRUE
+				break
 	return cant_pass
 
 /proc/get_step_towards2(var/atom/ref , var/atom/trg)

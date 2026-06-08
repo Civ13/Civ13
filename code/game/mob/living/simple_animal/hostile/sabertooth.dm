@@ -23,6 +23,8 @@
 	melee_damage_lower = 22
 	melee_damage_upper = 44
 	mob_size = MOB_MEDIUM
+	predatory_carnivore = 1
+	carnivore = 1
 
 	faction = "hostile"
 

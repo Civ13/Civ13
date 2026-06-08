@@ -19,7 +19,7 @@
 	response_help  = "pets"
 	response_disarm = "shoos"
 	response_harm   = "steps on"
-	faction = list("hostile")
+	faction = "hostile"
 	density = FALSE
 	pass_flags = PASSTABLE
 	mob_size = MOB_SMALL
@@ -75,7 +75,7 @@
 	response_help  = "pets"
 	response_disarm = "shoos"
 	response_harm   = "steps on"
-	faction = list("hostile")
+	faction = "hostile"
 	density = FALSE
 	mob_size = MOB_MEDIUM
 	predatory_carnivore = 1
@@ -168,7 +168,7 @@
 	constricting = FALSE
 	if (cons_target)
 		cons_target.canmove = TRUE
+		if (cons_target.client)
+			cons_target.client.canmove = TRUE
 		cons_target = null
 	update_icons()
-	if (cons_target && cons_target.client)
-		cons_target.client.canmove = TRUE

@@ -1,5 +1,5 @@
 //Cat
-/mob/living/simple_animal/cat
+/mob/living/simple_animal/pet/cat
 	name = "cat"
 	desc = "A domesticated, feline pet. Has a tendency to adopt humans."
 	icon_state = "cat2"
@@ -17,9 +17,7 @@
 	response_help  = "pets"
 	response_disarm = "gently pushes aside"
 	response_harm   = "kicks"
-	var/turns_since_scan = FALSE
-	var/mob/living/simple_animal/mouse/movement_target
-	var/mob/flee_target
+	flee_message = "HSSSSS"
 	minbodytemp = 223		//Below -50 Degrees Celcius
 	maxbodytemp = 323	//Above 50 Degrees Celcius
 //	holder_type = /obj/item/weapon/holder/cat
@@ -29,7 +27,7 @@
 	melee_damage_lower = 5
 	melee_damage_upper = 9
 
-/mob/living/simple_animal/cat/Life()
+/mob/living/simple_animal/pet/cat/Life()
 	//MICE!
 	if ((loc) && isturf(loc))
 		if (!stat && !resting && !buckled)
@@ -74,63 +72,8 @@
 				var/atom/A = pick(visible)
 				visible_emote("suddenly stops and stares at something unseen[istype(A) ? " near [A]":""].")
 
-/mob/living/simple_animal/cat/proc/handle_movement_target()
-	//if our target is neither inside a turf or inside a human(???), stop
-	if ((movement_target) && !(isturf(movement_target.loc) || ishuman(movement_target.loc) ))
-		movement_target = null
-		stop_automated_movement = FALSE
-	//if we have no target or our current one is out of sight/too far away
-	if ( !movement_target || !(movement_target.loc in oview(src, 4)) )
-		movement_target = null
-		stop_automated_movement = FALSE
-		for (var/mob/living/simple_animal/mouse/snack in oview(src)) //search for a new target
-			if (isturf(snack.loc) && !snack.stat)
-				movement_target = snack
-				break
-
-	if (movement_target)
-		stop_automated_movement = TRUE
-		walk_to(src,movement_target,0,3)
-
-/mob/living/simple_animal/cat/proc/handle_flee_target()
-	//see if we should stop fleeing
-	if (flee_target && !(flee_target.loc in view(src)))
-		flee_target = null
-		stop_automated_movement = FALSE
-
-	if (flee_target)
-		if (prob(25)) say("HSSSSS")
-		stop_automated_movement = TRUE
-		walk_away_od(src, flee_target, 7, 2)
-
-/mob/living/simple_animal/cat/proc/set_flee_target(atom/A)
-	if (A)
-		flee_target = A
-		turns_since_scan = 5
-
-/mob/living/simple_animal/cat/attackby(var/obj/item/O, var/mob/user)
-	. = ..()
-	if (O.force)
-		set_flee_target(user? user : loc)
-
-/mob/living/simple_animal/cat/attack_hand(mob/living/human/M as mob)
-	. = ..()
-	if (M.a_intent == I_HARM)
-		set_flee_target(M)
-
-/mob/living/simple_animal/cat/ex_act()
-	. = ..()
-	set_flee_target(loc)
-
-/mob/living/simple_animal/cat/bullet_act(var/obj/item/projectile/proj)
-	. = ..()
-	set_flee_target(proj.firer? proj.firer : loc)
-
-/mob/living/simple_animal/cat/hitby(atom/movable/AM)
-	. = ..()
-	set_flee_target(AM.thrower? AM.thrower : loc)
 /*
-/mob/living/simple_animal/cat/MouseDrop(atom/over_object)
+/mob/living/simple_animal/pet/cat/MouseDrop(atom/over_object)
 
 	var/mob/living/human/H = over_object
 	if (!istype(H) || !Adjacent(H)) return ..()
@@ -142,10 +85,10 @@
 		return ..()
 */
 //Basic friend AI
-/mob/living/simple_animal/cat/fluff
+/mob/living/simple_animal/pet/cat/fluff
 	var/mob/living/human/friend
 
-/mob/living/simple_animal/cat/fluff/handle_movement_target()
+/mob/living/simple_animal/pet/cat/fluff/handle_movement_target()
 	if (friend)
 		var/follow_dist = 5
 		if (friend.stat == DEAD || friend.health <= 0) //danger
@@ -177,7 +120,7 @@
 	if (!friend || movement_target != friend)
 		..()
 
-/mob/living/simple_animal/cat/fluff/Life()
+/mob/living/simple_animal/pet/cat/fluff/Life()
 	..()
 	if (stat || !friend)
 		return
@@ -197,7 +140,7 @@
 			var/verb = pick("meows", "mews", "mrowls")
 			audible_emote("[verb] anxiously.")
 
-/mob/living/simple_animal/cat/fluff/verb/friend()
+/mob/living/simple_animal/pet/cat/fluff/verb/friend()
 	set name = "Become Friends"
 	set category = "IC"
 	set src in view(1)
@@ -218,7 +161,7 @@
 
 
 //RUNTIME IS ALIVE! SQUEEEEEEEE~
-/mob/living/simple_animal/cat/fluff/Runtime
+/mob/living/simple_animal/pet/cat/fluff/Runtime
 	name = "Runtime"
 	desc = "Her fur has the look and feel of velvet, and her tail quivers occasionally."
 	gender = FEMALE
@@ -227,7 +170,7 @@
 	icon_living = "cat"
 	icon_dead = "cat_dead"
 
-/mob/living/simple_animal/cat/kitten
+/mob/living/simple_animal/pet/cat/kitten
 	name = "kitten"
 	desc = "D'aaawwww"
 	icon_state = "kitten"
@@ -236,11 +179,11 @@
 	icon_dead = "kitten_dead"
 	gender = NEUTER
 
-/mob/living/simple_animal/cat/kitten/New()
+/mob/living/simple_animal/pet/cat/kitten/New()
 	gender = pick(MALE, FEMALE)
 	..()
 
-/mob/living/simple_animal/cat/salem
+/mob/living/simple_animal/pet/cat/salem
 	name = "Salem"
 	desc = "The ship's black tomcat. Keeps the hull clear of mice and brings good luck to the crew. His death would be disastrous..."
 	gender = MALE

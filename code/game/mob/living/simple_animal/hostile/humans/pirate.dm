@@ -213,7 +213,6 @@
 	attacktext = "punched"
 	attack_sound = 'sound/weapons/punch3.ogg'
 	behaviour = "wander"
-	role = "soldier"
 	corpse = /mob/living/human/corpse/pirate
 	New()
 		..()

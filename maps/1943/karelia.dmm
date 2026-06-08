@@ -131,7 +131,7 @@
 "cA" = (/obj/item/clothing/head/ww2/sov_ushanka/nomads,/obj/item/clothing/head/ww2/sov_ushanka/nomads,/obj/item/clothing/head/ww2/sov_ushanka/nomads,/obj/item/clothing/head/ww2/sov_ushanka/nomads,/obj/item/clothing/head/ww2/sov_ushanka/nomads,/obj/item/clothing/head/ww2/sov_ushanka/nomads,/obj/structure/closet/crate/empty,/obj/item/clothing/head/bearpelt/white,/obj/item/clothing/head/bearpelt/white,/turf/floor/plating/concrete,/area/caribbean/german/inside{name = "Finnish Warehouse"})
 "cB" = (/obj/item/clothing/under/ww2/finnish,/obj/structure/closet/crate/empty,/turf/floor/plating/concrete,/area/caribbean/german/inside{name = "Finnish Warehouse"})
 "cC" = (/obj/item/weapon/snowwall,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/snow)
-"cD" = (/mob/living/simple_animal/cattle/cow,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
+"cD" = (/mob/living/simple_animal/pet/cattle/cow,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "cE" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "cF" = (/obj/structure/brazier/loaded,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "cG" = (/obj/effect/landmark{name = "JoinLateGECap"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/snow)
