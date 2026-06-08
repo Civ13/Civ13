@@ -148,6 +148,18 @@
 		stats[statname][1] *= (1 + round(multiplier/100, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/100, increase_multiple))
 
+	else if (list("strength", "stamina").Find(statname))
+		stats[statname][1] *= (1 + round(multiplier/150, increase_multiple))
+		stats[statname][2] *= (1 + round(multiplier/150, increase_multiple))
+
+	else if (statname == "throwing")
+		stats[statname][1] *= (1 + round(multiplier/200, increase_multiple))
+		stats[statname][2] *= (1 + round(multiplier/200, increase_multiple))
+
+	else if (statname == "philosophy")
+		stats[statname][1] *= (1 + round(multiplier/100, increase_multiple))
+		stats[statname][2] *= (1 + round(multiplier/100, increase_multiple))
+
 	// stats may not go over 250, magic 100
 	var/cap = (statname == "magic") ? 100.00 : 250.00
 	stats[statname][1] = min(stats[statname][1], cap)
