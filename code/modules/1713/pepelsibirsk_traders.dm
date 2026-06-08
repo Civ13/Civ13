@@ -253,9 +253,9 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 
 /mob/living/simple_animal/pepelsibirsk_trader/pacific_trader/New()
 	..()
-	icon_state = "afghcia"
-	icon_living = "afghcia"
-	icon_dead = "afghcia_dead"
+	icon_state = "usptrader"
+	icon_living = "usptrader"
+	icon_dead = "usptrader_dead"
 	speak = list(
 		"Traveling across the Pacific, across the wastes of Siberia, and what for? To trade with some backwater Russian town in the middle of nowhere? Hell yeah.",
 		"Did you know our President is from Austria? I can't believe it either, but he does good work.",
