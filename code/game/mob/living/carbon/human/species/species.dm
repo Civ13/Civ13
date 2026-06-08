@@ -7,7 +7,6 @@
 	// Descriptors and strings.
 	var/name											 // Species name.
 	var/name_plural									  // Pluralized name (since "[name]s" is not always valid)
-	var/blurb = "A completely nondescript species."	  // A brief lore summary for use in the chargen screen.
 
 	// Icon/appearance vars.
 	var/icobase = 'icons/mob/human_races/r_human.dmi'	// Normal icon set.
@@ -42,7 +41,6 @@
 	var/list/secondary_langs = list()			// The names of secondary languages that are available to this species.
 	var/list/speech_sounds				   		// A list of sounds to potentially play when speaking.
 	var/list/speech_chance				   		// The likelihood of a speech sound playing.
-	var/num_alternate_languages = FALSE		  	// How many secondary languages are available to select at character creation
 	var/name_language = "Galactic Common"		// The language to use when determining names for this species, or null to use the first name/last name generator
 
 	// Combat vars.
@@ -60,11 +58,9 @@
 
 	// Death vars.
 	var/meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat/human
-	var/gibber_type = /obj/effect/gibspawner/human
 	var/single_gib_type = /obj/effect/decal/cleanable/blood/gibs
 	var/gibbed_anim = "gibbed-h"
 	var/death_sound
-	var/death_message = "" // "seizes up and falls limp, their eyes dead and lifeless..."
 	var/knockout_message = "has been knocked unconscious!"
 
 	// Environment tolerance/life processes vars.
@@ -112,10 +108,8 @@
 	var/appearance_flags = FALSE	  // Appearance/display related features.
 	var/spawn_flags = FALSE		   // Flags that specify who can spawn as this species
 	var/slowdown = FALSE			  // Passive movement speed malus (or boost, if negative)
-	var/primitive_form			// Lesser form, if any (ie. monkey for humans)
 	var/holder_type
 	var/gluttonous				// Can eat some mobs. Values can be GLUT_TINY, GLUT_SMALLER, GLUT_ANYTHING.
-								  // Determines the organs that the species spawns with and
 	var/list/has_organ = list(	// which required-organ checks are conducted.
 		"heart" =	/obj/item/organ/heart,
 		"lungs" =	/obj/item/organ/lungs,

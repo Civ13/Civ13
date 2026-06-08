@@ -615,10 +615,6 @@ var/global/datum/controller/occupations/job_master
 			if (H.client)
 				H.client.remove_gun_icons()
 		if (H)
-			spawn (50)
-				if (H)
-					H.stopDumbDamage = FALSE
-
 			spawn(12)
 				if(map.ID != MAP_CAMPAIGN && map.ID != MAP_BATTLE_SHIPS && map.ID != CAMPAIGN_MAP_LIST_AND_NOT_MAPID)
 					H.memory()

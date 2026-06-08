@@ -1404,7 +1404,6 @@ var/global/redirect_all_players = null
 	if (!new_character)
 		return
 
-	new_character.stopDumbDamage = TRUE
 	new_character.lastarea = get_area(loc)
 
 	if (client)

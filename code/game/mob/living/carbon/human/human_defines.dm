@@ -79,7 +79,6 @@
 	var/equipment_darkness_modifier			// Darkvision modifier from equipped items
 	var/equipment_vision_flags				// Extra vision flags from equipped items
 	var/equipment_see_invis					// Max see invibility level granted by equipped items
-	var/equipment_prescription				// Eye prescription granted by equipped items
 	var/list/equipment_overlays = list()	// Extra overlays from equipped items
 
 	var/stance_damage = FALSE //Whether this mob's ability to stand has been affected
@@ -146,8 +145,6 @@
 	var/max_juice = 100
 
 	var/has_hunger_and_thirst = TRUE
-
-	var/stopDumbDamage = FALSE
 
 	var/partial_languages[0]
 

@@ -1,5 +1,4 @@
 /mob/living/simple_animal/hostile/poison
-	var/poison_type = "toxin"
 
 
 /mob/living/simple_animal/hostile/poison/snake

@@ -486,7 +486,6 @@ default behaviour is:
 	if (stat == DEAD)
 		dead_mob_list -= src
 		living_mob_list += src
-		tod = null
 		timeofdeath = FALSE
 
 	// restore us to conciousness
@@ -494,8 +493,6 @@ default behaviour is:
 
 	// make the icons look correct
 	regenerate_icons()
-
-	failed_last_breath = FALSE //So mobs that died of oxyloss don't revive and have perpetual out of breath.
 
 	return
 

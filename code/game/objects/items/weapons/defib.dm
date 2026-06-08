@@ -445,10 +445,8 @@
 /obj/item/weapon/shockpaddles/proc/make_alive(mob/living/human/M) //This revives the mob
 	M.switch_from_dead_to_living_mob_list()
 	M.timeofdeath = 0
-	M.tod = null
 	M.stat = UNCONSCIOUS //Life() can bring them back to consciousness if it needs to.
 	M.regenerate_icons()
-	M.failed_last_breath = 0 //So mobs that died of oxyloss don't revive and have perpetual out of breath.
 
 	M.emote("gasp")
 	M.Weaken(rand(10,25))
