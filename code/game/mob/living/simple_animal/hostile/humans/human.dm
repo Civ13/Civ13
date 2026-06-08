@@ -177,7 +177,7 @@ var/global/list/npc_appearance_cache = list()
 		qdel(dummy)
 
 /mob/living/simple_animal/hostile/human/death()
-	if(icon_state == icon_dead)
+	if(stat == DEAD)
 		return
 	moving = FALSE
 	found_path = list()

@@ -25,7 +25,7 @@
 	weapon = /obj/item/weapon/material/spear/dory
 
 /mob/living/simple_animal/hostile/human/barbarian/death()
-	if(icon_state == icon_dead)
+	if (stat == DEAD)
 		return
 	new /obj/item/stack/money/silvercoin(src.loc)
 	return ..()
