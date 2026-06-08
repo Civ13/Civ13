@@ -169,9 +169,9 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 /mob/living/simple_animal/pepelsibirsk_trader/pacific_trader
 	name = "U.S.P Trader"
 	desc = "The United States of the Pacific has come to trade. He flashes a grin that says he's definitely selling things he probably shouldn't."
-	icon_state = "afghcia"
-	icon_living = "afghcia"
-	icon_dead = "afghcia_dead"
+	icon_state = "usptrader"
+	icon_living = "usptrader"
+	icon_dead = "usptrader_dead"
 	faction_relations = "faction_3_relations"
 	faction_name = "United States of the Pacific"
 	products = list(
