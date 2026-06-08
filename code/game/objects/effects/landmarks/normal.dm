@@ -71,17 +71,51 @@
 	icon_state = "x"
 	anchored = 1.0
 	invisibility = 101
+	var/controller = "none"
+	var/capturing = FALSE //if capturing is active or not
 
 /obj/effect/landmark/npctarget/faction
 	name = "faction target"
 	icon_state = "f1"
 	var/faction = "none"
-	New()
-		spawn(150)
-			if(map && src)
-				map.faction_targets += list(list(src.name,src.faction,src.loc.x,src.loc.y,src.loc.z))
-			..()
 
 /obj/effect/landmark/npctarget/faction/all
 	name = "all faction target"
 	faction = "all"
+
+/obj/effect/landmark/npctarget/proc/capture()
+	if(!capturing)
+		return
+	var/list/factions_here = list()
+	for(var/mob/M in range(3, src))
+		if(M.stat == DEAD)
+			continue
+		var/mob_faction = null
+		if(ishuman(M))
+			var/mob/living/human/H = M
+			mob_faction = H.faction_text
+		else if(istype(M, /mob/living/simple_animal/hostile/human))
+			var/mob/living/simple_animal/hostile/human/SH = M
+			mob_faction = SH.faction
+		if(mob_faction)
+			factions_here[mob_faction] = TRUE
+	if(factions_here.len == 1)
+		for(var/faction_key in factions_here)
+			controller = faction_key
+			break
+	else if(factions_here.len == 0)
+		controller = "none"
+
+/obj/effect/landmark/npctarget/proc/capture_loop()
+	set waitfor = FALSE
+	while(src)
+		capture()
+		sleep(300)
+
+/obj/effect/landmark/npctarget/faction/New()
+	..()
+	capturing = TRUE
+	spawn(150)
+		if(map && src)
+			map.faction_targets += list(list(src.name, src.faction, src.loc.x, src.loc.y, src.loc.z))
+		capture_loop()

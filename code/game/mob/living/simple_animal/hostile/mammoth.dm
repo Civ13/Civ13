@@ -8,7 +8,6 @@
 	speak_emote = list("trumpets")
 	health = 1200
 	maxHealth = 1200
-	move_to_delay = 12
 	move_to_delay = 10
 	attacktext = "stomps"
 	melee_damage_lower = 35

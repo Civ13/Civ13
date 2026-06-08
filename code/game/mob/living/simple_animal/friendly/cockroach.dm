@@ -32,10 +32,6 @@
 	can_pull_mobs = MOB_PULL_NONE
 	scavenger = 1
 
-/mob/living/simple_animal/cockroach/New()
-	..()
-
-
 /mob/living/simple_animal/cockroach/death()
 	layer = MOB_LAYER
 	..()
@@ -45,8 +41,7 @@
 /mob/living/simple_animal/cockroach/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (stat != DEAD)
 		return ..()
-	if (!istype(W) || !W.sharp)
-		return ..()
+	return
 
 /mob/living/simple_animal/cockroach/handle_mutations_and_radiation()
 	return

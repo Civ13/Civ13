@@ -2403,7 +2403,7 @@
 /turf/floor/dirt/burned,
 /area/caribbean/roofed)
 "no" = (
-/mob/living/simple_animal/dog,
+/mob/living/simple_animal/pet/dog,
 /turf/floor/wood{
 	icon_state = "wood-broken3"
 	},

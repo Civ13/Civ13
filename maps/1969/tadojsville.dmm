@@ -175,7 +175,7 @@
 "dA" = (/obj/structure/window/barrier/jersey,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "dB" = (/obj/structure/simple_door/key_door/anyone/doubledoor/wood,/turf/floor/wood/ship,/area/caribbean/roofed/jungle)
 "dC" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
-"dD" = (/mob/living/simple_animal/cat/salem,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
+"dD" = (/mob/living/simple_animal/pet/cat/salem,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "dE" = (/obj/covers/brick_wall,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "dF" = (/obj/item/weapon/cigbutt,/obj/item/weapon/cigbutt,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "dG" = (/obj/structure/barricade/tires,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)

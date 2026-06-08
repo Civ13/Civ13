@@ -4,7 +4,7 @@
 	a_intent = I_HARM
 	behaviour = "hunt"
 	var/atom/target
-	var/atom/pathfind_target = null
+	//pathfind_target inherited from /mob/living/simple_animal
 //These vars are related to how mobs locate and target
 	var/robust_searching = 0 //By default, mobs have a simple searching method, set this to 1 for the more scrutinous searching (stat_attack, stat_exclusive, etc), should be disabled on most mobs
 	var/search_objects = 0 //If we want to consider objects when searching around, set this to 1. If you want to search for objects while also ignoring mobs until hurt, set it to 2. To completely ignore mobs, even when attacked, set it to 3

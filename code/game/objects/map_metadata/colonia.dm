@@ -265,7 +265,7 @@
 /obj/map_metadata/colonia/proc/invasion_subsystem()
 	spawn(1 HOUR)
 		var/playercount = 0
-		for (var/mob/new_player/player in new_player_mob_list)
+		for (var/mob/player in human_clients_mob_list)
 			if (player.client)
 				++playercount
 		if (BARBARIAN_RELATIONS <= 25 && playercount >= 10)
@@ -282,15 +282,13 @@
 					num_to_spawn = num_to_spawn * 2
 				for(var/i = 1 to num_to_spawn)
 					var/turf/spawn_loc = pick(invasion_routes)
-					var/mob/living/simple_animal/hostile/human/barbarian/S
-					S = new /mob/living/simple_animal/hostile/human/barbarian(spawn_loc)
-					S.pathfind_target = city_center
+					new /mob/living/simple_animal/hostile/human/barbarian(spawn_loc)
 			if (LOCAL_TRIBES_RELATIONS <= 25 && BARBARIAN_RELATIONS <= 25)
-				to_chat(world, "<br><font size =3><span class='user'>The barbarians are launching an attack on the colony, and the local tribes have joined in!</font></span>")
+				to_chat(world, "<br><font size =3><span class='danger'>The barbarians are launching an attack on the colony, and the local tribes have joined in!</font></span>")
 			else
-				to_chat(world, "<br><font size =3><span class='user'>The barbarians are launching an attack on the colony!</font></span>")
+				to_chat(world, "<br><font size =3><span class='danger'>The barbarians are launching an attack on the colony!</font></span>")
 		if (ROMAN_RELATIONS <= 25 && playercount >= 10)
-			to_chat(world, "<br><font size =3><span class='user'>The Roman Empire is invading the colony!</font></span>")
+			to_chat(world, "<br><font size =3><span class='danger'>The Roman Empire is invading the colony!</font></span>")
 			var/list/turf/invasion_routes = latejoin_turfs["InvasionRouteRoman"]
 			var/list/turf/city_centers = latejoin_turfs["CityCenter"]
 			var/turf/city_center = null
@@ -323,9 +321,9 @@
 	return
 
 /obj/map_metadata/colonia/proc/recover_relations()
-	if (ROMAN_RELATIONS >= 0)
+	if (ROMAN_RELATIONS > 0)
 		ROMAN_RELATIONS -= 0.02 //Romans demand their trade ties
-	if (BARBARIAN_RELATIONS >= 0)
+	if (BARBARIAN_RELATIONS > 0)
 		BARBARIAN_RELATIONS -= 0.1 //The barbarians can never be satisfied, and will constantly demand tribute
 	if (LOCAL_TRIBES_RELATIONS <= 30)
 		LOCAL_TRIBES_RELATIONS += 0.02 //The local tribes will forgive you, slowly
@@ -403,13 +401,15 @@
 	)
 
 /obj/structure/pepelsibirsk_radio/supply_radio/colonia/attackby(var/obj/item/stack/W as obj, var/mob/living/human/user as mob)
-	if (W.amount && istype(W, /obj/item/stack/money/) && W.value>0)
-		money += W.value*W.amount
-		qdel(W)
-		return
-	else
+	if (!istype(W, /obj/item/stack/money/))
 		to_chat(user, "You need to use real money.")
 		return
+	if (!W.amount || W.value <= 0)
+		to_chat(user, "This money has no value.")
+		return
+	money += W.value * W.amount
+	to_chat(user, "You add [W.value * W.amount] to the account.")
+	qdel(W)
 
 /obj/structure/pepelsibirsk_radio/supply_radio/colonia/no_scam
 	name = "secure import book"

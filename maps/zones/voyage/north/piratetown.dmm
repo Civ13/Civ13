@@ -155,7 +155,7 @@
 "uK" = (/obj/covers/wood_ship,/obj/structure/railing{dir = 4},/turf/floor/beach/water/shallowsaltwater,/area/caribbean/sea/top)
 "FV" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand,/area/caribbean/sea/top)
 "Kb" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand,/area/caribbean/sea/top)
-"NV" = (/mob/living/simple_animal/dog,/turf/floor/beach/sand,/area/caribbean/sea/top)
+"NV" = (/mob/living/simple_animal/pet/dog,/turf/floor/beach/sand,/area/caribbean/sea/top)
 "QX" = (/obj/covers/wood_ship,/obj/structure/table/fancy,/obj/item/weapon/paper,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
 "RT" = (/obj/structure/flag/pirates,/turf/floor/beach/sand,/area/caribbean/sea/top)
 "Zg" = (/obj/covers/wood_ship,/obj/structure/railing{dir = 4},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)

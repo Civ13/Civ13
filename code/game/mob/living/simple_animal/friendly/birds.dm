@@ -470,7 +470,7 @@
 	mob_size = MOB_MINISCULE
 	flying = TRUE
 	granivore = 1
-	behaviour = "wanders"
+	behaviour = "wander"
 
 /mob/living/simple_animal/turkeychick/New()
 	..()

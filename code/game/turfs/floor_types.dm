@@ -415,18 +415,6 @@
 		return TRUE
 	for (var/obj/structure/vehicleparts/frame/ship/S in src.contents)
 		return TRUE
-	for(var/obj/structure/STR in src.contents)
-		var/obj/structure/vehicleparts/frame/ship/S
-		if (S in src.contents)
-			return TRUE
-		else
-			return FALSE
-	for(var/obj/item/OB in src.contents)
-		var/obj/structure/vehicleparts/frame/ship/S
-		if (S in src.contents)
-			return TRUE
-		else
-			return FALSE
 	for(var/obj/structure/multiz/ladder/ST in src.contents)
 		return TRUE
 	for (var/obj/structure/vehicleparts/axis/ship/SA in src.contents)

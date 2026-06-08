@@ -34,6 +34,15 @@
 	var/wander = TRUE	// Does the mob wander around when idle?
 	var/stop_automated_movement_when_pulled = TRUE //When set to TRUE this stops the animal from moving when someone is pulling it.
 	var/flying = FALSE
+	var/targeting = FALSE // If TRUE, uses A* waypoint navigation toward pathfind_target. Only for specific mob types.
+
+	// Pathfinding vars (used by do_movement / get_path in code/pathfinding.dm)
+	var/moving = FALSE
+	var/atom/target_obj = null
+	var/list/found_path = list()
+	var/atom/pathfind_target = null
+	var/last_pathfound = 0
+	var/move_gen = 0
 
 	//Interaction
 	var/response_help   = "tries to help"
@@ -285,7 +294,7 @@
 
 		if (I_HELP)
 			if (health > 0)
-				if (istype(src, /mob/living/simple_animal/dog))
+				if (istype(src, /mob/living/simple_animal/pet/dog))
 					if (prob(30))
 						M.visible_message("<span class = 'notice'>[M] tells \the [src] that he is a good boy!</span>")
 					else
@@ -379,6 +388,94 @@
 			qdel(G)
 	return
 
+/mob/living/simple_animal/pet
+	var/turns_since_scan = FALSE
+	var/mob/living/simple_animal/mouse/movement_target
+	var/mob/flee_target
+	var/flee_message = "HSSSSS"
+
+/mob/living/simple_animal/pet/proc/handle_movement_target()
+	if ((movement_target) && !(isturf(movement_target.loc) || ishuman(movement_target.loc)))
+		movement_target = null
+		stop_automated_movement = FALSE
+	if (!movement_target || !(movement_target.loc in oview(src, 4)))
+		movement_target = null
+		stop_automated_movement = FALSE
+		for (var/mob/living/simple_animal/mouse/snack in oview(src))
+			if (isturf(snack.loc) && !snack.stat)
+				movement_target = snack
+				break
+	if (movement_target)
+		stop_automated_movement = TRUE
+		walk_to(src, movement_target, 0, 3)
+
+/mob/living/simple_animal/pet/proc/handle_flee_target()
+	if (flee_target && !(flee_target.loc in view(src)))
+		flee_target = null
+		stop_automated_movement = FALSE
+	if (flee_target)
+		if (prob(25)) say(flee_message)
+		stop_automated_movement = TRUE
+		walk_away_od(src, flee_target, 7, 2)
+
+/mob/living/simple_animal/pet/proc/set_flee_target(atom/A)
+	if (A)
+		flee_target = A
+		turns_since_scan = 5
+
+/mob/living/simple_animal/pet/attackby(var/obj/item/O, var/mob/user)
+	. = ..()
+	if (O.force)
+		set_flee_target(user ? user : loc)
+
+/mob/living/simple_animal/pet/attack_hand(mob/living/human/M as mob)
+	. = ..()
+	if (M.a_intent == I_HARM)
+		set_flee_target(M)
+
+/mob/living/simple_animal/pet/ex_act()
+	. = ..()
+	set_flee_target(loc)
+
+/mob/living/simple_animal/pet/bullet_act(var/obj/item/projectile/proj)
+	. = ..()
+	set_flee_target(proj.firer ? proj.firer : loc)
+
+/mob/living/simple_animal/pet/hitby(atom/movable/AM)
+	. = ..()
+	set_flee_target(AM.thrower ? AM.thrower : loc)
+
+/mob/living/simple_animal/proc/try_infect(var/mob/living/human/target, base_chance, disease_name, check_strong_immune = TRUE)
+	if (!target || !istype(target))
+		return FALSE
+	var/dmod = 1
+	if (target.find_trait("Weak Immune System"))
+		dmod = 2
+	if (check_strong_immune && target.find_trait("Strong Immune System"))
+		dmod = 0.2
+	if (prob(base_chance * dmod))
+		target.disease = TRUE
+		target.disease_type = disease_name
+		return TRUE
+	return FALSE
+
+/mob/living/simple_animal/proc/butcher_yield(var/mob/living/simple_animal/target)
+	var/mob_size_to_check = target ? target.mob_size : src.mob_size
+	switch(mob_size_to_check)
+		if (MOB_MINISCULE)
+			return 1
+		if (MOB_TINY)
+			return 2
+		if (MOB_SMALL)
+			return 3
+		if (MOB_MEDIUM)
+			return 4
+		if (MOB_LARGE)
+			return 5
+		if (MOB_HUGE)
+			return 8
+	return 1
+
 /mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
 	if (ishuman(user))
 		var/mob/living/human/H = user
@@ -446,19 +543,7 @@
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 				if (do_after(user, 30, src))
 					user.visible_message("<span class = 'notice'>[user] butchers [src].</span>")
-					var/amt = 0
-					if (mob_size == MOB_MINISCULE)
-						amt = 1
-					if (mob_size == MOB_TINY)
-						amt = 2
-					if (mob_size == MOB_SMALL)
-						amt = 3
-					if (mob_size == MOB_MEDIUM)
-						amt = 4
-					if (mob_size == MOB_LARGE)
-						amt = 5
-					if (mob_size == MOB_HUGE)
-						amt = 8
+					var/amt = butcher_yield()
 					var/namt = amt-2
 					if (namt <= 0)
 						namt = 1
@@ -538,19 +623,7 @@
 			user.visible_message("<span class = 'notice'>[user] starts to skin and butcher [src].</span>")
 			if (do_after(user, 100, src))
 				user.visible_message("<span class = 'notice'>[user] skins and butchers [src].</span>")
-				var/amt = 0
-				if (mob_size == MOB_MINISCULE)
-					amt = 1
-				if (mob_size == MOB_TINY)
-					amt = 2
-				if (mob_size == MOB_SMALL)
-					amt = 3
-				if (mob_size == MOB_MEDIUM)
-					amt = 4
-				if (mob_size == MOB_LARGE)
-					amt = 5
-				if (mob_size == MOB_HUGE)
-					amt = 8
+				var/amt = butcher_yield()
 				var/namt = amt-2
 				if (namt <= 0)
 					namt = 1
@@ -610,7 +683,7 @@
 				else if (istype(src, /mob/living/simple_animal/hostile/fox))
 					var/obj/item/stack/material/pelt/foxpelt/NP = new/obj/item/stack/material/pelt/foxpelt(get_turf(src))
 					NP.amount = 3
-				else if (istype(src, /mob/living/simple_animal/cat))
+				else if (istype(src, /mob/living/simple_animal/pet/cat))
 					var/obj/item/stack/material/pelt/catpelt/NP = new/obj/item/stack/material/pelt/catpelt(get_turf(src))
 					NP.amount = 2
 				else if (istype(src, /mob/living/simple_animal/hostile/panther) && !istype(src, /mob/living/simple_animal/hostile/panther/jaguar))
@@ -716,6 +789,25 @@
 
 	if ((client.add_stat_tab("Status") || client.statpanel_tab == "Status") && show_stat_health)
 		client.add_stat(null, "Health: [round((health / maxHealth) * 100)]%")
+
+/mob/living/simple_animal/proc/get_valid_move_dirs()
+	var/list/valid = list()
+	for (var/d in cardinal)
+		var/turf/T = get_step(src, d)
+		if (!T || T.density)
+			continue
+		if (istype(T, /turf/floor/beach/water/deep) && !T.iscovered() && !flying)
+			continue
+		if (istype(T, /turf/floor/broken_floor) && !T.iscovered())
+			continue
+		valid += d
+	return valid
+
+/mob/living/simple_animal/proc/smart_step_towards(atom/target)
+	var/turf/next = get_step_towards2(src, target)
+	if (isturf(next) && next != loc)
+		return step(src, get_dir(src, next))
+	return FALSE
 
 /mob/living/simple_animal/proc/unregisterSpawner()
 	if (origin != null)

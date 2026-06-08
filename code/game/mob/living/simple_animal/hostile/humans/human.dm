@@ -3,7 +3,7 @@ var/global/list/npc_appearance_cache = list()
 /mob/living/simple_animal/hostile/human
 	attack_verb = "hits"
 	speed = 4
-	move_to_delay = 3
+	move_to_delay = 4
 	icon = 'icons/mob/npcs.dmi'
 	icon_state = "pirate_friendly1"
 	icon_dead = "pirate_friendly_dead"
@@ -31,8 +31,7 @@ var/global/list/npc_appearance_cache = list()
 	var/grenade_type = /obj/item/weapon/grenade
 
 	var/role = "soldier" //soldier, medic, officer, recon, guard...
-	var/list/found_path = list()
-	var/atom/target_obj = null //for some roles (i.e. guard)
+	//for some roles (i.e. guard)
 	var/action_running = FALSE
 	var/target_action = null
 	var/datum/language/language = new/datum/language/english
@@ -54,8 +53,7 @@ var/global/list/npc_appearance_cache = list()
 	var/peeking = FALSE
 	var/suppressing = FALSE
 	var/last_retreat = 0
-	var/moving = FALSE
-	var/last_pathfound = 0
+	//moving and last_pathfound inherited from /mob/living/simple_animal
 /mob/living/simple_animal/hostile/human/New()
 	..()
 	if (use_generated_appearance)
@@ -249,7 +247,6 @@ var/global/list/npc_appearance_cache = list()
 	do_human_behaviour()
 	if (role == "medic" && !action_running)
 		help_patient()
-	do_behaviour()
 /mob/living/simple_animal/hostile/human/hear_say(var/message, var/verb = "says", var/datum/language/s_language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE, var/original_message = "")
 	if (stat == DEAD)
 		return
@@ -552,6 +549,13 @@ var/global/list/npc_appearance_cache = list()
 					do_movement(pathfind_target)
 			else
 				pathfind_target = null
+		else if (targeting)
+			// No pathfind_target set – patrol by seeking nearest waypoint
+			if (!moving)
+				var/turf/wp = get_nearest_waypoint(loc)
+				if(wp && wp != loc)
+					wander = FALSE
+					do_movement(wp)
 		if (role == "officer")
 			idle_counter++
 			if (idle_counter >= 120)
@@ -685,8 +689,8 @@ var/global/list/npc_appearance_cache = list()
 	if (!enemy_detected && !action_running && target_action=="helping")
 		target_action = "bandaging"
 		action_running = TRUE
-		if (ishuman(target_mob))
-			var/mob/living/human/H = target_mob
+		if (ishuman(target_obj))
+			var/mob/living/human/H = target_obj
 			if (H.getTotalDmg()>95)
 				say(pick("!!Hang on buddy, you will be fine!","!!You'll be fine kid, don't worry."), language)
 		visible_message("<span class='notice'>[src] starts bandaging [target_obj]...</span>")
@@ -821,7 +825,8 @@ var/global/list/npc_appearance_cache = list()
 			if (PEN.faction != faction && PEN.stat != DEAD)
 				EN = PEN
 				break
-		walk_away_od(src,EN,10,5)
+		if (EN)
+			walk_away_od(src,EN,10,5)
 		spawn(40)
 			target_mob = null
 		spawn(45)
@@ -1014,6 +1019,70 @@ var/global/list/npc_appearance_cache = list()
 				best_turf = T
 				
 	return best_turf
+
+/mob/living/simple_animal/hostile/human/proc/get_nearest_waypoint(var/atom/destination)
+	if(!destination || !map?.faction_targets)
+		return null
+	var/turf/dest_turf = get_turf(destination)
+	var/turf/my_turf = get_turf(src)
+	if(!dest_turf || !my_turf)
+		return null
+	var/my_dist = get_dist(my_turf, dest_turf)
+	var/self_targeting = (dest_turf == my_turf)
+
+	// Pass 1: find uncontrolled waypoints closer to destination (normal forward progress)
+	var/turf/best = null
+	var/best_dist = my_dist ? my_dist : INFINITY
+	for(var/list/LT in map.faction_targets)
+		if(LT[2] == "all" || LT[2] == src.faction)
+			var/turf/T = locate(LT[3], LT[4], LT[5])
+			if(!T)
+				continue
+			// Skip waypoints we've already reached (exact same turf for pathfind_target, 5-tile radius for self-targeting patrol)
+			if(self_targeting)
+				if(get_dist(T, loc) <= 5)
+					continue
+			else if(T == loc)
+				continue
+			// Check if this landmark is controlled by an enemy faction
+			var/controlled = FALSE
+			for(var/obj/effect/landmark/npctarget/NM in landmarks_list)
+				if(NM.loc == T && NM.controller != "none" && NM.controller != src.faction)
+					controlled = TRUE
+					break
+			if(controlled)
+				continue
+			var/dist_to_dest = get_dist(T, dest_turf)
+			var/dist_to_me = get_dist(my_turf, T)
+			if(self_targeting)
+				if(dist_to_me < best_dist)
+					best_dist = dist_to_me
+					best = T
+			else if(dist_to_dest < my_dist && dist_to_me < 40)
+				if(dist_to_dest < best_dist)
+					best_dist = dist_to_dest
+					best = T
+	if(best)
+		return best
+
+	// Pass 2: no uncontrolled waypoint found – expanding ring search for ANY
+	// nearby waypoint (including enemy-controlled) so mobs don't loiter at spawn
+	var/search_dist = 10
+	while(search_dist <= 80)
+		for(var/list/LT in map.faction_targets)
+			if(LT[2] == "all" || LT[2] == src.faction)
+				var/turf/T = locate(LT[3], LT[4], LT[5])
+				if(!T)
+					continue
+				if(self_targeting && get_dist(T, loc) <= 5)
+					continue
+				if(!self_targeting && T == loc)
+					continue
+				var/dist_to_me = get_dist(my_turf, T)
+				if(dist_to_me <= search_dist)
+					return T
+		search_dist += 10
+	return null
 
 /mob/living/human/get_objective()
 	var/turf/best_turf = null

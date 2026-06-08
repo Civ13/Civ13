@@ -7,7 +7,6 @@
 	icon_dead = "hostage_m1_dead"
 	speak = list("Oh god!","Please don't!","AAAAAAH!")
 	speak_emote = list("cries","screams","sobs")
-	speak_emote = list("cries","screams","sobs")
 	emote_see = list("walks around", "waves his hands", "trembles in fear")
 	meat_amount = 2
 	attacktext = "hit"

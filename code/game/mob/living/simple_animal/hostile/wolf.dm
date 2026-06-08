@@ -52,9 +52,9 @@
 /mob/living/simple_animal/hostile/wolf/New()
 	wolf_count |= src
 	if (female)
-		name = "[btype] wolf"
-	else
 		name = "[btype] she-wolf"
+	else
+		name = "[btype] wolf"
 	..()
 
 /mob/living/simple_animal/hostile/wolf/Life()
@@ -77,10 +77,10 @@
 			icon_living = "[btype]wolf"
 			icon_dead = "[btype]wolf_dead"
 			mob_size = MOB_MEDIUM
-			if (female)
-				name = "[btype] she-wolf"
-			else
-				name = "[btype] she-wolf"
+		if (female)
+			name = "[btype] she-wolf"
+		else
+			name = "[btype] wolf"
 
 	if(!src.following_mob)
 		src.do_behaviour()
