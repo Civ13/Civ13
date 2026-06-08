@@ -15,7 +15,6 @@
 #define AREA_OUTSIDE 1
 
 /area
-	var/fire = null
 	level = null
 	name = "Unknown"
 	icon = 'icons/turf/areas.dmi'
@@ -23,8 +22,6 @@
 	layer = 10
 	mouse_opacity = FALSE
 	plane = LIGHTING_PLANE
-
-	var/debug = FALSE
 
 	var/has_gravity = TRUE
 //	var/obj/machinery/power/apc/apc = null
@@ -42,20 +39,15 @@
 
 	var/capturable = TRUE
 
-	var/parent_area_type = null
-
 	var/climate = "temperate" //temperate, desert, jungle, tundra
 
 	var/nukesafe = FALSE
-	var/global/global_uid = FALSE
-	var/uid
 	var/artillery_integrity = 100
 
 /area/New()
 	icon = 'icons/effects/weather.dmi'
 	icon_state = ""
 	layer = 10
-	uid = ++global_uid
 
 	..()
 
