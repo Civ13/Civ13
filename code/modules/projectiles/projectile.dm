@@ -394,38 +394,23 @@
 			S.initiate(get_turf(target_mob))
 			return
 
-	if (target_mob.takes_less_damage)
-		switch (damage)
-			if (DAMAGE_LOW-5 to DAMAGE_LOW+5)
-				damage = DAMAGE_LOW - 6
-			if (DAMAGE_MEDIUM-5 to DAMAGE_MEDIUM+5)
-				damage = DAMAGE_MEDIUM - 6
-			if (DAMAGE_MEDIUM_HIGH-5 to DAMAGE_MEDIUM_HIGH+5)
-				damage = DAMAGE_MEDIUM_HIGH - 6
-			if (DAMAGE_HIGH-5 to DAMAGE_HIGH+5)
-				damage = DAMAGE_HIGH - 6
-			if (DAMAGE_VERY_HIGH-5 to DAMAGE_VERY_HIGH+5)
-				damage = DAMAGE_VERY_HIGH - 6
-			if (DAMAGE_OH_GOD-5 to DAMAGE_OH_GOD+5)
-				damage = DAMAGE_OH_GOD - 6
 	// 50% chance of variable damage that stays within the boundaries of the bullet's damage tier
-	else
-		var/variation = 0
-		switch (damage)
-			if (DAMAGE_LOW-5 to DAMAGE_LOW+5)
-				variation = damage - DAMAGE_LOW
-			if (DAMAGE_MEDIUM-5 to DAMAGE_MEDIUM+5)
-				variation = damage - DAMAGE_MEDIUM
-			if (DAMAGE_MEDIUM_HIGH-5 to DAMAGE_MEDIUM_HIGH+5)
-				variation = damage - DAMAGE_MEDIUM_HIGH
-			if (DAMAGE_HIGH-5 to DAMAGE_HIGH+5)
-				variation = damage - DAMAGE_HIGH
-			if (DAMAGE_VERY_HIGH-5 to DAMAGE_VERY_HIGH+5)
-				variation = damage - DAMAGE_VERY_HIGH
-			if (DAMAGE_OH_GOD-5 to DAMAGE_OH_GOD+5)
-				variation = damage - DAMAGE_OH_GOD
-		if (variation > 0)
-			damage += rand(-variation, variation)
+	var/variation = 0
+	switch (damage)
+		if (DAMAGE_LOW-5 to DAMAGE_LOW+5)
+			variation = damage - DAMAGE_LOW
+		if (DAMAGE_MEDIUM-5 to DAMAGE_MEDIUM+5)
+			variation = damage - DAMAGE_MEDIUM
+		if (DAMAGE_MEDIUM_HIGH-5 to DAMAGE_MEDIUM_HIGH+5)
+			variation = damage - DAMAGE_MEDIUM_HIGH
+		if (DAMAGE_HIGH-5 to DAMAGE_HIGH+5)
+			variation = damage - DAMAGE_HIGH
+		if (DAMAGE_VERY_HIGH-5 to DAMAGE_VERY_HIGH+5)
+			variation = damage - DAMAGE_VERY_HIGH
+		if (DAMAGE_OH_GOD-5 to DAMAGE_OH_GOD+5)
+			variation = damage - DAMAGE_OH_GOD
+	if (variation > 0)
+		damage += rand(-variation, variation)
 
 	//hit messages
 	if (blockedhit == FALSE)

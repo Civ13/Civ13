@@ -51,8 +51,6 @@
 	var/slurring = null		//Carbon
 	var/lisp = null		//Carbon
 
-	var/takes_less_damage = FALSE
-
 	var/tactic = "charge"
 	var/life_forced = FALSE
 	var/datum/language/default_language

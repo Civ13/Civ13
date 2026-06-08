@@ -41,7 +41,6 @@ var/list/interior_areas = list(/area/caribbean/houses,
 //	var/list/resources
 
 	var/to_be_destroyed = FALSE //Used for fire, if a melting temperature was reached, it will be destroyed
-	var/max_fire_temperature_sustained = FALSE //The max temperature of the fire which it was subjected to
 	var/dirt = FALSE
 
 //	var/datum/scheduled_task/flooding_task

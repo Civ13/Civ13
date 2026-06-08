@@ -30,7 +30,6 @@
 //	var/obj/machinery/power/apc/apc = null
 	var/no_air = null
 	var/list/ambience = list()
-	var/list/forced_ambience = list()
 	var/turf/base_turf //The base turf type of the area, which can be used to override the z-level's base turf
 	var/sound_env = FOREST
 
@@ -44,7 +43,6 @@
 	var/capturable = TRUE
 
 	var/parent_area_type = null
-	var/area/parent_area = null
 
 	var/climate = "temperate" //temperate, desert, jungle, tundra
 
@@ -60,10 +58,6 @@
 	uid = ++global_uid
 
 	..()
-
-	spawn (100)
-		if (parent_area_type)
-			parent_area = locate(parent_area_type)
 
 	area_list |= src
 

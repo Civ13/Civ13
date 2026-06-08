@@ -96,8 +96,6 @@
 			damage = 0
 	H.damage_armor(def_zone, (P.damage - damage) * 0.01)
 	if (ishuman(src))
-		if (H.takes_less_damage)
-			damage /= H.getStatCoeff("strength")
 		var/instadeath = 0
 		if (def_zone == "eyes")
 			instadeath = 10

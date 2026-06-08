@@ -31,7 +31,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 	for (var/datum/reagent/blood/B in vessel.reagent_list)
 		if (B.id == "blood")
 			B.data = list(	"donor"=src,"viruses"=null,"species"=species.name,"blood_DNA"=dna.unique_enzymes,"blood_colour"= species.blood_color,"blood_type"=dna.b_type,	\
-							"resistances"=null,"trace_chem"=null, "virus2" = null, "antibodies" = list())
+							"resistances"=null,"trace_chem"=null)
 			B.color = B.data["blood_colour"]
 
 /* takes care of blood loss and regeneration
@@ -174,7 +174,6 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 
 	//set reagent data
 	B.data["donor"] = src
-	B.data["antibodies"] = antibodies
 	B.data["blood_DNA"] = copytext(dna.unique_enzymes,1,0)
 	B.data["blood_type"] = copytext(dna.b_type,1,0)
 

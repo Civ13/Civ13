@@ -106,10 +106,6 @@
 
 /mob/living/human/adjustBruteLoss(var/amount)
 	amount = amount*species.brute_mod
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	if (amount > 0)
 		take_overall_damage(amount, FALSE)
 	else
@@ -117,10 +113,6 @@
 
 /mob/living/human/adjustBurnLoss(var/amount)
 	amount = amount*species.burn_mod
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	if (amount > 0)
 		take_overall_damage(0, amount)
 	else
@@ -151,10 +143,8 @@
 	..()
 
 /mob/living/human/Weaken(amount)
-	if (takes_less_damage && prob(15 + ceil(getStatCoeff("strength") * 9)))
-		return
 	// failing that, addition 50%/77% chance to get less weakened
-	else if (prob(5 + ceil(getStatCoeff("strength") * 9)))
+	if (prob(5 + ceil(getStatCoeff("strength") * 9)))
 		amount /= pick(2,3)
 
 	..()
