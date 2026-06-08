@@ -24,6 +24,12 @@
 	language = new/datum/language/german
 	weapon = /obj/item/weapon/material/spear/dory
 
+/mob/living/simple_animal/hostile/human/barbarian/death()
+	if(icon_state == icon_dead)
+		return
+	new /obj/item/stack/money/silvercoin(src.loc)
+	return ..()
+
 /mob/living/simple_animal/hostile/human/barbarian/friendly
 	name = "Foederati"
 	desc = "A hired barbarian from a tribe allied with Rome."
