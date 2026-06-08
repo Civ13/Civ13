@@ -321,9 +321,9 @@
 	return
 
 /obj/map_metadata/colonia/proc/recover_relations()
-	if (ROMAN_RELATIONS >= 0)
+	if (ROMAN_RELATIONS > 0)
 		ROMAN_RELATIONS -= 0.02 //Romans demand their trade ties
-	if (BARBARIAN_RELATIONS >= 0)
+	if (BARBARIAN_RELATIONS > 0)
 		BARBARIAN_RELATIONS -= 0.1 //The barbarians can never be satisfied, and will constantly demand tribute
 	if (LOCAL_TRIBES_RELATIONS <= 30)
 		LOCAL_TRIBES_RELATIONS += 0.02 //The local tribes will forgive you, slowly
@@ -401,13 +401,15 @@
 	)
 
 /obj/structure/pepelsibirsk_radio/supply_radio/colonia/attackby(var/obj/item/stack/W as obj, var/mob/living/human/user as mob)
-	if (W.amount && istype(W, /obj/item/stack/money/) && W.value>0)
-		money += W.value*W.amount
-		qdel(W)
-		return
-	else
+	if (!istype(W, /obj/item/stack/money/))
 		to_chat(user, "You need to use real money.")
 		return
+	if (!W.amount || W.value <= 0)
+		to_chat(user, "This money has no value.")
+		return
+	money += W.value * W.amount
+	to_chat(user, "You add [W.value * W.amount] to the account.")
+	qdel(W)
 
 /obj/structure/pepelsibirsk_radio/supply_radio/colonia/no_scam
 	name = "secure import book"

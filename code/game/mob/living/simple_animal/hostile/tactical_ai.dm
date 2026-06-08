@@ -193,8 +193,8 @@
 					var/mob/living/simple_animal/hostile/H = src
 					if(H.pathfind_target)
 						if(get_dist(src, H.pathfind_target) > 2)
-							/// Mobs with targeting use do_movement()
-							if(!targeting) // Call do_movement directly
+								// Mobs without targeting use do_movement() directly
+							if(!targeting)
 								src.do_movement(H.pathfind_target)
 							moved = TRUE
 						else

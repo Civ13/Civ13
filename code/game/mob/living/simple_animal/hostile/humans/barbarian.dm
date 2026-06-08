@@ -27,7 +27,7 @@
 
 /mob/living/simple_animal/hostile/human/barbarian/death()
 	if (stat == DEAD)
-		return
+		return ..()
 	new /obj/item/stack/money/silvercoin(src.loc)
 	return ..()
 
