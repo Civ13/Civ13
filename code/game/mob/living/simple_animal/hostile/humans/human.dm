@@ -542,21 +542,16 @@ var/global/list/npc_appearance_cache = list()
 /mob/living/simple_animal/hostile/human/proc/do_human_behaviour()
 	if (!target_mob && !stop_automated_movement)
 		wander = TRUE
-		target_obj = null  // Clear stale combat movement target so patrol can resume
 		if (pathfind_target)
 			if (get_dist(src, pathfind_target) > 2)
 				wander = FALSE
-				if (!moving && !target_obj)
-					var/turf/wp = get_nearest_waypoint(pathfind_target)
-					if(wp && wp != loc)
-						do_movement(wp)
-					else
-						do_movement(pathfind_target)
+				if (!moving)
+					do_movement(pathfind_target)
 			else
 				pathfind_target = null
 		else if (targeting)
 			// No pathfind_target set – patrol by seeking nearest waypoint
-			if (!moving && !target_obj)
+			if (!moving)
 				var/turf/wp = get_nearest_waypoint(loc)
 				if(wp && wp != loc)
 					wander = FALSE

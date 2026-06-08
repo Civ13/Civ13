@@ -42,6 +42,7 @@
 	var/list/found_path = list()
 	var/atom/pathfind_target = null
 	var/last_pathfound = 0
+	var/move_gen = 0
 
 	//Interaction
 	var/response_help   = "tries to help"

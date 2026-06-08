@@ -19,7 +19,8 @@
 				stance = HOSTILE_STANCE_ATTACK
 				handle_combat_behaviour("hostile")
 				return
-		return
+		// Fall through to the main AI logic below so enemy detection
+		// (FindTarget via do_behaviour) can still run during patrol.
 
 	if (!isturf(loc) || resting || buckled || !canmove)
 		return

@@ -182,13 +182,17 @@
 		moving = FALSE
 		return FALSE
 
-	// Loop protection: block re-entry when a movement cycle is already running.
+	// If a movement loop is already running, bump the generation counter so
+	// the old loop exits (its generation is stale) and a new one starts below.
 	if(moving)
-		return TRUE
+		move_gen++
+		found_path = list()
+		// Fall through — start a fresh loop with the updated target_obj
 
 	moving = TRUE
+	var/my_gen = move_gen
 	spawn(0)
-		while(moving && target_obj && get_dist(src, target_obj) > 1 && stat != 2)
+		while(moving && my_gen == move_gen && target_obj && target_obj.loc && get_dist(src, target_obj) > 1 && stat != 2)
 			// Stuck detection
 			if (loc == last_loc)
 				stuck_ticks++
@@ -241,13 +245,14 @@
 			var/delay = (found_path.len == 0) ? max(move_to_delay, 10) : move_to_delay
 			sleep(delay)
 
-		// Clean up on exit
-		if (target_obj && get_dist(src, target_obj) <= 1)
-			if (target_obj == pathfind_target)
-				pathfind_target = null
-			target_obj = null
-			found_path = list()
-		moving = FALSE
+		// Clean up on exit — only if this generation is still current
+		if(my_gen == move_gen)
+			if (target_obj && target_obj.loc && get_dist(src, target_obj) <= 1)
+				if (target_obj == pathfind_target)
+					pathfind_target = null
+				target_obj = null
+				found_path = list()
+			moving = FALSE
 	return TRUE
 
 /mob/living/simple_animal/proc/get_path(var/atom/tgt = null)
