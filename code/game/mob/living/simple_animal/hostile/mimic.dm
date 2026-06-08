@@ -23,11 +23,6 @@
 	melee_damage_upper = 25
 	mob_size = MOB_LARGE
 
-	var/activeicon = 'icons/mob/animal.dmi'
-	var/activeicon_state = "mimic"
-	var/idleicon = 'icons/obj/storage.dmi'
-	var/idleicon_state = "treasure_chest"
-
 	var/btype = ""
 
 	faction = "neutral"

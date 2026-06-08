@@ -24,14 +24,11 @@
 	var/flesh_color = "#FFC896"						  // Pink.
 	var/base_color									   // Used by changelings. Should also be used for icon previes..
 	var/tail											 // Name of tail state in species effects icon file.
-	var/tail_animation								   // If set, the icon to obtain tail animation states from.
 	var/race_key = FALSE	   								 // Used for mob icon cache string.
 	var/icon/icon_template							   // Used for mob icon generation for non-32x32 species.
 	var/mob_size	= MOB_MEDIUM
 	var/show_ssd = "fast asleep"
-	var/virus_immune
 	var/blood_volume = 560							   // Initial blood volume.
-	var/hunger_factor = DEFAULT_HUNGER_FACTOR			// Multiplier for hunger.
 	var/taste_sensitivity = TASTE_NORMAL				 // How sensitive the species is to minute tastes.
 
 	var/teeth_type = /obj/item/stack/teeth/generic 		 //What sort of teeth do the species have
@@ -59,8 +56,6 @@
 	var/burn_mod = 1.0							// Burn damage multiplier.
 	var/oxy_mod = 1.0							// Oxyloss modifier
 	var/toxins_mod = 1.0						// Toxloss modifier
-	var/radiation_mod = 1.0						// Radiation modifier
-	var/flash_mod =	1.0							// Stun from blindness modifier.
 	var/vision_flags = SEE_SELF					// Same flags as glasses.
 
 	// Death vars.
@@ -68,12 +63,9 @@
 	var/gibber_type = /obj/effect/gibspawner/human
 	var/single_gib_type = /obj/effect/decal/cleanable/blood/gibs
 	var/gibbed_anim = "gibbed-h"
-	var/dusted_anim = "dust-h"
 	var/death_sound
 	var/death_message = "" // "seizes up and falls limp, their eyes dead and lifeless..."
 	var/knockout_message = "has been knocked unconscious!"
-	var/halloss_message = "slumps to the ground, too weak to continue fighting."
-	var/halloss_message_self = "You're in too much pain to keep going..."
 
 	// Environment tolerance/life processes vars.
 	var/reagent_tag								   //Used for metabolizing reagents.
@@ -87,7 +79,6 @@
 	var/heat_level_1 = 315							// Heat damage level TRUE above this point.
 	var/heat_level_2 = 323							// Heat damage level 2 above this point.
 	var/heat_level_3 = 333						   // Heat damage level 3 above this point.
-	var/passive_temp_gain = FALSE						  // Species will gain this much temperature every second
 //	var/hazard_high_pressure = HAZARD_HIGH_PRESSURE   // Dangerously high pressure.
 //	var/warning_high_pressure = WARNING_HIGH_PRESSURE // High pressure warning.
 //	var/warning_low_pressure = WARNING_LOW_PRESSURE   // Low pressure warning.
@@ -122,10 +113,8 @@
 	var/spawn_flags = FALSE		   // Flags that specify who can spawn as this species
 	var/slowdown = FALSE			  // Passive movement speed malus (or boost, if negative)
 	var/primitive_form			// Lesser form, if any (ie. monkey for humans)
-	var/greater_form			  // Greater form, if any, ie. human for monkeys.
 	var/holder_type
 	var/gluttonous				// Can eat some mobs. Values can be GLUT_TINY, GLUT_SMALLER, GLUT_ANYTHING.
-	var/rarity_value = TRUE		  // Relative rarity/collector value for this species.
 								  // Determines the organs that the species spawns with and
 	var/list/has_organ = list(	// which required-organ checks are conducted.
 		"heart" =	/obj/item/organ/heart,

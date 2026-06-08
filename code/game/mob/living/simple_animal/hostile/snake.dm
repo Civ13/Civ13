@@ -1,5 +1,4 @@
 /mob/living/simple_animal/hostile/poison
-	var/poison_per_bite = 0
 	var/poison_type = "toxin"
 
 

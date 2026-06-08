@@ -21,11 +21,6 @@
 
 	var/last_special = FALSE //Used by the resist verb, likely used to prevent players from bypassing next_move by logging in/out.
 
-	var/t_plasma = null
-	var/t_oxygen = null
-	var/t_sl_gas = null
-	var/t_n2 = null
-
 	var/now_pushing = null
 	var/mob_bump_flag = FALSE
 	var/mob_swap_flags = FALSE
@@ -36,7 +31,6 @@
 	var/list/datum/action/actions = list()
 
 	var/tod = null // Time of death
-	var/update_slimes = TRUE
 	var/silent = null 		// Can't talk. Value goes down every life proc.
 	var/on_fire = FALSE //The "Are we on fire?" var
 	var/fire_stacks

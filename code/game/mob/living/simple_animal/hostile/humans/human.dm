@@ -25,7 +25,6 @@ var/global/list/npc_appearance_cache = list()
 	var/last_fire = 0
 	var/casingtype = null
 	var/projectiletype = null
-	var/fire_desc = "fires"
 	var/obj/item/weapon/gun/projectile/gun = null
 	var/grenades = 0 //number of grenades
 	var/grenade_type = /obj/item/weapon/grenade
