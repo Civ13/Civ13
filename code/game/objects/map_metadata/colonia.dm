@@ -325,7 +325,9 @@
 /obj/map_metadata/colonia/proc/recover_relations()
 	if (ROMAN_RELATIONS >= 0)
 		ROMAN_RELATIONS -= 0.02 //Romans demand their trade ties
-	if (LOCAL_TRIBES_RELATIONS <= 30 && LOCAL_TRIBES_RELATIONS < 100)
+	if (BARBARIAN_RELATIONS <= 100)
+		BARBARIAN_RELATIONS -= 0.1 //The barbarians can never be satisfied, and will constantly demand tribute
+	if (LOCAL_TRIBES_RELATIONS <= 30)
 		LOCAL_TRIBES_RELATIONS += 0.02 //The local tribes will forgive you, slowly
 	spawn(20 MINUTES)
 		recover_relations()
@@ -596,3 +598,33 @@
 		new tpath(get_turf(spawnpoint))
 		to_chat(user, "Your [final_list[1]] has arrived.")
 	return
+
+/obj/structure/pepelsibirsk_radio/tribute_bag
+	name = "tribute bag"
+	desc = "Use this to bribe other factions into liking you."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "moneybag"
+	density = TRUE
+	anchored = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/pepelsibirsk_radio/tribute_bag/attackby(var/obj/item/stack/money/W as obj, var/mob/living/human/user as mob)
+	if (W.value == 0)
+		to_chat(user, "There is no demand for this item.")
+		return
+	else
+		var/tributeChoice = WWinput(user, "Pay tribute to which faction?", "Paying tribute", "Cancel", list("Cancel", "Germanic Barbarians", "Roman Empire", "Local Tribes"))
+		if (tributeChoice == "Cancel")
+			return
+		else if (tributeChoice == "Germanic Barbarians")
+			BARBARIAN_RELATIONS += W.value*0.1
+			to_chat(user, "You have paid tribute to the Germanic Barbarians. Relations have increased by [W.value*0.1].")
+		else if (tributeChoice == "Roman Empire")
+			ROMAN_RELATIONS += W.value*0.1
+			to_chat(user, "You have paid tribute to the Roman Empire. Relations have increased by [W.value*0.1].")
+		else if (tributeChoice == "Local Tribes")
+			LOCAL_TRIBES_RELATIONS += W.value*0.1
+			to_chat(user, "You have paid tribute to the Local Tribes. Relations have increased by [W.value*0.1].")
+		if (W)
+			qdel(W)

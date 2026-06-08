@@ -179,6 +179,10 @@
 	},
 /turf/floor/beach/water,
 /area/caribbean/nomads/forest)
+"iV" = (
+/obj/item/flashlight/torch,
+/turf/floor/dirt,
+/area/caribbean/void/caves)
 "jI" = (
 /obj/covers/wood/alt,
 /obj/roof/clay,
@@ -189,6 +193,11 @@
 /obj/effect/spawner/mobspawner/goats_m,
 /turf/floor/grass,
 /area/caribbean/nomads/forest)
+"le" = (
+/turf/floor/dirt/underground{
+	name = "cave wall"
+	},
+/area/caribbean/void/caves)
 "lk" = (
 /obj/covers/romanroad,
 /obj/effect/landmark{
@@ -302,6 +311,10 @@
 /obj/roof/clay,
 /turf/floor/grass,
 /area/caribbean/nomads/forest)
+"pl" = (
+/obj/structure/closet/crate/cart/wooden,
+/turf/floor/dirt,
+/area/caribbean/void/caves)
 "pL" = (
 /obj/effect/spawner/mobspawner/goats_f,
 /turf/floor/grass,
@@ -360,6 +373,17 @@
 /obj/covers/repairedfloor/ship,
 /turf/floor/beach/water,
 /area/caribbean/nomads/forest)
+"sY" = (
+/obj/covers/romanroad,
+/obj/roof/wood,
+/obj/structure/pepelsibirsk_radio/tribute_bag,
+/turf/floor/grass,
+/area/caribbean/nomads/forest)
+"tS" = (
+/obj/covers/roads/dirt,
+/obj/structure/mine_support,
+/turf/floor/dirt,
+/area/caribbean/void/caves)
 "uD" = (
 /obj/covers/wood/stairs{
 	dir = 4
@@ -566,9 +590,9 @@
 /turf/floor/wood/ship,
 /area/caribbean/nomads/forest)
 "zZ" = (
-/obj/structure/pepelsibirsk_radio/supply_radio/colonia,
 /obj/covers/romanroad,
 /obj/roof/wood,
+/obj/structure/pepelsibirsk_radio/supply_radio/colonia/no_scam,
 /turf/floor/grass,
 /area/caribbean/nomads/forest)
 "Au" = (
@@ -601,6 +625,11 @@
 /obj/effect/spawner/mobspawner/horse,
 /turf/floor/grass,
 /area/caribbean/nomads/forest)
+"Cb" = (
+/obj/structure/multiz/ladder/ww2/tunnelbottom,
+/obj/structure/mine_support,
+/turf/floor/dirt,
+/area/caribbean/void/caves)
 "Ct" = (
 /obj/effect/spawner/mobspawner/deer,
 /turf/floor/grass,
@@ -721,6 +750,10 @@
 	initial_health = 40000
 	},
 /obj/roof/clay,
+/turf/floor/grass,
+/area/caribbean/nomads/forest)
+"Kh" = (
+/obj/structure/pepelsibirsk_radio/tribute_bag,
 /turf/floor/grass,
 /area/caribbean/nomads/forest)
 "KT" = (
@@ -963,6 +996,11 @@
 /obj/covers/wood_wall/log,
 /turf/floor/grass,
 /area/caribbean/pirates/ship/voyage/lower/storage)
+"YX" = (
+/obj/structure/mine_support,
+/obj/structure/multiz/ladder/ww2/tunneltop,
+/turf/floor/dirt,
+/area/caribbean/void/caves)
 "Zl" = (
 /obj/covers/stonebrickfloor,
 /obj/roof/clay,
@@ -975,6 +1013,9 @@
 /obj/covers/repairedfloor/ship,
 /turf/floor/beach/water,
 /area/caribbean/nomads/forest)
+"ZI" = (
+/turf/floor/dirt,
+/area/caribbean/void/caves)
 
 (1,1,1) = {"
 hn
@@ -40204,9 +40245,9 @@ hn
 hn
 hn
 hn
-hn
-hn
-hn
+ZI
+ZI
+ZI
 hn
 hn
 hn
@@ -40461,9 +40502,9 @@ hn
 hn
 hn
 hn
-hn
-hn
-hn
+ZI
+Cb
+ZI
 hn
 hn
 hn
@@ -40718,9 +40759,9 @@ hn
 hn
 hn
 hn
-hn
-hn
-hn
+ZI
+ZI
+ZI
 hn
 hn
 hn
@@ -72838,9 +72879,9 @@ vl
 vl
 vl
 vl
-vl
-vl
-vl
+cp
+gD
+cp
 vl
 MI
 MI
@@ -73095,10 +73136,10 @@ vl
 vl
 vl
 vl
-cp
 gD
-cp
-vl
+zZ
+gD
+MI
 MI
 MI
 MI
@@ -73353,7 +73394,7 @@ sh
 vl
 vl
 gD
-zZ
+sY
 gD
 MI
 MI
@@ -104448,7 +104489,7 @@ dk
 dk
 dk
 dk
-vl
+dk
 vl
 vl
 vl
@@ -104704,9 +104745,9 @@ dk
 dk
 dk
 dk
-vl
-vl
-vl
+dk
+dk
+dk
 vl
 vl
 vl
@@ -104715,9 +104756,9 @@ vl
 vl
 hr
 Ra
-vl
-vl
-vl
+le
+le
+le
 sh
 vl
 vl
@@ -104960,22 +105001,22 @@ dk
 dk
 dk
 dk
-vl
-vl
-yO
-vl
-vl
+dk
+dk
+dk
+dk
+dk
 cA
 vl
 vl
-vl
-vl
-vl
-vl
-hr
-vl
-vl
-vl
+le
+le
+le
+le
+le
+le
+le
+le
 vl
 vl
 vl
@@ -105219,21 +105260,21 @@ dk
 dk
 vl
 vl
+dk
+dk
+dk
+dk
 vl
-vl
-vl
-vl
-vl
-vl
-hr
-vl
-vl
-vl
-vl
-vl
-rM
-vl
-vl
+le
+le
+le
+le
+le
+le
+le
+le
+le
+le
 vl
 vl
 vl
@@ -105477,20 +105518,20 @@ vl
 vl
 vl
 vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-hr
-vl
+dk
+dk
+dk
+dk
+le
+le
+le
+le
+le
+le
+le
+le
+le
+le
 hr
 vl
 vl
@@ -105735,19 +105776,19 @@ vl
 vl
 vl
 Ra
-vl
-vl
-vl
-HU
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
+dk
+dk
+dk
+le
+iV
+ZI
+ZI
+ZI
+le
+le
+le
+le
+le
 vl
 vl
 vl
@@ -105992,19 +106033,19 @@ vl
 vl
 vl
 vl
-lP
 vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-hr
-vl
+dk
+dk
+tS
+ZI
+ZI
+YX
+ZI
+le
+le
+le
+le
+le
 hr
 vl
 vl
@@ -106252,16 +106293,16 @@ vl
 vl
 hr
 vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-cA
+le
+pl
+ZI
+ZI
+ZI
+le
+le
+le
+le
+le
 vl
 vl
 vl
@@ -106509,15 +106550,15 @@ vl
 vl
 vl
 vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
+le
+le
+le
+le
+le
+le
+le
+le
+le
 vl
 vl
 vl
@@ -106766,13 +106807,13 @@ vl
 vl
 vl
 vl
-vl
-vl
-vl
-vl
-vl
-vl
-vl
+le
+le
+le
+le
+le
+le
+le
 vl
 vl
 vl
@@ -107024,10 +107065,10 @@ vl
 vl
 vl
 vl
-vl
-vl
-vl
-vl
+le
+le
+le
+le
 vl
 vl
 vl
@@ -116473,7 +116514,7 @@ oa
 Ss
 Ss
 Ss
-vl
+Kh
 vl
 vl
 vl
