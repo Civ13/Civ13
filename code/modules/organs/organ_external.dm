@@ -301,7 +301,7 @@
 			//getting hit on broken hand hurts
 			owner.emote("scream")
 	//if the damage from this event is high enough OR the accumulated blunt damage is high enough
-	if(brute >= min_broken_damage || prob(blunt_dam) ) //blunt damage is gud at fracturing
+	if(brute >= min_broken_damage || (brute >= ceil(min_broken_damage * 0.5) && prob(blunt_dam)) ) //blunt damage is gud at fracturing
 		if (istype(used_weapon, /obj/item/projectile))
 			if (prob(35))
 				fracture()
