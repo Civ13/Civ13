@@ -764,7 +764,9 @@ Shinobi's unfinished welder stuff - siro*/
 			img = image(icon = 'icons/minimaps.dmi', icon_state = "operation_falcon_map")
 
 /obj/item/weapon/compass/modern/tacmap/examine(mob/user)
-	user << browse(getFlatIcon(img),"window=popup;size=630x630")
+	if (img)
+		var/icon/flat = new /icon(img.icon, img.icon_state)
+		user << browse(flat, "window=popup;size=630x630")
 
 //////////////////////////////////////////LOCKPICK/////////////////////////////////////////////////////////////////////////////
 /obj/item/weapon/lockpick

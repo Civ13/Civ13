@@ -60,7 +60,7 @@
 
 	user.face_atom(origin)
 
-	if (!locate(user) in range(1,origin))
+	if (get_dist(origin, user) > 1)
 		to_chat(user, "<span class = 'danger'>Get next to \the [origin] to use it.</span>")
 		return FALSE
 

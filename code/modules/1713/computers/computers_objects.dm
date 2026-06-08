@@ -73,6 +73,7 @@
 				return
 			if (PD.included)
 				var/datum/program/NP = new PD.included
+				NP.origin = src
 				for(var/datum/program/EP in programs)
 					if (istype(EP,NP))
 						to_chat(H, "This program is already installed on this machine.")

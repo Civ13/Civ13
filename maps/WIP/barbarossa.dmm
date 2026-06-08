@@ -126,7 +126,7 @@
 "cv" = (/obj/structure/gate/barrier/vertical{dir = 1},/turf/floor/dirt/dust,/area/caribbean/nomads)
 "cw" = (/obj/structure/gate/barrier/vertical,/turf/floor/dirt,/area/caribbean/nomads)
 "cx" = (/obj/structure/grille/chainlinkfence,/obj/structure/barbwire{pixel_y = 8},/turf/floor/grass,/area/caribbean/nomads)
-"cy" = (/mob/living/simple_animal/pet/cattle,/turf/floor/dirt/dust,/area/caribbean/roofed/temperate)
+"cy" = (/mob/living/simple_animal/cattle,/turf/floor/dirt/dust,/area/caribbean/roofed/temperate)
 "cz" = (/turf/floor/dirt/dust,/area/caribbean/roofed/temperate)
 "cA" = (/obj/structure/grille/chainlinkfence{icon_state = "chainlinkfence"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8; pixel_x = 8},/turf/floor/grass,/area/caribbean/nomads)
 "cB" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/grass,/area/caribbean/nomads)

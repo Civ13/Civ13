@@ -17,6 +17,7 @@
 	var/owner = "Global"
 	var/max_products = 5
 	var/sound_type = 'sound/machines/vending_drop.ogg'
+	var/vendor_style = "modern"
 
 /obj/structure/vending/ex_act(severity)
 	return
@@ -111,70 +112,80 @@
 	set category = null
 	set src in range(1, usr)
 
-
 	if (!istype(usr, /mob/living/human))
 		return
 
 	if (owner != "Global" && find_company_member(usr,owner))
-		var/choice1 = WWinput(usr, "What do you want to do?", "Vendor Management", "Exit", list("Exit", "Change Name", "Change Prices", "Remove Product", "Change Currency"))
-		if (choice1 == "Exit")
-			return TRUE
-		else if (choice1 == "Change Name")
-			var/input1 = input("What name do you want to give to this vendor?", "Vendor Name", name) as text
-			if (input1 == null || input1 == "")
-				return FALSE
-			else
-				name = input1
-				return TRUE
-		else if (choice1 == "Change Prices")
-			var/list/choicelist = list("Exit")
-			for(var/datum/data/vending_product/VP in product_records)
-				choicelist += VP.product_name
-			var/choice2 = WWinput(usr, "What product to change the price?", "Vendor Management", "Exit", choicelist)
-			if (choice2 == "Exit")
-				return FALSE
-			else
-				for(var/datum/data/vending_product/VP in product_records)
-					if (VP.product_name == choice2)
-						var/input3 = input("The current price for [VP.product_name] is [VP.price]. What should the new price be?", "Product Price", VP.price) as num
-						if (input3 < 0 || input3 == null)
-							return FALSE
-						else
-							VP.price = input3
-							return TRUE
-		else if (choice1 == "Remove Product")
-			var/list/choicelist = list("Exit")
-			for(var/datum/data/vending_product/VP in product_records)
-				choicelist += VP.product_name
-			var/choice2 = WWinput(usr, "What product to remove?", "Vendor Management", "Exit", choicelist)
-			if (choice2 == "Exit")
-				return FALSE
-			else
-				for(var/datum/data/vending_product/VP in product_records)
-					if (VP.product_name == choice2)
-						vend(VP, usr, VP.amount)
-						return TRUE
-		else if (choice1 == "Change Currency")
-			if (moneyin > 0)
-				to_chat(usr, "<span class='warning'>You must empty the vendor of all funds before changing its accepted currency.</span>")
-				return FALSE
-			var/list/curr_list = list("Standard Coins")
-			var/list/curr_map = list("Standard Coins" = "standard")
-			for(var/cid in fiat.currency_list)
-				if (fiat.currency_list[cid][5])
-					curr_list += fiat.currency_list[cid][1]
-					curr_map[fiat.currency_list[cid][1]] = cid
-			var/curr_choice = WWinput(usr, "Which currency should this vendor accept?", "Vendor Management", "Cancel", curr_list)
-			if (curr_choice == "Cancel" || !curr_choice)
-				return FALSE
-			accepted_currency = curr_map[curr_choice]
-			to_chat(usr, "<span class='notice'>This vendor now accepts [curr_choice].</span>")
-			return TRUE
-
-
+		show_management_ui(usr)
 	else
 		to_chat(usr, "You do not have permission to manage this vendor.")
-		return FALSE
+
+/obj/structure/vending/sales/proc/show_management_ui(mob/user)
+	if (!user || !user.client)
+		return
+
+	// Build currency options
+	var/currency_opts_html = ""
+	var/selected = (accepted_currency == "standard") ? " selected" : ""
+	currency_opts_html += "<option value='standard'[selected]>Standard Coins</option>"
+	for (var/cid in fiat.currency_list)
+		if (fiat.currency_list[cid][5])
+			selected = (accepted_currency == cid) ? " selected" : ""
+			currency_opts_html += "<option value='[cid]'[selected]>[fiat.currency_list[cid][1]]</option>"
+
+	// Build products listing
+	var/products_html = ""
+	for (var/datum/data/vending_product/VP in product_records)
+		products_html += "<div class='product-item'><span class='product-name'>[VP.product_name]</span><span class='product-price'>[VP.price]</span>"
+		products_html += "<button class='btn' onclick=\"var p=prompt('New price for [VP.product_name]:','[VP.price]');if(p!==null&&!isNaN(p)&&Number(p)>=0)window.location='byond://?src=\ref[src];manage=changeprice&product=\ref[VP]&price='+encodeURIComponent(p)\">Price</button>"
+		products_html += "<button class='btn btn-danger' onclick=\"window.location='byond://?src=\ref[src];manage=removeproduct&product=\ref[VP]'\">Remove</button></div>"
+	if (!product_records.len)
+		products_html = "<div style='color: #707090; font-style: italic; padding: 8px;'>No products in this vendor.</div>"
+
+	var/dat = "<html><head><style>"
+	if (vendor_style == "modern")
+		dat += "body{font-family:Verdana,Geneva,sans-serif;background:#1a1a1a;color:#ffffff;margin:0;padding:20px;}"
+		dat += "h2{color:#aa0000;border-bottom:2px solid #aa0000;padding-bottom:8px;margin-top:0;}"
+		dat += ".section{background:#272727;border:1px solid #aa0000;border-radius:4px;padding:12px;margin-bottom:12px;}"
+		dat += ".section h3{color:#aa0000;margin:0 0 8px 0;font-size:14px;}"
+		dat += ".field { margin: 4px 0; }"
+		dat += ".field .ftext { width: 96%; background: #1a1a1a; color: #ffffff; border: 1px solid #aa0000; border-radius: 3px; padding: 6px; font-family: monospace; }"
+		dat += ".field select { width: 100%; background: #1a1a1a; color: #ffffff; border: 1px solid #aa0000; border-radius: 3px; padding: 6px; font-family: monospace; }"
+		dat += ".btn { background: #aa0000; color: #ffffff; border: 1px solid #770000; border-radius: 3px; padding: 6px 14px; cursor: pointer; font-size: 13px; display: inline-block; margin: 2px; text-decoration: none; }"
+		dat += ".btn:hover { background: #ff3333; }"
+		dat += ".btn-danger { background: #5e2a2a; color: #ff7070; border: 1px solid #8a3a3a; }"
+		dat += ".btn-danger:hover { background: #8a3a3a; }"
+		dat += ".product-item { background: #1a1a1a; border: 1px solid #aa0000; border-radius: 3px; padding: 6px 10px; margin: 4px 0; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }"
+		dat += ".product-name { color: #ffffff; }"
+		dat += ".product-price { color: #ffd700; font-weight: bold; }"
+	else
+		dat += "body{font-family:'Segoe UI',monospace;background:#2b1e0e;color:#f0e0c0;margin:0;padding:20px;}"
+		dat += "h2{color:#ffd700;border-bottom:2px solid #5a3a1a;padding-bottom:8px;margin-top:0;}"
+		dat += ".section{background:#3d2b14;border:1px solid #5a3a1a;border-radius:4px;padding:12px;margin-bottom:12px;}"
+		dat += ".section h3{color:#ffd700;margin:0 0 8px 0;font-size:14px;}"
+		dat += ".field { margin: 4px 0; }"
+		dat += ".field .ftext { width: 96%; background: #2b1e0e; color: #f0e0c0; border: 1px solid #5a3a1a; border-radius: 3px; padding: 6px; font-family: monospace; }"
+		dat += ".field select { width: 100%; background: #2b1e0e; color: #f0e0c0; border: 1px solid #5a3a1a; border-radius: 3px; padding: 6px; font-family: monospace; }"
+		dat += ".btn { background: #5a3a1a; color: #ffd700; border: 1px solid #5a3a1a; border-radius: 3px; padding: 6px 14px; cursor: pointer; font-size: 13px; display: inline-block; margin: 2px; text-decoration: none; }"
+		dat += ".btn:hover { background: #8a6a3a; }"
+		dat += ".btn-danger { background: #5e2a2a; color: #ff7070; border: 1px solid #8a3a3a; }"
+		dat += ".btn-danger:hover { background: #8a3a3a; }"
+		dat += ".product-item { background: #2b1e0e; border: 1px solid #5a3a1a; border-radius: 3px; padding: 6px 10px; margin: 4px 0; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }"
+		dat += ".product-name { color: #f0e0c0; }"
+		dat += ".product-price { color: #ffd700; font-weight: bold; }"
+	dat += "</style></head><body>"
+	dat += "<h2>Vendor Management - [name]</h2>"
+	dat += "<div class='section'><h3>Change Name</h3>"
+	dat += "<div class='field'><input type='text' id='new_name' class='ftext' value='[name]' placeholder='Enter new name...'>"
+	dat += "<button class='btn' onclick=\"var v=document.getElementById('new_name').value;if(v)window.location='byond://?src=\ref[src];manage=rename&value='+encodeURIComponent(v)\">Change Name</button></div></div>"
+	dat += "<div class='section'><h3>Products &amp; Prices</h3>[products_html]</div>"
+	dat += "<div class='section'><h3>Change Currency</h3>"
+	dat += "<div class='field'><select id='currency_select'>[currency_opts_html]</select>"
+	dat += "<button class='btn' onclick=\"window.location='byond://?src=\ref[src];manage=changecurrency&currency='+document.getElementById('currency_select').value\">Apply</button></div></div>"
+	dat += "<div class='section'><button class='btn' onclick=\"window.location='byond://?src=\ref[src];manage=close'\">Close</button></div>"
+	dat += "</body></html>"
+
+	user << browse(dat, "window=vendor_management;size=500x550")
 
 /** Internal procedure to deliver the selected product after successful payment and update the vendor status. */
 /obj/structure/vending/sales/vend(datum/data/vending_product/R, mob/user, var/p_amount=1)
@@ -205,6 +216,7 @@
 	user.set_using_object(src)
 
 	var/list/data = list()
+	data["modern"] = (vendor_style == "modern")
 	var/cur_name = "silver coins"
 	var/cur_short = "sc"
 	if (accepted_currency != "standard")
@@ -266,13 +278,13 @@
 	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
-			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 440, 600)
+			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 540, 600)
 		else if (map.ID == MAP_GULAG13)
-			ui = new(user, src, ui_key, "vending_machine_gulag.tmpl", name, 440, 600)
+			ui = new(user, src, ui_key, "vending_machine_gulag.tmpl", name, 540, 600)
 		else if (map.ID == MAP_KANDAHAR)
-			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 440, 600)
+			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 540, 600)
 		else
-			ui = new(user, src, ui_key, "vending_machine2.tmpl", name, 440, 600)
+			ui = new(user, src, ui_key, "vending_machine2.tmpl", name, 540, 600)
 		ui.set_initial_data(data)
 		ui.open()
 
@@ -408,6 +420,40 @@
 				if (GC.amount == 0)
 					qdel(GC)
 			moneyin = 0
+			GLOB.nanomanager.update_uis(src)
+			return
+
+		else if (href_list["manage"])
+			if (owner == "Global" || !find_company_member(usr, owner))
+				return
+			var/action = href_list["manage"]
+			switch(action)
+				if ("close")
+					return
+				if ("rename")
+					var/new_name = href_list["value"]
+					if (new_name && new_name != "")
+						name = new_name
+				if ("changeprice")
+					var/datum/data/vending_product/VP = locate(href_list["product"])
+					var/new_price = text2num(href_list["price"])
+					if (VP && !isnull(new_price) && new_price >= 0)
+						VP.price = new_price
+				if ("removeproduct")
+					var/datum/data/vending_product/VP = locate(href_list["product"])
+					if (VP)
+						vend(VP, usr, VP.amount)
+				if ("changecurrency")
+					if (moneyin > 0)
+						to_chat(usr, "<span class='warning'>You must empty the vendor of all funds before changing its accepted currency.</span>")
+						return
+					var/new_currency = href_list["currency"]
+					if (new_currency)
+						accepted_currency = new_currency
+						var/curr_name = "Standard Coins"
+						if (new_currency != "standard" && fiat.currency_list[new_currency])
+							curr_name = fiat.currency_list[new_currency][1]
+						to_chat(usr, "<span class='notice'>This vendor now accepts [curr_name].</span>")
 			GLOB.nanomanager.update_uis(src)
 			return
 
@@ -641,6 +687,7 @@
 	name = "market stall"
 	desc = "A market stall selling an assortment of goods."
 	icon_state = "market_stall"
+	vendor_style = "classic"
 	var/image/overlay_primary = null
 	var/image/overlay_secondary = null
 

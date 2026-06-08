@@ -465,13 +465,25 @@ body
 	font-size: 16px;
 	color: #009933;
 	line-height: 170%;
+	text-shadow: 0px 0px 4px rgba(51, 255, 51, 0.6); /* CRT Phosphor Glow */
+}
+/* The Scanline Effect */
+body::after {
+	content: " ";
+	display: block;
+	position: absolute;
+	top: 0; left: 0; bottom: 0; right: 0;
+	background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+	z-index: 2;
+	background-size: 100% 2px, 3px 100%;
+	pointer-events: none; /* Let clicks pass through */
+}
+hr {
+	border: 1px dashed #33FF33;
 }
 
-hr
-{
-	background-color: #161616;
-	height: 1px;
-}
+.warning { color: #FF3333; text-shadow: 0px 0px 4px #FF0000; }
+.notice { color: #FFFF33; }
 
 a, a:link, a:visited, a:active, .linkOn, .linkOff
 {

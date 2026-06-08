@@ -210,7 +210,7 @@
 "eb" = (/obj/covers/cobblestone,/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)
 "ec" = (/obj/structure/animalspawner/bearcave/full,/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)
 "ed" = (/obj/effect/spawner/mobspawner/fox,/turf/floor/dirt,/area/caribbean/forest/dirt)
-"ee" = (/mob/living/simple_animal/pet/cattle/bull,/turf/floor/grass,/area/caribbean/nomads/semiarid)
+"ee" = (/mob/living/simple_animal/cattle/bull,/turf/floor/grass,/area/caribbean/nomads/semiarid)
 "ef" = (/mob/living/simple_animal/chicken,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
 "eg" = (/obj/covers/wood,/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/obj/roof/clay/blue,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
 "eh" = (/obj/effect/spawner/mobspawner/horse,/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)
@@ -218,7 +218,7 @@
 "ej" = (/obj/covers/marbletile,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
 "ek" = (/obj/covers/cobblestone,/obj/roof/clay/blue,/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)
 "el" = (/mob/living/simple_animal/chicken,/turf/floor/dirt/ploughed,/area/caribbean/nomads/semiarid)
-"em" = (/obj/structure/wild/tallgrass,/mob/living/simple_animal/pet/cattle/cow,/turf/floor/grass,/area/caribbean/nomads/semiarid)
+"em" = (/obj/structure/wild/tallgrass,/mob/living/simple_animal/cattle/cow,/turf/floor/grass,/area/caribbean/nomads/semiarid)
 "en" = (/obj/structure/furnace/kiln,/obj/covers/cobblestone,/obj/roof/clay/blue,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
 "eo" = (/obj/covers/roads/roman,/turf/floor/grass,/area/caribbean/nomads/semiarid)
 "ep" = (/obj/structure/grille/fence{icon_state = "fence"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)
@@ -506,7 +506,7 @@
 "jM" = (/obj/covers/sandstone,/obj/roof/clay,/mob/living/simple_animal/pet/cat,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
 "jN" = (/obj/covers/carpet,/obj/structure/table/modern/table,/obj/roof/clay,/obj/structure/voting/civb,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
 "jO" = (/obj/covers/wood,/obj/roof/clay/blue,/obj/effect/spawner/mobspawner/mouse/sm,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
-"jP" = (/mob/living/simple_animal/pet/cattle/cow,/turf/floor/grass,/area/caribbean/nomads/semiarid)
+"jP" = (/mob/living/simple_animal/cattle/cow,/turf/floor/grass,/area/caribbean/nomads/semiarid)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababaaacacacacacadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaaaaaaaaaaaaaaaaaaaaaaaaaa

@@ -488,7 +488,7 @@
 					return
 /obj/structure/voyage/tablemap
 	name = "map"
-	desc = "A map of the regeion. Used by the captain to plan the next moves."
+	desc = "A map of the region. Used by the captain to plan the next moves."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "table_map"
 	layer = 3.2

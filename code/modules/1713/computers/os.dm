@@ -26,19 +26,12 @@
 			"}
 	usr << browse(os,"window=opsys;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
 /obj/structure/computer/interact(var/mob/m)
-	if (user)
-		if (get_dist(src, user) > 1)
-			user = null
-	restart:
-	if (user && user != m)
-		if (user.client)
-			return
-		else
-			user = null
-			goto restart
-	else
-		user = m
-		do_html(user)
+	if (user && user != m && user.client && get_dist(src, user) <= 1)
+		return
+	
+	user = m
+	do_html(user)
+
 /obj/structure/computer/Topic(href, href_list, hsrc)
 
 	var/mob/living/human/user = usr
@@ -48,7 +41,7 @@
 
 	user.face_atom(src)
 
-	if (!locate(user) in range(1,src))
+	if (get_dist(src, user) > 1)
 		to_chat(user, "<span class = 'danger'>Get next to \the [src] to use it.</span>")
 		return FALSE
 
