@@ -192,38 +192,3 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 /proc/spawn_vehicle(template_id, turf/location, direction = NORTH)
 	return vehicle_factory.spawn_vehicle(template_id, location, direction)
 
-/client/proc/spawn_modular_vehicle()
-	set category = "Admin"
-	set name = "Spawn Modular Vehicle"
-
-	if (!holder)
-		to_chat(src, "<font color='red'>Error: Admin-PM-Panel: Only administrators may use this command.</font>")
-		return
-
-	var/list/templates = list("jeep", "truck", "btr80", "mtlb", "t34", "bradley")
-	var/template_id = WWinput(usr, "Select a vehicle template:", "Vehicle Factory", WWinput_first_choice(templates), WWinput_list_or_null(templates))
-	if (!template_id)
-		return
-
-	var/direction_text = WWinput(usr, "Select direction:", "Vehicle Factory", "SOUTH", list("NORTH", "SOUTH", "EAST", "WEST"))
-	if (!direction_text)
-		return
-
-	var/direction = NORTH
-	switch(direction_text)
-		if("NORTH") direction = NORTH
-		if("SOUTH") direction = SOUTH
-		if("EAST") direction = EAST
-		if("WEST") direction = WEST
-
-	var/turf/T = get_turf(usr)
-	if (!T)
-		return
-
-	var/obj/structure/vehicleparts/axis/axis = vehicle_factory.spawn_vehicle(template_id, T, direction)
-	if (axis)
-		to_chat(usr, "Successfully spawned [axis.name] at [T.x], [T.y], [T.z].")
-		message_admins("[key_name(src)] spawned a vehicle, [axis.name] ([T.x], [T.y], [T.z])", key_name(src))
-		log_admin("[key_name(src)] spawned a vehicle, [axis.name] ([T.x], [T.y], [T.z])")
-	else
-		to_chat(usr, "Failed to spawn vehicle.")

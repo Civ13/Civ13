@@ -42,46 +42,6 @@
 			if (usr)	to_chat(usr, "ToRban updated.")
 		log_misc("ToR data update aborted: no data.")
 
-/client/proc/ToRban(task in list("update","toggle","show","remove","remove all","find"))
-	set name = "ToRban"
-	set category = "Server"
-	if (!holder)	return
-	switch(task)
-		if ("update")
-			ToRban_update()
-		if ("toggle")
-			if (config)
-				if (config.ToRban)
-					config.ToRban = FALSE
-					message_admins("<font color='red'>ToR banning disabled.</font>")
-				else
-					config.ToRban = TRUE
-					message_admins("<font colot='green'>ToR banning enabled.</font>")
-		if ("show")
-			var/savefile/F = new(get_tor_file_dir())
-			var/dat
-			if ( length(F.dir) )
-				for ( var/i=1, i<=length(F.dir), i++ )
-					dat += "<tr><td>#[i]</td><td> [F.dir[i]]</td></tr>"
-				dat = "<table width='100%'>[dat]</table>"
-			else
-				dat = "No addresses in list."
-			src << browse(dat,"window=ToRban_show")
-		if ("remove")
-			var/savefile/F = new(get_tor_file_dir())
-			var/choice = input(src,"Please select an IP address to remove from the ToR banlist:","Remove ToR ban",null) as null|anything in F.dir
-			if (choice)
-				F.dir.Remove(choice)
-				to_chat(src, "<b>Address removed</b>")
-		if ("remove all")
-			to_chat(src, "<b>[get_tor_file_dir()] was [fdel(get_tor_file_dir())?"":"not "]removed.</b>")
-		if ("find")
-			var/input = input(src,"Please input an IP address to search for:","Find ToR ban",null) as null|text
-			if (input)
-				if (ToRban_isbanned(input))
-					to_chat(src, "<font color='green'><b>Address is a known ToR address</b></font>")
-				else
-					to_chat(src, "<font color='red'><b>Address is not a known ToR address</b></font>")
-	return
+
 
 #undef TOR_UPDATE_INTERVAL

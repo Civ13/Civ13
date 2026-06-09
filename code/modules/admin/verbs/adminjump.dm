@@ -4,37 +4,6 @@
 /mob/observer/ghost/on_mob_jump()
 	stop_following()
 
-/client/proc/Jump(var/area/A in return_sorted_areas())
-	set name = "Jump to Area"
-	set desc = "Area to jump to"
-	set category = "Admin"
-	if (!check_rights(R_ADMIN|R_MOD|R_DEBUG))
-		return
-
-	if (config.allow_admin_jump)
-		usr.on_mob_jump()
-
-		var/turf/new_location = safepick(get_area_turfs(A))
-		if (!new_location)
-			WWalert(src, "Admin jump failed due to missing [A] area turfs.", "Admin Jump")
-			return
-		var/tries = 0
-		while (new_location.density || locate(/obj/structure) in new_location)
-			new_location = safepick(get_area_turfs(A))
-			++tries
-			if (tries >= 20)
-				break
-
-		if (new_location)
-			usr.loc = new_location
-			log_admin("[key_name(usr)] jumped to [A]")
-			message_admins("[key_name_admin(usr)] jumped to [A]", key_name_admin(usr))
-		else
-
-
-	else
-		WWalert(src, "Admin jumping is disabled", "Admin Jump")
-
 /client/proc/jumptoturf(var/turf/T in turfs)
 	set name = "Jump to Turf"
 	set category = "Admin"

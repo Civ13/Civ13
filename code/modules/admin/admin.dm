@@ -858,19 +858,6 @@ proc/admin_notice(var/message, var/rights)
 /datum/admins/proc/output_ai_laws()
 	return FALSE
 
-/client/proc/update_mob_sprite(mob/living/human/H as mob)
-	set category = "Admin"
-	set name = "Update Mob Sprite"
-	set desc = "Should fix any mob sprite update errors."
-
-	if (!holder)
-		to_chat(src, "Only administrators may use this command.")
-		return
-
-	if (istype(H))
-		H.regenerate_icons()
-
-
 /*
 	helper proc to test if someone is a mentor or not.  Got tired of writing this same check all over the place.
 */

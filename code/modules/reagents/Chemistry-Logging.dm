@@ -14,15 +14,4 @@
 		message_admins(logstr, usr ? key_name(usr) : "")
 	log_admin(logstr)
 
-/client/proc/view_chemical_reaction_logs()
-	set name = "Show Chemical Reactions"
-	set category = "Admin"
 
-	if (!check_rights(R_ADMIN))
-		return
-
-	var/html = ""
-	for (var/entry in chemical_reaction_logs)
-		html += "[entry]<br>"
-
-	usr << browse(html, "window=chemlogs")
