@@ -3,7 +3,6 @@
 	desc = "NCR Trooper Fatigues"
 	icon_state = "ncr_fatigues"
 	item_state = "ncr_fatigues"
-	worn_state = "ncr_fatigues"
 	var/rolled = FALSE
 	var/maskup = FALSE
 
@@ -16,7 +15,6 @@
 		if (!maskup)
 			if (rolled)
 				flags_inv = null
-				worn_state = "ncr_fatigues"
 				item_state = "ncr_fatigues"
 				icon_state = "ncr_fatigues"
 				item_state_slots["w_uniform"] = "ncr_fatigues"
@@ -27,7 +25,6 @@
 				return
 			if (!rolled)
 				flags_inv = null
-				worn_state = "ncr_fatigues_rolled"
 				item_state = "ncr_fatigues_rolled"
 				icon_state = "ncr_fatigues_rolled"
 				item_state_slots["w_uniform"] = "ncr_fatigues_rolled"
@@ -39,7 +36,6 @@
 		else
 			if (rolled)
 				flags_inv = HIDEFACE
-				worn_state = "ncr_fatigues_maskup"
 				item_state = "ncr_fatigues_maskup"
 				icon_state = "ncr_fatigues_maskup"
 				item_state_slots["w_uniform"] = "ncr_fatigues_maskup"
@@ -50,7 +46,6 @@
 				return
 			else
 				flags_inv = HIDEFACE
-				worn_state = "ncr_fatigues_rolled_maskup"
 				item_state = "ncr_fatigues_rolled_maskup"
 				icon_state = "ncr_fatigues_rolled_maskup"
 				item_state_slots["w_uniform"] = "ncr_fatigues_rolled_maskup"
@@ -67,7 +62,6 @@
 	else
 		if (maskup)
 			if (!rolled)
-				worn_state = "ncr_fatigues"
 				item_state = "ncr_fatigues"
 				icon_state = "ncr_fatigues"
 				item_state_slots["w_uniform"] = "ncr_fatigues"
@@ -77,7 +71,6 @@
 				update_clothing_icon()
 				return
 			else
-				worn_state = "ncr_fatigues_rolled"
 				item_state = "ncr_fatigues_rolled"
 				icon_state = "ncr_fatigues_rolled"
 				item_state_slots["w_uniform"] = "ncr_fatigues_rolled"
@@ -88,7 +81,6 @@
 				return
 		else
 			if (!rolled)
-				worn_state = "ncr_fatigues_maskup"
 				item_state = "ncr_fatigues_maskup"
 				icon_state = "ncr_fatigues_maskup"
 				item_state_slots["w_uniform"] = "ncr_fatigues_maskup"
@@ -99,7 +91,6 @@
 				update_clothing_icon()
 				return
 			else
-				worn_state = "ncr_fatigues_maskup_rolled"
 				item_state = "ncr_fatigues_maskup_rolled"
 				icon_state = "ncr_fatigues_maskup_rolled"
 				item_state_slots["w_uniform"] = "ncr_fatigues_maskup_rolled"
@@ -129,7 +120,6 @@
 	desc = "An NCR Armored Vest"
 	icon_state = "ncr_armor"
 	item_state = "ncr_armor"
-	worn_state = "ncr_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 60, arrow = 40, gun = 20, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	flammable = TRUE
@@ -140,7 +130,6 @@
 	desc = "A typical rounded steel helmet."
 	icon_state = "ncr_helmet"
 	item_state = "ncr_helmet"
-	worn_state = "ncr_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
@@ -150,7 +139,6 @@
 	desc = "A typical rounded steel helmet. This one has a pair of biker goggles attached."
 	icon_state = "ncr_helmet_goggles"
 	item_state = "ncr_helmet_goggles"
-	worn_state = "ncr_helmet_goggles"
 	var/goggles = FALSE
 
 /obj/item/clothing/head/helmet/fallout/ncr/goggles/verb/adjust_goggles()
@@ -161,13 +149,11 @@
 	else
 		if (goggles)
 			item_state = "ncr_helmet_goggles"
-			worn_state = "ncr_helmet_goggles"
 			item_state_slots["slot_head"] = "ncr_helmet_goggles"
 			to_chat(usr, "<span class = 'danger'>You adjust your goggles.</span>")
 			goggles = FALSE
 		else if (!goggles)
 			item_state = "ncr_helmet_goggles_down"
-			worn_state = "ncr_helmet_goggles_down"
 			item_state_slots["slot_head"] = "ncr_helmet_goggles_down"
 			to_chat(usr, "<span class = 'danger'>You adjust your goggles.</span>")
 			goggles = TRUE
@@ -219,14 +205,12 @@
 	desc = "A green camo beret with a capbadge of the NCR's 2 headed bear."
 	icon_state = "ncr_beret"
 	item_state = "ncr_beret"
-	worn_state = "ncr_beret"
 
 /obj/item/clothing/head/fallout/ncr/recon
 	name = "NCR 1st Recon Beret"
 	desc = "A red beret with a capbadge of the NCR's 1st Recon."
 	icon_state = "ncr_beret_recon"
 	item_state = "ncr_beret_recon"
-	worn_state = "ncr_beret_recon"
 
 
 
@@ -236,7 +220,6 @@
 	desc = "A red T-shirt and dark skirt with leather armor overtop. Commonly worn by Caesar's Legion."
 	icon_state = "legionaire"
 	item_state = "legionaire"
-	worn_state = "legionaire"
 	armor = list(melee = 35, arrow = 33, gun = 8, energy = 15, bomb = 35, bio = 20, rad = FALSE)
 
 /obj/item/clothing/shoes/heavyboots/wrappedboots/legion
@@ -255,7 +238,6 @@
 	desc = "A rather thin leather cap with ear protection."
 	icon_state = "legionaire"
 	item_state = "legionaire"
-	worn_state = "legionaire"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 10, arrow = 2, gun = 0, energy = 15, bomb = 10, bio = 20, rad = FALSE)

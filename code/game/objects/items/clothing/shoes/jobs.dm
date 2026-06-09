@@ -14,12 +14,10 @@
 /obj/item/clothing/shoes/jackboots/modern
 	icon_state = "jackboots2"
 	item_state = "jackboots2"
-	worn_state = "jackboots2"
 
 /obj/item/clothing/shoes/jackboots/brown
 	icon_state = "brownboots"
 	item_state = "brownboots"
-	worn_state = "brownboots"
 
 /obj/item/clothing/shoes/workboots
 	name = "workboots"

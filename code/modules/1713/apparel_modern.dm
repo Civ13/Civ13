@@ -238,7 +238,6 @@
 	desc = "Wearable armor that can stop even some rifle rounds. Can be fitted with plates to increase protection."
 	icon_state = "iba_black"
 	item_state = "iba_black"
-	worn_state = "iba_black"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 75, arrow = 100, gun = 65, energy = 25, bomb = 65, bio = 20, rad = FALSE)
 	value = 120
@@ -251,14 +250,12 @@
 	desc = "Wearable armor that can stop even some rifle rounds. Can be fitted with plates to increase protection. This one has the Universal Camouflage Pattern."
 	icon_state = "iba_ucp"
 	item_state = "iba_ucp"
-	worn_state = "iba_ucp"
 
 /obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ocp
 	name = "OCP Interceptor Body Armor"
 	desc = "Wearable armor that can stop even some rifle rounds. Can be fitted with plates to increase protection. This one has the Operational Camouflage Pattern."
 	icon_state = "iba_ocp"
 	item_state = "iba_ocp"
-	worn_state = "iba_ocp"
 
 	/* Carrier & Plate Carrier Vests */
 
@@ -267,7 +264,6 @@
 	desc = "A plate carrier that can store magazines and pouches. This one is tan."
 	icon_state = "platecarrier_tan"
 	item_state = "platecarrier_tan"
-	worn_state = "platecarrier_tan"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 30, arrow = 20, gun = 40, energy = 20, bomb = 30, bio = 20, rad = FALSE)
 	value = 130
@@ -280,7 +276,6 @@
 	desc = "A plate carrier that can store magazines and pouches. This one is olive."
 	icon_state = "platecarrier_green"
 	item_state = "platecarrier_green"
-	worn_state = "platecarrier_green"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 30, arrow = 20, gun = 40, energy = 20, bomb = 30, bio = 20, rad = FALSE)
 	value = 130
@@ -293,7 +288,6 @@
 	desc = "A plate carrier that can store magazines and pouches. This one is black."
 	icon_state = "platecarrier_black"
 	item_state = "platecarrier_black"
-	worn_state = "platecarrier_black"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 30, arrow = 20, gun = 40, energy = 20, bomb = 30, bio = 20, rad = FALSE)
 	value = 130
@@ -306,7 +300,6 @@
 	desc = "A kevlar vest with pouches, it is tan."
 	icon_state = "pcarrier_tan"
 	item_state = "pcarrier_tan"
-	worn_state = "pcarrier_tan"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 65, arrow = 95, gun = 76, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
@@ -319,7 +312,6 @@
 	desc = "A kevlar vest with pouches, it is black."
 	icon_state = "pcarrier_black"
 	item_state = "pcarrier_black"
-	worn_state = "pcarrier_black"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 65, arrow = 95, gun = 76, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
@@ -332,7 +324,6 @@
 	desc = "A tan carrier vest for holding various items."
 	icon_state = "thickcarrier"
 	item_state = "thickcarrier"
-	worn_state = "thickcarrier"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 30, arrow = 30, gun = 78, energy = 16, bomb = 30, bio = 15, rad = FALSE)
 	value = 90
@@ -345,7 +336,6 @@
 	desc = "A plate carrier that can store magazines and pouches. This one is made by UARM."
 	icon_state = "ukraine_armor"
 	item_state = "ukraine_armor"
-	worn_state = "ukraine_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 40, arrow = 20, gun = 40, energy = 20, bomb = 30, bio = 20, rad = FALSE)
 	value = 130
@@ -359,7 +349,6 @@
 	desc = "A modern body armor of Russian origin."
 	icon_state = "6b45"
 	item_state = "6b45"
-	worn_state = "6b45"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 67, arrow = 95, gun = 52, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 130
@@ -372,7 +361,6 @@
 	desc = "A modern body armor of Russian origin."
 	icon_state = "6b45_ext"
 	item_state = "6b45_ext"
-	worn_state = "6b45_ext"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 70, arrow = 95, gun = 60, energy = 22, bomb = 65, bio = 20, rad = FALSE)
 	value = 130
@@ -385,7 +373,6 @@
 	desc = "A modern plate carrier of Russian origin. This one is used by paratroopers and vehicle crewmen as it is a lighter version of the 6B45."
 	icon_state = "6b46"
 	item_state = "6b46"
-	worn_state = "6b46"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 60, arrow = 95, gun = 50, energy = 22, bomb = 55, bio = 20, rad = FALSE)
 	value = 150
@@ -404,7 +391,6 @@
 	desc = "A typical US Army PASGT helmet. This one is in U.S. Woodland pattern."
 	icon_state = "pasgt_woodland"
 	item_state = "pasgt_woodland"
-	worn_state = "pasgt_woodland"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 62, arrow = 75, gun = 55, energy = 15, bomb = 55, bio = 20, rad = FALSE)
@@ -412,47 +398,39 @@
 /obj/item/clothing/head/helmet/modern/pasgt/com
 	icon_state = "pasgt_woodland_com"
 	item_state = "pasgt_woodland_com"
-	worn_state = "pasgt_woodland_com"
 /obj/item/clothing/head/helmet/modern/pasgt/sl
 	icon_state = "pasgt_woodland_sl"
 	item_state = "pasgt_woodland_sl"
-	worn_state = "pasgt_woodland_sl"
 /obj/item/clothing/head/helmet/modern/pasgt/desert
 	name = "PASGT helmet"
 	desc = "A typical US Army PASGT helmet. This one is in U.S. Desert pattern."
 	icon_state = "pasgt_desert"
 	item_state = "pasgt_desert"
-	worn_state = "pasgt_desert"
 
 /obj/item/clothing/head/helmet/modern/pasgt/reddish
 	name = "Red PASGT helmet"
 	desc = "A typical US Army PASGT helmet. This one has a red dye."
 	icon_state = "pasgt_reddish"
 	item_state = "pasgt_reddish"
-	worn_state = "pasgt_reddish"
 
 /obj/item/clothing/head/helmet/modern/pasgt/white
 	name = "White PASGT helmet"
 	desc = "A typical US Army PASGT helmet. This one has a white dye."
 	icon_state = "pasgt_white"
 	item_state = "pasgt_white"
-	worn_state = "pasgt_white"
 
 /obj/item/clothing/head/helmet/modern/pasgt/white/alt
 	icon_state = "pasgt_white_alt"
 	item_state = "pasgt_white_alt"
-	worn_state = "pasgt_white_alt"
 /obj/item/clothing/head/helmet/modern/pasgt/white/alt/two
 	icon_state = "pasgt_white_alt_2"
 	item_state = "pasgt_white_alt_2"
-	worn_state = "pasgt_white_alt_2"
 
 /obj/item/clothing/head/helmet/modern/pasgt/desert/New()
 	..()
 	if (prob(50))
 		icon_state = "pasgt_desert_attachments"
 		item_state = "pasgt_desert_attachments"
-		worn_state = "pasgt_desert_attachments"
 		update_icon()
 
 /obj/item/clothing/accessory/armor/coldwar/pasgt
@@ -460,7 +438,6 @@
 	desc = "Wearable armor that can stop most pistol rounds. This one is in U.S. Woodland pattern."
 	icon_state = "pasgt_woodland"
 	item_state = "pasgt_woodland"
-	worn_state = "pasgt_woodland"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 67, arrow = 95, gun = 52, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
@@ -473,28 +450,24 @@
 	desc = "Wearable armor that can stop most pistol rounds. This one is khaki colored."
 	icon_state = "pasgt_khaki"
 	item_state = "pasgt_khaki"
-	worn_state = "pasgt_khaki"
 
 /obj/item/clothing/accessory/armor/coldwar/pasgt/green
 	name = "green PASGT body armor"
 	desc = "Wearable armor that can stop most pistol rounds. This one is green colored."
 	icon_state = "pasgt_green"
 	item_state = "pasgt_green"
-	worn_state = "pasgt_green"
 
 /obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard
 	name = "blizzard PASGT body armor"
 	desc = "Wearable armor that can stop most pistol rounds. This one has a blizzard pattern."
 	icon_state = "pasgt_blizzard"
 	item_state = "pasgt_blizzard"
-	worn_state = "pasgt_blizzard"
 
 /obj/item/clothing/accessory/armor/coldwar/rb23
 	name = "RB-23 body armor"
 	desc = "A modern ballistic vest of Redmenian origin."
 	icon_state = "rb23"
 	item_state = "rb23"
-	worn_state = "rb23"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 70, arrow = 95, gun = 72, energy = 30, bomb = 70, bio = 20, rad = FALSE)
 	slowdown = 0.1
@@ -505,7 +478,6 @@
 	desc = "A modern piece of Blugoslavian armor introduced in 2023, made fully out of kevlar while also having some space left for plate inserts"
 	icon_state = "n34bm"
 	item_state = "n34bm"
-	worn_state = "n34bm"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 70, arrow = 95, gun = 72, energy = 30, bomb = 70, bio = 20, rad = FALSE)
 	ripable = FALSE
@@ -519,7 +491,6 @@
 	desc = "A Blugoslavian armor used by medics and doctors alike, comes with a white medical cross on the back."
 	icon_state = "n34bmm"
 	item_state = "n34bmm"
-	worn_state = "n34bmm"
 
 		/* US Lightweight Helmets*/
 
@@ -528,7 +499,6 @@
 	desc = "A typical US Army LightWeight Helmet. This one is in beige color."
 	icon_state = "lwh_desert"
 	item_state = "lwh_desert"
-	worn_state = "lwh_desert"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 68, arrow = 67, gun = 65, energy = 18, bomb = 65, bio = 20, rad = FALSE)
@@ -538,14 +508,12 @@
 	desc = "A typical US Army LightWeight Helmet. This one is in black color."
 	icon_state = "lwh_black"
 	item_state = "lwh_black"
-	worn_state = "lwh_black"
 
 /obj/item/clothing/head/helmet/modern/ach
 	name = "OCP ACH helmet"
 	desc = "A typical US Army Advanced Combat Helmet. This one is in OCP cammo."
 	icon_state = "ach_ocp"
 	item_state = "ach_ocp"
-	worn_state = "ach_ocp"
 	body_parts_covered = HEAD
 	armor = list(melee = 75, arrow = 95, gun = 93, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 
@@ -554,22 +522,18 @@
 	desc = "A typical US Army Advanced Combat Helmet. This one is in green."
 	icon_state = "ach_green"
 	item_state = "ach_green"
-	worn_state = "ach_green"
 /obj/item/clothing/head/helmet/modern/ach/white
 	name = "ACH helmet"
 	desc = "A typical US Army Advanced Combat Helmet. This one is in white."
 	icon_state = "ach_white"
 	item_state = "ach_white"
-	worn_state = "ach_white"
 /obj/item/clothing/head/helmet/modern/ach/green/com
 	icon_state = "ach_green_com"
 	item_state = "ach_green_com"
-	worn_state = "ach_green_com"
 
 /obj/item/clothing/head/helmet/modern/ach/green/sl
 	icon_state = "ach_green_sl"
 	item_state = "ach_green_sl"
-	worn_state = "ach_green_sl"
 	/* US Army Clothing*/
 
 /obj/item/clothing/under/us_uni/us_camo_dcu
@@ -577,7 +541,6 @@
 	desc = "The standard US Army desert camo uniform the late 20th century."
 	icon_state = "us_camo_dcu"
 	item_state = "us_camo_dcu"
-	worn_state = "us_camo_dcu"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/us_uni/us_camo_woodland
@@ -585,7 +548,6 @@
 	desc = "The standard US Army camo uniform the late 20th century."
 	icon_state = "us_camo_woodland"
 	item_state = "us_camo_woodland"
-	worn_state = "us_camo_woodland"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/us_uni/us_camo_ucp
@@ -593,7 +555,6 @@
 	desc = "The standard US Army camo uniform the early 21st century."
 	icon_state = "us_camo_ucp"
 	item_state = "us_camo_ucp"
-	worn_state = "us_camo_ucp"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/us_uni/us_camo_ocp
@@ -601,7 +562,6 @@
 	desc = "The standard US Army camo uniform from 2018 onwards."
 	icon_state = "us_camo_ocp"
 	item_state = "us_camo_ocp"
-	worn_state = "us_camo_ocp"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/us_uni/multicam
@@ -609,7 +569,6 @@
 	desc = "A uniform in a camouflage pattern designed for use in a wide range of environments and conditions. Usually given to special operations units."
 	icon_state = "multicam"
 	item_state = "multicam"
-	worn_state = "multicam"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	var/rolled = FALSE
 
@@ -621,7 +580,6 @@
 	else
 		if (rolled)
 			item_state = "multicam"
-			worn_state = "multicam"
 			item_state_slots["w_uniform"] = "multicam"
 			to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 			rolled = FALSE
@@ -629,7 +587,6 @@
 			update_clothing_icon()
 		else if (!rolled)
 			item_state = "multicam_rolled"
-			worn_state = "multicam_rolled"
 			item_state_slots["w_uniform"] = "multicam_rolled"
 			to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 			rolled = TRUE
@@ -642,7 +599,6 @@
 	desc = "An informal outfit made of OCP pattern trousers and a olive drab shirt."
 	icon_state = "us_lightuni_modern"
 	item_state = "us_lightuni_modern"
-	worn_state = "us_lightuni_modern"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
 
 /obj/item/clothing/gloves/fingerless
@@ -680,14 +636,12 @@
 	desc = "An outfit composed of the VSR93 camo pants and shirt, along with a high waistbelt."
 	icon_state = "rus_vsr93"
 	item_state = "rus_vsr93"
-	worn_state = "rus_vsr93"
 
 /obj/item/clothing/under/omon
 	name = "russian OMON uniform" //Uniform used mostly in the 90's
 	desc = "An outfit designed and issued for the OMON forces of the Russian Federation."
 	icon_state = "omon"
 	item_state = "omon"
-	worn_state = "omon"
 
 /* USSR Helmets*/
 
@@ -696,7 +650,6 @@
 	desc = "A USSR heavy armoured helmet with a slitted facemask."
 	icon_state = "sovietfacehelmet"
 	item_state = "sovietfacehelmet"
-	worn_state = "sovietfacehelmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 90, arrow = 110, gun = 96, energy = 27, bomb = 76, bio = 30, rad = FALSE)
@@ -706,7 +659,6 @@
 	desc = "A USSR heavy armoured helmet with a welding visor facemask."
 	icon_state = "sovietfacehelmet" //wip
 	item_state = "sovietfacehelmet"
-	worn_state = "sovietfacehelmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 90, arrow = 110, gun = 96, energy = 27, bomb = 76, bio = 30, rad = FALSE)
@@ -716,7 +668,6 @@
 	desc = "A USSR heavy armoured helmet with a slitted facemask."
 	icon_state = "sovietfacehelmet_o"
 	item_state = "sovietfacehelmet_o"
-	worn_state = "sovietfacehelmet_o"
 	armor = list(melee = 85, arrow = 110, gun = 95, energy = 25, bomb = 75, bio = 30, rad = FALSE)
 	health = 80
 	slowdown = 0.45
@@ -731,7 +682,6 @@
 		if (toggled)
 			item_state = "sovietfacehelmet_o"
 			icon_state = "sovietfacehelmet_o"
-			worn_state = "sovietfacehelmet_o"
 			item_state_slots["slot_head"] = "sovietfacehelmet_o"
 			to_chat(usr, "<span class = 'danger'>You put up your helmet's visor.</span>")
 			toggled = FALSE
@@ -741,7 +691,6 @@
 		else if (!toggled)
 			item_state = "sovietfacehelmet"
 			icon_state = "sovietfacehelmet"
-			worn_state = "sovietfacehelmet"
 			item_state_slots["slot_head"] = "sovietfacehelmet"
 			to_chat(usr, "<span class = 'danger'>You put down your helmet's visor.</span>")
 			toggled = TRUE
@@ -754,7 +703,6 @@
 	desc = "A russian heavy armoured helmet with a welding visor facemask."
 	icon_state = "sovietface_weldhelmet"
 	item_state = "sovietface_weldhelmet"
-	worn_state = "sovietface_weldhelmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 85, arrow = 110, gun = 95, energy = 25, bomb = 75, bio = 30, rad = FALSE)
@@ -771,7 +719,6 @@
 		if (toggled)
 			item_state = "sovietface_weldhelmet_o"
 			icon_state = "sovietface_weldhelmet_o"
-			worn_state = "sovietface_weldhelmet_o"
 			item_state_slots["slot_head"] = "sovietface_weldhelmet_o"
 			to_chat(usr, "<span class = 'danger'>You put up your helmet's visor.</span>")
 			toggled = FALSE
@@ -781,7 +728,6 @@
 		else if (!toggled)
 			item_state = "sovietface_weldhelmet"
 			icon_state = "sovietface_weldhelmet"
-			worn_state = "sovietface_weldhelmet"
 			item_state_slots["slot_head"] = "sovietface_weldhelmet"
 			to_chat(usr, "<span class = 'danger'>You put down your helmet's visor.</span>")
 			toggled = TRUE
@@ -794,7 +740,6 @@
 	desc = "A Russian heavy armoured helmet often used by Russian infantry forces in the 21st century."
 	icon_state = "a6b47"
 	item_state = "a6b47"
-	worn_state = "a6b47"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 62, arrow = 75, gun = 55, energy = 15, bomb = 55, bio = 20, rad = FALSE)
@@ -802,37 +747,31 @@
 /obj/item/clothing/head/helmet/modern/a6b47/emr
 	icon_state = "6b47_emr"
 	item_state = "6b47_emr"
-	worn_state = "6b47_emr"
 
 /obj/item/clothing/head/helmet/modern/a6b47/emr/desert
 	icon_state = "6b47_emr_desert"
 	item_state = "6b47_emr_desert"
-	worn_state = "6b47_emr_desert"
 
 /obj/item/clothing/head/helmet/modern/a6b47/camo
 	name = "camo 6B47 helmet"
 	icon_state = "a6b47cam"
 	item_state = "a6b47cam"
-	worn_state = "a6b47cam"
 
 /obj/item/clothing/head/helmet/modern/a6b47/camo/blugo
 	name = "blugo 6B47 helmet"
 	icon_state = "a6b47b"
 	item_state = "a6b47b"
-	worn_state = "a6b47b"
 
 /obj/item/clothing/head/helmet/modern/a6b47/camo/blugo/command
 	name = "blugo command 6B47 helmet"
 	icon_state = "a6b47bc"
 	item_state = "a6b47bc"
-	worn_state = "a6b47bc"
 
 /obj/item/clothing/head/helmet/modern/sfera //1990's helmet for reference, specific date unknown.
 	name = "Sfera helmet"
 	desc = "A russian combat armoured helmet, often used by internal troops in the USSR and Russia."
 	icon_state = "sfera_helmet"
 	item_state = "sfera_helmet"
-	worn_state = "sfera_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 80, arrow = 100, gun = 95, energy = 36, bomb = 76, bio = 30, rad = FALSE)
@@ -842,7 +781,6 @@
 	desc = "A russian heavy armoured helmet, often used by USSR infantry forces in the late 20th century."
 	icon_state = "zsh1"
 	item_state = "zsh1"
-	worn_state = "zsh1"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 80, arrow = 100, gun = 95, energy = 36, bomb = 76, bio = 30, rad = FALSE)
@@ -852,7 +790,6 @@
 	desc = "A russian heavy armoured helmet with a visor; often used by russian infantry forces in the 21st century."
 	icon_state = "zsh2"
 	item_state = "zsh2"
-	worn_state = "zsh2"
 	body_parts_covered = HEAD|EYES
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 84, arrow = 104, gun = 98, energy = 38, bomb = 79, bio = 34, rad = FALSE)
@@ -870,14 +807,12 @@
 	desc = "The standard US Army camo uniform the late 20th century, with Hezbollah insiginia."
 	icon_state = "us_camo_woodland_hez"
 	item_state = "us_camo_woodland_hez"
-	worn_state = "us_camo_woodland_hez"
 
 /obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah/officer
 	name = "woodland camouflage uniform"
 	desc = "The standard US Army camo uniform the late 20th century, with Hezbollah insiginia of an officer."
 	icon_state = "us_camo_woodland_hez_officer"
 	item_state = "us_camo_woodland_hez_officer"
-	worn_state = "us_camo_woodland_hez_officer"
 
 /* Insurgents*/
 	/* Insurgent Clothing*/
@@ -887,7 +822,6 @@
 	desc = "An all black tunic and trousers outfit."
 	icon_state = "insurgent_black"
 	item_state = "insurgent_black"
-	worn_state = "insurgent_black"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/insurgent_sand
@@ -895,7 +829,6 @@
 	desc = "A dark yellow, sand-colored tunic and trousers outfit."
 	icon_state = "insurgent_sand"
 	item_state = "insurgent_sand"
-	worn_state = "insurgent_sand"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/insurgent_sand_woodland
@@ -903,7 +836,6 @@
 	desc = "A dark yellow, sand-colored tunic with woodland camo trousers."
 	icon_state = "insurgent_sand_woodland"
 	item_state = "insurgent_sand_woodland"
-	worn_state = "insurgent_sand_woodland"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/insurgent_sand_dcu
@@ -911,7 +843,6 @@
 	desc = "A dark yellow, sand-colored uniform with desert camo trousers."
 	icon_state = "insurgent_sand_dcu"
 	item_state = "insurgent_sand_dcu"
-	worn_state = "insurgent_sand_dcu"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/insurgent_sand_green
@@ -919,7 +850,6 @@
 	desc = "A light brown uniform with green trousers."
 	icon_state = "insurgent_sand_green"
 	item_state = "insurgent_sand_green"
-	worn_state = "insurgent_sand_green"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/insurgent_leader
@@ -927,7 +857,6 @@
 	desc = "A black tunic with desert camo trousers, worn by insurgent leaders."
 	icon_state = "insurgent_leader"
 	item_state = "insurgent_leader"
-	worn_state = "insurgent_leader"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/head/black_bandana
@@ -982,7 +911,6 @@
 	desc = "The plain olive coloured uniform of the Israeli Defense Forces."
 	icon_state = "idf_olive"
 	item_state = "idf_olive"
-	worn_state = "idf_olive"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 
@@ -991,7 +919,6 @@
 	desc = "A typical IDF helmet. This one is in IDF olive green."
 	icon_state = "idf"
 	item_state = "idf1"
-	worn_state = "idf1"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 62, arrow = 55, gun = 51, energy = 15, bomb = 55, bio = 20, rad = FALSE)
@@ -999,14 +926,12 @@
 /obj/item/clothing/head/helmet/modern/idf/New()
 	..()
 	item_state = pick("idf1","idf2","idf3")
-	worn_state = item_state
 
 /obj/item/clothing/accessory/armor/coldwar/idf
 	name = "Masada body armor"
 	desc = "Israeli wearable armor that can stop most pistol rounds. This one is green."
 	icon_state = "greenkevlarvest"
 	item_state = "greenkevlarvest"
-	worn_state = "greenkevlarvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 67, arrow = 95, gun = 52, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
@@ -1029,7 +954,6 @@
 	desc = "Standard kevlar, can stop low caliber bullets. This one is black."
 	icon_state = "kevlarvest"
 	item_state = "kevlarvest"
-	worn_state = "kevlarvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
 	armor = list(melee = 80, arrow = 95, gun = 65, energy = 35, bomb = 64, bio = 20, rad = FALSE)
 	value = 90
@@ -1042,7 +966,6 @@
 	desc = "A black kevlar vest for commercial use."
 	icon_state = "civilianvest"
 	item_state = "civilianvest"
-	worn_state = "civilianvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 60, arrow = 90, gun = 52, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
@@ -1055,14 +978,12 @@
 	desc = "A blue kevlar vest, with 'PRESS' written across the chest."
 	icon_state = "press_kevlarvest"
 	item_state = "press_kevlarvest"
-	worn_state = "press_kevlarvest"
 
 /obj/item/clothing/head/helmet/kevlarhelmet/press
 	name = "Press kevlar helmet"
 	desc = "A standard bulletproof helmet, made of kevlar, with 'PRESS' written across it."
 	icon_state = "kevlarhelmet_press"
 	item_state = "kevlarhelmet_press"
-	worn_state = "kevlarhelmet_press"
 
 /obj/item/clothing/accessory/armor/nomads/civiliankevlar/under //for TDM maps, showing under the clothing
 
@@ -1071,7 +992,6 @@
 	desc = "A standard bulletproof helmet, made of kevlar."
 	icon_state = "kevlarhelmet"
 	item_state = "kevlarhelmet"
-	worn_state = "kevlarhelmet"
 	body_parts_covered = HEAD
 	armor = list(melee = 65, arrow = 95, gun = 73, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
@@ -1084,7 +1004,6 @@
 	desc = "Protects your head from injuries if you crash your bike."
 	icon_state = "motorcycle"
 	item_state = "motorcycle"
-	worn_state = "motorcycle"
 	body_parts_covered = FACE|EYES|HEAD
 	flags_inv = HIDEMASK|BLOCKHAIR|BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 65, gun = 5, energy = 35, bomb = 35, bio = 30, rad = FALSE)
@@ -1094,20 +1013,17 @@
 	desc = "A casual jeans and white shirt combo."
 	icon_state = "motorist"
 	item_state = "motorist"
-	worn_state = "motorist"
 
 /obj/item/clothing/under/reporter
 	name = "war correspondent outfit"
 	desc = "Casual brown trousers and a black shirt, perfect for running away from gunfire."
 	icon_state = "reporter"
 	item_state = "reporter"
-	worn_state = "reporter"
 
 /obj/item/clothing/gloves/motorist
 	name = "black motorist gloves"
 	icon_state = "motorist"
 	item_state = "motorist"
-	worn_state = "motorist"
 	body_parts_covered = HANDS
 	slot_flags = SLOT_GLOVES
 
@@ -1116,7 +1032,6 @@
 	desc = "A pair of simple, thin grey sneakers."
 	icon_state = "courier_sneakers"
 	item_state = "courier_sneakers"
-	worn_state = "courier_sneakers"
 	force = WEAPON_FORCE_WEAK
 	armor = list(melee = 10, arrow = 10, gun = FALSE, energy = 8, bomb = 10, bio = 10, rad = 25)
 	item_flags = NOSLIP
@@ -1129,7 +1044,6 @@
 	desc = "A jacket often worn by enthusiasts of vehicles, speed and the smell of burning rubber."
 	icon_state = "motorist_jacket"
 	item_state = "motorist_jacket"
-	worn_state = "motorist_jacket"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
@@ -1139,7 +1053,6 @@
 	desc = "A winter jacket used by the Russian Federal Forces in VSR93 camo."
 	icon_state = "rus_winter_vsr93"
 	item_state = "rus_winter_vsr93"
-	worn_state = "rus_winter_vsr93"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
@@ -1151,21 +1064,18 @@
 	desc = "A rowdy alternative culture purple sleeveless shirt and purple trousers for bringing down the establishment."
 	icon_state = "punk"
 	item_state = "punk"
-	worn_state = "punk"
 
 /obj/item/clothing/accessory/armband/punk
 	name = "spiked bracers"
 	desc = "A pair of punkish spiked bracers."
 	icon_state = "spiked_bracers"
 	item_state = "spiked_bracers"
-	worn_state = "spiked_bracers"
 
 /obj/item/clothing/shoes/punk
 	name = "punk boots"
 	desc = "A pair of stylized high leather boots for kicking the snot out of 'The Man'."
 	icon_state = "punk"
 	item_state = "punk"
-	worn_state = "punk"
 	force = WEAPON_FORCE_WEAK
 	armor = list(melee = 20, arrow = 10, gun = FALSE, energy = 8, bomb = 10, bio = 10, rad = 25)
 	item_flags = NOSLIP
@@ -1178,7 +1088,6 @@
 	desc = "A loose jacket often worn by counter-cultural types, commonly additional inscriptions can be found on the back."
 	icon_state = "punk_vest"
 	item_state = "punk_vest"
-	worn_state = "punk_vest"
 	body_parts_covered = UPPER_TORSO
 	cold_protection = UPPER_TORSO
 	armor = list(melee = 15, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
@@ -1192,7 +1101,6 @@
 	desc = "A standard kevlar helmet used by swat officers."
 	icon_state = "swat"
 	item_state = "swat"
-	worn_state = "swat"
 	body_parts_covered = HEAD
 	armor = list(melee = 65, arrow = 95, gun = 85, energy = 27, bomb = 64, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
@@ -1203,7 +1111,6 @@
 	desc = "A standard kevlar helmet used by swat officers."
 	icon_state = "swat_new"
 	item_state = "swat_new"
-	worn_state = "swat_new"
 	body_parts_covered = HEAD
 	armor = list(melee = 85, arrow = 95, gun = 85, energy = 27, bomb = 70, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
@@ -1216,7 +1123,6 @@
 	desc = "A red lifejacket, to improve survival on sea."
 	icon_state = "sealvest"
 	item_state = "sealvest"
-	worn_state = "sealvest"
 	body_parts_covered = UPPER_TORSO
 	armor = list(melee = 10, arrow = 5, gun = FALSE, energy = FALSE, bomb = FALSE, bio = 5, rad = 5)
 	w_class = ITEM_SIZE_SMALL
@@ -1227,41 +1133,35 @@
 	desc = "A yellow lifejacket, to improve survival on sea."
 	icon_state = "sealvest_yellow"
 	item_state = "sealvest_yellow"
-	worn_state = "sealvest_yellow"
 
 /obj/item/clothing/suit/lifejacket/blue
 	name = "lifejacket"
 	desc = "A blue lifejacket, to improve survival on sea."
 	icon_state = "sealvest_blue"
 	item_state = "sealvest_blue"
-	worn_state = "sealvest_blue"
 
 /obj/item/clothing/suit/storage/jacket/highvis
 	name = "high visibility jacket"
 	desc = "A yellow high visibility jacket."
 	icon_state = "high_vis_jacket_yellow"
 	item_state = "high_vis_jacket_yellow"
-	worn_state = "high_vis_jacket_yellow"
 
 /obj/item/clothing/suit/storage/jacket/highvis/paramedic
 	name = "paramedic jacket"
 	icon_state = "paramedic_jacket"
 	item_state = "paramedic_jacket"
-	worn_state = "paramedic_jacket"
 
 /obj/item/clothing/under/paramedic
 	name = "paramedic uniform"
 	desc = "A uniform used by EMS workers."
 	icon_state = "paramedic"
 	item_state = "paramedic"
-	worn_state = "paramedic"
 
 /obj/item/clothing/under/firefighter
 	name = "firefighter uniform"
 	desc = "A uniform used by firefighters. Offers heat protection on the legs."
 	icon_state = "firefighter"
 	item_state = "firefighter"
-	worn_state = "firefighter"
 	flammable = FALSE
 	heat_protection = LOWER_TORSO|LEGS
 	max_heat_protection_temperature = FIRESUIT_MAX_HEAT_PROTECTION_TEMPERATURE
@@ -1271,7 +1171,6 @@
 	desc = "A coat used by firefighters. Offers heat protection on the torso and arms."
 	icon_state = "firefighter"
 	item_state = "firefighter"
-	worn_state = "firefighter"
 	flammable = FALSE
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	max_heat_protection_temperature = FIRESUIT_MAX_HEAT_PROTECTION_TEMPERATURE
@@ -1281,7 +1180,6 @@
 	desc = "A protective and fire-resistant helmet used by firefigthers."
 	icon_state = "hardhat_yellow"
 	item_state = "hardhat_yellow"
-	worn_state = "hardhat_yellow"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	heat_protection = HEAD
@@ -1290,28 +1188,24 @@
 /obj/item/clothing/head/helmet/modern/firefighter/white
 	icon_state = "hardhat_white"
 	item_state = "hardhat_white"
-	worn_state = "hardhat_white"
 
 /obj/item/clothing/under/detective1
 	name = "shirt outfit"
 	desc = "A brown shirt with black pants."
 	icon_state = "detective1"
 	item_state = "detective1"
-	worn_state = "detective1"
 
 /obj/item/clothing/under/detective2
 	name = "shirt outfit"
 	desc = "A blue shirt with black pants."
 	icon_state = "detective2"
 	item_state = "detective2"
-	worn_state = "detective2"
 
 /obj/item/clothing/under/detective3
 	name = "shirt outfit"
 	desc = "A black shirt with grey pants."
 	icon_state = "detective3"
 	item_state = "detective3"
-	worn_state = "detective3"
 
 	/* Emergency Services Objects*/
 
@@ -1320,7 +1214,6 @@
 	desc = "A belt that can hold the standard issue gear of law enforcement officers."
 	icon_state = "gerbelt"
 	item_state = "security"
-	worn_state = "security"
 	storage_slots = 10
 	max_w_class = 3
 	max_storage_space = 24
@@ -1501,7 +1394,6 @@
 	desc = "A vest used by baily security units."
 	icon_state = "bailyvest"
 	item_state = "bailyvest"
-	worn_state = "bailyvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
 	armor = list(melee = 40, arrow = 95, gun = 82, energy = 30, bomb = 35, bio = 20, rad = FALSE)
 	value = 90
@@ -1517,7 +1409,6 @@
 	desc = "An advanced piece of armor that provides medium protection against kinetic and other projectiles. This armor is mostly used by the Chinese."
 	icon_state = "zgz1_armor"
 	item_state = "zgz1_armor"
-	worn_state = "zgz1_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 45, arrow = 90, gun = 78, energy = 50, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
@@ -1529,7 +1420,6 @@
 	desc = "An advanced piece of armor that provides medium protection against kinetic and other projectiles. This armor is mostly used by the Chinese medics."
 	icon_state = "zgz1med_armor"
 	item_state = "zgz1med_armor"
-	worn_state = "zgz1med_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 45, arrow = 90, gun = 78, energy = 50, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
@@ -1541,7 +1431,6 @@
 	desc = "An extremely advanced helmet used by the Chinese."
 	icon_state = "ft1_helmet"
 	item_state = "ft1_helmet"
-	worn_state = "ft1_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 35, arrow = 60, gun = 80, energy = 40, bomb = 30, bio = 30, rad = FALSE)
@@ -1552,7 +1441,6 @@
 	desc = "An extremely advanced helmet used by the Chinese medics."
 	icon_state = "ft1med_helmet"
 	item_state = "ft1med_helmet"
-	worn_state = "ft1med_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 35, arrow = 60, gun = 80, energy = 40, bomb = 30, bio = 30, rad = FALSE)
@@ -1564,7 +1452,6 @@
 	desc = "A standard bulletproof helmet, made of polyethylene."
 	icon_state = "tacticalhelmet"
 	item_state = "tacticalhelmet"
-	worn_state = "tacticalhelmet"
 	body_parts_covered = HEAD
 	armor = list(melee = 75, arrow = 95, gun = 93, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
@@ -1575,7 +1462,6 @@
 	desc = "A shirt with tracksuit pants."
 	item_state = "trackpants"
 	icon_state = "trackpants"
-	worn_state = "trackpants"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
 
 /obj/item/clothing/suit/storage/jacket/tracksuit
@@ -1583,7 +1469,6 @@
 	desc = "A sporty track suit."
 	item_state = "tracksuit"
 	icon_state = "tracksuit"
-	worn_state = "tracksuit"
 	body_parts_covered = UPPER_TORSO|ARMS
 
 /obj/item/clothing/under/tacti
@@ -1591,7 +1476,6 @@
 	desc = "A outfit used by tactical units."
 	icon_state = "tacti"
 	item_state = "tacti"
-	worn_state = "tacti"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
@@ -1601,56 +1485,47 @@
 	desc = "Assorted surplus cammo trousers with a nice hawaiian shirt for all your operating needs."
 	icon_state = "tacticool_hawaiian_blue"
 	item_state = "tacticool_hawaiian_blue"
-	worn_state = "tacticool_hawaiian_blue"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/tacticool_hawaiian/green
 	icon_state = "tacticool_hawaiian_green"
 	item_state = "tacticool_hawaiian_green"
-	worn_state = "tacticool_hawaiian_green"
 /obj/item/clothing/under/tacticool_hawaiian/orange
 	icon_state = "tacticool_hawaiian_orange"
 	item_state = "tacticool_hawaiian_orange"
-	worn_state = "tacticool_hawaiian_orange"
 /obj/item/clothing/under/tacticool_hawaiian/purple
 	icon_state = "tacticool_hawaiian_purple"
 	item_state = "tacticool_hawaiian_purple"
-	worn_state = "tacticool_hawaiian_purple"
 
 /obj/item/clothing/under/boomerwaffen1
 	name = "camouflage shirt with blue pants"
 	desc = "A camouflage shirt with blue pants."
 	icon_state = "boomerwaffen1"
 	item_state = "boomerwaffen1"
-	worn_state = "boomerwaffen1"
 
 /obj/item/clothing/under/boomerwaffen2
 	name = "tanktop with camouflage pants"
 	desc = "A tanktop with camouflage pants."
 	icon_state = "boomerwaffen2"
 	item_state = "boomerwaffen2"
-	worn_state = "boomerwaffen2"
 
 /obj/item/clothing/under/boomerwaffen3
 	name = "black shirt with camouflage pants"
 	desc = "A black shirt with camouflage pants."
 	icon_state = "boomerwaffen3"
 	item_state = "boomerwaffen3"
-	worn_state = "boomerwaffen3"
 
 /obj/item/clothing/under/modern_shaman
 	name = "modern shaman outfit"
 	desc = "A modern shaman outfit."
 	icon_state = "modern_shaman"
 	item_state = "modern_shaman"
-	worn_state = "modern_shaman"
 
 /obj/item/clothing/head/cap
 	name = "cap"
 	desc = "A generic visored cap."
 	icon_state = "blackcap"
 	item_state = "blackcap"
-	worn_state = "blackcap"
 	var/base_state = "blackcap"
 	var/flipped = FALSE
 
@@ -1669,18 +1544,15 @@
 	if (flipped)
 		icon_state = "[base_state]_flipped"
 		item_state = icon_state
-		worn_state = icon_state
 	else
 		icon_state = base_state
 		item_state = icon_state
-		worn_state = icon_state
 
 /obj/item/clothing/head/cap/tfc
 	name = "TFC Cap"
 	desc = "A red Texas Fried Chicken cap."
 	icon_state = "tfc"
 	item_state = "tfc"
-	worn_state = "tfc"
 	base_state = "tfc"
 
 /obj/item/clothing/head/cap/red
@@ -1688,7 +1560,6 @@
 	desc = "A red cap."
 	icon_state = "redcap"
 	item_state = "redcap"
-	worn_state = "redcap"
 	base_state = "redcap"
 
 /obj/item/clothing/head/cap/yellow
@@ -1696,7 +1567,6 @@
 	desc = "A yellow cap."
 	icon_state = "yellowcap"
 	item_state = "yellowcap"
-	worn_state = "yellowcap"
 	base_state = "yellowcap"
 
 /obj/item/clothing/head/cap/blue
@@ -1704,7 +1574,6 @@
 	desc = "A blue cap."
 	icon_state = "bluecap"
 	item_state = "bluecap"
-	worn_state = "bluecap"
 	base_state = "bluecap"
 
 /obj/item/clothing/head/cap/maga
@@ -1712,7 +1581,6 @@
 	desc = "A red hat with \"Make America Great Again\" on the front."
 	icon_state = "maga"
 	item_state = "maga"
-	worn_state = "maga"
 	base_state = "maga"
 
 /obj/item/clothing/head/cap/fbi
@@ -1720,7 +1588,6 @@
 	desc = "A black hat with FBI in white letters in the front."
 	icon_state = "fbi"
 	item_state = "fbi"
-	worn_state = "fbi"
 	base_state = "fbi"
 
 /obj/item/clothing/head/cap/atf
@@ -1728,7 +1595,6 @@
 	desc = "A dark navy hat with ATF in yellow letters in the front."
 	icon_state = "atf"
 	item_state = "atf"
-	worn_state = "atf"
 	base_state = "atf"
 
 /obj/item/clothing/head/cap/dea
@@ -1736,7 +1602,6 @@
 	desc = "A dark navy hat with DEA in yellow letters in the front."
 	icon_state = "dea"
 	item_state = "dea"
-	worn_state = "dea"
 	base_state = "dea"
 
 /obj/item/clothing/accessory/armor/nomads/iogsuit //too broad, this is meant to be some sort of extreme sports armorwear or something.
@@ -1744,7 +1609,6 @@
 	desc = "A heavy suit made of strong materials."
 	icon_state = "iogsuit"
 	item_state = "iogsuit"
-	worn_state = "iogsuit"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
 	armor = list(melee = 110, arrow = 100, gun = 130, energy = 50, bomb = 90, bio = 100, rad = FALSE)
 	value = 160
@@ -1757,7 +1621,6 @@
 	desc = "A strong helmet."
 	icon_state = "ioghelmet"
 	item_state = "ioghelmet"
-	worn_state = "ioghelmet"
 	body_parts_covered = HEAD
 	armor = list(melee = 95, arrow = 100, gun = 110, energy = 50, bomb = 90, bio = 45, rad = FALSE)
 	flags_inv = BLOCKHAIR
@@ -1768,7 +1631,6 @@
 	desc = "A strong helmet."
 	icon_state = "iogmask1"
 	item_state = "iogmask1"
-	worn_state = "iogmask1"
 	body_parts_covered = HEAD
 	armor = list(melee = 95, arrow = 100, gun = 100, energy = 50, bomb = 90, bio = 45, rad = 100)
 	flags_inv = BLOCKHAIR
@@ -1781,7 +1643,6 @@
 	desc = "A ramshackle suit of armor, reminiscence of medieval times."
 	icon_state = "scraparmor"
 	item_state = "scraparmor"
-	worn_state = "scraparmor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 70, arrow = 85, gun = 20, energy = 20, bomb = 50, bio = 10, rad = 40)
 	value = 50
@@ -1793,7 +1654,6 @@
 	desc = "A makeshift helmet made of random metal."
 	icon_state = "scraphelmet"
 	item_state = "scraphelmet"
-	worn_state = "scraphelmet"
 	body_parts_covered = HEAD|FACE
 	armor = list(melee = 70, arrow = 85, gun = 20, energy = 20, bomb = 50, bio = 10, rad = 40)
 	flags_inv = BLOCKHAIR
@@ -1806,7 +1666,6 @@
 	desc = "A british developed kevlar ballistics helmet."
 	icon_state = "mk6"
 	item_state = "mk6"
-	worn_state = "mk6"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 70, arrow = 67, gun = 73, energy = 18, bomb = 65, bio = 20, rad = FALSE)
@@ -1820,13 +1679,11 @@
 	else
 		if (adjusted)
 			item_state = "mk6"
-			worn_state = "mk6"
 			item_state_slots["slot_head"] = "mk6"
 			to_chat(usr, "<span class = 'danger'>you adjust your helmet's straps.</span>")
 			adjusted = FALSE
 		else if (!adjusted)
 			item_state = "mk6_straps"
-			worn_state = "mk6_straps"
 			item_state_slots["slot_head"] = "mk6_straps"
 			to_chat(usr, "<span class = 'danger'>you adjust your helmet's straps.</span>")
 			adjusted = TRUE
@@ -1837,7 +1694,6 @@
 	desc = "The standard Ukrainian Ground Forces camo uniform."
 	icon_state = "ukraine_acu"
 	item_state = "ukraine_acu"
-	worn_state = "ukraine_acu"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	var/rolled = FALSE
 
@@ -1849,7 +1705,6 @@
 	else
 		if (rolled)
 			item_state = "ukraine_acu"
-			worn_state = "ukraine_acu"
 			item_state_slots["w_uniform"] = "ukraine_acu"
 			to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 			rolled = FALSE
@@ -1857,7 +1712,6 @@
 			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ukraine_acu_rolled"
-			worn_state = "ukraine_acu_rolled"
 			item_state_slots["w_uniform"] = "ukraine_acu_rolled"
 			to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 			rolled = TRUE
@@ -1870,7 +1724,6 @@
 	desc = "An ACU pattern field cap, standard issue for the Ukrainian Ground Forces"
 	icon_state = "ukraine_cap"
 	item_state = "ukraine_cap"
-	worn_state = "ukraine_cap"
 
 
 /obj/item/clothing/under/russian
@@ -1878,7 +1731,6 @@
 	desc = "The standard Russian Federation Army camo uniform."
 	icon_state = "russian_emr"
 	item_state = "russian_emr"
-	worn_state = "russian_emr"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	var/rolled = FALSE
 
@@ -1889,14 +1741,12 @@
 		return
 	if (rolled)
 		item_state = "russian_emr"
-		worn_state = "russian_emr"
 		item_state_slots["w_uniform"] = "russian_emr"
 		to_chat(usr, SPAN_NOTICE("You roll down your uniform's sleeves."))
 		rolled = FALSE
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	else
 		item_state = "russian_emr_rolled"
-		worn_state = "russian_emr_rolled"
 		item_state_slots["w_uniform"] = "russian_emr_rolled"
 		to_chat(usr, SPAN_NOTICE("You roll up your uniform's sleeves."))
 		rolled = TRUE
@@ -1911,14 +1761,12 @@
 		return
 	if (rolled)
 		item_state = "russian_emr_vdv"
-		worn_state = "russian_emr_vdv"
 		item_state_slots["w_uniform"] = "russian_emr_vdv"
 		to_chat(usr, SPAN_NOTICE("You roll down your uniform's sleeves."))
 		rolled = FALSE
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	else
 		item_state = "russian_emr_vdv_rolled"
-		worn_state = "russian_emr_vdv_rolled"
 		item_state_slots["w_uniform"] = "russian_emr_vdv_rolled"
 		to_chat(usr, SPAN_NOTICE("You roll up your uniform's sleeves."))
 		rolled = TRUE
@@ -1931,7 +1779,6 @@
 	desc = "The standard Russian Federation Army camo uniform."
 	icon_state = "russian_emr_vdv"
 	item_state = "russian_emr_vdv"
-	worn_state = "russian_emr_vdv"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	rolled = FALSE
 
@@ -1940,7 +1787,6 @@
 	desc = "The standard Russian Federation Army camo uniform."
 	icon_state = "russian_emr_desert"
 	item_state = "russian_emr_desert"
-	worn_state = "russian_emr_desert"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	var/rolled = FALSE
 
@@ -1952,7 +1798,6 @@
 	else
 		if (rolled)
 			item_state = "russian_emr_desert"
-			worn_state = "russian_emr_desert"
 			item_state_slots["w_uniform"] = "russian_emr_desert"
 			to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 			rolled = FALSE
@@ -1960,7 +1805,6 @@
 			update_clothing_icon()
 		else if (!rolled)
 			item_state = "russian_emr_desert_rolled"
-			worn_state = "russian_emr_desert_rolled"
 			item_state_slots["w_uniform"] = "russian_emr_desert_rolled"
 			to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 			rolled = TRUE
@@ -1975,7 +1819,6 @@
 	desc = "Standard Uniform of the syrian army."
 	icon_state = "syr_army"
 	item_state = "syr_army"
-	worn_state = "syr_army"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	var/rolled = FALSE
 
@@ -1987,7 +1830,6 @@
 	else
 		if (rolled)
 			item_state = "syr_army"
-			worn_state = "syr_army"
 			item_state_slots["w_uniform"] = "syr_army"
 			to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 			rolled = FALSE
@@ -1995,7 +1837,6 @@
 			update_clothing_icon()
 		else if (!rolled)
 			item_state = "syr_army_rolled"
-			worn_state = "syr_army_rolled"
 			item_state_slots["w_uniform"] = "syr_army_rolled"
 			to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 			rolled = TRUE
@@ -2008,7 +1849,6 @@
 	desc = "Standard uniform used by the FSA forces."
 	icon_state = "salv_army"
 	item_state = "salv_army"
-	worn_state = "salv_army"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	var/rolled = FALSE
 
@@ -2020,7 +1860,6 @@
 	else
 		if (rolled)
 			item_state = "salv_army"
-			worn_state = "salv_army"
 			item_state_slots["w_uniform"] = "salv_army"
 			to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 			rolled = FALSE
@@ -2028,7 +1867,6 @@
 			update_clothing_icon()
 		else if (!rolled)
 			item_state = "salv_army_rolled"
-			worn_state = "salv_army_rolled"
 			item_state_slots["w_uniform"] = "salv_army_rolled"
 			to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 			rolled = TRUE
@@ -2041,14 +1879,12 @@
 	desc = "An USEC pattern field cap, standard issue for USEC PMCs"
 	icon_state = "usec_cap"
 	item_state = "usec_cap"
-	worn_state = "usec_cap"
 
 /obj/item/clothing/head/cap/bear
 	name = "BEAR field cap"
 	desc = "A BEAR pattern field cap, standard issue for BEAR PMCs"
 	icon_state = "bear_cap"
 	item_state = "bear_cap"
-	worn_state = "bear_cap"
 
 //african militias
 /obj/item/clothing/under/warband1
@@ -2056,7 +1892,6 @@
 	desc = "A pair of jeans secured by suspenders."
 	icon_state = "warband1"
 	item_state = "warband1"
-	worn_state = "warband1"
 	body_parts_covered =LOWER_TORSO|LEGS
 
 /obj/item/clothing/under/warband2
@@ -2064,7 +1899,6 @@
 	desc = "A mix of woodland camoflage trousers and a white sleeveless shirt."
 	icon_state = "warband2"
 	item_state = "warband2"
-	worn_state = "warband2"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 //modern winter jackets
@@ -2073,7 +1907,6 @@
 	desc = "A coat in Finnish M05 snow pattern."
 	icon_state = "fur_jacket7"
 	item_state = "fur_jacket7"
-	worn_state = "fur_jacket7"
 	specific = TRUE
 	colorn = 7
 
@@ -2082,7 +1915,6 @@
 	desc = "A coat in Ukrainian winter pattern."
 	icon_state = "fur_jacket8"
 	item_state = "fur_jacket8"
-	worn_state = "fur_jacket8"
 	specific = TRUE
 	colorn = 8
 
@@ -2091,7 +1923,6 @@
 	desc = "A coat in Russian 'Klyaksa' snow pattern."
 	icon_state = "fur_jacket10"
 	item_state = "fur_jacket10"
-	worn_state = "fur_jacket10"
 	specific = TRUE
 	colorn = 10
 
@@ -2101,7 +1932,6 @@
 	desc = "A coat in German Schneetarn pattern."
 	icon_state = "fur_jacket9"
 	item_state = "fur_jacket9"
-	worn_state = "fur_jacket9"
 	specific = TRUE
 	colorn = 9
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2112,7 +1942,6 @@
 	desc = "A canadian pattern uniform"
 	icon_state = "cad_pat"
 	item_state = "cad_pat"
-	worn_state = "cad_pat"
 	var/base_icon = "cad_pat"
 	var/rolled = FALSE
 	var/stripped = FALSE
@@ -2122,7 +1951,6 @@
 	desc = "A canadian pattern uniform"
 	icon_state = "cad_pat_arid"
 	item_state = "cad_pat_arid"
-	worn_state = "cad_pat_arid"
 	rolled = FALSE
 	stripped = FALSE
 	base_icon = "cad_pat_arid"
@@ -2132,7 +1960,6 @@
 	desc = "A canadian pattern uniform"
 	icon_state = "cad_pat_winter"
 	item_state = "cad_pat_winter"
-	worn_state = "cad_pat_winter"
 	rolled = FALSE
 	stripped = FALSE
 	base_icon = "cad_pat_winter"
@@ -2145,7 +1972,6 @@
 	else
 		if (!stripped)
 			if (rolled)
-				worn_state = "[base_icon]"
 				item_state = "[base_icon]"
 				icon_state = "[base_icon]"
 				item_state_slots["w_uniform"] = "[base_icon]"
@@ -2155,7 +1981,6 @@
 				update_clothing_icon()
 				return
 			if (!rolled)
-				worn_state = "[base_icon]_rolled"
 				item_state = "[base_icon]_rolled"
 				icon_state = "[base_icon]_rolled"
 				item_state_slots["w_uniform"] = "[base_icon]_rolled"
@@ -2166,7 +1991,6 @@
 				return
 		else
 			if (rolled)
-				worn_state = "[base_icon]_stripped"
 				item_state = "[base_icon]_stripped"
 				icon_state = "[base_icon]_stripped"
 				item_state_slots["w_uniform"] = "[base_icon]_stripped"
@@ -2176,7 +2000,6 @@
 				update_clothing_icon()
 				return
 			else
-				worn_state = "[base_icon]_stripped"
 				item_state = "[base_icon]_stripped"
 				icon_state = "[base_icon]_stripped"
 				item_state_slots["w_uniform"] = "[base_icon]_stripped"
@@ -2193,7 +2016,6 @@
 	else
 		if (stripped)
 			if (!rolled)
-				worn_state = "[base_icon]"
 				item_state = "[base_icon]"
 				icon_state = "[base_icon]"
 				item_state_slots["w_uniform"] = "[base_icon]"
@@ -2203,7 +2025,6 @@
 				update_clothing_icon()
 				return
 			else
-				worn_state = "[base_icon]_rolled"
 				item_state = "[base_icon]_rolled"
 				icon_state = "[base_icon]_rolled"
 				item_state_slots["cad_pat_rolled"] = "[base_icon]_rolled"
@@ -2214,7 +2035,6 @@
 				return
 		else
 			if (!rolled)
-				worn_state = "[base_icon]_stripped"
 				item_state = "[base_icon]_stripped"
 				icon_state = "[base_icon]_stripped"
 				item_state_slots["w_uniform"] = "[base_icon]_stripped"
@@ -2226,7 +2046,6 @@
 				update_clothing_icon()
 				return
 			else
-				worn_state = "[base_icon]_stripped"
 				item_state = "[base_icon]_stripped"
 				icon_state = "[base_icon]_stripped"
 				item_state_slots["w_uniform"] = "[base_icon]_stripped"
@@ -2247,19 +2066,16 @@
 	desc = "A typical CAF CADPAT Combat Helmet."
 	icon_state = "cg634"
 	item_state = "cg634"
-	worn_state = "cg634"
 	body_parts_covered = HEAD
 	armor = list(melee = 75, arrow = 95, gun = 93, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/modern/cg634/arid
 	icon_state = "cg634_arid"
 	item_state = "cg634_arid"
-	worn_state = "cg634_arid"
 
 /obj/item/clothing/head/helmet/modern/cg634/winter
 	icon_state = "cg634_winter"
 	item_state = "cg634_winter"
-	worn_state = "cg634_winter"
 
 /obj/item/clothing/accessory/storage/webbing/caf_tacvest
 	name = "CAF Tacvest"
@@ -2273,36 +2089,30 @@
 
 /obj/item/clothing/accessory/storage/webbing/caf_tacvest/arid
 	icon_state = "caf_tacvest_arid"
-	worn_state = "caf_tacvest_arid"
 
 /obj/item/clothing/accessory/storage/webbing/caf_tacvest/winter
 	icon_state = "caf_tacvest_winter"
-	worn_state = "caf_tacvest_winter"
 
 /obj/item/clothing/head/jungle_hat/caf
 	name = "cadpat tilly"
 	desc = "A wide brim, soft sun hat."
 	icon_state = "tilly_cadpat"
 	item_state = "tilly_cadpat"
-	worn_state = "tilly_cadpat"
 	body_parts_covered = HEAD
 
 /obj/item/clothing/head/jungle_hat/caf/arid
 	icon_state = "tilly_cadpat_arid"
 	item_state = "tilly_cadpat_arid"
-	worn_state = "tilly_cadpat_arid"
 
 /obj/item/clothing/head/jungle_hat/caf/winter
 	icon_state = "tilly_cadpat_winter"
 	item_state = "tilly_cadpat_winter"
-	worn_state = "tilly_cadpat_winter"
 
 /obj/item/clothing/head/helmet/modern/mechanical
 	name = "Mechanical Helmet"
 	desc = "A mechanical steel helmet."
 	icon_state = "mechanicalhelmet"
 	item_state = "mechanicalhelmet"
-	worn_state = "mechanicalhelmet"
 	body_parts_covered = HEAD
 	armor = list(melee = 175, arrow = 99, gun = 120, energy = 42, bomb = 185, bio = 35, rad = FALSE)
 
@@ -2311,7 +2121,6 @@
 	desc = "A thick, thrown together iron armor, covering most of the body."
 	icon_state = "mechanicalarmor"
 	item_state = "mechanicalarmor"
-	worn_state = "mechanicalarmor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 85, arrow = 150, gun = 150, energy = 55, bomb = 70, bio = 30, rad = FALSE)
 	value = 150
@@ -2323,14 +2132,12 @@
 	desc = "The standard modern Chinese military uniform."
 	icon_state = "type07"
 	item_state = "type07"
-	worn_state = "type07"
 
 /obj/item/clothing/head/helmet/modern/qgf03
 	name = "QGF03 helmet"
 	desc = "A modern chinese combat helmet."
 	icon_state = "qgf03"
 	item_state = "qgf03"
-	worn_state = "qgf03"
 	body_parts_covered = HEAD
 	armor = list(melee = 65, arrow = 80, gun = 65, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 
@@ -2339,7 +2146,6 @@
 	desc = "A pair of light pants with a red floral shirt."
 	icon_state = "cartel1"
 	item_state = "cartel1"
-	worn_state = "cartel1"
 
 /obj/item/clothing/head/black_beanie
 	name = "black beanie"
@@ -2353,7 +2159,6 @@
 	desc = "A DPM variant camo uniform used by the Dutch Army."
 	icon_state = "dutch_dpm"
 	item_state = "dutch_dpm"
-	worn_state = "dutch_dpm"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/head/helmet/modern/m95_dpm
@@ -2361,7 +2166,6 @@
 	desc = "A PASGT derived helmet used by the Dutch Armed Forces. This one is in DPM pattern."
 	icon_state = "m95_dpm"
 	item_state = "m95_dpm"
-	worn_state = "m95_dpm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 62, arrow = 75, gun = 55, energy = 15, bomb = 55, bio = 20, rad = FALSE)

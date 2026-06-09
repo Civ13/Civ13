@@ -57,7 +57,6 @@
 		if (toggled)
 			item_state = "sterile"
 			icon_state = "sterile"
-			worn_state = "sterile"
 			item_state_slots["slot_mask"] = "sterile"
 			to_chat(usr, "<span class = 'danger'>You put up your mask.</span>")
 			toggled = FALSE
@@ -66,7 +65,6 @@
 			body_parts_covered = null
 			item_state = "sterile_down"
 			icon_state = "sterile_down"
-			worn_state = "sterile_down"
 			item_state_slots["slot_mask"] = "sterile_down"
 			to_chat(usr, "<span class = 'danger'>You put down your mask flaps.</span>")
 			toggled = TRUE

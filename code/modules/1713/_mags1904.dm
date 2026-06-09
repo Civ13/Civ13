@@ -200,7 +200,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "Maxim ammo belt"
 	icon_state = "maximbelt"
 	attached_icon_state = "belt_"
-	worn_state = "maximbelt"
 	mag_type = MAGAZINE
 	caliber = "a762x54_weak"
 	w_class = ITEM_SIZE_LARGE

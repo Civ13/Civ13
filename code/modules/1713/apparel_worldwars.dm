@@ -3,7 +3,6 @@
 	desc = "A German coat."
 	icon_state = "germtrench"
 	item_state = "germtrench"
-	worn_state = "germtrench"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 20)
@@ -15,7 +14,6 @@
 	desc = "A French trench coat, it rhymes!"
 	icon_state = "frenchtrench"
 	item_state = "frenchtrench"
-	worn_state = "frenchtrench"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
@@ -27,7 +25,6 @@
 	desc = "A British coat."
 	icon_state = "britishtrench"
 	item_state = "britishtrench"
-	worn_state = "britishtrench"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 20)
@@ -61,7 +58,6 @@
 	desc = "An iconic German Stahlhelm, widely used by soldiers in battle."
 	icon_state = "stahlhelm_old"
 	item_state = "stahlhelm_old"
-	worn_state = "stahlhelm_old"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 35, gun = 10, energy = 15, bomb = 45, bio = 20, rad = FALSE)
@@ -71,7 +67,6 @@
 	desc = "A Greek Adrian Helmet, commonly worn by soldiers in battle."
 	icon_state = "adrian_greek"
 	item_state = "adrian_greek"
-	worn_state = "adrian_greek"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -85,7 +80,6 @@
 	if (strap)
 		icon_state = "adrian_greek"
 		item_state = "adrian_greek"
-		worn_state = "adrian_greek"
 		body_parts_covered = HEAD
 		item_state_slots["slot_wear_head"] = "adrian_greek"
 		usr.visible_message("<span class = 'notice'>[usr] puts down their helmet's strap.</span>", "<span class = 'notice'>You put down your helmet's strap.</span>")
@@ -95,7 +89,6 @@
 	else if (!strap)
 		icon_state = "adrian_greek_strap"
 		item_state = "adrian_greek_strap"
-		worn_state = "adrian_greek_strap"
 		body_parts_covered = HEAD
 		item_state_slots["slot_wear_head"] = "adrian_greek_strap"
 		usr.visible_message("<span class = 'notice'>[usr] puts up their helmet's strap.</span>", "<span class = 'notice'>You put up your helmet's strap.</span>")
@@ -108,7 +101,6 @@
 	desc = "An iconic M15 Adrian Helmet, widely used by French soldiers."
 	icon_state = "adrian_standard"
 	item_state = "adrian_standard"
-	worn_state = "adrian_standard"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -122,7 +114,6 @@
 	if (strap)
 		icon_state = "adrian_standard"
 		item_state = "adrian_standard"
-		worn_state = "adrian_standard"
 		body_parts_covered = HEAD
 		item_state_slots["slot_wear_head"] = "adrian_standard"
 		usr.visible_message("<span class = 'notice'>[usr] puts down their helmet's strap.</span>", "<span class = 'notice'>You put down your helmet's strap.</span>")
@@ -132,7 +123,6 @@
 	else if (!strap)
 		icon_state = "adrian_standard_strap"
 		item_state = "adrian_standard_strap"
-		worn_state = "adrian_standard_strap"
 		body_parts_covered = HEAD
 		item_state_slots["slot_wear_head"] = "adrian_standard_strap"
 		usr.visible_message("<span class = 'notice'>[usr] puts up their helmet's strap.</span>", "<span class = 'notice'>You put up your helmet's strap.</span>")
@@ -145,21 +135,18 @@
 	desc = "An M15 Greek Adrian Helmet, known for its distinctive design."
 	icon_state = "adrian_greek"
 	item_state = "adrian_greek"
-	worn_state = "adrian_greek"
 
 /obj/item/clothing/head/helmet/ww/adrian/greekmedic
 	name = "Medic M15 Adrian helmet"
 	desc = "An M15 Greek Adrian Helmet, specially designed for medics."
 	icon_state = "m26_medic"
 	item_state = "m26_medic"
-	worn_state = "m26_medic"
 
 /obj/item/clothing/head/helmet/ww/adriansoviet
 	name = "Russian M15 Adrian helmet"
 	desc = "The Adrian helmet but Soviet, used by the red army."
 	icon_state = "adrian_russian"
 	item_state = "adrian_russian"
-	worn_state = "adrian_russian"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -173,7 +160,6 @@
 	if (strap)
 		icon_state = "adrian_russian"
 		item_state = "adrian_russian"
-		worn_state = "adrian_russian"
 		body_parts_covered = HEAD 
 		item_state_slots["slot_wear_head"] = "adrian_standard" 
 		usr.visible_message("<span class = 'notice'>[usr] puts down their helmet's strap.</span>", "<span class = 'notice'>You put down your helmet's strap.</span>")
@@ -183,7 +169,6 @@
 	else if (!strap)
 		icon_state = "adrian_russian_strap"
 		item_state = "adrian_russian_strap"
-		worn_state = "adrian_russian_strap"
 		body_parts_covered = HEAD
 		item_state_slots["slot_wear_head"] = "adrian_standard_strap"
 		usr.visible_message("<span class = 'notice'>[usr] puts up their helmet's strap.</span>", "<span class = 'notice'>You put up your helmet's strap.</span>")
@@ -196,7 +181,6 @@
 	desc = "An M15 Adrian Helmet, specially outfitted for medics."
 	icon_state = "m15_adrian_m"
 	item_state = "m15_adrian_m"
-	worn_state = "m15_adrian_m"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -206,7 +190,6 @@
 	desc = "An iconic M26 Adrian Helmet, widely used during its time."
 	icon_state = "m26_adrian"
 	item_state = "m26_adrian"
-	worn_state = "m26_adrian"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -220,7 +203,6 @@
 	if (strap)
 		icon_state = "m26_adrian"
 		item_state = "m26_adrian"
-		worn_state = "m26_adrian"
 		body_parts_covered = HEAD
 		item_state_slots["slot_wear_head"] = "m26_adrian"
 		usr.visible_message("<span class = 'notice'>[usr] puts down their helmet's strap.</span>", "<span class = 'notice'>You put down your helmet's strap.</span>")
@@ -230,7 +212,6 @@
 	else if (!strap)
 		icon_state = "m26_adrian_s"
 		item_state = "m26_adrian_s"
-		worn_state = "m26_adrian_s"
 		body_parts_covered = HEAD
 		item_state_slots["slot_wear_head"] = "m26_adrian_s"
 		usr.visible_message("<span class = 'notice'>[usr] puts up their helmet's strap.</span>", "<span class = 'notice'>You put up your helmet's strap.</span>")
@@ -243,7 +224,6 @@
 	desc = "An iconic M26 Adrian Helmet, specially designed for medics."
 	icon_state = "m26_medic"
 	item_state = "m26_medic"
-	worn_state = "m26_medic"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -253,7 +233,6 @@
 	desc = "A classic British helmet, this one is painted in duck egg blue."
 	icon_state = "brodie_mk1_deb"
 	item_state = "brodie_mk1_deb"
-	worn_state = "brodie_mk1_deb"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -263,42 +242,36 @@
 	desc = "A classic British helmet, this one is painted in apple green."
 	icon_state = "brodie_mk1_ag"
 	item_state = "brodie_mk1_ag"
-	worn_state = "brodie_mk1_ag"
 
 /obj/item/clothing/head/helmet/ww/mk2brodieog
 	name = "Mk2 Brodie Helmet"
 	desc = "An iconic British helmet, this one is painted in olive green."
 	icon_state = "brodie_mk2_og"
 	item_state = "brodie_mk2_og"
-	worn_state = "brodie_mk2_og"
 
 /obj/item/clothing/head/helmet/ww/mk2brodiemedic
 	name = "Mk2 Brodie Medic Helmet"
 	desc = "A specialized British helmet for medical personnel."
 	icon_state = "brodie_mk2_medic"
 	item_state = "brodie_mk2_medic"
-	worn_state = "brodie_mk2_medic"
 
 /obj/item/clothing/head/helmet/ww/mk2brodieirish
 	name = "Irish Mk2 Brodie Helmet"
 	desc = "A variant of the Mk2 Brodie Helmet used by the Irish Royal Rifles."
 	icon_state = "brodie_mk2_irish"
 	item_state = "brodie_mk2_irish"
-	worn_state = "brodie_mk2_irish"
 
 /obj/item/clothing/head/helmet/ww/mk2brodiegnet
 	name = "Mk2 Brodie Helmet with green netting"
 	desc = "A British helmet equipped with green netting for additional camouflage."
 	icon_state = "brodie_mk2_netgreen"
 	item_state = "brodie_mk2_netgreen"
-	worn_state = "brodie_mk2_netgreen"
 
 /obj/item/clothing/head/helmet/ww/mk2brodietnet
 	name = "Mk2 Brodie Helmet with tan netting"
 	desc = "A British helmet equipped with tan netting for additional camouflage."
 	icon_state = "brodie_mk2_nettan"
 	item_state = "brodie_mk2_nettan"
-	worn_state = "brodie_mk2_nettan"
 
 /obj/item/clothing/head/helmet/ww/mk2brodieog/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
@@ -332,21 +305,18 @@
 	desc = "A British Army helmet with tan netting and foliage for camouflage."
 	icon_state = "brodie_mk2_nettanf"
 	item_state = "brodie_mk2_nettanf"
-	worn_state = "brodie_mk2_nettanf"
 
 /obj/item/clothing/head/helmet/ww/mk2brodiegreennetf
 	name = "Camouflaged Mk2 Brodie Helmet"
 	desc = "A British Army helmet with green netting and foliage for camouflage."
 	icon_state = "brodie_mk2_netgreenf"
 	item_state = "brodie_mk2_netgreenf"
-	worn_state = "brodie_mk2_netgreenf"
 
 /obj/item/clothing/head/helmet/ww/pickelhaube2
 	name = "Leather pickelhaube"
 	desc = "A typical pointed helmet."
 	icon_state = "pickelhaube2"
 	item_state = "pickelhaube2"
-	worn_state = "pickelhaube2"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 30, arrow = 30, gun = 3, energy = 10, bomb = 35, bio = 20, rad = FALSE)
@@ -358,7 +328,6 @@
 	desc = "Early 20th century pilot goggles." //Probably shouldn't belong in here [apparel_worldwars.dm] then, more like apparel_earlymodern.dm
 	icon_state = "biker"
 	item_state = "biker"
-	worn_state = "biker"
 
 /* GULAG */
 
@@ -367,14 +336,12 @@
 	desc = "A worn out GULAG prisoner outfit."
 	icon_state = "gulagprisoner"
 	item_state = "gulagprisoner"
-	worn_state = "gulagprisoner"
 
 /obj/item/clothing/under/ww2/bagne_prisoner
 	name = "Bagne prisoner clothing"
 	desc = "A worn out prisoner outfit, commonly used by prisoners of the French Bagnes."
 	icon_state = "bagneprisoner"
 	item_state = "bagneprisoner"
-	worn_state = "bagneprisoner"
 
 ////////////////////////////////////////////////////////////////////////
 ///////////////////////////////WW2 JAPS/////////////////////////////////
@@ -387,7 +354,6 @@
 	desc = "An \"Adrian\" style Japanese helmet, the top having a cherry blossom shaped vent."
 	icon_state = "sakura_helm"
 	item_state = "sakura_helm"
-	worn_state = "sakura_helm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 33, arrow = 25, gun = 8, energy = 15, bomb = 38, bio = 20, rad = FALSE)
@@ -397,7 +363,6 @@
 	desc = "This Japanese helm is crafted in the classic rounded steel design, commonly worn by frontlining soldiers."
 	icon_state = "japhelm"
 	item_state = "japhelm"
-	worn_state = "japhelm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
@@ -413,7 +378,6 @@
 		if (has_headband && !has_havelock)
 			item_state = "japhelm"
 			icon_state = "japhelm"
-			worn_state = "japhelm"
 			item_state_slots["slot_w_uniform"] = "japhelm"
 			usr.visible_message("<span class='notice'>[usr] removes the headband from their helmet.</span>", "<span class='notice'>You remove the headband from your helmet.</span>")
 			has_headband = FALSE
@@ -422,7 +386,6 @@
 		else if (has_havelock && !has_headband)
 			item_state = "japhelm"
 			icon_state = "japhelm"
-			worn_state = "japhelm"
 			item_state_slots["slot_w_uniform"] = "japhelm"
 			usr.visible_message("<span class='notice'>[usr] removes the havelocks from their helmet.</span>", "<span class='notice'>You remove the havelocks from your helmet.</span>")
 			has_havelock = FALSE
@@ -431,7 +394,6 @@
 		else if (has_headband && has_havelock)
 			item_state = "japhelm"
 			icon_state = "japhelm"
-			worn_state = "japhelm"
 			item_state_slots["slot_w_uniform"] = "japhelm"
 			usr.visible_message("<span class='notice'>[usr] removes the havelocks and the headband from their helmet.</span>", "<span class='notice'>You remove the havelocks and the headband from your helmet.</span>")
 			has_havelock = FALSE
@@ -442,7 +404,6 @@
 		else if (!has_headband && !has_havelock)
 			item_state = "japhelm"
 			icon_state = "japhelm"
-			worn_state = "japhelm"
 			item_state_slots["slot_w_uniform"] = "japhelm"
 			to_chat(usr, SPAN_WARNING("You have nothing attached to your helmet!"))
 			update_clothing_icon()
@@ -458,11 +419,9 @@
 		if(src.has_havelock == TRUE)
 			src.item_state = "japhelm_bandana_extended"
 			src.icon_state = "japhelm_bandana_extended"
-			src.worn_state = "japhelm_bandana_extended"
 		else
 			src.item_state = "japhelm_bandana"
 			src.icon_state = "japhelm_bandana"
-			src.worn_state = "japhelm_bandana"
 		update_clothing_icon()
 		return
 	if (istype(W, /obj/item/havelock) && !has_havelock)
@@ -473,11 +432,9 @@
 		if(src.has_headband == TRUE)
 			src.item_state = "japhelm_bandana_extended"
 			src.icon_state = "japhelm_bandana_extended"
-			src.worn_state = "japhelm_bandana_extended"
 		else
 			src.item_state = "japhelm_extended"
 			src.icon_state = "japhelm_extended"
-			src.worn_state = "japhelm_extended"
 		update_clothing_icon()
 		return
 
@@ -487,7 +444,6 @@
 	desc = "The Japanese SNLF helm is crafted in the classic rounded steel design, this helmet is standard issue for Japanese soldiers of the Special Naval Landing Forces."
 	icon_state = "japhelm_snlf"
 	item_state = "japhelm_snlf"
-	worn_state = "japhelm_snlf"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
@@ -502,7 +458,6 @@
 		if (has_havelock)
 			item_state = "japhelm_snlf"
 			icon_state = "japhelm_snlf"
-			worn_state = "japhelm_snlf"
 			item_state_slots["slot_w_uniform"] = "japhelm_snlf"
 			usr.visible_message("<span class='notice'>[usr] removes the havelocks from their helmet.</span>", "<span class='notice'>You remove the havelocks from your helmet.</span>")
 			has_havelock = FALSE
@@ -511,7 +466,6 @@
 		else
 			item_state = "japhelm_snlf"
 			icon_state = "japhelm_snlf"
-			worn_state = "japhelm_snlf"
 			item_state_slots["slot_w_uniform"] = "japhelm_snlf"
 			to_chat(usr, SPAN_WARNING("You have nothing attached to the helmet!"))
 			update_clothing_icon()
@@ -525,7 +479,6 @@
 		qdel(W)
 		src.item_state = "japhelm_snlf_extended"
 		src.icon_state = "japhelm_snlf_extended"
-		src.worn_state = "japhelm_snlf_extended"
 		update_clothing_icon()
 		return
 
@@ -536,7 +489,6 @@
 	desc = "The Japanese medical helmet is crafted in the typical rounded steel design, this helmet bears the distinguishing marks of a medic, signifying its use by Japanese medical personnel"
 	icon_state = "japhelm_medic"
 	item_state = "japhelm_medic"
-	worn_state = "japhelm_medic"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
@@ -551,7 +503,6 @@
 		if (has_havelock)
 			item_state = "japhelm_medic"
 			icon_state = "japhelm_medic"
-			worn_state = "japhelm_medic"
 			item_state_slots["slot_w_uniform"] = "japhelm_medic"
 			usr.visible_message("<span class='notice'>[usr] removes the havelocks from their helmet.</span>", "<span class='notice'>You remove the havelocks from your helmet.</span>")
 			has_havelock = FALSE
@@ -560,7 +511,6 @@
 		else
 			item_state = "japhelm_medic"
 			icon_state = "japhelm_medic"
-			worn_state = "japhelm_medic"
 			item_state_slots["slot_w_uniform"] = "japhelm_medic"
 			to_chat(usr, SPAN_WARNING("You have nothing attached to the helmet!"))
 			update_clothing_icon()
@@ -574,7 +524,6 @@
 		qdel(W)
 		src.item_state = "japhelm_med_extended"
 		src.icon_state = "japhelm_med_extended"
-		src.worn_state = "japhelm_med_extended"
 		update_clothing_icon()
 		return
 
@@ -583,7 +532,6 @@
 	desc = "The Japanese tanker helmet is crafted from a blend of sturdy meshes and tough leather, this helmet boasts a typical rounded steel design, providing reliable protection for Japanese tank crews."
 	icon_state = "japtanker"
 	item_state = "japtanker"
-	worn_state = "japtanker"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 20, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -599,7 +547,6 @@
 	desc = "A cap worn by the Imperial Japanese Army."
 	icon_state = "ww2_japcap"
 	item_state = "ww2_japcap"
-	worn_state = "ww2_japcap"
 	var/has_havelock = FALSE
 
 /obj/item/clothing/head/ww2/japcap/verb/strip_accessories(mob/user as mob)
@@ -611,7 +558,6 @@
 		if (has_havelock)
 			item_state = "ww2_japcap"
 			icon_state = "ww2_japcap"
-			worn_state = "ww2_japcap"
 			item_state_slots["slot_w_uniform"] = "ww2_japcap"
 			usr.visible_message("<span class='danger'>[usr] removes the havelocks from their cap.</span>", "<span class='danger'>You remove the havelocks from your cap.</span>")
 			has_havelock = FALSE
@@ -620,7 +566,6 @@
 		else
 			item_state = "ww2_japcap"
 			icon_state = "ww2_japcap"
-			worn_state = "ww2_japcap"
 			item_state_slots["slot_w_uniform"] = "ww2_japcap"
 			to_chat(usr, SPAN_WARNING("You have nothing attached to the cap!"))
 			update_clothing_icon()
@@ -634,7 +579,6 @@
 		qdel(W)
 		src.item_state = "ww2_japcap_extended"
 		src.icon_state = "ww2_japcap_extended"
-		src.worn_state = "ww2_japcap_extended"
 		update_clothing_icon()
 		return
 
@@ -643,7 +587,6 @@
 	desc = "A cap worn by Japanese officers."
 	icon_state = "ww2_japoffcap"
 	item_state = "ww2_japoffcap"
-	worn_state = "ww2_japoffcap"
 	var/has_havelock = FALSE
 
 /obj/item/clothing/head/ww2/japoffcap/verb/strip_accessories(mob/user as mob)
@@ -655,7 +598,6 @@
 		if (has_havelock)
 			item_state = "ww2_japoffcap"
 			icon_state = "ww2_japoffcap"
-			worn_state = "ww2_japoffcap"
 			item_state_slots["slot_w_uniform"] = "ww2_japoffcap"
 			usr.visible_message("<span class='notice'>[usr] removes the havelocks from their cap.</span>", "<span class='notice'>You remove the havelocks from your cap.</span>") // Removing here has no sound, and some more havelocks down the code.
 			has_havelock = FALSE
@@ -664,7 +606,6 @@
 		else
 			item_state = "ww2_japoffcap"
 			icon_state = "ww2_japoffcap"
-			worn_state = "ww2_japoffcap"
 			item_state_slots["slot_w_uniform"] = "ww2_japoffcap"
 			to_chat(usr, SPAN_WARNING("You have nothing attached to the cap!"))
 			update_clothing_icon()
@@ -677,7 +618,6 @@
 		qdel(W)
 		src.item_state = "ww2_japoffcap_extended"
 		src.icon_state = "ww2_japoffcap_extended"
-		src.worn_state = "ww2_japoffcap_extended"
 		update_clothing_icon()
 		return
 
@@ -686,28 +626,24 @@
 	desc = "A cap worn by Japanese officers in their navy."
 	icon_state = "ww2_japcap_navy_officer"
 	item_state = "ww2_japcap_navy_officer"
-	worn_state = "ww2_japcap_navy_officer"
 
 /obj/item/clothing/head/ww2/japcap_navy_po
 	name = "Japanese petty officer cap"
 	desc = "A cap worn by Japanese petty officers in their navy."
 	icon_state = "ww2_japcap_navy"
 	item_state = "ww2_japcap_navy"
-	worn_state = "ww2_japcap_navy"
 
 /obj/item/clothing/head/ww2/japcap_navy_cap
 	name = "Japanese sailor cap"
 	desc = "A cap worn by Japanese sailors."
 	icon_state = "japanese_sailor_hat"
 	item_state = "japanese_sailor_hat"
-	worn_state = "japanese_sailor_hat"
 
 /obj/item/clothing/head/ww2/japcap_snlf
 	name = "Japanese cap"
 	desc = "A cap worn by the Imperial Japanese Army, especially those bearing the rank of SNLF."
 	icon_state = "ww2_japcap_snlf"
 	item_state = "ww2_japcap_snlf"
-	worn_state = "ww2_japcap_snlf"
 	var/has_havelock = FALSE
 
 /obj/item/clothing/head/ww2/japcap_snlf/verb/strip_accessories(mob/user as mob)
@@ -719,7 +655,6 @@
 		if (has_havelock)
 			item_state = "ww2_japcap_snlf"
 			icon_state = "ww2_japcap_snlf"
-			worn_state = "ww2_japcap_snlf"
 			item_state_slots["slot_w_uniform"] = "ww2_japcap_snlf"
 			usr.visible_message("<span class='notice'>[usr] removes the havelocks from their cap.</span>", "<span class='notice'>You remove the havelocks from your cap.</span>")
 			has_havelock = FALSE
@@ -728,7 +663,6 @@
 		else
 			item_state = "ww2_japcap_snlf"
 			icon_state = "ww2_japcap_snlf"
-			worn_state = "ww2_japcap_snlf"
 			item_state_slots["slot_w_uniform"] = "ww2_japcap_snlf"
 			to_chat(usr, SPAN_WARNING("You have nothing attached to the cap!"))
 			update_clothing_icon()
@@ -742,7 +676,6 @@
 		qdel(W)
 		src.item_state = "ww2_japcap_snlf_extended"
 		src.icon_state = "ww2_japcap_snlf_extended"
-		src.worn_state = "ww2_japcap_snlf_extended"
 		update_clothing_icon()
 		return
 
@@ -751,7 +684,6 @@
 	desc = "An Imperial Japanese Army officer uniform."
 	icon_state = "ww2_japoffuni"
 	item_state = "ww2_japoffuni"
-	worn_state = "ww2_japoffuni"
 	var/rolled = FALSE
 
 /obj/item/clothing/under/ww2/japoffuni/verb/roll_sleeves()
@@ -762,7 +694,6 @@
 	else
 		if (rolled)
 			item_state = "ww2_japoffuni"
-			worn_state = "ww2_japoffuni"
 			icon_state = "ww2_japoffuni"
 			item_state_slots["w_uniform"] = "ww2_japoffuni"
 			usr.visible_message("<span class='notice'>[usr] rolls down their uniform's sleeves.</span>", "<span class='notice'>You roll down your uniform's sleeves.</span>")
@@ -771,7 +702,6 @@
 			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ww2_japoffuni_rolled"
-			worn_state = "ww2_japoffuni_rolled"
 			icon_state = "ww2_japoffuni_rolled"
 			item_state_slots["w_uniform"] = "ww2_japoffuni_rolled"
 			usr.visible_message("<span class='notice'>[usr] rolls up their uniform's sleeves.</span>", "<span class='notice'>You roll up your uniform's sleeves.</span>")
@@ -785,17 +715,14 @@
 	desc = "An Imperial Japanese Army uniform."
 	icon_state = "ww2_japuni"
 	item_state = "ww2_japuni"
-	worn_state = "ww2_japuni"
 	var/rolled = FALSE
 	var/stripped = FALSE
 
 /obj/item/clothing/under/ww2/japuni/update_icon()
 	if (map && (map.ID == MAP_NANKOU || map.ID == MAP_NANJING))
-		worn_state = "1937_japuni"
 		item_state = "1937_japuni"
 		icon_state = "1937_japuni"
 	else
-		worn_state = "ww2_japuni"
 		item_state = "ww2_japuni"
 		icon_state = "ww2_japuni"
 
@@ -808,7 +735,6 @@
 		if (!stripped)
 			if (rolled)
 				if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
-					worn_state = "1937_japuni"
 					item_state = "1937_japuni"
 					icon_state = "1937_japuni"
 					item_state_slots["w_uniform"] = "1937_japuni"
@@ -818,7 +744,6 @@
 					update_clothing_icon()
 					return
 				else
-					worn_state = "ww2_japuni"
 					item_state = "ww2_japuni"
 					icon_state = "ww2_japuni"
 					item_state_slots["w_uniform"] = "ww2_japuni"
@@ -829,7 +754,6 @@
 					return
 			if (!rolled)
 				if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
-					worn_state = "1937_japuni_rolled"
 					item_state = "1937_japuni_rolled"
 					icon_state = "1937_japuni_rolled"
 					item_state_slots["w_uniform"] = "1937_japuni_rolled"
@@ -840,7 +764,6 @@
 					update_clothing_icon()
 					return
 				else
-					worn_state = "ww2_japuni_rolled"
 					item_state = "ww2_japuni_rolled"
 					icon_state = "ww2_japuni_rolled"
 					item_state_slots["w_uniform"] = "ww2_japuni_rolled"
@@ -851,7 +774,6 @@
 					return
 		else
 			if (rolled)
-				worn_state = "japuni_summer"
 				item_state = "japuni_summer"
 				icon_state = "japuni_summer"
 				item_state_slots["w_uniform"] = "japuni_summer"
@@ -861,7 +783,6 @@
 				update_clothing_icon()
 				return
 			else
-				worn_state = "japuni_summer_rolled"
 				item_state = "japuni_summer_rolled"
 				icon_state = "japuni_summer_rolled"
 				item_state_slots["w_uniform"] = "japuni_summer_rolled"
@@ -880,7 +801,6 @@
 		if (stripped)
 			if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
 				if (!rolled)
-					worn_state = "1937_japuni"
 					item_state = "1937_japuni"
 					icon_state = "1937_japuni"
 					item_state_slots["w_uniform"] = "1937_japuni"
@@ -890,7 +810,6 @@
 					update_clothing_icon()
 					return
 				else
-					worn_state = "1937_japuni_rolled"
 					item_state = "1937_japuni_rolled"
 					icon_state = "1937_japuni_rolled"
 					item_state_slots["w_uniform"] = "1937_japuni_rolled"
@@ -901,7 +820,6 @@
 					return
 			else
 				if (!rolled)
-					worn_state = "ww2_japuni"
 					item_state = "ww2_japuni"
 					icon_state = "ww2_japuni"
 					item_state_slots["w_uniform"] = "ww2_japuni"
@@ -911,7 +829,6 @@
 					update_clothing_icon()
 					return
 				else
-					worn_state = "ww2_japuni_rolled"
 					item_state = "ww2_japuni_rolled"
 					icon_state = "ww2_japuni_rolled"
 					item_state_slots["w_uniform"] = "1937_japuni_rolled"
@@ -922,7 +839,6 @@
 					return
 		else
 			if (!rolled)
-				worn_state = "japuni_summer"
 				item_state = "japuni_summer"
 				icon_state = "japuni_summer"
 				item_state_slots["w_uniform"] = "japuni_summer"
@@ -933,7 +849,6 @@
 				update_clothing_icon()
 				return
 			else
-				worn_state = "japuni_summer_rolled"
 				item_state = "japuni_summer_rolled"
 				icon_state = "japuni_summer_rolled"
 				item_state_slots["w_uniform"] = "japuni_summer_rolled"
@@ -953,7 +868,6 @@
 	desc = "A imperial japanese navy uniform."
 	icon_state = "ww2_japuni_navy"
 	item_state = "ww2_japuni_navy"
-	worn_state = "ww2_japuni_navy"
 	var/rolled = FALSE
 
 /obj/item/clothing/under/ww2/japuni_navy/verb/roll_sleeves()
@@ -963,7 +877,6 @@
 		return
 	else
 		if (rolled)
-			worn_state = "japuni_navy"
 			item_state = "japuni_navy"
 			icon_state = "japuni_navy"
 			item_state_slots["w_uniform"] = "japuni_navy"
@@ -972,7 +885,6 @@
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 			update_clothing_icon()
 		else if (!rolled)
-			worn_state = "japuni_navy_rolled"
 			item_state = "japuni_navy_rolled"
 			icon_state = "japuni_navy_rolled"
 			item_state_slots["w_uniform"] = "japuni_navy_rolled"
@@ -987,21 +899,18 @@
 	desc = "An Imperial Japanese naval petty officer uniform."
 	icon_state = "ww2_japuni_navy_po"
 	item_state = "ww2_japuni_navy_po"
-	worn_state = "ww2_japuni_navy_po"
 
 /obj/item/clothing/under/ww2/japuni_navy_officer
 	name = "Japanese naval officer uniform"
 	desc = "An Imperial Japanese naval officer uniform."
 	icon_state = "ww2_japuni_navy_officer"
 	item_state = "ww2_japuni_navy_officer"
-	worn_state = "ww2_japuni_navy_officer"
 
 /obj/item/clothing/under/ww2/japuni_snlf
 	name = "Japanese SNLF uniform"
 	desc = "A prestigious Imperial Japanese SNLF uniform, worn by elite naval infantry renowned for their expertise in amphibious assault operations."
 	icon_state = "ww2_japuni_snlf"
 	item_state = "ww2_japuni_snlf"
-	worn_state = "ww2_japuni_snlf"
 	var/rolled = FALSE
 
 /obj/item/clothing/under/ww2/japuni_snlf/verb/roll_sleeves()
@@ -1011,7 +920,6 @@
 		return
 	else
 		if (rolled)
-			worn_state = "ww2_japuni_snlf"
 			item_state = "ww2_japuni_snlf"
 			icon_state = "ww2_japuni_snlf"
 			item_state_slots["w_uniform"] = "ww2_japuni_snlf"
@@ -1020,7 +928,6 @@
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 			update_clothing_icon()
 		else if (!rolled)
-			worn_state = "ww2_japuni_snlf_rolled"
 			item_state = "ww2_japuni_snlf_rolled"
 			icon_state = "ww2_japuni_snlf_rolled"
 			item_state_slots["w_uniform"] = "ww2_japuni_snlf_rolled"
@@ -1035,14 +942,12 @@
 	desc = "An Imperial Japanese Army uniform, this one bears the rank of a tanker."
 	icon_state = "japtanker"
 	item_state = "japtanker"
-	worn_state = "japtanker"
 
 /obj/item/clothing/head/ww2/jap_headband
 	name = "Japanese headband"
 	desc = "A headband worn by Japanese soldiers."
 	icon_state = "japbandana"
 	item_state = "japbandana"
-	worn_state = "japbandana"
 
 /obj/item/clothing/accessory/harness
 	name = "Japanese pilot harness"
@@ -1050,7 +955,6 @@
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "jap_harn"
 	item_state = "jap_harn"
-	worn_state = "jap_harn"
 	ripable = FALSE
 	flags = CONDUCT
 
@@ -1059,7 +963,6 @@
 	desc = "An Imperial Japanese Army coat."
 	icon_state = "ww2_japcoat"
 	item_state = "ww2_japcoat"
-	worn_state = "ww2_japcoat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
@@ -1074,7 +977,6 @@
 	desc = "An Imperial Japanese Army rain-coat."
 	icon_state = "jap_raincoat"
 	item_state = "jap_raincoat"
-	worn_state = "jap_raincoat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
@@ -1085,7 +987,6 @@
 	desc = "A Japanese air-force kamikaze jacket."
 	icon_state = "jappilotcoat"
 	item_state = "jappilotcoat"
-	worn_state = "jappilotcoat"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
@@ -1096,7 +997,6 @@
 	desc = "A cap worn by Japanese pilots."
 	icon_state = "jappilotcap"
 	item_state = "jappilotcap"
-	worn_state = "jappilotcap"
 	flags = CONDUCT
 
 /obj/item/clothing/head/ww2/jap_mp
@@ -1104,21 +1004,18 @@
 	desc = "A cap worn by the military police corps of the Imperial Japanese Army."
 	icon_state = "japcap_mp"
 	item_state = "japcap_mp"
-	worn_state = "japcap_mp"
 
 /obj/item/clothing/head/ww2/japwinter
 	name = "Japanese winter cap"
 	desc = "A Japanese winter cap, worn by soldiers in the Imperial Japanese Army."
 	icon_state = "japwinter_up"
 	item_state = "japwinter_up"
-	worn_state = "japwinter_up"
 	flags_inv = BLOCKHEADHAIR
 	cold_protection = HEAD
 
 /obj/item/clothing/head/ww2/japwinter/down
 	icon_state = "japwinter"
 	item_state = "japwinter"
-	worn_state = "japwinter"
 
 /obj/item/clothing/head/ww2/japwinter/attack_self(mob/user as mob)
 	if (icon_state == "japwinter")
@@ -1147,19 +1044,16 @@
 	desc = "A pair of hob-nailed leather boots."
 	icon_state = "japboots_ww2"
 	item_state = "japboots_ww2"
-	worn_state = "japboots_ww2"
 	var/puttees = FALSE
 
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/update_icon()
 	if (puttees)
 		item_state = "japboots_ww2_puttees"
 		icon_state = "japboots_ww2_puttees"
-		worn_state = "japboots_ww2_puttees"
 		item_state_slots["shoes"] = "japboots_ww2_puttees"
 	else
 		item_state = "japboots_ww2"
 		icon_state = "japboots_ww2"
-		worn_state = "japboots_ww2"
 		item_state_slots["slot_w_uniform"] = "japboots_ww2"
 
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/verb/strip_off_puttees(mob/user as mob)
@@ -1171,7 +1065,6 @@
 		if (puttees)
 			item_state = "japboots_ww2"
 			icon_state = "japboots_ww2"
-			worn_state = "japboots_ww2"
 			item_state_slots["slot_w_uniform"] = "japboots_ww2"
 			user.visible_message("<span class = 'notice'>[user] unwraps the puttees around their legs.</span>", "<span class = 'notice'>You unwrap the puttees around your legs.</span>") // We don't play a sound here for some reason, TODO: enhance.
 			puttees = FALSE
@@ -1180,7 +1073,6 @@
 		else if (!puttees)
 			item_state = "japboots_ww2"
 			icon_state = "japboots_ww2"
-			worn_state = "japboots_ww2"
 			item_state_slots["slot_w_uniform"] = "japboots_ww2"
 			to_chat(usr, SPAN_WARNING("You haven't any puttees on the boots!"))
 			puttees = FALSE
@@ -1195,7 +1087,6 @@
 		qdel(W)
 		src.item_state = "japboots_ww2_puttees"
 		src.icon_state = "japboots_ww2_puttees"
-		src.worn_state = "japboots_ww2_puttees"
 		item_state_slots["shoes"] = "japboots_ww2_puttees"
 		update_clothing_icon()
 		return
@@ -1207,12 +1098,10 @@
 	if (puttees)
 		item_state = "japboots_ww2_puttees"
 		icon_state = "japboots_ww2_puttees"
-		worn_state = "japboots_ww2_puttees"
 		item_state_slots["shoes"] = "japboots_ww2_puttees"
 	else
 		item_state = "japboots_ww2"
 		icon_state = "japboots_ww2"
-		worn_state = "japboots_ww2"
 		item_state_slots["slot_w_uniform"] = "japboots_ww2"
 
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees/attackby(obj/item/W as obj, mob/user as mob)
@@ -1224,7 +1113,6 @@
 		qdel(W)
 		src.item_state = "japboots_ww2_puttees"
 		src.icon_state = "japboots_ww2_puttees"
-		src.worn_state = "japboots_ww2_puttees"
 		item_state_slots["shoes"] = "japboots_ww2_puttees"
 		update_clothing_icon()
 		return
@@ -1238,7 +1126,6 @@
 	desc = "A pair of hob-nailed leather boots."
 	icon_state = "japboots_ww2_navy"
 	item_state = "japboots_ww2_navy"
-	worn_state = "japboots_ww2_navy"
 	puttees = FALSE
 
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy/puttees
@@ -1255,7 +1142,6 @@
 	desc = "A cap worn by British officers."
 	icon_state = "ww2_british_officer"
 	item_state = "ww2_british_officer"
-	worn_state = "ww2_british_officer"
 	var/toggled = FALSE
 
 /obj/item/clothing/head/ww2/britishoffcap/verb/toggle_flaps()
@@ -1267,7 +1153,6 @@
 		if (toggled)
 			item_state = "ww2_british_officer"
 			icon_state = "ww2_british_officer"
-			worn_state = "ww2_british_officer"
 			item_state_slots["slot_w_uniform"] = "ww2_british_officer"
 			usr.visible_message("<span class = 'notice'>[usr] puts up their cap's flaps.</span>", "<span class = 'notice'>You put up your cap's flaps.</span>")
 			toggled = FALSE
@@ -1275,7 +1160,6 @@
 		else if (!toggled)
 			item_state = "ww2_british_officer_flap"
 			icon_state = "ww2_british_officer_flap"
-			worn_state = "ww2_british_officer_flap"
 			item_state_slots["slot_w_uniform"] = "ww2_british_officer_flap"
 			usr.visible_message("<span class = 'notice'>[usr] puts down their cap's flaps.</span>", "<span class = 'notice'>You put down your cap's flaps.</span>")
 			toggled = TRUE
@@ -1286,7 +1170,6 @@
 	desc = "A cap worn by British officers, this one being a tropical green."
 	icon_state = "ww2_british_officer_tropical"
 	item_state = "ww2_british_officer_tropical"
-	worn_state = "ww2_british_officer_tropical"
 	var/toggled = FALSE
 
 /obj/item/clothing/head/ww2/britishoffcap_tropical/verb/toggle_flaps()
@@ -1297,7 +1180,6 @@
 	else
 		if (toggled)
 			item_state = "ww2_british_officer_tropical"
-			worn_state = "ww2_british_officer_tropical"
 			icon_state = "ww2_british_officer_tropical"
 			item_state_slots["slot_w_uniform"] = "ww2_british_officer_tropical"
 			usr.visible_message("<span class = 'notice'>[usr] puts up their cap's flaps.</span>", "<span class = 'notice'>You put up your cap's flaps.</span>")
@@ -1305,7 +1187,6 @@
 			update_clothing_icon()
 		else if (!toggled)
 			item_state = "ww2_british_officer_tropical_flap"
-			worn_state = "ww2_british_officer_tropical_flap"
 			icon_state = "ww2_british_officer_tropical_flap"
 			item_state_slots["slot_w_uniform"] = "ww2_british_officer_tropical_flap"
 			usr.visible_message("<span class = 'notice'>[usr] puts down their cap's flaps.</span>", "<span class = 'notice'>You put down your cap's flaps.</span>")
@@ -1317,7 +1198,6 @@
 	desc = "A khaki British uniform."
 	icon_state = "ww2_british_tropical"
 	item_state = "ww2_british_tropical"
-	worn_state = "ww2_british_tropical"
 	var/rolled = FALSE
 
 /obj/item/clothing/under/ww2/british/verb/roll_sleeves()
@@ -1329,14 +1209,12 @@
 		if (rolled)
 			item_state = "ww2_british_tropical"
 			icon_state = "ww2_british_tropical"
-			worn_state = "ww2_british_tropical"
 			item_state_slots["w_uniform"] = "ww2_british_tropical"
 			usr.visible_message("<span class = 'notice'>[usr] rolls down their uniform's sleeves.</span>", "<span class = 'notice'>You roll down your uniform's sleeves.</span>" )
 			rolled = FALSE
 			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ww2_british_tropical_rolled"
-			worn_state = "ww2_british_tropical_rolled"
 			icon_state = "ww2_british_tropical_rolled"
 			item_state_slots["w_uniform"] = "ww2_british_tropical_rolled"
 			usr.visible_message("<span class = 'notice'>[usr] rolls up their uniform's sleeves.</span>", "<span class = 'notice'>You roll up your uniform's sleeves.</span>" )
@@ -1353,7 +1231,6 @@
 	desc = "A tropical green British officer uniform."
 	icon_state = "ww2_british_off_tropical"
 	item_state = "ww2_british_off_tropical"
-	worn_state = "ww2_british_off_tropical"
 	var/rolled = FALSE
 
 /obj/item/clothing/under/ww2/british_off/verb/roll_sleeves()
@@ -1364,7 +1241,6 @@
 	else
 		if (rolled)
 			item_state = "ww2_british_off_tropical"
-			worn_state = "ww2_british_off_tropical"
 			icon_state = "ww2_british_off_tropical"
 			item_state_slots["w_uniform"] = "ww2_british_off_tropical"
 			usr.visible_message("<span class = 'notice'>[usr] rolls down their uniform's sleeves.</span>", "<span class = 'notice'>You roll down your uniform's sleeves.</span>" )
@@ -1372,7 +1248,6 @@
 			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ww2_british_off_tropical_rolled"
-			worn_state = "ww2_british_off_tropical_rolled"
 			icon_state = "ww2_british_off_tropical_rolled"
 			item_state_slots["w_uniform"] = "ww2_british_off_tropical_rolled"
 			usr.visible_message("<span class = 'notice'>[usr] rolls up their uniform's sleeves.</span>", "<span class = 'notice'>You roll up your uniform's sleeves.</span>" )
@@ -1384,28 +1259,24 @@
 	desc = "A brown hat sometimes worn by the British."
 	icon_state = "ww2_aussie"
 	item_state = "ww2_aussie"
-	worn_state = "ww2_aussie"
 
 /obj/item/clothing/head/ww2/british_tropical_hat
 	name = "tropical british hat"
 	desc = "A khaki hat worn by the British Army in tropical climates."
 	icon_state = "ww2_british_tropical"
 	item_state = "ww2_british_tropical"
-	worn_state = "ww2_british_tropical"
 
 /obj/item/clothing/head/ww2/british_beret
 	name = "British beret"
 	desc = "A khaki beret worn by the British Army."
 	icon_state = "ww2_british_beret"
 	item_state = "ww2_british_beret"
-	worn_state = "ww2_british_beret"
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/under/ww2/chiuni
 	name = "Chinese uniform"
 	desc = "A Chinese Red Army uniform."
 	icon_state = "ww2_china"
 	item_state = "ww2_china"
-	worn_state = "ww2_china"
 	var/rolled = FALSE
 
 /obj/item/clothing/under/ww2/chiuni/verb/roll_sleeves()
@@ -1417,14 +1288,12 @@
 		if (rolled)
 			item_state = "ww2_china"
 			icon_state = "ww2_china"
-			worn_state = "ww2_china"
 			item_state_slots["w_uniform"] = "ww2_china"
 			usr.visible_message("<span class = 'notice'>[usr] rolls down their uniform's sleeves.</span>", "<span class = 'notice'>You roll down your uniform's sleeves.</span>" )
 			rolled = FALSE
 			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ww2_china_rolled"
-			worn_state = "ww2_china_rolled"
 			icon_state = "ww2_china_rolled"
 			item_state_slots["w_uniform"] = "ww2_china_rolled"
 			usr.visible_message("<span class = 'notice'>[usr] rolls up their uniform's sleeves.</span>", "<span class = 'notice'>You roll up your uniform's sleeves.</span>" )
@@ -1436,7 +1305,6 @@
 	desc = "A Chinese Red Army uniform."
 	icon_state = "ww2_china_off"
 	item_state = "ww2_china_off"
-	worn_state = "ww2_china_off"
 	var/rolled = FALSE
 
 /obj/item/clothing/under/ww2/chiuni_off/verb/roll_sleeves()
@@ -1447,7 +1315,6 @@
 	else
 		if (rolled)
 			item_state = "ww2_china_off"
-			worn_state = "ww2_china_off"
 			icon_state = "ww2_china_off"
 			item_state_slots["w_uniform"] = "ww2_china_off"
 			usr.visible_message("<span class = 'notice'>[usr] rolls down their uniform's sleeves.</span>", "<span class = 'notice'>You roll down your uniform's sleeves.</span>" )
@@ -1455,7 +1322,6 @@
 			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ww2_china_off_rolled"
-			worn_state = "ww2_china_off_rolled"
 			icon_state = "ww2_china_off_rolled"
 			item_state_slots["w_uniform"] = "ww2_china_off_rolled"
 			usr.visible_message("<span class = 'notice'>[usr] rolls up their uniform's sleeves.</span>", "<span class = 'notice'>You roll up your uniform's sleeves.</span>" )
@@ -1467,7 +1333,6 @@
 	desc = "A Chinese Red Army uniform."
 	icon_state = "ww2_china2"
 	item_state = "ww2_china2"
-	worn_state = "ww2_china2"
 	var/rolled = FALSE
 
 /obj/item/clothing/under/ww2/chiuni2/verb/roll_sleeves()
@@ -1479,14 +1344,12 @@
 		if (rolled)
 			item_state = "ww2_china2"
 			icon_state = "ww2_china2"
-			worn_state = "ww2_china2"
 			item_state_slots["w_uniform"] = "ww2_china2"
 			usr.visible_message("<span class = 'notice'>[usr] rolls down their uniform's sleeves.</span>", "<span class = 'notice'>You roll down your uniform's sleeves.</span>" )
 			rolled = FALSE
 			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ww2_china2_rolled"
-			worn_state = "ww2_china2_rolled"
 			icon_state = "ww2_china2_rolled"
 			item_state_slots["w_uniform"] = "ww2_china2_rolled"
 			usr.visible_message("<span class = 'notice'>[usr] rolls up their uniform's sleeves.</span>", "<span class = 'notice'>You roll up your uniform's sleeves.</span>" )
@@ -1498,7 +1361,6 @@
 	desc = "A chinese army uniform."
 	icon_state = "ww2_china2_off"
 	item_state = "ww2_china2_off"
-	worn_state = "ww2_china2_off"
 	var/rolled = FALSE
 
 /obj/item/clothing/under/ww2/chiuni2_off/verb/roll_sleeves()
@@ -1509,7 +1371,6 @@
 	else
 		if (rolled)
 			item_state = "ww2_china_off"
-			worn_state = "ww2_china_off"
 			icon_state = "ww2_china_off"
 			item_state_slots["w_uniform"] = "ww2_china_off"
 			usr.visible_message("<span class = 'notice'>[usr] rolls down their uniform's sleeves.</span>", "<span class = 'notice'>You roll down your uniform's sleeves.</span>" )
@@ -1518,7 +1379,6 @@
 		else if (!rolled)
 			item_state = "ww2_china_off_rolled"
 			icon_state = "ww2_china_off_rolled"
-			worn_state = "ww2_china_off_rolled"
 			item_state_slots["w_uniform"] = "ww2_china_off_rolled"
 			usr.visible_message("<span class = 'notice'>[usr] rolls up their uniform's sleeves.</span>", "<span class = 'notice'>You roll up your uniform's sleeves.</span>" )
 			rolled = TRUE
@@ -1529,28 +1389,24 @@ obj/item/clothing/head/ww2/chicap
 	desc = "A cap worn by the Chinese Red Army."
 	icon_state = "fieldcap_china"
 	item_state = "fieldcap_china"
-	worn_state = "fieldcap_china"
 
 obj/item/clothing/head/ww2/chicap2
 	name = "Chinese cap"
 	desc = "A cap worn by the Chinese Red Army."
 	icon_state = "fieldcap_china2"
 	item_state = "fieldcap_china2"
-	worn_state = "fieldcap_china2"
 
 /obj/item/clothing/under/ww2/cra_uni
 	name = "Chinese Red Army uniform"
 	desc = "A uniform worn by the Chinese Red Army."
 	icon_state = "cra_uni"
 	item_state = "cra_uni"
-	worn_state = "cra_uni"
 
 obj/item/clothing/head/ww2/cra_cap
 	name = "Chinese Red Army cap"
 	desc = "A cap worn by the Chinese Red Army."
 	icon_state = "cra_cap"
 	item_state = "cra_cap"
-	worn_state = "cra_cap"
 
 ///////////WW1 UNIFORMS///////////
 /obj/item/clothing/under/ww1/german
@@ -1558,21 +1414,18 @@ obj/item/clothing/head/ww2/cra_cap
 	desc = "A feldgrau uniform worn by the Imperial German Army."
 	icon_state = "ww1_german"
 	item_state = "ww1_german"
-	worn_state = "ww1_german"
 
 /obj/item/clothing/under/ww1/british
 	name = "british uniform"
 	desc = "A khaki uniform worn by the British Army."
 	icon_state = "ww1_british"
 	item_state = "ww1_british"
-	worn_state = "ww1_british"
 
 /obj/item/clothing/under/ww1/trenchsuit
 	name = "British uniform"
 	desc = "A khaki trench suit worn by soldiers of the British Army."
 	icon_state = "trenchsuit"
 	item_state = "trenchsuit"
-	worn_state = "trenchsuit"
 
 /obj/item/clothing/under/ww1/trenchsuit/poland //looks very similiar to the ww2 polish uniform so lets pretend that its the polish uniform
 	name = "Polish uniform"
@@ -1583,7 +1436,6 @@ obj/item/clothing/head/ww2/cra_cap
 	desc = "A French light blue uniform, used by the French Army."
 	icon_state = "ww1_french"
 	item_state = "ww1_french"
-	worn_state = "ww1_french"
 
 
 /obj/item/clothing/accessory/storage/webbing/ww1
@@ -1768,7 +1620,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2
 	name = "German webbing vest" //ww2
-	worn_state = "german_ww2_webbing"
 	slots = 9
 	New()
 		..()
@@ -1814,7 +1665,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 			new/obj/item/ammo_magazine/mauser(hold)
 
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40
-	worn_state = "german_ww2_webbing_mp40"
 	New()
 		..()
 		for (var/i=1, i<= 4, i++)
@@ -1937,7 +1787,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "modern_platearmor"
 	item_state = "modern_platearmor"
-	worn_state = "modern_platearmor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 70, arrow = 95, gun = 45, energy = 15, bomb = 45, bio = 20, rad = 20)
 	value = 50
@@ -1949,7 +1798,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "modern_dayfield"
 	item_state = "modern_dayfield"
-	worn_state = "modern_dayfield"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 70, arrow = 90, gun = 40, energy = 12, bomb = 40, bio = 20, rad = 15)
 	value = 50
@@ -1963,7 +1811,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "modern_armorvest"
 	item_state = "modern_armorvest"
-	worn_state = "modern_armorvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 50, arrow = 95, gun = 35, energy = 15, bomb = 45, bio = 20, rad = 20)
 	value = 50
@@ -1985,7 +1832,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "modern_blackvest"
 	item_state = "modern_blackvest"
-	worn_state = "modern_blackvest"
 
 /obj/item/clothing/accessory/armor/modern/lightplate/black/lead
 	name = "Lead breastplate body-armor"
@@ -2004,7 +1850,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A German feldgrau uniform, often worn by the Wehrmacht."
 	icon_state = "geruni_ww2"
 	item_state = "geruni_ww2"
-	worn_state = "geruni_ww2"
 	var/rolled = FALSE
 /*
 /obj/item/clothing/under/ww2/german/New()
@@ -2012,7 +1857,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
 		icon_state = "geruni_ww2_winter"
 		item_state = "geruni_ww2_winter"
-		worn_state = "geruni_ww2_winter"
 		item_state_slots["slot_w_uniform"] = "geruni_ww2_winter"
 */
 /obj/item/clothing/under/ww2/german/verb/roll_sleeves()
@@ -2025,20 +1869,17 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
 			if (rolled)
 				item_state = "geruni_ww2_winter"
-				worn_state = "geruni_ww2_winter"
 				item_state_slots["slot_w_uniform"] = "geruni_ww2_winter"
 				to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
 				rolled = FALSE
 			else if (!rolled)
 				item_state = "geruni_ww2_winter_rolled"
-				worn_state = "geruni_ww2_winter_rolled"
 				item_state_slots["slot_w_uniform"] = "geruni_ww2_winter_rolled"
 				to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
 				rolled = TRUE
 		else
 */
 		if (rolled)
-			worn_state = "geruni_ww2"
 			item_state = "geruni_ww2"
 			icon_state = "geruni_ww2"
 			item_state_slots["w_uniform"] = "geruni_ww2"
@@ -2047,7 +1888,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 			update_clothing_icon()
 		else if (!rolled)
-			worn_state = "geruni_ww2_rolled"
 			item_state = "geruni_ww2_rolled"
 			icon_state = "geruni_ww2_rolled"
 			item_state_slots["w_uniform"] = "geruni_ww2_rolled"
@@ -2062,7 +1902,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A German feldgrau uniform, usually worn by doctors in the Wehrmacht."
 	icon_state = "geruni_doctor"
 	item_state = "geruni_doctor"
-	worn_state = "geruni_doctor"
 	var/rolled = FALSE
 
 /obj/item/clothing/under/ww2/german_doctor/verb/roll_sleeves()
@@ -2072,7 +1911,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		return
 	else
 		if (rolled)
-			worn_state = "geruni_doctor"
 			item_state = "geruni_doctor"
 			icon_state = "geruni_doctor"
 			item_state_slots["w_uniform"] = "geruni_doctor"
@@ -2081,7 +1919,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 			update_clothing_icon()
 		else if (!rolled)
-			worn_state = "geruni_doctor_rolled"
 			item_state = "geruni_doctor_rolled"
 			icon_state = "geruni_doctor_rolled"
 			item_state_slots["w_uniform"] = "geruni_doctor_rolled"
@@ -2096,49 +1933,42 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A German feldgrau uniform, almost always worn by officers in the Wehrmacht."
 	icon_state = "geruni_officer"
 	item_state = "geruni_officer"
-	worn_state = "geruni_officer"
 
 /obj/item/clothing/under/ww2/german_tanker
 	name = "German tanker uniform"
 	desc = "A German feldgrau uniform, often worn by tankers in the Wehrmacht."
 	icon_state = "gertanker"
 	item_state = "gertanker"
-	worn_state = "gertanker"
 
 /obj/item/clothing/under/ww2/german_mp
 	name = "German MP uniform"
 	desc = "A German feldgrau uniform, mostly worn by Military Police in the Wehrmacht."
 	icon_state = "geruni_mp"
 	item_state = "geruni_mp"
-	worn_state = "geruni_mp"
 
 /obj/item/clothing/under/ww2/german_ss
 	name = "German SS uniform"
 	desc = "A German SS uniform, always worn by soldaten in the Schutzstaffel."
 	icon_state = "ssuni"
 	item_state = "ssuni"
-	worn_state = "ssuni"
 
 /obj/item/clothing/under/ww2/german_ss_officer
 	name = "German SS officer uniform"
 	desc = "A german SS officer uniform, worn by officers in the Schutzstaffel."
 	icon_state = "ssuni_officer"
 	item_state = "ssuni_officer"
-	worn_state = "ssuni_officer"
 
 /obj/item/clothing/under/ww2/german_ss_camo
 	name = "German camo SS uniform"
 	desc = "This German SS uniform features the iconic 1944 Erbsenmuster dot-pattern, historically worn by members of the Schutzstaffel."
 	icon_state = "ssuni_camo"
 	item_state = "ssuni_camo"
-	worn_state = "ssuni_camo"
 
 /obj/item/weapon/storage/ammo_can
 	name = "ammunition can"
 	desc = "This metal ammunition can is designed for convenient transportation and storage of ammo."
 	icon_state = "ammo_can"
 	item_state = "ammo_can"
-	worn_state = "ammo_can"
 	throw_speed = 2
 	throw_range = 8
 	max_storage_space = 14
@@ -2249,15 +2079,12 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A Soviet uniform, used by infantry in the Red Army."
 	icon_state = "sovuni"
 	item_state = "sovuni"
-	worn_state = "sovuni"
 	var/rolled = FALSE
 /obj/item/clothing/under/ww2/soviet/update_icon()
 	if (ishuman(loc))
 		var/mob/living/human/H = loc
 		if (H.gender == "female")
-			worn_state = "sovuni_f"
 		else
-			worn_state = "sovuni"
 
 /obj/item/clothing/under/ww2/soviet/verb/roll_sleeves()
 	set category = null
@@ -2267,7 +2094,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	else
 		if (rolled && usr.gender == "male")
 			item_state = "sovuni"
-			worn_state = "sovuni"
 			icon_state = "sovuni"
 			item_state_slots["w_uniform"] = "sovuni"
 			usr.visible_message("<span class = 'notice'>[usr] rolls down their uniform's sleeves.</span>", "<span class = 'notice'>You roll down your uniform's sleeves.</span>" )
@@ -2276,7 +2102,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 			update_clothing_icon()
 		else if (!rolled && usr.gender == "male")
 			item_state = "sovuni_rolled"
-			worn_state = "sovuni_rolled"
 			icon_state = "sovuni_rolled"
 			item_state_slots["w_uniform"] = "sovuni_rolled"
 			to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
@@ -2287,7 +2112,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 			update_clothing_icon()
 		if (rolled && usr.gender == "female")
 			item_state = "sovuni"
-			worn_state = "sovuni_f"
 			icon_state = "sovuni"
 			item_state_slots["w_uniform"] = "sovuni"
 			usr.visible_message("<span class = 'notice'>[usr] rolls down their uniform's sleeves.</span>", "<span class = 'notice'>You roll down your uniform's sleeves.</span>" )
@@ -2296,7 +2120,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 			update_clothing_icon()
 		else if (!rolled && usr.gender == "female")
 			item_state = "sovuni_rolled"
-			worn_state = "sovuni_rolled_f"
 			icon_state = "sovuni_rolled"
 			item_state_slots["w_uniform"] = "sovuni_rolled"
 			usr.visible_message("<span class = 'notice'>[usr] rolls up their uniform's sleeves.</span>", "<span class = 'notice'>You roll up your uniform's sleeves.</span>" )
@@ -2310,84 +2133,72 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A Soviet tanker uniform, used by tank crewmen in the Red Army."
 	icon_state = "sovtanker"
 	item_state = "sovtanker"
-	worn_state = "sovtanker"
 
 /obj/item/clothing/under/ww2/soviet_officer
 	name = "Soviet officer uniform"
 	desc = "A Soviet officer uniform, used by officers in the Red Army."
 	icon_state = "sovuni_officer"
 	item_state = "sovuni_officer"
-	worn_state = "sovuni_officer"
 
 /obj/item/clothing/under/ww2/soviet_nkvd
 	name = "NKVD uniform"
 	desc = "A soviet NKVD uniform, worn by members of the NKVD."
 	icon_state = "nkvd_uni"
 	item_state = "nkvd_uni"
-	worn_state = "nkvd_uni"
 
 /obj/item/clothing/under/ww2/soviet_berezka
 	name = "Soviet berezka uniform"
 	desc = "A Soviet berezka uniform, adapted to the winter wilderness."
 	icon_state = "berezka"
 	item_state = "berezka"
-	worn_state = "berezka"
 
 /obj/item/clothing/under/ww2/soviet_amoeba
 	name = "Soviet amoeba outfit"
 	desc = "A Soviet camouflage outfit, designed specifically for reconnaissance units."
 	icon_state = "amoeba"
 	item_state = "amoeba"
-	worn_state = "amoeba"
 
 /obj/item/clothing/under/ww2/soviet_amoeba/winter
 	name = "Soviet winter amoeba outfit"
 	desc = "This Soviet winter camouflage outfit was designed specifically for reconnaissance units, providing effective concealment in snowy terrains."
 	icon_state = "amoebaw"
 	item_state = "amoebaw"
-	worn_state = "amoebaw"
 
 /obj/item/clothing/shoes/jackboots/soviet
 	name = "Soviet sapogi boots"
 	desc = "Jackboots of Soviet origin. Also known as 'Yuftevyje sapogi'."
 	icon_state = "sovietboots"
 	item_state = "sovietboots"
-	worn_state = "sovietboots"
 
 /obj/item/clothing/under/ww2/italian
 	name = "Italian uniform"
 	desc = "An Italian uniform, used by the Italian Royal Army."
 	icon_state = "it_uni"
 	item_state = "it_uni"
-	worn_state = "it_uni"
 
 /obj/item/clothing/under/ww2/italian_officer
 	name = "Italian officer uniform"
 	desc = "An Italian uniform, used by officers of the Italian Royal Army."
 	icon_state = "it_uni_officer"
 	item_state = "it_uni_officer"
-	worn_state = "it_uni_officer"
 
 /obj/item/clothing/under/ww2/greek
 	name = "Greek uniform"
 	desc = "A Hellenic army uniform."
 	icon_state = "ww2_japuni"
 	item_state = "ww2_japuni"
-	worn_state = "ww2_japuni"
 
 /obj/item/clothing/under/ww2/civ1
 	name = "Green civilian outfit"
 	desc = "A mid 20th-century civilian outfit."
 	icon_state = "ww2_civuni1"
 	item_state = "ww2_civuni1"
-	worn_state = "ww2_civuni1"
 
 /obj/item/clothing/under/ww2/civ2
 	name = "Brown civilian outfit"
 	desc = "A mid 20th-century civilian outfit."
 	icon_state = "ww2_civuni2"
 	item_state = "ww2_civuni2"
-	worn_state = "ww2_civuni2"
 
 /obj/item/clothing/under/ww2/hitlerjugend
 	name = "Hitlerjugend outfit"
@@ -2403,49 +2214,42 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "An American uniform, used by soldiers in the US army during WW2."
 	icon_state = "usuni2"
 	item_state = "usuni2"
-	worn_state = "usuni2"
 
 /obj/item/clothing/under/ww2/us_tanker
 	name = "American tanker uniform"
 	desc = "An American uniform, used by tankers in the US army."
 	icon_state = "ustanker"
 	item_state = "ustanker"
-	worn_state = "ustanker"
 
 /obj/item/clothing/under/ww2/us_navy
 	name = "U.S. Navy uniform"
 	desc = "An american uniform, used by sailors in the US navy during WW2."
 	icon_state = "us_navy"
 	item_state = "us_navy"
-	worn_state = "us_navy"
 
 /obj/item/clothing/under/ww2/us_cap
 	name = "American captain uniform"
 	desc = "An American uniform, used by captains in the US army."
 	icon_state = "usuni_cap"
 	item_state = "usuni_cap"
-	worn_state = "usuni_cap"
 
 /obj/item/clothing/under/ww2/us_mp
 	name = "American MP uniform"
 	desc = "An American uniform, used by Military Police in the US army."
 	icon_state = "usuni_mp"
 	item_state = "usuni_mp"
-	worn_state = "usuni_mp"
 
 /obj/item/clothing/under/ww2/us_shirtless
 	name = "American uniform with shirt"
 	desc = "An American uniform, used by soldiers in the US army, this one has no jacket."
 	icon_state = "us_shirtless"
 	item_state = "us_shirtless"
-	worn_state = "us_shirtless"
 
 /obj/item/clothing/suit/storage/coat/ww2/us_coat
 	name = "American coat"
 	desc = "A US army coat."
 	icon_state = "us_coat"
 	item_state = "us_coat"
-	worn_state = "us_coat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
@@ -2454,7 +2258,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "Combat boots made of brown leather with a toe cap and rubber sole."
 	icon_state = "brownboots"
 	item_state = "brownboots_us_ww2"
-	worn_state = "brownboots_us_ww2"
 	force = WEAPON_FORCE_WEAK
 	armor = list(melee = 10, arrow = 20, gun = 0, energy = 25, bomb = 50, bio = 10, rad = 0)
 	item_flags = NOSLIP
@@ -2467,7 +2270,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "These combat boots are crafted from durable brown leather, featuring a toe cap and rubber sole. They come complete with protective leggings, providing extra coverage and support for the wearer's legs."
 	icon_state = "brownboots_us_ww2_alt"
 	item_state = "brownboots_us_ww2_alt"
-	worn_state = "brownboots_us_ww2_alt"
 
 /obj/item/clothing/accessory/storage/webbing/us_ww2
 	name = "US webbing"
@@ -2492,14 +2294,12 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A Finnish winter uniform."
 	icon_state = "geruni_ww2_winter"
 	item_state = "geruni_ww2_winter"
-	worn_state = "geruni_ww2_winter"
 
 /obj/item/clothing/suit/storage/coat/ww2/german
 	name = "German parka"
 	desc = "A german parka, worn by soldaten in the Wehrmacht."
 	icon_state = "gerparka"
 	item_state = "gerparka"
-	worn_state = "gerparka"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
@@ -2508,7 +2308,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 /obj/item/clothing/suit/storage/coat/ww2/german/winter
 	icon_state = "gerparka_winter"
 	item_state = "gerparka_winter"
-	worn_state = "gerparka_winter"
 	name = "German winter coat"
 	desc = "A German coat, worn by soldaten in the Wehrmacht."
 	body_parts_covered = UPPER_TORSO||ARMS
@@ -2523,7 +2322,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A German officer's coat, worn by officers in the Wehrmacht."
 	icon_state = "ger_offcoat"
 	item_state = "ger_offcoat"
-	worn_state = "ger_offcoat"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
@@ -2534,7 +2332,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A german \'SS\' parka, in 1944 Erbsenmuster dot-camo, worn by soldaten in the Schutzstaffel."
 	icon_state = "sssmock"
 	item_state = "sssmock"
-	worn_state = "sssmock"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
@@ -2545,7 +2342,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A soviet trenchcoat, worn by krasnoarmeyets in the Red Army."
 	icon_state = "ruscoat"
 	item_state = "ruscoat"
-	worn_state = "ruscoat"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
@@ -2557,7 +2353,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A traditional Soviet coat, in dark yellow."
 	icon_state = "gulagguard"
 	item_state = "gulagguard"
-	worn_state = "gulagguard"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
@@ -2569,7 +2364,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A traditional Soviet coat, in light blue."
 	icon_state = "gulagprisoner1"
 	item_state = "gulagprisoner1"
-	worn_state = "gulagprisoner1"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
@@ -2579,14 +2373,12 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		..()
 		icon_state = "gulagprisoner[rand(1,3)]"
 		item_state = icon_state
-		worn_state = icon_state
 
 /obj/item/clothing/suit/storage/coat/ww2/soviet_officer
 	name = "Soviet officer coat"
 	desc = "A soviet trenchcoat, worn by officers in the Red Army."
 	icon_state = "sov_offcoat"
 	item_state = "sov_offcoat"
-	worn_state = "sov_offcoat"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
@@ -2595,14 +2387,12 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 /obj/item/clothing/suit/storage/coat/ww2/soviet_officer/alt
 	icon_state = "sov_offcoat_alt"
 	item_state = "sov_offcoat_alt"
-	worn_state = "sov_offcoat_alt"
 
 /obj/item/clothing/head/helmet/ww2/us_mp
 	name = "US mp helmet"
 	desc = "A typical rounded steel helmet. This one has the markings of MP on it."
 	icon_state = "m1_mp_white"
 	item_state = "m1_mp_white"
-	worn_state = "m1_mp_white"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -2612,21 +2402,18 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A cap worn by American NCO's."
 	icon_state = "usnco_cap"
 	item_state = "usnco_cap"
-	worn_state = "usnco_cap"
 
 /obj/item/clothing/head/ww2/us_sailor_hat
 	name = "US sailor hat"
 	desc = "A hat worn by American sailors."
 	icon_state = "sailor_hat"
 	item_state = "sailor_hat"
-	worn_state = "sailor_hat"
 
 /obj/item/clothing/head/ww2/us_tanker
 	name = "US tanker cap"
 	desc = "A cap worn by American tankers."
 	icon_state = "ustanker"
 	item_state = "ustanker"
-	worn_state = "ustanker"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 20, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -2636,7 +2423,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A cap and radio headset worn by German tank crewmen of the Wehrmacht."
 	icon_state = "gertanker"
 	item_state = "gertanker"
-	worn_state = "gertanker"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 0, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -2646,7 +2432,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A cap and radio headset worn by Italian tank crewmen."
 	icon_state = "gertanker"
 	item_state = "gertanker"
-	worn_state = "gertanker"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 0, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -2656,7 +2441,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A cap worn by Soviet tank crewmen."
 	icon_state = "sovtanker"
 	item_state = "sovtanker"
-	worn_state = "sovtanker"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 20, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -2672,14 +2456,12 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A cap worn by German officers the Wehrmacht."
 	icon_state = "ger_officercap"
 	item_state = "ger_officercap"
-	worn_state = "ger_officercap"
 
 /obj/item/clothing/head/ww2/ger_officercap_tanker
 	name = "German panzer officer cap"
 	desc = "A cap worn by German officers the tank corps of the Wehrmacht."
 	icon_state = "ger_officercap_tanker"
 	item_state = "ger_officercap_tanker"
-	worn_state = "ger_officercap_tanker"
 	flags = CONDUCT
 
 /obj/item/clothing/head/ww2/sov_officercap
@@ -2687,28 +2469,24 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A cap and worn by soviet officers the red army."
 	icon_state = "sov_officercap"
 	item_state = "sov_officercap"
-	worn_state = "sov_officercap"
 
 /obj/item/clothing/head/ww2/sov_pilotka
 	name = "soviet pilotka"
 	desc = "A cap and worn by soviet soldiers of the red army."
 	icon_state = "sovpilotka"
 	item_state = "sovpilotka"
-	worn_state = "sovpilotka"
 
 /obj/item/clothing/head/ww2/sov_ushanka
 	name = "soviet ushanka"
 	desc = "A soviet ushanka, used by soldiers in the red army."
 	icon_state = "ushanka_up"
 	item_state = "ushanka_up"
-	worn_state = "ushanka_up"
 	flags_inv = BLOCKHEADHAIR
 	cold_protection = HEAD
 
 /obj/item/clothing/head/ww2/sov_ushanka/down
 	icon_state = "ushanka"
 	item_state = "ushanka"
-	worn_state = "ushanka"
 
 /obj/item/clothing/head/ww2/sov_ushanka/attack_self(mob/user as mob)
 	if (icon_state == "ushanka")
@@ -2730,7 +2508,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 /obj/item/clothing/head/ww2/sov_ushanka/nomads/down
 	icon_state = "ushanka_plain"
 	item_state = "ushanka_plain"
-	worn_state = "ushanka_plain"
 
 /obj/item/clothing/head/ww2/sov_ushanka/nomads/attack_self(mob/user as mob)
 	if (icon_state == "ushanka_plain")
@@ -2747,21 +2524,18 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A cap worn by members of the NKVD."
 	icon_state = "nkvd_cap"
 	item_state = "nkvd_cap"
-	worn_state = "nkvd_cap"
 
 /obj/item/clothing/head/ww2/ss_cap
 	name = "SS cap"
 	desc = "A cap worn by officers in the Schutzstaffel."
 	icon_state = "sscap"
 	item_state = "sscap"
-	worn_state = "sscap"
 
 /obj/item/clothing/head/ww2/german_fieldcap
 	name = "German field cap"
 	desc = "A cap worn by German Wehrmacht."
 	icon_state = "fieldcap1"
 	item_state = "fieldcap1"
-	worn_state = "fieldcap1"
 
 /obj/item/clothing/head/ww2/german_fieldcap/New()
 	..()
@@ -2770,12 +2544,10 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		if (randhead == 1)
 			icon_state = "fieldcap1_winter"
 			item_state = "fieldcap1_winter"
-			worn_state = "fieldcap1_winter"
 			item_state_slots["slot_w_uniform"] = "fieldcap1_winter"
 		else if (randhead == 2)
 			icon_state = "fieldcap1_winter2"
 			item_state = "fieldcap1_winter2"
-			worn_state = "fieldcap1_winter2"
 			item_state_slots["slot_w_uniform"] = "fieldcap1_winter2"
 
 /obj/item/clothing/head/ww2/soviet_fieldcap
@@ -2783,14 +2555,12 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A cap and worn by soviets in the red army."
 	icon_state = "fieldcap2"
 	item_state = "fieldcap2"
-	worn_state = "fieldcap2"
 
 /obj/item/clothing/head/helmet/ww2/gerhelm
 	name = "german stahlhelm"
 	desc = "The typical rounded steel helmet of the Wehrmacht"
 	icon_state = "stahlhelm"
 	item_state = "stahlhelm"
-	worn_state = "stahlhelm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -2802,12 +2572,10 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		if (randhead == 1)
 			icon_state = "gerhelm_winter"
 			item_state = "gerhelm_winter"
-			worn_state = "gerhelm_winter"
 			item_state_slots["slot_w_uniform"] = "gerhelm_winter"
 		else if (randhead == 2)
 			icon_state = "gerhelm_winter2"
 			item_state = "gerhelm_winter2"
-			worn_state = "gerhelm_winter2"
 			item_state_slots["slot_w_uniform"] = "gerhelm_winter2"
 
 /obj/item/clothing/head/helmet/ww2/gerhelm/winter
@@ -2815,7 +2583,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the Wehrmacht"
 	icon_state = "gerhelm_winter"
 	item_state = "gerhelm_winter"
-	worn_state = "gerhelm_winter"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -2825,7 +2592,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A fallschirmjager helmet."
 	icon_state = "stahlhelm_para"
 	item_state = "stahlhelm_para"
-	worn_state = "stahlhelm_para"
 	armor = list(melee = 35, arrow = 30, gun = 10, energy = 15, bomb = 35, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/ww2/gerhelm_medic
@@ -2833,7 +2599,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the Wehrmacht, this one belonging to a medic."
 	icon_state = "gerhelm_medic"
 	item_state = "gerhelm_medic"
-	worn_state = "gerhelm_medic"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -2843,7 +2608,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the Wehrmacht, this one specifically for MP's."
 	icon_state = "gerhelm_mp"
 	item_state = "gerhelm_mp"
-	worn_state = "gerhelm_mp"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -2853,7 +2617,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "An ordinary German Stahlhelm, it most likely belongs to the Russian Liberation Army."
 	icon_state = "roa_helmet"
 	item_state = "roa_helmet"
-	worn_state = "roa_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -2863,7 +2626,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "An ordinary German Stahlhelm, it has identification marks indicating it belongs to the Russian Liberation Army."
 	icon_state = "roa_helmet2"
 	item_state = "roa_helmet2"
-	worn_state = "roa_helmet2"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -2873,7 +2635,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the Schutzstaffel. This one is prepared with camo."
 	icon_state = "sshelm"
 	item_state = "sshelm"
-	worn_state = "sshelm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 42, arrow = 32, gun = 12, energy = 15, bomb = 42, bio = 20, rad = FALSE)
@@ -2883,14 +2644,12 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the Schutzstaffel."
 	icon_state = "stahlhelm"
 	item_state = "stahlhelm"
-	worn_state = "stahlhelm"
 
 /obj/item/clothing/head/helmet/ww2/soviet
 	name = "soviet helmet"
 	desc = "The typical rounded steel helmet of the red army."
 	icon_state = "sovhelm"
 	item_state = "sovhelm"
-	worn_state = "sovhelm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -2899,20 +2658,17 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
 		icon_state = "sovhelm_winter"
 		item_state = "sovhelm_winter"
-		worn_state = "sovhelm_winter"
 		item_state_slots["sovhelm_winter"] = "sovhelm_winter"
 
 /obj/item/clothing/head/helmet/ww2/soviet/winter
 	icon_state = "sovhelm_winter"
 	item_state = "sovhelm_winter"
-	worn_state = "sovhelm_winter"
 
 /obj/item/clothing/head/helmet/ww2/m1934
 	name = "Greek M1934/39 Helmet"
 	desc = "The M1934/39 helmet was the primary combat helmet used by the Greek Armed Forces during World War II. Greece purchased these helmets from Italy prior to the conflict as a replacement for their World War I-era Adrian helmets."
 	icon_state = "m33_helm"
 	item_state = "m33_helm"
-	worn_state = "m33_helm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	weight = 1.0
@@ -2923,7 +2679,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The Elmetto Mod. 33 is a steel combat helmet designed in the 1930s in Italy. While not as good as the German Stahlhelm, the M33 was seen as a successful design, since it offered three times the resistance of the Adrian, and was relatively comfortable."
 	icon_state = "m33_helm"
 	item_state = "m33_helm"
-	worn_state = "m33_helm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	weight = 1.2
@@ -2934,7 +2689,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The Elmetto Mod. The M33 is a steel combat helmet designed in the 1930s in Italy. While not as good as the German Stahlhelm, the M33 was seen as a successful design, since it offered three times the resistance of the Adrian, and was relatively comfortable. This one is for medics"
 	icon_state = "m33_helm_med"
 	item_state = "m33_helm_med"
-	worn_state = "m33_helm_med"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	weight = 1.2
@@ -2945,7 +2699,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the US Army."
 	icon_state = "m1_standard"
 	item_state = "m1_standard"
-	worn_state = "m1_standard"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -2966,7 +2719,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	if (color)
 		icon_state = "m1_tan_netting"
 		item_state = "m1_tan_netting"
-		worn_state = "m1_tan_netting"
 		body_parts_covered = HEAD
 		item_state_slots["slot_wear_head"] = "m1_tan_netting"
 		to_chat(usr, "<span class = 'danger'>You switch out your tan netting for green netting.</span>")
@@ -2976,7 +2728,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	else if (!color)
 		icon_state = "m1_green_netting"
 		item_state = "m1_green_netting"
-		worn_state = "m1_green_netting"
 		body_parts_covered = HEAD
 		item_state_slots["slot_wear_head"] = "m1_green_netting"
 		to_chat(usr, "<span class = 'danger'>You switch out your green netting for tan netting.</span>")
@@ -2989,7 +2740,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the US Army, with green netting."
 	icon_state = "m1_green_netting"
 	item_state = "m1_green_netting"
-	worn_state = "m1_green_netting"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -3008,7 +2758,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the US Army, with tan netting."
 	icon_state = "m1_greennet_leaves"
 	item_state = "m1_greennet_leaves"
-	worn_state = "m1_greennet_leaves"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -3018,7 +2767,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the US Army, with tan netting."
 	icon_state = "m1_tan_netting"
 	item_state = "m1_tan_netting"
-	worn_state = "m1_tan_netting"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -3028,7 +2776,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the US Army, this one brandishing a cross."
 	icon_state = "m1_chaplain"
 	item_state = "m1_chaplain"
-	worn_state = "m1_chaplain"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -3039,7 +2786,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the US Army, this one for Military Police."
 	icon_state = "m1_mp_black"
 	item_state = "m1_mp_black"
-	worn_state = "m1_mp_black"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -3049,7 +2795,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the US Army, this one for Military Police."
 	icon_state = "m1_mp_green"
 	item_state = "m1_mp_green"
-	worn_state = "m1_mp_green"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -3060,7 +2805,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the US Army, this one for medics"
 	icon_state = "m1_medic"
 	item_state = "m1_medic"
-	worn_state = "m1_medic"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -3070,7 +2814,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the US Army, this one bearing the rank of 2nd Lieutenant."
 	icon_state = "m1_2nd_lt"
 	item_state = "m1_2nd_lt"
-	worn_state = "m1_2nd_lt"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -3080,7 +2823,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the US Army, this one bearing the rank of 1st Lieutenant."
 	icon_state = "m1_1st_lt"
 	item_state = "m1_1st_lt"
-	worn_state = "m1_1st_lt"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -3090,7 +2832,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the US Army, this one bearing the rank of Captain."
 	icon_state = "m1_cpt"
 	item_state = "m1_cpt"
-	worn_state = "m1_cpt"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -3100,7 +2841,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the USMC."
 	icon_state = "ushelmet_mar"
 	item_state = "ushelmet_mar"
-	worn_state = "ushelmet_mar"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -3110,7 +2850,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the USMC, this one bearing the rank of Sergeant."
 	icon_state = "ushelmet_mar_nco"
 	item_state = "ushelmet_mar_nco"
-	worn_state = "ushelmet_mar_nco"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -3120,7 +2859,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "The typical rounded steel helmet of the red army, with the white markings of the medical corps."
 	icon_state = "sovhelm_medic"
 	item_state = "sovhelm_medic"
-	worn_state = "sovhelm_medic"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
@@ -3136,17 +2874,14 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	if (ishuman(loc))
 		var/mob/living/human/H = loc
 		if (H.gender == "female")
-			worn_state = "upa_uni_f"
 			H.update_inv_w_uniform()
 		else
-			worn_state = "upa_uni"
 			H.update_inv_w_uniform()
 /obj/item/clothing/under/ww2/upa/off
 	name = "UPA officer uniform"
 	desc = "A Ukrayins'ka Povstans'ka Armiya officer uniform."
 	icon_state = "upa_off"
 	item_state = "upa_off"
-	worn_state = "upa_off"
 	base_state = "upa_off"
 	rolled = FALSE
 /obj/item/clothing/under/ww2/upa/verb/roll_sleeves()
@@ -3154,7 +2889,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	set src in usr
 	if (rolled && usr.gender == "male")
 		item_state = "[base_state]"
-		worn_state = "[base_state]"
 		icon_state = "[base_state]"
 		item_state_slots["w_uniform"] = "[base_state]"
 		to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
@@ -3163,7 +2897,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		update_clothing_icon()
 	else if (!rolled && usr.gender == "male")
 		item_state = "[base_state]_rolled"
-		worn_state = "[base_state]_rolled"
 		icon_state = "[base_state]_rolled"
 		item_state_slots["w_uniform"] = "[base_state]_rolled"
 		to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
@@ -3173,7 +2906,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		update_clothing_icon()
 	if (rolled && usr.gender == "female")
 		item_state = "[base_state]"
-		worn_state = "upa_uni_f"
 		icon_state = "[base_state]"
 		item_state_slots["w_uniform"] = "[base_state]"
 		to_chat(usr, "<span class = 'danger'>You roll down your uniform's sleeves.</span>")
@@ -3182,7 +2914,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		update_clothing_icon()
 	else if (!rolled && usr.gender == "female")
 		item_state = "[base_state]_rolled"
-		worn_state = "upa_uni_rolled_f"
 		icon_state = "[base_state]_rolled"
 		item_state_slots["w_uniform"] = "[base_state]_rolled"
 		to_chat(usr, "<span class = 'danger'>You roll up your uniform's sleeves.</span>")
@@ -3196,25 +2927,21 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A cap and worn by the Ukrayins'ka Povstans'ka Armiya."
 	icon_state = "upa_cap"
 	item_state = "upa_cap"
-	worn_state = "upa_cap"
 /obj/item/clothing/head/ww2/upa_pilotka
 	name = "UPA pilotka"
 	desc = "A pilotka and worn by the Ukrayins'ka Povstans'ka Armiya."
 	icon_state = "upapilotka"
 	item_state = "upapilotka"
-	worn_state = "upapilotka"
 /obj/item/clothing/head/ww2/upa_cap_off
 	name = "UPA officer cap"
 	desc = "A cap and worn by the Ukrayins'ka Povstans'ka Armiya NCO's."
 	icon_state = "upa_off"
 	item_state = "upa_off"
-	worn_state = "upa_off"
 /obj/item/clothing/head/ww2/upa_cap_commander
 	name = "UPA officer cap"
 	desc = "A cap and worn by the Ukrayins'ka Povstans'ka Armiya Officers."
 	icon_state = "upa_commander"
 	item_state = "upa_commander"
-	worn_state = "upa_commander"
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/accessory/armband/redcross
 	name = "red cross armband"
@@ -3251,7 +2978,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A standard coat made from wool."
 	icon_state = "moderncoat"
 	item_state = "moderncoat"
-	worn_state = "moderncoat"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
@@ -3262,7 +2988,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A fancy coat made from wool."
 	icon_state = "woolcoat"
 	item_state = "woolcoat"
-	worn_state = "woolcoat"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
@@ -3273,7 +2998,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A royal coat used for royal people."
 	icon_state = "royalcoat"
 	item_state = "royalcoat"
-	worn_state = "royalcoat"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
@@ -3284,7 +3008,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A expensive coat made from wool and leather."
 	icon_state = "expensivecoat"
 	item_state = "expensivecoat"
-	worn_state = "expensivecoat"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
@@ -3295,7 +3018,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A standard military jacket."
 	icon_state = "servicejacket"
 	item_state = "servicejacket"
-	worn_state = "servicejacket"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 5, arrow = 0, gun = FALSE, energy = 10, bomb = 5, bio = 15, rad = 15)
@@ -3306,7 +3028,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A brown jacket meant for high-altitude temperatures."
 	icon_state = "bomberjacket"
 	item_state = "bomberjacket"
-	worn_state = "bomberjacket"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
@@ -3317,7 +3038,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A black jacket meant for high-altitude temperatures."
 	icon_state = "blackbomberjacket"
 	item_state = "blackbomberjacket"
-	worn_state = "blackbomberjacket"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
@@ -3328,7 +3048,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A black jacket, favoured by the bold and recreational thrill seekers."
 	icon_state = "biker"
 	item_state = "biker"
-	worn_state = "biker"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
@@ -3339,7 +3058,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A sleek alligator scale jacket, bold and impression-setting like the people who wear it. 'See-ya later alligator'."
 	icon_state = "gator_jacket"
 	item_state = "gator_jacket"
-	worn_state = "gator_jacket"
 	value = 150
 
 /obj/item/weapon/storage/belt/gulagguard
@@ -3372,7 +3090,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "Seems to be two piece red Bikini, the top is held up by straps."
 	icon_state = "r_strapbikini"
 	item_state = "r_strapbikini"
-	worn_state = "r_strapbikini"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
@@ -3381,7 +3098,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "Seems to be two piece red Bikini, the top is held up by a tight horizontal band."
 	icon_state = "r_bandbikini"
 	item_state = "r_bandbikini"
-	worn_state = "r_bandbikini"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
@@ -3391,7 +3107,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "Seems to be pants made for swiming in."
 	icon_state = "r_swimtrunks"
 	item_state = "r_swimtrunks"
-	worn_state = "r_swimtrunks"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
@@ -3401,7 +3116,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "Seems to be two piece blue Bikini, the top is held up by straps."
 	icon_state = "b_strapbikini"
 	item_state = "b_strapbikini"
-	worn_state = "b_strapbikini"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
@@ -3410,7 +3124,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "Seems to be two piece blue Bikini, the top is held up by a tight horizontal band."
 	icon_state = "b_bandbikini"
 	item_state = "b_bandbikini"
-	worn_state = "b_bandbikini"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
@@ -3419,7 +3132,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "Seems to be pants made for swiming in."
 	icon_state = "b_swimtrunks"
 	item_state = "b_swimtrunks"
-	worn_state = "b_swimtrunks"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
@@ -3428,7 +3140,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "Seems to be two piece green Bikini, the top is held up by straps."
 	icon_state = "g_strapbikini"
 	item_state = "g_strapbikini"
-	worn_state = "g_strapbikini"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
@@ -3437,7 +3148,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "Seems to be two piece green Bikini, the top is held up by a tight horizontal cloth."
 	icon_state = "g_bandbikini"
 	item_state = "g_bandbikini"
-	worn_state = "g_bandbikini"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
@@ -3447,7 +3157,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "Seems to be pants made for swiming in."
 	icon_state = "g_swimtrunks"
 	item_state = "g_swimtrunks"
-	worn_state = "g_swimtrunks"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
@@ -3516,25 +3225,21 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	desc = "A long black leather coat."
 	icon_state = "leathercoat_black"
 	item_state = "leathercoat_black"
-	worn_state = "leathercoat_black"
 
 /obj/item/clothing/suit/storage/coat/modern_long_brown
 	name = "modern brown coat"
 	desc = "A modern long brown coat."
 	icon_state = "mlongcoat_brown"
 	item_state = "mlongcoat_brown"
-	worn_state = "mlongcoat_brown"
 
 /obj/item/clothing/suit/storage/coat/modern_long_black
 	name = "modern black coat"
 	desc = "A modern long black coat."
 	icon_state = "mlongcoat_black"
 	item_state = "mlongcoat_black"
-	worn_state = "mlongcoat_black"
 
 /obj/item/clothing/suit/storage/coat/gentleman
 	name = "gentleman coat"
 	desc = "An elegant black coat."
 	icon_state = "gentlemancoat"
 	item_state = "gentlemancoat"
-	worn_state = "gentlemancoat"

@@ -3,7 +3,6 @@
 	desc = "A football jersey of the Unga Bunga United, U.B.U."
 	icon_state = "football_red"
 	item_state = "football_red"
-	worn_state = "football_red"
 	force = 0.0
 	throwforce = 0.0
 	var/player_number = 0
@@ -13,7 +12,6 @@
 	desc = "A C.R. Flamengo football shirt, with yellow swimming trunks."
 	icon_state = "flamengo"
 	item_state = "flamengo"
-	worn_state = "flamengo"
 	player_number = 10
 
 /obj/item/clothing/under/football/red
@@ -21,28 +19,24 @@
 	desc = "A football jersey of the Unga Bunga United, U.B.U."
 	icon_state = "football_red"
 	item_state = "football_red"
-	worn_state = "football_red"
 
 /obj/item/clothing/under/football/red/goalkeeper
 	name = "Unga Bunga goalkeeper jersey"
 	desc = "A football jersey of the goalkeeper of Unga Bunga United, U.B.U."
 	icon_state = "football_red_gk"
 	item_state = "football_red_gk"
-	worn_state = "football_red_gk"
 
 /obj/item/clothing/under/football/blue
 	name = "Chad Town jersey"
 	desc = "A football jersey of the Chad Town Football Club, C.T.F.C."
 	icon_state = "football_blue"
 	item_state = "football_blue"
-	worn_state = "football_blue"
 
 /obj/item/clothing/under/football/blue/goalkeeper
 	name = "Chad Town goalkeeper jersey"
 	desc = "A football jersey of the goalkeeper of Chad Town Football Club, C.T.F.C."
 	icon_state = "football_blue_gk"
 	item_state = "football_blue_gk"
-	worn_state = "football_blue_gk"
 
 // Campaign
 
@@ -51,28 +45,24 @@
 	desc = "A football jersey of the Redmenia United, U.B.U."
 	icon_state = "football_red"
 	item_state = "football_red"
-	worn_state = "football_red"
 
 /obj/item/clothing/under/football/red_campaign/goalkeeper
 	name = "Redmenia goalkeeper jersey"
 	desc = "A football jersey of the goalkeeper of Redmenia United, U.B.U."
 	icon_state = "football_red_gk"
 	item_state = "football_red_gk"
-	worn_state = "football_red_gk"
 
 /obj/item/clothing/under/football/blue_campaign
 	name = "Blugoslavia jersey"
 	desc = "A football jersey of the Blugoslavia Football Club, C.T.F.C."
 	icon_state = "football_blue"
 	item_state = "football_blue"
-	worn_state = "football_blue"
 
 /obj/item/clothing/under/football/blue_campaign/goalkeeper
 	name = "Blugoslavia goalkeeper jersey"
 	desc = "A football jersey of the goalkeeper of Blugoslavia Football Club, C.T.F.C."
 	icon_state = "football_blue_gk"
 	item_state = "football_blue_gk"
-	worn_state = "football_blue_gk"
 
 ///////////CUSTOM JERSEY//////////////
 /obj/item/clothing/under/football/custom
@@ -88,7 +78,6 @@
 	var/shirt_vstripes_color = 0
 	item_state = "football_custom"
 	icon_state = "football_custom"
-	worn_state = "football_custom"
 	heat_protection = LOWER_TORSO|UPPER_TORSO
 	color = "#FFFFFF"
 	New()
@@ -289,7 +278,6 @@
 	desc = "A pair of football trainers."
 	icon_state = "football"
 	item_state = "football"
-	worn_state = "football"
 	armor = list(melee = 60, arrow = 5, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	siemens_coefficient = 0.6
 	force = 0.0

@@ -5,7 +5,6 @@
 	desc = "Used to steer a vehicle."
 	icon_state = "wheel_b"
 	item_state = "wheel_b"
-	worn_state = "wheel_b"
 	var/obj/structure/bed/chair/drivers/drivingchair = null
 	var/obj/structure/vehicleparts/frame/control = null
 	var/lastdirchange = 0
@@ -434,7 +433,6 @@
 	icon = 'icons/obj/device.dmi'
 	icon_state = "turret_control"
 	item_state = "turret_control"
-	worn_state = "turret_control"
 	nothrow = TRUE
 	nodrop = TRUE
 	var/datum/action/toggle_scope/azoom

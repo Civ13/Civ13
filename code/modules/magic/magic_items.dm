@@ -422,7 +422,6 @@
 	icon = 'icons/obj/magic_items.dmi'
 	icon_state = "mac_jacket"
 	item_state = "mac_jacket"
-	worn_state = "mac_jacket"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 5, arrow = 0, gun = FALSE, energy = 0, bomb = 0, bio = 0, rad = 0)
 	slot_flags = SLOT_OCLOTHING

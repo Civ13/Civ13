@@ -8,7 +8,6 @@
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "harpoon"
 	item_state = "harpoon"
-	worn_state = "spear"
 	throw_speed = 3
 	throw_range = 7
 	allow_spin = FALSE
@@ -121,7 +120,6 @@
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "rake"
 	item_state = "rake"
-	worn_state = "rake"
 	default_material = "iron"
 	force_divisor = 0.35 // 5 with weight 20 (steel)
 	thrown_force_divisor = 0.35 // as above
@@ -160,7 +158,6 @@
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "spear"
 	item_state = "spear"
-	worn_state = "spear"
 	default_material = "wood"
 	throw_speed = 6
 	throw_range = 11
@@ -225,7 +222,6 @@
 	desc = "A long hafted wood spear with a finely sharpened iron point; rewnown for being the weapon of choice of zulu warriors."
 	icon_state = "assagai"
 	item_state = "assagai"
-	worn_state = "assagai"
 	force_divisor = 0.8 // 32 with hardness 40 (wood)
 	thrown_force_divisor = 1.6 // 29 with weight 18 (wood)
 
@@ -535,7 +531,6 @@
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "pilum"
 	item_state = "pilum"
-	worn_state = "pilum"
 	default_material = "wood"
 	throw_speed = 6
 	throw_range = 14
@@ -630,7 +625,6 @@
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "dory"
 	item_state = "dory"
-	worn_state = "dory"
 	default_material = "wood"
 	throw_speed = 4
 	throw_range = 8
@@ -654,7 +648,6 @@
 	slot_flags = SLOT_SHOULDER
 	icon_state = "sarissa"
 	item_state = "sarissa"
-	worn_state = "sarissa"
 	default_material = "wood"
 	throw_speed = 1
 	throw_range = 1
@@ -763,12 +756,10 @@
 	if (!istype(loc, /mob/living/human))
 		deployed = FALSE
 		item_state = initial(item_state)
-		worn_state = initial(worn_state)
 	else
 		var/mob/living/human/US = loc
 		if (deployed)
 			item_state = ""
-			worn_state = ""
 			var/img_state
 			US.overlays -= standing
 			if (US.dir == NORTH)
@@ -800,7 +791,6 @@
 		else if (!deployed)
 			US.overlays -= standing
 			item_state = initial(item_state)
-			worn_state = initial(worn_state)
 		spawn(1)
 			update_icon()
 
@@ -818,7 +808,6 @@
 	slot_flags = SLOT_SHOULDER
 //	icon_state = "pike"
 //	item_state = "pike"
-//	worn_state = "pike"
 	default_material = "iron"
 	allow_spin = FALSE
 	force_divisor = 0.85 // 42 with hardness 60 (steel)
@@ -868,7 +857,6 @@
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "halberd"
 	item_state = "halberd"
-	worn_state = "halberd"
 	default_material = "iron"
 	throw_speed = 3
 	throw_range = 4
@@ -892,7 +880,6 @@
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "halberd"
 	item_state = "halberd"
-	worn_state = "halberd"
 	default_material = "iron"
 	throw_speed = 3
 	throw_range = 4
@@ -916,7 +903,6 @@
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "pike"
 	item_state = "pike"
-	worn_state = "pike"
 	default_material = "iron"
 	throw_speed = 4
 	throw_range = 5

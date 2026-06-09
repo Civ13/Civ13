@@ -356,7 +356,6 @@
 	desc = "An oversized white t-shirt and purple cargo shorts."
 	icon_state = "ballas1"
 	item_state = "ballas1"
-	worn_state = "ballas1"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/ballas2
@@ -364,7 +363,6 @@
 	desc = "An oversized black outfit."
 	icon_state = "ballas2"
 	item_state = "ballas2"
-	worn_state = "ballas2"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/ballas3
@@ -372,7 +370,6 @@
 	desc = "An oversized purple shirt and khaki cargo pants."
 	icon_state = "ballas3"
 	item_state = "ballas3"
-	worn_state = "ballas3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/grove1
@@ -380,7 +377,6 @@
 	desc = "An oversized green sweatshirt and jeans."
 	icon_state = "grove1"
 	item_state = "grove1"
-	worn_state = "grove1"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/grove2
@@ -388,7 +384,6 @@
 	desc = "A green checkered shirt and beige pants."
 	icon_state = "grove2"
 	item_state = "grove2"
-	worn_state = "grove2"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/grove3
@@ -396,7 +391,6 @@
 	desc = "A green basketball jersey and black jeans."
 	icon_state = "grove3"
 	item_state = "grove3"
-	worn_state = "grove3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/head/custom/custom_beanie/black
@@ -408,18 +402,15 @@
 	desc = "A purple bandana tied in the front."
 	icon_state = "bandana_ballas1"
 	item_state = "bandana_ballas1"
-	worn_state = "bandana_ballas1"
 	flags_inv = BLOCKHEADHAIR
 
 /obj/item/clothing/head/bandana_ballas/two
 	icon_state = "bandana_ballas2"
 	item_state = "bandana_ballas2"
-	worn_state = "bandana_ballas2"
 
 /obj/item/clothing/head/bandana_grove
 	name = "green bandana"
 	desc = "A green bandana tied in the front."
 	icon_state = "bandana_grove"
 	item_state = "bandana_grove"
-	worn_state = "bandana_grove"
 	flags_inv = BLOCKHEADHAIR
