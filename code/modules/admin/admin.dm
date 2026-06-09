@@ -827,20 +827,7 @@ proc/admin_notice(var/message, var/rights)
 		message_admins(msg, key_name(usr))
 		log_admin(msg)
 
-/*
-/datum/admins/proc/toggletintedweldhelmets()
-	set category = "Debug"
-	set desc = "Reduces view range when wearing welding helmets"
-	set name = "Toggle tinted welding helmets."
-	config.welder_vision = !( config.welder_vision )
-	if (config.welder_vision)
-		to_chat(world, "<b>Reduced welder vision has been enabled!</b>")
-	else
-		to_chat(world, "<b>Reduced welder vision has been disabled!</b>")
-	log_admin("[key_name(usr)] toggled welder vision.")
-	message_admins("[key_name_admin(usr)] toggled welder vision.", key_name_admin(usr))
 
-*/
 
 /datum/admins/proc/toggleguests()
 	set category = "Server"

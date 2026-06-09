@@ -802,17 +802,10 @@ default behaviour is:
 	pulling = AM
 	AM.pulledby = src
 
-	/*if (pullin)
-		pullin.icon_state = "pull1"*/
 	if (HUDneed.Find("pull"))
 		var/obj/screen/HUDthrow/HUD = HUDneed["pull"]
 		HUD.update_icon()
-/*
-	if (ishuman(AM))
-		var/mob/living/human/H = AM
-		if (H.pull_damage())
-			to_chat(src, SPAN_WARNING("<b>Pulling \the [H] in their current condition would probably be a bad idea.</b>"))
-*/
+
 	//Attempted fix for people flying away through space when cuffed and dragged.
 	if (ismob(AM))
 		var/mob/pulled = AM
@@ -840,16 +833,3 @@ default behaviour is:
 		return
 /mob/living/proc/slip(var/slipped_on,stun_duration=8)
 	return FALSE
-//Code to handle merging stacks when they are in mob's direct inventory.
-//Called when object enters the contents of a mob. Storage items not supported yet.
-//Not used because people don't like it. Might be useful for merging in containers.
-/* /mob/living/Entered(var/obj/item/stack/O)
- * 	..()
- * 	if(istype(O, /obj/item/stack))
- * 		if(O.amount != O.max_amount)
- * 			for(var/obj/item/stack/S in contents)
- * 				if(S.stacktype == O.stacktype && S.amount != S.max_amount)
- * 					if(O.amount == O.max_amount)
- * 						break
- * 					S.merge(O)
- */

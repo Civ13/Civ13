@@ -126,26 +126,7 @@
 	else
 		user_unbuckle_mob(user)
 	return
-/* removed this incredibly dumb feature - Kachnov
-/obj/structure/bed/chair/wheelchair/CtrlClick(var/mob/user)
-	if (in_range(src, user))
-		if (!ishuman(user))	return
-		if (user == buckled_mob)
-			to_chat(user, "<span class='warning'>You realize you are unable to push the wheelchair you sit in.</span>")
-			return
-		if (!pulling)
-			pulling = user
-			user.pulledby = src
-			if (user.pulling)
-				user.stop_pulling()
-			user.set_dir(get_dir(user, src))
-			to_chat(user, "You grip \the [name]'s handles.")
-		else
-			to_chat(usr, "You let go of \the [name]'s handles.")
-			pulling.pulledby = null
-			pulling = null
-		return
-*/
+
 /obj/structure/bed/chair/wheelchair/Bump(atom/A)
 	..()
 	if (!buckled_mob)	return

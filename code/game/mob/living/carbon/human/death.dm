@@ -251,31 +251,7 @@
 								else
 									map.scores["Eastern Army"] += 1
 
-		/*
-			if (MAP_AFRICAN_WARLORDS)
-				if (faction_text == CIVILIAN && original_job_title == "United Nations Doctor")
-					var/mob/living/human/killer = last_harmed
-					if (ishuman(killer))
-						map.scores[killer.nationality] -= 12
-						to_chat(world, "<big><b>A United Nations Doctor has been killed! The elders are furious and have put a bounty on [killer.real_name], a [killer.original_job_title]! Bring his head to your altar for a generous reward!</b></big>")
-						killer.nationality = "Exiled"
-				if (faction_text == CIVILIAN && original_job_title == "United Nations Engineer")
-					var/mob/living/human/killer = last_harmed
-					if (ishuman(killer))
-						map.scores[killer.nationality] -= 10
-						killer.nationality = "Exiled"
-						to_chat(world, "<big><b>A United Nations Engineer has been killed! The elders are furious and have put a bounty on [killer.real_name], a [killer.original_job_title]! Bring his head to your altar for a generous reward!</b></big>")
-				if (faction_text == CIVILIAN && original_job_title == "United Nations Soldier")
-					map.scores["Blugisi"] -= 4
-					map.scores["Yellowagwana"] -= 4
-					map.scores["Redkantu"] -= 4
-					to_chat(world, "<big><b>A United Nations Soldier has been killed. The United Nations have lowered their financial support in the region. The local population is paying the consequences!</b></big>")
-				if (faction_text == CIVILIAN && original_job_title == "Local Policeman")
-					map.scores["Blugisi"] -= 4
-					map.scores["Yellowagwana"] -= 4
-					map.scores["Redkantu"] -= 4
-					to_chat(world, "<big><b>A Local Policeman has been killed! The local population is in shock and lowered their support for the warbands!</b></big>")
-		*/
+
 			if (MAP_THE_ART_OF_THE_DEAL)
 				if ((civilization && civilization) in map.scores)
 					if (civilization == "Paramedics")

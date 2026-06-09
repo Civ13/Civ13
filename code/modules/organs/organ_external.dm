@@ -715,12 +715,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	//things tend to bleed if they are CUT OPEN
 	if (open && !clamped && (H && !(H.species.flags & NO_BLOOD)))
 		status |= ORGAN_BLEEDING
-/* Maybe bones shouldnt randomly break when stacking damage?
-	//Bone fractures
-	if (blunt_dam >= min_broken_damage * config.organ_health_multiplier && !H.buckled && !H.resting)
-		if (blunt_dam > fracturetimer+20)
-			fracture()
-*/
+
 	if (!(brute_dam+burn_dam) || !number_wounds)
 		disfigured = FALSE
 

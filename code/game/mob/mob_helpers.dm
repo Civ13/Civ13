@@ -430,36 +430,7 @@ proc/is_blind(A)
 	else if (id && istype(id, /obj/item/weapon/card/id/centcom))
 		return SAFE_PERP
 */
-/*
-	if (check_access && !access_obj.allowed(src))
-		threatcount += 4
-*/
-/*
-	if (auth_weapons && !access_obj.allowed(src))
-		if (istype(l_hand, /obj/item/weapon/gun) || istype(l_hand, /obj/item/weapon/melee))
-			threatcount += 4
 
-		if (istype(r_hand, /obj/item/weapon/gun) || istype(r_hand, /obj/item/weapon/melee))
-			threatcount += 4
-
-		if (istype(belt, /obj/item/weapon/gun) || istype(belt, /obj/item/weapon/melee))
-			threatcount += 2
-
-		if (species.name != "Human")
-			threatcount += 2*/
-/*
-	if (check_records || check_arrest)
-		var/perpname = name
-		if (id)
-			perpname = id.registered_name
-
-		var/datum/data/record/R = find_security_record("name", perpname)
-		if (check_records && !R)
-			threatcount += 4
-
-		if (check_arrest && R && (R.fields["criminal"] == "*Arrest*"))
-			threatcount += 4
-*/
 	return threatcount
 
 /mob/living/simple_animal/hostile/assess_perp(var/obj/access_obj, var/check_access, var/auth_weapons, var/check_records, var/check_arrest)

@@ -20,13 +20,7 @@ Get the ultimate area of `A`, similarly to [get_turf].
 
 #define isdatum(A) istype(A, /datum)
 
-#define isimage(A) istype(A, /image)
-
 #define isicon(A) istype(A, /icon)
-
-#define isscreen(A) istype(A, /obj/screen)
-
-#define ishud(A) istype(A, /obj/screen)
 
 //MOB LEVEL
 
@@ -46,13 +40,9 @@ Get the ultimate area of `A`, similarly to [get_turf].
 
 #define ishuman(A) istype(A, /mob/living/human)
 
-#define isbrain(A) istype(A, /mob/living/human/brain)
-
 //---------------------------------------------------
 
 #define isanimal(A) istype(A, /mob/living/simple_animal)
-
-#define iscorgi(A) istype(A, /mob/living/simple_animal/corgi)
 
 #define ismouse(A) istype(A, /mob/living/simple_animal/mouse)
 //---------------------------------------------------
@@ -80,11 +70,7 @@ Get the ultimate area of `A`, similarly to [get_turf].
 
 //TURF LEVEL
 
-#define iswall(X) istype(X, /turf/wall)
-
 #define isfloor(X) istype(X, /turf/floor)
-
-#define istrueflooring(X) (isfloor(X) && !istype(X, /turf/floor/plating))
 
 // other
 #define isclient(A) istype(A, /client)
@@ -92,32 +78,18 @@ Get the ultimate area of `A`, similarly to [get_turf].
 // Tests if an datum has been deleted.
 #define isDeleted(D) (!D || D:gcDestroyed)
 
-#define forrange(x) for (var/v = 1 to x)
-
 #define to_chat(target, message)						to_chat_wrapper(target, message)
 #define to_world(message)								to_chat_wrapper(world, message)
 #define to_world_log(message)							world.log << message
 #define sound_to(target, sound)							 target << sound
 #define show_browser(target, browser_content, browser_name) target << browse(browser_content, browser_name)
-#define close_browser(target, browser_name)				 target << browse(null, browser_name)
-#define show_image(target, image)						 target << (image)
 #define send_rsc(target, rsc_content, rsc_name)			 target << browse_rsc(rsc_content, rsc_name)
-
-#define MAP_IMAGE_PATH "nano/images/[GLOB.using_map.path]/"
-
-#define map_image_file_name(z_level) "[GLOB.using_map.path]-[z_level].png"
-
-#define RANDOM_BLOOD_TYPE pick(4;"O-", 36;"O+", 3;"A-", 28;"A+", 1;"B-", 20;"B+", 1;"AB-", 5;"AB+")
-
-#define any2ref(x) "\ref[x]"
 
 #define CanInteract(user, state) (CanUseTopic(user, state) == STATUS_INTERACTIVE)
 
 #define CanInteractWith(user, target, state) (target.CanUseTopic(user, state) == STATUS_INTERACTIVE)
 
 #define CanPhysicallyInteract(user) CanInteract(user, GLOB.physical_state)
-
-#define CanPhysicallyInteractWith(user, target) CanInteractWith(user, target, GLOB.physical_state)
 
 #define QDEL_NULL_LIST(x) if(x) { for(var/y in x) { qdel(y) } ; x = null }
 
@@ -126,8 +98,6 @@ Get the ultimate area of `A`, similarly to [get_turf].
 // Helper macros to aid in optimizing lazy instantiation of lists.
 // All of these are null-safe, you can use them without knowing if the list var is initialized yet
 
-//Picks from the list, with some safeties, and returns the "default" arg if it fails
-#define DEFAULTPICK(L, default) ((istype(L, /list) && L:len) ? pick(L) : default)
 // Ensures L is initailized after this point
 #define LAZYINITLIST(L) if (!L) L = list()
 // Sets a L back to null iff it is empty
@@ -136,8 +106,6 @@ Get the ultimate area of `A`, similarly to [get_turf].
 #define LAZYREMOVE(L, I) if(L) { L -= I; if(!length(L)) { L = null; } }
 // Adds I to L, initalizing L if necessary
 #define LAZYADD(L, I) if(!L) { L = list(); } L += I;
-// Insert I into L at position X, initalizing L if necessary
-#define LAZYINSERT(L, I, X) if(!L) { L = list(); } L.Insert(X, I);
 // Adds I to L, initalizing L if necessary, if I is not already in L
 #define LAZYDISTINCTADD(L, I) if(!L) { L = list(); } L |= I;
 // Sets L[A] to I, initalizing L if necessary
@@ -146,15 +114,8 @@ Get the ultimate area of `A`, similarly to [get_turf].
 #define LAZYACCESS(L, I) (L ? (isnum(I) ? (I > 0 && I <= length(L) ? L[I] : null) : L[I]) : null)
 // Reads the length of L, returning 0 if null
 #define LAZYLEN(L) length(L)
-// Safely checks if I is in L
-#define LAZYISIN(L, I) (L ? (I in L) : FALSE)
 // Null-safe L.Cut()
 #define LAZYCLEARLIST(L) if(L) L.Cut()
-// Reads L or an empty list if L is not a list.  Note: Does NOT assign, L may be an expression.
-#define SANITIZE_LIST(L) ( islist(L) ? L : list() )
-
-// Insert an object A into a sorted list using cmp_proc (/code/_helpers/cmp.dm) for comparison.
-#define ADD_SORTED(list, A, cmp_proc) if(!list.len) {list.Add(A)} else {list.Insert(FindElementIndex(A, list, cmp_proc), A)}
 
 #define OPPOSITE_DIR(D) turn(D, 180)
 #define TURN_LEFT(D) turn(D, 90)
@@ -169,6 +130,4 @@ Get the ultimate area of `A`, similarly to [get_turf].
 #define SPAN_BLUE(X) SPAN("blue", X)
 #define SPAN_GREEN(X) SPAN("green", X)
 #define SPAN_GREEN_BOLD(X) SPAN("green_bold", X)
-#define SPAN_ALERT(X) SPAN("alert", X)
-#define SPAN_DEADSAY(X) SPAN("deadsay", X)
 #define SPAN_INFO(X) SPAN("info", X)
