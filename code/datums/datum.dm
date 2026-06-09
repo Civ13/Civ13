@@ -26,7 +26,6 @@
 	  *
 	  * Lazy associated list in the structure of `type:component/list of components`
 	  */
-	var/list/datum_components
 	/**
 	  * Any datum registered to receive signals from this datum is in this list
 	  *
@@ -61,6 +60,10 @@
 	var/list/found_refs
 	#endif
 #endif
+
+/// Stub for the SEND_SIGNAL macro — never called since nothing registers signals
+/datum/proc/_SendSignal(sigtype, list/arguments)
+	return NONE
 
 /**
  * Called when a href for this datum is clicked
@@ -104,38 +107,7 @@
 			continue
 		qdel(timer)
 
-	//BEGIN: ECS SHIT
-
-	var/list/dc = datum_components
-	if(dc)
-		var/all_components = dc[/datum/component]
-		if(length_char(all_components))
-			for(var/datum/component/component as anything in all_components)
-				qdel(component, FALSE, TRUE)
-		else
-			var/datum/component/C = all_components
-			qdel(C, FALSE, TRUE)
-		dc.Cut()
-
-	clear_signal_refs()
-	//END: ECS SHIT
 	return QDEL_HINT_QUEUE
-
-/datum/proc/clear_signal_refs()
-	var/list/lookup = _listen_lookup
-	if(lookup)
-		for(var/sig in lookup)
-			var/list/comps = lookup[sig]
-			if(length_char(comps))
-				for(var/datum/component/comp as anything in comps)
-					comp.UnregisterSignal(src, sig)
-			else
-				var/datum/component/comp = comps
-				comp.UnregisterSignal(src, sig)
-		_listen_lookup = lookup = null
-
-	for(var/target in _signal_procs)
-		UnregisterSignal(target, _signal_procs[target])
 
 #ifdef DATUMVAR_DEBUGGING_MODE
 /datum/proc/save_vars()
