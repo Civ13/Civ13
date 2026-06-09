@@ -64,92 +64,6 @@
 /proc/isobject(x)
 	return (istype(x, /datum) || istype(x, /client) || islist(x))
 
-// Clone of list()
-/proc/n_list()
-	var/list/returnlist = list()
-	for (var/e in args)
-		returnlist.Add(e)
-	return returnlist
-
-// Clone of pick()
-/proc/n_pick()
-	var/list/finalpick = list()
-	for (var/e in args)
-		if (isobject(e))
-			if (istype(e, /list))
-				var/list/sublist = e
-				for (var/sube in sublist)
-					finalpick.Add(sube)
-				continue
-		finalpick.Add(e)
-
-	return pick(finalpick)
-
-// Clone of list[]
-/proc/n_listpos(var/list/L, var/pos, var/value)
-	if (!istype(L, /list)) return
-	if (isnum(pos))
-		if (!value)
-			if (L.len >= pos)
-				return L[pos]
-		else
-			if (L.len >= pos)
-				L[pos] = value
-	else if (istext(pos))
-		if (!value)
-			return L[pos]
-		else
-			L[pos] = value
-
-// Clone of list.Copy()
-/proc/n_listcopy(var/list/L, var/start, var/end)
-	if (!istype(L, /list)) return
-	return L.Copy(start, end)
-
-// Clone of list.Add()
-/proc/n_listadd()
-	var/list/chosenlist
-	var/i = TRUE
-	for (var/e in args)
-		if (i == TRUE)
-			if (isobject(e))
-				if (istype(e, /list))
-					chosenlist = e
-			i = 2
-		else
-			if (chosenlist)
-				chosenlist.Add(e)
-
-// Clone of list.Remove()
-/proc/n_listremove()
-	var/list/chosenlist
-	var/i = TRUE
-	for (var/e in args)
-		if (i == TRUE)
-			if (isobject(e))
-				if (istype(e, /list))
-					chosenlist = e
-			i = 2
-		else
-			if (chosenlist)
-				chosenlist.Remove(e)
-
-// Clone of list.Cut()
-/proc/n_listcut(var/list/L, var/start, var/end)
-	if (!istype(L, /list)) return
-	return L.Cut(start, end)
-
-// Clone of list.Swap()
-/proc/n_listswap(var/list/L, var/firstindex, var/secondindex)
-	if (!istype(L, /list)) return
-	if (L.len >= secondindex && L.len >= firstindex)
-		return L.Swap(firstindex, secondindex)
-
-// Clone of list.Insert()
-/proc/n_listinsert(var/list/L, var/index, var/element)
-	if (!istype(L, /list)) return
-	return L.Insert(index, element)
-
 // --- Miscellaneous functions ---
 
 // Merge of list.Find() and findtext()
@@ -171,46 +85,6 @@
 	if (istext(string) && isnum(start) && isnum(end))
 		if (start > 0)
 			return copytext(string, start, end)
-
-proc/n_repeat(var/string, var/amount)
-	if (istext(string) && isnum(amount))
-		var/i
-		var/newstring = ""
-		if (length(newstring)*amount >=1000)
-			return
-		for (i=0, i<=amount, i++)
-			if (i>=1000)
-				break
-			newstring = newstring + string
-
-		return newstring
-
-proc/n_reverse(var/string)
-	if (istext(string))
-		var/newstring = ""
-		var/i
-		for (i=length(string), i>0, i--)
-			if (i>=1000)
-				break
-			newstring = newstring + copytext(string, i, i+1)
-
-		return newstring
-
-// I don't know if it's neccesary to make my own proc, but I think I have to to be able to check for istext.
-proc/n_str2num(var/string)
-	if (istext(string))
-		return text2num(string)
-
-// Number shit
-proc/n_num2str(var/num)
-	if (isnum(num))
-		return num2text(num)
-
-// Returns TRUE if N is inbetween Min and Max
-proc/n_inrange(var/num, var/min=-1, var/max=1)
-	if (isnum(num)&&isnum(min)&&isnum(max))
-		return ((min <= num) && (num <= max))
-// END OF BY DONKIE :(
 
 // Non-recursive
 // Imported from Mono string.ReplaceUnchecked
