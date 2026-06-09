@@ -541,11 +541,7 @@ var/list/coefflist = list()
 		return NEUTER
 	return gender
 
-/mob/living/human/proc/increase_germ_level(n)
-	if (gloves)
-		gloves.germ_level += n
-	else
-		germ_level += n
+
 
 /mob/living/human/revive()
 

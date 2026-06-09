@@ -570,15 +570,7 @@ bullet_act
 			C.update_clothing_icon()
 	return TRUE
 
-/mob/living/human/proc/check_head_coverage()
-	var/list/body_parts = list(head, wear_mask, wear_suit, w_uniform)
-	for (var/bp in body_parts)
-		if (!bp)	continue
-		if (bp && istype(bp ,/obj/item/clothing))
-			var/obj/item/clothing/C = bp
-			if (C.body_parts_covered & HEAD)
-				return TRUE
-	return FALSE
+
 
 //Used to check if they can be fed food/drinks/pills
 /mob/living/human/proc/check_mouth_coverage()

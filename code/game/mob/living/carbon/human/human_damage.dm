@@ -292,14 +292,7 @@ This function restores all organs.
 	for (var/obj/item/organ/external/current_organ in organs)
 		current_organ.rejuvenate()
 
-/mob/living/human/proc/HealDamage(zone, brute, burn)
-	var/obj/item/organ/external/E = get_organ(zone)
-	if (istype(E, /obj/item/organ/external))
-		if (E.heal_damage(brute, burn))
-			UpdateDamageIcon()
-	else
-		return FALSE
-	return
+
 
 /mob/living/human/proc/get_organ(var/zone)
 	if (!zone)	zone = "chest"
@@ -354,28 +347,7 @@ This function restores all organs.
 	return created_wound
 
 // Find out in how much pain the mob is at the moment.
-/mob/living/human/proc/get_shock()
-	if(!can_feel_pain())
-		return FALSE
 
-	var/traumatic_shock = getHalLoss()                 // Pain.
-	traumatic_shock -= chem_effects[CE_PAINKILLER] // TODO: check what is actually stored here.
-
-	if(stat == UNCONSCIOUS)
-		traumatic_shock *= 0.6
-
-	for (var/obj/item/organ/external/organ in organs)
-		if (organ && (organ.is_broken() || organ.open))
-			traumatic_shock += 30
-
-	if (bloodstr)
-		for (var/datum/reagent/ethanol/E in ingested.reagent_list)
-			traumatic_shock -= E.volume/4
-		for (var/datum/reagent/adrenaline/A in ingested.reagent_list)
-			traumatic_shock -= A.volume*2
-		for (var/datum/reagent/opium/O in ingested.reagent_list)
-			traumatic_shock -= O.volume/2
-	return max(0,traumatic_shock)
 
 // proc to find out in how much pain the mob is at the moment
 /mob/living/human/proc/updateshock()
