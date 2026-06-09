@@ -31,8 +31,6 @@
 	var/ear = null
 	var/hand = null
 	var/glasses = null
-	var/suit_store = null
-
 	var/list/backpacks = list(
 		/obj/item/weapon/storage/backpack
 		)

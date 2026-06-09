@@ -22,8 +22,6 @@
 	//+2 accuracy over the LWAP because only one shot
 	gun_type = GUN_TYPE_BOW
 	attachment_slots = null
-	accuracy_increase_mod = 3.00
-	accuracy_decrease_mod = 7.00
 	KD_chance = KD_CHANCE_HIGH
 	stat = "bows"
 	move_delay = 5
@@ -36,7 +34,6 @@
 	equiptimer = 20
 	gtype = "none"
 	load_delay = 30
-	aim_miss_chance_divider = 3.00
 	accuracy = 4
 
 /obj/item/weapon/gun/projectile/bow/New()
@@ -154,8 +151,6 @@
 	ammo_type = /obj/item/ammo_casing/arrow
 	gun_type = GUN_TYPE_BOW
 	attachment_slots = null
-	accuracy_increase_mod = 1.00
-	accuracy_decrease_mod = 1.00
 	stat = "bow"
 	move_delay = 5
 	fire_delay = 8
@@ -183,8 +178,6 @@
 	ammo_type = /obj/item/ammo_casing/arrow
 	gun_type = GUN_TYPE_BOW
 	attachment_slots = null
-	accuracy_increase_mod = 1.25
-	accuracy_decrease_mod = 1.00
 	stat = "bow"
 	move_delay = 7
 	fire_delay = 10
@@ -212,8 +205,6 @@
 	ammo_type = /obj/item/ammo_casing/arrow
 	gun_type = GUN_TYPE_BOW
 	attachment_slots = null
-	accuracy_increase_mod = 1.35
-	accuracy_decrease_mod = 0.85
 	stat = "bow"
 	move_delay = 5
 	fire_delay = 7
@@ -241,8 +232,6 @@
 	ammo_type = /obj/item/ammo_casing/stone
 	gun_type = GUN_TYPE_BOW
 	attachment_slots = null
-	accuracy_increase_mod = 1.00
-	accuracy_decrease_mod = 1.00
 	stat = "strength"
 	move_delay = 5
 	fire_delay = 8

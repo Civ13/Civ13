@@ -1,0 +1,218 @@
+================================================================================
+COMPLETE REPORT: UNUSED & DEAD-WRITE VARIABLES IN /datum TYPE BLOCKS
+Generated: Automated static analysis of 1213 .dm files in code/ and maps/
+Analysis scope: Member variable declarations in /datum and /datum/... type blocks
+Method: Pattern extraction + grep word-boundary reference counting + manual verification
+================================================================================
+
+PART 1: UNUSED VARIABLES (declared but never referenced anywhere else)
+================================================================================
+These variables only appear on their declaration line. Zero uses elsewhere.
+
+code/_helpers/cmp.dm:          (/datum/qdel_item)
+  Line 59:   hard_deletes           - Only declaration line
+  Line 61:   no_respect_force       - Only declaration line
+  Line 62:   no_hint                - Only declaration line
+  Line 63:   slept_destroy          - Only declaration line
+
+code/datums/browser.dm:          (/datum/browser)
+  Line 12:   head_elements          - Only declaration line
+  Line 13:   body_elements          - Only declaration line
+
+code/datums/configuration.dm:    (/datum/configuration)
+  Line 8:    lobby_screens          - Only declaration line
+  Line 40:   del_new_on_log         - Only declaration line
+  Line 47:   mode_names             - Only declaration line
+  Line 49:   votable_modes          - Only declaration line
+  Line 51:   allow_random_events    - Only declaration line
+  Line 106:  simultaneous_pm_warning_timeout - Only declaration line
+  Line 142:  allow_dabbing          - Only declaration line
+  Line 145:  allowed_seasons        - Only declaration line
+  Line 148:  wlog                   - Only declaration line
+  Line 168:  new_round_webhook_color - Only declaration line
+  Line 169:  new_round_mention_webhook_url - Only declaration line
+  Line 170:  new_round_webhook_url  - Only declaration line
+
+code/datums/datum.dm:            (/datum)
+  Line 23:   status_traits          - Only declaration line
+  Line 25:   hidden_from_codex      - Only declaration line
+
+code/datums/mind.dm:             (/datum/mind)
+  Line 64:   initial_account        - Only declaration line
+
+code/datums/titlecard.dm:        (/datum/titlecard)
+  Line 4:    maptext_areas          - Only declaration line
+  Line 9:    is_game_mode           - Only declaration line
+
+code/datums/vote.dm:             (/datum/vote)
+  Line 13:   gamemode_names         - Only declaration line
+  Line 18:   auto_muted             - Only declaration line
+
+code/game/gameticker.dm:         (/datum/controller/gameticker)
+  Line 13:   post_game              - Only declaration line
+  Line 14:   event_time             - Only declaration line
+  Line 23:   syndicate_coalition    - Only declaration line
+  Line 33:   round_end_announced    - Only declaration line
+  Line 35:   can_latejoin_ruforce   - Only declaration line
+  Line 36:   can_latejoin_geforce   - Only declaration line
+
+code/game/jobs/job.dm:           (/datum/job)
+  Line 34:   suit_store             - Only declaration line
+
+code/game/jobs/job_controller.dm: (/datum/controller/occupations)
+  Line 62:   job_debug              - Only declaration line
+
+code/game/objects/effects/explosion_particles.dm: (/datum/effect/system/expl_particles)
+  Line 22:   total_particles        - Only declaration line
+
+code/game/objects/map_metadata/_map_metadata.dm: (/datum/map_metadata)
+  Line 103:  time_both_sides_locked - Only declaration line
+  Line 104:  time_to_end_round_after_both_sides_locked - Only declaration line
+  Line 180:  disablehud             - Only declaration line
+  Line 224:  age8_top               - Only declaration line
+
+code/game/objects/map_metadata/the_art_of_the_deal.dm: (/datum/map_metadata/the_art_of_the_deal)
+  Line 21:   fac_nr                 - Only declaration line
+  Line 26:   winner_ckeys           - Only declaration line
+
+code/modules/1713/jobs/faction.dm: (/datum/faction)
+  Line 52:   last_returned_image    - Only declaration line
+  Line 53:   last_returned_hud      - Only declaration line
+
+code/modules/1713/machinery/modular_vehicles/_config.dm: (/datum/vehicle_constants)
+  Line 9:    TURN_DELAY             - Only declaration line
+  Line 10:   MOVEMENT_LOOP_DELAY    - Only declaration line
+  Line 11:   MOVEMENT_TICK_RATE     - Only declaration line
+  Line 16:   MIN_WHEELS             - Only declaration line
+  Line 19:   TRACK_SOUND_INTERVAL   - Only declaration line
+  Line 20:   ENGINE_STARTUP_DELAY   - Only declaration line
+  Line 21:   ENGINE_SOUND_VOLUME    - Only declaration line
+  Line 22:   MOVEMENT_SOUND_VOLUME  - Only declaration line
+  Line 26:   PIXEL_OFFSETS          - Only declaration line
+  Line 114:  VEHICLE_TYPE_LIGHT     - Only declaration line
+  Line 115:  VEHICLE_TYPE_MEDIUM    - Only declaration line
+  Line 116:  VEHICLE_TYPE_HEAVY     - Only declaration line
+  Line 117:  VEHICLE_TYPE_APC       - Only declaration line
+  Line 120:  MOVEMENT_TYPE_WHEEL    - Only declaration line
+  Line 121:  MOVEMENT_TYPE_TRACK    - Only declaration line
+  Line 124:  DEFAULT_STATS          - Only declaration line
+
+code/modules/1713/machinery/modular_vehicles/_datums.dm: (/datum/vehicle_configuration, /datum/wheel_config, /datum/engine_config)
+  Line 14:   turn_speed             - Only declaration line
+  Line 23:   weight_multiplier      - Only declaration line
+  Line 24:   speed_multiplier       - Only declaration line
+  Line 27:   max_components         - Only declaration line
+  Line 29:   min_wheels             - Only declaration line
+  Line 32:   default_color          - Only declaration line
+  Line 33:   has_roof               - Only declaration line
+  Line 34:   roof_opacity           - Only declaration line
+  Line 56:   off_road_penalty       - Only declaration line
+  Line 150:  fuel_consumption       - Only declaration line
+  Line 151:  power_output           - Only declaration line
+  Line 153:  idle_sound             - Only declaration line
+
+code/modules/1713/martial_arts/_martial.dm: (/datum/martial_art)
+  Line 34:   smashes_tables         - Only declaration line
+  Line 37:   combo_timer            - Only declaration line
+
+code/modules/client/preferencesSQLite/preference_setup/general/01_basic.dm: (/datum/category_item/player_setup_item/general/basic)
+  Line 6:    valid_second_languages - Only declaration line
+
+code/modules/client/preferencesSQLite/preferences.dm: (/datum/preferences)
+  Line 9:    warns                  - Only declaration line
+
+code/modules/error_handler/error_viewer.dm: (/datum/error_viewer/error_cache)
+  Line 91:   errors_silenced        - Only declaration line
+
+code/modules/surgery/surgery.dm: (/datum/surgery_status/)
+  Line 182:  head_reattach          - Only declaration line
+
+--- Total UNUSED: 70 variables ---
+
+
+================================================================================
+PART 2: DEAD-WRITE VARIABLES (written/assigned but never read)
+================================================================================
+These variables have assignment operations but the value is never used/read.
+
+code/datums/mind.dm:              (/datum/mind)
+  Line 46:   role_alt_title        - 2 writes (assignment =), 0 reads
+                                    (mind.dm:201, job_controller.dm:397)
+                                    Evidence: assigned but never checked/used
+
+  Line 58:   rev_cooldown          - 1 write (mind.dm:207), 0 reads
+                                    Evidence: assigned FALSE, never queried
+
+  Line 61:   brigged_since         - 1 write (mind.dm:208), 0 reads
+                                    Evidence: assigned -1, never checked
+
+code/datums/http.dm:              (/datum/http_response)
+  Line 77:   status_code           - 1 write (http.dm:67), 0 reads
+                                    Evidence: R.status_code = L["status_code"]
+                                    but status_code is never used afterward
+
+  Line 81:   errored               - 1 write (http.dm:71), 0 reads
+                                    Evidence: R.errored = TRUE but never checked
+
+code/datums/configuration.dm:     (/datum/configuration)
+  Line 71:   masterdir             - 1 write (configuration.dm:204), 0 reads
+                                    Evidence: assigned from config file,
+                                    never referenced elsewhere
+
+code/game/jobs/job_controller.dm: (/datum/controller/occupations)
+  Line 60:   unassigned            - 2 writes (lines 398, 417), 0 reads
+                                    Evidence: items added/removed from list
+                                    but list never iterated or checked
+
+code/modules/1713/martial_arts/_martial.dm: (/datum/martial_art)
+  Line 36:   display_combos        - 1 write (sleepingcarp.dm:8), 0 reads
+                                    Evidence: set to TRUE but never checked
+
+code/modules/client/preferencesSQLite/preferences.dm: (/datum/preferences)
+  Line 67:   client_isguest        - 1 write (preferences.dm:85), 0 reads
+                                    Evidence: set to TRUE but never read
+
+code/modules/error_handler/error_viewer.dm: (/datum/error_viewer/error_entry)
+  Line 158:  exc                   - 1 write (error_viewer.dm:178), 0 reads
+                                    Evidence: assigned but exception never
+                                    re-thrown or inspected
+
+code/modules/nano/_nanoui.dm:     (/datum/nanoui)
+  Line 48:   map_z_level           - 1 write (_nanoui.dm:327 via set_map_z_level),
+                                    0 reads (read line 197 commented out)
+                                    Evidence: writing via set_map_z_level()
+                                    but no active read path
+
+code/modules/nano/modules/nano_module.dm: (/datum/nano_module)
+  Line 4:    available_to_ai       - 1 write (appearance_changer.dm:3), 0 reads
+                                    Evidence: set FALSE but never checked
+
+code/modules/nano/nanomanager.dm: (/datum/nanomanager)
+  Line 11:   asset_files           - 1 write (nanomanager.dm:35 via Add), 0 reads
+                                    Evidence: files added to list but list
+                                    never iterated or sent to clients
+
+code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Food-Drinks.dm: (/datum/reagent/capsaicin)
+  Line 345:  slime_temp_adj        - 1 write (food-drinks.dm:377), 0 reads
+                                    Evidence: assigned 15 but never used
+
+--- Total DEAD-WRITE: 14 variables ---
+
+
+================================================================================
+SUMMARY
+================================================================================
+Total member variables analyzed in /datum types: 990 unique names
+UNUSED (never referenced outside declaration): 70
+DEAD-WRITE (written but never read):             14
+USED (referenced outside declaration):           906
+
+Most affected files:
+  - code/datums/configuration.dm: 12 UNUSED + 1 DEAD-WRITE = 13
+  - code/modules/1713/machinery/modular_vehicles/_config.dm: 16 UNUSED
+  - code/modules/1713/machinery/modular_vehicles/_datums.dm: 12 UNUSED
+  - code/game/gameticker.dm: 6 UNUSED
+  - code/game/objects/map_metadata/_map_metadata.dm: 4 UNUSED
+  - code/datums/mind.dm: 1 UNUSED + 3 DEAD-WRITE = 4
+  - code/datums/datum.dm: 2 UNUSED (on the base /datum type itself)
+  - code/_helpers/cmp.dm: 4 UNUSED

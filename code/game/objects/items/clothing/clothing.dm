@@ -5,7 +5,6 @@
 	var/tint = TINT_NONE							// Sets the item's level of visual impairment tint.
 	var/list/species_restricted = null				// Only these species can wear this kit.
 	var/gunshot_residue								// Used by forensics.
-	var/initial_name = "clothing"					// For coloring
 
 	var/list/accessories = list()
 	var/list/valid_accessory_slots
@@ -441,7 +440,6 @@ BLIND	 // can't see anything
 /obj/item/clothing/suit
 	icon = 'icons/obj/clothing/suits.dmi'
 	name = "suit"
-	var/fire_resist = T0C+100
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
 	slot_flags = SLOT_OCLOTHING

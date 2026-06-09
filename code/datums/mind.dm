@@ -60,9 +60,6 @@
 	// the world.time since the mob has been brigged, or -1 if not at all
 	var/brigged_since = -1
 
-	//put this here for easier tracking ingame
-	var/datum/money_account/initial_account
-
 	var/datum/martial_art/martial_art
 	var/static/datum/martial_art/default_martial_art = new/datum/martial_art
 

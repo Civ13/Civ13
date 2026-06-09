@@ -5,8 +5,6 @@ var/list/gamemode_cache = list()
 	var/server_name = null				// server name (for world name / status)
 	var/server_suffix = FALSE				// generate numeric suffix based on server port
 
-	var/list/lobby_screens = list("1") // Which lobby screens are available
-
 	var/lobby_countdown = 90
 	var/round_end_countdown = 90
 
@@ -37,18 +35,14 @@ var/list/gamemode_cache = list()
 	var/vote_no_default = FALSE				// vote does not default to nochange/norestart (tbi)
 	var/vote_no_dead = FALSE				// dead people can't vote (tbi)
 //	var/enable_authentication = FALSE		// goon authentication
-	var/del_new_on_log = TRUE				// del's new players if they log before they spawn in
 	var/objectives_disabled = FALSE 		//if objectives are disabled or not
 	var/protect_roles_from_antagonist = FALSE// If security and such can be traitor/cult/other
 	var/popup_admin_pm = FALSE				//adminPMs to non-admins show in a pop-up 'reply' window when set to 1.
 	var/Ticklag = 0.9
 	var/Tickcomp = FALSE
 //	var/socket_talk	= FALSE					// use socket_talk to communicate with other processes
-	var/list/mode_names = list()
 	var/list/modes = list()					// allowed modes
-	var/list/votable_modes = list()			// votable modes
 	var/list/probabilities = list()			// relative probability of each mode
-	var/allow_random_events = FALSE			// enables random events mid-round when set to TRUE
 	var/guest_jobban = TRUE
 	var/useapprovedlist = FALSE
 	var/use_job_whitelist =  FALSE
@@ -103,8 +97,6 @@ var/list/gamemode_cache = list()
 
 	var/no_click_cooldown = FALSE
 
-	var/simultaneous_pm_warning_timeout = 100
-
 	var/use_recursive_explosions //Defines whether the server uses recursive or circular explosions.
 
 	var/ghost_interaction = FALSE
@@ -138,14 +130,7 @@ var/list/gamemode_cache = list()
 	var/hub_body = ""
 	var/hub_banner_url = "https://i.imgur.com/napac0L.png"
 
-	// dumb memes
-	var/allow_dabbing = FALSE
-
-	// seasons and weather
-	var/list/allowed_seasons = list(1)
-
 	var/list/slog = list()
-	var/list/wlog = list()
 
 	// testing
 	var/use_hunger = TRUE
@@ -164,11 +149,6 @@ var/list/gamemode_cache = list()
 	var/webhook_address = null
 	var/webhook_key = null
 	
-
-	var/new_round_webhook_color = ""
-	var/new_round_mention_webhook_url = ""
-	var/new_round_webhook_url = ""
-
 	var/topic_filtering_whitelist = list("127.0.0.1")
 
 /datum/configuration/proc/load(filename, type = "config") //the type can also be game_options, in which case it uses a different switch. not making it separate to not copypaste code - Urist

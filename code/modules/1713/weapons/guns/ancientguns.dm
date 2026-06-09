@@ -21,8 +21,6 @@ obj/item/weapon/gun/projectile/ancient
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	gun_type = GUN_TYPE_RIFLE
 	attachment_slots = ATTACH_BARREL
-	accuracy_increase_mod = 2.00
-	accuracy_decrease_mod = 6.00
 	KD_chance = KD_CHANCE_HIGH
 	stat = "rifle"
 	move_delay = 5
@@ -34,7 +32,6 @@ obj/item/weapon/gun/projectile/ancient
 	accuracy = 5
 
 	load_delay = 200
-	aim_miss_chance_divider = 3.00
 
 obj/item/weapon/gun/projectile/ancient/firelance
 	name = "fire lance"
@@ -51,7 +48,6 @@ obj/item/weapon/gun/projectile/ancient/firelance
 	edge = TRUE
 
 	load_delay = 150
-	aim_miss_chance_divider = 1.50
 
 obj/item/weapon/gun/projectile/ancient/handcannon
 	name = "handcannon"

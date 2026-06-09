@@ -26,11 +26,8 @@
 	load_method = SINGLE_CASING|SPEEDLOADER
 	accuracy = 10
 
-	accuracy_increase_mod = 1.50
-	accuracy_decrease_mod = 2.00
 	KD_chance = KD_CHANCE_MEDIUM
 	stat = "pistol"
-	aim_miss_chance_divider = 2.00
 	load_delay = 6
 	barrel_x_offset = 17
 	barrel_y_offset = 0
@@ -631,11 +628,8 @@
 	maxhealth = 45
 	gtype = "rifle"
 
-	accuracy_increase_mod = 1.50
-	accuracy_decrease_mod = 2.00
 	KD_chance = KD_CHANCE_LOW
 	stat = "rifle"
-	aim_miss_chance_divider = 2.50
 	load_delay = 7
 
 /obj/item/weapon/gun/projectile/revolving/verb/spin_cylinder()
@@ -770,11 +764,8 @@
 	base_icon = null
 	gtype = "pistol"
 
-	accuracy_increase_mod = 1.50
-	accuracy_decrease_mod = 2.00
 	KD_chance = KD_CHANCE_LOW
 	stat = "pistol"
-	aim_miss_chance_divider = 2.00
 	load_delay = 6
 	accuracy = 10
 

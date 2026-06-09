@@ -175,7 +175,6 @@
 	var/num_fragments = 30  //total number of fragments produced by the grenade
 	var/fragment_damage = 15
 	var/damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
-	var/big_bomb = FALSE
 	var/spread_range = 7
 
 /obj/item/mine/ap/armed
@@ -285,7 +284,6 @@
 	var/num_fragments = 30  //total number of fragments produced by the grenade
 	var/fragment_damage = 15
 	var/damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
-	var/big_bomb = FALSE
 	var/spread_range = 7 */
 
 //Disarming

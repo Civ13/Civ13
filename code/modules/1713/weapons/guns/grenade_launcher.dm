@@ -7,7 +7,6 @@
 	force = 10
 
 	fire_sound = 'sound/weapons/guns/fire/M79.ogg'
-	fire_sound_text = "a metallic thunk"
 	shake_strength = 0
 	firing_range = 40
 	release_force = 5

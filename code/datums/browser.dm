@@ -9,8 +9,6 @@
 	var/stylesheets[0]
 	var/scripts[0]
 	var/title_image
-	var/head_elements
-	var/body_elements
 	var/head_content = ""
 	var/content = ""
 	var/title_buttons = ""

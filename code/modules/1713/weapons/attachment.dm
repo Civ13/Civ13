@@ -453,7 +453,6 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/scope/adjustable/advanced
 	icon = 'icons/obj/gun_att.dmi'
 	icon_state = "holographic"
-	var/scopeonly = TRUE //if the gun must be on scope mode to give the bonuses
 	attachment_type = ATTACH_SCOPE
 	var/image/ongun
 	mount = "scope_mount"

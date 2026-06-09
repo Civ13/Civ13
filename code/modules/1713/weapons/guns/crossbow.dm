@@ -21,8 +21,6 @@
 	//+2 accuracy over the LWAP because only one shot
 	gun_type = GUN_TYPE_BOW
 	attachment_slots = null
-	accuracy_increase_mod = 6.00
-	accuracy_decrease_mod = 8.00
 	KD_chance = KD_CHANCE_HIGH
 	stat = "bows"
 	move_delay = 1
@@ -34,7 +32,6 @@
 	icotype = "crossbow"
 	equiptimer = 25
 	load_delay = 60
-	aim_miss_chance_divider = 3.00
 	accuracy = 1
 
 /obj/item/weapon/gun/projectile/bow/crossbow/New()

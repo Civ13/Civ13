@@ -100,8 +100,6 @@ var/civmax_research = list(230,230,230)
 		7 = null,
 	)
 	var/required_players = 1
-	var/time_both_sides_locked = -1
-	var/time_to_end_round_after_both_sides_locked = 9000
 	var/admins_triggered_roundend = FALSE
 	var/admins_triggered_noroundend = FALSE
 	var/list/faction_targets = list()
@@ -177,8 +175,6 @@ var/civmax_research = list(230,230,230)
 	var/perschadplus = FALSE
 	var/is_wasteland = FALSE
 	var/hasnukes = FALSE
-	var/disablehud = FALSE //Faction hud
-
 	//autoresearch
 	var/autoresearch = FALSE //if autoresearch is active
 	var/autoresearch_mult = 0.03 // the amount research goes up per minute. Can be editted by admins.
@@ -221,7 +217,6 @@ var/civmax_research = list(230,230,230)
 	var/age8_lim = 620
 	var/age8_done = 0
 	var/age8_timer = 7*24*36000
-	var/age8_top = 230
 
 	var/orespawners = 0
 

@@ -40,7 +40,6 @@
 	var/fire_delay = 0.1 	//delay after shooting before the gun can be used again
 	var/fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
 	var/silencer_fire_sound = 'sound/weapons/guns/fire/AKM-SD.ogg'
-	var/fire_sound_text = "gunshot"
 	var/shake_strength = 0		//screen shake
 	var/muzzle_flash = 3
 
@@ -58,9 +57,6 @@
 	var/firemode_type = /datum/firemode //for subtypes that need custom firemode data
 
 	//aiming system stuff
-	var/keep_aim = TRUE 	//1 for keep shooting until aim is lowered
-						//0 for one bullet after tarrget moves and aim is lowered
-	var/multi_aim = FALSE //Used to determine if you can target multiple people.
 	var/tmp/list/mob/living/aim_targets //List of who yer targeting.
 	var/tmp/mob/living/last_moved_mob //Used to fire faster at more than one person.
 	var/tmp/told_cant_shoot = FALSE //So that it doesn't spam them with the fact they cannot hit them.

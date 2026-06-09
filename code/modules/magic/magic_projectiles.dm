@@ -701,8 +701,6 @@
 	light_color = "#00FF00"
 	tracer_type = /obj/effect/projectile/tracer/magic
 	impact_type = /obj/effect/projectile/impact/magic/heal
-	var/heal_amount = 50
-
 /obj/item/projectile/magic/fixae/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (..())
 		if (isliving(target))

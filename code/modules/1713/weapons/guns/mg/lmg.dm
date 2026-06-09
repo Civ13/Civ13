@@ -13,8 +13,6 @@
 	accuracy = 3
 	recoil = 50
 
-	accuracy_increase_mod = 1.00
-	accuracy_decrease_mod = 2.00
 	KD_chance = KD_CHANCE_MEDIUM
 	stat = "machinegun"
 	w_class = ITEM_SIZE_HUGE

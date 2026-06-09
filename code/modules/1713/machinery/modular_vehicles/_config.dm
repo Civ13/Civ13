@@ -5,34 +5,8 @@
 var/global/datum/vehicle_constants/VEHICLE_CONSTANTS = new()
 
 /datum/vehicle_constants
-	/// Movement & Physics
-	var/static/TURN_DELAY = 15               // Milliseconds between steering inputs
-	var/static/MOVEMENT_LOOP_DELAY = 15     // Milliseconds between movement ticks
-	var/static/MOVEMENT_TICK_RATE = 1.0     // Multiplier for movement speed calculations
-
-	/// Vehicle Limits
-	var/static/MAX_VEHICLE_SIZE = 5          // Maximum length/width in tiles
-	var/static/MAX_COMPONENTS = 25           // Maximum frame pieces per vehicle
-	var/static/MIN_WHEELS = 4                // Minimum wheels required to move
-
-	/// Sound Settings
-	var/static/TRACK_SOUND_INTERVAL = 30     // Milliseconds between track movement sounds
-	var/static/ENGINE_STARTUP_DELAY = 40     // Milliseconds until engine runs steady
-	var/static/ENGINE_SOUND_VOLUME = 100
-	var/static/MOVEMENT_SOUND_VOLUME = 100
-
-	/// Rendering - Pixel Offsets for Wheel Display
-	/// Format: vehicle_type = list(front_offset, back_offset)
-	var/static/list/PIXEL_OFFSETS = list(
-		"standard" = list(32, -32),    // Standard wheels
-		"mtlb" = list(28, -28),        // MT-LB tracks
-		"bmd2" = list(20, -20),        // BMD-2 tracks
-		"bradley" = list(32, -32),     // Bradley AFV tracks
-		"is_series" = list(32, -32),   // IS tank series tracks
-		"t34" = list(32, -32),         // T-34 tracks
-		"m41" = list(32, -32),         // M41 Walker bulldog tracks
-		"char" = list(32, -32),        // Char B1 tracks
-	)
+	var/MAX_VEHICLE_SIZE = 4
+	var/MAX_COMPONENTS = 20
 
 	/// Wall Configuration Type Definitions
 	var/static/list/VEHICLE_WALLS = list(
@@ -107,44 +81,6 @@ var/global/datum/vehicle_constants/VEHICLE_CONSTANTS = new()
 			max_health = 60,
 			can_open = TRUE,
 			icon_state = "c_windowdoor",
-		),
-	)
-
-	/// Vehicle Type Classifications
-	var/static/VEHICLE_TYPE_LIGHT = "light"      // Fast, low armor
-	var/static/VEHICLE_TYPE_MEDIUM = "medium"    // Balanced
-	var/static/VEHICLE_TYPE_HEAVY = "heavy"      // Slow, high armor
-	var/static/VEHICLE_TYPE_APC = "apc"          // Personnel carrier
-
-	/// Movement Component Types
-	var/static/MOVEMENT_TYPE_WHEEL = "wheel"
-	var/static/MOVEMENT_TYPE_TRACK = "track"
-
-	/// Default Vehicle Stats by Type
-	var/static/list/DEFAULT_STATS = list(
-		"light" = list(
-			armor = 10,
-			health = 150,
-			speed = 2.0,
-			weight_mult = 0.8,
-		),
-		"medium" = list(
-			armor = 30,
-			health = 300,
-			speed = 1.5,
-			weight_mult = 1.0,
-		),
-		"heavy" = list(
-			armor = 60,
-			health = 500,
-			speed = 0.8,
-			weight_mult = 1.2,
-		),
-		"apc" = list(
-			armor = 40,
-			health = 250,
-			speed = 1.8,
-			weight_mult = 1.1,
 		),
 	)
 

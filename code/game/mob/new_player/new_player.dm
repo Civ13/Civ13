@@ -9,7 +9,6 @@
 	var/ready = FALSE
 	var/spawning = FALSE //Referenced when you want to delete the new_player later on in the code.
 	var/totalPlayers = 0		 //Player counts for the Lobby tab
-	var/totalPlayersReady = 0
 	var/desired_job = null // job title. This is for join queues.
 	var/datum/job/delayed_spawning_as_job = null // job title. Self explanatory.
 
@@ -25,7 +24,6 @@
 
 	anchored = TRUE	//  don't get pushed around
 
-	var/on_welcome_popup = FALSE
 
 var/global/redirect_all_players = null
 /mob/new_player/New()

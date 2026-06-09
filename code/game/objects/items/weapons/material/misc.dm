@@ -665,9 +665,6 @@
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 18
 	var/image/standing
-	var/ownerdir_x = 0
-	var/ownerdir_y = 0
-	var/ownerdir_z = 1
 	var/ownerdir = NORTH
 	var/deployed = FALSE
 	block_chance = 5
@@ -779,36 +776,24 @@
 				standing = image(icon = img_state, icon_state = "sarissa")
 				standing.pixel_x = 0
 				standing.pixel_y = 0
-				ownerdir_x = US.x
-				ownerdir_y = US.y+32
-				ownerdir_z = US.z
 				ownerdir = NORTH
 			else if (US.dir == SOUTH)
 				img_state = 'icons/obj/weapons_2t_v.dmi'
 				standing = image(icon = img_state, icon_state = "sarissa")
 				standing.pixel_x = 0
 				standing.pixel_y = -32
-				ownerdir_x = US.x
-				ownerdir_y = US.y-32
-				ownerdir_z = US.z
 				ownerdir = SOUTH
 			else if (US.dir == EAST)
 				img_state = 'icons/obj/weapons_2t.dmi'
 				standing = image(icon = img_state, icon_state = "sarissa")
 				standing.pixel_x = 0
 				standing.pixel_y = 0
-				ownerdir_x = US.x+32
-				ownerdir_y = US.y
-				ownerdir_z = US.z
 				ownerdir = EAST
 			else if (US.dir == WEST)
 				img_state = 'icons/obj/weapons_2t.dmi'
 				standing = image(icon = img_state, icon_state = "sarissa")
 				standing.pixel_x = -32
 				standing.pixel_y = 0
-				ownerdir_x = US.x-32
-				ownerdir_y = US.y
-				ownerdir_z = US.z
 				ownerdir = WEST
 			//apply img
 			US.overlays += standing

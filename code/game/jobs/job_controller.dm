@@ -58,8 +58,6 @@ var/global/datum/controller/occupations/job_master
 	var/list/faction_organized_occupations = list()
 		//Players who need jobs
 	var/list/unassigned = list()
-		//Debug info
-	var/list/job_debug = list()
 
 /datum/controller/occupations/proc/set_factions(var/autobalance_nr = 0)
 	map.availablefactions = list("Human tribesman", "Crustacean tribesman", "Orc tribesman", "Lizard tribesman")

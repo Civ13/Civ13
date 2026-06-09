@@ -29,9 +29,6 @@
 	var/brute_dam = FALSE //sum of blunt, pierce and cut damage
 	var/burn_dam = FALSE
 	var/blunt_dam = FALSE // not sharp and not edged. More likely to break bones. Won't bleed.
-	var/pierce_dam = FALSE // sharp but not edged. More likely to give internal bleeding or damage wounds. Just a little bleeding.
-	var/cut_dam = FALSE // superficial damage, not a lot of damage but lots of bleeding.
-	var/max_size = FALSE
 	var/last_dam = -1
 	var/icon/mob_icon
 //	var/gendered_icon = FALSE
@@ -50,7 +47,6 @@
 	var/obj/item/organ/external/parent
 	var/list/obj/item/organ/external/children
 	var/list/internal_organs = list() 	// Internal organs of this body part
-	var/damage_msg = "<span class = 'red'>You feel an intense pain</span>"
 	var/broken_description
 	var/open = FALSE
 	var/stage = FALSE
@@ -64,7 +60,6 @@
 
 	// Joint/state stuff.
 	var/can_grasp 						//It would be more appropriate if these two were named "affects_grasp" and "affects_stand" at this point
-	var/can_stand
 	var/pain = FALSE
 	var/fracturetimer = 0
 	var/artery_name = "artery"		 	// Flavour text for carotid artery, aorta, etc.
@@ -76,7 +71,6 @@
 	var/burn_ratio = 0
 	var/brute_ratio = 0
 	var/encased
-	var/cavity_name = ""
 
 /obj/item/organ/external/New()
 	..()
@@ -707,10 +701,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 					burn_dam += W.damage
 				if (PIERCE)
 					brute_dam += W.damage
-					pierce_dam += W.damage
 				if (CUT)
 					brute_dam += W.damage
-					cut_dam += W.damage
 				if (BRUISE)
 					brute_dam += W.damage
 					blunt_dam += W.damage
@@ -1148,7 +1140,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 	artery_name = "aorta"
 	arterial_bleed_severity = 2
 	encased = "ribcage"
-	cavity_name = "thoracic"
 
 /obj/item/organ/external/groin
 	name = "lower body"
@@ -1167,7 +1158,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 //	gendered_icon = TRUE
 	artery_name = "iliac artery"
 	arterial_bleed_severity = 2
-	cavity_name = "abdominal"
 
 /obj/item/organ/external/arm
 	limb_name = "l_arm"
@@ -1204,7 +1194,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 	parent_organ = "groin"
 	joint = "left knee"
 	amputation_point = "left hip"
-	can_stand = TRUE
 	artery_name = "femoral artery"
 	arterial_bleed_severity = 1
 
@@ -1229,7 +1218,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 	parent_organ = "l_leg"
 	joint = "left ankle"
 	amputation_point = "left ankle"
-	can_stand = TRUE
 	artery_name = "dorsal artery"
 	arterial_bleed_severity = 1
 
@@ -1292,9 +1280,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 	var/list/teeth_list = list()
 	var/max_teeth = 32
-	var/eye_icon = "eyes_s"
-	var/eye_icon_location = 'icons/mob/human_face.dmi'
-
 /obj/item/organ/external/head/removed()
 	if (owner)
 		name = "[owner.real_name]'s head"

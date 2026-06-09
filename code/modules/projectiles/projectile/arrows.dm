@@ -7,11 +7,7 @@
 	check_armor = "arrow"
 	embed = TRUE
 	sharp = TRUE
-	hitsound_wall = "ric_sound" //CHANGE
 	var/mob_passthrough_check = FALSE
-	var/move_tiles = -1
-	var/moved_tiles = FALSE
-
 /obj/item/projectile/arrow/get_structure_damage()
 	if (damage_type == BRUTE)
 		return 0

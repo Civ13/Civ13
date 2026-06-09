@@ -1148,7 +1148,6 @@
 	icon_state = "japboots_ww2"
 	item_state = "japboots_ww2"
 	worn_state = "japboots_ww2"
-	var/baseicon = "japboots_ww2"
 	var/puttees = FALSE
 
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/update_icon()
@@ -1241,7 +1240,6 @@
 	item_state = "japboots_ww2_navy"
 	worn_state = "japboots_ww2_navy"
 	puttees = FALSE
-	baseicon = "japboots_ww2_navy"
 
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy/puttees
 	puttees = TRUE

@@ -50,7 +50,6 @@
 	var/used = FALSE
 	var/painting_name //Painting name, this is set after framing.
 	var/finalized = FALSE //Blocks edits
-	var/author_ckey
 	var/icon_generated = FALSE
 	var/icon/generated_icon
 
@@ -124,7 +123,6 @@
 
 /obj/item/canvas/proc/finalize(mob/user)
 	finalized = TRUE
-	author_ckey = user.ckey
 	generate_proper_overlay()
 	try_rename(user)
 
@@ -212,8 +210,6 @@
 	desc = "The perfect showcase for your favorite deathtrap memories."
 	icon = 'icons/obj/decals.dmi'
 	icon_state = "frame-empty"
-	var/result_path = /obj/structure/sign/painting
-
 /obj/structure/sign/painting
 	name = "Painting"
 	desc = "Art or \"Art\"? You decide."

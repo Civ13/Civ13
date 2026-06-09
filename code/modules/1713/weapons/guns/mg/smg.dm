@@ -17,8 +17,6 @@
 	recoil = 8 // Compared to automatic machines, recoil is easier to control, but the spread is several times higher
 	accuracy = 10
 
-	accuracy_increase_mod = 1.00
-	accuracy_decrease_mod = 1.50
 	KD_chance = KD_CHANCE_HIGH+3
 	stat = "machinegun"
 	w_class = ITEM_SIZE_NORMAL
@@ -1195,8 +1193,6 @@
 	scope_y_offset = -2
 	barrel_x_offset = 14
 	barrel_y_offset = 16
-	accuracy_increase_mod = 2.00
-	accuracy_decrease_mod = 6.00
 	scope_mounts = list ("picatinny")
 
 /obj/item/weapon/gun/projectile/submachinegun/m14/sniper/New()

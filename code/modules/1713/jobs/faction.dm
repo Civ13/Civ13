@@ -49,9 +49,6 @@ var/global/soldiers[27]
 	var/title = "Something that shouldn't exist"
 	var/list/objectives = list()
 	var/team = null
-	var/image/last_returned_image = null
-	var/obj/factionhud/last_returned_hud = null
-
 /datum/faction/proc/base_type()
 	return "/datum/faction"
 

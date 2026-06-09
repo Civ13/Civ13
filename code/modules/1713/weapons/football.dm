@@ -298,14 +298,12 @@
 ////////////GLOVES/////////////////
 /obj/item/clothing/gloves/goalkeeper/red
 	name = "goalkeeper gloves"
-	initial_name = "goalkeeper gloves"
 	icon_state = "latex"
 	item_state = "latex"
 	color = "#ffffff"
 
 /obj/item/clothing/gloves/goalkeeper/blue
 	name = "goalkeeper gloves"
-	initial_name = "goalkeeper gloves"
 	icon_state = "latex"
 	item_state = "latex"
 	color = "#ffffff"

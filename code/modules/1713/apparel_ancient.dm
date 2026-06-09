@@ -761,7 +761,6 @@
 	worn_state = "bearpelt"
 	flags_inv = BLOCKHEADHAIR
 	cold_protection = HEAD
-	var/colortype = "black"
 
 /obj/item/clothing/head/wolfpelt
 	name = "wolfpelt headcover"
@@ -771,7 +770,6 @@
 	worn_state = "wolfpelt"
 	flags_inv = BLOCKHEADHAIR
 	cold_protection = HEAD
-	var/colortype = "grey"
 
 /obj/item/clothing/head/wolfpelt/white
 	name = "white wolfpelt headcover"
@@ -779,7 +777,6 @@
 	icon_state = "whitewolfpelt"
 	item_state = "whitewolfpelt"
 	worn_state = "whitewolfpelt"
-	colortype = "white"
 
 /obj/item/clothing/head/pantherpelt
 	name = "pantherpelt headcover"
@@ -789,7 +786,6 @@
 	worn_state = "pantherpelt"
 	flags_inv = BLOCKHEADHAIR
 	cold_protection = HEAD
-	var/colortype = "black"
 
 /obj/item/clothing/head/lionpelt
 	name = "lionpelt headcover"
@@ -799,7 +795,6 @@
 	worn_state = "lionpelt"
 	flags_inv = BLOCKHEADHAIR
 	cold_protection = HEAD
-	var/colortype = "brown" //I haven't knocked together the coloration idea yet - @fantasticfwoosh
 
 /obj/item/clothing/head/gatorpelt
 	name = "alligator pelt headcover"
@@ -809,7 +804,6 @@
 	worn_state = "gatorpelt"
 	flags_inv = BLOCKHEADHAIR
 	heat_protection = HEAD
-	var/colortype = "grey" //i really dont know what to put in this one - @fantasticfwoosh
 
 /obj/item/clothing/head/foxpelt
 	name = "foxpelt headcover"
@@ -819,7 +813,6 @@
 	worn_state = "foxpelt"
 	flags_inv = BLOCKHEADHAIR
 	cold_protection = HEAD
-	var/colortype = "brown"
 
 /obj/item/clothing/head/foxpelt/white
 	name = "white foxpelt headcover"
@@ -827,7 +820,6 @@
 	icon_state = "whitefoxpelt"
 	item_state = "whitefoxpelt"
 	worn_state = "whitefoxpelt"
-	colortype = "white"
 
 /obj/item/clothing/head/sheeppelt
 	name = "sheep-pelt headcover"
@@ -836,7 +828,6 @@
 	item_state = "sheeppelt"
 	worn_state = "sheeppelt"
 	cold_protection = HEAD|ARMS
-	var/colortype = "white"
 
 /obj/item/clothing/head/goatpelt
 	name = "goatpelt headcover"
@@ -845,7 +836,6 @@
 	item_state = "goatpelt"
 	worn_state = "goatpelt"
 	heat_protection = HEAD|ARMS
-	var/colortype = "beige" //erm...
 
 /obj/item/clothing/head/bisonpelt
 	name = "bisonpelt headcover"
@@ -854,7 +844,6 @@
 	item_state = "bisonpelt"
 	worn_state = "bisonpelt"
 	cold_protection = HEAD|ARMS
-	var/colortype = "brown"
 
 /*Fur Coats*/
 
