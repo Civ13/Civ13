@@ -49,5 +49,3 @@ var/list/pirates_rations_meat = list(
 /obj/item/weapon/reagent_containers/food/snacks/bearmeat,
 /obj/item/weapon/reagent_containers/food/snacks/meat
 )
-
-var/added_plants_to_rations = FALSE

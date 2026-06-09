@@ -155,54 +155,6 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
-	/*
-//////////SPECIAL ATF//////////
-/datum/job/american/negotiator
-	title = "ATF Negotiator"
-	rank_abbreviation = "Agent"
-	allowed_maps = list(MAP_WACO)
-
-	spawn_location = "JoinLateNegotiator"
-
-	whitelisted = TRUE
-	can_be_female = TRUE
-
-	min_positions = 1
-	max_positions = 2
-
-/datum/job/american/negotiator/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
-//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/atf(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/atf(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/interceptor(null)
-	uniform.attackby(armor, H)
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
-	uniform.attackby(holsterh, H)
-	give_random_name(H)
-	H.civilization = "ATF"
-	H.add_note("Role", "You are a <b>[title]</b>, a ATF Negotiator tasked with calming the branch davidian leader to prevent any deaths.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
-	return TRUE
-*/
 /datum/job/american/atf_medic
 	title = "ATF Medic"
 	rank_abbreviation = "Medic"

@@ -1,1 +1,0 @@
-/mob/living/simple_animal/mutated

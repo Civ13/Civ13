@@ -322,17 +322,9 @@
 					src.remove_language("English")
 					src.name = species.get_random_ukrainian_name(gender)
 					src.real_name = name
-					src.add_note("Group", "You are a Ukrainian political prisoner. You are part of the <b>Ukrainian</b> faction. Try to escape and/or keep your faction powerful!")
-					src.nationality = "Ukrainian"
-					src.add_language("Ukrainian",FALSE)
-/*
-			if (3)
-				if (src.nationality == "none")
-					src.remove_language("English")
-					src.name = species.get_random_russian_name(gender)
-					src.real_name = name
-					src.add_note("Group", "You are a Vor, a Soviet criminal. You are part of the <b>Vory</b> faction. Try to escape and/or keep your faction powerful!")
-					src.nationality = "Vory" */
+				src.add_note("Group", "You are a Ukrainian political prisoner. You are part of the <b>Ukrainian</b> faction. Try to escape and/or keep your faction powerful!")
+				src.nationality = "Ukrainian"
+				src.add_language("Ukrainian",FALSE)
 			if (3)
 				if (src.nationality == "none")
 					src.add_note("Known Languages", "German")
