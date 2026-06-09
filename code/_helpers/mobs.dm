@@ -6,15 +6,6 @@
 //helper for inverting armor blocked values into a multiplier
 #define blocked_mult(blocked) max(1 - (blocked/100), 0)
 
-/proc/mobs_in_view(var/range, var/source)
-	var/list/mobs = list()
-	for (var/atom/movable/AM in view(range, source))
-		var/M = AM.get_mob()
-		if (M)
-			mobs += M
-
-	return mobs
-
 proc/random_hair_style(gender, species = "Human")
 	var/h_style = "Bald"
 
@@ -115,24 +106,6 @@ proc/age2agedescription(age)
 		if (70 to INFINITY)		return "elderly"
 		else				return "unknown"
 
-proc/ageAndGender2Desc(age, gender) // Radio name getters.
-	if (!gender || !isnum(age))
-		CRASH("ageAndGender2Desc; proc called without age/gender argument.")
-
-	if (gender == MALE)
-		switch(age)
-			if (0 to 15)		return "Boy"
-			if (16 to 25)		return "Young Man"
-			if (26 to 60)		return "Man"
-			if (61 to INFINITY)	return "Old Man"
-	else
-		switch(age)
-			if (0 to 15)		return "Girl"
-			if (16 to 25)		return "Young Woman"
-			if (26 to 60)		return "Woman"
-			if (61 to INFINITY)	return "Old Woman"
-	return "Unknown"
-
 proc/get_body_build(gender, body_build = "Default")
 	if (gender == MALE)
 		if (body_build in male_body_builds)
@@ -162,13 +135,6 @@ Proc for attack log creation, because really why not
 		target.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been [what_done] by [user ? "[user.name][(ismob(user) && user.ckey) ? "([user.ckey])" : ""]" : "NON-EXISTANT SUBJECT"][object ? " with [object]" : " "][addition]</font>")
 	if (admin)
 		log_attack("<font color='red'>[user ? "[user.name][(ismob(user) && user.ckey) ? "([user.ckey])" : ""]" : "NON-EXISTANT SUBJECT"] [what_done] [target ? "[target.name][(ismob(target) && target.ckey)? "([target.ckey])" : ""]" : "NON-EXISTANT SUBJECT"][object ? " with [object]" : " "][addition]</font>")
-
-/proc/get_exposed_defense_zone(var/atom/movable/target)
-	var/obj/item/weapon/grab/G = locate() in target
-	if (G && G.state >= GRAB_NECK) //works because mobs are currently not allowed to upgrade to NECK if they are grabbing two people.
-		return pick("head", "l_hand", "r_hand", "l_foot", "r_foot", "l_arm", "r_arm", "l_leg", "r_leg")
-	else
-		return pick("chest", "groin")
 
 /mob/var/may_do_mob = TRUE
 /proc/do_mob(mob/user , mob/target, time = 30, uninterruptible = FALSE, progress = TRUE)
@@ -792,32 +758,3 @@ Proc for attack log creation, because really why not
 // Returns true if the mob was removed form the dead list
 /mob/proc/remove_from_dead_mob_list()
 	return global.dead_mob_list.Remove(src)
-
-//Find a dead mob with a brain and client.
-/proc/find_dead_player(var/find_key, var/include_observers = 0)
-	if(isnull(find_key))
-		return
-
-	var/mob/selected = null
-
-	if(include_observers)
-		for(var/mob/M in global.player_list)
-			if((M.stat != DEAD) || (!M.client))
-				continue
-			if(M.ckey == find_key)
-				selected = M
-				break
-	else
-		for(var/mob/living/M in global.player_list)
-			//Dead people only thanks!
-			if((M.stat != DEAD) || (!M.client))
-				continue
-			//They need a brain!
-			if(istype(M, /mob/living/human))
-				var/mob/living/human/H = M
-				if(H.species.has_organ["brain"] && !H.has_brain())
-					continue
-			if(M.ckey == find_key)
-				selected = M
-				break
-	return selected

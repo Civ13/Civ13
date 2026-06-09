@@ -194,11 +194,6 @@ var/list/preferences_datums = list()
 			message_admins("[character] ([character.ckey]) has spawned with their gender as plural or neuter. Please notify coders.", character.ckey)
 			character.gender = MALE
 
-/proc/globalprefsanitize(str)
-	if (islist(str))
-		return ""
-	return str
-
 /client/proc/is_preference_enabled(var/preference)
 
 	if (ispath(preference))

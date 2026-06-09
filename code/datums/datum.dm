@@ -159,48 +159,6 @@
 	if(!istype(., /datum))
 		. = null
 
-///Convert a datum into a json blob
-/proc/json_serialize_datum(datum/D, list/options)
-	if(!istype(D))
-		return
-	var/list/jsonlist = D.serialize_list(options)
-	if(islist(jsonlist))
-		jsonlist["DATUM_TYPE"] = D.type
-	return json_encode(jsonlist)
-
-/// Convert a list of json to datum
-/proc/json_deserialize_datum(list/jsonlist, list/options, target_type, strict_target_type = FALSE)
-	if(!islist(jsonlist))
-		if(!istext(jsonlist))
-			CRASH("Invalid JSON")
-		jsonlist = json_decode(jsonlist)
-		if(!islist(jsonlist))
-			CRASH("Invalid JSON")
-	if(!jsonlist["DATUM_TYPE"])
-		return
-	if(!ispath(jsonlist["DATUM_TYPE"]))
-		if(!istext(jsonlist["DATUM_TYPE"]))
-			return
-		jsonlist["DATUM_TYPE"] = text2path(jsonlist["DATUM_TYPE"])
-		if(!ispath(jsonlist["DATUM_TYPE"]))
-			return
-	if(target_type)
-		if(!ispath(target_type))
-			return
-		if(strict_target_type)
-			if(target_type != jsonlist["DATUM_TYPE"])
-				return
-		else if(!ispath(jsonlist["DATUM_TYPE"], target_type))
-			return
-	var/typeofdatum = jsonlist["DATUM_TYPE"]			//BYOND won't directly read if this is just put in the line below, and will instead runtime because it thinks you're trying to make a new list?
-	var/datum/D = new typeofdatum
-	var/datum/returned = D.deserialize_list(jsonlist, options)
-	if(!istype(returned, /datum))
-		qdel(D)
-	else
-		return returned
-
-
 /**
  * Called when a href for this datum is clicked
  *

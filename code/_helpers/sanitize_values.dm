@@ -19,32 +19,7 @@
 
 
 
-//more specialised stuff
-/proc/sanitize_gender(gender,neuter=0,plural=0, default="male")
-	switch(gender)
-		if (MALE, FEMALE)return gender
-		if (NEUTER)
-			if (neuter)	return gender
-			else		return default
-		if (PLURAL)
-			if (plural)	return gender
-			else		return default
-	return default
 
-/proc/sanitize_hexcolor(color, default="#000000")
-	if (!istext(color)) return default
-	var/len = length(color)
-	if (len != 7 && len !=4) return default
-	if (text2ascii(color,1) != 35) return default	//35 is the ascii code for "#"
-	. = "#"
-	for (var/i=2,i<=len,i++)
-		var/ascii = text2ascii(color,i)
-		switch(ascii)
-			if (48 to 57)	. += ascii2text(ascii)		//numbers FALSE to 9
-			if (97 to 102)	. += ascii2text(ascii)		//letters a to f
-			if (65 to 70)	. += ascii2text(ascii+32)	//letters A to F - translates to lowercase
-			else			return default
-	return .
 
 // Sanitize inputs to avoid SQL injection attacks
 proc/sql_sanitize_text(var/text)

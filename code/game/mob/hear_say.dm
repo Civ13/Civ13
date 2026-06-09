@@ -351,9 +351,6 @@
 
 		on_hear_radio(destination, full_message)
 
-/proc/say_timestamp()
-	return "<span class='say_quote'>\[[stationtime2text()]\]</span>"
-
 /mob/proc/on_hear_radio(var/obj/destination = null, var/fullmessage)
 	if (destination)
 		to_chat(src, "\icon[getFlatIcon(destination)] [fullmessage]")

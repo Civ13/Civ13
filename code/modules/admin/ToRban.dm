@@ -6,13 +6,6 @@
 /proc/get_tor_file_dir()
 	return "data/ToR_ban.bdb"
 
-/proc/ToRban_isbanned(var/ip_address)
-	var/savefile/F = new(get_tor_file_dir())
-	if (F)
-		if ( ip_address in F.dir )
-			return TRUE
-	return FALSE
-
 /proc/ToRban_autoupdate()
 	var/savefile/F = new(get_tor_file_dir())
 	if (F)

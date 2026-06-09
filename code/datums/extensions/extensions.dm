@@ -25,23 +25,6 @@
 		extensions = null
 	return ..()
 
-//Variadic - Additional positional arguments can be given. Named arguments might not work so well
-/proc/set_extension(var/datum/source, var/datum/extension/base_type, var/extension_type)
-	if(!source.extensions)
-		source.extensions = list()
-	var/datum/extension/existing_extension = source.extensions[base_type]
-	if(istype(existing_extension))
-		qdel(existing_extension)
-
-	if(initial(base_type.flags) & EXTENSION_FLAG_IMMEDIATE)
-		. = construct_extension_instance(extension_type, source, args.Copy(4))
-		source.extensions[base_type] = .
-	else
-		var/list/extension_data = list(extension_type, source)
-		if(args.len > 3)
-			extension_data += args.Copy(4)
-		source.extensions[base_type] = extension_data
-
 /proc/get_extension(var/datum/source, var/base_type)
 	if(!source.extensions)
 		return

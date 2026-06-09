@@ -102,12 +102,6 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 		return TRUE	// it's a real, air blocking door
 	return FALSE
 
-/proc/TurfBlockedNonWindow(turf/loc)
-	for (var/obj/O in loc)
-		if (O.density && !istype(O, /obj/structure/window))
-			return TRUE
-	return FALSE
-
 //Ultra-Fast Bresenham Line-Drawing Algorithm
 /proc/getline(atom/M,atom/N, var/exclude_m_turf = FALSE)
 	var/px=M.x		//starting x
@@ -234,22 +228,6 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 		if (ch < 48 || ch > 57)
 			return FALSE
 	return TRUE
-/*
-//Ensure the frequency is within bounds of what it should be sending/recieving at
-/proc/sanitize_frequency(var/f, var/low = PUBLIC_LOW_FREQ, var/high = PUBLIC_HIGH_FREQ)
-	f = round(f)
-	f = max(low, f)
-	f = min(high, f)
-	if ((f % 2) == FALSE) //Ensure the last digit is an odd number
-		f += 1
-	return f
-
-//Turns 1479 into 147.9
-/proc/format_frequency(var/f)
-	return "[round(f / 10)].[f % 10]"
-
-*/
-
 //This will update a mob's name, real_name, mind.name, data_core records, pda and id
 //Calling this proc without an oldname will only update the mob and skip updating the pda, id and records ~Carn
 /mob/proc/fully_replace_character_name(var/oldname,var/newname)
@@ -305,13 +283,6 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 
 
 
-//Forces a variable to be posative
-/proc/modulus(var/M)
-	if (M >= 0)
-		return M
-	if (M < 0)
-		return -M
-
 // returns the turf located at the map edge in the specified direction relative to A
 // used for mass driver
 /proc/get_edge_target_turf(var/atom/A, var/direction)
@@ -348,25 +319,6 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 			toReturn += part.GetAllContents(searchDepth - 1)
 
 	return toReturn
-
-//Step-towards method of determining whether one atom can see another. Similar to viewers()
-/proc/can_see(var/atom/source, var/atom/target, var/length=5) // I couldn't be arsed to do actual raycasting :I This is horribly inaccurate.
-	var/turf/current = get_turf(source)
-	var/turf/target_turf = get_turf(target)
-	var/steps = FALSE
-
-	if (!current || !target_turf)
-		return FALSE
-
-	while (current != target_turf)
-		if (steps > length) return FALSE
-		if (current.opacity) return FALSE
-		for (var/atom/A in current)
-			if (A.opacity) return FALSE
-		current = get_step_towards(current, target_turf)
-		steps++
-
-	return TRUE
 
 /proc/is_blocked_turf(var/turf/T)
 	var/cant_pass = FALSE
@@ -434,20 +386,6 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 	return sortAtom(return_areas())
 
 //Takes: Area type as text string or as typepath OR an instance of the area.
-//Returns: A list of all areas of that type in the world.
-/proc/get_areas(var/areatype)
-	if (!areatype) return null
-	if (istext(areatype)) areatype = text2path(areatype)
-	if (isarea(areatype))
-		var/area/areatemp = areatype
-		areatype = areatemp.type
-
-	var/list/areas = new/list()
-	for (var/area/N in area_list)
-		if (istype(N, areatype)) areas += N
-	return areas
-
-//Takes: Area type as text string or as typepath OR an instance of the area.
 //Returns: A list of all atoms	(objs, turfs, mobs) in areas of that type of that type in the world.
 /proc/get_area_all_atoms(var/areatype)
 	if (!areatype) return null
@@ -472,14 +410,6 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 //chances are TRUE:value. anyprob(1) will always return true
 proc/anyprob(value)
 	return (rand(1,value)==value)
-
-proc/view_or_range(distance = 7 , center = usr , type)
-	switch(type)
-		if ("view")
-			. = view(distance,center)
-		if ("range")
-			. = range(distance,center)
-	return
 
 proc/get_mob_with_client_list()
 	var/list/mobs = list()
@@ -511,14 +441,6 @@ proc/get_mob_with_client_list()
 	for (A, A && !isturf(A), A=A.loc);
 	return A*/
 
-/proc/get(atom/loc, type)
-	while (loc)
-		if (istype(loc, type))
-			return loc
-		loc = loc.loc
-	return null
-
-
 //Quick type checks for some tools
 var/global/list/common_tools = list(
 /obj/item/weapon/wrench,
@@ -526,16 +448,6 @@ var/global/list/common_tools = list(
 /obj/item/weapon/wirecutters,
 ///obj/item/multitool,
 /obj/item/weapon/crowbar)
-
-/proc/istool(O)
-	if (O && is_type_in_list(O, common_tools))
-		return TRUE
-	return FALSE
-
-/proc/iswrench(O)
-	if (istype(O, /obj/item/weapon/wrench))
-		return TRUE
-	return FALSE
 
 /proc/iswirecutter(O)
 	if (istype(O, /obj/item/weapon/wirecutters))
@@ -546,17 +458,6 @@ var/global/list/common_tools = list(
 	if (istype(O, /obj/item/weapon/hammer)|| istype(O, /obj/item/weapon/screwdriver)) // TO DO: separate hammers and screwdrivers in the whole codebase
 		return TRUE
 	return FALSE
-/*
-/proc/ismultitool(O)
-	if (istype(O, /obj/item/multitool))
-		return TRUE
-	return FALSE
-*/
-/proc/iscrowbar(O)
-	if (istype(O, /obj/item/weapon/crowbar))
-		return TRUE
-	return FALSE
-
 proc/is_hot(obj/item/W as obj)
 	switch(W.type)
 		if (/obj/item/weapon/flame/lighter)
@@ -607,16 +508,6 @@ proc/is_hot(obj/item/W as obj)
 		istype(W, /obj/item/weapon/material/shovel) \
 	)
 
-/proc/is_surgery_tool(obj/item/W as obj)
-	return (	\
-	istype(W, /obj/item/weapon/surgery/scalpel)			||	\
-	istype(W, /obj/item/weapon/surgery/hemostat)		||	\
-	istype(W, /obj/item/weapon/surgery/retractor)		||	\
-	istype(W, /obj/item/weapon/surgery/cautery)			||	\
-	istype(W, /obj/item/weapon/surgery/bone_saw)			||	\
-	istype(W, /obj/item/weapon/surgery/bonesetter)
-	)
-
 //check if mob is lying down on something we can operate him on.
 /proc/can_operate(mob/living/human/M)
 	var/M_turf = get_turf(M)
@@ -649,11 +540,6 @@ proc/is_hot(obj/item/W as obj)
 
 /proc/format_text(text)
 	return replacetext(replacetext(text,"\proper ",""),"\improper ","")
-
-/proc/topic_link(var/datum/D, var/arglist, var/content)
-	if (istype(arglist,/list))
-		arglist = list2params(arglist)
-	return "<a href='?src=\ref[D];[arglist]'>[content]</a>"
 
 /proc/get_random_colour(var/simple, var/lower, var/upper)
 	var/colour
@@ -707,14 +593,6 @@ var/mob/dview/dview_mob = new
 // call to generate a stack trace and print to runtime logs
 /proc/crash_with(msg)
 	CRASH(msg)
-
-/proc/CheckFace(var/atom/Obj1, var/atom/Obj2)
-	var/CurrentDir = get_dir(Obj1, Obj2)
-	//if ((Obj1.loc == Obj2.loc) || (CurrentDir == Obj1.dir) || (CurrentDir == turn(Obj1.dir, 45)) || (CurrentDir == turn(Obj1.dir, -45)))
-	if ((CurrentDir & Obj1.dir) || (CurrentDir == FALSE))
-		return TRUE
-	else
-		return FALSE
 
 /proc/CallAsync(datum/source, proctype, list/arguments)
 	set waitfor = FALSE

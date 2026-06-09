@@ -67,15 +67,4 @@
 
 	qdel(info)
 
-/proc/show_player_info_irc(var/key as text)
-	var/dat = "		  Info on [key]\n"
-	var/savefile/info = new("[get_player_notes_file_dir()][copytext(key, TRUE, 2)]/[key]/info.sav")
-	var/list/infos
-	info >> infos
-	if (!infos)
-		dat = "No information found on the given key."
-	else
-		for (var/datum/player_info/I in infos)
-			dat += "[I.content]\nby [I.author] ([I.rank]) on [I.timestamp]\n\n"
 
-	return list2params(list(dat))

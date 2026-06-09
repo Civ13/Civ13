@@ -30,16 +30,6 @@
 		else  return "[jointext(input, comma_text, 1, -1)][final_comma_text][and_text][input[input.len]]"
 
 //Returns list element or null. Should prevent "index out of bounds" error.
-proc/listgetindex(var/list/list,index)
-	if (istype(list) && list.len)
-		if (isnum(index))
-			if (InRange(index,1,list.len))
-				return list[index]
-		else if (index in list)
-			return list[index]
-	return
-
-//Return either pick(list) or null if list is not of type /list or is empty
 proc/safepick(list/list)
 	if (!islist(list) || !list.len)
 		return
@@ -64,18 +54,6 @@ proc/isemptylist(list/list)
 		if (istype(A, type))
 			instances++
 	return instances
-
-//Empties the list by .Cut(). Setting length = FALSE has been confirmed to leak references.
-proc/clearlist(var/list/L)
-	if (islist(L))
-		L.Cut()
-
-//Removes any null entries from the list
-proc/listclearnulls(list/list)
-	if (istype(list))
-		while (null in list)
-			list -= null
-	return
 
 /*
  * Returns list containing all the entries from first list that are not present in second.
@@ -201,12 +179,6 @@ proc/listclearnulls(list/list)
 	for (var/i=1; i<L.len; i++)
 		L.Swap(i, rand(i,L.len))
 	return L
-
-// Return a list of the values in an assoc list (including null)
-/proc/list_values(var/list/L)
-	. = list()
-	for(var/e in L)
-		. += L[e]
 
 //Mergesort: divides up the list into halves to begin the sort
 /proc/sortKey(var/list/client/L, var/order = TRUE)
@@ -402,21 +374,6 @@ proc/listclearnulls(list/list)
 
 	return r
 
-// Returns the key based on the index
-/proc/get_key_by_index(var/list/L, var/index)
-	var/i = TRUE
-	for (var/key in L)
-		if (index == i)
-			return key
-		i++
-	return null
-
-// Returns the key based on the index
-/proc/get_key_by_value(var/list/L, var/value)
-	for (var/key in L)
-		if (L[key] == value)
-			return key
-
 /proc/count_by_type(var/list/L, type)
 	var/i = FALSE
 	for (var/T in L)
@@ -441,12 +398,6 @@ proc/listclearnulls(list/list)
 
 	//world.log << "	output: [out.len]"
 	return out
-
-/proc/insertion_sort_numeric_list_descending(var/list/L)
-	//world.log << "descending len input: [L.len]"
-	var/list/out = insertion_sort_numeric_list_ascending(L)
-	//world.log << "	output: [out.len]"
-	return reverselist(out)
 
 /proc/dd_sortedObjectList(var/list/L, var/cache=list())
 	if (L.len < 2)
@@ -617,11 +568,6 @@ proc/dd_sortedtextlist(list/incoming, case_sensitive = FALSE)
 		sorted_text += current_sort_text
 		sorted_text += list_bottom
 	return sorted_text
-
-
-proc/dd_sortedTextList(list/incoming)
-	var/case_sensitive = TRUE
-	return dd_sortedtextlist(incoming, case_sensitive)
 
 
 /datum/proc/dd_SortValue()

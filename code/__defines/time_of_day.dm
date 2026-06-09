@@ -21,11 +21,6 @@ var/list/time_of_day2ticks = list(
 	"Evening" = 20*60,
 	"Night" = 20*60,)
 
-/proc/isDarkOutside()
-	if (list("Evening", "Night").Find(time_of_day))
-		return TRUE
-	return FALSE
-
 /proc/pick_TOD()
 
 	if (map && times_of_day.len != map.times_of_day.len)

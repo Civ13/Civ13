@@ -29,21 +29,8 @@
 	return FALSE
 
 
-proc/isdeaf(A)
-	if (isliving(A))
-		var/mob/living/M = A
-		return (M.sdisabilities & DEAF) || M.ear_deaf || M.find_trait("Deaf")
-	return FALSE
-
 proc/hasorgans(A) // Fucking really??
 	return ishuman(A)
-
-proc/iscuffed(A)
-	if (istype(A, /mob/living/human))
-		var/mob/living/human/C = A
-		if (C.handcuffed)
-			return TRUE
-	return FALSE
 
 /proc/is_admin(var/mob/user)
 	return check_rights(R_ADMIN, FALSE, user) != FALSE
@@ -293,12 +280,6 @@ It's fairly easy to fix if dealing with single letters but not so much with comp
 		if (M)
 			M.shakecamera = FALSE
 
-/proc/findname(msg)
-	for (var/mob/M in mob_list)
-		if (M.real_name == text("[msg]"))
-			return TRUE
-	return FALSE
-
 
 /mob/proc/abiotic(var/full_body = FALSE)
 	if (full_body && ((l_hand && !( l_hand.abstract )) || (r_hand && !( r_hand.abstract )) || (back || wear_mask)))
@@ -334,13 +315,6 @@ proc/is_blind(A)
 		if (istype(C.eyes, /obj/item/clothing/glasses/sunglasses/blindfold))
 			return TRUE
 	return FALSE
-
-/proc/mobs_in_area(var/area/A)
-	var/list/mobs = new
-	for (var/mob/living/M in mob_list)
-		if (get_area(M) == A)
-			mobs += M
-	return mobs
 
 //Direct dead say used both by emote and say
 //It is somewhat messy. I don't know what to do.

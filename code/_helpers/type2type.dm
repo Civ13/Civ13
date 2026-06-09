@@ -141,26 +141,6 @@
 		if(SOUTHWEST)
 			return "southwest"
 
-//Turns a direction into text
-/proc/dir2text_short(direction)
-	switch(direction)
-		if(NORTH)
-			return "N"
-		if(SOUTH)
-			return "S"
-		if(EAST)
-			return "E"
-		if(WEST)
-			return "W"
-		if(NORTHEAST)
-			return "NE"
-		if(SOUTHEAST)
-			return "SE"
-		if(NORTHWEST)
-			return "NW"
-		if(SOUTHWEST)
-			return "SW"
-
 //Turns text into proper directions
 /proc/text2dir(direction)
 	switch(uppertext(direction))
@@ -238,10 +218,6 @@
 			return list(NORTH, WEST, NORTHWEST)
 		if (SOUTHWEST)
 			return list(SOUTH, WEST, SOUTHWEST)
-
-//Returns the angle in english
-/proc/angle2text(degree)
-	return dir2text(angle2dir(degree))
 
 //Converts a blend_mode constant to one acceptable to icon.Blend()
 /proc/blendMode2iconMode(blend_mode)

@@ -738,23 +738,6 @@ proc/getFlatIcon(A, defdir=2, deficon=null, defstate="", defblend=BLEND_DEFAULT,
 	else
 		return icon(flat, "", SOUTH)
 
-proc/getIconMask(atom/A)//By yours truly. Creates a dynamic mask for a mob/whatever. /N
-	var/icon/alpha_mask = new(A.icon,A.icon_state)//So we want the default icon and icon state of A.
-	for (var/I in A.overlays)//For every image in overlays. var/image/I will not work, don't try it.
-		if (I:layer>A.layer)	continue//If layer is greater than what we need, skip it.
-		var/icon/image_overlay = new(I:icon,I:icon_state)//Blend only works with icon objects.
-		//Also, icons cannot directly set icon_state. Slower than changing variables but whatever.
-		alpha_mask.Blend(image_overlay,ICON_OR)//OR so they are lumped together in a nice overlay.
-	return alpha_mask//And now return the mask.
-
-//For photo camera.
-/proc/build_composite_icon(atom/A)
-	var/icon/composite = icon(A.icon, A.icon_state, A.dir, TRUE)
-	for (var/O in A.overlays)
-		var/image/I = O
-		composite.Blend(icon(I.icon, I.icon_state, I.dir, TRUE), ICON_OVERLAY)
-	return composite
-
 proc/adjust_brightness(var/color, var/value)
 	if (!color) return "#FFFFFF"
 	if (!value) return color
