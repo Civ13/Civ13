@@ -113,13 +113,13 @@ If you make a derivative work from this code, you must include this notification
 		throw_wrassle.Grant(owner)
 		strike.Grant(owner)
 
-/datum/martial_art/wrestling/on_remove(mob/living/owner)
-	to_chat(owner, "<span class='userdanger'>You no longer feel that the tower of power is too sweet to be sour...</span>")
+/datum/martial_art/wrestling/remove(mob/living/owner)
 	drop.Remove(owner)
 	kick.Remove(owner)
 	slam.Remove(owner)
 	throw_wrassle.Remove(owner)
 	strike.Remove(owner)
+	..()
 
 /datum/martial_art/wrestling/harm_act(mob/living/human/A, mob/living/human/D)
 	if(check_streak(A,D))
@@ -166,7 +166,7 @@ If you make a derivative work from this code, you must include this notification
 				to_chat(A, "<span class='warning'>You can't throw [D] from here!</span>")
 				return
 
-			A.setDir(turn(A.dir, 90))
+			A.dir = turn(A.dir, 90)
 			var/turf/T = get_step(A, A.dir)
 			var/turf/S = D.loc
 			if ((S && isturf(S) && S.Exit(D)) && (T && isturf(T) && T.Enter(A)))
@@ -198,7 +198,7 @@ If you make a derivative work from this code, you must include this notification
 		if (T && isturf(T))
 			if (!D.stat)
 				D.emote("scream")
-			D.throw_at(T, 10, 4, A, TRUE, TRUE, callback = CALLBACK(D, TYPE_PROC_REF(/mob/living, Paralyze), 20))
+			D.throw_at(T, 10, 4, A, TRUE, TRUE, callback = CALLBACK(D, /mob/proc/Paralyse, 20))
 		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Thrown with wrestling by [A.name] ([A.ckey])</font>"
 	return
 
@@ -230,8 +230,8 @@ If you make a derivative work from this code, you must include this notification
 		if (A && D)
 			A.pixel_y += 3
 			D.pixel_y += 3
-			A.setDir(turn(A.dir, 90))
-			D.setDir(turn(D.dir, 90))
+			A.dir = turn(A.dir, 90)
+			D.dir = turn(D.dir, 90)
 
 			switch (A.dir)
 				if (NORTH)
@@ -298,17 +298,17 @@ If you make a derivative work from this code, you must include this notification
 		playsound(A.loc, "swing_hit", 50, TRUE)
 		if (!D.stat)
 			D.emote("scream")
-			D.Paralyze(40)
+			D.Paralyse(40)
 
 			switch(rand(1,3))
 				if (2)
 					D.adjustBruteLoss(rand(20,30))
 				if (3)
-					D.ex_act(EXPLODE_LIGHT)
+					D.ex_act(3)
 				else
 					D.adjustBruteLoss(rand(10,20))
 		else
-			D.ex_act(EXPLODE_LIGHT)
+			D.ex_act(3)
 
 	else
 		if (A)
@@ -331,7 +331,7 @@ If you make a derivative work from this code, you must include this notification
 	var/turf/T = get_turf(A)
 	if (T && isturf(T) && D && isturf(D.loc))
 		for (var/i = 0, i < 4, i++)
-			A.setDir(turn(A.dir, 90))
+			A.dir = turn(A.dir, 90)
 
 		A.forceMove(D.loc)
 		addtimer(CALLBACK(src, src.CheckStrikeTurf(), A, T), 4)
@@ -341,7 +341,7 @@ If you make a derivative work from this code, you must include this notification
 		to_chat(A, "<span class='danger'>You headbutt [D]!</span>")
 		D.adjustBruteLoss(rand(10,20))
 		playsound(A.loc, "swing_hit", 50, TRUE)
-		D.Unconscious(20)
+		D.Paralyse(20)
 		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Headbutted with wrestling by [A.name] ([A.ckey])</font>"
 
 /datum/martial_art/wrestling/proc/kick(mob/living/human/A, mob/living/human/D)
@@ -349,7 +349,7 @@ If you make a derivative work from this code, you must include this notification
 		return
 	A.emote("scream")
 	A.emote("flip")
-	A.setDir(turn(A.dir, 90))
+	A.dir = turn(A.dir, 90)
 
 	D.visible_message("<span class='danger'>[A] roundhouse-kicks [D]!</span>", \
 					"<span class='userdanger'>You're roundhouse-kicked by [A]!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>")
@@ -359,7 +359,7 @@ If you make a derivative work from this code, you must include this notification
 
 	var/turf/T = get_edge_target_turf(A, get_dir(A, get_step_away(D, A)))
 	if (T && isturf(T))
-		D.Paralyze(20)
+		D.Paralyse(20)
 		D.throw_at(T, 3, 2)
 		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Roundhouse-kicked by [A.name] ([A.ckey])</font>"
 
@@ -400,7 +400,7 @@ If you make a derivative work from this code, you must include this notification
 				A.visible_message("<span class='danger'>...and dives head-first into the ground, ouch!</span>", \
 								"<span class='userdanger'>...and dive head-first into the ground, ouch!</span>")
 				A.adjustBruteLoss(rand(10,20))
-				A.Paralyze(60)
+				A.Paralyse(60)
 			to_chat(A, "<span class='warning'>[D] is too far away!</span>")
 			return
 
@@ -424,7 +424,7 @@ If you make a derivative work from this code, you must include this notification
 		A.emote("scream")
 		D.adjustBruteLoss(rand(20,30))
 
-		D.Paralyze(40)
+		D.Paralyse(40)
 
 		A.pixel_y = 0
 

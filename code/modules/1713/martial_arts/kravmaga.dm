@@ -58,11 +58,11 @@
 		legsweep.Grant(owner)
 		lungpunch.Grant(owner)
 
-/datum/martial_art/krav_maga/on_remove(mob/living/owner)
-	to_chat(owner, "<span class='userdanger'>You suddenly forget the arts of [name]...</span>")
+/datum/martial_art/krav_maga/remove(mob/living/owner)
 	neckchop.Remove(owner)
 	legsweep.Remove(owner)
 	lungpunch.Remove(owner)
+	..()
 
 /datum/martial_art/krav_maga/proc/check_streak(mob/living/human/A, mob/living/human/D)
 	switch(streak)
@@ -83,14 +83,14 @@
 /datum/martial_art/krav_maga/proc/leg_sweep(mob/living/human/A, mob/living/human/D)
 	if(D.stat || D.paralysis > 0)
 		return FALSE
-	var/obj/item/organ/external/affecting = D.get_bodypart(BODY_ZONE_CHEST)
+	var/obj/item/organ/external/affecting = D.get_organ("chest")
 	var/armor_block = D.run_armor_check(affecting, "melee")
 	D.visible_message("<span class='warning'>[A] leg sweeps [D]!</span>", \
 					"<span class='userdanger'>Your legs are sweeped by [A]!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>", null, A)
 	to_chat(A, "<span class='danger'>You leg sweep [D]!</span>")
 	playsound(get_turf(A), 'sound/weapons/kick.ogg', 50, TRUE, -1)
-	D.apply_damage(rand(20,30), STAMINA, affecting, armor_block)
-	D.Knockdown(60)
+	D.stats["stamina"][1] = max(0, D.stats["stamina"][1] - rand(20,30))
+	D.Weaken(60)
 	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Leg sweeped by [A.name] ([A.ckey])</font>"
 	return TRUE
 
@@ -108,9 +108,9 @@
 /datum/martial_art/krav_maga/proc/neck_chop(mob/living/human/A, mob/living/human/D)
 	D.visible_message("<span class='warning'>[A] karate chops [D]'s neck!</span>", \
 					"<span class='userdanger'>Your neck is karate chopped by [A], rendering you unable to speak!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>")
-	to_chat(A, "<span class='danger'>You karate chop [D]'s neck, rendering [D.p_them()] unable to speak!</span>")
-	playsound(get_turf(A), 'sound/effects/hit_punch.ogg', 50, TRUE, -1)
-	D.apply_damage(5, A.get_attack_type())
+	to_chat(A, "<span class='danger'>You karate chop [D]'s neck, rendering [D.gender == MALE ? "him" : "her"] unable to speak!</span>")
+	playsound(get_turf(A), 'sound/weapons/punch1.ogg', 50, TRUE, -1)
+	D.apply_damage(5, BRUTE)
 	if (ishuman(D))
 		var/mob/living/human/human_defender = D
 		if(human_defender.silent <= 10)
@@ -132,20 +132,20 @@
 	var/armor_block = D.run_armor_check(affecting, "melee")
 	var/picked_hit_type = pick("punch", "kick")
 	var/bonus_damage = 0
-	if(D.body_position == LYING_DOWN)
+	if(D.lying)
 		bonus_damage += 5
 		picked_hit_type = "stomp"
-	D.apply_damage(rand(5,10) + bonus_damage, A.get_attack_type(), affecting, armor_block)
+	D.stats["stamina"][1] = max(0, D.stats["stamina"][1] - (rand(5,10) + bonus_damage))
 	if(picked_hit_type == "kick" || picked_hit_type == "stomp")
-		A.do_attack_animation(D, ATTACK_EFFECT_KICK)
+		A.do_attack_animation(D)
 		playsound(get_turf(D), 'sound/weapons/kick.ogg', 50, TRUE, -1)
 	else
-		A.do_attack_animation(D, ATTACK_EFFECT_PUNCH)
-		playsound(get_turf(D), 'sound/effects/hit_punch.ogg', 50, TRUE, -1)
+		A.do_attack_animation(D)
+		playsound(get_turf(D), 'sound/weapons/punch1.ogg', 50, TRUE, -1)
 	D.visible_message("<span class='danger'>[A] [picked_hit_type]s [D]!</span>", \
 					"<span class='userdanger'>You're [picked_hit_type]ed by [A]!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>")
 	to_chat(A, "<span class='danger'>You [picked_hit_type] [D]!</span>")
-		D.attack_log += "\[[time_stamp()]\] <font color='orange'>[picked_hit_type] by [A.name] ([A.ckey])</font>"
+	D.attack_log += "\[[time_stamp()]\] <font color='orange'>[picked_hit_type] by [A.name] ([A.ckey])</font>"
 	return TRUE
 
 /datum/martial_art/krav_maga/disarm_act(mob/living/human/A, mob/living/human/D)
@@ -153,23 +153,24 @@
 		return TRUE
 	var/obj/item/organ/external/affecting = D.get_bodypart(ran_zone(A.targeted_organ))
 	var/armor_block = D.run_armor_check(affecting, "melee")
-	if(D.body_position == STANDING_UP)
+	if(!D.lying)
 		D.visible_message("<span class='danger'>[A] reprimands [D]!</span>", \
 					"<span class='userdanger'>You're slapped by [A]!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>")
 		to_chat(A, "<span class='danger'>You jab [D]!</span>")
-		A.do_attack_animation(D, ATTACK_EFFECT_PUNCH)
-		playsound(D, 'sound/effects/hit_punch.ogg', 50, TRUE, -1)
-		D.apply_damage(rand(5,10), STAMINA, affecting, armor_block)
+		A.do_attack_animation(D)
+		playsound(D, 'sound/weapons/punch1.ogg', 50, TRUE, -1)
+		D.stats["stamina"][1] = max(0, D.stats["stamina"][1] - rand(5,10))
 		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Punched nonlethally by [A.name] ([A.ckey])</font>"
-	if(D.body_position == LYING_DOWN)
+	if(D.lying)
 		D.visible_message("<span class='danger'>[A] reprimands [D]!</span>", \
 					"<span class='userdanger'>You're manhandled by [A]!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>")
 		to_chat(A, "<span class='danger'>You stomp [D]!</span>")
-		A.do_attack_animation(D, ATTACK_EFFECT_KICK)
-		playsound(D, 'sound/effects/hit_punch.ogg', 50, TRUE, -1)
-		D.apply_damage(rand(10,15), STAMINA, affecting, armor_block)
+		A.do_attack_animation(D)
+		playsound(D, 'sound/weapons/punch1.ogg', 50, TRUE, -1)
+		D.stats["stamina"][1] = max(0, D.stats["stamina"][1] - rand(10,15))
 		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Stomped nonlethally by [A.name] ([A.ckey])</font>"
-	if(prob(D.getStaminaLoss()))
+	if(prob(D.stats["stamina"][2] - D.stats["stamina"][1]))
 		D.visible_message("<span class='warning'>[D] sputters and recoils in pain!</span>", "<span class='userdanger'>You recoil in pain as you are jabbed in a nerve!</span>")
-		D.drop_all_held_items()
+		D.drop_l_hand()
+		D.drop_r_hand()
 	return TRUE

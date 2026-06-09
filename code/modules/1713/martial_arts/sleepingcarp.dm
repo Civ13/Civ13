@@ -31,42 +31,43 @@
 /datum/martial_art/the_sleeping_carp/proc/strongPunch(mob/living/human/A, mob/living/human/D)
 	///this var is so that the strong punch is always aiming for the body part the user is targeting and not trying to apply to the chest before deviating
 	var/obj/item/organ/external/affecting = D.get_bodypart(ran_zone(A.targeted_organ))
-	A.do_attack_animation(D, ATTACK_EFFECT_PUNCH)
+	A.do_attack_animation(D)
 	var/atk_verb = pick("precisely kick", "brutally chop", "cleanly hit", "viciously slam")
 	D.visible_message("<span class='danger'>[A] [atk_verb]s [D]!</span>", \
 					"<span class='userdanger'>[A] [atk_verb]s you!</span>", null, null, A)
 	to_chat(A, "<span class='danger'>You [atk_verb] [D]!</span>")
 	playsound(get_turf(D), 'sound/weapons/punch1.ogg', 25, TRUE, -1)
 	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Strong punched (Sleeping Carp) by [A.name] ([A.ckey])</font>"
-	D.apply_damage(20, A.get_attack_type(), affecting)
+	D.apply_damage(20, BRUTE, affecting)
 	return
 
 ///Crashing Wave Kick: Harm Disarm combo, throws people seven tiles backwards
 /datum/martial_art/the_sleeping_carp/proc/launchKick(mob/living/human/A, mob/living/human/D)
-	A.do_attack_animation(D, ATTACK_EFFECT_KICK)
+	A.do_attack_animation(D)
 	D.visible_message("<span class='warning'>[A] kicks [D] square in the chest, sending them flying!</span>", \
 					"<span class='userdanger'>You are kicked square in the chest by [A], sending you flying!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>")
 	playsound(get_turf(A), 'sound/weapons/kick.ogg', 50, TRUE, -1)
 	var/atom/throw_target = get_edge_target_turf(D, A.dir)
 	D.throw_at(throw_target, 7, 14, A)
-	D.apply_damage(15, A.get_attack_type(), BODY_ZONE_CHEST, wound_bonus = CANT_WOUND)
+	D.apply_damage(15, BRUTE, "chest")
 	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Launchkicked (Sleeping Carp) by [A.name] ([A.ckey])</font>"
 	return
 
 ///Keelhaul: Harm Grab combo, knocks people down, deals stamina damage while they're on the floor
 /datum/martial_art/the_sleeping_carp/proc/dropKick(mob/living/human/A, mob/living/human/D)
-	A.do_attack_animation(D, ATTACK_EFFECT_KICK)
+	A.do_attack_animation(D)
 	playsound(get_turf(A), 'sound/weapons/kick.ogg', 50, TRUE, -1)
-	if(D.body_position == STANDING_UP)
-		D.apply_damage(10, A.get_attack_type(), BODY_ZONE_HEAD, wound_bonus = CANT_WOUND)
-		D.apply_damage(40, STAMINA, BODY_ZONE_HEAD)
-		D.Knockdown(40)
+	if(!D.lying)
+		D.apply_damage(10, BRUTE, "head")
+		D.stats["stamina"][1] = max(0, D.stats["stamina"][1] - 40)
+		D.Weaken(40)
 		D.visible_message("<span class='warning'>[A] kicks [D] in the head, sending them face first into the floor!</span>", \
 					"<span class='userdanger'>You are kicked in the head by [A], sending you crashing to the floor!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>")
 	else
-		D.apply_damage(5, A.get_attack_type(), BODY_ZONE_HEAD, wound_bonus = CANT_WOUND)
-		D.apply_damage(40, STAMINA, BODY_ZONE_HEAD)
-		D.drop_all_held_items()
+		D.apply_damage(5, BRUTE, "head")
+		D.stats["stamina"][1] = max(0, D.stats["stamina"][1] - 40)
+		D.drop_l_hand()
+		D.drop_r_hand()
 		D.visible_message("<span class='warning'>[A] kicks [D] in the head!</span>", \
 					"<span class='userdanger'>You are kicked in the head by [A]!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>")
 	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Dropkicked (Sleeping Carp) by [A.name] ([A.ckey])</font>"
@@ -83,13 +84,13 @@
 	add_to_streak("H",D)
 	if(check_streak(A,D))
 		return TRUE
-	var/obj/item/organ/external/affecting = D.get_bodypart(ran_zone(A.targeted_organ))
-	A.do_attack_animation(D, ATTACK_EFFECT_PUNCH)
+	var/obj/item/organ/external/affecting = D.get_organ(ran_zone(A.targeted_organ))
+	A.do_attack_animation(D)
 	var/atk_verb = pick("kick", "chop", "hit", "slam")
 	D.visible_message("<span class='danger'>[A] [atk_verb]s [D]!</span>", \
 					"<span class='userdanger'>[A] [atk_verb]s you!</span>", null, null, A)
 	to_chat(A, "<span class='danger'>You [atk_verb] [D]!</span>")
-	D.apply_damage(rand(10,15), BRUTE, affecting, wound_bonus = CANT_WOUND)
+	D.apply_damage(rand(10,15), BRUTE, affecting)
 	playsound(get_turf(D), 'sound/weapons/punch1.ogg', 25, TRUE, -1)
 	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Punched (Sleeping Carp) by [A.name] ([A.ckey])</font>"
 	return TRUE
