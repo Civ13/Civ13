@@ -37,5 +37,7 @@
 // Returns true if val is from min to max, inclusive.
 #define IsInteger(x) (Floor(x) == x)
 
+#define LERP(a, b, amount) ( amount ? ((a) + ((b) - (a)) * (amount)) : a )
+
 // 180 / Pi ~ 57.2957795
 #define ToDegrees(radians) (radians * 57.2957795)
