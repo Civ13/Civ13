@@ -49,9 +49,6 @@ proc/iscuffed(A)
 	return check_rights(R_ADMIN, FALSE, user) != FALSE
 
 
-/proc/hsl2rgb(h, s, l)
-	return //TODO: Implement
-
 //Used to weight organs when an organ is hit randomly (i.e. not a directed, aimed attack).
 //Also used to weight the protection value that armor provides for covering that body part when calculating protection from full-body effects.
 var/list/global/organ_rel_size = list(

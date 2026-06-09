@@ -171,11 +171,6 @@ var/list/admin_verbs_paranoid_debug = list(
 	/client/proc/debug_controller
 	)
 
-var/list/admin_verbs_possess = list(
-	/proc/possess,
-	/proc/release
-	)
-
 var/list/admin_verbs_permissions = list(
 	/client/proc/edit_admin_permissions
 	)
@@ -237,8 +232,6 @@ var/list/admin_verbs_hideable = list(
 	/datum/admins/proc/persistent,
 	/datum/admins/proc/persistent_chad,
 //	/client/proc/roll_dices,
-	/proc/possess,
-	/proc/release
 	)
 var/list/admin_verbs_mod = list(
 	/client/proc/goto_adminzone,

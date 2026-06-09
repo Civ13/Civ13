@@ -51,22 +51,6 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 	if (A > upper) return FALSE
 	return TRUE
 
-/*
-/proc/Get_Angle(atom/movable/start,atom/movable/end)//For beams.
-	if (!start || !end) return FALSE
-	var/dy
-	var/dx
-	dy=(32*end.y+end.pixel_y)-(32*start.y+start.pixel_y)
-	dx=(32*end.x+end.pixel_x)-(32*start.x+start.pixel_x)
-	if (!dy)
-		return (dx>=0)?90:270
-	.=arctan(dx/dy)
-	if (dy<0)
-		.+=180
-	else if (dx<0)
-		.+=360
-*/
-
 //gives us the stack trace from CRASH() without ending the current proc.
 /proc/stack_trace(msg)
 	CRASH(msg)
@@ -84,101 +68,6 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 			else
 				return "\[[url_encode(thing.tag)]\]"
 	return "\ref[input]"
-
-
-//Returns location. Returns null if no location was found.
-/proc/get_teleport_loc(turf/location,mob/target,distance = TRUE, density = FALSE, errorx = FALSE, errory = FALSE, eoffsetx = FALSE, eoffsety = FALSE)
-/*
-Location where the teleport begins, target that will teleport, distance to go, density checking FALSE/1(yes/no).
-Random error in tile placement x, error in tile placement y, and block offset.
-Block offset tells the proc how to place the box. Behind teleport location, relative to starting location, forward, etc.
-Negative values for offset are accepted, think of it in relation to North, -x is west, -y is south. Error defaults to positive.
-Turf and target are seperate in case you want to teleport some distance from a turf the target is not standing on or something.
-*/
-
-	var/dirx = FALSE//Generic location finding variable.
-	var/diry = FALSE
-
-	var/xoffset = FALSE//Generic counter for offset location.
-	var/yoffset = FALSE
-
-	var/b1xerror = FALSE//Generic placing for point A in box. The lower left.
-	var/b1yerror = FALSE
-	var/b2xerror = FALSE//Generic placing for point B in box. The upper right.
-	var/b2yerror = FALSE
-
-	errorx = abs(errorx)//Error should never be negative.
-	errory = abs(errory)
-	//var/errorxy = round((errorx+errory)/2)//Used for diagonal boxes.
-
-	switch(target.dir)//This can be done through equations but switch is the simpler method. And works fast to boot.
-	//Directs on what values need modifying.
-		if (1)//North
-			diry+=distance
-			yoffset+=eoffsety
-			xoffset+=eoffsetx
-			b1xerror-=errorx
-			b1yerror-=errory
-			b2xerror+=errorx
-			b2yerror+=errory
-		if (2)//South
-			diry-=distance
-			yoffset-=eoffsety
-			xoffset+=eoffsetx
-			b1xerror-=errorx
-			b1yerror-=errory
-			b2xerror+=errorx
-			b2yerror+=errory
-		if (4)//East
-			dirx+=distance
-			yoffset+=eoffsetx//Flipped.
-			xoffset+=eoffsety
-			b1xerror-=errory//Flipped.
-			b1yerror-=errorx
-			b2xerror+=errory
-			b2yerror+=errorx
-		if (8)//West
-			dirx-=distance
-			yoffset-=eoffsetx//Flipped.
-			xoffset+=eoffsety
-			b1xerror-=errory//Flipped.
-			b1yerror-=errorx
-			b2xerror+=errory
-			b2yerror+=errorx
-
-	var/turf/destination=locate(location.x+dirx,location.y+diry,location.z)
-
-	if (destination)//If there is a destination.
-		if (errorx||errory)//If errorx or y were specified.
-			var/destination_list[] = list()//To add turfs to list.
-			//destination_list = new()
-			/*This will draw a block around the target turf, given what the error is.
-			Specifying the values above will basically draw a different sort of block.
-			If the values are the same, it will be a square. If they are different, it will be a rectengle.
-			In either case, it will center based on offset. Offset is position from center.
-			Offset always calculates in relation to direction faced. In other words, depending on the direction of the teleport,
-			the offset should remain positioned in relation to destination.*/
-
-			var/turf/center = locate((destination.x+xoffset),(destination.y+yoffset),location.z)//So now, find the new center.
-
-			//Now to find a box from center location and make that our destination.
-			for (var/turf/T in block(locate(center.x+b1xerror,center.y+b1yerror,location.z), locate(center.x+b2xerror,center.y+b2yerror,location.z) ))
-				if (density&&T.density)	continue//If density was specified.
-				if (T.x>world.maxx || T.x<1)	continue//Don't want them to teleport off the map.
-				if (T.y>world.maxy || T.y<1)	continue
-				destination_list += T
-			if (destination_list.len)
-				destination = pick(destination_list)
-			else	return
-
-		else//Same deal here.
-			if (density&&destination.density)	return
-			if (destination.x>world.maxx || destination.x<1)	return
-			if (destination.y>world.maxy || destination.y<1)	return
-	else	return
-
-	return destination
-
 
 
 /proc/LinkBlocked(turf/A, turf/B)
@@ -303,53 +192,6 @@ Turf and target are seperate in case you want to teleport some distance from a t
 
 	return turfs
 
-/proc/getstraightline(atom/M, atom/N, var/exclude_m_turf = FALSE, var/skip_turfs = FALSE)//Ultra-Fast Bresenham Line-Drawing Algorithm
-	var/list/line = list()
-
-	if (!exclude_m_turf)
-		line += get_turf(M)
-
-	var/active_turf = get_step(M, M.dir)
-
-	for (var/v in TRUE to rand(7,9))
-		if (skip_turfs)
-			--skip_turfs
-			continue
-		line += active_turf
-		if (active_turf == get_turf(N))
-			break
-		active_turf = get_step(active_turf, M.dir)
-
-	return line
-
-/proc/getturfsbetween(atom/start, atom/target, var/maxrange = 5, var/safe = TRUE)
-
-	var/list/turfs = list()
-	var/horizontal_dir_2_target = target.x > start.x ? EAST : WEST
-	var/vertical_dir_2_target = target.y > start.y ? NORTH : SOUTH
-
-	for (var/turf/t in range(maxrange, start))
-
-		if (safe)
-			if (t == get_turf(start) || t == get_turf(target))
-				continue
-
-			if (locate(get_turf(start)) in range(1, t))
-				continue
-
-		if (horizontal_dir_2_target == EAST && t.x > start.x && t.x <= target.x)
-			turfs += t
-		else if (horizontal_dir_2_target == WEST && t.x < start.x && t.x >= target.x)
-			turfs += t
-
-		if (vertical_dir_2_target == NORTH && t.y > start.y && t.y <= target.y)
-			turfs += t
-		else if (vertical_dir_2_target == SOUTH && t.y < start.y && t.y >= target.y)
-			turfs += t
-
-
-	return turfs
-
 #define LOCATE_COORDS(X, Y, Z) locate(between(1, X, world.maxx), between(1, Y, world.maxy), Z)
 /proc/getcircle(turf/center, var/radius) //Uses a fast Bresenham rasterization algorithm to return the turfs in a thin circle.
 	if (!radius) return list(center)
@@ -463,35 +305,6 @@ Turf and target are seperate in case you want to teleport some distance from a t
 
 
 
-//Picks a string of symbols to display as the law number for hacked or ion laws
-/proc/ionnum()
-	return "[pick("1","2","3","4","5","6","7","8","9","0")][pick("!","@","#","$","%","^","&","*")][pick("!","@","#","$","%","^","&","*")][pick("!","@","#","$","%","^","&","*")]"
-
-/proc/get_sorted_mobs()
-	var/list/old_list = getmobs()
-	var/list/Dead_list = list()
-	var/list/keyclient_list = list()
-	var/list/key_list = list()
-	var/list/logged_list = list()
-	for (var/named in old_list)
-		var/mob/M = old_list[named]
-		if (isghost(M) || M.stat == DEAD)
-			Dead_list |= M
-		else if (M.key && M.client)
-			keyclient_list |= M
-		else if (M.key)
-			key_list |= M
-		else
-			logged_list |= M
-		old_list.Remove(named)
-	var/list/new_list = list()
-	new_list += keyclient_list
-	new_list += key_list
-	new_list += logged_list
-	new_list += Dead_list
-	return new_list
-
-
 //Forces a variable to be posative
 /proc/modulus(var/M)
 	if (M >= 0)
@@ -520,33 +333,6 @@ Turf and target are seperate in case you want to teleport some distance from a t
 		target = locate(1, target.y, target.z)
 
 	return target
-
-// returns turf relative to A in given direction at set range
-// result is bounded to map size
-// note range is non-pythagorean
-// used for disposal system
-/proc/get_ranged_target_turf(var/atom/A, var/direction, var/range)
-
-	var/x = A.x
-	var/y = A.y
-	if (direction & NORTH)
-		y = min(world.maxy, y + range)
-	if (direction & SOUTH)
-		y = max(1, y - range)
-	if (direction & EAST)
-		x = min(world.maxx, x + range)
-	if (direction & WEST)
-		x = max(1, x - range)
-
-	return locate(x,y,A.z)
-
-
-// returns turf relative to A offset in dx and dy tiles
-// bound to map limits
-/proc/get_offset_target_turf(var/atom/A, var/dx, var/dy)
-	var/x = min(world.maxx, max(1, A.x + dx))
-	var/y = min(world.maxy, max(1, A.y + dy))
-	return locate(x,y,A.z)
 
 //Makes sure MIDDLE is between LOW and HIGH. If not, it adjusts it. Returns the adjusted value. Lower bound takes priority.
 /proc/between(var/low, var/middle, var/high)
@@ -636,12 +422,6 @@ Turf and target are seperate in case you want to teleport some distance from a t
 
 	else return get_step(ref, base_dir)
 
-//Takes: Anything that could possibly have variables and a varname to check.
-//Returns: TRUE if found, FALSE if not.
-/proc/hasvar(var/datum/A, var/varname)
-	if (A.vars.Find(lowertext(varname))) return TRUE
-	else return FALSE
-
 //Returns: all the areas in the world
 /proc/return_areas()
 	var/list/area/areas = list()
@@ -688,29 +468,6 @@ Turf and target are seperate in case you want to teleport some distance from a t
 	var/y_pos = null
 	var/z_pos = null
 
-proc/DuplicateObject(obj/original, var/perfectcopy = FALSE , var/sameloc = FALSE)
-	if (!original)
-		return null
-
-	var/obj/O = null
-
-	if (sameloc)
-		O=new original.type(original.loc)
-	else
-		O=new original.type(locate(0,0,0))
-
-	if (perfectcopy)
-		if ((O) && (original))
-			for (var/V in original.vars)
-				if (!(V in list("type","loc","locs","vars", "parent", "parent_type","verbs","ckey","key")))
-					O.vars[V] = original.vars[V]
-	return O
-
-
-proc/get_cardinal_dir(atom/A, atom/B)
-	var/dx = abs(B.x - A.x)
-	var/dy = abs(B.y - A.y)
-	return get_dir(A, B) & (rand() * (dx+dy) < dy ? 3 : 12)
 
 //chances are TRUE:value. anyprob(1) will always return true
 proc/anyprob(value)
@@ -722,14 +479,6 @@ proc/view_or_range(distance = 7 , center = usr , type)
 			. = view(distance,center)
 		if ("range")
 			. = range(distance,center)
-	return
-
-proc/oview_or_orange(distance = 7 , center = usr , type)
-	switch(type)
-		if ("view")
-			. = oview(distance,center)
-		if ("range")
-			. = orange(distance,center)
 	return
 
 proc/get_mob_with_client_list()
@@ -768,9 +517,6 @@ proc/get_mob_with_client_list()
 			return loc
 		loc = loc.loc
 	return null
-
-/proc/get_turf_or_move(turf/location)
-	return get_turf(location)
 
 
 //Quick type checks for some tools

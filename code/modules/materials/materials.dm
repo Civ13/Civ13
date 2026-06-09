@@ -57,12 +57,6 @@ var/list/material/name_to_material
 		return name_to_material[name]
 	return null
 
-/proc/material_display_name(name)
-	var/material/material = get_material_by_name(name)
-	if (material)
-		return material.display_name
-	return null
-
 // Material definition and procs follow.
 /material
 	var/name							  	// Unique name for use in indexing the list.

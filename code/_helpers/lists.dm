@@ -12,15 +12,6 @@
 // "locate() in list" tends not to work, so here's a version that works for both objects and lists - Kachnov
 // interesting to note, istype() works even when the first argument isn't an object. We use this to bypass some type checking, making these fairly-common procs faster
 
-/proc/locate_type(var/L, var/type)
-	if (isatom(L))
-		var/atom/A = L
-		L = A.contents
-	for (var/D in L)
-		if (istype(D, type))
-			return D
-	return FALSE
-
 /proc/locate_dense_type(var/L, var/type)
 	if (isatom(L))
 		var/atom/A = L
@@ -28,25 +19,6 @@
 	for (var/A in L)
 		if (istype(A, type) && A:density)
 			return A
-	return FALSE
-
-/proc/locate_opaque_type(var/L, var/type)
-	if (isatom(L))
-		var/atom/A = L
-		L = A.contents
-	for (var/A in L)
-		if (istype(A, type) && A:opacity)
-			return A
-	return FALSE
-
-/proc/locate_bullet_blocking_structure(var/list/L)
-	if (isatom(L))
-		var/atom/A = L
-		L = A.contents
-	for (var/obj/structure/structure in L)
-		if (structure.throwpass || !structure.density)
-			continue
-		return TRUE
 	return FALSE
 
 //Returns a list in plain english as a string
@@ -127,16 +99,6 @@ proc/listclearnulls(list/list)
  * If skipref = TRUE, repeated elements are treated as one.
  * If either of arguments is not a list, returns null
  */
-/proc/uniquemergelist(var/list/first, var/list/second, var/skiprep=0)
-	if (!islist(first) || !islist(second))
-		return
-	var/list/result = new
-	if (skiprep)
-		result = difflist(first, second, skiprep)+difflist(second, first, skiprep)
-	else
-		result = first ^ second
-	return result
-
 //Pretends to pick an element based on its weight but really just seems to pick a random element.
 /proc/pickweight(list/L)
 	var/total = FALSE
@@ -239,12 +201,6 @@ proc/listclearnulls(list/list)
 	for (var/i=1; i<L.len; i++)
 		L.Swap(i, rand(i,L.len))
 	return L
-
-//Return a list with no duplicate entries
-/proc/uniquelist(var/list/L)
-	. = list()
-	for (var/i in L)
-		. |= i
 
 // Return a list of the values in an assoc list (including null)
 /proc/list_values(var/list/L)
@@ -354,13 +310,6 @@ proc/listclearnulls(list/list)
 		return L
 	var/middle = L.len / 2 + 1 // Copy is first,second-1
 	return mergeLists(sortList(L.Copy(0,middle)), sortList(L.Copy(middle))) //second parameter null = to end of list
-
-//Mergsorge: uses sortList() but uses the var's name specifically. This should probably be using mergeAtom() instead
-/proc/sortNames(var/list/L)
-	var/list/Q = new()
-	for (var/atom/x in L)
-		Q[x.name] = x
-	return sortList(Q)
 
 /proc/mergeLists(var/list/L, var/list/R)
 	var/Li=1
@@ -734,30 +683,6 @@ proc/dd_sortedTextList(list/incoming)
 			L.Swap(fromIndex, toIndex)
 			L.Cut(fromIndex, fromIndex+1)
 
-
-//Move elements from [fromIndex, fromIndex+len) to [toIndex, toIndex+len)
-//Move any elements being overwritten by the move to the now-empty elements, preserving order
-//Note: if the two ranges overlap, only the destination order will be preserved fully, since some elements will be within both ranges ~Carnie
-/proc/swapRange(list/L, fromIndex, toIndex, len=1)
-	var/distance = abs(toIndex - fromIndex)
-	if(len > distance)	//there is an overlap, therefore swapping each element will require more swaps than inserting new elements
-		if(fromIndex < toIndex)
-			toIndex += len
-		else
-			fromIndex += len
-
-		for(var/i=0, i<distance, ++i)
-			L.Insert(fromIndex, null)
-			L.Swap(fromIndex, toIndex)
-			L.Cut(toIndex, toIndex+1)
-	else
-		if(toIndex > fromIndex)
-			var/a = toIndex
-			toIndex = fromIndex
-			fromIndex = a
-
-		for(var/i=0, i<len, ++i)
-			L.Swap(fromIndex++, toIndex++)
 
 //replaces reverseList ~Carnie
 /proc/reverseRange(list/L, start=1, end=0)
