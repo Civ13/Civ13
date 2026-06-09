@@ -13,7 +13,6 @@
 	var/t_climate = null
 	var/aggroed = FALSE
 	var/empty = TRUE
-	var/max_pop = 10
 	var/procreate_holder = 27000 //45 minutes - TIMER TO PROCREATE
 	var/procreate_cooldown = FALSE
 	var/wanderer_holder = 18000 //30 minutes to roll the chance for the wanderer to go out

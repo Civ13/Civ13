@@ -55,7 +55,6 @@
 	var/icon/stand_icon = null
 
 	var/voice = ""	//Instead of new say code calling GetVoice() over and over and over, we're just going to ask this variable, which gets updated in Life()
-	var/sayverb = "says"
 
 	var/speech_problem_flag = FALSE
 
@@ -80,7 +79,6 @@
 	var/equipment_darkness_modifier			// Darkvision modifier from equipped items
 	var/equipment_vision_flags				// Extra vision flags from equipped items
 	var/equipment_see_invis					// Max see invibility level granted by equipped items
-	var/equipment_prescription				// Eye prescription granted by equipped items
 	var/list/equipment_overlays = list()	// Extra overlays from equipped items
 
 	var/stance_damage = FALSE //Whether this mob's ability to stand has been affected
@@ -148,19 +146,11 @@
 
 	var/has_hunger_and_thirst = TRUE
 
-	var/stopDumbDamage = FALSE
-
 	var/partial_languages[0]
-
-	var/debugmob = FALSE
 
 	var/next_footstep_sound_at_movement_tick = -1
 
 	var/never_set_faction_huds = TRUE
-
-	var/life_hud_check = list(
-		"stat" = -1,
-		"health" = -1)
 
 	var/disease = FALSE
 	var/disease_type = "none"

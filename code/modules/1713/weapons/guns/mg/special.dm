@@ -13,8 +13,6 @@
 	gun_type = GUN_TYPE_RIFLE
 	gtype = "smg"
 
-	accuracy_increase_mod = 1.00
-	accuracy_decrease_mod = 1.50
 	KD_chance = KD_CHANCE_HIGH+5
 	stat = "machinegun"
 	w_class = ITEM_SIZE_NORMAL

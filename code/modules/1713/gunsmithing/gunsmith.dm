@@ -861,7 +861,6 @@ function pickAppearance(a) {
 	var/check_bolt = FALSE //Keeps the bolt from being interfered with
 	var/check_bolt_lock = FALSE //For locking the bolt. Didn't put this in with check_bolt to avoid issues
 	var/bolt_safety = FALSE //If true, locks the bolt when gun is empty
-	var/next_reload = -1
 	var/jammed_until = -1
 	var/jamcheck = 0
 	var/last_fire = -1
@@ -937,8 +936,6 @@ function pickAppearance(a) {
 			load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 			gun_type = GUN_TYPE_RIFLE
 			attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
-			accuracy_increase_mod = 2.00
-			accuracy_decrease_mod = 6.00
 			KD_chance = KD_CHANCE_HIGH
 			stat = "rifle"
 			move_delay = 2
@@ -946,7 +943,6 @@ function pickAppearance(a) {
 			good_mags = list(/obj/item/ammo_magazine/emptyclip)
 
 			load_delay = 4
-			aim_miss_chance_divider = 3.00
 		if ("Revolver")
 			item_state = "revolver"
 			gtype = "revolver"
@@ -966,10 +962,7 @@ function pickAppearance(a) {
 			slot_flags = SLOT_HOLSTER
 			good_mags = list(/obj/item/ammo_magazine/emptyspeedloader)
 
-			accuracy_increase_mod = 1.50
-			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_LOW
-			aim_miss_chance_divider = 2.00
 			load_delay = 6
 
 		if ("Semi-Auto (small)")
@@ -985,10 +978,7 @@ function pickAppearance(a) {
 
 			w_class = ITEM_SIZE_SMALL
 			slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_HOLSTER
-			accuracy_increase_mod = 1.50
-			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_LOW
-			aim_miss_chance_divider = 2.00
 		if ("Semi-Auto (large)")
 			item_state = "g41"
 			stat = "rifle"
@@ -997,13 +987,8 @@ function pickAppearance(a) {
 			slot_flags = SLOT_SHOULDER
 			good_mags = list(/obj/item/ammo_magazine/emptymagazine/rifle)
 
-			accuracy_increase_mod = 2.00
-			accuracy_decrease_mod = 6.00
 			KD_chance = KD_CHANCE_MEDIUM
 			load_delay = 5
-			aim_miss_chance_divider = 2.50
-			headshot_kill_chance = 35
-			KO_chance = 30
 			load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
 			max_shells = 10
 			weight = 3.85
@@ -1029,8 +1014,6 @@ function pickAppearance(a) {
 			equiptimer -= 1
 			gun_type = GUN_TYPE_RIFLE
 
-			accuracy_increase_mod = 1.00
-			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_MEDIUM
 		if ("Open-Bolt (large)")
 			item_state = "negev"
@@ -1053,8 +1036,6 @@ function pickAppearance(a) {
 			slowdown = 1
 			load_delay = 12
 
-			accuracy_increase_mod = 1.00
-			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_MEDIUM
 			load_method = MAGAZINE
 			sel_mode = 1
@@ -1079,8 +1060,6 @@ function pickAppearance(a) {
 			load_delay = 8
 			gun_type = GUN_TYPE_RIFLE
 
-			accuracy_increase_mod = 1.00
-			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_MEDIUM
 		if ("Triple Selective Fire")
 			good_mags = list(/obj/item/ammo_magazine/emptymagazine,/obj/item/ammo_magazine/emptymagazine/rifle)
@@ -1103,8 +1082,6 @@ function pickAppearance(a) {
 			load_delay = 8
 			gun_type = GUN_TYPE_RIFLE
 
-			accuracy_increase_mod = 1.00
-			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_MEDIUM
 		if ("Pump-Action")
 			item_state = "shotgun"
@@ -1113,8 +1090,6 @@ function pickAppearance(a) {
 			gun_type = GUN_TYPE_SHOTGUN
 			fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 
-			accuracy_increase_mod = 1.00
-			accuracy_decrease_mod = 1.00
 			KD_chance = KD_CHANCE_HIGH
 			max_shells = 6
 			w_class = ITEM_SIZE_LARGE

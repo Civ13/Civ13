@@ -1,7 +1,6 @@
 /obj/structure/vehicle/magic
 	name = "magical vehicle"
 	icon = 'icons/obj/magic_weapons.dmi'
-	var/magic_energy = TRUE
 
 /obj/item/vehicleparts/wheel/handle/mop_handle
 	name = "mop handle"

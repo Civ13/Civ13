@@ -33,7 +33,6 @@
 	var/weakenpower = 0
 	var/flamepower = 0
 	var/icepower = 0
-	var/toxicpower = 0
 	var/leechpower = 0
 	var/shockpower = 0
 	//cooloff
@@ -100,7 +99,6 @@
 	sharpness = 25
 	block_chance = 35
 	toxics = 100
-	toxicpower = 100
 	reagent1 = "lexorin"
 	reagent2 = "plague"
 	reagent1amount = 25
@@ -109,7 +107,6 @@
 /obj/item/weapon/material/sword/magic/arkofdisease/lesser
 	name = "Curve of Infection"
 	toxics = 40
-	toxicpower = 15
 	reagent1 = "cryptobiolin"
 	reagent2 = "typhus"
 	reagent1amount = 15

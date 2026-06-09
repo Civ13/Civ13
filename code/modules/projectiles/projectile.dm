@@ -12,7 +12,6 @@
 	var/angle = 0
 	var/direction = EAST
 	var/bumped = FALSE							// Prevents it from hitting more than one guy at once
-	var/hitsound_wall = ""						// "ricochet"
 	var/def_zone = ""							// Aiming at
 	var/mob/firer = null						// Who shot it
 	var/firer_original_dir = null
@@ -29,7 +28,6 @@
 	var/blockedhit = FALSE						// If blocked by shield/armor/etc
 
 	var/launch_from_trench = FALSE
-	var/launch_from_vehicle = FALSE
 	var/overcoming_trench = FALSE 				// If bullet flies out of trench, it will be more difficult to hit a target in another trench
 
 	var/fired_from_turret = FALSE
@@ -64,10 +62,7 @@
 	var/embed = FALSE							// whether or not the projectile can embed itself in the mob
 
 	var/hitscan = 0		// whether the projectile should be hitscan
-	var/step_delay = 0.25	// the delay between iterations if not a hitscan projectile
-
 	var/did_muzzle_effect = FALSE
-	var/firer_turf
 
 	// effect types to be used
 	var/muzzle_type
@@ -94,7 +89,6 @@
 
 	var/useless = FALSE
 
-	var/can_hit_in_trench = TRUE
 	var/btype = "normal" 				// normal, AP (armor piercing) and HP (hollow point)
 	var/atype = "normal"
 	should_save = 0
@@ -291,7 +285,6 @@
 
 	firer = user
 	firer_original_dir = firer.dir
-	firer_turf = get_turf(firer)
 	firedfrom = launcher
 	shot_from = launcher.name
 	if (istype(launcher, /obj/item/weapon/gun))
@@ -394,38 +387,23 @@
 			S.initiate(get_turf(target_mob))
 			return
 
-	if (target_mob.takes_less_damage)
-		switch (damage)
-			if (DAMAGE_LOW-5 to DAMAGE_LOW+5)
-				damage = DAMAGE_LOW - 6
-			if (DAMAGE_MEDIUM-5 to DAMAGE_MEDIUM+5)
-				damage = DAMAGE_MEDIUM - 6
-			if (DAMAGE_MEDIUM_HIGH-5 to DAMAGE_MEDIUM_HIGH+5)
-				damage = DAMAGE_MEDIUM_HIGH - 6
-			if (DAMAGE_HIGH-5 to DAMAGE_HIGH+5)
-				damage = DAMAGE_HIGH - 6
-			if (DAMAGE_VERY_HIGH-5 to DAMAGE_VERY_HIGH+5)
-				damage = DAMAGE_VERY_HIGH - 6
-			if (DAMAGE_OH_GOD-5 to DAMAGE_OH_GOD+5)
-				damage = DAMAGE_OH_GOD - 6
 	// 50% chance of variable damage that stays within the boundaries of the bullet's damage tier
-	else
-		var/variation = 0
-		switch (damage)
-			if (DAMAGE_LOW-5 to DAMAGE_LOW+5)
-				variation = damage - DAMAGE_LOW
-			if (DAMAGE_MEDIUM-5 to DAMAGE_MEDIUM+5)
-				variation = damage - DAMAGE_MEDIUM
-			if (DAMAGE_MEDIUM_HIGH-5 to DAMAGE_MEDIUM_HIGH+5)
-				variation = damage - DAMAGE_MEDIUM_HIGH
-			if (DAMAGE_HIGH-5 to DAMAGE_HIGH+5)
-				variation = damage - DAMAGE_HIGH
-			if (DAMAGE_VERY_HIGH-5 to DAMAGE_VERY_HIGH+5)
-				variation = damage - DAMAGE_VERY_HIGH
-			if (DAMAGE_OH_GOD-5 to DAMAGE_OH_GOD+5)
-				variation = damage - DAMAGE_OH_GOD
-		if (variation > 0)
-			damage += rand(-variation, variation)
+	var/variation = 0
+	switch (damage)
+		if (DAMAGE_LOW-5 to DAMAGE_LOW+5)
+			variation = damage - DAMAGE_LOW
+		if (DAMAGE_MEDIUM-5 to DAMAGE_MEDIUM+5)
+			variation = damage - DAMAGE_MEDIUM
+		if (DAMAGE_MEDIUM_HIGH-5 to DAMAGE_MEDIUM_HIGH+5)
+			variation = damage - DAMAGE_MEDIUM_HIGH
+		if (DAMAGE_HIGH-5 to DAMAGE_HIGH+5)
+			variation = damage - DAMAGE_HIGH
+		if (DAMAGE_VERY_HIGH-5 to DAMAGE_VERY_HIGH+5)
+			variation = damage - DAMAGE_VERY_HIGH
+		if (DAMAGE_OH_GOD-5 to DAMAGE_OH_GOD+5)
+			variation = damage - DAMAGE_OH_GOD
+	if (variation > 0)
+		damage += rand(-variation, variation)
 
 	//hit messages
 	if (blockedhit == FALSE)

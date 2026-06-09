@@ -289,7 +289,6 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	worn_state = "lizardpelt"
 	flags_inv = BLOCKHEADHAIR
 	heat_protection = HEAD
-	var/colortype = "green"
 
 /obj/item/clothing/under/lizardpants
 	name = "shirtless lizard pants"

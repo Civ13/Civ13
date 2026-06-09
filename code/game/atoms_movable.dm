@@ -4,7 +4,6 @@
 	var/last_move = null
 	var/anchored = FALSE
 	var/l_move_time = TRUE
-	var/m_flag = TRUE
 	var/throwing = FALSE
 	var/thrower = null
 	var/speed = 0

@@ -18,7 +18,6 @@
 	is_diggable = TRUE
 	uses_winter_overlay = TRUE
 	may_become_muddy = TRUE
-	var/obj/structure/wild/wild = null
 
 /turf/floor/grass/ex_act(severity)
 	return
@@ -345,7 +344,6 @@
 	opacity = TRUE
 	density = TRUE
 	initial_flooring = null
-	var/rocktype = "default" //Default, Sand, and Ice.
 	New()
 		..()
 

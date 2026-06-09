@@ -27,8 +27,6 @@
 //	scoped_accuracy = 2
 	gun_type = GUN_TYPE_RIFLE
 	attachment_slots = ATTACH_IRONSIGHTS | ATTACH_BARREL
-	accuracy_increase_mod = 2.00
-	accuracy_decrease_mod = 6.00
 	KD_chance = KD_CHANCE_HIGH
 	stat = "rifle"
 	move_delay = 2
@@ -38,7 +36,6 @@
 	equiptimer = 15
 	gtype = "rifle"
 	load_delay = 8
-	aim_miss_chance_divider = 2.50
 
 	var/recentpump = FALSE
 

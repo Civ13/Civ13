@@ -4,7 +4,6 @@
 	voice_name = "unknown"
 	icon = 'icons/mob/human.dmi'
 	icon_state = "human_m_s"
-	var/is_murderer = FALSE // for the "find the murderer" gamemode
 	var/can_mutate = FALSE //from high rads, into ant etc
 	var/looking = FALSE
 	var/look_amount = 3

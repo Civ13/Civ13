@@ -7,8 +7,6 @@
 	equiptimer = 17
 	magazine_type = /obj/item/ammo_magazine/shellbox
 
-	accuracy_increase_mod = 1.00
-	accuracy_decrease_mod = 1.00
 	KD_chance = KD_CHANCE_HIGH
 	stat = "rifle"
 

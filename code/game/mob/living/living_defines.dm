@@ -21,11 +21,6 @@
 
 	var/last_special = FALSE //Used by the resist verb, likely used to prevent players from bypassing next_move by logging in/out.
 
-	var/t_plasma = null
-	var/t_oxygen = null
-	var/t_sl_gas = null
-	var/t_n2 = null
-
 	var/now_pushing = null
 	var/mob_bump_flag = FALSE
 	var/mob_swap_flags = FALSE
@@ -35,13 +30,10 @@
 	var/mob/living/cameraFollow = null
 	var/list/datum/action/actions = list()
 
-	var/tod = null // Time of death
-	var/update_slimes = TRUE
 	var/silent = null 		// Can't talk. Value goes down every life proc.
 	var/on_fire = FALSE //The "Are we on fire?" var
 	var/fire_stacks
 
-	var/failed_last_breath = FALSE //This is used to determine if the mob failed a breath. If they did fail a brath, they will attempt to breathe each tick, otherwise just once per 4 ticks.
 	var/possession_candidate // Can be possessed by ghosts if unplayed.
 
 	var/eye_blind = null	//Carbon
@@ -50,8 +42,6 @@
 	var/stuttering = null	//Carbon
 	var/slurring = null		//Carbon
 	var/lisp = null		//Carbon
-
-	var/takes_less_damage = FALSE
 
 	var/tactic = "charge"
 	var/life_forced = FALSE

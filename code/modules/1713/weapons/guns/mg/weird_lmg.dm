@@ -58,8 +58,6 @@
 			VERY_LONG_RANGE_MOVING = 14),
 	)
 
-	accuracy_increase_mod = 1.00
-	accuracy_decrease_mod = 2.00
 	KD_chance = KD_CHANCE_MEDIUM
 	good_mags = list() //List of extra compatible mags
 	bad_magazine_types = list(/obj/item/ammo_magazine) // list of magazine types that we can't use

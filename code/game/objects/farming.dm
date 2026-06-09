@@ -389,7 +389,6 @@
 	var/list/seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 
 	var/vstatic = FALSE // to "freeze" the image, so it can be used as a prop
-	var/fertilized = FALSE
 	var/water = 60
 	var/max_water = 60
 	var/plant_nutrition = 100

@@ -5,7 +5,6 @@
 	item_state = "muzzle"
 	body_parts_covered = FACE
 	w_class = ITEM_SIZE_SMALL
-	gas_transfer_coefficient = 0.90
 	voicechange = TRUE
 	heat_protection = 0
 

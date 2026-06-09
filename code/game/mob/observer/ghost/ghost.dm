@@ -10,7 +10,6 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	blinded = FALSE
 	anchored = TRUE	//  don't get pushed around
 	var/can_reenter_corpse
-	var/datum/hud/living/carbon/hud = null // hud
 	var/started_as_observer //This variable is set to TRUE when you enter the game as an observer.
 							//If you died in the game and are a ghsot - this will remain as null.
 							//Note that this is not a reliable way to determine if admins started as observers, since they change mobs a lot.
@@ -28,8 +27,6 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 
 	//ghostcombat stuff
 	var/combatmode = "melee"
-	var/ghostlife = 100
-
 	var/last_revive_notification = null // world.time of last notification, used to avoid spamming players from defibs or cloners.
 
 /mob/observer/ghost/New(mob/body)

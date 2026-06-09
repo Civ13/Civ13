@@ -75,7 +75,6 @@
 	var/list/beakers = list() //All containers inside the gun.
 	var/list/mixing = list() //Containers being used for mixing.
 	var/max_beakers = 1
-	var/dart_reagent_amount = 10
 	var/container_type = /obj/item/weapon/reagent_containers
 	var/list/starting_chems = null
 	move_delay=2
@@ -105,7 +104,6 @@
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
 	caliber = "dart"
 	fire_sound = 'sound/weapons/guns/interact/garandload.ogg'
-	fire_sound_text = "a sharp metalic clack"
 	shake_strength = FALSE
 	magazine_type = /obj/item/ammo_magazine/chemdart
 	auto_eject = FALSE
@@ -113,7 +111,6 @@
 	beakers = list() //All containers inside the gun.
 	mixing = list() //Containers being used for mixing.
 	max_beakers = 3
-	dart_reagent_amount = 15
 	container_type = /obj/item/weapon/reagent_containers/glass/beaker
 	muzzle_flash = FALSE
 
@@ -147,13 +144,11 @@
 	throwforce = 20
 	caliber = "dart"
 	fire_sound = 'sound/weapons/guns/fire/Crossbow.ogg'
-	fire_sound_text = "someone blowing through a tube"
 	bulletinsert_sound = 'sound/items/matchstick_hit.ogg'
 	shake_strength = 0
 	auto_eject = FALSE
 	gtype = "none"
 	max_beakers = 1
-	dart_reagent_amount = 10
 	beakers = list() //All containers inside the gun.
 	mixing = list() //Containers being used for mixing.
 	container_type = /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot
@@ -289,12 +284,10 @@
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
 	caliber = "dart"
 	fire_sound = 'sound/weapons/guns/interact/garandload.ogg'
-	fire_sound_text = "a sharp metalic clack"
 	shake_strength = 0
 	auto_eject = TRUE
 	gtype = "none"
 	max_beakers = 1
-	dart_reagent_amount = 10
 	beakers = list() //All containers inside the gun.
 	mixing = list() //Containers being used for mixing.
 	container_type = /obj/item/weapon/reagent_containers/glass/bottle
@@ -329,7 +322,6 @@
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
 	caliber = "dart"
 	fire_sound = 'sound/weapons/guns/interact/garandload.ogg'
-	fire_sound_text = "a sharp metalic clack"
 	shake_strength = 0
 	magazine_type = /obj/item/ammo_magazine/chemdart/mag
 	auto_eject = TRUE
@@ -337,7 +329,6 @@
 	beakers = list() //All containers inside the gun.
 	mixing = list() //Containers being used for mixing.
 	max_beakers = 1
-	dart_reagent_amount = 10
 	container_type = /obj/item/weapon/reagent_containers/glass/bottle
 	starting_chems = null
 

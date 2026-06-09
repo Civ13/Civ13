@@ -7,7 +7,6 @@ Parts of code courtesy of Super3222
 	name = "generic scope"
 	icon = 'icons/obj/device.dmi'
 	icon_state = "telescope1"
-	zoomdevicename = null
 	var/zoom_amt = 3
 	var/zoomed = FALSE
 	var/datum/action/toggle_scope/azoom

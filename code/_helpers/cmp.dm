@@ -56,11 +56,7 @@ var/atom/cmp_dist_origin=null
 	var/qdels = 0			//Total number of times it's passed thru qdel.
 	var/destroy_time = 0	//Total amount of milliseconds spent processing this type's Destroy()
 	var/failures = 0		//Times it was queued for soft deletion but failed to soft delete.
-	var/hard_deletes = 0 	//Different from failures because it also includes QDEL_HINT_HARDDEL deletions
 	var/hard_delete_time = 0//Total amount of milliseconds spent hard deleting this type.
-	var/no_respect_force = 0//Number of times it's not respected force=TRUE
-	var/no_hint = 0			//Number of times it's not even bother to give a qdel hint
-	var/slept_destroy = 0	//Number of times it's slept in its destroy
 
 /datum/qdel_item/New(mytype)
 	name = "[mytype]"

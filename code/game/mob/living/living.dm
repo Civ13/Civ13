@@ -249,10 +249,6 @@ default behaviour is:
 
 /mob/living/proc/adjustBruteLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	bruteloss = min(max(bruteloss + amount, FALSE),(maxHealth*2))
 	if (amount > 0)
 		check_arena_promotion()
@@ -263,10 +259,6 @@ default behaviour is:
 
 /mob/living/proc/adjustBurnLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	burnloss = min(max(burnloss + amount, FALSE),(maxHealth*2))
 	if (amount > 0)
 		check_arena_promotion()
@@ -277,18 +269,10 @@ default behaviour is:
 
 /mob/living/proc/adjustOxyLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	oxyloss = min(max(oxyloss + amount, FALSE),(maxHealth*2))
 
 /mob/living/proc/setOxyLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	oxyloss = amount
 
 /mob/living/proc/getToxLoss()
@@ -296,20 +280,12 @@ default behaviour is:
 
 /mob/living/proc/adjustToxLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	toxloss = min(max(toxloss + amount, FALSE),(maxHealth*2))
 	if (amount > 0)
 		check_arena_promotion()
 	return TRUE
 /mob/living/proc/setToxLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	toxloss = amount
 
 /mob/living/proc/getCloneLoss()
@@ -317,10 +293,6 @@ default behaviour is:
 
 /mob/living/proc/adjustCloneLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	cloneloss = min(max(cloneloss + amount, FALSE),(maxHealth*2))
 
 /mob/living/proc/setCloneLoss(var/amount)
@@ -514,7 +486,6 @@ default behaviour is:
 	if (stat == DEAD)
 		dead_mob_list -= src
 		living_mob_list += src
-		tod = null
 		timeofdeath = FALSE
 
 	// restore us to conciousness
@@ -522,8 +493,6 @@ default behaviour is:
 
 	// make the icons look correct
 	regenerate_icons()
-
-	failed_last_breath = FALSE //So mobs that died of oxyloss don't revive and have perpetual out of breath.
 
 	return
 
