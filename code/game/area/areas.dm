@@ -53,24 +53,9 @@
 
 	area_list |= src
 
-/area/proc/get_contents()
-	return contents
-
 /area/proc/get_turfs()
-	. = get_contents():Copy()
+	. = contents.Copy()
 	. -= typesof(/obj)
-	. -= typesof(/mob)
-	return .
-
-/area/proc/get_mobs()
-	. = get_contents():Copy()
-	. -= typesof(/turf)
-	. -= typesof(/obj)
-	return .
-
-/area/proc/get_objs()
-	. = get_contents():Copy()
-	. -= typesof(/turf)
 	. -= typesof(/mob)
 	return .
 
@@ -156,14 +141,6 @@
 	if (C)
 		C.ambience_playing = null
 	mob_or_client << sound(null, channel = SOUND_CHANNEL_AMBIENCE)
-
-/area/proc/gravitychange(var/gravitystate = FALSE, var/area/A)
-	A.has_gravity = gravitystate
-
-	for (var/mob/M in A)
-		if (has_gravity)
-			thunk(M)
-		M.update_floating( M.Check_Dense_Object() )
 
 /area/proc/thunk(mob)
 	if (istype(mob,/mob/living/human/))
