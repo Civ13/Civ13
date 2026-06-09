@@ -31,10 +31,7 @@
 		<span class='notice'>DISARM</span>: Attempts to disarm the target mob.\n\
 		<span class='notice'>GRAB</span>: Attempts to grab the target mob.\n\
 		<span class='notice'>HARM</span>: Punches the target mob."
-	var/smashes_tables = FALSE //If the martial art smashes tables when performing table slams and head smashes
 	var/datum/weakref/holder //owner of the martial art
-	var/display_combos = FALSE //shows combo meter if true
-	var/combo_timer = 6 SECONDS // period of time after which the combo streak is reset.
 
 /datum/martial_art/proc/help_act(mob/living/human/A, mob/living/human/D)
 	return MARTIAL_ATTACK_INVALID

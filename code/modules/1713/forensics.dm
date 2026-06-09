@@ -695,7 +695,6 @@ proc/is_complete_print(var/print)
 	var/obj/item/weapon/forensics/swab/bloodsamp = null
 	var/closed = 0
 	var/scanning = 0
-	var/scanner_rate = 2.50
 	var/report_num = 0
 
 /obj/machinery/dnaforensics/attackby(var/obj/item/W, mob/user as mob)
@@ -876,4 +875,3 @@ proc/is_complete_print(var/print)
 	..()
 	for(var/i = 1 to storage_slots)
 		new /obj/item/weapon/forensics/slide(src)
-

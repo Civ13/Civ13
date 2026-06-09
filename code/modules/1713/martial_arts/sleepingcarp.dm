@@ -5,7 +5,6 @@
 /datum/martial_art/the_sleeping_carp
 	name = "The Sleeping Carp"
 	id = "sleepingcarp"
-	display_combos = TRUE
 	help_verb_text = "<b><i>You retreat inward and recall the teachings of the Sleeping Carp...</i></b>\n\
 	<span class='notice'>Gnashing Teeth</span>: Harm Harm. Deal additional damage every second (consecutive) punch!\n\
 	<span class='notice'>Crashing Wave Kick</span>: Harm Disarm. Launch your opponent away from you with incredible force!\n\

@@ -3,7 +3,6 @@
 /datum/category_item/player_setup_item/general/basic
 	name = "Basic"
 	sort_order = 1
-	var/list/valid_second_languages = list(ENGLISH, FRENCH, SPANISH, PORTUGUESE)
 
 /datum/category_item/player_setup_item/general/basic/sanitize_character()
 	var/list/valid_player_genders = list(MALE, FEMALE)

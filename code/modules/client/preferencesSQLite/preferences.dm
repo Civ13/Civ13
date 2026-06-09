@@ -6,7 +6,6 @@ var/list/preferences_datums = list()
 /datum/preferences
 
 	//non-preference stuff
-	var/warns = FALSE
 	var/muted = FALSE
 	var/last_ip
 	var/last_id
@@ -64,7 +63,6 @@ var/list/preferences_datums = list()
 
 	var/client/client = null
 	var/client_ckey = null
-	var/client_isguest = FALSE
 
 	var/datum/category_collection/player_setup_collection/player_setup
 
@@ -81,8 +79,6 @@ var/list/preferences_datums = list()
 	if (istype(C))
 		client = C
 		client_ckey = C.ckey
-		if (IsGuestKey(client_ckey))
-			client_isguest = TRUE
 
 		var/F = file("SQL/charprefs.txt")
 		var/list/charprefs = splittext(file2text(F), "|||\n")

@@ -11,7 +11,6 @@
 
 	/// Movement
 	var/base_speed = 1.0
-	var/turn_speed = 15  // Lower = faster turning
 	var/max_weight = 100
 
 	/// Structure
@@ -19,19 +18,8 @@
 	var/max_health = 150
 	var/current_health = 150
 
-	/// Physics
-	var/weight_multiplier = 1.0
-	var/speed_multiplier = 1.0
-
 	/// Components
-	var/max_components = 25
 	var/max_distance = 5
-	var/min_wheels = 4
-
-	/// Display
-	var/default_color = rgb(128, 128, 128)
-	var/has_roof = TRUE
-	var/roof_opacity = TRUE
 
 	New(name = "", type_class = "light", base_speed = 1.0, max_health = 150, armor = 10)
 		if (name) src.name = name
@@ -53,7 +41,6 @@
 
 	/// Performance
 	var/base_speed = 1.0
-	var/off_road_penalty = 1.0
 	var/armor = 0
 	var/max_health = 50
 	var/current_health = 50
@@ -147,10 +134,7 @@
 /datum/engine_config
 	var/name = "Standard Engine"
 	var/max_fuel = 100
-	var/fuel_consumption = 1.0
-	var/power_output = 100
 	var/starting_time = 40
-	var/idle_sound = "sound/machines/engine_idle.ogg"
 	var/running_sound = "sound/machines/engine_running.ogg"
 
 
