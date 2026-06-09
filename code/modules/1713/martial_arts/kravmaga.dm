@@ -83,8 +83,6 @@
 /datum/martial_art/krav_maga/proc/leg_sweep(mob/living/human/A, mob/living/human/D)
 	if(D.stat || D.paralysis > 0)
 		return FALSE
-	var/obj/item/organ/external/affecting = D.get_organ("chest")
-	var/armor_block = D.run_armor_check(affecting, "melee")
 	D.visible_message("<span class='warning'>[A] leg sweeps [D]!</span>", \
 					"<span class='userdanger'>Your legs are sweeped by [A]!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>", null, A)
 	to_chat(A, "<span class='danger'>You leg sweep [D]!</span>")
@@ -128,8 +126,6 @@
 	if(check_streak(A,D))
 		return TRUE
 	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Punched by [A.name] ([A.ckey])</font>"
-	var/obj/item/organ/external/affecting = D.get_bodypart(ran_zone(A.targeted_organ))
-	var/armor_block = D.run_armor_check(affecting, "melee")
 	var/picked_hit_type = pick("punch", "kick")
 	var/bonus_damage = 0
 	if(D.lying)
@@ -151,8 +147,6 @@
 /datum/martial_art/krav_maga/disarm_act(mob/living/human/A, mob/living/human/D)
 	if(check_streak(A,D))
 		return TRUE
-	var/obj/item/organ/external/affecting = D.get_bodypart(ran_zone(A.targeted_organ))
-	var/armor_block = D.run_armor_check(affecting, "melee")
 	if(!D.lying)
 		D.visible_message("<span class='danger'>[A] reprimands [D]!</span>", \
 					"<span class='userdanger'>You're slapped by [A]!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>")
