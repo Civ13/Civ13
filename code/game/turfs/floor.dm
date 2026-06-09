@@ -17,7 +17,6 @@
 	var/flooring_override
 	var/initial_flooring
 	var/decl/flooring/flooring
-	var/mineral = DEFAULT_WALL_MATERIAL
 	var/set_update_icon
 	heat_capacity = 10000
 //	var/lava = FALSE

@@ -198,7 +198,6 @@
 			for(var/mob/living/human/NB in view(6,src))
 				if (!NB.orc)
 					NB.mood -= 10
-					// NB.ptsd += 1
 	return
 
 
@@ -281,7 +280,6 @@
 				for(var/mob/living/human/NB in view(6,src))
 					if (!NB.orc)
 						NB.mood -= 10
-						// NB.ptsd += 1
 				return
 
 	// High brute damage or sharp objects may damage internal organs

@@ -187,8 +187,6 @@ var/list/preferences_datums = list()
 
 	character.traits = traits
 
-	character.all_underwear.Cut()
-
 
 	//Debugging report to track down a bug, which randomly assigned the plural gender to people.
 	if (character.gender in list(PLURAL, NEUTER))

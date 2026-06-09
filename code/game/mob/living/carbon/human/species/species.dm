@@ -810,9 +810,6 @@
 	if (!H.client)//no client, no screen to update
 		return TRUE
 
-	for (var/overlay in H.equipment_overlays)
-		H.client.screen |= overlay
-
 	return TRUE
 
 /datum/species/proc/get_blood_colour(var/mob/living/human/H)

@@ -22,7 +22,6 @@
 	for(var/mob/living/human/NB in view(6,src))
 		if (!NB.orc)
 			NB.mood -= 15
-			//NB.ptsd += 3
 
 /mob/living/human/crush()
 
@@ -38,7 +37,6 @@
 	for(var/mob/living/human/NB in view(6,src))
 		if (!NB.orc)
 			NB.mood -= 15
-			//NB.ptsd += 3
 
 /mob/living/human/maim()
 	next_emote["vocal"] = world.time + 50

@@ -178,7 +178,6 @@
 
 /turf/floor/grass/jungle
 	name = "jungle grass patch"
-	overlay_priority = 0
 	is_diggable = TRUE
 	may_become_muddy = TRUE
 	initial_flooring = null

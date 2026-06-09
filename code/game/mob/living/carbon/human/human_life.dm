@@ -629,7 +629,6 @@
 			if (map.civilizations || map.ID == MAP_COLONY || map.ID == MAP_JUNGLE_COLONY || map.ID == MAP_GULAG13 || map.ID == MAP_BAGNE13)
 				handle_hygiene()
 			handle_mood()
-			handle_ptsd()
 		if (!map.civilizations && map.ID != MAP_COLONY && map.ID != MAP_JUNGLE_COLONY)
 			bowels = 0
 			bladder = 0

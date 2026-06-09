@@ -54,7 +54,6 @@
 	equipment_see_invis	= FALSE
 	equipment_vision_flags = FALSE
 	equipment_darkness_modifier = FALSE
-//	equipment_overlays.Cut()
 
 	if (istype(head, /obj/item/clothing/head))
 		add_clothing_protection(head)

@@ -7,8 +7,6 @@ var/list/exterior_turfs = list(/turf/floor/grass,
 var/list/interior_areas = list(/area/caribbean/houses,
 							)
 
-/turf/var/open_directions
-
 /turf
 	name = "turf"
 	icon = 'icons/turf/floors.dmi'
@@ -30,7 +28,6 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/calcborders = FALSE //if borders were calculated already. To prevent both sides creating borders over each other.
 
 	var/wet = FALSE
-	var/image/wet_overlay = null
 	var/water_level = 0 // For flooding
 	var/is_diggable = FALSE //can be digged with a shovel?
 	var/is_plowed = FALSE // ready to be farmed?
@@ -54,7 +51,6 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/available_sand = 0
 	var/available_snow = 0
 	var/bullethole_count = 0
-	var/overlay_priority = 0
 
 	map_storage_saved_vars = "icon_state;name"
 

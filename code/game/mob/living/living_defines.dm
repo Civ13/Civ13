@@ -27,7 +27,6 @@
 	var/mob_push_flags = FALSE
 	var/mob_always_swap = FALSE
 
-	var/mob/living/cameraFollow = null
 	var/list/datum/action/actions = list()
 
 	var/silent = null 		// Can't talk. Value goes down every life proc.
