@@ -95,12 +95,6 @@ var/list/interior_areas = list(/area/caribbean/houses,
 /turf/ex_act(severity)
 	return FALSE
 
-/turf/proc/is_space()
-	return FALSE
-
-/turf/proc/is_intact()
-	return FALSE
-
 /mob/var/next_push = -1
 
 /turf/attack_hand(mob/user)
@@ -216,30 +210,12 @@ var/const/enterloopsanity = 100
 			objects++
 	return
 
-/turf/proc/adjacent_fire_act(turf/floor/source, temperature, volume)
-	return
-
 /turf/proc/is_plating()
 	return FALSE
 
 /turf/proc/levelupdate()
 	for (var/obj/O in src)
 		O.hide(O.hides_under_flooring() && !is_plating())
-
-/turf/proc/AdjacentTurfs()
-	var/L[] = new()
-	for (var/turf/t in oview(src,1))
-		if (!t.density)
-			if (!LinkBlocked(src, t) && !TurfBlockedNonWindow(t))
-				L.Add(t)
-	return L
-
-/turf/proc/CardinalTurfs()
-	var/L[] = new()
-	for (var/turf/T in AdjacentTurfs())
-		if (T.x == x || T.y == y)
-			L.Add(T)
-	return L
 
 /turf/proc/Distance(turf/t)
 	if (get_dist(src,t) == TRUE)
@@ -248,14 +224,6 @@ var/const/enterloopsanity = 100
 		return cost
 	else
 		return get_dist(src,t)
-
-/turf/proc/AdjacentTurfsSpace()
-	var/L[] = new()
-	for (var/turf/t in oview(src,1))
-		if (!t.density)
-			if (!LinkBlocked(src, t) && !TurfBlockedNonWindow(t))
-				L.Add(t)
-	return L
 
 /turf/proc/process()
 	return PROCESS_KILL
@@ -281,9 +249,6 @@ var/const/enterloopsanity = 100
 	else
 		to_chat(user, "<span class='warning'>\The [source] is too dry to wash that.</span>")
 	source.reagents.trans_to_turf(src, TRUE, 10)	//10 is the multiplier for the reaction effect. probably needed to wet the floor properly.
-
-/turf/proc/update_blood_overlays()
-	return
 
 /turf/clean_blood()
 	for (var/obj/effect/decal/cleanable/blood/B in contents)
@@ -459,9 +424,6 @@ var/const/enterloopsanity = 100
 		return TRUE //we bloodied the floor
 	return FALSE
 
-
-/turf/proc/can_build_cable(var/mob/user)
-	return FALSE
 
 /turf/proc/try_airstrike(var/ckey, var/faction_text, var/aircraft_name, var/direction = "NORTH", var/payload = "Rockets", var/payload_class = 1, var/admin = FALSE)
 	var/turf/T = src
