@@ -1,3 +1,11 @@
+// ============================================================
+// Submarine Turfs — hull walls, bulkheads, and deck floors
+// with water accumulation, atmospheric simulation, and
+// compartment-based flooding physics.
+// ============================================================
+
+// ---- Hull Walls ----
+
 /turf/wall/sub_hull
 	name = "submarine pressure hull"
 	icon = 'icons/turf/wall_masks.dmi'
@@ -5,10 +13,41 @@
 	opacity = 1
 	density = 1
 	var/hull_integrity = 1000
+	var/max_hull_integrity = 1000
+	var/breached = FALSE           // TRUE when integrity <= 0
+	var/breach_inflow_rate = 0     // cm of water added per tick while breached
 	flags = TURF_HAS_EDGES
 
 /turf/wall/sub_hull/New(var/newloc)
 	..(newloc,"iron")
+
+/turf/wall/sub_hull/proc/apply_breach_damage(var/damage)
+	hull_integrity -= damage
+	if(hull_integrity <= 0 && !breached)
+		breach_hull()
+
+/turf/wall/sub_hull/proc/breach_hull()
+	if(breached) return
+	breached = TRUE
+	breach_inflow_rate = SUB_BREACH_INFLOW_BASE
+	visible_message("<span class='danger'><b>The hull buckles! Seawater erupts through the breach!</b></span>")
+
+	// Find adjacent deck turfs and start flooding them
+	for(var/turf/floor/sub_deck/D in range(1, src))
+		D.add_water(SUB_BREACH_INFLOW_BASE)
+
+	// Mark this wall as visually damaged
+	icon_state = "damaged"
+
+/turf/wall/sub_hull/proc/repair_breach()
+	if(!breached) return
+	breached = FALSE
+	breach_inflow_rate = 0
+	hull_integrity = max_hull_integrity * 0.5  // Repaired to half
+	icon_state = "metal0"
+	visible_message("<span class='notice'>The hull breach is sealed.</span>")
+
+// ---- Bulkheads ----
 
 /turf/wall/sub_bulkhead
 	name = "internal bulkhead"
@@ -17,10 +56,20 @@
 	opacity = 1
 	density = 1
 	var/health = 200
+	var/max_health = 200
+	// Bulkheads are watertight: water does NOT flow through them by default
+	var/watertight = TRUE
 	flags = TURF_HAS_EDGES
 
 /turf/wall/sub_bulkhead/New(var/newloc)
 	..(newloc,"iron")
+
+/turf/wall/sub_bulkhead/proc/take_bulkhead_damage(var/damage)
+	health -= damage
+	if(health <= 0)
+		watertight = FALSE
+		visible_message("<span class='warning'>The bulkhead crumples! It no longer holds back water.</span>")
+		icon_state = "damaged"
 
 /turf/wall/sub_bulkhead/sub_shielding
 	name = "lead reactor shielding"
@@ -28,16 +77,218 @@
 	icon_state = "solid0"
 	opacity = 1
 	density = 1
-	// custom variable to block rad vectors
-	var/rad_dampening = 1.0 
+	var/rad_dampening = 1.0
+	health = 400
+	max_health = 400
+	watertight = TRUE
 	flags = TURF_HAS_EDGES
 
 /turf/wall/sub_bulkhead/sub_shielding/New(var/newloc)
 	..(newloc,"steel")
 
+// ============================================================
+// Deck Floor — the core of water/atmos simulation
+// ============================================================
+
 /turf/floor/sub_deck
 	name = "deck floor"
 	icon = 'icons/obj/machines/submarine.dmi'
 	icon_state = "steel_grid"
-	var/water_depth = 0 // in cm, max 200
-	var/blocked_airlocks = 0
+
+	// ---- Water Physics ----
+	var/water_depth = 0            // Centimeters of water on this tile (0 = dry, 200 = fully flooded)
+	var/max_water = 200            // Maximum water depth before tile is considered fully submerged
+	var/water_inflow_rate = 0      // cm/tick added by adjacent breaches (set by hull breach procs)
+	var/water_sealed = FALSE       // TRUE = watertight door/hatch preventing flow
+
+	// ---- Compartment System ----
+	var/compartment_id = ""        // Which compartment this tile belongs to (e.g. "forward_torpedo", "reactor_room")
+	var/compartment_pressure = 1   // Atmosphere: 1.0 = 1 atm (normal), <1 = vacuum/low, >1 = overpressure
+
+	// ---- Atmospheric Vars ----
+	var/oxygen_moles = 20.0        // Moles of O2 in this tile's air
+	var/co2_moles = 0.1            // Moles of CO2 (exhaled by mobs, produced by fires)
+	var/atmos_temperature = 293.15 // Kelvin (20 C = 293.15 K) -- avoids collision with turf.temperature
+	var/vent_active = FALSE        // Whether a ventilation duct is processing this tile
+	var/vent_id = ""               // Links vents to their duct network
+
+	// ---- Visual / Info ----
+	var/water_warning_sent = FALSE  // Prevents spamming "water rising!" messages
+	var/last_damage_tick = 0        // For drowning damage cooldown
+
+/turf/floor/sub_deck/New()
+	..()
+	// Register with the flooding controller
+	if(global.subcom_flooding)
+		global.subcom_flooding.register_turf(src)
+
+/turf/floor/sub_deck/Destroy()
+	if(global.subcom_flooding)
+		global.subcom_flooding.unregister_turf(src)
+	..()
+
+// ============================================================
+// Water Accumulation System
+// ============================================================
+
+// Add water to this tile (cm). Called by breaches, flooding, etc.
+/turf/floor/sub_deck/proc/add_water(var/cm)
+	if(water_sealed) return
+	water_depth = min(water_depth + cm, max_water)
+	update_icon_state()
+
+// Remove water from this tile (cm). Called by bilge pumps, draining.
+/turf/floor/sub_deck/proc/remove_water(var/cm)
+	water_depth = max(0, water_depth - cm)
+	update_icon_state()
+
+// Called each tick by the flooding controller — handles water spreading and drowning
+/turf/floor/sub_deck/proc/flood_tick()
+	// 1. Apply inflow from breaches
+	if(water_inflow_rate > 0)
+		add_water(water_inflow_rate)
+
+	// 2. Water spreading: if this tile has water, it flows to adjacent lower-open tiles
+	if(water_depth > 1)
+		spread_water()
+
+	// 3. Drowning damage to mobs
+	if(water_depth >= 50)  // 50cm = ankle-deep, enough to start causing problems
+		apply_drowning_damage()
+
+	// 4. Atmospheric updates: water displaces oxygen
+	if(water_depth > 0)
+		var/water_displacement = water_depth / max_water  // 0 to 1
+		oxygen_moles = max(0, oxygen_moles * (1 - water_displacement * 0.3))
+		compartment_pressure = max(0.3, 1.0 - (water_displacement * 0.7))
+
+// Water flows to adjacent tiles with lower water depth
+/turf/floor/sub_deck/proc/spread_water()
+	if(water_depth <= 0) return
+	if(compartment_id == "") return  // No compartment = no spreading logic
+
+	for(var/direction in list(NORTH, SOUTH, EAST, WEST))
+		var/turf/floor/sub_deck/neighbor = get_step(src, direction)
+		if(!neighbor || !istype(neighbor)) continue
+		if(neighbor.water_sealed) continue
+		if(neighbor.compartment_id != compartment_id && neighbor.compartment_id != "") continue
+
+		var/delta = water_depth - neighbor.water_depth
+		if(delta > 2)
+			// Flow rate: proportional to depth difference
+			var/flow = min(delta * 0.25, 5)  // Max 5cm per tick per direction
+			neighbor.add_water(flow)
+			remove_water(flow)
+
+// Drowning damage to mobs standing on this tile
+/turf/floor/sub_deck/proc/apply_drowning_damage()
+	if(world.time - last_damage_tick < 10) return  // 1 second cooldown
+	last_damage_tick = world.time
+
+	for(var/mob/living/L in src)
+		if(water_depth >= 150)
+			// Fully submerged: heavy damage, chance of drowning
+			L.apply_damage(8, BRUTE)
+			if(prob(15) && istype(L, /mob/living/human))
+				var/mob/living/human/H = L
+				H.losebreath = max(H.losebreath + 3, 3)
+				to_chat(H, "<span class='danger'>Water fills your lungs!</span>")
+		else if(water_depth >= 100)
+			// Waist deep: moderate drowning risk
+			if(istype(L, /mob/living/human))
+				var/mob/living/human/H = L
+				H.losebreath = max(H.losebreath + 1, 1)
+			if(prob(5))
+				to_chat(L, "<span class='warning'>You struggle to breathe above the rising water.</span>")
+		else if(water_depth >= 50)
+			// Ankle deep: annoying, minor oxygen drain
+			if(prob(2))
+				to_chat(L, "<span class='notice'>Water sloshes around your boots.</span>")
+
+// Update the turf's visual appearance based on water depth
+/turf/floor/sub_deck/proc/update_icon_state()
+	if(water_depth <= 0)
+		icon_state = "steel_grid"
+	else if(water_depth < 30)
+		icon_state = "water_shallow"
+	else if(water_depth < 100)
+		icon_state = "water_medium"
+	else if(water_depth < max_water)
+		icon_state = "water_deep"
+	else
+		icon_state = "water_flooded"
+
+// ============================================================
+// Atmospheric System
+// ============================================================
+
+// Called by the flooding controller each tick
+/turf/floor/sub_deck/proc/atmos_tick()
+	// Oxygen depletion from mobs breathing
+	for(var/mob/living/L in src)
+		if(oxygen_moles > 0.5)
+			oxygen_moles -= 0.05  // Each mob consumes ~0.05 moles/tick
+			co2_moles += 0.03     // Produces CO2
+
+	// CO2 buildup: if too high, mobs start suffocating
+	if(co2_moles > SUB_ATMOS_DANGER_CO2)
+		for(var/mob/living/human/H in src)
+			H.losebreath = max(H.losebreath + 1, 1)
+			if(prob(3))
+				to_chat(H, "<span class='danger'>The air is thick with CO2!</span>")
+
+	// Ventilation: if a vent is active, equalize with duct network
+	if(vent_active && vent_id)
+		process_ventilation()
+
+	// Recalculate pressure from gas moles
+	// PV = nRT, simplified: pressure in kPa from moles in a ~2m^3 tile
+	compartment_pressure = clamp((oxygen_moles + co2_moles) * 8.314 * atmos_temperature / 2000 / 101.325, 0, 2)
+
+/turf/floor/sub_deck/proc/process_ventilation()
+	if(!global.subcom_flooding) return
+	var/datum/flooding_controller/FC = global.subcom_flooding
+
+	// Find the duct network for this vent_id
+	if(FC.vent_networks[vent_id])
+		var/list/network_turfs = FC.vent_networks[vent_id]
+		// Average the oxygen across all connected turfs
+		var/total_o2 = 0
+		var/total_co2 = 0
+		var/tile_count = 0
+		for(var/turf/floor/sub_deck/T in network_turfs)
+			total_o2 += T.oxygen_moles
+			total_co2 += T.co2_moles
+			tile_count++
+		if(tile_count > 0)
+			var/avg_o2 = total_o2 / tile_count
+			var/avg_co2 = total_co2 / tile_count
+			// Gradually equalize (vents don't teleport air instantly)
+			oxygen_moles = lerp(oxygen_moles, avg_o2, 0.3)
+			co2_moles = lerp(co2_moles, avg_co2, 0.3)
+
+// ============================================================
+// Examine / Info
+// ============================================================
+
+/turf/floor/sub_deck/examine(mob/user)
+	..()
+	if(water_depth > 0)
+		var/water_desc = ""
+		switch(water_depth)
+			if(1 to 29)
+				water_desc = "There is a thin layer of water on the deck."
+			if(30 to 99)
+				water_desc = "<span class='warning'>Water covers the deck up to ankle height.</span>"
+			if(100 to 149)
+				water_desc = "<span class='warning'>Water reaches waist height. Movement is difficult.</span>"
+			if(150 to 199)
+				water_desc = "<span class='danger'>The compartment is nearly fully flooded!</span>"
+			if(200)
+				water_desc = "<span class='danger'>This compartment is completely submerged!</span>"
+		to_chat(user, water_desc)
+
+	if(oxygen_moles < 5)
+		to_chat(user, "<span class='warning'>The air smells stale and oxygen-depleted.</span>")
+	if(co2_moles > 3)
+		to_chat(user, "<span class='danger'>The CO2 concentration is dangerously high!</span>")

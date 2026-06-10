@@ -189,24 +189,311 @@
 		if(prob(2))
 			visible_message("<span class='danger'>[src] spits sparks as it overheats!</span>")
 
+// --- 4b. DIESEL PROPULSION MOTOR ---
+// Used on diesel-only submarines. Converts diesel engine output to propeller thrust.
+// Only functional when surfaced and diesel throttle is engaged.
+
+/obj/structure/machinery/sub_physical/diesel_propulsion
+	name = "diesel-electric propulsion motor"
+	desc = "A heavy electric traction motor coupled to the propeller shaft. Powered by the diesel generators."
+	icon = 'icons/obj/engines32.dmi'
+	icon_state = "turbine_static"
+	health = 200
+	max_health = 200
+	var/motor_temp = 20
+
+/obj/structure/machinery/sub_physical/diesel_propulsion/process()
+	if(!my_sub) return
+	if(my_sub.has_nuclear_engine) return  // Should not exist on nuclear subs
+
+	var/eff = get_efficiency()
+
+	// Diesel-only propulsion: max speed is capped by motor health
+	if(my_sub.depth == 0 && my_sub.diesel_throttle > 0 && my_sub.diesel_fuel > 0)
+		var/max_possible_speed = SUB_MAX_SPEED_DIESEL * eff
+		if(my_sub.target_speed > max_possible_speed)
+			my_sub.target_speed = max_possible_speed
+			if(prob(5))
+				visible_message("<span class='warning'>The propulsion motor whines under the load!</span>")
+
+		// Motor heating from high throttle
+		if(my_sub.diesel_throttle > 70)
+			motor_temp += 0.5
+		else
+			motor_temp = max(SUB_AMBIENT_TEMP, motor_temp - 0.3)
+
+		// Overheating damage
+		if(motor_temp > 80)
+			health -= 0.1
+			if(prob(3))
+				visible_message("<span class='warning'>[src] smells of burning insulation!</span>")
+
+		// Motor damage limits output
+		if(health <= 0)
+			my_sub.diesel_throttle = 0
+			visible_message("<span class='danger'>[src] seizes with a shower of sparks! Propulsion lost!</span>")
+	else
+		// Cooldown when idle
+		motor_temp = max(SUB_AMBIENT_TEMP, motor_temp - 0.5)
+
 // --- 5. BILGE PUMP ---
+// Reworked to use typed water_depth on /turf/floor/sub_deck.
+// Drains water from the turf it sits on and adjacent connected turfs.
 
 /obj/structure/machinery/sub_physical/bilge_pump
 	name = "bilge pump"
+	desc = "A high-capacity centrifugal pump for evacuating seawater from flooded compartments."
 	icon = 'icons/obj/machines/submarine.dmi'
 	icon_state = "bilge_pump"
 	health = 80
 	max_health = 80
 	var/active = FALSE
+	var/drain_rate = 10            // cm of water removed per tick
+	var/power_draw = 15            // kW per tick when active
+	var/drain_range = 1            // How many turfs away it can drain (1 = adjacent only)
+
+/obj/structure/machinery/sub_physical/bilge_pump/attack_hand(mob/user)
+	if(..()) return
+	if(!my_sub) return
+	active = !active
+	if(active)
+		to_chat(user, "<span class='notice'>You switch on [src]. It hums to life.</span>")
+		playsound(src.loc, 'sound/machines/machine_switch.ogg', 50, 1)
+	else
+		to_chat(user, "<span class='notice'>You switch off [src].</span>")
+		playsound(src.loc, 'sound/machines/click.ogg', 50, 1)
 
 /obj/structure/machinery/sub_physical/bilge_pump/process()
 	if(!active || health <= 0) return
-	
-	// Physical water interaction
-	var/turf/T = get_turf(src)
-	if(T && T.vars.Find("water_level"))
-		if(T.vars["water_level"] > 0)
-			T.vars["water_level"] = max(0, T.vars["water_level"] - 10)
+	if(!my_sub) return
+
+	// Check power: bilge pumps need battery power
+	if(my_sub.battery_current < power_draw)
+		active = FALSE
+		visible_message("<span class='warning'>[src] sputters and shuts down — insufficient power.</span>")
+		return
+
+	my_sub.battery_current -= power_draw
+
+	// Find the turf we're on and drain it
+	var/turf/floor/sub_deck/my_turf = get_turf(src)
+	if(!my_turf || !istype(my_turf)) return
+
+	// Drain our own tile
+	if(my_turf.water_depth > 0)
+		var/amount = min(my_turf.water_depth, drain_rate)
+		my_turf.remove_water(amount)
+
+	// Drain adjacent tiles within range
+	if(drain_range > 0)
+		for(var/direction in list(NORTH, SOUTH, EAST, WEST))
+			var/turf/floor/sub_deck/neighbor = get_step(my_turf, direction)
+			if(neighbor && istype(neighbor) && !neighbor.water_sealed)
+				if(neighbor.water_depth > 0)
+					var/amount = min(neighbor.water_depth, drain_rate * 0.5)
+					neighbor.remove_water(amount)
+
+	// Visual feedback: pump is working hard if there's lots of water
+	if(my_turf.water_depth > 50 && prob(10))
+		visible_message("<span class='notice'>[src] gurgles as it strains against the rising water.</span>")
+
+// --- 5b. EMERGENCY BILGE PUMP ---
+// A smaller, emergency-only pump. Slower but doesn't need as much power.
+
+/obj/structure/machinery/sub_physical/bilge_pump/emergency
+	name = "emergency bilge pump"
+	desc = "A manually-activated backup pump. Slow but better than drowning."
+	drain_rate = 5
+	power_draw = 8
+	range = 0  // Only drains the tile it's on
+
+// ============================================================
+// VENTILATION SYSTEM
+// ============================================================
+
+// --- 5c. VENT DUCT ---
+// Links deck turfs into a ventilation network. Air equalizes
+// across all turfs in the same vent_id network.
+
+/obj/structure/machinery/sub_physical/vent_duct
+	name = "ventilation duct"
+	desc = "A heavy-duty air duct connecting compartments to the central ventilation system."
+	icon = 'icons/obj/machines/submarine.dmi'
+	icon_state = "vent"
+	health = 60
+	max_health = 60
+	var/vent_id = "main"           // Network ID — all ducts with same vent_id are connected
+	var/flow_rate = 0.3            // Lerp factor for air equalization (0 = no flow, 1 = instant)
+	var/active = TRUE
+
+/obj/structure/machinery/sub_physical/vent_duct/New()
+	..()
+	// Register with the flooding controller
+	if(global.subcom_flooding)
+		var/turf/floor/sub_deck/my_turf = get_turf(src)
+		if(my_turf && istype(my_turf))
+			global.subcom_flooding.register_vent(vent_id, my_turf)
+
+/obj/structure/machinery/sub_physical/vent_duct/Destroy()
+	if(global.subcom_flooding)
+		var/turf/floor/sub_deck/my_turf = get_turf(src)
+		if(my_turf && istype(my_turf))
+			global.subcom_flooding.unregister_vent(vent_id, my_turf)
+	..()
+
+/obj/structure/machinery/sub_physical/vent_duct/attack_hand(mob/user)
+	if(..()) return
+	active = !active
+	if(active)
+		to_chat(user, "<span class='notice'>You open the ventilation duct. Air begins to flow.</span>")
+	else
+		to_chat(user, "<span class='notice'>You close the ventilation duct. Air flow stops.</span>")
+
+/obj/structure/machinery/sub_physical/vent_duct/attackby(obj/item/W, mob/user)
+	if(istype(W, /obj/item/weapon/weldingtool))
+		if(health < max_health)
+			user.visible_message("<span class='notice'>[user] repairs [src].</span>")
+			if(do_after(user, 25, src))
+				health = min(max_health, health + 20)
+		return
+	if(istype(W, /obj/item/weapon/screwdriver) || istype(W, /obj/item/weapon/wirecutters))
+		to_chat(user, "<span class='notice'>Network: [vent_id] | Status: [active ? "OPEN" : "CLOSED"]</span>")
+		return
+	..()
+
+// --- 5d. SCRUBBER ---
+// Actively removes CO2 and optionally injects O2.
+// Higher power draw than passive vents.
+
+/obj/structure/machinery/sub_physical/scrubber
+	name = "CO2 scrubber"
+	desc = "An activated-carbon filtration unit that removes carbon dioxide from the air."
+	icon = 'icons/obj/machines/submarine.dmi'
+	icon_state = "scrubber"
+	health = 70
+	max_health = 70
+	var/active = FALSE
+	var/power_draw = 25            // kW per tick
+	var/scrub_rate = 0.5           // Moles of CO2 removed per tick
+	var/inject_o2 = FALSE          // If TRUE, also injects O2 (from electrolysis)
+	var/o2_inject_rate = 0.2       // Moles of O2 added per tick when inject_o2 is TRUE
+
+/obj/structure/machinery/sub_physical/scrubber/attack_hand(mob/user)
+	if(..()) return
+	if(!my_sub) return
+	active = !active
+	if(active)
+		to_chat(user, "<span class='notice'>You activate [src]. It begins filtering the air.</span>")
+		playsound(src.loc, 'sound/machines/diesel_loop.ogg', 40, 1)
+	else
+		to_chat(user, "<span class='notice'>You deactivate [src].</span>")
+
+/obj/structure/machinery/sub_physical/scrubber/process()
+	if(!active || health <= 0) return
+	if(!my_sub) return
+
+	// Power check
+	if(my_sub.battery_current < power_draw)
+		active = FALSE
+		visible_message("<span class='warning'>[src] shuts down — insufficient power.</span>")
+		return
+
+	my_sub.battery_current -= power_draw
+
+	// Scrub CO2 from all turfs in the compartment
+	var/turf/floor/sub_deck/my_turf = get_turf(src)
+	if(!my_turf || !istype(my_turf)) return
+	if(!my_turf.compartment_id) return
+
+	if(global.subcom_flooding)
+		var/list/comp_turfs = global.subcom_flooding.compartment_turfs[my_turf.compartment_id]
+		if(comp_turfs)
+			for(var/turf/floor/sub_deck/T in comp_turfs)
+				T.co2_moles = max(0, T.co2_moles - scrub_rate)
+				if(inject_o2)
+					T.oxygen_moles = min(30, T.oxygen_moles + o2_inject_rate)
+
+// --- 5e. HULL BREACH SEALANT SPRAYER ---
+// Emergency tool: sprays a fast-curing polymer to seal small hull breaches.
+
+/obj/structure/machinery/sub_physical/breach_sealant
+	name = "hull breach sealant sprayer"
+	desc = "An automated sprayer that coats damaged hull sections with fast-curing polymer sealant."
+	icon = 'icons/obj/machines/submarine.dmi'
+	icon_state = "sealant"
+	health = 50
+	max_health = 50
+	var/sealant_remaining = 100    // Uses of sealant left
+	var/power_draw = 10            // kW per tick
+	var/active = FALSE
+
+/obj/structure/machinery/sub_physical/breach_sealant/attack_hand(mob/user)
+	if(..()) return
+	if(!my_sub) return
+	if(sealant_remaining <= 0)
+		to_chat(user, "<span class='warning'>The sealant supply is depleted!</span>")
+		return
+	active = !active
+	if(active)
+		to_chat(user, "<span class='notice'>You activate [src]. It begins scanning for breaches.</span>")
+	else
+		to_chat(user, "<span class='notice'>You deactivate [src].</span>")
+
+/obj/structure/machinery/sub_physical/breach_sealant/process()
+	if(!active || health <= 0) return
+	if(!my_sub) return
+	if(sealant_remaining <= 0)
+		active = FALSE
+		return
+
+	// Power check
+	if(my_sub.battery_current < power_draw)
+		active = FALSE
+		return
+
+	my_sub.battery_current -= power_draw
+
+	// Scan adjacent turfs for breached hull walls and attempt to seal
+	for(var/direction in list(NORTH, SOUTH, EAST, WEST))
+		var/turf/wall/sub_hull/hull = get_step(src, direction)
+		if(hull && istype(hull) && hull.breached)
+			hull.repair_breach()
+			sealant_remaining--
+			visible_message("<span class='notice'>[src] sprays sealant onto the hull breach. It hisses as it cures.</span>")
+			playsound(src.loc, 'sound/items/Screwdriver.ogg', 60, 1)
+			break  // One repair per tick
+
+// --- 5f. BALLAST CONTROL VALVE ---
+// Controls water intake for dive planes. Fills/empties ballast tanks.
+
+/obj/structure/machinery/sub_physical/ballast_valve
+	name = "ballast control valve"
+	desc = "A heavy-duty valve controlling seawater flow into the ballast tanks."
+	icon = 'icons/obj/machines/submarine.dmi'
+	icon_state = "ballast"
+	health = 100
+	max_health = 100
+	var/valve_open = FALSE
+	var/fill_rate = 5              // cm of water moved per tick
+
+/obj/structure/machinery/sub_physical/ballast_valve/attack_hand(mob/user)
+	if(..()) return
+	if(!my_sub) return
+	valve_open = !valve_open
+	if(valve_open)
+		to_chat(user, "<span class='notice'>You open the ballast valve. Water begins flooding the tanks.</span>")
+		playsound(src.loc, 'sound/machines/door_open.ogg', 50, 1)
+	else
+		to_chat(user, "<span class='notice'>You close the ballast valve.</span>")
+		playsound(src.loc, 'sound/machines/door_close.ogg', 50, 1)
+
+/obj/structure/machinery/sub_physical/ballast_valve/process()
+	if(!valve_open || health <= 0) return
+	if(!my_sub) return
+
+	// Ballast fill affects the sub's depth control
+	// Each tick, add ballast weight to simulate flooding the tanks
+	my_sub.ballast = min(my_sub.ballast + fill_rate, 50)  // Max 50 tons of ballast
 
 // --- 6. TORPEDO TUBE ---
 

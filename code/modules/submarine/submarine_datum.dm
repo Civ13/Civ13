@@ -5,6 +5,7 @@ var/global/list/all_submarines = list()
 	var/vessel_name = "SSN-Civ13"
 	var/crush_depth = 300
 	var/keel_depth = 30
+	var/has_nuclear_engine = TRUE  // FALSE for diesel-only subs
 
 	// Movement & Physics
 	var/x_pos = 1000.0
@@ -96,8 +97,26 @@ var/global/list/all_submarines = list()
 		if(heading < 0) heading += 360
 		if(heading >= 360) heading -= 360
 
-	var/power_source_nuclear = (r_power_output[1] + r_power_output[2]) > 5.0 // Threshold for turbine operation
-	var/current_max_speed = power_source_nuclear ? SUB_MAX_SPEED_NUCLEAR : SUB_MAX_SPEED_ELECTRIC
+	// Determine available power source and max speed
+	var/current_max_speed = 0
+	var/power_source_nuclear = FALSE
+	var/power_source_diesel = FALSE
+
+	if(has_nuclear_engine)
+		power_source_nuclear = (r_power_output[1] + r_power_output[2]) > 5.0
+		if(power_source_nuclear)
+			current_max_speed = SUB_MAX_SPEED_NUCLEAR
+		else
+			// Nuclear sub with reactors offline: fall back to battery
+			current_max_speed = SUB_MAX_SPEED_ELECTRIC
+	else
+		// Diesel-only submarine
+		if(depth == 0 && diesel_throttle > 0 && diesel_fuel > 0)
+			power_source_diesel = TRUE
+			current_max_speed = SUB_MAX_SPEED_DIESEL
+		else
+			// Submerged or no diesel power: battery only
+			current_max_speed = SUB_MAX_SPEED_ELECTRIC
 	
 	// Adjust Speed
 	var/desired_clamped_speed = clamp(target_speed, 0, current_max_speed)
@@ -106,17 +125,23 @@ var/global/list/all_submarines = list()
 	else if(speed > desired_clamped_speed)
 		speed = max(speed - SUB_ACCEL_RATE, desired_clamped_speed)
 
-	// Battery Drain if running on Electric
-	if(!power_source_nuclear && speed > 0)
+	// Battery Drain if running on electric (no nuclear or diesel providing power)
+	if(!power_source_nuclear && !power_source_diesel && speed > 0)
 		battery_current = max(0, battery_current - SUB_BATTERY_DRAIN_ELECTRIC)
 
-	// Diesel Generators (Surfaced only)
+	// Diesel Generators
+	// Diesel-only subs: diesel provides direct propulsion when surfaced + charges batteries
+	// Nuclear subs: diesel only charges batteries when surfaced (backup role)
 	if(depth == 0 && diesel_throttle > 0)
-		var/fuel_usage = diesel_throttle * 2 // Example usage rate
+		var/fuel_usage = diesel_throttle * 2
 		if(diesel_fuel >= fuel_usage)
 			diesel_fuel -= fuel_usage
-			// Charge batteries: 350kW per generator (assuming 2 generators)
-			battery_current = min(battery_max, battery_current + (350 * 2))
+			if(!has_nuclear_engine && power_source_diesel)
+				// Diesel-only: engines drive propulsion directly AND charge batteries
+				battery_current = min(battery_max, battery_current + (200 * diesel_throttle / 100))
+			else
+				// Nuclear sub: diesel generators charge batteries (backup)
+				battery_current = min(battery_max, battery_current + (350 * 2))
 		else
 			diesel_throttle = 0
 
@@ -133,6 +158,10 @@ var/global/list/all_submarines = list()
 	// BYOND handles degrees for sin/cos
 	x_pos += cos(heading) * (speed * SUB_TICK_SCALE)
 	y_pos += sin(heading) * (speed * SUB_TICK_SCALE)
+
+	// Clamp to world map boundaries
+	x_pos = clamp(x_pos, 0, SUB_MAP_SIZE)
+	y_pos = clamp(y_pos, 0, SUB_MAP_SIZE)
 
 	// 3. Power Consumption & Electrolysis
 	var/total_drain = 5.0 // Baseline kW for lights/electronics (e.g., 5 kW)
@@ -163,6 +192,7 @@ var/global/list/all_submarines = list()
 	detected_targets.Cut()
 	var/sensor_range = (sonar_mode == SUB_SONAR_ACTIVE) ? 50000 : 20000 // meters
 
+	// Detect other player submarines
 	for(var/datum/submarine/other_sub in all_submarines)
 		if(other_sub == src) continue
 		
@@ -183,6 +213,33 @@ var/global/list/all_submarines = list()
 			C.noise_signature = other_sub.speed * 5 // Faster speed = higher noise
 			detected_targets += C
 
+	// Detect NPC vessels via sonar
+	if(global.subcom_map)
+		for(var/datum/vessel_contact/npc/NPC in global.subcom_map.active_vessels)
+			if(QDELETED(NPC)) continue
+
+			var/dist = euclidean_distance(NPC.x_pos, NPC.y_pos, x_pos, y_pos)
+			if(dist > sensor_range) continue
+
+			// Passive sonar: only detects submerged contacts if they're noisy enough
+			if(sonar_mode == SUB_SONAR_PASSIVE)
+				if(NPC.contact_type == SUB_CONTACT_AIR || NPC.contact_type == SUB_CONTACT_SURFACE)
+					continue  // Can't passively hear surface/air contacts underwater
+
+			var/dx = NPC.x_pos - x_pos
+			var/dy = NPC.y_pos - y_pos
+			var/bearing_deg = arctan(dy, dx)
+			if(dx < 0)
+				bearing_deg += 180
+			else if(dy < 0 && dx >= 0)
+				bearing_deg += 360
+
+			var/datum/vessel_contact/C = new(NPC.name, NPC.contact_type, NPC.nationality)
+			C.range = dist
+			C.bearing = (bearing_deg + 360) % 360
+			C.noise_signature = NPC.speed * 5
+			detected_targets += C
+
 /datum/submarine/proc/handle_meltdown(var/index)
 	r_scrammed[index] = TRUE
 	r_power_output[index] = 0
@@ -200,36 +257,99 @@ var/global/list/all_submarines = list()
 	if(prob(10))
 		var/turf/T = pick(internal_turfs)
 		if(T)
-			// Create a leak object that drains oxygen and/or creates water
-			new /obj/effect/step_trigger/sub_leak(T)
-			T.visible_message("<span class='danger'>The hull buckles! A high-pressure leak springs open!</span>")
-			// Sound effect placeholder:
-			// playsound(T, 'sound/effects/leak.ogg', 100, 1)
+			// If it's a hull wall, breach it (which handles flooding automatically)
+			if(istype(T, /turf/wall/sub_hull))
+				var/turf/wall/sub_hull/H = T
+				H.apply_breach_damage(200)
+			else
+				// Non-hull interior turf — create a leak effect
+				new /obj/effect/step_trigger/sub_leak(T)
+				T.visible_message("<span class='danger'>The hull buckles! A high-pressure leak springs open!</span>")
+				// Flood adjacent deck turfs
+				for(var/turf/floor/sub_deck/D in range(1, T))
+					D.add_water(SUB_BREACH_INFLOW_BASE)
 
 /datum/submarine/proc/generate_oxygen()
-	// Find the most oxygen-depleted turf inside the sub
-	if(!internal_turfs.len) return
-	
-	var/turf/T = pick(internal_turfs)
-	if(T)
-		// Standard atmos interaction: inject 5 moles of O2
-		// T.zone.air.adjust_gas("o2", 5)
-		return TRUE
+	// Inject oxygen into all compartments via the flooding controller
+	if(global.subcom_flooding)
+		for(var/cid in global.subcom_flooding.compartment_turfs)
+			global.subcom_flooding.inject_oxygen(cid, 2.0)  // 2 moles per tick per compartment
 
 /datum/submarine/proc/battery_shutdown()
 	radar_active = FALSE
 	sonar_active = FALSE
 	electrolysis_active = FALSE
-	target_speed = min(target_speed, SUB_MAX_SPEED_ELECTRIC)
+	// Diesel-only subs can still run on diesel if surfaced
+	if(!has_nuclear_engine && depth == 0 && diesel_fuel > 0 && diesel_throttle > 0)
+		target_speed = min(target_speed, SUB_MAX_SPEED_DIESEL)
+	else
+		target_speed = min(target_speed, SUB_MAX_SPEED_ELECTRIC)
 	// Notify bridge
 	// bridge_message("MAIN POWER FAILURE: Switch to emergency battery successful. Non-essential systems offline.")
+
+// ---- Torpedo Impact Handler ----
+// Called when a virtual torpedo detonates near this submarine.
+// Randomly damages physical hull turfs to simulate flooding/breach.
+
+/datum/submarine/proc/apply_hit(var/base_damage)
+	torpedo_hit(base_damage)
+
+/datum/submarine/proc/torpedo_hit(var/base_damage)
+	if(!internal_turfs.len) return
+
+	// Determine how many hull turfs get damaged
+	var/turfs_to_hit = clamp(round(base_damage / 100), 1, 5)
+
+	for(var/i = 1, i <= turfs_to_hit, i++)
+		var/turf/T = pick(internal_turfs)
+		if(!T) continue
+
+		// Check if it's a hull turf and reduce its integrity
+		if(istype(T, /turf/wall/sub_hull))
+			var/turf/wall/sub_hull/H = T
+			H.apply_breach_damage(base_damage)
+		else
+			// Non-hull interior turf — flood adjacent deck turfs
+			for(var/turf/floor/sub_deck/D in range(1, T))
+				if(D.compartment_id)
+					D.add_water(round(base_damage / 20))
+
+	// Structural shock: give everyone on board a notification
+	for(var/mob/living/L in range(10, pick(internal_turfs)))
+		to_chat(L, "<span class='danger'><b>A violent explosion shakes the entire submarine!</b></span>")
 
 /datum/submarine/proc/launch_torpedo(var/tube_index)
 	if(!master_arm || !tubes_loaded[tube_index] || !selected_target) return FALSE
 	
 	tubes_loaded[tube_index] = FALSE
-	// Placeholder for creating a torpedo projectile
-	// new /obj/projectile/torpedo(src.loc, selected_target)
+
+	// Calculate launch heading toward the selected target
+	var/tgt_x = 0
+	var/tgt_y = 0
+	if(istype(selected_target, /datum/vessel_contact/npc))
+		var/datum/vessel_contact/npc/N = selected_target
+		tgt_x = N.x_pos
+		tgt_y = N.y_pos
+	else
+		return FALSE
+
+	var/dx = tgt_x - x_pos
+	var/dy = tgt_y - y_pos
+	var/launch_heading = arctan(dy, dx)
+
+	// Create a virtual torpedo datum
+	var/datum/projectile/torpedo/T = new(x_pos, y_pos, launch_heading, SUB_TORPEDO_DAMAGE, TRUE)
+	T.target = selected_target
+	T.sub_target = null
+
+	// Register with the world map controller
+	if(global.subcom_map)
+		global.subcom_map.active_torpedoes += T
+
+	// Notify via radio
+	if(global.subcom_map && global.subcom_map.missions && global.subcom_map.missions.radio_console)
+		global.subcom_map.missions.radio_console.add_log("TORPEDO AWAY from tube [tube_index]. Bearing [round(launch_heading)] degrees. Godspeed.")
+
 	return TRUE
 
 /obj/effect/step_trigger/sub_leak

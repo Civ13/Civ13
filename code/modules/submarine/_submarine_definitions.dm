@@ -15,8 +15,10 @@
 #define SUB_MELTDOWN_TEMP 1000
 #define SUB_ACCEL_RATE 0.1
 #define SUB_MAX_SPEED_NUCLEAR 30
+#define SUB_MAX_SPEED_DIESEL  18
 #define SUB_MAX_SPEED_ELECTRIC 8
 #define SUB_BATTERY_DRAIN_ELECTRIC 10 // kW per tick
+#define SUB_DIESEL_PROPULSION_POWER 500 // kW per diesel engine for direct propulsion
 
 #define SUB_RADAR_RANGE_SHORT 20000 // meters
 #define SUB_RADAR_RANGE_LONG  50000 // meters
@@ -27,3 +29,66 @@
 
 #define SUB_TICK_SCALE 0.5           // Scaling factor for virtual movement
 #define SUB_TURN_RATE 1.5            // Degrees per tick the sub can rotate
+
+// World Map Grid
+#define SUB_MAP_SIZE 1000            // 1000x1000 nautical mile virtual grid
+#define SUB_MAP_TICK_INTERVAL 20     // Process interval in ticks (2 seconds at 10 TPS)
+
+// NPC AI States
+#define SUB_AI_PATROL  1
+#define SUB_AI_HUNT    2
+#define SUB_AI_ATTACK  3
+
+// Torpedo Constants
+#define SUB_TORPEDO_SPEED     40     // Knots
+#define SUB_TORPEDO_LIFE      800    // Max range in virtual units
+#define SUB_TORPEDO_DETONATE  0.1    // Detonation distance threshold
+#define SUB_TORPEDO_DAMAGE    150    // Base hull damage on hit
+
+// Fast Travel
+#define SUB_FAST_TRAVEL_MULT  10     // Speed multiplier during fast travel
+#define SUB_FAST_TRAVEL_HOSTILE_DISABLE_RANGE 50  // Disable fast travel if hostile is within this range
+#define SUB_FAST_TRAVEL_MIN_SPEED 5  // Minimum speed to maintain fast travel
+
+// Mission Types
+#define SUB_MISSION_SINK_CARGO   "SINK_CARGO"
+#define SUB_MISSION_PATROL       "PATROL_AREA"
+#define SUB_MISSION_REFIT        "REFIT"
+
+// Noise Thresholds (for NPC passive sonar detection)
+#define SUB_NOISE_SILENT    0
+#define SUB_NOISE_LOW       10
+#define SUB_NOISE_MEDIUM    30
+#define SUB_NOISE_HIGH      60
+#define SUB_NOISE_ACTIVE_SONAR 100
+
+// Flooding & Water Physics
+#define SUB_BREACH_INFLOW_BASE  5     // cm of water per tick from a fresh hull breach
+#define SUB_WATER_DROWNING_LIGHT  50  // cm — ankle deep, minor annoyance
+#define SUB_WATER_DROWNING_MOD   100  // cm — waist deep, movement penalty
+#define SUB_WATER_DROWNING_HEAVY  150  // cm — chest deep, drowning risk
+#define SUB_WATER_FLOODED         200  // cm — fully flooded tile
+#define SUB_BILGE_PUMP_DRAIN      10   // cm removed per pump tick
+#define SUB_BILGE_PUMP_POWER      15   // kW per pump tick
+
+// Compartment IDs (used on /turf/floor/sub_deck)
+#define SUB_COMP_NONE                ""
+#define SUB_COMP_FORWARD_TORPEDO     "forward_torpedo"
+#define SUB_COMP_FORWARD_BATTERY     "forward_battery"
+#define SUB_COMP_OPERATIONS          "operations"
+#define SUB_COMP_CREW_QUARTERS       "crew_quarters"
+#define SUB_COMP_GALLEY              "galley"
+#define SUB_COMP_CPO_QUARTERS        "cpo_quarters"
+#define SUB_COMP_AFT_BATTERY         "aft_battery"
+#define SUB_COMP_REACTOR_ROOM        "reactor_room"
+#define SUB_COMP_ENGINE_ROOM         "engine_room"
+#define SUB_COMP_MANEUVERING         "maneuvering"
+#define SUB_COMP_AFT_TORPEDO         "aft_torpedo"
+
+// Atmospheric Constants
+#define SUB_ATMOS_NORMAL_O2    20.0   // Moles of O2 in a normal compartment
+#define SUB_ATMOS_NORMAL_CO2   0.1    // Moles of CO2 in a normal compartment
+#define SUB_ATMOS_DANGER_CO2   5.0    // CO2 level where suffocation begins
+#define SUB_ATMOS_VENT_OXYGEN  2.0    // Minimum O2 before vent equalization kicks in
+#define SUB_ATMOS_TEMP_NORMAL  293.15 // Kelvin (20 C)
+#define SUB_ATMOS_PRESSURE_NORMAL 101.325 // kPa (1 atm)

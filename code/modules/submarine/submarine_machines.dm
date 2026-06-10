@@ -83,6 +83,15 @@
 	dat += "<tr><td>HEADING</td><td>[my_sub.heading]&deg;</td><td>TARGET: [my_sub.target_heading]&deg;</td></tr>"
 	dat += "<tr><td>SPEED</td><td>[my_sub.speed] KTS</td><td>TARGET: [my_sub.target_speed] KTS</td></tr>"
 	dat += "<tr><td>DEPTH</td><td>[my_sub.depth] M</td><td>TARGET: [my_sub.target_depth] M</td></tr>"
+	if(my_sub.has_nuclear_engine)
+		var/total_output = my_sub.r_power_output[1] + my_sub.r_power_output[2]
+		dat += "<tr><td>PROPULSION</td><td colspan='2'>[total_output > 5.0 ? "NUCLEAR TURBINES" : "BATTERY (EMERGENCY)"]</td></tr>"
+	else
+		var/prop_status = "BATTERY"
+		if(my_sub.depth == 0 && my_sub.diesel_throttle > 0 && my_sub.diesel_fuel > 0)
+			prop_status = "DIESEL ([my_sub.diesel_throttle]%)"
+		dat += "<tr><td>PROPULSION</td><td colspan='2'>[prop_status]</td></tr>"
+		dat += "<tr><td>DIESEL</td><td>[my_sub.diesel_fuel]/[my_sub.diesel_max]L</td><td>FUEL: [my_sub.diesel_fuel > 0 ? "OK" : "<span class='warning'>EMPTY</span>"]</td></tr>"
 	dat += "</table>"
 
 	dat += "<b>SET TARGET HEADING:</b><br>"
@@ -96,6 +105,8 @@
 	dat += "<b>SET TARGET DEPTH:</b><br>"
 	dat += "<a href='?src=\ref[src];set_dp=0'>SURFACE (0m)</a> "
 	dat += "<a href='?src=\ref[src];set_dp=15'>PERISCOPE (15m)</a><br>"
+	if(!my_sub.has_nuclear_engine)
+		dat += "<span class='warning'>DIESEL ENGINES SURFACE ONLY</span><br>"
 	dat += "<a href='?src=\ref[src];set_dp=150'>DEEP (150m)</a> "
 	dat += "<a href='?src=\ref[src];set_dp=250'>CRASH DIVE (250m)</a><br><br>"
 
@@ -131,6 +142,15 @@
 	scr_overlay = "transponder_screen"
 
 /obj/structure/machinery/sub_control/reactor_panel/get_ui_content()
+	if(!my_sub.has_nuclear_engine)
+		var/dat = "<b>REACTOR SYSTEMS</b><br>"
+		dat += "<span class='warning'>NO NUCLEAR REACTOR INSTALLED</span><br>"
+		dat += "This vessel operates on diesel-electric propulsion.<br>"
+		dat += "Diesel Status: [my_sub.diesel_fuel] / [my_sub.diesel_max] liters<br>"
+		dat += "Throttle: [my_sub.diesel_throttle]%<br>"
+		dat += "Fuel consumption: [my_sub.diesel_throttle * 2] L/tick<br>"
+		return dat
+
 	var/dat = ""
 	for(var/i=1, i<=2, i++)
 		dat += "<b>REACTOR [i]</b> [my_sub.r_scrammed[i] ? "<span class='warning'>(SCRAMMED)</span>" : ""]<br>"
@@ -400,5 +420,75 @@
 				visible_message("<span class='warning'>TORPEDO LAUNCHED from tube [tube_idx]!</span>")
 			else
 				to_chat(usr, "<span class='warning'>Torpedo launch failed. Check master arm, tube status, and target lock.</span>")
+
+	interact(usr)
+
+// --- RADIO / MISSION CONSOLE ---
+
+/obj/structure/machinery/sub_control/radio_console
+	name = "encrypted radio console"
+	desc = "A hardened military radio transceiver with frequency hopping and burst encryption."
+	icon = 'icons/obj/computers.dmi'
+	icon_state = "computer"
+	scr_overlay = "comm_logs"
+
+	var/list/message_log = list()       // List of radio messages
+	var/max_log_entries = 50
+
+/obj/structure/machinery/sub_control/radio_console/New()
+	..()
+	// Register with the mission controller
+	if(global.subcom_map && global.subcom_map.missions)
+		global.subcom_map.missions.radio_console = src
+
+/obj/structure/machinery/sub_control/radio_console/proc/add_log(var/message)
+	message_log.Add("\[[world.time / 10]\] [message]")
+	if(message_log.len > max_log_entries)
+		message_log.Cut(1, 2)  // Remove oldest entry
+
+/obj/structure/machinery/sub_control/radio_console/get_ui_content()
+	var/dat = "<b>ENCRYPTED RADIO - COMMAND CHANNEL</b><br>"
+	dat += "FREQ: 147.325 MHz | MOD: FHSS-AES | STATUS: <span style='color:lime'>LINKED</span><br>"
+	dat += "----------------------------------------<br>"
+
+	// Mission status from mission controller
+	if(global.subcom_map && global.subcom_map.missions)
+		dat += "<b>CURRENT ORDERS:</b><br>"
+		dat += global.subcom_map.missions.get_status_text()
+		dat += "<br>"
+
+	dat += "<b>TRANSMISSION LOG:</b><br>"
+	if(message_log.len)
+		for(var/i = message_log.len, i >= max(1, message_log.len - 20), i--)
+			dat += "[message_log[i]]<br>"
+	else
+		dat += "<i>No transmissions received.</i><br>"
+
+	dat += "<br><a href='?src=\ref[src];clear_log=1'>CLEAR LOG</a>"
+
+	// Fast travel controls
+	if(global.subcom_map)
+		dat += "<br><br><b>NAVIGATION:</b><br>"
+		if(global.subcom_map.fast_travel_active)
+			dat += "<a href='?src=\ref[src];fast_travel=0' style='color:red'>DISENGAGE FAST TRAVEL</a><br>"
+		else
+			dat += "<a href='?src=\ref[src];fast_travel=1'>ENGAGE FAST TRAVEL</a> <i>(10x speed, auto-disables on contact)</i><br>"
+
+	return dat
+
+/obj/structure/machinery/sub_control/radio_console/Topic(href, href_list)
+	if(..()) return 1
+	if(!can_use(usr)) return
+
+	if(href_list["clear_log"])
+		message_log.Cut()
+
+	if(href_list["fast_travel"])
+		if(global.subcom_map)
+			if(text2num(href_list["fast_travel"]) == 1)
+				global.subcom_map.enable_fast_travel()
+				add_log("FAST TRAVEL ENGAGED. Speed x10. Auto-disabling on hostile contact.")
+			else
+				global.subcom_map.disable_fast_travel("Manual disengagement by operator.")
 
 	interact(usr)
