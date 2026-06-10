@@ -200,6 +200,7 @@
 	if(my_sub.diesel_throttle >= 95 && health < 100)
 		if(prob(2))
 			visible_message("<span class='danger'>[src] spits sparks as it overheats!</span>")
+			playsound(src.loc, 'sound/machines/submarine/dgenstop.ogg', 50, 1)
 
 // --- 4b. DIESEL PROPULSION MOTOR ---
 // Used on diesel-only submarines. Converts diesel engine output to propeller thrust.
@@ -256,7 +257,7 @@
 	name = "bilge pump"
 	desc = "A high-capacity centrifugal pump for evacuating seawater from flooded compartments."
 	icon = 'icons/obj/machines/submarine.dmi'
-	icon_state = "bilge_pump1"
+	icon_state = "bilge_pump"
 	health = 80
 	max_health = 80
 	var/active = FALSE
@@ -283,6 +284,7 @@
 	if(my_sub.battery_current < power_draw)
 		active = FALSE
 		visible_message("<span class='warning'>[src] sputters and shuts down — insufficient power.</span>")
+		playsound(src.loc, 'sound/machines/submarine/alarm_flooding.ogg', 40, 1)
 		return
 
 	my_sub.battery_current -= power_draw
@@ -358,6 +360,7 @@
 	active = !active
 	if(active)
 		to_chat(user, "<span class='notice'>You open the ventilation duct. Air begins to flow.</span>")
+		playsound(src.loc, 'sound/machines/submarine/gas.ogg', 40, 1)
 	else
 		to_chat(user, "<span class='notice'>You close the ventilation duct. Air flow stops.</span>")
 
@@ -380,8 +383,8 @@
 /obj/structure/machinery/sub_physical/scrubber
 	name = "CO2 scrubber"
 	desc = "An activated-carbon filtration unit that removes carbon dioxide from the air."
-	icon = 'icons/obj/machines/submarine.dmi'
-	icon_state = "scrubber"
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "airfilter2"
 	health = 70
 	max_health = 70
 	var/active = FALSE
@@ -396,7 +399,7 @@
 	active = !active
 	if(active)
 		to_chat(user, "<span class='notice'>You activate [src]. It begins filtering the air.</span>")
-		playsound(src.loc, 'sound/machines/diesel_loop.ogg', 40, 1)
+		playsound(src.loc, 'sound/machines/submarine/gas.ogg', 40, 1)
 	else
 		to_chat(user, "<span class='notice'>You deactivate [src].</span>")
 
@@ -472,7 +475,7 @@
 			hull.repair_breach()
 			sealant_remaining--
 			visible_message("<span class='notice'>[src] sprays sealant onto the hull breach. It hisses as it cures.</span>")
-			playsound(src.loc, 'sound/items/Screwdriver.ogg', 60, 1)
+			playsound(src.loc, 'sound/machines/submarine/gas.ogg', 60, 1)
 			break  // One repair per tick
 
 // --- 5f. BALLAST CONTROL VALVE ---
@@ -508,6 +511,12 @@
 	my_sub.ballast = min(my_sub.ballast + fill_rate, 50)  // Max 50 tons of ballast
 
 // --- 6. TORPEDO TUBE ---
+
+/obj/structure/props/torpedo_tube
+	name = "torpedo launch tube"
+	desc = "A ship's torpedo tube."
+	icon = 'icons/obj/machines/submarine.dmi'
+	icon_state = "torpedo_tube2"
 
 /obj/structure/machinery/sub_physical/torpedo_tube
 	name = "torpedo launch tube"
@@ -576,7 +585,7 @@
 
 	food_stored--
 	to_chat(user, "<span class='notice'>The machine clunks and produces a nutritional ration.</span>")
-	new /obj/item/weapon/reagent_containers/food/snacks/ration(src.loc)
+	new /obj/item/weapon/reagent_containers/food/snacks/MRE(src.loc)
 
 // --- 9. EQUIPMENT STORAGE ---
 
@@ -644,6 +653,8 @@
 
 /obj/structure/machinery/sub_physical/fuel_storage/proc/explode()
 	visible_message("<span class='danger'><b>[src] CATASTROPHICALLY RUPTURES!</b></span>")
+	playsound(src.loc, 'sound/machines/submarine/fire.ogg', 100, 1)
+	playsound(src.loc, 'sound/machines/submarine/nuke_exp.ogg', 100, 1)
 	explosion(src.loc, 1, 2, 4)
 	qdel(src)
 
@@ -684,8 +695,3 @@
 	icon_state = "torpedo_item"
 	w_class = 5.0 // Heavy
 
-/obj/item/weapon/reagent_containers/food/snacks/ration
-	name = "nutritional ration"
-	desc = "A dense, flavorless nutritional paste."
-	icon = 'icons/obj/items.dmi'
-	icon_state = "ration"

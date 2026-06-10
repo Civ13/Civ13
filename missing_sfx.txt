@@ -1,173 +1,51 @@
 Missing Sound Effects for Submarine Commander (SUBCOM13)
-========================================================
+=======================================================
 
-Each entry lists the file path where the sound should be placed,
-the suggested filename, and a description of what it should sound like.
+Remaining sounds not yet added to sound/machines/submarine/.
+
 
 SUBMARINE OPERATIONS
 --------------------
 
-sound/submarine/sonar_ping.ogg
-  Description: Active sonar ping. A sharp, echoing "ping" with metallic reverb.
-  Should sound like a real sonar: a brief 1-2kHz tone that decays with
-  a 1-2 second echo tail. Mono, short duration (~3s).
-  Used by: sonar panel active ping.
-
-sound/submarine/sonar_passive.ogg
-  Description: Passive sonar ambient loop. Low drone of ocean noise,
-  distant machinery hum, occasional creak. Seamless loop, ~10s.
-  Used by: sonar panel passive mode background.
-
-sound/submarine/hull_creak.ogg
-  Description: Metal hull creaking under pressure at depth. A low groaning
-  sound of stressed metal plates. Should be unsettling. ~2-4s.
-  Used by: depth pressure warnings, hull damage events.
-
-sound/submarine/hull_breach.ogg
+sound/machines/submarine/hull_breach.ogg
   Description: Catastrophic hull breach. Loud tearing metal followed by
   rushing water. Dramatic, ~3-5s.
-  Used by: when a hull section loses integrity (breach_hull proc).
+  Used by: breach_hull proc. (Currently uses flood.ogg + crash.ogg)
 
-sound/submarine/flooding_start.ogg
+sound/machines/submarine/flooding_start.ogg
   Description: Water beginning to pour into a compartment. Gurgling
   rush of water through a crack. ~2-3s, loopable.
   Used by: add_water() when water_depth starts increasing.
 
-sound/submarine/flooding_ambient.ogg
-  Description: Standing water in a compartment. Gentle sloshing and
-  dripping. Seamless loop, ~8s.
-  Used by: ambient sound when water_depth > 0 on a deck tile.
-
-sound/submarine/alarm_dive.ogg
-  Description: Submarine dive alarm. Classic "AWOOGA" klaxon.
-  Two-tone rising and falling. ~3s, loopable.
-  Used by: diving below periscope depth.
-
-sound/submarine/alarm_surface.ogg
-  Description: Surface alarm. Distinct from dive alarm. Higher pitched,
-  urgent beeping pattern. ~3s, loopable.
-  Used by: surfacing operations.
-
-sound/submarine/alarm_flood.ogg
-  Description: Flooding alarm. Loud repeating buzzer. ~2s, loopable.
-  Used by: flooding controller when a compartment starts flooding.
-
-sound/submarine/alarm_depth.ogg
-  Description: Critical depth warning. Rapid high-pitched alarm.
-  ~2s, loopable. Should feel urgent and dangerous.
-  Used by: approaching crush depth.
-
-sound/submarine/alarm_rig.ogg
-  Description: General quarters / battle stations alarm. Deep,
-  resonant klaxon. ~3s, loopable.
-  Used by: combat encounters, mission start.
 
 PROPULSION & MACHINERY
 ----------------------
 
-sound/submarine/engine_nuclear_hum.ogg
+sound/machines/submarine/engine_nuclear_hum.ogg
   Description: Nuclear reactor ambient. Low, steady electromagnetic hum.
   Subtle, almost subliminal. Seamless loop, ~10s.
   Used by: reactor panel background when reactor is online.
 
-sound/submarine/engine_diesel_run.ogg
-  Description: Diesel generator running. Rhythmic chugging of a large
-  marine diesel. Steady beat. Seamless loop, ~8s.
-  Used by: diesel engine when throttle > 0.
-
-sound/submarine/engine_diesel_start.ogg
-  Description: Diesel generator cranking and starting. Starter motor
-  whine followed by diesel catching and settling to idle. ~4-5s.
-  Used by: first engagement of diesel throttle.
-
-sound/submarine/turbine_run.ogg
-  Description: Steam turbine spinning. High-pitched whine with
-  underlying rumble. Seamless loop, ~8s.
-  Used by: steam turbine at speed.
-
-sound/submarine/propeller_water.ogg
-  Description: Propeller churning water. Bubbling, rushing water
-  sound from screw rotation. Seamless loop, ~6s.
-  Used by: ambient sound when sub is moving.
-
-WEAPONS
--------
-
-sound/submarine/torpedo_launch.ogg
-  Description: Torpedo firing from tube. Compressed air release hiss
-  followed by a deep "thump" and rushing water. ~2-3s.
-  Used by: launch_torpedo() proc.
-
-sound/submarine/torpedo_travel.ogg
-  Description: Torpedo running through water. Propeller whine with
-  cavitation bubbles. Seamless loop, ~5s.
-  Used by: torpedo_datum while torpedo is in transit.
-
-sound/submarine/torpedo_explosion.ogg
-  Description: Underwater detonation. Deep, muffled boom with
-  shockwave rumble. Not a sharp crack - underwater explosions
-  are bass-heavy. ~3-4s.
-  Used by: torpedo detonation.
-
-sound/submarine/depth_charge_distant.ogg
-  Description: Distant depth charge. Muffled thud, felt more than
-  heard. Low frequency rumble. ~2-3s.
-  Used by: depth charge detonation at range.
-
-sound/submarine/depth_charge_close.ogg
-  Description: Close depth charge detonation. Violent underwater
-  explosion with shockwave. Loud, bass-heavy. ~3-5s.
-  Used by: depth charge detonation nearby.
-
-sound/submarine/gunfire_surface.ogg
-  Description: Naval gunfire from surface vessel. Distant booming
-  reports. ~1-2s per shot.
-  Used by: NPC gun attacks.
-
-sound/submarine/missile_launch.ogg
-  Description: Missile launch from above. Rising whoosh with
-  crackling exhaust. ~2-3s.
-  Used by: NPC missile attacks (aircraft).
 
 ENVIRONMENT & UI
 ----------------
 
-sound/submarine/console_click.ogg
-  Description: Physical button press on a submarine console.
-  Mechanical click with slight metallic ring. ~0.5s.
-  Used by: all console button presses. (Can reuse existing
-  sound/machines/click.ogg if suitable.)
-
-sound/submarine/console_switch.ogg
-  Description: Toggle switch flip. Solid mechanical snap. ~0.3s.
-  Used by: vent toggles, ballast valve, bilge pump switches.
-
-sound/submarine/valve_turn.ogg
+sound/machines/submarine/valve_turn.ogg
   Description: Heavy valve wheel being turned. Metal-on-metal
   grinding. ~1-2s.
   Used by: ballast valve, manual valve operations.
 
-sound/submarine/scrubber_hum.ogg
+sound/machines/submarine/scrubber_hum.ogg
   Description: CO2 scrubber running. Steady fan/motor hum with
   slight air-rushing sound. Seamless loop, ~6s.
   Used by: scrubber active ambient.
 
-sound/submarine/bilge_pump_run.ogg
-  Description: Bilge pump operating. Rhythmic pumping sound with
-  water gurgling. Seamless loop, ~6s.
-  Used by: bilge pump active ambient.
-
-sound/submarine/radio_static.ogg
+sound/machines/submarine/radio_static.ogg
   Description: Radio transmission static. Brief burst of white noise
   before message. ~1s. Can be mixed with voice effect.
   Used by: radio console message reception.
 
-sound/submarine/water_drip.ogg
+sound/machines/submarine/water_drip.ogg
   Description: Water dripping in a flooded compartment. Isolated
   drip with echo. ~1s, randomizable.
   Used by: ambient sound in compartments with water_depth > 0.
-
-sound/submarine/radiation_alarm.ogg
-  Description: Radiation warning alarm. Geiger counter clicking
-  accelerating into a whine. ~3s, loopable.
-  Used by: reactor_core radiation_pulse proc.

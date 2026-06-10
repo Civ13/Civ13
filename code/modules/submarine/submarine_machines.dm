@@ -239,6 +239,8 @@
 		my_sub.target_depth = 0
 		my_sub.ballast = 0
 		visible_message("<span class='warning'>The ballast tanks hiss violently!</span>")
+		playsound(src, 'sound/machines/submarine/blowballast.ogg', 80, 1)
+		playsound(src, 'sound/machines/submarine/dive_alarm.ogg', 60, 1)
 
 	interact(usr)
 
@@ -374,6 +376,7 @@
 		my_sub.r_scrammed[r_idx] = TRUE
 		my_sub.r_control_rods[r_idx] = 100
 		visible_message("<span class='warning'>A loud klaxon sounds! Reactor [r_idx] has been SCRAMMED!</span>")
+		playsound(src, 'sound/machines/submarine/scram_alarm.ogg', 80, 1)
 
 	interact(usr)
 
@@ -497,6 +500,7 @@
 		fire_supp_active[C] = !fire_supp_active[C]
 		if(fire_supp_active[C])
 			visible_message("<span class='notice'>Hissing sounds heard from [C] fire suppression vents.</span>")
+			playsound(src, 'sound/machines/submarine/gas.ogg', 50, 1)
 
 	interact(usr)
 
@@ -666,12 +670,15 @@
 		my_sub.sonar_active = !my_sub.sonar_active
 		if(!my_sub.sonar_active)
 			my_sub.detected_targets.Cut() // Clear targets when off
+		else
+			playsound(src, 'sound/machines/submarine/sonar_ping.ogg', 50, 1)
 
 	if(href_list["toggle_mode"])
 		if(my_sub.sonar_active)
 			my_sub.sonar_mode = (my_sub.sonar_mode == SUB_SONAR_ACTIVE) ? SUB_SONAR_PASSIVE : SUB_SONAR_ACTIVE
 			if(my_sub.sonar_mode == SUB_SONAR_ACTIVE)
 				my_sub.noise_level = 100 // Active sonar is very loud
+				playsound(src, 'sound/machines/submarine/sonar_ping2.ogg', 60, 1)
 			else
 				my_sub.noise_level = my_sub.speed * 5 // Passive mode noise based on speed
 		else
@@ -788,6 +795,7 @@
 		if(tube_idx >= 1 && tube_idx <= 4)
 			if(my_sub.launch_torpedo(tube_idx))
 				visible_message("<span class='warning'>TORPEDO LAUNCHED from tube [tube_idx]!</span>")
+				playsound(src, 'sound/machines/submarine/torpedo_launch.ogg', 100, 1)
 			else
 				to_chat(usr, "<span class='warning'>Torpedo launch failed. Check master arm, tube status, and target lock.</span>")
 

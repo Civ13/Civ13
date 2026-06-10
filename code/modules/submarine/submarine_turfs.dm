@@ -2,18 +2,6 @@
 // Submarine Areas
 // ============================================================
 
-/area/submarine
-	name = "submarine interior"
-	icon_state = "purple1"
-	has_gravity = TRUE
-	no_air = FALSE
-	dynamic_lighting = TRUE
-	sound_env = FOREST
-	ambience = list("sound/ambience/ship1.ogg")
-
-/area/submarine/extern
-	name = "exterior ocean"
-	sound_env = UNDERWATER
 
 // ============================================================
 // Submarine Turfs — hull walls, bulkheads, and deck floors
@@ -48,6 +36,8 @@
 	breached = TRUE
 	breach_inflow_rate = SUB_BREACH_INFLOW_BASE
 	visible_message("<span class='danger'><b>The hull buckles! Seawater erupts through the breach!</b></span>")
+	playsound(src, 'sound/machines/submarine/flood.ogg', 80, 1)
+	playsound(src, 'sound/machines/submarine/crash.ogg', 90, 1)
 
 	// Find adjacent deck turfs and start continuous flooding
 	for(var/turf/floor/sub_deck/D in range(1, src))
@@ -55,7 +45,8 @@
 		D.water_inflow_rate += SUB_BREACH_INFLOW_BASE  // Ongoing inflow each tick
 
 	// Mark this wall as visually damaged
-	icon_state = "damaged"
+	overlays += image(icon='icons/turf/damage_overlays.dmi',icon_state=pick("damaged1","damaged2","damaged3"))
+	overlays += image(icon='icons/obj/machines/submarine.dmi',icon_state="breach_glow")
 
 /turf/wall/sub_hull/proc/repair_breach()
 	if(!breached) return
@@ -63,6 +54,7 @@
 	breach_inflow_rate = 0
 	hull_integrity = max_hull_integrity * 0.5  // Repaired to half
 	icon_state = "metal0"
+	overlays.Cut()  // Remove damage and breach glow overlays
 	visible_message("<span class='notice'>The hull breach is sealed.</span>")
 
 // ---- Bulkheads ----
@@ -153,12 +145,12 @@
 /turf/floor/sub_deck/proc/add_water(var/cm)
 	if(water_sealed) return
 	water_depth = min(water_depth + cm, max_water)
-	update_icon_state()
+	refresh_water_overlay()
 
 // Remove water from this tile (cm). Called by bilge pumps, draining.
 /turf/floor/sub_deck/proc/remove_water(var/cm)
 	water_depth = max(0, water_depth - cm)
-	update_icon_state()
+	refresh_water_overlay()
 
 // Called each tick by the flooding controller — handles water spreading and drowning
 /turf/floor/sub_deck/proc/flood_tick()
@@ -211,6 +203,7 @@
 				var/mob/living/human/H = L
 				H.losebreath = max(H.losebreath + 3, 3)
 				to_chat(H, "<span class='danger'>Water fills your lungs!</span>")
+				playsound(src, 'sound/machines/submarine/flood.ogg', 40, 1)
 		else if(water_depth >= 100)
 			// Waist deep: moderate drowning risk
 			if(istype(L, /mob/living/human))
@@ -218,23 +211,28 @@
 				H.losebreath = max(H.losebreath + 1, 1)
 			if(prob(5))
 				to_chat(L, "<span class='warning'>You struggle to breathe above the rising water.</span>")
+				playsound(src, 'sound/machines/submarine/alarm_flooding.ogg', 30, 1)
 		else if(water_depth >= 50)
 			// Ankle deep: annoying, minor oxygen drain
 			if(prob(2))
 				to_chat(L, "<span class='notice'>Water sloshes around your boots.</span>")
 
 // Update the turf's visual appearance based on water depth
-/turf/floor/sub_deck/proc/update_icon_state()
-	if(water_depth <= 0)
-		icon_state = "steel_grid"
-	else if(water_depth < 30)
-		icon_state = "water_shallow"
-	else if(water_depth < 100)
-		icon_state = "water_medium"
-	else if(water_depth < max_water)
-		icon_state = "water_deep"
-	else
-		icon_state = "water_flooded"
+/turf/floor/sub_deck/proc/refresh_water_overlay()
+	overlays.Cut()
+	icon_state = "steel_grid"
+
+	if(water_depth > 0)
+		var/image/water_overlay = image('icons/obj/machines/submarine.dmi', "water_deep")
+		if(water_depth < 30)
+			water_overlay.alpha = 60       // Shallow — faint tint
+		else if(water_depth < 100)
+			water_overlay.alpha = 130      // Medium — noticeable
+		else if(water_depth < max_water)
+			water_overlay.alpha = 200      // Deep — heavy overlay
+		else
+			water_overlay.alpha = 255      // Fully flooded — opaque
+		overlays += water_overlay
 
 // ============================================================
 // Atmospheric System

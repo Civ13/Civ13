@@ -224,6 +224,11 @@ var/global/list/all_submarines = list()
 	if(depth > crush_depth)
 		trigger_structural_damage()
 
+	// Depth alarm when approaching crush depth
+	if(depth > crush_depth * 0.8 && prob(10))
+		if(internal_turfs.len)
+			playsound(pick(internal_turfs), 'sound/machines/submarine/alarm_depth.ogg', 60, 1)
+
 	// Virtual position update (Trigonometry)
 	// BYOND handles degrees for sin/cos
 	x_pos += cos(heading) * (speed * SUB_TICK_SCALE)
@@ -319,6 +324,8 @@ var/global/list/all_submarines = list()
 	for(var/turf/T in reactor_turfs)
 		// This triggers standard SS13/Civ13 radiation and heat damage logic
 		T.visible_message("<span class='danger'>The reactor core has collapsed! Intense radiation fills the room!</span>")
+		playsound(T, 'sound/machines/submarine/nuke_exp.ogg', 100, 1)
+		playsound(T, 'sound/machines/submarine/scram_alarm.ogg', 80, 1)
 		// Hypothetical atmos/damage triggers:
 		// T.assume_gas("fire", 100) 
 		// T.rad_act(500)
@@ -337,6 +344,7 @@ var/global/list/all_submarines = list()
 				// Non-hull interior turf — create a leak effect
 				new /obj/effect/step_trigger/sub_leak(T)
 				T.visible_message("<span class='danger'>The hull buckles! A high-pressure leak springs open!</span>")
+				playsound(T, 'sound/machines/submarine/gas.ogg', 80, 1)
 				// Flood adjacent deck turfs
 				for(var/turf/floor/sub_deck/D in range(1, T))
 					D.add_water(SUB_BREACH_INFLOW_BASE)
@@ -389,6 +397,7 @@ var/global/list/all_submarines = list()
 	// Structural shock: give everyone on board a notification
 	for(var/mob/living/L in range(10, pick(internal_turfs)))
 		to_chat(L, "<span class='danger'><b>A violent explosion shakes the entire submarine!</b></span>")
+		playsound(pick(internal_turfs), 'sound/machines/submarine/crash.ogg', 100, 1)
 
 /datum/submarine/proc/launch_torpedo(var/tube_index)
 	if(!master_arm || !tubes_loaded[tube_index] || !selected_target) return FALSE
@@ -431,11 +440,14 @@ var/global/list/all_submarines = list()
 	switch(weapon_type)
 		if("torpedo")
 			torpedo_hit(damage)
+			if(internal_turfs.len)
+				playsound(pick(internal_turfs), 'sound/machines/submarine/crash.ogg', 100, 1)
 		if("depth_charge")
 			// Depth charges do area damage — hit multiple hull turfs near the explosion
 			var/turfs_to_hit = clamp(round(damage / 80), 2, 6)
 			if(internal_turfs.len)
 				var/turf/center = pick(internal_turfs)
+				playsound(center, 'sound/machines/submarine/depth_charge_close.ogg', 100, 1)
 				for(var/i = 1, i <= turfs_to_hit, i++)
 					var/turf/wall/sub_hull/H = locate(/turf/wall/sub_hull) in range(3, center)
 					if(H)
@@ -447,6 +459,8 @@ var/global/list/all_submarines = list()
 			// Missiles are like torpedoes but also cause structural shock
 			torpedo_hit(damage)
 			if(internal_turfs.len)
+				playsound(pick(internal_turfs), 'sound/machines/submarine/missile_alarm.ogg', 80, 1)
+				playsound(pick(internal_turfs), 'sound/machines/submarine/crash.ogg', 100, 1)
 				for(var/mob/living/L in range(6, pick(internal_turfs)))
 					to_chat(L, "<span class='danger'><b>The missile impact sends shrapnel flying through the compartment!</b></span>")
 		if("gun")

@@ -1,48 +1,108 @@
-"aA" = (/obj/structure/machinery/sub_physical/coolant_pump{pump_id = 1; is_primary = TRUE}, /turf/floor/sub_deck, /area/submarine)
-"aB" = (/obj/structure/machinery/sub_physical/coolant_pump{pump_id = 2; is_primary = FALSE}, /turf/floor/sub_deck, /area/submarine)
-"aC" = (/obj/structure/machinery/sub_physical/steam_turbine, /turf/floor/sub_deck, /area/submarine)
-"aD" = (/obj/structure/machinery/sub_physical/diesel_engine, /turf/floor/sub_deck, /area/submarine)
-"aE" = (/obj/structure/sub_physical/equipment_storage, /turf/floor/sub_deck, /area/submarine)
-"aa" = (/turf/floor/beach/water/deep/saltwater/underwater, /area/submarine/extern)
-"ab" = (/turf/wall/sub_hull, /area/submarine)
-"ac" = (/turf/wall/sub_bulkhead, /area/submarine)
-"ad" = (/turf/floor/sub_deck, /area/submarine)
-"ae" = (/obj/map_metadata/subcom13, /turf/wall/sub_hull, /area/submarine)
-"af" = (/obj/effect/landmark{name = "JoinLateSub"}, /turf/floor/sub_deck, /area/submarine)
-"ag" = (/obj/structure/machinery/sub_control/maneuver_panel, /turf/floor/sub_deck, /area/submarine)
-"ah" = (/obj/structure/machinery/sub_control/sonar_panel, /turf/floor/sub_deck, /area/submarine)
-"ai" = (/obj/structure/machinery/sub_control/radar_panel, /turf/floor/sub_deck, /area/submarine)
-"aj" = (/obj/structure/machinery/sub_control/weapons_panel, /turf/floor/sub_deck, /area/submarine)
-"ak" = (/obj/structure/machinery/sub_control/radio_console, /turf/floor/sub_deck, /area/submarine)
-"al" = (/obj/structure/machinery/sub_control/misc_systems, /turf/floor/sub_deck, /area/submarine)
-"am" = (/obj/structure/machinery/sub_control/compartment_panel, /turf/floor/sub_deck, /area/submarine)
-"an" = (/obj/structure/machinery/sub_physical/torpedo_tube{tube_id = 1}, /turf/floor/sub_deck, /area/submarine)
-"ao" = (/obj/structure/machinery/sub_physical/torpedo_tube{tube_id = 2}, /turf/floor/sub_deck, /area/submarine)
-"ap" = (/obj/structure/machinery/sub_physical/torpedo_tube{tube_id = 3}, /turf/floor/sub_deck, /area/submarine)
-"aq" = (/obj/structure/machinery/sub_physical/torpedo_tube{tube_id = 4}, /turf/floor/sub_deck, /area/submarine)
-"ar" = (/obj/structure/machinery/sub_physical/bilge_pump, /turf/floor/sub_deck, /area/submarine)
-"as" = (/obj/structure/machinery/sub_physical/vent_duct, /turf/floor/sub_deck, /area/submarine)
-"at" = (/obj/structure/bed/bunk, /turf/floor/sub_deck, /area/submarine)
-"au" = (/obj/structure/machinery/sub_physical/galley, /turf/floor/sub_deck, /area/submarine)
-"av" = (/obj/structure/machinery/sub_physical/scrubber, /turf/floor/sub_deck, /area/submarine)
-"aw" = (/obj/structure/machinery/sub_physical/fuel_storage, /turf/floor/sub_deck, /area/submarine)
-"ax" = (/obj/structure/machinery/sub_physical/ballast_valve, /turf/floor/sub_deck, /area/submarine)
-"ay" = (/obj/structure/machinery/sub_physical/reactor_core{id = 1}, /turf/floor/sub_deck, /area/submarine)
-"az" = (/obj/structure/machinery/sub_physical/reactor_core{id = 2}, /turf/floor/sub_deck, /area/submarine)
+"aa" = (/obj/structure/machinery/sub_physical/diesel_engine,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"ab" = (/turf/floor/beach/water/deep/saltwater/underwater,/area/caribbean/sea/underwater)
+"ac" = (/obj/structure/machinery/sub_control/radar_panel,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"ad" = (/obj/structure/machinery/sub_control/sonar_panel,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"ae" = (/obj/map_metadata/subcom13,/turf/floor/beach/water/deep/saltwater/underwater,/area/caribbean/sea/underwater)
+"af" = (/obj/structure/table/modern/retable,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"ag" = (/obj/structure/machinery/sub_physical/steam_turbine,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"ah" = (/obj/structure/machinery/sub_physical/vent_duct,/turf/wall/sub_hull,/area/caribbean/sea/underwater)
+"ai" = (/obj/structure/sign/custom/metallic{name = "Comms Room"},/turf/wall/sub_bulkhead,/area/caribbean/sea/underwater)
+"aj" = (/obj/structure/medicalbed,/obj/item/weapon/bedsheet/medical,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"ak" = (/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"al" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 4},/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"am" = (/obj/structure/machinery/sub_physical/reactor_core{id = 2},/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"an" = (/turf/wall/sub_hull,/area/caribbean/sea/underwater)
+"ao" = (/obj/structure/machinery/sub_physical/coolant_pump{pump_id = 1; is_primary = TRUE},/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"ap" = (/obj/structure/gate/blast,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"aq" = (/obj/item/weapon/stool,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"ar" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"as" = (/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"at" = (/obj/structure/machinery/sub_physical/fuel_storage,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"au" = (/turf/wall/sub_bulkhead/sub_shielding,/area/caribbean/sea/underwater)
+"av" = (/obj/structure/machinery/sub_physical/torpedo_tube{tube_id = 3},/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"aw" = (/obj/item/weapon/torpedo,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"ax" = (/obj/structure/sign/flag/medical,/turf/wall/sub_bulkhead,/area/caribbean/sea/underwater)
+"ay" = (/turf/wall/sub_bulkhead,/area/caribbean/sea/underwater)
+"az" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 8},/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"aA" = (/turf/floor/dirt,/area/caribbean/sea/underwater)
+"aB" = (/obj/structure/closet/crate/footlocker,/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"aC" = (/obj/structure/machinery/sub_control/weapons_panel,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"aD" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/machinery/sub_physical/bilge_pump,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"aE" = (/obj/structure/closet/cabinet/extinguisher_cabinet,/turf/wall/sub_bulkhead,/area/caribbean/sea/underwater)
+"cf" = (/obj/structure/machinery/sub_physical/galley,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"eI" = (/obj/structure/machinery/sub_control/radio_console,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"iu" = (/obj/structure/lamp/lamp_small/alwayson/red,/obj/structure/medicalbed,/obj/item/weapon/bedsheet/medical,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"kB" = (/obj/structure/machinery/sub_physical/ballast_valve,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"lc" = (/obj/item/weapon/doctor_handbook,/obj/item/weapon/doctor_handbook,/obj/item/weapon/doctor_handbook,/obj/structure/table/modern,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"mn" = (/obj/structure/curtain/medical,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"wM" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"xe" = (/obj/structure/machinery/sub_control/maneuver_panel,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"xI" = (/obj/structure/sign/custom/metallic{name = "Torpedo Room"},/turf/wall/sub_bulkhead,/area/caribbean/sea/underwater)
+"zB" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/table/modern/retable,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"An" = (/obj/structure/machinery/sub_physical/bilge_pump,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"At" = (/obj/structure/sign/custom/metallic{name = "Engine Room"},/turf/wall/sub_bulkhead,/area/caribbean/sea/underwater)
+"Cp" = (/obj/effect/landmark{name = "JoinLateSub"},/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"CE" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/bed/bunk,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"DO" = (/obj/structure/sign/custom/metallic{name = "Sonar & Radar"},/turf/wall/sub_bulkhead,/area/caribbean/sea/underwater)
+"Gx" = (/obj/structure/sign/custom/metallic{name = "Storage"},/turf/wall/sub_bulkhead,/area/caribbean/sea/underwater)
+"GV" = (/obj/structure/bed/bunk,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"Hf" = (/obj/structure/machinery/sub_physical/scrubber,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"IQ" = (/obj/structure/machinery/sub_control/compartment_panel,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"Ji" = (/obj/structure/sign/custom/metallic{name = "Bunks & Galley"},/turf/wall/sub_bulkhead,/area/caribbean/sea/underwater)
+"JE" = (/obj/structure/lamp/lamp_small/alwayson/red,/obj/structure/machinery/sub_physical/bilge_pump,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"MZ" = (/obj/structure/curtain/medical,/obj/structure/curtain/medical,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"Ni" = (/obj/structure/gatecontrol/blastcontrol,/turf/wall/sub_bulkhead/sub_shielding,/area/caribbean/sea/underwater)
+"NL" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/item/weapon/stool,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"Oo" = (/obj/structure/sign/custom/metallic{name = "Medical"},/turf/wall/sub_bulkhead,/area/caribbean/sea/underwater)
+"Pv" = (/obj/structure/sub_physical/equipment_storage,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"PO" = (/obj/structure/sub_physical/equipment_storage,/obj/structure/lamp/lamp_small/alwayson/red{dir = 8},/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"QA" = (/obj/structure/closet/crate/footlocker,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"Ru" = (/obj/structure/machinery/sub_control/misc_systems,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"RA" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 4},/obj/structure/table/modern,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"SK" = (/obj/structure/gatecontrol/blastcontrol,/turf/wall/sub_bulkhead,/area/caribbean/sea/underwater)
+"SP" = (/obj/structure/sign/custom/metallic{name = "Nuclear Reactor"},/turf/wall/sub_bulkhead/sub_shielding,/area/caribbean/sea/underwater)
+"Tu" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/sub_deck,/area/caribbean/sea/underwater)
+"Yg" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 8},/obj/structure/curtain/medical,/turf/floor/sub_deck,/area/caribbean/sea/underwater)
 
 (1,1,1) = {"
-abababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
-abababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
-ababadadadadadadacadadadadadadacadadadamadadadacadadadasadadacadadadadacadadadadadadacadadadadadadadacasadadadadadad
-ababadadadadadadacadadadadadadacadadadaladadadacadadadadadadacadadadadacadadadadadatacadadadadadadadacadadadadadadas
-ababadadadaqadadacadadadadadadacadajadadadakadacadadadadadadacadadadadacadatadadadadacadadadadadadavacadadadadadadad
-ababadaoadadadadacadadaradadadacadadadadadadadacadadadadadadacadadadadacadadadadadadacadadadawadadadacadaBadadadadad
-ababadadadadadadacadadadadadadacadadadagadadadacadadafauadadacadadadadacadadadatadadacadadadadadadadacadadadadadadaD
-ababadadadapadadacadadadasadadacadahadadadaiadacadadadadadadacadadadadacadadatadadadacadadadadadadadacadadadadaAaCad
-ababadanadadadadacadadadadaxadacadadadadadadadacadadadadadadacadadadadacadadadadadadacadadawadadadadacadadazadadadad
-ababadadaEadadadacadadadadadadacadadadadadadadacadadadadadadacadadadadacadadadadadadacadadadadadadadacadayadadadadad
-ababadadadadadadacadadadadadadacadadadadadadadacadadadadadadacadadadadacadadadadadadacadadadadadadadacadadadadadadad
-ababadadadadadadacadadadadadadacadadadadadadadacadadadadadadacadadadadacadadadadadadacadadadadadadadacadadadadadadad
-abababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
-aeababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abananananabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abananananababababababababababababananananananananananananananayanananahananananananananahananananananananahanananananahanananananahananananababababab
+abananananabababababababababababananAnarasasasarasasapasasAnasayAnasarasarHfatayaseIarasasarAnayGVaBGVQACEQAGVaDPvaqzBaqafNLcfayawawaravasanananababab
+abananananababanananananananahanananasasPvasasasasasSKasasasasayasasasasasasatayasasasasasasasayCpCpCpCpCpCpCpCpCpasaqasaqascfayawawasasasasasananabab
+abananananababananananAnasarPvayasasasalauauauauauauauazasasalayazasasIQasasalayasasasasasasasayGVQAGVQAGVQAGVasasaqafaqafaqcfayawawasasasavasananabab
+abananananananananananasasaaasapasasasasNiasaoamarAnauasasasasayasasasRuasasasayayayayapaiaEayayayayayayayayayaEapJiayayayayayayPOasasasasasasanananab
+abananananananananananagasasasAtasasaswMapTuasasasasauasasasasaiasaCasasasaAasaiasasarasasasarasAnayAnarasasasarasasasarasasasxIasasasasasasasasananan
+abananananananananananasasasasSKasasasasSPasaoamakasauasasasasapasasasasasasasapasasasasasasasasasapasasasasasasasasasasasasasapasasasasasasasasananan
+abananananananananananasasaaasapasasasalauauauauauauauazasasasayasasasxeasasasayayayayapDOaEayayayayayayOoapaxaEayayayapGxayayayPOasasasasasasanananab
+abananananababananananasasakasayasasasasPvasasasasasayasasasalayazasasasasasalayasasasasasasasasasayAnasasasaslcayAnasasasasasayawawasasasavasananabab
+abananananababanananananananahanananasasasasasasasasSKasasasasayasasasasasasasayazadasasasacasasalayYgmnMZmnasRAayazasasasasalayawawasasasasasananabab
+abananananabababababababababababananasakasasasakasasapaskBAnasayasasakasakasasayasasakasasasakasAnayajajiumnakPvayPvakasakasasayawawJEavasanananababab
+abananananababababababababababababananananananananananananananananananahananananananananahananananananananahanananananahanananananahananananababababab
+abananananabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
 "}
