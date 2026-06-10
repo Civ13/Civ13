@@ -128,7 +128,6 @@
 #include "code\datums\weakref.dm"
 #include "code\datums\win_condition.dm"
 #include "code\datums\world_topic.dm"
-
 #include "code\datums\extensions\_defines.dm"
 #include "code\datums\extensions\extensions.dm"
 #include "code\datums\observation\_debug.dm"
@@ -966,6 +965,7 @@
 #include "code\modules\admin\verbs\massmodvar.dm"
 #include "code\modules\admin\verbs\mentorhelp.dm"
 #include "code\modules\admin\verbs\modifyvariables.dm"
+#include "code\modules\admin\verbs\OOC.dm"
 #include "code\modules\admin\verbs\playsound.dm"
 #include "code\modules\admin\verbs\quickBan.dm"
 #include "code\modules\admin\verbs\random_verbs.dm"
@@ -976,7 +976,6 @@
 #include "code\modules\admin\verbs\vote.dm"
 #include "code\modules\admin\verbs\warn.dm"
 #include "code\modules\admin\verbs\weather.dm"
-#include "code\modules\admin\verbs\OOC.dm"
 #include "code\modules\admin\view_variables\helpers.dm"
 #include "code\modules\admin\view_variables\reference_tracking.dm"
 #include "code\modules\admin\view_variables\topic.dm"

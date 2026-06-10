@@ -105,6 +105,8 @@
 	return ..()
 
 /mob/living/simple_animal/wizard/attack_hand(mob/user)
+	if (stat)
+		return ..()
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		if (H.a_intent == I_HARM || H.a_intent == I_DISARM)

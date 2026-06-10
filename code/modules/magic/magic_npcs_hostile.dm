@@ -193,6 +193,8 @@
 		walk(src, 0)
 
 /mob/living/simple_animal/hostile/wizard/moldy_man/attack_hand(mob/user)
+	if (stat)
+		return ..()
 	src.say(pick(
 		"The mold... it spreads...",
 		"Moldywart sees all!",
@@ -200,6 +202,7 @@
 		"Lord Moldywart will reclaim his nose! ...Eventually.",
 		"Mold. Damp. Darkness. This is the true magic.",
 	))
+	return ..()
 
 /mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant
 	name = "Moldy Lieutenant"
@@ -417,7 +420,10 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 		walk(src, 0)
 
 /mob/living/simple_animal/hostile/wizard/moldywart/attack_hand(mob/user)
+	if (stat)
+		return ..()
 	src.say(pick(taunt_lines))
+	return ..()
 
 /mob/living/simple_animal/hostile/wizard/moldywart/death(gibbed)
 	if (stat != DEAD)
