@@ -92,7 +92,6 @@
 	icon = 'icons/obj/clothing/badges.dmi'
 	item_icons = 'icons/mob/badge.dmi'
 	icon_state = "Order of the Patriotic War, 1st Class"
-	worn_state = "OPW I, on body"
 	item_state = "OPW I, on body"
 	throwforce = FALSE
 	w_class = ITEM_SIZE_TINY
@@ -114,7 +113,6 @@
 	name = "I.D.I.O.T. certificate"
 	desc = "The 'Inept & Deficient Individual's Ordinary Test' certificate. Not to be left unnatended near crayons."
 	icon_state = "wizard_idiot"
-	worn_state = "christian_party_pin"
 	item_state = "christian_party_pin"
 
 // Tier 1: U.N.G.A. certificate
@@ -122,7 +120,6 @@
 	name = "U.N.G.A. certificate"
 	desc = "The 'Underperforming Numpty General Assessment' certificate. The most basic magic aptitude level."
 	icon_state = "wizard_unga"
-	worn_state = "nationalist_party_pin"
 	item_state = "nationalist_party_pin"
 
 // Tier 2: C.O.A.L. licence
@@ -130,7 +127,6 @@
 	name = "C.O.A.L. license"
 	desc = "The 'Community Ordinary Amateur License'. The bare minimum required to carry a wand in the valley without being arrested."
 	icon_state = "wizard_coal"
-	worn_state = "pirate_flag_pin"
 	item_state = "pirate_flag_pin"
 
 // Tier 3: G.E.M. licence
@@ -138,7 +134,6 @@
 	name = "G.E.M. licence"
 	desc = "The 'Gravity & Elemental Manipulation'. Granted to those proven unlikely to accidentally collapse the school's slate roofs."
 	icon_state = "wizard_gem"
-	worn_state = "nationalist_party_pin"
 	item_state = "nationalist_party_pin"
 
 // Tier 4: B.A.S.E.D. licence
@@ -146,7 +141,6 @@
 	name = "B.A.S.E.D. licence"
 	desc = "The 'Boarwart Advanced Sorcery & Experimental Deeds' licence. Reserved for students whose deeds are considered extremely based, yet highly unstable."
 	icon_state = "wizard_based"
-	worn_state = "AS, on body"
 	item_state = "AS, on body"
 
 // Tier 5: C.H.A.D. degree
@@ -154,7 +148,6 @@
 	name = "C.H.A.D. degree"
 	desc = "The 'Classified High-level Arcane Destruction' degree. The absolute peak of magical education. Absolute gigachad energy required."
 	icon_state = "wizard_chad"
-	worn_state = "Verwund Geld, on body"
 	item_state = "Verwund Geld, on body"
 
 // Tier R: L.O.S.E.R. status
@@ -162,5 +155,4 @@
 	name = "L.O.S.E.R. status pin"
 	desc = "The 'Llanboarwart Outcast & Sub-standard Educational Reject' status. A mark of disciplinary shame for those who have violated school laws."
 	icon_state = "wizard_loser"
-	worn_state = "globalist_pin"
 	item_state = "globalist_pin"

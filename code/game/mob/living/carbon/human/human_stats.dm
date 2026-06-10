@@ -43,10 +43,7 @@
 	else
 		return FALSE
 
-/mob/living/human/proc/getLesserStatCombinedCoeff(var/list/statnames = list())
-	. = 1 - (statnames.len/10)
-	for (var/statname in statnames)
-		. += stats[lowertext(statname)][1]/1000
+
 
 /mob/living/human/proc/setStat(statname, statval)
 

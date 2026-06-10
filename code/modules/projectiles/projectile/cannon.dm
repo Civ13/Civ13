@@ -7,7 +7,6 @@
 	check_armor = "bomb"
 	embed = TRUE
 	sharp = TRUE
-	hitsound_wall = "ric_sound"
 	var/mob_passthrough_check = FALSE
 	penetrating = 10
 	armor_penetration = 80

@@ -1,31 +1,3 @@
-/client/proc/trigger_roundend()
-	set name = "End the round"
-	set category = "Server"
-
-	if (!check_rights(R_SERVER))
-		to_chat(src, "<span class = 'danger'>You don't have the permissions.</span>")
-		return
-
-	if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
-		to_chat(src, "<span class = 'danger'>You can't end the round right now.</span>")
-		return
-
-	var/conf_1 = input("Are you absolutely positively sure you want to END THE ROUND?") in list ("Yes", "No")
-	if (conf_1 == "No")
-		return
-
-	var/conf_2 = input("Seriously?") in list ("Yes", "No")
-	if (conf_2 == "No")
-		return
-
-	if (map)
-		map.next_win = world.time - 100
-		map.round_finished = TRUE
-		ticker.finished = TRUE
-
-	message_admins("[key_name(src)] ended the round!", key_name(usr))
-	log_admin("[key_name(src)] ended the round!")
-
 /client/proc/toggle_round_ending()
 	set name = "Toggle Round Ending"
 	set category = "Server"

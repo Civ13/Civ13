@@ -23,7 +23,6 @@
 	var/powerneeded = 0 //how much power it draws from a nearby engine. 0 means no power needed.
 	var/obj/structure/cable/powersource = null
 	var/powered = FALSE
-	var/quality = 0
 	var/unacidable = FALSE	//For acids interactions, called at Chemistry-Reagents-Compounds.dm
 
 	var/can_buckle = FALSE
@@ -37,10 +36,6 @@
 	var/explosion_resistance
 
 	var/origin_tech = null	//Used by R&D to determine what research bonuses it grants.
-	var/m_amt = 0	// metal
-	var/g_amt = 0	// glass
-	var/w_amt = 0	// waster amounts
-	var/crit_fail = 0
 	var/reliability = 100	//Used by SOME devices to determine how reliable they are.
 
 /obj/examine(mob/user,distance=-1)

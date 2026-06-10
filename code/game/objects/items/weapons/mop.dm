@@ -10,7 +10,6 @@
 	w_class = ITEM_SIZE_NORMAL
 	attack_verb = list("mopped", "bashed", "bludgeoned", "whacked")
 	var/mopping = FALSE
-	var/mopcount = FALSE
 	flammable = TRUE
 	flags = FALSE
 

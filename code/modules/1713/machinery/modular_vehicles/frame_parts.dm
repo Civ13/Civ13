@@ -466,37 +466,3 @@ var/global/list/license_plate_numbers = list()
 		license_plate_numbers += tempnum
 		return
 
-/*
-/obj/structure/vehicleparts/frame/verb/add_walls()
-	set category = null
-	set name = "Add walls"
-	set src in range(1, usr)
-
-	var/ndir = WWinput(usr, "Which dir to set first?", "Wall Placer", "Cancel", list("North","South","East","West", "Cancel"))
-	if (ndir == "Cancel")
-		return
-	else
-		dir = text2dir(ndir)
-		var/position = WWinput(usr, "Which position?", "Wall Placer", "Cancel", list("left","right","front","back", "Cancel"))
-		if (position == "Cancel")
-			return
-		else
-			position = "w_[position]"
-			var/ntype = WWinput(usr, "Which type?", "Wall Placer", "Cancel", list("wall","windshield","window", "armored front", "armoredwall", "door", "windowed door", "Cancel"))
-			if (ntype == "Cancel")
-				return
-			else
-				ntype = "c_[type]"
-				ntype = replacetext(ntype, " ", "")
-				switch(position)
-					if ("w_left")
-						w_left = vehicle_walls[ntype]
-					if ("w_right")
-						w_right = vehicle_walls[ntype]
-					if ("w_front")
-						w_front = vehicle_walls[ntype]
-					if ("w_back")
-						w_back = vehicle_walls[ntype]
-	update_icon()
-
-*/

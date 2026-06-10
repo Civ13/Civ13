@@ -45,7 +45,6 @@ var/global/list/image/fluidtrack_cache=list()
 	icon_state = ""
 	var/coming_state="blood1"
 	var/going_state="blood2"
-	var/updatedtracks=0
 
 	// dir = id in stack
 	var/list/setdirs=list(
@@ -100,7 +99,6 @@ var/global/list/image/fluidtrack_cache=list()
 				track=new /datum/fluidtrack(b,bloodcolor,t)
 				stack.Add(track)
 				setdirs["[b]"]=stack.Find(track)
-				updatedtracks |= b
 				updated=1
 
 			// GOING BIT (shift up 4)
@@ -117,7 +115,6 @@ var/global/list/image/fluidtrack_cache=list()
 				track=new /datum/fluidtrack(b,bloodcolor,t)
 				stack.Add(track)
 				setdirs["[b]"]=stack.Find(track)
-				updatedtracks |= b
 				updated=1
 
 		dirs |= comingdir|realgoing
@@ -149,7 +146,6 @@ var/global/list/image/fluidtrack_cache=list()
 			track.overlay=I
 			stack[stack_idx]=track
 			overlays += I
-		updatedtracks=0 // Clear our memory of updated tracks.
 
 /obj/effect/decal/cleanable/blood/tracks/footprints
 	name = "wet footprints"

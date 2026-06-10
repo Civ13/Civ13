@@ -51,18 +51,6 @@ var/next_station_date_change = 1 DAYS
 /proc/time_stamp()
 	return time2text(world.timeofday, "hh:mm:ss")
 
-/* Returns TRUE if it is the selected month and day */
-proc/isDay(var/month, var/day)
-	if (isnum(month) && isnum(day))
-		var/MM = text2num(time2text(world.timeofday, "MM")) // get the current month
-		var/DD = text2num(time2text(world.timeofday, "DD")) // get the current day
-		if (month == MM && day == DD)
-			return TRUE
-
-		// Uncomment this out when debugging!
-		//else
-			//return TRUE
-
 var/next_duration_update = 0
 var/next_duration_update_days= 0
 var/last_roundduration2text = 0
@@ -114,11 +102,6 @@ var/round_start_time = 0
 		last_roundduration2text_days = "[mins] min[mins >= 2 ? "s" : ""]"
 	next_duration_update_days = world.time + 1 MINUTES
 	return last_roundduration2text_days
-
-//Can be useful for things dependent on process timing
-/proc/process_schedule_interval(var/process_name)
-	var/process/process = processScheduler.getProcess(process_name)
-	return process.schedule_interval
 
 //Returns the world time in english
 /proc/worldtime2text(time = world.time)

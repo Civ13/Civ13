@@ -14,39 +14,7 @@
 /mob/var/last_pain_message = ""
 /mob/var/next_pain_time = FALSE
 
-// partname is the name of a body part
-// amount is a num from TRUE to 100
-/mob/living/human/proc/pain(var/partname, var/amount, var/force, var/burning = FALSE)
-	if (stat >= 1)
-		return
-	if (species && (species.flags & NO_PAIN))
-		return
-	if (analgesic > 40)
-		return
-	if (world.time < next_pain_time && !force)
-		return
-	if (bloodstr)
-		var/no_pain_prob = FALSE
-		for (var/datum/reagent/ethanol/E in ingested.reagent_list)
-			no_pain_prob += E.volume
-		if (prob(no_pain_prob))
-			return
-	if (amount > 10 && istype(src,/mob/living/human))
-		if (src:paralysis)
-			src:paralysis = max(0, src:paralysis-round(amount/10))
-	var/msg
 
-	switch(amount)
-		if (1 to 10)
-			flash_weakest_pain()
-		if (11 to 90)
-			flash_weak_pain()
-		if (91 to 10000)
-			flash_pain()
-	if (msg && (msg != last_pain_message || prob(10)))
-		last_pain_message = msg
-		to_chat(src, msg)
-	next_pain_time = world.time + (100 - amount)
 
 
 // message is the custom message to be displayed
@@ -163,9 +131,3 @@
 	else
 		return TRUE
 
-/mob/living/human/proc/suffer_well(var/prob)
-	if (prob(prob) && !stat)
-		emote("agony")
-		Weaken(10)
-		shake_camera(src, 20, 3)
-		visible_message("<span class='warning'>[src] gives into the pain!</span>")

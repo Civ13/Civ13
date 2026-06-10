@@ -374,11 +374,9 @@
 	var/wool_damp           = FALSE // damp sheep wool
 	var/backstabber         = FALSE // feral rat tail
 	var/sparkplug_overdrive = FALSE // rusted spark plug
-	var/gnat_wing_speed     = FALSE // golden gnat wing
 	var/gloom_weave         = FALSE // gloom-weave thread
 
 	// Length flags
-	var/fast_draw           = FALSE // no equip delay (Stubby)
 	var/overcomp_proj_disc  = FALSE // -15% juice on projectile spells (Overcomp)
 	var/telescopic_extended = FALSE // current collapse state (Telescopic)
 
@@ -493,7 +491,6 @@
 	wool_damp          = FALSE
 	backstabber        = FALSE
 	sparkplug_overdrive = FALSE
-	gnat_wing_speed     = FALSE
 	gloom_weave         = FALSE
 
 	switch (wand_core)
@@ -546,7 +543,6 @@
 			sparkplug_overdrive = TRUE
 
 		if (WAND_CORE_GNAT)
-			gnat_wing_speed = TRUE
 			cast_time_mod = cast_time_mod * 0.2
 			misfire_chance = 0
 
@@ -558,7 +554,6 @@
 /// Apply length-specific modifiers. Call after setting wand_length.
 /obj/item/weapon/material/magic/wand/crafted/proc/apply_length_stats()
 	// Reset length-derived state to neutral
-	fast_draw         = FALSE
 	range_bonus       = 0
 	overcomp_proj_disc = FALSE
 
@@ -568,7 +563,6 @@
 			w_class    = ITEM_SIZE_TINY
 			slot_flags = SLOT_BELT | SLOT_POCKET
 			range_bonus = -2
-			fast_draw   = TRUE
 
 		if (WAND_LENGTH_STANDARD)
 			// No-frills baseline.

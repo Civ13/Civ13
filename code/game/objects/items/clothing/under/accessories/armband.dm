@@ -130,7 +130,6 @@
 	desc = "intresting"
 	icon_state = "kitty"
 	item_state = "kitty"
-	worn_state = "kitty"
 	body_parts_covered = FALSE
 	flags_inv = HIDEEARS|HIDEEYES|HIDEFACE
 	slot = "decor"
@@ -191,7 +190,6 @@
 	desc = "A cloth scarf."
 	icon_state = "customscarf"
 	item_state = "customscarf"
-	worn_state = "customscarf"
 	slot = "decor"
 
 /obj/item/clothing/accessory/custom/armband
@@ -199,7 +197,6 @@
 	desc = "A cloth armband."
 	icon_state = "customarmband"
 	item_state = "customarmband"
-	worn_state = "customarmband"
 	slot = "armband"
 
 /obj/item/clothing/accessory/custom/sash
@@ -207,7 +204,6 @@
 	desc = "A cloth sash."
 	icon_state = "customsash"
 	item_state = "customsash"
-	worn_state = "customsash"
 	slot = "sash"
 
 /obj/item/clothing/accessory/custom/tabard
@@ -215,7 +211,6 @@
 	desc = "A cloth tabard."
 	icon_state = "customtabard"
 	item_state = "customtabard"
-	worn_state = "customtabard"
 	slot = "overcloth"
 
 /obj/item/clothing/accessory/custom/apron
@@ -223,7 +218,6 @@
 	desc = "A cloth apron."
 	icon_state = "apron"
 	item_state = "apron"
-	worn_state = "apron"
 	slot = "overcloth"
 
 /obj/item/clothing/accessory/custom/priest_band
@@ -231,7 +225,6 @@
 	desc = "A priest band."
 	icon_state = "customizable_priest_band"
 	item_state = "customizable_priest_band"
-	worn_state = "customizable_priest_band"
 	slot = "decor"
 
 /obj/item/clothing/accessory/custom/cape
@@ -239,7 +232,6 @@
 	desc = "A cloth cape."
 	icon_state = "customcape"
 	item_state = "customcape"
-	worn_state = "customcape"
 	slot = "cape"
 
 /obj/item/clothing/accessory/custom/tie
@@ -247,7 +239,6 @@
 	desc = "A cloth tie."
 	icon_state = "custom_tie"
 	item_state = "custom_tie"
-	worn_state = "custom_tie"
 	slot = "tie"
 
 /obj/item/clothing/accessory/custom/bowtie
@@ -255,7 +246,6 @@
 	desc = "A cloth bowtie."
 	icon_state = "custom_bowtie"
 	item_state = "custom_bowtie"
-	worn_state = "custom_bowtie"
 	slot = "tie"
 
 /obj/item/clothing/accessory/patch/marksman
@@ -263,7 +253,6 @@
 	desc = "A patch with a marksman logo on it. Usually worn by skilled shooters."
 	icon_state = "patch_marksman"
 	item_state = "patch_marksman"
-	worn_state = "patch_marksman"
 	slot = "armband"
 
 /obj/item/clothing/accessory/patch/russia
@@ -271,7 +260,6 @@
 	desc = "A patch with the flag of Russia."
 	icon_state = "patch_russia"
 	item_state = "patch_russia"
-	worn_state = "patch_russia"
 	slot = "armband"
 
 /obj/item/clothing/accessory/patch/spetsgruppaa
@@ -279,7 +267,6 @@
 	desc = "A special forces patch, this one is of spetsnaz."
 	icon_state = "patch_spets"
 	item_state = "patch_marksman"
-	worn_state = "patch_marksman"
 	slot = "armband"
 
 /obj/item/clothing/accessory/patch/swat
@@ -287,7 +274,6 @@
 	desc = "A SWAT tag."
 	icon_state = "swat"
 	item_state = "swat"
-	worn_state = "swat"
 	slot = "armband"
 
 /obj/item/clothing/accessory/patch/specialforce
@@ -295,7 +281,6 @@
 	desc = "A patch used by special forces."
 	icon_state = "patch_specialforces"
 	item_state = "patch_specialforces"
-	worn_state = "patch_specialforces"
 	slot = "armband"
 
 /obj/item/clothing/accessory/patch/police
@@ -303,7 +288,6 @@
 	desc = "A tag used by police."
 	icon_state = "policetag"
 	item_state = "policetag"
-	worn_state = "policetag"
 	slot = "armband"
 
 /obj/item/clothing/accessory/patch/security
@@ -311,7 +295,6 @@
 	desc = "A tag used by security forces."
 	icon_state = "policetag"
 	item_state = "policetag"
-	worn_state = "policetag"
 	slot = "armband"
 
 /obj/item/clothing/accessory/pauldronsingle
@@ -319,7 +302,6 @@
 	desc = "A plastoid armored shoulder cover."
 	icon_state = "pauldron_s"
 	item_state = "pauldron_s"
-	worn_state = "pauldron_s"
 	slot = "decor"
 
 /obj/item/clothing/accessory/pauldronsingle/green
@@ -327,7 +309,6 @@
 	desc = "A green plastoid armored shoulder cover."
 	icon_state = "pauldron_sg"
 	item_state = "pauldron_sg"
-	worn_state = "pauldron_sg"
 	slot = "decor"
 
 /obj/item/clothing/accessory/pauldronsingle/blue
@@ -335,7 +316,6 @@
 	desc = "A blue plastoid armored shoulder cover."
 	icon_state = "pauldron_sb"
 	item_state = "pauldron_sb"
-	worn_state = "pauldron_sb"
 	slot = "decor"
 
 /obj/item/clothing/accessory/pauldronsingle/red
@@ -343,7 +323,6 @@
 	desc = "A red plastoid armored shoulder cover."
 	icon_state = "pauldron_sr"
 	item_state = "pauldron_sr"
-	worn_state = "pauldron_sr"
 	slot = "decor"
 
 /obj/item/clothing/accessory/pauldronsingle/gold
@@ -351,7 +330,6 @@
 	desc = "A gold plastoid armored shoulder cover."
 	icon_state = "pauldron_sy"
 	item_state = "pauldron_sy"
-	worn_state = "pauldron_sy"
 	slot = "decor"
 
 /obj/item/clothing/accessory/pauldrondouble
@@ -359,7 +337,6 @@
 	desc = "Dual plastoid shoulder cover."
 	icon_state = "pauldron_d"
 	item_state = "pauldron_d"
-	worn_state = "pauldron_d"
 	slot = "decor"
 
 /obj/item/clothing/accessory/pauldrondouble/green
@@ -367,7 +344,6 @@
 	desc = "Dual green plastoid shoulder cover."
 	icon_state = "pauldron_dg"
 	item_state = "pauldron_dg"
-	worn_state = "pauldron_dg"
 	slot = "decor"
 
 /obj/item/clothing/accessory/pauldrondouble/blue
@@ -375,7 +351,6 @@
 	desc = "Dual blue plastoid shoulder cover."
 	icon_state = "pauldron_db"
 	item_state = "pauldron_db"
-	worn_state = "pauldron_db"
 	slot = "decor"
 
 /obj/item/clothing/accessory/pauldrondouble/red
@@ -383,7 +358,6 @@
 	desc = "Dual red plastoid shoulder cover."
 	icon_state = "pauldron_dr"
 	item_state = "pauldron_dr"
-	worn_state = "pauldron_dr"
 	slot = "decor"
 
 /obj/item/clothing/accessory/pauldrondouble/gold
@@ -391,7 +365,6 @@
 	desc = "Dual red plastoid shoulder cover."
 	icon_state = "pauldron_dy"
 	item_state = "pauldron_dy"
-	worn_state = "pauldron_dy"
 	slot = "decor"
 
 /obj/item/clothing/accessory/wearable_sign
@@ -399,7 +372,6 @@
 	desc = "A wooden sign with a string, wearable over the clothing."
 	icon_state = "wearable_sign"
 	item_state = "wearable_sign"
-	worn_state = "wearable_sign"
 	slot = "overcloth"
 
 /obj/item/clothing/accessory/wearable_sign/attackby(obj/item/W as obj, mob/user as mob)

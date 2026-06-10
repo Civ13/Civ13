@@ -4,24 +4,20 @@
 	name = "blue roulette chip"
 	icon = 'icons/obj/items.dmi'
 	icon_state = "chip_blue"
-	var/chip_color = "blue"
 
 /obj/item/weapon/roulette/chip/red
 	name = "red roulette chip"
 	icon_state = "chip_red"
-	chip_color = "red"
 	value = 5
 
 /obj/item/weapon/roulette/chip/green
 	name = "green roulette chip"
 	icon_state = "chip_green"
-	chip_color = "green"
 	value = 25
 
 /obj/item/weapon/roulette/chip/black
 	name = "black roulette chip"
 	icon_state = "chip_black"
-	chip_color = "black"
 	value = 100
 
 /obj/item/weapon/roulette/chip/examine(mob/user, distance)

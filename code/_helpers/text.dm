@@ -156,11 +156,6 @@
 
 //Checks the beginning of a string for a specified sub-string. This proc is case sensitive
 //Returns the position of the substring or FALSE if it was not found
-/proc/dd_hasprefix_case(text, prefix)
-	var/start = TRUE
-	var/end = length(prefix) + 1
-	return findtextEx(text, prefix, start, end)
-
 //Checks the end of a string for a specified substring.
 //Returns the position of the substring or FALSE if it was not found
 /proc/dd_hassuffix(text, suffix)
@@ -168,13 +163,6 @@
 	if (start)
 		return findtext(text, suffix, start, null)
 	return
-
-//Checks the end of a string for a specified substring. This proc is case sensitive
-//Returns the position of the substring or FALSE if it was not found
-/proc/dd_hassuffix_case(text, suffix)
-	var/start = length(text) - length(suffix)
-	if (start)
-		return findtextEx(text, suffix, start, null)
 
 /*
  * Text modification
@@ -196,18 +184,6 @@
 /proc/add_zero(t, u)
 	while (length(t) < u)
 		t = "0[t]"
-	return t
-
-//Adds 'u' number of spaces ahead of the text 't'
-/proc/add_lspace(t, u)
-	while (length(t) < u)
-		t = " [t]"
-	return t
-
-//Adds 'u' number of spaces behind the text 't'
-/proc/add_tspace(t, u)
-	while (length(t) < u)
-		t = "[t] "
 	return t
 
 //Returns a string with reserved characters and spaces before the first letter removed
@@ -290,12 +266,6 @@
 			count++
 	return count
 
-/proc/reverse_text(var/text = "")
-	var/new_text = ""
-	for (var/i = length(text); i > 0; i--)
-		new_text += copytext(text, i, i+1)
-	return new_text
-
 // Converts seconds to display "less than a minute", "around 1 minute", "around x minutes"
 /proc/convert_to_textminute(displaytime)
 	displaytime = round(displaytime/600)
@@ -307,17 +277,6 @@
 	else
 		text = "less than a minute"
 	return text
-
-//Used in preferences' SetFlavorText and human's set_flavor verb
-//Previews a string of len or less length
-proc/TextPreview(var/string,var/len=40)
-	if (length(string) <= len)
-		if (!length(string))
-			return "\[...\]"
-		else
-			return string
-	else
-		return "[copytext_preserve_html(string, TRUE, 37)]..."
 
 //alternative copytext() for encoded text, doesn't break html entities (&#34; and other)
 /proc/copytext_preserve_html(var/text, var/first, var/last)
@@ -344,22 +303,6 @@ proc/TextPreview(var/string,var/len=40)
 
 	return "<span class='text_tag tag-[tagname]'>[display_text]</span>"
 
-/proc/contains_az09(var/input)
-	for (var/i=1, i<=length(input), i++)
-		var/ascii_char = text2ascii(input,i)
-		switch(ascii_char)
-			// A  .. Z
-			if (65 to 90)			//Uppercase Letters
-				return TRUE
-			// a  .. z
-			if (97 to 122)			//Lowercase Letters
-				return TRUE
-
-			// FALSE  .. 9
-			if (48 to 57)			//Numbers
-				return TRUE
-	return FALSE
-
 /**
  * Strip out the special beyond characters for \proper and \improper
  * from text that will be sent to the browser.
@@ -372,12 +315,6 @@ proc/TextPreview(var/string,var/len=40)
 	msg = replacetext(msg, "<", "&lt;")
 	msg = replacetext(msg, ">", "&gt;")
 	msg = replacetext(msg, "�", "&#255;")
-	return msg
-
-/proc/rhtml_decode(var/msg)
-	msg = replacetext(msg, "&gt;", ">")
-	msg = replacetext(msg, "&lt;", "<")
-	msg = replacetext(msg, "&#255;", "�")
 	return msg
 
 #define gender2text(gender) capitalize(gender)

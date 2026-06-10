@@ -1,12 +1,9 @@
 var/global/pregameHTML = null
 
 /datum/titlecard
-	var/global/list/maptext_areas = list()
 	var/global/last_pregame_html = ""
 
 	var/image_url = "civ13.png"
-
-	var/is_game_mode = FALSE
 	var/add_html = ""
 	var/pixelated = TRUE
 

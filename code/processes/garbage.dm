@@ -228,14 +228,4 @@ var/list/delayed_garbage = list()
 	gcDestroyed = world.time
 	del(src)
 
-/client/proc/purge_all_destroyed_objects()
-	set category = "Debug"
-	set name = "Purge Destroyed Objects"
-	if (processes.garbage)
-		while (processes.garbage.destroyed.len)
-			var/datum/o = locate(processes.garbage.destroyed[1])
-			if (istype(o) && o.gcDestroyed)
-				del(o)
-				processes.garbage.total_dels++
-				processes.garbage.hard_dels++
-			processes.garbage.destroyed.Cut(1, 2)
+	processes.garbage.destroyed.Cut(1, 2)

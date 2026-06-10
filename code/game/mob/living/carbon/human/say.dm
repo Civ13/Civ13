@@ -123,17 +123,7 @@
 /mob/living/human/GetVoice()
 	return real_name
 
-/mob/living/human/proc/SetSpecialVoice(var/new_voice)
-	if (new_voice)
-		special_voice = new_voice
-	return
 
-/mob/living/human/proc/UnsetSpecialVoice()
-	special_voice = ""
-	return
-
-/mob/living/human/proc/GetSpecialVoice()
-	return special_voice
 
 
 /mob/living/human/say_quote(var/message, var/datum/language/speaking = null)

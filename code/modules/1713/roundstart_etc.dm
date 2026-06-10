@@ -1,8 +1,4 @@
 var/roundstart_time = 0
-var/grace_period = TRUE
-var/game_started = FALSE
-var/train_checked = FALSE
-var/secret_ladder_message = null
 var/GRACE_PERIOD_LENGTH = 7
 
 /hook/roundstart/proc/game_start()

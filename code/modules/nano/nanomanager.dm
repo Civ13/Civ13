@@ -7,8 +7,6 @@ GLOBAL_DATUM_INIT(nanomanager, /datum/nanomanager, new) // NanoManager, the mana
 	var/open_uis[0]
 	// a list of current open /nanoui UIs, not grouped, for use in processing
 	var/list/processing_uis = list()
-	// a list of asset filenames which are to be sent to the client on user logon
-	var/list/asset_files = list()
 
  /**
   * Create a new nanomanager instance.
@@ -17,23 +15,6 @@ GLOBAL_DATUM_INIT(nanomanager, /datum/nanomanager, new) // NanoManager, the mana
   * @return /nanomanager new nanomanager object
   */
 /datum/nanomanager/New()
-	var/list/nano_asset_dirs = list(\
-		"UI/css/",\
-		"UI/images/",\
-		"UI/images/modular_computers/",\
-		"UI/images/status_icons/",\
-		"UI/js/",\
-		"UI/templates/"\
-	)
-
-	var/list/filenames = null
-	for (var/path in nano_asset_dirs)
-		filenames = flist(path)
-		for (var/filename in filenames)
-			if (copytext(filename, length(filename)) != "/") // filenames which end in "/" are actually directories, which we want to ignore
-				if (fexists(path + filename))
-					asset_files.Add(fcopy_rsc(path + filename)) // add this file to asset_files for sending to clients when they connect
-
 	return
 
  /**

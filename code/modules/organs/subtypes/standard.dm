@@ -59,7 +59,6 @@
 	parent_organ = "groin"
 	joint = "left knee"
 	amputation_point = "left hip"
-	can_stand = TRUE
 
 /obj/item/organ/external/leg/right
 	limb_name = "r_leg"
@@ -80,7 +79,6 @@
 	parent_organ = "l_leg"
 	joint = "left ankle"
 	amputation_point = "left ankle"
-	can_stand = TRUE
 
 /obj/item/organ/external/foot/removed()
 	if (owner) owner.u_equip(owner.shoes)

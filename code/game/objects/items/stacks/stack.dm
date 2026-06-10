@@ -17,13 +17,11 @@
 	var/max_amount //also see stack recipes initialisation, param "max_res_amount" must be equal to this max_amount
 	var/stacktype //determines whether different stack types can merge
 	var/build_type = null //used when directly applied to a turf
-	var/real_value = 1
 	value = 1
 	var/can_stack = FALSE //Determines if stacks should be auto-merged.
 	var/customcolor = "#FFFFFF"
 	var/customcolor1 = "#000000"
 	var/customcolor2 = "#FFFFFF"
-	var/customcode = "0000"
 	var/customname = ""
 
 /obj/item/stack/New(var/loc, var/_amount=0, var/merge = can_stack)

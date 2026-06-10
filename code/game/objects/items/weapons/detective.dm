@@ -1,7 +1,6 @@
 #define BURNING_RAG_LIFE_TICKS 10000 // pretty much forever
 
 /obj/item/clothing/gloves
-	var/transfer_blood = FALSE
 	var/mob/living/human/bloody_hands_mob
 
 /obj/item/clothing/shoes/

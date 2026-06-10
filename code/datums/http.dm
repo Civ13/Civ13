@@ -64,19 +64,15 @@
 
 	try
 		var/list/L = json_decode(_raw_response)
-		R.status_code = L["status_code"]
 		R.headers = L["headers"]
 		R.body = L["body"]
 	catch
-		R.errored = TRUE
 		R.error = _raw_response
 
 	return R
 
 /datum/http_response
-	var/status_code
 	var/body
 	var/list/headers
 
-	var/errored = FALSE
 	var/error

@@ -3,7 +3,6 @@
 	if (!material)
 		return
 
-	construction_stage = null
 	if (!material)
 		material = get_material_by_name(DEFAULT_WALL_MATERIAL)
 	if (material)
@@ -25,8 +24,6 @@
 
 /turf/wall/proc/set_wall_state(var/new_state)
 
-	ref_state = new_state
-
 	if (!material)
 		return
 
@@ -45,7 +42,6 @@
 		if (material.icon_colour)
 			I.color = material.icon_colour
 		wall_cache["[new_state]-[material.icon_colour]"] = I
-		ref_state = "[new_state]"
 	overlays |= wall_cache["[new_state]-[material.icon_colour]"]
 
 /turf/wall/proc/set_material(var/material/newmaterial)

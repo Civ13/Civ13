@@ -178,7 +178,6 @@
 
 /turf/floor/grass/jungle
 	name = "jungle grass patch"
-	overlay_priority = 0
 	is_diggable = TRUE
 	may_become_muddy = TRUE
 	initial_flooring = null
@@ -290,15 +289,10 @@
 	var/sickness = 1 //amount of toxins, from 0 to 3
 	initial_flooring = /decl/flooring/water
 	watertile = TRUE
-	var/image/water_overlay = null
 
 /turf/floor/beach/water/New()
 	..()
 	water_turf_list += src
-	spawn(1)
-		water_overlay = image(icon='icons/misc/beach.dmi')
-		water_overlay.icon_state= "[icon_state]_ov"
-		water_overlay.layer= 10.1
 
 /turf/floor/beach/water/coastwater
 	name = "coast water"

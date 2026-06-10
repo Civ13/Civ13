@@ -149,18 +149,7 @@
 			unset_using_drone()
 	return
 
-/mob/living/human/proc/activate_hand(var/selhand) //0 or "r" or "right" for right hand; TRUE or "l" or "left" for left hand.
 
-	if (istext(selhand))
-		selhand = lowertext(selhand)
-
-		if (selhand == "right" || selhand == "r")
-			selhand = FALSE
-		if (selhand == "left" || selhand == "l")
-			selhand = TRUE
-
-	if (selhand != hand)
-		swap_hand()
 
 /mob/living/human/proc/help_shake_act(mob/living/human/M)
 	if (health >= config.health_threshold_crit)

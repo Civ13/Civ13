@@ -44,8 +44,6 @@ nanoui is used to open and update nano browser uis
 	var/state_key = STATE_KEY_DEFAULT
 	// show the map ui, this is used by the default layout
 	var/show_map = FALSE
-	// the map z level to display
-	var/map_z_level = TRUE
 	// initial data, containing the full data structure, must be sent to the ui (the data structure cannot be extended later on)
 	var/list/initial_data[0]
 	// set to TRUE to update the ui automatically every master_controller tick
@@ -323,8 +321,6 @@ nanoui is used to open and update nano browser uis
   *
   * @return nothing
   */
-/datum/nanoui/proc/set_map_z_level(nz)
-	map_z_level = nz
 
  /**
   * Set whether or not to use the "old" on close logic (mainly unset_using_object())

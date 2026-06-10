@@ -5,7 +5,6 @@
 	item_state = "muzzle"
 	body_parts_covered = FACE
 	w_class = ITEM_SIZE_SMALL
-	gas_transfer_coefficient = 0.90
 	voicechange = TRUE
 	heat_protection = 0
 
@@ -58,7 +57,6 @@
 		if (toggled)
 			item_state = "sterile"
 			icon_state = "sterile"
-			worn_state = "sterile"
 			item_state_slots["slot_mask"] = "sterile"
 			to_chat(usr, "<span class = 'danger'>You put up your mask.</span>")
 			toggled = FALSE
@@ -67,7 +65,6 @@
 			body_parts_covered = null
 			item_state = "sterile_down"
 			icon_state = "sterile_down"
-			worn_state = "sterile_down"
 			item_state_slots["slot_mask"] = "sterile_down"
 			to_chat(usr, "<span class = 'danger'>You put down your mask flaps.</span>")
 			toggled = TRUE

@@ -629,7 +629,6 @@
 			if (map.civilizations || map.ID == MAP_COLONY || map.ID == MAP_JUNGLE_COLONY || map.ID == MAP_GULAG13 || map.ID == MAP_BAGNE13)
 				handle_hygiene()
 			handle_mood()
-			handle_ptsd()
 		if (!map.civilizations && map.ID != MAP_COLONY && map.ID != MAP_JUNGLE_COLONY)
 			bowels = 0
 			bladder = 0
@@ -787,35 +786,7 @@
 		bodytemperature += temp_adj
 	// +/- 50 degrees from 310.15K is the 'safe' zone, where no damage is dealt.
 
-//this is handled in the get_environment_discomfort.
-/*
-	if (bodytemperature >= species.heat_level_1 && !orc)
-		//Body temperature is too hot.
 
-		if (status_flags & GODMODE)	return TRUE	//godmode
-		var/burn_dam = FALSE
-		switch(bodytemperature)
-			if (species.heat_level_1 to species.heat_level_2)
-				burn_dam = HEAT_DAMAGE_LEVEL_1
-			if (species.heat_level_2 to species.heat_level_3)
-				burn_dam = HEAT_DAMAGE_LEVEL_2
-			if (species.heat_level_3 to INFINITY)
-				burn_dam = HEAT_DAMAGE_LEVEL_3
-		take_overall_damage(burn=burn_dam, used_weapon = "High Body Temperature")
-
-	else if (bodytemperature <= species.cold_level_1 && !wolfman)
-		if (status_flags & GODMODE)	return TRUE	//godmode
-
-		var/burn_dam = FALSE
-		switch(bodytemperature)
-			if (-INFINITY to species.cold_level_3)
-				burn_dam = COLD_DAMAGE_LEVEL_3
-			if (species.cold_level_3 to species.cold_level_2)
-				burn_dam = COLD_DAMAGE_LEVEL_2
-			if (species.cold_level_2 to species.cold_level_1)
-				burn_dam = COLD_DAMAGE_LEVEL_1
-		take_overall_damage(burn=burn_dam, used_weapon = "Low Body Temperature")
-*/
 
 	species.get_environment_discomfort(src)
 

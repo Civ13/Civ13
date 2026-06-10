@@ -88,7 +88,6 @@
 	desc = "Fuzzy."
 	icon_state = "bearpelt"
 	item_state = "bearpelt"
-	worn_state = "bearpelt"
 	flags_inv = BLOCKHAIR
 	siemens_coefficient = 0.7
 	ripable = FALSE
@@ -97,19 +96,16 @@
 	name = "black bear pelt hat"
 	icon_state = "bearpelt"
 	item_state = "bearpelt"
-	worn_state = "bearpelt"
 
 /obj/item/clothing/head/bearpelt/brown
 	name = "brown bear pelt hat"
 	icon_state = "brownbearpelt"
 	item_state = "brownbearpelt"
-	worn_state = "brownbearpelt"
 
 /obj/item/clothing/head/bearpelt/white
 	name = "polar bear pelt hat"
 	icon_state = "whitebearpelt"
 	item_state = "whitebearpelt"
-	worn_state = "whitebearpelt"
 
 /obj/item/clothing/head/philosopher_wig
 	name = "natural philosopher's wig"
@@ -133,7 +129,6 @@
 	desc = "A pointed white cap often worn by dummies who should feel ashamed."
 	icon_state = "dunce_cap"
 	item_state = "dunce_cap"
-	worn_state = "dunce_cap"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHAIR
 

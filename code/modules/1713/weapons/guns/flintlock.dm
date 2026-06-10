@@ -24,8 +24,6 @@
 //	scoped_accuracy = 2
 	gun_type = GUN_TYPE_RIFLE
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
-	accuracy_increase_mod = 2.00
-	accuracy_decrease_mod = 6.00
 	KD_chance = KD_CHANCE_HIGH
 	stat = "rifle"
 	gtype = "rifle"
@@ -36,7 +34,6 @@
 	accuracy = 5
 
 	load_delay = 110 //11 seconds for rifles, 8 seconds for pistols & blunderbuss
-	aim_miss_chance_divider = 3.00
 
 	var/cocked = FALSE
 	var/check_cocked = FALSE //Keeps the bolt from being interfered with
@@ -256,11 +253,8 @@
 	gtype = "pistol"
 	equiptimer = 7
 	gun_type = GUN_TYPE_PISTOL
-	accuracy_increase_mod = 1.50
-	accuracy_decrease_mod = 2.00
 	KD_chance = KD_CHANCE_LOW
 	stat = "pistol"
-	aim_miss_chance_divider = 2.00
 	accuracy = 4
 
 /obj/item/weapon/gun/projectile/flintlock/blunderbuss
@@ -284,8 +278,6 @@
 	// 15% more accurate than SMGs
 	accuracy = 5
 
-	accuracy_increase_mod = 1.05
-	accuracy_decrease_mod = 1.10
 	KD_chance = KD_CHANCE_HIGH
 
 /obj/item/weapon/gun/projectile/flintlock/pistoletmodelean1733
@@ -309,11 +301,8 @@
 	gtype = "pistol"
 	gun_type = GUN_TYPE_PISTOL
 	equiptimer = 7
-	accuracy_increase_mod = 1.40
-	accuracy_decrease_mod = 2.00
 	KD_chance = KD_CHANCE_LOW
 	stat = "pistol"
-	aim_miss_chance_divider = 1.70
 	accuracy = 10
 	accuracy = 4
 
@@ -361,11 +350,8 @@
 	gtype = "pistol"
 	gun_type = GUN_TYPE_PISTOL
 	equiptimer = 7
-	accuracy_increase_mod = 1.40
-	accuracy_decrease_mod = 2.00
 	KD_chance = KD_CHANCE_LOW
 	stat = "pistol"
-	aim_miss_chance_divider = 1.70
 	accuracy = 4
 
 /obj/item/weapon/gun/projectile/flintlock/blunderbuss/pistol

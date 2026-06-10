@@ -1,17 +1,6 @@
 #define ENABLE_MEMOS 1				//using a define because screw making a config variable for it. This is more efficient and purty.
 /proc/get_player_memo_file_dir()
 	return "data/memo2.sav"
-//switch verb so we don't spam up the verb lists with like, 3 verbs for this feature.
-/client/proc/player_memo(task in list("write","show","delete"))
-	set name = "Player Memo"
-	set category = "Server"
-	// ENABLE_MEMOS is always 1 — guard removed to silence static-condition warning
-	if (!check_rights(0))	return
-	switch(task)
-		if ("write")		player_memo_write()
-		if ("show")		player_memo_show()
-		if ("delete")	player_memo_delete()
-
 //write a message
 /client/proc/player_memo_write()
 	var/savefile/F = new(get_player_memo_file_dir())

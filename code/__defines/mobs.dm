@@ -27,7 +27,6 @@
 #define GLUT_ANYTHING 3   // Eat anything, ever
 
 #define TINT_NONE 0
-#define TINT_MODERATE 1
 #define TINT_HEAVY 2
 #define TINT_BLIND 3
 
@@ -45,23 +44,16 @@
 #define INCAPACITATION_FORCELYING 16 //needs a better name - represents being knocked down BUT still conscious.
 #define INCAPACITATION_KNOCKOUT 32
 
-#define INCAPACITATION_KNOCKDOWN (INCAPACITATION_KNOCKOUT|INCAPACITATION_FORCELYING)
 #define INCAPACITATION_DEFAULT (INCAPACITATION_RESTRAINED|INCAPACITATION_BUCKLED_FULLY|INCAPACITATION_DISABLED)
-#define INCAPACITATION_ALL (~INCAPACITATION_NONE)
 
 #define MOB_PULL_NONE 0
 #define MOB_PULL_SMALLER 1
-#define MOB_PULL_SAME 2
 #define MOB_PULL_LARGER 3
 
 #define MOVED_DROP 1
 
 //carbon taste sensitivity defines, used in mob/living/human/proc/ingest
-#define TASTE_HYPERSENSITIVE 3 //anything below 5%
-#define TASTE_SENSITIVE 2 //anything below 7%
 #define TASTE_NORMAL 1 //anything below 15%
-#define TASTE_DULL 0.5 //anything below 30%
-#define TASTE_NUMB 0.1 //anything below 150%
 
 //Ambience
 #define SOUND_CHANNEL_AMBIENCE 2
@@ -70,6 +62,4 @@
 #define HYGIENE_LEVEL_CLEAN 250
 #define HYGIENE_LEVEL_NORMAL 200
 #define HYGIENE_LEVEL_DIRTY 75
-#define HYGIENE_FACTOR_LOWEST 0.045
 #define HYGIENE_FACTOR 0.025
-#define HYGIENE_FACTOR_HIGHEST 0.55

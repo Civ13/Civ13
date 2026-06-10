@@ -186,16 +186,7 @@
 /mob/proc/show_inv(mob/user as mob)
 	return
 
-/*atom/verb/Interact()
-	set name = "Interact"
-	set category = "IC"
 
-	set src in view(1)
-	var/mob/user = usr
-	if(src in range(1,usr))
-		user.ClickOn(src)
-	else
-		src.examine(user)*/
 
 /mob/verb/interact(atom/A as mob|obj|turf in view(1))
 	set name = "Interact"
@@ -309,16 +300,7 @@
 			W.secondary_attack_self(src)
 			update_inv_r_hand()
 	return
-/*
-/mob/verb/dump_source()
 
-	var/master = "<PRE>"
-	for (var/t in typesof(/area))
-		master += text("[]\n", t)
-		//Foreach goto(26)
-	src << browse(master)
-	return
-*/
 
 /mob/verb/memory()
 	set name = "Notes"

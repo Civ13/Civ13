@@ -31,37 +31,6 @@
 		H.print_excrement()
 		to_chat(H, "<span class='info'>*---------*</span>")
 		return
-/mob/living/human/proc/handle_ptsd()
-	if (ptsd > 100)
-		ptsd = 100
-	if (ptsd < 0)
-		ptsd = 0
-
-	if (ptsd < 10 || ingested.has_reagent("citalopram", 5) || ingested.has_reagent("paroxetine", 3.33)) //antidepressives and anxiolytics block PTSD effects
-		return FALSE
-	else
-		if (prob(0.45*(ptsd/8))) //at ptsd of 10, every 3 minutes or so, assuming the life tick of humans takes 8 deciseconds
-			do_ptsd()
-			return TRUE
-		if (prob(0.45*(ptsd/4)))
-			flash_sadness(ptsd)
-
-/mob/living/human/proc/do_ptsd()
-	if (ptsd < 3 || ingested.has_reagent("citalopram", 5) || ingested.has_reagent("paroxetine", 3.33)) //antidepressives and anxiolytics block PTSD effects
-		return
-	else
-		if (prob(50))
-			jitteriness += rand(140,200)
-			visible_message("[src] starts shaking!","<span class='warning'>You start shaking!</span>")
-			emote("cry")
-			return
-		else
-			jitteriness += rand(60,90)
-			Paralyse(3)
-			visible_message("[src] collapses, breathing heavily!","<span class='warning'>You can't handle the situation!</span>")
-			emote("scream")
-			return
-
 
 /mob/living/human/proc/flash_sadness(ptsd = 1)
 	if (ingested.has_reagent("citalopram", 5) || ingested.has_reagent("paroxetine", 3.33)) //antidepressives and anxiolytics block PTSD effects
