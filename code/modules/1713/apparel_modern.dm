@@ -1521,6 +1521,24 @@
 	icon_state = "modern_shaman"
 	item_state = "modern_shaman"
 
+/obj/item/clothing/head/navyofficercap
+	name = "Navy officer cap"
+	desc = "A white officer cap."
+	icon_state = "abashiri_guard_head"
+	item_state = "abashiri_guard_head"
+
+obj/item/clothing/head/navycap
+	name = "Navy cap"
+	desc = "A cap worn by sailors."
+	icon_state = "fieldcap_china2"
+	item_state = "fieldcap_china2"
+
+/obj/item/clothing/suit/storage/coat/frenchcoat/navy
+	name = "Navy trench coat"
+	desc = "A trench coat used by officers of the Navy."
+	icon_state = "frenchtrench"
+	item_state = "frenchtrench"
+
 /obj/item/clothing/head/cap
 	name = "cap"
 	desc = "A generic visored cap."

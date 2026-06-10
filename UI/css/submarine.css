@@ -197,51 +197,21 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Gauge tick marks via conic-gradient */
+/* Gauge tick marks - positioned via DM code (conic-gradient unsupported in BYOND IE) */
 .gauge-ticks {
     position: absolute;
-    top: 4px;
-    left: 4px;
-    right: 4px;
-    bottom: 4px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     border-radius: 50%;
-    background: conic-gradient(
-        from 225deg,
-        transparent 0deg,
-        rgba(255,255,255,0.15) 0deg, rgba(255,255,255,0.15) 2deg,
-        transparent 2deg,
-        transparent 18deg,
-        rgba(255,255,255,0.15) 18deg, rgba(255,255,255,0.15) 20deg,
-        transparent 20deg,
-        transparent 36deg,
-        rgba(255,255,255,0.15) 36deg, rgba(255,255,255,0.15) 38deg,
-        transparent 38deg,
-        transparent 54deg,
-        rgba(255,255,255,0.15) 54deg, rgba(255,255,255,0.15) 56deg,
-        transparent 56deg,
-        transparent 72deg,
-        rgba(255,255,255,0.15) 72deg, rgba(255,255,255,0.15) 74deg,
-        transparent 74deg,
-        transparent 90deg,
-        rgba(255,255,255,0.15) 90deg, rgba(255,255,255,0.15) 92deg,
-        transparent 92deg,
-        transparent 108deg,
-        rgba(255,255,255,0.15) 108deg, rgba(255,255,255,0.15) 110deg,
-        transparent 110deg,
-        transparent 126deg,
-        rgba(255,255,255,0.15) 126deg, rgba(255,255,255,0.15) 128deg,
-        transparent 128deg,
-        transparent 144deg,
-        rgba(255,255,255,0.15) 144deg, rgba(255,255,255,0.15) 146deg,
-        transparent 146deg,
-        transparent 162deg,
-        rgba(255,255,255,0.15) 162deg, rgba(255,255,255,0.15) 164deg,
-        transparent 164deg,
-        transparent 180deg,
-        rgba(255,255,255,0.15) 180deg, rgba(255,255,255,0.15) 182deg,
-        transparent 182deg,
-        transparent 270deg
-    );
+}
+
+.gauge-tick {
+    position: absolute;
+    width: 1px;
+    background: rgba(255,255,255,0.25);
+    transform-origin: center top;
 }
 
 /* Gauge needle - rotate via inline style: style="transform: rotate(Xdeg)" */

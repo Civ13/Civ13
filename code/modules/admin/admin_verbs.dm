@@ -353,7 +353,8 @@ var/list/admin_verbs_magic = list(
 			)
 		if (map && map.ID == MAP_SUBCOM13 && (holder.rights & R_ADMIN))
 			verbs += list(
-				/datum/admins/proc/toggle_subcom_singleplayer
+				/datum/admins/proc/toggle_subcom_singleplayer,
+				/datum/admins/proc/subcom13_panel
 			)
 /client/proc/remove_admin_verbs()
 	verbs.Remove(

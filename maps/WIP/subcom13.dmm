@@ -31,10 +31,13 @@
 "be" = (/obj/structure/machinery/sub_physical/diesel_engine,/turf/floor/sub_deck/engine_room,/area/caribbean/sea/underwater)
 "bG" = (/obj/structure/simple_door/blast,/turf/floor/sub_deck/central_corridor,/area/caribbean/sea/underwater)
 "cf" = (/obj/item/weapon/torpedo,/turf/floor/sub_deck/forward_torpedo,/area/caribbean/sea/underwater)
+"cn" = (/obj/structure/bed/chair/steel/alt/blue,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "ej" = (/obj/structure/vending/submarine_emergency,/turf/floor/sub_deck/engine_room,/area/caribbean/sea/underwater)
 "eA" = (/obj/structure/simple_door/blast,/turf/floor/sub_deck/medical_bay,/area/caribbean/sea/underwater)
 "eI" = (/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/sub_deck/reactor_room,/area/caribbean/sea/underwater)
 "fX" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
+"gf" = (/obj/structure/table/modern/retable,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
+"hm" = (/obj/structure/table/modern/retable,/obj/item/weapon/paper,/obj/item/weapon/paper_bin/empty,/obj/item/weapon/pen/blue,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "hv" = (/obj/structure/lamp/lamp_small/alwayson/red,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/sub_deck/rear_corridor,/area/caribbean/sea/underwater)
 "hx" = (/obj/structure/machinery/sub_physical/bilge_pump,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "hG" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
@@ -42,6 +45,7 @@
 "iu" = (/obj/structure/medicalbed,/obj/item/weapon/bedsheet/medical,/turf/floor/sub_deck/medical_bay,/area/caribbean/sea/underwater)
 "jN" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/sub_deck/medical_bay,/area/caribbean/sea/underwater)
 "kB" = (/turf/floor/sub_deck/rear_corridor,/area/caribbean/sea/underwater)
+"kI" = (/obj/structure/closet/cabinet/extinguisher_cabinet,/turf/wall/sub_hull,/area/caribbean/sea/underwater)
 "kM" = (/obj/structure/vending/submarine_emergency,/turf/floor/sub_deck/medical_bay,/area/caribbean/sea/underwater)
 "lc" = (/obj/structure/machinery/sub_physical/bilge_pump,/turf/floor/sub_deck/storage,/area/caribbean/sea/underwater)
 "lP" = (/turf/floor/sub_deck/storage,/area/caribbean/sea/underwater)
@@ -50,7 +54,7 @@
 "nM" = (/obj/structure/bed/chair/steel/alt/green{dir = 1},/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "oy" = (/obj/structure/machinery/sub_physical/torpedo_tube{tube_id = 3},/turf/floor/sub_deck/forward_torpedo,/area/caribbean/sea/underwater)
 "oP" = (/obj/structure/machinery/sub_physical/bilge_pump,/turf/floor/sub_deck/engine_room,/area/caribbean/sea/underwater)
-"oQ" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/table/modern/retable,/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
+"oQ" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/table/modern/retable,/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
 "rI" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 4},/obj/structure/lamp/lamp_small/alwayson{dir = 4},/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "sF" = (/obj/structure/vending/submarine_emergency,/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
 "sH" = (/obj/structure/machinery/sub_physical/bilge_pump,/turf/floor/sub_deck/rear_corridor,/area/caribbean/sea/underwater)
@@ -92,7 +96,7 @@
 "Ft" = (/obj/structure/machinery/sub_physical/breach_sealant/galley,/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
 "FS" = (/obj/structure/lamp/lamp_small/alwayson/red,/obj/structure/machinery/sub_physical/bilge_pump,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/sub_deck/forward_torpedo,/area/caribbean/sea/underwater)
 "Gx" = (/obj/structure/sign/custom/metallic{name = "Storage"},/turf/wall/sub_bulkhead,/area/caribbean/sea/underwater)
-"GV" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/bed/bunk,/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
+"GV" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/bed/bunk,/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
 "Hb" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/machinery/sub_physical/fuel_storage,/turf/floor/sub_deck/engine_room,/area/caribbean/sea/underwater)
 "Hf" = (/obj/structure/machinery/sub_physical/breach_sealant/operations,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "Hl" = (/obj/structure/closet/crate/footlocker,/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
@@ -104,7 +108,7 @@
 "JE" = (/obj/structure/props/torpedo_tube,/turf/floor/sub_deck/forward_torpedo,/area/caribbean/sea/underwater)
 "Kv" = (/obj/structure/sub_physical/stern_plane,/turf/floor/beach/water/deep/saltwater/underwater,/area/caribbean/sea/underwater)
 "Kz" = (/obj/structure/bed/chair/steel{dir = 1},/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
-"LO" = (/obj/structure/closet/crate/footlocker,/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
+"LO" = (/obj/structure/closet/crate/footlocker,/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
 "MY" = (/obj/structure/machinery/sub_control/sonar_panel{dir = 1},/obj/structure/table/modern/retable,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "MZ" = (/obj/structure/closet/crate/footlocker,/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
 "Ne" = (/obj/structure/machinery/sub_physical/vent_duct/rear_corridor,/turf/floor/sub_deck/rear_corridor,/area/caribbean/sea/underwater)
@@ -120,7 +124,7 @@
 "PO" = (/obj/structure/machinery/sub_physical/vent_duct/medical_bay,/turf/floor/sub_deck/medical_bay,/area/caribbean/sea/underwater)
 "PY" = (/obj/structure/vending/submarine_emergency,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "Qt" = (/obj/structure/machinery/sub_physical/vent_duct/reactor_room,/turf/floor/sub_deck/reactor_room,/area/caribbean/sea/underwater)
-"QA" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/machinery/sub_physical/bilge_pump,/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
+"QA" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/machinery/sub_physical/bilge_pump,/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
 "Ru" = (/obj/structure/machinery/sub_physical/breach_sealant/medical_bay,/turf/floor/sub_deck/medical_bay,/area/caribbean/sea/underwater)
 "RA" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 8},/turf/floor/sub_deck/storage,/area/caribbean/sea/underwater)
 "RP" = (/obj/structure/machinery/sub_physical/breach_sealant/reactor_room,/turf/floor/sub_deck/reactor_room,/area/caribbean/sea/underwater)
@@ -132,9 +136,10 @@
 "Tf" = (/obj/structure/closet/wardrobe{name = "NBC wardrobe"},/obj/item/clothing/suit/nbc,/obj/item/clothing/suit/nbc,/obj/item/clothing/suit/nbc,/obj/item/clothing/suit/nbc,/obj/item/weapon/storage/box/nbcbox/ami,/obj/item/clothing/head/nbc,/obj/item/clothing/head/nbc,/obj/item/clothing/head/nbc,/obj/item/weapon/geiger_counter,/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/sub_deck/rear_corridor,/area/caribbean/sea/underwater)
 "Tg" = (/obj/structure/table/modern/retable,/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "Tu" = (/obj/structure/simple_door/blast,/turf/floor/sub_deck/reactor_room,/area/caribbean/sea/underwater)
-"Uz" = (/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/pen/red,/obj/item/weapon/pen/blue,/obj/structure/table/modern/retable,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
+"TM" = (/obj/structure/table/modern/retable,/obj/item/weapon/paper,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
+"Uz" = (/obj/structure/bed/chair/steel/alt/blue{dir = 1},/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "UA" = (/obj/structure/machinery/sub_physical/bilge_pump/emergency,/obj/structure/table/modern/retable,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
-"WB" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/item/weapon/stool,/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
+"WB" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/item/weapon/stool,/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
 "WG" = (/obj/structure/simple_door/blast,/turf/floor/sub_deck/storage,/area/caribbean/sea/underwater)
 "XQ" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/lamp/lamp_small/alwayson{dir = 1},/obj/structure/machinery/sub_physical/breach_sealant/fwd_torpedo,/turf/floor/sub_deck/forward_torpedo,/area/caribbean/sea/underwater)
 "Yg" = (/obj/structure/machinery/sub_physical/bilge_pump/emergency,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
@@ -155,18 +160,18 @@ abababababababababababababababababababababababababababababababababababababababab
 ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
 abababKvababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
 ababananananababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
-ababananananababababababababababababanananananananananananayananananananananananananananananananananananananananananananananananananananababababababab
-ababananananabababababababababababanansHucsOsORYTfRYkBuckBayananananananaEananananayayayayayAvLOAvHlGVHlAvQAsFaDoQaDzBWBaqaycfcfXQoyJEanananababababab
+ababananananababababababababababababananananananananananananananananananananananananananananananananananananananananananananananananananababababababab
+ababananananabababababababababababanansHucsOsORYTfRYkBuckBayanananananankIananananayayayayayAvLOAvHlGVHlAvQAsFaDoQaDzBWBaqaycfcfXQoyJEanananababababab
 ababananananababananananananananananankBkBkBkBkBkBkBkBkBkBayPYPYTgOFEwYgafhGHfhxaCayayayayFtCpCpCpCpCpCpCpCpCpvkaDtRaDvkaqaycfcfawawawananananabababab
-ababananananababananananatHHHbejbeahayalDlauauauaaauauauBMayDDafNrHXIQafafafafafrIayayayayayAvMZAvHlAuHlAvmDvkaDCiaDCiaDaqaycfcfawoyJEananananabababab
-ababananananananananananasahahahahahaBkBkBauaoamtsNLIOaukBayafafKzafKzafafafafafafayayaEayayayayayayayayayayCEJiayayayayayaySKawawawPkanananananababab
-ababananananananananananywahahahahahAtkBZeTuBUaoaoaoQtaukBaiafafafDZafafafafafafafaivRAnAnDOAnAnAnDOAnAnAnDOAnAnAnAnwtAnzdxIawawawawawhLanananananabab
-ababananananananananananahahahahahahaykBkBSPaoaoaoaoaoaukBNiafEwANUARWEwafafafafafbGAnAnAnapAnAnAnapAnAnAnapAnAnAnAnapAnAnbGawawawawawawanananananabab
-ababananananananananananasahahahahahaBkBkBYqaoamtseIRPaukBayafEwnMfXnMEwafMYUzavafayayaEayayayayayayOoeAayaEayayayWGGxayayaySKawawawPkanananananababab
-ababananananababananananoPHHBpahbeunayalDlauauauaaauauauBMayDDwMazafaAutafKzAJKzrIayxearararjNararjNararjNPeaylcCBlPCBlPlPaycfcfawoyJEananananabababab
-ababananananababanananananananananananNekBkBkBkBkBkBkBkBkBayafafagafafafafagYgafafayRuaracacacacacacacararadayRAlPlPlPlPyMaycfcfawawawananananabababab
-ababananananabababababababababababananNkhvkBkBkBhvkBkBhvkBayananananananaEananananankMaraciuajiuiuajacPOmnkMayPvaklPakzHSCaycfcfFSoyJEanananababababab
-ababananananababababababababababababananananananananananananananananananananananananananayanananananananananananananananananananananananababababababab
+ababananananababananananatHHHbejbeahayalDlauauauaaauauauBMayDDafNrHXIQafafcncncnrIayayayayayAvMZAvHlAuHlAvmDvkaDCiaDCiaDaqaycfcfawoyJEananananabababab
+ababananananananananananasahahahahahaBkBkBauaoamtsNLIOaukBayafafKzafKzafafgfhmTMafayayaEayayayayayayayayayayCEJiayayayayayaySKawawawPkanananananababab
+ababananananananananananywahahahahahAtkBZeTuBUaoaoaoQtaukBaiafafafDZafafafUzUzUzafaivRAnAnDOAnAnAnDOAnAnAnDOAnAnAnwtAnAnzdxIawawawawawhLanananananabab
+ababananananananananananahahahahahahaykBkBSPaoaoaoaoaoaukBNiafEwANUARWEwafafafafafbGAnAnAnapAnAnAnapAnAnAnapAnAnAnapAnAnAnbGawawawawawawanananananabab
+ababananananananananananasahahahahahaBkBkBYqaoamtseIRPaukBayafEwnMfXnMEwafMYAJavafayayaEayayayayayayOoeAayaEayayayGxWGayayaySKawawawPkanananananababab
+ababananananababananananoPHHBpahbeunayalDlauauauaaauauauBMayDDwMazafaAutafKzKzKzrIayxearararjNararjNararjNPeaylcCBlPCBlPlPaycfcfawoyJEananananabababab
+ababananananababananananananankIanananNekBkBkBkBkBkBkBkBkBayafafagafafafafagYgafafayRuaracacacacacacacararadayRAlPlPlPlPyMaycfcfawawawananananabababab
+ababananananabababababababababababananNkhvkBkBkBhvkBkBhvkBayanananananankIananananankMaraciuajiuiuajacPOmnkMayPvaklPakzHSCaycfcfFSoyJEanananababababab
+ababananananababababababababababababananananananananananananananananananananananananananananananananananananananananananananananananananababababababab
 ababananananababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
 abababKvababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
 ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab

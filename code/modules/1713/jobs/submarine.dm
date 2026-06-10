@@ -23,14 +23,12 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_dcu(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/american(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_navy(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/cap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/navyofficercap(H), slot_head)
 //gear
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	give_random_name(H)
 	H.add_note("Role", "You are the <b>Commanding Officer</b> of this submarine. You are in charge of the entire vessel and crew. Give orders, manage strategy, and ensure mission success!")
 	H.setStat("strength", STAT_NORMAL)
@@ -67,13 +65,13 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_dcu(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_navy(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/frenchcoat/navy(H), slot_wear_suit)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/cap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/navyofficercap(H), slot_head)
 //gear
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>Submarine Officer</b>. You serve as the Executive Officer or department head. Support the Captain and manage your assigned station.")
 	H.setStat("strength", STAT_NORMAL)
@@ -108,9 +106,10 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni_modern(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_navy(H), slot_w_uniform)
 //gear
-	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>Submarine Crewman</b>. Operate your assigned station - helm, weapons, engineering, or sonar. Follow your officer's orders and keep the boat running!")
 	H.setStat("strength", STAT_NORMAL)

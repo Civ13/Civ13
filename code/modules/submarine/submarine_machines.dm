@@ -18,6 +18,12 @@
 	// In a multi-sub scenario, this could look for a specific vessel_name
 	if(global.all_submarines.len)
 		my_sub = global.all_submarines[1]
+	update_icon()
+
+/obj/structure/machinery/sub_control/update_icon()
+	overlays.Cut()
+	if(active && !broken)
+		overlays += image(icon = icon, icon_state = scr_overlay)
 
 /obj/structure/machinery/sub_control/proc/can_use(mob/user)
 	if(broken || !active)
@@ -76,11 +82,22 @@
 	dat += get_ui_content()
 
 	dat += "</body></html>"
-	user << browse(dat, "window=sub_control;size=450x550")
+	user << browse(dat, "window=sub_control;size=700x600")
 	onclose(user, "sub_control")
 
 /obj/structure/machinery/sub_control/proc/vessel_name_header()
 	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - SYSTEMS INTERFACE"
+
+/obj/structure/machinery/sub_control/proc/gauge_ticks_html(var/radius = 46)
+	// Generate tick mark divs for gauge displays (10 ticks across 270° sweep)
+	var/dat = ""
+	var/num_ticks = 10
+	for(var/j = 0, j < num_ticks, j++)
+		var/angle = -135 + (j * 270 / (num_ticks - 1))
+		var/tick_x = 50 + radius * sin(angle)
+		var/tick_y = 50 - radius * cos(angle)
+		dat += "<div class='gauge-tick' style='left:[tick_x]px; top:[tick_y]px; height:[j % 5 == 0 ? 6 : 4]px; transform:rotate([angle]deg);'></div>"
+	return dat
 
 /obj/structure/machinery/sub_control/Topic(href, href_list)
 	if(href_list["close"])
@@ -129,7 +146,7 @@
 	dat += "<div class='panel' style='text-align:center; padding:8px;'>"
 	dat += "<div class='label'>HEADING</div>"
 	dat += "<div class='gauge' style='margin:6px auto;'>"
-	dat += "<div class='gauge-ticks'></div>"
+	dat += "<div class='gauge-ticks'>[gauge_ticks_html(46)]</div>"
 	dat += "<div class='gauge-needle' style='transform:rotate([hd_angle]deg);'></div>"
 	dat += "<div class='gauge-center'></div>"
 	dat += "<div class='gauge-value'>[round(my_sub.heading)]&deg;</div>"
@@ -150,7 +167,7 @@
 	dat += "<div class='panel' style='text-align:center; padding:8px;'>"
 	dat += "<div class='label'>SPEED</div>"
 	dat += "<div class='gauge' style='margin:6px auto;'>"
-	dat += "<div class='gauge-ticks'></div>"
+	dat += "<div class='gauge-ticks'>[gauge_ticks_html(46)]</div>"
 	dat += "<div class='gauge-needle' style='transform:rotate([sp_angle]deg);'></div>"
 	dat += "<div class='gauge-center'></div>"
 	dat += "<div class='gauge-value'>[round(my_sub.speed)]</div>"
@@ -176,7 +193,7 @@
 	dat += "<div class='panel' style='text-align:center; padding:8px;'>"
 	dat += "<div class='label'>DEPTH</div>"
 	dat += "<div class='gauge' style='margin:6px auto;'>"
-	dat += "<div class='gauge-ticks'></div>"
+	dat += "<div class='gauge-ticks'>[gauge_ticks_html(46)]</div>"
 	dat += "<div class='gauge-needle' style='transform:rotate([dp_angle]deg); background:[depth_color];'></div>"
 	dat += "<div class='gauge-center'></div>"
 	dat += "<div class='gauge-value' style='color:[depth_color];'>[round(my_sub.depth)]</div>"
@@ -355,7 +372,7 @@
 		var/pwr_angle = (my_sub.r_power_output[i] / 70) * 270 - 135
 		dat += "<div style='text-align:center;'>"
 		dat += "<div class='gauge-sm' style='margin:0 auto;'>"
-		dat += "<div class='gauge-ticks'></div>"
+		dat += "<div class='gauge-ticks'>[gauge_ticks_html(31)]</div>"
 		dat += "<div class='gauge-needle' style='transform:rotate([pwr_angle]deg); background:[output_color];'></div>"
 		dat += "<div class='gauge-center'></div>"
 		dat += "<div class='gauge-value' style='color:[output_color]; font-size:10px;'>[round(my_sub.r_power_output[i], 0.1)]</div>"
@@ -368,7 +385,7 @@
 		var/temp_angle = (my_sub.r_core_temp[i] / 1000) * 270 - 135
 		dat += "<div style='text-align:center;'>"
 		dat += "<div class='gauge-sm' style='margin:0 auto;'>"
-		dat += "<div class='gauge-ticks'></div>"
+		dat += "<div class='gauge-ticks'>[gauge_ticks_html(31)]</div>"
 		dat += "<div class='gauge-needle' style='transform:rotate([temp_angle]deg); background:[temp_color];'></div>"
 		dat += "<div class='gauge-center'></div>"
 		dat += "<div class='gauge-value' style='color:[temp_color]; font-size:10px;'>[round(my_sub.r_core_temp[i])]</div>"
@@ -689,9 +706,17 @@
 	dat += "<div class='label'>BEARING SWEEP</div>"
 	dat += "<div style='margin-top:8px; background:#001a00; border:1px solid #0a0; height:80px; position:relative; overflow:hidden;'>"
 	if(my_sub.sonar_active)
-		// Bearing labels
-		dat += "<div style='display:flex; justify-content:space-between; font-size:8px; color:#0a0; padding:2px 4px;'>"
-		dat += "<span>180</span><span>225</span><span>270</span><span>315</span><span>0</span><span>45</span><span>90</span><span>135</span><span>180</span>"
+		// Bearing labels - positioned to match sweep angle mapping (0-360 maps to 0-100%)
+		dat += "<div style='position:relative; height:12px; font-size:8px; color:#0a0;'>"
+		dat += "<span style='position:absolute; left:0%; transform:translateX(-50%);'>180</span>"
+		dat += "<span style='position:absolute; left:12.5%; transform:translateX(-50%);'>225</span>"
+		dat += "<span style='position:absolute; left:25%; transform:translateX(-50%);'>270</span>"
+		dat += "<span style='position:absolute; left:37.5%; transform:translateX(-50%);'>315</span>"
+		dat += "<span style='position:absolute; left:50%; transform:translateX(-50%);'>0</span>"
+		dat += "<span style='position:absolute; left:62.5%; transform:translateX(-50%);'>45</span>"
+		dat += "<span style='position:absolute; left:75%; transform:translateX(-50%);'>90</span>"
+		dat += "<span style='position:absolute; left:87.5%; transform:translateX(-50%);'>135</span>"
+		dat += "<span style='position:absolute; left:100%; transform:translateX(-50%);'>180</span>"
 		dat += "</div>"
 		// Sweep line
 		var/sweep_x = (my_sub.bearing_sweep / 360) * 100
@@ -892,7 +917,6 @@
 		dat += "<div style='font-size:10px; font-weight:bold; color:[tube_color];'>TUBE [i]</div>"
 		dat += "<div style='font-size:8px; color:#888;'>[tube_status]</div>"
 		dat += "</div>"
-		dat += "<a href='?src=\ref[src];load_tube=[i]' class='btn btn-grey' style='min-width:55px; font-size:8px; margin-top:2px;'>[my_sub.tubes_loaded[i] ? "UNLOAD" : "LOAD"]</a>"
 		dat += "</div>"
 	dat += "</div>"
 	dat += "</div>"
@@ -941,12 +965,6 @@
 		my_sub.master_arm = !my_sub.master_arm
 		if(!my_sub.master_arm)
 			my_sub.selected_target = null // Clear target if disarmed
-
-	if(href_list["load_tube"])
-		var/tube_idx = text2num(href_list["load_tube"])
-		if(tube_idx >= 1 && tube_idx <= 4)
-			my_sub.tubes_loaded[tube_idx] = !my_sub.tubes_loaded[tube_idx] // Toggle load status for now
-			// In a real game, this would trigger a loading animation/delay and consume an item
 
 	if(href_list["select_target"])
 		my_sub.selected_target = locate(href_list["select_target"])
