@@ -34,6 +34,12 @@
 	var/radar_cross_section = 1.0
 	var/enemy_type_ref = null         // Reference to /datum/subcom_enemy that spawned this
 
+	// Acoustic signature (LOFAR tonals in Hz)
+	var/sig_low = 0
+	var/sig_mid = 0
+	var/sig_high = 0
+	var/classification = "Unknown"
+
 	// Weapons: list of lists, each inner list = list(name, damage, range, type, cooldown_ticks)
 	var/list/weapons = list()
 	var/list/weapon_timers = list()  // Cooldown counters, parallel to weapons list

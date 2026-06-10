@@ -164,6 +164,7 @@ var/list/admin_verbs_debug = list(
 	/client/proc/load_voyage_event,
 	/client/proc/load_battle_ship,
 	/client/proc/debug_variables_map,
+	/datum/admins/proc/subcom13_panel,
 	)
 
 var/list/admin_verbs_paranoid_debug = list(

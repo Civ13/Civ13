@@ -840,6 +840,131 @@
 				PlayerNotesPage(text2num(href_list["index"]))
 		return
 
+	// --- SUBCOM13 Admin Panel ---
+	if (href_list["subcom_speed"])
+		if (!check_rights(R_ADMIN)) return
+		var/obj/map_metadata/subcom13/SM = map
+		if(SM?.created_sub)
+			SM.created_sub.target_speed = text2num(href_list["subcom_speed"])
+			to_chat(usr, "<span class='notice'>Set target speed to [href_list["subcom_speed"]] kts.</span>")
+			show_subcom13_panel()
+		return
+
+	if (href_list["subcom_surface"])
+		if (!check_rights(R_ADMIN)) return
+		var/obj/map_metadata/subcom13/SM = map
+		if(SM?.created_sub)
+			SM.created_sub.target_depth = 0
+			to_chat(usr, "<span class='notice'>Surfacing submarine.</span>")
+			show_subcom13_panel()
+		return
+
+	if (href_list["subcom_crash"])
+		if (!check_rights(R_ADMIN)) return
+		var/obj/map_metadata/subcom13/SM = map
+		if(SM?.created_sub)
+			SM.created_sub.target_depth = 250
+			to_chat(usr, "<span class='notice'>Crash diving to 250m.</span>")
+			show_subcom13_panel()
+		return
+
+	if (href_list["subcom_load_all"])
+		if (!check_rights(R_ADMIN)) return
+		var/obj/map_metadata/subcom13/SM = map
+		if(SM?.created_sub)
+			for(var/i = 1, i <= 4, i++)
+				SM.created_sub.tubes_loaded[i] = TRUE
+			to_chat(usr, "<span class='notice'>All torpedo tubes loaded.</span>")
+			show_subcom13_panel()
+		return
+
+	if (href_list["subcom_arm_toggle"])
+		if (!check_rights(R_ADMIN)) return
+		var/obj/map_metadata/subcom13/SM = map
+		if(SM?.created_sub)
+			SM.created_sub.master_arm = !SM.created_sub.master_arm
+			to_chat(usr, "<span class='notice'>Master arm: [SM.created_sub.master_arm ? "ARMED" : "SAFE"].</span>")
+			show_subcom13_panel()
+		return
+
+	if (href_list["subcom_spawn"])
+		if (!check_rights(R_ADMIN)) return
+		var/spawn_type = href_list["subcom_spawn"]
+		var/spawn_x = 500
+		var/spawn_y = 500
+		var/obj/map_metadata/subcom13/SM = map
+		if(SM?.created_sub)
+			spawn_x = SM.created_sub.x_pos + rand(30, 60)
+			spawn_y = SM.created_sub.y_pos + rand(30, 60)
+			spawn_x = clamp(spawn_x, 50, 950)
+			spawn_y = clamp(spawn_y, 50, 950)
+
+		var/datum/subcom_enemy/enemy_path
+		switch(spawn_type)
+			if("destroyer") enemy_path = /datum/subcom_enemy/destroyer
+			if("frigate_kirov") enemy_path = /datum/subcom_enemy/cruiser
+			if("frigate_krivak") enemy_path = /datum/subcom_enemy/frigate
+			if("corvette") enemy_path = /datum/subcom_enemy/corvette
+			if("patrol_boat") enemy_path = /datum/subcom_enemy/patrol_boat
+			if("cargo_freight") enemy_path = /datum/subcom_enemy/cargo_ship
+			if("cargo_tanker") enemy_path = /datum/subcom_enemy/tanker
+			if("bomber") enemy_path = /datum/subcom_enemy/tu22m
+			if("strike") enemy_path = /datum/subcom_enemy/su24
+			if("asw_patrol") enemy_path = /datum/subcom_enemy/Il38
+			if("sub_diesel") enemy_path = /datum/subcom_enemy/sub_diesel
+			if("sub_nuclear") enemy_path = /datum/subcom_enemy/sub_nuclear
+			if("sub_ballistic") enemy_path = /datum/subcom_enemy/sub_ballistic
+
+		if(enemy_path)
+			var/datum/vessel_contact/npc/NPC = spawn_enemy_npc(enemy_path, spawn_x, spawn_y)
+			if(global.subcom_map)
+				global.subcom_map.active_vessels += NPC
+			to_chat(usr, "<span class='notice'>Spawned [NPC.name] at ([spawn_x], [spawn_y]).</span>")
+		show_subcom13_panel()
+		return
+
+	if (href_list["subcom_spawn_random"])
+		if (!check_rights(R_ADMIN)) return
+		var/spawn_x = 500
+		var/spawn_y = 500
+		var/obj/map_metadata/subcom13/SM = map
+		if(SM?.created_sub)
+			spawn_x = SM.created_sub.x_pos + rand(30, 60)
+			spawn_y = SM.created_sub.y_pos + rand(30, 60)
+			spawn_x = clamp(spawn_x, 50, 950)
+			spawn_y = clamp(spawn_y, 50, 950)
+
+		var/datum/vessel_contact/npc/NPC = spawn_random_enemy(spawn_x, spawn_y)
+		if(global.subcom_map)
+			global.subcom_map.active_vessels += NPC
+		to_chat(usr, "<span class='notice'>Spawned random hostile [NPC.name] at ([spawn_x], [spawn_y]).</span>")
+		show_subcom13_panel()
+		return
+
+	if (href_list["subcom_despawn_all"])
+		if (!check_rights(R_ADMIN)) return
+		if(global.subcom_map)
+			for(var/datum/vessel_contact/npc/NPC in global.subcom_map.active_vessels)
+				qdel(NPC)
+			global.subcom_map.active_vessels.Cut()
+		to_chat(usr, "<span class='notice'>All NPC vessels removed.</span>")
+		show_subcom13_panel()
+		return
+
+	if (href_list["subcom_toggle_sp"])
+		if (!check_rights(R_ADMIN)) return
+		var/obj/map_metadata/subcom13/SM = map
+		if(SM)
+			SM.single_player = !SM.single_player
+			world << "<font size=3 color='yellow'><b>Single Player Mode [SM.single_player ? "ENABLED" : "DISABLED"].</b></font>"
+		show_subcom13_panel()
+		return
+
+	if (href_list["subcom_refresh"])
+		if (!check_rights(R_ADMIN)) return
+		show_subcom13_panel()
+		return
+
 mob/living/proc/can_centcom_reply()
 	return FALSE
 

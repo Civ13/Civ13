@@ -29,6 +29,12 @@
 	// Weapons: list of /datum/subcom_weapon
 	var/list/weapons = list()
 
+	// Acoustic signature (LOFAR tonals in Hz)
+	var/sig_low = 0              // Propeller blade rate (10-200 Hz)
+	var/sig_mid = 0              // Main engines (500-900 Hz)
+	var/sig_high = 0             // Auxiliary machinery (1000-2000 Hz)
+	var/classification = "Unknown" // Short class name for LOFAR display
+
 	// Loot dropped on sink (optional)
 	var/loot_type = null
 
@@ -72,6 +78,10 @@
 	sonar_range = 25000
 	passive_sonar_threshold = 20
 	radar_cross_section = 1.0
+	sig_low = 170
+	sig_mid = 840
+	sig_high = 1890
+	classification = "Frigate (ASW)"
 
 /datum/subcom_enemy/destroyer/New()
 	..()
@@ -92,6 +102,10 @@
 	sonar_range = 30000
 	passive_sonar_threshold = 15
 	radar_cross_section = 1.3
+	sig_low = 120
+	sig_mid = 490
+	sig_high = 920
+	classification = "Cruiser (Heavy)"
 
 /datum/subcom_enemy/cruiser/New()
 	..()
@@ -113,6 +127,10 @@
 	sonar_range = 20000
 	passive_sonar_threshold = 25
 	radar_cross_section = 0.9
+	sig_low = 240
+	sig_mid = 930
+	sig_high = 1520
+	classification = "Frigate (Patrol)"
 
 /datum/subcom_enemy/frigate/New()
 	..()
@@ -133,6 +151,10 @@
 	sonar_range = 15000
 	passive_sonar_threshold = 30
 	radar_cross_section = 0.7
+	sig_low = 210
+	sig_mid = 760
+	sig_high = 1650
+	classification = "Corvette (Light)"
 
 /datum/subcom_enemy/corvette/New()
 	..()
@@ -153,6 +175,10 @@
 	sonar_range = 18000
 	passive_sonar_threshold = 28
 	radar_cross_section = 0.6
+	sig_low = 190
+	sig_mid = 680
+	sig_high = 1440
+	classification = "Patrol Boat (ASW)"
 
 /datum/subcom_enemy/patrol_boat/New()
 	..()
@@ -177,6 +203,10 @@
 	sonar_range = 5000
 	passive_sonar_threshold = 40
 	radar_cross_section = 2.0         // Large radar signature
+	sig_low = 170
+	sig_mid = 840
+	sig_high = 1890
+	classification = "Merchant (Cargo)"
 	loot_type = "supplies"
 
 /datum/subcom_enemy/tanker
@@ -193,6 +223,10 @@
 	sonar_range = 3000
 	passive_sonar_threshold = 50
 	radar_cross_section = 2.5
+	sig_low = 130
+	sig_mid = 620
+	sig_high = 1350
+	classification = "Merchant (Tanker)"
 	loot_type = "fuel"
 
 /datum/subcom_enemy/tanker/New()
@@ -281,6 +315,10 @@
 	sonar_range = 35000
 	passive_sonar_threshold = 10     // Very quiet -- hard to detect
 	radar_cross_section = 0.3        // Small sonar/radar signature
+	sig_low = 380
+	sig_mid = 720
+	sig_high = 1200
+	classification = "Submarine (Diesel)"
 
 /datum/subcom_enemy/sub_diesel/New()
 	..()
@@ -301,6 +339,10 @@
 	sonar_range = 45000
 	passive_sonar_threshold = 8      // Extremely quiet
 	radar_cross_section = 0.25
+	sig_low = 140
+	sig_mid = 350
+	sig_high = 880
+	classification = "Submarine (Nuclear)"
 
 /datum/subcom_enemy/sub_nuclear/New()
 	..()
@@ -321,6 +363,10 @@
 	sonar_range = 30000
 	passive_sonar_threshold = 12
 	radar_cross_section = 0.35
+	sig_low = 150
+	sig_mid = 380
+	sig_high = 950
+	classification = "Submarine (Ballistic)"
 
 /datum/subcom_enemy/sub_ballistic/New()
 	..()
@@ -347,6 +393,10 @@
 	NPC.contact_type = E.contact_type
 	NPC.nationality = E.nationality
 	NPC.radar_cross_section = E.radar_cross_section
+	NPC.sig_low = E.sig_low
+	NPC.sig_mid = E.sig_mid
+	NPC.sig_high = E.sig_high
+	NPC.classification = E.classification
 	NPC.enemy_type_ref = E
 
 	// Transfer weapons

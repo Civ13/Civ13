@@ -10,6 +10,7 @@
 	var/active = TRUE
 	var/datum/submarine/my_sub
 	var/scr_overlay = "comm_monitor"
+	var/list/open_users = list()   // Mobs currently viewing this console
 
 /obj/structure/machinery/sub_control/New()
 	..()
@@ -44,10 +45,22 @@
 /obj/structure/machinery/sub_control/attack_hand(mob/user)
 	interact(user)
 
+/obj/structure/machinery/sub_control/attack_ghost(mob/observer/ghost/user)
+	var/obj/map_metadata/subcom13/SM = map
+	if(istype(SM) && SM.single_player)
+		interact(user)
+		return
+	..()
+
 /obj/structure/machinery/sub_control/interact(mob/user)
 	if(!can_use(user))
 		user << browse(null, "window=sub_control")
+		open_users -= user
 		return
+
+	// Track this user as having the console open
+	if(!(user in open_users))
+		open_users += user
 
 	// Send the shared submarine CSS to the client
 	user << browse_rsc('UI/css/submarine.css', "submarine.css")
@@ -69,8 +82,10 @@
 /obj/structure/machinery/sub_control/proc/vessel_name_header()
 	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - SYSTEMS INTERFACE"
 
-// Override Topic to bypass NanoUI CanUseTopic() — use our own can_use() instead
 /obj/structure/machinery/sub_control/Topic(href, href_list)
+	if(href_list["close"])
+		open_users -= usr
+		return
 	if(!can_use(usr))
 		return 1
 	return 0
@@ -80,14 +95,21 @@
 
 /obj/structure/machinery/sub_control/process()
 	if(!active || broken) return
-	// Throttle UI refresh to every 5 ticks (~5 seconds) to reduce bandwidth
+	// Throttle UI refresh to every 10 ticks (~1 second)
 	var/static/refresh_counter = 0
 	refresh_counter++
-	if(refresh_counter % 5 != 0) return
-	// Refresh UI for all users looking at this console
-	for(var/mob/M in range(1, src))
-		if(M.client)
-			interact(M)
+	if(refresh_counter % 10 != 0) return
+	// Refresh UI for all users with this console open
+	var/list/stale = list()
+	for(var/mob/M in open_users)
+		if(!M || !M.client || QDELETED(M))
+			stale += M
+			continue
+		if(get_dist(M, src) > 1 && !isobserver(M))
+			stale += M
+			continue
+		interact(M)
+	open_users -= stale
 
 // --- MANEUVER PANEL ---
 
@@ -274,6 +296,22 @@
 	icon = 'icons/obj/machines/submarine.dmi'
 	icon_state = "transponder"
 	scr_overlay = "transponder_screen"
+	var/obj/structure/machinery/sub_physical/reactor_core/reactor1
+	var/obj/structure/machinery/sub_physical/reactor_core/reactor2
+
+/obj/structure/machinery/sub_control/reactor_panel/New()
+	..()
+	spawn(20)
+		assign_reactors()
+
+/obj/structure/machinery/sub_control/reactor_panel/proc/assign_reactors()
+	for(var/obj/structure/machinery/sub_physical/reactor_core/R in world)
+		if(R.id == 1 && !reactor1)
+			reactor1 = R
+			R.name = "Reactor Core 1"
+		else if(R.id == 2 && !reactor2)
+			reactor2 = R
+			R.name = "Reactor Core 2"
 
 /obj/structure/machinery/sub_control/reactor_panel/get_ui_content()
 	if(!my_sub.has_nuclear_engine)
@@ -565,16 +603,18 @@
 	dat += "<div class='label'>DETECTED CONTACTS</div>"
 	if(my_sub.radar_active && my_sub.depth == 0 && my_sub.detected_targets.len)
 		dat += "<table class='data-table' style='margin-top:6px;'>"
-		dat += "<tr><th>NAME</th><th>RANGE</th><th>BEARING</th><th>TYPE</th></tr>"
+		dat += "<tr><th>NAME</th><th>RANGE</th><th>BEARING</th><th>TYPE</th><th></th></tr>"
 		for(var/datum/vessel_contact/C in my_sub.detected_targets)
 			if(C.contact_type == SUB_CONTACT_SURFACE || C.contact_type == SUB_CONTACT_AIR)
 				var/type_color = C.contact_type == SUB_CONTACT_AIR ? "#f80" : "#0af"
 				var/type_text = C.contact_type == SUB_CONTACT_AIR ? "AIR" : "SURFACE"
+				var/is_tagged = (C in my_sub.tagged_contacts)
 				dat += "<tr>"
-				dat += "<td style='font-weight:bold;'>[C.name]</td>"
+				dat += "<td style='font-weight:bold; color:[is_tagged ? "#0ff" : "#fff"];'>[C.name]</td>"
 				dat += "<td>[round(C.range)]m</td>"
 				dat += "<td>[round(C.bearing)]&deg;</td>"
 				dat += "<td style='color:[type_color];'>[type_text]</td>"
+				dat += "<td><a href='?src=\ref[src];tag_contact=\ref[C]' style='font-size:8px; color:[is_tagged ? "#0ff" : "#666"];'>[is_tagged ? "TAGGED" : "TAG"]</a></td>"
 				dat += "</tr>"
 		dat += "</table>"
 	else
@@ -592,7 +632,7 @@
 		if(my_sub.depth == 0) // Can only toggle if surfaced
 			my_sub.radar_active = !my_sub.radar_active
 			if(!my_sub.radar_active)
-				my_sub.detected_targets.Cut() // Clear targets when off
+				my_sub.detected_targets.Cut()
 		else
 			to_chat(usr, "<span class='warning'>Cannot activate radar while submerged!</span>")
 
@@ -601,6 +641,14 @@
 			my_sub.radar_range_long = !my_sub.radar_range_long
 		else
 			to_chat(usr, "<span class='notice'>Activate radar first to change range.</span>")
+
+	if(href_list["tag_contact"])
+		var/datum/vessel_contact/target = locate(href_list["tag_contact"]) in my_sub.detected_targets
+		if(target)
+			if(target in my_sub.tagged_contacts)
+				my_sub.tagged_contacts -= target
+			else
+				my_sub.tagged_contacts += target
 
 	interact(usr)
 
@@ -611,6 +659,7 @@
 	icon = 'icons/obj/computers.dmi'
 	icon_state = "wallconsole"
 	scr_overlay = "wallconsole_sonar"
+	var/selected_contact = null
 
 /obj/structure/machinery/sub_control/sonar_panel/get_ui_content()
 	var/dat = ""
@@ -635,53 +684,131 @@
 	dat += "</div>"
 	dat += "</div>"
 
-	// === LOFAR ANALYSIS (visual display) ===
+	// === BEARING SWEEP DISPLAY ===
 	dat += "<div class='panel crt-overlay' style='padding:10px;'>"
-	dat += "<div class='label'>PASSIVE SONAR — LOFAR</div>"
-	dat += "<div style='margin-top:8px; background:#001a00; border:1px solid #0a0; padding:8px; position:relative; height:100px;'>"
-
+	dat += "<div class='label'>BEARING SWEEP</div>"
+	dat += "<div style='margin-top:8px; background:#001a00; border:1px solid #0a0; height:80px; position:relative; overflow:hidden;'>"
 	if(my_sub.sonar_active)
-		// Bearing labels across the top
-		dat += "<div style='display:flex; justify-content:space-between; font-size:8px; color:#0a0; margin-bottom:4px;'>"
-		dat += "<span>180 S</span><span>225 SW</span><span>270 W</span><span>315 NW</span><span>0 N</span><span>45 NE</span><span>90 E</span><span>135 SE</span><span>180 S</span>"
+		// Bearing labels
+		dat += "<div style='display:flex; justify-content:space-between; font-size:8px; color:#0a0; padding:2px 4px;'>"
+		dat += "<span>180</span><span>225</span><span>270</span><span>315</span><span>0</span><span>45</span><span>90</span><span>135</span><span>180</span>"
 		dat += "</div>"
-		// Simulated waterfall line
-		dat += "<div style='border-top:1px solid #0a0; height:60px; position:relative;'>"
-		// Draw contact blips
+		// Sweep line
+		var/sweep_x = (my_sub.bearing_sweep / 360) * 100
+		dat += "<div style='position:absolute; left:[sweep_x]%; top:0; bottom:0; width:2px; background:#0f0; box-shadow:0 0 6px #0f0;'></div>"
+		// Contact blips on sweep line
 		for(var/datum/vessel_contact/C in my_sub.detected_targets)
 			if(C.contact_type == SUB_CONTACT_SUBMERGED)
 				var/blip_x = (C.bearing / 360) * 100
-				var/blip_size = max(4, min(12, 100 - C.range / 500))
-				dat += "<div style='position:absolute; left:[blip_x]%; top:50%; transform:translate(-50%,-50%); width:[blip_size]px; height:[blip_size]px; background:#0f0; border-radius:50%; box-shadow:0 0 4px #0f0;'></div>"
-		// Center bearing marker
-		dat += "<div style='position:absolute; left:50%; bottom:0; width:0; height:0; border-left:4px solid transparent; border-right:4px solid transparent; border-bottom:6px solid #0f0; transform:translateX(-50%);'></div>"
-		dat += "</div>"
+				var/blip_intensity = max(20, min(100, 100 - C.range / 500))
+				var/is_selected = (C == selected_contact)
+				var/blip_color = is_selected ? "#0ff" : "#0f0"
+				var/blip_size = is_selected ? 10 : 6
+				dat += "<div style='position:absolute; left:[blip_x]%; top:50%; transform:translate(-50%,-50%); width:[blip_size]px; height:[blip_size]px; background:[blip_color]; border-radius:50%; box-shadow:0 0 [blip_intensity / 10]px [blip_color];'></div>"
 	else
-		dat += "<div style='text-align:center; color:#040; padding-top:30px;'>SONAR OFFLINE</div>"
-
+		dat += "<div style='text-align:center; color:#040; padding-top:25px;'>SONAR OFFLINE</div>"
 	dat += "</div>"
 	dat += "</div>"
 
-	// === DETECTED CONTACTS ===
-	dat += "<div class='panel' style='padding:10px;'>"
-	dat += "<div class='label'>DETECTED CONTACTS</div>"
+	// === BOTTOM ROW: LOFAR + CONTACTS ===
+	dat += "<div class='flex-row' style='gap:8px;'>"
+
+	// --- LOFAR DISPLAY (left) ---
+	dat += "<div class='panel crt-overlay' style='flex:1; padding:10px;'>"
+	dat += "<div class='label'>LOFAR SPECTRAL</div>"
+	if(selected_contact && my_sub.sonar_active)
+		var/datum/vessel_contact/SC = selected_contact
+		// NPC contacts have sig_low/sig_mid/sig_high directly on them
+		var/has_tonals = FALSE
+		var/sig_low_val = 0
+		var/sig_mid_val = 0
+		var/sig_high_val = 0
+		var/classification_val = "Unknown"
+		if(istype(SC, /datum/vessel_contact/npc))
+			var/datum/vessel_contact/npc/SCN = SC
+			if(SCN.sig_low > 0)
+				has_tonals = TRUE
+				sig_low_val = SCN.sig_low
+				sig_mid_val = SCN.sig_mid
+				sig_high_val = SCN.sig_high
+				classification_val = SCN.classification
+		if(has_tonals)
+			dat += "<div style='margin-top:6px; background:#001a00; border:1px solid #0a0; padding:6px;'>"
+			dat += "<div style='font-size:9px; color:#0a0; margin-bottom:4px;'>TARGET: [SC.name] ([SC.range]m [round(SC.bearing)]&deg;)</div>"
+			// Frequency axis
+			dat += "<div style='display:flex; justify-content:space-between; font-size:7px; color:#060; border-bottom:1px solid #0a0; padding-bottom:2px; margin-bottom:4px;'>"
+			dat += "<span>0 Hz</span><span>500</span><span>1000</span><span>1500</span><span>2000</span>"
+			dat += "</div>"
+			// Three tonals
+			dat += "<div style='display:flex; gap:8px; justify-content:center;'>"
+			// Low tonal (propeller)
+			var/low_x = (sig_low_val / 2000) * 100
+			dat += "<div style='text-align:center;'>"
+			dat += "<div style='width:100%; height:40px; background:#001a00; border:1px solid #0a0; position:relative;'>"
+			dat += "<div style='position:absolute; left:[low_x]%; top:0; bottom:0; width:3px; background:#0f0; box-shadow:0 0 4px #0f0;'></div>"
+			dat += "</div>"
+			dat += "<div style='font-size:7px; color:#0f0; margin-top:2px;'>[sig_low_val] Hz</div>"
+			dat += "<div style='font-size:6px; color:#080;'>PROP</div>"
+			dat += "</div>"
+			// Mid tonal (engine)
+			var/mid_x = (sig_mid_val / 2000) * 100
+			dat += "<div style='text-align:center;'>"
+			dat += "<div style='width:100%; height:40px; background:#001a00; border:1px solid #0a0; position:relative;'>"
+			dat += "<div style='position:absolute; left:[mid_x]%; top:0; bottom:0; width:3px; background:#ff0; box-shadow:0 0 4px #ff0;'></div>"
+			dat += "</div>"
+			dat += "<div style='font-size:7px; color:#ff0; margin-top:2px;'>[sig_mid_val] Hz</div>"
+			dat += "<div style='font-size:6px; color:#880;'>ENGINE</div>"
+			dat += "</div>"
+			// High tonal (aux)
+			var/high_x = (sig_high_val / 2000) * 100
+			dat += "<div style='text-align:center;'>"
+			dat += "<div style='width:100%; height:40px; background:#001a00; border:1px solid #0a0; position:relative;'>"
+			dat += "<div style='position:absolute; left:[high_x]%; top:0; bottom:0; width:3px; background:#f80; box-shadow:0 0 4px #f80;'></div>"
+			dat += "</div>"
+			dat += "<div style='font-size:7px; color:#f80; margin-top:2px;'>[sig_high_val] Hz</div>"
+			dat += "<div style='font-size:6px; color:#840;'>AUX</div>"
+			dat += "</div>"
+			dat += "</div>"
+			dat += "<div style='text-align:center; margin-top:6px; font-size:8px; color:#0f0; border-top:1px solid #0a0; padding-top:4px;'>"
+			dat += "CLASSIFICATION: [classification_val]"
+			dat += "</div>"
+			dat += "</div>"
+		else
+			dat += "<div style='text-align:center; color:#666; padding-top:20px;'>No signature data available.</div>"
+	else if(!my_sub.sonar_active)
+		dat += "<div style='text-align:center; color:#040; padding-top:20px;'>SONAR OFFLINE</div>"
+	else
+		dat += "<div style='text-align:center; color:#666; padding-top:20px;'>Select a contact to analyze.</div>"
+	dat += "</div>"
+
+	// --- CONTACT LIST (right) ---
+	dat += "<div class='panel' style='width:220px; padding:10px;'>"
+	dat += "<div class='label'>CONTACTS</div>"
 	if(my_sub.sonar_active && my_sub.detected_targets.len)
-		dat += "<table class='data-table' style='margin-top:6px;'>"
-		dat += "<tr><th>NAME</th><th>RANGE</th><th>BEARING</th><th>NOISE</th></tr>"
+		dat += "<table style='width:100%; margin-top:6px; font-size:10px;'>"
 		for(var/datum/vessel_contact/C in my_sub.detected_targets)
 			if(C.contact_type == SUB_CONTACT_SUBMERGED)
+				var/is_selected = (C == selected_contact)
+				var/is_tagged = (C in my_sub.tagged_contacts)
+				var/row_bg = is_selected ? "#003300" : "transparent"
 				var/noise_color = C.noise_signature > 50 ? "#f00" : C.noise_signature > 20 ? "#ff0" : "#0f0"
-				dat += "<tr>"
-				dat += "<td style='font-weight:bold;'>[C.name]</td>"
-				dat += "<td>[round(C.range)]m</td>"
-				dat += "<td>[round(C.bearing)]&deg;</td>"
-				dat += "<td style='color:[noise_color];'>[C.noise_signature]</td>"
+				dat += "<tr style='background:[row_bg];'>"
+				dat += "<td style='padding:3px; cursor:pointer;' onclick='window.location=\"?src=\ref[src];select_contact=\ref[C]\";'>"
+				dat += "<span style='font-weight:bold; color:[is_tagged ? "#0ff" : "#0f0"];'>[C.name]</span>"
+				dat += "</td>"
+				dat += "<td style='padding:3px; color:#888;'>[round(C.range)]m</td>"
+				dat += "<td style='padding:3px; color:#888;'>[round(C.bearing)]&deg;</td>"
+				dat += "<td style='padding:3px; color:[noise_color];'>[C.noise_signature]</td>"
+				dat += "<td style='padding:3px;'>"
+				dat += "<a href='?src=\ref[src];tag_contact=\ref[C]' style='font-size:8px; color:[is_tagged ? "#0ff" : "#666"];'>[is_tagged ? "TAGGED" : "TAG"]</a>"
+				dat += "</td>"
 				dat += "</tr>"
 		dat += "</table>"
 	else
-		dat += "<div style='margin-top:6px; color:#666; text-align:center;'>No subsurface contacts detected.</div>"
+		dat += "<div style='margin-top:6px; color:#666; text-align:center;'>No subsurface contacts.</div>"
 
 	dat += "</div>"
+	dat += "</div>" // end bottom row
 
 	return dat
 
@@ -692,7 +819,8 @@
 	if(href_list["toggle_power"])
 		my_sub.sonar_active = !my_sub.sonar_active
 		if(!my_sub.sonar_active)
-			my_sub.detected_targets.Cut() // Clear targets when off
+			my_sub.detected_targets.Cut()
+			selected_contact = null
 		else
 			playsound(src, 'sound/machines/submarine/sonar_ping.ogg', 50, 1)
 
@@ -700,12 +828,25 @@
 		if(my_sub.sonar_active)
 			my_sub.sonar_mode = (my_sub.sonar_mode == SUB_SONAR_ACTIVE) ? SUB_SONAR_PASSIVE : SUB_SONAR_ACTIVE
 			if(my_sub.sonar_mode == SUB_SONAR_ACTIVE)
-				my_sub.noise_level = 100 // Active sonar is very loud
+				my_sub.noise_level = 100
 				playsound(src, 'sound/machines/submarine/sonar_ping2.ogg', 60, 1)
 			else
-				my_sub.noise_level = my_sub.speed * 5 // Passive mode noise based on speed
+				my_sub.noise_level = my_sub.speed * 5
 		else
 			to_chat(usr, "<span class='notice'>Activate sonar first to change mode.</span>")
+
+	if(href_list["select_contact"])
+		var/datum/vessel_contact/target = locate(href_list["select_contact"]) in my_sub.detected_targets
+		if(target)
+			selected_contact = target
+
+	if(href_list["tag_contact"])
+		var/datum/vessel_contact/target = locate(href_list["tag_contact"]) in my_sub.detected_targets
+		if(target)
+			if(target in my_sub.tagged_contacts)
+				my_sub.tagged_contacts -= target
+			else
+				my_sub.tagged_contacts += target
 
 	interact(usr)
 
@@ -1144,3 +1285,306 @@
 		to_chat(usr, "<span class='notice'>[sealed] bulkhead(s) sealed.</span>")
 
 	interact(usr)
+
+// ============================================================
+// OVERWORLD MAP DISPLAY — ASCII tactical map
+// ============================================================
+
+/obj/structure/machinery/sub_control/map_display
+	name = "tactical map display"
+	icon = 'icons/obj/computers.dmi'
+	icon_state = "wallconsole"
+	scr_overlay = "wallconsole_map"
+	var/map_range = 20000   // Meters displayed from center to edge (half-width)
+	var/map_size = 15        // Grid cells radius (15x15 grid = 31x31)
+
+/obj/structure/machinery/sub_control/map_display/get_ui_content()
+	var/dat = ""
+
+	// === STATUS BAR ===
+	dat += "<div class='panel' style='padding:8px; margin-bottom:8px;'>"
+	dat += "<div class='flex-between'>"
+	dat += "<div class='label'>TACTICAL MAP</div>"
+	dat += "<div style='color:#888;'>[my_sub.x_pos], [my_sub.y_pos] | HDG [round(my_sub.heading)]&deg;</div>"
+	dat += "</div>"
+	dat += "<div class='flex-row' style='gap:8px; margin-top:6px;'>"
+	dat += "<a href='?src=\ref[src];range_up=1' class='btn btn-blue'>&#9650; ZOOM OUT</a>"
+	dat += "<a href='?src=\ref[src];range_down=1' class='btn btn-blue'>&#9660; ZOOM IN</a>"
+	dat += "<div style='color:#888;'>RANGE: [map_range / 1000]km</div>"
+	dat += "</div>"
+	dat += "</div>"
+
+	// === MAP GRID ===
+	var/grid_dim = map_size * 2 + 1
+	var/cell_px = 16
+
+	dat += "<div class='panel crt-overlay' style='padding:10px;'>"
+	dat += "<div style='background:#001a00; border:1px solid #0a0; padding:8px; position:relative;'>"
+
+	// Compass labels
+	dat += "<div style='text-align:center; font-size:9px; color:#0a0; margin-bottom:4px;'>N</div>"
+
+	dat += "<div style='display:flex; align-items:center;'>"
+	dat += "<div style='font-size:9px; color:#0a0; padding-right:4px;'>W</div>"
+
+	// Grid
+	dat += "<div style='position:relative; width:[grid_dim * cell_px]px; height:[grid_dim * cell_px]px; background:#000; border:1px solid #0a0;'>"
+
+	// Draw grid lines (faint)
+	for(var/i = 0; i <= grid_dim; i++)
+		var/line_pos = i * cell_px
+		dat += "<div style='position:absolute; left:0; right:0; top:[line_pos]px; height:1px; background:#0a200a;'></div>"
+		dat += "<div style='position:absolute; top:0; bottom:0; left:[line_pos]px; width:1px; background:#0a200a;'></div>"
+
+	// Draw tagged contacts from sonar/radar
+	for(var/datum/vessel_contact/C in my_sub.tagged_contacts)
+		if(QDELETED(C)) continue
+		// Calculate position on grid using bearing and range
+		var/rel_x = C.range * sin(C.bearing)  // sin gives east-west (bearing 90 = east)
+		var/rel_y = C.range * cos(C.bearing)  // cos gives north-south (bearing 0 = north)
+		var/cell_x = map_size + round(rel_x / map_range * map_size)
+		var/cell_y = map_size - round(rel_y / map_range * map_size) // Y inverted (screen Y goes down)
+		// Clamp to grid
+		cell_x = max(0, min(grid_dim - 1, cell_x))
+		cell_y = max(0, min(grid_dim - 1, cell_y))
+		var/pix_x = cell_x * cell_px + cell_px / 2
+		var/pix_y = cell_y * cell_px + cell_px / 2
+		var/contact_color = "#0ff"
+		if(C.contact_type == SUB_CONTACT_AIR)
+			contact_color = "#f80"
+		else if(C.contact_type == SUB_CONTACT_SURFACE)
+			contact_color = "#0af"
+		else if(C.nationality == SUB_NATION_HOSTILE)
+			contact_color = "#f00"
+		// Contact marker
+		dat += "<div style='position:absolute; left:[pix_x - 4]px; top:[pix_y - 4]px; width:8px; height:8px; background:[contact_color]; border-radius:50%; box-shadow:0 0 6px [contact_color]; z-index:3;'></div>"
+		// Label
+		dat += "<div style='position:absolute; left:[pix_x + 6]px; top:[pix_y - 5]px; font-size:7px; color:[contact_color]; white-space:nowrap; z-index:3;'>[C.name]</div>"
+		// Range/bearing label below
+		dat += "<div style='position:absolute; left:[pix_x + 6]px; top:[pix_y + 3]px; font-size:6px; color:#888; white-space:nowrap; z-index:3;'>[round(C.range / 1000)]km [round(C.bearing)]&deg;</div>"
+
+	// Draw detected but untagged contacts (faint blips)
+	for(var/datum/vessel_contact/C in my_sub.detected_targets)
+		if(C in my_sub.tagged_contacts) continue
+		var/rel_x = C.range * sin(C.bearing)
+		var/rel_y = C.range * cos(C.bearing)
+		var/cell_x = map_size + round(rel_x / map_range * map_size)
+		var/cell_y = map_size - round(rel_y / map_range * map_size)
+		cell_x = max(0, min(grid_dim - 1, cell_x))
+		cell_y = max(0, min(grid_dim - 1, cell_y))
+		var/pix_x = cell_x * cell_px + cell_px / 2
+		var/pix_y = cell_y * cell_px + cell_px / 2
+		var/blip_color = C.contact_type == SUB_CONTACT_AIR ? "#840" : C.contact_type == SUB_CONTACT_SURFACE ? "#048" : "#080"
+		dat += "<div style='position:absolute; left:[pix_x - 2]px; top:[pix_y - 2]px; width:4px; height:4px; background:[blip_color]; border-radius:50%; opacity:0.5; z-index:2;'></div>"
+
+	// Player sub (center) with heading indicator
+	var/center_px = map_size * cell_px + cell_px / 2
+	var/heading_indicator_len = 12
+	var/hdx = heading_indicator_len * sin(my_sub.heading)
+	var/hdy = -heading_indicator_len * cos(my_sub.heading) // negative because screen Y is inverted
+	dat += "<div style='position:absolute; left:[center_px - 4]px; top:[center_px - 4]px; width:8px; height:8px; background:#fff; border:2px solid #0f0; border-radius:50%; box-shadow:0 0 8px #0f0; z-index:5;'></div>"
+	dat += "<div style='position:absolute; left:[center_px + hdx - 1]px; top:[center_px + hdy - 1]px; width:2px; height:2px; background:#0f0; z-index:5;'></div>"
+	dat += "<div style='position:absolute; left:[center_px + 10]px; top:[center_px - 5]px; font-size:8px; color:#0f0; font-weight:bold; z-index:5;'>YOU</div>"
+
+	// Grid scale indicator
+	var/scale_km = map_range / map_size / 1000
+	var/scale_cells = max(1, round(5 / scale_km))
+	dat += "<div style='position:absolute; right:4px; bottom:4px; font-size:7px; color:#0a0; z-index:3;'>"
+	dat += "[scale_km * scale_cells]km"
+	dat += "</div>"
+
+	dat += "</div>" // end grid
+
+	dat += "<div style='text-align:center; font-size:9px; color:#0a0; margin-top:4px;'>S</div>"
+	dat += "<div style='text-align:right; font-size:9px; color:#0a0; margin-top:-10px; margin-right:-12px;'>E</div>"
+
+	dat += "</div>" // end crt-overlay panel
+
+	// === LEGEND ===
+	dat += "<div class='panel' style='padding:8px; margin-top:8px;'>"
+	dat += "<div class='label'>LEGEND</div>"
+	dat += "<div class='flex-row' style='gap:12px; margin-top:6px; font-size:10px;'>"
+	dat += "<div><span style='display:inline-block; width:8px; height:8px; background:#fff; border:2px solid #0f0; border-radius:50%; vertical-align:middle;'></span> Player Sub</div>"
+	dat += "<div><span style='display:inline-block; width:8px; height:8px; background:#0ff; border-radius:50%; vertical-align:middle;'></span> Tagged Contact</div>"
+	dat += "<div><span style='display:inline-block; width:6px; height:6px; background:#f00; border-radius:50%; vertical-align:middle;'></span> Hostile</div>"
+	dat += "<div><span style='display:inline-block; width:6px; height:6px; background:#0af; border-radius:50%; vertical-align:middle;'></span> Surface</div>"
+	dat += "<div><span style='display:inline-block; width:6px; height:6px; background:#f80; border-radius:50%; vertical-align:middle;'></span> Air</div>"
+	dat += "<div><span style='display:inline-block; width:4px; height:4px; background:#080; border-radius:50%; vertical-align:middle; opacity:0.5;'></span> Untagged</div>"
+	dat += "</div>"
+	dat += "</div>"
+
+	return dat
+
+/obj/structure/machinery/sub_control/map_display/Topic(href, href_list)
+	if(..()) return 1
+	if(!can_use(usr)) return
+
+	if(href_list["range_up"])
+		map_range = min(200000, map_range * 2)
+
+	if(href_list["range_down"])
+		map_range = max(2500, map_range / 2)
+
+	interact(usr)
+
+// ============================================================
+// IN-GAME BOOK: Sonar Operator's Manual
+// ============================================================
+
+/obj/item/weapon/book/subcom_sonar_manual
+	name = "Sonar Operator's Manual"
+	icon = 'icons/obj/library.dmi'
+	icon_state = "book"
+	author = "US Navy Submarine Command"
+	title = "Sonar Operator's Manual"
+	unique = TRUE
+
+	dat = {"<html>
+			<head>
+			<style>
+			body {font-family: Verdana, sans-serif; font-size: 12px; background-color: #f0f8ff; padding: 15px;}
+			h1 {font-size: 18px; color: #003366; border-bottom: 2px solid #003366; padding-bottom: 5px;}
+			h2 {font-size: 14px; color: #004488; margin-top: 15px;}
+			h3 {font-size: 12px; color: #006699; margin-top: 10px;}
+			li {margin: 3px 0px 3px 15px;}
+			ul {margin: 5px; padding: 0px;}
+			table {border-collapse: collapse; margin: 10px 0; width: 100%;}
+			th, td {border: 1px solid #003366; padding: 4px 8px; text-align: left; font-size: 11px;}
+			th {background-color: #003366; color: white;}
+			.note {background-color: #ffeecc; border-left: 3px solid #ff9900; padding: 8px; margin: 10px 0; font-size: 11px;}
+			.warning {background-color: #ffcccc; border-left: 3px solid #cc0000; padding: 8px; margin: 10px 0; font-size: 11px;}
+			code {background-color: #e0e0e0; padding: 1px 3px; font-size: 11px;}
+			</style>
+			</head>
+			<body>
+
+			<h1>SONAR OPERATOR'S MANUAL</h1>
+			<p><i>Classification: UNCLASSIFIED // For training purposes</i></p>
+
+			<h2>1. SONAR MODES</h2>
+
+			<h3>Passive Sonar</h3>
+			<ul>
+			<li>LISTENS only. Does not emit sound. <b>Stealth.</b></li>
+			<li>Detects submerged contacts by their acoustic signature.</li>
+			<li>Detection range: ~20,000m (varies with target noise and ocean conditions).</li>
+			<li>Cannot detect surface vessels or aircraft (they make no underwater sound).</li>
+			<li>Power draw: 50 kW.</li>
+			</ul>
+
+			<h3>Active Sonar</h3>
+			<ul>
+			<li>EMITS sound pulses (pings). Detects everything.</li>
+			<li>Detection range: ~50,000m.</li>
+			<li><b class="warning">WARNING: Active sonar makes your submarine extremely loud (noise level 100). Enemy submarines will detect you from far away.</b></li>
+			<li>Power draw: 200 kW.</li>
+			</ul>
+
+			<h2>2. BEARING SWEEP</h2>
+			<p>The bearing sweep display rotates continuously, showing detected contacts as blips on a 360-degree compass. The sweep line indicates the current bearing being scanned.</p>
+			<ul>
+			<li><b>Green blips:</b> Standard contacts (untagged).</li>
+			<li><b>Cyan blips:</b> Selected/highlighted contacts.</li>
+			<li>Click a contact in the list to select it for LOFAR analysis.</li>
+			</ul>
+
+			<h2>3. LOFAR SPECTRAL ANALYSIS</h2>
+			<p>Low Frequency Analysis and Recording (LOFAR) identifies vessels by their acoustic tonals. Every ship has a unique sound signature based on its machinery.</p>
+
+			<h3>The Three Tonals</h3>
+			<table>
+			<tr><th>Band</th><th>Frequency</th><th>Source</th><th>What It Tells You</th></tr>
+			<tr><td><b>LOW</b> (green)</td><td>10-500 Hz</td><td>Propeller blade rate</td><td>Number of blades, RPM. Larger props = lower frequency.</td></tr>
+			<tr><td><b>MID</b> (yellow)</td><td>500-900 Hz</td><td>Main engines</td><td>Engine type, power output. Diesel vs nuclear have different ranges.</td></tr>
+			<tr><td><b>HIGH</b> (orange)</td><td>1000-2000 Hz</td><td>Auxiliary machinery</td><td>Pumps, generators, HVAC. Unique per vessel class.</td></tr>
+			</table>
+
+			<div class="note"><b>Tip:</b> Select a contact by clicking it in the contact list. The LOFAR display will show its three tonals and the classification.</div>
+
+			<h2>4. SHIP IDENTIFICATION DATABASE</h2>
+
+			<h3>Surface Combatants</h3>
+			<table>
+			<tr><th>Vessel</th><th>LOW (Hz)</th><th>MID (Hz)</th><th>HIGH (Hz)</th><th>Notes</th></tr>
+			<tr><td>Perry FFG</td><td>170</td><td>840</td><td>1890</td><td>ASW frigate. Loud auxiliaries.</td></tr>
+			<tr><td>Kirov CGN</td><td>120</td><td>490</td><td>920</td><td>Nuclear cruiser. Very low prop rate (huge blades).</td></tr>
+			<tr><td>Krivak FFG</td><td>240</td><td>930</td><td>1520</td><td>Patrol frigate. Distinctive mid-range.</td></tr>
+			<tr><td>Nanuchka CVS</td><td>210</td><td>760</td><td>1650</td><td>Light corvette. Fast, agile.</td></tr>
+			<tr><td>Grisha MPK</td><td>190</td><td>680</td><td>1440</td><td>ASW patrol boat. Small but dangerous.</td></tr>
+			</table>
+
+			<h3>Merchant Vessels</h3>
+			<table>
+			<tr><th>Vessel</th><th>LOW (Hz)</th><th>MID (Hz)</th><th>HIGH (Hz)</th><th>Notes</th></tr>
+			<tr><td>Bulk Freighter</td><td>170</td><td>840</td><td>1890</td><td>Large, slow, loud. Easy to detect.</td></tr>
+			<tr><td>Fleet Tanker</td><td>130</td><td>620</td><td>1350</td><td>Very slow. High noise threshold (hard to hear).</td></tr>
+			</table>
+
+			<h3>Submarines</h3>
+			<table>
+			<tr><th>Vessel</th><th>LOW (Hz)</th><th>MID (Hz)</th><th>HIGH (Hz)</th><th>Notes</th></tr>
+			<tr><td>Kilo SSK</td><td>380</td><td>720</td><td>1200</td><td>Diesel-electric. Very quiet when running on battery.</td></tr>
+			<tr><td>Akula SSN</td><td>140</td><td>350</td><td>880</td><td>Nuclear attack sub. Extremely quiet. High threat.</td></tr>
+			<tr><td>Delta III SSBN</td><td>150</td><td>380</td><td>950</td><td>Nuclear ballistic sub. Carries SLBMs. Heavy escort expected.</td></tr>
+			</table>
+
+			<h3>Aircraft (Active Sonar Only)</h3>
+			<table>
+			<tr><th>Aircraft</th><th>Notes</th></tr>
+			<tr><td>Tu-22M Backfire</td><td>Bomber. Carries ASMs. Very dangerous. Low radar cross-section.</td></tr>
+			<tr><td>Su-24 Fencer</td><td>Attack aircraft. Carries ASMs and bombs.</td></tr>
+			<tr><td>Il-38 May</td><td>Maritime patrol. Carries depth charges and torpedoes. Has MAD (magnetic anomaly detector).</td></tr>
+			</table>
+
+			<div class="note"><b>Tip:</b> Nuclear submarines have lower prop rates (larger blades) than diesel boats. If you see LOW tonal below 200 Hz, it's likely nuclear-powered.</div>
+
+			<h2>5. TACTICAL MAP</h2>
+			<p>The tactical map display shows your position and all tagged contacts on a grid. Use the TAG button on the sonar or radar contact list to mark contacts for display.</p>
+			<ul>
+			<li><b>White circle:</b> Your submarine (center).</li>
+			<li><b>Cyan markers:</b> Tagged contacts with name, range, and bearing labels.</li>
+			<li><b>Faint blips:</b> Detected but untagged contacts.</li>
+			<li>Use ZOOM IN/OUT to adjust the display range (2.5km to 200km).</li>
+			</ul>
+
+			<h3>Map Legend</h3>
+			<table>
+			<tr><th>Symbol</th><th>Meaning</th></tr>
+			<tr><td><span style="color:#0f0;">&#9679;</span> White with green border</td><td>Your submarine</td></tr>
+			<tr><td><span style="color:#0ff;">&#9679;</span> Cyan</td><td>Tagged contact</td></tr>
+			<tr><td><span style="color:#f00;">&#9679;</span> Red</td><td>Hostile contact</td></tr>
+			<tr><td><span style="color:#0af;">&#9679;</span> Blue</td><td>Surface contact</td></tr>
+			<tr><td><span style="color:#f80;">&#9679;</span> Orange</td><td>Air contact</td></tr>
+			<tr><td><span style="color:#080;">&#9679;</span> Faint green</td><td>Untagged contact</td></tr>
+			</table>
+
+			<h2>6. OPERATIONAL PROCEDURES</h2>
+
+			<h3>Startup Sequence</h3>
+			<ol>
+			<li>Power ON the sonar system.</li>
+			<li>Select PASSIVE mode (recommended for stealth).</li>
+			<li>Wait for bearing sweep to complete full rotation.</li>
+			<li>Review detected contacts in the contact list.</li>
+			<li>Click contacts to view LOFAR analysis and identify.</li>
+			<li>TAG important contacts for the tactical map.</li>
+			</ol>
+
+			<h3>When to Use Active Sonar</h3>
+			<ul>
+			<li>When you need to find a specific target at long range.</li>
+			<li>When you are not concerned about stealth (e.g., during combat).</li>
+			<li>When you suspect a submarine is nearby but passive cannot locate it.</li>
+			</ul>
+
+			<div class="warning"><b>Remember:</b> Active sonar is a double-edged sword. You will find them, but they will also find YOU. Use sparingly.</div>
+
+			<h3>Noise Discipline</h3>
+			<ul>
+			<li>Your noise level increases with speed. Slow down to reduce detection.</li>
+			<li>Active sonar sets noise to 100. Passive sonar noise = speed * 5.</li>
+			<li>Enemy passive detection threshold varies by vessel type (8-50).</li>
+			</ul>
+
+			</body>
+			</html>"}

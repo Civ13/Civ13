@@ -112,6 +112,8 @@ var/global/list/all_submarines = list()
 	var/sonar_mode = SUB_SONAR_PASSIVE
 	var/list/detected_targets = list()
 	var/datum/vessel_contact/selected_target // For weapons targeting
+	var/bearing_sweep = 0            // Current sweep angle (0-360) for sonar bearing display
+	var/list/tagged_contacts = list() // Contacts tagged for overworld map display
 	
 	// Physical World Links
 	var/list/internal_turfs = list() // Turfs that make up the interior
@@ -270,6 +272,9 @@ var/global/list/all_submarines = list()
 
 	detected_targets.Cut()
 	var/sensor_range = (sonar_mode == SUB_SONAR_ACTIVE) ? 50000 : 20000 // meters
+
+	// Rotate bearing sweep (15 degrees per tick)
+	bearing_sweep = (bearing_sweep + 15) % 360
 
 	// Detect other player submarines
 	for(var/datum/submarine/other_sub in all_submarines)

@@ -26,6 +26,17 @@
 		return FALSE
 	return TRUE
 
+/obj/structure/machinery/sub_physical/attack_hand(mob/user)
+	if(!can_use_sub(user)) return
+	..()
+
+/obj/structure/machinery/sub_physical/attack_ghost(mob/observer/ghost/user)
+	var/obj/map_metadata/subcom13/SM = map
+	if(istype(SM) && SM.single_player)
+		attack_hand(user)
+		return
+	..()
+
 /obj/structure/machinery/sub_physical/proc/get_efficiency()
 	return max(0, health / max_health)
 
