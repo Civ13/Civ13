@@ -42,8 +42,8 @@
 // Torpedo Constants
 #define SUB_TORPEDO_SPEED     40     // Knots
 #define SUB_TORPEDO_LIFE      800    // Max range in virtual units
-#define SUB_TORPEDO_DETONATE  0.1    // Detonation distance threshold
-#define SUB_TORPEDO_DAMAGE    150    // Base hull damage on hit
+#define SUB_TORPEDO_DETONATE  0.15   // Detonation distance threshold
+#define SUB_TORPEDO_DAMAGE    250    // Base hull damage on hit
 
 // Fast Travel
 #define SUB_FAST_TRAVEL_MULT  10     // Speed multiplier during fast travel

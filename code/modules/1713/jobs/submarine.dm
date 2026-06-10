@@ -42,6 +42,10 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	// Register with submarine crew tracking
+	if(global.all_submarines.len)
+		var/datum/submarine/sub = global.all_submarines[1]
+		sub.add_crew_member(H, "Captain")
 	return TRUE
 
 /datum/job/american/submarine_officer
@@ -81,6 +85,10 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	// Register with submarine crew tracking
+	if(global.all_submarines.len)
+		var/datum/submarine/sub = global.all_submarines[1]
+		sub.add_crew_member(H, "Officer")
 	return TRUE
 
 /datum/job/american/submarine_crew
@@ -114,4 +122,8 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	// Register with submarine crew tracking
+	if(global.all_submarines.len)
+		var/datum/submarine/sub = global.all_submarines[1]
+		sub.add_crew_member(H, "Crewman")
 	return TRUE

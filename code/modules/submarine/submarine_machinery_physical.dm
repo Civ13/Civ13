@@ -14,6 +14,18 @@
 	if(global.all_submarines.len)
 		my_sub = global.all_submarines[1]
 
+/obj/structure/machinery/sub_physical/proc/can_use_sub(mob/user)
+	// Standard check: alive, adjacent, not incapacitated
+	if(user.incapacitated() || user.lying) return FALSE
+	if(get_dist(user, src) > 1) return FALSE
+	// Ghost/dead check: allowed only in single-player mode
+	if(user.stat == DEAD || isobserver(user))
+		var/obj/map_metadata/subcom13/SM = map
+		if(istype(SM) && SM.single_player)
+			return TRUE
+		return FALSE
+	return TRUE
+
 /obj/structure/machinery/sub_physical/proc/get_efficiency()
 	return max(0, health / max_health)
 
@@ -253,7 +265,7 @@
 	var/drain_range = 1            // How many turfs away it can drain (1 = adjacent only)
 
 /obj/structure/machinery/sub_physical/bilge_pump/attack_hand(mob/user)
-	if(..()) return
+	if(!can_use_sub(user)) return
 	if(!my_sub) return
 	active = !active
 	if(active)
@@ -342,7 +354,7 @@
 	..()
 
 /obj/structure/machinery/sub_physical/vent_duct/attack_hand(mob/user)
-	if(..()) return
+	if(!can_use_sub(user)) return
 	active = !active
 	if(active)
 		to_chat(user, "<span class='notice'>You open the ventilation duct. Air begins to flow.</span>")
@@ -379,7 +391,7 @@
 	var/o2_inject_rate = 0.2       // Moles of O2 added per tick when inject_o2 is TRUE
 
 /obj/structure/machinery/sub_physical/scrubber/attack_hand(mob/user)
-	if(..()) return
+	if(!can_use_sub(user)) return
 	if(!my_sub) return
 	active = !active
 	if(active)
@@ -428,7 +440,7 @@
 	var/active = FALSE
 
 /obj/structure/machinery/sub_physical/breach_sealant/attack_hand(mob/user)
-	if(..()) return
+	if(!can_use_sub(user)) return
 	if(!my_sub) return
 	if(sealant_remaining <= 0)
 		to_chat(user, "<span class='warning'>The sealant supply is depleted!</span>")
@@ -477,7 +489,7 @@
 	var/fill_rate = 5              // cm of water moved per tick
 
 /obj/structure/machinery/sub_physical/ballast_valve/attack_hand(mob/user)
-	if(..()) return
+	if(!can_use_sub(user)) return
 	if(!my_sub) return
 	valve_open = !valve_open
 	if(valve_open)
@@ -505,7 +517,7 @@
 	var/is_loaded = FALSE
 
 /obj/structure/machinery/sub_physical/torpedo_tube/attack_hand(mob/user)
-	if(..()) return
+	if(!can_use_sub(user)) return
 	if(!my_sub) return
 
 	to_chat(user, "<span class='notice'>Tube [tube_id] status: [my_sub.tubes_loaded[tube_id] ? "LOADED" : "EMPTY"]</span>")
@@ -554,6 +566,7 @@
 	var/food_stored = 50
 
 /obj/structure/machinery/sub_physical/galley/attack_hand(mob/user)
+	if(!can_use_sub(user)) return
 	if(health < 30)
 		to_chat(user, "<span class='warning'>The processor is too damaged to function.</span>")
 		return
@@ -577,7 +590,8 @@
 		/obj/item/weapon/weldingtool = 2,
 		/obj/item/weapon/reagent_containers/glass/fire_extinguisher = 2,
 		/obj/item/weapon/screwdriver = 1,
-		/obj/item/weapon/wrench = 1
+		/obj/item/weapon/wrench = 1,
+		/obj/item/weapon/torpedo = 4
 	)
 
 /obj/structure/sub_physical/equipment_storage/attack_hand(mob/user)

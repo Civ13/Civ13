@@ -16,6 +16,8 @@
 	var/datum/world_map_controller/parent_map
 	var/obj/structure/machinery/sub_control/radio_console/radio_console
 	var/next_mission_delay = 0           // Ticks before next mission spawns
+	var/missions_completed = 0          // Total missions successfully completed
+	var/missions_failed = 0             // Total missions failed
 
 	// Timers and tracking
 	var/mission_timer = 0                // Generic countdown (recon duration, ambush timeout)
@@ -380,6 +382,7 @@
 /datum/mission_controller/proc/complete_mission(var/flavor_msg)
 	mission_active = FALSE
 	is_completed = TRUE
+	missions_completed++
 
 	var/msg = flavor_msg || "Objective complete. Well done, Commander. Returning to patrol status."
 	send_radio_message("COMMAND: [msg] Next orders incoming shortly.")
@@ -392,6 +395,7 @@
 /datum/mission_controller/proc/fail_mission(var/reason)
 	mission_active = FALSE
 	is_completed = FALSE
+	missions_failed++
 
 	send_radio_message("COMMAND: Mission failed. [reason] Regroup and await new orders.")
 

@@ -59,6 +59,11 @@
 	var/patrol_max_x = 900
 	var/patrol_max_y = 900
 
+	// Attack circle parameters
+	var/circle_angle = 0          // Current angle for circle-strafing
+	var/circle_radius = 25        // Radius of attack circle
+	var/circle_cw = TRUE          // Direction: TRUE = clockwise
+
 /datum/vessel_contact/npc/New(var/_name, var/_x, var/_y)
 	..(_name, SUB_CONTACT_SURFACE, SUB_NATION_HOSTILE)
 	x_pos = _x
@@ -183,10 +188,13 @@ var/global/list/npc_type_cache = list()
 	navigate_to(last_known_x, last_known_y)
 
 	var/dist = euclidean_distance(x_pos, y_pos, last_known_x, last_known_y)
-	if(dist < 10)
-		// Reached last known position, switch to ATTACK if close enough to target area
+	if(dist < 30)
+		// Reached last known position, switch to ATTACK
 		ai_state = SUB_AI_ATTACK
 		attack_cooldown = 0
+		// Initialize circle in a random direction
+		circle_cw = prob(50)
+		circle_angle = rand(0, 360)
 	else if(dist > sensor_range)
 		// Lost the contact, return to patrol after a delay
 		if(tick_counter > 30)
@@ -196,18 +204,36 @@ var/global/list/npc_type_cache = list()
 // ---- AI State: ATTACK ----
 
 /datum/vessel_contact/npc/proc/process_attack()
-	speed = 0  // Stop or circle
+	if(!global.subcom_map || !global.subcom_map.player_sub)
+		return
+
+	var/datum/submarine/player = global.subcom_map.player_sub
+	var/dist = euclidean_distance(x_pos, y_pos, player.x_pos, player.y_pos)
+
+	// Circle-strafe around the player instead of sitting still
+	var/desired_dist = circle_radius
+	if(speed < 5)
+		speed = 8  // Maintain minimum speed for maneuvering
+
+	// Calculate target position on the circle around the player
+	circle_angle += circle_cw ? 8 : -8  // Degrees per tick
+	if(circle_angle >= 360) circle_angle -= 360
+	if(circle_angle <= 0) circle_angle += 360
+
+	var/circle_x = player.x_pos + cos(circle_angle) * desired_dist
+	var/circle_y = player.y_pos + sin(circle_angle) * desired_dist
+
+	// Steer toward the circle point
+	navigate_to(circle_x, circle_y)
+
+	// Fire weapons when in range
 	attack_cooldown--
 	if(attack_cooldown <= 0)
 		fire_weapons_at_player()
-		attack_cooldown = 20  // Default cooldown in ticks between volleys
+		attack_cooldown = 20
 
-	// Re-evaluate: if player is too far, go back to hunt
-	if(!global.subcom_map || !global.subcom_map.player_sub)
-		return
-	var/datum/submarine/player = global.subcom_map.player_sub
-	var/dist = euclidean_distance(x_pos, y_pos, player.x_pos, player.y_pos)
-	if(dist > 30)
+	// If player is too far, chase them
+	if(dist > 40)
 		ai_state = SUB_AI_HUNT
 		last_known_x = player.x_pos
 		last_known_y = player.y_pos
@@ -278,8 +304,8 @@ var/global/list/npc_type_cache = list()
 				if("missile")
 					player.apply_weapon_hit(weapon["damage"], "missile", x_pos, y_pos)
 				if("depth_charge")
-					if(dist < 10)
-						player.apply_weapon_hit(weapon["damage"], "depth_charge", x_pos, y_pos)
+					// Depth charges have their own range check via weapon["range"]
+					player.apply_weapon_hit(weapon["damage"], "depth_charge", x_pos, y_pos)
 				if("gun")
 					player.apply_weapon_hit(weapon["damage"], "gun", x_pos, y_pos)
 			weapon_timers[i] = weapon["cooldown"]

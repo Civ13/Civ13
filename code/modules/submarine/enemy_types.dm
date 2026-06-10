@@ -95,9 +95,9 @@
 
 /datum/subcom_enemy/cruiser/New()
 	..()
-	weapons += new /datum/subcom_weapon("P-700 Granit", 500, 60000, "missile", 55)
-	weapons += new /datum/subcom_weapon("SS-N-14 Silex", 300, 25000, "missile", 40)
-	weapons += new /datum/subcom_weapon("53-65 Torpedo", 280, 20000, "torpedo", 35)
+	weapons += new /datum/subcom_weapon("P-700 Granit", 400, 60000, "missile", 55)
+	weapons += new /datum/subcom_weapon("SS-N-14 Silex", 250, 25000, "missile", 40)
+	weapons += new /datum/subcom_weapon("53-65 Torpedo", 220, 20000, "torpedo", 35)
 
 /datum/subcom_enemy/frigate
 	name = "Krivak-class FFG"
@@ -324,8 +324,8 @@
 
 /datum/subcom_enemy/sub_ballistic/New()
 	..()
-	weapons += new /datum/subcom_weapon("R-29 Vysota SLBM", 1000, 80000, "missile", 120)
-	weapons += new /datum/subcom_weapon("53-65M Torpedo", 230, 18000, "torpedo", 35)
+	weapons += new /datum/subcom_weapon("R-29 Vysota SLBM", 600, 80000, "missile", 120)
+	weapons += new /datum/subcom_weapon("53-65M Torpedo", 200, 18000, "torpedo", 35)
 
 // ============================================================
 // HELPER: Spawn an NPC from type definition

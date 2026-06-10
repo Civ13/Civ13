@@ -1,5 +1,69 @@
 var/global/list/all_submarines = list()
 
+// ============================================================
+// Crew Member datum — tracks individual crew status
+// ============================================================
+/datum/crew_member
+	var/mob/living/human/member   // Reference to the living mob
+	var/name = "Unknown"
+	var/assignment = "Crewman"    // Job assignment
+	var/role = "crew"             // "captain", "officer", "crew"
+	var/health = 100              // Current health percentage
+	var/total_damage = 0          // Sum of all brute+burn damage
+	var/oxygen_status = "Nominal" // "Nominal", "Low O2", "Suffocating", "Drowning"
+	var/compartment = ""          // Current compartment ID
+	var/conscious = TRUE          // FALSE if unconscious/dead
+	var/injured = FALSE           // TRUE if has significant damage
+
+/datum/crew_member/New(var/mob/living/human/_mob, var/_assignment)
+	if(!_mob) return
+	member = _mob
+	name = _mob.real_name
+	assignment = _assignment
+
+	// Determine role from assignment
+	if(_assignment == "Captain")
+		role = "captain"
+	else if(_assignment == "Officer")
+		role = "officer"
+	else
+		role = "crew"
+
+/datum/crew_member/proc/update_status()
+	if(!member || QDELETED(member))
+		return FALSE
+
+	// Health tracking
+	health = member.health
+	total_damage = member.getBruteLoss() + member.getBurnLoss() + member.getToxLoss() + member.getOxyLoss()
+	injured = (total_damage > 20)
+
+	// Consciousness
+	conscious = (member.stat == CONSCIOUS)
+
+	// Compartment check
+	compartment = ""
+	var/turf/floor/sub_deck/T = get_turf(member)
+	if(T && istype(T) && T.compartment_id)
+		compartment = T.compartment_id
+
+	// Oxygen status
+	if(T && istype(T))
+		if(T.water_depth >= SUB_WATER_DROWNING_HEAVY)
+			oxygen_status = "Drowning"
+		else if(T.water_depth >= SUB_WATER_DROWNING_MOD)
+			oxygen_status = "Drowning"
+		else if(T.oxygen_moles < 5)
+			oxygen_status = "Suffocating"
+		else if(T.oxygen_moles < SUB_ATMOS_NORMAL_O2 * 0.5)
+			oxygen_status = "Low O2"
+		else
+			oxygen_status = "Nominal"
+	else
+		oxygen_status = "Unknown"
+
+	return TRUE
+
 /datum/submarine
 	// General/Structural
 	var/vessel_name = "SSN-Civ13"
@@ -8,8 +72,8 @@ var/global/list/all_submarines = list()
 	var/has_nuclear_engine = TRUE  // FALSE for diesel-only subs
 
 	// Movement & Physics
-	var/x_pos = 1000.0
-	var/y_pos = 1000.0
+	var/x_pos = 500.0
+	var/y_pos = 500.0
 	var/heading = 0.0
 	var/target_heading = 0.0
 	var/depth = 0.0
@@ -54,11 +118,17 @@ var/global/list/all_submarines = list()
 	var/list/reactor_turfs = list()  // Turfs in the reactor rooms
 	var/list/stern_planes = list()   // References to physical plane objects
 
+	// Crew Management
+	var/list/crew = list()           // All /datum/crew_member on this sub
+	var/tick_counter = 0             // Process tick counter
+
 /datum/submarine/New()
 	..()
 	all_submarines += src
 
 /datum/submarine/proc/process_tick()
+	tick_counter++
+
 	// 1. Reactor Thermodynamics Loop
 	for(var/i=1, i<=2, i++)
 		if(r_melted[i])
@@ -183,6 +253,10 @@ var/global/list/all_submarines = list()
 	// Emergency Shutdown
 	if(battery_current <= 0)
 		battery_shutdown()
+
+	// 4. Crew Status Update (every 10 ticks to reduce overhead)
+	if(tick_counter % 10 == 0)
+		update_crew_status()
 
 /datum/submarine/proc/sonar_sweep()
 	if(!sonar_active)
@@ -400,6 +474,93 @@ var/global/list/all_submarines = list()
 	if(breached_hulls >= 3)
 		if(global.subcom_map && global.subcom_map.missions && global.subcom_map.missions.radio_console)
 			global.subcom_map.missions.radio_console.add_log("EMERGENCY: Multiple hull breaches! submarine integrity critically compromised!")
+
+// ============================================================
+// Crew Management Procs
+// ============================================================
+
+/datum/submarine/proc/add_crew_member(var/mob/living/human/H, var/assignment)
+	if(!H) return
+	// Check if already tracked
+	for(var/datum/crew_member/CM in crew)
+		if(CM.member == H)
+			return CM
+	var/datum/crew_member/CM = new(H, assignment)
+	crew += CM
+	return CM
+
+/datum/submarine/proc/remove_crew_member(var/mob/living/human/H)
+	for(var/datum/crew_member/CM in crew)
+		if(CM.member == H || QDELETED(CM.member))
+			crew -= CM
+			qdel(CM)
+			return
+
+/datum/submarine/proc/update_crew_status()
+	// Remove dead/deleted crew
+	var/list/to_remove = list()
+	for(var/datum/crew_member/CM in crew)
+		if(!CM.update_status())
+			to_remove += CM
+	for(var/datum/crew_member/CM in to_remove)
+		crew -= CM
+		qdel(CM)
+
+	// Auto-detect crew from mobs on the sub's Z-level
+	for(var/mob/living/human/H in world)
+		if(H.stat == DEAD) continue
+		var/turf/floor/sub_deck/T = get_turf(H)
+		if(T && istype(T) && (T in internal_turfs))
+			// Check if already tracked
+			var/found = FALSE
+			for(var/datum/crew_member/CM in crew)
+				if(CM.member == H)
+					found = TRUE
+					break
+			if(!found)
+				add_crew_member(H, H.original_job_title ? H.original_job_title : "Crewman")
+
+/datum/submarine/proc/get_crew_count()
+	return crew.len
+
+/datum/submarine/proc/get_crew_by_role(var/role)
+	var/list/result = list()
+	for(var/datum/crew_member/CM in crew)
+		if(CM.role == role)
+			result += CM
+	return result
+
+/datum/submarine/proc/get_injured_crew()
+	var/list/result = list()
+	for(var/datum/crew_member/CM in crew)
+		if(CM.injured)
+			result += CM
+	return result
+
+/datum/submarine/proc/get_suffocating_crew()
+	var/list/result = list()
+	for(var/datum/crew_member/CM in crew)
+		if(CM.oxygen_status != "Nominal")
+			result += CM
+	return result
+
+/datum/submarine/proc/get_crew_in_compartment(var/compartment_id)
+	var/list/result = list()
+	for(var/datum/crew_member/CM in crew)
+		if(CM.compartment == compartment_id)
+			result += CM
+	return result
+
+/datum/submarine/proc/get_crew_summary()
+	var/total = crew.len
+	var/injured_count = 0
+	var/suffocating_count = 0
+	var/unconscious_count = 0
+	for(var/datum/crew_member/CM in crew)
+		if(CM.injured) injured_count++
+		if(CM.oxygen_status != "Nominal") suffocating_count++
+		if(!CM.conscious) unconscious_count++
+	return list("total" = total, "injured" = injured_count, "suffocating" = suffocating_count, "unconscious" = unconscious_count)
 
 /obj/effect/step_trigger/sub_leak
 	name = "hull breach"

@@ -21,6 +21,7 @@ var/global/datum/flooding_controller/subcom_flooding
 
 /datum/flooding_controller/proc/register_turf(var/turf/floor/sub_deck/T)
 	if(!T) return
+	if(T in tracked_turfs) return  // Already registered
 	tracked_turfs += T
 	if(T.compartment_id)
 		if(!compartment_turfs[T.compartment_id])

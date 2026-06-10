@@ -31,6 +31,14 @@
 	if(!my_sub)
 		to_chat(user, "<span class='notice'>No submarine link detected.</span>")
 		return FALSE
+	// Single-player mode: allow dead/ghost users
+	if(user.stat == DEAD || isobserver(user))
+		// Check if we're on the subcom13 map with single-player enabled
+		var/obj/map_metadata/subcom13/SM = map
+		if(istype(SM) && SM.single_player)
+			return TRUE
+		to_chat(user, "<span class='warning'>Single-player mode is not enabled.</span>")
+		return FALSE
 	return TRUE
 
 /obj/structure/machinery/sub_control/attack_hand(mob/user)
@@ -997,6 +1005,59 @@
 
 	dat += "</table>"
 	dat += "</div>"
+
+	// === CREW STATUS ===
+	if(my_sub && my_sub.crew.len > 0)
+		dat += "<div class='panel' style='padding:10px; margin-top:8px;'>"
+		dat += "<div class='label'>CREW STATUS</div>"
+		dat += "<table class='data-table'>"
+		dat += "<tr>"
+		dat += "<th style='width:25%;'>NAME</th>"
+		dat += "<th style='width:20%;'>ROLE</th>"
+		dat += "<th style='width:15%; text-align:center;'>STATUS</th>"
+		dat += "<th style='width:20%;'>OXYGEN</th>"
+		dat += "<th style='width:20%;'>COMPARTMENT</th>"
+		dat += "</tr>"
+
+		for(var/datum/crew_member/CM in my_sub.crew)
+			var/status_color = "#0f0"
+			var/status_text = "OK"
+			if(!CM.conscious)
+				status_color = "#f00"
+				status_text = "UNCONSCIOUS"
+			else if(CM.injured)
+				status_color = "#f80"
+				status_text = "INJURED"
+
+			var/o2_color = "#0f0"
+			if(CM.oxygen_status == "Suffocating" || CM.oxygen_status == "Drowning")
+				o2_color = "#f00"
+			else if(CM.oxygen_status == "Low O2")
+				o2_color = "#f80"
+
+			// Compartment display name
+			var/comp_display = CM.compartment ? CM.compartment : "UNKNOWN"
+			switch(CM.compartment)
+				if(SUB_COMP_FORWARD_TORPEDO) comp_display = "FWD TORPEDO"
+				if(SUB_COMP_FORWARD_BATTERY) comp_display = "FWD BATTERY"
+				if(SUB_COMP_OPERATIONS) comp_display = "OPERATIONS"
+				if(SUB_COMP_CREW_QUARTERS) comp_display = "CREW QUARTERS"
+				if(SUB_COMP_GALLEY) comp_display = "GALLEY"
+				if(SUB_COMP_CPO_QUARTERS) comp_display = "CPO QUARTERS"
+				if(SUB_COMP_AFT_BATTERY) comp_display = "AFT BATTERY"
+				if(SUB_COMP_REACTOR_ROOM) comp_display = "REACTOR"
+				if(SUB_COMP_ENGINE_ROOM) comp_display = "ENGINE"
+
+			dat += "<tr>"
+			dat += "<td style='font-weight:bold;'>[CM.name]</td>"
+			dat += "<td>[CM.assignment]</td>"
+			dat += "<td style='text-align:center; color:[status_color];'>[status_text]</td>"
+			dat += "<td style='color:[o2_color];'>[CM.oxygen_status]</td>"
+			dat += "<td>[comp_display]</td>"
+			dat += "</tr>"
+
+		dat += "</table>"
+		dat += "</div>"
 
 	// === ACTION BUTTONS ===
 	dat += "<div class='flex-row' style='justify-content:center; gap:6px; margin-top:6px;'>"

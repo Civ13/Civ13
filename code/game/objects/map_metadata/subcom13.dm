@@ -26,6 +26,7 @@
 	var/game_over = FALSE
 	var/missions_completed = 0
 	var/missions_failed = 0
+	var/single_player = FALSE       // TRUE = single-player mode enabled
 
 /obj/map_metadata/subcom13/New()
 	..()
@@ -62,6 +63,7 @@
 	// bulkhead: 24, Crew: 25-30, bulkhead: 31, Galley: 32-35,
 	// bulkhead: 36, CPO: 37-42, bulkhead: 43, Aft Battery: 44-50,
 	// bulkhead: 51, Reactor: 52-55, Engine: 56-58
+	var/old_id = T.compartment_id
 	switch(T.x)
 		if(3 to 8)
 			T.compartment_id = SUB_COMP_FORWARD_TORPEDO
@@ -81,6 +83,17 @@
 			T.compartment_id = SUB_COMP_REACTOR_ROOM
 		if(56 to 58)
 			T.compartment_id = SUB_COMP_ENGINE_ROOM
+
+	// Update flooding controller compartment mapping if id changed
+	if(T.compartment_id != old_id && global.subcom_flooding)
+		// Remove from old compartment
+		if(old_id && global.subcom_flooding.compartment_turfs[old_id])
+			global.subcom_flooding.compartment_turfs[old_id] -= T
+		// Add to new compartment
+		if(T.compartment_id)
+			if(!global.subcom_flooding.compartment_turfs[T.compartment_id])
+				global.subcom_flooding.compartment_turfs[T.compartment_id] = list()
+			global.subcom_flooding.compartment_turfs[T.compartment_id] += T
 
 /obj/map_metadata/subcom13/update_win_condition()
 	if(game_over)
@@ -111,13 +124,48 @@
 				ticker.finished = TRUE
 				return
 
-	// Update mission completion tracking
-	if(global.subcom_map && global.subcom_map.missions)
-		missions_completed = 0
-		missions_failed = 0
+	// Update mission completion tracking from mission controller
+	if(global.subcom_map)
+		var/datum/mission_controller/MC = global.subcom_map.missions
+		if(MC)
+			missions_completed = MC.missions_completed
+			missions_failed = MC.missions_failed
 
 /obj/map_metadata/subcom13/cross_message(faction)
 	return ""
 
 /obj/map_metadata/subcom13/reverse_cross_message(faction)
 	return ""
+
+// ============================================================
+// Single Player Mode
+// ============================================================
+
+/obj/map_metadata/subcom13/verb/toggle_single_player_mode()
+	set name = "Toggle Single Player Mode"
+	set category = "Server"
+	set desc = "Toggle single-player mode. When enabled, ghosts can interact with submarine machinery."
+	set src in world
+
+	if(!usr || !usr.client) return
+	if(!usr.client.holder)
+		to_chat(usr, "<span class='warning'>Only administrators can toggle single-player mode.</span>")
+		return
+
+	single_player = !single_player
+	if(single_player)
+		world << "<font size=3 color='yellow'><b>Single Player Mode ENABLED.</b> Ghosts may now interact with submarine machinery.</font>"
+	else
+		world << "<font size=3 color='yellow'><b>Single Player Mode DISABLED.</b> Ghosts can no longer interact with machinery.</font>"
+
+// Proc to check if a mob can use sub machinery (ghost check for single-player)
+/obj/map_metadata/subcom13/proc/can_use_sub_machine(var/mob/user)
+	if(!user) return FALSE
+	// Living mobs always allowed
+	if(istype(user, /mob/living))
+		return TRUE
+	// Dead/ghost mobs allowed only in single-player mode on this map
+	if(user.stat == DEAD || isobserver(user))
+		if(single_player)
+			return TRUE
+	return FALSE
