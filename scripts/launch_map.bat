@@ -64,22 +64,25 @@ echo Updating DME...
 set "TMPDME=%TEMP%\civ13_launch.dme"
 set "MAP_INCLUDE=#include "!MAP_REL!""
 
-REM Copy DME, skip lines containing .dmm
-set "FIRST_DMM=1"
+REM Copy DME, skip lines containing .dmm, insert new map before END_INCLUDE
+set "FOUND_END=0"
+set "TMPDME=%TEMP%\civ13_launch.dme"
 (
     for /f "usebackq delims=" %%L in ("%DME%") do (
         echo %%L | findstr /C:".dmm" >nul 2>&1
         if errorlevel 1 (
+            echo %%L | findstr /C:"// END_INCLUDE" >nul 2>&1
+            if not errorlevel 1 (
+                echo %MAP_INCLUDE%
+                set "FOUND_END=1"
+            )
             echo %%L
-        ) else if !FIRST_DMM!==1 (
-            echo %MAP_INCLUDE%
-            set "FIRST_DMM=0"
         )
     )
 ) > "%TMPDME%"
 
-REM If no .dmm line existed, append
-if !FIRST_DMM!==1 (
+REM If no END_INCLUDE found, append at end
+if !FOUND_END!==0 (
     echo.>> "%TMPDME%"
     echo %MAP_INCLUDE%>> "%TMPDME%"
 )

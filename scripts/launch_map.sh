@@ -67,13 +67,11 @@ echo "Map file: $MAP_REL"
 # (BYOND on Linux handles both, and this avoids sed escaping issues).
 MAP_INCLUDE="#include \"${MAP_REL}\""
 
-# Build new DME: keep everything except .dmm lines, then append our map
+# Build new DME: keep everything except .dmm lines, then insert map before END_INCLUDE
 TMPDME=$(mktemp)
 awk '!/\.dmm"/' "$DME" > "$TMPDME"
-# Remove trailing blank lines before re-adding the map include
-sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$TMPDME"
-echo "" >> "$TMPDME"
-echo "$MAP_INCLUDE" >> "$TMPDME"
+# Insert map include before the // END_INCLUDE line
+sed -i "s|^// END_INCLUDE|${MAP_INCLUDE}\n// END_INCLUDE|" "$TMPDME"
 mv "$TMPDME" "$DME"
 
 echo "DME updated: $MAP_INCLUDE"
