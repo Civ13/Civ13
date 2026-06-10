@@ -32,7 +32,7 @@
 	response_disarm = "shoves away"
 	response_harm   = "strikes"
 	stop_automated_movement_when_pulled = FALSE
-	// Tanky and hits very hard — balanced by slow speed
+	// Tanky and hits very hard - balanced by slow speed
 	maxHealth = 220
 	health = 220
 	melee_damage_lower = 30
@@ -110,11 +110,11 @@
 // Returns TRUE if M is carrying an active (lit) light source.
 // Checks hands (base mob), and belt + ID slot (human-only).
 /mob/living/simple_animal/hostile/lightseeker/proc/is_carrying_light(var/mob/living/M)
-	// Hands — defined on base /mob, works for all mobs
+	// Hands - defined on base /mob, works for all mobs
 	for (var/obj/item/flashlight/FL in list(M.r_hand, M.l_hand))
 		if (FL && FL.on)
 			return TRUE
-	// Belt and ID slot — human-only vars
+	// Belt and ID slot - human-only vars
 	if (ishuman(M))
 		var/mob/living/human/H = M
 		if (H.phosphor_dye_timer > 0)
@@ -124,7 +124,7 @@
 				return TRUE
 	return FALSE
 
-// Override FindTarget() — the standard hunt AI calls this to pick a target.
+// Override FindTarget() - the standard hunt AI calls this to pick a target.
 // We only allow mobs carrying an active light, or anyone already adjacent (1 tile).
 /mob/living/simple_animal/hostile/lightseeker/FindTarget()
 	stop_automated_movement = FALSE
@@ -205,7 +205,7 @@
 	response_disarm = "shoves away"
 	response_harm   = "strikes"
 	stop_automated_movement_when_pulled = FALSE
-	// Strong all-rounder — high HP, high damage, solid speed
+	// Strong all-rounder - high HP, high damage, solid speed
 	maxHealth = 175
 	health = 175
 	melee_damage_lower = 20
@@ -250,7 +250,7 @@
 				var/snd = pick('sound/animals/monsters/roar1.ogg', 'sound/animals/monsters/roar2.ogg')
 				playsound(src.loc, snd, 100, TRUE)
 
-// Drone subtype — lighter, faster scout variant
+// Drone subtype - lighter, faster scout variant
 /mob/living/simple_animal/hostile/alien/drone
 	name = "alien drone"
 	desc = "A smaller, faster variant of the xenomorph. Still absolutely lethal."

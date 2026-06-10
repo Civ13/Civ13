@@ -1,5 +1,5 @@
 // ============================================================
-// Flooding Controller — manages water accumulation, spreading,
+// Flooding Controller - manages water accumulation, spreading,
 // atmospheric simulation, and compartment integrity across all
 // submarine deck turfs. Processes on a regular tick interval.
 // ============================================================
@@ -71,7 +71,7 @@ var/global/datum/flooding_controller/subcom_flooding
 	for(var/turf/wall/sub_bulkhead/B in world)
 		if(QDELETED(B)) continue
 		if(!B.watertight && B.health > 0)
-			// This bulkhead was destroyed — check if adjacent deck turfs have water
+			// This bulkhead was destroyed - check if adjacent deck turfs have water
 			for(var/direction in list(NORTH, SOUTH, EAST, WEST))
 				var/turf/floor/sub_deck/neighbor = get_step(B, direction)
 				if(neighbor && istype(neighbor) && neighbor.water_depth > 10)

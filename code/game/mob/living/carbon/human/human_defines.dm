@@ -136,7 +136,7 @@
 		"throwing" = list(100,100),
 		"magic" = list(0,0))
 
-	var/juice = 100          // Mana pool for wizard spells — max 100, regens ~5/sec
+	var/juice = 100          // Mana pool for wizard spells - max 100, regens ~5/sec
 	var/max_juice = 100
 
 	var/has_hunger_and_thirst = TRUE

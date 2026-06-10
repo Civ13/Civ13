@@ -814,7 +814,7 @@
 	name = "podlock"
 	desc = "Sturdy pod lock, should stop anything short of a breaching charge."
 	icon = 'icons/obj/doors/material_doors.dmi'
-	icon_state = "blast0"
+	icon_state = "blast"
 	anchored = TRUE
 	not_movable = TRUE
 	density = TRUE

@@ -376,7 +376,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/welsh_rum
 	name = "Brenda's \"Special Reserve\" Welsh Rum"
-	desc = "A grimy bottle with a handwritten label that reads 'Property of B. Brenda — Touch this and I'll break your wand arm.'"
+	desc = "A grimy bottle with a handwritten label that reads 'Property of B. Brenda - Touch this and I'll break your wand arm.'"
 	icon = 'icons/obj/magic_items.dmi'
 	icon_state = "rumbottle"
 	item_state = "beer"
@@ -496,7 +496,7 @@
 		var/mob/living/human/H = M
 		H.thermal = TRUE
 		H.handle_vision()
-		to_chat(H, SPAN_NOTICE("Your eyes burn and warp — the world shimmers in green and heat!"))
+		to_chat(H, SPAN_NOTICE("Your eyes burn and warp - the world shimmers in green and heat!"))
 		spawn(2400)
 			if (H && ishuman(H))
 				H.thermal = FALSE
@@ -509,7 +509,7 @@
 
 /obj/item/weapon/storage/tesco_bag
 	name = "\"Bottomless\" Tesco Carrier Bag"
-	desc = "A crinkled, slightly sticky plastic grocery bag from a non-magical supermarket. Brenda charmed it herself in the pub's cellar. It can hold a ludicrous amount of stuff — but sharp objects might tear it."
+	desc = "A crinkled, slightly sticky plastic grocery bag from a non-magical supermarket. Brenda charmed it herself in the pub's cellar. It can hold a ludicrous amount of stuff - but sharp objects might tear it."
 	icon = 'icons/obj/magic_items.dmi'
 	icon_state = "tesco_bag"
 	item_state = "plasticbag"
@@ -617,7 +617,7 @@
 		if (!(H in affected_mobs))
 			affected_mobs += H
 			H.no_magic = TRUE
-			to_chat(H, SPAN_DANGER("An oppressive numbness floods your body — the null zone suppresses all magic!"))
+			to_chat(H, SPAN_DANGER("An oppressive numbness floods your body - the null zone suppresses all magic!"))
 
 	var/i = 1
 	while (i <= affected_mobs.len)

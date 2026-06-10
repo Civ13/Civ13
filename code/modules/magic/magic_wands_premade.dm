@@ -23,7 +23,7 @@
 	wand_length = WAND_LENGTH_STANDARD
 
 // ----- The Sniper -----
-// Fibreglass + Copper Wire + Overcompensator: blazing fast, long-range, cheap — but violent on overcast
+// Fibreglass + Copper Wire + Overcompensator: blazing fast, long-range, cheap - but violent on overcast
 /obj/item/weapon/material/magic/wand/crafted/sniper
 	parent_type = /obj/item/weapon/material/magic/wand/crafted/premade
 	name = "The Sniper"
@@ -45,7 +45,7 @@
 	wand_length = WAND_LENGTH_STUBBY
 
 // ----- The Ghost -----
-// Balsa + Fox Fur + Stubby: pocket-sized, invisible lightning casts — but snaps if you sneeze on it
+// Balsa + Fox Fur + Stubby: pocket-sized, invisible lightning casts - but snaps if you sneeze on it
 /obj/item/weapon/material/magic/wand/crafted/ghost
 	parent_type = /obj/item/weapon/material/magic/wand/crafted/premade
 	name = "The Ghost"
@@ -78,7 +78,7 @@
 	wand_length = WAND_LENGTH_OVERCOMP
 
 // ----- The Chaos Stick -----
-// MDF + Asbestos Fibre + Stubby: fire-immune, toxin-dripping, swells in rain — pocket chaos
+// MDF + Asbestos Fibre + Stubby: fire-immune, toxin-dripping, swells in rain - pocket chaos
 /obj/item/weapon/material/magic/wand/crafted/chaos_stick
 	parent_type = /obj/item/weapon/material/magic/wand/crafted/premade
 	name = "The Chaos Stick"

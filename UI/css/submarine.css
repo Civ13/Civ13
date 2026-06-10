@@ -1,5 +1,5 @@
 /* ============================================================
-   SUBCOM13 — Shared Submarine Console CSS Components
+   SUBCOM13 - Shared Submarine Console CSS Components
    All submarine console UIs should link this stylesheet.
    ============================================================ */
 
@@ -244,7 +244,7 @@ body {
     );
 }
 
-/* Gauge needle — rotate via inline style: style="transform: rotate(Xdeg)" */
+/* Gauge needle - rotate via inline style: style="transform: rotate(Xdeg)" */
 .gauge-needle {
     position: absolute;
     width: 2px;

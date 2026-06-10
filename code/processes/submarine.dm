@@ -1,5 +1,5 @@
 // ============================================================
-// Submarine Process — drives the overworld simulation and
+// Submarine Process - drives the overworld simulation and
 // flooding/atmos tick for SUBCOM13 game mode.
 // ============================================================
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# select_map.sh — Interactive map selector. Lists folders, then maps,
+# select_map.sh - Interactive map selector. Lists folders, then maps,
 # then calls launch_map.sh with the chosen map.
 
 set -euo pipefail

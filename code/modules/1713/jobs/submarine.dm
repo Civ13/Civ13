@@ -1,5 +1,5 @@
 // ============================================================
-// SUBCOM13 — Submarine crew job definitions.
+// SUBCOM13 - Submarine crew job definitions.
 // Captain (whitelisted), Officer, and Crew roles.
 // ============================================================
 
@@ -112,7 +112,7 @@
 //gear
 	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>Submarine Crewman</b>. Operate your assigned station — helm, weapons, engineering, or sonar. Follow your officer's orders and keep the boat running!")
+	H.add_note("Role", "You are a <b>Submarine Crewman</b>. Operate your assigned station - helm, weapons, engineering, or sonar. Follow your officer's orders and keep the boat running!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)

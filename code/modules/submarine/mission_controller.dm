@@ -1,5 +1,5 @@
 // ============================================================
-// Mission Controller — generates objectives and relays
+// Mission Controller - generates objectives and relays
 // encrypted transmissions to the sub's radio console.
 // Supports: SINK_CARGO, PATROL_AREA, ESCORT, RECON, RESCUE, AMBUSH
 // ============================================================
@@ -138,7 +138,7 @@
 	if(!target_vessel || QDELETED(target_vessel) || target_vessel.hull_strength <= 0)
 		fail_mission("Rescue vessel destroyed. Mission failed.")
 		return
-	// The damaged vessel should be following the player — check if it's close to start
+	// The damaged vessel should be following the player - check if it's close to start
 	var/dist = euclidean_distance(target_vessel.x_pos, target_vessel.y_pos, start_x, start_y)
 	if(dist <= SUB_MISSION_RESCUE_RANGE)
 		complete_mission("Rescued vessel brought to safe waters. Outstanding work, Commander.")
@@ -312,7 +312,7 @@
 	target_vessel.name = pick("K-218", "K-447", "K-315", "K-524")
 	target_vessel.hull_strength = rand(80, 150)  // Critically damaged
 	target_vessel.max_hull_strength = 700
-	// Make it very slow — engines damaged
+	// Make it very slow - engines damaged
 	target_vessel.max_speed = 3
 	target_vessel.patrol_speed = 2
 	target_vessel.attack_speed = 0

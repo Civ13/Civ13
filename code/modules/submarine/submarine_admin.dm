@@ -1,5 +1,5 @@
 // ============================================================
-// SUBCOM13 Admin Panel — debug tools for testing and balance
+// SUBCOM13 Admin Panel - debug tools for testing and balance
 // ============================================================
 
 /datum/admins/proc/subcom13_panel()

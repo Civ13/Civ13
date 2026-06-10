@@ -1,5 +1,5 @@
 // ============================================================
-// SUBCOM13 Map Metadata — Submarine Commander game mode.
+// SUBCOM13 Map Metadata - Submarine Commander game mode.
 // Instantiates core datums on map load and drives round logic.
 // ============================================================
 
@@ -8,12 +8,14 @@
 	title = "Submarine Commander"
 	description = "Command a nuclear submarine through hostile waters. Complete missions, manage your crew, and survive."
 	gamemode = "Submarine Commander"
-	lobby_icon = 'icons/lobby/civ13.gif'
+	lobby_icon = 'icons/lobby/subcom13.png'
 	caribbean_blocking_area_types = list()
 	respawn_delay = 0
 	faction_organization = list(AMERICAN)
 	roundend_condition_sides = list()
 	availablefactions = list("US Navy")
+	songs = list(
+		"Killing Joke - Eighties:1" = "sound/music/eighties.ogg",)
 	mission_start_message = "Reporting for duty, Commander. Your submarine awaits."
 	faction1 = AMERICAN
 	faction2 = null
@@ -68,17 +70,17 @@
 		if(3 to 8)
 			T.compartment_id = SUB_COMP_FORWARD_TORPEDO
 		if(10 to 15)
-			T.compartment_id = SUB_COMP_FORWARD_BATTERY
+			T.compartment_id = SUB_COMP_STORAGE
 		if(17 to 23)
 			T.compartment_id = SUB_COMP_OPERATIONS
 		if(25 to 30)
-			T.compartment_id = SUB_COMP_CREW_QUARTERS
+			T.compartment_id = SUB_COMP_MEDICAL_BAY
 		if(32 to 35)
 			T.compartment_id = SUB_COMP_GALLEY
 		if(37 to 42)
-			T.compartment_id = SUB_COMP_CPO_QUARTERS
+			T.compartment_id = SUB_COMP_CENTRAL_CORRIDOR
 		if(44 to 50)
-			T.compartment_id = SUB_COMP_AFT_BATTERY
+			T.compartment_id = SUB_COMP_REAR_CORRIDOR
 		if(52 to 55)
 			T.compartment_id = SUB_COMP_REACTOR_ROOM
 		if(56 to 58)

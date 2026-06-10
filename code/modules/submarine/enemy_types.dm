@@ -4,7 +4,7 @@
 // Used by the mission controller and world map to spawn contacts.
 // ============================================================
 
-// Base type — all enemy stats live here
+// Base type - all enemy stats live here
 /datum/subcom_enemy
 	var/name = "Unknown"
 	var/contact_type = SUB_CONTACT_SURFACE   // "Surface", "Submerged", "Air"
@@ -21,8 +21,8 @@
 	var/max_hull_strength = 500
 
 	// Sensors
-	var/sensor_range = 30000     // Meters — how far this vessel can detect others
-	var/sonar_range = 20000      // Meters — underwater detection
+	var/sensor_range = 30000     // Meters - how far this vessel can detect others
+	var/sonar_range = 20000      // Meters - underwater detection
 	var/radar_cross_section = 1.0 // Multiplier for how visible on radar (1.0 = normal)
 	var/passive_sonar_threshold = 20  // NPC detects player if player noise > this value
 
@@ -50,7 +50,7 @@
 	var/range = 20000            // Meters
 	var/weapon_type = "missile"  // "missile", "torpedo", "depth_charge", "gun"
 	var/cooldown = 30            // Ticks between firings
-	var/speed = 40               // Projectile speed (knots) — only for torpedoes
+	var/speed = 40               // Projectile speed (knots) - only for torpedoes
 	var/homing = FALSE           // Whether the projectile tracks
 
 /datum/subcom_weapon/New(var/_name, var/_dmg, var/_range, var/_type, var/_cd)

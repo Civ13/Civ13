@@ -4,7 +4,7 @@
 
 
 // ============================================================
-// Submarine Turfs — hull walls, bulkheads, and deck floors
+// Submarine Turfs - hull walls, bulkheads, and deck floors
 // with water accumulation, atmospheric simulation, and
 // compartment-based flooding physics.
 // ============================================================
@@ -97,7 +97,7 @@
 	..(newloc,"steel")
 
 // ============================================================
-// Deck Floor — the core of water/atmos simulation
+// Deck Floor - the core of water/atmos simulation
 // ============================================================
 
 /turf/floor/sub_deck
@@ -152,7 +152,7 @@
 	water_depth = max(0, water_depth - cm)
 	refresh_water_overlay()
 
-// Called each tick by the flooding controller — handles water spreading and drowning
+// Called each tick by the flooding controller - handles water spreading and drowning
 /turf/floor/sub_deck/proc/flood_tick()
 	// 1. Apply inflow from breaches
 	if(water_inflow_rate > 0)
@@ -225,13 +225,13 @@
 	if(water_depth > 0)
 		var/image/water_overlay = image('icons/obj/machines/submarine.dmi', "water_deep")
 		if(water_depth < 30)
-			water_overlay.alpha = 60       // Shallow — faint tint
+			water_overlay.alpha = 60       // Shallow - faint tint
 		else if(water_depth < 100)
-			water_overlay.alpha = 130      // Medium — noticeable
+			water_overlay.alpha = 130      // Medium - noticeable
 		else if(water_depth < max_water)
-			water_overlay.alpha = 200      // Deep — heavy overlay
+			water_overlay.alpha = 200      // Deep - heavy overlay
 		else
-			water_overlay.alpha = 255      // Fully flooded — opaque
+			water_overlay.alpha = 255      // Fully flooded - opaque
 		overlays += water_overlay
 
 // ============================================================
@@ -310,36 +310,36 @@
 		to_chat(user, "<span class='danger'>The CO2 concentration is dangerously high!</span>")
 
 // ============================================================
-// Compartment Floor Subtypes — pre-configured for mapmaking
+// Compartment Floor Subtypes - pre-configured for mapmaking
 // ============================================================
 
 /turf/floor/sub_deck/forward_torpedo
 	name = "forward torpedo room floor"
 	compartment_id = SUB_COMP_FORWARD_TORPEDO
 
-/turf/floor/sub_deck/forward_battery
-	name = "forward battery room floor"
-	compartment_id = SUB_COMP_FORWARD_BATTERY
+/turf/floor/sub_deck/storage
+	name = "storage floor"
+	compartment_id = SUB_COMP_STORAGE
 
 /turf/floor/sub_deck/operations
 	name = "operations room floor"
 	compartment_id = SUB_COMP_OPERATIONS
 
-/turf/floor/sub_deck/crew_quarters
-	name = "crew quarters floor"
-	compartment_id = SUB_COMP_CREW_QUARTERS
+/turf/floor/sub_deck/medical_bay
+	name = "medical bay floor"
+	compartment_id = SUB_COMP_MEDICAL_BAY
 
 /turf/floor/sub_deck/galley
 	name = "galley floor"
 	compartment_id = SUB_COMP_GALLEY
 
-/turf/floor/sub_deck/cpo_quarters
-	name = "CPO quarters floor"
-	compartment_id = SUB_COMP_CPO_QUARTERS
+/turf/floor/sub_deck/central_corridor
+	name = "central corridor floor"
+	compartment_id = SUB_COMP_CENTRAL_CORRIDOR
 
-/turf/floor/sub_deck/aft_battery
-	name = "aft battery room floor"
-	compartment_id = SUB_COMP_AFT_BATTERY
+/turf/floor/sub_deck/rear_corridor
+	name = "rear corridor floor"
+	compartment_id = SUB_COMP_REAR_CORRIDOR
 
 /turf/floor/sub_deck/reactor_room
 	name = "reactor room floor"

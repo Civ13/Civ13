@@ -12,16 +12,16 @@ Windows-specific server management scripts for Civ13.
 ### Usage
 
 ```bat
-REM Interactive selector — pick folder then map
+REM Interactive selector - pick folder then map
 scripts\select_map.bat
 
-REM Direct — pass a map name
+REM Direct - pass a map name
 scripts\launch_map.bat nomads
 scripts\launch_map.bat SUBCOM13
 ```
 
 `launch_map.bat` resolves maps in this order:
-1. Checks `code\__defines\maps.dm` for `#define MAP_<ARG>` — uses the quoted value as the map ID
+1. Checks `code\__defines\maps.dm` for `#define MAP_<ARG>` - uses the quoted value as the map ID
 2. Falls back to finding `<arg>.dmm` (case-insensitive) under `maps\`
 
 ## Server Scripts

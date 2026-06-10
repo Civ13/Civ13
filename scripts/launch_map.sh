@@ -1,5 +1,5 @@
 #!/bin/bash
-# launch_map.sh — Swap the map in civ13.dme, compile, and run on DreamSeeker.
+# launch_map.sh - Swap the map in civ13.dme, compile, and run on DreamSeeker.
 # Usage: ./scripts/launch_map.sh <map>
 #
 # Resolution order:
@@ -33,9 +33,9 @@ find_dmm() {
 
 MAP_PATH=""
 
-# Step 1: check for MAP_<UPPER> define (exact match — space/tab after name)
+# Step 1: check for MAP_<UPPER> define (exact match - space/tab after name)
 if [[ -f "$MAPS_DM" ]] && grep -qP "#define\s+MAP_${UPPER}\s" "$MAPS_DM"; then
-    # The define value is the string ID used in map metadata — find the .dmm by that ID
+    # The define value is the string ID used in map metadata - find the .dmm by that ID
     # e.g. #define MAP_NOMADS "nomads"  →  look for nomads.dmm
     MAP_ID=$(grep -P "#define\s+MAP_${UPPER}\s" "$MAPS_DM" | sed 's/.*"\(.*\)".*/\1/')
     echo "Found #define MAP_${UPPER} \"${MAP_ID}\""
@@ -63,7 +63,7 @@ MAP_REL="${MAP_PATH#$REPO_DIR/}"
 echo "Map file: $MAP_REL"
 
 # --- rewrite civ13.dme: replace any existing .dmm include ---
-# DME uses backslash paths — we store the include with forward slashes
+# DME uses backslash paths - we store the include with forward slashes
 # (BYOND on Linux handles both, and this avoids sed escaping issues).
 MAP_INCLUDE="#include \"${MAP_REL}\""
 
@@ -89,7 +89,7 @@ else
 fi
 
 if [[ ! -f "${DME%.dme}.dmb" ]]; then
-    echo "ERROR: Compilation failed — .dmb not found."
+    echo "ERROR: Compilation failed - .dmb not found."
     exit 1
 fi
 

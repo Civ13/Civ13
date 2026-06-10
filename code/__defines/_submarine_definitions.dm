@@ -62,7 +62,7 @@
 // Mission Timing
 #define SUB_MISSION_RECON_DURATION   30    // Ticks to survive at recon target
 #define SUB_MISSION_AMBUSH_TIMEOUT   120   // Ticks to clear all hostiles
-#define SUB_MISSION_RESCUE_RANGE     20    // nm — must bring target this close to start
+#define SUB_MISSION_RESCUE_RANGE     20    // nm - must bring target this close to start
 #define SUB_MISSION_FAIL_DELAY       20    // Ticks before next mission after failure
 #define SUB_MISSION_SUCCESS_DELAY_MIN 30
 #define SUB_MISSION_SUCCESS_DELAY_MAX 60
@@ -76,22 +76,22 @@
 
 // Flooding & Water Physics
 #define SUB_BREACH_INFLOW_BASE  5     // cm of water per tick from a fresh hull breach
-#define SUB_WATER_DROWNING_LIGHT  50  // cm — ankle deep, minor annoyance
-#define SUB_WATER_DROWNING_MOD   100  // cm — waist deep, movement penalty
-#define SUB_WATER_DROWNING_HEAVY  150  // cm — chest deep, drowning risk
-#define SUB_WATER_FLOODED         200  // cm — fully flooded tile
+#define SUB_WATER_DROWNING_LIGHT  50  // cm - ankle deep, minor annoyance
+#define SUB_WATER_DROWNING_MOD   100  // cm - waist deep, movement penalty
+#define SUB_WATER_DROWNING_HEAVY  150  // cm - chest deep, drowning risk
+#define SUB_WATER_FLOODED         200  // cm - fully flooded tile
 #define SUB_BILGE_PUMP_DRAIN      10   // cm removed per pump tick
 #define SUB_BILGE_PUMP_POWER      15   // kW per pump tick
 
 // Compartment IDs (used on /turf/floor/sub_deck)
 #define SUB_COMP_NONE                ""
 #define SUB_COMP_FORWARD_TORPEDO     "forward_torpedo"
-#define SUB_COMP_FORWARD_BATTERY     "forward_battery"
+#define SUB_COMP_STORAGE             "storage"
 #define SUB_COMP_OPERATIONS          "operations"
-#define SUB_COMP_CREW_QUARTERS       "crew_quarters"
+#define SUB_COMP_MEDICAL_BAY         "medical_bay"
 #define SUB_COMP_GALLEY              "galley"
-#define SUB_COMP_CPO_QUARTERS        "cpo_quarters"
-#define SUB_COMP_AFT_BATTERY         "aft_battery"
+#define SUB_COMP_CENTRAL_CORRIDOR    "central_corridor"
+#define SUB_COMP_REAR_CORRIDOR       "rear_corridor"
 #define SUB_COMP_REACTOR_ROOM        "reactor_room"
 #define SUB_COMP_ENGINE_ROOM         "engine_room"
 #define SUB_COMP_MANEUVERING         "maneuvering"

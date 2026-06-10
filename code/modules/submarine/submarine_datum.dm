@@ -1,7 +1,7 @@
 var/global/list/all_submarines = list()
 
 // ============================================================
-// Crew Member datum — tracks individual crew status
+// Crew Member datum - tracks individual crew status
 // ============================================================
 /datum/crew_member
 	var/mob/living/human/member   // Reference to the living mob
@@ -346,7 +346,7 @@ var/global/list/all_submarines = list()
 				var/turf/wall/sub_hull/H = T
 				H.apply_breach_damage(200)
 			else
-				// Non-hull interior turf — create a leak effect
+				// Non-hull interior turf - create a leak effect
 				new /obj/effect/step_trigger/sub_leak(T)
 				T.visible_message("<span class='danger'>The hull buckles! A high-pressure leak springs open!</span>")
 				playsound(T, 'sound/machines/submarine/gas.ogg', 80, 1)
@@ -394,7 +394,7 @@ var/global/list/all_submarines = list()
 			var/turf/wall/sub_hull/H = T
 			H.apply_breach_damage(base_damage)
 		else
-			// Non-hull interior turf — flood adjacent deck turfs
+			// Non-hull interior turf - flood adjacent deck turfs
 			for(var/turf/floor/sub_deck/D in range(1, T))
 				if(D.compartment_id)
 					D.add_water(round(base_damage / 20))
@@ -448,7 +448,7 @@ var/global/list/all_submarines = list()
 			if(internal_turfs.len)
 				playsound(pick(internal_turfs), 'sound/machines/submarine/crash.ogg', 100, 1)
 		if("depth_charge")
-			// Depth charges do area damage — hit multiple hull turfs near the explosion
+			// Depth charges do area damage - hit multiple hull turfs near the explosion
 			var/turfs_to_hit = clamp(round(damage / 80), 2, 6)
 			if(internal_turfs.len)
 				var/turf/center = pick(internal_turfs)

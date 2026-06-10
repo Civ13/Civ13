@@ -1,5 +1,5 @@
 // ============================================================
-// Virtual Torpedo — pure coordinate tracker, no /obj needed
+// Virtual Torpedo - pure coordinate tracker, no /obj needed
 // ============================================================
 
 /datum/projectile/torpedo

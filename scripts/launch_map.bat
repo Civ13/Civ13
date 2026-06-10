@@ -1,5 +1,5 @@
 @echo off
-REM launch_map.bat â€” Swap the map in civ13.dme, compile, and run on DreamSeeker.
+REM launch_map.bat -€” Swap the map in civ13.dme, compile, and run on DreamSeeker.
 REM Usage: scripts\launch_map.bat <map>
 REM
 REM Resolution order:
@@ -109,7 +109,7 @@ if not errorlevel 1 (
 
 set "DMB=%DME:.dme=.dmb%"
 if not exist "%DMB%" (
-    echo ERROR: Compilation failed â€” .dmb not found.
+    echo ERROR: Compilation failed -€” .dmb not found.
     exit /b 1
 )
 

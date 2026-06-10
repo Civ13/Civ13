@@ -556,17 +556,17 @@
 		if (isliving(target))
 			var/mob/living/L = target
 			if (L.l_hand)
-				// Chewing Gum / Truncheon: wand is glued/locked to hand — Dropus cannot dislodge it
+				// Chewing Gum / Truncheon: wand is glued/locked to hand - Dropus cannot dislodge it
 				var/obj/item/weapon/material/magic/wand/WL = L.l_hand
 				if (istype(WL) && (WL.chewing_gum_sticky || WL.truncheon_grip))
-					to_chat(L, SPAN_NOTICE("The Dropus! spell tries to wrench \the [L.l_hand] free — but it won't budge!"))
+					to_chat(L, SPAN_NOTICE("The Dropus! spell tries to wrench \the [L.l_hand] free - but it won't budge!"))
 				else
 					L.visible_message("<span class='danger'>[target] drops \the [L.l_hand]!</span>")
 					L.drop_l_hand()
 			if (L.r_hand)
 				var/obj/item/weapon/material/magic/wand/WR = L.r_hand
 				if (istype(WR) && (WR.chewing_gum_sticky || WR.truncheon_grip))
-					to_chat(L, SPAN_NOTICE("The Dropus! spell tries to wrench \the [L.r_hand] free — but it won't budge!"))
+					to_chat(L, SPAN_NOTICE("The Dropus! spell tries to wrench \the [L.r_hand] free - but it won't budge!"))
 				else
 					L.visible_message("<span class='danger'>[target] drops \the [L.r_hand]!</span>")
 					L.drop_r_hand()

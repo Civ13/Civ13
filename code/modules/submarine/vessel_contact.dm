@@ -12,7 +12,7 @@
 	nationality = _nat
 
 // ============================================================
-// NPC Vessel AI — virtual overworld contact with state machine
+// NPC Vessel AI - virtual overworld contact with state machine
 // ============================================================
 
 /datum/vessel_contact/npc

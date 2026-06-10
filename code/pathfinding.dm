@@ -187,7 +187,7 @@
 	if(moving)
 		move_gen++
 		found_path = list()
-		// Fall through — start a fresh loop with the updated target_obj
+		// Fall through - start a fresh loop with the updated target_obj
 
 	moving = TRUE
 	var/my_gen = move_gen
@@ -245,7 +245,7 @@
 			var/delay = (found_path.len == 0) ? max(move_to_delay, 10) : move_to_delay
 			sleep(delay)
 
-		// Clean up on exit — only if this generation is still current
+		// Clean up on exit - only if this generation is still current
 		if(my_gen == move_gen)
 			if (target_obj && target_obj.loc && get_dist(src, target_obj) <= 1)
 				if (target_obj == pathfind_target)

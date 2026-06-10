@@ -594,7 +594,7 @@
 
 	// Submerged warning
 	if(my_sub.depth > 0)
-		dat += "<div style='margin-top:6px; padding:4px; background:#400; border:1px solid #f00; text-align:center; color:#f00; font-weight:bold;'>RADAR INOPERATIVE — SUBMERGED</div>"
+		dat += "<div style='margin-top:6px; padding:4px; background:#400; border:1px solid #f00; text-align:center; color:#f00; font-weight:bold;'>RADAR INOPERATIVE - SUBMERGED</div>"
 
 	dat += "</div>"
 
@@ -1061,7 +1061,7 @@
 	interact(usr)
 
 // ============================================================
-// Compartment Status Panel — ship-wide damage/flood monitor
+// Compartment Status Panel - ship-wide damage/flood monitor
 // ============================================================
 
 /obj/structure/machinery/sub_control/compartment_panel
@@ -1120,12 +1120,12 @@
 			var/display_name = cid
 			switch(cid)
 				if(SUB_COMP_FORWARD_TORPEDO) display_name = "FWD TORPEDO"
-				if(SUB_COMP_FORWARD_BATTERY) display_name = "FWD BATTERY"
+				if(SUB_COMP_STORAGE) display_name = "STORAGE"
 				if(SUB_COMP_OPERATIONS) display_name = "OPERATIONS"
-				if(SUB_COMP_CREW_QUARTERS) display_name = "CREW QUARTERS"
+				if(SUB_COMP_MEDICAL_BAY) display_name = "MEDICAL BAY"
 				if(SUB_COMP_GALLEY) display_name = "GALLEY"
-				if(SUB_COMP_CPO_QUARTERS) display_name = "CPO QUARTERS"
-				if(SUB_COMP_AFT_BATTERY) display_name = "AFT BATTERY"
+				if(SUB_COMP_CENTRAL_CORRIDOR) display_name = "CENTRAL CORRIDOR"
+				if(SUB_COMP_REAR_CORRIDOR) display_name = "REAR CORRIDOR"
 				if(SUB_COMP_REACTOR_ROOM) display_name = "REACTOR"
 				if(SUB_COMP_ENGINE_ROOM) display_name = "ENGINE"
 				if(SUB_COMP_MANEUVERING) display_name = "MANEUVERING"
@@ -1211,12 +1211,12 @@
 			var/comp_display = CM.compartment ? CM.compartment : "UNKNOWN"
 			switch(CM.compartment)
 				if(SUB_COMP_FORWARD_TORPEDO) comp_display = "FWD TORPEDO"
-				if(SUB_COMP_FORWARD_BATTERY) comp_display = "FWD BATTERY"
+				if(SUB_COMP_STORAGE) comp_display = "STORAGE"
 				if(SUB_COMP_OPERATIONS) comp_display = "OPERATIONS"
-				if(SUB_COMP_CREW_QUARTERS) comp_display = "CREW QUARTERS"
+				if(SUB_COMP_MEDICAL_BAY) comp_display = "MEDICAL BAY"
 				if(SUB_COMP_GALLEY) comp_display = "GALLEY"
-				if(SUB_COMP_CPO_QUARTERS) comp_display = "CPO QUARTERS"
-				if(SUB_COMP_AFT_BATTERY) comp_display = "AFT BATTERY"
+				if(SUB_COMP_CENTRAL_CORRIDOR) comp_display = "CENTRAL CORRIDOR"
+				if(SUB_COMP_REAR_CORRIDOR) comp_display = "REAR CORRIDOR"
 				if(SUB_COMP_REACTOR_ROOM) comp_display = "REACTOR"
 				if(SUB_COMP_ENGINE_ROOM) comp_display = "ENGINE"
 
@@ -1287,7 +1287,7 @@
 	interact(usr)
 
 // ============================================================
-// OVERWORLD MAP DISPLAY — ASCII tactical map
+// OVERWORLD MAP DISPLAY - ASCII tactical map
 // ============================================================
 
 /obj/structure/machinery/sub_control/map_display

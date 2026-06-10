@@ -294,7 +294,7 @@
 	// Check power: bilge pumps need battery power
 	if(my_sub.battery_current < power_draw)
 		active = FALSE
-		visible_message("<span class='warning'>[src] sputters and shuts down — insufficient power.</span>")
+		visible_message("<span class='warning'>[src] sputters and shuts down - insufficient power.</span>")
 		playsound(src.loc, 'sound/machines/submarine/alarm_flooding.ogg', 40, 1)
 		return
 
@@ -328,6 +328,7 @@
 /obj/structure/machinery/sub_physical/bilge_pump/emergency
 	name = "emergency bilge pump"
 	desc = "A manually-activated backup pump. Slow but better than drowning."
+	icon_state = "bilge_pump_small"
 	drain_rate = 5
 	power_draw = 8
 	drain_range = 0  // Only drains the tile it's on
@@ -347,45 +348,45 @@
 	icon_state = "vent"
 	health = 60
 	max_health = 60
-	var/vent_id = "main"           // Network ID — all ducts with same vent_id are connected
+	var/vent_id = "main"           // Network ID - all ducts with same vent_id are connected
 	var/flow_rate = 0.3            // Lerp factor for air equalization (0 = no flow, 1 = instant)
 	var/active = TRUE
 
-// Predefined vent ducts — one per compartment, each with its own air network
+// Predefined vent ducts - one per compartment, each with its own air network
 /obj/structure/machinery/sub_physical/vent_duct/fwd_torpedo
-	name = "vent duct — forward torpedo"
+	name = "vent duct - forward torpedo"
 	vent_id = "fwd_torpedo"
 
-/obj/structure/machinery/sub_physical/vent_duct/fwd_battery
-	name = "vent duct — forward battery"
-	vent_id = "fwd_battery"
+/obj/structure/machinery/sub_physical/vent_duct/storage
+	name = "vent duct - storage"
+	vent_id = "storage"
 
 /obj/structure/machinery/sub_physical/vent_duct/operations
-	name = "vent duct — operations"
+	name = "vent duct - operations"
 	vent_id = "operations"
 
-/obj/structure/machinery/sub_physical/vent_duct/crew_quarters
-	name = "vent duct — crew quarters"
-	vent_id = "crew_quarters"
+/obj/structure/machinery/sub_physical/vent_duct/medical_bay
+	name = "vent duct - medical bay"
+	vent_id = "medical_bay"
 
 /obj/structure/machinery/sub_physical/vent_duct/galley
-	name = "vent duct — galley"
+	name = "vent duct - galley"
 	vent_id = "galley"
 
-/obj/structure/machinery/sub_physical/vent_duct/cpo_quarters
-	name = "vent duct — CPO quarters"
-	vent_id = "cpo_quarters"
+/obj/structure/machinery/sub_physical/vent_duct/central_corridor
+	name = "vent duct - central corridor"
+	vent_id = "central_corridor"
 
-/obj/structure/machinery/sub_physical/vent_duct/aft_battery
-	name = "vent duct — after battery"
-	vent_id = "aft_battery"
+/obj/structure/machinery/sub_physical/vent_duct/rear_corridor
+	name = "vent duct - rear corridor"
+	vent_id = "rear_corridor"
 
 /obj/structure/machinery/sub_physical/vent_duct/reactor_room
-	name = "vent duct — reactor room"
+	name = "vent duct - reactor room"
 	vent_id = "reactor_room"
 
 /obj/structure/machinery/sub_physical/vent_duct/engine_room
-	name = "vent duct — engine room"
+	name = "vent duct - engine room"
 	vent_id = "engine_room"
 
 /obj/structure/machinery/sub_physical/vent_duct/New()
@@ -458,7 +459,7 @@
 	// Power check
 	if(my_sub.battery_current < power_draw)
 		active = FALSE
-		visible_message("<span class='warning'>[src] shuts down — insufficient power.</span>")
+		visible_message("<span class='warning'>[src] shuts down - insufficient power.</span>")
 		return
 
 	my_sub.battery_current -= power_draw
@@ -490,25 +491,25 @@
 	var/power_draw = 10            // kW per tick
 	var/active = FALSE
 
-// Predefined sealant sprayers — one per compartment
+// Predefined sealant sprayers - one per compartment
 /obj/structure/machinery/sub_physical/breach_sealant/fwd_torpedo
-	name = "sealant sprayer — forward torpedo"
-/obj/structure/machinery/sub_physical/breach_sealant/fwd_battery
-	name = "sealant sprayer — forward battery"
+	name = "sealant sprayer - forward torpedo"
+/obj/structure/machinery/sub_physical/breach_sealant/storage
+	name = "sealant sprayer - storage"
 /obj/structure/machinery/sub_physical/breach_sealant/operations
-	name = "sealant sprayer — operations"
-/obj/structure/machinery/sub_physical/breach_sealant/crew_quarters
-	name = "sealant sprayer — crew quarters"
+	name = "sealant sprayer - operations"
+/obj/structure/machinery/sub_physical/breach_sealant/medical_bay
+	name = "sealant sprayer - medical bay"
 /obj/structure/machinery/sub_physical/breach_sealant/galley
-	name = "sealant sprayer — galley"
-/obj/structure/machinery/sub_physical/breach_sealant/cpo_quarters
-	name = "sealant sprayer — CPO quarters"
-/obj/structure/machinery/sub_physical/breach_sealant/aft_battery
-	name = "sealant sprayer — after battery"
+	name = "sealant sprayer - galley"
+/obj/structure/machinery/sub_physical/breach_sealant/central_corridor
+	name = "sealant sprayer - central corridor"
+/obj/structure/machinery/sub_physical/breach_sealant/rear_corridor
+	name = "sealant sprayer - rear corridor"
 /obj/structure/machinery/sub_physical/breach_sealant/reactor_room
-	name = "sealant sprayer — reactor room"
+	name = "sealant sprayer - reactor room"
 /obj/structure/machinery/sub_physical/breach_sealant/engine_room
-	name = "sealant sprayer — engine room"
+	name = "sealant sprayer - engine room"
 
 /obj/structure/machinery/sub_physical/breach_sealant/attack_hand(mob/user)
 	if(!can_use_sub(user)) return

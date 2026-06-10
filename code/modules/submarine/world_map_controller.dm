@@ -1,5 +1,5 @@
 // ============================================================
-// World Map Controller — singleton managing the 1000x1000
+// World Map Controller - singleton managing the 1000x1000
 // virtual nautical coordinate grid, all active vessels, and
 // the overworld simulation tick loop.
 // ============================================================

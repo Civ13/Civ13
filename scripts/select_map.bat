@@ -1,5 +1,5 @@
 @echo off
-REM select_map.bat â€” Interactive map selector. Lists folders, then maps,
+REM select_map.bat -€” Interactive map selector. Lists folders, then maps,
 REM then calls launch_map.bat with the chosen map.
 REM Usage: scripts\select_map.bat
 
