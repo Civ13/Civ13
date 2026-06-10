@@ -88,17 +88,6 @@
 /obj/structure/machinery/sub_control/proc/vessel_name_header()
 	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - SYSTEMS INTERFACE"
 
-/obj/structure/machinery/sub_control/proc/gauge_ticks_html(var/radius = 46)
-	// Generate tick mark divs for gauge displays (10 ticks across 270° sweep)
-	var/dat = ""
-	var/num_ticks = 10
-	for(var/j = 0, j < num_ticks, j++)
-		var/angle = -135 + (j * 270 / (num_ticks - 1))
-		var/tick_x = 50 + radius * sin(angle)
-		var/tick_y = 50 - radius * cos(angle)
-		dat += "<div class='gauge-tick' style='left:[tick_x]px; top:[tick_y]px; height:[j % 5 == 0 ? 6 : 4]px; transform:rotate([angle]deg);'></div>"
-	return dat
-
 /obj/structure/machinery/sub_control/Topic(href, href_list)
 	if(href_list["close"])
 		open_users -= usr
@@ -146,7 +135,7 @@
 	dat += "<div class='panel' style='text-align:center; padding:8px;'>"
 	dat += "<div class='label'>HEADING</div>"
 	dat += "<div class='gauge' style='margin:6px auto;'>"
-	dat += "<div class='gauge-ticks'>[gauge_ticks_html(46)]</div>"
+	dat += "<div class='gauge-ticks'></div>"
 	dat += "<div class='gauge-needle' style='transform:rotate([hd_angle]deg);'></div>"
 	dat += "<div class='gauge-center'></div>"
 	dat += "<div class='gauge-value'>[round(my_sub.heading)]&deg;</div>"
@@ -167,7 +156,7 @@
 	dat += "<div class='panel' style='text-align:center; padding:8px;'>"
 	dat += "<div class='label'>SPEED</div>"
 	dat += "<div class='gauge' style='margin:6px auto;'>"
-	dat += "<div class='gauge-ticks'>[gauge_ticks_html(46)]</div>"
+	dat += "<div class='gauge-ticks'></div>"
 	dat += "<div class='gauge-needle' style='transform:rotate([sp_angle]deg);'></div>"
 	dat += "<div class='gauge-center'></div>"
 	dat += "<div class='gauge-value'>[round(my_sub.speed)]</div>"
@@ -193,7 +182,7 @@
 	dat += "<div class='panel' style='text-align:center; padding:8px;'>"
 	dat += "<div class='label'>DEPTH</div>"
 	dat += "<div class='gauge' style='margin:6px auto;'>"
-	dat += "<div class='gauge-ticks'>[gauge_ticks_html(46)]</div>"
+	dat += "<div class='gauge-ticks'></div>"
 	dat += "<div class='gauge-needle' style='transform:rotate([dp_angle]deg); background:[depth_color];'></div>"
 	dat += "<div class='gauge-center'></div>"
 	dat += "<div class='gauge-value' style='color:[depth_color];'>[round(my_sub.depth)]</div>"
@@ -372,7 +361,7 @@
 		var/pwr_angle = (my_sub.r_power_output[i] / 70) * 270 - 135
 		dat += "<div style='text-align:center;'>"
 		dat += "<div class='gauge-sm' style='margin:0 auto;'>"
-		dat += "<div class='gauge-ticks'>[gauge_ticks_html(31)]</div>"
+		dat += "<div class='gauge-ticks'></div>"
 		dat += "<div class='gauge-needle' style='transform:rotate([pwr_angle]deg); background:[output_color];'></div>"
 		dat += "<div class='gauge-center'></div>"
 		dat += "<div class='gauge-value' style='color:[output_color]; font-size:10px;'>[round(my_sub.r_power_output[i], 0.1)]</div>"
@@ -385,7 +374,7 @@
 		var/temp_angle = (my_sub.r_core_temp[i] / 1000) * 270 - 135
 		dat += "<div style='text-align:center;'>"
 		dat += "<div class='gauge-sm' style='margin:0 auto;'>"
-		dat += "<div class='gauge-ticks'>[gauge_ticks_html(31)]</div>"
+		dat += "<div class='gauge-ticks'></div>"
 		dat += "<div class='gauge-needle' style='transform:rotate([temp_angle]deg); background:[temp_color];'></div>"
 		dat += "<div class='gauge-center'></div>"
 		dat += "<div class='gauge-value' style='color:[temp_color]; font-size:10px;'>[round(my_sub.r_core_temp[i])]</div>"
@@ -468,12 +457,12 @@
 
 	var/list/compartments = list(
 		"Forward Torpedo Room",
-		"Forward Battery",
+		"Storage",
 		"Operations",
-		"CPO Quarters",
+		"Central Corridor",
 		"Galley",
-		"Crew Quarters",
-		"After Battery",
+		"Medical Bay",
+		"Rear Corridor",
 		"Reactor Room",
 		"Engine Room",
 		"Maneuvering Room",
@@ -1087,7 +1076,7 @@
 	desc = "A ruggedized flat-panel display showing real-time compartment status across the submarine."
 	icon = 'icons/obj/computers.dmi'
 	icon_state = "computer"
-	scr_overlay = "engineering"
+	scr_overlay = "comm_monitor"
 
 /obj/structure/machinery/sub_control/compartment_panel/get_ui_content()
 	var/dat = ""
@@ -1312,7 +1301,7 @@
 	name = "tactical map display"
 	icon = 'icons/obj/computers.dmi'
 	icon_state = "wallconsole"
-	scr_overlay = "wallconsole_map"
+	scr_overlay = "wallconsole_airbridge-docked"
 	var/map_range = 20000   // Meters displayed from center to edge (half-width)
 	var/map_size = 15        // Grid cells radius (15x15 grid = 31x31)
 
