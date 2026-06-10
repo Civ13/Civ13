@@ -69,7 +69,7 @@ MAP_INCLUDE="#include \"${MAP_REL}\""
 
 # Build new DME: keep everything except .dmm lines, then append our map
 TMPDME=$(mktemp)
-awk '!/\.dmm[[:space:]]*$/ || !/#include/' "$DME" > "$TMPDME"
+awk '!/\.dmm"/' "$DME" > "$TMPDME"
 # Remove trailing blank lines before re-adding the map include
 sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$TMPDME"
 echo "" >> "$TMPDME"

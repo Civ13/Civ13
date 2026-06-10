@@ -1205,11 +1205,9 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\nomads\nomads.dmm"
 // END_INCLUDE
 
-#include "maps/nomads/nomads.dmm"
+
+
 
 #include "maps/WIP/subcom13.dmm"
-
-#include "maps/nomads/nomads_desert.dmm"
