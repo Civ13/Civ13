@@ -74,7 +74,6 @@
 	name = "plating"
 	icon_state = "plating"
 	floor_type = null
-	intact = FALSE
 
 /turf/floor/plating/ex_act(severity)
 		//set src in oview(1)
@@ -382,8 +381,9 @@
 
 /turf/floor/beach/water/deep/saltwater/underwater
 	name = "deep saltwater"
+	icon_state = "underwater"
 	salty = TRUE
-	initial_flooring = /decl/flooring/water_deep_salt
+	initial_flooring = /decl/flooring/water_deep_underwater
 
 
 /turf/floor/beach/water/deep/CanPass(atom/movable/mover)

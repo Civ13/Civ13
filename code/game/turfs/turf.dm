@@ -44,7 +44,6 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/interior = TRUE
 	var/stepsound = null
 	var/floor_type= null
-	var/intact = TRUE
 
 	// for digging out dirt
 	var/available_dirt = 0
