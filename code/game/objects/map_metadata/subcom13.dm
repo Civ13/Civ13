@@ -11,11 +11,11 @@
 	lobby_icon = 'icons/lobby/civ13.gif'
 	caribbean_blocking_area_types = list()
 	respawn_delay = 0
-	faction_organization = list()
+	faction_organization = list(AMERICAN)
 	roundend_condition_sides = list()
-	availablefactions = list()
+	availablefactions = list("US Navy")
 	mission_start_message = "Reporting for duty, Commander. Your submarine awaits."
-	faction1 = null
+	faction1 = AMERICAN
 	faction2 = null
 	required_players = 0
 	gamemode_vote = FALSE
