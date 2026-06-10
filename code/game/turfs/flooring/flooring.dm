@@ -116,6 +116,15 @@ var/list/flooring_types
 	icon_base = "seadeep"
 	has_base_range = 0
 	damage_temperature = T0C+8000
+
+/decl/flooring/water_deep_underwater
+	name = "deep saltwater"
+	desc = "Deep salt water."
+	icon = 'icons/misc/beach.dmi'
+	icon_base = "underwater"
+	has_base_range = 0
+	damage_temperature = T0C+8000
+
 //	flags = TURF_HAS_EDGES
 /decl/flooring/water_deep_salt/shipline
 	icon_base = "ship_line"

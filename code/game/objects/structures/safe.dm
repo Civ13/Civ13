@@ -180,8 +180,8 @@ obj/structure/safe/ex_act(severity)
 		hide(1)
 	update_icon()
 
-/obj/structure/safe/floor/hide(var/intact)
-	invisibility = intact ? 101 : FALSE
+/obj/structure/safe/floor/hide()
+	invisibility = 101
 
 /obj/structure/safe/floor/hides_under_flooring()
 	return TRUE

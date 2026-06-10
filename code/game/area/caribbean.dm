@@ -336,6 +336,13 @@
 	ambience = list("sound/ambience/ship1.ogg")
 	climate = "sea"
 
+/area/caribbean/sea/underwater
+	name = "Ocean"
+	base_turf = /turf/floor/beach/water/deep/saltwater/underwater
+	icon_state = "purple1"
+	ambience = list("sound/ambience/underwater.ogg")
+	climate = "sea"
+
 /area/caribbean/sea/top
 	name = "sea"
 	base_turf = /turf/floor/beach/water/deep/saltwater

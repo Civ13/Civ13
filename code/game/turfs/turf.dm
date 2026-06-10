@@ -48,7 +48,6 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/interior = TRUE
 	var/stepsound = null
 	var/floor_type= null
-	var/intact = TRUE
 
 	// for digging out dirt
 	var/available_dirt = 0
@@ -101,9 +100,6 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	return FALSE
 
 /turf/proc/is_space()
-	return FALSE
-
-/turf/proc/is_intact()
 	return FALSE
 
 /mob/var/next_push = -1
