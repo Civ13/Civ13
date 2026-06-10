@@ -647,46 +647,6 @@
 
 #undef fetchElement
 
-//simple insertion sort - generally faster than merge for runs of 7 or smaller
-/proc/sortInsert(list/L, cmp=/proc/cmp_numeric_asc, associative, fromIndex=1, toIndex=0)
-	if(L && L.len >= 2)
-		fromIndex = fromIndex % L.len
-		toIndex = toIndex % (L.len+1)
-		if(fromIndex <= 0)
-			fromIndex += L.len
-		if(toIndex <= 0)
-			toIndex += L.len + 1
-
-		var/datum/sortInstance/SI = null
-		if(!SI)
-			SI = new
-		SI.L = L
-		SI.cmp = cmp
-		SI.associative = associative
-
-		SI.binarySort(fromIndex, toIndex, fromIndex)
-	return L
-
-//merge-sort - gernerally faster than insert sort, for runs of 7 or larger
-/proc/sortMerge(list/L, cmp=/proc/cmp_numeric_asc, associative, fromIndex=1, toIndex)
-	if(L && L.len >= 2)
-		fromIndex = fromIndex % L.len
-		toIndex = toIndex % (L.len+1)
-		if(fromIndex <= 0)
-			fromIndex += L.len
-		if(toIndex <= 0)
-			toIndex += L.len + 1
-
-		var/datum/sortInstance/SI = null
-		if(!SI)
-			SI = new
-		SI.L = L
-		SI.cmp = cmp
-		SI.associative = associative
-
-		SI.mergeSort(fromIndex, toIndex)
-	return L
-
 //TimSort interface
 /proc/sortTim(list/L, cmp=/proc/cmp_numeric_asc, associative, fromIndex=1, toIndex=0)
 	if(L && L.len >= 2)

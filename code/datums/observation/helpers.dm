@@ -18,11 +18,3 @@
 // Sometimes you just want to end yourself
 /datum/proc/qdel_self()
 	qdel(src)
-
-/proc/register_all_movement(var/event_source, var/listener)
-	GLOB.moved_event.register(event_source, listener, /atom/movable/proc/recursive_move)
-	GLOB.dir_set_event.register(event_source, listener, /atom/proc/recursive_dir_set)
-
-/proc/unregister_all_movement(var/event_source, var/listener)
-	GLOB.moved_event.unregister(event_source, listener, /atom/movable/proc/recursive_move)
-	GLOB.dir_set_event.unregister(event_source, listener, /atom/proc/recursive_dir_set)

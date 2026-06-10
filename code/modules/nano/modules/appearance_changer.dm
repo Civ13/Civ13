@@ -1,6 +1,5 @@
 /datum/nano_module/appearance_changer
 	name = "Appearance Editor"
-	available_to_ai = FALSE
 	var/flags = APPEARANCE_ALL_HAIR
 	var/mob/living/human/owner = null
 	var/list/valid_species = list()

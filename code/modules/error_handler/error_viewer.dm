@@ -88,7 +88,6 @@ GLOBAL_DATUM(error_cache, /datum/error_viewer/error_cache)
 /datum/error_viewer/error_cache
 	var/list/errors = list()
 	var/list/error_sources = list()
-	var/list/errors_silenced = list()
 
 /datum/error_viewer/error_cache/show_to(user, datum/error_viewer/back_to, linear)
 	var/html = build_header()
@@ -155,7 +154,6 @@ GLOBAL_DATUM(error_cache, /datum/error_viewer/error_cache)
 
 /datum/error_viewer/error_entry
 	var/datum/error_viewer/error_source/error_source
-	var/exception/exc
 	var/desc = ""
 	var/usr_ref
 	var/turf/usr_loc
@@ -175,8 +173,7 @@ GLOBAL_DATUM(error_cache, /datum/error_viewer/error_cache)
 		return
 
 	name = "<b>\[[time_stamp()]]</b> Runtime in <b>[e.file]</b>, line <b>[e.line]</b>: <b>[rhtml_encode(e.name)]</b>"
-	exc = e
-	
+
 	info_name = "Runtime in [e.file],[e.line]: [e]"
 	info = info_name
 

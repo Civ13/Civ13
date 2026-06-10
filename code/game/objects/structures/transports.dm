@@ -33,8 +33,6 @@
 
 	mouse_drop_zone = TRUE
 
-	var/animal_propelled = FALSE
-
 /obj/structure/vehicle/proc/check_sails()
 	return
 /obj/structure/vehicle/proc/updatepassdir()
@@ -339,7 +337,6 @@
 	dwheel = new/obj/item/vehicleparts/wheel/rudder
 	var/image/cover_overlay = null
 	var/image/cover_overlay_c = null
-	var/maxcapacity = 1 //besides the driver
 	var/mob/living/human/currentcap = null
 	bound_width = 64
 	bound_height = 64
@@ -1089,7 +1086,6 @@
 	dwheel = new/obj/item/vehicleparts/wheel/rope
 	var/image/cover_overlay = null
 	var/image/cover_overlay_c = null
-	var/maxcapacity = 0 //besides the driver
 	var/mob/living/human/currentcap = null
 	bound_width = 64
 	bound_height = 96

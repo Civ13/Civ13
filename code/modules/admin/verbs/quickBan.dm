@@ -42,60 +42,6 @@ var/list/ban_types = list("Faction Ban", "Job Ban", "Server Ban", "Playing Ban",
 var/datum/quickBan_handler/quickBan_handler = null
 
 /* admin procedures */
-/client/proc/quickBan_search()
-	set category = "Bans"
-
-	if (!quickBan_handler)
-		quickBan_handler = new
-	var/list/result = list()
-	var/list/checkedUID = list() //to prevent same ban from showing multiple times
-	var/option = input(src, "Search for a ban?") in list("Yes","Show All","Cancel")
-	if (option == "No")
-		return
-	var/list/details_lines = splittext(file2text("SQL/bans.txt"), "|||\n")
-	for(var/i=1,i<=details_lines.len,i++)
-		if (findtext(details_lines[i], ";"))
-			var/list/presult = splittext(details_lines[i], ";")
-			var/found = FALSE
-			if (presult && presult.len>=11)
-				for(var/tuid in checkedUID)
-					if (presult[3] == tuid)
-						found = TRUE
-				if (!found && presult.len>=11)
-					checkedUID += presult[3]
-					result += list(presult)
-	if (option == "Yes")
-		var/option2 = input(src, "What to search for?") in list("ckey","cID","ip","Cancel")
-		var/list/result3 = list()
-		if (option2 == "Cancel")
-			return
-		else if (option2 == "ckey")
-			var/_ckey = ckey(input(src, "What ckey will you search for?") as null|text)
-			for(var/result2 in result)
-				if (result2[9]==_ckey)
-					result3 += list(result2)
-		else if (option2 == "cID")
-			var/cID = input(src, "What cID will you search for?") as null|text
-			for(var/result2 in result)
-				if (result2[11]==cID)
-					result3 += list(result2)
-		else if (option2 == "ip")
-			var/ip = input(src, "What address will you search for?") as null|text
-			for(var/result2 in result)
-				if (result2[10]==ip)
-					result3 += list(result2)
-		result = result3
-
-	var/html = "<center><big>List of Quick Bans</big></center>"
-	var/list/possibilities = list()
-	if (islist(result) && !isemptylist(result))
-		for (var/list/v in result)
-			possibilities += "<big><b>UID [v[3]]</b> (<a href='byond://?src=\ref[quickBan_handler];caller=\ref[src];quickBan_removeBan=1;quickBan_removeBan_UID=[v[3]];quickBan_removeBan_ckey=[v[9]];quickBan_removeBan_cID=[v[10]];quickBan_removeBan_ip=[v[11]]'>DELETE</a>)</big>: [v[9]]/[v[10]]/[v[11]], type '[v[1]]' ([v[2]]): banned for '[v[4]]' by [v[5]] on [v[6]]. <b>[v[8]]</b>. (After assigned date)"
-	for (var/possibility in possibilities)
-		html += "<br>"
-		html += possibility
-
-	src << browse(html, "window=quick_bans_search;")
 /proc/find_cID(var/current = "ckey", var/currentvar = null)
 	if (currentvar == null)
 		return FALSE

@@ -342,7 +342,6 @@
 	var/agony_dose = 5
 	var/agony_amount = 2
 	var/discomfort_message = "<span class='danger'>Your insides feel uncomfortably hot!</span>"
-	var/slime_temp_adj = 10
 
 /datum/reagent/capsaicin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.adjustToxLoss(0.5 * removed)
@@ -374,7 +373,6 @@
 	agony_dose = 0.5
 	agony_amount = 4
 	discomfort_message = "<span class='danger'>You feel like your insides are burning!</span>"
-	slime_temp_adj = 15
 
 /datum/reagent/capsaicin/condensed/affect_touch(var/mob/living/human/M, var/alien, var/removed)
 	var/eyes_covered = FALSE

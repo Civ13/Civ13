@@ -1,5 +1,5 @@
 /datum/reagent/blood
-	data = list("donor" = null, "viruses" = null, "species" = "Human", "blood_DNA" = null, "blood_type" = null, "blood_colour" = "#A10808", "resistances" = null, "trace_chem" = null, "antibodies" = list())
+	data = list("donor" = null, "viruses" = null, "species" = "Human", "blood_DNA" = null, "blood_type" = null, "blood_colour" = "#A10808", "resistances" = null, "trace_chem" = null)
 	name = "Blood"
 	id = "blood"
 	reagent_state = LIQUID
@@ -16,9 +16,6 @@
 
 /datum/reagent/blood/get_data() // Just in case you have a reagent that handles data differently.
 	var/t = data.Copy()
-	if (t["virus2"])
-		var/list/v = t["virus2"]
-		t["virus2"] = v.Copy()
 	return t
 
 /datum/reagent/blood/touch_turf(var/turf/T)
@@ -43,20 +40,6 @@
 /datum/reagent/blood/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.inject_blood(src, volume)
 	remove_self(volume)
-
-// pure concentrated antibodies
-/datum/reagent/antibodies
-	data = list("antibodies"=list())
-	name = "Antibodies"
-	taste_description = "slime"
-	id = "antibodies"
-	reagent_state = LIQUID
-	color = "#0050F0"
-
-/datum/reagent/antibodies/affect_blood(var/mob/living/human/M, var/alien, var/removed)
-	if (data)
-		M.antibodies |= data["antibodies"]
-	..()
 
 #define WATER_LATENT_HEAT 19000 // How much heat is removed when applied to a hot turf, in J/unit (19000 makes 120 u of water roughly equivalent to 4L)
 /datum/reagent/water

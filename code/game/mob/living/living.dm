@@ -249,10 +249,6 @@ default behaviour is:
 
 /mob/living/proc/adjustBruteLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	bruteloss = min(max(bruteloss + amount, FALSE),(maxHealth*2))
 	if (amount > 0)
 		check_arena_promotion()
@@ -263,10 +259,6 @@ default behaviour is:
 
 /mob/living/proc/adjustBurnLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	burnloss = min(max(burnloss + amount, FALSE),(maxHealth*2))
 	if (amount > 0)
 		check_arena_promotion()
@@ -277,18 +269,10 @@ default behaviour is:
 
 /mob/living/proc/adjustOxyLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	oxyloss = min(max(oxyloss + amount, FALSE),(maxHealth*2))
 
 /mob/living/proc/setOxyLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	oxyloss = amount
 
 /mob/living/proc/getToxLoss()
@@ -296,20 +280,12 @@ default behaviour is:
 
 /mob/living/proc/adjustToxLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	toxloss = min(max(toxloss + amount, FALSE),(maxHealth*2))
 	if (amount > 0)
 		check_arena_promotion()
 	return TRUE
 /mob/living/proc/setToxLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	toxloss = amount
 
 /mob/living/proc/getCloneLoss()
@@ -317,10 +293,6 @@ default behaviour is:
 
 /mob/living/proc/adjustCloneLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
 	cloneloss = min(max(cloneloss + amount, FALSE),(maxHealth*2))
 
 /mob/living/proc/setCloneLoss(var/amount)
@@ -514,7 +486,6 @@ default behaviour is:
 	if (stat == DEAD)
 		dead_mob_list -= src
 		living_mob_list += src
-		tod = null
 		timeofdeath = FALSE
 
 	// restore us to conciousness
@@ -522,8 +493,6 @@ default behaviour is:
 
 	// make the icons look correct
 	regenerate_icons()
-
-	failed_last_breath = FALSE //So mobs that died of oxyloss don't revive and have perpetual out of breath.
 
 	return
 
@@ -833,17 +802,10 @@ default behaviour is:
 	pulling = AM
 	AM.pulledby = src
 
-	/*if (pullin)
-		pullin.icon_state = "pull1"*/
 	if (HUDneed.Find("pull"))
 		var/obj/screen/HUDthrow/HUD = HUDneed["pull"]
 		HUD.update_icon()
-/*
-	if (ishuman(AM))
-		var/mob/living/human/H = AM
-		if (H.pull_damage())
-			to_chat(src, SPAN_WARNING("<b>Pulling \the [H] in their current condition would probably be a bad idea.</b>"))
-*/
+
 	//Attempted fix for people flying away through space when cuffed and dragged.
 	if (ismob(AM))
 		var/mob/pulled = AM
@@ -871,16 +833,3 @@ default behaviour is:
 		return
 /mob/living/proc/slip(var/slipped_on,stun_duration=8)
 	return FALSE
-//Code to handle merging stacks when they are in mob's direct inventory.
-//Called when object enters the contents of a mob. Storage items not supported yet.
-//Not used because people don't like it. Might be useful for merging in containers.
-/* /mob/living/Entered(var/obj/item/stack/O)
- * 	..()
- * 	if(istype(O, /obj/item/stack))
- * 		if(O.amount != O.max_amount)
- * 			for(var/obj/item/stack/S in contents)
- * 				if(S.stacktype == O.stacktype && S.amount != S.max_amount)
- * 					if(O.amount == O.max_amount)
- * 						break
- * 					S.merge(O)
- */

@@ -90,26 +90,6 @@
 		. = usr.client.view+1
 
 //Debug procs
-/client/proc/test_movable_UI()
-	set category = "Debug"
-	set name = "Spawn Movable UI Object"
-
-	var/obj/screen/movable/M = new()
-	M.name = "Movable UI Object"
-	M.icon = prefs.UI_file
-	M.icon_state = "block"
-	M.maptext = "Movable"
-	M.maptext_width = 64
-
-	var/screen_l = WWinput(src, "Where on the screen? (Formatted as 'X,Y' e.g: '1,1' for bottom left)", "Spawn Movable UI Object", "1,1", "text")
-	if (!screen_l)
-		return
-
-	M.screen_loc = screen_l
-
-	screen += M
-
-
 /client/proc/test_snap_UI()
 	set category = "Debug"
 	set name = "Spawn Snap UI Object"

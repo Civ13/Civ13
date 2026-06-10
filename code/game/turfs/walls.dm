@@ -9,19 +9,13 @@ var/list/global/wall_cache = list()
 	density = TRUE
 	heat_capacity = 312500 //a little over 5 cm thick , 312500 for TRUE m by 2.5 m by 0.25 m plasteel wall
 	plane = GAME_PLANE
-	overlay_priority = 100
 	var/damage = FALSE
 	var/damage_overlay = FALSE
 	var/global/damage_overlays[16]
-	var/active
 	var/can_open = FALSE
 	var/material/material
 	var/last_state
-	var/construction_stage
 	var/hitsound = 'sound/weapons/Genhit.ogg'
-	var/list/wall_connections = list("0", "0", "0", "0")
-	var/ref_state = "generic"
-	var/tank_destroyable = TRUE
 
 // Extracts ricochet angle's tan if ischance = 1.
 // In other case it just makes bullets and lazorz go where they're supposed to.
@@ -115,13 +109,11 @@ var/list/global/wall_cache = list()
 /turf/wall/void
 	icon_state = "void"
 	damage = -100000
-	tank_destroyable = FALSE
 
 /turf/wall/rockwall
 	name = "cave wall"
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "rock"
-	tank_destroyable = FALSE
 	layer = TURF_LAYER + 0.02 // above lifts
 	desc = "A massive slab of rock in the shape of a wall."
 

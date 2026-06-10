@@ -1,20 +1,5 @@
 //TODO: rewrite and standardise all controller datums to the datum/controller type
 //TODO: allow all controllers to be deleted for clean restarts (see WIP master controller stuff) - MC done - lighting done
-/client/proc/restart_controller()
-	set category = "Debug"
-	set name = "Restart Process"
-	set desc = "Restart one of the various periodic loop controllers for the game (be careful!)"
-
-	if (!check_rights(R_SERVER)) return
-
-	var/process = input(src, "Which process?") in list("Cancel") | processScheduler.nameToProcessMap
-	if (process == "Cancel")
-		return
-
-	processScheduler.restartProcess(process)
-
-	message_admins("Admin [key_name_admin(usr)] has restarted the [process] process.", key_name_admin(usr))
-	return
 
 var/list/special_globalobjects = list("processScheduler", "Master", "Ticker", "Configuration", "Observation","Whitelists", "Job Master")
 /client/proc/debug_controller()

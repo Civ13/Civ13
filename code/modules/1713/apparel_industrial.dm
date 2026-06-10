@@ -75,13 +75,11 @@
 	else
 		if (adjusted)
 			item_state = "union_cap"
-			worn_state = "union_cap"
 			item_state_slots["slot_head"] = "union_cap"
 			to_chat(usr, "<span class = 'danger'>you adjust your cap's band.</span>")
 			adjusted = FALSE
 		else if (!adjusted)
 			item_state = "union_capad"
-			worn_state = "union_capad"
 			item_state_slots["slot_head"] = "union_capad"
 			to_chat(usr, "<span class = 'danger'>you adjust your cap's band.</span>")
 			adjusted = TRUE
@@ -98,7 +96,6 @@
 	desc = "Also known as a butler suit."
 	icon_state = "victorian_tailcoat"
 	item_state = "victorian_tailcoat"
-	worn_state = "victorian_tailcoat"
 
 /obj/item/clothing/head/confederatecap
 	name = "confederate cap"
@@ -115,13 +112,11 @@
 	else
 		if (adjusted)
 			item_state = "confederate_cap"
-			worn_state = "confederate_cap"
 			item_state_slots["slot_head"] = "confederate_cap"
 			to_chat(usr, "<span class = 'danger'>you adjust your cap's band.</span>")
 			adjusted = FALSE
 		else if (!adjusted)
 			item_state = "confederate_capad"
-			worn_state = "confederate_capad"
 			item_state_slots["slot_head"] = "confederate_capad"
 			to_chat(usr, "<span class = 'danger'>you adjust your cap's band.</span>")
 			adjusted = TRUE
@@ -216,105 +211,90 @@
 	desc = "A red shirt with leather trousers, commonly used among pioneers."
 	icon_state = "pioneer_outfit"
 	item_state = "pioneer_outfit"
-	worn_state = "pioneer_outfit"
 
 /obj/item/clothing/under/industrial2
 	name = "rancher outfit"
 	desc = "A blue shirt with light beige trousers."
 	icon_state = "rancher_outfit"
 	item_state = "rancher_outfit"
-	worn_state = "rancher_outfit"
 
 /obj/item/clothing/under/industrial3
 	name = "cowboy outfit"
 	desc = "A white shirt with leather trousers, worn among cowboys and ranchers."
 	icon_state = "cowboy_outfit"
 	item_state = "cowboy_outfit"
-	worn_state = "cowboy_outfit"
 
 /obj/item/clothing/under/industrial4
 	name = "checkered outfit"
 	desc = "A red-and-white checkered shirt and light beige trousers."
 	icon_state = "checkered_outfit"
 	item_state = "checkered_outfit"
-	worn_state = "checkered_outfit"
 
 /obj/item/clothing/under/industrial5
 	name = "worker outfit"
 	desc = "A navy blue shirt with denim trousers."
 	icon_state = "worker_outfit"
 	item_state = "worker_outfit"
-	worn_state = "worker_outfit"
 
 /obj/item/clothing/under/texan
 	name = "texan shirt outfit"
 	desc = "A white undershirt with beige briefs. it has texan style bowtie."
 	icon_state = "texas"
 	item_state = "texas"
-	worn_state = "texas"
 
 /obj/item/clothing/under/lederhosen
 	name = "lederhosen"
 	desc = "The traditional south german attire."
 	icon_state = "lederhosen"
 	item_state = "lederhosen"
-	worn_state = "lederhosen"
 
 /obj/item/clothing/under/gang_leader // Welcome to sauce or loss with the Van Derlinde Gang
 	name = "classy outlaw outfit"
 	desc = "A well made black and red outfit with white arms and gold buttons. Often worn by self styled leaders, always with a plan."
 	icon_state = "gang_leader"
 	item_state = "gang_leader"
-	worn_state = "gang_leader"
 
 /obj/item/clothing/under/outlaw //alright arthur, show us what you got
 	name = "outlaw outfit"
 	desc = "A blue shirt with blue denim trousers and white suspenders. Often worn by people at arms length with the wrong side of the law, clothes sense is no judicator of character however."
 	icon_state = "arthur_morgan"
 	item_state = "arthur_morgan"
-	worn_state = "arthur_morgan"
 
 /obj/item/clothing/under/bartender
 	name = "bartender outfit"
 	desc = "A stylish bartender outfit."
 	icon_state = "bartender"
 	item_state = "bartender"
-	worn_state = "bartender"
 
 /obj/item/clothing/under/victorian_vest
 	name = "black victorian shirt and vest"
 	desc = "A no nonsense black shirt & vest with gold buttons, made in victorian style."
 	icon_state = "victorianvest"
 	item_state = "victorianvest"
-	worn_state = "victorianvest"
 
 /obj/item/clothing/under/victorian_vest/redvest
 	name = "black victorian shirt and red vest"
 	desc = "A no nonsense black shirt & red vest with gold buttons, made in victorian style."
 	icon_state = "victorianredvest"
 	item_state = "victorianredvest"
-	worn_state = "victorianredvest"
 
 /obj/item/clothing/under/victorian_vest/redshirt
 	name = "red victorian shirt and black vest"
 	desc = "A no nonsense red shirt & black vest with gold buttons, made in victorian style."
 	icon_state = "victorianblred"
 	item_state = "victorianblred"
-	worn_state = "victorianblred"
 
 /obj/item/clothing/under/waistcoat
 	name = "white shirt and black waistcoat"
 	desc = "A no nonsense black waistcoat with white shirt."
 	icon_state = "waistcoat"
 	item_state = "waistcoat"
-	worn_state = "waistcoat"
 
 /obj/item/clothing/suit/storage/coat/victorian_peacoat
 	name = "black peacoat"
 	desc = "A no nonsense black peacoat"
 	icon_state = "victorian_peacoat"
 	item_state = "victorian_peacoat"
-	worn_state = "victorian_peacoat"
 
 /* Womens Fashion*/
 
@@ -323,63 +303,54 @@
 	desc = "A eye catching dress often worn by frontier damsels looking to drum up business."
 	icon_state = "dress_saloon"
 	item_state = "dress_saloon"
-	worn_state = "dress_saloon"
 
 /obj/item/clothing/under/cheongsam
 	name = "cheongsam dress"
 	desc = "A tight fitting and attractive dress commmonly worn by women hailing from the orient."
 	icon_state = "cheongsam"
 	item_state = "cheongsam"
-	worn_state = "cheongsam"
 
 /obj/item/clothing/under/blackdress/short
 	name = "short black dress"
 	desc = "A plain black dress for women, this one is notably shorter and less modest."
 	icon_state = "dress_black_short"
 	item_state = "dress_black_short"
-	worn_state = "dress_black_short"
 
 /obj/item/clothing/under/wedding
 	name = "white wedding dress"
 	desc = "A cermonial white wedding dress. Something old, something new, something borrowed, something blue."
 	icon_state = "bride_white"
 	item_state = "bride_white"
-	worn_state = "bride_white"
 
 /obj/item/clothing/under/victorian_dress
 	name = "victorian black dress"
 	desc = "A black dress for a lady, made in a victorian style."
 	icon_state = "victorianblackdress"
 	item_state = "victorianblackdress"
-	worn_state = "victorianblackdress"
 
 /obj/item/clothing/under/victorian_dress/red
 	name = "victorian red dress"
 	desc = "A red dress for a lady, made in a victorian style."
 	icon_state = "victorianreddress"
 	item_state = "victorianreddress"
-	worn_state = "victorianreddress"
 
 /obj/item/clothing/under/victorian_prim
 	name = "neck length black dress"
 	desc = "A prim and proper black dress, covers from neck to ankle."
 	icon_state = "victorian_dress"
 	item_state = "victorian_dress"
-	worn_state = "victorian_dress"
 
 /obj/item/clothing/suit/storage/closechest_apron_f
 	name = "chest length apron"
 	desc = "A white apron that covers up to the chest, the ruffles are popular with the french."
 	icon_state = "closechest_apron_f"
 	item_state = "closechest_apron_f"
-	worn_state = "closechest_apron_f"
 
 /obj/item/clothing/suit/storage/openchest_apron_f
 	name = "waist length apron"
 	desc = "A white apron that covers up to the waist, the ruffles are popular with the french."
 	icon_state = "openchest_apron_f"
 	item_state = "openchest_apron_f"
-	worn_state = "openchest_apron_f"
 /* Womens Fashion - End*/
 
 /obj/item/clothing/under/union_uniform
@@ -387,14 +358,12 @@
 	desc = "A blue uniform worn by union soldiers."
 	icon_state = "union_uniform"
 	item_state = "union_uniform"
-	worn_state = "union_uniform"
 
 obj/item/clothing/under/confederate_uniform/grey
 	name = "confederate uniform"
 	desc = "A grey uniform worn by confederate soldiers."
 	icon_state = "confederate_uniform1"
 	item_state = "confederate_uniform1"
-	worn_state = "confederate_uniform1"
 	colorn = 1
 	specific = TRUE
 
@@ -403,7 +372,6 @@ obj/item/clothing/under/confederate_uniform/grey_blue
 	desc = "A grey uniform worn by confederate soldiers, however this one has union pants."
 	icon_state = "confederate_uniform2"
 	item_state = "confederate_uniform2"
-	worn_state = "confederate_uniform2"
 	colorn = 2
 	specific = TRUE
 
@@ -412,7 +380,6 @@ obj/item/clothing/under/confederate_uniform/grey_blue
 	desc = "A grey uniform worn by confederate soldiers."
 	icon_state = "confederate_uniform1"
 	item_state = "confederate_uniform1"
-	worn_state = "confederate_uniform1"
 	value = 70
 	var/colorn = 1
 	var/specific = FALSE
@@ -423,7 +390,6 @@ obj/item/clothing/under/confederate_uniform/New()
 		colorn = pick(1,2)
 		icon_state = "confederate_uniform[colorn]"
 		item_state = "confederate_uniform[colorn]"
-		worn_state = "confederate_uniform[colorn]"
 
 /* Industrial Suits */
 
@@ -432,42 +398,36 @@ obj/item/clothing/under/confederate_uniform/New()
 	desc = "A long leather overcoat."
 	icon_state = "leather_overcoat"
 	item_state = "leather_overcoat"
-	worn_state = "leather_overcoat"
 
 /obj/item/clothing/suit/storage/jacket/leatherovercoat2
 	name = "black leather overcoat"
 	desc = "A long black leather overcoat."
 	icon_state = "black_leather_overcoat"
 	item_state = "black_leather_overcoat"
-	worn_state = "black_leather_overcoat"
 
 /obj/item/clothing/suit/storage/jacket/blackvest
 	name = "black vest"
 	desc = "A simple black vest."
 	icon_state = "blackvest"
 	item_state = "blackvest"
-	worn_state = "blackvest"
 
 /obj/item/clothing/suit/storage/jacket/olivevest
 	name = "olive vest"
 	desc = "A simple olive vest."
 	icon_state = "olivevest"
 	item_state = "olivevest"
-	worn_state = "olivevest"
 
 /obj/item/clothing/suit/storage/jacket/bluevest
 	name = "blue vest"
 	desc = "A simple blue vest."
 	icon_state = "bluevest"
 	item_state = "bluevest"
-	worn_state = "bluevest"
 
 /obj/item/clothing/suit/storage/jacket/texan
 	name = "cream short jacket"
 	desc = "A cream colored short jacket."
 	icon_state = "texas"
 	item_state = "texas"
-	worn_state = "texas"
 
 /* Industrial Boots*/
 
@@ -476,7 +436,6 @@ obj/item/clothing/under/confederate_uniform/New()
 	desc = "Black leather boots with spurs, perfect for riding."
 	icon_state = "cowboyboots1"
 	item_state = "cowboyboots1"
-	worn_state = "cowboyboots1"
 	force = WEAPON_FORCE_WEAK
 	armor = list(melee = 70, arrow = 40, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 25)
 	item_flags = NOSLIP
@@ -488,7 +447,6 @@ obj/item/clothing/under/confederate_uniform/New()
 	desc = "Leather boots with spurs, perfect for riding."
 	icon_state = "cowboyboots2"
 	item_state = "cowboyboots2"
-	worn_state = "cowboyboots2"
 	force = WEAPON_FORCE_WEAK
 	armor = list(melee = 70, arrow = 40, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 25)
 	item_flags = NOSLIP
@@ -500,14 +458,12 @@ obj/item/clothing/under/confederate_uniform/New()
 	desc = "Alligator scale patterned boots with spurs, perfect for riding in style."
 	icon_state = "gator_cowboy"
 	item_state = "gator_cowboy"
-	worn_state = "gator_cowboy"
 
 /obj/item/clothing/shoes/gator_ankleboots
 	name = "alligator scale ankle boots"
 	desc = "Classy alligator scale ankle-length boots, a certain statement for fashion."
 	icon_state = "gator_ankleboots"
 	item_state = "gator_ankleboots"
-	worn_state = "gator_ankleboots"
 	force = WEAPON_FORCE_WEAK
 	armor = list(melee = 50, arrow = 30, gun = FALSE, energy = 20, bomb = 40, bio = 10, rad = 20)
 	item_flags = NOSLIP
@@ -520,7 +476,6 @@ obj/item/clothing/under/confederate_uniform/New()
 	desc = "A thick fur coat, great for the winter."
 	icon_state = "kozhanka"
 	item_state = "kozhanka"
-	worn_state = "kozhanka"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
@@ -535,7 +490,6 @@ obj/item/clothing/under/confederate_uniform/New()
 		colorn = pick(1,2,)
 		icon_state = "kozhanka"
 		item_state = "kozhanka"
-		worn_state = "kozhanka"
 
 /obj/item/clothing/suit/storage/coat/kozhanka/verb/toggle_hood()
 	set category = null
@@ -544,7 +498,6 @@ obj/item/clothing/under/confederate_uniform/New()
 	if (hood)
 		icon_state = "kozhanka"
 		item_state = "kozhanka"
-		worn_state = "kozhanka"
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 		item_state_slots["slot_wear_suit"] = "kozhanka[colorn]"
@@ -557,7 +510,6 @@ obj/item/clothing/under/confederate_uniform/New()
 	else if (!hood)
 		icon_state = "kozhankah"
 		item_state = "kozhankah"
-		worn_state = "kozhankah"
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
 		item_state_slots["slot_wear_suit"] = "kozhankah[colorn]"
@@ -573,7 +525,6 @@ obj/item/clothing/under/confederate_uniform/New()
 	desc = "A thick white fur coat, great for the winter."
 	icon_state = "kozhanka_w"
 	item_state = "kozhanka_w"
-	worn_state = "kozhanka_w"
 	specific = TRUE
 	colorn = 2
 
@@ -584,7 +535,6 @@ obj/item/clothing/under/confederate_uniform/New()
 	desc = "A cream jacket with white undershirt, the jacket and the shirt seem to be sown into one piece for convenience and it has texan style bowtie. This person probably has a lot of money.."
 	icon_state = "doug_dimmadome"
 	item_state = "doug_dimmadome"
-	worn_state = "doug_dimmadome"
 
 /obj/item/clothing/accessory/storage/webbing/civil_war
 	name = "cartridge rigging"

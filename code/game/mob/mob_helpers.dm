@@ -29,28 +29,12 @@
 	return FALSE
 
 
-proc/isdeaf(A)
-	if (isliving(A))
-		var/mob/living/M = A
-		return (M.sdisabilities & DEAF) || M.ear_deaf || M.find_trait("Deaf")
-	return FALSE
-
 proc/hasorgans(A) // Fucking really??
 	return ishuman(A)
-
-proc/iscuffed(A)
-	if (istype(A, /mob/living/human))
-		var/mob/living/human/C = A
-		if (C.handcuffed)
-			return TRUE
-	return FALSE
 
 /proc/is_admin(var/mob/user)
 	return check_rights(R_ADMIN, FALSE, user) != FALSE
 
-
-/proc/hsl2rgb(h, s, l)
-	return //TODO: Implement
 
 //Used to weight organs when an organ is hit randomly (i.e. not a directed, aimed attack).
 //Also used to weight the protection value that armor provides for covering that body part when calculating protection from full-body effects.
@@ -296,12 +280,6 @@ It's fairly easy to fix if dealing with single letters but not so much with comp
 		if (M)
 			M.shakecamera = FALSE
 
-/proc/findname(msg)
-	for (var/mob/M in mob_list)
-		if (M.real_name == text("[msg]"))
-			return TRUE
-	return FALSE
-
 
 /mob/proc/abiotic(var/full_body = FALSE)
 	if (full_body && ((l_hand && !( l_hand.abstract )) || (r_hand && !( r_hand.abstract )) || (back || wear_mask)))
@@ -337,13 +315,6 @@ proc/is_blind(A)
 		if (istype(C.eyes, /obj/item/clothing/glasses/sunglasses/blindfold))
 			return TRUE
 	return FALSE
-
-/proc/mobs_in_area(var/area/A)
-	var/list/mobs = new
-	for (var/mob/living/M in mob_list)
-		if (get_area(M) == A)
-			mobs += M
-	return mobs
 
 //Direct dead say used both by emote and say
 //It is somewhat messy. I don't know what to do.
@@ -459,36 +430,7 @@ proc/is_blind(A)
 	else if (id && istype(id, /obj/item/weapon/card/id/centcom))
 		return SAFE_PERP
 */
-/*
-	if (check_access && !access_obj.allowed(src))
-		threatcount += 4
-*/
-/*
-	if (auth_weapons && !access_obj.allowed(src))
-		if (istype(l_hand, /obj/item/weapon/gun) || istype(l_hand, /obj/item/weapon/melee))
-			threatcount += 4
 
-		if (istype(r_hand, /obj/item/weapon/gun) || istype(r_hand, /obj/item/weapon/melee))
-			threatcount += 4
-
-		if (istype(belt, /obj/item/weapon/gun) || istype(belt, /obj/item/weapon/melee))
-			threatcount += 2
-
-		if (species.name != "Human")
-			threatcount += 2*/
-/*
-	if (check_records || check_arrest)
-		var/perpname = name
-		if (id)
-			perpname = id.registered_name
-
-		var/datum/data/record/R = find_security_record("name", perpname)
-		if (check_records && !R)
-			threatcount += 4
-
-		if (check_arrest && R && (R.fields["criminal"] == "*Arrest*"))
-			threatcount += 4
-*/
 	return threatcount
 
 /mob/living/simple_animal/hostile/assess_perp(var/obj/access_obj, var/check_access, var/auth_weapons, var/check_records, var/check_arrest)

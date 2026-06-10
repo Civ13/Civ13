@@ -1,7 +1,6 @@
 // COLOR SHOES
 /obj/item/clothing/shoes/color
 	name = "shoes"
-	initial_name = "shoes"
 	desc = "A pair of shoes."
 	icon_state = "white"
 
@@ -11,38 +10,31 @@
 
 /obj/item/clothing/shoes/color/blue
 	name = "blue shoes"
-	initial_name = "blue shoes"
 	icon_state = "blue"
 
 /obj/item/clothing/shoes/color/green
 	name = "green shoes"
-	initial_name = "green shoes"
 	icon_state = "green"
 
 /obj/item/clothing/shoes/color/yellow
 	name = "yellow shoes"
-	initial_name = "yellow shoes"
 	icon_state = "yellow"
 
 /obj/item/clothing/shoes/color/purple
 	name = "purple shoes"
-	initial_name = "purple shoes"
 	icon_state = "purple"
 
 /obj/item/clothing/shoes/color/brown
 	name = "brown shoes"
-	initial_name = "brown shoes"
 	icon_state = "brown"
 
 /obj/item/clothing/shoes/color/red
 	name = "red shoes"
-	initial_name = "red shoes"
 	desc = "Stylish red shoes."
 	icon_state = "red"
 
 /obj/item/clothing/shoes/color/orange
 	name = "orange shoes"
-	initial_name = "orange shoes"
 	icon_state = "orange"
 	var/obj/item/weapon/handcuffs/chained = null
 

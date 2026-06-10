@@ -7,8 +7,6 @@ var/global/list/valid_coordinates = list()
 /mob/living/human/var/can_check_distant_coordinates = FALSE
 
 /mob/living/human/proc/make_artillery_officer()
-	verbs += /mob/living/human/proc/Check_Coordinates
-	verbs += /mob/living/human/proc/Reset_Coordinates
 	can_check_distant_coordinates = TRUE
 
 /mob/living/human/proc/make_artillery_scout()
@@ -111,37 +109,7 @@ var/global/list/valid_coordinates = list()
 	else
 		to_chat(usr, "You can't make an annoucement while you're dead!")
 
-/mob/living/human/proc/Check_Coordinates()
-	set category = "Officer"
-	if (!check_coords_check())
-		to_chat(usr, "<span class = 'warning'>You can't use this yet.</span>")
-		return
-	if (checking_coords[1] && checking_coords[2])
-		checking_coords[3] = x
-		checking_coords[4] = y
-		valid_coordinates["[x],[y]"] = TRUE
-		var/dist = "[checking_coords[3] - checking_coords[1]],[checking_coords[4] - checking_coords[2]]"
-		to_chat(usr, "<span class = 'notice'>You finished tracking coordinates at <b>[x],[y]</b>. You moved an offset of <b>[dist]</b>.[kanonier_msg]</span>")
-		checking_coords[3] = null
-		checking_coords[4] = null // continue to track from the same starting location
-	else
-		checking_coords[1] = x
-		checking_coords[2] = y
-		to_chat(usr, "<span class = 'notice'>You've started checking coordinates at <b>[x], [y]</b>.</span>")
 
-/mob/living/human/proc/Reset_Coordinates()
-	set category = "Officer"
-	if (!check_coords_check())
-		to_chat(usr, "<span class = 'warning'>You can't use this yet.</span>")
-		return
-	if (checking_coords[1] && checking_coords[2])
-		var/x = checking_coords[1]
-		var/y = checking_coords[2]
-		checking_coords[1] = null
-		checking_coords[2] = null
-		to_chat(usr, "<span class = 'notice'>You are no longer tracking from <b>[x],[y]</b>.</span>")
-		checking_coords[3] = null
-		checking_coords[4] = null
 
 // the only thing different about these verbs is the category
 

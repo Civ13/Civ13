@@ -11,7 +11,6 @@
 	icon_state = "backpack"
 	base_icon = "backpack"
 	item_state = "backpack"
-	worn_state = "backpack"
 	//most backpacks use the default backpack state for inhand overlays
 	item_state_slots = list(
 		slot_l_hand_str = "backpack",
@@ -47,7 +46,6 @@
 	desc = "It's a very fancy satchel made with fine leather."
 	icon_state = "satchel"
 	base_icon = "satchel"
-	worn_state = "satchel"
 	max_storage_space = 16
 
 /obj/item/weapon/storage/backpack/satchel/gator_satchel
@@ -61,7 +59,6 @@
 	desc = "A very fancy satchel made out of black leather."
 	icon_state = "satchel_black"
 	base_icon = "satchel_black"
-	worn_state = "satchel_black"
 
 /obj/item/weapon/storage/backpack/satchel/black/germanat
 	name = "German Anti Tank Satchel"
@@ -99,14 +96,12 @@
 	desc = "A very versitile backpack made out of synthetic leather."
 	icon_state = "replicant_backpack"
 	base_icon = "replicant_backpack"
-	worn_state = "replicant_backpack"
 
 /obj/item/weapon/storage/backpack/satchel/police
 	name = "police tactical pouch"
 	desc = "A tactical pouch made for law enforcement agents."
 	icon_state = "policesatchel"
 	base_icon = "policesatchel"
-	worn_state = "policesatchel"
 	max_storage_space = 12
 
 /* Backpacks */
@@ -116,7 +111,6 @@
 	desc = "It's a standard issue backpack for japanese military personel"
 	icon_state = "jappack"
 	item_state = "jappack"
-	worn_state = "jappack"
 	base_icon = "jappack"
 	max_storage_space = 24
 /obj/item/weapon/storage/backpack/ww2/jap/full
@@ -138,7 +132,6 @@
 	desc = "It's a crate equipped with straps for carrying, often used by ammo bearers."
 	icon_state = "ammo_crate"
 	item_state = "ammo_crate"
-	worn_state = "ammo_crate"
 	base_icon = "ammo_crate"
 	max_storage_space = 24
 	can_hold = list(
@@ -169,7 +162,6 @@
 	desc = "A standard issue backpack for German military personel"
 	icon_state = "germanpack"
 	item_state = "germanpack"
-	worn_state = "germanpack"
 	base_icon = "germanpack"
 	max_storage_space = 24
 	can_hold = list(
@@ -187,7 +179,6 @@
 	desc = "A standard issue backpack for Soviet military personel."
 	icon_state = "germanpack" //To be replaced with proper, high quality sprites
 	item_state = "germanpack" //To be replaced with proper, high quality sprites
-	worn_state = "germanpack" //To be replaced with proper, high quality sprites
 	base_icon = "germanpack" //To be replaced with proper, high quality sprites
 	max_storage_space = 24
 	can_hold = list(
@@ -246,7 +237,6 @@
 	desc = "It's a standard issue backpack for American military personel"
 	icon_state = "uspack"
 	item_state = "uspack"
-	worn_state = "uspack"
 	base_icon = "uspack"
 	max_storage_space = 24
 
@@ -255,7 +245,6 @@
 	desc = "A backpack with a built-in parachute."
 	icon_state = "parachute"
 	item_state = "parachute"
-	worn_state = "parachute"
 	base_icon = "parachute"
 	w_class = ITEM_SIZE_HUGE
 	max_storage_space = 0
@@ -481,7 +470,6 @@
 		slot_l_hand_str = "us_buttpack",
 		slot_r_hand_str = "us_buttpack",
 		)
-	worn_state = "us_buttpack"
 	base_icon = "us_buttpack"
 	slot_flags = SLOT_BACK
 	max_storage_space = 8
@@ -495,7 +483,6 @@
 		slot_l_hand_str = "sovpack",
 		slot_r_hand_str = "sovpack",
 		)
-	worn_state = "sovpack"
 	base_icon = "sovpack"
 	slot_flags = SLOT_BACK
 	max_storage_space = 12

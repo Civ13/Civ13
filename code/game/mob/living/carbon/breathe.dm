@@ -15,8 +15,3 @@
 			// I dunno, maybe the reagents enter the blood stream through the lungs?
 			break // If they breathe in the nasty stuff once, no need to continue checking
 
-/mob/living/human/proc/handle_breath(datum/gas_mixture/breath)
-	return TRUE
-
-/mob/living/human/proc/handle_post_breath(datum/gas_mixture/breath)
-	return TRUE

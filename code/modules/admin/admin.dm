@@ -267,9 +267,6 @@ proc/admin_notice(var/message, var/rights)
 		<br>
 		<center><big><b>Game Panel</b></big></center><hr>\n
 		"}
-		//		<A href='?src=\ref[src];c_mode=1'>Change Game Mode</A><br>
-/*	if (master_mode == "secret")
-		dat += "<A href='?src=\ref[src];f_secret=1'>(Force Secret Mode)</A><br>"*/
 
 	dat += {"
 		<br>
@@ -827,20 +824,7 @@ proc/admin_notice(var/message, var/rights)
 		message_admins(msg, key_name(usr))
 		log_admin(msg)
 
-/*
-/datum/admins/proc/toggletintedweldhelmets()
-	set category = "Debug"
-	set desc = "Reduces view range when wearing welding helmets"
-	set name = "Toggle tinted welding helmets."
-	config.welder_vision = !( config.welder_vision )
-	if (config.welder_vision)
-		to_chat(world, "<b>Reduced welder vision has been enabled!</b>")
-	else
-		to_chat(world, "<b>Reduced welder vision has been disabled!</b>")
-	log_admin("[key_name(usr)] toggled welder vision.")
-	message_admins("[key_name_admin(usr)] toggled welder vision.", key_name_admin(usr))
 
-*/
 
 /datum/admins/proc/toggleguests()
 	set category = "Server"
@@ -857,19 +841,6 @@ proc/admin_notice(var/message, var/rights)
 
 /datum/admins/proc/output_ai_laws()
 	return FALSE
-
-/client/proc/update_mob_sprite(mob/living/human/H as mob)
-	set category = "Admin"
-	set name = "Update Mob Sprite"
-	set desc = "Should fix any mob sprite update errors."
-
-	if (!holder)
-		to_chat(src, "Only administrators may use this command.")
-		return
-
-	if (istype(H))
-		H.regenerate_icons()
-
 
 /*
 	helper proc to test if someone is a mentor or not.  Got tired of writing this same check all over the place.

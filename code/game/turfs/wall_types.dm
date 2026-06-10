@@ -51,7 +51,6 @@ turf/wall/generic_wall/New(var/newloc)
 /* Wood Walls*/
 /turf/wall/wood
 	icon_state = "wood0"
-	ref_state = "wood"
 /turf/wall/wood/New(var/newloc)
 	..(newloc,"hardwood")
 /turf/wall/wood/low/New(var/newloc)
@@ -64,7 +63,6 @@ turf/wall/generic_wall/New(var/newloc)
 /turf/wall/abashiri
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "abashiri0"
-	ref_state = "abashiri"
 	mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
 
 /turf/wall/abashiri/update_icon()

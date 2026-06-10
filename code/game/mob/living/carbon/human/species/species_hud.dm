@@ -12,10 +12,6 @@
 	//var/has_nutrition = TRUE // Draw the nutrition indicator.
 	//var/has_bodytemp = TRUE  // Draw the bodytemp indicator.
 	var/has_hands = TRUE	 // Set to draw hands.
-	//var/has_drop = TRUE	  // Set to draw drop button.
-	//var/has_throw = TRUE	 // Set to draw throw button.
-	//var/has_resist = TRUE	// Set to draw resist button.
-	var/has_internals = TRUE // Set to draw the internals toggle button.
 
 	// Contains information on the position and tag for all inventory slots
 	// to be drawn for the mob. This is fairly delicate, try to avoid messing with it

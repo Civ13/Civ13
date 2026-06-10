@@ -19,10 +19,6 @@
 
 	/// Active timers with this datum as the target
 	var/list/active_timers
-	/// Status traits attached to this datum. associative list of the form: list(trait name (string) = list(source1, source2, source3,...))
-	var/list/status_traits
-
-	var/hidden_from_codex = FALSE //set to TRUE if you want something to be hidden.
 	var/interaction_flags = NONE //Defined at the datum level since some can be interacted with.
 
 	/**
@@ -30,7 +26,6 @@
 	  *
 	  * Lazy associated list in the structure of `type:component/list of components`
 	  */
-	var/list/datum_components
 	/**
 	  * Any datum registered to receive signals from this datum is in this list
 	  *
@@ -65,6 +60,10 @@
 	var/list/found_refs
 	#endif
 #endif
+
+/// Stub for the SEND_SIGNAL macro — never called since nothing registers signals
+/datum/proc/_SendSignal(sigtype, list/arguments)
+	return NONE
 
 /**
  * Called when a href for this datum is clicked
@@ -108,38 +107,7 @@
 			continue
 		qdel(timer)
 
-	//BEGIN: ECS SHIT
-
-	var/list/dc = datum_components
-	if(dc)
-		var/all_components = dc[/datum/component]
-		if(length_char(all_components))
-			for(var/datum/component/component as anything in all_components)
-				qdel(component, FALSE, TRUE)
-		else
-			var/datum/component/C = all_components
-			qdel(C, FALSE, TRUE)
-		dc.Cut()
-
-	clear_signal_refs()
-	//END: ECS SHIT
 	return QDEL_HINT_QUEUE
-
-/datum/proc/clear_signal_refs()
-	var/list/lookup = _listen_lookup
-	if(lookup)
-		for(var/sig in lookup)
-			var/list/comps = lookup[sig]
-			if(length_char(comps))
-				for(var/datum/component/comp as anything in comps)
-					comp.UnregisterSignal(src, sig)
-			else
-				var/datum/component/comp = comps
-				comp.UnregisterSignal(src, sig)
-		_listen_lookup = lookup = null
-
-	for(var/target in _signal_procs)
-		UnregisterSignal(target, _signal_procs[target])
 
 #ifdef DATUMVAR_DEBUGGING_MODE
 /datum/proc/save_vars()
@@ -190,48 +158,6 @@
 	. = deserialize_list(jsonlist)
 	if(!istype(., /datum))
 		. = null
-
-///Convert a datum into a json blob
-/proc/json_serialize_datum(datum/D, list/options)
-	if(!istype(D))
-		return
-	var/list/jsonlist = D.serialize_list(options)
-	if(islist(jsonlist))
-		jsonlist["DATUM_TYPE"] = D.type
-	return json_encode(jsonlist)
-
-/// Convert a list of json to datum
-/proc/json_deserialize_datum(list/jsonlist, list/options, target_type, strict_target_type = FALSE)
-	if(!islist(jsonlist))
-		if(!istext(jsonlist))
-			CRASH("Invalid JSON")
-		jsonlist = json_decode(jsonlist)
-		if(!islist(jsonlist))
-			CRASH("Invalid JSON")
-	if(!jsonlist["DATUM_TYPE"])
-		return
-	if(!ispath(jsonlist["DATUM_TYPE"]))
-		if(!istext(jsonlist["DATUM_TYPE"]))
-			return
-		jsonlist["DATUM_TYPE"] = text2path(jsonlist["DATUM_TYPE"])
-		if(!ispath(jsonlist["DATUM_TYPE"]))
-			return
-	if(target_type)
-		if(!ispath(target_type))
-			return
-		if(strict_target_type)
-			if(target_type != jsonlist["DATUM_TYPE"])
-				return
-		else if(!ispath(jsonlist["DATUM_TYPE"], target_type))
-			return
-	var/typeofdatum = jsonlist["DATUM_TYPE"]			//BYOND won't directly read if this is just put in the line below, and will instead runtime because it thinks you're trying to make a new list?
-	var/datum/D = new typeofdatum
-	var/datum/returned = D.deserialize_list(jsonlist, options)
-	if(!istype(returned, /datum))
-		qdel(D)
-	else
-		return returned
-
 
 /**
  * Called when a href for this datum is clicked

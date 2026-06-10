@@ -7,7 +7,6 @@
 	var/load_delay = 10
 	var/release_force = 0
 	var/firing_range = 18
-	fire_sound_text = "a launcher firing"
 
 //This normally uses a proc on projectiles and our ammo is not strictly speaking a projectile.
 /obj/item/weapon/gun/launcher/can_hit(var/mob/living/target as mob, var/mob/living/user as mob)

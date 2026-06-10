@@ -54,9 +54,6 @@
 /proc/schedule_task_in(var/in_time, var/procedure, var/list/arguments = list())
 	return schedule_task(world.time + in_time, procedure, arguments)
 
-/proc/schedule_task_with_source_in(var/in_time, var/source, var/procedure, var/list/arguments = list())
-	return schedule_task_with_source(world.time + in_time, source, procedure, arguments)
-
 /proc/schedule_task(var/trigger_time, var/procedure, var/list/arguments)
 	var/datum/scheduled_task/st = new/datum/scheduled_task(trigger_time, procedure, arguments, GLOBAL_PROC_REF(destroy_scheduled_task), list())
 	processes.scheduler.schedule(st)
@@ -64,16 +61,6 @@
 
 /proc/schedule_task_with_source(var/trigger_time, var/source, var/procedure, var/list/arguments)
 	var/datum/scheduled_task/st = new/datum/scheduled_task/source(trigger_time, source, procedure, arguments, GLOBAL_PROC_REF(destroy_scheduled_task), list())
-	processes.scheduler.schedule(st)
-	return st
-
-/proc/schedule_repeating_task(var/trigger_time, var/repeat_interval, var/procedure, var/list/arguments)
-	var/datum/scheduled_task/st = new/datum/scheduled_task(trigger_time, procedure, arguments, GLOBAL_PROC_REF(repeat_scheduled_task), list(repeat_interval))
-	processes.scheduler.schedule(st)
-	return st
-
-/proc/schedule_repeating_task_with_source(var/trigger_time, var/repeat_interval, var/source, var/procedure, var/list/arguments)
-	var/datum/scheduled_task/st = new/datum/scheduled_task/source(trigger_time, source, procedure, arguments, GLOBAL_PROC_REF(repeat_scheduled_task), list(repeat_interval))
 	processes.scheduler.schedule(st)
 	return st
 

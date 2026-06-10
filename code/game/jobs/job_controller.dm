@@ -57,9 +57,6 @@ var/global/datum/controller/occupations/job_master
 		//List of all jobs ordered by faction
 	var/list/faction_organized_occupations = list()
 		//Players who need jobs
-	var/list/unassigned = list()
-		//Debug info
-	var/list/job_debug = list()
 
 /datum/controller/occupations/proc/set_factions(var/autobalance_nr = 0)
 	map.availablefactions = list("Human tribesman", "Crustacean tribesman", "Orc tribesman", "Lizard tribesman")
@@ -393,9 +390,6 @@ var/global/datum/controller/occupations/job_master
 				player.mind.assigned_job = job
 			player.original_job = job
 			player.original_job_title = player.original_job.title
-			if (player.mind)
-				player.mind.role_alt_title = GetPlayerAltTitle(player, rank)
-			unassigned -= player
 			job.current_positions++
 			return TRUE
 	return FALSE
@@ -414,7 +408,6 @@ var/global/datum/controller/occupations/job_master
 			player.mind.assigned_role = null
 			player.mind.special_role = null
 	SetupOccupations()
-	unassigned = list()
 	return
 
 /datum/controller/occupations/proc/EquipRank(var/mob/living/human/H, var/rank, var/joined_late = FALSE)
@@ -615,10 +608,6 @@ var/global/datum/controller/occupations/job_master
 			if (H.client)
 				H.client.remove_gun_icons()
 		if (H)
-			spawn (50)
-				if (H)
-					H.stopDumbDamage = FALSE
-
 			spawn(12)
 				if(map.ID != MAP_CAMPAIGN && map.ID != MAP_BATTLE_SHIPS && map.ID != CAMPAIGN_MAP_LIST_AND_NOT_MAPID)
 					H.memory()

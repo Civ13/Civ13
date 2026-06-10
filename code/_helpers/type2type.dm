@@ -141,26 +141,6 @@
 		if(SOUTHWEST)
 			return "southwest"
 
-//Turns a direction into text
-/proc/dir2text_short(direction)
-	switch(direction)
-		if(NORTH)
-			return "N"
-		if(SOUTH)
-			return "S"
-		if(EAST)
-			return "E"
-		if(WEST)
-			return "W"
-		if(NORTHEAST)
-			return "NE"
-		if(SOUTHEAST)
-			return "SE"
-		if(NORTHWEST)
-			return "NW"
-		if(SOUTHWEST)
-			return "SW"
-
 //Turns text into proper directions
 /proc/text2dir(direction)
 	switch(uppertext(direction))
@@ -239,10 +219,6 @@
 		if (SOUTHWEST)
 			return list(SOUTH, WEST, SOUTHWEST)
 
-//Returns the angle in english
-/proc/angle2text(degree)
-	return dir2text(angle2dir(degree))
-
 //Converts a blend_mode constant to one acceptable to icon.Blend()
 /proc/blendMode2iconMode(blend_mode)
 	switch(blend_mode)
@@ -289,92 +265,7 @@
 		. += "[seperator]+MENTOR"
 	return .
 
-// heat2color functions. Adapted from: http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
-/proc/heat2color(temp)
-	return rgb(heat2color_r(temp), heat2color_g(temp), heat2color_b(temp))
-
-/proc/heat2color_r(temp)
-	temp /= 100
-	if (temp <= 66)
-		. = 255
-	else
-		. = max(0, min(255, 329.698727446 * (temp - 60) ** -0.1332047592))
-
-/proc/heat2color_g(temp)
-	temp /= 100
-	if (temp <= 66)
-		. = max(0, min(255, 99.4708025861 * log(temp) - 161.1195681661))
-	else
-		. = max(0, min(255, 288.1221695283 * ((temp - 60) ** -0.0755148492)))
-
-/proc/heat2color_b(temp)
-	temp /= 100
-	if (temp >= 66)
-		. = 255
-	else
-		if (temp <= 16)
-			. = FALSE
-		else
-			. = max(0, min(255, 138.5177312231 * log(temp - 10) - 305.0447927307))
-
-// Very ugly, BYOND doesn't support unix time and rounding errors make it really hard to convert it to BYOND time.
-// returns "YYYY-MM-DD" by default
-/proc/unix2date(timestamp, seperator = "-")
-	if (timestamp < 0)
-		return FALSE //Do not accept negative values
-
-	var/const/dayInSeconds = 86400 //60secs*60mins*24hours
-	var/const/daysInYear = 365 //Non Leap Year
-	var/const/daysInLYear = daysInYear + 1//Leap year
-	var/days = round(timestamp / dayInSeconds) //Days passed since UNIX Epoc
-	var/year = 1970 //Unix Epoc begins 1970-01-01
-	var/tmpDays = days + 1 //If passed (timestamp < dayInSeconds), it will return FALSE, so add TRUE
-	var/monthsInDays = list() //Months will be in here ***Taken from the PHP source code***
-	var/month = TRUE //This will be the returned MONTH NUMBER.
-	var/day //This will be the returned day number.
-
-	while (tmpDays > daysInYear) //Start adding years to 1970
-		year++
-		if (isLeap(year))
-			tmpDays -= daysInLYear
-		else
-			tmpDays -= daysInYear
-
-	if (isLeap(year)) //The year is a leap year
-		monthsInDays = list(-1,30,59,90,120,151,181,212,243,273,304,334)
-	else
-		monthsInDays = list(0,31,59,90,120,151,181,212,243,273,304,334)
-
-	var/mDays = FALSE;
-	var/monthIndex = FALSE;
-
-	for (var/m in monthsInDays)
-		monthIndex++
-		if (tmpDays > m)
-			mDays = m
-			month = monthIndex
-
-	day = tmpDays - mDays //Setup the date
-
-	return "[year][seperator][((month < 10) ? "0[month]" : month)][seperator][((day < 10) ? "0[day]" : day)]"
-
-/proc/isLeap(y)
-	return ((y) % 4 == FALSE && ((y) % 100 != FALSE || (y) % 400 == FALSE))
-
 /proc/list2text(L)
 	return jointext(L, ";")
 
-/proc/type2parent(child)
-	var/string_type = "[child]"
-	var/last_slash = findlasttext_char(string_type, "/")
-	if(last_slash == 1)
-		switch(child)
-			if(/datum)
-				return null
-			if(/obj, /mob)
-				return /atom/movable
-			if(/area, /turf)
-				return /atom
-			else
-				return /datum
-	return text2path(copytext_char(string_type, 1, last_slash))
+

@@ -11,10 +11,8 @@
 	var/image/shit_overlay = null
 	var/image/piss_overlay = null
 	var/abstract = FALSE
-	var/r_speed = 1.0
 	var/health = null
 	var/maxhealth
-	var/burn_point = null
 	var/burning = null
 	var/hitsound = null
 	var/storage_cost = null
@@ -48,13 +46,11 @@
 	var/item_flags = FALSE //Miscellaneous flags pertaining to equippable objects.
 
 	//var/heat_transfer_coefficient = TRUE //0 prevents all transfers, TRUE is invisible
-	var/gas_transfer_coefficient = TRUE // for leaking gas from turf to mask and vice-versa (for masks right now, but at some point, i'd like to include space helmets)
 	var/permeability_coefficient = TRUE // for chemicals/diseases
 	var/siemens_coefficient = TRUE // for electrical admittance/conductance (electrocution checks and shit)
 	var/slowdown = FALSE // How much clothing is slowing you down. Negative values speeds you up
 	var/canremove = TRUE //Mostly for Ninja code at this point but basically will not allow the item to be removed if set to 0. /N
 	var/list/armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
-	var/zoomdevicename = null //name used for message when binoculars/scope is used
 
 	var/icon_override = null  //Used to override hardcoded clothing dmis in human clothing proc.
 
@@ -66,8 +62,6 @@
 	// If icon_override or sprite_sheets are set they will take precendence over this, assuming they apply to the slot in question.
 	// Only slot_l_hand/slot_r_hand are implemented at the moment. Others to be implemented as needed.
 	var/list/item_icons = list()
-	var/wielded_icon = null
-	var/worn_state = null
 
 	var/dropsound = 'sound/effects/drop_default.ogg'
 
@@ -562,9 +556,6 @@ var/list/global/slot_flags_enumeration = list(
 	if (piss_overlay)
 		overlays.Remove(piss_overlay)
 		piss_overlay = null
-	if (istype(src, /obj/item/clothing/gloves))
-		var/obj/item/clothing/gloves/G = src
-		G.transfer_blood = FALSE
 	update_icon()
 /obj/item/reveal_blood()
 	if (was_bloodied && !fluorescent)

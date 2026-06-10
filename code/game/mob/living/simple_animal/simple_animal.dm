@@ -88,7 +88,6 @@
 	var/list/friends = list()
 	var/break_stuff_probability = 10
 	var/destroy_surroundings = TRUE
-	var/enroute = FALSE
 	var/stance_step = FALSE
 	var/can_bite_limbs_off = FALSE
 	var/ai_tick_delay = 0 // Throttle AI logic in Life()

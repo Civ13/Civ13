@@ -5,16 +5,6 @@
 	organ_tag = "lungs"
 	parent_organ = "chest"
 
-	var/breath_type
-	var/poison_type
-	var/exhale_type
-
-	var/min_breath_pressure
-
-	var/safe_exhaled_max = 10
-	var/safe_toxins_max = 0.2
-	var/SA_para_min = TRUE
-	var/SA_sleep_min = 5
 
 	var/active_breathing = 1
 

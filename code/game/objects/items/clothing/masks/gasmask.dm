@@ -7,7 +7,6 @@
 	body_parts_covered = FACE|EYES
 	w_class = ITEM_SIZE_SMALL
 	item_state = "gas_alt"
-	gas_transfer_coefficient = 0.01
 	permeability_coefficient = 0.01
 	siemens_coefficient = 0.9
 	var/gas_filter_strength = TRUE			//For gas mask filters

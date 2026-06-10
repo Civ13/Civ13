@@ -36,11 +36,3 @@ proc/GetBelow(var/atom/atom)
 	if (!turf)
 		return null
 	return HasBelow(turf.z) ? get_step(turf, DOWN) : null
-
-
-// for in game debugging
-/turf/proc/GetBelowMemberFunction()
-	return GetBelow(src)
-
-/turf/proc/GetAboveMemberFunction()
-	return GetAbove(src)

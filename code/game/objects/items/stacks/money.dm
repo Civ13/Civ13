@@ -36,7 +36,6 @@
 	attack_verb = list("hit")
 	w_class = ITEM_SIZE_SMALL // fits in pockets
 	value = 1
-	real_value = 1
 	var/novariants = TRUE
 
 /obj/item/stack/money/cents
@@ -152,7 +151,6 @@
 	attack_verb = list("hit")
 	w_class = ITEM_SIZE_SMALL // fits in pockets
 	value = 1
-	real_value = 1
 	novariants = TRUE
 
 /obj/item/stack/money/asian
@@ -170,7 +168,6 @@
 	attack_verb = list("hit")
 	w_class = ITEM_SIZE_SMALL // fits in pockets
 	value = 1
-	real_value = 1
 	novariants = TRUE
 
 /obj/item/stack/money/fictional
@@ -188,7 +185,6 @@
 	attack_verb = list("hit")
 	w_class = ITEM_SIZE_SMALL // fits in pockets
 	value = 1
-	real_value = 1
 	novariants = TRUE
 
 // -------------------------------------------------

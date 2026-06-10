@@ -2,8 +2,6 @@
 	gender = MALE
 	var/datum/species/species //Contains icon generation and language information, set during New().
 	var/list/stomach_contents = list() // mob/living in stomach, not a food 
-	var/list/datum/disease2/disease/virus2 = list() //was a virus mechanics, in fact are removed (partially) from code //TO DO TODO: Totally remove, or fix
-	var/list/antibodies = list() //was an antibodies mechanics, in fact are removed (partially) from code //TO DO TODO: Totally remove, or fix
 	var/life_tick = 0 // The amount of life ticks that have processed on this mob.
 	var/analgesic = FALSE // when this is set, the mob isn't affected by shock or pain
 	var/obj/item/handcuffed = null //An item that is handcuffed or null if not handcuffed

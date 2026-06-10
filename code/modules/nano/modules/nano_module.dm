@@ -1,7 +1,6 @@
 /datum/nano_module
 	var/name
 	var/datum/host
-	var/available_to_ai = TRUE
 //	var/datum/computer_file/program/program = null	// Program-Based computer program that runs this nano module. Defaults to null.
 
 /datum/nano_module/New(var/_host, var/program)

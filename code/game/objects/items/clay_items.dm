@@ -374,6 +374,7 @@
 	amount_per_transfer_from_this = 20
 	volume = 130
 	w_class = ITEM_SIZE_SMALL
+	var/quality = 0
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (istype(I, /obj/item/stack/material))

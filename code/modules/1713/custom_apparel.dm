@@ -63,14 +63,12 @@
 	desc = "A simple cloth toga."
 	icon_state = "customtoga"
 	item_state = "customtoga"
-	worn_state = "customtoga"
 
 /obj/item/clothing/under/custom/stola
 	name = "stola"
 	desc = "A simple cloth stola, roman clothing for women."
 	icon_state = "fem_roman"
 	item_state = "fem_roman"
-	worn_state = "fem_roman"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
 
 /obj/item/clothing/under/custom/roman
@@ -78,21 +76,18 @@
 	desc = "A simple cloth tunic, with a brass and leather belt."
 	icon_state = "customroman"
 	item_state = "customroman"
-	worn_state = "customroman"
 
 /obj/item/clothing/under/custom/spartan
 	name = "short loincloth"
 	desc = "A simple, small loincloth."
 	icon_state = "customspartan"
 	item_state = "customspartan"
-	worn_state = "customspartan"
 
 /obj/item/clothing/under/custom/shendyt
 	name = "shendyt"
 	desc = "A kilt-like cloth used around the waist."
 	icon_state = "customshendyt"
 	item_state = "customshendyt"
-	worn_state = "customshendyt"
 	heat_protection = LOWER_TORSO
 
 /obj/item/clothing/under/custom/celtic
@@ -100,7 +95,6 @@
 	desc = "Thick cloth celtic trousers."
 	icon_state = "customceltic"
 	item_state = "customceltic"
-	worn_state = "customceltic"
 	heat_protection = LOWER_TORSO|LEGS
 
 /obj/item/clothing/under/custom/toga/purple
@@ -108,7 +102,6 @@
 	desc = "A fancy cloth toga."
 	icon_state = "customtoga"
 	item_state = "customtoga"
-	worn_state = "customtoga"
 	uncolored = FALSE
 	color = "#66023C"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
@@ -119,7 +112,6 @@
 	desc = "A simple cloth tunic, with a leather belt."
 	icon_state = "customtunic"
 	item_state = "customtunic"
-	worn_state = "customtunic"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 
 /obj/item/clothing/under/custom/haori
@@ -127,21 +119,18 @@
 	desc = "A light, loose fitting bit of clothes, worn in japan."
 	icon_state = "haori_custom"
 	item_state = "haori_custom"
-	worn_state = "haori_custom"
 	uncolored = TRUE
 /obj/item/clothing/suit/storage/jacket/custom/haori_jacket
 	name = "haori jacket"
 	desc = "A simple jacket worn over a haori outfit."
 	icon_state = "haori_jacket_custom"
 	item_state = "haori_jacket_custom"
-	worn_state = "haori_jacket_custom"
 	uncolored = TRUE
 /obj/item/clothing/under/custom/arabictunic
 	name = "arabic tunic"
 	desc = "A light cloth tunic, in arabic style."
 	icon_state = "customarabictunic"
 	item_state = "customarabictunic"
-	worn_state = "customarabictunic"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 
 /obj/item/clothing/suit/storage/jacket/custom/poncho
@@ -149,7 +138,6 @@
 	desc = "A simple cloth poncho."
 	icon_state = "customponcho"
 	item_state = "customponcho"
-	worn_state = "customponcho"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 	uncolored = TRUE
 
@@ -161,7 +149,6 @@
 	var/undercolor = 0
 	item_state = "customren"
 	icon_state = "customren"
-	worn_state = "customren"
 	color = "#FFFFFF"
 	New()
 		..()
@@ -207,7 +194,6 @@
 	var/handcolor = 0
 	item_state = "custom_pontifical"
 	icon_state = "custom_pontifical"
-	worn_state = "custom_pontifical"
 	color = "#FFFFFF"
 	New()
 		..()
@@ -270,7 +256,6 @@
 	var/overcolor = 0
 	item_state = "customdress"
 	icon_state = "customdress"
-	worn_state = "customdress"
 	color = "#FFFFFF"
 	New()
 		..()
@@ -324,7 +309,6 @@
 	var/undercolor = 0
 	item_state = "custombuttonup_full"
 	icon_state = "custombuttonup_full"
-	worn_state = "custombuttonup_full"
 	color = "#FFFFFF"
 	New()
 		..()
@@ -369,7 +353,6 @@
 	var/linescolor = 0
 	item_state = "customcolonialcoat_full"
 	icon_state = "customcolonialcoat_full"
-	worn_state = "customcolonialcoat_full"
 	color = "#FFFFFF"
 	New()
 		..()
@@ -422,7 +405,6 @@
 	var/crosscolor = 0
 	item_state = "customcolonial_full"
 	icon_state = "customcolonial_full"
-	worn_state = "customcolonial_full"
 	color = "#FFFFFF"
 	New()
 		..()
@@ -468,7 +450,6 @@
 	var/pantscolor = 0
 	item_state = "tribalrobe"
 	icon_state = "tribalrobe"
-	worn_state = "tribalrobe"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 	color = "#FFFFFF"
 	New()
@@ -519,7 +500,6 @@
 	var/pantscolor = 0
 	item_state = "customuni"
 	icon_state = "customuni"
-	worn_state = "customuni"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 	color = "#FFFFFF"
 	New()
@@ -594,7 +574,6 @@
 	var/symbolcolor = 0
 	item_state = "customcap"
 	icon_state = "customcap"
-	worn_state = "customcap"
 	color = "#FFFFFF"
 	New()
 		..()
@@ -643,7 +622,6 @@
 	desc = "A cap often worn by military personnel."
 	icon_state = "fieldcap_custom"
 	item_state = "fieldcap_custom"
-	worn_state = "fieldcap_custom"
 	var/capcolor = 0
 
 /obj/item/clothing/head/custom/fieldcap/attack_self(mob/user as mob)
@@ -674,7 +652,6 @@
 	var/blackcolor = 0
 	item_state = "modern_camo_custom"
 	icon_state = "modern_camo_custom"
-	worn_state = "modern_camo_custom"
 	color = "#FFFFFF"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 	New()
@@ -726,7 +703,6 @@
 	desc = "Basic striped pyjamas."
 	icon_state = "custompyjamas"
 	item_state = "custompyjamas"
-	worn_state = "custompyjamas"
 	var/stripescolor = 0
 	var/uncolored = TRUE
 
@@ -757,28 +733,24 @@
 	desc = "A simple cloth beret."
 	icon_state = "customberet_hat"
 	item_state = "customberet_hat"
-	worn_state = "customberet_hat"
 
 /obj/item/clothing/head/custom/custombandana
 	name = "bandana"
 	desc = "A simple cloth bandana."
 	icon_state = "custombandana_hat"
 	item_state = "custombandana_hat"
-	worn_state = "custombandana_hat"
 
 /obj/item/clothing/head/custom/customnoblehat
 	name = "noble hat"
 	desc = "A fancy noble hat."
 	icon_state = "customnoblehat_hat"
 	item_state = "customnoblehat_hat"
-	worn_state = "customnoblehat_hat"
 
 /obj/item/clothing/head/custom/customhood
 	name = "wool_hood"
 	desc = "A wool hood."
 	icon_state = "wool_hood"
 	item_state = "wool_hood"
-	worn_state = "wool_hood"
 	cold_protection = HEAD
 
 /obj/item/clothing/head/custom/custom_beanie
@@ -786,7 +758,6 @@
 	desc = "A warm winter beanie."
 	icon_state = "custom_beanie"
 	item_state = "custom_beanie"
-	worn_state = "custom_beanie"
 	cold_protection = HEAD
 
 /obj/item/clothing/head/custom/drill_hat
@@ -794,7 +765,6 @@
     desc = "The hat of a drill sergeant sir yes sir!!"
     icon_state = "drill_hat"
     item_state = "drill_hat"
-    worn_state = "drill_hat"
     heat_protection = HEAD
 
 /obj/item/clothing/head/custom/taqiyah
@@ -802,14 +772,12 @@
 	desc = "A short, rounded skullcap usually worn for religious purposes."
 	icon_state = "taqiyah"
 	item_state = "taqiyah"
-	worn_state = "taqiyah"
 
 /obj/item/clothing/head/custom/hijab
 	name = "hijab"
 	desc = "A veil which is wrapped to cover the head and chest."
 	icon_state = "hijab"
 	item_state = "hijab"
-	worn_state = "hijab"
 	flags_inv = BLOCKHAIR
 	body_parts_covered = HEAD
 
@@ -818,14 +786,12 @@
 	desc = "A small, brimless cap."
 	icon_state = "kippa"
 	item_state = "kippa"
-	worn_state = "kippa"
 
 /obj/item/clothing/head/custom_keffiyeh
 	name = "keffiyeh"
 	desc = "A headdress fashioned from a scarf with a checkered pattern."
 	icon_state = "keffiyeh_custom"
 	item_state = "keffiyeh_custom"
-	worn_state = "keffiyeh_custom"
 	heat_protection = HEAD
 	var/uncolored1 = TRUE
 	var/patterncolor = 0
@@ -857,7 +823,6 @@
 	icon_override = "icons/obj/clothing/head.dmi"
 	icon_state = "montefortino"
 	item_state = "montefortino"
-	worn_state = "montefortino"
 	body_parts_covered = HEAD
 	armor = list(melee = 38, arrow = 25, gun = FALSE, energy = 15, bomb = 30, bio = 20, rad = FALSE)
 	health = 30
@@ -890,7 +855,6 @@
 	icon_override = "icons/obj/clothing/head.dmi"
 	icon_state = "roman_d"
 	item_state = "roman_d"
-	worn_state = "roman_d"
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
@@ -923,7 +887,6 @@
 	icon_override = "icons/obj/clothing/head.dmi"
 	icon_state = "roman_c"
 	item_state = "roman_c"
-	worn_state = "roman_c"
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
@@ -958,7 +921,6 @@
 	var/bandcolor = 0
 	item_state = "custfeathercap_hat"
 	icon_state = "custfeathercap_hat"
-	worn_state = "custfeathercap_hat"
 	color = "#FFFFFF"
 	New()
 		..()
@@ -1004,7 +966,6 @@
 	var/undercolor = 0
 	item_state = "crinoline_dress"
 	icon_state = "crinoline_dress"
-	worn_state = "crinoline_dress"
 	color = "#FFFFFF"
 	New()
 		..()
@@ -1046,7 +1007,6 @@
 	desc = "A headdress fashioned from cloth with a nice lining."
 	icon_state = "custom_hennin"
 	item_state = "custom_hennin"
-	worn_state = "custom_hennin"
 	heat_protection = HEAD
 	var/uncolored1 = TRUE
 	var/patterncolor = 0
@@ -1079,7 +1039,6 @@
 	var/pantscolor = 0
 	item_state = "custom_mod_full"
 	icon_state = "custom_mod_full"
-	worn_state = "custom_mod_full"
 	var/base_icon = "custom_mod"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 	color = "#FFFFFF"
@@ -1130,28 +1089,24 @@
 	name = "baggy modern outfit"
 	item_state = "custom_modbaggy_full"
 	icon_state = "custom_modbaggy_full"
-	worn_state = "custom_modbaggy_full"
 	base_icon = "custom_modbaggy"
 
 /obj/item/clothing/under/customuniform/short
 	name = "short modern outfit"
 	item_state = "custom_modshort_full"
 	icon_state = "custom_modshort_full"
-	worn_state = "custom_modshort_full"
 	base_icon = "custom_modshort"
 
 /obj/item/clothing/under/customuniform/colonial
 	name = "colonial outfit"
 	item_state = "custom_col_full"
 	icon_state = "custom_col_full"
-	worn_state = "custom_col_full"
 	base_icon = "custom_col"
 
 /obj/item/clothing/under/customuniform/colonial/short
 	name = "short colonial outfit"
 	item_state = "custom_col_short_full"
 	icon_state = "custom_col_short_full"
-	worn_state = "custom_col_short_full"
 	base_icon = "custom_col_short"
 
 /obj/item/clothing/suit/storage/jacket/custom/hoodie
@@ -1159,7 +1114,6 @@
 	desc = "A simple comfy cloth hoodie."
 	icon_state = "customhoodie"
 	item_state = "customhoodie"
-	worn_state = "customhoodie"
 	uncolored = TRUE
 
 /obj/item/clothing/suit/storage/jacket/custom/cloth_jacket
@@ -1167,7 +1121,6 @@
 	desc = "A simple cloth jacket."
 	icon_state = "customjacket"
 	item_state = "customjacket"
-	worn_state = "customjacket"
 	uncolored = TRUE
 
 /obj/item/clothing/suit/storage/jacket/custom/blazer
@@ -1175,7 +1128,6 @@
 	desc = "A simple cloth blazer."
 	icon_state = "customblazer"
 	item_state = "customblazer"
-	worn_state = "customblazer"
 	uncolored = TRUE
 
 ////////////Track suit////////////////
@@ -1189,7 +1141,6 @@
 	var/shirtcolor = 0
 	item_state = "trackpants_custom"
 	icon_state = "trackpants_custom"
-	worn_state = "trackpants_custom"
 	color = "#FFFFFF"
 	New()
 		..()
@@ -1240,7 +1191,6 @@
 	var/linescolor = 0
 	item_state = "customtracksuit"
 	icon_state = "customtracksuit"
-	worn_state = "customtracksuit"
 	color = "#FFFFFF"
 	New()
 		..()

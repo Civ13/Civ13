@@ -10,7 +10,6 @@
 	can_stack = TRUE
 	var/default_type = DEFAULT_WALL_MATERIAL
 	var/material/material
-	var/perunit = SHEET_MATERIAL_AMOUNT
 	var/apply_colour //temp pending icon rewrite
 	icon = 'icons/obj/materials.dmi'
 

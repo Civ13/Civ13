@@ -15,7 +15,6 @@
 #define AREA_OUTSIDE 1
 
 /area
-	var/fire = null
 	level = null
 	name = "Unknown"
 	icon = 'icons/turf/areas.dmi'
@@ -24,13 +23,10 @@
 	mouse_opacity = FALSE
 	plane = LIGHTING_PLANE
 
-	var/debug = FALSE
-
 	var/has_gravity = TRUE
 //	var/obj/machinery/power/apc/apc = null
 	var/no_air = null
 	var/list/ambience = list()
-	var/list/forced_ambience = list()
 	var/turf/base_turf //The base turf type of the area, which can be used to override the z-level's base turf
 	var/sound_env = FOREST
 
@@ -43,48 +39,23 @@
 
 	var/capturable = TRUE
 
-	var/parent_area_type = null
-	var/area/parent_area = null
-
 	var/climate = "temperate" //temperate, desert, jungle, tundra
 
 	var/nukesafe = FALSE
-	var/global/global_uid = FALSE
-	var/uid
 	var/artillery_integrity = 100
 
 /area/New()
 	icon = 'icons/effects/weather.dmi'
 	icon_state = ""
 	layer = 10
-	uid = ++global_uid
 
 	..()
 
-	spawn (100)
-		if (parent_area_type)
-			parent_area = locate(parent_area_type)
-
 	area_list |= src
 
-/area/proc/get_contents()
-	return contents
-
 /area/proc/get_turfs()
-	. = get_contents():Copy()
+	. = contents.Copy()
 	. -= typesof(/obj)
-	. -= typesof(/mob)
-	return .
-
-/area/proc/get_mobs()
-	. = get_contents():Copy()
-	. -= typesof(/turf)
-	. -= typesof(/obj)
-	return .
-
-/area/proc/get_objs()
-	. = get_contents():Copy()
-	. -= typesof(/turf)
 	. -= typesof(/mob)
 	return .
 
@@ -170,14 +141,6 @@
 	if (C)
 		C.ambience_playing = null
 	mob_or_client << sound(null, channel = SOUND_CHANNEL_AMBIENCE)
-
-/area/proc/gravitychange(var/gravitystate = FALSE, var/area/A)
-	A.has_gravity = gravitystate
-
-	for (var/mob/M in A)
-		if (has_gravity)
-			thunk(M)
-		M.update_floating( M.Check_Dense_Object() )
 
 /area/proc/thunk(mob)
 	if (istype(mob,/mob/living/human/))

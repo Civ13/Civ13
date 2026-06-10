@@ -230,7 +230,6 @@
 			dir = olddir
 			set_dir(direct)
 		l_move_time = world.time
-		m_flag = TRUE
 		if ((A != loc && A && A.z == z))
 			last_move = get_dir(A, loc)
 	if (istype(src, /mob/living/human))

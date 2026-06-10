@@ -7,7 +7,6 @@
 	check_armor = "energy"
 	embed = FALSE
 	sharp = FALSE
-	hitsound_wall = "laser_ric_sound"
 	damage = DAMAGE_LOW
 	penetrating = 8
 	armor_penetration = 0

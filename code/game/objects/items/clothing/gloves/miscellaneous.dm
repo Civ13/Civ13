@@ -99,7 +99,6 @@
 	desc = "Thick padded gloves worn to protect the hands from heat retrieving food."
 	icon_state = "oven_mitts"
 	item_state = "oven_mitts"
-	worn_state = "oven_mitts"
 	permeability_coefficient = 0.05
 	siemens_coefficient = 0.50 //thick work gloves
 

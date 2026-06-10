@@ -10,8 +10,6 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 //	var/hide_mode = FALSE
 //	var/datum/game_mode/mode = null
-	var/post_game = FALSE
-	var/event_time = null
 	var/event = FALSE
 
 	var/login_music			// music played in pregame lobby
@@ -20,7 +18,6 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 	var/random_players = FALSE 	// if set to nonzero, ALL players who latejoin or declare-ready join will have random appearances/genders
 
-	var/list/syndicate_coalition = list() // list of traitor-compatible factions
 	var/list/factions = list()			  // list of all factions
 	var/list/availablefactions = list()	  // list of factions with openings
 
@@ -29,11 +26,6 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 	var/delay_end = FALSE	//if set to nonzero, the round will not restart on it's own
 
 //	var/triai = FALSE//Global holder for Triumvirate
-
-	var/round_end_announced = FALSE // Spam Prevention. Announce round end only once.
-
-	var/can_latejoin_ruforce = TRUE
-	var/can_latejoin_geforce = TRUE
 
 	var/players_can_join = TRUE
 
@@ -140,14 +132,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 	//start_events() //handles random events and space dust.
 	//new random event system is handled from the MC.
 
-	/* TODO: discord bot - Kachnov
-	var/admins_number = 0
-	for (var/client/C)
-		if (C.holder)
-			admins_number++
 
-	if (admins_number == 0)
-		send2adminirc("Round has started with no admins online.")*/
 
 	return TRUE
 

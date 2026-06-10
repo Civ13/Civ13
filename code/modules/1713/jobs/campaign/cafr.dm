@@ -3,7 +3,6 @@
 	desc = "A heavily weathered Afghanka uniform with a CAFR patch on the front."
 	icon_state = "cafr_afghanka_open"
 	item_state = "cafr_afghanka_open"
-	worn_state = "cafr_afghanka_open"
 
 /obj/item/clothing/under/afghanka/cafr/toggle()
 	set category = null
@@ -13,7 +12,6 @@
 		return
 	else
 		if(adjusted)
-			worn_state = "cafr_afghanka_open"
 			item_state = "cafr_afghanka_open"
 			icon_state = "cafr_afghanka_open"
 			item_state_slots["w_uniform"] = "cafr_afghanka_open"
@@ -21,7 +19,6 @@
 			adjusted = FALSE
 			update_clothing_icon()
 		else if (!adjusted)
-			worn_state = "cafr_afghanka_closed"
 			item_state = "cafr_afghanka_closed"
 			icon_state = "cafr_afghanka_closed"
 			item_state_slots["w_uniform"] = "cafr_afghanka_closed"
@@ -34,7 +31,6 @@
 	desc = "A camouflage uniform issued by the Central Asian Federal Republic."
 	icon_state = "cafr_newiform"
 	item_state = "cafr_newiform"
-	worn_state = "cafr_newiform"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/suit/storage/jacket/afghanka/cafr
@@ -42,7 +38,6 @@
 	desc = "An Afghanka coat made with the CAFR camouflage pattern."
 	icon_state = "cafr_pattern_afghanka"
 	item_state = "cafr_pattern_afghanka"
-	worn_state = "cafr_pattern_afghanka"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
