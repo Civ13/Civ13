@@ -137,27 +137,6 @@
 /obj/map_metadata/subcom13/reverse_cross_message(faction)
 	return ""
 
-// ============================================================
-// Single Player Mode
-// ============================================================
-
-/obj/map_metadata/subcom13/verb/toggle_single_player_mode()
-	set name = "Toggle Single Player Mode"
-	set category = "Server"
-	set desc = "Toggle single-player mode. When enabled, ghosts can interact with submarine machinery."
-	set src in world
-
-	if(!usr || !usr.client) return
-	if(!usr.client.holder)
-		to_chat(usr, "<span class='warning'>Only administrators can toggle single-player mode.</span>")
-		return
-
-	single_player = !single_player
-	if(single_player)
-		world << "<font size=3 color='yellow'><b>Single Player Mode ENABLED.</b> Ghosts may now interact with submarine machinery.</font>"
-	else
-		world << "<font size=3 color='yellow'><b>Single Player Mode DISABLED.</b> Ghosts can no longer interact with machinery.</font>"
-
 // Proc to check if a mob can use sub machinery (ghost check for single-player)
 /obj/map_metadata/subcom13/proc/can_use_sub_machine(var/mob/user)
 	if(!user) return FALSE

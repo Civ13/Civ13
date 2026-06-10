@@ -516,6 +516,24 @@ proc/admin_notice(var/message, var/rights)
 	message_admins("<span class = 'notice'>[key_name(usr)] toggled admin item spawning to [config.allow_admin_spawning].</span>", key_name(usr))
 
 
+/datum/admins/proc/toggle_subcom_singleplayer()
+	set category = "Server"
+	set desc = "Toggle single-player mode for SUBCOM13"
+	set name = "Toggle Subcom13 Single Player"
+	if(!usr.client.holder)
+		return
+	if(!istype(map, /obj/map_metadata/subcom13))
+		to_chat(usr, "<span class='warning'>This command only works on the SUBCOM13 map.</span>")
+		return
+	var/obj/map_metadata/subcom13/SM = map
+	SM.single_player = !SM.single_player
+	if(SM.single_player)
+		world << "<font size=3 color='yellow'><b>Single Player Mode ENABLED.</b> Ghosts may now interact with submarine machinery.</font>"
+	else
+		world << "<font size=3 color='yellow'><b>Single Player Mode DISABLED.</b> Ghosts can no longer interact with machinery.</font>"
+	message_admins("<span class='notice'>[key_name(usr)] toggled SUBCOM13 single-player mode to [SM.single_player].</span>", key_name(usr))
+
+
 /datum/admins/proc/adrev()
 	set category = "Server"
 	set desc = "Toggle admin revives"

@@ -69,6 +69,12 @@
 /obj/structure/machinery/sub_control/proc/vessel_name_header()
 	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - SYSTEMS INTERFACE"
 
+// Override Topic to bypass NanoUI CanUseTopic() — use our own can_use() instead
+/obj/structure/machinery/sub_control/Topic(href, href_list)
+	if(!can_use(usr))
+		return 1
+	return 0
+
 /obj/structure/machinery/sub_control/proc/get_ui_content()
 	return "BASE INTERFACE"
 
@@ -218,6 +224,20 @@
 	dat += "<a href='?src=\ref[src];blow_ballast=1' class='btn btn-red' style='font-size:9px;'>BLOW BALLAST</a>"
 	dat += "</div></div>"
 
+	// --- DIESEL THROTTLE (visible when surfaced) ---
+	if(my_sub.depth == 0)
+		dat += "<div class='panel' style='padding:8px; min-width:140px;'>"
+		dat += "<div class='label'>DIESEL THROTTLE</div>"
+		dat += "<div style='margin-top:6px; text-align:center;'>"
+		dat += "<div style='font-size:18px; font-weight:bold; color:#0f0;'>[round(my_sub.diesel_throttle)]%</div>"
+		dat += "</div>"
+		dat += "<div style='text-align:center; margin-top:4px; gap:4px;'>"
+		dat += "<a href='?src=\ref[src];adj_dt=-10' class='btn btn-grey' style='font-size:9px;'>-10</a> "
+		dat += "<a href='?src=\ref[src];adj_dt=-5' class='btn btn-grey' style='font-size:9px;'>-5</a> "
+		dat += "<a href='?src=\ref[src];adj_dt=5' class='btn btn-green' style='font-size:9px;'>+5</a> "
+		dat += "<a href='?src=\ref[src];adj_dt=10' class='btn btn-green' style='font-size:9px;'>+10</a>"
+		dat += "</div></div>"
+
 	dat += "</div>" // end flex-row
 
 	return dat
@@ -241,6 +261,9 @@
 		visible_message("<span class='warning'>The ballast tanks hiss violently!</span>")
 		playsound(src, 'sound/machines/submarine/blowballast.ogg', 80, 1)
 		playsound(src, 'sound/machines/submarine/dive_alarm.ogg', 60, 1)
+
+	if(href_list["adj_dt"])
+		my_sub.diesel_throttle = clamp(my_sub.diesel_throttle + text2num(href_list["adj_dt"]), 0, 100)
 
 	interact(usr)
 

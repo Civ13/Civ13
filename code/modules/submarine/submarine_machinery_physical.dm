@@ -340,6 +340,43 @@
 	var/flow_rate = 0.3            // Lerp factor for air equalization (0 = no flow, 1 = instant)
 	var/active = TRUE
 
+// Predefined vent ducts — one per compartment, each with its own air network
+/obj/structure/machinery/sub_physical/vent_duct/fwd_torpedo
+	name = "vent duct — forward torpedo"
+	vent_id = "fwd_torpedo"
+
+/obj/structure/machinery/sub_physical/vent_duct/fwd_battery
+	name = "vent duct — forward battery"
+	vent_id = "fwd_battery"
+
+/obj/structure/machinery/sub_physical/vent_duct/operations
+	name = "vent duct — operations"
+	vent_id = "operations"
+
+/obj/structure/machinery/sub_physical/vent_duct/crew_quarters
+	name = "vent duct — crew quarters"
+	vent_id = "crew_quarters"
+
+/obj/structure/machinery/sub_physical/vent_duct/galley
+	name = "vent duct — galley"
+	vent_id = "galley"
+
+/obj/structure/machinery/sub_physical/vent_duct/cpo_quarters
+	name = "vent duct — CPO quarters"
+	vent_id = "cpo_quarters"
+
+/obj/structure/machinery/sub_physical/vent_duct/aft_battery
+	name = "vent duct — after battery"
+	vent_id = "aft_battery"
+
+/obj/structure/machinery/sub_physical/vent_duct/reactor_room
+	name = "vent duct — reactor room"
+	vent_id = "reactor_room"
+
+/obj/structure/machinery/sub_physical/vent_duct/engine_room
+	name = "vent duct — engine room"
+	vent_id = "engine_room"
+
 /obj/structure/machinery/sub_physical/vent_duct/New()
 	..()
 	// Register with the flooding controller
@@ -441,6 +478,26 @@
 	var/sealant_remaining = 100    // Uses of sealant left
 	var/power_draw = 10            // kW per tick
 	var/active = FALSE
+
+// Predefined sealant sprayers — one per compartment
+/obj/structure/machinery/sub_physical/breach_sealant/fwd_torpedo
+	name = "sealant sprayer — forward torpedo"
+/obj/structure/machinery/sub_physical/breach_sealant/fwd_battery
+	name = "sealant sprayer — forward battery"
+/obj/structure/machinery/sub_physical/breach_sealant/operations
+	name = "sealant sprayer — operations"
+/obj/structure/machinery/sub_physical/breach_sealant/crew_quarters
+	name = "sealant sprayer — crew quarters"
+/obj/structure/machinery/sub_physical/breach_sealant/galley
+	name = "sealant sprayer — galley"
+/obj/structure/machinery/sub_physical/breach_sealant/cpo_quarters
+	name = "sealant sprayer — CPO quarters"
+/obj/structure/machinery/sub_physical/breach_sealant/aft_battery
+	name = "sealant sprayer — after battery"
+/obj/structure/machinery/sub_physical/breach_sealant/reactor_room
+	name = "sealant sprayer — reactor room"
+/obj/structure/machinery/sub_physical/breach_sealant/engine_room
+	name = "sealant sprayer — engine room"
 
 /obj/structure/machinery/sub_physical/breach_sealant/attack_hand(mob/user)
 	if(!can_use_sub(user)) return

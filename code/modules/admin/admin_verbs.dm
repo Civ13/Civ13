@@ -350,6 +350,10 @@ var/list/admin_verbs_magic = list(
 				/datum/admins/proc/check_sabotage_progress,
 				/datum/admins/proc/trigger_moldy_reveal,
 			)
+		if (map && map.ID == MAP_SUBCOM13 && (holder.rights & R_ADMIN))
+			verbs += list(
+				/datum/admins/proc/toggle_subcom_singleplayer
+			)
 /client/proc/remove_admin_verbs()
 	verbs.Remove(
 		admin_verbs_default,
