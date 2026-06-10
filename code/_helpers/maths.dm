@@ -2,6 +2,9 @@
 /proc/random_decimal(var/low, var/high)
 	return (rand(smart_round(low*100), smart_round(high*100)))/100
 
+/proc/mix_value(var/a, var/b, var/t)
+	return a + (b - a) * t
+
 /proc/smart_round(var/num)
 	var/_ceil = ceil(num)
 	var/_floor = round(num)

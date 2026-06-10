@@ -13,19 +13,22 @@ var/global/datum/world_map_controller/subcom_map
 	var/datum/mission_controller/missions // Mission system reference
 	var/fast_travel_active = FALSE
 	var/tick_counter = 0
+	var/start_x = 500                     // Sub spawn X coordinate
+	var/start_y = 500                     // Sub spawn Y coordinate
 
 /datum/world_map_controller/New()
 	..()
-	src = global.subcom_map
+	global.subcom_map = src
 	missions = new /datum/mission_controller(src)
-	// Initialize flooding controller if not already present
 	if(!global.subcom_flooding)
 		new /datum/flooding_controller()
 
 /datum/world_map_controller/proc/initialize(var/datum/submarine/_player_sub)
 	player_sub = _player_sub
+	if(player_sub)
+		start_x = player_sub.x_pos
+		start_y = player_sub.y_pos
 	load_npc_types()
-	// Spawn initial NPC contacts for the patrol area
 	spawn_initial_contacts()
 
 // ---- Main Process Loop (called on SUB_MAP_TICK_INTERVAL cadence) ----
@@ -89,7 +92,8 @@ var/global/datum/world_map_controller/subcom_map
 	if(!player_sub)
 		return
 	fast_travel_active = TRUE
-	player_sub.speed = player_sub.target_speed * SUB_FAST_TRAVEL_MULT
+	player_sub.target_speed = player_sub.target_speed * SUB_FAST_TRAVEL_MULT
+	player_sub.speed = player_sub.target_speed
 
 /datum/world_map_controller/proc/disable_fast_travel(var/reason)
 	fast_travel_active = FALSE
@@ -121,11 +125,15 @@ var/global/datum/world_map_controller/subcom_map
 // ---- Contact Spawning ----
 
 /datum/world_map_controller/proc/spawn_initial_contacts()
-	// Spawn initial patrol contacts using typed enemy definitions
-	spawn_enemy_npc(/datum/subcom_enemy/destroyer)
-	spawn_enemy_npc(/datum/subcom_enemy/destroyer)
-	spawn_enemy_npc(/datum/subcom_enemy/frigate)
-	spawn_enemy_npc(/datum/subcom_enemy/cargo_ship, rand(600, 800), rand(600, 800))
+	var/datum/vessel_contact/npc/NPC
+	NPC = spawn_enemy_npc(/datum/subcom_enemy/destroyer)
+	if(NPC) active_vessels += NPC
+	NPC = spawn_enemy_npc(/datum/subcom_enemy/destroyer)
+	if(NPC) active_vessels += NPC
+	NPC = spawn_enemy_npc(/datum/subcom_enemy/frigate)
+	if(NPC) active_vessels += NPC
+	NPC = spawn_enemy_npc(/datum/subcom_enemy/cargo_ship, rand(600, 800), rand(600, 800))
+	if(NPC) active_vessels += NPC
 
 /datum/world_map_controller/proc/spawn_npc(var/enemy_type_path, var/spawn_x, var/spawn_y)
 	var/datum/vessel_contact/npc/NPC = spawn_enemy_npc(enemy_type_path, spawn_x, spawn_y)

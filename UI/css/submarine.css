@@ -1,0 +1,538 @@
+/* ============================================================
+   SUBCOM13 — Shared Submarine Console CSS Components
+   All submarine console UIs should link this stylesheet.
+   ============================================================ */
+
+/* ---- Reset & Base ---- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #2a2a2a;
+    color: #cccccc;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    padding: 8px;
+    overflow-x: hidden;
+}
+
+/* ---- Panel (recessed container with corner screws) ---- */
+.panel {
+    background: #1a1a1a;
+    border: 2px solid #444;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 6px 0;
+    position: relative;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.panel::before, .panel::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #888, #444);
+    border: 1px solid #333;
+}
+
+.panel::before {
+    top: 4px;
+    left: 4px;
+}
+
+.panel::after {
+    top: 4px;
+    right: 4px;
+}
+
+/* Screw bottom-left and bottom-right via child spans */
+.screw-bl, .screw-br {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #888, #444);
+    border: 1px solid #333;
+}
+
+.screw-bl { bottom: 4px; left: 4px; }
+.screw-br { bottom: 4px; right: 4px; }
+
+/* ---- Label (diamond-headed header) ---- */
+.label {
+    display: inline-block;
+    background: #111;
+    color: #fff;
+    font-weight: bold;
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border: 1px solid #666;
+    text-align: center;
+    margin: 2px 4px 2px 0;
+}
+
+.label::before {
+    content: '\25C6 ';  /* diamond */
+    color: #aaa;
+    font-size: 8px;
+}
+
+.label::after {
+    content: ' \25C6';
+    color: #aaa;
+    font-size: 8px;
+}
+
+/* ---- Indicator Light ---- */
+.light {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid #333;
+    vertical-align: middle;
+    margin: 0 3px;
+}
+
+.light-off {
+    background: radial-gradient(circle at 40% 40%, #333, #1a1a1a);
+    box-shadow: none;
+}
+
+.light-green {
+    background: radial-gradient(circle at 40% 40%, #4f4, #0a0);
+    box-shadow: 0 0 6px #0f0, 0 0 12px rgba(0,255,0,0.3);
+}
+
+.light-red {
+    background: radial-gradient(circle at 40% 40%, #f44, #a00);
+    box-shadow: 0 0 6px #f00, 0 0 12px rgba(255,0,0,0.3);
+}
+
+.light-yellow {
+    background: radial-gradient(circle at 40% 40%, #ff4, #aa0);
+    box-shadow: 0 0 6px #ff0, 0 0 12px rgba(255,255,0,0.3);
+}
+
+.light-amber {
+    background: radial-gradient(circle at 40% 40%, #fa0, #a60);
+    box-shadow: 0 0 6px #f80, 0 0 12px rgba(255,136,0,0.3);
+}
+
+/* Pulsing animation for critical lights */
+@keyframes pulse-red {
+    0%, 100% { box-shadow: 0 0 6px #f00, 0 0 12px rgba(255,0,0,0.3); }
+    50% { box-shadow: 0 0 10px #f00, 0 0 20px rgba(255,0,0,0.5); }
+}
+
+.light-critical {
+    background: radial-gradient(circle at 40% 40%, #f44, #a00);
+    animation: pulse-red 1s ease-in-out infinite;
+}
+
+/* ---- Toggle Switch ---- */
+.switch {
+    display: inline-block;
+    width: 40px;
+    height: 18px;
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 9px;
+    position: relative;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.switch::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, #aaa, #666);
+    border: 1px solid #444;
+    top: 1px;
+    left: 1px;
+    transition: left 0.2s;
+}
+
+.switch-on {
+    background: #060;
+    border-color: #0a0;
+}
+
+.switch-on::after {
+    left: 23px;
+}
+
+/* ---- Gauge (analog dial) ---- */
+.gauge {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, #222, #111);
+    border: 2px solid #555;
+    position: relative;
+    margin: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.gauge-label {
+    position: absolute;
+    bottom: 14px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 8px;
+    color: #aaa;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+/* Gauge tick marks via conic-gradient */
+.gauge-ticks {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 225deg,
+        transparent 0deg,
+        rgba(255,255,255,0.15) 0deg, rgba(255,255,255,0.15) 2deg,
+        transparent 2deg,
+        transparent 18deg,
+        rgba(255,255,255,0.15) 18deg, rgba(255,255,255,0.15) 20deg,
+        transparent 20deg,
+        transparent 36deg,
+        rgba(255,255,255,0.15) 36deg, rgba(255,255,255,0.15) 38deg,
+        transparent 38deg,
+        transparent 54deg,
+        rgba(255,255,255,0.15) 54deg, rgba(255,255,255,0.15) 56deg,
+        transparent 56deg,
+        transparent 72deg,
+        rgba(255,255,255,0.15) 72deg, rgba(255,255,255,0.15) 74deg,
+        transparent 74deg,
+        transparent 90deg,
+        rgba(255,255,255,0.15) 90deg, rgba(255,255,255,0.15) 92deg,
+        transparent 92deg,
+        transparent 108deg,
+        rgba(255,255,255,0.15) 108deg, rgba(255,255,255,0.15) 110deg,
+        transparent 110deg,
+        transparent 126deg,
+        rgba(255,255,255,0.15) 126deg, rgba(255,255,255,0.15) 128deg,
+        transparent 128deg,
+        transparent 144deg,
+        rgba(255,255,255,0.15) 144deg, rgba(255,255,255,0.15) 146deg,
+        transparent 146deg,
+        transparent 162deg,
+        rgba(255,255,255,0.15) 162deg, rgba(255,255,255,0.15) 164deg,
+        transparent 164deg,
+        transparent 180deg,
+        rgba(255,255,255,0.15) 180deg, rgba(255,255,255,0.15) 182deg,
+        transparent 182deg,
+        transparent 270deg
+    );
+}
+
+/* Gauge needle — rotate via inline style: style="transform: rotate(Xdeg)" */
+.gauge-needle {
+    position: absolute;
+    width: 2px;
+    height: 40px;
+    background: #f00;
+    left: 50%;
+    bottom: 50%;
+    transform-origin: bottom center;
+    transform: rotate(0deg);
+    z-index: 2;
+    border-radius: 1px;
+}
+
+/* Gauge center cap */
+.gauge-center {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, #888, #444);
+    border: 1px solid #333;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+}
+
+/* Gauge value text */
+.gauge-value {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 11px;
+    font-weight: bold;
+    color: #0f0;
+    z-index: 2;
+}
+
+/* Small gauge variant */
+.gauge-sm {
+    width: 70px;
+    height: 70px;
+}
+
+.gauge-sm .gauge-needle {
+    height: 26px;
+}
+
+.gauge-sm .gauge-label {
+    font-size: 7px;
+    bottom: 10px;
+}
+
+/* Large gauge variant */
+.gauge-lg {
+    width: 130px;
+    height: 130px;
+}
+
+.gauge-lg .gauge-needle {
+    height: 52px;
+}
+
+.gauge-lg .gauge-label {
+    font-size: 9px;
+    bottom: 18px;
+}
+
+/* ---- Bar (vertical or horizontal progress) ---- */
+.bar-h {
+    display: inline-block;
+    height: 12px;
+    background: #1a1a1a;
+    border: 1px solid #444;
+    border-radius: 2px;
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.bar-h-fill {
+    height: 100%;
+    background: linear-gradient(to bottom, #4a4, #282);
+    transition: width 0.3s;
+}
+
+.bar-v {
+    display: inline-block;
+    width: 12px;
+    background: #1a1a1a;
+    border: 1px solid #444;
+    border-radius: 2px;
+    overflow: hidden;
+    vertical-align: bottom;
+}
+
+.bar-v-fill {
+    width: 100%;
+    background: linear-gradient(to right, #4a4, #282);
+    transition: height 0.3s;
+    position: absolute;
+    bottom: 0;
+}
+
+/* Danger fill colors */
+.fill-danger { background: linear-gradient(to bottom, #a44, #822) !important; }
+.fill-warning { background: linear-gradient(to bottom, #aa4, #882) !important; }
+.fill-good { background: linear-gradient(to bottom, #4a4, #282) !important; }
+
+/* ---- Button (hardware-style) ---- */
+.btn {
+    display: inline-block;
+    padding: 4px 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    border: 1px solid #555;
+    border-radius: 3px;
+    cursor: pointer;
+    text-align: center;
+    min-width: 60px;
+    transition: all 0.15s;
+}
+
+.btn:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+.btn-green {
+    background: linear-gradient(to bottom, #2a5a2a, #1a3a1a);
+    color: #0f0;
+    border-color: #0a0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.btn-green:hover {
+    background: linear-gradient(to bottom, #3a7a3a, #2a5a2a);
+}
+
+.btn-red {
+    background: linear-gradient(to bottom, #5a2a2a, #3a1a1a);
+    color: #f00;
+    border-color: #a00;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.btn-red:hover {
+    background: linear-gradient(to bottom, #7a3a3a, #5a2a2a);
+}
+
+.btn-blue {
+    background: linear-gradient(to bottom, #2a2a5a, #1a1a3a);
+    color: #00f;
+    border-color: #00a;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.btn-yellow {
+    background: linear-gradient(to bottom, #5a5a2a, #3a3a1a);
+    color: #ff0;
+    border-color: #aa0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.btn-grey {
+    background: linear-gradient(to bottom, #444, #333);
+    color: #ccc;
+    border-color: #555;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+/* ---- Data Table ---- */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+.data-table th {
+    background: #222;
+    color: #aaa;
+    font-weight: bold;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    padding: 3px 6px;
+    border-bottom: 1px solid #555;
+    text-align: left;
+}
+
+.data-table td {
+    padding: 2px 6px;
+    border-bottom: 1px solid #333;
+}
+
+.data-table tr:hover {
+    background: rgba(255,255,255,0.03);
+}
+
+/* ---- Status Colors ---- */
+.status-ok { color: #0f0; }
+.status-warn { color: #ff0; }
+.status-danger { color: #f00; }
+.status-info { color: #0af; }
+.status-dim { color: #666; }
+
+/* ---- Flex Layout Helpers ---- */
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex-1 { flex: 1; }
+.flex-2 { flex: 2; }
+.flex-3 { flex: 3; }
+
+/* ---- Spacing Utilities ---- */
+.mt-4 { margin-top: 4px; }
+.mt-8 { margin-top: 8px; }
+.mb-4 { margin-bottom: 4px; }
+.mb-8 { margin-bottom: 8px; }
+.ml-4 { margin-left: 4px; }
+.mr-4 { margin-right: 4px; }
+.p-4 { padding: 4px; }
+.p-8 { padding: 8px; }
+
+/* ---- CRT Scanline Effect (optional) ---- */
+.crt-overlay {
+    position: relative;
+}
+
+.crt-overlay::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* ---- Radar/Sonar Sweep Animation ---- */
+@keyframes radar-sweep {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.radar-sweep {
+    animation: radar-sweep 4s linear infinite;
+}
+
+/* ---- Warning Flash ---- */
+@keyframes flash-warning {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.flash {
+    animation: flash-warning 1s ease-in-out infinite;
+}

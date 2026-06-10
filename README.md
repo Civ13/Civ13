@@ -49,6 +49,16 @@ Most scripts are called externally by our [Discord bot](https://github.com/Valgo
 
 4. Open civ13.dmb with BYOND DreamSeeker to launch the server.
 
+#### Running a specific map (local dev)
+```
+scripts\launch_map.bat nomads
+scripts\launch_map.bat SUBCOM13
+```
+Or use the interactive selector:
+```
+scripts\select_map.bat
+```
+
 
 ### Linux
 1. You will need a linux machine for the automated install, preferably Ubuntu. Open the command line.
@@ -58,3 +68,13 @@ Most scripts are called externally by our [Discord bot](https://github.com/Valgo
 3. Use **sudo bash INSTALL** and it should install everything you need.
 
 4. You're all set! Run the **launch.py** file inside the **scripts/** folder. Use ***python3 launch.py***.
+
+#### Running a specific map (local dev)
+```bash
+./scripts/launch_map.sh nomads
+./scripts/launch_map.sh SUBCOM13
+```
+Or use the interactive selector:
+```bash
+./scripts/select_map.sh
+```

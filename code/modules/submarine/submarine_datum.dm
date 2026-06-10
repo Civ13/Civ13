@@ -201,12 +201,10 @@ var/global/list/all_submarines = list()
 			// Calculate relative bearing
 			var/dx = other_sub.x_pos - x_pos
 			var/dy = other_sub.y_pos - y_pos
-			var/bearing_deg = arctan(dy / dx)
-			if(dx < 0)
-				bearing_deg += 180
-			else if(dy < 0)
+			var/bearing_deg = arctan(dy, dx)
+			if(bearing_deg < 0)
 				bearing_deg += 360
-			
+
 			var/datum/vessel_contact/C = new(other_sub.vessel_name, SUB_CONTACT_SUBMERGED, SUB_NATION_NEUTRAL)
 			C.range = dist
 			C.bearing = (bearing_deg + 360) % 360
@@ -352,8 +350,59 @@ var/global/list/all_submarines = list()
 
 	return TRUE
 
+// ---- Weapon Impact Handler ----
+// Handles different weapon types hitting the submarine.
+
+/datum/submarine/proc/apply_weapon_hit(var/damage, var/weapon_type, var/hit_x = 0, var/hit_y = 0)
+	switch(weapon_type)
+		if("torpedo")
+			torpedo_hit(damage)
+		if("depth_charge")
+			// Depth charges do area damage — hit multiple hull turfs near the explosion
+			var/turfs_to_hit = clamp(round(damage / 80), 2, 6)
+			if(internal_turfs.len)
+				var/turf/center = pick(internal_turfs)
+				for(var/i = 1, i <= turfs_to_hit, i++)
+					var/turf/wall/sub_hull/H = locate(/turf/wall/sub_hull) in range(3, center)
+					if(H)
+						H.apply_breach_damage(damage)
+						center = H
+				for(var/mob/living/L in range(8, center))
+					to_chat(L, "<span class='danger'><b>Depth charges detonate nearby! The hull groans under the pressure!</b></span>")
+		if("missile")
+			// Missiles are like torpedoes but also cause structural shock
+			torpedo_hit(damage)
+			if(internal_turfs.len)
+				for(var/mob/living/L in range(6, pick(internal_turfs)))
+					to_chat(L, "<span class='danger'><b>The missile impact sends shrapnel flying through the compartment!</b></span>")
+		if("gun")
+			// Naval guns do localized damage
+			torpedo_hit(round(damage / 3))
+
+	// Send damage report via radio
+	if(global.subcom_map && global.subcom_map.missions && global.subcom_map.missions.radio_console)
+		global.subcom_map.missions.radio_console.add_log("ALERT: Hull impact detected! Weapon type: [uppertext(weapon_type)]. Damage assessment in progress.")
+
+	// Check for critical damage
+	check_critical_damage()
+
+// ---- Critical Damage Check ----
+
+/datum/submarine/proc/check_critical_damage()
+	if(!internal_turfs.len) return
+
+	// Count breached hull sections
+	var/breached_hulls = 0
+	for(var/turf/wall/sub_hull/H in internal_turfs)
+		if(H.breached)
+			breached_hulls++
+
+	if(breached_hulls >= 3)
+		if(global.subcom_map && global.subcom_map.missions && global.subcom_map.missions.radio_console)
+			global.subcom_map.missions.radio_console.add_log("EMERGENCY: Multiple hull breaches! submarine integrity critically compromised!")
+
 /obj/effect/step_trigger/sub_leak
 	name = "hull breach"
 	desc = "A catastrophic breach in the hull."
 	icon = 'icons/effects/effects.dmi'
-	icon_state = "spark"
+	icon_state = "sparks"

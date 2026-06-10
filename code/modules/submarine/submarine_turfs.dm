@@ -1,4 +1,21 @@
 // ============================================================
+// Submarine Areas
+// ============================================================
+
+/area/submarine
+	name = "submarine interior"
+	icon_state = "purple1"
+	has_gravity = TRUE
+	no_air = FALSE
+	dynamic_lighting = TRUE
+	sound_env = FOREST
+	ambience = list("sound/ambience/ship1.ogg")
+
+/area/submarine/extern
+	name = "exterior ocean"
+	sound_env = UNDERWATER
+
+// ============================================================
 // Submarine Turfs — hull walls, bulkheads, and deck floors
 // with water accumulation, atmospheric simulation, and
 // compartment-based flooding physics.
@@ -32,9 +49,10 @@
 	breach_inflow_rate = SUB_BREACH_INFLOW_BASE
 	visible_message("<span class='danger'><b>The hull buckles! Seawater erupts through the breach!</b></span>")
 
-	// Find adjacent deck turfs and start flooding them
+	// Find adjacent deck turfs and start continuous flooding
 	for(var/turf/floor/sub_deck/D in range(1, src))
 		D.add_water(SUB_BREACH_INFLOW_BASE)
+		D.water_inflow_rate += SUB_BREACH_INFLOW_BASE  // Ongoing inflow each tick
 
 	// Mark this wall as visually damaged
 	icon_state = "damaged"
@@ -264,8 +282,8 @@
 			var/avg_o2 = total_o2 / tile_count
 			var/avg_co2 = total_co2 / tile_count
 			// Gradually equalize (vents don't teleport air instantly)
-			oxygen_moles = lerp(oxygen_moles, avg_o2, 0.3)
-			co2_moles = lerp(co2_moles, avg_co2, 0.3)
+			oxygen_moles = mix_value(oxygen_moles, avg_o2, 0.3)
+			co2_moles = mix_value(co2_moles, avg_co2, 0.3)
 
 // ============================================================
 // Examine / Info

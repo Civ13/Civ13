@@ -54,6 +54,18 @@
 #define SUB_MISSION_SINK_CARGO   "SINK_CARGO"
 #define SUB_MISSION_PATROL       "PATROL_AREA"
 #define SUB_MISSION_REFIT        "REFIT"
+#define SUB_MISSION_ESCORT       "ESCORT"
+#define SUB_MISSION_RECON        "RECON"
+#define SUB_MISSION_RESCUE       "RESCUE"
+#define SUB_MISSION_AMBUSH       "AMBUSH"
+
+// Mission Timing
+#define SUB_MISSION_RECON_DURATION   30    // Ticks to survive at recon target
+#define SUB_MISSION_AMBUSH_TIMEOUT   120   // Ticks to clear all hostiles
+#define SUB_MISSION_RESCUE_RANGE     20    // nm — must bring target this close to start
+#define SUB_MISSION_FAIL_DELAY       20    // Ticks before next mission after failure
+#define SUB_MISSION_SUCCESS_DELAY_MIN 30
+#define SUB_MISSION_SUCCESS_DELAY_MAX 60
 
 // Noise Thresholds (for NPC passive sonar detection)
 #define SUB_NOISE_SILENT    0

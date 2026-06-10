@@ -1,0 +1,122 @@
+Missing Sprites for Submarine Commander (SUBCOM13)
+===================================================
+
+Each entry lists the target .dmi file, the icon_state name needed,
+dimensions, a description of the sprite, and where it's referenced.
+
+NAMING MISMATCHES (quick fixes — states exist but names don't match)
+--------------------------------------------------------------------
+
+These can be fixed by either renaming the state in the .dmi or
+updating the code reference. Listed as code → DMI so you know
+which direction to go.
+
+1. icons/obj/machines/submarine.dmi
+   Code references: icon_state = "bilge_pump"
+   DMI has: "bilge_pump1", "bilge_pump2" (no plain "bilge_pump")
+   Fix: Either add a "bilge_pump" state, or change code to "bilge_pump1"
+   Referenced: submarine_machinery_physical.dm:247
+
+2. icons/obj/computers.dmi
+   Code references: icon_state = "computer_middle"
+   DMI has: "computer-middle" (hyphen, not underscore)
+   Fix: Change code to "computer-middle"
+   Referenced: submarine_machines.dm:373
+
+3. icons/effects/effects.dmi
+   Code references: icon_state = "spark"
+   DMI has: "sparks" (plural)
+   Fix: Change code to "sparks"
+   Referenced: submarine_datum.dm:409
+
+NEW SPRITES NEEDED
+------------------
+
+icons/obj/machines/submarine.dmi (128x128 recommended, 32x32 minimum)
+
+4. "water_shallow"
+   Description: Transparent blue overlay for lightly flooded deck tiles.
+   Light blue wash, ~20% opacity. Should tile seamlessly.
+   32x32. Referenced: submarine_turfs.dm:230
+
+5. "water_medium"
+   Description: Medium flooding overlay. Darker blue, ~50% opacity.
+   Should show subtle wave/ripple pattern. 32x32, tileable.
+   Referenced: submarine_turfs.dm:232
+
+6. "water_deep"
+   Description: Deep flooding overlay. Near-opaque dark blue.
+   Visible surface ripples. 32x32, tileable.
+   Referenced: submarine_turfs.dm:234
+
+7. "water_flooded"
+   Description: Fully flooded overlay. Opaque dark blue-green.
+   Should convey "this tile is underwater." 32x32, tileable.
+   Referenced: submarine_turfs.dm:236
+
+8. "vent"
+   Description: Heavy-duty submarine ventilation duct/grille.
+   Rectangular metal frame with horizontal slats.
+   Industrial look, riveted edges. 32x32.
+   Referenced: submarine_machinery_physical.dm:322
+
+9. "scrubber"
+   Description: CO2 scrubber unit. Boxy metal housing with a fan grille
+   on the front, indicator light (green = active, red = off).
+   Wall-mounted style. 32x32.
+   Referenced: submarine_machinery_physical.dm:372
+
+10. "sealant"
+    Description: Hull breach sealant sprayer. A cylindrical tank with
+    a nozzle/hose attachment. Warning stripes (yellow/black).
+    32x32.
+    Referenced: submarine_machinery_physical.dm:423
+
+11. "ballast"
+    Description: Ballast control valve. Heavy wheel valve with pipe
+    fittings. Industrial steel look. 32x32.
+    Referenced: submarine_machinery_physical.dm:473
+
+icons/turf/wall_masks.dmi
+
+12. "damaged"
+    Description: Visually damaged/breached hull wall. Should look like
+    "metal0" but with cracks, deformation, possibly water leaking through.
+    Used when hull integrity reaches 0. 32x32.
+    Referenced: submarine_turfs.dm:57, :89
+
+icons/obj/items.dmi
+
+13. "ration"
+    Description: Nutritional ration item. Small rectangular foil-wrapped
+    packet, grey/beige. Something you'd find in a military MRE.
+    32x32.
+    Referenced: submarine_machinery_physical.dm:677
+
+icons/obj/engines32.dmi (if you want diesel engine here instead of vehicleparts)
+
+14. "engine_static"
+    Description: Diesel engine block. Large industrial engine, cylinder
+    heads visible, fuel lines. Dark metallic grey with some rust.
+    32x32.
+    Referenced: submarine_machinery_physical.dm:171
+    NOTE: This state already exists in icons/obj/vehicles/vehicleparts.dmi
+    and the code points there, so this is fine as-is. Only needed if
+    you want the sprite in engines32.dmi instead.
+
+OPTIONAL ENHANCEMENTS
+---------------------
+
+These aren't strictly missing but would improve visuals:
+
+15. icons/obj/machines/submarine.dmi — "torpedo_tube2", "torpedo_tube3", "torpedo_tube4"
+    Currently only "torpedo_tube1" exists. Tubes 2-4 reuse the same sprite.
+    Could add numbered variants for visual distinction.
+
+16. icons/obj/machines/submarine.dmi — animated water states
+    The water_shallow/deep/flooded states could be animated (2-3 frames)
+    with subtle wave motion for a more dynamic look.
+
+17. icons/turf/wall_masks.dmi — "breach_glow"
+    A glowing overlay for breached hull sections showing water
+    spraying through. Would layer on top of "damaged" state.

@@ -244,7 +244,7 @@
 	name = "bilge pump"
 	desc = "A high-capacity centrifugal pump for evacuating seawater from flooded compartments."
 	icon = 'icons/obj/machines/submarine.dmi'
-	icon_state = "bilge_pump"
+	icon_state = "bilge_pump1"
 	health = 80
 	max_health = 80
 	var/active = FALSE
@@ -305,7 +305,7 @@
 	desc = "A manually-activated backup pump. Slow but better than drowning."
 	drain_rate = 5
 	power_draw = 8
-	range = 0  // Only drains the tile it's on
+	drain_range = 0  // Only drains the tile it's on
 
 // ============================================================
 // VENTILATION SYSTEM

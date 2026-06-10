@@ -273,15 +273,15 @@ var/global/list/npc_type_cache = list()
 			switch(weapon["type"])
 				if("torpedo")
 					var/datum/projectile/torpedo/T = new(x_pos, y_pos, arctan(player.y_pos - y_pos, player.x_pos - x_pos), weapon["damage"], FALSE)
-					T.target = player
+					T.sub_target = player
 					global.subcom_map.active_torpedoes += T
 				if("missile")
-					// Missiles travel instantly for simplicity at overworld scale
-					player.apply_hit(weapon["damage"])
+					player.apply_weapon_hit(weapon["damage"], "missile", x_pos, y_pos)
 				if("depth_charge")
-					// Depth charges only effective at close range, direct damage
 					if(dist < 10)
-						player.apply_hit(weapon["damage"])
+						player.apply_weapon_hit(weapon["damage"], "depth_charge", x_pos, y_pos)
+				if("gun")
+					player.apply_weapon_hit(weapon["damage"], "gun", x_pos, y_pos)
 			weapon_timers[i] = weapon["cooldown"]
 			break  // Fire one weapon per volley cycle
 
