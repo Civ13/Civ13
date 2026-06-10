@@ -10,6 +10,9 @@
 - [ ] Crew management (track crew members, injuries, assignments, oxygen status)
 - [ ] Test full game loop end-to-end (map loads, process ticks run, missions generate, combat works)
 
+## Low Priority
+- [ ] Single Player mode. Let players toggle "Single Player Mode" command under the Server > Subcom13 tab, which enables them to interact with the machinery etc as a ghost. This should be gated to the specific map only, and interactions checked to make sure it is running in single-player. Add single_player = TRUE var to the map metadata.
+
 ## Done
 - [x] Overworld framework (map controller, torpedoes, vessel contacts)
 - [x] NPC AI with state machine (PATROL → HUNT → ATTACK)

@@ -10,7 +10,7 @@ var/global/datum/flooding_controller/subcom_flooding
 	// All tracked deck turfs, indexed by compartment_id
 	var/list/tracked_turfs = list()      // list of all /turf/floor/sub_deck
 	var/list/compartment_turfs = list()  // assoc: compartment_id -> list of turfs
-	var/list/vent_networks = list()      // assoc: vent_id -> list of connected turfs
+	var/list/list/vent_networks = list()      // assoc: vent_id -> list of connected turfs
 	var/tick_counter = 0
 
 /datum/flooding_controller/New()

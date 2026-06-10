@@ -98,6 +98,6 @@
 /datum/martial_art/the_sleeping_carp/disarm_act(mob/living/human/A, mob/living/human/D)
 	add_to_streak("D",D)
 	if(check_streak(A,D))
-		return TRUE
 		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Disarmed (Sleeping Carp) by [A.name] ([A.ckey])</font>"
+		return TRUE
 	return ..()
