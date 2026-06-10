@@ -655,40 +655,7 @@
 	to_chat(user, "<span class='notice'>The machine clunks and produces a nutritional ration.</span>")
 	new /obj/item/weapon/reagent_containers/food/snacks/MRE(src.loc)
 
-// --- 9. EQUIPMENT STORAGE ---
-
-/obj/structure/sub_physical/equipment_storage
-	name = "emergency equipment locker"
-	icon = 'icons/obj/closet.dmi'
-	icon_state = "firecloset"
-	var/list/stored_gear = list(
-		/obj/item/clothing/mask/gas/military = 3,
-		/obj/item/clothing/suit/storage/coat/fur = 2, // Heavy rad-protection placeholder
-		/obj/item/weapon/weldingtool = 2,
-		/obj/item/weapon/reagent_containers/glass/fire_extinguisher = 2,
-		/obj/item/weapon/screwdriver = 1,
-		/obj/item/weapon/wrench = 1,
-		/obj/item/weapon/torpedo = 4
-	)
-
-/obj/structure/sub_physical/equipment_storage/attack_hand(mob/user)
-	var/dat = "<b>Locker Contents:</b><br><hr>"
-	for(var/path in stored_gear)
-		var/amt = stored_gear[path]
-		if(amt > 0)
-			var/obj/O = path
-			dat += "<a href='?src=\ref[src];get=[path]'>[initial(O.name)]</a> (x[amt])<br>"
-	
-	user << browse(dat, "window=sub_locker;size=300x400")
-
-/obj/structure/sub_physical/equipment_storage/Topic(href, href_list)
-	if(href_list["get"])
-		var/path = text2path(href_list["get"])
-		if(stored_gear[path] > 0)
-			stored_gear[path]--
-			new path(src.loc)
-			usr.visible_message("<span class='notice'>[usr] takes an item from the locker.</span>")
-	attack_hand(usr)
+// --- 9. EQUIPMENT STORAGE (converted to vendor in vending.dm) ---
 
 // --- 10. TORPEDO FUEL STORAGE (HTP) ---
 

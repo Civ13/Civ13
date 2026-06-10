@@ -1765,3 +1765,18 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
 	)
+
+/obj/structure/vending/submarine_emergency
+	name = "Emergency Equipment Locker"
+	desc = "A wall-mounted locker containing emergency firefighting and repair equipment. Push button to dispense."
+	icon = 'icons/obj/closet.dmi'
+	icon_state = "firecloset"
+	products = list(
+		/obj/item/clothing/mask/gas/military = 3,
+		/obj/item/clothing/suit/storage/coat/fur = 2,
+		/obj/item/weapon/weldingtool = 2,
+		/obj/item/weapon/reagent_containers/glass/fire_extinguisher = 2,
+		/obj/item/weapon/screwdriver = 1,
+		/obj/item/weapon/wrench = 1,
+		/obj/item/weapon/torpedo = 4,
+	)
