@@ -308,3 +308,51 @@
 		to_chat(user, "<span class='warning'>The air smells stale and oxygen-depleted.</span>")
 	if(co2_moles > 3)
 		to_chat(user, "<span class='danger'>The CO2 concentration is dangerously high!</span>")
+
+// ============================================================
+// Compartment Floor Subtypes — pre-configured for mapmaking
+// ============================================================
+
+/turf/floor/sub_deck/forward_torpedo
+	name = "forward torpedo room floor"
+	compartment_id = SUB_COMP_FORWARD_TORPEDO
+
+/turf/floor/sub_deck/forward_battery
+	name = "forward battery room floor"
+	compartment_id = SUB_COMP_FORWARD_BATTERY
+
+/turf/floor/sub_deck/operations
+	name = "operations room floor"
+	compartment_id = SUB_COMP_OPERATIONS
+
+/turf/floor/sub_deck/crew_quarters
+	name = "crew quarters floor"
+	compartment_id = SUB_COMP_CREW_QUARTERS
+
+/turf/floor/sub_deck/galley
+	name = "galley floor"
+	compartment_id = SUB_COMP_GALLEY
+
+/turf/floor/sub_deck/cpo_quarters
+	name = "CPO quarters floor"
+	compartment_id = SUB_COMP_CPO_QUARTERS
+
+/turf/floor/sub_deck/aft_battery
+	name = "aft battery room floor"
+	compartment_id = SUB_COMP_AFT_BATTERY
+
+/turf/floor/sub_deck/reactor_room
+	name = "reactor room floor"
+	compartment_id = SUB_COMP_REACTOR_ROOM
+
+/turf/floor/sub_deck/engine_room
+	name = "engine room floor"
+	compartment_id = SUB_COMP_ENGINE_ROOM
+
+/turf/floor/sub_deck/maneuvering
+	name = "maneuvering room floor"
+	compartment_id = SUB_COMP_MANEUVERING
+
+/turf/floor/sub_deck/aft_torpedo
+	name = "aft torpedo room floor"
+	compartment_id = SUB_COMP_AFT_TORPEDO
