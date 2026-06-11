@@ -137,13 +137,28 @@ var/global/list/all_submarines = list()
 		if(r_melted[i])
 			continue
 
+		// Reactor Room Flooding: water degrades coolant pumps and forces SCRAM
+		var/reactor_water = 0
+		if(global.subcom_flooding)
+			reactor_water = global.subcom_flooding.get_compartment_water_level(SUB_COMP_REACTOR_ROOM)
+
+		// Coolant pump degradation: pumps lose effectiveness as water rises
+		// At 0cm = 100%, at 100cm = 0% (fully submerged pumps fail)
+		var/water_pump_factor = clamp(1.0 - (reactor_water / 100), 0, 1)
+
+		// Full flood: force SCRAM on both reactors
+		if(reactor_water >= 100 && !r_scrammed[i])
+			r_scrammed[i] = TRUE
+			r_control_rods[i] = 100
+			world << "<span class='warning'><b>[vessel_name]: REACTOR [i] SCRAMMED — reactor room flooded!</b></span>"
+
 		// Heat Generation: heat increases as rods are pulled out (0 rods = max heat)
 		var/heat_added = 0
 		if(!r_scrammed[i])
 			heat_added = (100 - r_control_rods[i]) * 5
 
-		// Heat Dissipation: proportional to pump speed and current temp
-		var/heat_removed = r_primary_pump_speed[i] * (r_core_temp[i] * 0.05)
+		// Heat Dissipation: proportional to pump speed, temp, and water factor
+		var/heat_removed = r_primary_pump_speed[i] * (r_core_temp[i] * 0.05) * water_pump_factor
 		
 		r_core_temp[i] += (heat_added - heat_removed)
 		r_core_temp[i] = max(SUB_AMBIENT_TEMP, r_core_temp[i])
@@ -153,8 +168,8 @@ var/global/list/all_submarines = list()
 			r_melted[i] = TRUE
 			handle_meltdown(i)
 		
-		// Power Output (Turbines): 1% efficiency per secondary pump RPM
-		r_power_output[i] = r_secondary_pump_speed[i] * (r_core_temp[i] * 0.01)
+		// Power Output (Turbines): 1% efficiency per secondary pump RPM, degraded by flooding
+		r_power_output[i] = r_secondary_pump_speed[i] * (r_core_temp[i] * 0.01) * water_pump_factor
 
 	// 2. Propulsion & Movement Physics
 	
@@ -210,6 +225,13 @@ var/global/list/all_submarines = list()
 	// Diesel Generators
 	// Diesel-only subs: diesel provides direct propulsion when surfaced + charges batteries
 	// Nuclear subs: diesel only charges batteries when surfaced (backup role)
+	// Engine Room Flooding: water shuts down diesel engines entirely
+	var/engine_water = 0
+	if(global.subcom_flooding)
+		engine_water = global.subcom_flooding.get_compartment_water_level(SUB_COMP_ENGINE_ROOM)
+	if(engine_water >= 50 && diesel_throttle > 0)
+		diesel_throttle = 0
+		world << "<span class='warning'><b>[vessel_name]: Diesel engines shut down — engine room flooded!</b></span>"
 	if(depth == 0 && diesel_throttle > 0)
 		var/fuel_usage = diesel_throttle * 2
 		if(diesel_fuel >= fuel_usage)
@@ -238,13 +260,16 @@ var/global/list/all_submarines = list()
 			playsound(pick(internal_turfs), 'sound/machines/submarine/alarm_depth.ogg', 60, 1)
 
 	// Virtual position update (Trigonometry)
-	// BYOND handles degrees for sin/cos
-	x_pos += cos(heading) * (speed * SUB_TICK_SCALE)
-	y_pos += sin(heading) * (speed * SUB_TICK_SCALE)
+	// heading uses compass convention: 0=North, 90=East, clockwise
+	// cos/sin use math convention: 0=East, counterclockwise
+	// Convert: math_angle = 90 - heading
+	var/move_angle = 90 - heading
+	x_pos += cos(move_angle) * (speed * SUB_TICK_SCALE)
+	y_pos += sin(move_angle) * (speed * SUB_TICK_SCALE)
 
-	// Clamp to world map boundaries
-	x_pos = clamp(x_pos, 0, SUB_MAP_SIZE)
-	y_pos = clamp(y_pos, 0, SUB_MAP_SIZE)
+	// Wrap around map boundaries (toroidal space)
+	x_pos = ((x_pos % SUB_MAP_SIZE) + SUB_MAP_SIZE) % SUB_MAP_SIZE
+	y_pos = ((y_pos % SUB_MAP_SIZE) + SUB_MAP_SIZE) % SUB_MAP_SIZE
 
 	// 3. Power Consumption & Electrolysis
 	var/total_drain = 5.0 // Baseline kW for lights/electronics (e.g., 5 kW)
@@ -294,7 +319,7 @@ var/global/list/all_submarines = list()
 
 	detected_targets.Cut()
 	
-	var/s_range = (sonar_mode == SUB_SONAR_ACTIVE) ? 50000 : 20000 // meters
+	var/s_range = (sonar_mode == SUB_SONAR_ACTIVE) ? SUB_SONAR_RANGE_ACTIVE : SUB_SONAR_RANGE_PASSIVE
 	var/r_range = radar_range_long ? SUB_RADAR_RANGE_LONG : SUB_RADAR_RANGE_SHORT
 
 	if(sonar_active)
@@ -309,11 +334,18 @@ var/global/list/all_submarines = list()
 		var/can_detect = FALSE
 		var/c_type = SUB_CONTACT_SUBMERGED
 		
-		if(sonar_active && dist <= s_range)
+		// Passive sonar: surface + submerged contacts, within passive range
+		if(sonar_active && sonar_mode == SUB_SONAR_PASSIVE && dist <= s_range)
 			can_detect = TRUE
-		if(radar_active && depth == 0 && other_sub.depth == 0 && dist <= r_range)
+			c_type = other_sub.depth == 0 ? SUB_CONTACT_SURFACE : SUB_CONTACT_SUBMERGED
+		// Active sonar: surface + submerged contacts, within active range
+		if(sonar_active && sonar_mode == SUB_SONAR_ACTIVE && dist <= s_range)
 			can_detect = TRUE
-			c_type = SUB_CONTACT_SURFACE
+			c_type = other_sub.depth == 0 ? SUB_CONTACT_SURFACE : SUB_CONTACT_SUBMERGED
+		// Radar: surface + submerged + air contacts, within radar range
+		if(radar_active && dist <= r_range)
+			can_detect = TRUE
+			c_type = other_sub.depth == 0 ? SUB_CONTACT_SURFACE : SUB_CONTACT_SUBMERGED
 			
 		if(can_detect)
 			// Calculate relative bearing
@@ -337,19 +369,21 @@ var/global/list/all_submarines = list()
 			var/dist = euclidean_distance(NPC.x_pos, NPC.y_pos, x_pos, y_pos)
 			var/can_detect = FALSE
 			
-			// Radar Check
-			if(radar_active && depth == 0 && dist <= r_range)
-				if(NPC.contact_type == SUB_CONTACT_SURFACE || NPC.contact_type == SUB_CONTACT_AIR)
-					can_detect = TRUE
+			// Radar Check: surface + submerged + air contacts
+			if(radar_active && dist <= r_range)
+				can_detect = TRUE
 					
-			// Sonar Check
+			// Sonar Check (if not already detected by radar)
 			if(sonar_active && dist <= s_range && !can_detect)
-				if(NPC.contact_type == SUB_CONTACT_SUBMERGED || NPC.contact_type == SUB_CONTACT_SURFACE)
-					if(sonar_mode == SUB_SONAR_PASSIVE)
-						// Passive sonar needs high noise to detect
-						if(NPC.speed > 0)
-							can_detect = TRUE
-					else
+				if(sonar_mode == SUB_SONAR_PASSIVE)
+					// Passive: surface + submerged contacts, submerged must be moving
+					if(NPC.contact_type == SUB_CONTACT_SUBMERGED && NPC.speed > 0)
+						can_detect = TRUE
+					else if(NPC.contact_type == SUB_CONTACT_SURFACE)
+						can_detect = TRUE
+				else
+					// Active: surface + submerged contacts
+					if(NPC.contact_type == SUB_CONTACT_SUBMERGED || NPC.contact_type == SUB_CONTACT_SURFACE)
 						can_detect = TRUE
 
 			if(can_detect)
@@ -573,6 +607,141 @@ var/global/list/all_submarines = list()
 	if(breached_hulls >= 3)
 		if(global.subcom_map && global.subcom_map.missions && global.subcom_map.missions.radio_console)
 			global.subcom_map.missions.radio_console.add_log("EMERGENCY: Multiple hull breaches! submarine integrity critically compromised!")
+
+// ============================================================
+// Attack Simulation (Admin Debug)
+// ============================================================
+
+/datum/submarine/proc/simulate_attack(var/attack_type)
+	if(!internal_turfs.len) return
+
+	switch(attack_type)
+		if("depth_charge")
+			sim_depth_charge()
+		if("reactor_meltdown")
+			sim_reactor_meltdown()
+		if("fire")
+			sim_start_fire()
+		if("hull_breach")
+			sim_hull_breach()
+		if("flood")
+			sim_flood_compartment()
+		if("torpedo")
+			sim_torpedo_hit()
+		if("missile")
+			sim_missile_strike()
+
+/datum/submarine/proc/sim_depth_charge()
+	// Area damage across multiple hull sections
+	var/turfs_to_hit = rand(2, 5)
+	var/turf/center = pick(internal_turfs)
+	playsound(center, 'sound/machines/submarine/depth_charge_close.ogg', 100, 1)
+	playsound(center, 'sound/machines/submarine/depth_charge_distant.ogg', 80, 1)
+
+	for(var/i = 1, i <= turfs_to_hit, i++)
+		var/turf/wall/sub_hull/H = locate(/turf/wall/sub_hull) in range(4, center)
+		if(H)
+			H.apply_breach_damage(rand(150, 400))
+			center = H
+	shake_crew(8, 5)
+	for(var/mob/living/L in range(10, center))
+		to_chat(L, "<span class='danger'><b>Depth charges detonate nearby! The hull groans under the pressure!</b></span>")
+
+	if(global.subcom_map && global.subcom_map.missions && global.subcom_map.missions.radio_console)
+		global.subcom_map.missions.radio_console.add_log("ALERT: Multiple depth charge detonations detected in vicinity! Hull damage reported.")
+
+/datum/submarine/proc/sim_reactor_meltdown()
+	// SCRAM reactor 1 and force meltdown
+	var/index = pick(1, 2)
+	if(r_melted[index])
+		// Try the other one
+		index = index == 1 ? 2 : 1
+		if(r_melted[index])
+			return // Both already melted
+
+	r_control_rods[index] = 100
+	r_scrammed[index] = FALSE
+	r_core_temp[index] = SUB_MELTDOWN_TEMP + 100
+	// The process_tick will call handle_meltdown() next tick
+
+	if(global.subcom_map && global.subcom_map.missions && global.subcom_map.missions.radio_console)
+		global.subcom_map.missions.radio_console.add_log("EMERGENCY: Reactor [index] control rods failed! Core temperature exceeding limits! MELTDOWN IMMINENT!")
+
+/datum/submarine/proc/sim_start_fire()
+	// Ignite fires in 1-3 random internal turfs
+	var/fires_to_start = rand(1, 3)
+	for(var/i = 1, i <= fires_to_start, i++)
+		var/turf/T = pick(internal_turfs)
+		if(T)
+			ignite_turf(T, rand(20, 40), rand(3, 8))
+			T.visible_message("<span class='danger'>A fire erupts in the compartment!</span>")
+			playsound(T, 'sound/machines/submarine/fire.ogg', 60, 1)
+			// Activate fire spread system on sub_deck turfs
+			if(istype(T, /turf/floor/sub_deck))
+				var/turf/floor/sub_deck/D = T
+				D.ignite_deck_fire(rand(20, 40), rand(600, 1000))
+
+	if(global.subcom_map && global.subcom_map.missions && global.subcom_map.missions.radio_console)
+		global.subcom_map.missions.radio_console.add_log("ALERT: Fire reported aboard the submarine! All hands to damage control!")
+
+/datum/submarine/proc/sim_hull_breach()
+	// Directly breach a random hull section
+	var/turf/wall/sub_hull/H = locate(/turf/wall/sub_hull) in internal_turfs
+	if(!H)
+		// Fallback: search nearby
+		H = locate(/turf/wall/sub_hull) in range(5, pick(internal_turfs))
+	if(H)
+		H.apply_breach_damage(500) // Enough to guarantee a breach
+		shake_crew(6, 4)
+		for(var/mob/living/L in range(8, H))
+			to_chat(L, "<span class='danger'><b>Hull breach! Water is flooding in!</b></span>")
+
+	if(global.subcom_map && global.subcom_map.missions && global.subcom_map.missions.radio_console)
+		global.subcom_map.missions.radio_console.add_log("EMERGENCY: Hull breach detected! Flooding in progress!")
+
+/datum/submarine/proc/sim_flood_compartment()
+	// Add significant water to a random compartment
+	if(!global.subcom_flooding || !global.subcom_flooding.compartment_turfs.len)
+		return
+
+	var/list/compartments = list()
+	for(var/cid in global.subcom_flooding.compartment_turfs)
+		compartments += cid
+
+	if(!compartments.len)
+		return
+
+	var/target_comp = pick(compartments)
+	var/list/turfs = global.subcom_flooding.compartment_turfs[target_comp]
+	for(var/turf/floor/sub_deck/T in turfs)
+		T.add_water(rand(80, 150))
+
+	if(internal_turfs.len)
+		playsound(pick(internal_turfs), 'sound/machines/submarine/alarm_flooding.ogg', 70, 1)
+		for(var/mob/living/L in range(10, pick(internal_turfs)))
+			to_chat(L, "<span class='danger'><b>Flooding detected in [target_comp]! Water levels rising rapidly!</b></span>")
+
+	if(global.subcom_map && global.subcom_map.missions && global.subcom_map.missions.radio_console)
+		global.subcom_map.missions.radio_console.add_log("ALERT: Flooding reported in [target_comp]! Emergency bulkheads engaging!")
+
+/datum/submarine/proc/sim_torpedo_hit()
+	torpedo_hit(SUB_TORPEDO_DAMAGE)
+	if(internal_turfs.len)
+		playsound(pick(internal_turfs), 'sound/machines/submarine/crash.ogg', 100, 1)
+
+	if(global.subcom_map && global.subcom_map.missions && global.subcom_map.missions.radio_console)
+		global.subcom_map.missions.radio_console.add_log("EMERGENCY: TORPEDO IMPACT! Hull damage sustained! Casualties reported!")
+
+/datum/submarine/proc/sim_missile_strike()
+	torpedo_hit(SUB_TORPEDO_DAMAGE + 100)
+	if(internal_turfs.len)
+		playsound(pick(internal_turfs), 'sound/machines/submarine/missile_alarm.ogg', 80, 1)
+		playsound(pick(internal_turfs), 'sound/machines/submarine/crash.ogg', 100, 1)
+		for(var/mob/living/L in range(8, pick(internal_turfs)))
+			to_chat(L, "<span class='danger'><b>Missile impact! Explosive force tears through the hull!</b></span>")
+
+	if(global.subcom_map && global.subcom_map.missions && global.subcom_map.missions.radio_console)
+		global.subcom_map.missions.radio_console.add_log("EMERGENCY: MISSILE STRIKE CONFIRMED! Severe structural damage! All hands brace for impact!")
 
 // ============================================================
 // Crew Management Procs

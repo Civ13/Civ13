@@ -13,17 +13,22 @@
 	..()
 	if(global.all_submarines.len)
 		my_sub = global.all_submarines[1]
+	processing_objects += src
+
+/obj/structure/machinery/sub_physical/Destroy()
+	processing_objects -= src
+	..()
 
 /obj/structure/machinery/sub_physical/proc/can_use_sub(mob/user)
-	// Standard check: alive, adjacent, not incapacitated
-	if(user.incapacitated() || user.lying) return FALSE
-	if(get_dist(user, src) > 1) return FALSE
-	// Ghost/dead check: allowed only in single-player mode
+	// Ghost/dead check: allowed only in single-player mode (skip distance check)
 	if(user.stat == DEAD || isobserver(user))
 		var/obj/map_metadata/subcom13/SM = map
 		if(istype(SM) && SM.single_player)
 			return TRUE
 		return FALSE
+	// Standard check: alive, adjacent, not incapacitated
+	if(user.incapacitated() || user.lying) return FALSE
+	if(get_dist(user, src) > 1) return FALSE
 	return TRUE
 
 /obj/structure/machinery/sub_physical/attack_hand(mob/user)
@@ -118,6 +123,15 @@
 	if(!my_sub) return
 
 	var/core_temp = my_sub.r_core_temp[id]
+
+	// Flooding damage: water on the reactor core causes radiation leaks
+	var/turf/floor/sub_deck/my_turf = get_turf(src)
+	if(istype(my_turf) && my_turf.water_depth > 30)
+		radiation_pulse()
+		if(prob(10))
+			visible_message("<span class='danger'>[src] hisses as water contacts the superheated core!</span>")
+		// Direct damage from thermal shock
+		health -= my_turf.water_depth * 0.02
 	
 	// Meltdown and Damage Logic
 	if(health < (max_health * 0.5) || core_temp > 1000)
@@ -162,8 +176,8 @@
 
 /obj/structure/machinery/sub_physical/steam_turbine
 	name = "main propulsion steam turbine"
-	icon = 'icons/obj/engines32.dmi'
-	icon_state = "turbine_static"
+	icon = 'icons/obj/engines64.dmi'
+	icon_state = "turbine"
 	health = 200
 	max_health = 200
 	var/gearbox_integrity = 100
@@ -188,14 +202,24 @@
 
 /obj/structure/machinery/sub_physical/diesel_engine
 	name = "backup diesel generator"
-	icon = 'icons/obj/vehicles/vehicleparts.dmi'
-	icon_state = "engine_static"
+	icon = 'icons/obj/engines64.dmi'
+	icon_state = "engine"
 	health = 150
 	max_health = 150
 	var/carbon_buildup = 0
 
 /obj/structure/machinery/sub_physical/diesel_engine/process()
 	if(!my_sub) return
+
+	// Flooding: water kills the diesel engine
+	var/turf/floor/sub_deck/my_turf = get_turf(src)
+	if(istype(my_turf) && my_turf.water_depth > 30)
+		if(my_sub.diesel_throttle > 0)
+			my_sub.diesel_throttle = 0
+			visible_message("<span class='danger'>[src] sputters and dies as water floods the engine!</span>")
+			playsound(src.loc, 'sound/machines/submarine/dgenstop.ogg', 70, 1)
+		health -= my_turf.water_depth * 0.05
+		return
 
 	// Throttle-based maintenance logic
 	if(my_sub.diesel_throttle > 0 && my_sub.diesel_throttle < 40)
@@ -218,8 +242,8 @@
 /obj/structure/machinery/sub_physical/diesel_propulsion
 	name = "diesel-electric propulsion motor"
 	desc = "A heavy electric traction motor coupled to the propeller shaft. Powered by the diesel generators."
-	icon = 'icons/obj/engines32.dmi'
-	icon_state = "turbine_static"
+	icon = 'icons/obj/engines64.dmi'
+	icon_state = "engine"
 	health = 200
 	max_health = 200
 	var/motor_temp = 20
@@ -227,6 +251,16 @@
 /obj/structure/machinery/sub_physical/diesel_propulsion/process()
 	if(!my_sub) return
 	if(my_sub.has_nuclear_engine) return  // Should not exist on nuclear subs
+
+	// Flooding: water kills the propulsion motor
+	var/turf/floor/sub_deck/my_turf = get_turf(src)
+	if(istype(my_turf) && my_turf.water_depth > 30)
+		if(my_sub.diesel_throttle > 0)
+			my_sub.diesel_throttle = 0
+			visible_message("<span class='danger'>[src] seizes with a shower of sparks as water floods the motor!</span>")
+			playsound(src.loc, 'sound/machines/submarine/dgenstop.ogg', 70, 1)
+		health -= my_turf.water_depth * 0.03
+		return
 
 	var/eff = get_efficiency()
 
@@ -279,9 +313,11 @@
 	if(!my_sub) return
 	active = !active
 	if(active)
+		icon_state = "[initial(icon_state)]_on"
 		to_chat(user, "<span class='notice'>You switch on [src]. It hums to life.</span>")
 		playsound(src.loc, 'sound/machines/machine_switch.ogg', 50, 1)
 	else
+		icon_state = initial(icon_state)
 		to_chat(user, "<span class='notice'>You switch off [src].</span>")
 		playsound(src.loc, 'sound/machines/click.ogg', 50, 1)
 
@@ -292,6 +328,7 @@
 	// Check power: bilge pumps need battery power
 	if(my_sub.battery_current < power_draw)
 		active = FALSE
+		icon_state = initial(icon_state)
 		visible_message("<span class='warning'>[src] sputters and shuts down - insufficient power.</span>")
 		playsound(src.loc, 'sound/machines/submarine/alarm_flooding.ogg', 40, 1)
 		return
@@ -644,6 +681,8 @@
 	desc = "A cramped but essential rest area for the submarine crew."
 	icon = 'icons/obj/bed_chair.dmi'
 	icon_state = "bunk_bed"
+	material = "steel"
+	applies_material_colour = FALSE
 
 // --- 8. GALLEY ---
 

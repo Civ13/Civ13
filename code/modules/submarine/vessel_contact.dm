@@ -258,8 +258,9 @@ var/global/list/npc_type_cache = list()
 	x_pos += cos(heading) * speed * SUB_TICK_SCALE
 	y_pos += sin(heading) * speed * SUB_TICK_SCALE
 
-	x_pos = clamp(x_pos, 0, SUB_MAP_SIZE)
-	y_pos = clamp(y_pos, 0, SUB_MAP_SIZE)
+	// Wrap around map boundaries (toroidal space)
+	x_pos = ((x_pos % SUB_MAP_SIZE) + SUB_MAP_SIZE) % SUB_MAP_SIZE
+	y_pos = ((y_pos % SUB_MAP_SIZE) + SUB_MAP_SIZE) % SUB_MAP_SIZE
 
 // ---- Detection Checks (called by world_map_controller) ----
 

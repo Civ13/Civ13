@@ -889,6 +889,16 @@
 			src.show_subcom13_panel()
 		return
 
+	if (href_list["subcom_attack"])
+		if (!check_rights(R_ADMIN)) return
+		var/attack_type = href_list["subcom_attack"]
+		var/obj/map_metadata/subcom13/SM = map
+		if(SM?.created_sub)
+			SM.created_sub.simulate_attack(attack_type)
+			to_chat(usr, "<span class='notice'>Simulated attack: [attack_type].</span>")
+			src.show_subcom13_panel()
+		return
+
 	if (href_list["subcom_spawn"])
 		if (!check_rights(R_ADMIN)) return
 		var/spawn_type = href_list["subcom_spawn"]

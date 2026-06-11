@@ -125,6 +125,11 @@
 	var/water_warning_sent = FALSE  // Prevents spamming "water rising!" messages
 	var/last_damage_tick = 0        // For drowning damage cooldown
 
+	// ---- Fire State ----
+	var/fire_active = FALSE         // TRUE if this tile is on fire
+	var/fire_temperature = 0        // Current fire intensity (affects spread chance and damage)
+	var/fire_duration = 0           // Ticks remaining before fire burns out
+
 /turf/floor/sub_deck/New()
 	..()
 	// Register with the flooding controller
@@ -183,14 +188,97 @@
 		var/turf/floor/sub_deck/neighbor = get_step(src, direction)
 		if(!neighbor || !istype(neighbor)) continue
 		if(neighbor.water_sealed) continue
-		if(neighbor.compartment_id != compartment_id && neighbor.compartment_id != "") continue
+
+		// Check for a blast door between these two tiles
+		var/obj/structure/simple_door/blast/door = locate(/obj/structure/simple_door/blast) in get_step(src, direction)
+		if(door)
+			if(!door.state) continue  // Door is closed, block water
+			// Door is open: allow flow across compartment boundaries
+		else
+			// No door: original compartment check
+			if(neighbor.compartment_id != compartment_id && neighbor.compartment_id != "") continue
 
 		var/delta = water_depth - neighbor.water_depth
 		if(delta > 2)
-			// Flow rate: proportional to depth difference
-			var/flow = min(delta * 0.25, 5)  // Max 5cm per tick per direction
+			var/flow = min(delta * 0.25, 5)
 			neighbor.add_water(flow)
 			remove_water(flow)
+
+// ============================================================
+// Fire Spread System
+// ============================================================
+
+/turf/floor/sub_deck/proc/fire_tick()
+	if(!fire_active) return
+
+	// Water extinguishes fire
+	if(water_depth > 50)
+		extinguish_fire()
+		return
+
+	fire_duration--
+	if(fire_duration <= 0)
+		extinguish_fire()
+		return
+
+	// Damage mobs on this tile (supplements /obj/effect/fire's own damage)
+	for(var/mob/living/L in src)
+		if(prob(15))
+			L.adjustBurnLoss(rand(3, 8))
+
+	// Smoke effect
+	if(prob(4))
+		new/obj/effect/effect/smoke(loc)
+
+	// Spread: 5-8% chance per tick to ignite an adjacent sub_deck turf
+	if(prob(rand(5, 8)))
+		var/list/spread_dirs = list(NORTH, SOUTH, EAST, WEST)
+		shuffle(spread_dirs)
+		for(var/dir in spread_dirs)
+			var/turf/floor/sub_deck/neighbor = get_step(src, dir)
+			if(!neighbor || !istype(neighbor)) continue
+			if(neighbor.fire_active) continue
+			if(neighbor.water_depth > 50) continue
+			// Don't spread through watertight bulkheads
+			var/turf/wall/sub_bulkhead/B = get_step(src, dir)
+			if(B && istype(B) && B.watertight) continue
+			// Don't spread through closed blast doors
+			var/obj/structure/simple_door/blast/door = locate(/obj/structure/simple_door/blast) in get_step(src, dir)
+			if(door && !door.state) continue
+			// Ignite the neighbor
+			neighbor.ignite_deck_fire(rand(15, 30), fire_temperature)
+			break  // Only spread to one tile per tick
+
+/turf/floor/sub_deck/proc/ignite_deck_fire(var/duration = 20, var/temperature = 800)
+	if(fire_active) return  // Already burning
+	if(water_depth > 50) return  // Too much water
+
+	fire_active = TRUE
+	fire_temperature = temperature
+	fire_duration = duration
+
+	// Spawn the visual fire effect (skip if one already exists on this tile)
+	var/has_fire = FALSE
+	for(var/obj/effect/fire/F in src)
+		has_fire = TRUE
+		break
+	if(!has_fire)
+		var/obj/effect/fire/F = new(src)
+		F.timer = duration * 10
+
+	// Sound on first ignition
+	if(prob(30))
+		playsound(src, 'sound/machines/submarine/fire.ogg', 50, 1)
+
+/turf/floor/sub_deck/proc/extinguish_fire()
+	if(!fire_active) return
+	fire_active = FALSE
+	fire_temperature = 0
+	fire_duration = 0
+
+	// Remove all fire effects on this tile
+	for(var/obj/effect/fire/F in src)
+		qdel(F)
 
 // Drowning damage to mobs standing on this tile
 /turf/floor/sub_deck/proc/apply_drowning_damage()
@@ -225,7 +313,7 @@
 	icon_state = "steel_grid"
 
 	if(water_depth > 0)
-		var/image/water_overlay = image('icons/obj/machines/submarine.dmi', "water_deep")
+		var/image/water_overlay = image('icons/misc/beach.dmi', "flood_overlay2")
 		if(water_depth < 30)
 			water_overlay.alpha = 60       // Shallow - faint tint
 		else if(water_depth < 100)

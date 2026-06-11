@@ -3,7 +3,7 @@
 // ============================================================
 
 /datum/admins/proc/subcom13_panel()
-	set category = "Admin"
+	set category = "Map Controls"
 	set name = "Subcom13 Panel"
 	set desc = "Open the Submarine Commander debug panel"
 
@@ -12,7 +12,7 @@
 		to_chat(usr, "<span class='warning'>Not on SUBCOM13 map.</span>")
 		return
 
-	src.show_subcom13_panel()
+	usr.client.holder.show_subcom13_panel()
 
 /datum/admins/proc/show_subcom13_panel()
 	var/dat = {"
@@ -118,6 +118,19 @@
 		dat += "<div class='label'>TORPEDO CONTROLS</div>"
 		dat += "<a href='?src=\ref[src];subcom_load_all' class='btn'>LOAD ALL TUBES</a> "
 		dat += "<a href='?src=\ref[src];subcom_arm_toggle' class='btn btn-yellow'>TOGGLE MASTER ARM</a>"
+		dat += "</div>"
+
+		// --- ATTACK SIMULATION ---
+		dat += "<div class='panel'>"
+		dat += "<div class='label'>ATTACK SIMULATION</div>"
+		dat += "<div style='margin:4px 0; font-size:10px; color:#888;'>Simulate incoming attacks for testing damage response</div>"
+		dat += "<a href='?src=\ref[src];subcom_attack=depth_charge' class='btn btn-red'>DEPTH CHARGE</a> "
+		dat += "<a href='?src=\ref[src];subcom_attack=reactor_meltdown' class='btn btn-red'>REACTOR MELTDOWN</a> "
+		dat += "<a href='?src=\ref[src];subcom_attack=fire' class='btn btn-yellow'>START FIRE</a> "
+		dat += "<a href='?src=\ref[src];subcom_attack=hull_breach' class='btn btn-red'>HULL BREACH</a> "
+		dat += "<a href='?src=\ref[src];subcom_attack=flood' class='btn btn-blue'>FLOOD COMPARTMENT</a> "
+		dat += "<a href='?src=\ref[src];subcom_attack=torpedo' class='btn btn-red'>TORPEDO HIT</a> "
+		dat += "<a href='?src=\ref[src];subcom_attack=missile' class='btn btn-red'>MISSILE STRIKE</a>"
 		dat += "</div>"
 
 	else

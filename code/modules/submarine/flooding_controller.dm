@@ -65,6 +65,7 @@ var/global/datum/flooding_controller/subcom_flooding
 			continue
 		T.flood_tick()
 		T.atmos_tick()
+		T.fire_tick()
 
 	// Ambient water drip in flooded compartments (every 30 ticks)
 	if(tick_counter % 30 == 0)
@@ -90,6 +91,20 @@ var/global/datum/flooding_controller/subcom_flooding
 					if(other_side && istype(other_side) && !other_side.water_sealed)
 						var/flow = min(neighbor.water_depth * 0.1, 3)
 						other_side.add_water(flow)
+
+	// Open blast door check: propagate water through open doors between compartments
+	for(var/obj/structure/simple_door/blast/D in world)
+		if(QDELETED(D)) continue
+		if(!D.state) continue  // Door is closed
+		// Door is open - check both sides for water
+		for(var/direction in list(NORTH, SOUTH, EAST, WEST))
+			var/turf/floor/sub_deck/neighbor = get_step(D, direction)
+			if(!neighbor || !istype(neighbor)) continue
+			if(neighbor.water_depth > 10)
+				var/turf/floor/sub_deck/other_side = get_step(D, turn(direction, 180))
+				if(other_side && istype(other_side) && !other_side.water_sealed)
+					var/flow = min(neighbor.water_depth * 0.1, 3)
+					other_side.add_water(flow)
 
 // ---- Compartment Queries ----
 

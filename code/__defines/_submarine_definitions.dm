@@ -20,10 +20,12 @@
 #define SUB_BATTERY_DRAIN_ELECTRIC 10 // kW per tick
 #define SUB_DIESEL_PROPULSION_POWER 500 // kW per diesel engine for direct propulsion
 
-#define SUB_RADAR_RANGE_SHORT 20000 // meters
-#define SUB_RADAR_RANGE_LONG  50000 // meters
+#define SUB_RADAR_RANGE_SHORT 25000 // meters - surface + submerged + air contacts
+#define SUB_RADAR_RANGE_LONG  70000 // meters - surface + submerged + air contacts
 #define SUB_RADAR_POWER_SHORT 10 // kW
 #define SUB_RADAR_POWER_LONG  50 // kW
+#define SUB_SONAR_RANGE_PASSIVE 25000 // meters - surface + submerged contacts
+#define SUB_SONAR_RANGE_ACTIVE  40000 // meters - surface + submerged contacts
 #define SUB_SONAR_POWER_PASSIVE 5 // kW
 #define SUB_SONAR_POWER_ACTIVE 100 // kW, high power draw
 

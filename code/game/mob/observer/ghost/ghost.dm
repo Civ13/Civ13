@@ -323,7 +323,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	if (!seedarkness)
 		see_invisible = SEE_INVISIBLE_OBSERVER_NOLIGHTING
 	else
-		see_invisible = ghostvision ? SEE_INVISIBLE_OBSERVER : SEE_INVISIBLE_LIVING
+		see_invisible = SEE_INVISIBLE_LIVING
 
 	updateghostimages()
 

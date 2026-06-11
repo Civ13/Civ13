@@ -53,18 +53,17 @@
 		return FALSE
 	if(user.incapacitated() || user.lying)
 		return FALSE
-	if(get_dist(user, src) > 1)
-		return FALSE
-	if(!my_sub)
-		to_chat(user, "<span class='notice'>No submarine link detected.</span>")
-		return FALSE
-	// Single-player mode: allow dead/ghost users
+	// Single-player mode: allow dead/ghost users (skip distance check)
 	if(user.stat == DEAD || isobserver(user))
-		// Check if we're on the subcom13 map with single-player enabled
 		var/obj/map_metadata/subcom13/SM = map
 		if(istype(SM) && SM.single_player)
 			return TRUE
 		to_chat(user, "<span class='warning'>Single-player mode is not enabled.</span>")
+		return FALSE
+	if(get_dist(user, src) > 1)
+		return FALSE
+	if(!my_sub)
+		to_chat(user, "<span class='notice'>No submarine link detected.</span>")
 		return FALSE
 	return TRUE
 
@@ -141,6 +140,9 @@
 	icon_state = "computer"
 	scr_overlay = "navigation"
 	window_size = "1000x600"
+
+/obj/structure/machinery/sub_control/maneuver_panel/vessel_name_header()
+	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - HELM & NAVIGATION"
 
 /obj/structure/machinery/sub_control/maneuver_panel/get_ui_content()
 	var/dat = ""
@@ -372,6 +374,9 @@
 	var/obj/structure/machinery/sub_physical/reactor_core/reactor2
 	window_size = "700x500"
 
+/obj/structure/machinery/sub_control/reactor_panel/vessel_name_header()
+	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - REACTOR CONTROL"
+
 /obj/structure/machinery/sub_control/reactor_panel/New()
 	..()
 	spawn(20)
@@ -521,6 +526,7 @@
 	icon = 'icons/obj/machines/submarine.dmi'
 	icon_state = "transponder"
 	scr_overlay = "transponder_screen"
+	window_size = "700x750"
 
 	var/list/compartments = list(
 		"Forward Torpedo Room",
@@ -535,10 +541,12 @@
 		"Maneuvering Room",
 		"After Torpedo Room"
 	)
-	window_size = "700x750"
 	// Internal status tracking for simulation
 	var/list/vents_open = list()
 	var/list/fire_supp_active = list()
+
+/obj/structure/machinery/sub_control/misc_systems/vessel_name_header()
+	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - AUXILIARY SYSTEMS"
 
 /obj/structure/machinery/sub_control/misc_systems/New()
 	vents_open = list()
@@ -650,6 +658,9 @@
 	scr_overlay = "radar_screen"
 	var/radar_channel = 0
 
+/obj/structure/machinery/sub_control/radar_panel/vessel_name_header()
+	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - RADAR SYSTEMS"
+
 /obj/structure/machinery/sub_control/radar_panel/get_ui_content()
 	var/dat = ""
 
@@ -671,28 +682,33 @@
 
 	// Submerged warning
 	if(my_sub.depth > 0)
-		dat += "<div style='margin-top:6px; padding:4px; background:#400; border:1px solid #f00; text-align:center; color:#f00; font-weight:bold;'>RADAR INOPERATIVE - SUBMERGED</div>"
+		dat += "<div style='margin-top:6px; padding:4px; background:#440; border:1px solid #ff0; text-align:center; color:#ff0; font-weight:bold;'>RADAR: SUBMERGED — LIMITED VISIBILITY</div>"
 
 	dat += "</div>"
 
 	// === CONTACT TABLE ===
 	dat += "<div class='panel' style='padding:10px;'>"
 	dat += "<div class='label'>DETECTED CONTACTS</div>"
-	if(my_sub.radar_active && my_sub.depth == 0 && my_sub.detected_targets.len)
+	if(my_sub.radar_active && my_sub.detected_targets.len)
 		dat += "<table class='data-table' style='margin-top:6px;'>"
 		dat += "<tr><th>NAME</th><th>RANGE</th><th>BEARING</th><th>TYPE</th><th></th></tr>"
 		for(var/datum/vessel_contact/C in my_sub.detected_targets)
-			if(C.contact_type == SUB_CONTACT_SURFACE || C.contact_type == SUB_CONTACT_AIR)
-				var/type_color = C.contact_type == SUB_CONTACT_AIR ? "#f80" : "#0af"
-				var/type_text = C.contact_type == SUB_CONTACT_AIR ? "AIR" : "SURFACE"
-				var/is_tagged = (C in my_sub.tagged_contacts)
-				dat += "<tr>"
-				dat += "<td style='font-weight:bold; color:[is_tagged ? "#0ff" : "#fff"];'>[C.name]</td>"
-				dat += "<td>[round(C.range)]m</td>"
-				dat += "<td>[round(C.bearing)]&deg;</td>"
-				dat += "<td style='color:[type_color];'>[type_text]</td>"
-				dat += "<td><a href='?src=\ref[src];tag_contact=\ref[C]' style='font-size:8px; color:[is_tagged ? "#0ff" : "#666"];'>[is_tagged ? "TAGGED" : "TAG"]</a></td>"
-				dat += "</tr>"
+			var/type_color = "#0af"
+			var/type_text = "SURFACE"
+			if(C.contact_type == SUB_CONTACT_AIR)
+				type_color = "#f80"
+				type_text = "AIR"
+			else if(C.contact_type == SUB_CONTACT_SUBMERGED)
+				type_color = "#0f0"
+				type_text = "SUBMERGED"
+			var/is_tagged = (C in my_sub.tagged_contacts)
+			dat += "<tr>"
+			dat += "<td style='font-weight:bold; color:[is_tagged ? "#0ff" : "#fff"];'>[C.name]</td>"
+			dat += "<td>[round(C.range)]m</td>"
+			dat += "<td>[round(C.bearing)]&deg;</td>"
+			dat += "<td style='color:[type_color];'>[type_text]</td>"
+			dat += "<td><a href='?src=\ref[src];tag_contact=\ref[C]' style='font-size:8px; color:[is_tagged ? "#0ff" : "#666"];'>[is_tagged ? "TAGGED" : "TAG"]</a></td>"
+			dat += "</tr>"
 		dat += "</table>"
 	else
 		dat += "<div style='margin-top:6px; color:#666; text-align:center;'>No contacts detected.</div>"
@@ -746,6 +762,9 @@
 	var/selected_contact = null
 	var/sonar_channel = 0
 
+/obj/structure/machinery/sub_control/sonar_panel/vessel_name_header()
+	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - SONAR SYSTEMS"
+
 /obj/structure/machinery/sub_control/sonar_panel/get_ui_content()
 	var/dat = ""
 
@@ -772,10 +791,43 @@
 	// === BEARING SWEEP DISPLAY ===
 	dat += "<div class='panel crt-overlay' style='padding:10px;'>"
 	dat += "<div class='label'>BEARING SWEEP</div>"
-	dat += "<div style='margin-top:8px; background:#001a00; border:1px solid #0a0; height:80px; position:relative; overflow:hidden;'>"
+	dat += "<div style='margin-top:8px; background:#001a00; border:1px solid #0a0; height:100px; position:relative; overflow:hidden;'>"
 	if(my_sub.sonar_active)
-		// Bearing labels - positioned to match sweep angle mapping (0-360 maps to 0-100%)
-		dat += "<div style='position:relative; height:12px; font-size:8px; color:#0a0;'>"
+		// Calculate sweep marker position
+		var/sweep_x = my_sub.bearing_sweep >= 180 ? ((my_sub.bearing_sweep - 180) / 180) * 50 : 50 + (my_sub.bearing_sweep / 180) * 50
+		// Draw the noise baseline - a faint horizontal line at 65% height
+		dat += "<div style='position:absolute; left:0; right:0; top:65%; height:1px; background:rgba(0,160,0,0.4);'></div>"
+		// Draw contact amplitude spikes
+		for(var/datum/vessel_contact/C in my_sub.detected_targets)
+			if(C.contact_type == SUB_CONTACT_SUBMERGED || C.contact_type == SUB_CONTACT_SURFACE)
+				var/blip_x = C.bearing >= 180 ? ((C.bearing - 180) / 180) * 50 : 50 + (C.bearing / 180) * 50
+				var/spike_h = max(15, min(55, (C.noise_signature / 100.0) * 55))
+				var/is_selected = (C == selected_contact)
+				var/spike_color = is_selected ? "#0ff" : C.contact_type == SUB_CONTACT_SUBMERGED ? "#0f0" : "#0af"
+				// Spike: a vertical line going UP from the baseline
+				dat += "<a href='?src=\ref[src];select_contact=\ref[C]' style='position:absolute; left:[blip_x]%; bottom:35%; width:3px; height:[spike_h]px; display:block; transform:translateX(-50%);'>"
+				dat += "<div style='width:100%; height:100%; background:[spike_color]; box-shadow:0 0 4px [spike_color];'></div>"
+				dat += "</a>"
+				if(is_selected)
+					// Selected contact: small label above spike
+					dat += "<div style='position:absolute; left:[blip_x]%; bottom:[35 + spike_h + 2]%; transform:translateX(-50%); font-size:7px; color:#0ff; white-space:nowrap;'>[C.name]</div>"
+		// Noise waveform using SVG with a fixed viewBox coordinate space (percentages are invalid in SVG points)
+		// viewBox "0 0 1000 100" means x=0-1000 maps to full width, y=0-100 maps to full height
+		dat += "<svg style='position:absolute; left:0; top:0; width:100%; height:100%;' viewBox='0 0 1000 100' preserveAspectRatio='none'>"
+		var/noise_points = ""
+		var/num_pts = 80
+		for(var/i = 0; i <= num_pts; i++)
+			var/svgx = (i * 1000) / num_pts
+			// Pseudo-noise: mix of two prime-modulo offsets to make a more complex waveform
+			var/noise_amp = (((i * 7 + my_sub.tick_counter * 3) % 17) - 8) + (((i * 13 + my_sub.tick_counter) % 11) - 5)
+			var/svgy = 65 + noise_amp  // baseline at y=65, noise ±13 units out of 100
+			noise_points += "[svgx],[svgy] "
+		dat += "<polyline points='[noise_points]' fill='none' stroke='rgba(0,200,0,0.7)' stroke-width='1.5'/>"
+		dat += "</svg>"
+		// Sweep position marker: downward-pointing triangle
+		dat += "<div style='position:absolute; left:[sweep_x]%; top:4px; transform:translateX(-50%); width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:8px solid #0f0;'></div>"
+		// Bearing labels at bottom
+		dat += "<div style='position:absolute; bottom:2px; left:0; right:0; height:12px; font-size:8px; color:#0a0;'>"
 		dat += "<span style='position:absolute; left:2%; transform:translateX(-50%);'>180</span>"
 		dat += "<span style='position:absolute; left:14%; transform:translateX(-50%);'>225</span>"
 		dat += "<span style='position:absolute; left:27%; transform:translateX(-50%);'>270</span>"
@@ -786,20 +838,8 @@
 		dat += "<span style='position:absolute; left:86%; transform:translateX(-50%);'>135</span>"
 		dat += "<span style='position:absolute; left:98%; transform:translateX(-50%);'>180</span>"
 		dat += "</div>"
-		// Sweep line
-		var/sweep_x = my_sub.bearing_sweep >= 180 ? ((my_sub.bearing_sweep - 180) / 180) * 50 : 50 + (my_sub.bearing_sweep / 180) * 50
-		dat += "<div style='position:absolute; left:[sweep_x]%; top:0; bottom:0; width:2px; background:#0f0; box-shadow:0 0 6px #0f0;'></div>"
-		// Contact blips on sweep line
-		for(var/datum/vessel_contact/C in my_sub.detected_targets)
-			if(C.contact_type == SUB_CONTACT_SUBMERGED)
-				var/blip_x = C.bearing >= 180 ? ((C.bearing - 180) / 180) * 50 : 50 + (C.bearing / 180) * 50
-				var/blip_intensity = max(20, min(100, 100 - C.range / 500))
-				var/is_selected = (C == selected_contact)
-				var/blip_color = is_selected ? "#0ff" : "#0f0"
-				var/blip_size = is_selected ? 10 : 6
-				dat += "<div style='position:absolute; left:[blip_x]%; top:50%; transform:translate(-50%,-50%); width:[blip_size]px; height:[blip_size]px; background:[blip_color]; border-radius:50%; box-shadow:0 0 [blip_intensity / 10]px [blip_color];'></div>"
 	else
-		dat += "<div style='text-align:center; color:#040; padding-top:25px;'>SONAR OFFLINE</div>"
+		dat += "<div style='text-align:center; color:#040; padding-top:35px;'>SONAR OFFLINE</div>"
 	dat += "</div>"
 	dat += "</div>"
 
@@ -880,25 +920,25 @@
 	if(my_sub.sonar_active && my_sub.detected_targets.len)
 		dat += "<table style='width:100%; margin-top:6px; font-size:10px;'>"
 		for(var/datum/vessel_contact/C in my_sub.detected_targets)
-			if(C.contact_type == SUB_CONTACT_SUBMERGED)
-				var/is_selected = (C == selected_contact)
-				var/is_tagged = (C in my_sub.tagged_contacts)
-				var/row_bg = is_selected ? "#003300" : "transparent"
-				var/noise_color = C.noise_signature > 50 ? "#f00" : C.noise_signature > 20 ? "#ff0" : "#0f0"
-				dat += "<tr style='background:[row_bg];'>"
-				dat += "<td style='padding:3px; cursor:pointer;' onclick='window.location=\"?src=\ref[src];select_contact=\ref[C]\";'>"
-				dat += "<span style='font-weight:bold; color:[is_tagged ? "#0ff" : "#0f0"];'>[C.name]</span>"
-				dat += "</td>"
-				dat += "<td style='padding:3px; color:#888;'>[round(C.range)]m</td>"
-				dat += "<td style='padding:3px; color:#888;'>[round(C.bearing)]&deg;</td>"
-				dat += "<td style='padding:3px; color:[noise_color];'>[C.noise_signature]</td>"
-				dat += "<td style='padding:3px;'>"
-				dat += "<a href='?src=\ref[src];tag_contact=\ref[C]' style='font-size:8px; color:[is_tagged ? "#0ff" : "#666"];'>[is_tagged ? "TAGGED" : "TAG"]</a>"
-				dat += "</td>"
-				dat += "</tr>"
+			if(C.contact_type == SUB_CONTACT_AIR) continue  // Sonar doesn't display air contacts
+			var/is_selected = (C == selected_contact)
+			var/is_tagged = (C in my_sub.tagged_contacts)
+			var/row_bg = is_selected ? "#003300" : "transparent"
+			var/type_color = C.contact_type == SUB_CONTACT_SUBMERGED ? "#0f0" : "#0af"
+			dat += "<tr style='background:[row_bg];'>"
+			dat += "<td style='padding:3px; cursor:pointer;' onclick='window.location=\"?src=\ref[src];select_contact=\ref[C]\";'>"
+			dat += "<span style='font-weight:bold; color:[is_tagged ? "#0ff" : "#0f0"];'>[C.name]</span>"
+			dat += "</td>"
+			dat += "<td style='padding:3px; color:#888;'>[round(C.range)]m</td>"
+			dat += "<td style='padding:3px; color:#888;'>[round(C.bearing)]&deg;</td>"
+			dat += "<td style='padding:3px; color:[type_color];'>[C.contact_type]</td>"
+			dat += "<td style='padding:3px;'>"
+			dat += "<a href='?src=\ref[src];tag_contact=\ref[C]' style='font-size:8px; color:[is_tagged ? "#0ff" : "#666"];'>[is_tagged ? "TAGGED" : "TAG"]</a>"
+			dat += "</td>"
+			dat += "</tr>"
 		dat += "</table>"
 	else
-		dat += "<div style='margin-top:6px; color:#666; text-align:center;'>No subsurface contacts.</div>"
+		dat += "<div style='margin-top:6px; color:#666; text-align:center;'>No contacts detected.</div>"
 
 	dat += "</div>"
 	dat += "</div>" // end bottom row
@@ -963,6 +1003,9 @@
 	icon = 'icons/obj/computers.dmi'
 	icon_state = "computer-retro"
 	scr_overlay = "targeting_peace"
+
+/obj/structure/machinery/sub_control/weapons_panel/vessel_name_header()
+	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - WEAPONS CONTROL"
 
 /obj/structure/machinery/sub_control/weapons_panel/get_ui_content()
 	var/dat = ""
@@ -1076,6 +1119,9 @@
 	var/list/message_log = list()       // List of radio messages
 	var/max_log_entries = 50
 
+/obj/structure/machinery/sub_control/radio_console/vessel_name_header()
+	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - RADIO & COMMS"
+
 /obj/structure/machinery/sub_control/radio_console/New()
 	..()
 	// Register with the mission controller
@@ -1170,6 +1216,9 @@
 	icon = 'icons/obj/computers.dmi'
 	icon_state = "computer"
 	scr_overlay = "comm_monitor"
+
+/obj/structure/machinery/sub_control/compartment_panel/vessel_name_header()
+	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - DAMAGE CONTROL"
 
 /obj/structure/machinery/sub_control/compartment_panel/get_ui_content()
 	var/dat = ""
@@ -1395,12 +1444,17 @@
 	icon = 'icons/obj/computers.dmi'
 	icon_state = "wallconsole"
 	scr_overlay = "wallconsole_navigation"
+	window_size = "700x750"
 	var/map_range = 20000   // Meters displayed from center to edge (half-width)
-	var/map_size = 15        // Grid cells radius (15x15 grid = 31x31)
+
+/obj/structure/machinery/sub_control/map_display/vessel_name_header()
+	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - TACTICAL MAP"
 
 /obj/structure/machinery/sub_control/map_display/get_ui_content()
 	var/dat = ""
-
+	var/map_size = 11        // Grid cells radius (11x11 grid = 23x23), smaller to fit in 700px window
+	var/cell_px = 14         // pixels per cell
+	var/grid_dim = map_size * 2 + 1
 	// === STATUS BAR ===
 	dat += "<div class='panel' style='padding:8px; margin-bottom:8px;'>"
 	dat += "<div class='flex-between'>"
@@ -1414,9 +1468,7 @@
 	dat += "</div>"
 	dat += "</div>"
 
-	// === MAP GRID ===
-	var/grid_dim = map_size * 2 + 1
-	var/cell_px = 16
+
 
 	dat += "<div class='panel crt-overlay' style='padding:10px;'>"
 	dat += "<div style='background:#001a00; border:1px solid #0a0; padding:8px; position:relative;'>"

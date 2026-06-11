@@ -517,7 +517,7 @@ proc/admin_notice(var/message, var/rights)
 
 
 /datum/admins/proc/toggle_subcom_singleplayer()
-	set category = "Server"
+	set category = "Map Controls"
 	set desc = "Toggle single-player mode for SUBCOM13"
 	set name = "Toggle Subcom13 Single Player"
 	if(!usr.client.holder)

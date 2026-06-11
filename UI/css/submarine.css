@@ -78,13 +78,13 @@ body {
 }
 
 .label::before {
-    content: '\25C6 ';  /* diamond */
+    content: '\25C6\0020';  /* diamond */
     color: #aaa;
     font-size: 8px;
 }
 
 .label::after {
-    content: ' \25C6';
+    content: '\0020\25C6';
     color: #aaa;
     font-size: 8px;
 }

@@ -5,6 +5,7 @@
 	spawn_location = "JoinLateCiv"
 	min_positions = 100
 	max_positions = 100
+	can_be_female = TRUE
 	allowed_maps = list(MAP_WIZARD_BOY)
 
 /datum/job/civilian/magic/equip(var/mob/living/human/H)
