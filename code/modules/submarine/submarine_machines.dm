@@ -12,7 +12,7 @@
 	var/scr_overlay = "comm_monitor"
 	var/list/open_users = list()   // Mobs currently viewing this console
 	var/list/window_open = list()  // Assoc: mob -> TRUE while their window is open
-
+	var/window_size = "700x600"
 /obj/structure/machinery/sub_control/New()
 	..()
 	if(global.all_submarines.len)
@@ -110,7 +110,7 @@
 	dat += get_ui_content()
 
 	dat += "</body></html>"
-	user << browse(dat, "window=sub_control;size=700x600")
+	user << browse(dat, "window=sub_control;size=[window_size]")
 
 /obj/structure/machinery/sub_control/proc/vessel_name_header()
 	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - SYSTEMS INTERFACE"
@@ -120,11 +120,11 @@
 		open_users -= usr
 		window_open -= usr
 		usr << browse(null, "window=sub_control")
-		return
+		return 1
 	if(href_list["close"])
 		open_users -= usr
 		window_open -= usr
-		return
+		return 1
 	if(!can_use(usr))
 		return 1
 	return 0
@@ -140,6 +140,7 @@
 	name = "helm control station"
 	icon_state = "computer"
 	scr_overlay = "navigation"
+	window_size = "1000x600"
 
 /obj/structure/machinery/sub_control/maneuver_panel/get_ui_content()
 	var/dat = ""
@@ -151,7 +152,8 @@
 	dat += "<div class='panel' style='text-align:center; padding:8px;'>"
 	dat += "<div class='label'>HEADING</div>"
 	dat += "<div class='gauge' style='margin:6px auto;'>"
-	dat += "<div class='gauge-ticks'></div>"
+	dat += "<div class='gauge-ticks-360'></div>"
+	dat += "<div class='gauge-needle' style='transform:rotate([my_sub.target_heading]deg); background:rgba(255,0,0,0.3); height:45px; width:4px;'></div>"
 	dat += "<div class='gauge-needle' style='transform:rotate([my_sub.heading]deg);'></div>"
 	dat += "<div class='gauge-center'></div>"
 	dat += "<div class='gauge-value'>[round(my_sub.heading)]&deg;</div>"
@@ -173,10 +175,12 @@
 
 	// --- SPEED DIAL ---
 	var/sp_angle = (my_sub.speed / 30) * 270 - 135
+	var/target_sp_angle = (my_sub.target_speed / 30) * 270 - 135
 	dat += "<div class='panel' style='text-align:center; padding:8px;'>"
 	dat += "<div class='label'>SPEED</div>"
 	dat += "<div class='gauge' style='margin:6px auto;'>"
 	dat += "<div class='gauge-ticks'></div>"
+	dat += "<div class='gauge-needle' style='transform:rotate([target_sp_angle]deg); background:rgba(255,0,0,0.3); height:45px; width:4px;'></div>"
 	dat += "<div class='gauge-needle' style='transform:rotate([sp_angle]deg);'></div>"
 	dat += "<div class='gauge-center'></div>"
 	dat += "<div class='gauge-value'>[round(my_sub.speed)]</div>"
@@ -194,6 +198,7 @@
 
 	// --- DEPTH DIAL ---
 	var/dp_angle = (my_sub.depth / my_sub.crush_depth) * 270 - 135
+	var/target_dp_angle = (my_sub.target_depth / my_sub.crush_depth) * 270 - 135
 	var/depth_color = "#0f0"
 	if(my_sub.depth > my_sub.crush_depth * 0.8)
 		depth_color = "#f00"
@@ -203,6 +208,7 @@
 	dat += "<div class='label'>DEPTH</div>"
 	dat += "<div class='gauge' style='margin:6px auto;'>"
 	dat += "<div class='gauge-ticks'></div>"
+	dat += "<div class='gauge-needle' style='transform:rotate([target_dp_angle]deg); background:rgba(0,255,0,0.3); height:45px; width:4px;'></div>"
 	dat += "<div class='gauge-needle' style='transform:rotate([dp_angle]deg); background:[depth_color];'></div>"
 	dat += "<div class='gauge-center'></div>"
 	dat += "<div class='gauge-value' style='color:[depth_color];'>[round(my_sub.depth)]</div>"
@@ -280,6 +286,14 @@
 		total_usage += my_sub.sonar_mode == SUB_SONAR_ACTIVE ? SUB_SONAR_POWER_ACTIVE : SUB_SONAR_POWER_PASSIVE
 	if(my_sub.radar_active)
 		total_usage += my_sub.radar_range_long ? SUB_RADAR_POWER_LONG : SUB_RADAR_POWER_SHORT
+	
+	if(my_sub.speed > 0)
+		var/prop_drain = (my_sub.speed / 30) * 15000 // kW drain for propulsion
+		if(my_sub.has_nuclear_engine)
+			total_usage += prop_drain
+		else if(my_sub.depth > 0)
+			total_usage += prop_drain
+			
 	var/batt_pct = my_sub.battery_max > 0 ? (my_sub.battery_current / my_sub.battery_max * 100) : 0
 	var/batt_color = batt_pct > 50 ? "#0f0" : (batt_pct > 20 ? "#ff0" : "#f00")
 	var/power_balance = total_production - total_usage
@@ -329,7 +343,11 @@
 		my_sub.target_speed = clamp(my_sub.target_speed + text2num(href_list["adj_sp"]), 0, 30)
 
 	if(href_list["set_dp"])
-		my_sub.target_depth = text2num(href_list["set_dp"])
+		var/new_depth = text2num(href_list["set_dp"])
+		my_sub.target_depth = new_depth
+		if(new_depth >= 250)
+			playsound(src, 'sound/machines/submarine/dive_alarm.ogg', 80, 1)
+			visible_message("<span class='warning'><b>CRASH DIVE! Crash diving to [new_depth]m!</b></span>")
 
 	if(href_list["blow_ballast"])
 		my_sub.target_depth = 0
@@ -352,6 +370,7 @@
 	scr_overlay = "fuel_screen"
 	var/obj/structure/machinery/sub_physical/reactor_core/reactor1
 	var/obj/structure/machinery/sub_physical/reactor_core/reactor2
+	window_size = "700x500"
 
 /obj/structure/machinery/sub_control/reactor_panel/New()
 	..()
@@ -516,11 +535,14 @@
 		"Maneuvering Room",
 		"After Torpedo Room"
 	)
+	window_size = "700x750"
 	// Internal status tracking for simulation
 	var/list/vents_open = list()
 	var/list/fire_supp_active = list()
 
 /obj/structure/machinery/sub_control/misc_systems/New()
+	vents_open = list()
+	fire_supp_active = list()
 	..()
 	for(var/C in compartments)
 		vents_open[C] = TRUE
@@ -626,6 +648,7 @@
 	icon = 'icons/obj/computers.dmi'
 	icon_state = "computer-retro"
 	scr_overlay = "radar_screen"
+	var/radar_channel = 0
 
 /obj/structure/machinery/sub_control/radar_panel/get_ui_content()
 	var/dat = ""
@@ -687,6 +710,13 @@
 			my_sub.radar_active = !my_sub.radar_active
 			if(!my_sub.radar_active)
 				my_sub.detected_targets.Cut()
+				if(radar_channel)
+					sound(null, channel = radar_channel)
+					radar_channel = 0
+			else
+				var/sound/S = sound('sound/machines/submarine/dgen.ogg', repeat = TRUE, wait = 0, volume = 30, channel = 771)
+				radar_channel = 771
+				src << S
 		else
 			to_chat(usr, "<span class='warning'>Cannot activate radar while submerged!</span>")
 
@@ -714,6 +744,7 @@
 	icon_state = "computer-retro"
 	scr_overlay = "sonar_screen"
 	var/selected_contact = null
+	var/sonar_channel = 0
 
 /obj/structure/machinery/sub_control/sonar_panel/get_ui_content()
 	var/dat = ""
@@ -756,12 +787,12 @@
 		dat += "<span style='position:absolute; left:98%; transform:translateX(-50%);'>180</span>"
 		dat += "</div>"
 		// Sweep line
-		var/sweep_x = (my_sub.bearing_sweep / 360) * 100
+		var/sweep_x = my_sub.bearing_sweep >= 180 ? ((my_sub.bearing_sweep - 180) / 180) * 50 : 50 + (my_sub.bearing_sweep / 180) * 50
 		dat += "<div style='position:absolute; left:[sweep_x]%; top:0; bottom:0; width:2px; background:#0f0; box-shadow:0 0 6px #0f0;'></div>"
 		// Contact blips on sweep line
 		for(var/datum/vessel_contact/C in my_sub.detected_targets)
 			if(C.contact_type == SUB_CONTACT_SUBMERGED)
-				var/blip_x = (C.bearing / 360) * 100
+				var/blip_x = C.bearing >= 180 ? ((C.bearing - 180) / 180) * 50 : 50 + (C.bearing / 180) * 50
 				var/blip_intensity = max(20, min(100, 100 - C.range / 500))
 				var/is_selected = (C == selected_contact)
 				var/blip_color = is_selected ? "#0ff" : "#0f0"
@@ -883,8 +914,14 @@
 		if(!my_sub.sonar_active)
 			my_sub.detected_targets.Cut()
 			selected_contact = null
+			if(sonar_channel)
+				sound(null, channel = sonar_channel)
+				sonar_channel = 0
 		else
 			playsound(src, 'sound/machines/submarine/sonar_ping.ogg', 50, 1)
+			var/sound/S = sound('sound/machines/submarine/sonar_passive.ogg', repeat = TRUE, wait = 0, volume = 40, channel = 770)
+			sonar_channel = 770
+			src << S
 
 	if(href_list["toggle_mode"])
 		if(my_sub.sonar_active)
@@ -892,8 +929,15 @@
 			if(my_sub.sonar_mode == SUB_SONAR_ACTIVE)
 				my_sub.noise_level = 100
 				playsound(src, 'sound/machines/submarine/sonar_ping2.ogg', 60, 1)
+				if(sonar_channel)
+					sound(null, channel = sonar_channel)
+					sonar_channel = 0
 			else
 				my_sub.noise_level = my_sub.speed * 5
+				if(!sonar_channel)
+					var/sound/S = sound('sound/machines/submarine/sonar_passive.ogg', repeat = TRUE, wait = 0, volume = 40, channel = 770)
+					sonar_channel = 770
+					src << S
 		else
 			to_chat(usr, "<span class='notice'>Activate sonar first to change mode.</span>")
 
@@ -1028,7 +1072,7 @@
 	icon = 'icons/obj/machines/submarine.dmi'
 	icon_state = "transponder"
 	scr_overlay = "transponder-screen"
-
+	window_size = "700x700"
 	var/list/message_log = list()       // List of radio messages
 	var/max_log_entries = 50
 
@@ -1042,6 +1086,7 @@
 	message_log.Add("\[[world.time / 10]\] [message]")
 	if(message_log.len > max_log_entries)
 		message_log.Cut(1, 2)  // Remove oldest entry
+	playsound(src, 'sound/machines/submarine/radio_static.ogg', 50, 1)
 
 /obj/structure/machinery/sub_control/radio_console/get_ui_content()
 	var/dat = ""

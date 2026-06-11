@@ -440,6 +440,7 @@
 	var/scrub_rate = 0.5           // Moles of CO2 removed per tick
 	var/inject_o2 = FALSE          // If TRUE, also injects O2 (from electrolysis)
 	var/o2_inject_rate = 0.2       // Moles of O2 added per tick when inject_o2 is TRUE
+	var/scrub_channel = 0
 
 /obj/structure/machinery/sub_physical/scrubber/attack_hand(mob/user)
 	if(!can_use_sub(user)) return
@@ -448,8 +449,14 @@
 	if(active)
 		to_chat(user, "<span class='notice'>You activate [src]. It begins filtering the air.</span>")
 		playsound(src.loc, 'sound/machines/submarine/gas.ogg', 40, 1)
+		var/sound/S = sound('sound/machines/submarine/scrubber_hum.ogg', repeat = TRUE, wait = 0, volume = 35, channel = 772)
+		scrub_channel = 772
+		src << S
 	else
 		to_chat(user, "<span class='notice'>You deactivate [src].</span>")
+		if(scrub_channel)
+			sound(null, channel = scrub_channel)
+			scrub_channel = 0
 
 /obj/structure/machinery/sub_physical/scrubber/process()
 	if(!active || health <= 0) return
@@ -459,6 +466,9 @@
 	if(my_sub.battery_current < power_draw)
 		active = FALSE
 		visible_message("<span class='warning'>[src] shuts down - insufficient power.</span>")
+		if(scrub_channel)
+			sound(null, channel = scrub_channel)
+			scrub_channel = 0
 		return
 
 	my_sub.battery_current -= power_draw
@@ -565,10 +575,10 @@
 	valve_open = !valve_open
 	if(valve_open)
 		to_chat(user, "<span class='notice'>You open the ballast valve. Water begins flooding the tanks.</span>")
-		playsound(src.loc, 'sound/machines/door_open.ogg', 50, 1)
+		playsound(src.loc, 'sound/machines/submarine/valve_turn.ogg', 50, 1)
 	else
 		to_chat(user, "<span class='notice'>You close the ballast valve.</span>")
-		playsound(src.loc, 'sound/machines/door_close.ogg', 50, 1)
+		playsound(src.loc, 'sound/machines/submarine/valve_turn.ogg', 50, 1)
 
 /obj/structure/machinery/sub_physical/ballast_valve/process()
 	if(!valve_open || health <= 0) return

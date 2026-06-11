@@ -1,7 +1,0 @@
-Missing Sprites for Submarine Commander (SUBCOM13)
-===================================================
-
-All sprite needs have been resolved.
-
-- water_shallow/medium/deep/flooded: Use water_deep with alpha overlays (submarine_turfs.dm)
-- breach_glow: Added to icons/obj/machines/submarine.dmi

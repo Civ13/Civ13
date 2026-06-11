@@ -12,7 +12,7 @@
 		to_chat(usr, "<span class='warning'>Not on SUBCOM13 map.</span>")
 		return
 
-	show_subcom13_panel()
+	src.show_subcom13_panel()
 
 /datum/admins/proc/show_subcom13_panel()
 	var/dat = {"

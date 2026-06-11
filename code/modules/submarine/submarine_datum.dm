@@ -103,6 +103,7 @@ var/global/list/all_submarines = list()
 	var/list/r_power_output = list(0.0, 0.0) // MW
 	var/list/r_scrammed = list(FALSE, FALSE)
 	var/list/r_melted = list(FALSE, FALSE)
+	var/reactor_hum_channel = 0
 
 	// Weapons & Sensors
 	var/master_arm = FALSE
@@ -178,9 +179,16 @@ var/global/list/all_submarines = list()
 		power_source_nuclear = (r_power_output[1] + r_power_output[2]) > 5.0
 		if(power_source_nuclear)
 			current_max_speed = SUB_MAX_SPEED_NUCLEAR
+			if(!reactor_hum_channel && internal_turfs.len)
+				var/sound/S = sound('sound/machines/submarine/engine_nuclear_hum.ogg', repeat = TRUE, wait = 0, volume = 25, channel = 773)
+				reactor_hum_channel = 773
+				src << S
 		else
 			// Nuclear sub with reactors offline: fall back to battery
 			current_max_speed = SUB_MAX_SPEED_ELECTRIC
+			if(reactor_hum_channel)
+				sound(null, channel = reactor_hum_channel)
+				reactor_hum_channel = 0
 	else
 		// Diesel-only submarine
 		if(depth == 0 && diesel_throttle > 0 && diesel_fuel > 0)
@@ -196,10 +204,6 @@ var/global/list/all_submarines = list()
 		speed = min(speed + SUB_ACCEL_RATE, desired_clamped_speed)
 	else if(speed > desired_clamped_speed)
 		speed = max(speed - SUB_ACCEL_RATE, desired_clamped_speed)
-
-	// Battery Drain if running on electric (no nuclear or diesel providing power)
-	if(!power_source_nuclear && !power_source_diesel && speed > 0)
-		battery_current = max(0, battery_current - SUB_BATTERY_DRAIN_ELECTRIC)
 
 	// Diesel Generators
 	// Diesel-only subs: diesel provides direct propulsion when surfaced + charges batteries
@@ -248,14 +252,29 @@ var/global/list/all_submarines = list()
 	if(radar_active)
 		total_drain += radar_range_long ? SUB_RADAR_POWER_LONG : SUB_RADAR_POWER_SHORT
 	
+	if(speed > 0)
+		var/prop_drain = (speed / 30) * 15000 // kW drain for propulsion
+		if(has_nuclear_engine)
+			total_drain += prop_drain
+		else if(depth > 0)
+			// Diesel subs only use electric propulsion when submerged
+			total_drain += prop_drain
+
+	// Production from Nuclear Reactor
+	var/total_production = 0
+	if(has_nuclear_engine)
+		total_production = (r_power_output[1] + r_power_output[2]) * 1000 // MW -> kW
+
+	// Apply power balance
+	var/power_balance = total_production - total_drain
+	battery_current = clamp(battery_current + power_balance, 0, battery_max)
+
 	if(electrolysis_active)
 		if(battery_current >= 50)
 			battery_current -= 50
 			generate_oxygen()
 		else // Not enough power for electrolysis
 			electrolysis_active = FALSE
-
-	battery_current = max(0, battery_current - total_drain)
 
 	// Emergency Shutdown
 	if(battery_current <= 0)
@@ -264,24 +283,37 @@ var/global/list/all_submarines = list()
 	// 4. Crew Status Update (every 10 ticks to reduce overhead)
 	if(tick_counter % 10 == 0)
 		update_crew_status()
+		sensor_sweep()
 
-/datum/submarine/proc/sonar_sweep()
-	if(!sonar_active)
+/datum/submarine/proc/sensor_sweep()
+	if(!sonar_active && !radar_active)
 		detected_targets.Cut()
 		return
 
 	detected_targets.Cut()
-	var/sensor_range = (sonar_mode == SUB_SONAR_ACTIVE) ? 50000 : 20000 // meters
+	
+	var/s_range = (sonar_mode == SUB_SONAR_ACTIVE) ? 50000 : 20000 // meters
+	var/r_range = radar_range_long ? SUB_RADAR_RANGE_LONG : SUB_RADAR_RANGE_SHORT
 
-	// Rotate bearing sweep (15 degrees per tick)
-	bearing_sweep = (bearing_sweep + 15) % 360
+	if(sonar_active)
+		// Rotate bearing sweep (15 degrees per sweep update)
+		bearing_sweep = (bearing_sweep + 15) % 360
 
 	// Detect other player submarines
 	for(var/datum/submarine/other_sub in all_submarines)
 		if(other_sub == src) continue
 		
 		var/dist = sqrt((other_sub.x_pos - x_pos)**2 + (other_sub.y_pos - y_pos)**2)
-		if(dist <= sensor_range)
+		var/can_detect = FALSE
+		var/c_type = SUB_CONTACT_SUBMERGED
+		
+		if(sonar_active && dist <= s_range)
+			can_detect = TRUE
+		if(radar_active && depth == 0 && other_sub.depth == 0 && dist <= r_range)
+			can_detect = TRUE
+			c_type = SUB_CONTACT_SURFACE
+			
+		if(can_detect)
 			// Calculate relative bearing
 			var/dx = other_sub.x_pos - x_pos
 			var/dy = other_sub.y_pos - y_pos
@@ -289,42 +321,56 @@ var/global/list/all_submarines = list()
 			if(bearing_deg < 0)
 				bearing_deg += 360
 
-			var/datum/vessel_contact/C = new(other_sub.vessel_name, SUB_CONTACT_SUBMERGED, SUB_NATION_NEUTRAL)
+			var/datum/vessel_contact/C = new(other_sub.vessel_name, c_type, SUB_NATION_NEUTRAL)
 			C.range = dist
 			C.bearing = (bearing_deg + 360) % 360
 			C.noise_signature = other_sub.speed * 5 // Faster speed = higher noise
 			detected_targets += C
 
-	// Detect NPC vessels via sonar
+	// Detect NPC vessels via sensors
 	if(global.subcom_map)
 		for(var/datum/vessel_contact/npc/NPC in global.subcom_map.active_vessels)
 			if(QDELETED(NPC)) continue
 
 			var/dist = euclidean_distance(NPC.x_pos, NPC.y_pos, x_pos, y_pos)
-			if(dist > sensor_range) continue
+			var/can_detect = FALSE
+			
+			// Radar Check
+			if(radar_active && depth == 0 && dist <= r_range)
+				if(NPC.contact_type == SUB_CONTACT_SURFACE || NPC.contact_type == SUB_CONTACT_AIR)
+					can_detect = TRUE
+					
+			// Sonar Check
+			if(sonar_active && dist <= s_range && !can_detect)
+				if(NPC.contact_type == SUB_CONTACT_SUBMERGED || NPC.contact_type == SUB_CONTACT_SURFACE)
+					if(sonar_mode == SUB_SONAR_PASSIVE)
+						// Passive sonar needs high noise to detect
+						if(NPC.speed > 0)
+							can_detect = TRUE
+					else
+						can_detect = TRUE
 
-			// Passive sonar: only detects submerged contacts if they're noisy enough
-			if(sonar_mode == SUB_SONAR_PASSIVE)
-				if(NPC.contact_type == SUB_CONTACT_AIR || NPC.contact_type == SUB_CONTACT_SURFACE)
-					continue  // Can't passively hear surface/air contacts underwater
+			if(can_detect)
+				var/dx = NPC.x_pos - x_pos
+				var/dy = NPC.y_pos - y_pos
+				var/bearing_deg = arctan(dy, dx)
+				if(dx < 0)
+					bearing_deg += 180
+				else if(dy < 0 && dx >= 0)
+					bearing_deg += 360
 
-			var/dx = NPC.x_pos - x_pos
-			var/dy = NPC.y_pos - y_pos
-			var/bearing_deg = arctan(dy, dx)
-			if(dx < 0)
-				bearing_deg += 180
-			else if(dy < 0 && dx >= 0)
-				bearing_deg += 360
-
-			var/datum/vessel_contact/C = new(NPC.name, NPC.contact_type, NPC.nationality)
-			C.range = dist
-			C.bearing = (bearing_deg + 360) % 360
-			C.noise_signature = NPC.speed * 5
-			detected_targets += C
+				var/datum/vessel_contact/C = new(NPC.name, NPC.contact_type, NPC.nationality)
+				C.range = dist
+				C.bearing = (bearing_deg + 360) % 360
+				C.noise_signature = NPC.speed * 5
+				detected_targets += C
 
 /datum/submarine/proc/handle_meltdown(var/index)
 	r_scrammed[index] = TRUE
 	r_power_output[index] = 0
+	if(reactor_hum_channel)
+		sound(null, channel = reactor_hum_channel)
+		reactor_hum_channel = 0
 	
 	// Find the reactor core object for this index
 	var/obj/structure/machinery/sub_physical/reactor_core/the_core
@@ -377,6 +423,12 @@ var/global/list/all_submarines = list()
 	radar_active = FALSE
 	sonar_active = FALSE
 	electrolysis_active = FALSE
+	// Stop looping sensor sounds
+	sound(null, channel = 770)
+	sound(null, channel = 771)
+	sound(null, channel = 772)
+	sound(null, channel = 773)
+	reactor_hum_channel = 0
 	// Diesel-only subs can still run on diesel if surfaced
 	if(!has_nuclear_engine && depth == 0 && diesel_fuel > 0 && diesel_throttle > 0)
 		target_speed = min(target_speed, SUB_MAX_SPEED_DIESEL)

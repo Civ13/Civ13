@@ -847,7 +847,7 @@
 		if(SM?.created_sub)
 			SM.created_sub.target_speed = text2num(href_list["subcom_speed"])
 			to_chat(usr, "<span class='notice'>Set target speed to [href_list["subcom_speed"]] kts.</span>")
-			show_subcom13_panel()
+			src.show_subcom13_panel()
 		return
 
 	if (href_list["subcom_surface"])
@@ -856,7 +856,7 @@
 		if(SM?.created_sub)
 			SM.created_sub.target_depth = 0
 			to_chat(usr, "<span class='notice'>Surfacing submarine.</span>")
-			show_subcom13_panel()
+			src.show_subcom13_panel()
 		return
 
 	if (href_list["subcom_crash"])
@@ -864,8 +864,10 @@
 		var/obj/map_metadata/subcom13/SM = map
 		if(SM?.created_sub)
 			SM.created_sub.target_depth = 250
+			if(SM.created_sub.internal_turfs.len)
+				playsound(pick(SM.created_sub.internal_turfs), 'sound/machines/submarine/dive_alarm.ogg', 80, 1)
 			to_chat(usr, "<span class='notice'>Crash diving to 250m.</span>")
-			show_subcom13_panel()
+			src.show_subcom13_panel()
 		return
 
 	if (href_list["subcom_load_all"])
@@ -875,7 +877,7 @@
 			for(var/i = 1, i <= 4, i++)
 				SM.created_sub.tubes_loaded[i] = TRUE
 			to_chat(usr, "<span class='notice'>All torpedo tubes loaded.</span>")
-			show_subcom13_panel()
+			src.show_subcom13_panel()
 		return
 
 	if (href_list["subcom_arm_toggle"])
@@ -884,7 +886,7 @@
 		if(SM?.created_sub)
 			SM.created_sub.master_arm = !SM.created_sub.master_arm
 			to_chat(usr, "<span class='notice'>Master arm: [SM.created_sub.master_arm ? "ARMED" : "SAFE"].</span>")
-			show_subcom13_panel()
+			src.show_subcom13_panel()
 		return
 
 	if (href_list["subcom_spawn"])
@@ -920,7 +922,7 @@
 			if(global.subcom_map)
 				global.subcom_map.active_vessels += NPC
 			to_chat(usr, "<span class='notice'>Spawned [NPC.name] at ([spawn_x], [spawn_y]).</span>")
-		show_subcom13_panel()
+		src.show_subcom13_panel()
 		return
 
 	if (href_list["subcom_spawn_random"])
@@ -948,7 +950,7 @@
 				qdel(NPC)
 			global.subcom_map.active_vessels.Cut()
 		to_chat(usr, "<span class='notice'>All NPC vessels removed.</span>")
-		show_subcom13_panel()
+		src.show_subcom13_panel()
 		return
 
 	if (href_list["subcom_toggle_sp"])
@@ -957,12 +959,12 @@
 		if(SM)
 			SM.single_player = !SM.single_player
 			world << "<font size=3 color='yellow'><b>Single Player Mode [SM.single_player ? "ENABLED" : "DISABLED"].</b></font>"
-		show_subcom13_panel()
+		src.show_subcom13_panel()
 		return
 
 	if (href_list["subcom_refresh"])
 		if (!check_rights(R_ADMIN)) return
-		show_subcom13_panel()
+		src.show_subcom13_panel()
 		return
 
 mob/living/proc/can_centcom_reply()

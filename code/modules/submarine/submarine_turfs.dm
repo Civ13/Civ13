@@ -36,8 +36,7 @@
 	breached = TRUE
 	breach_inflow_rate = SUB_BREACH_INFLOW_BASE
 	visible_message("<span class='danger'><b>The hull buckles! Seawater erupts through the breach!</b></span>")
-	playsound(src, 'sound/machines/submarine/flood.ogg', 80, 1)
-	playsound(src, 'sound/machines/submarine/crash.ogg', 90, 1)
+	playsound(src, 'sound/machines/submarine/hull_breach.ogg', 90, 1)
 
 	// Find adjacent deck turfs and start continuous flooding
 	for(var/turf/floor/sub_deck/D in range(1, src))
@@ -144,8 +143,11 @@
 // Add water to this tile (cm). Called by breaches, flooding, etc.
 /turf/floor/sub_deck/proc/add_water(var/cm)
 	if(water_sealed) return
+	var/was_dry = water_depth < 5
 	water_depth = min(water_depth + cm, max_water)
 	refresh_water_overlay()
+	if(was_dry && water_depth >= 5)
+		playsound(src, 'sound/machines/submarine/flooding_start.ogg', 50, 1)
 
 // Remove water from this tile (cm). Called by bilge pumps, draining.
 /turf/floor/sub_deck/proc/remove_water(var/cm)

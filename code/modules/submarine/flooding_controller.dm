@@ -66,6 +66,16 @@ var/global/datum/flooding_controller/subcom_flooding
 		T.flood_tick()
 		T.atmos_tick()
 
+	// Ambient water drip in flooded compartments (every 30 ticks)
+	if(tick_counter % 30 == 0)
+		var/list/wet_turfs = list()
+		for(var/turf/floor/sub_deck/T in tracked_turfs)
+			if(!QDELETED(T) && T.water_depth > 20)
+				wet_turfs += T
+		if(wet_turfs.len)
+			var/turf/floor/sub_deck/drip_turf = pick(wet_turfs)
+			playsound(drip_turf, 'sound/machines/submarine/water_drip.ogg', 30, 1)
+
 	// Bulkhead integrity check: if a bulkhead adjacent to a breached area is damaged,
 	// propagate water through it
 	for(var/turf/wall/sub_bulkhead/B in world)

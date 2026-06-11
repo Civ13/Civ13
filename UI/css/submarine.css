@@ -240,7 +240,69 @@ body {
         transparent 180deg,
         rgba(255,255,255,0.15) 180deg, rgba(255,255,255,0.15) 182deg,
         transparent 182deg,
-        transparent 270deg
+        transparent 198deg,
+        rgba(255,255,255,0.15) 198deg, rgba(255,255,255,0.15) 200deg,
+        transparent 200deg,
+        transparent 216deg,
+        rgba(255,255,255,0.15) 216deg, rgba(255,255,255,0.15) 218deg,
+        transparent 218deg,
+        transparent 234deg,
+        rgba(255,255,255,0.15) 234deg, rgba(255,255,255,0.15) 236deg,
+        transparent 236deg,
+        transparent 252deg,
+        rgba(255,255,255,0.15) 252deg, rgba(255,255,255,0.15) 254deg,
+        transparent 254deg,
+        transparent 270deg,
+        rgba(255,255,255,0.15) 270deg, rgba(255,255,255,0.15) 272deg,
+        transparent 272deg
+    );
+}
+
+.gauge-ticks-360 {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        rgba(255,255,255,0.15) 0deg, rgba(255,255,255,0.15) 2deg,
+        transparent 2deg,
+        transparent 30deg,
+        rgba(255,255,255,0.15) 30deg, rgba(255,255,255,0.15) 32deg,
+        transparent 32deg,
+        transparent 60deg,
+        rgba(255,255,255,0.15) 60deg, rgba(255,255,255,0.15) 62deg,
+        transparent 62deg,
+        transparent 90deg,
+        rgba(255,255,255,0.15) 90deg, rgba(255,255,255,0.15) 92deg,
+        transparent 92deg,
+        transparent 120deg,
+        rgba(255,255,255,0.15) 120deg, rgba(255,255,255,0.15) 122deg,
+        transparent 122deg,
+        transparent 150deg,
+        rgba(255,255,255,0.15) 150deg, rgba(255,255,255,0.15) 152deg,
+        transparent 152deg,
+        transparent 180deg,
+        rgba(255,255,255,0.15) 180deg, rgba(255,255,255,0.15) 182deg,
+        transparent 182deg,
+        transparent 210deg,
+        rgba(255,255,255,0.15) 210deg, rgba(255,255,255,0.15) 212deg,
+        transparent 212deg,
+        transparent 240deg,
+        rgba(255,255,255,0.15) 240deg, rgba(255,255,255,0.15) 242deg,
+        transparent 242deg,
+        transparent 270deg,
+        rgba(255,255,255,0.15) 270deg, rgba(255,255,255,0.15) 272deg,
+        transparent 272deg,
+        transparent 300deg,
+        rgba(255,255,255,0.15) 300deg, rgba(255,255,255,0.15) 302deg,
+        transparent 302deg,
+        transparent 330deg,
+        rgba(255,255,255,0.15) 330deg, rgba(255,255,255,0.15) 332deg,
+        transparent 332deg
     );
 }
 
