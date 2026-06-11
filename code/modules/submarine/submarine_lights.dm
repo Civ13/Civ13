@@ -55,7 +55,7 @@
 			update_icon()
 			on = FALSE
 		else
-		// Power is out - lights on
+			// Power is out - lights on
 			if (blinking)
 				blink_state = !blink_state
 				if(blink_state)

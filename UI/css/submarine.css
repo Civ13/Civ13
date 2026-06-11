@@ -403,6 +403,7 @@ body {
     border-radius: 2px;
     overflow: hidden;
     vertical-align: bottom;
+    position: relative;
 }
 
 .bar-v-fill {
@@ -463,10 +464,10 @@ body {
 }
 
 .btn-blue {
-    background: linear-gradient(to bottom, #2a2a5a, #1a1a3a);
-    color: #00f;
-    border-color: #00a;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+    background: linear-gradient(to bottom, #3a5a8a, #2a4a7a);
+    color: #8cf;
+    border-color: #48a;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
 .btn-yellow {

@@ -222,7 +222,7 @@
 	dat += "<div class='panel'>"
 	dat += "<div class='label'>GAME SETTINGS</div>"
 	dat += "<a href='?src=\ref[src];subcom_toggle_sp' class='btn btn-yellow'>TOGGLE SINGLE PLAYER MODE</a> "
-	dat += "Status: [SM.single_player ? "<span class='status-ok'>ENABLED</span>" : "DISABLED"]"
+	dat += "Status: [SM?.single_player ? "<span class='status-ok'>ENABLED</span>" : "DISABLED"]"
 	dat += "</div>"
 
 	dat += "<br><a href='?src=\ref[src];subcom_refresh' class='btn'>REFRESH</a>"

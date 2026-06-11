@@ -54,6 +54,9 @@
 	hull_integrity = max_hull_integrity * 0.5  // Repaired to half
 	icon_state = "metal0"
 	overlays.Cut()  // Remove damage and breach glow overlays
+	// Undo inflow rate on adjacent deck turfs
+	for(var/turf/floor/sub_deck/D in range(1, src))
+		D.water_inflow_rate = max(0, D.water_inflow_rate - SUB_BREACH_INFLOW_BASE)
 	visible_message("<span class='notice'>The hull breach is sealed.</span>")
 
 // ---- Bulkheads ----
@@ -228,7 +231,7 @@
 
 	// Smoke effect
 	if(prob(4))
-		new/obj/effect/effect/smoke(loc)
+		new/obj/effect/effect/smoke(src)
 
 	// Spread: 5-8% chance per tick to ignite an adjacent sub_deck turf
 	if(prob(rand(5, 8)))
@@ -241,7 +244,7 @@
 			if(neighbor.water_depth > 50) continue
 			// Don't spread through watertight bulkheads
 			var/turf/wall/sub_bulkhead/B = get_step(src, dir)
-			if(B && istype(B) && B.watertight) continue
+			if(istype(B) && B.watertight) continue
 			// Don't spread through closed blast doors
 			var/obj/structure/simple_door/blast/door = locate(/obj/structure/simple_door/blast) in get_step(src, dir)
 			if(door && !door.state) continue

@@ -11,7 +11,6 @@ var/global/datum/world_map_controller/subcom_map
 	var/list/active_torpedoes = list()    // All /datum/projectile/torpedo instances
 	var/datum/submarine/player_sub        // Direct reference to the player's sub datum
 	var/datum/mission_controller/missions // Mission system reference
-	var/fast_travel_active = FALSE
 	var/tick_counter = 0
 	var/start_x = 500                     // Sub spawn X coordinate
 	var/start_y = 500                     // Sub spawn Y coordinate
@@ -57,51 +56,12 @@ var/global/datum/world_map_controller/subcom_map
 			continue
 		T.process_tick()
 
-	// 4. Fast Travel Logic
-	if(fast_travel_active)
-		process_fast_travel()
-
-	// 5. Process mission controller
+	// 4. Process mission controller
 	if(missions)
 		missions.process_tick()
 
-	// 6. Update noise level on the player sub
+	// 5. Update noise level on the player sub
 	update_player_noise()
-
-// ---- Fast Travel ----
-
-/datum/world_map_controller/proc/process_fast_travel()
-	if(!player_sub)
-		fast_travel_active = FALSE
-		return
-
-	// Disable if sub speed drops below minimum
-	if(player_sub.speed < SUB_FAST_TRAVEL_MIN_SPEED)
-		disable_fast_travel("Speed dropped below [SUB_FAST_TRAVEL_MIN_SPEED] knots.")
-		return
-
-	// Disable if any hostile NPC is within hostile detection range
-	for(var/datum/vessel_contact/npc/NPC in active_vessels)
-		if(NPC.nationality == SUB_NATION_HOSTILE)
-			var/dist = euclidean_distance(NPC.x_pos, NPC.y_pos, player_sub.x_pos, player_sub.y_pos) * SUB_MAP_SCALE
-			if(dist < SUB_FAST_TRAVEL_HOSTILE_DISABLE_RANGE * SUB_MAP_SCALE)
-				disable_fast_travel("Hostile contact detected within [round(dist)]m!")
-				return
-
-/datum/world_map_controller/proc/enable_fast_travel()
-	if(!player_sub)
-		return
-	fast_travel_active = TRUE
-	player_sub.target_speed = player_sub.target_speed * SUB_FAST_TRAVEL_MULT
-	player_sub.speed = player_sub.target_speed
-
-/datum/world_map_controller/proc/disable_fast_travel(var/reason)
-	fast_travel_active = FALSE
-	if(player_sub)
-		player_sub.target_speed = min(player_sub.target_speed, SUB_MAX_SPEED_NUCLEAR)
-	// Notify the player via radio console
-	if(missions && missions.radio_console)
-		missions.radio_console.add_log("FAST TRAVEL DISENGAGED: [reason]")
 
 // ---- Player Noise Calculation ----
 

@@ -31,10 +31,10 @@
 	if(is_homing)
 		var/target_x = 0
 		var/target_y = 0
-		if(target)
+		if(target && !QDELETED(target))
 			target_x = target.x_pos
 			target_y = target.y_pos
-		else if(sub_target)
+		else if(sub_target && !QDELETED(sub_target))
 			target_x = sub_target.x_pos
 			target_y = sub_target.y_pos
 		else
@@ -63,14 +63,14 @@
 
 /datum/projectile/torpedo/proc/check_detonation()
 	// Against NPC vessel contact
-	if(target)
+	if(target && !QDELETED(target))
 		var/dist = euclidean_distance(x_pos, y_pos, target.x_pos, target.y_pos)
 		if(dist < SUB_TORPEDO_DETONATE)
 			detonate_npc(target)
 			return
 
 	// Against player submarine
-	if(sub_target)
+	if(sub_target && !QDELETED(sub_target))
 		var/dist = euclidean_distance(x_pos, y_pos, sub_target.x_pos, sub_target.y_pos)
 		if(dist < SUB_TORPEDO_DETONATE)
 			detonate_player(sub_target)

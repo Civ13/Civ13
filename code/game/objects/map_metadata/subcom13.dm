@@ -149,7 +149,7 @@
 	if(istype(user, /mob/living))
 		return TRUE
 	// Dead/ghost mobs allowed only in single-player mode on this map
-	if(user.stat == DEAD || isobserver(user))
+	if(isobserver(user))
 		if(single_player)
 			return TRUE
 	return FALSE

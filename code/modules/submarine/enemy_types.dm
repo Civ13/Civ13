@@ -397,7 +397,6 @@
 	NPC.sig_mid = E.sig_mid
 	NPC.sig_high = E.sig_high
 	NPC.classification = E.classification
-	NPC.enemy_type_ref = E
 
 	// Transfer weapons
 	for(var/datum/subcom_weapon/W in E.weapons)

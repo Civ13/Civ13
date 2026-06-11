@@ -85,6 +85,8 @@ var/global/list/npc_type_cache = list()
 		return npc_type_cache
 
 	var/list/lines = file2list("data/subcom/types.txt")
+	if(!lines || !lines.len)
+		return npc_type_cache
 	var/current_vessel = null
 	var/list/current_data = list()
 
@@ -183,7 +185,7 @@ var/global/list/npc_type_cache = list()
 	navigate_to(patrol_target_x, patrol_target_y)
 
 	// Check if we reached the patrol waypoint
-	var/dist = euclidean_distance(x_pos, y_pos, patrol_target_x, patrol_target_y)
+	var/dist = toroidal_distance(x_pos, y_pos, patrol_target_x, patrol_target_y)
 	if(dist < 5)
 		generate_patrol_target()
 
@@ -193,7 +195,7 @@ var/global/list/npc_type_cache = list()
 	speed = attack_speed
 	navigate_to(last_known_x, last_known_y)
 
-	var/dist = euclidean_distance(x_pos, y_pos, last_known_x, last_known_y)
+	var/dist = toroidal_distance(x_pos, y_pos, last_known_x, last_known_y)
 	if(dist < 30)
 		// Reached last known position, switch to ATTACK
 		ai_state = SUB_AI_ATTACK
@@ -201,7 +203,7 @@ var/global/list/npc_type_cache = list()
 		// Initialize circle in a random direction
 		circle_cw = prob(50)
 		circle_angle = rand(0, 360)
-	else if(dist > sensor_range)
+	else if(dist > (sensor_range / SUB_MAP_SCALE))
 		// Lost the contact, return to patrol after a delay
 		if(tick_counter > 30)
 			ai_state = SUB_AI_PATROL
@@ -214,7 +216,7 @@ var/global/list/npc_type_cache = list()
 		return
 
 	var/datum/submarine/player = global.subcom_map.player_sub
-	var/dist = euclidean_distance(x_pos, y_pos, player.x_pos, player.y_pos)
+	var/dist = toroidal_distance(x_pos, y_pos, player.x_pos, player.y_pos)
 
 	// Circle-strafe around the player instead of sitting still
 	var/desired_dist = circle_radius
@@ -244,11 +246,25 @@ var/global/list/npc_type_cache = list()
 		last_known_x = player.x_pos
 		last_known_y = player.y_pos
 
+// ---- Toroidal Distance Helper ----
+
+/datum/vessel_contact/npc/proc/toroidal_distance(var/x1, var/y1, var/x2, var/y2)
+	var/dx = abs(x1 - x2)
+	var/dy = abs(y1 - y2)
+	dx = min(dx, SUB_MAP_SIZE - dx)
+	dy = min(dy, SUB_MAP_SIZE - dy)
+	return sqrt(dx * dx + dy * dy)
+
 // ---- Navigation ----
 
 /datum/vessel_contact/npc/proc/navigate_to(var/target_x, var/target_y)
 	var/dx = target_x - x_pos
 	var/dy = target_y - y_pos
+	// Toroidal shortest-path: pick the shorter wrap direction
+	if(dx > SUB_MAP_SIZE / 2) dx -= SUB_MAP_SIZE
+	else if(dx < -SUB_MAP_SIZE / 2) dx += SUB_MAP_SIZE
+	if(dy > SUB_MAP_SIZE / 2) dy -= SUB_MAP_SIZE
+	else if(dy < -SUB_MAP_SIZE / 2) dy += SUB_MAP_SIZE
 	if(abs(dx) < 0.5 && abs(dy) < 0.5)
 		return
 
@@ -268,7 +284,7 @@ var/global/list/npc_type_cache = list()
 	if(!player)
 		return
 
-	var/dist = euclidean_distance(x_pos, y_pos, player.x_pos, player.y_pos)
+	var/dist = toroidal_distance(x_pos, y_pos, player.x_pos, player.y_pos) * SUB_MAP_SCALE  // Convert to meters
 
 	// Active sonar ping detected
 	if(player.sonar_active && player.sonar_mode == SUB_SONAR_ACTIVE && dist <= sonar_range)
@@ -300,7 +316,7 @@ var/global/list/npc_type_cache = list()
 		if(weapon_timers[i] > 0)
 			continue
 		var/list/weapon = weapons[i]
-		var/dist = euclidean_distance(x_pos, y_pos, player.x_pos, player.y_pos)
+		var/dist = toroidal_distance(x_pos, y_pos, player.x_pos, player.y_pos) * SUB_MAP_SCALE  // Convert to meters
 		if(dist <= weapon["range"])
 			// Fire weapon
 			switch(weapon["type"])

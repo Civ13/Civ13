@@ -270,11 +270,11 @@
 		var/datum/vessel_contact/npc/interceptor = spawn_enemy_npc(pick(interceptor_types), int_x, int_y)
 		if(global.subcom_map)
 			global.subcom_map.active_vessels += interceptor
-	// Set waypoints for the escort: from start to a point near target
-	escort_target.patrol_min_x = start_x - 20
-	escort_target.patrol_min_y = start_y - 20
-	escort_target.patrol_max_x = start_x + 20
-	escort_target.patrol_max_y = start_y + 20
+	// Set waypoints for the escort: from start toward target
+	escort_target.patrol_min_x = min(start_x, target_x) - 20
+	escort_target.patrol_min_y = min(start_y, target_y) - 20
+	escort_target.patrol_max_x = max(start_x, target_x) + 20
+	escort_target.patrol_max_y = max(start_y, target_y) + 20
 	var/msg = pick(escort_messages)
 	msg = replacetext(msg, "%X", "[escort_x]")
 	msg = replacetext(msg, "%Y", "[escort_y]")
@@ -415,11 +415,11 @@
 // ---- Radio Relay ----
 
 /datum/mission_controller/proc/send_radio_message(var/message)
-	if(!radio_console)
+	if(!radio_console || QDELETED(radio_console))
 		for(var/obj/structure/machinery/sub_control/radio_console/RC in world)
 			radio_console = RC
 			break
-	if(radio_console)
+	if(radio_console && !QDELETED(radio_console))
 		radio_console.add_log(message)
 
 // ---- Mission Status Query ----

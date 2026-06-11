@@ -30,7 +30,7 @@
 #define SUB_SONAR_POWER_ACTIVE 100 // kW, high power draw
 
 #define SUB_TICK_SCALE 0.5           // Scaling factor for virtual movement
-#define SUB_TURN_RATE 1.5            // Degrees per tick the sub can rotate
+#define SUB_TURN_RATE 3.0            // Degrees per tick the sub can rotate
 
 // World Map Grid
 #define SUB_MAP_SIZE 1000            // 1000x1000 virtual grid
@@ -47,11 +47,6 @@
 #define SUB_TORPEDO_LIFE      800    // Max range in virtual units
 #define SUB_TORPEDO_DETONATE  0.15   // Detonation distance threshold
 #define SUB_TORPEDO_DAMAGE    250    // Base hull damage on hit
-
-// Fast Travel
-#define SUB_FAST_TRAVEL_MULT  10     // Speed multiplier during fast travel
-#define SUB_FAST_TRAVEL_HOSTILE_DISABLE_RANGE 50  // Disable fast travel if hostile is within this range
-#define SUB_FAST_TRAVEL_MIN_SPEED 5  // Minimum speed to maintain fast travel
 
 // Mission Types
 #define SUB_MISSION_SINK_CARGO   "SINK_CARGO"

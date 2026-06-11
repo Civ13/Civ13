@@ -686,8 +686,85 @@
 
 	dat += "</div>"
 
-	// === CONTACT TABLE ===
-	dat += "<div class='panel' style='padding:10px;'>"
+	// === CIRCULAR RADAR DISPLAY ===
+	var/max_range = my_sub.radar_range_long ? SUB_RADAR_RANGE_LONG : SUB_RADAR_RANGE_SHORT
+	var/display_size = 200
+	var/radius = display_size / 2
+	var/center = radius
+
+	dat += "<div class='panel crt-overlay' style='padding:10px;'>"
+	dat += "<div style='background:#001a00; border:1px solid #0a0; padding:8px; position:relative;'>"
+
+	// Compass labels
+	dat += "<div style='text-align:center; font-size:9px; color:#0a0; margin-bottom:4px;'>N</div>"
+
+	dat += "<div style='display:flex; align-items:center;'>"
+	dat += "<div style='font-size:9px; color:#0a0; padding-right:4px;'>W</div>"
+
+	// Circular radar container
+	dat += "<div style='position:relative; width:[display_size]px; height:[display_size]px; background:#000; border:1px solid #0a0; border-radius:50%; overflow:hidden;'>"
+
+	// Range rings at 25%, 50%, 75%, 100%
+	for(var/ring_pct = 25; ring_pct <= 100; ring_pct += 25)
+		var/ring_r = radius * ring_pct / 100
+		dat += "<div style='position:absolute; left:[center - ring_r]px; top:[center - ring_r]px; width:[ring_r * 2]px; height:[ring_r * 2]px; border:1px solid #0a200a; border-radius:50%; z-index:1;'></div>"
+
+	// Cross-hair lines (N-S, E-W, NE/NW/SE/SW)
+	dat += "<div style='position:absolute; left:[center]px; top:0; width:1px; height:[display_size]px; background:#0a200a; z-index:1;'></div>"
+	dat += "<div style='position:absolute; left:0; top:[center]px; width:[display_size]px; height:1px; background:#0a200a; z-index:1;'></div>"
+	// Diagonal lines
+	dat += "<div style='position:absolute; left:0; top:0; width:[display_size]px; height:1px; background:#0a200a; transform-origin:0 0; transform:rotate(45deg); z-index:1;'></div>"
+	dat += "<div style='position:absolute; left:0; top:0; width:[display_size]px; height:1px; background:#0a200a; transform-origin:0 0; transform:rotate(-45deg); z-index:1;'></div>"
+
+	// Range ring labels
+	dat += "<div style='position:absolute; left:[center + 2]px; top:[center - radius * 0.25 - 6]px; font-size:7px; color:#080; z-index:3;'>[round(max_range * 0.25 / 1000)]km</div>"
+	dat += "<div style='position:absolute; left:[center + 2]px; top:[center - radius * 0.5 - 6]px; font-size:7px; color:#080; z-index:3;'>[round(max_range * 0.5 / 1000)]km</div>"
+	dat += "<div style='position:absolute; left:[center + 2]px; top:[center - radius * 0.75 - 6]px; font-size:7px; color:#080; z-index:3;'>[round(max_range * 0.75 / 1000)]km</div>"
+
+	// Draw contacts
+	if(my_sub.radar_active && my_sub.detected_targets.len)
+		for(var/datum/vessel_contact/C in my_sub.detected_targets)
+			var/rel_x = C.range * sin(C.bearing)
+			var/rel_y = C.range * cos(C.bearing)
+			var/px = center + (rel_x / max_range) * radius
+			var/py = center - (rel_y / max_range) * radius
+			// Clamp to circle
+			var/dist_from_center = sqrt((px - center) ** 2 + (py - center) ** 2)
+			if(dist_from_center > radius - 4)
+				var/clamp_scale = (radius - 4) / dist_from_center
+				px = center + (px - center) * clamp_scale
+				py = center + (py - center) * clamp_scale
+			// Contact color
+			var/contact_color = "#0af"
+			if(C.contact_type == SUB_CONTACT_AIR)
+				contact_color = "#f80"
+			else if(C.contact_type == SUB_CONTACT_SUBMERGED)
+				contact_color = "#0f0"
+			else if(C.nationality == SUB_NATION_HOSTILE)
+				contact_color = "#f00"
+			var/is_tagged = (C in my_sub.tagged_contacts)
+			var/blip_size = is_tagged ? 8 : 5
+			var/blip_offset = is_tagged ? 4 : 2.5
+			var/label_px = px + 6
+			var/label_py = py - 4
+			// Blip
+			dat += "<div style='position:absolute; left:[px - blip_offset]px; top:[py - blip_offset]px; width:[blip_size]px; height:[blip_size]px; background:[contact_color]; border-radius:50%; box-shadow:0 0 [is_tagged ? "6" : "3"]px [contact_color]; z-index:4;'></div>"
+			// Label for tagged contacts
+			if(is_tagged)
+				dat += "<div style='position:absolute; left:[label_px]px; top:[label_py]px; font-size:7px; color:[contact_color]; white-space:nowrap; z-index:4;'>[C.name]</div>"
+
+	// Player sub (center)
+	dat += "<div style='position:absolute; left:[center - 4]px; top:[center - 4]px; width:8px; height:8px; background:#fff; border:2px solid #0f0; border-radius:50%; box-shadow:0 0 8px #0f0; z-index:5;'></div>"
+
+	dat += "</div>" // end circular radar
+
+	dat += "<div style='text-align:center; font-size:9px; color:#0a0; margin-top:4px;'>S</div>"
+	dat += "<div style='text-align:right; font-size:9px; color:#0a0; margin-top:-10px; margin-right:-12px;'>E</div>"
+
+	dat += "</div>" // end crt-overlay panel
+
+	// === CONTACT TABLE (below radar) ===
+	dat += "<div class='panel' style='padding:10px; margin-top:8px;'>"
 	dat += "<div class='label'>DETECTED CONTACTS</div>"
 	if(my_sub.radar_active && my_sub.detected_targets.len)
 		dat += "<table class='data-table' style='margin-top:6px;'>"
@@ -707,7 +784,7 @@
 			dat += "<td>[round(C.range)]m</td>"
 			dat += "<td>[round(C.bearing)]&deg;</td>"
 			dat += "<td style='color:[type_color];'>[type_text]</td>"
-			dat += "<td><a href='?src=\ref[src];tag_contact=\ref[C]' style='font-size:8px; color:[is_tagged ? "#0ff" : "#666"];'>[is_tagged ? "TAGGED" : "TAG"]</a></td>"
+			dat += "<td><a href='?src=\ref[src];tag_contact=\ref[C];tag_contact_name=[C.name]' style='font-size:8px; color:[is_tagged ? "#0ff" : "#666"];'>[is_tagged ? "TAGGED" : "TAG"]</a></td>"
 			dat += "</tr>"
 		dat += "</table>"
 	else
@@ -744,6 +821,13 @@
 
 	if(href_list["tag_contact"])
 		var/datum/vessel_contact/target = locate(href_list["tag_contact"]) in my_sub.detected_targets
+		if(!target)
+			var/tag_name = href_list["tag_contact_name"]
+			if(tag_name)
+				for(var/datum/vessel_contact/C in my_sub.detected_targets)
+					if(C.name == tag_name)
+						target = C
+						break
 		if(target)
 			if(target in my_sub.tagged_contacts)
 				my_sub.tagged_contacts -= target
@@ -926,14 +1010,14 @@
 			var/row_bg = is_selected ? "#003300" : "transparent"
 			var/type_color = C.contact_type == SUB_CONTACT_SUBMERGED ? "#0f0" : "#0af"
 			dat += "<tr style='background:[row_bg];'>"
-			dat += "<td style='padding:3px; cursor:pointer;' onclick='window.location=\"?src=\ref[src];select_contact=\ref[C]\";'>"
+			dat += "<td style='padding:3px; cursor:pointer;' onclick='window.location=\"?src=\ref[src];select_contact=\ref[C];select_contact_name=[C.name]\";'>"
 			dat += "<span style='font-weight:bold; color:[is_tagged ? "#0ff" : "#0f0"];'>[C.name]</span>"
 			dat += "</td>"
 			dat += "<td style='padding:3px; color:#888;'>[round(C.range)]m</td>"
 			dat += "<td style='padding:3px; color:#888;'>[round(C.bearing)]&deg;</td>"
 			dat += "<td style='padding:3px; color:[type_color];'>[C.contact_type]</td>"
 			dat += "<td style='padding:3px;'>"
-			dat += "<a href='?src=\ref[src];tag_contact=\ref[C]' style='font-size:8px; color:[is_tagged ? "#0ff" : "#666"];'>[is_tagged ? "TAGGED" : "TAG"]</a>"
+			dat += "<a href='?src=\ref[src];tag_contact=\ref[C];tag_contact_name=[C.name]' style='font-size:8px; color:[is_tagged ? "#0ff" : "#666"];'>[is_tagged ? "TAGGED" : "TAG"]</a>"
 			dat += "</td>"
 			dat += "</tr>"
 		dat += "</table>"
@@ -982,12 +1066,30 @@
 			to_chat(usr, "<span class='notice'>Activate sonar first to change mode.</span>")
 
 	if(href_list["select_contact"])
+		// Match by ref first, then by name as fallback for stale refs
 		var/datum/vessel_contact/target = locate(href_list["select_contact"]) in my_sub.detected_targets
 		if(target)
 			selected_contact = target
+		else
+			// Ref is stale from sensor sweep rebuild — find by name from the href
+			var/target_name = href_list["select_contact_name"]
+			if(target_name)
+				for(var/datum/vessel_contact/C in my_sub.detected_targets)
+					if(C.name == target_name)
+						selected_contact = C
+						break
+			else
+				selected_contact = null
 
 	if(href_list["tag_contact"])
 		var/datum/vessel_contact/target = locate(href_list["tag_contact"]) in my_sub.detected_targets
+		if(!target)
+			var/tag_name = href_list["tag_contact_name"]
+			if(tag_name)
+				for(var/datum/vessel_contact/C in my_sub.detected_targets)
+					if(C.name == tag_name)
+						target = C
+						break
 		if(target)
 			if(target in my_sub.tagged_contacts)
 				my_sub.tagged_contacts -= target
@@ -1073,7 +1175,7 @@
 			dat += "<div style='margin-top:4px; font-size:10px; color:#aaa;'>SELECT FROM CONTACTS:</div>"
 			dat += "<div class='flex-row' style='flex-wrap:wrap; gap:4px; margin-top:4px;'>"
 			for(var/datum/vessel_contact/C in my_sub.detected_targets)
-				dat += "<a href='?src=\ref[src];select_target=\ref[C]' class='btn btn-blue' style='font-size:9px;'>[C.name] ([round(C.range)]m)</a>"
+				dat += "<a href='?src=\ref[src];select_target=\ref[C];select_target_name=[C.name]' class='btn btn-blue' style='font-size:9px;'>[C.name] ([round(C.range)]m)</a>"
 			dat += "</div>"
 		else
 			dat += "<div style='margin-top:4px; color:#666; font-size:10px;'>No contacts detected.</div>"
@@ -1091,7 +1193,15 @@
 			my_sub.selected_target = null // Clear target if disarmed
 
 	if(href_list["select_target"])
-		my_sub.selected_target = locate(href_list["select_target"])
+		my_sub.selected_target = locate(href_list["select_target"]) in my_sub.detected_targets
+		if(!my_sub.selected_target)
+			// Fallback: match by name
+			var/target_name = href_list["select_target_name"]
+			if(target_name)
+				for(var/datum/vessel_contact/C in my_sub.detected_targets)
+					if(C.name == target_name)
+						my_sub.selected_target = C
+						break
 
 	if(href_list["clear_target"])
 		my_sub.selected_target = null
@@ -1173,19 +1283,7 @@
 	// === NAVIGATION ===
 	dat += "<div class='panel' style='padding:8px;'>"
 	dat += "<div class='label'>NAVIGATION</div>"
-	dat += "<div style='margin-top:6px;'>"
-	if(global.subcom_map)
-		if(global.subcom_map.fast_travel_active)
-			dat += "<div class='flex-between'>"
-			dat += "<div><span class='light light-red'></span> <span style='color:#f00; font-weight:bold;'>FAST TRAVEL ENGAGED</span></div>"
-			dat += "<a href='?src=\ref[src];fast_travel=0' class='btn btn-red'>DISENGAGE</a>"
-			dat += "</div>"
-		else
-			dat += "<div class='flex-between'>"
-			dat += "<div><span class='light light-off'></span> <span style='color:#888;'>FAST TRAVEL STANDBY</span></div>"
-			dat += "<a href='?src=\ref[src];fast_travel=1' class='btn btn-green'>ENGAGE (10x)</a>"
-			dat += "</div>"
-	dat += "</div></div>"
+	dat += "</div>"
 
 	return dat
 
@@ -1195,14 +1293,6 @@
 
 	if(href_list["clear_log"])
 		message_log.Cut()
-
-	if(href_list["fast_travel"])
-		if(global.subcom_map)
-			if(text2num(href_list["fast_travel"]) == 1)
-				global.subcom_map.enable_fast_travel()
-				add_log("FAST TRAVEL ENGAGED. Speed x10. Auto-disabling on hostile contact.")
-			else
-				global.subcom_map.disable_fast_travel("Manual disengagement by operator.")
 
 	interact(usr)
 

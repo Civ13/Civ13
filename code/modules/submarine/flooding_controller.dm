@@ -159,8 +159,12 @@ var/global/datum/flooding_controller/subcom_flooding
 // Inject oxygen into all turfs in a compartment (from electrolysis, O2 tanks, etc.)
 /datum/flooding_controller/proc/inject_oxygen(var/compartment_id, var/moles)
 	if(!compartment_turfs[compartment_id]) return
-	for(var/turf/floor/sub_deck/T in compartment_turfs[compartment_id])
-		T.oxygen_moles = min(30, T.oxygen_moles + moles)  // Cap at 30 moles
+	var/list/turfs = compartment_turfs[compartment_id]
+	var/turf_count = turfs.len
+	if(turf_count <= 0) return
+	var/per_turf = moles / turf_count
+	for(var/turf/floor/sub_deck/T in turfs)
+		T.oxygen_moles = min(30, T.oxygen_moles + per_turf)  // Cap at 30 moles
 
 // ---- Compartment Breach Status Summary ----
 

@@ -929,9 +929,12 @@
 
 		if(enemy_path)
 			var/datum/vessel_contact/npc/NPC = spawn_enemy_npc(enemy_path, spawn_x, spawn_y)
-			if(global.subcom_map)
-				global.subcom_map.active_vessels += NPC
-			to_chat(usr, "<span class='notice'>Spawned [NPC.name] at ([spawn_x], [spawn_y]).</span>")
+			if(NPC)
+				if(global.subcom_map)
+					global.subcom_map.active_vessels += NPC
+				to_chat(usr, "<span class='notice'>Spawned [NPC.name] at ([spawn_x], [spawn_y]).</span>")
+			else
+				to_chat(usr, "<span class='warning'>Failed to spawn NPC.</span>")
 		src.show_subcom13_panel()
 		return
 
@@ -947,9 +950,12 @@
 			spawn_y = clamp(spawn_y, 50, 950)
 
 		var/datum/vessel_contact/npc/NPC = spawn_random_enemy(spawn_x, spawn_y)
-		if(global.subcom_map)
-			global.subcom_map.active_vessels += NPC
-		to_chat(usr, "<span class='notice'>Spawned random hostile [NPC.name] at ([spawn_x], [spawn_y]).</span>")
+		if(NPC)
+			if(global.subcom_map)
+				global.subcom_map.active_vessels += NPC
+			to_chat(usr, "<span class='notice'>Spawned random hostile [NPC.name] at ([spawn_x], [spawn_y]).</span>")
+		else
+			to_chat(usr, "<span class='warning'>Failed to spawn random NPC.</span>")
 		show_subcom13_panel()
 		return
 

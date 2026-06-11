@@ -314,6 +314,13 @@ var/global/list/all_submarines = list()
 	if(tick_counter % 10 == 0)
 		update_crew_status()
 
+/datum/submarine/proc/toroidal_distance(var/x1, var/y1, var/x2, var/y2)
+	var/dx = abs(x1 - x2)
+	var/dy = abs(y1 - y2)
+	dx = min(dx, SUB_MAP_SIZE - dx)
+	dy = min(dy, SUB_MAP_SIZE - dy)
+	return sqrt(dx*dx + dy*dy)
+
 /datum/submarine/proc/sensor_sweep()
 	if(!sonar_active && !radar_active)
 		detected_targets.Cut()
@@ -332,7 +339,7 @@ var/global/list/all_submarines = list()
 	for(var/datum/submarine/other_sub in all_submarines)
 		if(other_sub == src) continue
 		
-		var/raw_dist = sqrt((other_sub.x_pos - x_pos)**2 + (other_sub.y_pos - y_pos)**2)
+		var/raw_dist = toroidal_distance(other_sub.x_pos, other_sub.y_pos, x_pos, y_pos)
 		var/dist = raw_dist * SUB_MAP_SCALE // Convert to meters
 		var/can_detect = FALSE
 		var/c_type = SUB_CONTACT_SUBMERGED
@@ -369,7 +376,7 @@ var/global/list/all_submarines = list()
 		for(var/datum/vessel_contact/npc/NPC in global.subcom_map.active_vessels)
 			if(QDELETED(NPC)) continue
 
-			var/raw_dist = euclidean_distance(NPC.x_pos, NPC.y_pos, x_pos, y_pos)
+			var/raw_dist = toroidal_distance(NPC.x_pos, NPC.y_pos, x_pos, y_pos)
 			var/dist = raw_dist * SUB_MAP_SCALE // Convert to meters
 			var/can_detect = FALSE
 			
@@ -380,11 +387,11 @@ var/global/list/all_submarines = list()
 			// Sonar Check (if not already detected by radar)
 			if(sonar_active && dist <= s_range && !can_detect)
 				if(sonar_mode == SUB_SONAR_PASSIVE)
-					// Passive: surface + submerged contacts, submerged must be moving
-					if(NPC.contact_type == SUB_CONTACT_SUBMERGED && NPC.speed > 0)
-						can_detect = TRUE
-					else if(NPC.contact_type == SUB_CONTACT_SURFACE)
-						can_detect = TRUE
+					// Passive: surface + submerged contacts (stationary subs still make noise)
+					if(NPC.contact_type == SUB_CONTACT_SUBMERGED || NPC.contact_type == SUB_CONTACT_SURFACE)
+						// Moving targets detected at full range; stationary at reduced range
+						if(NPC.speed > 0 || dist <= s_range * 0.4)
+							can_detect = TRUE
 				else
 					// Active: surface + submerged contacts
 					if(NPC.contact_type == SUB_CONTACT_SUBMERGED || NPC.contact_type == SUB_CONTACT_SURFACE)
@@ -393,10 +400,13 @@ var/global/list/all_submarines = list()
 			if(can_detect)
 				var/dx = NPC.x_pos - x_pos
 				var/dy = NPC.y_pos - y_pos
+				// Wrap deltas to shortest path
+				if(dx > SUB_MAP_SIZE / 2) dx -= SUB_MAP_SIZE
+				else if(dx < -SUB_MAP_SIZE / 2) dx += SUB_MAP_SIZE
+				if(dy > SUB_MAP_SIZE / 2) dy -= SUB_MAP_SIZE
+				else if(dy < -SUB_MAP_SIZE / 2) dy += SUB_MAP_SIZE
 				var/bearing_deg = arctan(dy, dx)
-				if(dx < 0)
-					bearing_deg += 180
-				else if(dy < 0 && dx >= 0)
+				if(bearing_deg < 0)
 					bearing_deg += 360
 
 				var/datum/vessel_contact/C = new(NPC.name, NPC.contact_type, NPC.nationality)
@@ -406,22 +416,24 @@ var/global/list/all_submarines = list()
 				detected_targets += C
 
 	// Sync tagged contacts with fresh detection data (range/bearing update each tick)
-	var/list/stale_tags = list()
-	for(var/datum/vessel_contact/tagged in tagged_contacts)
-		if(QDELETED(tagged))
-			stale_tags += tagged
-			continue
-		var/found = FALSE
-		for(var/datum/vessel_contact/C in detected_targets)
-			if(C.name == tagged.name)
-				tagged.range = C.range
-				tagged.bearing = C.bearing
-				tagged.noise_signature = C.noise_signature
-				found = TRUE
-				break
-		if(!found)
-			stale_tags += tagged
-	tagged_contacts -= stale_tags
+	// Only sync if we have active detections — preserve tags when sensors are off
+	if(detected_targets.len)
+		var/list/stale_tags = list()
+		for(var/datum/vessel_contact/tagged in tagged_contacts)
+			if(QDELETED(tagged))
+				stale_tags += tagged
+				continue
+			var/found = FALSE
+			for(var/datum/vessel_contact/C in detected_targets)
+				if(C.name == tagged.name)
+					tagged.range = C.range
+					tagged.bearing = C.bearing
+					tagged.noise_signature = C.noise_signature
+					found = TRUE
+					break
+			if(!found)
+				stale_tags += tagged
+		tagged_contacts -= stale_tags
 
 /datum/submarine/proc/handle_meltdown(var/index)
 	r_scrammed[index] = TRUE

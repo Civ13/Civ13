@@ -131,7 +131,7 @@
 		if(prob(10))
 			visible_message("<span class='danger'>[src] hisses as water contacts the superheated core!</span>")
 		// Direct damage from thermal shock
-		health -= my_turf.water_depth * 0.02
+		health = max(0, health - my_turf.water_depth * 0.02)
 	
 	// Meltdown and Damage Logic
 	if(health < (max_health * 0.5) || core_temp > 1000)

@@ -1527,7 +1527,7 @@
 	icon_state = "abashiri_guard_head"
 	item_state = "abashiri_guard_head"
 
-obj/item/clothing/head/navycap
+/obj/item/clothing/head/navycap
 	name = "Navy cap"
 	desc = "A cap worn by sailors."
 	icon_state = "fieldcap_china2"
