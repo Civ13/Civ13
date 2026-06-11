@@ -109,7 +109,7 @@
 "Kv" = (/obj/structure/sub_physical/stern_plane,/turf/floor/beach/water/deep/saltwater/underwater,/area/caribbean/sea/underwater)
 "Kz" = (/obj/structure/bed/chair/steel{dir = 1},/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "LO" = (/obj/structure/closet/crate/footlocker,/obj/structure/lamp/lamp_small/alwayson/red{dir = 1},/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
-"MY" = (/obj/structure/machinery/sub_control/sonar_panel{dir = 1},/obj/structure/table/modern/retable,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
+"MY" = (/obj/structure/table/modern/retable,/obj/structure/machinery/sub_control/sonar_panel,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "MZ" = (/obj/structure/closet/crate/footlocker,/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
 "Ne" = (/obj/structure/machinery/sub_physical/vent_duct/rear_corridor,/turf/floor/sub_deck/rear_corridor,/area/caribbean/sea/underwater)
 "Ni" = (/obj/structure/simple_door/blast,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)

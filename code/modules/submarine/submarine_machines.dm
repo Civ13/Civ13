@@ -11,14 +11,34 @@
 	var/datum/submarine/my_sub
 	var/scr_overlay = "comm_monitor"
 	var/list/open_users = list()   // Mobs currently viewing this console
+	var/list/window_open = list()  // Assoc: mob -> TRUE while their window is open
 
 /obj/structure/machinery/sub_control/New()
 	..()
-	// Bind to the first submarine datum for simplicity in this mode
-	// In a multi-sub scenario, this could look for a specific vessel_name
 	if(global.all_submarines.len)
 		my_sub = global.all_submarines[1]
 	update_icon()
+	spawn()
+		auto_refresh_loop()
+
+/obj/structure/machinery/sub_control/proc/auto_refresh_loop()
+	while(!QDELETED(src) && active && !broken)
+		sleep(10)
+		var/list/stale = list()
+		for(var/mob/M in open_users)
+			if(!M || !M.client || QDELETED(M))
+				stale += M
+				continue
+			if(!window_open[M])
+				stale += M
+				continue
+			if(!can_use(M))
+				stale += M
+				window_open -= M
+				M << browse(null, "window=sub_control")
+				continue
+			send_ui(M)
+		open_users -= stale
 
 /obj/structure/machinery/sub_control/update_icon()
 	overlays.Cut()
@@ -62,13 +82,18 @@
 	if(!can_use(user))
 		user << browse(null, "window=sub_control")
 		open_users -= user
+		window_open -= user
 		return
 
-	// Track this user as having the console open
 	if(!(user in open_users))
 		open_users += user
+	window_open[user] = TRUE
 
-	// Send the shared submarine CSS to the client
+	send_ui(user)
+	onclose(user, "sub_control")
+
+/obj/structure/machinery/sub_control/proc/send_ui(mob/user)
+	if(!user || !user.client) return
 	user << browse_rsc('UI/css/submarine.css', "submarine.css")
 
 	var/dat = "<html><head>"
@@ -77,20 +102,28 @@
 	dat += "a { color: #fff; text-decoration: none; border: 1px solid #0f0; padding: 2px 6px; background: #222; border-radius: 2px; }"
 	dat += "a:hover { background: #0f0; color: #000; }"
 	dat += "</style></head><body>"
+	dat += "<div style='display:flex; justify-content:space-between; align-items:center;'>"
 	dat += "<div class='label' style='font-size:13px;'>[vessel_name_header()]</div>"
+	dat += "<a href='?src=\ref[src];close_console=1' class='btn btn-red' style='font-size:9px; min-width:40px;'>CLOSE</a>"
+	dat += "</div>"
 
 	dat += get_ui_content()
 
 	dat += "</body></html>"
 	user << browse(dat, "window=sub_control;size=700x600")
-	onclose(user, "sub_control")
 
 /obj/structure/machinery/sub_control/proc/vessel_name_header()
 	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - SYSTEMS INTERFACE"
 
 /obj/structure/machinery/sub_control/Topic(href, href_list)
+	if(href_list["close_console"])
+		open_users -= usr
+		window_open -= usr
+		usr << browse(null, "window=sub_control")
+		return
 	if(href_list["close"])
 		open_users -= usr
+		window_open -= usr
 		return
 	if(!can_use(usr))
 		return 1
@@ -99,23 +132,7 @@
 /obj/structure/machinery/sub_control/proc/get_ui_content()
 	return "BASE INTERFACE"
 
-/obj/structure/machinery/sub_control/process()
-	if(!active || broken) return
-	// Throttle UI refresh to every 10 ticks (~1 second)
-	var/static/refresh_counter = 0
-	refresh_counter++
-	if(refresh_counter % 10 != 0) return
-	// Refresh UI for all users with this console open
-	var/list/stale = list()
-	for(var/mob/M in open_users)
-		if(!M || !M.client || QDELETED(M))
-			stale += M
-			continue
-		if(get_dist(M, src) > 1 && !isobserver(M))
-			stale += M
-			continue
-		interact(M)
-	open_users -= stale
+// Auto-refresh handled by spawn() loop in New()
 
 // --- MANEUVER PANEL ---
 
@@ -130,16 +147,19 @@
 	// === TOP ROW: Large dials ===
 	dat += "<div class='flex-row' style='justify-content:center; gap:16px; margin-bottom:8px;'>"
 
-	// --- HEADING DIAL ---
-	var/hd_angle = (my_sub.heading / 360) * 270 - 135
+	// --- HEADING DIAL (360° compass) ---
 	dat += "<div class='panel' style='text-align:center; padding:8px;'>"
 	dat += "<div class='label'>HEADING</div>"
 	dat += "<div class='gauge' style='margin:6px auto;'>"
 	dat += "<div class='gauge-ticks'></div>"
-	dat += "<div class='gauge-needle' style='transform:rotate([hd_angle]deg);'></div>"
+	dat += "<div class='gauge-needle' style='transform:rotate([my_sub.heading]deg);'></div>"
 	dat += "<div class='gauge-center'></div>"
 	dat += "<div class='gauge-value'>[round(my_sub.heading)]&deg;</div>"
-	dat += "<div class='gauge-label'>DEG</div>"
+	// Cardinal direction labels
+	dat += "<div style='position:absolute; top:2px; left:50%; transform:translateX(-50%); font-size:8px; color:#0f0; font-weight:bold;'>N</div>"
+	dat += "<div style='position:absolute; bottom:2px; left:50%; transform:translateX(-50%); font-size:8px; color:#0f0; font-weight:bold;'>S</div>"
+	dat += "<div style='position:absolute; top:50%; right:2px; transform:translateY(-50%); font-size:8px; color:#0f0; font-weight:bold;'>E</div>"
+	dat += "<div style='position:absolute; top:50%; left:2px; transform:translateY(-50%); font-size:8px; color:#0f0; font-weight:bold;'>W</div>"
 	dat += "</div>"
 	dat += "<div style='font-size:10px; color:#888;'>TGT: [round(my_sub.target_heading)]&deg;</div>"
 	dat += "<div style='margin-top:4px;'>"
@@ -188,6 +208,7 @@
 	dat += "<div class='gauge-value' style='color:[depth_color];'>[round(my_sub.depth)]</div>"
 	dat += "<div class='gauge-label'>METERS</div>"
 	dat += "</div>"
+	dat += "<div style='font-size:12px; font-weight:bold; color:[depth_color]; margin:4px 0;'>[round(my_sub.depth)]m / [my_sub.crush_depth]m</div>"
 	dat += "<div style='font-size:10px; color:#888;'>CRUSH: [my_sub.crush_depth]m</div>"
 	dat += "<div style='margin-top:4px;'>"
 	dat += "<a href='?src=\ref[src];set_dp=0' class='btn btn-green'>SURFACE</a> "
@@ -252,6 +273,33 @@
 	dat += "<a href='?src=\ref[src];blow_ballast=1' class='btn btn-red' style='font-size:9px;'>BLOW BALLAST</a>"
 	dat += "</div></div>"
 
+	// --- POWER ---
+	var/total_production = (my_sub.r_power_output[1] + my_sub.r_power_output[2]) * 1000 // MW -> kW
+	var/total_usage = SUB_BATTERY_DRAIN_ELECTRIC // base drain
+	if(my_sub.sonar_active)
+		total_usage += my_sub.sonar_mode == SUB_SONAR_ACTIVE ? SUB_SONAR_POWER_ACTIVE : SUB_SONAR_POWER_PASSIVE
+	if(my_sub.radar_active)
+		total_usage += my_sub.radar_range_long ? SUB_RADAR_POWER_LONG : SUB_RADAR_POWER_SHORT
+	var/batt_pct = my_sub.battery_max > 0 ? (my_sub.battery_current / my_sub.battery_max * 100) : 0
+	var/batt_color = batt_pct > 50 ? "#0f0" : (batt_pct > 20 ? "#ff0" : "#f00")
+	var/power_balance = total_production - total_usage
+	var/balance_color = power_balance >= 0 ? "#0f0" : "#f00"
+	dat += "<div class='panel' style='padding:8px; min-width:140px;'>"
+	dat += "<div class='label'>POWER</div>"
+	dat += "<div style='margin-top:6px;'>"
+	dat += "<div style='font-size:9px; color:#888;'>PRODUCTION</div>"
+	dat += "<div style='font-size:12px; font-weight:bold; color:#0f0;'>[round(total_production)] kW</div>"
+	dat += "<div style='font-size:9px; color:#888; margin-top:4px;'>USAGE</div>"
+	dat += "<div style='font-size:12px; font-weight:bold; color:[total_usage > total_production ? "#f00" : "#0f0"];'>[round(total_usage)] kW</div>"
+	dat += "<div style='font-size:9px; color:#888; margin-top:4px;'>BALANCE</div>"
+	dat += "<div style='font-size:12px; font-weight:bold; color:[balance_color];'>[power_balance >= 0 ? "+" : ""][round(power_balance)] kW</div>"
+	dat += "<div style='font-size:9px; color:#888; margin-top:4px;'>BATTERY</div>"
+	dat += "<div style='background:#111; border:1px solid #333; height:10px; border-radius:2px; overflow:hidden;'>"
+	dat += "<div style='height:100%; width:[batt_pct]%; background:[batt_color];'></div>"
+	dat += "</div>"
+	dat += "<div style='font-size:9px; color:[batt_color]; text-align:center;'>[round(my_sub.battery_current)]/[round(my_sub.battery_max)] kWh ([round(batt_pct)]%)</div>"
+	dat += "</div></div>"
+
 	// --- DIESEL THROTTLE (visible when surfaced) ---
 	if(my_sub.depth == 0)
 		dat += "<div class='panel' style='padding:8px; min-width:140px;'>"
@@ -299,9 +347,9 @@
 
 /obj/structure/machinery/sub_control/reactor_panel
 	name = "reactor control station"
-	icon = 'icons/obj/machines/submarine.dmi'
-	icon_state = "transponder"
-	scr_overlay = "transponder_screen"
+	icon = 'icons/obj/computers.dmi'
+	icon_state = "computer-solgov"
+	scr_overlay = "fuel_screen"
 	var/obj/structure/machinery/sub_physical/reactor_core/reactor1
 	var/obj/structure/machinery/sub_physical/reactor_core/reactor2
 
@@ -451,9 +499,9 @@
 
 /obj/structure/machinery/sub_control/misc_systems
 	name = "auxiliary systems console"
-	icon = 'icons/obj/computers.dmi'
-	icon_state = "computer-middle"
-	scr_overlay = "comm_logs"
+	icon = 'icons/obj/machines/submarine.dmi'
+	icon_state = "transponder"
+	scr_overlay = "transponder_screen"
 
 	var/list/compartments = list(
 		"Forward Torpedo Room",
@@ -575,9 +623,9 @@
 
 /obj/structure/machinery/sub_control/radar_panel
 	name = "radar console"
-	icon = 'icons/obj/machines/submarine.dmi'
-	icon_state = "bsm_off"
-	scr_overlay = "bsm_on"
+	icon = 'icons/obj/computers.dmi'
+	icon_state = "computer-retro"
+	scr_overlay = "radar_screen"
 
 /obj/structure/machinery/sub_control/radar_panel/get_ui_content()
 	var/dat = ""
@@ -663,8 +711,8 @@
 /obj/structure/machinery/sub_control/sonar_panel
 	name = "sonar console"
 	icon = 'icons/obj/computers.dmi'
-	icon_state = "wallconsole"
-	scr_overlay = "wallconsole_sonar"
+	icon_state = "computer-retro"
+	scr_overlay = "sonar_screen"
 	var/selected_contact = null
 
 /obj/structure/machinery/sub_control/sonar_panel/get_ui_content()
@@ -697,15 +745,15 @@
 	if(my_sub.sonar_active)
 		// Bearing labels - positioned to match sweep angle mapping (0-360 maps to 0-100%)
 		dat += "<div style='position:relative; height:12px; font-size:8px; color:#0a0;'>"
-		dat += "<span style='position:absolute; left:0%; transform:translateX(-50%);'>180</span>"
-		dat += "<span style='position:absolute; left:12.5%; transform:translateX(-50%);'>225</span>"
-		dat += "<span style='position:absolute; left:25%; transform:translateX(-50%);'>270</span>"
-		dat += "<span style='position:absolute; left:37.5%; transform:translateX(-50%);'>315</span>"
+		dat += "<span style='position:absolute; left:2%; transform:translateX(-50%);'>180</span>"
+		dat += "<span style='position:absolute; left:14%; transform:translateX(-50%);'>225</span>"
+		dat += "<span style='position:absolute; left:27%; transform:translateX(-50%);'>270</span>"
+		dat += "<span style='position:absolute; left:39%; transform:translateX(-50%);'>315</span>"
 		dat += "<span style='position:absolute; left:50%; transform:translateX(-50%);'>0</span>"
-		dat += "<span style='position:absolute; left:62.5%; transform:translateX(-50%);'>45</span>"
-		dat += "<span style='position:absolute; left:75%; transform:translateX(-50%);'>90</span>"
-		dat += "<span style='position:absolute; left:87.5%; transform:translateX(-50%);'>135</span>"
-		dat += "<span style='position:absolute; left:100%; transform:translateX(-50%);'>180</span>"
+		dat += "<span style='position:absolute; left:61%; transform:translateX(-50%);'>45</span>"
+		dat += "<span style='position:absolute; left:73%; transform:translateX(-50%);'>90</span>"
+		dat += "<span style='position:absolute; left:86%; transform:translateX(-50%);'>135</span>"
+		dat += "<span style='position:absolute; left:98%; transform:translateX(-50%);'>180</span>"
 		dat += "</div>"
 		// Sweep line
 		var/sweep_x = (my_sub.bearing_sweep / 360) * 100
@@ -977,9 +1025,9 @@
 /obj/structure/machinery/sub_control/radio_console
 	name = "encrypted radio console"
 	desc = "A hardened military radio transceiver with frequency hopping and burst encryption."
-	icon = 'icons/obj/computers.dmi'
-	icon_state = "computer"
-	scr_overlay = "comm_logs"
+	icon = 'icons/obj/machines/submarine.dmi'
+	icon_state = "transponder"
+	scr_overlay = "transponder-screen"
 
 	var/list/message_log = list()       // List of radio messages
 	var/max_log_entries = 50
@@ -1301,7 +1349,7 @@
 	name = "tactical map display"
 	icon = 'icons/obj/computers.dmi'
 	icon_state = "wallconsole"
-	scr_overlay = "wallconsole_airbridge-docked"
+	scr_overlay = "wallconsole_navigation"
 	var/map_range = 20000   // Meters displayed from center to edge (half-width)
 	var/map_size = 15        // Grid cells radius (15x15 grid = 31x31)
 

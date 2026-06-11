@@ -348,6 +348,7 @@
 	icon_state = "vent"
 	health = 60
 	max_health = 60
+	density = FALSE
 	var/vent_id = "main"           // Network ID - all ducts with same vent_id are connected
 	var/flow_rate = 0.3            // Lerp factor for air equalization (0 = no flow, 1 = instant)
 	var/active = TRUE
@@ -611,6 +612,7 @@
 			user.drop_item()
 			qdel(I)
 			my_sub.tubes_loaded[tube_id] = TRUE
+			icon_state = "torpedo_tube1_closed"
 			to_chat(user, "<span class='notice'>Tube [tube_id] is now ready for launch.</span>")
 		return
 
@@ -620,6 +622,7 @@
 			user.visible_message("<span class='notice'>[user] begins manually extracting the torpedo from tube [tube_id].</span>")
 			if(do_after(user, 80, src))
 				my_sub.tubes_loaded[tube_id] = FALSE
+				icon_state = "torpedo_tube1"
 				new /obj/item/weapon/torpedo(src.loc)
 				to_chat(user, "<span class='notice'>You successfully unload the tube.</span>")
 		return

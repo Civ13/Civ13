@@ -11,6 +11,8 @@
 	lobby_icon = 'icons/lobby/subcom13.png'
 	caribbean_blocking_area_types = list()
 	respawn_delay = 0
+	age = "1973"
+	ordinal_age = 7
 	faction_organization = list(AMERICAN)
 	roundend_condition_sides = list()
 	availablefactions = list("US Navy")
