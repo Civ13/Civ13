@@ -60,6 +60,7 @@
 				created_sub.internal_turfs += T
 
 /obj/map_metadata/subcom13/proc/set_compartment_id(var/turf/floor/sub_deck/T)
+	if(T.compartment_id) return // Already set by subtype — skip runtime override
 	// Compartment layout for 58-wide submarine interior map.
 	// Bow = low x, stern = high x.
 	// Hull cap: x 1-2, Fwd Torpedo: 3-8, bulkhead: 9,

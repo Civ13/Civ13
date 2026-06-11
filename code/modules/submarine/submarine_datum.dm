@@ -326,14 +326,27 @@ var/global/list/all_submarines = list()
 	r_scrammed[index] = TRUE
 	r_power_output[index] = 0
 	
+	// Find the reactor core object for this index
+	var/obj/structure/machinery/sub_physical/reactor_core/the_core
+	for(var/obj/structure/machinery/sub_physical/reactor_core/R in world)
+		if(R.id == index)
+			the_core = R
+			break
+
+	// Explosion and radiation at each reactor turf
 	for(var/turf/T in reactor_turfs)
-		// This triggers standard SS13/Civ13 radiation and heat damage logic
 		T.visible_message("<span class='danger'>The reactor core has collapsed! Intense radiation fills the room!</span>")
 		playsound(T, 'sound/machines/submarine/nuke_exp.ogg', 100, 1)
 		playsound(T, 'sound/machines/submarine/scram_alarm.ogg', 80, 1)
-		// Hypothetical atmos/damage triggers:
-		// T.assume_gas("fire", 100) 
-		// T.rad_act(500)
+		ignite_turf(T, 30, 5) // Fire burns for 30 ticks, 5 damage per tick
+
+	// Explosion from the core itself
+	if(the_core)
+		explosion(get_turf(the_core), 1, 2, 4, 6)
+		// Lethal radiation burst
+		radiation_pulse(get_turf(the_core), 5, 300, 50)
+
+	shake_crew(10, 6)
 
 /datum/submarine/proc/trigger_structural_damage()
 	if(!internal_turfs.len) return
@@ -379,8 +392,16 @@ var/global/list/all_submarines = list()
 /datum/submarine/proc/apply_hit(var/base_damage)
 	torpedo_hit(base_damage)
 
+/datum/submarine/proc/shake_crew(var/duration = 4, var/strength = 3)
+	for(var/turf/T in internal_turfs)
+		for(var/mob/living/L in T)
+			if(L.client && L.stat != DEAD)
+				shake_camera(L, duration, strength)
+
 /datum/submarine/proc/torpedo_hit(var/base_damage)
 	if(!internal_turfs.len) return
+
+	shake_crew(6, 4)
 
 	// Determine how many hull turfs get damaged
 	var/turfs_to_hit = clamp(round(base_damage / 100), 1, 5)
@@ -458,6 +479,7 @@ var/global/list/all_submarines = list()
 					if(H)
 						H.apply_breach_damage(damage)
 						center = H
+				shake_crew(8, 5)
 				for(var/mob/living/L in range(8, center))
 					to_chat(L, "<span class='danger'><b>Depth charges detonate nearby! The hull groans under the pressure!</b></span>")
 		if("missile")

@@ -90,7 +90,7 @@
 	window_open[user] = TRUE
 
 	send_ui(user)
-	onclose(user, "sub_control")
+	onclose(user, "sub_control", src)
 
 /obj/structure/machinery/sub_control/proc/send_ui(mob/user)
 	if(!user || !user.client) return

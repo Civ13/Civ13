@@ -1149,6 +1149,7 @@
 #include "code\modules\submarine\submarine_datum.dm"
 #include "code\modules\submarine\submarine_machinery_physical.dm"
 #include "code\modules\submarine\submarine_machines.dm"
+#include "code\modules\submarine\submarine_lights.dm"
 #include "code\modules\submarine\submarine_turfs.dm"
 #include "code\modules\submarine\torpedo_datum.dm"
 #include "code\modules\submarine\vessel_contact.dm"

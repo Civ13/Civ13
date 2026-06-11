@@ -124,12 +124,10 @@
 		radiation_pulse()
 
 /obj/structure/machinery/sub_physical/reactor_core/proc/radiation_pulse()
-	// Irradiate everyone in the room
 	for(var/mob/living/L in range(3, src))
+		L.rad_act(8) // ~8 rads per tick near a damaged core
 		to_chat(L, "<span class='danger'>The air feels heavy and metallic...</span>")
-		// Standard Rad Act - assuming typical SS13 radiation logic
-		// L.rad_act(10) 
-	
+
 	if(prob(5))
 		visible_message("<span class='warning'>[src] emits a burst of ionizing radiation!</span>")
 
