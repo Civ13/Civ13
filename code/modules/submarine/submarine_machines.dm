@@ -711,7 +711,7 @@
 			if(!my_sub.radar_active)
 				my_sub.detected_targets.Cut()
 				if(radar_channel)
-					sound(null, channel = radar_channel)
+					src << sound(null, channel = radar_channel)
 					radar_channel = 0
 			else
 				var/sound/S = sound('sound/machines/submarine/dgen.ogg', repeat = TRUE, wait = 0, volume = 30, channel = 771)
@@ -915,7 +915,7 @@
 			my_sub.detected_targets.Cut()
 			selected_contact = null
 			if(sonar_channel)
-				sound(null, channel = sonar_channel)
+				src << sound(null, channel = sonar_channel)
 				sonar_channel = 0
 		else
 			playsound(src, 'sound/machines/submarine/sonar_ping.ogg', 50, 1)
@@ -930,7 +930,7 @@
 				my_sub.noise_level = 100
 				playsound(src, 'sound/machines/submarine/sonar_ping2.ogg', 60, 1)
 				if(sonar_channel)
-					sound(null, channel = sonar_channel)
+					src << sound(null, channel = sonar_channel)
 					sonar_channel = 0
 			else
 				my_sub.noise_level = my_sub.speed * 5

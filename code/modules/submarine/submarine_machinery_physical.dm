@@ -455,7 +455,7 @@
 	else
 		to_chat(user, "<span class='notice'>You deactivate [src].</span>")
 		if(scrub_channel)
-			sound(null, channel = scrub_channel)
+			src << sound(null, channel = scrub_channel)
 			scrub_channel = 0
 
 /obj/structure/machinery/sub_physical/scrubber/process()
@@ -467,7 +467,7 @@
 		active = FALSE
 		visible_message("<span class='warning'>[src] shuts down - insufficient power.</span>")
 		if(scrub_channel)
-			sound(null, channel = scrub_channel)
+			src << sound(null, channel = scrub_channel)
 			scrub_channel = 0
 		return
 

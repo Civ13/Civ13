@@ -187,7 +187,9 @@ var/global/list/all_submarines = list()
 			// Nuclear sub with reactors offline: fall back to battery
 			current_max_speed = SUB_MAX_SPEED_ELECTRIC
 			if(reactor_hum_channel)
-				sound(null, channel = reactor_hum_channel)
+				for(var/mob/M in world)
+					if(M.client)
+						M << sound(null, channel = reactor_hum_channel)
 				reactor_hum_channel = 0
 	else
 		// Diesel-only submarine
@@ -369,7 +371,9 @@ var/global/list/all_submarines = list()
 	r_scrammed[index] = TRUE
 	r_power_output[index] = 0
 	if(reactor_hum_channel)
-		sound(null, channel = reactor_hum_channel)
+		for(var/mob/M in world)
+			if(M.client)
+				M << sound(null, channel = reactor_hum_channel)
 		reactor_hum_channel = 0
 	
 	// Find the reactor core object for this index
@@ -424,10 +428,12 @@ var/global/list/all_submarines = list()
 	sonar_active = FALSE
 	electrolysis_active = FALSE
 	// Stop looping sensor sounds
-	sound(null, channel = 770)
-	sound(null, channel = 771)
-	sound(null, channel = 772)
-	sound(null, channel = 773)
+	for(var/mob/M in world)
+		if(M.client)
+			M << sound(null, channel = 770)
+			M << sound(null, channel = 771)
+			M << sound(null, channel = 772)
+			M << sound(null, channel = 773)
 	reactor_hum_channel = 0
 	// Diesel-only subs can still run on diesel if surfaced
 	if(!has_nuclear_engine && depth == 0 && diesel_fuel > 0 && diesel_throttle > 0)
