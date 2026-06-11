@@ -49,16 +49,16 @@
 	if(broken || !active)
 		to_chat(user, "<span class='warning'>The console is powered down or broken.</span>")
 		return FALSE
-	if(!user.IsAdvancedToolUser())
-		return FALSE
-	if(user.incapacitated() || user.lying)
-		return FALSE
-	// Single-player mode: allow dead/ghost users (skip distance check)
+	// Ghost/dead check: allowed only in single-player mode (skip all below)
 	if(user.stat == DEAD || isobserver(user))
 		var/obj/map_metadata/subcom13/SM = map
 		if(istype(SM) && SM.single_player)
 			return TRUE
 		to_chat(user, "<span class='warning'>Single-player mode is not enabled.</span>")
+		return FALSE
+	if(!user.IsAdvancedToolUser())
+		return FALSE
+	if(user.incapacitated() || user.lying)
 		return FALSE
 	if(get_dist(user, src) > 1)
 		return FALSE
@@ -682,7 +682,7 @@
 
 	// Submerged warning
 	if(my_sub.depth > 0)
-		dat += "<div style='margin-top:6px; padding:4px; background:#440; border:1px solid #ff0; text-align:center; color:#ff0; font-weight:bold;'>RADAR: SUBMERGED — LIMITED VISIBILITY</div>"
+		dat += "<div style='margin-top:6px; padding:4px; background:#440; border:1px solid #ff0; text-align:center; color:#ff0; font-weight:bold;'>RADAR: SUBMERGED - LIMITED VISIBILITY</div>"
 
 	dat += "</div>"
 

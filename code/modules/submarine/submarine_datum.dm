@@ -150,7 +150,7 @@ var/global/list/all_submarines = list()
 		if(reactor_water >= 100 && !r_scrammed[i])
 			r_scrammed[i] = TRUE
 			r_control_rods[i] = 100
-			world << "<span class='warning'><b>[vessel_name]: REACTOR [i] SCRAMMED — reactor room flooded!</b></span>"
+			world << "<span class='warning'><b>[vessel_name]: REACTOR [i] SCRAMMED - reactor room flooded!</b></span>"
 
 		// Heat Generation: heat increases as rods are pulled out (0 rods = max heat)
 		var/heat_added = 0
@@ -231,7 +231,7 @@ var/global/list/all_submarines = list()
 		engine_water = global.subcom_flooding.get_compartment_water_level(SUB_COMP_ENGINE_ROOM)
 	if(engine_water >= 50 && diesel_throttle > 0)
 		diesel_throttle = 0
-		world << "<span class='warning'><b>[vessel_name]: Diesel engines shut down — engine room flooded!</b></span>"
+		world << "<span class='warning'><b>[vessel_name]: Diesel engines shut down - engine room flooded!</b></span>"
 	if(depth == 0 && diesel_throttle > 0)
 		var/fuel_usage = diesel_throttle * 2
 		if(diesel_fuel >= fuel_usage)
@@ -307,10 +307,12 @@ var/global/list/all_submarines = list()
 	if(battery_current <= 0)
 		battery_shutdown()
 
+	// Sensor sweep every tick for real-time contact tracking
+	sensor_sweep()
+
 	// 4. Crew Status Update (every 10 ticks to reduce overhead)
 	if(tick_counter % 10 == 0)
 		update_crew_status()
-		sensor_sweep()
 
 /datum/submarine/proc/sensor_sweep()
 	if(!sonar_active && !radar_active)
@@ -402,6 +404,24 @@ var/global/list/all_submarines = list()
 				C.bearing = (bearing_deg + 360) % 360
 				C.noise_signature = NPC.speed * 5
 				detected_targets += C
+
+	// Sync tagged contacts with fresh detection data (range/bearing update each tick)
+	var/list/stale_tags = list()
+	for(var/datum/vessel_contact/tagged in tagged_contacts)
+		if(QDELETED(tagged))
+			stale_tags += tagged
+			continue
+		var/found = FALSE
+		for(var/datum/vessel_contact/C in detected_targets)
+			if(C.name == tagged.name)
+				tagged.range = C.range
+				tagged.bearing = C.bearing
+				tagged.noise_signature = C.noise_signature
+				found = TRUE
+				break
+		if(!found)
+			stale_tags += tagged
+	tagged_contacts -= stale_tags
 
 /datum/submarine/proc/handle_meltdown(var/index)
 	r_scrammed[index] = TRUE

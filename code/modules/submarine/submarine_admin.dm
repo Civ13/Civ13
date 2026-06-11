@@ -30,8 +30,8 @@
 		.btn-red:hover { background: #f00; color: #000; }
 		.btn-yellow { border-color: #ff0; color: #ff0; }
 		.btn-yellow:hover { background: #ff0; color: #000; }
-		.btn-blue { border-color: #0af; color: #0af; }
-		.btn-blue:hover { background: #0af; color: #000; }
+		.btn-blue { border-color: #00aaff; color: #00aaff; }
+		.btn-blue:hover { background: #00aaff; color: #000; }
 		table { border-collapse: collapse; width: 100%; margin: 4px 0; }
 		th, td { border: 1px solid #0f0; padding: 4px 8px; text-align: left; font-size: 11px; }
 		th { background: #222; }

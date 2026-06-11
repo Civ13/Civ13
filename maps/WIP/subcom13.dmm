@@ -97,6 +97,7 @@
 "Ft" = (/obj/item/weapon/storage/toolbox/mechanical,/turf/floor/sub_deck/storage,/area/caribbean/sea/underwater)
 "FS" = (/obj/structure/machinery/sub_physical/bilge_pump,/obj/structure/lamp/lamp_small/alwayson/sub,/obj/structure/lamp/lamp_small/alwayson/red/emergency,/turf/floor/sub_deck/forward_torpedo,/area/caribbean/sea/underwater)
 "Gx" = (/obj/structure/sign/custom/metallic{name = "Storage"},/turf/wall/sub_bulkhead,/area/caribbean/sea/underwater)
+"GB" = (/obj/structure/machinery/sub_physical/torpedo_tube,/turf/floor/sub_deck/forward_torpedo,/area/caribbean/sea/underwater)
 "Hf" = (/obj/structure/machinery/sub_physical/breach_sealant/operations,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "Hl" = (/obj/structure/closet/crate/footlocker,/obj/structure/lamp/lamp_small/alwayson/sub{dir = 1},/obj/item/clothing/suit/lifejacket,/obj/item/clothing/suit/lifejacket,/obj/item/clothing/suit/lifejacket,/obj/item/clothing/suit/lifejacket,/turf/floor/sub_deck/galley,/area/caribbean/sea/underwater)
 "HH" = (/obj/structure/machinery/sub_physical/fuel_storage,/turf/floor/sub_deck/engine_room,/area/caribbean/sea/underwater)
@@ -137,6 +138,7 @@
 "SP" = (/obj/structure/sign/custom/metallic{name = "Nuclear Reactor"},/turf/wall/sub_bulkhead/sub_shielding,/area/caribbean/sea/underwater)
 "Tf" = (/obj/structure/closet/wardrobe{name = "NBC wardrobe"},/obj/item/clothing/suit/nbc,/obj/item/clothing/suit/nbc,/obj/item/clothing/suit/nbc,/obj/item/clothing/suit/nbc,/obj/item/weapon/storage/box/nbcbox/ami,/obj/item/clothing/head/nbc,/obj/item/clothing/head/nbc,/obj/item/clothing/head/nbc,/obj/item/weapon/geiger_counter,/obj/structure/lamp/lamp_small/alwayson/sub{dir = 1},/turf/floor/sub_deck/rear_corridor,/area/caribbean/sea/underwater)
 "Tu" = (/obj/structure/simple_door/blast,/turf/floor/sub_deck/reactor_room,/area/caribbean/sea/underwater)
+"TL" = (/obj/structure/machinery/sub_physical/torpedo_tube{tube_id = 4},/turf/floor/sub_deck/forward_torpedo,/area/caribbean/sea/underwater)
 "TM" = (/obj/structure/table/modern/retable,/obj/item/weapon/paper,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "Uz" = (/obj/structure/bed/chair/steel/alt/blue{dir = 1},/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "UA" = (/obj/structure/machinery/sub_physical/bilge_pump/emergency,/obj/structure/table/modern/retable,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
@@ -145,6 +147,7 @@
 "XQ" = (/obj/structure/lamp/lamp_small/alwayson/sub{dir = 1},/obj/structure/machinery/sub_physical/breach_sealant/fwd_torpedo,/obj/structure/lamp/lamp_small/alwayson/red/emergency{dir = 1},/turf/floor/sub_deck/forward_torpedo,/area/caribbean/sea/underwater)
 "Yg" = (/obj/structure/machinery/sub_physical/bilge_pump/emergency,/turf/floor/sub_deck/operations,/area/caribbean/sea/underwater)
 "Yq" = (/obj/structure/sign/radiation,/turf/wall/sub_bulkhead/sub_shielding,/area/caribbean/sea/underwater)
+"YG" = (/obj/structure/machinery/sub_physical/torpedo_tube{tube_id = 2},/turf/floor/sub_deck/forward_torpedo,/area/caribbean/sea/underwater)
 
 (1,1,1) = {"
 ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
@@ -162,14 +165,14 @@ ababababKvabababababababababababababababababababababababababababababananabababab
 abababanananababababababababababababababababababababababababababababanananabababababababababababababababababababababababababababababababababababababab
 abababanananabababababababababababababanananananananananananababababananananabababanananananananananananananananananananababababababababababababababab
 abababananananabababababababababababanansHucsORYTfkBkBuckBayanananananankIanananananAvHlAvHlAvHlAvHlAvQAsFaDoQaDzBWBaqayananananananananababababababab
-abababananananababananananananananananankBkBkBkBkBkBkBkBkBayPYPYEwOFEwHfhxhGafafaCJivkvkCpCpCpCpCpCpCpCpCpvkaDtRaDvkaqaEcfawXQoyJEananananabababababab
+abababananananababananananananananananankBkBkBkBkBkBkBkBkBayPYPYEwOFEwHfhxhGafafaCJivkvkCpCpCpCpCpCpCpCpCpvkaDtRaDvkaqaEcfawXQGBJEananananabababababab
 abababananananababananananatBpHHejbeywayalauauauaazHauauBMayDDafNrHXIQafafcncncnafCEvkMZAvMZAvMZAvMZAvHVvkaDCiaDCiaDaqaycfawawawPkananananabababababab
-abababananananananananananahahahahNSywaykBauaoamtsNLIOaukBayafafKzafKzafafgfhmTMrIayayaEayayayayayayayayCEJiayayayayayayCBawawoyJEanananananababababab
+abababananananananananananahahahahNSywaykBauaoamtsNLIOaukBayafafKzafKzafafgfhmTMrIayayaEayayayayayayayayCEJiayayayayayayCBawawYGJEanananananababababab
 abababananananananananananywywahahahwtAtkBTuBUaoaoaoQtaukBaiafafafDZafafafUzUzUzafaivRAnAnAnAnDOAnAnAnDOAnAnAnDOAnAnzdxIawawawawawmDanananananabababab
 abababananananananananananJOywahahahahaBkBSPaoaoaoaoaoaukBNiafEwANUARWEwafafagafafbGapAnAnAnAnapAnAnAnapAnAnAnapAnAnapbGawawawawawmDanananananabababab
 abababananananananananananahahahahywywaykBYqaoastseIRPaukBayafEwnMfXnMEwafMYAJavafayayaEayayayayOoeAayaEayayayGxWGayayayCBawawoyJEanananananababababab
 abababananananababananananoPyMHHunRAywayalauauauaazHauauBMayDDwMazafaAutafKzKzKzrIayxearjNararjNararjNPeaylcSKaklPSKakaycfawhLawPkananananabababababab
-abababananananababananananananankIanananNekBkBkBkBkBkBkBkBayafafafagafafafagYgafafayRuacacacacacacararadaydzFtlPlPlPFpaEcfawFSoyJEananananabababababab
+abababananananababananananananankIanananNekBkBkBkBkBkBkBkBayafafafagafafafagYgafafayRuacacacacacacararadaydzFtlPlPlPFpaEcfawFSTLJEananananabababababab
 abababananananabababababababababababananNkhvsORYhvkBkBhvkBayanananananankIananananankMacajiuiuajacPOmnkMayPvwcakakNWSCayananananananananababababababab
 abababanananabababababababababababababanananananananananananababababananananabababanananananananananananananananananananababababababababababababababab
 abababanananababababababababababababababababababababababababababababanananabababababababababababababababababababababababababababababababababababababab
