@@ -123,8 +123,8 @@ If you make a derivative work from this code, you must include this notification
 
 /datum/martial_art/wrestling/harm_act(mob/living/human/A, mob/living/human/D)
 	if(check_streak(A,D))
-		return 1
 		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Punched with wrestling by [A.name] ([A.ckey])</font>"
+		return 1
 	..()
 
 /datum/martial_art/wrestling/proc/throw_wrassle(mob/living/human/A, mob/living/human/D)
@@ -198,7 +198,7 @@ If you make a derivative work from this code, you must include this notification
 		if (T && isturf(T))
 			if (!D.stat)
 				D.emote("scream")
-			D.throw_at(T, 10, 4, A, TRUE, TRUE, callback = CALLBACK(D, /mob/proc/Paralyse, 20))
+			D.throw_at(T, 10, 4, A, TRUE, TRUE)
 		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Thrown with wrestling by [A.name] ([A.ckey])</font>"
 	return
 
@@ -436,9 +436,8 @@ If you make a derivative work from this code, you must include this notification
 
 /datum/martial_art/wrestling/disarm_act(mob/living/human/A, mob/living/human/D)
 	if(check_streak(A,D))
-		return 1
-	
 		D.attack_log += "\[[time_stamp()]\] <font color='orange'>disarmed with wrestling by [A.name] ([A.ckey])</font>"
+		return 1
 	..()
 
 /datum/martial_art/wrestling/grab_act(mob/living/human/A, mob/living/human/D)

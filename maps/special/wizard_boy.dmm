@@ -7,6 +7,7 @@
 "al" = (/mob/living/simple_animal/wizard/rubywyrm{dir = 8},/turf/floor/carpet,/area/caribbean/roofed/temperate)
 "am" = (/obj/structure/railing/steel{dir = 4},/turf/floor/grass,/area/caribbean/nomads/forest)
 "an" = (/obj/effect/decal/cleanable/dirt,/obj/effect/spawner/objspawner/wandpart/driftwood,/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
+"ap" = (/obj/item/clothing/suit/storage/coat/bizarre_coat,/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
 "ar" = (/obj/structure/curtain/leather/open,/obj/structure/window_frame,/obj/item/weapon/material/shard{material = "glass"},/turf/floor/wood,/area/caribbean/sea/top)
 "as" = (/obj/structure/lamp/lamp_big{dir = 4},/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
 "au" = (/obj/structure/religious/totem{icon_state = "bear"},/turf/floor/dirt,/area/caribbean/roofed/jungle)
@@ -26,6 +27,7 @@
 "bm" = (/obj/structure/bed/chair/wood/bleacher/r,/turf/floor/plating/tiled/woodv,/area/caribbean/roofed/temperate)
 "bn" = (/obj/structure/roof_support/nordic,/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/carpet/greencarpet,/area/caribbean/roofed/temperate)
 "bo" = (/obj/item/weapon/material/spear,/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
+"bp" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
 "br" = (/obj/structure/bed/padded,/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
 "bv" = (/obj/structure/bed/chair/steel/alt/green{dir = 8},/turf/floor/wood/alt/three,/area/caribbean/roofed/temperate)
 "by" = (/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
@@ -48,7 +50,7 @@
 "cp" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean/nomads/forest)
 "cs" = (/obj/structure/sink/kitchen,/turf/floor/plating/white,/area/caribbean/roofed/temperate)
 "cu" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/nomads/forest)
-"cv" = (/obj/effect/spawner/objspawner/wandpart/asbestos,/turf/floor/wood,/area/caribbean/houses/nml_two)
+"cv" = (/obj/effect/spawner/objspawner/wandpart/fibreglass{max_range = 3},/turf/floor/wood,/area/caribbean/houses/nml_two)
 "cw" = (/turf/floor/dirt/dust,/area/caribbean/farm)
 "cx" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/structure/optable,/turf/floor/plating/steel,/area/caribbean/sea/top/roofed)
 "cy" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/railing/steel{dir = 1},/turf/floor/grass{name = "pitch"},/area/caribbean/nomads/forest)
@@ -67,12 +69,14 @@
 "di" = (/obj/structure/grille/chainlinkfence/door,/turf/floor/dirt/dust,/area/caribbean/farm)
 "dj" = (/obj/item/clothing/accessory/armband/indianr,/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
 "dl" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/dust,/area/caribbean/farm)
+"dn" = (/obj/structure/closet/cabinet,/obj/item/clothing/shoes/whiteputtee,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "dt" = (/obj/effect/floor_decal/spline/fancy/wood{dir = 6},/turf/floor/plating/stone_old,/area/caribbean/roofed/temperate)
 "dv" = (/obj/item/weapon/clayshards,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "dw" = (/obj/item/weapon/material/shard{material = "glass"},/turf/floor/dirt/burned,/area/caribbean/sea/top)
 "dy" = (/obj/structure/brazier/loaded,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
 "dA" = (/obj/covers/brick_wall,/turf/floor/plating/steel,/area/caribbean/sea/top/roofed)
 "dB" = (/obj/structure/window/classic,/turf/floor/plating/white,/area/caribbean/houses/nml_two)
+"dD" = (/obj/structure/religious/moai,/turf/floor/dirt/burned,/area/caribbean/sea/top)
 "dE" = (/obj/structure/goalpost{dir = 9},/turf/floor/grass{name = "pitch"},/area/caribbean/nomads/forest)
 "dF" = (/obj/effect/spawner/objspawner/wandpart/fox_fur,/obj/structure/wild/jungle/medpine/dead,/turf/floor/grass,/area/caribbean/farm)
 "dH" = (/obj/covers/wood_wall/nordic,/obj/item/flashlight/lantern/on/anchored,/turf/floor/carpet/bluecarpet,/area/caribbean/roofed/temperate)
@@ -82,10 +86,10 @@
 "dP" = (/mob/living/simple_animal/wizard/rubywyrm,/turf/floor/carpet,/area/caribbean/roofed/temperate)
 "dR" = (/obj/structure/pot,/obj/structure/lamp/lamp_big{dir = 1},/obj/effect/spawner/objspawner/wandpart/cassette_tape,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "dS" = (/obj/structure/closet/cabinet,/turf/floor/carpet/blackcarpet,/area/caribbean/roofed/temperate)
-"dY" = (/obj/effect/spawner/objspawner/wandpart/balsa_wood,/turf/floor/plating/steel,/area/caribbean/houses/nml_two)
+"dY" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "eb" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/table/wood/flipped,/obj/structure/curtain/closed/green{pixel_x = 0; pixel_y = -32},/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
 "eg" = (/obj/structure/grille/fence/picket{dir = 4},/turf/floor/grass,/area/caribbean/farm)
-"eh" = (/obj/structure/closet/cabinet,/turf/floor/wood,/area/caribbean/sea/top/roofed)
+"eh" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/vaquerohat,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "ek" = (/obj/structure/shower{dir = 4},/turf/floor/plating/marble/ornate,/area/caribbean/roofed/temperate)
 "en" = (/obj/structure/bed/chair/wood/red{dir = 8; icon_state = "wooden_chair_red"},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "ep" = (/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 1},/turf/floor/beach/water/deep,/area/caribbean/nomads/forest)
@@ -114,8 +118,11 @@
 "fr" = (/obj/structure/closet/cabinet,/turf/floor/carpet/greencarpet,/area/caribbean/roofed/temperate)
 "fs" = (/obj/covers/wood_wall/nordic,/turf/floor/carpet/bluecarpet,/area/caribbean/roofed/temperate)
 "fu" = (/turf/floor/dirt,/area/caribbean/roofed/jungle)
+"fv" = (/obj/structure/wild/tallgrass,/turf/floor/plating/stone_old,/area/caribbean/sea/top)
+"fw" = (/obj/item/stack/farming/seeds/apple,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "fB" = (/obj/structure/vending/sales/wizards,/turf/floor/carpet/greencarpet,/area/caribbean/roofed/temperate)
 "fC" = (/obj/structure/window/classic/brickfull,/obj/structure/grille/ironfence,/turf/floor/wood,/area/caribbean/sea/top/roofed)
+"fE" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "fH" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/curtain/black{pixel_y = -32},/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
 "fI" = (/turf/floor/beach/sand/dark,/area/caribbean/farm)
 "fJ" = (/obj/structure/roof_support/nordic,/obj/item/flashlight/torch/on/unlimited,/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
@@ -124,6 +131,7 @@
 "fQ" = (/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "fR" = (/obj/structure/railing/steel{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/forest)
 "fT" = (/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/forest)
+"fU" = (/obj/structure/religious/impaledskull,/turf/floor/dirt/burned,/area/caribbean/sea/top)
 "fV" = (/obj/structure/table/modern/table,/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/obj/item/kitchen/snack_bowl,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "fX" = (/obj/structure/sign/traffic/central{dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean/nomads/forest)
 "ga" = (/obj/structure/table/modern,/obj/structure/centrifuge,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
@@ -132,6 +140,7 @@
 "gf" = (/obj/structure/sign/custom/metallic{name = "Classrooms, Arena, Workshop"},/turf/wall/sandstone,/area/caribbean/roofed/temperate)
 "gk" = (/obj/structure/simple_door/key_door/custom/jail/steeljail,/turf/floor/plating/marble/grid,/area/caribbean/houses/nml_one)
 "go" = (/obj/map_metadata/wizard_boy,/turf/floor/grass,/area/caribbean/farm)
+"gp" = (/turf/floor/dirt/dust{name = "dry dirt"},/area/caribbean/sea/top)
 "gq" = (/obj/structure/religious/grave,/turf/floor/dirt,/area/caribbean/dark)
 "gz" = (/obj/effect/decal/cleanable/vomit,/turf/floor/plating/steel,/area/caribbean/sea/top/roofed)
 "gA" = (/obj/structure/simple_door/key_door/anyone/nordic,/turf/floor/carpet,/area/caribbean/roofed/temperate)
@@ -193,6 +202,7 @@
 "jH" = (/obj/structure/simple_door/key_door/civ/room3,/turf/floor/carpet/bluecarpet,/area/caribbean/roofed/temperate)
 "jK" = (/obj/structure/simple_door/key_door/civ/room2,/turf/floor/carpet,/area/caribbean/roofed/temperate)
 "jL" = (/obj/structure/sign/traffic/central{dir = 4},/obj/structure/sign/traffic/central{dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean/nomads/forest)
+"jM" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/piratehat,/obj/item/clothing/head/pimphat,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "jN" = (/obj/covers/brick_wall,/turf/floor/dirt/burned,/area/caribbean/sea/top/roofed)
 "jR" = (/obj/structure/religious/totem{icon_state = "wolf"},/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
 "jT" = (/obj/structure/barricade,/obj/structure/curtain/open{color = "#ff8c00"},/obj/structure/window/classic/reinforced,/turf/floor/carpet/purplecarpet,/area/caribbean/roofed/temperate)
@@ -257,20 +267,23 @@
 "lY" = (/obj/structure/table/wood,/turf/floor/carpet/greencarpet,/area/caribbean/roofed/temperate)
 "ma" = (/obj/structure/bed/chair/wood/alt{dir = 8},/turf/floor/plating/marble/grid,/area/caribbean/roofed/temperate)
 "md" = (/mob/living/simple_animal/mouse/white,/turf/floor/dirt/burned,/area/caribbean/sea/top/roofed)
+"me" = (/obj/effect/spawner/objspawner/wandpart/balsa_wood,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "mh" = (/obj/structure/bed/chair/wood/red{dir = 1; icon_state = "wooden_chair_red"},/turf/floor/wood,/area/caribbean/houses/nml_two)
 "mi" = (/obj/structure/barricade/debris,/obj/structure/window/barrier/rock{dir = 8; icon_state = "rock_barricade"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/sea/top)
+"mj" = (/obj/covers/repairedfloor/ship,/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/plating/tiled/woodh,/area/caribbean/houses/nml_two)
 "mk" = (/obj/structure/curtain/black{pixel_y = -32},/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
 "mo" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/plating/steel,/area/caribbean/houses/nml_three)
 "mp" = (/obj/covers/brick_wall,/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
 "ms" = (/obj/effect/floor_decal/spline/fancy/wood{dir = 1},/obj/effect/spawner/mobspawner/training_dummy,/turf/floor/plating/tiled,/area/caribbean/roofed/temperate)
 "mt" = (/obj/structure/bed/chair/wood/bleacher{dir = 1},/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/carpet/purplecarpet,/area/caribbean/roofed/temperate)
 "mu" = (/obj/structure/bed/chair/wood{dir = 1; icon_state = "wooden_chair"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"mv" = (/obj/effect/spawner/objspawner/wandpart/fox_fur,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "mw" = (/obj/covers/marble_checkerboard/reverse,/obj/structure/closet/fridge,/turf/floor/wood,/area/caribbean/houses/nml_two)
 "mx" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/optable,/turf/floor/plating/steel,/area/caribbean/sea/top/roofed)
 "mD" = (/obj/structure/simple_door/key_door/anyone/doubledoor/sandstone,/turf/floor/carpet/purplecarpet,/area/caribbean/roofed/temperate)
 "mE" = (/obj/item/clothing/accessory/armband/indiang,/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
 "mF" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/farm)
-"mG" = (/obj/covers/repairedfloor/ship,/obj/structure/barricade,/turf/floor/plating/tiled/woodh,/area/caribbean/houses/nml_two)
+"mG" = (/obj/structure/fireplace_portal{destination = list("great_hall"); identification = "the Leaky Sheep Pub"},/turf/wall/brick,/area/caribbean/houses/nml_two)
 "mH" = (/mob/living/simple_animal/deer/elk/female,/turf/floor/grass,/area/caribbean/farm)
 "mJ" = (/obj/structure/simple_door/key_door/civ/inn,/turf/floor/carpet/greencarpet,/area/caribbean/roofed/temperate)
 "mK" = (/obj/structure/wild/largejungle,/turf/floor/dirt,/area/caribbean/farm)
@@ -278,6 +291,7 @@
 "mR" = (/obj/structure/religious/tribalmask,/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
 "mT" = (/obj/structure/simple_door/key_door/civ/room6,/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
 "mU" = (/obj/structure/simple_door/key_door/custom/jail/steeljail,/turf/floor/plating/steel,/area/caribbean/houses/nml_two)
+"mV" = (/obj/item/clothing/suit/prehistoricfurcoat/grey,/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
 "mX" = (/obj/structure/sign/painting3,/turf/wall/brick,/area/caribbean/houses/nml_two)
 "mY" = (/obj/structure/bed/chair/steel/alt/blue{dir = 8},/turf/floor/wood/alt/three,/area/caribbean/roofed/temperate)
 "na" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/dark,/area/caribbean/farm)
@@ -309,7 +323,7 @@
 "on" = (/obj/structure/window/classic/stone,/obj/structure/barricade/steel,/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 4},/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 1},/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
 "op" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "oq" = (/obj/effect/floor_decal/spline/fancy/wood{dir = 1},/turf/floor/carpet/purplecarpet,/area/caribbean/roofed/temperate)
-"or" = (/obj/covers/repairedfloor/ship,/obj/effect/spawner/mobspawner/normie_farmer,/turf/floor/plating/tiled/woodh,/area/caribbean/houses/nml_two)
+"or" = (/obj/covers/repairedfloor/ship,/obj/effect/spawner/mobspawner/normie_farmer{max_number = 3},/turf/floor/plating/tiled/woodh,/area/caribbean/houses/nml_two)
 "os" = (/obj/item/weapon/stool/padded,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "ou" = (/obj/structure/lamp/lamp_small/alwayson,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "ox" = (/obj/structure/bed/chair{dir = 2; icon_state = "chair"},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
@@ -384,6 +398,7 @@
 "ry" = (/obj/structure/table/wood,/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
 "rG" = (/obj/structure/window/clean/reinforced/metal/indestructible,/obj/structure/railing/steel{dir = 8},/turf/floor/plating/marble/grid,/area/caribbean/houses/nml_one)
 "rI" = (/obj/structure/chemical_dispenser/soda{dir = 1},/obj/structure/table/modern,/turf/floor/plating/white,/area/caribbean/roofed/temperate)
+"rJ" = (/obj/structure/wild/largejungle,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "rM" = (/obj/covers/repairedfloor/ship,/obj/structure/potted_plant{dir = 9; icon_state = "potted_plant"},/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/plating/tiled/woodh,/area/caribbean/houses/nml_two)
 "rR" = (/obj/structure/grille/fence/picket{dir = 4},/obj/structure/grille/fence/picket{dir = 1},/turf/floor/grass,/area/caribbean/farm)
 "rW" = (/obj/structure/window/classic/brickfull,/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
@@ -402,6 +417,7 @@
 "ss" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/plating/steel,/area/caribbean/houses/nml_three)
 "su" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/nomads/forest)
 "sv" = (/obj/structure/lamp/lamp_big/alwayson/white{dir = 1; icon_state = "tube"},/obj/structure/vending/sales/wands,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"sy" = (/obj/structure/wild/smallbush,/turf/floor/plating/stone_old,/area/caribbean/sea/top)
 "sz" = (/obj/structure/barricade/debris,/turf/floor/dirt/burned,/area/caribbean/sea/top)
 "sA" = (/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/sea/top/roofed)
 "sC" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water,/area/caribbean/farm)
@@ -429,6 +445,7 @@
 "tG" = (/obj/structure/closet/old_coffin,/turf/floor/plating/stone_old,/area/caribbean/dark)
 "tI" = (/obj/effect/spawner/mobspawner/huw_pugh,/turf/floor/grass,/area/caribbean/farm)
 "tN" = (/obj/structure/table/rack/shelf/wooden,/turf/floor/plating/steel,/area/caribbean/houses/nml_two)
+"tO" = (/obj/item/clothing/head/chief_hat,/turf/floor/dirt/burned,/area/caribbean/sea/top)
 "tP" = (/obj/item/stack/medical/advanced/herbs,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "tQ" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses/nml_two)
 "tR" = (/obj/item/weapon/mop,/obj/item/weapon/reagent_containers/glass/barrel/water,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
@@ -448,6 +465,7 @@
 "uo" = (/obj/effect/decal/cleanable/cobweb2{icon_state = "cobweb2"; dir = 4},/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
 "up" = (/obj/structure/sign/armory{name = "C.A.P. Police Station"},/turf/wall/brick,/area/caribbean/houses/nml_three)
 "us" = (/turf/floor/dirt,/area/caribbean/dark)
+"uv" = (/obj/item/stack/farming/seeds/sugarcane,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "ux" = (/obj/structure/roof_support/nordic,/turf/floor/carpet/purplecarpet,/area/caribbean/roofed/temperate)
 "uz" = (/obj/structure/roof_support/nordic,/turf/floor/carpet,/area/caribbean/roofed/temperate)
 "uA" = (/obj/structure/table/wood,/turf/floor/carpet/bluecarpet,/area/caribbean/roofed/temperate)
@@ -461,11 +479,13 @@
 "uU" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/nomads/forest)
 "uX" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "uY" = (/obj/structure/sign/crest/small/mintysnek,/turf/wall/sandstone,/area/caribbean/roofed/temperate)
+"va" = (/obj/item/clothing/head/furhat/bison,/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
 "vb" = (/obj/effect/floor_decal/spline/fancy/wood{dir = 8},/turf/floor/plating/tiled,/area/caribbean/roofed/temperate)
 "vc" = (/obj/structure/TV/television/active{pixel_y = 32; layer = 4},/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/houses/nml_two)
 "vd" = (/obj/structure/simple_door/key_door/civ/room1,/turf/floor/carpet/greencarpet,/area/caribbean/roofed/temperate)
 "vg" = (/obj/structure/bed/chair/wood/alt{dir = 4},/turf/floor/carpet/blackcarpet,/area/caribbean/roofed/temperate)
 "vi" = (/obj/structure/bed/chair/steel/alt{dir = 8},/obj/effect/spawner/objspawner/wandpart/chewing_gum{max_range = 2},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"vj" = (/obj/structure/closet/cabinet,/obj/item/clothing/shoes/riding1/lizard_cowboy,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "vm" = (/obj/structure/roof_support/nordic,/obj/item/flashlight/torch/on/unlimited,/turf/floor/carpet/bluecarpet,/area/caribbean/roofed/temperate)
 "vt" = (/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 8},/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 8},/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/forest)
 "vv" = (/obj/effect/decal/cleanable/generic,/turf/floor/dirt,/area/caribbean/sea/top)
@@ -482,6 +502,7 @@
 "vT" = (/turf/floor/wood{icon_state = "wood-broken6"},/area/caribbean/sea/top)
 "vX" = (/obj/structure/sign/anatomy,/turf/wall/sandstone,/area/caribbean/roofed/temperate)
 "vZ" = (/obj/structure/sign/n3,/turf/wall/sandstone,/area/caribbean/roofed/temperate)
+"wa" = (/obj/structure/wild/rock,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "wc" = (/turf/floor/plating/marble/black,/area/caribbean/dark)
 "wj" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood{icon_state = "wood-broken4"},/area/caribbean/sea/top/roofed)
 "wk" = (/obj/covers/repairedfloor/ship,/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/tiled/woodh,/area/caribbean/houses/nml_two)
@@ -502,6 +523,7 @@
 "wO" = (/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/carpet/blackcarpet,/area/caribbean/roofed/temperate)
 "wR" = (/obj/effect/floor_decal/spline/fancy/wood/three_quarters,/turf/floor/plating/stone_old,/area/caribbean/houses/nml_one)
 "wS" = (/obj/structure/wild/tree/live_tree,/obj/effect/spawner/objspawner/wandpart/rat_tail,/turf/floor/grass,/area/caribbean/nomads/forest)
+"wT" = (/obj/structure/bookcase/filled_magic,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "wX" = (/obj/structure/wild/flowers,/turf/floor/dirt,/area/caribbean/sea/top)
 "wZ" = (/obj/covers/cobblestone/stairs{icon_state = "rampup"; dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/forest)
 "xa" = (/obj/structure/wild/tallgrass,/turf/floor/beach/sand/dark,/area/caribbean/nomads/forest)
@@ -510,6 +532,7 @@
 "xj" = (/obj/structure/closet/crate/bin,/turf/floor/plating/steel,/area/caribbean/sea/top/roofed)
 "xk" = (/obj/structure/simple_door/key_door/civ/room3,/turf/floor/carpet,/area/caribbean/roofed/temperate)
 "xl" = (/obj/structure/lamp/lamp_big/alwayson/white,/obj/structure/table/modern,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"xm" = (/obj/item/clothing/accessory/armband/armbangle/bronze,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "xo" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/plating/white,/area/caribbean/houses/nml_two)
 "xp" = (/obj/effect/decal/cleanable/cobweb{icon_state = "cobweb1"; dir = 4},/turf/floor/plating/stone_old,/area/caribbean/dark)
 "xr" = (/turf/floor/plating/white,/area/caribbean/roofed/temperate)
@@ -558,6 +581,7 @@
 "zb" = (/obj/structure/wild/junglebush,/turf/floor/plating/cobblestone/vertical,/area/caribbean/sea/top)
 "zd" = (/obj/structure/window/barrier{dir = 8; icon_state = "dirt_wall"},/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "ze" = (/obj/structure/lamp/lamp_small/alwayson{dir = 1; icon_state = "bulb"},/turf/floor/wood,/area/caribbean/houses/nml_two)
+"zg" = (/obj/effect/decal/cleanable/dirt,/obj/structure/religious/remains,/obj/effect/spawner/objspawner/wandpart/rat_tail,/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
 "zh" = (/obj/structure/window/classic/reinforced,/obj/covers/jail,/obj/structure/curtain/open/red,/turf/floor/carpet,/area/caribbean/roofed/temperate)
 "zj" = (/obj/effect/floor_decal/spline/fancy/wood{dir = 8},/obj/effect/floor_decal/spline/fancy/wood{dir = 1},/turf/floor/plating/tiled,/area/caribbean/roofed/temperate)
 "zn" = (/obj/covers/wood_wall/nordic,/obj/structure/sign/crest/mintysnek,/turf/floor/grass,/area/caribbean/roofed/temperate)
@@ -599,10 +623,12 @@
 "AN" = (/obj/covers/marble_checkerboard/reverse,/obj/structure/sink/kitchen{layer = 4; pixel_y = 8},/turf/floor/wood,/area/caribbean/houses/nml_two)
 "AV" = (/obj/structure/table/wood,/turf/floor/plating/tiled/woodv,/area/caribbean/roofed/temperate)
 "AY" = (/obj/structure/sign/crest/small/mustardweasel,/turf/wall/sandstone,/area/caribbean/roofed/temperate)
+"AZ" = (/obj/structure/wild/smallbush,/obj/effect/spawner/mobspawner/moldymen{max_range = 2},/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "Ba" = (/obj/structure/wild/burnedtree,/turf/floor/dirt/dark_dirt,/area/caribbean/dark)
 "Bb" = (/obj/item/stack/material/bone,/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
 "Bk" = (/obj/structure/simple_door/key_door/civ/room3,/turf/floor/carpet/greencarpet,/area/caribbean/roofed/temperate)
 "Bm" = (/obj/structure/wild/tree/dead_tree/destroyed,/turf/floor/dirt/dark_dirt,/area/caribbean/dark)
+"Bn" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "Bo" = (/obj/structure/grille/chainlinkfence,/obj/structure/sign/custom{name = "Dark Forest - ENTER AT YOUR OWN RISK"; desc = "Entering the forest voids your health insurance."},/turf/floor/beach/sand/dark,/area/caribbean/farm)
 "Bp" = (/obj/structure/bed/chair/wood/bleacher/r{icon_state = "bleacher_r"; dir = 8},/turf/floor/carpet,/area/caribbean/roofed/temperate)
 "Bs" = (/obj/structure/bed/chair/wood{dir = 8},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
@@ -610,6 +636,7 @@
 "By" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "BA" = (/obj/structure/table/wood,/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
 "BB" = (/obj/covers/brick_wall,/obj/effect/spawner/mobspawner/moldymen{max_range = 5; max_number = 3},/turf/wall/brick,/area/caribbean/sea/top/roofed)
+"BD" = (/obj/structure/table/wood,/obj/item/clothing/suit/storage/jacket/inquisition/alt,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "BE" = (/mob/living/simple_animal/wizard/slatepie,/turf/floor/carpet/bluecarpet,/area/caribbean/roofed/temperate)
 "BF" = (/obj/covers/cobblestone/stairs,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/forest)
 "BH" = (/obj/structure/sign/custom/plaque{name = "Classroom 1"},/turf/wall/sandstone,/area/caribbean/roofed/temperate)
@@ -644,19 +671,23 @@
 "CC" = (/obj/structure/bed/chair/steel/alt/red{dir = 8},/turf/floor/wood/alt/three,/area/caribbean/roofed/temperate)
 "CD" = (/obj/covers/wood_wall/nordic,/obj/item/flashlight/torch/on/unlimited,/obj/structure/sign/kiddieplaque{desc = "The sleeping quarters of the Slatepies."; name = "Slatepie Quarters"},/turf/floor/carpet/bluecarpet,/area/caribbean/roofed/temperate)
 "CF" = (/obj/covers/wood_wall/nordic,/obj/item/flashlight/torch/on/unlimited,/obj/structure/sign/kiddieplaque{desc = "The sleeping quarters of the Mustardweasels."; name = "Mustardweasel Quarters"},/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
+"CL" = (/obj/structure/wild/tallgrass2,/turf/floor/plating/stone_old,/area/caribbean/sea/top)
 "CP" = (/obj/structure/closet/anchored,/turf/floor/plating/steel,/area/caribbean/houses/nml_three)
 "CT" = (/obj/covers/wood_wall,/turf/floor/winter/grass,/area/caribbean/sea/top/roofed)
 "CW" = (/obj/structure/table/modern,/obj/structure/grinder,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "CZ" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/railing/steel{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/forest)
 "Db" = (/obj/effect/decal/cleanable/blood/splatter,/turf/floor/plating/steel,/area/caribbean/sea/top/roofed)
+"Dl" = (/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "Dm" = (/mob/living/simple_animal/wizard/slatepie{dir = 4},/turf/floor/carpet/bluecarpet,/area/caribbean/roofed/temperate)
 "Do" = (/obj/structure/window/barrier/rock{dir = 4; icon_state = "rock_barricade"},/turf/floor/dirt,/area/caribbean/sea/top)
 "Dv" = (/obj/structure/lamp/lamp_big{dir = 8},/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "Dw" = (/obj/structure/wild/tree/live_tree,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/farm)
+"Dx" = (/obj/structure/simple_door/key_door/anyone/nordic,/turf/floor/carpet/blackcarpet,/area/caribbean/roofed/temperate)
 "DA" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/chair/wood/red{dir = 8; icon_state = "wooden_chair_red"},/turf/floor/plating/tiled/woodh,/area/caribbean/houses/nml_two)
 "DC" = (/obj/structure/curtain/open/shower,/obj/structure/shower,/turf/floor/plating/steel,/area/caribbean/sea/top/roofed)
 "DD" = (/obj/structure/sign/painting12,/turf/wall/sandstone,/area/caribbean/roofed/temperate)
 "DE" = (/turf/floor/plating/steel,/area/caribbean/sea/top/roofed)
+"DL" = (/obj/effect/spawner/mobspawner/moldymen{max_range = 2; max_number = 2},/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "DN" = (/turf/wall/old_stone,/area/caribbean/roofed/desert)
 "DP" = (/obj/structure/closet/coffin/sarcophagus,/turf/floor/plating/stone_old,/area/caribbean/dark)
 "DV" = (/obj/effect/decal/cleanable/blood/splatter,/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
@@ -677,6 +708,7 @@
 "Ex" = (/obj/structure/brazier/loaded,/turf/floor/carpet/purplecarpet,/area/caribbean/roofed/temperate)
 "Ey" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical,/area/caribbean/sea/top)
 "Ez" = (/obj/covers/marble_checkerboard/reverse,/obj/structure/sink/kitchen{dir = 8; icon_state = "sink_alt"; pixel_x = 12},/turf/floor/wood,/area/caribbean/houses/nml_two)
+"EA" = (/obj/structure/simple_door/key_door/anyone/doubledoor/sandstone,/turf/floor/carpet/blackcarpet,/area/caribbean/roofed/temperate)
 "EB" = (/obj/structure/table/modern/table,/obj/structure/TV,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "ED" = (/obj/structure/sign/custom/plaque{name = "Classroom 2"},/turf/wall/sandstone,/area/caribbean/roofed/temperate)
 "EE" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/dirt/burned,/area/caribbean/sea/top/roofed)
@@ -727,13 +759,16 @@
 "GE" = (/obj/structure/pot,/obj/structure/lamp/lamp_big{dir = 1},/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "GI" = (/obj/structure/window/classic/metal,/obj/structure/curtain/open,/turf/floor/wood,/area/caribbean/houses/nml_two)
 "GJ" = (/obj/structure/simple_door/key_door/anyone/doubledoor/sandstone,/turf/floor/plating/tiled/darker,/area/caribbean/roofed/temperate)
+"GK" = (/obj/item/clothing/suit/storage/coat/modern_long_black,/turf/floor/dirt/dark_dirt,/area/caribbean/dark)
 "GO" = (/obj/structure/window/classic/reinforced,/obj/covers/jail,/obj/structure/curtain/open/shower/engineering{name = "curtain"},/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
+"GS" = (/obj/structure/religious/monument/megalith,/turf/floor/dirt/burned,/area/caribbean/sea/top)
 "GV" = (/obj/structure/bed/chair/wood/bleacher/r,/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
 "GW" = (/obj/item/weapon/storage/firstaid/surgery,/turf/floor/plating/steel{icon_state = "damaged2"},/area/caribbean/sea/top/roofed)
 "GY" = (/obj/structure/simple_door/key_door/custom/doubledoor/tin,/turf/floor/plating/tiled/woodv,/area/caribbean/roofed/temperate)
 "Hf" = (/obj/structure/toilet{dir = 8; icon_state = "toilet00"},/turf/floor/plating/steel,/area/caribbean/houses/nml_three)
 "Hg" = (/obj/covers/wood_wall/nordic,/obj/item/flashlight/torch/on/unlimited,/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
 "Hi" = (/obj/structure/simple_door/key_door/civ/room8,/turf/floor/carpet/bluecarpet,/area/caribbean/roofed/temperate)
+"Hj" = (/obj/structure/religious/gargoyle,/turf/floor/dirt/dark_dirt,/area/caribbean/dark)
 "Hk" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/nomads/forest)
 "Hl" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/steel,/area/caribbean/houses/nml_two)
 "Hm" = (/obj/structure/bed/chair/wood/bleacher/l{icon_state = "bleacher_l"; dir = 8},/turf/floor/plating/tiled/woodv,/area/caribbean/roofed/temperate)
@@ -763,6 +798,7 @@
 "Ir" = (/obj/structure/religious/monument/shaman/ape,/turf/floor/carpet/blackcarpet,/area/caribbean/roofed/temperate)
 "It" = (/obj/structure/religious/woodcross2,/turf/floor/dirt/dark_dirt,/area/caribbean/dark)
 "Ix" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/fork,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/plating/tiled/woodh,/area/caribbean/houses/nml_two)
+"IF" = (/obj/structure/religious/tribalmask,/turf/wall/old_stone,/area/caribbean/sea/top)
 "IG" = (/obj/structure/closet/cabinet,/obj/item/clothing/suit/storage/coat/ww2/expensivecoat,/obj/item/clothing/gloves/color/luxglove,/turf/floor/wood,/area/caribbean/houses/nml_two)
 "IJ" = (/obj/structure/simple_door/key_door/civ/room1,/turf/floor/carpet/bluecarpet,/area/caribbean/roofed/temperate)
 "IN" = (/obj/structure/table/modern/table,/obj/item/weapon/storage/backpack/duffel,/turf/floor/wood,/area/caribbean/sea/top/roofed)
@@ -786,16 +822,19 @@
 "JL" = (/obj/covers/brick_wall,/obj/structure/poster/faction/red/mil2,/turf/wall/brick,/area/caribbean/sea/top/roofed)
 "JM" = (/obj/covers/brick_wall,/obj/structure/mirror,/turf/wall/brick,/area/caribbean/sea/top/roofed)
 "JN" = (/obj/structure/sign/crest/small/slatepie,/turf/wall/sandstone,/area/caribbean/roofed/temperate)
+"JO" = (/turf/floor/plating/stone_old,/area/caribbean/sea/top)
 "JP" = (/obj/structure/sign/custom/metallic{name = "Workshop"},/turf/wall/sandstone,/area/caribbean/roofed/temperate)
 "JQ" = (/obj/structure/religious/impaledskull,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "JT" = (/obj/structure/torch_stand/lantern,/obj/structure/window/clean/reinforced/metal/indestructible,/obj/structure/railing/steel{dir = 4},/obj/structure/railing/steel{dir = 1},/turf/floor/plating/marble/grid,/area/caribbean/houses/nml_one)
 "JU" = (/obj/effect/floor_decal/spline/fancy/wood{dir = 1},/turf/floor/plating/stone_old,/area/caribbean/roofed/temperate)
+"JZ" = (/obj/structure/sink/puddle,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "Ka" = (/obj/structure/wild/burnedbush,/obj/effect/spawner/mobspawner/moldymen{max_range = 5; max_number = 3},/turf/floor/dirt/dark_dirt,/area/caribbean/dark)
 "Kc" = (/obj/structure/roof_support,/obj/item/flashlight/torch/on/unlimited,/turf/floor/grass,/area/caribbean/nomads/forest)
 "Kf" = (/obj/covers/wood_wall/nordic,/obj/item/flashlight/lantern/on/anchored,/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
 "Kg" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
 "Kh" = (/obj/structure/grille/fence/picket{dir = 1},/turf/floor/grass,/area/caribbean/farm)
-"Ks" = (/obj/covers/repairedfloor/ship,/obj/effect/spawner/objspawner/wandpart/snooker_cue,/turf/floor/plating/tiled/woodh,/area/caribbean/houses/nml_two)
+"Ki" = (/turf/wall/old_stone,/area/caribbean/sea/top)
+"Ks" = (/obj/covers/repairedfloor/ship,/obj/effect/spawner/objspawner/wandpart/snooker_cue,/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/plating/tiled/woodh,/area/caribbean/houses/nml_two)
 "Kt" = (/turf/floor/dirt,/area/caribbean/farm)
 "Ku" = (/obj/structure/bed/chair/wood/alt{dir = 8},/mob/living/simple_animal/wizard/professor{dir = 8},/turf/floor/plating/marble/grid,/area/caribbean/roofed/temperate)
 "Kw" = (/obj/effect/decal/cleanable/blood,/turf/floor/wood,/area/caribbean/sea/top/roofed)
@@ -806,6 +845,7 @@
 "KL" = (/obj/structure/religious/totem{icon_state = "bear"},/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
 "KQ" = (/obj/structure/vending/sales/cigarettes,/turf/floor/carpet/greencarpet,/area/caribbean/roofed/temperate)
 "KS" = (/obj/structure/bed/padded,/obj/item/weapon/bedsheet/orange,/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
+"KU" = (/obj/structure/wild/smallbush,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "KV" = (/obj/structure/grille/fence/picket{dir = 8},/obj/structure/grille/fence/picket{dir = 1},/turf/floor/grass,/area/caribbean/farm)
 "KW" = (/obj/structure/wild/rock,/turf/floor/dirt/burned,/area/caribbean/sea/top)
 "Ld" = (/obj/structure/bed/chair/comfy/purp{dir = 8},/turf/floor/wood,/area/caribbean/houses/nml_two)
@@ -833,17 +873,20 @@
 "LO" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/farm)
 "LP" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/nomads/forest)
 "LQ" = (/obj/effect/floor_decal/spline/fancy/wood{dir = 4},/obj/effect/floor_decal/spline/fancy/wood{dir = 1},/turf/floor/plating/tiled,/area/caribbean/roofed/temperate)
+"LT" = (/obj/effect/spawner/mobspawner/moldymen_lt{max_range = 3},/turf/floor/dirt/burned,/area/caribbean/sea/top)
 "LU" = (/obj/structure/pot,/obj/structure/lamp/lamp_big,/turf/floor/wood,/area/caribbean/sea/top/roofed)
-"LV" = (/obj/covers/stone_wall{layer = 2.3; density = 0},/obj/structure/fireplace_portal{identification = "great_hall"; destination = list("the ruins", "the dungeon","the cemetery")},/turf/floor/carpet/purplecarpet,/area/caribbean/roofed/temperate)
+"LV" = (/obj/structure/fireplace_portal{identification = "great_hall"; destination = list("the ruins", "the dungeon","the cemetery","the jungle","the Leaky Sheep Pub")},/turf/wall/sandstone,/area/caribbean/roofed/temperate)
 "LX" = (/obj/effect/floor_decal/spline/fancy/wood{dir = 1},/turf/floor/plating/tiled,/area/caribbean/roofed/temperate)
 "LY" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "LZ" = (/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
 "Mc" = (/obj/structure/potted_plant{dir = 9; icon = 'icons/obj/flora/plants.dmi'; icon_state = "plant-39"; layer = 5; pixel_x = -8},/turf/floor/wood,/area/caribbean/houses/nml_two)
+"Md" = (/obj/item/clothing/head/cowboyhat,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "Me" = (/obj/covers/repairedfloor/ship,/obj/structure/table/modern/table,/obj/structure/radio,/turf/floor/plating/tiled/woodh,/area/caribbean/houses/nml_two)
-"Mj" = (/obj/structure/lamp/lamp_small/alwayson{dir = 8; icon_state = "bulb"},/obj/effect/spawner/objspawner/wandpart/copper_wire,/turf/floor/wood,/area/caribbean/houses/nml_two)
+"Mj" = (/obj/structure/lamp/lamp_small/alwayson{dir = 8; icon_state = "bulb"},/obj/effect/spawner/objspawner/wandpart/copper_wire{max_range = 5},/turf/floor/wood,/area/caribbean/houses/nml_two)
 "Mn" = (/obj/structure/wild/jungle/acacia/dead,/turf/floor/grass,/area/caribbean/farm)
 "Mo" = (/obj/structure/wild/tallgrass,/obj/structure/grille/fence/picket{dir = 8},/turf/floor/grass,/area/caribbean/farm)
 "Mq" = (/obj/covers/repairedfloor/ship,/obj/item/weapon/barstool/white,/turf/floor/plating/tiled/woodh,/area/caribbean/houses/nml_two)
+"Mr" = (/obj/structure/wild/jungle,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
 "Mu" = (/obj/structure/bed/wood,/obj/item/weapon/bedsheet,/obj/effect/landmark{name = "JoinLateCivI"},/turf/floor/wood,/area/caribbean/houses/nml_two)
 "Mv" = (/obj/structure/lamp/lamp_big,/turf/floor/plating/tiled/darker,/area/caribbean/sea/top)
 "Mw" = (/turf/floor/beach/water/deep,/area/caribbean/farm)
@@ -874,31 +917,37 @@
 "Nu" = (/turf/floor/wood/alt/three,/area/caribbean/roofed/temperate)
 "Nw" = (/obj/structure/simple_door/key_door/anyone/roman,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
 "Nx" = (/obj/structure/mine_support/stone/ionic,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
+"Ny" = (/obj/item/clothing/suit/storage/coat/fur/orc,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "NA" = (/obj/structure/shower{dir = 8},/turf/floor/plating/marble/ornate,/area/caribbean/roofed/temperate)
 "NB" = (/obj/structure/grille/fence/picket{dir = 8},/turf/floor/grass,/area/caribbean/farm)
 "ND" = (/obj/structure/bed/chair/wood/alt,/turf/floor/carpet/blackcarpet,/area/caribbean/roofed/temperate)
 "NE" = (/obj/structure/bed/chair/wood/bleacher/r,/turf/floor/carpet/bluecarpet,/area/caribbean/roofed/temperate)
+"NG" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/bizarre_hat,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "NI" = (/turf/floor/plating/steel,/area/caribbean/houses/nml_three)
 "NJ" = (/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean/sea/top/roofed)
 "NM" = (/obj/structure/bed/chair/wood/red,/turf/floor/carpet/purplecarpet,/area/caribbean/roofed/temperate)
 "NN" = (/obj/structure/table/wood,/obj/item/weapon/key/civ/room1,/obj/item/weapon/key/civ/room2,/obj/item/weapon/key/civ/room3,/obj/item/weapon/key/civ/room4,/obj/item/weapon/key/civ/room5,/obj/item/weapon/key/civ/room6,/obj/item/weapon/key/civ/room7,/obj/item/weapon/key/civ/room8,/obj/item/weapon/handbell,/turf/floor/carpet/greencarpet,/area/caribbean/roofed/temperate)
 "NQ" = (/mob/living/simple_animal/wizard/goblin_cleaner,/turf/floor/carpet/blackcarpet,/area/caribbean/roofed/temperate)
-"NR" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/fork,/obj/item/weapon/material/kitchen/utensil/knife,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/tiled/woodh,/area/caribbean/houses/nml_two)
+"NR" = (/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "NS" = (/obj/structure/bed/chair/wood/bleacher/l{icon_state = "bleacher_l"; dir = 8},/mob/living/simple_animal/wizard/rubywyrm{dir = 8},/turf/floor/carpet,/area/caribbean/roofed/temperate)
 "NW" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/farm)
 "Ob" = (/obj/structure/sign/traffic/central{dir = 4},/obj/structure/sign/traffic/central{dir = 8},/obj/structure/sign/traffic/central,/turf/floor/grass{name = "pitch"},/area/caribbean/nomads/forest)
+"Oc" = (/obj/item/stack/farming/seeds/tea,/turf/floor/grass/jungle,/area/caribbean/sea/top)
+"Oe" = (/obj/structure/wild/palm,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
 "Oi" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/bed,/obj/item/weapon/bedsheet/medical,/turf/floor/plating/steel,/area/caribbean/sea/top/roofed)
 "Ok" = (/obj/structure/table/modern/table,/obj/item/weapon/paper,/obj/item/weapon/pen/crayon,/obj/covers/jail/steeljail{icon = 'icons/obj/structures.dmi'; icon_state = "bank_glass_open"},/obj/item/weapon/pen,/obj/structure/table/modern/retable,/turf/floor/plating/steel,/area/caribbean/houses/nml_three)
-"Om" = (/obj/structure/closet/cabinet,/turf/floor/wood,/area/caribbean/sea/top)
+"Om" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/top_hat,/turf/floor/wood,/area/caribbean/sea/top)
 "Op" = (/turf/floor/beach/water,/area/caribbean/nomads/forest)
 "Or" = (/obj/structure/bed/chair/wood/bleacher/l,/turf/floor/plating/tiled/woodv,/area/caribbean/roofed/temperate)
 "Os" = (/obj/structure/window/barrier/railing/brick{desc = "A bunch of bricks, can be used as a cover"},/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
+"Ot" = (/obj/structure/roulette,/turf/floor/carpet/blackcarpet,/area/caribbean/roofed/temperate)
 "Ou" = (/obj/structure/simple_door/key_door/civ/room4,/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
 "Ov" = (/obj/structure/simple_door/key_door/civ/room5,/turf/floor/carpet/greencarpet,/area/caribbean/roofed/temperate)
 "Ow" = (/obj/structure/closet/cabinet,/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
 "Ox" = (/obj/effect/floor_decal/spline/fancy/wood{dir = 4},/turf/floor/carpet/purplecarpet,/area/caribbean/roofed/temperate)
 "OC" = (/obj/effect/decal/cleanable/cobweb2,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot,/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
 "OE" = (/obj/effect/decal/cleanable/cobweb2{icon_state = "cobweb2"; dir = 1},/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
+"OI" = (/obj/structure/wild/junglebush,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
 "OL" = (/obj/structure/closet/cabinet,/turf/floor/carpet,/area/caribbean/roofed/temperate)
 "OO" = (/obj/covers/wood_wall,/turf/wall/brick,/area/caribbean/sea/top/roofed)
 "OQ" = (/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/white,/area/caribbean/roofed/temperate)
@@ -972,6 +1021,7 @@
 "RR" = (/obj/structure/sink,/obj/structure/lamp/lamp_big,/turf/floor/plating/steel,/area/caribbean/sea/top/roofed)
 "Sa" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4},/obj/effect/decal/cleanable/generic,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "Sc" = (/obj/structure/simple_door/stone,/turf/floor/dirt,/area/caribbean/roofed/jungle)
+"Sd" = (/obj/item/clothing/accessory/armband/armbangle/gold,/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
 "Se" = (/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "Sg" = (/obj/structure/simple_door/key_door/civ/room6,/turf/floor/carpet/greencarpet,/area/caribbean/roofed/temperate)
 "Sh" = (/turf/floor/plating/steel{icon_state = "neutralcorner"},/area/caribbean/sea/top/roofed)
@@ -988,6 +1038,7 @@
 "SB" = (/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 8},/turf/floor/grass,/area/caribbean/nomads/forest)
 "SC" = (/obj/structure/sign/custom/metallic{name = "Infirmary"},/turf/wall/sandstone,/area/caribbean/roofed/temperate)
 "SE" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/nomads/forest)
+"SG" = (/obj/item/clothing/suit/storage/coat/wise_tutor_robes,/turf/floor/plating/stone_old,/area/caribbean/dark)
 "SH" = (/obj/structure/barricade/steel,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "SI" = (/obj/structure/bed/chair/steel/alt{dir = 8},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "SK" = (/obj/structure/bed/chair{icon_state = "wooden_chair"; dir = 4},/turf/floor/wood,/area/caribbean/sea/top/roofed)
@@ -1005,8 +1056,10 @@
 "Tg" = (/obj/structure/table/modern/retable,/obj/structure/window/clean/reinforced/bank_glass,/turf/floor/plating/steel,/area/caribbean/houses/nml_three)
 "Ti" = (/obj/item/kitchen/wood_bowl,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "Tj" = (/obj/structure/window/barrier/railing/brick{desc = "A bunch of bricks, can be used as a cover."; dir = 4},/obj/structure/barricade/vertical,/obj/structure/barricade/steel,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/wood,/area/caribbean/sea/top/roofed)
+"Tl" = (/obj/effect/spawner/objspawner/wandpart/badger_hair,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "Ts" = (/obj/covers/repairedfloor/ship,/obj/structure/table/modern/table,/turf/floor/plating/tiled/woodh,/area/caribbean/houses/nml_two)
 "Tt" = (/turf/wall/indestructable/black,/area/caribbean/sea/top)
+"Tw" = (/obj/structure/closet/cabinet,/obj/item/clothing/shoes/riding1/gator_cowboy,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "TA" = (/obj/structure/bookcase,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/turf/floor/wood,/area/caribbean/houses/nml_two)
 "TG" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/sea/top)
 "TI" = (/obj/effect/spawner/objspawner/wandpart/sheep_wool,/turf/floor/grass,/area/caribbean/farm)
@@ -1015,13 +1068,14 @@
 "TO" = (/obj/effect/decal/cleanable/dirt,/obj/item/weapon/barrier/sandbag,/turf/floor/plating/cobblestone/vertical,/area/caribbean/sea/top)
 "TQ" = (/obj/structure/bed/chair/wood/bleacher{dir = 8},/turf/floor/carpet/blackcarpet,/area/caribbean/roofed/temperate)
 "TR" = (/obj/structure/sign/wide/carpet,/turf/floor/wood,/area/caribbean/houses/nml_two)
-"TS" = (/obj/effect/spawner/objspawner/wandpart/fibreglass,/turf/floor/plating/steel,/area/caribbean/houses/nml_two)
+"TS" = (/obj/effect/spawner/objspawner/wandpart/fibreglass{max_range = 3},/turf/floor/plating/steel,/area/caribbean/houses/nml_two)
 "TU" = (/turf/floor/dirt/underground{name = "rocks"},/area/caribbean/roofed/jungle)
 "TV" = (/obj/effect/decal/cleanable/cobweb,/turf/floor/plating/stone_old,/area/caribbean/roofed/desert)
 "TY" = (/obj/effect/decal/cleanable/blood,/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
 "Ue" = (/mob/living/simple_animal/wizard/goblin_cleaner,/turf/floor/wood/alt/three,/area/caribbean/roofed/temperate)
 "Ug" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/sea/top)
 "Uh" = (/obj/structure/table/glass,/turf/floor/plating/steel,/area/caribbean/sea/top/roofed)
+"Ui" = (/obj/structure/closet/cabinet,/obj/item/clothing/suit/armor/samurai/warrior,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "Uk" = (/obj/structure/roof_support/nordic,/obj/item/flashlight/torch/on/unlimited,/turf/floor/carpet/purplecarpet,/area/caribbean/roofed/temperate)
 "Ul" = (/obj/structure/window/classic/brickfull,/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
 "Um" = (/obj/covers/wood_wall/nordic,/obj/structure/sign/crest/mustardweasel,/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
@@ -1049,6 +1103,7 @@
 "Vc" = (/obj/structure/simple_door/key_door/anyone/doubledoor/bronze,/turf/floor/carpet/blackcarpet,/area/caribbean/roofed/temperate)
 "Ve" = (/obj/covers/decorative_marbletile/black,/turf/floor/plating/stone_old,/area/caribbean/dark)
 "Vj" = (/obj/structure/wild/tree/live_tree,/turf/floor/beach/sand/dark,/area/caribbean/nomads/forest)
+"Vm" = (/obj/structure/fireplace_portal{destination = list("great_hall"); identification = "the jungle"},/turf/wall/old_stone,/area/caribbean/sea/top)
 "Vp" = (/obj/structure/window/classic/brickfull,/obj/structure/window/barrier/sandbag,/turf/floor/plating/tiled/darker,/area/caribbean/sea/top)
 "Vq" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "Vu" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
@@ -1061,6 +1116,7 @@
 "VN" = (/obj/structure/window/classic/stone,/obj/structure/barricade/steel,/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 8},/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
 "VR" = (/mob/living/simple_animal/wizard/goblin_cleaner,/turf/floor/plating/tiled/woodv,/area/caribbean/roofed/temperate)
 "VS" = (/obj/covers/brick_wall,/turf/floor/dirt,/area/caribbean/sea/top/roofed)
+"VT" = (/obj/structure/religious/animal_statue,/turf/floor/plating/stone_old,/area/caribbean/sea/top)
 "VY" = (/obj/structure/bed/chair/steel/alt/yellow{dir = 4},/turf/floor/wood/alt/three,/area/caribbean/roofed/temperate)
 "VZ" = (/obj/effect/landmark/npctarget,/turf/floor/carpet/purplecarpet,/area/caribbean/roofed/temperate)
 "Wa" = (/obj/structure/bed/chair/comfy/red,/mob/living/simple_animal/wizard/tumbledoor{anchored = 1},/turf/floor/carpet/purplecarpet,/area/caribbean/roofed/temperate)
@@ -1075,6 +1131,7 @@
 "WC" = (/obj/effect/decal/cleanable/dirt,/obj/effect/spawner/objspawner/wandpart/driftwood,/turf/floor/dirt,/area/caribbean/roofed/jungle)
 "WE" = (/obj/covers/repairedfloor/ship,/obj/structure/reagent_dispensers/largebarrel/beer,/turf/floor/plating/tiled/woodh,/area/caribbean/houses/nml_two)
 "WN" = (/obj/structure/bed/chair/wood/bleacher/l,/turf/floor/carpet/bluecarpet,/area/caribbean/roofed/temperate)
+"WO" = (/obj/item/clothing/suit/prehistoricfurcoat/black,/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
 "WQ" = (/obj/structure/table/modern,/obj/item/weapon/reagent_containers/food/drinks/bottle/small,/obj/item/weapon/reagent_containers/food/drinks/bottle/small,/obj/item/weapon/reagent_containers/food/drinks/bottle/small,/obj/item/weapon/reagent_containers/food/drinks/bottle/small,/obj/item/weapon/reagent_containers/food/drinks/bottle/small,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "WR" = (/obj/structure/bed/chair/wood/bleacher/r{icon_state = "bleacher_r"; dir = 8},/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
 "WU" = (/obj/structure/curtain/medical,/turf/floor/plating/steel,/area/caribbean/sea/top/roofed)
@@ -1085,6 +1142,7 @@
 "Xd" = (/obj/structure/religious/animal_statue/sandstone{icon_state = "sandstone_eue"},/turf/floor/carpet/purplecarpet,/area/caribbean/roofed/temperate)
 "Xi" = (/mob/living/simple_animal/wizard/goblin_healer,/turf/floor/carpet/blackcarpet,/area/caribbean/roofed/temperate)
 "Xl" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/wood,/area/caribbean/sea/top/roofed)
+"Xm" = (/obj/structure/wild/tree/dead_tree,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "Xo" = (/mob/living/simple_animal/wizard/mintysnek{dir = 4},/turf/floor/carpet/greencarpet,/area/caribbean/roofed/temperate)
 "Xp" = (/obj/structure/closet/cabinet,/turf/floor/carpet/bluecarpet,/area/caribbean/roofed/temperate)
 "Xr" = (/obj/structure/bed/wood,/obj/structure/curtain/black{pixel_y = 32},/turf/floor/wood,/area/caribbean/sea/top/roofed)
@@ -1095,12 +1153,14 @@
 "Xz" = (/obj/structure/table/modern/table,/obj/item/weapon/can/filled,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "XD" = (/obj/structure/bed/chair/office/dark{dir = 1},/mob/living/simple_animal/wizard/bobby,/turf/floor/plating/steel,/area/caribbean/houses/nml_three)
 "XH" = (/turf/floor/plating/stone_old,/area/caribbean/roofed/jungle)
+"XJ" = (/obj/item/stack/farming/seeds/peyote,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "XK" = (/obj/effect/decal/cleanable/blood/drip,/turf/floor/plating/cobblestone/vertical,/area/caribbean/sea/top)
 "XL" = (/turf/floor/plating/steel,/area/caribbean/houses/nml_two)
 "XP" = (/obj/structure/brazier/loaded,/turf/floor/wood,/area/caribbean/sea/top/roofed)
 "XT" = (/obj/structure/religious/monument/cultist/moloch,/turf/floor/carpet/blackcarpet,/area/caribbean/roofed/temperate)
 "XU" = (/turf/floor/plating/marble/grid,/area/caribbean/roofed/temperate)
 "XW" = (/obj/structure/vending/sales/wizards,/turf/floor/carpet/bluecarpet,/area/caribbean/roofed/temperate)
+"XZ" = (/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
 "Ya" = (/obj/structure/religious/runestone,/turf/floor/dirt/dark_dirt,/area/caribbean/dark)
 "Yb" = (/obj/structure/closet/cabinet,/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher,/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher,/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher,/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher,/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher,/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher,/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher,/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher,/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher,/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher,/turf/floor/carpet/blackcarpet,/area/caribbean/roofed/temperate)
 "Yc" = (/turf/wall/sandstone,/area/caribbean/houses/nml_two)
@@ -1134,9 +1194,10 @@
 "Zz" = (/obj/structure/mirror{layer = 4; pixel_x = 32},/obj/structure/sink{dir = 8; pixel_x = 14},/turf/floor/plating/white,/area/caribbean/houses/nml_two)
 "ZB" = (/obj/covers/wood_wall/nordic,/obj/item/flashlight/lantern/on/anchored,/turf/floor/carpet/greencarpet,/area/caribbean/roofed/temperate)
 "ZI" = (/obj/structure/potted_plant{dir = 9},/turf/floor/plating/tiled/woodv,/area/caribbean/roofed/temperate)
+"ZJ" = (/mob/living/simple_animal/turkey_f,/turf/floor/grass/jungle,/area/caribbean/sea/top)
 "ZL" = (/obj/structure/lamp/lamp_big{dir = 1},/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
 "ZM" = (/obj/structure/grille/chainlinkfence,/turf/floor/beach/water,/area/caribbean/farm)
-"ZN" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/shellbox/slug,/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
+"ZN" = (/obj/structure/closet/cabinet,/obj/item/clothing/suit/storage/jacket/inquisition/alt/hood,/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
 "ZP" = (/obj/structure/bed/chair/wood/red,/mob/living/simple_animal/wizard/professor_snip,/turf/floor/carpet/purplecarpet,/area/caribbean/roofed/temperate)
 "ZQ" = (/obj/structure/bed/chair{dir = 2; icon_state = "chair"},/turf/floor/plating/tiled/darker,/area/caribbean/sea/top/roofed)
 "ZT" = (/obj/structure/toilet{dir = 4; icon_state = "toilet00"},/turf/floor/plating/white,/area/caribbean/houses/nml_two)
@@ -1144,55 +1205,55 @@
 "ZZ" = (/obj/structure/wild/jungle/medpine/dead,/turf/floor/grass,/area/caribbean/farm)
 
 (1,1,1) = {"
-EuEupKIbEuEuEuVGpKEuEuVGEuEuEuEuEuEuEuEuEuEupKEuEupKpKEuEuEuEuHwEuEuEuCkCkCkCkisisCkCkEuEuTtTUTUTUTUTUTUTUTUTUTUTUTUWsXHXHXHXHXHXHBbXHAgXHkOWsTUTUTUTUWsgKboVLfOXHDVXHWsfufufuTtcHBmcHcHcHcHcHCeCecHcHcHcHCecHcHcHcHcHcHSwcHSwcHCecHSwcHcHcHcHcHCecHcHcHcHcHCecHCeTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-EupKVGEsVGEuEuEuEuEuEuEuEupKEupKEuVGpKEuEuVGEuVGVGVGEuVGpKIbVGvQEuTGCkCkCkCkCkCkCkEuEuCkEuTtTUTUTUTUTUTUTUTUTUTUTUTUWsXHXHTYVuVufufufuXHXHfuWsTUTUTUTUWsXHXHqvfuVuXHfuWsTUTUTUTtcHBacHcHBmcHCeBmCecHBmcHcHcHcHcHSwcHBmCeBmcHcHcHSwcHcHBacHBaSwcHSwcHBmcHSwcHCeSwSwTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwEuEuVGVGBLVGpKIbHwqJEuCkCkofCkTGCkCkTGCkCkCkEuTtTUTUTUTUTUTUTUTUTUTUTUTUWsWsWsWsWsWsWsWsWsfuXHXHWsTUTUTUTUWsnxfuXHfuXHXHXHWsTUTUTUTtBmcHBmcHCecHcHcHcHcHSwcHwcwcwcwcwccHSwcHcHcHcHcHcHSwcHcHcHcHBmcHCecHcHcHcHcHCecHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwsAsAsAsAsAsAsAsAsAsAsAsAsAsAsAsAsAsAsAsAHwHwHwEuVGEupKpKIbHwqJEuCkCkCkTGCkCkCkCkCkCkCkTGTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsfufuXHWsTUTUTUTUWsOEXHKLfuauAgfuWsTUTUTUTtcHcHSwcHSwcHBmCecHBmcHcHwcENbDENwccHBacHcHBmBmcHcHcHcHBmcHCeBacHSwcHBmcHSwcHCecHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwsAJFSHSHsANdNdfVadNdsAJFNdNdsANdNdfVadsAHwHwHwVGpKVGpKVGIbvvvQEuCkCkCkCkCkCkCkCkCkCkCkEuTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHXHWsTUTUTUTUWsWsWsWsclWsWsWsWsTUTUTUTtcHcHBmcHcHcHBacHcHcHBaBmXugILNgIXucHcHcHcHcHcHBmSwBmBmcHBacHBaQWQWcHSwcHcHcHcHcHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwAKzdNdSasANdNdFTXzcdsAzdNdSasANdNdFTUsHPHwHwHwVGpKEuEupKpKEuvQCkCkisCkCkTGCkCkCkCkCkisisTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsXHyRXHWsTUTUTUTUTUTUWsfuVufuWsTUTUTUTUTUTtcHBmcHcHcHcHcHSwcHcHPJBawcCxVeCxwcCeBmcHCeCeusSwcHCeCecHcHcHcHcHQWSwcHBaBmcHBmcHBmTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwwoBPCtNduXNdKwNdadJFsABPCtNduXNdKwNdUNTjHwHwHwVGpKEuEuVGEuUgvQEuTGCkCkCkCkCkCkEuEuCkCkisTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHfuWsTUTUTUTUTUTUWsChXHXHWsTUTUTUTUTUTtcHSwcHBmBmcHcHBacHcHcHSwwcYNSPYNwccHSwcHBabdbdbdbdbdbdcHBmcHBmcHcHcHBaQWQWQWcHBmcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwsAsAuXsAsANdNdadEBXPsAsAuXsAsANdNdUNEBsAHwHwEupKpKVGpKVGVGHwvQCkCkCkEuCkCkCkCkisisEuCkEuTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHXHWsTUTUTUTUTUTUWsVuanBbWsTUTUTUTUTUTtBmcHcHCeCeQWcHcHBmcHBmcHcHwcSPwcBmcHBaPJBmbdDPSPSPlBbdcHSwcHcHcHcHBmcHCecHCecHCecHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwsANdNdKwsAJvNdRPNdXlsANdNdKwsAJvNdoKNdsAHwHwHwVGpKqJEuVGVGQKHwEuCkCkCkCkEuCkCkCkCkTGEuEuTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHfuWsTUTUTUTUTUTUXHfuXHtPWsTUTUTUTUTUTtcHBaCeSwQWQWcHCecHcHSwCecHwcSPwcCecHcHcHSPoOSPSPSPSPbdcHcHBacHcHBmcHcHcHBmcHCecHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwJLajajNdsANdNdNdHpNdJLNdNdNdsANdNdNdHpuXHwHwHwpKpKEuIbpKpKEuHwEuCkCkisisCkCkCBCkCkCkCkCkTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsXHfuXHWsTUTUTUTUTUTUWsfuXHXHWsTUTUTUTUTUTtSwCecHQWQWQWcHcHBmcHBmcHSwYNSPYNCecHBmcHSPbdAJxpSPDPbdcHBmcHBmcHCecHcHcHcHcHCecHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwsAwwByVqsAadNdNdosJtsAEpNdXlsAadNdNdossAHwHwHwpKpKpKpKIbuMEuHwEuCkCkTGCkCkCkCkCkCkCkCkCkTtWsWsWsWsWsWsWsWsWsWsWsWsWsWsWsWsWsXHWsWsWsuoXHXHWsTUTUTUTUTUTUWsXHfuTiWsTUTUTUTUTUTtcHcHcHQWcHcHcHCecHcHSwCecHwcSPwccHcHSwcHSPbdbdbdbdbdbdBmcHcHSwcHSwcHBmcHSwcHCecHBmTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwuXNdwpNdsAadNdyyqOadsANdNdNdsAINNdyyqOsAHwHwEuVGpKEuEuEsqJHwHwCkCkCkCkCkCkCkCkCkCkisisCkTtXHfuXHXHXHfuhhLtXHXHfuXHFufufuXHXHXHXHnfWsXHXHXHWsTUTUTUTUTUTUWsXHXHXHWsTUTUTUTUTUTtcHcHcHcHBmcHSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPcHcHSwcHCecHcHBmcHcHcHSwcHcHcHcHBacHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-EuVSsAsAsAsAsNsABBsAsAsAsAsAsAsAsAsAsAsAsAHwEuEuEupKVGVGpKEsEuHwCkCkisCkofCkTGCkCkTGCkCkCkTtYFYFYFBbXHVuXHfufuWsWsVuVuXHBbfuWsWsXHXHScXHXHXHBOWsWsWsWsWsWsWsWslvkoWsWsTUTUTUTUTtCeBmcHBmcHBmSPpCcHpCcHpCcHpCSPpCcHpCcHpCcHpCSPcHcHCecHCecHBmcHcHcHBmcHCecHBmBmcHBmTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-EusAOOehNdzBOOehNdNdzBOOafGwNdafSKNdNdrcsAHwEuEuEuEuEuVGEuEuEuHwCkCkCkCkCkTGCkCkCkCkCkCkCkTtXHXHXHXHXHXHXHXHXHWsWsXHfOfuVufuWsWsXHfulvXHXHTYfuXHXHXHXHXHXHXHfufuXHldWsTUTUTUTUTtBmcHcHSwcHCeSPuscHuscHJdcHusSPuscHuscHuscHusSPcHCecHcHcHcHSwcHBmBmcHBacHBmcHcHcHSwTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwsAOOAfafNdOONdmdafNdOOzTNdNdVGNdNdNdAIsAHwHwHwEuQKEuIbEupKHwHwEuCkCkTGCkCkCkofCkEuCkCkCkTtYFYFYFXHXHXHXHXHXHXHfuXHfuXHXHfuXHXHXHXHWsfuXHXHXHXHXHXHXHXHfuDVXHXHXHXHWsTUTUTUTUTtcHcHcHCecHCeSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPcHcHcHBmcHBmcHcHCeCecHcHcHcHcHcHcHBmTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwsACTNdNdFlOONdNdNdFlOOUTafNdVGNdNdNddvsAHwEuHwVGEuqJIbpKpKEuHwEuCkCkCkCkCkisCkCkCkCkCkTGTtXHXHXHhhfuWsWsWsWsWsWsWsWsWsWsWsWsWsWsWsWslvWsWsWslvWsWsWskokoWsWsScWsWsWsTUTUTUTUTtcHBmCecHcHcHSPpCcHpCcHpCcHpCSPpCcHpCcHpCcHpCSPcHBmcHcHBmcHBaCeSwCecHBmcHCeCecHBmcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwsAOOOOhSOOCTOOhSOOOOOOthafQuafmdGwNdNdsAHwEuHwsZEuIbpKEuEuEuHwEuTGCkCkCkTGCkCkCkCkTGCkCkTtWsWsWsWsWsWsTUTUTUTUTUTUTUTUTUTUTUTUTUTUWslvWsWsWsScWsWsWskoWsWsXHXHdjWsTUTUTUTUTUTtBmcHcHcHBmcHSPuscHuscHuscHusSPuscHuscHuscHusSPcHBmcHBaCeSwCecHcHcHcHMAcHBaBmcHSwcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwsAOOHpNdNdEEafNdjnNdzBNdGwNdNdNdoFNdNduXHwHwHwpKEuEsEuEuQKEuHwCkCkCkCkCkCkCkCkCkCkCkCkCkTtTUTUTUTUTUTUTUTUTUTUTUTUTUWsWsWsWsWsWsWsWsXHXHfuXHXHfuXHfuXHXHWsXHfOXHWsTUTUTUTUTUTtcHcHcHcHcHBmSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPSwBacHQWQWcHcHcHcHcHcHcHBacHcHBmcHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwsAOONdFTGwJFcdcdNdNdNdNddvNdafaffQfQAIsAHwEuHwpKEupKIbEuEuEuHwEuCkCkCkisCkCkCkCkCkCkCkCkTtTUTUTUfufuTUTUTUTUTUTUTUTUWsXHChfuXHXHZsWsXHXHXHXHSvVuqvVuVuXHWsXHXHIjWsTUTUTUTUTUTtcHcHcHcHcHQWSPpCcHpCcHpCcHpCSPpCcHpCcHpCcHpCSPSwBaQWQWQWcHcHcHcHBmcHBmcHCecHcHBaCeTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-zbsAOOjnNdNdwjafafafNdyyfQNdNdLYVGMyNdNdarHwEuHwpKpKVGEsVGEuEuHwCkCkCkCkCkofCkTGCkCkCkCkCkTtTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHjRjRXHXHWsfuXHXHfuXHXHXHXHeZVuWsXHXHXHWsTUTUTUTUTUTtcHcHcHBmQWQWSPuscHgqcHgqcHusSPuscHuscHJdcHusSPcHcHcHcHCeCeBmcHBmcHBmQWQWcHBmcHcHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwsAOOOOafOOOOOOOOafOOOOOOOOOOHpVGMyQnMyvTHwHwHwVGpKVGIbVGEuEuHwCkCkCkCkCkCkCkCkCkisCkTGEuTtTUSefuTUfufufufufufufufuTUWsXHXHXHXHfuXHlvXHyRXHWsWsWsWsWsScWsWsfuXHfuWsTUTUTUTUTUTtcHBmBacHcHcHSPSPSPSPSPSPSPSPNpSPSPSPSPSPSPSPSPBacHcHcHBaBmcHcHSwcHCeQWcHcHcHcHcHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwsAOOcxtcqwNJWUQsJpJpUosKqwOONdVGhrNdNdarHwHwHwpKpKVGqJpKEuEuEuEuCkCkTGCkCkCkCkCkCkCkCkEuTtfuSeSeSefufufuTUfufufuTUTUWsfuXHjRjRGlfuWsfuXHfuWsTUTUWsuoXHXHWsXHVuXHWsTUTUTUTUTUTtcHcHcHcHcHBmSPcHcHBmQWQWBawcSPwccHcHcHcHcHcHcHcHBmcHBmcHcHcHcHCecHCecHBmcHSwcHcHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-EusAOOUhiRiRtcWUEIgzQMiRNJDbOOafMyNdNdAIsAHwHwHwpKpKpKVGpKpKEuEuCkCkCkCkCkCkCkCkCkCkCkTGCkTtfufufufuqHfufufufufuTUTUTUWsXHfuXHfuXHXHWsXHXHXHWsTUTUWsmRXHmRWsXHVufuWsTUTUTUTUTUTtcHBacHSPSPSPSPcHcHcHQWcHcHMJSPMJcHcHcHcHcHBmcHCecHcHSwCecHBmCecHcHcHcHSwcHcHCeCecHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-EusAOOUhtcQMXwWUiRShNJiRlziROONdjnNdZcNdsAHwHwHwpKpKpKVGVGEuEuEuCkCkCkCkCkCkCkCkCkCkCkCkEuTtfufufufufufufufufuTUTUTUTUWsWsWsWsWsWsWsWsfuXHXHXHTUTUWsfufuXHWsfuXHXHWsTUTUTUTUTUTtBmcHCeSPcHSwcHBmcHSwcHBmcHwcSPwccHBmcHBmBmcHBacHcHcHCecHBmcHcHcHBmcHBmcHCecHBmCecHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-EusAOOmxDEtcpvWUGWdKlbOiiRdKOOjnNdNdNdCtMyHwHwEupKVGEuEuVGpKQKHwEuCkCkisEuCkTGCkisTGCkCkEuTtUBUBfufufuSeSefufuTUTUTUTUTUTUTUTUTUTUTUWsfuXHXHXHTUTUWsXHXHodWsXHGlXHWsTUTUTUTUTUTtcHcHcHSPcHcHbdbdbdbdbdbdcHwcSPwccHSwcHCeCecHcHcHcHCecHcHcHcHcHcHcHBmcHBacHcHcHcHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-QKsAsAsAlzsAsAsAsAsAiRsAjNsAsAsAsAVGVGsAsAHwEuEuVGVGEuVGVGEuHwHwEuEuCkEuEuEuEuCkEuEuCkEuEuTtUBfufufuCdfufuSefufufuTUTUTUTUTUTUTUTUTUXHfuXHXHWsTUTUWsXHXHfuWsXHfufuWsTUTUTUTUTUTtcHSPSPSPcHcHbdtGSPSPtGbdcHMJSPMJcHcHCeBmCecHBmcHcHcHcHcHSwcHBmCeTdCecHcHcHcHBmBmCeTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-HwtwHwvQHwHwHwtwHwGDHwCkCkyvTOqJHwHwEuEuYwEuEuEuHwSMVGvQYwVGEuUgqJHwEuEuVGGDvQEuspSAEuVGEyTtUBfufufufufufuSefufufuTUTUTUTUTUTUTUTUTUWsXHXHXHWsTUTUWsfufuXHWsfuXHXHWsTUTUTUTUTUTtcHSPBmcHBmBmbdSPSPSPSPoOSPwcSPwccHBacHcHcHcHSwcHBmcHCecHcHcHSwcHCecHcHBmcHcHSwcHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-pKpKpKEspKpKVGVGVGpKEuBLpKpKIbVGLFpKVGEuVGEspKpKpKEuEuEspKpKjtpKIbVGEuEuVGVGIbEuDoiEEuEuEsTtfufufufufufufuSeSefufufufuTUTUTUTUTUTUTUWsXHpcfuWsTUTUWsnxXHmRWsXHXHXHWsTUTUTUTUTUTtcHSPSwcHCeCebdtGxpSPtGbdcHwcSPwccHcHcHcHcHcHcHBacHBacHCecHBmCecHCecHcHcHcHcHcHcHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-sZpKpKEspKpKpKpKpKEuEuEuPHVGycJCEuVGVGEuEspKpKVGpKpKpKIbVGLFpKpKIbpKEuEuszpKPeQKtBEupKIbVGTtfufufufufufufuSeSefuTUTUfuTUTUTUTUTUTUTUWsfuXHfuWsTUTUWsXHBbXHWsTYXHXHWsTUTUTUTUTUTtcHSPcHCeSwCebdbdbdbdbdbdcHMJSPMJcHcHcHcHBmcHBmcHcHcHcHcHBmcHcHcHCecHBmcHCeCeSwcHBmTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-pKEupKVGEspKVGEuEuVGEsEupKwXhZLnEuQKEuEsVGpKyHCkEuEkpKhZYwEuVGEuEspKEuEukWpKGtEuEuVGpKIbVGTtSeSefufufufufufufuTUTUTUTUTUTUTUTUTUTUTUWsOEfuXHWsTUTUWsWslvWskGWslvWskoTUTUTUTUTUTtBmSPBacHQWQWQWSwcHBaBmcHcHwcSPwcCeBmcHBmcHBmcHcHcHBmcHcHcHcHQWQWQWQWSwcHBaBmcHcHSwTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-pKpKpKQKEspKpKpKEuVGVGEuEuEsEspKpKpKEuVGEuVGpKpKpKpKpKEsLFpKVGpKYrVGVGVGkWEuqJpKJupKqJVGEuTtSeSefufufuTUTUfufuTUTUTUTUTUTUTUTUTUTUTUWsWsfuXHWsTUTUWsldqzFFXHFFXHldWsTUTUTUTUTUTtSwSPcHQWQWcHcHcHBacHcHcHcHwcSPwcBmcHcHSwcHCecHcHcHcHcHcHcHcHBaQWQWcHcHBmSwCecHBmCeTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-pKpKLFkLEsqJEuEuEuEuEuEspKEspKpKEuEspKpKpKpKpKpKpKpKpKwmpKpKVGkLIbVGEuEuszEuEspKEujvEsRnEuTtSeSefufufuTUTUfufuTUTUTUTUTUfuTUTUTUTUTUTUWsfuXHWsTUTUWsXHXHSvAHTYBbXHWsTUTUTUTUTUTtcHSPcHcHcHBmcHBmcHCecHBmCeMJSPMJcHcHcHCecHCecHBmBmcHCeBmcHBmcHCecHBmCecHCecHBmcHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-bRVGVGpKEsycVGEupKpKEupKpKpKpKpKpKEuEuEuEuVGpKpKpKLFLFEspKpKpKVGwHVGEuEukWEuEsEuDoMLpKEuEuTtfufuWsWsWsWsWsWsWsWsTUTUTUTUTUTUTUTUTUTUTUWsXHfuWsTUTUWsXHfuFFXHFFXHldWsTUTUTUTUTUTtCeSPBmcHBmcHBmcHcHcHBmcHcHwcSPwccHcHCecHcHcHcHSwcHcHBacHBmcHcHcHBmcHcHcHSwcHcHcHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-EuHwVGHwHwHwHwEuHwVGVGVGSMHwGuVGEuEspKpKVGEuVGHwHwVGVGVGvQYodwdwIbVGEuEuEuEuwXEuDoyAHwEuHwTtfufuWsuohMfufuXHOCWsTUTUTUTUTUTUTUTUTUTUTUWsfuXHWsTUTUWsWslvWsWsWslvWsWsTUTUTUTUTUTtBaSPSPSPSPcHKacHcHcHcHcHcHwcSPwcBmSPSPSPSPSPSPSPSPSPSPcHCecHcHcHcHcHCecHBmcHcHcHBaTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-YwHwVGHwGutwHwHwHwEutwHwHwEuEuHwEuEuEuEuEuHwHwbeUgEuHwHwqJqJHwHwvQEuQgEuUgEutaEuDomiHwHwHwTthAJQWsXHXHXHmEXHmRWsWsWsWsWsWsWsWsWsWsWsWsWslvlvWsTUTUWsfuXHXHWsXHXHfuWsTUTUTUTUTUTtcHcHcHcHSPcHCecHBmcHSwcHBmMJSPMJcHSPBmcHcHBmcHBaCecHSPcHCecHBmcHSwcHBmcHSwcHcHBmcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-EuKWHwYOHwRvHwHwEuHwHwzPzbzbHwHwHwHwHwHwHwHwHwHwHwSMHwHwHwHwHwHwHwHwHwHwHwtataEukWtaHwSMHwTtfufulvbofuVuBbBbXHXHfufuXHXHfOfufufucKWCqvXHXHXHWsTUTUWsXHfuXHWsBRXHXHWsTUTUTUTUTUTtCecHBmCeSPcHcHcHSwcHcHcHSwwcSPwcSwSPSwcHSwBacHcHcHcHSPSPSPSPSPSPSPSPSPSPSPSPBmcHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-EuHwsAsAsAsAsAsAsAsAsAVpVpVpsAsAsAsAsAvJsAsAvJsAsAsAvJsAvJsAsAEuEuEurvsAfCsAEuEusesAafsAsATtfufulvfuXHVuyRVuXHXHXHXHXHXHfuXHXHXHXHXHXHfuXHnfWsTUTUWsfuXHXHWsXHXHXHWsTUTUTUTUTUTtcHBmcHcHSPBmcHBmcHCecHBmCewcSPwccHSPbdbdbdbdbdbdcHcHSPzIYazIcHYacHYazIcHYaSPCecHCeTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-EuVGsAesDEqwdAryryrymprpeKfmsADCDEDEADitlJsAUylJsAgVkPsARAsmsANdEurvQzifXrsAififQzafNdafsATtJQxXWsXHXHXHfupcfuWsWsWsWsWsWsWsWsWsWsWsXHWsWsWsWsTUTUXHfuXHXHWsVuXHXHWsTUTUTUTUTUTtcHcHcHcHSPcHBmcHBacHBmcHcHMJSPMJcHSPbdDPSPSPlBbdcHcHSPcHcHcHcHcHcHcHcHcHcHSPcHcHCeTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-vvHwsAMFDEDEeWbysdbylHDXMvWesAxjFURRsAbybyafsdassArwsdafsdMEsANdNdGwuXNdHVsADvFrNdGwNdNdsATtfuSeWsIoXHgKXHXHfkWsTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsXHXHXHWsXHXHAHWsTUTUTUTUTUTtcHSwcHBmSPSPSPSPSPSPSPSPSPSPSPSPSPSPoOSPSPSPSPbdcHcHSPItcHRlItRlItcHRlItRlSPcHcHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-EuGusAdAkgdAdAbybyasmpmpmpmpsAsAsAJMsAbyassAbrbysAbybrsAbrMEsAAnVbNdQzehehsAOmFrQzRjLUeIsATtfufuWsWsWsWsWsWsWsWsTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHfuWsfuXHzoWsTUTUTUTUTUTtcHcHcHSwcHCecHcHBmcHCeCeBmBaSPcHcHCebdAJxpSPDPbdcHBmSPcHcHcHcHcHcHcHcHcHcHSPBacHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-EuHwrWetyZZNmprybybympyZyZOwsAxjesqVsAbyjBsAsAeWsAeWsAsAsAeWsABBsAsAsAsAsAsAsAsAsAsAsAsAsATtfufufufufuSefufufufuTUfufuTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsXHXHfuWsWsSclvWsWsWsTUTUTUTtCecHBmCecHCecHcHcHcHcHcHcHcHSPBmcHcHbdbdbdbdbdbdBacHSPItRlItcHRlItTdItRlRlSPcHCecHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-VGHwjycMbybydArybybympbybybyafYyDEDEDEbybybybybybybybybybybysAAndRRjQzehNdsAehehQzRjGEeIsATtfufufufufufuqHfufufuTUfufufuTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHfuWsWsXHXHfuZsWsTUTUTUTtcHBmcHQWiHCecHBmcHCeCeBmcHcHSPcHcHBmcHcHCecHcHcHcHcHSPcHcHcHcHcHcHcHcHcHcHSPcHcHBmTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-EuHwsAOwyZbyeWbybybybyLobyOwsAsAsAsAsAbybysAeWsAsAsAeWsAeWsAsAeINdNduXNdHVsADvNduXNdNdNdsATtUBfufufufufufufufufufufuTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHXHWsWsfuXHXHChWsTUTUTUTtcHQWQWQWcHcHcHSwcHBaBmcHcHcHSPCeBmcHcHcHcHcHSwcHcHcHSPItcHItRlItRlRlcHRlItSPcHcHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-KWXKsAsAsAsAsAbybybysAsAsAsAsAsnaLiSsAbyassAbybrsAbrbysAbybrsANdNdeIQzifnZsAhzifQzNdNdNdsATtUBfufufufuSefufufufufufuTUTUfufufuTUTUTUTUTUTUTUTUTUTUWsXHfuXHWsWsFXVuVuFXWsTUTUTUTtQWQWcHBacHcHcHcHBmSwCeDNDNDNMZDNDNDNBacHcHcHcHBmcHcHSPSPSPSPSPSPSPSPSPSPSPSPBmcHSwTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-VGHwbybybyZLbybyKgbyZLbybyWjsAbybybyeWbybysAbyZQafZQbysArwoxsAsAuXsAsAsAfCsAfCsAsAsAuXsAsATtUBUBfufufufuUBfufufufufufufufufufuTUTUTUfuTUTUTUTUTUTUWsfuXHXHWsWsFXXHXHFXWsTUTUTUTtBmcHBmcHCecHBmCecHCecHDNTVhohoholhDNcHCecHBmCeQWcHcHcHcHBmcHBmcHCecHcHcHcHBmCeCecHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-IbvQsAiUmkEcEcEcfHmkbybybyLCsAyQEQwtsAvxJisAcDkdsAebJisAcDkdsAVGHwHwHwHwHwHwHwHwHwHwHwHwHwTtUBUBfufufufufuUBfufuopfufuTUTUTUTUfufuTUTUTUfufufuTUTUWsXHXHfuWsWsmRXHBIgZWsTUTUTUTtcHBmcHcHcHBmcHcHcHSwcHDNHzhohohoHzDNcHcHBmcHQWQWCeBmcHBmcHBmcHcHcHBmBmQWBmcHcHcHBmTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-IbGusAUlUlsAphsAykrWOsbyOsrWsAsAUlsAsAsAphsAsAUlsAUlsAsAsAUlsAHwHwHwHwHwHwHwHwHwVGVGHwHwHwTtTUTUTUTUopfufufufufufufufufufuTUTUTUTUTUTUTUTUTUTUTUTUWsWsWsWsWsWsWsinWsWsWsTUTUTUTtcHCecHcHcHcHcHCecHBmcHDNhohohohohoDNcHcHcHcHCecHBmcHcHSwcHCecHcHcHcHQWcHSwcHcHcHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-IbvQHwtatatatataHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwIbVGHwvQVGHwHwVGHwHwHwTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTtcHCecHBmcHSwcHBmcHSwcHDNHzhohohoHzDNBmcHSwcHBmcHcHcHcHCeQWCecHBmcHSwSwcHCecHBmcHSwTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
-VGvQtatatatatatataHwHwHwHwHwHwHwVGVGHwHwHwHwHwHwHwVGHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTtcHcHcHSwcHcHcHSwcHBmcHDNDNDNpnDNDNDNSwcHcHcHSwcHcHBmCecHQWQWcHSwcHcHcHCecHcHcHcHcHTtEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEuEu
+EuEupKIbEuEuEuVGpKEuEuVGEuEuEuEuEuEuEuEuEuEupKEuEupKpKEuEuEuEuHwEuEuEuCkCkCkCkisisCkCkEuEuTtTUTUTUTUTUTUTUTUTUTUTUTUWsXHXHXHXHXHXHBbXHAgXHkOWsTUTUTUTUWsgKboVLfOXHDVXHWsfufufuTtcHBmcHcHcHcHcHCeCecHcHcHcHCecHcHcHcHcHcHSwcHSwcHCecHSwcHcHcHcHcHCecHcHcHcHcHCecHCeTtNRNRNRXZNRNRNRNRDlNRNRXZOINRNRXZEuEuNRNRDlNRDlDlNREuNRNRNRNRNRNRKUDlNRNRNRNRNRNRNRNRNRNRfE
+EupKVGEsVGEuEuEuEuEuEuEuEupKEupKEuVGpKEuEuVGEuVGVGVGEuVGpKIbVGvQEuTGCkCkCkCkCkCkCkEuEuCkEuTtTUTUTUTUTUTUTUTUTUTUTUTUWsXHXHTYVuVufufufuXHXHfuWsTUTUTUTUWsXHXHqvfuVuXHfuWsTUTUTUTtcHBacHcHBmcHCeBmCecHBmcHcHcHcHcHSwcHBmCeBmcHcHcHSwcHcHBacHBaSwcHSwcHBmcHSwcHCeSwSwTtDlDlNRNRNRNRNRfENRDlNRNRNRNRNRNRNREuNRNRNRBnBnNRNREuNRNRNRNRNRDlDlNRNRfENRNRNRDlDlKUDlNRNR
+HwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwEuEuVGVGBLVGpKIbHwqJEuCkCkofCkTGCkCkTGCkCkCkEuTtTUTUTUTUTUTUTUTUTUTUTUTUWsWsWsWsWsWsWsWsWsfuXHXHWsTUTUTUTUWsnxfuXHfuXHXHXHWsTUTUTUTtBmcHBmcHCecHcHcHcHcHSwcHwcwcwcwcwccHSwcHcHcHcHcHcHSwcHcHcHcHBmcHCecHcHcHcHcHCecHcHTtNRNRNRNRNRNRNRNRNRNRNRNRKUNRKUNRNRNRNRNRNRNRNRNRNREuNRNRNRNRNRNRNRNRNRNRNRNRNRNRXZDlXZNRDl
+HwsAsAsAsAsAsAsAsAsAsAsAsAsAsAsAsAsAsAsAsAHwHwHwEuVGEupKpKIbHwqJEuCkCkCkTGCkCkCkCkCkCkCkTGTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsfufuXHWsTUTUTUTUWsOEXHKLfuauAgfuWsTUTUTUTtcHcHSwcHSwcHBmCecHBmcHcHwcENbDENwccHBacHcHBmBmcHcHcHcHBmcHCeBacHSwcHBmcHSwcHCecHcHTtNRNRNRKUdYNRBngpNRNRNRNRNRNRDlNRNRNRNRNRdYNRDlrJNREuDlDlNRBnNRNRNRNRNRNRNRNRNRNRNRNRNRNRNR
+HwsAJFSHSHsANdNdfVadNdsAJFNdNdsANdNdfVadsAHwHwHwVGpKVGpKVGIbvvvQEuCkCkCkCkCkCkCkCkCkCkCkEuTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHXHWsTUTUTUTUWsWsWsWsclWsWsWsWsTUTUTUTtcHcHBmcHcHcHBacHcHcHBaBmXugILNgIXucHcHcHcHcHcHBmSwBmBmcHBacHBaQWQWcHSwcHcHcHcHcHcHTtNRBnNRNRNRNRNRgpNRNRNRNRNRfENRdYNRNRwaNRNRrJNRNRNRNRNRfENRNRNRXZXZMrNRNRNRNRdYNRNRNRNRNRNR
+HwAKzdNdSasANdNdFTXzcdsAzdNdSasANdNdFTUsHPHwHwHwVGpKEuEupKpKEuvQCkCkisCkCkTGCkCkCkCkCkisisTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsXHyRXHWsTUTUTUTUTUTUWsfuVufuWsTUTUTUTUTUTtcHBmcHcHcHcHcHSwcHcHPJBawcCxVeCxwcCeBmcHCeCeusSwcHCeCecHcHcHcHcHQWSwcHBaBmcHBmcHBmTtNRNRNRdYNRNRNROefEDlfEDlNRXZXZNRNRNRNRrJNRNRNRNRNRwaNRNRNRNRNRNRNRDlKUNRNRNRNRNRNRNRNRNRNR
+HwwoBPCtNduXNdKwNdadJFsABPCtNduXNdKwNdUNTjHwHwHwVGpKEuEuVGEuUgvQEuTGCkCkCkCkCkCkEuEuCkCkisTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHfuWsTUTUTUTUTUTUWsChXHXHWsTUTUTUTUTUTtcHSwcHBmBmcHcHBacHcHcHSwwcYNSPYNwccHSwcHBabdbdbdbdbdbdcHBmcHBmcHcHcHBaQWQWQWcHBmcHTtNRNRNRNRNRNRNRKUNRNRwaBnNRNRNRNRNRNRNRNRKUNRDlNRNRNRNRDlNRdYNRNRNRNRNRNRNRNRNRNRNRNRNRNRDl
+HwsAsAuXsAsANdNdadEBXPsAsAuXsAsANdNdUNEBsAHwHwEupKpKVGpKVGVGHwvQCkCkCkEuCkCkCkCkisisEuCkEuTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHXHWsTUTUTUTUTUTUWsVuanBbWsTUTUTUTUTUTtBmcHcHCeCeQWcHcHBmcHBmcHcHwcSPwcBmcHBaPJBmbdDPSPSPlBbdcHSwcHcHcHcHBmcHCecHCecHCecHTtNRNRNRNRNRNRNRXZNRNRKUNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRdYNRNRdYNR
+HwsANdNdKwsAJvNdRPNdXlsANdNdKwsAJvNdoKNdsAHwHwHwVGpKqJEuVGVGQKHwEuCkCkCkCkEuCkCkCkCkTGEuEuTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHfuWsTUTUTUTUTUTUXHfuXHtPWsTUTUTUTUTUTtcHBaCeSwQWQWcHCecHcHSwCecHwcSPwcCecHcHcHSPoOSPSPSPSPbdcHcHBacHcHBmcHcHcHBmcHCecHcHTtNRNRrJNRdYBnNROeNRNRNRNRrJDlDlNRNRdYNRNRNRdYNRNRNRNRNRNRNRNRNRBnNRNRDlNRNRKUDlfEfEDlNRZJNR
+HwJLajajNdsANdNdNdHpNdJLNdNdNdsANdNdNdHpuXHwHwHwpKpKEuIbpKpKEuHwEuCkCkisisCkCkCBCkCkCkCkCkTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsXHfuXHWsTUTUTUTUTUTUWsfuXHXHWsTUTUTUTUTUTtSwCecHQWQWQWcHcHBmcHBmcHSwYNSPYNCecHBmcHSPbdAJxpSPDPbdcHBmcHBmcHCecHcHcHcHcHCecHcHTtBnfENRNRBnfEbpNRdYNRNRNRNRNRfENRNRNRNRNRNRBnNRNRNRdYNREudYEuNRNRDlNRfENRNRDlNRNRwaBnNRNRNR
+HwsAwwByVqsAadNdNdosJtsAEpNdXlsAadNdNdossAHwHwHwpKpKpKpKIbuMEuHwEuCkCkTGCkCkCkCkCkCkCkCkCkTtWsWsWsWsWsWsWsWsWsWsWsWsWsWsWsWsWsXHWsWsWsuoXHXHWsTUTUTUTUTUTUWsXHfuTiWsTUTUTUTUTUTtcHcHcHQWcHcHcHCecHcHSwCeHjwcSPwcHjcHSwcHSPbdbdbdbdbdbdBmcHcHSwcHSwcHBmcHSwcHCecHBmTtNRNRDlNRNRbpfEXZNRNRNRNRNRNRBnNRNRBnNRNRNRNRNRdYfUGSVGGSfUNRNRNRNRKUwaNRNRNRNRNRKUNRNRNRNR
+HwuXNdwpNdsAadNdyyqOadsANdNdNdsAINNdyyqOsAHwHwEuVGpKEuEuEsqJHwHwCkCkCkCkCkCkCkCkCkCkisisCkTtXHfuXHXHXHfuhhLtXHXHfuXHFufufuXHXHXHXHnfWsXHXHXHWsTUTUTUTUTUTUWsXHXHXHWsTUTUTUTUTUTtcHcHcHcHBmcHSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPcHcHSwcHCecHcHBmcHcHcHSwcHcHcHcHBacHTtNRNRNRNRNRXZKUXZNRNRrJNRNRNRNRNRNRdYNRNRBnNREuGSVGVGVGVGVGGSNRDlNRNRNRuvmvNRNRNRNRNRrJDlDl
+EuVSsAsAsAsAsNsABBsAsAsAsAsAsAsAsAsAsAsAsAHwEuEuEupKVGVGpKEsEuHwCkCkisCkofCkTGCkCkTGCkCkCkTtYFYFYFBbXHVuXHfufuWsWsVuVuXHBbfuWsWsXHXHScXHXHXHBOWsWsWsWsWsWsWsWslvkoWsWsTUTUTUTUTtCeBmcHBmcHBmSPpCcHpCcHpCcHpCSPpCcHpCcHpCcHpCSPcHcHCecHCecHBmcHcHcHBmcHCecHBmBmcHBmTtNRwaNRNRXZKUXZXZDlNRNRNRXZNRNRXJDlfwNRNRBnNREufUVGVGdDLTVGfUEuNRBnNRfENRNRNRdYNRNRNRNRNRNR
+EusAOOdnNdzBOOjMNdNdzBOOafGwNdafSKNdNdrcsAHwEuEuEuEuEuVGEuEuEuHwCkCkCkCkCkTGCkCkCkCkCkCkCkTtXHXHXHXHXHXHXHXHXHWsWsXHfOfuVuxmWsWsXHfulvXHXHTYfuXHXHXHXHXHXHXHfufuXHldWsTUTUTUTUTtBmcHcHSwcHCeSPuscHuscHJdcHusSPuscHuscHuscHusSPcHCecHcHcHcHSwcHBmBmcHBacHBmcHcHcHSwTtNRNRNRNRNRNRNRKUNRBnBnNRNRNRmeNRNRNRNRNRNRNRNRGStOVGVGVGVGGSNRNRNRNRNRNRNRNRNRNRNRNRNRNRBn
+HwsAOOAfafNdOONdmdafNdOOzTNdNdVGNdNdNdAIsAHwHwHwEuQKEuIbEupKHwHwEuCkCkTGCkCkCkofCkEuCkCkCkTtYFYFYFXHXHXHXHXHXHXHfuXHfuXHXHfuXHXHXHXHWsfuXHXHXHXHXHXHvaXHfuDVXHXHXHXHWsTUTUTUTUTtcHcHcHCecHCeSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPcHcHcHBmcHBmcHcHCeCecHcHcHcHcHcHcHBmTtNRDlNRrJdYNRKUKUNRBnNRNRDlNRNRNRNRNRNRNRNRDlNRBnfUGSVGGSfUNRNRNRNRNRNRNRrJNRNRNRrJNRNRNRNR
+HwsACTNdNdFlOONdNdNdFlOOUTafNdVGNdNdNddvsAHwEuHwVGEuqJIbpKpKEuHwEuCkCkCkCkCkisCkCkCkCkCkTGTtXHXHXHhhfuWsWsWsWsWsWsWsWsWsWsWsWsWsWsWsWslvWsWsWslvWsWsWskokoWsWsScWsWsWsTUTUTUTUTtcHBmCecHcHcHSPpCcHpCcHpCcHpCSPpCcHpCcHpCcHpCSPcHBmcHcHBmcHBaCeSwCecHBmcHCeCecHBmcHTtNRDlNRNRNRDlNRDlNRNRNRNRNRNRNRNRNRdYNRNRdYNRDlNRNRKUEuEuuvNREuNRNRNRNRNRNRNRDlNRNRNRNyNRuv
+HwsAOOOOhSOOCTOOhSOOOOOOthafQuafmdGwNdNdsAHwEuHwsZEuIbpKEuEuEuHwEuTGCkCkCkTGCkCkCkCkTGCkCkTtWsWsWsWsWsWsTUTUTUTUTUTUTUTUTUTUTUTUTUTUWslvWsWsWsScWsWsWskoWsWsXHXHdjWsTUTUTUTUTUTtBmcHcHcHBmcHSPuscHuscHuscHusSPuscHuscHuscHusSPcHBmcHBaCeSwCecHcHcHcHMAcHBaBmcHSwcHTtfENRdYNRNRNRDlNRNRrJNRrJdYNRNRDlDlNRDlNRNRNRNRNRNREuNRNRNRfEfENRdYNRNRBnBnNRNRBnBnNRNRNRNR
+HwsAOOHpNdNdEEafNdjnNdzBNdGwNdNdNdoFNdNduXHwHwHwpKEuEsEuEuQKEuHwCkCkCkCkCkCkCkCkCkCkCkCkCkTtTUTUTUTUTUTUTUTUTUTUTUTUTUWsWsWsWsWsWsWsWsXHXHfuXHXHfuXHfuXHXHWsXHfOXHWsTUTUTUTUTUTtcHcHcHcHcHBmSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPSPSwBacHQWQWcHcHcHcHcHcHcHBacHcHBmcHcHTtNRNRNRNRNRNRKUDlNRNRNRNRNRNRNRNRNRNRfENRNRNRDlNRKUNRDlNRNRNRXmNRNRNRNRNRBnNRNRBnNRNRDlNRNR
+HwsAOONdFTGwJFcdcdNdNdNdNddvNdafaffQfQAIsAHwEuHwpKEupKIbEuEuEuHwEuCkCkCkisCkCkCkCkCkCkCkCkTtTUTUTUfufuTUTUTUTUTUTUTUTUWsXHChfuXHmVZsWsXHXHXHXHSvVuzgVuVuXHWsXHXHIjWsTUTUTUTUTUTtcHcHcHcHcHQWSPpCcHpCcHpCcHpCSPpCcHpCcHpCcHpCSPSwBaQWQWQWcHcHcHcHBmcHBmcHCecHcHBaCeTtNRNRNRNRNRDlDlNRNRfENRNRNRDlDlKUDlNRNRNRNRNRNRfENRNRNRNRNRNRNRNRwaNRNRNRNRNRNRNRBnNRNRNRNR
+zbsAOOjnNdNdwjafafafNdyyBDNdNdLYVGMyNdNdarHwEuHwpKpKVGEsVGEuEuHwCkCkCkCkCkofCkTGCkCkCkCkCkTtTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHjRjRXHXHWsfuXHXHfuXHXHXHXHeZVuWsXHXHXHWsTUTUTUTUTUTtcHcHcHBmQWQWSPuscHgqcHgqcHusSPuscHuscHJdcHusSPcHcHcHcHCeCeBmcHBmcHBmQWQWcHBmcHcHcHTtNRNRNRNRNRNRNRNRNRNRNRNRNRNRXZDlXZNRDlNRBnNRBnfENRNRDlrJBnNRNRNRNRNRNRNRNRrJNRNRNRNRNRNRNR
+HwsAOOOOafOOOOOOOOafOOOOOOOOOOHpVGMyQnMyvTHwHwHwVGpKVGIbVGEuEuHwCkCkCkCkCkCkCkCkCkisCkTGEuTtTUSefuTUfufufufufufufufuTUWsXHXHXHXHfuXHlvXHyRXHWsWsWsWsWsScWsWsfuXHfuWsTUTUTUTUTUTtcHBmBacHcHcHSPSPSPSPSPSPSPSPNpSPSPSPSPSPSPSPSPBacHcHcHBaBmcHcHSwcHCeQWcHcHcHcHcHcHTtDlDlNRBnNRNRNRNRMdNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRfENRNRdYNRNRNRNRNRNRNRNRNRNRNRNR
+HwsAOOcxtcqwNJWUQsJpJpUosKqwOONdVGhrNdNdarHwHwHwpKpKVGqJpKEuEuEuEuCkCkTGCkCkCkCkCkCkCkCkEuTtfuSeSeSefufufuTUfufufuTUTUWsfuXHjRjRGlfuWsfuXHfuWsTUTUWsuoXHXHWsXHVuXHWsTUTUTUTUTUTtcHcHcHcHcHBmSPcHcHBmQWQWBawcSPwccHcHcHcHcHcHcHcHBmcHBmcHcHcHcHCecHCecHBmcHSwcHcHcHTtOcfENRNRNRXZXZMrNRNRNRNRdYNRNRNRNRNRNRNRNRNRNRNRdYfENRKUKUfENRNRNRfEfEKUDlEuNRNRNRNRdYNRDl
+EusAOOUhiRiRtcWUEIgzQMiRNJDbOOafMyNdNdAIsAHwHwHwpKpKpKVGpKpKEuEuCkCkCkCkCkCkCkCkCkCkCkTGCkTtfufufufuqHfufufufufuTUTUTUWsSdfuXHfuXHXHWsXHXHXHWsTUTUWsmRXHmRWsXHVufuWsTUTUTUTUTUTtcHBacHSPSPSPSPcHcHcHQWcHcHMJSPMJcHcHcHcHcHBmcHCecHcHSwCecHBmCecHcHcHcHSwcHcHCeCecHTtNRNRNRNRNRNRNRDlKUNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRDLNRNRNRNRNRNREuNRNRNRdYNRNRNRNR
+EusAOOUhtcQMXwWUiRShNJiRlziROONdjnNdZcNdsAHwHwHwpKpKpKVGVGEuEuEuCkCkCkCkCkCkCkCkCkCkCkCkEuTtfufufufufufufufufuTUTUTUTUWsWsWsWsWsWsWsWsfuXHXHXHTUTUWsfufuXHWsfuXHXHWsTUTUTUTUTUTtBmcHCeSPcHSwcHBmcHSwcHBmcHwcSPwccHBmcHBmBmcHBacHcHcHCecHBmcHcHcHBmcHBmcHCecHBmCecHTtNRDlNRdYNRNRNRNRNRNRNRNRNRNRNRNRNRNRDlNRBnNRNRNRNRdYNRNRNRNRDlfEDlXZNRNRNRNRNRNREuNRNRNRNR
+EusAOOmxDEtcpvWUGWdKlbOiiRdKOOjnNdNdNdCtMyHwHwEupKVGEuEuVGpKQKHwEuCkCkisEuCkTGCkisTGCkCkEuTtUBUBfufufuSeSefufuTUTUTUTUTUTUTUTUTUTUTUWsfuXHXHXHTUTUWsXHXHodWsXHGlXHWsTUTUTUTUTUTtcHcHcHSPcHcHbdbdbdbdbdbdcHwcSPwccHSwcHCeCecHcHcHcHCecHcHcHcHcHcHcHBmcHBacHGKcHcHcHTtNRNRNRNRNRNRNRNRNRNRNRNRNRNRdYNRNRdYNRDlNRNRKUrJNRNRNRXmNRDlNRNRNRNRNRNRNRNRNRDlrJNRNRNRdY
+QKsAsAsAlzsAsAsAsAsAiRsAjNsAsAsAsAVGVGsAsAHwEuEuVGVGEuVGVGEuHwHwEuEuCkEuEuEuEuCkEuEuCkEuEuTtUBfufufuCdfufuSefufufuTUTUTUTUTUTUTUTUTUXHfuXHXHWsTUTUWsXHXHfuWsXHfufuWsTUTUTUTUTUTtcHSPSPSPcHcHbdtGSPSPtGbdcHMJSPMJcHcHCeBmCecHBmcHcHcHcHcHSwcHBmCeTdCecHcHcHcHBmBmCeTtBnNRNRNRNRBnNRNRDlNRNRKUDlDlNRDlNRNRNRNRNRNRNRNRNRDlNRfENRNRNRNRNRNRfENRNRNRNRNRNRwawaNRNR
+HwtwHwvQHwHwHwtwHwGDHwCkCkyvTOqJHwHwEuEuYwEuEuEuHwSMVGvQYwVGEuUgqJHwEuEuVGGDvQEuspSAEuVGEyTtUBfufufufufufuSefufufuTUTUTUTUTUTUTUTUTUWsXHXHXHWsTUTUWsfufuXHWsfuXHXHWsTUTUTUTUTUTtcHSPBmcHBmBmbdSPSGSPSPoOSPwcSPwccHBacHcHcHcHSwcHBmcHCecHcHcHSwcHCecHcHBmcHcHSwcHcHTtNRNRdYNRNRNRDlNRfENRNRDlNRNRfEBnNRNRNRNRNRNRNRNRNRNRDlNRNRNRfENRNRdYNRNRNRNRNRNRNRNRKUNRNR
+pKpKpKEspKpKVGVGVGpKEuBLpKpKIbVGLFpKVGEuVGEspKpKpKEuEuEspKpKjtpKIbVGEuEuVGVGIbEuDoiEEuEuEsTtfufufufufufufuSeSefufufufuTUTUTUTUTUTUTUWsXHpcfuWsTUTUWsnxXHmRWsXHXHXHWsTUTUTUTUTUTtcHSPSwcHCeCebdtGxpSPtGbdcHwcSPwccHcHcHcHcHcHcHBacHBacHCecHBmCecHCecHcHcHcHcHcHcHcHTtNRDlNRNRNRNRNRAZwaNRNRNRNRNRKUNRNRNRNRdYNRNRNRNRNRNRNRNRKUKUfENRNRNRfEfEKUDlEuNRNRNRNRNRXZ
+sZpKpKEspKpKpKpKpKEuEuEuPHVGycJCEuVGVGEuEspKpKVGpKpKpKIbVGLFpKpKIbpKEuEuszpKPeQKtBEupKIbVGTtfufufufufufufuSeSefuTUTUfuTUTUTUTUTUTUTUWsfuXHfuWsTUTUWsXHBbXHWsTYXHXHWsTUTUTUTUTUTtcHSPcHCeSwCebdbdbdbdbdbdcHMJSPMJcHcHcHcHBmcHBmcHcHcHcHcHBmcHcHcHCecHBmcHCeCeSwcHBmTtNRfENRNRNRDlNRNRNRuvNRNRNRNRNRNRrJDlDlNRBnNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNREuNRNRNRNRNRNRdY
+pKEupKVGEspKVGEuEuVGEsEupKwXhZLnEuQKEuEsVGpKyHCkEuEkpKhZYwEuVGEuEspKEuEukWpKGtEuEuVGpKIbVGTtSeSefufufufufufufuTUTUTUTUTUTUTUTUTUTUTUWsOEfuXHWsTUTUWsWslvWskGWslvWskoTUTUTUTUTUTtBmSPBacHQWQWQWSwcHBaBmcHcHwcSPwcCeBmcHBmcHBmcHcHcHBmcHcHcHcHQWQWQWQWSwcHBaBmcHcHSwTtNRNRNRdYNRNRBnNRfENRNyNRdYNRNRNRNRNRNRNRNRNRNRNRdYNRNRfENRNRNRDlfEDlXZNRNRNRNRNRNRNRNRNRNR
+pKpKpKQKEspKpKpKEuVGVGEuEuEsEspKpKpKEuVGEuVGpKpKpKpKpKEsLFpKVGpKYrVGVGVGkWEuqJpKJupKqJVGEuTtSeSefufufuTUTUfufuTUTUTUTUTUTUTUTUTUTUTUWsWsfuXHWsTUTUWsldqzFFXHFFXHldWsTUTUTUTUTUTtSwSPcHQWQWcHcHcHBacHcHcHcHwcSPwcBmcHcHSwcHCecHcHcHcHcHcHcHcHBaQWQWcHcHBmSwCecHBmCeTtNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRNRBnNRNRNRDlNRNRNRNRNRXmNRDlNRNRNRNRNRNRNRNRNRDlNRNRNRNR
+pKpKLFkLEsqJEuEuEuEuEuEspKEspKpKEuEspKpKpKpKpKpKpKpKpKwmpKpKVGkLIbVGEuEuszEuEspKEujvEsRnEuTtSeSefufufuTUTUfufuTUTUTUTUTUfuTUTUTUTUTUTUWsfuXHWsTUTUWsXHXHSvAHTYBbXHWsTUTUTUTUTUTtcHSPcHcHcHBmcHBmcHCecHBmCeMJSPMJcHcHcHCecHCecHBmBmcHCeBmcHBmcHCecHBmCecHCecHBmcHcHTtNRfENRNRNRNRNRNRNRNRrJNRNRNRrJNRNRNRNRNRdYNRNRNRNRNRNRNRfENRNRNRNRmeNRfENRNRNRNRNRdYNRBnNR
+bRVGVGpKEsycVGEupKpKEupKpKpKpKpKpKEuEuEuEuVGpKpKpKLFLFEspKpKpKVGwHVGEuEukWEuEsEuDoMLpKEuEuTtfufuWsWsWsWsWsWsWsWsTUTUTUTUTUTUTUTUTUTUTUWsXHfuWsTUTUWsXHfuFFXHFFXHldWsTUTUTUTUTUTtCeSPBmcHBmcHBmcHcHcHBmcHcHwcSPwccHcHCecHcHcHcHSwcHcHBacHBmcHcHcHBmcHcHcHSwcHcHcHcHTtNRNRuvTlNRNRNRNRNRNRNRNRDlNRNRNRNRNRuvNRNRNRNRNRDldYEuEuNRNRNRBnNRNRNRNRNRNRNRNRNRNRNRNRNR
+EuHwVGHwHwHwHwEuHwVGVGVGSMHwGuVGEuEspKpKVGEuVGHwHwVGVGVGvQYodwdwIbVGEuEuEuEuwXEuDoyAHwEuHwTtfufuWsuohMfufuXHOCWsTUTUTUTUTUTUTUTUTUTUTUWsfuXHWsTUTUWsWslvWsWsWslvWsWsTUTUTUTUTUTtBaSPSPSPSPcHKacHcHcHcHcHcHwcSPwcBmSPSPSPSPSPSPSPSPSPSPcHCecHcHcHcHcHCecHBmcHcHcHBaTtNRNRNRfEfENRdYNRNRBnBnNRNRBnBnNRNRNRNRNRNRNRNRNRNRBnNRNRNRNRNRNRNRNRNRNRNRDlDlNRNRNRNRNRNR
+YwHwVGHwGutwHwHwHwEutwHwHwEuEuHwEuEuEuEuEuHwHwbeUgEuHwHwqJqJHwHwvQEuQgEuUgEutaEuDomiHwHwHwTthAJQWsXHXHXHmEXHmRWsWsWsWsWsWsWsWsWsWsWsWsWslvlvWsTUTUWsfuXHXHWsXHXHfuWsTUTUTUTUTUTtcHcHcHcHSPcHCecHBmcHSwcHBmMJSPMJcHSPBmcHcHBmcHBaCecHSPcHCecHBmcHSwcHBmcHSwcHcHBmcHTtDlNRNRNRXmNRNRNRNRNRBnNRNRBnNRNRDlNRNRNRrJNRNRNRNRBndYNRNRNRKUdYdYNRNRNRdYNRNRNRNRNRNRNRNR
+EuKWHwYOHwRvHwHwEuHwHwzPzbzbHwHwHwHwHwHwHwHwHwHwHwSMHwHwHwHwHwHwHwHwHwHwHwtataEukWtaHwSMHwTtfufulvbofuVuBbBbXHXHfufuWOXHfOfufufucKWCqvXHXHXHWsTUTUWsXHfuXHWsBRXHXHWsTUTUTUTUTUTtCecHBmCeSPcHcHcHSwcHcHcHSwwcSPwcSwSPSwcHSwBacHcHcHcHSPSPSPSPSPSPSPSPSPSPSPSPBmcHcHTtNRNRNRNRNRNRwaNRNRNRNRNRNRNRBnNRNRNRNRNRDlNRNRNRNRNREuEufENRNRNRNRNRNRNRNRNRNRNRrJNRNRNRrJ
+EuHwsAsAsAsAsAsAsAsAsAVpVpVpsAsAsAsAsAvJsAsAvJsAsAsAvJsAvJsAsAEuEuEurvsAfCsAEuEusesAafsAsATtfufulvfuXHVuyRVuXHXHXHXHXHXHfuXHXHXHXHXHXHfuXHnfWsTUTUWsfuXHXHWsXHXHXHWsTUTUTUTUTUTtcHBmcHcHSPBmcHBmcHCecHBmCewcSPwccHSPbdbdbdbdbdbdcHcHSPzIYazIcHYacHYazIcHYaSPCecHCeTtDlrJBnNRNRNRNRNRNRNRNRrJNRNRNRNRNRNRNRNRNRNRNRNRNRNRKUNRNRNRNRNRNRNRNRNRXZrJNRJZNRdYBnfENR
+EuVGsAesDEqwdAryryrymprpeKfmsADCDEDEADitlJsAUylJsAgVkPsARAsmsANdEurvQzifXrsAififQzafNdafsATtJQxXWsXHXHXHfupcfuWsWsWsWsWsWsWsWsWsWsWsXHWsWsWsWsTUTUXHfuXHXHWsVuXHXHWsTUTUTUTUTUTtcHcHcHcHSPcHBmcHBacHBmcHcHMJSPMJcHSPbdDPSPSPlBbdcHcHSPcHcHcHcHcHcHcHcHcHcHSPcHcHCeTtNRNRNRfENRNRdYNRNRNRNRNRNRNRNRNRNRNRNRNRNRrJNRNRNRNRNRdYNRNRNRNRNRNRNRNRDlNRNRNRNRNRNRdYNR
+vvHwsAMFDEDEeWbysdbylHDXMvWesAxjFURRsAbybyafsdassArwsdafsdMEsANdNdGwuXNdHVsADvFrNdGwNdNdsATtfuSeWsIoXHgKXHXHfkWsTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsXHXHXHWsXHXHAHWsTUTUTUTUTUTtcHSwcHBmSPSPSPSPSPSPSPSPSPSPSPSPSPSPoOSPSPSPSPbdcHcHSPItcHRlItRlItcHRlItRlSPcHcHcHTtNRKUKUfENRNRNRfEfEKUDlEuNRNRNRNRdYNRDlNRDlDlNRNRdYKUNRNREuEuEuNRNREuEuEuEuNRNREuEuNRNRNRNR
+EuGusAdAkgdAdAbybyasmpmpmpmpsAsAsAJMsAbyassAbrapsAbybrsAbrMEsAAnVbNdQzTwvjsAOmFrQzRjLUeIsATtfufuWsWsWsWsWsWsWsWsTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHfuWsfuXHzoWsTUTUTUTUTUTtcHcHcHSwcHCecHcHBmcHCeCeBmBaSPcHcHCebdAJxpSPDPbdcHBmSPcHcHcHcHcHcHcHcHcHcHSPBacHcHTtNRNRNRNRNRNRNRNRNRNREuNRNRNRdYNRNRNRNRBnBnNRNRNRNRNRNRNRNRNRNRNRNRNRNRDlNRBnNRNRNRNRdYNRNR
+EuHwrWetyZZNmprybybympyZyZOwsAxjesqVsAbyjBsAsAeWsAeWsAsAsAeWsABBsAsAsAsAsAsAsAsAsAsAsAsAsATtfufufufufuSefufufufuTUfufuTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsXHXHfuWsWsSclvWsWsWsTUTUTUTtCecHBmCecHCecHcHcHcHcHcHcHcHSPBmcHcHbdbdbdbdbdbdBacHSPItRlItcHRlItTdItRlRlSPcHCecHTtNRNRNRNRDlfEDlXZNRNRNRNRNRNREuNRNRNRNRNRNRNRNRuvDlNRNRNRNRNRNRdYNRNRdYNRDlNRNRKUrJNRNRNRDl
+VGHwjycMbybydArybybympbybybyafYyDEDEDEbybybybybybybybybybybysAAndRRjQzehNdsAUiNGQzRjGEeIsATtfufufufufufuqHfufufuTUfufufuTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHfuWsWsXHXHfuZsWsTUTUTUTtcHBmcHQWiHCecHBmcHCeCeBmcHcHSPcHcHBmcHcHCecHcHcHcHcHSPcHcHcHcHcHcHcHcHcHcHSPcHcHBmTtNRXmNRDlNRNRNRNRNRNRNRNRNRDlrJNRNRNRdYNRDlrJNRNRNRDlNRNRKUDlDlDlDlNRZJNRNRNRNRNRNRNRDlNRNR
+EuHwsAOwyZbyeWbybybybyLobyOwsAsAsAsAsAbybysAeWsAsAsAeWsAeWsAsAeINdNduXNdHVsADvNduXNdNdNdsATtUBfufufufufufufufufufufuTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUWsfuXHXHWsWsfuXHXHChWsTUTUTUTtcHQWQWQWcHcHcHSwcHBaBmcHcHcHSPCeBmcHcHcHcHcHSwcHcHcHSPItcHItRlItRlRlcHRlItSPcHcHcHTtNRfENRNRNRNRNRNRfENRNRNRNRNRNRwaXZIFXZKiKiKiIFKiKiXZNRNRDlNRNRwaBnNRNRNRNRNRNRNRNRNRNRDlNR
+KWXKsAsAsAsAsAbybybysAsAsAsAsAsnaLiSsAbyassAbybrsAbrbysAbybrsANdNdeIQzifnZsAhzifafafNdNdsATtUBfufufufuSefufufufufufuTUTUfufufuTUTUTUTUTUTUTUTUTUTUWsXHfuXHWsWsFXVuVuFXWsTUTUTUTtQWQWcHBacHcHcHcHBmSwCeDNDNDNMZDNDNDNBacHcHcHcHBmcHcHSPSPSPSPSPSPSPSPSPSPSPSPBmcHSwTtDlNRNRNRBnNRNRNRNRNRNRNRNRNRNRNRKiXZXZJOJOJOJOJOJOJONRNRNRNRNRKUNRNRNRNRdYNRNRNRNRNRNRNRNR
+VGHwbybybyZLbybyKgbyZLbybyWjsAbybybyeWbybysAbyZQafZQbysArwoxsAsAuXsAsAsAfCsAfCafafsAuXsAsATtUBUBfufufufuUBfufufufufufufufufufuTUTUTUfuTUTUTUTUTUTUWsfuXHXHWsWsFXXHXHFXWsTUTUTUTtBmcHBmcHCecHBmCecHCecHDNTVhohoholhDNcHCecHBmCeQWcHcHcHcHBmcHBmcHCecHcHcHcHBmCeCecHTtNRNRNRNRNRNRNRNRNRNRDlDlNRNRNRNRKiJOfvCLCLJOsyfvNRKiuvNRNRNRNRNRNRrJDlDlNRBnNRNRNRNRNRNRNR
+IbvQsAiUmkEcEcEcfHmkbybybyLCsAyQEQwtsAvxJisAcDkdsAebJisAcDkdsAVGHwHwHwHwHwHwHwHwHwHwHwHwHwTtUBUBfufufufufuUBfufuopfufuTUTUTUTUfufuTUTUTUfufufuTUTUWsXHXHfuWsWsmRXHBIgZWsTUTUTUTtcHBmcHcHcHBmcHcHcHSwcHDNHzhohohoHzDNcHcHBmcHQWQWCeBmcHBmcHBmcHcHcHBmBmQWBmcHcHcHBmTtNRNRNRKUdYdYNRNRNRdYNRNRNRNRNRNRJOJOJOJOJOVTJOJOXZKiNRNRNRdYNRNRNRNRNRNRNRNRNRNRNRdYNRNRNR
+IbGusAUlUlsAphsAykrWOsbyOsrWsAsAUlsAsAsAphsAsAUlsAUlsAsAsAUlsAHwHwHwHwHwHwHwHwHwVGVGHwHwHwTtTUTUTUTUopfufufufufufufufufufuTUTUTUTUTUTUTUTUTUTUTUTUWsWsWsWsWsWsWsinWsWsWsTUTUTUTtcHCecHcHcHcHcHCecHBmcHDNhohohohohoDNcHcHcHcHCecHBmcHcHSwcHCecHcHcHcHQWcHSwcHcHcHcHTtNRfENRNRNRNRNRNRNRNRNRNRNRrJNRNRJOCLJOsyJOJOXZfvfvJONRNRNRNRNRNRNRNRNRBnNRNRNRDlNRNRNRNREu
+IbvQHwtatatatataHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwIbVGHwvQVGHwHwVGHwHwHwTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTtcHCecHBmcHSwcHBmcHSwcHDNHzhohohoHzDNBmcHSwcHBmcHcHcHcHCeQWCecHBmcHSwSwcHCecHBmcHSwTtNRNRNRNRNRNRNRNRNRXZrJNRJZNRNRNRKiXZJOKiVmKiXZKiJOXZNRrJNRNRNRrJNRNRNRNRNRdYNRNRNRNRNRNREu
+VGvQtatatatatatataHwHwHwHwHwHwHwVGVGHwHwHwHwHwHwHwVGHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwHwTtTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTUTtcHcHcHSwcHcHcHSwcHBmcHDNDNDNpnDNDNDNSwcHcHcHSwcHcHBmCecHQWQWcHSwcHcHcHCecHcHcHcHcHTtNRNRNRNRNRrJNRNRNRDlNRNRNRNRrJNRNRNRNRNRNRrJNRNRNRNREuEuEurJEuEuEuEudYEuEuNRfENRNRdYEuEuEu
 TtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTtTt
 aYaYaYcwcwcwaYaYaYaYPVPVaYaYaYaYaYaYaYaYNWaYaYaYaYaYaYaYaYPVaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYWBaYaYaYaYfIfIfIfIfIfIfIfIfIfIYJMwXbXbXbOpOpIiIiIiGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCkEkEGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCcuGCGCGCGCGCGCOpXbXbXbMwYJaYaYaYaYaYaYaYaYaYaYaYaYaYKtaYaYaY
 aYaYcwcwcwaYaYaYaYaYaYaYaYOZaYaYaYOZaYaYaYNWaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYWBWBWBaYaYaYaYPVaYaYfIfIaYaYaYfIfIfIYJYJXbXbOpOpIiGCGCGCGCGCGCGCcucuGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCcFGCGCGCGCkEkEGCGCGCGCGCcJGCGCGCGCGCGCGCcJGCGCGCGCcJcJGCGCGCGCGCGCcJGCGCcJGCGCGCGCcuGCGCcJGCGCGCGCGCGCOpOpXbXbXbMwYJOZaYaYaYaYKtaYaYaYKtaYuhaYMnaYaYaY
@@ -1211,27 +1272,27 @@ aYaYaYaYaYaYaYaYaYaYPVPVaYOZaYaYaYaYaYPVaYOZaYaYaYaYNWNWaYaYaYaYaYaYaYaYaYOZaYaY
 aYOZaYaYaYaYaYNWaYaYaYaYOZaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYPVaYOZaYaYaYaYaYaYaYaYaYaYaYNWaYaYaYaYaYaYaYaYfIfIYJXbXbXbXbOpkZAwXUltrGyiyiyiyiwRyiyiyiyiQyKuXUBJeNeNeNKAiViViViVAjiViViViViVsvBJVyOLlaVyrZrZrZVyVyVyfhJqyaVyVyJqVygAVyZXfrknpOZXZXpOpOpOpOpPHDGCGCGCGCGCGCGCcJGCGCGCGCHDGCGCGCGCGCGCGCGCGCGCGCHDHDGCGCGCOpXbXbYJYJKtKtKtoaaYaYDwaYaYaYaYMnaYaYaYaYKt
 aYaYaYaYaYaYPVNWaYaYaYaYaYaYPVaYNWaYaYaYaYaYPVaYNWaYaYaYaYOZaYaYaYaYaYaYaYaYNWaYaYKtKtKtKtcwaYaYaYfIfIfIfIYJXbXbXbXbOpIiBJXUltrGyiyiyiyiyiyiyiyiyiQymaXUBJeNeNeNJPiViViViViViViViViViVsvBJVyrZrZVyrZrZrZrZdPrZrZrZrZrZrZrZrZrZVyZXZXZXpOZXZXZXgcZXZXpOGCGCGCGCGCGCGCGCcJGCGCGCGCcJGCGCGCGCGCGCGCGCcJGCGCHDHDGCGCGCOpXbXbMwYJKtKtKtaYOZaYaYaYaYKtunaYntNWNWaYaY
 aYaYaYaYaYaYaYaYaYaYaYaYaYNWaYaYaYaYaYaYaYNWaYaYaYaYaYaYaYaYaYPVaYNWaYaYOZaYaYaYOZKtKtKtKtaYaYfISUSUfIYJYJXbXbXbOpOpIiIiBJXUltKByiyiyiyiyiyiyiyiyiabmaXUBJeNeNsYBJnMtlBsnMtlBsiViViViVaHBJVyrZrZQBrZHIrZrZrZuzrZrZrZuzrZrZrZuzVyZXZXZXlgZXZXqFZXxRXypOGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCcJcJGCcuIiGCIiGCGCGCGCGCHDOpOpXbXbYJYJKtDwDwaYaYaYaYaYntaYaYaYaYuhuhOZaY
-aYPVaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYOZaYaYNWNWaYaYaYaYaYaYaYaYNWaYaYaYaYaYaYaYPVaYaYKtKtKtKtaYfIfIfIYJAtXbXbXbXbOpkuOpVjGCBJXUltKBvLvLvLvLvLvLvLvLvLabmaXUBJXTeNeNBJnMxlBsnMtlrtiLiLiLjViVBJVyVyVyJqrZrZrZrZrZrZrZrZrZrZrZrZrZalVypOpOpOpPZXZXZXZXZXXypOGCGCGCGCGCGCGCcJGCGCGCGCGCGCGCHDGCGCGCGCGCGCGCIiIiGCIiOpOpOpXbXbXbYJYJKtaYaYaYvOaYaYaYaYaYaYuhaYaYaYuhaY
+aYPVaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYOZaYaYNWNWaYaYaYaYaYaYaYaYNWaYaYaYaYaYaYaYPVaYaYKtKtKtKtaYfIfIfIYJAtXbXbXbXbOpkuOpVjGCBJXUltKBvLvLvLvLvLvLvLvLvLabmaXUBJXTeNeNBJnMxlBsnMtlrtwTwTwTjViVBJVyVyVyJqrZrZrZrZrZrZrZrZrZrZrZrZrZalVypOpOpOpPZXZXZXZXZXXypOGCGCGCGCGCGCGCcJGCGCGCGCGCGCGCHDGCGCGCGCGCGCGCIiIiGCIiOpOpOpXbXbXbYJYJKtaYaYaYvOaYaYaYaYaYaYuhaYaYaYuhaY
 NWaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYPVaYOZaYOZaYaYNWNWaYaYaYaYaYaYNWaYaYaYaYaYaYaYfIfIYJYJXbXbXbXbOpOpOpIiIiIicuBJXUltKByiyiyiyiyiyiyiyiyiabmaXUBJeNeNsYBJBJBJBJBJBJBJBJBJBJBJBJBJVyOLlaVyrZrZrZJqVyVyagJqGeVyVyJqVygAVyZXfrknpOZXZXpPpOpOpOpPGCGCHDHDGCGCGCGCcuGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCOpOpOpXbXbMwYJYJMnaYaYuhaYaYZZaYaYOZaYaYaYaYOZOZ
 NWaYOZaYaYaYaYaYaYaYaYNWaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYPVaYOZaYaYaYNWaYOZaYcwaYfIfIfIYJYJYJXbXbXbOpnzOpxaIiGCGCGCBJXUltrGyiyiyiyiyiyiyiyiyiQymaXUBJeNeNeNBJGCcuGCcuGCUHcuGCGCGCkEGCzhrZrZVyrZrZrZVyOLrZrZVyrZrZOLVyEWFRVyZXZXZXpOZXZXSgZXZXfrpOGCGCGCcJGCGCGCGCGCGCGCGCcucuGCGCGCGCGCGCGCGCGCkEGCcuGCGCOpOpOpXbXbMwYJYJKtaYaYaYaYaYaYaYaYKtaYaYKtKtaYaY
 aYaYaYaYaYaYNWNWaYaYaYaYPVaYOZaYaYaYaYaYaYKtaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYfISUsCXbXbXbXbOpOpxaIiIiGCGCGCGCGCAwXUltrGyiyiyiyiwRyiyiyiyiQymaXUAweNeNsYAwkEGCGCGCkEGCUHGCcJGCcuGCVyrZrZxkrZrZrZVylarZrZVyrZrZlaVyEWzrVyZXZXZXBkZXZXpOZXZXknpOGCGCGCGCGCGCGCGCGCGCGCGCGCGCcJGCGCGCGCGCGCGCcuGCGCGCHDGCHDOpOpXbXbMwYJYJaYaYaYoaaYOZuhaYaYaYaYaYaYOZaYaY
-aYaYaYaYaYaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYKtaYOZaYaYaYaYaYKtaYaYaYaYaYNWaYaYaYaYaYfIfIYJYJXbXbXbOpOpQYxaIicJGCGCGCGCGCBJXUltrGyiyiyiyiyiyiyiyiyiQyKuXUmDeNeNeNBJkEGCcJkEGCUHkEcuGCkEkEcuVyVyVyJqrZuzrZJqVyVyVyVyVyVyVyVyVyVyVypOpOpOpPZXZXpPpOpOpOpPBJBJBJBJGCGCGCGCGCGCGCGCGCGCGCGCGCHDHDGCGCGCGChbhbGCcJGCcuOpXbXbXbMwYJaYaYaYaYaYaYaYaYaYaYvOaYaYaYaYaYaY
+aYaYaYaYaYaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYKtaYOZaYaYaYaYaYKtaYaYaYaYaYNWaYaYaYaYaYfIfIYJYJXbXbXbOpOpQYxaIicJGCGCGCGCGCBJXUltrGyiyiyiyiyiyiyiyiyiQyKuXUEAeNeNeNBJkEGCcJkEGCUHkEcuGCkEkEcuVyVyVyJqrZuzrZJqVyVyVyVyVyVyVyVyVyVyVypOpOpOpPZXZXpPpOpOpOpPBJBJBJBJGCGCGCGCGCGCGCGCGCGCGCGCGCHDHDGCGCGCGChbhbGCcJGCcuOpXbXbXbMwYJaYaYaYaYaYaYaYaYaYaYvOaYaYaYaYaYaY
 aYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYKtaYOZaYaYaYaYaYaYaYfIfIYJXbXbXbXbXbOpIiIiGCGCGCkEGCcJGCGCBJXUXUSsfbfbfbfbgkfbfbfbfbSzmaXUAmNQeNsYBJGCcJUHGCcuGCUHGCcuGCkEcuVyrZrZhdrZrZrZjKrZrZVyZXZXZXfrpOekNApOZXZXZXvdZXZXsoZXZXZXpOBJeNeNBJBJjZBJBJBJBJBJBJjZBJBJBJjZBJBJGCGCGCcuHDHDGCcuHDOpOpOpXbXbMwYJYJYJYJaYaYaYaYaYaYaYaYaYaYNWaYaYaY
 OZaYaYaYPVPVaYaYaYaYaYNWaYaYOZaYaYaYaYaYaYaYaYaYPVaYNWaYaYOZaYaYaYaYaYaYaYOZaYaYaYfIYJYJXbXbXbXbXbOpQYcuGCGCGCGCcJGCGCGCBJXUXUXUewewewewXUewewewewXUXUXUBJeNeNeNBJUHkEGCcuUHcJGCGCkEGCcuGCzhrZrZVyHvrZrZVyrZrZVyZXZXZXknpOekNApOZXfrknpOZXZXpOZXZXZXxtBJAleNBJtSZIbmOrAVBJpVEPFKEPtSEPtSEPBJGCGCGCcuGCGCGCGCGCcJOpOpOpOpMwMwMwYJYJaYaYaYaYaYntezaYaYEOntaYaYaY
 aYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYKtKtaYaYaYaYNWaYaYaYKtKtKtKtaYaYaYaYaYKtaYOZfIfIYJYJXbXbOpOpOpOpIiIiGCGCGCGCGCGCGCGCGCBJXUXUXUXUXUXUXUXUXUXUXUXUXUXUXUBJIreNsYBJkEGCcuGCGCUHGCkEGCcJGCUHVyOLlaVyuarZrZVylaOLVypPLvpOpOpPpOkmpOpOpOpOpPZXZXpOZXknfrpOAweNeNAwtStStStSZIAwkytStStStStStSyOAwGCGCGCGCGCGCGCHDGCIiOpOpOpXbMwMwMwYJYJYJaYaYaYaYaYuhpaaYaYuhaYaYaY
-aYaYaYaYaYaYaYaYaYaYaYaYKtaYaYaYaYNWNWKtaYaYaYaYLOLOaYOZaYaYaYaYaYaYOZaYaYfIfIfIYJYJXbXbXbOpOpIiIiIiQYGCcJcJGCGCGCGCGCGCAwBJBJBJBJBJAwBJBJBJBJBJAwBJBJBJBJBJmDBJBJUHGCAYuYrXjTTMkxJNGCUHkEVyVyVyJquauzrZJqVyVyVyZXZXxRZXZXZXxRZXZXKQfBfBZXZXpPpOpOpOpOBJAleNSCtStStStStSkktStStStSVRcAtStSjZGCGCcuGCGCcJGCGCGCGCOpOpOpXbMwYJMwMwYJYJOZaYaYoaaYaYaYaYaYaYaYaYaY
-aYaYLOLOaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYKtaYaYNWKtKtaYNWNWKtaYaYaYaYLOnafIYJYJYJYJXbXbXbXbnzoAIicJGCGCGCGCGCGCGCGCGCcJGCGCcJGCBJXirxwOzjLXmsLQpXTQeNTQXyBJeNeNeNBJGCBJBJExXxXxXxExBJBJGCkEVyrZrZrZrZrZrZaTWwleVyZXZXZXZXZXZXEvZXZXZXZXZXZXZXZXkQiolYpOBJeNeNGYtStStStSHmBJtStSBWEPtSEPtSEPAwGCGCGCGCGCGCGCkEGCGCGCOpOpXbMwYJMwMwMwYJaYaYaYaYaYaYaYaYoaaYaYaYaY
+aYaYaYaYaYaYaYaYaYaYaYaYKtaYaYaYaYNWNWKtaYaYaYaYLOLOaYOZaYaYaYaYaYaYOZaYaYfIfIfIYJYJXbXbXbOpOpIiIiIiQYGCcJcJGCGCGCGCGCGCAwBJBJBJBJBJAwBJBJBJBJBJAwBJBJBJBJBJEABJBJUHGCBJuYrXjTTMkxBJGCUHkEVyVyVyJquauzrZJqVyVyVyZXZXxRZXZXZXxRZXZXKQfBfBZXZXpPpOpOpOpOBJAleNSCtStStStStSkktStStStSVRcAtStSjZGCGCcuGCGCcJGCGCGCGCOpOpOpXbMwYJMwMwYJYJOZaYaYoaaYaYaYaYaYaYaYaYaY
+aYaYLOLOaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYKtaYaYNWKtKtaYNWNWKtaYaYaYaYLOnafIYJYJYJYJXbXbXbXbnzoAIicJGCGCGCGCGCGCGCGCGCcJGCGCcJGCBJXirxwOzjLXmsLQpXTQeNTQXyBJeNeNeNBJGCBJAYExXxXxXxExJNBJGCkEVyrZrZrZrZrZrZaTWwleVyZXZXZXZXZXZXEvZXZXZXZXZXZXZXZXkQiolYpOBJeNeNGYtStStStSHmBJtStSBWEPtSEPtSEPAwGCGCGCGCGCGCGCkEGCGCGCOpOpXbMwYJMwMwMwYJaYaYaYaYaYaYaYaYoaaYaYaYaY
 aYNWKtKtaYaYaYaYaYaYaYaYNWNWaYaYaYaYaYaYaYaYaYNWaYaYaYaYaYOZaYaYaYNWKtfIYJYJYJYJXbXbOpOpxaIiQYGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCBJBSawwOzjLXLXLQpXTQeNTQeNAweNeNeNBJBJbILVuxXxXxXxuxLVbIBJGCVyrZlePOrZrZrZrZrZNSVypPzWpOpOpPpOkmpOZXZXlYNNZXZXZXXoEvNipOBJAleNBJAVxYibtSpWBJkytStStStStStStSBJGCGCGCGCGCGCcuGCGCGCGCOpOpXbMwMwMwYJMwYJaYaYuhaYaYuhuhaYaYaYaYaYaY
 aYNWaYaYaYaYPVaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYKtaYaYaYaYaYNWfIfIYJMwXbXbXbOpOpQYxaGCGCGCGCGCGCGCGCGCGCGCcJGCGCGCGCGCGCjZeNeNwOvbCwCwaWpXTQeNTQeNBHIOeNeNBJBJXxXxXxXxXxXxXxXxXxBJBJVyrZxUsUrZrZrZuzrZTNVyZXZXZXfrpOEWFRpOZXZXbnHuZXZXZXxRZXIqpOBJeNeNBJtSzvtStSrkBJpVEPtSEPtSEPtSEPBJGCGCcJGCGCGCcuGCGCGCGCOpOpXbMwMwMwYJYJaYaYaYaYaYntuhaYNWaYZZaYaYaY
 aYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYNWNWaYaYaYaYaYaYaYaYaYaYaYaYfIfIfIYJMwXbXbnzoAIixaGCLMGCGCGCGCGCkEkEGCGCGCGCcucuGCGCGCGCjZeNeNeNvbCwCwaWeNeNeNeNeNVceNeNeNXaXxXxXxUIZPWaUINMXxXxXxeMVyrZrZwDrZrZrZrZrZBpVyZXZXZXknpOEWzrpOZXZXZXMKZXZXZXZXZXCzpOBJAleNBJBJjZBJBJBJAwBJBJjZBJBJAwjZBJBJGCGCGCGCGCGCGCGCkEGCOpOpOpXbMwMwMwYJYJaYaYOZaYaYaYaYOZaYKtKtaYOZaY
-aYaYaYaYaYaYaYaYaYPVaYNWaYPVaYOZaYaYaYaYaYPVaYOZaYaYaYaYyNNWaYaYaYaYfIfIYJMwXbOpOpQYIiGCGCGCGCGCGCcJGCGCGCGCGCkEGCGCGCGCGCGCGCjZeNeNwOvbCwCwaWpXTQeNTQeNhtIOeNeNRJXxUkXxwFwFwFZhwFXxUkXxoGVyVyoQVyVygAzYVyVyoQVypOpOpOpOZBpOpOpOpOpOZBpOpOkmyfpOpOZBpOBJeNeNBJNuuDqdmYNuVYqdlQNuNuNuNuNuNuAwGCGCGCGCGCcuGCGCcuGCOpXbXbXbMwMwMwYJYJaYaYaYaYoaaYaYKtaYmKKtaYKtaY
-aYaYaYaYaYaYaYaYNWaYaYaYaYaYOZaYaYaYaYaYaYaYOZaYaYaYaYaYnFaYOZaYaYaYaYfIYJMwXbOpIiIiGCGCGCcJGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCcJGCBJNQeNwOFoHAHAohpXTQeNTQeNAweNeNeNnGXxXxXxXxXxXxXxXxXxXxXxtWeNAleNKDnjeNeNKDnjeNAltdtdAlSQeNAltdtdAleNeNznnjeNeNznnjeNAlAwAleNAwNuuDqdmYNuVYqdlQNuNuNuNuNuNuBJGCGCcJGCGCGCGCGCGCGCOpXbXbXbMwMwMwYJaYaYaYaYaYNWNWaYaYaYKtKtuhaYaY
+aYaYaYaYaYaYaYaYaYPVaYNWaYPVaYOZaYaYaYaYaYPVaYOZaYaYaYaYyNNWaYaYaYaYfIfIYJMwXbOpOpQYIiGCGCGCGCGCGCcJGCGCGCGCGCkEGCGCGCGCGCGCGCjZeNeNwOvbCwCwaWpXTQeNTQeNhtIOeNeNRJXxUkXxwFwFwFZhwFXxUkXxoGVyVyoQVyVyDxzYVyVyoQVypOpOpOpOZBpOpOpOpOpOZBpOpODxyfpOpOZBpOBJeNeNBJNuuDqdmYNuVYqdlQNuNuNuNuNuNuAwGCGCGCGCGCcuGCGCcuGCOpXbXbXbMwMwMwYJYJaYaYaYaYoaaYaYKtaYmKKtaYKtaY
+aYaYaYaYaYaYaYaYNWaYaYaYaYaYOZaYaYaYaYaYaYaYOZaYaYaYaYaYnFaYOZaYaYaYaYfIYJMwXbOpIiIiGCGCGCcJGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCcJGCBJNQeNwOFoHAHAohpXTQeNTQeNAweNeNeNnGXxXxXxXxXxXxXxXxXxXxXxtWeNAleNKDnjeNeNKDnjeNAltdtdAlSQeNAlOteNAleNeNznnjeNeNznnjeNAlAwAleNAwNuuDqdmYNuVYqdlQNuNuNuNuNuNuBJGCGCcJGCGCGCGCGCGCGCOpXbXbXbMwMwMwYJaYaYaYaYaYNWNWaYaYaYKtKtuhaYaY
 aYaYaYaYaYaYaYaYaYaYaYaYOZaYaYaYPVaYNWaYaYaYaYaYPVaYNWaYaYaYaYaYaYaYaYfIYJYJXbOpMBIiGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCGCcJGCGCHDBJGpYbwOFoHALuohpXTQeNTQXyBJeNeNeNBJeOoqoqoqcGXxnIoqoqoqeOBJeNeNeNeNeNeNeNeNeNeNeNeNeNeNEbeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNBJNuuDqdmYNuVYqdlQNuNuNuNuNuNuBJGCGCGCGCGCGCcJGCGCGCIiOpOpXbMwMwYJYJaYaYaYaYaYaYaYOZaYaYKtKtOZaYaY
 aYaYaYaYaYaYaYaYaYaYaYaYaYaYaYNWaYaYaYaYaYaYaYNWaYaYaYaYaYOZaYaYaYaYaYfIYJYJXbZuOpIiQYIiGCGCGCGCGCGCGCGCcJGCGCGCGCGCGCGCGCGCHDBJBJBJAwBJBJLyPIBJAwBJBJBJBJNQeNeNgfXxNtmtIdFPXxsTNtmtIdXxWqeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNBJNuuDRamYNuVYRalQNuNuNuNuNuNuBJGCGCGCGCGCHDGCcJIiIiOpOpXbXbYJYJYJaYaYOZEONWaYOZaYaYuhaYaYaYaYaYaY
 aYaYaYOZaYaYNWaYaYaYaYaYaYaYaYaYaYaYaYOZaYaYNWNWaYaYaYaYaYaYaYNWaYaYaYfIfIYJXbXbOpkuOpIiIiGCcJGCGCGCGCcucuGCGCGCGCGCGCGCGCGCHDBJdSdSyUFxNDNDNDNDNDeNXyXyBJeNeNeNmDXxXxXxXxOxXxMPXxXxXxXxmDeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNNQeNeNeNeNeNjCeNeNeNeNeNeNeNeNeNLANuNuNuNuNuNuNuNuNuNuNuMRMROQBJGCGCGCcJGCGCIiIiIiOpOpXbXbMwYJYJNWaYaYaYaYaYaYuhaYoaaYntaYaYaYaYaY
 aYaYaYaYaYaYaYPVaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYPVaYOZaYaYaYaYNWaYaYaYfIYJYJMwXbXbOpIiOpQYGCGCGCGCkEGCGCGCGCGCyGGCGCGCGCGCGCGCvXeNeNeNvgBQJUJUJUlwEteNeNAweNeNeNmDXxNtmtIdFPXxsTNtmtIdXxmDeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNeNGYNuNuNuNuNuNuNuNuNuNuNuMRxrxrBJGCGCGChboAIiOpOpOpOpXbMwMwMwAtnaaYaYZZaYaYaYuhaYaYaYaYaYaYaYaYaYaY
 aYaYaYaYaYaYaYaYOZaYaYaYaYNWaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYfIYJYJMwXbOpOpQYIiIiGCGCGCGCGCGCGCGCkEGCcuGCGCGCGCGCGCGCjZeNeNeNvgJxiaiaiabiEteNeNEDIOeNeNBJXxXxXxXxOxXxMPXxXxXxXxBJeNAleNpOpOeNeNpOpOeNAleNevAleNkRAleNIrAleNeNpOpOeNeNpOpOeNAlBJAleNGYNuNuNuUeNuNuNuNuNuNuNuMRxrcsBJGCGCcuHDIiOpOpOpOpXbXbYJYJYJfIfIaYaYaYaYOZOZaYNWaYaYaYaYaYaYOZaYaY
-aYcwcwaYaYaYaYaYaYaYaYaYaYaYPVaYOZaYaYaYaYNWaYaYPVPVaYaYaYaYaYNWaYcwcwfIfIYJYJXbXbOpOpIiQYLZGCGCGCGCGCGCcuGCGCGCGCGCcJGCcJGCGCjZeNeNBSeNJxiaiaiabieNeNSOVceNeNeNufXxNtmtIdFPSNsTNtmtIdXxQhfsfsdHkafsygCDkafsdHfsfsfsfsfsdHfsfsFwFwFwKfUmFwGiCFUmFwKfFwAweNeNAwNuNuNuNuNuNuNuNuNuNuNuMRxrnmAwGCGCcuIiIiOpXbXbXbMwYJYJfISUaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYuhoaaY
+aYcwcwaYaYaYaYaYaYaYaYaYaYaYPVaYOZaYaYaYaYNWaYaYPVPVaYaYaYaYaYNWaYcwcwfIfIYJYJXbXbOpOpIiQYLZGCGCGCGCGCGCcuGCGCGCGCGCcJGCcJGCGCjZeNeNBSeNJxiaiaiabieNeNSOVceNeNeNufXxNtmtIdFPSNsTNtmtIdXxQhfsfsdHkafsDxCDkafsdHfsfsfsfsfsdHfsfsFwFwFwKfUmFwDxCFUmFwKfFwAweNeNAwNuNuNuNuNuNuNuNuNuNuNuMRxrnmAwGCGCcuIiIiOpXbXbXbMwYJYJfISUaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYuhoaaY
 aYaYcwaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYNWaYaYPVPVaYaYaYOZaYaYaYOZaYaYaYcwfIfIYJYJXbXbOpOpIiGCLZGCcJcJGCGCcucuGCGCGCGCGCGCGCGCGCGCjZeNeNeNvgJxiaiaiabiEteNeNIkIOeNeNxLtfXxXxXxOxRMMPXxXxXxtfBJfspEpEpEpEpEpEpENEWNuAfspEpEXpfsekNAFwhphphphphphphpGVeVBAFwBJAleNBJNuhGRabvNugTRaCCNuNuNuNqxrcaBJcJGCIiIiIiOpXbXbMwAtnafISUaYaYaYaYoaaYaYOZOZqbNWaYOZuhaYaYaYaYaYaY
 aYaYaYcwaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYmHaYaYaYaYaYaYaYaYaYaYaYcwfIfIYJYJXbXbOpIiGCGCLZGCGCGCGCGCGCkEGCcJGCGCGCGCGCGCGCgFNQeNeNvgfcdOdOdOdtEteNeNAweNeNeNBJXxNtmtIdFPVZsTNtmtIdXxBJfspEuAhxpEpEpEpEpEpEumfspEpEQSfsekNAFwhpBASohphphphphphpsQFwBJeNeNBJNuhGqdbvNugTqdCCNuNuNuCyxryCBJGCGCGCIiIiOpXbXbYJYJfIfIaYaYaYaYaYaYaYKtaYaYaYaYaYaYaYaYaYaYaYaYaY
 aYaYNWaYaYaYFhaYaYaYaYaYaYaYaYaYaYaYaYaYmHaYaYKtaYOZaYaYaYaYaYaYaYaYNWaYfIfIfIYJXbOpIiIiIixaGCGCGCGCGCcJGCGCGCGCGCGCGCGCcJGCGCBJdSdSeNeNYCYCYCYCYCeNXyXyBJjCeNeNmDXxXxXxXxOxXxMPXxXxXxXxBJfspENfjXpEpEpEpERzpESTfsNbfsfsypfsygFwhpUSHrhphphphpEZhpxPFwBJAleNBJNuhGqdbvNugTqdCCNuNuNuRfxrrIBJGCGCGCGCIiOpXbXbYJfIfIaYaYaYaYaYaYaYuhOZaYaYaYaYaYaYaYoaOZaYKtKtaY
@@ -1292,9 +1353,9 @@ aYOZaYaYaYaYaYOZaYCgqxqxQolkIxDAQolkIxDAQoMehBWEyJCgaYaYaYaYaYLwLwLwaYKhaYaYaYaY
 aYaYaYaYOZaYaYaYaYihIxIxQolkIxDAQolkIxDAQoQoQoQovyCgaYaYaYPVaYLwLwLwaYKhaYaYaYPVaYaYPVTIaYPVaYaYaYaYOZaYaYNWaYNWaYaYaYaYzVaYaYaYaYaYaYYJYJaYYJYJfIfIfIfIfIfIfIaYaYfIaYaYaYmFLweCfIfIfIfIaYaYfIYJaYaYfIfIfIfIfIfIfIfIfIaYaYfIaYaYaYfIYJfIfIfIYJfIYJYJfIfIfIYJfIfIfIYJpxYJYJfIfIfIfIfIfIfIfIfIfIfIfIfIfIfIfIfIfIfIYJYJYJfIaYaYOZaYaYuhPVaYuhaYaYaYaYoaaYuhoaaYaY
 aYaYaYaYaYaYaYaYaYihIgIgQoQoQoQoQoQoQoQojUTsQoQoQoCgPVaYaYPVaYLwLwLwOZEVPVaYaYPVaYaYaYaYaYOZaYaYaYaYaYaYaYNWaYNWaYaYNWNWzVaYNWNWaYaYaYaYaYPVPVaYaYPVaYaYaYaYaYaYPVaYaYNWsbLwLwLwsbPVaYaYaYOZaYaYaYaYaYaYaYaYaYPVfIaYaYaYaYaYOZaYaYaYfIfIfIfIfIfIfIfIfIaYaYfIfIfIfIfIpxfIfIfIaYaYfIaYaYaYaYaYaYaYaYPVfIaYaYaYaYaYfIfIfIaYaYaYOZaYaYaYvOaYoauhuhaYaYaYaYaYaYaYaY
 OZaYaYaYaYaYaYaYaYCgwkQoQoQoQoQoQoQoQoQoMqQEUqQoQodeaYaYaYaYaYLwLwLwaYKhaYaYaYOZaYaYaYNWaYaYaYtIaYaYaYaYaYPVaYaYNWaYaYaYzVaYaYNWaYaYPVaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYMxLwLwLwMxaYaYNWaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYPVfIaYaYaYaYaYaYaYaYaYpxfIaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYntaYaYaYaYaYaYaYaYaYaYZZaYaYaY
-aYaYaYaYaYaYaYaYaYCglkIxDAQolkNRDAQoQoQovETsQoQovyCgaYaYaYaYaYLwLwLwNWKhaYaYNWaYaYaYaYaYaYaYaYPVaYPVaYaYaYPVaYaYaYaYaYaYzVaYaYaYaYaYaYaYaYaYaYaYaYPVaYaYNWaYaYaYaYaYaYPVaYLwLwLwaYaYaYaYaYaYaYPVaYPVaYaYaYaYOZaYaYaYaYaYaYaYOZaYaYaYaYOZOZaYaYaYaYaYaYOZaYaYOZaYaYaYuEaYaYaYOZaYaYaYaYaYaYoaOZaYaYaYaYOZOZaYaYaYaYaYaYOZaYaYOZaYaYaYaYaYaYaYaYoaaYaYaYaYaYaYaY
-aYaYaYaYaYaYaYaYaYCglkIxDAQoKsmGQoQoQoQoQoRbQobzbACgaYPVPVaYsbLwLwLwsbKhOZaYNWaYaYaYaYNWaYtmNWaYaYPVaYaYUROZaYaYaYaYaYKtzVaYaYaYaYaYaYaYaYPVPVaYaYPVaYaYaYaYOZPVPVaYaYPVaYLwLwLwaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYNWaYaYaYaYaYaYKtaYaYKtKtaYaYaYaYaYOZaYaYOZOZaYaYaYaYaYuEaYaYaYaYNWaYaYoaaYoaaYKtaYaYKtKtaYaYaYaYaYOZaYaYOZOZaYaYaYaYaYaYOZaYaYuhaYaYaYaYaYntaYaY
-aYaYaYOZaYaYOZaYaYmXQoQoQoQoQoHKorQoQoQovyCgCgihCgCgaYaYaYaYaYLwLwLwaYKhaYaYaYNWaYaYaYaYaYaYtmNWaYaYaYNWaYaYaYaYaYNWaYaYzVaYaYaYaYaYPVPVaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYOZaYLwLwLwaYaYaYaYaYaYPVaYaYNWaYaYaYaYaYaYaYaYaYNWNWaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYuEaYaYaYaYaYaYaYaYNWNWaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYKtKtaYaYaYuhaYaYaYaYaYaYaYaY
+aYaYaYaYaYaYaYaYaYCglkIxDAQolkIxDAQoQoQovETsQoQovyCgaYaYaYaYaYLwLwLwNWKhaYaYNWaYaYaYaYaYaYaYaYPVaYPVaYaYaYPVaYaYaYaYaYaYzVaYaYaYaYaYaYaYaYaYaYaYaYPVaYaYNWaYaYaYaYaYaYPVaYLwLwLwaYaYaYaYaYaYaYPVaYPVaYaYaYaYOZaYaYaYaYaYaYaYOZaYaYaYaYOZOZaYaYaYaYaYaYOZaYaYOZaYaYaYuEaYaYaYOZaYaYaYaYaYaYoaOZaYaYaYaYOZOZaYaYaYaYaYaYOZaYaYOZaYaYaYaYaYaYaYaYoaaYaYaYaYaYaYaY
+aYaYaYaYaYaYaYaYaYCglkIxDAQoKsmGmjQoQoQoQoRbQobzbACgaYPVPVaYsbLwLwLwsbKhOZaYNWaYaYaYaYNWaYtmNWaYaYPVaYaYUROZaYaYaYaYaYKtzVaYaYaYaYaYaYaYaYPVPVaYaYPVaYaYaYaYOZPVPVaYaYPVaYLwLwLwaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYNWaYaYaYaYaYaYKtaYaYKtKtaYaYaYaYaYOZaYaYOZOZaYaYaYaYaYuEaYaYaYaYNWaYaYoaaYoaaYKtaYaYKtKtaYaYaYaYaYOZaYaYOZOZaYaYaYaYaYaYOZaYaYuhaYaYaYaYaYntaYaY
+aYaYaYOZaYaYOZaYaYmXQoQoQoQoQoQoorQoQoQovyCgCgihCgCgaYaYaYaYaYLwLwLwaYKhaYaYaYNWaYaYaYaYaYaYtmNWaYaYaYNWaYaYaYaYaYNWaYaYzVaYaYaYaYaYPVPVaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYOZaYLwLwLwaYaYaYaYaYaYPVaYaYNWaYaYaYaYaYaYaYaYaYNWNWaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYuEaYaYaYaYaYaYaYaYNWNWaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYKtKtaYaYaYuhaYaYaYaYaYaYaYaY
 aYaYaYaYaYaYaYaYaYCgZpqxqxQoqxqxqxQoqxqxQoCgaYaYaYaYaYaYaYaYaYLwLwLwaYKhaYaYaYNWaYaYaYPVcwaYPVaYNWNWNWaYaYaYaYPVaYPVaYOZzVaYaYaYaYOZaYaYaYaYaYaYaYaYaYPVaYaYNWaYaYaYaYaYaYLwLwLwaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYNWNWuEaYoaaYaYaYaYaYaYaYvOOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYuhuhNWaYOZaYaYdFuhvOaYaYOZaYaYaYaY
 aYaYPVPVPVPVPVaYaYihQoIxIxQoIxIxIxQoIxIxQoCgaYaYaYaYNWNWNWNWaYLwcYLwaYKhNWNWNWaYaYaYaYPVcwcwcwPVaYaYaYaYaYaYaYaYaYaYaYaYzVaYOZaYaYaYaYaYNWaYaYPVPVaYaYPVaYaYaYaYOZaYaYaYsbLwLwLwsbaYNWaYaYaYaYaYaYPVaYaYaYaYaYaYaYaYaYaYaYKtaYaYaYaYaYaYPVaYaYaYaYOZOZNWNWaYOZaYaYySBoHnaYaYaYaYaYaYaYaYaYKtaYaYaYaYaYaYPVaYaYaYaYOZOZNWNWaYOZaYaYaYaYaYaYaYaYaYaYaYKtaYaYKtaY
 aYaYaYaYNWaYaYaYaYihQoIgIgQoIgIgIgQoIgIgQoCgaYaYaYaYaYOZaYaYaYLwLwLwaYKhaYaYaYaYOZaYaYOZPVcwaYPVaYaYaYaYaYaYPVaYaYNWaYaYzVaYaYaYaYaYaYaYaYaYaYaYaYKtaYaYaYaYaYaYaYaYaYPVaYLwLwLwaYaYaYaYOZPVPVaYaYPVaYaYaYaYOZaYaYaYaYNWaYPVaYaYKtKtaYaYaYaYaYaYKtaYaYaYaYaYaYaYaYaYpxaYaYaYOZaYoaaYaYNWaYPVaYuhKtKtoaaYaYaYaYaYKtaYaYaYaYaYaYaYaYaYaYuhaYaYaYNWNWaYaYaYaYaYaY
@@ -1313,7 +1374,7 @@ aYaYaYaYaYOZaYaYaYaYaYNWaYaYLwLwLwQRLpLpRgLpLpQRtNtNQRaYaYbBbBbBbBbBbBZvbBbBbBbB
 cwaYaYaYaYaYaYaYaYaYaYaYaYaYLwLwLwQRXLLpLpLpLpQRpNXLQRPVaYbBmoCPCPCPmoNICPCPCPmobBaYaYaYaYOZaYaYaYaYaYaYaYNWaYaYPVPVaYaYPVaYaYURaYOZaYaYaYaYaYaYPVaYaYNWaYaYaYaYaYaYPVaYaYLwLwLwaYaYOZaYaYaYaYaYaYaYaYOZaYaYaYaYaYOZaYaYaYaYaYNWaYaYPVPVaYaYPVaYaYaYaYOZaYaYaYaYaYaYPVaYaYNWuEaYaYaYoaaYPVaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYOZaYaYuhaYaYaYoaaYaYaYaYaYaY
 cwOZaYaYaYaYaYaYaYaYOZaYaYaYLwLwLwlXHlUVXLLpPvQRHlXLQRaYaYbBssssssssssssssssssssbBaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYKtaYaYaYaYaYaYaYaYaYPVPVaYaYPVaYaYaYaYOZPVPVaYaYPVaYaYLwLwLwaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYKtaYaYaYaYaYaYaYaYaYPVPVaYaYPVaYaYaYuEOZPVPVaYaYPVaYaYvOaYOZaYoaaYaYaYaYaYaYaYaYuhaYaYoaaYaYaYaYaYaYaYaYaYPVaYaYaYaYaY
 cwaYaYaYaYaYaYaYaYaYaYaYaYaYLwLwLwmUXLXLXLTSXLJeXLXLQRaYaYbBnBnBnBnBnBCcnBnBnBnBbBaYaYOZaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYPVPVaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYOZaYaYLwLwLwaYaYaYaYaYaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYPVPVaYaYaYaYaYaYaYaYaYuEaYaYaYaYaYOZaYaYuhaYuhaYaYaYoaaYaYaYOZaYaYaYaYaYaYNWaYuhaYaYZZaYaYaYaYaYaYaYoaaY
-cwaYaYaYaYaYaYaYaYaYaYaYOZaYLwLwLwmUXLXLXLuldYXLXLXLQRaYPVbBNINININININININININIbBaYaYaYaYaYNWaYaYaYaYaYaYaYaYaYaYaYOZaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYPVaYaYNWaYaYaYaYaYaYaYLwLwLwaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYOZaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYPVaYuENWaYaYaYaYaYaYaYaYaYaYaYaYaYoaaYaYaYaYaYaYaYaYaYNWaYoaaYaYaYaYaYaYaYqhaYaYaYaYaY
+cwaYaYaYaYaYaYaYaYaYaYaYOZaYLwLwLwmUXLXLXLulXLXLXLXLQRaYPVbBNINININININININININIbBaYaYaYaYaYNWaYaYaYaYaYaYaYaYaYaYaYOZaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYPVaYaYNWaYaYaYaYaYaYaYLwLwLwaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYOZaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYPVaYuENWaYaYaYaYaYaYaYaYaYaYaYaYaYoaaYaYaYaYaYaYaYaYaYNWaYoaaYaYaYaYaYaYaYqhaYaYaYaYaY
 aYaYaYaYOZaYaYOZaYaYaYaYaYaYLwLwLwlXugtNtNXLXLtNtNtNQRaYaYbBOTNIOTNINININININIHfbBaYaYaYaYaYaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYOZaYaYaYaYaYNWaYaYPVPVaYaYPVaYaYaYaYOZaYaYaYaYsbLwLwLwsbaYKtaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYOZaYaYaYaYaYNWaYaYPVPVaYaYPVaYuEuEuEOZoaaYaYaYaYaYaYaYaYaYaYaYaYaYNWaYaYaYaYxxaYaYaYaYaYaYaYaYaYaYaYaYuhaYaYaYaY
 aYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYKtQRXLXLXLXLXLXLXLXLQRaYaYbBOTSuOTNISXloloSXNIHfbBaYaYNWaYaYOZaYaYOZaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYPVaYaYaYLwLwLwaYaYaYaYaYaYaYaYPVaYaYaYOZaYaYaYOZaYaYOZaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYuEaYaYaYaYvOaYaYPVPVntaYaYaYaYuhaYaYaYaYaYaYaYaYaYaYaYaYOZaYaYaYaYaYaYaYaYaYaY
 aYaYaYPVPVPVPVPVaYaYaYOZaYaYaYaYKtQRtNtNprtNtNprtNtNQRNWNWbBbBbBbBbBAbbBbBbBbBbBbBaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYLwLwLwaYaYOZaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYuEaYQCaYaYaYaYaYaYntaYaYaYaYaYaYaYoaaYaYuhaYaYaYuhaYaYaYaYaYaYaYaYaYOZaYaYaYaY
