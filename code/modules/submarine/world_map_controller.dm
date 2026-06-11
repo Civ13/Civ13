@@ -83,9 +83,9 @@ var/global/datum/world_map_controller/subcom_map
 	// Disable if any hostile NPC is within hostile detection range
 	for(var/datum/vessel_contact/npc/NPC in active_vessels)
 		if(NPC.nationality == SUB_NATION_HOSTILE)
-			var/dist = euclidean_distance(NPC.x_pos, NPC.y_pos, player_sub.x_pos, player_sub.y_pos)
-			if(dist < SUB_FAST_TRAVEL_HOSTILE_DISABLE_RANGE)
-				disable_fast_travel("Hostile contact detected within [SUB_FAST_TRAVEL_HOSTILE_DISABLE_RANGE]nm!")
+			var/dist = euclidean_distance(NPC.x_pos, NPC.y_pos, player_sub.x_pos, player_sub.y_pos) * SUB_MAP_SCALE
+			if(dist < SUB_FAST_TRAVEL_HOSTILE_DISABLE_RANGE * SUB_MAP_SCALE)
+				disable_fast_travel("Hostile contact detected within [round(dist)]m!")
 				return
 
 /datum/world_map_controller/proc/enable_fast_travel()

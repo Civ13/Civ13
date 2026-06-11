@@ -1773,10 +1773,9 @@ obj/structure/vending/idfammo
 	icon_state = "firecloset"
 	products = list(
 		/obj/item/clothing/mask/gas/military = 3,
-		/obj/item/clothing/suit/storage/coat/fur = 2,
+		/obj/item/clothing/suit/lifejacket = 2,
 		/obj/item/weapon/weldingtool = 2,
 		/obj/item/weapon/reagent_containers/glass/fire_extinguisher = 2,
-		/obj/item/weapon/screwdriver = 1,
-		/obj/item/weapon/wrench = 1,
-		/obj/item/weapon/torpedo = 4,
+		/obj/item/weapon/screwdriver = 2,
+		/obj/item/weapon/wrench = 2,
 	)

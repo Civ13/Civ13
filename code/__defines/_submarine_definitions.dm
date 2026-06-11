@@ -33,7 +33,8 @@
 #define SUB_TURN_RATE 1.5            // Degrees per tick the sub can rotate
 
 // World Map Grid
-#define SUB_MAP_SIZE 1000            // 1000x1000 nautical mile virtual grid
+#define SUB_MAP_SIZE 1000            // 1000x1000 virtual grid
+#define SUB_MAP_SCALE 100            // meters per virtual unit (1 unit = 100m, map = 100km x 100km)
 #define SUB_MAP_TICK_INTERVAL 20     // Process interval in ticks (2 seconds at 10 TPS)
 
 // NPC AI States

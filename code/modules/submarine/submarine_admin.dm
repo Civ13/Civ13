@@ -177,7 +177,7 @@
 		for(var/datum/vessel_contact/npc/NPC in global.subcom_map.active_vessels)
 			if(QDELETED(NPC)) continue
 			idx++
-			var/dist = sub ? round(sqrt((NPC.x_pos - sub.x_pos)**2 + (NPC.y_pos - sub.y_pos)**2)) : "?"
+			var/dist = sub ? round(sqrt((NPC.x_pos - sub.x_pos)**2 + (NPC.y_pos - sub.y_pos)**2) * SUB_MAP_SCALE) : "?"
 			var/state_name = "PATROL"
 			switch(NPC.ai_state)
 				if(SUB_AI_HUNT) state_name = "HUNT"

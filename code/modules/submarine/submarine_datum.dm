@@ -330,7 +330,8 @@ var/global/list/all_submarines = list()
 	for(var/datum/submarine/other_sub in all_submarines)
 		if(other_sub == src) continue
 		
-		var/dist = sqrt((other_sub.x_pos - x_pos)**2 + (other_sub.y_pos - y_pos)**2)
+		var/raw_dist = sqrt((other_sub.x_pos - x_pos)**2 + (other_sub.y_pos - y_pos)**2)
+		var/dist = raw_dist * SUB_MAP_SCALE // Convert to meters
 		var/can_detect = FALSE
 		var/c_type = SUB_CONTACT_SUBMERGED
 		
@@ -366,7 +367,8 @@ var/global/list/all_submarines = list()
 		for(var/datum/vessel_contact/npc/NPC in global.subcom_map.active_vessels)
 			if(QDELETED(NPC)) continue
 
-			var/dist = euclidean_distance(NPC.x_pos, NPC.y_pos, x_pos, y_pos)
+			var/raw_dist = euclidean_distance(NPC.x_pos, NPC.y_pos, x_pos, y_pos)
+			var/dist = raw_dist * SUB_MAP_SCALE // Convert to meters
 			var/can_detect = FALSE
 			
 			// Radar Check: surface + submerged + air contacts
