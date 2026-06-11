@@ -10,7 +10,7 @@
 "aj" = (/obj/structure/lamp/lamp_small/alwayson/red,/obj/structure/medicalbed,/obj/item/weapon/bedsheet/medical,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/sub_deck/medical_bay,/area/caribbean/sea/underwater)
 "ak" = (/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/sub_deck/storage,/area/caribbean/sea/underwater)
 "al" = (/obj/structure/lamp/lamp_small/alwayson/red{dir = 8},/obj/structure/lamp/lamp_small/alwayson{dir = 8},/turf/floor/sub_deck/rear_corridor,/area/caribbean/sea/underwater)
-"am" = (/obj/structure/machinery/sub_physical/coolant_pump{pump_id = 1; is_primary = TRUE},/turf/floor/sub_deck/reactor_room,/area/caribbean/sea/underwater)
+"am" = (/obj/structure/machinery/sub_physical/coolant_pump{pump_id = 1; is_primary = 1},/turf/floor/sub_deck/reactor_room,/area/caribbean/sea/underwater)
 "an" = (/turf/wall/sub_hull,/area/caribbean/sea/underwater)
 "ao" = (/turf/floor/sub_deck/reactor_room,/area/caribbean/sea/underwater)
 "ap" = (/obj/structure/lamp/lamp_small/alwayson,/turf/floor/sub_deck/central_corridor,/area/caribbean/sea/underwater)
