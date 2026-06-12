@@ -1001,6 +1001,7 @@
 #include "code\modules\client\preferencesSQLite\preference_setup\global\setting_datums.dm"
 #include "code\modules\collectibles\stickers.dm"
 #include "code\modules\collectibles\stickers_admin.dm"
+#include "code\modules\collectibles\structures.dm"
 #include "code\modules\dmm_suite\_preprocessor_and_utilities.dm"
 #include "code\modules\dmm_suite\reader.dm"
 #include "code\modules\error_handler\_defines.dm"

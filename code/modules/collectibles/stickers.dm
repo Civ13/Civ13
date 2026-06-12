@@ -18,6 +18,8 @@
 #define STICKER_CAT_TECH     "Technology"
 #define STICKER_CAT_WEAPONS  "Weapons"
 #define STICKER_CAT_ANIMALS  "Animals"
+#define STICKER_CAT_CROPS    "Crops"
+#define STICKER_CAT_MINERALS "Minerals"
 
 /datum/sticker
 	var/id
@@ -308,6 +310,33 @@
 	age = STICKER_AGE_CLASSICAL
 	icon_state = "horse"
 
+/datum/sticker/dog
+	id = "dog"
+	name = "Dog"
+	desc = "Man's best friend — the first animal to walk beside us."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_ANIMALS
+	age = STICKER_AGE_STONE
+	icon_state = "dog"
+
+/datum/sticker/wheel
+	id = "wheel"
+	name = "Wheel"
+	desc = "Round and simple, yet it revolutionized every civilization that turned it."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_TECH
+	age = STICKER_AGE_CLASSICAL
+	icon_state = "wheel"
+
+/datum/sticker/pickaxe
+	id = "pickaxe"
+	name = "Pickaxe"
+	desc = "A pointed tool for breaking rock — the miner's constant companion."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_TECH
+	age = STICKER_AGE_CLASSICAL
+	icon_state = "pickaxe"
+
 // ======================= UNCOMMON =======================
 
 /datum/sticker/sword
@@ -399,6 +428,51 @@
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_INDUSTRIAL
 	icon_state = "petrol_engine"
+
+/datum/sticker/electricity
+	id = "electricity"
+	name = "Electricity"
+	desc = "Harnessed lightning — powered the second industrial revolution."
+	rarity = STICKER_UNCOMMON
+	category = STICKER_CAT_TECH
+	age = STICKER_AGE_INDUSTRIAL
+	icon_state = "electricity"
+
+/datum/sticker/flight
+	id = "flight"
+	name = "Flight"
+	desc = "Humanity took to the skies and never looked back."
+	rarity = STICKER_UNCOMMON
+	category = STICKER_CAT_TECH
+	age = STICKER_AGE_INDUSTRIAL
+	icon_state = "flight"
+
+/datum/sticker/cars
+	id = "cars"
+	name = "Cars"
+	desc = "Personal transport on four wheels — the open road calling."
+	rarity = STICKER_UNCOMMON
+	category = STICKER_CAT_TECH
+	age = STICKER_AGE_INDUSTRIAL
+	icon_state = "cars"
+
+/datum/sticker/computers
+	id = "computers"
+	name = "Computers"
+	desc = "Logic machines that think faster than any human — the digital revolution."
+	rarity = STICKER_UNCOMMON
+	category = STICKER_CAT_TECH
+	age = STICKER_AGE_COLDWAR
+	icon_state = "computers"
+
+/datum/sticker/printing_press
+	id = "printing_press"
+	name = "Printing Press"
+	desc = "Movable type and ink — knowledge escaped the monasteries and reached the masses."
+	rarity = STICKER_UNCOMMON
+	category = STICKER_CAT_TECH
+	age = STICKER_AGE_IMPERIAL
+	icon_state = "printing_press"
 
 // ======================= RARE =======================
 
@@ -573,6 +647,42 @@
 	age = STICKER_AGE_MODERN
 	icon_state = "victoria_falls"
 
+/datum/sticker/sahara
+	id = "sahara"
+	name = "Sahara Desert"
+	desc = "The largest hot desert on Earth — an ocean of sand stretching across a continent."
+	rarity = STICKER_RARE
+	category = STICKER_CAT_NATURAL
+	age = STICKER_AGE_MODERN
+	icon_state = "sahara"
+
+/datum/sticker/amazon
+	id = "amazon"
+	name = "Amazon Rainforest"
+	desc = "The lungs of the planet — home to 10% of all species on Earth."
+	rarity = STICKER_RARE
+	category = STICKER_CAT_NATURAL
+	age = STICKER_AGE_MODERN
+	icon_state = "amazon"
+
+/datum/sticker/internet
+	id = "internet"
+	name = "Internet"
+	desc = "A web connecting every mind on Earth — the largest library ever built."
+	rarity = STICKER_RARE
+	category = STICKER_CAT_TECH
+	age = STICKER_AGE_MODERN
+	icon_state = "internet"
+
+/datum/sticker/nuclear_energy
+	id = "nuclear_energy"
+	name = "Nuclear Energy"
+	desc = "Split the atom and unlocked power measured in kilotons."
+	rarity = STICKER_RARE
+	category = STICKER_CAT_TECH
+	age = STICKER_AGE_COLDWAR
+	icon_state = "nuclear_energy"
+
 // ======================= LEGENDARY =======================
 
 /datum/sticker/great_wall
@@ -638,6 +748,15 @@
 	age = STICKER_AGE_CLASSICAL
 	icon_state = "colosseum"
 
+/datum/sticker/angkor_wat
+	id = "angkor_wat"
+	name = "Angkor Wat"
+	desc = "The largest religious monument ever built — a temple city rising from the jungle."
+	rarity = STICKER_LEGENDARY
+	category = STICKER_CAT_WONDERS
+	age = STICKER_AGE_MEDIEVAL
+	icon_state = "angkor_wat"
+
 /datum/sticker/pyramid
 	id = "pyramid"
 	name = "Great Pyramid"
@@ -646,6 +765,203 @@
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_CLASSICAL
 	icon_state = "pyramid"
+
+// ── Crops: Common ──
+
+/datum/sticker/wheat
+	id = "wheat"
+	name = "Wheat"
+	desc = "The golden grain that feeds civilizations — bread of life since the Fertile Crescent."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_CROPS
+	age = STICKER_AGE_CLASSICAL
+	icon_state = "wheat"
+
+/datum/sticker/corn
+	id = "corn"
+	name = "Corn"
+	desc = "Maize — the gift of the Americas, feeding billions across the New World and the Old."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_CROPS
+	age = STICKER_AGE_CLASSICAL
+	icon_state = "corn"
+
+/datum/sticker/cotton
+	id = "cotton"
+	name = "Cotton"
+	desc = "Soft white bolls that clothed the world — and fueled revolutions in industry and labor."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_CROPS
+	age = STICKER_AGE_MEDIEVAL
+	icon_state = "cotton"
+
+/datum/sticker/hemp
+	id = "hemp"
+	name = "Hemp"
+	desc = "Tough fibrous stalks woven into rope, sails, and paper — the working man's plant."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_CROPS
+	age = STICKER_AGE_CLASSICAL
+	icon_state = "hemp"
+
+/datum/sticker/rice
+	id = "rice"
+	name = "Rice"
+	desc = "The staple grain of half the world — paddy fields stretching to the horizon."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_CROPS
+	age = STICKER_AGE_CLASSICAL
+	icon_state = "rice"
+
+/datum/sticker/tomato
+	id = "tomato"
+	name = "Tomato"
+	desc = "A bright red fruit from the New World that conquered every kitchen in the Old."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_CROPS
+	age = STICKER_AGE_IMPERIAL
+	icon_state = "tomato"
+
+/datum/sticker/potato
+	id = "potato"
+	name = "Potato"
+	desc = "A humble tuber that fed armies, survived famines, and changed the fate of nations."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_CROPS
+	age = STICKER_AGE_IMPERIAL
+	icon_state = "potato"
+
+// ── Crops: Uncommon ──
+
+/datum/sticker/tobacco
+	id = "tobacco"
+	name = "Tobacco"
+	desc = "A controversial cash crop that shaped empires, economies, and the fate of colonies."
+	rarity = STICKER_UNCOMMON
+	category = STICKER_CAT_CROPS
+	age = STICKER_AGE_IMPERIAL
+	icon_state = "tobacco"
+
+/datum/sticker/opium
+	id = "opium"
+	name = "Opium"
+	desc = "A potent narcotic resin that sparked wars, addiction crises, and diplomatic incidents."
+	rarity = STICKER_UNCOMMON
+	category = STICKER_CAT_CROPS
+	age = STICKER_AGE_IMPERIAL
+	icon_state = "opium"
+
+/datum/sticker/tea
+	id = "tea"
+	name = "Tea"
+	desc = "Leaves steeped in hot water — the drink of emperors, philosophers, and revolutionaries."
+	rarity = STICKER_UNCOMMON
+	category = STICKER_CAT_CROPS
+	age = STICKER_AGE_MEDIEVAL
+	icon_state = "tea"
+
+/datum/sticker/coffee
+	id = "coffee"
+	name = "Coffee"
+	desc = "Dark bitter beans brewed into a drink that fueled the Enlightenment and the modern world."
+	rarity = STICKER_UNCOMMON
+	category = STICKER_CAT_CROPS
+	age = STICKER_AGE_IMPERIAL
+	icon_state = "coffee"
+
+// ── Minerals: Common ──
+
+/datum/sticker/dd_rock
+	id = "dd_rock"
+	name = "Diamond Drilling Rock"
+	desc = "Core samples from deep beneath the earth — every gem starts as stone."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_MINERALS
+	age = STICKER_AGE_INDUSTRIAL
+	icon_state = "dd_rock"
+
+/datum/sticker/iron_ore
+	id = "iron_ore"
+	name = "Iron Ore"
+	desc = "The backbone of industry — from ploughshares to swords to skyscrapers."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_MINERALS
+	age = STICKER_AGE_CLASSICAL
+	icon_state = "iron_ore"
+
+/datum/sticker/coal
+	id = "coal"
+	name = "Coal"
+	desc = "Black rock that powered the Industrial Revolution and fired the furnaces of empire."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_MINERALS
+	age = STICKER_AGE_INDUSTRIAL
+	icon_state = "coal"
+
+/datum/sticker/copper_ore
+	id = "copper_ore"
+	name = "Copper Ore"
+	desc = "The first metal shaped by human hands — coins, tools, and plumbing."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_MINERALS
+	age = STICKER_AGE_STONE
+	icon_state = "copper_ore"
+
+/datum/sticker/tin_ore
+	id = "tin_ore"
+	name = "Tin Ore"
+	desc = "Mixed with copper to make bronze — the alloy that defined an age."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_MINERALS
+	age = STICKER_AGE_STONE
+	icon_state = "tin_ore"
+
+/datum/sticker/salt
+	id = "salt"
+	name = "Salt"
+	desc = "White gold of the ancient world — preserving food and seasoning every meal."
+	rarity = STICKER_COMMON
+	category = STICKER_CAT_MINERALS
+	age = STICKER_AGE_STONE
+	icon_state = "salt"
+
+// ── Minerals: Uncommon ──
+
+/datum/sticker/silver_ore
+	id = "silver_ore"
+	name = "Silver Ore"
+	desc = "A gleaming white metal — currency of kings and adornment of temples."
+	rarity = STICKER_UNCOMMON
+	category = STICKER_CAT_MINERALS
+	age = STICKER_AGE_CLASSICAL
+	icon_state = "silver_ore"
+
+/datum/sticker/gold_ore
+	id = "gold_ore"
+	name = "Gold Ore"
+	desc = "The eternal metal — incorruptible, beautiful, and the root of countless quests."
+	rarity = STICKER_UNCOMMON
+	category = STICKER_CAT_MINERALS
+	age = STICKER_AGE_STONE
+	icon_state = "gold_ore"
+
+/datum/sticker/uranium_ore
+	id = "uranium_ore"
+	name = "Uranium Ore"
+	desc = "A radioactive element that powers reactors and haunts battlefields."
+	rarity = STICKER_UNCOMMON
+	category = STICKER_CAT_MINERALS
+	age = STICKER_AGE_MODERN
+	icon_state = "uranium_ore"
+
+/datum/sticker/lead_ore
+	id = "lead_ore"
+	name = "Lead Ore"
+	desc = "A heavy, dull metal — bullets, pipes, and the shield against radiation."
+	rarity = STICKER_UNCOMMON
+	category = STICKER_CAT_MINERALS
+	age = STICKER_AGE_CLASSICAL
+	icon_state = "lead_ore"
 
 GLOBAL_LIST_EMPTY(sticker_registry)
 
@@ -925,3 +1241,46 @@ GLOBAL_LIST_EMPTY(sticker_collections)
 			to_chat(user, "<span class='notice'>[M] declined the sticker.</span>")
 			return
 	..()
+
+/obj/item/sticker_pack/special
+	name = "premium sticker pack"
+	desc = "A glittering gold-foil pack containing guaranteed rare stickers. Two commons, two uncommons, and one premium pull!"
+
+/obj/item/sticker_pack/special/attack_self(mob/user)
+	if(!length(GLOB.sticker_registry))
+		to_chat(user, "<span class='warning'>The sticker registry is empty! Something is wrong.</span>")
+		return
+	user.visible_message("<span class='notice'>[user] carefully opens \the [src]!</span>")
+	playsound(user, 'sound/effects/rip_pack.ogg', 100, TRUE)
+
+	var/list/common_pool = list()
+	var/list/uncommon_pool = list()
+	var/list/rare_pool = list()
+	var/list/legendary_pool = list()
+
+	for(var/id in GLOB.sticker_registry)
+		var/datum/sticker/S = GLOB.sticker_registry[id]
+		switch(S.rarity)
+			if(STICKER_COMMON)    common_pool += id
+			if(STICKER_UNCOMMON)  uncommon_pool += id
+			if(STICKER_RARE)      rare_pool += id
+			if(STICKER_LEGENDARY) legendary_pool += id
+
+	// 2 commons
+	for(var/i in 1 to 2)
+		if(length(common_pool))
+			new /obj/item/sticker(get_turf(user), pick(common_pool))
+	// 2 uncommons
+	for(var/i in 1 to 2)
+		if(length(uncommon_pool))
+			new /obj/item/sticker(get_turf(user), pick(uncommon_pool))
+	// 1 premium: 70% rare, 30% legendary
+	if(length(legendary_pool) && prob(30))
+		new /obj/item/sticker(get_turf(user), pick(legendary_pool))
+	else if(length(rare_pool))
+		new /obj/item/sticker(get_turf(user), pick(rare_pool))
+	else if(length(legendary_pool))
+		new /obj/item/sticker(get_turf(user), pick(legendary_pool))
+
+	user.drop_item()
+	qdel(src)
