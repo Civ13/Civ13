@@ -144,5 +144,9 @@
 		to_chat(world, "<big><b>The current round has been set as a Persistent Round.</b></big>")
 
 	//////////////////////////////////////////////////////
+	admin_notice("<span class='danger'>Initializing sticker registry...</span>", R_DEBUG)
+	sleep(-1)
+	init_sticker_registry()
+
 	admin_notice("<span class='danger'>Initializations complete.</span>", R_DEBUG)
 	sleep(-1)
