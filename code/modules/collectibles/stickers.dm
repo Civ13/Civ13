@@ -28,8 +28,8 @@
 	var/rarity = STICKER_COMMON
 	var/category = STICKER_CAT_TECH
 	var/age = STICKER_AGE_STONE
-	var/icon = 'icons/obj/items.dmi'
-	var/icon_state = "card"
+	var/icon = 'icons/obj/collectibles.dmi'
+	var/icon_state = "collectible_card_pigeon"
 
 /datum/sticker/proc/rarity_name()
 	switch(src.rarity)
@@ -990,8 +990,8 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 /obj/item/sticker
 	name = "sticker"
 	desc = "A loose collectible sticker."
-	icon = 'icons/obj/items.dmi'
-	icon_state = "card"
+	icon = 'icons/obj/collectibles.dmi'
+	icon_state = "collectible_card"
 	w_class = ITEM_SIZE_TINY
 	var/sticker_id
 
@@ -1015,8 +1015,8 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 	else
 		name = "unknown sticker"
 		desc = "This sticker seems blank or corrupted."
-		icon = 'icons/obj/items.dmi'
-		icon_state = "card"
+		icon = 'icons/obj/collectibles.dmi'
+		icon_state = "collectible_card"
 
 /obj/item/sticker/examine(mob/user)
 	..()
@@ -1026,10 +1026,10 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 		to_chat(user, "<span class='notice'>Category: [S.category] | Era: [S.age]</span>")
 
 /obj/item/sticker_pack
-	name = "foil sticker pack"
+	name = "Civ Cards sticker pack"
 	desc = "A shiny foil pack containing random stickers. Trade with your friends!"
-	icon = 'icons/obj/items.dmi'
-	icon_state = "card_pack"
+	icon = 'icons/obj/collectibles.dmi'
+	icon_state = "cardpack_civ"
 	w_class = ITEM_SIZE_TINY
 	var/pack_size = 5
 
@@ -1058,8 +1058,8 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 /obj/item/sticker_album
 	name = "sticker album"
 	desc = "A binder for collecting and displaying stickers."
-	icon = 'icons/obj/items.dmi'
-	icon_state = "notebook"
+	icon = 'icons/obj/collectibles.dmi'
+	icon_state = "collectible_album"
 	w_class = ITEM_SIZE_NORMAL
 
 /obj/item/sticker_album/attackby(obj/item/W, mob/user)
@@ -1243,8 +1243,9 @@ GLOBAL_LIST_EMPTY(sticker_collections)
 	..()
 
 /obj/item/sticker_pack/special
-	name = "premium sticker pack"
+	name = "Civ Cards premium sticker pack"
 	desc = "A glittering gold-foil pack containing guaranteed rare stickers. Two commons, two uncommons, and one premium pull!"
+	icon_state = "cardpack_civ_special"
 
 /obj/item/sticker_pack/special/attack_self(mob/user)
 	if(!length(GLOB.sticker_registry))
@@ -1284,3 +1285,17 @@ GLOBAL_LIST_EMPTY(sticker_collections)
 
 	user.drop_item()
 	qdel(src)
+
+/obj/structure/vending/sales/cards
+	name = "Civ Cards vending machine"
+	desc = "A vending machine selling packs of the 'Civ Cards' collection stickers."
+	icon_state = "cards"
+	owner = "Civ Cards Collection"
+	products = list(
+		/obj/item/sticker_pack = 25,
+		/obj/item/sticker_pack/special = 25,
+	)
+	prices = list(
+		/obj/item/sticker_pack = 10,
+		/obj/item/sticker_pack/special = 10,
+	)
