@@ -243,7 +243,7 @@
 				break
 		return
 
-	// Manage company — view members
+	// Manage company - view members
 	if (href_list["viewmembers"])
 		var/cmp = href_list["viewmembers"]
 		var/body = "<html><head><title>[cmp]</title></head>[common_browser_style]<b>[cmp] Members</b><br><br>"
@@ -253,7 +253,7 @@
 		H << browse(body, "window=stockmembers;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
 		return
 
-	// Manage company — distribute profits
+	// Manage company - distribute profits
 	if (href_list["distribute"])
 		var/cmp = href_list["distribute"]
 		if (!find_company_member(H, cmp))
@@ -284,7 +284,7 @@
 			to_chat(H, "<span class='notice'>There are no profits to distribute from [cmp].</span>")
 		return
 
-	// Manage company — withdraw profits
+	// Manage company - withdraw profits
 	if (href_list["withdraw"])
 		var/cmp = href_list["withdraw"]
 		if (!find_company_member(H, cmp))
@@ -330,7 +330,7 @@
 					to_chat(H, "<span class='notice'>You have no profits to withdraw.</span>")
 		return
 
-	// Faction treasury — set sales tax
+	// Faction treasury - set sales tax
 	if (href_list["setsalestax"])
 		if (!H.leader)
 			return
@@ -344,7 +344,7 @@
 		to_chat(H, "<b>Sales Tax</b> set to [val]%.")
 		return
 
-	// Faction treasury — set business tax
+	// Faction treasury - set business tax
 	if (href_list["setbusinesstax"])
 		if (!H.leader)
 			return
@@ -358,7 +358,7 @@
 		to_chat(H, "<b>Business Tax</b> set to [val]%.")
 		return
 
-	// Faction treasury — withdraw taxes
+	// Faction treasury - withdraw taxes
 	if (href_list["withdrawtaxes"])
 		if (map.custom_civs[H.civilization][4] != H)
 			to_chat(H, "<span class='warning'>You do not have the permissions to do that!</span>")
@@ -383,7 +383,7 @@
 			to_chat(H, "<span class='notice'>There is no money to withdraw.</span>")
 		return
 
-	// Faction treasury — withdraw fiat tax
+	// Faction treasury - withdraw fiat tax
 	if (href_list["withdrawfiat"])
 		if (map.custom_civs[H.civilization][4] != H)
 			to_chat(H, "<span class='warning'>You do not have the permissions to do that!</span>")

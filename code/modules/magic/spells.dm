@@ -172,7 +172,7 @@
 	name = "Fixae"
 	description = "A powerful healing spell that rejuvenates the target."
 	proj_type = /obj/item/projectile/magic/fixae
-	skill_level = 75
+	skill_level = 70
 	cast_time = 15
 	learnable = TRUE
 	juice_cost = 50
@@ -199,7 +199,7 @@
 	skill_level = 85
 	cast_time = 30
 	learnable = TRUE
-	juice_cost = 85
+	juice_cost = 50
 	screen_obj = /obj/screen/spell/painum
 	sound_effect = 'sound/effects/spells/painum.ogg'
 

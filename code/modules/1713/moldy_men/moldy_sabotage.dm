@@ -29,7 +29,7 @@
 
 	for (var/mob/living/human/H in player_list)
 		if (H.client && (H.client.ckey in member_ckeys))
-			to_chat(H, "<span class='danger'>[source_name] — +[amount] Sabotage Point\s.</span>")
+			to_chat(H, "<span class='danger'>[source_name] - +[amount] Sabotage Point\s.</span>")
 			to_chat(H, "<span class='notice'>Total: [sabotage_points]/[max_threshold] ([progress]% toward Grand Ritual).</span>")
 
 	check_threshold()

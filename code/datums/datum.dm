@@ -61,7 +61,7 @@
 	#endif
 #endif
 
-/// Stub for the SEND_SIGNAL macro — never called since nothing registers signals
+/// Stub for the SEND_SIGNAL macro - never called since nothing registers signals
 /datum/proc/_SendSignal(sigtype, list/arguments)
 	return NONE
 

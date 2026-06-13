@@ -748,7 +748,7 @@
 				if (usable.len)
 					client.add_stat("<h3>Available Spells</h3>")
 					for (var/datum/spell/S in usable)
-						client.add_stat(S.name, "<i>[S.description]</i> (<b>Level</b> <span style='color:teal'>[S.skill_level]</span>, <b>Cast time:</b> <span style='color:red'>[S.cast_time/10] secs</span>)")
+						client.add_stat(S.name, "<i>[S.description]</i> (<b>Level</b> <span style='color:#00e9ff'>[S.skill_level]</span>, <b>Cost:</b> <span style='color:red'>[S.juice_cost] juice</span>, <b>Cast time:</b> <span style='color:#fff800'>[S.cast_time/10] secs</span>)")
 				else
 					client.add_stat("No spells available.")
 

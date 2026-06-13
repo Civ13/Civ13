@@ -1,4 +1,4 @@
-// NPC Vendors — Human traders (mob version, Pepelsibirsk-style)
+// NPC Vendors - Human traders (mob version, Pepelsibirsk-style)
 // Setting: The Art of the Deal (1990s organized crime)
 
 /mob/living/simple_animal/npc_vendor
@@ -94,7 +94,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 		return
 
 // ============================================================
-// Plastique override — protect NPC vendors and safes on TAOTD
+// Plastique override - protect NPC vendors and safes on TAOTD
 // ============================================================
 
 /obj/item/weapon/plastique/afterattack(atom/movable/target, mob/user, flag)
@@ -104,7 +104,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 	..()
 
 // ============================================================
-// OMAR THE SMUGGLER — Sells smuggled weapon crates
+// OMAR THE SMUGGLER - Sells smuggled weapon crates
 // ============================================================
 
 /mob/living/simple_animal/npc_vendor/smuggler
@@ -137,7 +137,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 
 	var/content = {"<div class="message">"A shipment will arrive at the Docks. Better be ready."</div>
 <div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-weight:bold;margin-bottom:8px;">Smuggler's Package — $500</div>
+<div style="font-weight:bold;margin-bottom:8px;">Smuggler's Package - $500</div>
 <a class="btn btn-sm" href="byond://?src=\ref[src];buy_shipment=1">Buy Shipment</a>
 </div>"}
 	H << browse(build_shop_html(content, H), "window=npc_vendor;size=500x400")
@@ -212,7 +212,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 					new /obj/structure/largecrate/smuggler/ak47(get_turf(locate(84, 6, 1)))
 
 // ============================================================
-// BRUCE THE BIKER — Buys drugs, sells weapons
+// BRUCE THE BIKER - Buys drugs, sells weapons
 // ============================================================
 
 /mob/living/simple_animal/npc_vendor/biker
@@ -262,7 +262,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 		to_chat(H, "\icon[getFlatIcon(src)] My boys are busy for now. Come back later.")
 		return
 
-	// Build sell drug section — check hands for pills
+	// Build sell drug section - check hands for pills
 	var/sell_html = ""
 	var/obj/item/weapon/reagent_containers/pill/P = null
 	var/obj/item/weapon/reagent_containers/cocaineblock/CB = null
@@ -453,7 +453,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 		show_shop(H)
 
 // ============================================================
-// DIEGO 'EL DIABLO' MORALES — Cartel cocaine dealer
+// DIEGO 'EL DIABLO' MORALES - Cartel cocaine dealer
 // ============================================================
 
 /mob/living/simple_animal/npc_vendor/cartel
@@ -625,7 +625,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 		new /obj/item/weapon/reagent_containers/pill/cocaine(src)
 
 // ============================================================
-// MR. WHITE — Chemicals and explosives
+// MR. WHITE - Chemicals and explosives
 // ============================================================
 
 /mob/living/simple_animal/npc_vendor/walter
@@ -747,7 +747,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 		show_shop(H)
 
 // ============================================================
-// AGENT HARRISON YATES — Corrupt federal agent
+// AGENT HARRISON YATES - Corrupt federal agent
 // ============================================================
 
 /mob/living/simple_animal/npc_vendor/fed
@@ -799,7 +799,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 </div>"}
 		else
 			content = {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-weight:bold;margin-bottom:8px;">Bribe — $500</div>
+<div style="font-weight:bold;margin-bottom:8px;">Bribe - $500</div>
 <div style="font-size:11px;color:#999999;margin-bottom:8px;">Improve your standing with the Agency.</div>
 <a class="btn btn-sm" href="byond://?src=\ref[src];bribe=1">Bribe</a>
 </div>"}
@@ -926,7 +926,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 		show_shop(H)
 
 // ============================================================
-// MARCELLUS — Bouncer (simple flavor NPC)
+// MARCELLUS - Bouncer (simple flavor NPC)
 // ============================================================
 
 /mob/living/simple_animal/npc_vendor/bouncer
@@ -954,7 +954,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 	src.say(pick(speak))
 
 // ============================================================
-// BIG LENNY — Barber (simple flavor NPC)
+// BIG LENNY - Barber (simple flavor NPC)
 // ============================================================
 
 /mob/living/simple_animal/npc_vendor/big_lenny
@@ -982,7 +982,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 	src.say(pick(speak))
 
 // ============================================================
-// Map placeholder structures — spawn the mob equivalents
+// Map placeholder structures - spawn the mob equivalents
 // ============================================================
 
 /obj/structure/npc_vendor
