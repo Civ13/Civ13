@@ -610,7 +610,7 @@
 		return
 
 	for (var/mob/living/human/H in range(3, src))
-		if (H.stat || H == owner)
+		if (H.stat)
 			continue
 		if (H.faction == "Moldywart")
 			continue

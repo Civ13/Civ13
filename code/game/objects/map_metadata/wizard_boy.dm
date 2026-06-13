@@ -51,6 +51,18 @@
 		override_global_recipes = "camp"
 	update_win_condition()
 		return
+	if(H.ckey in round_sticker_packs_given)
+		return
+	if(!length(GLOB.sticker_registry))
+		return
+	round_sticker_packs_given += H.ckey
+	var/obj/item/sticker_pack/special/SP = new /obj/item/sticker_pack/special(get_turf(H))
+	H.equip_to_slot_or_del(new /obj/item/stack/money/silvercoin/twenty(H), slot_l_store)
+	H.equip_to_slot_if_possible(SP, slot_l_hand, FALSE, TRUE)
+	to_chat(H, "<span class='notice' style='font-size:2em'><b>A mysterious package appears in your hands - a Civ Cards sticker pack!</b></span>")
+
+/obj/map_metadata/wizard_boy/update_win_condition()
+	return
 /obj/map_metadata/wizard_boy/show_map_report()
 	var/leading_house = "None"
 	var/max_score = -9999

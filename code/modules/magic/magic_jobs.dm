@@ -101,7 +101,6 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard(H), slot_wear_suit)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/stack/money/silvercoin/twenty(H), slot_l_store)
 	H.add_note("Role", "You're a wizard boy with magic powers. What shenanigans will you get up to?")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
