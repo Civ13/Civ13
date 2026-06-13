@@ -1117,7 +1117,9 @@
 			for (var/mob/living/M in view(2, holder))
 				if (M != holder)
 					M.emote("cough")
-					M.mood -= 1.5
+					if (ishuman(M))
+						var/mob/living/human/H = M
+						H.mood -= 1.5
 	// --- ASBESTOS: PASSIVE TOXIN DRIP ---
 	if (asbestos_tox && holder)
 		tox_timer += 2
