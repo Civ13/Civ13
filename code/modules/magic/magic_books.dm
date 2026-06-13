@@ -374,6 +374,21 @@
 				<p><b>Threat Profile:</b> Lethal. Casts <i>Deadum!</i> (Instant termination of the student's physical existence) and <i>Explodus!</i> (Localized demolition). He also utilizes a <i>Blockum!</i> shield of his own.</p>
 				<p><b>Counter-Measures:</b> There are no approved counter-measures for I.D.I.O.T. or U.N.G.A. level students. If you see Lord Moldywart, please ensure your Ministry life insurance policy is up to date.</p>
 
+				<h3>4. The Shrieking Shrub (Flora of Extreme Hazard)</h3>
+				<p><b>Description:</b> A twisted, thorny bush with a maw of jagged leaves. It vibrates constantly and emits a faint, high-pitched whimper that intensifies when disturbed.</p>
+				<p><b>Threat Profile:</b> Do not be deceived by its stationary nature. When struck or approached aggressively, the Shrub emits a devastating sonic shriek that <b>stuns every human within eight tiles</b>, causing severe brain damage and rupturing the eardrums. Victims typically collapse unconscious and bleeding from the ears.</p>
+				<p><b>Counter-Measures:</b> Do not attack it. Do not touch it. Do not look at it funny. If you must pass, maintain a distance of at least nine tiles. If you hear whimpering, you are already too close.</p>
+
+				<h3>5. The Golden Gnat (Vermin of Extreme Speed)</h3>
+				<p><b>Description:</b> A tiny, brilliantly golden insect that hums at an impossibly high frequency. It vibrates with barely contained kinetic energy.</p>
+				<p><b>Threat Profile:</b> The Golden Gnat is not aggressive. However, it is the fastest living creature recorded in the Cwm-Tlawd valley, moving at speeds that make a Floatus charm look like a leisurely stroll. It will flee from any human on sight. Attempting to catch one is a waste of time and dignity.</p>
+				<p><b>Counter-Measures:</b> None required. The Gnat wants nothing to do with you. If you somehow manage to kill one (you won't), its wing is a highly sought-after wand core component. The Ministry classifies the Gnat Wing as a 'Class-A Magical Resource'. Students are reminded that poaching Golden Gnats carries a mandatory detention sentence.</p>
+
+				<h3>6. The Sludge Monster (Toxic Abomination)</h3>
+				<p><b>Description:</b> A heaving mass of foul, glowing ooze that leaves a trail of corrosion in its wake. It gurgles with a sound like a blocked drain and reeks of chemical waste.</p>
+				<p><b>Threat Profile:</b> Slow-moving but relentlessly toxic. Physical contact inflicts severe toxin poisoning. Worse, its mere presence within three tiles causes nearby humans to involuntarily vomit, further weakening them with additional toxin damage and leaving them stunned and vulnerable. The Sludge Monster does not negotiate, does not flee, and does not stop.</p>
+				<p><b>Counter-Measures:</b> Maintain distance. Ranged attacks are strongly recommended. If you must engage in melee, ensure you have access to anti-toxin medication. Do not, under any circumstances, attempt to 'hug' the Sludge Monster to calm it down. This has been tried. The student is no longer with us. (He dropped out and became an accountant.)</p>
+
 				<p><i>Remember: A safe student is a student who doesn't poke the ancient evil with a stick.</i></p>
 
 				</body>
