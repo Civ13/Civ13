@@ -1,4 +1,4 @@
-// Pepelsibirsk Traveling Merchants — mob version
+// Pepelsibirsk Traveling Merchants - mob version
 // Setting: alt-hist Cold War Siberia, 1975-1976
 
 /mob/living/simple_animal/pepelsibirsk_trader

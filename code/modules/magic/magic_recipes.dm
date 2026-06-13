@@ -112,7 +112,7 @@
 
 // ---- 2. Welsh Instant Darkness Powder ----
 // Stable when mixed. Produces a massive smoke cloud when thrown.
-// (Inert in a beaker — must be thrown to activate.)
+// (Inert in a beaker - must be thrown to activate.)
 
 /datum/reagent/darkness_powder
 	name = "Welsh Instant Darkness Powder"

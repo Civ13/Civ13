@@ -300,7 +300,7 @@
 
 		to_chat(H, SPAN_NOTICE("<b>Trial started!</b> Deflect 3 spells with <b>Blockum!</b>, then disarm the dummy with <b>Dropus!</b>. Do NOT leave the circle!"))
 
-		// Monitor student position — abort if they leave the dueling square
+		// Monitor student position - abort if they leave the dueling square
 		spawn(0)
 			while (TD && !isnull(TD.loc) && TD.active_student == H)
 				sleep(5) // check every 0.5 seconds
