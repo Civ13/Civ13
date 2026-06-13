@@ -38,6 +38,7 @@
 	var/stats_dirty = FALSE
 	var/saving_stats = FALSE
 	var/list/moldy_men = list()
+	var/list/round_sticker_packs_given = list()
 	var/datum/moldy_sabotage/sabotage
 	New()
 		..()
@@ -49,8 +50,21 @@
 		spawn(100)
 		load_new_recipes("config/crafting/material_recipes_camp.txt")
 		override_global_recipes = "camp"
-	update_win_condition()
+
+/obj/map_metadata/wizard_boy/proc/give_sticker_pack(mob/living/human/H)
+	if(!H || !H.ckey)
 		return
+	if(H.ckey in round_sticker_packs_given)
+		return
+	if(!length(GLOB.sticker_registry))
+		return
+	round_sticker_packs_given += H.ckey
+	var/obj/item/sticker_pack/special/SP = new /obj/item/sticker_pack/special(get_turf(H))
+	H.equip_to_slot_if_possible(SP, slot_l_hand, FALSE, TRUE)
+	to_chat(H, "<span class='notice' style='font-size:2em'><b>A mysterious package appears in your hands - a Civ Cards sticker pack!</b></span>")
+
+/obj/map_metadata/wizard_boy/update_win_condition()
+	return
 /obj/map_metadata/wizard_boy/show_map_report()
 	var/leading_house = "None"
 	var/max_score = -9999

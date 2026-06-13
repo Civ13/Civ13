@@ -162,6 +162,11 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 		//	if (!player_is_antag(player.mind, only_offstation_roles = TRUE))
 			job_master.EquipRank(player, player.mind.assigned_role, FALSE)
 		//		equip_custom_items(player)
+	if (map && map.ID == MAP_WIZARD_BOY)
+		var/obj/map_metadata/wizard_boy/WB = map
+		for (var/mob/living/human/player in player_list)
+			if (player && player.ckey)
+				WB.give_sticker_pack(player)
 
 /datum/controller/gameticker/proc/process()
 	if (current_state != GAME_STATE_PLAYING)

@@ -1245,6 +1245,9 @@ var/global/redirect_all_players = null
 					to_chat(H, "<big><b>Your squad leader is [map.faction2_squad_leaders[H.squad]].</b></big>")
 	if(!map.fob_spawns)
 		job_master.relocate(character)
+	if (map.ID == MAP_WIZARD_BOY && ishuman(character))
+		var/obj/map_metadata/wizard_boy/WB = map
+		WB.give_sticker_pack(character)
 	if (character.buckled && istype(character.buckled, /obj/structure/bed/chair/wheelchair))
 		character.buckled.loc = character.loc
 		character.buckled.set_dir(character.dir)
