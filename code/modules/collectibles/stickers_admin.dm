@@ -26,6 +26,8 @@
 	var/count = 0
 	for(var/id in GLOB.sticker_registry)
 		var/datum/sticker/S = GLOB.sticker_registry[id]
+		if(!S)
+			continue
 		if(count % 3 == 0)
 			dat += "<tr>"
 		if(id in player_stickers)
@@ -89,6 +91,8 @@
 	var/list/sticker_names = list()
 	for(var/id in GLOB.sticker_registry)
 		var/datum/sticker/S = GLOB.sticker_registry[id]
+		if(!S)
+			continue
 		sticker_names["[S.name] ([S.rarity_name()])"] = id
 	var/picked_name = input(usr, "Select a sticker", "Give Specific Sticker") in sticker_names
 	if (!picked_name)
@@ -133,6 +137,8 @@
 	var/list/sticker_names = list()
 	for(var/id in GLOB.sticker_registry)
 		var/datum/sticker/S = GLOB.sticker_registry[id]
+		if(!S)
+			continue
 		sticker_names["[S.name] ([S.rarity_name()])"] = id
 	var/picked_name = input(usr, "Select a sticker to unlock", "Unlock Sticker") in sticker_names
 	if (!picked_name)

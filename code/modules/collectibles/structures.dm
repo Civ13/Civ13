@@ -96,14 +96,15 @@
 				dat += "<span class='rarity-tag' style='color: #555;'>Not yet collected</span>"
 				dat += "</div>"
 
-	dat += "<br><br><a href='byond://?src=\ref[src];close=1' class='btn'>Close</a>"
+	dat += "<br><br><a href='byond://?src=\ref[src];close=sticker_album' class='btn'>Close</a>"
 	dat += "</body></html>"
 	user << browse(dat, "window=sticker_album;size=650x550")
 
 /obj/item/sticker_album/Topic(href, href_list)
 	. = ..()
 	if(href_list["close"])
-		usr << browse(null, "window=sticker_album")
+		var/window_id = href_list["close"]
+		usr << browse(null, "window=[window_id]")
 		return TRUE
 	if(href_list["open_card"]) // Handle the new 'open_card' link
 		var/card_index = href_list["open_card"]
@@ -130,8 +131,14 @@ GLOBAL_LIST_EMPTY(sticker_collections)
 		if(!line)
 			continue
 		var/list/parts = splittext(line, ";")
-		if(length(parts) >= 2 && parts[1] == ckey)
-			return parts.Copy(2)
+		if(length(parts) >= 1 && parts[1] == ckey)
+			var/list/ret = list()
+			if(length(parts) >= 2)
+				for(var/i = 2 to length(parts))
+					var/id = parts[i]
+					if(id)
+						ret += id
+			return ret
 	return list()
 
 /proc/save_sticker_collection(ckey, list/ids)
@@ -139,7 +146,8 @@ GLOBAL_LIST_EMPTY(sticker_collections)
 		return
 	var/list/temp = list()
 	for(var/id in ids)
-		temp[id] = TRUE
+		if(id)
+			temp[id] = TRUE
 	ids = list()
 	for(var/id in temp)
 		ids += id
@@ -151,20 +159,23 @@ GLOBAL_LIST_EMPTY(sticker_collections)
 			var/list/parts = splittext(line, ";")
 			if(length(parts) >= 1 && parts[1] == ckey)
 				if(!found)
-					new_lines += "[ckey];[jointext(ids, ";")]"
+					new_lines += length(ids) ? "[ckey];[jointext(ids, ";")]" : "[ckey]"
 					found = TRUE
 			else
 				new_lines += line
 	if(!found)
-		new_lines += "[ckey];[jointext(ids, ";")]"
+		new_lines += length(ids) ? "[ckey];[jointext(ids, ";")]" : "[ckey]"
 	if(fexists("SQL/collectibles.txt"))
 		if(fexists("SQL/collectibles_backup.txt"))
 			fdel("SQL/collectibles_backup.txt")
 		fcopy("SQL/collectibles.txt", "SQL/collectibles_backup.txt")
 		fdel("SQL/collectibles.txt")
+	var/list/non_empty = list()
 	for(var/line in new_lines)
 		if(length(line) > 0)
-			text2file(line, "SQL/collectibles.txt")
+			non_empty += line
+	if(length(non_empty))
+		text2file(jointext(non_empty, "\n"), "SQL/collectibles.txt")
 	GLOB.sticker_collections[ckey] = ids
 
 /obj/item/sticker_album/attack(mob/M, mob/user)
@@ -180,13 +191,15 @@ GLOBAL_LIST_EMPTY(sticker_collections)
 		dat += "<p>Collected: [length(owner_stickers)] / [length(GLOB.sticker_registry)]</p>"
 		for(var/id in GLOB.sticker_registry)
 			var/datum/sticker/S = GLOB.sticker_registry[id]
+			if(!S)
+				continue
 			if(id in owner_stickers)
 				dat += "<span style='display:inline-block;width:150px;padding:4px;margin:2px;background:#2a3a2a;border:1px solid #4a6a4a;'>"
 				dat += "<b>#[S.index] [S.name]</b><br><font color='[S.rarity_color()]'>[S.rarity_name()]</font></span> "
 			else
 				dat += "<span style='display:inline-block;width:150px;padding:4px;margin:2px;background:#1a1a1a;border:1px solid #333;color:#555;'>"
 				dat += "<b>#[S.index]</b> ???</span> "
-		dat += "<br><br><a href='byond://?src=\ref[src];close=1' class='btn'>Close</a>"
+		dat += "<br><br><a href='byond://?src=\ref[src];close=[M.ckey]_album' class='btn'>Close</a>"
 		dat += "</body></html>"
 		user << browse(dat, "window=[M.ckey]_album;size=550x500")
 		return
