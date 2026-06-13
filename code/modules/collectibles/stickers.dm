@@ -1,4 +1,4 @@
-﻿#define STICKER_COMMON    1
+#define STICKER_COMMON    1
 #define STICKER_UNCOMMON  2
 #define STICKER_RARE      3
 #define STICKER_LEGENDARY 4
@@ -846,7 +846,7 @@
 	age = STICKER_AGE_CLASSICAL
 	icon_state = "collectible_card_5"
 
-// â”€â”€ Crops: Common â”€â”€
+// == Crops: Common ==
 
 /datum/sticker/wheat
 	id = "wheat"
@@ -918,7 +918,7 @@
 	age = STICKER_AGE_IMPERIAL
 	icon_state = "collectible_card_4"
 
-// â”€â”€ Crops: Uncommon â”€â”€
+// == Crops: Uncommon ==
 
 /datum/sticker/tobacco
 	id = "tobacco"
@@ -960,7 +960,7 @@
 	age = STICKER_AGE_IMPERIAL
 	icon_state = "collectible_card_4"
 
-// â”€â”€ Minerals: Common â”€â”€
+// == Minerals: Common ==
 
 /datum/sticker/dd_rock
 	id = "dd_rock"
@@ -1022,7 +1022,7 @@
 	age = STICKER_AGE_STONE
 	icon_state = "collectible_card_6"
 
-// â”€â”€ Minerals: Uncommon â”€â”€
+// == Minerals: Uncommon ==
 
 /datum/sticker/silver_ore
 	id = "silver_ore"
@@ -1119,6 +1119,10 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 		icon = 'icons/obj/collectibles.dmi'
 		icon_state = "collectible_card"
 
+/obj/item/sticker/attack_self(mob/user)
+	..()
+	examine(user)
+
 /obj/item/sticker/examine(mob/user)
 	..()
 	var/datum/sticker/S = get_sticker_datum()
@@ -1126,6 +1130,7 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 		to_chat(user, "<span class='notice'>Index: #[S.index]</span>")
 		to_chat(user, "<span class='notice'>Rarity: <font color='[S.rarity_color()]'>[S.rarity_name()]</font></span>")
 		to_chat(user, "<span class='notice'>Category: [S.category] | Era: [S.age]</span>")
+		user << browse("<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'><style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style></head><body><iframe src='https://civ13.com/card/[S.index]'></iframe></body></html>", "window=sticker_card;size=370x490")
 
 /obj/item/sticker_pack
 	name = "Civ Cards sticker pack"
