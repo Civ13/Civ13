@@ -1,4 +1,4 @@
-#define STICKER_COMMON    1
+﻿#define STICKER_COMMON    1
 #define STICKER_UNCOMMON  2
 #define STICKER_RARE      3
 #define STICKER_LEGENDARY 4
@@ -58,7 +58,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_WEAPONS
 	age = STICKER_AGE_STONE
-	icon_state = "spear"
+	icon_state = "collectible_card_1"
 
 /datum/sticker/flint_hatchet
 	id = "flint_hatchet"
@@ -68,7 +68,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_WEAPONS
 	age = STICKER_AGE_STONE
-	icon_state = "flint_hatchet"
+	icon_state = "collectible_card_1"
 
 /datum/sticker/club
 	id = "club"
@@ -78,7 +78,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_WEAPONS
 	age = STICKER_AGE_STONE
-	icon_state = "club"
+	icon_state = "collectible_card_1"
 
 /datum/sticker/sling
 	id = "sling"
@@ -88,7 +88,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_WEAPONS
 	age = STICKER_AGE_STONE
-	icon_state = "sling"
+	icon_state = "collectible_card_1"
 
 /datum/sticker/bow
 	id = "bow"
@@ -98,7 +98,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_WEAPONS
 	age = STICKER_AGE_STONE
-	icon_state = "bow"
+	icon_state = "collectible_card_1"
 
 /datum/sticker/pottery
 	id = "pottery"
@@ -108,7 +108,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_STONE
-	icon_state = "pottery"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/plough
 	id = "plough"
@@ -118,7 +118,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "plough"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/drying_rack
 	id = "drying_rack"
@@ -128,7 +128,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_STONE
-	icon_state = "drying_rack"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/loom
 	id = "loom"
@@ -138,7 +138,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "loom"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/fire
 	id = "fire"
@@ -148,7 +148,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_STONE
-	icon_state = "fire"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/basket
 	id = "basket"
@@ -158,7 +158,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_STONE
-	icon_state = "basket"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/fishing_net
 	id = "fishing_net"
@@ -168,7 +168,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_STONE
-	icon_state = "fishing_net"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/rope
 	id = "rope"
@@ -178,7 +178,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_STONE
-	icon_state = "rope"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/hammer
 	id = "hammer"
@@ -188,7 +188,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_STONE
-	icon_state = "hammer"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/axe
 	id = "axe"
@@ -198,7 +198,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_STONE
-	icon_state = "axe"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/mortar_pestle
 	id = "mortar_pestle"
@@ -208,7 +208,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_STONE
-	icon_state = "mortar_pestle"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/papyrus
 	id = "papyrus"
@@ -218,7 +218,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "papyrus"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/torch
 	id = "torch"
@@ -228,7 +228,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_STONE
-	icon_state = "torch"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/leather_hide
 	id = "leather_hide"
@@ -238,7 +238,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_STONE
-	icon_state = "leather_hide"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/irrigation
 	id = "irrigation"
@@ -248,7 +248,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "irrigation"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/sails
 	id = "sails"
@@ -258,7 +258,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "sails"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/cement
 	id = "cement"
@@ -268,7 +268,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "cement"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/fermentation
 	id = "fermentation"
@@ -278,7 +278,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_STONE
-	icon_state = "fermentation"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/chicken
 	id = "chicken"
@@ -288,7 +288,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_ANIMALS
 	age = STICKER_AGE_STONE
-	icon_state = "chicken"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/cow
 	id = "cow"
@@ -298,7 +298,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_ANIMALS
 	age = STICKER_AGE_STONE
-	icon_state = "cow"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/deer
 	id = "deer"
@@ -308,7 +308,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_ANIMALS
 	age = STICKER_AGE_STONE
-	icon_state = "deer"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/sheep
 	id = "sheep"
@@ -318,7 +318,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_ANIMALS
 	age = STICKER_AGE_STONE
-	icon_state = "sheep"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/bear
 	id = "bear"
@@ -328,7 +328,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_ANIMALS
 	age = STICKER_AGE_STONE
-	icon_state = "bear"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/horse
 	id = "horse"
@@ -338,7 +338,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_ANIMALS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "horse"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/dog
 	id = "dog"
@@ -348,7 +348,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_ANIMALS
 	age = STICKER_AGE_STONE
-	icon_state = "dog"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/wheel
 	id = "wheel"
@@ -358,7 +358,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "wheel"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/pickaxe
 	id = "pickaxe"
@@ -368,7 +368,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "pickaxe"
+	icon_state = "collectible_card_3"
 
 // ======================= UNCOMMON =======================
 
@@ -380,7 +380,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_WEAPONS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "sword"
+	icon_state = "collectible_card_1"
 
 /datum/sticker/compass
 	id = "compass"
@@ -390,7 +390,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_MEDIEVAL
-	icon_state = "compass"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/cannon
 	id = "cannon"
@@ -400,7 +400,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_WEAPONS
 	age = STICKER_AGE_MEDIEVAL
-	icon_state = "cannon"
+	icon_state = "collectible_card_1"
 
 /datum/sticker/arquebus
 	id = "arquebus"
@@ -410,7 +410,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_WEAPONS
 	age = STICKER_AGE_IMPERIAL
-	icon_state = "arquebus"
+	icon_state = "collectible_card_1"
 
 /datum/sticker/musket
 	id = "musket"
@@ -420,7 +420,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_WEAPONS
 	age = STICKER_AGE_IMPERIAL
-	icon_state = "musket"
+	icon_state = "collectible_card_1"
 
 /datum/sticker/forge
 	id = "forge"
@@ -430,7 +430,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_MEDIEVAL
-	icon_state = "forge"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/bloomery
 	id = "bloomery"
@@ -440,7 +440,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_MEDIEVAL
-	icon_state = "bloomery"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/furnace
 	id = "furnace"
@@ -450,7 +450,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_IMPERIAL
-	icon_state = "furnace"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/steam_engine
 	id = "steam_engine"
@@ -460,7 +460,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_INDUSTRIAL
-	icon_state = "steam_engine"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/petrol_engine
 	id = "petrol_engine"
@@ -470,7 +470,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_INDUSTRIAL
-	icon_state = "petrol_engine"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/electricity
 	id = "electricity"
@@ -480,7 +480,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_INDUSTRIAL
-	icon_state = "electricity"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/flight
 	id = "flight"
@@ -490,7 +490,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_INDUSTRIAL
-	icon_state = "flight"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/cars
 	id = "cars"
@@ -500,7 +500,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_INDUSTRIAL
-	icon_state = "cars"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/computers
 	id = "computers"
@@ -510,7 +510,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_COLDWAR
-	icon_state = "computers"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/printing_press
 	id = "printing_press"
@@ -520,7 +520,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_IMPERIAL
-	icon_state = "printing_press"
+	icon_state = "collectible_card_3"
 
 // ======================= RARE =======================
 
@@ -532,7 +532,7 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "hanging_gardens"
+	icon_state = "collectible_card_5"
 
 /datum/sticker/statue_zeus
 	id = "statue_zeus"
@@ -542,7 +542,7 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "statue_zeus"
+	icon_state = "collectible_card_5"
 
 /datum/sticker/temple_artemis
 	id = "temple_artemis"
@@ -552,7 +552,7 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "temple_artemis"
+	icon_state = "collectible_card_5"
 
 /datum/sticker/mausoleum
 	id = "mausoleum"
@@ -562,7 +562,7 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "mausoleum"
+	icon_state = "collectible_card_5"
 
 /datum/sticker/colossus_rhodes
 	id = "colossus_rhodes"
@@ -572,7 +572,7 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "colossus_rhodes"
+	icon_state = "collectible_card_5"
 
 /datum/sticker/lighthouse
 	id = "lighthouse"
@@ -582,7 +582,7 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "lighthouse"
+	icon_state = "collectible_card_5"
 
 /datum/sticker/bolt_action_rifle
 	id = "bolt_action_rifle"
@@ -592,7 +592,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_WEAPONS
 	age = STICKER_AGE_WW1
-	icon_state = "bolt_action_rifle"
+	icon_state = "collectible_card_1"
 
 /datum/sticker/machine_gun
 	id = "machine_gun"
@@ -602,7 +602,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_WEAPONS
 	age = STICKER_AGE_WW1
-	icon_state = "machine_gun"
+	icon_state = "collectible_card_1"
 
 /datum/sticker/submachine_gun
 	id = "submachine_gun"
@@ -612,7 +612,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_WEAPONS
 	age = STICKER_AGE_WW1
-	icon_state = "submachine_gun"
+	icon_state = "collectible_card_1"
 
 /datum/sticker/assault_rifle
 	id = "assault_rifle"
@@ -622,7 +622,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_WEAPONS
 	age = STICKER_AGE_WW2
-	icon_state = "assault_rifle"
+	icon_state = "collectible_card_1"
 
 /datum/sticker/crossbow
 	id = "crossbow"
@@ -632,7 +632,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_WEAPONS
 	age = STICKER_AGE_MEDIEVAL
-	icon_state = "crossbow"
+	icon_state = "collectible_card_1"
 
 /datum/sticker/alligator
 	id = "alligator"
@@ -642,7 +642,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_ANIMALS
 	age = STICKER_AGE_MODERN
-	icon_state = "alligator"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/sabertooth
 	id = "sabertooth"
@@ -652,7 +652,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_ANIMALS
 	age = STICKER_AGE_STONE
-	icon_state = "sabertooth"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/piranha
 	id = "piranha"
@@ -662,7 +662,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_ANIMALS
 	age = STICKER_AGE_MODERN
-	icon_state = "piranha"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/mount_fuji
 	id = "mount_fuji"
@@ -672,7 +672,7 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_NATURAL
 	age = STICKER_AGE_MODERN
-	icon_state = "mount_fuji"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/great_barrier_reef
 	id = "great_barrier_reef"
@@ -682,7 +682,7 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_NATURAL
 	age = STICKER_AGE_MODERN
-	icon_state = "great_barrier_reef"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/grand_canyon
 	id = "grand_canyon"
@@ -692,7 +692,7 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_NATURAL
 	age = STICKER_AGE_MODERN
-	icon_state = "grand_canyon"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/everest
 	id = "everest"
@@ -702,7 +702,7 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_NATURAL
 	age = STICKER_AGE_MODERN
-	icon_state = "everest"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/victoria_falls
 	id = "victoria_falls"
@@ -712,7 +712,7 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_NATURAL
 	age = STICKER_AGE_MODERN
-	icon_state = "victoria_falls"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/sahara
 	id = "sahara"
@@ -722,7 +722,7 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_NATURAL
 	age = STICKER_AGE_MODERN
-	icon_state = "sahara"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/amazon
 	id = "amazon"
@@ -732,7 +732,7 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_NATURAL
 	age = STICKER_AGE_MODERN
-	icon_state = "amazon"
+	icon_state = "collectible_card_2"
 
 /datum/sticker/internet
 	id = "internet"
@@ -742,7 +742,7 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_MODERN
-	icon_state = "internet"
+	icon_state = "collectible_card_3"
 
 /datum/sticker/nuclear_energy
 	id = "nuclear_energy"
@@ -752,7 +752,7 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_TECH
 	age = STICKER_AGE_COLDWAR
-	icon_state = "nuclear_energy"
+	icon_state = "collectible_card_3"
 
 // ======================= LEGENDARY =======================
 
@@ -764,7 +764,7 @@
 	rarity = STICKER_LEGENDARY
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "great_wall"
+	icon_state = "collectible_card_5"
 
 /datum/sticker/petra
 	id = "petra"
@@ -774,7 +774,7 @@
 	rarity = STICKER_LEGENDARY
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "petra"
+	icon_state = "collectible_card_5"
 
 /datum/sticker/christ_redeemer
 	id = "christ_redeemer"
@@ -784,7 +784,7 @@
 	rarity = STICKER_LEGENDARY
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_MODERN
-	icon_state = "christ_redeemer"
+	icon_state = "collectible_card_5"
 
 /datum/sticker/machu_picchu
 	id = "machu_picchu"
@@ -794,7 +794,7 @@
 	rarity = STICKER_LEGENDARY
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "machu_picchu"
+	icon_state = "collectible_card_5"
 
 /datum/sticker/chichen_itza
 	id = "chichen_itza"
@@ -804,7 +804,7 @@
 	rarity = STICKER_LEGENDARY
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "chichen_itza"
+	icon_state = "collectible_card_5"
 
 /datum/sticker/taj_mahal
 	id = "taj_mahal"
@@ -814,7 +814,7 @@
 	rarity = STICKER_LEGENDARY
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_IMPERIAL
-	icon_state = "taj_mahal"
+	icon_state = "collectible_card_5"
 
 /datum/sticker/colosseum
 	id = "colosseum"
@@ -824,7 +824,7 @@
 	rarity = STICKER_LEGENDARY
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "colosseum"
+	icon_state = "collectible_card_5"
 
 /datum/sticker/angkor_wat
 	id = "angkor_wat"
@@ -834,7 +834,7 @@
 	rarity = STICKER_LEGENDARY
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_MEDIEVAL
-	icon_state = "angkor_wat"
+	icon_state = "collectible_card_5"
 
 /datum/sticker/pyramid
 	id = "pyramid"
@@ -844,9 +844,9 @@
 	rarity = STICKER_RARE
 	category = STICKER_CAT_WONDERS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "pyramid"
+	icon_state = "collectible_card_5"
 
-// ── Crops: Common ──
+// â”€â”€ Crops: Common â”€â”€
 
 /datum/sticker/wheat
 	id = "wheat"
@@ -856,7 +856,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_CROPS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "wheat"
+	icon_state = "collectible_card_4"
 
 /datum/sticker/corn
 	id = "corn"
@@ -866,7 +866,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_CROPS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "corn"
+	icon_state = "collectible_card_4"
 
 /datum/sticker/cotton
 	id = "cotton"
@@ -876,7 +876,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_CROPS
 	age = STICKER_AGE_MEDIEVAL
-	icon_state = "cotton"
+	icon_state = "collectible_card_4"
 
 /datum/sticker/hemp
 	id = "hemp"
@@ -886,7 +886,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_CROPS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "hemp"
+	icon_state = "collectible_card_4"
 
 /datum/sticker/rice
 	id = "rice"
@@ -896,7 +896,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_CROPS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "rice"
+	icon_state = "collectible_card_4"
 
 /datum/sticker/tomato
 	id = "tomato"
@@ -906,7 +906,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_CROPS
 	age = STICKER_AGE_IMPERIAL
-	icon_state = "tomato"
+	icon_state = "collectible_card_4"
 
 /datum/sticker/potato
 	id = "potato"
@@ -916,9 +916,9 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_CROPS
 	age = STICKER_AGE_IMPERIAL
-	icon_state = "potato"
+	icon_state = "collectible_card_4"
 
-// ── Crops: Uncommon ──
+// â”€â”€ Crops: Uncommon â”€â”€
 
 /datum/sticker/tobacco
 	id = "tobacco"
@@ -928,7 +928,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_CROPS
 	age = STICKER_AGE_IMPERIAL
-	icon_state = "tobacco"
+	icon_state = "collectible_card_4"
 
 /datum/sticker/opium
 	id = "opium"
@@ -938,7 +938,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_CROPS
 	age = STICKER_AGE_IMPERIAL
-	icon_state = "opium"
+	icon_state = "collectible_card_4"
 
 /datum/sticker/tea
 	id = "tea"
@@ -948,7 +948,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_CROPS
 	age = STICKER_AGE_MEDIEVAL
-	icon_state = "tea"
+	icon_state = "collectible_card_4"
 
 /datum/sticker/coffee
 	id = "coffee"
@@ -958,9 +958,9 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_CROPS
 	age = STICKER_AGE_IMPERIAL
-	icon_state = "coffee"
+	icon_state = "collectible_card_4"
 
-// ── Minerals: Common ──
+// â”€â”€ Minerals: Common â”€â”€
 
 /datum/sticker/dd_rock
 	id = "dd_rock"
@@ -970,7 +970,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_MINERALS
 	age = STICKER_AGE_INDUSTRIAL
-	icon_state = "dd_rock"
+	icon_state = "collectible_card_6"
 
 /datum/sticker/iron_ore
 	id = "iron_ore"
@@ -980,7 +980,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_MINERALS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "iron_ore"
+	icon_state = "collectible_card_6"
 
 /datum/sticker/coal
 	id = "coal"
@@ -990,7 +990,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_MINERALS
 	age = STICKER_AGE_INDUSTRIAL
-	icon_state = "coal"
+	icon_state = "collectible_card_6"
 
 /datum/sticker/copper_ore
 	id = "copper_ore"
@@ -1000,7 +1000,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_MINERALS
 	age = STICKER_AGE_STONE
-	icon_state = "copper_ore"
+	icon_state = "collectible_card_6"
 
 /datum/sticker/tin_ore
 	id = "tin_ore"
@@ -1010,7 +1010,7 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_MINERALS
 	age = STICKER_AGE_STONE
-	icon_state = "tin_ore"
+	icon_state = "collectible_card_6"
 
 /datum/sticker/salt
 	id = "salt"
@@ -1020,9 +1020,9 @@
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_MINERALS
 	age = STICKER_AGE_STONE
-	icon_state = "salt"
+	icon_state = "collectible_card_6"
 
-// ── Minerals: Uncommon ──
+// â”€â”€ Minerals: Uncommon â”€â”€
 
 /datum/sticker/silver_ore
 	id = "silver_ore"
@@ -1032,7 +1032,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_MINERALS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "silver_ore"
+	icon_state = "collectible_card_6"
 
 /datum/sticker/gold_ore
 	id = "gold_ore"
@@ -1042,7 +1042,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_MINERALS
 	age = STICKER_AGE_STONE
-	icon_state = "gold_ore"
+	icon_state = "collectible_card_6"
 
 /datum/sticker/uranium_ore
 	id = "uranium_ore"
@@ -1052,7 +1052,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_MINERALS
 	age = STICKER_AGE_MODERN
-	icon_state = "uranium_ore"
+	icon_state = "collectible_card_6"
 
 /datum/sticker/lead_ore
 	id = "lead_ore"
@@ -1062,7 +1062,7 @@
 	rarity = STICKER_UNCOMMON
 	category = STICKER_CAT_MINERALS
 	age = STICKER_AGE_CLASSICAL
-	icon_state = "lead_ore"
+	icon_state = "collectible_card_6"
 
 GLOBAL_LIST_EMPTY(sticker_registry)
 
