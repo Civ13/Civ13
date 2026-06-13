@@ -23,7 +23,7 @@
 	wand_length = WAND_LENGTH_STANDARD
 
 // ----- The Sniper -----
-// Fibreglass + Copper Wire + Overcompensator: blazing fast, long-range, cheap — but violent on overcast
+// Fibreglass + Copper Wire + Overcompensator: blazing fast, long-range, cheap - but violent on overcast
 /obj/item/weapon/material/magic/wand/crafted/sniper
 	parent_type = /obj/item/weapon/material/magic/wand/crafted/premade
 	name = "The Sniper"
@@ -45,7 +45,7 @@
 	wand_length = WAND_LENGTH_STUBBY
 
 // ----- The Ghost -----
-// Balsa + Fox Fur + Stubby: pocket-sized, invisible lightning casts — but snaps if you sneeze on it
+// Balsa + Fox Fur + Stubby: pocket-sized, invisible lightning casts - but snaps if you sneeze on it
 /obj/item/weapon/material/magic/wand/crafted/ghost
 	parent_type = /obj/item/weapon/material/magic/wand/crafted/premade
 	name = "The Ghost"
@@ -71,14 +71,14 @@
 /obj/item/weapon/material/magic/wand/crafted/swamp_thing
 	parent_type = /obj/item/weapon/material/magic/wand/crafted/premade
 	name = "The Swamp Thing"
-	desc = "A massive, rotting branch of bog oak packed with highly illegal asbestos. It smells like dead fish, but it lets you lob massive fireballs from a mile away... while slowly poisoning you."
+	desc = "A massive, rotting branch of driftwood packed with highly illegal asbestos. It smells like dead fish, but it lets you lob massive fireballs from a mile away... while slowly poisoning you."
 	icon_state  = "wand_driftwood_longest"
 	wand_wood   = WAND_WOOD_DRIFTWOOD
 	wand_core   = WAND_CORE_ASBESTOS
 	wand_length = WAND_LENGTH_OVERCOMP
 
 // ----- The Chaos Stick -----
-// MDF + Asbestos Fibre + Stubby: fire-immune, toxin-dripping, swells in rain — pocket chaos
+// MDF + Asbestos Fibre + Stubby: fire-immune, toxin-dripping, swells in rain - pocket chaos
 /obj/item/weapon/material/magic/wand/crafted/chaos_stick
 	parent_type = /obj/item/weapon/material/magic/wand/crafted/premade
 	name = "The Chaos Stick"

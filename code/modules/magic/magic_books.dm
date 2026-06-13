@@ -214,9 +214,9 @@
 
 				<h3>9. The Soul-Drainer</h3>
 				<ul>
-					<li><b>Parts:</b> Bog Oak + Gloom-Weave Thread + Standard Length.</li>
+					<li><b>Parts:</b> Driftwood + Gloom-Weave Thread + Standard Length.</li>
 					<li><b>The Vibe:</b> Cold, stinky, and efficient.</li>
-					<li><b>Performance:</b> The Bog Oak gives a discount on elemental spells, and the Gloom-Weave halves all Juice costs. Better yet, your projectiles will slow enemies to a crawl on hit. Just try to ignore the smell of wet dog and despair.</li>
+					<li><b>Performance:</b> The Driftwood gives a discount on elemental spells, and the Gloom-Weave halves all Juice costs. Better yet, your projectiles will slow enemies to a crawl on hit. Just try to ignore the smell of wet dog and despair.</li>
 				</ul>
 
 				</body>
@@ -461,7 +461,7 @@
 				<h3>Fibreglass</h3>
 				<p>Whippy and fast. If you overcast, it lashes back and cuts your arm. I have several scars that look like lightning bolts. People think I'm the Chosen One; I'm actually just a clumsy researcher.</p>
 
-				<h3>Bog Oak (Driftwood)</h3>
+				<h3>Driftwood</h3>
 				<p>Elemental resonance. It emits a constant, passive stink. My lab assistant moved his desk to the hallway after I built one of these.</p>
 
 				<h3>Stale Chip (French Fry)</h3>

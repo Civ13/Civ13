@@ -338,7 +338,7 @@
 	var/wand_core           = WAND_CORE_PIGEON
 	var/wand_length         = WAND_LENGTH_STANDARD
 
-	// Derived modifiers — recomputed by apply_*_stats()
+	// Derived modifiers - recomputed by apply_*_stats()
 	var/cast_time_mod       = 1.0   // < 1 faster, > 1 slower
 	var/juice_cost_mod      = 1.0   // < 1 cheaper, > 1 costlier
 	var/wand_melee_force    = WEAPON_FORCE_WEAK  // melee brute force
@@ -389,7 +389,7 @@
 
 
 // ============================================================
-//  CRAFTED WAND — THE MODULAR SUBTYPE
+//  CRAFTED WAND - THE MODULAR SUBTYPE
 // ============================================================
 
 /obj/item/weapon/material/magic/wand/crafted
@@ -427,7 +427,7 @@
 
 	switch (wand_wood)
 		if (WAND_WOOD_PINE)
-			// Baseline — no bonuses, no penalties.
+			// Baseline - no bonuses, no penalties.
 			// 5% chance of splinter to active hand when overcasting.
 			splinter_chance = 5
 
@@ -583,7 +583,7 @@
 			_update_telescopic_length()
 
 
-/// Internal helper — syncs telescopic wand's length stats to its current state.
+/// Internal helper - syncs telescopic wand's length stats to its current state.
 /obj/item/weapon/material/magic/wand/crafted/proc/_update_telescopic_length()
 	if (telescopic_extended)
 		// Extended acts like Overcompensator
@@ -727,7 +727,7 @@
 	if (wool_damp && (S.name == "Blockum" || S.name == "Wallus"))
 		mod *= 0.75
 
-	// Lint core: random modifier — 0x (free!) or 2x (ouch)
+	// Lint core: random modifier - 0x (free!) or 2x (ouch)
 	if (lint_random_cost)
 		mod *= pick(0, 2.0)
 
@@ -793,7 +793,7 @@
 		// Sharp+edge damage = laceration (bleeding)
 		H.apply_damage(8, BRUTE, pick("l_hand", "r_hand"), 0, null, TRUE, TRUE)
 
-	// Copper wire: catastrophic short-circuit — stun + ignition
+	// Copper wire: catastrophic short-circuit - stun + ignition
 	if (overcast_lethal)
 		to_chat(H, SPAN_DANGER("The copper wiring in \the [src] short-circuits! Electricity surges through you!"))
 		H.visible_message(SPAN_DANGER("[H]'s wand erupts in a shower of sparks and shorts out!"))
@@ -832,7 +832,7 @@
 
 
 // ============================================================
-//  AFTERATTACK — FULL CRAFTED CASTING OVERRIDE
+//  AFTERATTACK - FULL CRAFTED CASTING OVERRIDE
 // ============================================================
 
 /obj/item/weapon/material/magic/wand/crafted/afterattack(atom/target, mob/user, proximity_flag, params)
@@ -896,7 +896,7 @@
 		playsound(user.loc, 'sound/items/matchstick_lit.ogg', 40, TRUE)
 		return
 
-	// Telescopic collapse check — 10% chance to collapse mid-cast, fizzling spell
+	// Telescopic collapse check - 10% chance to collapse mid-cast, fizzling spell
 	if (wand_length == WAND_LENGTH_TELESCOPIC && telescopic_extended && prob(10))
 		telescopic_extended = FALSE
 		_update_telescopic_length()
@@ -925,7 +925,7 @@
 		if (ishuman(user))
 			if (user.get_active_hand() == src) // H.juice > 0 is guaranteed by the checks above if eff_juice_cost > 0
 				H.juice -= eff_juice_cost // Deduct juice
-				// Cast feedback — suppressed for Fox fur silent cast
+				// Cast feedback - suppressed for Fox fur silent cast
 				if (!silent_cast)
 					for (var/mob/living/human/M in view(7, H))
 						if (M.client)
@@ -995,7 +995,7 @@
 
 							// Tangled Cassette Tape: 15% chance to echo a second identical projectile
 							if (echo_tape_chance && prob(echo_tape_chance))
-								to_chat(H, SPAN_NOTICE("\The [src] crackles with a looping echo — the spell fires twice!"))
+								to_chat(H, SPAN_NOTICE("\The [src] crackles with a looping echo - the spell fires twice!"))
 								var/obj/item/projectile/magic/P2 = new S.proj_type(user.loc)
 								if (P2 && istype(P2, /obj/item/projectile/magic))
 									P2.backstabber_damage  = backstabber
@@ -1006,7 +1006,7 @@
 
 					// Damp Sheep Wool: Burnus scorches the caster's lungs
 					if (wool_damp && S.name == "Burnus")
-						to_chat(H, SPAN_DANGER("The wet wool superheats from the fire spell — you inhale scalding steam and start coughing!"))
+						to_chat(H, SPAN_DANGER("The wet wool superheats from the fire spell - you inhale scalding steam and start coughing!"))
 						H.cough_duration = max(H.cough_duration, 40)  // 4 seconds of coughing
 						H.apply_damage(5, BURN, "chest")
 
@@ -1141,7 +1141,7 @@
 				if (candidates.len)
 					var/turf/dest = pick(candidates)
 					holder.visible_message(SPAN_DANGER("[holder]'s wand panics and teleports them wildly!"))
-					to_chat(holder, SPAN_WARNING("Your wand panics! It blinks you somewhere — hopefully not into a wall."))
+					to_chat(holder, SPAN_WARNING("Your wand panics! It blinks you somewhere - hopefully not into a wall."))
 					playsound(holder.loc, 'sound/weapons/magic/spell2.ogg', 60, TRUE)
 					holder.forceMove(dest)
 

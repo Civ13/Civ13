@@ -597,7 +597,7 @@
 	// recover stamina
 	stats["stamina"][1] = min(stats["stamina"][1] + round(stats["stamina"][2] * 0.02), stats["stamina"][2])
 
-	// recover juice (mana) — ~0.5 per second at standard 2ds Life() ticks
+	// recover juice (mana) - ~0.5 per second at standard 2ds Life() ticks
 	if (juice < max_juice)
 		juice = min(juice + 1, max_juice)
 

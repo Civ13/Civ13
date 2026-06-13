@@ -31,7 +31,7 @@
 		if(id in player_stickers)
 			dat += "<td style='padding:4px;'><b>[S.name]</b> <font color='[S.rarity_color()]'>[S.rarity_name()]</font></td>"
 		else
-			dat += "<td style='padding:4px;color:#555;'>??? — Missing</td>"
+			dat += "<td style='padding:4px;color:#555;'>??? - Missing</td>"
 		count++
 		if(count % 3 == 0)
 			dat += "</tr>"

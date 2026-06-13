@@ -1,5 +1,5 @@
 // ============================================================
-// MOLDY MEN — Moldywart's Followers
+// MOLDY MEN - Moldywart's Followers
 // Hostile simple_animal NPCs that cast Floatus, Burnus and Painum at players.
 // ============================================================
 
@@ -223,7 +223,7 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 	..()
 
 // ============================================================
-// LORD MOLDYWART — Boss NPC
+// LORD MOLDYWART - Boss NPC
 // Casts Painum, Deadum, and Explodus at players.
 // Sprites provided: moldywart / moldywart_dead
 // ============================================================
@@ -268,9 +268,9 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 		"I have gone further than anybody along the path that leads to immortality. You will not stop me. You are also standing on my robe.",
 		"I fashioned myself a new name, a name I knew wizards everywhere would one day fear to speak, when I had become the greatest sorcerer in the world! ...I miss having a nose.",
 		"Nyehehehe.",
-		"You dare? YOU DARE?! I defeated the greatest wizards of my age! I am the heir of Merlin himself! I am— ...one moment, I appear to have stepped in something.",
+		"You dare? YOU DARE?! I defeated the greatest wizards of my age! I am the heir of Merlin himself! I am- ...one moment, I appear to have stepped in something.",
 		"Kill the spare.",
-		"I cannot be killed. I am the Dark Lord. I am eternal. I am—... does anyone have a tissue? I think I have a cold. I cannot tell.",
+		"I cannot be killed. I am the Dark Lord. I am eternal. I am-... does anyone have a tissue? I think I have a cold. I cannot tell.",
 		"You think you can stand against me? I have horcruxes. Eleven of them. One of them is a sock. Don't ask.",
 		"Join me. Or don't. I'll be honest, the Moldy Men could use the numbers, they keep getting Floatus'd into the ceiling.",
 		"My followers are utterly loyal! Mostly because I hexed them. Details.",
@@ -612,7 +612,7 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 	activated = FALSE
 
 // ============================================================
-// THE GLOOM — Bootleg Dementors
+// THE GLOOM - Bootleg Dementors
 // Floating entities of pure despair that drain heat and hope.
 // ============================================================
 

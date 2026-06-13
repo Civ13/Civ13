@@ -268,7 +268,7 @@
 	dat += ".btn-danger{background:#5e2a2a;color:#ff7070;border:1px solid #8a3a3a;}"
 	dat += ".btn-danger:hover{background:#8a3a3a;}"
 	dat += "</style></head><body>"
-	dat += "<h2>Supply Stall — [name]</h2>"
+	dat += "<h2>Supply Stall - [name]</h2>"
 
 	// Current order info
 	dat += "<div class='section'><h3>Current Buy Order</h3>"
