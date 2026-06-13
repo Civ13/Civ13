@@ -74,7 +74,7 @@
 	id = "club"
 	index = 3
 	name = "Wooden Club"
-	desc = "The simplest weapon. Pointed end goes in the other guy."
+	desc = "The simplest weapon. Big end goes in the other guy."
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_WEAPONS
 	age = STICKER_AGE_STONE
@@ -962,14 +962,14 @@
 
 // == Minerals: Common ==
 
-/datum/sticker/dd_rock
-	id = "dd_rock"
+/datum/sticker/rock
+	id = "rock"
 	index = 91
-	name = "Diamond Drilling Rock"
-	desc = "Core samples from deep beneath the earth - every gem starts as stone."
+	name = "Rock"
+	desc = "A generic rock. Boring, but essential."
 	rarity = STICKER_COMMON
 	category = STICKER_CAT_MINERALS
-	age = STICKER_AGE_INDUSTRIAL
+	age = STICKER_AGE_STONE
 	icon_state = "collectible_card_6"
 
 /datum/sticker/iron_ore
@@ -1130,7 +1130,7 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 		to_chat(user, "<span class='notice'>Index: #[S.index]</span>")
 		to_chat(user, "<span class='notice'>Rarity: <font color='[S.rarity_color()]'>[S.rarity_name()]</font></span>")
 		to_chat(user, "<span class='notice'>Category: [S.category] | Era: [S.age]</span>")
-		user << browse("<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'><style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style></head><body><iframe src='https://civ13.com/card/[S.index]'></iframe></body></html>", "window=sticker_card;size=370x490")
+		user << browse("<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'><style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style></head><body><iframe src='https://civ13.com/card/[S.index]'></iframe></body></html>", "window=sticker_card;size=400x650")
 
 /obj/item/sticker_pack
 	name = "Civ Cards sticker pack"
@@ -1192,9 +1192,12 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 /obj/item/sticker_album/attack_self(mob/user)
 	ui_interact(user)
 
+/obj/item/sticker_album/anchored/attack_hand(mob/user)
+	ui_interact(user)
+
 /obj/item/sticker_album/ui_interact(mob/user)
 	var/list/player_stickers = get_player_stickers(user.ckey)
-	var/list/stickers_by_rarity = list()
+	var/list/stickers_by_rarity = new/list(4)
 	stickers_by_rarity[STICKER_COMMON]    = list()
 	stickers_by_rarity[STICKER_UNCOMMON]  = list()
 	stickers_by_rarity[STICKER_RARE]      = list()
