@@ -1197,19 +1197,23 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 	if(!length(stickers)) return
 	
 	var/list/options = list()
-	var/list/name_to_id = list()
+	var/list/option_to_index = list()
 	
-	for(var/id in stickers)
+	for(var/i = 1 to length(stickers))
+		var/id = stickers[i]
 		var/datum/sticker/S = GLOB.sticker_registry[id]
 		if(S)
 			var/display = "[S.name] (#[S.index])"
-			options |= display // Use |= to keep list unique if duplicates exist
-			name_to_id[display] = id
+			if(display in option_to_index)
+				display += " - copy [i]"
+			options += display
+			option_to_index[display] = i
 
 	var/choice = WWinput(user, "Which sticker do you want to remove from the pile?", "Sticker Pile", options[1], options)
-	if(choice && (choice in name_to_id))
-		var/target_id = name_to_id[choice]
-		stickers -= target_id
+	if(choice && (choice in option_to_index))
+		var/target_index = option_to_index[choice]
+		var/target_id = stickers[target_index]
+		stickers.Cut(target_index, target_index + 1)
 		var/obj/item/sticker/S = new /obj/item/sticker(get_turf(user), target_id)
 		user.put_in_hands(S)
 		to_chat(user, "<span class='notice'>You pull [choice] from the pile.</span>")
@@ -1233,6 +1237,8 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 	var/list/weighted = list()
 	for(var/id in GLOB.sticker_registry)
 		var/datum/sticker/S = GLOB.sticker_registry[id]
+		if(!S)
+			continue
 		weighted[id] = sticker_weight(S.rarity)
 
 	var/list/picked_ids = list()
@@ -1260,10 +1266,10 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 		user.visible_message("<span class='notice'>[user] offers \the [src] to [M].</span>")
 		var/response = alert(M, "[user] wants to give you \a [name]. Accept?", "Sticker Trade", "Accept", "Decline")
 		if(response == "Accept" && isturf(user.loc) && isturf(M.loc) && get_dist(user, M) <= 1)
-			if(!istype(src) || qdeleted(src))
+			if(!istype(src) || qdeleted(src) || src.loc != user)
 				return
 			user.visible_message("<span class='notice'>[user] hands \the [src] to [M].</span>")
-			user.drop_item()
+			user.drop_from_inventory(src)
 			forceMove(get_turf(M))
 			M.put_in_active_hand(src)
 			return
@@ -1291,6 +1297,8 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 
 	for(var/id in GLOB.sticker_registry)
 		var/datum/sticker/S = GLOB.sticker_registry[id]
+		if(!S)
+			continue
 		switch(S.rarity)
 			if(STICKER_COMMON)    common_pool += id
 			if(STICKER_UNCOMMON)  uncommon_pool += id
@@ -1340,6 +1348,8 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 	var/list/pool = list()
 	for(var/id in GLOB.sticker_registry)
 		var/datum/sticker/S = GLOB.sticker_registry[id]
+		if(!S)
+			continue
 		var/w = sticker_weight(S.rarity)
 		for(var/i in 1 to w)
 			pool += id
@@ -1352,6 +1362,8 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 	var/list/pool = list()
 	for(var/id in GLOB.sticker_registry)
 		var/datum/sticker/S = GLOB.sticker_registry[id]
+		if(!S)
+			continue
 		if(S.rarity == STICKER_COMMON)
 			pool += id
 	return pool
@@ -1363,6 +1375,8 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 	var/list/pool = list()
 	for(var/id in GLOB.sticker_registry)
 		var/datum/sticker/S = GLOB.sticker_registry[id]
+		if(!S)
+			continue
 		if(S.rarity == STICKER_RARE || S.rarity == STICKER_LEGENDARY)
 			pool += id
 	return pool
