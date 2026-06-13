@@ -411,6 +411,7 @@
 			H.juice = min(H.max_juice, H.juice + 1.0 * removed)
 		H.add_chemical_effect(CE_PAINKILLER, 250)
 		H.slurring = max(H.slurring, 45)
+		M.mood += removed*25
 
 // ============================================================
 // THE "CHAMELEON" MAC (Bootleg Invisibility Cloak)

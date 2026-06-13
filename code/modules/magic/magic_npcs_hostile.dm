@@ -733,7 +733,7 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 	..(gibbed)
 
 /mob/living/simple_animal/hostile/wizard/shrieking_shrub/proc/shriek()
-	if (stat)
+	if (stat || world.time < shriek_cooldown)
 		return
 	shriek_cooldown = world.time + 100
 
@@ -761,7 +761,7 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 	if (!target_mob || !SA_attackable(target_mob))
 		LoseTarget()
 		return FALSE
-	return TRUE
+	return ..()
 
 /mob/living/simple_animal/hostile/wizard/shrieking_shrub/bullet_act(var/obj/item/projectile/P)
 	if (P && P.invisibility <= 0)
@@ -850,11 +850,12 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 	if (!target_mob || !SA_attackable(target_mob))
 		LoseTarget()
 		return FALSE
-	. = ..()
-	if (. && ishuman(target_mob))
+	var/result = ..()
+	if (ishuman(target_mob))
 		var/mob/living/human/H = target_mob
 		H.adjustToxLoss(rand(3, 6))
 		to_chat(H, SPAN_DANGER("The Sludge Monster's touch burns with a corrosive, toxic sting!"))
+	return result
 
 /obj/effect/spawner/mobspawner/shrieking_shrub
 	name = "shrieking shrub spawner"

@@ -67,7 +67,7 @@
 	wand_length = WAND_LENGTH_TELESCOPIC
 
 // ----- The Swamp Thing -----
-// Bog Oak + Asbestos Fibre + Overcompensator: long-range elemental supremacy at personal cost
+// Driftwood + Asbestos Fibre + Overcompensator: long-range elemental supremacy at personal cost
 /obj/item/weapon/material/magic/wand/crafted/swamp_thing
 	parent_type = /obj/item/weapon/material/magic/wand/crafted/premade
 	name = "The Swamp Thing"

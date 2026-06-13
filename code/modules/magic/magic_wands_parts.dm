@@ -349,8 +349,8 @@
 	var/splinter_chance     = 0     // % splinter on overcast (Pine)
 	var/snaps_on_melee      = FALSE // wand destroyed on melee hit (Balsa)
 	var/lash_on_overcast    = FALSE // caster lacerates on overcast (Fibreglass)
-	var/emit_stink          = FALSE // passive stink cloud (Bog Oak)
-	var/bog_elem_discount   = FALSE // -20% juice on elemental spells (Bog Oak)
+	var/emit_stink          = FALSE // passive stink cloud (Driftwood)
+	var/bog_elem_discount   = FALSE // -20% juice on elemental spells (Driftwood)
 	var/wand_wet            = FALSE // MDF swelling state
 	var/wand_wet_timer      = 0     // ds counter for drying
 	var/carb_loaded         = FALSE // stale chip
@@ -715,7 +715,7 @@
 	if (badger_defensive && _is_defensive_spell(S))
 		mod *= 1.5
 
-	// Bog Oak: elemental spells cost 20% less
+	// Driftwood: elemental spells cost 20% less
 	if (bog_elem_discount && _is_elemental_spell(S))
 		mod *= 0.8
 
@@ -1108,7 +1108,7 @@
 			if (holder)
 				to_chat(holder, SPAN_NOTICE("\The [src] has dried out. It's back to its normal, mediocre self."))
 
-	// --- BOG OAK: PASSIVE STINK CLOUD ---
+	// --- DRIFTWOOD: PASSIVE STINK CLOUD ---
 	if (emit_stink && holder)
 		stink_timer += 2
 		if (stink_timer >= 30)  // Every 3 seconds
@@ -1117,7 +1117,7 @@
 			for (var/mob/living/M in view(2, holder))
 				if (M != holder)
 					M.emote("cough")
-
+					M.mood -= 1.5
 	// --- ASBESTOS: PASSIVE TOXIN DRIP ---
 	if (asbestos_tox && holder)
 		tox_timer += 2
