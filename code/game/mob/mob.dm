@@ -432,14 +432,12 @@
 			qdel(M)
 		return
 
-	var/old_ckey = src.ckey
 	M.key = key
 
-	if (map && istype(map, /obj/map_metadata/wizard_boy) && old_ckey)
+	if (map && istype(map, /obj/map_metadata/wizard_boy))
 		for (var/mob/living/human/O in world)
-			if (O == src)
-				continue
-			if (O.stat == DEAD && O.ckey == old_ckey)
+			if (O.stat == DEAD && O.lastKnownCkey == M.key)
+			if (O.stat == DEAD && ckey(O.lastKnownCkey) == ckey(M.ckey))
 				var/turf/O_turf = get_turf(O)
 				if (O_turf)
 					for (var/obj/item/weapon/material/magic/wand/W in O_turf)
