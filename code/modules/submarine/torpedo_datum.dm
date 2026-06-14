@@ -32,8 +32,8 @@
 		var/target_x = 0
 		var/target_y = 0
 		if(target && !QDELETED(target))
-			target_x = target.x_pos
-			target_y = target.y_pos
+			target_x = target.source_x
+			target_y = target.source_y
 		else if(sub_target && !QDELETED(sub_target))
 			target_x = sub_target.x_pos
 			target_y = sub_target.y_pos
@@ -64,7 +64,7 @@
 /datum/projectile/torpedo/proc/check_detonation()
 	// Against NPC vessel contact
 	if(target && !QDELETED(target))
-		var/dist = euclidean_distance(x_pos, y_pos, target.x_pos, target.y_pos)
+		var/dist = euclidean_distance(x_pos, y_pos, target.source_x, target.source_y)
 		if(dist < SUB_TORPEDO_DETONATE)
 			detonate_npc(target)
 			return

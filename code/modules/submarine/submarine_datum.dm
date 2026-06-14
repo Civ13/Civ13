@@ -195,15 +195,16 @@ var/global/list/all_submarines = list()
 		if(power_source_nuclear)
 			current_max_speed = SUB_MAX_SPEED_NUCLEAR
 			if(!reactor_hum_channel && internal_turfs.len)
-				var/sound/S = sound('sound/machines/submarine/engine_nuclear_hum.ogg', repeat = TRUE, wait = 0, volume = 25, channel = 773)
 				reactor_hum_channel = 773
-				src << S
+				for(var/turf/T in internal_turfs)
+					for(var/mob/living/M in T)
+						M << sound('sound/machines/submarine/engine_nuclear_hum.ogg', repeat = TRUE, wait = 0, volume = 25, channel = 773)
 		else
 			// Nuclear sub with reactors offline: fall back to battery
 			current_max_speed = SUB_MAX_SPEED_ELECTRIC
 			if(reactor_hum_channel)
-				for(var/mob/M in world)
-					if(M.client)
+				for(var/turf/T in internal_turfs)
+					for(var/mob/living/M in T)
 						M << sound(null, channel = reactor_hum_channel)
 				reactor_hum_channel = 0
 	else
@@ -211,9 +212,19 @@ var/global/list/all_submarines = list()
 		if(depth == 0 && diesel_throttle > 0 && diesel_fuel > 0)
 			power_source_diesel = TRUE
 			current_max_speed = SUB_MAX_SPEED_DIESEL
+			if(!reactor_hum_channel && internal_turfs.len)
+				reactor_hum_channel = 772
+				for(var/turf/T in internal_turfs)
+					for(var/mob/living/M in T)
+						M << sound('sound/machines/submarine/dgen.ogg', repeat = TRUE, wait = 0, volume = 25, channel = 772)
 		else
 			// Submerged or no diesel power: battery only
 			current_max_speed = SUB_MAX_SPEED_ELECTRIC
+			if(reactor_hum_channel)
+				for(var/turf/T in internal_turfs)
+					for(var/mob/living/M in T)
+						M << sound(null, channel = reactor_hum_channel)
+				reactor_hum_channel = 0
 	
 	// Adjust Speed
 	var/desired_clamped_speed = clamp(target_speed, 0, current_max_speed)
@@ -369,6 +380,8 @@ var/global/list/all_submarines = list()
 			C.range = dist
 			C.bearing = (bearing_deg + 360) % 360
 			C.noise_signature = other_sub.speed * 5 // Faster speed = higher noise
+			C.source_x = other_sub.x_pos
+			C.source_y = other_sub.y_pos
 			detected_targets += C
 
 	// Detect NPC vessels via sensors
@@ -413,6 +426,8 @@ var/global/list/all_submarines = list()
 				C.range = dist
 				C.bearing = (bearing_deg + 360) % 360
 				C.noise_signature = NPC.speed * 5
+				C.source_x = NPC.x_pos
+				C.source_y = NPC.y_pos
 				detected_targets += C
 
 	// Sync tagged contacts with fresh detection data (range/bearing update each tick)
@@ -554,17 +569,13 @@ var/global/list/all_submarines = list()
 /datum/submarine/proc/launch_torpedo(var/tube_index)
 	if(!master_arm || !tubes_loaded[tube_index] || !selected_target) return FALSE
 	
-	tubes_loaded[tube_index] = FALSE
-
 	// Calculate launch heading toward the selected target
-	var/tgt_x = 0
-	var/tgt_y = 0
-	if(istype(selected_target, /datum/vessel_contact/npc))
-		var/datum/vessel_contact/npc/N = selected_target
-		tgt_x = N.x_pos
-		tgt_y = N.y_pos
-	else
+	var/tgt_x = selected_target.source_x
+	var/tgt_y = selected_target.source_y
+	if(tgt_x == 0 && tgt_y == 0)
 		return FALSE
+
+	tubes_loaded[tube_index] = FALSE
 
 	var/dx = tgt_x - x_pos
 	var/dy = tgt_y - y_pos

@@ -117,6 +117,7 @@
 	health = 340
 	max_health = 340
 	var/id = 1 // Reactor 1 or 2
+	var/last_rad_message_time = 0
 	var/shielding = 100
 
 /obj/structure/machinery/sub_physical/reactor_core/process()
@@ -140,7 +141,10 @@
 /obj/structure/machinery/sub_physical/reactor_core/proc/radiation_pulse()
 	for(var/mob/living/L in range(3, src))
 		L.rad_act(8) // ~8 rads per tick near a damaged core
-		to_chat(L, "<span class='danger'>The air feels heavy and metallic...</span>")
+	if(world.time > last_rad_message_time + 100)
+		last_rad_message_time = world.time
+		for(var/mob/living/L in range(3, src))
+			to_chat(L, "<span class='danger'>The air feels heavy and metallic...</span>")
 
 	if(prob(5))
 		visible_message("<span class='warning'>[src] emits a burst of ionizing radiation!</span>")

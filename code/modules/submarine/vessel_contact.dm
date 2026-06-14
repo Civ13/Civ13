@@ -5,6 +5,8 @@
 	var/noise_signature = 0   // Decibels or frequency ID
 	var/contact_type = SUB_CONTACT_SURFACE
 	var/nationality = SUB_NATION_NEUTRAL
+	var/source_x = 0          // World-space X of the detected vessel (for torpedo targeting)
+	var/source_y = 0          // World-space Y of the detected vessel (for torpedo targeting)
 
 /datum/vessel_contact/New(var/_name, var/_type, var/_nat)
 	name = _name

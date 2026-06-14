@@ -881,20 +881,6 @@
 		var/sweep_x = my_sub.bearing_sweep >= 180 ? ((my_sub.bearing_sweep - 180) / 180) * 50 : 50 + (my_sub.bearing_sweep / 180) * 50
 		// Draw the noise baseline - a faint horizontal line at 65% height
 		dat += "<div style='position:absolute; left:0; right:0; top:65%; height:1px; background:rgba(0,160,0,0.4);'></div>"
-		// Draw contact amplitude spikes
-		for(var/datum/vessel_contact/C in my_sub.detected_targets)
-			if(C.contact_type == SUB_CONTACT_SUBMERGED || C.contact_type == SUB_CONTACT_SURFACE)
-				var/blip_x = C.bearing >= 180 ? ((C.bearing - 180) / 180) * 50 : 50 + (C.bearing / 180) * 50
-				var/spike_h = max(15, min(55, (C.noise_signature / 100.0) * 55))
-				var/is_selected = (C == selected_contact)
-				var/spike_color = is_selected ? "#0ff" : C.contact_type == SUB_CONTACT_SUBMERGED ? "#0f0" : "#0af"
-				// Spike: a vertical line going UP from the baseline
-				dat += "<a href='?src=\ref[src];select_contact=\ref[C]' style='position:absolute; left:[blip_x]%; bottom:35%; width:3px; height:[spike_h]px; display:block; transform:translateX(-50%);'>"
-				dat += "<div style='width:100%; height:100%; background:[spike_color]; box-shadow:0 0 4px [spike_color];'></div>"
-				dat += "</a>"
-				if(is_selected)
-					// Selected contact: small label above spike
-					dat += "<div style='position:absolute; left:[blip_x]%; bottom:[35 + spike_h + 2]%; transform:translateX(-50%); font-size:7px; color:#0ff; white-space:nowrap;'>[C.name]</div>"
 		// Noise waveform using SVG with a fixed viewBox coordinate space (percentages are invalid in SVG points)
 		// viewBox "0 0 1000 100" means x=0-1000 maps to full width, y=0-100 maps to full height
 		dat += "<svg style='position:absolute; left:0; top:0; width:100%; height:100%;' viewBox='0 0 1000 100' preserveAspectRatio='none'>"
@@ -902,11 +888,27 @@
 		var/num_pts = 80
 		for(var/i = 0; i <= num_pts; i++)
 			var/svgx = (i * 1000) / num_pts
-			// Pseudo-noise: mix of two prime-modulo offsets to make a more complex waveform
 			var/noise_amp = (((i * 7 + my_sub.tick_counter * 3) % 17) - 8) + (((i * 13 + my_sub.tick_counter) % 11) - 5)
-			var/svgy = 65 + noise_amp  // baseline at y=65, noise ±13 units out of 100
+			var/svgy = 65 + noise_amp
+			// Nudge the line upward for contacts at this x position
+			for(var/datum/vessel_contact/C in my_sub.detected_targets)
+				if(C.contact_type == SUB_CONTACT_SUBMERGED || C.contact_type == SUB_CONTACT_SURFACE)
+					var/cx = C.bearing >= 180 ? ((C.bearing - 180) / 180) * 1000 : 1000 + (C.bearing / 180) * 1000
+					if(abs(svgx - cx) < 18)
+						var/spike_h = max(8, min(40, (C.noise_signature / 100.0) * 40))
+						svgy = max(5, svgy - spike_h)
 			noise_points += "[svgx],[svgy] "
 		dat += "<polyline points='[noise_points]' fill='none' stroke='rgba(0,200,0,0.7)' stroke-width='1.5'/>"
+		// Draw selectable contact hitboxes and labels on top of the polyline
+		for(var/datum/vessel_contact/C in my_sub.detected_targets)
+			if(C.contact_type == SUB_CONTACT_SUBMERGED || C.contact_type == SUB_CONTACT_SURFACE)
+				var/blip_x = C.bearing >= 180 ? ((C.bearing - 180) / 180) * 50 : 50 + (C.bearing / 180) * 50
+				var/is_selected = (C == selected_contact)
+				var/spike_color = is_selected ? "#0ff" : C.contact_type == SUB_CONTACT_SUBMERGED ? "#0f0" : "#0af"
+				dat += "<a href='?src=\ref[src];select_contact=\ref[C]' style='position:absolute; left:[blip_x]%; top:10%; bottom:10%; width:10px; display:block; transform:translateX(-50%);'></a>"
+				if(is_selected)
+					var/spike_h = max(8, min(40, (C.noise_signature / 100.0) * 40))
+					dat += "<div style='position:absolute; left:[blip_x]%; bottom:[35 + spike_h + 2]%; transform:translateX(-50%); font-size:7px; color:#0ff; white-space:nowrap;'>[C.name]</div>"
 		dat += "</svg>"
 		// Sweep position marker: downward-pointing triangle
 		dat += "<div style='position:absolute; left:[sweep_x]%; top:4px; transform:translateX(-50%); width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:8px solid #0f0;'></div>"

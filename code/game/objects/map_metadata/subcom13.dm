@@ -18,7 +18,7 @@
 	availablefactions = list("US Navy")
 	songs = list(
 		"Killing Joke - Eighties:1" = "sound/music/eighties.ogg",)
-	mission_start_message = "Reporting for duty, Commander. Your submarine awaits."
+	mission_start_message = "<font size=4>Reporting for duty, Commander. Your submarine awaits.</font>"
 	faction1 = AMERICAN
 	faction2 = null
 	required_players = 0
