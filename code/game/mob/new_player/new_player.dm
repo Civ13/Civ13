@@ -1248,6 +1248,7 @@ var/global/redirect_all_players = null
 	if (map.ID == MAP_WIZARD_BOY && ishuman(character))
 		var/obj/map_metadata/wizard_boy/WB = map
 		WB.give_sticker_pack(character)
+		WB.load_wand(character)
 	if (character.buckled && istype(character.buckled, /obj/structure/bed/chair/wheelchair))
 		character.buckled.loc = character.loc
 		character.buckled.set_dir(character.dir)

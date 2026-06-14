@@ -599,7 +599,17 @@
 
 	// recover juice (mana) - ~0.5 per second at standard 2ds Life() ticks
 	if (juice < max_juice)
-		juice = min(juice + 1, max_juice)
+		var/juice_regen = 1
+		// Damp Sheep Wool: +30% juice regen
+		if (l_hand && istype(l_hand, /obj/item/weapon/material/magic/wand/crafted))
+			var/obj/item/weapon/material/magic/wand/crafted/W = l_hand
+			if (W.wool_damp)
+				juice_regen = 1.3
+		else if (r_hand && istype(r_hand, /obj/item/weapon/material/magic/wand/crafted))
+			var/obj/item/weapon/material/magic/wand/crafted/W = r_hand
+			if (W.wool_damp)
+				juice_regen = 1.3
+		juice = min(juice + juice_regen, max_juice)
 
 	voice = GetVoice()
 

@@ -39,6 +39,7 @@
 	var/saving_stats = FALSE
 	var/list/moldy_men = list()
 	var/list/round_sticker_packs_given = list()
+	var/list/round_wands_given = list()
 	var/datum/moldy_sabotage/sabotage
 	New()
 		..()
@@ -492,6 +493,8 @@
 		load_houses()
 	if (!house_info[H.client.ckey])
 		return null
+	if(H.ckey in round_wands_given) //only spawn wand once per round
+		return null
 	var/list/data = house_info[H.client.ckey]
 	if (data.len < 3 || !data[3])
 		return null
@@ -506,6 +509,8 @@
 	W.apply_core_stats()
 	W.apply_length_stats()
 	W.update_name_and_desc()
+	H.equip_to_slot_or_del(W, slot_belt)
+	round_wands_given += H.ckey
 	return W
 
 /obj/map_metadata/wizard_boy/proc/save_wand_mob(mob/living/human/H)

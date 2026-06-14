@@ -14,15 +14,9 @@
 	light_range = 3
 	tracer_type = /obj/effect/projectile/tracer/magic/yellow
 	impact_type = /obj/effect/projectile/impact/magic
-	var/overdrive = FALSE
 	var/backstabber_damage = FALSE
 	var/frostbite_effect = FALSE
 	var/shrub_shriek_effect = FALSE
-
-/obj/item/projectile/magic/process()
-	..()
-	if (overdrive && !isDeleted(src))
-		..()
 
 /obj/item/projectile/magic/on_hit(var/atom/target, var/blocked = FALSE, var/def_zone = null)
 	if (blocked >= 2)		return FALSE//Full block

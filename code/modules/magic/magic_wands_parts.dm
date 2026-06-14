@@ -250,10 +250,10 @@
 		if (istype(core_part, /obj/item/wand_part/fox_fur)) return "Silent spells with no visual cues. Adds +2s cast delay."
 		if (istype(core_part, /obj/item/wand_part/chewing_gum)) return "Extremely sticky; very difficult to drop or unequip."
 		if (istype(core_part, /obj/item/wand_part/cassette_tape)) return "15% chance to echo cast. 5% chance to jumble spell choice."
-		if (istype(core_part, /obj/item/wand_part/sheep_wool)) return "+20% defensive speed; -25% juice cost. Scalding steam hazard."
+		if (istype(core_part, /obj/item/wand_part/sheep_wool)) return "+30% juice regen. Scalding steam on fire/explosion spells."
 		if (istype(core_part, /obj/item/wand_part/rat_tail)) return "Projectiles deal backstab damage. Misfires when user is injured."
-		if (istype(core_part, /obj/item/wand_part/spark_plug)) return "Projectiles fly twice as fast. Shatters hand bones on overcast."
-		if (istype(core_part, /obj/item/wand_part/gnat_wing)) return "-80% cast time and 0% misfire chance."
+		if (istype(core_part, /obj/item/wand_part/spark_plug)) return "All spells cost 30% less juice. Shatters hand bones on overcast."
+		if (istype(core_part, /obj/item/wand_part/gnat_wing)) return "-50% cast time and 0% misfire chance."
 		if (istype(core_part, /obj/item/wand_part/gloom_thread)) return "-50% juice cost. Projectiles slow targets on hit."
 		return "Unknown core effects."
 
@@ -373,7 +373,7 @@
 	var/jumble_tape_chance  = 0     // cassette tape jumble chance
 	var/wool_damp           = FALSE // damp sheep wool
 	var/backstabber         = FALSE // feral rat tail
-	var/sparkplug_overdrive = FALSE // rusted spark plug
+	var/sparkplug_discount = FALSE // rusted spark plug
 	var/gloom_weave         = FALSE // gloom-weave thread
 
 	// Length flags
@@ -490,7 +490,7 @@
 	jumble_tape_chance = 0
 	wool_damp          = FALSE
 	backstabber        = FALSE
-	sparkplug_overdrive = FALSE
+	sparkplug_discount = FALSE
 	gloom_weave         = FALSE
 
 	switch (wand_core)
@@ -540,10 +540,10 @@
 			backstabber = TRUE
 
 		if (WAND_CORE_SPARKPLUG)
-			sparkplug_overdrive = TRUE
+			sparkplug_discount = TRUE
 
 		if (WAND_CORE_GNAT)
-			cast_time_mod = cast_time_mod * 0.2
+			cast_time_mod = cast_time_mod * 0.5
 			misfire_chance = 0
 
 		if (WAND_CORE_GLOOM)
@@ -687,10 +687,6 @@
 	if (pigeon_movement && _is_movement_spell(S))
 		mod *= 0.1
 
-	// Damp Sheep Wool: defensive/structural spells cast 20% faster
-	if (wool_damp && (S.name == "Blockum" || S.name == "Wallus"))
-		mod *= 0.8
-
 	// Stale Chip: healing spells cast 30% faster
 	if (carb_loaded && S.name == "Fixae")
 		mod *= 0.7
@@ -723,9 +719,9 @@
 	if (overcomp_proj_disc && S.proj_type)
 		mod *= 0.85
 
-	// Damp Sheep Wool: defensive/structural spells cost 25% less
-	if (wool_damp && (S.name == "Blockum" || S.name == "Wallus"))
-		mod *= 0.75
+	// Rusted Spark Plug: all spells cost 30% less juice
+	if (sparkplug_discount)
+		mod *= 0.7
 
 	// Lint core: random modifier - 0x (free!) or 2x (ouch)
 	if (lint_random_cost)
@@ -802,9 +798,9 @@
 		H.fire_stacks += 3
 		H.IgniteMob()
 
-	// Rusted Spark Plug: instantly shatters active hand bones, deals 30 brute, forces drop
-	if (sparkplug_overdrive)
-		to_chat(H, SPAN_DANGER("\The [src]'s kinetic overdrive backfires! The violent surge shatters the bones in your hand!"))
+	// Rusted Spark Plug: overcast backfire - shatters hand bones, deals 30 brute, forces drop
+	if (sparkplug_discount)
+		to_chat(H, SPAN_DANGER("\The [src]'s juice siphon backfires! The arcane feedback shatters the bones in your hand!"))
 		H.visible_message(SPAN_DANGER("[H]'s wand backfires with a sickening crunch!"))
 		var/target_hand = (H.l_hand == src) ? "l_hand" : "r_hand"
 		H.apply_damage(30, BRUTE, target_hand)
@@ -980,7 +976,6 @@
 								P.backstabber_damage  = backstabber
 								P.frostbite_effect    = gloom_weave
 								P.shrub_shriek_effect = shrub_shriek
-								P.overdrive           = sparkplug_overdrive
 							var/tgt_zone = H.targeted_organ || "chest"
 							process_projectile(P, user, target, tgt_zone, params)
 
@@ -999,16 +994,16 @@
 								var/obj/item/projectile/magic/P2 = new S.proj_type(user.loc)
 								if (P2 && istype(P2, /obj/item/projectile/magic))
 									P2.backstabber_damage  = backstabber
-									P2.frostbite_effect    = gloom_weave
-									P2.shrub_shriek_effect = shrub_shriek
-									P2.overdrive           = sparkplug_overdrive
-									process_projectile(P2, user, target, tgt_zone, params)
+								P2.frostbite_effect    = gloom_weave
+								P2.shrub_shriek_effect = shrub_shriek
+								process_projectile(P2, user, target, tgt_zone, params)
 
-					// Damp Sheep Wool: Burnus scorches the caster's lungs
-					if (wool_damp && S.name == "Burnus")
+					// Damp Sheep Wool: Burnus/Explodus scorches the caster's lungs
+					if (wool_damp && (S.name == "Burnus" || S.name == "Explodus"))
 						to_chat(H, SPAN_DANGER("The wet wool superheats from the fire spell - you inhale scalding steam and start coughing!"))
 						H.cough_duration = max(H.cough_duration, 40)  // 4 seconds of coughing
 						H.apply_damage(5, BURN, "chest")
+						H.stats["stamina"][1] = max(0, H.stats["stamina"][1] - 20)
 
 					// Stale Chip: non-healing casts have a 20% chance to crumble a bit
 					if (carb_loaded && S.name != "Fixae" && prob(20))

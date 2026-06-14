@@ -515,16 +515,16 @@
 				<p>Looping energy. 15% chance to fire the spell twice. 5% chance to jumble your spell choice. I tried to cast <i>Lightus!</i> and accidentally cast <i>Explodus!</i> on my bookshelf.</p>
 
 				<h3>Damp Sheep Wool</h3>
-				<p>Defensive spells are faster and cheaper. Also creates scalding steam when you cast fire magic. My facial hair has never been softer, or more singed.</p>
+				<p>Juice regenerates 30% faster while held. Also creates scalding steam when you cast fire or explosion magic. My facial hair has never been softer, or more singed.</p>
 
 				<h3>Feral Rat Tail</h3>
 				<p>Backstabber logic. Projectiles do more damage if the target isn't looking. Also misfires if you're injured. It's a coward's core. I love it.</p>
 
 				<h3>Rusted Spark Plug</h3>
-				<p>Kinetic overdrive. Projectiles fly at double speed. <span class='hazard'>WARNING:</span> Overcasting shatters your hand bones. I'm currently typing this with my toes.</p>
+				<p>Juice siphon. All spells cost 30% less juice. <span class='hazard'>WARNING:</span> Overcasting shatters your hand bones. I'm currently typing this with my toes.</p>
 
 				<h3>Golden Gnat Wing</h3>
-				<p>The Holy Grail. -80% cast time. No misfires. Finding one of these is harder than finding a student who actually does their homework.</p>
+				<p>The Holy Grail. -50% cast time. No misfires. Finding one of these is harder than finding a student who actually does their homework.</p>
 
 				<h3>Gloom-Weave Thread</h3>
 				<p>Halves Juice costs. Projectiles slow targets to a crawl. It's cold to the touch and makes you feel like crying. Matches the Welsh weather perfectly.</p>
