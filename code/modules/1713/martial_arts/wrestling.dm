@@ -199,7 +199,6 @@ If you make a derivative work from this code, you must include this notification
 			if (!D.stat)
 				D.emote("scream")
 			D.throw_at(T, 10, 4, A, TRUE, TRUE)
-			D.Paralyse(20)
 		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Thrown with wrestling by [A.name] ([A.ckey])</font>"
 	return
 

@@ -13,6 +13,10 @@
 
 	// objects
 
+	admin_notice("<span class='danger'>Initializing sticker registry...</span>", R_DEBUG)
+	sleep(-1)
+	init_sticker_registry()
+
 	admin_notice("<span class='danger'>Initializing objects...</span>", R_DEBUG)
 	sleep(-1)
 	for (var/atom/movable/object in world)

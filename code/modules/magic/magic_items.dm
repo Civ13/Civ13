@@ -411,6 +411,7 @@
 			H.juice = min(H.max_juice, H.juice + 1.0 * removed)
 		H.add_chemical_effect(CE_PAINKILLER, 250)
 		H.slurring = max(H.slurring, 45)
+		M.mood += removed*25
 
 // ============================================================
 // THE "CHAMELEON" MAC (Bootleg Invisibility Cloak)
@@ -610,7 +611,7 @@
 		return
 
 	for (var/mob/living/human/H in range(3, src))
-		if (H.stat || H == owner)
+		if (H.stat)
 			continue
 		if (H.faction == "Moldywart")
 			continue

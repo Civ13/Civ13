@@ -21,7 +21,7 @@
 #define WAND_WOOD_BALSA       "balsa"       // Fast but fragile; snaps on melee.
 #define WAND_WOOD_SNOOKER     "snooker"     // Slow caster; excellent bludgeon.
 #define WAND_WOOD_FIBREGLASS  "fibreglass"  // Whippy fast; lashes you on overcast.
-#define WAND_WOOD_BOGOAK      "bogoak"      // Driftwood chassis; elemental discount; emits stink.
+#define WAND_WOOD_DRIFTWOOD   "driftwood"   // Driftwood chassis; elemental discount; emits stink.
 #define WAND_WOOD_CHIP        "stale_chip"  // Stale Chip / French Fry.
 #define WAND_WOOD_SHRUB       "shrub_root"  // Shrieking Shrub Root.
 #define WAND_WOOD_TRUNCHEON   "truncheon"   // C.A.P. Truncheon.
@@ -129,7 +129,7 @@
 				else if (istype(wood_part, /obj/item/wand_part/fibreglass))
 					new_wand.wand_wood = WAND_WOOD_FIBREGLASS
 				else if (istype(wood_part, /obj/item/wand_part/driftwood))
-					new_wand.wand_wood = WAND_WOOD_BOGOAK
+					new_wand.wand_wood = WAND_WOOD_DRIFTWOOD
 				else if (istype(wood_part, /obj/item/wand_part/stale_chip))
 					new_wand.wand_wood = WAND_WOOD_CHIP
 				else if (istype(wood_part, /obj/item/wand_part/shrub_root))
@@ -349,8 +349,8 @@
 	var/splinter_chance     = 0     // % splinter on overcast (Pine)
 	var/snaps_on_melee      = FALSE // wand destroyed on melee hit (Balsa)
 	var/lash_on_overcast    = FALSE // caster lacerates on overcast (Fibreglass)
-	var/emit_stink          = FALSE // passive stink cloud (Bog Oak)
-	var/bog_elem_discount   = FALSE // -20% juice on elemental spells (Bog Oak)
+	var/emit_stink          = FALSE // passive stink cloud (Driftwood)
+	var/bog_elem_discount   = FALSE // -20% juice on elemental spells (Driftwood)
 	var/wand_wet            = FALSE // MDF swelling state
 	var/wand_wet_timer      = 0     // ds counter for drying
 	var/carb_loaded         = FALSE // stale chip
@@ -454,7 +454,7 @@
 			cast_time_mod    = 0.75
 			lash_on_overcast = TRUE
 
-		if (WAND_WOOD_BOGOAK)
+		if (WAND_WOOD_DRIFTWOOD)
 			// Soggy and elemental: -20% elemental juice, passive stink.
 			bog_elem_discount = TRUE
 			emit_stink        = TRUE
@@ -612,7 +612,7 @@
 		if (WAND_WOOD_BALSA)      wood_str = "balsa"
 		if (WAND_WOOD_SNOOKER)    wood_str = "snooker cue"
 		if (WAND_WOOD_FIBREGLASS) wood_str = "fibreglass"
-		if (WAND_WOOD_BOGOAK)     wood_str = "driftwood"
+		if (WAND_WOOD_DRIFTWOOD)     wood_str = "driftwood"
 		if (WAND_WOOD_CHIP)       wood_str = "stale chip"
 		if (WAND_WOOD_SHRUB)      wood_str = "shrieking shrub"
 		if (WAND_WOOD_TRUNCHEON)  wood_str = "C.A.P. truncheon"
@@ -654,7 +654,7 @@
 		if (WAND_WOOD_BALSA)      wood_icon = "wand_balsa"
 		if (WAND_WOOD_SNOOKER)    wood_icon = "wand_snooker"
 		if (WAND_WOOD_FIBREGLASS) wood_icon = "wand_fibreglass"
-		if (WAND_WOOD_BOGOAK)     wood_icon = "wand_driftwood"
+		if (WAND_WOOD_DRIFTWOOD)     wood_icon = "wand_driftwood"
 		if (WAND_WOOD_CHIP)       wood_icon = "wand_chip"
 		if (WAND_WOOD_SHRUB)      wood_icon = "wand_shrub"
 		if (WAND_WOOD_TRUNCHEON)  wood_icon = "wand_truncheon"
@@ -715,7 +715,7 @@
 	if (badger_defensive && _is_defensive_spell(S))
 		mod *= 1.5
 
-	// Bog Oak: elemental spells cost 20% less
+	// Driftwood: elemental spells cost 20% less
 	if (bog_elem_discount && _is_elemental_spell(S))
 		mod *= 0.8
 
@@ -1075,7 +1075,9 @@
 /obj/item/weapon/material/magic/wand/crafted/examine(mob/user as mob)
 	..()  // Base examine: juice level, active spell, known spells
 	if (ishuman(user))
-		to_chat(user, SPAN_NOTICE("Wood: <b>[wand_wood]</b> | Core: <b>[wand_core]</b> | Length: <b>[wand_length]</b>"))
+		var/parsed_wood = replacetext(wand_wood,"_"," ")
+		var/parsed_core = replacetext(wand_core,"_"," ")
+		to_chat(user, SPAN_NOTICE("Wood: <b>[parsed_wood]</b> | Core: <b>[parsed_core]</b> | Length: <b>[wand_length]</b>"))
 		if (wand_wet)
 			to_chat(user, SPAN_WARNING("The MDF body has swollen with moisture. It looks very sorry for itself."))
 		if (wand_length == WAND_LENGTH_TELESCOPIC)
@@ -1106,7 +1108,7 @@
 			if (holder)
 				to_chat(holder, SPAN_NOTICE("\The [src] has dried out. It's back to its normal, mediocre self."))
 
-	// --- BOG OAK: PASSIVE STINK CLOUD ---
+	// --- DRIFTWOOD: PASSIVE STINK CLOUD ---
 	if (emit_stink && holder)
 		stink_timer += 2
 		if (stink_timer >= 30)  // Every 3 seconds
@@ -1115,7 +1117,9 @@
 			for (var/mob/living/M in view(2, holder))
 				if (M != holder)
 					M.emote("cough")
-
+					if (ishuman(M))
+						var/mob/living/human/H = M
+						H.mood -= 1.5
 	// --- ASBESTOS: PASSIVE TOXIN DRIP ---
 	if (asbestos_tox && holder)
 		tox_timer += 2

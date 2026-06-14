@@ -40,6 +40,8 @@
 
 /obj/item/clothing/suit/storage/jacket/wizard/pinkrobe
 	name = "L.O.S.E.R. wizard robe"
+	icon_state = "magic_boy_robe_pink"
+	item_state = "magic_boy_robe_pink"
 	desc = "A pink wizard's robe used by those who have received the 'LLanboarwart Outcast and Substandard Educational Reject' status."
 	house_colors = "#000000"
 

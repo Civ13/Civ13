@@ -305,6 +305,7 @@
 
 /obj/item/weapon/material/magic/wand/attack(mob/living/M, mob/living/user, var/target_zone)
 	afterattack(M, user, TRUE)
+	user.next_move = world.time + 8
 	return TRUE
 
 /obj/item/weapon/material/magic/wand/proc/process_projectile(obj/item/projectile/P, mob/user, atom/target, var/target_zone, var/params=null)
