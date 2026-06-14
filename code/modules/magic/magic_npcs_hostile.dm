@@ -691,8 +691,8 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 	icon_living = "shrieking_shrub"
 	icon_dead = "shrieking_shrub_dead"
 	faction = "Moldywart"
-	maxHealth = 60
-	health = 60
+	maxHealth = 120
+	health = 120
 	melee_damage_lower = 2
 	melee_damage_upper = 5
 	attacktext = "lashes out at"

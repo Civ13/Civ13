@@ -436,7 +436,6 @@
 
 	if (map && istype(map, /obj/map_metadata/wizard_boy))
 		for (var/mob/living/human/O in world)
-			if (O.stat == DEAD && O.lastKnownCkey == M.key)
 			if (O.stat == DEAD && ckey(O.lastKnownCkey) == ckey(M.ckey))
 				var/turf/O_turf = get_turf(O)
 				if (O_turf)
