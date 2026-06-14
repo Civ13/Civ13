@@ -536,7 +536,7 @@
 	if (..())
 		if (isliving(target))
 			var/mob/living/L = target
-			L.apply_effects(agony = 80, stun = 6, blocked = blocked)
+			L.apply_effects(agony = 180, stun = 6, eyeblur = 20, blocked = blocked)
 			L.emote("painscream")
 			to_chat(L, SPAN_DANGER("You feel unimaginable agony!"))
 			deduct_house_points_for_illegal_spell(target, 50, "Painum")

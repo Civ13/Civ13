@@ -105,6 +105,8 @@
 	return ..()
 
 /mob/living/simple_animal/wizard/attack_hand(mob/user)
+	if (stat)
+		return ..()
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		if (H.a_intent == I_HARM || H.a_intent == I_DISARM)
@@ -1087,6 +1089,63 @@ h2 { color: #ffd700; border-bottom: 2px solid #5a3a1a; padding-bottom: 8px; marg
 		to_chat(H, SPAN_NOTICE("You bought [item_name] for [price] silver."))
 
 // ============================================================
+// GOLDEN GNAT
+// A tiny, shimmering insect that flees from players on sight.
+// Drops a golden gnat wing (wand core) when killed.
+// ============================================================
+
+/mob/living/simple_animal/golden_gnat
+	name = "golden gnat"
+	desc = "A tiny, brilliantly golden insect that hums at an impossibly high frequency. It seems to vibrate with barely contained speed."
+	icon = 'icons/mob/monsters_wizards.dmi'
+	icon_state = "gnat"
+	icon_living = "gnat"
+	icon_dead = "dead"
+	faction = "Moldywart"
+	maxHealth = 15
+	health = 15
+	melee_damage_lower = 0
+	melee_damage_upper = 0
+	mob_size = MOB_TINY
+	move_to_delay = 1
+	see_in_dark = 6
+	response_help = "peers at"
+	response_disarm = "swats at"
+	response_harm = "squashes"
+	density = FALSE
+	pass_flags = PASSTABLE
+	wander = TRUE
+	stop_automated_movement = FALSE
+	behaviour = "scared"
+	flying = TRUE
+
+/mob/living/simple_animal/golden_gnat/death(gibbed)
+	if (stat != DEAD)
+		new /obj/item/wand_part/gnat_wing(src.loc)
+		visible_message(SPAN_DANGER("The [name] shatters into a shower of golden dust as it hits the ground!"))
+		spawn(10)
+			if (src)
+				qdel(src)
+	..(gibbed)
+
+/mob/living/simple_animal/golden_gnat/attack_hand(mob/user)
+	if (stat)
+		return ..()
+	if (ishuman(user) && (user.a_intent == I_HARM || user.a_intent == I_DISARM))
+		do_behaviour("scared")
+	return ..()
+
+/mob/living/simple_animal/golden_gnat/attackby(obj/item/W, mob/living/user)
+	if (ishuman(user))
+		do_behaviour("scared")
+	return ..()
+
+/mob/living/simple_animal/golden_gnat/bullet_act(var/obj/item/projectile/P)
+	if (P && P.invisibility <= 0 && ishuman(P.firer))
+		do_behaviour("scared")
+	return ..()
+
+// ============================================================
 // SPAWNERS
 // ============================================================
 
@@ -1153,3 +1212,11 @@ h2 { color: #ffd700; border-bottom: 2px solid #5a3a1a; padding-bottom: 8px; marg
 	icon_state = "npc"
 	max_number = 1
 	max_range = 1
+
+/obj/effect/spawner/mobspawner/golden_gnat
+	name = "golden gnat spawner"
+	create_path = /mob/living/simple_animal/golden_gnat
+	timer = 12000
+	icon_state = "npc"
+	max_number = 1
+	max_range = 3

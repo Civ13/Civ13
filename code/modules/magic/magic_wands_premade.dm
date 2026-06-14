@@ -67,13 +67,13 @@
 	wand_length = WAND_LENGTH_TELESCOPIC
 
 // ----- The Swamp Thing -----
-// Bog Oak + Asbestos Fibre + Overcompensator: long-range elemental supremacy at personal cost
+// Driftwood + Asbestos Fibre + Overcompensator: long-range elemental supremacy at personal cost
 /obj/item/weapon/material/magic/wand/crafted/swamp_thing
 	parent_type = /obj/item/weapon/material/magic/wand/crafted/premade
 	name = "The Swamp Thing"
-	desc = "A massive, rotting branch of bog oak packed with highly illegal asbestos. It smells like dead fish, but it lets you lob massive fireballs from a mile away... while slowly poisoning you."
+	desc = "A massive, rotting branch of driftwood packed with highly illegal asbestos. It smells like dead fish, but it lets you lob massive fireballs from a mile away... while slowly poisoning you."
 	icon_state  = "wand_driftwood_longest"
-	wand_wood   = WAND_WOOD_BOGOAK
+	wand_wood   = WAND_WOOD_DRIFTWOOD
 	wand_core   = WAND_CORE_ASBESTOS
 	wand_length = WAND_LENGTH_OVERCOMP
 
@@ -106,7 +106,7 @@
 	name = "The Elderly Wand"
 	desc = "An incredibly old, knobby walking stick. Legend says Tumbledoor won it from Death himself in a high-stakes game of Go Fish."
 	icon_state = "elderly_wand"
-	wand_wood   = WAND_WOOD_BOGOAK      // Ancient and slightly damp
+	wand_wood   = WAND_WOOD_DRIFTWOOD      // Ancient and slightly damp
 	wand_core   = WAND_CORE_BADGER      // Extremely powerful combat casts
 	wand_length = WAND_LENGTH_OVERCOMP  // Huge range
 

@@ -193,6 +193,8 @@
 		walk(src, 0)
 
 /mob/living/simple_animal/hostile/wizard/moldy_man/attack_hand(mob/user)
+	if (stat)
+		return ..()
 	src.say(pick(
 		"The mold... it spreads...",
 		"Moldywart sees all!",
@@ -200,6 +202,7 @@
 		"Lord Moldywart will reclaim his nose! ...Eventually.",
 		"Mold. Damp. Darkness. This is the true magic.",
 	))
+	return ..()
 
 /mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant
 	name = "Moldy Lieutenant"
@@ -417,7 +420,10 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 		walk(src, 0)
 
 /mob/living/simple_animal/hostile/wizard/moldywart/attack_hand(mob/user)
+	if (stat)
+		return ..()
 	src.say(pick(taunt_lines))
+	return ..()
 
 /mob/living/simple_animal/hostile/wizard/moldywart/death(gibbed)
 	if (stat != DEAD)
@@ -669,3 +675,200 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 	timer = 1800
 	icon_state = "npc"
 	max_number = 1
+
+// ============================================================
+// SHRIEKING SHRUB
+// A stationary magical plant that screams when attacked,
+// stunning and severely damaging nearby humans.
+// Drops a shrieking shrub root (wand wood) when killed.
+// ============================================================
+
+/mob/living/simple_animal/hostile/wizard/shrieking_shrub
+	name = "Shrieking Shrub"
+	desc = "A twisted, thorny bush with an unnervingly wide maw of jagged leaves. It vibrates constantly, emitting a faint, high-pitched whimper."
+	icon = 'icons/obj/flora/largejungleflora.dmi'
+	icon_state = "shrieking_shrub"
+	icon_living = "shrieking_shrub"
+	icon_dead = "shrieking_shrub_dead"
+	faction = "Moldywart"
+	maxHealth = 60
+	health = 60
+	melee_damage_lower = 2
+	melee_damage_upper = 5
+	attacktext = "lashes out at"
+	mob_size = MOB_MEDIUM
+	wander = FALSE
+	stop_automated_movement = TRUE
+	speed = 0
+	move_to_delay = 0
+	possession_candidate = FALSE
+	house_point_value = 15
+	anchored = TRUE
+	var/shriek_cooldown = 0
+
+/mob/living/simple_animal/hostile/wizard/shrieking_shrub/Move()
+	return FALSE
+
+/mob/living/simple_animal/hostile/wizard/shrieking_shrub/New()
+	..()
+	processing_objects |= src
+
+/mob/living/simple_animal/hostile/wizard/shrieking_shrub/Destroy()
+	processing_objects -= src
+	return ..()
+
+/mob/living/simple_animal/hostile/wizard/shrieking_shrub/death(gibbed)
+	if (stat != DEAD)
+		new /obj/item/wand_part/shrub_root(src.loc)
+		visible_message(SPAN_DANGER("The [name] lets out one final, ear-splitting SHRIEK before crumbling to dust!"))
+		playsound(src.loc, 'sound/weapons/magic/spell4.ogg', 100, TRUE)
+		for (var/mob/living/human/H in view(8, src))
+			H.adjustEarDamage(rand(5, 10), rand(10, 20))
+			H.adjustBrainLoss(rand(8, 15))
+			H.Paralyse(3)
+			to_chat(H, SPAN_DANGER("The dying shriek of the Shrieking Shrub tears through your skull! Your ears bleed profusely!"))
+		spawn(10)
+			if (src)
+				qdel(src)
+	..(gibbed)
+
+/mob/living/simple_animal/hostile/wizard/shrieking_shrub/proc/shriek()
+	if (stat || world.time < shriek_cooldown)
+		return
+	shriek_cooldown = world.time + 100
+
+	visible_message(SPAN_DANGER("<b>[src]</b> lets out a horrible, ear-splitting SHRIEK!"))
+	playsound(src.loc, 'sound/animals/monsters/shriek1.ogg', 100, TRUE)
+
+	for (var/mob/living/human/H in view(8, src))
+		H.Paralyse(2)
+		H.adjustBrainLoss(rand(5, 10))
+		H.adjustEarDamage(rand(3, 7), rand(5, 15))
+		to_chat(H, SPAN_DANGER("The Shrieking Shrub's scream pierces your ears! You collapse to the ground, disoriented and bleeding from the ears!"))
+
+/mob/living/simple_animal/hostile/wizard/shrieking_shrub/proc/process()
+	if (stat || !loc)
+		return
+	if (world.time < shriek_cooldown)
+		return
+	for (var/mob/living/human/H in view(8, src))
+		if (H.stat || !H.client)
+			continue
+		shriek()
+		break
+
+/mob/living/simple_animal/hostile/wizard/shrieking_shrub/AttackingTarget()
+	if (!target_mob || !SA_attackable(target_mob))
+		LoseTarget()
+		return FALSE
+	return ..()
+
+/mob/living/simple_animal/hostile/wizard/shrieking_shrub/bullet_act(var/obj/item/projectile/P)
+	if (P && P.invisibility <= 0)
+		shriek()
+	return ..()
+
+/mob/living/simple_animal/hostile/wizard/shrieking_shrub/attack_hand(mob/user)
+	if (stat)
+		return ..()
+	shriek()
+	return ..()
+
+/mob/living/simple_animal/hostile/wizard/shrieking_shrub/attackby(obj/item/W, mob/living/user)
+	if (stat)
+		return ..()
+	shriek()
+	return ..()
+
+// ============================================================
+// SLUDGE MONSTER
+// A slow, oozing abomination that corrodes nearby life.
+// Applies toxin damage on melee hits and forces nearby humans
+// to vomit every ~10 seconds, causing additional minor toxin.
+// Deletes on death.
+// ============================================================
+
+/mob/living/simple_animal/hostile/wizard/sludge_monster
+	name = "Sludge Monster"
+	desc = "A heaving mass of foul, glowing ooze that leaves a trail of corrosion in its wake. It gurgles with a sound like a blocked drain."
+	icon = 'icons/mob/monsters_wizards.dmi'
+	icon_state = "sludge"
+	icon_living = "sludge"
+	icon_dead = "sludge"
+	faction = "Moldywart"
+	maxHealth = 120
+	health = 120
+	melee_damage_lower = 5
+	melee_damage_upper = 10
+	attacktext = "slams into"
+	attack_verb = "slams"
+	mob_size = MOB_LARGE
+	wander = TRUE
+	stop_automated_movement = FALSE
+	speed = 6
+	move_to_delay = 8
+	possession_candidate = FALSE
+	house_point_value = 20
+	var/retch_cooldown = 0
+
+/mob/living/simple_animal/hostile/wizard/sludge_monster/New()
+	..()
+	processing_objects |= src
+
+/mob/living/simple_animal/hostile/wizard/sludge_monster/Destroy()
+	processing_objects -= src
+	return ..()
+
+/mob/living/simple_animal/hostile/wizard/sludge_monster/death(gibbed)
+	if (stat != DEAD)
+		visible_message(SPAN_DANGER("The [name] collapses in on itself, dissolving into a bubbling puddle of toxic filth!"))
+		playsound(src.loc, 'sound/effects/splat.ogg', 100, TRUE)
+		var/turf/T = get_turf(src)
+		if (T)
+			T.add_vomit_floor(src, TRUE)
+		spawn(10)
+			if (src)
+				qdel(src)
+	..(gibbed)
+
+/mob/living/simple_animal/hostile/wizard/sludge_monster/proc/process()
+	if (stat || !loc)
+		return
+	if (world.time < retch_cooldown)
+		return
+	for (var/mob/living/human/H in view(3, src))
+		if (H.stat || !H.client)
+			continue
+		retch_cooldown = world.time + 100
+		H.vomit()
+		H.adjustToxLoss(rand(2, 5))
+		to_chat(H, SPAN_DANGER("The stench of the Sludge Monster forces you to retch!"))
+		playsound(src.loc, 'sound/effects/splat.ogg', 50, TRUE)
+		break
+
+/mob/living/simple_animal/hostile/wizard/sludge_monster/AttackingTarget()
+	if (!target_mob || !SA_attackable(target_mob))
+		LoseTarget()
+		return FALSE
+	var/result = ..()
+	if (ishuman(target_mob))
+		var/mob/living/human/H = target_mob
+		H.adjustToxLoss(rand(3, 6))
+		to_chat(H, SPAN_DANGER("The Sludge Monster's touch burns with a corrosive, toxic sting!"))
+	return result
+
+/obj/effect/spawner/mobspawner/shrieking_shrub
+	name = "shrieking shrub spawner"
+	create_path = /mob/living/simple_animal/hostile/wizard/shrieking_shrub
+	timer = 4800
+	icon_state = "npc"
+	max_number = 1
+	max_range = 3
+
+/obj/effect/spawner/mobspawner/sludge_monster
+	name = "sludge monster spawner"
+	create_path = /mob/living/simple_animal/hostile/wizard/sludge_monster
+	timer = 1800
+	icon_state = "npc"
+	max_number = 2
+	max_range = 4
