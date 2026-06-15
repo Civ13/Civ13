@@ -126,7 +126,7 @@
 "cv" = (/obj/structure/voting/civb,/obj/covers/wood,/obj/structure/table/fancy,/obj/structure/roof_support/admin,/obj/roof/clay/blue,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
 "cw" = (/obj/covers/wood,/obj/roof/clay/blue,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
 "cx" = (/turf/floor/beach/sand,/area/caribbean/nomads/desert)
-"cy" = (/obj/covers/stone_wall/classic/archway/marble,/obj/effect/overlay/palmtree_l,/obj/structure/wild/flowers{icon_state = "smallbush10"},/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/nomads/semiarid)
+"cy" = (/obj/covers/stone_wall/classic/archway/marble,/obj/structure/wild/palm,/obj/structure/wild/flowers{icon_state = "smallbush10"},/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/nomads/semiarid)
 "cz" = (/obj/covers/cobblestone/stairs,/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 8},/turf/floor/dirt,/area/caribbean/nomads/semiarid)
 "cA" = (/obj/covers/cobblestone/stairs,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
 "cB" = (/obj/covers/cobblestone/stairs,/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 4},/turf/floor/dirt,/area/caribbean/nomads/semiarid)

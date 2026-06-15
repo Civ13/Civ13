@@ -23,8 +23,28 @@ var/list/flooring_cache = list()
 
 /turf/floor/update_icon(var/update_neighbors)
 	if (flooring)
-		// Apply edges, corners, and inner corners.
+		// Clear all overlays and rebuild from scratch
 		overlays.Cut()
+
+		// Set initial icon and strings.
+		name = flooring.name
+		desc = flooring.desc
+		icon = flooring.icon
+		if (!isnull(set_update_icon) && istext(set_update_icon))
+			icon_state = set_update_icon
+		else if (flooring_override)
+			icon_state = flooring_override
+		else
+			if (overrided_icon_state)
+				icon_state = overrided_icon_state
+				flooring_override = icon_state
+			else
+				icon_state = flooring.icon_base
+				if (flooring.has_base_range)
+					icon_state = "[icon_state][rand(0,flooring.has_base_range)]"
+					flooring_override = icon_state
+
+		// Apply edges, corners, and inner corners.
 		var/has_border = FALSE
 		if (flooring.flags & SMOOTH_ONLY_WITH_ITSELF) // for carpets and stuff like that
 			if (isnull(set_update_icon) && (flooring.flags & TURF_HAS_EDGES))
@@ -34,7 +54,6 @@ var/list/flooring_cache = list()
 						has_border |= step_dir
 						overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", step_dir)
 
-				// There has to be a concise numerical way to do this but I am too noob.
 				if ((has_border & NORTH) && (has_border & EAST))
 					overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[NORTHEAST]", "[flooring.icon_base]_edges", NORTHEAST)
 				if ((has_border & NORTH) && (has_border & WEST))
@@ -45,7 +64,6 @@ var/list/flooring_cache = list()
 					overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[SOUTHWEST]", "[flooring.icon_base]_edges", SOUTHWEST)
 
 				if (flooring.flags & TURF_HAS_CORNERS)
-					// As above re: concise numerical way to do this.
 					if (!(has_border & NORTH))
 						if (!(has_border & EAST))
 							var/turf/floor/T = get_step(src, NORTHEAST)
@@ -65,7 +83,47 @@ var/list/flooring_cache = list()
 							if (!istype(T) || !T.flooring || T.flooring.name != flooring.name)
 								overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[SOUTHWEST]", "[flooring.icon_base]_corners", SOUTHWEST)
 
-		else
+		else if (flooring.flags & TURF_HAS_EDGES) // Natural floor edges: higher tier bleeds onto lower
+			if (isnull(set_update_icon))
+				for (var/step_dir in alldirs)
+					var/turf/T = get_step(src, step_dir)
+					var/edge_dir = reverse_direction(step_dir)
+
+					if (!T)
+						continue
+
+					// Non-floor neighbor (wall, space, etc.) - show my edge against it
+					if (!istype(T, /turf/floor))
+						overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", edge_dir, flooring.icon)
+						continue
+
+					var/turf/floor/FT = T
+
+					// Neighbor has no flooring - show my edge
+					if (!FT.flooring)
+						overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", edge_dir, flooring.icon)
+						continue
+
+					// Neighbor is non-natural (tier 0, e.g. carpet, wood) - show my edge
+					if (FT.flooring.tier == 0)
+						overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", edge_dir, flooring.icon)
+						continue
+
+					// Water shows its own edge against land
+					if (flooring.tier == 1 && FT.flooring.tier > 1)
+						overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", edge_dir, flooring.icon)
+						continue
+
+					// Land shows water's edge against it (water shows edges too)
+					if (flooring.tier > 1 && FT.flooring.tier == 1)
+						overlays |= get_flooring_overlay("[FT.flooring.icon_base]-edge-[step_dir]", "[FT.flooring.icon_base]_edges", edge_dir, FT.flooring.icon)
+						continue
+
+					// Higher neighbor bleeds onto me (pull neighbor's edge sprite)
+					if (FT.flooring.tier > flooring.tier)
+						overlays |= get_flooring_overlay("[FT.flooring.icon_base]-edge-[step_dir]", "[FT.flooring.icon_base]_edges", edge_dir, FT.flooring.icon)
+
+		else // Non-SMOOTH_ONLY, non-natural edges (broken_floor only, legacy)
 			if (isnull(set_update_icon) && (flooring.flags & TURF_HAS_EDGES))
 				for (var/step_dir in cardinal)
 					var/turf/T = get_step(src, step_dir)
@@ -73,7 +131,6 @@ var/list/flooring_cache = list()
 						has_border |= step_dir
 						overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", step_dir)
 
-				// There has to be a concise numerical way to do this but I am too noob.
 				if ((has_border & NORTH) && (has_border & EAST))
 					overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[NORTHEAST]", "[flooring.icon_base]_edges", NORTHEAST)
 				if ((has_border & NORTH) && (has_border & WEST))
@@ -84,7 +141,6 @@ var/list/flooring_cache = list()
 					overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[SOUTHWEST]", "[flooring.icon_base]_edges", SOUTHWEST)
 
 				if (flooring.flags & TURF_HAS_CORNERS)
-					// As above re: concise numerical way to do this.
 					if (!(has_border & NORTH))
 						if (!(has_border & EAST))
 							var/turf/floor/T = get_step(src, NORTHEAST)
@@ -149,9 +205,10 @@ var/list/flooring_cache = list()
 					overlays += icon(icon,"seashallow_swamp_overlay")
 			else
 				name = replacetext(name, "irradiated ", "")
-/turf/floor/proc/get_flooring_overlay(var/cache_key, var/icon_base, var/icon_dir = FALSE)
+/turf/floor/proc/get_flooring_overlay(var/cache_key, var/icon_base, var/icon_dir = FALSE, var/edge_icon)
 	if (!flooring_cache[cache_key])
-		var/image/I = image(icon = flooring.icon, icon_state = icon_base, dir = icon_dir)
+		var/icon/use_icon = edge_icon ? edge_icon : flooring.icon
+		var/image/I = image(icon = use_icon, icon_state = icon_base, dir = icon_dir)
 		I.layer = layer
 		flooring_cache[cache_key] = I
 	return flooring_cache[cache_key]

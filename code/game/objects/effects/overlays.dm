@@ -1,25 +1,8 @@
 /obj/effect/overlay
 	name = "overlay"
 
-
-/obj/effect/overlay/palmtree_r
-	name = "Palm tree"
-	icon = 'icons/misc/beach2.dmi'
-	icon_state = "palm1"
-	density = TRUE
-	layer = 5
-	anchored = TRUE
-
-/obj/effect/overlay/palmtree_l
-	name = "Palm tree"
-	icon = 'icons/misc/beach2.dmi'
-	icon_state = "palm2"
-	density = TRUE
-	layer = 5
-	anchored = TRUE
-
 /obj/effect/overlay/coconut
 	name = "Coconuts"
-	icon = 'icons/misc/beach.dmi'
+	icon = 'icons/turf/beach.dmi'
 	icon_state = "coconuts"
 

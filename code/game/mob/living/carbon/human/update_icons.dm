@@ -1367,7 +1367,7 @@ var/global/list/damage_icon_parts = list()
 
 	if (drowning || water_overlay)
 		var/turf/D = get_turf(src)
-		var/image/I = image("icon"='icons/misc/beach.dmi', "icon_state"="[D.icon_state]_ov", "layer"=FIRE_LAYER)
+		var/image/I = image("icon"='icons/turf/beach.dmi', "icon_state"="[D.icon_state]_ov", "layer"=FIRE_LAYER)
 		if (lying || prone)
 			var/matrix/M = matrix()
 			M.Scale(size_multiplier)

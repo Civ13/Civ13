@@ -901,6 +901,10 @@
 	max_range = 15
 	create_path = /mob/living/simple_animal/hostile/phosphor_beetle
 	timer = 2000
+
+/obj/effect/spawner/mobspawner/phosphor_beetle/magic
+	create_path = /mob/living/simple_animal/hostile/phosphor_beetle/magic
+
 ////////////////////OBJ SPAWNER///////////
 /obj/effect/spawner/objspawner
 	name = "obj spawner"

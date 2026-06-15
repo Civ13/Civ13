@@ -377,9 +377,9 @@ var/list/seed_list_jungle
 /obj/structure/wild/tree/live_tree/pine
 	name = "pinetree"
 	icon = 'icons/obj/flora/pinetrees.dmi'
-	icon_state = "pine_1"
-	deadicon = 'icons/obj/flora/pinetrees_dead.dmi'
-	deadicon_state = "pine_1"
+	icon_state = "new_pine_1"
+	deadicon = 'icons/obj/flora/pinetrees.dmi'
+	deadicon_state = "new_pine_dead"
 	sways = FALSE
 	amount = 5
 	edible = TRUE
@@ -391,9 +391,7 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/tree/live_tree/pine/New()
 	..()
-	icon_state = "pine_[rand(1,3)]"
-	deadicon = 'icons/obj/flora/pinetrees_dead.dmi'
-	deadicon_state = icon_state
+	icon_state = "new_pine_[rand(1,3)]"
 	if (map.ID == MAP_HUNGERGAMES)
 		spawn(6000)
 			if(prob(75))
@@ -427,7 +425,7 @@ var/list/seed_list_jungle
 /obj/structure/wild/tree/live_tree/pine/snow
 	name = "pinetree"
 	icon = 'icons/obj/flora/pinetrees_snow.dmi'
-	icon_state = "pine_1"
+	icon_state = "new_pine_1"
 	sways = FALSE
 	amount = 5
 	edible = FALSE
@@ -446,9 +444,9 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/palm
 	name = "palm tree"
-	icon = 'icons/misc/beach2.dmi'
+	icon = 'icons/obj/flora/palm.dmi'
 	icon_state = "palm1"
-	deadicon = 'icons/misc/beach2.dmi'
+	deadicon = 'icons/obj/flora/palm.dmi'
 	deadicon_state = "dead_palm1"
 	sways = FALSE
 	amount = 4
@@ -523,7 +521,7 @@ var/list/seed_list_jungle
 /obj/structure/wild/palm/New()
 	..()
 	icon_state = pick("palm1","palm2")
-	deadicon = 'icons/misc/beach2.dmi'
+	deadicon = 'icons/obj/flora/palm.dmi'
 	deadicon_state = "dead_[icon_state]"
 
 ///////////////////////Bushes////////////////////////////
@@ -861,6 +859,24 @@ var/list/seed_list_jungle
 	branches = 2
 	max_branches = 2
 
+/obj/structure/wild/jungle/yucca
+	name = "Joshua tree"
+	icon = 'icons/obj/flora/bigtrees.dmi'
+	desc = "A desert tree, also known as Yucca."
+	icon_state = "joshua_2"
+	deadicon = 'icons/obj/flora/deadtrees.dmi'
+	deadicon_state = "joshua_2"
+	edible = FALSE
+	leaves = 0
+	max_leaves = 0
+	branches = 0
+	max_branches = 0
+
+/obj/structure/wild/jungle/yucca/New()
+	..()
+	icon_state = pick("joshua_1","joshua_2","joshua_3","joshua_4")
+	deadicon_state = icon_state
+
 /obj/structure/wild/jungle/medpine/dead
 	name = "dead mediterranean pine tree"
 	icon = 'icons/obj/flora/deadtrees.dmi'
@@ -1055,7 +1071,7 @@ var/list/seed_list_jungle
 		if (do_after(user, 80, src))
 			if (src && branches >= 1)
 				to_chat(user, SPAN_NOTICE("You break off a branch from \the [src]."))
-				if (icon == 'icons/obj/flora/deadtrees.dmi' || icon == 'icons/obj/flora/deadtrees_winter.dmi' || icon == 'icons/obj/flora/pinetrees_dead.dmi' || findtext(icon_state, "dead"))
+				if (icon == 'icons/obj/flora/deadtrees.dmi' || icon == 'icons/obj/flora/deadtrees_winter.dmi' || findtext(icon_state, "dead"))
 					new /obj/structure/branch/cleared(get_turf(src))
 				else
 					new /obj/structure/branch(get_turf(src))

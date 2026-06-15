@@ -179,7 +179,7 @@
 	name = "jungle grass patch"
 	is_diggable = TRUE
 	may_become_muddy = TRUE
-	initial_flooring = null
+	initial_flooring = /decl/flooring/grass
 
 /turf/floor/grass/edge
 	name = "grass edge"
@@ -196,7 +196,7 @@
 /turf/floor/grass/jungle/savanna
 	name = "dry grass patch"
 	icon_state = "dry_grass"
-	initial_flooring = null
+	initial_flooring = /decl/flooring/grass/savanna
 
 /turf/floor/grass/jungle/savanna/New()
 	..()
@@ -228,11 +228,10 @@
 	..()
 	icon = 'icons/turf/snow.dmi'
 	icon_state = "grass[rand(0,6)]"
-	initial_flooring = null
 
 /turf/floor/beach
 	name = "beach"
-	icon = 'icons/misc/beach.dmi'
+	icon = 'icons/turf/beach.dmi'
 	initial_flooring = null
 
 /turf/floor/beach/drywater
@@ -240,14 +239,14 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "sand1"
 	is_diggable = FALSE
-	initial_flooring = null
+	initial_flooring = /decl/flooring/sand/drywater
 
 /turf/floor/beach/drywater2
 	name = "dry riverbed"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "sand1"
 	is_diggable = FALSE
-	initial_flooring = null
+	initial_flooring = /decl/flooring/sand/drywater
 
 /turf/floor/beach/sand
 	name = "sand"
@@ -269,13 +268,8 @@
 	icon_state = "darksand"
 	is_diggable = TRUE
 	available_sand = 4
-	initial_flooring = null
+	initial_flooring = /decl/flooring/sand/dark
 
-/turf/floor/beach/coastline
-	name = "coastline"
-	icon = 'icons/misc/beach2.dmi'
-	icon_state = "sandwater"
-	watertile = TRUE
 //water level is measured in centimeters. the maximum is 200 (2 meters). up to 1.5 will make movement progressively slower, up from that you will drown if you stay for too long.
 
 /turf/floor/beach/water
@@ -455,14 +449,15 @@
 	name = "ice"
 	icon_state = "seashallow_frozen"
 	move_delay = 0
-	initial_flooring = null
+	initial_flooring = /decl/flooring/water/ice
 
 /turf/floor/beach/water/ice/salty
 	name = "saltwater ice"
+	initial_flooring = /decl/flooring/water/ice
 
 /turf/floor/beach/sand/desert
 	name = "desert sand"
-	icon = 'icons/misc/beach.dmi'
+	icon = 'icons/turf/beach.dmi'
 	icon_state = "desert1"
 	interior = FALSE
 	stepsound = "dirt"

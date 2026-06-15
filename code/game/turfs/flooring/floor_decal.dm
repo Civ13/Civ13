@@ -1184,11 +1184,11 @@ var/list/floor_decals = list()
 
 /obj/effect/floor_decal/desert_edge
 	name = "desert edge"
-	icon = 'icons/misc/beach.dmi'
+	icon = 'icons/turf/beach.dmi'
 	icon_state = "desert_edges"
 /obj/effect/floor_decal/sand_edge
 	name = "sand edge"
-	icon = 'icons/misc/beach.dmi'
+	icon = 'icons/turf/beach.dmi'
 	icon_state = "sand_edges"
 
 /* Tatami (Bamboo Floor Bordering For Mats)*/

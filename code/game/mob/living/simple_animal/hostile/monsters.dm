@@ -597,6 +597,9 @@
 	faction = "neutral"
 	density = FALSE
 
+/mob/living/simple_animal/hostile/phosphor_beetle/magic
+	faction = "Moldywart" //so npcs dont attack each other
+
 /mob/living/simple_animal/hostile/phosphor_beetle/Crossed(atom/movable/AM)
 	..()
 	if (stat == DEAD || stat == UNCONSCIOUS)
