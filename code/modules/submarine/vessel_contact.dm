@@ -300,8 +300,8 @@ var/global/list/npc_type_cache = list()
 
 	var/dist = toroidal_distance(x_pos, y_pos, player.x_pos, player.y_pos) * SUB_MAP_SCALE  // Convert to meters
 
-	// Radar detection: surface ships detect surfaced subs via radar (sensor_range)
-	if(contact_type == SUB_CONTACT_SURFACE && player.depth == 0 && dist <= sensor_range)
+	// Radar detection: surface ships and air contacts detect surfaced subs via radar (sensor_range)
+	if((contact_type == SUB_CONTACT_SURFACE || contact_type == SUB_CONTACT_AIR) && player.depth == 0 && dist <= sensor_range)
 		react_to_detection(player.x_pos, player.y_pos)
 		return
 

@@ -79,15 +79,22 @@ var/list/flooring_cache = list()
 	var/has_irradiated_prefix = findtext(name, "irradiated")
 	if (radiation >= 15)
 		if (!has_irradiated_prefix)
-			if (istype(src, /turf/floor/grass) || istype(src, /turf/floor/winter/grass))
+			if (istype(src, /turf/floor/grass))
 				var/turf/floor/grass/G = src
 				if (G.deadicon_state != "none" && G.icon_state != G.deadicon_state)
 					name = "irradiated [name]"
 					G.icon = G.deadicon
 					G.icon_state = G.deadicon_state
+			else if (istype(src, /turf/floor/winter/grass))
+				var/turf/floor/winter/grass/WG = src
+				if (WG.deadicon_state != "none" && WG.icon_state != WG.deadicon_state)
+					name = "irradiated [name]"
+					WG.icon = WG.deadicon
+					WG.icon_state = WG.deadicon_state
 			else if (istype(src, /turf/floor/beach/water) && radiation >= 20)
 				name = "irradiated [name]"
-				overlays += image(icon, "seashallow_swamp_overlay")
+		if (istype(src, /turf/floor/beach/water) && radiation >= 20)
+			overlays += image(icon, "seashallow_swamp_overlay")
 	else if (has_irradiated_prefix)
 		name = replacetext(name, "irradiated ", "")
 

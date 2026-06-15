@@ -31,8 +31,9 @@ var/global/next_torpedo_id = 1
 	if(life_left <= 0)
 		// Torpedo expired without hitting - announce miss to target sub crew
 		if(sub_target && !QDELETED(sub_target) && sub_target.internal_turfs.len)
-			for(var/mob/living/L in sub_target.internal_turfs)
-				to_chat(L, "<span class='warning'><b>A torpedo passes nearby without contact.</b></span>")
+			for(var/turf/T in sub_target.internal_turfs)
+				for(var/mob/living/L in T)
+					to_chat(L, "<span class='warning'><b>A torpedo passes nearby without contact.</b></span>")
 		qdel(src)
 		return
 
@@ -108,8 +109,9 @@ var/global/next_torpedo_id = 1
 
 	// Announce torpedo impact
 	if(sub.internal_turfs.len)
-		for(var/mob/living/L in sub.internal_turfs)
-			to_chat(L, "<span class='danger'><font size='3'><b>TORPEDO IMPACT!</b></font></span>")
+		for(var/turf/T in sub.internal_turfs)
+			for(var/mob/living/L in T)
+				to_chat(L, "<span class='danger'><font size='3'><b>TORPEDO IMPACT!</b></font></span>")
 
 	// Apply hull damage to physical turfs on the sub's Z-level
 	sub.torpedo_hit(damage)

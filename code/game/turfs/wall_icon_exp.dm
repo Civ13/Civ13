@@ -110,12 +110,12 @@
 			T.check_relatives(1,0)
 	if (!isnull(junction))
 		set_wall_state("[material.icon_base][junction]")
-	if (istype(src, /turf/wall/sub_bulkhead))
-		var/turf/wall/sub_bulkhead/SB = src
-		if (SB.draw_color_lines)
-			var/image/line_ov = image(icon = 'icons/turf/wall_masks.dmi', icon_state = "wall_line_ov[junction]")
-			line_ov.color = SB.color_lines_color
-			overlays += line_ov
+		if (istype(src, /turf/wall/sub_bulkhead))
+			var/turf/wall/sub_bulkhead/SB = src
+			if (SB.draw_color_lines)
+				var/image/line_ov = image(icon = 'icons/turf/wall_masks.dmi', icon_state = "wall_line_ov[junction]")
+				line_ov.color = SB.color_lines_color
+				overlays += line_ov
 	return
 /turf/wall/can_join_with(var/atom/W)
 	if (istype(W,src))

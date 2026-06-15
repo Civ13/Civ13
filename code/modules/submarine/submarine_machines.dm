@@ -1703,7 +1703,6 @@
 	dat += "<div><span style='display:inline-block; width:6px; height:6px; background:#f00; border-radius:50%; vertical-align:middle;'></span> Hostile</div>"
 	dat += "<div><span style='display:inline-block; width:6px; height:6px; background:#0af; border-radius:50%; vertical-align:middle;'></span> Surface</div>"
 	dat += "<div><span style='display:inline-block; width:6px; height:6px; background:#f80; border-radius:50%; vertical-align:middle;'></span> Air</div>"
-	dat += "<div><span style='display:inline-block; width:4px; height:4px; background:#080; border-radius:50%; vertical-align:middle; opacity:0.5;'></span> Untagged</div>"
 	dat += "<div><span style='display:inline-block; width:4px; height:4px; background:#ff0; border-radius:50%; vertical-align:middle;'></span> Your Torpedo</div>"
 	dat += "<div><span style='display:inline-block; width:4px; height:4px; background:#f44; border-radius:50%; vertical-align:middle;'></span> Enemy Torpedo</div>"
 	dat += "</div>"
@@ -1839,7 +1838,6 @@
 			<ul>
 			<li><b>White circle:</b> Your submarine (center).</li>
 			<li><b>Cyan markers:</b> Tagged contacts with name, range, and bearing labels.</li>
-			<li><b>Faint blips:</b> Detected but untagged contacts.</li>
 			<li>Use ZOOM IN/OUT to adjust the display range (2.5km to 200km).</li>
 			</ul>
 
@@ -1851,7 +1849,6 @@
 			<tr><td><span style="color:#f00;">&#9679;</span> Red</td><td>Hostile contact</td></tr>
 			<tr><td><span style="color:#0af;">&#9679;</span> Blue</td><td>Surface contact</td></tr>
 			<tr><td><span style="color:#f80;">&#9679;</span> Orange</td><td>Air contact</td></tr>
-			<tr><td><span style="color:#080;">&#9679;</span> Faint green</td><td>Untagged contact</td></tr>
 			</table>
 
 			<h2>6. OPERATIONAL PROCEDURES</h2>
