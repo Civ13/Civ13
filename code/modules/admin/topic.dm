@@ -876,6 +876,11 @@
 		if(SM?.created_sub)
 			for(var/i = 1, i <= 4, i++)
 				SM.created_sub.tubes_loaded[i] = TRUE
+			// Update tube icon states
+			for(var/obj/structure/machinery/sub_physical/torpedo_tube/TT in world)
+				if(TT.my_sub == SM.created_sub)
+					TT.is_loaded = TRUE
+					TT.icon_state = "torpedo_tube1_closed"
 			to_chat(usr, "<span class='notice'>All torpedo tubes loaded.</span>")
 			src.show_subcom13_panel()
 		return

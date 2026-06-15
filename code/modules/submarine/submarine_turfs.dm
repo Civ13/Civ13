@@ -14,7 +14,7 @@
 /turf/wall/sub_hull
 	name = "submarine pressure hull"
 	icon = 'icons/turf/wall_masks.dmi'
-	icon_state = "metal0"
+	icon_state = "sub0"
 	opacity = 1
 	density = 1
 	var/hull_integrity = 1000
@@ -24,7 +24,7 @@
 	flags = TURF_HAS_EDGES
 
 /turf/wall/sub_hull/New(var/newloc)
-	..(newloc,"iron")
+	..(newloc,"submarine hull")
 
 /turf/wall/sub_hull/proc/apply_breach_damage(var/damage)
 	hull_integrity -= damage
@@ -64,7 +64,7 @@
 /turf/wall/sub_bulkhead
 	name = "internal bulkhead"
 	icon = 'icons/turf/wall_masks.dmi'
-	icon_state = "metal0"
+	icon_state = "sub0"
 	opacity = 1
 	density = 1
 	var/health = 200
@@ -72,9 +72,11 @@
 	// Bulkheads are watertight: water does NOT flow through them by default
 	var/watertight = TRUE
 	flags = TURF_HAS_EDGES
+	var/draw_color_lines = TRUE
+	var/color_lines_color = "#007F00"
 
 /turf/wall/sub_bulkhead/New(var/newloc)
-	..(newloc,"iron")
+	..(newloc,"submarine hull")
 
 /turf/wall/sub_bulkhead/proc/take_bulkhead_damage(var/damage)
 	health -= damage
@@ -176,8 +178,8 @@
 	if(water_depth >= 50)  // 50cm = ankle-deep, enough to start causing problems
 		apply_drowning_damage()
 
-	// 4. Atmospheric updates: water displaces oxygen
-	if(water_depth > 0)
+	// 4. Atmospheric updates: significant water displaces oxygen
+	if(water_depth >= 30)
 		var/water_displacement = water_depth / max_water  // 0 to 1
 		oxygen_moles = max(0, oxygen_moles * (1 - water_displacement * 0.3))
 		compartment_pressure = max(0.3, 1.0 - (water_displacement * 0.7))
@@ -345,6 +347,16 @@
 			H.losebreath = max(H.losebreath + 1, 1)
 			if(prob(3))
 				to_chat(H, "<span class='danger'>The air is thick with CO2!</span>")
+
+	// Low oxygen: damage and messages
+	if(oxygen_moles < 5)
+		for(var/mob/living/human/H in src)
+			H.losebreath = max(H.losebreath + 1, 1)
+			if(world.time - last_damage_tick > 10)
+				H.adjustOxyLoss(2)
+				last_damage_tick = world.time
+				if(prob(8))
+					to_chat(H, "<span class='danger'>You gasp for air — the oxygen is gone!</span>")
 
 	// Ventilation: if a vent is active, equalize with duct network
 	if(vent_active && vent_id)

@@ -6,7 +6,11 @@
 	var/contact_type = SUB_CONTACT_SURFACE
 	var/nationality = SUB_NATION_NEUTRAL
 	var/source_x = 0          // World-space X of the detected vessel (for torpedo targeting)
-	var/source_y = 0          // World-space Y of the detected vessel (for torpedo targeting)
+	var/source_y = 0          // World-space Y of the detected vessel
+	var/sig_low = 0           // LOFAR tonals (copied from NPC source)
+	var/sig_mid = 0
+	var/sig_high = 0
+	var/classification = "Unknown"
 
 /datum/vessel_contact/New(var/_name, var/_type, var/_nat)
 	name = _name
@@ -23,6 +27,8 @@
 	var/y_pos = 0
 	var/heading = 0
 	var/speed = 0
+	var/list/position_history = list()  // Trail of {x, y} for map display
+	var/history_interval = 5            // Record position every N ticks
 
 	// Stats loaded from types.txt
 	var/max_speed = 30
@@ -35,12 +41,6 @@
 	var/attack_speed = 25
 	var/radar_cross_section = 1.0
 	var/enemy_type_ref = null         // Reference to /datum/subcom_enemy that spawned this
-
-	// Acoustic signature (LOFAR tonals in Hz)
-	var/sig_low = 0
-	var/sig_mid = 0
-	var/sig_high = 0
-	var/classification = "Unknown"
 
 	// Weapons: list of lists, each inner list = list(name, damage, range, type, cooldown_ticks)
 	var/list/weapons = list()
@@ -198,7 +198,7 @@ var/global/list/npc_type_cache = list()
 	navigate_to(last_known_x, last_known_y)
 
 	var/dist = toroidal_distance(x_pos, y_pos, last_known_x, last_known_y)
-	if(dist < 30)
+	if(dist < 60)
 		// Reached last known position, switch to ATTACK
 		ai_state = SUB_AI_ATTACK
 		attack_cooldown = 0
@@ -210,6 +210,12 @@ var/global/list/npc_type_cache = list()
 		if(tick_counter > 30)
 			ai_state = SUB_AI_PATROL
 			generate_patrol_target()
+
+	// Fire weapons while closing in if within range
+	attack_cooldown--
+	if(attack_cooldown <= 0)
+		fire_weapons_at_player()
+		attack_cooldown = 20
 
 // ---- AI State: ATTACK ----
 
@@ -243,7 +249,7 @@ var/global/list/npc_type_cache = list()
 		attack_cooldown = 20
 
 	// If player is too far, chase them
-	if(dist > 40)
+	if(dist > 80)
 		ai_state = SUB_AI_HUNT
 		last_known_x = player.x_pos
 		last_known_y = player.y_pos
@@ -280,6 +286,12 @@ var/global/list/npc_type_cache = list()
 	x_pos = ((x_pos % SUB_MAP_SIZE) + SUB_MAP_SIZE) % SUB_MAP_SIZE
 	y_pos = ((y_pos % SUB_MAP_SIZE) + SUB_MAP_SIZE) % SUB_MAP_SIZE
 
+	// Record position history for trail display
+	if(tick_counter % history_interval == 0)
+		position_history += list(list("x" = x_pos, "y" = y_pos))
+		if(position_history.len > 20)
+			position_history.Cut(1, 2)  // Keep last 20 points
+
 // ---- Detection Checks (called by world_map_controller) ----
 
 /datum/vessel_contact/npc/proc/check_player_detection(var/datum/submarine/player)
@@ -287,6 +299,11 @@ var/global/list/npc_type_cache = list()
 		return
 
 	var/dist = toroidal_distance(x_pos, y_pos, player.x_pos, player.y_pos) * SUB_MAP_SCALE  // Convert to meters
+
+	// Radar detection: surface ships detect surfaced subs via radar (sensor_range)
+	if(contact_type == SUB_CONTACT_SURFACE && player.depth == 0 && dist <= sensor_range)
+		react_to_detection(player.x_pos, player.y_pos)
+		return
 
 	// Active sonar ping detected
 	if(player.sonar_active && player.sonar_mode == SUB_SONAR_ACTIVE && dist <= sonar_range)

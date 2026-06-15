@@ -490,7 +490,7 @@
 	if(active)
 		to_chat(user, "<span class='notice'>You activate [src]. It begins filtering the air.</span>")
 		playsound(src.loc, 'sound/machines/submarine/gas.ogg', 40, 1)
-		var/sound/S = sound('sound/machines/submarine/scrubber_hum.ogg', repeat = TRUE, wait = 0, volume = 35, channel = 772)
+		var/sound/S = sound('sound/machines/submarine/scrubber_hum.ogg', repeat = TRUE, wait = 0, volume = 15, channel = 772)
 		scrub_channel = 772
 		src << S
 	else
@@ -708,7 +708,7 @@
 
 	food_stored--
 	to_chat(user, "<span class='notice'>The machine clunks and produces a nutritional ration.</span>")
-	new /obj/item/weapon/reagent_containers/food/snacks/MRE(src.loc)
+	new /obj/item/weapon/reagent_containers/food/snacks/MRE/generic(src.loc)
 
 // --- 9. EQUIPMENT STORAGE (converted to vendor in vending.dm) ---
 

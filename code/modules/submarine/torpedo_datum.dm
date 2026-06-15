@@ -10,9 +10,13 @@
 	var/damage = SUB_TORPEDO_DAMAGE
 	var/life_left = SUB_TORPEDO_LIFE
 	var/is_homing = FALSE
+	var/max_turn_rate = 15  // Max degrees per tick the torpedo can turn
 	var/datum/vessel_contact/npc/target   // For NPC targets
 	var/datum/submarine/sub_target         // For player sub targets
 	var/launched_by_npc = FALSE           // True if an NPC fired this
+	var/uid = 0                            // Unique ID for sonar tracking
+
+var/global/next_torpedo_id = 1
 
 /datum/projectile/torpedo/New(var/_x, var/_y, var/_heading, var/_damage = SUB_TORPEDO_DAMAGE, var/_homing = FALSE)
 	x_pos = _x
@@ -20,10 +24,15 @@
 	heading = _heading
 	damage = _damage
 	is_homing = _homing
+	uid = next_torpedo_id++
 
 /datum/projectile/torpedo/proc/process_tick()
 	life_left--
 	if(life_left <= 0)
+		// Torpedo expired without hitting - announce miss to target sub crew
+		if(sub_target && !QDELETED(sub_target) && sub_target.internal_turfs.len)
+			for(var/mob/living/L in sub_target.internal_turfs)
+				to_chat(L, "<span class='warning'><b>A torpedo passes nearby without contact.</b></span>")
 		qdel(src)
 		return
 
@@ -45,7 +54,17 @@
 			var/dx = target_x - x_pos
 			var/dy = target_y - y_pos
 			if(abs(dx) > 0.01 || abs(dy) > 0.01)
-				heading = arctan(dy, dx)
+				var/desired_heading = arctan(dy, dx)
+				var/diff = desired_heading - heading
+				// Normalize to -180..180
+				while(diff > 180) diff -= 360
+				while(diff < -180) diff += 360
+				// Clamp turn rate
+				if(abs(diff) > max_turn_rate)
+					diff = diff > 0 ? max_turn_rate : -max_turn_rate
+				heading += diff
+				// Normalize heading to 0..360
+				heading = ((heading % 360) + 360) % 360
 
 	// Move
 	x_pos += cos(heading) * speed * SUB_TICK_SCALE
@@ -86,6 +105,11 @@
 /datum/projectile/torpedo/proc/detonate_player(var/datum/submarine/sub)
 	if(!sub)
 		return
+
+	// Announce torpedo impact
+	if(sub.internal_turfs.len)
+		for(var/mob/living/L in sub.internal_turfs)
+			to_chat(L, "<span class='danger'><font size='3'><b>TORPEDO IMPACT!</b></font></span>")
 
 	// Apply hull damage to physical turfs on the sub's Z-level
 	sub.torpedo_hit(damage)

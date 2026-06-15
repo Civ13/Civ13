@@ -290,7 +290,7 @@
 		total_usage += my_sub.radar_range_long ? SUB_RADAR_POWER_LONG : SUB_RADAR_POWER_SHORT
 	
 	if(my_sub.speed > 0)
-		var/prop_drain = (my_sub.speed / 30) * 15000 // kW drain for propulsion
+		var/prop_drain = (my_sub.speed / 30) ** 2 * 60000 // kW - quadratic drain
 		if(my_sub.has_nuclear_engine)
 			total_usage += prop_drain
 		else if(my_sub.depth > 0)
@@ -305,6 +305,11 @@
 	dat += "<div style='margin-top:6px;'>"
 	dat += "<div style='font-size:9px; color:#888;'>PRODUCTION</div>"
 	dat += "<div style='font-size:12px; font-weight:bold; color:#0f0;'>[round(total_production)] kW</div>"
+	if(my_sub.speed > 0 && my_sub.has_nuclear_engine)
+		var/prop_kW = (my_sub.speed / 30) ** 2 * 60000
+		var/prop_color = prop_kW > total_production * 0.7 ? "#f00" : prop_kW > total_production * 0.4 ? "#ff0" : "#0f0"
+		dat += "<div style='font-size:9px; color:#888; margin-top:4px;'>PROPULSION</div>"
+		dat += "<div style='font-size:11px; font-weight:bold; color:[prop_color];'>[round(prop_kW)] kW</div>"
 	dat += "<div style='font-size:9px; color:#888; margin-top:4px;'>USAGE</div>"
 	dat += "<div style='font-size:12px; font-weight:bold; color:[total_usage > total_production ? "#f00" : "#0f0"];'>[round(total_usage)] kW</div>"
 	dat += "<div style='font-size:9px; color:#888; margin-top:4px;'>BALANCE</div>"
@@ -627,6 +632,16 @@
 	dat += "</table>"
 	dat += "</div>"
 
+	// === DAMAGE CONTROL ACTIONS ===
+	dat += "<div class='panel' style='padding:8px; margin-top:8px;'>"
+	dat += "<div class='label'>DAMAGE CONTROL</div>"
+	dat += "<div class='flex-row' style='justify-content:center; gap:6px; margin-top:6px;'>"
+	dat += "<a href='?src=\ref[src];drain_all=1' class='btn btn-red' style='min-width:140px;'>EMERGENCY DRAIN</a>"
+	dat += "<a href='?src=\ref[src];inject_o2=1' class='btn btn-blue' style='min-width:140px;'>O<sub>2</sub> INJECT ALL</a>"
+	dat += "<a href='?src=\ref[src];seal_all=1' class='btn btn-yellow' style='min-width:140px;'>SEAL BULKHEADS</a>"
+	dat += "</div>"
+	dat += "</div>"
+
 	return dat
 
 /obj/structure/machinery/sub_control/misc_systems/Topic(href, href_list)
@@ -646,6 +661,28 @@
 		if(fire_supp_active[C])
 			visible_message("<span class='notice'>Hissing sounds heard from [C] fire suppression vents.</span>")
 			playsound(src, 'sound/machines/submarine/gas.ogg', 50, 1)
+
+	if(href_list["drain_all"])
+		if(global.subcom_flooding)
+			var/total_drained = 0
+			for(var/cid in global.subcom_flooding.compartment_turfs)
+				total_drained += global.subcom_flooding.emergency_drain(cid, 15)
+			to_chat(usr, "<span class='notice'>Emergency drain activated. [round(total_drained)]cm of water removed.</span>")
+
+	if(href_list["inject_o2"])
+		if(global.subcom_flooding)
+			for(var/cid in global.subcom_flooding.compartment_turfs)
+				global.subcom_flooding.inject_oxygen(cid, 5)
+			to_chat(usr, "<span class='notice'>Oxygen injection activated across all compartments.</span>")
+
+	if(href_list["seal_all"])
+		var/sealed = 0
+		for(var/turf/wall/sub_bulkhead/B in world)
+			if(QDELETED(B)) continue
+			if(!B.watertight && B.health > 0)
+				B.watertight = TRUE
+				sealed++
+		to_chat(usr, "<span class='notice'>[sealed] bulkhead(s) sealed.</span>")
 
 	interact(usr)
 
@@ -742,7 +779,7 @@
 				contact_color = "#0f0"
 			else if(C.nationality == SUB_NATION_HOSTILE)
 				contact_color = "#f00"
-			var/is_tagged = (C in my_sub.tagged_contacts)
+			var/is_tagged = (C.name in my_sub.tagged_contacts)
 			var/blip_size = is_tagged ? 8 : 5
 			var/blip_offset = is_tagged ? 4 : 2.5
 			var/label_px = px + 6
@@ -778,13 +815,13 @@
 			else if(C.contact_type == SUB_CONTACT_SUBMERGED)
 				type_color = "#0f0"
 				type_text = "SUBMERGED"
-			var/is_tagged = (C in my_sub.tagged_contacts)
+			var/is_tagged = (C.name in my_sub.tagged_contacts)
 			dat += "<tr>"
 			dat += "<td style='font-weight:bold; color:[is_tagged ? "#0ff" : "#fff"];'>[C.name]</td>"
 			dat += "<td>[round(C.range)]m</td>"
 			dat += "<td>[round(C.bearing)]&deg;</td>"
 			dat += "<td style='color:[type_color];'>[type_text]</td>"
-			dat += "<td><a href='?src=\ref[src];tag_contact=\ref[C];tag_contact_name=[C.name]' style='font-size:8px; color:[is_tagged ? "#0ff" : "#666"];'>[is_tagged ? "TAGGED" : "TAG"]</a></td>"
+			dat += "<td><a href='?src=\ref[src];tag_contact=[C.name]' style='font-size:8px; color:[is_tagged ? "#0ff" : "#666"];'>[is_tagged ? "TAGGED" : "TAG"]</a></td>"
 			dat += "</tr>"
 		dat += "</table>"
 	else
@@ -803,13 +840,16 @@
 			my_sub.radar_active = !my_sub.radar_active
 			if(!my_sub.radar_active)
 				my_sub.detected_targets.Cut()
-				if(radar_channel)
-					src << sound(null, channel = radar_channel)
-					radar_channel = 0
+				if(my_sub.radar_ambient_channel)
+					for(var/turf/T in my_sub.internal_turfs)
+						for(var/mob/living/M in T)
+							M << sound(null, channel = my_sub.radar_ambient_channel)
+					my_sub.radar_ambient_channel = 0
 			else
-				var/sound/S = sound('sound/machines/submarine/dgen.ogg', repeat = TRUE, wait = 0, volume = 30, channel = 771)
-				radar_channel = 771
-				src << S
+				my_sub.radar_ambient_channel = 771
+				for(var/turf/T in my_sub.internal_turfs)
+					for(var/mob/living/M in T)
+						M << sound('sound/machines/submarine/dgen.ogg', repeat = TRUE, wait = 0, volume = 15, channel = 771)
 		else
 			to_chat(usr, "<span class='warning'>Cannot activate radar while submerged!</span>")
 
@@ -820,19 +860,12 @@
 			to_chat(usr, "<span class='notice'>Activate radar first to change range.</span>")
 
 	if(href_list["tag_contact"])
-		var/datum/vessel_contact/target = locate(href_list["tag_contact"]) in my_sub.detected_targets
-		if(!target)
-			var/tag_name = href_list["tag_contact_name"]
-			if(tag_name)
-				for(var/datum/vessel_contact/C in my_sub.detected_targets)
-					if(C.name == tag_name)
-						target = C
-						break
-		if(target)
-			if(target in my_sub.tagged_contacts)
-				my_sub.tagged_contacts -= target
+		var/tag_name = href_list["tag_contact"]
+		if(tag_name)
+			if(tag_name in my_sub.tagged_contacts)
+				my_sub.tagged_contacts -= tag_name
 			else
-				my_sub.tagged_contacts += target
+				my_sub.tagged_contacts += tag_name
 
 	interact(usr)
 
@@ -883,7 +916,7 @@
 		dat += "<div style='position:absolute; left:0; right:0; top:65%; height:1px; background:rgba(0,160,0,0.4);'></div>"
 		// Noise waveform using SVG with a fixed viewBox coordinate space (percentages are invalid in SVG points)
 		// viewBox "0 0 1000 100" means x=0-1000 maps to full width, y=0-100 maps to full height
-		dat += "<svg style='position:absolute; left:0; top:0; width:100%; height:100%;' viewBox='0 0 1000 100' preserveAspectRatio='none'>"
+		dat += "<svg style='position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none;' viewBox='0 0 1000 100' preserveAspectRatio='none'>"
 		var/noise_points = ""
 		var/num_pts = 80
 		for(var/i = 0; i <= num_pts; i++)
@@ -901,15 +934,19 @@
 		dat += "<polyline points='[noise_points]' fill='none' stroke='rgba(0,200,0,0.7)' stroke-width='1.5'/>"
 		// Draw selectable contact hitboxes and labels on top of the polyline
 		for(var/datum/vessel_contact/C in my_sub.detected_targets)
-			if(C.contact_type == SUB_CONTACT_SUBMERGED || C.contact_type == SUB_CONTACT_SURFACE)
+			if(C.contact_type == SUB_CONTACT_SUBMERGED || C.contact_type == SUB_CONTACT_SURFACE || C.contact_type == SUB_CONTACT_TORPEDO)
 				var/blip_x = C.bearing >= 180 ? ((C.bearing - 180) / 180) * 50 : 50 + (C.bearing / 180) * 50
 				var/is_selected = (C == selected_contact)
-				var/spike_color = is_selected ? "#0ff" : C.contact_type == SUB_CONTACT_SUBMERGED ? "#0f0" : "#0af"
-				dat += "<a href='?src=\ref[src];select_contact=\ref[C]' style='position:absolute; left:[blip_x]%; top:10%; bottom:10%; width:10px; display:block; transform:translateX(-50%);'></a>"
+				var/spike_color = C.contact_type == SUB_CONTACT_TORPEDO ? "#f44" : "#0ff"
 				if(is_selected)
 					var/spike_h = max(8, min(40, (C.noise_signature / 100.0) * 40))
-					dat += "<div style='position:absolute; left:[blip_x]%; bottom:[35 + spike_h + 2]%; transform:translateX(-50%); font-size:7px; color:#0ff; white-space:nowrap;'>[C.name]</div>"
+					dat += "<div style='position:absolute; left:[blip_x]%; bottom:[35 + spike_h + 2]%; transform:translateX(-50%); font-size:7px; color:[spike_color]; white-space:nowrap; z-index:2;'>[C.name]</div>"
 		dat += "</svg>"
+		// Clickable contact hitboxes (outside SVG for proper click handling)
+		for(var/datum/vessel_contact/C in my_sub.detected_targets)
+			if(C.contact_type == SUB_CONTACT_SUBMERGED || C.contact_type == SUB_CONTACT_SURFACE || C.contact_type == SUB_CONTACT_TORPEDO)
+				var/blip_x = C.bearing >= 180 ? ((C.bearing - 180) / 180) * 50 : 50 + (C.bearing / 180) * 50
+				dat += "<a href='?src=\ref[src];select_contact=\ref[C];select_contact_name=[C.name]' style='position:absolute; left:[blip_x]%; top:0; bottom:0; width:14px; display:block; transform:translateX(-50%); z-index:3; cursor:pointer;'></a>"
 		// Sweep position marker: downward-pointing triangle
 		dat += "<div style='position:absolute; left:[sweep_x]%; top:4px; transform:translateX(-50%); width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:8px solid #0f0;'></div>"
 		// Bearing labels at bottom
@@ -937,20 +974,12 @@
 	dat += "<div class='label'>LOFAR SPECTRAL</div>"
 	if(selected_contact && my_sub.sonar_active)
 		var/datum/vessel_contact/SC = selected_contact
-		// NPC contacts have sig_low/sig_mid/sig_high directly on them
-		var/has_tonals = FALSE
-		var/sig_low_val = 0
-		var/sig_mid_val = 0
-		var/sig_high_val = 0
-		var/classification_val = "Unknown"
-		if(istype(SC, /datum/vessel_contact/npc))
-			var/datum/vessel_contact/npc/SCN = SC
-			if(SCN.sig_low > 0)
-				has_tonals = TRUE
-				sig_low_val = SCN.sig_low
-				sig_mid_val = SCN.sig_mid
-				sig_high_val = SCN.sig_high
-				classification_val = SCN.classification
+		// Check for LOFAR tonals on the contact
+		var/has_tonals = SC.sig_low > 0 || SC.sig_mid > 0 || SC.sig_high > 0
+		var/sig_low_val = SC.sig_low
+		var/sig_mid_val = SC.sig_mid
+		var/sig_high_val = SC.sig_high
+		var/classification_val = SC.classification
 		if(has_tonals)
 			dat += "<div style='margin-top:6px; background:#001a00; border:1px solid #0a0; padding:6px;'>"
 			dat += "<div style='font-size:9px; color:#0a0; margin-bottom:4px;'>TARGET: [SC.name] ([SC.range]m [round(SC.bearing)]&deg;)</div>"
@@ -1008,9 +1037,9 @@
 		for(var/datum/vessel_contact/C in my_sub.detected_targets)
 			if(C.contact_type == SUB_CONTACT_AIR) continue  // Sonar doesn't display air contacts
 			var/is_selected = (C == selected_contact)
-			var/is_tagged = (C in my_sub.tagged_contacts)
+			var/is_tagged = (C.name in my_sub.tagged_contacts)
 			var/row_bg = is_selected ? "#003300" : "transparent"
-			var/type_color = C.contact_type == SUB_CONTACT_SUBMERGED ? "#0f0" : "#0af"
+			var/type_color = C.contact_type == SUB_CONTACT_SUBMERGED ? "#0f0" : C.contact_type == SUB_CONTACT_TORPEDO ? "#f44" : "#0af"
 			dat += "<tr style='background:[row_bg];'>"
 			dat += "<td style='padding:3px; cursor:pointer;' onclick='window.location=\"?src=\ref[src];select_contact=\ref[C];select_contact_name=[C.name]\";'>"
 			dat += "<span style='font-weight:bold; color:[is_tagged ? "#0ff" : "#0f0"];'>[C.name]</span>"
@@ -1019,7 +1048,7 @@
 			dat += "<td style='padding:3px; color:#888;'>[round(C.bearing)]&deg;</td>"
 			dat += "<td style='padding:3px; color:[type_color];'>[C.contact_type]</td>"
 			dat += "<td style='padding:3px;'>"
-			dat += "<a href='?src=\ref[src];tag_contact=\ref[C];tag_contact_name=[C.name]' style='font-size:8px; color:[is_tagged ? "#0ff" : "#666"];'>[is_tagged ? "TAGGED" : "TAG"]</a>"
+			dat += "<a href='?src=\ref[src];tag_contact=[C.name]' style='font-size:8px; color:[is_tagged ? "#0ff" : "#666"];'>[is_tagged ? "TAGGED" : "TAG"]</a>"
 			dat += "</td>"
 			dat += "</tr>"
 		dat += "</table>"
@@ -1040,14 +1069,17 @@
 		if(!my_sub.sonar_active)
 			my_sub.detected_targets.Cut()
 			selected_contact = null
-			if(sonar_channel)
-				src << sound(null, channel = sonar_channel)
-				sonar_channel = 0
+			if(my_sub.sonar_ambient_channel)
+				for(var/turf/T in my_sub.internal_turfs)
+					for(var/mob/living/M in T)
+						M << sound(null, channel = my_sub.sonar_ambient_channel)
+				my_sub.sonar_ambient_channel = 0
 		else
 			playsound(src, 'sound/machines/submarine/sonar_ping.ogg', 50, 1)
-			var/sound/S = sound('sound/machines/submarine/sonar_passive.ogg', repeat = TRUE, wait = 0, volume = 40, channel = 770)
-			sonar_channel = 770
-			src << S
+			my_sub.sonar_ambient_channel = 770
+			for(var/turf/T in my_sub.internal_turfs)
+				for(var/mob/living/M in T)
+					M << sound('sound/machines/submarine/sonar_passive.ogg', repeat = TRUE, wait = 0, volume = 20, channel = 770)
 
 	if(href_list["toggle_mode"])
 		if(my_sub.sonar_active)
@@ -1055,15 +1087,18 @@
 			if(my_sub.sonar_mode == SUB_SONAR_ACTIVE)
 				my_sub.noise_level = 100
 				playsound(src, 'sound/machines/submarine/sonar_ping2.ogg', 60, 1)
-				if(sonar_channel)
-					src << sound(null, channel = sonar_channel)
-					sonar_channel = 0
+				if(my_sub.sonar_ambient_channel)
+					for(var/turf/T in my_sub.internal_turfs)
+						for(var/mob/living/M in T)
+							M << sound(null, channel = my_sub.sonar_ambient_channel)
+					my_sub.sonar_ambient_channel = 0
 			else
 				my_sub.noise_level = my_sub.speed * 5
-				if(!sonar_channel)
-					var/sound/S = sound('sound/machines/submarine/sonar_passive.ogg', repeat = TRUE, wait = 0, volume = 40, channel = 770)
-					sonar_channel = 770
-					src << S
+				if(!my_sub.sonar_ambient_channel)
+					my_sub.sonar_ambient_channel = 770
+					for(var/turf/T in my_sub.internal_turfs)
+						for(var/mob/living/M in T)
+							M << sound('sound/machines/submarine/sonar_passive.ogg', repeat = TRUE, wait = 0, volume = 20, channel = 770)
 		else
 			to_chat(usr, "<span class='notice'>Activate sonar first to change mode.</span>")
 
@@ -1084,19 +1119,12 @@
 				selected_contact = null
 
 	if(href_list["tag_contact"])
-		var/datum/vessel_contact/target = locate(href_list["tag_contact"]) in my_sub.detected_targets
-		if(!target)
-			var/tag_name = href_list["tag_contact_name"]
-			if(tag_name)
-				for(var/datum/vessel_contact/C in my_sub.detected_targets)
-					if(C.name == tag_name)
-						target = C
-						break
-		if(target)
-			if(target in my_sub.tagged_contacts)
-				my_sub.tagged_contacts -= target
+		var/tag_name = href_list["tag_contact"]
+		if(tag_name)
+			if(tag_name in my_sub.tagged_contacts)
+				my_sub.tagged_contacts -= tag_name
 			else
-				my_sub.tagged_contacts += target
+				my_sub.tagged_contacts += tag_name
 
 	interact(usr)
 
@@ -1472,13 +1500,6 @@
 		dat += "</table>"
 		dat += "</div>"
 
-	// === ACTION BUTTONS ===
-	dat += "<div class='flex-row' style='justify-content:center; gap:6px; margin-top:6px;'>"
-	dat += "<a href='?src=\ref[src];drain_all=1' class='btn btn-red' style='min-width:140px;'>EMERGENCY DRAIN</a>"
-	dat += "<a href='?src=\ref[src];inject_o2=1' class='btn btn-blue' style='min-width:140px;'>O<sub>2</sub> INJECT ALL</a>"
-	dat += "<a href='?src=\ref[src];seal_all=1' class='btn btn-yellow' style='min-width:140px;'>SEAL BULKHEADS</a>"
-	dat += "</div>"
-
 	return dat
 
 /obj/structure/machinery/sub_control/compartment_panel/Topic(href, href_list)
@@ -1502,28 +1523,6 @@
 						T.vent_id = cid
 						global.subcom_flooding.vent_networks[cid] += T
 					to_chat(usr, "<span class='notice'>Ventilation restored for [cid].</span>")
-
-	if(href_list["drain_all"])
-		if(global.subcom_flooding)
-			var/total_drained = 0
-			for(var/cid in global.subcom_flooding.compartment_turfs)
-				total_drained += global.subcom_flooding.emergency_drain(cid, 15)
-			to_chat(usr, "<span class='notice'>Emergency drain activated. [round(total_drained)]cm of water removed.</span>")
-
-	if(href_list["inject_o2"])
-		if(global.subcom_flooding)
-			for(var/cid in global.subcom_flooding.compartment_turfs)
-				global.subcom_flooding.inject_oxygen(cid, 5)
-			to_chat(usr, "<span class='notice'>Oxygen injection activated across all compartments.</span>")
-
-	if(href_list["seal_all"])
-		var/sealed = 0
-		for(var/turf/wall/sub_bulkhead/B in world)
-			if(QDELETED(B)) continue
-			if(!B.watertight && B.health > 0)
-				B.watertight = TRUE
-				sealed++
-		to_chat(usr, "<span class='notice'>[sealed] bulkhead(s) sealed.</span>")
 
 	interact(usr)
 
@@ -1580,15 +1579,38 @@
 		dat += "<div style='position:absolute; left:0; right:0; top:[line_pos]px; height:1px; background:#0a200a;'></div>"
 		dat += "<div style='position:absolute; top:0; bottom:0; left:[line_pos]px; width:1px; background:#0a200a;'></div>"
 
+	// Draw player sub trail
+	if(my_sub.position_history.len > 1)
+		var/trail_points = ""
+		for(var/idx = 1, idx <= my_sub.position_history.len, idx++)
+			var/list/pt = my_sub.position_history[idx]
+			var/rel_hx = (pt["x"] - my_sub.x_pos) * SUB_MAP_SCALE
+			var/rel_hy = (pt["y"] - my_sub.y_pos) * SUB_MAP_SCALE
+			var/h_cell_x = map_size + round(rel_hx / map_range * map_size)
+			var/h_cell_y = map_size - round(rel_hy / map_range * map_size)
+			h_cell_x = max(0, min(grid_dim - 1, h_cell_x))
+			h_cell_y = max(0, min(grid_dim - 1, h_cell_y))
+			var/h_pix_x = h_cell_x * cell_px + cell_px / 2
+			var/h_pix_y = h_cell_y * cell_px + cell_px / 2
+			trail_points += "[h_pix_x],[h_pix_y] "
+		dat += "<svg style='position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:1;'>"
+		dat += "<polyline points='[trail_points]' fill='none' stroke='#0f0' stroke-width='1.5' opacity='0.35'/>"
+		dat += "</svg>"
+
 	// Draw tagged contacts from sonar/radar
-	for(var/datum/vessel_contact/C in my_sub.tagged_contacts)
-		if(QDELETED(C)) continue
+	for(var/tname in my_sub.tagged_contacts)
+		// Find the live contact by name
+		var/datum/vessel_contact/C = null
+		for(var/datum/vessel_contact/DC in my_sub.detected_targets)
+			if(DC.name == tname)
+				C = DC
+				break
+		if(!C || QDELETED(C)) continue
 		// Calculate position on grid using bearing and range
-		var/rel_x = C.range * sin(C.bearing)  // sin gives east-west (bearing 90 = east)
-		var/rel_y = C.range * cos(C.bearing)  // cos gives north-south (bearing 0 = north)
+		var/rel_x = C.range * sin(C.bearing)
+		var/rel_y = C.range * cos(C.bearing)
 		var/cell_x = map_size + round(rel_x / map_range * map_size)
-		var/cell_y = map_size - round(rel_y / map_range * map_size) // Y inverted (screen Y goes down)
-		// Clamp to grid
+		var/cell_y = map_size - round(rel_y / map_range * map_size)
 		cell_x = max(0, min(grid_dim - 1, cell_x))
 		cell_y = max(0, min(grid_dim - 1, cell_y))
 		var/pix_x = cell_x * cell_px + cell_px / 2
@@ -1600,6 +1622,27 @@
 			contact_color = "#0af"
 		else if(C.nationality == SUB_NATION_HOSTILE)
 			contact_color = "#f00"
+		// Draw trail from NPC position history
+		if(istype(C, /datum/vessel_contact/npc))
+			var/datum/vessel_contact/npc/NC = C
+			if(NC.position_history.len > 1)
+				var/trail_points = ""
+				for(var/idx = 1, idx <= NC.position_history.len, idx++)
+					var/list/pt = NC.position_history[idx]
+					var/rel_hx = (pt["x"] - my_sub.x_pos) * SUB_MAP_SCALE
+					var/rel_hy = (pt["y"] - my_sub.y_pos) * SUB_MAP_SCALE
+					var/h_cell_x = map_size + round(rel_hx / map_range * map_size)
+					var/h_cell_y = map_size - round(rel_hy / map_range * map_size)
+					h_cell_x = max(0, min(grid_dim - 1, h_cell_x))
+					h_cell_y = max(0, min(grid_dim - 1, h_cell_y))
+					var/h_pix_x = h_cell_x * cell_px + cell_px / 2
+					var/h_pix_y = h_cell_y * cell_px + cell_px / 2
+					trail_points += "[h_pix_x],[h_pix_y] "
+				// Also add current position as the last point
+				trail_points += "[pix_x],[pix_y]"
+				dat += "<svg style='position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:2;'>"
+				dat += "<polyline points='[trail_points]' fill='none' stroke='[contact_color]' stroke-width='1' opacity='0.4'/>"
+				dat += "</svg>"
 		// Contact marker
 		dat += "<div style='position:absolute; left:[pix_x - 4]px; top:[pix_y - 4]px; width:8px; height:8px; background:[contact_color]; border-radius:50%; box-shadow:0 0 6px [contact_color]; z-index:3;'></div>"
 		// Label
@@ -1607,19 +1650,26 @@
 		// Range/bearing label below
 		dat += "<div style='position:absolute; left:[pix_x + 6]px; top:[pix_y + 3]px; font-size:6px; color:#888; white-space:nowrap; z-index:3;'>[round(C.range / 1000)]km [round(C.bearing)]&deg;</div>"
 
-	// Draw detected but untagged contacts (faint blips)
-	for(var/datum/vessel_contact/C in my_sub.detected_targets)
-		if(C in my_sub.tagged_contacts) continue
-		var/rel_x = C.range * sin(C.bearing)
-		var/rel_y = C.range * cos(C.bearing)
-		var/cell_x = map_size + round(rel_x / map_range * map_size)
-		var/cell_y = map_size - round(rel_y / map_range * map_size)
-		cell_x = max(0, min(grid_dim - 1, cell_x))
-		cell_y = max(0, min(grid_dim - 1, cell_y))
-		var/pix_x = cell_x * cell_px + cell_px / 2
-		var/pix_y = cell_y * cell_px + cell_px / 2
-		var/blip_color = C.contact_type == SUB_CONTACT_AIR ? "#840" : C.contact_type == SUB_CONTACT_SURFACE ? "#048" : "#080"
-		dat += "<div style='position:absolute; left:[pix_x - 2]px; top:[pix_y - 2]px; width:4px; height:4px; background:[blip_color]; border-radius:50%; opacity:0.5; z-index:2;'></div>"
+	// Draw active torpedoes
+	if(global.subcom_map && global.subcom_map.active_torpedoes.len)
+		for(var/datum/projectile/torpedo/T in global.subcom_map.active_torpedoes)
+			if(QDELETED(T)) continue
+			// Convert torpedo world coords to grid position relative to player sub
+			var/rel_tx = (T.x_pos - my_sub.x_pos) * SUB_MAP_SCALE
+			var/rel_ty = (T.y_pos - my_sub.y_pos) * SUB_MAP_SCALE
+			var/t_cell_x = map_size + round(rel_tx / map_range * map_size)
+			var/t_cell_y = map_size - round(rel_ty / map_range * map_size)
+			t_cell_x = max(0, min(grid_dim - 1, t_cell_x))
+			t_cell_y = max(0, min(grid_dim - 1, t_cell_y))
+			var/t_pix_x = t_cell_x * cell_px + cell_px / 2
+			var/t_pix_y = t_cell_y * cell_px + cell_px / 2
+			// Torpedo marker (small triangle pointing in travel direction)
+			var/trail_len = 6
+			var/trail_x = trail_len * sin(T.heading)
+			var/trail_y = -trail_len * cos(T.heading)
+			var/torpedo_color = T.launched_by_npc ? "#f44" : "#ff0"
+			dat += "<div style='position:absolute; left:[t_pix_x - 2]px; top:[t_pix_y - 2]px; width:4px; height:4px; background:[torpedo_color]; border-radius:50%; box-shadow:0 0 4px [torpedo_color]; z-index:4;'></div>"
+			dat += "<div style='position:absolute; left:[t_pix_x + trail_x - 1]px; top:[t_pix_y + trail_y - 1]px; width:2px; height:2px; background:[torpedo_color]; opacity:0.5; z-index:4;'></div>"
 
 	// Player sub (center) with heading indicator
 	var/center_px = map_size * cell_px + cell_px / 2
@@ -1654,6 +1704,8 @@
 	dat += "<div><span style='display:inline-block; width:6px; height:6px; background:#0af; border-radius:50%; vertical-align:middle;'></span> Surface</div>"
 	dat += "<div><span style='display:inline-block; width:6px; height:6px; background:#f80; border-radius:50%; vertical-align:middle;'></span> Air</div>"
 	dat += "<div><span style='display:inline-block; width:4px; height:4px; background:#080; border-radius:50%; vertical-align:middle; opacity:0.5;'></span> Untagged</div>"
+	dat += "<div><span style='display:inline-block; width:4px; height:4px; background:#ff0; border-radius:50%; vertical-align:middle;'></span> Your Torpedo</div>"
+	dat += "<div><span style='display:inline-block; width:4px; height:4px; background:#f44; border-radius:50%; vertical-align:middle;'></span> Enemy Torpedo</div>"
 	dat += "</div>"
 	dat += "</div>"
 

@@ -526,6 +526,11 @@ var/list/material/name_to_material
 	stack_type = /obj/item/stack/material/steel
 	resilience = 1.5
 
+/material/steel/sub
+	name = "submarine hull"
+	icon_base = "sub"
+	icon_colour = null
+
 /material/glass
 	name = "glass"
 	icon_colour = "#00E1FF"

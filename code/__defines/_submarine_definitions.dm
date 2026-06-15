@@ -5,6 +5,7 @@
 #define SUB_CONTACT_SURFACE   "Surface"
 #define SUB_CONTACT_SUBMERGED "Submerged"
 #define SUB_CONTACT_AIR       "Air"
+#define SUB_CONTACT_TORPEDO   "Torpedo"
 
 #define SUB_NATION_FRIENDLY "Friendly"
 #define SUB_NATION_NEUTRAL  "Neutral"
@@ -43,7 +44,7 @@
 #define SUB_AI_ATTACK  3
 
 // Torpedo Constants
-#define SUB_TORPEDO_SPEED     40     // Knots
+#define SUB_TORPEDO_SPEED     25     // Knots
 #define SUB_TORPEDO_LIFE      800    // Max range in virtual units
 #define SUB_TORPEDO_DETONATE  0.15   // Detonation distance threshold
 #define SUB_TORPEDO_DAMAGE    250    // Base hull damage on hit

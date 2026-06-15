@@ -82,6 +82,8 @@ var/global/list/all_submarines = list()
 	var/target_speed = 0.0
 	var/ballast = 0.0 // Tons
 	var/steering_efficiency = 1.0 // Multiplier for turn rate based on stern plane health
+	var/list/position_history = list()  // Trail of {x, y} for map display
+	var/history_interval = 5            // Record position every N ticks
 
 	// Power & Endurance
 	var/battery_current = 3000.0
@@ -104,6 +106,8 @@ var/global/list/all_submarines = list()
 	var/list/r_scrammed = list(FALSE, FALSE)
 	var/list/r_melted = list(FALSE, FALSE)
 	var/reactor_hum_channel = 0
+	var/sonar_ambient_channel = 0
+	var/radar_ambient_channel = 0
 
 	// Weapons & Sensors
 	var/master_arm = FALSE
@@ -198,7 +202,7 @@ var/global/list/all_submarines = list()
 				reactor_hum_channel = 773
 				for(var/turf/T in internal_turfs)
 					for(var/mob/living/M in T)
-						M << sound('sound/machines/submarine/engine_nuclear_hum.ogg', repeat = TRUE, wait = 0, volume = 25, channel = 773)
+						M << sound('sound/machines/submarine/engine_nuclear_hum.ogg', repeat = TRUE, wait = 0, volume = 12, channel = 773)
 		else
 			// Nuclear sub with reactors offline: fall back to battery
 			current_max_speed = SUB_MAX_SPEED_ELECTRIC
@@ -216,7 +220,7 @@ var/global/list/all_submarines = list()
 				reactor_hum_channel = 772
 				for(var/turf/T in internal_turfs)
 					for(var/mob/living/M in T)
-						M << sound('sound/machines/submarine/dgen.ogg', repeat = TRUE, wait = 0, volume = 25, channel = 772)
+						M << sound('sound/machines/submarine/dgen.ogg', repeat = TRUE, wait = 0, volume = 12, channel = 772)
 		else
 			// Submerged or no diesel power: battery only
 			current_max_speed = SUB_MAX_SPEED_ELECTRIC
@@ -282,6 +286,12 @@ var/global/list/all_submarines = list()
 	x_pos = ((x_pos % SUB_MAP_SIZE) + SUB_MAP_SIZE) % SUB_MAP_SIZE
 	y_pos = ((y_pos % SUB_MAP_SIZE) + SUB_MAP_SIZE) % SUB_MAP_SIZE
 
+	// Record position history for trail display
+	if(tick_counter % history_interval == 0)
+		position_history += list(list("x" = x_pos, "y" = y_pos))
+		if(position_history.len > 20)
+			position_history.Cut(1, 2)  // Keep last 20 points
+
 	// 3. Power Consumption & Electrolysis
 	var/total_drain = 5.0 // Baseline kW for lights/electronics (e.g., 5 kW)
 
@@ -291,7 +301,8 @@ var/global/list/all_submarines = list()
 		total_drain += radar_range_long ? SUB_RADAR_POWER_LONG : SUB_RADAR_POWER_SHORT
 	
 	if(speed > 0)
-		var/prop_drain = (speed / 30) * 15000 // kW drain for propulsion
+		// Quadratic drain: low speeds are efficient, high speeds strain the reactors
+		var/prop_drain = (speed / 30) ** 2 * 60000 // kW - max speed costs 60 MW
 		if(has_nuclear_engine)
 			total_drain += prop_drain
 		else if(depth > 0)
@@ -337,14 +348,15 @@ var/global/list/all_submarines = list()
 		detected_targets.Cut()
 		return
 
-	detected_targets.Cut()
-	
 	var/s_range = (sonar_mode == SUB_SONAR_ACTIVE) ? SUB_SONAR_RANGE_ACTIVE : SUB_SONAR_RANGE_PASSIVE
 	var/r_range = radar_range_long ? SUB_RADAR_RANGE_LONG : SUB_RADAR_RANGE_SHORT
 
 	if(sonar_active)
 		// Rotate bearing sweep (15 degrees per sweep update)
 		bearing_sweep = (bearing_sweep + 15) % 360
+
+	// Track which contact names are still detected this tick
+	var/list/detected_names = list()
 
 	// Detect other player submarines
 	for(var/datum/submarine/other_sub in all_submarines)
@@ -376,13 +388,24 @@ var/global/list/all_submarines = list()
 			if(bearing_deg < 0)
 				bearing_deg += 360
 
-			var/datum/vessel_contact/C = new(other_sub.vessel_name, c_type, SUB_NATION_NEUTRAL)
-			C.range = dist
-			C.bearing = (bearing_deg + 360) % 360
-			C.noise_signature = other_sub.speed * 5 // Faster speed = higher noise
-			C.source_x = other_sub.x_pos
-			C.source_y = other_sub.y_pos
-			detected_targets += C
+			detected_names += other_sub.vessel_name
+			// Update existing contact in-place or create new
+			var/datum/vessel_contact/C = find_existing_contact(other_sub.vessel_name)
+			if(C)
+				C.range = dist
+				C.bearing = (bearing_deg + 360) % 360
+				C.noise_signature = other_sub.speed * 5
+				C.contact_type = c_type
+				C.source_x = other_sub.x_pos
+				C.source_y = other_sub.y_pos
+			else
+				C = new(other_sub.vessel_name, c_type, SUB_NATION_NEUTRAL)
+				C.range = dist
+				C.bearing = (bearing_deg + 360) % 360
+				C.noise_signature = other_sub.speed * 5
+				C.source_x = other_sub.x_pos
+				C.source_y = other_sub.y_pos
+				detected_targets += C
 
 	// Detect NPC vessels via sensors
 	if(global.subcom_map)
@@ -422,33 +445,99 @@ var/global/list/all_submarines = list()
 				if(bearing_deg < 0)
 					bearing_deg += 360
 
-				var/datum/vessel_contact/C = new(NPC.name, NPC.contact_type, NPC.nationality)
-				C.range = dist
-				C.bearing = (bearing_deg + 360) % 360
-				C.noise_signature = NPC.speed * 5
-				C.source_x = NPC.x_pos
-				C.source_y = NPC.y_pos
-				detected_targets += C
+				detected_names += NPC.name
+				// Update existing contact in-place or create new
+				var/datum/vessel_contact/C = find_existing_contact(NPC.name)
+				if(C)
+					C.range = dist
+					C.bearing = (bearing_deg + 360) % 360
+					C.noise_signature = NPC.speed * 5
+					C.contact_type = NPC.contact_type
+					C.nationality = NPC.nationality
+					C.source_x = NPC.x_pos
+					C.source_y = NPC.y_pos
+					C.sig_low = NPC.sig_low
+					C.sig_mid = NPC.sig_mid
+					C.sig_high = NPC.sig_high
+					C.classification = NPC.classification
+				else
+					C = new(NPC.name, NPC.contact_type, NPC.nationality)
+					C.range = dist
+					C.bearing = (bearing_deg + 360) % 360
+					C.noise_signature = NPC.speed * 5
+					C.source_x = NPC.x_pos
+					C.source_y = NPC.y_pos
+					C.sig_low = NPC.sig_low
+					C.sig_mid = NPC.sig_mid
+					C.sig_high = NPC.sig_high
+					C.classification = NPC.classification
+					detected_targets += C
 
-	// Sync tagged contacts with fresh detection data (range/bearing update each tick)
-	// Only sync if we have active detections — preserve tags when sensors are off
-	if(detected_targets.len)
-		var/list/stale_tags = list()
-		for(var/datum/vessel_contact/tagged in tagged_contacts)
-			if(QDELETED(tagged))
-				stale_tags += tagged
-				continue
-			var/found = FALSE
-			for(var/datum/vessel_contact/C in detected_targets)
-				if(C.name == tagged.name)
-					tagged.range = C.range
-					tagged.bearing = C.bearing
-					tagged.noise_signature = C.noise_signature
-					found = TRUE
-					break
-			if(!found)
-				stale_tags += tagged
-		tagged_contacts -= stale_tags
+	// Detect incoming torpedoes (sonar only)
+	if(sonar_active && global.subcom_map)
+		for(var/datum/projectile/torpedo/T in global.subcom_map.active_torpedoes)
+			if(QDELETED(T)) continue
+			// Don't detect our own torpedoes
+			if(!T.launched_by_npc) continue
+
+			var/raw_dist = toroidal_distance(T.x_pos, T.y_pos, x_pos, y_pos)
+			var/dist = raw_dist * SUB_MAP_SCALE
+			if(dist <= s_range)
+				var/dx = T.x_pos - x_pos
+				var/dy = T.y_pos - y_pos
+				if(dx > SUB_MAP_SIZE / 2) dx -= SUB_MAP_SIZE
+				else if(dx < -SUB_MAP_SIZE / 2) dx += SUB_MAP_SIZE
+				if(dy > SUB_MAP_SIZE / 2) dy -= SUB_MAP_SIZE
+				else if(dy < -SUB_MAP_SIZE / 2) dy += SUB_MAP_SIZE
+				var/bearing_deg = arctan(dy, dx)
+				if(bearing_deg < 0)
+					bearing_deg += 360
+
+				// Stable contact name using torpedo uid
+				var/contact_name = "Torpedo [T.uid]"
+				detected_names += contact_name
+				var/datum/vessel_contact/C = find_existing_contact(contact_name)
+				if(C)
+					C.range = dist
+					C.bearing = (bearing_deg + 360) % 360
+					C.noise_signature = 80
+					C.contact_type = SUB_CONTACT_TORPEDO
+					C.source_x = T.x_pos
+					C.source_y = T.y_pos
+				else
+					// New torpedo detected - alarm!
+					C = new(contact_name, SUB_CONTACT_TORPEDO, SUB_NATION_HOSTILE)
+					C.range = dist
+					C.bearing = (bearing_deg + 360) % 360
+					C.noise_signature = 80
+					C.source_x = T.x_pos
+					C.source_y = T.y_pos
+					detected_targets += C
+					// Sound the alarm
+					if(internal_turfs.len)
+						playsound(pick(internal_turfs), 'sound/machines/submarine/missile_alarm.ogg', 90, 1)
+					for(var/mob/living/L in internal_turfs)
+						to_chat(L, "<span class='danger'><font size='2'><b>TORPEDO INBOUND!</b></font></span>")
+
+	// Remove contacts no longer detected
+	var/list/to_remove = list()
+	for(var/datum/vessel_contact/C in detected_targets)
+		if(!(C.name in detected_names))
+			to_remove += C
+	detected_targets -= to_remove
+
+	// Prune tagged contacts whose vessels are no longer detected
+	var/list/stale_tags = list()
+	for(var/tname in tagged_contacts)
+		if(!(tname in detected_names))
+			stale_tags += tname
+	tagged_contacts -= stale_tags
+
+/datum/submarine/proc/find_existing_contact(var/contact_name)
+	for(var/datum/vessel_contact/C in detected_targets)
+		if(C.name == contact_name)
+			return C
+	return null
 
 /datum/submarine/proc/handle_meltdown(var/index)
 	r_scrammed[index] = TRUE
@@ -511,13 +600,15 @@ var/global/list/all_submarines = list()
 	sonar_active = FALSE
 	electrolysis_active = FALSE
 	// Stop looping sensor sounds
-	for(var/mob/M in world)
-		if(M.client)
+	for(var/turf/T in internal_turfs)
+		for(var/mob/living/M in T)
 			M << sound(null, channel = 770)
 			M << sound(null, channel = 771)
 			M << sound(null, channel = 772)
 			M << sound(null, channel = 773)
 	reactor_hum_channel = 0
+	sonar_ambient_channel = 0
+	radar_ambient_channel = 0
 	// Diesel-only subs can still run on diesel if surfaced
 	if(!has_nuclear_engine && depth == 0 && diesel_fuel > 0 && diesel_throttle > 0)
 		target_speed = min(target_speed, SUB_MAX_SPEED_DIESEL)
@@ -600,6 +691,10 @@ var/global/list/all_submarines = list()
 // Handles different weapon types hitting the submarine.
 
 /datum/submarine/proc/apply_weapon_hit(var/damage, var/weapon_type, var/hit_x = 0, var/hit_y = 0)
+	// Announce to all crew
+	for(var/mob/living/L in internal_turfs)
+		to_chat(L, "<span class='danger'><font size='3'><b>WE ARE UNDER ATTACK!</b></font></span>")
+
 	switch(weapon_type)
 		if("torpedo")
 			torpedo_hit(damage)
@@ -617,8 +712,12 @@ var/global/list/all_submarines = list()
 						H.apply_breach_damage(damage)
 						center = H
 				shake_crew(8, 5)
-				for(var/mob/living/L in range(8, center))
-					to_chat(L, "<span class='danger'><b>Depth charges detonate nearby! The hull groans under the pressure!</b></span>")
+				for(var/mob/living/L in range(15, center))
+					if(get_dist(L, center) <= 8)
+						to_chat(L, "<span class='danger'><b>Depth charges detonate nearby! The hull groans under the pressure!</b></span>")
+					else
+						playsound(L, 'sound/machines/submarine/depth_charge_distant.ogg', 60, 1)
+						to_chat(L, "<span class='warning'><b>A deep, resonant boom echoes through the hull.</b></span>")
 		if("missile")
 			// Missiles are like torpedoes but also cause structural shock
 			torpedo_hit(damage)

@@ -532,7 +532,11 @@ proc/admin_notice(var/message, var/rights)
 	else
 		world << "<font size=3 color='yellow'><b>Single Player Mode DISABLED.</b> Ghosts can no longer interact with machinery.</font>"
 	message_admins("<span class='notice'>[key_name(usr)] toggled SUBCOM13 single-player mode to [SM.single_player].</span>", key_name(usr))
-
+	if (ticker.current_state == GAME_STATE_PREGAME)
+		if (!round_progressing)
+			round_progressing = TRUE
+		ticker.pregame_timeleft = 1
+		ticker.admin_started = TRUE
 
 /datum/admins/proc/adrev()
 	set category = "Server"

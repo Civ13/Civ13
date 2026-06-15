@@ -35,6 +35,9 @@ var/global/datum/world_map_controller/subcom_map
 /datum/world_map_controller/proc/process_tick()
 	tick_counter++
 
+	// 0. Update noise level BEFORE detection so NPCs see current values
+	update_player_noise()
+
 	// 1. Update the player submarine's virtual position
 	if(player_sub)
 		player_sub.process_tick()
@@ -59,9 +62,6 @@ var/global/datum/world_map_controller/subcom_map
 	// 4. Process mission controller
 	if(missions)
 		missions.process_tick()
-
-	// 5. Update noise level on the player sub
-	update_player_noise()
 
 // ---- Player Noise Calculation ----
 
