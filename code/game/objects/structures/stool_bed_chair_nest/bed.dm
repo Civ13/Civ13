@@ -73,7 +73,7 @@
 
 /obj/structure/bed/New(var/newloc, var/new_material, var/new_padding_material)
 	..(newloc)
-	if (!istype(src, /obj/structure/bed/bedroll) && !istype(src, /obj/structure/bed/custsofa))
+	if (!istype(src, /obj/structure/bed/bunk) && !istype(src, /obj/structure/bed/bedroll) && !istype(src, /obj/structure/bed/custsofa))
 		color = null
 		if (!new_material)
 			if (!material)

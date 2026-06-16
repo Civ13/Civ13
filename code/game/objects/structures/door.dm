@@ -502,3 +502,14 @@
 	..(newloc, "steel")
 	basic_icon = "cell"
 	icon_state = "cell"
+
+//this is the keyless version of the blast door
+/obj/structure/simple_door/blast
+	name = "blast door"
+	desc = "A sturdy blast door."
+	basic_icon = "blast"
+	icon = 'icons/obj/doors/material_doors.dmi'
+	icon_state = "blast"
+	override_material = TRUE
+	anchored = TRUE
+	health = 1200

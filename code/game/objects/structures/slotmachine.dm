@@ -9,7 +9,6 @@
 	density = TRUE
 	anchored = TRUE
 	not_disassemblable = FALSE
-	not_disassemblable = FALSE
 
 /obj/machinery/slotmachine
 	name = "slot machine"

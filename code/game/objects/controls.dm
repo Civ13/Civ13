@@ -33,10 +33,10 @@
 				G.open = FALSE
 				cooldown = world.time + 3 SECONDS
 				playsound(G.loc, 'sound/effects/rollermove.ogg', 100)
-				flick("blast_closing",G)
+				flick("blastclosing",G)
 				spawn(10)
 					playsound(G.loc, 'sound/effects/lever.ogg', 100)
-					G.icon_state = "blast0"
+					G.icon_state = "blast"
 					G.density = TRUE
 					G.opacity = TRUE
 			else
@@ -46,10 +46,10 @@
 				G.open = TRUE
 				cooldown = world.time + 3 SECONDS
 				playsound(G.loc, 'sound/effects/lever.ogg', 100)
-				flick("blast_opening",G)
+				flick("blastopening",G)
 				spawn(10)
 					playsound(G.loc, 'sound/effects/rollermove.ogg', 100)
-					G.icon_state = "blast1"
+					G.icon_state = "blastopen"
 					G.density = FALSE
 					G.opacity = FALSE
 
@@ -194,7 +194,7 @@
 	name = "blast door"
 	desc = "An thick steel blast door."
 	icon = 'icons/obj/doors/material_doors.dmi'
-	icon_state = "blast0"
+	icon_state = "blast"
 	anchored = TRUE
 	opacity = TRUE
 	density = TRUE
@@ -207,7 +207,7 @@
 	name = "blast door"
 	desc = "An thick steel blast door."
 	icon = 'icons/obj/doors/material_doors.dmi'
-	icon_state = "blast1"
+	icon_state = "blastopen"
 	opacity = FALSE
 	anchored = TRUE
 	density = FALSE

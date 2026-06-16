@@ -46,6 +46,7 @@ var/datum/process_list/processes = new
 	// --- Standalone processes (run directly by the main scheduler) ---
 	// (processes not yet migrated to a subsystem remain here)
 	var/process/callproc/callproc = null
+	var/process/submarine/submarine = null
 	
 	// Lighting members are separate because they run too often
 	var/process/lighting_sources/lighting_sources = null

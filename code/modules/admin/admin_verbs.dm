@@ -164,6 +164,7 @@ var/list/admin_verbs_debug = list(
 	/client/proc/load_voyage_event,
 	/client/proc/load_battle_ship,
 	/client/proc/debug_variables_map,
+	/datum/admins/proc/subcom13_panel,
 	)
 
 var/list/admin_verbs_paranoid_debug = list(
@@ -349,6 +350,11 @@ var/list/admin_verbs_magic = list(
 				/datum/admins/proc/award_sabotage_points,
 				/datum/admins/proc/check_sabotage_progress,
 				/datum/admins/proc/trigger_moldy_reveal,
+			)
+		if (map && map.ID == MAP_SUBCOM13 && (holder.rights & R_ADMIN))
+			verbs += list(
+				/datum/admins/proc/toggle_subcom_singleplayer,
+				/datum/admins/proc/subcom13_panel
 			)
 /client/proc/remove_admin_verbs()
 	verbs.Remove(

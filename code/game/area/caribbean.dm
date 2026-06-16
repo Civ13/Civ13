@@ -342,6 +342,7 @@
 	icon_state = "purple1"
 	ambience = list("sound/ambience/underwater.ogg")
 	climate = "sea"
+	location = AREA_INSIDE
 
 /area/caribbean/sea/top
 	name = "sea"
