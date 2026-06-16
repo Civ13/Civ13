@@ -320,7 +320,7 @@
 	for(var/mob/living/L in src)
 		if(water_depth >= 150)
 			// Fully submerged: heavy damage, chance of drowning
-			L.apply_damage(8, BRUTE)
+			L.apply_damage(8, OXY)
 			if(prob(15) && istype(L, /mob/living/human))
 				var/mob/living/human/H = L
 				H.losebreath = max(H.losebreath + 3, 3)
