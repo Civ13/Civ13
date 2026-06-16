@@ -1093,7 +1093,7 @@
 "Se" = (/turf/floor/dirt/dust,/area/caribbean/roofed/jungle)
 "Sg" = (/obj/structure/simple_door/key_door/civ/room6,/turf/floor/carpet/greencarpet,/area/caribbean/roofed/temperate)
 "Sh" = (/turf/floor/plating/steel{icon_state = "neutralcorner"},/area/caribbean/sea/top/roofed)
-"Si" = (/obj/effect/spawner/mobspawner/phosphor_beetle/magic{max_range = 5; max_number = 2},/turf/floor/beach/water/swamp,/area/caribbean/roofed/desert)
+"Si" = (/obj/effect/spawner/mobspawner/phosphor_beetle/magic{max_range = 2; max_number = 2},/turf/floor/beach/water/swamp,/area/caribbean/roofed/desert)
 "Sl" = (/obj/item/clothing/suit/storage/coat/monk_robes,/turf/floor/plating/dark,/area/caribbean/roofed/desert)
 "Sn" = (/obj/structure/table/wood,/obj/structure/radio{powered = 1; powerneeded = 0},/turf/floor/wood,/area/caribbean/houses/nml_two)
 "So" = (/obj/structure/table/wood,/obj/item/weapon/key/civ/room1,/obj/item/weapon/key/civ/room2,/obj/item/weapon/key/civ/room3,/obj/item/weapon/key/civ/room4,/obj/item/weapon/key/civ/room5,/obj/item/weapon/key/civ/room6,/obj/item/weapon/key/civ/room7,/obj/item/weapon/key/civ/room8,/obj/item/weapon/handbell,/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)

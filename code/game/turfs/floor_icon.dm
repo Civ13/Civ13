@@ -85,43 +85,142 @@ var/list/flooring_cache = list()
 
 		else if (flooring.flags & TURF_HAS_EDGES) // Natural floor edges: higher tier bleeds onto lower
 			if (isnull(set_update_icon))
-				for (var/step_dir in alldirs)
+				var/list/unique_TFs = list()
+				var/list/cardinal_TFs = list() // maps step_dir string to TF
+
+				for (var/step_dir in cardinal)
 					var/turf/T = get_step(src, step_dir)
-					var/edge_dir = reverse_direction(step_dir)
+					var/decl/flooring/TF = null
 
 					if (!T)
-						continue
+						TF = flooring
+					else if (!istype(T, /turf/floor))
+						TF = flooring
+					else
+						var/turf/floor/FT = T
+						if (!FT.flooring)
+							TF = flooring
+						else if (FT.flooring.tier == 0)
+							TF = flooring
+						// Special water (tier 2) vs sand (tier 3) rules
+						else if (flooring.tier == 2 && FT.flooring.tier == 3)
+							TF = flooring
+						else if (flooring.tier == 3 && FT.flooring.tier == 2)
+							TF = FT.flooring
+						// General tier-based bleeding (excluding water/sand special case)
+						else if (FT.flooring.tier > flooring.tier)
+							TF = FT.flooring
 
-					// Non-floor neighbor (wall, space, etc.) - show my edge against it
-					if (!istype(T, /turf/floor))
-						overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", edge_dir, flooring.icon)
-						continue
+					if (TF)
+						cardinal_TFs["[step_dir]"] = TF
+						unique_TFs |= TF
 
-					var/turf/floor/FT = T
+				for (var/decl/flooring/TF in unique_TFs)
+					has_border = FALSE
+					var/use_reverse = (TF != flooring && !findtext(TF.icon_base, "grass"))
+					var/list/ns_flip = list(
+						"[NORTH]" = SOUTH,
+						"[SOUTH]" = NORTH,
+						"[EAST]" = EAST,
+						"[WEST]" = WEST,
+						"[NORTHEAST]" = SOUTHEAST,
+						"[SOUTHEAST]" = NORTHEAST,
+						"[NORTHWEST]" = SOUTHWEST,
+						"[SOUTHWEST]" = NORTHWEST
+					)
+					for (var/step_dir in cardinal)
+						if (cardinal_TFs["[step_dir]"] == TF)
+							has_border |= step_dir
 
-					// Neighbor has no flooring - show my edge
-					if (!FT.flooring)
-						overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", edge_dir, flooring.icon)
-						continue
+							var/render_dir = use_reverse ? reverse_dir[step_dir] : ns_flip["[step_dir]"]
+							overlays |= get_flooring_overlay("[TF.icon_base]-edge-[render_dir]", "[TF.icon_base]_edges", render_dir, TF.icon)
 
-					// Neighbor is non-natural (tier 0, e.g. carpet, wood) - show my edge
-					if (FT.flooring.tier == 0)
-						overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", edge_dir, flooring.icon)
-						continue
+					// Outer corners
+					if ((has_border & NORTH) && (has_border & EAST))
+						var/render_dir = use_reverse ? reverse_dir[NORTHEAST] : ns_flip["[NORTHEAST]"]
+						overlays |= get_flooring_overlay("[TF.icon_base]-edge-[render_dir]", "[TF.icon_base]_edges", render_dir, TF.icon)
 
-					// Water shows its own edge against land
-					if (flooring.tier == 1 && FT.flooring.tier > 1)
-						overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", edge_dir, flooring.icon)
-						continue
+					if ((has_border & NORTH) && (has_border & WEST))
+						var/render_dir = use_reverse ? reverse_dir[NORTHWEST] : ns_flip["[NORTHWEST]"]
+						overlays |= get_flooring_overlay("[TF.icon_base]-edge-[render_dir]", "[TF.icon_base]_edges", render_dir, TF.icon)
 
-					// Land shows water's edge against it (water shows edges too)
-					if (flooring.tier > 1 && FT.flooring.tier == 1)
-						overlays |= get_flooring_overlay("[FT.flooring.icon_base]-edge-[step_dir]", "[FT.flooring.icon_base]_edges", edge_dir, FT.flooring.icon)
-						continue
+					if ((has_border & SOUTH) && (has_border & EAST))
+						var/render_dir = use_reverse ? reverse_dir[SOUTHEAST] : ns_flip["[SOUTHEAST]"]
+						overlays |= get_flooring_overlay("[TF.icon_base]-edge-[render_dir]", "[TF.icon_base]_edges", render_dir, TF.icon)
 
-					// Higher neighbor bleeds onto me (pull neighbor's edge sprite)
-					if (FT.flooring.tier > flooring.tier)
-						overlays |= get_flooring_overlay("[FT.flooring.icon_base]-edge-[step_dir]", "[FT.flooring.icon_base]_edges", edge_dir, FT.flooring.icon)
+					if ((has_border & SOUTH) && (has_border & WEST))
+						var/render_dir = use_reverse ? reverse_dir[SOUTHWEST] : ns_flip["[SOUTHWEST]"]
+						overlays |= get_flooring_overlay("[TF.icon_base]-edge-[render_dir]", "[TF.icon_base]_edges", render_dir, TF.icon)
+
+					// Inner corners
+					if (TF.flags & TURF_HAS_CORNERS)
+						if (!(has_border & NORTH))
+							if (!(has_border & EAST))
+								var/turf/T = get_step(src, NORTHEAST)
+								var/is_corner = FALSE
+								if (!T || !istype(T, /turf/floor))
+									is_corner = (TF == flooring)
+								else
+									var/turf/floor/FT = T
+									if (TF == flooring)
+										is_corner = (!FT.flooring || FT.flooring.tier == 0)
+									else
+										is_corner = (FT.flooring && FT.flooring.name == TF.name)
+								
+								if (is_corner)
+									var/render_dir = use_reverse ? reverse_dir[NORTHEAST] : ns_flip["[NORTHEAST]"]
+									overlays |= get_flooring_overlay("[TF.icon_base]-corner-[render_dir]", "[TF.icon_base]_corners", render_dir, TF.icon)
+
+						if (!(has_border & NORTH))
+							if (!(has_border & WEST))
+								var/turf/T = get_step(src, NORTHWEST)
+								var/is_corner = FALSE
+								if (!T || !istype(T, /turf/floor))
+									is_corner = (TF == flooring)
+								else
+									var/turf/floor/FT = T
+									if (TF == flooring)
+										is_corner = (!FT.flooring || FT.flooring.tier == 0)
+									else
+										is_corner = (FT.flooring && FT.flooring.name == TF.name)
+								
+								if (is_corner)
+									var/render_dir = use_reverse ? reverse_dir[NORTHWEST] : ns_flip["[NORTHWEST]"]
+									overlays |= get_flooring_overlay("[TF.icon_base]-corner-[render_dir]", "[TF.icon_base]_corners", render_dir, TF.icon)
+
+						if (!(has_border & SOUTH))
+							if (!(has_border & EAST))
+								var/turf/T = get_step(src, SOUTHEAST)
+								var/is_corner = FALSE
+								if (!T || !istype(T, /turf/floor))
+									is_corner = (TF == flooring)
+								else
+									var/turf/floor/FT = T
+									if (TF == flooring)
+										is_corner = (!FT.flooring || FT.flooring.tier == 0)
+									else
+										is_corner = (FT.flooring && FT.flooring.name == TF.name)
+								
+								if (is_corner)
+									var/render_dir = use_reverse ? reverse_dir[SOUTHEAST] : ns_flip["[SOUTHEAST]"]
+									overlays |= get_flooring_overlay("[TF.icon_base]-corner-[render_dir]", "[TF.icon_base]_corners", render_dir, TF.icon)
+
+						if (!(has_border & SOUTH))
+							if (!(has_border & WEST))
+								var/turf/T = get_step(src, SOUTHWEST)
+								var/is_corner = FALSE
+								if (!T || !istype(T, /turf/floor))
+									is_corner = (TF == flooring)
+								else
+									var/turf/floor/FT = T
+									if (TF == flooring)
+										is_corner = (!FT.flooring || FT.flooring.tier == 0)
+									else
+										is_corner = (FT.flooring && FT.flooring.name == TF.name)
+								
+								if (is_corner)
+									var/render_dir = use_reverse ? reverse_dir[SOUTHWEST] : ns_flip["[SOUTHWEST]"]
+									overlays |= get_flooring_overlay("[TF.icon_base]-corner-[render_dir]", "[TF.icon_base]_corners", render_dir, TF.icon)
 
 		else // Non-SMOOTH_ONLY, non-natural edges (broken_floor only, legacy)
 			if (isnull(set_update_icon) && (flooring.flags & TURF_HAS_EDGES))

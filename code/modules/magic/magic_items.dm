@@ -189,180 +189,139 @@
 	desc = "Standard-issue Ministry police baton. Carved from dense, magic-resistant mahogany and weighted with lead."
 	icon_state = "cap_truncheon"
 
+/obj/effect/spawner/objspawner/wandpart
+	max_number = 3
+	max_range = 4
+
 /obj/effect/spawner/objspawner/wandpart/pine_wood
 	name = "wand part spawner"
 	icon_state = "f2"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/pine_wood
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/mdf_board
 	name = "wand part spawner"
 	icon_state = "f2"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/mdf_board
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/balsa_wood
 	name = "wand part spawner"
 	icon_state = "f2"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/balsa_wood
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/fibreglass
 	name = "wand part spawner"
 	icon_state = "f2"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/fibreglass
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/driftwood
 	name = "wand part spawner"
 	icon_state = "f2"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/driftwood
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/snooker_cue
 	name = "wand part spawner"
 	icon_state = "f2"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/snooker_cue
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/badger_hair
 	name = "wand part spawner"
 	icon_state = "f3"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/badger_hair
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/pigeon_feather
 	name = "wand part spawner"
 	icon_state = "f3"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/pigeon_feather
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/copper_wire
 	name = "wand part spawner"
 	icon_state = "f3"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/copper_wire
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/pocket_lint
 	name = "wand part spawner"
 	icon_state = "f3"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/pocket_lint
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/asbestos
 	name = "wand part spawner"
 	icon_state = "f3"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/asbestos
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/fox_fur
 	name = "wand part spawner"
 	icon_state = "f3"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/fox_fur
 	timer = 1800
-
 
 /obj/effect/spawner/objspawner/wandpart/stale_chip
 	name = "wand part spawner"
 	icon_state = "f3"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/stale_chip
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/shrub_root
 	name = "wand part spawner"
 	icon_state = "f2"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/shrub_root
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/cap_truncheon
 	name = "wand part spawner"
 	icon_state = "f2"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/cap_truncheon
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/chewing_gum
 	name = "wand part spawner"
 	icon_state = "f3"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/chewing_gum
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/cassette_tape
 	name = "wand part spawner"
 	icon_state = "f3"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/cassette_tape
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/sheep_wool
 	name = "wand part spawner"
 	icon_state = "f3"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/sheep_wool
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/rat_tail
 	name = "wand part spawner"
 	icon_state = "f3"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/rat_tail
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/spark_plug
 	name = "wand part spawner"
 	icon_state = "f3"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/spark_plug
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/gnat_wing
 	name = "wand part spawner"
 	icon_state = "f3"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/gnat_wing
 	timer = 1800
 
 /obj/effect/spawner/objspawner/wandpart/gloom_thread
 	name = "wand part spawner"
 	icon_state = "f3"
-	max_number = 5
-	max_range = 7
 	create_path = /obj/item/wand_part/gloom_thread
 	timer = 1800
 
