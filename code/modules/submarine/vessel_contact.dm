@@ -300,18 +300,23 @@ var/global/list/npc_type_cache = list()
 
 	var/dist = toroidal_distance(x_pos, y_pos, player.x_pos, player.y_pos) * SUB_MAP_SCALE  // Convert to meters
 
+	// Depth penalty: sonar range reduced when player is deep (thermal layers hide them)
+	var/depth_factor = 1.0
+	if(player.depth > 0)
+		depth_factor = clamp(1 - (player.depth / player.crush_depth) * 0.6, 0.4, 1)
+
 	// Radar detection: surface ships and air contacts detect surfaced subs via radar (sensor_range)
 	if((contact_type == SUB_CONTACT_SURFACE || contact_type == SUB_CONTACT_AIR) && player.depth == 0 && dist <= sensor_range)
 		react_to_detection(player.x_pos, player.y_pos)
 		return
 
-	// Active sonar ping detected
-	if(player.sonar_active && player.sonar_mode == SUB_SONAR_ACTIVE && dist <= sonar_range)
+	// Active sonar ping detected (depth penalty applies)
+	if(player.sonar_active && player.sonar_mode == SUB_SONAR_ACTIVE && dist <= sonar_range * depth_factor)
 		react_to_detection(player.x_pos, player.y_pos)
 		return
 
-	// Passive sonar: noise level exceeds our threshold
-	if(player.noise_level >= passive_sonar_threshold && dist <= sonar_range)
+	// Passive sonar: noise level exceeds our threshold (depth penalty applies)
+	if(player.noise_level >= passive_sonar_threshold && dist <= sonar_range * depth_factor)
 		react_to_detection(player.x_pos, player.y_pos)
 		return
 

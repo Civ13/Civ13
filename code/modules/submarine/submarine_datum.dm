@@ -366,19 +366,24 @@ var/global/list/all_submarines = list()
 		var/dist = raw_dist * SUB_MAP_SCALE // Convert to meters
 		var/can_detect = FALSE
 		var/c_type = SUB_CONTACT_SUBMERGED
-		
-		// Passive sonar: surface + submerged contacts, within passive range
-		if(sonar_active && sonar_mode == SUB_SONAR_PASSIVE && dist <= s_range)
+
+		// Depth penalty: sonar range reduced when deep (thermal layers)
+		var/depth_factor = 1.0
+		if(depth > 0)
+			depth_factor = clamp(1 - (depth / crush_depth) * 0.6, 0.4, 1) // up to 60% reduction at crush depth
+
+		// Passive sonar: surface + submerged contacts, within depth-adjusted range
+		if(sonar_active && sonar_mode == SUB_SONAR_PASSIVE && dist <= s_range * depth_factor)
 			can_detect = TRUE
 			c_type = other_sub.depth == 0 ? SUB_CONTACT_SURFACE : SUB_CONTACT_SUBMERGED
-		// Active sonar: surface + submerged contacts, within active range
-		if(sonar_active && sonar_mode == SUB_SONAR_ACTIVE && dist <= s_range)
+		// Active sonar: surface + submerged contacts, within depth-adjusted range
+		if(sonar_active && sonar_mode == SUB_SONAR_ACTIVE && dist <= s_range * depth_factor)
 			can_detect = TRUE
 			c_type = other_sub.depth == 0 ? SUB_CONTACT_SURFACE : SUB_CONTACT_SUBMERGED
-		// Radar: surface + submerged + air contacts, within radar range
-		if(radar_active && dist <= r_range)
+		// Radar: surface + air contacts only (radar cannot see through water)
+		if(radar_active && dist <= r_range && other_sub.depth == 0)
 			can_detect = TRUE
-			c_type = other_sub.depth == 0 ? SUB_CONTACT_SURFACE : SUB_CONTACT_SUBMERGED
+			c_type = SUB_CONTACT_SURFACE
 			
 		if(can_detect)
 			// Calculate relative bearing
@@ -415,18 +420,23 @@ var/global/list/all_submarines = list()
 			var/raw_dist = toroidal_distance(NPC.x_pos, NPC.y_pos, x_pos, y_pos)
 			var/dist = raw_dist * SUB_MAP_SCALE // Convert to meters
 			var/can_detect = FALSE
-			
-			// Radar Check: surface + submerged + air contacts
-			if(radar_active && dist <= r_range)
+
+			// Depth penalty: sonar range reduced when deep (thermal layers)
+			var/depth_factor = 1.0
+			if(depth > 0)
+				depth_factor = clamp(1 - (depth / crush_depth) * 0.6, 0.4, 1)
+
+			// Radar Check: surface + air contacts only (radar cannot see through water)
+			if(radar_active && dist <= r_range && NPC.contact_type != SUB_CONTACT_SUBMERGED)
 				can_detect = TRUE
 					
 			// Sonar Check (if not already detected by radar)
-			if(sonar_active && dist <= s_range && !can_detect)
+			if(sonar_active && dist <= s_range * depth_factor && !can_detect)
 				if(sonar_mode == SUB_SONAR_PASSIVE)
 					// Passive: surface + submerged contacts (stationary subs still make noise)
 					if(NPC.contact_type == SUB_CONTACT_SUBMERGED || NPC.contact_type == SUB_CONTACT_SURFACE)
 						// Moving targets detected at full range; stationary at reduced range
-						if(NPC.speed > 0 || dist <= s_range * 0.4)
+						if(NPC.speed > 0 || dist <= s_range * depth_factor * 0.4)
 							can_detect = TRUE
 				else
 					// Active: surface + submerged contacts

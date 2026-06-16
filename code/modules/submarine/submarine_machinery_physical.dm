@@ -181,7 +181,7 @@
 /obj/structure/machinery/sub_physical/steam_turbine
 	name = "main propulsion steam turbine"
 	icon = 'icons/obj/engines64.dmi'
-	icon_state = "turbine"
+	icon_state = "turbine_double"
 	health = 200
 	max_health = 200
 	var/gearbox_integrity = 100
@@ -718,7 +718,7 @@
 	name = "HTP Fuel Tank"
 	desc = "Contains high-test peroxide. Extremely unstable."
 	icon = 'icons/obj/barrel.dmi'
-	icon_state = "welding_tank"
+	icon_state = "htp"
 	health = 80
 	var/htp_volume = 100
 	var/temperature = 20

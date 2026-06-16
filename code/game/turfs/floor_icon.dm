@@ -227,11 +227,8 @@ var/list/flooring_cache = list()
 				for (var/step_dir in cardinal)
 					var/turf/T = get_step(src, step_dir)
 					if (istype(T, /turf/floor/broken_floor))
-						is_border = TRUE
-				
-				if (is_border)
-					has_border |= step_dir
-					overlays |= get_flooring_overlay("[base]-edge-[step_dir]", "[base]_edges", step_dir)
+						has_border |= step_dir
+						overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", step_dir)
 
 				if ((has_border & NORTH) && (has_border & EAST))
 					overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[NORTHEAST]", "[flooring.icon_base]_edges", NORTHEAST)
@@ -247,9 +244,20 @@ var/list/flooring_cache = list()
 						if (!(has_border & EAST))
 							var/turf/floor/T = get_step(src, NORTHEAST)
 							if (istype(T, /turf/floor/broken_floor))
-								is_border = TRUE
-						if (is_border)
-							overlays |= get_flooring_overlay("[base]-corner-[diag_dir]", "[base]_corners", diag_dir)
+								overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[NORTHEAST]", "[flooring.icon_base]_corners", NORTHEAST)
+						if (!(has_border & WEST))
+							var/turf/floor/T = get_step(src, NORTHWEST)
+							if (istype(T, /turf/floor/broken_floor))
+								overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[NORTHWEST]", "[flooring.icon_base]_corners", NORTHWEST)
+					if (!(has_border & SOUTH))
+						if (!(has_border & EAST))
+							var/turf/floor/T = get_step(src, SOUTHEAST)
+							if (istype(T, /turf/floor/broken_floor))
+								overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[SOUTHEAST]", "[flooring.icon_base]_corners", SOUTHEAST)
+						if (!(has_border & WEST))
+							var/turf/floor/T = get_step(src, SOUTHWEST)
+							if (istype(T, /turf/floor/broken_floor))
+								overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[SOUTHWEST]", "[flooring.icon_base]_corners", SOUTHWEST)
 
 	if (decals && decals.len)
 		overlays |= decals

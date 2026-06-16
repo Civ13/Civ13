@@ -158,6 +158,9 @@
 	refresh_water_overlay()
 	if(was_dry && water_depth >= 5)
 		playsound(src, 'sound/machines/submarine/flooding_start.ogg', 50, 1)
+		// Debug: log first water addition to find roundstart flooding source
+		world.log << "FLOOD DEBUG: Water added to [src] ([x],[y],[z]) compartment=[compartment_id] cm=[cm] total=[water_depth]"
+		stack_trace("add_water on dry tile at [x],[y],[z]")
 
 // Remove water from this tile (cm). Called by bilge pumps, draining.
 /turf/floor/sub_deck/proc/remove_water(var/cm)
@@ -318,7 +321,7 @@
 	icon_state = "steel_grid"
 
 	if(water_depth > 0)
-		var/image/water_overlay = image('icons/misc/beach.dmi', "flood_overlay2")
+		var/image/water_overlay = image('icons/turf/beach.dmi', "flood_overlay2")
 		if(water_depth < 30)
 			water_overlay.alpha = 60       // Shallow - faint tint
 		else if(water_depth < 100)

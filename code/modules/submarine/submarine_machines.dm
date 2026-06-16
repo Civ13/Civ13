@@ -1555,6 +1555,7 @@
 	dat += "<div class='flex-row' style='gap:8px; margin-top:6px;'>"
 	dat += "<a href='?src=\ref[src];range_up=1' class='btn btn-blue'>&#9650; ZOOM OUT</a>"
 	dat += "<a href='?src=\ref[src];range_down=1' class='btn btn-blue'>&#9660; ZOOM IN</a>"
+	dat += "<a href='?src=\ref[src];action_stations=1' class='btn btn-red'>ACTION STATIONS</a>"
 	dat += "<div style='color:#888;'>RANGE: [map_range / 1000]km</div>"
 	dat += "</div>"
 	dat += "</div>"
@@ -1650,6 +1651,28 @@
 		// Range/bearing label below
 		dat += "<div style='position:absolute; left:[pix_x + 6]px; top:[pix_y + 3]px; font-size:6px; color:#888; white-space:nowrap; z-index:3;'>[round(C.range / 1000)]km [round(C.bearing)]&deg;</div>"
 
+	// Periscope view: show surface/air contacts within 10km when surfaced or at periscope depth
+	if(my_sub.depth <= 15 && global.subcom_map)
+		var/periscope_range = 100  // 10km = 100 virtual units
+		for(var/datum/vessel_contact/npc/NPC in global.subcom_map.active_vessels)
+			if(QDELETED(NPC)) continue
+			if(NPC.contact_type != SUB_CONTACT_SURFACE && NPC.contact_type != SUB_CONTACT_AIR) continue
+			var/raw_dist = my_sub.toroidal_distance(NPC.x_pos, NPC.y_pos, my_sub.x_pos, my_sub.y_pos)
+			if(raw_dist > periscope_range) continue
+			// Convert to grid position
+			var/rel_px = (NPC.x_pos - my_sub.x_pos) * SUB_MAP_SCALE
+			var/rel_py = (NPC.y_pos - my_sub.y_pos) * SUB_MAP_SCALE
+			var/p_cell_x = map_size + round(rel_px / map_range * map_size)
+			var/p_cell_y = map_size - round(rel_py / map_range * map_size)
+			p_cell_x = max(0, min(grid_dim - 1, p_cell_x))
+			p_cell_y = max(0, min(grid_dim - 1, p_cell_y))
+			var/p_pix_x = p_cell_x * cell_px + cell_px / 2
+			var/p_pix_y = p_cell_y * cell_px + cell_px / 2
+			var/peri_color = NPC.contact_type == SUB_CONTACT_AIR ? "#f80" : "#0af"
+			var/peri_size = NPC.nationality == SUB_NATION_HOSTILE ? 6 : 4
+			dat += "<div style='position:absolute; left:[p_pix_x - peri_size/2]px; top:[p_pix_y - peri_size/2]px; width:[peri_size]px; height:[peri_size]px; background:[peri_color]; border-radius:50%; z-index:2; opacity:0.7;'></div>"
+			dat += "<div style='position:absolute; left:[p_pix_x + 5]px; top:[p_pix_y - 4]px; font-size:6px; color:[peri_color]; white-space:nowrap; z-index:2; opacity:0.8;'>[NPC.name]</div>"
+
 	// Draw active torpedoes
 	if(global.subcom_map && global.subcom_map.active_torpedoes.len)
 		for(var/datum/projectile/torpedo/T in global.subcom_map.active_torpedoes)
@@ -1719,6 +1742,11 @@
 
 	if(href_list["range_down"])
 		map_range = max(2500, map_range / 2)
+
+	if(href_list["action_stations"])
+		for(var/mob/M in world)
+			M << sound('sound/machines/submarine/action_stations2.ogg', volume = 80)
+		to_chat(usr, "<span class='notice'>Action stations alarm sounded.</span>")
 
 	interact(usr)
 
