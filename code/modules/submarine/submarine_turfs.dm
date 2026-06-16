@@ -78,12 +78,38 @@
 /turf/wall/sub_bulkhead/New(var/newloc)
 	..(newloc,"submarine hull")
 
+/turf/wall/sub_bulkhead/attackby(obj/item/weapon/W, mob/user)
+	if(istype(W, /obj/item/weapon/weldingtool))
+		if(health >= max_health && watertight)
+			to_chat(user, "<span class='notice'>[src] is already in good condition.</span>")
+			return
+		if(!watertight)
+			to_chat(user, "<span class='notice'>You begin welding the bulkhead seals back into place...</span>")
+			playsound(src.loc, 'sound/machines/submarine/gas.ogg', 50, 1)
+			if(do_after(user, 80, src))
+				watertight = TRUE
+				health = min(max_health, health + 60)
+				icon_state = initial(icon_state)
+				to_chat(user, "<span class='notice'>The bulkhead seals are restored. Watertight integrity re-established.</span>")
+				playsound(src.loc, 'sound/machines/submarine/gas.ogg', 50, 1)
+		else
+			to_chat(user, "<span class='notice'>You begin welding cracks in the bulkhead...</span>")
+			playsound(src.loc, 'sound/machines/submarine/gas.ogg', 50, 1)
+			if(do_after(user, 40, src))
+				health = min(max_health, health + 30)
+				to_chat(user, "<span class='notice'>You repair some structural damage on the bulkhead.</span>")
+		return
+	..()
+
 /turf/wall/sub_bulkhead/proc/take_bulkhead_damage(var/damage)
 	health -= damage
 	if(health <= 0)
 		watertight = FALSE
 		visible_message("<span class='warning'>The bulkhead crumples! It no longer holds back water.</span>")
 		icon_state = "damaged"
+	else if(health < max_health * 0.5)
+		watertight = FALSE
+		visible_message("<span class='warning'>The bulkhead buckles under pressure! Seals are compromised.</span>")
 
 /turf/wall/sub_bulkhead/sub_shielding
 	name = "lead reactor shielding"
@@ -153,14 +179,12 @@
 // Add water to this tile (cm). Called by breaches, flooding, etc.
 /turf/floor/sub_deck/proc/add_water(var/cm)
 	if(water_sealed) return
-	var/was_dry = water_depth < 5
+	var/was_dry = water_depth < 1
 	water_depth = min(water_depth + cm, max_water)
 	refresh_water_overlay()
-	if(was_dry && water_depth >= 5)
+	if(was_dry && water_depth >= 1)
 		playsound(src, 'sound/machines/submarine/flooding_start.ogg', 50, 1)
-		// Debug: log first water addition to find roundstart flooding source
-		world.log << "FLOOD DEBUG: Water added to [src] ([x],[y],[z]) compartment=[compartment_id] cm=[cm] total=[water_depth]"
-		stack_trace("add_water on dry tile at [x],[y],[z]")
+		world.log << "FLOOD DEBUG: Water=[cm]cm tile=[x],[y],[z] compartment=[compartment_id] total=[water_depth]"
 
 // Remove water from this tile (cm). Called by bilge pumps, draining.
 /turf/floor/sub_deck/proc/remove_water(var/cm)
@@ -321,15 +345,13 @@
 	icon_state = "steel_grid"
 
 	if(water_depth > 0)
-		var/image/water_overlay = image('icons/turf/beach.dmi', "flood_overlay2")
-		if(water_depth < 30)
-			water_overlay.alpha = 60       // Shallow - faint tint
-		else if(water_depth < 100)
-			water_overlay.alpha = 130      // Medium - noticeable
-		else if(water_depth < max_water)
-			water_overlay.alpha = 200      // Deep - heavy overlay
-		else
-			water_overlay.alpha = 255      // Fully flooded - opaque
+		var/overlay_state = "flood_overlay1"
+		if(water_depth >= 100)
+			overlay_state = "flood_overlay3"
+		else if(water_depth >= 30)
+			overlay_state = "flood_overlay2"
+		var/image/water_overlay = image('icons/turf/beach.dmi', overlay_state)
+		water_overlay.layer = MOB_LAYER + 0.1
 		overlays += water_overlay
 
 // ============================================================

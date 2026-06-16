@@ -1360,6 +1360,7 @@ var/global/list/damage_icon_parts = list()
 
 	if (update_icons) update_icons()
 
+//this actually also handles other over-mob overlays like the water wading overlays
 /mob/living/human/update_fire(var/update_icons=1)
 	overlays_standing[FIRE_LAYER] = null
 	if (on_fire)
@@ -1367,16 +1368,33 @@ var/global/list/damage_icon_parts = list()
 
 	if (drowning || water_overlay)
 		var/turf/D = get_turf(src)
-		var/image/I = image("icon"='icons/turf/beach.dmi', "icon_state"="[D.icon_state]_ov", "layer"=FIRE_LAYER)
-		if (lying || prone)
-			var/matrix/M = matrix()
-			M.Scale(size_multiplier)
-			M.Translate(0, 16*(size_multiplier-1))
-			I.transform = M
-		plane = GAME_PLANE
-		I.plane = FLOOR_PLANE
-		overlays_standing[FIRE_LAYER] = I
+		if (istype(D, /turf/floor/sub_deck))
+			var/turf/floor/sub_deck/sub_turf = D
+			if (sub_turf.water_depth > 0)
+				var/mask_state = "flood_overlay20"
+				if(sub_turf.water_depth >= 100)
+					mask_state = "flood_overlay60"
+				else if(sub_turf.water_depth >= 30)
+					mask_state = "flood_overlay40"
+				filters = null
+				filters += filter(type="alpha", icon=icon('icons/turf/beach.dmi', mask_state))
+			else
+				filters = null
+				if (plane == FLOOR_PLANE)
+					plane = GAME_PLANE
+		else
+			filters = null
+			var/image/I = image("icon"='icons/turf/beach.dmi', "icon_state"="[D.icon_state]_ov", "layer"=FIRE_LAYER)
+			if (lying || prone)
+				var/matrix/M = matrix()
+				M.Scale(size_multiplier)
+				M.Translate(0, 16*(size_multiplier-1))
+				I.transform = M
+			plane = GAME_PLANE
+			I.plane = FLOOR_PLANE
+			overlays_standing[FIRE_LAYER] = I
 	else
+		filters = null
 		if (plane==FLOOR_PLANE)
 			plane=GAME_PLANE
 	if (update_icons)

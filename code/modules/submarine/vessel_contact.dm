@@ -328,6 +328,7 @@ var/global/list/npc_type_cache = list()
 
 	if(ai_state == SUB_AI_PATROL)
 		ai_state = SUB_AI_HUNT
+		attack_cooldown = 50  // Grace period before first shot
 
 // ---- Weapons ----
 

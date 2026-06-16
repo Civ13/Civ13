@@ -376,11 +376,17 @@
 			update_fire(1)
 			return
 		else
+			if (istype(T, /turf/floor/sub_deck) && T:water_depth > 0)
+				drowning = FALSE
+				water_overlay = TRUE
+				update_fire(1)
+				return
 			water_overlay = FALSE
 			if (plane == FLOOR_PLANE)
 				plane = GAME_PLANE
 			if (!on_fire)
 				overlays_standing[25] = null
+			update_fire(1)
 			return
 	else
 		var/turf/floor/beach/water/deep/D = T

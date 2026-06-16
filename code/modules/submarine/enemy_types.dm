@@ -379,7 +379,33 @@
 
 /proc/spawn_enemy_npc(var/enemy_type_path, var/spawn_x, var/spawn_y)
 	var/datum/subcom_enemy/E = new enemy_type_path()
-	var/datum/vessel_contact/npc/NPC = new(E.name, spawn_x || rand(200, 800), spawn_y || rand(200, 800))
+	var/datum/submarine/player_sub = global.all_submarines.len ? global.all_submarines[1] : null
+
+	// Enforce minimum spawn distance from player (1.5x sensor range so NPC can't detect immediately)
+	var/min_dist = round(E.sensor_range * 1.5 / SUB_MAP_SCALE)
+	min_dist = max(min_dist, 550)  // At least 55km
+	var/px = player_sub ? player_sub.x_pos : 500
+	var/py = player_sub ? player_sub.y_pos : 500
+	var/found_valid = FALSE
+	if(!spawn_x || !spawn_y)
+		// Random spawn with minimum distance guarantee
+		for(var/i in 1 to 50)
+			spawn_x = rand(100, 900)
+			spawn_y = rand(100, 900)
+			var/dx = abs(spawn_x - px)
+			var/dy = abs(spawn_y - py)
+			dx = min(dx, SUB_MAP_SIZE - dx)
+			dy = min(dy, SUB_MAP_SIZE - dy)
+			if(sqrt(dx*dx + dy*dy) >= min_dist)
+				found_valid = TRUE
+				break
+		// Fallback: offset at min_dist if all attempts failed
+		if(!found_valid)
+			var/spawn_angle = rand(0, 360)
+			spawn_x = px + cos(spawn_angle) * min_dist
+			spawn_y = py + sin(spawn_angle) * min_dist
+
+	var/datum/vessel_contact/npc/NPC = new(E.name, spawn_x, spawn_y)
 
 	// Transfer stats from type definition to NPC instance
 	NPC.max_speed = E.max_speed

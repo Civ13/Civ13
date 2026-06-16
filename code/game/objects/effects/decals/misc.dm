@@ -32,6 +32,7 @@
 	desc = "A bunch of pipes taking something somewhere."
 	icon = 'icons/obj/machines/pipes.dmi'
 	icon_state = "intact"
+	layer = 2.99
 
 /obj/effect/decal/piping/manifold
 	icon_state = "manifold"
@@ -46,7 +47,7 @@
 	icon_state = "intact-y"
 
 /obj/effect/decal/piping/green
-	icon_state = "intact-gf"
+	icon_state = "intact-g-f"
 
 /obj/effect/decal/piping/purple
 	icon_state = "intact-p"
@@ -58,3 +59,4 @@
 	name = "pipe meter"
 	desc = "A pipe meter."
 	icon_state = "meter"
+	layer = 3.01
