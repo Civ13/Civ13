@@ -169,7 +169,7 @@
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/roofed/temperate)
 "fO" = (
-/obj/effect/overlay/palmtree_l,
+/obj/structure/wild/palm,
 /turf/floor/grass,
 /area/caribbean/no_mans_land/invisible_wall/one)
 "fW" = (
@@ -311,7 +311,7 @@
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "jS" = (
-/obj/effect/overlay/palmtree_l,
+/obj/structure/wild/palm,
 /turf/floor/grass,
 /area/caribbean/no_mans_land/invisible_wall)
 "kc" = (
@@ -1514,7 +1514,7 @@
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "Yk" = (
-/obj/effect/overlay/palmtree_l,
+/obj/structure/wild/palm,
 /turf/floor/grass,
 /area/caribbean)
 "Yx" = (

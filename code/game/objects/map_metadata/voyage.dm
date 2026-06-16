@@ -960,7 +960,7 @@
 /obj/effect/flooding
 	name = "flooded floor"
 	desc = "The water seems to be about 50cm deep."
-	icon = 'icons/misc/beach.dmi'
+	icon = 'icons/turf/beach.dmi'
 	icon_state = "flood_overlay1"
 	layer = 2.3
 	density = FALSE

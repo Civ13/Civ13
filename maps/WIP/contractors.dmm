@@ -1021,7 +1021,7 @@
 /turf/floor/beach/sand/desert,
 /area/caribbean/houses)
 "qU" = (
-/obj/effect/overlay/palmtree_r,
+/obj/structure/wild/palm,
 /turf/floor/dirt/dust,
 /area/caribbean)
 "qZ" = (
@@ -1516,7 +1516,7 @@
 /turf/floor/beach/sand/dark,
 /area/caribbean)
 "yB" = (
-/obj/effect/overlay/palmtree_l,
+/obj/structure/wild/palm,
 /turf/floor/dirt/dust,
 /area/caribbean)
 "yH" = (
@@ -1653,7 +1653,7 @@
 /turf/floor/dirt/dust,
 /area/caribbean)
 "Cc" = (
-/obj/effect/overlay/palmtree_l,
+/obj/structure/wild/palm,
 /turf/floor/beach/sand/desert,
 /area/caribbean)
 "Cf" = (
@@ -1852,7 +1852,7 @@
 /turf/floor/beach/sand/desert,
 /area/caribbean)
 "ES" = (
-/obj/effect/overlay/palmtree_r,
+/obj/structure/wild/palm,
 /turf/floor/beach/sand/desert,
 /area/caribbean)
 "EV" = (
@@ -1924,7 +1924,7 @@
 /turf/floor/dirt,
 /area/caribbean)
 "Gi" = (
-/obj/effect/overlay/palmtree_r,
+/obj/structure/wild/palm,
 /turf/floor/dirt,
 /area/caribbean)
 "Go" = (
@@ -1983,7 +1983,7 @@
 /turf/floor/beach/sand/desert,
 /area/caribbean)
 "Hw" = (
-/obj/effect/overlay/palmtree_l,
+/obj/structure/wild/palm,
 /turf/floor/beach/sand/desert,
 /area/caribbean/no_mans_land/invisible_wall/one)
 "Hz" = (
@@ -2355,7 +2355,7 @@
 /turf/floor/beach/sand/desert,
 /area/caribbean)
 "MI" = (
-/obj/effect/overlay/palmtree_l,
+/obj/structure/wild/palm,
 /turf/floor/dirt,
 /area/caribbean)
 "MQ" = (
@@ -3055,7 +3055,7 @@
 /turf/floor/beach/sand/desert,
 /area/caribbean)
 "YV" = (
-/obj/effect/overlay/palmtree_l,
+/obj/structure/wild/palm,
 /turf/floor/beach/sand/desert,
 /area/caribbean/no_mans_land/invisible_wall/two)
 "YY" = (
@@ -3159,7 +3159,7 @@
 /turf/floor/dirt/dust,
 /area/caribbean)
 "ZZ" = (
-/obj/effect/overlay/palmtree_r,
+/obj/structure/wild/palm,
 /turf/floor/beach/sand/desert,
 /area/caribbean/no_mans_land/invisible_wall/one)
 

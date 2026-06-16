@@ -19,7 +19,7 @@
 "s" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea)
 "t" = (/turf/floor/beach/sand,/area/caribbean/sea)
 "u" = (/turf/floor/grass,/area/caribbean/sea)
-"v" = (/obj/effect/overlay/palmtree_l,/turf/floor/grass,/area/caribbean/sea)
+"v" = (/obj/structure/wild/palm,/turf/floor/grass,/area/caribbean/sea)
 "w" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/sea)
 "x" = (/obj/effect/spawner/objspawner/palm,/turf/floor/grass,/area/caribbean/sea)
 "y" = (/turf/floor/dirt,/area/caribbean/sea)

@@ -320,7 +320,7 @@
 	may_become_muddy = TRUE
 	available_dirt = 0
 	is_diggable = TRUE
-	initial_flooring = null
+	initial_flooring = /decl/flooring/dirt/dry_lava
 
 /turf/floor/dirt/burned
 	name = "burnt ground"
@@ -329,7 +329,7 @@
 	may_become_muddy = TRUE
 	available_dirt = 1
 	is_diggable = TRUE
-	initial_flooring = null
+	initial_flooring = /decl/flooring/dirt/burned
 
 /turf/floor/dirt/underground
 	name = "underground rock"
@@ -343,7 +343,7 @@
 	is_mineable = TRUE
 	opacity = TRUE
 	density = TRUE
-	initial_flooring = null
+	initial_flooring = /decl/flooring/dirt/underground
 	New()
 		..()
 
@@ -468,7 +468,7 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "dirt_ploughed"
 	is_plowed = TRUE
-	initial_flooring = null
+	initial_flooring = /decl/flooring/dirt/ploughed
 
 /turf/floor/dirt/ploughed/fertile
 	soil_nutrition = 150
@@ -484,7 +484,7 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "flood_dirt_ploughed"
 	is_plowed = TRUE
-	initial_flooring = null
+	initial_flooring = /decl/flooring/dirt/ploughed
 
 /turf/floor/dirt/dust
 	name = "dry dirt"
