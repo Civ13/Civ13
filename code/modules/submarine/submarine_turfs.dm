@@ -331,6 +331,7 @@
 			if(istype(L, /mob/living/human))
 				var/mob/living/human/H = L
 				H.losebreath = max(H.losebreath + 1, 1)
+				H.adjustOxyLoss(4)
 			if(prob(5))
 				to_chat(L, "<span class='warning'>You struggle to breathe above the rising water.</span>")
 				playsound(src, 'sound/machines/submarine/alarm_flooding.ogg', 30, 1)
@@ -346,13 +347,63 @@
 
 	if(water_depth > 0)
 		var/overlay_state = "flood_overlay1"
+		var/edge_state = "flood_overlay1_edges"
 		if(water_depth >= 100)
 			overlay_state = "flood_overlay3"
+			edge_state = "flood_overlay3_edges"
 		else if(water_depth >= 30)
 			overlay_state = "flood_overlay2"
+			edge_state = "flood_overlay2_edges"
 		var/image/water_overlay = image('icons/turf/beach.dmi', overlay_state)
 		water_overlay.layer = MOB_LAYER + 0.1
 		overlays += water_overlay
+
+		// Edge borders: where water meets dry floor or walls
+		var/list/cardinal_dirs = list(NORTH, SOUTH, EAST, WEST)
+		for(var/dir in cardinal_dirs)
+			var/turf/neighbor = get_step(src, dir)
+			var/has_edge = FALSE
+			if(!neighbor)
+				has_edge = TRUE
+			else if(istype(neighbor, /turf/floor/sub_deck))
+				var/turf/floor/sub_deck/N = neighbor
+				if(N.water_depth <= 0)
+					has_edge = TRUE
+			else
+				has_edge = TRUE
+			if(has_edge)
+				var/image/edge_img = image('icons/turf/beach.dmi', edge_state, dir=dir)
+				edge_img.layer = MOB_LAYER + 0.2
+				overlays += edge_img
+
+		// Corner overlays where two edges meet
+		var/list/corner_dirs = list(NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)
+		var/list/corner_dir1 = list(NORTH, NORTH, SOUTH, SOUTH)
+		var/list/corner_dir2 = list(EAST, WEST, EAST, WEST)
+		for(var/i in 1 to 4)
+			var/cdir = corner_dirs[i]
+			var/dir1 = corner_dir1[i]
+			var/dir2 = corner_dir2[i]
+			var/turf/T1 = get_step(src, dir1)
+			var/turf/T2 = get_step(src, dir2)
+			var/edge1 = FALSE
+			var/edge2 = FALSE
+			if(!T1 || !istype(T1, /turf/floor/sub_deck))
+				edge1 = TRUE
+			else
+				var/turf/floor/sub_deck/SD1 = T1
+				if(SD1.water_depth <= 0)
+					edge1 = TRUE
+			if(!T2 || !istype(T2, /turf/floor/sub_deck))
+				edge2 = TRUE
+			else
+				var/turf/floor/sub_deck/SD2 = T2
+				if(SD2.water_depth <= 0)
+					edge2 = TRUE
+			if(edge1 && edge2)
+				var/image/corner_img = image('icons/turf/beach.dmi', edge_state, dir=cdir)
+				corner_img.layer = MOB_LAYER + 0.3
+				overlays += corner_img
 
 // ============================================================
 // Atmospheric System

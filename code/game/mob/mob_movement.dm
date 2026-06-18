@@ -464,6 +464,14 @@
 						standing_on_snow = 4
 					if (3)
 						standing_on_snow = 6
+			if(istype(F, /turf/floor/sub_deck))
+				var/turf/floor/sub_deck/SD = F
+				if(SD.water_depth >= 150)
+					standing_on_snow = 6
+				else if(SD.water_depth >= 100)
+					standing_on_snow = 4
+				else if(SD.water_depth >= 50)
+					standing_on_snow = 2
 			if ((F_area.weather == WEATHER_WET && findtext(F_area.icon_state,"rain")) || F_area.weather == WEATHER_EXTREME)
 				if (F.may_become_muddy)
 					if (F_area.climate != "semiarid" || F_area.climate != "jungle" || F_area.climate != "desert" || F_area.climate != "savanna" || season == "WINTER" || season == "SPRING")

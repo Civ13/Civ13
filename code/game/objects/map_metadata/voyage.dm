@@ -974,7 +974,7 @@
 				if (src != FLD)
 					flood_level = min(3,flood_level+FLD.flood_level)
 					qdel(FLD)
-					update_icon()
+			update_icon()
 		spawn(6000)
 			if (src)
 				flood_level--
@@ -983,6 +983,34 @@
 	update_icon()
 		icon_state = "flood_overlay[flood_level]"
 		desc = "The water seems to be about [flood_level*50]cm deep."
+		// Set overlay directly on the turf
+		var/turf/T = get_turf(src)
+		if(T)
+			T.overlays.Cut()
+			var/image/water_img = image(icon, icon_state)
+			water_img.layer = MOB_LAYER + 0.1
+			T.overlays += water_img
+			// Edge borders matching flood level
+			var/edge_state = "flood_overlay[flood_level]_edges"
+			var/list/cardinal_dirs = list(NORTH, SOUTH, EAST, WEST)
+			for(var/dir in cardinal_dirs)
+				var/turf/neighbor = get_step(T, dir)
+				var/has_edge = FALSE
+				if(!neighbor)
+					has_edge = TRUE
+				else if(neighbor.type == T.type)
+					var/has_flood = FALSE
+					for(var/obj/effect/flooding/F in neighbor)
+						has_flood = TRUE
+						break
+					if(!has_flood)
+						has_edge = TRUE
+				else
+					has_edge = TRUE
+				if(has_edge)
+					var/image/edge_img = image('icons/turf/beach.dmi', edge_state, dir=dir)
+					edge_img.layer = MOB_LAYER + 0.2
+					T.overlays += edge_img
 
 	attackby(obj/item/I, mob/living/human/user)
 		if(istype(I, /obj/item/weapon/reagent_containers/glass))
