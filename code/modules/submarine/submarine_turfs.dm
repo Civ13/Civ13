@@ -59,6 +59,27 @@
 		D.water_inflow_rate = max(0, D.water_inflow_rate - SUB_BREACH_INFLOW_BASE)
 	visible_message("<span class='notice'>The hull breach is sealed.</span>")
 
+/turf/wall/sub_hull/attackby(obj/item/weapon/W, mob/user)
+	if(istype(W, /obj/item/weapon/weldingtool))
+		if(breached)
+			to_chat(user, "<span class='notice'>You begin welding the hull breach shut...</span>")
+			playsound(src.loc, 'sound/machines/submarine/gas.ogg', 50, 1)
+			if(do_after(user, 1200, src))
+				repair_breach()
+				playsound(src.loc, 'sound/machines/submarine/gas.ogg', 50, 1)
+		else if(hull_integrity < max_hull_integrity)
+			to_chat(user, "<span class='notice'>You begin welding cracks in the hull...</span>")
+			playsound(src.loc, 'sound/machines/submarine/gas.ogg', 50, 1)
+			if(do_after(user, 1200, src))
+				hull_integrity = min(max_hull_integrity, hull_integrity + round(max_hull_integrity * 0.5))
+				overlays.Cut()
+				to_chat(user, "<span class='notice'>You repair the hull. Integrity: [hull_integrity]/[max_hull_integrity]</span>")
+				playsound(src.loc, 'sound/machines/submarine/gas.ogg', 50, 1)
+		else
+			to_chat(user, "<span class='notice'>The hull is in good condition.</span>")
+		return
+	..()
+
 // ---- Bulkheads ----
 
 /turf/wall/sub_bulkhead
@@ -78,12 +99,38 @@
 /turf/wall/sub_bulkhead/New(var/newloc)
 	..(newloc,"submarine hull")
 
+/turf/wall/sub_bulkhead/attackby(obj/item/weapon/W, mob/user)
+	if(istype(W, /obj/item/weapon/weldingtool))
+		if(health >= max_health && watertight)
+			to_chat(user, "<span class='notice'>[src] is already in good condition.</span>")
+			return
+		if(!watertight)
+			to_chat(user, "<span class='notice'>You begin welding the bulkhead seals back into place...</span>")
+			playsound(src.loc, 'sound/machines/submarine/gas.ogg', 50, 1)
+			if(do_after(user, 80, src))
+				watertight = TRUE
+				health = min(max_health, health + 60)
+				icon_state = initial(icon_state)
+				to_chat(user, "<span class='notice'>The bulkhead seals are restored. Watertight integrity re-established.</span>")
+				playsound(src.loc, 'sound/machines/submarine/gas.ogg', 50, 1)
+		else
+			to_chat(user, "<span class='notice'>You begin welding cracks in the bulkhead...</span>")
+			playsound(src.loc, 'sound/machines/submarine/gas.ogg', 50, 1)
+			if(do_after(user, 40, src))
+				health = min(max_health, health + 30)
+				to_chat(user, "<span class='notice'>You repair some structural damage on the bulkhead.</span>")
+		return
+	..()
+
 /turf/wall/sub_bulkhead/proc/take_bulkhead_damage(var/damage)
 	health -= damage
 	if(health <= 0)
 		watertight = FALSE
 		visible_message("<span class='warning'>The bulkhead crumples! It no longer holds back water.</span>")
 		icon_state = "damaged"
+	else if(health < max_health * 0.5)
+		watertight = FALSE
+		visible_message("<span class='warning'>The bulkhead buckles under pressure! Seals are compromised.</span>")
 
 /turf/wall/sub_bulkhead/sub_shielding
 	name = "lead reactor shielding"
@@ -153,14 +200,12 @@
 // Add water to this tile (cm). Called by breaches, flooding, etc.
 /turf/floor/sub_deck/proc/add_water(var/cm)
 	if(water_sealed) return
-	var/was_dry = water_depth < 5
+	var/was_dry = water_depth < 1
 	water_depth = min(water_depth + cm, max_water)
 	refresh_water_overlay()
-	if(was_dry && water_depth >= 5)
+	if(was_dry && water_depth >= 1)
 		playsound(src, 'sound/machines/submarine/flooding_start.ogg', 50, 1)
-		// Debug: log first water addition to find roundstart flooding source
-		world.log << "FLOOD DEBUG: Water added to [src] ([x],[y],[z]) compartment=[compartment_id] cm=[cm] total=[water_depth]"
-		stack_trace("add_water on dry tile at [x],[y],[z]")
+		world.log << "FLOOD DEBUG: Water=[cm]cm tile=[x],[y],[z] compartment=[compartment_id] total=[water_depth]"
 
 // Remove water from this tile (cm). Called by bilge pumps, draining.
 /turf/floor/sub_deck/proc/remove_water(var/cm)
@@ -296,7 +341,7 @@
 	for(var/mob/living/L in src)
 		if(water_depth >= 150)
 			// Fully submerged: heavy damage, chance of drowning
-			L.apply_damage(8, BRUTE)
+			L.apply_damage(8, OXY)
 			if(prob(15) && istype(L, /mob/living/human))
 				var/mob/living/human/H = L
 				H.losebreath = max(H.losebreath + 3, 3)
@@ -307,6 +352,7 @@
 			if(istype(L, /mob/living/human))
 				var/mob/living/human/H = L
 				H.losebreath = max(H.losebreath + 1, 1)
+				H.adjustOxyLoss(4)
 			if(prob(5))
 				to_chat(L, "<span class='warning'>You struggle to breathe above the rising water.</span>")
 				playsound(src, 'sound/machines/submarine/alarm_flooding.ogg', 30, 1)
@@ -321,16 +367,64 @@
 	icon_state = "steel_grid"
 
 	if(water_depth > 0)
-		var/image/water_overlay = image('icons/turf/beach.dmi', "flood_overlay2")
-		if(water_depth < 30)
-			water_overlay.alpha = 60       // Shallow - faint tint
-		else if(water_depth < 100)
-			water_overlay.alpha = 130      // Medium - noticeable
-		else if(water_depth < max_water)
-			water_overlay.alpha = 200      // Deep - heavy overlay
-		else
-			water_overlay.alpha = 255      // Fully flooded - opaque
+		var/overlay_state = "flood_overlay1"
+		var/edge_state = "flood_overlay1_edges"
+		if(water_depth >= 100)
+			overlay_state = "flood_overlay3"
+			edge_state = "flood_overlay3_edges"
+		else if(water_depth >= 30)
+			overlay_state = "flood_overlay2"
+			edge_state = "flood_overlay2_edges"
+		var/image/water_overlay = image('icons/turf/beach.dmi', overlay_state)
+		water_overlay.layer = MOB_LAYER + 0.1
 		overlays += water_overlay
+
+		// Edge borders: where water meets dry floor or walls
+		var/list/cardinal_dirs = list(NORTH, SOUTH, EAST, WEST)
+		for(var/dir in cardinal_dirs)
+			var/turf/neighbor = get_step(src, dir)
+			var/has_edge = FALSE
+			if(!neighbor)
+				has_edge = TRUE
+			else if(istype(neighbor, /turf/floor/sub_deck))
+				var/turf/floor/sub_deck/N = neighbor
+				if(N.water_depth <= 0)
+					has_edge = TRUE
+			else
+				has_edge = TRUE
+			if(has_edge)
+				var/image/edge_img = image('icons/turf/beach.dmi', edge_state, dir=dir)
+				edge_img.layer = MOB_LAYER + 0.2
+				overlays += edge_img
+
+		// Corner overlays where two edges meet
+		var/list/corner_dirs = list(NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)
+		var/list/corner_dir1 = list(NORTH, NORTH, SOUTH, SOUTH)
+		var/list/corner_dir2 = list(EAST, WEST, EAST, WEST)
+		for(var/i in 1 to 4)
+			var/cdir = corner_dirs[i]
+			var/dir1 = corner_dir1[i]
+			var/dir2 = corner_dir2[i]
+			var/turf/T1 = get_step(src, dir1)
+			var/turf/T2 = get_step(src, dir2)
+			var/edge1 = FALSE
+			var/edge2 = FALSE
+			if(!T1 || !istype(T1, /turf/floor/sub_deck))
+				edge1 = TRUE
+			else
+				var/turf/floor/sub_deck/SD1 = T1
+				if(SD1.water_depth <= 0)
+					edge1 = TRUE
+			if(!T2 || !istype(T2, /turf/floor/sub_deck))
+				edge2 = TRUE
+			else
+				var/turf/floor/sub_deck/SD2 = T2
+				if(SD2.water_depth <= 0)
+					edge2 = TRUE
+			if(edge1 && edge2)
+				var/image/corner_img = image('icons/turf/beach.dmi', edge_state, dir=cdir)
+				corner_img.layer = MOB_LAYER + 0.3
+				overlays += corner_img
 
 // ============================================================
 // Atmospheric System

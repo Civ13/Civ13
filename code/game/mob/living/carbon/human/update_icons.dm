@@ -133,7 +133,8 @@ Please contact me on #coderbus IRC. ~Carn x
 #define FIRE_LAYER				25		//If you're on fire
 #define TARGETED_LAYER			26		//BS12: Layer for the target overlay from weapon targeting system
 #define OVEREFFECTS_LAYER		27
-#define TOTAL_LAYERS			27
+#define WATER_LAYER				28		//Water overlay above mob when flooding
+#define TOTAL_LAYERS			28
 //////////////////////////////////
 
 /mob/living/human
@@ -1360,27 +1361,56 @@ var/global/list/damage_icon_parts = list()
 
 	if (update_icons) update_icons()
 
+//this actually also handles other over-mob overlays like the water wading overlays
 /mob/living/human/update_fire(var/update_icons=1)
 	overlays_standing[FIRE_LAYER] = null
+	overlays_standing[WATER_LAYER] = null
 	if (on_fire)
 		overlays_standing[FIRE_LAYER] = image("icon"='icons/mob/OnFire.dmi', "icon_state"="Standing", "layer"=FIRE_LAYER)
 
 	if (drowning || water_overlay)
 		var/turf/D = get_turf(src)
-		var/image/I = image("icon"='icons/turf/beach.dmi', "icon_state"="[D.icon_state]_ov", "layer"=FIRE_LAYER)
-		if (lying || prone)
-			var/matrix/M = matrix()
-			M.Scale(size_multiplier)
-			M.Translate(0, 16*(size_multiplier-1))
-			I.transform = M
-		plane = GAME_PLANE
-		I.plane = FLOOR_PLANE
-		overlays_standing[FIRE_LAYER] = I
+		// Determine mask state based on water type and depth
+		var/mask_state = "seashallow_over2"  // Default: chest height
+		if (istype(D, /turf/floor/sub_deck))
+			var/turf/floor/sub_deck/sub_turf = D
+			if (sub_turf.water_depth > 0)
+				mask_state = "seashallow_over1"
+				if(sub_turf.water_depth >= 100)
+					mask_state = "seashallow_over3"
+				else if(sub_turf.water_depth >= 30)
+					mask_state = "seashallow_over2"
+			else
+				filters = null
+				clear_overlay_filters()
+				if (plane == FLOOR_PLANE)
+					plane = GAME_PLANE
+				if (update_icons)
+					update_icons()
+				return
+		else if (drowning)
+			mask_state = "seashallow_over3"  // Deep water - fully submerged
+		var/icon/mask_icon = icon('icons/turf/beach.dmi', mask_state)
+		filters = null
+		filters += filter(type="alpha", icon=mask_icon, flags=MASK_INVERSE)
+		for(var/over in overlays_standing)
+			var/image/img = over
+			if(img)
+				img.filters = null
+				img.filters += filter(type="alpha", icon=mask_icon, flags=MASK_INVERSE)
 	else
+		filters = null
+		clear_overlay_filters()
 		if (plane==FLOOR_PLANE)
 			plane=GAME_PLANE
 	if (update_icons)
 		update_icons()
+
+/mob/living/human/proc/clear_overlay_filters()
+	for(var/over in overlays_standing)
+		var/image/img = over
+		if(img)
+			img.filters = null
 
 /mob/living/human/proc/update_surgery(var/update_icons=1)
 	overlays_standing[SURGERY_LEVEL] = null
@@ -1452,4 +1482,5 @@ var/global/list/damage_icon_parts = list()
 #undef TARGETED_LAYER
 #undef FIRE_LAYER
 #undef OVEREFFECTS_LAYER
+#undef WATER_LAYER
 #undef TOTAL_LAYERS

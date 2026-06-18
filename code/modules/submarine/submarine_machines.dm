@@ -549,6 +549,8 @@
 	// Internal status tracking for simulation
 	var/list/vents_open = list()
 	var/list/fire_supp_active = list()
+	var/last_drain_time = 0
+	var/drain_cooldown = 300  // 30 seconds between emergency drains
 
 /obj/structure/machinery/sub_control/misc_systems/vessel_name_header()
 	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - AUXILIARY SYSTEMS"
@@ -636,10 +638,15 @@
 	dat += "<div class='panel' style='padding:8px; margin-top:8px;'>"
 	dat += "<div class='label'>DAMAGE CONTROL</div>"
 	dat += "<div class='flex-row' style='justify-content:center; gap:6px; margin-top:6px;'>"
-	dat += "<a href='?src=\ref[src];drain_all=1' class='btn btn-red' style='min-width:140px;'>EMERGENCY DRAIN</a>"
+	var/drain_ready = world.time >= last_drain_time + drain_cooldown
+	if(drain_ready)
+		dat += "<a href='?src=\ref[src];drain_all=1' class='btn btn-red' style='min-width:140px;'>EMERGENCY DRAIN</a>"
+	else
+		var/wait = round(((last_drain_time + drain_cooldown) - world.time) / 10)
+		dat += "<span class='btn btn-grey' style='min-width:140px; opacity:0.6;'>DRAIN [wait]s</span>"
 	dat += "<a href='?src=\ref[src];inject_o2=1' class='btn btn-blue' style='min-width:140px;'>O<sub>2</sub> INJECT ALL</a>"
-	dat += "<a href='?src=\ref[src];seal_all=1' class='btn btn-yellow' style='min-width:140px;'>SEAL BULKHEADS</a>"
 	dat += "</div>"
+	dat += "<div style='margin-top:6px; font-size:9px; color:#888;'>Bulkhead repair requires a welding tool at the damaged section.</div>"
 	dat += "</div>"
 
 	return dat
@@ -664,25 +671,21 @@
 
 	if(href_list["drain_all"])
 		if(global.subcom_flooding)
-			var/total_drained = 0
-			for(var/cid in global.subcom_flooding.compartment_turfs)
-				total_drained += global.subcom_flooding.emergency_drain(cid, 15)
-			to_chat(usr, "<span class='notice'>Emergency drain activated. [round(total_drained)]cm of water removed.</span>")
+			if(world.time < last_drain_time + drain_cooldown)
+				var/wait = round(((last_drain_time + drain_cooldown) - world.time) / 10)
+				to_chat(usr, "<span class='warning'>Emergency drain recharging. [wait]s remaining.</span>")
+			else
+				last_drain_time = world.time
+				var/total_drained = 0
+				for(var/cid in global.subcom_flooding.compartment_turfs)
+					total_drained += global.subcom_flooding.emergency_drain(cid, 15)
+				to_chat(usr, "<span class='notice'>Emergency drain activated. [round(total_drained)]cm of water removed.</span>")
 
 	if(href_list["inject_o2"])
 		if(global.subcom_flooding)
 			for(var/cid in global.subcom_flooding.compartment_turfs)
 				global.subcom_flooding.inject_oxygen(cid, 5)
 			to_chat(usr, "<span class='notice'>Oxygen injection activated across all compartments.</span>")
-
-	if(href_list["seal_all"])
-		var/sealed = 0
-		for(var/turf/wall/sub_bulkhead/B in world)
-			if(QDELETED(B)) continue
-			if(!B.watertight && B.health > 0)
-				B.watertight = TRUE
-				sealed++
-		to_chat(usr, "<span class='notice'>[sealed] bulkhead(s) sealed.</span>")
 
 	interact(usr)
 

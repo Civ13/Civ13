@@ -702,8 +702,9 @@ var/global/list/all_submarines = list()
 
 /datum/submarine/proc/apply_weapon_hit(var/damage, var/weapon_type, var/hit_x = 0, var/hit_y = 0)
 	// Announce to all crew
-	for(var/mob/living/L in internal_turfs)
-		to_chat(L, "<span class='danger'><font size='3'><b>WE ARE UNDER ATTACK!</b></font></span>")
+	for(var/turf/T in internal_turfs)
+		for(var/mob/living/L in T)
+			to_chat(L, "<span class='danger'><font size='3'><b>WE ARE UNDER ATTACK!</b></font></span>")
 
 	switch(weapon_type)
 		if("torpedo")
@@ -870,13 +871,14 @@ var/global/list/all_submarines = list()
 	for(var/turf/floor/sub_deck/T in turfs)
 		T.add_water(rand(80, 150))
 
+	var/tcomptext = replacetext(target_comp, "_", " ")
 	if(internal_turfs.len)
 		playsound(pick(internal_turfs), 'sound/machines/submarine/alarm_flooding.ogg', 70, 1)
 		for(var/mob/living/L in range(10, pick(internal_turfs)))
-			to_chat(L, "<span class='danger'><b>Flooding detected in [target_comp]! Water levels rising rapidly!</b></span>")
+			to_chat(L, "<span class='danger'><b>Flooding detected in [tcomptext]! Water levels rising rapidly!</b></span>")
 
 	if(global.subcom_map && global.subcom_map.missions && global.subcom_map.missions.radio_console)
-		global.subcom_map.missions.radio_console.add_log("ALERT: Flooding reported in [target_comp]! Emergency bulkheads engaging!")
+		global.subcom_map.missions.radio_console.add_log("ALERT: Flooding reported in [tcomptext]! Emergency bulkheads engaging!")
 
 /datum/submarine/proc/sim_torpedo_hit()
 	torpedo_hit(SUB_TORPEDO_DAMAGE)

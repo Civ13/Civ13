@@ -204,6 +204,14 @@
 	name = "radiation in the area!"
 	icon_state = "radiation"
 
+/obj/structure/sign/radiation2
+	name = "DANGER: Radiation!"
+	icon_state = "radiation2"
+
+/obj/structure/sign/electricity
+	name = "DANGER: Electricity!"
+	icon_state = "shock"
+
 /obj/structure/sign/traffic
 	name = "STOP sign"
 	desc = ""
