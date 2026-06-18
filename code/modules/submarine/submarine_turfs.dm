@@ -59,6 +59,27 @@
 		D.water_inflow_rate = max(0, D.water_inflow_rate - SUB_BREACH_INFLOW_BASE)
 	visible_message("<span class='notice'>The hull breach is sealed.</span>")
 
+/turf/wall/sub_hull/attackby(obj/item/weapon/W, mob/user)
+	if(istype(W, /obj/item/weapon/weldingtool))
+		if(breached)
+			to_chat(user, "<span class='notice'>You begin welding the hull breach shut...</span>")
+			playsound(src.loc, 'sound/machines/submarine/gas.ogg', 50, 1)
+			if(do_after(user, 1200, src))
+				repair_breach()
+				playsound(src.loc, 'sound/machines/submarine/gas.ogg', 50, 1)
+		else if(hull_integrity < max_hull_integrity)
+			to_chat(user, "<span class='notice'>You begin welding cracks in the hull...</span>")
+			playsound(src.loc, 'sound/machines/submarine/gas.ogg', 50, 1)
+			if(do_after(user, 1200, src))
+				hull_integrity = min(max_hull_integrity, hull_integrity + round(max_hull_integrity * 0.5))
+				overlays.Cut()
+				to_chat(user, "<span class='notice'>You repair the hull. Integrity: [hull_integrity]/[max_hull_integrity]</span>")
+				playsound(src.loc, 'sound/machines/submarine/gas.ogg', 50, 1)
+		else
+			to_chat(user, "<span class='notice'>The hull is in good condition.</span>")
+		return
+	..()
+
 // ---- Bulkheads ----
 
 /turf/wall/sub_bulkhead
