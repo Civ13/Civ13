@@ -21,6 +21,13 @@
 	var/block_chance = 15
 
 	var/crafting_quality = 1
+	// Scalars persist through the native world serializer without retaining parts.
+	var/tool_head_material
+	var/tool_handle_material
+	var/tool_head_quality
+	var/tool_handle_quality
+	var/tool_head_condition
+	var/tool_handle_condition
 
 	dropsound = 'sound/effects/drop_knife.ogg'
 
@@ -132,6 +139,8 @@
 
 /obj/item/weapon/material/examine(mob/user)
 	..()
+	if (tool_head_material && tool_handle_material)
+		to_chat(user, "<b>Components:</b> [tool_head_material] head (quality [tool_head_quality]), [tool_handle_material] handle (quality [tool_handle_quality]).")
 	switch(crafting_quality)
 		if (-100 to 0.85)
 			to_chat(user, "<b>Quality:</b> Very Crude")
@@ -154,4 +163,27 @@
 				to_chat(user, "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>")
 			if (85 to 200)
 				to_chat(user, "<font color='#245319'>Seems to be in very good condition.</font>")
+
+/obj/item/weapon/material/proc/record_tool_components(obj/item/weapon/material/part/head_part, obj/item/weapon/material/handle/HANDLE)
+	tool_head_material = head_part.material.name
+	tool_handle_material = HANDLE.material.name
+	tool_head_quality = max(0.5, min(2, head_part.crafting_quality))
+	tool_handle_quality = max(0.5, min(2, HANDLE.crafting_quality))
+	tool_head_condition = max(0, min(1, head_part.health / head_part.maxhealth))
+	tool_handle_condition = max(0, min(1, HANDLE.health / HANDLE.maxhealth))
+	crafting_quality = min(tool_head_quality, tool_handle_quality)
+	update_force()
+	var/material/wood = get_material_by_name("wood")
+	var/handle_capacity = max(0.5, min(1.5, HANDLE.material.integrity / wood.integrity))
+	maxhealth = max(1, round(maxhealth * handle_capacity))
+	health = maxhealth * min(tool_head_condition, tool_handle_condition)
+	var/handle_speed = max(0.75, min(1.25, wood.weight / max(1, HANDLE.material.weight)))
+	if (istype(src, /obj/item/weapon/material/pickaxe))
+		var/obj/item/weapon/material/pickaxe/P = src
+		var/material/iron = get_material_by_name("iron")
+		var/head_speed = max(0.5, min(1.5, head_part.material.hardness / iron.hardness))
+		P.usespeed = max(1, min(3, initial(P.usespeed) * head_speed * handle_speed))
+	else if (istype(src, /obj/item/weapon/material/shovel))
+		var/obj/item/weapon/material/shovel/S = src
+		S.usespeed = initial(S.usespeed) * handle_speed
 
