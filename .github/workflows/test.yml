@@ -138,6 +138,15 @@ jobs:
           git fetch --no-tags --depth=1 origin 9e44a2eb25945281979453b8aa060a9b1bad044b
           pwsh -NoProfile -File tests/outdoor_crops/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Revision 9e44a2eb25945281979453b8aa060a9b1bad044b -Baseline
 
+      - name: Run irrigation propagation regression and baseline
+        if: needs.changes.outputs.game == 'true'
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          pwsh -NoProfile -File tests/irrigation/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
+          git fetch --no-tags --depth=1 origin b43ff97a5a97745f29727e11a29c3783257fd619
+          pwsh -NoProfile -File tests/irrigation/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Revision b43ff97a5a97745f29727e11a29c3783257fd619 -Baseline
+
       - name: Run isolated power accounting regressions
         if: needs.changes.outputs.extensive == 'true'
         shell: bash
