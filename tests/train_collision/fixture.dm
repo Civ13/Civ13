@@ -135,10 +135,17 @@ var/failures = 0
 		A.automovement = TRUE
 		check(!A.process_rail_movement(), "train collision stops direction [direction]")
 		check(!A.automovement && A.health == 995 && A.x == 5 && B.x == 6, "collision preserves stop/damage direction [direction]")
+		check(!A.Move(B.loc,EAST), "direct train contact reports failed move direction [direction]")
 		check(!B.Bumped(A) && B.x == 6, "train bump cannot push direction [direction]")
 		sleep(2)
 		check(A.x == 5 && B.x == 6, "no delayed train bump cascade direction [direction]")
 		clear_cars()
+	A = car(5,5)
+	var/mob/living/human/pusher = new(locate(4,5,1))
+	pusher.dir = EAST
+	check(A.Bumped(pusher) && A.x == 6, "human pushing wagon remains supported")
+	del(pusher)
+	clear_cars()
 	A = car(5,5)
 	B = car(6,5)
 	A.connected = B
@@ -152,6 +159,17 @@ var/failures = 0
 	check(A.Move(locate(6,5,1),EAST), "deleted follower does not prevent movement")
 	A.automovement = TRUE
 	check(A.process_rail_movement() && A.x == 7, "normal automatic movement")
+	clear_cars()
+	A = car(5,5)
+	B = car(4,5)
+	A.connected = B
+	var/obj/structure/rails/turn/corner = new(A.loc)
+	corner.dir = EAST
+	corner.turn_dir = NORTH
+	for (var/obj/structure/rails/R in locate(5,6,1))
+		R.dir = NORTH
+	A.automovement = TRUE
+	check(A.process_rail_movement() && A.y == 6 && B.x == 5 && B.y == 5, "coupled train follows rail corner")
 	world.log << "RESULT failures=[failures]"
 	del(world)
 

@@ -21,7 +21,7 @@ Use an isolated checkout and BYOND 516.1681; never run the baseline against prod
 
 The generated 20x10x1 fixture extracts production train procedures, replaces audiovisual resources with null, and injects no-op map/effect adapters plus the deferred bump callback. Windows processes are bounded by 15 seconds, 5 CPU seconds and a sampled 256 MiB working-set ceiling; Linux uses timeout and CPU/address-space limits. The runner stops only its own PID, waits for exit and prints temporary log paths. A sampled ceiling is not a Windows OS hard memory limit. No production storage or train is touched.
 
-Thirty assertions cover actual hitch/unhitch, cycle rejection, malformed existing cycles, three-car movement, blocked movement, cargo/riders, head-on/rear/side train contact and deferred bumps, same-consist contact, deleted followers and normal automatic movement. Fixture results do not prove full-game integration or visual behavior. Full `civ13.dme` compilation on 516.1681 separately passed with zero errors/warnings.
+Thirty-five assertions cover actual hitch/unhitch, cycle rejection, malformed existing cycles, three-car movement, blocked movement, cargo/riders, head-on/rear/side train contact and deferred bumps, same-consist contact, deleted followers direct blocked train movement, normal human pushing, automatic movement and rail corners. Fixture results do not prove full-game integration or visual behavior. Full `civ13.dme` compilation on 516.1681 separately passed with zero errors/warnings.
 
 ## Gameplay acceptance still required
 
