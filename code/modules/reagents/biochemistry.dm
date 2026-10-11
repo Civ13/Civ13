@@ -9,7 +9,7 @@
 /datum/reagent/proteolytic_enzyme
 	name = "Digestive Protease"
 	id = "proteolytic_enzyme"
-	description = "A simplified digestive enzyme extract. Albumin, globulins and fibrinogen are not proteases."
+	description = "A simplified digestive enzyme extract, distinct from the game's plasma protein reagents."
 	reagent_state = LIQUID
 	color = "#99AA55"
 
