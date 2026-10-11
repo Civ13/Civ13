@@ -12,11 +12,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--negative-control', action='store_true')
-    parser.add_argument('--probe', choices=('polyethylene', 'fuel'), default='polyethylene')
+    parser.add_argument('--probe', choices=('polyethylene', 'fuel', 'processing'), default='polyethylene')
     parser.add_argument('--visual', action='store_true')
     parser.add_argument('--port', type=int, default=18329)
     args = parser.parse_args()
-    if args.visual and (args.negative_control or not 1024 <= args.port <= 65535):
+    if args.visual and (args.probe == 'processing' or args.negative_control or not 1024 <= args.port <= 65535):
         parser.error('Visual mode requires a valid local port and no negative control')
     root = Path(__file__).resolve().parents[2]
     binary = args.byond_bin.resolve()
@@ -42,13 +42,14 @@ def main():
         if args.visual:
             generated[5].write_text('/mob/new_player\n\tvar/client/my_client\n/mob/new_player/Login()\n\tchemistry_fixture_login()\n', encoding='utf-8')
             source = source.replace('code\\game\\mob\\new_player\\login.dm', prefix + '_login.dm')
-        if args.negative_control and args.probe == 'fuel':
+        if args.negative_control and args.probe in ('fuel', 'processing'):
             # Restore the registration defect in a generated source copy.
             compounds = (root / 'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Compounds.dm').read_text(encoding='utf-8')
-            target = '\tid = "octane"'
+            reagent = 'octane' if args.probe == 'fuel' else 'n_methylmorpholine_n_oxide'
+            target = f'\tid = "{reagent}"'
             if compounds.count(target) != 1:
-                raise RuntimeError('Octane mutation target missing or ambiguous')
-            generated[6].write_text(compounds.replace(target, '\tid = "octane_removed"', 1), encoding='utf-8')
+                raise RuntimeError(f'{reagent} mutation target missing or ambiguous')
+            generated[6].write_text(compounds.replace(target, f'\tid = "{reagent}_removed"', 1), encoding='utf-8')
             source = source.replace('code\\modules\\reagents\\Chemistry-Reagents\\Chemistry-Reagents-Compounds.dm', prefix + '_compounds.dm')
         elif args.negative_control:
             # Reintroduce the original wrong feedstock only in a generated copy.
@@ -76,6 +77,10 @@ def main():
             raise RuntimeError('Chemistry compilation failed')
         shutil.copy2(generated[3], logs / generated[3].name)
         shutil.copy2(generated[4], logs / generated[4].name)
+        if args.probe == 'processing':
+            (logs / 'config/crafting').mkdir(parents=True)
+            shutil.copy2(root / 'config/crafting/material_recipes_global.txt',
+                         logs / 'config/crafting/material_recipes_global.txt')
         if args.visual:
             daemon_output = (logs / 'daemon.log').open('w', encoding='utf-8')
             visual = subprocess.Popen([str(daemon), str(logs / generated[3].name), str(args.port),
@@ -104,8 +109,10 @@ def main():
             raise RuntimeError(f'Chemistry result missing; daemon exit={runtime.returncode}')
         result = (logs / 'chemistry_result.txt').read_text(encoding='utf-8').strip()
         print(result, flush=True)
-        failure = ('FAIL: Product missing: octane' if args.probe == 'fuel'
-                   else 'FAIL: Polymerization unavailable with catalysts')
+        failures = {'fuel': 'FAIL: Product missing: octane',
+                    'processing': 'FAIL: Bench synthesis unavailable: n_methylmorpholine_n_oxide',
+                    'polyethylene': 'FAIL: Polymerization unavailable with catalysts'}
+        failure = failures[args.probe]
         expected = (failure
                     if args.negative_control else 'PASS:')
         if runtime.returncode or not result.startswith(expected):
