@@ -90,19 +90,14 @@ var/global/FREQM = rand(101,120)
 	if (!powersource || powerneeded == 0)
 		return FALSE
 	else
-		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
+		if (draw_cable_power())
 			if (!on)
-				powersource.update_power(powerneeded,1)
 				on = TRUE
-				powersource.currentflow += powerneeded
-				powersource.lastupdate2 = world.time
 			return TRUE
 		else
 			if (on)
-				powersource.update_power(powerneeded,1)
+				powersource.update_power(-powerneeded,1,src)
 				on = FALSE
-				powersource.currentflow -= powerneeded
-				powersource.lastupdate2 = world.time
 			return FALSE
 
 

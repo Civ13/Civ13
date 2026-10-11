@@ -45,3 +45,6 @@ TODO.md
 
 # Generated season evidence belongs in direct PR attachments.
 /docs/evidence/season-memory/
+# Generated API reference and downloaded tools
+/dmdoc/
+/.cache/
