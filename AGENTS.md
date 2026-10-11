@@ -289,3 +289,8 @@ crash behavior. Do not replace required gameplay captures with fixture output.
 retained entries are distinct from OS private memory. `run-game.ps1 -ExerciseCapture`
 checks real forward/reverse/stop behavior. Its optional bounded `-Visual` mode
 requires the coordinator's exclusive screen turn; see tests/conveyor/README.md.
+<!-- 2026-10-11: shipped Discord changelog -->
+The standalone publisher in tools/changelog requires reviewed manifests and live
+confirmation or a trusted successful production deployment event. A merge/CI pass
+is not shipment. Preserve the discord-changelog-receipts branch; pending receipts
+block uncertain replay. See tools/changelog/README.md before activation.
