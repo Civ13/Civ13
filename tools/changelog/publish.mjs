@@ -34,6 +34,7 @@ export async function request(url, options = {}, { fetcher = fetch, sleep = ms =
     try { response = await fetcher(url, { ...options, redirect: 'error', signal: AbortSignal.timeout(15000) }); }
     catch { throw new Error('Transport failed; delivery may be uncertain. Inspect receipt before retrying.'); }
     const body = await response.json().catch(() => null);
+    if (response.status === 404 && options.allowNotFound) return null;
     if (response.status === 429) {
       const seconds = Number(body?.retry_after ?? response.headers.get('retry-after'));
       requireValue(Number.isFinite(seconds) && seconds > 0 && seconds <= 60, 'Rate limit requires later reconciliation');
@@ -143,5 +144,6 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     } else await run(process.env, JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8')));
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
+
 
 

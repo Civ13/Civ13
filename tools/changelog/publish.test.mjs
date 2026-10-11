@@ -89,7 +89,7 @@ test('destination mismatch prevents POST; valid destination suppresses mentions'
     let posts = 0, stored;
     const liveApi = async (path, options) => {
       if (path.startsWith('git/ref/')) return {};
-      if (path.startsWith('contents/receipts?')) return [];
+      if (path.includes('.json?ref=discord-changelog-receipts')) return null;
       if (path.startsWith('contents/receipts/')) { stored = JSON.parse(Buffer.from(JSON.parse(options.body).content, 'base64')); return { content: { sha: 'receipt-sha' } }; }
       return api(path);
     };
@@ -119,3 +119,4 @@ test('malformed webhook fails without external request', async () => {
     await assert.rejects(run({ ...env, CHANGELOG_ENABLED: 'true', DISCORD_CHANGELOG_WEBHOOK: url }, event, { api, http: async () => { throw Error('Should not call'); } }), /Invalid webhook/);
   }
 });
+
