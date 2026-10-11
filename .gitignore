@@ -42,3 +42,7 @@ webclient/dist/
 webclient/package-lock.json
 webclient/config.json
 TODO.md
+
+# Generated API reference and downloaded tools
+/dmdoc/
+/.cache/
