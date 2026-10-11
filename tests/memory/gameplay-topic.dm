@@ -6,8 +6,10 @@
     var/list/request = params2list(T)
     if (request["memory-evidence"] != MEMORY_EVIDENCE_TOKEN)
         return ..()
-    if (addr && addr != "127.0.0.1" && addr != "::1")
-        return "LOCAL ONLY: [addr]"
+    // Native world.Export callers include their listening port in addr.
+    var/list/caller = splittext(addr, ":")
+    if (addr && addr != "::1" && !(caller.len >= 1 && caller.len <= 2 && caller[1] == "127.0.0.1"))
+        return "LOCAL ONLY"
     var/client/C
     for (var/client/local_client in clients)
         if (local_client.holder && (!local_client.address || local_client.address == "127.0.0.1" || local_client.address == "::1"))
