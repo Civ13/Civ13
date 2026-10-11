@@ -7,7 +7,7 @@
     if (request["memory-evidence"] != MEMORY_EVIDENCE_TOKEN)
         return ..()
     if (addr && addr != "127.0.0.1" && addr != "::1")
-        return "LOCAL ONLY"
+        return "LOCAL ONLY: [addr]"
     var/client/C
     for (var/client/local_client in clients)
         if (local_client.holder && (!local_client.address || local_client.address == "127.0.0.1" || local_client.address == "::1"))
