@@ -39,3 +39,4 @@
     // Leave one visible shallow-water tile for ordinary movement/Examine checks.
     target.ChangeTurf(/turf/floor/beach/water)
     to_chat(src, "<b>PASS local water registry: 20 wet/deep/dry cycles; baseline [baseline], final [water_turf_list.len] (one visible water tile).</b>")
+    return TRUE
