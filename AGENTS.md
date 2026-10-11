@@ -253,4 +253,3 @@ game callback/locomotive-loop tests with `tests/train_collision/run-game.ps1`.
 The full-game probe uses temporary state and outbound-hook controls. Its optional
 visual mode needs separate capture authorization; it never proves production
 crash behavior. Do not replace required gameplay captures with fixture output.
-

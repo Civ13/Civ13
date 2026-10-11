@@ -59,4 +59,3 @@ $metadata = [ordered]@{commit=$commit;scenario='crafting';run=$run;port=$Port;no
 $metadata | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $run 'session.json')
 Write-Output "SESSION_JSON=$(Join-Path $run 'session.json')"
 Write-Output "Connect a fresh Dream Seeker to byond://127.0.0.1:$Port; adapter nonce is in session.json."
-
