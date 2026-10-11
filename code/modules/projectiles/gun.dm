@@ -108,6 +108,7 @@
 //Any checks that shouldn't result in handle_click_empty() being called if they fail should go here.
 //Otherwise, if you want handle_click_empty() to be called, check in consume_next_projectile() and return null there.
 /obj/item/weapon/gun/proc/special_check(var/mob/user)
+	if (gun_work_busy) return FALSE
 
 	if (!istype(user, /mob/living))
 		return FALSE

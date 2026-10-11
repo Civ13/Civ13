@@ -26,36 +26,6 @@ Current Defines (_defines/attachment.dm)
 	var/list/fits = list("pistol", "smg", "rifle", "shotgun", "mg") // What does it fit on?
 	var/ergonomics = 1
 
-/obj/item/weapon/attachment/proc/attached(mob/user, obj/item/weapon/gun/G)
-	to_chat(user, "<span class = 'notice'>You start to attach [src] to the [G].</span>")
-	if (do_after(user, 15, user))
-		user.unEquip(src)
-		A_attached = TRUE
-		G.attachment_slots -= attachment_type
-		loc = G
-		G.actions += actions
-		G.verbs += verbs
-		G.attachments += src
-		G.update_attachment_actions(user)
-		G.ergonomics *= src.ergonomics
-		to_chat(user, "<span class = 'notice'>You attach [src] to the [G].</span>")
-	else
-		return
-
-/obj/item/weapon/attachment/proc/removed(mob/user, obj/item/weapon/gun/G)
-	if (do_after(user, 15, user))
-		G.attachments -= src
-		G.actions -= actions
-		G.verbs -= verbs
-		G.attachment_slots += attachment_type
-		G.ergonomics /= src.ergonomics
-		dropped(user)
-		A_attached = FALSE
-		loc = get_turf(src)
-		to_chat(user, "You remove [src] from the [G].")
-	else
-		return//
-
 /obj/item/weapon/gun
 	var/list/attachments = list()
 	var/attachment_slots = null // Use the 'ATTACH_' defines above; can ise in combination Ex. ATTACH_SCOPE|ATTACH_BARREL
@@ -82,70 +52,12 @@ Current Defines (_defines/attachment.dm)
 		for (var/obj/item/weapon/gun/launcher/grenade/underslung/G in attachments)
 			G.pickup(user)
 
-/obj/item/weapon/gun/verb/field_strip()
-	set name = "Field Strip"
-	set desc = "Removes any attachments."
-	set category = null
-	var/mob/living/human/user = usr
-
-	for (var/obj/item/weapon/attachment/A in attachments)
-		A.removed(user, src)
-	for (var/obj/item/weapon/gun/launcher/grenade/underslung/G in attachments)
-		G.removed(user, src)
-
 // Use this under /New() of weapons if they spawn with attachments
-/obj/item/weapon/gun/proc/spawn_add_attachment(obj/item/weapon/attachment/A)
-	A.A_attached = TRUE
-	attachment_slots -= A.attachment_type
-	attachments += A
-	actions += A.actions
-
 /obj/item/weapon/gun/proc/update_attachment_actions(mob/user)
 	for (var/datum/action/action in actions)
 		action.Grant(user)
 
-/obj/item/weapon/gun/proc/try_attach(obj/item/I, mob/user)
-	if (!I || !user)
-		return
-	if (user.get_inactive_hand() != src)
-		to_chat(user, "You must be holding the [src] to add attachments.")
-		return
-	attach_A(I, user)
-
 // Do not use this; use try_attach instead
-/obj/item/weapon/gun/proc/attach_A(obj/item/I, mob/user)
-	if (istype(I, /obj/item/weapon/attachment))
-		var/obj/item/weapon/attachment/A = I
-		switch(A.attachment_type)
-			if (ATTACH_IRONSIGHTS)
-				if (attachment_slots & ATTACH_IRONSIGHTS)
-					A.attached(user, src)
-				else
-					to_chat(user, "You already have iron sights.")
-			if (ATTACH_SCOPE)
-				if (attachment_slots & ATTACH_SCOPE)
-					A.attached(user, src, FALSE)
-				else
-					to_chat(user, "You fumble around with the attachment.")
-			if (ATTACH_STOCK)
-				if (attachment_slots & ATTACH_STOCK)
-					A.attached(user, src, FALSE)
-				else
-					to_chat(user, "You fumble around with the attachment.")
-			if (ATTACH_BARREL)
-				if (attachment_slots & ATTACH_BARREL)
-					A.attached(user, src, FALSE)
-				else
-					to_chat(user, "You fumble around with the attachment.")
-			if (ATTACH_UNDER)
-				if (attachment_slots & ATTACH_UNDER)
-					A.attached(user, src, FALSE)
-	if (istype(I, /obj/item/weapon/gun/launcher/grenade/underslung))
-		var/obj/item/weapon/gun/launcher/grenade/underslung/G = I
-		if (attachment_slots & ATTACH_UNDER)
-			G.attached(user, src, FALSE)
-
-
 /////////////////MISC ATTACHMENTS//////////////////////////////
 
 //Scope code is found in code/modules/WW2/weapons/zoom.dm
@@ -187,54 +99,6 @@ Current Defines (_defines/attachment.dm)
 		edge = TRUE
 		sharp = TRUE
 		return
-/obj/item/weapon/attachment/bayonet/attached(var/mob/user = null, obj/item/weapon/gun/G, var/quick = FALSE)
-	if (quick)
-		if (user)
-			user.unEquip(src)
-		A_attached = TRUE
-		G.attachment_slots -= attachment_type
-		loc = G
-		G.actions += actions
-		G.verbs += verbs
-		G.attachments += src
-		if (user)
-			to_chat(user, "<span class = 'notice'>You attach [src] to the [G].</span>")
-		G.bayonet = src
-		G.update_icon()
-	else
-		if (user)
-			to_chat(user, "<span class = 'notice'>You start to attach [src] to the [G].</span>")
-		if (do_after(user, 15, user))
-			A_attached = TRUE
-			G.attachment_slots -= attachment_type
-			G.actions += actions
-			G.verbs += verbs
-			G.attachments += src
-			if (user)
-				user.unEquip(src)
-				G.update_attachment_actions(user)
-				to_chat(user, "<span class = 'notice'>You attach [src] to the [G].</span>")
-			loc = G
-			G.bayonet = src
-			G.update_icon()
-		else
-			return
-
-/obj/item/weapon/attachment/bayonet/removed(mob/user, obj/item/weapon/gun/G)
-	if (do_after(user, 15, user))
-		G.attachments -= src
-		G.actions -= actions
-		G.verbs -= verbs
-		G.attachment_slots += attachment_type
-		dropped(user)
-		A_attached = FALSE
-		loc = get_turf(src)
-		to_chat(user, "You remove [src] from the [G].")
-		G.bayonet = null
-		G.update_icon()
-	else
-		return
-
 /obj/item/weapon/attachment/bayonet/flag
 	name = "japanese flag"
 	icon_state = "jap_flag"
@@ -251,28 +115,10 @@ Current Defines (_defines/attachment.dm)
 
 /////////////////OPTICS//////////////////////////////
 
-/obj/item/weapon/attachment/scope/removed(mob/user, obj/item/weapon/gun/G)
-	if (do_after(user, 15, user))
-		G.attachments -= src
-		G.actions -= actions
-		G.verbs -= verbs
-		G.attachment_slots += attachment_type
-		dropped(user)
-		A_attached = FALSE
-		loc = get_turf(src)
-		to_chat(user, "You remove [src] from the [G].")
-		G.shake_strength = initial(G.shake_strength)
-		G.update_icon()
-	else
-		return
-
 /obj/item/weapon/attachment/scope/iron_sights
 	name = "iron sights"
 	attachment_type = ATTACH_IRONSIGHTS
 	zoom_amt = ZOOM_CONSTANT
-
-/obj/item/weapon/attachment/scope/iron_sights/removed(mob/user, obj/item/weapon/gun/G)
-	return
 
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope
 	name = "sniper scope"
@@ -399,60 +245,6 @@ Current Defines (_defines/attachment.dm)
 	mount = "picatinny"
 	max_zoom = ZOOM_CONSTANT * 3
 
-/obj/item/weapon/attachment/scope/adjustable/sniper_scope/removed(mob/user, obj/item/weapon/gun/G)
-	if (do_after(user, 15, user))
-		G.attachments -= src
-		G.actions -= actions
-		G.verbs -= verbs
-		G.attachment_slots += attachment_type
-		G.ergonomics /= src.ergonomics
-		dropped(user)
-		A_attached = FALSE
-		loc = get_turf(src)
-		to_chat(user, "You remove [src] from the [G].")
-		//This should only be temporary until more attachment icons are made, then we switch to adding/removing icon masks
-		if (istype(G, /obj/item/weapon/gun/projectile))
-			var/obj/item/weapon/gun/projectile/W = G
-			W.scope = null
-		G.update_icon()
-	else
-		return
-
-/obj/item/weapon/attachment/scope/adjustable/sniper_scope/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
-	if(!G.scope_mounts.Find(src.mount))
-		to_chat(user, SPAN_WARNING("\The [src.name] can't be attached!"))
-		return
-	if (quick)
-		A_attached = TRUE
-		G.attachment_slots -= attachment_type
-		loc = G
-		G.scope = src
-		G.actions += actions
-		G.verbs += verbs
-		G.attachments += src
-		G.ergonomics *= ergonomics
-		if (istype(G, /obj/item/weapon/gun/projectile))
-			var/obj/item/weapon/gun/projectile/W = G
-			W.update_icon()
-	else
-		if (do_after(user, 15, user))
-			user.unEquip(src)
-			A_attached = TRUE
-			G.attachment_slots -= attachment_type
-			loc = G
-			G.actions += actions
-			G.verbs += verbs
-			G.scope = src
-			G.attachments += src
-			G.update_attachment_actions(user)
-			G.ergonomics *= src.ergonomics
-			to_chat(user, "<span class = 'notice'>You attach [src] to the [G].</span>")
-			if (istype(G, /obj/item/weapon/gun/projectile))
-				var/obj/item/weapon/gun/projectile/W = G
-				W.update_icon()
-		else
-			return
-
 /////////////////ADVANCED OPTICS//////////////////////////////
 
 /obj/item/weapon/attachment/scope/adjustable/advanced
@@ -464,52 +256,6 @@ Current Defines (_defines/attachment.dm)
 	New()
 		..()
 		ongun = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "[icon_state]_ongun")
-
-/obj/item/weapon/attachment/scope/adjustable/advanced/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
-	if(!G.scope_mounts.Find(src.mount))
-		to_chat(user, "[src.name] can't be attached!")
-		return
-	if (quick)
-		A_attached = TRUE
-		G.attachment_slots -= attachment_type
-		loc = G
-		G.actions += actions
-		G.verbs += verbs
-		G.attachments += src
-		G.scope = src
-		G.ergonomics *= src.ergonomics
-		G.update_icon()
-	else
-		if (do_after(user, 15, user))
-			user.unEquip(src)
-			A_attached = TRUE
-			G.attachment_slots -= attachment_type
-			loc = G
-			G.actions += actions
-			G.verbs += verbs
-			G.attachments += src
-			G.update_attachment_actions(user)
-			to_chat(user, "<span class = 'notice'>You attach [src] to the [G].</span>")
-			G.ergonomics *= src.ergonomics
-			G.scope = src
-			G.update_icon()
-		else
-			return
-/obj/item/weapon/attachment/scope/adjustable/advanced/removed(mob/user, obj/item/weapon/gun/G)
-	if (do_after(user, 15, user))
-		G.attachments -= src
-		G.actions -= actions
-		G.verbs -= verbs
-		G.attachment_slots += attachment_type
-		dropped(user)
-		A_attached = FALSE
-		loc = get_turf(src)
-		to_chat(user, "You remove [src] from the [G].")
-		G.scope = null
-		G.ergonomics /= src.ergonomics
-		G.update_icon()
-	else
-		return
 
 /obj/item/weapon/attachment/scope/adjustable/advanced/reddot
 	name = "red dot sight"
@@ -542,52 +288,6 @@ Current Defines (_defines/attachment.dm)
 	attachment_type = ATTACH_UNDER
 	var/mount = "picatinny"
 
-/obj/item/weapon/attachment/under/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
-	if(!G.under_mounts.Find(src.mount))
-		to_chat(user, "[src.name] can't be attached!")
-		return
-	if (quick)
-		A_attached = TRUE
-		G.attachment_slots -= attachment_type
-		loc = G
-		G.actions += actions
-		G.verbs += verbs
-		G.attachments += src
-		G.under = src
-		G.ergonomics *= src.ergonomics
-		G.update_icon()
-	else
-		if (do_after(user, 15, user))
-			user.unEquip(src)
-			A_attached = TRUE
-			G.attachment_slots -= attachment_type
-			loc = G
-			G.actions += actions
-			G.verbs += verbs
-			G.attachments += src
-			G.update_attachment_actions(user)
-			G.ergonomics *= src.ergonomics
-			to_chat(user, "<span class = 'notice'>You attach [src] to the [G].</span>")
-			G.under = src
-			G.update_icon()
-		else
-			return
-
-/obj/item/weapon/attachment/under/removed(mob/user, obj/item/weapon/gun/G)
-	if (do_after(user, 15, user))
-		G.attachments -= src
-		G.actions -= actions
-		G.verbs -= verbs
-		G.attachment_slots += attachment_type
-		dropped(user)
-		A_attached = FALSE
-		loc = get_turf(src)
-		to_chat(user, "You remove [src] from the [G].")
-		G.under = null
-		G.ergonomics /= src.ergonomics
-		G.update_icon()
-	else
-		return
 /obj/item/weapon/attachment/under/laser
 	name = "laser pointer"
 	icon_state = "laser"
@@ -606,44 +306,6 @@ Current Defines (_defines/attachment.dm)
 	desc = "A foregrip, to increase stability when firing."
 	ergonomics = 1.5
 
-/obj/item/weapon/gun/launcher/grenade/underslung/proc/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
-	if(!G.under_mounts.Find(src.mount))
-		to_chat(user, "[src.name] can't be attached!")
-		return
-	if (quick)
-		A_attached = TRUE
-		G.attachment_slots -= ATTACH_UNDER
-		loc = G
-		G.attachments += src
-		G.launcher = src
-		G.update_icon()
-	else
-		if (do_after(user, 15, user))
-			user.unEquip(src)
-			A_attached = TRUE
-			G.attachment_slots -= ATTACH_UNDER
-			loc = G
-			G.attachments += src
-			G.update_attachment_actions(user)
-			to_chat(user, "<span class = 'notice'>You attach [src] to the [G].</span>")
-			G.launcher = src
-			G.update_icon()
-		else
-			return
-
-/obj/item/weapon/gun/launcher/grenade/underslung/proc/removed(mob/user, obj/item/weapon/gun/G)
-	if (do_after(user, 15, user))
-		G.attachments -= src
-		G.attachment_slots += ATTACH_UNDER
-		dropped(user)
-		A_attached = FALSE
-		loc = get_turf(src)
-		to_chat(user, "You remove [src] from the [G].")
-		G.launcher = null
-		G.update_icon()
-	else
-		return
-
 /obj/item/weapon/gun
 	var/obj/item/weapon/attachment/silencer/silencer = null
 
@@ -660,56 +322,6 @@ Current Defines (_defines/attachment.dm)
 	var/caliber = "multicaliber"
 	ergonomics = 1.25
 	fits = null
-
-/obj/item/weapon/attachment/silencer/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
-	if (istype(G, /obj/item/weapon/gun/projectile))
-		var/obj/item/weapon/gun/projectile/P = G
-		if (caliber != "multicaliber")
-			if (P.caliber != caliber)
-				to_chat(user, SPAN_WARNING("\The [src.name] can't be attached!"))
-				return
-	if (quick)
-		A_attached = TRUE
-		G.attachment_slots -= attachment_type
-		loc = G
-		G.actions += actions
-		G.verbs += verbs
-		G.attachments += src
-		G.silencer = src
-		G.ergonomics *= src.ergonomics
-		G.update_icon()
-	else
-		if (do_after(user, 15, user))
-			user.unEquip(src)
-			A_attached = TRUE
-			G.attachment_slots -= attachment_type
-			loc = G
-			G.actions += actions
-			G.verbs += verbs
-			G.attachments += src
-			G.update_attachment_actions(user)
-			G.ergonomics *= src.ergonomics
-			to_chat(user, SPAN_NOTICE("You attach \the [src] to the [G]."))
-			G.silencer = src
-			G.update_icon()
-		else
-			return
-
-/obj/item/weapon/attachment/silencer/removed(mob/user, obj/item/weapon/gun/G)
-	if (do_after(user, 15, user))
-		G.attachments -= src
-		G.actions -= actions
-		G.verbs -= verbs
-		G.attachment_slots += attachment_type
-		dropped(user)
-		A_attached = FALSE
-		loc = get_turf(src)
-		G.ergonomics /= src.ergonomics
-		to_chat(user, SPAN_NOTICE("You remove \the [src] from the [G]."))
-		G.silencer = null
-		G.update_icon()
-	else
-		return
 
 // Improvised
 /obj/item/weapon/attachment/silencer/plastic_bottle

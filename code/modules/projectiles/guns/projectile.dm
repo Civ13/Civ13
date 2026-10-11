@@ -236,12 +236,14 @@
 //Maybe this should be broken up into separate procs for each load method?
 /mob/var/next_load = -1
 /obj/item/weapon/gun/projectile/proc/load_ammo(var/obj/item/A, mob/user)
+	if (gun_work_busy) return FALSE
 
 	if (world.time < user.next_load)
 		return
 
 	if (load_delay && !do_after(user, load_delay, src, can_move = TRUE))
 		return
+	if (gun_work_busy) return FALSE
 
 	user.next_load = world.time + 1
 
@@ -376,6 +378,7 @@
 	update_icon()
 
 /obj/item/weapon/gun/projectile/proc/tactical_reload(var/obj/item/A as obj, mob/user)
+	if (gun_work_busy) return FALSE
 	if(!can_tactical_reload)
 		return FALSE
 	if(!good_mags.Find(A.type))
@@ -386,6 +389,13 @@
 	return TRUE
 
 /obj/item/weapon/gun/projectile/attackby(var/obj/item/A as obj, mob/user)
+	if (istype(A, /obj/item/weapon/gun_cleaning_kit))
+		if (!service_firearm(user,A,null))
+			to_chat(user,SPAN_WARNING("Unload first. A cleaning kit works only from 50% up to 80% condition; worse damage needs a firearm maintenance bench."))
+		return
+	if (istype(A, /obj/item/weapon/material/kitchen/utensil/knife))
+		file_serial(A,user)
+		return
 	..()
 	if(launcher && (istype(A, /obj/item/weapon/grenade)))//load check it for it's type
 		playsound(src, 'sound/weapons/guns/interact/launcher_insertgrenade.ogg', 50, 1)
