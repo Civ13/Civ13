@@ -210,3 +210,6 @@ worktree that will be archived while the MCP entry still points to it.
 opt-in full-game capture adapter. `scripts/test-power.ps1` requires an explicit
 BYOND bin path; CI also compiles the excluded gameplay adapter. Powerflow and
 currentflow are instantaneous capacity and reserved demand, not stored energy.
+
+<!-- 2026-10-11: GitHub comment review -->
+Tools under tools/comment-review provide an authenticated-gh local collector and a disabled-by-default Codex event workflow. Preserve ignored data/comment-review cursors/receipts across worktree cleanup; inspect current API data before acknowledging or posting. The local collector does not install a scheduler or consume API credentials. See tools/comment-review/README.md for event trust boundaries and activation settings.
