@@ -39,6 +39,8 @@ var/global/failures = 0
         check(GLOB.event_sources_count[source] == 1 && GLOB.event_listen_count[listener] == 1, "single removal must preserve remaining counts")
         event.raise_event(source)
         check(listener.first_hits == 1 && listener.second_hits == 2, "single removal must preserve second callback")
+        event.register(source, listener, /datum/test_listener/proc/first)
+        check(GLOB.event_sources_count[source] == 2, "bulk removal setup must contain two callbacks")
         event.unregister(source, listener)
         check(!event.event_sources.len, "source callbacks removed")
         check(!GLOB.event_sources_count.len && !GLOB.event_listen_count.len, "bulk unregister retained source/listener keys")
