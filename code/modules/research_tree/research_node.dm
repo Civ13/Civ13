@@ -889,7 +889,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/ancient/handcannon" = "gunpowder",
 		"/obj/item/weapon/gun/projectile/ancient/matchlock" = "gunpowder",
 		"/obj/item/weapon/gun/projectile/ancient/tanegashima" = "gunpowder",
-		// --- gunsmithing (12) ---
+		// --- gunsmithing (13) ---
+		"/obj/item/weapon/gun_mount" = "gunsmithing",
 		"/obj/item/blackpowder_part/stock/pistol" = "gunsmithing",
 		"/obj/item/blackpowder_part/stock/musket" = "gunsmithing",
 		"/obj/item/clothing/accessory/holster/hip" = "gunsmithing",

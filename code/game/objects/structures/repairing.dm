@@ -121,7 +121,7 @@
 	throwforce = WEAPON_FORCE_NORMAL
 	w_class = ITEM_SIZE_SMALL
 
-/obj/item/weapon/gun/projectile/attackby(obj/item/M as obj, mob/user as mob)
+/obj/item/weapon/gun/projectile/proc/file_serial(obj/item/M, mob/user)
 	if (istype(M, /obj/item/weapon/material/kitchen/utensil/knife) && (!(istype(src, /obj/item/weapon/gun/projectile/bow))))
 		switch(alert(user,"Ae you sure you want to scratch the serial number? This cannot be reversed and will make the gun illegal!","Serial number filing","Yes","No"))
 			if ("No")
@@ -132,20 +132,3 @@
 					to_chat(user, "You successfully scratch the serial number, making the gun untraceable.")
 					serial = ""
 					return
-	else if (istype(M, /obj/item/weapon/gun_cleaning_kit))
-		if (!istype(src, /obj/item/weapon/gun/projectile/bow))
-			if ((health/maxhealth)<0.5)
-				visible_message("<span class='warning'>\The [src.name]is too damaged, you need a specialized firearm repairing bench!</span>")
-			else if ((health/maxhealth)>0.8)
-				visible_message("<span class='warning'>You can't repair \the [src.name] more than this without a specialized firearm repairing bench!</span>")
-
-			visible_message("<span class='notice'>[user] starts to clean the [src.name]...</span>")
-			if (do_after(user, 100, src))
-				health = src.maxhealth*0.8
-				visible_message("<span class='notice'>[user] finishes cleaning the [src.name].</span>")
-				return
-			else
-				visible_message("<span class='notice'>[user] stops cleaning the [src.name].</span>")
-				return
-	else
-		..()

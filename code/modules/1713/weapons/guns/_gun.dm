@@ -11,6 +11,9 @@
 	..()
 
 /obj/item/weapon/gun/attackby(obj/item/I, mob/user)
+	if (istype(I, /obj/item/weapon/gun_mount))
+		try_attach(I, user)
+		return
 	if (istype(I, /obj/item/weapon/attachment))
 		var/obj/item/weapon/attachment/A = I
 		if (A.attachable)
