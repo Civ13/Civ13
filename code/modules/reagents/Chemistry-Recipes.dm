@@ -603,6 +603,14 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("carbon" = 1, "ethanol" = 2)
 	result_amount = 1
 
+// Renewable carbon feedstock from the existing wood-charcoal production path.
+/datum/chemical_reaction/acetone_charcoal
+	name = "Acetone from charcoal"
+	id = "acetone_charcoal"
+	result = "acetone"
+	required_reagents = list("charcoal" = 1, "ethanol" = 2)
+	result_amount = 1
+
 /datum/chemical_reaction/salt
 	name = "Table Salt"
 	id = "sodiumchloride"

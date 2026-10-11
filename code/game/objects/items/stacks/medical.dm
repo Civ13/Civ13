@@ -182,7 +182,7 @@
 /obj/item/stack/medical/advanced/herbs
 	name = "healing herbs"
 	singular_name = "healing herb"
-	desc = "A bunch of healing herbs collected from bushes. Helps clean the wounds."
+	desc = "Healing herbs from bushes. Apply to wounds, plant on ploughed soil, or use in hand to chew one as a slow illness remedy. Take three herbs across ten minutes without letting the remedy run out."
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "healing_herbs"
 	item_state = null
@@ -192,6 +192,17 @@
 
 /obj/item/stack/medical/advanced/herbs/small
 	amount = 1
+
+/obj/item/stack/medical/advanced/herbs/attack_self(mob/user as mob)
+	if (!ishuman(user) || user.stat != CONSCIOUS || !user.can_eat(src))
+		return
+	var/mob/living/human/H = user
+	if (!H.ingested || H.ingested.get_free_space() < 10)
+		to_chat(user, SPAN_WARNING("You cannot take another herb dose yet."))
+		return
+	H.ingested.add_reagent("herbal_remedy", 10)
+	to_chat(user, SPAN_NOTICE("You chew a healing herb. It provides about three minutes of slow treatment; take another before it runs out. A full course takes ten minutes."))
+	use(1)
 
 /obj/item/stack/medical/advanced/herbs/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())
