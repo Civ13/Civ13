@@ -718,6 +718,7 @@
 	description = "Bitter, from the cinchona plant."
 	taste_description = "very strong bitterness"
 	color = "#f4f4f4"
+	metabolism = 0.05 // One 10-unit cinchona harvest covers a 180-tick course.
 
 /datum/reagent/drink/quinine/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
@@ -727,7 +728,7 @@
 	if (istype(M, /mob/living/human))
 		var/mob/living/human/HH = M
 		if (HH.disease == 1 && HH.disease_type == "malaria")
-			HH.disease_treatment = TRUE
+			HH.receive_disease_treatment(1)
 
 /datum/reagent/drink/coffee
 	name = "Coffee"
