@@ -78,3 +78,6 @@ Or use the interactive selector:
 ```bash
 ./scripts/select_map.sh
 ```
+
+## Contributor API reference
+See [source documentation generation and comment conventions](docs/api/README.md).
