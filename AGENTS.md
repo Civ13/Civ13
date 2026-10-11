@@ -403,3 +403,9 @@ the hourly fallback. Keep new seasonal maps and transition hooks in sync with
 when the third argument is omitted. Natural calls count transitions. Forward
 all three arguments in season overrides and honor `looping = FALSE` to avoid
 starting extra recurring cycles from the admin command.
+<!-- 2026-10-11: trench save progress -->
+- Trench types reconstruct depth/flooring and neighbor edges, but construction
+  progress requires explicit turf save fields: trench_filling and dirt/sand
+  trench_stage. Do not persist cooldowns, overlays or recovery registries.
+- tests/trench_save/run.py runs production whole-world disk round trips with
+  isolated startup and independent filling/digging omission controls.

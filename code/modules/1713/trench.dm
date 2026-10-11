@@ -4,6 +4,7 @@ var/list/global/floor_cache = list()
 	var/previous_turf = /turf/floor/dirt
 
 /turf/floor/trench
+	map_storage_saved_vars = "icon_state;name;trench_filling"
 	name = "trench"
 	icon = 'icons/turf/trench.dmi'
 	icon_state = "trench"
@@ -175,6 +176,7 @@ var/list/global/floor_cache = list()
 
 
 /turf/floor/dirt
+	map_storage_saved_vars = "icon_state;name;trench_stage"
 	var/trench_stage = 0
 	available_dirt = 2
 /turf/floor/trench/Enter(atom/movable/O, atom/oldloc)
@@ -349,6 +351,7 @@ var/list/global/floor_cache = list()
 	..()
 
 /turf/floor/beach/sand
+	map_storage_saved_vars = "icon_state;name;trench_stage"
 	var/trench_stage = 0
 /turf/floor/beach/sand/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype(C, /obj/item/weapon/material/shovel) && user.a_intent == I_HARM)
