@@ -24,6 +24,10 @@ var/global/icon_updates = 0
     maxy = 3
     turf = /turf/floor
 /world/New()
+    var/list/channel_states = icon_states('icons/turf/trench.dmi')
+    for (var/junction in 0 to 15)
+        check("irrigation[junction]" in channel_states, "missing dry channel sprite [junction]")
+        check("irrigation[junction]_flooded" in channel_states, "missing flooded channel sprite [junction]")
     var/turf/floor/C = locate(3,2,1)
     var/turf/floor/F = locate(3,1,1)
     C.irrigation = TRUE
