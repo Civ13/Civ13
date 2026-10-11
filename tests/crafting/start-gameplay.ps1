@@ -4,8 +4,8 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
-$commit = (git -C $repo rev-parse HEAD).Trim()
-if (git -C $repo status --porcelain) { throw 'Use a clean committed checkout for evidence' }
+. (Join-Path $PSScriptRoot '../memory/gameplay-evidence-common.ps1')
+$commit = Get-EvidenceCheckoutCommit -Repository $repo
 if (Get-NetTCPConnection -LocalPort $Port -ErrorAction SilentlyContinue) { throw 'Requested local evidence port is occupied' }
 $nonce = [guid]::NewGuid().ToString('N')
 $run = Join-Path ([IO.Path]::GetTempPath()) ('civ13-evidence-' + 'crafting' + '-' + $nonce)
@@ -56,6 +56,19 @@ $config = $config.Replace('SERVER_NAME Civilization 13',"SERVER_NAME Civ13 LOCAL
 $started = (Get-Date).ToUniversalTime().ToString('o')
 $daemon = Start-Process -FilePath (Join-Path $ByondBin 'dreamdaemon.exe') -ArgumentList @((Join-Path $run 'civ13.dmb'),"$Port",'-invisible','-trusted','-logself') -WorkingDirectory $run -WindowStyle Hidden -PassThru
 $metadata = [ordered]@{commit=$commit;scenario='crafting';run=$run;port=$Port;nonce=$nonce;pid=$daemon.Id;started_utc=$started;binary_sha256=(Get-FileHash (Join-Path $run 'civ13.dmb')).Hash;scope='isolated-game with opt-in local test adapter'}
-$metadata | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $run 'session.json')
+$sessionPath = Join-Path $run 'session.json'
+$metadata | ConvertTo-Json | Set-Content -LiteralPath $sessionPath
+try {
+    $null = Wait-EvidenceServerReady -Process $daemon -ExpectedCommit $commit -TimeoutMilliseconds 60000 -StatusQuery {
+        $queryOutput = & (Join-Path $PSScriptRoot 'query-gameplay.ps1') -SessionJson $sessionPath -ByondBin $ByondBin -Action status
+        $paths = @($queryOutput | Where-Object { $_ -match '^QUERY_RESULT=' })
+        if ($paths.Count -ne 1) { throw 'Missing authenticated readiness result' }
+        Read-EvidenceQueryResult -Path $paths[0].Substring(13) -ExpectedCommit $commit -Action status
+    }
+}
+catch {
+    if (!$daemon.HasExited) { Stop-Process -Id $daemon.Id }
+    throw
+}
 Write-Output "SESSION_JSON=$(Join-Path $run 'session.json')"
 Write-Output "Connect a fresh Dream Seeker to byond://127.0.0.1:$Port; adapter nonce is in session.json."

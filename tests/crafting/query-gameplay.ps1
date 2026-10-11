@@ -5,6 +5,7 @@ param(
     [ValidateSet(1,2,4,8)][int]$Direction=1
 )
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot '../memory/gameplay-evidence-common.ps1')
 $session=Get-Content -LiteralPath $SessionJson -Raw | ConvertFrom-Json
 $run=Join-Path $session.run ('query-'+[guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $run | Out-Null
@@ -26,7 +27,10 @@ $build | Set-Content -LiteralPath (Join-Path $run 'build.log')
 if ($LASTEXITCODE -ne 0 -or ($build -join "`n") -notmatch '0 errors, 0 warnings') { throw 'Query compilation failed' }
 $process=Start-Process -FilePath (Join-Path $ByondBin 'dreamdaemon.exe') -ArgumentList @((Join-Path $run 'query.dmb'),'-invisible','-trusted','-logself','-close') -WorkingDirectory $run -WindowStyle Hidden -PassThru
 if (!$process.WaitForExit(15000)) { Stop-Process -Id $process.Id; throw "Query timeout: $run" }
+if ($process.ExitCode -ne 0) { throw 'Query process failed' }
 $result=Join-Path $run 'result.json'
-if (!(Test-Path -LiteralPath $result)) { throw "Missing query result: $run" }
+$response = Read-EvidenceQueryResult -Path $result -ExpectedCommit $session.commit -Action $Action
+if ($response.error) { throw "Evidence action rejected: $($response.error)" }
+if ($Action -ne 'status' -and $response.client -ne 1) { throw 'Evidence action requires a local admin client' }
 Get-Content -LiteralPath $result
 Write-Output "QUERY_RESULT=$result"
