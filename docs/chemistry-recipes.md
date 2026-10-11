@@ -51,7 +51,7 @@ progression still determine which recipes a player is offered.
 
 | Chain | Game conversion |
 | --- | --- |
-| Acid precursor | 1 hydrogen + 1 chlorine -> 1 hydrogen chloride; 1 hydrogen chloride + 5 water -> 5 hydrochloric acid |
+| Acid precursor | 2 hydrogen + 2 chlorine -> 1 hydrogen chloride; 1 hydrogen chloride + 5 water -> 5 hydrochloric acid |
 | Crude gelatin | 4 collagen + 1 hydrochloric acid, digestive protease or fruit protease -> 5 unpurified gelatin |
 | Purification | Centrifuge 5 unpurified gelatin -> 4 purified gelatin |
 | Solid gelatin | 4 purified gelatin + 1 water or purified ethanol -> 5 solid gelatin |

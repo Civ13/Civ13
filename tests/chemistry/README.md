@@ -78,7 +78,8 @@ in a generated copy and must detect the missing output before consuming inputs.
   diesel-only engines reject the blend.
 - All six gelatin treatment/finishing combinations, production transfers, exact
   centrifuge yields, all blood fractions, unknown/full-collector rejection and
-  the actual 15-second callback with powered/lost-power/lost-collector cases.
+  the actual 15-second callback with powered/lost-power/lost-collector cases and
+  a restarted cycle that rejects its obsolete callback.
 
 `--probe biochemistry --negative-control` removes enginefuel registration in a
 generated source copy and requires the missing-product failure. CI runs both.

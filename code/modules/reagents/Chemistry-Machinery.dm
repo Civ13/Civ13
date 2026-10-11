@@ -377,6 +377,7 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/active = FALSE
+	var/cycle_token = 0
 	powerneeded = 30
 	var/obj/item/weapon/reagent_containers/glass/beaker/collector = null
 
@@ -485,6 +486,7 @@
 	return
 
 /obj/structure/centrifuge/proc/process_machine()
+	var/this_cycle = ++cycle_token
 	if (!check_power())
 		active = FALSE
 		update_icon()
@@ -492,7 +494,7 @@
 		return
 	else
 		spawn(15 SECONDS)
-			if(!active)
+			if(!src || gcDestroyed || !active || this_cycle != cycle_token)
 				return
 			if (!check_power())
 				active = FALSE
