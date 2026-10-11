@@ -40,7 +40,9 @@ Chicken/rooster also yields one giblets portion. Other nonmammals do not gain
 mammalian organs, sinew, generic leather or bone. Existing reptile skinning pelts
 remain. White-wolf and giant-gorilla special pelts are selected before their base
 types. Species pelt counts remain in `harvest_hide()`; no new organ datums or
-per-organ processes/timers are registered.
+organ-specific processes/timers are registered. Offal inherits the existing
+food-decay sleeping proc per portion, so bounded outputs also bound that added
+existing food-processing work; this is not a zero-overhead memory claim.
 
 Offal is food, not a transplant organ. Each portion starts with two protein
 units, is raw, decays through existing food handling and accepts existing meat
