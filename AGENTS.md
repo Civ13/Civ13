@@ -242,6 +242,11 @@ Native BYOND world.Export returns the remote Topic value, and its caller address
   costs, replacement cancellation and native contained-input disk saves through
   the resource-extraction launcher. Same-type `ChangeTurf()` can return the
   existing turf; use actual native replacement when testing replacement identity.
+<!-- 2026-10-11: bounded mining yield comparison -->
+- The resource extraction launcher's `tests/mining_yields/probe.dm` option adapts
+  only RNG calls in the production mining body. It checks branch/era endpoints
+  and finite conversion; fossils yield one (two in special caves), so do not
+  claim every destructive resource exceeds two-unit renewable mineral batches.
 
 <!-- 2026-10-11: petroleum save lifecycle -->
 - Oil wells preserve barrels in native saved contents and rebuild runtime links after load. Constructors must not claim floor barrels: empty contents restoration can delete those links, while moving a contained barrel to its turf during save can omit it from the turf iteration. `tests/petroleum_lifecycle/probe.dm` checks disk-backed entry/turf round trips and bounded callbacks through the resource extraction launcher.
