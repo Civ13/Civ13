@@ -22,10 +22,25 @@
 /turf/floor/grass/ex_act(severity)
 	return
 
+/turf/floor/grass/var/grass_registry_index = 0
+
 /turf/floor/grass/New()
 	..()
 	grass_turf_list += src
+	grass_registry_index = grass_turf_list.len
 	icon_state = "grass[rand(0,3)]"
+
+// BYOND calls Del(), rather than Destroy(), when a turf is replaced.
+/turf/floor/grass/Del()
+	// Swap-remove avoids a linear search and shifting the whole map's registry.
+	if (grass_registry_index)
+		var/last_index = grass_turf_list.len
+		var/turf/floor/grass/last_grass = grass_turf_list[last_index]
+		grass_turf_list[grass_registry_index] = last_grass
+		last_grass.grass_registry_index = grass_registry_index
+		grass_turf_list.Cut(last_index, last_index + 1)
+		grass_registry_index = 0
+	..()
 
 /turf/floor/proc/plant()
 	return
@@ -236,13 +251,24 @@
 	var/min_soil_nutrition = 0
 	initial_flooring = /decl/flooring/dirt
 
+// Turf replacement preserves sleeping procs but resets instance vars.
+// Each new dirt turf must invalidate any recovery chain from its predecessor.
+/datum/soil_recovery_token
+/turf/floor/dirt/var/datum/soil_recovery_token/soil_recovery_token
+
 /turf/floor/dirt/New()
+	soil_recovery_token = new
 	soil_nutrition_recover() // Starts soil nutrition recover
 	return ..()
 
+/turf/floor/dirt/Del()
+	soil_recovery_token = null
+	..()
+
 /turf/floor/dirt/proc/soil_nutrition_recover()
+	var/datum/soil_recovery_token/token = soil_recovery_token
 	spawn(rand(12000,12010)) // Every 20 minutes the soil will recover. Randomised values to prevent all the turfs from running it at the same time lagging the game
-		if(!istype(src, /turf/floor/dirt)) // It could be that the turf has ceased to be dirt during the wait
+		if (!istype(src, /turf/floor/dirt) || soil_recovery_token != token)
 			return
 		if(soil_nutrition < max_soil_nutrition)
 			if (!locate(/obj/structure/farming/plant) in src) // Soil recovers when no farming plants

@@ -76,6 +76,8 @@
 	user.drop_from_inventory(src)
 	anchored = TRUE
 	to_chat(user, "You connect the cables on this tile.")
+	for (var/obj/structure/cable/CB in turflist)
+		CB.rebuild_supply()
 	return
 /obj/item/connector/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wrench))
@@ -190,6 +192,9 @@
 				CLC.connections += CLD
 	if (turflist.len > 1)
 		to_chat(user, "You connect the cables on this tile.")
+	for (var/obj/structure/cable/CB in turflist)
+		CB.rebuild_supply()
+	C.rebuild_supply()
 	return C
 
 //////////////////////////////

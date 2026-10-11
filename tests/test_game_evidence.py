@@ -11,9 +11,7 @@ import unittest
 
 
 KIT = Path(__file__).resolve().parents[1]
-HELPER = KIT / "skills/civ13-byond-verification/scripts/check_game_evidence.py"
-if not HELPER.is_file():
-    HELPER = KIT / "scripts/check-game-evidence.py"
+HELPER = KIT / "scripts/check-game-evidence.py"
 spec = importlib.util.spec_from_file_location("game_evidence", HELPER)
 evidence = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(evidence)
@@ -182,6 +180,15 @@ class GameEvidenceTests(unittest.TestCase):
         self.data.pop("memory")
         with self.assertRaisesRegex(ValueError, "requires parsed memory"):
             self.run_check()
+
+    def test_memory_rejects_extra_or_missing_csv_fields(self):
+        csv_text = self.memory_fixture()
+        for bad_row in ('0,1,baseline,100,unexpected', '0,1,baseline'):
+            with self.subTest(row=bad_row):
+                (self.root / "samples.csv").write_text(
+                    csv_text.replace('0,1,baseline,100', bad_row), encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, "exactly four fields"):
+                    self.run_check()
 
     def test_memory_samples_must_fit_declared_run_duration(self):
         self.memory_fixture()

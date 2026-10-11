@@ -61,13 +61,17 @@ resource limit. Do not use or overwrite production saves for these checks.
 
 The [manifest contract](game-evidence-format.md) describes a bundle directory
 containing metadata and existing logs, captures, CSV samples, or fixture saves.
+Keep generated bundles outside the repository. After authorized direct PR uploads,
+verify attachment access before deleting local media; preserve reusable fixtures
+and substantive verification notes in version control.
 With a verified Python 3.9+ executable (on Windows, avoid Store aliases):
 
 ```powershell
-& $PythonPath ./scripts/check-game-evidence.py ./evidence/manifest.json --expected-commit '<full-tested-commit>' --report ./evidence/report.json
+& $PythonPath ./scripts/check-game-evidence.py "$EvidenceDirectory/manifest.json" --expected-commit '<full-tested-commit>' --report "$EvidenceDirectory/report.json"
 ```
 
-Use a fresh report path. The checker never starts processes, connects to a
+Set `$PythonPath` to the verified interpreter and `$EvidenceDirectory` to an
+absolute directory outside the checkout. Use a fresh report path. The checker never starts processes, connects to a
 service, captures a screen, fetches a URL, or uploads files. It checks local file
 hashes, references, commit equality, explicit skips, and sample structure. A
 dirty test run needs its diff as a patch artifact. Obtain the expected commit

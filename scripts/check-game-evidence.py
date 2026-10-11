@@ -81,6 +81,8 @@ def memory_summary(path, metadata, duration_seconds):
     previous_cycle = 0
     phase_order = {"baseline": 0, "peak": 1, "settled": 2}
     for row in rows:
+        require(None not in row and all(value is not None for value in row.values()),
+                "Memory CSV rows must contain exactly four fields")
         elapsed, value = float(row["elapsed_seconds"]), float(row["bytes"])
         cycle, phase = int(row["cycle"]), row["phase"]
         require(math.isfinite(elapsed) and math.isfinite(value) and elapsed >= 0 and value >= 0,
