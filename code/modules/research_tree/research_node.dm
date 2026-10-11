@@ -445,6 +445,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/camera" = "automation",
 		"/obj/structure/vending/sales/vending" = "automation",
 		// --- automobiles (13) ---
+		"/obj/structure/car_workshop" = "automobiles",
 		"/obj/item/vehicleparts/frame/bike" = "automobiles",
 		"/obj/item/vehicleparts/frame/boat/rhib" = "automobiles",
 		"/obj/structure/bed/chair/carseat/left" = "automobiles",

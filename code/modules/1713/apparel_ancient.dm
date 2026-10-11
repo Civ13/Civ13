@@ -702,6 +702,7 @@
 /obj/item/clothing/head/wolfpelt/white
 	name = "white wolfpelt headcover"
 	desc = "A wolf pelt turned into a headcover."
+	icon = 'icons/obj/crafted_item_repairs.dmi'
 	icon_state = "whitewolfpelt"
 	item_state = "whitewolfpelt"
 

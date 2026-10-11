@@ -1313,66 +1313,92 @@
 	var/tmp/obj/structure/oil_spring/base = null
 	var/tmp/obj/item/weapon/reagent_containers/glass/barrel/work_barrel = null
 	var/tmp/extracting_now = FALSE
+	var/tmp/extraction_pending = FALSE
+	var/tmp/extraction_due = 0
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
 /obj/structure/oilwell/New()
 	. = ..()
-	link_to_spring()
+	link_to_spring(FALSE)
 
-/obj/structure/oilwell/proc/link_to_spring()
+/obj/structure/oilwell/proc/link_to_spring(load_floor_barrel = FALSE)
+	base = null
 	for (var/obj/structure/oil_spring/OS in src.loc)
 		base = OS
 		break
 	if (!work_barrel)
-		load_barrel()
+		load_barrel(load_floor_barrel)
 	start_extraction()
 
 /obj/structure/oilwell/proc/start_extraction()
-	if (base)
-		if (!extracting_now)
-			extract()
+	if (base && base.loc == loc && work_barrel && work_barrel.loc == src && !extracting_now)
+		extracting_now = TRUE
+		extraction_due = world.time + 1200
+		extract()
+
+/obj/structure/oilwell/proc/stop_extraction()
+	extracting_now = FALSE
+	extraction_due = 0
 
 /obj/structure/oilwell/proc/extract()
-	extracting_now = TRUE
-	var/need_extract
-	spawn(1200)
-		need_extract = FALSE
-		if (work_barrel)
-			if (work_barrel.reagents.total_volume < work_barrel.reagents.maximum_volume)
-				if (base.counter>0)
-					work_barrel.reagents.add_reagent("petroleum", min(work_barrel.reagents.get_free_space(), 10))
-					base.counter --
-					need_extract = TRUE
-					if (work_barrel.reagents.total_volume == work_barrel.reagents.maximum_volume)
-						visible_message("<span class='notice'>\The [work_barrel] in \the [src] filled up.</span>")
-						need_extract = FALSE
-		if (base.counter<1)
-			need_extract = TRUE //need to be sure, that spring will refiled
-			if (base.timeout<world.time) //if no sheduled refill() we call it
-				base.timeout = world.time + 600 //give default timeout
-				base.refill()
-		if (need_extract)
+	if (!extracting_now || extraction_pending)
+		return
+	if (!isturf(loc) || !base || base.loc != loc || !work_barrel || work_barrel.loc != src || !work_barrel.reagents || work_barrel.reagents.get_free_space() <= 0)
+		if (base && base.loc != loc)
+			base = null
+		if (work_barrel && work_barrel.loc != src)
+			work_barrel = null
+		stop_extraction()
+		return
+	if (world.time >= extraction_due)
+		if (base.counter > 0)
+			work_barrel.reagents.add_reagent("petroleum", min(work_barrel.reagents.get_free_space(), 10))
+			base.counter--
+			base.update_icon()
+		if (base.counter < 1 && base.timeout < world.time)
+			base.timeout = world.time + 600
+			base.refill()
+		extraction_due = world.time + 1200
+		if (work_barrel.reagents.get_free_space() <= 0)
+			stop_extraction()
+			return
+	// One short callback bounds retained state after stop, save or destruction.
+	extraction_pending = TRUE
+	spawn(20)
+		extraction_pending = FALSE
+		if (extracting_now)
 			extract()
-		else
-			extracting_now = FALSE
 
-/obj/structure/oilwell/proc/load_barrel()
+/obj/structure/oilwell/proc/load_barrel(load_floor_barrel = TRUE)
+	if (work_barrel)
+		return
+	for (var/obj/item/weapon/reagent_containers/glass/barrel/contained in contents)
+		if (contained.loc == src && contained.reagents && contained.reagents.get_free_space() > 0)
+			work_barrel = contained
+			start_extraction()
+			return
+	if (!load_floor_barrel)
+		return
 	for (var/obj/item/weapon/reagent_containers/glass/barrel/B in src.loc)
 		if (B.reagents.total_volume<B.reagents.maximum_volume)
 			work_barrel = B
-			B.loc = null
+			B.loc = src
 			start_extraction()
 			break
 
 /obj/structure/oilwell/proc/unload_barrel()
-	work_barrel.loc = src.loc
+	stop_extraction()
+	if (work_barrel && work_barrel.loc == src)
+		work_barrel.loc = get_turf(src)
 	work_barrel = null
 
 /obj/structure/oilwell/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
 		if (!work_barrel)
 			if (do_after(user, 35, src))
+				if (work_barrel || W.loc != user || get_dist(user, src) > 1)
+					return
 				user.drop_item(src.loc)
 				user.visible_message("<span class='notice'>[user] puts \the [W] in \the [src].</span>",
 					"<span class='notice'>You put \the [W] in \the [src].</span>")
@@ -1387,16 +1413,21 @@
 
 /obj/structure/oilwell/attack_hand(var/mob/living/human/H)
 	if (work_barrel)
+		var/obj/item/weapon/reagent_containers/glass/barrel/removing = work_barrel
 		to_chat(H, "You start taking \the barrel from \the [src]...")
 		if (do_after(H, 35, src))
+			if (work_barrel != removing || removing.loc != src)
+				return
 			H.visible_message("<span class='notice'>[H] removes \the [work_barrel] from \the [src].</span>",
 				"<span class='notice'>You remove \the [work_barrel] from \the [src].</span>",)
 			unload_barrel()
 	else
-		to_chat(H, "There is no container to remove from \the [src].")
+		load_barrel()
+		to_chat(H, work_barrel ? "You connect the nearby barrel to \the [src]." : "There is no nearby empty container to connect to \the [src].")
 
 /obj/structure/oilwell/Destroy()
 	unload_barrel()
+	base = null
 	. = ..()
 
 /obj/structure/oilwell/initialize()
@@ -1405,11 +1436,18 @@
 
 /obj/structure/oilwell/before_save()
 	. = ..()
-	unload_barrel()
+	stop_extraction()
 
 /obj/structure/oilwell/after_load()
 	. = ..()
+	extraction_pending = FALSE
+	stop_extraction()
 	link_to_spring()
+
+/obj/structure/oilwell/get_saved_vars()
+	var/list/saved = ..()
+	saved -= list("base", "work_barrel", "extracting_now", "extraction_pending", "extraction_due")
+	return saved
 
 ////////////////////////////////////////////////////////////////////////
 //  Printing press  ////////////////////////////////////////////////////

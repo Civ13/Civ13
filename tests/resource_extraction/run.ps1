@@ -1,4 +1,8 @@
-param([Parameter(Mandatory)][string]$ByondBin, [ValidateSet('tests/resource_extraction/probe.dm','tests/hydraulic_fracturing/probe.dm')][string]$Probe = 'tests/resource_extraction/probe.dm')
+param(
+    [Parameter(Mandatory)][string]$ByondBin,
+    [ValidateSet('tests/resource_extraction/probe.dm','tests/petroleum_lifecycle/probe.dm','tests/hydraulic_fracturing/probe.dm')]
+    [string]$Probe = 'tests/resource_extraction/probe.dm'
+)
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $prefix = '.resource_probe_' + [guid]::NewGuid().ToString('N')
