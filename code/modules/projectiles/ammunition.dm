@@ -25,6 +25,7 @@
 	pixel_y = rand(-10, 10)
 	bullet_casings += src
 	randomrotation()
+	register_abandoned_item()
 
 /obj/item/ammo_casing/proc/checktype()
 	BB.btype = btype
@@ -49,6 +50,8 @@
 /obj/item/ammo_casing/proc/expend()
 	. = BB
 	BB = null
+	register_abandoned_item()
+	reset_abandonment()
 	set_dir(pick(cardinal)) //spin spent casings
 	update_icon()
 

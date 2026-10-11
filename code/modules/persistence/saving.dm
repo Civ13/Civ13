@@ -103,6 +103,8 @@
 		if(contents && AM.load_datums)
 			changing_vars += "reagents"
 	for(var/v in changing_vars)
+		if(A.persistence_runtime_var(v))
+			continue
 		if(!old_vars.Find(v))
 			savefile.cd = "/entries/[ref]"
 		if(A.vars.Find(v))

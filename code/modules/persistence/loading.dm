@@ -41,6 +41,8 @@
 		existing_references["[ind]"] = object
 		for(var/v in savefile.dir)
 			savefile.cd = "/entries/[ind]"
+			if(object.persistence_runtime_var(v))
+				continue
 			if(v == "type")
 				continue
 			else if(v == "content")
