@@ -59,7 +59,7 @@ node tools/comment-review/collect.mjs --repo Civ13/Civ13 --state 'D:\GitHub\Civ1
 `--respond` returns `{id,posted}`; it revalidates the current revision, posts
 using `gh api --input -`, and records the receipt only after success. It refuses
 changed/deleted/already-reviewed information. No comment text is interpolated into
-a command. Published output strips HTML comments/tags and neutralizes mentions.
+a command. Published output escapes HTML and neutralizes mentions.
 Local reviews carry a marker and are ignored only when authored by the authenticated
 reviewer account. Ordinary comments from that same account remain eligible.
 Workflow replies from `github-actions[bot]` and the Codex connector are excluded.

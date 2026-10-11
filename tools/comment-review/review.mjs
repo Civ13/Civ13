@@ -65,7 +65,7 @@ END UNTRUSTED DATA
 }
 export function formatReview(item, key, message) {
   // Prevent review output from summoning integrations or spoofing state markers.
-  const clean = clip(message, 18000).replace(/<!--[\s\S]*?-->/g, '')
+  const clean = clip(message, 18000).replace(/&/g, '&amp;')
     .replace(/@/g, '@\u200b').replace(/</g, '&lt;').replace(/>/g, '&gt;').trim();
   if (!clean) throw new Error('Empty review output');
   return `Codex review of [new information](${item.html_url})\n\n${clean}\n\n${key}`;
