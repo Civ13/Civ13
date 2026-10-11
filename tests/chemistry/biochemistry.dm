@@ -8,6 +8,7 @@
 		return fixture_power
 
 /proc/processing_extra_checks()
+	GLOB.all_observable_events = list()
 	GLOB.moved_event = new /decl/observ/moved
 	GLOB.dir_set_event = new /decl/observ/dir_set
 	GLOB.name_set_event = new /decl/observ/name_set
@@ -58,6 +59,12 @@
 	var/obj/structure/reaction_bench/bench = processing_new_bench()
 	for(var/id in list("hydrogen", "carbon", "oxygen", "nitrogen", "calcium", "chlorine", "sodium", "sulfur", "titanium", "boron", "fluorine", "aluminum", "water", "pethanol"))
 		biochemistry_supply(D, bench, id, 1)
+	bench.collector.reagents.clear_reagents()
+	biochemistry_supply(D, bench, "hydrogen", 1)
+	biochemistry_supply(D, bench, "chlorine", 1)
+	chemistry_assert(bench.synthesize("hydrogen_chloride"), "Obtainable hydrogen chloride precursor")
+	biochemistry_supply(D, bench, "water", 5)
+	chemistry_assert(bench.synthesize("hclacid") && bench.collector.reagents.get_reagent_amount("hclacid") == 5, "Obtainable hydrochloric-acid chain")
 	bench.collector.reagents.clear_reagents()
 	D.beaker = new /obj/item/weapon/reagent_containers/glass/beaker(D)
 	chemistry_assert(D.dispense_into_beaker("not_registered", 5) == 0, "Dispenser accepted unknown reagent")
@@ -114,6 +121,11 @@
 	fuel.reagents.add_reagent("pethanol", 2)
 	burner.attackby(fuel, null)
 	chemistry_assert(fuel.reagents.total_volume == 0 && burner.reagents.get_reagent_amount("pethanol") == 2, "Burner filling did not transfer fuel")
+	burner.loc = locate(1,1,1)
+	chemistry_assert(!burner.heat_bench(bench) && burner.reagents.get_reagent_amount("pethanol") == 2, "Remote burner heated bench or consumed fuel")
+	burner.loc = null
+	chemistry_assert(!burner.heat_bench(bench), "Unlocated burner heated bench")
+	burner.loc = get_turf(bench)
 	chemistry_assert(burner.heat_bench(bench) && burner.reagents.get_reagent_amount("pethanol") == 1, "Burner heat fuel cost")
 	bench.heated_until = world.time - 1
 	chemistry_assert(!bench.synthesize("polypropylene"), "Expired heat accepted")
@@ -188,6 +200,23 @@
 	timed.reagents.add_reagent("unpurified_gelatin", 5)
 	timed.active = TRUE
 	timed.process_machine()
+	var/obj/structure/centrifuge/chemistry_power/interrupted = new(locate(21,20,1))
+	interrupted.collector = new /obj/item/weapon/reagent_containers/glass/beaker/vial(interrupted)
+	interrupted.reagents.add_reagent("unpurified_gelatin", 5)
+	interrupted.active = TRUE
+	interrupted.process_machine()
+	interrupted.fixture_power = FALSE
+	var/obj/structure/centrifuge/chemistry_power/missing = new(locate(22,20,1))
+	missing.collector = new /obj/item/weapon/reagent_containers/glass/beaker/vial(missing)
+	missing.reagents.add_reagent("unpurified_gelatin", 5)
+	missing.active = TRUE
+	missing.process_machine()
+	qdel(missing.collector)
+	missing.collector = null
 	sleep(15 SECONDS + 1)
 	chemistry_assert(!timed.active && timed.collector.reagents.get_reagent_amount("purified_gelatin") == 4, "Real timed centrifuge callback failed")
+	chemistry_assert(!interrupted.active && interrupted.reagents.total_volume == 5 && interrupted.collector.reagents.total_volume == 0, "Lost power consumed input or left centrifuge active")
+	chemistry_assert(!missing.active && missing.reagents.total_volume == 5, "Lost collector consumed input or left centrifuge active")
 	qdel(timed)
+	qdel(interrupted)
+	qdel(missing)

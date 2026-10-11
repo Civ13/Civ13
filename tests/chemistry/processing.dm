@@ -19,7 +19,7 @@ var/processing_error = FALSE
 	world.log << "Runtime error: [error] at [error.file]:[error.line]"
 
 /world/New()
-	text2file(json_encode(list("commit" = world.params["tested_commit"], "probe" = "processing", "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "metadata.json")
+	text2file(json_encode(list("commit" = world.params["tested_commit"], "probe" = world.params["probe"], "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "metadata.json")
 	try
 		initialize_chemical_reagents()
 		initialize_chemical_reactions()
@@ -31,7 +31,11 @@ var/processing_error = FALSE
 			chemistry_assert(processing_extra_checks(), "Additional processing checks did not complete")
 		chemistry_assert(!processing_error, "Runtime error during processing")
 		if(!processing_error)
+#ifdef BIOCHEMISTRY_PROBE
+			text2file("PASS: 32 controlled recipes, finite feedstock/equipment construction, seed/plant/harvest and biological extraction, cold/expired/fuelled polymerization, actual engine blend consumption, six gelatin routes, blood fractions and timed centrifuge callback", "chemistry_result.txt")
+#else
 			text2file("PASS: controlled recipe outputs, calcium chain, transfers, catalyst/capacity/missing-input guards, beaker lifecycle, research/catalog and production construction", "chemistry_result.txt")
+#endif
 	catch(var/exception/error)
 		text2file("FAIL: [error]", "chemistry_result.txt")
 	del(world)

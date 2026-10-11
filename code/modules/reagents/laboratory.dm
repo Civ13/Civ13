@@ -115,7 +115,7 @@
 
 /obj/structure/reaction_bench/New()
 	..()
-	reaction_paths += list(/datum/chemical_reaction/hclacid, /datum/chemical_reaction/polypropylene, /datum/chemical_reaction/gelatin_acid, /datum/chemical_reaction/gelatin_enzyme, /datum/chemical_reaction/gelatin_fruit, /datum/chemical_reaction/gelatin_water, /datum/chemical_reaction/gelatin_ethanol, /datum/chemical_reaction/enginefuel)
+	reaction_paths += list(/datum/chemical_reaction/hydrogen_chloride, /datum/chemical_reaction/hclacid, /datum/chemical_reaction/polypropylene, /datum/chemical_reaction/gelatin_acid, /datum/chemical_reaction/gelatin_enzyme, /datum/chemical_reaction/gelatin_fruit, /datum/chemical_reaction/gelatin_water, /datum/chemical_reaction/gelatin_ethanol, /datum/chemical_reaction/enginefuel)
 
 /obj/item/weapon/laboratory_burner
 	name = "laboratory burner"
@@ -129,7 +129,9 @@
 	reagents = new /datum/reagents(20, src)
 
 /obj/item/weapon/laboratory_burner/proc/heat_bench(obj/structure/reaction_bench/bench)
-	if(!bench || get_dist(src, bench) > 1 || !bench.collector || bench.collector.loc != bench || !reagents.has_reagent("pethanol", 1))
+	var/turf/burner_turf = get_turf(src)
+	var/turf/bench_turf = get_turf(bench)
+	if(!burner_turf || !bench_turf || burner_turf.z != bench_turf.z || get_dist(burner_turf, bench_turf) > 1 || !bench.collector || bench.collector.loc != bench || !reagents.has_reagent("pethanol", 1))
 		return FALSE
 	reagents.remove_reagent("pethanol", 1)
 	bench.heated_until = world.time + 1 MINUTE

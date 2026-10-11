@@ -49,6 +49,7 @@
 	color = "#EEEEEE"
 
 /datum/reagent/enginefuel
+	parent_type = /datum/reagent/gasoline
 	name = "Blended Engine Fuel"
 	id = "enginefuel"
 	description = "The game's 9:1 gasoline and purified-ethanol blend for gasoline engines."

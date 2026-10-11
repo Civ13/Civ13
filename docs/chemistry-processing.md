@@ -36,5 +36,5 @@ references still use the liquid reagent. Existing isobutylene uses 4 carbon +
 Verification commands and adapters are documented in tests/chemistry/README.md.
 The processing fixture executes production transfers, selected reactions and
 construction, but it does not click menus or test timed character interactions.
-Gelatin processing, heat-gated polypropylene, engine fuel and comprehensive
-player feedstock acquisition remain separate acceptance work for issue #2299.
+The subsequent gelatin, heat/polypropylene, fuel and player acquisition paths
+are documented in [Chemistry Recipes](chemistry-recipes.md).

@@ -119,7 +119,7 @@ def main():
         # normal world startup. The probe calls production holders/reactions.
         platform_flags = ['-invisible', '-close'] if os.name == 'nt' else []
         runtime = subprocess.run([str(daemon), str(logs / generated[3].name), *platform_flags,
-                                  '-safe', '-params', f'tested_commit={commit}',
+                                  '-safe', '-params', f'tested_commit={commit}&probe={args.probe}',
                                   '-log', 'runtime.log'], cwd=logs,
                                  capture_output=True, text=True, timeout=45,
                                  creationflags=flags)
