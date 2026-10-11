@@ -95,6 +95,15 @@ var/fracture_runtime_error = FALSE
 		fracture_check(!D.active && C.currentflow == 0 && !O.reagents.total_volume && R.is_mineable, "removed sand cancels without payment")
 		S.loc = D
 		fracture_catalog(H)
+		H.loc = T
+		D.attack_hand(H)
+		D.next_spawn = 0
+		D.production_due = world.time
+		sleep(25)
+		R = locate(4,5,1)
+		fracture_check(!R.is_mineable && O.reagents.get_reagent_amount("petroleum") == 50, "second finite batch depletes replacement rock")
+		W.reagents.add_reagent("water", 20)
+		S = new(D,5,FALSE)
 		D.powersource = null
 		D.name = "saved finite rig"
 		map_storage.clear_bookkeeping()
@@ -102,15 +111,23 @@ var/fracture_runtime_error = FALSE
 		var/savefile/F = new("fracture.sav")
 		F["/format_version"] << 2
 		var/id = map_storage.BuildVarDirectory(F,D,1)
+		var/terrain_id = map_storage.BuildVarDirectory(F,R,1)
 		F.Flush()
 		qdel(D)
+		R = new /turf/floor/dirt/underground(R)
 		F = null
 		map_storage.clear_bookkeeping()
 		F = new("fracture.sav")
 		D = map_storage.Load_Entry(F,id,null,T)
+		R = map_storage.Load_Entry(F,terrain_id,R)
 		for (var/datum/A in map_storage.all_loaded)
 			A.after_load()
 		fracture_check(D && D.name == "saved finite rig" && !D.active && !D.process_pending && !D.fracture_target && D.contents.len == 3, "disk save reloads stopped with contained inputs")
+		fracture_check(R && !R.is_mineable && !istype(R,/turf/floor/dirt/underground), "disk save restores depleted terrain instead of mineable rock")
+		var/obj/structure/drill/fracking/rebuilt = new(T)
+		rebuilt.anchored = TRUE
+		rebuilt.attack_hand(H)
+		fracture_check(!rebuilt.active && !rebuilt.fracture_target, "rebuilding rig does not renew saved depleted terrain")
 	catch(var/exception/e)
 		fracture_check(FALSE, "exception [e]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = fracture_failures, "runtime_error" = fracture_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
