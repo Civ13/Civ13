@@ -23,7 +23,7 @@ var/survival_runtime_error = FALSE
 				H.survival_baseline_step()
 				if(!first_critical && H.getToxLoss() >= 100)
 					first_critical = tick
-			text2file("sample=[sample] first_100_toxin_seconds=[first_critical] toxin_180s=[H.getToxLoss()] progression=[H.disease_progression]", "baseline.txt")
+			text2file("sample=[sample] first_100_toxin_call=[first_critical] toxin_after_180_calls=[H.getToxLoss()] progression=[H.disease_progression]", "baseline.txt")
 			qdel(H)
 		survival_assert(!survival_runtime_error, "baseline runtime error invalidated observations")
 		text2file("PASS: baseline samples recorded in baseline.txt", "survival-result.txt")
