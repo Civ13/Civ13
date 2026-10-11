@@ -307,3 +307,6 @@ block uncertain replay. See tools/changelog/README.md before activation.
 <!-- 2026-10-11: hosted API reference -->
 Source docs publish from master via api-pages.yml to https://civ13.github.io/Civ13/.
 The generator validates emitted links and search anchors; search covers documented output only.
+
+<!-- 2026-10-11: documentation-only CI selection -->
+The always-running ci-selection.yml allows documented prose/API-generator changes to skip expensive game suites. All other paths, shared CI/harness changes and unknown comparisons run all game checks; see docs/ci-selection.md.

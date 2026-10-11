@@ -1,0 +1,39 @@
+name: CI change selection
+on:
+  workflow_call:
+    inputs:
+      base:
+        type: string
+        default: ''
+      head:
+        type: string
+        required: true
+    outputs:
+      game:
+        value: ${{ jobs.changes.outputs.game }}
+permissions:
+  contents: read
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      game: ${{ steps.select.outputs.game }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ inputs.head }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Selection regression tests
+        run: python3 -m unittest discover -s tests -p test_ci_selection.py -v
+      - id: select
+        env:
+          BASE_REF: ${{ inputs.base }}
+          HEAD_REF: ${{ inputs.head }}
+        run: python3 scripts/select-ci.py --base "$BASE_REF" --head "$HEAD_REF" --output "$GITHUB_OUTPUT"
+      - name: Validate all workflow syntax
+        run: |
+          curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz -o "$RUNNER_TEMP/actionlint.tar.gz"
+          echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  $RUNNER_TEMP/actionlint.tar.gz" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/actionlint.tar.gz" -C "$RUNNER_TEMP" actionlint
+          "$RUNNER_TEMP/actionlint" -shellcheck= .github/workflows/*.yml
