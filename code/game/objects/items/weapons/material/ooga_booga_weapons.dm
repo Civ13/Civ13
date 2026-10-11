@@ -85,7 +85,7 @@
 			return S
 
 /obj/item/weapon/branch/proc/axe_parts_valid(mob/user, obj/item/weapon/flint/head, obj/item/stack/binding)
-	return !QDELETED(src) && !QDELETED(user) && !QDELETED(head) && !QDELETED(binding) && sharpened && head.sharpened && user.stat == CONSCIOUS && loc == user && head.loc == user && binding.amount >= 1 && (binding.loc == user || binding.loc == get_turf(user)) && (istype(binding, /obj/item/stack/sinew) || istype(binding, /obj/item/stack/material/rope))
+	return !QDELETED(src) && !QDELETED(user) && !QDELETED(head) && !QDELETED(binding) && sharpened && head.sharpened && user.stat == CONSCIOUS && (loc == user || loc == get_turf(user)) && head.loc == user && binding.amount >= 1 && (binding.loc == user || binding.loc == get_turf(user)) && (istype(binding, /obj/item/stack/sinew) || istype(binding, /obj/item/stack/material/rope))
 
 /obj/item/weapon/branch/proc/axe_assembly_wait(mob/user)
 	return do_after(user, 100, src)

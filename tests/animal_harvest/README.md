@@ -3,7 +3,7 @@
 Run with a verified Python interpreter and explicit BYOND 516.1681 bin path:
 
 ```powershell
-& 'C:/Users/valza/AppData/Local/Programs/Python/Python313/python.exe' tests/animal_harvest/run.py --byond-bin 'C:/Users/valza/.codex/cache/byond/516.1681/byond/bin'
+& '<verified-python-executable>' tests/animal_harvest/run.py --byond-bin '<516.1681-bin>'
 ```
 
 The runner compiles the production DME without its map or normal world startup,

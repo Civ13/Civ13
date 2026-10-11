@@ -169,13 +169,23 @@ var/global/harvest_duplicate_result = null
 		map_storage.clear_bookkeeping()
 		qdel(S)
 		harvest_clear(site)
-		for (var/action in list("cancel", "drop", "empty", "disconnect", "concurrent", "complete"))
+		for (var/path in list(/mob/living/simple_animal/hostile/sabertooth/lion, /mob/living/simple_animal/hostile/sabertooth/lion/gladiator, /mob/living/simple_animal/hostile/sabertooth))
+			var/mob/living/simple_animal/A = new path(site)
+			A.harvest_hide(site)
+			var/obj/item/stack/material/pelt/lionpelt/pelt = locate() in site
+			var/expected = path == /mob/living/simple_animal/hostile/sabertooth/lion/gladiator ? 0 : (path == /mob/living/simple_animal/hostile/sabertooth/lion ? 3 : 6)
+			harvest_assert(expected ? pelt && pelt.amount == expected : !pelt, "Lion hide subtype yield: [path]")
+			qdel(A)
+			harvest_clear(site)
+		for (var/action in list("cancel", "drop", "move_branch", "empty", "disconnect", "concurrent", "complete", "ground"))
 			var/obj/item/weapon/branch/sharpened/harvest_tester/B = new(U)
 			var/obj/item/weapon/flint/sharpened/H = new(U)
 			var/obj/item/stack/sinew/binding = new(U, 2)
 			B.test_action = action
+			if (action == "ground")
+				B.loc = site
 			B.assemble_flint_axe(U, H)
-			if (action == "complete" || action == "concurrent")
+			if (action == "complete" || action == "concurrent" || action == "ground")
 				harvest_assert(!B.loc && !H.loc && !H.sharpened && binding.amount == 1 && harvest_count(site, /obj/item/weapon/material/hatchet/tribal/flint) == 1, "Axe assembly conservation/duplication: [action]")
 				B.assemble_flint_axe(U, H)
 				harvest_assert(binding.amount == 1 && harvest_count(site, /obj/item/weapon/material/hatchet/tribal/flint) == 1, "Consumed parts reused")
@@ -213,6 +223,8 @@ var/global/harvest_duplicate_result = null
 	if (test_action == "drop")
 		var/obj/item/weapon/flint/H = locate() in user
 		H.loc = get_turf(user)
+	if (test_action == "move_branch")
+		loc = locate(8,8,1)
 	if (test_action == "empty")
 		var/obj/item/stack/sinew/S = locate() in user
 		S.amount = 0
