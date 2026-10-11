@@ -17,3 +17,11 @@ Sources:
 - William Hafford's archaeological assessment, reported by HISTORY: https://www.history.com/articles/baghdad-battery
 
 Graphical acceptance requires real screenshots and reproduction steps at the tested head. Timing evidence also requires video. Runtime fixtures establish isolated contracts only. No production deployment or restart is part of this milestone.
+
+## Rechargeable extension (requested scope)
+
+Lead-acid accumulator: Industrial research 105, five lead sheets for the empty assembly, 20 units of sulfuric acid for commissioning; 12000 PU s capacity, 10 PU charge/discharge limits. Only running, unbroken, single-cable-port engines with no mechanical attachments are eligible charging sources. Reserve every connected consumer's nominal requirement, including idle consumers, before allocating charging. Per-engine per-second ledgers survive battery deletion and network splits, preventing a second battery from reclaiming a spent charging budget. Battery output never enters a charging budget. Charging reserves are reported to engine load accounting and deducted from advertised source capacity for that interval.
+
+Charging and discharge use one-second discrete simulation intervals and unity conversion efficiency; no additional losses or self-discharge are imposed. Discharge is prepaid and unused output is lost. Changing mode can lose a prepaid interval. Newly crafted accumulators have zero energy, and commissioning does not charge them. Primary cells cannot enter electrical charging mode.
+
+Persistence keeps energy, commissioning/assembly/electrode state and anchoring. Wiring, mode and prepaid output are intentionally omitted and must be reconnected after load. Scalar state round-trip checks do not establish full-world import behavior; that requires the actual persistence runtime separately.
