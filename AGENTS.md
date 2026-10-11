@@ -335,3 +335,6 @@ The always-running ci-selection.yml selects compilation conservatively and skips
 
 <!-- 2026-10-11: plant lifecycle -->
 Dead/static crops stop growth at entry and pending-wait wake; water death keeps its specific description, and age expiration marks the crop dead before stopping. `tests/plant_lifecycle/run.ps1 -ByondBin <516.1681-bin>` executes production growth/water/soil procs with accelerated waits; baseline callback counts are not whole-game performance evidence.
+
+<!-- 2026-10-11: crop diagnostics -->
+Plant examine delegates to read-only farming_diagnostics(skill). Preserve skill thresholds and sampled nutrition semantics; diagnostics do not sample soil or run growth. tests/plant_diagnostics/run.ps1 extracts the production helper in temporary storage.
