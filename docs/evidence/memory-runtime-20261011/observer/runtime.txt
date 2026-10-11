@@ -1,7 +1,0 @@
-STARTED RUNTIME LOGGING
-LOCAL EVIDENCE status: {"commit":"104f669840b61a972dbd17b66f79ad3e2a751834","map":"Nomads (Temperate)","dimensions":[155,225,2],"client":1,"state":1}
-LOCAL EVIDENCE prepare: {"commit":"104f669840b61a972dbd17b66f79ad3e2a751834","map":"Nomads (Temperate)","dimensions":[155,225,2],"client":1,"state":1}
-LOCAL EVIDENCE join: {"commit":"104f669840b61a972dbd17b66f79ad3e2a751834","map":"Nomads (Temperate)","dimensions":[155,225,2],"client":1,"state":3,"joined":1,"position":[1,89,2]}
-LOCAL EVIDENCE run: {"commit":"104f669840b61a972dbd17b66f79ad3e2a751834","map":"Nomads (Temperate)","dimensions":[155,225,2],"client":1,"state":3,"passed":1,"position":[1,89,2]}
-LOCAL EVIDENCE examine: {"commit":"104f669840b61a972dbd17b66f79ad3e2a751834","map":"Nomads (Temperate)","dimensions":[155,225,2],"client":1,"state":3,"examined":"tree","position":[1,89,2]}
-LOCAL EVIDENCE status: {"commit":"104f669840b61a972dbd17b66f79ad3e2a751834","map":"Nomads (Temperate)","dimensions":[155,225,2],"client":1,"state":3,"position":[4,89,2]}
