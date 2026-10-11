@@ -21,11 +21,12 @@ jobs:
           python-version: '3.12'
       - name: Configure source-link metadata
         env:
-          SOURCE_BRANCH: ${{ github.head_ref || github.ref_name }}
+          SOURCE_REF: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           git switch -C api-docs-build
           git config branch.api-docs-build.remote origin
-          git config branch.api-docs-build.merge refs/heads/master
+          git update-ref "refs/remotes/origin/$SOURCE_REF" HEAD
+          git config branch.api-docs-build.merge "refs/heads/$SOURCE_REF"
       - name: Generate and validate
         run: python scripts/build-api-docs.py
       - name: Upload reference
