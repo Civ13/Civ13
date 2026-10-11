@@ -4,9 +4,9 @@ param(
     [ValidateRange(1024,65535)][int]$Port = 16992
 )
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'gameplay-evidence-common.ps1')
 $repo = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
-$commit = (git -C $repo rev-parse HEAD).Trim()
-if (git -C $repo status --porcelain) { throw 'Use a clean committed checkout for evidence' }
+$commit = Get-EvidenceCheckoutCommit -Repository $repo
 $nonce = [guid]::NewGuid().ToString('N')
 $run = Join-Path ([IO.Path]::GetTempPath()) ('civ13-evidence-' + $Scenario + '-' + $nonce)
 New-Item -ItemType Directory -Path $run | Out-Null
@@ -24,7 +24,7 @@ try {
     Copy-Item -LiteralPath ([IO.Path]::ChangeExtension($environment,'dmb')) -Destination (Join-Path $run 'civ13.dmb')
     Copy-Item -LiteralPath ([IO.Path]::ChangeExtension($environment,'rsc')) -Destination (Join-Path $run 'civ13.rsc')
 }
-finally { Remove-Item -LiteralPath $environment }
+finally { Remove-EvidenceBuildOutputs -Environment $environment -Repository $repo }
 Copy-Item -LiteralPath (Join-Path $repo 'config'),(Join-Path $repo 'UI') -Destination $run -Recurse
 New-Item -ItemType Directory -Path (Join-Path $run 'SQL') | Out-Null
 'valzargaming;Debug Host;65535|||' | Set-Content -LiteralPath (Join-Path $run 'SQL/admins.txt')
@@ -37,7 +37,17 @@ $config = $config.Replace('SERVER_NAME Civilization 13',"SERVER_NAME Civ13 LOCAL
 $started = (Get-Date).ToUniversalTime().ToString('o')
 $daemon = Start-Process -FilePath (Join-Path $ByondBin 'dreamdaemon.exe') -ArgumentList @((Join-Path $run 'civ13.dmb'),"$Port",'-invisible','-trusted','-logself') -WorkingDirectory $run -WindowStyle Hidden -PassThru
 $metadata = [ordered]@{commit=$commit;scenario=$Scenario;run=$run;port=$Port;nonce=$nonce;pid=$daemon.Id;started_utc=$started;binary_sha256=(Get-FileHash (Join-Path $run 'civ13.dmb')).Hash;scope='isolated-game with opt-in local test adapter'}
-$metadata | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $run 'session.json')
+$pendingSession = Join-Path $run 'pending-session.json'
+$metadata | ConvertTo-Json | Set-Content -LiteralPath $pendingSession
+try {
+    $statusQuery = { & (Join-Path $PSScriptRoot 'query-gameplay-evidence.ps1') -SessionJson $pendingSession -ByondBin $ByondBin -Action status -PassThru }
+    $ready = Wait-EvidenceServerReady -Process $daemon -StatusQuery $statusQuery -ExpectedCommit $commit
+    Move-Item -LiteralPath $pendingSession -Destination (Join-Path $run 'session.json')
+}
+catch {
+    $daemon.Refresh()
+    if (!$daemon.HasExited) { $daemon.Kill(); $null = $daemon.WaitForExit(5000) }
+    throw
+}
 Write-Output "SESSION_JSON=$(Join-Path $run 'session.json')"
 Write-Output "Connect a fresh Dream Seeker to byond://127.0.0.1:$Port; adapter nonce is in session.json."
-
