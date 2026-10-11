@@ -93,6 +93,7 @@ map_storage
 		list/saving_references = list()
 		list/all_loaded = list()
 		list/found_types = list()
+		list/saved_turfs = list()
 		var/per_pause = 200
 		var/so_far = 0
 	New(game_id, backdoor, ignore)
@@ -154,6 +155,8 @@ map_storage
 	sleep(1)
 	world.log << "Clearing objects..."
 	for (var/obj/object in world)
+		if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay))
+			continue
 		qdel(object)
 	return
 
@@ -188,12 +191,20 @@ var/global/persistence_save_in_progress = FALSE
 	return 1
 
 /datum/controller/gameticker/proc/loadmap()
+	if(persistence_save_in_progress)
+		return FALSE
+	if(!map_storage.validate_world_save())
+		return FALSE
+	persistence_save_in_progress = TRUE
 	var/watch = start_watch()
 	log_startup_progress("Starting map load...")
 	sleep(1)
 	map_storage.ClearMap()
 	sleep(1)
-	map_storage.Load_World()
+	if(!map_storage.Load_World())
+		persistence_save_in_progress = FALSE
+		return FALSE
 	map_storage.load_map_metadata()
+	persistence_save_in_progress = FALSE
 	log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
 	return 1

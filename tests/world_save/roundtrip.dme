@@ -1,0 +1,10 @@
+#define TRUE 1
+#define FALSE 0
+#define TICK_CHECK
+#define TICK_LIMIT_TO_RUN 100
+#define EXCEPTION(message) new /exception(message)
+#include "stubs.dm"
+#include "../../code/modules/persistence/functions.dm"
+#include "../../code/modules/persistence/saving.dm"
+#include "../../code/modules/persistence/loading.dm"
+#include "roundtrip.dm"

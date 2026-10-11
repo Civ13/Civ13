@@ -11,11 +11,16 @@
 			return existing_references["[ind]"]
 		savefile.cd = "/entries/[ind]"
 		var/type = savefile["type"]
-		if (!findtext("[type]","/turf/"))
-			return
-		var/atom/movable/object
-		if(!type)
-			return
+		if(!ispath(type, /datum))
+			throw EXCEPTION("Invalid saved type at entry [ind]: [type]")
+		if(ispath(type, /obj/map_metadata))
+			existing_references["[ind]"] = map
+			return map
+		var/datum/object
+		if(ispath(type, /turf) && !old_turf)
+			old_turf = saved_turfs["[ind]"]
+			if(!old_turf)
+				throw EXCEPTION("Missing coordinate for turf entry [ind]")
 		if(lag_fix)
 			so_far++
 			if(so_far > per_pause)
@@ -46,14 +51,13 @@
 			else if(v == "content")
 				if(nocontents != 2)
 					var/list/refs = params2list(savefile[v])
-					var/finished = 0
-					while(!finished)
-						finished = 1
-						for(var/obj/ob in object.contents)
-							if(ob.loc != object) continue
-							finished = 0
-							ob.forceMove(locate(200, 100, 2))
-							ob.Destroy()
+					var/atom/container = object
+					if(container)
+						for(var/obj/ob in container.contents.Copy())
+							if(istype(ob, /obj/map_metadata) || istype(ob, /atom/movable/lighting_overlay))
+								continue
+							if(ob.loc == container)
+								qdel(ob)
 					for(var/x in refs)
 						Load_Entry(savefile, x, null, object, nocontents = nextContents, lag_fix = lag_fix)
 			else if(findtext(savefile[v], "**list"))
@@ -84,7 +88,7 @@
 			else if(v == "req_access_txt")
 				object.vars[v] = savefile[v]
 			else if(savefile[v] == "**emptylist")
-				continue
+				object.vars[v] = list()
 			else
 				savefile.cd = "/entries/[ind]"
 				object.vars[v] = savefile[v]
@@ -98,7 +102,7 @@
 				H.name = savefile["name"]
 		return object
 	catch(var/exception/e)
-		message_admins("EXCEPTION IN LOAD ENTRY!! [e] on [e.file]:[e.line], v: [savefile["type"]]")
+		throw e
 /map_storage/proc/Load_World()
 	for(var/B = 1, B <= world.maxz, B++)
 		try
@@ -108,6 +112,13 @@
 			if(!fexists("map_saves/[B].sav"))
 				continue
 			var/savefile/savefile = new("map_saves/[B].sav")
+			saved_turfs = list()
+			// Index every turf before recursive contents/variable references load.
+			for(var/ty = 1, ty <= world.maxy, ty++)
+				for(var/tx = 1, tx <= world.maxx, tx++)
+					savefile.cd = "/map/[B]/[ty]"
+					var/ref = savefile["[tx]"]
+					saved_turfs["[ref]"] = locate(tx, ty, B)
 			savefile.cd = "/map"
 			TICK_CHECK
 			for(var/z in savefile.dir)
@@ -135,8 +146,60 @@
 			log_startup_progress("	Loaded z-level [B] in [stop_watch(watch)]s.")
 		catch(var/exception/e)
 			message_admins("EXCEPTION IN MAP LOADING!! [e] on [e.file]:[e.line]")
+			clear_bookkeeping()
+			saved_turfs = list()
+			return FALSE
 	clear_bookkeeping()
+	saved_turfs = list()
 	log_startup_progress("Finished loading.")
+	return TRUE
+
+// A failed preflight must leave the running world untouched. Historical saves
+// use the same grid; the completion marker is required by the startup contract.
+/map_storage/proc/validate_world_save()
+	try
+		if(!fexists("map_saves/save_complete.txt") || !fexists("map_saves/map.txt"))
+			throw EXCEPTION("Save is incomplete: metadata or completion marker missing")
+		var/list/meta = splittext(file2text("map_saves/map.txt"), "\n")
+		if(meta.len < 9 || meta[1] != map.ID)
+			throw EXCEPTION("Save metadata does not match the current map")
+		for(var/z = 1, z <= world.maxz, z++)
+			if(!fexists("map_saves/[z].sav"))
+				throw EXCEPTION("Missing saved z-level [z]")
+			var/savefile/F = new("map_saves/[z].sav")
+			var/list/turf_refs = list()
+			F.cd = "/map"
+			if(F.dir.len != 1 || !("[z]" in F.dir))
+				throw EXCEPTION("Unexpected z-level grid in [z].sav")
+			F.cd = "/map/[z]"
+			if(F.dir.len != world.maxy)
+				throw EXCEPTION("Saved height differs from world.maxy on z=[z]")
+			for(var/y = 1, y <= world.maxy, y++)
+				F.cd = "/map/[z]/[y]"
+				if(F.dir.len != world.maxx)
+					throw EXCEPTION("Incomplete row at y=[y], z=[z]")
+				for(var/x = 1, x <= world.maxx, x++)
+					F.cd = "/map/[z]/[y]"
+					var/ref = F["[x]"]
+					if(!isnum(ref) || ref < 1 || ref != round(ref) || turf_refs["[ref]"])
+						throw EXCEPTION("Missing or duplicate turf at [x],[y],[z]")
+					turf_refs["[ref]"] = TRUE
+					F.cd = "/entries/[ref]"
+					var/type = F["type"]
+					if(!ispath(type, /turf))
+						throw EXCEPTION("Invalid turf type at [x],[y],[z]")
+					TICK_CHECK
+			F.cd = "/entries"
+			var/list/entries = F.dir.Copy()
+			for(var/ref in entries)
+				F.cd = "/entries/[ref]"
+				var/type = F["type"]
+				if(!ispath(type, /datum) || ispath(type, /area) || (ispath(type, /turf) && !turf_refs["[ref]"]))
+					throw EXCEPTION("Unsupported or unplaced saved entry [ref] on z=[z]")
+		return TRUE
+	catch(var/exception/e)
+		message_admins("Save rejected before clearing the world: [e]")
+		return FALSE
 
 // Restores the world-level state written at the top of Save_World(). Load_World()
 // only rebuilds turfs (see the /turf/ check in Load_Entry()), so without this the

@@ -58,6 +58,11 @@
 		return 0
 	if(!A.should_save)
 		return 0
+	if(istype(A, /obj/map_metadata))
+		return 0
+	for(var/ignored in ignore_types)
+		if(istype(A, ignored))
+			return 0
 	var/ind = saving_references.Find(A)
 	var/ref = 0
 	if(ind)
@@ -90,11 +95,8 @@
 		savefile.cd = "/entries/[ref]"
 		savefile["content"] << final_params
 	var/list/changing_vars
-	if(found_types.Find(A.type))
-		changing_vars = found_types[A.type]
-	else
-		changing_vars = A.get_saved_vars()
-		found_types["[A.type]"] = changing_vars
+	// Changed variables depend on the instance, not just its type.
+	changing_vars = A.get_saved_vars()
 	
 	var/list/old_vars = params2list(A.map_storage_saved_vars)
 	var/list/safe_lists = params2list(A.safe_list_vars)
@@ -103,6 +105,10 @@
 		if(contents && AM.load_datums)
 			changing_vars += "reagents"
 	for(var/v in changing_vars)
+		// Location is reconstructed by the map grid and contents graph. Saving it
+		// recursively used to create turf entries outside that graph.
+		if(v in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs"))
+			continue
 		if(!old_vars.Find(v))
 			savefile.cd = "/entries/[ref]"
 		if(A.vars.Find(v))
