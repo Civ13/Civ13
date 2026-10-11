@@ -397,3 +397,10 @@ or 6/12 running-server hours on static maps. Season routines record scalar
 transitions; startup climate assignments do not. Fixed wet-season labels use
 the hourly fallback. Keep new seasonal maps and transition hooks in sync with
 `tests/abandoned_items/run.py`; custom cycles may ignore `config.seasons_on`.
+
+<!-- 2026-10-11: trench save progress -->
+- Trench types reconstruct depth/flooring and neighbor edges, but construction
+  progress requires explicit turf save fields: trench_filling and dirt/sand
+  trench_stage. Do not persist cooldowns, overlays or recovery registries.
+- tests/trench_save/run.py runs production whole-world disk round trips with
+  isolated startup and independent filling/digging omission controls.
