@@ -42,3 +42,6 @@ webclient/dist/
 webclient/package-lock.json
 webclient/config.json
 TODO.md
+
+# Generated runtime evidence belongs in PR attachments, not source control
+/docs/evidence/memory-runtime-*/
