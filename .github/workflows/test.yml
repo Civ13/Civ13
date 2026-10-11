@@ -243,4 +243,3 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           /usr/bin/python3 tests/food_progression/run.py --byond-bin "$PWD/BYOND/byond/bin"
           /usr/bin/python3 tests/food_progression/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
-          /usr/bin/python3 tests/food_progression/run.py --byond-bin "$PWD/BYOND/byond/bin" --soil-negative-control

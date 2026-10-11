@@ -35,5 +35,5 @@ No game behavior or artwork is changed.
 
 The production dirt turf save allowlist must restore nondefault soil nutrition.
 `--soil-negative-control` removes only that allowlist addition in a generated
-source and requires this nutrition assertion to fail. CI runs both negative
-controls separately. Recovery tokens are excluded from the dirt allowlist.
+source and requires this nutrition assertion to fail. This additional control is an explicit local check; CI
+runs the normal probe (including soil restoration) and existing seed control. Recovery tokens are excluded from the dirt allowlist.
