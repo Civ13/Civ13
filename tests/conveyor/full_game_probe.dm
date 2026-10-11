@@ -53,6 +53,9 @@ var/global/datum/conveyor_game_probe/conveyor_game_probe = new
 		world.log << "FAIL: conveyor full-game probe: [e]"
 	if(world.params["visual"] && findtext(file2text("game_result.txt"), "PASS:") == 1)
 		prepare_visual()
+		if(world.params["auto_scene"] )
+			spawn(10)
+				wait_for_capture_client()
 	else
 		del(world)
 
@@ -64,6 +67,7 @@ var/global/datum/conveyor_game_probe/conveyor_game_probe = new
 		T.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
 	visual_belt = new(locate(20,20,1), EAST, FALSE)
 	visual_belt.id = "local_capture"
+	visual_belt.set_light(6, 2, "#FFFFFF")
 	visual_switch = new(locate(20,21,1), "local_capture")
 	visual_cargo = new /obj/item/weapon/material/kitchen/utensil/knife(visual_belt.loc)
 	visual_cargo.name = "movable conveyor test knife"
@@ -103,11 +107,13 @@ var/global/datum/conveyor_game_probe/conveyor_game_probe = new
 	set name = "Inspect conveyor probe"
 	if(!world.params["visual"] || !conveyor_game_probe.visual_belt)
 		return
+	src << browse(null, "window=playersetup")
 	screen.Cut()
 	eye = conveyor_game_probe.visual_belt.loc
 	perspective = EYE_PERSPECTIVE
 	mob.sight = SEE_TURFS | SEE_OBJS | SEE_MOBS | SEE_SELF
 	mob.see_in_dark = 8
+	mob.see_invisible = SEE_INVISIBLE_OBSERVER_NOLIGHTING
 	view = 7
 	to_chat(src, "<b>[file2text("game_result.txt")]</b><br>Commit [world.params["tested_commit"]], map [map.ID] [world.maxx]x[world.maxy]x[world.maxz], BYOND [world.byond_version].[world.byond_build]. Local disposable world. Use Run conveyor capture sequence for forward/reverse/stop.")
 
@@ -116,3 +122,18 @@ var/global/datum/conveyor_game_probe/conveyor_game_probe = new
 	set name = "Run conveyor capture sequence"
 	if(world.params["visual"])
 		conveyor_game_probe.capture_sequence(src)
+
+// Visual-only convenience: no lobby clicks or timing-sensitive command entry.
+/datum/conveyor_game_probe/proc/wait_for_capture_client()
+	var/deadline = world.time + 5000
+	while(world.time < deadline)
+		for(var/client/C)
+			if(C.mob)
+				sleep(20)
+				if(!C || !C.mob)
+					continue
+				C.inspect_conveyor_probe()
+				sleep(80)
+				capture_sequence(C)
+				return
+		sleep(10)

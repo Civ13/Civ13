@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$ByondBin, [switch]$Visual, [switch]$ExerciseCapture, [ValidateRange(1024,65535)][int]$Port=18328, [ValidateRange(60,900)][int]$TimeoutSeconds=120)
+param([Parameter(Mandatory=$true)][string]$ByondBin, [switch]$Visual, [switch]$AutoScene, [switch]$ExerciseCapture, [ValidateRange(1024,65535)][int]$Port=18328, [ValidateRange(60,900)][int]$TimeoutSeconds=120)
 $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $nonce = [guid]::NewGuid().ToString('N')
@@ -24,7 +24,9 @@ try {
     $commit = (& git -C $repo rev-parse HEAD).Trim()
     if ($LASTEXITCODE -or $commit -notmatch '^[0-9a-f]{40}$') { throw 'Cannot determine tested commit' }
     $parameters = 'tested_commit=' + $commit
+    if ($AutoScene -and !$Visual) { throw 'AutoScene requires Visual' }
     if ($Visual) { $parameters += '&visual=1' }
+    if ($AutoScene) { $parameters += '&auto_scene=1' }
     if ($ExerciseCapture) { $parameters += '&exercise_capture=1' }
     $process = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @((Join-Path $run 'probe.dmb'),"$Port",'-invisible','-safe','-params',$parameters,'-log','startup.log') -WorkingDirectory $run -WindowStyle Hidden -PassThru
     Write-Output "RUN_DIRECTORY=$run; PID=$($process.Id); connect=byond://127.0.0.1:$Port"

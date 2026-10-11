@@ -49,3 +49,10 @@ Do not use the stress-fixture reference count as evidence of OS RAM savings.
 Before requesting the capture turn, `-ExerciseCapture` runs that same sequence
 without a client and checks each position/anchoring result. This is offline
 sequence validation, not a substitute for actual screenshot/video capture.
+
+For a short assigned capture turn, add `-AutoScene`: after a local client connects,
+the opt-in world closes its lobby panel, displays the commit scene, waits eight
+seconds, then runs the same real forward/reverse/stop sequence automatically.
+Start recording immediately after connecting and retain at least 30 seconds.
+The test belt supplies a local light so cargo is visible; this affects only the
+capture adapter's disposable scene, not production lighting or movement.
