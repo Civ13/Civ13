@@ -21,8 +21,11 @@ world
 	var/turf/destination
 	var/area/current_area
 	var/obj/map_metadata/metadata
+	var/obj/item/test/other_z
 /datum/test
 	var/value = 0
+	var/datum/test/next
+	var/obj/item/test/backlink
 /proc/check(condition, message)
 	if(!condition)
 		throw EXCEPTION(message)
@@ -42,6 +45,8 @@ world
 		A.items = list()
 		A.reference = new /datum/test
 		A.reference.value = 123
+		A.reference.next = A.reference
+		A.reference.backlink = A
 		A.complex = list("literal **entry7", 7, 7, "key" = list("nested" = 42))
 		A.alias = A.complex
 		A.complex += list(A.complex)
@@ -63,6 +68,7 @@ world
 		B = locate(/obj/item/test) in A
 		check(B && B.number == 99, "nested contents lost")
 		check(A.reference && A.reference.value == 123, "datum reference lost")
+		check(A.reference.next == A.reference && A.reference.backlink == A, "datum/object cycle lost")
 		check(islist(A.items) && !A.items.len, "empty list reverted to default")
 		check(A.complex[1] == "literal **entry7", "literal marker string changed")
 		check(A.complex[2] == 7 && A.complex[3] == 7, "duplicates lost")
@@ -78,6 +84,14 @@ world
 		check(map_storage.Save_World(), "second export failed")
 		check(fexists("map_backups/save_complete.txt"), "backup completion marker missing")
 		check(map_storage.validate_world_save(), "second export rejected")
+		if(!world.params["large"])
+			A.other_z = C
+			var/datum/controller/gameticker/failed_export_ticker = new
+			check(!failed_export_ticker.savemap(), "cross-level object silently duplicated")
+			check(!fexists("map_saves/save_complete.txt") && !persistence_save_in_progress, "failed export retained completion marker or lock")
+			check(fexists("map_backups/save_complete.txt"), "failed export lost completed backup")
+			A.other_z = null
+			check(map_storage.Save_World(), "recovery export failed")
 		var/savefile/F1 = new("map_saves/1.sav")
 		F1["/maxx"] << world.maxx + 1
 		check(!map_storage.validate_world_save(), "dimension mismatch accepted")
