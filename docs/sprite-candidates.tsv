@@ -293,7 +293,6 @@ type	initial_icon	initial_state	initial_invisibility	declaration	reference_examp
 /obj/structure/farming/plant/bamboo	icons/farming/plants.dmi	bambooo-grow1	0	code/game/objects/farming.dm:512		Unreviewed initial default; obtainability and dynamic rendering not established
 /obj/structure/farming/plant/celery	icons/farming/vegetables.dmi	celery_grow1	0	code/game/objects/farming.dm:828		Unreviewed initial default; obtainability and dynamic rendering not established
 /obj/structure/farming/plant/cocoa	icons/farming/fruits.dmi	coco-grow1	0	code/game/objects/farming.dm:864		Unreviewed initial default; obtainability and dynamic rendering not established
-/obj/structure/farming/plant/herbs	icons/farming/plants.dmi	herbs_grow1	0	code/game/objects/farming.dm:554	code/game/objects/farming.dm:895; maps/1013/clash.dmm:1911	Unreviewed initial default; obtainability and dynamic rendering not established
 /obj/structure/farming/plant/liquorice	icons/farming/plants.dmi	liquorice_grow1	0	code/game/objects/farming.dm:837		Unreviewed initial default; obtainability and dynamic rendering not established
 /obj/structure/fitness	icons/obj/objects.dmi		0	code/game/objects/structures/fitness.dm:1		Unreviewed initial default; obtainability and dynamic rendering not established
 /obj/structure/lamp/lamp_small/alwayson/space	icons/obj/lighting.dmi	spacelights	0	code/modules/1713/modern_items.dm:262		Unreviewed initial default; obtainability and dynamic rendering not established

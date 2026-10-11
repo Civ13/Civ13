@@ -5,7 +5,13 @@
 	maxy = 1
 	maxz = 1
 
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
+
 /world/New()
+	OpenPort("none")
 	var/list/rows = list()
 	for(var/T in typesof(/obj/item, /obj/structure, /obj/machinery))
 		var/I = initial(T:icon)

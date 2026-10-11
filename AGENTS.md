@@ -237,6 +237,13 @@ zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
 ## Local MCP tooling
 
+<!-- 2026-10-11: irrigation propagation -->
+Irrigation propagates through cardinally connected channels with temporary local
+lists. Ordinary floors and filled-in channels are not water sources; salt reaches
+already-wet channels. Source removal does not drain existing channel water.
+`tests/irrigation/run.ps1 -ByondBin <516.1681-bin>` checks production procedures,
+including the pre-fix baseline; it does not prove map or construction acceptance.
+
 <!-- 2026-10-11: isolated legacy garbage queue -->
 When normal startup is disabled, atom `qdel` removes the atom from its location
 and queues it in `delayed_garbage`; it does not set the newer `gc_destroyed` flag
@@ -295,6 +302,14 @@ Tools under tools/comment-review provide an authenticated-gh local collector and
 Dormant comment-review listeners must be workflow_dispatch-only: GitHub can request approval before evaluating job guards. Keep automatic subscriptions in tools/comment-review/active-events.example.json until a separately reviewed activation.
 
 ## Train verification
+
+<!-- 2026-10-11: medicine regression isolation -->
+`tests/survival/run.py` checks production disease courses, oral metabolism,
+ingredient acquisition and timed fermentation/distillation in temporary storage.
+Its fixture materializes the global-controller `vars` name list before union:
+BYOND 516.1681 otherwise logs Bad ref during initialization on the historical
+baseline too. Runtime errors/engine diagnostics invalidate evidence. Direct
+`del()` of live test atoms triggers the production GC error; use `qdel()`.
 
 <!-- 2026-10-11: trace resource extraction -->
 `tests/resource_extraction/run.ps1` compiles production extraction types with
@@ -355,3 +370,5 @@ Nomads Europe foraged seeds use biome filtering like its climate-restricted grow
 <!-- 2026-10-11: compiled sprite audit -->
 - `tests/sprites/run.py --byond-bin <516.1681-bin> --output <temporary-json>` inventories compiled inherited item/structure/machinery defaults without constructing them or starting game systems. Its required-types manifest checks real DMI directions, frames and nonempty pixels; `--negative-control` restores a wrong optic icon resource in a generated source copy.
 - Missing initial states do not prove missing graphics: constructors, overlays, material recoloring and map overrides can supply them. Add new obtainable types to `tests/sprites/required-types.json` when static defaults are appropriate, or document and test their dynamic rendering. See `docs/sprite-audit.md` and its unresolved-candidate inventory.
+<!-- 2026-10-11: timed decal lifecycle -->
+Cleanable expiry uses code/processes/decal_decay.dm (256 candidates/second), not per-decal sleeping timers or direct Destroy. Preserve existing decay_timer lifetimes; decay_deadline/index are explicitly excluded from native save export/import. tests/decal_decay/run.py compares actual native lifecycle with --baseline historical cleanable source, without normal game startup. Baseline early-qdel retention and missing expiry GC bookkeeping are isolated evidence, not full-game OOM proof.
