@@ -1,0 +1,6 @@
+#search { margin-block: 1.5rem; }
+#api-search { display: block; box-sizing: border-box; width: 100%; max-width: 40rem; padding: .6rem; font: inherit; }
+#search-results { max-height: 25rem; overflow: auto; padding: 1rem 2rem; }
+#search-results a { overflow-wrap: anywhere; }
+a:focus-visible, input:focus-visible { outline: 3px solid #1769aa; outline-offset: 3px; }
+@media (max-width: 600px) { body { margin: .5rem; } main { overflow-wrap: anywhere; } table { display: block; overflow-x: auto; } }

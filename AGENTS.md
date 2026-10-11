@@ -303,3 +303,7 @@ The standalone publisher in tools/changelog requires reviewed manifests and live
 confirmation or a trusted successful production deployment event. A merge/CI pass
 is not shipment. Preserve the discord-changelog-receipts branch; pending receipts
 block uncertain replay. See tools/changelog/README.md before activation.
+
+<!-- 2026-10-11: hosted API reference -->
+Source docs publish from master via api-pages.yml to https://civ13.github.io/Civ13/.
+The generator validates emitted links and search anchors; search covers documented output only.
