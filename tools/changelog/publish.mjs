@@ -110,10 +110,9 @@ export async function run(env, event, deps = {}) {
   await api('git/ref/heads/' + stateBranch);
   let fileSha;
   const load = async id => {
-    const directory = await api('contents/receipts?ref=' + stateBranch);
-    requireValue(Array.isArray(directory), 'Invalid receipt directory');
-    if (!directory.some(x => x.name === id + '.json')) return null;
-    const f = await api('contents/receipts/' + id + '.json?ref=' + stateBranch);
+    const f = await api('contents/receipts/' + id + '.json?ref=' + stateBranch, { allowNotFound: true });
+    if (f === null) return null;
+    requireValue(f.type === 'file' && f.size <= 70000, 'Invalid receipt file');
     fileSha = f.sha;
     return JSON.parse(Buffer.from(f.content, 'base64').toString('utf8'));
   };
@@ -144,6 +143,3 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     } else await run(process.env, JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8')));
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-
-
-

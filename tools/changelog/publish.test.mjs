@@ -119,4 +119,3 @@ test('malformed webhook fails without external request', async () => {
     await assert.rejects(run({ ...env, CHANGELOG_ENABLED: 'true', DISCORD_CHANGELOG_WEBHOOK: url }, event, { api, http: async () => { throw Error('Should not call'); } }), /Invalid webhook/);
   }
 });
-
