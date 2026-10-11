@@ -31,6 +31,11 @@ class Page(HTMLParser):
             if key in attrs:
                 self.links.append(attrs[key])
 
+def inject(text, marker, replacement, name):
+    if marker not in text:
+        raise SystemExit(f'Missing {marker} in {name}; dmdoc markup changed')
+    return text.replace(marker, replacement)
+
 def main():
     os.chdir(ROOT)
     system = platform.system()
@@ -65,8 +70,8 @@ def main():
         for anchor in sorted(page.ids):
             if anchor.startswith(('proc/', 'var/', 'define/')):
                 entries.append({'label': label + '/' + anchor, 'url': relative + '#' + anchor})
-        text = text.replace('</head>', '<meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="search.css"><script defer src="search.js"></script></head>')
-        text = text.replace('</header>', ' - <a href="index.html#search">Search</a></header>')
+        text = inject(text, '</head>', '<meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="search.css"><script defer src="search.js"></script></head>', relative)
+        text = inject(text, '</header>', ' - <a href="index.html#search">Search</a></header>', relative)
         path.write_text(text, encoding='utf-8')
     for query in ('callback/proc/Invoke', 'datum/var', 'code/datums/callback'):
         if not any(query.lower() in entry['label'].lower() for entry in entries):
@@ -77,7 +82,7 @@ def main():
     index = output / 'index.html'
     text = index.read_text(encoding='utf-8')
     search = '<section id="search" aria-label="API search"><h2>Search source documentation</h2><label for="api-search">Types, procs, vars and documented files</label><input id="api-search" type="search" placeholder="Try callback, Invoke or cooldowns" autocomplete="off"><p id="search-status" role="status">Loading search index...</p><ul id="search-results"></ul><noscript>Enable JavaScript for search, or browse the module and type trees below.</noscript></section>'
-    index.write_text(text.replace('<main>', '<main>' + search), encoding='utf-8')
+    index.write_text(inject(text, '<main>', '<main>' + search, 'index.html'), encoding='utf-8')
     pages = {p: Page(p.read_text(encoding='utf-8')) for p in output.rglob('*.html')}
     errors = []
     for path, page in pages.items():
