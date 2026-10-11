@@ -401,6 +401,7 @@ var/global/datum/boat_game_probe/boat_game_probe = new
 	screen.Cut()
 	mob.sight = SEE_TURFS | SEE_OBJS | SEE_MOBS | SEE_SELF
 	mob.see_in_dark = 8
+	mob.see_invisible = SEE_INVISIBLE_OBSERVER_NOLIGHTING
 	eye = locate(45,43,1)
 	perspective = EYE_PERSPECTIVE
 	view = 10
@@ -465,6 +466,7 @@ var/global/datum/boat_game_probe/boat_game_probe = new
 	screen.Cut()
 	mob.sight = SEE_TURFS | SEE_OBJS | SEE_MOBS | SEE_SELF
 	mob.see_in_dark = 8
+	mob.see_invisible = SEE_INVISIBLE_OBSERVER_NOLIGHTING
 	eye = locate(81,44,1)
 	perspective = EYE_PERSPECTIVE
 	view = 10
