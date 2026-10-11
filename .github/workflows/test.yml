@@ -41,6 +41,10 @@ jobs:
           persist-credentials: false
       - name: Test offline evidence checker
         run: python3 -m unittest discover -s tests -p test_game_evidence.py -v
+      - name: Test and inventory placed outdoor bootstrap resources
+        run: |
+          python3 -m unittest discover -s tests -p test_outdoor_bootstrap.py -v
+          python3 scripts/check-outdoor-bootstrap.py
 
   # Existing game compilation gate.
   build:
