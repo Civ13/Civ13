@@ -1,3 +1,10 @@
+/world
+	hub = ""
+	hub_password = ""
+	maxx = 1
+	maxy = 1
+	maxz = 1
+
 /world/New()
 	var/list/rows = list()
 	for(var/T in typesof(/obj/item, /obj/structure, /obj/machinery))

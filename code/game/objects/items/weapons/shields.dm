@@ -353,6 +353,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 /obj/item/weapon/shield/chitin
 	name = "chitin buckler"
 	desc = "A rounded shield made out of fused chitinous plates."
+	icon = 'icons/obj/crafted_item_repairs.dmi'
 	icon_state = "chitin_buckler"
 	item_state = "chitin_buckler"
 	material = "chitin"
