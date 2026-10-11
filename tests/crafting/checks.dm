@@ -97,7 +97,9 @@ var/recipe_ci_files = 0
 			craftlist_lists[faction] = list(row)
 			var/material_path = text2path(copytext(row[1], 1, length(row[1])))
 			var/material/M = new material_path
+			map.ordinal_age = ispath(text2path(row[3]), /obj/item/blackpowder_part/stock) ? 3 : 0
 			M.generate_recipes_civs(list(text2num(row[9]), text2num(row[10]), text2num(row[11])), faction, "recipe_ci")
+			map.ordinal_age = 0
 			var/found = FALSE
 			for (var/datum/stack_recipe/R in recipe_ci_flatten(M.recipes))
 				if (R.title == row[2] && R.result_type == text2path(row[3]) && R.req_amount == text2num(row[4]))
