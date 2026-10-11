@@ -13,7 +13,7 @@ const children = new Set();
 let compiling = false;
 const inside = p => p === root || p.startsWith(root + path.sep);
 async function source(relative) {
-  if (!/^(code\/.*\.dm|civ13\.dme|README\.md|INSTALL|docs/api/(README|index)\.md)$/.test(relative) || relative.includes('..') || relative.includes('\\')) throw Error('Source path is not allowed');
+  if (!/^(code\/.*\.dm|civ13\.dme|README\.md|INSTALL|docs\/api\/(README|index)\.md)$/.test(relative) || relative.includes('..') || relative.includes('\\')) throw Error('Source path is not allowed');
   const absolute = await fs.realpath(path.resolve(root, relative));
   if (!inside(absolute)) throw Error('Source escapes repository');
   const stat = await fs.stat(absolute);
