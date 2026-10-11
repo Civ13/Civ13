@@ -26,7 +26,7 @@ For future obtainable types, add static-default types to `tests/sprites/required
 
 ## Remaining candidates and exclusions
 
-[`sprite-candidates.tsv`](sprite-candidates.tsv) records all **407 remaining initial-default candidates**, declaration locations and representative source/map/recipe references. They are **not 407 confirmed invisible items**. A referenced type can be an abstract parent, a WIP map entry, an intentional invisible object, or an object with runtime rendering. References are lexical examples and do not prove reachability or inherited assignment locations.
+[`sprite-candidates.tsv`](sprite-candidates.tsv) records all **406 remaining initial-default candidates**, declaration locations and representative source/map/recipe references. They are **not 406 confirmed invisible items**. A referenced type can be an abstract parent, a WIP map entry, an intentional invisible object, or an object with runtime rendering. References are lexical examples and do not prove reachability or inherited assignment locations.
 
 Reviewed constructor exclusions include fur boots (`fur1..fur4`), dried octopus (`octopus_rings`) and small clay pots (`smallclaypot1..2`). Custom bottles/glasses and gallon jugs/cartons compose label/fluid overlays; their absent base states need separate composite appearance review. Other vehicle/frame defaults, map overrides, machinery runtime states, food variants, papers/stamps, and obsolete/WIP types remain untriaged. No blanket changes were made to these families.
 
