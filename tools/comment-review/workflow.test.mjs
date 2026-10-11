@@ -43,3 +43,29 @@ test('reusable publish ceiling is sufficient while identify and model stay read-
   assert.throws(() => ceiling({ ...maximum, issues: 'read' }, publisher));
   assert.match(job(caller, 'identify'), /github\.event_name != 'workflow_dispatch'/);
 });
+
+function triggerNames(source) {
+  const block = source.match(/^on:\n([\s\S]*?)(?=^permissions:)/m)?.[1];
+  assert.ok(block, 'Missing on mapping');
+  return [...block.matchAll(/^  ([\w-]+):/gm)].map(match => match[1]).sort();
+}
+test('dormant listeners register only manual smokes and never execute them', () => {
+  for (const [file, role] of [['comment-review.yml', 'identify'], ['comment-review-events.yml', 'collect']]) {
+    const source = read(file);
+    assert.deepEqual(triggerNames(source), ['workflow_dispatch']);
+    assert.match(job(source, role), /vars\.CODEX_COMMENT_REVIEW_ENABLED == 'true' && github\.event_name != 'workflow_dispatch'/);
+    // Regression: the old disabled-by-job route still registered a pre-job event.
+    const old = source.replace('  workflow_dispatch:\n', '  workflow_dispatch:\n  workflow_run:\n    types: [completed]\n');
+    assert.notDeepEqual(triggerNames(old), ['workflow_dispatch']);
+  }
+});
+test('activation examples preserve intended events without activating installed files', () => {
+  const example = JSON.parse(readFileSync(new URL('active-events.example.json', import.meta.url), 'utf8'));
+  assert.deepEqual(example['comment-review.yml'].workflow_run, { workflows: ['Comment review intake'], types: ['completed'] });
+  assert.deepEqual(example['comment-review.yml'].issue_comment.types, ['created', 'edited']);
+  assert.deepEqual(example['comment-review-events.yml'].pull_request_review.types, ['submitted', 'edited']);
+  assert.deepEqual(example['comment-review-events.yml'].pull_request_review_comment.types, ['created', 'edited']);
+  for (const name of ['comment-review.yml', 'comment-review-events.yml']) {
+    assert.deepEqual(triggerNames(read(name)), ['workflow_dispatch']);
+  }
+});
