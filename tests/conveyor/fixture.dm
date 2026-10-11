@@ -21,6 +21,9 @@ var/failures = 0
 	for (var/obj/machinery/conveyor/C in belts)
 		count += length(C.affecting)
 	return count
+/proc/set_phase(name)
+	text2file(name, "phase.txt")
+	world.log << "PHASE [name]"
 /world/New()
 	..()
 	spawn(0)
@@ -67,7 +70,7 @@ var/failures = 0
 			for (var/i in 1 to 40)
 				var/obj/O = new(B.loc)
 				O.anchored = 1
-	world.log << "PHASE baseline"
+	set_phase("baseline")
 	sleep(20)
 	var/start = world.realtime
 	for (var/obj/machinery/conveyor/B in belts)
@@ -76,20 +79,20 @@ var/failures = 0
 	world.log << "RESULT occupied_elapsed_ds=[world.realtime-start] retained_entries=[retained(belts)] belts=[belts.len]"
 	for (var/obj/machinery/conveyor/B in belts)
 		B.operating = 0
-	world.log << "PHASE settled"
+	set_phase("settled")
 	sleep(30)
 	for (var/obj/machinery/conveyor/B in belts)
 		for (var/obj/O in B.loc)
 			if (!istype(O, /obj/machinery/conveyor))
 				del(O)
 		B.operating = 1
-	world.log << "PHASE empty"
+	set_phase("empty")
 	start = world.realtime
 	for (var/i in 1 to 250)
 		for (var/obj/machinery/conveyor/B in belts)
 			B.process()
 		sleep(2)
 	world.log << "RESULT empty_elapsed_ds=[world.realtime-start] calls=100000 failures=[failures]"
-	world.log << "PHASE complete"
+	set_phase("complete")
 	sleep(10)
 	del(world)

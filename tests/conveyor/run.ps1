@@ -28,11 +28,8 @@ try {
         $process.Refresh()
         if (!$process.HasExited) {
             $phase = 'startup'
-            $logPath = Join-Path $temp 'runtime.log'
-            if (Test-Path -LiteralPath $logPath) {
-                $phaseMatches = [regex]::Matches((Get-Content -LiteralPath $logPath -Raw), 'PHASE (\w+)')
-                if ($phaseMatches.Count) { $phase = $phaseMatches[$phaseMatches.Count-1].Groups[1].Value }
-            }
+            $phasePath = Join-Path $temp 'phase.txt'
+            if (Test-Path -LiteralPath $phasePath) { $phase = Get-Content -LiteralPath $phasePath -Tail 1 }
             $samples.Add([pscustomobject]@{
                 phase=$phase; utc=[DateTime]::UtcNow.ToString('o')
                 private_bytes=$process.PrivateMemorySize64; working_set=$process.WorkingSet64
