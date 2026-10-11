@@ -108,9 +108,7 @@
 	if (active)
 		active = FALSE
 		powered = FALSE
-		powersource.update_power(powerneeded,1)
-		powersource.currentflow -= powerneeded
-		powersource.lastupdate2 = world.time
+		powersource.update_power(-powerneeded,1,src)
 		to_chat(H, "You power off the [src].")
 		update_icon()
 		return
@@ -118,12 +116,9 @@
 		to_chat(H, "<span class = 'notice'>There is not enough power to start the [src].</span>")
 		update_icon()
 		return
-	else if (!active && powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
+	else if (!active && draw_cable_power())
 		active = TRUE
 		powered = TRUE
-		powersource.update_power(powerneeded,1)
-		powersource.currentflow += powerneeded
-		powersource.lastupdate2 = world.time
 		power_on()
 		to_chat(H, "You power the [src].")
 		update_icon()
