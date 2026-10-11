@@ -24,8 +24,13 @@
 
 /turf/floor/grass/New()
 	..()
-	grass_turf_list += src
+	grass_turf_list |= src
 	icon_state = "grass[rand(0,3)]"
+
+// BYOND calls Del(), rather than Destroy(), when a turf is replaced.
+/turf/floor/grass/Del()
+	grass_turf_list -= src
+	..()
 
 /turf/floor/proc/plant()
 	return
