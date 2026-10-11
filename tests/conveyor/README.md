@@ -25,3 +25,27 @@ The matching 32x32x1 fixture contains 400 occupied belts with 40 anchored object
 Reference release does not establish an OS-memory reduction, collection of live cargo, or long-runtime stability. Cargo remains live on the map. Process-memory and CPU results must be compared across repeated runs; short noisy measurements are not a production performance promise. No production save, server setting, deployment or restart is involved. A bounded read-only SSH process snapshot attempt timed out.
 
 Graphical acceptance remains pending while screen control is paused. Required genuine screenshots should show the exact tested commit, a real conveyor with movable and anchored cargo, and stopped-belt state. Video is required for the one-tick movement sequence and reversal. Replicate in an isolated local game using a belt, switch with matching ID, a knife and anchored cargo; activate, reverse and stop the switch, observing cargo movement and the ten-object limit. Upload captures directly as PR attachments, verify accessibility, then delete task-created local media. Fixture logs and compilation are not screenshot/video acceptance.
+
+## Coordinator capture turn
+
+Only the exclusively assigned capture owner may start visual mode. Run
+`./tests/conveyor/run-game.ps1 -ByondBin '<516.1681 bin>' -Visual -TimeoutSeconds 600`.
+The hidden server prints its unique run directory, task PID and localhost port
+(default 18328). After `game_result.txt` reports PASS, connect Dream Seeker to that
+address, select **Local Verification / Inspect conveyor probe**, and capture the
+real sprites plus commit/map/PASS text. Record **Run conveyor capture sequence**:
+forward, reverse and stop each show a two-second before state, execute the real
+belt/switch processing, assert cargo position and anchoring, then show the result
+for three seconds. Capture final stopped state and PASS text. This opt-in adapter
+controls processing explicitly so the one-tick conveyor contract can be observed
+without unrelated scheduler activity. It does not measure normal round throughput.
+
+Visual mode stops its own daemon after the requested bound and always cleans
+unique worktree DME/DMB/RSC outputs. End the task-owned client as well; verify both
+exits before releasing the coordinator turn. Upload screenshots/video directly
+as PR attachments and verify them before deleting task-generated local media.
+Do not use the stress-fixture reference count as evidence of OS RAM savings.
+
+Before requesting the capture turn, `-ExerciseCapture` runs that same sequence
+without a client and checks each position/anchoring result. This is offline
+sequence validation, not a substitute for actual screenshot/video capture.

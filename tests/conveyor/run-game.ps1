@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$ByondBin)
+param([Parameter(Mandatory=$true)][string]$ByondBin, [switch]$Visual, [switch]$ExerciseCapture, [ValidateRange(1024,65535)][int]$Port=18328, [ValidateRange(60,900)][int]$TimeoutSeconds=120)
 $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $nonce = [guid]::NewGuid().ToString('N')
@@ -22,8 +22,20 @@ try {
     $config = [regex]::Replace($config,'(?m)^HUB_BANNER_URL[^\r\n]*','#HUB_BANNER_URL')
     [IO.File]::WriteAllText($configPath,$config)
     $commit = (& git -C $repo rev-parse HEAD).Trim()
-    $process = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @((Join-Path $run 'probe.dmb'),'-invisible','-safe','-params',"tested_commit=$commit",'-log','startup.log') -WorkingDirectory $run -WindowStyle Hidden -PassThru
-    if (!$process.WaitForExit(120000)) { throw 'Full-game probe timed out' }
+    if ($LASTEXITCODE -or $commit -notmatch '^[0-9a-f]{40}$') { throw 'Cannot determine tested commit' }
+    $parameters = 'tested_commit=' + $commit
+    if ($Visual) { $parameters += '&visual=1' }
+    if ($ExerciseCapture) { $parameters += '&exercise_capture=1' }
+    $process = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @((Join-Path $run 'probe.dmb'),"$Port",'-invisible','-safe','-params',$parameters,'-log','startup.log') -WorkingDirectory $run -WindowStyle Hidden -PassThru
+    Write-Output "RUN_DIRECTORY=$run; PID=$($process.Id); connect=byond://127.0.0.1:$Port"
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    while (!$process.WaitForExit(200)) {
+        $process.Refresh()
+        if ($watch.Elapsed.TotalSeconds -gt $TimeoutSeconds) {
+            if ($Visual -and (Test-Path -LiteralPath (Join-Path $run 'game_result.txt'))) { Stop-Process -Id $process.Id; $process.WaitForExit(); break }
+            throw 'Full-game probe timed out'
+        }
+    }
     $result = Get-Content -LiteralPath (Join-Path $run 'game_result.txt') -Raw
     Write-Output "RUN_DIRECTORY=$run"
     Write-Output $result

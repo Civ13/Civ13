@@ -245,3 +245,9 @@ game callback/locomotive-loop tests with `tests/train_collision/run-game.ps1`.
 The full-game probe uses temporary state and outbound-hook controls. Its optional
 visual mode needs separate capture authorization; it never proves production
 crash behavior. Do not replace required gameplay captures with fixture output.
+
+<!-- 2026-10-11: conveyor verification -->
+`tests/conveyor/run.ps1` compares production tick snapshots with isolated storage;
+retained entries are distinct from OS private memory. `run-game.ps1 -ExerciseCapture`
+checks real forward/reverse/stop behavior. Its optional bounded `-Visual` mode
+requires the coordinator's exclusive screen turn; see tests/conveyor/README.md.

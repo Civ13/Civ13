@@ -1,5 +1,11 @@
 // Opt-in only. This file is not included by production civ13.dme.
 var/global/datum/conveyor_game_probe/conveyor_game_probe = new
+/datum/conveyor_game_probe
+	var/obj/machinery/conveyor/visual_belt
+	var/obj/machinery/conveyor_switch/visual_switch
+	var/obj/item/visual_cargo
+	var/obj/item/visual_fixed
+	var/sequence_running = FALSE
 /datum/conveyor_game_probe/New()
 	if(config)
 		config.webhook_can_fire = FALSE
@@ -36,9 +42,77 @@ var/global/datum/conveyor_game_probe/conveyor_game_probe = new
 		qdel(K)
 		qdel(F)
 		qdel(C)
+		if(world.params["exercise_capture"] )
+			prepare_visual()
+			if(!capture_sequence(null))
+				throw EXCEPTION("Offline capture sequence failed")
 		text2file("PASS: real conveyor constructor, delayed movement, anchored cargo, stop, no retained snapshot field", "game_result.txt")
 		world.log << "PASS: conveyor full-game probe"
 	catch(var/exception/e)
 		text2file("FAIL: [e]", "game_result.txt")
 		world.log << "FAIL: conveyor full-game probe: [e]"
-	del(world)
+	if(world.params["visual"] && findtext(file2text("game_result.txt"), "PASS:") == 1)
+		prepare_visual()
+	else
+		del(world)
+
+/datum/conveyor_game_probe/proc/prepare_visual()
+	for(var/x in 18 to 22)
+		var/turf/T = locate(x,20,1)
+		for(var/obj/O in T)
+			qdel(O)
+		T.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+	visual_belt = new(locate(20,20,1), EAST, FALSE)
+	visual_belt.id = "local_capture"
+	visual_switch = new(locate(20,21,1), "local_capture")
+	visual_cargo = new /obj/item/weapon/material/kitchen/utensil/knife(visual_belt.loc)
+	visual_cargo.name = "movable conveyor test knife"
+	visual_fixed = new /obj/item/weapon/material/kitchen/utensil/knife(visual_belt.loc)
+	visual_fixed.name = "anchored conveyor test knife"
+	visual_fixed.anchored = TRUE
+	visual_fixed.pixel_y = 8
+
+/datum/conveyor_game_probe/proc/capture_sequence(client/viewer)
+	if(sequence_running || !visual_belt || !visual_switch)
+		return
+	sequence_running = TRUE
+	. = FALSE
+	try
+		for(var/position in list(1, -1, 0))
+			visual_cargo.loc = visual_belt.loc
+			visual_switch.position = position
+			visual_switch.operated = TRUE
+			visual_switch.process()
+			to_chat(viewer, "Capture stage: [position == 1 ? "FORWARD" : position == -1 ? "REVERSE" : "STOP"]. Cargo starts on the belt; anchored knife stays.")
+			sleep(20)
+			visual_belt.process()
+			sleep(2)
+			var/turf/expected = position ? get_step(visual_belt, position == 1 ? EAST : WEST) : visual_belt.loc
+			if(visual_cargo.loc != expected || visual_fixed.loc != visual_belt.loc)
+				throw EXCEPTION("Capture movement assertion failed at position [position]")
+			to_chat(viewer, "PASS stage [position]: movable knife at ([visual_cargo.x],[visual_cargo.y]); anchored knife at ([visual_fixed.x],[visual_fixed.y]).")
+			sleep(30)
+		to_chat(viewer, "PASS: forward, reverse, stopped and anchored cargo. Commit [world.params["tested_commit"]].")
+		. = TRUE
+	catch(var/exception/e)
+		to_chat(viewer, "FAIL: [e]")
+	sequence_running = FALSE
+
+/client/verb/inspect_conveyor_probe()
+	set category = "Local Verification"
+	set name = "Inspect conveyor probe"
+	if(!world.params["visual"] || !conveyor_game_probe.visual_belt)
+		return
+	screen.Cut()
+	eye = conveyor_game_probe.visual_belt.loc
+	perspective = EYE_PERSPECTIVE
+	mob.sight = SEE_TURFS | SEE_OBJS | SEE_MOBS | SEE_SELF
+	mob.see_in_dark = 8
+	view = 7
+	to_chat(src, "<b>[file2text("game_result.txt")]</b><br>Commit [world.params["tested_commit"]], map [map.ID] [world.maxx]x[world.maxy]x[world.maxz], BYOND [world.byond_version].[world.byond_build]. Local disposable world. Use Run conveyor capture sequence for forward/reverse/stop.")
+
+/client/verb/run_conveyor_capture_sequence()
+	set category = "Local Verification"
+	set name = "Run conveyor capture sequence"
+	if(world.params["visual"])
+		conveyor_game_probe.capture_sequence(src)
