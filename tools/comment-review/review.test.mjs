@@ -98,3 +98,31 @@ test('GitHub API adapter has fixed origin, timeout and generic errors', async ()
   assert.ok(calls[0].options.signal);
   assert.throws(() => apiClient('../evil', 'test-only'));
 });
+
+test('nested and unterminated HTML cannot create a hidden review marker', () => {
+  for (const body of ['<!--<!-- hidden --> marker -->', '<!-- no closing delimiter', '&#60;!-- spoof -->']) {
+    const output = formatReview(item(), marker(raw.event, item()), body);
+    assert.equal((output.match(/<!--/g) ?? []).length, 1);
+    assert.ok(output.endsWith(marker(raw.event, item())));
+  }
+});
+test('dismissed review body is not eligible after its original event', () => {
+  assert.equal(eligible(item({ state: 'DISMISSED' }), 'submitted'), false);
+});
+test('compact GitHub run PR repository IDs establish the intake association', async () => {
+  const run = { id: 10, path: '.github/workflows/comment-review-events.yml',
+    event: 'pull_request_review_comment', conclusion: 'success',
+    repository: { full_name: repo }, head_repository: { id: 7, full_name: 'user/fork' },
+    pull_requests: [{ number: 4, head: { repo: { id: 7, name: 'fork' } } }] };
+  const api = async () => ({ artifacts: [{ id: 1, name: 'comment-review-event', size_in_bytes: 300 }] });
+  assert.deepEqual(await fromRun(api, run, repo, async () => ({ ...raw, event: run.event })),
+    { ...raw, event: run.event });
+  await assert.rejects(fromRun(api, { ...run, head_repository: { id: 8, full_name: 'evil/fork' } },
+    repo, async () => ({ ...raw, event: run.event })));
+});
+test('local authenticated review publication receipts prevent retry duplicates', async () => {
+  const key = marker(raw.event, item());
+  const f = fixture(item(), [{ user: { login: 'local-reviewer' }, body: key }]);
+  assert.equal(await publish(f.api, raw, repo, key, 'Assessment', 'local-reviewer'), false);
+  assert.equal(f.writes.length, 0);
+});

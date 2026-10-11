@@ -15,7 +15,7 @@ export function quotaOnly(login, body) {
   return /^(?:Copilot (?:was unable to|could not|cannot) review this pull request because (?:the user who requested the review has reached their quota limit|(?:you|the user) (?:have|has) (?:reached|exceeded) (?:your|their|the) (?:usage|token|review|quota) limit)\.?|(?:You(?:'ve| have) (?:used all|run out of|exhausted) (?:your )?(?:Copilot )?(?:usage tokens|review tokens)|Copilot (?:has run out of|is out of) (?:usage )?tokens)\.?)$/i.test(body.trim());
 }
 export function eligible(item, action) {
-  if (['deleted', 'dismissed'].includes(action)) return false;
+  if (['deleted', 'dismissed'].includes(action) || item.state?.toUpperCase() === 'DISMISSED') return false;
   if (!['created', 'edited', 'submitted'].includes(action)) return false;
   if (SELF.has(item.user?.login?.toLowerCase())) return false;
   return !!item.body?.trim() && !quotaOnly(item.user?.login ?? '', item.body);

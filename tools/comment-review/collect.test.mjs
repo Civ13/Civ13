@@ -95,3 +95,12 @@ test('gh adapter handles deleted objects and posts JSON over stdin without shell
   assert.deepEqual(call.args.slice(-4), ['--method', 'POST', '--input', '-']);
   assert.equal(JSON.parse(call.options.input).body, '$(touch bad)');
 });
+
+test('reverting to an unreviewed pending body restores one current revision', async () => {
+  const first = await collect(repo, { records: {} }, fixtures(), now);
+  const edited = await collect(repo, first, fixtures([comment({ body: 'Edited finding' })]), now);
+  const reverted = await collect(repo, edited, fixtures(), now);
+  const pending = Object.values(reverted.records).filter(r => r.status === 'pending');
+  assert.equal(pending.length, 1);
+  assert.equal(pending[0].body, comment().body);
+});

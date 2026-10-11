@@ -69,7 +69,13 @@ export async function collect(repo, state, api, now = new Date()) {
       if (record.id !== id && record.repo === repo && record.event === event &&
           record.comment_id === item.id && record.status === 'pending') record.status = 'superseded';
     }
-    if (records[id]) continue;
+    if (records[id]) {
+      if (records[id].status === 'superseded' && eligible(item, 'edited')) {
+        records[id].status = 'pending';
+        added++;
+      }
+      continue;
+    }
     const action = event === 'pull_request_review' ? 'submitted' : 'created';
     const revision = candidate(event, { action, comment: item, review: item, issue: { number } });
     const priorRevision = Object.values(records).some(r => r.repo === repo && r.event === event && r.comment_id === item.id);
