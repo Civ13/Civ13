@@ -18,6 +18,8 @@
     var/list/result = list("commit" = MEMORY_EVIDENCE_COMMIT, "map" = map ? map.title : "", "dimensions" = list(world.maxx,world.maxy,world.maxz), "client" = !!C, "state" = ticker ? ticker.current_state : -1)
     if (!C)
         return json_encode(result)
+    // Preserve the acting player context required by the real late-join path.
+    usr = C.mob
     var/action = request["action"]
     if (action == "prepare")
         if (ticker && ticker.current_state == GAME_STATE_PREGAME)
