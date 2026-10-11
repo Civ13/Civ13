@@ -107,7 +107,10 @@ var/global/datum/train_game_probe/train_game_probe = new
 	set category = "Local Verification"
 	if(!world.params["visual"])
 		return
+	src << browse(null, "window=playersetup")
 	screen.Cut()
+	mob.sight = SEE_TURFS | SEE_OBJS | SEE_MOBS | SEE_SELF
+	mob.see_in_dark = 8
 	eye = locate(27,22,1)
 	perspective = EYE_PERSPECTIVE
 	view = 7
