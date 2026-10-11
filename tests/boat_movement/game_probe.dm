@@ -281,6 +281,7 @@ var/global/datum/boat_game_probe/boat_game_probe = new
 	check(!A.do_move() && same_locations(edge_before),"tank edge linear move cannot lose or partially move parts")
 	clear()
 /datum/boat_game_probe/proc/save_result()
+	fdel("boat-result.json")
 	text2file(json_encode(list("commit"=world.params["tested_commit"], "map_id"=map.ID, "maxx"=world.maxx, "maxy"=world.maxy, "maxz"=world.maxz, "version"=world.byond_version, "build"=world.byond_build, "passed"=passed, "failures"=failures, "phase"=phase, "adapters"="test-only scene preparation and inspection; real production boat procedures and forceMove")), "boat-result.json")
 	fdel("boat-result.txt")
 	text2file("RESULT failures=[failures]; passed=[passed]", "boat-result.txt")
