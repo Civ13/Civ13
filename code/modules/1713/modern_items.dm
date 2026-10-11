@@ -1070,6 +1070,7 @@
 	var/active = FALSE
 	var/next_spawn = -1
 	var/tmp/process_pending = FALSE
+	var/tmp/production_due = 0
 	var/output_stack_limit = 12
 	powerneeded = 150
 
@@ -1080,6 +1081,7 @@
 /obj/structure/drill/proc/stop_drilling()
 	active = FALSE
 	next_spawn = -1
+	production_due = 0
 	if (powersource)
 		powersource.update_power(-powerneeded, 1, src)
 	powered = FALSE
@@ -1108,6 +1110,7 @@
 		return
 	active = TRUE
 	next_spawn = 60
+	production_due = world.time + 1200
 	if (!process_pending)
 		process_machine()
 	if (active)
@@ -1129,12 +1132,13 @@
 		stop_drilling()
 		visible_message(SPAN_WARNING("\The [src] stops drilling: insufficient cable power."))
 		return
-	if (next_spawn <= 0)
+	if (next_spawn <= 0 && world.time >= production_due)
 		if (!produce_minerals(pick(ore_types), 2))
 			stop_drilling()
 			visible_message(SPAN_WARNING("\The [src] stops drilling: clear its output tile, then restart it."))
 			return
 		next_spawn = 60
+		production_due = world.time + 1200
 	playsound(loc, 'sound/machines/drill.ogg', 100, FALSE)
 	update_icon()
 	// One pending callback survives stop/start. Toggling cannot spawn more loops.
@@ -1151,7 +1155,13 @@
 
 /obj/structure/drill/after_load()
 	. = ..()
+	process_pending = FALSE
 	stop_drilling()
+
+/obj/structure/drill/get_saved_vars()
+	var/list/saved = ..()
+	saved -= list("process_pending", "production_due")
+	return saved
 
 /obj/structure/drill/Destroy()
 	stop_drilling()

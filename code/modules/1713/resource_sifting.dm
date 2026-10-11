@@ -3,6 +3,11 @@
 /mob/living/human/var/tmp/sifting_action = FALSE
 /turf/var/tmp/datum/sifting_identity
 
+/mob/living/human/get_saved_vars()
+	var/list/saved = ..()
+	saved -= list("sifting_resources", "sifting_action")
+	return saved
+
 /turf/proc/can_sift_resources()
 	return (istype(src, /turf/floor/dirt) || istype(src, /turf/floor/beach/sand)) && !is_mineable && !(locate(/obj/covers) in src)
 
@@ -67,7 +72,7 @@
 /mob/living/human/proc/valid_sifting_tool(obj/item/tool, panning)
 	if (!tool)
 		return !panning
-	if (l_hand != tool && r_hand != tool)
+	if (get_active_hand() != tool)
 		return FALSE
 	return panning ? istype(tool, /obj/item/kitchen/wood_bowl) : istype(tool, /obj/item/weapon/resource_sieve)
 // Split out for production-path tests with a bounded action-delay adapter.
@@ -95,7 +100,7 @@
 	if (water && !water.sifting_identity)
 		water.sifting_identity = new /datum
 	var/datum/water_identity = water ? water.sifting_identity : null
-	to_chat(src, SPAN_NOTICE("You begin slowly sifting for trace resources by hand."))
+	to_chat(src, SPAN_NOTICE("You begin slowly gathering trace resources[tool ? " with [tool]" : " by hand"]."))
 	if (!sifting_wait(T, tool) || stat || loc != T || !T.can_sift_resources() || T.sifting_identity != identity || !valid_sifting_tool(tool, panning))
 		return FALSE
 	if (panning && (!water || T.panning_water() != water || water.sifting_identity != water_identity))

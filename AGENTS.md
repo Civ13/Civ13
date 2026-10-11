@@ -283,6 +283,15 @@ Dormant comment-review listeners must be workflow_dispatch-only: GitHub can requ
 
 ## Train verification
 
+<!-- 2026-10-11: trace resource extraction -->
+`tests/resource_extraction/run.ps1` compiles production extraction types with
+normal startup disabled and temporary storage. It checks bounded output, drill
+power/callback lifecycle, construction costs, gathering guards and shortened
+production action waits and serialized drill entries. It does not establish
+graphical menus or full-world save round trips. Custom saves require explicit
+exclusion of transient extraction locks. The fixture closes its port at startup and rejects reopening;
+`-close` alone does not prevent a Windows DreamDaemon listening port.
+
 <!-- 2026-10-11: train collision investigation -->
 `code/modules/1713/trains.dm` connections point from leader to follower. Reject
 coupling cycles and stop failed movement before recursively moving followers;

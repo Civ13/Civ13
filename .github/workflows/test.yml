@@ -121,6 +121,13 @@ jobs:
           pwsh -NoProfile -File scripts/test-power.ps1 -ByondBin "$PWD/BYOND/byond/bin"
           bash scripts/check-power-gameplay.sh
 
+      - name: Run isolated resource extraction regressions
+        if: needs.changes.outputs.extensive == 'true'
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
+
       - name: Run constructed vehicle movement regressions
         if: needs.changes.outputs.extensive == 'true'
         shell: bash

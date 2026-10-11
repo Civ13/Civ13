@@ -1213,7 +1213,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/plant_pot/clay/light" = "pottery_storage",
 		"/obj/structure/plant_pot/medium_planter/clay/yellow" = "pottery_storage",
 		"/obj/structure/pot" = "pottery_storage",
-		// --- power_tools (2) ---
+		// --- power tools and resource extraction ---
 		"/obj/item/weapon/material/pickaxe/jackhammer" = "power_tools",
 		"/obj/structure/drill" = "electricity",
 		"/obj/item/weapon/resource_sieve" = "basic_tools",
