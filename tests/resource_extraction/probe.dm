@@ -169,6 +169,7 @@ var/extraction_runtime_error = FALSE
 		extraction_check(!H.sift_resource(T,/obj/item/stack/ore/gold,bowl,TRUE), "dropped pan rejected")
 		extraction_construction(H)
 		extraction_electricity_bootstrap(H)
+		extraction_circuit_inputs(H)
 		extraction_save_roundtrip()
 	catch(var/exception/e)
 		extraction_check(FALSE, "exception [e]")
@@ -243,6 +244,37 @@ var/extraction_runtime_error = FALSE
 		extraction_check(!map.is_node_done(faction,"electricity"), "prototype does not bypass remaining study")
 		qdel(B)
 	map.ordinal_age = 2
+
+/proc/extraction_circuit_inputs(mob/living/human/extraction_probe/H)
+	var/turf/T = locate(10,8,1)
+	T = T.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+	H.loc = T
+	H.stats = list("strength" = list(100,100), "crafting" = list(220,220))
+	var/obj/item/stack/material/copper/C = new(H,4,FALSE)
+	var/obj/item/stack/material/iron/I = new(H,1,FALSE)
+	H.l_hand = C
+	H.r_hand = I
+	H.hand = TRUE
+	// The catalog crafts singly; permit two here to exercise the shared batch API.
+	var/datum/stack_recipe/R = new("electronic circuits", /obj/item/stack/material/electronics, 1, _max_res_amount = 2, _time = 80, _on_floor = TRUE)
+	C.produce_recipe(R,2,H)
+	extraction_check(C.amount == 4 && I.amount == 1 && !(locate(/obj/item/stack/material/electronics) in T), "short circuit iron preserves both inputs")
+	I.amount = 3
+	spawn(2)
+		I.loc = T
+		H.r_hand = null
+	C.produce_recipe(R,2,H)
+	extraction_check(C.amount == 4 && I.amount == 3 && !(locate(/obj/item/stack/material/electronics) in T), "iron lost during circuit wait consumes neither input")
+	I.loc = H
+	H.r_hand = I
+	spawn(2)
+		H.loc = locate(10,9,1)
+	C.produce_recipe(R,2,H)
+	extraction_check(C.amount == 4 && I.amount == 3, "interrupted circuit craft preserves both inputs")
+	H.loc = T
+	C.produce_recipe(R,2,H)
+	var/obj/item/stack/material/electronics/E = locate() in T
+	extraction_check(C.amount == 2 && I.amount == 1 && E && E.amount == 2, "two circuits consume two copper and two iron (copper=[C.amount], iron=[I.amount], output=[E ? E.amount : -1])")
 
 /proc/extraction_save_roundtrip()
 	var/turf/T = locate(11,11,1)

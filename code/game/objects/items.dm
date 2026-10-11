@@ -82,8 +82,11 @@
 	maxhealth = health
 	..()
 	maxhealth = health
+	if (!istype(src, /obj/item/ammo_casing))
+		register_abandoned_item()
 
 /obj/item/equipped()
+	reset_abandonment()
 	..()
 	var/mob/M = loc
 	if (!istype(M))
@@ -94,6 +97,7 @@
 		M.r_hand.update_held_icon()
 
 /obj/item/Destroy()
+	unregister_abandoned_item()
 	actions = list()
 	if (ismob(loc))
 		var/mob/m = loc
@@ -151,7 +155,8 @@
 			size = "bulky"
 		if (5.0)
 			size = "huge"
-	return ..(user, distance, "", "It is a [size] item.")
+	var/decay_notice = abandonment_notice()
+	return ..(user, distance, "", "It is a [size] item.[decay_notice]")
 
 /obj/item/attack_hand(mob/user as mob)
 	if (isturf(loc) && anchored) return
@@ -262,6 +267,7 @@
 
 // apparently called whenever an item is removed from a slot, container, or anything else.
 /obj/item/proc/dropped(mob/user as mob)
+	reset_abandonment()
 	plane = GAME_PLANE
 	spawn (1)
 		if (dropsound)
@@ -274,14 +280,15 @@
 
 // called just as an item is picked up (loc is not yet changed)
 /obj/item/proc/pickup(mob/user)
-	return
+	reset_abandonment()
 
 // called when this item is removed from a storage item, which is passed on as S. The loc variable is already set to the new destination before this is called.
 /obj/item/proc/on_exit_storage(obj/item/weapon/storage/S as obj)
-	return
+	reset_abandonment()
 
 // called when this item is added into a storage item, which is passed on as S. The loc variable is already set to the storage item.
 /obj/item/proc/on_enter_storage(obj/item/weapon/storage/S as obj)
+	reset_abandonment()
 	if(istype(src,/obj))
 		var/obj/O = src
 		if(O.invisibility >= 100)

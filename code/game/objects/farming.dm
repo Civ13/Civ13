@@ -1041,7 +1041,7 @@
 	if (!A)
 		return
 	if (findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon"))
-		water += 15
+		water = min(water + 15, max_water)
 		return
 
 	// Check for snow storm or sandstorm and set plant to dead

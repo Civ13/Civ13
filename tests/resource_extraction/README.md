@@ -20,6 +20,11 @@ prototype without bypassing the remaining study. With startup disabled, consumed
 atoms enter the legacy `delayed_garbage` queue; this fixture does not prove GC
 drainage or long-running world memory stability.
 
+Circuit-input checks run the real crafting wait and verify that insufficient
+iron, lost iron and movement cancellation consume neither input. The catalog
+crafts one circuit at a time; a two-output fixture recipe additionally exercises
+the shared batch API and its one-iron-per-circuit payment.
+
 Gathering tests shorten the delay. A drill is also serialized to disk and
 restored through production entry serialization/loading and post-load hooks;
 this is not a full-world round trip. Ordinary startup, crafting menu clicks,
