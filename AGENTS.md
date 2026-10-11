@@ -303,6 +303,14 @@ Dormant comment-review listeners must be workflow_dispatch-only: GitHub can requ
 
 ## Train verification
 
+<!-- 2026-10-11: automobile construction -->
+`tests/car_workshop/run.ps1 -ByondBin <516.1681-bin>` exercises paid AOTD
+assembly, interruptions, cable reservations, driving, turning and temporary
+world-save round trips with production sources and isolated startup/actor waits.
+Nested vehicle controllers have no direct turf coordinates; use `get_turf()`
+when comparing their positions. Workshop power connects by dragging a laid cable
+onto the workshop; cable coils feed its material stock.
+
 <!-- 2026-10-11: medicine regression isolation -->
 `tests/survival/run.py` checks production disease courses, oral metabolism,
 ingredient acquisition and timed fermentation/distillation in temporary storage.
