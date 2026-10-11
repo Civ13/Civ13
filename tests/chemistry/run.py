@@ -5,20 +5,25 @@ from pathlib import Path
 import subprocess
 import shutil
 import tempfile
+import json
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--negative-control', action='store_true')
+    parser.add_argument('--visual', action='store_true')
+    parser.add_argument('--port', type=int, default=18329)
     args = parser.parse_args()
+    if args.visual and (args.negative_control or not 1024 <= args.port <= 65535):
+        parser.error('Visual mode requires a valid local port and no negative control')
     root = Path(__file__).resolve().parents[2]
     binary = args.byond_bin.resolve()
     compiler = binary / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     prefix = '.chemistry_ci'
     generated = [root / (prefix + suffix) for suffix in
-                 ('.dme', '_world.dm', '_recipes.dm', '.dmb', '.rsc')]
+                 ('.dme', '_world.dm', '_recipes.dm', '.dmb', '.rsc', '_login.dm')]
     if any(path.exists() for path in generated):
         raise RuntimeError('Existing chemistry probe files must be preserved')
     logs = Path(tempfile.mkdtemp(prefix='civ13-chemistry-ci-'))
@@ -33,6 +38,9 @@ def main():
         generated[1].write_text(world, encoding='utf-8')
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         source = source.replace('code\\world.dm', prefix + '_world.dm')
+        if args.visual:
+            generated[5].write_text('/mob/new_player\n\tvar/client/my_client\n/mob/new_player/Login()\n\tchemistry_fixture_login()\n', encoding='utf-8')
+            source = source.replace('code\\game\\mob\\new_player\\login.dm', prefix + '_login.dm')
         if args.negative_control:
             # Reintroduce the original wrong feedstock only in a generated copy.
             recipes = (root / 'code/modules/reagents/Chemistry-Recipes.dm').read_text(encoding='utf-8')
@@ -46,7 +54,7 @@ def main():
             generated[2].write_text(recipes, encoding='utf-8')
             source = source.replace('code\\modules\\reagents\\Chemistry-Recipes.dm',
                                     prefix + '_recipes.dm')
-        generated[0].write_text(source + '\n#include "tests/chemistry/polyethylene.dm"\n', encoding='utf-8')
+        generated[0].write_text(source + '\n#include "tests/chemistry/polyethylene.dm"\n#include "tests/chemistry/visual.dm"\n', encoding='utf-8')
         commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         print(f'Commit: {commit}; negative_control={args.negative_control}', flush=True)
         build = subprocess.run([str(compiler), '-max_errors', '0', str(generated[0])],
@@ -59,6 +67,17 @@ def main():
             raise RuntimeError('Chemistry compilation failed')
         shutil.copy2(generated[3], logs / generated[3].name)
         shutil.copy2(generated[4], logs / generated[4].name)
+        if args.visual:
+            daemon_output = (logs / 'daemon.log').open('w', encoding='utf-8')
+            visual = subprocess.Popen([str(daemon), str(logs / generated[3].name), str(args.port),
+                                       '-invisible', '-safe', '-params', f'tested_commit={commit}&visual=1',
+                                       '-log', 'runtime.log'], cwd=logs, stdout=daemon_output,
+                                      stderr=subprocess.STDOUT, creationflags=flags)
+            daemon_output.close()
+            (logs / 'process.json').write_text(json.dumps({'pid': visual.pid, 'commit': commit,
+                'port': args.port, 'url': f'byond://127.0.0.1:{args.port}', 'runtime': str(logs)}), encoding='utf-8')
+            print(f'Visual process {visual.pid}; byond://127.0.0.1:{args.port}; 15 minute watchdog', flush=True)
+            return
         # Run entirely from temporary storage, with no server configuration or
         # normal world startup. The probe calls production holders/reactions.
         platform_flags = ['-invisible', '-close'] if os.name == 'nt' else []

@@ -20,6 +20,16 @@ with a verified absolute Python interpreter path. Each runtime is bounded to
 45 seconds and uses temporary storage. The Windows runner also closes to new
 clients using its platform-specific launch flags.
 
+For local client evidence, use the portable runner with `--visual --port 18329`
+on Windows, after confirming the port is free. It starts a task-owned invisible
+daemon with temporary storage and a 15 minute watchdog, prints its localhost
+URL and writes `process.json` with its PID. Close that process when done.
+Connect a local client only during an authorized capture turn. The fixture
+replaces lobby Login and normal world startup. `Inspect chemistry` displays real
+beaker contents; `Run chemistry` invokes production `process_reactions()` and
+verifies positive/missing-catalyst/wrong-feedstock cases. These fixture verbs are
+not the normal crafting menu. Ordinary CI also verifies those real beaker cases.
+
 For gameplay replication, use an isolated game and a reagent container with
 adequate capacity. Mix 2 units of ethylene with 10 titaniumchloride,
 5 borontrifluoride, and 5 aluminumchloride. Expect 25 polyethylene and unchanged
