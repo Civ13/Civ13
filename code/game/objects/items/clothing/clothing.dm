@@ -458,6 +458,8 @@ BLIND	 // can't see anything
 */
 
 /obj/item/clothing/under
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	min_cold_protection_temperature = 240 // Ordinary layers help in temperate cold, not arctic extremes.
 	icon = 'icons/obj/clothing/uniforms.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/items/lefthand_uniforms.dmi',
@@ -485,6 +487,14 @@ BLIND	 // can't see anything
 	valid_accessory_slots = list("utility","armband","decor", "sash", "cape", "overcloth", "tie", "armor", "leg_armor", "arm_armor")
 	restricted_accessory_slots = list("utility", "armband", "armor", "leg_armor", "arm_armor")
 
+
+/obj/item/clothing/proc/get_cold_coverage()
+	. = cold_protection
+	if(istype(src, /obj/item/clothing/under))
+		. &= body_parts_covered
+		// Older shorts and loincloth templates express coverage as heat protection.
+		if(heat_protection)
+			. &= heat_protection
 
 /obj/item/clothing/under/attack_hand(var/mob/user)
 	if (accessories && accessories.len && (src == user.r_hand || src == user.l_hand))

@@ -92,6 +92,13 @@ jobs:
       - name: Explain opt-in runtime coverage
         if: needs.changes.outputs.extensive != 'true'
         run: echo 'Extensive runtime suites were not requested. Use Run workflow with extensive_regressions enabled.'
+      - name: Verify bounded winter survival and cold-loss negative control
+        if: needs.changes.outputs.game == 'true'
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/weather/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/weather/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
       - name: Validate compiled crafting recipes
         if: needs.changes.outputs.extensive == 'true'
         run: |
@@ -229,3 +236,11 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           /usr/bin/python3 tests/decal_decay/run.py --byond-bin "$PWD/BYOND/byond/bin"
           /usr/bin/python3 tests/decal_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --baseline
+
+      - name: Verify production food progression and seed-consumption negative control
+        if: needs.changes.outputs.game == 'true'
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/food_progression/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/food_progression/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
