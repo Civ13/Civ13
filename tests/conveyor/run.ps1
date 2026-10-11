@@ -22,12 +22,22 @@ if ($LASTEXITCODE -or !(Select-String -LiteralPath (Join-Path $temp 'compile.log
 $process = $null
 $samples = [Collections.Generic.List[object]]::new()
 try {
-    $process = Start-Process -FilePath (Join-Path $ByondBin 'dreamdaemon.exe') -ArgumentList @('probe.dmb','-invisible','-trusted','-log','runtime.log') -WorkingDirectory $temp -WindowStyle Hidden -PassThru
+    $process = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @((Join-Path $temp 'probe.dmb'),'-invisible','-trusted','-log','runtime.log') -WorkingDirectory $temp -WindowStyle Hidden -PassThru
     $deadline = [DateTime]::UtcNow.AddSeconds(180)
     while (!$process.HasExited -and [DateTime]::UtcNow -lt $deadline) {
-        $process = Get-Process -Id $process.Id -ErrorAction Stop
+        $process.Refresh()
         if (!$process.HasExited) {
-            $phase = "startup"; $logPath = Join-Path $temp "runtime.log"; if (Test-Path -LiteralPath $logPath) { $phaseMatches = [regex]::Matches([IO.File]::ReadAllText($logPath), "PHASE (\w+)"); if ($phaseMatches.Count) { $phase = $phaseMatches[$phaseMatches.Count-1].Groups[1].Value } }; $samples.Add([pscustomobject]@{phase=$phase;utc=[DateTime]::UtcNow.ToString('o');private_bytes=$process.PrivateMemorySize64;working_set=$process.WorkingSet64;cpu_ms=$process.TotalProcessorTime.TotalMilliseconds})
+            $phase = 'startup'
+            $logPath = Join-Path $temp 'runtime.log'
+            if (Test-Path -LiteralPath $logPath) {
+                $phaseMatches = [regex]::Matches((Get-Content -LiteralPath $logPath -Raw), 'PHASE (\w+)')
+                if ($phaseMatches.Count) { $phase = $phaseMatches[$phaseMatches.Count-1].Groups[1].Value }
+            }
+            $samples.Add([pscustomobject]@{
+                phase=$phase; utc=[DateTime]::UtcNow.ToString('o')
+                private_bytes=$process.PrivateMemorySize64; working_set=$process.WorkingSet64
+                cpu_ms=$process.TotalProcessorTime.TotalMilliseconds
+            })
         }
         Start-Sleep -Milliseconds 200
     }
@@ -37,7 +47,7 @@ try {
     $samples | Export-Csv -LiteralPath (Join-Path $temp 'memory.csv') -NoTypeInformation
 }
 $log = Get-Content -LiteralPath (Join-Path $temp 'runtime.log') -Raw
-$summary = [ordered]@{commit=$commit;revision=$Revision;process_id=$process.Id;runtime="DreamDaemon 516.1681 Windows";map="synthetic 32x32x1";source_sha256=(Get-FileHash -LiteralPath (Join-Path $temp 'probe.dme')).Hash;directory=$temp;peak_private_bytes=($samples | Measure-Object private_bytes -Maximum).Maximum;final_cpu_ms=($samples | Select-Object -Last 1).cpu_ms}
+$summary = [ordered]@{commit=$commit;revision=$Revision;process_id=$process.Id;runtime=((Get-Content -LiteralPath (Join-Path $temp 'compile.log') -First 1).Trim());dirty_diff=(& git -C $repo diff --stat | Out-String).Trim();map="synthetic 32x32x1";source_sha256=(Get-FileHash -LiteralPath (Join-Path $temp 'probe.dme')).Hash;directory=$temp;peak_private_bytes=($samples | Measure-Object private_bytes -Maximum).Maximum;final_cpu_ms=($samples | Select-Object -Last 1).cpu_ms}
 $summary | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $temp 'metadata.json')
 $log | Write-Output
 $summary | ConvertTo-Json | Write-Output

@@ -22,7 +22,7 @@ try {
     $config = [regex]::Replace($config,'(?m)^HUB_BANNER_URL[^\r\n]*','#HUB_BANNER_URL')
     [IO.File]::WriteAllText($configPath,$config)
     $commit = (& git -C $repo rev-parse HEAD).Trim()
-    $process = Start-Process -FilePath (Join-Path $ByondBin 'dreamdaemon.exe') -ArgumentList @('probe.dmb','-invisible','-safe','-params',"tested_commit=$commit",'-log','startup.log') -WorkingDirectory $run -WindowStyle Hidden -PassThru
+    $process = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @((Join-Path $run 'probe.dmb'),'-invisible','-safe','-params',"tested_commit=$commit",'-log','startup.log') -WorkingDirectory $run -WindowStyle Hidden -PassThru
     if (!$process.WaitForExit(120000)) { throw 'Full-game probe timed out' }
     $result = Get-Content -LiteralPath (Join-Path $run 'game_result.txt') -Raw
     Write-Output "RUN_DIRECTORY=$run"
