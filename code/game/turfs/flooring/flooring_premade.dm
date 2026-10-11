@@ -22,14 +22,24 @@
 /turf/floor/grass/ex_act(severity)
 	return
 
+/turf/floor/grass/var/grass_registry_index = 0
+
 /turf/floor/grass/New()
 	..()
-	grass_turf_list |= src
+	grass_turf_list += src
+	grass_registry_index = grass_turf_list.len
 	icon_state = "grass[rand(0,3)]"
 
 // BYOND calls Del(), rather than Destroy(), when a turf is replaced.
 /turf/floor/grass/Del()
-	grass_turf_list -= src
+	// Swap-remove avoids a linear search and shifting the whole map's registry.
+	if (grass_registry_index)
+		var/last_index = grass_turf_list.len
+		var/turf/floor/grass/last_grass = grass_turf_list[last_index]
+		grass_turf_list[grass_registry_index] = last_grass
+		last_grass.grass_registry_index = grass_registry_index
+		grass_turf_list.Cut(last_index, last_index + 1)
+		grass_registry_index = 0
 	..()
 
 /turf/floor/proc/plant()

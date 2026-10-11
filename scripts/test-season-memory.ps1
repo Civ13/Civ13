@@ -34,6 +34,8 @@ var/global/recoveries = 0
     var/max_soil_nutrition = 150
 /obj/structure/farming/plant
 /turf/floor/dirt/winter
+/turf/floor/grass
+    var/grass_registry_index = 0
 /turf/floor/grass/jungle
 $procs
 /world
@@ -99,7 +101,9 @@ while (!$daemon.HasExited) {
     if (!$daemon.HasExited) { $samples += [pscustomobject]@{Time=(Get-Date).ToString('o');PrivateBytes=$daemon.PrivateMemorySize64;WorkingSet=$daemon.WorkingSet64} }
     Start-Sleep -Milliseconds 100
 }
-$log = Get-Content -LiteralPath (Join-Path $testDir 'season_memory.log') -Raw
+$logPath = Join-Path $testDir 'season_memory.log'
+if (!(Test-Path -LiteralPath $logPath)) { throw "DreamDaemon exited with code $($daemon.ExitCode) without a log. Evidence: $testDir" }
+$log = Get-Content -LiteralPath $logPath -Raw
 $log | Write-Output
 $samples | Export-Csv -NoTypeInformation -LiteralPath (Join-Path $testDir 'memory.csv')
 Write-Output "Evidence: $testDir"
