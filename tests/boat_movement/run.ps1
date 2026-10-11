@@ -10,7 +10,7 @@ $temp = Join-Path ([IO.Path]::GetTempPath()) ('civ13-boat-' + [guid]::NewGuid())
 New-Item -ItemType Directory $temp | Out-Null
 $sourceRef = if ($Revision) { $Revision } else { 'HEAD' }
 $tested = git -C $repo rev-parse $sourceRef
-$dirty = if (!$Revision) { [bool](git -C $repo status --porcelain) } else { $false }
+$dirty = if (!$Revision) { [bool](git -C $repo status --porcelain -- code/game/objects/effects/autoassembler.dm code/modules/1713/machinery/modular_vehicles tests/boat_movement) } else { $false }
 Write-Output "Working source dirty: $dirty"
 Write-Output "Boat source revision: $tested; OS: $([Environment]::OSVersion); fixture: 40x40x1 water world"
 $process = $null
@@ -57,7 +57,7 @@ try {
     $security = '-safe'
     $launch = @{
         FilePath = Join-Path $ByondBin $daemon
-        ArgumentList = @(('"' + (Join-Path $temp 'probe.dmb') + '"'), '-invisible', $security, '-log', ('"' + $log + '"'))
+        ArgumentList = @(('"' + (Join-Path $temp 'probe.dmb') + '"'), '-invisible', $security, '-log', 'runtime.log')
         WorkingDirectory = $temp
         PassThru = $true
     }
