@@ -289,6 +289,7 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("steam_power", "Steam Power", "Industrial", 300, 3, RESEARCH_MODE_PROTOTYPE, list("watermills"), 4, /obj/item/weapon/material/handle))
 	// Prototype: a spool of cable (gated on paved_infrastructure, era3, well
 	// before this node's era5).
+	register_research_node(new /datum/research_node("hydraulic_fracturing", "Hydraulic Fracturing", "Industrial", 400, 7, RESEARCH_MODE_ANALYSIS, list("electricity", "modern_construction"), 8))
 	register_research_node(new /datum/research_node("electricity", "Electricity", "Industrial", 352, 4, RESEARCH_MODE_PROTOTYPE, list("steam_power"), 5, /obj/item/stack/cable_coil))
 	register_research_node(new /datum/research_node("combustion", "Combustion Engine", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("steam_power","steelmaking"), 5))
 	// Prototype: a geiger counter (gated on factories, era4, well before this
@@ -1217,6 +1218,7 @@ var/global/list/node_grid_col_cache = null
 		// --- power tools and resource extraction ---
 		"/obj/item/weapon/material/pickaxe/jackhammer" = "power_tools",
 		"/obj/structure/drill" = "electricity",
+		"/obj/structure/drill/fracking" = "hydraulic_fracturing",
 		"/obj/item/weapon/resource_sieve" = "basic_tools",
 		// --- primitive_construction (42) ---
 		"/obj/covers/fancywood" = "primitive_construction",

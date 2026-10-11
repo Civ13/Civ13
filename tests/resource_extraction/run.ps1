@@ -1,4 +1,4 @@
-param([Parameter(Mandatory)][string]$ByondBin)
+param([Parameter(Mandatory)][string]$ByondBin, [ValidateSet('tests/resource_extraction/probe.dm','tests/hydraulic_fracturing/probe.dm')][string]$Probe = 'tests/resource_extraction/probe.dm')
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $prefix = '.resource_probe_' + [guid]::NewGuid().ToString('N')
@@ -27,7 +27,7 @@ try {
     $source = Get-Content -LiteralPath 'civ13.dme' -Raw
     $source = $source.Replace('code\world.dm', $prefix + '_world.dm').Replace('code\controllers\mc\globals.dm', $prefix + '_globals.dm')
     $source = [regex]::Replace($source, '(?m)^#include ".*\.dmm"\s*$', '')
-    [IO.File]::WriteAllText((Join-Path $repo ($prefix + '.dme')), $source + "`n#include `"tests/resource_extraction/probe.dm`"`n")
+    [IO.File]::WriteAllText((Join-Path $repo ($prefix + '.dme')), $source + "`n#include `"$Probe`"`n")
     $build = & (Join-Path $ByondBin $compilerName) -max_errors 0 ($prefix + '.dme') 2>&1
     $build | Tee-Object -FilePath (Join-Path $temporary 'compile.log')
     if ($LASTEXITCODE -ne 0 -or ($build -join "`n") -notmatch '0 errors, 0 warnings' -or ($build -join "`n") -notmatch '516\.1681') { throw 'Pinned probe compile failed' }

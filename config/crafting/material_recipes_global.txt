@@ -407,6 +407,7 @@ RECIPE: /material/electronics/,geiger counter,/obj/item/weapon/geiger_counter,5,
 RECIPE: /material/electronics/,component analyser,/obj/item/weapon/analyser,18,100,0,1,none,218,0,0,8,null
 RECIPE: /material/electronics/,laboratory centrifuge,/obj/structure/centrifuge,24,100,0,1,none,100,0,0,8,null
 RECIPE: /material/electronics/,industrial drill,/obj/structure/drill,20,300,1,1,none,125,0,0,8,null
+RECIPE: /material/electronics/,hydraulic fracturing rig,/obj/structure/drill/fracking,20,300,1,1,none,0,0,0,8,null
 
 //*****************| ELECTRONICS RADIO & COMMUNICATION |***************************
 
