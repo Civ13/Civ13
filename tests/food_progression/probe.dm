@@ -65,8 +65,30 @@
 	var/stage_before = W.stage
 	sleep(5)
 	food_check(W.stage == stage_before, "temperate winter pauses tomato development")
+	// Real custom persistence entry encoder/loader, with fresh temporary storage.
+	W.stage = 3
+	stage_before = W.stage
+	W.water = 42
+	W.plant_nutrition = 87
+	W.radiation = 3
+	var/savefile/F = new("crop.sav")
+	F["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/ref = map_storage.BuildVarDirectory(F, W)
+	food_check(ref, "crop has a saved entry")
+	map_storage.clear_bookkeeping()
+	var/turf/floor/dirt/ploughed/restored_soil = new(locate(1,2,1))
+	restored_soil.soil_nutrition = 150
+	var/obj/structure/farming/plant/tomato/restored = map_storage.Load_Entry(F, ref, starting_loc = restored_soil)
+	food_check(restored && restored.type == W.type && restored.loc == restored_soil, "crop type and location restored")
+	food_check(restored.stage == W.stage && restored.water == 42 && restored.plant_nutrition == 87 && restored.radiation == 3, "crop scalar state restored")
+	food_check(jointext(restored.biomes, ",") == jointext(W.biomes, ",") && jointext(restored.seasons, ",") == jointext(W.seasons, ","), "crop climate and season lists restored")
+	W.vstatic = TRUE
+	sleep(5)
+	food_check(restored.stage == stage_before, "restored winter crop remains paused")
 	season = "SPRING"
 	sleep(5)
-	food_check(W.stage > stage_before, "spring resumes tomato development")
-	text2file("PASS: production planting, rejection, growth, harvest, seed return and season gating", "food_result.txt")
+	food_check(restored.stage > stage_before, "restored crop resumes in spring")
+	text2file("PASS: production planting, rejection, growth, harvest, seed return, season gating and crop entry save/load", "food_result.txt")
 	del(world)

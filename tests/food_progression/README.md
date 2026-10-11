@@ -12,6 +12,10 @@ occupied/unploughed rejection, plant construction, growth, water/soil behavior,
 knife harvest, actual tomato produce construction and two returned seeds run
 through production handlers. Only the one-minute growth wait is shortened to
 two ticks. Winter development pauses and spring resumes with fresh water nearby.
+The actual custom save entry encoder/loader writes a live winter crop to a
+temporary savefile and recreates its type/location, stage, stored water,
+nutrition, radiation and climate/season lists. The restored crop remains paused
+in winter and develops after spring begins, through its constructor-owned wait.
 
 Runtime uses unique temporary storage and tracked name data, with no production
 config or saves. It retains compile/runtime logs, result, metadata and generated
@@ -24,5 +28,7 @@ This is production-path integration evidence, not a player bootstrap or full
 season-transition demonstration. Seeds, knife, nutrition, actor and prepared
 soil are supplied. It does not prove walking access, craft/research/tool gates,
 inventory interactions, elapsed gameplay timing, map-wide climate transitions,
-plant save/load state or graphical appearance. Those remain under #3048/#3049.
+full-map save/import sequencing or graphical appearance. Crop entry restoration
+does not prove transactional map loading or constructors at full map scale.
+Those remain under #3048/#3049.
 No game behavior or artwork is changed.
