@@ -1,0 +1,32 @@
+name: Comment review intake
+on:
+  pull_request_review_comment:
+    types: [created, edited]
+  pull_request_review:
+    types: [submitted, edited]
+permissions:
+  contents: read
+jobs:
+  collect:
+    if: vars.CODEX_COMMENT_REVIEW_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      # No checkout, credentials, or execution of repository/PR code.
+      - name: Record identifiers only
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const e = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
+          const item = process.env.EVENT_NAME === 'pull_request_review' ? e.review : e.comment;
+          writeFileSync('event.json', JSON.stringify({
+            event: process.env.EVENT_NAME, action: e.action,
+            id: item.id, number: e.pull_request.number
+          }));
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: comment-review-event
+          path: event.json
+          retention-days: 1

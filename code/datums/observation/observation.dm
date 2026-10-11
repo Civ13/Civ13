@@ -175,7 +175,9 @@
 		global_listeners[listener] = callbacks
 
 	// Add the callback and return true.
-	callbacks |= proc_call
+	if (proc_call in callbacks)
+		return FALSE
+	callbacks += proc_call
 	return TRUE
 
 /decl/observ/proc/unregister_global(var/datum/listener, var/proc_call)

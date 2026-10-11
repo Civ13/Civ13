@@ -433,7 +433,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Polyethylene"
 	id = "polyethylene"
 	result = "polyethylene"
-	required_reagents = list("propylene" = 2)
+	required_reagents = list("ethylene" = 2)
 	catalysts = list("titaniumchloride" = 10, "borontrifluoride" = 5, "aluminumchloride" = 5)
 	result_amount = 25
 

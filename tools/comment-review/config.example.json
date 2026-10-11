@@ -1,0 +1,19 @@
+{
+  "github_event_settings": {
+    "CODEX_COMMENT_REVIEW_ENABLED": "false",
+    "CODEX_COMMENT_REVIEW_MODEL": "",
+    "required_secret_name": "OPENAI_API_KEY"
+  },
+  "local": {
+    "cadence_minutes": 10,
+    "state_directory": "D:\\GitHub\\Civ13\\data\\comment-review",
+    "repositories": [
+      "Civ13/Civ13",
+      "Civ13/Civ14",
+      "Civ13/civ13.github.io",
+      "Valgorithms/Civilizationbot"
+    ],
+    "output_limit": 5,
+    "scheduler_installed": false
+  }
+}

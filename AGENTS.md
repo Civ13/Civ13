@@ -200,7 +200,28 @@ tests/crafting/README.md documents scripts/check-recipes.py, a compiled
 BYOND recipe-schema/registration and isolated crafting-fixture check. Use the
 current research-tree and map-mode gates when testing material registration;
 zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
+<!-- 2026-10-11: observer reference bookkeeping -->
+- Observer cleanup count lists retain their datum keys. Counts must reflect actual callbacks: duplicate global registrations do not increment them, and unregistering all callbacks subtracts their full count.
+- `scripts/test-observer-memory.ps1 -ByondBin <BYOND-bin-directory>` runs complete production observer registration/cleanup code in an isolated fixture with temporary outputs and no game startup.
+<!-- 2026-10-11: water registry replacement -->
+- `water_turf_list` must track only current water turfs; turf replacement invokes `Del()` and retargets saved turf references. Water New/Del maintain registry indexes with constant-time swap removal.
+- `scripts/test-water-memory.ps1 -ByondBin <BYOND-bin-directory>` checks subtype replacement, dry conversion and interleaved registry removals across 20 cycles without starting game systems.
+<!-- 2026-10-11: season memory regression -->
+- BYOND turf replacement calls `Del()` and preserves sleeping procs. Registry cleanup in `Destroy()` alone does not handle replacement; grass registration is maintained by grass `New()`/`Del()`.
+- Dirt recovery uses an identity token so old sleeping recovery chains stop after turf replacement. Obsolete waits release their token when they wake (up to 20 minutes), without deleting live entities.
+- `scripts/test-season-memory.ps1 -ByondBin <BYOND-bin-directory>` executes production turf lifecycle bodies in an isolated world, with accelerated recovery waits and temporary output. It checks repeated replacement, bounded grass registration, one recovery chain per dirt turf, and planted-soil behavior. Synthetic process memory is not full-game memory evidence.
+<!-- 2026-10-11: evidence harness review -->
+Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
 ## Local MCP tooling
+
+<!-- 2026-10-11: chemistry verification -->
+Chemical recipe IDs do not register reagents: each product needs a matching
+`/datum/reagent` ID or mixing can consume inputs without producing the result.
+`tests/chemistry/run.py` compiles production sources with normal world startup
+disabled and runs bounded reactions in temporary storage. CI also runs its
+wrong-feedstock negative control; this does not replace gameplay verification.
+Linux DreamDaemon safe mode rejects an absolute `-log` path. Use a relative
+log filename with the runtime working directory set to temporary storage.
 
 <!-- 2026-10-11: Civ13 MCP integration -->
 `tools/mcp/README.md` documents the bounded stdio server and Codex configuration.
@@ -218,4 +239,18 @@ worktree that will be archived while the MCP entry still points to it.
 opt-in full-game capture adapter. `scripts/test-power.ps1` requires an explicit
 BYOND bin path; CI also compiles the excluded gameplay adapter. Powerflow and
 currentflow are instantaneous capacity and reserved demand, not stored energy.
+
+<!-- 2026-10-11: GitHub comment review -->
+Tools under tools/comment-review provide an authenticated-gh local collector and a disabled-by-default Codex event workflow. Preserve ignored data/comment-review cursors/receipts across worktree cleanup; inspect current API data before acknowledging or posting. The local collector does not install a scheduler or consume API credentials. See tools/comment-review/README.md for event trust boundaries and activation settings.
+## Train verification
+
+<!-- 2026-10-11: train collision investigation -->
+`code/modules/1713/trains.dm` connections point from leader to follower. Reject
+coupling cycles and stop failed movement before recursively moving followers;
+`Bumped` is deferred by the movable atom's bump callback. Run bounded isolated
+regressions with `tests/train_collision/run.ps1 -ByondBin <516.1681-bin>` and real
+game callback/locomotive-loop tests with `tests/train_collision/run-game.ps1`.
+The full-game probe uses temporary state and outbound-hook controls. Its optional
+visual mode needs separate capture authorization; it never proves production
+crash behavior. Do not replace required gameplay captures with fixture output.
 
