@@ -16,7 +16,7 @@ Sources:
 - Royal Swedish Academy of Sciences, primary pile and rechargeable lead-acid, 1859-60: https://www.kva.se/app/uploads/2019/10/scibackkeen19.pdf
 - William Hafford's archaeological assessment, reported by HISTORY: https://www.history.com/articles/baghdad-battery
 
-Graphical acceptance requires real screenshots and reproduction steps at the tested head. Timing evidence also requires video. Runtime fixtures establish isolated contracts only. No production deployment or restart is part of this milestone.
+Production-source energy regressions and compiled real-item checks establish accounting, construction and lifecycle behavior. Gameplay capture is optional when it resolves remaining uncertainty; these checks do not establish graphical appearance or full-world persistence. No production deployment or restart is part of this milestone.
 
 ## Rechargeable extension (requested scope)
 
