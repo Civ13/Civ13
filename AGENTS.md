@@ -65,6 +65,12 @@ An experimental open-source BYOND reimplementation. `.vscode/launch.json` has an
 - The metadata `.dm` file must be `#include`d in `civ13.dme` **after** any defines it references.
 - Win conditions: call `world << "<font>..."` for announcements, set `game_over = TRUE` and `ticker.finished = TRUE` to end the round.
 
+<!-- 2026-10-11: forced season decay control -->
+`seasons(looping, force, advance_decay)` preserves debris age for forced calls
+when the third argument is omitted. Natural calls count transitions. Forward
+all three arguments in season overrides and honor `looping = FALSE` to avoid
+starting extra recurring cycles from the admin command.
+
 ### Player spawning
 
 - Jobs define `spawn_location = "JoinLateXXX"` (a string key).

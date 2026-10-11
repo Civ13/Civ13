@@ -75,10 +75,11 @@ var/global/datum/external_relations/external_relations = new()
 	spawn(1)
 		seasons()
 
-/obj/map_metadata/pepelsibirsk/seasons()
+/obj/map_metadata/pepelsibirsk/seasons(looping = TRUE, force = FALSE, advance_decay = null)
+	advance_decay = season_decay_requested(force, advance_decay)
 	if (real_season == "FALL")
 		season = "WINTER"
-		record_abandonment_season_change()
+		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The <b>Winter</b> has started.</big>")
 		change_weather_somehow()
 		spawn(1200)
@@ -137,7 +138,7 @@ var/global/datum/external_relations/external_relations = new()
 		real_season = "WINTER"
 	else if (real_season == "SPRING")
 		season = "SUMMER"
-		record_abandonment_season_change()
+		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The <b>Summer</b> has started.</big>")
 		change_weather_somehow()
 		spawn(300)
@@ -171,12 +172,12 @@ var/global/datum/external_relations/external_relations = new()
 		real_season = "SUMMER"
 	else if (real_season == "WINTER")
 		season = "SPRING"
-		record_abandonment_season_change()
+		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The weather is getting warmer in other places of the world, but not here. It is now <b>Spring</b>.</big>")
 		real_season = "SPRING"
 	else if (real_season == "SUMMER")
 		season = "FALL"
-		record_abandonment_season_change()
+		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The warmth of summer abruptly ends, being replaced with strong winds and rain, swiftly turning to snowstorms and ice. It is now <b>Fall</b>.</big>")
 		spawn(1200)
 			for (var/obj/structure/wild/tree/live_tree/TREES in world)
@@ -232,8 +233,9 @@ var/global/datum/external_relations/external_relations = new()
 		for (var/turf/floor/grass/GTT in get_area_turfs(/area/caribbean/nomads/snow))
 			GTT.ChangeTurf(/turf/floor/winter/grass)
 		real_season = "FALL"
-	spawn(30 MINUTES)
-		seasons()
+	if (looping)
+		spawn(30 MINUTES)
+			seasons()
 
 /obj/map_metadata/pepelsibirsk/cross_message(faction)
 	return "<font size = 3><span class = 'notice'><b>The all-clear has been given. You may now leave the Soviet.</b></font></span>"

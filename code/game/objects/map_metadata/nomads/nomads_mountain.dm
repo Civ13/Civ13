@@ -17,10 +17,11 @@
 			season = "Wet Season"
 
 
-/obj/map_metadata/nomads/mountain/seasons()
+/obj/map_metadata/nomads/mountain/seasons(looping = TRUE, force = FALSE, advance_decay = null)
+	advance_decay = season_decay_requested(force, advance_decay)
 	if (real_season == "dry")
 		season = "Wet Season"
-		record_abandonment_season_change()
+		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The <b>Wet Season</b> has started.</big>")
 		change_weather_somehow()
 		for (var/turf/floor/beach/drywater/D)
@@ -28,11 +29,12 @@
 		real_season = "wet"
 	else
 		season = "Dry Season"
-		record_abandonment_season_change()
+		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The <b>Dry Season</b> has started.</big>")
 		change_weather_somehow()
 		for (var/turf/floor/beach/water/swamp/D)
 			D.ChangeTurf(/turf/floor/beach/drywater)
 		real_season = "dry"
-	spawn(18000)
-		seasons()
+	if (looping)
+		spawn(18000)
+			seasons()
