@@ -67,3 +67,24 @@ power returns; join two legitimate sources and verify stopping one preserves the
 other's capacity. Capture actual screenshots and sequence video showing these
 steps, the tested map, and commit. This gameplay sequence remains to be verified;
 probe results must not be presented as completed gameplay capture.
+
+## Opt-in full-game capture session (Windows)
+
+From a clean committed checkout, run `tests/power/start-gameplay.ps1 -ByondBin
+'C:/path/to/byond/bin'`. This compiles the normal Nomads map plus the opt-in
+adapter at that SHA and starts an owned temporary world on port 17031. The
+production DME does not include the adapter. Temporary config disables hub
+visibility, webhooks, whitelist and remote ban updates; SQL state is new and
+contains only the local debug operator. The returned session.json records SHA,
+PID, nonce, binary hash, port and temporary directory.
+
+Use `tests/power/query-gameplay.ps1 -SessionJson ... -ByondBin ... -Action setup`
+to prepare a bounded scene on the normal map. It uses actual coal fueling,
+furnace lighting, engine startup, coil placement and lamp attachment procedures.
+After a fresh local Dream Seeker connects, action `view` attaches its local test
+admin to the operator. Game verbs under Power evidence provide status, wire cut,
+reconnection, load deletion and engine shutdown. Status reads real cable fields;
+wait at least two seconds after a change for real consumer callbacks to settle.
+The query adapter accepts only loopback requests with the per-run nonce and a
+fixed action list. Client actions require a local debug admin. Never connect it
+to production. Close the owned PID and Dream Seeker when capture is finished.
