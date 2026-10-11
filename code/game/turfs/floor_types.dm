@@ -283,9 +283,23 @@
 	initial_flooring = /decl/flooring/water
 	watertile = TRUE
 
+/turf/floor/beach/water/var/water_registry_index = 0
+
 /turf/floor/beach/water/New()
 	..()
 	water_turf_list += src
+	water_registry_index = water_turf_list.len
+
+// Replacement invokes Del(), and list entries would otherwise follow the new turf.
+/turf/floor/beach/water/Del()
+	if (water_registry_index)
+		var/last_index = water_turf_list.len
+		var/turf/floor/beach/water/last_water = water_turf_list[last_index]
+		water_turf_list[water_registry_index] = last_water
+		last_water.water_registry_index = water_registry_index
+		water_turf_list.Cut(last_index, last_index + 1)
+		water_registry_index = 0
+	..()
 
 /turf/floor/beach/water/coastwater
 	name = "coast water"
