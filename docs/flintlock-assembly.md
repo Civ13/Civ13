@@ -46,3 +46,7 @@ research menus and the production save/load routines. Actor startup and selected
 wait/inventory effects are explicit adapters; genuine do_after cancellation is
 also exercised. It does not prove production behavior or graphical acceptance.
 Run `scripts/check-recipes.py` for the compiled catalog and full game compilation.
+
+The probe also accepts `-NegativeControl`: an isolated temporary mutation removes
+the completion-time compatibility check, and the test must catch the missing flint.
+The actual imported sprite cells are shown in [this preview](images/flintlock-parts.png).

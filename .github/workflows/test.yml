@@ -247,3 +247,11 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           /usr/bin/python3 tests/food_progression/run.py --byond-bin "$PWD/BYOND/byond/bin"
           /usr/bin/python3 tests/food_progression/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
+
+      - name: Verify flintlock assembly, races, catalog and persistence
+        if: needs.changes.outputs.game == 'true'
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          pwsh -NoProfile -File tests/blackpowder/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
+          pwsh -NoProfile -File tests/blackpowder/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -NegativeControl
