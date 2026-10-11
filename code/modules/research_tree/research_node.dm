@@ -412,6 +412,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/reagent_containers/pill/cocaine" = "apothecary",
 		"/obj/structure/lab_distillery" = "apothecary",
 		"/obj/structure/reaction_bench" = "apothecary",
+		"/obj/item/weapon/laboratory_burner" = "apothecary",
 		// --- archery (7) ---
 		"/obj/item/ammo_casing/arrow" = "archery",
 		"/obj/item/ammo_casing/stone" = "archery",
@@ -1177,6 +1178,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/centrifuge" = "pharmacology",
 		"/obj/structure/chem_master" = "pharmacology",
 		"/obj/structure/chemical_dispenser" = "pharmacology",
+		"/obj/structure/chemical_dispenser/full/laboratory" = "pharmacology",
 		"/obj/structure/closet/fridge" = "pharmacology",
 		// --- pottery_storage (32) ---
 		"/obj/item/kitchen/wood_bowl" = "pottery_storage",

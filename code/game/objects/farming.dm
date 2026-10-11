@@ -377,6 +377,7 @@
 	var/readyStageMin = 7
 	var/readyStageMax = 10
 	var/plant = "name" // icon and name control, also harvested product type: /obj/item/weapon/reagent_containers/food/snacks/grown/plant
+	var/sprite_plant = null // Optional existing sprite family for new crops.
 	var/condiment = "product_name" // change it if product is condiment type: /obj/item/weapon/reagent_containers/food/condiment/product_name
 	var/stack = "product_name" // change it if product is stack type: /obj/item/stack/product_name
 	var/stack_amount = 1 // if product is stack type, then this is amount of harvested material, change it if it not 1
@@ -937,6 +938,7 @@
 		return TRUE
 
 /obj/structure/farming/plant/proc/growth()
+	var/sprite_name = sprite_plant ? sprite_plant : plant
 	var/turf/floor/dirt/D = get_turf(loc)
 	if(!istype(D, /turf/floor/dirt/ploughed))
 		water_proc() // Plant will still consume resources and respond to the climate, but will not be able to develop
@@ -945,15 +947,15 @@
 		soil_nutrition_proc()
 		water_proc()
 		if (stage < readyStageMin)
-			icon_state = "[plant]-grow[stage]"
+			icon_state = "[sprite_name]-grow[stage]"
 			desc = "A young [plant] plant."
 			name = "young [plant] plant"
 		else if (readyHarvest())
-			icon_state = "[plant]-harvest"
+			icon_state = "[sprite_name]-harvest"
 			desc = "A ready to harvest [plant] plant."
 			name = "ready [plant] plant"
 		else
-			icon_state = "[plant]-dead"
+			icon_state = "[sprite_name]-dead"
 			desc = "A dead [plant] plant."
 			name = "dead [plant] plant"
 		spawn(600) // 1 minute 
@@ -1015,7 +1017,7 @@
 // Helper function to set plant to dead
 /obj/structure/farming/plant/proc/set_dead(type = "dead")
     stage = 11
-    icon_state = "[plant]-dead"
+    icon_state = "[sprite_plant ? sprite_plant : plant]-dead"
     desc = "A " + type + " [plant] plant."
     name = type + " [plant] plant"
 

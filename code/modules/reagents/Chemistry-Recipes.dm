@@ -452,15 +452,13 @@ datum/admins/proc/print_chemical_reactions()
 	result_amount = 25
 
 // Used to make Polypropylene plastics
-/* Requires heat to polymerize, but we don't have a system for that yet
 /datum/chemical_reaction/polypropylene
 	name = "Polypropylene"
 	id = "polypropylene"
 	result = "polypropylene"
 	required_reagents = list("propylene" = 2)
-	catalysts = list("methylpropene" = 2, "titaniumchloride" = 10, "borontrifluoride" = 5, "aluminumchloride" = 5)
+	catalysts = list("titaniumchloride" = 10, "borontrifluoride" = 5, "aluminumchloride" = 5)
 	result_amount = 25
-*/
 
 // Mostly used for polymerization, rubber production, adhesives, lubricate, antioxidents, fuel and fuel additive
 /datum/chemical_reaction/butene
