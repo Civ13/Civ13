@@ -1,0 +1,27 @@
+# Conveyor snapshot regression and benchmark
+
+Conveyors kept each movement tick's `loc.contents - src` list in an instance field after delayed movement completed. Switching a belt off left this snapshot referenced indefinitely, until another active tick or belt destruction. The fix keeps it local to the queued tick and skips the delayed task when that snapshot is empty. It preserves the one-tick delay, direction lookup at execution, source-location check, anchored filtering, iteration order and ten-object limit.
+
+## Reproduce
+
+Use BYOND 516.1681, matching `.github/workflows/test.yml`. In PowerShell:
+
+```powershell
+./tests/conveyor/run.ps1 -ByondBin '<BYOND bin>' -Revision 0d38999d5f9f987a944493f11c456537f39ac2f6
+./tests/conveyor/run.ps1 -ByondBin '<BYOND bin>' -RequireReleasedSnapshot
+./tests/conveyor/run-game.ps1 -ByondBin '<BYOND bin>'
+```
+
+The fixture compiles the actual production `process()` verbatim from the selected revision. Its minimal adapters supply movable objects, the belt fields and the base `process()` declaration. It checks delayed east movement, reverse movement, anchored/departed cargo, stopped and unplaced belts, and the ten-object cap. The optional snapshot assertion fails on the baseline.
+
+Both runners use unique temporary directories and hidden task-owned console Dream Daemon processes. They stop only the process they created on failure or timeout. The full-game runner compiles a separate environment, copies public config/UI files, disables optional outbound hooks, and uses temporary storage. It exercises real conveyor and knife constructors in Nomads, checks movement/anchoring/stop and absence of the instance snapshot field, then closes the world. Its adapter is excluded from production `civ13.dme`. Probe turfs are changed only in the disposable test world.
+
+Fixture outputs include compile/runtime logs, `metadata.json` and `memory.csv`; the full-game run prints its directory containing `probe_metadata.json`, `game_result.txt` and startup/runtime logs. Memory sampling is every 200 ms: private bytes, working set bytes and cumulative process CPU milliseconds. Phase labels distinguish the two-second pre-processing baseline, three-second stopped-belt settling period, and empty-belt workload. Peak memory is the maximum observed sample, not a guaranteed instantaneous peak. CPU and elapsed observations include the fixture workload and scheduler overhead; do not equate them with production tick performance.
+
+## Evidence and limits
+
+The matching 32x32x1 fixture contains 400 occupied belts with 40 anchored objects each. Baseline retains 16,000 list entries after movement; patched retains zero. A subsequent 100,000 empty-belt calls preserve the tick delay/cadence. The stress load is larger than the checked-in Pepelsibirsk map's 45 belts and two switches (118,803 mapped turfs). Ordinary Nomads has no mapped belts: this is a focused industrial/construction path improvement, not a general world-footprint or season-OOM fix.
+
+Reference release does not establish an OS-memory reduction, collection of live cargo, or long-runtime stability. Cargo remains live on the map. Process-memory and CPU results must be compared across repeated runs; short noisy measurements are not a production performance promise. No production save, server setting, deployment or restart is involved. A bounded read-only SSH process snapshot attempt timed out.
+
+Graphical acceptance remains pending while screen control is paused. Required genuine screenshots should show the exact tested commit, a real conveyor with movable and anchored cargo, and stopped-belt state. Video is required for the one-tick movement sequence and reversal. Replicate in an isolated local game using a belt, switch with matching ID, a knife and anchored cargo; activate, reverse and stop the switch, observing cargo movement and the ten-object limit. Upload captures directly as PR attachments, verify accessibility, then delete task-created local media. Fixture logs and compilation are not screenshot/video acceptance.
