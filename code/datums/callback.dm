@@ -38,6 +38,10 @@ HELP TO PROC TYPEPATH SHORTCUTS (Purely based on the path in the code)
 	If you can't do the above or want to be sure, use the full path (/type/of/thing/proc/procname)
 */
 
+/** Stores a proc target and reusable arguments.
+ * Invoke appends call-time arguments without mutating stored arguments.
+ * See [/datum/callback/dynamic] for targets supplied during invocation.
+ */
 /datum/callback
 	var/datum/object = GLOBAL_PROC
 	var/delegate
@@ -50,6 +54,7 @@ HELP TO PROC TYPEPATH SHORTCUTS (Purely based on the path in the code)
 	if (length(args) > 2)
 		arguments = args.Copy(3)
 
+/// Calls the target synchronously and returns its result; call-time arguments follow stored arguments.
 /datum/callback/proc/Invoke(...)
 	if (!object)
 		return
@@ -64,6 +69,7 @@ HELP TO PROC TYPEPATH SHORTCUTS (Purely based on the path in the code)
 	return call(object, delegate)(arglist(calling_arguments))
 
 //copy and pasted because fuck proc overhead
+/// Calls with waitfor disabled; a sleeping target continues after this call returns.
 /datum/callback/proc/InvokeAsync(...)
 	set waitfor = FALSE
 	if (!object)
@@ -80,12 +86,18 @@ HELP TO PROC TYPEPATH SHORTCUTS (Purely based on the path in the code)
 
 // DYNAMIC callbacks. Certainly will be loved by the NDatabase
 // The difference is simple. Object is NEVER passed in constructor. First parameter of any INVOKE is our object
+/** Callback whose target is the first invocation argument.
+ * Inherits stored arguments from [/datum/callback]; the target is not passed to the delegate.
+ */
+/datum/callback/dynamic
+
 /datum/callback/dynamic/New(proctocall, ...)
 	object = null
 	delegate = proctocall
 	if (length(args) > 1)
 		arguments = args.Copy(2)
 
+/// Uses the first argument as target and appends remaining arguments to the stored list.
 /datum/callback/dynamic/Invoke(...)	
 	var/list/calling_arguments = arguments
 	if (length(args))
