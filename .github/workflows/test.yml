@@ -129,6 +129,14 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           pwsh -NoProfile -File tests/plant_diagnostics/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
 
+      - name: Run isolated disease and medicine regressions
+        if: needs.changes.outputs.game == 'true'
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/survival/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/survival/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
+
       - name: Run outdoor crop bootstrap and water regressions
         if: needs.changes.outputs.game == 'true'
         shell: bash
