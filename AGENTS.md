@@ -344,5 +344,18 @@ The always-running ci-selection.yml selects compilation conservatively and skips
 <!-- 2026-10-11: plant lifecycle -->
 Dead/static crops stop growth at entry and pending-wait wake; water death keeps its specific description, and age expiration marks the crop dead before stopping. `tests/plant_lifecycle/run.ps1 -ByondBin <516.1681-bin>` executes production growth/water/soil procs with accelerated waits; baseline callback counts are not whole-game performance evidence.
 
+<!-- 2026-10-11: bounded abandoned debris -->
+`code/processes/abandoned_items.dm` owns the opt-in waste registry and 256-candidate
+sweep every 30 seconds. Warning/removal use 12/24 elapsed server hours, independent
+of seasons. Do not opt useful item parents into decay without gameplay review.
+Custom persistence serializes tmp vars: override `persistence_runtime_var` for
+runtime fields and preserve both export/import exclusions. Native storage and
+inventory transitions reset exposure; Destroy/Del release registry slots.
+`tests/abandoned_items/run.py` compiles production sources with normal startup
+and maps disabled, checks nested native save restoration and repeated disposal,
+and samples RSS separately from retained object counts. It does not prove OOM fixes.
 <!-- 2026-10-11: crop diagnostics -->
 Plant examine delegates to read-only farming_diagnostics(skill). Preserve skill thresholds and sampled nutrition semantics; diagnostics do not sample soil or run growth. tests/plant_diagnostics/run.ps1 extracts the production helper in temporary storage.
+
+<!-- 2026-10-11: outdoor crop bootstrap -->
+Nomads Europe foraged seeds use biome filtering like its climate-restricted growth. Rain caps crop storage at max_water; natural irrigation sources remain unlimited. tests/outdoor_crops/run.ps1 tests production seed catalogs/dispatch and fresh/salt/range behavior; it does not establish map-level bootstrap reachability.
