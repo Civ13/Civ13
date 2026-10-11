@@ -17,6 +17,7 @@ def main():
     parser.add_argument("--report", type=Path)
     parser.add_argument("--compiler", default="DreamMaker")
     parser.add_argument("--runtime", default="DreamDaemon")
+    parser.add_argument("--food-bootstrap-negative-control", action="store_true")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     # Assets/includes are resolved relative to the checkout; runtime storage is isolated.
@@ -43,6 +44,12 @@ def main():
         dme, maps = re.subn(r'^#include ".*\.dmm"\s*$', '', dme, flags=re.M)
         if not maps:
             raise RuntimeError("Expected to remove game maps")
+        if args.food_bootstrap_negative_control:
+            nodes = (root / "code/modules/research_tree/research_node.dm").read_text(encoding="utf-8")
+            marker = '"/obj/item/weapon/plough" = "basic_agriculture"'
+            nodes = replace_once(nodes, marker, '"/obj/item/weapon/plough" = "basic_tools"')
+            (build / "research_node.dm").write_text(nodes, encoding="utf-8")
+            dme = replace_once(dme, r'#include "code\modules\research_tree\research_node.dm"', f'#include "{build.as_posix()}/research_node.dm"')
         dme += f'\n#include "{root.as_posix()}/tests/crafting/checks.dm"\n'
         # Preserve resource lookup from original includes.
         dme = dme.replace('#define FILE_DIR .', f'#define FILE_DIR "{root.as_posix()}"')
@@ -69,6 +76,16 @@ def main():
             args.report.write_text(output, encoding="utf-8")
         print(output)
         if runtime.returncode or any(marker in runtime_log.lower() for marker in ("runtime error:", "bug:", "## error:")):
+            return 1
+        if args.food_bootstrap_negative_control:
+            expected = [
+                "FAIL food bootstrap: plough stays locked before Basic Agriculture",
+                "FAIL food bootstrap: incomplete study keeps the plough locked",
+            ]
+            if output.rstrip().splitlines()[1:-1] == expected and output.rstrip().endswith("FAIL"):
+                print("PASS: food bootstrap research-gate omission detected")
+                return 0
+            print("FAIL: food bootstrap control did not produce only the expected gate failures")
             return 1
         return 0 if output.rstrip().endswith("PASS") else 1
 

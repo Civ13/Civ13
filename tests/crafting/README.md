@@ -38,6 +38,30 @@ The daemon's Windows account login message is engine behavior, not a game login.
 - Thirteen deliberately invalid row fixtures must produce diagnostics.
   A valid fractional-cost inherited-output fixture must be accepted.
 
+## Food bootstrap gate regression
+
+The normal run also checks a separate unresearched Stone Age faction against all
+real global recipe rows, without the catalog fixture's all-nodes-DONE state.
+It verifies the two-log wooden knife, two-stone hatchet and eight-plank research
+bench, then checks that 94 Basic Agriculture study ticks leave the plough locked
+and the 95th unlocks its four-plank recipe. Raw logs are rejected for that recipe.
+The starter bench can select Basic Agriculture; irrigation rejects missing
+prerequisites and requires bench tier one. Era advancement grants neither
+specialist irrigation nor Basic Agriculture to an established faction whose
+baseline was Stone Age. A factionless Bronze Age player gets the Main-tree grant.
+
+For a local mutation control, add `--food-bootstrap-negative-control`. A generated
+research-node source maps the wooden plough to the baseline Basic Tools node.
+Success requires exactly the two premature-plough diagnostics, with no compiler
+warnings, runtime errors or other catalog failures. Production sources are not
+modified. The normal CI command is unchanged; this extra control is opt-in.
+
+These are recipe eligibility and production study-accounting contracts. The
+fixture supplies ticks directly and a bench instance, without simulating a
+connected authorised researcher, natural resources, faction founding, timed
+crafting, player movement, permissions, bench upgrades or seasons. See
+[the bootstrap route checklist](../../docs/outdoor-crop-bootstrap.md). They do
+not complete natural-map acceptance under #3048 or irrigation acceptance #3049.
 ## Catalog repairs
 
 Path spelling/whitespace, missing slashes, incorrect material names, a malformed
