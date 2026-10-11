@@ -42,3 +42,4 @@
         to_chat(src, "FAIL local observer cleanup: [failures] assertions")
     else
         to_chat(src, "<b>PASS local observer cleanup: 100 cycles; callbacks delivered and no probe references retained.</b>")
+    return !failures
