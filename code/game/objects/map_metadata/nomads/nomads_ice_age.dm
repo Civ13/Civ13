@@ -1,5 +1,7 @@
 
 /obj/map_metadata/nomads/ice_age
+	abandonment_season_cycle = TRUE
+	abandonment_season_autonomous = TRUE
 	ID = MAP_NOMADS_ICE_AGE
 	title = "Nomads (Ice Age)"
 	description = "Battle on the Nomads (Ice Age) map."
@@ -15,6 +17,7 @@
 /obj/map_metadata/nomads/ice_age/seasons()
 	if (real_season == "SUMMER")
 		season = "WINTER"
+		record_abandonment_season_change()
 		to_chat(world, "<big>It's getting very cold. <b>Winter</b> has started.</big>")
 		change_weather_somehow()
 		for (var/obj/structure/wild/tree/live_tree/TREES)
@@ -39,6 +42,7 @@
 		real_season = "WINTER"
 	else
 		season = "SUMMER"
+		record_abandonment_season_change()
 		to_chat(world, "<big>The weather gets warmer. <b>Summer</b> has started.</big>")
 		change_weather_somehow()
 		for (var/obj/structure/wild/tree/live_tree/TREES)

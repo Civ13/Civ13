@@ -1,4 +1,5 @@
 /obj/map_metadata/bohemia
+	abandonment_season_cycle = TRUE
 	ID = MAP_BOHEMIA
 	title = "Bohemia"
 	description = "Europeans have built a kingdom! The People must thrive on their industry and live peacefully!.THIS IS AN HRP MAP - No griefing will be tolerated."

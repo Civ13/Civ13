@@ -1,5 +1,6 @@
 
 /obj/map_metadata/tribes
+	abandonment_season_cycle = TRUE
 	ID = MAP_TRIBES
 	title = "Tribes"
 	description = "Several tribes are settling in this land. Will they be able to get along?"
