@@ -1,0 +1,49 @@
+name: Discord shipped changelog
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        description: Reviewed manifest ID in changelogs/
+        required: true
+        type: string
+      commit:
+        description: Full SHA confirmed running on production
+        required: true
+        type: string
+      dry_run:
+        description: Preview without Discord or receipt writes
+        default: true
+        type: boolean
+      confirm_live:
+        description: I confirmed this exact commit is live
+        default: false
+        type: boolean
+  deployment_status:
+permissions:
+  contents: read
+concurrency:
+  group: discord-changelog
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.repository == 'Civ13/Civ13' && (github.event_name == 'workflow_dispatch' || (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'production' && github.event.deployment.production_environment == true && github.event.deployment.ref == 'master'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: discord-changelog
+    permissions:
+      contents: write
+      deployments: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: master
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '24'
+      - name: Publish reviewed shipped manifest
+        run: node tools/changelog/publish.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CHANGELOG_ENABLED: ${{ vars.DISCORD_CHANGELOG_ENABLED }}
+          DISCORD_CHANGELOG_WEBHOOK: ${{ secrets.DISCORD_CHANGELOG_WEBHOOK }}

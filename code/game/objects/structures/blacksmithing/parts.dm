@@ -61,6 +61,10 @@
 	material = null
 
 /obj/item/weapon/material/part/attackby(obj/item/weapon/material/handle/HANDLE, mob/living/human/H)
+	if (is_work_tool_head())
+		if (assemble_work_tool(HANDLE, H))
+			to_chat(H, "You finish assembling the [result_name].")
+		return
 	if (result && material && src && istype(HANDLE, /obj/item/weapon/material/handle))
 		var/obj/item/weapon/material/M = new result(get_turf(H),material.name)
 		M.loc = H.loc
@@ -68,3 +72,28 @@
 		qdel(src)
 		to_chat(H, "You finish assembling the [result_name].")
 		return
+
+/obj/item/weapon/material/part/proc/is_work_tool_head()
+	return result == /obj/item/weapon/material/pickaxe || result == /obj/item/weapon/material/shovel || result == /obj/item/weapon/material/hatchet
+
+// No waits or prompts between validation and consumption: a second callback
+// cannot reuse a queued-for-deletion ingredient or produce another output.
+/obj/item/weapon/material/part/proc/assemble_work_tool(obj/item/weapon/material/handle/HANDLE, mob/living/human/H)
+	if (!is_work_tool_head() || QDELETED(src) || QDELETED(HANDLE) || !istype(HANDLE) || !istype(H))
+		return
+	if (!material || !HANDLE.material || health <= 0 || maxhealth <= 0 || HANDLE.health <= 0 || HANDLE.maxhealth <= 0)
+		return
+	if (HANDLE.loc != H || (H.l_hand != HANDLE && H.r_hand != HANDLE) || get_dist(H, src) > 1)
+		return
+	if (loc != H && !isturf(loc))
+		return
+	var/obj/item/weapon/material/M = new result(get_turf(H), material.name)
+	if (QDELETED(M))
+		return
+	M.record_tool_components(src, HANDLE)
+	H.drop_from_inventory(HANDLE)
+	if (loc == H)
+		H.drop_from_inventory(src)
+	qdel(HANDLE)
+	qdel(src)
+	return M

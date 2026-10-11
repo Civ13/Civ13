@@ -377,6 +377,7 @@
 	var/readyStageMin = 7
 	var/readyStageMax = 10
 	var/plant = "name" // icon and name control, also harvested product type: /obj/item/weapon/reagent_containers/food/snacks/grown/plant
+	var/sprite_plant = null // Optional existing sprite family for new crops.
 	var/condiment = "product_name" // change it if product is condiment type: /obj/item/weapon/reagent_containers/food/condiment/product_name
 	var/stack = "product_name" // change it if product is stack type: /obj/item/stack/product_name
 	var/stack_amount = 1 // if product is stack type, then this is amount of harvested material, change it if it not 1
@@ -937,6 +938,10 @@
 		return TRUE
 
 /obj/structure/farming/plant/proc/growth()
+	// Dead and display-only plants do not consume soil or own another growth wait.
+	if (vstatic || stage > readyStageMax)
+		return
+	var/sprite_name = sprite_plant ? sprite_plant : plant
 	var/turf/floor/dirt/D = get_turf(loc)
 	if(!istype(D, /turf/floor/dirt/ploughed))
 		water_proc() // Plant will still consume resources and respond to the climate, but will not be able to develop
@@ -944,19 +949,24 @@
 	else if (!vstatic && stage < 12)
 		soil_nutrition_proc()
 		water_proc()
+		// Preserve the specific drought/storm death message and stop immediately.
+		if (stage > readyStageMax)
+			return
 		if (stage < readyStageMin)
-			icon_state = "[plant]-grow[stage]"
+			icon_state = "[sprite_name]-grow[stage]"
 			desc = "A young [plant] plant."
 			name = "young [plant] plant"
 		else if (readyHarvest())
-			icon_state = "[plant]-harvest"
+			icon_state = "[sprite_name]-harvest"
 			desc = "A ready to harvest [plant] plant."
 			name = "ready [plant] plant"
 		else
-			icon_state = "[plant]-dead"
+			icon_state = "[sprite_name]-dead"
 			desc = "A dead [plant] plant."
 			name = "dead [plant] plant"
 		spawn(600) // 1 minute 
+			if (!src || vstatic || stage > readyStageMax)
+				return
 			var/turf/t = null
 			var/area/a = null
 			if (src)
@@ -978,6 +988,8 @@
 								count++
 				if (count > 0 || ! list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA).Find(map.ID))
 					stageGrowth()
+			if (stage > readyStageMax)
+				set_dead()
 			growth()
 
 /obj/structure/farming/plant/proc/stageGrowth()  // Uses plant_nutrition as Use the plant's nutrition as a chance to grow
@@ -1015,7 +1027,7 @@
 // Helper function to set plant to dead
 /obj/structure/farming/plant/proc/set_dead(type = "dead")
     stage = 11
-    icon_state = "[plant]-dead"
+    icon_state = "[sprite_plant ? sprite_plant : plant]-dead"
     desc = "A " + type + " [plant] plant."
     name = type + " [plant] plant"
 
@@ -1029,7 +1041,7 @@
 	if (!A)
 		return
 	if (findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon"))
-		water += 15
+		water = min(water + 15, max_water)
 		return
 
 	// Check for snow storm or sandstorm and set plant to dead
@@ -1068,21 +1080,43 @@
 	if (water <= 0)
 		set_dead("dry")
 
+/obj/structure/farming/plant/proc/farming_diagnostics(farming_skill)
+	var/list/messages = list()
+	if (vstatic)
+		return messages
+	if (stage > readyStageMax)
+		if (farming_skill >= 1.3)
+			messages += "This plant is dead and cannot be harvested. Uproot it before replanting."
+		return messages
+	if (farming_skill >= 1.6 && farming_skill < 2.2)
+		if (max_water)
+			var/water_desc = "healthy"
+			if (water/max_water < 0.33)
+				water_desc = "wilted"
+			else if (water/max_water < 0.66)
+				water_desc = "dry"
+			messages += "\The [src] seems <b>[water_desc]</b>."
+		else
+			messages += "This crop does not need watering."
+		if (plant_nutrition <= 0)
+			messages += "The soil is exhausted; growth may be slow."
+		else if (plant_nutrition < 40)
+			messages += "The soil is poor; growth may be slow."
+		else if (plant_nutrition <= 80)
+			messages += "The soil has some nutrients; growth may be slow."
+	else if (farming_skill >= 2.2)
+		if (max_water)
+			messages += "[src]'s water level is at <b>[water]/[max_water]</b>."
+		else
+			messages += "This crop does not need watering."
+		messages += "[src]'s nutrition level is at <b>[plant_nutrition]/[max_plant_nutrition]</b>."
+	if (farming_skill >= 1.3 && plant_nutrition > 80)
+		messages += "The plant is well nourished and may give extra crops."
+	return messages
+
 /obj/structure/farming/plant/examine(mob/user)
 	..(user)
 	if (ishuman(user))
 		var/mob/living/human/H = user
-		if (H.getStatCoeff("farming")>= 1.6 && H.getStatCoeff("farming") < 2.2)
-			var/water_desc = "healthy"
-			if (max_water)
-				if (water/max_water < 0.66 && water/max_water >= 0.33)
-					water_desc = "dry"
-				if (water/max_water < 0.33)
-					water_desc = "wilted"
-			to_chat(user, "\The [src] seems <b>[water_desc]</b>.")
-		else if (H.getStatCoeff("farming") >= 2.2)
-			to_chat(user, "[src]'s water level is at <b>[water]/[max_water]</b>.")
-			to_chat(user, "[src]'s nutrition level is at <b>[plant_nutrition]/[max_plant_nutrition]</b>.")
-		if (H.getStatCoeff("farming")>= 1.3)
-			if (plant_nutrition > 80)
-				to_chat(user, "The plant looks good and healthy, it may give extra crops.")
+		for (var/message in farming_diagnostics(H.getStatCoeff("farming")))
+			to_chat(user, message)

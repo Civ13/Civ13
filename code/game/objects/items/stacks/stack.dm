@@ -787,19 +787,9 @@
 		if (H.getStatCoeff("crafting") < 2.2)
 			to_chat(H, SPAN_DANGER("This is too complex for your skill level."))
 			return
-		if (!istype(H.l_hand, /obj/item/stack/material/iron) && !istype(H.r_hand, /obj/item/stack/material/iron))
+		if (!electronics_construction_iron(H, quantity))
 			to_chat(user, SPAN_WARNING("You need to have iron in the other hand to craft electronic circuits."))
 			return
-		if (istype(H.l_hand, /obj/item/stack/material/electronics))
-			var/obj/item/stack/material/electronics/NR = H.l_hand
-			NR.amount -= 1
-			if (NR.amount <= 0)
-				qdelHandReturn(H.l_hand, H)
-		else if (istype(H.r_hand, /obj/item/stack/material/electronics))
-			var/obj/item/stack/material/electronics/NR = H.r_hand
-			NR.amount -= 1
-			if (NR.amount <= 0)
-				qdelHandReturn(H.r_hand, H)
 
 	else if (recipe.result_type == /obj/structure/sawmill/powered)
 		if (H.getStatCoeff("crafting") < 2.2)
@@ -1651,30 +1641,10 @@
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 4 iron in one your hands in order to make this.</span>")
 					return
 
-	else if (findtext(recipe.title, "industrial drill"))
-		if (!istype(H.l_hand, /obj/item/stack/material/electronics) && !istype(H.r_hand, /obj/item/stack/material/electronics))
-			to_chat(user, SPAN_WARNING("You need a stack of at least 20 electronics in one of your hands in order to make this."))
+	else if (recipe.result_type == /obj/structure/drill)
+		if (!drill_construction_steel(H))
+			to_chat(user, SPAN_WARNING("You need at least 20 steel in your other hand to build an industrial drill."))
 			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/steel))
-				var/obj/item/stack/material/steel/NB = H.l_hand
-				if (NB.amount >= 20)
-					NB.amount -= 20
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					to_chat(user, SPAN_WARNING("You need a stack of at least 20 steel in one your hands in order to make this."))
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/steel))
-				var/obj/item/stack/material/steel/NB = H.r_hand
-				if (NB.amount >= 20)
-					NB.amount -= 20
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					to_chat(user, SPAN_WARNING("You need a stack of at least 20 steel in one your hands in order to make this."))
-					return
-
 	else if (findtext(recipe.title, "brown napoleonic bearskin hat"))
 		if (!istype(H.l_hand, /obj/item/stack/material/pelt/bearpelt/brown) && !istype(H.r_hand, /obj/item/stack/material/pelt/bearpelt/brown))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 4 brown bear pelts in one of your hands in order to make this.</span>")
@@ -1910,6 +1880,20 @@
 		if (barbwire_amount >= 2)
 			to_chat(H, SPAN_WARNING("You cannot build more barbwire here."))
 			return
+
+	// Recheck after do_after, before consuming either drill construction input.
+	if (recipe.result_type == /obj/structure/drill)
+		var/obj/item/stack/material/steel/drill_steel = drill_construction_steel(H)
+		if (!can_use(required) || !drill_steel)
+			to_chat(user, SPAN_WARNING("Keep the electronics and 20 steel in your hands until construction completes."))
+			return
+		drill_steel.use(20)
+	else if (recipe.result_type == /obj/item/stack/material/electronics)
+		var/obj/item/stack/material/iron/circuit_iron = electronics_construction_iron(H, quantity)
+		if (!can_use(required) || !circuit_iron)
+			to_chat(user, SPAN_WARNING("Keep the copper and iron in your hands until the circuits are complete."))
+			return
+		circuit_iron.use(quantity)
 
 	if (use(required,H))
 		var/atom/O
@@ -2365,3 +2349,25 @@
 			interact(usr)
 			return
 	return
+
+// Circuit batches pay one iron per circuit, only after both inputs survive the wait.
+/obj/item/stack/proc/electronics_construction_iron(mob/living/human/H, quantity)
+	if (!istype(src, /obj/item/stack/material/copper) || !H || loc != H || quantity < 1 || quantity != round(quantity))
+		return null
+	if (H.l_hand != src && H.r_hand != src)
+		return null
+	var/obj/item/stack/material/iron/I = H.l_hand == src ? H.r_hand : H.l_hand
+	if (istype(I) && I.loc == H && I.can_use(quantity))
+		return I
+	return null
+
+// The recipe stack pays electronics; the other held stack pays steel.
+/obj/item/stack/proc/drill_construction_steel(mob/living/human/H)
+	if (!istype(src, /obj/item/stack/material/electronics) || !H)
+		return null
+	if (H.l_hand != src && H.r_hand != src)
+		return null
+	var/obj/item/stack/material/steel/S = H.l_hand == src ? H.r_hand : H.l_hand
+	if (istype(S) && S.can_use(20))
+		return S
+	return null

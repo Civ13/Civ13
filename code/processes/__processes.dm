@@ -40,6 +40,7 @@ var/datum/process_list/processes = new
 	var/process/chemistry/chemistry = null
 
 	// SSCleanup members
+	var/process/abandoned_items/abandoned_items = null
 	var/process/garbage/garbage = null
 	var/process/python/python = null
 
