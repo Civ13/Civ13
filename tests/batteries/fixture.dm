@@ -17,8 +17,11 @@ world
 	var/battery_charge_power = 0
 /obj/structure/cable
 	var/list/connections = list()
-/obj/structure/cable/proc/rebuild_supply()
-	return
+	var/list/power_consumers = list()
+	var/powerflow = 0
+	var/currentflow = 0
+	var/d1 = 0
+	var/cable_color = "red"
 /obj/structure/battery
 	anchored = TRUE
 	var/stored_energy = 0
@@ -78,6 +81,7 @@ var/failures = 0
 	B.settle_tick()
 	check("consumer capacity first", B.stored_energy, 4)
 	check("engine charge ledger", E.battery_charge_power, 4)
+	check("reserved charging reduces cable supply", C.powerflow, 6)
 	var/obj/structure/battery/B2 = new(C.loc)
 	connect(B2,C)
 	B2.rechargeable = TRUE
@@ -100,6 +104,8 @@ var/failures = 0
 	P.mode = "discharge"
 	P.settle_tick()
 	check("battery cannot charge battery", C.reserve_battery_charge(10), 0)
+	check("battery alone powers cable", C.powerflow, 20)
+	check("consumer draws stored power", load.draw_cable_power(), TRUE)
 	E.on = TRUE
 	load.powerneeded = 0
 	sleep(10)
@@ -146,3 +152,7 @@ var/failures = 0
 	check("energy scalar save/load", B2.stored_energy, 137.5)
 	world.log << "BATTERY_PROBE failures=[failures]"
 	shutdown()
+
+/atom/movable/proc/forceMove(atom/destination, var/special_event)
+	loc = destination
+	return TRUE

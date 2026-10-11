@@ -1,4 +1,4 @@
-# Primary electrochemical cells milestone
+# Era battery and storage milestone
 
 Depends on wire-power-accounting (#3031). Capacity is power, never stored energy.
 
@@ -8,7 +8,7 @@ Both are primary cells, not electrically rechargeable. Empty copper assemblies r
 
 Use abstract power units (PU), consistent with existing powerneeded/maxpower, and energy in PU seconds. Jar: 1 PU, 600 PU seconds; pile: 5 PU, 3000 PU seconds. Both last ten minutes at rated output. A closed circuit consumes at rated output, including unused output; open circuit preserves remaining chemical energy. One second output is prepaid before publishing capacity, ensuring repeated supply rebuilds cannot create energy. Turning off or disconnecting may waste the already prepaid interval, never refund it. No offline elapsed-time discharge.
 
-Rechargeable lead-acid storage is a follow-up after authoritative demand settlement exists. #3031 fixes instantaneous supply and disconnection; currentflow remains time-gated additive demand, which is unsuitable as a conserved charging budget. Do not silently add recharge using currentflow.
+The rechargeable tier uses explicit engine charging reservations alongside #3031 supply/demand contracts. Charging never uses battery output or stale currentflow as an energy source.
 
 Sources:
 - Smithsonian, Volta's continuous-current battery introduced in 1800: https://library.si.edu/exhibition/fantastic-worlds/body-electric

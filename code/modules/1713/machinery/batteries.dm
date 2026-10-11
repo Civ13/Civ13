@@ -6,6 +6,7 @@
 	icon_state = "clayvase"
 	anchored = FALSE
 	not_disassemblable = TRUE
+	not_movable = FALSE
 	var/stored_energy = 0 // abstract power-unit seconds (PU s)
 	var/energy_capacity = 600
 	var/discharge_rate = 1 // PU; one interval is one second (10 deciseconds)
@@ -62,6 +63,25 @@
 		CB.rebuild_supply()
 	return ..()
 
+
+/obj/structure/battery/proc/disconnect_battery()
+	mode = "off"
+	output_power = 0
+	if (powersource)
+		var/obj/structure/cable/CB = powersource
+		CB.connections -= src
+		powersource = null
+		CB.rebuild_supply()
+
+/obj/structure/battery/Move()
+	var/atom/previous = loc
+	. = ..()
+	if (. && loc != previous) disconnect_battery()
+
+/obj/structure/battery/forceMove(atom/destination, var/special_event)
+	var/atom/previous = loc
+	. = ..()
+	if (. && loc != previous) disconnect_battery()
 // Only durable chemical state is saved. Output, mode, timers and wiring are
 // intentionally rebuilt by players, so loading cannot replay prepaid output.
 /obj/structure/battery/get_saved_vars()
