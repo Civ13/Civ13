@@ -1,0 +1,145 @@
+Window: "Civ13 LOCAL full-game world-save probe", App: dreamseeker.exe.
+	0 dialog Civ13 LOCAL full-game world-save probe Secondary Actions: Raise
+		1 dialog Secondary Actions: Raise
+			2 pane 127.0.0.1:56668/22a56b6c.htm
+				506 pane (disabled)
+				4 region 127.0.0.1:56668/22a56b6c.htm - Web content
+					5 region
+						6 region
+						7 region
+							8 region
+								9 region
+								10 region
+									11 region
+										12 region
+											13 region
+												14 region
+												507 document Value: http://127.0.0.1:56668/22a56b6c.htm ID: RootWebArea
+													508 text Welcome, Valzargaming!
+													509 separator
+													510 link Setup Character & Preferences Value: byond://?src=[0x3000099];show_preferences=1
+													511 link Join! Value: byond://?src=[0x3000099];nomads=1
+													512 link Observe Value: byond://?src=[0x3000099];observe=1
+								21 region
+						22 region
+			23 thumb (settable, float) Value: 0 ID: 242141688
+			24 title bar
+		25 pane ID: 101
+		26 pane ID: 101
+		27 pane Info Panels
+			28 pane (disabled)
+			29 region Info Panels - Web content
+				30 region
+					31 region
+					32 region
+						33 region
+							34 region
+							35 region
+								36 region
+									37 region
+										38 region
+											39 region
+											40 document Info Panels Value: http://127.0.0.1:56668/info.html ID: RootWebArea
+												489 group
+													490 text Status
+												491 group
+													492 text Local Verification
+												493 group
+													494 text OOC
+												495 group
+													496 text Help!
+												497 group
+													498 text IC
+												499 link Inspect restored save Value: byond://?action=execute_verb&verb=Inspect%20restored%20save
+							115 region
+					116 region
+		117 edit (settable, string) ID: 1004
+		118 pane Civilization 13 Chat
+			119 pane (disabled)
+			120 region Civilization 13 Chat - Web content
+				121 region
+					122 region
+					123 region
+						124 region
+							125 region
+							126 region
+								127 region
+									128 region
+										129 region
+											130 region
+											131 document Civilization 13 Chat Value: http://127.0.0.1:56668/chat.html ID: RootWebArea
+												132 text Game ID:
+												133 text cHU-a6X9
+												134 heading Welcome to Civilization 13 - Beta Edition
+												135 text The current map is
+												136 text Nomads (Temperate)
+												137 text .
+												138 text 
+												139 text This server is running
+												140 text BYOND 516.1681
+												141 text , and you are running
+												142 text BYOND 516.1669
+												143 text .
+												144 heading RULES: civ13.com/rules
+													145 link civ13.com/rules Value: http://civ13.com/rules
+												146 heading Github: github.com/civ13/civ13
+													147 link github.com/civ13/civ13 Value: https://github.com/civ13/civ13
+												148 heading Discord: civ13.com/discord
+													149 link civ13.com/discord Value: https://civ13.com/discord
+												150 heading Wiki: civ13.github.io/civ13-wiki
+													151 link civ13.github.io/civ13-wiki Value: https://civ13.github.io/civ13-wiki
+												152 text Now playing
+												153 text Words Through the Sky
+												500 text Tip of the round:
+												501 text Use Z when wielding a sword or knife to switch between Stab, Slash, or Bash. Bash has a higher chance of knockout but does less damage. Slash will easily make your enemy bleed. Stabbing gives a higher probability of internal bleeding.
+												502 text After ages as hunter-gatherers, people are starting to form groups and settle down. Will they be able to work together?
+												503 text 
+												504 text Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads
+												505 text The round has started!
+												513 text 
+												514 text It's
+												515 text afternoon
+												516 text , and the season is
+												517 text Spring
+												518 text .
+												519 text PASS: full game constructors, crate, nested knife, metadata, boundary turf
+												520 text 
+												521 text Commit: c3c3607a16adeebab2b1906018585a5df1611afe
+												522 text 
+												523 text Map: NOMADS, 155x225x2. Actual restored crate at (20,20,1), containing the named knife. Local temporary storage, no production services.
+							154 region
+					155 region
+		156 text ID: 65535
+		157 thumb (settable, float) Value: 0 ID: 111696808
+		158 title bar (settable, string) Value: Civ13 LOCAL full-game world-save probe
+			159 menu bar System ID: MenuBar
+				529 menu item System
+			161 button Minimize
+			162 button Maximize
+			163 button Close
+		164 menu bar Application ID: MenuBar
+			530 menu item File
+			531 menu item Icons
+			532 menu item Links
+			533 menu item Help
+
+Document text: ```
+Game ID: cHU-a6X9
+Welcome to Civilization 13 - Beta Edition
+The current map is Nomads (Temperate).
+This server is running BYOND 516.1681, and you are running BYOND 516.1669.
+RULES: civ13.com/rules
+Github: github.com/civ13/civ13
+Discord: civ13.com/discord
+Wiki: civ13.github.io/civ13-wiki
+Now playing Words Through the Sky
+Tip of the round: Use Z when wielding a sword or knife to switch between Stab, Slash, or Bash. Bash has a higher chance of knockout but does less damage. Slash will easily make your enemy bleed. Stabbing gives a higher probability of internal bleeding.
+After ages as hunter-gatherers, people are starting to form groups and settle down. Will they be able to work together?
+Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads
+The round has started!
+It's afternoon, and the season is Spring.
+PASS: full game constructors, crate, nested knife, metadata, boundary turf
+
+Commit: c3c3607a16adeebab2b1906018585a5df1611afe
+Map: NOMADS, 155x225x2. Actual restored crate at (20,20,1), containing the named knife. Local temporary storage, no production services.
+```

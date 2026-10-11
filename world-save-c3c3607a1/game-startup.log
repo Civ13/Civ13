@@ -1,0 +1,10 @@
+Logging in...Sun Oct 11 02:10:19 2026
+World opened on network port 13743.
+Welcome BYOND! (5.0 Public Version 516.1681)
+BUG: Bad ref (c0:1) in DecRefCount(DM code/controllers/mc/globals.dm:16)
+BUG: Call stack: 
+BUG: Bad ref (21:145312680) in DecRefCount(DM code/controllers/mc/globals.dm:16)
+33 global variables
+.connected
+Logged in as Valzargaming.
+Finished cleaning ban list. 0 bans removed, 0 bans kept.

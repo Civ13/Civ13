@@ -1,0 +1,21 @@
+DM compiler version 516.1681
+loading roundtrip.dme
+saving roundtrip.dmb
+roundtrip.dmb - 0 errors, 0 warnings (10/11/26 2:10 am)
+Total time: 0:00
+Logging in...Sun Oct 11 02:10:26 2026
+World opened on network port 29423.
+Welcome BYOND! (5.0 Public Version 516.1681)
+<span class='danger'>	Saved metadata.</span>
+connected
+Logged in as Valzargaming.
+<span class='danger'>	Saved z-level 1.</span>
+<span class='danger'>	Saved z-level 2.</span>
+<span class='danger'>Finished saving.</span>
+Clearing mobs...
+Clearing objects...
+<span class='danger'>	Loaded z-level 1 in 0s.</span>
+<span class='danger'>	Loaded z-level 2 in 0s.</span>
+<span class='danger'>Finished loading.</span>
+PASS: 500x500x2 world-save round trip and object/list/turf invariants
+Evidence retained at C:\Users\valza\AppData\Local\Temp\civ13-world-save-855121c3-7c2d-420e-8564-e5ee9fca33fd

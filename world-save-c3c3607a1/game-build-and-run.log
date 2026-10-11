@@ -1,0 +1,10 @@
+DM compiler version 516.1681
+loading .world_save_probe.dme
+loading interface/skin.dmf
+loading maps/nomads/nomads.dmm
+saving .world_save_probe.dmb (DEBUG mode)
+.world_save_probe.dmb - 0 errors, 0 warnings (10/11/26 2:10 am)
+Total time: 0:05
+Isolated full-game runtime: C:\Users\valza\AppData\Local\Temp\civ13-world-save-game-14c2819b-a54c-411d-a69a-093b9099af42
+PASS: full game constructors, crate, nested knife, metadata, boundary turf
+

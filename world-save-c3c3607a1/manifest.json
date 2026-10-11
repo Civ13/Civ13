@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "game": "Civ13",
+  "commit": "c3c3607a16adeebab2b1906018585a5df1611afe",
+  "runtime": {
+    "version": "516.1681",
+    "client_version": "516.1669",
+    "platform": "Windows",
+    "name": "BYOND"
+  },
+  "map": {
+    "source": "maps/nomads/nomads.dmm",
+    "dimensions": [
+      155,
+      225,
+      2
+    ],
+    "name": "NOMADS"
+  },
+  "scenario": "save-roundtrip",
+  "run": {
+    "finished_utc": "2026-10-11T06:22:09.2785412Z",
+    "started_utc": "2026-10-11T06:10:08.5779602Z",
+    "dirty": false,
+    "scope": "isolated-game"
+  },
+  "steps": [
+    "Checkout c3c3607a16adeebab2b1906018585a5df1611afe.",
+    "Run tests/world_save/run.ps1 with BYOND 516.1681, then with -Large for 500x500x2 scale acceptance.",
+    "Run tests/world_save/run-game.ps1 with BYOND 516.1681 and -Visual; the script generates a root probe environment from civ13.dme plus the committed helper, and copies it and public config assets to new temporary storage.",
+    "The probe creates a real crate and nested knife at (20,20,1), exports, imports and asserts preservation using normal game startup and constructors.",
+    "Connect Dream Seeker to the loopback port in startup.log; select Local Verification and Inspect restored save. Double-click the native title bar to maximize and capture the restored crate and actual result/commit/dimensions in chat.",
+    "Stop only the identified copied probe daemon after capture; preserve closed logs and original/synthetic saves.",
+    "Baseline comparison restores functions/saving/loading from origin/master 0d38999d5f9f987a944493f11c456537f39ac2f6 in a separate generated environment, disables outbound hooks, and runs startup in new temporary storage."
+  ],
+  "media": {
+    "screenshot_required": true,
+    "reason": "Static restored container and turf state is observable in a still; ordered runtime assertions/logs cover export/import. No motion or timing claim is made.",
+    "video_required": false
+  },
+  "checks": [
+    {
+      "notes": "Real Nomads 155x225x2, real crate and nested knife, metadata identity and boundary turf assertions passed.",
+      "result": "passed",
+      "evidence": [
+        "game-result",
+        "game-runtime",
+        "game-build"
+      ],
+      "description": "Actual game export/import preserves world state",
+      "id": "roundtrip"
+    },
+    {
+      "notes": "Exact-head CI executes aliases, cycles, null/empty lists, associative values, literal markers and nested object/datum checks.",
+      "result": "passed",
+      "evidence": [
+        "fixture-ci",
+        "game-result"
+      ],
+      "description": "Nested objects, datums and lists retain identity and values",
+      "id": "nested-values"
+    },
+    {
+      "notes": "500x500x2 fixture passes complete round-trip invariants; small fixture and full game also assert boundary turfs.",
+      "result": "passed",
+      "evidence": [
+        "large-runtime",
+        "fixture-ci",
+        "game-result"
+      ],
+      "description": "Boundary and multi-level turfs survive representative scale",
+      "id": "edge-turfs"
+    },
+    {
+      "notes": "Missing turf at 8,6,2 rejected by validator and gameticker.",
+      "result": "passed",
+      "evidence": [
+        "fixture-ci"
+      ],
+      "description": "Incomplete grids are rejected before mutation",
+      "id": "missing-turf-rejected"
+    },
+    {
+      "notes": "Existing object value and operation lock asserted after rejection.",
+      "result": "passed",
+      "evidence": [
+        "fixture-ci"
+      ],
+      "description": "Rejected import preserves existing world and releases lock",
+      "id": "world-unchanged-after-rejection"
+    },
+    {
+      "notes": "Unedited native Dream Seeker capture shows crate, result, full commit hash and actual map dimensions.",
+      "result": "passed",
+      "evidence": [
+        "game-screen",
+        "game-ui",
+        "probe-metadata"
+      ],
+      "description": "Inspect restored save displays actual loaded container and result",
+      "id": "client-interaction"
+    },
+    {
+      "notes": "Captured through the computer-use skill after activating the correct local game window.",
+      "result": "passed",
+      "evidence": [
+        "game-screen"
+      ],
+      "description": "Actual runtime screenshot captured",
+      "id": "screenshot"
+    },
+    {
+      "notes": "Cross-level object reference rejected explicitly, marker removed, backup marker and released lock preserved; recovery export succeeds.",
+      "result": "passed",
+      "evidence": [
+        "fixture-ci"
+      ],
+      "description": "Failed export cannot certify incomplete data or destroy completed backup",
+      "id": "backup-recovery"
+    }
+  ],
+  "limitations": [
+    "No production import, save modification, deployment or restart was performed.",
+    "Object references across z-levels are explicitly rejected by this per-level format; turf references across levels are supported. Shared list identity is per-level.",
+    "Complete legacy flat saves are supported, but values already discarded by the old exporter cannot be recovered.",
+    "Structural preflight cannot predict arbitrary constructor/after_load failures; restoration is not transactional.",
+    "Startup emits an existing BYOND DecRefCount Bad ref diagnostic at unchanged global-controller initialization; the baseline with original persistence reproduces it before any save/import.",
+    "The rendered client is 516.1669; compiler and daemon are 516.1681.",
+    "This probe asserts specific real game objects and world invariants, not all gameplay systems or active-player migrations."
+  ],
+  "artifacts": [
+    {
+      "id": "game-build",
+      "kind": "build-log",
+      "path": "game-build-and-run.log",
+      "sha256": "8ca811de28fa5a8c51483e0caca4bc9a41e7cb5cfbb5be6924a7407d4e4fa1a8"
+    },
+    {
+      "id": "game-runtime",
+      "kind": "log",
+      "path": "game-runtime.log",
+      "sha256": "ea9e105e302c57a4e1dcec086153e04c07dd8e8a9b54761e99e3d77c619d2d7e"
+    },
+    {
+      "id": "game-result",
+      "kind": "log",
+      "path": "full_game_result.txt",
+      "sha256": "911e66d76bef64a4de5ad08db9919069768ea2b105716abb5424ad20948fa07f"
+    },
+    {
+      "id": "fixture-ci",
+      "kind": "log",
+      "path": "ci-build-and-fixture.log",
+      "sha256": "19883ec0084ba301977d8c8208feb930c0f72036e34bea87cd50c57af19c4f7a"
+    },
+    {
+      "id": "ci-metadata",
+      "kind": "other",
+      "path": "ci-run.json",
+      "sha256": "6ec33df8ef8579bef3d60d0b477f080aabd6ef6d6e2c99fc1e9086a308e3f916"
+    },
+    {
+      "id": "large-runtime",
+      "kind": "log",
+      "path": "large-build-and-run.log",
+      "sha256": "2d6b04ba0a479b1ba9bb75e7ff6b47bc38439db316d356a39e8ce4ffb88e860c"
+    },
+    {
+      "id": "game-screen",
+      "kind": "screenshot",
+      "path": "restored-crate.jpg",
+      "sha256": "5bf889d451b4636a3180307999971e48af33de722a4e36e16915a2f088456cad"
+    },
+    {
+      "id": "game-ui",
+      "kind": "other",
+      "path": "game-ui.txt",
+      "sha256": "a7001f57450c5a97e2392705758842f7e3e07bac3614a2d21ee0cb5e8657feb0"
+    },
+    {
+      "id": "probe-metadata",
+      "kind": "other",
+      "path": "probe_metadata.json",
+      "sha256": "1949ebd5bc79de06f285e16add32ff04455379f255b2b74cdf3c6de0a22e9e82"
+    },
+    {
+      "id": "baseline-startup",
+      "kind": "log",
+      "path": "baseline-startup.log",
+      "sha256": "a5a8d295a938f92d51170a8b1fd09ca72f0baab3448af72040034c043b236e57"
+    },
+    {
+      "id": "game-startup",
+      "kind": "log",
+      "path": "game-startup.log",
+      "sha256": "e2aab4179d6c99ae438aecbc45f4c52f70c1470c5dd90c9240925bb1a772638d"
+    }
+  ]
+}
