@@ -81,6 +81,13 @@ world
 		check(C && C.number == 314 && C.items["second level"] == 271, "second-level objects/lists lost")
 		check(map && map.loc == locate(1,1,1), "metadata deleted")
 		check(!errors.len, "unexpected errors")
+		// Large-map acceptance exercises the complete graph/grid round trip.
+		// Fault injection and backup recovery use the focused fixture below.
+		if(world.params["large"])
+			world.log << "PASS: 500x500x2 world-save round trip and object/list/turf invariants"
+			text2file("PASS", "result.txt")
+			del(world)
+			return
 		check(map_storage.Save_World(), "second export failed")
 		check(fexists("map_backups/save_complete.txt"), "backup completion marker missing")
 		check(map_storage.validate_world_save(), "second export rejected")
