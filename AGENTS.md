@@ -195,6 +195,15 @@ a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10:
 
 ## Local MCP tooling
 
+<!-- 2026-10-11: chemistry verification -->
+Chemical recipe IDs do not register reagents: each product needs a matching
+`/datum/reagent` ID or mixing can consume inputs without producing the result.
+`tests/chemistry/run.py` compiles production sources with normal world startup
+disabled and runs bounded reactions in temporary storage. CI also runs its
+wrong-feedstock negative control; this does not replace gameplay verification.
+Linux DreamDaemon safe mode rejects an absolute `-log` path. Use a relative
+log filename with the runtime working directory set to temporary storage.
+
 <!-- 2026-10-11: Civ13 MCP integration -->
 `tools/mcp/README.md` documents the bounded stdio server and Codex configuration.
 Run `npm ci --prefix tools/mcp` then `npm test --prefix tools/mcp` for isolated
@@ -213,3 +222,14 @@ currentflow are instantaneous capacity and reserved demand, not stored energy.
 
 <!-- 2026-10-11: GitHub comment review -->
 Tools under tools/comment-review provide an authenticated-gh local collector and a disabled-by-default Codex event workflow. Preserve ignored data/comment-review cursors/receipts across worktree cleanup; inspect current API data before acknowledging or posting. The local collector does not install a scheduler or consume API credentials. See tools/comment-review/README.md for event trust boundaries and activation settings.
+## Train verification
+
+<!-- 2026-10-11: train collision investigation -->
+`code/modules/1713/trains.dm` connections point from leader to follower. Reject
+coupling cycles and stop failed movement before recursively moving followers;
+`Bumped` is deferred by the movable atom's bump callback. Run bounded isolated
+regressions with `tests/train_collision/run.ps1 -ByondBin <516.1681-bin>` and real
+game callback/locomotive-loop tests with `tests/train_collision/run-game.ps1`.
+The full-game probe uses temporary state and outbound-hook controls. Its optional
+visual mode needs separate capture authorization; it never proves production
+crash behavior. Do not replace required gameplay captures with fixture output.
