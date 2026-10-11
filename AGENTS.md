@@ -237,6 +237,11 @@ zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
 ## Local MCP tooling
 
+<!-- 2026-10-11: finite fracking verification -->
+- `tests/hydraulic_fracturing/probe.dm` checks finite terrain conversion, batch
+  costs, replacement cancellation and native contained-input disk saves through
+  the resource-extraction launcher. Same-type `ChangeTurf()` can return the
+  existing turf; use actual native replacement when testing replacement identity.
 <!-- 2026-10-11: bounded mining yield comparison -->
 - The resource extraction launcher's `tests/mining_yields/probe.dm` option adapts
   only RNG calls in the production mining body. It checks branch/era endpoints
