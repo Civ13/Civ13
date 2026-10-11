@@ -32,3 +32,8 @@ full-map save/import sequencing or graphical appearance. Crop entry restoration
 does not prove transactional map loading or constructors at full map scale.
 Those remain under #3048/#3049.
 No game behavior or artwork is changed.
+
+The production dirt turf save allowlist must restore nondefault soil nutrition.
+`--soil-negative-control` removes only that allowlist addition in a generated
+source and requires this nutrition assertion to fail. This additional control is an explicit local check; CI
+runs the normal probe (including soil restoration) and existing seed control. Recovery tokens are excluded from the dirt allowlist.
