@@ -70,7 +70,11 @@ var/yield_high = FALSE
 		movementMachine = new
 		populate_material_list()
 		map = new /obj/map_metadata/yield_probe
+		var/mob/living/human/yield_probe/H = new(locate(1,1,1))
 		for (var/era in 0 to 8)
+			map.ordinal_age = era
+			var/list/choices = H.sifting_choices()
+			yield_check(!(/obj/item/stack/material/fossil in choices) && choices["Iron ore"] == (era >= 1 ? /obj/item/stack/ore/iron : null) && choices["Coal"] == (era >= 2 ? /obj/item/stack/ore/coal : null), "era[era] real sustainable catalog gates minerals and excludes fossil")
 			for (var/high in list(FALSE,TRUE))
 				yield_high = high
 				yield_case(era,"copper",list(TRUE,TRUE),/obj/item/stack/ore/copper,12,24)
