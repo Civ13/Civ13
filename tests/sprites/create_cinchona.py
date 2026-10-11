@@ -19,4 +19,3 @@ d.point((21,2), fill='#f2e6c7')
 meta = PngImagePlugin.PngInfo()
 meta.add_text('Description', '# BEGIN DMI\nversion = 4.0\n\twidth = 32\n\theight = 32\nstate = "cinchona"\n\tdirs = 1\n\tframes = 1\n# END DMI\n', zip=True)
 im.save(ROOT / 'icons/obj/food/cinchona.dmi', format='PNG', pnginfo=meta)
-

@@ -13,8 +13,8 @@ This audit starts from merged master `4e79acac9c80ba0ba3b2edef3d050bb45590d41b` 
 | `attachment/scope/adjustable/sniper_scope/elcan/winter` | Same constructor/removal path | Existing `elcan_winter` in `parts.dmi` |
 | `attachment/scope/adjustable/sniper_scope/vortex_viper` | Bolt-action, semiautomatic and SMG constructors and scope removal | Existing `vortex_viper` in `parts.dmi` |
 | `clothing/head/wolfpelt/white` | Material recipe files, including `material_recipes_carib.txt`; weaving unlock in `research_node.dm` | Adapted existing wolfpelt world sprite; worn `whitewolfpelt` already exists in `icons/mob/head.dmi` |
-| `weapon/shield/chitin` | `config/crafting/material_recipes_crustacean.txt`, chitin buckler recipe | Original plated buckler world sprite; existing hand/back graphics preserved |
-| `weapon/shield/chitin/large` | Same file, chitin shield recipe | Original taller plated shield world sprite; existing hand/back graphics preserved |
+| `shield/chitin` | `config/crafting/material_recipes_crustacean.txt`, chitin buckler recipe | Original plated buckler world sprite; existing hand/back graphics preserved |
+| `shield/chitin/large` | Same file, chitin shield recipe | Original taller plated shield world sprite; existing hand/back graphics preserved |
 
 Item paths in this table omit the `/obj/item/weapon/` prefix except clothing, which uses `/obj/item/`. No gameplay values, timers, map placements or save contracts change.
 
@@ -50,4 +50,3 @@ The isolated fixture removes map inclusion and normal world/global-controller st
 - `crafted_item_repairs.dmi`: original chitin shield pixels and recolored `icons/obj/clothing/hats.dmi` state `wolfpelt` from this repository at the audit baseline; reproducible with `tests/sprites/create_crafted_repairs.py`.
 - Five optics: unmodified existing `icons/obj/guns/parts.dmi` sprites. Their existing repository attribution/license remains intact.
 - New/adapted assets and scripts are distributed under Civ13's existing AGPL-3.0 license. No Pocket Stronghold assets were needed or imported; its third-party rights were therefore not implicated.
-
