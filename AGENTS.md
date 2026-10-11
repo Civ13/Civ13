@@ -397,3 +397,7 @@ or 6/12 running-server hours on static maps. Season routines record scalar
 transitions; startup climate assignments do not. Fixed wet-season labels use
 the hourly fallback. Keep new seasonal maps and transition hooks in sync with
 `tests/abandoned_items/run.py`; custom cycles may ignore `config.seasons_on`.
+
+<!-- 2026-10-11: food fertility save regression -->
+- Turfs use a persistence allowlist rather than all changed vars. Dirt adds `soil_nutrition` through its parent-calling `get_saved_vars()` override; do not serialize its live soil recovery token.
+- `tests/food_progression/run.py --soil-negative-control` proves omission is detected. The full-game world-save probe checks crop/soil and nested seed stock; its frozen crop does not establish post-load growth or season transitions.
