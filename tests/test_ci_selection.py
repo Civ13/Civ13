@@ -11,6 +11,14 @@ selection = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(selection)
 
 class SelectionTests(unittest.TestCase):
+    def test_extensive_is_explicit_manual_opt_in(self):
+        self.assertTrue(selection.needs_extensive('workflow_dispatch', True))
+        self.assertFalse(selection.needs_extensive('workflow_dispatch', False))
+        for event in ('push', 'pull_request', 'pull_request_target', ''):
+            with self.subTest(event=event):
+                self.assertFalse(selection.needs_extensive(event, True))
+                self.assertFalse(selection.needs_extensive(event, False))
+
     def test_documentation_only(self):
         self.assertFalse(selection.needs_game(['AGENTS.md', 'docs/api/search.js',
             'docs/api/search.css', 'scripts/build-api-docs.py',

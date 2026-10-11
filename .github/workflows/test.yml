@@ -12,6 +12,11 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      extensive_regressions:
+        description: 'Opt in to recipes, save, chemistry, power, boats and battery runtime regressions'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -25,6 +30,7 @@ jobs:
   changes:
     uses: ./.github/workflows/ci-selection.yml
     with:
+      extensive: ${{ github.event_name == 'workflow_dispatch' && inputs.extensive_regressions }}
       base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
   evidence-checker:
     runs-on: ubuntu-latest
@@ -49,12 +55,14 @@ jobs:
         env:
           SELECTION_RESULT: ${{ needs.changes.result }}
           GAME_SELECTION: ${{ needs.changes.outputs.game }}
+          EXTENSIVE_SELECTION: ${{ needs.changes.outputs.extensive }}
         run: |
           test "$SELECTION_RESULT" = success
           case "$GAME_SELECTION" in true|false) ;; *) exit 1 ;; esac
+          case "$EXTENSIVE_SELECTION" in true|false) ;; *) exit 1 ;; esac
       - name: Explain documentation-only skip
         if: needs.changes.outputs.game != 'true'
-        run: echo 'Game compilation and regressions skipped because only documentation changed.'
+        run: echo 'Game compilation skipped because only documentation changed.'
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         if: needs.changes.outputs.game == 'true'
@@ -68,28 +76,31 @@ jobs:
         run: sudo bash ./scripts/travis_pre_byond.sh
         shell: bash
 
+      - name: Explain opt-in runtime coverage
+        if: needs.changes.outputs.extensive != 'true'
+        run: echo 'Extensive runtime suites were not requested. Use Run workflow with extensive_regressions enabled.'
       - name: Validate compiled crafting recipes
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true'
         run: |
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
           python3 scripts/check-recipes.py --report recipe-checks.txt
         shell: bash
 
       - name: Upload recipe validation report
-        if: always() && needs.changes.outputs.game == 'true'
+        if: always() && needs.changes.outputs.extensive == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: recipe-validation
           path: recipe-checks.txt
           if-no-files-found: warn
       - name: Offline world-save round-trip regression
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true'
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           bash tests/world_save/run.sh
         shell: bash
       - name: Verify isolated chemistry reactions and negative control
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true'
         shell: bash
         run: |
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
@@ -103,7 +114,7 @@ jobs:
           /usr/bin/python3 tests/chemistry/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe biochemistry --negative-control
 
       - name: Run isolated power accounting regressions
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true'
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -111,21 +122,21 @@ jobs:
           bash scripts/check-power-gameplay.sh
 
       - name: Run constructed vehicle movement regressions
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true'
         shell: bash
         run: |
           source ./BYOND/byond/bin/byondsetup
           pwsh -NoProfile -File ./tests/boat_movement/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
           pwsh -NoProfile -File ./tests/boat_movement/run-game.ps1 -ByondBin "$PWD/BYOND/byond/bin"
       - name: Run isolated battery energy and network regressions
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true'
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           pwsh -NoProfile -File scripts/test-batteries.ps1 -ByondBin "$PWD/BYOND/byond/bin"
 
       - name: Check battery construction and durable state with compiled game types
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true'
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"

@@ -28,20 +28,26 @@ def select(base, head):
     game = needs_game(paths)
     return game, 'Game/shared/unknown changes' if game else 'Only documentation generation or prose changed'
 
+def needs_extensive(event, opted_in):
+    return event == 'workflow_dispatch' and opted_in
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base', default='')
     parser.add_argument('--head', default='')
     parser.add_argument('--output', required=True)
+    parser.add_argument('--event', default='')
+    parser.add_argument('--extensive', choices=('true', 'false'), default='false')
     args = parser.parse_args()
     game, reason = select(args.base, args.head)
+    extensive = game and needs_extensive(args.event, args.extensive == 'true')
     with open(args.output, 'a', encoding='utf-8') as output:
-        output.write(f'game={str(game).lower()}\n')
-    print(f'game={str(game).lower()}: {reason}')
+        output.write(f'game={str(game).lower()}\nextensive={str(extensive).lower()}\n')
+    print(f'game={str(game).lower()}, extensive={str(extensive).lower()}: {reason}')
     summary = os.environ.get('GITHUB_STEP_SUMMARY')
     if summary:
         with open(summary, 'a', encoding='utf-8') as output:
-            output.write(f'Game checks selected: **{game}**. {reason}.\n')
+            output.write(f'Game compilation selected: **{game}**. Extensive regressions opted in: **{extensive}**. {reason}.\n')
 
 if __name__ == '__main__':
     main()
