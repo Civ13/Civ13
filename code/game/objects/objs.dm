@@ -48,6 +48,10 @@
 	return M
 
 /obj/Destroy()
+	if (powersource)
+		powersource.update_power(-powerneeded, 1, src)
+		powersource.connections -= src
+		powersource = null
 	processing_objects -= src
 	return ..()
 

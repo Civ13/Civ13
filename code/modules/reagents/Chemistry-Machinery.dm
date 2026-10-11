@@ -377,18 +377,12 @@
 		return FALSE
 	else
 		powered = TRUE
-		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
-			if (!active)
-				powersource.update_power(powerneeded,1)
-				powersource.currentflow += powerneeded
-				powersource.lastupdate2 = world.time
+		if (draw_cable_power())
 			return TRUE
 		else
 			if (active)
-				powersource.update_power(powerneeded,1)
+				powersource.update_power(-powerneeded,1,src)
 				active = FALSE
-				powersource.currentflow -= powerneeded
-				powersource.lastupdate2 = world.time
 			return FALSE
 
 /obj/structure/centrifuge/update_icon()
@@ -527,18 +521,12 @@
 		return FALSE
 	else
 		powered = TRUE
-		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
-			if (!active)
-				powersource.update_power(powerneeded,1)
-				powersource.currentflow += powerneeded
-				powersource.lastupdate2 = world.time
+		if (draw_cable_power())
 			return TRUE
 		else
 			if (active)
-				powersource.update_power(powerneeded,1)
+				powersource.update_power(-powerneeded,1,src)
 				active = FALSE
-				powersource.currentflow -= powerneeded
-				powersource.lastupdate2 = world.time
 			return FALSE
 
 /obj/structure/grinder/update_icon()

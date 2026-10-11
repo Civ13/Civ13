@@ -2,9 +2,11 @@ param(
     [Parameter(Mandatory=$true)][string]$SessionJson,
     [Parameter(Mandatory=$true)][string]$ByondBin,
     [ValidateSet('status','prepare','join','run','move','examine')][string]$Action='status',
-    [ValidateSet(1,2,4,8)][int]$Direction=1
+    [ValidateSet(1,2,4,8)][int]$Direction=1,
+    [switch]$PassThru
 )
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'gameplay-evidence-common.ps1')
 $session=Get-Content -LiteralPath $SessionJson -Raw | ConvertFrom-Json
 $run=Join-Path $session.run ('query-'+[guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $run | Out-Null
@@ -27,6 +29,7 @@ if ($LASTEXITCODE -ne 0 -or ($build -join "`n") -notmatch '0 errors, 0 warnings'
 $process=Start-Process -FilePath (Join-Path $ByondBin 'dreamdaemon.exe') -ArgumentList @((Join-Path $run 'query.dmb'),'-invisible','-trusted','-logself','-close') -WorkingDirectory $run -WindowStyle Hidden -PassThru
 if (!$process.WaitForExit(15000)) { Stop-Process -Id $process.Id; throw "Query timeout: $run" }
 $result=Join-Path $run 'result.json'
-if (!(Test-Path -LiteralPath $result)) { throw "Missing query result: $run" }
-Get-Content -LiteralPath $result
+$response = Read-EvidenceQueryResult -Path $result -ExpectedCommit $session.commit -Action $Action
+if ($PassThru) { return $response }
+$response | ConvertTo-Json -Compress
 Write-Output "QUERY_RESULT=$result"
