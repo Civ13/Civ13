@@ -7,7 +7,7 @@ NEVER use "—": always use "-" instead.
 - **Build**: `dm civ13.dme` (Windows) or `DreamMaker civ13.dme` (Linux). Outputs `civ13.dmb` + `civ13.rsc`.
 - **Lint**: `./dreamchecker.exe` (SpacemanDMM static analyzer). Config in `SpacemanDMM.toml` (sets `dreamchecker = true` for the langserver).
 - **Required BYOND version**: 516.1681 (enforced in CI and `.vscode/tasks.json`).
-- **CI** (`.github/workflows/test.yml`): installs BYOND 516.1681 on Ubuntu, runs `DreamMaker -max_errors 0 civ13.dme`, fails on any errors or warnings. That's the only CI check - no unit tests.
+- **CI** (`.github/workflows/test.yml`): installs BYOND 516.1681 on Ubuntu, runs `DreamMaker -max_errors 0 civ13.dme`, fails on any errors or warnings. The MCP protocol workflow separately tests the local tooling on Windows and Linux; it does not run gameplay.
 
 ## Code structure
 
@@ -192,3 +192,50 @@ Good candidates for additions:
 When adding, keep it concise and put it under the most relevant existing section.
 If nothing fits, create a new section. Prefix your additions with the date and
 a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10: subcom audit -->`).
+
+<!-- 2026-10-11: season memory regression -->
+- BYOND turf replacement calls `Del()` and preserves sleeping procs. Registry cleanup in `Destroy()` alone does not handle replacement; grass registration is maintained by grass `New()`/`Del()`.
+- Dirt recovery uses an identity token so old sleeping recovery chains stop after turf replacement. Obsolete waits release their token when they wake (up to 20 minutes), without deleting live entities.
+- `scripts/test-season-memory.ps1 -ByondBin <BYOND-bin-directory>` executes production turf lifecycle bodies in an isolated world, with accelerated recovery waits and temporary output. It checks repeated replacement, bounded grass registration, one recovery chain per dirt turf, and planted-soil behavior. Synthetic process memory is not full-game memory evidence.
+<!-- 2026-10-11: evidence harness review -->
+Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
+## Local MCP tooling
+
+<!-- 2026-10-11: chemistry verification -->
+Chemical recipe IDs do not register reagents: each product needs a matching
+`/datum/reagent` ID or mixing can consume inputs without producing the result.
+`tests/chemistry/run.py` compiles production sources with normal world startup
+disabled and runs bounded reactions in temporary storage. CI also runs its
+wrong-feedstock negative control; this does not replace gameplay verification.
+Linux DreamDaemon safe mode rejects an absolute `-log` path. Use a relative
+log filename with the runtime working directory set to temporary storage.
+
+<!-- 2026-10-11: Civ13 MCP integration -->
+`tools/mcp/README.md` documents the bounded stdio server and Codex configuration.
+Run `npm ci --prefix tools/mcp` then `npm test --prefix tools/mcp` for isolated
+protocol/path/cancellation tests. Set `CIV13_DM_COMPILER` to a trusted absolute
+DreamMaker path to additionally check its banner and a fixed temporary fixture.
+Source discovery is lexical; include diagnostics do not replace compilation.
+Both compiler tools create temporary storage/processes. No live game, Topic or
+production administration tools are exposed. Never configure this server from a
+worktree that will be archived while the MCP entry still points to it.
+
+<!-- 2026-10-11: wire power verification -->
+`tests/power/README.md` documents isolated cable accounting regressions and an
+opt-in full-game capture adapter. `scripts/test-power.ps1` requires an explicit
+BYOND bin path; CI also compiles the excluded gameplay adapter. Powerflow and
+currentflow are instantaneous capacity and reserved demand, not stored energy.
+
+<!-- 2026-10-11: GitHub comment review -->
+Tools under tools/comment-review provide an authenticated-gh local collector and a disabled-by-default Codex event workflow. Preserve ignored data/comment-review cursors/receipts across worktree cleanup; inspect current API data before acknowledging or posting. The local collector does not install a scheduler or consume API credentials. See tools/comment-review/README.md for event trust boundaries and activation settings.
+## Train verification
+
+<!-- 2026-10-11: train collision investigation -->
+`code/modules/1713/trains.dm` connections point from leader to follower. Reject
+coupling cycles and stop failed movement before recursively moving followers;
+`Bumped` is deferred by the movable atom's bump callback. Run bounded isolated
+regressions with `tests/train_collision/run.ps1 -ByondBin <516.1681-bin>` and real
+game callback/locomotive-loop tests with `tests/train_collision/run-game.ps1`.
+The full-game probe uses temporary state and outbound-hook controls. Its optional
+visual mode needs separate capture authorization; it never proves production
+crash behavior. Do not replace required gameplay captures with fixture output.

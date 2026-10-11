@@ -310,3 +310,46 @@
 	taste_description = "like iron"
 	reagent_state = LIQUID
 	color = "#C80000"
+
+// Chemistry Expansion: products used by the polyethylene chain.
+/datum/reagent/ethylene
+	name = "Ethylene"
+	id = "ethylene"
+	description = "A gaseous feedstock used to produce polyethylene."
+	reagent_state = GAS
+	color = "#EEEEEE"
+
+/datum/reagent/propylene
+	name = "Propylene"
+	id = "propylene"
+	description = "A gaseous feedstock used in polymer production."
+	reagent_state = GAS
+	color = "#EEEEEE"
+
+/datum/reagent/titaniumchloride
+	name = "Titanium Chloride"
+	id = "titaniumchloride"
+	description = "A liquid catalyst used in polymer production."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/aluminumchloride
+	name = "Aluminum Chloride"
+	id = "aluminumchloride"
+	description = "A solid co-catalyst used in polymer production."
+	reagent_state = SOLID
+	color = "#EEEEEE"
+
+/datum/reagent/borontrifluoride
+	name = "Boron Trifluoride"
+	id = "borontrifluoride"
+	description = "A gaseous co-catalyst used in polymer production."
+	reagent_state = GAS
+	color = "#EEEEEE"
+
+/datum/reagent/polyethylene
+	name = "Polyethylene"
+	id = "polyethylene"
+	description = "A plastic polymer produced from ethylene."
+	reagent_state = SOLID
+	color = "#EEEEEE"
