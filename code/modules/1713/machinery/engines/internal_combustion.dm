@@ -47,6 +47,9 @@
 				update_icon()
 /obj/structure/engine/internal/New()
 	..()
+	if("gasoline" in fuels)
+		fuels = fuels.Copy()
+		fuels += "enginefuel"
 	weight = 20*(enginesize/1000)
 	name = "[enginesize]cc [name]"
 	maxpower *= (enginesize/1000)

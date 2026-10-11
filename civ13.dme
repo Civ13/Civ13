@@ -1114,6 +1114,7 @@
 #include "code\modules\reagents\Chemistry-Holder.dm"
 #include "code\modules\reagents\Chemistry-Machinery.dm"
 #include "code\modules\reagents\laboratory.dm"
+#include "code\modules\reagents\biochemistry.dm"
 #include "code\modules\reagents\Chemistry-Metabolism.dm"
 #include "code\modules\reagents\Chemistry-Readme.dm"
 #include "code\modules\reagents\Chemistry-Reagents.dm"

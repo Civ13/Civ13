@@ -245,6 +245,15 @@ disabled and runs bounded reactions in temporary storage. CI also runs its
 wrong-feedstock negative control; this does not replace gameplay verification.
 Linux DreamDaemon safe mode rejects an absolute `-log` path. Use a relative
 log filename with the runtime working directory set to temporary storage.
+
+<!-- 2026-10-11: chemistry recipe acceptance -->
+`tests/chemistry/run.py --probe biochemistry` checks production acquisition,
+construction, controlled reactions, heated polymers, gelatin separation and
+engine fuel in temporary storage. See docs/chemistry-recipes.md for game yields,
+finite supplies and labels. Its isolated error handler and explicit completion
+flags are necessary: normal game error infrastructure is unavailable when
+global/controller startup is disabled. Parenthesize each `in` expression when
+combining membership checks with `&&` in DM.
 <!-- 2026-10-11: gasoline precursor regression -->
 `tests/chemistry/run.py --probe fuel` verifies precursor registration and real
 beaker gasoline mixing; its negative control removes octane registration in a

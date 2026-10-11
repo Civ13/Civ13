@@ -16,10 +16,10 @@ var/processing_error = FALSE
 	if(!processing_error)
 		text2file("FAIL: runtime [error]", "chemistry_result.txt")
 	processing_error = TRUE
-	world.log << "Runtime error: [error]"
+	world.log << "Runtime error: [error] at [error.file]:[error.line]"
 
 /world/New()
-	text2file(json_encode(list("commit" = world.params["tested_commit"], "probe" = "processing", "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "metadata.json")
+	text2file(json_encode(list("commit" = world.params["tested_commit"], "probe" = world.params["probe"], "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "metadata.json")
 	try
 		initialize_chemical_reagents()
 		initialize_chemical_reactions()
@@ -27,9 +27,15 @@ var/processing_error = FALSE
 		chemistry_assert(processing_recipe_checks(), "Recipe checks did not complete")
 		chemistry_assert(processing_guard_checks(), "Guard checks did not complete")
 		chemistry_assert(processing_crafting_checks(), "Crafting checks did not complete")
+		if(!processing_error)
+			chemistry_assert(processing_extra_checks(), "Additional processing checks did not complete")
 		chemistry_assert(!processing_error, "Runtime error during processing")
 		if(!processing_error)
+#ifdef BIOCHEMISTRY_PROBE
+			text2file("PASS: 32 controlled recipes, finite feedstock/equipment construction, seed/plant/harvest and biological extraction, cold/expired/fuelled polymerization, actual engine blend consumption, six gelatin routes, blood fractions and timed centrifuge callback", "chemistry_result.txt")
+#else
 			text2file("PASS: controlled recipe outputs, calcium chain, transfers, catalyst/capacity/missing-input guards, beaker lifecycle, research/catalog and production construction", "chemistry_result.txt")
+#endif
 	catch(var/exception/error)
 		text2file("FAIL: [error]", "chemistry_result.txt")
 	del(world)
@@ -73,6 +79,11 @@ var/processing_error = FALSE
 			processing_add(bench, id, R.required_reagents[id])
 		for(var/id in R.catalysts)
 			processing_add(bench, id, R.catalysts[id])
+		if(R.id == "polypropylene")
+			var/obj/item/weapon/laboratory_burner/burner = new(get_turf(bench))
+			burner.reagents.add_reagent("pethanol", 1)
+			chemistry_assert(burner.heat_bench(bench), "Fixture burner could not heat bench")
+			qdel(burner)
 		chemistry_assert(!bench.collector.reagents.process_reactions(), "Automatic mixing escaped inert bench")
 		chemistry_assert(bench.synthesize(R.id), "Bench synthesis unavailable: [R.id]")
 		chemistry_assert(bench.collector.reagents.get_reagent_amount(R.result) == R.result_amount, "Bench product mismatch: [R.id]")
@@ -96,6 +107,11 @@ var/processing_error = FALSE
 	chemistry_assert(chemical_reagents_list["titaniumchloride"]:reagent_state == LIQUID, "Titanium IV not liquid")
 	text2file(json_encode(results), "processing_results.json")
 	return TRUE
+
+#ifndef BIOCHEMISTRY_PROBE
+/proc/processing_extra_checks()
+	return TRUE
+#endif
 
 /proc/processing_guard_checks()
 	var/obj/structure/reaction_bench/bench = processing_new_bench(TRUE)

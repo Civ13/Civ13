@@ -8,6 +8,7 @@
 	anchored = TRUE
 	var/obj/item/weapon/reagent_containers/glass/collector = null
 	var/collector_was_inert = FALSE
+	var/heated_until = 0
 	var/list/reaction_paths = list(/datum/chemical_reaction/ethanoic_acid, /datum/chemical_reaction/calcium_carbonate, /datum/chemical_reaction/calcium_chloride, /datum/chemical_reaction/gluconic_acid, /datum/chemical_reaction/calcium_gluconate, /datum/chemical_reaction/sodium_sulfide, /datum/chemical_reaction/sodium_hydroxide, /datum/chemical_reaction/sulfurous_acid, /datum/chemical_reaction/hydrogen_sulfites, /datum/chemical_reaction/n_methylmorpholine_n_oxide, /datum/chemical_reaction/isobutylene, /datum/chemical_reaction/titaniumchloride, /datum/chemical_reaction/titaniumtrichloride, /datum/chemical_reaction/aluminumchloride, /datum/chemical_reaction/borontrifluoride, /datum/chemical_reaction/ethylene, /datum/chemical_reaction/propylene, /datum/chemical_reaction/polyethylene, /datum/chemical_reaction/octane, /datum/chemical_reaction/cyclopentane, /datum/chemical_reaction/toluene, /datum/chemical_reaction/butene, /datum/chemical_reaction/gasoline)
 
 /obj/structure/reaction_bench/proc/install_beaker(obj/item/weapon/reagent_containers/glass/B, mob/user)
@@ -16,6 +17,7 @@
 	if(user)
 		user.drop_item()
 	collector = B
+	heated_until = 0
 	collector_was_inert = (B.flags & NOREACT) != 0
 	B.flags |= NOREACT
 	B.loc = src
@@ -29,6 +31,7 @@
 		B.flags &= ~NOREACT
 	B.loc = get_turf(src)
 	collector = null
+	heated_until = 0
 	B.reagents.handle_reactions()
 	return B
 
@@ -64,6 +67,13 @@
 	return R.process(holder) > 0
 
 /obj/structure/reaction_bench/attackby(obj/item/W, mob/user)
+	if(istype(W, /obj/item/weapon/laboratory_burner))
+		var/obj/item/weapon/laboratory_burner/burner = W
+		if(burner.heat_bench(src))
+			to_chat(user, SPAN_NOTICE("You fuel the burner and heat the secured beaker for one minute."))
+		else
+			to_chat(user, SPAN_WARNING("Secure a beaker and fill the burner with purified ethanol first."))
+		return
 	if(istype(W, /obj/item/weapon/reagent_containers/glass))
 		var/obj/item/weapon/reagent_containers/glass/B = W
 		if(!collector)
@@ -84,7 +94,9 @@
 		var/datum/chemical_reaction/R = new path()
 		options[R.name] = R.id
 	var/choice = input(user, "Choose a game reaction. All required inputs and catalysts must be present; the output must fit.", name) as null|anything in options
-	if(!choice || !user || get_dist(src, user) > 1)
+	var/turf/user_turf = get_turf(user)
+	var/turf/bench_turf = get_turf(src)
+	if(!choice || !user || user.stat || user.restrained() || !user_turf || !bench_turf || user_turf.z != bench_turf.z || get_dist(user_turf, bench_turf) > 1)
 		return
 	if(synthesize(options[choice]))
 		to_chat(user, SPAN_NOTICE("The selected game reaction completes."))
@@ -99,3 +111,41 @@
 /obj/structure/reaction_bench/Destroy()
 	remove_beaker()
 	return ..()
+
+/obj/structure/reaction_bench/proc/is_heated()
+	return collector && collector.loc == src && heated_until > world.time
+
+/obj/structure/reaction_bench/New()
+	..()
+	reaction_paths += list(/datum/chemical_reaction/hydrogen_chloride, /datum/chemical_reaction/hclacid, /datum/chemical_reaction/polypropylene, /datum/chemical_reaction/gelatin_acid, /datum/chemical_reaction/gelatin_enzyme, /datum/chemical_reaction/gelatin_fruit, /datum/chemical_reaction/gelatin_water, /datum/chemical_reaction/gelatin_ethanol, /datum/chemical_reaction/enginefuel)
+
+/obj/item/weapon/laboratory_burner
+	name = "laboratory burner"
+	desc = "Uses one unit of purified ethanol to heat a secured reaction-bench beaker for one minute."
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "extraction_kit"
+	flags = NOREACT | OPENCONTAINER
+
+/obj/item/weapon/laboratory_burner/New()
+	..()
+	reagents = new /datum/reagents(20, src)
+
+/obj/item/weapon/laboratory_burner/proc/heat_bench(obj/structure/reaction_bench/bench)
+	var/turf/burner_turf = get_turf(src)
+	var/turf/bench_turf = get_turf(bench)
+	if(!burner_turf || !bench_turf || burner_turf.z != bench_turf.z || get_dist(burner_turf, bench_turf) > 1 || !bench.collector || bench.collector.loc != bench || !reagents.has_reagent("pethanol", 1))
+		return FALSE
+	reagents.remove_reagent("pethanol", 1)
+	bench.heated_until = world.time + 1 MINUTE
+	return TRUE
+
+/obj/item/weapon/laboratory_burner/attackby(obj/item/W, mob/user)
+	if(istype(W, /obj/item/weapon/reagent_containers/glass))
+		var/obj/item/weapon/reagent_containers/glass/B = W
+		var/amount = min(B.amount_per_transfer_from_this, B.reagents.get_reagent_amount("pethanol"), reagents.get_free_space())
+		if(amount > 0)
+			reagents.add_reagent("pethanol", amount)
+			B.reagents.remove_reagent("pethanol", amount)
+		to_chat(user, SPAN_NOTICE("You add [amount] units of purified ethanol to the burner."))
+		return
+	..()
