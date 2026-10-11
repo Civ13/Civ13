@@ -89,7 +89,7 @@
 	var/list/crop_states = icon_states(crop.icon)
 	for(var/stage in 1 to 6)
 		chemistry_assert("orange-grow[stage]" in crop_states, "Papaya crop sprite missing growth stage [stage]")
-	chemistry_assert("orange-harvest" in crop_states && "orange-dead" in crop_states, "Papaya harvest/dead sprites missing")
+	chemistry_assert(("orange-harvest" in crop_states) && ("orange-dead" in crop_states), "Papaya harvest/dead sprites missing")
 	crop.stage = 7 // Harvest-ready fixture; no growth-duration claim.
 	var/mob/living/human/chemistry_builder/harvester = new(get_turf(seed))
 	var/obj/item/weapon/material/kitchen/utensil/knife/knife = new(get_turf(seed))

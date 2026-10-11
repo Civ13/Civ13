@@ -94,7 +94,9 @@
 		var/datum/chemical_reaction/R = new path()
 		options[R.name] = R.id
 	var/choice = input(user, "Choose a game reaction. All required inputs and catalysts must be present; the output must fit.", name) as null|anything in options
-	if(!choice || !user || get_dist(src, user) > 1)
+	var/turf/user_turf = get_turf(user)
+	var/turf/bench_turf = get_turf(src)
+	if(!choice || !user || user.stat || user.restrained() || !user_turf || !bench_turf || user_turf.z != bench_turf.z || get_dist(user_turf, bench_turf) > 1)
 		return
 	if(synthesize(options[choice]))
 		to_chat(user, SPAN_NOTICE("The selected game reaction completes."))
