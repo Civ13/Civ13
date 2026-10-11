@@ -19,9 +19,29 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 		C.name = "world-save regression crate"
 		var/obj/item/weapon/material/kitchen/utensil/knife/K = new(C)
 		K.name = "world-save regression knife"
+		// Freeze only this named crop to make the full-world persistence assertion
+		// independent of normal elapsed growth and ongoing season processing.
+		var/turf/floor/dirt/ploughed/soil = new(locate(21,20,1))
+		var/obj/structure/farming/plant/tomato/crop = new(soil)
+		crop.name = "world-save regression tomato"
+		crop.vstatic = TRUE
+		crop.stage = 3
+		crop.water = 42
+		crop.plant_nutrition = 87
+		crop.radiation = 3
+		soil.soil_nutrition = 123
+		var/saved_biomes = jointext(crop.biomes, ",")
+		var/saved_seasons = jointext(crop.seasons, ",")
+		var/obj/item/stack/farming/seeds/tomato/seeds = new(C, 7)
+		seeds.name = "world-save regression seed stock"
 		var/obj/map_metadata/original_map = map
 		if(!ticker.savemap())
 			throw EXCEPTION("Full-game export failed: [map_storage.last_error]")
+		crop.stage = 9
+		crop.water = 1
+		soil.soil_nutrition = 1
+		seeds.amount = 1
+		var/obj/structure/farming/plant/tomato/original_crop = crop
 		T.ChangeTurf(saved_turf_type == /turf/floor/dirt ? /turf/floor/grass : /turf/floor/dirt, FALSE, FALSE)
 		if(!ticker.loadmap())
 			throw EXCEPTION("Full-game import failed: [map_storage.last_error]")
@@ -38,7 +58,26 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 				K = candidate
 		if(!K || map != original_map || !locate(world.maxx,world.maxy,world.maxz) || locate(20,20,1):type != saved_turf_type)
 			throw EXCEPTION("Nested item, metadata identity or boundary turf lost")
-		text2file("PASS: full game constructors, crate, nested knife, metadata, boundary turf", "full_game_result.txt")
+		soil = locate(21,20,1)
+		if(!istype(soil) || soil.soil_nutrition != 123)
+			throw EXCEPTION("Ploughed crop soil or nutrition lost")
+		crop = null
+		var/crop_count = 0
+		for(var/obj/structure/farming/plant/tomato/candidate in soil)
+			if(candidate.name == "world-save regression tomato")
+				crop = candidate
+				crop_count++
+		if(crop_count != 1 || crop == original_crop || crop.stage != 3 || crop.water != 42 || crop.plant_nutrition != 87 || crop.radiation != 3 || !crop.vstatic)
+			throw EXCEPTION("Crop replacement, unique placement or scalar state lost")
+		if(jointext(crop.biomes, ",") != saved_biomes || jointext(crop.seasons, ",") != saved_seasons)
+			throw EXCEPTION("Crop climate or season lists lost")
+		seeds = null
+		for(var/obj/item/stack/farming/seeds/tomato/candidate in C)
+			if(candidate.name == "world-save regression seed stock")
+				seeds = candidate
+		if(!seeds || seeds.amount != 7 || persistence_save_in_progress)
+			throw EXCEPTION("Nested seed stock or persistence operation lock lost")
+		text2file("PASS: full game constructors, crate, nested knife and seed stock, crop and soil state, metadata, boundary turf", "full_game_result.txt")
 		world.log << "PASS: full-game world-save probe"
 	catch(var/exception/e)
 		text2file("FAIL: [e]", "full_game_result.txt")
