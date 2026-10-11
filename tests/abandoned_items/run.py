@@ -123,7 +123,7 @@ def main():
         result = (out / 'result.txt').read_text(encoding="utf-8").strip()
         print(result)
         if a.negative_control:
-            expected = {'decay': 'expired exposed waste decays', 'storage': 'nested storage protects waste', 'save': 'production serializer excludes runtime state'}[a.negative_control]
+            expected = {'decay': 'fourth change decays waste', 'storage': 'nested storage protects waste', 'save': 'production serializer excludes runtime state'}[a.negative_control]
             if not result.startswith('FAIL: ' + expected): raise RuntimeError('Negative control did not detect expected mutation')
             print(f'PASS: {a.negative_control} mutation detected')
         elif not result.startswith('PASS:') or proc.returncode:
