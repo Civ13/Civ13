@@ -66,6 +66,8 @@ def main():
         page = Page(text)
         relative = path.relative_to(output).as_posix()
         label = relative.removesuffix('.html')
+        if (ROOT / (label + '.dm')).is_file():
+            label += '.dm'
         entries.append({'label': label, 'url': relative})
         for anchor in sorted(page.ids):
             if anchor.startswith(('proc/', 'var/', 'define/')):
@@ -73,7 +75,7 @@ def main():
         text = inject(text, '</head>', '<meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="search.css"><script defer src="search.js"></script></head>', relative)
         text = inject(text, '</header>', ' - <a href="index.html#search">Search</a></header>', relative)
         path.write_text(text, encoding='utf-8')
-    for query in ('callback/proc/Invoke', 'datum/var', 'code/datums/callback'):
+    for query in ('callback/proc/Invoke', 'datum/var', 'code/datums/callback.dm'):
         if not any(query.lower() in entry['label'].lower() for entry in entries):
             raise SystemExit('Missing search coverage: ' + query)
     (output / 'search-index.json').write_text(json.dumps(entries), encoding='utf-8')

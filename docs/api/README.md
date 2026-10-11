@@ -72,7 +72,7 @@ with write permissions restricted to the deployment job. PRs only build artifact
 The root showcase and player wiki are separate sites.
 
 Search on every page links to the index, where case-insensitive words match documented
-page paths and proc, var and macro anchors. Press Enter to focus the first result,
+page paths and proc, var and macro anchors. Leading type slashes and actual .dm filenames are supported. Press Enter to focus the first result,
 then Enter to follow it. Results are capped at 100; refine the query for more precise
 matches. JavaScript is required for search, while the generated reference remains
 browsable without it. This searches emitted documentation, not every source declaration.

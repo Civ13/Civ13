@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!response.ok) throw new Error("Search index unavailable");
     const index = await response.json();
     const search = () => {
-      const words = input.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      const words = input.value.trim().toLowerCase().split(/\s+/).map(word => word.replace(/^\/+/, '')).filter(Boolean);
       results.replaceChildren();
       if (!words.length) {
         status.textContent = "Search " + index.length + " documented pages and members. Coverage is incremental.";
