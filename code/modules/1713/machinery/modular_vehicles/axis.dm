@@ -10,6 +10,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	var/turntimer = 15
 	var/doorcode = 0
 	var/movement_processes = 0
+	var/tmp/transforming_ship = FALSE
 /obj/structure/vehicleparts/axis/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -265,10 +266,18 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				return FALSE
 
 /obj/structure/vehicleparts/axis/proc/do_move()
+	if (ship && transforming_ship)
+		return FALSE
 	add_transporting()
 	var/m_dir = loc.dir
 	if (reverse)
 		m_dir = OPPOSITE_DIR(dir)
+	if (ship)
+		// Include invisible turning placeholders: never force a part into null at an edge.
+		for (var/atom/movable/M in (transporting | components))
+			if (!isturf(M.loc) || !get_step(M.loc, m_dir))
+				return FALSE
+		transforming_ship = TRUE
 	for (var/atom/movable/M in transporting)
 		if ((istype(M, /obj/structure) || istype(M, /obj/item)) && !istype(M, /obj/structure/vehicleparts/frame) && (!istype(M, /obj/structure/vehicleparts/movement) || istype(M, /obj/structure/vehicleparts/movement/sail)) && !istype(M, /obj/structure/wild))
 			var/obj/MO = M
@@ -295,7 +304,8 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		F.forceMove(get_step(F.loc, m_dir))
 		F.update_icon()
 
-	return
+	transforming_ship = FALSE
+	return TRUE
 
 /obj/structure/vehicleparts/axis/proc/add_transporting()
 	transporting = list()
@@ -509,15 +519,21 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		return FALSE
 
 /obj/structure/vehicleparts/axis/proc/do_matrix(var/olddir = 0, var/newdir = 0, var/tdir = "none", var/mob/user = null)
-	if (olddir == 0 || newdir == 0 || tdir == "none")
+	if ((ship && transforming_ship) || olddir == 0 || newdir == 0 || !(tdir in list("left", "right")))
 		return FALSE
-	if (isemptylist(corners))
-		check_corners()
-	if (isemptylist(matrix))
-		check_matrix()
+	if (isemptylist(corners) && !check_corners())
+		return FALSE
+	if (isemptylist(matrix) && !check_matrix())
+		return FALSE
+	if (maxdist < 1 || maxdist > 5)
+		return FALSE
+	if (ship)
+		add_transporting()
 	matrix_current_locs = list()
 
 	var/turf/axis_turf = get_turf(loc)
+	if (!axis_turf)
+		return FALSE
 	var/dx=1
 	var/dy=1
 	switch(dir)
@@ -538,7 +554,8 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			var/list/tmplist = list()
 			for (var/atom/movable/MV in currloc)
 				if ((istype(MV, /mob/living) || istype(MV, /obj/structure) || istype(MV, /obj/item) || istype(MV, /obj/effect/pseudovehicle)))
-					tmplist += MV
+					if (!ship || (MV in transporting) || (MV in components) || (MV in wheels))
+						tmplist += MV
 			matrix_current_locs += list(matrix[loc2textv][4] = list(currloc,tmplist, matrix[loc2textv][4]))
 			if(dir == NORTH || dir == SOUTH)
 				i+=dx
@@ -552,7 +569,8 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			i+=dx
 			j = 0
 
-	//check if there are no other vehicles/obstacles in the destination areas
+	// Validate every destination before deleting obstacles or moving any part.
+	var/list/turn_destroy = list()
 	for (var/locx=1; locx<=maxdist; locx++)
 		for (var/locy=1; locy<=maxdist; locy++)
 			var/loc2textv = "[locx],[locy]"
@@ -569,11 +587,23 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				if (5)
 					dlocfinding = rotation_matrixes5[tdir][loc2textv][1]
 			var/turf/T = matrix_current_locs[dlocfinding][1]
+			var/list/source_contents = matrix_current_locs[loc2textv][2]
 			if (!T)
+				if (source_contents.len)
+					return FALSE
 				continue
+			if (ship)
+				var/has_hull = FALSE
+				for (var/obj/structure/vehicleparts/frame/ship/F in source_contents)
+					if (F.axis == src)
+						has_hull = TRUE
+				if (!has_hull)
+					continue
+				if (T.density || ((!istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/beach/water/ice)) && !istype(T, /turf/floor/trench/flooded)))
+					return FALSE
 			var/list/todestroy = list()
 			for (var/obj/O in T)
-				if ((!locate(O) in transporting) && (!locate(O) in components) && (!locate(O) in wheels))
+				if (!(O in transporting) && !(O in components) && !(O in wheels))
 					if (istype(O, /obj/structure/vehicleparts/frame/ship))
 						var/obj/structure/vehicleparts/frame/ship/FRM = O
 						if (FRM.axis != src)
@@ -612,7 +642,11 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 						todestroy += O
 			for(var/obj/OM in todestroy)
 				if (!istype(OM, /obj/structure/sign/traffic/zebracrossing) && !istype(OM, /obj/structure/sign/traffic/side) && !istype(OM, /obj/structure/sign/traffic/central) && !istype(OM, /obj/structure/rails) && !istype(OM, /obj/covers) && !istype(OM, /obj/structure/gate) && !istype(OM, /obj/structure/lamp/lamppost_small/) && !istype(OM, /obj/structure/lamp/lamp_big/alwayson) && !istype(OM, /obj/structure/lamp/lamp_small/alwayson) && !istype(OM, /obj/structure/redmailbox) && !istype(OM, /obj/structure/billboard))
-					qdel(OM)
+					turn_destroy |= OM
+	if (ship)
+		transforming_ship = TRUE
+	for (var/obj/OM in turn_destroy)
+		qdel(OM)
 	dir = newdir
 	for (var/obj/structure/vehicleparts/movement/OBB in wheels)
 		if (OBB.reversed)
@@ -636,15 +670,21 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 					dlocfind = rotation_matrixes5[tdir][loc2textv][1]
 //			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes5[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])")
 			if (islist(matrix_current_locs[loc2textv][2]))
+				var/has_hull = !ship
+				for (var/obj/structure/vehicleparts/frame/ship/F in matrix_current_locs[loc2textv][2])
+					if (F.axis == src)
+						has_hull = TRUE
 				for (var/obj/effect/pseudovehicle/PV in matrix_current_locs[dlocfind][1])
+					if (!has_hull)
+						continue
 					var/turf/toget = matrix_current_locs[dlocfind][1]
 					for (var/mob/living/ML in toget)
-						if (!locate(ML) in transporting)
+						if (!(ML in transporting))
 							for(var/obj/item/I in ML)
 								qdel(I)
 							ML.crush()
 					for (var/obj/structure/ST in toget)
-						if (!ST.density)
+						if (!ST.density && !(ST in transporting) && !(ST in components))
 							ST.Destroy()
 				for (var/atom/movable/M in matrix_current_locs[loc2textv][2])
 					if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M,/obj/covers) && !istype(M,/obj/structure/cable) && !istype(M,/obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard))
@@ -669,6 +709,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	for(var/mob/living/MB in transporting)
 		MB.dir = dir
 
+	transforming_ship = FALSE
 	return TRUE
 
 /obj/effect/pseudovehicle

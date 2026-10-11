@@ -42,7 +42,10 @@
 					return FALSE
 				else
 					S.update_icon()
-			do_move()
+			if (!do_move())
+				stopmovementloop()
+				movement_processes--
+				return FALSE
 		else
 			currentspeed = 0
 			moving = FALSE
@@ -247,9 +250,20 @@
 
 /obj/structure/vehicleparts/axis/ship/add_transporting()
 	transporting = list()
+	// Older assemblies filled the entire 5x5 assembler area with placeholders.
+	// Keep only this ship's current turning square; never remove physical hull parts.
+	var/turf/origin = get_turf(src)
+	if (origin && maxdist >= 1 && maxdist <= 5)
+		var/end_x = origin.x + ((dir == EAST || dir == SOUTH) ? -1 : 1) * (maxdist - 1)
+		var/end_y = origin.y + ((dir == EAST || dir == NORTH) ? -1 : 1) * (maxdist - 1)
+		for (var/obj/effect/pseudovehicle/PV in components.Copy())
+			if (PV.link == src && (PV.z != origin.z || PV.x < min(origin.x,end_x) || PV.x > max(origin.x,end_x) || PV.y < min(origin.y,end_y) || PV.y > max(origin.y,end_y)))
+				components -= PV
+				qdel(PV)
 	for (var/obj/structure/vehicleparts/frame/F in components)
-		if (!F || !(F in range(7,loc)))
+		if (!F || F.axis != src || !(F in range(7,loc)))
 			components -= F
+			continue
 		var/turf/T = get_turf(F)
 		for (var/atom/movable/M in T)
 		 /* TODO: Naval Mines
@@ -259,6 +273,14 @@
 					MAT.trigger(F)
 		*/
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
+				if (istype(M, /obj/structure/vehicleparts/frame))
+					var/obj/structure/vehicleparts/frame/other = M
+					if (other.axis != src)
+						continue
+				if (istype(M, /obj/structure/vehicleparts/movement))
+					var/obj/structure/vehicleparts/movement/other = M
+					if (other.axis && other.axis != src)
+						continue
 				transporting += M
 	return transporting.len
 
