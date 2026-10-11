@@ -51,17 +51,20 @@ $procs
         if (grass_turf_list.len != world.maxx * world.maxy)
             world.log << "FAIL grass count cycle=[cycle] count=[grass_turf_list.len]"
             del(world)
+            return
         for (var/turf/T in world)
             new /turf/floor/grass/jungle(T)
         if (grass_turf_list.len != world.maxx * world.maxy)
             world.log << "FAIL grass subtype count=[grass_turf_list.len]"
             del(world)
+            return
         for (var/turf/T in world)
             new /turf/floor/dirt(T)
             new /turf/floor/dirt/winter(T)
         if (grass_turf_list.len)
             world.log << "FAIL non-grass registry count=[grass_turf_list.len]"
             del(world)
+            return
         sleep(1)
     // Wait for obsolete chains to wake and stop, then count one recovery wave.
     var/turf/floor/dirt/planted = locate(1,1,1)
@@ -73,17 +76,21 @@ $procs
     if (recoveries - before != world.maxx * world.maxy)
         world.log << "FAIL duplicate recovery chains delta=[recoveries-before] expected=[world.maxx*world.maxy]"
         del(world)
+        return
     var/turf/floor/dirt/D = locate(2,1,1)
     if (D.soil_nutrition <= 0 || D.soil_nutrition > D.max_soil_nutrition)
         world.log << "FAIL soil recovery nutrition=[D.soil_nutrition]"
         del(world)
+        return
     if (planted.soil_nutrition != 0)
         world.log << "FAIL planted soil recovered"
         del(world)
+        return
     world.log << "POST cycles=$Cycles registry=[grass_turf_list.len] recovery_wave=[recoveries-before]"
     sleep(10)
     world.log << "PASS season memory regression"
     del(world)
+    return
 "@
 $testDir = Join-Path ([IO.Path]::GetTempPath()) ('civ13-season-test-' + [guid]::NewGuid())
 New-Item -ItemType Directory -Path $testDir | Out-Null
