@@ -240,7 +240,7 @@ var/global/list/anvil_recipes = list(
 
 	///*Steel Helmets*///
 			/*World Wars*/
-	"Mesh Pickelhaube Helmet" = list("Mesh Picklehaube Helmet","helmets",5,5,6,0,0,0,/obj/item/clothing/head/helmet/ww/pickelhaube2),
+	"Mesh Pickelhaube Helmet" = list("Mesh Pickelhaube Helmet","helmets",5,5,6,0,0,0,/obj/item/clothing/head/helmet/ww/pickelhaube2),
 
 	"Stahlhelm Helmet" = list("Stahlhelm Helmet","helmets",5,6,9,0,0,0,/obj/item/clothing/head/helmet/modern/stahlhelm),
 

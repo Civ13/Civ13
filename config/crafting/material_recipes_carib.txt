@@ -193,7 +193,7 @@ RECIPE: /material/leaf/palm/,long leaf skirt,/obj/item/clothing/under/leaves_ski
 
 //*********************| FERN LEAVES |******************************
 
-RECIPE: material/leaf/fern/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,2,45,0,1,none,0,0,0,8,null
+RECIPE: /material/leaf/fern/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,2,45,0,1,none,0,0,0,8,null
 
 //*****************| FERN LEAVES CLOTHING |**************************
 
@@ -1041,7 +1041,7 @@ RECIPE: /material/bearpelt/white/,white napoleonic bearskin hat,/obj/item/clothi
 //*****************| BLACK BEARPELT CLOTHES |***************************
 
 RECIPE: /material/bearpelt/black/,primitive pelt coat,/obj/item/clothing/suit/prehistoricfurcoat/black,6,125,0,1,none,0,0,0,3,null
-RECIPE: /material/bearpelt/black,fur coat,/obj/item/clothing/suit/storage/coat/fur/black,6,150,0,1,none,0,0,102,8,null
+RECIPE: /material/bearpelt/black/,fur coat,/obj/item/clothing/suit/storage/coat/fur/black,6,150,0,1,none,0,0,102,8,null
 RECIPE: /material/bearpelt/black/,fancy fur coat,/obj/item/clothing/suit/storage/coat/fancy_fur_coat,10,200,0,1,none,0,0,0,102,null
 RECIPE: /material/bearpelt/black/,fur boots,/obj/item/clothing/shoes/fur/black,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/black/,fur gloves,/obj/item/clothing/gloves/thick/leather/black,3,80,0,1,none,0,0,0,8,null
@@ -1269,8 +1269,8 @@ RECIPE: /material/bone/,tomahawk,/obj/item/weapon/material/thrown/tomahawk,4,30,
 
 //*********************| FOSSILS |***********************
 
-RECIPE: /material/fossil/,bones (10x),/obj/item/stack/material/bone,1,10,0,1,none,0,0,0,8,null
-RECIPE: /material/fossil/,stone (8x),/obj/item/stack/material/stone,1,10,0,1,none,0,0,0,8,null
+// Disabled legacy recipe (fossil stacks use the stone datum; no /material/fossil exists): RECIPE: /material/fossil/,bones (10x),/obj/item/stack/material/bone,1,10,0,1,none,0,0,0,8,null
+// Disabled legacy recipe (fossil stacks use the stone datum; no /material/fossil exists): RECIPE: /material/fossil/,stone (8x),/obj/item/stack/material/stone,1,10,0,1,none,0,0,0,8,null
 
 //**************************************************************
 //*********************| STONE |********************************
@@ -1339,7 +1339,7 @@ RECIPE: /material/stone/,monumental ominous statue of the evil-one,/obj/structur
 
 RECIPE: /material/stone/,smooth roman road,/obj/covers/roads/roman,1,0,1,1,roads,102,0,0,8,null
 RECIPE: /material/stone/,smooth cobble road,/obj/covers/roads/cobble,1,0,1,1,roads,102,0,0,8,null
-RECIPE: /material/stone/,smooth modern road,obj/covers/roads/modern,1,0,1,1,roads,102,0,0,8,null
+RECIPE: /material/stone/,smooth modern road,/obj/covers/roads/modern,1,0,1,1,roads,102,0,0,8,null
 
 //*************| STONE 'STATUE' & WINDOWS |***************
 
@@ -1550,6 +1550,10 @@ RECIPE: /material/glass/,vial,/obj/item/weapon/reagent_containers/glass/beaker/v
 RECIPE: /material/glass/,beaker,/obj/item/weapon/reagent_containers/glass/beaker,2,40,0,1,chemistry,105,0,0,8,null
 RECIPE: /material/glass/,large beaker,/obj/item/weapon/reagent_containers/glass/beaker/large,3,40,0,1,chemistry,105,0,0,8,null
 RECIPE: /material/glass/,laboratory distiller,/obj/structure/lab_distillery,10,140,1,1,chemistry,105,0,0,8,null
+RECIPE: /material/glass/,laboratory reaction bench,/obj/structure/reaction_bench,10,140,1,1,chemistry,105,0,0,8,null
+RECIPE: /material/electronics/,laboratory centrifuge,/obj/structure/centrifuge,24,100,0,1,chemistry,100,0,0,8,null
+RECIPE: /material/glass/,laboratory feedstock dispenser,/obj/structure/chemical_dispenser/full/laboratory,20,180,1,1,chemistry,90,0,0,8,null
+RECIPE: /material/iron/,laboratory burner,/obj/item/weapon/laboratory_burner,4,80,0,1,chemistry,105,0,0,8,null
 
 //*************| GLASS FURNITURE |***************
 
@@ -2095,7 +2099,7 @@ RECIPE: /material/wood/,wearable sign,/obj/item/clothing/accessory/wearable_sign
 
 RECIPE: /material/wood/,table,/obj/structure/table/wood,4,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/,wood pole,/obj/structure/barricade/wood_pole,2,50,1,1,furniture,0,0,0,8,null
-RECIPE: /material/wood/,bed,/obj/structure/bed/wood,4,60,_one_per_turf = 1,1,furniture,0,0,0,8,null
+RECIPE: /material/wood/,bed,/obj/structure/bed/wood,4,60,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/,wood crate,/obj/structure/closet/crate/empty,5,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/,bookcase,/obj/structure/bookcase,6,80,1,1,furniture,14,0,0,8,null
 RECIPE: /material/wood/,chair,/obj/structure/bed/chair/wood,4,50,1,1,furniture,14,0,0,8,null
@@ -2110,7 +2114,7 @@ RECIPE: /material/wood/,coffin,/obj/structure/closet/coffin,4,50,1,1,furniture,4
 RECIPE: /material/wood/,wardrobe,/obj/structure/closet/cabinet,5,80,1,1,furniture,41,0,0,8,null
 RECIPE: /material/wood/,cabinet,/obj/structure/closet/cabinet/ceiling,4,60,1,1,furniture,102,0,0,8,null
 RECIPE: /material/wood/,grandfather clock,/obj/structure/TV/grandfather,9,160,1,1,furniture,102,0,0,8,null
-RECIPE: /material/wood/,wooden rifle rack, /obj/structure/vending/craftable/rifles/wood,8,80,1,1,storage,0,75,0,8,null
+RECIPE: /material/wood/,wooden rifle rack,/obj/structure/vending/craftable/rifles/wood,8,80,1,1,storage,0,75,0,8,null
 RECIPE: /material/wood/,poker table,/obj/structure/table/wood/poker,7,50,1,1,furniture,102,0,0,8,null
 RECIPE: /material/wood/,modern table,/obj/structure/table/modern/table,7,50,1,1,furniture,102,0,0,8,null
 RECIPE: /material/wood/,fancy table,/obj/structure/table/fancy,7,50,1,1,furniture,102,0,0,8,null
@@ -2203,14 +2207,14 @@ RECIPE: /material/wood/,leader propaganda poster,/obj/item/weapon/poster/faction
 
 RECIPE: /material/wood/,notice board,/obj/structure/noticeboard,12,145,1,1,paper & printing,102,0,0,8,null
 RECIPE: /material/wood/,printing press,/obj/structure/printingpress,12,120,1,1,paper & printing,102,0,0,8,null
-RECIPE: /material/wood/,large blue stamp,/obj/item/weapon/stamp/captain,1,30,0,1,paper & printing,103,0,0,8,null
+// Disabled legacy recipe (no compiled output type /obj/item/weapon/stamp/captain): RECIPE: /material/wood/,large blue stamp,/obj/item/weapon/stamp/captain,1,30,0,1,paper & printing,103,0,0,8,null
 RECIPE: /material/wood/,DENIED stamp,/obj/item/weapon/stamp/denied,1,30,0,1,paper & printing,103,0,0,8,null
 RECIPE: /material/wood/,APPROVED stamp,/obj/item/weapon/stamp/approved,1,30,0,1,paper & printing,103,0,0,8,null
-RECIPE: /material/wood/,silly stamp,/obj/item/weapon/stamp/clown,1,30,0,1,paper & printing,103,0,0,8,null
-RECIPE: /material/wood/,red stamp,/obj/item/weapon/stamp/hos,1,30,0,1,paper & printing,103,0,0,8,null
-RECIPE: /material/wood/,blue stamp,/obj/item/weapon/stamp/hop,1,30,0,1,paper & printing,103,0,0,8,null
-RECIPE: /material/wood/,dark red stamp,/obj/item/weapon/stamp/internalaffairs,1,30,0,1,paper & printing,103,0,0,8,null
-RECIPE: /material/wood/,yellow stamp,/obj/item/weapon/stamp/ce,1,30,0,1,paper & printing,103,0,0,8,null
+// Disabled legacy recipe (no compiled output type /obj/item/weapon/stamp/clown): RECIPE: /material/wood/,silly stamp,/obj/item/weapon/stamp/clown,1,30,0,1,paper & printing,103,0,0,8,null
+// Disabled legacy recipe (no compiled output type /obj/item/weapon/stamp/hos): RECIPE: /material/wood/,red stamp,/obj/item/weapon/stamp/hos,1,30,0,1,paper & printing,103,0,0,8,null
+// Disabled legacy recipe (no compiled output type /obj/item/weapon/stamp/hop): RECIPE: /material/wood/,blue stamp,/obj/item/weapon/stamp/hop,1,30,0,1,paper & printing,103,0,0,8,null
+// Disabled legacy recipe (no compiled output type /obj/item/weapon/stamp/internalaffairs): RECIPE: /material/wood/,dark red stamp,/obj/item/weapon/stamp/internalaffairs,1,30,0,1,paper & printing,103,0,0,8,null
+// Disabled legacy recipe (no compiled output type /obj/item/weapon/stamp/ce): RECIPE: /material/wood/,yellow stamp,/obj/item/weapon/stamp/ce,1,30,0,1,paper & printing,103,0,0,8,null
 RECIPE: /material/wood/,clipboard,/obj/item/weapon/clipboard,5,85,0,1,paper & printing,125,0,0,8,null
 
 //*********************| WOOD SIEGE WEAPONS |**************************
@@ -2254,7 +2258,7 @@ RECIPE: /material/wood/,pillory,/obj/structure/pillory,8,60,1,1,punishments,0,32
 
 //*********************| BAMBOO DECORATION & RELIGION |**************************
 
-RECIPE: /material/bamboo/,bamboo altar,obj/structure/altar/material/bamboo,20,200,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/bamboo/,bamboo altar,/obj/structure/altar/bamboo,20,200,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/bamboo/,small tiki statue,/obj/structure/religious/tiki_statue/small,8,150,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/bamboo/,tiki torch,/obj/item/flashlight/tiki_torch,5,60,0,1,none,0,0,0,8,null
 
@@ -2509,7 +2513,7 @@ RECIPE: /material/sandstone/,pickaxe,/obj/item/weapon/material/pickaxe/stone,2,5
 
 RECIPE: /material/sandstone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,projectiles,0,0,0,8,sandstone
 RECIPE: /material/sandstone/,projectile (x2),/obj/item/stack/ammopart/stoneball,1,25,0,1,projectiles,24,49,0,8,sandstone
-RECIPE: /material/sandstone/,sandstone arrowhead (x4),/obj/item/stack/arrowhead/sandstone,1,10,0,1,projectiles,0,14,0,8,sandstone
+// Disabled legacy recipe (no compiled output type /obj/item/stack/arrowhead/sandstone): RECIPE: /material/sandstone/,sandstone arrowhead (x4),/obj/item/stack/arrowhead/sandstone,1,10,0,1,projectiles,0,14,0,8,sandstone
 
 RECIPE: /material/sandstone/,catapult projectile,/obj/item/catapult_ball,5,75,0,1,projectiles,24,33,0,4,sandstone
 
@@ -2529,4 +2533,4 @@ RECIPE: /material/obsidian/,aztec column,/obj/structure/mine_support/stone/aztec
 
 //*********************| OBSIDIAN DECORATIONS & RELIGION |**************************
 
-RECIPE: /material/obsidian/,obsidian altar,/obj/structure/altar/obsidian,15,200,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/obsidian/,obsidian altar,/obj/structure/altar/stone/material/obsidian,15,200,1,1,religious & decoration,0,0,0,8,null

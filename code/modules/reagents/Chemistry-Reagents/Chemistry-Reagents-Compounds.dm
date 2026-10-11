@@ -327,7 +327,7 @@
 	color = "#EEEEEE"
 
 /datum/reagent/titaniumchloride
-	name = "Titanium Chloride"
+	name = "Titanium Tetrachloride"
 	id = "titaniumchloride"
 	description = "A liquid catalyst used in polymer production."
 	reagent_state = LIQUID
@@ -353,3 +353,117 @@
 	description = "A plastic polymer produced from ethylene."
 	reagent_state = SOLID
 	color = "#EEEEEE"
+
+// Existing gasoline recipes require registered feedstock reagents.
+/datum/reagent/octane
+	name = "Octane"
+	id = "octane"
+	description = "A liquid hydrocarbon used in gasoline blending."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/cyclopentane
+	name = "Cyclopentane"
+	id = "cyclopentane"
+	description = "A liquid hydrocarbon used in gasoline blending."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/toluene
+	name = "Toluene"
+	id = "toluene"
+	description = "A liquid solvent used in gasoline blending."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/butene
+	name = "Butene"
+	id = "butene"
+	description = "A gaseous hydrocarbon used in gasoline blending."
+	reagent_state = GAS
+	color = "#EEEEEE"
+
+// Chemistry Expansion feedstocks. Recipes are game conversions, not synthesis instructions.
+/datum/reagent/ethanoic_acid
+	name = "Ethanoic Acid"
+	id = "ethanoic_acid"
+	description = "An acid used in laboratory processing."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/calcium_carbonate
+	name = "Calcium Carbonate"
+	id = "calcium_carbonate"
+	description = "A solid calcium compound used in laboratory processing."
+	reagent_state = SOLID
+	color = "#FFFFFF"
+
+/datum/reagent/calcium_chloride
+	name = "Calcium Chloride"
+	id = "calcium_chloride"
+	description = "A calcium salt used in laboratory processing."
+	reagent_state = SOLID
+	color = "#FFFFFF"
+
+/datum/reagent/gluconic_acid
+	name = "Gluconic Acid"
+	id = "gluconic_acid"
+	description = "An acid used to prepare calcium compounds."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/calcium_gluconate
+	name = "Calcium Gluconate"
+	id = "calcium_gluconate"
+	description = "A calcium compound used in laboratory processing."
+	reagent_state = SOLID
+	color = "#FFFFFF"
+
+/datum/reagent/sodium_sulfide
+	name = "Sodium Sulfide"
+	id = "sodium_sulfide"
+	description = "A solid reagent used in wood processing."
+	reagent_state = SOLID
+	color = "#FFFFCC"
+
+/datum/reagent/sodium_hydroxide
+	name = "Sodium Hydroxide"
+	id = "sodium_hydroxide"
+	description = "A solid reagent used in wood processing."
+	reagent_state = SOLID
+	color = "#FFFFFF"
+
+/datum/reagent/sulfurous_acid
+	name = "Sulfurous Acid"
+	id = "sulfurous_acid"
+	description = "A liquid reagent used in wood processing."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/hydrogen_sulfites
+	name = "Hydrogen Sulfite"
+	id = "hydrogen_sulfites"
+	description = "The game's simplified hydrogen-sulfite processing reagent."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/n_methylmorpholine_n_oxide
+	name = "N-Methylmorpholine N-oxide"
+	id = "n_methylmorpholine_n_oxide"
+	description = "A solvent used in cellulose processing."
+	reagent_state = SOLID
+	color = "#EEEEEE"
+
+/datum/reagent/isobutylene
+	name = "Isobutylene"
+	id = "isobutylene"
+	description = "A gaseous hydrocarbon used in polymer processing."
+	reagent_state = GAS
+	color = "#EEEEEE"
+
+/datum/reagent/titaniumtrichloride
+	name = "Titanium Trichloride"
+	id = "titaniumtrichloride"
+	description = "A solid titanium chloride, distinct from liquid titanium tetrachloride."
+	reagent_state = SOLID
+	color = "#993399"

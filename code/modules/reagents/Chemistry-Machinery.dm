@@ -175,16 +175,7 @@
 			amount = 120
 
 	if (href_list["dispense"])
-		if (beaker != null && beaker.is_open_container())
-			for (var/list/l in dispensable_reagents)
-				if (l[1] == href_list["dispense"] && l[2] > 0)
-					var/obj/item/weapon/reagent_containers/B = beaker
-					var/datum/reagents/R = B.reagents
-					var/space = R.maximum_volume - R.total_volume
-					var/added_amount = min(min(amount, space),l[2])
-					l[2] -= added_amount
-					R.add_reagent(href_list["dispense"], added_amount)
-					sanitize_reagents()
+		dispense_into_beaker(href_list["dispense"], amount)
 	if (href_list["ejectBeaker"])
 		if (beaker)
 			var/obj/item/weapon/reagent_containers/B = beaker
@@ -235,6 +226,28 @@
 			temp_dr += list(list(r[1],r[2]))
 	dispensable_reagents = temp_dr
 	return
+
+/obj/structure/chemical_dispenser/proc/dispense_into_beaker(id, requested)
+	if(!beaker || beaker.loc != src || !beaker.is_open_container() || !beaker.reagents || !chemical_reagents_list[id] || !isnum(requested) || requested <= 0)
+		return 0
+	for(var/list/stock in dispensable_reagents)
+		if(stock[1] == id && stock[2] > 0)
+			var/added = min(requested, beaker.reagents.get_free_space(), stock[2])
+			if(added <= 0 || !beaker.reagents.add_reagent(id, added))
+				return 0
+			stock[2] -= added
+			sanitize_reagents()
+			return added
+	return 0
+
+/obj/structure/chemical_dispenser/full/laboratory
+	name = "laboratory feedstock dispenser"
+	desc = "A finite starter supply of game laboratory feedstocks; refill it with reagent containers."
+
+/obj/structure/chemical_dispenser/full/laboratory/New()
+	..()
+	for(var/id in list("carbon", "sulfur", "boron", "titanium", "water", "pethanol"))
+		dispensable_reagents += list(list(id, 100))
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -364,6 +377,7 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/active = FALSE
+	var/cycle_token = 0
 	powerneeded = 30
 	var/obj/item/weapon/reagent_containers/glass/beaker/collector = null
 
@@ -472,33 +486,56 @@
 	return
 
 /obj/structure/centrifuge/proc/process_machine()
+	var/this_cycle = ++cycle_token
 	if (!check_power())
+		active = FALSE
+		update_icon()
 		visible_message(SPAN_WARNING("\The [src] abruptly stops it's cycle and powers down."))
 		return
 	else
 		spawn(15 SECONDS)
+			if(!src || gcDestroyed || !active || this_cycle != cycle_token)
+				return
 			if (!check_power())
+				active = FALSE
+				update_icon()
 				visible_message(SPAN_WARNING("\The [src] abruptly stops it's cycle and powers down."))
 				return
-			var/largest = reagents.get_master_reagent_id()
-			var/voltotransf = min(collector.reagents.get_free_space(),reagents.get_reagent_amount(largest))
-			var/chems_got_back_div = 1 // Divider for how many chems you get back vs how much you put in (0.1, you get a tenth of the chems back)
-			var/topick // What chems you got back
-
-			switch (largest)
-				if ("blood")
-					topick = pick("blood_plasma", "red_blood_cells", "white_blood_cells")
-					chems_got_back_div = 5
-				if ("sodiumchloride")
-					topick = pick("sodium", "chlorine")
-					chems_got_back_div = 2
-
-			collector.reagents.add_reagent(topick,voltotransf / chems_got_back_div)
-			reagents.remove_reagent(largest,voltotransf)
+			var/separated = separate_batch()
 			active = FALSE
 			update_icon()
-			visible_message("\The [src] stops it's cycle.")
+			visible_message(separated ? "\The [src] completes its cycle." : "\The [src] stops without consuming inputs; check its collector and supported mixture.")
 			playsound(loc, 'sound/machines/ping.ogg', 100, TRUE)
+
+// Resolve supported outputs and their capacity before consuming any input.
+/obj/structure/centrifuge/proc/separate_batch()
+	if(!collector || collector.loc != src || !collector.reagents)
+		return FALSE
+	var/largest = reagents.get_master_reagent_id()
+	var/list/products
+	switch(largest)
+		if("blood")
+			products = list("blood_plasma" = 0.6, "red_blood_cells" = 0.3, "white_blood_cells" = 0.1)
+		if("sodiumchloride")
+			products = list("sodium" = 0.5, "chlorine" = 0.5)
+		if("unpurified_gelatin")
+			products = list("purified_gelatin" = 0.8)
+	if(!products)
+		return FALSE
+	var/yield_fraction = 0
+	for(var/id in products)
+		if(!chemical_reagents_list[id])
+			return FALSE
+		yield_fraction += products[id]
+	var/input_amount = min(reagents.get_reagent_amount(largest), collector.reagents.get_free_space() / yield_fraction)
+	// Avoid consuming tiny residues that reagent holders discard automatically.
+	if(input_amount < 1)
+		return FALSE
+	for(var/id in products)
+		collector.reagents.add_reagent(id, input_amount * products[id], safety = TRUE)
+	reagents.remove_reagent(largest, input_amount)
+	collector.reagents.handle_reactions()
+	return TRUE
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

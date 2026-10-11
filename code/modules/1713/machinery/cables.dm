@@ -201,6 +201,7 @@ By design, d1 is the smallest direction and d2 is the highest
 	var/list/pending = list(src)
 	var/list/cables = list()
 	var/list/engines = list()
+	var/list/batteries = list()
 	var/capacity = 0
 	var/demand = 0
 	while (pending.len)
@@ -228,7 +229,13 @@ By design, d1 is the smallest direction and d2 is the highest
 				if (!(EN in engines) && (CB in EN.connections))
 					engines += EN
 					if (EN.on && !EN.broken && EN.maxpower > 0)
-						capacity += EN.maxpower
+						var/charging = EN.battery_charge_epoch == round(world.time / 10) ? EN.battery_charge_power : 0
+						capacity += max(0, EN.maxpower - charging)
+			else if (istype(OB, /obj/structure/battery))
+				var/obj/structure/battery/B = OB
+				if (!(B in batteries) && B.powersource == CB)
+					batteries += B
+					capacity += B.available_output()
 	for (var/obj/structure/cable/CB in cables)
 		CB.currentflow = demand
 		CB.powerflow = capacity
