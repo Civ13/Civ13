@@ -42,3 +42,20 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 		world.log << "FAIL: full-game world-save probe: [e]"
 	if(!world.params["visual"])
 		del(world)
+
+/client/verb/inspect_restored_save()
+	set category = "Local Verification"
+	set name = "Inspect restored save"
+	var/result = file2text("full_game_result.txt")
+	if(findtext(result, "PASS:") != 1)
+		to_chat(src, "Probe has not passed: [result]")
+		return
+	screen.Cut()
+	mob.loc = locate(20,20,1)
+	mob.sight = SEE_TURFS | SEE_OBJS | SEE_MOBS | SEE_SELF
+	mob.see_in_dark = 8
+	eye = mob.loc
+	perspective = EYE_PERSPECTIVE
+	view = 7
+	winset(src, null, "mainwindow.title='Civ13 LOCAL full-game world-save probe'")
+	to_chat(src, "<b>[result]</b><br>Actual restored crate at (20,20,1), containing the named knife. Local temporary storage, no production services.")
