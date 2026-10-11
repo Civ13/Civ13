@@ -95,11 +95,13 @@ var/global/abandoned_item_cursor = 1
 			return protected
 		if (istype(container, /obj/item/weapon/storage))
 			protected = TRUE
+		else if (istype(src, /obj/item/ammo_casing) && (istype(container, /obj/item/ammo_magazine) || istype(container, /obj/item/weapon/gun)))
+			protected = TRUE // Native ammunition storage/chambers preserve spent cases.
 		else if (istype(container, /obj/structure/closet))
 			var/obj/structure/closet/C = container
 			if (!C.opened)
 				protected = TRUE
-		// Arbitrary objects, magazines and fake containers do not confer storage.
+		// Arbitrary objects and fake containers do not confer storage.
 		container = container.loc
 	return TRUE // pathological containment depth: conservative, bounded traversal
 

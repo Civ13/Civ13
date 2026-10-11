@@ -107,6 +107,27 @@ var/decay_assertions = 0
 		decay_assert(loaded.abandonment_index > 0, "spent casing opts in after expend")
 		loaded.check_abandonment(0)
 		decay_assert(loaded.check_abandonment(ABANDONED_ITEM_LIFETIME), "spent empty casing decays")
+		var/obj/item/ammo_magazine/magazine = new(T)
+		var/obj/item/ammo_casing/stored = new(T)
+		stored.spent_icon = "empty"
+		stored.register_abandoned_item()
+		stored.forceMove(magazine)
+		magazine.stored_ammo += stored
+		stored.check_abandonment(0)
+		decay_assert(stored.abandonment_protected() && !stored.check_abandonment(ABANDONED_ITEM_LIFETIME*2), "native magazine preserves spent casings")
+		stored.forceMove(T)
+		magazine.stored_ammo -= stored
+		stored.check_abandonment(0)
+		decay_assert(stored.check_abandonment(ABANDONED_ITEM_LIFETIME), "dumped spent casing becomes exposed waste")
+		qdel(magazine)
+		var/obj/item/weapon/gun/gun = new(T)
+		stored = new(T)
+		stored.spent_icon = "empty"
+		stored.register_abandoned_item()
+		stored.forceMove(gun)
+		stored.check_abandonment(0)
+		decay_assert(stored.abandonment_protected() && !stored.check_abandonment(ABANDONED_ITEM_LIFETIME*2), "native gun preserves internal spent casing")
+		qdel(stored); qdel(gun)
 		I.abandonment_since = 123
 		I.abandonment_location = "old-runtime"
 		var/savefile/F = new("isolated-decay.sav")
