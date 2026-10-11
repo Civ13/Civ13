@@ -17,7 +17,16 @@
 	maxz = 1
 	fps = 20
 	turf = /turf
+/world/Topic(T, addr, master, key)
+	return "Food fixture has no remote operations."
+/world/Error(exception/e, datum/e_src)
+	world.log << "Runtime error: [e]"
+	text2file("FAIL: runtime [e]", "food_result.txt")
+	del(world)
+	sleep(1)
 /world/New()
+	if (config)
+		config.webhook_can_fire = FALSE
 	GLOB.all_observable_events = list()
 	GLOB.moved_event = new /decl/observ/moved
 	GLOB.dir_set_event = new /decl/observ/dir_set
