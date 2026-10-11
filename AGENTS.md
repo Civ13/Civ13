@@ -237,6 +237,12 @@ zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
 ## Local MCP tooling
 
+<!-- 2026-10-11: isolated legacy garbage queue -->
+When normal startup is disabled, atom `qdel` removes the atom from its location
+and queues it in `delayed_garbage`; it does not set the newer `gc_destroyed` flag
+checked by `QDELETED`. Fixture disposal assertions must reflect that actual
+queue and must not claim that production garbage collection has drained it.
+
 <!-- 2026-10-11: chemistry verification -->
 Chemical recipe IDs do not register reagents: each product needs a matching
 `/datum/reagent` ID or mixing can consume inputs without producing the result.

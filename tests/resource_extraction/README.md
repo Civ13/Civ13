@@ -13,7 +13,12 @@ Coverage includes stack conservation and caps, output congestion, one pending
 drill callback after repeated restarts, power reservation release, save/load
 hooks, construction side-input transactions, trace gathering eligibility,
 replacement identity, river panning, action overlap, and the production
-`do_after` movement/active-tool interruption loop.
+`do_after` movement/active-tool interruption loop. The actual recipe catalog also
+proves plain white cable is craftable from one copper before Electricity, while
+colored cable stays locked; a production research bench accepts the crafted
+prototype without bypassing the remaining study. With startup disabled, consumed
+atoms enter the legacy `delayed_garbage` queue; this fixture does not prove GC
+drainage or long-running world memory stability.
 
 Gathering tests shorten the delay. A drill is also serialized to disk and
 restored through production entry serialization/loading and post-load hooks;

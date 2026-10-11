@@ -64,6 +64,11 @@ var/extraction_runtime_error = FALSE
 		build_research_tree()
 		extraction_check(get_recipe_node_req("/obj/structure/drill") == "electricity", "drill unlock at electricity")
 		extraction_check(get_recipe_node_req("/obj/item/stack/material/electronics") == "electricity", "electronics unlock at electricity")
+		extraction_check(get_recipe_node_req("/obj/item/stack/cable_coil/white") == "paved_infrastructure", "plain cable prototype precedes electricity")
+		var/datum/research_node/electricity = research_nodes["electricity"]
+		var/obj/item/stack/cable_coil/white/prototype = new(locate(1,1,1))
+		extraction_check(electricity && istype(prototype, electricity.prototype_type), "reachable plain cable satisfies electricity prototype type")
+		qdel(prototype)
 		var/turf/T = locate(5,5,1)
 		T = T.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
 		var/obj/structure/drill/D = new(T)
@@ -163,6 +168,7 @@ var/extraction_runtime_error = FALSE
 		H.wait_mode = "drop"
 		extraction_check(!H.sift_resource(T,/obj/item/stack/ore/gold,bowl,TRUE), "dropped pan rejected")
 		extraction_construction(H)
+		extraction_electricity_bootstrap(H)
 		extraction_save_roundtrip()
 	catch(var/exception/e)
 		extraction_check(FALSE, "exception [e]")
@@ -186,6 +192,57 @@ var/extraction_runtime_error = FALSE
 	extraction_check(electronics.amount == 20 && steel.amount == 20 && (locate(/obj/structure/drill) in T), "construction pays 20 electronics and 20 steel")
 	electronics.produce_recipe(R,1,H)
 	extraction_check(electronics.amount == 20 && steel.amount == 20, "occupied tile consumes neither input")
+
+/proc/extraction_electricity_bootstrap(mob/living/human/extraction_probe/H)
+	map.ordinal_age = 4
+	var/faction = "extraction-bootstrap"
+	map.faction_baseline_era[faction] = 4
+	H.civilization = faction
+	H.research_role = "researcher"
+	H.stats = list("strength" = list(100,100), "crafting" = list(100,100))
+	var/list/rows = list()
+	for (var/line in splittext(file2text("config/crafting/material_recipes_global.txt"), "\n"))
+		if (findtext(line, "RECIPE: ") == 1)
+			rows += list(splittext(replacetext(line, "RECIPE: ", ""), ","))
+	craftlist_lists["global"] = rows
+	var/material/copper/M = get_material_by_name("copper")
+	M.generate_recipes_civs(list(0,0,0), "global", faction)
+	var/datum/stack_recipe/white_recipe
+	var/red_available = FALSE
+	for (var/datum/stack_recipe_list/category in M.recipes)
+		for (var/datum/stack_recipe/R in category.recipes)
+			if (R.result_type == /obj/item/stack/cable_coil/white)
+				white_recipe = R
+			if (R.result_type == /obj/item/stack/cable_coil/red)
+				red_available = TRUE
+	extraction_check(white_recipe && !red_available && !map.is_node_done(faction,"electricity"), "actual catalog exposes only plain cable before Electricity")
+	if (!white_recipe)
+		return
+	var/turf/T = locate(9,8,1)
+	T = T.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+	H.loc = T
+	var/obj/item/stack/material/copper/copper = new(H,2,FALSE)
+	H.l_hand = copper
+	H.r_hand = null
+	H.hand = TRUE
+	copper.produce_recipe(white_recipe,1,H)
+	var/obj/item/stack/cable_coil/white/coil = locate() in T
+	extraction_check(copper.amount == 1 && coil && coil.amount == 10, "real plain cable recipe consumes one copper without another tool")
+	if (coil)
+		var/datum/research_node/N = research_nodes["electricity"]
+		var/obj/structure/research_bench/B = new(T)
+		B.faction = faction
+		B.assigned_node = "electricity"
+		B.tier = N.min_bench_tier
+		extraction_check(map.can_manage_faction_research(H,faction) && map.node_prereqs_met(faction,"electricity"), "prototype submission has real faction permission and prerequisites")
+		B.attackby(coil,H)
+		extraction_check(map.node_prototype_submitted(faction,"electricity"), "research bench accepts crafted plain cable prototype")
+		sleep(1)
+		// Normal startup is disabled: legacy atom qdel queues in delayed_garbage.
+		extraction_check(!coil || (!coil.loc && (coil in delayed_garbage)), "accepted cable prototype is removed and queued for collection")
+		extraction_check(!map.is_node_done(faction,"electricity"), "prototype does not bypass remaining study")
+		qdel(B)
+	map.ordinal_age = 2
 
 /proc/extraction_save_roundtrip()
 	var/turf/T = locate(11,11,1)

@@ -644,7 +644,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/cable_coil/orange" = "electricity",
 		"/obj/item/stack/cable_coil/pink" = "electricity",
 		"/obj/item/stack/cable_coil/red" = "electricity",
-		"/obj/item/stack/cable_coil/white" = "electricity",
+		// Plain cable supplies the Electricity prototype before that node unlocks.
+		"/obj/item/stack/cable_coil/white" = "paved_infrastructure",
 		"/obj/item/stack/cable_coil/yellow" = "electricity",
 		"/obj/item/stack/material/electronics" = "electricity",
 		"/obj/structure/telegraph" = "electricity",
