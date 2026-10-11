@@ -1,0 +1,25 @@
+name: Train collision regression
+on:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  train-collision:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BYOND_MAJOR: '516'
+      BYOND_MINOR: '1681'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Compile full game with pinned BYOND
+        run: sudo bash scripts/travis_pre_byond.sh
+      - name: Run bounded train regressions
+        shell: bash
+        run: |
+          source BYOND/byond/bin/byondsetup
+          bash tests/train_collision/run.sh
