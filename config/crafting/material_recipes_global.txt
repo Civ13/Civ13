@@ -2101,6 +2101,8 @@ RECIPE: /material/wood/soft/,bolt shaft (x3),/obj/item/ammo_casing/bolt,1,40,0,1
 
 RECIPE: /material/wood/,hammer,/obj/item/weapon/hammer,5,75,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/soft/,wood handle,/obj/item/weapon/material/handle,1,35,0,1,tools,0,0,0,8,wood
+RECIPE: /material/wood/soft/,plank handle,/obj/item/weapon/material/handle,2,70,0,1,tools,0,0,0,8,woodplank
+RECIPE: /material/iron/,reinforced handle,/obj/item/weapon/material/handle,2,70,0,1,tools,18,0,0,8,iron
 RECIPE: /material/wood/soft/,wood cane,/obj/item/weapon/cane,2,35,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/soft/,plough,/obj/item/weapon/plough,4,120,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,berries gatherer,/obj/item/weapon/berriesgatherer,4,80,0,1,tools,0,0,0,8,null

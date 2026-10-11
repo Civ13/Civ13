@@ -243,6 +243,13 @@ and queues it in `delayed_garbage`; it does not set the newer `gc_destroyed` fla
 checked by `QDELETED`. Fixture disposal assertions must reflect that actual
 queue and must not claim that production garbage collection has drained it.
 
+<!-- 2026-10-11: component work tools -->
+`scripts/check-component-tools.py` compiles production head/handle assembly and
+material stats with isolated startup, then checks rejection, bounded properties,
+wear/provenance and current-format native entry save/load. Use BYOND 516.1681.
+The legacy `QDELETED` macro reads `gc_destroyed`, while legacy qdel uses
+`gcDestroyed`/null locations; ingredient accessibility must also be validated.
+
 <!-- 2026-10-11: chemistry verification -->
 Chemical recipe IDs do not register reagents: each product needs a matching
 `/datum/reagent` ID or mixing can consume inputs without producing the result.
@@ -325,3 +332,6 @@ The generator validates emitted links and search anchors; search covers document
 
 <!-- 2026-10-11: documentation-only CI selection -->
 The always-running ci-selection.yml selects compilation conservatively and skips it for documentation-only changes. Extensive runtime suites require CI workflow_dispatch with extensive_regressions enabled; train tests are workflow_dispatch-only. Skips do not prove gameplay; see docs/ci-selection.md.
+
+<!-- 2026-10-11: plant lifecycle -->
+Dead/static crops stop growth at entry and pending-wait wake; water death keeps its specific description, and age expiration marks the crop dead before stopping. `tests/plant_lifecycle/run.ps1 -ByondBin <516.1681-bin>` executes production growth/water/soil procs with accelerated waits; baseline callback counts are not whole-game performance evidence.
