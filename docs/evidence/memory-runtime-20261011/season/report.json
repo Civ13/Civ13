@@ -1,0 +1,293 @@
+{
+  "artifacts": [
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-0",
+      "kind": "build-log",
+      "path": "build.log",
+      "sha256": "a7d7d15e5eade850ec53c29fcd5285896a40b23516541972b8d322b4feaaa767",
+      "size_bytes": 258
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-1",
+      "kind": "log",
+      "path": "civ13.log",
+      "sha256": "99796067f0ce4a3e7dc3cd6d8dfb9c6bd40cfe62914a102b22b52164771df14e",
+      "size_bytes": 188
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-2",
+      "kind": "log",
+      "path": "fixture.log",
+      "sha256": "f48b3a5efa14982c39f9958e8d2c349572e4ca957e5b48abb06643bd8052cee9",
+      "size_bytes": 207
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-3",
+      "kind": "other",
+      "path": "provenance.json",
+      "sha256": "500972dbae704d27cbf0bd8d8e1327ccbda4e289190b93843b19a6100d85c6ef",
+      "size_bytes": 277
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-4",
+      "kind": "other",
+      "path": "query-57ad361dca99420d916895dea6ccf489.json",
+      "sha256": "987cec20552ec04356f4970e620d7f1f02944f554316e95bd46dab21ae5fba8d",
+      "size_bytes": 149
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-5",
+      "kind": "other",
+      "path": "query-5d0984ea6a5649a79a6da39b5a658593.json",
+      "sha256": "987cec20552ec04356f4970e620d7f1f02944f554316e95bd46dab21ae5fba8d",
+      "size_bytes": 149
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-6",
+      "kind": "other",
+      "path": "query-89404958726e4e6a98c6f069976db145.json",
+      "sha256": "747fc551f2b86df1a5e519330eaa1a42a80aa955557cb3d88854f090a08d6fbc",
+      "size_bytes": 165
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-7",
+      "kind": "other",
+      "path": "query-9f45a47280624517b42d79205f9025bb.json",
+      "sha256": "5b1442e42297bd85935e4f6036abb2476d58880fede9893e1b36c7517cc86988",
+      "size_bytes": 167
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-8",
+      "kind": "other",
+      "path": "query-a72b4261cd0c4330abf4d26edd5b3c28.json",
+      "sha256": "2b45e980445365bae8c95025083111a4cf911be5be8fc535cc9354e60e34705f",
+      "size_bytes": 167
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-9",
+      "kind": "other",
+      "path": "query-c2b44437ffc54a218094335f7da2e208.json",
+      "sha256": "65f6aab53715c847ecd68a6ef08ef13c33c1e3935ed91a9f7a5975229f678b03",
+      "size_bytes": 160
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-10",
+      "kind": "other",
+      "path": "query-e0ec1cc3b63c4e2fb01316b4eee6ed09.json",
+      "sha256": "9273370bfe2146c6eeb2dbae321ecef030578885777c2ab37898bc124e893510",
+      "size_bytes": 167
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-11",
+      "kind": "other",
+      "path": "query-e6083ec71a43436096a83b423f159a9b.json",
+      "sha256": "a979ff4c3c58d8c5e575205dfa33fd5461d063f953c2bd62ab3983784eadb662",
+      "size_bytes": 128
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-12",
+      "kind": "other",
+      "path": "query-f771c5cce2794aac9c4e0387431f6417.json",
+      "sha256": "203124f726b106984d403105f0d90c2b52c23cbefd07e63542d1e10d8c29e6c8",
+      "size_bytes": 128
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-13",
+      "kind": "other",
+      "path": "query-fa030f17090547d296c4bcd2a387f5de.json",
+      "sha256": "0f57368d64aa9125d8bb971d84acff0ce441ed3b2b7c64cc8fc9647267c864d9",
+      "size_bytes": 167
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-14",
+      "kind": "log",
+      "path": "runtime.txt",
+      "sha256": "7c6769f0370fad4b1901c1034331806a1ab12d0da82bb7fbf6d64d9966facbeb",
+      "size_bytes": 1639
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-15",
+      "kind": "screenshot",
+      "path": "season-fall.jpg",
+      "sha256": "a00f6cfdefebcd9f3f50615ff1ffe56751193e81bbf3f889399afe3edcf95552",
+      "size_bytes": 256877
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-16",
+      "kind": "other",
+      "path": "season-frame-times.json",
+      "sha256": "80c7f73a6f55dea5d1b8299fc75d1bf8333d756345907e44043701444da79643",
+      "size_bytes": 380
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-17",
+      "kind": "video",
+      "path": "season-sampled-movement.mp4",
+      "sha256": "d2fab74ed8f0202f1872a63898fb5b844eb82f7f0915596220d58d3eb196f7ec",
+      "size_bytes": 584124
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-18",
+      "kind": "screenshot",
+      "path": "season-spring-return.jpg",
+      "sha256": "c88d1540b9767db16faa5318b09e1d43396c5ec3775a43c997209d7446282741",
+      "size_bytes": 204589
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-19",
+      "kind": "screenshot",
+      "path": "season-spring-thaw.jpg",
+      "sha256": "62ee58eb0affb2b574655386bbc404d4450116360868eda9da71fdd032a36099",
+      "size_bytes": 241181
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-20",
+      "kind": "screenshot",
+      "path": "season-spring.jpg",
+      "sha256": "c4af57357124e093f373bbcca2f78ef0269438efa306fb7a9744fb5c02c04689",
+      "size_bytes": 247117
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-21",
+      "kind": "screenshot",
+      "path": "season-summer.jpg",
+      "sha256": "af0e01e97b9207d782180af18ac9f6f605d74443d105d1805dfea2faa52d972e",
+      "size_bytes": 248709
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-22",
+      "kind": "screenshot",
+      "path": "season-winter.jpg",
+      "sha256": "3955172a267e59a56d03e8670c247f557d423f8932eec932875469389db5ad69",
+      "size_bytes": 227417
+    }
+  ],
+  "bundle_valid": true,
+  "checks": [
+    {
+      "description": "Full-game plus optional test adapter compiles",
+      "evidence": [
+        "artifact-0"
+      ],
+      "id": "build",
+      "notes": "0 errors, 0 warnings; production DME unchanged.",
+      "result": "passed"
+    },
+    {
+      "description": "Spring through Summer/Fall/Winter back to Spring with delayed thaw",
+      "evidence": [
+        "artifact-14",
+        "artifact-15",
+        "artifact-18",
+        "artifact-19",
+        "artifact-20",
+        "artifact-21",
+        "artifact-22"
+      ],
+      "id": "season-cycle",
+      "notes": "One forced local cycle; final capture after 300-second thaw shows grass restored.",
+      "result": "passed"
+    },
+    {
+      "description": "Nomad spawn, limited Winter movement and tree Examine in Spring",
+      "evidence": [
+        "artifact-14",
+        "artifact-15",
+        "artifact-18",
+        "artifact-19",
+        "artifact-20",
+        "artifact-21",
+        "artifact-22",
+        "artifact-17"
+      ],
+      "id": "client-interaction",
+      "notes": "Actor moved x1 to x2 during Winter. Unclothed actor suffered cold injuries; later keyboard movement did not change position. Tree Examine returned normally. No admin healing was used.",
+      "result": "passed"
+    },
+    {
+      "description": "Repeated completed full-game season cycles",
+      "evidence": [],
+      "id": "repeated-seasons",
+      "notes": "This graphical run exercised one cycle. Separate accelerated production-body fixture passed 20 cycles.",
+      "result": "not-run"
+    },
+    {
+      "description": "Repeated full-game baseline/peak/settled memory samples",
+      "evidence": [],
+      "id": "memory-samples",
+      "notes": "No phased full-game memory sampling was performed; short gameplay captures do not prove OOM remediation.",
+      "result": "not-run"
+    }
+  ],
+  "commit": "a7e2ce748b07a178a2b79059829b89bd038fa457",
+  "game": "Civ13",
+  "limitations": [
+    "One isolated forced cycle, not production or long-runtime OOM verification.",
+    "Naked actor suffered normal cold injuries; post-thaw free movement was not established in this run.",
+    "Winter snow obscured the actor; movement is supported by changed map view and logged coordinates.",
+    "Videos contain genuine sampled screenshots at 2 fps, not continuous video or a timing benchmark.",
+    "Public evidence excludes local paths and temporary test token; originals retained locally."
+  ],
+  "manifest_sha256": "c6222fa02683659f32eddea20d2dd3ae5cd2e94df60a9c80de903e0744538286",
+  "map": {
+    "dimensions": [
+      155,
+      225,
+      2
+    ],
+    "name": "Nomads (Temperate)",
+    "source": "maps/nomads/nomads.dmm"
+  },
+  "meaning": "Metadata, local file checksums, references, and supplied sample structure were checked. Game acceptance and external URL availability were not independently verified.",
+  "media": {
+    "reason": "Actual sampled Winter movement/weather frames encoded at 2 fps; original timestamps retained.",
+    "screenshot_required": true,
+    "video_required": true
+  },
+  "memory_observations": null,
+  "missing_required_media": [],
+  "run": {
+    "dirty": false,
+    "finished_utc": "2026-10-11T06:35:05.718Z",
+    "scope": "isolated-game",
+    "started_utc": "2026-10-11T06:26:37.3375541Z"
+  },
+  "runtime": {
+    "name": "BYOND",
+    "platform": "Windows",
+    "version": "516.1681"
+  },
+  "scenario": "season-memory",
+  "schema_version": 1,
+  "steps": [
+    "Check out a7e2ce748b07a178a2b79059829b89bd038fa457",
+    "Run tests/memory/start-gameplay-evidence.ps1 -ByondBin <516.1681-bin> -Scenario season -Port 16996; connect a local admin Dream Seeker",
+    "Run query-gameplay-evidence.ps1 with generated SessionJson and ByondBin for prepare, wait for playing, then join",
+    "Close Notes popup; capture Spring, then action run four times to reach Summer, Fall, Winter, Spring; capture each transition",
+    "In Winter use Right/Down keyboard inputs and capture sampled frames. Wait at least 300 seconds after Spring for delayed temperate thaw; examine a nearby tree",
+    "Stop exact task-owned server/client PIDs; preserve closed logs"
+  ]
+}

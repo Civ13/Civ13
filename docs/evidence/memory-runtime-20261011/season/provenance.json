@@ -1,0 +1,7 @@
+{
+  "commit": "a7e2ce748b07a178a2b79059829b89bd038fa457",
+  "scenario": "season",
+  "started_utc": "2026-10-11T06:26:37.3375541Z",
+  "binary_sha256": "82207B95556C5A016812921C1A76D4BA80CDBA734FFC0CC7C382BCEFD04E6164",
+  "scope": "isolated-game with opt-in local test adapter"
+}
