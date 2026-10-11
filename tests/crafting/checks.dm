@@ -15,6 +15,7 @@
 
 var/list/recipe_ci_errors = list()
 var/recipe_ci_count = 0
+var/recipe_ci_files = 0
 
 /proc/recipe_ci_fail(context, reason)
 	recipe_ci_errors += "[context]: [reason]"
@@ -72,6 +73,8 @@ var/recipe_ci_count = 0
 	for (var/filename in flist("config/crafting/"))
 		if (!findtext(filename, "material_recipes_"))
 			continue
+		recipe_ci_files++
+		var/file_rows = 0
 		var/faction = replacetext(replacetext(filename, "material_recipes_", ""), ".txt", "")
 		craftlist_lists[faction] = list()
 		var/line_number = 0
@@ -87,6 +90,7 @@ var/recipe_ci_count = 0
 			var/before = recipe_ci_errors.len
 			recipe_ci_row(row, context)
 			recipe_ci_count++
+			file_rows++
 			if (recipe_ci_errors.len != before)
 				continue
 			// Exercise actual production registration at requirements satisfied and age 0.
@@ -100,6 +104,10 @@ var/recipe_ci_count = 0
 					found = TRUE
 			if (!found)
 				recipe_ci_fail(context, "not registered with requirements and special modes enabled")
+		if (!file_rows)
+			recipe_ci_fail(filename, "no active recipes were enumerated")
+	if (!recipe_ci_files || !anvil_recipes.len)
+		recipe_ci_fail("catalog", "material files or anvil registry missing")
 	for (var/title in anvil_recipes)
 		var/list/row = anvil_recipes[title]
 		recipe_ci_count++

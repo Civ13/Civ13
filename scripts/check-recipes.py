@@ -6,6 +6,12 @@ import shutil
 import subprocess
 import tempfile
 
+
+def replace_once(source, old, new):
+    if source.count(old) != 1:
+        raise RuntimeError(f"Isolation include changed: {old}")
+    return source.replace(old, new)
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--report", type=Path)
@@ -31,9 +37,9 @@ def main():
             raise RuntimeError("Global-controller isolation marker changed")
         (build / "globals.dm").write_text(globals_source.replace(marker, marker + "\treturn\n"), encoding="utf-8")
         dme = (root / "civ13.dme").read_text(encoding="utf-8")
-        dme = dme.replace('#include "code\\controllers\\mc\\globals.dm"', f'#include "{build.as_posix()}/globals.dm"')
+        dme = replace_once(dme, '#include "code\\controllers\\mc\\globals.dm"', f'#include "{build.as_posix()}/globals.dm"')
         dme = re.sub(r'^#include ".*\.dmf"\s*$', '', dme, flags=re.M)
-        dme = dme.replace('#include "code\\world.dm"', f'#include "{build.as_posix()}/world.dm"')
+        dme = replace_once(dme, '#include "code\\world.dm"', f'#include "{build.as_posix()}/world.dm"')
         dme, maps = re.subn(r'^#include ".*\.dmm"\s*$', '', dme, flags=re.M)
         if not maps:
             raise RuntimeError("Expected to remove game maps")
