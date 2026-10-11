@@ -191,6 +191,14 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 
 ## Agent self-maintenance
 
+<!-- 2026-10-11: world-save verification -->
+- Persistence regressions are in `tests/world_save`; the focused fixture uses
+  the actual saver/loader with isolated adapters, and `run-game.ps1` exercises
+  real constructors in temporary storage. New saves use version-2 typed values
+  and sharded entries; retain legacy flat-entry reading. Never restore `loc`,
+  `pixloc`, or client session fields as ordinary variables. Linux DreamDaemon
+  `-safe` requires a relative log path inside the isolated working directory.
+
 This file is read by every agent at session start. If you discover something
 useful about the codebase that future agents should know, **update this file**.
 Good candidates for additions:
@@ -230,6 +238,10 @@ disabled and runs bounded reactions in temporary storage. CI also runs its
 wrong-feedstock negative control; this does not replace gameplay verification.
 Linux DreamDaemon safe mode rejects an absolute `-log` path. Use a relative
 log filename with the runtime working directory set to temporary storage.
+<!-- 2026-10-11: gasoline precursor regression -->
+`tests/chemistry/run.py --probe fuel` verifies precursor registration and real
+beaker gasoline mixing; its negative control removes octane registration in a
+generated copy. Fuel ratios and engine behavior are separate contracts.
 
 <!-- 2026-10-11: Civ13 MCP integration -->
 `tools/mcp/README.md` documents the bounded stdio server and Codex configuration.

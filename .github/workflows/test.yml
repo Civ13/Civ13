@@ -45,12 +45,19 @@ jobs:
         run: sudo bash ./scripts/travis_pre_byond.sh
         shell: bash
 
+      - name: Offline world-save round-trip regression
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          bash tests/world_save/run.sh
+        shell: bash
       - name: Verify isolated chemistry reactions and negative control
         shell: bash
         run: |
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
           /usr/bin/python3 tests/chemistry/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
           /usr/bin/python3 tests/chemistry/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control
+          /usr/bin/python3 tests/chemistry/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe fuel
+          /usr/bin/python3 tests/chemistry/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe fuel --negative-control
 
       - name: Run isolated power accounting regressions
         shell: bash
