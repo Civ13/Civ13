@@ -5,6 +5,14 @@
     set category = "Debug"
     if (!holder || (address && address != "127.0.0.1" && address != "::1"))
         return
+    // Allow deterministic CLI entry from the local lobby using the real job spawn path.
+    if (istype(mob, /mob/new_player))
+        if (!ticker || ticker.current_state != GAME_STATE_PLAYING || !ticker.players_can_join)
+            to_chat(src, "FAIL local water test: wait for the round to start")
+            return
+        var/mob/new_player/player = mob
+        player.close_spawn_windows()
+        player.AttemptLateSpawn("Nomad")
     var/turf/floor/target
     for (var/turf/floor/F in orange(1, mob))
         if (!istype(F, /turf/floor/beach/water) && !F.density && !locate(/obj/structure) in F)
