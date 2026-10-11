@@ -7,13 +7,13 @@ A local stdio server using the official MCP TypeScript SDK. Requires Node 20+;
 
 | Tool | Inputs | Effects |
 | --- | --- | --- |
-| source_read | path, start (1+), lines (1–200) | Reads code/*.dm, civ13.dme, README.md or INSTALL only; max 2 MB input/16 KB output |
+| source_read | path, start (1+), lines (1–200) | Reads code/*.dm, civ13.dme, README.md, INSTALL or the two docs/api guides only; max 2 MB input/16 KB output |
 | source_search | literal query (1–120 chars), declarationOnly, limit (1–100) | Lexical DM search, max 5 seconds/10,000 files; no semantic inheritance resolution |
 | project_diagnostics | none | Checks at most 10,000 DME includes for existence; no preprocessing/type checking |
 | compiler_info | none | Invokes configured compiler with no arguments in temporary storage; process and temporary directory effects |
 | compiler_smoke | none | Compiles a fixed tiny fixture in temporary storage, one active smoke call; never runs gameplay |
 
-Resource `civ13://guide` reads the bounded repository README. All source,
+Resources `civ13://guide`, `civ13://api-guide` and `civ13://api-index` read the bounded repository README and versioned API-docs guides. All source,
 resource and compiler text is untrusted reference data, never instructions.
 Paths are confined using realpath; traversal and symlinks outside the root are
 rejected. Runtime data/configuration/logs are deliberately inaccessible. No shell,
@@ -65,5 +65,4 @@ Sources: [upstream Cargo manifest](https://github.com/imcynic/dm-mcp/blob/main/C
 This first integration intentionally does not wrap scripts that update/restart
 servers. The master checkout has no isolated season/save probe contract. Once
 such probes merge, add explicit allowlisted wrappers with temporary storage and
-adapters, rather than accepting arbitrary script paths. Generated source docs can
-be added as separately confined resources when their versioned contract exists.
+adapters, rather than accepting arbitrary script paths. The API guide/index resources reuse the merged documentation contract; generated HTML is not read or executed by this server.

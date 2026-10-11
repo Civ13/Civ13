@@ -18,6 +18,8 @@ test('real stdio handshake, discovery, bounded calls and error isolation', async
   const search = await call('source_search',{query:'/mob',limit:2}); assert.equal(search.structuredContent.matches.length,2);
   assert.equal((await call('project_diagnostics')).isError,undefined);
   assert.equal((await client.readResource({uri:'civ13://guide'})).contents.length,1);
+  assert.equal((await client.readResource({uri:'civ13://api-guide'})).contents.length,1);
+  assert.equal((await client.readResource({uri:'civ13://api-index'})).contents.length,1);
   if(process.env.CIV13_DM_COMPILER) {
    const smoke = await call('compiler_smoke'); assert.equal(smoke.structuredContent.exitCode,0); assert.match(smoke.structuredContent.output,/0 errors/);
    const info = await call('compiler_info'); assert.match(info.structuredContent.output,/Dream Maker|DM compiler|BYOND/i);
