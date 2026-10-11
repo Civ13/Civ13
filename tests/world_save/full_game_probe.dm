@@ -14,6 +14,7 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 		world.name = "Civ13 LOCAL full-game world-save probe"
 		text2file(json_encode(list("commit" = world.params["tested_commit"], "map_id" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "probe_metadata.json")
 		var/turf/T = locate(20,20,1)
+		var/saved_turf_type = T.type
 		var/obj/structure/closet/crate/C = new(T)
 		C.name = "world-save regression crate"
 		var/obj/item/weapon/material/kitchen/utensil/knife/K = new(C)
@@ -21,6 +22,7 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 		var/obj/map_metadata/original_map = map
 		if(!ticker.savemap())
 			throw EXCEPTION("Full-game export failed: [map_storage.last_error]")
+		T.ChangeTurf(saved_turf_type == /turf/floor/dirt ? /turf/floor/grass : /turf/floor/dirt, FALSE, FALSE)
 		if(!ticker.loadmap())
 			throw EXCEPTION("Full-game import failed: [map_storage.last_error]")
 		sleep(20)
@@ -34,7 +36,7 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 		for(var/obj/item/weapon/material/kitchen/utensil/knife/candidate in C)
 			if(candidate.name == "world-save regression knife")
 				K = candidate
-		if(!K || map != original_map || !locate(world.maxx,world.maxy,world.maxz))
+		if(!K || map != original_map || !locate(world.maxx,world.maxy,world.maxz) || locate(20,20,1):type != saved_turf_type)
 			throw EXCEPTION("Nested item, metadata identity or boundary turf lost")
 		text2file("PASS: full game constructors, crate, nested knife, metadata, boundary turf", "full_game_result.txt")
 		world.log << "PASS: full-game world-save probe"

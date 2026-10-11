@@ -59,6 +59,9 @@ world
 		C.items = list("second level" = 271)
 		check(map_storage.Save_World(), "export failed")
 		check(map_storage.validate_world_save(), "valid export rejected")
+		// Force import to allocate a different turf, rather than only rehydrate
+		// the already matching type in the live fixture.
+		edge.ChangeTurf(/turf/test, FALSE, FALSE)
 		map_storage.ClearMap()
 		check(map_storage.Load_World(), "import failed")
 		check(istype(locate(world.maxx,world.maxy,2), /turf/test/edge), "edge turf lost")
