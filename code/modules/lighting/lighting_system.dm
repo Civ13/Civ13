@@ -76,9 +76,11 @@ var/created_lighting_corners_and_overlays = FALSE
 	processes.time_of_day_change.announce = announce
 	processes.time_of_day_change.fire(TRUE)
 
-	if (_time_of_day == "Night" && map && map.ID == MAP_NOMADS_WASTELAND_2)
+// Run map effects for the completed request, after a queued target has settled.
+/proc/apply_time_of_day_effects(target)
+	if (target == "Night" && map && map.ID == MAP_NOMADS_WASTELAND_2)
 		var/obj/map_metadata/nomads/wasteland/two/map2 = map
 		map2.zombies(TRUE)
-	if (_time_of_day == "Morning" && map && map.ID == MAP_NOMADS_WASTELAND_2)
+	if (target == "Morning" && map && map.ID == MAP_NOMADS_WASTELAND_2)
 		var/obj/map_metadata/nomads/wasteland/two/map2 = map
 		map2.zombies(FALSE)
