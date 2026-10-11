@@ -46,6 +46,11 @@
     spawn(20)
         if (!holder || (address && address != "127.0.0.1" && address != "::1"))
             return
+        // Bound local evidence setup using the same fields as the Start Now admin verb.
+        if (ticker && ticker.current_state == GAME_STATE_PREGAME)
+            round_progressing = TRUE
+            ticker.pregame_timeleft = 1
+            ticker.admin_started = TRUE
         var/waits = 0
         while ((!ticker || ticker.current_state != GAME_STATE_PLAYING || !ticker.players_can_join) && waits++ < 120)
             sleep(10)
