@@ -75,6 +75,14 @@
 		del(herbs)
 		del(H)
 	var/mob/living/human/H = survival_patient("plague")
+	H.ingested.add_reagent("penicillin", 2)
+	for(var/tick in 1 to 181)
+		H.nutrition = 500
+		H.bodytemperature = H.species.body_temperature
+		H.Life()
+	survival_assert(!H.disease && H.stat != DEAD, "actual human Life ordering completes oral medicine course")
+	del(H)
+	H = survival_patient("plague")
 	H.ingested.add_reagent("penicillin", 0.5)
 	for(var/tick in 1 to 80)
 		survival_tick(H)
