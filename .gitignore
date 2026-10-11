@@ -42,3 +42,6 @@ webclient/dist/
 webclient/package-lock.json
 webclient/config.json
 TODO.md
+
+# Generated season evidence belongs in direct PR attachments.
+/docs/evidence/season-memory/
