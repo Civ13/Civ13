@@ -69,6 +69,55 @@
 	var/sharpened = FALSE
 
 	var/ants = FALSE
+	var/tmp/assembling_axe = FALSE
+
+/obj/item/weapon/branch/persistence_runtime_var(key)
+	if (key == "assembling_axe")
+		return TRUE
+	return ..()
+
+/obj/item/weapon/branch/proc/axe_binding(mob/user)
+	var/turf/site = get_turf(user)
+	if (!site)
+		return
+	for (var/obj/item/stack/S in user.contents + site.contents)
+		if (!QDELETED(S) && S.amount >= 1 && (istype(S, /obj/item/stack/sinew) || istype(S, /obj/item/stack/material/rope)))
+			return S
+
+/obj/item/weapon/branch/proc/axe_parts_valid(mob/user, obj/item/weapon/flint/head, obj/item/stack/binding)
+	return !QDELETED(src) && !QDELETED(user) && !QDELETED(head) && !QDELETED(binding) && sharpened && head.sharpened && user.stat == CONSCIOUS && loc == user && head.loc == user && binding.amount >= 1 && (binding.loc == user || binding.loc == get_turf(user)) && (istype(binding, /obj/item/stack/sinew) || istype(binding, /obj/item/stack/material/rope))
+
+/obj/item/weapon/branch/proc/axe_assembly_wait(mob/user)
+	return do_after(user, 100, src)
+
+/obj/item/weapon/branch/proc/axe_actor_connected(mob/user)
+	return user && user.client
+
+/obj/item/weapon/branch/proc/assemble_flint_axe(mob/user, obj/item/weapon/flint/head)
+	if (assembling_axe || !axe_actor_connected(user))
+		return
+	var/obj/item/stack/binding = axe_binding(user)
+	if (!binding)
+		to_chat(user, SPAN_WARNING("You need one portion of sinew or rope in your inventory or on the ground beneath you to bind the axe head."))
+		return
+	if (!axe_parts_valid(user, head, binding))
+		return
+	assembling_axe = TRUE
+	to_chat(user, SPAN_NOTICE("You start binding the flint head to the stick..."))
+	var/completed = axe_assembly_wait(user)
+	if (QDELETED(src))
+		return
+	assembling_axe = FALSE
+	if (!completed || !axe_actor_connected(user) || !axe_parts_valid(user, head, binding))
+		return
+	if (!binding.use(1))
+		return
+	// Invalidate the reusable head before creating the completed tool.
+	head.sharpened = FALSE
+	qdel(head)
+	new /obj/item/weapon/material/hatchet/tribal/flint(get_turf(user))
+	to_chat(user, SPAN_NOTICE("You finish making the bound flint axe."))
+	qdel(src)
 
 /obj/item/weapon/branch/attack_self(mob/living/human/user as mob)
 	if (ants)
@@ -106,14 +155,8 @@
 	else if (sharpened && istype(W, /obj/item/weapon/flint))
 		var/obj/item/weapon/flint/F = W
 		if (F.sharpened)
-			to_chat(user, "You start attaching the flint to the stick...")
-			if (do_after(user, 100, src))
-				if (src && F && F.sharpened)
-					to_chat(user, "You finish making the flint axe.")
-					new/obj/item/weapon/material/hatchet/tribal/flint(user.loc)
-					qdel(F)
-					qdel(src)
-					return
+			assemble_flint_axe(user, F)
+			return
 	else
 		..()
 
