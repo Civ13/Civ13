@@ -5,9 +5,6 @@ on:
       base:
         type: string
         default: ''
-      head:
-        type: string
-        required: true
     outputs:
       game:
         value: ${{ jobs.changes.outputs.game }}
@@ -21,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: ${{ inputs.head }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
       - name: Selection regression tests
@@ -29,7 +26,7 @@ jobs:
       - id: select
         env:
           BASE_REF: ${{ inputs.base }}
-          HEAD_REF: ${{ inputs.head }}
+          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python3 scripts/select-ci.py --base "$BASE_REF" --head "$HEAD_REF" --output "$GITHUB_OUTPUT"
       - name: Validate all workflow syntax
         run: |

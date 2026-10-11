@@ -13,6 +13,9 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 env:
   BYOND_MAJOR: "516"
   BYOND_MINOR: "1681"
@@ -23,7 +26,6 @@ jobs:
     uses: ./.github/workflows/ci-selection.yml
     with:
       base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
-      head: ${{ github.event.pull_request.head.sha || github.sha }}
   evidence-checker:
     runs-on: ubuntu-latest
     steps:
