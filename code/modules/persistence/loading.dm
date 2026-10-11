@@ -260,6 +260,10 @@
 				for(var/shard in shards)
 					F.cd = "/entries/[shard]"
 					entries += F.dir.Copy()
+			var/list/entry_set = list()
+			for(var/ref in entries)
+				entry_set["[ref]"] = TRUE
+				TICK_CHECK
 			for(var/ref in entries)
 				TICK_CHECK
 				F.cd = entry_path(F, ref)
@@ -274,19 +278,19 @@
 						continue
 					if(field == "content")
 						for(var/content_ref in params2list(value))
-							if(!(content_ref in entries))
+							if(!entry_set["[content_ref]"])
 								throw EXCEPTION("Missing content entry [content_ref] on z=[z]")
 							var/content_type = F["[entry_path(F, content_ref)]/type"]
 							if(!ispath(content_type, /atom/movable))
 								throw EXCEPTION("Non-movable entry in saved contents on z=[z]")
 					else if(version == 2)
-						validate_saved_value(F, value, entries, validated_lists)
+						validate_saved_value(F, value, entry_set, validated_lists)
 					else if(istext(value) && findtext(value, "**entry") == 1)
-						if(!(copytext(value, 8) in entries))
+						if(!entry_set[copytext(value, 8)])
 							throw EXCEPTION("Missing legacy referenced entry on z=[z]")
 					else if(istext(value) && findtext(value, "**list") == 1)
 						for(var/item in params2list(copytext(value, 7)))
-							if(findtext(item, "**entry") == 1 && !(copytext(item, 8) in entries))
+							if(findtext(item, "**entry") == 1 && !entry_set[copytext(item, 8)])
 								throw EXCEPTION("Missing legacy list entry on z=[z]")
 		return TRUE
 	catch(var/exception/e)
@@ -311,7 +315,7 @@
 		if("value")
 			return TRUE
 		if("entry")
-			if(value["ref"] && !("[value["ref"]]" in entries))
+			if(value["ref"] && !entries["[value["ref"]]"])
 				throw EXCEPTION("Missing saved referenced entry [value["ref"]]")
 			return TRUE
 		if("turf")

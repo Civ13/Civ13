@@ -79,11 +79,13 @@ Optional webhook and Tor hooks are explicitly disabled. The probe uses real
 game startup, constructors, turf replacement and deletion scheduling, exports
 the selected map, imports it, and verifies a named crate with a nested knife,
 metadata identity and a boundary turf. The result is in `full_game_result.txt`;
-game exceptions are in `data/logs/runtime/`. `-Visual` keeps the world running
+game exceptions are in `data/logs/runtime/`. The non-visual probe defaults to a
+360-second timeout (`-TimeoutSeconds` overrides it), stops only its own launched
+daemon on timeout, and retains diagnostics. `-Visual` keeps the world running
 after the test for local Dream Seeker inspection and runtime capture.
 
 `inspect.dme` is a standalone read-only entry inspector. Compile it and copy its
 binary into isolated save storage, then run with `-params
-'file=map_saves/2.sav&ref=20042'`. It writes `entry_inspection.txt` and never
+'file=map_saves/2.sav&ref=20042'`. It logs only the requested entry and never
 instantiates saved objects. Do not publish exported entries containing embedded
 resources as diagnostic log excerpts.

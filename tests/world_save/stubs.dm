@@ -3,6 +3,12 @@ var/TimeOfGame = 0
 var/obj/map_metadata/map
 var/list/errors = list()
 var/delete_failure_path = null
+var/list/mutate_on_tick = null
+/proc/fixture_tick_check()
+	if(mutate_on_tick)
+		mutate_on_tick.Cut()
+		mutate_on_tick = null
+	return world.tick_usage > 80 ? stoplag() : 0
 /proc/delete_file_adapter(path)
 	if("[path]" == delete_failure_path)
 		return 0

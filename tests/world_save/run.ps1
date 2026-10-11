@@ -17,8 +17,13 @@ try {
     New-Item -ItemType Directory -Path $testRun | Out-Null
     Copy-Item -LiteralPath 'tests/world_save/roundtrip.dmb' -Destination $testRun
     Copy-Item -LiteralPath 'tests/world_save/roundtrip.rsc' -Destination $testRun
-    $parameters = if ($Large) { 'large=1' } else { '' }
-    & $daemon (Join-Path $testRun 'roundtrip.dmb') -invisible -safe -params $parameters -log (Join-Path $testRun 'runtime.log')
+    Push-Location -LiteralPath $testRun
+    try {
+        $daemonArgs = @('roundtrip.dmb', '-invisible', '-safe', '-log', 'runtime.log')
+        if ($Large) { $daemonArgs += @('-params', 'large=1') }
+        & $daemon @daemonArgs
+        if ($LASTEXITCODE -ne 0) { throw 'Regression daemon failed' }
+    } finally { Pop-Location }
     Get-Content -LiteralPath (Join-Path $testRun 'runtime.log')
     if ((Get-Content -LiteralPath (Join-Path $testRun 'result.txt') -Raw).Trim() -ne 'PASS') {
         throw 'Regression world failed'

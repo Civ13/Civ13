@@ -8,6 +8,5 @@ world
 	var/path = "/entries/[ref]"
 	if(F["/format_version"] == 2)
 		path = "/entries/[round((ref-1)/512)]/[ref]"
-	F.ExportText(path, "entry_inspection.txt")
-	world.log << file2text("entry_inspection.txt")
+	world.log << F.ExportText(path)
 	del(world)

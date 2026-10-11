@@ -4,9 +4,9 @@ root=$(cd "$(dirname "$0")/../.." && pwd)
 compiler=${DREAMMAKER:-DreamMaker}
 daemon=${DREAMDAEMON:-DreamDaemon}
 cd "$root"
-"$compiler" -max_errors 0 tests/world_save/roundtrip.dme | tee /tmp/civ13-world-save-compile.log
-grep -q '0 errors, 0 warnings' /tmp/civ13-world-save-compile.log
 run=$(mktemp -d -t civ13-world-save.XXXXXXXX)
+"$compiler" -max_errors 0 tests/world_save/roundtrip.dme | tee "$run/compile.log"
+grep -q '0 errors, 0 warnings' "$run/compile.log"
 cp tests/world_save/roundtrip.dmb tests/world_save/roundtrip.rsc "$run/"
 cd "$run"
 "$daemon" roundtrip.dmb -invisible -safe -log runtime.log -params "${1:-}"

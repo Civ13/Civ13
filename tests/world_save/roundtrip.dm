@@ -32,6 +32,7 @@ world
 /world/New()
 	..()
 	try
+		check_save_identity_and_snapshot()
 		if(world.params["large"])
 			world.maxx = 500
 			world.maxy = 500
@@ -58,6 +59,7 @@ world
 		C.number = 314
 		C.items = list("second level" = 271)
 		check(map_storage.Save_World(), "export failed")
+		check(!map_storage.saving_reference_pins.len && !map_storage.saving_list_pins.len, "save pins retained after completion")
 		check(map_storage.validate_world_save(), "valid export rejected")
 		// Force import to allocate a different turf, rather than only rehydrate
 		// the already matching type in the live fixture.
@@ -105,6 +107,7 @@ world
 			var/datum/controller/gameticker/failed_export_ticker = new
 			check(!failed_export_ticker.savemap(), "cross-level object silently duplicated")
 			check(!fexists("map_saves/save_complete.txt") && !persistence_save_in_progress, "failed export retained completion marker or lock")
+			check(!map_storage.saving_reference_pins.len && !map_storage.saving_list_pins.len, "failed export retained save pins")
 			check(fexists("map_backups/save_complete.txt"), "failed export lost completed backup")
 			A.other_z = null
 			check(map_storage.Save_World(), "recovery export failed")
@@ -161,6 +164,27 @@ world
 			F["/entries/[ref]/number"] << 88
 			F["/entries/[ref]/items"] << "**emptylist"
 			F["/entries/[ref]/pixloc"] << null
+
+/proc/check_save_identity_and_snapshot()
+	var/savefile/F = new
+	F["/format_version"] << 2
+	var/list/live = list("first", "second")
+	mutate_on_tick = live
+	var/encoded = map_storage.encode_saved_value(F, live)
+	var/list/restored = map_storage.decode_saved_value(F, encoded)
+	check(!live.len && restored.len == 2 && restored[1] == "first" && restored[2] == "second", "list changed while encoder yielded")
+	map_storage.clear_bookkeeping()
+	var/datum/test/original = new
+	var/old_id = map_storage.BuildVarDirectory(F, original)
+	qdel(original)
+	var/datum/test/replacement = new
+	// Simulate reuse of an old raw ref slot without depending on allocator timing.
+	map_storage.saving_references["\ref[replacement]"] = old_id
+	var/new_id = map_storage.BuildVarDirectory(F, replacement)
+	check(new_id != old_id && map_storage.saving_reference_pins[new_id] == replacement, "reused ref assigned an old save identity")
+	map_storage.clear_bookkeeping()
+	check(!map_storage.saving_reference_pins.len && !map_storage.saving_list_pins.len, "save pins retained after cleanup")
+	qdel(replacement)
 
 /client/New()
 	..()

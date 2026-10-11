@@ -95,6 +95,8 @@ map_storage
 		list/found_types = list()
 		list/saved_turfs = list()
 		list/saving_lists = list()
+		list/saving_reference_pins = list()
+		list/saving_list_pins = list()
 		list/loaded_lists = list()
 		var/saving_z = 0
 		var/last_error = null
@@ -117,6 +119,8 @@ map_storage
 	found_types = list()
 	all_loaded = list()
 	saving_lists = list()
+	saving_reference_pins = list()
+	saving_list_pins = list()
 	loaded_lists = list()
 	saved_turfs = list()
 

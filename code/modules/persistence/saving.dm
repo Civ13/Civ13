@@ -7,6 +7,7 @@
 // You can also specify a name and password for the map, along with any extra
 // variables (in params format) that you want saved along with the map file.
 /map_storage/proc/Save_World()
+	clear_bookkeeping()
 	// ***** MAP SECTION *****
 	var/backup_dir = "map_backups/"
 	// Back up the whole previous completed generation before overwriting any
@@ -37,6 +38,8 @@
 	for(var/A = 1, A <= world.maxz, A++)
 		saving_z = A
 		saving_lists = list()
+		saving_reference_pins = list()
+		saving_list_pins = list()
 		saving_references = list()
 		existing_references = list()
 		found_types = list()
@@ -79,9 +82,10 @@
 			throw EXCEPTION("Cross-level object reference cannot be represented in per-level save files: [A.type]")
 	var/ind = saving_references["\ref[A]"]
 	var/ref = 0
-	if(ind)
+	if(ind && saving_reference_pins[ind] == A)
 		return ind
-	ref = saving_references.len + 1
+	ref = saving_reference_pins.len + 1
+	saving_reference_pins += A
 	saving_references["\ref[A]"] = ref
 	A.before_save()
 	savefile.cd = entry_path(savefile, ref)
@@ -143,15 +147,17 @@
 	if(islist(value))
 		var/list/L = value
 		var/id = saving_lists["\ref[L]"]
-		if(!id)
-			id = saving_lists.len + 1
+		if(!id || saving_list_pins[id] != L)
+			id = saving_list_pins.len + 1
+			saving_list_pins += list(L)
 			saving_lists["\ref[L]"] = id
-			F["/lists/[id]/length"] << L.len
-			for(var/i = 1, i <= L.len, i++)
+			var/list/snapshot = L.Copy()
+			F["/lists/[id]/length"] << snapshot.len
+			for(var/i = 1, i <= snapshot.len, i++)
 				TICK_CHECK
-				var/key = L[i]
+				var/key = snapshot[i]
 				var/encoded_key = encode_saved_value(F, key)
-				var/encoded_value = encode_saved_value(F, (isnum(key) || isnull(key)) ? null : L[key])
+				var/encoded_value = encode_saved_value(F, (isnum(key) || isnull(key)) ? null : snapshot[key])
 				F["/lists/[id]/[i]/key"] << encoded_key
 				F["/lists/[id]/[i]/value"] << encoded_value
 		return list("kind" = "list", "ref" = id)

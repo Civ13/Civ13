@@ -1,6 +1,6 @@
 #define TRUE 1
 #define FALSE 0
-#define TICK_CHECK (world.tick_usage > 80 ? stoplag() : 0)
+#define TICK_CHECK fixture_tick_check()
 #define TICK_LIMIT_TO_RUN 100
 #define EXCEPTION(message) new /exception(message)
 #define FILE_DIR "../.."
