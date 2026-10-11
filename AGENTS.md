@@ -237,6 +237,13 @@ zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
 ## Local MCP tooling
 
+<!-- 2026-10-11: irrigation propagation -->
+Irrigation propagates through cardinally connected channels with temporary local
+lists. Ordinary floors and filled-in channels are not water sources; salt reaches
+already-wet channels. Source removal does not drain existing channel water.
+`tests/irrigation/run.ps1 -ByondBin <516.1681-bin>` checks production procedures,
+including the pre-fix baseline; it does not prove map or construction acceptance.
+
 <!-- 2026-10-11: isolated legacy garbage queue -->
 When normal startup is disabled, atom `qdel` removes the atom from its location
 and queues it in `delayed_garbage`; it does not set the newer `gc_destroyed` flag
@@ -303,6 +310,14 @@ control. Its accelerated iterations are nominal one-second Life calls, not
 elapsed gameplay. `cold_wetness` is a durable bounded 0-1 scalar, without timers
 or retained references. Ordinary uniforms have a 240 K cold rating; overlapping
 layers help but insulation caps at 90%, and hypothermia still harms covered mobs.
+
+<!-- 2026-10-11: medicine regression isolation -->
+`tests/survival/run.py` checks production disease courses, oral metabolism,
+ingredient acquisition and timed fermentation/distillation in temporary storage.
+Its fixture materializes the global-controller `vars` name list before union:
+BYOND 516.1681 otherwise logs Bad ref during initialization on the historical
+baseline too. Runtime errors/engine diagnostics invalidate evidence. Direct
+`del()` of live test atoms triggers the production GC error; use `qdel()`.
 
 <!-- 2026-10-11: trace resource extraction -->
 `tests/resource_extraction/run.ps1` compiles production extraction types with
