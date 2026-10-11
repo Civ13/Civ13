@@ -99,7 +99,7 @@ Suggested prompt:
 
 ## Prepared GitHub event route
 
-Install these files on the repository's default branch. For Civ13 that is `master`.
+The installed listener workflows are manual-smoke-only: they register no issue, review, or workflow_run events. A false job-level enable flag cannot prevent GitHub's earlier maintainer-approval gate, so dormant listeners must not subscribe automatically. GitHub run 38146518916 demonstrated this pre-job approval behavior with zero jobs and no model activation.
 
 | Setting | Purpose |
 | --- | --- |
@@ -113,7 +113,7 @@ Configure a project spend limit before enabling public-author intake. One model
 run is bounded by a 15-minute job timeout and at most 90 patch entries / 60,000
 patch characters, but timeout is not a dollar budget. No paid live test has run.
 
-Coverage:
+Prepared coverage after explicit activation:
 
 - `issue_comment.created/edited`: issue comments and PR conversation comments.
 - `pull_request_review_comment.created/edited`: inline comments and replies.
@@ -158,3 +158,7 @@ Official references: [Codex Action](https://learn.chatgpt.com/docs/github-action
 [GitHub workflow_run security](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_run).
 
 Configuration smoke: gh workflow run comment-review.yml --ref BRANCH runs GitHub's reusable-workflow validation while always skipping inference/publication, even when the enable variable is true. No key or model call is needed. The local workflow contract regression guards the caller/publisher ceiling and model read permissions.
+
+### Explicit future activation
+
+When credential setup and API spending are separately authorized, submit a reviewed change applying the on mappings in active-events.example.json to the two named listener workflows on the default branch. Keep workflow_dispatch and both manual-dispatch skip guards. Run offline contracts and the no-model configuration smokes before merging; only then configure the approved key/enable variable. Setting a variable or enabling a workflow alone does not install these dormant automatic subscriptions. Returning to dormancy means restoring workflow_dispatch-only mappings, not just setting the job flag false. Do not relax GitHub's fork approval policy or approve untrusted runs to silence historical approval requests. Existing action_required runs are historical pre-job requests; no approval is needed while the route is dormant. Local polling and existing receipts are independent, and this configuration change must not resume paused polling.

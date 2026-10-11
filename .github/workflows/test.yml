@@ -63,3 +63,10 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           pwsh -NoProfile -File scripts/test-power.ps1 -ByondBin "$PWD/BYOND/byond/bin"
           bash scripts/check-power-gameplay.sh
+
+      - name: Run constructed vehicle movement regressions
+        shell: bash
+        run: |
+          source ./BYOND/byond/bin/byondsetup
+          pwsh -NoProfile -File ./tests/boat_movement/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
+          pwsh -NoProfile -File ./tests/boat_movement/run-game.ps1 -ByondBin "$PWD/BYOND/byond/bin"

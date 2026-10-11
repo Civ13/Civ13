@@ -257,6 +257,9 @@ currentflow are instantaneous capacity and reserved demand, not stored energy.
 
 <!-- 2026-10-11: GitHub comment review -->
 Tools under tools/comment-review provide an authenticated-gh local collector and a disabled-by-default Codex event workflow. Preserve ignored data/comment-review cursors/receipts across worktree cleanup; inspect current API data before acknowledging or posting. The local collector does not install a scheduler or consume API credentials. See tools/comment-review/README.md for event trust boundaries and activation settings.
+<!-- 2026-10-11: dormant trigger approval boundary -->
+Dormant comment-review listeners must be workflow_dispatch-only: GitHub can request approval before evaluating job guards. Keep automatic subscriptions in tools/comment-review/active-events.example.json until a separately reviewed activation.
+
 ## Train verification
 
 <!-- 2026-10-11: train collision investigation -->

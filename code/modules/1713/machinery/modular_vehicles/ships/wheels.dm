@@ -366,7 +366,7 @@
 		return FALSE
 	for(var/obj/effect/pseudovehicle/O in ship.components)
 		for(var/obj/structure/vehicleparts/frame/VP in O.loc)
-			if (!VP.axis.ship)
+			if (VP.axis != ship)
 				if (mob)
 					to_chat(mob, "<span class='warning'>You can't turn, something is in the way!</span>")
 				return FALSE
@@ -382,9 +382,9 @@
 			return FALSE
 */
 	if (newdir == "left")
-		ship.do_matrix(dir,TURN_LEFT(ship.dir), newdir)
+		return ship.do_matrix(ship.dir,TURN_LEFT(ship.dir), newdir, mob)
 	else
-		ship.do_matrix(dir,TURN_RIGHT(ship.dir), newdir)
+		return ship.do_matrix(ship.dir,TURN_RIGHT(ship.dir), newdir, mob)
 	return TRUE
 
 /obj/structure/vehicleparts/shipwheel/attack_hand(var/mob/attacker)
