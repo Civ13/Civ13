@@ -7,8 +7,8 @@
     if (request["memory-evidence"] != MEMORY_EVIDENCE_TOKEN)
         return ..()
     // Native world.Export callers include their listening port in addr.
-    var/list/caller = splittext(addr, ":")
-    if (addr && addr != "::1" && !(caller.len >= 1 && caller.len <= 2 && caller[1] == "127.0.0.1"))
+    var/list/evidence_address_parts = splittext(addr, ":")
+    if (addr && addr != "::1" && !(evidence_address_parts.len >= 1 && evidence_address_parts.len <= 2 && evidence_address_parts[1] == "127.0.0.1"))
         return "LOCAL ONLY"
     var/client/C
     for (var/client/local_client in clients)
