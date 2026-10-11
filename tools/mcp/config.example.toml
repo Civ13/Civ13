@@ -1,0 +1,6 @@
+[mcp_servers.civ13]
+command = 'C:\Program Files\nodejs\node.exe'
+args = ['D:\GitHub\Civ13\tools\mcp\server.mjs', 'D:\GitHub\Civ13']
+
+[mcp_servers.civ13.env]
+CIV13_DM_COMPILER = 'C:\Program Files (x86)\BYOND\bin\dm.exe'

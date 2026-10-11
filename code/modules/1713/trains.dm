@@ -232,6 +232,7 @@
 	var/list/transporting = list()
 	var/on = FALSE
 	var/obj/structure/trains/connected = null
+	var/tmp/moving_train = FALSE
 
 /obj/structure/trains/verb/hitch()
 	set category = null
@@ -247,17 +248,29 @@
 	for (var/obj/structure/trains/TR in get_step(src, dir))
 		if (TR.connected && TR.connected == src)
 			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-			to_chat(usr, "You unhitch \the [src] from \the [connected].")
-			connected = null
+			to_chat(usr, "You unhitch \the [src] from \the [TR].")
+			TR.connected = null
 			return TRUE
 		else if (!TR.connected)
-			if (dir == TR.dir || dir == OPPOSITE_DIR(TR.dir))
+			if ((dir == TR.dir || dir == OPPOSITE_DIR(TR.dir)) && can_connect_to(TR))
 				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 				to_chat(usr, "You hitch \the [src] to \the [TR].")
 				TR.connected = src
 				return TRUE
 	to_chat(usr, "There is no wagon to hitch \the [src] to.")
 	return FALSE
+
+// Connections point to the following wagon. Reject both a new cycle and an
+// already malformed chain before attaching it to another car.
+/obj/structure/trains/proc/can_connect_to(obj/structure/trains/leader)
+	var/list/seen = list(leader)
+	var/obj/structure/trains/car = src
+	while (car)
+		if (car in seen)
+			return FALSE
+		seen += car
+		car = car.connected
+	return TRUE
 
 /obj/structure/trains/proc/check_connections()
 	if (!connected)
@@ -268,6 +281,9 @@
 		connected = null
 		return FALSE
 /obj/structure/trains/Bumped(atom/AM)
+	// Train contact is handled by process_rail_movement, not a push cascade.
+	if (istype(AM, /obj/structure/trains) || moving_train || !AM || !AM.loc)
+		return FALSE
 	check_connections()
 	var/turf/tgt = get_step(src,AM.dir)
 	if (!tgt)
@@ -284,31 +300,23 @@
 		for (var/obj/structure/trains/TR in tgt)
 			return FALSE
 	if (rail_canmove(AM.dir))
-		src.Move(tgt)
-		return TRUE
+		return src.Move(tgt)
 /obj/structure/trains/Move(var/turf/newloc, var/fdir = dir)
+	if (moving_train || !isturf(loc) || !newloc)
+		return FALSE
 	check_connections()
 	if (buckled_mob && map.check_caribbean_block(buckled_mob, newloc))
 		return FALSE
-/*
-	var/turf/behind = get_step(src,OPPOSITE_DIR(dir))
-	var/turf/oldloc = loc
-	dir = fdir
-
-	for (var/obj/structure/rails/turn/TR in oldloc)
-		if (dir != TR.turn_dir && dir == TR.dir)
-			behind = get_step(src,OPPOSITE_DIR(TR.turn_dir))
-
-		else if (dir != TR.dir && dir == TR.turn_dir)
-			behind = get_step(src,OPPOSITE_DIR(TR.dir))
-
-	for (var/obj/structure/trains/T in behind)
-		T.Move(oldloc, dir)
-*/
 
 	var/turf/oldloc = loc
 
-	..(newloc)
+	moving_train = TRUE
+	var/moved = ..(newloc)
+	if (!src)
+		return FALSE
+	if (!moved || loc == oldloc || !isturf(loc))
+		moving_train = FALSE
+		return FALSE
 	dir = fdir
 	if (buckled_mob)
 		if (buckled_mob.buckled == src)
@@ -328,6 +336,7 @@
 			transporting -= O
 	for (var/obj/item/I in transporting)
 		I.update_light()
+	moving_train = FALSE
 	return TRUE
 
 /obj/structure/trains/proc/rail_movement()
@@ -441,7 +450,10 @@
 				L.adjustBruteLoss(100)
 				return FALSE
 		// ... and move this train
-		src.Move(tgtt, fdir)
+		if (!src.Move(tgtt, fdir))
+			automovement = FALSE
+			set_light(0)
+			return FALSE
 		set_light(2)
 		return TRUE
 	return FALSE

@@ -69,15 +69,18 @@
 	return
 
 /obj/structure/engine/proc/process_power_output()
+	for (var/obj/structure/cable/CB in connections)
+		CB.rebuild_supply()
 	var/powerused = 0
 	currentspeed = 0
 	if (!isemptylist(connections))
 		for (var/obj/C in connections)
 			if (istype(C, /obj/structure/cable))
 				var/obj/structure/cable/CBL = C
-				if (CBL.currentflow > 0)
-					powerused += CBL.currentflow
-					C.powered = TRUE
+				if (CBL.powerflow > 0)
+					// Split shared cable demand between the contributing engines.
+					powerused += min(CBL.currentflow, CBL.powerflow) * maxpower / CBL.powerflow
+				continue
 			if (C.powerneeded <= (maxpower - powerused))
 //				if (!istype(C, /obj/structure/vehicleparts/axis))
 				powerused += C.powerneeded
@@ -513,3 +516,26 @@
 				else
 					done = FALSE
 					return
+
+/obj/structure/engine/proc/disconnect_cables()
+	for (var/obj/structure/cable/CB in connections.Copy())
+		connections -= CB
+		CB.connections -= src
+		CB.rebuild_supply()
+
+/obj/structure/engine/Destroy()
+	on = FALSE
+	disconnect_cables()
+	return ..()
+
+/obj/structure/engine/Move()
+	var/atom/previous_location = loc
+	. = ..()
+	if (. && loc != previous_location)
+		disconnect_cables()
+
+/obj/structure/engine/forceMove(atom/destination, var/special_event)
+	var/atom/previous_location = loc
+	. = ..()
+	if (. && loc != previous_location)
+		disconnect_cables()

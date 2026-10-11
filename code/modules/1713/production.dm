@@ -2032,13 +2032,10 @@
 	if (!powersource || !powerneeded)
 		return FALSE
 	else
-		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
+		if (draw_cable_power())
 			if (!powered)
-				powersource.update_power(powerneeded,1)
 				powered = TRUE
-				powersource.currentflow += powerneeded
-				powersource.lastupdate2 = world.time
-				return TRUE
+			return TRUE
 		else
 			powered = FALSE
 			return

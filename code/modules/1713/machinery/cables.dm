@@ -46,13 +46,12 @@ By design, d1 is the smallest direction and d2 is the highest
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	crushable = FALSE
-	var/lastupdate = 0 //to prevent loops. Can only update once per decisecond. For turning on/off.
-	var/lastupdate2 = 0 //to prevent loops. Can only update once per decisecond. For power calculations.
 	var/cable_color = "red"
 	color = "#ff0000"
 	var/usesound = 'sound/items/Wirecutter.ogg'
 	var/powerflow = 0 //maximum powerflow in the network (total maxpower of all engines connected)
-	var/currentflow = 0 //corrent power used by all the nodes in the network (cant be > powerflow)
+	var/list/power_consumers = list() // consumer => reserved demand
+	var/currentflow = 0 //reserved demand in this connected component
 	var/tilepos = "under"
 	var/tiledir = "horizontal"
 
@@ -176,74 +175,108 @@ By design, d1 is the smallest direction and d2 is the highest
 
 //needed as this can, unlike other placements, disconnect cables
 /obj/structure/cable/proc/disconnect()
-	for (var/obj/structure/cable/CB in connections)
-		CB.connections -= src
-		connections -= CB
-	for (var/obj/OB in connections)
-		OB.powersource = null
-		connections -= OB
-		if (istype(OB, /obj/structure/engine))
-			var/obj/structure/engine/EN = OB
-			EN.connections -= src
-/obj/structure/cable/proc/update_power(var/powerval = 0, var/recheck = 0)
-	if (!isturf(loc))
-		return
-	var/connectioncount = 0 //to prevent loops. maximum 4 connections per tile
-	for (var/obj/structure/cable/CB in connections)
-		if ((CB.lastupdate2 <= world.time-25) && CB != src && connectioncount <= 4)
-			connectioncount +=1
-			CB.lastupdate2 = world.time
-			if (powered)
-				CB.currentflow += powerval
-			else
-				CB.currentflow = 0
-			CB.update_power(powerval,0)
-		if (recheck)
-			recheck_update_power(powerval)
-	return
-/obj/structure/cable/proc/recheck_update_power(var/powerval = 0)
-	if (!isturf(loc))
-		return
-	spawn(30)
-		var/connectioncount = 0 //to prevent loops. maximum 4 connections per tile
-		for (var/obj/structure/cable/CB in connections)
-			if ((CB.lastupdate2 <= world.time-25) && CB != src && connectioncount <= 4)
-				connectioncount +=1
-				CB.lastupdate2 = world.time
-				if (powered && CB.currentflow < currentflow)
-					CB.currentflow = currentflow
-					CB.recheck_update_power(powerval)
-/obj/structure/cable/proc/power_on(var/maxpower = 0)
-	if (!isturf(loc))
-		return
-	if (maxpower > 0)
-		powered = TRUE
-		powerflow += maxpower
-		lastupdate = world.time
+	var/list/previous = connections.Copy()
+	connections.Cut()
+	power_consumers.Cut()
+	powered = FALSE
+	powerflow = 0
+	currentflow = 0
+	for (var/obj/OB in previous)
+		if (istype(OB, /obj/structure/cable))
+			var/obj/structure/cable/CB = OB
+			CB.connections -= src
+		else
+			if (OB.powersource == src)
+				OB.powersource = null
+				OB.powered = FALSE
+			if (istype(OB, /obj/structure/engine))
+				var/obj/structure/engine/EN = OB
+				EN.connections -= src
+	for (var/obj/structure/cable/CB in previous)
+		CB.rebuild_supply()
 
-	for (var/obj/structure/cable/CB in connections)
-		if (CB.lastupdate <= world.time-25 && CB != src)
-			CB.powered = TRUE
-			CB.powerflow += powerflow
-			CB.lastupdate = world.time
-			CB.power_on(0)
-	return
+// Capacity is instantaneous engine output, not accumulated energy. Visit each
+// cable and engine once, including when a network contains loops or branches.
+/obj/structure/cable/proc/rebuild_supply()
+	var/list/pending = list(src)
+	var/list/cables = list()
+	var/list/engines = list()
+	var/capacity = 0
+	var/demand = 0
+	while (pending.len)
+		var/obj/structure/cable/CB = pending[pending.len]
+		pending.len--
+		if (CB in cables)
+			continue
+		cables += CB
+		if (!isturf(CB.loc))
+			continue
+		for (var/obj/consumer in CB.power_consumers.Copy())
+			if (consumer.powersource != CB || !(consumer in CB.connections) || !isturf(consumer.loc) || get_dist(CB, consumer) > 1 || consumer.z != CB.z)
+				CB.power_consumers -= consumer
+			else
+				demand += CB.power_consumers[consumer]
+		for (var/obj/OB in CB.connections)
+			if (!isturf(OB.loc) || get_dist(CB, OB) > 1 || CB.z != OB.z)
+				continue
+			if (istype(OB, /obj/structure/cable))
+				var/obj/structure/cable/neighbor = OB
+				if (CB in neighbor.connections)
+					pending |= neighbor
+			else if (istype(OB, /obj/structure/engine))
+				var/obj/structure/engine/EN = OB
+				if (!(EN in engines) && (CB in EN.connections))
+					engines += EN
+					if (EN.on && !EN.broken && EN.maxpower > 0)
+						capacity += EN.maxpower
+	for (var/obj/structure/cable/CB in cables)
+		CB.currentflow = demand
+		CB.powerflow = capacity
+		CB.powered = capacity > 0
+	return capacity
+
+// Reservations are keyed by the consumer, so repeated checks are idempotent.
+/obj/structure/cable/proc/update_power(var/powerval = 0, var/recheck = 0, obj/consumer)
+	if (consumer)
+		if (powerval > 0 && consumer.powersource == src && (consumer in connections))
+			power_consumers[consumer] = powerval
+		else
+			power_consumers -= consumer
+	return rebuild_supply()
+
+/obj/proc/draw_cable_power()
+	if (!powersource)
+		return FALSE
+	if (powerneeded <= 0)
+		powersource.update_power(0, 1, src)
+		return FALSE
+	if (!isturf(loc) || !(src in powersource.connections) || get_dist(src, powersource) > 1 || z != powersource.z)
+		powersource.update_power(-powerneeded, 1, src)
+		return FALSE
+	powersource.rebuild_supply()
+	var/reserved = powersource.power_consumers[src]
+	if (powersource.powered && powersource.powerflow - powersource.currentflow + reserved >= powerneeded)
+		powersource.update_power(powerneeded, 1, src)
+		return TRUE
+	powersource.update_power(-powerneeded, 1, src)
+	return FALSE
+
+/obj/structure/cable/proc/power_on(var/maxpower = 0)
+	return rebuild_supply()
 
 /obj/structure/cable/proc/power_off(var/maxpower = 0)
-	if (!isturf(loc))
-		return
-	if (maxpower > 0)
-		powered = FALSE
-		powerflow = 0
-		lastupdate = world.time
-		if (powerflow < 0)
-			powerflow = 0
-	for (var/obj/structure/cable/CB in connections)
-		if (CB.lastupdate <= world.time-25 && CB != src && CB.powered)
-			CB.powered = FALSE
-			CB.powerflow = 0
-			if (CB.powerflow < 0)
-				CB.powerflow = 0
-			CB.lastupdate = world.time
-			CB.power_off(0)
-	return
+	return rebuild_supply()
+
+
+
+/obj/structure/cable/Move()
+	var/atom/previous_location = loc
+	. = ..()
+	if (. && loc != previous_location)
+		disconnect()
+
+/obj/structure/cable/forceMove(atom/destination, var/special_event)
+	var/atom/previous_location = loc
+	. = ..()
+	if (. && loc != previous_location)
+		disconnect()
