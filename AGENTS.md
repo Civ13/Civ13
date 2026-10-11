@@ -338,3 +338,6 @@ Dead/static crops stop growth at entry and pending-wait wake; water death keeps 
 
 <!-- 2026-10-11: crop diagnostics -->
 Plant examine delegates to read-only farming_diagnostics(skill). Preserve skill thresholds and sampled nutrition semantics; diagnostics do not sample soil or run growth. tests/plant_diagnostics/run.ps1 extracts the production helper in temporary storage.
+
+<!-- 2026-10-11: outdoor crop bootstrap -->
+Nomads Europe foraged seeds use biome filtering like its climate-restricted growth. Rain caps crop storage at max_water; natural irrigation sources remain unlimited. tests/outdoor_crops/run.ps1 tests production seed catalogs/dispatch and fresh/salt/range behavior; it does not establish map-level bootstrap reachability.
