@@ -143,6 +143,7 @@ jobs:
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/petroleum_lifecycle/probe.dm
 
       - name: Run constructed vehicle movement regressions
         if: needs.changes.outputs.extensive == 'true'

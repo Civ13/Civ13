@@ -1304,6 +1304,8 @@
 //TO DO TODO: Clean fuckups with item/flashlight
 /obj/structure/oilwell
 	name = "wooden oil well"
+	// before_save returns the runtime barrel to the map; never restore empty contents over a newly linked barrel.
+	load_contents = FALSE
 	desc = "An oil well, extracting petroleum to a barrel."
 	icon = 'icons/obj/obj32x64.dmi'
 	icon_state = "oilwell"
@@ -1313,6 +1315,8 @@
 	var/tmp/obj/structure/oil_spring/base = null
 	var/tmp/obj/item/weapon/reagent_containers/glass/barrel/work_barrel = null
 	var/tmp/extracting_now = FALSE
+	var/tmp/extraction_pending = FALSE
+	var/tmp/extraction_due = 0
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
@@ -1321,6 +1325,7 @@
 	link_to_spring()
 
 /obj/structure/oilwell/proc/link_to_spring()
+	base = null
 	for (var/obj/structure/oil_spring/OS in src.loc)
 		base = OS
 		break
@@ -1329,44 +1334,58 @@
 	start_extraction()
 
 /obj/structure/oilwell/proc/start_extraction()
-	if (base)
-		if (!extracting_now)
-			extract()
+	if (base && base.loc == loc && work_barrel && work_barrel.loc == src && !extracting_now)
+		extracting_now = TRUE
+		extraction_due = world.time + 1200
+		extract()
+
+/obj/structure/oilwell/proc/stop_extraction()
+	extracting_now = FALSE
+	extraction_due = 0
 
 /obj/structure/oilwell/proc/extract()
-	extracting_now = TRUE
-	var/need_extract
-	spawn(1200)
-		need_extract = FALSE
-		if (work_barrel)
-			if (work_barrel.reagents.total_volume < work_barrel.reagents.maximum_volume)
-				if (base.counter>0)
-					work_barrel.reagents.add_reagent("petroleum", min(work_barrel.reagents.get_free_space(), 10))
-					base.counter --
-					need_extract = TRUE
-					if (work_barrel.reagents.total_volume == work_barrel.reagents.maximum_volume)
-						visible_message("<span class='notice'>\The [work_barrel] in \the [src] filled up.</span>")
-						need_extract = FALSE
-		if (base.counter<1)
-			need_extract = TRUE //need to be sure, that spring will refiled
-			if (base.timeout<world.time) //if no sheduled refill() we call it
-				base.timeout = world.time + 600 //give default timeout
-				base.refill()
-		if (need_extract)
+	if (!extracting_now || extraction_pending)
+		return
+	if (!isturf(loc) || !base || base.loc != loc || !work_barrel || work_barrel.loc != src || !work_barrel.reagents || work_barrel.reagents.get_free_space() <= 0)
+		if (base && base.loc != loc)
+			base = null
+		if (work_barrel && work_barrel.loc != src)
+			work_barrel = null
+		stop_extraction()
+		return
+	if (world.time >= extraction_due)
+		if (base.counter > 0)
+			work_barrel.reagents.add_reagent("petroleum", min(work_barrel.reagents.get_free_space(), 10))
+			base.counter--
+			base.update_icon()
+		if (base.counter < 1 && base.timeout < world.time)
+			base.timeout = world.time + 600
+			base.refill()
+		extraction_due = world.time + 1200
+		if (work_barrel.reagents.get_free_space() <= 0)
+			stop_extraction()
+			return
+	// One short callback bounds retained state after stop, save or destruction.
+	extraction_pending = TRUE
+	spawn(20)
+		extraction_pending = FALSE
+		if (extracting_now)
 			extract()
-		else
-			extracting_now = FALSE
 
 /obj/structure/oilwell/proc/load_barrel()
+	if (work_barrel)
+		return
 	for (var/obj/item/weapon/reagent_containers/glass/barrel/B in src.loc)
 		if (B.reagents.total_volume<B.reagents.maximum_volume)
 			work_barrel = B
-			B.loc = null
+			B.loc = src
 			start_extraction()
 			break
 
 /obj/structure/oilwell/proc/unload_barrel()
-	work_barrel.loc = src.loc
+	stop_extraction()
+	if (work_barrel && work_barrel.loc == src)
+		work_barrel.loc = get_turf(src)
 	work_barrel = null
 
 /obj/structure/oilwell/attackby(obj/item/weapon/W as obj, mob/user as mob)
@@ -1397,6 +1416,7 @@
 
 /obj/structure/oilwell/Destroy()
 	unload_barrel()
+	base = null
 	. = ..()
 
 /obj/structure/oilwell/initialize()
@@ -1409,7 +1429,14 @@
 
 /obj/structure/oilwell/after_load()
 	. = ..()
+	extraction_pending = FALSE
+	stop_extraction()
 	link_to_spring()
+
+/obj/structure/oilwell/get_saved_vars()
+	var/list/saved = ..()
+	saved -= list("base", "work_barrel", "extracting_now", "extraction_pending", "extraction_due")
+	return saved
 
 ////////////////////////////////////////////////////////////////////////
 //  Printing press  ////////////////////////////////////////////////////

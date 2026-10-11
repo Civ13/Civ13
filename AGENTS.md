@@ -237,6 +237,9 @@ zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
 ## Local MCP tooling
 
+<!-- 2026-10-11: petroleum save lifecycle -->
+- Oil wells unload their runtime barrel before saving and disable contents restoration. Otherwise the loader's empty contents pass can delete a barrel linked by the constructor. `tests/petroleum_lifecycle/probe.dm` checks a disk-backed entry round trip and bounded extraction/refill callbacks through the resource extraction launcher.
+
 <!-- 2026-10-11: isolated legacy garbage queue -->
 When normal startup is disabled, atom `qdel` removes the atom from its location
 and queues it in `delayed_garbage`; it does not set the newer `gc_destroyed` flag
