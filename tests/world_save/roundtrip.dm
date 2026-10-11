@@ -92,6 +92,12 @@ world
 		check(fexists("map_backups/save_complete.txt"), "backup completion marker missing")
 		check(map_storage.validate_world_save(), "second export rejected")
 		if(!world.params["large"])
+			delete_failure_path = "map_saves/save_complete.txt"
+			var/datum/controller/gameticker/deletion_failure_ticker = new
+			check(!deletion_failure_ticker.savemap(), "failed marker deletion accepted")
+			check(fexists("map_saves/save_complete.txt") && !persistence_save_in_progress, "failed marker deletion changed active completion or retained lock")
+			delete_failure_path = null
+			check(map_storage.validate_world_save(), "failed marker deletion changed original save")
 			A.other_z = C
 			var/datum/controller/gameticker/failed_export_ticker = new
 			check(!failed_export_ticker.savemap(), "cross-level object silently duplicated")

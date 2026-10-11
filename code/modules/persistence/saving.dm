@@ -13,7 +13,8 @@
 	// level. A per-level rolling backup mixed old and new levels after failures.
 	if(fexists("map_saves/save_complete.txt"))
 		if(fexists("map_backups/save_complete.txt"))
-			fdel("map_backups/save_complete.txt")
+			if(!fdel("map_backups/save_complete.txt"))
+				throw EXCEPTION("Could not invalidate backup marker; existing save retained")
 		for(var/name in flist("map_saves/"))
 			if(name == "map.txt" || copytext(name, max(1, length(name)-3)) == ".sav")
 				if(!fcopy("map_saves/[name]", "[backup_dir][name]"))
@@ -23,10 +24,12 @@
 	// Remove the completion marker first: if this save dies partway through, the
 	// marker's absence tells the startup autoload not to trust map_saves/.
 	if (fexists("map_saves/save_complete.txt"))
-		fdel("map_saves/save_complete.txt")
+		if(!fdel("map_saves/save_complete.txt"))
+			throw EXCEPTION("Could not invalidate completion marker; existing save retained")
 	var/F0 = file("map_saves/map.txt")
 	if (fexists(F0))
-		fdel(F0)
+		if(!fdel(F0))
+			throw EXCEPTION("Could not replace save metadata")
 	var/list/metadata = list(map.ID, "[map.age]", "[map.ordinal_age]", "[map.default_research]", "[map.autoresearch]", "[map.autoresearch_mult]", "[map.chad_mode]", "[map.chad_mode_plus]", "[map.gamemode]", time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)"))
 	if(!text2file(jointext(metadata, "\n"), F0))
 		throw EXCEPTION("Could not write world-save metadata")
@@ -38,7 +41,8 @@
 		existing_references = list()
 		found_types = list()
 		if(fexists("map_saves/[A].sav"))
-			fdel("map_saves/[A].sav")
+			if(!fdel("map_saves/[A].sav"))
+				throw EXCEPTION("Could not replace saved level [A]")
 		var/savefile/savefile = new("map_saves/[A].sav")
 		savefile["/format_version"] << 2
 		savefile["/maxx"] << world.maxx

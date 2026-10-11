@@ -2,6 +2,11 @@
 var/TimeOfGame = 0
 var/obj/map_metadata/map
 var/list/errors = list()
+var/delete_failure_path = null
+/proc/delete_file_adapter(path)
+	if("[path]" == delete_failure_path)
+		return 0
+	return fdel(path)
 /proc/to_chat(target, message)
 	world.log << message
 /proc/message_admins(message)
