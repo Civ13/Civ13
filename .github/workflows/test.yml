@@ -45,6 +45,11 @@ jobs:
         run: sudo bash ./scripts/travis_pre_byond.sh
         shell: bash
 
+      - name: Offline world-save round-trip regression
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          bash tests/world_save/run.sh
+        shell: bash
       - name: Verify isolated chemistry reactions and negative control
         shell: bash
         run: |
