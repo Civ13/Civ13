@@ -39,27 +39,3 @@
     // Leave one visible shallow-water tile for ordinary movement/Examine checks.
     target.ChangeTurf(/turf/floor/beach/water)
     to_chat(src, "<b>PASS local water registry: 20 wet/deep/dry cycles; baseline [baseline], final [water_turf_list.len] (one visible water tile).</b>")
-
-#ifdef MEMORY_GAMEPLAY_AUTORUN
-/client/New()
-    . = ..()
-    spawn(20)
-        if (!holder || (address && address != "127.0.0.1" && address != "::1"))
-            return
-        // Bound local evidence setup using the same fields as the Start Now admin verb.
-        if (ticker && ticker.current_state == GAME_STATE_PREGAME)
-            round_progressing = TRUE
-            ticker.pregame_timeleft = 1
-            ticker.admin_started = TRUE
-        var/waits = 0
-        while ((!ticker || ticker.current_state != GAME_STATE_PLAYING || !ticker.players_can_join) && waits++ < 120)
-            sleep(10)
-        verify_water_registry_gameplay()
-        sleep(20)
-        src << browse(null, "window=memory")
-        if (istype(mob, /mob/living))
-            for (var/direction in cardinal)
-                if (step(mob, direction))
-                    to_chat(src, "<b>PASS scripted player movement after water replacement.</b>")
-                    break
-#endif
