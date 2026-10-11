@@ -60,7 +60,7 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 			throw EXCEPTION("Nested item, metadata identity or boundary turf lost")
 		soil = locate(21,20,1)
 		if(!istype(soil) || soil.soil_nutrition != 123)
-			throw EXCEPTION("Ploughed crop soil or nutrition lost")
+			throw EXCEPTION("Ploughed crop soil or nutrition lost: type=[soil.type], nutrition=[soil.soil_nutrition], expected=123")
 		crop = null
 		var/crop_count = 0
 		for(var/obj/structure/farming/plant/tomato/candidate in soil)

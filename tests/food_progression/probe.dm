@@ -93,6 +93,18 @@
 	food_check(restored && restored.type == W.type && restored.loc == restored_soil, "crop type and location restored")
 	food_check(restored.stage == W.stage && restored.water == 42 && restored.plant_nutrition == 87 && restored.radiation == 3, "crop scalar state restored")
 	food_check(jointext(restored.biomes, ",") == jointext(W.biomes, ",") && jointext(restored.seasons, ",") == jointext(W.seasons, ","), "crop climate and season lists restored")
+	// Exercise the actual turf allowlist.
+	var/turf/floor/dirt/ploughed/saved_soil = new(locate(4,2,1))
+	saved_soil.soil_nutrition = 123
+	var/savefile/soil_file = new("soil.sav")
+	soil_file["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/soil_ref = map_storage.BuildVarDirectory(soil_file, saved_soil, 1)
+	saved_soil.soil_nutrition = 1
+	map_storage.clear_bookkeeping()
+	var/turf/floor/dirt/ploughed/loaded_soil = map_storage.Load_Entry(soil_file, soil_ref, old_turf = locate(4,2,1))
+	food_check(loaded_soil && loaded_soil.soil_nutrition == 123, "full turf entry restores nondefault soil nutrition")
 	W.vstatic = TRUE
 	sleep(5)
 	food_check(restored.stage == stage_before, "restored winter crop remains paused")
