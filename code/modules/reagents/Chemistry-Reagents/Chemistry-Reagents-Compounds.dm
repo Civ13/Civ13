@@ -353,3 +353,32 @@
 	description = "A plastic polymer produced from ethylene."
 	reagent_state = SOLID
 	color = "#EEEEEE"
+
+// Existing gasoline recipes require registered feedstock reagents.
+/datum/reagent/octane
+	name = "Octane"
+	id = "octane"
+	description = "A liquid hydrocarbon used in gasoline blending."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/cyclopentane
+	name = "Cyclopentane"
+	id = "cyclopentane"
+	description = "A liquid hydrocarbon used in gasoline blending."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/toluene
+	name = "Toluene"
+	id = "toluene"
+	description = "A liquid solvent used in gasoline blending."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/butene
+	name = "Butene"
+	id = "butene"
+	description = "A gaseous hydrocarbon used in gasoline blending."
+	reagent_state = GAS
+	color = "#EEEEEE"

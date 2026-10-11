@@ -30,6 +30,17 @@ beaker contents; `Run chemistry` invokes production `process_reactions()` and
 verifies positive/missing-catalyst/wrong-feedstock cases. These fixture verbs are
 not the normal crafting menu. Ordinary CI also verifies those real beaker cases.
 
+## Gasoline precursor registration
+
+Use `run.py --probe fuel --byond-bin <absolute BYOND bin directory>` for four
+existing precursor recipes and real-beaker gasoline mixing. Two complete
+10 octane / 4 cyclopentane / 5 toluene / 1 butene batches must produce 40 gasoline.
+Missing butene or only 0.5 butene prevents mixing and preserves the inputs.
+`--probe fuel --negative-control` removes octane registration in a generated
+copy and requires the original missing-product failure. CI runs both modes.
+Visual mode supports `--probe fuel --visual` with the same localhost adapter.
+Fuel recipe ratios, engine consumption, ethanol blends and balance are unchanged.
+
 For gameplay replication, use an isolated game and a reagent container with
 adequate capacity. Mix 2 units of ethylene with 10 titaniumchloride,
 5 borontrifluoride, and 5 aluminumchloride. Expect 25 polyethylene and unchanged

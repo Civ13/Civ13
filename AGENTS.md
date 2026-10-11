@@ -230,6 +230,10 @@ disabled and runs bounded reactions in temporary storage. CI also runs its
 wrong-feedstock negative control; this does not replace gameplay verification.
 Linux DreamDaemon safe mode rejects an absolute `-log` path. Use a relative
 log filename with the runtime working directory set to temporary storage.
+<!-- 2026-10-11: gasoline precursor regression -->
+`tests/chemistry/run.py --probe fuel` verifies precursor registration and real
+beaker gasoline mixing; its negative control removes octane registration in a
+generated copy. Fuel ratios and engine behavior are separate contracts.
 
 <!-- 2026-10-11: Civ13 MCP integration -->
 `tools/mcp/README.md` documents the bounded stdio server and Codex configuration.

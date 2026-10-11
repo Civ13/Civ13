@@ -12,6 +12,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--negative-control', action='store_true')
+    parser.add_argument('--probe', choices=('polyethylene', 'fuel'), default='polyethylene')
     parser.add_argument('--visual', action='store_true')
     parser.add_argument('--port', type=int, default=18329)
     args = parser.parse_args()
@@ -21,9 +22,9 @@ def main():
     binary = args.byond_bin.resolve()
     compiler = binary / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
-    prefix = '.chemistry_ci'
+    prefix = '.chemistry_ci_' + args.probe
     generated = [root / (prefix + suffix) for suffix in
-                 ('.dme', '_world.dm', '_recipes.dm', '.dmb', '.rsc', '_login.dm')]
+                 ('.dme', '_world.dm', '_recipes.dm', '.dmb', '.rsc', '_login.dm', '_compounds.dm')]
     if any(path.exists() for path in generated):
         raise RuntimeError('Existing chemistry probe files must be preserved')
     logs = Path(tempfile.mkdtemp(prefix='civ13-chemistry-ci-'))
@@ -41,7 +42,15 @@ def main():
         if args.visual:
             generated[5].write_text('/mob/new_player\n\tvar/client/my_client\n/mob/new_player/Login()\n\tchemistry_fixture_login()\n', encoding='utf-8')
             source = source.replace('code\\game\\mob\\new_player\\login.dm', prefix + '_login.dm')
-        if args.negative_control:
+        if args.negative_control and args.probe == 'fuel':
+            # Restore the registration defect in a generated source copy.
+            compounds = (root / 'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Compounds.dm').read_text(encoding='utf-8')
+            target = '\tid = "octane"'
+            if compounds.count(target) != 1:
+                raise RuntimeError('Octane mutation target missing or ambiguous')
+            generated[6].write_text(compounds.replace(target, '\tid = "octane_removed"', 1), encoding='utf-8')
+            source = source.replace('code\\modules\\reagents\\Chemistry-Reagents\\Chemistry-Reagents-Compounds.dm', prefix + '_compounds.dm')
+        elif args.negative_control:
             # Reintroduce the original wrong feedstock only in a generated copy.
             recipes = (root / 'code/modules/reagents/Chemistry-Recipes.dm').read_text(encoding='utf-8')
             target = recipes.index('/datum/chemical_reaction/polyethylene\n')
@@ -54,9 +63,9 @@ def main():
             generated[2].write_text(recipes, encoding='utf-8')
             source = source.replace('code\\modules\\reagents\\Chemistry-Recipes.dm',
                                     prefix + '_recipes.dm')
-        generated[0].write_text(source + '\n#include "tests/chemistry/polyethylene.dm"\n#include "tests/chemistry/visual.dm"\n', encoding='utf-8')
+        generated[0].write_text(source + f'\n#include "tests/chemistry/{args.probe}.dm"\n#include "tests/chemistry/visual.dm"\n#include "tests/chemistry/fuel_visual.dm"\n', encoding='utf-8')
         commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-        print(f'Commit: {commit}; negative_control={args.negative_control}', flush=True)
+        print(f'Commit: {commit}; probe={args.probe}; negative_control={args.negative_control}', flush=True)
         build = subprocess.run([str(compiler), '-max_errors', '0', str(generated[0])],
                                cwd=root, capture_output=True, text=True, timeout=120,
                                creationflags=flags)
@@ -70,7 +79,7 @@ def main():
         if args.visual:
             daemon_output = (logs / 'daemon.log').open('w', encoding='utf-8')
             visual = subprocess.Popen([str(daemon), str(logs / generated[3].name), str(args.port),
-                                       '-invisible', '-safe', '-params', f'tested_commit={commit}&visual=1',
+                                       '-invisible', '-safe', '-params', f'tested_commit={commit}&visual=1&probe={args.probe}',
                                        '-log', 'runtime.log'], cwd=logs, stdout=daemon_output,
                                       stderr=subprocess.STDOUT, creationflags=flags)
             daemon_output.close()
@@ -95,12 +104,14 @@ def main():
             raise RuntimeError(f'Chemistry result missing; daemon exit={runtime.returncode}')
         result = (logs / 'chemistry_result.txt').read_text(encoding='utf-8').strip()
         print(result, flush=True)
-        expected = ('FAIL: Polymerization unavailable with catalysts'
+        failure = ('FAIL: Product missing: octane' if args.probe == 'fuel'
+                   else 'FAIL: Polymerization unavailable with catalysts')
+        expected = (failure
                     if args.negative_control else 'PASS:')
         if runtime.returncode or not result.startswith(expected):
             raise RuntimeError('Chemistry result did not match expected outcome')
         if args.negative_control:
-            print('PASS: wrong-feedstock mutation detected', flush=True)
+            print(f'PASS: {args.probe} mutation detected', flush=True)
     finally:
         for path in generated:
             path.unlink(missing_ok=True)
