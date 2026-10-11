@@ -429,3 +429,6 @@ the hourly fallback. Keep new seasonal maps and transition hooks in sync with
   trench_stage. Do not persist cooldowns, overlays or recovery registries.
 - tests/trench_save/run.py runs production whole-world disk round trips with
   isolated startup and independent filling/digging omission controls.
+
+<!-- 2026-10-11: bounded environment sweeps -->
+- `tests/environment_sweeps/run.py` runs production daylight/weather sweep bodies and lighting color calculations with isolated startup, pinned baseline comparisons and yield/reentry controls. See `docs/environment-sweeps.md`; it does not prove client rendering or production latency. BYOND spawn copies local scalar variables: fixture completion flags shared across spawned callbacks must use a shared list/datum.

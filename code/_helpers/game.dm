@@ -199,3 +199,12 @@ proc
 
 /proc/SecondsToTicks(var/seconds)
 	return seconds * 10
+
+// Bound environment sweeps independently of the general 90% tick threshold.
+#define ENVIRONMENT_SWEEP_BATCH 4096
+#define ENVIRONMENT_SWEEP_TICK_LIMIT 20
+/proc/environment_sweep_pause(work)
+	if (work >= ENVIRONMENT_SWEEP_BATCH || world.tick_usage >= ENVIRONMENT_SWEEP_TICK_LIMIT)
+		sleep(world.tick_lag)
+		return TRUE
+	return FALSE

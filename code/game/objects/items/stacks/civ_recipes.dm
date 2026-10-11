@@ -113,6 +113,8 @@
 		// the faction; otherwise it keeps the legacy research-threshold check.
 		// Era gating (i[12]) applies in both cases.
 		var/node_req = get_recipe_node_req(i[3])
+		if (ispath(text2path(i[3]), /obj/item/blackpowder_part/stock) && (!map || map.ordinal_age < 3 || map.ordinal_age > 4))
+			continue
 		var/research_allowed
 		// is_node_done handles a null/"none" faction fine (baseline-era grants
 		// don't depend on faction), so factionless players get their era's
