@@ -94,6 +94,10 @@ map_storage
 		list/all_loaded = list()
 		list/found_types = list()
 		list/saved_turfs = list()
+		list/saving_lists = list()
+		list/loaded_lists = list()
+		var/saving_z = 0
+		var/last_error = null
 		var/per_pause = 200
 		var/so_far = 0
 	New(game_id, backdoor, ignore)
@@ -112,6 +116,9 @@ map_storage
 	existing_references = list()
 	found_types = list()
 	all_loaded = list()
+	saving_lists = list()
+	loaded_lists = list()
+	saved_turfs = list()
 
 // Returns true if the value is purely numeric, return false if there are non-numeric
 // characters contained within the text string.
@@ -184,6 +191,8 @@ var/global/persistence_save_in_progress = FALSE
 	catch(var/exception/e)
 		map_storage.clear_bookkeeping()
 		persistence_save_in_progress = FALSE
+		map_storage.last_error = "[e] on [e.file]:[e.line]"
+		world.log << "World-save export failed: [map_storage.last_error]"
 		message_admins("EXCEPTION IN MAP SAVING!! [e] on [e.file]:[e.line]")
 		return 0
 	persistence_save_in_progress = FALSE
@@ -193,18 +202,25 @@ var/global/persistence_save_in_progress = FALSE
 /datum/controller/gameticker/proc/loadmap()
 	if(persistence_save_in_progress)
 		return FALSE
-	if(!map_storage.validate_world_save())
-		return FALSE
 	persistence_save_in_progress = TRUE
-	var/watch = start_watch()
-	log_startup_progress("Starting map load...")
-	sleep(1)
-	map_storage.ClearMap()
-	sleep(1)
-	if(!map_storage.Load_World())
+	if(!map_storage.validate_world_save())
 		persistence_save_in_progress = FALSE
 		return FALSE
-	map_storage.load_map_metadata()
+	var/watch = start_watch()
+	log_startup_progress("Starting map load...")
+	try
+		map_storage.ClearMap()
+		if(!map_storage.Load_World())
+			persistence_save_in_progress = FALSE
+			return FALSE
+		map_storage.load_map_metadata()
+	catch(var/exception/e)
+		map_storage.clear_bookkeeping()
+		map_storage.last_error = "[e] on [e.file]:[e.line]"
+		world.log << "World-save import failed: [map_storage.last_error]"
+		message_admins("Import failed during restoration; restart from the original map before retrying: [e]")
+		persistence_save_in_progress = FALSE
+		return FALSE
 	persistence_save_in_progress = FALSE
 	log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
 	return 1
