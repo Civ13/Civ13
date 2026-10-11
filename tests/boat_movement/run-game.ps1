@@ -17,7 +17,7 @@ try {
     $build | Tee-Object -FilePath (Join-Path $temp 'compile.log')
     if ($LASTEXITCODE -ne 0 -or ($build -join "`n") -notmatch '0 errors, 0 warnings') { throw 'Full-game probe compilation failed' }
     foreach ($extension in @('dmb','rsc')) { Copy-Item -LiteralPath (Join-Path $repo ('.boat_game_probe.' + $extension)) -Destination $temp }
-    Remove-Item -LiteralPath $sourcePath
+    Remove-Item -LiteralPath $sourcePath -Force
     # Copy only versioned sample configuration into isolated storage; never local secrets/saves.
     foreach ($path in (git -C $repo ls-files config)) {
         $target = Join-Path $temp $path
@@ -75,6 +75,6 @@ try {
     if ($process.ExitCode -ne 0 -or $resultText -notmatch '^RESULT failures=0') { throw 'Full-game probe failed' }
 } finally {
     if ($process -and !$process.HasExited) { Stop-Process -Id $process.Id; $process.WaitForExit() }
-    if (Test-Path -LiteralPath $sourcePath) { Remove-Item -LiteralPath $sourcePath }
+    if (Test-Path -LiteralPath $sourcePath) { Remove-Item -LiteralPath $sourcePath -Force }
     Write-Output "Full-game artifacts: $temp"
 }
