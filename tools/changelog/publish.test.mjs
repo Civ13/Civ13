@@ -83,3 +83,39 @@ test('untrusted branches, refs, SHA and absent live confirmation rejected', asyn
 test('dry run needs no secrets and writes no receipt', async () => {
   await run(env, { inputs: { ...event.inputs, dry_run: 'true', confirm_live: 'false' } }, { api });
 });
+test('destination mismatch prevents POST; valid destination suppresses mentions', async () => {
+  const live = { ...env, CHANGELOG_ENABLED: 'true', DISCORD_CHANGELOG_WEBHOOK: 'https://discord.com/api/webhooks/123/token' };
+  for (const wrong of [true, false]) {
+    let posts = 0, stored;
+    const liveApi = async (path, options) => {
+      if (path.startsWith('git/ref/')) return {};
+      if (path.startsWith('contents/receipts?')) return [];
+      if (path.startsWith('contents/receipts/')) { stored = JSON.parse(Buffer.from(JSON.parse(options.body).content, 'base64')); return { content: { sha: 'receipt-sha' } }; }
+      return api(path);
+    };
+    const http = async (url, options) => {
+      if (!options) return { type: 1, guild_id: '468979034571931648', channel_id: wrong ? '999' : channel };
+      posts++;
+      assert.equal(stored.messages[0].state, 'pending');
+      assert.ok(url.endsWith('?wait=true'));
+      assert.deepEqual(JSON.parse(options.body).allowed_mentions.parse, []);
+      return { id: '123', channel_id: channel };
+    };
+    if (wrong) await assert.rejects(run(live, event, { api: liveApi, http }), /destination/);
+    else await run(live, event, { api: liveApi, http });
+    assert.equal(posts, wrong ? 0 : 1);
+  }
+});
+test('production events require trusted deployment and latest successful status', async () => {
+  const deploymentEvent = { deployment: { id: 42 }, deployment_status: { id: 43, state: 'success' } };
+  const production = { environment: 'production', production_environment: true, ref: 'master', task: 'deploy', sha: 'a'.repeat(40), payload: { changelog: 'example' } };
+  for (const override of [{ ref: 'attacker' }, { environment: 'preview' }, { production_environment: false }]) {
+    await assert.rejects(run({ ...env, GITHUB_EVENT_NAME: 'deployment_status' }, deploymentEvent, { api: async p => p === 'deployments/42' ? { ...production, ...override } : api(p) }));
+  }
+  await assert.rejects(run({ ...env, GITHUB_EVENT_NAME: 'deployment_status' }, deploymentEvent, { api: async p => p === 'deployments/42' ? production : p.endsWith('/statuses') ? [{ id: 44, state: 'success' }] : api(p) }), /Stale/);
+});
+test('malformed webhook fails without external request', async () => {
+  for (const url of ['http://discord.com/api/webhooks/1/token', 'https://evil.invalid/api/webhooks/1/token', 'https://discord.com/api/webhooks/1/token?wait=true']) {
+    await assert.rejects(run({ ...env, CHANGELOG_ENABLED: 'true', DISCORD_CHANGELOG_WEBHOOK: url }, event, { api, http: async () => { throw Error('Should not call'); } }), /Invalid webhook/);
+  }
+});

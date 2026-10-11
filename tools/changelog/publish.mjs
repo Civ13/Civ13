@@ -69,6 +69,7 @@ export async function deliver(m, { load, save, post, verify }) {
 }
 export async function run(env, event, deps = {}) {
   requireValue(env.GITHUB_REPOSITORY === 'Civ13/Civ13', 'Unexpected repository');
+  const http = deps.http ?? request;
   const api = deps.api ?? ((path, options) => request('https://api.github.com/repos/Civ13/Civ13/' + path, {
     ...options, headers: { Authorization: 'Bearer ' + env.GITHUB_TOKEN, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' }
   }));
@@ -125,10 +126,10 @@ export async function run(env, event, deps = {}) {
   const receipt = await deliver(m, {
     load, save,
     verify: async () => {
-      const webhook = await request(url.href);
+      const webhook = await http(url.href);
       requireValue(webhook.type === 1 && webhook.channel_id === channel && webhook.guild_id === guild, 'Webhook destination mismatch');
     },
-    post: content => request(url.href + '?wait=true', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content, allowed_mentions: { parse: [], users: [], roles: [], replied_user: false } }) })
+    post: content => http(url.href + '?wait=true', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content, allowed_mentions: { parse: [], users: [], roles: [], replied_user: false } }) })
   });
   console.log(JSON.stringify({ manifest: name, commit, receipt }));
 }
@@ -142,4 +143,5 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     } else await run(process.env, JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8')));
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
+
 
