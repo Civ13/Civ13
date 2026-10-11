@@ -2,10 +2,34 @@
 import argparse, json, os, shutil, subprocess, tempfile, time
 from pathlib import Path
 
+def process_memory(pid):
+    if os.name == 'nt':
+        import ctypes
+        from ctypes import wintypes
+        class Counters(ctypes.Structure):
+            _fields_ = [('cb', wintypes.DWORD), ('faults', wintypes.DWORD)] + [(key, ctypes.c_size_t) for key in ('peak_rss', 'rss', 'peak_paged', 'paged', 'peak_nonpaged', 'nonpaged', 'pagefile', 'peak_pagefile', 'private')]
+        kernel = ctypes.WinDLL('kernel32', use_last_error=True)
+        api = ctypes.WinDLL('psapi', use_last_error=True)
+        kernel.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+        kernel.OpenProcess.restype = wintypes.HANDLE
+        kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+        api.GetProcessMemoryInfo.argtypes = [wintypes.HANDLE, ctypes.POINTER(Counters), wintypes.DWORD]
+        handle = kernel.OpenProcess(0x410, False, pid)
+        if not handle: return None
+        try:
+            counters = Counters(); counters.cb = ctypes.sizeof(counters)
+            if not api.GetProcessMemoryInfo(handle, ctypes.byref(counters), counters.cb): return None
+            return {'rss_bytes': counters.rss, 'private_bytes': counters.private}
+        finally: kernel.CloseHandle(handle)
+    try:
+        resident = int(Path(f'/proc/{pid}/statm').read_text().split()[1])
+        return {'rss_bytes': resident * os.sysconf('SC_PAGE_SIZE')}
+    except (FileNotFoundError, ProcessLookupError): return None
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--byond-bin', type=Path, required=True)
-    p.add_argument('--negative-control', action='store_true')
+    p.add_argument('--negative-control', nargs='?', const='decay', choices=('decay', 'storage', 'save'))
     a = p.parse_args()
     root = Path(__file__).resolve().parents[2]
     out = Path(tempfile.mkdtemp(prefix='civ13-decay-'))
@@ -25,9 +49,15 @@ def main():
         world = world.replace('/world/New()', '/world/proc/unused_decay_startup()', 1)
         generated[1].write_text(world, encoding="utf-8")
         source = (root / 'civ13.dme').read_text(encoding="utf-8").replace('code\\world.dm', stem + '_world.dm')
+        source = "\n".join(line for line in source.splitlines() if not line.strip().startswith('#include "maps\\'))
         if a.negative_control:
             decay = (root / 'code/processes/abandoned_items.dm').read_text(encoding="utf-8")
-            decay = decay.replace('\t\tqdel(src)\n\t\treturn TRUE', '\t\treturn FALSE', 1)
+            if a.negative_control == 'decay':
+                decay = decay.replace('\t\tqdel(src)\n\t\treturn TRUE', '\t\treturn FALSE', 1)
+            elif a.negative_control == 'storage':
+                decay = decay.replace('/obj/item/proc/abandonment_protected()\n', '/obj/item/proc/abandonment_protected()\n\treturn FALSE\n', 1)
+            else:
+                decay = decay.replace('\t\treturn TRUE\n\treturn ..()', '\t\treturn FALSE\n\treturn ..()', 1)
             generated[2].write_text(decay, encoding="utf-8")
             source = source.replace('code\\processes\\abandoned_items.dm', stem + '_decay.dm')
         generated[0].write_text(source + '\n#include "tests/abandoned_items/probe.dm"\n')
@@ -39,36 +69,52 @@ def main():
         if build.returncode or 'DM compiler version 516.1681' not in text or '0 errors, 0 warnings' not in text:
             raise RuntimeError('Pinned compilation failed')
         for f in generated[3:]: shutil.copy2(f, out / f.name)
+        # Only tracked name data; no production config, credentials or saves.
+        for rel in subprocess.check_output(['git', 'ls-files', 'config/names'], cwd=root, text=True).splitlines():
+            destination = out / rel
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(root / rel, destination)
+        (out / 'config/config.txt').write_text('', encoding='utf-8')
         log = (out / 'daemon.log').open('w')
         cmd = [str(daemon), str(out / generated[3].name)]
         if os.name == 'nt': cmd += ['-invisible', '-close']
         cmd += ['-safe', '-params', f'tested_commit={head}', '-log', 'runtime.log']
         proc = subprocess.Popen(cmd, cwd=out, stdout=log, stderr=subprocess.STDOUT, creationflags=flags)
         samples = []
-        # psutil is optional locally; object and reference evidence always exists.
-        try:
-            import psutil
-            monitor = psutil.Process(proc.pid)
-        except ImportError: monitor = None
         start = time.monotonic()
         try:
             while proc.poll() is None:
                 if time.monotonic() - start > 120: raise RuntimeError('Probe exceeded120 seconds')
-                if monitor:
-                    try: samples.append({'seconds': round(time.monotonic()-start,3), 'rss_bytes': monitor.memory_info().rss})
-                    except psutil.NoSuchProcess: pass
+                memory = process_memory(proc.pid)
+                if memory:
+                    sample = {'seconds': round(time.monotonic()-start,3), **memory}
+                    cycles = out / 'cycles.jsonl'
+                    if cycles.exists():
+                        rows = cycles.read_text().splitlines()
+                        if rows: sample['completed_cycle'] = json.loads(rows[-1])['cycle']
+                    phase = out / 'phase.json'
+                    try:
+                        if phase.exists(): sample.update(json.loads(phase.read_text()))
+                    except (json.JSONDecodeError, FileNotFoundError): pass
+                    samples.append(sample)
                 time.sleep(0.1)
         finally:
             if proc.poll() is None: proc.kill(); proc.wait()
             log.close()
             (out / 'rss.json').write_text(json.dumps(samples))
+        runtime_text = (out / 'runtime.log').read_text(encoding='utf-8', errors='replace')
+        if 'runtime error:' in runtime_text: raise RuntimeError('Uncaught runtime error in isolated log')
         result = (out / 'result.txt').read_text(encoding="utf-8").strip()
         print(result)
         if a.negative_control:
-            if not result.startswith('FAIL: expired exposed waste decays'): raise RuntimeError('Negative control did not detect disabled deletion')
-            print('PASS: disabled-decay mutation detected')
+            expected = {'decay': 'expired exposed waste decays', 'storage': 'nested storage protects waste', 'save': 'production serializer excludes runtime state'}[a.negative_control]
+            if not result.startswith('FAIL: ' + expected): raise RuntimeError('Negative control did not detect expected mutation')
+            print(f'PASS: {a.negative_control} mutation detected')
         elif not result.startswith('PASS:') or proc.returncode:
             raise RuntimeError('Production assertions failed')
+        settled = [s for s in samples if s.get('phase') == 'settled']
+        if settled:
+            print(f'Settled RSS bytes first={settled[0]["rss_bytes"]} last={settled[-1]["rss_bytes"]} range={min(s["rss_bytes"] for s in settled)}..{max(s["rss_bytes"] for s in settled)}; counts zero at each completed cycle')
         if samples: print(f'RSS bytes first={samples[0]["rss_bytes"]} peak={max(s["rss_bytes"] for s in samples)} last={samples[-1]["rss_bytes"]}; short synthetic run only')
     finally:
         for f in generated: f.unlink(missing_ok=True)

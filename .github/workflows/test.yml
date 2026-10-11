@@ -150,3 +150,12 @@ jobs:
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 scripts/check-battery-items.py
+
+      - name: Verify bounded abandoned-item decay and negative control
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/abandoned_items/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/abandoned_items/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
+          /usr/bin/python3 tests/abandoned_items/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control storage
+          /usr/bin/python3 tests/abandoned_items/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control save

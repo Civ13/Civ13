@@ -320,3 +320,14 @@ The always-running ci-selection.yml selects compilation conservatively and skips
 
 <!-- 2026-10-11: plant lifecycle -->
 Dead/static crops stop growth at entry and pending-wait wake; water death keeps its specific description, and age expiration marks the crop dead before stopping. `tests/plant_lifecycle/run.ps1 -ByondBin <516.1681-bin>` executes production growth/water/soil procs with accelerated waits; baseline callback counts are not whole-game performance evidence.
+
+<!-- 2026-10-11: bounded abandoned debris -->
+`code/processes/abandoned_items.dm` owns the opt-in waste registry and 256-candidate
+sweep every 30 seconds. Warning/removal use 12/24 elapsed server hours, independent
+of seasons. Do not opt useful item parents into decay without gameplay review.
+Custom persistence serializes tmp vars: override `persistence_runtime_var` for
+runtime fields and preserve both export/import exclusions. Native storage and
+inventory transitions reset exposure; Destroy/Del release registry slots.
+`tests/abandoned_items/run.py` compiles production sources with normal startup
+and maps disabled, checks nested native save restoration and repeated disposal,
+and samples RSS separately from retained object counts. It does not prove OOM fixes.

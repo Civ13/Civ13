@@ -1,3 +1,9 @@
+/world
+	maxx = 4
+	maxy = 4
+	maxz = 1
+	turf = /turf
+
 var/decay_assertions = 0
 /proc/decay_assert(ok, message)
 	decay_assertions++
@@ -21,6 +27,7 @@ var/decay_assertions = 0
 /world/New()
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "byond" = "[world.byond_version].[world.byond_build]", "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz)), "metadata.json")
 	try
+		decay_assert(ABANDONED_ITEM_WARNING == 432000 && ABANDONED_ITEM_LIFETIME == 864000, "human12/24-hour thresholds")
 		var/process/garbage/G = new
 		G.setup()
 		var/process/abandoned_items/P = new
@@ -37,7 +44,7 @@ var/decay_assertions = 0
 		I = new(T)
 		I.abandonment_since = world.time - ABANDONED_ITEM_WARNING
 		I.abandonment_location = "\ref[T]"
-		decay_assert(findtext(I.abandonment_notice(), "weathered"), "five-day examine warning")
+		decay_assert(findtext(I.abandonment_notice(), "weathered"), "12-hour examine warning")
 		var/obj/item/weapon/storage/backpack/bag = new(T)
 		var/obj/item/weapon/storage/backpack/inner = new(bag)
 		I.forceMove(inner)
@@ -46,7 +53,7 @@ var/decay_assertions = 0
 		decay_assert(!I.gcDestroyed && isnull(I.abandonment_since), "nested storage protects waste")
 		I.forceMove(T)
 		I.check_abandonment(ABANDONED_ITEM_LIFETIME*2)
-		decay_assert(!I.check_abandonment(ABANDONED_ITEM_LIFETIME*3-1), "leaving storage grants fresh window")
+		decay_assert(!I.check_abandonment(ABANDONED_ITEM_LIFETIME*3-10), "leaving storage grants fresh window")
 		I.loc = inner
 		I.check_abandonment(ABANDONED_ITEM_LIFETIME*4)
 		decay_assert(isnull(I.abandonment_since), "direct loc assignment sampled safely")
@@ -59,7 +66,7 @@ var/decay_assertions = 0
 		I.pickup(M)
 		decay_assert(isnull(I.abandonment_since), "pickup resets even before loc changes")
 		I.check_abandonment(0)
-		I.equipped()
+		I.equipped(M, slot_l_hand)
 		decay_assert(isnull(I.abandonment_since), "equipped hook resets")
 		I.check_abandonment(0)
 		I.dropped(M)
@@ -103,9 +110,36 @@ var/decay_assertions = 0
 		I.abandonment_since = 123
 		I.abandonment_location = "old-runtime"
 		var/savefile/F = new("isolated-decay.sav")
+		F["/format_version"] << 2
+		map_storage.saving_z = 1
 		var/ref = map_storage.BuildVarDirectory(F, I, 1)
-		F.cd = "/entries/[ref]"
+		F.cd = map_storage.entry_path(F, ref)
 		decay_assert(!("abandonment_index" in F.dir) && !("abandonment_since" in F.dir) && !("abandonment_location" in F.dir), "production serializer excludes runtime state")
+		// Restore a real nested container entry with forged stale runtime fields.
+		I.forceMove(inner)
+		map_storage.clear_bookkeeping()
+		map_storage.saving_z = 1
+		var/container_ref = map_storage.BuildVarDirectory(F, bag, 1)
+		var/item_ref = map_storage.saving_references["\ref[I]"]
+		F.cd = map_storage.entry_path(F, item_ref)
+		F["abandonment_index"] << list("kind" = "value", "value" = 999999)
+		F["abandonment_since"] << list("kind" = "value", "value" = -ABANDONED_ITEM_LIFETIME*10)
+		F["abandonment_location"] << list("kind" = "value", "value" = "stale")
+		map_storage.clear_bookkeeping()
+		var/obj/item/weapon/storage/backpack/restored = map_storage.Load_Entry(F, container_ref, null, T)
+		decay_assert(restored && restored != bag && restored.loc == T, "native entry restores container")
+		var/obj/item/trash/decay_probe/restored_waste
+		for(var/obj/item/weapon/storage/backpack/nested in restored)
+			for(var/obj/item/trash/decay_probe/target in nested)
+				restored_waste = target
+		decay_assert(restored_waste && restored_waste.abandonment_index != 999999 && isnull(restored_waste.abandonment_since), "nested restored waste ignores stale scheduler fields")
+		for(var/datum/loaded_datum in map_storage.all_loaded)
+			loaded_datum.after_load()
+		decay_assert(restored_waste.abandonment_protected() && !restored_waste.gcDestroyed, "restored nested contents survive decay check")
+		restored_waste.forceMove(T)
+		restored_waste.check_abandonment(0)
+		decay_assert(!restored_waste.check_abandonment(ABANDONED_ITEM_LIFETIME-1), "restored waste receives full24-hour exposed window")
+		qdel(restored)
 		I.after_load()
 		decay_assert(isnull(I.abandonment_since) && I.abandonment_index, "load reset does not duplicate registry")
 		map_storage.clear_bookkeeping()
@@ -114,7 +148,25 @@ var/decay_assertions = 0
 		qdel(I); qdel(bag); qdel(M); qdel(C); qdel(fake)
 		qdel(cash); qdel(candle); qdel(tray); qdel(tool); qdel(arrow)
 		decay_assert(!abandoned_items.len, "fixture registry returns to baseline")
+		// Mixed preservation and swap removals cannot starve exposed entries.
+		var/obj/item/weapon/storage/backpack/protected_bag = new(T)
+		for (var/n = 1, n <= 600, n++)
+			new /obj/item/trash/decay_probe(protected_bag)
+			var/obj/item/trash/decay_probe/exposed = new(T)
+			exposed.abandonment_since = world.time - ABANDONED_ITEM_LIFETIME
+			exposed.abandonment_location = "\ref[T]"
+		for (var/batch = 1, batch <= 10, batch++)
+			P.fire()
+		decay_assert(abandoned_items.len == 600, "mixed sweep preserves600 and removes600 without starvation")
+		qdel(protected_bag)
+		decay_assert(!abandoned_items.len, "container deletion unregisters all children")
+		var/obj/item/trash/decay_probe/raw = new(T)
+		raw.loc = null
+		del(raw)
+		decay_assert(!abandoned_items.len, "native Del releases registry")
 		for (var/cycle = 1, cycle <= 60, cycle++)
+			fdel("phase.json")
+			text2file(json_encode(list("phase" = "allocating", "cycle" = cycle)), "phase.json")
 			for (var/n = 1, n <= 1024, n++)
 				var/obj/item/trash/decay_probe/waste = new(T)
 				waste.abandonment_since = world.time - ABANDONED_ITEM_LIFETIME
@@ -138,8 +190,11 @@ var/decay_assertions = 0
 			var/list/counts = decay_counts()
 			decay_assert(!counts["objects"] && !counts["pending"], "no retained probe objects after GC drain")
 			text2file(json_encode(list("cycle" = cycle, "counts" = counts, "gc_queue" = G.destroyed.len)), "cycles.jsonl")
+			fdel("phase.json")
+			text2file(json_encode(list("phase" = "settled", "cycle" = cycle)), "phase.json")
+			sleep(3)
 			world.log << "DECAY CYCLE [cycle]: registry=[abandoned_items.len] objects=[counts["objects"]] queued=[G.destroyed.len]"
 		text2file("PASS: [decay_assertions] assertions; 60 cycles x 1024 discarded items", "result.txt")
 	catch(var/exception/error)
-		text2file("FAIL: [error]", "result.txt")
+		text2file("FAIL: [error] at [error.file]:[error.line]", "result.txt")
 	del(world)

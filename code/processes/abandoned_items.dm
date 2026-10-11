@@ -1,6 +1,6 @@
 // Active server elapsed time in deciseconds, unrelated to day/night or seasons.
-#define ABANDONED_ITEM_WARNING (5 * 24 * 60 * 60 * 10)
-#define ABANDONED_ITEM_LIFETIME (7 * 24 * 60 * 60 * 10)
+#define ABANDONED_ITEM_WARNING (12 * 60 * 60 * 10)
+#define ABANDONED_ITEM_LIFETIME (24 * 60 * 60 * 10)
 #define ABANDONED_ITEM_BATCH 256
 
 var/global/list/abandoned_items = list()
@@ -126,7 +126,7 @@ var/global/abandoned_item_cursor = 1
 
 /obj/item/proc/abandonment_notice()
 	if (!isnull(abandonment_since) && abandonment_location == "\ref[loc]" && is_abandonment_waste() && !abandonment_protected() && world.time - abandonment_since >= ABANDONED_ITEM_WARNING)
-		return " It is badly weathered and will crumble away after seven days of abandonment. Pick it up or store it to preserve it."
+		return " It is badly weathered and will crumble away after 24 hours of abandonment. Pick it up or store it to preserve it."
 	return ""
 
 /process/abandoned_items/setup()
