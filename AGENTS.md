@@ -204,3 +204,9 @@ Source discovery is lexical; include diagnostics do not replace compilation.
 Both compiler tools create temporary storage/processes. No live game, Topic or
 production administration tools are exposed. Never configure this server from a
 worktree that will be archived while the MCP entry still points to it.
+
+<!-- 2026-10-11: wire power verification -->
+`tests/power/README.md` documents isolated cable accounting regressions and an
+opt-in full-game capture adapter. `scripts/test-power.ps1` requires an explicit
+BYOND bin path; CI also compiles the excluded gameplay adapter. Powerflow and
+currentflow are instantaneous capacity and reserved demand, not stored energy.
