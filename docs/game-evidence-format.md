@@ -5,6 +5,8 @@ against a dedicated evidence directory. Artifact paths are relative to the
 manifest, remain inside that directory, and must be nonempty files. It hashes
 local artifacts, optionally checks supplied `sha256` values, and leaves HTTPS
 URLs explicitly unverified. It does not alter sources or upload anything.
+Use completed captures and copies of closed logs; do not hash files that a game
+or recorder is still writing.
 
 Record metadata from the actual run, including the tested commit and dirty diff.
 `--expected-commit` should come from the intended test target, independently of
