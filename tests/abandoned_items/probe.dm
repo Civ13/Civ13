@@ -127,7 +127,7 @@ var/decay_assertions = 0
 		stored.forceMove(gun)
 		stored.check_abandonment(0)
 		decay_assert(stored.abandonment_protected() && !stored.check_abandonment(ABANDONED_ITEM_LIFETIME*2), "native gun preserves internal spent casing")
-		qdel(gun)
+		qdel(stored); qdel(gun)
 		I.abandonment_since = 123
 		I.abandonment_location = "old-runtime"
 		var/savefile/F = new("isolated-decay.sav")
