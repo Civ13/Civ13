@@ -138,19 +138,14 @@
 	if (!powersource || !powerneeded)
 		return FALSE
 	else
-		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
+		if (draw_cable_power())
 			if (!on)
-				powersource.update_power(powerneeded,1)
 				on = TRUE
-				powersource.currentflow += powerneeded
-				powersource.lastupdate2 = world.time
 			return TRUE
 		else
 			if (on)
-				powersource.update_power(powerneeded,1)
+				powersource.update_power(-powerneeded,1,src)
 				on = FALSE
-				powersource.currentflow -= powerneeded
-				powersource.lastupdate2 = world.time
 			return FALSE
 
 
@@ -458,9 +453,7 @@
 	if (active)
 		active = FALSE
 		powered = FALSE
-		powersource.update_power(powerneeded,1)
-		powersource.currentflow -= powerneeded
-		powersource.lastupdate2 = world.time
+		powersource.update_power(-powerneeded,1,src)
 		to_chat(H, "You power off the refinery.")
 		return
 	if (isemptylist(barrel))
@@ -473,12 +466,9 @@
 	if (!active && powersource && !powersource.powered)
 		to_chat(H, SPAN_NOTICE("There is not enough power to start the refinery."))
 		return
-	else if (!active && powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
+	else if (!active && draw_cable_power())
 		active = TRUE
 		powered = TRUE
-		powersource.update_power(powerneeded,1)
-		powersource.currentflow += powerneeded
-		powersource.lastupdate2 = world.time
 		power_on()
 		to_chat(H, "You power the refinery.")
 		return
@@ -721,9 +711,7 @@
 	if (active)
 		active = FALSE
 		powered = FALSE
-		powersource.update_power(powerneeded,1)
-		powersource.currentflow -= powerneeded
-		powersource.lastupdate2 = world.time
+		powersource.update_power(-powerneeded,1,src)
 		to_chat(H, "You power off the [src].")
 		update_icon()
 		return
@@ -735,12 +723,9 @@
 		to_chat(H, SPAN_NOTICE("There is not enough power to start the [src]."))
 		update_icon()
 		return
-	else if (!active && powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
+	else if (!active && draw_cable_power())
 		active = TRUE
 		powered = TRUE
-		powersource.update_power(powerneeded,1)
-		powersource.currentflow += powerneeded
-		powersource.lastupdate2 = world.time
 		power_on()
 		to_chat(H, "You power the [src].")
 		update_icon()
@@ -1093,18 +1078,12 @@
 		return FALSE
 	else
 		powered = TRUE
-		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
-			if (!active)
-				powersource.update_power(powerneeded,1)
-				powersource.currentflow += powerneeded
-				powersource.lastupdate2 = world.time
+		if (draw_cable_power())
 			return TRUE
 		else
 			if (active)
-				powersource.update_power(powerneeded,1)
+				powersource.update_power(-powerneeded,1,src)
 				active = FALSE
-				powersource.currentflow -= powerneeded
-				powersource.lastupdate2 = world.time
 			return FALSE
 
 /obj/structure/drill/update_icon()

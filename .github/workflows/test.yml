@@ -47,3 +47,10 @@ jobs:
           name: recipe-validation
           path: recipe-checks.txt
           if-no-files-found: warn
+      - name: Run isolated power accounting regressions
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          pwsh -NoProfile -File scripts/test-power.ps1 -ByondBin "$PWD/BYOND/byond/bin"
+          bash scripts/check-power-gameplay.sh
+
