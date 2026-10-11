@@ -116,23 +116,14 @@
 	..()
 
 /mob/living/simple_animal/mouse/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (stat != DEAD)
-		return ..()
-	if (!istype(W) || !W.sharp)
-		return ..()
-	else if (W.sharp)
-		user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
-		if (do_after(user, 30, src))
-			user.visible_message("<span class = 'notice'>[user] butchers [src] into a sole meat slab.</span>")
-			var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
-			meat.name = "[name] meatsteak"
-			meat.radiation = radiation/2
-			if(plaguemouse)
-				meat.reagents.add_reagent("plague", 3)
-			if (istype(user, /mob/living/human))
-				var/mob/living/human/HM = user
-				HM.adaptStat("medical", 0.3)
-			qdel(src)
+	if (stat == DEAD && W && W.sharp)
+		return harvest_animal(user, W, user.a_intent == I_GRAB)
+	return ..()
+
+/mob/living/simple_animal/mouse/harvest_products(turf/site, skin)
+	var/obj/item/weapon/reagent_containers/food/snacks/meat/human/M = harvest_food(/obj/item/weapon/reagent_containers/food/snacks/meat/human, site)
+	if (plaguemouse)
+		M.reagents.add_reagent("plague", 3)
 
 /*
  * Mouse types
