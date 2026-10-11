@@ -14,7 +14,6 @@
 	var/backwards		// hopefully self-explanatory
 	var/movedir			// the actual direction to move stuff in
 
-	var/list/affecting	// the list of all items that will be moved this ptick
 	var/id = ""			// the control ID	- must match controller ID
 
 /obj/machinery/conveyor/New(loc, newdir, on = 0)
@@ -62,7 +61,10 @@
 		return
 	if(operating == 0 || !movedir)
 		return
-	affecting = loc.contents - src		// moved items will be all in loc
+	// Keep this tick's snapshot only until its delayed movement finishes.
+	var/list/affecting = loc.contents - src
+	if(!affecting.len)
+		return
 	spawn(1)	// slight delay to prevent infinite propagation due to map order	//TODO: please no spawn() in process(). It's a very bad idea
 		var/items_moved = 0
 		for(var/atom/movable/A in affecting)

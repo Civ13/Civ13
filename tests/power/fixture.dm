@@ -13,6 +13,8 @@ world
 	var/on = TRUE
 	var/broken = FALSE
 	var/maxpower = 10
+	var/battery_charge_epoch = -1
+	var/battery_charge_power = 0
 /obj/structure/cable
 	var/list/connections = list()
 	var/list/power_consumers = list()
@@ -194,3 +196,6 @@ var/list/processing_objects = list()
 /obj/structure/lamp
 	var/on = FALSE
 	powerneeded = 2
+
+/obj/structure/battery/proc/available_output()
+	return 0
