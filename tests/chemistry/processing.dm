@@ -1,17 +1,45 @@
+/world
+	hub = ""
+	hub_password = ""
+	maxx = 30
+	maxy = 30
+	maxz = 1
+	turf = /turf
+	area = /area
+
+/obj/map_metadata/chemistry_ci/New()
+	return
+
+var/processing_error = FALSE
+
+/world/Error(exception/error)
+	if(!processing_error)
+		text2file("FAIL: runtime [error]", "chemistry_result.txt")
+	processing_error = TRUE
+	world.log << "Runtime error: [error]"
+
 /world/New()
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "probe" = "processing", "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "metadata.json")
 	try
-		processing_recipe_checks()
-		processing_guard_checks()
-		processing_crafting_checks()
-		text2file("PASS: controlled recipe outputs, calcium chain, transfers, catalyst/capacity/missing-input guards, beaker lifecycle, research/catalog and production construction", "chemistry_result.txt")
+		initialize_chemical_reagents()
+		initialize_chemical_reactions()
+		map = new /obj/map_metadata/chemistry_ci
+		chemistry_assert(processing_recipe_checks(), "Recipe checks did not complete")
+		chemistry_assert(processing_guard_checks(), "Guard checks did not complete")
+		chemistry_assert(processing_crafting_checks(), "Crafting checks did not complete")
+		chemistry_assert(!processing_error, "Runtime error during processing")
+		if(!processing_error)
+			text2file("PASS: controlled recipe outputs, calcium chain, transfers, catalyst/capacity/missing-input guards, beaker lifecycle, research/catalog and production construction", "chemistry_result.txt")
 	catch(var/exception/error)
 		text2file("FAIL: [error]", "chemistry_result.txt")
 	del(world)
 
 /proc/chemistry_assert(condition, message)
 	if(!condition)
-		throw EXCEPTION(message)
+		if(!processing_error)
+			text2file("FAIL: [message]", "chemistry_result.txt")
+		processing_error = TRUE
+	return condition
 
 // Constructor adapter avoids character/random-name/global startup in this
 // bounded world. Production produce_recipe/use and output New stay intact.
@@ -67,6 +95,7 @@
 	chemistry_assert(chemical_reagents_list["titaniumtrichloride"]:reagent_state == SOLID, "Titanium III not solid")
 	chemistry_assert(chemical_reagents_list["titaniumchloride"]:reagent_state == LIQUID, "Titanium IV not liquid")
 	text2file(json_encode(results), "processing_results.json")
+	return TRUE
 
 /proc/processing_guard_checks()
 	var/obj/structure/reaction_bench/bench = processing_new_bench(TRUE)
@@ -93,6 +122,7 @@
 	chemistry_assert(!bench.synthesize("calcium_carbonate"), "Missing carbonate inputs accepted")
 	chemistry_assert(bench.collector.reagents.get_reagent_amount("calcium") == 1, "Missing inputs consumed calcium")
 	qdel(bench)
+	return TRUE
 
 /proc/processing_crafting_checks()
 	populate_material_list()
@@ -129,3 +159,11 @@
 	stock.produce_recipe(bench_recipe, 1, builder)
 	chemistry_assert(stock.amount == 10, "Production construction did not consume glass")
 	chemistry_assert(locate(/obj/structure/reaction_bench) in T, "Production construction did not create bench")
+	stock.produce_recipe(bench_recipe, 1, builder)
+	chemistry_assert(stock.amount == 10, "Occupied tile consumed glass")
+	var/obj/structure/reaction_bench/built = locate() in T
+	qdel(built)
+	stock.amount = 9
+	stock.produce_recipe(bench_recipe, 1, builder)
+	chemistry_assert(stock.amount == 9 && !(locate(/obj/structure/reaction_bench) in T), "Insufficient glass accepted")
+	return TRUE

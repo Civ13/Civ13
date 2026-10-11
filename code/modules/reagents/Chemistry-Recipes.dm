@@ -681,13 +681,6 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("carbon" = 5, "water" = 4, "oxygen" = 2)
 	result_amount = 5
 
-/datum/chemical_reaction/calcium_carbonate
-	name = "Calcium carbonate"
-	id = "calcium carbonate"
-	result = "calcium carbonate"
-	required_reagents = list("carbon" = 1, "calcium" = 1, "oxygen" = 3)
-	result_amount = 2
-
 /datum/chemical_reaction/carbon_dioxide
 	name = "Carbon dioxide"
 	id = "carbon_dioxide"
