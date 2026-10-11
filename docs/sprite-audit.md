@@ -15,7 +15,6 @@ This audit starts from merged master `4e79acac9c80ba0ba3b2edef3d050bb45590d41b` 
 | `/obj/item/clothing/head/wolfpelt/white` | Material recipe files, including `material_recipes_carib.txt`; weaving unlock in `research_node.dm` | Adapted existing wolfpelt world sprite; worn `whitewolfpelt` already exists in `icons/mob/head.dmi` |
 | `/obj/item/weapon/shield/chitin` | `config/crafting/material_recipes_crustacean.txt`, chitin buckler recipe | Original plated buckler world sprite; existing hand/back graphics preserved |
 | `/obj/item/weapon/shield/chitin/large` | Same file, chitin shield recipe | Original taller plated shield world sprite; existing hand/back graphics preserved |
-
 | `/obj/structure/farming/plant/herbs` | `code/game/objects/farming.dm` herb seed and healing-herb planting paths | Correct initial `herbs_grow1` typo to existing `herbs-grow1`; growth mechanics unchanged |
 
 ## New-item coverage
