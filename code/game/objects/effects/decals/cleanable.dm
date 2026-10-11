@@ -10,22 +10,11 @@
 	..()
 
 /obj/effect/decal/cleanable/New()
-	var/bare_water = FALSE
-	if (istype(loc, /turf/floor/beach/water))
-		var/found = FALSE
-		for(var/obj/covers/C in loc)
-			found = TRUE
-			break
-		if (!found)
-			bare_water = TRUE
 	if (random_icon_states && length(random_icon_states) > 0)
 		icon_state = pick(random_icon_states)
 	..()
 	cleanables += src
-	if (decay_timer)
-		do_decay()
-	if (bare_water)
-		schedule_decay(10)
+	schedule_environment_decay()
 
 /obj/effect/decal/cleanable/Destroy()
 	unregister_decay()
@@ -45,12 +34,19 @@
 /obj/effect/decal/cleanable/after_load()
 	..()
 	unregister_decay()
-	do_decay()
+	schedule_environment_decay()
 
 /obj/effect/decal/cleanable/Del()
 	unregister_decay()
 	cleanables -= src
 	return ..()
+
+/obj/effect/decal/cleanable/proc/schedule_environment_decay()
+	do_decay()
+	if (istype(loc, /turf/floor/beach/water))
+		for (var/obj/covers/C in loc)
+			return
+		schedule_decay(10)
 
 /obj/effect/decal/cleanable/proc/schedule_decay(delay)
 	if (gcDestroyed || delay < 0)
