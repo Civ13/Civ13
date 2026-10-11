@@ -195,6 +195,15 @@ a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10:
 
 ## Local MCP tooling
 
+<!-- 2026-10-11: chemistry verification -->
+Chemical recipe IDs do not register reagents: each product needs a matching
+`/datum/reagent` ID or mixing can consume inputs without producing the result.
+`tests/chemistry/run.py` compiles production sources with normal world startup
+disabled and runs bounded reactions in temporary storage. CI also runs its
+wrong-feedstock negative control; this does not replace gameplay verification.
+Linux DreamDaemon safe mode rejects an absolute `-log` path. Use a relative
+log filename with the runtime working directory set to temporary storage.
+
 <!-- 2026-10-11: Civ13 MCP integration -->
 `tools/mcp/README.md` documents the bounded stdio server and Codex configuration.
 Run `npm ci --prefix tools/mcp` then `npm test --prefix tools/mcp` for isolated
