@@ -61,12 +61,19 @@ def main():
         shutil.copy2(generated[4], logs / generated[4].name)
         # Run entirely from temporary storage, with no server configuration or
         # normal world startup. The probe calls production holders/reactions.
-        runtime = subprocess.run([str(daemon), str(logs / generated[3].name), '-invisible',
-                                  '-safe', '-close', '-params', f'tested_commit={commit}',
+        platform_flags = ['-invisible', '-close'] if os.name == 'nt' else []
+        runtime = subprocess.run([str(daemon), str(logs / generated[3].name), *platform_flags,
+                                  '-safe', '-params', f'tested_commit={commit}',
                                   '-log', str(logs / 'runtime.log')], cwd=logs,
                                  capture_output=True, text=True, timeout=45,
                                  creationflags=flags)
         (logs / 'daemon.log').write_text(runtime.stdout + runtime.stderr, encoding='utf-8')
+        print(runtime.stdout + runtime.stderr, flush=True)
+        if not (logs / 'chemistry_result.txt').exists():
+            runtime_log = logs / 'runtime.log'
+            if runtime_log.exists():
+                print(runtime_log.read_text(encoding='utf-8', errors='replace'), flush=True)
+            raise RuntimeError(f'Chemistry result missing; daemon exit={runtime.returncode}')
         result = (logs / 'chemistry_result.txt').read_text(encoding='utf-8').strip()
         print(result, flush=True)
         expected = ('FAIL: Polymerization unavailable with catalysts'
