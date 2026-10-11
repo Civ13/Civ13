@@ -1304,8 +1304,6 @@
 //TO DO TODO: Clean fuckups with item/flashlight
 /obj/structure/oilwell
 	name = "wooden oil well"
-	// before_save returns the runtime barrel to the map; never restore empty contents over a newly linked barrel.
-	load_contents = FALSE
 	desc = "An oil well, extracting petroleum to a barrel."
 	icon = 'icons/obj/obj32x64.dmi'
 	icon_state = "oilwell"
@@ -1322,15 +1320,15 @@
 
 /obj/structure/oilwell/New()
 	. = ..()
-	link_to_spring()
+	link_to_spring(FALSE)
 
-/obj/structure/oilwell/proc/link_to_spring()
+/obj/structure/oilwell/proc/link_to_spring(load_floor_barrel = FALSE)
 	base = null
 	for (var/obj/structure/oil_spring/OS in src.loc)
 		base = OS
 		break
 	if (!work_barrel)
-		load_barrel()
+		load_barrel(load_floor_barrel)
 	start_extraction()
 
 /obj/structure/oilwell/proc/start_extraction()
@@ -1372,8 +1370,15 @@
 		if (extracting_now)
 			extract()
 
-/obj/structure/oilwell/proc/load_barrel()
+/obj/structure/oilwell/proc/load_barrel(load_floor_barrel = TRUE)
 	if (work_barrel)
+		return
+	for (var/obj/item/weapon/reagent_containers/glass/barrel/contained in contents)
+		if (contained.loc == src && contained.reagents && contained.reagents.get_free_space() > 0)
+			work_barrel = contained
+			start_extraction()
+			return
+	if (!load_floor_barrel)
 		return
 	for (var/obj/item/weapon/reagent_containers/glass/barrel/B in src.loc)
 		if (B.reagents.total_volume<B.reagents.maximum_volume)
@@ -1392,6 +1397,8 @@
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
 		if (!work_barrel)
 			if (do_after(user, 35, src))
+				if (work_barrel || W.loc != user || get_dist(user, src) > 1)
+					return
 				user.drop_item(src.loc)
 				user.visible_message("<span class='notice'>[user] puts \the [W] in \the [src].</span>",
 					"<span class='notice'>You put \the [W] in \the [src].</span>")
@@ -1406,13 +1413,17 @@
 
 /obj/structure/oilwell/attack_hand(var/mob/living/human/H)
 	if (work_barrel)
+		var/obj/item/weapon/reagent_containers/glass/barrel/removing = work_barrel
 		to_chat(H, "You start taking \the barrel from \the [src]...")
 		if (do_after(H, 35, src))
+			if (work_barrel != removing || removing.loc != src)
+				return
 			H.visible_message("<span class='notice'>[H] removes \the [work_barrel] from \the [src].</span>",
 				"<span class='notice'>You remove \the [work_barrel] from \the [src].</span>",)
 			unload_barrel()
 	else
-		to_chat(H, "There is no container to remove from \the [src].")
+		load_barrel()
+		to_chat(H, work_barrel ? "You connect the nearby barrel to \the [src]." : "There is no nearby empty container to connect to \the [src].")
 
 /obj/structure/oilwell/Destroy()
 	unload_barrel()
@@ -1425,7 +1436,7 @@
 
 /obj/structure/oilwell/before_save()
 	. = ..()
-	unload_barrel()
+	stop_extraction()
 
 /obj/structure/oilwell/after_load()
 	. = ..()

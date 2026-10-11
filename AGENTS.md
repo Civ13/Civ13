@@ -238,7 +238,7 @@ Native BYOND world.Export returns the remote Topic value, and its caller address
 ## Local MCP tooling
 
 <!-- 2026-10-11: petroleum save lifecycle -->
-- Oil wells unload their runtime barrel before saving and disable contents restoration. Otherwise the loader's empty contents pass can delete a barrel linked by the constructor. `tests/petroleum_lifecycle/probe.dm` checks a disk-backed entry round trip and bounded extraction/refill callbacks through the resource extraction launcher.
+- Oil wells preserve barrels in native saved contents and rebuild runtime links after load. Constructors must not claim floor barrels: empty contents restoration can delete those links, while moving a contained barrel to its turf during save can omit it from the turf iteration. `tests/petroleum_lifecycle/probe.dm` checks disk-backed entry/turf round trips and bounded callbacks through the resource extraction launcher.
 
 <!-- 2026-10-11: isolated legacy garbage queue -->
 When normal startup is disabled, atom `qdel` removes the atom from its location
