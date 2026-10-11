@@ -129,6 +129,7 @@ var/recipe_ci_files = 0
 				alternatives++
 		if (!alternatives)
 			recipe_ci_fail(context, "no material branch can offer this recipe")
+	recipe_ci_food_bootstrap()
 	recipe_ci_craft_fixture()
 	// Negative fixtures must prove errors, without suppressing real catalog failures.
 	var/list/catalog_errors = recipe_ci_errors.Copy()
@@ -149,7 +150,7 @@ var/recipe_ci_files = 0
 	if (!recipe_ci_errors.len)
 		catalog_errors += "self-test: malformed row accepted"
 	recipe_ci_errors = catalog_errors
-	var/report = "Checked [recipe_ci_count] material/anvil rows; production material registration, actual crafting fixture and 13 negative fixtures.\n"
+	var/report = "Checked [recipe_ci_count] material/anvil rows; production material registration, food bootstrap research/material gates, actual crafting fixture and 13 negative fixtures.\n"
 	for (var/error in recipe_ci_errors)
 		report += "FAIL [error]\n"
 	report += recipe_ci_errors.len ? "FAIL\n" : "PASS\n"
@@ -209,3 +210,62 @@ var/recipe_ci_files = 0
 	S.produce_recipe(R, 1, H)
 	if (S.amount != 8)
 		recipe_ci_fail("craft fixture", "occupied turf was accepted")
+
+// Check the food route with an unresearched Stone Age faction, separately from
+// the catalog's all-nodes-DONE fixture. This does not simulate resource gathering.
+/proc/recipe_ci_food_recipe(material_path, result_path, faction)
+	var/material/M = new material_path
+	M.generate_recipes_civs(list(0,0,0), "global", faction)
+	for (var/datum/stack_recipe/R in recipe_ci_flatten(M.recipes))
+		if (R.result_type == result_path)
+			return R
+	return null
+
+/proc/recipe_ci_food_expect(condition, reason)
+	if (!condition)
+		recipe_ci_fail("food bootstrap", reason)
+
+/proc/recipe_ci_food_bootstrap()
+	// Reload every real global row; the catalog loop above tests one row at a time.
+	craftlist_lists["global"] = list()
+	for (var/line in file2list("config/crafting/material_recipes_global.txt", "\n"))
+		if (findtext(line, "RECIPE: ") && !findtext(line, "//"))
+			craftlist_lists["global"] += list(splittext(replacetext(line, "RECIPE: ", ""), ","))
+	map.ordinal_age = 0
+	map.resourceresearch = FALSE
+	map.chad_mode_plus = FALSE
+	var/faction = "food_bootstrap_ci"
+	map.faction_baseline_era[faction] = 0
+	var/datum/stack_recipe/R = recipe_ci_food_recipe(/material/wood, /obj/item/weapon/material/kitchen/utensil/knife/wood, faction)
+	recipe_ci_food_expect(R && R.req_amount == 2, "raw logs offer the two-log wooden knife")
+	R = recipe_ci_food_recipe(/material/stone, /obj/item/weapon/material/hatchet/tribal, faction)
+	recipe_ci_food_expect(R && R.req_amount == 2, "Stone Age offers the two-stone hatchet")
+	R = recipe_ci_food_recipe(/material/wood/soft, /obj/structure/research_bench, faction)
+	recipe_ci_food_expect(R && R.req_amount == 8, "eight planks offer the starter research bench")
+	recipe_ci_food_expect(!recipe_ci_food_recipe(/material/wood/soft, /obj/item/weapon/plough, faction), "plough stays locked before Basic Agriculture")
+	var/datum/research_node/N = get_research_node("basic_agriculture")
+	recipe_ci_food_expect(N && N.cost_ticks == 95 && N.min_bench_tier == 0 && !N.prereqs.len, "Basic Agriculture has a reachable starter-bench contract")
+	var/obj/structure/research_bench/B = new(locate(1,1,1))
+	B.faction = faction
+	recipe_ci_food_expect(B.can_assign_node("basic_agriculture"), "tier-zero bench can select Basic Agriculture")
+	recipe_ci_food_expect(!map.add_research_ticks(faction, "irrigation", 165) && !map.get_node_entry(faction, "irrigation"), "irrigation rejects study before its prerequisite")
+	// Feed earned-tick accounting directly. No connected researcher or scheduler
+	// is simulated, and no DONE status is written by this fixture.
+	recipe_ci_food_expect(!map.add_research_ticks(faction, "basic_agriculture", 94), "94 study ticks do not finish Basic Agriculture")
+	recipe_ci_food_expect(!recipe_ci_food_recipe(/material/wood/soft, /obj/item/weapon/plough, faction), "incomplete study keeps the plough locked")
+	recipe_ci_food_expect(map.add_research_ticks(faction, "basic_agriculture", 1), "the 95th study tick completes Basic Agriculture")
+	R = recipe_ci_food_recipe(/material/wood/soft, /obj/item/weapon/plough, faction)
+	recipe_ci_food_expect(R && R.req_amount == 4, "completed study offers the four-plank plough")
+	recipe_ci_food_expect(!recipe_ci_food_recipe(/material/wood, /obj/item/weapon/plough, faction), "raw logs do not substitute for planks")
+	recipe_ci_food_expect(!B.can_assign_node("irrigation"), "starter bench cannot select tier-one irrigation")
+	B.tier = 1
+	recipe_ci_food_expect(B.can_assign_node("irrigation"), "tier-one bench can select irrigation after Basic Agriculture")
+	map.ordinal_age = 8
+	recipe_ci_food_expect(!map.is_node_done(faction, "irrigation") && !map.is_node_done(null, "irrigation"), "Modern era does not grant specialist irrigation")
+	map.ordinal_age = 1
+	recipe_ci_food_expect(map.is_node_done(null, "basic_agriculture"), "Bronze factionless baseline grants Basic Agriculture")
+	var/new_faction = "food_bootstrap_frozen_ci"
+	map.faction_baseline_era[new_faction] = 0
+	recipe_ci_food_expect(!map.is_node_done(new_faction, "basic_agriculture"), "world era advancement does not grant an established Stone Age faction the plough")
+	map.ordinal_age = 0
+	qdel(B)
