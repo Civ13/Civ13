@@ -16,7 +16,7 @@ Sources:
 - Royal Swedish Academy of Sciences, primary pile and rechargeable lead-acid, 1859-60: https://www.kva.se/app/uploads/2019/10/scibackkeen19.pdf
 - William Hafford's archaeological assessment, reported by HISTORY: https://www.history.com/articles/baghdad-battery
 
-Production-source energy regressions and compiled real-item checks establish accounting, construction and lifecycle behavior. Gameplay capture is optional when it resolves remaining uncertainty; these checks do not establish graphical appearance or full-world persistence. No production deployment or restart is part of this milestone.
+Production-source energy regressions and compiled real-item checks establish accounting, construction and lifecycle behavior. Gameplay capture is optional when it resolves remaining uncertainty; these checks do not establish graphical appearance or production deployment. No production deployment or restart is part of this milestone.
 
 ## Rechargeable extension (requested scope)
 
@@ -24,4 +24,4 @@ Lead-acid accumulator: Industrial research 105, five lead sheets for the empty a
 
 Charging and discharge use one-second discrete simulation intervals and unity conversion efficiency; no additional losses or self-discharge are imposed. Discharge is prepaid and unused output is lost. Changing mode can lose a prepaid interval. Newly crafted accumulators have zero energy, and commissioning does not charge them. Primary cells cannot enter electrical charging mode.
 
-Persistence keeps energy, commissioning/assembly/electrode state and anchoring. Wiring, mode and prepaid output are intentionally omitted and must be reconnected after load. Scalar state round-trip checks do not establish full-world import behavior; that requires the actual persistence runtime separately.
+Persistence keeps energy, commissioning/assembly/electrode state and anchoring. Wiring, mode and prepaid output are intentionally omitted and must be reconnected after load. The compiled item suite exports, validates and imports all three real battery types through the production world serializer in a 4x4x1 temporary world. It verifies energy and commissioning, zero restored output, and exactly one debit/capacity after reconnection and repeated supply rebuilds. Startup and deferred garbage finalization are isolated adapters; large populated-map persistence is not established by this test.

@@ -107,6 +107,70 @@ var/list/battery_item_errors = list()
 	battery_item_check("loaded storage can power circuit", port.powerflow, 10)
 	loaded.Destroy()
 	battery_item_check("deletion removes stale supply", port.powerflow, 0)
+	try
+		run_battery_world_save_checks()
+	catch (var/exception/e)
+		battery_item_errors += "world serializer exception: [e]"
 	var/report = battery_item_errors.len ? "[jointext(battery_item_errors, "\n")]\nFAIL" : "BATTERY ITEMS PASS"
 	text2file(report, "battery-item-checks.txt")
 	shutdown()
+
+// Actual production exporter/preflight/importer in a tiny world. World startup
+// is disabled; only deferred garbage deletion is finalized by this adapter.
+/proc/run_battery_world_save_checks()
+	for (var/obj/O in world)
+		if (O == map) continue
+		qdel(O)
+		del(O)
+	map.ID = "BATTERY_CI"
+	map.loc = locate(4,4,1)
+	var/list/types = list(/obj/structure/battery, /obj/structure/battery/pile, /obj/structure/battery/lead_acid)
+	var/index = 0
+	for (var/path in types)
+		index++
+		var/obj/structure/battery/B = new path(locate(index,1,1))
+		B.name = "saved battery [index]"
+		B.assembled = TRUE
+		B.commissioned = TRUE
+		B.anchored = TRUE
+		B.stored_energy = 123.5 * index
+		var/obj/structure/cable/C = new(B.loc)
+		B.powersource = C
+		C.connections |= B
+		B.mode = "discharge"
+		B.settle_tick()
+		// Record chemical state after prepayment, not the output credit.
+		B.stored_energy = 123.5 * index
+	battery_item_check("actual world export", map_storage.Save_World(), TRUE)
+	battery_item_check("actual world save preflight", map_storage.validate_world_save(), TRUE)
+	map_storage.ClearMap()
+	for (var/obj/O in world)
+		if (O != map) del(O)
+	battery_item_check("actual world import", map_storage.Load_World(), TRUE)
+	index = 0
+	for (var/path in types)
+		index++
+		var/turf/T = locate(index,1,1)
+		var/obj/structure/battery/B = locate(path) in T
+		battery_item_check("world restored tier [index]", !!B, TRUE)
+		if (!B) continue
+		battery_item_check("world energy tier [index]", B.stored_energy, 123.5 * index)
+		battery_item_check("world commissioned tier [index]", B.commissioned, TRUE)
+		battery_item_check("world assembled tier [index]", B.assembled, TRUE)
+		battery_item_check("world load mode tier [index]", B.mode, "off")
+		battery_item_check("world load output tier [index]", B.available_output(), 0)
+		battery_item_check("world load wiring tier [index]", B.powersource, null)
+		var/obj/structure/cable/C = locate(/obj/structure/cable) in T
+		battery_item_check("world restored port tier [index]", !!C, TRUE)
+		if (!C) continue
+		C.rebuild_supply()
+		battery_item_check("world rebuild no stale output tier [index]", C.powerflow, 0)
+		B.powersource = C
+		C.connections |= B
+		B.mode = "discharge"
+		var/prior_energy = B.stored_energy
+		B.settle_tick()
+		C.rebuild_supply()
+		C.rebuild_supply()
+		battery_item_check("world reconnect capacity tier [index]", C.powerflow, B.discharge_rate)
+		battery_item_check("world reconnect debit tier [index]", B.stored_energy, prior_energy - B.discharge_rate)
