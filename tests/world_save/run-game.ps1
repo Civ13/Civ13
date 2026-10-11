@@ -18,7 +18,8 @@ try {
     Copy-Item -LiteralPath '.world_save_probe.rsc' -Destination $testRun
     # Public checkout defaults and name/crafting assets, no live server files.
     Copy-Item -LiteralPath 'config' -Destination $testRun -Recurse
-    $parameters = if ($Visual) { 'visual=1' } else { '' }
+    $testedCommit = git rev-parse HEAD
+    $parameters = "tested_commit=$testedCommit" + $(if ($Visual) { '&visual=1' } else { '' })
     Write-Output "Isolated full-game runtime: $testRun"
     & (Join-Path $ByondBin 'dd.exe') (Join-Path $testRun '.world_save_probe.dmb') -invisible -safe -params $parameters -log (Join-Path $testRun 'startup.log')
     $result = Get-Content -LiteralPath (Join-Path $testRun 'full_game_result.txt') -Raw

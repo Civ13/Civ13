@@ -12,6 +12,7 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 		if(!map || !ticker)
 			throw EXCEPTION("Game startup did not create map/ticker")
 		world.name = "Civ13 LOCAL full-game world-save probe"
+		text2file(json_encode(list("commit" = world.params["tested_commit"], "map_id" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "probe_metadata.json")
 		var/turf/T = locate(20,20,1)
 		var/obj/structure/closet/crate/C = new(T)
 		C.name = "world-save regression crate"
@@ -58,4 +59,4 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 	perspective = EYE_PERSPECTIVE
 	view = 7
 	winset(src, null, "mainwindow.title='Civ13 LOCAL full-game world-save probe'")
-	to_chat(src, "<b>[result]</b><br>Actual restored crate at (20,20,1), containing the named knife. Local temporary storage, no production services.")
+	to_chat(src, "<b>[result]</b><br>Commit: [world.params["tested_commit"]]<br>Map: [map.ID], [world.maxx]x[world.maxy]x[world.maxz]. Actual restored crate at (20,20,1), containing the named knife. Local temporary storage, no production services.")
