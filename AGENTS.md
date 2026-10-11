@@ -193,7 +193,6 @@ When adding, keep it concise and put it under the most relevant existing section
 If nothing fits, create a new section. Prefix your additions with the date and
 a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10: subcom audit -->`).
 
-<<<<<<< HEAD
 <!-- 2026-10-11: crafting validation -->
 ## Crafting checks
 
@@ -201,7 +200,6 @@ tests/crafting/README.md documents scripts/check-recipes.py, a compiled
 BYOND recipe-schema/registration and isolated crafting-fixture check. Use the
 current research-tree and map-mode gates when testing material registration;
 zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
-=======
 ## Local MCP tooling
 
 <!-- 2026-10-11: Civ13 MCP integration -->
@@ -213,5 +211,5 @@ Source discovery is lexical; include diagnostics do not replace compilation.
 Both compiler tools create temporary storage/processes. No live game, Topic or
 production administration tools are exposed. Never configure this server from a
 worktree that will be archived while the MCP entry still points to it.
->>>>>>> origin/master
+
 
