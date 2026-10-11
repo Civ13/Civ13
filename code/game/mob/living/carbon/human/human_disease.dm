@@ -113,5 +113,3 @@
 				playerzombie.loc = loc
 				playerzombie.name = "[real_name]'s zombie"
 				strip()
-
-
