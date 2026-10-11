@@ -21,4 +21,3 @@ jobs:
           cache-dependency-path: tools/mcp/package-lock.json
       - run: npm ci --prefix tools/mcp
       - run: npm test --prefix tools/mcp
-
