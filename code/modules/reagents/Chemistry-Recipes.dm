@@ -253,8 +253,15 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Calcium Chloride"
 	id = "calcium_chloride"
 	result = "calcium_chloride"
-	required_reagents = list("calcium carbonate" = 1, "chlorine" = 2)
+	required_reagents = list("calcium_carbonate" = 1, "chlorine" = 2)
 	result_amount = 3
+
+/datum/chemical_reaction/calcium_carbonate
+	name = "Calcium Carbonate"
+	id = "calcium_carbonate"
+	result = "calcium_carbonate"
+	required_reagents = list("calcium" = 1, "carbon" = 1, "oxygen" = 3)
+	result_amount = 5
 
 /datum/chemical_reaction/gluconic_acid
 	name = "Gluconic Acid"
@@ -281,7 +288,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Sodium Hydroxide"
 	id = "sodium_hydroxide"
 	result = "sodium_hydroxide"
-	required_reagents = list("sodium" = 2, "hydrogen" = 1, "oxygen" = 1)
+	required_reagents = list("sodium" = 1, "hydrogen" = 1, "oxygen" = 1)
 	result_amount = 3
 
 /datum/chemical_reaction/sulfurous_acid
@@ -371,11 +378,18 @@ datum/admins/proc/print_chemical_reactions()
 
 // Used in the Ziegler-Natta polymerization process as a catalyst
 /datum/chemical_reaction/titaniumchloride
-	name = "Titanium Chloride"
+	name = "Titanium Tetrachloride"
 	id = "titaniumchloride"
 	result = "titaniumchloride"
 	required_reagents = list("titanium" = 1, "chlorine" = 4)
 	result_amount = 5
+
+/datum/chemical_reaction/titaniumtrichloride
+	name = "Titanium Trichloride"
+	id = "titaniumtrichloride"
+	result = "titaniumtrichloride"
+	required_reagents = list("titanium" = 1, "chlorine" = 3)
+	result_amount = 4
 
 // Used in the Ziegler-Natta polymerization process as a co-catalyst
 /datum/chemical_reaction/aluminumchloride
@@ -438,15 +452,13 @@ datum/admins/proc/print_chemical_reactions()
 	result_amount = 25
 
 // Used to make Polypropylene plastics
-/* Requires heat to polymerize, but we don't have a system for that yet
 /datum/chemical_reaction/polypropylene
 	name = "Polypropylene"
 	id = "polypropylene"
 	result = "polypropylene"
 	required_reagents = list("propylene" = 2)
-	catalysts = list("methylpropene" = 2, "titaniumchloride" = 10, "borontrifluoride" = 5, "aluminumchloride" = 5)
+	catalysts = list("titaniumchloride" = 10, "borontrifluoride" = 5, "aluminumchloride" = 5)
 	result_amount = 25
-*/
 
 // Mostly used for polymerization, rubber production, adhesives, lubricate, antioxidents, fuel and fuel additive
 /datum/chemical_reaction/butene
@@ -666,13 +678,6 @@ datum/admins/proc/print_chemical_reactions()
 	result = "aspirin"
 	required_reagents = list("carbon" = 5, "water" = 4, "oxygen" = 2)
 	result_amount = 5
-
-/datum/chemical_reaction/calcium_carbonate
-	name = "Calcium carbonate"
-	id = "calcium carbonate"
-	result = "calcium carbonate"
-	required_reagents = list("carbon" = 1, "calcium" = 1, "oxygen" = 3)
-	result_amount = 2
 
 /datum/chemical_reaction/carbon_dioxide
 	name = "Carbon dioxide"

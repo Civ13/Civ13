@@ -1,0 +1,23 @@
+name: Component tool regression
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  component-tools:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BYOND_MAJOR: '516'
+      BYOND_MINOR: '1681'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Compile full game with pinned BYOND
+        run: sudo bash scripts/travis_pre_byond.sh
+      - name: Run bounded component tool regressions
+        shell: bash
+        run: |
+          source BYOND/byond/bin/byondsetup
+          /usr/bin/python3 scripts/check-component-tools.py

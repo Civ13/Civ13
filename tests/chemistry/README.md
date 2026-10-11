@@ -30,6 +30,72 @@ beaker contents; `Run chemistry` invokes production `process_reactions()` and
 verifies positive/missing-catalyst/wrong-feedstock cases. These fixture verbs are
 not the normal crafting menu. Ordinary CI also verifies those real beaker cases.
 
+## Gasoline precursor registration
+
+Use `run.py --probe fuel --byond-bin <absolute BYOND bin directory>` for four
+existing precursor recipes and real-beaker gasoline mixing. Two complete
+10 octane / 4 cyclopentane / 5 toluene / 1 butene batches must produce 40 gasoline.
+Missing butene or only 0.5 butene prevents mixing and preserves the inputs.
+`--probe fuel --negative-control` removes octane registration in a generated
+copy and requires the original missing-product failure. CI runs both modes.
+Visual mode supports `--probe fuel --visual` with the same localhost adapter.
+Fuel recipe ratios, engine consumption, ethanol blends and balance are unchanged.
+
+## Controlled laboratory processing
+
+`run.py --probe processing --byond-bin <absolute BYOND bin directory>` runs
+all 23 offered reactions through production beaker transfer and bench synthesis.
+It checks exact products, consumed reactants, retained catalysts, the carbonate
+to chloride chain, reagent phases, and rejected missing-input/overflow/unknown
+recipes. It verifies inert-beaker restoration, preexisting inert flags, and
+collector survival when the bench is destroyed. The production catalog parser,
+research mapping, generated crafting recipe, stack consumption and actual bench
+constructor run, including occupied-tile and insufficient-glass rejection.
+
+This probe removes the normal map, world/global/controller startup and uses a
+30x30x1 test world, temporary catalogs/names and a constructor-only human adapter.
+The craft timer is set to zero; timed builds, menu clicks and character startup
+are not verified. Runtime error diagnostics fail the check. Processing has no
+visual mode. `--probe processing --negative-control` removes NMMO registration
+in a generated copy and must detect the missing output before consuming inputs.
+
+## Full Chemistry Recipes acceptance
+
+`run.py --probe biochemistry --byond-bin <absolute BYOND bin directory>` adds:
+
+- Actual construction of finite feedstock dispenser (20 glass), extraction kit
+  (14 iron), burner (4 iron) and centrifuge (24 electronics) via their generated
+  research-gated production recipes and output constructors, with the complete
+  equipment chain constructed from the Carib catalog as well.
+- Fourteen feedstocks through production dispensing/transfer, capacity/depletion
+  rejection, and hydrogen chloride-to-hydrochloric acid.
+- Natural jungle seed-list registration, seed-to-plant construction, real ready
+  crop harvest and meat/vomit/papaya extraction. Spoiled, unknown and nonempty-kit
+  cases preserve sources.
+- Cold/expired/empty/remote burner rejection, actual fuel filling/consumption and
+  heated polypropylene with retained catalysts.
+- Scaled 9:1 gasoline/purified-ethanol blending, missing-ethanol rejection and
+  real gasoline-engine consumption. Ordinary gasoline consumption is unchanged;
+  diesel-only engines reject the blend.
+- All six gelatin treatment/finishing combinations, production transfers, exact
+  centrifuge yields, all blood fractions, unknown/full-collector rejection and
+  the actual 15-second callback with powered/lost-power/lost-collector cases and
+  a restarted cycle that rejects its obsolete callback.
+
+`--probe biochemistry --negative-control` removes enginefuel registration in a
+generated source copy and requires the missing-product failure. CI runs both.
+All 32 offered recipes run through inherited processing checks. Success requires
+every check to finish without a recorded failure; the fixture error handler
+preserves runtime diagnostics without normal game error infrastructure.
+
+External power is injected for the timed callback. Craft timers, character
+construction and installed dispenser containers are explicit adapters; harvest
+starts at a ready stage. This does not prove player menu clicks, crop growth
+duration, power-network integration, syringe collection, ordinary-map progression,
+production-server or graphical acceptance. Temporary storage and the 30x30x1
+world remain isolated; only needed observation datums are initialized. There is
+no visual mode. Player paths and game choices: docs/chemistry-recipes.md.
+
 For gameplay replication, use an isolated game and a reagent container with
 adequate capacity. Mix 2 units of ethylene with 10 titaniumchloride,
 5 borontrifluoride, and 5 aluminumchloride. Expect 25 polyethylene and unchanged

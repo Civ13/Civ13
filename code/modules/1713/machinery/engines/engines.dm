@@ -41,6 +41,8 @@
 
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank //only used for internal combustion, but needs to be here because its checked by vehicles
 	var/on = FALSE
+	var/tmp/battery_charge_epoch = -1
+	var/tmp/battery_charge_power = 0
 
 	var/starting_snd = 'sound/machines/diesel_starting.ogg'
 	var/running_snd = 'sound/machines/diesel_loop.ogg'
@@ -71,7 +73,7 @@
 /obj/structure/engine/proc/process_power_output()
 	for (var/obj/structure/cable/CB in connections)
 		CB.rebuild_supply()
-	var/powerused = 0
+	var/powerused = battery_charge_epoch == round(world.time / 10) ? battery_charge_power : 0
 	currentspeed = 0
 	if (!isemptylist(connections))
 		for (var/obj/C in connections)

@@ -191,6 +191,14 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 
 ## Agent self-maintenance
 
+<!-- 2026-10-11: world-save verification -->
+- Persistence regressions are in `tests/world_save`; the focused fixture uses
+  the actual saver/loader with isolated adapters, and `run-game.ps1` exercises
+  real constructors in temporary storage. New saves use version-2 typed values
+  and sharded entries; retain legacy flat-entry reading. Never restore `loc`,
+  `pixloc`, or client session fields as ordinary variables. Linux DreamDaemon
+  `-safe` requires a relative log path inside the isolated working directory.
+
 This file is read by every agent at session start. If you discover something
 useful about the codebase that future agents should know, **update this file**.
 Good candidates for additions:
@@ -208,6 +216,13 @@ When adding, keep it concise and put it under the most relevant existing section
 If nothing fits, create a new section. Prefix your additions with the date and
 a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10: subcom audit -->`).
 
+<!-- 2026-10-11: crafting validation -->
+## Crafting checks
+
+tests/crafting/README.md documents scripts/check-recipes.py, a compiled
+BYOND recipe-schema/registration and isolated crafting-fixture check. Use the
+current research-tree and map-mode gates when testing material registration;
+zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 <!-- 2026-10-11: observer reference bookkeeping -->
 - Observer cleanup count lists retain their datum keys. Counts must reflect actual callbacks: duplicate global registrations do not increment them, and unregistering all callbacks subtracts their full count.
 - `scripts/test-observer-memory.ps1 -ByondBin <BYOND-bin-directory>` runs complete production observer registration/cleanup code in an isolated fixture with temporary outputs and no game startup.
@@ -222,6 +237,13 @@ a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10:
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
 ## Local MCP tooling
 
+<!-- 2026-10-11: component work tools -->
+`scripts/check-component-tools.py` compiles production head/handle assembly and
+material stats with isolated startup, then checks rejection, bounded properties,
+wear/provenance and current-format native entry save/load. Use BYOND 516.1681.
+The legacy `QDELETED` macro reads `gc_destroyed`, while legacy qdel uses
+`gcDestroyed`/null locations; ingredient accessibility must also be validated.
+
 <!-- 2026-10-11: chemistry verification -->
 Chemical recipe IDs do not register reagents: each product needs a matching
 `/datum/reagent` ID or mixing can consume inputs without producing the result.
@@ -230,6 +252,19 @@ disabled and runs bounded reactions in temporary storage. CI also runs its
 wrong-feedstock negative control; this does not replace gameplay verification.
 Linux DreamDaemon safe mode rejects an absolute `-log` path. Use a relative
 log filename with the runtime working directory set to temporary storage.
+
+<!-- 2026-10-11: chemistry recipe acceptance -->
+`tests/chemistry/run.py --probe biochemistry` checks production acquisition,
+construction, controlled reactions, heated polymers, gelatin separation and
+engine fuel in temporary storage. See docs/chemistry-recipes.md for game yields,
+finite supplies and labels. Its isolated error handler and explicit completion
+flags are necessary: normal game error infrastructure is unavailable when
+global/controller startup is disabled. Parenthesize each `in` expression when
+combining membership checks with `&&` in DM.
+<!-- 2026-10-11: gasoline precursor regression -->
+`tests/chemistry/run.py --probe fuel` verifies precursor registration and real
+beaker gasoline mixing; its negative control removes octane registration in a
+generated copy. Fuel ratios and engine behavior are separate contracts.
 
 <!-- 2026-10-11: Civ13 MCP integration -->
 `tools/mcp/README.md` documents the bounded stdio server and Codex configuration.
@@ -240,6 +275,7 @@ Source discovery is lexical; include diagnostics do not replace compilation.
 Both compiler tools create temporary storage/processes. No live game, Topic or
 production administration tools are exposed. Never configure this server from a
 worktree that will be archived while the MCP entry still points to it.
+
 
 <!-- 2026-10-11: wire power verification -->
 `tests/power/README.md` documents isolated cable accounting regressions and an
@@ -263,3 +299,24 @@ game callback/locomotive-loop tests with `tests/train_collision/run-game.ps1`.
 The full-game probe uses temporary state and outbound-hook controls. Its optional
 visual mode needs separate capture authorization; it never proves production
 crash behavior. Do not replace required gameplay captures with fixture output.
+
+<!-- 2026-10-11: conveyor verification -->
+`tests/conveyor/run.ps1` compares production tick snapshots with isolated storage;
+retained entries are distinct from OS private memory. `run-game.ps1 -ExerciseCapture`
+checks real forward/reverse/stop behavior. Its optional bounded `-Visual` mode
+requires the coordinator's exclusive screen turn; see tests/conveyor/README.md.
+<!-- 2026-10-11: shipped Discord changelog -->
+The standalone publisher in tools/changelog requires reviewed manifests and live
+confirmation or a trusted successful production deployment event. A merge/CI pass
+is not shipment. Preserve the discord-changelog-receipts branch; pending receipts
+block uncertain replay. See tools/changelog/README.md before activation.
+
+<!-- 2026-10-11: hosted API reference -->
+Source docs publish from master via api-pages.yml to https://civ13.github.io/Civ13/.
+The generator validates emitted links and search anchors; search covers documented output only.
+
+<!-- 2026-10-11: documentation-only CI selection -->
+The always-running ci-selection.yml selects compilation conservatively and skips it for documentation-only changes. Extensive runtime suites require CI workflow_dispatch with extensive_regressions enabled; train tests are workflow_dispatch-only. Skips do not prove gameplay; see docs/ci-selection.md.
+
+<!-- 2026-10-11: plant lifecycle -->
+Dead/static crops stop growth at entry and pending-wait wake; water death keeps its specific description, and age expiration marks the crop dead before stopping. `tests/plant_lifecycle/run.ps1 -ByondBin <516.1681-bin>` executes production growth/water/soil procs with accelerated waits; baseline callback counts are not whole-game performance evidence.

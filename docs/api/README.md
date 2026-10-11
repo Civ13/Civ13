@@ -66,9 +66,14 @@ any diagnostic change fails and requires review. Do not refresh that file blindl
 dmdoc prints parser errors but may return success, so unexpected stderr also fails validation.
 Coverage is deliberately informational, not a universal annotation requirement.
 
-The existing Civ13 repository Pages setting points to workflow hosting at
-`https://civ13.github.io/Civ13/`, but currently has no deployment workflow and an errored
-status. Proposed destination: that project site for this API reference, leaving the
-root website and player wiki intact. This change only prepares downloadable artifacts;
-confirm repository Pages ownership and publication rules before adding deployment.
-No server configuration or existing website/wiki content is changed.
+The hosted reference is [civ13.github.io/Civ13](https://civ13.github.io/Civ13/).
+The master-only Pages workflow regenerates, validates and publishes the same output,
+with write permissions restricted to the deployment job. PRs only build artifacts.
+The root showcase and player wiki are separate sites.
+
+Search on every page links to the index, where case-insensitive words match documented
+page paths and proc, var and macro anchors. Leading type slashes and actual .dm filenames are supported. Press Enter to focus the first result,
+then Enter to follow it. Results are capped at 100; refine the query for more precise
+matches. JavaScript is required for search, while the generated reference remains
+browsable without it. This searches emitted documentation, not every source declaration.
+The footer and build.json identify the exact source commit.
