@@ -18,7 +18,7 @@ try {
     [IO.File]::WriteAllText((Join-Path $repoRoot '.chemistry_world.dm'), $world)
     $source = Get-Content -LiteralPath 'civ13.dme' -Raw
     $source = $source.Replace('code\world.dm', '.chemistry_world.dm')
-    [IO.File]::WriteAllText((Join-Path $repoRoot '.chemistry_probe.dme'), $source + "`n#include `"tests/chemistry/polyethylene.dm`"`n")
+    [IO.File]::WriteAllText((Join-Path $repoRoot '.chemistry_probe.dme'), $source + "`n#include `"tests/chemistry/polyethylene.dm`"`n#include `"tests/chemistry/visual.dm`"`n#include `"tests/chemistry/fuel_visual.dm`"`n")
     $build = & (Join-Path $ByondBin 'dm.exe') -max_errors 0 '.chemistry_probe.dme' 2>&1
     $build | Write-Output
     if ($LASTEXITCODE -ne 0 -or ($build -join "`n") -notmatch '0 errors, 0 warnings') { throw 'Compilation failed' }
