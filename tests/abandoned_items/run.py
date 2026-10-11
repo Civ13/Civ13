@@ -36,6 +36,7 @@ def main():
     metadata = root / 'code/game/objects/map_metadata'
     for name in ('_map_metadata', 'nomads/nomads_mountain', 'nomads/nomads_ice_age', 'colonia', 'pepelsibirsk'):
         source = (metadata / (name + '.dm')).read_text()
+        assert 'advance_decay = season_decay_requested(force, advance_decay)' in source, name
         if name != '_map_metadata':
             assert 'abandonment_season_autonomous = TRUE' in source, name
         inside = False
@@ -45,9 +46,14 @@ def main():
             if line.startswith('/'):
                 inside = '/seasons(' in line
             if inside and line.lstrip().startswith('season = '):
-                assert lines[i+1].strip() == 'record_abandonment_season_change()', (name, i+1)
+                assert lines[i+1].strip() == 'record_abandonment_season_change(advance_decay)', (name, i+1)
                 transitions += 1
         assert transitions >= 2, name
+    asia = (metadata / 'nomads/nomads_asia.dm').read_text()
+    assert '..(looping, force, advance_decay)' in asia
+    admin = (root / 'code/modules/admin/verbs/weather.dm').read_text()
+    assert 'map.seasons(FALSE, TRUE, advance_decay)' in admin
+    assert '"Keep decay age", "Advance decay age", "Cancel"' in admin
     out = Path(tempfile.mkdtemp(prefix='civ13-decay-'))
     stem = '.abandoned_items_probe'
     generated = [root / (stem + s) for s in ('.dme', '_world.dm', '_decay.dm', '.dmb', '.rsc')]

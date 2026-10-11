@@ -18,8 +18,12 @@ var/global/abandonment_season_changes = 0
 		return TRUE
 	return config && config.seasons_on && (season == "SPRING" || season == "SUMMER" || season == "FALL" || season == "WINTER")
 
-/obj/map_metadata/proc/record_abandonment_season_change()
-	if (src == map)
+/proc/season_decay_requested(force, advance_decay)
+	// Natural cycles age debris. Forced calls preserve it unless explicitly opted in.
+	return isnull(advance_decay) ? !force : advance_decay
+
+/obj/map_metadata/proc/record_abandonment_season_change(advance_decay = TRUE)
+	if (advance_decay && src == map)
 		abandonment_season_changes++
 
 /obj/item/proc/abandonment_uses_seasons()

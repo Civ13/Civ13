@@ -18,6 +18,36 @@ var/decay_assertions = 0
 /obj/map_metadata/nomads/decay_probe/New()
 	map = src // Isolated metadata: no normal map timers or systems.
 
+/obj/map_metadata/nomads/mountain/decay_admin_probe
+	valid_weather_types = list(WEATHER_NONE)
+
+/obj/map_metadata/nomads/mountain/decay_admin_probe/New()
+	map = src // Real season routine, isolated metadata startup.
+
+/obj/map_metadata/nomads/ice_age/decay_admin_probe
+	valid_weather_types = list(WEATHER_NONE)
+
+/obj/map_metadata/nomads/ice_age/decay_admin_probe/New()
+	map = src // Real season routine, isolated metadata startup.
+
+/obj/map_metadata/nomads/asia/decay_admin_probe
+	valid_weather_types = list(WEATHER_NONE)
+
+/obj/map_metadata/nomads/asia/decay_admin_probe/New()
+	map = src // Real season routine, isolated metadata startup.
+
+/obj/map_metadata/colonia/decay_admin_probe
+	valid_weather_types = list(WEATHER_NONE)
+
+/obj/map_metadata/colonia/decay_admin_probe/New()
+	map = src // Real season routine, isolated metadata startup.
+
+/obj/map_metadata/pepelsibirsk/decay_admin_probe
+	valid_weather_types = list(WEATHER_NONE)
+
+/obj/map_metadata/pepelsibirsk/decay_admin_probe/New()
+	map = src // Real season routine, isolated metadata startup.
+
 /proc/decay_counts()
 	var/waste = 0
 	var/pending = 0
@@ -36,6 +66,28 @@ var/decay_assertions = 0
 		var/obj/map_metadata/nomads/decay_probe/season_map = new
 		season = "SPRING"
 		decay_assert(season_map.abandonment_uses_seasons(), "ancient nomads uses seasonal clock before first transition")
+		var/transition_count = abandonment_season_changes
+		season_map.valid_weather_types = list(WEATHER_NONE)
+		season_map.seasons(FALSE, TRUE)
+		decay_assert(season == "SUMMER" && abandonment_season_changes == transition_count, "forced base transition preserves decay by default")
+		season_map.seasons(FALSE, TRUE, TRUE)
+		decay_assert(season == "FALL" && abandonment_season_changes == transition_count+1, "explicit forced base transition advances decay")
+		season_map.seasons(FALSE)
+		decay_assert(season == "WINTER" && abandonment_season_changes == transition_count+2, "natural base transition advances decay")
+		for (var/metadata_type in list(/obj/map_metadata/nomads/mountain/decay_admin_probe, /obj/map_metadata/nomads/ice_age/decay_admin_probe, /obj/map_metadata/nomads/asia/decay_admin_probe, /obj/map_metadata/colonia/decay_admin_probe, /obj/map_metadata/pepelsibirsk/decay_admin_probe))
+			var/obj/map_metadata/custom_map = new metadata_type
+			season = "SPRING"
+			transition_count = abandonment_season_changes
+			custom_map.seasons(FALSE, TRUE)
+			decay_assert(abandonment_season_changes == transition_count && season != "SPRING", "forced [metadata_type] preserves decay by default")
+			custom_map.seasons(FALSE, TRUE, TRUE)
+			decay_assert(abandonment_season_changes == transition_count+1, "explicit forced [metadata_type] advances decay")
+			custom_map.seasons(FALSE)
+			decay_assert(abandonment_season_changes == transition_count+2, "natural [metadata_type] advances decay")
+			qdel(custom_map)
+		map = season_map
+		season = "SPRING"
+		abandonment_season_changes = 0
 		var/turf/season_turf = locate(1,1,1)
 		var/obj/item/trash/decay_probe/season_waste = new(season_turf)
 		season_waste.check_abandonment(0)
