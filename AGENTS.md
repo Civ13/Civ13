@@ -174,6 +174,21 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 - `_compile_options.dm` controls TESTING, UNIT_TESTS, REFERENCE_TRACKING, etc. - uncomment as needed.
 - `.gitignore` excludes compiled outputs (`*.dmb`, `*.rsc`), log files, `data/`, `SQL/`, `dreamchecker.exe`, `civ13.json`, `TODO.md`.
 
+<!-- 2026-10-11: repeatable game verification -->
+## Game verification evidence
+
+- Follow `docs/game-verification.md` for exact-commit build, isolated-fixture,
+  graphical, season-memory, and save-round-trip evidence. Reuse probes present in
+  the selected checkout; investigation-branch probes may not be on master yet.
+- Game PRs need actual screenshots and reproduction steps, plus video when
+  movement/timing requires it. Keep unavailable acceptance explicit. Current
+  captures are internal testing material; no AI-generated art or mock evidence.
+- Use `scripts/check-game-evidence.py` to validate existing bundles. Its success
+  proves metadata/file consistency, not gameplay acceptance or OOM remediation.
+  Tests live in `tests/test_game_evidence.py` and do not launch BYOND.
+- Use temporary saves and external-effect adapters. Testing does not authorize
+  production restarts, live season transitions/imports, or publishing captures.
+
 ## Agent self-maintenance
 
 This file is read by every agent at session start. If you discover something

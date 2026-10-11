@@ -42,3 +42,5 @@ webclient/dist/
 webclient/package-lock.json
 webclient/config.json
 TODO.md
+__pycache__/
+*.pyc
