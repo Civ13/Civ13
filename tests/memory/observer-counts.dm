@@ -13,10 +13,13 @@ var/global/failures = 0
     world.log << message
 #include "../../code/datums/observation/observation.dm"
 #include "../../code/datums/observation/~cleanup.dm"
+/datum/test_listener
+    var/first_hits = 0
+    var/second_hits = 0
 /datum/test_listener/proc/first(source)
-    return
+    first_hits++
 /datum/test_listener/proc/second(source)
-    return
+    second_hits++
 /proc/check(condition, message)
     if (!condition)
         failures++
@@ -30,6 +33,12 @@ var/global/failures = 0
         var/datum/test_listener/other_listener = new
         event.register(source, listener, /datum/test_listener/proc/first)
         event.register(source, listener, /datum/test_listener/proc/second)
+        event.raise_event(source)
+        check(listener.first_hits == 1 && listener.second_hits == 1, "registered callbacks must fire once")
+        event.unregister(source, listener, /datum/test_listener/proc/first)
+        check(GLOB.event_sources_count[source] == 1 && GLOB.event_listen_count[listener] == 1, "single removal must preserve remaining counts")
+        event.raise_event(source)
+        check(listener.first_hits == 1 && listener.second_hits == 2, "single removal must preserve second callback")
         event.unregister(source, listener)
         check(!event.event_sources.len, "source callbacks removed")
         check(!GLOB.event_sources_count.len && !GLOB.event_listen_count.len, "bulk unregister retained source/listener keys")

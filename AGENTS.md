@@ -192,3 +192,7 @@ Good candidates for additions:
 When adding, keep it concise and put it under the most relevant existing section.
 If nothing fits, create a new section. Prefix your additions with the date and
 a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10: subcom audit -->`).
+
+<!-- 2026-10-11: observer reference bookkeeping -->
+- Observer cleanup count lists retain their datum keys. Counts must reflect actual callbacks: duplicate global registrations do not increment them, and unregistering all callbacks subtracts their full count.
+- `scripts/test-observer-memory.ps1 -ByondBin <BYOND-bin-directory>` runs complete production observer registration/cleanup code in an isolated fixture with temporary outputs and no game startup.
