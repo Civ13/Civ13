@@ -1,0 +1,12 @@
+{
+  "Commit": "339675da2d3120743a4b8816784801ae30179390",
+  "BinarySHA256": "6B5FB16DD23E0AD9823F98ACD4886322C232C8F59CDBB516D177B60BB6258718",
+  "Runtime": "BYOND 516.1681",
+  "Client": "BYOND 516.1669",
+  "Map": "Nomads (Temperate)",
+  "Scope": "Temporary local server, no production changes",
+  "Transitions": "Spring -> Summer -> Fall -> Winter -> Spring",
+  "Checks": "Joined as Nomad, movement, seasonal terrain and tree changes, cold penalties, Examine tree",
+  "TestIntervention": "Admin rejuvenation after naked test character developed cold injury",
+  "Limitations": "No Gaia full-game test, long-runtime test or production OOM proof"
+}
