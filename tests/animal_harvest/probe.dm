@@ -133,9 +133,16 @@ var/global/harvest_duplicate_result = null
 					harvest_assert(F.rots && F.raw && F.decay > 0 && F.radiation == 4 && F.reagents.get_reagent_amount("protein") == 2, "Offal decay/nutrition/radiation contract")
 			qdel(A)
 			harvest_clear(site)
+		var/obj/item/stack/material/pelt/cowpelt/existing_hide = new(site, 5)
+		var/mob/living/simple_animal/cattle/cow/harvest_tester/pelt_cow = new(site)
+		pelt_cow.harvest_products(site, TRUE)
+		harvest_assert(existing_hide.amount == 7 && harvest_count(site, /obj/item/stack/material/pelt/cowpelt) == 1, "Hide constructor merged before setting yield")
+		qdel(pelt_cow)
+		harvest_clear(site)
+		var/obj/item/stack/material/rope/existing_rope = new(site, 10)
 		var/obj/item/stack/sinew/S = new(U, 3)
 		S.attack_self(U)
-		harvest_assert(S.amount == 2 && harvest_count(site, /obj/item/stack/material/rope) == 1, "Binding conversion conservation")
+		harvest_assert(S.amount == 2 && existing_rope.amount == 10 && harvest_count(site, /obj/item/stack/material/rope) == 2, "Binding conversion conservation on stocked turf")
 		var/mob/living/simple_animal/cattle/cow/harvest_tester/saved = new(site)
 		saved.harvesting = TRUE
 		saved.harvested = TRUE

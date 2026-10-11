@@ -57,7 +57,9 @@
 		return
 	// Existing rope recipes consume this cord for tools and other bindings.
 	if (use(1))
-		var/obj/item/stack/material/rope/cord = new(get_turf(user))
+		// Keep the new item live until the hand placement; automatic merging can
+		// queue the constructor's returned item for deletion.
+		var/obj/item/stack/material/rope/cord = new(get_turf(user), 1, FALSE)
 		cord.name = "sinew binding cord"
 		user.put_in_any_hand_if_possible(cord)
 		to_chat(user, SPAN_NOTICE("You twist the sinew into binding cord."))
@@ -176,91 +178,62 @@
 
 /mob/living/simple_animal/proc/harvest_hide(turf/site)
 	if (istype(src, /mob/living/simple_animal/hostile/bear)) //all bears on the inheritance path drop leather to compensate for improper types.
-		var/obj/item/stack/material/leather/NP = new/obj/item/stack/material/leather(site)
-		NP.amount = 1
+		new /obj/item/stack/material/leather(site, 1)
 	if (istype(src, /mob/living/simple_animal/hostile/bear/boar/black))
-		var/obj/item/stack/material/pelt/bearpelt/black/NP = new/obj/item/stack/material/pelt/bearpelt/black(site)
-		NP.amount = 6
+		new /obj/item/stack/material/pelt/bearpelt/black(site, 6)
 	else if (istype(src, /mob/living/simple_animal/hostile/bear/sow/black))
-		var/obj/item/stack/material/pelt/bearpelt/black/NP = new/obj/item/stack/material/pelt/bearpelt/black(site)
-		NP.amount = 6
+		new /obj/item/stack/material/pelt/bearpelt/black(site, 6)
 	else if (istype(src, /mob/living/simple_animal/hostile/bear/boar/polar))
-		var/obj/item/stack/material/pelt/bearpelt/white/NP = new/obj/item/stack/material/pelt/bearpelt/white(site)
-		NP.amount = 6
+		new /obj/item/stack/material/pelt/bearpelt/white(site, 6)
 	else if (istype(src, /mob/living/simple_animal/hostile/bear/sow/polar))
-		var/obj/item/stack/material/pelt/bearpelt/white/NP = new/obj/item/stack/material/pelt/bearpelt/white(site)
-		NP.amount = 6
+		new /obj/item/stack/material/pelt/bearpelt/white(site, 6)
 	else if (istype(src, /mob/living/simple_animal/hostile/bear/boar/brown))
-		var/obj/item/stack/material/pelt/bearpelt/brown/NP = new/obj/item/stack/material/pelt/bearpelt/brown(site)
-		NP.amount = 6
+		new /obj/item/stack/material/pelt/bearpelt/brown(site, 6)
 	else if (istype(src, /mob/living/simple_animal/hostile/bear/sow/brown))
-		var/obj/item/stack/material/pelt/bearpelt/brown/NP = new/obj/item/stack/material/pelt/bearpelt/brown(site)
-		NP.amount = 6
+		new /obj/item/stack/material/pelt/bearpelt/brown(site, 6)
 	else if (istype(src, /mob/living/simple_animal/hostile/wolf/white))
-		var/obj/item/stack/material/pelt/wolfpelt/white/NP = new/obj/item/stack/material/pelt/wolfpelt/white(site)
-		NP.amount = 4
+		new /obj/item/stack/material/pelt/wolfpelt/white(site, 4)
 	else if (istype(src, /mob/living/simple_animal/hostile/wolf))
-		var/obj/item/stack/material/pelt/wolfpelt/NP = new/obj/item/stack/material/pelt/wolfpelt(site)
-		NP.amount = 4
+		new /obj/item/stack/material/pelt/wolfpelt(site, 4)
 	else if (istype(src, /mob/living/simple_animal/monkey))
-		var/obj/item/stack/material/pelt/monkeypelt/NP = new/obj/item/stack/material/pelt/monkeypelt(site)
-		NP.amount = 3
+		new /obj/item/stack/material/pelt/monkeypelt(site, 3)
 	else if (istype(src, /mob/living/simple_animal/hostile/gorilla/gigantopithecus))
-		var/obj/item/stack/material/pelt/gorillapelt/NP = new/obj/item/stack/material/pelt/gorillapelt(site)
-		NP.amount = 6
+		new /obj/item/stack/material/pelt/gorillapelt(site, 6)
 	else if (istype(src, /mob/living/simple_animal/hostile/gorilla))
-		var/obj/item/stack/material/pelt/gorillapelt/NP = new/obj/item/stack/material/pelt/gorillapelt(site)
-		NP.amount = 3
+		new /obj/item/stack/material/pelt/gorillapelt(site, 3)
 	else if (istype(src, /mob/living/simple_animal/hostile/fox/arctic))
-		var/obj/item/stack/material/pelt/foxpelt/white/NP = new/obj/item/stack/material/pelt/foxpelt/white(site)
-		NP.amount = 3
+		new /obj/item/stack/material/pelt/foxpelt/white(site, 3)
 	else if (istype(src, /mob/living/simple_animal/hostile/fox))
-		var/obj/item/stack/material/pelt/foxpelt/NP = new/obj/item/stack/material/pelt/foxpelt(site)
-		NP.amount = 3
+		new /obj/item/stack/material/pelt/foxpelt(site, 3)
 	else if (istype(src, /mob/living/simple_animal/pet/cat))
-		var/obj/item/stack/material/pelt/catpelt/NP = new/obj/item/stack/material/pelt/catpelt(site)
-		NP.amount = 2
+		new /obj/item/stack/material/pelt/catpelt(site, 2)
 	else if (istype(src, /mob/living/simple_animal/hostile/panther) && !istype(src, /mob/living/simple_animal/hostile/panther/jaguar))
-		var/obj/item/stack/material/pelt/pantherpelt/NP = new/obj/item/stack/material/pelt/pantherpelt(site)
-		NP.amount = 3
+		new /obj/item/stack/material/pelt/pantherpelt(site, 3)
 	else if (istype(src, /mob/living/simple_animal/hostile/sabertooth) && !istype(src, /mob/living/simple_animal/hostile/sabertooth/white))
-		var/obj/item/stack/material/pelt/lionpelt/NP = new/obj/item/stack/material/pelt/lionpelt(site)
-		NP.amount = 6
+		new /obj/item/stack/material/pelt/lionpelt(site, 6)
 	else if (istype(src, /mob/living/simple_animal/hostile/sabertooth/lion) && !istype(src, /mob/living/simple_animal/hostile/sabertooth/lion/gladiator))
-		var/obj/item/stack/material/pelt/lionpelt/NP = new/obj/item/stack/material/pelt/lionpelt(site)
-		NP.amount = 3
+		new /obj/item/stack/material/pelt/lionpelt(site, 3)
 	else if (istype(src, /mob/living/simple_animal/hostile/alligator))
-		var/obj/item/stack/material/pelt/gatorpelt/NP = new/obj/item/stack/material/pelt/gatorpelt(site)
-		NP.amount = 3
+		new /obj/item/stack/material/pelt/gatorpelt(site, 3)
 	else if (istype(src, /mob/living/simple_animal/hostile/dinosaur/trex))
-		var/obj/item/stack/material/pelt/lizardpelt/NP = new/obj/item/stack/material/pelt/lizardpelt(site)
-		NP.amount = 10
+		new /obj/item/stack/material/pelt/lizardpelt(site, 10)
 	else if (istype(src, /mob/living/simple_animal/hostile/dinosaur/velociraptor))
-		var/obj/item/stack/material/pelt/lizardpelt/NP = new/obj/item/stack/material/pelt/lizardpelt(site)
-		NP.amount = 3
+		new /obj/item/stack/material/pelt/lizardpelt(site, 3)
 	else if (istype(src, /mob/living/simple_animal/pachy))
-		var/obj/item/stack/material/pelt/lizardpelt/NP = new/obj/item/stack/material/pelt/lizardpelt(site)
-		NP.amount = 3
+		new /obj/item/stack/material/pelt/lizardpelt(site, 3)
 	else if (istype(src, /mob/living/simple_animal/hostile/dinosaur/compsognathus))
-		var/obj/item/stack/material/pelt/lizardpelt/NP = new/obj/item/stack/material/pelt/lizardpelt(site)
-		NP.amount = 1
+		new /obj/item/stack/material/pelt/lizardpelt(site, 1)
 	else if (istype(src, /mob/living/simple_animal/sheep))
-		var/obj/item/stack/material/pelt/sheeppelt/NP = new/obj/item/stack/material/pelt/sheeppelt(site)
-		NP.amount = 2
+		new /obj/item/stack/material/pelt/sheeppelt(site, 2)
 	else if (istype(src, /mob/living/simple_animal/goat))
-		var/obj/item/stack/material/pelt/goatpelt/NP = new/obj/item/stack/material/pelt/goatpelt(site)
-		NP.amount = 2
+		new /obj/item/stack/material/pelt/goatpelt(site, 2)
 	else if (istype(src, /mob/living/simple_animal/cattle/cow))
-		var/obj/item/stack/material/pelt/cowpelt/NP = new/obj/item/stack/material/pelt/cowpelt(site)
-		NP.amount = 2
+		new /obj/item/stack/material/pelt/cowpelt(site, 2)
 	else if (istype(src, /mob/living/simple_animal/cattle/bull))
-		var/obj/item/stack/material/pelt/cowpelt/NP = new/obj/item/stack/material/pelt/cowpelt(site)
-		NP.amount = 3
+		new /obj/item/stack/material/pelt/cowpelt(site, 3)
 	else if (istype(src, /mob/living/simple_animal/bison))
-		var/obj/item/stack/material/pelt/bisonpelt/NP = new/obj/item/stack/material/pelt/bisonpelt(site)
-		NP.amount = 3
+		new /obj/item/stack/material/pelt/bisonpelt(site, 3)
 	else if (istype(src, /mob/living/simple_animal/bisonbull))
-		var/obj/item/stack/material/pelt/bisonpelt/NP = new/obj/item/stack/material/pelt/bisonpelt(site)
-		NP.amount = 4
+		new /obj/item/stack/material/pelt/bisonpelt(site, 4)
 	else if (harvest_mammal() && !istype(src, /mob/living/simple_animal/hostile/bear))
 		new /obj/item/stack/material/leather(site, max(1, butcher_yield()-2))
