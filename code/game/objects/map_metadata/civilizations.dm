@@ -1,4 +1,5 @@
 /obj/map_metadata/civilizations
+	abandonment_season_cycle = TRUE
 	ID = MAP_CIVILIZATIONS
 	title = "Two Kingdoms"
 	lobby_icon = 'icons/lobby/civ13.gif'

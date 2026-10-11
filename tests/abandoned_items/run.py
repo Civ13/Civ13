@@ -32,6 +32,22 @@ def main():
     p.add_argument('--negative-control', nargs='?', const='decay', choices=('decay', 'storage', 'save'))
     a = p.parse_args()
     root = Path(__file__).resolve().parents[2]
+    # Assert every production transition is wired, without starting map systems.
+    metadata = root / 'code/game/objects/map_metadata'
+    for name in ('_map_metadata', 'nomads/nomads_mountain', 'nomads/nomads_ice_age', 'colonia', 'pepelsibirsk'):
+        source = (metadata / (name + '.dm')).read_text()
+        if name != '_map_metadata':
+            assert 'abandonment_season_autonomous = TRUE' in source, name
+        inside = False
+        lines = source.splitlines()
+        transitions = 0
+        for i, line in enumerate(lines):
+            if line.startswith('/'):
+                inside = '/seasons(' in line
+            if inside and line.lstrip().startswith('season = '):
+                assert lines[i+1].strip() == 'record_abandonment_season_change()', (name, i+1)
+                transitions += 1
+        assert transitions >= 2, name
     out = Path(tempfile.mkdtemp(prefix='civ13-decay-'))
     stem = '.abandoned_items_probe'
     generated = [root / (stem + s) for s in ('.dme', '_world.dm', '_decay.dm', '.dmb', '.rsc')]
@@ -107,7 +123,7 @@ def main():
         result = (out / 'result.txt').read_text(encoding="utf-8").strip()
         print(result)
         if a.negative_control:
-            expected = {'decay': 'expired exposed waste decays', 'storage': 'nested storage protects waste', 'save': 'production serializer excludes runtime state'}[a.negative_control]
+            expected = {'decay': 'fourth change decays waste', 'storage': 'nested storage protects waste', 'save': 'production serializer excludes runtime state'}[a.negative_control]
             if not result.startswith('FAIL: ' + expected): raise RuntimeError('Negative control did not detect expected mutation')
             print(f'PASS: {a.negative_control} mutation detected')
         elif not result.startswith('PASS:') or proc.returncode:

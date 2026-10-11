@@ -1,7 +1,31 @@
-// Active server elapsed time in deciseconds, unrelated to day/night or seasons.
-#define ABANDONED_ITEM_WARNING (12 * 60 * 60 * 10)
-#define ABANDONED_ITEM_LIFETIME (24 * 60 * 60 * 10)
+// Fallback elapsed server time for maps without an active seasonal cycle.
+#define ABANDONED_ITEM_WARNING (6 * 60 * 60 * 10)
+#define ABANDONED_ITEM_LIFETIME (12 * 60 * 60 * 10)
+#define ABANDONED_ITEM_SEASON_WARNING 2
+#define ABANDONED_ITEM_SEASON_LIFETIME 4
 #define ABANDONED_ITEM_BATCH 256
+
+var/global/abandonment_season_changes = 0
+
+/obj/map_metadata
+	var/abandonment_season_cycle = FALSE
+	var/abandonment_season_autonomous = FALSE
+
+/obj/map_metadata/proc/abandonment_uses_seasons()
+	if (!abandonment_season_cycle)
+		return FALSE
+	if (abandonment_season_autonomous)
+		return TRUE
+	return config && config.seasons_on && (season == "SPRING" || season == "SUMMER" || season == "FALL" || season == "WINTER")
+
+/obj/map_metadata/proc/record_abandonment_season_change()
+	if (src == map)
+		abandonment_season_changes++
+
+/obj/item/proc/abandonment_uses_seasons()
+	if (!map)
+		return FALSE
+	return map.abandonment_uses_seasons()
 
 var/global/list/abandoned_items = list()
 var/global/abandoned_item_cursor = 1
@@ -9,6 +33,8 @@ var/global/abandoned_item_cursor = 1
 /obj/item
 	// Explicit opt-in. Do not enable at the item root or broad useful-gear parents.
 	var/abandonment_decay = FALSE
+	var/tmp/abandonment_season_since = null
+	var/tmp/abandonment_seasonal = FALSE
 	var/tmp/abandonment_index = 0
 	var/tmp/abandonment_since = null
 	var/tmp/abandonment_location = null // ref text, never a retained location datum
@@ -49,10 +75,14 @@ var/global/abandoned_item_cursor = 1
 	abandoned_items.Cut(abandoned_items.len, abandoned_items.len + 1)
 	abandonment_index = 0
 	abandonment_since = null
+	abandonment_season_since = null
+	abandonment_seasonal = FALSE
 	abandonment_location = null
 
 /obj/item/proc/reset_abandonment()
 	abandonment_since = null
+	abandonment_season_since = null
+	abandonment_seasonal = FALSE
 	abandonment_location = null
 
 /obj/item/Del()
@@ -70,7 +100,7 @@ var/global/abandoned_item_cursor = 1
 		reset_abandonment()
 
 /obj/item/persistence_runtime_var(key)
-	if (key == "abandonment_index" || key == "abandonment_since" || key == "abandonment_location")
+	if (key == "abandonment_index" || key == "abandonment_since" || key == "abandonment_location" || key == "abandonment_season_since" || key == "abandonment_seasonal")
 		return TRUE
 	return ..()
 
@@ -115,20 +145,28 @@ var/global/abandoned_item_cursor = 1
 	if (abandonment_protected())
 		reset_abandonment()
 		return FALSE
+	var/seasonal = abandonment_uses_seasons()
 	var/location_key = "\ref[loc]"
-	if (isnull(abandonment_since) || abandonment_location != location_key || now < abandonment_since)
+	if (isnull(abandonment_since) || abandonment_location != location_key || now < abandonment_since || seasonal != abandonment_seasonal || (seasonal && abandonment_season_changes < abandonment_season_since))
+		abandonment_seasonal = seasonal
+		abandonment_season_since = abandonment_season_changes
 		abandonment_since = now
 		abandonment_location = location_key
 		return FALSE
-	if (now - abandonment_since >= ABANDONED_ITEM_LIFETIME)
+	if (seasonal ? abandonment_season_changes - abandonment_season_since >= ABANDONED_ITEM_SEASON_LIFETIME : now - abandonment_since >= ABANDONED_ITEM_LIFETIME)
 		// No sleep between final eligibility check and qdel. Never delete children.
 		qdel(src)
 		return TRUE
 	return FALSE
 
 /obj/item/proc/abandonment_notice()
-	if (!isnull(abandonment_since) && abandonment_location == "\ref[loc]" && is_abandonment_waste() && !abandonment_protected() && world.time - abandonment_since >= ABANDONED_ITEM_WARNING)
-		return " It is badly weathered and will crumble away after 24 hours of abandonment. Pick it up or store it to preserve it."
+	if (isnull(abandonment_since) || abandonment_location != "\ref[loc]" || !is_abandonment_waste() || abandonment_protected() || abandonment_seasonal != abandonment_uses_seasons())
+		return ""
+	if (abandonment_seasonal)
+		if (abandonment_season_changes - abandonment_season_since >= ABANDONED_ITEM_SEASON_WARNING)
+			return " It is badly weathered and will crumble away after four season changes of abandonment. Pick it up or store it to preserve it."
+	else if (world.time - abandonment_since >= ABANDONED_ITEM_WARNING)
+		return " It is badly weathered and will crumble away after 12 hours of abandonment. Pick it up or store it to preserve it."
 	return ""
 
 /process/abandoned_items/setup()

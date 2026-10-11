@@ -1,4 +1,5 @@
 /obj/map_metadata/four_kingdoms
+	abandonment_season_cycle = TRUE
 	ID = MAP_FOUR_KINGDOMS
 	title = "Four Kingdoms"
 	description = "Several tribes are settling in this land. Will they be able to get along?."
