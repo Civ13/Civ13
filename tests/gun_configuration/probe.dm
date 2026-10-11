@@ -43,6 +43,7 @@
 			if ("incapacitated") H:test_incapacitated = TRUE
 			if ("load") ammo_magazine = new /obj/item/ammo_magazine(src)
 			if ("damage") health--
+			if ("delete part") qdel(H.r_hand)
 			if ("bench lost")
 				for (var/obj/structure/repair/gun/B in range(1,H)) B.loc = locate(5,3,1)
 			if ("shared") configuration_concurrent = install_configuration(H.r_hand,H)
@@ -85,6 +86,13 @@ var/configuration_concurrent
 		text2file("FAIL: [E] at [E.file]:[E.line]","gun_configuration-result.txt")
 	del(world)
 /proc/run_configuration_checks()
+	GLOB.all_observable_events = list()
+	GLOB.global_listen_count = list()
+	GLOB.event_sources_count = list()
+	GLOB.event_listen_count = list()
+	GLOB.dir_set_event = new /decl/observ/dir_set
+	GLOB.moved_event = new /decl/observ/moved
+	GLOB.destroyed_event = new /decl/observ/destroyed
 	var/turf/T = locate(1,1,1)
 	var/mob/living/human/configuration_ci/H = new(T)
 	var/obj/item/weapon/screwdriver/S = new(H)
@@ -151,6 +159,10 @@ var/configuration_concurrent
 	configuration_hold(H,R,G)
 	G.test_action = "drop part"
 	configuration_check(!G.install_configuration(R,H) && !G.optic_rail && R.loc == T,"post-wait dropped part remains uninstalled")
+	var/obj/item/weapon/gun_mount/deleted_part = new(H)
+	configuration_hold(H,deleted_part,G)
+	G.test_action = "delete part"
+	configuration_check(!G.install_configuration(deleted_part,H) && !G.optic_rail && !G.gun_work_busy,"deleted part cannot complete installation")
 	for (var/action in list("cancel","drop gun","tool lost","incapacitated","load","shared"))
 		G.loc = H
 		H.test_incapacitated = FALSE

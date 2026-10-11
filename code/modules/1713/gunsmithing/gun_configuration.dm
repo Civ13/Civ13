@@ -121,11 +121,11 @@
 	return TRUE
 
 /obj/item/weapon/gun/proc/configuration_actor(mob/living/human/H)
-	return H && loc == H && isturf(H.loc) && (H.get_active_hand() == src || H.get_inactive_hand() == src) && !H.incapacitated()
+	return !QDELETED(src) && !QDELETED(H) && loc == H && isturf(H.loc) && (H.get_active_hand() == src || H.get_inactive_hand() == src) && !H.incapacitated()
 
 /obj/item/weapon/gun/proc/configuration_bench(mob/living/human/H)
 	for (var/obj/structure/repair/gun/B in range(1, H))
-		if (isturf(B.loc) && B.anchored) return B
+		if (!QDELETED(B) && isturf(B.loc) && B.anchored) return B
 	return null
 
 /obj/item/weapon/gun/proc/configuration_tools(obj/item/P, mob/living/human/H)
@@ -138,6 +138,7 @@
 	return TRUE
 
 /obj/item/weapon/gun/proc/configuration_compatible(obj/item/P)
+	if (QDELETED(P)) return FALSE
 	if (istype(P, /obj/item/weapon/gun_mount))
 		var/obj/item/weapon/gun_mount/M = P
 		return P.type == /obj/item/weapon/gun_mount && !optic_rail && !scope && (attachment_slots & ATTACH_SCOPE) && (M.input_mount in scope_mounts) && !(M.output_mount in scope_mounts) && !P.contents.len
@@ -187,7 +188,7 @@
 		gun_work_busy = TRUE
 		configuration_part_busy(P, TRUE)
 		var/complete = wait_for_configuration(H, 15)
-		if (!complete || !P || !configuration_actor(H) || !configuration_unloaded() || P.loc != H || H.get_active_hand() != P || !configuration_tools(P,H) || !configuration_compatible(P))
+		if (!complete || QDELETED(P) || !configuration_actor(H) || !configuration_unloaded() || P.loc != H || H.get_active_hand() != P || !configuration_tools(P,H) || !configuration_compatible(P))
 			gun_work_busy = FALSE
 			configuration_part_busy(P, FALSE)
 			return FALSE
@@ -216,7 +217,7 @@
 	configuration_part_busy(P, TRUE)
 	var/old_loc = P.loc
 	var/complete = wait_for_configuration(H, 15)
-	if (!complete || !P || !configuration_actor(H) || !configuration_unloaded() || !configuration_tools(P,H) || P.loc != old_loc || (P == optic_rail ? P.contents.len : !(P in configuration_parts())))
+	if (!complete || QDELETED(P) || !configuration_actor(H) || !configuration_unloaded() || !configuration_tools(P,H) || P.loc != old_loc || (P == optic_rail ? P.contents.len : !(P in configuration_parts())))
 		gun_work_busy = FALSE
 		configuration_part_busy(P, FALSE)
 		return FALSE
@@ -276,8 +277,8 @@
 /obj/item/weapon/gun/proc/firearm_service_access(mob/living/human/H, obj/item/weapon/gun_cleaning_kit/K, obj/structure/repair/gun/B)
 	if (!configuration_actor(H) || !configuration_unloaded() || !isnum(health) || !isnum(maxhealth) || health <= 0 || maxhealth <= 0) return FALSE
 	if (B)
-		return isturf(B.loc) && B.anchored && in_range(B,H) && maxhealth > B.damageamount
-	return K && K.loc == H && H.get_active_hand() == K && !istype(src,/obj/item/weapon/gun/projectile/bow) && health/maxhealth >= 0.5 && health/maxhealth < 0.8
+		return !QDELETED(B) && isturf(B.loc) && B.anchored && in_range(B,H) && maxhealth > B.damageamount
+	return !QDELETED(K) && K.loc == H && H.get_active_hand() == K && !istype(src,/obj/item/weapon/gun/projectile/bow) && health/maxhealth >= 0.5 && health/maxhealth < 0.8
 
 /obj/item/weapon/gun/proc/service_firearm(mob/living/human/H, obj/item/weapon/gun_cleaning_kit/K, obj/structure/repair/gun/B)
 	if (gun_work_busy || (B && B.firearm_service_busy) || !firearm_service_access(H,K,B)) return FALSE
