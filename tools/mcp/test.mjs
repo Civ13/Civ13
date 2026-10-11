@@ -46,3 +46,19 @@ test('cancellation stops owned compiler and removes temporary state', async () =
 });
 
 
+
+test('realpath rejects directory links escaping configured root', async () => {
+ const fs = await import('node:fs/promises'); const os = await import('node:os');
+ const dir = await fs.mkdtemp(path.join(os.tmpdir(),'civ13-mcp-paths-'));
+ const repo = path.join(dir,'repo'), outside = path.join(dir,'outside');
+ await fs.mkdir(repo); await fs.mkdir(outside);
+ await fs.writeFile(path.join(outside,'escape.dm'),'private fixture');
+ await fs.symlink(outside,path.join(repo,'code'),process.platform==='win32'?'junction':'dir');
+ const transport = new StdioClientTransport({command:process.execPath,args:[path.join(import.meta.dirname,'server.mjs'),repo]});
+ const client = new Client({name:'path-test',version:'1.0.0'});
+ try {
+  await client.connect(transport);
+  const response = await client.callTool({name:'source_read',arguments:{path:'code/escape.dm'}});
+  assert.equal(response.isError,true); assert.match(response.content[0].text,/escapes repository/);
+ } finally { await client.close(); await fs.rm(dir,{recursive:true,force:true}); }
+});
