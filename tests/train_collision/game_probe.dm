@@ -73,6 +73,13 @@ var/global/datum/train_game_probe/train_game_probe = new
 		A.connected = B
 		A.automovement = TRUE
 		check(A.process_rail_movement() && A.x == 26 && B.x == 25, "normal automatic movement")
+		prepare_visual()
+		for(var/obj/structure/trains/locomotive/L in cars)
+			L.on = TRUE
+			L.locomotive()
+		sleep(60)
+		for(var/obj/structure/trains/locomotive/L in cars)
+			check(!L.automovement && L.health == 995, "normal locomotive loop stops with collision damage at [L.x]")
 		text2file(json_encode(list("commit" = world.params["tested_commit"], "map_id" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "version" = world.byond_version, "build" = world.byond_build, "failures" = failures)), "train-result.json")
 		text2file("RESULT failures=[failures]", "train-result.txt")
 	catch(var/exception/e)
