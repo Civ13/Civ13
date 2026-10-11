@@ -121,6 +121,8 @@
 		if(contents && AM.load_datums)
 			changing_vars += "reagents"
 	for(var/v in changing_vars)
+		if(A.persistence_runtime_var(v))
+			continue
 		// Location is reconstructed by the map grid and contents graph. Saving it
 		// recursively used to create turf entries outside that graph.
 		if(v in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))
