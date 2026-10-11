@@ -1,5 +1,6 @@
 
 /obj/map_metadata/pioneers
+	abandonment_season_cycle = TRUE
 	ID = MAP_PIONEERS
 	title = "Pioneers"
 	description = "Pioneers have reached the frontier! The Pioneers must build their town. The gracewall will be up after 25 minutes.THIS IS A RP MAP - PLAYERS ARE FRIENDLY BY DEFAULT."

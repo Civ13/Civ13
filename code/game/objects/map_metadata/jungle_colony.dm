@@ -1,5 +1,6 @@
 
 /obj/map_metadata/jungle_colony
+	abandonment_season_cycle = TRUE
 	ID = MAP_JUNGLE_COLONY
 	title = "Jungle Colony"
 	description = "Europeans have reached the shore! The Colonists must build their villages."

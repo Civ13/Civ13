@@ -1,4 +1,5 @@
 /obj/map_metadata/hunt
+	abandonment_season_cycle = TRUE
 	ID = MAP_HUNT
 	title = "Hunt"
 	description = "After a major storm, a Pirate shipwreck has washed ashore on an unknown Island. However, they are not alone..."

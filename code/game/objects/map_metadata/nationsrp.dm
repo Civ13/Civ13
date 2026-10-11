@@ -1,4 +1,5 @@
 /obj/map_metadata/nationsrp
+	abandonment_season_cycle = TRUE
 	ID = MAP_NATIONSRP
 	title = "Nations RP"
 	lobby_icon = 'icons/lobby/civ13.gif'

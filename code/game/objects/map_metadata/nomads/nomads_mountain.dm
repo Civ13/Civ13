@@ -1,5 +1,7 @@
 
 /obj/map_metadata/nomads/mountain
+	abandonment_season_cycle = TRUE
+	abandonment_season_autonomous = TRUE
 	
 	ID = MAP_NOMADS_MOUNTAIN
 	title = "Nomads (Mountain)"
@@ -18,6 +20,7 @@
 /obj/map_metadata/nomads/mountain/seasons()
 	if (real_season == "dry")
 		season = "Wet Season"
+		record_abandonment_season_change()
 		to_chat(world, "<big>The <b>Wet Season</b> has started.</big>")
 		change_weather_somehow()
 		for (var/turf/floor/beach/drywater/D)
@@ -25,6 +28,7 @@
 		real_season = "wet"
 	else
 		season = "Dry Season"
+		record_abandonment_season_change()
 		to_chat(world, "<big>The <b>Dry Season</b> has started.</big>")
 		change_weather_somehow()
 		for (var/turf/floor/beach/water/swamp/D)

@@ -1,4 +1,6 @@
 /obj/map_metadata/colonia //this is literally just pepelsibirsk but roman
+	abandonment_season_cycle = TRUE
+	abandonment_season_autonomous = TRUE
 	ID = MAP_COLONIA
 	title = "Colonia"
 	lobby_icon = "icons/lobby/ancient.png"
@@ -54,6 +56,7 @@
 /obj/map_metadata/colonia/seasons()
 	if (season == "FALL")
 		season = "WINTER"
+		record_abandonment_season_change()
 		to_chat(world, "<big>The <b>Winter</b> has started. In the hot climates, the wet season has started.</big>")
 		change_weather_somehow()
 		spawn(1200)
@@ -112,6 +115,7 @@
 
 	else if (season == "SPRING")
 		season = "SUMMER"
+		record_abandonment_season_change()
 		to_chat(world, "<big>The <b>Summer</b> has started. In the hot climates, the dry season has started.</big>")
 		change_weather_somehow()
 		spawn(300)
@@ -144,6 +148,7 @@
 			WT.ChangeTurf(/turf/floor/dirt)
 	else if (season == "WINTER")
 		season = "SPRING"
+		record_abandonment_season_change()
 		to_chat(world, "<big>The weather is getting warmer. It is now <b>Spring</b>. In the hot climates, the wet season continues.</big>")
 		spawn(900)
 			for (var/obj/structure/wild/tree/live_tree/TREES in world)
@@ -210,6 +215,7 @@
 					qdel(SW3)
 	else if (season == "SUMMER")
 		season = "FALL"
+		record_abandonment_season_change()
 		to_chat(world, "<big>The leaves start to fall and the weather gets colder. It is now <b>Fall</b>. In the hot climates, the dry season continues.</big>")
 		spawn(900)
 			for (var/obj/structure/wild/tree/live_tree/TREES in world)
