@@ -17,10 +17,13 @@ GLOBAL_LIST_EMPTY(event_listen_count)
 		GLOB.event_listen_count[listener] += 1
 
 /decl/observ/unregister(var/datum/event_source, var/datum/listener, var/proc_call)
+	var/list/listeners = event_sources[event_source]
+	var/list/callbacks = listeners ? listeners[listener] : null
+	var/removed_count = proc_call ? 1 : length(callbacks)
 	. = ..()
 	if(.)
-		GLOB.event_sources_count[event_source] -= 1
-		GLOB.event_listen_count[listener] -= 1
+		GLOB.event_sources_count[event_source] -= removed_count
+		GLOB.event_listen_count[listener] -= removed_count
 
 		if(GLOB.event_sources_count[event_source] <= 0)
 			GLOB.event_sources_count -= event_source
@@ -33,9 +36,11 @@ GLOBAL_LIST_EMPTY(event_listen_count)
 		GLOB.global_listen_count[listener] += 1
 
 /decl/observ/unregister_global(var/datum/listener, var/proc_call)
+	var/list/callbacks = global_listeners[listener]
+	var/removed_count = proc_call ? 1 : length(callbacks)
 	. = ..()
 	if(.)
-		GLOB.global_listen_count[listener] -= 1
+		GLOB.global_listen_count[listener] -= removed_count
 		if(GLOB.global_listen_count[listener] <= 0)
 			GLOB.global_listen_count -= listener
 
