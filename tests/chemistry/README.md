@@ -65,7 +65,8 @@ in a generated copy and must detect the missing output before consuming inputs.
 
 - Actual construction of finite feedstock dispenser (20 glass), extraction kit
   (14 iron), burner (4 iron) and centrifuge (24 electronics) via their generated
-  research-gated production recipes and output constructors.
+  research-gated production recipes and output constructors, with the complete
+  equipment chain constructed from the Carib catalog as well.
 - Fourteen feedstocks through production dispensing/transfer, capacity/depletion
   rejection, and hydrogen chloride-to-hydrochloric acid.
 - Natural jungle seed-list registration, seed-to-plant construction, real ready

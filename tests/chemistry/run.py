@@ -103,6 +103,8 @@ def main():
             (logs / 'config/crafting').mkdir(parents=True)
             shutil.copy2(root / 'config/crafting/material_recipes_global.txt',
                          logs / 'config/crafting/material_recipes_global.txt')
+            shutil.copy2(root / 'config/crafting/material_recipes_carib.txt',
+                         logs / 'config/crafting/material_recipes_carib.txt')
             shutil.copytree(root / 'config/names', logs / 'config/names')
         if args.visual:
             daemon_output = (logs / 'daemon.log').open('w', encoding='utf-8')

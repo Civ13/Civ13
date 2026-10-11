@@ -43,8 +43,8 @@ a wrench, connect the existing cable power system, and meet its medical skill
 requirement. Pour input into it and install an empty vial as collector. A cycle
 takes 15 seconds and requires power at both start and completion.
 
-New equipment appears in global/Carib catalogs through the Modern Age. The
-centrifuge retains its existing global catalog/research rules. Map catalogs and
+Equipment appears in global/Carib catalogs through the Modern Age. Carib gains
+the existing 24-electronics centrifuge recipe with its Pharmacology gate. Map catalogs and
 progression still determine which recipes a player is offered.
 
 ## Recipes and balance choices

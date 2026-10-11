@@ -1551,6 +1551,7 @@ RECIPE: /material/glass/,beaker,/obj/item/weapon/reagent_containers/glass/beaker
 RECIPE: /material/glass/,large beaker,/obj/item/weapon/reagent_containers/glass/beaker/large,3,40,0,1,chemistry,105,0,0,8,null
 RECIPE: /material/glass/,laboratory distiller,/obj/structure/lab_distillery,10,140,1,1,chemistry,105,0,0,8,null
 RECIPE: /material/glass/,laboratory reaction bench,/obj/structure/reaction_bench,10,140,1,1,chemistry,105,0,0,8,null
+RECIPE: /material/electronics/,laboratory centrifuge,/obj/structure/centrifuge,24,100,0,1,chemistry,100,0,0,8,null
 RECIPE: /material/glass/,laboratory feedstock dispenser,/obj/structure/chemical_dispenser/full/laboratory,20,180,1,1,chemistry,90,0,0,8,null
 RECIPE: /material/iron/,laboratory burner,/obj/item/weapon/laboratory_burner,4,80,0,1,chemistry,105,0,0,8,null
 

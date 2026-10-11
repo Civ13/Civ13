@@ -14,13 +14,14 @@
 	GLOB.name_set_event = new /decl/observ/name_set
 	GLOB.stat_set_event = new /decl/observ/stat_set
 	biochemistry_acquisition_checks()
+	biochemistry_carib_checks()
 	biochemistry_heat_fuel_checks()
 	biochemistry_gelatin_checks()
 	return TRUE
 
-/proc/biochemistry_build(result_path, material_path, stack_path, cost, x)
+/proc/biochemistry_build(result_path, material_path, stack_path, cost, x, faction = "global")
 	var/material/M = new material_path()
-	M.generate_recipes_civs(list(999,999,999), "global", null)
+	M.generate_recipes_civs(list(999,999,999), faction, null)
 	var/datum/stack_recipe/recipe
 	for(var/entry in M.recipes)
 		if(istype(entry, /datum/stack_recipe))
@@ -44,6 +45,15 @@
 	var/obj/output = locate(result_path) in T
 	chemistry_assert(output, "Equipment constructor missing: [result_path]")
 	return output
+
+/proc/biochemistry_carib_checks()
+	craftlist_lists["config/crafting/carib"] = list()
+	map.load_new_recipes("config/crafting/material_recipes_carib.txt")
+	craftlist_lists["carib"] = craftlist_lists["config/crafting/carib"]
+	chemistry_assert(craftlist_lists["carib"], "Carib catalog did not load")
+	for(var/list/equipment in list(list(/obj/structure/reaction_bench, /material/glass, /obj/item/stack/material/glass, 10), list(/obj/structure/chemical_dispenser/full/laboratory, /material/glass, /obj/item/stack/material/glass, 20), list(/obj/item/weapon/laboratory_burner, /material/iron, /obj/item/stack/material/iron, 4), list(/obj/item/weapon/reagent_containers/glass/extraction_kit, /material/iron, /obj/item/stack/material/iron, 14), list(/obj/structure/centrifuge, /material/electronics, /obj/item/stack/material/electronics, 24)))
+		var/obj/output = biochemistry_build(equipment[1], equipment[2], equipment[3], equipment[4], 30, "carib")
+		qdel(output)
 
 /proc/biochemistry_supply(obj/structure/chemical_dispenser/D, obj/structure/reaction_bench/bench, id, amount)
 	var/obj/item/weapon/reagent_containers/glass/beaker/B = new(D)
