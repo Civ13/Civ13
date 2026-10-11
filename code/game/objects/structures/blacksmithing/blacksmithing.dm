@@ -87,7 +87,11 @@
 			var/list/optlist = list("cancel")
 			if (H.orc)
 				optlist = list("cancel", "orkish shields", "orkish headwear", "orkish helmets", "orkish armor")
+				if (blackpowder_part_options(P, H).len > 1)
+					optlist += "flintlock parts"
 				var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
+				if (choice == "flintlock parts")
+					return forge_blackpowder_part(P, H)
 				if (choice == "cancel")
 					return
 				var/list/newlist = list("Cancel")
@@ -135,7 +139,11 @@
 					optlist = list("cancel","helmets")
 				else if (map.ordinal_age == 8)
 					optlist = list("cancel","armor")
+				if (blackpowder_part_options(P, H).len > 1)
+					optlist += "flintlock parts"
 				var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
+				if (choice == "flintlock parts")
+					return forge_blackpowder_part(P, H)
 				if (choice == "cancel")
 					return
 				var/list/newlist = list("Cancel")
@@ -175,7 +183,11 @@
 			var/list/optlist = list("cancel")
 			if (H.orc)
 				//optlist = list("cancel", "orkish shields", "orkish headwear", "orkish helmets") //disabled for now, as no Orkish armour and weapons require steel at the moment
+				if (blackpowder_part_options(P, H).len > 1)
+					optlist += "flintlock parts"
 				var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
+				if (choice == "flintlock parts")
+					return forge_blackpowder_part(P, H)
 				if (choice == "cancel")
 					return
 				var/list/newlist = list("Cancel")
@@ -226,7 +238,11 @@
 				else if (map.ordinal_age == 8)
 					optlist = list("cancel","helmets","guns")
 
+				if (blackpowder_part_options(P, H).len > 1)
+					optlist += "flintlock parts"
 				var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
+				if (choice == "flintlock parts")
+					return forge_blackpowder_part(P, H)
 				if (choice == "cancel")
 					return
 				var/list/newlist = list("Cancel")

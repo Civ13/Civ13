@@ -2113,6 +2113,8 @@ RECIPE: /material/wood/,berries gatherer,/obj/item/weapon/berriesgatherer,4,80,0
 RECIPE: /material/wood/soft/,fishing pole,/obj/item/weapon/fishing,3,120,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/soft/,mop,/obj/item/weapon/mop,2,55,0,1,tools,22,0,0,8,null
 RECIPE: /material/wood/soft/,rollingpin,/obj/item/weapon/material/kitchen/rollingpin,1,50,0,1,tools,22,0,0,8,null
+RECIPE: /material/wood/soft/,pistol butt,/obj/item/blackpowder_part/stock/pistol,1,120,0,1,tools,0,80,0,4,null
+RECIPE: /material/wood/soft/,musket stock,/obj/item/blackpowder_part/stock/musket,3,240,0,1,tools,0,80,0,4,null
 
 RECIPE: /material/wood/soft/,bucket,/obj/item/weapon/reagent_containers/glass/bucket,2,60,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,produce basket,/obj/item/weapon/storage/produce_basket,5,100,0,1,tools,0,0,0,8,null
