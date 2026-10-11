@@ -847,7 +847,7 @@
 	for (var/obj/item/clothing/C in list(head,wear_suit,w_uniform,shoes,gloves,wear_mask))
 		if (C)
 			if (C.min_cold_protection_temperature && C.min_cold_protection_temperature <= temperature)
-				. |= C.cold_protection
+				. |= C.get_cold_coverage()
 
 /mob/living/human/get_heat_protection(temperature) //Temperature is the temperature you're being exposed to.
 	var/thermal_protection_flags = get_heat_protection_flags(temperature)
@@ -862,11 +862,12 @@
 	var/protection = 0
 	for (var/obj/item/clothing/C in list(head,wear_suit,w_uniform,shoes,gloves,wear_mask))
 		if (C && C.min_cold_protection_temperature && C.min_cold_protection_temperature <= temperature)
+			var/coverage = C.get_cold_coverage()
 			// First layer blocks 80% of a body's weighted heat loss; an
 			// overlapping layer adds 16%. Exposed parts still lose heat.
-			protection += 0.8 * get_thermal_protection(C.cold_protection & ~covered)
-			protection += 0.16 * get_thermal_protection(C.cold_protection & covered)
-			covered |= C.cold_protection
+			protection += 0.8 * get_thermal_protection(coverage & ~covered)
+			protection += 0.16 * get_thermal_protection(coverage & covered)
+			covered |= coverage
 	return min(0.9, protection) * (1 - 0.5 * cold_wetness)
 
 /mob/living/human/proc/get_thermal_protection(var/flags)

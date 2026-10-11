@@ -85,6 +85,17 @@ var/weather_runtime_error = FALSE
 		var/mob/living/human/weather_probe/ordinary = new(locate(1,1,1))
 		ordinary.w_uniform = new /obj/item/clothing/under
 		weather_assert(ordinary.get_cold_protection(244.15) > 0, "Unmodified ordinary clothing must insulate")
+		var/ordinary_protection = ordinary.get_cold_protection(244.15)
+		ordinary.w_uniform = new /obj/item/clothing/under/mayan_loincloth
+		var/obj/item/clothing/catalog_item = ordinary.w_uniform
+		weather_assert(catalog_item.get_cold_coverage() == LOWER_TORSO, "Actual loincloth must cover only its declared thermal region")
+		weather_assert(ordinary.get_cold_protection(244.15) < ordinary_protection, "Actual loincloth must insulate less than full ordinary clothing")
+		ordinary.w_uniform = new /obj/item/clothing/under/celtic_short_braccae
+		catalog_item = ordinary.w_uniform
+		weather_assert(catalog_item.get_cold_coverage() == LOWER_TORSO, "Actual shorts must not inherit full uniform insulation")
+		ordinary.w_uniform = new /obj/item/clothing/under
+		ordinary.w_uniform.body_parts_covered = LEGS
+		weather_assert(ordinary.get_cold_protection_flags(244.15) == LEGS, "Physical clothing coverage must limit the damage mask too")
 		weather_assert(ordinary.get_cold_protection(213.15) == 0, "Ordinary clothing has a finite temperature rating")
 		ordinary.cold_protection_disabled_timer = 10
 		weather_assert(ordinary.get_cold_protection(244.15) == 0, "Disabled protection must remain disabled")

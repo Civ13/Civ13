@@ -31,7 +31,10 @@ requests without health, organ healing, metabolism, movement or death side effec
 The comparable uniform is a fixture-rated torso/arm/leg layer (200 K minimum),
 the coat is the real fur-coat template, and full coverage adds head/hand/foot
 coverage at 160 K. The fixture also checks an unmodified ordinary uniform, its
-240 K limit and the existing protection-disabled state. This separates coverage
+240 K limit and the existing protection-disabled state. Actual Mayan loincloth
+and Celtic shorts templates retain lower-torso-only insulation. Underclothing
+insulation intersects physical coverage and any declared thermal mask.
+This separates coverage
 math from catalog ratings without granting equipment to live players.
 
 The `--baseline` mode loads the three original thermal/clothing sources from

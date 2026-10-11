@@ -249,7 +249,7 @@
 		for (var/obj/item/clothing/C in list(H.head,H.wear_suit,H.w_uniform,H.shoes,H.gloves,H.wear_mask))
 			if (C)
 				if (C.cold_protection)
-					sum |= C.cold_protection
+					sum |= C.get_cold_coverage()
 			if (sum & HEAD)
 				exposed_bp -= "head"
 			if (sum & UPPER_TORSO)

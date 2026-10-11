@@ -488,6 +488,14 @@ BLIND	 // can't see anything
 	restricted_accessory_slots = list("utility", "armband", "armor", "leg_armor", "arm_armor")
 
 
+/obj/item/clothing/proc/get_cold_coverage()
+	. = cold_protection
+	if(istype(src, /obj/item/clothing/under))
+		. &= body_parts_covered
+		// Older shorts and loincloth templates express coverage as heat protection.
+		if(heat_protection)
+			. &= heat_protection
+
 /obj/item/clothing/under/attack_hand(var/mob/user)
 	if (accessories && accessories.len && (src == user.r_hand || src == user.l_hand))
 		if (istype(accessories[1], /obj/item/clothing/accessory/storage/webbing))
