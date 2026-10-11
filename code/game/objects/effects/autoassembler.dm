@@ -126,6 +126,9 @@
 		if (isemptylist(central.axis.corners) || !central.axis.corners[1])
 			central.axis.check_corners()
 		for (var/turf/T in rangeto)
+			// Vehicle placeholders belong to the turning square, not the entire assembler range.
+			if (central.axis && (T.x < central.x || T.x >= central.x + central.axis.maxdist || T.y > central.y || T.y <= central.y - central.axis.maxdist))
+				continue
 			if (!central.axis || !central.axis.corners || !central.axis.corners.len || !central.axis.corners[1])
 				continue
 			if (abs(T.x-central.axis.corners[1].x)<=central.axis.maxdist || abs(T.y-central.axis.corners[1].y)<=central.axis.maxdist)

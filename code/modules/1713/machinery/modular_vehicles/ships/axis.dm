@@ -42,7 +42,10 @@
 					return FALSE
 				else
 					S.update_icon()
-			do_move()
+			if (!do_move())
+				stopmovementloop()
+				movement_processes--
+				return FALSE
 		else
 			currentspeed = 0
 			moving = FALSE
@@ -185,7 +188,7 @@
 					stopmovementloop()
 					return FALSE
 			for(var/obj/item/I in TT)
-				if (!(I in transporting) || istype(I, /obj/item/ammo_casing))
+				if ((!(I in transporting) || istype(I, /obj/item/ammo_casing)) && !istype(I, /obj/item/weapon/grenade))
 					qdel(I)
 
 			if ((!istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/beach/water/ice)) && !istype(T, /turf/floor/trench/flooded))
@@ -245,13 +248,21 @@
 
 	return 1
 
-/obj/structure/vehicleparts/axis/ship/add_transporting()
+/obj/structure/vehicleparts/axis/ship/add_transporting(var/trigger_mines=TRUE)
 	transporting = list()
+	prune_turning_placeholders()
 	for (var/obj/structure/vehicleparts/frame/F in components)
-		if (!F || !(F in range(7,loc)))
+		if (!F || F.axis != src || !(F in range(7,loc)))
 			components -= F
+			continue
 		var/turf/T = get_turf(F)
 		for (var/atom/movable/M in T)
+			if (M.loc != T || QDELETED(M))
+				continue
+			if (istype(M, /obj/item/weapon/grenade))
+				var/obj/item/weapon/grenade/G = M
+				if (G.is_vehicle_exterior(src))
+					continue
 		 /* TODO: Naval Mines
 			if (istype(M, /obj/item/mine/at))
 				var/obj/item/mine/at/MAT = M
@@ -259,6 +270,14 @@
 					MAT.trigger(F)
 		*/
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
+				if (istype(M, /obj/structure/vehicleparts/frame))
+					var/obj/structure/vehicleparts/frame/other = M
+					if (other.axis != src)
+						continue
+				if (istype(M, /obj/structure/vehicleparts/movement))
+					var/obj/structure/vehicleparts/movement/other = M
+					if (other.axis && other.axis != src)
+						continue
 				transporting += M
 	return transporting.len
 
