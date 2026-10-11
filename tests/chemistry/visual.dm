@@ -2,6 +2,7 @@
 // and the usual lobby Login are disabled by the visual runner only.
 var/global/list/chemistry_visual_beakers = list()
 var/global/chemistry_visual_processed = FALSE
+var/global/chemistry_visual_product = "polyethylene"
 
 /proc/chemistry_prepare_visual()
 	world.name = "Civ13 LOCAL chemistry fixture"
@@ -35,7 +36,7 @@ var/global/chemistry_visual_processed = FALSE
 		report += "<h3>[beaker.name]</h3><p>"
 		for(var/datum/reagent/reagent in beaker.reagents.reagent_list)
 			report += "[reagent.name] ([reagent.id]): [reagent.volume]u<br>"
-		report += "Polyethylene: [beaker.reagents.get_reagent_amount("polyethylene")]u</p>"
+		report += "[chemistry_visual_product]: [beaker.reagents.get_reagent_amount(chemistry_visual_product)]u</p>"
 	report += "<p>Native Local Verification verb: Run chemistry processes all three holders once.</p></body></html>"
 	src << browse(report, "window=chemistry;size=760x800")
 
@@ -46,6 +47,9 @@ var/global/chemistry_visual_processed = FALSE
 	inspect_chemistry()
 
 /proc/chemistry_run_visual()
+	if(chemistry_visual_product == "gasoline")
+		fuel_run_visual()
+		return
 	if(!chemistry_visual_processed)
 		for(var/obj/item/weapon/reagent_containers/glass/beaker/large/beaker in chemistry_visual_beakers)
 			beaker.reagents.process_reactions()

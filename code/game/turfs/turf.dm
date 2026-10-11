@@ -8,6 +8,8 @@ var/list/interior_areas = list(/area/caribbean/houses,
 							)
 
 /turf
+	// Temporary reservation while coupled vehicle parts are being transformed.
+	var/tmp/obj/structure/vehicleparts/axis/vehicle_transforming = null
 	name = "turf"
 	icon = 'icons/turf/floors.dmi'
 	level = TRUE
@@ -141,6 +143,8 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	return TRUE
 
 /turf/Enter(atom/movable/mover as mob|obj, atom/forget as mob|obj|turf|area)
+	if (vehicle_transforming && !QDELETED(vehicle_transforming) && !isobserver(mover))
+		return FALSE
 	if (movement_disabled && usr.ckey != movement_disabled_exception)
 		to_chat(usr, "<span class='warning'>Movement is admin-disabled.</span>") //This is to identify lag problems
 		return

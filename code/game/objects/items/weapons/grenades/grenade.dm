@@ -10,12 +10,41 @@
 	flags = CONDUCT
 	slot_flags = SLOT_BELT|SLOT_POCKET
 	var/active = FALSE
+	// A vehicle passing over a loose grenade must not turn it into carried cargo.
+	var/tmp/datum/weakref/vehicle_exterior_owner
+	var/tmp/atom/vehicle_exterior_location
 	var/det_time = 50
 	var/loadable = TRUE
 	flammable = TRUE
 	value = 5
 	var/explosion_sound = 'sound/weapons/Explosives/HEGrenade.ogg'
 	var/mob/living/human/firer = null
+/obj/item/weapon/grenade/proc/mark_vehicle_exterior(obj/structure/vehicleparts/axis/A, turf/T)
+	vehicle_exterior_owner = WEAKREF(A)
+	vehicle_exterior_location = T
+
+/obj/item/weapon/grenade/proc/is_vehicle_exterior(obj/structure/vehicleparts/axis/A)
+	var/datum/owner = vehicle_exterior_owner?.resolve()
+	if (!owner || loc != vehicle_exterior_location)
+		vehicle_exterior_owner = null
+		vehicle_exterior_location = null
+		return FALSE
+	return owner == A
+
+/obj/item/weapon/grenade/Move()
+	var/atom/oldloc = loc
+	. = ..()
+	if (loc != oldloc)
+		vehicle_exterior_owner = null
+		vehicle_exterior_location = null
+
+/obj/item/weapon/grenade/forceMove(atom/destination, var/special_event)
+	var/atom/oldloc = loc
+	. = ..()
+	if (loc != oldloc)
+		vehicle_exterior_owner = null
+		vehicle_exterior_location = null
+
 /obj/item/weapon/grenade/examine(mob/user)
 	if (..(user, FALSE))
 		if (det_time > 1)

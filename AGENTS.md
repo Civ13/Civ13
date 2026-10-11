@@ -7,7 +7,7 @@ NEVER use "—": always use "-" instead.
 - **Build**: `dm civ13.dme` (Windows) or `DreamMaker civ13.dme` (Linux). Outputs `civ13.dmb` + `civ13.rsc`.
 - **Lint**: `./dreamchecker.exe` (SpacemanDMM static analyzer). Config in `SpacemanDMM.toml` (sets `dreamchecker = true` for the langserver).
 - **Required BYOND version**: 516.1681 (enforced in CI and `.vscode/tasks.json`).
-- **CI** (`.github/workflows/test.yml`): installs BYOND 516.1681 on Ubuntu, runs `DreamMaker -max_errors 0 civ13.dme`, fails on any errors or warnings. The MCP protocol workflow separately tests the local tooling on Windows and Linux; it does not run gameplay.
+- **CI** (`.github/workflows/test.yml`): installs BYOND 516.1681 on Ubuntu, runs `DreamMaker -max_errors 0 civ13.dme`, fails on any errors or warnings. A separate evidence-checker job runs synthetic Python tests without executing the game. The MCP protocol workflow separately tests local tooling on Windows and Linux; it does not run gameplay.
 
 ## Code structure
 
@@ -174,6 +174,21 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 - `_compile_options.dm` controls TESTING, UNIT_TESTS, REFERENCE_TRACKING, etc. - uncomment as needed.
 - `.gitignore` excludes compiled outputs (`*.dmb`, `*.rsc`), log files, `data/`, `SQL/`, `dreamchecker.exe`, `civ13.json`, `TODO.md`.
 
+<!-- 2026-10-11: repeatable game verification -->
+## Game verification evidence
+
+- Follow `docs/game-verification.md` for exact-commit build, isolated-fixture,
+  graphical, season-memory, and save-round-trip evidence. Reuse probes present in
+  the selected checkout; investigation-branch probes may not be on master yet.
+- Game PRs need actual screenshots and reproduction steps, plus video when
+  movement/timing requires it. Keep unavailable acceptance explicit. Current
+  captures are internal testing material; no AI-generated art or mock evidence.
+- Use `scripts/check-game-evidence.py` to validate existing bundles. Its success
+  proves metadata/file consistency, not gameplay acceptance or OOM remediation.
+  Tests live in `tests/test_game_evidence.py` and do not launch BYOND.
+- Use temporary saves and external-effect adapters. Testing does not authorize
+  production restarts, live season transitions/imports, or publishing captures.
+
 ## Agent self-maintenance
 
 This file is read by every agent at session start. If you discover something
@@ -222,6 +237,10 @@ disabled and runs bounded reactions in temporary storage. CI also runs its
 wrong-feedstock negative control; this does not replace gameplay verification.
 Linux DreamDaemon safe mode rejects an absolute `-log` path. Use a relative
 log filename with the runtime working directory set to temporary storage.
+<!-- 2026-10-11: gasoline precursor regression -->
+`tests/chemistry/run.py --probe fuel` verifies precursor registration and real
+beaker gasoline mixing; its negative control removes octane registration in a
+generated copy. Fuel ratios and engine behavior are separate contracts.
 
 <!-- 2026-10-11: Civ13 MCP integration -->
 `tools/mcp/README.md` documents the bounded stdio server and Codex configuration.
@@ -242,6 +261,9 @@ currentflow are instantaneous capacity and reserved demand, not stored energy.
 
 <!-- 2026-10-11: GitHub comment review -->
 Tools under tools/comment-review provide an authenticated-gh local collector and a disabled-by-default Codex event workflow. Preserve ignored data/comment-review cursors/receipts across worktree cleanup; inspect current API data before acknowledging or posting. The local collector does not install a scheduler or consume API credentials. See tools/comment-review/README.md for event trust boundaries and activation settings.
+<!-- 2026-10-11: dormant trigger approval boundary -->
+Dormant comment-review listeners must be workflow_dispatch-only: GitHub can request approval before evaluating job guards. Keep automatic subscriptions in tools/comment-review/active-events.example.json until a separately reviewed activation.
+
 ## Train verification
 
 <!-- 2026-10-11: train collision investigation -->
