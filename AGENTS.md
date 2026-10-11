@@ -296,6 +296,14 @@ Dormant comment-review listeners must be workflow_dispatch-only: GitHub can requ
 
 ## Train verification
 
+<!-- 2026-10-11: medicine regression isolation -->
+`tests/survival/run.py` checks production disease courses, oral metabolism,
+ingredient acquisition and timed fermentation/distillation in temporary storage.
+Its fixture materializes the global-controller `vars` name list before union:
+BYOND 516.1681 otherwise logs Bad ref during initialization on the historical
+baseline too. Runtime errors/engine diagnostics invalidate evidence. Direct
+`del()` of live test atoms triggers the production GC error; use `qdel()`.
+
 <!-- 2026-10-11: trace resource extraction -->
 `tests/resource_extraction/run.ps1` compiles production extraction types with
 normal startup disabled and temporary storage. It checks bounded output, drill

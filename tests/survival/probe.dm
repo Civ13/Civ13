@@ -1,4 +1,15 @@
 // Test-only world. Production startup is disabled by run.py.
+/world
+	hub = ""
+	hub_password = ""
+
+var/survival_runtime_error = FALSE
+
+/world/Error(exception/error)
+	survival_runtime_error = TRUE
+	text2file("FAIL: runtime [error] at [error.file]:[error.line]", "survival-result.txt")
+	world.log << "Runtime error: [error] at [error.file]:[error.line]"
+
 /world/New()
 	try
 		text2file("commit=[world.params["tested_commit"]] BYOND=[world.byond_version].[world.byond_build]", "metadata.txt")
@@ -13,10 +24,12 @@
 				if(!first_critical && H.getToxLoss() >= 100)
 					first_critical = tick
 			text2file("sample=[sample] first_100_toxin_seconds=[first_critical] toxin_180s=[H.getToxLoss()] progression=[H.disease_progression]", "baseline.txt")
-			del(H)
+			qdel(H)
+		survival_assert(!survival_runtime_error, "baseline runtime error invalidated observations")
 		text2file("PASS: baseline samples recorded in baseline.txt", "survival-result.txt")
 #else
 		survival_regressions()
+		survival_assert(!survival_runtime_error, "runtime error invalidated assertions")
 		text2file("PASS: severe terminal windows, oral medicines, interrupted courses, herbal stock, renewable recipe, exemptions and transmission", "survival-result.txt")
 #endif
 	catch(var/exception/error)
@@ -55,7 +68,7 @@
 			survival_assert(H.stat != DEAD && H.getToxLoss() == 0 && H.getBrainLoss() == 0, "[kind]: premature lethal damage")
 		survival_tick(H)
 		survival_assert(H.stat == DEAD && H.disease_progression == 1200, "[kind]: untreated terminal deadline")
-		del(H)
+		qdel(H)
 		H = survival_patient(kind)
 		text2file("[kind]: medicine", "progress.txt")
 		var/medicine = kind == "malaria" ? "quinine" : "penicillin"
@@ -63,7 +76,7 @@
 		for(var/tick in 1 to 181)
 			survival_tick(H)
 		survival_assert(!H.disease && H.disease_course == 0 && H.stat != DEAD, "[kind]: practical oral course")
-		del(H)
+		qdel(H)
 		H = survival_patient(kind)
 		text2file("[kind]: herbs", "progress.txt")
 		var/obj/item/stack/medical/advanced/herbs/herbs = new(H.loc, 4)
@@ -72,8 +85,8 @@
 				herbs.attack_self(H)
 			survival_tick(H)
 		survival_assert(!H.disease && herbs.amount == 1, "[kind]: three oral herbs complete course and reserve planting stock")
-		del(herbs)
-		del(H)
+		qdel(herbs)
+		qdel(H)
 	var/mob/living/human/H = survival_patient("plague")
 	H.ingested.add_reagent("penicillin", 2)
 	for(var/tick in 1 to 181)
@@ -81,7 +94,16 @@
 		H.bodytemperature = H.species.body_temperature
 		H.Life()
 	survival_assert(!H.disease && H.stat != DEAD, "actual human Life ordering completes oral medicine course")
-	del(H)
+	qdel(H)
+	H = survival_patient("plague")
+	H.disease_progression = 1198
+	H.ingested.add_reagent("penicillin", 2)
+	for(var/tick in 1 to 181)
+		H.nutrition = 500
+		H.bodytemperature = H.species.body_temperature
+		H.Life()
+	survival_assert(!H.disease && H.stat != DEAD, "critical illness remains treatable through actual Life before terminal deadline")
+	qdel(H)
 	H = survival_patient("plague")
 	H.ingested.add_reagent("penicillin", 0.5)
 	for(var/tick in 1 to 80)
@@ -91,13 +113,13 @@
 	for(var/tick in 1 to 181)
 		survival_tick(H)
 	survival_assert(!H.disease, "interrupted course remains recoverable")
-	del(H)
+	qdel(H)
 	H = survival_patient("malaria")
 	H.ingested.add_reagent("penicillin", 2)
 	for(var/tick in 1 to 181)
 		survival_tick(H)
 	survival_assert(H.disease && H.disease_course == 0, "wrong medicine does not treat malaria")
-	del(H)
+	qdel(H)
 	H = survival_patient("plague")
 	H.inducedSSD = TRUE
 	for(var/tick in 1 to 1300)
@@ -111,7 +133,7 @@
 	H.disease_immunity += "plague"
 	survival_tick(H)
 	survival_assert(!H.disease, "existing immunity exemption")
-	del(H)
+	qdel(H)
 	var/datum/reagents/holder = new(100)
 	holder.add_reagent("charcoal", 1, safety = TRUE)
 	holder.add_reagent("ethanol", 2, safety = TRUE)
@@ -124,17 +146,48 @@
 	survival_assert(antibiotic.can_happen(holder), "penicillin after renewable acetone")
 	antibiotic.process(holder)
 	survival_assert(holder.get_reagent_amount("penicillin") == 5, "renewable antibiotic output")
-	del(holder)
-	del(acetone)
-	del(antibiotic)
+	qdel(holder)
+	qdel(acetone)
+	qdel(antibiotic)
+	// Real acquisition routes: charcoal into a barrel already yields carbon,
+	// while a grain-started jar produces enzyme without initial yeast stock.
+	H = new(locate(10,10,1))
+	var/obj/item/weapon/reagent_containers/glass/barrel/glass = new(H.loc)
+	var/obj/item/stack/ore/charcoal/charcoal = new(H.loc, 2)
+	glass.attackby(charcoal, H)
+	survival_assert(glass.reagents.get_reagent_amount("carbon") == 3 && charcoal.amount == 1, "existing renewable carbon acquisition")
+	var/obj/item/weapon/starterjar/jar = new(H.loc)
+	var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/grain = new(H.loc)
+	jar.attackby(grain, H)
+	survival_assert(jar.fermenting == 1, "grain bootstraps yeast without finite enzyme")
+	jar.fermenting_timer = world.time // Accelerate only the existing wait.
+	sleep(105)
+	survival_assert(jar.fermenting == 2 && jar.fermenting_contents == 1, "grain fermentation produces starter")
+	jar.attack_self(H)
+	var/obj/item/weapon/reagent_containers/food/condiment/enzyme/yeast = locate() in H
+	survival_assert(yeast && yeast.reagents.get_reagent_amount("enzyme") == 50, "real jar output contains medicine enzyme")
+	var/obj/structure/distillery/distiller = new(H.loc)
+	var/obj/item/weapon/reagent_containers/glass/beaker/collector = new(H.loc)
+	distiller.reagents.add_reagent("beer", 4)
+	distiller.collector = collector
+	distiller.attack_hand(H)
+	sleep(155) // Exercise the existing timed distillation callback.
+	survival_assert(!distiller.active && collector.reagents.get_reagent_amount("ethanol") == 2, "real distillation provides acetone ethanol")
+	qdel(distiller)
+	qdel(collector)
+	qdel(jar)
+	qdel(yeast)
+	qdel(glass)
+	qdel(charcoal)
+	qdel(H)
 	// A real cultivated herb harvest must exceed one unit reserved to replant.
 	var/obj/structure/farming/plant/herbs/plant = new(locate(12,10,1))
 	plant.plant_nutrition = 0
 	plant.spawn_produce()
 	var/obj/item/stack/medical/advanced/herbs/harvest = locate() in plant.loc
 	survival_assert(harvest && harvest.amount == 3, "herbs renewable minimum yield")
-	del(harvest)
-	del(plant)
+	qdel(harvest)
+	qdel(plant)
 	var/mob/living/human/source = survival_patient("plague")
 	H = new(locate(11,10,1))
 	H.hygiene = 100
@@ -153,6 +206,6 @@
 	for(var/tick in 1 to 1000)
 		H.acquire_nearby_disease()
 	survival_assert(!H.disease, "malaria does not transmit person to person")
-	del(H)
-	del(source)
+	qdel(H)
+	qdel(source)
 #endif

@@ -27,7 +27,20 @@ Later medicine uses the existing extraction, fermentation and apothecary
 equipment/research. Renewable charcoal and ethanol can now make acetone:
 one charcoal plus two ethanol produces one acetone. Ten enzyme plus one
 acetone produces five penicillin. Wood-derived charcoal avoids relying on
-finite coal for this recipe. Cinchona remains the existing quinine source.
+finite coal for this recipe. The existing barrel route also converts one
+charcoal item to three carbon units for the original acetone recipe. Use a
+barrel for that route; a beaker does not accept charcoal directly. Cinchona
+remains the existing quinine source.
+
+A grain or flour starter ferments without existing yeast. Let its yeast grow
+before withdrawing a container if you want to retain the culture; each yeast
+container holds fifty enzyme units. Beer uses barley flour, water, hops and
+enzyme as a catalyst. Distilling four beer units produces two ethanol units.
+The ethanol distillery is an existing softwood crafting recipe with an
+Economy & Production threshold of 45. The starter jar needs glass and the
+Pottery Storage node; apothecary equipment is gated by Herbalism then
+Apothecary. These are existing research/equipment costs, so herbs remain the
+early fallback rather than an immediate industrial cure.
 
 Person-to-person transmission applies to susceptible healthy humans near an
 infected source. Malaria and zombie infection do not use this route. Existing
