@@ -988,6 +988,8 @@
 								count++
 				if (count > 0 || ! list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA).Find(map.ID))
 					stageGrowth()
+			if (stage > readyStageMax)
+				set_dead()
 			growth()
 
 /obj/structure/farming/plant/proc/stageGrowth()  // Uses plant_nutrition as Use the plant's nutrition as a chance to grow

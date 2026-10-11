@@ -92,6 +92,9 @@ var/global/datum/map_fixture/map = new
     P.growth()
     sleep(3)
     check(P.stage == 11, "overripe transition changed")
+#ifndef BASELINE
+    check(P.desc == "A dead tomato plant.", "overripe appearance")
+#endif
     del(P)
     P = new(locate(6,1,1))
     P.growth()
