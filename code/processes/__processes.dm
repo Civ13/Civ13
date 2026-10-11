@@ -15,6 +15,7 @@ var/datum/process_list/processes = new
 	var/process/time_of_day/time_of_day = null
 	var/process/time_of_day_change/time_of_day_change = null
 	var/process/weather/weather = null
+	var/process/decal_decay/decal_decay = null
 	var/process/cleanables/cleanables = null
 	var/process/casings/casings = null
 	var/process/self_cleaning/self_cleaning = null
@@ -40,6 +41,7 @@ var/datum/process_list/processes = new
 	var/process/chemistry/chemistry = null
 
 	// SSCleanup members
+	var/process/abandoned_items/abandoned_items = null
 	var/process/garbage/garbage = null
 	var/process/python/python = null
 

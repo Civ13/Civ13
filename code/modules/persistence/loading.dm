@@ -44,6 +44,8 @@
 		existing_references["[ind]"] = object
 		for(var/v in savefile.dir)
 			savefile.cd = entry_path(savefile, ind)
+			if(object.persistence_runtime_var(v))
+				continue
 			if(v == "type")
 				continue
 			else if(v in list("loc", "locs", "pixloc", "contents", "vars", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))

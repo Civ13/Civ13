@@ -11,6 +11,10 @@
 /datum/proc/before_save()
 	return
 
+// Custom persistence iterates vars, including tmp. Runtime fields require explicit exclusion.
+/datum/proc/persistence_runtime_var(key)
+	return FALSE
+
 /datum/proc/get_saved_vars()
 	var/list/to_save = list()
 	var/partial = FALSE
@@ -23,6 +27,8 @@
 		to_save |= params2list(map_storage_saved_vars)
 	else
 		for (var/key in src.vars)
+			if (persistence_runtime_var(key))
+				continue
 			if (src.vars[key] != initial(src.vars[key]) && key != "verbs" && key != "locs" && key != "group")
 				to_save |= key
 			to_save |= "name"
