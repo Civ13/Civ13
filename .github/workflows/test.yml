@@ -182,3 +182,11 @@ jobs:
           /usr/bin/python3 tests/abandoned_items/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
           /usr/bin/python3 tests/abandoned_items/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control storage
           /usr/bin/python3 tests/abandoned_items/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control save
+
+      - name: Verify timed decal lifecycle and historical baseline
+        if: needs.changes.outputs.game == 'true'
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/decal_decay/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/decal_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --baseline
