@@ -28,5 +28,9 @@ $process=Start-Process -FilePath (Join-Path $ByondBin 'dreamdaemon.exe') -Argume
 if (!$process.WaitForExit(15000)) { Stop-Process -Id $process.Id; throw "Query timeout: $run" }
 $result=Join-Path $run 'result.json'
 if (!(Test-Path -LiteralPath $result)) { throw "Missing query result: $run" }
-Get-Content -LiteralPath $result
+$raw = Get-Content -LiteralPath $result -Raw
+if ([string]::IsNullOrWhiteSpace($raw)) { throw "Empty query result: $run" }
+try { $reply = $raw | ConvertFrom-Json } catch { throw "Non-JSON query result: $run" }
+if ($reply.commit -ne $session.commit) { throw "Evidence commit mismatch: $run" }
+$raw
 Write-Output "QUERY_RESULT=$result"

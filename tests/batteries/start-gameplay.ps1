@@ -5,7 +5,11 @@ param(
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $commit = (git -C $repo rev-parse HEAD).Trim()
-if (git -C $repo status --porcelain) { throw 'Use a clean committed checkout for evidence' }
+if ($LASTEXITCODE -ne 0 -or $commit -notmatch '^[0-9a-f]{40}$') { throw 'Cannot identify evidence commit' }
+$dirty = git -C $repo status --porcelain
+if ($LASTEXITCODE -ne 0 -or $dirty) { throw 'Use a clean committed checkout for evidence' }
+$listener = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback, $Port)
+try { $listener.Start() } finally { $listener.Stop() }
 $nonce = [guid]::NewGuid().ToString('N')
 $run = Join-Path ([IO.Path]::GetTempPath()) ('civ13-evidence-' + 'battery' + '-' + $nonce)
 New-Item -ItemType Directory -Path $run | Out-Null
@@ -45,6 +49,15 @@ $started = (Get-Date).ToUniversalTime().ToString('o')
 $daemon = Start-Process -FilePath (Join-Path $ByondBin 'dreamdaemon.exe') -ArgumentList @((Join-Path $run 'civ13.dmb'),"$Port",'-invisible','-trusted','-logself') -WorkingDirectory $run -WindowStyle Hidden -PassThru
 $metadata = [ordered]@{commit=$commit;scenario='battery';run=$run;port=$Port;nonce=$nonce;pid=$daemon.Id;started_utc=$started;binary_sha256=(Get-FileHash (Join-Path $run 'civ13.dmb')).Hash;scope='isolated-game with opt-in local test adapter'}
 $metadata | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $run 'session.json')
+$ready = $false
+for ($attempt = 0; $attempt -lt 30; $attempt++) {
+    if ($daemon.HasExited) { throw "Evidence daemon exited: $run" }
+    $probe = [Net.Sockets.TcpClient]::new()
+    try { $probe.Connect('127.0.0.1', $Port); $ready = $true } catch {} finally { $probe.Dispose() }
+    if ($ready) { break }
+    Start-Sleep -Milliseconds 500
+}
+if (!$ready) { Stop-Process -Id $daemon.Id; throw "Evidence daemon did not listen: $run" }
 Write-Output "SESSION_JSON=$(Join-Path $run 'session.json')"
 Write-Output "Connect a fresh Dream Seeker to byond://127.0.0.1:$Port; adapter nonce is in session.json."
 
