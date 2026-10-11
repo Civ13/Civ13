@@ -7,6 +7,7 @@ world
 	maxy = 32
 	fps = 10
 /obj/machinery/conveyor
+	anchored = 1
 	var/operating = 1
 	var/movedir = EAST
 	var/list/affecting
@@ -42,9 +43,9 @@ var/failures = 0
 	C.movedir = WEST
 	cargo.loc = C.loc
 	C.process()
-	cargo.loc = locate(10,10,1)
+	cargo.loc = locate(30,30,1)
 	sleep(2)
-	check(cargo.x == 10 && cargo.y == 10, "departed cargo stays")
+	check(cargo.x == 30 && cargo.y == 30, "departed cargo stays")
 	var/list/capped = list()
 	for (var/i in 1 to 12)
 		capped += new /obj(C.loc)
@@ -82,6 +83,7 @@ var/failures = 0
 			if (!istype(O, /obj/machinery/conveyor))
 				del(O)
 		B.operating = 1
+	world.log << "PHASE empty"
 	start = world.realtime
 	for (var/i in 1 to 250)
 		for (var/obj/machinery/conveyor/B in belts)
