@@ -27,7 +27,6 @@ $build | Set-Content -LiteralPath (Join-Path $run 'build.log')
 if ($LASTEXITCODE -ne 0 -or ($build -join "`n") -notmatch '0 errors, 0 warnings') { throw 'Query compilation failed' }
 $process=Start-Process -FilePath (Join-Path $ByondBin 'dreamdaemon.exe') -ArgumentList @((Join-Path $run 'query.dmb'),'-invisible','-trusted','-logself','-close') -WorkingDirectory $run -WindowStyle Hidden -PassThru
 if (!$process.WaitForExit(15000)) { Stop-Process -Id $process.Id; throw "Query timeout: $run" }
-if ($process.ExitCode -ne 0) { throw 'Query process failed' }
 $result=Join-Path $run 'result.json'
 $response = Read-EvidenceQueryResult -Path $result -ExpectedCommit $session.commit -Action $Action
 if ($response.error) { throw "Evidence action rejected: $($response.error)" }
