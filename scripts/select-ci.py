@@ -9,7 +9,7 @@ DOC_WORKFLOWS = {'.github/workflows/api-docs.yml', '.github/workflows/api-pages.
 def needs_game(paths):
     # Full-game probes compile the DME and its shared includes. Do not maintain
     # a partial subsystem dependency graph: every non-doc change runs them all.
-    return any(not (
+    return any(PurePosixPath(path).suffix.lower() in {'.dm', '.dme', '.dmm', '.dmi', '.rsc'} or not (
         path.startswith('docs/') or
         (len(PurePosixPath(path).parts) == 1 and path.endswith('.md')) or
         path == 'scripts/build-api-docs.py' or path in DOC_WORKFLOWS
