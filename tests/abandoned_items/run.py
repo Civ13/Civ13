@@ -29,7 +29,7 @@ def process_memory(pid):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--byond-bin', type=Path, required=True)
-    p.add_argument('--negative-control', nargs='?', const='decay', choices=('decay', 'storage', 'save'))
+    p.add_argument('--negative-control', nargs='?', const='decay', choices=('decay', 'storage', 'save', 'seasons'))
     a = p.parse_args()
     root = Path(__file__).resolve().parents[2]
     # Assert every production transition is wired, without starting map systems.
@@ -78,6 +78,8 @@ def main():
                 decay = decay.replace('\t\tqdel(src)\n\t\treturn TRUE', '\t\treturn FALSE', 1)
             elif a.negative_control == 'storage':
                 decay = decay.replace('/obj/item/proc/abandonment_protected()\n', '/obj/item/proc/abandonment_protected()\n\treturn FALSE\n', 1)
+            elif a.negative_control == 'seasons':
+                decay = decay.replace('isnull(advance_decay) ? !force : advance_decay', 'isnull(advance_decay) ? TRUE : advance_decay', 1)
             else:
                 decay = decay.replace('\t\treturn TRUE\n\treturn ..()', '\t\treturn FALSE\n\treturn ..()', 1)
             generated[2].write_text(decay, encoding="utf-8")
@@ -129,7 +131,7 @@ def main():
         result = (out / 'result.txt').read_text(encoding="utf-8").strip()
         print(result)
         if a.negative_control:
-            expected = {'decay': 'fourth change decays waste', 'storage': 'nested storage protects waste', 'save': 'production serializer excludes runtime state'}[a.negative_control]
+            expected = {'decay': 'fourth change decays waste', 'storage': 'nested storage protects waste', 'save': 'production serializer excludes runtime state', 'seasons': 'forced base transition preserves decay by default'}[a.negative_control]
             if not result.startswith('FAIL: ' + expected): raise RuntimeError('Negative control did not detect expected mutation')
             print(f'PASS: {a.negative_control} mutation detected')
         elif not result.startswith('PASS:') or proc.returncode:

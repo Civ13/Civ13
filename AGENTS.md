@@ -389,3 +389,9 @@ or 6/12 running-server hours on static maps. Season routines record scalar
 transitions; startup climate assignments do not. Fixed wet-season labels use
 the hourly fallback. Keep new seasonal maps and transition hooks in sync with
 `tests/abandoned_items/run.py`; custom cycles may ignore `config.seasons_on`.
+
+<!-- 2026-10-11: forced season decay control -->
+`seasons(looping, force, advance_decay)` preserves debris age for forced calls
+when the third argument is omitted. Natural calls count transitions. Forward
+all three arguments in season overrides and honor `looping = FALSE` to avoid
+starting extra recurring cycles from the admin command.

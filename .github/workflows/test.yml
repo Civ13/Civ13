@@ -220,6 +220,7 @@ jobs:
           /usr/bin/python3 tests/abandoned_items/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
           /usr/bin/python3 tests/abandoned_items/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control storage
           /usr/bin/python3 tests/abandoned_items/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control save
+          /usr/bin/python3 tests/abandoned_items/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control seasons
 
       - name: Verify timed decal lifecycle and historical baseline
         if: needs.changes.outputs.game == 'true'

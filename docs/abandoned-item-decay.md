@@ -27,6 +27,7 @@ Run the versioned production-source probe with pinned BYOND 516.1681:
 & '<verified-python-path>' tests/abandoned_items/run.py --byond-bin '<516.1681-bin>' --negative-control
 & '<verified-python-path>' tests/abandoned_items/run.py --byond-bin '<516.1681-bin>' --negative-control storage
 & '<verified-python-path>' tests/abandoned_items/run.py --byond-bin '<516.1681-bin>' --negative-control save
+& '<verified-python-path>' tests/abandoned_items/run.py --byond-bin '<516.1681-bin>' --negative-control seasons
 ```
 
 The fixture compiles the current production sources, disables normal startup and map loading, uses a 4x4 isolated world and temporary saves, and exercises inheritance/lifecycle, direct/nested storage, inventories, warnings, exact 6/12-hour and 2/4-season recovery windows, clock changes, fixed/disabled seasons, native current-format container restoration, stale runtime fields, native Del and mixed batch fairness. It repeats 60 production/disposal cycles of 1,024 items and drains the actual bounded garbage processor with accelerated GC timestamps. Object/reference counts and OS RSS/private bytes are distinct measurements. Forced collection in this probe does not prove that every production reference is naturally released.
