@@ -1,6 +1,8 @@
 param([Parameter(Mandatory=$true)][string]$ByondBin, [switch]$Visual, [ValidateRange(1,900)][int]$TimeoutSeconds = 90)
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+$commit = git -C $repo rev-parse HEAD
+if ($LASTEXITCODE -ne 0 -or $commit -notmatch '^[0-9a-f]{40}$') { throw 'Cannot determine tested commit' }
 $sourcePath = Join-Path $repo '.train_game_probe.dme'
 if (Test-Path -LiteralPath $sourcePath) { throw 'Existing probe file must be preserved' }
 $temp = Join-Path ([IO.Path]::GetTempPath()) ('civ13-train-game-' + [guid]::NewGuid())
@@ -14,7 +16,6 @@ try {
     if ($LASTEXITCODE -ne 0 -or ($build -join "`n") -notmatch '0 errors, 0 warnings') { throw 'Full-game probe compilation failed' }
     foreach ($extension in @('dmb','rsc')) { Copy-Item -LiteralPath (Join-Path $repo ('.train_game_probe.' + $extension)) -Destination $temp }
     Copy-Item -LiteralPath (Join-Path $repo 'config') -Destination $temp -Recurse
-    $commit = git -C $repo rev-parse HEAD
     $parameters = 'tested_commit=' + $commit
     if ($Visual) { $parameters += '&visual=1' }
     $process = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @((Join-Path $temp '.train_game_probe.dmb'), '-invisible', '-safe', '-params', $parameters, '-log', (Join-Path $temp 'startup.log')) -WorkingDirectory $temp -WindowStyle Hidden -PassThru
