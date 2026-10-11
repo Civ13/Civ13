@@ -34,6 +34,12 @@
 			to_save |= "name"
 	return to_save
 
+// Dirt uses the turf allowlist rather than the object changed-vars encoder.
+// Preserve finite fertility across exports without serializing recovery tokens.
+/turf/floor/dirt/get_saved_vars()
+	. = ..()
+	. |= "soil_nutrition"
+
 var/map_storage/map_storage = new("SS13")
 
 /proc/string_explode(var/string, var/separator = "")

@@ -65,6 +65,12 @@ An experimental open-source BYOND reimplementation. `.vscode/launch.json` has an
 - The metadata `.dm` file must be `#include`d in `civ13.dme` **after** any defines it references.
 - Win conditions: call `world << "<font>..."` for announcements, set `game_over = TRUE` and `ticker.finished = TRUE` to end the round.
 
+<!-- 2026-10-11: forced season decay control -->
+`seasons(looping, force, advance_decay)` preserves debris age for forced calls
+when the third argument is omitted. Natural calls count transitions. Forward
+all three arguments in season overrides and honor `looping = FALSE` to avoid
+starting extra recurring cycles from the admin command.
+
 ### Player spawning
 
 - Jobs define `spawn_location = "JoinLateXXX"` (a string key).
@@ -404,11 +410,10 @@ transitions; startup climate assignments do not. Fixed wet-season labels use
 the hourly fallback. Keep new seasonal maps and transition hooks in sync with
 `tests/abandoned_items/run.py`; custom cycles may ignore `config.seasons_on`.
 
-<!-- 2026-10-11: forced season decay control -->
-`seasons(looping, force, advance_decay)` preserves debris age for forced calls
-when the third argument is omitted. Natural calls count transitions. Forward
-all three arguments in season overrides and honor `looping = FALSE` to avoid
-starting extra recurring cycles from the admin command.
+<!-- 2026-10-11: food fertility save regression -->
+- Turfs use a persistence allowlist rather than all changed vars. Dirt adds `soil_nutrition` through its parent-calling `get_saved_vars()` override; do not serialize its live soil recovery token.
+- `tests/food_progression/run.py --soil-negative-control` proves omission is detected. The full-game world-save probe checks crop/soil and nested seed stock; its frozen crop does not establish post-load growth or season transitions.
+
 <!-- 2026-10-11: trench save progress -->
 - Trench types reconstruct depth/flooring and neighbor edges, but construction
   progress requires explicit turf save fields: trench_filling and dirt/sand

@@ -78,7 +78,13 @@ directory. It copies no live server configuration, credentials, SQL or saves.
 Optional webhook and Tor hooks are explicitly disabled. The probe uses real
 game startup, constructors, turf replacement and deletion scheduling, exports
 the selected map, imports it, and verifies a named crate with a nested knife,
-metadata identity and a boundary turf. The result is in `full_game_result.txt`;
+metadata identity and a boundary turf. It also restores a uniquely named tomato
+on ploughed soil, its nondefault stage/water/nutrition/radiation and climate/season
+lists, soil nutrition, and seven tomato seeds nested in the crate. The live crop
+and seed state are deliberately changed after export so retaining the old state
+cannot satisfy the assertions. The crop is frozen with its existing `vstatic`
+flag to avoid elapsed growth or season timing; this tests persistence, not
+post-load growth or an actual season transition. The result is in `full_game_result.txt`;
 game exceptions are in `data/logs/runtime/`. The non-visual probe defaults to a
 360-second timeout (`-TimeoutSeconds` overrides it), stops only its own launched
 daemon on timeout, and retains diagnostics. `-Visual` keeps the world running
