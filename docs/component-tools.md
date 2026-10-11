@@ -5,6 +5,11 @@ head-on-handle interaction. Assembly stays immediate, with no timing game.
 Existing head production, handle recipes and age/research requirements remain.
 Spear, throwing axe and battleaxe assembly retain their existing behavior.
 
+The existing wood handle costs one plank. A plank handle costs two planks and
+70 ticks, offering a lighter, stronger grip. A reinforced handle costs two iron
+ingots and 70 ticks with the same research threshold as a wrench; it gives
+greater capacity but a heavier, slower grip. These use existing handle sprites.
+
 The finished work tool records both materials, qualities and input conditions.
 The head still supplies its native material damage, hardness and wear behavior.
 Finished quality is the lower input quality, bounded to 0.5-2, so an excellent
@@ -23,7 +28,8 @@ paths ignore the chopping_speed property.
 
 Examine an assembled tool to see its component materials and qualities.
 Existing tools and old saves without component records keep their current
-stats. This first extension does not add repair, disassembly or new assets.
+stats. Existing quality is normally 1; this does not introduce randomized grades.
+This first extension does not add repair, disassembly or new assets.
 
 Design references: Pocket Stronghold's head-and-stick workbench recipes at
 `2bfb1906a9a68f58c5e5da25383f83dd495bf138`, and DF13's separate head/handle
