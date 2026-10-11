@@ -210,3 +210,15 @@ worktree that will be archived while the MCP entry still points to it.
 opt-in full-game capture adapter. `scripts/test-power.ps1` requires an explicit
 BYOND bin path; CI also compiles the excluded gameplay adapter. Powerflow and
 currentflow are instantaneous capacity and reserved demand, not stored energy.
+
+## Train verification
+
+<!-- 2026-10-11: train collision investigation -->
+`code/modules/1713/trains.dm` connections point from leader to follower. Reject
+coupling cycles and stop failed movement before recursively moving followers;
+`Bumped` is deferred by the movable atom's bump callback. Run bounded isolated
+regressions with `tests/train_collision/run.ps1 -ByondBin <516.1681-bin>` and real
+game callback/locomotive-loop tests with `tests/train_collision/run-game.ps1`.
+The full-game probe uses temporary state and outbound-hook controls. Its optional
+visual mode needs separate capture authorization; it never proves production
+crash behavior. Do not replace required gameplay captures with fixture output.
