@@ -26,7 +26,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish:
-    if: github.repository == 'Civ13/Civ13' && (github.event_name == 'workflow_dispatch' || github.event.deployment_status.state == 'success')
+    if: github.repository == 'Civ13/Civ13' && (github.event_name == 'workflow_dispatch' || (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'production' && github.event.deployment.production_environment == true && github.event.deployment.ref == 'master'))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: discord-changelog
