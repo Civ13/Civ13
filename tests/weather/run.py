@@ -34,7 +34,10 @@ def main():
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         source = source.replace('code\\world.dm', prefix + '_world.dm')
         globals_source = (root / 'code/controllers/mc/globals.dm').read_text(encoding='utf-8')
-        globals_source = globals_source.replace('gvars_datum_in_built_vars = exclude_these.vars + list(',
+        target = 'gvars_datum_in_built_vars = exclude_these.vars + list('
+        if globals_source.count(target) != 1:
+            raise RuntimeError('Global initialization adapter target changed')
+        globals_source = globals_source.replace(target,
             'gvars_datum_in_built_vars = list()\n\tfor(var/key in exclude_these.vars)\n\t\tgvars_datum_in_built_vars += key\n\tgvars_datum_in_built_vars += list(')
         generated[4].write_text(globals_source, encoding='utf-8')
         source = source.replace('code\\controllers\\mc\\globals.dm', prefix + '_globals.dm')
@@ -81,7 +84,8 @@ def main():
             print((logs / 'weather.csv').read_text(), flush=True)
         completion = (logs / 'weather-result.txt').read_text()
         expected = 'WEATHER FAIL: Ten-minute cold harm' if args.negative_control else 'WEATHER PASS'
-        if result.returncode or 'runtime:' in runtime or 'Runtime error:' in runtime or not completion.startswith(expected):
+        diagnostics = runtime + result.stdout + result.stderr
+        if result.returncode or 'BUG:' in diagnostics or 'runtime:' in diagnostics or 'Runtime error:' in diagnostics or not completion.startswith(expected):
             raise RuntimeError('Weather probe failed')
     finally:
         for path in generated:
