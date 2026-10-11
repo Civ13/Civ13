@@ -1,0 +1,198 @@
+{
+  "artifacts": [
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-0",
+      "kind": "build-log",
+      "path": "build.log",
+      "sha256": "15fdaf2bea6e4790f23f144356418db5959929efdb2d8c7b69c7c0fb72276f1b",
+      "size_bytes": 258
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-1",
+      "kind": "log",
+      "path": "civ13.log",
+      "sha256": "552c7b2ac982f87b2fef15c47e57daafc6314b158bbb3ebaee7cd8a4cc4efbf9",
+      "size_bytes": 188
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-2",
+      "kind": "log",
+      "path": "fixture.log",
+      "sha256": "77b63092fadfa77315a4369a89d8abfba27e4a6591f0879e9405f0dd44f1bb35",
+      "size_bytes": 194
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-3",
+      "kind": "screenshot",
+      "path": "observer-movement-examine.jpg",
+      "sha256": "c8a38ef9bf50b3fa5d343577364a10d03feff246f19eaf33b6f1a7afa793c6dd",
+      "size_bytes": 285200
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-4",
+      "kind": "screenshot",
+      "path": "observer-pass.jpg",
+      "sha256": "44cd6b6f1697478a9c829169fae20f9d87e31cb8a432c9a9fbc0afeccb4c5820",
+      "size_bytes": 215533
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-5",
+      "kind": "video",
+      "path": "observer-sampled-movement.mp4",
+      "sha256": "e575f0fbf9ac7f43ddc0717a00ac408ca43f1d7f44afbae339014c310297ce36",
+      "size_bytes": 596367
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-6",
+      "kind": "other",
+      "path": "query-64629ea3b70840e59e7135efae5b0390.json",
+      "sha256": "e3c386db7ae1dfbba5ac916311a52767d25067e35ebfc57d43e3f1bccff7007f",
+      "size_bytes": 128
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-7",
+      "kind": "other",
+      "path": "query-68de466af0b744ecafc00b163ed87d03.json",
+      "sha256": "ad16e55e6b04a1333b5e16f60f0987d20b27094b5e7945f31dc34a3d35e56d61",
+      "size_bytes": 148
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-8",
+      "kind": "other",
+      "path": "query-b05dd478e5c34637a187529468e3d3ca.json",
+      "sha256": "05eeec028b7de3c098131bdc48769bf3f3b122218e83be5866ad7603764d5cb4",
+      "size_bytes": 159
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-9",
+      "kind": "other",
+      "path": "query-b126c36cff594248b03457cb45c87c08.json",
+      "sha256": "04a3a08c3d3e9a0ffd0d29f08ae678a5c80f6240e9bf9f108b5c4dc513243ac2",
+      "size_bytes": 159
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-10",
+      "kind": "other",
+      "path": "query-b3b7f339bd9a4c069b1b152d14352abc.json",
+      "sha256": "e3d13bcef78a7b56a96356ce6a45cde36e27dfba48b1bf5b0002596dc0d6859d",
+      "size_bytes": 166
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-11",
+      "kind": "other",
+      "path": "query-d908143aba1045edb21735bfdda8032e.json",
+      "sha256": "e3c386db7ae1dfbba5ac916311a52767d25067e35ebfc57d43e3f1bccff7007f",
+      "size_bytes": 128
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-12",
+      "kind": "log",
+      "path": "runtime.txt",
+      "sha256": "b2f8a72e495886986dcddb2beb7815bc4abfbd80d4fe3d8c79a0bf6cb1382b7b",
+      "size_bytes": 1048
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "provenance",
+      "kind": "other",
+      "path": "provenance.json",
+      "sha256": "ba66862886b0eb890c751a6b05f8cd69dd7ff565c9492625575dc3ed979f4a7f",
+      "size_bytes": 279
+    }
+  ],
+  "bundle_valid": true,
+  "checks": [
+    {
+      "description": "Full game plus opt-in adapter compiles",
+      "evidence": [
+        "artifact-0"
+      ],
+      "id": "build",
+      "notes": "0 errors, 0 warnings.",
+      "result": "passed"
+    },
+    {
+      "description": "100 observer cycles deliver callbacks and release probe references",
+      "evidence": [
+        "artifact-12",
+        "artifact-3",
+        "artifact-4"
+      ],
+      "id": "runtime",
+      "notes": "PASS in game. Probe uses real GLOB observation objects.",
+      "result": "passed"
+    },
+    {
+      "description": "Nomad spawn, keyboard movement and tree Examine after check",
+      "evidence": [
+        "artifact-3",
+        "artifact-4",
+        "artifact-5",
+        "artifact-12"
+      ],
+      "id": "client-interaction",
+      "notes": "Actual client and map; observer position changed from x1 to x4. Water adapter step returned zero despite changed coordinates; keyboard movement is separately visible.",
+      "result": "passed"
+    }
+  ],
+  "commit": "104f669840b61a972dbd17b66f79ad3e2a751834",
+  "game": "Civ13",
+  "limitations": [
+    "Short isolated local acceptance only; no production or long-runtime OOM verification.",
+    "Opt-in local admin test adapter is excluded from production civ13.dme.",
+    "Video is a sequence of genuine sampled screenshots at 2 fps; original capture times retained.",
+    "Public bundle omits local run paths and temporary adapter token. Unsanitized originals retained locally."
+  ],
+  "manifest_sha256": "9b379e9d2848574c7f03e4b65b22ab848d4dc73503acd85ae557ea751c87d995",
+  "map": {
+    "dimensions": [
+      155,
+      225,
+      2
+    ],
+    "name": "Nomads (Temperate)",
+    "source": "maps/nomads/nomads.dmm"
+  },
+  "meaning": "Metadata, local file checksums, references, and supplied sample structure were checked. Game acceptance and external URL availability were not independently verified.",
+  "media": {
+    "reason": "Sampled real game frames show keyboard movement; encoded at 2 fps, not a timing benchmark.",
+    "screenshot_required": true,
+    "video_required": true
+  },
+  "memory_observations": null,
+  "missing_required_media": [],
+  "run": {
+    "dirty": false,
+    "finished_utc": "2026-10-11T06:30:32.347Z",
+    "scope": "isolated-game",
+    "started_utc": "2026-10-11T06:24:37.8280946Z"
+  },
+  "runtime": {
+    "name": "BYOND",
+    "platform": "Windows",
+    "version": "516.1681"
+  },
+  "scenario": "gameplay",
+  "schema_version": 1,
+  "steps": [
+    "Check out commit 104f669840b61a972dbd17b66f79ad3e2a751834",
+    "Run tests/memory/start-gameplay-evidence.ps1 -ByondBin <516.1681 bin> -Scenario observer -Port 16994",
+    "Connect Dream Seeker 516.1681 to byond://127.0.0.1:16994",
+    "Run query-gameplay-evidence.ps1 with SessionJson and ByondBin for prepare, wait for state 3, then join, run, examine",
+    "Close the native Notes popup; capture PASS, press Right/Down with keyboard, capture sampled frames",
+    "Stop only the task-owned server/client PIDs; preserve closed logs"
+  ]
+}

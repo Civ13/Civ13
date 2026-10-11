@@ -1,0 +1,216 @@
+{
+  "artifacts": [
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-0",
+      "kind": "build-log",
+      "path": "build.log",
+      "sha256": "ebdf1402846d72f8f214fcb34d72d9ea9aa1c52c5487a12b8a296278575999e5",
+      "size_bytes": 258
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-1",
+      "kind": "log",
+      "path": "civ13.log",
+      "sha256": "e4841c823510a199b0d2b1fa1d01dc28eb8a853e08ee4ab0b0a0c5943885354d",
+      "size_bytes": 188
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-2",
+      "kind": "log",
+      "path": "fixture.log",
+      "sha256": "b6604fd8660fac2a431402b9535ac14a7d1694c0c706523329190cf256d6a76c",
+      "size_bytes": 185
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-3",
+      "kind": "other",
+      "path": "query-35add9afddbb4ad7bbcd7bcb31a45935.json",
+      "sha256": "62d20405a44163c82d856854fd093cda17820c5f2ab96cf95d87012fdddbf81e",
+      "size_bytes": 128
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-4",
+      "kind": "other",
+      "path": "query-6539c946e4c14a40afbc2e3a49835369.json",
+      "sha256": "e5ef5f512009b0ee9c4ebb0a30047498ace4410b4caef661a01c2162c4419ca5",
+      "size_bytes": 177
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-5",
+      "kind": "other",
+      "path": "query-6c40fb7021464b638a053dafe8c9fc1f.json",
+      "sha256": "f1015972733282e0d9be36ae7cddf092e4115d054f2f481ca21aa3df157dbbc8",
+      "size_bytes": 160
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-6",
+      "kind": "other",
+      "path": "query-77765a9877f14ab6a07da80b1d30ec74.json",
+      "sha256": "5aceae8babf69a388220426b795db109362ee27c6480913274a97be9eb3b61b5",
+      "size_bytes": 161
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-7",
+      "kind": "other",
+      "path": "query-8f0f0a385f974a05b00871001928879c.json",
+      "sha256": "4071ebde37965a90f9838569a6257b54f3d822856b232577571f207e0d6cc071",
+      "size_bytes": 160
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-8",
+      "kind": "other",
+      "path": "query-b76ff564d26f4af38a44d0b81934d77e.json",
+      "sha256": "81308e41941a98d598950db26a3104d8bb63025bbccc8ad314b4fb79f6c5a642",
+      "size_bytes": 168
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-9",
+      "kind": "other",
+      "path": "query-bbdfc9fc1e674557865b326ee1b8a0ed.json",
+      "sha256": "13f13313bb8c135dd001b586dc7357bbf9376d18548dfbcdc8907c790cc75290",
+      "size_bytes": 128
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-10",
+      "kind": "log",
+      "path": "runtime.txt",
+      "sha256": "133780a4bf966f43a47c37bc9927f30d73e5c020c570eab7694cfcd6a833178e",
+      "size_bytes": 1110
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-13",
+      "kind": "screenshot",
+      "path": "water-examine.jpg",
+      "sha256": "9802707cad9504874d16bf6189f5856f88cb3a98e4e760ae70c987df851fee42",
+      "size_bytes": 234350
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-14",
+      "kind": "screenshot",
+      "path": "water-movement.jpg",
+      "sha256": "309be4437ff027398c3b255ba895765013d8611c7ddd587ced05cc7122ba48e0",
+      "size_bytes": 233748
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-15",
+      "kind": "screenshot",
+      "path": "water-pass.jpg",
+      "sha256": "ce62337ab4c0d8dfab58adf7ad6aca680c7a11d891c8fcd52f0ae60c11c6edf1",
+      "size_bytes": 219704
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "artifact-16",
+      "kind": "video",
+      "path": "water-sampled-movement.mp4",
+      "sha256": "f6b8343be728568813ff6d6c5ffb8ecf151eb0a334980ad1cd333a06cda87765",
+      "size_bytes": 730272
+    },
+    {
+      "availability": "local-file-verified",
+      "id": "provenance",
+      "kind": "other",
+      "path": "provenance.json",
+      "sha256": "56a34bd680babce679d5d1b1c86d87dfd46878410a21e68b7eea3b6d2547c3b0",
+      "size_bytes": 276
+    }
+  ],
+  "bundle_valid": true,
+  "checks": [
+    {
+      "description": "Full game plus opt-in adapter compiles",
+      "evidence": [
+        "artifact-0"
+      ],
+      "id": "build",
+      "notes": "0 errors, 0 warnings.",
+      "result": "passed"
+    },
+    {
+      "description": "20 water/deep/dry cycles maintain registry baseline",
+      "evidence": [
+        "artifact-10",
+        "artifact-13",
+        "artifact-14",
+        "artifact-15"
+      ],
+      "id": "runtime",
+      "notes": "Baseline 6835; final 6836 includes one deliberately retained visible tile.",
+      "result": "passed"
+    },
+    {
+      "description": "Nomad spawn, keyboard movement and tree Examine after check",
+      "evidence": [
+        "artifact-13",
+        "artifact-14",
+        "artifact-15",
+        "artifact-16",
+        "artifact-10"
+      ],
+      "id": "client-interaction",
+      "notes": "Actual client and map; observer position changed from x1 to x4. Water adapter step returned zero despite changed coordinates; keyboard movement is separately visible.",
+      "result": "passed"
+    }
+  ],
+  "commit": "e19c52ad9a155cf62529d5a51430f5c2d797179f",
+  "game": "Civ13",
+  "limitations": [
+    "Short isolated local acceptance only; no production or long-runtime OOM verification.",
+    "Opt-in local admin test adapter is excluded from production civ13.dme.",
+    "Video is a sequence of genuine sampled screenshots at 2 fps; original capture times retained.",
+    "Public bundle omits local run paths and temporary adapter token. Unsanitized originals retained locally."
+  ],
+  "manifest_sha256": "41a3eaeb7e1147d5f76fabdf4cb7364940061c67780581afac9bb611b732d972",
+  "map": {
+    "dimensions": [
+      155,
+      225,
+      2
+    ],
+    "name": "Nomads (Temperate)",
+    "source": "maps/nomads/nomads.dmm"
+  },
+  "meaning": "Metadata, local file checksums, references, and supplied sample structure were checked. Game acceptance and external URL availability were not independently verified.",
+  "media": {
+    "reason": "Sampled real game frames show keyboard movement; encoded at 2 fps, not a timing benchmark.",
+    "screenshot_required": true,
+    "video_required": true
+  },
+  "memory_observations": null,
+  "missing_required_media": [],
+  "run": {
+    "dirty": false,
+    "finished_utc": "2026-10-11T06:30:32.339Z",
+    "scope": "isolated-game",
+    "started_utc": "2026-10-11T06:22:13.6285070Z"
+  },
+  "runtime": {
+    "name": "BYOND",
+    "platform": "Windows",
+    "version": "516.1681"
+  },
+  "scenario": "gameplay",
+  "schema_version": 1,
+  "steps": [
+    "Check out commit e19c52ad9a155cf62529d5a51430f5c2d797179f",
+    "Run tests/memory/start-gameplay-evidence.ps1 -ByondBin <516.1681 bin> -Scenario water -Port 16992",
+    "Connect Dream Seeker 516.1681 to byond://127.0.0.1:16992",
+    "Run query-gameplay-evidence.ps1 with SessionJson and ByondBin for prepare, wait for state 3, then join, run, examine",
+    "Close the native Notes popup; capture PASS, press Right/Down with keyboard, capture sampled frames",
+    "Stop only the task-owned server/client PIDs; preserve closed logs"
+  ]
+}
