@@ -33,3 +33,17 @@ jobs:
       - name: Run a one-line script
         run: sudo bash ./scripts/travis_pre_byond.sh
         shell: bash
+
+      - name: Validate compiled crafting recipes
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          python3 scripts/check-recipes.py --report recipe-checks.txt
+        shell: bash
+
+      - name: Upload recipe validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: recipe-validation
+          path: recipe-checks.txt
+          if-no-files-found: warn
