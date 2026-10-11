@@ -303,6 +303,14 @@ Dormant comment-review listeners must be workflow_dispatch-only: GitHub can requ
 
 ## Train verification
 
+<!-- 2026-10-11: automobile construction -->
+`tests/car_workshop/run.ps1 -ByondBin <516.1681-bin>` exercises paid AOTD
+assembly, interruptions, cable reservations, driving, turning and temporary
+world-save round trips with production sources and isolated startup/actor waits.
+Nested vehicle controllers have no direct turf coordinates; use `get_turf()`
+when comparing their positions. Workshop power connects by dragging a laid cable
+onto the workshop; cable coils feed its material stock.
+
 <!-- 2026-10-11: medicine regression isolation -->
 `tests/survival/run.py` checks production disease courses, oral metabolism,
 ingredient acquisition and timed fermentation/distillation in temporary storage.
@@ -367,5 +375,8 @@ Plant examine delegates to read-only farming_diagnostics(skill). Preserve skill 
 <!-- 2026-10-11: outdoor crop bootstrap -->
 Nomads Europe foraged seeds use biome filtering like its climate-restricted growth. Rain caps crop storage at max_water; natural irrigation sources remain unlimited. tests/outdoor_crops/run.ps1 tests production seed catalogs/dispatch and fresh/salt/range behavior; it does not establish map-level bootstrap reachability.
 
+<!-- 2026-10-11: compiled sprite audit -->
+- `tests/sprites/run.py --byond-bin <516.1681-bin> --output <temporary-json>` inventories compiled inherited item/structure/machinery defaults without constructing them or starting game systems. Its required-types manifest checks real DMI directions, frames and nonempty pixels; `--negative-control` restores a wrong optic icon resource in a generated source copy.
+- Missing initial states do not prove missing graphics: constructors, overlays, material recoloring and map overrides can supply them. Add new obtainable types to `tests/sprites/required-types.json` when static defaults are appropriate, or document and test their dynamic rendering. See `docs/sprite-audit.md` and its unresolved-candidate inventory.
 <!-- 2026-10-11: timed decal lifecycle -->
 Cleanable expiry uses code/processes/decal_decay.dm (256 candidates/second), not per-decal sleeping timers or direct Destroy. Preserve existing decay_timer lifetimes; decay_deadline/index are explicitly excluded from native save export/import. tests/decal_decay/run.py compares actual native lifecycle with --baseline historical cleanable source, without normal game startup. Baseline early-qdel retention and missing expiry GC bookkeeping are isolated evidence, not full-game OOM proof.
