@@ -11,6 +11,8 @@
 var/global/datum/external_relations/external_relations = new()
 
 /obj/map_metadata/pepelsibirsk
+	abandonment_season_cycle = TRUE
+	abandonment_season_autonomous = TRUE
 	ID = MAP_PEPELSIBIRSK
 	title = "Pepelsibirsk"
 	lobby_icon = "icons/lobby/pepelsibirsk.png"
@@ -76,6 +78,7 @@ var/global/datum/external_relations/external_relations = new()
 /obj/map_metadata/pepelsibirsk/seasons()
 	if (real_season == "FALL")
 		season = "WINTER"
+		record_abandonment_season_change()
 		to_chat(world, "<big>The <b>Winter</b> has started.</big>")
 		change_weather_somehow()
 		spawn(1200)
@@ -134,6 +137,7 @@ var/global/datum/external_relations/external_relations = new()
 		real_season = "WINTER"
 	else if (real_season == "SPRING")
 		season = "SUMMER"
+		record_abandonment_season_change()
 		to_chat(world, "<big>The <b>Summer</b> has started.</big>")
 		change_weather_somehow()
 		spawn(300)
@@ -167,10 +171,12 @@ var/global/datum/external_relations/external_relations = new()
 		real_season = "SUMMER"
 	else if (real_season == "WINTER")
 		season = "SPRING"
+		record_abandonment_season_change()
 		to_chat(world, "<big>The weather is getting warmer in other places of the world, but not here. It is now <b>Spring</b>.</big>")
 		real_season = "SPRING"
 	else if (real_season == "SUMMER")
 		season = "FALL"
+		record_abandonment_season_change()
 		to_chat(world, "<big>The warmth of summer abruptly ends, being replaced with strong winds and rain, swiftly turning to snowstorms and ice. It is now <b>Fall</b>.</big>")
 		spawn(1200)
 			for (var/obj/structure/wild/tree/live_tree/TREES in world)

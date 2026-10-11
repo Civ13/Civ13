@@ -1,5 +1,6 @@
 
 /obj/map_metadata/colony
+	abandonment_season_cycle = TRUE
 	ID = MAP_COLONY
 	title = "Colony"
 	description = "Europeans have reached the shore! The Colonists must build their villages."

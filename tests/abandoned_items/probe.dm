@@ -15,6 +15,9 @@ var/decay_assertions = 0
 
 /obj/item/trash/decay_probe_occupied
 
+/obj/map_metadata/nomads/decay_probe/New()
+	map = src // Isolated metadata: no normal map timers or systems.
+
 /proc/decay_counts()
 	var/waste = 0
 	var/pending = 0
@@ -27,7 +30,50 @@ var/decay_assertions = 0
 /world/New()
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "byond" = "[world.byond_version].[world.byond_build]", "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz)), "metadata.json")
 	try
-		decay_assert(ABANDONED_ITEM_WARNING == 432000 && ABANDONED_ITEM_LIFETIME == 864000, "human12/24-hour thresholds")
+		decay_assert(ABANDONED_ITEM_WARNING == 216000 && ABANDONED_ITEM_LIFETIME == 432000, "human6/12-hour thresholds")
+		decay_assert(ABANDONED_ITEM_SEASON_WARNING == 2 && ABANDONED_ITEM_SEASON_LIFETIME == 4, "human seasonal thresholds")
+		config = new
+		var/obj/map_metadata/nomads/decay_probe/season_map = new
+		season = "SPRING"
+		decay_assert(season_map.abandonment_uses_seasons(), "ancient nomads uses seasonal clock before first transition")
+		var/turf/season_turf = locate(1,1,1)
+		var/obj/item/trash/decay_probe/season_waste = new(season_turf)
+		season_waste.check_abandonment(0)
+		decay_assert(!season_waste.check_abandonment(ABANDONED_ITEM_LIFETIME*100), "seasonal waste has no elapsed-hour deadline")
+		season = "SUMMER"
+		decay_assert(abandonment_season_changes == 0, "startup/direct climate assignment does not count as a transition")
+		season_map.record_abandonment_season_change()
+		decay_assert(!season_waste.check_abandonment(ABANDONED_ITEM_LIFETIME*101) && !season_waste.abandonment_notice(), "first change preserves waste without warning")
+		season_map.record_abandonment_season_change()
+		decay_assert(findtext(season_waste.abandonment_notice(), "four season changes"), "second change warns")
+		season_map.record_abandonment_season_change()
+		decay_assert(!season_waste.check_abandonment(ABANDONED_ITEM_LIFETIME*102), "third change preserves waste")
+		season_map.record_abandonment_season_change()
+		decay_assert(season_waste.check_abandonment(ABANDONED_ITEM_LIFETIME*103), "fourth change decays waste")
+		season_waste = new(season_turf)
+		season_waste.check_abandonment(0)
+		season_map.record_abandonment_season_change()
+		season_waste.forceMove(locate(2,1,1))
+		season_waste.check_abandonment(0)
+		decay_assert(season_waste.abandonment_season_since == abandonment_season_changes, "movement starts fresh seasonal window")
+		config.seasons_on = FALSE
+		season_waste.check_abandonment(100)
+		decay_assert(!season_waste.abandonment_seasonal && !season_waste.check_abandonment(100+ABANDONED_ITEM_LIFETIME-1), "disabling standard seasons grants full real-time window")
+		config.seasons_on = TRUE
+		season_waste.check_abandonment(100+ABANDONED_ITEM_LIFETIME)
+		decay_assert(!season_waste.gcDestroyed && season_waste.abandonment_seasonal, "enabling seasons resets clock conservatively")
+		season = "Wet Season"
+		decay_assert(!season_map.abandonment_uses_seasons(), "fixed wet label uses fallback")
+		season_map.abandonment_season_autonomous = TRUE
+		config.seasons_on = FALSE
+		decay_assert(season_map.abandonment_uses_seasons(), "custom wet/dry cycle ignores standard config")
+		season_map.abandonment_season_cycle = FALSE
+		decay_assert(!season_map.abandonment_uses_seasons(), "static map uses fallback")
+		qdel(season_waste)
+		map = null
+		qdel(season_map)
+		season = "SPRING"
+		config.seasons_on = TRUE
 		var/process/garbage/G = new
 		G.setup()
 		var/process/abandoned_items/P = new
@@ -44,7 +90,7 @@ var/decay_assertions = 0
 		I = new(T)
 		I.abandonment_since = world.time - ABANDONED_ITEM_WARNING
 		I.abandonment_location = "\ref[T]"
-		decay_assert(findtext(I.abandonment_notice(), "weathered"), "12-hour examine warning")
+		decay_assert(findtext(I.abandonment_notice(), "weathered"), "6-hour examine warning")
 		var/obj/item/weapon/storage/backpack/bag = new(T)
 		var/obj/item/weapon/storage/backpack/inner = new(bag)
 		I.forceMove(inner)
@@ -135,7 +181,7 @@ var/decay_assertions = 0
 		map_storage.saving_z = 1
 		var/ref = map_storage.BuildVarDirectory(F, I, 1)
 		F.cd = map_storage.entry_path(F, ref)
-		decay_assert(!("abandonment_index" in F.dir) && !("abandonment_since" in F.dir) && !("abandonment_location" in F.dir), "production serializer excludes runtime state")
+		decay_assert(!("abandonment_index" in F.dir) && !("abandonment_since" in F.dir) && !("abandonment_location" in F.dir) && !("abandonment_season_since" in F.dir) && !("abandonment_seasonal" in F.dir), "production serializer excludes runtime state")
 		// Restore a real nested container entry with forged stale runtime fields.
 		I.forceMove(inner)
 		map_storage.clear_bookkeeping()
@@ -145,6 +191,8 @@ var/decay_assertions = 0
 		F.cd = map_storage.entry_path(F, item_ref)
 		F["abandonment_index"] << list("kind" = "value", "value" = 999999)
 		F["abandonment_since"] << list("kind" = "value", "value" = -ABANDONED_ITEM_LIFETIME*10)
+		F["abandonment_season_since"] << list("kind" = "value", "value" = -99999)
+		F["abandonment_seasonal"] << list("kind" = "value", "value" = TRUE)
 		F["abandonment_location"] << list("kind" = "value", "value" = "stale")
 		map_storage.clear_bookkeeping()
 		var/obj/item/weapon/storage/backpack/restored = map_storage.Load_Entry(F, container_ref, null, T)
@@ -153,13 +201,13 @@ var/decay_assertions = 0
 		for(var/obj/item/weapon/storage/backpack/nested in restored)
 			for(var/obj/item/trash/decay_probe/target in nested)
 				restored_waste = target
-		decay_assert(restored_waste && restored_waste.abandonment_index != 999999 && isnull(restored_waste.abandonment_since), "nested restored waste ignores stale scheduler fields")
+		decay_assert(restored_waste && restored_waste.abandonment_index != 999999 && isnull(restored_waste.abandonment_since) && isnull(restored_waste.abandonment_season_since) && !restored_waste.abandonment_seasonal, "nested restored waste ignores stale scheduler fields")
 		for(var/datum/loaded_datum in map_storage.all_loaded)
 			loaded_datum.after_load()
 		decay_assert(restored_waste.abandonment_protected() && !restored_waste.gcDestroyed, "restored nested contents survive decay check")
 		restored_waste.forceMove(T)
 		restored_waste.check_abandonment(0)
-		decay_assert(!restored_waste.check_abandonment(ABANDONED_ITEM_LIFETIME-1), "restored waste receives full24-hour exposed window")
+		decay_assert(!restored_waste.check_abandonment(ABANDONED_ITEM_LIFETIME-1), "restored waste receives full12-hour exposed window")
 		qdel(restored_waste); qdel(restored)
 		I.after_load()
 		decay_assert(isnull(I.abandonment_since) && I.abandonment_index, "load reset does not duplicate registry")

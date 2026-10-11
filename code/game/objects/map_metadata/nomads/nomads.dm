@@ -1,5 +1,6 @@
 
 /obj/map_metadata/nomads
+	abandonment_season_cycle = TRUE
 	ID = MAP_NOMADS
 	title = "Nomads (Temperate)"
 	description = "After ages as hunter-gatherers, people are starting to form groups and settle down."
