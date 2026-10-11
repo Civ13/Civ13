@@ -5,6 +5,8 @@ var/obj/item/stack/material/crafting_evidence_input
 var/obj/structure/anvil/steel/crafting_evidence_anvil
 var/turf/crafting_evidence_tile
 var/crafting_evidence_case = ""
+var/crafting_evidence_prompt_mode = FALSE
+var/list/crafting_evidence_prompt_trace = list()
 
 /world/Topic(T, addr, master, key)
 	var/list/request = params2list(T)
@@ -35,6 +37,14 @@ var/crafting_evidence_case = ""
 		to_chat(C, "LOCAL CRAFTING evidence commit: [CRAFTING_EVIDENCE_COMMIT]")
 	if ((action == "road" || action == "helmet") && istype(C.mob, /mob/living/human))
 		var/mob/living/human/H = C.mob
+		C << browse(null, "window=playersetup")
+		C << browse(null, "window=memory")
+		C.eye = H
+		C.perspective = MOB_PERSPECTIVE
+		H.invisibility = 0
+		H.see_in_dark = 8
+		H.sight = SEE_TURFS | SEE_MOBS | SEE_OBJS
+		H.update_icons()
 		var/turf/center = locate(round(world.maxx/2),round(world.maxy/2),1)
 		H.forceMove(locate(center.x,center.y-1,1))
 		for (var/atom/movable/object in center)
@@ -63,6 +73,27 @@ var/crafting_evidence_case = ""
 			crafting_evidence_anvil = new(crafting_evidence_tile)
 			H.put_in_active_hand(crafting_evidence_input)
 			to_chat(C, "LOCAL TEST: steel anvil, age 5, trained blacksmith, 20 steel. Use steel on the anvil, choose helmets, then Mesh Pickelhaube Helmet (6 steel). Stand still through the normal timed craft.")
+	if (action == "road-procedure" && crafting_evidence_case == "road" && crafting_evidence_input && istype(C.mob,/mob/living/human))
+		var/datum/stack_recipe/chosen
+		for (var/datum/stack_recipe_list/group in crafting_evidence_input.recipes)
+			for (var/datum/stack_recipe/recipe in group.recipes)
+				if (recipe.title == "smooth modern road" && recipe.result_type == /obj/covers/roads/modern)
+					chosen = recipe
+		if (chosen)
+			to_chat(C, "PROCEDURE TEST: calling production produce_recipe for the real catalog row. This is an adapter call, not a menu click.")
+			crafting_evidence_input.produce_recipe(chosen,1,C.mob)
+		else
+			result["error"] = "Real road menu entry missing"
+	if (action == "helmet-procedure" && crafting_evidence_case == "helmet" && crafting_evidence_input && crafting_evidence_anvil && istype(C.mob,/mob/living/human))
+		if (!crafting_evidence_prompt_mode && !crafting_evidence_anvil.in_use)
+			crafting_evidence_prompt_mode = TRUE
+			crafting_evidence_prompt_trace = list()
+			to_chat(C, "PROCEDURE TEST: calling production anvil attackby. Only the two dialog selections are injected; crafting time, checks, consumption and output creation remain production behavior. No menu clicks are claimed.")
+			spawn(0)
+				usr = C.mob
+				crafting_evidence_anvil.attackby(crafting_evidence_input,C.mob)
+				crafting_evidence_prompt_mode = FALSE
+				world.log << "CRAFTING PROCEDURE completed: [json_encode(crafting_evidence_prompt_trace)]"
 	if (action == "inspect" && crafting_evidence_tile)
 		var/list/outputs = list()
 		for (var/atom/movable/output in crafting_evidence_tile)
@@ -70,8 +101,26 @@ var/crafting_evidence_case = ""
 				outputs += "[output.type]"
 				output.examine(C.mob)
 		result["outputs"] = outputs
+		result["prompt_trace"] = crafting_evidence_prompt_trace
 		result["case"] = crafting_evidence_case
 		result["input_remaining"] = crafting_evidence_input ? crafting_evidence_input.amount : -1
 		to_chat(C, "LOCAL CRAFTING observed [crafting_evidence_case]: input remaining [result["input_remaining"]], outputs [json_encode(outputs)].")
 	world.log << "LOCAL CRAFTING EVIDENCE [action]: [json_encode(result)]"
 	return json_encode(result)
+
+// The isolated build wires only anvil dialog calls to this selector. Outside
+// the explicit procedure-test action it delegates to the original WWinput.
+/proc/crafting_evidence_prompt(client, message, title, default, toc1, toc2)
+	if (!crafting_evidence_prompt_mode)
+		return WWinput(client,message,title,default,toc1,toc2)
+	var/list/options = islist(toc1) ? toc1 : null
+	var/selection
+	if (options && ("helmets" in options))
+		selection = "helmets"
+	else if (options && ("Mesh Pickelhaube Helmet - 6 steel" in options))
+		selection = "Mesh Pickelhaube Helmet - 6 steel"
+	crafting_evidence_prompt_trace += list(list("offered"=options,"selected"=selection))
+	to_chat(client,"PROCEDURE TEST offered: [html_encode(json_encode(options))]; injected selection: [selection]")
+	var/preview = "<html><body><h3>TEST dialog adapter (not clicked)</h3><pre>[html_encode(json_encode(options))]</pre><p>Injected selection: [html_encode(selection)]</p></body></html>"
+	client << browse(preview,"window=crafting_procedure;size=640x420")
+	return selection ? selection : default

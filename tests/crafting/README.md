@@ -97,3 +97,20 @@ and multiple clients, and supplies only isolated test inputs/progression.
 6. Stop only the daemon PID recorded in this session and its own client when
    capture is finished. Keep logs/manifest; upload media as verified direct PR
    attachments and remove local media only after URL verification.
+
+### Explicit procedure-test alternative
+
+When native tooling cannot target BYOND's embedded WebView, the road-procedure
+action locates the real generated catalog datum and calls production
+produce_recipe. The helmet-procedure action calls production anvil attackby in
+an isolated source copy: its dialog boundary delegates to the original WWinput
+except during this explicit test action, which injects only selections present
+in the actual offered lists. It records all offered lists/selections. Recipe
+lookup, age/skill/material checks, timed build, consumption and output creation
+are unchanged. It neither creates nor substitutes output objects itself.
+
+These are adapter-driven production procedure tests, not menu clicks. Capture
+the actual game and result plus the prominently labeled dialog trace. Retain
+the manually offered stone menu observation separately. No universal gameplay
+reachability or native menu input acceptance is inferred. Stage setup closes
+only local character popups and grants fixture visibility for inspecting output.

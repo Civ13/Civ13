@@ -20,6 +20,16 @@ foreach ($adapter in @(@('code/modules/webhooks/webhooks.dm','/proc/webhook_send
     [IO.File]::WriteAllText($path,$body)
     $base = $base.Replace($adapter[0].Replace('/','\'),$path.Replace('\','/'))
 }
+# Inject only dialog selections in the isolated anvil copy. No recipe logic is rewritten.
+$anvilRelative = 'code/game/objects/structures/blacksmithing/blacksmithing.dm'
+$anvilBody = Get-Content -LiteralPath (Join-Path $repo $anvilRelative) -Raw
+if (!$anvilBody.Contains('WWinput(')) { throw 'Anvil prompt wiring changed' }
+$anvilBody = $anvilBody.Replace('WWinput(', 'crafting_evidence_prompt(')
+$anvilPath = Join-Path $run 'blacksmithing.dm'
+[IO.File]::WriteAllText($anvilPath,$anvilBody)
+$includeNeedle = $anvilRelative.Replace('/','\')
+if ([regex]::Matches($base,[regex]::Escape($includeNeedle)).Count -ne 1) { throw 'Anvil include wiring changed' }
+$base = $base.Replace($includeNeedle,$anvilPath.Replace('\','/'))
 $basePath = Join-Path $repo ('.crafting-base-' + $nonce + '.dme')
 [IO.File]::WriteAllText($basePath,$base)
 $lines = @(('#define CRAFTING_EVIDENCE_TOKEN "{0}"' -f $nonce),('#define CRAFTING_EVIDENCE_COMMIT "{0}"' -f $commit),('#include "{0}"' -f $basePath.Replace('\','/')),'#include "tests/crafting/gameplay.dm"')

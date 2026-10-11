@@ -1,7 +1,7 @@
 param(
     [Parameter(Mandatory=$true)][string]$SessionJson,
     [Parameter(Mandatory=$true)][string]$ByondBin,
-    [ValidateSet('status','prepare','join','road','helmet','inspect')][string]$Action='status',
+    [ValidateSet('status','prepare','join','road','helmet','road-procedure','helmet-procedure','inspect')][string]$Action='status',
     [ValidateSet(1,2,4,8)][int]$Direction=1
 )
 $ErrorActionPreference='Stop'
