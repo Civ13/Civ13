@@ -7,7 +7,10 @@ promise that a particular food crop is available immediately.
 On Continental, Pangea, New World, Mediterranean, Gaia and Europe Nomads maps,
 foraged seeds are selected for the area's biome. Eight biome catalogs are
 nonempty: sea, temperate, tundra, taiga, desert, semiarid, savanna and jungle.
-Fixed-era maps retain their generic bush seed catalog. A compatible seed still
+Pangea's checked-in map has direct seed stacks and no placed small bushes; catalog
+selection alone does not establish a bush-foraging route there. See
+[the placed map inventory](outdoor-map-inventory.md). Fixed-era maps retain their
+generic bush seed catalog. A compatible seed still
 needs a ploughed plot and suitable growing conditions. Season restrictions remain
 in effect on climate-restricted Nomads maps; planting does not guarantee growth.
 
