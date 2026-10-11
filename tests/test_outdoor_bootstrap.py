@@ -11,9 +11,11 @@ spec.loader.exec_module(bootstrap)
 
 class MapInventoryParser(unittest.TestCase):
     def test_top_row_is_high_y_and_unused_definition_is_absent(self):
-        text = '"aa" = (/turf/floor/dirt,/area/test)\n"bb" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/test)\n(4,7,2) = {"\naaaa\naaaa\n"}'
+        text = '"aa" = (/turf/floor/grass,/area/test)\n"bb" = (/turf/floor/dirt,/area/test)\n"cc" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/test)\n(4,7,2) = {"\naabb\nbbaa\n"}'
         tiles = bootstrap.read_map(text)
         self.assertEqual(set(tiles), {(4, 7, 2), (5, 7, 2), (4, 8, 2), (5, 8, 2)})
+        self.assertIn("/turf/floor/grass", tiles[(4, 8, 2)])
+        self.assertIn("/turf/floor/dirt", tiles[(4, 7, 2)])
         self.assertTrue(all("smallbush" not in tile for tile in tiles.values()))
 
     def test_invalid_maps_are_rejected(self):
