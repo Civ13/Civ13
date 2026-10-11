@@ -115,7 +115,7 @@
 	for(var/v in changing_vars)
 		// Location is reconstructed by the map grid and contents graph. Saving it
 		// recursively used to create turf entries outside that graph.
-		if(v in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs"))
+		if(v in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))
 			continue
 		if(A.vars.Find(v))
 			var/value = encode_saved_value(savefile, A.vars[v])
@@ -128,18 +128,26 @@
 // Typed envelopes preserve literal marker strings and associative/nested lists.
 // Lists are indexed separately so aliases and cycles survive a round trip.
 /map_storage/proc/encode_saved_value(savefile/F, value)
+	if(istype(value, /obj/map_metadata))
+		return list("kind" = "map")
+	if(istype(value, /area))
+		var/area/AR = value
+		var/turf/T = locate(/turf) in AR
+		if(!T)
+			throw EXCEPTION("Referenced area has no world turf: [AR.type]")
+		return list("kind" = "area", "x" = T.x, "y" = T.y, "z" = T.z, "type" = AR.type)
 	if(islist(value))
 		var/list/L = value
-		var/id = saving_lists.Find(L)
+		var/id = saving_lists["\ref[L]"]
 		if(!id)
-			saving_lists += list(L)
-			id = saving_lists.len
+			id = saving_lists.len + 1
+			saving_lists["\ref[L]"] = id
 			F["/lists/[id]/length"] << L.len
 			for(var/i = 1, i <= L.len, i++)
 				TICK_CHECK
 				var/key = L[i]
 				var/encoded_key = encode_saved_value(F, key)
-				var/encoded_value = encode_saved_value(F, isnum(key) ? null : L[key])
+				var/encoded_value = encode_saved_value(F, (isnum(key) || isnull(key)) ? null : L[key])
 				F["/lists/[id]/[i]/key"] << encoded_key
 				F["/lists/[id]/[i]/value"] << encoded_value
 		return list("kind" = "list", "ref" = id)

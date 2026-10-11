@@ -19,6 +19,8 @@ world
 	var/list/complex
 	var/list/alias
 	var/turf/destination
+	var/area/current_area
+	var/obj/map_metadata/metadata
 /datum/test
 	var/value = 0
 /proc/check(condition, message)
@@ -43,7 +45,10 @@ world
 		A.complex = list("literal **entry7", 7, 7, "key" = list("nested" = 42))
 		A.alias = A.complex
 		A.complex += list(A.complex)
+		A.complex += list(null)
 		A.destination = edge
+		A.current_area = edge.loc
+		A.metadata = map
 		var/obj/item/test/C = new(edge)
 		C.number = 314
 		C.items = list("second level" = 271)
@@ -62,8 +67,10 @@ world
 		check(A.complex[1] == "literal **entry7", "literal marker string changed")
 		check(A.complex[2] == 7 && A.complex[3] == 7, "duplicates lost")
 		check(A.complex["key"]["nested"] == 42, "associative nested list lost")
-		check(A.alias == A.complex && A.complex[A.complex.len] == A.complex, "list alias/cycle lost")
+		check(A.alias == A.complex && A.complex[A.complex.len-1] == A.complex, "list alias/cycle lost")
+		check(isnull(A.complex[A.complex.len]), "null list element lost")
 		check(A.destination == locate(world.maxx,world.maxy,2), "cross-level turf reference lost")
+		check(A.current_area == A.destination.loc && A.metadata == map, "area or metadata identity lost")
 		C = locate(/obj/item/test) in locate(world.maxx,world.maxy,2)
 		check(C && C.number == 314 && C.items["second level"] == 271, "second-level objects/lists lost")
 		check(map && map.loc == locate(1,1,1), "metadata deleted")

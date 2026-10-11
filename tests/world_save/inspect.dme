@@ -1,0 +1,13 @@
+// Read-only save entry inspection. Copy the binary into isolated save storage.
+world
+	sleep_offline = 0
+/world/New()
+	..()
+	var/savefile/F = new(world.params["file"])
+	var/ref = text2num(world.params["ref"])
+	var/path = "/entries/[ref]"
+	if(F["/format_version"] == 2)
+		path = "/entries/[round((ref-1)/512)]/[ref]"
+	F.ExportText(path, "entry_inspection.txt")
+	world.log << file2text("entry_inspection.txt")
+	del(world)

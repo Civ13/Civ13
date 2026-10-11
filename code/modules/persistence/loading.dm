@@ -46,7 +46,7 @@
 			savefile.cd = entry_path(savefile, ind)
 			if(v == "type")
 				continue
-			else if(v in list("loc", "locs", "pixloc", "contents", "vars", "parent_type", "x", "y", "z", "vis_locs"))
+			else if(v in list("loc", "locs", "pixloc", "contents", "vars", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))
 				continue
 			else if(v == "content")
 				if(nocontents != 2)
@@ -110,6 +110,13 @@
 	if(!islist(value))
 		throw EXCEPTION("Invalid typed saved value")
 	switch(value["kind"])
+		if("map")
+			return map
+		if("area")
+			var/turf/T = locate(value["x"], value["y"], value["z"])
+			if(!T || !istype(T.loc, value["type"]))
+				throw EXCEPTION("Referenced area differs from the current map")
+			return T.loc
 		if("value")
 			return value["value"]
 		if("turf")
@@ -292,6 +299,15 @@
 	if(!islist(value))
 		throw EXCEPTION("Invalid typed saved value")
 	switch(value["kind"])
+		if("map")
+			return TRUE
+		if("area")
+			if(!ispath(value["type"], /area))
+				throw EXCEPTION("Invalid saved area type")
+			var/turf/T = locate(value["x"], value["y"], value["z"])
+			if(!T || !istype(T.loc, value["type"]))
+				throw EXCEPTION("Referenced area differs from the current map")
+			return TRUE
 		if("value")
 			return TRUE
 		if("entry")
