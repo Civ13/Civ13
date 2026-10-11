@@ -12,6 +12,9 @@ try {
     # The probe runs real holders/reactions without schedulers or live adapters.
     $world = Get-Content -LiteralPath 'code/world.dm' -Raw
     $world = $world.Replace('/world/New()', '/world/proc/unused_chemistry_startup()')
+    # The renamed startup is never called and no longer has a parent New().
+    $startupOffset = $world.IndexOf('/world/proc/unused_chemistry_startup()')
+    $world = [regex]::new('(?m)^\t\.\.\(\)\r?$').Replace($world, '', 1, $startupOffset)
     [IO.File]::WriteAllText((Join-Path $repoRoot '.chemistry_world.dm'), $world)
     $source = Get-Content -LiteralPath 'civ13.dme' -Raw
     $source = $source.Replace('code\world.dm', '.chemistry_world.dm')
@@ -23,8 +26,10 @@ try {
     $build | Set-Content -LiteralPath (Join-Path $testRun 'compile.log')
     Copy-Item -LiteralPath '.chemistry_probe.dmb', '.chemistry_probe.rsc' -Destination $testRun
     Copy-Item -LiteralPath 'config' -Destination $testRun -Recurse
+    $testedCommit = git rev-parse HEAD
+    Write-Output "Tested commit: $testedCommit"
     Write-Output "Isolated runtime and retained logs: $testRun"
-    $runtime = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @((Join-Path $testRun '.chemistry_probe.dmb'), '-invisible', '-safe', '-log', (Join-Path $testRun 'runtime.log')) -WorkingDirectory $testRun -WindowStyle Hidden -PassThru
+    $runtime = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @((Join-Path $testRun '.chemistry_probe.dmb'), '-invisible', '-safe', '-close', '-params', "tested_commit=$testedCommit", '-log', (Join-Path $testRun 'runtime.log')) -WorkingDirectory $testRun -WindowStyle Hidden -PassThru
     if (!$runtime.WaitForExit(30000)) {
         Stop-Process -Id $runtime.Id
         throw 'Task-owned chemistry probe exceeded 30 seconds'

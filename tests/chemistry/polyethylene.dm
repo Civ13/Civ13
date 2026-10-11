@@ -1,4 +1,5 @@
 /world/New()
+	text2file(json_encode(list("commit" = world.params["tested_commit"], "byond_version" = world.byond_version, "byond_build" = world.byond_build, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz)), "metadata.json")
 	try
 		var/list/recipes = list(new /datum/chemical_reaction/ethylene, new /datum/chemical_reaction/propylene, new /datum/chemical_reaction/titaniumchloride, new /datum/chemical_reaction/aluminumchloride, new /datum/chemical_reaction/borontrifluoride)
 		for(var/datum/chemical_reaction/reaction in recipes)

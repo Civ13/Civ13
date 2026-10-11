@@ -1,6 +1,7 @@
 # Polyethylene regression probe
 
 Run `./tests/chemistry/run.ps1 -ByondBin 'C:\Program Files (x86)\BYOND\bin'`.
+Use BYOND 516.1681 or newer, as required by the production checkout.
 The runner compiles the production sources with normal world startup replaced,
 then runs the real reagent holders and chemical reactions in temporary storage.
 It does not start game schedulers, a client, or configured live-service adapters.
