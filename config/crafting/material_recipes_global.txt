@@ -2555,3 +2555,6 @@ RECIPE: /material/obsidian/,aztec column,/obj/structure/mine_support/stone/aztec
 //*********************| OBSIDIAN DECORATIONS & RELIGION |**************************
 
 RECIPE: /material/obsidian/,obsidian altar,/obj/structure/altar/stone/material/obsidian,15,200,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/copper/,Baghdad-style jar cell assembly,/obj/structure/battery,2,80,1,1,electrical,25,0,0,8,null
+RECIPE: /material/copper/,iron-copper voltaic-style pile,/obj/structure/battery/pile,5,120,1,1,electrical,95,0,0,8,null
+RECIPE: /material/lead/,lead-acid accumulator,/obj/structure/battery/lead_acid,5,150,1,1,electrical,105,0,0,8,null
