@@ -76,6 +76,13 @@ var/weather_runtime_error = FALSE
 		weather_assert(naked.probe_damage > layers.probe_damage, "Layers must reduce harm")
 		weather_assert(layers.bodytemperature > coat.bodytemperature && layers.bodytemperature > uniform.bodytemperature, "Overlapping layers must help")
 		weather_assert(full.probe_damage > 0, "Complete clothing must not give indefinite immunity")
+		for(var/obj/item/clothing/rated_item in list(full.head, full.wear_suit, full.w_uniform, full.shoes, full.gloves))
+			rated_item.min_cold_protection_temperature = 300
+		full.bodytemperature = 250
+		full.probe_damage = 0
+		weather_assert(full.get_cold_protection(244.15) == 0, "Below-rated complete clothing must give zero insulation")
+		full.handle_environment()
+		weather_assert(full.probe_damage > 0, "Below-rated complete coverage must not prevent systemic cold harm")
 		A.weather = WEATHER_WET
 		A.icon_state = "rain2"
 		var/mob/living/human/weather_probe/wet = weather_case("wet_full", 1200, TRUE, TRUE, TRUE)
