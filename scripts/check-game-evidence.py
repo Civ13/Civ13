@@ -64,7 +64,7 @@ def utc_timestamp(value):
     return parsed
 
 
-def memory_summary(path, metadata):
+def memory_summary(path, metadata, duration_seconds):
     """Summarize raw observations; deliberately make no leak/OOM verdict."""
     for key in ("metric", "process_identity", "settling_rule"):
         require(nonempty(metadata.get(key)), f"Memory evidence needs {key}")
@@ -87,6 +87,7 @@ def memory_summary(path, metadata):
                 "Memory samples must be finite and nonnegative")
         require(value.is_integer(), "Memory bytes must be integers")
         require(elapsed > previous_time, "Memory sample times must strictly increase")
+        require(elapsed <= duration_seconds, "Memory sample exceeds the declared run duration")
         require(cycle >= 1 and cycle >= previous_cycle, "Memory cycles must increase from 1")
         require(phase in phase_order, "Unknown memory phase")
         samples = cycles.setdefault(cycle, [])
@@ -141,8 +142,8 @@ def validate(manifest_path, expected_commit):
     require(isinstance(run, dict), "run must be an object")
     require(isinstance(run.get("scope"), str) and run["scope"] in SCOPES, "Unknown run scope")
     require(type(run.get("dirty")) is bool, "Record run.dirty explicitly")
-    require(utc_timestamp(run.get("finished_utc")) >= utc_timestamp(run.get("started_utc")),
-            "Run finish precedes start")
+    started, finished = utc_timestamp(run.get("started_utc")), utc_timestamp(run.get("finished_utc"))
+    require(finished >= started, "Run finish precedes start")
     require(text_list(data.get("steps")), "Record concrete reproduction steps")
     require(text_list(data.get("limitations")), "Record acceptance limits explicitly")
     media = data.get("media", {})
@@ -190,6 +191,8 @@ def validate(manifest_path, expected_commit):
         require(isinstance(evidence, list) and all(isinstance(ref, str) and ref in indexed for ref in evidence),
                 "Checks must reference known artifact IDs")
         require(result == "not-run" or bool(evidence), "Executed checks need evidence")
+        require(identity not in {"screenshot", "video"} or result != "not-run" or not evidence,
+                "Skipped media checks need an empty evidence list")
         check_ids.add(identity)
     require(SCENARIO_CHECKS[scenario] <= check_ids, "Scenario checks are missing; mark unavailable checks not-run")
     for kind, required in (("screenshot", media["screenshot_required"]), ("video", media["video_required"])):
@@ -202,7 +205,8 @@ def validate(manifest_path, expected_commit):
         identity = metadata.get("artifact")
         require(isinstance(identity, str) and identity in indexed and indexed[identity]["kind"] == "metrics" and
                 "path" in indexed[identity], "Memory samples require a local metrics artifact")
-        memory = memory_summary(contained_file(manifest_path.parent, indexed[identity]["path"]), metadata)
+        memory = memory_summary(contained_file(manifest_path.parent, indexed[identity]["path"]),
+                                metadata, (finished - started).total_seconds())
     require(not any(check["id"] == "memory-samples" and check["result"] == "passed" for check in checks) or memory,
             "A passed memory-samples check requires parsed memory observations")
     return {"schema_version": 1, "bundle_valid": True,

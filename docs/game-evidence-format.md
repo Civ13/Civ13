@@ -86,6 +86,8 @@ contiguously from 1, has baseline, peak, and settled phases in that order. Multi
 samples per phase are allowed; timestamps strictly increase. At least two
 complete cycles are needed to summarize repetition. Use more cycles and a
 representative duration to support the investigation's actual acceptance claim.
+Elapsed seconds start at the declared run start; samples cannot exceed the
+declared run duration.
 
 Choose one metric: `private_bytes`, `rss_bytes`, or `working_set_bytes`. Do not mix
 metrics/processes or convert datum counts into memory bytes. The report records

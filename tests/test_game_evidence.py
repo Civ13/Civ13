@@ -140,6 +140,13 @@ class GameEvidenceTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "real screenshot"):
             self.run_check()
 
+    def test_skipped_media_cannot_cite_unrelated_evidence(self):
+        self.data["media"]["screenshot_required"] = True
+        self.data["checks"].append({"id": "screenshot", "description": "Capture the interaction",
+                                    "result": "not-run", "evidence": ["log"], "notes": "Unavailable"})
+        with self.assertRaisesRegex(ValueError, "empty evidence list"):
+            self.run_check()
+
     def test_save_scenario_requires_rejection_and_preservation_results(self):
         self.data["scenario"] = "save-roundtrip"
         with self.assertRaisesRegex(ValueError, "Scenario checks are missing"):
@@ -175,6 +182,14 @@ class GameEvidenceTests(unittest.TestCase):
         self.data.pop("memory")
         with self.assertRaisesRegex(ValueError, "requires parsed memory"):
             self.run_check()
+
+    def test_memory_samples_must_fit_declared_run_duration(self):
+        self.memory_fixture()
+        self.data["run"]["finished_utc"] = "2026-10-11T00:00:01Z"
+        with self.assertRaisesRegex(ValueError, "run duration"):
+            self.run_check()
+        self.data["run"]["finished_utc"] = "2026-10-11T00:00:05Z"
+        self.assertTrue(self.run_check()["bundle_valid"])
 
     def test_missing_limits_bad_dimensions_and_timestamps_rejected(self):
         for change in (lambda d: d.update(limitations=[]), lambda d: d["map"].update(dimensions=[True, 2, 1]),
