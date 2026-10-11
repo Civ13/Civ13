@@ -270,7 +270,9 @@
 				exposed_bp -= "r_hand"
 
 		for (var/i in exposed_bp)
-			H.adjustBurnLossByPart(0.5*dmod, i)
+			H.adjustBurnLossByPart(0.1*dmod, i)
+		// Insulation slows cooling but cannot make hypothermia harmless.
+		H.adjustBurnLoss(0.05*dmod)
 
 		if (prob(12))
 			to_chat(H, SPAN_DANGER("[pick(cold_discomfort_strings)]"))

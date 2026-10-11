@@ -28,6 +28,7 @@
 /mob/living/human
 	var/global/list/overlays_cache = null
 	var/heatDamageFromClothingTimer = 0
+	var/cold_wetness = 0 // Bounded 0-1 exposure state, processed by the existing Life tick.
 	var/start_to_rot = FALSE
 	var/rotting_stage = 0
 
@@ -748,6 +749,15 @@
 		return
 
 	loc_temp = get_temp(src)
+	cold_wetness = min(1, max(0, cold_wetness))
+	// Rain and immersion soak insulation; shelter and nearby heat let it dry.
+	// This scalar needs no retained references, spawned timers or registries.
+	if (istype(get_turf(src), /turf/floor/beach/water))
+		cold_wetness = 1
+	else if (mob_area.location == AREA_OUTSIDE && mob_area.weather == WEATHER_WET && (findtext(mob_area.icon_state, "rain") || mob_area.icon_state == "monsoon"))
+		cold_wetness = min(1, cold_wetness + 0.01)
+	else
+		cold_wetness = max(0, cold_wetness - (loc_temp >= 18 ? 0.01 : 0.002))
 
 	for (var/obj/structure/bed/bedroll/BRL in src.loc)
 		if (BRL.used == TRUE && BRL.buckled_mob == src)
@@ -777,7 +787,9 @@
 	if ((loc_temp < bodytemperature-20) || (loc_temp < bodytemperature-12 && (ant || lizard))) //Under 17 degrees = unconfortable without clothing
 		var/thermal_protection = get_cold_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
-			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature-10) / BODYTEMP_COLD_DIVISOR) //this will be negative
+			// One Life call is nominally one second. Body heat loss needs minutes,
+			// not the atmospheric divisor shared with organ fever calculations.
+			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature-10) / 240) * (1 + cold_wetness)
 	else if ((loc_temp > bodytemperature) || (loc_temp > bodytemperature-7 && (ant || lizard))) //Over 37 degrees = unconfortable with too much clothing
 		var/thermal_protection = get_heat_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
@@ -786,14 +798,16 @@
 	if (temp_adj > 0)
 		temp_adj = min(temp_adj,8)
 	else if (temp_adj < 0)
-		temp_adj = max(temp_adj,-8)
+		temp_adj = max(temp_adj,-0.5)
 	else
 		if (loc_temp < bodytemperature)
 			temp_adj = -0.1
 		if (loc_temp > bodytemperature)
 			temp_adj = 0.1
-	if ((map && map.civilizations) || map.ID == MAP_ANTARCTICA)
+	if (map && (map.civilizations || map.ID == MAP_ANTARCTICA))
 		bodytemperature += temp_adj
+		if (loc_temp >= 291.15 && bodytemperature < species.body_temperature && !on_fire)
+			bodytemperature = min(species.body_temperature, bodytemperature + 0.15)
 	// +/- 50 degrees from 310.15K is the 'safe' zone, where no damage is dealt.
 
 
@@ -844,8 +858,16 @@
 	temperature = max(temperature, 2.7) //There is an occasional bug where the temperature is miscalculated in ares with a small amount of gas on them, so this is necessary to ensure that that bug does not affect this calculation. Space's temperature is 2.7K and most suits that are intended to protect against any cold, protect down to 2.0K.
 	if (cold_protection_disabled_timer > 0)
 		return 0
-	var/thermal_protection_flags = get_cold_protection_flags(temperature)
-	return get_thermal_protection(thermal_protection_flags)
+	var/covered = 0
+	var/protection = 0
+	for (var/obj/item/clothing/C in list(head,wear_suit,w_uniform,shoes,gloves,wear_mask))
+		if (C && C.min_cold_protection_temperature && C.min_cold_protection_temperature <= temperature)
+			// First layer blocks 80% of a body's weighted heat loss; an
+			// overlapping layer adds 16%. Exposed parts still lose heat.
+			protection += 0.8 * get_thermal_protection(C.cold_protection & ~covered)
+			protection += 0.16 * get_thermal_protection(C.cold_protection & covered)
+			covered |= C.cold_protection
+	return min(0.9, protection) * (1 - 0.5 * cold_wetness)
 
 /mob/living/human/proc/get_thermal_protection(var/flags)
 	.=0

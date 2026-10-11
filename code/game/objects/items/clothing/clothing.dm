@@ -458,6 +458,8 @@ BLIND	 // can't see anything
 */
 
 /obj/item/clothing/under
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	min_cold_protection_temperature = 240 // Ordinary layers help in temperate cold, not arctic extremes.
 	icon = 'icons/obj/clothing/uniforms.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/items/lefthand_uniforms.dmi',

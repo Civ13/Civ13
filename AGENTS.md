@@ -296,6 +296,14 @@ Dormant comment-review listeners must be workflow_dispatch-only: GitHub can requ
 
 ## Train verification
 
+<!-- 2026-10-11: bounded winter survival -->
+`tests/weather/run.py` runs inherited production thermal procs and real human
+constructors in isolated storage, with a pinned baseline and cold-loss negative
+control. Its accelerated iterations are nominal one-second Life calls, not
+elapsed gameplay. `cold_wetness` is a durable bounded 0-1 scalar, without timers
+or retained references. Ordinary uniforms have a 240 K cold rating; overlapping
+layers help but insulation caps at 90%, and hypothermia still harms covered mobs.
+
 <!-- 2026-10-11: trace resource extraction -->
 `tests/resource_extraction/run.ps1` compiles production extraction types with
 normal startup disabled and temporary storage. It checks bounded output, drill
