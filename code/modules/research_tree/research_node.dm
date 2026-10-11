@@ -644,7 +644,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/cable_coil/orange" = "electricity",
 		"/obj/item/stack/cable_coil/pink" = "electricity",
 		"/obj/item/stack/cable_coil/red" = "electricity",
-		"/obj/item/stack/cable_coil/white" = "electricity",
+		// Plain cable supplies the Electricity prototype before that node unlocks.
+		"/obj/item/stack/cable_coil/white" = "paved_infrastructure",
 		"/obj/item/stack/cable_coil/yellow" = "electricity",
 		"/obj/item/stack/material/electronics" = "electricity",
 		"/obj/structure/telegraph" = "electricity",
@@ -1213,9 +1214,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/plant_pot/clay/light" = "pottery_storage",
 		"/obj/structure/plant_pot/medium_planter/clay/yellow" = "pottery_storage",
 		"/obj/structure/pot" = "pottery_storage",
-		// --- power_tools (2) ---
+		// --- power tools and resource extraction ---
 		"/obj/item/weapon/material/pickaxe/jackhammer" = "power_tools",
-		"/obj/structure/drill" = "power_tools",
+		"/obj/structure/drill" = "electricity",
+		"/obj/item/weapon/resource_sieve" = "basic_tools",
 		// --- primitive_construction (42) ---
 		"/obj/covers/fancywood" = "primitive_construction",
 		"/obj/covers/straw_wall" = "primitive_construction",

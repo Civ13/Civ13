@@ -237,6 +237,12 @@ zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
 ## Local MCP tooling
 
+<!-- 2026-10-11: isolated legacy garbage queue -->
+When normal startup is disabled, atom `qdel` removes the atom from its location
+and queues it in `delayed_garbage`; it does not set the newer `gc_destroyed` flag
+checked by `QDELETED`. Fixture disposal assertions must reflect that actual
+queue and must not claim that production garbage collection has drained it.
+
 <!-- 2026-10-11: component work tools -->
 `scripts/check-component-tools.py` compiles production head/handle assembly and
 material stats with isolated startup, then checks rejection, bounded properties,
@@ -289,6 +295,15 @@ Tools under tools/comment-review provide an authenticated-gh local collector and
 Dormant comment-review listeners must be workflow_dispatch-only: GitHub can request approval before evaluating job guards. Keep automatic subscriptions in tools/comment-review/active-events.example.json until a separately reviewed activation.
 
 ## Train verification
+
+<!-- 2026-10-11: trace resource extraction -->
+`tests/resource_extraction/run.ps1` compiles production extraction types with
+normal startup disabled and temporary storage. It checks bounded output, drill
+power/callback lifecycle, construction costs, gathering guards and shortened
+production action waits and serialized drill entries. It does not establish
+graphical menus or full-world save round trips. Custom saves require explicit
+exclusion of transient extraction locks. The fixture closes its port at startup and rejects reopening;
+`-close` alone does not prevent a Windows DreamDaemon listening port.
 
 <!-- 2026-10-11: train collision investigation -->
 `code/modules/1713/trains.dm` connections point from leader to follower. Reject
