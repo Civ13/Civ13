@@ -14,7 +14,7 @@
 	var/tmp/assembly_time = 100
 
 /obj/structure/car_workshop/persistence_runtime_var(key)
-	return key in list("busy", "assembly_time", "powerneeded", "powersource") || ..(key)
+	return (key in list("busy", "assembly_time", "powerneeded", "powersource")) || ..(key)
 
 /obj/structure/car_workshop/after_load()
 	..()
@@ -31,7 +31,7 @@
 /obj/structure/car_workshop/proc/model_size(model)
 	if (!(model in models()))
 		return 0
-	return model in list("ASNO Piccolino", "ASNO Quattroporte", "Yamasaki Kazoku") ? 3 : 4
+	return (model in list("ASNO Piccolino", "ASNO Quattroporte", "Yamasaki Kazoku")) ? 3 : 4
 
 /obj/structure/car_workshop/proc/costs(model)
 	var/size = model_size(model)
@@ -63,7 +63,7 @@
 	return TRUE
 
 /obj/structure/car_workshop/attackby(obj/item/I, mob/living/human/H)
-	if (busy || !allowed(H) || !Adjacent(H))
+	if (busy || QDELETED(I) || !allowed(H) || !Adjacent(H))
 		return
 	var/key
 	if (istype(I, /obj/item/stack/material/steel)) key = "steel"
@@ -80,7 +80,15 @@
 
 // Wheels are structures: drag an unused wheel onto the workshop.
 /obj/structure/car_workshop/MouseDrop_T(atom/movable/O, mob/living/human/H)
-	if (busy || !allowed(H) || !Adjacent(H) || !O.Adjacent(H))
+	if (busy || QDELETED(O) || !allowed(H) || !Adjacent(H) || !O.Adjacent(H))
+		return
+	if (istype(O, /obj/structure/cable) && O.Adjacent(src) && isturf(O.loc))
+		if (powersource)
+			powersource.update_power(0, 1, src)
+			powersource.connections -= src
+		powersource = O
+		powersource.connections |= src
+		to_chat(H, SPAN_NOTICE("Workshop connected to the power cable."))
 		return
 	if (O.type == /obj/structure/vehicleparts/movement && stock["wheels"] < 4)
 		var/obj/structure/vehicleparts/movement/W = O
@@ -102,20 +110,33 @@
 	if (choice == "Unload inputs")
 		unload()
 		return
+	assemble_for(H, choice)
+
+/obj/structure/car_workshop/proc/wait_for_assembly(mob/living/human/H)
+	return do_after(H, assembly_time, src)
+
+/obj/structure/car_workshop/proc/assemble_for(mob/living/human/H, choice)
+	if (busy || !Adjacent(H) || !allowed(H))
+		return null
 	if (!(choice in models()) || !has_inputs(choice) || !clear_footprint(choice))
 		to_chat(H, SPAN_WARNING("Assembly needs all inputs and an empty, dry floor bay."))
-		return
+		return null
 	busy = TRUE
 	powerneeded = 20
 	if (!draw_cable_power())
 		finish_work()
 		to_chat(H, SPAN_WARNING("Connect an active cable supply with 20 available power."))
 		return
-	var/completed = do_after(H, assembly_time, src)
-	if (completed && !QDELETED(src) && Adjacent(H) && allowed(H) && draw_cable_power())
-		if (complete_assembly(choice))
+	var/completed = wait_for_assembly(H)
+	if (QDELETED(src))
+		return null
+	var/obj/structure/vehicleparts/axis/result
+	if (completed && Adjacent(H) && allowed(H) && draw_cable_power())
+		result = complete_assembly(choice)
+		if (result)
 			to_chat(H, SPAN_NOTICE("Your [choice] is assembled. Add the correct fuel before driving."))
 	finish_work()
+	return result
 
 /obj/structure/car_workshop/proc/finish_work()
 	if (powersource)
@@ -125,7 +146,6 @@
 
 /obj/structure/car_workshop/Destroy()
 	finish_work()
-	unload()
 	return ..()
 
 /obj/structure/car_workshop/proc/unload()
