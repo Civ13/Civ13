@@ -42,3 +42,16 @@
         to_chat(src, "FAIL local observer cleanup: [failures] assertions")
     else
         to_chat(src, "<b>PASS local observer cleanup: 100 cycles; callbacks delivered and no probe references retained.</b>")
+
+#ifdef MEMORY_GAMEPLAY_AUTORUN
+/client/New()
+    . = ..()
+    spawn(20)
+        if (!holder || (address && address != "127.0.0.1" && address != "::1"))
+            return
+        var/waits = 0
+        while ((!ticker || ticker.current_state != GAME_STATE_PLAYING || !ticker.players_can_join) && waits++ < 120)
+            sleep(10)
+        sleep(30)
+        verify_observer_cleanup_gameplay()
+#endif
