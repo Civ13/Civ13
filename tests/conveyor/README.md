@@ -24,11 +24,17 @@ The matching 32x32x1 fixture contains 400 occupied belts with 40 anchored object
 
 Reference release does not establish an OS-memory reduction, collection of live cargo, or long-runtime stability. Cargo remains live on the map. Process-memory and CPU results must be compared across repeated runs; short noisy measurements are not a production performance promise. No production save, server setting, deployment or restart is involved. A bounded read-only SSH process snapshot attempt timed out.
 
-Graphical acceptance remains pending while screen control is paused. Required genuine screenshots should show the exact tested commit, a real conveyor with movable and anchored cargo, and stopped-belt state. Video is required for the one-tick movement sequence and reversal. Replicate in an isolated local game using a belt, switch with matching ID, a knife and anchored cargo; activate, reverse and stop the switch, observing cargo movement and the ten-object limit. Upload captures directly as PR attachments, verify accessibility, then delete task-created local media. Fixture logs and compilation are not screenshot/video acceptance.
+Source review, production-proc regressions and real-game assertions establish this
+fix without a graphical acceptance gate under the current human policy. Screenshots
+or video are optional when they resolve a material uncertainty. Historical real
+client stills are pinned to their original head; failed, late and wrong-surface
+recordings are excluded. No accepted movement video or production RAM gain is
+claimed. Public uploads must be verified by accessibility and hash before local
+media cleanup.
 
 ## Coordinator capture turn
 
-Only the exclusively assigned capture owner may start visual mode. Run
+Optional: only the exclusively assigned capture owner may start visual mode. Run
 `./tests/conveyor/run-game.ps1 -ByondBin '<516.1681 bin>' -Visual -TimeoutSeconds 600`.
 The hidden server prints its unique run directory, task PID and localhost port
 (default 18328). After `game_result.txt` reports PASS, connect Dream Seeker to that
