@@ -875,6 +875,7 @@
 #include "code\modules\1713\machinery\modular_vehicles\_datums.dm"
 #include "code\modules\1713\machinery\modular_vehicles\axis.dm"
 #include "code\modules\1713\machinery\modular_vehicles\factory.dm"
+#include "code\modules\1713\machinery\modular_vehicles\car_workshop.dm"
 #include "code\modules\1713\machinery\modular_vehicles\frame.dm"
 #include "code\modules\1713\machinery\modular_vehicles\frame_icons.dm"
 #include "code\modules\1713\machinery\modular_vehicles\frame_parts.dm"

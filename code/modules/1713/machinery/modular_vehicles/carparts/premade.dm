@@ -69,9 +69,12 @@
 	"5,5" = list(),
 	)
 
-/obj/effects/premadevehicles/New()
+/obj/effects/premadevehicles/New(location, blueprint_only = FALSE)
 	invisibility = 101
 	..()
+	// Workshops inspect the existing layouts without scheduling map-spawn assembly.
+	if (blueprint_only)
+		return
 	var/vmaxx = 1
 	var/vmaxy = 1
 	spawn(10)
