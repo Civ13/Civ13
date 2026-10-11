@@ -1,5 +1,7 @@
 name: Codex comment review
 on:
+  # Configuration smoke only; always skips inference/publication.
+  workflow_dispatch:
   issue_comment:
     types: [created, edited]
   workflow_run:
@@ -12,7 +14,7 @@ permissions:
   pull-requests: read
 jobs:
   identify:
-    if: vars.CODEX_COMMENT_REVIEW_ENABLED == 'true'
+    if: vars.CODEX_COMMENT_REVIEW_ENABLED == 'true' && github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     outputs:
       candidate: ${{ steps.identify.outputs.candidate }}
@@ -56,6 +58,11 @@ jobs:
   review:
     needs: identify
     if: needs.identify.outputs.candidate != ''
+    # Ceiling for the reusable worker. Its model job explicitly downgrades to read.
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     uses: ./.github/workflows/comment-review-worker.yml
     with:
       candidate: ${{ needs.identify.outputs.candidate }}

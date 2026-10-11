@@ -131,7 +131,7 @@ Privileged jobs always check out the default branch with persisted credentials o
 PR patches are API data. Fork workflow approvals/settings still apply. If GitHub
 cannot establish the originating PR association, intake fails closed.
 
-A reusable worker serializes the complete review/publication lifecycle per comment.
+The reusable caller grants a publication permission ceiling; the model job explicitly downgrades to read-only. A reusable worker serializes the complete review/publication lifecycle per comment.
 Bursts of edits coalesce to the current body; different comments have separate keys.
 A full-body/state hash in an authenticated review comment deduplicates deliveries.
 The publish job revalidates the source revision and uses a separate write token.
@@ -156,3 +156,5 @@ payloads, never paid models or live comment posts.
 Official references: [Codex Action](https://learn.chatgpt.com/docs/github-action),
 [GitHub comment/review events](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows),
 [GitHub workflow_run security](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_run).
+
+Configuration smoke: gh workflow run comment-review.yml --ref BRANCH runs GitHub's reusable-workflow validation while always skipping inference/publication, even when the enable variable is true. No key or model call is needed. The local workflow contract regression guards the caller/publisher ceiling and model read permissions.
