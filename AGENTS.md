@@ -216,6 +216,13 @@ When adding, keep it concise and put it under the most relevant existing section
 If nothing fits, create a new section. Prefix your additions with the date and
 a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10: subcom audit -->`).
 
+<!-- 2026-10-11: crafting validation -->
+## Crafting checks
+
+tests/crafting/README.md documents scripts/check-recipes.py, a compiled
+BYOND recipe-schema/registration and isolated crafting-fixture check. Use the
+current research-tree and map-mode gates when testing material registration;
+zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 <!-- 2026-10-11: observer reference bookkeeping -->
 - Observer cleanup count lists retain their datum keys. Counts must reflect actual callbacks: duplicate global registrations do not increment them, and unregistering all callbacks subtracts their full count.
 - `scripts/test-observer-memory.ps1 -ByondBin <BYOND-bin-directory>` runs complete production observer registration/cleanup code in an isolated fixture with temporary outputs and no game startup.
@@ -252,6 +259,7 @@ Source discovery is lexical; include diagnostics do not replace compilation.
 Both compiler tools create temporary storage/processes. No live game, Topic or
 production administration tools are exposed. Never configure this server from a
 worktree that will be archived while the MCP entry still points to it.
+
 
 <!-- 2026-10-11: wire power verification -->
 `tests/power/README.md` documents isolated cable accounting regressions and an
