@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory)][string]$ByondBin,
-    [ValidateSet('tests/resource_extraction/probe.dm','tests/automated_sifting/probe.dm','tests/mining_yields/probe.dm')]
+    [ValidateSet('tests/resource_extraction/probe.dm','tests/automated_sifting/probe.dm','tests/mining_yields/probe.dm','tests/petroleum_lifecycle/probe.dm')]
     [string]$Probe = 'tests/resource_extraction/probe.dm'
 )
 $ErrorActionPreference = 'Stop'

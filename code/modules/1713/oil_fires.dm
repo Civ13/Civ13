@@ -6,6 +6,7 @@
 	anchored = TRUE
 	var/counter = 1
 	var/timeout = 0
+	var/tmp/refill_pending = FALSE
 	flammable = TRUE
 	not_movable = TRUE
 	not_disassemblable = TRUE
@@ -51,14 +52,31 @@
 		icon_state = "oil_spring0"
 
 /obj/structure/oil_spring/proc/refill()
+	if (refill_pending || !isturf(loc))
+		return
 	if (world.time >= timeout)
 		if (counter < 1)
 			counter++
 			update_icon()
 			return
 	else
+		refill_pending = TRUE
 		spawn(50)
-			refill()
+			refill_pending = FALSE
+			if (isturf(loc))
+				refill()
+
+/obj/structure/oil_spring/get_saved_vars()
+	var/list/saved = ..()
+	saved -= list("refill_pending", "timeout")
+	return saved
+
+/obj/structure/oil_spring/after_load()
+	. = ..()
+	refill_pending = FALSE
+	if (counter < 1)
+		timeout = world.time + 600
+		refill()
 
 /obj/structure/oil_spring/proc/oil_explode()
 	playsound(loc, 'sound/effects/Explosion2.ogg', 100, FALSE, 12)

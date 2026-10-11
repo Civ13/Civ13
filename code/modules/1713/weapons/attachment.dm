@@ -323,6 +323,7 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/pu/ppu8
 	name = "PPU-8"
 	desc = "You can attach this scope to DTM machinegun."
+	icon = 'icons/obj/guns/parts.dmi'
 	icon_state = "ppu8"
 	mount = "dt_mount"
 	max_zoom = ZOOM_CONSTANT+2
@@ -367,6 +368,7 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/m84
 	name = "M84"
 	desc = "You can attach this to Springfield sniper rifles."
+	icon = 'icons/obj/guns/parts.dmi'
 	icon_state = "m84"
 	mount = "picatinny"
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog
@@ -384,12 +386,15 @@ Current Defines (_defines/attachment.dm)
 	max_zoom = ZOOM_CONSTANT+2
 	ergonomics = 1.35
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan/arid
+	icon = 'icons/obj/guns/parts.dmi'
 	icon_state = "elcan_arid"
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan/winter
+	icon = 'icons/obj/guns/parts.dmi'
 	icon_state = "elcan_winter"
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/vortex_viper
 	name = "Viper Vortex"
 	desc = "You can attach this to any rifle with picatinny rail"
+	icon = 'icons/obj/guns/parts.dmi'
 	icon_state = "vortex_viper"
 	mount = "picatinny"
 	max_zoom = ZOOM_CONSTANT * 3

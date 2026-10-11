@@ -556,7 +556,7 @@
 	name = "herbs"
 	desc = "A herb plant."
 	icon = 'icons/farming/plants.dmi'
-	icon_state = "herbs_grow1"
+	icon_state = "herbs-grow1"
 	plant = "herbs"
 	stack = "medical/advanced/herbs"
 	stack_amount = 3
