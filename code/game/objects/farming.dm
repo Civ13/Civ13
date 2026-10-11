@@ -1080,21 +1080,43 @@
 	if (water <= 0)
 		set_dead("dry")
 
+/obj/structure/farming/plant/proc/farming_diagnostics(farming_skill)
+	var/list/messages = list()
+	if (vstatic)
+		return messages
+	if (stage > readyStageMax)
+		if (farming_skill >= 1.3)
+			messages += "This plant is dead and cannot be harvested. Uproot it before replanting."
+		return messages
+	if (farming_skill >= 1.6 && farming_skill < 2.2)
+		if (max_water)
+			var/water_desc = "healthy"
+			if (water/max_water < 0.33)
+				water_desc = "wilted"
+			else if (water/max_water < 0.66)
+				water_desc = "dry"
+			messages += "\The [src] seems <b>[water_desc]</b>."
+		else
+			messages += "This crop does not need watering."
+		if (plant_nutrition <= 0)
+			messages += "The soil is exhausted; growth may be slow."
+		else if (plant_nutrition < 40)
+			messages += "The soil is poor; growth may be slow."
+		else if (plant_nutrition <= 80)
+			messages += "The soil has some nutrients; growth may be slow."
+	else if (farming_skill >= 2.2)
+		if (max_water)
+			messages += "[src]'s water level is at <b>[water]/[max_water]</b>."
+		else
+			messages += "This crop does not need watering."
+		messages += "[src]'s nutrition level is at <b>[plant_nutrition]/[max_plant_nutrition]</b>."
+	if (farming_skill >= 1.3 && plant_nutrition > 80)
+		messages += "The plant is well nourished and may give extra crops."
+	return messages
+
 /obj/structure/farming/plant/examine(mob/user)
 	..(user)
 	if (ishuman(user))
 		var/mob/living/human/H = user
-		if (H.getStatCoeff("farming")>= 1.6 && H.getStatCoeff("farming") < 2.2)
-			var/water_desc = "healthy"
-			if (max_water)
-				if (water/max_water < 0.66 && water/max_water >= 0.33)
-					water_desc = "dry"
-				if (water/max_water < 0.33)
-					water_desc = "wilted"
-			to_chat(user, "\The [src] seems <b>[water_desc]</b>.")
-		else if (H.getStatCoeff("farming") >= 2.2)
-			to_chat(user, "[src]'s water level is at <b>[water]/[max_water]</b>.")
-			to_chat(user, "[src]'s nutrition level is at <b>[plant_nutrition]/[max_plant_nutrition]</b>.")
-		if (H.getStatCoeff("farming")>= 1.3)
-			if (plant_nutrition > 80)
-				to_chat(user, "The plant looks good and healthy, it may give extra crops.")
+		for (var/message in farming_diagnostics(H.getStatCoeff("farming")))
+			to_chat(user, message)

@@ -1023,7 +1023,7 @@
 
 /obj/structure/drill
 	name = "industrial drill"
-	desc = "A heavy industrial deep drill used to collect minerals that are hidden far underground. It needs to be powered, underground and on dirt in order to operate."
+	desc = "A heavy industrial deep drill used to collect minerals that are hidden far underground. Requires 150 cable power and uncovered dirt on z-level 1. Produces 2 minerals every two minutes. Clear the output tile before it reaches 12 stacks."
 	icon = 'icons/obj/machines/mining_drill.dmi'
 	icon_state = "mining_drill"
 	flammable = FALSE
@@ -1066,115 +1066,133 @@
 		/obj/item/stack/material/stone,
 		/obj/item/stack/material/stone,
 		/obj/item/stack/material/stone,
-		/obj/item/weapon/barrier,
 	)
 	var/active = FALSE
 	var/next_spawn = -1
+	var/tmp/process_pending = FALSE
+	var/tmp/production_due = 0
+	var/output_stack_limit = 12
 	powerneeded = 150
 
 /obj/structure/drill/proc/check_power()
-	if (!powersource || !powerneeded)
-		powered = FALSE
-		return FALSE
-	else
-		powered = TRUE
-		if (draw_cable_power())
-			return TRUE
-		else
-			if (active)
-				powersource.update_power(-powerneeded,1,src)
-				active = FALSE
-			return FALSE
+	powered = draw_cable_power()
+	return powered
+
+/obj/structure/drill/proc/stop_drilling()
+	active = FALSE
+	next_spawn = -1
+	production_due = 0
+	if (powersource)
+		powersource.update_power(-powerneeded, 1, src)
+	powered = FALSE
+	update_icon()
 
 /obj/structure/drill/update_icon()
 	..()
-	if (powered)
-		icon_state = "mining_drill_powered"
-	else
-		icon_state = "mining_drill"
-	if (active)
-		icon_state = "mining_drill_active"
+	icon_state = active ? "mining_drill_active" : (powered ? "mining_drill_powered" : "mining_drill")
 
 /obj/structure/drill/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	..()
-
 	if (!anchored)
+		stop_drilling()
 		to_chat(H, SPAN_NOTICE("Fix \the [src] in place with a wrench first."))
 		return
-
 	if (istype(W, /obj/item/stack/cable_coil))
 		connect_cable(H,W)
-		return
 
 /obj/structure/drill/attack_hand(var/mob/living/human/H)
+	if (active)
+		stop_drilling()
+		to_chat(H, "You power off \the [src].")
+		return
 	if (!anchored)
 		to_chat(H, SPAN_NOTICE("Fix \the [src] in place with a wrench first."))
 		return
-	else if (!check_power())
-		to_chat(H, SPAN_WARNING("\The [src] doesn't have any power!"))
-		update_icon()
-		return
-	else if (!active && powered)
-		next_spawn = 30
-		active = TRUE
+	active = TRUE
+	next_spawn = 60
+	production_due = world.time + 1200
+	if (!process_pending)
 		process_machine()
-		update_icon()
+	if (active)
 		to_chat(H, "You power up \the [src].")
-		return
-	else if (active)
-		next_spawn = -1
-		active = FALSE
-		update_icon()
-		to_chat(H, "You power off \the [src].")
-		return
+
+// Validate the whole batch before changing stacks. No retained output queue.
+/obj/structure/drill/proc/produce_minerals(var/ore_type, var/quantity)
+	var/turf/T = get_turf(src)
+	return T && T.deposit_small_resource(ore_type, quantity, output_stack_limit)
 
 /obj/structure/drill/proc/process_machine()
-	if (!active)
+	if (!active || process_pending)
 		return
-	else if (!check_power())
-		active = FALSE
-		update_icon()
-		visible_message(SPAN_WARNING("\The [src] stops drilling and powers down."))
+	if (!anchored || !istype(loc, /turf/floor/dirt) || z != 1 || (locate(/obj/covers) in loc))
+		stop_drilling()
+		visible_message(SPAN_WARNING("\The [src] requires anchored, uncovered dirt on z-level 1."))
 		return
-
-	else if (!istype(get_turf(src), /turf/floor/dirt))
-		playsound(loc, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
-		active = FALSE
-		update_icon()
-		visible_message(SPAN_WARNING("\The [src] cannot drill here, find some softer ground."))
+	if (!check_power())
+		stop_drilling()
+		visible_message(SPAN_WARNING("\The [src] stops drilling: insufficient cable power."))
 		return
-	for (var/obj/covers/C in get_turf(src))
-		playsound(loc, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
-		active = FALSE
-		update_icon()
-		visible_message(SPAN_WARNING("\The [src] cannot drill here, the drill cannot reach the soil."))
-		return
-	if (!(src.z == 1))
-		playsound(loc, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
-		active = FALSE
-		update_icon()
-		visible_message(SPAN_WARNING("\The [src] needs to be underground to drill."))
-		return
-
-	else
-		playsound(loc, 'sound/machines/drill.ogg', 100, FALSE)
-		if (next_spawn == 0)
-			var/picked = pick(ore_types)
-
-			var/obj/item/stack/tospawn = new picked(null)
-			tospawn.amount = rand(2,5)
-			for (var/obj/item/stack/S in get_turf(src))
-				if (S.type == tospawn.type)
-					S.amount += tospawn.amount
-					S.update_icon()
-					qdel(tospawn)
-					break
-			if (tospawn)
-				tospawn.loc = get_turf(src)
-			visible_message(SPAN_NOTICE("\The [src] drills up [tospawn.name]."))
-			next_spawn = 60
-
-		update_icon()
-		spawn (2 SECONDS)
+	if (next_spawn <= 0 && world.time >= production_due)
+		if (!produce_minerals(pick(ore_types), 2))
+			stop_drilling()
+			visible_message(SPAN_WARNING("\The [src] stops drilling: clear its output tile, then restart it."))
+			return
+		next_spawn = 60
+		production_due = world.time + 1200
+	playsound(loc, 'sound/machines/drill.ogg', 100, FALSE)
+	update_icon()
+	// One pending callback survives stop/start. Toggling cannot spawn more loops.
+	process_pending = TRUE
+	spawn (2 SECONDS)
+		process_pending = FALSE
+		if (active)
 			next_spawn--
 			process_machine()
+
+/obj/structure/drill/before_save()
+	stop_drilling()
+	return ..()
+
+/obj/structure/drill/after_load()
+	. = ..()
+	process_pending = FALSE
+	stop_drilling()
+
+/obj/structure/drill/get_saved_vars()
+	var/list/saved = ..()
+	saved -= list("process_pending", "production_due")
+	return saved
+
+/obj/structure/drill/Destroy()
+	stop_drilling()
+	return ..()
+
+/turf/proc/deposit_small_resource(var/ore_type, var/quantity, var/output_stack_limit = 12)
+	if (!ispath(ore_type, /obj/item/stack) || quantity < 1 || quantity > 5)
+		return FALSE
+	var/turf/T = src
+	if (!T)
+		return FALSE
+	var/stack_count = 0
+	var/free_amount = 0
+	for (var/obj/item/stack/S in T)
+		stack_count++
+		if (S.type == ore_type)
+			free_amount += max(0, S.max_amount - S.amount)
+	if (stack_count >= output_stack_limit && free_amount < quantity)
+		return FALSE
+	var/remaining = quantity
+	for (var/obj/item/stack/S in T)
+		if (S.type != ore_type)
+			continue
+		var/transfer = min(remaining, max(0, S.max_amount - S.amount))
+		S.amount += transfer
+		remaining -= transfer
+		S.update_icon()
+		if (!remaining)
+			break
+	if (remaining)
+		var/obj/item/stack/output = new ore_type(T, remaining, FALSE)
+		output.update_icon()
+	return TRUE
+

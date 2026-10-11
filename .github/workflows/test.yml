@@ -122,6 +122,13 @@ jobs:
           git fetch --no-tags --depth=1 origin e48afe3a84485de779b2076b80841c1119288930
           pwsh -NoProfile -File tests/plant_lifecycle/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Revision e48afe3a84485de779b2076b80841c1119288930 -Baseline
 
+      - name: Run isolated crop diagnostics regression
+        if: needs.changes.outputs.game == 'true'
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          pwsh -NoProfile -File tests/plant_diagnostics/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
+
       - name: Run isolated power accounting regressions
         if: needs.changes.outputs.extensive == 'true'
         shell: bash
@@ -129,6 +136,13 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           pwsh -NoProfile -File scripts/test-power.ps1 -ByondBin "$PWD/BYOND/byond/bin"
           bash scripts/check-power-gameplay.sh
+
+      - name: Run isolated resource extraction regressions
+        if: needs.changes.outputs.extensive == 'true'
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
 
       - name: Run constructed vehicle movement regressions
         if: needs.changes.outputs.extensive == 'true'

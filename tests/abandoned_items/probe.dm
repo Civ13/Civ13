@@ -139,7 +139,7 @@ var/decay_assertions = 0
 		restored_waste.forceMove(T)
 		restored_waste.check_abandonment(0)
 		decay_assert(!restored_waste.check_abandonment(ABANDONED_ITEM_LIFETIME-1), "restored waste receives full24-hour exposed window")
-		qdel(restored)
+		qdel(restored_waste); qdel(restored)
 		I.after_load()
 		decay_assert(isnull(I.abandonment_since) && I.abandonment_index, "load reset does not duplicate registry")
 		map_storage.clear_bookkeeping()
