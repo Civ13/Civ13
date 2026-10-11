@@ -29,6 +29,10 @@
 	caliber = "7.62x54"
 	var/test_action = "complete"
 	wait_for_configuration(mob/living/human/H, delay)
+		if (test_action == "real wait") return ..()
+		if (test_action == "real move")
+			spawn(1) H.loc = locate(3,1,1)
+			return ..()
 		sleep(1)
 		switch(test_action)
 			if ("cancel") return FALSE
@@ -39,6 +43,8 @@
 			if ("incapacitated") H:test_incapacitated = TRUE
 			if ("load") ammo_magazine = new /obj/item/ammo_magazine(src)
 			if ("damage") health--
+			if ("bench lost")
+				for (var/obj/structure/repair/gun/B in range(1,H)) B.loc = locate(5,3,1)
 			if ("shared") configuration_concurrent = install_configuration(H.r_hand,H)
 		return TRUE
 
@@ -122,6 +128,18 @@ var/configuration_concurrent
 		configuration_check(!action.owner && !(action in H.actions),"removed optic actions release actor references")
 	configuration_check(G.remove_configuration(R,H) && G.weight == 4 && G.ergonomics == 1 && !G.scope,"rail removal restores exact base stats")
 	configuration_check(!G.remove_configuration(R,H) && (G.attachment_slots & ATTACH_SCOPE),"repeated removal cannot mint extra slot bits")
+	configuration_hold(H,R,G)
+	G.test_action = "real move"
+	configuration_check(!G.install_configuration(R,H) && !G.optic_rail && !G.gun_work_busy,"production do_after cancels actor movement")
+	H.loc = T
+	G.test_action = "real wait"
+	configuration_check(G.install_configuration(R,H),"production do_after completes valid work")
+	G.test_action = "load"
+	configuration_check(!G.remove_configuration(R,H) && G.optic_rail == R,"removal refuses ammunition introduced during wait")
+	qdel(G.ammo_magazine)
+	G.ammo_magazine = null
+	G.test_action = "complete"
+	configuration_check(G.remove_configuration(R,H),"removal succeeds after clearing ammunition")
 	for (var/i in 1 to 12)
 		configuration_hold(H,R,G)
 		configuration_check(G.install_configuration(R,H),"cycle [i] rail install")
@@ -189,6 +207,12 @@ var/configuration_concurrent
 	G.test_action = "complete"
 	configuration_check(G.service_firearm(H,null,B) && G.maxhealth == 99 && G.health == 84,"bench retains native twenty-five repair and one max-condition cost")
 	configuration_check(!B.firearm_service_busy && !G.gun_work_busy,"bench and gun locks released")
+	G.test_action = "tool lost"
+	K.loc = T
+	configuration_check(!G.service_firearm(H,K,null),"lost cleaning kit refuses maintenance")
+	G.test_action = "bench lost"
+	configuration_check(!G.service_firearm(H,null,B) && !B.firearm_service_busy && !G.gun_work_busy,"bench relocation cancels service and releases locks")
+	G.test_action = "complete"
 	G.gun_work_busy = TRUE
 	configuration_check(!G.special_check(H),"gun cannot fire during work")
 	configuration_check(!G.load_ammo(C,H),"gun cannot reload during work")
@@ -204,3 +228,37 @@ var/configuration_concurrent
 	var/effect = loaded_svd.ergonomics
 	loaded_svd.after_load()
 	configuration_check(loaded_svd.ergonomics == effect,"repeated migration does not accumulate effects")
+	var/obj/item/weapon/gun/projectile/semiautomatic/svd/acog/AV = new(T)
+	configuration_check(istype(AV.scope,/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog) && AV.scope.loc == AV,"native ACOG replacement constructor remains valid")
+	configuration_recipe_checks()
+
+/obj/map_metadata/configuration_ci
+	New()
+		return
+/proc/configuration_rail_recipe()
+	var/material/steel/M = new
+	M.generate_recipes_civs(list(200,200,200),"global","configuration_ci")
+	for (var/datum/stack_recipe_list/L in M.recipes)
+		for (var/datum/stack_recipe/R in L.recipes)
+			if (R.result_type == /obj/item/weapon/gun_mount) return R
+	return null
+/proc/configuration_recipe_checks()
+	populate_material_list()
+	map = new /obj/map_metadata/configuration_ci
+	map.resourceresearch = TRUE
+	build_research_tree()
+	craftlist_lists["global"] = list()
+	for (var/line in splittext(file2text("config/crafting/material_recipes_global.txt"),"\n"))
+		if (!findtext(line,"RECIPE: ") || findtext(line,"//")) continue
+		var/list/row = splittext(replacetext(line,"RECIPE: ",""),",")
+		row[row.len] = replacetext(row[row.len],ascii2text(13),"")
+		craftlist_lists["global"] += list(row)
+	map.ensure_node_entry("configuration_ci","gunsmithing")[RNODE_ENTRY_STATUS] = RNODE_DONE
+	for (var/age in list(0,3,5,6,7,8,9))
+		map.ordinal_age = age
+		configuration_check(!!configuration_rail_recipe() == (age >= 6 && age <= 8),"production rail crafting era [age]")
+	map.ordinal_age = 6
+	var/datum/stack_recipe/R = configuration_rail_recipe()
+	configuration_check(R && R.req_amount == 2 && R.time == 120,"production steel rail cost and crafting time")
+	map.ensure_node_entry("configuration_ci","gunsmithing")[RNODE_ENTRY_STATUS] = RNODE_LOCKED
+	configuration_check(!configuration_rail_recipe(),"high legacy research cannot bypass Gunsmithing")

@@ -163,6 +163,7 @@
 	return !L.A_attached && !L.grenades.len && (L.mount in under_mounts)
 
 /obj/item/weapon/gun/proc/configuration_part_busy(obj/item/P, value = null)
+	if (!P) return FALSE
 	if (istype(P, /obj/item/weapon/attachment))
 		var/obj/item/weapon/attachment/A = P
 		if (!isnull(value)) A.configuration_busy = value
@@ -186,7 +187,7 @@
 		gun_work_busy = TRUE
 		configuration_part_busy(P, TRUE)
 		var/complete = wait_for_configuration(H, 15)
-		if (!complete || !configuration_actor(H) || !configuration_unloaded() || P.loc != H || H.get_active_hand() != P || !configuration_tools(P,H) || !configuration_compatible(P))
+		if (!complete || !P || !configuration_actor(H) || !configuration_unloaded() || P.loc != H || H.get_active_hand() != P || !configuration_tools(P,H) || !configuration_compatible(P))
 			gun_work_busy = FALSE
 			configuration_part_busy(P, FALSE)
 			return FALSE
@@ -215,7 +216,7 @@
 	configuration_part_busy(P, TRUE)
 	var/old_loc = P.loc
 	var/complete = wait_for_configuration(H, 15)
-	if (!complete || !configuration_actor(H) || !configuration_unloaded() || !configuration_tools(P,H) || P.loc != old_loc || (P == optic_rail ? P.contents.len : !(P in configuration_parts())))
+	if (!complete || !P || !configuration_actor(H) || !configuration_unloaded() || !configuration_tools(P,H) || P.loc != old_loc || (P == optic_rail ? P.contents.len : !(P in configuration_parts())))
 		gun_work_busy = FALSE
 		configuration_part_busy(P, FALSE)
 		return FALSE

@@ -322,6 +322,13 @@ Dormant comment-review listeners must be workflow_dispatch-only: GitHub can requ
 
 ## Train verification
 
+<!-- 2026-10-11: firearm configuration verification -->
+Gun configuration is centralized in `code/modules/1713/gunsmithing/gun_configuration.dm`.
+Keep runtime action owners and work reservations out of native item saves; saved
+optics can be nested inside one rail adapter. `tests/gun_configuration/run.ps1`
+checks production handling, interruptions, maintenance, crafting gates and nested
+save migration; `-NegativeControl` must catch omitted completion ownership checks.
+
 <!-- 2026-10-11: bounded winter survival -->
 `tests/weather/run.py` runs inherited production thermal procs and real human
 constructors in isolated storage, with a pinned baseline and cold-loss negative
