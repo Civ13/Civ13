@@ -8,7 +8,7 @@ conditions and seek better cold-weather equipment for extreme climates.
 
 Rain and immersion make you wet, reducing clothing insulation and accelerating
 cooling. Move into dry shelter to avoid further soaking. A lit nearby brazier,
-campfire, bonfire or fireplace provides warmth; warm conditions dry you faster
+campfire, iron furnace or fireplace provides warmth; warm conditions dry you faster
 and help you recover from hypothermia. Shelter alone may still be cold.
 
 Complete coverage buys time but cannot provide permanent immunity. Clothing
