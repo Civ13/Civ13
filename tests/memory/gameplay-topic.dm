@@ -6,7 +6,7 @@
     var/list/request = params2list(T)
     if (request["memory-evidence"] != MEMORY_EVIDENCE_TOKEN)
         return ..()
-    if (addr != "127.0.0.1" && addr != "::1")
+    if (addr && addr != "127.0.0.1" && addr != "::1")
         return "LOCAL ONLY"
     var/client/C
     for (var/client/local_client in clients)
