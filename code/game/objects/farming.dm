@@ -938,6 +938,9 @@
 		return TRUE
 
 /obj/structure/farming/plant/proc/growth()
+	// Dead and display-only plants do not consume soil or own another growth wait.
+	if (vstatic || stage > readyStageMax)
+		return
 	var/sprite_name = sprite_plant ? sprite_plant : plant
 	var/turf/floor/dirt/D = get_turf(loc)
 	if(!istype(D, /turf/floor/dirt/ploughed))
@@ -946,6 +949,9 @@
 	else if (!vstatic && stage < 12)
 		soil_nutrition_proc()
 		water_proc()
+		// Preserve the specific drought/storm death message and stop immediately.
+		if (stage > readyStageMax)
+			return
 		if (stage < readyStageMin)
 			icon_state = "[sprite_name]-grow[stage]"
 			desc = "A young [plant] plant."
@@ -959,6 +965,8 @@
 			desc = "A dead [plant] plant."
 			name = "dead [plant] plant"
 		spawn(600) // 1 minute 
+			if (!src || vstatic || stage > readyStageMax)
+				return
 			var/turf/t = null
 			var/area/a = null
 			if (src)
@@ -980,6 +988,8 @@
 								count++
 				if (count > 0 || ! list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA).Find(map.ID))
 					stageGrowth()
+			if (stage > readyStageMax)
+				set_dead()
 			growth()
 
 /obj/structure/farming/plant/proc/stageGrowth()  // Uses plant_nutrition as Use the plant's nutrition as a chance to grow
