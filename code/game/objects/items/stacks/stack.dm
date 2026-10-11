@@ -1641,7 +1641,7 @@
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 4 iron in one your hands in order to make this.</span>")
 					return
 
-	else if (recipe.result_type == /obj/structure/drill)
+	else if (ispath(recipe.result_type, /obj/structure/drill))
 		if (!drill_construction_steel(H))
 			to_chat(user, SPAN_WARNING("You need at least 20 steel in your other hand to build an industrial drill."))
 			return
@@ -1882,7 +1882,7 @@
 			return
 
 	// Recheck after do_after, before consuming either drill construction input.
-	if (recipe.result_type == /obj/structure/drill)
+	if (ispath(recipe.result_type, /obj/structure/drill))
 		var/obj/item/stack/material/steel/drill_steel = drill_construction_steel(H)
 		if (!can_use(required) || !drill_steel)
 			to_chat(user, SPAN_WARNING("Keep the electronics and 20 steel in your hands until construction completes."))

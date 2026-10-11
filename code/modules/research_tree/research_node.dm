@@ -1217,6 +1217,8 @@ var/global/list/node_grid_col_cache = null
 		// --- power tools and resource extraction ---
 		"/obj/item/weapon/material/pickaxe/jackhammer" = "power_tools",
 		"/obj/structure/drill" = "electricity",
+		"/obj/structure/drill/sifter" = "electricity",
+		"/obj/structure/drill/sifter/panner" = "electricity",
 		"/obj/item/weapon/resource_sieve" = "basic_tools",
 		// --- primitive_construction (42) ---
 		"/obj/covers/fancywood" = "primitive_construction",
