@@ -7,7 +7,7 @@ NEVER use "—": always use "-" instead.
 - **Build**: `dm civ13.dme` (Windows) or `DreamMaker civ13.dme` (Linux). Outputs `civ13.dmb` + `civ13.rsc`.
 - **Lint**: `./dreamchecker.exe` (SpacemanDMM static analyzer). Config in `SpacemanDMM.toml` (sets `dreamchecker = true` for the langserver).
 - **Required BYOND version**: 516.1681 (enforced in CI and `.vscode/tasks.json`).
-- **CI** (`.github/workflows/test.yml`): installs BYOND 516.1681 on Ubuntu, runs `DreamMaker -max_errors 0 civ13.dme`, fails on any errors or warnings. That's the only CI check - no unit tests.
+- **CI** (`.github/workflows/test.yml`): installs BYOND 516.1681 on Ubuntu, runs `DreamMaker -max_errors 0 civ13.dme`, fails on any errors or warnings. The MCP protocol workflow separately tests the local tooling on Windows and Linux; it does not run gameplay.
 
 ## Code structure
 
@@ -192,3 +192,15 @@ Good candidates for additions:
 When adding, keep it concise and put it under the most relevant existing section.
 If nothing fits, create a new section. Prefix your additions with the date and
 a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10: subcom audit -->`).
+
+## Local MCP tooling
+
+<!-- 2026-10-11: Civ13 MCP integration -->
+`tools/mcp/README.md` documents the bounded stdio server and Codex configuration.
+Run `npm ci --prefix tools/mcp` then `npm test --prefix tools/mcp` for isolated
+protocol/path/cancellation tests. Set `CIV13_DM_COMPILER` to a trusted absolute
+DreamMaker path to additionally check its banner and a fixed temporary fixture.
+Source discovery is lexical; include diagnostics do not replace compilation.
+Both compiler tools create temporary storage/processes. No live game, Topic or
+production administration tools are exposed. Never configure this server from a
+worktree that will be archived while the MCP entry still points to it.
