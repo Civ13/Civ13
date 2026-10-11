@@ -239,6 +239,12 @@ Native BYOND world.Export returns the remote Topic value, and its caller address
 
 <!-- 2026-10-11: petroleum save lifecycle -->
 - Oil wells preserve barrels in native saved contents and rebuild runtime links after load. Constructors must not claim floor barrels: empty contents restoration can delete those links, while moving a contained barrel to its turf during save can omit it from the turf iteration. `tests/petroleum_lifecycle/probe.dm` checks disk-backed entry/turf round trips and bounded callbacks through the resource extraction launcher.
+<!-- 2026-10-11: irrigation propagation -->
+Irrigation propagates through cardinally connected channels with temporary local
+lists. Ordinary floors and filled-in channels are not water sources; salt reaches
+already-wet channels. Source removal does not drain existing channel water.
+`tests/irrigation/run.ps1 -ByondBin <516.1681-bin>` checks production procedures,
+including the pre-fix baseline; it does not prove map or construction acceptance.
 
 <!-- 2026-10-11: isolated legacy garbage queue -->
 When normal startup is disabled, atom `qdel` removes the atom from its location
@@ -298,6 +304,14 @@ Tools under tools/comment-review provide an authenticated-gh local collector and
 Dormant comment-review listeners must be workflow_dispatch-only: GitHub can request approval before evaluating job guards. Keep automatic subscriptions in tools/comment-review/active-events.example.json until a separately reviewed activation.
 
 ## Train verification
+
+<!-- 2026-10-11: medicine regression isolation -->
+`tests/survival/run.py` checks production disease courses, oral metabolism,
+ingredient acquisition and timed fermentation/distillation in temporary storage.
+Its fixture materializes the global-controller `vars` name list before union:
+BYOND 516.1681 otherwise logs Bad ref during initialization on the historical
+baseline too. Runtime errors/engine diagnostics invalidate evidence. Direct
+`del()` of live test atoms triggers the production GC error; use `qdel()`.
 
 <!-- 2026-10-11: trace resource extraction -->
 `tests/resource_extraction/run.ps1` compiles production extraction types with

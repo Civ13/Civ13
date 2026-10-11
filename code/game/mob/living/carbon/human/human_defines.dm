@@ -151,6 +151,7 @@
 	var/disease_type = "none"
 	var/disease_progression = 0
 	var/disease_treatment = 0
+	var/disease_course = 0 // Bounded 0-180 treatment progress, retained with the illness.
 
 	var/list/disease_immunity = list()
 

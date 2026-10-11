@@ -283,8 +283,19 @@
 /datum/reagent/penicillin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (istype(M, /mob/living/human))
 		var/mob/living/human/HH = M
-		if (HH.disease && (HH.disease_type == "typhus" || HH.disease_type == "plague" || HH.disease_type == "flu"))
-			HH.disease_treatment = TRUE
+		if (HH.disease_type in list("typhus", "plague", "cholera", "flu"))
+			HH.receive_disease_treatment(1)
+
+// Slow, renewable early-era gameplay medicine. No real-world efficacy claim.
+/datum/reagent/herbal_remedy
+	name = "Herbal remedy"
+	id = "herbal_remedy"
+	description = "A slow traditional remedy for severe in-game illnesses. Keep taking it for a full course."
+	color = "#658D40"
+	metabolism = 0.05
+
+/datum/reagent/herbal_remedy/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+	M.receive_disease_treatment(0.3)
 
 /datum/reagent/saline_glucose
 	name = "Saline Glucose solution"

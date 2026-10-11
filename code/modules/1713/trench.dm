@@ -572,24 +572,26 @@ var/list/global/floor_cache = list()
 			flooded = FALSE
 			irrigation = TRUE
 			salty = FALSE
-			irrigation_overlay = image(icon = 'icons/turf/trench.dmi', icon_state = "irrigation0", layer = src.layer += 0.01)
+			irrigation_overlay = image(icon = 'icons/turf/trench.dmi', icon_state = "irrigation0", layer = src.layer + 0.01)
 			check_relatives(1,1,irrigation_type)
 		if ("fresh")
 			name = "flooded irrigation channel"
 			flooded = TRUE
 			irrigation = TRUE
 			salty = FALSE
-			irrigation_overlay = image(icon = 'icons/turf/trench.dmi', icon_state = "irrigation0_flooded", layer = src.layer += 0.01)
+			irrigation_overlay = image(icon = 'icons/turf/trench.dmi', icon_state = "irrigation0_flooded", layer = src.layer + 0.01)
 			check_relatives(1,1,irrigation_type)
 		if ("salty")
 			name = "flooded saltwater irrigation channel"
 			salty = TRUE
 			flooded = TRUE
 			irrigation = TRUE
-			irrigation_overlay = image(icon = 'icons/turf/trench.dmi', icon_state = "irrigation0_flooded", layer = src.layer += 0.01)
+			irrigation_overlay = image(icon = 'icons/turf/trench.dmi', icon_state = "irrigation0_flooded", layer = src.layer + 0.01)
 			check_relatives(1,1,irrigation_type)
 
-/turf/floor/check_relatives(var/update_self = FALSE, var/update_others = FALSE, watertype = "empty")
+/turf/floor/check_relatives(var/update_self = FALSE, var/update_others = FALSE, watertype = "empty", var/propagate = TRUE)
+	if (!irrigation)
+		return
 	var/junction
 	if (update_self)
 		junction = FALSE
@@ -597,40 +599,56 @@ var/list/global/floor_cache = list()
 		var/turf/floor/T = get_step(src, checkdir)
 		if (!istype(T, /turf/floor))
 			continue
-		if (T.flooded || istype(T, /turf/floor/beach/water))
+		// Ordinary floors and filled-in channels are not water sources.
+		if ((T.irrigation && T.flooded) || istype(T, /turf/floor/beach/water) || (istype(T, /turf/floor/trench/flooded) && T.flooded))
 			flooded = TRUE
 			if (T.salty)
 				salty = TRUE
-		if (flooded || istype(src, /turf/floor/beach/water))
+		if (!T.irrigation)
+			continue
+		if (flooded)
 			T.flooded = TRUE
 			if (salty)
 				T.salty = TRUE
-		if (!T.irrigation)
-			continue
 		if (update_self)
-			if (T.irrigation)
-				junction |= get_dir(src,T)
+			junction |= get_dir(src,T)
 		if (update_others)
-			T.check_relatives(1,0)
-	expand_flood()
+			T.check_relatives(1,0,watertype,FALSE)
+	if (propagate)
+		expand_flood()
 	if (!isnull(junction))
 		var/tpicon = ""
 		if (flooded)
 			tpicon = "_flooded"
-		irrigation_overlay = image(icon = 'icons/turf/trench.dmi', icon_state = "irrigation[junction][tpicon]", layer = src.layer += 0.01)
+		irrigation_overlay = image(icon = 'icons/turf/trench.dmi', icon_state = "irrigation[junction][tpicon]", layer = src.layer + 0.01)
 	update_icon()
 
 /turf/floor/proc/expand_flood()
-	if (!flooded)
+	if (!irrigation || !flooded)
 		return
-	for (var/checkdir in cardinal)
-		var/turf/floor/T = get_step(src, checkdir)
-		if (!istype(T, /turf/floor) || !T.irrigation)
-			continue
-		if (salty && !T.salty)
-			T.salty = TRUE
-		if (flooded && !T.flooded)
-			T.flooded = TRUE
-			T.expand_flood()
-			T.check_relatives(1,0)
-	return
+	// Visit the connected channel component once, including already-wet channels.
+	// These local lists release their turf references when this call returns.
+	var/list/channels = list(src)
+	var/list/visited = list()
+	visited[src] = TRUE
+	var/contaminated = salty
+	for (var/index = 1, index <= channels.len, index++)
+		var/turf/floor/C = channels[index]
+		if (C.salty)
+			contaminated = TRUE
+		for (var/checkdir in cardinal)
+			var/turf/floor/T = get_step(C, checkdir)
+			if (!istype(T, /turf/floor))
+				continue
+			if (T.salty && (istype(T, /turf/floor/beach/water) || (istype(T, /turf/floor/trench/flooded) && T.flooded)))
+				contaminated = TRUE
+			if (!T.irrigation || visited[T])
+				continue
+			visited[T] = TRUE
+			channels += T
+	for (var/turf/floor/C in channels)
+		C.flooded = TRUE
+		if (contaminated)
+			C.salty = TRUE
+	for (var/turf/floor/C in channels)
+		C.check_relatives(1,0,"empty",FALSE)
