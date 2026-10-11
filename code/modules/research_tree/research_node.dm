@@ -1215,7 +1215,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/pot" = "pottery_storage",
 		// --- power_tools (2) ---
 		"/obj/item/weapon/material/pickaxe/jackhammer" = "power_tools",
-		"/obj/structure/drill" = "power_tools",
+		"/obj/structure/drill" = "electricity",
+		"/obj/item/weapon/resource_sieve" = "basic_tools",
 		// --- primitive_construction (42) ---
 		"/obj/covers/fancywood" = "primitive_construction",
 		"/obj/covers/straw_wall" = "primitive_construction",
