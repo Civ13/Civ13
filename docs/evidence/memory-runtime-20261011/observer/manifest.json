@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "game": "Civ13",
+  "commit": "104f669840b61a972dbd17b66f79ad3e2a751834",
+  "runtime": {
+    "name": "BYOND",
+    "version": "516.1681",
+    "platform": "Windows"
+  },
+  "map": {
+    "name": "Nomads (Temperate)",
+    "source": "maps/nomads/nomads.dmm",
+    "dimensions": [
+      155,
+      225,
+      2
+    ]
+  },
+  "scenario": "gameplay",
+  "run": {
+    "scope": "isolated-game",
+    "dirty": false,
+    "started_utc": "2026-10-11T06:24:37.8280946Z",
+    "finished_utc": "2026-10-11T06:30:32.347Z"
+  },
+  "steps": [
+    "Check out commit 104f669840b61a972dbd17b66f79ad3e2a751834",
+    "Run tests/memory/start-gameplay-evidence.ps1 -ByondBin <516.1681 bin> -Scenario observer -Port 16994",
+    "Connect Dream Seeker 516.1681 to byond://127.0.0.1:16994",
+    "Run query-gameplay-evidence.ps1 with SessionJson and ByondBin for prepare, wait for state 3, then join, run, examine",
+    "Close the native Notes popup; capture PASS, press Right/Down with keyboard, capture sampled frames",
+    "Stop only the task-owned server/client PIDs; preserve closed logs"
+  ],
+  "media": {
+    "screenshot_required": true,
+    "video_required": true,
+    "reason": "Sampled real game frames show keyboard movement; encoded at 2 fps, not a timing benchmark."
+  },
+  "checks": [
+    {
+      "id": "build",
+      "description": "Full game plus opt-in adapter compiles",
+      "result": "passed",
+      "evidence": [
+        "artifact-0"
+      ],
+      "notes": "0 errors, 0 warnings."
+    },
+    {
+      "id": "runtime",
+      "description": "100 observer cycles deliver callbacks and release probe references",
+      "result": "passed",
+      "evidence": [
+        "artifact-12",
+        "artifact-3",
+        "artifact-4"
+      ],
+      "notes": "PASS in game. Probe uses real GLOB observation objects."
+    },
+    {
+      "id": "client-interaction",
+      "description": "Nomad spawn, keyboard movement and tree Examine after check",
+      "result": "passed",
+      "evidence": [
+        "artifact-3",
+        "artifact-4",
+        "artifact-5",
+        "artifact-12"
+      ],
+      "notes": "Actual client and map; observer position changed from x1 to x4. Water adapter step returned zero despite changed coordinates; keyboard movement is separately visible."
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "artifact-0",
+      "kind": "build-log",
+      "path": "build.log"
+    },
+    {
+      "id": "artifact-1",
+      "kind": "log",
+      "path": "civ13.log"
+    },
+    {
+      "id": "artifact-2",
+      "kind": "log",
+      "path": "fixture.log"
+    },
+    {
+      "id": "artifact-3",
+      "kind": "screenshot",
+      "path": "observer-movement-examine.jpg"
+    },
+    {
+      "id": "artifact-4",
+      "kind": "screenshot",
+      "path": "observer-pass.jpg"
+    },
+    {
+      "id": "artifact-5",
+      "kind": "video",
+      "path": "observer-sampled-movement.mp4"
+    },
+    {
+      "id": "artifact-6",
+      "kind": "other",
+      "path": "query-64629ea3b70840e59e7135efae5b0390.json"
+    },
+    {
+      "id": "artifact-7",
+      "kind": "other",
+      "path": "query-68de466af0b744ecafc00b163ed87d03.json"
+    },
+    {
+      "id": "artifact-8",
+      "kind": "other",
+      "path": "query-b05dd478e5c34637a187529468e3d3ca.json"
+    },
+    {
+      "id": "artifact-9",
+      "kind": "other",
+      "path": "query-b126c36cff594248b03457cb45c87c08.json"
+    },
+    {
+      "id": "artifact-10",
+      "kind": "other",
+      "path": "query-b3b7f339bd9a4c069b1b152d14352abc.json"
+    },
+    {
+      "id": "artifact-11",
+      "kind": "other",
+      "path": "query-d908143aba1045edb21735bfdda8032e.json"
+    },
+    {
+      "id": "artifact-12",
+      "kind": "log",
+      "path": "runtime.txt"
+    },
+    {
+      "id": "provenance",
+      "kind": "other",
+      "path": "provenance.json"
+    }
+  ],
+  "limitations": [
+    "Short isolated local acceptance only; no production or long-runtime OOM verification.",
+    "Opt-in local admin test adapter is excluded from production civ13.dme.",
+    "Video is a sequence of genuine sampled screenshots at 2 fps; original capture times retained.",
+    "Public bundle omits local run paths and temporary adapter token. Unsanitized originals retained locally."
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "commit": "e19c52ad9a155cf62529d5a51430f5c2d797179f",
+  "scenario": "water",
+  "started_utc": "2026-10-11T06:22:13.6285070Z",
+  "binary_sha256": "B44A4A7DB276275B82EC8C3AFFE6B8ED7E2321DE774FBF0945A9AB451D510BCD",
+  "scope": "isolated-game with opt-in local test adapter"
+}

@@ -1,0 +1,7 @@
+{
+  "commit": "104f669840b61a972dbd17b66f79ad3e2a751834",
+  "scenario": "observer",
+  "started_utc": "2026-10-11T06:24:37.8280946Z",
+  "binary_sha256": "297B0009CFA352E4775E7A4F92822FFAE08CED3BD17E9946496AA9BD89B1CA1E",
+  "scope": "isolated-game with opt-in local test adapter"
+}
