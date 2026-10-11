@@ -411,6 +411,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/reagent_containers/glass/extraction_kit" = "apothecary",
 		"/obj/item/weapon/reagent_containers/pill/cocaine" = "apothecary",
 		"/obj/structure/lab_distillery" = "apothecary",
+		"/obj/structure/reaction_bench" = "apothecary",
 		// --- archery (7) ---
 		"/obj/item/ammo_casing/arrow" = "archery",
 		"/obj/item/ammo_casing/stone" = "archery",

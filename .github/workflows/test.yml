@@ -71,6 +71,8 @@ jobs:
           /usr/bin/python3 tests/chemistry/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control
           /usr/bin/python3 tests/chemistry/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe fuel
           /usr/bin/python3 tests/chemistry/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe fuel --negative-control
+          /usr/bin/python3 tests/chemistry/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe processing
+          /usr/bin/python3 tests/chemistry/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe processing --negative-control
 
       - name: Run isolated power accounting regressions
         shell: bash

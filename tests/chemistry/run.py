@@ -6,17 +6,18 @@ import subprocess
 import shutil
 import tempfile
 import json
+import re
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--negative-control', action='store_true')
-    parser.add_argument('--probe', choices=('polyethylene', 'fuel'), default='polyethylene')
+    parser.add_argument('--probe', choices=('polyethylene', 'fuel', 'processing'), default='polyethylene')
     parser.add_argument('--visual', action='store_true')
     parser.add_argument('--port', type=int, default=18329)
     args = parser.parse_args()
-    if args.visual and (args.negative_control or not 1024 <= args.port <= 65535):
+    if args.visual and (args.probe == 'processing' or args.negative_control or not 1024 <= args.port <= 65535):
         parser.error('Visual mode requires a valid local port and no negative control')
     root = Path(__file__).resolve().parents[2]
     binary = args.byond_bin.resolve()
@@ -24,7 +25,7 @@ def main():
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     prefix = '.chemistry_ci_' + args.probe
     generated = [root / (prefix + suffix) for suffix in
-                 ('.dme', '_world.dm', '_recipes.dm', '.dmb', '.rsc', '_login.dm', '_compounds.dm')]
+                 ('.dme', '_world.dm', '_recipes.dm', '.dmb', '.rsc', '_login.dm', '_compounds.dm', '_globals.dm')]
     if any(path.exists() for path in generated):
         raise RuntimeError('Existing chemistry probe files must be preserved')
     logs = Path(tempfile.mkdtemp(prefix='civ13-chemistry-ci-'))
@@ -36,19 +37,30 @@ def main():
         parent = world.index('\n\t..()', start)
         world = world[:parent] + world[parent:].replace('\n\t..()', '', 1)
         world = world.replace('/world/New()', '/world/proc/unused_chemistry_startup()', 1)
+        if args.probe == 'processing':
+            world = world.replace('/datum/global_init/New()\n', '/datum/global_init/New()\n\treturn\n', 1)
         generated[1].write_text(world, encoding='utf-8')
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         source = source.replace('code\\world.dm', prefix + '_world.dm')
+        if args.probe == 'processing':
+            globals_source = (root / 'code/controllers/mc/globals.dm').read_text(encoding='utf-8')
+            marker = '/datum/controller/global_vars/New()\n'
+            if globals_source.count(marker) != 1:
+                raise RuntimeError('Global-controller isolation marker changed')
+            generated[7].write_text(globals_source.replace(marker, marker + '\treturn\n'), encoding='utf-8')
+            source = source.replace('code\\controllers\\mc\\globals.dm', prefix + '_globals.dm')
+            source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
         if args.visual:
             generated[5].write_text('/mob/new_player\n\tvar/client/my_client\n/mob/new_player/Login()\n\tchemistry_fixture_login()\n', encoding='utf-8')
             source = source.replace('code\\game\\mob\\new_player\\login.dm', prefix + '_login.dm')
-        if args.negative_control and args.probe == 'fuel':
+        if args.negative_control and args.probe in ('fuel', 'processing'):
             # Restore the registration defect in a generated source copy.
             compounds = (root / 'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Compounds.dm').read_text(encoding='utf-8')
-            target = '\tid = "octane"'
+            reagent = 'octane' if args.probe == 'fuel' else 'n_methylmorpholine_n_oxide'
+            target = f'\tid = "{reagent}"'
             if compounds.count(target) != 1:
-                raise RuntimeError('Octane mutation target missing or ambiguous')
-            generated[6].write_text(compounds.replace(target, '\tid = "octane_removed"', 1), encoding='utf-8')
+                raise RuntimeError(f'{reagent} mutation target missing or ambiguous')
+            generated[6].write_text(compounds.replace(target, f'\tid = "{reagent}_removed"', 1), encoding='utf-8')
             source = source.replace('code\\modules\\reagents\\Chemistry-Reagents\\Chemistry-Reagents-Compounds.dm', prefix + '_compounds.dm')
         elif args.negative_control:
             # Reintroduce the original wrong feedstock only in a generated copy.
@@ -64,6 +76,9 @@ def main():
             source = source.replace('code\\modules\\reagents\\Chemistry-Recipes.dm',
                                     prefix + '_recipes.dm')
         generated[0].write_text(source + f'\n#include "tests/chemistry/{args.probe}.dm"\n#include "tests/chemistry/visual.dm"\n#include "tests/chemistry/fuel_visual.dm"\n', encoding='utf-8')
+        shutil.copy2(generated[0], logs / 'probe_source.dme')
+        if generated[6].exists():
+            shutil.copy2(generated[6], logs / 'mutated_compounds.dm')
         commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         print(f'Commit: {commit}; probe={args.probe}; negative_control={args.negative_control}', flush=True)
         build = subprocess.run([str(compiler), '-max_errors', '0', str(generated[0])],
@@ -76,6 +91,11 @@ def main():
             raise RuntimeError('Chemistry compilation failed')
         shutil.copy2(generated[3], logs / generated[3].name)
         shutil.copy2(generated[4], logs / generated[4].name)
+        if args.probe == 'processing':
+            (logs / 'config/crafting').mkdir(parents=True)
+            shutil.copy2(root / 'config/crafting/material_recipes_global.txt',
+                         logs / 'config/crafting/material_recipes_global.txt')
+            shutil.copytree(root / 'config/names', logs / 'config/names')
         if args.visual:
             daemon_output = (logs / 'daemon.log').open('w', encoding='utf-8')
             visual = subprocess.Popen([str(daemon), str(logs / generated[3].name), str(args.port),
@@ -104,8 +124,15 @@ def main():
             raise RuntimeError(f'Chemistry result missing; daemon exit={runtime.returncode}')
         result = (logs / 'chemistry_result.txt').read_text(encoding='utf-8').strip()
         print(result, flush=True)
-        failure = ('FAIL: Product missing: octane' if args.probe == 'fuel'
-                   else 'FAIL: Polymerization unavailable with catalysts')
+        if args.probe == 'processing':
+            runtime_text = (logs / 'runtime.log').read_text(encoding='utf-8', errors='replace')
+            if any(marker in runtime_text.lower() for marker in ('runtime error:', 'bug:', '## error:')):
+                print(runtime_text, flush=True)
+                raise RuntimeError('Processing probe runtime diagnostics failed')
+        failures = {'fuel': 'FAIL: Product missing: octane',
+                    'processing': 'FAIL: Bench synthesis unavailable: n_methylmorpholine_n_oxide',
+                    'polyethylene': 'FAIL: Polymerization unavailable with catalysts'}
+        failure = failures[args.probe]
         expected = (failure
                     if args.negative_control else 'PASS:')
         if runtime.returncode or not result.startswith(expected):

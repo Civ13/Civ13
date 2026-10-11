@@ -41,6 +41,24 @@ copy and requires the original missing-product failure. CI runs both modes.
 Visual mode supports `--probe fuel --visual` with the same localhost adapter.
 Fuel recipe ratios, engine consumption, ethanol blends and balance are unchanged.
 
+## Controlled laboratory processing
+
+`run.py --probe processing --byond-bin <absolute BYOND bin directory>` runs
+all 23 offered reactions through production beaker transfer and bench synthesis.
+It checks exact products, consumed reactants, retained catalysts, the carbonate
+to chloride chain, reagent phases, and rejected missing-input/overflow/unknown
+recipes. It verifies inert-beaker restoration, preexisting inert flags, and
+collector survival when the bench is destroyed. The production catalog parser,
+research mapping, generated crafting recipe, stack consumption and actual bench
+constructor run, including occupied-tile and insufficient-glass rejection.
+
+This probe removes the normal map, world/global/controller startup and uses a
+30x30x1 test world, temporary catalogs/names and a constructor-only human adapter.
+The craft timer is set to zero; timed builds, menu clicks and character startup
+are not verified. Runtime error diagnostics fail the check. Processing has no
+visual mode. `--probe processing --negative-control` removes NMMO registration
+in a generated copy and must detect the missing output before consuming inputs.
+
 For gameplay replication, use an isolated game and a reagent container with
 adequate capacity. Mix 2 units of ethylene with 10 titaniumchloride,
 5 borontrifluoride, and 5 aluminumchloride. Expect 25 polyethylene and unchanged
