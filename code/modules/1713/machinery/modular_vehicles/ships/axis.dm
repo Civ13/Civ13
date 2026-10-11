@@ -188,7 +188,7 @@
 					stopmovementloop()
 					return FALSE
 			for(var/obj/item/I in TT)
-				if (!(I in transporting) || istype(I, /obj/item/ammo_casing))
+				if ((!(I in transporting) || istype(I, /obj/item/ammo_casing)) && !istype(I, /obj/item/weapon/grenade))
 					qdel(I)
 
 			if ((!istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/beach/water/ice)) && !istype(T, /turf/floor/trench/flooded))
@@ -248,24 +248,21 @@
 
 	return 1
 
-/obj/structure/vehicleparts/axis/ship/add_transporting()
+/obj/structure/vehicleparts/axis/ship/add_transporting(var/trigger_mines=TRUE)
 	transporting = list()
-	// Older assemblies filled the entire 5x5 assembler area with placeholders.
-	// Keep only this ship's current turning square; never remove physical hull parts.
-	var/turf/origin = get_turf(src)
-	if (origin && maxdist >= 1 && maxdist <= 5)
-		var/end_x = origin.x + ((dir == EAST || dir == SOUTH) ? -1 : 1) * (maxdist - 1)
-		var/end_y = origin.y + ((dir == EAST || dir == NORTH) ? -1 : 1) * (maxdist - 1)
-		for (var/obj/effect/pseudovehicle/PV in components.Copy())
-			if (PV.link == src && (PV.z != origin.z || PV.x < min(origin.x,end_x) || PV.x > max(origin.x,end_x) || PV.y < min(origin.y,end_y) || PV.y > max(origin.y,end_y)))
-				components -= PV
-				qdel(PV)
+	prune_turning_placeholders()
 	for (var/obj/structure/vehicleparts/frame/F in components)
 		if (!F || F.axis != src || !(F in range(7,loc)))
 			components -= F
 			continue
 		var/turf/T = get_turf(F)
 		for (var/atom/movable/M in T)
+			if (M.loc != T || QDELETED(M))
+				continue
+			if (istype(M, /obj/item/weapon/grenade))
+				var/obj/item/weapon/grenade/G = M
+				if (G.is_vehicle_exterior(src))
+					continue
 		 /* TODO: Naval Mines
 			if (istype(M, /obj/item/mine/at))
 				var/obj/item/mine/at/MAT = M

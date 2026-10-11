@@ -10,7 +10,8 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	var/turntimer = 15
 	var/doorcode = 0
 	var/movement_processes = 0
-	var/tmp/transforming_ship = FALSE
+	var/tmp/transforming_vehicle = FALSE
+	var/tmp/list/transform_tiles = null
 /obj/structure/vehicleparts/axis/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -224,7 +225,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				if(!AC.BB)
 					qdel(AC) //to prevent the "empty empty empty empty"... spam
 			for(var/obj/item/I in TT)
-				if (!(I in transporting))
+				if (!(I in transporting) && !istype(I, /obj/item/weapon/grenade))
 					qdel(I)
 			for(var/obj/effect/fire/BO in T)
 				if (!(BO in transporting))
@@ -266,73 +267,152 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				return FALSE
 
 /obj/structure/vehicleparts/axis/proc/do_move()
-	if (ship && transforming_ship)
+	if (transforming_vehicle)
 		return FALSE
 	add_transporting()
-	var/m_dir = loc.dir
-	if (reverse)
-		m_dir = OPPOSITE_DIR(dir)
-	if (ship)
-		// Include invisible turning placeholders: never force a part into null at an edge.
-		for (var/atom/movable/M in (transporting | components))
-			if (!isturf(M.loc) || !get_step(M.loc, m_dir))
-				return FALSE
-		transforming_ship = TRUE
-	for (var/atom/movable/M in transporting)
-		if ((istype(M, /obj/structure) || istype(M, /obj/item)) && !istype(M, /obj/structure/vehicleparts/frame) && (!istype(M, /obj/structure/vehicleparts/movement) || istype(M, /obj/structure/vehicleparts/movement/sail)) && !istype(M, /obj/structure/wild))
-			var/obj/MO = M
-			MO.forceMove(get_step(MO.loc, m_dir))
-			if (!istype(M, /obj/structure/cannon) && !istype(M, /obj/structure/catapult) && !istype(M, /obj/item/weapon/gun/projectile/automatic/stationary/autocannon))
-				MO.dir = dir
-				MO.update_icon()
-		if (istype(M, /obj/structure/vehicleparts/movement) && !istype(M, /obj/structure/vehicleparts/movement/sail))
-			var/obj/structure/vehicleparts/movement/MV = M
-			if (MV.reversed)
-				MV.dir = OPPOSITE_DIR(dir)
-			else
-				MV.dir = dir
-			MV.forceMove(get_step(MV.loc, m_dir))
-			MV.update_icon()
-		if (istype(M, /mob/living))
-			var/mob/living/ML = M
-			ML.forceMove(get_step(ML.loc, m_dir))
-			if(ML.using_object && istype(ML.using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
-				var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = ML.using_object
-				HMG.update_pixels(ML)
-	for (var/obj/F in components)
-		F.dir = dir
-		F.forceMove(get_step(F.loc, m_dir))
-		F.update_icon()
+	var/m_dir = reverse ? OPPOSITE_DIR(dir) : dir
+	var/list/origins = list()
+	var/list/destinations = list()
+	var/list/move_turfs = list()
+	var/list/exterior_grenades = list()
+	for (var/atom/movable/M in (transporting | components))
+		if (QDELETED(M))
+			continue
+		if (!isturf(M.loc))
+			return FALSE
+		var/turf/destination = get_step(M.loc, m_dir)
+		if (!destination)
+			return FALSE
+		origins[M] = M.loc
+		destinations[M] = destination
+	for (var/obj/structure/vehicleparts/frame/F in components)
+		if (QDELETED(F) || F.axis != src)
+			continue
+		var/turf/source_turf = origins[F]
+		var/turf/destination = destinations[F]
+		if ((source_turf.vehicle_transforming && !QDELETED(source_turf.vehicle_transforming)) || (destination.vehicle_transforming && !QDELETED(destination.vehicle_transforming)))
+			return FALSE
+		move_turfs |= source_turf
+		move_turfs |= destination
+		for (var/obj/item/weapon/grenade/G in destination)
+			if (G.loc == destination && !(G in transporting) && !QDELETED(G))
+				exterior_grenades[G] = destination
+	transforming_vehicle = TRUE
+	transform_tiles = move_turfs
+	for (var/turf/T in move_turfs)
+		T.vehicle_transforming = src
+	try
+		for (var/obj/item/weapon/grenade/G in exterior_grenades)
+			G.mark_vehicle_exterior(src, exterior_grenades[G])
+		for (var/atom/movable/M in transporting)
+			if (QDELETED(M) || M.loc != origins[M])
+				continue
+			if ((istype(M, /obj/structure) || istype(M, /obj/item)) && !istype(M, /obj/structure/vehicleparts/frame) && (!istype(M, /obj/structure/vehicleparts/movement) || istype(M, /obj/structure/vehicleparts/movement/sail)) && !istype(M, /obj/structure/wild))
+				var/obj/MO = M
+				MO.forceMove(destinations[MO])
+				if (QDELETED(MO))
+					continue
+				if (!istype(M, /obj/structure/cannon) && !istype(M, /obj/structure/catapult) && !istype(M, /obj/item/weapon/gun/projectile/automatic/stationary/autocannon))
+					MO.dir = dir
+					MO.update_icon()
+			if (istype(M, /obj/structure/vehicleparts/movement) && !istype(M, /obj/structure/vehicleparts/movement/sail))
+				var/obj/structure/vehicleparts/movement/MV = M
+				if (MV.reversed)
+					MV.dir = OPPOSITE_DIR(dir)
+				else
+					MV.dir = dir
+				MV.forceMove(destinations[MV])
+				if (QDELETED(MV))
+					continue
+				MV.update_icon()
+			if (istype(M, /mob/living))
+				var/mob/living/ML = M
+				ML.forceMove(destinations[ML])
+				if (QDELETED(ML))
+					continue
+				if(ML.using_object && istype(ML.using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
+					var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = ML.using_object
+					HMG.update_pixels(ML)
+		for (var/obj/F in components)
+			if (QDELETED(F) || F.loc != origins[F])
+				continue
+			F.dir = dir
+			F.forceMove(destinations[F])
+			if (QDELETED(F))
+				continue
+			F.update_icon()
 
-	transforming_ship = FALSE
+	catch(var/exception/e)
+		release_transform_tiles(move_turfs)
+		throw e
+	release_transform_tiles(move_turfs)
 	return TRUE
 
-/obj/structure/vehicleparts/axis/proc/add_transporting()
+/obj/structure/vehicleparts/axis/Destroy()
+	release_transform_tiles(transform_tiles)
+	return ..()
+
+/obj/structure/vehicleparts/axis/proc/release_transform_tiles(var/list/tiles)
+	for (var/turf/T in tiles)
+		if (T.vehicle_transforming == src)
+			T.vehicle_transforming = null
+	transform_tiles = null
+	transforming_vehicle = FALSE
+
+/obj/structure/vehicleparts/axis/proc/prune_turning_placeholders()
+	// Older assemblies filled the entire 5x5 assembler area with placeholders.
+	// Keep only this vehicle's current turning square; never remove physical hull parts.
+	var/turf/origin = get_turf(src)
+	if (origin && maxdist >= 1 && maxdist <= 5)
+		var/end_x = origin.x + ((dir == EAST || dir == SOUTH) ? -1 : 1) * (maxdist - 1)
+		var/end_y = origin.y + ((dir == EAST || dir == NORTH) ? -1 : 1) * (maxdist - 1)
+		for (var/obj/effect/pseudovehicle/PV in components.Copy())
+			if (PV.link == src && (PV.z != origin.z || PV.x < min(origin.x,end_x) || PV.x > max(origin.x,end_x) || PV.y < min(origin.y,end_y) || PV.y > max(origin.y,end_y)))
+				components -= PV
+				qdel(PV)
+
+/obj/structure/vehicleparts/axis/proc/add_transporting(var/trigger_mines=TRUE)
 	transporting = list()
+	prune_turning_placeholders()
 	for (var/obj/structure/vehicleparts/frame/F in components)
-		if (!F || !(F in range(7,loc)))
+		if (!F || F.axis != src || !(F in range(7,loc)))
 			components -= F
+			continue
 		var/turf/T = get_turf(F)
 		for (var/atom/movable/M in T)
-			if (istype(M, /obj/item/mine/at))
+			if (M.loc != T || QDELETED(M))
+				continue
+			if (istype(M, /obj/item/weapon/grenade))
+				var/obj/item/weapon/grenade/G = M
+				if (G.is_vehicle_exterior(src))
+					continue
+			if (trigger_mines && istype(M, /obj/item/mine/at))
 				var/obj/item/mine/at/MAT = M
 				if (MAT.anchored)
 					MAT.trigger(F)
 				else
 					qdel(MAT)
 					visible_message(SPAN_WARNING("\The [src] crushes \the [MAT]!"),SPAN_WARNING("You crush \the [MAT]!"))
-			if (istype(M, /obj/item/mine/boobytrap))
+			if (trigger_mines && istype(M, /obj/item/mine/boobytrap))
 				var/obj/item/mine/boobytrap/BAT = M
 				if (BAT.anchored)
 					qdel(BAT)
 					visible_message(SPAN_WARNING("\The [src] crushes \the [BAT]!"),SPAN_WARNING("You crush \the [BAT]!"))
-			if (istype(M, /obj/item/mine/ap))
+			if (trigger_mines && istype(M, /obj/item/mine/ap))
 				var/obj/item/mine/ap/BAT = M
 				if (BAT.anchored)
 					qdel(BAT)
 					visible_message(SPAN_WARNING("\The [src] crushes \the [BAT]!"),SPAN_WARNING("You crush \the [BAT]!"))
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
 				if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M, /obj/structure/cable) && !istype(M, /obj/structure/redmailbox) && !istype(M, /obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard))
+					if (istype(M, /obj/structure/vehicleparts/frame))
+						var/obj/structure/vehicleparts/frame/other = M
+						if (other.axis != src)
+							continue
+					if (istype(M, /obj/structure/vehicleparts/movement))
+						var/obj/structure/vehicleparts/movement/other = M
+						if (other.axis && other.axis != src)
+							continue
 					transporting += M
 	return transporting.len
 
@@ -519,7 +599,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		return FALSE
 
 /obj/structure/vehicleparts/axis/proc/do_matrix(var/olddir = 0, var/newdir = 0, var/tdir = "none", var/mob/user = null)
-	if ((ship && transforming_ship) || olddir == 0 || newdir == 0 || !(tdir in list("left", "right")))
+	if (transforming_vehicle || olddir == 0 || newdir == 0 || !(tdir in list("left", "right")))
 		return FALSE
 	if (isemptylist(corners) && !check_corners())
 		return FALSE
@@ -527,8 +607,8 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		return FALSE
 	if (maxdist < 1 || maxdist > 5)
 		return FALSE
-	if (ship)
-		add_transporting()
+	// Rotation collects membership without triggering movement-only mine effects.
+	add_transporting(FALSE)
 	matrix_current_locs = list()
 
 	var/turf/axis_turf = get_turf(loc)
@@ -553,8 +633,11 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			var/turf/currloc = locate(axis_turf.x + i, axis_turf.y+j, axis_turf.z)
 			var/list/tmplist = list()
 			for (var/atom/movable/MV in currloc)
+				// Multi-tile bounds appear in each covered turf's contents. Move the anchor once.
+				if (MV.loc != currloc)
+					continue
 				if ((istype(MV, /mob/living) || istype(MV, /obj/structure) || istype(MV, /obj/item) || istype(MV, /obj/effect/pseudovehicle)))
-					if (!ship || (MV in transporting) || (MV in components) || (MV in wheels))
+					if ((MV in transporting) || (MV in components) || (MV in wheels))
 						tmplist += MV
 			matrix_current_locs += list(matrix[loc2textv][4] = list(currloc,tmplist, matrix[loc2textv][4]))
 			if(dir == NORTH || dir == SOUTH)
@@ -571,6 +654,8 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 
 	// Validate every destination before deleting obstacles or moving any part.
 	var/list/turn_destroy = list()
+	var/list/turn_turfs = list()
+	var/list/turn_exterior_grenades = list()
 	for (var/locx=1; locx<=maxdist; locx++)
 		for (var/locy=1; locy<=maxdist; locy++)
 			var/loc2textv = "[locx],[locy]"
@@ -592,18 +677,27 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				if (source_contents.len)
 					return FALSE
 				continue
-			if (ship)
-				var/has_hull = FALSE
-				for (var/obj/structure/vehicleparts/frame/ship/F in source_contents)
-					if (F.axis == src)
-						has_hull = TRUE
-				if (!has_hull)
-					continue
-				if (T.density || ((!istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/beach/water/ice)) && !istype(T, /turf/floor/trench/flooded)))
-					return FALSE
+			var/has_hull = FALSE
+			for (var/obj/structure/vehicleparts/frame/F in source_contents)
+				if (F.axis == src)
+					has_hull = TRUE
+			if (!has_hull)
+				continue
+			var/turf/source_turf = matrix_current_locs[loc2textv][1]
+			if ((T.vehicle_transforming && !QDELETED(T.vehicle_transforming)) || (source_turf.vehicle_transforming && !QDELETED(source_turf.vehicle_transforming)))
+				return FALSE
+			turn_turfs |= T
+			turn_turfs |= source_turf
+			if (T.density)
+				return FALSE
+			if (ship && ((!istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/beach/water/ice)) && !istype(T, /turf/floor/trench/flooded)))
+				return FALSE
 			var/list/todestroy = list()
 			for (var/obj/O in T)
 				if (!(O in transporting) && !(O in components) && !(O in wheels))
+					if (istype(O, /obj/item/weapon/grenade))
+						turn_exterior_grenades[O] = T
+						continue
 					if (istype(O, /obj/structure/vehicleparts/frame/ship))
 						var/obj/structure/vehicleparts/frame/ship/FRM = O
 						if (FRM.axis != src)
@@ -643,73 +737,83 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			for(var/obj/OM in todestroy)
 				if (!istype(OM, /obj/structure/sign/traffic/zebracrossing) && !istype(OM, /obj/structure/sign/traffic/side) && !istype(OM, /obj/structure/sign/traffic/central) && !istype(OM, /obj/structure/rails) && !istype(OM, /obj/covers) && !istype(OM, /obj/structure/gate) && !istype(OM, /obj/structure/lamp/lamppost_small/) && !istype(OM, /obj/structure/lamp/lamp_big/alwayson) && !istype(OM, /obj/structure/lamp/lamp_small/alwayson) && !istype(OM, /obj/structure/redmailbox) && !istype(OM, /obj/structure/billboard))
 					turn_destroy |= OM
-	if (ship)
-		transforming_ship = TRUE
-	for (var/obj/OM in turn_destroy)
-		qdel(OM)
-	dir = newdir
-	for (var/obj/structure/vehicleparts/movement/OBB in wheels)
-		if (OBB.reversed)
-			OBB.dir = OPPOSITE_DIR(dir)
-		else
-			OBB.dir = dir
-	for (var/locx=1; locx<=maxdist; locx++)
-		for (var/locy=1; locy<=maxdist; locy++)
-			var/loc2textv = "[locx],[locy]"
-			var/dlocfind
-			switch(maxdist)
-				if (1)
-					dlocfind = rotation_matrixes1[tdir][loc2textv][1]
-				if (2)
-					dlocfind = rotation_matrixes2[tdir][loc2textv][1]
-				if (3)
-					dlocfind = rotation_matrixes3[tdir][loc2textv][1]
-				if (4)
-					dlocfind = rotation_matrixes4[tdir][loc2textv][1]
-				if (5)
-					dlocfind = rotation_matrixes5[tdir][loc2textv][1]
-//			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes5[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])")
-			if (islist(matrix_current_locs[loc2textv][2]))
-				var/has_hull = !ship
-				for (var/obj/structure/vehicleparts/frame/ship/F in matrix_current_locs[loc2textv][2])
-					if (F.axis == src)
-						has_hull = TRUE
-				for (var/obj/effect/pseudovehicle/PV in matrix_current_locs[dlocfind][1])
-					if (!has_hull)
-						continue
-					var/turf/toget = matrix_current_locs[dlocfind][1]
-					for (var/mob/living/ML in toget)
-						if (!(ML in transporting))
-							for(var/obj/item/I in ML)
-								qdel(I)
-							ML.crush()
-					for (var/obj/structure/ST in toget)
-						if (!ST.density && !(ST in transporting) && !(ST in components))
-							ST.Destroy()
-				for (var/atom/movable/M in matrix_current_locs[loc2textv][2])
-					if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M,/obj/covers) && !istype(M,/obj/structure/cable) && !istype(M,/obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard))
-						if (istype(M, /obj/structure/turret/course))
-							var/obj/structure/turret/course/C = M
-							C.turn_to_dir(tdir)
-						M.forceMove(matrix_current_locs[dlocfind][1])
-						if (istype(M, /obj))
-							var/obj/O = M
-							if (!istype(O, /obj/structure/cannon))
-								O.dir = dir
-							if (istype(O, /obj/structure/vehicleparts/frame))
-								var/obj/structure/vehicleparts/frame/FR = O
-								if (FR.mwheel)
-									FR.mwheel.update_icon()
-							O.update_icon()
+	transforming_vehicle = TRUE
+	transform_tiles = turn_turfs
+	for (var/turf/T in turn_turfs)
+		T.vehicle_transforming = src
+	try
+		for (var/obj/item/weapon/grenade/G in turn_exterior_grenades)
+			G.mark_vehicle_exterior(src, turn_exterior_grenades[G])
+		for (var/obj/OM in turn_destroy)
+			qdel(OM)
+		dir = newdir
+		for (var/obj/structure/vehicleparts/movement/OBB in wheels)
+			if (OBB.reversed)
+				OBB.dir = OPPOSITE_DIR(dir)
+			else
+				OBB.dir = dir
+		for (var/locx=1; locx<=maxdist; locx++)
+			for (var/locy=1; locy<=maxdist; locy++)
+				var/loc2textv = "[locx],[locy]"
+				var/dlocfind
+				switch(maxdist)
+					if (1)
+						dlocfind = rotation_matrixes1[tdir][loc2textv][1]
+					if (2)
+						dlocfind = rotation_matrixes2[tdir][loc2textv][1]
+					if (3)
+						dlocfind = rotation_matrixes3[tdir][loc2textv][1]
+					if (4)
+						dlocfind = rotation_matrixes4[tdir][loc2textv][1]
+					if (5)
+						dlocfind = rotation_matrixes5[tdir][loc2textv][1]
+	//			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes5[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])")
+				if (islist(matrix_current_locs[loc2textv][2]))
+					var/has_hull = FALSE
+					for (var/obj/structure/vehicleparts/frame/F in matrix_current_locs[loc2textv][2])
+						if (F.axis == src)
+							has_hull = TRUE
+					for (var/obj/effect/pseudovehicle/PV in matrix_current_locs[dlocfind][1])
+						if (!has_hull)
+							continue
+						var/turf/toget = matrix_current_locs[dlocfind][1]
+						for (var/mob/living/ML in toget)
+							if (!(ML in transporting))
+								for(var/obj/item/I in ML)
+									qdel(I)
+								ML.crush()
+						for (var/obj/structure/ST in toget)
+							if (!ST.density && !(ST in transporting) && !(ST in components))
+								ST.Destroy()
+					for (var/atom/movable/M in matrix_current_locs[loc2textv][2])
+						if (QDELETED(M) || M.loc != matrix_current_locs[loc2textv][1])
+							continue
+						if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M,/obj/covers) && !istype(M,/obj/structure/cable) && !istype(M,/obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard))
+							if (istype(M, /obj/structure/turret/course))
+								var/obj/structure/turret/course/C = M
+								C.turn_to_dir(tdir)
+							M.forceMove(matrix_current_locs[dlocfind][1])
+							if (istype(M, /obj))
+								var/obj/O = M
+								if (!istype(O, /obj/structure/cannon))
+									O.dir = dir
+								if (istype(O, /obj/structure/vehicleparts/frame))
+									var/obj/structure/vehicleparts/frame/FR = O
+									if (FR.mwheel)
+										FR.mwheel.update_icon()
+								O.update_icon()
 
-	for(var/obj/structure/vehicleparts/VP in components)
-		VP.dir = dir
-		VP.update_icon()
+		for(var/obj/structure/vehicleparts/VP in components)
+			VP.dir = dir
+			VP.update_icon()
 
-	for(var/mob/living/MB in transporting)
-		MB.dir = dir
+		for(var/mob/living/MB in transporting)
+			MB.dir = dir
 
-	transforming_ship = FALSE
+	catch(var/exception/e)
+		release_transform_tiles(turn_turfs)
+		throw e
+	release_transform_tiles(turn_turfs)
 	return TRUE
 
 /obj/effect/pseudovehicle

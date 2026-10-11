@@ -1,43 +1,38 @@
-# Constructed boat movement regressions
+# Constructed vehicle movement verification
 
-Player-built hulls use `/obj/structure/vehicleparts/axis/ship`, ship frames, a ship wheel and the modular vehicle rotation code. The separate legacy small-boat controllers and train movement are not replaced here.
+This PR covers player-built ship hulls and constructed land vehicles sharing `axis.do_matrix` and `axis.do_move`. Full-game tank tests use production T34 frames, tracks, fueled engine, driver seat and the actual autoassembler. Legacy small-boat controllers are not replaced.
 
-## Confirmed baseline failures
+Confirmed causes include stale carried-object membership; collecting off-deck objects from the whole turning square; invisible placeholders outside that square; collecting a multi-tile cannon once per covered turf; destructive preflight before all blockers are validated; map-edge null destinations; and transient frame vacancies admitting an ordinary human Move during a turn or step. The latter was reproduced with the production moved-event callback: an actor moved from (77,44) to (78,44) and became carried cargo inside a closed tank. The human Move wrapper returns null even on movement, so assertions use actual position and membership.
 
-Against master `0d38999d5f9f987a944493f11c456537f39ac2f6` on Windows with BYOND 516.1681, the fixture completes with 15 failed assertions. It confirms:
+The shared fix collects owned/deck anchors once, validates the entire physical footprint, plans translation destinations, and reserves real source/destination hull tiles until mutation finishes. It retains the square pivot and quarter-turn tables. Normal closed-wall rejection and open-door boarding work after release. Boat-only navigable-water checks remain boat-only. Real collision/crushing and grenade explosion code remain active.
 
-- A 2x3 hull acquires placeholders across the full 5x5 assembler range rather than its 3x3 turning square.
-- Rotation includes off-deck objects and destroys onboard cargo and the helm because its carried-object list is stale.
-- Shoreline and foreign-frame turns proceed; earlier scenery can be deleted before a later blocking destination is found.
-- Map-edge movement/rotation changes some parts while losing others into null.
-- An injected movement callback during a turn splits the hull. This is an isolated callback reproduction, not a claim that a particular production callback caused the report.
+Loose grenades covered by a new footprint keep their original world location and live fuse. A weak exterior-owner marker prevents later movement from adopting them as cargo. Actual movement/pickup clears that marker, so pickup followed by dropping onto the deck establishes legitimate cargo. Real primed fragmentation grenades were verified to explode at their original floor point after rotation and following vehicle movement; a tank moving over that point can still suffer ordinary blast damage. This is distinct from teleporting a grenade into cargo or clipping a carrier through a closed hull.
 
-The patch retains the existing square pivot, quarter-turn tables, supported size limit and collision/crushing rules. Boat rotation snapshots contain deck occupants and owned parts. All destinations are checked before obstacle deletion or movement, hull destinations must be navigable water, and nested boat transforms are rejected. Assembly and existing boats discard only surplus owned invisible placeholders. The helm propagates rejection and foreign frames do not become cargo.
+## Checks
 
-## Run
-
-PowerShell 7 is required. Supply the exact BYOND compiler/runtime used by the build:
+PowerShell 7 and the build's BYOND version are required:
 
 ```powershell
 ./tests/boat_movement/run.ps1 -ByondBin '<BYOND-bin>'
-./tests/boat_movement/run.ps1 -ByondBin '<BYOND-bin>' -Revision 0d38999d5f9f987a944493f11c456537f39ac2f6 -Baseline
+./tests/boat_movement/run-game.ps1 -ByondBin '<BYOND-bin>'
+./tests/boat_movement/run-game.ps1 -ByondBin '<BYOND-bin>' -TankOnly
+./tests/boat_movement/run-game.ps1 -ByondBin '<BYOND-bin>' -Visual -TimeoutSeconds 900
 ```
 
-`-Revision` extracts production procedures from that revision; fixture and adapters come from this checkout. The default reads working files. The runner compiles a temporary 40x40x1 water world, starts only its own daemon with `-safe`, and bounds it to 15 wall seconds, 5 CPU seconds and 256 MiB. It verifies completion, process exit and runtime/assertion failures; logs remain at the printed temporary path. It never reads a production map or save. Linux CI reuses the existing pinned BYOND installation after the full-game compile.
+The smaller fixture extracts production procedures into a temporary 40x40x1 water world and has 168 assertions. It uses simplified effects and engine/weight adapters, not full-game acceptance. `-Revision <sha> -Baseline` reproduces the original boat failures against master `0d38999d5f9f987a944493f11c456537f39ac2f6`; that baseline does not establish the later tank cases.
 
-The 168 passing patch assertions cover production assembly and wheel steering, 2x2/2x3/5x5 hulls, eight quarter turns in each direction, every heading reached through actual turns, forward/reverse displacement, passengers/cargo/mast/helm/cannon, independent cannon aim, shore/solid obstacles/foreign frames, failed-turn atomicity, map edges, reentrant movement, cargo deletion during callbacks, existing-placeholder normalization, unsupported oversized-turn rejection, ordinary shared vehicle rotation and movement-loop shutdown.
+The full-game overlay compiles `civ13.dme`, its configured Nomads map (155x225x2 on this checkout), and only the versioned test overlay. It uses temporary storage and versioned sample configuration, disables webhook/ban updates, and exercises real assembly, icons, forceMove, ordinary human Move, cargo, tracks, fuel checks and blast/shrapnel procedures. The runner rejects assertion/runtime failures, bounds owned processes to 120 seconds by default (900 maximum for visual mode), 768 MiB and 45 CPU seconds, and verifies exit. Logs and JSON remain at the printed temporary path. Generated bytecode/resources and media are not committed.
 
-Adapters provide no-op icon/audio/chat effects, a fixed adequate engine/weight check, empty faction block rules and isolated movement callbacks. Propulsion/fuel/wind balance, arbitrary irregular hulls, full-game Crossed/Entered behavior, graphical overlays and live-server behavior are not established by this fixture. The full-game compile uses `civ13.dme` and its configured `maps/nomads/nomads.dmm`; the fixture uses its generated world rather than that map.
+The combined full-game probe currently has 100 assertions, covering 2x2/2x3/5x5 boats; production-assembled 3x4 T34; repeated full turns; all tank movement headings/reverse; passengers/cargo/mast/helm/cannon; multi-tile attachment anchors; source/destination outsiders; ordinary callback entry during turns and steps; normal doors; blocked and edge moves; external primed/unarmed grenades; following movement; legitimate pickup/drop; and actual explosion origin. Linux CI reuses the pinned BYOND installation for both fixtures after the full compile and existing power checks.
 
-## Safe gameplay replication and capture
+The overlay's only terrain adapter ignores a synthetic `Entered(null)` callback during fixture water initialization. All real movable entries delegate to production. The current observer path independently dereferences `am.loc` without a null check; this separate defect is reported, not silently changed here. Startup native Bad ref diagnostics also occur in the existing train-probe baseline and are not claimed fixed. Wind/fuel balance, arbitrary irregular hulls, long-running server stability and production behavior remain outside this bounded verification.
 
-Use an isolated game built from the PR head, with no production storage or service configuration. Record the exact commit, BYOND version and map with captures.
+## Gameplay capture
 
-1. Build six wooden ship frames in a 2x3 rectangle, facing NORTH, on open water. Put the ship rudder in the northwest frame, a mast/sail and ship wheel on frames, then assemble. Verify the helm remains attached.
-2. Put a passenger on the northwest frame, a loose cargo item and a cannon on deck. Put a separate item at the southeast corner of the 3x3 turning square, outside the 2x3 deck. That corner stays outside the hull after a right turn.
-3. Lift the anchor, enable valid propulsion and turn right while moving. Repeat four turns and then four left turns. The passenger, cargo and fixture must remain with the hull; the outside item must stay on its original water tile, and a full rotation must preserve relative positions and cannon aim.
-4. Repeat with 2x2 and 5x5 hulls, every heading and reverse. Observe movement as well as stationary positions after each quarter turn.
-5. Place shore/ice or another vehicle frame under a proposed hull destination. Attempt the turn: no heading, hull, passenger, cargo or obstacle should change. Repeat near a map edge. Place a destructible item in an earlier destination and a solid cover in a later destination to verify rejection does not first delete scenery.
-6. Stop movement and remove a cargo item, then resume and turn again. Verify no stale reference or missing hull part. Compare the separate automated callback/edge cases in the fixture log; ordinary gameplay cannot directly invoke its injected callbacks.
+Use only an isolated world built at the PR head. Record SHA, BYOND and map with genuine screenshots/video. After the runner prints its live session, launch Dream Seeker explicitly with `byond://127.0.0.1:<reported-port>`. The Local Verification verbs close only their own playersetup browser and set the inspection view; they do not change production code or any other client.
 
-Capture genuine before/after screenshots of membership and rejected turns, plus video of repeated movement/quarter turns/full rotations. Fixture output and compilation are not substitutes for this full-game evidence. Generated media belongs in verified PR attachments, not in Git.
+- Inspect local boat probe shows 2x3 and 5x5 real boats. Run local boat sequence rejects a shore turn, restores only its fixture water tile, turns around an off-deck item, moves two steps and performs repeated quarter/full turns.
+- Inspect local tank probe shows the real assembled T34. Run local tank sequence attempts ordinary callback boarding during a turn, shows the actor staying outside, rotates/moves the tank, then demonstrates a real primed grenade remaining exterior and exploding at its original floor location.
+- Capture before/after membership, blocked-turn state and callback-entry outcome, plus video of movement/turns and the grenade sequence. Inspect actual captures and logs; a green compile or JSON manifest cannot substitute for this evidence.
+
+Replicate manual construction with the rudder/controller in the northwest frame, a correctly connected helm/driver, valid propulsion and cargo/passenger fixtures. Verify four left/right turns and advance/reverse; then place shore (boat), solid cover/another frame, an outside actor or grenade in the relevant destination. Preserve existing physical collision/blast rules while proving no phantom-cell adoption or temporary-gap entry. Generated media belongs in verified PR attachments, with replication steps, not in Git.

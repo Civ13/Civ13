@@ -1,4 +1,5 @@
 #define TRUE 1
+#define QDELETED(a) (!a)
 #define FALSE 0
 #define OPPOSITE_DIR(d) turn(d,180)
 #define SPAN_WARNING(s) s
@@ -36,7 +37,8 @@
 	var/list/matrix = list()
 	var/list/matrix_current_locs = list()
 	var/list/transporting = list()
-	var/tmp/transforming_ship = FALSE
+	var/tmp/transforming_vehicle = FALSE
+	var/tmp/list/transform_tiles
 	var/maxdist = 5
 	var/matrix_l
 	var/matrix_h
@@ -122,6 +124,9 @@ var/datum/map_stub/map = new
 	return current_weight
 /obj/structure/vehicleparts/axis/ship/proc/check_sails()
 /obj/item/sail
+/obj/item/weapon/grenade/proc/mark_vehicle_exterior(obj/structure/vehicleparts/axis/A, turf/T)
+/obj/item/weapon/grenade/proc/is_vehicle_exterior(obj/structure/vehicleparts/axis/A)
+	return FALSE
 /obj/item/ammo_casing
 /obj/item/mine/boobytrap
 /obj/item/mine/ap
@@ -136,6 +141,8 @@ var/datum/map_stub/map = new
 /mob/living/simple_animal/proc/adjustBruteLoss(n)
 /obj/structure/wild
 /obj/structure/cannon
+	bound_width = 32
+	bound_height = 64
 /obj/structure/catapult
 /obj/structure/turret/course/proc/turn_to_dir(d)
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/update_pixels(mob/M)
@@ -159,6 +166,8 @@ var/datum/map_stub/map = new
 /mob/living/proc/crush()
 	world.log << "CRUSH [src]"
 	del(src)
+/turf
+	var/tmp/obj/structure/vehicleparts/axis/vehicle_transforming
 /turf/floor/beach/water
 /turf/floor/beach/water/ice
 /turf/floor/trench/flooded
@@ -331,7 +340,7 @@ var/failures = 0
 	for(var/turns=1,turns<=4,turns++)
 		A.do_matrix(A.dir,turn(A.dir,-90),"right")
 	check(!deleted_cargo && same_locations(before),"deleted cargo callback leaves other parts intact")
-	check(!A.transforming_ship,"callback turn releases transform guard")
+	check(!A.transforming_vehicle,"callback turn releases transform guard")
 	clear_boats()
 	A = boat(2,2)
 	A.engine = new /obj/structure/engine(locate(15,25,1))

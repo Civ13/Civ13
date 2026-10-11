@@ -126,8 +126,8 @@
 		if (isemptylist(central.axis.corners) || !central.axis.corners[1])
 			central.axis.check_corners()
 		for (var/turf/T in rangeto)
-			// Ship placeholders belong to the turning square, not the entire assembler range.
-			if (central.axis && central.axis.ship && (T.x < central.x || T.x >= central.x + central.axis.maxdist || T.y > central.y || T.y <= central.y - central.axis.maxdist))
+			// Vehicle placeholders belong to the turning square, not the entire assembler range.
+			if (central.axis && (T.x < central.x || T.x >= central.x + central.axis.maxdist || T.y > central.y || T.y <= central.y - central.axis.maxdist))
 				continue
 			if (!central.axis || !central.axis.corners || !central.axis.corners.len || !central.axis.corners[1])
 				continue

@@ -37,7 +37,7 @@ try {
     $slices = @(
         (Slice $axis '/obj/structure/vehicleparts/axis/proc/do_move()' '/obj/structure/vehicleparts/axis/MouseDrop('),
         (Slice $axis '/obj/structure/vehicleparts/axis/proc/check_matrix()' ("`n/obj/effect/pseudovehicle`n")),
-        (Slice $ship '/obj/structure/vehicleparts/axis/ship/add_transporting()' '//basically, a matrix'),
+        (Slice $ship '/obj/structure/vehicleparts/axis/ship/add_transporting(' '//basically, a matrix'),
         $config.Substring($config.IndexOf('var/global/list/rotation_matrixes1')),
         (Slice $axis '/obj/structure/vehicleparts/axis/MouseDrop(' '//basically, a matrix'),
         (Slice $wheel '/obj/structure/vehicleparts/shipwheel/proc/turndir(' '/obj/structure/vehicleparts/shipwheel/attack_hand('),
