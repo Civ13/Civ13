@@ -237,6 +237,13 @@ zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
 ## Local MCP tooling
 
+<!-- 2026-10-11: irrigation propagation -->
+Irrigation propagates through cardinally connected channels with temporary local
+lists. Ordinary floors and filled-in channels are not water sources; salt reaches
+already-wet channels. Source removal does not drain existing channel water.
+`tests/irrigation/run.ps1 -ByondBin <516.1681-bin>` checks production procedures,
+including the pre-fix baseline; it does not prove map or construction acceptance.
+
 <!-- 2026-10-11: isolated legacy garbage queue -->
 When normal startup is disabled, atom `qdel` removes the atom from its location
 and queues it in `delayed_garbage`; it does not set the newer `gc_destroyed` flag
@@ -296,6 +303,14 @@ Dormant comment-review listeners must be workflow_dispatch-only: GitHub can requ
 
 ## Train verification
 
+<!-- 2026-10-11: medicine regression isolation -->
+`tests/survival/run.py` checks production disease courses, oral metabolism,
+ingredient acquisition and timed fermentation/distillation in temporary storage.
+Its fixture materializes the global-controller `vars` name list before union:
+BYOND 516.1681 otherwise logs Bad ref during initialization on the historical
+baseline too. Runtime errors/engine diagnostics invalidate evidence. Direct
+`del()` of live test atoms triggers the production GC error; use `qdel()`.
+
 <!-- 2026-10-11: trace resource extraction -->
 `tests/resource_extraction/run.ps1` compiles production extraction types with
 normal startup disabled and temporary storage. It checks bounded output, drill
@@ -351,3 +366,6 @@ Plant examine delegates to read-only farming_diagnostics(skill). Preserve skill 
 
 <!-- 2026-10-11: outdoor crop bootstrap -->
 Nomads Europe foraged seeds use biome filtering like its climate-restricted growth. Rain caps crop storage at max_water; natural irrigation sources remain unlimited. tests/outdoor_crops/run.ps1 tests production seed catalogs/dispatch and fresh/salt/range behavior; it does not establish map-level bootstrap reachability.
+
+<!-- 2026-10-11: timed decal lifecycle -->
+Cleanable expiry uses code/processes/decal_decay.dm (256 candidates/second), not per-decal sleeping timers or direct Destroy. Preserve existing decay_timer lifetimes; decay_deadline/index are explicitly excluded from native save export/import. tests/decal_decay/run.py compares actual native lifecycle with --baseline historical cleanable source, without normal game startup. Baseline early-qdel retention and missing expiry GC bookkeeping are isolated evidence, not full-game OOM proof.

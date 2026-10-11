@@ -221,6 +221,8 @@
 #include "code\game\mob\living\carbon\human\human_helpers.dm"
 #include "code\game\mob\living\carbon\human\human_hud.dm"
 #include "code\game\mob\living\carbon\human\human_life.dm"
+#include "code\game\mob\living\carbon\human\human_disease.dm"
+#include "code\game\mob\living\carbon\human\severe_disease.dm"
 #include "code\game\mob\living\carbon\human\human_movement.dm"
 #include "code\game\mob\living\carbon\human\human_mutations.dm"
 #include "code\game\mob\living\carbon\human\human_needs.dm"
@@ -1196,6 +1198,7 @@
 #include "code\processes\casings.dm"
 #include "code\processes\abandoned_items.dm"
 #include "code\processes\chemistry.dm"
+#include "code\processes\decal_decay.dm"
 #include "code\processes\cleanables.dm"
 #include "code\processes\client.dm"
 #include "code\processes\dog.dm"
@@ -1228,7 +1231,3 @@
 #include "interface\skin.dmf"
 #include "maps\nomads\nomads.dmm"
 // END_INCLUDE
-
-
-
-
