@@ -102,4 +102,3 @@ const transport = new StdioServerTransport();
 await server.connect(transport);
 process.stdin.on('end', async () => { for (const child of children) child.kill(); await server.close(); });
 for (const event of ['SIGINT','SIGTERM']) process.on(event, () => { for (const child of children) child.kill(); process.stdin.destroy(); });
-
