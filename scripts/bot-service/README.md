@@ -13,6 +13,18 @@ Read-only SSH inspection on 2026-10-12 found the bot checkout at
 No dedicated systemd bot unit was present. The legacy game launcher paths are
 not installation instructions for this host.
 
+## Installation blocker
+
+**Do not install or enable this draft unit yet.** CivilizationBot currently
+launches DreamDaemon directly and its restart method spawns another PHP process.
+nohup/disown do not escape a systemd cgroup: the unit's control-group stop could
+terminate games launched by the supervised bot. Before cutover, game launch
+operations must use independently supervised units/scopes and bot self-restart
+must delegate to its supervisor without spawning another PHP copy. Review and
+test that contract in CivilizationBot, including a negative control proving bot
+restart cannot stop the game. This draft intentionally retains proper cgroup
+cleanup rather than silently adopting KillMode=process and orphaning workers.
+
 ## Installation and controlled cutover
 
 Installing a service and stopping the existing bot are separate host operations.
