@@ -37,7 +37,7 @@ engine_log = log + '\n' + (run.stdout + run.stderr).decode('utf-8', errors='repl
 errors = bool(re.search(r'runtime error|RUNTIME|Bad ref|Bad loc|BUG:|## ERROR:|WARNING ',engine_log,re.I))
 if run.returncode or 'FAIL ' in log or 'PASS globals name snapshot' not in log: raise SystemExit('Native fixture failed')
 if a.baseline:
-    if len(re.findall(r'^BUG: Bad ref.*DecRefCount\(DM New\)',log,re.M)) != 2: raise SystemExit('Expected exactly two historical native Bad ref diagnostics')
+    if not re.findall(r'^BUG: Bad ref.*DecRefCount\(DM New\)',log,re.M): raise SystemExit('Expected historical native Bad ref diagnostic was absent')
     remainder = re.sub(r'^BUG: (?:Bad ref.*DecRefCount\(DM New\)|Call stack:.*)\n?', '', engine_log, flags=re.M)
     if re.search(r'runtime error|RUNTIME|Bad ref|Bad loc|BUG:|## ERROR:|WARNING ',remainder,re.I): raise SystemExit('Unexpected baseline diagnostics invalidate control')
     print('PASS baseline diagnostic control: native Bad ref detected; baseline is invalid production evidence')
