@@ -88,6 +88,15 @@ starting extra recurring cycles from the admin command.
 - `fire()` is called each tick; do your per-tick work there.
 - Global singletons should be accessed via `global.xxx` or a `var/xxx` on a global datum.
 
+<!-- 2026-10-12: copied processing-list removal -->
+Native BYOND `-=` and `Remove(value)` remove the last matching occurrence,
+including repeated nulls; a guarded front `Cut(1,2)` is not equivalent.
+`tests/processing_list_removal/run.py` checks production object-loop order,
+budget resumes, deletion/mutations and existing recursive-fire behavior, with
+immutable baseline and unsafe-cut controls. Its opt-in benchmark records complete
+visit counts; no faster equivalent removal was adopted. Start budget fixtures
+after a normal tick and anchor `run_time_tick_usage` to `world.tick_usage`.
+
 ### Map object placement (codebase-specific)
 
 - Existing maps place objects directly in DMM tile definitions (not spawned in code).
