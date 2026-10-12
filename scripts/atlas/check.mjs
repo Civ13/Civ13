@@ -11,7 +11,7 @@ class Element {
 const elements=new Map();
 const document={getElementById(id){if(!elements.has(id))elements.set(id,new Element());return elements.get(id);},createElement(){return new Element();},createElementNS(){return new Element();}};
 const context=vm.createContext({document,console});
-const script=html.match(/<script>([\s\S]*)<\/script>/)[1];
+const script=html.match(/<script>([\s\S]*)<\/script>/i)[1];
 vm.runInContext(script,context,{timeout:10000});
 assert(elements.get('catalog').children.length>0);
 assert(elements.get('diagram').children.length===1);
