@@ -132,6 +132,7 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/savemap
 	)
 var/list/admin_verbs_debug = list(
+	/client/proc/gc_deletion_costs,
 	/client/proc/cmd_admin_list_open_jobs,
 	/client/proc/Debug2,
 	/datum/admins/proc/view_runtimes,
@@ -1029,6 +1030,22 @@ var/global/list/global_colour_matrix = null
 
 
 ///////////////////////GC STUFF////////////////////////////////
+
+/client/proc/gc_deletion_costs()
+	set category = "Debug"
+	set name = "GC Deletion Costs"
+	if (!check_rights(R_DEBUG) || !processes.garbage)
+		return
+	var/list/snapshot = processes.garbage.profile_snapshot()
+	var/html = "<html><body><h2>GC deletion costs</h2><p>Elapsed wall deciseconds (10 ds = 1 second), coarse clock; waits and nested costs included. First 128 types plus overflow. Completed qdel Destroy and collector/immediate del only; no failure classification.</p><table border='1'><tr><th>Type</th><th>Cleanup count</th><th>Total ds</th><th>Max ds</th><th>Crossed tick</th><th>Forced count</th><th>Total ds</th><th>Max ds</th><th>Crossed tick</th></tr>"
+	for (var/type_name in snapshot)
+		var/list/row = snapshot[type_name]
+		html += "<tr><td>[html_encode(type_name)]</td>"
+		for (var/field in list("cleanup_count", "cleanup_total_ds", "cleanup_max_ds", "cleanup_yielded", "forced_count", "forced_total_ds", "forced_max_ds", "forced_yielded"))
+			html += "<td>[row[field]]</td>"
+		html += "</tr>"
+	html += "</table></body></html>"
+	src << browse(html, "window=gc_deletion_costs;size=1000x600")
 
 var/global/gc_helper_on = FALSE
 
