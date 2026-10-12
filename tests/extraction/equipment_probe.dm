@@ -54,6 +54,34 @@ var/equipment_completed = FALSE
 #endif
 #endif
 
+/proc/equipment_workshop_material_probe(datum/extraction_equipment_codec/C)
+	var/obj/item/stack/material/glass/glass = new(null)
+	glass.amount = 6
+	var/list/glass_record = C.encode(glass)
+	equipment_assert(glass_record && C.validate(glass_record), "paid workshop glass is supported")
+	var/obj/item/stack/material/glass/restored_glass = C.decode(glass_record, locate(1,1,1))
+	equipment_assert(restored_glass && restored_glass.amount == 6 && restored_glass.extraction_item_id == glass.extraction_item_id, "glass restoration preserves amount and identity")
+	var/obj/item/stack/cable_coil/cable = new(null)
+	cable.amount = 10
+	cable.cable_color = "red"
+	var/list/cable_record = C.encode(cable)
+	equipment_assert(cable_record && C.validate(cable_record), "paid workshop cable is supported")
+	var/obj/item/stack/cable_coil/restored_cable = C.decode(cable_record, locate(1,1,1))
+	var/obj/item/stack/cable_coil/second_cable = C.decode(cable_record, locate(1,1,1))
+	equipment_assert(restored_cable && second_cable && restored_cable != second_cable && restored_cable.amount == 10 && second_cable.amount == 10 && restored_cable.cable_color == "red" && restored_cable.extraction_item_id == cable.extraction_item_id, "cable restores isolated amount, color and identity without constructor merging")
+	cable_record["nodes"][1]["scalars"]["amount"] = 51
+	equipment_assert(!C.validate(cable_record), "oversized cable stock rejects before construction")
+	cable_record["nodes"][1]["scalars"]["amount"] = 0
+	equipment_assert(!C.validate(cable_record), "empty cable stock rejects before construction")
+	cable_record["nodes"][1]["scalars"]["amount"] = 10
+	cable_record["nodes"][1]["scalars"]["cable_color"] = "invalid"
+	equipment_assert(!C.validate(cable_record), "unknown cable color rejects before construction")
+	qdel(glass)
+	qdel(restored_glass)
+	qdel(cable)
+	qdel(restored_cable)
+	qdel(second_cable)
+
 /proc/run_equipment_probe()
 	try
 		GLOB.all_observable_events = list()
@@ -68,6 +96,7 @@ var/equipment_completed = FALSE
 #else
 		run_economy_probe()
 		var/datum/extraction_equipment_codec/C = new
+		equipment_workshop_material_probe(C)
 		var/obj/item/weapon/gun/projectile/pistol/m9beretta/G = new(locate(1,1,1))
 		G.health = 123
 		G.ammo_magazine = new /obj/item/ammo_magazine/m9beretta(G)

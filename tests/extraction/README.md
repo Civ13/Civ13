@@ -302,6 +302,12 @@ The dealer's 25-salvage purchase is separate from the required player constructi
 feature. Construction from actual components, reachable workshop power and
 progression prerequisites, and durable interrupted-build recovery remain pending.
 Dealer purchase evidence must not be reported as component construction evidence.
+The construction preparation adds paid level-two glass (six sheets, 20 game
+credits) and cable (ten units, 30 game credits) offers. Equipment snapshots retain
+their original identities and bounded quantities, including cable color. Native
+assertions cover restoration without constructor merging and rejection of empty,
+oversized or invalid-color cable graphs; these additions are unrun until a slot
+is granted. Loose wheels and durable build reservations remain pending.
 
 The mode fixture also assembles a real car and checks the internal physical
 transfer helper: moving/stale vehicles, unexpected footprint/nested cargo and occupied bays

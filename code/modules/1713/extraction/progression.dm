@@ -2,6 +2,8 @@
 // both payment and product; external bot balances are never read or written.
 /obj/map_metadata/extraction_survival/proc/supply_catalog()
 	var/list/offers = basic_supply_catalog()
+	offers["Glass sheets"] = list("type" = /obj/item/stack/material/glass, "amount" = 6, "price" = 20, "level" = 2)
+	offers["Workshop cable"] = list("type" = /obj/item/stack/cable_coil, "amount" = 10, "price" = 30, "level" = 2)
 	offers["Carved planks"] = list("type" = /obj/item/stack/material/woodplank, "amount" = 10, "price" = 30, "level" = 1)
 	offers["Copper sheets"] = list("type" = /obj/item/stack/material/copper, "amount" = 10, "price" = 40, "level" = 2)
 	offers["Gold research stock"] = list("type" = /obj/item/stack/material/gold, "amount" = 5, "price" = 150, "level" = 3)
@@ -57,7 +59,7 @@
 	S.transitioning = TRUE
 	var/path = offer["type"]
 	var/obj/item/product = new path(null, offer["material"])
-	if (istype(product, /obj/item/stack/material)) product:amount = offer["amount"]
+	if (istype(product, /obj/item/stack)) product:amount = offer["amount"]
 	var/list/entry = record_item(product)
 	if (!entry || !codec.validate(entry["equipment"]))
 		if (product) qdel(product)

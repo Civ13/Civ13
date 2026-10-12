@@ -9,6 +9,7 @@
 	for (var/i in 1 to 3) equipment_assert(M.exchange_salvage(H), "actual uninsured workshop part exchanges once through native snapshot")
 	equipment_assert(M.game_credits(S) == 30 && M.home_roots(S).len == 4 && !M.exchange_salvage(H), "three original payments retire with no replay or bot balance")
 	equipment_assert(!M.buy_supplies(H, "Gasoline jerrycan"), "house level gates advanced supply purchase before payment")
+	equipment_assert(!M.buy_supplies(H, "Glass sheets") && !M.buy_supplies(H, "Workshop cable") && M.game_credits(S) == 30, "workshop materials retain house progression gate without debit")
 	M.test_supply_confirmation = FALSE
 	equipment_assert(!M.buy_supplies(H, "Wooden handle") && M.game_credits(S) == 30 && M.home_roots(S).len == 4, "declined supply confirmation exposes no paid product")
 	M.test_supply_confirmation = "move"
@@ -40,7 +41,7 @@
 		var/list/offer = offers[label]
 		var/path = offer["type"]
 		var/obj/item/I = new path(null, offer["material"])
-		if (istype(I, /obj/item/stack/material)) I:amount = offer["amount"]
+		if (istype(I, /obj/item/stack)) I:amount = offer["amount"]
 		var/list/graph = M.codec.encode(I)
 		equipment_assert(graph && M.codec.validate(graph), "fixed offer [label] has a supported actual equipment graph")
 		var/obj/item/restored = M.codec.decode(graph, locate(3,3,1))

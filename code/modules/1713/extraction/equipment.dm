@@ -31,6 +31,7 @@ var/global/extraction_identity_sequence = 0
 	if (!ispath(path, /obj/item)) return FALSE
 	if (ispath(path, /obj/item/weapon/gun/projectile/custom)) return FALSE
 	if (ispath(path, /obj/item/weapon/key/extraction_room)) return TRUE
+	if (path in list(/obj/item/stack/material/glass, /obj/item/stack/cable_coil)) return TRUE
 	if (path in list(/obj/item/stack/material/copper, /obj/item/stack/material/gold)) return TRUE
 	if (path in list(/obj/item/stack/material/wood, /obj/item/stack/material/woodplank, /obj/item/stack/material/iron, /obj/item/stack/material/steel, /obj/item/stack/material/cloth, /obj/item/stack/material/rope, /obj/item/stack/material/leather, /obj/item/stack/material/kevlar, /obj/item/stack/material/cotton, /obj/item/stack/material/flax, /obj/item/stack/material/rettedfabric)) return TRUE
 	if (path in list(/obj/item/weapon/reagent_containers/glass/barrel/jerrycan, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel)) return TRUE
@@ -44,7 +45,8 @@ var/global/extraction_identity_sequence = 0
 	if (ispath(path, /obj/item/weapon/material)) fields |= list("crafting_quality", "tool_head_material", "tool_handle_material", "tool_head_quality", "tool_handle_quality", "tool_head_condition", "tool_handle_condition")
 	if (ispath(path, /obj/item/blackpowder_part)) fields |= list("quality", "material_name")
 	if (ispath(path, /obj/item/weapon/key/extraction_room)) fields |= "code"
-	if (ispath(path, /obj/item/stack/material)) fields |= "amount"
+	if (ispath(path, /obj/item/stack)) fields |= "amount"
+	if (path == /obj/item/stack/cable_coil) fields |= "cable_color"
 	return fields
 
 /datum/extraction_equipment_codec/proc/reference_fields(path)
@@ -180,9 +182,11 @@ var/global/extraction_identity_sequence = 0
 		for (var/key in scalars)
 			var/value = scalars[key]
 			if (!(key in allowed) || (!isnull(value) && !isnum(value) && !istext(value)) || (istext(value) && length(value) > 2048)) return FALSE
-			var/list/text_fields = list("name", "desc", "color", "icon_state", "item_state", "serial", "btype", "material_key", "tool_head_material", "tool_handle_material", "material_name", "attachment_type")
+			var/list/text_fields = list("name", "desc", "color", "icon_state", "item_state", "serial", "btype", "material_key", "tool_head_material", "tool_handle_material", "material_name", "attachment_type", "cable_color")
 			if (!isnull(value) && (key in text_fields ? !istext(value) : !isnum(value))) return FALSE
 		if (ispath(path, /obj/item/weapon/material) && !get_material_by_name(scalars["material_key"])) return FALSE
+		if (path == /obj/item/stack/cable_coil)
+			if (!isnum(scalars["amount"]) || round(scalars["amount"]) != scalars["amount"] || scalars["amount"] < 1 || scalars["amount"] > 50 || !(scalars["cable_color"] in cable_colors)) return FALSE
 		if (ispath(path, /obj/item/stack/material))
 			var/obj/item/stack/material/prototype = path
 			if (scalars["material_key"] != initial(prototype.default_type) || !get_material_by_name(scalars["material_key"]) || !isnum(scalars["amount"]) || round(scalars["amount"]) != scalars["amount"] || scalars["amount"] < 1 || scalars["amount"] > initial(prototype.max_amount)) return FALSE
@@ -285,7 +289,7 @@ var/global/extraction_identity_sequence = 0
 		var/path = text2path(node["type"])
 		// Stack constructors merge at their initial location. Restore isolated
 		// quantities before placement so a second graph cannot merge or vanish.
-		var/obj/item/I = new path(ispath(path, /obj/item/stack/material) ? null : destination)
+		var/obj/item/I = new path(ispath(path, /obj/item/stack) ? null : destination)
 		created += I
 		// Native constructors may make scopes and bullets. Replace, don't add to
 		// those defaults, or a reload would silently manufacture ammunition.
