@@ -41,6 +41,9 @@ def run(root, output, byond, variant, repetitions, batches, negative=None):
     body = (root/'code/processes/garbage.dm').read_bytes()
     if variant == 'baseline':
         body = subprocess.check_output(['git', 'show', BASELINE+':code/processes/garbage.dm'], cwd=root)
+    # Copied collector sources still resolve sibling helpers in the checkout.
+    body = re.sub(rb'(#include\s+")([^"/\\]+\.dm)(")',
+                  lambda match: match[1] + (root/'code/processes'/match[2].decode()).as_posix().encode() + match[3], body)
     expected = None
     if negative == 'budget-return':
         source = source.replace('#include \"' + root.as_posix() + '/code/processes/___defines.dm\"', '#include \"' + root.as_posix() + '/code/processes/___defines.dm\"\n#undef PROCESS_TICK_CHECK\n#define PROCESS_TICK_CHECK')
