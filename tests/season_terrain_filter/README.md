@@ -54,8 +54,8 @@ none. Existing unfiltered calls retain their predicate behavior.
 Each cycle replaces at most 256 turfs (4,096 total), even in largest mode.
 Stored object/mob identities and retargeted locations must survive. Process CPU
 seconds measure the whole daemon and include startup and assertions; per-mode
-paired results report wall time only. Source guards also normalize added arguments
-and compare the complete season procedure to its immutable baseline. Without
+paired results report wall time only. Source guards check all 27 filtered terrain
+passes; tests/season_transition separately compares full seasonal behavior. Without
 --output the runner chooses a fresh temporary evidence path.
 
 The persistence-beta grid initially has 339,704 forest-family turfs. Within

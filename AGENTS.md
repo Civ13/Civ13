@@ -587,3 +587,12 @@ never cache them across transitions. Filtered predicates must be pure because
 excluded types skip predicate calls. tests/season_terrain_filter compares ordered
 native selections and bounded allocations at 660x550 synthetic geometry; inert
 entities and isolated wall times are not full-game or connected-player evidence.
+
+<!-- 2026-10-12: serialized seasonal terrain -->
+Base seasons serialize discovery, terrain mutation and delayed phases with
+season_busy/season_epoch; pending natural requests remain distinct. Delayed
+callbacks retain scalar phase/epoch values and stop when metadata is replaced.
+Discovery yields at 4096 candidates, mutation at 256, and both at 20% tick usage.
+Season worker fields are explicitly excluded by persistence_runtime_var because
+custom saves enumerate tmp fields. Asia flooding uses season_transition_complete
+inside the same lock. Isolated tests do not establish full-server latency.

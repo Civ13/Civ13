@@ -14,6 +14,9 @@ var/replacements = 0
 /turf/dirt/jungle
 /obj/inert
 /mob/inert
+/obj/map_metadata
+/obj/map_metadata/proc/season_work_pause(epoch, work, discovery)
+	return TRUE
 /proc/even_column(turf/T)
 	return !(T.x % 2)
 /proc/selected(list/input, type)
@@ -118,6 +121,6 @@ var/replacements = 0
 					else
 						for(var/turf/other/T in work)
 							visits++
-				samples += list(list("mode"=mode, "pair"=pair, "candidate"=candidate, "calls"=4, "slots"=slots, "peak_slots"=peak_slots, "visits"=visits, "elapsed_ds"=world.timeofday-start))
+				samples += list(list("mode"=mode, "pair"=pair, "candidate"=candidate, "calls"=4, "slots"=slots, "peak_slots"=peak_slots, "visits"=visits, "elapsed_ds"=(world.timeofday-start+864000)%864000))
 	text2file(json_encode(list("cycles"=16, "replacements"=replacements, "distractors"=owned.len, "comparisons"=comparisons, "parity_failures"=parity_failures, "bound_failures"=bound_failures, "baseline_slots"=baseline_slots, "candidate_slots"=candidate_slots, "samples"=samples)), "result.json")
 	del(world)
