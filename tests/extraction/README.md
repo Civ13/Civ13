@@ -228,6 +228,51 @@ pending journals, stale inventory and access-gate release.
 
 ## Required safe-house concept video
 
+### Connected acceptance preparation
+
+Use two distinct authenticated BYOND accounts, labeled A and B in the recording.
+Do not capture passwords, login tokens or private reference material. Admission
+uses actual ckeys and rejects guests; two guest windows cannot substitute for
+account isolation. Availability of both signed-in sessions remains unverified.
+
+The existing disposable launcher is `run-playable.ps1`. Prepare the exact build,
+clean source inventory and passed local regression record before requesting both
+the native slot and exclusive screen lease. After those grants, use the pinned
+absolute BYOND bin with `-Visual -Port 18342 -TimeoutSeconds 600`; use a separately
+prepared `-City` run for the Modern city. The launcher owns only its daemon,
+retains evidence and temporary storage, disables outbound game exports, and
+checks runtime logs. Client windows and recording processes require separate
+ownership and cleanup. Engine authentication is outside the outbound adapter.
+
+| Route | Visible result to capture |
+| --- | --- |
+| Privacy and hub | A and B enter distinct rooms; foreign entry fails; empty-handed public hub visits return each account to its own room; carried gear blocks hub travel |
+| Storage and reconnect | Deposit recognizable original equipment, disconnect A, reconnect A and compare contents; B cannot inspect A's private stash |
+| Upgrade and idle release | Label any injected workshop parts as setup; show quoted cost, native payment and room level; show bounded idle release and preserved items on admission |
+| Group and paid vehicle return | Show driver/passenger consent, real seats, separate personal returns and owner-only car/boot return; show an unfunded rider or changed quote refusing settlement |
+| NPC and conditional exits | Show actual NPC loot/extraction and receipt outcome; show faction, opening time, backpack, secured-room key and vehicle-only gates using real actors |
+| Insurance and components | Show paid original gun/optic, actual detach and death/theft route; recovered original components stay excluded from mail; reconnect does not advance eligibility; an additional complete round is required |
+| Crafting and city parity | Show native workbench payment/completion and identifiable output; repeat privacy, stash and return routes in the Modern city, including its real NPC presence |
+| Same-world restart | Stop only the owned disposable daemon, restart identical saved artifacts over the same retained account directory, then compare both accounts' items and upgrades |
+
+Restart is a launcher gap: a second ordinary invocation creates a fresh run
+directory. Prepare a verified same-directory restart path before filming that
+row; a second fresh world or the three-process journal fixture cannot count as
+connected restart acceptance. No active raid resumption is promised.
+
+Computer-use preparation verified that `@oai/sky` imports through `node_repl`,
+and the pinned `dreamseeker.exe` exists. No window inventory, screenshot or input
+was performed. Screen access and remaining capture budget are unverified until
+the exclusive lease. Bounded tool discovery found ffmpeg and ffprobe; discovery
+does not prove capture or editing. Reconcile the independently owned capture
+tools before use rather than replacing them with parallel infrastructure.
+
+Keep a per-route result and source commit beside the genuine raw footage.
+Edit with readable captions, retain real completion frames, label setup supplies
+and accelerated waits, and remove credential-bearing frames. Review the exported
+video for legibility and behavior separately from bundle metadata validation.
+An unshown route remains pending; failed runtime diagnostics invalidate its run.
+
 The mode fixture also assembles a real car and checks the internal physical
 transfer helper: moving/stale vehicles, unexpected footprint/nested cargo and occupied bays
 are rejected before relocation; original parts, fuel, wall condition and
