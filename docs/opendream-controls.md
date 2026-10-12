@@ -16,6 +16,7 @@ Run with a verified Python 3.10+ interpreter:
 ```
 <python> scripts/opendream/control.py --profile <absolute-profile.json> start
 <python> scripts/opendream/control.py --profile <absolute-profile.json> status
+<python> scripts/opendream/control.py --profile <absolute-profile.json> topic-status
 <python> scripts/opendream/control.py --profile <absolute-profile.json> restart
 <python> scripts/opendream/control.py --profile <absolute-profile.json> mapswap NOMADS
 <python> scripts/opendream/control.py --profile <absolute-profile.json> stop
@@ -23,6 +24,8 @@ Run with a verified Python 3.10+ interpreter:
 
 Each CLI call prints one JSON response and exits nonzero on rejection. Status
 reports `running`, `server_pid`, `game_port`, `topic_port`, and `runtime_dir`.
+`topic-status` performs a bounded read-only standard BYOND TCP status request on
+loopback using the separate Topic port. It requires a complete Civ13 JSON reply.
 Process existence is not gameplay readiness. Check the status HTTP endpoint and
 the DM Topic response separately before admitting clients. The supervisor owns
 its child process only and does not discover or kill other servers. It does not

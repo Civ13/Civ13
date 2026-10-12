@@ -4,6 +4,6 @@
   "game_port": 18452,
   "topic_port": 18462,
   "server_command": ["D:/GitHub/Civ13/data/opendream-trial/server/OpenDreamServer_win-x64/Robust.Server.exe", "--config-file", "D:/GitHub/Civ13/data/local-opendream/Nomads/server.toml"],
-  "compiler": "D:/GitHub/Civ13/data/opendream-trial/compiler/DMCompiler.exe",
+  "compiler": "D:/GitHub/Civ13/data/opendream-trial/compiler/DMCompiler_win-x64/DMCompiler.exe",
   "maps": {"NOMADS": "maps/nomads/nomads.dmm"}
 }

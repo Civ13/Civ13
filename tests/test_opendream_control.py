@@ -3,9 +3,12 @@ import importlib.util
 import json
 from pathlib import Path
 import subprocess
+import socket
+import struct
 import sys
 import tempfile
 import time
+import threading
 import unittest
 from unittest.mock import patch
 
@@ -120,6 +123,41 @@ class Controls(unittest.TestCase):
         target.write_text(" " * (control.MAX_REQUEST + 1))
         with self.assertRaises(ValueError):
             control.read_json(target)
+
+    def topic_server(self, response):
+        listener = socket.socket()
+        listener.bind(("127.0.0.1", 0))
+        listener.listen(1)
+        port = listener.getsockname()[1]
+        observed = []
+        def serve():
+            try:
+                with listener.accept()[0] as connection:
+                    observed.append(connection.recv(4096))
+                    # Split all headers/body bytes to verify exact reads.
+                    for byte in response:
+                        connection.sendall(bytes([byte]))
+            finally:
+                listener.close()
+        thread = threading.Thread(target=serve)
+        thread.start()
+        return port, thread, observed
+
+    def test_topic_wire_protocol_and_fragmented_reply(self):
+        payload = b'\x06{"players":0,"map_name":"test"}\0'
+        port, thread, observed = self.topic_server(b'\x00\x83' + struct.pack('>H', len(payload)) + payload)
+        self.assertEqual(0, control.topic_status(port)["players"])
+        thread.join(timeout=5)
+        packet = observed[0]
+        self.assertEqual(b'\x00\x83', packet[:2])
+        self.assertEqual(len(packet) - 4, struct.unpack('>H', packet[2:4])[0])
+        self.assertEqual(b'?status=1&format=json\0', packet[9:])
+
+    def test_topic_truncated_reply_rejected(self):
+        port, thread, _ = self.topic_server(b'\x00\x83\x00\x05\x06x')
+        with self.assertRaises(ValueError):
+            control.topic_status(port)
+        thread.join(timeout=5)
 
     def test_cli_and_game_spool(self):
         daemon = subprocess.Popen([sys.executable, str(SCRIPT), "--profile", str(self.profile_path), "supervise"])

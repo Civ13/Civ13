@@ -4,12 +4,42 @@ import json
 import os
 from pathlib import Path
 import re
+import socket
+import struct
 import subprocess
 import sys
 import time
 import uuid
 
 MAX_REQUEST = 4096
+
+
+def topic_status(port):
+    """Read-only standard BYOND Topic packet to the explicit loopback Topic port."""
+    body = b"\0" * 5 + b"?status=1&format=json\0"
+    with socket.create_connection(("127.0.0.1", port), timeout=5) as connection:
+        connection.sendall(b"\x00\x83" + struct.pack(">H", len(body)) + body)
+        def receive(size):
+            data = b""
+            while len(data) < size:
+                chunk = connection.recv(size - len(data))
+                if not chunk:
+                    raise ValueError("Incomplete Topic response")
+                data += chunk
+            return data
+        header = receive(4)
+        if header[:2] != b"\x00\x83":
+            raise ValueError("Unexpected Topic response header")
+        length = struct.unpack(">H", header[2:])[0]
+        if not 2 <= length <= 32768:
+            raise ValueError("Invalid Topic response length")
+        response = receive(length)
+        if response[0] != 6 or response[-1] != 0:
+            raise ValueError("Expected a terminated string Topic status response")
+        result = json.loads(response[1:-1].decode("ascii"))
+        if not isinstance(result, dict) or "players" not in result:
+            raise ValueError("Not a Civ13 status response")
+        return result
 
 
 def atomic_json(path, value):
@@ -191,11 +221,15 @@ def request(supervisor, action, map_id=None, timeout=200):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", required=True)
-    parser.add_argument("action", choices=["start", "stop", "restart", "status", "mapswap", "supervise"])
+    parser.add_argument("action", choices=["start", "stop", "restart", "status", "topic-status", "mapswap", "supervise"])
     parser.add_argument("map", nargs="?")
     args = parser.parse_args()
     try:
         supervisor = Supervisor(args.profile)
+        if args.action == "topic-status":
+            print(json.dumps({"ok": True, "topic_port": supervisor.profile["topic_port"],
+                              "status": topic_status(supervisor.profile["topic_port"])}))
+            return 0
         if args.action == "supervise":
             supervisor.run()
             return 0
