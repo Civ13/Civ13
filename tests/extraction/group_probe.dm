@@ -100,6 +100,9 @@
 		H.m_intent = "stealth"
 		M.test_owners[H] = "grouprider[i]"
 		equipment_assert(M.admit(H), "car group member admitted")
+		var/list/funded = H.extraction_session.copy_profile()
+		funded["credits"] = i == 2 ? 5 : 10
+		equipment_assert(H.extraction_session.commit(funded), "car fee fixture seeds bounded participant wallets")
 		bodies += H
 	var/mob/living/human/driver = bodies[1]
 	var/mob/living/human/passenger = bodies[2]
@@ -161,13 +164,21 @@
 		if (!(F in parked.tiles) && !F.contents.len) exit_turf = F
 	equipment_assert(exit_turf, "group vehicle exit stays outside car footprint")
 	var/obj/effect/extraction_exit/exit = new(exit_turf)
+	exit.extraction_fee = 6
 	driver.forceMove(get_turf(seat))
 	passenger.forceMove(get_turf(passenger_seat))
 	equipment_assert(seat.buckle_mob(driver) && passenger_seat.buckle_mob(passenger), "original riders reboard actual parked seats")
+	equipment_assert(!M.extract_vehicle(driver, exit, A) && driver.buckled == seat && passenger.buckled == passenger_seat && S.profile["credits"] == 10 && passenger.extraction_session.profile["credits"] == 5, "unfunded passenger blocks all rider fees and car return before consent")
+	exit.extraction_fee = 5
 	M.test_vehicle_return_confirmation = FALSE
 	equipment_assert(!M.extract_vehicle(driver, exit, A) && driver.buckled == seat && passenger.buckled == passenger_seat && S.profile["state"] == "raid", "declined rider extraction preserves every occupied seat and account")
 	M.test_vehicle_return_confirmation = "stale"
 	equipment_assert(!M.extract_vehicle(driver, exit, A) && driver.buckled == seat && passenger.buckled == passenger_seat && S.profile["state"] == "raid", "changed carried condition during rider confirmation invalidates consent before unloading or credit")
+	M.test_fee_exit = exit
+	M.test_vehicle_return_confirmation = "fee"
+	equipment_assert(!M.extract_vehicle(driver, exit, A) && driver.buckled == seat && passenger.buckled == passenger_seat && S.profile["credits"] == 10 && passenger.extraction_session.profile["credits"] == 5, "changed exit fee invalidates rider consent without debit or unloading")
+	exit.extraction_fee = 5
+	M.test_fee_exit = null
 	M.test_vehicle_return_confirmation = TRUE
 	M.test_wait = "cancel"
 	equipment_assert(!M.extract_vehicle(driver, exit, A) && !driver.buckled && !passenger.buckled && S.profile["state"] == "raid" && passenger.extraction_session.profile["state"] == "raid" && M.raid_vehicles[A], "cancelled consenting rider extraction unboards without crediting any account")
@@ -186,6 +197,7 @@
 	var/returned = M.extract_vehicle(driver, exit, A)
 	if (!returned) world.log << "RIDER ERROR: [M.last_vehicle_return_error]; journal=[M.accounts.group_journal.last_error]"
 	equipment_assert(returned, "all consenting passenger accounts commit before actual car returns")
+	equipment_assert(S.profile["credits"] == 5 && passenger.extraction_session.profile["credits"] == 0, "shared passenger receipt charges each quoted exit fee exactly once")
 	equipment_assert(S.profile["state"] == "home" && passenger.extraction_session.profile["state"] == "home" && S.profile["garage"].len == 1 && S.garage_vehicle == A && driver.z == 2 && passenger.z == 2 && get_turf(driver) != get_turf(passenger) && loot.loc == passenger && loot.extraction_found_in_raid && !M.raid_vehicles[A], "each rider returns to their own house with original loot and only driver receives original car")
 	equipment_assert(insured_gun.loc == driver && (insured_gun.extraction_insurance_token in S.profile["insurance_recovered"]), "passenger receipt records actual paid insured identity recovery")
 	equipment_assert(!M.extract_vehicle(driver, exit, A), "passenger vehicle credit cannot replay")

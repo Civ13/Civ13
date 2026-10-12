@@ -17,6 +17,7 @@
 	var/test_car_confirmation = TRUE
 	var/test_ride_confirmation = TRUE
 	var/test_vehicle_return_confirmation = TRUE
+	var/obj/effect/extraction_exit/test_fee_exit
 	var/test_supply_confirmation = TRUE
 	var/test_upgrade_confirmation = TRUE
 	choose_upgrade_parts(datum/extraction_session/S)
@@ -39,7 +40,10 @@
 			H.forceMove(locate(H.extraction_session.house.x + 4, H.extraction_session.house.y + 4, 2))
 			return TRUE
 		return test_supply_confirmation
-	confirm_vehicle_return(mob/living/human/H, car_owner)
+	confirm_vehicle_return(mob/living/human/H, car_owner, fee = 0)
+		if (test_vehicle_return_confirmation == "fee")
+			test_fee_exit.extraction_fee++
+			return TRUE
 		if (test_vehicle_return_confirmation == "stale")
 			for (var/obj/item/weapon/gun/G in H.contents) G.health--
 			return TRUE

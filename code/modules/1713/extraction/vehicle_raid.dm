@@ -171,8 +171,9 @@
 	return TRUE
 
 /obj/map_metadata/extraction_survival/proc/vehicle_rider_eligible(mob/living/human/H, obj/effect/extraction_exit/E)
-	if (!owned(H) || H.stat != CONSCIOUS || H.z != 1 || E.z != 1 || get_dist(H, E) > 4 || !H.extraction_session.house) return FALSE
+	if (!owned(H) || H.stat != CONSCIOUS || H.z != 1 || E.z != 1 || !E.available() || get_dist(H, E) > 4 || !H.extraction_session.house) return FALSE
 	var/datum/extraction_session/S = H.extraction_session
+	if (!isnum(E.extraction_fee) || E.extraction_fee < 0 || E.extraction_fee > 1000000 || round(E.extraction_fee) != E.extraction_fee || S.profile["credits"] < E.extraction_fee) return FALSE
 	return S.profile["state"] == "raid" && (E.allowed_faction == "all" || E.allowed_faction == S.profile["raid_faction"])
 
 /obj/map_metadata/extraction_survival/proc/vehicle_rider_roots(mob/living/human/H, obj/structure/vehicleparts/axis/A)
@@ -180,13 +181,10 @@
 	if (A.driver == H && istype(H.buckled, /obj/structure/bed/chair/drivers/car) && H.buckled:axis == A && H.buckled:wheel == A.wheel && A.wheel.loc == H) roots -= A.wheel
 	return roots
 
-/obj/map_metadata/extraction_survival/proc/confirm_vehicle_return(mob/living/human/H, car_owner)
-	return WWinput(H, "Leave your car seat and extract your carried equipment to your own house? The car and boot cargo return to [car_owner]'s garage only after every rider account is committed.", "Passenger extraction", "Decline", list("Extract", "Decline")) == "Extract"
+/obj/map_metadata/extraction_survival/proc/confirm_vehicle_return(mob/living/human/H, car_owner, fee = 0)
+	return WWinput(H, "Leave your car seat, pay [fee] game credits and extract your carried equipment to your own house? The car and boot cargo return to [car_owner]'s garage only after every rider account is committed.", "Passenger extraction", "Decline", list("Extract", "Decline")) == "Extract"
 
 /obj/map_metadata/extraction_survival/proc/extract_vehicle_riders(mob/living/human/driver, obj/effect/extraction_exit/E, obj/structure/vehicleparts/axis/A)
-	// The shared conservation ledger has no exit-fee recipient yet. Fail closed
-	// for paid party exits rather than destroy currency outside that ledger.
-	if (E.extraction_fee) return FALSE
 	last_vehicle_return_error = "Rider preflight"
 	if (!E.eligible(driver) || E.forbid_backpack || istype(E, /obj/effect/extraction_exit/locked_room) || A.driver != driver || !raid_vehicles[A] || get_dist(get_turf(A), E) > 4 || A.moving || A.currentspeed || A.movement_processes || A.transforming_vehicle || !A.engine || A.engine.on) return FALSE
 	var/list/riders = list()
@@ -204,11 +202,12 @@
 		profiles[H] = md5(json_encode(H.extraction_session.profile))
 		loadouts[H] = loot
 	if (!(driver in riders)) return FALSE
+	var/quoted_fee = E.extraction_fee
 	for (var/mob/living/human/H in riders)
-		if (!confirm_vehicle_return(H, driver.extraction_session.owner)) return FALSE
+		if (!confirm_vehicle_return(H, driver.extraction_session.owner, quoted_fee)) return FALSE
 	// Prompts can yield. Consent remains bound to the same accounts, seats and
 	// carried graphs before changing any occupancy or ownership.
-	if (!A || !A.engine || A.driver != driver || A.moving || A.currentspeed || A.movement_processes || A.transforming_vehicle || A.engine.on || !raid_vehicles[A]) return FALSE
+	if (E.extraction_fee != quoted_fee || !A || !A.engine || A.driver != driver || A.moving || A.currentspeed || A.movement_processes || A.transforming_vehicle || A.engine.on || !raid_vehicles[A]) return FALSE
 	for (var/mob/living/human/H in riders)
 		if (!vehicle_rider_eligible(H, E) || H.extraction_session.transitioning || H.buckled != seats[H] || seats[H]:buckled_mob != H || profiles[H] != md5(json_encode(H.extraction_session.profile)) || json_encode(records(vehicle_rider_roots(H, A))) != json_encode(loadouts[H])) return FALSE
 	for (var/mob/living/human/H in riders)
@@ -227,20 +226,20 @@
 	var/success = wait_for_extraction(driver, E)
 	last_vehicle_return_error = "Changed car or rider after wait"
 	var/list/parts = list()
-	if (success && raid_vehicles[A] && get_dist(get_turf(A), E) <= 4 && json_encode(vehicle_codec.encode(A)) == json_encode(vehicle) && T.current() && T.destination_tiles(garage_anchor(car_owner)))
+	if (success && E.extraction_fee == quoted_fee && raid_vehicles[A] && get_dist(get_turf(A), E) <= 4 && json_encode(vehicle_codec.encode(A)) == json_encode(vehicle) && T.current() && T.destination_tiles(garage_anchor(car_owner)))
 		for (var/mob/living/human/H in riders)
 			var/datum/extraction_session/S = H.extraction_session
 			if (!vehicle_rider_eligible(H, E) || H.buckled || profiles[H] != md5(json_encode(S.profile)) || json_encode(records(player_roots(H))) != json_encode(loadouts[H]))
 				success = FALSE
 				break
 			var/list/record = H == driver ? vehicle : null
-			var/list/after = S.plan_vehicle_return(loadouts[H], record)
+			var/list/after = S.plan_vehicle_return(loadouts[H], record, quoted_fee)
 			if (!after || !accounts.store.recovery_ownership_clear(S.owner, after))
 				last_vehicle_return_error = "Invalid or conflicting rider projection: [S.owner]"
 				success = FALSE
 				break
 			after["revision"] = S.profile["revision"] + 1
-			parts += list(list("operation" = "vehicle_extract", "owner" = S.owner, "before" = S.copy_profile(), "after" = after, "loot" = loadouts[H], "vehicle" = record))
+			parts += list(list("operation" = "vehicle_extract", "owner" = S.owner, "before" = S.copy_profile(), "after" = after, "loot" = loadouts[H], "vehicle" = record, "fee" = quoted_fee))
 	else success = FALSE
 	var/datum/extraction_settlement/groups/J = accounts.group_journal
 	if (!success || !J.submit(J.profile["sequence"] + 1, parts))

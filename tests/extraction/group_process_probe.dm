@@ -126,6 +126,9 @@
 				var/list/entry = list("id" = G.extraction_item_id, "equipment" = graph)
 				var/list/car = owner == "returnone" ? vehicle : null
 				equipment_assert(A.checkpoint_home(list(entry), car ? list(car) : list()), "return fixture checkpoints original issued ownership")
+				var/list/funded = A.copy_profile()
+				funded["credits"] = 10
+				equipment_assert(A.commit(funded), "passenger restart fixture seeds bounded fee wallet")
 				var/list/raid = A.plan_raid(list(G.extraction_item_id), "PMC")
 				if (car) raid = A.plan_group_vehicle(raid, car["id"], md5(json_encode(car)))
 				equipment_assert(A.commit(raid["candidate"]), "return fixture debits issued car and loadout before credit")
@@ -137,10 +140,11 @@
 				entry["equipment"] = C.encode(G)
 				var/list/loot = list(entry)
 				var/list/before = A.copy_profile()
-				var/list/after = A.plan_vehicle_return(loot, car)
+				var/list/after = A.plan_vehicle_return(loot, car, 3)
 				equipment_assert(islist(after), "return fixture plans credit only after issued ownership was debited")
+				equipment_assert(after["credits"] == 7 && A.profile["credits"] == 10, "paid passenger projection reserves exact fee without premature debit")
 				after["revision"] = before["revision"] + 1
-				parts += list(list("operation" = "vehicle_extract", "owner" = owner, "before" = before, "after" = after, "loot" = loot, "vehicle" = car))
+				parts += list(list("operation" = "vehicle_extract", "owner" = owner, "before" = before, "after" = after, "loot" = loot, "vehicle" = car, "fee" = 3))
 				qdel(G)
 				A.close()
 			var/datum/extraction_settlement/groups/J = S.group_journal
@@ -173,6 +177,9 @@
 			var/list/forged = json_decode(json_encode(receipt["parts"]))
 			forged[2]["after"]["stash"] = list()
 			equipment_assert(!J.valid_participants(forged), "forged passenger credit rejected by return planning authority")
+			forged = json_decode(json_encode(receipt["parts"]))
+			forged[2]["after"]["credits"] = 10
+			equipment_assert(!J.valid_participants(forged), "forged passenger fee refund rejected by return planning authority")
 			var/list/malformed = json_decode(json_encode(receipt["parts"]))
 			malformed[1]["vehicle"] = 0
 			equipment_assert(!J.valid_participants(malformed), "malformed passenger car cannot become an ordinary loot-only receipt")

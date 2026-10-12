@@ -224,10 +224,12 @@
 	candidate["vehicle_issued"] = list("id" = vehicle_id, "sequence" = plan["sequence"], "digest" = vehicle_digest)
 	return plan
 
-/datum/extraction_session/proc/plan_vehicle_return(list/loot, list/vehicle)
+/datum/extraction_session/proc/plan_vehicle_return(list/loot, list/vehicle, fee = 0)
 	if (profile["state"] != "raid" || !valid_entries(loot, 16)) return null
+	if (!isnum(fee) || fee < 0 || fee > 1000000 || round(fee) != fee || profile["credits"] < fee) return null
 	if (!isnull(vehicle) && !islist(vehicle)) return null
 	var/list/candidate = copy_profile()
+	candidate["credits"] -= fee
 	var/list/stash = candidate["stash"]
 	for (var/list/entry in loot) stash += list(entry)
 	if (!valid_entries(stash, capacity())) return null

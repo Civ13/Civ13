@@ -253,7 +253,8 @@
 			V.profile = before
 			V.service = service
 			if (!isnull(part["vehicle"])) cars++
-			var/list/expected = V.plan_vehicle_return(part["loot"], part["vehicle"])
+			var/fee = isnull(part["fee"]) ? 0 : part["fee"]
+			var/list/expected = V.plan_vehicle_return(part["loot"], part["vehicle"], fee)
 			if (!expected) return FALSE
 			expected["revision"] = before["revision"] + 1
 			if (json_encode(expected) != json_encode(after)) return FALSE

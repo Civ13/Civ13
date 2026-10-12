@@ -43,6 +43,7 @@ regressions establish the authoritative operations, not graphical acceptance.
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control premium
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control car
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control return
+& $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control fee
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe vehicles
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe vehicles --vehicle-loss-negative-control
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe mode --vehicle-purchase-negative-control
@@ -110,7 +111,11 @@ Manhole and secured-room exits retain immediate access subject to their actual
 backpack/key/room checks. These timings are implementation balance defaults.
 Exit fees default to zero, and NPC currency defaults to zero. Configured fees
 must be integer credits and are charged with successful solo extraction; unpaid
-actors cannot extract. Paid party vehicle extraction currently fails closed.
+actors cannot extract. Paid party vehicle extraction charges
+each consenting rider the quoted fee through the shared return journal. It
+rejects insufficient funds and fee changes during consent or the extraction
+wait. Native group and full-mode checks pass; defaults remain zero. Connected
+client acceptance remains pending.
 Vehicle-only exits reject foot extraction. NPCs have no private vehicle bay or
 secured-room account, so those exits are unavailable to them; no vehicle, key,
 currency or player account is invented.
@@ -123,6 +128,12 @@ atoms. Insurance reads these receipts even after physical retirement. An uncerta
 retirement blocks recovery after restart rather than guessing success.
 `--probe npc` checks actual stolen gun/optic separation, native disk reopening,
 faction/time/payment/backpack/key/vehicle denial and interrupted receipts.
+The corpse integration also retires a real dead human through the
+production corpse record before the NPC takes the original detached gun and
+optic. It checks item IDs, insurance tokens and mixed found-in-raid flags across
+the drop. The focused native NPC fixture passes with a real human constructor
+and normal species registry setup; it also checks the actual hand drops on death
+before staging the original components for corpse retirement.
 
 The production equipment probe also covers read-only graph projection for a
 subset of surviving node identities, including a recovered nested optic and

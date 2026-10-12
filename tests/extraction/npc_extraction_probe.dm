@@ -30,7 +30,8 @@
 	var/datum/extraction_session/S = M.accounts.open("npcvictim")
 	var/obj/item/weapon/gun/projectile/semiautomatic/sks/extraction_scope_probe/G = new(T)
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1/O = new(T)
-	var/mob/living/human/extraction_scope_probe/H = new(T)
+	if (!all_species.len) makeDatumRefLists()
+	var/mob/living/human/H = new(T)
 	var/obj/item/weapon/screwdriver/tool = new(H)
 	equipment_assert(G.install_configuration(O, H, TRUE), "NPC stolen graph has actual attached optic")
 	var/list/graph = M.codec.encode(G)
@@ -48,10 +49,26 @@
 	equipment_assert(raid, "insured native gun and optic deployed")
 	G = M.codec.decode(raid["issued"][1]["equipment"], H)
 	O = G.scope
+	var/gun_token = G.extraction_insurance_token
+	var/scope_token = O.extraction_insurance_token
+	equipment_assert(gun_token && scope_token, "paid deployment stamps original gun and optic insurance tokens")
 	H.r_hand = G
 	equipment_assert(G.remove_configuration(O, H) && O.loc == T, "insured optic detached as actual independent component")
-	equipment_assert(O.extraction_item_id == scope_id && G.extraction_item_id == gun_id, "NPC theft preserves original detached component identities")
-	H.r_hand = null
+	equipment_assert(O.extraction_item_id == scope_id && G.extraction_item_id == gun_id && G.extraction_insurance_token == gun_token && O.extraction_insurance_token == scope_token, "NPC theft preserves original detached component identities")
+	// Mixed fixture values verify preservation, not the raid provenance policy.
+	G.extraction_found_in_raid = FALSE
+	O.extraction_found_in_raid = TRUE
+	var/gun_fir = G.extraction_found_in_raid
+	var/scope_fir = O.extraction_found_in_raid
+	equipment_assert(H.put_in_l_hand(O), "actual inventory holds detached optic before corpse retirement")
+	H.death()
+	equipment_assert(H.stat == DEAD && H.corpse_decay_record && G.loc == T && O.loc == T, "native death drops both original insured hand components beside the corpse")
+	G.forceMove(H)
+	O.forceMove(H)
+	H.corpse_decay_age = ABANDONED_ITEM_LIFETIME
+	H.corpse_decay_seasons = ABANDONED_ITEM_SEASON_LIFETIME
+	H.corpse_decay_record.check(world.time)
+	equipment_assert((!H || !H.loc) && G.loc == T && O.loc == T && G.extraction_item_id == gun_id && O.extraction_item_id == scope_id && G.extraction_insurance_token == gun_token && O.extraction_insurance_token == scope_token && G.extraction_found_in_raid == gun_fir && O.extraction_found_in_raid == scope_fir, "corpse retirement preserves original NPC-loot IDs, insurance tokens and mixed FIR values")
 	O.forceMove(N)
 	G.forceMove(N)
 	M.track_loot(G)

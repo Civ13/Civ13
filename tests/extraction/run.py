@@ -15,7 +15,7 @@ def main():
     parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'npc', 'city', 'insurance', 'groups', 'vehicles'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry', 'disruptive_creation', 'disruptive_pending', 'disruptive_result'))
-    parser.add_argument('--group-negative-control', choices=('debit', 'visibility', 'premium', 'car', 'return'))
+    parser.add_argument('--group-negative-control', choices=('debit', 'visibility', 'premium', 'car', 'return', 'fee'))
     parser.add_argument('--vehicle-loss-negative-control', action='store_true')
     parser.add_argument('--vehicle-purchase-negative-control', action='store_true')
     parser.add_argument('--vehicle-raid-negative-control', choices=('debit', 'credit'))
@@ -197,7 +197,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             control.write_text(store_source.replace(marker, '\tP["stash"] = list()\n\t// Negative control: retain uncertain garage\n\tP["state"] = "home"'), encoding='utf-8')
             source = source.replace('code\\modules\\1713\\extraction\\account_store.dm', control.name)
         if group_control:
-            filename = 'transactions' if group_control in ('visibility', 'car') else 'settlement'
+            filename = 'transactions' if group_control in ('visibility', 'car', 'fee') else 'settlement'
             group_source = (root / f'code/modules/1713/extraction/{filename}.dm').read_text(encoding='utf-8')
             if group_control == 'debit':
                 marker = 'if (json_encode(expected) != json_encode(after) || json_encode(plan["issued"]) != json_encode(part["issued"])) return FALSE'
@@ -211,6 +211,10 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 marker = '\tcandidate["garage"] = list()'
                 replacement = '\tcandidate["garage"] = profile["garage"]'
                 expected_group_failure = 'native group recovery preserves exact vehicle debit without a second car'
+            elif group_control == 'fee':
+                marker = 'if (!isnull(vehicle) && !islist(vehicle)) return null\n\tvar/list/candidate = copy_profile()\n\tcandidate["credits"] -= fee'
+                replacement = 'if (!isnull(vehicle) && !islist(vehicle)) return null\n\tvar/list/candidate = copy_profile()\n\t// Negative control: omit passenger fee debit'
+                expected_group_failure = 'paid passenger projection reserves exact fee without premature debit'
             elif group_control == 'return':
                 marker = 'if (json_encode(expected) != json_encode(after)) return FALSE'
                 replacement = '// Negative control: permit a missing passenger credit'
