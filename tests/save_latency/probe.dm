@@ -21,9 +21,13 @@ var/save_ok = FALSE
 	while(!mutation_cancel && !map_storage.saving_references[identity])
 		sleep(1)
 	if(mutation_cancel) return
-	new /turf(locate(1,1,1))
-	moving_item.loc = locate(world.maxx,world.maxy,2)
-	del(deleted_item)
+	if(world.params["scenario"] == "parent-deletion")
+		var/atom/parent = moving_item.loc
+		del(parent)
+	else
+		new /turf(locate(1,1,1))
+		moving_item.loc = locate(world.maxx,world.maxy,2)
+		del(deleted_item)
 	mutation_done = TRUE
 /proc/concurrent_export(datum/controller/gameticker/ticker)
 	save_ok = ticker.savemap()
@@ -81,7 +85,7 @@ var/last_identity
 				first_identity = "\ref[item]"
 			if(i == count) last_identity = "\ref[item]"
 			if(i == 2) deleted_item = item
-		if(world.params["scenario"] == "movement")
+		if((world.params["scenario"] == "movement" || world.params["scenario"] == "parent-deletion"))
 			spawn(0) mutate_during_save()
 		if(world.params["scenario"] == "concurrent")
 			var/datum/controller/gameticker/ticker = new
@@ -100,7 +104,7 @@ var/last_identity
 			throw EXCEPTION("dense graph prevented heartbeat progress")
 		sleep(2)
 		world.log << "SAVE_METRICS first ticks=[elapsed] max_gap=[heartbeat_max] beats=[heartbeat_count]"
-		if(world.params["scenario"] == "movement")
+		if((world.params["scenario"] == "movement" || world.params["scenario"] == "parent-deletion"))
 			mutation_cancel = TRUE
 			if(!mutation_done) throw EXCEPTION("movement callback never ran during save")
 			if(!map_storage.validate_world_save()) throw EXCEPTION("moving graph invalid")

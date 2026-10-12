@@ -9,7 +9,7 @@ def main():
     parser.add_argument('--dense', action='store_true')
     parser.add_argument('--interrupt', action='store_true')
     parser.add_argument('--benchmark-only', action='store_true')
-    parser.add_argument('--scenario', choices=('movement','concurrent'))
+    parser.add_argument('--scenario', choices=('movement','concurrent','parent-deletion'))
     parser.add_argument('--negative-control', choices=('ownership','yield'))
     parser.add_argument('--baseline', help='Immutable Git commit for the saver and bookkeeping sources')
     args = parser.parse_args()
