@@ -138,3 +138,14 @@ the actual game and result plus the prominently labeled dialog trace. Retain
 the manually offered stone menu observation separately. No universal gameplay
 reachability or native menu input acceptance is inferred. Stage setup closes
 only local character popups and grants fixture visibility for inspecting output.
+
+## Camera prototype progression
+
+The normal runner checks two established Cold War factions through production
+recipe generation and research completion. One reaches Modern first; the other
+retains the seven-electronics cold-war camera required by Digital Computing.
+The modern camera parent does not match that subtype. Assembly Line and full
+study/prototype requirements remain enforced. Study and prototype flags are
+supplied directly; this is not connected-player submission or timed crafting.
+`--camera-prototype-negative-control` restores the old era-seven cap in temporary
+runtime recipe data and must detect exactly the lost paid prototype recipe.

@@ -1,3 +1,7 @@
+#include "garbage_profile.dm"
+#include "gc_outcome_triage.dm"
+#include "gc_reference_triage.dm"
+
 // The time a datum was destroyed by the GC, or null if it hasn't been
 /datum/var/gcDestroyed = 0
 #define GC_COLLECTIONS_PER_RUN 300
@@ -21,8 +25,6 @@ var/list/delayed_hard_garbage = list()
 	var/queue_high_water = 0
 	var/enqueued = 0
 	var/list/hard_references = list()
-	var/list/logging = list()	// list of all types that have failed to GC associated with the number of times that's happened.
-								// the types are stored as strings
 
 /process/garbage/setup()
 	name = "garbage"
@@ -43,9 +45,6 @@ var/list/delayed_hard_garbage = list()
 
 	fires_at_gamestates = list(GAME_STATE_PREGAME, GAME_STATE_SETTING_UP, GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 
-#ifdef GC_FINDREF
-/world/loop_checks = FALSE
-#endif
 
 /process/garbage/fire()
 	if (!garbage_collect)
@@ -72,19 +71,20 @@ var/list/delayed_hard_garbage = list()
 			if (remaining_force_dels <= 0)
 				A = null
 				break
-			#ifdef GC_FINDREF
-			LocateReferences(A)
-			#endif
-			// Something's still referring to the qdel'd object.  Kill it.
-			logging["[A.type]"]++
-			del(A)
+			// Ordinary retention differs from an explicitly requested hard delete.
+			var/forced_type = "[A.type]"
+			var/forced_started = world.timeofday
+			var/forced_tick = world.time
+			triage_force_delete(A, (refID in hard_references) ? "forced_requested" : "collection_failed")
+			profile_cost(forced_type, TRUE, forced_started, forced_tick)
 
 			hard_dels++
 			remaining_force_dels--
 		else
 			#ifdef GC_DEBUG
 			#endif
-			soft_dels++
+			triage_outcome(refID, A ? "queue_stale_identity" : "queue_absent", null)
+			soft_dels++ // Legacy aggregate: absent and stale queue records, not del calls.
 		tick_dels++
 		queued_drained++
 		total_dels++
@@ -99,49 +99,7 @@ var/list/delayed_hard_garbage = list()
 /process/garbage/reset_current_list()
 	return
 
-#ifdef GC_FINDREF
 
-/process/garbage/proc/LocateReferences(var/atom/A)
-//	testing("GC: Attempting to locate references to [A] | [A.type]. This is a potentially long-running operation.")
-	if (istype(A))
-		if (A.loc != null)
-//			testing("GC: [A] | [A.type] is located in [A.loc] instead of null")
-		if (A.contents.len)
-//			testing("GC: [A] | [A.type] has contents: [jointext(A.contents)]")
-	var/ref_count = 0
-	for (var/atom/atom)
-		ref_count += LookForRefs(atom, A)
-	for (var/datum/datum)	// This is strictly /datum, not subtypes.
-		ref_count += LookForRefs(datum, A)
-	for (var/client/client)
-		ref_count += LookForRefs(client, A)
-	var/message = "GC: References found to [A] | [A.type]: [ref_count]."
-	if (!ref_count)
-		message += " Has likely been supplied as an 'in list' argment to a proc."
-	testing(message)
-
-/process/garbage/proc/LookForRefs(var/datum/D, var/datum/A)
-	. = 0
-	for (var/V in D.vars)
-		if (V == "contents")
-			continue
-		if (!islist(D.vars[V]))
-			if (D.vars[V] == A)
-//				testing("GC: [A] | [A.type] referenced by [D] | [D.type], var [V]")
-				. += 1
-		else
-			. += LookForListRefs(D.vars[V], A, D, V)
-
-/process/garbage/proc/LookForListRefs(var/list/L, var/datum/A, var/datum/D, var/V)
-	. = 0
-	for (var/F in L)
-		if (!islist(F))
-			if (F == A || L[F] == A)
-//				testing("GC: [A] | [A.type] referenced by [D] | [D.type], list [V]")
-				. += 1
-		else
-			. += LookForListRefs(F, A, D, "[F] in list [V]")
-#endif
 
 /process/garbage/proc/AddTrash(datum/A)
 	if (!istype(A) || A.gcDestroyed > 0)
@@ -153,6 +111,7 @@ var/list/delayed_hard_garbage = list()
 	A.gc_destroyed = A.gcDestroyed
 	destroyed -= "\ref[A]" // Removing any previous references that were GC'd so that the current object will be at the end of the list.
 	destroyed["\ref[A]"] = A.gcDestroyed
+	triage_enqueued("\ref[A]", "[A.type]")
 	enqueued++
 	queue_high_water = max(queue_high_water, destroyed.len)
 
@@ -164,10 +123,10 @@ var/list/delayed_hard_garbage = list()
 /process/garbage/statProcess(client/C)
 	..(C)
 	C.add_stat("[garbage_collect ? "On" : "Off"], [destroyed.len] queued, [queue_high_water] peak, [oldest_queue_seconds()]s oldest, [enqueued] enqueued, [hard_references.len] forced owners, [pooled_count] pooled")
-	C.add_stat("Dels: [total_dels], [soft_dels] soft, [hard_dels] hard, [tick_dels] last run")
+	C.add_stat("Queue outcomes: [total_dels] legacy total, [soft_dels] absent/stale, [hard_dels] forced calls, [tick_dels] drained last run")
 
 /process/garbage/htmlProcess()
-	return ..() + "[garbage_collect ? "On" : "Off"], [destroyed.len] queued, [queue_high_water] peak, [oldest_queue_seconds()]s oldest, [enqueued] enqueued, [hard_references.len] forced owners, [pooled_count] pooled<br>Dels: [total_dels], [soft_dels] soft, [hard_dels] hard, [tick_dels] last run"
+	return ..() + "[garbage_collect ? "On" : "Off"], [destroyed.len] queued, [queue_high_water] peak, [oldest_queue_seconds()]s oldest, [enqueued] enqueued, [hard_references.len] forced owners, [pooled_count] pooled<br>Queue outcomes: [total_dels] legacy total, [soft_dels] absent/stale, [hard_dels] forced calls, [tick_dels] drained last run"
 
 // Should be treated as a replacement for the 'del' keyword.
 // Datums passed to this will be given a chance to clean up references to allow the GC to collect them.
@@ -185,11 +144,21 @@ var/list/delayed_hard_garbage = list()
 		return
 	// Guard reentry without changing legacy cleanup checks inside Destroy.
 	A.gc_destroyed = GC_CURRENTLY_BEING_QDELETED
+	var/profile_type = "[A.type]"
+	var/profile_ref = "\ref[A]"
+	var/cleanup_started = world.timeofday
+	var/cleanup_tick = world.time
 	var/hint = A.Destroy()
+	if (processes.garbage)
+		processes.garbage.profile_cost(profile_type, FALSE, cleanup_started, cleanup_tick)
 	if (!A)
+		if (processes.garbage)
+			processes.garbage.triage_outcome("", locate(profile_ref) ? "direct_incomplete" : "direct_deleted", profile_type)
 		return
 	if (hint == QDEL_HINT_LETMELIVE)
 		A.gc_destroyed = 0
+		if (processes.garbage)
+			processes.garbage.triage_outcome("", "let_live", profile_type)
 		return
 	A.gc_destroyed = GC_QUEUED_FOR_QUEUING
 	// Pending callbacks must not retain or retire a reused target.
@@ -207,10 +176,19 @@ var/list/delayed_hard_garbage = list()
 		if (QDEL_HINT_IWILLGC)
 			A.gcDestroyed = world.time + 1
 			A.gc_destroyed = A.gcDestroyed
+			if (processes.garbage)
+				processes.garbage.triage_outcome("", "unchecked_handoff", profile_type)
 		if (QDEL_HINT_HARDDEL_NOW)
 			A.gcDestroyed = world.time + 1
 			A.gc_destroyed = A.gcDestroyed
-			del(A)
+			var/forced_started = world.timeofday
+			var/forced_tick = world.time
+			if (processes.garbage)
+				processes.garbage.triage_force_delete(A, "immediate_requested")
+			else
+				del(A)
+			if (processes.garbage)
+				processes.garbage.profile_cost(profile_type, TRUE, forced_started, forced_tick)
 		if (QDEL_HINT_HARDDEL)
 			if (processes.garbage)
 				processes.garbage.AddTrash(A)
@@ -221,6 +199,13 @@ var/list/delayed_hard_garbage = list()
 				delayed_hard_garbage |= A
 		else
 			A.finalize_qdel()
+			if (processes.garbage)
+				if (!locate(profile_ref))
+					processes.garbage.triage_outcome("", "direct_deleted", profile_type)
+				else if (A && (A in pool_idle))
+					processes.garbage.triage_outcome("", "pooled_retired", profile_type)
+				else if (!A || !(profile_ref in processes.garbage.destroyed))
+					processes.garbage.triage_outcome("", "direct_incomplete", profile_type)
 
 
 /proc/qdel_list(var/list/L)

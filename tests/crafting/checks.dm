@@ -132,6 +132,7 @@ var/recipe_ci_files = 0
 		if (!alternatives)
 			recipe_ci_fail(context, "no material branch can offer this recipe")
 	recipe_ci_food_bootstrap()
+	recipe_ci_camera_progression()
 	recipe_ci_craft_fixture()
 	// Negative fixtures must prove errors, without suppressing real catalog failures.
 	var/list/catalog_errors = recipe_ci_errors.Copy()

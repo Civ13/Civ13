@@ -94,6 +94,15 @@ starting extra recurring cycles from the admin command.
 - `fire()` is called each tick; do your per-tick work there.
 - Global singletons should be accessed via `global.xxx` or a `var/xxx` on a global datum.
 
+<!-- 2026-10-12: copied processing-list removal -->
+Native BYOND `-=` and `Remove(value)` remove the last matching occurrence,
+including repeated nulls; a guarded front `Cut(1,2)` is not equivalent.
+`tests/processing_list_removal/run.py` checks production object-loop order,
+budget resumes, deletion/mutations and existing recursive-fire behavior, with
+immutable baseline and unsafe-cut controls. Its opt-in benchmark records complete
+visit counts; no faster equivalent removal was adopted. Start budget fixtures
+after a normal tick and anchor `run_time_tick_usage` to `world.tick_usage`.
+
 ### Map object placement (codebase-specific)
 
 - Existing maps place objects directly in DMM tile definitions (not spawned in code).
@@ -302,6 +311,14 @@ Group deployment reuses the shared journal under `_settlement/groups/`; exact
 home-to-raid projections come from the solo raid planner. Never move members
 before all account debits commit. `--probe groups` checks three-process recovery
 across eleven cuts; mode fixtures exercise consent/readiness and original atoms.
+<!-- 2026-10-12: native GC outcome triage -->
+BYOND 516.1681 can clear a native `del(A)` argument when `Del()` aborts while
+the target remains alive. Verify disappearance with the saved ref and retirement
+identity, not a null local. `tests/gc_triage/run.py` checks production outcomes
+and bounded opt-in owner-field inspection; outcome rows share deletion profiling's
+128 named types plus overflow. `gc_forced_types` telemetry counts these bounded
+forced-call buckets, not exact distinct types after saturation.
+
 <!-- 2026-10-12: opt-in regression CI -->
 Existing game and tooling regression suites are manual opt-in. PRs adding
 executable integration tests select their registered suite only for that PR;
@@ -584,3 +601,32 @@ lifecycle, immutable baseline and controls live in tests/process_loop_lifecycle.
 `cirrAstar()` includes the starting turf in its returned path. Discard leading
 current-turf entries before calling `step_towards()`, especially when replanning
 on every decision. Otherwise a successful path can repeatedly produce no move.
+<!-- 2026-10-12: comparative GC and loop benchmarks -->
+`tests/gc_benchmark`, `tests/scheduler_benchmark`, and
+`tests/game_loop_benchmark` compare production sources with immutable pre-PR3091
+bodies using BYOND 516.1681 and temporary storage. Run performance comparisons
+sequentially to avoid competing test workloads. `PROCESS_TICK_CHECK` returns the
+early-return sentinel; it does not sleep. Isolated queue counts and Windows
+private bytes are separate metrics, and process CPU accounting can have 15.625ms
+quantization. Full-game movement/Life/inventory probes do not establish client
+rendering, multiplayer latency or long-term OOM stability.
+
+<!-- 2026-10-12: exhausted budget snapshots -->
+A tick-budget return can happen after PROCESS_LIST_CHECK removes the last entry.
+Normalize exhausted EARLY results through finished and both process entry points
+so relayProcess removes completed work. Release exhausted snapshots so the next
+scheduled run builds
+fresh work; retain only nonempty unfinished snapshots. Assign null without cutting
+aliased VERY_HIGH live lists. tests/process_loop_lifecycle covers the exact
+last-entry boundary and an independent old-guard mutation control.
+
+<!-- 2026-10-12: era-dependent research prototypes -->
+Established factions retain their founding research baseline when another faction
+advances the world era. Prototype recipes must remain obtainable afterward:
+Digital Computing needs the cold-war camera subtype, not its modern camera parent.
+The compiled crafting fixture checks two-faction era advancement and the paid
+recipe; --camera-prototype-negative-control restores its obsolete era cap in
+isolated runtime data and must detect exactly the lost recipe.
+
+<!-- 2026-10-12: finite digging completion -->
+Loose snow/dirt/sand stock must be checked after the action wait, because another actor may consume the last unit. Underground pickaxe actions use one wait/completion path. `tests/resource_extraction/digging_probe.dm` runs production handlers with competing completion and cancellation adapters; `-DiggingBaseline` rejects immutable pre-fix source without changing the checkout.

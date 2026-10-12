@@ -39,6 +39,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
           persist-credentials: false
       - name: Test offline evidence checker
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_game_evidence.py')
@@ -78,6 +79,7 @@ jobs:
         if: needs.changes.outputs.game == 'true'
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
           persist-credentials: false
 
       # Runs a single command using the runners shell
@@ -85,6 +87,19 @@ jobs:
         if: needs.changes.outputs.game == 'true'
         run: sudo bash ./scripts/travis_pre_byond.sh
         shell: bash
+
+      - name: Verify explicit object processing units and negative controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/process_time')
+        shell: bash
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          python3 tests/process_time/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
+          python3 tests/process_time/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control units
+          python3 tests/process_time/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control legacy
+          python3 tests/process_time/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control fuel
+          python3 tests/process_time/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control damage
+          python3 tests/process_time/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control probability
+          python3 tests/process_time/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control dispatch
 
       - name: Verify compiled sprite defaults and wrong-resource control
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/sprites')
@@ -164,6 +179,7 @@ jobs:
         run: |
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
           python3 scripts/check-recipes.py --report recipe-checks.txt
+          python3 scripts/check-recipes.py --camera-prototype-negative-control
         shell: bash
 
       - name: Upload recipe validation report
@@ -256,6 +272,8 @@ jobs:
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/resource_extraction/digging_probe.dm
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/resource_extraction/digging_probe.dm -DiggingBaseline
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/hydraulic_fracturing/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/automated_sifting/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/mining_yields/probe.dm
@@ -305,6 +323,29 @@ jobs:
           /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control icon-readiness
           /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control icon-callback
 
+      - name: Verify bounded GC outcome and reference triage
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gc_triage')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/gc_triage/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          for control in triage-slots triage-identity triage-lists triage-metadata triage-delete-result triage-requested; do
+            /usr/bin/python3 tests/gc_triage/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
+
+      - name: Verify bounded GC profiling and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/garbage_profile')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/garbage_profile/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          for control in bound cleanup forced clock; do
+            /usr/bin/python3 tests/garbage_profile/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
+          for control in gc-soft-budget gc-hard-budget; do
+            /usr/bin/python3 tests/memory_ownership/run.py --byond-bin "$PWD/BYOND/byond/bin" --case collector --negative-control "$control"
+          done
+
       - name: Verify native memory ownership and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/callback_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/global_vars_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/memory_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nanoui_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/pool_effects') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/process_snapshot_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reagent_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/weakref_ownership')
         shell: bash
@@ -336,6 +377,17 @@ jobs:
           /usr/bin/python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/pool-effects-lighting-control" --negative-control lighting
           /usr/bin/python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/pool-effects-lifetime-control" --negative-control fallback
           /usr/bin/python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/pool-effects-chem-control" --negative-control chem
+      - name: Verify native copied processing-list removal contracts
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/processing_list_removal')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          git fetch --no-tags --depth=1 origin aa675de6dbade0f3740c516dc4b5945c5c9a43c7
+          /usr/bin/python3 tests/processing_list_removal/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/processing_list_removal/run.py --byond-bin "$PWD/BYOND/byond/bin" --baseline
+          /usr/bin/python3 tests/processing_list_removal/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
+          /usr/bin/python3 tests/processing_list_removal/run.py --byond-bin "$PWD/BYOND/byond/bin" --guarded-control
+
       - name: Verify bounded native lifetime telemetry and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/memory_telemetry')
         shell: bash
