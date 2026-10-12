@@ -1,5 +1,11 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-11: extraction vehicle graph -->
+Modular car wheels are contained in their connected frames; the controller is
+also nested in a frame and steering in the driver seat. Use get_turf() for their
+coordinates. tests/extraction/vehicle_probe.dm checks physical transfer only;
+it does not establish durable garage ownership or cargo/passenger extraction.
+
 ## Language & toolchain
 NEVER use "—": always use "-" instead.
 - **DM** (DreamMaker) - BYOND's proprietary language. Sources have `.dm` extension.

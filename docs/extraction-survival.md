@@ -1,6 +1,14 @@
 # Extraction survival implementation
 
 This mode is under implementation and has not received playable acceptance.
+Vehicle extraction remains incomplete. An internal helper preflights a stopped,
+unoccupied car and a clear floor footprint, then moves its existing parts and
+nested controller, steering and wheels. It rejects loose or nested cargo and
+preserves the actual tank, fuel and wall condition. It does not credit a garage
+or persist vehicle ownership. Durable garage transactions, cargo/capacity,
+passenger policy and restart recovery are required before a player-facing
+vehicle extraction action is available.
+
 Isolated native tests cover account storage, nested equipment restoration,
 bounded NPC combat, extraction cancellation, private rooms and hub navigation.
 Existing Factory mode stays available unchanged. Stack transformations and

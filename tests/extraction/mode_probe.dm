@@ -249,6 +249,7 @@
 	equipment_assert(M.raid_items.len == retained, "NPC death callback idempotent")
 	equipment_assert(M.raid_items.len <= 2048 && M.npcs.len <= 12, "loot and NPC registries bounded")
 	extraction_group_probe(M)
+	extraction_vehicle_probe()
 	extraction_round_probe(M)
 
 /proc/extraction_round_probe(obj/map_metadata/extraction_survival/M)

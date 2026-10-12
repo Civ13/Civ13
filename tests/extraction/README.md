@@ -125,6 +125,13 @@ pending journals, stale inventory and access-gate release.
 
 ## Required safe-house concept video
 
+The mode fixture also assembles a real car and checks the internal physical
+transfer helper: moving/stale vehicles, loose/nested cargo and occupied bays
+are rejected before relocation; original parts, fuel, wall condition and
+steering survive a successful transfer, which cannot replay. These checks do
+not establish account garage persistence, cargo/passenger extraction or client
+interaction. Those remain incomplete.
+
 Record a genuine disposable local playable world after integrated regressions
 pass. Use the exact pinned build and record its full commit, dirty patch when
 applicable, map dimensions, local process IDs, compiler/runtime versions and
