@@ -1,6 +1,7 @@
 param(
+    [switch]$DiggingBaseline,
     [Parameter(Mandatory)][string]$ByondBin,
-    [ValidateSet('tests/resource_extraction/probe.dm','tests/petroleum_lifecycle/probe.dm','tests/hydraulic_fracturing/probe.dm','tests/automated_sifting/probe.dm','tests/mining_yields/probe.dm')]
+    [ValidateSet('tests/resource_extraction/probe.dm','tests/petroleum_lifecycle/probe.dm','tests/hydraulic_fracturing/probe.dm','tests/automated_sifting/probe.dm','tests/mining_yields/probe.dm','tests/resource_extraction/digging_probe.dm')]
     [string]$Probe = 'tests/resource_extraction/probe.dm'
 )
 $ErrorActionPreference = 'Stop'
@@ -31,6 +32,17 @@ try {
     $source = Get-Content -LiteralPath 'civ13.dme' -Raw
     $source = $source.Replace('code\world.dm', $prefix + '_world.dm').Replace('code\controllers\mc\globals.dm', $prefix + '_globals.dm')
     $source = [regex]::Replace($source, '(?m)^#include ".*\.dmm"\s*$', '')
+    if ($Probe -eq 'tests/resource_extraction/digging_probe.dm') {
+        # Adapt only action waits; execute the complete production attackby body.
+        $digging = Get-Content -LiteralPath 'code/game/turfs/floor_attackby.dm' -Raw
+        if ($DiggingBaseline) {
+            $digging = (git show 'aa675de6dbade0f3740c516dc4b5945c5c9a43c7:code/game/turfs/floor_attackby.dm') -join "`n"
+            if ($LASTEXITCODE -ne 0) { throw 'Immutable digging baseline unavailable' }
+        }
+        $digging = $digging.Replace('do_after(', 'digging_probe_wait(')
+        [IO.File]::WriteAllText((Join-Path $repo ($prefix + '_mining.dm')), $digging)
+        $source = $source.Replace('code\game\turfs\floor_attackby.dm', $prefix + '_mining.dm')
+    }
     if ($Probe -eq 'tests/mining_yields/probe.dm') {
         # Only deterministic RNG calls in the production mining body are adapted.
         $mining = Get-Content -LiteralPath 'code/game/turfs/floor_attackby.dm' -Raw
@@ -51,14 +63,16 @@ try {
     if ($LASTEXITCODE -ne 0 -or ($build -join "`n") -notmatch '0 errors, 0 warnings' -or ($build -join "`n") -notmatch '516\.1681') { throw 'Pinned probe compile failed' }
     foreach ($extension in @('.dmb','.rsc')) { Copy-Item -LiteralPath ($prefix + $extension) -Destination (Join-Path $temporary ('probe' + $extension)) }
     Copy-Item -LiteralPath 'config' -Destination $temporary -Recurse
-    [IO.File]::WriteAllText((Join-Path $temporary 'source-state.txt'), "commit=$commit`ndirty=$dirty")
+    [IO.File]::WriteAllText((Join-Path $temporary 'source-state.txt'), "commit=$commit`ndirty=$dirty`ndigging_baseline=$DiggingBaseline")
     $runtime = Start-Process -FilePath (Join-Path $ByondBin $daemonName) -ArgumentList @('probe.dmb', '0', '-invisible', '-close', '-safe', '-params', "tested_commit=$commit", '-log', 'runtime.log') -WorkingDirectory $temporary -PassThru @options
     if (!$runtime.WaitForExit(30000)) { Stop-Process -Id $runtime.Id; $runtime.WaitForExit(); throw 'Task-owned probe timed out' }
     $result = Get-Content -LiteralPath (Join-Path $temporary 'result.json') -Raw | ConvertFrom-Json
     $runtimeLog = Get-Content -LiteralPath (Join-Path $temporary 'runtime.log') -Raw
     Write-Output $runtimeLog
     $result | ConvertTo-Json -Compress
-    if ($runtime.ExitCode -ne 0 -or $result.failures -ne 0 -or $result.runtime_error -or $runtimeLog -match 'runtime error' -or $result.commit -ne $commit -or $result.byond_build -ne 1681) { throw 'Production-path extraction probe failed' }
+    $failuresUnexpected = if ($DiggingBaseline) { $result.failures -eq 0 } else { $result.failures -ne 0 }
+    if ($DiggingBaseline -and $Probe -ne 'tests/resource_extraction/digging_probe.dm') { throw 'Baseline is only supported for digging probe' }
+    if ($runtime.ExitCode -ne 0 -or $failuresUnexpected -or $result.runtime_error -or $runtimeLog -match 'runtime error' -or $result.commit -ne $commit -or $result.byond_build -ne 1681) { throw 'Production-path extraction probe failed' }
 } finally {
     if ($runtime -and !$runtime.HasExited) { Stop-Process -Id $runtime.Id; $runtime.WaitForExit() }
     foreach ($extension in @('.dme','_world.dm','_globals.dm','_mining.dm','.dmb','.rsc')) {

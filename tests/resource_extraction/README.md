@@ -31,3 +31,9 @@ this is not a full-world round trip. Ordinary startup, crafting menu clicks,
 full-length gathering timing, graphical interaction, and production memory are
 not established by this fixture. A successful report also requires no runtime
 errors in the full runtime log.
+
+## Finite digging regression
+
+`./tests/resource_extraction/run.ps1 -ByondBin <516.1681-bin> -Probe tests/resource_extraction/digging_probe.dm` executes the complete production floor attack handler with an injected action-wait adapter. A competing actor finishes during the first actor's wait; snow, dirt and sand must produce only one output from one remaining unit. Cancellation releases actor locks, and underground mining performs one wait and one conversion. `-DiggingBaseline` substitutes immutable pre-fix floor source at aa675de6dbade0f3740c516dc4b5945c5c9a43c7 and requires the assertions to fail without runtime errors.
+
+The fixture does not establish graphical interaction or elapsed player timing. It leaves cooperative speed/yield balance unchanged. CI selects the existing extraction suite for this PR because it adds an executable integration probe; later edits remain opt-in.

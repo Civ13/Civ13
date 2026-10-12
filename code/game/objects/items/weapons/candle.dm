@@ -61,10 +61,14 @@
 
 
 /obj/item/weapon/flame/candle/process()
+	return process_interval(2)
+
+/obj/item/weapon/flame/candle/process_interval(configured_seconds = 2)
 	if (!lit)
 		return
-	wax--
-	if (!wax)
+	// Wax remains in legacy two-second units for save compatibility.
+	wax = max(0, wax - configured_seconds / 2)
+	if (wax <= 0)
 		new/obj/item/trash/candle(loc)
 		if (istype(loc, /mob))
 			dropped()
@@ -94,10 +98,14 @@
 	icon_state = "candle[i][lit ? "_lit" : ""]_lard"
 
 /obj/item/weapon/flame/candle/lard/process()
+	return process_interval(2)
+
+/obj/item/weapon/flame/candle/lard/process_interval(configured_seconds = 2)
 	if (!lit)
 		return
-	wax--
-	if (!wax)
+	// Wax remains in legacy two-second units for save compatibility.
+	wax = max(0, wax - configured_seconds / 2)
+	if (wax <= 0)
 		new/obj/item/trash/candle/lard(loc)
 		if (istype(loc, /mob))
 			dropped()

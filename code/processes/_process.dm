@@ -145,11 +145,15 @@
 	idle()
 	main.processFinished(src)
 	onFinish()
-	// Budgeted runs retain their remaining snapshot for the scheduler to resume.
-	if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)
+	// Exhausted snapshots completed even if the final entry hit the budget.
+	if (fire_result == PROCESS_TICK_CHECK_RETURNED_EARLY && !length(current_list))
+		fire_result = null
+	// Budgeted runs retain only nonempty snapshots for the scheduler to resume.
+	if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY || !length(current_list))
 		// Assign null instead of cutting a possibly aliased VERY_HIGH list.
 		current = null
 		current_list = null
+	return fire_result
 
 /process/proc/fire()
 	return
@@ -170,7 +174,7 @@
 		run_time_tick_usage_allowance = 10 // safe default: 10% budget per member
 	started()
 	. = fire()
-	finished(.)
+	. = finished(.)
 
 /process/proc/setup()
 	return
@@ -180,7 +184,7 @@
 	started()
 	if (!paused)
 		. = fire()
-	finished(.)
+	. = finished(.)
 	return .
 
 /process/proc/running()
@@ -443,3 +447,7 @@
 
 /datum/subsystem_module/proc/fire()
 	return
+
+// schedule_interval is BYOND deciseconds. Lag/resumes do not add catch-up time.
+/process/proc/configured_interval_seconds()
+	return schedule_interval / (1 SECOND)
