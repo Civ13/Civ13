@@ -64,7 +64,9 @@
 	proc/tick_parties()
 		for (var/datum/extraction_party/P in parties.Copy())
 			if (!party_current(P)) disband_party(P)
-	proc/ready_party(mob/living/human/H)
+	proc/confirm_party_insurance(mob/living/human/H, list/offer)
+		return WWinput(H, "Authorize [offer["cost"]] salvage parts for your group loadout insurance? Payment is charged only when the whole group deploys.", "Group insurance", "Decline", list("Authorize", "Decline")) == "Authorize"
+	proc/ready_party(mob/living/human/H, insured = FALSE)
 		if (!group_eligible(H)) return FALSE
 		var/datum/extraction_session/S = H.extraction_session
 		var/datum/extraction_party/P = party_by_owner[S.owner]
@@ -74,8 +76,14 @@
 		if (!graphs || carried.len > 16) return FALSE
 		var/list/ids = list()
 		for (var/obj/item/I in carried) ids += I.extraction_item_id
-		P.ready[S.owner] = list("version" = P.version, "revision" = S.profile["revision"], "profile_digest" = md5(json_encode(S.profile)), "carried_digest" = md5(json_encode(graphs)), "selected" = ids)
-		to_chat(H, "Group loadout ready. Changing equipment or saving your stash requires readying again. Group deployment is uninsured.")
+		var/list/offer
+		if (insured)
+			offer = returns.quote(S, ids, round_id)
+			var/version = P.version
+			if (!offer || !confirm_party_insurance(H, offer)) return FALSE
+			if (!party_current(P) || P.version != version || party_by_owner[S.owner] != P || !group_eligible(H) || json_encode(returns.quote(S, ids, round_id)) != json_encode(offer) || json_encode(records(player_roots(H))) != json_encode(graphs) || json_encode(records(home_roots(S))) != json_encode(S.profile["stash"])) return FALSE
+		P.ready[S.owner] = list("version" = P.version, "revision" = S.profile["revision"], "profile_digest" = md5(json_encode(S.profile)), "carried_digest" = md5(json_encode(graphs)), "selected" = ids, "insurance" = offer)
+		to_chat(H, "Group loadout ready. Changing equipment or saving your stash requires readying again.")
 		return TRUE
 	proc/deploy_party(mob/living/human/leader)
 		if (!group_eligible(leader) || !extraction_raid_markers.len) return FALSE
@@ -85,22 +93,29 @@
 		var/list/bodies = list()
 		var/list/carried_sets = list()
 		var/total_nodes = 0
+		var/insured_nodes = 0
 		for (var/owner in P.members)
 			var/datum/extraction_session/S = accounts.sessions[owner]
 			var/list/ready = P.ready[owner]
 			if (!S || !ready || !group_eligible(S.body) || ready["version"] != P.version || ready["revision"] != S.profile["revision"] || ready["profile_digest"] != md5(json_encode(S.profile))) return FALSE
 			var/list/carried = player_roots(S.body)
 			var/list/graphs = records(carried)
-			if (!graphs || ready["carried_digest"] != md5(json_encode(graphs)) || json_encode(records(home_roots(S))) != json_encode(S.profile["stash"])) return FALSE
+			if (!graphs || ready["carried_digest"] != md5(json_encode(graphs)) || json_encode(records(home_roots(S))) != json_encode(S.profile["stash"]) || json_encode(garage_snapshot(S)) != json_encode(S.profile["garage"])) return FALSE
 			for (var/list/entry in graphs) total_nodes += entry["equipment"]["nodes"].len
-			var/list/plan = S.plan_raid(ready["selected"], P.faction, null, null, null, ready["revision"])
+			var/list/offer = ready["insurance"]
+			if (offer && (offer["round"] != round_id || json_encode(returns.quote(S, ready["selected"], round_id)) != json_encode(offer))) return FALSE
+			var/list/plan = offer ? S.plan_raid(ready["selected"], P.faction, offer["insured"], offer["round"], offer["payment"], ready["revision"]) : S.plan_raid(ready["selected"], P.faction, null, null, null, ready["revision"])
 			if (!plan) return FALSE
+			if (offer)
+				for (var/list/entry in graphs) insured_nodes += entry["equipment"]["nodes"].len
 			var/list/after = plan["candidate"]
 			after["revision"] = S.profile["revision"] + 1
-			parts += list(list("owner" = owner, "before" = S.copy_profile(), "after" = after, "selected" = ready["selected"].Copy(), "faction" = P.faction, "issued" = plan["issued"]))
+			var/list/part = list("owner" = owner, "before" = S.copy_profile(), "after" = after, "selected" = ready["selected"].Copy(), "faction" = P.faction, "issued" = plan["issued"])
+			if (offer) part["insurance"] = offer
+			parts += list(part)
 			bodies[owner] = S.body
 			carried_sets[owner] = carried
-		if (raid_items.len + total_nodes > 2048) return FALSE
+		if (raid_items.len + total_nodes > 2048 || insured_nodes_issued + insured_nodes > 4096) return FALSE
 		var/datum/extraction_settlement/groups/J = accounts.group_journal
 		for (var/owner in P.members) accounts.sessions[owner]:transitioning = TRUE
 		if (!J.submit(J.profile["sequence"] + 1, parts))
@@ -114,10 +129,16 @@
 		// never decode a second physical copy of a selected loadout.
 		var/turf/destination = get_turf(pick(extraction_raid_markers))
 		for (var/list/part in parts) accounts.sessions[part["owner"]]:profile = part["after"]
+		insured_nodes_issued += insured_nodes
 		for (var/list/part in parts)
 			var/owner = part["owner"]
 			var/datum/extraction_session/S = accounts.sessions[owner]
 			var/mob/living/human/H = bodies[owner]
+			var/list/offer = part["insurance"]
+			if (offer)
+				for (var/obj/item/I in home_roots(S))
+					if (I.extraction_item_id in offer["payment"]) qdel(I)
+				apply_issued_tokens(carried_sets[owner], part["issued"])
 			for (var/obj/item/I in carried_sets[owner])
 				codec.set_raid_provenance(I, FALSE)
 				track_loot(I)
@@ -131,11 +152,11 @@
 		if (!group_eligible(H)) return FALSE
 		var/datum/extraction_party/P = party_by_owner[H.extraction_session.owner]
 		var/version = P ? P.version : 0
-		var/prompt = "Groups contain two to four consenting players. Each member readies their own loadout. Group deployment is uninsured and waits for all account debits. Groups expire after five minutes."
+		var/prompt = "Groups contain two to four consenting players. Each member readies their own loadout and may authorize their own insurance premium. Deployment waits for all account debits. Groups expire after five minutes."
 		var/list/actions = list("Create PMC group", "Create Scav group", "Cancel")
 		if (P)
 			prompt += "\nLeader: [P.leader]. Faction: [P.faction]. Members: [jointext(P.members, ", ")]. Ready: [P.ready.len]/[P.members.len]."
-			actions = P.leader == H.extraction_session.owner ? list("Invite player", "Ready loadout", "Deploy group", "Leave group", "Cancel") : list("Ready loadout", "Leave group", "Cancel")
+			actions = P.leader == H.extraction_session.owner ? list("Invite player", "Ready loadout", "Ready insured loadout", "Deploy group", "Leave group", "Cancel") : list("Ready loadout", "Ready insured loadout", "Leave group", "Cancel")
 		var/choice = WWinput(H, prompt, "Raid group", "Cancel", actions)
 		if (!group_eligible(H)) return FALSE
 		if (P && (!party_current(P) || P.version != version || party_by_owner[H.extraction_session.owner] != P)) return FALSE
@@ -143,6 +164,7 @@
 			if ("Create PMC group") return !!create_party(H)
 			if ("Create Scav group") return !!create_party(H, "Scav")
 			if ("Ready loadout") return ready_party(H)
+			if ("Ready insured loadout") return ready_party(H, TRUE)
 			if ("Deploy group") return deploy_party(H)
 			if ("Leave group") return leave_party(H.extraction_session.owner)
 			if ("Invite player")

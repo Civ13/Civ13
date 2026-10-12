@@ -11,6 +11,7 @@ Use BYOND 516.1681 and a verified full Python interpreter path:
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control debit
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control visibility
+& $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control premium
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe vehicles
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe vehicles --vehicle-loss-negative-control
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe mode --vehicle-purchase-negative-control

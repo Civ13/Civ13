@@ -71,8 +71,10 @@ leader invites each member, who must accept and ready their own loadout in
 their house. Groups share a PMC or Scav faction and expire after five minutes.
 Membership changes, withdrawal, condition changes or a new stash revision
 invalidate readiness. The leader starts deployment only when every current
-member is ready. Current group deployment is uninsured; paid insurance remains
-available through individual deployment.
+member is ready. Each member may authorize their own paid insurance quote instead
+of uninsured readiness. Readiness reserves no money: the exact premium is debited
+with that member's loadout in the shared deployment receipt. A changed quote or
+physical garage invalidates deployment before any account debit.
 
 The group journal reuses exact forward settlement beneath `_settlement/groups/`.
 It validates every home-to-raid projection against the same pure debit planner
@@ -85,10 +87,11 @@ issued gear. An unknown initial intent remains blocked for explicit recovery.
 Recovery never reconstructs issued gear as a second copy.
 
 The mode fixture checks four real human constructors and original gear atoms,
-consent races, readiness changes, member replacement, live access gates and
-independent extraction. `--probe groups` runs three native processes across
+consent races, readiness changes, member replacement, mixed paid/uninsured
+loadouts, physical premium retirement, live access gates and independent
+extraction. `--probe groups` runs three native processes across
 eleven journal/account interruption points, including initial and final receipt
-writes. Its debit and visibility negative controls must fail at the intended
+writes with a paid member. Its debit, visibility and forged-premium negative controls must fail at the intended
 assertions. These checks do not establish connected invitation dialogs, client
 movement/rendering or production restart acceptance.
 

@@ -28,12 +28,22 @@
 					var/list/entry = list("id" = G.extraction_item_id, "equipment" = C.encode(G))
 					// Encoding assigns the ID; read it after encoding.
 					entry["id"] = G.extraction_item_id
-					equipment_assert(A.checkpoint_home(list(entry)), "group fixture checkpoints real native equipment")
+					var/list/stash = list(entry)
+					if (owner == "groupone")
+						for (var/premium in 1 to 8)
+							var/obj/item/extraction_salvage/I = new(locate(3,5,1))
+							var/list/graph = C.encode(I)
+							stash += list(list("id" = I.extraction_item_id, "equipment" = graph))
+							qdel(I)
+					equipment_assert(A.checkpoint_home(stash), "group fixture checkpoints real native equipment")
 					var/list/before = A.copy_profile()
-					var/list/plan = A.plan_raid(list(G.extraction_item_id), "PMC")
+					var/list/offer = owner == "groupone" ? A.plan_insurance_quote(list(G.extraction_item_id), "group-process-round") : null
+					var/list/plan = offer ? A.plan_raid(list(G.extraction_item_id), "PMC", offer["insured"], offer["round"], offer["payment"], before["revision"]) : A.plan_raid(list(G.extraction_item_id), "PMC")
 					var/list/after = plan["candidate"]
 					after["revision"] = before["revision"] + 1
-					parts += list(list("owner" = owner, "before" = before, "after" = after, "selected" = list(G.extraction_item_id), "faction" = "PMC", "issued" = plan["issued"]))
+					var/list/part = list("owner" = owner, "before" = before, "after" = after, "selected" = list(G.extraction_item_id), "faction" = "PMC", "issued" = plan["issued"])
+					if (offer) part["insurance"] = offer
+					parts += list(part)
 					qdel(G)
 					A.close()
 				var/datum/extraction_settlement/groups/J = S.group_journal
@@ -56,7 +66,8 @@
 					continue
 				for (var/owner in list("groupone", "grouptwo"))
 					var/datum/extraction_session/A = S.open(owner)
-					equipment_assert(A && A.profile["state"] == "home" && A.profile["raid_sequence"] == 1 && !A.profile["stash"].len, "new process finishes every recorded debit and forfeits interrupted raid without reissuing gear")
+					var/list/expected = plan["parts"][owner == "groupone" ? 1 : 2]["after"]
+					equipment_assert(A && A.profile["state"] == "home" && A.profile["raid_sequence"] == 1 && json_encode(A.profile["stash"]) == json_encode(expected["stash"]) && json_encode(A.profile["insurance_claims"]) == json_encode(expected["insurance_claims"]), "new process finishes every recorded debit and forfeits interrupted raid without reissuing gear")
 					A.close()
 				var/datum/extraction_settlement/groups/J = S.group_journal
 				equipment_assert(J.submit(1, plan["parts"]), "exact group receipt replay acknowledged without a second debit")
@@ -64,6 +75,9 @@
 				forged[1]["after"]["stash"] = forged[1]["before"]["stash"]
 				equipment_assert(!J.valid_participants(forged), "forged group projection rejected by planning authority")
 				equipment_assert(!J.submit(1, forged) && !J.submit(2, forged), "replayed or new forged group refund rejected")
+				var/list/underpaid = json_decode(json_encode(plan["parts"]))
+				underpaid[1]["insurance"]["cost"] = 0
+				equipment_assert(!J.valid_participants(underpaid), "forged group premium rejected by canonical pricing authority")
 		completed = TRUE
 	catch (var/exception/E)
 		equipment_failures++

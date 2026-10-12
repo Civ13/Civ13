@@ -29,6 +29,8 @@
 		return test_party_confirmation != "decline"
 	confirm_insurance(mob/living/human/H, list/offer)
 		return test_insurance_confirmation
+	confirm_party_insurance(mob/living/human/H, list/offer)
+		return test_insurance_confirmation
 	identity(mob/living/human/H)
 		return test_owners[H]
 	wait_for_extraction(mob/living/human/H, obj/effect/extraction_exit/E)

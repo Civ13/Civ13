@@ -244,6 +244,7 @@
 		var/list/owners = list()
 		var/list/all_ids = list()
 		var/faction
+		var/insurance_round
 		for (var/list/part in parts)
 			if (!islist(part) || !service.store.valid_owner(part["owner"]) || owners[part["owner"]]) return FALSE
 			owners[part["owner"]] = TRUE
@@ -256,7 +257,12 @@
 			V.owner = part["owner"]
 			V.profile = before
 			V.service = service
-			var/list/plan = V.plan_raid(part["selected"], part["faction"], null, null, null, before["revision"], FALSE)
+			var/list/offer = part["insurance"]
+			if (!isnull(offer))
+				if (!islist(offer) || json_encode(V.plan_insurance_quote(part["selected"], offer["round"], FALSE)) != json_encode(offer)) return FALSE
+				if (insurance_round && insurance_round != offer["round"]) return FALSE
+				insurance_round = offer["round"]
+			var/list/plan = offer ? V.plan_raid(part["selected"], part["faction"], offer["insured"], offer["round"], offer["payment"], before["revision"], FALSE) : V.plan_raid(part["selected"], part["faction"], null, null, null, before["revision"], FALSE)
 			if (!plan) return FALSE
 			var/list/expected = plan["candidate"]
 			expected["revision"] = before["revision"] + 1

@@ -107,6 +107,38 @@
 
 // Persist the debit before returning equipment to the caller. Caller must
 // retire its home representations before materializing any raid representation.
+/proc/extraction_insurable_type_name(type_name)
+	if (!istext(type_name)) return FALSE
+	for (var/prefix in list("/obj/item/weapon/gun", "/obj/item/weapon/attachment", "/obj/item/weapon/gun_mount", "/obj/item/ammo_magazine", "/obj/item/clothing", "/obj/item/weapon/storage", "/obj/item/weapon/material", "/obj/item/blackpowder_part"))
+		if (type_name == prefix || copytext(type_name, 1, length(prefix) + 2) == "[prefix]/") return TRUE
+	return FALSE
+
+// Shared pure price calculation lets the durable group journal recompute each
+// member's premium without live sessions, client prompts or item constructors.
+/datum/extraction_session/proc/plan_insurance_quote(list/selected_ids, round_id, require_active = TRUE)
+	if ((require_active && !active()) || profile["state"] != "home" || !islist(selected_ids) || selected_ids.len > 16 || !istext(round_id) || !length(round_id) || length(round_id) > 64 || !valid_entries(profile["stash"], capacity())) return null
+	var/list/wanted = list()
+	for (var/id in selected_ids)
+		if (!istext(id) || wanted[id]) return null
+		wanted[id] = TRUE
+	var/list/insured = list()
+	var/list/payment = list()
+	var/cost = 0
+	var/found = 0
+	for (var/list/entry in profile["stash"])
+		var/list/graph = entry["equipment"]
+		if (wanted[entry["id"]])
+			found++
+			if (graph["schema"] != 2) return null
+			if (!extraction_insurable_type_name(graph["nodes"][1]["type"])) continue
+			insured += entry["id"]
+			for (var/list/node in graph["nodes"])
+				if (extraction_insurable_type_name(node["type"])) cost++
+		else if (graph["schema"] == 2 && graph["nodes"].len == 1 && graph["nodes"][1]["type"] == "/obj/item/extraction_salvage") payment += entry["id"]
+	if (found != wanted.len || !cost || cost > 64 || payment.len < cost) return null
+	payment.Cut(cost + 1)
+	return list("revision" = profile["revision"], "round" = round_id, "selected" = selected_ids.Copy(), "insured" = insured, "payment" = payment, "cost" = cost)
+
 /datum/extraction_session/proc/plan_raid(list/selected_ids, raid_faction = "PMC", list/insured_ids, insurance_round, list/payment_ids, expected_revision, require_active = TRUE)
 	if ((require_active && !active()) || profile["state"] != "home" || !islist(selected_ids) || selected_ids.len > 16 || !(raid_faction in list("PMC", "Scav"))) return null
 	if (!isnull(expected_revision) && expected_revision != profile["revision"]) return null
