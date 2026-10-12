@@ -82,6 +82,16 @@ These interfaces are not enabled by the house UI yet. Eligibility, pricing,
 round-end reconciliation, physical retirement and atomic return delivery remain
 pending. Issued claims alone never grant gear or prove insurance acceptance.
 
+The explicit round inventory reads at most 4096 account directory entries and
+indexes at most 4096 relevant claim tokens. It compares recovered tokens and
+current stored identities, rejects ambiguous ownership or unresolved journals,
+and gates normal account access while building. A later consumer must freeze
+service access and revalidate exact profile digests and the account set before
+writing a receipt. This is a read-only disk index, with no world scan, timer,
+physical deletion or payout. Native tests cover a recovered old claim versus a
+new issue, stored ownership without a recovery receipt, conflicting owners,
+pending journals, stale inventory and access-gate release.
+
 ## Required safe-house concept video
 
 Record a genuine disposable local playable world after integrated regressions

@@ -12,6 +12,10 @@
 var/equipment_failures = 0
 var/equipment_completed = FALSE
 
+/datum/insurance_gate_observer
+	proc/check(datum/extraction_service/S)
+		return !S.open("inventoryvisitor") && !S.sessions["insured"].active() && !S.sessions["insured"].checkpoint_home(list())
+
 /world/OpenPort(port)
 	if (port == "none") return ..()
 	return FALSE
@@ -50,7 +54,6 @@ var/equipment_completed = FALSE
 		equipment_assert(C.set_raid_provenance(G, TRUE), "raid acquisition marks bounded nested graph")
 		var/list/record = C.encode(G)
 		equipment_assert(record && C.validate(record), "gun graph encodes and validates")
-		equipment_projection_probe(C, record, G.extraction_item_id, O.extraction_item_id, G.serial)
 		var/datum/extraction_account_store/store = new
 		var/list/P = store.load_profile("equipped")
 		P["stash"] = list(list("id" = "configuredrifle", "equipment" = record))
@@ -65,6 +68,7 @@ var/equipment_completed = FALSE
 		equipment_assert(restored.optic_rail && restored.scope && restored.scope.loc == restored.optic_rail && restored.scope.A_attached, "nested rail and optic links restored")
 		equipment_assert(restored.ergonomics == G.ergonomics, "configuration does not compound on load")
 		equipment_assert(restored.extraction_item_id == G.extraction_item_id && restored.extraction_found_in_raid && restored.scope.extraction_item_id == O.extraction_item_id && restored.scope.extraction_found_in_raid, "nested identities and raid provenance survive native disk reload")
+		equipment_projection_probe(C, record, G.extraction_item_id, O.extraction_item_id, G.serial)
 		var/list/duplicate = json_decode(json_encode(record))
 		var/list/duplicate_nodes = duplicate["nodes"]
 		var/list/first_node = duplicate_nodes[1]
@@ -230,6 +234,28 @@ var/equipment_completed = FALSE
 	var/new_token = next["issued"][1]["equipment"]["nodes"][1]["insurance_token"]
 	equipment_assert(next && new_token != token && A.profile["insurance_claims"].len == 2, "later issue of same item receives independent claim token")
 	equipment_assert(!(new_token in B.profile["insurance_recovered"]), "old recovery receipt does not exclude later independently insured issue")
+	var/datum/extraction_insurance_inventory/inventory = new(S)
+	inventory.test_access_observer = new /datum/insurance_gate_observer
+	var/list/index = inventory.build("industrial1")
+	equipment_assert(index && index[token]["status"] == "recovered" && index[new_token]["status"] == "unrecovered" && A.active(), "bounded round inventory separates old recovery from new claim and releases access gate")
+	var/list/no_round = inventory.build("otherround")
+	equipment_assert(islist(no_round) && !no_round.len, "other round has no claim candidates")
+	var/datum/extraction_session/holder = S.open("holder")
+	equipment_assert(holder.checkpoint_home(next["issued"]), "fixture materializes stored ownership without recovery marker")
+	index = inventory.build("industrial1")
+	equipment_assert(index && index[new_token]["status"] == "stored", "current stored owner excludes return even without its recovery marker")
+	var/datum/extraction_session/conflict = S.open("conflict")
+	equipment_assert(conflict.checkpoint_home(next["issued"]), "fixture injects competing stored node identities")
+	equipment_assert(!inventory.build("industrial1") && A.active(), "conflicting stored ownership blocks planning without retaining service gate")
+	equipment_assert(conflict.checkpoint_home(list()) && holder.checkpoint_home(list()), "fixture clears conflicting ownership")
+	equipment_assert(!inventory.revalidate(), "unfrozen inventory cannot authorize a later write")
+	S.insurance_busy = TRUE
+	equipment_assert(!inventory.revalidate(), "changed account revisions invalidate a prior inventory")
+	S.insurance_busy = FALSE
+	equipment_assert(inventory.build("industrial1"), "refresh ownership index after changed accounts")
+	S.insurance_busy = TRUE
+	equipment_assert(inventory.revalidate(), "unchanged exact profiles validate under retained service gate")
+	S.insurance_busy = FALSE
 	var/list/projected = C.project_identities(next["issued"][1]["equipment"], list(root_id))
 	equipment_assert(projected && projected[1]["nodes"][1]["insurance_token"] == new_token, "partial return projection preserves exact issue-specific token")
 	var/list/bounded = A.copy_profile()
@@ -249,3 +275,8 @@ var/equipment_completed = FALSE
 	equipment_assert(!S.insurance_profile_valid(bounded), "recovery evidence refuses 4097 tokens instead of forgetting exclusions")
 	bounded["insurance_recovered"].Cut(4097, 4098)
 	equipment_assert(S.insurance_profile_valid(bounded), "4096 recovered tokens remain valid at boundary")
+	var/list/pending = S.store.load_profile("pendingaccount")
+	S.store.test_fail_at = "intent"
+	equipment_assert(!S.store.commit_profile("pendingaccount", pending), "inject unresolved nonparticipant account journal")
+	S.store.test_fail_at = null
+	equipment_assert(!inventory.build("industrial1") && !S.insurance_busy, "unresolved nonparticipant journal prevents insurance inference and releases read gate")

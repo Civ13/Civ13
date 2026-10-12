@@ -6,7 +6,9 @@
 	var/list/sessions = list()
 	var/last_error
 	var/datum/extraction_settlement/settlement
+	var/tmp/insurance_busy = FALSE
 	proc/settlement_ready()
+		if (insurance_busy) return FALSE
 		if (!settlement) settlement = new(src)
 		return settlement.ready()
 
