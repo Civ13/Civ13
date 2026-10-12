@@ -32,9 +32,14 @@ var/list/mutate_on_tick = null
 /obj/structure/wild
 /obj/item
 /obj/covers
+/mob
+	var/stat = FALSE // Production mob_defines.dm default; states from predefines.dm.
 /mob/new_player
+/mob/living/human
+	var/tmp/rejuvenate_calls = 0
 /mob/living/human/proc/rejuvenate()
-	return
+	rejuvenate_calls++
+	stat = CONSCIOUS
 /datum/controller/gameticker
 /obj/map_metadata
 	var/ID = "TEST"

@@ -44,6 +44,8 @@ var/datum/map_stub/map = new
 	var/obj/buckled
 /mob/living/proc/adjustBruteLoss(n)
 /mob/living/human
+/world/OpenPort(port)
+	return ..("none")
 world
 	maxx = 20
 	maxy = 10
@@ -53,6 +55,7 @@ world
 	loop_checks = FALSE
 #endif
 	New()
+		OpenPort("none")
 		..()
 		spawn(1) run_tests()
 /mob/living/human/proc/use_hitch(obj/structure/trains/T)

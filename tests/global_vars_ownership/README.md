@@ -1,0 +1,7 @@
+# Native global-controller variable-name snapshot
+
+Run `run.py --byond-bin <516.1681-bin> --evidence-dir <fresh-directory>` with a verified interpreter. The fixture compiles the complete production global-controller file with isolated base-datum, logging and delayed disposal adapters. It checks that the built-in variable-name snapshot survives disposal of the excluded controller and that the real global initialization dispatch initializes a probe global.
+
+`--baseline` is Windows-only and loads the immutable production source at `f6d769d3751275f63a4481db61290dde79e9cbb4`. BYOND 516.1681 Windows reports two native `BUG: Bad ref ... DecRefCount(DM New)` diagnostics while forming a union from the virtual datum.vars list. The control accepts only those expected diagnostics and requires successful compilation and completed assertions. Control exit success proves detection; this historical source is invalid production acceptance evidence. Linux CI runs the fixed-source check; no Linux baseline diagnostic reproduction is claimed.
+
+The fix first materializes variable names in an ordinary list, then appends the three internal-controller names. The fixed run requires zero compiler errors/warnings and zero native/runtime diagnostics. Source, fixture, hashes, logs and commit/dirty metadata are retained. Temporary world port closes at startup and refuses reopening. This isolated check does not replace full-game startup verification.

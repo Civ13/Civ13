@@ -482,3 +482,5 @@ and a fresh snapshot is populated only when a new pass starts. NanoUI child clos
 must detach from its master, and master close iterates a copy of children.
 tests/pool_effects constructs actual effects with isolated startup and observer
 count lists initialized; missing those lists creates misleading fixture errors.
+<!-- 2026-10-12: global controller virtual-list ownership -->
+Materialize `exclude_these.vars` names into an ordinary list before appending global-controller exclusions. Native BYOND 516.1681 can log `Bad ref` during direct virtual-list union even when assertions pass. `tests/global_vars_ownership/run.py` checks production initialization and a historical diagnostic control; the full-game train launcher rejects engine diagnostics and closes/refuses headless ports. Survival/weather/environment fixtures use fixed production initialization unchanged and adapt only the historical union.

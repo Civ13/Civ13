@@ -29,7 +29,10 @@ world
 /proc/check(condition, message)
 	if(!condition)
 		throw EXCEPTION(message)
+/world/OpenPort(port)
+	return ..("none")
 /world/New()
+	OpenPort("none")
 	..()
 	try
 		check_save_identity_and_snapshot()
@@ -58,6 +61,10 @@ world
 		var/obj/item/test/C = new(edge)
 		C.number = 314
 		C.items = list("second level" = 271)
+		var/mob/living/human/corpse = new(locate(2,1,1))
+		corpse.stat = DEAD
+		var/mob/living/human/living = new(locate(3,1,1))
+		living.stat = UNCONSCIOUS
 		check(map_storage.Save_World(), "export failed")
 		check(!map_storage.saving_reference_pins.len && !map_storage.saving_list_pins.len, "save pins retained after completion")
 		check(map_storage.validate_world_save(), "valid export rejected")
@@ -66,6 +73,10 @@ world
 		edge.ChangeTurf(/turf/test, FALSE, FALSE)
 		map_storage.ClearMap()
 		check(map_storage.Load_World(), "import failed")
+		corpse = locate(/mob/living/human) in locate(2,1,1)
+		living = locate(/mob/living/human) in locate(3,1,1)
+		check(corpse && corpse.stat == DEAD && !corpse.rejuvenate_calls, "saved dead human revived on import")
+		check(living && living.stat == CONSCIOUS && living.rejuvenate_calls == 1, "living human import did not rejuvenate")
 		check(istype(locate(world.maxx,world.maxy,2), /turf/test/edge), "edge turf lost")
 		check(locate(world.maxx,world.maxy,2):name == "far corner", "turf name lost")
 		A = locate(/obj/item/test) in locate(1,1,1)

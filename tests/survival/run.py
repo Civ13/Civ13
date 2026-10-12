@@ -35,8 +35,10 @@ def main():
         source = source.replace('code\\world.dm', generated[1].name)
         globals_source = (root / 'code/controllers/mc/globals.dm').read_text(encoding='utf-8')
         target = '\tgvars_datum_in_built_vars = exclude_these.vars + list('
-        if globals_source.count(target) != 1:
+        if globals_source.count(target) not in (0, 1):
             raise RuntimeError('Global variable snapshot isolation target changed')
+        if target not in globals_source and 'for(var/variable_name in exclude_these.vars)' not in globals_source:
+            raise RuntimeError('Fixed global name snapshot anchor changed')
         # Materialize the virtual vars list before union. BYOND 516.1681 logs
         # Bad ref during the original virtual-list union even on baseline.
         replacement = ('\tgvars_datum_in_built_vars = list()\n'

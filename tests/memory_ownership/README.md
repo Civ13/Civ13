@@ -36,8 +36,8 @@ Evidence from a dirty checkout is preliminary; repeat acceptance after committin
 Helpers are retired before invoking arbitrary code and are cleared on every exit.
 The reserve keeps at most 5,000 reusable helpers; cancellation indexes own only
 pending targets. Reserve removal uses the end of the list. Three final indexed
-150,000-cycle schedule/execute measurements were 0.900, 1.025 and 1.06094 seconds;
-the immutable baseline was 2.000, 1.950 and 1.98125 seconds. Median elapsed time fell 48%.
+150,000-cycle schedule/execute measurements at clean commit f6d769d3751275f63a4481db61290dde79e9cbb4 were 1.0875, 0.885938 and 1.00469 seconds;
+the immutable baseline was 1.850, 2.01094 and 1.94531 seconds. Median elapsed time fell 48%.
 These isolated measurements
 do not establish production latency or sustained server memory use.
 
