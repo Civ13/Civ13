@@ -26,6 +26,8 @@
 	var/tmp/shots = 18
 	var/tmp/death_registered = FALSE
 	var/tmp/list/route = list()
+	var/tmp/obj/item/loot_target
+	var/tmp/next_scavenge = 0
 	New()
 		..()
 		should_save = FALSE
@@ -43,6 +45,7 @@
 		hostile_entities.Cut()
 		route.Cut()
 		carried_salvage = null
+		loot_target = null
 		var/obj/map_metadata/extraction_survival/M = map
 		if (istype(M))
 			M.npcs -= src
@@ -50,6 +53,34 @@
 		return ..()
 	do_human_behaviour()
 		return
+	proc/scavenge_tick(obj/map_metadata/extraction_survival/M)
+		if (stat != CONSCIOUS || z != 1 || world.time < next_scavenge) return FALSE
+		next_scavenge = world.time + 2 SECONDS
+		var/held = 0
+		for (var/obj/item/I in contents) held++
+		if (held >= 8) return FALSE
+		if (loot_target && (!isturf(loot_target.loc) || loot_target.z != z || loot_target.anchored || !M.raid_items[loot_target])) loot_target = null
+		if (!loot_target)
+			var/best_distance = 13
+			var/inspected = 0
+			for (var/obj/item/I in view(12, src))
+				if (++inspected > 128) break
+				if (!isturf(I.loc) || I.z != z || I.anchored || !M.raid_items[I]) continue
+				var/distance = get_dist(src, I)
+				if (distance >= best_distance) continue
+				// Unsupported graphs remain physically present for other actors.
+				if (!M.codec.encode(I)) continue
+				loot_target = I
+				best_distance = distance
+		if (!loot_target) return FALSE
+		if (Adjacent(loot_target))
+			loot_target.forceMove(src)
+			loot_target = null
+			route.Cut()
+			return TRUE
+		route = cirrAstar(get_turf(src), get_turf(loot_target), 5, 64)
+		if (route.len) step_towards(src, route[1])
+		return FALSE
 	Shoot(atom/target)
 		if (!gun || stat != CONSCIOUS || !target) return
 		var/obj/item/projectile/P = gun.consume_next_projectile()
@@ -107,7 +138,10 @@
 			if (chosen != target_mob) route = list()
 			target_mob = chosen
 			if (chosen && chosen.z == z && (chosen in view(12, src)) && get_dist(src, chosen) > 6) route = cirrAstar(get_turf(src), get_turf(chosen), 5, 64)
-		if (!target_mob || target_mob.stat == DEAD || target_mob.z != 1) return
+		if (!target_mob)
+			scavenge_tick(M)
+			return
+		if (target_mob.stat == DEAD || target_mob.z != 1) return
 		if (get_dist(src, target_mob) <= 1)
 			if (world.time >= next_shot)
 				next_shot = world.time + 2 SECONDS
@@ -128,6 +162,7 @@
 		hostile_entities.Cut()
 		target_mob = null
 		route = list()
+		loot_target = null
 		var/obj/map_metadata/extraction_survival/M = map
 		if (istype(M) && !death_registered)
 			death_registered = TRUE
@@ -140,6 +175,9 @@
 				carried_salvage.forceMove(get_turf(src))
 				M.track_loot(carried_salvage)
 				carried_salvage = null
+			for (var/obj/item/I in contents.Copy())
+				I.forceMove(get_turf(src))
+				M.track_loot(I)
 
 /mob/living/simple_animal/hostile/human/extraction/contractor
 	name = "hostile contractor"

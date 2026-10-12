@@ -255,6 +255,10 @@
 	var/mob/living/simple_animal/hostile/human/extraction/contractor/pmc = new(locate(10,8,1))
 	M.npcs |= scav
 	M.npcs |= pmc
+	var/obj/item/extraction_salvage/finite_loot = M.spawn_loot(get_turf(scav), /obj/item/extraction_salvage)
+	var/list/finite_record = M.codec.encode(finite_loot)
+	scav.loot_target = finite_loot
+	equipment_assert(scav.scavenge_tick(M) && finite_loot.loc == scav && finite_loot.extraction_item_id == finite_record["nodes"][1]["id"], "NPC scavenges original finite tracked loot with its stable identity")
 	scav.handle_ai()
 	equipment_assert(!scav.target_mob, "unprovoked scav stays neutral")
 	scav.pmc_contact_hostile = TRUE
@@ -296,6 +300,7 @@
 	equipment_assert(!scav.aggressor && !scav.target_mob && !scav.route.len && !scav.hostile_entities.len, "death releases retaliation references")
 	equipment_assert(scav.stat == DEAD && !(scav in M.npcs) && dropped.loc == get_turf(scav) && M.raid_items[dropped], "NPC corpse drops tracked equipment once")
 	equipment_assert(original_salvage.loc == get_turf(scav) && M.raid_items[original_salvage] && !scav.carried_salvage, "NPC death releases original finite provision instead of creating loot")
+	equipment_assert(finite_loot.loc == get_turf(scav) && finite_loot.extraction_item_id == finite_record["nodes"][1]["id"], "NPC death releases original scavenged item without duplication")
 	var/retained = M.raid_items.len
 	scav.death()
 	equipment_assert(M.raid_items.len == retained, "NPC death callback idempotent")
