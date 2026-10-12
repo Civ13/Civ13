@@ -101,7 +101,9 @@
 		savefile.cd = ".."
 		if (ishuman(object))
 			var/mob/living/human/H = object
-			H.rejuvenate()
+			// A saved corpse must stay dead; do not replay death hooks on import.
+			if (H.stat != DEAD)
+				H.rejuvenate()
 			if (!H.name && savefile["name"])
 				H.name = savefile["name"]
 		return object

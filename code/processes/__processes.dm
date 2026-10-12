@@ -42,6 +42,7 @@ var/datum/process_list/processes = new
 
 	// SSCleanup members
 	var/process/abandoned_items/abandoned_items = null
+	var/process/human_corpse_decay/human_corpse_decay = null
 	var/process/garbage/garbage = null
 	var/process/python/python = null
 

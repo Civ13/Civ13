@@ -1538,47 +1538,10 @@
 		return
 
 /mob/living/human/proc/do_rotting()
-	if (map && istype(src, /mob/living/human/corpse))
-		return
-	spawn(600) // 1 minute
-		if (stat == DEAD)
-			spawn(30000)
-				if (stat == DEAD)
-					visible_message("[src]'s body starts to rot.")
-					rotting_stage = 1
-					spawn(30000)
-						if (stat == DEAD)
-							visible_message("[src]'s body is visibly rotten!")
-							rotting_stage = 2
-							if(map.ID != "TANTIVEIV" && map.ID != MAP_VERDUN)
-								if (isturf(loc))
-									new/mob/living/simple_animal/crow(loc)
-							spawn(20000)
-								if (stat == DEAD)
-									var/found = FALSE
-									for (var/obj/item/organ/external/head/H in organs)
-										found = TRUE
-										break
-									if ((map.is_zombie) && found && !istype(get_area(src), /area/caribbean/admin))
-										var/mob/living/simple_animal/hostile/human/zombie/playerzombie //make a var for the zombie
-										playerzombie = new /mob/living/simple_animal/hostile/human/zombie/ //make a zombie!
-										//transferring vars.
-										playerzombie.loc = loc
-										playerzombie.name = "[real_name]'s zombie"
-										strip()
-									else
-										if (!istype(src, /mob/living/human/corpse))
-											var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
-											HR.name = "[src]'s remains"
-											strip()
-									qdel(src)
-									return
-								else
-									return
-						else
-							return
-				else
-					return
+	// Idempotent registration, shared with extraction death handling.
+	if (stat == DEAD && !gcDestroyed)
+		start_to_rot = TRUE
+		register_corpse_decay()
 
 /mob/living/human/proc/ssd_hiding(var/timer = 10)
 	if (!map.civilizations)
