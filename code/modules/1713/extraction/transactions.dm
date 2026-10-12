@@ -6,11 +6,14 @@
 	var/list/sessions = list()
 	var/last_error
 	var/datum/extraction_settlement/settlement
+	var/datum/extraction_settlement/groups/group_journal
 	var/tmp/insurance_busy = FALSE
 	var/tmp/insurance_blocked = FALSE
 	var/tmp/datum/insurance_gate
 	proc/settlement_ready()
 		if (insurance_busy || insurance_blocked) return FALSE
+		if (!group_journal) group_journal = new(src)
+		if (!group_journal.ready()) return FALSE
 		if (insurance_gate && !call(insurance_gate, "ready")()) return FALSE
 		if (!settlement) settlement = new(src)
 		return settlement.ready()
@@ -100,8 +103,8 @@
 
 // Persist the debit before returning equipment to the caller. Caller must
 // retire its home representations before materializing any raid representation.
-/datum/extraction_session/proc/begin_raid(list/selected_ids, raid_faction = "PMC", list/insured_ids, insurance_round, list/payment_ids, expected_revision)
-	if (!active() || profile["state"] != "home" || !islist(selected_ids) || selected_ids.len > 16 || !(raid_faction in list("PMC", "Scav"))) return null
+/datum/extraction_session/proc/plan_raid(list/selected_ids, raid_faction = "PMC", list/insured_ids, insurance_round, list/payment_ids, expected_revision, require_active = TRUE)
+	if ((require_active && !active()) || profile["state"] != "home" || !islist(selected_ids) || selected_ids.len > 16 || !(raid_faction in list("PMC", "Scav"))) return null
 	if (!isnull(expected_revision) && expected_revision != profile["revision"]) return null
 	var/list/candidate = copy_profile()
 	var/list/stash = candidate["stash"]
@@ -152,8 +155,12 @@
 	candidate["raid_sequence"]++
 	candidate["state"] = "raid"
 	candidate["raid_faction"] = raid_faction
-	if (!commit(candidate)) return null
-	return list("sequence" = profile["raid_sequence"], "issued" = issued)
+	return list("candidate" = candidate, "sequence" = candidate["raid_sequence"], "issued" = issued)
+
+/datum/extraction_session/proc/begin_raid(list/selected_ids, raid_faction = "PMC", list/insured_ids, insurance_round, list/payment_ids, expected_revision)
+	var/list/plan = plan_raid(selected_ids, raid_faction, insured_ids, insurance_round, payment_ids, expected_revision)
+	if (!plan || !commit(plan["candidate"])) return null
+	return list("sequence" = profile["raid_sequence"], "issued" = plan["issued"])
 
 /datum/extraction_session/proc/extract(sequence, list/loot)
 	if (!active() || profile["state"] != "raid" || sequence != profile["raid_sequence"] || !valid_entries(loot, 16)) return FALSE

@@ -109,12 +109,13 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	attack_hand(mob/user)
 		var/mob/living/human/H = user
 		if (!istype(H) || !session || session.body != H || H.client?.ckey != session.owner || session.transitioning || session.profile["state"] != "home" || !Adjacent(H)) return
-		var/choice = WWinput(H, "Carry your loadout to deploy. Insured deployment costs one workshop part per reusable equipment component, paid from parts left at home. Ammunition never returns. This district closes after thirty minutes; extract before closure. Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts.", "Private safe house", "Cancel", list("Deploy", "Deploy as Scav", "Insure and deploy", "Claim insurance mail", "Visit hub", "Upgrade", "Save stash", "Cancel"))
+		var/choice = WWinput(H, "Carry your loadout to deploy. Insured deployment costs one workshop part per reusable equipment component, paid from parts left at home. Ammunition never returns. This district closes after thirty minutes; extract before closure. Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts.", "Private safe house", "Cancel", list("Deploy", "Raid group", "Deploy as Scav", "Insure and deploy", "Claim insurance mail", "Visit hub", "Upgrade", "Save stash", "Cancel"))
 		if (session.body != H || !Adjacent(H) || session.transitioning) return
 		var/obj/map_metadata/extraction_survival/M = map
 		if (!istype(M)) return
 		switch (choice)
 			if ("Deploy") M.deploy(H)
+			if ("Raid group") M.manage_party(H)
 			if ("Deploy as Scav") M.deploy(H, "Scav")
 			if ("Insure and deploy") M.deploy(H, "PMC", TRUE)
 			if ("Claim insurance mail") M.claim_mail(H)
@@ -476,6 +477,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	if (!raid)
 		S.transitioning = FALSE
 		return FALSE
+	leave_party(S.owner)
 	if (insured)
 		insured_nodes_issued += carried_nodes
 		for (var/obj/item/I in home_roots(S))
@@ -537,6 +539,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	return TRUE
 
 /obj/map_metadata/extraction_survival/proc/release(datum/extraction_session/S, save = TRUE)
+	leave_party(S.owner)
 	if (save && S.profile["state"] == "home" && !save_home(S)) return FALSE
 	if (S.house)
 		for (var/obj/item/I in home_roots(S))
@@ -550,6 +553,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	return TRUE
 
 /obj/map_metadata/extraction_survival/tick()
+	tick_parties()
 	if (round_closing)
 		close_round()
 		return

@@ -12,6 +12,7 @@
 	var/test_fail_at
 	var/datum/test_access_observer
 	var/last_error
+	var/journal_suffix = "_settlement/"
 	New(datum/extraction_service/S)
 		..()
 		service = S
@@ -22,7 +23,7 @@
 	proc/ready()
 		if (busy || blocked) return FALSE
 		if (!profile)
-			journal.root = "[service.store.root]_settlement/"
+			journal.root = "[service.store.root][journal_suffix]"
 			profile = journal.load_profile("world")
 			if (!profile && !repair_journal()) return fail("Shared journal requires recovery")
 			if (!profile["sequence"]) profile["sequence"] = 0
@@ -112,6 +113,8 @@
 		return TRUE
 	// Only released accounts can participate: their home representations have
 	// already been retired. Future live adapters must prepare that boundary first.
+	proc/participant_available(owner)
+		return !service.sessions[owner]
 	proc/submit(sequence, list/parts)
 		if (!ready()) return FALSE
 		var/digest = md5(json_encode(parts))
@@ -120,7 +123,7 @@
 			if (receipt["sequence"] == sequence) return receipt["digest"] == digest
 		if (!isnum(sequence) || round(sequence) != sequence || sequence != profile["sequence"] + 1 || sequence > 1000000 || !valid_participants(parts)) return FALSE
 		for (var/list/part in parts)
-			if (service.sessions[part["owner"]]) return FALSE
+			if (!participant_available(part["owner"])) return FALSE
 			var/list/current = service.store.load_profile(part["owner"])
 			if (!current || md5(json_encode(current)) != md5(json_encode(part["before"]))) return FALSE
 		// Check nonparticipant ownership too. Existing duplicates are not made
@@ -227,4 +230,41 @@
 		if (!success) return fail("Shared finalization requires recovery")
 		profile = final
 		if (test_fail_at == "after_finalize") return fail("Injected interruption after finalization")
+		return TRUE
+
+// Same durable projection protocol, with independently validated home-to-raid
+// transitions. No gear is copied or moved by the journal itself.
+/datum/extraction_settlement/groups
+	journal_suffix = "_settlement/groups/"
+	participant_available(owner)
+		var/datum/extraction_session/S = service.sessions[owner]
+		return !S || (S.active() && S.vars["transitioning"])
+	valid_participants(list/parts)
+		if (!islist(parts) || parts.len < 2 || parts.len > 4) return FALSE
+		var/list/owners = list()
+		var/list/all_ids = list()
+		var/faction
+		for (var/list/part in parts)
+			if (!islist(part) || !service.store.valid_owner(part["owner"]) || owners[part["owner"]]) return FALSE
+			owners[part["owner"]] = TRUE
+			var/list/before = part["before"]
+			var/list/after = part["after"]
+			if (!service.store.valid_profile(before, part["owner"]) || !service.store.valid_profile(after, part["owner"]) || !service.insurance_profile_valid(before) || !service.insurance_profile_valid(after)) return FALSE
+			if (!faction) faction = part["faction"]
+			if (part["faction"] != faction) return FALSE
+			var/datum/extraction_session/V = new
+			V.owner = part["owner"]
+			V.profile = before
+			V.service = service
+			var/list/plan = V.plan_raid(part["selected"], part["faction"], null, null, null, before["revision"], FALSE)
+			if (!plan) return FALSE
+			var/list/expected = plan["candidate"]
+			expected["revision"] = before["revision"] + 1
+			if (json_encode(expected) != json_encode(after) || json_encode(plan["issued"]) != json_encode(part["issued"])) return FALSE
+			var/list/ids = service.store.recovery_ids(before)
+			if (!islist(ids)) return FALSE
+			for (var/id in ids)
+				if (all_ids[id]) return FALSE
+				all_ids[id] = TRUE
+			if (all_ids.len > 4096) return FALSE
 		return TRUE

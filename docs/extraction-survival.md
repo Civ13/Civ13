@@ -21,6 +21,32 @@ the catalog check compiles all three actual environments with BYOND 516.1681.
 The mode fixture records the switch request through an injected adapter and
 does not deploy, restart production or establish graphical menu acceptance.
 
+The private-house terminal offers raid groups of two to four players. The
+leader invites each member, who must accept and ready their own loadout in
+their house. Groups share a PMC or Scav faction and expire after five minutes.
+Membership changes, withdrawal, condition changes or a new stash revision
+invalidate readiness. The leader starts deployment only when every current
+member is ready. Current group deployment is uninsured; paid insurance remains
+available through individual deployment.
+
+The group journal reuses exact forward settlement beneath `_settlement/groups/`.
+It validates every home-to-raid projection against the same pure debit planner
+used by individual raids, then commits all debits before moving any member.
+Existing item atoms move together to one raid spawn. Account access is gated
+throughout the commit. A failure before the shared receipt leaves everyone home;
+a failure after durable intent locks participants and account access. On restart,
+complete recorded projections finish forward and interrupted raids forfeit their
+issued gear. An unknown initial intent remains blocked for explicit recovery.
+Recovery never reconstructs issued gear as a second copy.
+
+The mode fixture checks four real human constructors and original gear atoms,
+consent races, readiness changes, member replacement, live access gates and
+independent extraction. `--probe groups` runs three native processes across
+eleven journal/account interruption points, including initial and final receipt
+writes. Its debit and visibility negative controls must fail at the intended
+assertions. These checks do not establish connected invitation dialogs, client
+movement/rendering or production restart acceptance.
+
 ## Milestones and dependencies
 
 1. Durable account snapshots, revision checks and interrupted-transfer barriers.

@@ -12,21 +12,24 @@ import uuid
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
-    parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'insurance'), default='store')
+    parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'insurance', 'groups'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry'))
+    parser.add_argument('--group-negative-control', choices=('debit', 'visibility'))
     args = parser.parse_args()
     if args.provenance_negative_control and args.probe not in ('equipment', 'mode'):
         parser.error('Provenance control requires the equipment or mode probe')
     if args.vote_negative_control and (args.probe != 'mode' or args.provenance_negative_control):
         parser.error('Vote control requires the mode probe without another control')
+    if args.group_negative_control and (args.probe != 'groups' or args.provenance_negative_control or args.vote_negative_control):
+        parser.error('Group control requires the groups probe without another control')
     root = Path(__file__).resolve().parents[2]
     binary = args.byond_bin.resolve()
     compiler = binary / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
-    if args.probe in ('equipment', 'mode', 'insurance'):
-        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control)
+    if args.probe in ('equipment', 'mode', 'insurance', 'groups'):
+        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control)
     with tempfile.TemporaryDirectory(prefix='civ13-extraction-') as temp:
         target = Path(temp)
         (target / 'tests/extraction').mkdir(parents=True)
@@ -56,12 +59,30 @@ def main():
                 raise RuntimeError('Account journal verification failed')
 
 
-def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None):
+def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None):
     prefix = '.extraction_' + uuid.uuid4().hex
     generated = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '.dmb', '.rsc')]
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         expected_vote_failure = None
+        expected_group_failure = None
+        if group_control:
+            filename = 'settlement' if group_control == 'debit' else 'transactions'
+            group_source = (root / f'code/modules/1713/extraction/{filename}.dm').read_text(encoding='utf-8')
+            if group_control == 'debit':
+                marker = 'if (json_encode(expected) != json_encode(after) || json_encode(plan["issued"]) != json_encode(part["issued"])) return FALSE'
+                replacement = 'if (json_encode(plan["issued"]) != json_encode(part["issued"])) return FALSE'
+                expected_group_failure = 'forged group projection rejected by planning authority'
+            else:
+                marker = 'if (!group_journal.ready()) return FALSE'
+                replacement = 'group_journal.ready()'
+                expected_group_failure = 'interrupted group never exposes a partial account set'
+            if group_source.count(marker) != 1:
+                raise RuntimeError('Group mutation marker changed')
+            control = root / (prefix + f'_{filename}.dm')
+            generated.append(control)
+            control.write_text(group_source.replace(marker, replacement), encoding='utf-8')
+            source = source.replace(f'code\\modules\\1713\\extraction\\{filename}.dm', control.name)
         if vote_control:
             vote_source = (root / 'code/datums/vote.dm').read_text(encoding='utf-8')
             mutations = {
@@ -101,10 +122,13 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
         source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
         if probe == 'mode':
             source = '#define EXTRACTION_MODE_PROBE\n' + source
-            source += '\n#include "tests/extraction/mode_probe.dm"\n#include "tests/extraction/vote_probe.dm"\n#include "tests/extraction/loot_probe.dm"\n#include "maps/extraction/industrial_district.dmm"\n'
+            source += '\n#include "tests/extraction/mode_probe.dm"\n#include "tests/extraction/vote_probe.dm"\n#include "tests/extraction/group_probe.dm"\n#include "tests/extraction/loot_probe.dm"\n#include "maps/extraction/industrial_district.dmm"\n'
         if probe == 'insurance':
             source = '#define EXTRACTION_RETURNS_PROCESS_PROBE\n' + source
             source += '\n#include "tests/extraction/insurance_process_probe.dm"\n'
+        if probe == 'groups':
+            source = '#define EXTRACTION_GROUP_PROCESS_PROBE\n' + source
+            source += '\n#include "tests/extraction/group_process_probe.dm"\n'
         source += '\n#include "tests/extraction/equipment_probe.dm"\n'
         generated[0].write_text(source, encoding='utf-8')
         with tempfile.TemporaryDirectory(prefix='civ13-extraction-equipment-') as temp:
@@ -118,14 +142,25 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             shutil.copy2(generated[4], target / 'probe.rsc')
             shutil.copytree(root / 'config/names', target / 'config/names')
             platform = ['-invisible', '-close'] if os.name == 'nt' else []
-            phases = ('write', 'reload', 'replay') if probe == 'insurance' else ('equipment',)
+            phases = ('write', 'reload', 'replay') if probe in ('insurance', 'groups') else ('equipment',)
             for phase in phases:
                 (target / 'result.txt').unlink(missing_ok=True)
-                ran = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-params', f'phase={phase}', '-log', 'runtime.log'], cwd=target,
-                                 capture_output=True, text=True, timeout=60, creationflags=flags)
+                try:
+                    ran = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-params', f'phase={phase}', '-log', 'runtime.log'], cwd=target,
+                                         capture_output=True, text=True, timeout=60, creationflags=flags)
+                except subprocess.TimeoutExpired:
+                    log_path = target / 'runtime.log'
+                    print(log_path.read_text(errors='replace')[-12000:] if log_path.exists() else 'Runtime log missing at timeout')
+                    raise
                 result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
                 log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''
                 print(result)
+                if group_control and result.startswith('FAIL:'):
+                    if ran.returncode or expected_group_failure not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
+                        print(log)
+                        raise RuntimeError('Group control did not fail at its intended assertion')
+                    print('PASS: group control rejected: ' + group_control)
+                    return
                 if vote_control:
                     if ran.returncode or not result.startswith('FAIL:') or expected_vote_failure not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
                         print(log)
@@ -141,6 +176,8 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 if ran.returncode or not result.startswith('PASS:') or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
                     print(log)
                     raise RuntimeError('Production equipment verification failed')
+            if group_control:
+                raise RuntimeError('Group control was not detected')
     finally:
         for path in generated:
             path.unlink(missing_ok=True)

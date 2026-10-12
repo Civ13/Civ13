@@ -249,6 +249,12 @@ deadlines. Retain and cancel handles when a caller's lifetime ends; completion
 callbacks run after detachment and may start another vote. See docs/voting.md
 and tests/extraction/vote_probe.dm; adapters isolate restart/deployment effects.
 
+<!-- 2026-10-11: atomic raid groups -->
+Group deployment reuses the shared journal under `_settlement/groups/`; exact
+home-to-raid projections come from the solo raid planner. Never move members
+before all account debits commit. `--probe groups` checks three-process recovery
+across eleven cuts; mode fixtures exercise consent/readiness and original atoms.
+
 <!-- 2026-10-11: automatic crafting atlas -->
 `scripts/build-crafting-atlas.py --catalog-only --game-catalog UI/crafting-atlas.json`
 refreshes the shared Notes-style game reference before direct local compilation.

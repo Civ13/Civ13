@@ -13,6 +13,13 @@
 	var/list/test_owners = list()
 	var/test_wait = "complete"
 	var/test_insurance_confirmation = TRUE
+	var/test_party_confirmation = "accept"
+	confirm_party(mob/living/human/H, leader, faction)
+		sleep(1)
+		if (test_party_confirmation == "stale")
+			var/datum/extraction_party/P = party_by_owner[leader]
+			P.invalidate()
+		return test_party_confirmation != "decline"
 	confirm_insurance(mob/living/human/H, list/offer)
 		return test_insurance_confirmation
 	identity(mob/living/human/H)
@@ -241,6 +248,7 @@
 	scav.death()
 	equipment_assert(M.raid_items.len == retained, "NPC death callback idempotent")
 	equipment_assert(M.raid_items.len <= 2048 && M.npcs.len <= 12, "loot and NPC registries bounded")
+	extraction_group_probe(M)
 	extraction_round_probe(M)
 
 /proc/extraction_round_probe(obj/map_metadata/extraction_survival/M)

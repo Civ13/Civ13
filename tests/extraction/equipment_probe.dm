@@ -30,10 +30,14 @@ var/equipment_completed = FALSE
 /world/New()
 	world.OpenPort("none")
 	spawn(2)
+#ifdef EXTRACTION_GROUP_PROCESS_PROBE
+		run_group_process_probe()
+#else
 #ifdef EXTRACTION_RETURNS_PROCESS_PROBE
 		run_insurance_process_probe()
 #else
 		run_equipment_probe()
+#endif
 #endif
 
 /proc/run_equipment_probe()
