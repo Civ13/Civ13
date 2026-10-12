@@ -99,7 +99,9 @@ class MallTests(unittest.TestCase):
             self.assertTrue(all('/obj/covers/generic_wall' in layers[z][100][x] for x in range(SIZE)))
         loot = [value for z in (1, 4, 5) for row in layers[z] for value in row if '/extraction_loot_marker' in value]
         ids = [int(re.search(r'container_id = (\d+)', value)[1]) for value in loot]
-        self.assertEqual(len(ids), 56)
+        self.assertEqual(len(ids), 58)
+        self.assertEqual(sum('/extraction_loot_marker/keyed/' not in value for value in loot), 56)
+        self.assertEqual(sum('/extraction_loot_marker/keyed/' in value for value in loot), 2)
         self.assertEqual(len(set(ids)), len(ids))
         self.assertTrue(all(1 <= value <= 64 for value in ids))
 

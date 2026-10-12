@@ -70,8 +70,14 @@ Generate with the verified Python interpreter and `tests/extraction/build_mall.p
 scale changes still require layout and travel-time review. 256 x 256 x 5 allocates
 327,680 turfs; 512 x 512 x 5 allocates 1,310,720. Wall padding is allocated too.
 Generation/topology support is not startup, memory, performance or balance
-acceptance for larger sizes. Budgets remain 56 unique sealed containers, at most
+acceptance for larger sizes. Budgets are 56 ordinary containers plus two keyed
+caches, at most
 64 allowed container IDs, 2,048 tracked item nodes, 12 NPCs, 32 participants and
 16 private homes.
 Do not hand-edit the generated map. This map is selectable through the existing
 launcher and safehouse next-map catalog; implementation does not deploy it.
+
+Transit security and Foundry hardware each have one exact-key cache on the
+retail floor. Their keys can be recovered on any Extraction map and retain
+their remaining uses when extracted. See [container keys](extraction-container-keys.md)
+for the catalog, acquisition rule and verification boundaries.

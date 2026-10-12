@@ -131,6 +131,7 @@ jobs:
           /usr/bin/python3 tests/extraction/test_recovery.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
           /usr/bin/python3 tests/extraction/test_map_environment.py
           /usr/bin/python3 tests/extraction/test_mall.py
+          /usr/bin/python3 tests/extraction/test_key_maps.py
           /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
           /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control mission
           /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control vehicle

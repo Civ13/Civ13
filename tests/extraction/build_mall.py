@@ -163,6 +163,10 @@ def build(size=SIZE):
         for y, row in enumerate(reversed(body.splitlines())):
             for x in range(96):
                 layers[int(z)][y][x] = tile(old_defs[row[x*2:x*2+2]])
+    # Clear interiors of Transit security and Foundry hardware. Add dictionary
+    # entries only after importing protected home/hub grids, keeping their keys.
+    put(4, 74, 100, '/obj/effect/extraction_loot_marker/keyed/mall_security{container_id = 61}')
+    put(4, 113, 40, '/obj/effect/extraction_loot_marker/keyed/mall_hardware{container_id = 62}', floor=dark)
     result = [f'"{key}" = {value}' for value, key in definitions.items()]
     for z in sorted(layers):
         result += ['', f'(1,1,{z}) = {{"', *(''.join(row) for row in reversed(layers[z])), '"}']

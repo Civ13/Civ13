@@ -1,0 +1,71 @@
+# Extraction container keys
+
+Every current Extraction map has two locked caches. Each key opens exactly one
+named container on one map. A foreign-map key is ordinary recoverable equipment:
+extract or ship it home, retain it in storage, and carry it on a later raid.
+Container keys have three uses. One successful unlock spends one use; reopening
+that same cache during the same loot epoch does not spend another. The final
+use removes the key. The unlocked cache is shared raid loot.
+
+The shared loot integration rolls a 1% bonus chance when an ordinary container's
+loot is first planned. A successful roll selects one of all six key types with
+equal weight, regardless of the current map. There are no fixed container-key
+spawns. Plans contain at most four outcomes and only one bonus key. Locked
+caches do not roll bonus keys. These are initial implementation values, not
+playtested balance claims.
+
+| Map | Exact container | ID | Separate reward table |
+| --- | --- | --- | --- |
+| Industrial District | Southwest maintenance stock cage | 61 | Workshop salvage, steel, copper |
+| Industrial District | Central dispatch reserves locker | 62 | Gasoline, cloth, leather |
+| Modern City | Southwest pharmacy treatment cabinet | 61 | Bandages, splints, cloth |
+| Modern City | North central evidence locker | 62 | Pistol, magazines, gold |
+| Interchange Mall | Transit security cache, retail floor | 61 | Kevlar, pistol, magazines |
+| Interchange Mall | Foundry hardware reserves, retail floor | 62 | Cable, glass, copper, optic |
+
+Each named table has independent weights and two or three guaranteed draws.
+Repeated rewards are possible. IDs are unique within each map and remain below
+the existing 64-container limit. Ordinary loot placements remain in place.
+
+## Integration contract
+
+`container_keys.dm` owns the bounded key catalog, immutable type-default targets,
+three-use limit, six mapped subtypes and six reward tables. An uncatalogued subtype
+or unknown pool must fail closed. Generic numeric door codes are not authority:
+the key family explicitly inherits `/obj/item`, so generic keys, doors and closet
+re-keying do not recognize these items. The historic secure-room extraction key
+is separate.
+
+The shared equipment codec must store `uses_remaining` and reject missing,
+fractional, exhausted or over-limit values. Map and target are never mutable
+account fields. Nested bags, extraction, shipment and vehicle cargo use the same
+equipment graph and item identity. Keys are not insurance-eligible.
+
+The shared loot journal owns access and charge consumption. It validates the
+actual carried key, actor/session, exact map/container/table, adjacency and raid
+state under its busy/transition guards. A successful durable unlock receipt
+precedes synchronous consumption of one use. The container stays unlocked for
+that loot epoch, including after reload or a contents-construction retry. Failed
+or ambiguous writes quarantine access; they must not expose contents or mint a
+replacement key. Interrupted raids forfeit deployed inventory. A new epoch
+relocks and restocks the cache. Pending deliveries remain recovery-blocked.
+
+## Verification
+
+`test_key_maps.py` checks deterministic generation, exactly one placement of each
+target, all three maps, bounded unique IDs, reachable approaches, protected
+home/hub floors and no fixed key spawns. Its blocked-cache control must fail
+reachability. `test_mall.py` also covers scaled topology and numeric DMM boolean
+assignments compatible with MapDiffBot2.
+
+`container_keys_probe.dm` is a native catalog regression scaffold: immutable
+targets, valid/exhausted counters, uncatalogued subtypes, native keyslot denial,
+unique tables and unsupported targets. It requires the shared codec integration
+for pharmacy rewards. It is compiled by the mall fixture and intended for the
+shared isolated key runner. Compilation is not runtime evidence.
+
+The additive catalog/placement patch alone does not enforce locks or persist
+charges; that requires the matching shared loot/equipment journal integration.
+Local native execution is currently held while daemon startup isolation is
+resolved. Unlock failures, concurrent use, rare-drop endpoints, inventory
+round trips and in-game appearance remain separate acceptance checks.

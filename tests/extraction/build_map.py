@@ -123,6 +123,14 @@ def build(city=False):
     hub[66][47] = tile('/obj/effect/extraction_hub_guide/operations', floor, hub_area)
     hub[47][47] = tile('/obj/effect/extraction_hub_terminal', floor, hub_area)
     layers.append(hub)
+    # Append new dictionary entries after protected levels to preserve their
+    # literal tile keys and grids. Both caches occupy clear warehouse interiors.
+    if city:
+        put(20, 24, '/obj/effect/extraction_loot_marker/keyed/city_pharmacy{container_id = 61}')
+        put(46, 66, '/obj/effect/extraction_loot_marker/keyed/city_evidence{container_id = 62}')
+    else:
+        put(22, 24, '/obj/effect/extraction_loot_marker/keyed/industrial_tool_cage{container_id = 61}')
+        put(46, 48, '/obj/effect/extraction_loot_marker/keyed/industrial_dispatch{container_id = 62}')
     result = [f'"{key}" = {value}' for value, key in definitions.items()]
     for z, layer in enumerate(layers, 1):
         result += ['', f'(1,1,{z}) = {{"', *(''.join(row) for row in reversed(layer)), '"}']
