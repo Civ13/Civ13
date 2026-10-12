@@ -67,9 +67,12 @@ var/training_wait_count = 0
 		training_check(E.actor == H && E.repetition == 1 && H.getMaxStat("strength") == 80 && training_wait_count == 1, "one manual repetition gives no partial XP or autonomous continuation")
 		E.attack_hand(other)
 		training_check(E.actor == H && !other.exercise_equipment, "equipment claim blocks concurrent actor")
+		var/obj/structure/exercise/training_fixture/second = new(locate(2,2,1))
+		second.attack_hand(H)
+		training_check(!second.actor && H.exercise_equipment == E, "second equipment cannot bypass actor session")
 		E.attack_hand(H)
 		E.attack_hand(H)
-		training_check(H.getMaxStat("strength") == 80.4 && H.exercise_fatigue == 2 && !E.actor && !H.exercise_equipment && training_fixture_time == 450, "three manual repetitions complete finite 45-second paid-equipment set")
+		training_check(abs(H.getMaxStat("strength") - 80.4) < 0.001 && H.exercise_fatigue == 2 && !E.actor && !H.exercise_equipment && training_fixture_time == 450, "three manual repetitions complete finite 45-second paid-equipment set (strength [H.getMaxStat("strength")])")
 		var/gain = H.getMaxStat("strength")
 		for (var/mode in list("interrupt","move","death","cancel"))
 			training_wait_mode = mode
@@ -85,6 +88,12 @@ var/training_wait_count = 0
 		training_fixture_time += 600
 		H.recover_exercise()
 		training_check(H.exercise_fatigue == 5, "one running-server minute recovers one fatigue point")
+		H.exercise_fatigue = 4
+		H.stats["strength"] = list(100,100)
+		E.attack_hand(H)
+		E.attack_hand(H)
+		E.attack_hand(H)
+		training_check(abs(H.getMaxStat("strength") - 100.1) < 0.001 && H.exercise_fatigue == 6, "fatigue and intermediate training diminish native reward")
 		H.exercise_fatigue = 0
 		H.stats["strength"] = list(124.9,124.9)
 		E.attack_hand(H)
@@ -96,6 +105,13 @@ var/training_wait_count = 0
 		map.ordinal_age = 8
 		H.exercise_fatigue = 0
 		training_check(M.eligible(H), "Modern equipment permits intermediate training")
+		H.stats["strength"] = list(149.9,149.9)
+		M.attack_hand(H)
+		M.attack_hand(H)
+		M.attack_hand(H)
+		training_check(H.getMaxStat("strength") == 150 && !M.eligible(H), "Modern gym cap retains advanced native progression")
+		H.stats["strength"] = list(125,125)
+		H.exercise_fatigue = 0
 		var/obj/structure/exercise/course/training_fixture/C = new(locate(2,2,1))
 		H.stats["dexterity"] = list(80,80)
 		H.stats["stamina"] = list(80,80)

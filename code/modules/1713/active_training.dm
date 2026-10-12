@@ -162,7 +162,7 @@
 		exercise_equipment.complete_repetition(src)
 
 /obj/structure/exercise/proc/complete_repetition(mob/living/human/H)
-	if (busy || actor != H || H.exercise_equipment != src)
+	if (!istype(H) || busy || actor != H || H.exercise_equipment != src)
 		return FALSE
 	if (!eligible(H) || exercise_time() >= expiry || loc != get_turf(src) || (course ? H.loc != goal() : H.loc != origin))
 		H.cancel_exercise()
@@ -191,7 +191,7 @@
 		var/rate = reward_rate * (1 - H.exercise_fatigue / 8) * (values[2] >= 100 ? 0.5 : 1)
 		// Native adaptStat floors to 0.001. Quantize deliberately and avoid a
 		// binary float just below the intended floor boundary after division.
-		var/steps = max(1, round(rate / 0.001))
+		var/steps = max(1, round(rate * 1000 + 0.00001))
 		H.adaptStat(skill, (steps + 0.001) * (skill == "dexterity" ? 0.1 : 0.15))
 		values[1] = min(skill_cap, values[1])
 		values[2] = min(skill_cap, values[2])

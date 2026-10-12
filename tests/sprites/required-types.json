@@ -22,5 +22,9 @@
   "/obj/item/clothing/head/wolfpelt/white",
   "/obj/item/weapon/shield/chitin",
   "/obj/item/weapon/shield/chitin/large",
-  "/obj/structure/farming/plant/herbs"
+  "/obj/structure/farming/plant/herbs",
+  "/obj/structure/exercise",
+  "/obj/structure/exercise/course",
+  "/obj/structure/exercise/modern",
+  "/obj/structure/exercise/modern/course"
 ]

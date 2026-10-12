@@ -394,6 +394,14 @@ jobs:
           pwsh -NoProfile -File tests/blackpowder/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -NegativeControl
           pwsh -NoProfile -File tests/blackpowder/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -ForgeMergeControl
 
+      - name: Verify finite active training and post-wait negative control
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/active_training')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          pwsh -NoProfile -File tests/active_training/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
+          pwsh -NoProfile -File tests/active_training/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -NegativeControl
+
       - name: Verify firearm configuration, hardware, maintenance and ownership negative control
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gun_configuration')
         shell: bash

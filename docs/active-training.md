@@ -9,7 +9,7 @@ and 105 current crafting skill. The material recipe menu and construction action
 recheck the era, research and skill gates.
 
 Lifting uses three manually started fifteen-second repetitions. Click the
-weights again after each completed repetition. Walking away, interruption,
+weights again after each completed repetition. Moving during a repetition, interruption,
 unconsciousness, equipment movement/deletion or Stop Exercise cancels the
 unfinished set without partial XP. Another player cannot take occupied equipment
 and another piece of equipment cannot bypass your current session.

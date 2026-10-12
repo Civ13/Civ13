@@ -7,3 +7,5 @@ actual course corner positions, era/caps/fatigue, human/equipment deletion and
 disk-backed native gains/fatigue restoration without runtime session references.
 Wait/clock adapters accelerate actions and inject failures. These assertions
 do not exercise a human client, real elapsed waits, combat, or a live server.
+Repeat with `-NegativeControl` to prove omitted post-wait movement and
+consciousness guards fail the generated source copy; production is untouched.
