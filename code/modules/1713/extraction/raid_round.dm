@@ -151,7 +151,7 @@
 			var/list/roots = list()
 			for (var/obj/item/I in raid_items)
 				var/turf/T = get_turf(I)
-				if (!I.loc || !T || T.z != 1) continue
+				if (!I.loc || !T || !extraction_mission_z(T.z)) continue
 				var/obj/item/root = I
 				for (var/depth in 1 to EXTRACTION_EQUIPMENT_DEPTH)
 					if (!istype(root.loc, /obj/item)) break

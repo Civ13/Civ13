@@ -97,7 +97,7 @@
 		var/total_nodes = 0
 		for (var/obj/item/I in roots)
 			var/turf/T = get_turf(I)
-			if (!I.loc || !T || T.z != 1 || istype(I.loc, /obj/item)) return null
+			if (!I.loc || !T || !extraction_mission_z(T.z) || istype(I.loc, /obj/item)) return null
 			var/list/record = codec.encode(I)
 			if (!record) return null
 			var/list/nodes = record["nodes"]

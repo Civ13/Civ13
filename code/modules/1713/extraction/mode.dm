@@ -6,6 +6,22 @@ var/global/list/extraction_loot_markers = list()
 var/global/list/extraction_npc_markers = list()
 var/global/list/extraction_secure_crates = list()
 var/global/obj/effect/extraction_hub_terminal/extraction_hub_terminal
+
+// One map-owned raid-floor policy. Isolated fixtures without metadata retain
+// the historical ground-floor rule; homes and the shared hub are never implied.
+/proc/extraction_mission_z(level)
+	var/obj/map_metadata/extraction_survival/M = map
+	return istype(M) ? M.mission_z(level) : level == 1
+
+/obj/map_metadata/extraction_survival/proc/mission_z(level)
+	return level == 1
+
+/obj/map_metadata/extraction_survival/proc/raid_arrival_turf()
+	var/list/eligible = list()
+	for (var/obj/effect/extraction_raid_marker/marker in extraction_raid_markers)
+		var/turf/T = get_turf(marker)
+		if (T && mission_z(T.z) && !T.density) eligible += T
+	return eligible.len ? pick(eligible) : null
 var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_door
 
 /area/extraction_lock_room
@@ -183,7 +199,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		return istype(M) && M.round_id && !M.round_closing && world.time < M.round_deadline && world.time >= M.round_deadline - M.round_duration + opens_after
 	proc/eligible(mob/living/human/H)
 		var/obj/map_metadata/extraction_survival/M = map
-		if (!available() || !istype(M) || !M.owned(H) || H.stat != CONSCIOUS || H.z != 1 || z != 1 || !Adjacent(H)) return FALSE
+		if (!available() || !istype(M) || !M.owned(H) || H.stat != CONSCIOUS || !extraction_mission_z(H.z) || !extraction_mission_z(z) || !Adjacent(H)) return FALSE
 		var/datum/extraction_session/S = H.extraction_session
 		if (S.profile["state"] != "raid" || !(allowed_faction in list("all", "PMC", "Scav"))) return FALSE
 		if (allowed_faction != "all" && S.profile["raid_faction"] != allowed_faction) return FALSE
@@ -204,7 +220,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		var/obj/map_metadata/extraction_survival/M = map
 		if (!istype(H) || !istype(M) || !Adjacent(H)) return
 		var/obj/structure/vehicleparts/axis/parked = M.nearby_raid_vehicle(H, src)
-		if (parked && !forbid_backpack && !istype(src, /obj/effect/extraction_exit/locked_room))
+		if (parked && M.vehicle_exit_allowed(src))
 			var/choice = WWinput(H, "Extract on foot or claim the parked [parked.name] and its boot cargo? Vehicle extraction requires the engine off, empty seats and a clear private bay.", "Extraction", "Cancel", list("Extract car", "On foot", "Cancel"))
 			if (!Adjacent(H)) return
 			if (choice == "Extract car") M.extract_vehicle(H, src, parked)
@@ -308,7 +324,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	return TRUE
 
 /obj/map_metadata/extraction_survival/proc/deposit_item(mob/living/human/H, obj/item/I, obj/effect/extraction_drop_box/box)
-	if (!owned(H) || H.stat != CONSCIOUS || H.z != 1 || box?.z != 1 || !box.Adjacent(H) || I?.loc != H) return FALSE
+	if (!owned(H) || H.stat != CONSCIOUS || !extraction_mission_z(H.z) || !extraction_mission_z(box?.z) || !box.Adjacent(H) || I?.loc != H) return FALSE
 	var/datum/extraction_session/S = H.extraction_session
 	if (S.transitioning || S.profile["state"] != "raid") return FALSE
 	S.transitioning = TRUE
@@ -510,6 +526,8 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		if (!confirm_insurance(H, offer) || !owned(H) || S.transitioning || !H.Adjacent(S.house) || json_encode(records(home_roots(S))) != json_encode(S.profile["stash"])) return FALSE
 		// Confirmation yields to other players and NPC population updates.
 		if (H.stat != CONSCIOUS || raid_items.len + carried_nodes > 2048 || insured_nodes_issued + carried_nodes > 4096) return FALSE
+	var/turf/destination = raid_arrival_turf()
+	if (!destination) return FALSE
 	S.transitioning = TRUE
 	var/list/raid = insured ? returns.paid_deploy(S, offer, raid_faction) : S.begin_raid(ids, raid_faction)
 	if (!raid)
@@ -524,7 +542,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	for (var/obj/item/I in carried)
 		codec.set_raid_provenance(I, FALSE)
 		track_loot(I)
-	H.forceMove(get_turf(pick(extraction_raid_markers)))
+	H.forceMove(destination)
 	H.status_flags &= ~GODMODE
 	S.transitioning = FALSE
 	to_chat(H, "Raid [raid["sequence"]] started. Extract to keep your carried loot. Death or an interrupted server raid forfeits this loadout.")
@@ -649,7 +667,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		var/obj/structure/component_workbench/extraction_private/B = house_workbench(S)
 		if (B) B.cancelled = TRUE
 		for (var/obj/item/I in home_roots(S))
-			if (I.loc == S.body && S.body.z == 1) continue
+			if (I.loc == S.body && extraction_mission_z(S.body.z)) continue
 			qdel(I)
 		S.house.session = null
 	retire_garage(S)
@@ -677,7 +695,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		var/datum/extraction_session/S = accounts.sessions[owner]
 		if (!S.body || S.body.stat == DEAD)
 			if (S.profile["state"] == "raid") S.forfeit(S.profile["raid_sequence"])
-			if (S.body && S.body.stat == DEAD && S.body.z == 1) S.body.do_rotting()
+			if (S.body && S.body.stat == DEAD && extraction_mission_z(S.body.z)) S.body.do_rotting()
 			release(S, FALSE)
 			continue
 		if (!S.body.client)
@@ -708,7 +726,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		for (var/depth in 1 to EXTRACTION_EQUIPMENT_DEPTH)
 			if (!isobj(holder)) break
 			holder = holder.loc
-		if (!I.loc || !T || T.z != 1)
+		if (!I.loc || !T || !extraction_mission_z(T.z))
 			raid_items -= I
 		else if (isliving(holder) && holder:stat != DEAD) raid_items[I] = world.time + 30 MINUTES
 		else if (world.time >= raid_items[I])
@@ -734,7 +752,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		var/near_player = FALSE
 		for (var/owner in accounts.sessions)
 			var/datum/extraction_session/S = accounts.sessions[owner]
-			if (S.body?.z == 1 && get_dist(S.body, marker) < 12) near_player = TRUE
+			if (S.body?.z == marker.z && extraction_mission_z(S.body?.z) && get_dist(S.body, marker) < 12) near_player = TRUE
 		if (!near_player)
 			var/path = npcs.len % 3 == 2 ? /mob/living/simple_animal/hostile/human/extraction/contractor : /mob/living/simple_animal/hostile/human/extraction
 			var/mob/living/simple_animal/hostile/human/extraction/N = new path(get_turf(marker))

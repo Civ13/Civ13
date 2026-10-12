@@ -56,7 +56,7 @@
 	do_human_behaviour()
 		return
 	proc/scavenge_tick(obj/map_metadata/extraction_survival/M)
-		if (stat != CONSCIOUS || z != 1 || world.time < next_scavenge) return FALSE
+		if (stat != CONSCIOUS || !extraction_mission_z(z) || world.time < next_scavenge) return FALSE
 		next_scavenge = world.time + 2 SECONDS
 		var/held = 0
 		for (var/obj/item/I in contents) held++
@@ -92,7 +92,7 @@
 		gun.process_projectile(P, src, target, "chest")
 		gun.handle_post_fire(src)
 	proc/provoke(mob/living/attacker)
-		if (attacker && attacker != src && attacker.z == 1 && attacker.stat != DEAD)
+		if (attacker && attacker != src && attacker.z == z && extraction_mission_z(attacker.z) && attacker.stat != DEAD)
 			// Mode population is bounded to 32 participants and 12 NPCs.
 			if (!(attacker in hostile_entities) && hostile_entities.len < 64) hostile_entities += attacker
 			// Keep the original retaliation focus across brief visibility loss.
@@ -109,7 +109,7 @@
 		if (I && I.force > 0 && isliving(user)) provoke(user)
 		return ..()
 	handle_ai()
-		if (stat != CONSCIOUS || z != 1) return
+		if (stat != CONSCIOUS || !extraction_mission_z(z)) return
 		var/obj/map_metadata/extraction_survival/M = map
 		if (!istype(M)) return
 		if (world.time >= next_decision)
@@ -119,20 +119,20 @@
 				if (!enemy.loc || enemy.stat == DEAD) hostile_entities -= enemy
 			if (aggressor && (!aggressor.loc || aggressor.stat == DEAD)) aggressor = null
 			if (!aggressor && hostile_entities.len) aggressor = hostile_entities[1]
-			if (aggressor) chosen = aggressor
+			if (aggressor && aggressor.z == z) chosen = aggressor
 			if (!chosen && (contractor || pmc_contact_hostile))
 				var/best_distance = 13
 				for (var/owner in M.accounts.sessions)
 					var/datum/extraction_session/S = M.accounts.sessions[owner]
 					var/mob/living/human/H = S.body
-					if (S.profile["state"] != "raid" || !H || H.stat == DEAD || H.z != 1) continue
+					if (S.profile["state"] != "raid" || !H || H.stat == DEAD || H.z != z || !extraction_mission_z(H.z)) continue
 					if (!contractor && S.profile["raid_faction"] != "PMC") continue
 					var/distance = get_dist(src, H)
 					if (distance < best_distance && (H in view(12, src)))
 						chosen = H
 						best_distance = distance
 				for (var/mob/living/simple_animal/hostile/human/extraction/N in M.npcs)
-					if (N == src || N.stat == DEAD || N.z != 1 || (contractor ? N.contractor : !N.contractor)) continue
+					if (N == src || N.stat == DEAD || N.z != z || !extraction_mission_z(N.z) || (contractor ? N.contractor : !N.contractor)) continue
 					var/distance = get_dist(src, N)
 					if (distance < best_distance && (N in view(12, src)))
 						chosen = N
@@ -145,7 +145,7 @@
 			scavenge_tick(M)
 			return
 		extraction_started = null
-		if (target_mob.stat == DEAD || target_mob.z != 1) return
+		if (target_mob.stat == DEAD || target_mob.z != z || !extraction_mission_z(target_mob.z)) return
 		if (get_dist(src, target_mob) <= 1)
 			if (world.time >= next_shot)
 				next_shot = world.time + 2 SECONDS

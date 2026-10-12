@@ -195,12 +195,12 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             expected_raid_failure = 'solo deployment debits saved garage before moving actual car' if vehicle_raid_control == 'debit' else 'vehicle exit credits actual car before private bay relocation'
         if vehicle_purchase_control:
             purchase_source = (root / 'code/modules/1713/extraction/vehicle_purchase.dm').read_text(encoding='utf-8')
-            marker = '\tcandidate["stash"] = retained'
+            marker = '\tcandidate["stash"] = retained\n\tcandidate["garage_purchase"] = list("id" = md5("[owner]:car:'
             if purchase_source.count(marker) != 1:
                 raise RuntimeError('Vehicle payment mutation marker changed')
             control = root / (prefix + '_vehicle_purchase.dm')
             generated.append(control)
-            control.write_text(purchase_source.replace(marker, '\tcandidate["stash"] = profile["stash"]'), encoding='utf-8')
+            control.write_text(purchase_source.replace(marker, marker.replace('candidate["stash"] = retained', 'candidate["stash"] = profile["stash"]')), encoding='utf-8')
             source = source.replace('code\\modules\\1713\\extraction\\vehicle_purchase.dm', control.name)
         if vehicle_loss_control:
             store_source = (root / 'code/modules/1713/extraction/account_store.dm').read_text(encoding='utf-8')

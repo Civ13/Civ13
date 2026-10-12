@@ -9,12 +9,12 @@
 		if (city_zombies.len >= 12 || !extraction_npc_markers.len) return
 		var/obj/effect/extraction_npc_marker/marker = pick(extraction_npc_markers)
 		var/turf/T = get_turf(marker)
-		if (!T || T.z != 1 || T.density) return
+		if (!T || !extraction_mission_z(T.z) || T.density) return
 		for (var/mob/living/simple_animal/hostile/human/zombie/extraction_city/Z in city_zombies)
-			if (get_dist(Z, T) < 2) return
+			if (Z.z == T.z && get_dist(Z, T) < 2) return
 		for (var/owner in accounts.sessions)
 			var/datum/extraction_session/S = accounts.sessions[owner]
-			if (S.body?.z == 1 && get_dist(S.body, T) < 12) return
+			if (S.body?.z == T.z && extraction_mission_z(S.body?.z) && get_dist(S.body, T) < 12) return
 		var/mob/living/simple_animal/hostile/human/zombie/extraction_city/Z = new(T)
 		Z.city = src
 		city_zombies += Z
@@ -35,7 +35,7 @@
 	do_human_behaviour()
 		return
 	handle_ai()
-		if (!city || city.game_over || city.round_closing || stat != CONSCIOUS || z != 1 || world.time < next_city_decision) return
+		if (!city || city.game_over || city.round_closing || stat != CONSCIOUS || !extraction_mission_z(z) || world.time < next_city_decision) return
 		next_city_decision = world.time + 2 SECONDS
 		var/mob/living/human/chosen
 		var/best = 8

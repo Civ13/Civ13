@@ -464,3 +464,19 @@ with seven-tile perception and thirty-two-node path searches. The fixture checks
 physical street wandering, visible raid actors, private-home exclusion, spawn
 cooldown and corpse expiry alongside shipment/evacuation/stranding contracts.
 This is accelerated fixture evidence, not connected combat or elapsed city play.
+
+### Shared mission-floor and vehicle map contract
+
+`mission_z(level)` defaults to z1. Additional raid floors must be explicitly
+admitted by map metadata; private homes on z2 and the public hub on z3 remain
+excluded. On-foot arrival selects an admitted marker before durable deployment.
+Combat, NPC extraction and proximity checks require actors on the same floor.
+
+Vehicle support requires `vehicle_mission_supported()` plus an admitted entry
+marker, a clear native footprint and an admitted exit. Maps override
+`vehicle_entry_allowed(marker)` and `vehicle_exit_allowed(exit)` to restrict
+road arrivals and highway departures. Solo arrival places the player on a clear
+floor near the actual car; groups use the actual car seats. These source changes
+await native regression runs after the quiet window is released. A larger map
+may pad the unchanged private rooms and hub with inaccessible walls, provided
+all z-levels share dimensions and their original coordinates are preserved.

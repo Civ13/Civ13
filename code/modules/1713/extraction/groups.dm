@@ -154,6 +154,8 @@
 		if (transfer)
 			for (var/list/entry in transfer.cargo_record) total_nodes += entry["equipment"]["nodes"].len
 		if (raid_items.len + total_nodes > 2048 || insured_nodes_issued + insured_nodes > 4096) return FALSE
+		var/turf/destination = transfer ? car_destination : raid_arrival_turf()
+		if (!destination || !mission_z(destination.z) || (transfer && !vehicle_mission_supported())) return FALSE
 		var/datum/extraction_settlement/groups/J = accounts.group_journal
 		for (var/owner in P.members) accounts.sessions[owner]:transitioning = TRUE
 		if (!J.submit(J.profile["sequence"] + 1, parts))
@@ -165,7 +167,6 @@
 			return FALSE
 		// All account debits are now durable. Move the existing atoms together;
 		// never decode a second physical copy of a selected loadout.
-		var/turf/destination = get_turf(pick(extraction_raid_markers))
 		for (var/list/part in parts) accounts.sessions[part["owner"]]:profile = part["after"]
 		if (transfer)
 			if (!transfer.relocate(car_destination))

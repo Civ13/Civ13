@@ -49,7 +49,7 @@ var/global/list/extraction_city_stations = list()
 	proc/departure_station()
 		return departure_index % 2 ? "north" : "south"
 	proc/reserve_evacuation(mob/living/human/H, obj/effect/extraction_exit/scheduled/E)
-		if (!owned(H) || H.stat != CONSCIOUS || H.z != 1 || E?.z != 1 || !E.Adjacent(H) || !(E in extraction_city_stations) || H.extraction_session.profile["state"] != "raid" || H.extraction_session.transitioning || departure_index > 6 || E.station_id != departure_station() || evacuation_time() >= departure_due()) return FALSE
+		if (!owned(H) || H.stat != CONSCIOUS || !extraction_mission_z(H.z) || !extraction_mission_z(E?.z) || H.z != E.z || !E.Adjacent(H) || !(E in extraction_city_stations) || H.extraction_session.profile["state"] != "raid" || H.extraction_session.transitioning || departure_index > 6 || E.station_id != departure_station() || evacuation_time() >= departure_due()) return FALSE
 		var/datum/extraction_session/S = H.extraction_session
 		evacuation_queue[S.owner] = list("sequence" = S.profile["raid_sequence"], "departure" = departure_index, "station" = E.station_id)
 		to_chat(H, "Reserved departure [departure_index] at [E.station_id] station in [round((departure_due() - evacuation_time()) / 600, 0.1)] minutes. Stay or return beside this station at departure. On-foot evacuation keeps carried gear; shipments already committed stay home. No automatic extraction occurs while absent.")

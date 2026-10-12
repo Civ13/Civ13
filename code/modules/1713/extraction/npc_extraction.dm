@@ -100,7 +100,7 @@
 
 /obj/effect/extraction_exit/proc/npc_eligible(mob/living/simple_animal/hostile/human/extraction/N)
 	var/obj/map_metadata/extraction_survival/M = map
-	if (!istype(M) || M.nomads || !available() || !N || N.extraction_retired || N.stat != CONSCIOUS || N.z != 1 || z != 1 || !Adjacent(N) || !(N in M.npcs)) return FALSE
+	if (!istype(M) || M.nomads || !available() || !N || N.extraction_retired || N.stat != CONSCIOUS || !extraction_mission_z(N.z) || !extraction_mission_z(z) || !Adjacent(N) || !(N in M.npcs)) return FALSE
 	if (!(allowed_faction in list("all", "PMC", "Scav")) || (allowed_faction != "all" && allowed_faction != (N.contractor ? "PMC" : "Scav"))) return FALSE
 	if (!isnum(extraction_fee) || extraction_fee < 0 || extraction_fee > 1000000 || round(extraction_fee) != extraction_fee || N.extraction_credits < extraction_fee) return FALSE
 	// NPCs have no private vehicle bay or secured-room owner. These exits are
@@ -148,7 +148,7 @@
 		if (Adjacent(extraction_target))
 			extraction_target = null
 			return FALSE
-		if (!extraction_target.available() || get_dist(src, extraction_target) > 12)
+		if (!extraction_target.available() || extraction_target.z != z || get_dist(src, extraction_target) > 12)
 			extraction_target = null
 			return FALSE
 		if (world.time >= next_step)

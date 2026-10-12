@@ -130,7 +130,7 @@
 		ready["loot_state"] = "ready"
 		return commit_container(M, ready)
 	proc/claim(obj/map_metadata/extraction_survival/M, mob/living/human/H, id)
-		if (locked || !M.owned(H) || H.stat != CONSCIOUS || H.z != 1 || !Adjacent(H) || H.extraction_session.transitioning || H.extraction_session.profile["state"] != "raid" || !profile || profile["loot_state"] != "ready") return null
+		if (locked || !M.owned(H) || H.stat != CONSCIOUS || !extraction_mission_z(H.z) || !Adjacent(H) || H.extraction_session.transitioning || H.extraction_session.profile["state"] != "raid" || !profile || profile["loot_state"] != "ready") return null
 		var/list/entry
 		var/list/candidate = json_decode(json_encode(profile))
 		var/list/stash = candidate["stash"]
@@ -159,7 +159,7 @@
 	attack_hand(mob/user)
 		var/mob/living/human/H = user
 		var/obj/map_metadata/extraction_survival/M = map
-		if (busy || !istype(H) || !istype(M) || !M.owned(H) || H.z != 1 || H.extraction_session.profile["state"] != "raid" || !Adjacent(H)) return
+		if (busy || !istype(H) || !istype(M) || !M.owned(H) || !extraction_mission_z(H.z) || H.extraction_session.profile["state"] != "raid" || !Adjacent(H)) return
 		busy = TRUE
 		if (prepare(M))
 			var/list/options = list()
