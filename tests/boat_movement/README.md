@@ -36,3 +36,7 @@ Use only an isolated world built at the PR head. Record SHA, BYOND and map with 
 - Capture before/after membership, blocked-turn state and callback-entry outcome, plus video of movement/turns and the grenade sequence. Inspect actual captures and logs; a green compile or JSON manifest cannot substitute for this evidence.
 
 Replicate manual construction with the rudder/controller in the northwest frame, a correctly connected helm/driver, valid propulsion and cargo/passenger fixtures. Verify four left/right turns and advance/reverse; then place shore (boat), solid cover/another frame, an outside actor or grenade in the relevant destination. Preserve existing physical collision/blast rules while proving no phantom-cell adoption or temporary-gap entry. Generated media belongs in verified PR attachments, with replication steps, not in Git.
+
+## Headless pickup precondition
+
+The full-game inventory case explicitly wakes its test actor immediately before the synchronous pickup/drop. Normal SSD handling puts humans without a client to sleep, which rejects hand pickup. The fixture asserts the actor is awake and live, then calls unchanged production inventory procedures and verifies actual location and cargo membership. The headless launcher closes its port, refuses reopening and rejects native engine diagnostics as well as runtime/assertion failures. This is isolated compatibility evidence, not player or graphical acceptance.

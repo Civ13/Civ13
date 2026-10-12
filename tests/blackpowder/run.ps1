@@ -1,5 +1,6 @@
-param([Parameter(Mandatory=$true)][string]$ByondBin, [ValidateRange(1,180)][int]$TimeoutSeconds = 90, [switch]$NegativeControl)
+param([Parameter(Mandatory=$true)][string]$ByondBin, [ValidateRange(1,180)][int]$TimeoutSeconds = 90, [switch]$NegativeControl, [switch]$ForgeMergeControl)
 $ErrorActionPreference = 'Stop'
+if ($NegativeControl -and $ForgeMergeControl) { throw 'Choose one negative control' }
 $repo = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $prefix = '.blackpowder_probe'
 $generated = @('.dme','_world.dm','_globals.dm','.dmb','.rsc','_assembly.dm') | ForEach-Object { Join-Path $repo ($prefix + $_) }
@@ -29,6 +30,7 @@ try {
         [IO.File]::WriteAllText($generated[5],$assembly.Replace($marker,'barrel_attached != expected_stage)'))
         $source = $source.Replace('code\modules\1713\gunsmithing\blackpowder_assembly.dm',$prefix + '_assembly.dm')
     }
+    if ($ForgeMergeControl) { $source = "#define FORGE_MERGE_CONTROL`n" + $source }
     [IO.File]::WriteAllText($generated[0], $source + "`n#include `"tests/blackpowder/probe.dm`"`n")
     $compiler = if ($IsWindows) { 'dm.exe' } else { 'DreamMaker' }
     $daemon = if ($IsWindows) { 'dd.exe' } else { 'DreamDaemon' }
@@ -65,6 +67,12 @@ try {
     $result = Get-Content -Raw -LiteralPath (Join-Path $temp 'blackpowder-result.txt')
     Write-Output $result
     $runtimeLog = Get-Content -Raw -LiteralPath (Join-Path $temp 'startup.log')
+    if ($runtimeLog -match '(?i)BLACKPOWDER RUNTIME|runtime error:|bad ref|BUG:|##ERROR:|RUNTIME:|infinite loop|segmentation|assertion failed|fatal error' -or $process.ExitCode -ne 0) { throw 'Unexpected blackpowder engine diagnostic' }
+    if ($ForgeMergeControl) {
+        if ($runtimeLog -match 'BLACKPOWDER RUNTIME|runtime error:' -or $process.ExitCode -ne 0 -or $result -notmatch '^FAIL: fresh forge material is live at ') { throw 'Forge merge setup control was not detected' }
+        Write-Output 'PASS: auto-merged forge input control detected'
+        return
+    }
     if ($NegativeControl) {
         if ($result -notmatch '^FAIL: post-wait missing flint rejects final assembly') { throw 'Negative control was not detected by the intended regression' }
         Write-Output 'PASS: unsafe post-wait compatibility negative control detected'

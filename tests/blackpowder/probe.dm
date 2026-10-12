@@ -175,9 +175,14 @@ var/blackpowder_concurrent_result
 		blackpowder_check(!A.produce_blackpowder_part("Flintlock Mechanism",Steel,H) && Steel.amount == 1, "insufficient forging consumes nothing")
 		for (var/action in list("cancel","drop","insufficient","era","concurrent forge"))
 			blackpowder_restore(H)
+#ifdef FORGE_MERGE_CONTROL
 			Steel = new(H)
+#else
+			Steel = new(H, 0, FALSE)
+#endif
 			Steel.amount = 3
 			blackpowder_hold(H,Steel)
+			blackpowder_check(!QDELETED(Steel) && Steel.loc == H && Steel.amount == 3, "fresh forge material is live")
 			blackpowder_action = action
 			var/obj/item/O = A.produce_blackpowder_part("Flintlock Mechanism",Steel,H)
 			if (action == "concurrent forge")

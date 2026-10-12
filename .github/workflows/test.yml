@@ -284,6 +284,36 @@ jobs:
           /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control restart
           /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control noop
 
+      - name: Verify native memory ownership and mutation controls
+        if: needs.changes.outputs.game == 'true'
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/memory_ownership/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          for control in cancel-retention deletion-state pool-cleanup pool-cap pool-global pool-idle hard-reference startup ref-identity hard-now let-live; do
+            /usr/bin/python3 tests/memory_ownership/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
+          git fetch --no-tags --depth=1 origin f556e39b93fc97f41020b2d8c5f2abed63fab497
+          /usr/bin/python3 tests/global_vars_ownership/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/global-vars-fixed"
+          for suite in weakref_ownership callback_ownership reagent_ownership process_snapshot_ownership nanoui_ownership; do
+            /usr/bin/python3 "tests/$suite/run.py" --byond-bin "$PWD/BYOND/byond/bin"
+            /usr/bin/python3 "tests/$suite/run.py" --byond-bin "$PWD/BYOND/byond/bin" --baseline
+          done
+          /usr/bin/python3 tests/process_snapshot_ownership/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
+          /usr/bin/python3 tests/process_snapshot_ownership/run.py --byond-bin "$PWD/BYOND/byond/bin" --reset-control
+          /usr/bin/python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/pool-effects-fixed"
+          /usr/bin/python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/pool-effects-lighting-control" --negative-control lighting
+          /usr/bin/python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/pool-effects-lifetime-control" --negative-control fallback
+          /usr/bin/python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/pool-effects-chem-control" --negative-control chem
+      - name: Verify bounded native lifetime telemetry and mutation controls
+        if: needs.changes.outputs.game == 'true'
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/memory_telemetry/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/memory-telemetry-fixed"
+          for control in overflow rate retention; do
+            /usr/bin/python3 tests/memory_telemetry/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/memory-telemetry-$control" --negative-control "$control"
+          done
       - name: Verify timed decal lifecycle and historical baseline
         if: needs.changes.outputs.game == 'true'
         shell: bash
@@ -314,6 +344,7 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           pwsh -NoProfile -File tests/blackpowder/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
           pwsh -NoProfile -File tests/blackpowder/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -NegativeControl
+          pwsh -NoProfile -File tests/blackpowder/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -ForgeMergeControl
 
       - name: Verify firearm configuration, hardware, maintenance and ownership negative control
         if: needs.changes.outputs.game == 'true'

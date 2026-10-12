@@ -446,10 +446,12 @@ nanoui is used to open and update nano browser uis
 	is_auto_updating = FALSE
 	GLOB.nanomanager.ui_closed(src)
 	user << browse(null, "window=[window_id]")
-	for (var/datum/nanoui/child in children)
+	for (var/datum/nanoui/child in children.Copy())
 		child.close()
 	children.Cut()
 	state = null
+	if (master_ui)
+		master_ui.children -= src
 	master_ui = null
 
  /**

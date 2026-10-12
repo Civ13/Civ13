@@ -95,3 +95,9 @@ binary into isolated save storage, then run with `-params
 'file=map_saves/2.sav&ref=20042'`. It logs only the requested entry and never
 instantiates saved objects. Do not publish exported entries containing embedded
 resources as diagnostic log excerpts.
+
+The isolated human adapter uses production predefines for mob states and mirrors
+production's initial stat value. Native disk round trips assert dead humans remain
+DEAD without rejuvenation, while unconscious living humans rejuvenate once. The
+fixture closes its port at startup and rejects reopening. These checks exercise
+the actual saver/loader with an injected rejuvenation adapter, not human gameplay.
