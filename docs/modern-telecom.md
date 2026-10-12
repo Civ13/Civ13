@@ -21,17 +21,43 @@ service. Delivery is limited to 32 terminals and 32 unique nearby listeners.
 Place an antenna adjacent to a radio or television program desk, connect power,
 choose a frequency and prepare a course with at least 100 raw skill. Powered
 receivers of the matching medium and frequency receive broadcasts within 60
-tiles on the same level. Six original lessons air ten seconds apart, followed
-by a five-minute interval. At most 32 nearby characters receive each lesson.
+tiles on the same level. Educational broadcasts require Modern at both emission
+and receipt. Six original lessons air ten seconds apart during a one-minute
+window in a ten-minute running-server schedule. At most 32 nearby characters
+receive each lesson.
+
+| Course | Window within each ten-minute cycle | Cycling-map seasons |
+| --- | --- | --- |
+| Crafting | 1:00 through 1:59 | Fall and Winter |
+| Farming | 3:00 through 3:59 | Spring and Summer |
+| Medical | 5:00 through 5:59 | All four seasons |
+
+Fixed-season maps, maps without a cycle and disabled seasonal cycles use an
+evergreen schedule with the same time windows. Season eligibility reads the
+existing map declaration; it never advances debris clocks. Restart resets the
+running-server schedule, while durable per-character lesson credits prevent
+repeat XP after restart, reconnect or rerun. Starting a desk midway through a
+window joins the currently airing lesson; it does not restart the course.
 
 Crafting, farming and medical courses each have six durable lesson credits.
 Online, conscious hearing characters with current skill at least 10 and both
-current and trained skill below 100 receive one percent per unique lesson.
+current and trained skill below 125 receive one percent per unique lesson below
+100 trained skill, then half a percent for intermediate training.
 Repeated broadcasts cannot repeat a credit. Existing practice multipliers,
 books, mood effects and native maximums remain in use. Skill Progress displays
 ten derived levels from the trained maximum; magic scales its native 100-point
 maximum to the same ten-level display. These display levels do not replace the
 native crafting or combat thresholds.
+
+Starting at the native default 100, six intermediate lessons increase a skill
+to about 103.04. A level-one industry book without religious modifiers takes
+60 seconds and increases crafting from 100 to 103.2; a corresponding medicine
+book increases medical skill to 116. Ordinary farming actions already use
+0.5% or larger multipliers. Broadcast credit is finite and ends at 125, the sixth
+derived practice-level threshold; books and useful practice retain their native
+advanced progression up to 250. These comparisons follow the actual
+`adaptStat` and book formulas; the isolated native curriculum test confirms
+the baseline-100 result and the 125-point cap.
 
 ## Primary-source audit and provenance
 
@@ -61,11 +87,12 @@ or program text. The six-line courses above are original Civ13 game guidance.
 ## Verification boundaries
 
 Equipment uses existing DMI states. Actual state/pixel audits and static previews
-are still pending. The initial broadcast-only draft compiled with BYOND
-516.1681, zero errors and zero warnings; subsequent landline, terminal,
-curriculum and recipe changes require fresh verification.
+are still pending. `tests/modern_telecom/run.ps1` compiles all production sources
+with BYOND 516.1681, zero errors and warnings. Its isolated runtime checks real
+powered delivery, mismatched frequencies, power loss, cable phone calls, local
+terminal delivery/rate limits, era/season/time eligibility, finite curriculum
+rewards, reconnect/rerun deduplication and durable credits through world reload.
 
-Required remaining checks include powered reception, incompatible frequencies,
-unpowered routes, topology changes, call interruption, repeated credits,
-reconnect/save restoration, native recipe registration and research gates.
+Required remaining checks include topology changes, call interruption and
+restoration, native recipe registration and research gates, and sprite previews.
 Local fixtures do not prove public-server performance or human UI acceptance.

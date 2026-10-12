@@ -1,7 +1,42 @@
 // Independent Civ13 implementation. No upstream telecom source or assets copied.
 #define CIV_TELECOM_LIMIT 128
+#define CIV_BROADCAST_SKILL_CAP 125
+// _map_metadata.dm:set_ordinal_age() maps 2013 (Modern) to ordinal 8.
+#define CIV_TELECOM_MODERN_AGE 8
+#define CIV_BROADCAST_CYCLE 6000
 var/global/list/civ_telecom_devices = list()
 var/global/civ_telecom_cursor = 1
+
+/proc/civ_broadcast_time()
+	return world.time
+
+// Authoritative running-server time, not wall time or per-device timers.
+// Each course occupies one minute in a repeating ten-minute schedule.
+/proc/civ_broadcast_slot(skill, now)
+	if (!map || map.ordinal_age < CIV_TELECOM_MODERN_AGE || !isnum(now) || now < 0)
+		return 0
+	var/start
+	var/list/allowed_seasons
+	switch (skill)
+		if ("crafting")
+			start = 600
+			allowed_seasons = list("FALL", "WINTER")
+		if ("farming")
+			start = 1800
+			allowed_seasons = list("SPRING", "SUMMER")
+		if ("medical")
+			start = 3000
+			allowed_seasons = list("SPRING", "SUMMER", "FALL", "WINTER")
+		else
+			return 0
+	// Use the existing map cycle declaration without recording or aging debris.
+	// Fixed-season and disabled-cycle maps have an explicit evergreen schedule.
+	if (map.abandonment_uses_seasons() && !(season in allowed_seasons))
+		return 0
+	var/phase = now % CIV_BROADCAST_CYCLE
+	if (phase < start || phase >= start + 600)
+		return 0
+	return round((phase - start) / 100) + 1
 
 /obj/structure/telecom
 	name = "broadcast receiver"
@@ -47,7 +82,7 @@ var/global/civ_telecom_cursor = 1
 	civ_attach_cable(O, H)
 
 /obj/proc/civ_attach_cable(atom/movable/O, mob/living/human/H)
-	if (!istype(O, /obj/structure/cable) || !H || H.stat != CONSCIOUS || !H.can_use_hands() || get_dist(H, src) > 1 || get_dist(H, O) > 1 || get_dist(src, O) > 1 || !anchored || !isturf(loc))
+	if (!istype(O, /obj/structure/cable) || !H || H.stat != CONSCIOUS || !H.can_use_hands() || H.z != z || O.z != z || get_dist(H, src) > 1 || get_dist(H, O) > 1 || get_dist(src, O) > 1 || !anchored || !isturf(loc))
 		return
 	if (powersource)
 		powersource.update_power(-powerneeded, 1, src)
@@ -75,7 +110,7 @@ var/global/civ_telecom_cursor = 1
 			program = value
 			prepared = TRUE
 			program_line = 0
-			to_chat(H, "You prepare the [program] course. Six lessons air ten seconds apart, with a five-minute interval between courses.")
+			to_chat(H, "You prepare the [program] course. Check the station schedule; six lessons air ten seconds apart during its one-minute window.")
 	if (choice == "Announcement" && istype(src, /obj/structure/telecom/station))
 		var/value = input(H, "Station announcement (maximum 200 characters)", name) as text|null
 		if (H && get_dist(H, src) <= 1 && H.stat == CONSCIOUS && H.can_use_hands())
@@ -109,21 +144,24 @@ var/global/civ_telecom_cursor = 1
 
 /obj/structure/telecom/station/proc/has_antenna()
 	for (var/obj/structure/telecom/antenna/A in range(1, src))
-		if (!A.retired && A.anchored && isturf(A.loc) && A.z == z)
+		if (!A.retired && (A in civ_telecom_devices) && A.anchored && isturf(A.loc) && A.z == z)
 			return TRUE
 	return FALSE
 
+/obj/structure/telecom/station/examine(mob/user)
+	. = ..()
+	to_chat(user, "Educational schedule repeats every ten running-server minutes: crafting 1:00-1:59 (Fall/Winter), farming 3:00-3:59 (Spring/Summer), medical 5:00-5:59 (all seasons). Fixed/no-cycle maps use all courses in every season. Modern only; six unique lessons per course, once per character.")
+
 /obj/structure/telecom/station/proc/transmit_lesson()
-	if (world.time < next_broadcast)
+	var/now = civ_broadcast_time()
+	if (now < next_broadcast)
 		return
-	next_broadcast = world.time + 100
-	if (!prepared || !operational() || !has_antenna())
+	next_broadcast = now - (now % 100) + 100
+	var/line = civ_broadcast_slot(program, now)
+	if (!prepared || !line || !operational() || !has_antenna())
 		program_line = 0
 		return
-	if (!(program in list("crafting", "farming", "medical")))
-		return
-	program_line++
-	var/line = program_line
+	program_line = line
 	var/list/delivered = list()
 	for (var/obj/structure/telecom/R in civ_telecom_devices)
 		if (istype(R, /obj/structure/telecom/station) || istype(R, /obj/structure/telecom/antenna) || istype(R, /obj/structure/telecom/terminal) || R.television != television || R.frequency != frequency || R.z != z || get_dist(R, src) > 60 || !R.operational())
@@ -134,14 +172,11 @@ var/global/civ_telecom_cursor = 1
 			if (H in delivered)
 				continue
 			delivered |= H
-			if (H.client && H.stat == CONSCIOUS)
+			if (H.broadcast_online() && H.stat == CONSCIOUS)
 				if (announcement)
 					to_chat(H, "[R]: [announcement]")
 				to_chat(H, "[R]: [program] workshop, lesson [line] of 6. [telecom_lesson_text(program, line)]")
 				H.learn_broadcast(program, line)
-	if (program_line >= 6)
-		program_line = 0
-		next_broadcast = world.time + 3000
 
 /proc/telecom_lesson_text(skill, line)
 	var/list/lessons
@@ -158,21 +193,22 @@ var/global/civ_telecom_cursor = 1
 	var/list/broadcast_lessons = list()
 
 /mob/living/human/proc/learn_broadcast(skill, line)
-	if (!broadcast_online() || stat != CONSCIOUS || (sdisabilities & DEAF) || ear_deaf || find_trait("Deaf") || !(skill in list("crafting", "farming", "medical")) || line != round(line) || line < 1 || line > 6)
+	if (!broadcast_online() || stat != CONSCIOUS || (sdisabilities & DEAF) || ear_deaf || find_trait("Deaf") || !(skill in list("crafting", "farming", "medical")) || line != round(line) || line < 1 || line > 6 || line != civ_broadcast_slot(skill, civ_broadcast_time()))
 		return FALSE
 	var/list/values = stats[skill]
-	if (!islist(values) || values.len < 2 || values[1] < 10 || values[1] >= 100 || values[2] >= 100)
+	if (!islist(values) || values.len < 2 || values[1] < 10 || values[1] >= CIV_BROADCAST_SKILL_CAP || values[2] >= CIV_BROADCAST_SKILL_CAP)
 		return FALSE
 	var/key = "[skill]:[line]"
 	if (key in broadcast_lessons)
 		return FALSE
 	broadcast_lessons |= key
-	// One percent per unique lesson; preserve the existing practice formulas.
+	// Novices gain 1%; intermediate learners gain 0.5%. Existing practice
+	// formulas remain unchanged, and advanced training requires practice/books.
 	var/divisor = skill == "crafting" ? 500 : (skill == "farming" ? 200 : 100)
-	adaptStat(skill, divisor * 0.01)
-	values[1] = min(values[1], 100)
-	// Never reduce a pre-existing maximum (for example an injured character).
-	values[2] = min(100, max(values[1], values[2]))
+	var/rate = values[2] < 100 ? 0.01 : 0.005
+	adaptStat(skill, divisor * rate)
+	values[1] = min(values[1], CIV_BROADCAST_SKILL_CAP)
+	values[2] = min(CIV_BROADCAST_SKILL_CAP, max(values[1], values[2]))
 	return TRUE
 
 /mob/living/human/proc/broadcast_online()
@@ -196,7 +232,7 @@ var/global/civ_telecom_cursor = 1
 	to_chat(src, "Practice levels reflect your existing trained maximum; mood and injuries still affect current effectiveness. Books retain their existing training rewards.")
 	for (var/skill in stats)
 		to_chat(src, "[skill]: level [practice_level(skill)]/10, trained [round(stats[skill][2], 0.1)], current [round(stats[skill][1], 0.1)].")
-	to_chat(src, "Educational lessons credited: [broadcast_lessons.len]/18. Courses teach crafting, farming and medicine below 100 raw skill; each unique lesson grants one percent once per character.")
+	to_chat(src, "Educational lessons credited: [broadcast_lessons.len]/18. Courses teach crafting, farming and medicine below 125 trained skill. Unique lessons grant 1% below 100, then 0.5%, once per character. Practice and books train beyond that limit.")
 
 /process/civ_telecom/setup()
 	name = "bounded civilian telecom"
