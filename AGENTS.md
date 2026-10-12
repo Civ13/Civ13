@@ -553,3 +553,6 @@ several seconds; combine its UTC date with precise world.timeofday and correct
 adjacent-day rounding near midnight. DM logical expressions can return operands,
 so normalize leap-year arithmetic with !!. tests/extraction/run_crypto.py checks
 independent UTC, midnight, signing and schema vectors without a live bot.
+
+<!-- 2026-10-12: deferred organ icon readiness -->
+External-organ constructor icon work must reject retired or partially hydrated owner/species links. Native save loading may yield between those links; hair style lookup previously dereferenced a missing organ species. tests/human_corpse_decay/run.py includes icon-readiness and icon-callback mutation controls and prints rejected native diagnostics.
