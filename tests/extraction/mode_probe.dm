@@ -282,6 +282,7 @@
 		if (H.extraction_session) M.release(H.extraction_session)
 		qdel(H)
 	equipment_assert(M.accounts.sessions.len == 0, "pool releases all session references")
+	extraction_native_market_probe(M)
 	var/mob/living/simple_animal/hostile/human/extraction/scav = new(locate(8,8,1))
 	var/mob/living/simple_animal/hostile/human/extraction/contractor/pmc = new(locate(10,8,1))
 	M.npcs |= scav

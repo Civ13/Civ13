@@ -632,8 +632,8 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		page = detail["next_page"]
 	return TRUE
 
-/obj/map_metadata/extraction_survival/proc/release(datum/extraction_session/S, save = TRUE)
-	leave_party(S.owner)
+/obj/map_metadata/extraction_survival/proc/release(datum/extraction_session/S, save = TRUE, leave_group = TRUE)
+	if (leave_group) leave_party(S.owner)
 	if (save && S.profile["state"] == "home" && !save_home(S)) return FALSE
 	if (S.house)
 		var/obj/structure/component_workbench/extraction_private/B = house_workbench(S)

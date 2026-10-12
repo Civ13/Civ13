@@ -290,3 +290,12 @@ need attachment-access verification before any local generated media deletion.
 Respect later retention instructions. Validate the bundle with the repository's
 game-evidence checker, then review the actual video separately: bundle validity
 only establishes metadata and file consistency.
+
+The combined `--probe mode` fixture has a 120-second runtime limit because it
+also retires and reopens actual native home inventories during market sales,
+escrow listings, purchases and cancellation, alongside the existing equipment,
+group, vehicle and round tests. Other isolated probe phases retain 60-second
+limits. Native market checks cover conserved wallets and original IDs,
+condition/FIR, private receipts, party retention, replay, duplicate/unknown
+payload rejection, foreign listing cancellation and unfunded settlement.
+These fixture calls do not establish connected modal UI acceptance.

@@ -78,9 +78,9 @@
 
 /obj/map_metadata/extraction_survival/proc/manage_supplies(mob/living/human/H)
 	if (!supply_access(H)) return
-	var/choice = WWinput(H, "Balance: [game_credits(H.extraction_session)] game credits. Exchange one uninsured workshop part for ten credits, or buy supplies. House level gates advanced gear and fuel.", "Safe-house supplies", "Cancel", list("Exchange one part", "Buy", "Cancel"))
+	var/choice = WWinput(H, "Balance: [game_credits(H.extraction_session)] game credits. Buy supplies or use the shared vendor and player market. House level gates advanced gear and fuel.", "Safe-house supplies", "Cancel", list("Market", "Buy", "Cancel"))
 	if (!supply_access(H)) return
-	if (choice == "Exchange one part") exchange_salvage(H)
+	if (choice == "Market") manage_native_market(H)
 	else if (choice == "Buy")
 		var/list/offers = supply_catalog()
 		var/list/options = list()

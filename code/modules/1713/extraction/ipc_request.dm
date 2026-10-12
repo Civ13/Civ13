@@ -39,6 +39,7 @@
 		if ("room.quote") payload_fields = list("operation", "item_ids")
 		if ("room.manage", "trade.confirm", "market.list", "market.buy", "market.cancel") payload_fields = list("confirmation_token")
 		if ("trade.quote")
+			if (!extraction_market_payload_valid(payload)) return null
 			if (payload["sale_kind"] in list("server_buyback", "player_listing")) payload_fields = list("item_ids", "sale_kind")
 			else if (payload["sale_kind"] in list("player_purchase", "listing_cancel")) payload_fields = list("listing_id", "sale_kind")
 			else return null
@@ -71,3 +72,19 @@
 	// This also rejects duplicate keys, alternate escapes and numeric precision loss.
 	if (replacetext(json_encode(request), "/", "\\/") != text) return null
 	return request
+
+// Shared by authenticated transport and ordinary server-local market callers.
+/proc/extraction_market_payload_valid(list/payload)
+	if (!islist(payload) || payload.len != 2 || !("sale_kind" in payload)) return FALSE
+	if (payload["sale_kind"] in list("server_buyback", "player_listing"))
+		if (!("item_ids" in payload)) return FALSE
+		var/list/ids = payload["item_ids"]
+		if (!islist(ids) || !ids.len || ids.len > 16) return FALSE
+		var/list/seen = list()
+		for (var/id in ids)
+			if (!extraction_ipc_identifier(id, FALSE, 80) || seen[id]) return FALSE
+			seen[id] = TRUE
+		return TRUE
+	if (payload["sale_kind"] in list("player_purchase", "listing_cancel"))
+		return ("listing_id" in payload) && extraction_ipc_identifier(payload["listing_id"], FALSE, 128)
+	return FALSE

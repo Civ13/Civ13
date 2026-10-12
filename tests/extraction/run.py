@@ -237,6 +237,8 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
         if probe == 'city':
             source = '#define EXTRACTION_MODE_PROBE\n#define EXTRACTION_CITY_PROBE\n' + source
             source += '\n#include "tests/extraction/mode_probe.dm"\n#include "tests/extraction/hub_probe.dm"\n#include "tests/extraction/progression_probe.dm"\n#include "tests/extraction/vote_probe.dm"\n#include "tests/extraction/group_probe.dm"\n#include "tests/extraction/vehicle_probe.dm"\n#include "tests/extraction/loot_probe.dm"\n#include "tests/extraction/city_probe.dm"\n#include "maps/extraction/modern_city_extraction.dmm"\n'
+        if probe in ('mode', 'city'):
+            source += '\n#include "tests/extraction/native_market_probe.dm"\n'
         if probe == 'insurance':
             source = '#define EXTRACTION_RETURNS_PROCESS_PROBE\n' + source
             source += '\n#include "tests/extraction/insurance_process_probe.dm"\n'
@@ -268,7 +270,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 (target / 'result.txt').unlink(missing_ok=True)
                 try:
                     ran = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-params', f'phase={phase}', '-log', 'runtime.log'], cwd=target,
-                                         capture_output=True, text=True, timeout=60, creationflags=flags)
+                                         capture_output=True, text=True, timeout=120 if probe == 'mode' else 60, creationflags=flags)
                 except subprocess.TimeoutExpired:
                     log_path = target / 'runtime.log'
                     print(log_path.read_text(errors='replace')[-12000:] if log_path.exists() else 'Runtime log missing at timeout')
