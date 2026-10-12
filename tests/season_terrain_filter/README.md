@@ -24,7 +24,7 @@ Whiterun metadata does not start automatic seasons. WIP nomads_western is
 
 Ordered selection covers area path/text/instance, parent/subtypes, distinct
 areas in deliberate order, predicates, unchanged unfiltered API, and native
-turf replacement across 16 cycles. Inert distractors are 800 objects and 80
+turf replacement across 16 cycles. Inert distractors are 20,000 objects and 80
 mobs, not connected players or production constructors. The generated-source
 negative control omits the filter: typed parity remains valid while candidate
 list bounds must fail. Source guards check exact turf arguments at base season

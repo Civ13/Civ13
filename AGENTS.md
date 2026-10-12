@@ -580,3 +580,10 @@ isolated runtime data and must detect exactly the lost recipe.
 
 <!-- 2026-10-12: finite digging completion -->
 Loose snow/dirt/sand stock must be checked after the action wait, because another actor may consume the last unit. Underground pickaxe actions use one wait/completion path. `tests/resource_extraction/digging_probe.dm` runs production handlers with competing completion and cancellation adapters; `-DiggingBaseline` rejects immutable pre-fix source without changing the checkout.
+<!-- 2026-10-12: seasonal terrain snapshots -->
+get_area_turfs accepts an optional third turf_type argument. Seasonal callers
+use fresh filtered snapshots, preserving pass order and native replacement refs;
+never cache them across transitions. Filtered predicates must be pure because
+excluded types skip predicate calls. tests/season_terrain_filter compares ordered
+native selections and bounded allocations at 660x550 synthetic geometry; inert
+entities and isolated wall times are not full-game or connected-player evidence.

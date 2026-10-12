@@ -65,7 +65,7 @@ var/replacements = 0
 			else new /turf/dirt/winter(T)
 	var/list/owned = list()
 	var/list/locations = list()
-	for(var/i in 1 to 800)
+	for(var/i in 1 to 20000)
 		var/obj/inert/O = new(locate(1 + i % WIDTH, 1 + i % HEIGHT, 1))
 		owned += O
 		locations += O.loc
