@@ -119,6 +119,8 @@ var/list/calls = list()
 		if (world.params["policy_tests"])
 			pool_type_roots += /obj/probe
 		var/scenario = world.params["case"]
+		if (scenario == "collector")
+			collector_checks()
 		if (scenario == "memory")
 			var/datum/callback_probe/target = new
 			var/list/payload = list()

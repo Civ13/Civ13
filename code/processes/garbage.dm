@@ -58,10 +58,6 @@ var/list/delayed_hard_garbage = list()
 	var/remaining_force_dels = GC_FORCE_DEL_PER_RUN
 
 	while (destroyed.len && --checkRemain >= 0)
-		if (remaining_force_dels <= 0)
-			#ifdef GC_DEBUG
-			#endif
-			break // Server's already pretty pounded, everything else can wait 2 seconds
 		var/refID = destroyed[1]
 		var/GCd_at_time = destroyed[refID]
 		if (GCd_at_time > time_to_kill)
@@ -72,6 +68,10 @@ var/list/delayed_hard_garbage = list()
 		#ifdef GC_DEBUG
 		#endif
 		if (A && A.gcDestroyed == GCd_at_time) // So if something else coincidently gets the same ref, it's not deleted by mistake
+			// A full hard-delete budget need not retain already-collected entries.
+			if (remaining_force_dels <= 0)
+				A = null
+				break
 			#ifdef GC_FINDREF
 			LocateReferences(A)
 			#endif
@@ -90,6 +90,7 @@ var/list/delayed_hard_garbage = list()
 		total_dels++
 		hard_references -= refID
 		destroyed.Cut(1, 2)
+		A = null // Do not retain a mismatched live identity across a budget yield.
 		PROCESS_TICK_CHECK
 
 #undef GC_COLLECTION_TIMEOUT

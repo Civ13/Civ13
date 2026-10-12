@@ -14,10 +14,10 @@ from ctypes import wintypes
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--byond-bin', type=Path, required=True)
-    p.add_argument('--case', choices=('callback', 'turf', 'lifecycle', 'pool', 'benchmark', 'memory'))
+    p.add_argument('--case', choices=('callback', 'turf', 'lifecycle', 'pool', 'benchmark', 'memory', 'collector'))
     p.add_argument('--output', type=Path)
     p.add_argument('--baseline-scheduler', action='store_true')
-    p.add_argument('--negative-control', choices=('cancel-retention','deletion-state','pool-cleanup','pool-cap','pool-global','pool-idle','hard-reference','startup','ref-identity','hard-now','let-live'))
+    p.add_argument('--negative-control', choices=('cancel-retention','deletion-state','pool-cleanup','pool-cap','pool-global','pool-idle','hard-reference','startup','ref-identity','hard-now','let-live','gc-soft-budget','gc-hard-budget'))
     a = p.parse_args()
     root = Path(__file__).resolve().parents[2]
     out = a.output or Path(tempfile.mkdtemp(prefix='civ13-memory-ownership-'))
@@ -28,6 +28,7 @@ def main():
     (out/'metadata.json').write_text(json.dumps({'head_sha': head, 'case': a.case, 'byond': '516.1681', 'scope': 'isolated production GC/pool/callproc', 'baseline_scheduler': a.baseline_scheduler, 'negative_control': a.negative_control}))
     (out/'dirty.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root))
     source = (root/'tests/memory_ownership/probe.dm').read_text().replace('../../code/', root.as_posix()+'/code/')
+    source += '\n' + (root/'tests/memory_ownership/collector.dm').read_text()
     if a.baseline_scheduler:
         if a.negative_control:
             raise RuntimeError('Do not combine historical baseline with mutation controls')
@@ -39,6 +40,8 @@ def main():
     expected = None
     if a.negative_control:
         controls = {
+            'gc-soft-budget': ('code/processes/garbage.dm', '\t\tvar/refID = destroyed[1]', '\t\tif (remaining_force_dels <= 0)\n\t\t\tbreak\n\t\tvar/refID = destroyed[1]', 'soft records drain after forced budget without exceeding candidate cap'),
+            'gc-hard-budget': ('code/processes/garbage.dm', 'if (remaining_force_dels <= 0)', 'if (FALSE)', 'next forced target waits after the hard-delete cap'),
             'cancel-retention': ('code/processes/callproc.dm', 'C.args = null', '// C.args deliberately retained', 'cancel clears helper target and arguments'),
             'deletion-state': ('code/processes/garbage.dm', 'A.gc_destroyed = A.gcDestroyed', 'A.gc_destroyed = 0', 'reentry cleans once and deletion markers agree'),
             'pool-cleanup': ('code/_helpers/datum_pool.dm', 'D.ResetVars()\n\tD.gcDestroyed', 'D.Destroy()\n\tD.ResetVars()\n\tD.gcDestroyed', 'pooled deletion cleans once and remains retired'),
@@ -75,7 +78,7 @@ def main():
     params = []
     if a.case:
         params.append('case='+a.case)
-    if a.case not in ('callback', 'turf', 'benchmark', 'memory'):
+    if a.case not in ('callback', 'turf', 'benchmark', 'memory', 'collector'):
         params.append('policy_tests=1')
     if params:
         command += ['-params', '&'.join(params)]
@@ -108,7 +111,7 @@ def main():
     print('Evidence:', out)
     if sample:
         print('Process memory:', sample)
-    if run.returncode or 'runtime error:' in runtime:
+    if run.returncode or any(marker in (runtime + (out/'daemon.log').read_text(errors='replace')).lower() for marker in ('runtime error:', 'bad ref', 'badref', '## bug:')):
         raise RuntimeError('Native runtime failed')
     if expected:
         if not result.startswith('FAIL: '+expected):
