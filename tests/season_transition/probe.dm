@@ -70,7 +70,12 @@ var/measure_gap = FALSE
 #endif
 /proc/probe_wait_settled(obj/map_metadata/M)
 	var/deadline = world.time + 100000
+#if CANDIDATE
 	while(M.probe_phase_pending || M.vars["season_busy"] || (islist(M.vars["season_queue"]) && length(M.vars["season_queue"])))
+#else
+	// Historical baseline has no worker/queue fields; its delayed callbacks are counted.
+	while(M.probe_phase_pending)
+#endif
 		if(world.time > deadline)
 			world.log << "ASSERTION: pending season phases never drained"
 			del(world)
