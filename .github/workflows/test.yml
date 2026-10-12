@@ -262,8 +262,18 @@ jobs:
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           /usr/bin/python3 tests/memory_ownership/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/memory_ownership/run.py --byond-bin "$PWD/BYOND/byond/bin" --case collector
+          for control in gc-soft-budget gc-hard-budget; do
+            /usr/bin/python3 tests/memory_ownership/run.py --byond-bin "$PWD/BYOND/byond/bin" --case collector --negative-control "$control"
+          done
           for control in cancel-retention deletion-state pool-cleanup pool-cap pool-global pool-idle hard-reference startup ref-identity hard-now let-live; do
             /usr/bin/python3 tests/memory_ownership/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
+          git fetch --no-tags --depth=1 origin 7cfa850bd9d2788dcbb9fd35f5c5915ccb528dd2
+          /usr/bin/python3 tests/process_loop_lifecycle/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/process_loop_lifecycle/run.py --byond-bin "$PWD/BYOND/byond/bin" --baseline
+          for control in token deadline successful-run; do
+            /usr/bin/python3 tests/process_loop_lifecycle/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
           git fetch --no-tags --depth=1 origin f556e39b93fc97f41020b2d8c5f2abed63fab497
           /usr/bin/python3 tests/global_vars_ownership/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/global-vars-fixed"
