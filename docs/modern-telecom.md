@@ -7,7 +7,13 @@ have not yet passed. It is not a production deployment announcement.
 
 Research utilities for network landlines, factories for broadcast equipment,
 and assembly-line manufacturing for television and local terminals. Recipes
-use existing materials and modern-era gates. Drag an adjacent electrical cable
+use existing materials and modern-era gates.
+Construction requires completed research and current native crafting skill:
+100 for landlines, 105 for radios, radio desks and antennas, and 160 for TV,
+TV desks and terminals. Both era and construction requirements are rechecked
+after the paid build action.
+
+Drag an adjacent electrical cable
 onto each powered device. Phones and computers use the same cable network for
 power and communications; this is an abstract game rule rather than a physical
 simulation of mains wiring or real VoIP equipment.

@@ -113,6 +113,8 @@
 		// the faction; otherwise it keeps the legacy research-threshold check.
 		// Era gating (i[12]) applies in both cases.
 		var/node_req = get_recipe_node_req(i[3])
+		if (civ_telecom_crafting_skill(text2path(i[3])) && !civ_telecom_era_allowed())
+			continue
 		if (ispath(text2path(i[3]), /obj/item/weapon/gun_mount) && (!map || map.ordinal_age < 6 || map.ordinal_age > 8))
 			continue
 		if (ispath(text2path(i[3]), /obj/item/blackpowder_part/stock) && (!map || map.ordinal_age < 3 || map.ordinal_age > 4))

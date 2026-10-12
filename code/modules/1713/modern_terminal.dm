@@ -10,10 +10,10 @@
 	return var_name == "last_message" || ..()
 
 /obj/structure/telecom/terminal/attack_hand(mob/living/human/H)
-	if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || get_dist(H, src) > 1)
+	if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || H.z != z || get_dist(H, src) > 1)
 		return
 	var/choice = input(H, "Local network terminal", name) in list("Send", "Power", "Cancel")
-	if (!H || H.stat != CONSCIOUS || !H.can_use_hands() || get_dist(H, src) > 1)
+	if (!H || H.stat != CONSCIOUS || !H.can_use_hands() || H.z != z || get_dist(H, src) > 1)
 		return
 	if (choice == "Power")
 		enabled = !enabled
@@ -21,7 +21,7 @@
 			powersource.update_power(-powerneeded, 1, src)
 	if (choice == "Send")
 		var/message = input(H, "Message to connected terminals (200 characters)", name) as text|null
-		if (H && H.stat == CONSCIOUS && H.can_use_hands() && get_dist(H, src) <= 1)
+		if (H && H.stat == CONSCIOUS && H.can_use_hands() && H.z == z && get_dist(H, src) <= 1)
 			to_chat(H, "Delivered to [send_network_message(sanitize(message, 200))] terminals.")
 
 /obj/structure/telecom/terminal/proc/send_network_message(message)

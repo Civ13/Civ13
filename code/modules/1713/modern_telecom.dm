@@ -10,6 +10,22 @@ var/global/civ_telecom_cursor = 1
 /proc/civ_broadcast_time()
 	return world.time
 
+/proc/civ_telecom_era_allowed()
+	return map && map.ordinal_age >= CIV_TELECOM_MODERN_AGE
+
+/proc/civ_telecom_crafting_skill(result_type)
+	if (ispath(result_type, /obj/item/weapon/telephone/landline))
+		return 100
+	if (ispath(result_type, /obj/structure/telecom/tv) || ispath(result_type, /obj/structure/telecom/station/tv) || ispath(result_type, /obj/structure/telecom/terminal))
+		return 160
+	return ispath(result_type, /obj/structure/telecom) ? 105 : 0
+
+/proc/civ_telecom_can_build(mob/living/human/H, result_type)
+	var/required_skill = civ_telecom_crafting_skill(result_type)
+	if (!required_skill)
+		return TRUE
+	return H && H.stat == CONSCIOUS && map && map.ordinal_age >= CIV_TELECOM_MODERN_AGE && H.getStat("crafting") >= required_skill && map.is_node_done(H.civilization, get_recipe_node_req("[result_type]"))
+
 // Authoritative running-server time, not wall time or per-device timers.
 // Each course occupies one minute in a repeating ten-minute schedule.
 /proc/civ_broadcast_slot(skill, now)

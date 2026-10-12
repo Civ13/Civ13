@@ -107,7 +107,7 @@ var/global/civ_landline_cursor = 1
 	return ..()
 
 /obj/item/weapon/telephone/landline/proc/dial(number)
-	if (retired || origincall || !(src in civ_landlines))
+	if (retired || origincall || !registered_number || !phonenumber || !(src in civ_landlines) || !isnum(number) || number < 1000 || number > 9999 || number != round(number))
 		return FALSE
 	for (var/obj/item/weapon/telephone/landline/P in civ_landlines)
 		if (P.phonenumber != number || P.origincall || !civ_phone_route(src, P))
@@ -137,7 +137,7 @@ var/global/civ_landline_cursor = 1
 	return TRUE
 
 /obj/item/weapon/telephone/landline/attack_self(mob/living/human/H)
-	if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || get_dist(H, src) > 1)
+	if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || H.z != z || get_dist(H, src) > 1)
 		return
 	if (ringingnum)
 		to_chat(H, answer() ? "You answer the call." : "The call has lost its connection.")
@@ -147,7 +147,7 @@ var/global/civ_landline_cursor = 1
 		to_chat(H, "You hang up.")
 		return
 	var/number = input(H, "Telephone number (1000-9999)", name) as num|null
-	if (isnull(number) || !H || H.stat != CONSCIOUS || !H.can_use_hands() || get_dist(H, src) > 1)
+	if (isnull(number) || !H || H.stat != CONSCIOUS || !H.can_use_hands() || H.z != z || get_dist(H, src) > 1)
 		return
 	to_chat(H, dial(sanitize_integer(number, 1000, 9999, 0)) ? "Calling [number]..." : "Busy, missing infrastructure, or no route.")
 
