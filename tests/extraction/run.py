@@ -15,7 +15,7 @@ def main():
     parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'insurance', 'groups', 'vehicles'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry'))
-    parser.add_argument('--group-negative-control', choices=('debit', 'visibility', 'premium'))
+    parser.add_argument('--group-negative-control', choices=('debit', 'visibility', 'premium', 'car'))
     parser.add_argument('--vehicle-loss-negative-control', action='store_true')
     parser.add_argument('--vehicle-purchase-negative-control', action='store_true')
     parser.add_argument('--vehicle-raid-negative-control', choices=('debit', 'credit'))
@@ -104,7 +104,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             control.write_text(store_source.replace(marker, '\tP["stash"] = list()\n\t// Negative control: retain uncertain garage\n\tP["state"] = "home"'), encoding='utf-8')
             source = source.replace('code\\modules\\1713\\extraction\\account_store.dm', control.name)
         if group_control:
-            filename = 'transactions' if group_control == 'visibility' else 'settlement'
+            filename = 'transactions' if group_control in ('visibility', 'car') else 'settlement'
             group_source = (root / f'code/modules/1713/extraction/{filename}.dm').read_text(encoding='utf-8')
             if group_control == 'debit':
                 marker = 'if (json_encode(expected) != json_encode(after) || json_encode(plan["issued"]) != json_encode(part["issued"])) return FALSE'
@@ -114,6 +114,10 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 marker = 'if (!islist(offer) || json_encode(V.plan_insurance_quote(part["selected"], offer["round"], FALSE)) != json_encode(offer)) return FALSE'
                 replacement = 'if (!islist(offer)) return FALSE'
                 expected_group_failure = 'forged group premium rejected by canonical pricing authority'
+            elif group_control == 'car':
+                marker = '\tcandidate["garage"] = list()'
+                replacement = '\tcandidate["garage"] = profile["garage"]'
+                expected_group_failure = 'native group recovery preserves exact vehicle debit without a second car'
             else:
                 marker = 'if (!group_journal.ready()) return FALSE'
                 replacement = 'group_journal.ready()'

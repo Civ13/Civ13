@@ -6,6 +6,17 @@
 
 /obj/map_metadata/extraction_survival
 	var/list/raid_vehicles = list()
+	proc/group_vehicle_seats(datum/extraction_vehicle_transfer/T)
+		if (!T || !T.current()) return null
+		var/list/seats = list()
+		for (var/obj/structure/bed/chair/drivers/car/driver in T.parts)
+			if (driver.axis != T.axis || !driver.can_buckle || driver.buckled_mob) return null
+			seats += driver
+		if (seats.len != 1) return null
+		for (var/obj/structure/bed/chair/carseat/seat in T.parts)
+			if (!seat.can_buckle || seat.buckled_mob) return null
+			seats += seat
+		return seats
 
 /datum/extraction_session/proc/plan_vehicle_raid(list/selected_ids, expected_revision, vehicle_id, vehicle_digest)
 	if (!active() || profile["revision"] != expected_revision || !islist(profile["garage"]) || profile["garage"].len != 1) return null

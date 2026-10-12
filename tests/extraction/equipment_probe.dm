@@ -6,8 +6,13 @@
 	maxx = 24
 	maxy = 24
 #else
+#ifdef EXTRACTION_GROUP_PROCESS_PROBE
+	maxx = 24
+	maxy = 24
+#else
 	maxx = 8
 	maxy = 8
+#endif
 #endif
 	maxz = 1
 #endif

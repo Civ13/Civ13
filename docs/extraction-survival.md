@@ -43,7 +43,7 @@ acknowledged extraction credit and during uncertain credit. Account parts and
 nested equipment are excluded from world-save ownership with `should_save`.
 Looted-car credit verifies the actual registered controller and exact current
 graph, and rejects an identity already acknowledged by another account.
-Passenger/group vehicle transactions remain unfinished; this solo path rejects
+Passenger extraction transactions remain unfinished; the solo path rejects
 occupied seats and is not playable acceptance.
 
 Isolated native tests cover account storage, nested equipment restoration,
@@ -75,6 +75,15 @@ member is ready. Each member may authorize their own paid insurance quote instea
 of uninsured readiness. Readiness reserves no money: the exact premium is debited
 with that member's loadout in the shared deployment receipt. A changed quote or
 physical garage invalidates deployment before any account debit.
+
+A PMC leader may select their saved garage car for group travel. That selection
+invalidates every ready vote. Each member explicitly agrees to ride when readying;
+the selected car identity and exact snapshot bind that consent. Deployment checks
+actual stopped-car seats and a clear raid footprint, includes the leader's garage
+debit in the same shared receipt, then moves the original car and buckles the
+original players into separate seats. A two-seat car cannot carry three members.
+Interrupted shared deployment cannot restore a second garage car on reconnect.
+Occupied passenger extraction is still pending.
 
 The group journal reuses exact forward settlement beneath `_settlement/groups/`.
 It validates every home-to-raid projection against the same pure debit planner

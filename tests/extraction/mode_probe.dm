@@ -15,6 +15,9 @@
 	var/test_insurance_confirmation = TRUE
 	var/test_party_confirmation = "accept"
 	var/test_car_confirmation = TRUE
+	var/test_ride_confirmation = TRUE
+	confirm_party_vehicle(mob/living/human/H, datum/extraction_party/P)
+		return test_ride_confirmation
 	confirm_car_purchase(mob/living/human/H)
 		if (test_car_confirmation == "move")
 			var/obj/effect/extraction_house_marker/house = H.extraction_session.house

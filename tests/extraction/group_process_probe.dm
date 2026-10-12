@@ -13,6 +13,7 @@
 		GLOB.moved_event = new /decl/observ/moved
 		GLOB.destroyed_event = new /decl/observ/destroyed
 		var/datum/extraction_equipment_codec/C = new
+		var/datum/extraction_vehicle_codec/VC = new
 		var/phase = world.params["phase"]
 		if (phase == "write")
 			var/list/plans = list()
@@ -35,14 +36,32 @@
 							var/list/graph = C.encode(I)
 							stash += list(list("id" = I.extraction_item_id, "equipment" = graph))
 							qdel(I)
-					equipment_assert(A.checkpoint_home(stash), "group fixture checkpoints real native equipment")
+					var/list/garage = list()
+					if (owner == "groupone")
+						var/obj/structure/car_workshop/W = new(locate(8,8,1))
+						var/obj/effects/premadevehicles/asno/piccolino/template = new(null, TRUE)
+						var/obj/structure/vehicleparts/axis/car = W.assemble_layout(template, 3)
+						qdel(template)
+						var/list/vehicle = VC.encode(car)
+						equipment_assert(vehicle, "native group fixture records real car graph")
+						garage += list(vehicle)
+						var/datum/extraction_vehicle_transfer/T = new
+						equipment_assert(T.capture(car, TRUE), "native group fixture owns bounded actual car parts")
+						for (var/obj/O in T.parts)
+							for (var/obj/child in O.contents.Copy())
+								if (child.extraction_vehicle_part_id) qdel(child)
+							qdel(O)
+						qdel(W)
+					equipment_assert(A.checkpoint_home(stash, garage), "group fixture checkpoints real native equipment")
 					var/list/before = A.copy_profile()
 					var/list/offer = owner == "groupone" ? A.plan_insurance_quote(list(G.extraction_item_id), "group-process-round") : null
 					var/list/plan = offer ? A.plan_raid(list(G.extraction_item_id), "PMC", offer["insured"], offer["round"], offer["payment"], before["revision"]) : A.plan_raid(list(G.extraction_item_id), "PMC")
+					if (garage.len) plan = A.plan_group_vehicle(plan, garage[1]["id"], md5(json_encode(garage[1])))
 					var/list/after = plan["candidate"]
 					after["revision"] = before["revision"] + 1
 					var/list/part = list("owner" = owner, "before" = before, "after" = after, "selected" = list(G.extraction_item_id), "faction" = "PMC", "issued" = plan["issued"])
 					if (offer) part["insurance"] = offer
+					if (garage.len) part["vehicle"] = list("id" = garage[1]["id"], "digest" = md5(json_encode(garage[1])))
 					parts += list(part)
 					qdel(G)
 					A.close()
@@ -68,6 +87,7 @@
 					var/datum/extraction_session/A = S.open(owner)
 					var/list/expected = plan["parts"][owner == "groupone" ? 1 : 2]["after"]
 					equipment_assert(A && A.profile["state"] == "home" && A.profile["raid_sequence"] == 1 && json_encode(A.profile["stash"]) == json_encode(expected["stash"]) && json_encode(A.profile["insurance_claims"]) == json_encode(expected["insurance_claims"]), "new process finishes every recorded debit and forfeits interrupted raid without reissuing gear")
+					equipment_assert(!A.profile["garage"].len && json_encode(A.profile["vehicle_issued"]) == json_encode(expected["vehicle_issued"]), "native group recovery preserves exact vehicle debit without a second car")
 					A.close()
 				var/datum/extraction_settlement/groups/J = S.group_journal
 				equipment_assert(J.submit(1, plan["parts"]), "exact group receipt replay acknowledged without a second debit")
@@ -78,6 +98,9 @@
 				var/list/underpaid = json_decode(json_encode(plan["parts"]))
 				underpaid[1]["insurance"]["cost"] = 0
 				equipment_assert(!J.valid_participants(underpaid), "forged group premium rejected by canonical pricing authority")
+				var/list/retained_car = json_decode(json_encode(plan["parts"]))
+				retained_car[1]["after"]["garage"] = retained_car[1]["before"]["garage"]
+				equipment_assert(!J.valid_participants(retained_car), "forged retained group car rejected by exact debit authority")
 		completed = TRUE
 	catch (var/exception/E)
 		equipment_failures++

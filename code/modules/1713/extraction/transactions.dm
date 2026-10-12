@@ -198,6 +198,17 @@
 	if (!plan || !commit(plan["candidate"])) return null
 	return list("sequence" = profile["raid_sequence"], "issued" = plan["issued"])
 
+// Compose a selected owned garage debit with an already planned group loadout.
+// This pure projection is also recomputed while repairing the shared journal.
+/datum/extraction_session/proc/plan_group_vehicle(list/plan, vehicle_id, vehicle_digest)
+	if (!islist(plan) || !islist(profile["garage"]) || profile["garage"].len != 1 || !service.store.valid_garage(profile["garage"])) return null
+	var/list/vehicle = profile["garage"][1]
+	if (vehicle["id"] != vehicle_id || md5(json_encode(vehicle)) != vehicle_digest) return null
+	var/list/candidate = plan["candidate"]
+	candidate["garage"] = list()
+	candidate["vehicle_issued"] = list("id" = vehicle_id, "sequence" = plan["sequence"], "digest" = vehicle_digest)
+	return plan
+
 /datum/extraction_session/proc/extract(sequence, list/loot)
 	if (!active() || profile["state"] != "raid" || sequence != profile["raid_sequence"] || !valid_entries(loot, 16)) return FALSE
 	var/list/candidate = copy_profile()

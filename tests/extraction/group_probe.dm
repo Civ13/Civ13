@@ -90,4 +90,54 @@
 	equipment_assert(!expired.alive && !M.party_by_owner[last.extraction_session.owner], "expired party releases membership and readiness")
 	equipment_assert(M.release(last.extraction_session), "unused invite target released")
 	qdel(last)
+	extraction_group_car_probe(M)
 	world.log << "GROUP: complete"
+
+/proc/extraction_group_car_probe(obj/map_metadata/extraction_survival/M)
+	var/list/bodies = list()
+	for (var/i in 1 to 3)
+		var/mob/living/human/H = new(locate(3,3,1))
+		H.m_intent = "stealth"
+		M.test_owners[H] = "grouprider[i]"
+		equipment_assert(M.admit(H), "car group member admitted")
+		bodies += H
+	var/mob/living/human/driver = bodies[1]
+	var/mob/living/human/passenger = bodies[2]
+	var/datum/extraction_session/S = driver.extraction_session
+	for (var/i in 1 to 5) new /obj/item/extraction_salvage(get_turf(S.house))
+	equipment_assert(M.upgrade_house(S), "group car owner pays private house upgrade")
+	for (var/i in 1 to EXTRACTION_CAR_PRICE) new /obj/item/extraction_salvage(get_turf(S.house))
+	equipment_assert(M.buy_car(driver), "group car is paid actual dealer vehicle")
+	var/obj/structure/vehicleparts/axis/A = S.garage_vehicle
+	var/obj/structure/vehicleparts/frame/frame = A.loc
+	var/datum/extraction_party/P = M.create_party(driver)
+	equipment_assert(M.invite_party(driver, passenger) && M.select_party_vehicle(driver), "leader selects exact paid car after consenting invitation")
+	M.test_ride_confirmation = FALSE
+	equipment_assert(!M.ready_party(passenger), "declining ride cannot ready car deployment")
+	M.test_ride_confirmation = TRUE
+	equipment_assert(M.invite_party(driver, bodies[3]), "third rider joins only by consent")
+	for (var/mob/living/human/H in bodies) equipment_assert(M.ready_party(H), "each car rider explicitly readies")
+	equipment_assert(!M.deploy_party(driver) && S.profile["garage"].len == 1, "two-seat Piccolino rejects third rider before vehicle debit")
+	M.leave_party(bodies[3]:extraction_session.owner)
+	equipment_assert(M.release(bodies[3]:extraction_session), "excess rider leaves without debit")
+	qdel(bodies[3])
+	equipment_assert(M.ready_party(driver) && M.ready_party(passenger), "remaining riders consent again after membership change")
+	frame.w_front[5]--
+	equipment_assert(!M.deploy_party(driver) && S.profile["garage"].len == 1 && passenger.extraction_session.profile["state"] == "home", "changed actual car invalidates all readiness before debit")
+	equipment_assert(M.select_party_vehicle(driver) && !P.ready.len && M.ready_party(driver) && M.ready_party(passenger), "updated selected car requires every rider to ready again")
+	M.accounts.group_journal.test_fail_at = "before_receipt"
+	equipment_assert(!M.deploy_party(driver) && S.garage_vehicle == A && S.profile["garage"].len == 1 && driver.z == 2 && passenger.z == 2, "failed car group receipt does not move riders or debit car")
+	M.accounts.group_journal.test_fail_at = null
+	equipment_assert(M.ready_party(driver) && M.ready_party(passenger) && M.deploy_party(driver), "consenting two-account deployment transfers paid original car and riders")
+	equipment_assert(driver.z == 1 && passenger.z == 1 && driver.buckled && passenger.buckled && driver.buckled != passenger.buckled && A.driver == driver && !S.profile["garage"].len && S.raid_vehicle == A && M.raid_vehicles[A], "original driver and passenger occupy separate actual seats after durable garage debit")
+	// Until passenger extraction composition is exercised, release the real seat
+	// links and forfeit these fixture accounts without claiming vehicle return.
+	var/obj/structure/bed/chair/drivers/seat = driver.buckled
+	if (A.wheel.loc == driver)
+		driver.remove_from_mob(A.wheel)
+		A.wheel.forceMove(seat)
+	seat.unbuckle_mob()
+	passenger.buckled.unbuckle_mob()
+	equipment_assert(M.release(S, FALSE) && M.release(passenger.extraction_session, FALSE) && A.loc && M.raid_vehicles[A], "group forfeiture leaves actual car for raid settlement")
+	qdel(driver)
+	qdel(passenger)
