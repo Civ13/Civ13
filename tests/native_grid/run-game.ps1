@@ -42,7 +42,7 @@ try {
     if ($runtime -and !$runtime.HasExited) { Stop-Process -Id $runtime.Id; $runtime.WaitForExit() }
     foreach ($extension in @('.dme','_world.dm','_globals.dm','.dmb','.rsc')) {
         $target = Join-Path $repo ($prefix + $extension)
-        if (Test-Path -LiteralPath $target) { Remove-Item -LiteralPath $target }
+        if (Test-Path -LiteralPath $target) { Remove-Item -LiteralPath $target -Force }
     }
     $resolved = [IO.Path]::GetFullPath($temporary)
     if (!$resolved.StartsWith([IO.Path]::GetTempPath(), [StringComparison]::OrdinalIgnoreCase)) { throw 'Invalid temporary fixture path' }
