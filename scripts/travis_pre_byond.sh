@@ -20,6 +20,7 @@ echo "Compiling the dme..."
 retval=1
 source /home/runner/work/Civ13/Civ13/BYOND/byond/bin/byondsetup
 cd /home/runner/work/Civ13/Civ13/
+python3 scripts/build-crafting-atlas.py --catalog-only --game-catalog UI/crafting-atlas.json
 DreamMaker -max_errors 0 civ13.dme | tee result.log
 retval=$?
 if ! grep '\- 0 errors, 0 warnings' result.log

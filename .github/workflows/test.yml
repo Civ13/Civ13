@@ -41,6 +41,8 @@ jobs:
           persist-credentials: false
       - name: Test offline evidence checker
         run: python3 -m unittest discover -s tests -p test_game_evidence.py -v
+      - name: Test current-source atlas generation and negative controls
+        run: python3 -m unittest discover -s tests -p test_crafting_atlas.py -v
       - name: Test and inventory placed outdoor bootstrap resources
         run: |
           python3 -m unittest discover -s tests -p test_outdoor_bootstrap.py -v
@@ -103,6 +105,17 @@ jobs:
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe insurance
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --provenance-negative-control
+
+      - name: Verify generated atlas assets and native bounded viewer
+        if: needs.changes.outputs.game == 'true'
+        shell: bash
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 scripts/build-crafting-atlas.py --output "$RUNNER_TEMP/crafting" --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --check-game-catalog UI/crafting-atlas.json
+          node scripts/atlas/check.mjs "$RUNNER_TEMP/crafting"
+          /usr/bin/python3 tests/crafting_atlas/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
+          /usr/bin/python3 tests/crafting_atlas/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control
+          /usr/bin/python3 tests/crafting_atlas/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --full-catalog
 
       - name: Explain opt-in runtime coverage
         if: needs.changes.outputs.extensive != 'true'
