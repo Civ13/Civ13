@@ -7,6 +7,14 @@ world
 	var/powerneeded = 0
 	var/powered = FALSE
 	var/obj/structure/cable/powersource
+/datum/proc/persistence_runtime_var(key)
+	return FALSE
+/obj/item/connector/proc/forget_cable(obj/structure/cable/C)
+	return
+/atom/proc/examine(mob/user)
+	return
+/proc/to_chat(mob/user, message)
+	return
 /obj/structure/engine
 	var/list/connections = list()
 	var/currentspeed = 0
@@ -32,7 +40,10 @@ world
 	if (!passed)
 		failures++
 var/failures = 0
+/world/OpenPort(port)
+	return port == "none" ? ..() : FALSE
 /world/New()
+	world.OpenPort("none")
 	var/obj/structure/cable/A = new(locate(1,1,1))
 	var/obj/structure/cable/B = new(locate(2,1,1))
 	var/obj/structure/cable/C = new(locate(3,1,1))
@@ -44,6 +55,9 @@ var/failures = 0
 	sleep(30)
 	A.power_on(10)
 	check("single source", C.powerflow, 10)
+	check("component identity agrees", A.component_id, C.component_id)
+	check("loop traversal visits each cable once", A.rebuild_visits, 3)
+	check("component identity excluded from saves", A.persistence_runtime_var("component_id"), TRUE)
 	var/obj/L = new(locate(1,1,1))
 	var/obj/M = new(locate(2,1,1))
 	L.powersource = A
@@ -99,6 +113,7 @@ var/failures = 0
 	check("repeated generation remote", C.powerflow, 10)
 	B.disconnect()
 	check("split disconnected supply", C.powerflow, 0)
+	check("split has distinct identities", A.component_id != C.component_id, TRUE)
 	var/obj/structure/engine/F = new(locate(3,1,1))
 	F.maxpower = 7
 	F.connections = list(C)
@@ -110,6 +125,8 @@ var/failures = 0
 	C.connections |= A
 	A.power_on(10)
 	check("loop two sources", C.powerflow, 17)
+	check("merge shares identity", A.component_id, C.component_id)
+	check("cycle visits each cable once", A.rebuild_visits, 3)
 	M.powersource = B
 	B.connections += M
 	A.update_power(4,1,L)
@@ -173,7 +190,7 @@ var/failures = 0
 	check("moved engine detaches cables", G.connections.len, 0)
 	G.Destroy()
 	world.log << "POWER_PROBE failures=[failures]"
-	shutdown()
+	del(world)
 
 
 

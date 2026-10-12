@@ -25,5 +25,16 @@
   "/obj/item/weapon/shield/chitin/large",
   "/obj/structure/farming/plant/herbs",
   "/obj/item/extraction_generator_kit",
-  "/obj/structure/car_workshop/extraction_private"
+  "/obj/structure/car_workshop/extraction_private",
+  "/obj/structure/exercise",
+  "/obj/structure/exercise/course",
+  "/obj/structure/exercise/modern",
+  "/obj/structure/exercise/modern/course",
+  "/obj/structure/telecom",
+  "/obj/structure/telecom/station",
+  "/obj/structure/telecom/tv",
+  "/obj/structure/telecom/station/tv",
+  "/obj/structure/telecom/antenna",
+  "/obj/item/weapon/telephone/landline",
+  "/obj/structure/telecom/terminal"
 ]

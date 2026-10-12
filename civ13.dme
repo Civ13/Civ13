@@ -1239,6 +1239,7 @@
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
 #include "code\modules\1713\animal_harvest.dm"
+#include "code\modules\1713\active_training.dm"
 #include "code\modules\1713\extraction\ipc_crypto.dm"
 #include "code\modules\1713\extraction\ipc_wire.dm"
 #include "code\modules\1713\extraction\ipc_request.dm"
@@ -1287,3 +1288,6 @@
 #endif
 // END_SELECTED_MAP
 // END_INCLUDE
+#include "code\modules\1713\modern_telecom.dm"
+#include "code\modules\1713\modern_telephone.dm"
+#include "code\modules\1713\modern_terminal.dm"

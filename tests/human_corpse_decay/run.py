@@ -30,7 +30,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--byond-bin', type=Path, required=True)
     p.add_argument('--output', type=Path)
-    p.add_argument('--negative-control', nargs='?', const='nodrop', choices=('nodrop', 'restart', 'noop', 'icon-readiness', 'icon-callback'))
+    p.add_argument('--negative-control', nargs='?', const='nodrop', choices=('nodrop', 'restart', 'noop', 'icon-readiness', 'icon-callback', 'runtime-parent'))
     a = p.parse_args()
     root = Path(__file__).resolve().parents[2]
     out = a.output.resolve() if a.output else Path(tempfile.mkdtemp(prefix='civ13-corpse-decay-'))
@@ -39,6 +39,8 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     stem = '.human_corpse_decay_probe'
     generated = [root / (stem + s) for s in ('.dme', '_world.dm', '_decay.dm', '.dmb', '.rsc', '_icons.dm', '_external.dm')]
+    training_copy = root / (stem + '_training.dm')
+    generated.append(training_copy)
     if any(x.exists() for x in generated):
         raise RuntimeError('Existing probe artifacts must be preserved')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
@@ -66,6 +68,14 @@ def main():
             assert external.count(guard) == 1
             generated[6].write_text(external.replace(guard, 'if (TRUE)', 1), encoding='utf-8')
             source = source.replace('code\\modules\\organs\\organ_external.dm', stem + '_external.dm')
+        elif a.negative_control == 'runtime-parent':
+            training = (root / 'code/modules/1713/active_training.dm').read_text(encoding='utf-8')
+            fixed = 'return (key in list("exercise_rest_epoch", "exercise_equipment")) || ..()'
+            broken = 'return key in list("exercise_rest_epoch", "exercise_equipment") || ..()'
+            if training.count(fixed) != 1:
+                raise RuntimeError('Runtime-parent mutation target changed')
+            training_copy.write_text(training.replace(fixed, broken, 1), encoding='utf-8')
+            source = source.replace('code\\modules\\1713\\active_training.dm', training_copy.name)
         elif a.negative_control:
             decay = (root / 'code/processes/human_corpse_decay.dm').read_text(encoding='utf-8')
             if a.negative_control == 'nodrop':
@@ -133,7 +143,7 @@ def main():
         result = (out / 'result.txt').read_text(encoding="utf-8").strip()
         print(result)
         if a.negative_control:
-            expected = {'nodrop': 'nodrop gear blocks retirement', 'restart': 'restart retains exposure', 'noop': 'noop movement retains exposure', 'icon-readiness': 'partial head icon defers species lookup', 'icon-callback': 'partial organ constructor callback defers'}[a.negative_control]
+            expected = {'nodrop': 'nodrop gear blocks retirement', 'restart': 'restart retains exposure', 'noop': 'noop movement retains exposure', 'icon-readiness': 'partial head icon defers species lookup', 'icon-callback': 'partial organ constructor callback defers', 'runtime-parent': 'human inherits corpse runtime exclusion'}[a.negative_control]
             if not result.startswith('FAIL: ' + expected): raise RuntimeError('Negative control did not detect expected mutation')
             print(f'PASS: {a.negative_control} mutation detected')
         elif not result.startswith('PASS:') or proc.returncode:

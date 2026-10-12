@@ -8,6 +8,12 @@ world
 	var/powered = FALSE
 	var/powerneeded = 0
 	var/obj/structure/cable/powersource
+/datum/proc/persistence_runtime_var(key)
+	return FALSE
+/obj/item/connector/proc/forget_cable(obj/structure/cable/C)
+	return
+/world/OpenPort(port)
+	return port == "none" ? ..() : FALSE
 /obj/structure/engine
 	var/list/connections = list()
 	var/on = TRUE
@@ -44,6 +50,7 @@ var/failures = 0
 	B.powersource = C
 	C.connections |= B
 /world/New()
+	OpenPort("none")
 	var/obj/structure/cable/A = new(locate(1,1,1))
 	var/obj/structure/cable/C = new(locate(2,1,1))
 	A.connections |= C
@@ -151,7 +158,7 @@ var/failures = 0
 	S["energy"] >> B2.stored_energy
 	check("energy scalar save/load", B2.stored_energy, 137.5)
 	world.log << "BATTERY_PROBE failures=[failures]"
-	shutdown()
+	del(world)
 
 /atom/movable/proc/forceMove(atom/destination, var/special_event)
 	loc = destination

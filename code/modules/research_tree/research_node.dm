@@ -399,6 +399,10 @@ var/global/list/node_grid_col_cache = null
 	// misclassifications. Unmapped paths (not listed here) keep the legacy
 	// threshold gate unchanged (see generate_recipes_civs in civ_recipes.dm).
 	recipe_node_requirements = list(
+		"/obj/structure/exercise" = "basic_tools",
+		"/obj/structure/exercise/course" = "primitive_construction",
+		"/obj/structure/exercise/modern" = "factories",
+		"/obj/structure/exercise/modern/course" = "factories",
 		// --- anesthetic_surgery (2) ---
 		"/obj/item/clothing/mask/sterile" = "anesthetic_surgery",
 		"/obj/item/clothing/suit/storage/jacket/surgeon" = "anesthetic_surgery",
@@ -671,6 +675,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/closet/crate" = "factories",
 		"/obj/structure/closet/crate/bin" = "factories",
 		"/obj/structure/radio" = "factories",
+        "/obj/structure/telecom" = "factories",
+        "/obj/structure/telecom/station" = "factories",
+        "/obj/structure/telecom/antenna" = "factories",
+        "/obj/structure/telecom/tv" = "assembly_line",
+        "/obj/structure/telecom/station/tv" = "assembly_line",
+        "/obj/structure/telecom/terminal" = "assembly_line",
+        "/obj/item/weapon/telephone/landline" = "utilities",
 		"/obj/structure/radio/transmitter" = "factories",
 		// --- field_artillery (5) ---
 		"/obj/item/stack/ammopart/casing/artillery" = "field_artillery",

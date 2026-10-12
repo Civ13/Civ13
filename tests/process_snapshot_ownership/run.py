@@ -44,7 +44,7 @@ if args.baseline:
 if args.negative_control:
     source = '#define UNCONDITIONAL_CLEAR_CONTROL\n' + source
 if args.negative_control:
-    anchor = 'if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)'
+    anchor = 'if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY || !length(current_list))'
     if source.count(anchor) != 1:
         raise SystemExit('Negative control anchor changed')
     source = source.replace(anchor, 'if (TRUE)')

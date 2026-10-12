@@ -62,6 +62,27 @@ var/corpse_hook_slots_clear = FALSE
 	return TRUE
 
 var/corpse_assertions = 0
+
+// Test inherited production contracts without starting equipment constructors.
+/obj/structure/exercise/corpse_persistence_ci/New()
+	return
+/obj/item/weapon/attachment/corpse_persistence_ci/New()
+	return
+/obj/item/weapon/gun/corpse_persistence_ci/New()
+	return
+
+/proc/corpse_persistence_contract()
+	var/list/subjects = list(new /obj/structure/exercise/corpse_persistence_ci, new /obj/item/weapon/attachment/corpse_persistence_ci, new /obj/item/weapon/gun/corpse_persistence_ci)
+	var/list/own_keys = list("actor", "configuration_busy", "gun_work_busy")
+	for (var/i = 1, i <= subjects.len, i++)
+		var/atom/movable/A = subjects[i]
+		corpse_assert(A.persistence_runtime_var(own_keys[i]), "subtype runtime field excluded")
+		corpse_assert(A.persistence_runtime_var("corpse_decay_record"), "equipment inherits corpse runtime exclusion")
+		corpse_assert(!A.persistence_runtime_var("name"), "durable equipment fields remain serializable")
+		if (istype(A, /obj/item))
+			corpse_assert(A.persistence_runtime_var("abandonment_since"), "equipment inherits abandonment runtime exclusion")
+		qdel(A)
+
 /proc/corpse_assert(ok, message)
 	corpse_assertions++
 	if (!ok)
@@ -93,6 +114,7 @@ var/corpse_assertions = 0
 		G.setup()
 		var/obj/map_metadata/corpse_ci/M = new
 		var/turf/T = locate(2,2,1)
+		corpse_persistence_contract()
 		var/mob/living/human/H = new(T)
 		// Let unrelated human constructor icon work finish before the focused case.
 		sleep(20)
@@ -125,6 +147,9 @@ var/corpse_assertions = 0
 		qdel(retired_head)
 		sleep(2)
 		corpse_assert(!retired_head.icon_callbacks, "retired organ constructor callback stays canceled")
+		corpse_assert(H.persistence_runtime_var("exercise_equipment"), "human exercise runtime field excluded")
+		corpse_assert(H.persistence_runtime_var("corpse_decay_record"), "human inherits corpse runtime exclusion")
+		corpse_assert(!H.persistence_runtime_var("exercise_fatigue"), "durable exercise fatigue remains serializable")
 		H.stat = DEAD
 		H.do_rotting()
 		var/datum/corpse_decay_record/R = H.corpse_decay_record
@@ -323,6 +348,7 @@ var/corpse_assertions = 0
 		H.corpse_decay_age = 3456
 		H.corpse_decay_seasons = 3
 		H.corpse_decay_seasonal = TRUE
+		H.exercise_fatigue = 3
 		bag = new(H)
 		child = new(bag)
 		H.back = bag
@@ -337,6 +363,7 @@ var/corpse_assertions = 0
 		var/mob/living/human/restored = map_storage.Load_Entry(F, body_ref, null, T)
 		for (var/datum/loaded in map_storage.all_loaded)
 			loaded.after_load()
+		corpse_assert(restored && restored.exercise_fatigue == 3, "native save retains durable exercise fatigue")
 		corpse_assert(restored && restored != H && restored.stat == DEAD && restored.corpse_decay_record && restored.corpse_decay_age == saved_age && restored.corpse_decay_seasons == 3, "native body roundtrip retains elapsed exposure")
 		corpse_assert((restored in dead_mob_list) && !(restored in living_mob_list) && restored.lying && !restored.canmove, "restored corpse has native dead-list and movement state")
 		corpse_assert(restored.getBruteLoss() == saved_damage && corpse_death_hooks == death_hooks_before, "native dead restore preserves damage without death-hook replay")

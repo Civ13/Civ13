@@ -316,6 +316,28 @@ Group deployment reuses the shared journal under `_settlement/groups/`; exact
 home-to-raid projections come from the solo raid planner. Never move members
 before all account debits commit. `--probe groups` checks three-process recovery
 across eleven cuts; mode fixtures exercise consent/readiness and original atoms.
+<!-- 2026-10-12: NPC cover decision parity -->
+`tests/npc_cover/run.py` compiles production cover scoring, LOS and line helpers
+with native BYOND ranges in an isolated 32x32x2 world. It compares every score
+and choice, including officer/clump boundaries and tie controls. Cover allies
+are cached only within one synchronous decision after its second cover candidate;
+keep candidate order and strict score comparison. The benchmark reports native
+wall time, not server CPU or combat movement acceptance.
+
+<!-- 2026-10-12: inherited runtime exclusion precedence -->
+DM `in` binds below `||`; parenthesize membership before combining a runtime-field
+list with `..()`. Otherwise a nonempty list short-circuits the parent exclusion.
+The human corpse fixture checks inherited human/equipment exclusions and its
+`--negative-control runtime-parent` restores the faulty human expression.
+
+<!-- 2026-10-12: lighting batch ownership -->
+Lighting overlays detach bounded 1000/2000-entry batches, null consumed slots
+and retain unfinished batches across budget
+returns. Scheduler replacement must transfer current_list/batch_index;
+cancellation returns unfinished entries to the live queue. Tests in
+tests/lighting_queues compare production color/luminosity and immutable baseline
+queue workloads; trivial callback timings do not establish server latency.
+
 <!-- 2026-10-12: native GC outcome triage -->
 BYOND 516.1681 can clear a native `del(A)` argument when `Del()` aborts while
 the target remains alive. Verify disappearance with the saved ref and retirement
