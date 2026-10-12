@@ -29,6 +29,9 @@
 	if (!P)
 		last_error = store.last_error
 		return null
+	if (!insurance_profile_valid(P))
+		last_error = "Insurance ownership records require recovery"
+		return null
 	// An old raid cannot be reconstructed as a free second copy of issued gear.
 	if (P["state"] == "raid")
 		P["state"] = "home"
@@ -47,6 +50,7 @@
 
 /datum/extraction_session/proc/commit(list/candidate)
 	if (!active()) return FALSE
+	if (!service.insurance_profile_valid(candidate)) return FALSE
 	if (!service.store.commit_profile(owner, candidate))
 		// A failed phase may have a durable intent. Stop all further mutations.
 		locked = TRUE
@@ -91,7 +95,7 @@
 
 // Persist the debit before returning equipment to the caller. Caller must
 // retire its home representations before materializing any raid representation.
-/datum/extraction_session/proc/begin_raid(list/selected_ids, raid_faction = "PMC")
+/datum/extraction_session/proc/begin_raid(list/selected_ids, raid_faction = "PMC", list/insured_ids, insurance_round)
 	if (!active() || profile["state"] != "home" || !islist(selected_ids) || selected_ids.len > 16 || !(raid_faction in list("PMC", "Scav"))) return null
 	var/list/candidate = copy_profile()
 	var/list/stash = candidate["stash"]
@@ -106,10 +110,23 @@
 		if (wanted[entry["id"]]) issued += list(entry)
 		else remaining += list(entry)
 	if (issued.len != wanted.len) return null
+	var/list/insured = list()
+	if (insured_ids)
+		if (!islist(insured_ids) || insured_ids.len > 16 || !istext(insurance_round) || !length(insurance_round) || length(insurance_round) > 64) return null
+		for (var/id in insured_ids)
+			if (!wanted[id] || insured[id]) return null
+			insured[id] = TRUE
 	for (var/list/entry in issued)
 		var/list/equipment = entry["equipment"]
 		if (equipment["schema"] == 2)
 			for (var/list/node in equipment["nodes"]) node["found_in_raid"] = FALSE
+		if (insured[entry["id"]])
+			if (equipment["schema"] != 2) return null
+			for (var/list/node in equipment["nodes"])
+				node["insurance_token"] = md5(json_encode(list(owner, insurance_round, profile["raid_sequence"] + 1, node["id"])))
+			if (!candidate["insurance_claims"]) candidate["insurance_claims"] = list()
+			var/list/claims = candidate["insurance_claims"]
+			claims += list(list("round" = insurance_round, "sequence" = profile["raid_sequence"] + 1, "entry" = json_decode(json_encode(entry))))
 	candidate["stash"] = remaining
 	candidate["raid_sequence"]++
 	candidate["state"] = "raid"
@@ -123,6 +140,7 @@
 	var/list/stash = candidate["stash"]
 	for (var/list/entry in loot) stash += list(entry)
 	if (!valid_entries(stash, capacity())) return FALSE
+	if (!record_insurance_recovery(candidate, loot)) return FALSE
 	candidate["state"] = "home"
 	return commit(candidate)
 
@@ -140,6 +158,7 @@
 	var/list/stash = candidate["stash"]
 	for (var/list/entry in shipment) stash += list(entry)
 	if (!valid_entries(stash, capacity())) return FALSE
+	if (!record_insurance_recovery(candidate, shipment)) return FALSE
 	return commit(candidate)
 
 // Only home sessions may replace their materialized home stash. Integration
@@ -176,3 +195,45 @@
 	closed = TRUE
 	profile = null
 	service = null
+
+// Issued claims are evidence, not stash ownership or payout instructions.
+// Recovery tokens are credited atomically with extraction/shipment and survive
+// subsequent stash consumption. No caller may clear them before reconciliation.
+/datum/extraction_service/proc/insurance_profile_valid(list/P)
+	if (!islist(P)) return FALSE
+	var/list/claims = P["insurance_claims"]
+	var/list/recovered = P["insurance_recovered"]
+	if (!isnull(claims) && (!islist(claims) || claims.len > 64)) return FALSE
+	if (!isnull(recovered) && (!islist(recovered) || recovered.len > 4096)) return FALSE
+	var/list/tokens = list()
+	var/datum/extraction_session/validator = new
+	if (claims)
+		for (var/list/claim in claims)
+			if (!islist(claim) || !istext(claim["round"]) || !length(claim["round"]) || length(claim["round"]) > 64 || !isnum(claim["sequence"]) || claim["sequence"] < 1 || claim["sequence"] > P["raid_sequence"] || round(claim["sequence"]) != claim["sequence"]) return FALSE
+			var/list/entry = claim["entry"]
+			if (!validator.valid_entries(list(entry), 1) || entry["equipment"]["schema"] != 2) return FALSE
+			for (var/list/node in entry["equipment"]["nodes"])
+				var/token = node["insurance_token"]
+				if (!istext(token) || token != md5(json_encode(list(P["owner"], claim["round"], claim["sequence"], node["id"]))) || tokens[token] || tokens.len >= 4096) return FALSE
+				tokens[token] = TRUE
+	if (recovered)
+		var/list/seen = list()
+		for (var/token in recovered)
+			if (!istext(token) || length(token) != 32 || ckey(token) != token || seen[token]) return FALSE
+			seen[token] = TRUE
+	return TRUE
+
+/datum/extraction_session/proc/record_insurance_recovery(list/candidate, list/entries)
+	var/list/recovered = candidate["insurance_recovered"]
+	if (!recovered) recovered = list()
+	for (var/list/entry in entries)
+		var/list/graph = entry["equipment"]
+		if (graph["schema"] != 2) continue
+		for (var/list/node in graph["nodes"])
+			var/token = node["insurance_token"]
+			if (isnull(token)) continue
+			if (!istext(token) || length(token) != 32 || ckey(token) != token) return FALSE
+			recovered |= token
+			if (recovered.len > 4096) return FALSE
+	if (recovered.len) candidate["insurance_recovered"] = recovered
+	return TRUE

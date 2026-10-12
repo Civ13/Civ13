@@ -6,6 +6,7 @@
 	var/tmp/extraction_item_id
 	var/tmp/extraction_found_in_raid = FALSE
 	var/tmp/extraction_secure_stored = FALSE
+	var/tmp/extraction_insurance_token
 
 var/global/extraction_identity_sequence = 0
 
@@ -79,6 +80,7 @@ var/global/extraction_identity_sequence = 0
 		if (!I.extraction_item_id) I.extraction_item_id = new_extraction_item_id()
 		node["id"] = I.extraction_item_id
 		node["found_in_raid"] = I.extraction_found_in_raid
+		if (I.extraction_insurance_token) node["insurance_token"] = I.extraction_insurance_token
 		var/list/scalars = list()
 		for (var/key in scalar_fields(I.type))
 			if (!(key in I.vars)) continue
@@ -142,6 +144,7 @@ var/global/extraction_identity_sequence = 0
 			var/id = node["id"]
 			if (!istext(id) || !length(id) || length(id) > 80 || identities[id] || !(node["found_in_raid"] in list(FALSE, TRUE))) return FALSE
 			identities[id] = TRUE
+			if (!isnull(node["insurance_token"]) && (!istext(node["insurance_token"]) || length(node["insurance_token"]) != 32 || ckey(node["insurance_token"]) != node["insurance_token"])) return FALSE
 		var/path = text2path(node["type"])
 		if (!supported(path) || !valid_ref(node["parent"], i - 1) || (i == 1 ? node["parent"] != 0 : node["parent"] == 0)) return FALSE
 		var/depth = i == 1 ? 1 : depths[node["parent"]] + 1
@@ -184,6 +187,58 @@ var/global/extraction_identity_sequence = 0
 		if ("optic_rail") return ispath(path, /obj/item/weapon/gun_mount)
 	return ispath(path, /obj/item/weapon/attachment)
 
+// Read-only projection for ownership reconciliation. The caller supplies the
+// authoritative surviving identities; this never decides who owns an item.
+// Removing a container does not remove its independently surviving children.
+/datum/extraction_equipment_codec/proc/project_identities(list/record, list/surviving_ids)
+	if (!validate(record) || record["schema"] != 2 || !islist(surviving_ids) || surviving_ids.len > EXTRACTION_EQUIPMENT_NODES) return null
+	var/list/wanted = list()
+	for (var/id in surviving_ids)
+		if (!istext(id) || wanted[id]) return null
+		wanted[id] = TRUE
+	var/list/source = record["nodes"]
+	var/list/group_for = list()
+	var/list/local_index = list()
+	var/list/groups = list()
+	var/found = 0
+	for (var/i in 1 to source.len)
+		var/list/node = source[i]
+		if (!wanted[node["id"]]) continue
+		found++
+		var/group = group_for["[node["parent"]]"]
+		if (!group)
+			groups += list(list())
+			group = groups.len
+		var/list/members = groups[group]
+		members += i
+		group_for["[i]"] = group
+		local_index["[i]"] = members.len
+	if (found != wanted.len) return null
+	var/list/result = list()
+	for (var/group in 1 to groups.len)
+		var/list/members = groups[group]
+		var/list/projected = list()
+		for (var/i in members)
+			var/list/node = json_decode(json_encode(source[i]))
+			var/parent = node["parent"]
+			node["parent"] = group_for["[parent]"] == group ? local_index["[parent]"] : 0
+			if (!node["parent"] && ispath(text2path(node["type"]), /obj/item/weapon/attachment)) node["scalars"]["A_attached"] = FALSE
+			var/list/refs = node["refs"]
+			for (var/key in refs)
+				var/target = refs[key]
+				refs[key] = group_for["[target]"] == group ? local_index["[target]"] : 0
+			var/list/lists = node["lists"]
+			for (var/key in lists)
+				var/list/values = list()
+				for (var/target in lists[key])
+					if (group_for["[target]"] == group) values += local_index["[target]"]
+				lists[key] = values
+			projected += list(node)
+		var/list/output = list("schema" = 2, "nodes" = projected)
+		if (!validate(output)) return null
+		result += list(output)
+	return result
+
 // All shape/type/ref validation completes before constructors run. Callers hold
 // the session freeze until the resulting graph has been fully installed.
 /datum/extraction_equipment_codec/proc/decode(list/record, atom/destination)
@@ -204,6 +259,7 @@ var/global/extraction_identity_sequence = 0
 		var/obj/item/I = created[i]
 		I.extraction_item_id = record["schema"] == 2 ? node["id"] : new_extraction_item_id()
 		I.extraction_found_in_raid = record["schema"] == 2 ? node["found_in_raid"] : FALSE
+		I.extraction_insurance_token = record["schema"] == 2 ? node["insurance_token"] : null
 		var/list/scalars = node["scalars"]
 		if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/M = I

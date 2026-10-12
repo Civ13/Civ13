@@ -61,6 +61,27 @@ system power-loss durability, bot authentication or live trading. Callers must
 retire materialized home items and release sessions before submission. Insurance,
 crafting transformations and trade adapters are not supplied by this ledger.
 
+## Insurance ownership evidence under implementation
+
+The production equipment probe also covers read-only graph projection for a
+subset of surviving node identities, including a recovered nested optic and
+independent components when their parent gun is recovered. References are
+remapped within each surviving component; detached attachments become unattached.
+Issued source evidence is unchanged.
+
+The internal `begin_raid` interface can atomically archive selected insurance
+graphs with its stash debit. Each node receives a token tied to the account,
+round, raid sequence and item identity. Actual equipment serialization retains
+that token. Extraction and shipment snapshots retain recovered tokens even if
+their items are later consumed, and a later insured issue gets a different token.
+Claims are bounded to 64 roots and 4096 nodes; recovered tokens are bounded to
+4096. Invalid or full records reject mutation instead of dropping evidence.
+Shared exchanges must preserve these records unchanged.
+
+These interfaces are not enabled by the house UI yet. Eligibility, pricing,
+round-end reconciliation, physical retirement and atomic return delivery remain
+pending. Issued claims alone never grant gear or prove insurance acceptance.
+
 ## Required safe-house concept video
 
 Record a genuine disposable local playable world after integrated regressions
