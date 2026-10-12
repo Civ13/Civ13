@@ -254,7 +254,7 @@ jobs:
           pwsh -NoProfile -File ./tests/boat_movement/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
           pwsh -NoProfile -File ./tests/boat_movement/run-game.ps1 -ByondBin "$PWD/BYOND/byond/bin"
       - name: Run isolated battery energy and network regressions
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/batteries')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/batteries') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/native_grid')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
