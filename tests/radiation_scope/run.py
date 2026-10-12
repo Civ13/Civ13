@@ -49,7 +49,8 @@ def main():
         work = Path(directory)
         (work / 'production.dm').write_text(production, encoding='utf-8')
         (work / 'fixture.dm').write_text((Path(__file__).parent / 'fixture.dm').read_text(encoding='utf-8'), encoding='utf-8')
-        (work / 'probe.dme').write_text('#include "fixture.dm"\n#include "production.dm"\n', encoding='utf-8')
+        definitions = '#define NORMALIZATION_CONTROL 1\n' if args.negative_control == 'normalization' else ''
+        (work / 'probe.dme').write_text(definitions + '#include "fixture.dm"\n#include "production.dm"\n', encoding='utf-8')
         hashes = {}
         for name in ('production.dm', 'fixture.dm', 'probe.dme'):
             contents = (work / name).read_bytes()
@@ -82,9 +83,10 @@ def main():
         if output.count('DONE radiation scope') != 1:
             raise RuntimeError('Fixture completion missing or duplicated')
         if args.negative_control:
-            expected = {'cross-z': 'windows scoped and once',
-                        'normalization': 'epicenter normalized to turf'}[args.negative_control]
-            if failures != [expected] or 'PASS radiation scope' in output:
+            expected = {'cross-z': ['windows scoped and once', 'other-z plants unchanged',
+                                    'second event remains scoped'],
+                        'normalization': ['epicenter normalized to turf']}[args.negative_control]
+            if failures != expected or 'PASS radiation scope' in output:
                 raise RuntimeError(f'Negative control must fail only {expected!r}: {failures}')
             print(f'PASS detected {args.negative_control} control')
         elif failures or output.count('PASS radiation scope') != 1:

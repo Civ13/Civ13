@@ -16,7 +16,10 @@ Run `--negative-control cross-z` and `--negative-control normalization` to verif
 that generated source copies restoring those defects fail fixture assertions.
 They never modify production files. The runner requires clean pinned compilation
 and rejects runtime errors in every mode. Each negative control requires its
-specific single assertion failure and a separate completion marker.
+specific ordered assertion failures and a single separate completion marker.
+Assertions accumulate rather than deleting the world midway through its startup
+procedure. The normalization control finishes at an immediate pre-callback
+checkpoint; the cross-level control also checks the repeated event.
 `--output-dir <fresh-path>` retains generated source, source hashes, exact HEAD,
 compile/runtime logs and successful result metadata outside runtime storage.
 Without that option a fresh persistent temporary evidence directory is used.

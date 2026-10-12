@@ -4,6 +4,11 @@ var/global/list/water_turf_list = list()
 var/global/list/global_colour_matrix
 var/global/global_radiation = 0
 var/global/blasts = 0
+var/global/list/assertion_failures = list()
+#ifndef NORMALIZATION_CONTROL
+#define NORMALIZATION_CONTROL 0
+#endif
+var/global/normalization_control = NORMALIZATION_CONTROL
 /atom
     var/radiation = 0
     var/received = 0
@@ -86,9 +91,13 @@ var/global/blasts = 0
     blasts++
 /proc/check(condition, message)
     if (!condition)
+        assertion_failures += message
         world.log << "FAIL [message]"
-        world.log << "DONE radiation scope"
-        del(world)
+/proc/finish_fixture()
+    if (!assertion_failures.len)
+        world.log << "PASS radiation scope"
+    world.log << "DONE radiation scope"
+    del(world)
 /proc/close_to(value, expected)
     return abs(value - expected) < 0.001
 /world
@@ -130,6 +139,9 @@ var/global/blasts = 0
     var/obj/holder = new(locate(30,2,1))
     var/obj/contained = new(holder)
     check(nuke_map(contained, 200, 1, FALSE), "contained epicenter normalized")
+    if (normalization_control)
+        finish_fixture()
+        return
     sleep(70)
     check(blasts == 1 && global_radiation == 310, "one event and intentional global fallout")
     var/turf/replacement = locate(30,2,1)
@@ -156,6 +168,4 @@ var/global/blasts = 0
     sleep(35)
     check(close_to(pulse_near.radiation, 3), "existing pulse duration applies exactly three doses")
     check(pulse_far.radiation == 0 && pulse_other.radiation == 0 && pulse_immune.radiation == 0, "pulse radius, z and immunity unchanged")
-    world.log << "PASS radiation scope"
-    world.log << "DONE radiation scope"
-    del(world)
+    finish_fixture()
