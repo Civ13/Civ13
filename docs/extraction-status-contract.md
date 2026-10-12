@@ -1,7 +1,7 @@
 # Extraction status adapter draft
 
-Parser and launcher ownership agreement is pending through the extraction
-coordinator. This document describes proposed fields, not an implemented or
+The coordinator approved the strict wire and access policy. Launcher binding
+and poll cadence remain pending. This document describes fields, not an implemented or
 accepted endpoint. Native execution and live probes remain on hold.
 
 The existing `status` Topic returns an unversioned count. The `players` Topic
@@ -24,8 +24,12 @@ Proposed read-only Topic `extraction_status` returns JSON with:
 | truncated | Strict boolean; true when the list omits connected players |
 
 Keep the existing Topic dispatcher, whitelist and cooldown. Do not globally
-relax legacy address checks. Player identity visibility and any additional
-authorization must be agreed before enabling the endpoint. Do not infer build
+relax legacy address checks. The adapter is disabled by default and requires a
+read-only capability. Player lists require authenticated scoped authorization
+independent of IP whitelisting. Public count-only responses require an explicit
+configured policy. Reject malformed capabilities and unknown schemas; never log
+capability secrets. Bind the caller to its trusted target/profile/server identity.
+Display ckeys are not authentication verifiers. Do not infer build
 identity from a branch name or readiness from a listening port.
 
 The parser must reject malformed, stale or future timestamps and inconsistent
@@ -46,8 +50,10 @@ Readiness must invalidate before map replacement or shutdown and remain false
 through initialization, recovery or a failed start. Restore it only after the
 launcher-owned completion boundary for the reported instance/build/map. A new
 boot receives a new opaque identity; the legacy time-derived `game_id` alone
-does not establish uniqueness. Ckey visibility requires explicit access policy;
-the public count endpoint must not incidentally expose a private player list.
+does not establish uniqueness. Boot entropy does not authenticate ownership.
+Prefer the trusted controller launch identity. Null or unknown build identity
+cannot prove readiness for a requested revision. A truncated list cannot prove
+player absence. Public count responses must not expose private player identities.
 
 Host lifecycle operations need separate update/build/start/stop/map receipts:
 operation ID, requested revision/map, owned process or instance identity,
@@ -60,3 +66,7 @@ Acceptance uses injected clocks, clients, readiness and process adapters:
 empty/loading/stale/future/malformed/truncated responses, count consistency,
 ownership mismatches, failed builds, start timeout and confirmed stop. Preserve
 ordinary Topic behavior. Mock acceptance does not establish live hosting.
+
+Include timestamp overflow and epoch conversion, unauthorized privileged queries,
+wrong instance/build/map and transition races. Do not enable the adapter before
+the frozen controller API and shared poll cadence are agreed.
