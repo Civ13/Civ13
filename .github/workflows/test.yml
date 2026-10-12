@@ -124,6 +124,21 @@ jobs:
           /usr/bin/python3 tests/crafting_atlas/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control
           /usr/bin/python3 tests/crafting_atlas/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --full-catalog
 
+      - name: Verify actual largest-map constructors under seasonal work
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_transition'))
+        timeout-minutes: 45
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/season_transition/full_game.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/season-transition/full-game/positive"
+          python3 tests/season_transition/full_game.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control --output "$RUNNER_TEMP/season-transition/full-game/population-control"
+      - name: Retain actual largest-map constructor evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_transition'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-season-constructor-evidence
+          path: ${{ runner.temp }}/season-transition/full-game/
+          if-no-files-found: error
       - name: Explain opt-in runtime coverage
         if: needs.changes.outputs.extensive != 'true'
         run: echo 'Existing regression suites are opt-in. Use Run workflow with extensive_regressions enabled; PRs introducing executable tests run only their corresponding suites.'
@@ -394,14 +409,6 @@ jobs:
             status=1
           fi
           exit "$status"
-      - name: Verify actual largest-map constructors under seasonal work
-        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_transition'))
-        timeout-minutes: 45
-        shell: bash
-        run: |
-          source "$PWD/BYOND/byond/bin/byondsetup"
-          python3 tests/season_transition/full_game.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/season-transition/full-game/positive"
-          python3 tests/season_transition/full_game.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control --output "$RUNNER_TEMP/season-transition/full-game/population-control"
       - name: Profile independent largest seasonal costs with guarded legacy reference
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_transition'))
         shell: bash

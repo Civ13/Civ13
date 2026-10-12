@@ -147,6 +147,10 @@ Movement uses native `step()` with `get_dir()`; human density and Life are
 unchanged. The earlier east-lane fixture failed because it overlapped actor2,
 and normal Life restored that actor's ordinary blocking density.
 These are headless humans, not connected players.
+Failed actor population assertions retain `actor-failure.json` with the individual
+identity, location, death and Life-service fields. CI runs this actual-map check
+before the longer isolated comparisons and immediately uploads its evidence as
+`full-season-constructor-evidence`; the complete seasonal bundle is also retained.
 
 ```
 <PYTHON> tests/season_transition/full_game.py --prepare-only

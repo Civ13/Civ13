@@ -103,6 +103,8 @@ var/global/datum/full_season_constructor_probe/full_season_probe = new
 	for (var/i in 1 to actors.len)
 		var/mob/living/human/full_season_actor/H = actors[i]
 		if (!H || H.gcDestroyed || H.stat == DEAD || H.loc != locate(640 + ((i-1) % 10), 530 - round((i-1)/10), 1) || !H.probe_lives)
+			var/turf/expected = locate(640 + ((i-1) % 10), 530 - round((i-1)/10), 1)
+			text2file(json_encode(list("phase" = phase, "actor_index" = i, "exists" = !!H, "actor_ref" = H ? "\ref[H]" : null, "gc_destroyed" = H ? H.gcDestroyed : null, "stat" = H ? H.stat : null, "life_calls" = H ? H.probe_lives : null, "actual_location" = H ? "[H.loc]" : null, "actual_x" = H ? H.x : null, "actual_y" = H ? H.y : null, "expected_x" = expected.x, "expected_y" = expected.y, "world_time_ds" = world.time)), "actor-failure.json")
 			throw EXCEPTION("Actor identity/location/service failed: [i]")
 	for (var/i in 1 to items.len)
 		var/obj/item/I = items[i]
