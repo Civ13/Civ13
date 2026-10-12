@@ -84,7 +84,7 @@ def main():
         request('unlinked-inspect', '999', 'stash.inspect', {'page': 0}, 'rejected', 'unlinked_actor')
         request('stale-inspect', '123', 'room.inspect', {'page': 0}, 'rejected', 'stale_revision', 0)
         request('status-1', '123', 'trade.status', {'operation_request_id': linked['request_id'], 'operation_request_digest': linked['request_digest']}, 'committed', 'operation_status')
-        request('wrong-status', '123', 'trade.status', {'operation_request_id': linked['request_id'], 'operation_request_digest': '0' * 64}, 'rejected', 'unknown_operation')
+        request('wrong-status', '123', 'trade.status', {'operation_request_id': linked['request_id'], 'operation_request_digest': '0' * 64}, 'committed', 'operation_not_found')
         request('link-1', '777', 'link.complete', {'challenge_id': challenge['challenge_id'], 'proof': challenge['proof']}, 'rejected', 'request_id_conflict')
         (target / 'requests.json').write_text(json.dumps(cases), encoding='ascii')
         (target / 'replay.json').write_text(json.dumps([replay_link, replay_inspect]), encoding='ascii')

@@ -10,6 +10,7 @@
 	var/busy = FALSE
 	var/test_fail_at
 	var/last_error
+	var/datum/economic_adapter
 	New(datum/extraction_account_store/store)
 		..()
 		accounts = store
@@ -25,6 +26,7 @@
 			if (!profile["owners"]) profile["owners"] = list()
 			if (!profile["challenges"]) profile["challenges"] = list()
 			if (!profile["receipts"]) profile["receipts"] = list()
+			if (!profile["quotes"]) profile["quotes"] = list()
 		if (!valid_state(profile))
 			blocked = TRUE
 			return FALSE
@@ -33,6 +35,10 @@
 		if (!journal.valid_profile(state, "world")) return FALSE
 		var/list/links = state["links"], owners = state["owners"], challenges = state["challenges"], receipts = state["receipts"]
 		if (!islist(links) || !islist(owners) || length(links) > 1000 || length(owners) != length(links) || !islist(challenges) || length(challenges) > 64 || !islist(receipts) || length(receipts) > 1000) return FALSE
+		if (!islist(state["quotes"]) || length(state["quotes"]) > 64) return FALSE
+		for (var/token in state["quotes"])
+			var/list/quote = state["quotes"][token]
+			if (!islist(quote) || !extraction_ipc_identifier(token, FALSE, 64) || length(token) != 64 || !accounts.valid_owner(quote["owner"]) || !extraction_ipc_identifier(quote["discord_id"], TRUE, 22) || !(quote["action"] in list("trade.confirm", "market.list", "market.buy", "market.cancel")) || !islist(extraction_ipc_time(quote["expires_at"])) || !islist(quote["item_ids"]) || length(quote["item_ids"]) < 1 || length(quote["item_ids"]) > 16 || !islist(quote["graph_digests"]) || length(quote["graph_digests"]) != length(quote["item_ids"]) || !extraction_ipc_equal(token, extraction_hmac_sha256(key, "civ13.safehouse.quote.v1\n[json_encode(quote)]"))) return FALSE
 		for (var/actor in links)
 			var/owner = links[actor]
 			if (!extraction_ipc_identifier(actor, TRUE, 22) || !accounts.valid_owner(owner) || owners[owner] != actor) return FALSE
@@ -58,10 +64,16 @@
 		profile = candidate
 		return TRUE
 	proc/response(list/request, status, reason, list/data)
-		return list("protocol" = request["protocol"], "request_id" = request["request_id"], "discord_id" = request["discord_id"], "action" = request["action"], "request_digest" = request["request_digest"], "status" = status, "reason" = reason, "data" = islist(data) ? data : list())
+		if (!islist(data)) data = list()
+		if (status != "committed")
+			var/list/codes = list("unlinked_actor" = "unlinked", "account_busy" = "busy", "account_in_raid" = "in_raid", "request_id_conflict" = "request_conflict", "quote_action_mismatch" = "action_mismatch", "account_recovery_required" = "recovery_required", "journal_recovery_required" = "recovery_required", "journal_capacity" = "recovery_required")
+			data["code"] = codes[reason] ? codes[reason] : reason
+		return list("protocol" = request["protocol"], "request_id" = request["request_id"], "discord_id" = request["discord_id"], "action" = request["action"], "request_digest" = request["request_digest"], "status" = status, "reason" = reason, "data" = data)
 	// Expiry supplied by the trusted game clock adapter, not the bot request.
 	proc/issue_challenge(owner, now_text, expires_text)
 		if (!ready() || !accounts.valid_owner(owner)) return null
+		if (isnull(now_text)) now_text = extraction_ipc_now()
+		if (isnull(expires_text)) expires_text = extraction_ipc_after(now_text, 300)
 		var/list/now = extraction_ipc_time(now_text)
 		var/list/expires = extraction_ipc_time(expires_text)
 		if (!islist(now) || !islist(expires) || extraction_ipc_elapsed(expires, now) != 300) return null
@@ -78,6 +90,7 @@
 		return list("challenge_id" = id, "proof" = proof, "expires" = expires_text)
 	proc/process_wire(wire, now_text)
 		if (!ready()) return null
+		if (isnull(now_text)) now_text = extraction_ipc_now()
 		var/list/request = extraction_ipc_request(extraction_ipc_verify(wire, key, now_text))
 		if (!islist(request)) return null
 		var/id = extraction_sha256(request["request_id"])
@@ -106,12 +119,16 @@
 		else if (owner)
 			if (action == "trade.status" && payload["operation_request_id"])
 				var/list/original = candidate["receipts"][extraction_sha256(payload["operation_request_id"])]
+				if (!islist(original) && economic_adapter)
+					var/list/operation = call(economic_adapter, "receipt")(src, owner, payload["operation_request_id"], payload["operation_request_digest"])
+					if (islist(operation)) original = list("discord_id" = actor, "request_digest" = payload["operation_request_digest"], "response" = operation)
 				if (islist(original) && original["discord_id"] == actor && original["request_digest"] == payload["operation_request_digest"])
-					result = response(request, "committed", "operation_status", list("operation" = original["response"]))
-				else result = response(request, "rejected", "unknown_operation")
+					var/list/operation = original["response"]
+					result = response(request, "committed", "operation_status", list("operation_status" = operation["status"], "operation_receipt" = operation))
+				else result = response(request, "committed", "operation_not_found", list("operation_status" = "not_found", "operation_receipt" = null))
 			else if (action in list("stash.inspect", "room.inspect"))
 				var/list/account = accounts.load_profile(owner)
-				if (!islist(account)) result = response(request, "pending", "account_recovery_required")
+				if ((economic_adapter && !call(economic_adapter, "ready")()) || !islist(account)) result = response(request, "pending", "account_recovery_required")
 				else if (account["state"] != "home") result = response(request, "rejected", "account_in_raid")
 				else if (!isnull(request["expected_account_revision"]) && request["expected_account_revision"] != account["revision"]) result = response(request, "rejected", "stale_revision")
 				else
@@ -122,8 +139,14 @@
 						var/list/item = stash[i]
 						entries += list(list("id" = item["id"], "secure" = !!item["secure"]))
 					result = response(request, "committed", "saved_snapshot", list("revision" = account["revision"], "level" = account["level"], "capacity" = account["level"] * 16, "state" = account["state"], "page" = payload["page"], "items" = entries))
+			else if (economic_adapter)
+				result = call(economic_adapter, "process")(src, request, candidate, now_text, owner)
+				if (!islist(result)) result = response(request, "rejected", "action_not_available")
 			else result = response(request, "rejected", "action_not_available")
 		// Link changes and their idempotent receipt commit in the same snapshot.
+		if (result["account_receipt"])
+			result.Remove("account_receipt")
+			return result
 		if (result["status"] == "pending") return result
 		candidate["receipts"][id] = list("request_id" = request["request_id"], "request_digest" = request["request_digest"], "discord_id" = actor, "response" = result)
 		if (!commit(candidate)) return response(request, "pending", "journal_recovery_required")

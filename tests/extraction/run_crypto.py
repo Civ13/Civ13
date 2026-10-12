@@ -45,9 +45,9 @@ def main():
                 'link.complete': {'challenge_id': 'challenge-1', 'proof': 'proof-1'},
                 'stash.inspect': {'page': 0}, 'room.inspect': {'page': 7},
                 'room.manage': {'confirmation_token': 'token-1'},
-                'trade.quote': {'item_ids': ['item-1', 'item-2'], 'sale_kind': 'vendor'},
+                'trade.quote': {'item_ids': ['item-1', 'item-2'], 'sale_kind': 'server_buyback'},
                 'trade.confirm': {'confirmation_token': 'token-1'},
-                'trade.status': {'transaction_id': 'transaction-1'},
+                'trade.status': {'operation_request_digest': 'a' * 64, 'operation_request_id': 'original-1'},
                 'market.list': {'confirmation_token': 'token-1'},
                 'market.buy': {'confirmation_token': 'token-1'},
                 'market.cancel': {'confirmation_token': 'token-1'}}
@@ -69,9 +69,12 @@ def main():
         ('stash.inspect', {'page': 0}, '123x', 4),
         ('stash.inspect', {'page': 0}, '123', -1),
         ('stash.inspect', {'page': 0}, '123', 1.5),
-        ('trade.quote', {'item_ids': ['same', 'same'], 'sale_kind': 'vendor'}, '123', 4),
-        ('trade.quote', {'item_ids': [], 'sale_kind': 'vendor'}, '123', 4),
-        ('trade.quote', {'item_ids': ['../account'], 'sale_kind': 'vendor'}, '123', 4),
+        ('trade.quote', {'item_ids': ['same', 'same'], 'sale_kind': 'server_buyback'}, '123', 4),
+        ('trade.quote', {'item_ids': [], 'sale_kind': 'server_buyback'}, '123', 4),
+        ('trade.quote', {'item_ids': ['../account'], 'sale_kind': 'server_buyback'}, '123', 4),
+        ('trade.quote', {'item_ids': ['item-1'], 'sale_kind': 'server_buyback'}, '123', None),
+        ('trade.quote', {'listing_id': 'listing-1', 'sale_kind': 'player_purchase', 'price': 1}, '123', 4),
+        ('trade.quote', {'listing_id': 'listing-1', 'sale_kind': 'unsupported'}, '123', 4),
         ('unknown.action', {'page': 0}, '123', 4),
     ]
     for action, payload, actor, revision in invalid_requests:
@@ -79,6 +82,11 @@ def main():
                    'action': action, 'expected_account_revision': revision, 'payload': payload}
         request['request_digest'] = hashlib.sha256(json.dumps(request, separators=(',', ':')).encode()).hexdigest()
         vectors.append({'kind': 'request', 'text': json.dumps(request, separators=(',', ':')), 'accepted': False})
+    for kind in ('player_listing', 'player_purchase', 'listing_cancel'):
+        payload = {'item_ids': ['item-1'], 'sale_kind': kind} if kind == 'player_listing' else {'listing_id': 'listing-1', 'sale_kind': kind}
+        request = {'protocol': 'civ13.safehouse.v1', 'request_id': 'quote-1', 'discord_id': '123', 'action': 'trade.quote', 'expected_account_revision': 4, 'payload': payload}
+        request['request_digest'] = hashlib.sha256(json.dumps(request, separators=(',', ':')).encode()).hexdigest()
+        vectors.append({'kind': 'request', 'text': json.dumps(request, separators=(',', ':')), 'accepted': True})
     for payload in ({'operation_request_id': 'original-1', 'operation_request_digest': 'a' * 64},
                     {'operation_request_digest': 'a' * 64, 'operation_request_id': 'original-1'}):
         request = {'protocol': 'civ13.safehouse.v1', 'request_id': 'recovery-1', 'discord_id': '123',

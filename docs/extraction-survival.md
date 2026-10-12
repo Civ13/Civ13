@@ -336,6 +336,26 @@ proof check must fail the wrong-proof assertion; interrupted journal intents
 block restart rather than rolling back account links.
 
 No listener, spool processor, operator key or player linking interface is enabled.
-Trade quotes, confirmations and market actions return `action_not_available`;
-their escrow/settlement integration remains unfinished. Current checks do not
+An explicitly injected native economic adapter now supports game-priced buyback,
+player listings, purchases and cancellation. Quotes expire after 120 seconds and
+bind the linked actor, account revision, exact equipment graph, price table,
+counterparty and listing revision. Listing requires raid provenance and excludes
+secured or insured graphs. The shared settlement journal conserves item identities,
+equipment graphs and credits across all participants. It stores the actor's
+operation receipt in that same durable transaction, so a fresh signed status
+request can recover the original result after interrupted projection. Duplicate
+confirmation requests return that receipt without another debit or delivery.
+
+The prototype vendor has a finite one-million-credit treasury and 64 storage
+roots; market escrow has 64 roots and at most 128 listing records. These reserved
+accounts cannot be opened as player accounts. Prices use the explicit
+`modern_safehouse_prices_v1` game-price table and `civ13.game_credits.v1` currency,
+with no external currency conversion. Active game accounts cannot participate in
+offline economic mutations. Capacity, funds or revision failures retain escrow.
+The equipment fixture checks signed buy/list/cancel paths, actor/action/expiry and
+funds rejection, replay/status and fresh-service recovery of a pending buyback.
+Its `--economic-payment-negative-control` deliberately omits buyer payment and
+must fail at the purchase assertion because the shared journal rejects creation
+of credits. The adapter and transport remain disabled unless explicitly wired;
+the live spool, player linking UI and connected bot integration remain unfinished. Current checks do not
 establish security acceptance, connected bot acceptance or activation readiness.

@@ -261,6 +261,14 @@ zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
 ## Local MCP tooling
 
+<!-- 2026-10-12: extraction bot economics -->
+Extraction bot economic mutations use the shared conservation journal and put
+operation receipts in the participant snapshot. Reserved vendor/market accounts
+cannot be player sessions; `_bot` is an internal journal directory in ownership
+scans. `tests/extraction/run.py --probe equipment` checks signed offline market
+flows and interrupted settlement recovery; its economic payment negative control
+must reject a missing buyer debit. This does not enable live IPC or prove bot UI.
+
 <!-- 2026-10-11: extraction vehicle account graph -->
 Extraction garage snapshots use explicit bounded part/link/config/fuel graphs;
 never serialize movement callbacks, passengers or arbitrary vehicle vars.

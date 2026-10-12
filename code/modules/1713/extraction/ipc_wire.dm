@@ -56,6 +56,15 @@
 /proc/extraction_ipc_now()
 	return extraction_ipc_clock(time2text(world.realtime, "YYYY-MM-DD hh:mm:ss", 0), world.timeofday)
 
+/proc/extraction_ipc_after(value, seconds)
+	var/list/time = extraction_ipc_time(value)
+	if (!islist(time) || !isnum(seconds) || round(seconds) != seconds || seconds < 0 || seconds > 3600) return null
+	time[2] += seconds
+	if (time[2] >= 86400)
+		time[2] -= 86400
+		time[1]++
+	return extraction_ipc_time_text(time)
+
 /proc/extraction_ipc_clock(coarse_text, precise_ticks)
 	var/list/coarse = extraction_ipc_calendar(coarse_text)
 	if (!islist(coarse) || !isnum(precise_ticks) || precise_ticks < 0 || precise_ticks >= 864000) return null
@@ -144,3 +153,11 @@
 	if (!extraction_ipc_equal(extraction_hmac_sha256(key, signed), mac)) return null
 	// Parsing request JSON, digest and account binding belong to the handler.
 	return extraction_ipc_base64_decode(body)
+
+/proc/extraction_ipc_seal(list/bytes, key, now_text, direction = "reply")
+	if (!islist(bytes) || !length(bytes) || length(bytes) > 8192 || !istext(key) || length(key) < 32 || length(key) > 4096 || !(direction in list("request", "reply")) || !islist(extraction_ipc_time(now_text))) return null
+	var/body = extraction_ipc_base64_encode(bytes)
+	var/expires = extraction_ipc_after(now_text, 120)
+	var/mac = extraction_hmac_sha256(key, "civ13.safehouse.ipc.v1\n[direction]\n[now_text]\n[expires]\n[body]")
+	if (!istext(body) || !istext(expires) || !istext(mac)) return null
+	return "{\"protocol\":\"civ13.safehouse.ipc.v1\",\"issued_at\":[now_text],\"expires_at\":[expires],\"body\":\"[replacetext(body, "/", "\\/")]\",\"mac\":\"[mac]\"}"

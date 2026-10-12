@@ -27,6 +27,9 @@
 
 /datum/extraction_service/proc/open(owner)
 	last_error = null
+	if (owner in list("extractionvendor", "extractionmarket"))
+		last_error = "Reserved game economy account"
+		return null
 	if (!settlement_ready())
 		last_error = settlement && settlement.last_error ? settlement.last_error : "Account access gated by pending ownership reconciliation"
 		return null

@@ -228,7 +228,7 @@
 	for (var/name in entries)
 		if (copytext(name, length(name), 0) != "/") continue
 		var/other = copytext(name, 1, length(name))
-		if (other == "_settlement" || other == "_insurance") continue
+		if (other == "_settlement" || other == "_insurance" || other == "_bot") continue
 		if (other == owner) continue
 		if (!valid_owner(other)) return fail("Unknown directory in ownership inventory")
 		var/list/other_profile = load_profile(other)

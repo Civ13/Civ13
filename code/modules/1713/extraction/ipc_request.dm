@@ -26,6 +26,7 @@
 	if (!(action in list("link.challenge", "link.complete", "stash.inspect", "room.inspect", "room.manage", "trade.quote", "trade.confirm", "trade.status", "market.list", "market.buy", "market.cancel"))) return null
 	var/revision = request["expected_account_revision"]
 	if (!isnull(revision) && (!isnum(revision) || revision < 0 || revision > 1000000 || round(revision) != revision)) return null
+	if (isnull(revision) && (action in list("trade.quote", "trade.confirm", "market.list", "market.buy", "market.cancel", "room.manage"))) return null
 	var/list/payload = request["payload"]
 	if (!islist(payload) || length(payload) > 2) return null
 	var/list/payload_fields
@@ -34,8 +35,11 @@
 		if ("link.complete") payload_fields = list("challenge_id", "proof")
 		if ("stash.inspect", "room.inspect") payload_fields = list("page")
 		if ("room.manage", "trade.confirm", "market.list", "market.buy", "market.cancel") payload_fields = list("confirmation_token")
-		if ("trade.quote") payload_fields = list("item_ids", "sale_kind")
-		if ("trade.status") payload_fields = length(payload) == 1 ? list("transaction_id") : list("operation_request_digest", "operation_request_id")
+		if ("trade.quote")
+			if (payload["sale_kind"] in list("server_buyback", "player_listing")) payload_fields = list("item_ids", "sale_kind")
+			else if (payload["sale_kind"] in list("player_purchase", "listing_cancel")) payload_fields = list("listing_id", "sale_kind")
+			else return null
+		if ("trade.status") payload_fields = list("operation_request_digest", "operation_request_id")
 	if (length(payload) != length(payload_fields)) return null
 	for (var/i = 1, i <= length(payload_fields), i++)
 		var/field = payload_fields[i]
