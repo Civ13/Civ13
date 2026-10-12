@@ -48,6 +48,24 @@
 	for (var/obj/item/weapon/gun/projectile/pistol/m9beretta/I in items) G = I
 	equipment_assert(G, "starter has conventional pistol")
 	G.forceMove(A)
+	var/obj/effect/extraction_secure_crate/private_crate = M.house_crate(SA)
+	equipment_assert(private_crate && !private_crate.authorized(B), "secure crate access bound to active room owner")
+	equipment_assert(M.private_storage(A, G, private_crate, TRUE) && G.loc == private_crate && G.extraction_secure_stored && SA.profile["stash"]:len == 4, "private crate deposit commits without copying equipment")
+	equipment_assert(!M.private_storage(B, G, private_crate, FALSE), "another account cannot withdraw secure contents")
+	equipment_assert(M.release(SA), "release checkpoints secure crate and retires physical graph")
+	equipment_assert(!G.loc && !private_crate.contents.len, "idle room release leaves no retained crate items")
+	equipment_assert(M.admit(A), "secure stash reload rebinds private instance")
+	SA = A.extraction_session
+	private_crate = M.house_crate(SA)
+	G = locate() in private_crate.contents
+	equipment_assert(G && G.extraction_secure_stored && M.home_roots(SA).len == 4, "actual stored gun restores inside rebound secure crate")
+	equipment_assert(M.private_storage(A, G, private_crate, FALSE) && !G.extraction_secure_stored && G.loc == get_turf(private_crate), "owner withdraw commits secure-location change")
+	var/obj/item/ammo_magazine/m9beretta/protected_magazine
+	for (var/obj/item/ammo_magazine/m9beretta/I in M.home_roots(SA)) protected_magazine = I
+	protected_magazine.forceMove(A)
+	var/protected_id = protected_magazine.extraction_item_id
+	equipment_assert(M.private_storage(A, protected_magazine, private_crate, TRUE), "spare equipment secured before raid")
+	G.forceMove(A)
 	M.codec.set_raid_provenance(G, TRUE)
 	equipment_assert(!M.visit_hub(A) && A.z == 2, "carried equipment cannot enter shared hub")
 	equipment_assert(M.deploy(A), "durable loadout debit precedes raid placement")
@@ -155,6 +173,10 @@
 	var/datum/extraction_session/reloaded = restarted.open("fixturealice")
 	equipment_assert(reloaded && reloaded.profile["state"] == "home" && reloaded.profile["stash"]:len == 4, "death forfeits carried loadout but retains committed shipment across disk reopen")
 	var/list/reloaded_stash = reloaded.profile["stash"]
+	var/retained_secure = FALSE
+	for (var/list/secure_entry in reloaded_stash)
+		if (secure_entry["id"] == protected_id && secure_entry["secure"] == TRUE) retained_secure = TRUE
+	equipment_assert(retained_secure, "private secure deposit survives death and native journal reopen")
 	var/list/reloaded_entry = reloaded_stash[4]
 	var/obj/item/weapon/gun/projectile/pistol/m9beretta/shipped_gun = M.codec.decode(reloaded_entry["equipment"], locate(3,4,1))
 	equipment_assert(shipped_gun && shipped_gun.scope && shipped_gun.scope.loc == shipped_gun.optic_rail && shipped_gun.extraction_item_id == shipped_entry["id"], "shipped actual nested gear restores with stable identity after death")

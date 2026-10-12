@@ -26,6 +26,9 @@ dispatch needs a client, so the fixture calls the production door switch and
 leaves real click dispatch for graphical acceptance. Nested item shipment tests
 cover another-account/concurrent/replay rejection, physical retirement after
 commit and actual gun/optic restoration after death and journal reopen.
+Private-crate checks cover owner-only deposits and withdrawals, materialized
+item retirement on room release, actual gun restoration into the rebound crate,
+and secured magazine retention through raid death and journal reload.
 First-access loot checks cover untouched containers, deterministic appearance
 and weight boundaries, incompatible types/weights, maximum quantities, persisted
 empty/results, repeated and concurrent opens, exact single claims, partial

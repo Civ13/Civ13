@@ -67,6 +67,7 @@ def build():
             for x in range(cx-4, cx+5):
                 house[y-1][x-1] = tile(private, houses)
         house[cy-1][cx-1] = tile(f'/obj/effect/extraction_house_marker{{room = {room+1}}}', private, houses)
+        house[cy-1][cx] = tile(f'/obj/effect/extraction_secure_crate{{room = {room+1}}}', private, houses)
     layers.append(house)
     # Shared demilitarized concourse, physically separated from private storage.
     hub_area = '/area/extraction_hub'

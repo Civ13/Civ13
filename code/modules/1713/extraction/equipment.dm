@@ -5,6 +5,7 @@
 /obj/item
 	var/tmp/extraction_item_id
 	var/tmp/extraction_found_in_raid = FALSE
+	var/tmp/extraction_secure_stored = FALSE
 
 var/global/extraction_identity_sequence = 0
 

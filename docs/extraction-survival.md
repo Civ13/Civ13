@@ -3,7 +3,7 @@
 This mode is under implementation and has not received playable acceptance.
 Isolated native tests cover account storage, nested equipment restoration,
 bounded NPC combat, extraction cancellation, private rooms and hub navigation.
-Existing Factory mode stays available unchanged. Insurance, secure deposits,
+Existing Factory mode stays available unchanged. Insurance,
 stack transformations and map voting
 remain pending. The required genuine concept video has not been recorded.
 
@@ -88,7 +88,14 @@ retired. The raid stays active; death and interrupted-raid recovery preserve
 already committed shipments. Duplicate root or nested identities reject replay.
 The stash capacity also bounds stored shipment history. Pending insurance must
 consume the same ownership identity rather than returning a shipped copy.
-Private secure storage crates remain separate pending work.
+Each private house has an account-bound secure crate. Deposit a held supported
+item to commit its entire graph and secure-storage location in the same account
+snapshot. Withdrawal rechecks current ownership and commits the location change.
+Released rooms retire their materialized contents; admission restores secure
+entries into the newly bound crate. Other accounts and stale sessions cannot
+withdraw. Secured gear stays outside raid loadouts until withdrawn, and survives
+raid death through the existing stash journal. This uses the fixed room pool;
+there is no background world or timer for each offline account.
 
 Deploy as PMC or Scav using your own equipment. The chosen raid role is committed
 with the loadout debit. The district has all-role, PMC-only, Scav-only and manhole

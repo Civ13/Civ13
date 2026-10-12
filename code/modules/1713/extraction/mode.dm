@@ -5,6 +5,7 @@ var/global/list/extraction_house_markers = list()
 var/global/list/extraction_raid_markers = list()
 var/global/list/extraction_loot_markers = list()
 var/global/list/extraction_npc_markers = list()
+var/global/list/extraction_secure_crates = list()
 var/global/obj/effect/extraction_hub_terminal/extraction_hub_terminal
 var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_door
 
@@ -78,7 +79,8 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	Enter(atom/movable/A, atom/oldloc)
 		if (ismob(A))
 			var/mob/living/human/H = A
-			if (!istype(H) || !H.extraction_session || !H.extraction_session.house || z != H.extraction_session.house.z || get_dist(src, H.extraction_session.house) > 4 || H.extraction_session.profile["state"] != "home") return FALSE
+			var/obj/map_metadata/extraction_survival/M = map
+			if (!istype(H) || !istype(M) || !M.owned(H) || !H.extraction_session.house || z != H.extraction_session.house.z || get_dist(src, H.extraction_session.house) > 4 || H.extraction_session.profile["state"] != "home") return FALSE
 		return ..()
 
 /mob/living/human
@@ -220,6 +222,56 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		var/obj/map_metadata/extraction_survival/M = map
 		if (istype(H) && istype(M)) M.deposit_item(H, I, src)
 
+/obj/effect/extraction_secure_crate
+	name = "private secure storage crate"
+	desc = "Account-bound storage. Completed deposits remain in your private stash when a raid fails."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "miningcaropen"
+	anchored = TRUE
+	var/room = 1
+	New()
+		..()
+		extraction_secure_crates |= src
+	proc/authorized(mob/living/human/H)
+		var/obj/map_metadata/extraction_survival/M = map
+		if (!istype(M) || !M.owned(H) || H.stat != CONSCIOUS || !Adjacent(H)) return FALSE
+		var/datum/extraction_session/S = H.extraction_session
+		return S.profile["state"] == "home" && !S.transitioning && S.house?.room == room && S.house.z == z && get_dist(src, S.house) <= 4
+	attackby(obj/item/I, mob/user)
+		var/mob/living/human/H = user
+		var/obj/map_metadata/extraction_survival/M = map
+		if (istype(H) && istype(M)) M.private_storage(H, I, src, TRUE)
+	attack_hand(mob/user)
+		var/mob/living/human/H = user
+		if (!istype(H) || !authorized(H)) return
+		var/list/options = list()
+		for (var/obj/item/I in contents) options["[I.name] ([copytext(I.extraction_item_id,1,7)])"] = I
+		if (!options.len)
+			to_chat(H, "The secure crate is empty.")
+			return
+		var/choice = WWinput(H, "Withdraw a stored item to your private room.", name, "Cancel", options + list("Cancel"))
+		var/obj/map_metadata/extraction_survival/M = map
+		if (istype(M) && options[choice]) M.private_storage(H, options[choice], src, FALSE)
+
+/obj/map_metadata/extraction_survival/proc/house_crate(datum/extraction_session/S)
+	for (var/obj/effect/extraction_secure_crate/C in extraction_secure_crates)
+		if (C.room == S.house?.room && C.z == S.house.z && get_dist(C, S.house) <= 4) return C
+	return null
+
+/obj/map_metadata/extraction_survival/proc/private_storage(mob/living/human/H, obj/item/I, obj/effect/extraction_secure_crate/C, deposit)
+	if (!C?.authorized(H) || !I || (deposit ? I.loc != H : I.loc != C)) return FALSE
+	var/atom/old_location = I.loc
+	var/old_secure = I.extraction_secure_stored
+	if (deposit) H.unEquip(I, TRUE)
+	I.forceMove(deposit ? C : get_turf(C))
+	I.extraction_secure_stored = deposit
+	if (!save_home(H.extraction_session))
+		I.forceMove(old_location)
+		I.extraction_secure_stored = old_secure
+		if (old_location == H) H.put_in_hands(I)
+		return FALSE
+	return TRUE
+
 /obj/map_metadata/extraction_survival/proc/deposit_item(mob/living/human/H, obj/item/I, obj/effect/extraction_drop_box/box)
 	if (!owned(H) || H.stat != CONSCIOUS || H.z != 1 || box?.z != 1 || !box.Adjacent(H) || I?.loc != H) return FALSE
 	var/datum/extraction_session/S = H.extraction_session
@@ -292,7 +344,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		uid++
 		I.extraction_item_id = md5("[world.realtime]-[rand(1,1000000)]-[uid]")
 	I.should_save = FALSE
-	return list("id" = I.extraction_item_id, "equipment" = graph, "salvage" = istype(I, /obj/item/extraction_salvage))
+	return list("id" = I.extraction_item_id, "equipment" = graph, "salvage" = istype(I, /obj/item/extraction_salvage), "secure" = I.extraction_secure_stored)
 
 /obj/map_metadata/extraction_survival/proc/player_roots(mob/living/human/H)
 	var/list/items = list()
@@ -308,6 +360,10 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	for (var/turf/T in range(4, S.house))
 		for (var/obj/item/I in T)
 			if (I.loc == T) items |= I
+	var/obj/effect/extraction_secure_crate/C = house_crate(S)
+	if (C)
+		for (var/obj/item/I in C.contents)
+			if (I.loc == C) items |= I
 	return items
 
 /obj/map_metadata/extraction_survival/proc/records(list/items)
@@ -360,16 +416,17 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		release(S, FALSE)
 		return FALSE
 	for (var/list/entry in stash)
-		if (!codec.validate(entry["equipment"]))
+		if (!codec.validate(entry["equipment"]) || (entry["secure"] && !house_crate(S)))
 			release(S, FALSE)
 			return FALSE
 	for (var/list/entry in stash)
-		var/obj/item/I = codec.decode(entry["equipment"], get_turf(house))
+		var/obj/item/I = codec.decode(entry["equipment"], entry["secure"] ? house_crate(S) : get_turf(house))
 		if (!I)
 			to_chat(H, "Equipment restoration failed; account locked for recovery.")
 			release(S, FALSE)
 			return FALSE
 		I.extraction_item_id = entry["id"]
+		I.extraction_secure_stored = entry["secure"] == TRUE
 	to_chat(H, "Private safe house level [S.profile["level"]]. Stash capacity: [S.capacity()] items. Use the terminal to save, upgrade or deploy.")
 	S.home_digest = md5(json_encode(S.profile["stash"]))
 	return TRUE

@@ -64,6 +64,7 @@
 	for (var/list/entry in entries)
 		if (!islist(entry) || !istext(entry["id"]) || !length(entry["id"]) || length(entry["id"]) > 80 || ids[entry["id"]] || !islist(entry["equipment"])) return FALSE
 		ids[entry["id"]] = TRUE
+		if (!isnull(entry["secure"]) && !(entry["secure"] in list(FALSE, TRUE))) return FALSE
 		var/list/equipment = entry["equipment"]
 		if (equipment["schema"] in list(1, 2))
 			var/list/graph = equipment["nodes"]
