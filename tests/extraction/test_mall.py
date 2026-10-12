@@ -101,11 +101,24 @@ class MallTests(unittest.TestCase):
             self.assertTrue(all('/obj/covers/generic_wall' in layers[z][100][x] for x in range(SIZE)))
         loot = [value for z in (1, 4, 5) for row in layers[z] for value in row if '/extraction_loot_marker' in value]
         ids = [int(re.search(r'container_id = (\d+)', value)[1]) for value in loot]
-        self.assertEqual(len(ids), 58)
-        self.assertEqual(sum('/extraction_loot_marker/keyed/' not in value for value in loot), 56)
+        self.assertEqual(len(ids), 64)
+        self.assertEqual(sum('/extraction_loot_marker/keyed/' not in value for value in loot), 62)
         self.assertEqual(sum('/extraction_loot_marker/keyed/' in value for value in loot), 2)
         self.assertEqual(len(set(ids)), len(ids))
         self.assertTrue(all(1 <= value <= 64 for value in ids))
+        parking_pools = [re.search(r'pool_kind = "([a-z]+)"', value)[1]
+                         for row in layers[1] for value in row
+                         if '/extraction_loot_marker' in value]
+        self.assertCountEqual(parking_pools, ['workshop'] * 3 + ['supplies'] * 2 + ['ammunition'])
+        # Preserve existing durable shop/cache identities when adding parking
+        # loot; redistributing or renumbering sources would reuse old journals.
+        for z, expected in ((1, {57, 58, 59, 60, 63, 64}),
+                            (4, set(range(1, 17)) | {61, 62}),
+                            (5, set(range(17, 57)))):
+            floor_ids = {int(re.search(r'container_id = (\d+)', value)[1])
+                         for row in layers[z] for value in row
+                         if '/extraction_loot_marker' in value}
+            self.assertEqual(floor_ids, expected)
 
     def test_raid_furnishings_use_fixed_catalog(self):
         # Native furniture can yield saleable materials through damage and tool

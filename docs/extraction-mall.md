@@ -87,12 +87,25 @@ Generate with the verified Python interpreter and `tests/extraction/build_mall.p
 scale changes still require layout and travel-time review. 256 x 256 x 5 allocates
 327,680 turfs; 512 x 512 x 5 allocates 1,310,720. Wall padding is allocated too.
 Generation/topology support is not startup, memory, performance or balance
-acceptance for larger sizes. Budgets are 56 ordinary containers plus two keyed
+acceptance for larger sizes. Budgets are 62 ordinary containers plus two keyed
 caches, at most
 64 allowed container IDs, 2,048 tracked item nodes, 12 NPCs, 32 participants and
 16 private homes.
 Do not hand-edit the generated map. This map is selectable through the existing
 launcher and safehouse next-map catalog; implementation does not deploy it.
+
+All three raid floors have searchable loot containers: six on parking, 16
+ordinary plus two keyed on retail, and 40 on the upper gallery. Parking has
+workshop salvage in maintenance, dispatch and utility rooms, supplies in the
+staff and delivery offices, and ammunition in the security office. These use
+the existing first-access tables and journals, not loose-item constructors.
+Parking uses IDs 57-60 and 63-64; existing shop IDs 1-56 and keyed IDs 61/62
+stay unchanged. A searched source retains its rolled contents and consumed
+claims within the loot epoch. Runtime item identities and FIR tracking alone
+do not provide durable ownership for loose surface spawns. There is currently
+no shelf/counter/ground loot-population system; static renders show scenery
+and source containers, not their randomized contents. Native restart recovery
+and active-raid acceptance remain separate verification requirements.
 
 Transit security and Foundry hardware each have one exact-key cache on the
 retail floor. Their keys can be recovered on any Extraction map and retain

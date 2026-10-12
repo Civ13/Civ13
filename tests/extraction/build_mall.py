@@ -9,6 +9,17 @@ ROAD_ENTRIES = ((10, 12), (150, 148))
 FOOT_ENTRIES = ((12, 148), (148, 12), (12, 80), (148, 80))
 STAIRS = ((30, 30), (130, 30), (30, 94), (130, 94), (54, 126), (106, 126))
 HIGHWAY_EXITS = ((10, 8), (150, 152))
+# Keep the original shop IDs 1..56 and keyed caches 61/62 stable. Parking
+# sources use the remaining journal IDs, with the same finite first-access
+# contract as shop containers. Coordinates use the normalized 160-tile plan.
+PARKING_LOOT = (
+    (57, 27, 119, 'workshop', 'Maintenance salvage bin'),
+    (58, 41, 125, 'supplies', 'Staff supply chest'),
+    (59, 115, 126, 'workshop', 'Dispatch workshop salvage'),
+    (60, 130, 116, 'supplies', 'Recovered delivery supplies'),
+    (63, 32, 25, 'ammunition', 'Parking security ammunition case'),
+    (64, 121, 36, 'workshop', 'Utility repair supplies'),
+)
 
 
 def coordinate(value, size=SIZE):
@@ -374,6 +385,8 @@ def build(size=SIZE):
                 layers[int(z)][y][x] = tile(old_defs[row[x*2:x*2+2]])
     # Clear interiors of Transit security and Foundry hardware. Add dictionary
     # entries only after importing protected home/hub grids, keeping their keys.
+    for container_id, x, y, pool, name in PARKING_LOOT:
+        put(1, x, y, f'/obj/effect/extraction_loot_marker{{container_id = {container_id}; pool_kind = "{pool}"; name = "{name}"}}')
     put(4, 74, 100, '/obj/effect/extraction_loot_marker/keyed/mall_security{container_id = 61}')
     put(4, 113, 40, '/obj/effect/extraction_loot_marker/keyed/mall_hardware{container_id = 62}', floor=dark)
     result = [f'"{key}" = {value}' for value, key in definitions.items()]
