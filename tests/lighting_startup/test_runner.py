@@ -46,6 +46,15 @@ class ExecutionReceipts(unittest.TestCase):
             self.assertEqual(receipt["command"], ["fixture"])
 
 class OrderingContract(unittest.TestCase):
+    def test_inactive_corner_control_removes_only_reconciliation_call(self):
+        repo = Path(__file__).resolve().parents[2]
+        positive, _ = run.prepare(repo, "candidate")
+        control, manifest = run.prepare(repo, "candidate", inactive_corner_control=True)
+        anchor = "\t\tactivate_existing_lighting_corners()\n"
+        self.assertEqual(positive["production.dm"].count(anchor), 1)
+        self.assertEqual(control["production.dm"], positive["production.dm"].replace(anchor, "", 1))
+        self.assertTrue(manifest["inactive_corner_control"])
+
     def pair(self):
         baseline = {"snapshots": {"initial": ["shared:queued:rendered"]},
                     "bulk_overlay_order": ["1,1,1", "2,1,1"],

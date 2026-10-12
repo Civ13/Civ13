@@ -137,6 +137,7 @@ jobs:
           python3 tests/lighting_startup/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/lighting-startup/positive"
           python3 tests/lighting_startup/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control --output "$RUNNER_TEMP/lighting-startup/negative"
           python3 tests/lighting_startup/run.py --byond-bin "$PWD/BYOND/byond/bin" --bulk-order-control --output "$RUNNER_TEMP/lighting-startup/bulk-order-control"
+          python3 tests/lighting_startup/run.py --byond-bin "$PWD/BYOND/byond/bin" --inactive-corner-control --output "$RUNNER_TEMP/lighting-startup/inactive-corner-control"
           if [ "${{ needs.changes.outputs.extensive }}" != true ]; then
             python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/lighting-startup/pool-effects"
             python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control lighting --output "$RUNNER_TEMP/lighting-startup/pool-effects-control"

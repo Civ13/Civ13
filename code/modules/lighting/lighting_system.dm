@@ -56,6 +56,19 @@
 		global.lighting_corners_initialised = TRUE
 	return fresh_corners
 
+// A later startup can add overlays to previously inactive, already shared
+// corners. Once activated through an overlay master, further visits skip them.
+// This uses no retained registry and does not reactivate fresh active corners.
+/proc/activate_existing_lighting_corners()
+	var/work = 0
+	for (var/turf/T in world)
+		if (T.lighting_overlay)
+			for (var/datum/lighting_corner/C in T.corners)
+				if (C && !C.active)
+					C.update_active(TRUE)
+		if (environment_sweep_pause(++work))
+			work = 0
+
 /proc/create_lighting_corners_zlevel(var/zlevel, var/defer_activity = FALSE)
 	var/list/fresh_corners = list()
 	var/work = 0
@@ -106,6 +119,7 @@ var/created_lighting_corners_and_overlays = FALSE
 			C.update_active(TRUE)
 			if (environment_sweep_pause(++work))
 				work = 0
+		activate_existing_lighting_corners()
 		lighting_corners_initialised = TRUE
 		created_lighting_corners_and_overlays = TRUE
 	catch (var/exception/E)

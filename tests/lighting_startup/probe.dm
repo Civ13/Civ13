@@ -27,6 +27,7 @@ var/probe_activity_waiter_done = FALSE
 var/probe_activity_waiters = 0
 var/probe_owner_activations = 0
 var/probe_owner_duplicates = 0
+var/probe_repeat_idempotent = TRUE
 var/list/probe_activated_corners = list()
 var/probe_failure_release = TRUE
 var/probe_prestartup_contract = TRUE
@@ -244,6 +245,16 @@ var/list/lighting_overlay_list = list()
 		concurrent_overlay_order = probe_overlay_order.Copy(concurrent_order_start)
 		if (!probe_replacement_started || !istype(locate(1,1,1), /turf/test/replacement))
 			probe_identity++
+		// A settled repeat must preserve active shared corners and overlay owners.
+		var/repeat_owner_count = probe_owner_activations
+		var/repeat_overlay_count = probe_overlay_order.len
+		probe_overlays_ready = FALSE
+		probe_startup = TRUE
+		create_lighting()
+		probe_startup = FALSE
+		sleep(2)
+		probe_snapshot("idempotent")
+		probe_repeat_idempotent = probe_owner_activations == repeat_owner_count && probe_overlay_order.len == repeat_overlay_count && json_encode(probe_snapshots["idempotent"]) == json_encode(concurrent_snapshot)
 		var/turf/failure_turf = locate(2,2,1)
 		var/datum/lighting_corner/failure_corner = failure_turf.corners[1]
 		failure_corner.active = FALSE
@@ -264,6 +275,6 @@ var/list/lighting_overlay_list = list()
 		sleep(2)
 		probe_prestartup_contract = !!prestartup_turf.lighting_overlay && prestartup_corner.active
 		#endif
-		text2file(json_encode(list("snapshots"=parity_snapshots,"overlay_order"=parity_overlay_order,"bulk_overlay_order"=parity_bulk_order,"compatibility_overlay_order"=parity_compatibility_order,"expected_compatibility_order"=probe_expected_compatibility_order,"order_scope"="strict bulk parity; candidate compatibility native world traversal; candidate race isolated","concurrent_snapshot"=concurrent_snapshot,"concurrent_overlay_order"=concurrent_overlay_order,"replacement_started"=probe_replacement_started,"early_activations"=probe_early,"identity_failures"=probe_identity,"pauses"=probe_pauses,"premature_flags"=probe_premature,"new_callbacks"=probe_new_callbacks,"build_waiters"=probe_build_waiters,"prestartup_contract"=probe_prestartup_contract,"activity_waiter_done"=probe_activity_waiter_done,"activity_waiters"=probe_activity_waiters,"owner_activations"=probe_owner_activations,"owner_duplicates"=probe_owner_duplicates,"failure_release"=probe_failure_release,"port_closed"=!world.port,"runtime_errors"=probe_errors,"native_loop_checks"=world.loop_checks)),"result.json")
+		text2file(json_encode(list("snapshots"=parity_snapshots,"overlay_order"=parity_overlay_order,"bulk_overlay_order"=parity_bulk_order,"compatibility_overlay_order"=parity_compatibility_order,"expected_compatibility_order"=probe_expected_compatibility_order,"order_scope"="strict bulk parity; candidate compatibility native world traversal; candidate race isolated","concurrent_snapshot"=concurrent_snapshot,"concurrent_overlay_order"=concurrent_overlay_order,"replacement_started"=probe_replacement_started,"early_activations"=probe_early,"identity_failures"=probe_identity,"pauses"=probe_pauses,"premature_flags"=probe_premature,"new_callbacks"=probe_new_callbacks,"build_waiters"=probe_build_waiters,"prestartup_contract"=probe_prestartup_contract,"activity_waiter_done"=probe_activity_waiter_done,"activity_waiters"=probe_activity_waiters,"owner_activations"=probe_owner_activations,"owner_duplicates"=probe_owner_duplicates,"repeat_idempotent"=probe_repeat_idempotent,"failure_release"=probe_failure_release,"port_closed"=!world.port,"runtime_errors"=probe_errors,"native_loop_checks"=world.loop_checks)),"result.json")
 		del(world)
 		return
