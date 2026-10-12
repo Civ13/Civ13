@@ -25,10 +25,13 @@
 		..()
 
 /obj/structure/noose/process()
-	fire()
+	return process_interval(2)
+
+/obj/structure/noose/process_interval(configured_seconds = 2)
+	return fire(configured_seconds)
 
 // call this instead of process() if you want to do direct calls, I think its better - Kachnov
-/obj/structure/noose/proc/fire()
+/obj/structure/noose/proc/fire(configured_seconds = 2)
 	if (hanging)
 		hanging.forceMove(loc)
 		density = TRUE
@@ -49,8 +52,8 @@
 		hanging.pixel_x = pixel_x
 
 		if (hanging.stat != DEAD)
-			hanging.adjustOxyLoss(5)
-			if (prob(5))
+			hanging.adjustOxyLoss(2.5 * configured_seconds)
+			if (prob(object_interval_probability(5, configured_seconds)))
 				visible_message("<span class = 'danger'>[hanging]'s neck snaps.</span>")
 				playsound(loc, 'sound/effects/gore/bullethit3.ogg')
 				hanging.death()
@@ -131,10 +134,13 @@
 		..()
 
 /obj/structure/gallows/process()
-	fire()
+	return process_interval(2)
+
+/obj/structure/gallows/process_interval(configured_seconds = 2)
+	return fire(configured_seconds)
 
 // call this instead of process() if you want to do direct calls, I think its better - Kachnov
-/obj/structure/gallows/proc/fire()
+/obj/structure/gallows/proc/fire(configured_seconds = 2)
 	if (hanging)
 		hanging.forceMove(loc)
 		density = TRUE
@@ -163,8 +169,8 @@
 		hanging.pixel_x = pixel_x
 
 		if (hanging.stat != DEAD)
-			hanging.adjustOxyLoss(5)
-			if (prob(5))
+			hanging.adjustOxyLoss(2.5 * configured_seconds)
+			if (prob(object_interval_probability(5, configured_seconds)))
 				visible_message("<span class = 'danger'>[hanging]'s neck snaps.</span>")
 				playsound(loc, 'sound/effects/gore/bullethit3.ogg')
 				hanging.death()

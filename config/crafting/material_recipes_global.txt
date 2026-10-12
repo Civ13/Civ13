@@ -426,7 +426,7 @@ RECIPE: /material/electronics/,mobile phone,/obj/item/weapon/telephone/mobile,20
 
 RECIPE: /material/electronics/,early camera,/obj/item/camera/early,5,150,1,1,none,95,0,0,5,null
 RECIPE: /material/electronics/,black and white camera,/obj/item/camera/earlymodern,6,150,1,1,none,115,0,0,7,null
-RECIPE: /material/electronics/,early color camera,/obj/item/camera/coldwar,7,150,1,1,none,160,0,0,7,null
+RECIPE: /material/electronics/,early color camera,/obj/item/camera/coldwar,7,150,1,1,none,160,0,0,8,null
 RECIPE: /material/electronics/,modern camera,/obj/item/camera,7,150,1,1,none,205,0,0,8,null
 
 //*****************| ELECTRONICS FURNITURE |***************************
