@@ -168,6 +168,9 @@ var/global/corpse_decay_cursor = 1
 	for (var/atom/movable/A in contents)
 		if (!(A in organs) && !(A in internal_organs))
 			return FALSE
+	// Storage views put real gear on client.screen; remove it before mob cleanup.
+	if (s_active)
+		s_active.close(src)
 	var/head_found = FALSE
 	for (var/obj/item/organ/external/head/H in organs)
 		head_found = TRUE

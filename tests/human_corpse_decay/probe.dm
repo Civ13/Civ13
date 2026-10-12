@@ -38,6 +38,12 @@
 	drop_count++
 	..()
 
+/obj/item/weapon/storage/corpse_ci/close(mob/user)
+	corpse_assert(loc == get_turf(user), "storage view closes after physical gear release")
+	corpse_storage_closed = TRUE
+	..()
+
+var/corpse_storage_closed = FALSE
 var/corpse_death_hooks = 0
 /hook/death/proc/corpse_ci(mob/living/human/H, gibbed)
 	corpse_death_hooks++
@@ -102,7 +108,10 @@ var/corpse_assertions = 0
 		var/obj/item/corpse_ci/child = new(bag)
 		var/obj/item/corpse_ci/attachment = new(child)
 		H.back = bag
+		var/obj/item/weapon/storage/corpse_ci/viewed_bag = new(H)
+		H.s_active = viewed_bag
 		corpse_expire(H)
+		corpse_assert(corpse_storage_closed && viewed_bag.loc == T, "active storage view closed before body cleanup")
 		corpse_assert(!H && I.loc == T && bag.loc == T && child.loc == bag && attachment.loc == child, "actual nested roots dropped before retirement")
 		corpse_assert(corpse_hook_slots_clear && corpse_hook_calls == 1 && I.drop_count == 1 && bag.drop_count == 1 && !child.drop_count && !attachment.drop_count, "slots cleared and roots released exactly once")
 		corpse_assert(I.stable_id == "issued-node-123" && I.found_in_raid && I.insured && child.stable_id == "issued-node-123", "identity and raid metadata preserved")
