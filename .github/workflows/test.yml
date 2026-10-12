@@ -134,6 +134,7 @@ jobs:
         run: |
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
           python3 scripts/check-recipes.py --report recipe-checks.txt
+          python3 scripts/check-recipes.py --camera-prototype-negative-control
         shell: bash
 
       - name: Upload recipe validation report
