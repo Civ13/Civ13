@@ -7,6 +7,9 @@
     if (!config.bot_service_control || world.system_type != UNIX)
         to_chat(src, "Bot service control is disabled or this host is not Linux.")
         return
+    if (!shell())
+        to_chat(src, "Host safety settings do not permit bot service control.")
+        return
     var/action = input(src, "Choose a bot service operation.", "CivilizationBot") as null|anything in list("status", "start", "restart")
     if (!action || !check_rights(R_SERVER) || !config.bot_service_control)
         return
@@ -25,4 +28,7 @@
             result = shell("/usr/bin/sudo -n /usr/local/sbin/civ13-bot-control restart")
         if ("status")
             result = shell("/usr/bin/sudo -n /usr/local/sbin/civ13-bot-control status")
+    if (isnull(result))
+        to_chat(src, "The host could not execute the bot service helper.")
+        return
     to_chat(src, "Bot service helper exit code: [result]. 0 = active (status) or request accepted (start/restart); 75 = cooldown; other codes require host investigation.")

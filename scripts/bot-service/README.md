@@ -66,9 +66,9 @@ with a root-owned flock in /run, and shares a sixty-second mutation cooldown
 across all game servers. Failed requests also consume that budget. Reboot clears
 the budget. Status does not consume it. systemctl mutations use --no-block:
 zero means the request was accepted, not that Discord is connected. Recheck
-status/journal. The subprocess has a three-second timeout; the DM shell call
-may briefly block its caller/server and is deliberately admin-only, not a tick
-watchdog. Automatic crash recovery belongs to systemd.
+status/journal. The subprocess has a three-second timeout; the DM calling proc sleeps until
+the command finishes, and the operation is deliberately admin-only, not a tick
+watchdog. DreamDaemon must permit shell calls (trusted mode). Automatic crash recovery belongs to systemd.
 
 The existing bot self-restart is not this API. Validate it during cutover before
 using it under supervision; prefer the service control while deployed.
