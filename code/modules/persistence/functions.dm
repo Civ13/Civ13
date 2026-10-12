@@ -213,7 +213,7 @@ var/global/persistence_save_in_progress = FALSE
 		return 0
 	persistence_save_in_progress = TRUE
 	var/watch = start_watch()
-	to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP! THIS USUALLY TAKES UNDER A MINUTE</B></FONT>")
+	to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP. COMPLETION TIME DEPENDS ON WORLD SIZE.</B></FONT>")
 	sleep(5)
 	try
 		map_storage.Save_World()
