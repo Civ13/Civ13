@@ -1,4 +1,6 @@
 /process/lighting_overlays
+	// Detach at most one bounded FIFO batch. Dirty flags keep enqueue deduplication
+	// active while budget-yielded entries wait; consumed slots release ownership.
 	var/tmp/batch_index = 1
 	var/tmp/processing_batch = FALSE
 
@@ -26,7 +28,7 @@
 		if (!isDeleted(L))
 			L.update_overlay()
 			L.needs_update = FALSE
-		if (world.tick_usage - run_time_tick_usage >= run_time_tick_usage_allowance)
+		if (priority != PROCESS_PRIORITY_VERY_HIGH && world.tick_usage - run_time_tick_usage >= run_time_tick_usage_allowance)
 			processing_batch = FALSE
 			if (batch_index <= current_list.len)
 				return PROCESS_TICK_CHECK_RETURNED_EARLY
@@ -36,3 +38,15 @@
 
 /process/lighting_overlays/reset_current_list()
 	return
+
+/process/lighting_overlays/copyStateFrom(process/lighting_overlays/target)
+	current_list = target.current_list
+	batch_index = target.batch_index
+	target.current_list = null
+
+/process/lighting_overlays/onKill()
+	// A killed process must not strand dirty overlays outside the live queue.
+	if (current_list)
+		lighting_update_overlays.Insert(1, current_list.Copy(batch_index))
+	current_list = null
+	processing_batch = FALSE

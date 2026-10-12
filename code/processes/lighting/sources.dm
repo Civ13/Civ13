@@ -1,4 +1,6 @@
 /process/lighting_sources
+	// Pending batches survive budget returns without copying the entire backlog.
+	// Source destruction still runs remove_lum through the ordinary dirty queue.
 	var/tmp/batch_index = 1
 	var/tmp/processing_batch = FALSE
 
@@ -41,7 +43,7 @@
 		else
 			catchBadType(current)
 		current = null
-		if (world.tick_usage - run_time_tick_usage >= run_time_tick_usage_allowance)
+		if (priority != PROCESS_PRIORITY_VERY_HIGH && world.tick_usage - run_time_tick_usage >= run_time_tick_usage_allowance)
 			processing_batch = FALSE
 			if (batch_index <= current_list.len)
 				return PROCESS_TICK_CHECK_RETURNED_EARLY
@@ -51,3 +53,16 @@
 
 /process/lighting_sources/reset_current_list()
 	return
+
+/process/lighting_sources/copyStateFrom(process/lighting_sources/target)
+	current_list = target.current_list
+	batch_index = target.batch_index
+	target.current_list = null
+	current = null
+
+/process/lighting_sources/onKill()
+	if (current_list)
+		lighting_update_lights.Insert(1, current_list.Copy(batch_index))
+	current_list = null
+	current = null
+	processing_batch = FALSE
