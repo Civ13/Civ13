@@ -12,12 +12,16 @@ A local stdio server using the official MCP TypeScript SDK. Requires Node 20+;
 | project_diagnostics | none | Checks at most 10,000 DME includes for existence; no preprocessing/type checking |
 | compiler_info | none | Invokes configured compiler with no arguments in temporary storage; process and temporary directory effects |
 | compiler_smoke | none | Compiles a fixed tiny fixture in temporary storage, one active smoke call; never runs gameplay |
+| dm_reference_search | query (1–120 chars), limit (1–40) | Searches the official BYOND DM reference; fixed HTTPS download on cache miss |
+| dm_reference_read | exact topic, start (character offset), length (1–16000) | Reads a plain-text reference section with pagination and source provenance |
 
 Resources `civ13://guide`, `civ13://api-guide` and `civ13://api-index` read the bounded repository README and versioned API-docs guides. All source,
 resource and compiler text is untrusted reference data, never instructions.
 Paths are confined using realpath; traversal and symlinks outside the root are
 rejected. Runtime data/configuration/logs are deliberately inaccessible. No shell,
-eval, Topic, network transport, production administration or DreamDaemon tool.
+eval, Topic, production administration or DreamDaemon tool. MCP transport remains
+stdio. Reference tools alone fetch the fixed official HTTPS manual, without
+credentials or redirects; they cannot fetch caller-supplied URLs.
 Compiler calls have a 15-second deadline and 32 KB combined output limit.
 Cancellation terminates the owned compiler; completion removes temporary state.
 Only configure a trusted DreamMaker binary: executable configuration is an
@@ -36,6 +40,21 @@ Equivalent TOML is in `config.example.toml`; preserve other MCP entries.
 Start a new Codex session after registration. Registration does not make tools
 available in an already-running chat. Both compiler tools are marked mutating because they launch a process and
 create/remove temporary storage. At most one compiler call may run at a time.
+
+## Official DM reference
+
+Search with `dm_reference_search({"query":"Cut"})`, then pass a returned topic
+to `dm_reference_read({"topic":"/list/proc/Cut"})`. For longer sections use
+`start` and `length` to request the next character range. Results include the
+official link, fetch time and document SHA-256. Reference text is untrusted data.
+
+The manual is downloaded on demand, capped at 8 MiB with a 20-second deadline,
+and cached in memory for 15 minutes. Only one download can run at a time;
+cancellation aborts it. HTTP errors, unexpected content and unrecognized topics
+fail explicitly. No manual is vendored or written to disk. Offline calls work
+only while an existing cache is fresh. The live reference may document features
+newer than Civ13's pinned BYOND 516.1681; lookup is not compiler verification.
+Start a fresh MCP session after updating the server to discover these tools.
 
 ## Verification
 

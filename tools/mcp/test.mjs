@@ -9,8 +9,11 @@ test('real stdio handshake, discovery, bounded calls and error isolation', async
  const client = new Client({name:'civ13-test',version:'1.0.0'});
  try {
   await client.connect(transport);
-  const tools = await client.listTools(); assert.equal(tools.tools.length,5);
+  const tools = await client.listTools(); assert.equal(tools.tools.length,7);
+  assert.equal(tools.tools.find(t => t.name === 'dm_reference_read').annotations.openWorldHint,true);
   const call = (name,args={}) => client.callTool({name,arguments:args});
+  assert.equal((await call('dm_reference_search',{query:' '})).isError,true);
+  assert.equal((await call('dm_reference_read',{topic:'/list',length:16001})).isError,true);
   const read = await call('source_read',{path:'README.md',lines:2}); assert.equal(read.isError,undefined);
   assert.equal((await call('source_read',{path:'../config.txt'})).isError,true);
   assert.equal((await call('source_read',{path:'data/player_saves.dm'})).isError,true);
@@ -45,6 +48,28 @@ test('cancellation stops owned compiler and removes temporary state', async () =
   const after = (await fs.readdir(os.tmpdir())).filter(n=>n.startsWith('civ13-mcp-info-') && !before.has(n));
   assert.deepEqual(after,[]); await client.ping();
  } finally { await client.close(); await fs.rm(hold,{force:true}); }
+});
+
+test('official reference search and read through stdio with an offline transport fixture', async () => {
+ const fs = await import('node:fs/promises'); const os = await import('node:os');
+ const dir = await fs.mkdtemp(path.join(os.tmpdir(),'civ13-mcp-reference-'));
+ const preload = path.join(dir,'fetch.cjs');
+ await fs.writeFile(preload, `globalThis.fetch = async url => {
+   if (url !== 'https://www.byond.com/docs/ref/info.html') throw Error('unexpected destination');
+   return new Response('<a name=/list/proc/Cut><h2>Cut</h2><p>Remove entries.</p>', {headers:{'content-type':'text/html'}});
+ };`);
+ const transport = new StdioClientTransport({command:process.execPath,args:['--require',preload,path.join(import.meta.dirname,'server.mjs')]});
+ const client = new Client({name:'reference-test',version:'1.0.0'});
+ try {
+  await client.connect(transport);
+  const search = await client.callTool({name:'dm_reference_search',arguments:{query:'Cut'}});
+  assert.equal(search.isError,undefined); assert.equal(search.structuredContent.matches[0].topic,'/list/proc/Cut');
+  const read = await client.callTool({name:'dm_reference_read',arguments:{topic:'/list/proc/Cut'}});
+  assert.equal(read.structuredContent.text,'Cut\nRemove entries.');
+  assert.equal(read.structuredContent.sha256,search.structuredContent.sha256);
+  assert.equal((await client.callTool({name:'dm_reference_read',arguments:{topic:'https://other.invalid'}})).isError,true);
+  await client.ping();
+ } finally { await client.close(); await fs.rm(dir,{recursive:true,force:true}); }
 });
 
 
