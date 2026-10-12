@@ -143,6 +143,7 @@
 	equipment_assert(!G.extraction_found_in_raid && !G.ammo_magazine?.extraction_found_in_raid, "bringing gear into subsequent raid clears found-in-raid status")
 	equipment_assert(SB.profile["stash"]:len == 4, "other account unaffected")
 	loot_mode_probe(M, A)
+	container_key_unlock_probe(M, A)
 	var/list/loot = M.records(M.player_roots(A))
 	var/obj/effect/extraction_exit/exit = locate() in world
 	var/obj/effect/extraction_exit/pmc/pmc_exit = locate() in world

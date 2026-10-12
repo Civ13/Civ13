@@ -66,9 +66,9 @@
 // Gameplay access and the unlock receipt belong to the shared loot journal.
 // These mapped subtypes bind a unique container to its own named reward table.
 /obj/effect/extraction_loot_marker/keyed
+	icon_state = "securecrate"
 	name = "locked scavenger cache"
 	desc = "The surviving lock needs the exact key named on this container."
-	icon_state = "securecrate"
 /obj/effect/extraction_loot_marker/keyed/industrial_tool_cage
 	name = "Industrial District maintenance stock cage"
 	container_id = 61

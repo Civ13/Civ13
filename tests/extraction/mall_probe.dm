@@ -45,6 +45,10 @@ var/global/mall_fixture_failed = FALSE
 /proc/mall_assert(condition, message)
 	if (!condition) throw EXCEPTION(message)
 
+// Shared key assertions use the equipment fixture's assertion interface.
+/proc/equipment_assert(condition, message)
+	mall_assert(condition, message)
+
 /datum/extraction_loot_pool/mall_fixture
 	plan()
 		return list(list("type" = "/obj/item/extraction_salvage", "quantity" = 1))

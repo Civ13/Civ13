@@ -306,7 +306,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
         if probe == 'vehicles':
             source = '#define EXTRACTION_VEHICLE_PROCESS_PROBE\n' + source
             source += '\n#include "tests/extraction/vehicle_process_probe.dm"\n'
-        source += '\n#include "tests/extraction/economy_probe.dm"\n#include "tests/extraction/scope_insurance_probe.dm"\n#include "tests/extraction/npc_extraction_probe.dm"\n#include "tests/extraction/equipment_probe.dm"\n'
+        source += '\n#include "tests/extraction/economy_probe.dm"\n#include "tests/extraction/scope_insurance_probe.dm"\n#include "tests/extraction/npc_extraction_probe.dm"\n#include "tests/extraction/container_keys_probe.dm"\n#include "tests/extraction/equipment_probe.dm"\n'
         generated[0].write_text(source, encoding='utf-8')
         with tempfile.TemporaryDirectory(prefix='civ13-extraction-equipment-') as temp:
             target = Path(temp)
@@ -346,7 +346,10 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 if workshop_control:
                     expected = {'wear': 'assembled wheel retains actual identity and paid wear', 'cleanup': 'cancel cleanup releases busy power and all paid preview references'}[workshop_control]
                     if ran.returncode or not result.startswith('FAIL:') or expected not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
-                        raise RuntimeError('Workshop control did not fail at its intended ownership assertion')
+                        print(ran.stdout)
+                        print(ran.stderr)
+                        print(log)
+                        raise RuntimeError(f'Workshop {workshop_control} control did not fail at its intended ownership assertion: {expected}')
                     print(f'PASS: workshop {workshop_control} omission detected')
                     continue
                 if room_payment_control:

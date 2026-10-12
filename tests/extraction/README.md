@@ -494,3 +494,35 @@ Inaccessible wall padding still allocates turfs. Shared home scans remain local
 these bounds do not establish whole-world startup, lighting, environment or
 save costs. Larger maps require full-map startup and memory measurements and
 runtime checks of navigation and extraction before scalability is accepted.
+
+Pharmacy loot may persist only the exact medical stack types
+`/obj/item/stack/medical/bruise_pack/bint` and
+`/obj/item/stack/medical/splint`. Their amount must be an integer from one to
+that subtype's native maximum (30 bandages or five splints). The equipment
+probe checks quantity and identity round trips and rejects empty, fractional,
+oversized and uncatalogued subtype payloads. These new native assertions are
+pending CI and do not establish connected gameplay or medical balance.
+
+### Exact-target cache keys (source integration)
+
+The six catalogued keys target one map and one cache each. Native generic door
+and closet keys do not recognize them. Only the exact type and remaining-use
+scalar are persisted; target injection and exhausted-key payloads are rejected.
+Ordinary container plans have a one-percent roll for at most one key from the
+whole catalog, including foreign-map keys. Locked rewards have no key bonus.
+These are implementation values, not validated balance claims.
+
+Unlocking checks the actual carried key, map, immutable cache binding and unique
+live container ID. It commits a pending receipt before consuming a physical use,
+then acknowledges the unlock. Receipt or acknowledgment uncertainty quarantines
+the session and cache without refund or replacement. Same-epoch acknowledged
+reopens do not charge again. Pending receipts survive epoch changes and require
+explicit reconciliation. Only acknowledged unlocks use the open-cache sprite.
+
+The added catalog, codec and mode probes cover wrong targets, use bounds,
+concurrent/duplicate access, receipt interruption and acknowledgment failure.
+They remain unrun locally under the native hold. Full successful-extraction key
+persistence, factory-construction negative controls and connected gameplay
+acceptance must be established before readiness; codec output alone proves
+neither extraction settlement nor gameplay. Cache placements are owned by the
+stacked map PR and are not included by this shared source change.

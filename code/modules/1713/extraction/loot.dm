@@ -74,6 +74,97 @@
 	var/tmp/datum/extraction_loot_pool/test_pool
 	var/tmp/test_fail_constructor_after = null
 	var/tmp/test_fail_delivery_ack = FALSE
+	var/tmp/list/test_key_rolls
+	var/tmp/unlock_recovery_required = FALSE
+	var/tmp/test_fail_after_unlock_receipt = FALSE
+	var/tmp/test_fail_unlock_ack = FALSE
+	proc/keyed()
+		return istype(src, /obj/effect/extraction_loot_marker/keyed)
+	proc/key_binding_valid(obj/map_metadata/extraction_survival/M)
+		if (!keyed()) return TRUE
+		if (container_id != initial(container_id) || pool_kind != initial(pool_kind) || !extraction_container_key_type(M.ID, container_id) || extraction_container_key_pool_kind(M.ID, container_id) != pool_kind) return FALSE
+		for (var/obj/effect/extraction_loot_marker/other in extraction_loot_markers)
+			if (other != src && other.container_id == container_id) return FALSE
+		return TRUE
+	proc/unlock_receipt_valid(obj/map_metadata/extraction_survival/M)
+		if (!profile || profile["unlock_state"] != "unlocked") return FALSE
+		var/list/R = profile["unlock_receipt"]
+		var/path = extraction_container_key_type(M.ID, container_id)
+		var/obj/item/weapon/key/extraction_container/prototype = path
+		return path && islist(R) && R["map"] == M.ID && R["container"] == container_id && R["epoch"] == M.loot_epoch && istext(R["owner"]) && length(R["owner"]) && istext(R["key_id"]) && length(R["key_id"]) && R["key_type"] == "[path]" && isnum(R["before"]) && round(R["before"]) == R["before"] && R["before"] >= 1 && R["before"] <= initial(prototype.max_uses) && R["after"] == R["before"] - 1
+	proc/load_container(obj/map_metadata/extraction_survival/M)
+		if (locked || container_id < 1 || container_id > 64 || round(container_id) != container_id || !key_binding_valid(M) || !M.ensure_loot_epoch()) return FALSE
+		if (!profile) profile = M.loot_store.load_profile("container[container_id]")
+		if (!profile) return FALSE
+		if (profile["loot_state"] == "pending" || profile["unlock_state"] == "pending")
+			unlock_recovery_required = profile["unlock_state"] == "pending"
+			return FALSE
+		if (profile["raid_sequence"] != M.loot_epoch)
+			var/list/fresh = json_decode(json_encode(profile))
+			fresh["raid_sequence"] = M.loot_epoch
+			fresh["stash"] = list()
+			fresh["loot_state"] = "unopened"
+			fresh["loot_plan"] = null
+			fresh["unlock_state"] = null
+			fresh["unlock_receipt"] = null
+			if (keyed()) icon_state = "securecrate"
+			if (!commit_container(M, fresh)) return FALSE
+		if (keyed() && ((!isnull(profile["unlock_state"]) || !isnull(profile["unlock_receipt"])) && !unlock_receipt_valid(M)))
+			unlock_recovery_required = TRUE
+			return FALSE
+		if (keyed() && unlock_receipt_valid(M)) icon_state = "securecrateopen"
+		return TRUE
+	proc/unlock(obj/map_metadata/extraction_survival/M, mob/living/human/H, obj/item/weapon/key/extraction_container/K)
+		if (busy || !keyed() || !M.owned(H) || H.stat != CONSCIOUS || H.z != z || !M.mission_z(z) || !Adjacent(H) || H.extraction_session.transitioning || H.extraction_session.profile["state"] != "raid") return FALSE
+		if (!load_container(M))
+			if (unlock_recovery_required) H.extraction_session.locked = TRUE
+			return FALSE
+		if (unlock_receipt_valid(M)) return TRUE
+		if (!K || K.loc != H || K.nodrop || K.extraction_secure_stored || K.extraction_insurance_token || !K.matches(M.ID, container_id) || !M.codec.encode(K)) return FALSE
+		busy = TRUE
+		var/datum/extraction_session/S = H.extraction_session
+		S.transitioning = TRUE
+		var/list/pending = json_decode(json_encode(profile))
+		pending["unlock_state"] = "pending"
+		pending["unlock_receipt"] = list("map" = M.ID, "container" = container_id, "epoch" = M.loot_epoch, "owner" = S.owner, "key_id" = K.extraction_item_id, "key_type" = "[K.type]", "before" = K.uses_remaining, "after" = K.uses_remaining - 1)
+		var/success = commit_container(M, pending)
+		if (success && !test_fail_after_unlock_receipt)
+			K.uses_remaining--
+			if (!K.uses_remaining)
+				if (H.drop_from_inventory(K))
+					M.raid_items -= K
+					qdel(K)
+				else success = FALSE
+			if (success)
+				var/list/ack = json_decode(json_encode(profile))
+				ack["unlock_state"] = "unlocked"
+				if (test_fail_unlock_ack) M.loot_store.test_fail_at = "intent"
+				success = commit_container(M, ack)
+		else success = FALSE
+		if (!success)
+			unlock_recovery_required = TRUE
+			S.locked = TRUE
+		S.transitioning = FALSE
+		busy = FALSE
+		if (success) icon_state = "securecrateopen"
+		return success
+	proc/key_bonus_roll(maximum)
+		if (test_key_rolls)
+			if (!test_key_rolls.len) return -1
+			var/result = test_key_rolls[1]
+			test_key_rolls.Cut(1, 2)
+			return result
+		return rand(0, maximum - 1)
+	proc/add_key_bonus(list/plan)
+		if (keyed() || !(pool_kind in list("ammunition", "workshop", "armory", "supplies")) || (test_pool && !test_key_rolls)) return TRUE
+		var/roll = key_bonus_roll(10000)
+		if (roll < 0 || roll >= 10000) return FALSE
+		if (roll >= 100) return TRUE
+		var/list/catalog = extraction_container_key_catalog()
+		var/choice = key_bonus_roll(catalog.len)
+		if (choice < 0 || choice >= catalog.len || plan.len >= 4) return FALSE
+		plan += list(list("type" = "[catalog[choice + 1]]", "rarity" = "rare", "quantity" = 1))
+		return TRUE
 	proc/commit_container(obj/map_metadata/extraction_survival/M, list/candidate)
 		if (locked || !M.loot_store.commit_profile("container[container_id]", candidate))
 			locked = TRUE
@@ -81,23 +172,13 @@
 		profile = candidate
 		return TRUE
 	proc/prepare(obj/map_metadata/extraction_survival/M)
-		if (locked || container_id < 1 || container_id > 64 || round(container_id) != container_id || !M.ensure_loot_epoch()) return FALSE
-		if (!profile) profile = M.loot_store.load_profile("container[container_id]")
-		if (!profile) return FALSE
-		// A fresh raid must not silently discard an uncertain old delivery.
-		if (profile["loot_state"] == "pending") return FALSE
-		if (profile["raid_sequence"] != M.loot_epoch)
-			var/list/fresh = json_decode(json_encode(profile))
-			fresh["raid_sequence"] = M.loot_epoch
-			fresh["stash"] = list()
-			fresh["loot_state"] = "unopened"
-			fresh["loot_plan"] = null
-			if (!commit_container(M, fresh)) return FALSE
+		if (!load_container(M) || (keyed() && !unlock_receipt_valid(M))) return FALSE
 		if (profile["loot_state"] == "ready") return TRUE
 		if (profile["loot_state"] == "unopened")
-			var/datum/extraction_loot_pool/P = test_pool ? test_pool : new /datum/extraction_loot_pool(pool_kind)
+			var/datum/extraction_loot_pool/P = test_pool ? test_pool : (keyed() ? extraction_container_key_pool(pool_kind) : new /datum/extraction_loot_pool(pool_kind))
+			if (!P) return FALSE
 			var/list/plan = P.plan()
-			if (!islist(plan)) return FALSE
+			if (!islist(plan) || !add_key_bonus(plan)) return FALSE
 			var/list/rolled = json_decode(json_encode(profile))
 			rolled["loot_plan"] = plan
 			rolled["loot_state"] = "planned"
@@ -130,7 +211,7 @@
 		ready["loot_state"] = "ready"
 		return commit_container(M, ready)
 	proc/claim(obj/map_metadata/extraction_survival/M, mob/living/human/H, id)
-		if (locked || !M.owned(H) || H.stat != CONSCIOUS || !extraction_mission_z(H.z) || !Adjacent(H) || H.extraction_session.transitioning || H.extraction_session.profile["state"] != "raid" || !profile || profile["loot_state"] != "ready") return null
+		if (locked || (keyed() && (!key_binding_valid(M) || !unlock_receipt_valid(M))) || !M.owned(H) || H.stat != CONSCIOUS || !extraction_mission_z(H.z) || !Adjacent(H) || H.extraction_session.transitioning || H.extraction_session.profile["state"] != "raid" || !profile || profile["loot_state"] != "ready") return null
 		var/list/entry
 		var/list/candidate = json_decode(json_encode(profile))
 		var/list/stash = candidate["stash"]
@@ -160,6 +241,15 @@
 		var/mob/living/human/H = user
 		var/obj/map_metadata/extraction_survival/M = map
 		if (busy || !istype(H) || !istype(M) || !M.owned(H) || !extraction_mission_z(H.z) || H.extraction_session.profile["state"] != "raid" || !Adjacent(H)) return
+		if (keyed())
+			var/obj/item/weapon/key/extraction_container/key
+			for (var/obj/item/weapon/key/extraction_container/K in H.contents)
+				if (K.matches(M.ID, container_id))
+					key = K
+					break
+			if (!unlock(M, H, key))
+				to_chat(H, unlock_recovery_required ? "Unlock recovery is required. No replacement key or use will be issued." : "This cache needs its exact tagged key in your carried inventory.")
+				return
 		busy = TRUE
 		if (prepare(M))
 			var/list/options = list()
