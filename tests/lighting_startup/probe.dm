@@ -229,6 +229,7 @@ var/list/lighting_overlay_list = list()
 		var/list/concurrent_snapshot = list()
 		var/list/concurrent_overlay_order = list()
 		#ifdef PROBE_CANDIDATE
+		#ifndef PROBE_ORDER_CONTROL
 		// Force a new overlay at an already visited position during a bounded pass.
 		var/concurrent_order_start = probe_overlay_order.len + 1
 		var/turf/concurrent_turf = locate(1,1,1)
@@ -274,6 +275,7 @@ var/list/lighting_overlay_list = list()
 		prestartup_turf.lighting_build_overlay()
 		sleep(2)
 		probe_prestartup_contract = !!prestartup_turf.lighting_overlay && prestartup_corner.active
+		#endif
 		#endif
 		text2file(json_encode(list("snapshots"=parity_snapshots,"overlay_order"=parity_overlay_order,"bulk_overlay_order"=parity_bulk_order,"compatibility_overlay_order"=parity_compatibility_order,"expected_compatibility_order"=probe_expected_compatibility_order,"order_scope"="strict bulk parity; candidate compatibility native world traversal; candidate race isolated","concurrent_snapshot"=concurrent_snapshot,"concurrent_overlay_order"=concurrent_overlay_order,"replacement_started"=probe_replacement_started,"early_activations"=probe_early,"identity_failures"=probe_identity,"pauses"=probe_pauses,"premature_flags"=probe_premature,"new_callbacks"=probe_new_callbacks,"build_waiters"=probe_build_waiters,"prestartup_contract"=probe_prestartup_contract,"activity_waiter_done"=probe_activity_waiter_done,"activity_waiters"=probe_activity_waiters,"owner_activations"=probe_owner_activations,"owner_duplicates"=probe_owner_duplicates,"repeat_idempotent"=probe_repeat_idempotent,"failure_release"=probe_failure_release,"port_closed"=!world.port,"runtime_errors"=probe_errors,"native_loop_checks"=world.loop_checks)),"result.json")
 		del(world)

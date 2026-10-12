@@ -61,6 +61,7 @@ def prepare(repo, mode, negative=False, bulk_order_control=False, inactive_corne
     files = {"production.dm": production, "probe.dm": (repo/"tests/lighting_startup/probe.dm").read_text(),
              "probe.dme": '#define TRUE 1\n#define FALSE 0\n#define ASSERT(x) if (!(x)) CRASH("assertion")\n#define PoolOrNew probe_pool\n#define GAME_STATE_PREGAME 0\n#include "probe.dm"\n#include "production.dm"\n'}
     if mode == "candidate": files["probe.dme"] = "#define PROBE_CANDIDATE\n" + files["probe.dme"]
+    if bulk_order_control: files["probe.dme"] = "#define PROBE_ORDER_CONTROL\n" + files["probe.dme"]
     assert '/world/OpenPort(port)\n\tif (port == "none")\n\t\treturn ..()\n\treturn FALSE' in files["probe.dm"], "Closed-port adapter changed"
     assert 'OpenPort("none")' in files["probe.dm"] and 'if (world.port || OpenPort(0) || world.port)' in files["probe.dm"], "Closing/reopening native guards missing"
     files.update({"original-"+Path(path).name: source for path,source in originals.items()})
@@ -125,13 +126,14 @@ def execute(repo, out, mode, negative, byond, bulk_order_control=False, inactive
         assert result["identity_failures"]==(10240 if inactive_corner_control else 0), {"identity_failures":result["identity_failures"],"inactive_corner_control":inactive_corner_control}
         if mode=="candidate":
             assert result["pauses"]>0 and result["premature_flags"]==0,result
-            assert result["build_waiters"]>0 and result["new_callbacks"]<20,result
-            assert result["failure_release"] and result["prestartup_contract"],result
-            assert result["activity_waiters"]>0 and result["activity_waiter_done"],result
-            assert result["replacement_started"] and len(result["concurrent_snapshot"])==5120,result
-            assert result["concurrent_overlay_order"].count("1,1,1")==2,result
             assert result["owner_activations"]>0 and result["owner_duplicates"]==0,result
-            assert result["repeat_idempotent"], "Settled repeat changed corner activity or overlay ownership"
+            if not bulk_order_control:
+                assert result["build_waiters"]>0 and result["new_callbacks"]<20,result
+                assert result["failure_release"] and result["prestartup_contract"],result
+                assert result["activity_waiters"]>0 and result["activity_waiter_done"],result
+                assert result["replacement_started"] and len(result["concurrent_snapshot"])==5120,result
+                assert result["concurrent_overlay_order"].count("1,1,1")==2,result
+                assert result["repeat_idempotent"], "Settled repeat changed corner activity or overlay ownership"
     return result
 
 def validate_parity(baseline, candidate):
