@@ -1,3 +1,5 @@
+#include "garbage_profile.dm"
+
 // The time a datum was destroyed by the GC, or null if it hasn't been
 /datum/var/gcDestroyed = 0
 #define GC_COLLECTIONS_PER_RUN 300
@@ -77,7 +79,11 @@ var/list/delayed_hard_garbage = list()
 			#endif
 			// Something's still referring to the qdel'd object.  Kill it.
 			logging["[A.type]"]++
+			var/forced_type = "[A.type]"
+			var/forced_started = world.timeofday
+			var/forced_tick = world.time
 			del(A)
+			profile_cost(forced_type, TRUE, forced_started, forced_tick)
 
 			hard_dels++
 			remaining_force_dels--
@@ -185,7 +191,12 @@ var/list/delayed_hard_garbage = list()
 		return
 	// Guard reentry without changing legacy cleanup checks inside Destroy.
 	A.gc_destroyed = GC_CURRENTLY_BEING_QDELETED
+	var/profile_type = "[A.type]"
+	var/cleanup_started = world.timeofday
+	var/cleanup_tick = world.time
 	var/hint = A.Destroy()
+	if (processes.garbage)
+		processes.garbage.profile_cost(profile_type, FALSE, cleanup_started, cleanup_tick)
 	if (!A)
 		return
 	if (hint == QDEL_HINT_LETMELIVE)
@@ -210,7 +221,11 @@ var/list/delayed_hard_garbage = list()
 		if (QDEL_HINT_HARDDEL_NOW)
 			A.gcDestroyed = world.time + 1
 			A.gc_destroyed = A.gcDestroyed
+			var/forced_started = world.timeofday
+			var/forced_tick = world.time
 			del(A)
+			if (processes.garbage)
+				processes.garbage.profile_cost(profile_type, TRUE, forced_started, forced_tick)
 		if (QDEL_HINT_HARDDEL)
 			if (processes.garbage)
 				processes.garbage.AddTrash(A)
