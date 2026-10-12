@@ -1,7 +1,8 @@
 """Compile actual Civ13 lighting callbacks with normal startup/maps disabled."""
-import argparse, json, os, shutil, subprocess, tempfile, uuid
+import argparse, hashlib, json, os, shutil, subprocess, tempfile, uuid
 from pathlib import Path
 from run import BASELINE
+from sampling import observe
 
 def main():
     p=argparse.ArgumentParser()
@@ -9,7 +10,10 @@ def main():
     p.add_argument('--baseline',action='store_true')
     p.add_argument('--compare',type=Path)
     p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--size',type=int,choices=(32,128),default=32)
+    p.add_argument('--lights',type=int,choices=(200,2000),default=200)
     a=p.parse_args(); root=Path(__file__).resolve().parents[2]
+    head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
     stem='.lighting_'+uuid.uuid4().hex
     files=[root/(stem+s) for s in ('.dme','_world.dm','_overlays.dm','_sources.dm','.dmb','.rsc')]
     flags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0
@@ -26,6 +30,7 @@ def main():
             files[i].write_text(text,encoding='utf-8'); source=source.replace(rel.replace('/','\\'),files[i].name)
         source+='\n#include "tests/lighting_queues/native_probe.dm"\n'
         files[0].write_text(source,encoding='utf-8')
+        queue_hashes={f.name.rsplit('_',1)[-1]:hashlib.sha256(f.read_bytes()).hexdigest() for f in files[2:4]}
         with tempfile.TemporaryDirectory(prefix='civ13-lighting-native-') as tmp:
             out=Path(tmp)
             dm=a.byond_bin/('dm.exe' if os.name=='nt' else 'DreamMaker')
@@ -40,8 +45,9 @@ def main():
             with (out/'daemon.log').open('w') as log:
                 cmd=[str(dd),str(out/files[4].name)]
                 if os.name=='nt': cmd+=['-invisible','-close']
-                cmd+=['-safe','-log','runtime.log']
-                result=subprocess.run(cmd,cwd=out,stdout=log,stderr=log,timeout=120,creationflags=flags)
+                cmd+=['-safe','-params',f'size={a.size}&lights={a.lights}','-log','runtime.log']
+                result=subprocess.Popen(cmd,cwd=out,stdout=log,stderr=log,creationflags=flags)
+                memory=observe(result,180)
             log=(out/'runtime.log').read_text(errors='replace')
             completion=(out/'result.txt').read_text().strip() if (out/'result.txt').exists() else 'Missing completion'
             print((out/'daemon.log').read_text(errors='replace'))
@@ -50,7 +56,8 @@ def main():
             states=[json.loads(x) for x in (out/'states.jsonl').read_text(encoding='utf-8').splitlines()]
             if a.compare and states!=json.loads(a.compare.read_text(encoding='utf-8'))['states']: raise RuntimeError('Lighting parity differs')
             a.output.parent.mkdir(parents=True,exist_ok=True)
-            a.output.write_text(json.dumps(dict(head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),baseline=BASELINE if a.baseline else None,states=states,log=log)))
+            rows=[json.loads(x) for x in (out/'metrics.jsonl').read_text().splitlines()]
+            a.output.write_text(json.dumps(dict(head=head,baseline=BASELINE if a.baseline else None,size=a.size,lights=a.lights,queue_hashes=queue_hashes,states=states,metrics=rows,compile=build.stdout,log=log,**memory)))
             print(f'PASS: five production lighting cycles; output {a.output}')
     finally:
         for f in files: f.unlink(missing_ok=True)
