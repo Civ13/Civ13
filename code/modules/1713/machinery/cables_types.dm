@@ -125,6 +125,20 @@
 		var/obj/structure/cable/root = turflist[1]
 		root.rebuild_supply()
 
+/obj/item/connector/after_load()
+	..()
+	// Older native saves have the junction edges but no ownership pairs.
+	if (!anchored || !isturf(loc) || junction_pairs.len)
+		return
+	for (var/i = 1, i <= turflist.len, i++)
+		var/obj/structure/cable/A = turflist[i]
+		if (!A || A.loc != loc)
+			continue
+		for (var/j = i + 1, j <= turflist.len, j++)
+			var/obj/structure/cable/B = turflist[j]
+			if (B && B.loc == loc && (B in A.connections) && (A in B.connections))
+				junction_pairs += list(list(A,B))
+
 /obj/item/connector/Destroy()
 	disconnect_cables()
 	return ..()
@@ -198,6 +212,7 @@
 
 	if(amount < 1) // Out of cable
 		to_chat(user, "<span class='warning'>There is no cable left!</span>")
+		user.remove_from_mob(src)
 		qdel(src)
 		return
 
@@ -244,18 +259,14 @@
 	if (opdir1 != 0 && opdir2 != 0)
 		for(var/obj/structure/cable/NCOO in get_turf(get_step(C,opdir1)))
 			if ((NCOO.tiledir == C.tiledir) && NCOO != C)
-				if (!(C in NCOO.connections) && !list_cmp(C.connections, NCOO.connections))
-					NCOO.connections += C
-				if (!(NCOO in C.connections) && !list_cmp(C.connections, NCOO.connections))
-					C.connections += NCOO
+				NCOO.connections |= C
+				C.connections |= NCOO
 				to_chat(user, "You connect the two cables.")
 
 		for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir2)))
 			if ((NCOC.tiledir == C.tiledir) && NCOC != C)
-				if (!(C in NCOC.connections) && !list_cmp(C.connections, NCOC.connections))
-					NCOC.connections += C
-				if (!(NCOC in C.connections) && !list_cmp(C.connections, NCOC.connections))
-					C.connections += NCOC
+				NCOC.connections |= C
+				C.connections |= NCOC
 				to_chat(user, "You connect the two cables.")
 	// Crossing directions join only through a secured connector.
 	for (var/obj/item/connector/junction in T)

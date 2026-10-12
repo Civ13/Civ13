@@ -14,4 +14,10 @@ Queue iterations and rebuild calls measure algorithm work. They do not measure
 OS memory, full-server tick latency, battery energy integration, map placement,
 save reconstruction or client rendering. The existing power fixture covers
 split/merge, source shutdown, engine/consumer disposal and movement. Additional
-placement and whole-save checks remain necessary for that milestone.
+placement and whole-save checks use `./tests/native_grid/run-game.ps1
+-ByondBin <516.1681-bin>`. That fixture compiles all production sources with
+startup and maps isolated, then executes real inventory, paid placement, cutting,
+connector lifecycle, and disk-backed world export/import. It checks current
+connector ownership and migration from legacy reference lists. Test actor species
+is initialized for the real inventory icon callbacks. No client rendering or
+production-server load is measured.

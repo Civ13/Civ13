@@ -11,6 +11,7 @@
 /obj/map_metadata/grid_fixture/New()
 	return
 /mob/living/human/grid_fixture/New()
+	species = new /datum/species/human
 	return
 var/native_grid_failures = 0
 /proc/native_grid_check(condition, label)
@@ -49,7 +50,7 @@ var/native_grid_failures = 0
 		H.stat = DEAD
 		native_grid_check(!coil.place_turf(locate(2,3,1),H,NORTH), "dead actor rejected")
 		H.stat = CONSCIOUS
-		H.forceMove(locate(3,2,1))
+		H.loc = locate(3,2,1)
 		var/obj/structure/cable/C = coil.place_turf(locate(4,2,1),H,EAST)
 		native_grid_check(C && coil.amount == 0 && !coil.loc && H.l_hand != coil, "last piece consumed and empty coil removed")
 		var/obj/item/weapon/wirecutters/cutters = new(H)
@@ -63,7 +64,7 @@ var/native_grid_failures = 0
 		H.l_hand = crossing_coil
 		var/obj/structure/cable/V = crossing_coil.place_turf(locate(4,2,1),H,NORTH)
 		native_grid_check(V && !(V in C.connections) && !(C in V.connections), "crossing directions remain separate without connector")
-		H.forceMove(locate(4,2,1))
+		H.loc = locate(4,2,1)
 		var/obj/item/connector/junction = new(H)
 		H.l_hand = junction
 		junction.attack_self(H)
@@ -113,9 +114,12 @@ var/native_grid_failures = 0
 			A.rebuild_supply()
 			native_grid_check(A.component_id && A.component_id == J.component_id && A.component_id != old_identity, "runtime identities rebuilt after import")
 			if (saved_connector)
+				saved_connector.junction_pairs.Cut()
+				saved_connector.after_load()
+				native_grid_check(saved_connector.junction_pairs.len == 1, "legacy connector ownership reconstructed")
 				saved_connector.disconnect_cables()
 				native_grid_check(!(A in J.connections) && !(J in A.connections), "restored connector can split restored network")
 	catch (var/exception/e)
-		native_grid_check(FALSE, "exception [e]")
+		native_grid_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit"=world.params["tested_commit"],"failures"=native_grid_failures,"byond_build"=world.byond_build)),"result.json")
 	del(world)
