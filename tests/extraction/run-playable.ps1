@@ -6,6 +6,8 @@ foreach ($binary in @('dm.exe','dd.exe')) {
     if (!(Test-Path -LiteralPath (Join-Path $ByondBin $binary) -PathType Leaf)) { throw "Missing BYOND binary: $binary" }
 }
 $repo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
+$sourceInventory = @(& git -C $repo status --porcelain --untracked-files=normal)
+if ($LASTEXITCODE -ne 0) { throw 'Cannot inventory tested source' }
 $nonce = [guid]::NewGuid().ToString('N')
 $source = Join-Path $repo ('.extraction-area-' + $nonce + '.dme')
 $run = Join-Path ([IO.Path]::GetTempPath()) ('civ13-extraction-area-' + $nonce)
@@ -29,12 +31,10 @@ try {
     [IO.File]::WriteAllText($configPath,$config)
     $commit = (& git -C $repo rev-parse HEAD).Trim()
     if ($LASTEXITCODE -ne 0) { throw 'Cannot identify tested commit' }
-    $dirty = @(& git -C $repo status --porcelain --untracked-files=normal)
-    if ($LASTEXITCODE -ne 0) { throw 'Cannot inventory tested source' }
     $patch = & git -C $repo diff HEAD
     if ($LASTEXITCODE -ne 0) { throw 'Cannot preserve tested patch' }
     $patch | Set-Content -LiteralPath (Join-Path $run 'tested.patch')
-    @{ commit=$commit; dirty=($dirty.Count -gt 0); source_changes=$dirty; city=[bool]$City; visual=[bool]$Visual; byond_bin=$ByondBin; duration_seconds=$TimeoutSeconds; storage='disposable run directory'; adapter_sha256=(Get-FileHash -LiteralPath (Join-Path $repo 'tests/extraction/playable_area.dm') -Algorithm SHA256).Hash } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $run 'invocation.json')
+    @{ commit=$commit; dirty=($sourceInventory.Count -gt 0); source_changes=$sourceInventory; city=[bool]$City; visual=[bool]$Visual; byond_bin=$ByondBin; duration_seconds=$TimeoutSeconds; storage='disposable run directory'; adapter_sha256=(Get-FileHash -LiteralPath (Join-Path $repo 'tests/extraction/playable_area.dm') -Algorithm SHA256).Hash } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $run 'invocation.json')
     $parameters = 'tested_commit=' + $commit
     if ($Visual) { $parameters += '&visual=1' }
     $daemonArguments = @('area.dmb',"$Port",'-invisible','-safe','-params',$parameters,'-log','startup.log')
