@@ -30,11 +30,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--compile-only', action='store_true')
-    parser.add_argument('--negative-control', choices=('mission', 'vehicle'))
+    parser.add_argument('--negative-control', choices=('mission', 'vehicle', 'key_charge', 'key_construction'))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     prefix = '.mall_' + uuid.uuid4().hex
-    files = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '_metadata.dm', '.dmb', '.rsc')]
+    files = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '_metadata.dm', '.dmb', '.rsc', '_loot.dm', '_equipment.dm')]
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
@@ -54,7 +54,7 @@ def main():
         files[2].write_text(globals_text.replace(marker, marker+'\treturn\n', 1), encoding='utf-8')
         source = source.replace('code\\world.dm', files[1].name).replace('code\\controllers\\mc\\globals.dm', files[2].name)
         expected = None
-        if args.negative_control:
+        if args.negative_control in ('mission', 'vehicle'):
             metadata = (root / 'code/modules/1713/extraction/mall.dm').read_text(encoding='utf-8')
             marker, replacement, expected = {
                 'mission': ('return level in list(1, 4, 5)', 'return level in list(1, 2, 3, 4, 5)', 'secure floors excluded by mission policy'),
@@ -64,6 +64,22 @@ def main():
                 raise RuntimeError('Mutation marker changed')
             files[3].write_text(metadata.replace(marker, replacement), encoding='utf-8')
             source = source.replace('code\\modules\\1713\\extraction\\mall.dm', files[3].name)
+        elif args.negative_control:
+            if args.negative_control == 'key_charge':
+                relative, output = 'equipment.dm', files[7]
+                marker = 'scalars[key] = value'
+                replacement = 'scalars[key] = key == "uses_remaining" ? 3 : value'
+                expected = 'successful extraction preserves remaining key uses'
+            else:
+                relative, output = 'loot.dm', files[6]
+                marker = 'if (!isnull(test_fail_constructor_after) && constructed.len >= test_fail_constructor_after)'
+                replacement = 'if (FALSE)'
+                expected = 'keyed factory construction failure exposes no reward'
+            original = (root / 'code/modules/1713/extraction' / relative).read_text(encoding='utf-8')
+            if original.count(marker) != 1:
+                raise RuntimeError('Key mutation marker changed')
+            output.write_text(original.replace(marker, replacement), encoding='utf-8')
+            source = source.replace('code\\modules\\1713\\extraction\\' + relative, output.name)
         source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
         source += '\n#include "tests/extraction/container_keys_probe.dm"\n#include "tests/extraction/mall_probe.dm"\n#include "maps/extraction/interchange_mall.dmm"\n'
         files[0].write_text(source, encoding='utf-8')

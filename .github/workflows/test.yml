@@ -135,6 +135,8 @@ jobs:
           /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
           /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control mission
           /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control vehicle
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control key_charge
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control key_construction
           /usr/bin/python3 tests/extraction/check_catalog.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe npc --npc-insurance-negative-control

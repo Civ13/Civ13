@@ -117,6 +117,26 @@ var/global/mall_fixture_failed = FALSE
 	var/obj/item/claimed = container.claim(M, H, entry["id"])
 	mall_assert(claimed && M.raid_items[claimed] && !container.claim(M, H, entry["id"]), "gallery loot claimed once and tracked")
 	mall_stage("after loot claim")
+	container_key_catalog_probe()
+	var/obj/effect/extraction_loot_marker/keyed/mall_security/cache = locate() in world
+	H.forceMove(get_turf(cache))
+	var/obj/item/weapon/key/extraction_container/mall_security/key = M.spawn_loot(get_turf(H), /obj/item/weapon/key/extraction_container/mall_security)
+	key.forceMove(H)
+	mall_assert(!cache.prepare(M) && cache.unlock(M, H, key) && key.uses_remaining == 2, "actual mall cache unlock consumes one use")
+	var/key_id = key.extraction_item_id
+	cache.test_fail_constructor_after = 0
+	mall_assert(!cache.prepare(M) && cache.profile["loot_state"] == "planned" && !cache.profile["stash"]:len, "keyed factory construction failure exposes no reward")
+	var/saved_plan = json_encode(cache.profile["loot_plan"])
+	cache.profile = null
+	cache.test_fail_constructor_after = null
+	mall_assert(cache.unlock(M, H, key) && key.uses_remaining == 2 && cache.prepare(M) && json_encode(cache.profile["loot_plan"]) == saved_plan, "construction retry retains paid unlock and exact rewards")
+	mall_assert(cache.icon_state == "securecrateopen", "durably unlocked reload restores open sprite")
+	var/obj/item/weapon/storage/backpack/bag = new(H)
+	var/obj/item/weapon/key/extraction_container/city_evidence/foreign = M.spawn_loot(get_turf(H), /obj/item/weapon/key/extraction_container/city_evidence)
+	foreign.forceMove(bag)
+	mall_assert(M.track_loot(bag) && M.codec.encode(bag), "foreign key nested bag has durable identities")
+	var/foreign_id = foreign.extraction_item_id
+	mall_stage("after keyed cache unlock and construction retry")
 	for (var/obj/effect/extraction_raid_marker/infil in extraction_raid_markers)
 		mall_assert(M.vehicle_entry_allowed(infil) == istype(infil, /obj/effect/extraction_raid_marker/road), "only road markers admit cars")
 	var/obj/effect/extraction_exit/highway/highway
@@ -128,5 +148,27 @@ var/global/mall_fixture_failed = FALSE
 		if (istype(E, /obj/effect/extraction_exit/highway)) highway = E
 	H.forceMove(get_turf(highway))
 	mall_assert(highway && M.extract_player(H, highway) && H.z == 2 && S.profile["state"] == "home", "native mall foot extraction settles home")
+	var/datum/extraction_account_store/disk = new
+	disk.root = M.accounts.store.root
+	var/list/saved = disk.load_profile(S.owner)
+	mall_assert(saved && saved["state"] == "home", "successful key extraction is committed on disk")
+	var/found_key = FALSE
+	var/found_foreign = FALSE
+	for (var/list/saved_entry in saved["stash"])
+		var/list/graph = saved_entry["equipment"]
+		for (var/list/node in graph["nodes"])
+			if (node["id"] == key_id)
+				mall_assert(node["scalars"]["uses_remaining"] == 2, "successful extraction preserves remaining key uses")
+				found_key = TRUE
+			if (node["id"] == foreign_id)
+				mall_assert(node["scalars"]["uses_remaining"] == 3 && node["parent"] != 0, "foreign key stays nested with unused charges")
+				found_foreign = TRUE
+		var/obj/item/restored = M.codec.decode(graph, null)
+		mall_assert(restored, "extracted graph restores from disk")
+		qdel(restored)
+	mall_assert(found_key && found_foreign, "both recovered keys survive extraction settlement")
+	mall_assert(M.deploy(H) && key.uses_remaining == 2 && foreign.uses_remaining == 3 && foreign.loc == bag, "later raid retains key charges and nested foreign key")
+	H.forceMove(get_turf(highway))
+	mall_assert(M.extract_player(H, highway) && key.uses_remaining == 2, "repeat extraction does not recharge key")
 	mall_stage("after final foot extraction")
 	mall_assert(!parking.traverse(H) && world.port == 0, "home actor cannot enter stairs and daemon port closed")

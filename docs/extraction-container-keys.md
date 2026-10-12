@@ -68,6 +68,20 @@ shared isolated key runner. Compilation is not runtime evidence.
 
 The additive catalog/placement patch alone does not enforce locks or persist
 charges; that requires the matching shared loot/equipment journal integration.
+The matching shared loot/equipment integration is included on the mall branch.
+Keyed journals are isolated under `data/extraction_loot/maps/<ckey(mapID)>/`,
+preserving `container61`/`container62` owners and recovery suffixes. Ordinary loot
+paths are unchanged. Ambiguous historical flat receipts are preserved for manual
+recovery; they are never migrated, replayed or refunded automatically.
+
+The mall fixture additionally exercises a real cache unlock, failed reward
+construction and retry, successful extraction, disk-backed remaining uses,
+nested foreign-map keys and redeployment. `--negative-control key_charge`
+restores charges in a generated codec copy and must fail the persisted-use
+assertion. `--negative-control key_construction` bypasses the injected constructor
+failure in a generated loot copy and must fail the no-exposure assertion.
+
 Local native execution is currently held while daemon startup isolation is
-resolved. Unlock failures, concurrent use, rare-drop endpoints, inventory
-round trips and in-game appearance remain separate acceptance checks.
+resolved. These fixtures and controls compile, but unlock failures, concurrent
+use, rare-drop endpoints, inventory round trips and in-game appearance remain
+unrun acceptance checks.
