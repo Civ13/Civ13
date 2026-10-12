@@ -287,6 +287,9 @@ jobs:
           for control in bound cleanup forced clock; do
             /usr/bin/python3 tests/garbage_profile/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
+          for control in gc-soft-budget gc-hard-budget; do
+            /usr/bin/python3 tests/memory_ownership/run.py --byond-bin "$PWD/BYOND/byond/bin" --case collector --negative-control "$control"
+          done
 
       - name: Verify native memory ownership and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/callback_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/global_vars_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/memory_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nanoui_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/pool_effects') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/process_snapshot_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reagent_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/weakref_ownership')
