@@ -60,14 +60,12 @@ home/hub floors and no fixed key spawns. Its blocked-cache control must fail
 reachability. `test_mall.py` also covers scaled topology and numeric DMM boolean
 assignments compatible with MapDiffBot2.
 
-`container_keys_probe.dm` is a native catalog regression scaffold: immutable
-targets, valid/exhausted counters, uncatalogued subtypes, native keyslot denial,
-unique tables and unsupported targets. It requires the shared codec integration
-for pharmacy rewards. It is compiled by the mall fixture and intended for the
-shared isolated key runner. Compilation is not runtime evidence.
+`container_keys_probe.dm` covers immutable targets, valid/exhausted counters,
+uncatalogued subtypes, native keyslot denial, unique tables and unsupported
+targets. Its shared runner also exercises unlock receipt failures, repeat use,
+rare-drop endpoints and journal isolation between maps. Compilation is not
+runtime evidence.
 
-The additive catalog/placement patch alone does not enforce locks or persist
-charges; that requires the matching shared loot/equipment journal integration.
 The matching shared loot/equipment integration is included on the mall branch.
 Keyed journals are isolated under `data/extraction_loot/maps/<ckey(mapID)>/`,
 preserving `container61`/`container62` owners and recovery suffixes. Ordinary loot

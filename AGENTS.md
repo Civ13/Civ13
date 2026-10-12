@@ -52,6 +52,12 @@ An experimental open-source BYOND reimplementation. `.vscode/launch.json` has an
 
 ### DMM format rules
 
+<!-- 2026-10-12: extraction map parser compatibility -->
+- Emit numeric `0`/`1` for DMM boolean assignments. BYOND accepts `FALSE`/`TRUE`
+  in maps, but MapDiffBot2 rejects variable references in tile definitions.
+- Extraction container keys explicitly inherit `/obj/item`, despite their path
+  beneath `/obj/item/weapon/key`, to exclude generic keyslot and closet re-keying.
+
 - All tile keys within a map **must be the same length** (all 2-char or all 1-char). Mixing breaks BYOND's parser.
 - Every grid row must have exactly `world.maxx` tile keys. Different row widths cause load failures.
 - Grid rows in the file are ordered top-to-bottom (Y=maxy first, Y=1 last).
