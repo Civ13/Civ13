@@ -579,3 +579,8 @@ Scheduler start replaces its identity token; stale sleeping invocations retire a
 wake, and stop invalidates the token. Process may_run uses one lazy history
 expiry deadline; started cancels it before recording new run history. Native
 lifecycle, immutable baseline and controls live in tests/process_loop_lifecycle.
+
+<!-- 2026-10-12: native path starting tile -->
+`cirrAstar()` includes the starting turf in its returned path. Discard leading
+current-turf entries before calling `step_towards()`, especially when replanning
+on every decision. Otherwise a successful path can repeatedly produce no move.

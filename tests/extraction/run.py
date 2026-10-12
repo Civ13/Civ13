@@ -239,6 +239,8 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             source += '\n#include "tests/extraction/mode_probe.dm"\n#include "tests/extraction/hub_probe.dm"\n#include "tests/extraction/progression_probe.dm"\n#include "tests/extraction/vote_probe.dm"\n#include "tests/extraction/group_probe.dm"\n#include "tests/extraction/vehicle_probe.dm"\n#include "tests/extraction/loot_probe.dm"\n#include "tests/extraction/city_probe.dm"\n#include "maps/extraction/modern_city_extraction.dmm"\n'
         if probe in ('mode', 'city'):
             source += '\n#include "tests/extraction/native_market_probe.dm"\n'
+        if probe == 'city':
+            source += '\n#include "tests/extraction/city_zombie_probe.dm"\n'
         if probe == 'insurance':
             source = '#define EXTRACTION_RETURNS_PROCESS_PROBE\n' + source
             source += '\n#include "tests/extraction/insurance_process_probe.dm"\n'

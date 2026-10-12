@@ -85,6 +85,7 @@
 	for (var/obj/item/I in M.home_roots(SA)) I.forceMove(A)
 	for (var/obj/item/I in M.home_roots(SB)) I.forceMove(B)
 	equipment_assert(M.deploy(A) && M.deploy(B) && !SA.profile["stash"].len && !SB.profile["stash"].len, "two real accounts debit carried loadouts into city")
+	extraction_city_zombie_probe(M, A, B)
 	A.forceMove(get_turf(north))
 	B.forceMove(get_turf(north))
 	equipment_assert(M.reserve_evacuation(A, north) && M.reserve_evacuation(B, north) && !north.eligible(A) && !M.extract_player(A, north), "reservation cannot grant early instant extraction")

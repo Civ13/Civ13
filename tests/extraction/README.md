@@ -299,3 +299,12 @@ limits. Native market checks cover conserved wallets and original IDs,
 condition/FIR, private receipts, party retention, replay, duplicate/unknown
 payload rejection, foreign listing cancellation and unfunded settlement.
 These fixture calls do not establish connected modal UI acceptance.
+
+The city fixture also exercises its separate zombie population from actual map
+markers, with twelve active actors maximum and one spawn attempt per thirty
+seconds. Native zombie appearance/limbs and melee remain inherited. Local AI
+decisions run at most every two seconds, idle wander goals every ten seconds,
+with seven-tile perception and thirty-two-node path searches. The fixture checks
+physical street wandering, visible raid actors, private-home exclusion, spawn
+cooldown and corpse expiry alongside shipment/evacuation/stranding contracts.
+This is accelerated fixture evidence, not connected combat or elapsed city play.

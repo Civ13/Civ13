@@ -24,7 +24,7 @@ var/global/list/extraction_city_stations = list()
 /obj/map_metadata/extraction_survival/modern_city
 	ID = MAP_EXTRACTION_CITY
 	title = "Modern City Extraction"
-	description = "Build and survive in an abandoned Modern city, ship recovered supplies home and reach an announced evacuation station before the final departure."
+	description = "Build and survive among wandering zombies in an abandoned Modern city, ship recovered supplies home and reach an announced evacuation station before the final departure."
 	nomads = TRUE
 	has_hunger = TRUE
 	default_research = 210
