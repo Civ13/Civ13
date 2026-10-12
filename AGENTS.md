@@ -530,7 +530,7 @@ rendering, multiplayer latency or long-term OOM stability.
 
 <!-- 2026-10-12: exhausted budget snapshots -->
 A tick-budget return can happen after PROCESS_LIST_CHECK removes the last entry.
-Release exhausted snapshots in process finished so the next scheduled run builds
+Normalize exhausted EARLY results through finished and both process entry points so relayProcess removes completed work. Release exhausted snapshots so the next scheduled run builds
 fresh work; retain only nonempty unfinished snapshots. Assign null without cutting
 aliased VERY_HIGH live lists. tests/process_loop_lifecycle covers the exact
 last-entry boundary and an independent old-guard mutation control.

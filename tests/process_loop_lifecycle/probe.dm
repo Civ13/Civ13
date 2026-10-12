@@ -40,6 +40,10 @@ var/datum/process_group/processes = new
 	return value
 /process
 	var/processScheduler/main
+	var/disabled = FALSE
+	var/paused = FALSE
+	var/killed = FALSE
+	var/last_fire_as_member = 0
 	var/ticks = 0
 	var/current
 	var/list/current_list
@@ -58,7 +62,15 @@ var/datum/process_group/processes = new
 	return
 /process/proc/onFinish()
 	return
-/process/budget_probe/proc/fire()
+/process/proc/may_fire()
+	return TRUE
+/process/proc/fire()
+	return
+/process/proc/reset_current_list()
+	current_list = null
+/process/budget_probe/reset_current_list()
+	current_list = list("only")
+/process/budget_probe/fire()
 	for (current in current_list)
 		PROCESS_LIST_CHECK
 		PROCESS_TICK_CHECK
@@ -161,6 +173,24 @@ var/datum/process_group/processes = new
 	fire_result = B.fire()
 	B.finished(fire_result)
 	check(isnull(B.current_list) && live_list.len == 2 && live_list[1] == "one" && live_list[2] == "two", "VERY_HIGH completion preserves aliased live list")
+	B.priority = 3
+	B.run_time_tick_usage_allowance = -2
+	B.current_list = list("first", "pending")
+	fire_result = B.process()
+	check(fire_result == PROCESS_TICK_CHECK_RETURNED_EARLY && B.current_list.len == 1, "pending process preserves early completion result")
+	B.current_list = list("only")
+	fire_result = B.process()
+	check(fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY && isnull(B.current_list), "exhausted process returns normal completion")
+	B.current_list = null
+	var/list/relay_queue = list(B)
+	var/dispatches = 0
+	while(relay_queue.len && dispatches < 3)
+		dispatches++
+		S.relayProcess(B, relay_queue)
+	check(dispatches == 1 && !relay_queue.len, "exhausted relay dispatches only once")
+	B.current_list = list("only")
+	fire_result = B.fire_as_member()
+	check(fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY && isnull(B.current_list), "exhausted member returns normal completion")
 	world.log << "METRICS repeated_cadence_max=[repeated_max] restart_cadence_max=[restart_max] watchdog_cadence_max=[watchdog_max] denial_pending_callbacks=[denial_sleepers] instrumented_peak_callbacks=[sleepers_peak]"
 	text2file(json_encode(list("checks" = checks, "failures" = failures, "repeated_cadence_max" = repeated_max, "restart_cadence_max" = restart_max, "watchdog_cadence_max" = watchdog_max, "denial_pending_callbacks" = denial_sleepers, "instrumented_peak_callbacks" = sleepers_peak)), "native-result.json")
 	world.log << "DONE [checks] checks [failures] failures"

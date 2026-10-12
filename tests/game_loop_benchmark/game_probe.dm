@@ -80,6 +80,7 @@ var/global/datum/game_loop_benchmark/game_loop_benchmark = new
         text2file(json_encode(list("world_time_deciseconds"=start,"timeofday_deciseconds"=start_tod)), "ready.json")
         var/previous_tod = start_tod
         var/list/natural_lives = list()
+        var/natural_elapsed = 0
         for(var/sample in 1 to 650)
             if(sample <= 20)
                 if(!A.put_in_active_hand(I) || I.loc != A) throw EXCEPTION("Production pickup identity failed sample=[sample] lying=[A.lying] stat=[A.stat] sleeping=[A.sleeping]")
@@ -101,6 +102,7 @@ var/global/datum/game_loop_benchmark/game_loop_benchmark = new
                     constructed_effects++
                     retired_refs += list(list("ref"=refID,"gc_stamp"=E.gcDestroyed))
             if(sample == 601)
+                natural_elapsed = world.time-start
                 for(var/mob/living/human/game_loop_actor/H in actors) natural_lives += H.life_calls
                 phase = "restart"
                 text2file(json_encode(list("world_time_deciseconds"=world.time,"timeofday_deciseconds"=world.timeofday)),"restart.json")
@@ -133,10 +135,16 @@ var/global/datum/game_loop_benchmark/game_loop_benchmark = new
             var/natural_calls = natural_lives[actor_index]
             var/restart_calls = H.life_calls-natural_calls
             if(natural_calls < 10 || restart_calls < 1) throw EXCEPTION("Actor service missing in natural/restart phase")
-            if(world.params["variant"] == "current" && (H.natural_max_gap_deciseconds > 15 || H.restart_max_gap_deciseconds > 20)) throw EXCEPTION("Current actor service exceeded natural/restart gap bounds")
+
             service += list(list("actor"=actor_index,"natural_life_calls"=natural_calls,"restart_life_calls"=restart_calls,"natural_max_gap_deciseconds"=H.natural_max_gap_deciseconds,"restart_max_gap_deciseconds"=H.restart_max_gap_deciseconds))
             if(H.life_calls < 10) throw EXCEPTION("Normal scheduler did not service every human")
         text2file(json_encode(list("rows"=rows,"actor_service"=service,"callbacks"=callbacks,"retained"=retained,"unique_refs"=unique_refs.len,"final_world_time_deciseconds"=world.time,"gc_queued_drained_delta"=processes.garbage.queued_drained-initial_gc_drained)),"observations.json")
+        if(world.params["variant"] == "current")
+            var/natural_call_limit = ceil(natural_elapsed/processes.mob.schedule_interval)+1
+            var/restart_call_limit = ceil((world.time-start-natural_elapsed)/processes.mob.schedule_interval)+1
+            for(var/list/entry in service)
+                if(entry["natural_max_gap_deciseconds"] > 15 || entry["restart_max_gap_deciseconds"] > 20) throw EXCEPTION("Current actor service exceeded natural/restart gap bounds")
+                if(entry["natural_life_calls"] > natural_call_limit || entry["restart_life_calls"] > restart_call_limit) throw EXCEPTION("Current actor serviced more often than its scheduled interval")
         if(callbacks != 20 || retained || game_loop_runtime_error || !game_loop_tick_checks || processes.garbage.queued_drained <= initial_gc_drained) throw EXCEPTION("Callback/collector/runtime/tick coverage failed callbacks=[callbacks] retained=[retained] runtime=[game_loop_runtime_error] checks=[game_loop_tick_checks] garbage_ticks=[processes.garbage.ticks] gc_dels=[processes.garbage.total_dels] queue=[processes.garbage.destroyed.len]")
         text2file(json_encode(list("passed"=TRUE,"tested_commit"=world.params["tested_commit"],"variant"=world.params["variant"],"byond_version"=world.byond_version,"byond_build"=world.byond_build,"port"=world.port,"map_id"=map.ID,"moves"=moves,"inventory_cycles"=inventory_cycles,"callbacks"=callbacks,"callback_delay_deciseconds"=callback_delays,"retired_effects"=constructed_effects,"gc_queued_drained_delta"=processes.garbage.queued_drained-initial_gc_drained,"retained_effects"=retained,"human_life_calls"=final_lives,"actor_service"=service,"unique_retired_refs"=unique_refs.len,"tick_check_evaluations"=game_loop_tick_checks,"tick_check_early_returns"=game_loop_early_returns,"rows"=rows)),"result.json")
         text2file("PASS: native scheduler human Life, movement/inventory, callbacks and collector drain","result.txt")

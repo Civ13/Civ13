@@ -5,7 +5,7 @@ BASELINE = '7cfa850bd9d2788dcbb9fd35f5c5915ccb528dd2'
 p = argparse.ArgumentParser()
 p.add_argument('--byond-bin', type=Path, required=True)
 p.add_argument('--baseline', action='store_true')
-p.add_argument('--negative-control', choices=('token', 'deadline', 'successful-run', 'exhausted-snapshot'))
+p.add_argument('--negative-control', choices=('token', 'deadline', 'successful-run', 'exhausted-snapshot', 'relay-result'))
 p.add_argument('--evidence-dir', type=Path)
 a = p.parse_args()
 if a.baseline and a.negative_control: p.error('Choose one control')
@@ -15,16 +15,21 @@ raw = [subprocess.check_output(['git','show',BASELINE+':'+x], cwd=r, text=True) 
 head = subprocess.check_output(['git','rev-parse','HEAD'], cwd=r, text=True).strip()
 dirty = subprocess.check_output(['git','status','--porcelain'], cwd=r, text=True)
 patch = subprocess.check_output(['git','diff','HEAD','--'], cwd=r)
-scheduler_patterns = [r'/processScheduler/proc/start\(\)[\s\S]*?(?=/processScheduler/proc/process\()', r'/processScheduler/proc/process\([^\n]*\)[\s\S]*?(?=/processScheduler/proc/stop\()', r'/processScheduler/proc/stop\(\)[\s\S]*?(?=/processScheduler/proc/checkRunningProcesses\()', r'/processScheduler/proc/recordRunTime\([^\n]*\)[\s\S]*?(?=/\*\*)']
-process_patterns = [r'/process/proc/finished\([^\n]*\)[\s\S]*?(?=/process/proc/fire\()', r'/process/proc/started\(\)[\s\S]*?(?=/process/proc/finished\()', r'/process/proc/may_run\([^\n]*\)[\s\S]*?(?=/datum/subsystem_module)']
+scheduler_patterns = [r'/processScheduler/proc/relayProcess\([^\n]*\)[\s\S]*?(?=/processScheduler/proc/addProcess\()', r'/processScheduler/proc/start\(\)[\s\S]*?(?=/processScheduler/proc/process\()', r'/processScheduler/proc/process\([^\n]*\)[\s\S]*?(?=/processScheduler/proc/stop\()', r'/processScheduler/proc/stop\(\)[\s\S]*?(?=/processScheduler/proc/checkRunningProcesses\()', r'/processScheduler/proc/recordRunTime\([^\n]*\)[\s\S]*?(?=/\*\*)']
+process_patterns = [r'/process/proc/process\(\)[\s\S]*?(?=/process/proc/running\()', r'/process/proc/fire_as_member\(\)[\s\S]*?(?=/process/proc/setup\()', r'/process/proc/finished\([^\n]*\)[\s\S]*?(?=/process/proc/fire\()', r'/process/proc/started\(\)[\s\S]*?(?=/process/proc/finished\()', r'/process/proc/may_run\([^\n]*\)[\s\S]*?(?=/datum/subsystem_module)']
 source = '\n'.join(re.search(pattern, raw[index]).group() for index, patterns in enumerate([scheduler_patterns, process_patterns]) for pattern in patterns)
 defines = (r/'code/processes/___defines.dm').read_text()
 macros = '\n'.join(line for line in defines.splitlines() if line.startswith(('#define PROCESS_TICK_CHECK_RETURNED_EARLY ', '#define PROCESS_LIST_CHECK ', '#define PROCESS_TICK_CHECK ')))
 assert len(macros.splitlines()) == 3
-if a.negative_control == 'exhausted-snapshot':
+if a.negative_control == 'relay-result':
+    old = '\tif (fire_result == PROCESS_TICK_CHECK_RETURNED_EARLY && !length(current_list))\n\t\tfire_result = null\n'
+    assert source.count(old) == 1
+    source = source.replace(old, '')
+elif a.negative_control == 'exhausted-snapshot':
     old = 'if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY || !length(current_list))'
     assert source.count(old) == 1
     source = source.replace(old, 'if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)')
+    source = source.replace('\tif (fire_result == PROCESS_TICK_CHECK_RETURNED_EARLY && !length(current_list))\n\t\tfire_result = null\n', '')
 elif a.negative_control == 'token':
     for old,new in [('if (!isRunning || run_token != token)', 'if (!isRunning)'), ('while (isRunning && run_token == token)', 'while (isRunning)')]:
         assert source.count(old) == 1
@@ -45,8 +50,9 @@ if a.baseline:
 else:
     assert old not in source
 expected = {
-    'baseline': ['repeated start has one scheduler cadence', 'stop restart cancels previous sleeping chain', 'watchdog start replaces active scheduler chain', 'repeated denial creates no callback backlog', 'successful bypass run history survives old deadline', 'final-entry budget return releases exhausted snapshot'],
-    'exhausted-snapshot': ['final-entry budget return releases exhausted snapshot'],
+    'baseline': ['repeated start has one scheduler cadence', 'stop restart cancels previous sleeping chain', 'watchdog start replaces active scheduler chain', 'repeated denial creates no callback backlog', 'successful bypass run history survives old deadline', 'final-entry budget return releases exhausted snapshot', 'exhausted process returns normal completion', 'exhausted relay dispatches only once', 'exhausted member returns normal completion'],
+    'exhausted-snapshot': ['final-entry budget return releases exhausted snapshot', 'exhausted process returns normal completion', 'exhausted relay dispatches only once', 'exhausted member returns normal completion'],
+    'relay-result': ['exhausted process returns normal completion', 'exhausted relay dispatches only once', 'exhausted member returns normal completion'],
     'token': ['repeated start has one scheduler cadence', 'stop restart cancels previous sleeping chain', 'watchdog start replaces active scheduler chain'],
     'deadline': ['denials do not postpone original expiry', 'expired history clears only on admission query'],
     'successful-run': ['successful bypass run history survives old deadline'],
@@ -78,6 +84,6 @@ with tempfile.TemporaryDirectory(prefix='civ13-process-loops-') as directory:
     result = json.loads((out/'native-result.json').read_text())
     errors = re.findall(r'^FAIL (.+)$',log,re.M)
     control = 'baseline' if a.baseline else a.negative_control
-    if result['checks'] != 19 or errors != (expected[control] if control else []) or result['failures'] != len(errors): raise SystemExit('Unexpected native lifecycle assertions')
+    if result['checks'] != 23 or errors != (expected[control] if control else []) or result['failures'] != len(errors): raise SystemExit('Unexpected native lifecycle assertions')
     print('PASS expected historical/mutation control' if control else 'PASS production loop lifecycle')
     if a.evidence_dir: print('Retained evidence: '+str(out))
