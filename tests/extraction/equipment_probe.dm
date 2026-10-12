@@ -69,6 +69,7 @@ var/equipment_completed = FALSE
 	var/obj/item/stack/cable_coil/restored_cable = C.decode(cable_record, locate(1,1,1))
 	var/obj/item/stack/cable_coil/second_cable = C.decode(cable_record, locate(1,1,1))
 	equipment_assert(restored_cable && second_cable && restored_cable != second_cable && restored_cable.amount == 10 && second_cable.amount == 10 && restored_cable.cable_color == "red" && restored_cable.extraction_item_id == cable.extraction_item_id, "cable restores isolated amount, color and identity without constructor merging")
+	equipment_assert(!restored_cable.throwing && !second_cable.throwing, "restoration releases temporary stack crossing guard")
 	cable_record["nodes"][1]["scalars"]["amount"] = 51
 	equipment_assert(!C.validate(cable_record), "oversized cable stock rejects before construction")
 	cable_record["nodes"][1]["scalars"]["amount"] = 0

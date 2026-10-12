@@ -320,7 +320,13 @@ var/global/extraction_identity_sequence = 0
 			var/list/restored = list()
 			for (var/id in lists[key]) restored += created[id]
 			if (key in I.vars) I.vars[key] = restored
+		// forceMove dispatches Crossed: existing stacks merge an incoming stack
+		// unless it is throwing. Suppress only this restoration placement, then
+		// restore the runtime flag before exposing the completed graph.
+		var/was_throwing = I.throwing
+		if (istype(I, /obj/item/stack)) I.throwing = TRUE
 		I.forceMove(node["parent"] ? created[node["parent"]] : destination)
+		I.throwing = was_throwing
 	for (var/obj/item/I in created) I.after_load()
 	return created[1]
 
