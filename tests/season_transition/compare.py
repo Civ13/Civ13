@@ -19,6 +19,8 @@ def main():
         p.error('Both baseline and candidate evidence paths are required')
     old, new = (json.loads(path.read_text()) for path in (a.baseline, a.candidate))
     assert old['mode'] == 'baseline' and new['mode'] == 'candidate'
+    assert old.get('profiling_enabled', False) == new.get('profiling_enabled', False), 'Profiled and unprofiled benchmarks cannot be compared'
+    assert old.get('profiling_scope') == new.get('profiling_scope'), 'Profiling scopes differ'
     assert not old['request_scenarios'] and not new['request_scenarios'], 'Benchmark workloads must be equal'
     assert old['dimensions'] == new['dimensions']
     assert old['baseline_sha'] == new['baseline_sha']

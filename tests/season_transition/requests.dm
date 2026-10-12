@@ -8,31 +8,39 @@
 			return FALSE
 		sleep(1)
 	return TRUE
+/proc/probe_request_assert(list/assertions, name, passed)
+	assertions[name] = !!passed
+	return passed ? 0 : 1
+var/request_checkpoint_mode
+var/list/request_checkpoint_results = list()
 /proc/probe_requests()
 	var/failures = 0
 	var/list/results = list()
-	// Natural requests are separate transitions even when submitted while busy.
+	var/list/assertions = list()
+	// Submit public callers from the real worker checkpoint with its lock held.
 	var/start_clock = clock
 	var/start_season = map.season
-	spawn(0) map.seasons(FALSE, FALSE)
-	sleep(1)
-	if(!map.vars["season_busy"]) failures++
-	for(var/i in 1 to 3)
-		spawn(0) map.seasons(FALSE, FALSE)
-	sleep(1)
+	request_checkpoint_mode = "natural"
+	request_checkpoint_results = list()
+	map.seasons(FALSE, FALSE)
 	probe_wait_idle(map)
-	if(clock != start_clock + 4 || map.season != start_season) failures++
+	failures += probe_request_assert(assertions, "natural_checkpoint_reached", request_checkpoint_results["triggered"] == 1)
+	failures += probe_request_assert(assertions, "natural_owner_busy", request_checkpoint_results["owner_busy"])
+	failures += probe_request_assert(assertions, "natural_three_records_queued", request_checkpoint_results["queue_slots"] == 12)
+	failures += probe_request_assert(assertions, "natural_four_clocks_and_cycle", clock == start_clock + 4 && map.season == start_season)
+	results["natural_checkpoint"] = request_checkpoint_results
 	results["queued_natural_clock_delta"] = clock - start_clock
-	// Two pending forced requests collapse to the last requested decay policy.
+	// Both forced public calls see the same lock; the second replaces the first.
 	start_clock = clock
-	spawn(0) map.seasons(FALSE, FALSE)
-	sleep(1)
-	if(!map.vars["season_busy"]) failures++
-	spawn(0) map.seasons(FALSE, TRUE, TRUE)
-	spawn(0) map.seasons(FALSE, TRUE, FALSE)
-	sleep(1)
+	request_checkpoint_mode = "forced"
+	request_checkpoint_results = list()
+	map.seasons(FALSE, FALSE)
 	probe_wait_idle(map)
-	if(clock != start_clock + 1) failures++
+	failures += probe_request_assert(assertions, "forced_checkpoint_reached", request_checkpoint_results["triggered"] == 1)
+	failures += probe_request_assert(assertions, "forced_owner_busy", request_checkpoint_results["owner_busy"])
+	failures += probe_request_assert(assertions, "forced_latest_record_retained", request_checkpoint_results["latest_record"])
+	failures += probe_request_assert(assertions, "forced_only_natural_clock", clock == start_clock + 1)
+	results["forced_checkpoint"] = request_checkpoint_results
 	results["latest_forced_clock_delta"] = clock - start_clock
 	// Exact default and explicit decay flags under disabled natural seasons.
 	config.seasons_on = FALSE
@@ -40,32 +48,33 @@
 	start_season = map.season
 	map.seasons(FALSE, FALSE)
 	probe_wait_idle(map)
-	if(clock != start_clock || map.season != start_season) failures++
+	failures += probe_request_assert(assertions, "disabled_natural_preserves_clock_and_season", clock == start_clock && map.season == start_season)
 	map.seasons(FALSE, TRUE)
 	probe_wait_idle(map)
-	if(clock != start_clock || map.season == start_season) failures++
+	failures += probe_request_assert(assertions, "forced_default_preserves_decay", clock == start_clock && map.season != start_season)
 	map.seasons(FALSE, TRUE, TRUE)
 	probe_wait_idle(map)
-	if(clock != start_clock + 1) failures++
+	failures += probe_request_assert(assertions, "forced_explicit_advances_decay", clock == start_clock + 1)
 	map.seasons(FALSE, TRUE, FALSE)
 	probe_wait_idle(map)
-	if(clock != start_clock + 1) failures++
+	failures += probe_request_assert(assertions, "forced_explicit_preserves_decay", clock == start_clock + 1)
 	config.seasons_on = TRUE
 	results["disabled_and_admin_flags"] = failures
-	// Every call above was looping=FALSE; no recurring chain may be armed.
-	if(map.vars["season_loop_scheduled"]) failures++
+	failures += probe_request_assert(assertions, "looping_false_has_no_timer", !map.vars["season_loop_scheduled"])
 	results["looping_false_scheduled"] = map.vars["season_loop_scheduled"]
-	// Replacement invalidates an in-progress owner's continuation after its yield.
+	// Replace the global owner from its actual active-worker checkpoint.
 	var/obj/map_metadata/retired = map
-	spawn(0) retired.seasons(FALSE, FALSE)
-	sleep(1)
-	if(!retired.vars["season_busy"]) failures++
-	map = new(locate(1,1,1))
-	retired.Destroy()
+	request_checkpoint_mode = "map_replace"
+	request_checkpoint_results = list()
+	retired.seasons(FALSE, FALSE)
 	probe_wait_idle(retired)
+	failures += probe_request_assert(assertions, "replacement_checkpoint_reached", request_checkpoint_results["triggered"] == 1)
+	failures += probe_request_assert(assertions, "replacement_owner_busy", request_checkpoint_results["owner_busy"])
+	failures += probe_request_assert(assertions, "replacement_owner_invalidated", map != retired && retired.vars["season_retired"])
 	start_clock = clock
 	probe_wait_settled(retired)
-	if(clock != start_clock || retired.vars["season_busy"]) failures++
+	failures += probe_request_assert(assertions, "replacement_clock_stable_and_worker_drained", clock == start_clock && !retired.vars["season_busy"])
+	results["replacement_checkpoint"] = request_checkpoint_results
 	results["map_replacement_clock_stable"] = clock == start_clock
 	var/list/checkpoints = probe_checkpoint_requests()
 	failures += checkpoints["failures"]
@@ -73,6 +82,7 @@
 	var/list/discovery = probe_discovery_sequences()
 	failures += discovery["failures"]
 	results["typed_discovery"] = discovery
+	results["assertions"] = assertions
 	results["failures"] = failures
 	return results
 var/atom/probe_current_candidate
@@ -86,6 +96,23 @@ var/probe_in_delayed = FALSE
 var/list/timer_arms = list()
 var/list/timer_fires = list()
 /proc/probe_checkpoint(obj/map_metadata/M, epoch, work, discovery)
+	if(request_checkpoint_mode && work >= 1)
+		var/mode = request_checkpoint_mode
+		request_checkpoint_mode = null
+		request_checkpoint_results["triggered"] = 1
+		request_checkpoint_results["owner_busy"] = M == map && M.vars["season_busy"] && M.season_worker_valid(epoch)
+		if(mode == "natural")
+			for(var/i in 1 to 3)
+				M.seasons(FALSE, FALSE)
+			request_checkpoint_results["queue_slots"] = M.season_queue.len
+		else if(mode == "forced")
+			M.seasons(FALSE, TRUE, TRUE)
+			M.seasons(FALSE, TRUE, FALSE)
+			request_checkpoint_results["latest_record"] = M.season_queue.len == 4 && M.season_queue[1] == "transition" && M.season_queue[2] == FALSE && M.season_queue[3] == TRUE && M.season_queue[4] == FALSE
+		else if(mode == "map_replace")
+			map = new(locate(1,1,1))
+			M.Destroy()
+		return
 	if(checkpoint_mode == "typed_cancel" && discovery && work >= 64)
 		checkpoint_mode = null
 		checkpoint_seen++

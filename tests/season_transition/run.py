@@ -23,7 +23,7 @@ def extract(text):
     end = text.index('//loads faction-specific recipes', start)
     return text[start:end]
 
-def prepare(repo, mode, size, negative, requests_enabled=False):
+def prepare(repo, mode, size, negative, requests_enabled=False, profile=False):
     def read(path):
         if mode == 'baseline':
             return subprocess.check_output(['git', 'show', BASELINE + ':' + path], cwd=repo, text=True)
@@ -145,6 +145,7 @@ def prepare(repo, mode, size, negative, requests_enabled=False):
 #define CANDIDATE {int(mode == 'candidate')}
 #define OPTRACE {int(size == 'small')}
 #define REQUESTCHECK {int(requests_enabled and mode == 'candidate' and negative == 'none')}
+#define PROFILECHECK {int(profile)}
 #define CRASH(message) throw new /exception(message)
 #include "probe.dm"
 #include "production.dm"
@@ -159,11 +160,14 @@ def main():
     parser.add_argument('--output', type=Path)
     parser.add_argument('--mode', choices=('candidate', 'baseline'), default='candidate')
     parser.add_argument('--requests', action='store_true', help='Run additional candidate request scenarios separately from comparable parity benchmarks')
+    parser.add_argument('--profile', action='store_true', help='Retain native proc profiling for the four parity cycles; compare only with equally profiled evidence')
     parser.add_argument('--size', choices=('small', 'largest'), default='small')
     parser.add_argument('--negative-control', choices=('none', 'yield', 'clock'), default='none')
     args = parser.parse_args()
     repo = Path(__file__).resolve().parents[2]
-    files, metadata = prepare(repo, args.mode, args.size, args.negative_control, args.requests)
+    files, metadata = prepare(repo, args.mode, args.size, args.negative_control, args.requests, args.profile)
+    metadata['profiling_enabled'] = args.profile
+    metadata['profiling_scope'] = 'Four parity cycles including worker/phase waits, heartbeat and terrain snapshots; excludes setup, identity checks, service witness and request scenarios' if args.profile else None
     metadata['head_sha'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip()
     metadata['dirty_patch_sha256'] = hashlib.sha256(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=repo)).hexdigest()
     if args.prepare_only:
@@ -197,9 +201,15 @@ def main():
         returncode, stdout, stderr, telemetry = run_native([str(daemon), 'probe.dmb'] + (['-invisible'] if os.name == 'nt' else []) + ['-close', '-safe', '-log', 'runtime.log'], root, flags, 900)
         log = (root / 'runtime.log').read_text(errors='replace') + (stdout + stderr).decode(errors='replace')
         (logs / 'runtime.log').write_text(log)
-        if returncode or re.search(r'runtime error|Bad ref|Bad loc|Cannot read null|Cannot execute null|PORT_OPEN|ASSERTION', log, re.I):
+        if returncode or re.search(r'runtime error|Bad ref|Bad loc|Cannot read null|Cannot execute null|Infinite loop suspected|switching proc to background|PORT_OPEN|ASSERTION', log, re.I):
             raise SystemExit(log)
         result = json.loads((root / 'result.json').read_text())
+        if args.profile:
+            profile_text = (root / 'profile.json').read_text()
+            profile_data = json.loads(profile_text)
+            assert isinstance(profile_data, (dict, list)) and profile_data, 'Native proc profile is empty'
+            (logs / 'profile.json').write_text(profile_text)
+            metadata['profiling_artifact'] = str(logs / 'profile.json')
         result.update(metadata, elapsed_seconds=time.monotonic() - start, **telemetry)
         args.output.write_text(json.dumps(result, indent=2))
         assert result['cycles'] == 4 and result['distractors'] == 20080

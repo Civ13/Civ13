@@ -201,6 +201,9 @@ var/measure_gap = FALSE
 	new /obj/item/weapon/snowwall(locate(6,6,1))
 	spawn(0) heartbeat()
 	var/list/samples = list()
+#if PROFILECHECK
+	world.Profile(PROFILE_RESTART)
+#endif
 	for(var/cycle in 1 to 4)
 		while(!heartbeat_ready) sleep(1)
 		sleep(1)
@@ -216,6 +219,14 @@ var/measure_gap = FALSE
 		var/all_phase_ticks = world.time - start
 		measure_gap = FALSE
 		samples += list(list("cycle"=cycle, "season"=map.season, "elapsed_ticks"=work_ticks, "all_phase_completion_ticks"=all_phase_ticks, "terrain_md5"=snapshot(), "rng_calls"=rng_index, "clock"=clock))
+#if PROFILECHECK
+	var/proc_profile_json = world.Profile(PROFILE_STOP, "json")
+	if(!istext(proc_profile_json) || !length(proc_profile_json))
+		world.log << "ASSERTION: native proc profile missing"
+		del(world)
+		return
+	text2file(proc_profile_json, "profile.json")
+#endif
 	var/identity_failures = 0
 	for(var/i in 1 to owned.len)
 		var/atom/movable/A = owned[i]
