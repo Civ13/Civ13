@@ -33,14 +33,22 @@ def prepare(repo, mode, size, negative, requests_enabled=False):
     helper = re.search(r'^/proc/get_area_turfs\([\s\S]*?(?=^/proc/pick_area_turf)', read(HELPER), re.M).group()
     originals = seasons + helper
     asia = ''
+    constructors = ''
     if mode == 'candidate':
         asia_source = (repo / 'code/game/objects/map_metadata/nomads/nomads_asia.dm').read_text()
         asia = asia_source[asia_source.index('/obj/map_metadata/nomads/asia/season_transition_complete('):]
         originals += asia
+        if requests_enabled:
+            for filename, typename in [('nomads.dm', 'nomads'), ('nomads_continental.dm', 'nomads/continental')]:
+                text = (repo / 'code/game/objects/map_metadata/nomads' / filename).read_text()
+                signature = '/obj/map_metadata/' + typename + '/New()'
+                block = re.search(re.escape(signature) + r'[^\n]*\n[\s\S]*?(?=^/obj/|\Z)', text, re.M).group()
+                constructors += block
+            originals += constructors
     seasons = re.sub(r'(^/obj/map_metadata/proc/season_work_pause[^\n]*\n)', r'\1\tprobe_checkpoint(src, epoch, work, discovery)\n', seasons, flags=re.M)
     seasons = seasons.replace('call(src, kind)(value)', 'probe_delayed_call(src, kind, value)')
     seasons = re.sub(r'^(\t*)spawn\(18000\)\n', lambda m: m[1] + 'probe_timer_armed(src, 18000)\n' + m[0] + m[1] + '\tprobe_timer_fired(src)\n', seasons, flags=re.M)
-    helper = re.sub(r'^(\s*)turfs \+= T$', lambda m: m[0] + '\n' + m[1] + 'probe_helper_peak_slots = max(probe_helper_peak_slots, turfs.len)', helper, flags=re.M)
+    helper = re.sub(r'^(\t+)return turfs$', lambda m: m[1] + 'probe_helper_peak_slots = max(probe_helper_peak_slots, turfs.len)\n' + m[0], helper, flags=re.M)
     # Only generated sources use deterministic RNG and accelerated delayed effects.
     seasons = re.sub(r'\bprob\(', 'probe_prob(', seasons)
     seasons = re.sub(r'spawn\((\d+)\)', lambda m: 'spawn(' + str(30 + int(m[1]) // 100) + ')', seasons)
@@ -61,10 +69,10 @@ def prepare(repo, mode, size, negative, requests_enabled=False):
     paths = set(re.findall(r'/(?:turf|area|obj)/[A-Za-z_][A-Za-z_0-9/]*', originals))
     callable_paths = set(re.findall(r'^(/obj/[A-Za-z_][A-Za-z_0-9/]*)\(', originals, re.M))
     paths = {p for p in paths if not p.startswith('/obj/map_metadata/proc/') and p not in callable_paths}
-    types = '\n'.join(sorted(paths)) + '\n/obj/map_metadata/nomads/asia\n'
+    types = '\n'.join(sorted(paths)) + '\n/obj/map_metadata/nomads/asia\n/obj/map_metadata/nomads/continental\n'
     # Extract production phase state declarations, never guess runtime defaults.
     declarations = '\n'.join(line for line in meta.splitlines() if re.match(r'\tvar/(?:tmp/)?(?:list/)?season_', line))
-    production = types + '\n/obj/map_metadata\n' + declarations + '\n' + seasons + helper + asia
+    production = types + '\n/obj/map_metadata\n' + declarations + '\n' + seasons + helper + asia + constructors
     production += (repo / 'code/_helpers/functional.dm').read_text()
     probe = Path(__file__).with_name('probe.dm').read_text()
     requests = Path(__file__).with_name('requests.dm').read_text()
@@ -126,7 +134,7 @@ def main():
             raise SystemExit(buildlog)
         start = time.monotonic()
         from telemetry import run_native
-        returncode, stdout, stderr, telemetry = run_native([str(daemon), 'probe.dmb', '-close', '-safe', '-log', 'runtime.log'], root, flags, 600)
+        returncode, stdout, stderr, telemetry = run_native([str(daemon), 'probe.dmb'] + (['-invisible'] if os.name == 'nt' else []) + ['-close', '-safe', '-log', 'runtime.log'], root, flags, 600)
         log = (root / 'runtime.log').read_text(errors='replace') + (stdout + stderr).decode(errors='replace')
         (logs / 'runtime.log').write_text(log)
         if returncode or re.search(r'runtime error|Bad ref|Bad loc|Cannot read null|Cannot execute null|PORT_OPEN|ASSERTION', log, re.I):

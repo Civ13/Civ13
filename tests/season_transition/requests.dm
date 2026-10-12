@@ -108,6 +108,7 @@ var/list/timer_fires = list()
 /proc/probe_timer_armed(obj/map_metadata/M, delay)
 	timer_arms += list(list("owner"="\ref[M]", "time"=world.time, "original_delay"=delay))
 /proc/probe_timer_fired(obj/map_metadata/M)
+	if(M != map || M.vars["season_retired"]) return
 	timer_fires += list(list("owner"="\ref[M]", "time"=world.time))
 /proc/probe_checkpoint_requests()
 	var/failures = 0
@@ -161,7 +162,35 @@ var/list/timer_fires = list()
 	map.seasons(FALSE, FALSE)
 	probe_wait_idle(map)
 	if(!istype(locate(1,1,1), /turf/floor/beach/water/flooded)) failures++
+	// Disabled base transitions still invoke Asia's original flood completion work.
+	config.seasons_on = FALSE
+	var/asia_clock = clock
+	map.season = "SUMMER"
+	new /turf/floor/beach/water/flooded(locate(1,1,1))
+	map.seasons(FALSE, FALSE)
+	probe_wait_idle(map)
+	if(!istype(locate(1,1,1), /turf/floor/dirt/flooded) || clock != asia_clock) failures++
+	map.season = "WINTER"
+	map.seasons(FALSE, FALSE)
+	probe_wait_idle(map)
+	if(!istype(locate(1,1,1), /turf/floor/beach/water/flooded) || clock != asia_clock) failures++
+	config.seasons_on = TRUE
 	checkpoints["asia_flood_hook"] = failures
+	// Actual inherited constructors must share a single bootstrap timer.
+	for(var/map_type in list(/obj/map_metadata/nomads, /obj/map_metadata/nomads/continental))
+		config.seasons_on = FALSE
+		timer_arms.Cut()
+		timer_fires.Cut()
+		map = new map_type(locate(1,1,1))
+		if(timer_arms.len != 1 || !map.vars["season_loop_scheduled"]) failures++
+		map.season_schedule_loop()
+		map.seasons(TRUE, FALSE)
+		if(timer_arms.len != 1) failures++
+		sleep(212)
+		if(timer_fires.len != 1 || timer_arms.len != 2) failures++
+		checkpoints["bootstrap:[map_type]"] = list("arms"=timer_arms.len, "fires"=timer_fires.len)
+		map.Destroy()
+	config.seasons_on = TRUE
 	// Disabled natural transitions isolate exact recurring timer ownership/cadence.
 	map = new(locate(1,1,1))
 	config.seasons_on = FALSE

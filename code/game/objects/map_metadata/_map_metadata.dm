@@ -1506,7 +1506,6 @@ var/civmax_research = list(230,230,230)
 /obj/map_metadata/proc/season_phase_7(var/epoch)
 	if (!season_worker_valid(epoch))
 		return
-	var/season_work = 0
 	change_weather(WEATHER_WET)
 
 /obj/map_metadata/proc/season_phase_8(var/epoch)

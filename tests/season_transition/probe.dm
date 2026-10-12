@@ -25,6 +25,9 @@ var/measure_gap = FALSE
 		return
 /obj/map_metadata
 	var/season = "FALL"
+	New()
+		..()
+		map = src
 	proc/change_weather_somehow()
 		events += "weather_somehow:[season]"
 	proc/change_weather(value)
@@ -59,6 +62,8 @@ var/measure_gap = FALSE
 /proc/get_area(atom/A)
 	while(A && !isarea(A)) A = A.loc
 	return A
+/proc/safepick(list/L)
+	return L && L.len ? L[1] : null
 /proc/qdel(atom/A)
 	del(A)
 /proc/probe_pause(delay)

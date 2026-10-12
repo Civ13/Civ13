@@ -48,10 +48,12 @@ synthetic fixture and cannot establish full-server performance or memory improve
 Adversarial requests cover preservation of concurrent natural requests, latest
 pending forced decay flags, config-disabled/default/explicit admin decay flags,
 looping FALSE, exact original 18000 timer delay and accelerated timer recurrence,
-map replacement and Destroy cancellation. Forced requests trigger deterministically
+map replacement and Destroy cancellation. Actual Nomads and Continental constructors
+share the guarded bootstrap timer, including additional looping requests. Forced requests trigger deterministically
 at production discovery, mutation and delayed-callback checkpoints. A turf replaced
 after its real mutation pause must retain its unrelated subtype. The actual extracted
-Asia hook checks both wet/dry flood transitions at z=1. Positive pause calls are
+Asia hook checks both wet/dry flood transitions at z=1 with enabled and disabled
+natural seasons, preserving disabled-mode season and decay clocks. Positive pause calls are
 observed in generated source; the yield control changes their delay to zero and must
 be detected specifically. The clock control removes committed decay advancement and
 must be detected specifically. Neither compiler/runtime failures nor unrelated
