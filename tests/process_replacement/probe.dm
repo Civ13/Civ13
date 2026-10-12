@@ -1,5 +1,6 @@
 #define TRUE 1
 #define FALSE 0
+#define SECOND * 10
 #define SECONDS * 10
 #define GAME_STATE_PREGAME 1
 #define GAME_STATE_SETTING_UP 2
