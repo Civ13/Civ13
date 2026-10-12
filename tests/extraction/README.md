@@ -118,6 +118,14 @@ altered offers cannot issue claims. Insured gear and its outer containers bypass
 ordinary loot expiry until the finite thirty-minute district closes. Human bodies
 use the merged bounded corpse lifecycle and release their actual gear.
 
+The mode fixture runs actual human death with a worn backpack containing an
+insured pistol and real magazine. Accelerated scalar age runs production corpse
+retirement and later bones expiry, preserving the original nested gear before
+round-end insurance returns one damaged gun and denies delivery replay.
+`--probe mode --corpse-release-negative-control` omits the production root drop
+in a generated source copy and must fail that integrated assertion. This is
+native isolated evidence, not connected-client or elapsed-hours acceptance.
+
 The internal return consumer journals its plan before retiring physical roots,
 records retirement before applying account projections, and delivers surviving
 insured reusable equipment into a bounded account mailbox. Current condition and

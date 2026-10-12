@@ -111,6 +111,7 @@ jobs:
           /usr/bin/python3 tests/extraction/test_map_environment.py
           /usr/bin/python3 tests/extraction/check_catalog.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --corpse-release-negative-control
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --economic-payment-negative-control
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --room-payment-negative-control
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --supply-negative-control

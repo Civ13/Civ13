@@ -23,7 +23,10 @@ def main():
     parser.add_argument('--city-presence-negative-control', action='store_true')
     parser.add_argument('--economic-payment-negative-control', action='store_true')
     parser.add_argument('--room-payment-negative-control', action='store_true')
+    parser.add_argument('--corpse-release-negative-control', action='store_true')
     args = parser.parse_args()
+    if args.corpse_release_negative_control and (args.probe != 'mode' or any(value for key, value in vars(args).items() if key.endswith('negative_control') and key != 'corpse_release_negative_control')):
+        parser.error('Corpse release control requires the mode probe without another mutation')
     if args.room_payment_negative_control and (args.probe != 'equipment' or args.economic_payment_negative_control):
         parser.error('Room payment control requires the equipment probe without the economic payment control')
     if args.economic_payment_negative_control and args.probe != 'equipment':
@@ -50,7 +53,7 @@ def main():
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     if args.probe in ('equipment', 'mode', 'city', 'insurance', 'groups', 'vehicles'):
-        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control, args.room_payment_negative_control)
+        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control, args.room_payment_negative_control, args.corpse_release_negative_control)
     with tempfile.TemporaryDirectory(prefix='civ13-extraction-') as temp:
         target = Path(temp)
         (target / 'tests/extraction').mkdir(parents=True)
@@ -80,11 +83,20 @@ def main():
                 raise RuntimeError('Account journal verification failed')
 
 
-def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False, room_payment_control=False):
+def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False, room_payment_control=False, corpse_release_control=False):
     prefix = '.extraction_' + uuid.uuid4().hex
     generated = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '.dmb', '.rsc')]
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
+        if corpse_release_control:
+            corpse_source = (root / 'code/processes/human_corpse_decay.dm').read_text(encoding='utf-8')
+            marker = '\t\tdrop_from_inventory(I, site)'
+            if corpse_source.count(marker) != 1:
+                raise RuntimeError('Corpse release mutation marker changed')
+            control = root / (prefix + '_corpse_decay.dm')
+            generated.append(control)
+            control.write_text(corpse_source.replace(marker, '\t\t// Negative control: retain worn root on body'), encoding='utf-8')
+            source = source.replace('code\\processes\\human_corpse_decay.dm', control.name)
         expected_vote_failure = None
         expected_group_failure = None
         if room_payment_control:
@@ -264,6 +276,13 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
                 log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''
                 print(result)
+                if corpse_release_control:
+                    expected = 'bones transition releases original nested insured equipment with stable identity and condition'
+                    if ran.returncode or not result.startswith('FAIL:') or expected not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
+                        print(log)
+                        raise RuntimeError('Corpse release control failed outside its intended assertion')
+                    print('PASS: omitted corpse gear release rejected by integrated death/insurance assertion')
+                    return
                 if room_payment_control:
                     if ran.returncode or not result.startswith('FAIL:') or 'native upgrade consumes exactly five roots and preserves unrelated wallet' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
                         print(log)

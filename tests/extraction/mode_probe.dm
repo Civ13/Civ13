@@ -289,6 +289,7 @@
 	var/obj/item/weapon/gun/projectile/pistol/m9beretta/G
 	for (var/obj/item/weapon/gun/projectile/pistol/m9beretta/I in M.home_roots(S)) G = I
 	G.forceMove(H)
+	G.ammo_magazine = new /obj/item/ammo_magazine/m9beretta(G)
 	for (var/i in 1 to 4) new /obj/item/extraction_salvage(get_turf(S.house))
 	equipment_assert(M.save_home(S), "round fixture funds premium with obtainable workshop parts")
 	var/list/offer = M.returns.quote(S, list(G.extraction_item_id), M.round_id)
@@ -307,9 +308,29 @@
 	M.raid_items[G] = world.time - 1
 	M.tick()
 	equipment_assert(bag.loc && G.loc == bag && G.health == 54, "ordinary expiry preserves insured child and uninsured outer container until bounded closure")
-	H.stat = DEAD
+	// Actual worn root and nested equipment cross death and corpse retirement.
+	var/token = G.extraction_insurance_token
+	var/magazine_id = G.ammo_magazine.extraction_item_id
+	bag.forceMove(H)
+	H.back = bag
+	H.death()
+	equipment_assert(H.stat == DEAD && bag.loc == H && G.loc == bag, "native death leaves actual worn nested gear on the body")
 	M.tick()
 	equipment_assert(H.corpse_decay_record && !H.extraction_session, "insured death releases account through integrated corpse lifecycle")
+	var/turf/death_site = get_turf(H)
+	// Accelerated age only; production retirement, drop callbacks and bones run.
+	H.corpse_decay_age = ABANDONED_ITEM_LIFETIME
+	H.corpse_decay_seasons = ABANDONED_ITEM_SEASON_LIFETIME
+	H.corpse_decay_record.check(world.time)
+	var/obj/structure/religious/remains/decaying/bones = locate() in death_site
+	equipment_assert((!H || !H.loc) && bones && bag.loc == death_site && G.loc == bag && G.extraction_item_id == id && G.extraction_insurance_token == token && G.ammo_magazine.extraction_item_id == magazine_id && G.health == 54, "bones transition releases original nested insured equipment with stable identity and condition")
+	var/bones_count = 0
+	for (var/obj/structure/religious/remains/decaying/B in death_site) bones_count++
+	equipment_assert(bones_count == 1, "one dead body produces one bones root")
+	bones.corpse_decay_age = ABANDONED_ITEM_LIFETIME
+	bones.corpse_decay_seasons = ABANDONED_ITEM_SEASON_LIFETIME
+	bones.corpse_decay_record.check(world.time)
+	equipment_assert((!bones || !bones.loc) && bag.loc == death_site && G.loc == bag, "later bones expiry preserves useful actual gear for insurance reconciliation")
 	var/mob/living/human/stranded = new(locate(3,3,1))
 	stranded.m_intent = "stealth"
 	M.test_owners[stranded] = "strandedowner"
