@@ -21,9 +21,12 @@ a replacement automatically on login, reload, transfer or extraction.
 Copying a valid key requires physical vehicle access, the current matching key,
 an advanced locksmith tool, a reachable powered workshop and paid blank/materials.
 Copying preserves generation. Losing all keys requires a separate costly rekey
-operation at the actual vehicle, with explicit ownership authorization recorded
-by the authoritative service. Mere proximity or an account-name guess is not
-ownership. Provide a reachable ordinary construction/workshop progression path
+operation based on physical custody, not original-account entitlement. The car
+must be physically secured at a powered, equipped workshop, stopped and
+unoccupied, with an adjacent operator holding the required tools and materials.
+Traded, recovered and stolen cars may undergo this expensive service. Mere
+proximity outside the secured service bay grants no recovery authority. Provide
+a reachable ordinary construction/workshop progression path
 so recovery never requires starting the inaccessible vehicle.
 
 Rekeying requires a stopped, unoccupied vehicle, advanced tools, workshop power,
@@ -39,12 +42,20 @@ generation and issues the new actual key. All old keys then fail immediately.
 Do not destroy or edit remote old-key objects; generation comparison invalidates
 them without a world scan. Journal ambiguous completion and block vehicle access
 until reconciliation rather than replaying payment or issuing another key.
-Notify the actor that all previous copies are invalid. Bound generations and
+Notify nearby players before service and the actor on completion that previous
+copies are invalid. No remote or Discord recovery bypass is permitted. The audit
+event records operator, service, vehicle ID, old/new generation and costs, not
+permanent account ownership. Bound generations and
 refuse overflow before payment. No perpetual per-key timers or global key scans.
 
 Before shared edits, agree authority placement with the existing extraction
 vehicle codec, account/custody journal and ordinary native saver. The container
 key presentation catalog remains separately owned by the mall worker.
+
+Create a new keyed vehicle ID only at successful paid construction. Constructors,
+loaders and reconnect paths must not mint one. Existing legacy cars retain their
+explicit legacy policy until a separately defined migration; they must not gain
+free replacement identities or keys by passing through the extraction codec.
 
 Acceptance needs wrong-vehicle/generation/generic-key ignition and lock rejection;
 valid copies; copy/rekey/drive races; cancellation/death/movement/tool removal;
