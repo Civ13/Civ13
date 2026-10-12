@@ -59,7 +59,8 @@ var/replacements = 0
 	var/area/desert/D = new
 	area_list = list(J, D, F)
 	for(var/turf/T in world)
-		T.loc = T.x % 3 ? F : (T.x % 2 ? J : D)
+		var/area/target_area = T.x % 3 ? F : (T.x % 2 ? J : D)
+		target_area.contents += T
 		if(!((T.x + T.y) % 8))
 			if(T.x % 2) new /turf/dirt/jungle(T)
 			else new /turf/dirt/winter(T)
