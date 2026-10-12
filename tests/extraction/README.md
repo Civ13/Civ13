@@ -291,6 +291,18 @@ and accelerated waits, and remove credential-bearing frames. Review the exported
 video for legibility and behavior separately from bundle metadata validation.
 An unshown route remains pending; failed runtime diagnostics invalidate its run.
 
+Vehicle deployment is allowlisted to Industrial Extraction and Modern City
+Extraction. Alleyway and Bank Robbery do not support the extraction vehicle
+lifecycle. Solo deployment and group selection, readiness and deployment reject
+unsupported missions before saving or debiting profiles or moving original cars
+and riders. The vehicle and group fixtures include unchanged-state assertions
+for this boundary; these new assertions await the next exclusive native slot.
+
+The dealer's 25-salvage purchase is separate from the required player construction
+feature. Construction from actual components, reachable workshop power and
+progression prerequisites, and durable interrupted-build recovery remain pending.
+Dealer purchase evidence must not be reported as component construction evidence.
+
 The mode fixture also assembles a real car and checks the internal physical
 transfer helper: moving/stale vehicles, unexpected footprint/nested cargo and occupied bays
 are rejected before relocation; original parts, fuel, wall condition and

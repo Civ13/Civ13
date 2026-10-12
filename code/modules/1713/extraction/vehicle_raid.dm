@@ -57,7 +57,12 @@
 	candidate["vehicle_returned"] = list("id" = vehicle["id"], "sequence" = sequence)
 	return commit(candidate)
 
+/obj/map_metadata/extraction_survival/proc/vehicle_mission_supported()
+	// Allowlisted lifecycle maps still require a clear footprint at deployment.
+	return ID in list(MAP_EXTRACTION_SURVIVAL, MAP_EXTRACTION_CITY)
+
 /obj/map_metadata/extraction_survival/proc/vehicle_raid_destination(datum/extraction_vehicle_transfer/T)
+	if (!vehicle_mission_supported()) return null
 	// Search a bounded radius around existing entry points, preserving map atoms.
 	for (var/obj/effect/extraction_raid_marker/marker in extraction_raid_markers)
 		for (var/turf/F in range(4, marker))
@@ -80,7 +85,7 @@
 	return nearest
 
 /obj/map_metadata/extraction_survival/proc/deploy_vehicle(mob/living/human/H)
-	if (!owned(H) || H.stat != CONSCIOUS || raid_vehicles.len >= 32) return FALSE
+	if (!vehicle_mission_supported() || !owned(H) || H.stat != CONSCIOUS || raid_vehicles.len >= 32) return FALSE
 	var/datum/extraction_session/S = H.extraction_session
 	if (S.transitioning || S.profile["state"] != "home" || !S.house || H.z != S.house.z || get_dist(H, S.house) > 4 || !save_home(S)) return FALSE
 	var/obj/structure/vehicleparts/axis/A = S.garage_vehicle

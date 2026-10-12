@@ -130,6 +130,14 @@
 	equipment_assert(M.release(bodies[3]:extraction_session), "excess rider leaves without debit")
 	qdel(bodies[3])
 	equipment_assert(M.ready_party(driver) && M.ready_party(passenger), "remaining riders consent again after membership change")
+	var/supported_map_id = M.ID
+	var/unsupported_driver_snapshot = json_encode(S.profile)
+	var/unsupported_passenger_snapshot = json_encode(passenger.extraction_session.profile)
+	var/unsupported_ready_snapshot = json_encode(P.ready)
+	M.ID = MAP_ALLEYWAY
+	equipment_assert(!M.select_party_vehicle(driver) && !M.ready_party(driver, TRUE) && !M.deploy_party(driver), "unsupported mission rejects car selection, readiness and deployment")
+	equipment_assert(json_encode(S.profile) == unsupported_driver_snapshot && json_encode(passenger.extraction_session.profile) == unsupported_passenger_snapshot && json_encode(P.ready) == unsupported_ready_snapshot && S.garage_vehicle == A && driver.z == 2 && passenger.z == 2, "unsupported group mission preserves profiles, readiness, original car and riders")
+	M.ID = supported_map_id
 	frame.w_front[5]--
 	equipment_assert(!M.deploy_party(driver) && S.profile["garage"].len == 1 && passenger.extraction_session.profile["state"] == "home", "changed actual car invalidates all readiness before debit")
 	equipment_assert(M.select_party_vehicle(driver) && !P.ready.len && M.ready_party(driver) && M.ready_party(passenger), "updated selected car requires every rider to ready again")

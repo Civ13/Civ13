@@ -71,7 +71,7 @@
 	proc/confirm_party_vehicle(mob/living/human/H, datum/extraction_party/P)
 		return WWinput(H, "Ride in [P.leader]'s selected car when this group deploys? Your loadout and any authorized premium still come from your own account.", "Group car", "Decline", list("Ride", "Decline")) == "Ride"
 	proc/select_party_vehicle(mob/living/human/H)
-		if (!group_eligible(H)) return FALSE
+		if (!vehicle_mission_supported() || !group_eligible(H)) return FALSE
 		var/datum/extraction_session/S = H.extraction_session
 		var/datum/extraction_party/P = party_by_owner[S.owner]
 		if (!party_current(P) || P.leader != S.owner || P.faction != "PMC" || !save_home(S) || !S.garage_vehicle || S.profile["garage"].len != 1) return FALSE
@@ -83,7 +83,7 @@
 		if (!group_eligible(H)) return FALSE
 		var/datum/extraction_session/S = H.extraction_session
 		var/datum/extraction_party/P = party_by_owner[S.owner]
-		if (!party_current(P) || !save_home(S)) return FALSE
+		if (!party_current(P) || (P.vehicle_id && !vehicle_mission_supported()) || !save_home(S)) return FALSE
 		var/list/carried = player_roots(H)
 		var/list/graphs = records(carried)
 		if (!graphs || carried.len > 16) return FALSE
@@ -92,12 +92,14 @@
 		if (P.vehicle_id)
 			var/version = P.version
 			if (!confirm_party_vehicle(H, P)) return FALSE
+			if (!vehicle_mission_supported()) return FALSE
 			if (!party_current(P) || P.version != version || party_by_owner[S.owner] != P || !group_eligible(H) || json_encode(records(player_roots(H))) != json_encode(graphs) || json_encode(records(home_roots(S))) != json_encode(S.profile["stash"])) return FALSE
 		var/list/offer
 		if (insured)
 			offer = returns.quote(S, ids, round_id)
 			var/version = P.version
 			if (!offer || !confirm_party_insurance(H, offer)) return FALSE
+			if (P.vehicle_id && !vehicle_mission_supported()) return FALSE
 			if (!party_current(P) || P.version != version || party_by_owner[S.owner] != P || !group_eligible(H) || json_encode(returns.quote(S, ids, round_id)) != json_encode(offer) || json_encode(records(player_roots(H))) != json_encode(graphs) || json_encode(records(home_roots(S))) != json_encode(S.profile["stash"])) return FALSE
 		P.ready[S.owner] = list("version" = P.version, "revision" = S.profile["revision"], "profile_digest" = md5(json_encode(S.profile)), "carried_digest" = md5(json_encode(graphs)), "selected" = ids, "insurance" = offer, "vehicle_id" = P.vehicle_id, "vehicle_digest" = P.vehicle_digest)
 		to_chat(H, "Group loadout ready. Changing equipment or saving your stash requires readying again.")
@@ -106,6 +108,7 @@
 		if (!group_eligible(leader) || !extraction_raid_markers.len) return FALSE
 		var/datum/extraction_party/P = party_by_owner[leader.extraction_session.owner]
 		if (!party_current(P) || P.leader != leader.extraction_session.owner || P.members.len < 2 || P.members.len > 4) return FALSE
+		if (P.vehicle_id && !vehicle_mission_supported()) return FALSE
 		var/list/parts = list()
 		var/list/bodies = list()
 		var/list/carried_sets = list()

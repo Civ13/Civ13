@@ -199,6 +199,12 @@
 	carried_part.extraction_found_in_raid = TRUE
 	equipment_assert(M.save_home(buyer_session), "vehicle fixture checkpoints carried loadout and boot cargo before quote")
 	var/list/stored_vehicle = buyer_session.profile["garage"][1]
+	var/supported_map_id = M.ID
+	var/unsupported_snapshot = json_encode(buyer_session.profile)
+	var/turf/home_car_turf = get_turf(deployed_car)
+	M.ID = MAP_ALLEYWAY
+	equipment_assert(!M.deploy_vehicle(buyer) && json_encode(buyer_session.profile) == unsupported_snapshot && get_turf(deployed_car) == home_car_turf && buyer_session.garage_vehicle == deployed_car && !buyer_session.raid_vehicle, "unsupported mission rejects solo car before saving, debit or movement")
+	M.ID = supported_map_id
 	equipment_assert(!buyer_session.plan_vehicle_raid(list(), buyer_session.profile["revision"] - 1, stored_vehicle["id"], md5(json_encode(stored_vehicle))), "stale vehicle deployment quote cannot debit garage")
 	deployed_car.engine.on = TRUE
 	equipment_assert(!M.deploy_vehicle(buyer) && buyer_session.profile["state"] == "home" && buyer_session.profile["garage"].len == 1, "running engine rejects deployment without garage debit")
