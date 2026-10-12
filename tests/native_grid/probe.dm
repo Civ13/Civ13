@@ -9,6 +9,8 @@ world
 	var/obj/structure/cable/powersource
 /datum/proc/persistence_runtime_var(key)
 	return FALSE
+/obj/item/connector/proc/forget_cable(obj/structure/cable/C)
+	return
 /atom/movable/proc/forceMove(atom/destination, special_event)
 	loc = destination
 	return TRUE

@@ -215,6 +215,7 @@ jobs:
           git fetch --no-tags --depth=1 origin aa675de6dbade0f3740c516dc4b5945c5c9a43c7
           pwsh -NoProfile -File tests/native_grid/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
           pwsh -NoProfile -File tests/native_grid/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Baseline
+          pwsh -NoProfile -File tests/native_grid/run-game.ps1 -ByondBin "$PWD/BYOND/byond/bin"
 
       - name: Run isolated resource extraction regressions
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/automated_sifting') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/hydraulic_fracturing') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/mining_yields') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/petroleum_lifecycle') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/resource_extraction')

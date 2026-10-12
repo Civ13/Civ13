@@ -114,6 +114,15 @@ By design, d1 is the smallest direction and d2 is the highest
 		disconnect()
 	return ..()									// then go ahead and delete the cable
 
+/obj/structure/cable/Del()
+	disconnect()
+	..()
+
+/obj/structure/cable/examine(mob/user)
+	. = ..()
+	rebuild_supply()
+	to_chat(user, "Supply capacity: [powerflow]. Reserved demand: [currentflow]. Connected cables: [component_size].")
+
 
 ///////////////////////////////////
 // General procedures
@@ -130,9 +139,17 @@ By design, d1 is the smallest direction and d2 is the highest
 //
 /obj/structure/cable/attackby(obj/item/W, mob/user, params)
 	if(istype(W, /obj/item/weapon/wirecutters))
+		var/mob/living/human/H = user
+		if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || !H.item_is_in_hands(W) || get_dist(H, src) > 1 || !isturf(loc))
+			return
 		user.visible_message("[user] cuts the cable.", "<span class='notice'>You cut the cable.</span>")
 		playsound(loc, usesound, 100, FALSE)
-		Destroy()
+		var/obj/item/stack/cable_coil/salvage = new(loc)
+		salvage.amount = 1
+		salvage.cable_color = cable_color
+		salvage.color = color
+		salvage.update_icon()
+		qdel(src)
 		return
 /*
 	else if(W.tool_behaviour == TOOL_MULTITOOL)
@@ -206,6 +223,9 @@ var/global/cable_identity_sequence = 0
 			var/obj/structure/cable/CB = OB
 			CB.connections -= src
 		else
+			if (istype(OB, /obj/item/connector))
+				var/obj/item/connector/J = OB
+				J.forget_cable(src)
 			if (OB.powersource == src)
 				OB.powersource = null
 				OB.powered = FALSE

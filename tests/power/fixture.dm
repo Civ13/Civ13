@@ -9,6 +9,12 @@ world
 	var/obj/structure/cable/powersource
 /datum/proc/persistence_runtime_var(key)
 	return FALSE
+/obj/item/connector/proc/forget_cable(obj/structure/cable/C)
+	return
+/atom/proc/examine(mob/user)
+	return
+/proc/to_chat(mob/user, message)
+	return
 /obj/structure/engine
 	var/list/connections = list()
 	var/currentspeed = 0
@@ -34,6 +40,8 @@ world
 	if (!passed)
 		failures++
 var/failures = 0
+/world/OpenPort(port)
+	return port == "none" ? ..() : FALSE
 /world/New()
 	world.OpenPort("none")
 	var/obj/structure/cable/A = new(locate(1,1,1))
