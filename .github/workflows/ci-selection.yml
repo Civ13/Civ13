@@ -11,6 +11,8 @@ on:
     outputs:
       extensive:
         value: ${{ jobs.changes.outputs.extensive }}
+      new_tests:
+        value: ${{ jobs.changes.outputs.new_tests }}
       game:
         value: ${{ jobs.changes.outputs.game }}
 permissions:
@@ -21,14 +23,13 @@ jobs:
     outputs:
       extensive: ${{ steps.select.outputs.extensive }}
       game: ${{ steps.select.outputs.game }}
+      new_tests: ${{ steps.select.outputs.new_tests }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
-      - name: Selection regression tests
-        run: python3 -m unittest discover -s tests -p test_ci_selection.py -v
       - id: select
         env:
           EVENT_NAME: ${{ github.event_name }}
@@ -36,6 +37,9 @@ jobs:
           BASE_REF: ${{ inputs.base }}
           HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python3 scripts/select-ci.py --base "$BASE_REF" --head "$HEAD_REF" --output "$GITHUB_OUTPUT" --event "$EVENT_NAME" --extensive "$EXTENSIVE"
+      - name: Selection regression tests
+        if: steps.select.outputs.extensive == 'true' || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_regression_policy.py') || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_selection.py')
+        run: python3 -m unittest discover -s tests -p 'test_ci*.py' -v
       - name: Validate all workflow syntax
         run: |
           curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz -o "$RUNNER_TEMP/actionlint.tar.gz"

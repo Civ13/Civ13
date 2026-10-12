@@ -8,7 +8,12 @@ on:
 permissions:
   contents: read
 jobs:
+  changes:
+    uses: ./.github/workflows/ci-selection.yml
+    with:
+      base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
   changelog-contracts:
+    needs: changes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -17,7 +22,8 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '24'
-      - run: node --test tools/changelog/*.test.mjs
+      - if: github.event_name == 'workflow_dispatch' || contains(fromJSON(needs.changes.outputs.new_tests), 'tools/changelog')
+        run: node --test tools/changelog/*.test.mjs
       - run: node tools/changelog/publish.mjs --validate
       - name: Validate changelog workflow syntax
         run: |
