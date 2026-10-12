@@ -105,6 +105,7 @@ var/global/blasts = 0
     world.OpenPort("none")
     check(!world.port, "fixture listening port closed")
     var/turf/floor/dirt/center = new(locate(30,2,1))
+    check(center.radiation == 0, "epicenter starts uncontaminated")
     var/turf/floor/grass/near_grass = new(locate(70,1,1))
     var/turf/floor/grass/far_grass = new(locate(139,1,1))
     var/turf/floor/grass/other_grass = new(locate(139,1,2))
