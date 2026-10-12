@@ -7,6 +7,12 @@ var/list/operation_trace = list()
 var/rng_index = 0
 var/probe_helper_peak_slots = 0
 var/positive_pause_calls = 0
+var/zero_pause_calls = 0
+var/probe_force_budget = FALSE
+var/probe_forced_budget_seen = 0
+var/probe_direct_budget_service = FALSE
+var/probe_service_seen = FALSE
+var/probe_service_busy = FALSE
 /atom
 	var/gcDestroyed = FALSE
 var/clock = 0
@@ -98,7 +104,39 @@ var/measure_gap = FALSE
 	del(A)
 /proc/probe_pause(delay)
 	if(delay > 0) positive_pause_calls++
+	else zero_pause_calls++
 	sleep(delay)
+/proc/probe_budget_usage(work, discovery)
+	var/batch = discovery ? 4096 : 256
+	if(probe_force_budget && (probe_direct_budget_service || !(work % batch)))
+		probe_forced_budget_seen++
+		return max(20, world.tick_usage)
+	return world.tick_usage
+/proc/probe_budget_service(obj/map_metadata/M)
+#if CANDIDATE
+	var/prior_busy = M.season_busy
+	var/prior_force = probe_force_budget
+	var/prior_seen = probe_forced_budget_seen
+	probe_force_budget = TRUE
+	probe_direct_budget_service = TRUE
+	M.season_busy = TRUE
+	probe_service_seen = FALSE
+	probe_service_busy = FALSE
+	var/start = world.time
+	spawn(world.tick_lag)
+		probe_service_seen = TRUE
+		probe_service_busy = M.season_busy
+	var/valid = M.season_work_pause(M.season_epoch, 1, FALSE)
+	var/list/result = list("seen"=probe_forced_budget_seen-prior_seen, "progress"=valid && world.time-start+0.001 >= world.tick_lag, "serviced"=probe_service_seen && probe_service_busy, "elapsed_ticks"=world.time-start)
+	M.season_busy = prior_busy
+	probe_force_budget = prior_force
+	probe_direct_budget_service = FALSE
+	// Drain the deliberately pending negative-control witness before other scenarios.
+	sleep(world.tick_lag)
+	return result
+#else
+	return list()
+#endif
 /proc/heartbeat()
 	var/last = world.time
 	var/last_wall = world.timeofday
@@ -187,10 +225,16 @@ var/measure_gap = FALSE
 	var/list/parity_events = events.Copy()
 	var/list/parity_rng = rng.Copy()
 	var/list/parity_operations = operation_trace.Copy()
+	var/parity_positive_pauses = positive_pause_calls
+	var/parity_zero_pauses = zero_pause_calls
+	var/list/budget_service = probe_budget_service(map)
 	var/list/requests = list()
 #if REQUESTCHECK
+	// Explicit budget injection applies only after all comparable snapshots/counts.
+	probe_force_budget = TRUE
 	requests = probe_requests()
+	probe_force_budget = FALSE
 #endif
 	heartbeat_running = FALSE
-	text2file(json_encode(list("cycles"=4, "clock"=parity_clock, "requests"=requests, "distractors"=owned.len, "identity_failures"=identity_failures, "samples"=samples, "events"=parity_events, "rng_thresholds"=parity_rng, "operation_trace"=parity_operations, "peak_gap_ticks"=peak_gap_ticks, "peak_gap_ds"=peak_gap_ds, "peak_helper_slots"=probe_helper_peak_slots, "positive_pause_calls"=positive_pause_calls)), "result.json")
+	text2file(json_encode(list("cycles"=4, "clock"=parity_clock, "requests"=requests, "distractors"=owned.len, "identity_failures"=identity_failures, "samples"=samples, "events"=parity_events, "rng_thresholds"=parity_rng, "operation_trace"=parity_operations, "peak_gap_ticks"=peak_gap_ticks, "peak_gap_ds"=peak_gap_ds, "peak_helper_slots"=probe_helper_peak_slots, "positive_pause_calls"=parity_positive_pauses, "zero_pause_calls"=parity_zero_pauses, "budget_service"=budget_service)), "result.json")
 	del(world)

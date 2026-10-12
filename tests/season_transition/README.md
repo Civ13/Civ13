@@ -39,14 +39,14 @@ final ordered per-season terrain hashes, RNG threshold order/count, weather/tree
 announcement traces or clocks that differ. Small fixtures additionally compare every
 ordered terrain replacement (coordinates and old/new type), icon update and probability
 decision (threshold, result and current candidate). Largest fixtures disable this trace
-to keep its memory/CPU cost out of the performance comparison. It also checks positive explicit pauses,
-multiple elapsed ticks, and the explicit synthetic one-second heartbeat ceiling.
+to keep its memory/CPU cost out of the performance comparison. It also checks the explicit synthetic one-second heartbeat ceiling. Cheap transitions
+may finish without a positive pause; ordinary parity uses actual tick usage and reports
+its observed positive/zero pauses and completion times.
 That ceiling is a fixture acceptance bound, not a production server SLO.
 
 Parity pairs use generated phase waits of `30 + original / 10` deciseconds,
-with identical scaling on both sizes and modes. Separate request/control runs
-use divisor 100 to shorten dormant waits; they do not establish ordered phase
-parity. Recurring timers use a distinct 210-decisecond adapter. Each result
+with identical scaling on both sizes and modes. Separate request runs use divisor 100 to shorten dormant waits and do not establish
+ordered phase parity. Negative controls retain divisor 10. Recurring timers use a distinct 210-decisecond adapter. Each result
 records these adapters and the 900-second daemon deadline. The comparator keeps
 strict callback order checks; it must reject an acceleration-induced mismatch.
 
@@ -54,8 +54,10 @@ Every parity snapshot waits for its owner's pending delayed callbacks, queued ph
 and active worker to drain under a bounded deadline, including nested baseline spawns.
 Telemetry reports immediate-work and all-phase native completion ticks, wall-clock heartbeat gaps with midnight
 wrap, actual peak helper snapshot slots, child process CPU, and OS peak working set
-(Windows) or sampled RSS/high-water (Linux). CPU/wall/memory ratios compare only
-identical four-cycle workloads. Missing CPU/memory samples fail comparison. Heartbeat
+(Windows) or sampled RSS/high-water (Linux). CPU/wall/memory ratios compare only equal unforced four-cycle workloads. OS metrics
+cover the whole child and include the candidate-only post-parity witness/drain (up to
+two ticks); this small overhead is explicitly labeled. Request runs are excluded
+from benchmark comparisons. Missing CPU/memory samples fail comparison. Heartbeat
 readiness and a pre-cycle tick establish the timestamp before each measured window. Additional request scenarios run separately via
 `--requests`. Generated source and build/runtime logs accompany results; manifests
 identify original/generated sources, HEAD and tracked patch. Metrics describe this
@@ -69,9 +71,14 @@ share the guarded bootstrap timer, including additional looping requests. Forced
 at production discovery, mutation and delayed-callback checkpoints. A turf replaced
 after its real mutation pause must retain its unrelated subtype. The actual extracted
 Asia hook checks both wet/dry flood transitions at z=1 with enabled and disabled
-natural seasons, preserving disabled-mode season and decay clocks. Positive pause calls are
-observed in generated source; the yield control changes their delay to zero and must
-be detected specifically. The clock control removes committed decay advancement and
+natural seasons, preserving disabled-mode season and decay clocks. After parity snapshots/counts, every candidate mode runs a dedicated scheduler
+budget scenario: a labeled adapter forces 20% tick usage, holds the worker lock, and
+schedules a next-tick service witness before calling the actual production pause.
+Normal/clock runs must advance time and service that witness while locked. The yield
+control changes the generated positive wait to zero and must specifically fail both
+progress and timed service. Request scenarios additionally force the budget branch at existing 4096-discovery/
+256-mutation batch checkpoints for their duration, making concurrent callers and
+after-pause replacement deterministic without adding per-candidate full-tick waits. The clock control removes committed decay advancement and
 must be detected specifically. Neither compiler/runtime failures nor unrelated
 assertion failures count as successful negative-control evidence.
 

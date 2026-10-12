@@ -22,6 +22,9 @@ def main():
     assert not old['request_scenarios'] and not new['request_scenarios'], 'Benchmark workloads must be equal'
     assert old['dimensions'] == new['dimensions']
     assert old['baseline_sha'] == new['baseline_sha']
+    assert old['phase_delay_adapter'] == new['phase_delay_adapter'], 'Phase adapters differ'
+    assert old['daemon_timeout_seconds'] == new['daemon_timeout_seconds']
+    assert old['budget_adapter'] == new['budget_adapter'], 'Budget adapter scopes differ'
     assert old['negative_control'] == new['negative_control'] == 'none'
     assert old['cycles'] == new['cycles'] == 4
     assert len(old['samples']) == len(new['samples']) == 4, 'Exactly four cycle samples are required'
@@ -41,11 +44,11 @@ def main():
         for field in ('cycle', 'season', 'terrain_md5', 'rng_calls', 'clock'):
             assert before[field] == after[field], f'Phase parity failed: {field}'
     assert new['identity_failures'] == 0
-    assert new['positive_pause_calls'] > 0
+    assert new['budget_service']['seen'] > 0
+    assert new['budget_service']['progress'] and new['budget_service']['serviced']
     assert new['peak_gap_ds'] <= a.max_gap_ds, 'Heartbeat gap exceeded explicit bound'
-    assert min(row['elapsed_ticks'] for row in new['samples']) > 1, 'Season work did not span ticks'
     ratios = {key: new[key] / old[key] if old.get(key) else None for key in ('process_cpu_seconds', 'daemon_wall_seconds', 'process_peak_memory_bytes', 'peak_helper_slots')}
-    print(json.dumps({'candidate_baseline_ratios': ratios, 'measurement_scope': 'synthetic fixture only', 'dimensions': new['dimensions'], 'peak_gap_ds': new['peak_gap_ds'], 'peak_gap_ticks': new['peak_gap_ticks'], 'completion_ticks': [row['elapsed_ticks'] for row in new['samples']], 'all_phase_completion_ticks': [row['all_phase_completion_ticks'] for row in new['samples']], 'parity': True}))
+    print(json.dumps({'candidate_baseline_ratios': ratios, 'measurement_scope': new['process_metric_scope'], 'dimensions': new['dimensions'], 'peak_gap_ds': new['peak_gap_ds'], 'peak_gap_ticks': new['peak_gap_ticks'], 'completion_ticks': [row['elapsed_ticks'] for row in new['samples']], 'all_phase_completion_ticks': [row['all_phase_completion_ticks'] for row in new['samples']], 'parity_positive_pause_calls': new['positive_pause_calls'], 'parity_zero_pause_calls': new['zero_pause_calls'], 'parity': True}))
 
 if __name__ == '__main__':
     main()

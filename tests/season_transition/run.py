@@ -80,6 +80,7 @@ def prepare(repo, mode, size, negative, requests_enabled=False):
             output.append(lines[i])
         return ''.join(output)
     seasons = track_phases(seasons)
+    seasons = seasons.replace('world.tick_usage >= 20', '(probe_force_budget ? probe_budget_usage(work, discovery) : world.tick_usage) >= 20')
     seasons = re.sub(r'(^/obj/map_metadata/proc/season_work_pause[^\n]*\n)', r'\1\tprobe_checkpoint(src, epoch, work, discovery)\n', seasons, flags=re.M)
     seasons = seasons.replace('call(src, kind)(value)', 'probe_delayed_call(src, kind, value)')
     seasons = re.sub(r'^(\t*)spawn\(18000\)\n', lambda m: m[1] + 'probe_timer_armed(src, 18000)\n' + m[0] + m[1] + '\tprobe_timer_fired(src)\n', seasons, flags=re.M)
@@ -89,7 +90,7 @@ def prepare(repo, mode, size, negative, requests_enabled=False):
     # Recurring timers keep the separate 210-ds adapter used by cadence assertions.
     # Phase delays retain ten times the former spacing: Fall's 900/100-ds
     # callbacks now have an 80-ds margin instead of 8 ds around yielded main work.
-    phase_delay_divisor = 100 if negative != 'none' or requests_enabled else 10
+    phase_delay_divisor = 100 if requests_enabled else 10
     def generated_delay(delay):
         return 210 if delay == 18000 else 30 + delay // phase_delay_divisor
     seasons = re.sub(r'spawn\((\d+)\)', lambda m: 'spawn(' + str(generated_delay(int(m[1]))) + ')', seasons)
@@ -146,7 +147,7 @@ def prepare(repo, mode, size, negative, requests_enabled=False):
 #include "production.dm"
 #include "requests.dm"
 '''
-    return {'probe.dm': probe, 'production.dm': production, 'requests.dm': requests, 'probe.dme': dme}, {'source_sha256': digest(originals), 'generated_sha256': digest(production), 'dimensions': [width, height, 1], 'mode': mode, 'request_scenarios': requests_enabled, 'negative_control': negative, 'baseline_sha': BASELINE, 'phase_delay_adapter': {'offset_ds': 30, 'divisor': phase_delay_divisor, 'recurring_delay_ds': 210}, 'daemon_timeout_seconds': 900}
+    return {'probe.dm': probe, 'production.dm': production, 'requests.dm': requests, 'probe.dme': dme}, {'source_sha256': digest(originals), 'generated_sha256': digest(production), 'dimensions': [width, height, 1], 'mode': mode, 'request_scenarios': requests_enabled, 'negative_control': negative, 'baseline_sha': BASELINE, 'phase_delay_adapter': {'offset_ds': 30, 'divisor': phase_delay_divisor, 'recurring_delay_ds': 210}, 'daemon_timeout_seconds': 900, 'budget_adapter': 'actual tick usage during parity; forced 20 percent only post-parity direct service call and request batch checkpoints', 'process_metric_scope': 'whole child includes candidate post-parity service witness (up to two ticks); requests excluded from benchmark comparisons'}
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -206,12 +207,13 @@ def main():
         else:
             assert result['clock'] == 4, 'Natural transition clocks were lost'
         if args.mode == 'candidate':
+            service = result['budget_service']
+            assert service['seen'] > 0, 'Dedicated budget branch was not exercised'
             if args.negative_control == 'yield':
-                assert result['positive_pause_calls'] == 0, 'Yield negative control was not detected'
+                assert not service['progress'] and not service['serviced'], 'Yield control did not fail the timed service witness'
                 result['negative_control_detected'] = True
             else:
-                assert result['positive_pause_calls'] > 0, 'Explicit bounded yields were absent'
-                assert min(x['elapsed_ticks'] for x in result['samples']) > 1, 'Transitions did not span ticks'
+                assert service['progress'] and service['serviced'], 'Exhausted-budget wait failed tick progress or locked service'
                 if args.negative_control == 'none' and args.requests:
                     assert result['requests']['failures'] == 0, 'Request ownership/flags/cancellation failed'
         args.output.write_text(json.dumps(result, indent=2))
