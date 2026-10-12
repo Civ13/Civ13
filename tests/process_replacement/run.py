@@ -67,7 +67,7 @@ def main():
         print(log,flush=True)
         assert run.returncode==0 and not re.search(r"runtime error|RUNTIME|Bad ref|Bad loc|BUG:|## ERROR:|Cannot read null|Cannot execute null|Infinite loop suspected",log,re.I),"Native diagnostics invalidate evidence"
         result=json.loads((out/"native-result.json").read_text())
-        expected={"baseline":{"owners","config","chemistry","snapshot"},"bookkeeping":{"owners"},"configuration":{"config"},"chemistry":{"chemistry","snapshot"}}
+        expected={"baseline":{"owners","config","chemistry","snapshot"},"bookkeeping":{"owners"},"configuration":{"owners","priority","config"},"chemistry":{"chemistry","snapshot"}}
         mode="baseline" if a.baseline else a.negative_control
         assert result["replacements"]==39 and result["checks"]>=300 and set(result["faults"])==(expected[mode] if mode else set()),result
         print("PASS expected historical/omission faults" if mode else "PASS production replacement")
