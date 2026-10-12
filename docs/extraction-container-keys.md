@@ -1,5 +1,7 @@
 # Extraction container keys
 
+![Existing key and cache sprite states, static export rather than gameplay](images/extraction-container-keys.png)
+
 Every current Extraction map has two locked caches. Each key opens exactly one
 named container on one map. A foreign-map key is ordinary recoverable equipment:
 extract or ship it home, retain it in storage, and carry it on a later raid.
