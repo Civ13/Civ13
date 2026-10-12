@@ -66,6 +66,10 @@ var/datum/process_slots/processes = new
 	setup_calls++
 /process/proc/catchBadType(value)
 	CRASH("unexpected holder")
+/process/proc/fire()
+	return
+/process/proc/reset_current_list()
+	return
 /process/proc/onKill()
 	return
 /process/proc/copyStateFrom(process/target)
