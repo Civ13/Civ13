@@ -92,6 +92,8 @@ var/global/list/extraction_city_stations = list()
 /datum/job/civilian/extraction_survival/modern_city
 	title = "City Survivor"
 	allowed_maps = list(MAP_EXTRACTION_CITY)
+	is_nomad = TRUE
 	equip(mob/living/human/H)
 		..()
+		H.make_nomad()
 		H.add_note("City Evacuation", "This Modern Nomads city runs for six hours. Hourly evacuation alternates north and south stations. Click the announced station to reserve and be beside it when departure occurs. The sixth departure is final; remaining unsent gear is forfeited. Shipments and home game credits remain in your account.")

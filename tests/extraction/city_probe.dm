@@ -19,6 +19,9 @@
 	var/mob/living/human/B = new(locate(3,3,1))
 	A.m_intent = "stealth"
 	B.m_intent = "stealth"
+	var/datum/job/civilian/extraction_survival/modern_city/city_job = new
+	city_job.equip(A)
+	equipment_assert(city_job.is_nomad && (/mob/living/human/proc/create_faction in A.verbs) && (/mob/living/human/proc/become_leader in A.verbs), "city job exposes production Nomads faction and research leadership controls")
 	M.test_owners[A] = "citypresent"
 	M.test_owners[B] = "cityabsent"
 	equipment_assert(M.admit(A) && M.admit(B), "two real city accounts admitted")

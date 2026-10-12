@@ -129,8 +129,13 @@ def main():
                 raise RuntimeError('Completed authenticated reply still marked unpublished')
         print('PASS: independent signer validates native immutable replies and expired-marker recovery')
         if args.output:
+            source_head = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=root, check=True,
+                                         capture_output=True, text=True).stdout.strip()
+            source_dirty = bool(subprocess.run(['git', 'status', '--porcelain'], cwd=root, check=True,
+                                               capture_output=True, text=True).stdout.strip())
             shutil.copytree(spool, args.output / 'after-restart')
-            manifest = {'synthetic': True, 'protocol': 'civ13.safehouse.ipc.v1', 'key': key.decode(), 'clock': 1000,
+            manifest = {'synthetic': True, 'source_head': source_head, 'source_dirty': source_dirty,
+                        'protocol': 'civ13.safehouse.ipc.v1', 'key': key.decode(), 'clock': 1000,
                         'issued_at': 1000, 'expires_at': 1120,
                         'requests': {'inspect-1': inspect_key, 'link-1': link_key}}
             (args.output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='ascii')
