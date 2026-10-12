@@ -51,6 +51,8 @@ var/obj/item/digging_tool
 /world/New()
 	OpenPort("none")
 	try
+		GLOB.moved_event = new /decl/observ/moved
+		movementMachine = new
 		map = new /obj/map_metadata/digging_probe
 		map.ordinal_age = 2
 		populate_material_list()

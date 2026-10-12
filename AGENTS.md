@@ -517,3 +517,6 @@ Scheduler start replaces its identity token; stale sleeping invocations retire a
 wake, and stop invalidates the token. Process may_run uses one lazy history
 expiry deadline; started cancels it before recording new run history. Native
 lifecycle, immutable baseline and controls live in tests/process_loop_lifecycle.
+
+<!-- 2026-10-12: finite digging completion -->
+Loose snow/dirt/sand stock must be checked after the action wait, because another actor may consume the last unit. Underground pickaxe actions use one wait/completion path. `tests/resource_extraction/digging_probe.dm` runs production handlers with competing completion and cancellation adapters; `-DiggingBaseline` rejects immutable pre-fix source without changing the checkout.
