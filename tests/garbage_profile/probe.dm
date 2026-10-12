@@ -54,13 +54,16 @@
 			for (var/key in values)
 				check(istext(key) && isnum(values[key]), "profile retains only scalar values")
 		var/process/garbage/timing = new
-		timing.profile_cost("timing", FALSE, world.timeofday - 5, world.time)
-		timing.profile_cost("timing", FALSE, world.timeofday - 2, world.time)
+		profile_fixture_clock = 10
+		timing.profile_cost("timing", FALSE, 5, world.time)
+		timing.profile_cost("timing", FALSE, 8, world.time)
 		var/list/timing_row = timing.profile_row("timing")
-		check(timing_row["cleanup_count"] == 2 && timing_row["cleanup_total_ds"] >= 7 && timing_row["cleanup_max_ds"] >= 5, "totals and maxima aggregate separate elapsed samples")
-		timing.profile_cost("midnight", TRUE, world.timeofday + 864000 - 3, world.time)
+		check(timing_row["cleanup_count"] == 2 && timing_row["cleanup_total_ds"] == 7 && timing_row["cleanup_max_ds"] == 5, "totals and maxima aggregate separate elapsed samples")
+		profile_fixture_clock = 1
+		timing.profile_cost("midnight", TRUE, 863998, world.time)
 		var/list/wrap_row = timing.profile_row("midnight")
-		check(wrap_row["forced_total_ds"] >= 3 && wrap_row["forced_total_ds"] < 10, "elapsed samples handle one midnight wrap")
+		check(wrap_row["forced_count"] == 1 && wrap_row["forced_total_ds"] == 3 && wrap_row["forced_max_ds"] == 3, "elapsed samples handle one midnight wrap")
+		profile_fixture_clock = null
 		var/overhead_started = world.timeofday
 		for (var/i = 1 to 10000)
 			timing.profile_cost("timing", FALSE, world.timeofday, world.time)
