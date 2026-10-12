@@ -6,6 +6,14 @@
 // can be references using a number instead of a fully written out type class.
 // You can also specify a name and password for the map, along with any extra
 // variables (in params format) that you want saved along with the map file.
+// Yield before consuming most of the game tick, including inside dense graphs.
+// Native savefile writes, list copies and fcopy calls remain nonpreemptible.
+/map_storage/proc/save_work_check()
+	saving_work++
+	if(saving_work >= 1024 || world.tick_usage >= 20)
+		saving_work = 0
+		sleep(world.tick_lag)
+
 /map_storage/proc/Save_World()
 	clear_bookkeeping()
 	// ***** MAP SECTION *****
@@ -17,9 +25,11 @@
 			if(!fdel("map_backups/save_complete.txt"))
 				throw EXCEPTION("Could not invalidate backup marker; existing save retained")
 		for(var/name in flist("map_saves/"))
+			save_work_check()
 			if(name == "map.txt" || copytext(name, max(1, length(name)-3)) == ".sav")
 				if(!fcopy("map_saves/[name]", "[backup_dir][name]"))
 					throw EXCEPTION("Could not back up [name]; existing save retained")
+		sleep(world.tick_lag)
 		if(!fcopy("map_saves/save_complete.txt", "[backup_dir]save_complete.txt"))
 			throw EXCEPTION("Could not mark completed backup; existing save retained")
 	// Remove the completion marker first: if this save dies partway through, the
@@ -37,6 +47,8 @@
 	log_startup_progress("	Saved metadata.")
 	for(var/A = 1, A <= world.maxz, A++)
 		saving_z = A
+		saving_owners = list()
+		saving_content_flags = list()
 		saving_lists = list()
 		saving_reference_pins = list()
 		saving_list_pins = list()
@@ -51,14 +63,35 @@
 		savefile["/maxx"] << world.maxx
 		savefile["/maxy"] << world.maxy
 		savefile["/maxz"] << world.maxz
-		for(var/turf/turf in world)
-			if (turf.z == A)
-				var/ref = BuildVarDirectory(savefile, turf, 1)
+		// Visit only this level instead of rescanning the entire world for each z.
+		for(var/y = 1, y <= world.maxy, y++)
+			for(var/x = 1, x <= world.maxx, x++)
+				var/turf/T = locate(x, y, A)
+				var/ref = BuildVarDirectory(savefile, T, 1, TRUE)
 				if(!ref)
-					throw EXCEPTION("Turf [turf.x],[turf.y],[turf.z] could not be saved")
-				savefile.cd = "/map/[turf.z]/[turf.y]"
-				savefile["[turf.x]"] << ref
-				TICK_CHECK
+					throw EXCEPTION("Turf [x],[y],[A] could not be saved")
+				savefile["/map/[A]/[y]/[x]"] << ref
+				save_work_check()
+		// Each movable belongs to its first captured parent, regardless of later
+		// live movement. Assemble edges after discovery to avoid duplicate placement.
+		var/list/edges = list()
+		for(var/i = 1, i <= saving_owners.len, i++)
+			edges += list(list())
+			save_work_check()
+		for(var/i = 1, i <= saving_owners.len, i++)
+			var/owner = saving_owners[i]
+			if(owner)
+				var/list/children = edges[owner]
+				children += "[i]"
+			save_work_check()
+		for(var/i = 1, i <= saving_owners.len, i++)
+			if(saving_content_flags[i])
+				savefile["[entry_path(savefile, i)]/content"] << list2params(edges[i])
+			save_work_check()
+		sleep(world.tick_lag)
+		savefile.Flush()
+		savefile = null
+		sleep(world.tick_lag)
 		log_startup_progress("	Saved z-level [A].")
 	clear_bookkeeping()
 	if(!text2file(time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)"),"map_saves/save_complete.txt"))
@@ -66,74 +99,80 @@
 	log_startup_progress("Finished saving.")
 	return 1
 
-/map_storage/proc/BuildVarDirectory(savefile/savefile, datum/A, var/contents = 0)
-	if(!A || istype(A, /client))
-		return 0
-	if(!A.should_save)
-		return 0
-	if(istype(A, /obj/map_metadata))
+/map_storage/proc/BuildVarDirectory(savefile/F, datum/A, contents = 0, traversal = FALSE)
+	if(!A || istype(A, /client) || !A.should_save || istype(A, /obj/map_metadata))
 		return 0
 	for(var/ignored in ignore_types)
 		if(istype(A, ignored))
 			return 0
+	var/identity = "\ref[A]"
 	if(istype(A, /atom/movable))
-		var/atom/movable/movable = A
-		if(movable.z && movable.z != saving_z)
+		var/atom/movable/M = A
+		var/list/previous = saving_world_movables[identity]
+		if(previous && previous["atom"] == A && previous["z"] != saving_z)
+			if(traversal) return 0
 			throw EXCEPTION("Cross-level object reference cannot be represented in per-level save files: [A.type]")
-	var/ind = saving_references["\ref[A]"]
-	var/ref = 0
+		var/turf/location = get_saved_turf(M)
+		if(location && location.z != saving_z)
+			throw EXCEPTION("Cross-level object reference cannot be represented in per-level save files: [A.type]")
+	var/ind = saving_references[identity]
 	if(ind && saving_reference_pins[ind] == A)
 		return ind
-	ref = saving_reference_pins.len + 1
+	var/ref = saving_reference_pins.len + 1
 	saving_reference_pins += A
-	saving_references["\ref[A]"] = ref
+	saving_references[identity] = ref
+	saving_owners += 0
+	saving_content_flags += FALSE
 	A.before_save()
-	savefile.cd = entry_path(savefile, ref)
-	if (A.type)
-		savefile["type"] << A.type
-	var/list/content_refs = list()
-	if(A.load_contents)
-		var/atom/movable/Ad = A
-		if(contents)
-			for(var/obj/content in Ad.contents)
-				if(content.loc != Ad) continue
-				var/conparams = BuildVarDirectory(savefile, content, 1)
-				savefile.cd = entry_path(savefile, ref)
-				if(!conparams)
-					continue
-				content_refs += "[conparams]"
-			for(var/mob/mcontent in Ad.contents)
-				if(mcontent.loc != Ad) continue
-				var/mconparams = BuildVarDirectory(savefile, mcontent, 1)
-				savefile.cd = entry_path(savefile, ref)
-				if(!mconparams)
-					continue
-				content_refs += "[mconparams]"
-		var/final_params = list2params(content_refs)
-		savefile.cd = entry_path(savefile, ref)
-		savefile["content"] << final_params
-	var/list/changing_vars
-	// Changed variables depend on the instance, not just its type.
-	changing_vars = A.get_saved_vars()
-	
+	if(!A)
+		throw EXCEPTION("Object deleted by before_save")
+	// Capture all fields and discovery handles before the first explicit yield.
+	// Never dereference A after it: native deletion nulls pinned references too.
+	var/saved_type = A.type
+	var/capture_contents = A.load_contents && contents
+	var/list/children = list()
+	var/atom/owner
 	if(istype(A, /atom/movable))
-		var/atom/movable/AM = A
-		if(contents && AM.load_datums)
-			changing_vars += "reagents"
-	for(var/v in changing_vars)
-		if(A.persistence_runtime_var(v))
+		var/atom/movable/M = A
+		owner = M.loc
+		saving_world_movables[identity] = list("atom" = A, "z" = saving_z)
+	if(capture_contents && istype(A, /atom))
+		var/atom/container = A
+		children = container.contents.Copy()
+	var/list/keys = A.get_saved_vars()
+	if(istype(A, /atom/movable))
+		var/atom/movable/M = A
+		if(contents && M.load_datums) keys |= "reagents"
+	var/list/values = list()
+	var/list/saved_keys = list()
+	for(var/key in keys)
+		if(A.persistence_runtime_var(key) || key in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))
 			continue
-		// Location is reconstructed by the map grid and contents graph. Saving it
-		// recursively used to create turf entries outside that graph.
-		if(v in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))
-			continue
-		if(A.vars.Find(v))
-			var/value = encode_saved_value(savefile, A.vars[v])
-			savefile.cd = entry_path(savefile, ref)
-			savefile[v] << value
-			continue
-	savefile.cd = ".."
+		if(A.vars.Find(key))
+			saved_keys += key
+			values += list(A.vars[key])
+	F["[entry_path(F, ref)]/type"] << saved_type
+	saving_content_flags[ref] = capture_contents
+	// Capturing ancestors also covers objects discovered through saved variables
+	// before their turf is scanned. Pins terminate parent/child reference cycles.
+	if(owner && !istype(owner, /area))
+		saving_owners[ref] = BuildVarDirectory(F, owner, 1, TRUE)
+	save_work_check()
+	for(var/atom/movable/child in children)
+		if(child && child.loc == A)
+			BuildVarDirectory(F, child, 1, TRUE)
+		save_work_check()
+	for(var/i = 1, i <= saved_keys.len, i++)
+		var/encoded = encode_saved_value(F, values[i])
+		F["[entry_path(F, ref)]/[saved_keys[i]]"] << encoded
+		save_work_check()
 	return ref
+
+// Nested movables have z=0; walk their containment chain without game helpers.
+/map_storage/proc/get_saved_turf(atom/A)
+	while(A && !isturf(A))
+		A = A.loc
+	return A
 
 // Typed envelopes preserve literal marker strings and associative/nested lists.
 // Lists are indexed separately so aliases and cycles survive a round trip.
@@ -156,6 +195,7 @@
 			var/list/snapshot = L.Copy()
 			F["/lists/[id]/length"] << snapshot.len
 			for(var/i = 1, i <= snapshot.len, i++)
+				save_work_check()
 				TICK_CHECK
 				var/key = snapshot[i]
 				var/encoded_key = encode_saved_value(F, key)
