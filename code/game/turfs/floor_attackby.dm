@@ -19,7 +19,7 @@
 	busy = FALSE
 	if (!completed || !grass_cutting_actor_connected(user) || user.stat != CONSCIOUS || QDELETED(tool) || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1 || !istype(src, /turf/floor/grass))
 		return
-	ChangeTurf(/turf/floor/dirt)
+	change_the_turf()
 	new /obj/item/stack/grass_cuttings(get_turf(user), 2)
 	to_chat(user, SPAN_NOTICE("You gather two portions of grass cuttings."))
 
