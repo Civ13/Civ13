@@ -77,3 +77,10 @@ not reach readiness within the test window; that map is excluded from the local
 allowlist. These checks do not establish all admin commands, graphical gameplay,
 graceful persistence shutdown, or production parity. OpenDream builds retain
 103 compatibility warnings; the native BYOND build has zero errors or warnings.
+
+Game-originated map votes compile a pending map without stopping the current
+world. The game's subsequent reboot hook commits it, preserving the round-end
+countdown and save hooks. Explicit console `mapswap` switches immediately.
+A second map change is rejected while a game map is pending. After a supervisor
+crash, pending staged files require manual inspection along with its stale lock;
+they are never automatically replayed by a new supervisor.

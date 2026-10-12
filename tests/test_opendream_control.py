@@ -92,6 +92,25 @@ class Controls(unittest.TestCase):
             self.supervisor.mapswap("ESCAPE")
         self.assertIsNone(old.poll())
 
+    def test_game_map_waits_for_round_restart(self):
+        self.supervisor.start()
+        old = self.supervisor.child
+        original = (self.root / "civ13.dme").read_bytes()
+        def compile_output(*args, **kwargs):
+            (self.root / "opendream-staged.json").write_text('{"new":true}')
+        with patch.object(control.subprocess, "run", side_effect=compile_output):
+            self.supervisor.dispatch({"action": "mapswap", "map": "B"}, from_game=True)
+        self.assertIsNone(old.poll())
+        self.assertEqual(original, (self.root / "civ13.dme").read_bytes())
+        self.assertEqual('{"old":true}', (self.root / "civ13.json").read_text())
+        with self.assertRaises(ValueError):
+            self.supervisor.mapswap("B")
+        self.supervisor.dispatch({"action": "restart"}, from_game=True)
+        self.assertIsNotNone(old.poll())
+        self.assertEqual('{"new":true}', (self.root / "civ13.json").read_text())
+        self.assertIn('maps/b.dmm', (self.root / "civ13.dme").read_text())
+        self.assertIsNone(self.supervisor.pending_map)
+
     def test_missing_compiler_output_is_not_committed(self):
         self.supervisor.start()
         old = self.supervisor.child

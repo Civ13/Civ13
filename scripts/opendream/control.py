@@ -68,6 +68,7 @@ class Supervisor:
         self.control.mkdir(parents=True, exist_ok=True)
         self.child = None
         self.log = None
+        self.pending_map = None
         for name in ("game_port", "topic_port"):
             port = self.profile[name]
             if type(port) is not int or not 1024 <= port <= 65535:
@@ -106,7 +107,9 @@ class Supervisor:
             self.log.close()
             self.log = None
 
-    def mapswap(self, map_id):
+    def mapswap(self, map_id, defer=False):
+        if self.pending_map:
+            raise ValueError("A compiled game map is pending the round restart")
         maps = self.profile.get("maps", {})
         if not isinstance(map_id, str) or map_id not in maps:
             raise ValueError("Map is not allowed by this profile")
@@ -134,24 +137,33 @@ class Supervisor:
                                timeout=180, check=True)
             if not compiled.is_file() or compiled.stat().st_size == 0:
                 raise ValueError("Compiler produced no JSON; running server preserved")
+            if defer:
+                self.pending_map = (staged, compiled)
+                return
             # Compilation is complete before the owned server is touched.
             self.stop()
             os.replace(compiled, self.root / "civ13.json")
             os.replace(staged, dme)
             self.start()
         finally:
-            staged.unlink(missing_ok=True)
-            compiled.unlink(missing_ok=True)
+            if not self.pending_map:
+                staged.unlink(missing_ok=True)
+                compiled.unlink(missing_ok=True)
 
-    def dispatch(self, request):
+    def dispatch(self, request, from_game=False):
         action = request.get("action")
         if action == "status":
             return self.status()
         if action == "restart":
             self.stop()
+            if self.pending_map:
+                staged, compiled = self.pending_map
+                os.replace(compiled, self.root / "civ13.json")
+                os.replace(staged, self.root / "civ13.dme")
+                self.pending_map = None
             self.start()
         elif action == "mapswap":
-            self.mapswap(request.get("map"))
+            self.mapswap(request.get("map"), defer=from_game)
         elif action == "stop":
             self.stop()
         else:
@@ -178,7 +190,7 @@ class Supervisor:
                         request = read_json(path)
                         if not isinstance(request, dict):
                             raise ValueError("Request must be an object")
-                        result = self.dispatch(request)
+                        result = self.dispatch(request, from_game=path.name == "game-request.json")
                     except (ValueError, OSError, subprocess.SubprocessError) as error:
                         result = {"ok": False, "error": str(error)}
                     result["id"] = request.get("id") if isinstance(request, dict) else None
