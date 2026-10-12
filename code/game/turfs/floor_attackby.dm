@@ -186,6 +186,9 @@
 					if (!do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))
 						H.shoveling = FALSE
 						return
+					if (!T || T.available_snow <= 0)
+						H.shoveling = FALSE
+						return
 					user.visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
 					H.shoveling = FALSE
 					H.adaptStat("strength", 1)
@@ -203,6 +206,9 @@
 						user.visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
 						if (do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))
+							if (!T || T.available_dirt <= 0)
+								H.shoveling = FALSE
+								return
 							user.visible_message("<span class = 'notice'>[user] shovels dirt into a pile.</span>", "<span class = 'notice'>You shovel dirt into a pile.</span>")
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
@@ -218,6 +224,9 @@
 						user.visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
 						if (do_after(user, (40/(H.getStatCoeff("strength"))/SH.usespeed)))
+							if (!T || T.available_sand <= 0)
+								H.shoveling = FALSE
+								return
 							user.visible_message("<span class = 'notice'>[user] shovels sand into a pile.</span>", "<span class = 'notice'>You shovel sand into a pile.</span>")
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
@@ -283,14 +292,6 @@
 			T.mining_in_progress = TRUE
 			user.visible_message("<span class = 'notice'>[user] starts to break the rock with \the [C.name].</span>", "<span class = 'notice'>You start to break the rock with \the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			if (do_after(user, (240/(H.getStatCoeff("strength"))/SH.usespeed)))
-				collapse_check()
-				if (istype(src, /turf/floor/dirt/underground/empty))
-					var/turf/floor/dirt/underground/empty/TT = src
-					TT.mining_clear_debris()
-					return
-				else if (!istype(src, /turf/floor/dirt/underground/empty))
-					mining_proc(H)
 			if (!do_after(user, (240/(H.getStatCoeff("strength"))/SH.usespeed)))
 				T.mining_in_progress = FALSE // In case we abort mid-way.
 				return

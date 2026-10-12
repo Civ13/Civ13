@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory)][string]$ByondBin,
-    [ValidateSet('tests/resource_extraction/probe.dm','tests/petroleum_lifecycle/probe.dm','tests/hydraulic_fracturing/probe.dm','tests/automated_sifting/probe.dm','tests/mining_yields/probe.dm')]
+    [ValidateSet('tests/resource_extraction/probe.dm','tests/petroleum_lifecycle/probe.dm','tests/hydraulic_fracturing/probe.dm','tests/automated_sifting/probe.dm','tests/mining_yields/probe.dm','tests/resource_extraction/digging_probe.dm')]
     [string]$Probe = 'tests/resource_extraction/probe.dm'
 )
 $ErrorActionPreference = 'Stop'
@@ -31,6 +31,13 @@ try {
     $source = Get-Content -LiteralPath 'civ13.dme' -Raw
     $source = $source.Replace('code\world.dm', $prefix + '_world.dm').Replace('code\controllers\mc\globals.dm', $prefix + '_globals.dm')
     $source = [regex]::Replace($source, '(?m)^#include ".*\.dmm"\s*$', '')
+    if ($Probe -eq 'tests/resource_extraction/digging_probe.dm') {
+        # Adapt only action waits; execute the complete production attackby body.
+        $digging = Get-Content -LiteralPath 'code/game/turfs/floor_attackby.dm' -Raw
+        $digging = $digging.Replace('do_after(', 'digging_probe_wait(')
+        [IO.File]::WriteAllText((Join-Path $repo ($prefix + '_mining.dm')), $digging)
+        $source = $source.Replace('code\game\turfs\floor_attackby.dm', $prefix + '_mining.dm')
+    }
     if ($Probe -eq 'tests/mining_yields/probe.dm') {
         # Only deterministic RNG calls in the production mining body are adapted.
         $mining = Get-Content -LiteralPath 'code/game/turfs/floor_attackby.dm' -Raw
