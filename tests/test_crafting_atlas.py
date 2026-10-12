@@ -14,8 +14,10 @@ class AtlasTests(unittest.TestCase):
         original=source.read_bytes()
         with tempfile.TemporaryDirectory() as folder:
             output=Path(folder)/'catalog.json'
-            command=[sys.executable,str(ROOT/'scripts/build-crafting-atlas.py'),'--catalog-only','--output',folder]
+            unused_output=Path(folder)/'unused-website'
+            command=[sys.executable,str(ROOT/'scripts/build-crafting-atlas.py'),'--catalog-only','--output',str(unused_output)]
             subprocess.run(command+['--game-catalog',str(output)],check=True,capture_output=True)
+            self.assertFalse(unused_output.exists(), 'Catalog-only builds must not create website output directories')
             before=json.loads(output.read_text())
             direct=next(r for r in before['recipes'] if r['name']=='Flintlock Pistol [iron]')
             self.assertEqual([(x['id'],x['quantity']) for x in direct['inputs']],[('/material/iron','20')])

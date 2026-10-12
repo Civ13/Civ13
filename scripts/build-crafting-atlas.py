@@ -11,7 +11,6 @@ parser.add_argument('--game-catalog', type=Path)
 parser.add_argument('--check-game-catalog', type=Path)
 options=parser.parse_args()
 OUT=options.output.resolve()
-OUT.mkdir(parents=True,exist_ok=True)
 def git(*args):
     return subprocess.check_output(['git','-C',str(ROOT),*args])
 SHA=git('rev-parse','HEAD').decode().strip()
@@ -216,6 +215,7 @@ if options.catalog_only:
     raise SystemExit(0)
 if not options.byond_bin:
     parser.error('--byond-bin is required for compiled website sprites')
+OUT.mkdir(parents=True,exist_ok=True)
 assets=OUT/'sprites';assets.mkdir(exist_ok=True)
 representatives={x:(sprite_variants[x]['type']+'#'+sprite_variants[x]['state'] if x in sprite_variants and 'state' in sprite_variants[x] else sprite_variants[x]['type'] if x in sprite_variants else material_stack(x) if x.startswith('/material/') else x) for x in resource_ids}
 fallback='/obj/item/weapon/paper'
