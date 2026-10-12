@@ -300,6 +300,7 @@ jobs:
           /usr/bin/python3 tests/processing_list_removal/run.py --byond-bin "$PWD/BYOND/byond/bin"
           /usr/bin/python3 tests/processing_list_removal/run.py --byond-bin "$PWD/BYOND/byond/bin" --baseline
           /usr/bin/python3 tests/processing_list_removal/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
+          /usr/bin/python3 tests/processing_list_removal/run.py --byond-bin "$PWD/BYOND/byond/bin" --guarded-control
 
       - name: Verify bounded native lifetime telemetry and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/memory_telemetry')

@@ -3,9 +3,11 @@ import argparse
 import hashlib
 import json
 import os
+import platform
 from pathlib import Path
 import re
 import subprocess
+import statistics
 import tempfile
 
 BASELINE = 'aa675de6dbade0f3740c516dc4b5945c5c9a43c7'
@@ -13,19 +15,31 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--byond-bin', required=True, type=Path)
 parser.add_argument('--baseline', action='store_true')
 parser.add_argument('--negative-control', action='store_true')
+parser.add_argument('--guarded-control', action='store_true')
+parser.add_argument('--remove-candidate', action='store_true')
 parser.add_argument('--benchmark', action='store_true')
 parser.add_argument('--evidence-dir', type=Path)
 args = parser.parse_args()
-if sum((args.baseline, args.negative_control, args.benchmark)) > 1:
+if sum((args.baseline, args.negative_control, args.guarded_control, args.benchmark, args.remove_candidate)) > 1:
     parser.error('Choose one mode')
 repo = Path(__file__).resolve().parents[2]
 paths = ['code/processes/___defines.dm', 'code/processes/obj.dm']
 raw = [subprocess.check_output(['git', 'show', BASELINE + ':' + p], cwd=repo, text=True)
        if args.baseline else (repo / p).read_text() for p in paths]
 defines, objects = raw
+if args.guarded_control:
+    defines, count = re.subn(r'^#define PROCESS_LIST_CHECK .+$',
+                            '#define PROCESS_LIST_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH) { if (current_list && current_list.len && current_list[1] == current) { current_list.Cut(1, 2); } else { current_list -= current; } }',
+                            defines, flags=re.M)
+    assert count == 1
+if args.remove_candidate:
+    defines, count = re.subn(r'^#define PROCESS_LIST_CHECK .+$',
+                            '#define PROCESS_LIST_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH) current_list.Remove(current)',
+                            defines, flags=re.M)
+    assert count == 1
 if args.negative_control:
     defines, count = re.subn(r'^#define PROCESS_LIST_CHECK .+$',
-                            '#define PROCESS_LIST_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH) current_list.Cut(1, 2)',
+                            '#define PROCESS_LIST_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH && current_list && current_list.len) current_list.Cut(1, 2)',
                             defines, flags=re.M)
     assert count == 1
 source = '' if args.benchmark else re.search(r'/process/obj/fire\(\)[\s\S]*?(?=/process/obj/statProcess)', objects).group()
@@ -42,9 +56,15 @@ with tempfile.TemporaryDirectory(prefix='civ13-list-removal-') as temp:
     (out / 'defines.dm').write_text(defines)
     (out / 'probe.dm').write_text(probe)
     (out / 'probe.dme').write_text('#include "defines.dm"\n#include "probe.dm"\n#include "production.dm"\n')
-    metadata = {'head': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(),
+    head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip()
+    metadata = {'head': head, 'source_commit': BASELINE if args.baseline else head,
                 'baseline': args.baseline, 'negative_control': args.negative_control,
+                'guarded_control': args.guarded_control,
                 'benchmark': args.benchmark,
+                'remove_candidate': args.remove_candidate,
+                'platform': platform.system() + ' ' + platform.release(),
+                'architecture': platform.machine(),
+                'checkout_status': subprocess.check_output(['git', 'status', '--porcelain'], cwd=repo, text=True),
                 'source_sha256': [hashlib.sha256(x.encode()).hexdigest() for x in raw],
                 'compiled_sha256': hashlib.sha256((defines + source).encode()).hexdigest(),
                 'probe_sha256': hashlib.sha256(probe.encode()).hexdigest()}
@@ -65,12 +85,19 @@ with tempfile.TemporaryDirectory(prefix='civ13-list-removal-') as temp:
         raise SystemExit(combined)
     result = json.loads((out / 'result.json').read_text())
     if args.benchmark:
-        print(json.dumps(result, indent=2))
+        for count in (1000, 5000, 10000):
+            for mode in dict.fromkeys(row['mode'] for row in result['samples']):
+                rows = [row for row in result['samples'] if row['count'] == count and row['mode'] == mode]
+                print(f"{count:5} {mode:12} median_ds={statistics.median(row['elapsed_ds'] for row in rows):.5f} complete={all(row['complete'] for row in rows)}")
     elif args.negative_control:
-        if result['failures'] < 2 or 'FAIL skipped head retained' not in log or 'FAIL already removed current leaves next entry' not in log:
+        if result != {'checks': 56, 'failures': 17} or 'FAIL skipped head retained' not in log or 'FAIL already removed current leaves next entry' not in log:
             raise SystemExit('Unsafe front removal was not detected: ' + log)
         print('PASS unsafe front-cut negative control: ' + str(result))
-    elif result['failures'] or result['checks'] < 40:
+    elif args.guarded_control:
+        if result != {'checks': 56, 'failures': 2} or log.count('FAIL value removal matches native subtraction') != 2:
+            raise SystemExit('Guarded-cut duplicate/null mismatch changed: ' + log)
+        print('PASS guarded-cut duplicate/null negative control: ' + str(result))
+    elif result['failures'] or result['checks'] != 56:
         raise SystemExit(log)
     else:
         print('PASS native production removal semantics: ' + str(result))

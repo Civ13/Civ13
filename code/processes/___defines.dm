@@ -28,8 +28,6 @@
 
 // this uses world.timeofday because world.time doesn't work
 // processes with priority VERY_HIGH use hacks here to run smoother (movement, throwing), similar to the old subsystems
-// The ordinary snapshot head needs no value search. Skipped entries or callback
-// mutations can leave current elsewhere, so preserve value removal in that case.
-#define PROCESS_LIST_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH) { if (current_list && current_list.len && current_list[1] == current) { current_list.Cut(1, 2); } else { current_list -= current; } }
+#define PROCESS_LIST_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH) current_list -= current
 #define PROCESS_TICK_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH && world.tick_usage - run_time_tick_usage >= run_time_tick_usage_allowance) return PROCESS_TICK_CHECK_RETURNED_EARLY
 #define PROCESS_USE_FASTEST_LIST(list) if (priority == PROCESS_PRIORITY_VERY_HIGH) { current_list = list; } else { current_list = null; current_list = list:Copy(); }
