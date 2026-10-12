@@ -67,6 +67,17 @@
 		buyer["credits"] = 100
 		economic_spool_assert(game.store.commit_profile("spoolseller", seller) && game.store.commit_profile("spoolbuyer", buyer), "temporary funded profiles committed")
 		text2file(md5(json_encode(graph)), "graph-digest.txt")
+	else if (phase == "upgrade-stock")
+		var/list/buyer = game.store.load_profile("spoolbuyer")
+		var/datum/extraction_equipment_codec/codec = new
+		for (var/i in 1 to 5)
+			var/obj/item/extraction_salvage/part = new(locate(1,1,1))
+			var/list/graph = codec.encode(part)
+			var/id = "room-part-[i]"
+			graph["nodes"][1]["id"] = id
+			buyer["stash"] += list(list("id" = id, "equipment" = graph, "salvage" = TRUE))
+			qdel(part)
+		economic_spool_assert(game.store.commit_profile("spoolbuyer", buyer), "isolated paid upgrade stock")
 	else
 		var/datum/extraction_ipc_spool/spool = new(ipc)
 		spool.root = "data/economic_spool/"
@@ -96,3 +107,6 @@
 			economic_spool_assert(seller["credits"] == 20 && buyer["credits"] == 90 && vendor["credits"] == 999990, "native list-buy-cancel-buyback conserves all wallet balances")
 			economic_spool_assert(!length(seller["stash"]) && !length(buyer["stash"]) && !length(market["stash"]) && length(vendor["stash"]) == 1, "native ownership moves exactly once through escrow into vendor")
 			economic_spool_assert(vendor["stash"][1]["id"] == "spool-part" && md5(json_encode(vendor["stash"][1]["equipment"])) == trim(file2text("graph-digest.txt")), "original full gear identity and condition survive native PHP roundtrip")
+		if (phase == "upgrade-verify")
+			var/list/buyer = game.store.load_profile("spoolbuyer")
+			economic_spool_assert(buyer["level"] == 2 && buyer["credits"] == 90 && !length(buyer["stash"]), "PHP room upgrade consumes paid native parts once and preserves wallet")

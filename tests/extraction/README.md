@@ -6,7 +6,11 @@ file hashes, then uses its actual PHP driver against a temporary native spool.
 Every step restarts the full production-source fixture with ordinary startup
 disabled. It exercises quotes, escrow listing, purchase, cancellation, buyback,
 immutable replay and a fresh status query after an interrupted shared receipt.
-The final native assertions check all wallets and exact graph ownership.
+It also discovers the actual escrow listing, inspects native stable node IDs and
+confirms a game-priced house upgrade. The upgrade consumes five fixture parts
+and stores the original request receipt in the same account snapshot; deleting
+only its temporary transport reply must recover that exact receipt without
+another upgrade. The final native assertions check all wallets and graph ownership.
 `--output` retains synthetic evidence in a new directory, including failures.
 This does not enable the live bot or establish connected-client acceptance.
 
@@ -17,6 +21,7 @@ Use BYOND 516.1681 and a verified full Python interpreter path:
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe restart
 & $PythonPath tests/extraction/test_recovery.py --byond-bin $ByondBin
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe equipment
+& $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe equipment --room-payment-negative-control
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe mode
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe mode --supply-negative-control
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe city

@@ -44,6 +44,9 @@ def main():
     payloads = {'link.challenge': {'challenge_id': 'challenge-1'},
                 'link.complete': {'challenge_id': 'challenge-1', 'proof': 'proof-1'},
                 'stash.inspect': {'page': 0}, 'room.inspect': {'page': 7},
+                'stash.detail': {'item_id': 'item-1', 'page': 31},
+                'market.browse': {'page': 15},
+                'room.quote': {'operation': 'upgrade', 'item_ids': ['item-1']},
                 'room.manage': {'confirmation_token': 'token-1'},
                 'trade.quote': {'item_ids': ['item-1', 'item-2'], 'sale_kind': 'server_buyback'},
                 'trade.confirm': {'confirmation_token': 'token-1'},
@@ -63,6 +66,14 @@ def main():
                         raw.replace('"expected_account_revision":4', '"expected_account_revision":4.0')):
             vectors.append({'kind': 'request', 'text': altered, 'accepted': False})
     invalid_requests = [
+        ('stash.detail', {'item_id': 'item-1', 'page': 32}, '123', 4),
+        ('stash.detail', {'item_id': '../account', 'page': 0}, '123', 4),
+        ('market.browse', {'page': 16}, '123', 4),
+        ('market.browse', {'page': 0, 'owner': 'victim'}, '123', 4),
+        ('room.quote', {'operation': 'upgrade', 'item_ids': ['item-1']}, '123', None),
+        ('room.quote', {'operation': 'downgrade', 'item_ids': ['item-1']}, '123', 4),
+        ('room.quote', {'operation': 'upgrade', 'item_ids': ['same', 'same']}, '123', 4),
+        ('room.quote', {'operation': 'upgrade', 'item_ids': []}, '123', 4),
         ('stash.inspect', {'page': -1}, '123', 4),
         ('stash.inspect', {'page': 8}, '123', 4),
         ('stash.inspect', {'page': 0, 'owner': 'victim'}, '123', 4),

@@ -103,6 +103,11 @@ def main():
 
             def inspect(identifier, actor):
                 key = php('inspect', identifier, actor)
+                if identifier == 'first-list-inspect':
+                    # Transport boundary setup: emulate a Windows CRLF terminator.
+                    # Keep the exact signed body/MAC and retain these bytes thereafter.
+                    path = spool / (key + '.request')
+                    path.write_bytes(path.read_bytes() + b'\r\n')
                 native()
                 poll(key)
                 return key
@@ -119,6 +124,12 @@ def main():
             native('init')
             listing_key, listing = sale('first-list', '123', 'player_listing', ['spool-part'])
             listing_id = listing['data']['listing_id']
+            observation = inspect('catalog-inspect', '456')
+            browse_key = php('browse', 'catalog-page', observation, '0')
+            native()
+            catalog = poll(browse_key)
+            if catalog['data']['listings'][0]['listing_id'] != listing_id or catalog['data']['listings'][0]['price']['amount'] != 20:
+                raise RuntimeError('PHP listing discovery did not expose the exact native escrow quote')
             purchase_key, _ = sale('purchase', '456', 'player_purchase', listing_id)
             immutable_purchase = (spool / (purchase_key + '.request')).read_bytes()
             original_reply = poll(purchase_key)
@@ -140,8 +151,28 @@ def main():
                 raise RuntimeError('Fresh PHP status did not recover the original economic receipt')
             poll(interrupted_key)
             native('verify')
+            native('upgrade-stock')
+            observation = inspect('upgrade-inspect', '456')
+            detail_key = php('detail', 'upgrade-detail', observation, 'room-part-1', '0')
+            native()
+            detail = poll(detail_key)
+            if detail['data']['nodes'][0]['id'] != 'room-part-1':
+                raise RuntimeError('PHP detail did not retain native stable node identity')
+            room_quote = php('room-quote', 'upgrade-quote', observation, json.dumps(['room-part-' + str(i) for i in range(1, 6)]))
+            native()
+            quoted = poll(room_quote)
+            if quoted['data']['required_parts'] != 5 or quoted['data']['target_level'] != 2:
+                raise RuntimeError('PHP room quote did not expose authoritative native upgrade cost')
+            room_confirm = php('confirm', 'upgrade-confirm', room_quote)
+            native()
+            original_upgrade = poll(room_confirm)
+            (spool / (room_confirm + '.reply')).unlink()
+            native()
+            if poll(room_confirm) != original_upgrade:
+                raise RuntimeError('Lost room reply did not recover the exact account receipt')
+            native('upgrade-verify')
             manifest['phases'] = phases
-            manifest['result'] = 'PASS: PHP/native list, purchase, cancel, buyback, immutable replay and interrupted settlement status recovery'
+            manifest['result'] = 'PASS: PHP/native catalog, detail, paid room upgrade, list, purchase, cancel, buyback, immutable replay and interrupted settlement status recovery'
             manifest_path.write_text(json.dumps(manifest, indent=2) + '\n', encoding='ascii')
             print(manifest['result'])
             if args.output:

@@ -1241,6 +1241,7 @@
 #include "code\modules\1713\extraction\ipc_crypto.dm"
 #include "code\modules\1713\extraction\ipc_wire.dm"
 #include "code\modules\1713\extraction\ipc_request.dm"
+#include "code\modules\1713\extraction\ipc_projection.dm"
 #include "code\modules\1713\extraction\account_store.dm"
 #include "code\modules\1713\extraction\ipc_service.dm"
 #include "code\modules\1713\extraction\ipc_economy.dm"

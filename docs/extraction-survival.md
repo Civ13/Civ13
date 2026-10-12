@@ -335,7 +335,8 @@ processing and restart processes with temporary account storage. Removing the
 proof check must fail the wrong-proof assertion; interrupted journal intents
 block restart rather than rolling back account links.
 
-No listener, spool processor, operator key or player linking interface is enabled.
+No listener, spool processor or operator key is enabled by default. The private
+terminal's linking option reports unavailable until the host enables it.
 An explicitly injected native economic adapter now supports game-priced buyback,
 player listings, purchases and cancellation. Quotes expire after 120 seconds and
 bind the linked actor, account revision, exact equipment graph, price table,
@@ -398,3 +399,30 @@ levels. Planks support the normal eight-plank research bench and gunsmithing
 station recipes; gold can be crafted into the coins ordinary benches consume.
 The shared laboratory avoids requiring a new bench to be upgraded through six
 tiers during a six-hour city run. These prototype prices still need playtesting.
+
+Saved `stash.inspect` and `room.inspect` pages retain root identity and secure
+storage flags and add authoritative root condition/FIR summaries. `stash.detail`
+pages expose at most sixteen saved nodes with their stable identities, original
+parent indexes, condition, material/quantity and contained ammunition references.
+Only the linked account's saved graph is visible; active native accounts reject
+offline inspection, and a supplied stale revision rejects. Insurance tokens and
+arbitrary saved descriptive strings are excluded. Graph revision is the account
+snapshot revision, not a separate invented clock. Legacy unsupported detail is
+explicitly unavailable. `market.browse` returns eight active escrow lots per page
+with native prices and identities, without seller account/Discord identity.
+Purchase quotes revalidate actual escrow rather than trusting this observation.
+
+`room.quote` prices the existing house upgrade at five, ten or fifteen whole
+workshop parts and binds their graphs, actor, account revision, operation and
+120-second expiry. `room.manage` accepts only that confirmation token and quoted
+revision. It uses the production upgrade plan and commits consumption, level and
+original request receipt in one account snapshot. The shared trade conservation
+journal is unchanged. Lost replies recover the original receipt; partial native
+journal writes still fail closed and may require explicit offline recovery.
+The room-payment mutation control retains parts and must fail the native payment
+assertion. These are disabled bot contracts, not live Discord acceptance.
+
+Signed bodies are limited to 8192 bytes, wire envelopes to 12000 and spool files
+to 12001 before outer transport whitespace trimming (including Windows CRLF).
+Signed body bytes are unchanged. Oversized projections reject explicitly with
+`response_too_large`; nodes or fields are never silently truncated.

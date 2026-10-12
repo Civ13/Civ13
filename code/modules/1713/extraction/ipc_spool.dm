@@ -40,8 +40,10 @@ var/global/list/extraction_ipc_spool_owners = list()
 		if (length(file(path)) > 12001) return null
 		var/text = file2text(path)
 		if (!istext(text) || length(text) > 12001) return null
-		// Native text2file adds one trailing LF outside the JSON envelope.
-		if (copytext(text, length(text)) == "\n") text = copytext(text, 1, length(text))
+		// Bounded transport whitespace may include Windows CRLF. The signed
+		// body remains untouched; only whitespace outside the envelope is removed.
+		while (length(text) && (text2ascii(text, 1) in list(9, 10, 13, 32))) text = copytext(text, 2)
+		while (length(text) && (text2ascii(text, length(text)) in list(9, 10, 13, 32))) text = copytext(text, 1, length(text))
 		return length(text) <= 12000 ? text : null
 	proc/historical_request(wire, id)
 		var/prefix = "{\"protocol\":\"civ13.safehouse.ipc.v1\",\"issued_at\":"

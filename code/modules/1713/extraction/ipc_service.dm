@@ -38,7 +38,7 @@
 		if (!islist(state["quotes"]) || length(state["quotes"]) > 64) return FALSE
 		for (var/token in state["quotes"])
 			var/list/quote = state["quotes"][token]
-			if (!islist(quote) || !extraction_ipc_identifier(token, FALSE, 64) || length(token) != 64 || !accounts.valid_owner(quote["owner"]) || !extraction_ipc_identifier(quote["discord_id"], TRUE, 22) || !(quote["action"] in list("trade.confirm", "market.list", "market.buy", "market.cancel")) || !islist(extraction_ipc_time(quote["expires_at"])) || !islist(quote["item_ids"]) || length(quote["item_ids"]) < 1 || length(quote["item_ids"]) > 16 || !islist(quote["graph_digests"]) || length(quote["graph_digests"]) != length(quote["item_ids"]) || !extraction_ipc_equal(token, extraction_hmac_sha256(key, "civ13.safehouse.quote.v1\n[json_encode(quote)]"))) return FALSE
+			if (!islist(quote) || !extraction_ipc_identifier(token, FALSE, 64) || length(token) != 64 || !accounts.valid_owner(quote["owner"]) || !extraction_ipc_identifier(quote["discord_id"], TRUE, 22) || !(quote["action"] in list("trade.confirm", "market.list", "market.buy", "market.cancel", "room.manage")) || !islist(extraction_ipc_time(quote["expires_at"])) || !islist(quote["item_ids"]) || length(quote["item_ids"]) < 1 || length(quote["item_ids"]) > 16 || !islist(quote["graph_digests"]) || length(quote["graph_digests"]) != length(quote["item_ids"]) || !extraction_ipc_equal(token, extraction_hmac_sha256(key, "civ13.safehouse.quote.v1\n[json_encode(quote)]"))) return FALSE
 		for (var/actor in links)
 			var/owner = links[actor]
 			if (!extraction_ipc_identifier(actor, TRUE, 22) || !accounts.valid_owner(owner) || owners[owner] != actor) return FALSE
@@ -130,24 +130,29 @@
 					var/list/operation = original["response"]
 					result = response(request, "committed", "operation_status", list("operation_status" = operation["status"], "operation_receipt" = operation["status"] == "pending" ? null : operation))
 				else result = response(request, "committed", "operation_not_found", list("operation_status" = "not_found", "operation_receipt" = null))
-			else if (action in list("stash.inspect", "room.inspect"))
+			else if (action in list("stash.inspect", "stash.detail", "room.inspect"))
 				var/list/account = accounts.load_profile(owner)
 				if ((economic_adapter && !call(economic_adapter, "ready")()) || !islist(account)) result = response(request, "pending", "account_recovery_required")
+				else if (economic_adapter && call(economic_adapter, "session_busy")(owner)) result = response(request, "rejected", "account_busy")
 				else if (account["state"] != "home") result = response(request, "rejected", "account_in_raid")
 				else if (!isnull(request["expected_account_revision"]) && request["expected_account_revision"] != account["revision"]) result = response(request, "rejected", "stale_revision")
+				else if (action == "stash.detail")
+					var/list/detail = extraction_ipc_detail_projection(account, payload["item_id"], payload["page"])
+					result = islist(detail) ? response(request, "committed", "saved_detail", detail) : response(request, "rejected", "item_unavailable")
 				else
 					var/list/entries = list()
 					var/start = payload["page"] * 8 + 1
 					var/list/stash = account["stash"]
 					for (var/i = start, i <= min(start + 7, length(stash)), i++)
 						var/list/item = stash[i]
-						entries += list(list("id" = item["id"], "secure" = !!item["secure"]))
+						entries += list(extraction_ipc_root_projection(item))
 					result = response(request, "committed", "saved_snapshot", list("revision" = account["revision"], "level" = account["level"], "capacity" = account["level"] * 16, "state" = account["state"], "page" = payload["page"], "items" = entries))
 			else if (economic_adapter)
 				result = call(economic_adapter, "process")(src, request, candidate, now_text, owner)
 				if (!islist(result)) result = response(request, "rejected", "action_not_available")
 			else result = response(request, "rejected", "action_not_available")
 		// Link changes and their idempotent receipt commit in the same snapshot.
+		if (length(extraction_crypto_bytes(json_encode(result))) > 8192) result = response(request, "rejected", "response_too_large")
 		if (result["account_receipt"])
 			result.Remove("account_receipt")
 			return result

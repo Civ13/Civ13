@@ -266,10 +266,14 @@
 
 // Upgrades consume whole stored salvage entries in the same durable snapshot.
 /datum/extraction_session/proc/upgrade(list/salvage_ids)
-	if (!active() || profile["state"] != "home" || profile["level"] >= 4 || !islist(salvage_ids) || salvage_ids.len != profile["level"] * 5) return FALSE
+	var/list/candidate = plan_upgrade(salvage_ids)
+	return islist(candidate) && commit(candidate)
+
+/datum/extraction_session/proc/plan_upgrade(list/salvage_ids, require_active = TRUE)
+	if ((require_active && !active()) || !islist(profile) || profile["state"] != "home" || profile["level"] >= 4 || !islist(salvage_ids) || salvage_ids.len != profile["level"] * 5) return null
 	var/list/wanted = list()
 	for (var/id in salvage_ids)
-		if (!istext(id) || wanted[id]) return FALSE
+		if (!istext(id) || wanted[id]) return null
 		wanted[id] = TRUE
 	var/list/candidate = copy_profile()
 	var/list/stash = candidate["stash"]
@@ -277,13 +281,13 @@
 	var/consumed = 0
 	for (var/list/entry in stash)
 		if (wanted[entry["id"]])
-			if (entry["salvage"] != TRUE) return FALSE
+			if (entry["salvage"] != TRUE) return null
 			consumed++
 		else remaining += list(entry)
-	if (consumed != wanted.len) return FALSE
+	if (consumed != wanted.len) return null
 	candidate["stash"] = remaining
 	candidate["level"]++
-	return commit(candidate)
+	return candidate
 
 /datum/extraction_session/proc/close()
 	if (service && service.sessions[owner] == src) service.sessions -= owner

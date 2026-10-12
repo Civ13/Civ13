@@ -29,7 +29,7 @@ def main():
     daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     with tempfile.TemporaryDirectory(prefix='civ13-ipc-service-') as folder:
         target = Path(folder)
-        files = ['account_store.dm', 'ipc_crypto.dm', 'ipc_wire.dm', 'ipc_request.dm', 'ipc_service.dm', 'ipc_spool.dm']
+        files = ['account_store.dm', 'ipc_crypto.dm', 'ipc_wire.dm', 'ipc_request.dm', 'ipc_projection.dm', 'ipc_service.dm', 'ipc_spool.dm']
         for name in files:
             shutil.copy2(root / 'code/modules/1713/extraction' / name, target / name)
         if args.proof_negative_control:
@@ -45,7 +45,11 @@ def main():
                 raise RuntimeError('Durable reply comparison mutation marker changed')
             (target / 'ipc_spool.dm').write_text(source.replace(marker, ''))
         shutil.copy2(root / 'tests/extraction/ipc_probe.dm', target / 'probe.dm')
-        (target / 'probe.dme').write_text(''.join(f'#include "{name}"\n' for name in files + ['probe.dm']))
+        # This historical linking fixture deliberately contains opaque legacy
+        # equipment. Production graph projection is covered by the full-source
+        # equipment/economics runners; here it reports detail unavailable.
+        (target / 'adapters.dm').write_text('/datum/extraction_equipment_codec/proc/validate(list/graph)\n\treturn FALSE\n')
+        (target / 'probe.dme').write_text(''.join(f'#include "{name}"\n' for name in ['adapters.dm'] + files + ['probe.dm']))
         built = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=target,
                                capture_output=True, text=True, timeout=60, creationflags=flags)
         print(built.stdout + built.stderr)

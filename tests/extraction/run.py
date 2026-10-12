@@ -22,7 +22,10 @@ def main():
     parser.add_argument('--supply-negative-control', action='store_true')
     parser.add_argument('--city-presence-negative-control', action='store_true')
     parser.add_argument('--economic-payment-negative-control', action='store_true')
+    parser.add_argument('--room-payment-negative-control', action='store_true')
     args = parser.parse_args()
+    if args.room_payment_negative_control and (args.probe != 'equipment' or args.economic_payment_negative_control):
+        parser.error('Room payment control requires the equipment probe without the economic payment control')
     if args.economic_payment_negative_control and args.probe != 'equipment':
         parser.error('Economic payment control requires the equipment probe')
     if args.city_presence_negative_control and (args.probe != 'city' or args.provenance_negative_control or args.vote_negative_control or args.group_negative_control or args.vehicle_loss_negative_control or args.vehicle_purchase_negative_control or args.vehicle_raid_negative_control or args.supply_negative_control):
@@ -47,7 +50,7 @@ def main():
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     if args.probe in ('equipment', 'mode', 'city', 'insurance', 'groups', 'vehicles'):
-        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control)
+        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control, args.room_payment_negative_control)
     with tempfile.TemporaryDirectory(prefix='civ13-extraction-') as temp:
         target = Path(temp)
         (target / 'tests/extraction').mkdir(parents=True)
@@ -77,13 +80,24 @@ def main():
                 raise RuntimeError('Account journal verification failed')
 
 
-def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False):
+def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False, room_payment_control=False):
     prefix = '.extraction_' + uuid.uuid4().hex
     generated = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '.dmb', '.rsc')]
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         expected_vote_failure = None
         expected_group_failure = None
+        if room_payment_control:
+            if probe != 'equipment' or economic_payment_control:
+                raise RuntimeError('Room payment control requires the equipment probe without another economic mutation')
+            transaction_source = (root / 'code/modules/1713/extraction/transactions.dm').read_text(encoding='utf-8')
+            marker = 'candidate["stash"] = remaining\n\tcandidate["level"]++'
+            if transaction_source.count(marker) != 1:
+                raise RuntimeError('Room upgrade payment mutation marker changed')
+            control = root / (prefix + '_transactions.dm')
+            generated.append(control)
+            control.write_text(transaction_source.replace(marker, 'candidate["level"]++'), encoding='utf-8')
+            source = source.replace('code\\modules\\1713\\extraction\\transactions.dm', control.name)
         if economic_payment_control:
             economic_source = (root / 'code/modules/1713/extraction/ipc_economy.dm').read_text(encoding='utf-8')
             marker = 'actor_after["credits"] = wallet(current) - amount'
@@ -250,6 +264,12 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
                 log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''
                 print(result)
+                if room_payment_control:
+                    if ran.returncode or not result.startswith('FAIL:') or 'native upgrade consumes exactly five roots and preserves unrelated wallet' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
+                        print(log)
+                        raise RuntimeError('Room payment control failed outside its intended assertion')
+                    print('PASS: retained upgrade parts rejected by native payment assertion')
+                    return
                 if economic_payment_control:
                     if ran.returncode or not result.startswith('FAIL:') or 'purchase three-account settlement committed' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
                         print(log)

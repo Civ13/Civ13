@@ -27,6 +27,8 @@
 		return TRUE
 	proc/wallet(list/account)
 		return isnull(account["credits"]) ? 0 : account["credits"]
+	proc/session_busy(owner)
+		return !!game?.sessions[owner]
 	proc/account(owner)
 		if (!ready() || game.sessions[owner]) return null
 		var/list/result = game.store.load_profile(owner)
@@ -84,10 +86,69 @@
 		if (!islist(current)) return ipc.response(request, "pending", "account_recovery_required")
 		if (islist(current["bot_receipts"]) && current["bot_receipts"][extraction_sha256(request["request_id"])]) return ipc.response(request, "rejected", "request_id_conflict")
 		if (current["state"] != "home") return ipc.response(request, "rejected", "account_in_raid")
-		if (request["expected_account_revision"] != current["revision"]) return ipc.response(request, "rejected", "stale_revision")
+		if (!isnull(request["expected_account_revision"]) && request["expected_account_revision"] != current["revision"]) return ipc.response(request, "rejected", "stale_revision")
+		if (request["action"] == "market.browse") return market_catalog(ipc, request, current)
+		if (request["action"] == "room.quote") return room_quote(ipc, request, candidate, current, now_text)
+		if (request["action"] == "room.manage") return room_confirm(ipc, request, candidate, current, now_text)
 		if (request["action"] == "trade.quote") return quote(ipc, request, candidate, current, now_text)
 		if (request["action"] in list("trade.confirm", "market.list", "market.buy", "market.cancel")) return confirm(ipc, request, candidate, current, now_text)
 		return null
+	proc/market_catalog(datum/extraction_ipc_service/ipc, list/request, list/current)
+		var/list/market = account("extractionmarket")
+		if (!islist(market)) return ipc.response(request, "pending", "account_recovery_required")
+		var/list/active = list()
+		for (var/id in market["listings"])
+			if (market["listings"][id]["state"] == "active") active += id
+		var/page = request["payload"]["page"]
+		var/start = page * 8 + 1
+		var/list/listings = list()
+		for (var/i = start, i <= min(start + 7, length(active)), i++)
+			var/id = active[i]
+			var/list/listing = market["listings"][id]
+			var/list/entries = selected(market, listing["item_ids"])
+			if (!islist(entries) || json_encode(graph_digests(entries)) != json_encode(listing["graph_digests"])) return ipc.response(request, "pending", "account_recovery_required")
+			var/list/roots = list()
+			for (var/list/entry in entries) roots += list(extraction_ipc_root_projection(entry))
+			listings += list(list("listing_id" = id, "listing_revision" = listing["revision"], "price" = list("currency_id" = "civ13.game_credits.v1", "amount" = listing["price"]), "item_ids" = listing["item_ids"], "item_count" = length(entries), "roots" = roots))
+		return ipc.response(request, "committed", "market_catalog", list("account_revision" = current["revision"], "page" = page, "next_page" = start + 8 <= length(active) ? page + 1 : null, "listings" = listings))
+	proc/room_parts(list/current, list/ids)
+		var/list/entries = selected(current, ids)
+		if (!islist(entries) || current["level"] >= 4 || length(entries) != current["level"] * 5) return null
+		for (var/list/entry in entries)
+			if (!entry["salvage"] || length(entry["equipment"]["nodes"]) != 1 || entry["equipment"]["nodes"][1]["type"] != "/obj/item/extraction_salvage") return null
+		return entries
+	proc/room_quote(datum/extraction_ipc_service/ipc, list/request, list/candidate, list/current, now_text)
+		var/list/ids = request["payload"]["item_ids"]
+		var/list/entries = room_parts(current, ids)
+		if (!islist(entries)) return ipc.response(request, "rejected", "upgrade_parts_unavailable")
+		var/list/record = list("quote_id" = extraction_sha256("roomquote\n[request["request_id"]]\n[request["request_digest"]]"), "action" = "room.manage", "discord_id" = request["discord_id"], "owner" = current["owner"], "revision" = current["revision"], "account_digest" = md5(json_encode(current)), "expires_at" = extraction_ipc_after(now_text, 120), "item_ids" = ids, "graph_digests" = graph_digests(entries), "current_level" = current["level"], "target_level" = current["level"] + 1, "required_parts" = length(entries), "operation" = "upgrade")
+		var/list/quotes = candidate["quotes"]
+		for (var/old_token in quotes.Copy())
+			if (extraction_ipc_elapsed(extraction_ipc_time(now_text), extraction_ipc_time(quotes[old_token]["expires_at"])) > 0) quotes.Remove(old_token)
+		if (length(quotes) >= 64) return ipc.response(request, "pending", "journal_capacity")
+		var/token = extraction_hmac_sha256(ipc.key, "civ13.safehouse.quote.v1\n[json_encode(record)]")
+		quotes[token] = record
+		return ipc.response(request, "committed", "quote_created", list("quote_id" = record["quote_id"], "confirmation_token" = token, "confirm_action" = "room.manage", "expected_account_revision" = current["revision"], "expires_at" = record["expires_at"], "operation" = "upgrade", "current_level" = current["level"], "target_level" = current["level"] + 1, "required_parts" = length(entries), "item_ids" = ids))
+	proc/room_confirm(datum/extraction_ipc_service/ipc, list/request, list/candidate, list/current, now_text)
+		var/token = request["payload"]["confirmation_token"]
+		var/list/record = candidate["quotes"][token]
+		if (!islist(record) || !extraction_ipc_equal(token, extraction_hmac_sha256(ipc.key, "civ13.safehouse.quote.v1\n[json_encode(record)]")) || record["owner"] != current["owner"] || record["discord_id"] != request["discord_id"]) return ipc.response(request, "rejected", "token_invalid")
+		if (record["action"] != "room.manage") return ipc.response(request, "rejected", "quote_action_mismatch")
+		if (extraction_ipc_elapsed(extraction_ipc_time(now_text), extraction_ipc_time(record["expires_at"])) >= 0) return ipc.response(request, "rejected", "quote_expired")
+		if (record["revision"] != current["revision"] || record["account_digest"] != md5(json_encode(current))) return ipc.response(request, "rejected", "stale_revision")
+		var/list/entries = room_parts(current, record["item_ids"])
+		if (!islist(entries) || json_encode(graph_digests(entries)) != json_encode(record["graph_digests"])) return ipc.response(request, "rejected", "invalid_graph")
+		var/datum/extraction_session/planner = new
+		planner.profile = current
+		var/list/after = planner.plan_upgrade(record["item_ids"], FALSE)
+		if (!islist(after)) return ipc.response(request, "rejected", "upgrade_parts_unavailable")
+		if (!islist(after["bot_receipts"])) after["bot_receipts"] = list()
+		if (length(after["bot_receipts"]) >= 256) return ipc.response(request, "pending", "journal_capacity")
+		var/list/result = ipc.response(request, "committed", "room_upgrade_committed", list("quote_id" = record["quote_id"], "account_revision" = current["revision"] + 1, "level" = after["level"], "required_parts" = record["required_parts"], "item_ids" = record["item_ids"]))
+		after["bot_receipts"][extraction_sha256(request["request_id"])] = json_decode(json_encode(result))
+		if (!game.store.commit_profile(current["owner"], after)) result = ipc.response(request, "pending", "account_recovery_required")
+		result["account_receipt"] = TRUE
+		return result
 	proc/quote(datum/extraction_ipc_service/ipc, list/request, list/candidate, list/current, now_text)
 		var/list/payload = request["payload"]
 		var/kind = payload["sale_kind"]
