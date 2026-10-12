@@ -16,6 +16,17 @@ This does not enable the live bot or establish connected-client acceptance.
 
 Use BYOND 516.1681 and a verified full Python interpreter path:
 
+The native private-house terminal exposes `Inspect stash`, using the same
+saved-node projection as `stash.detail`, including original IDs, parent links,
+condition, found-in-raid status, material, amount and ammunition links. Native
+detail access requires the owning body's physical terminal access. The mode
+probe checks another account's item ID, loss of terminal access and invalid
+pages. House upgrades select exact workshop-part IDs and show a final payment
+quote; the shared economic part eligibility and upgrade planner reject insured
+or unsuitable graphs. Native regressions check cancellation, movement during
+confirmation and changed physical equipment before debit. These injected-input
+regressions establish the authoritative operations, not graphical acceptance.
+
 ```powershell
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe store
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe restart

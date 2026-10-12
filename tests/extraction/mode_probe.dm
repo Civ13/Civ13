@@ -18,6 +18,22 @@
 	var/test_ride_confirmation = TRUE
 	var/test_vehicle_return_confirmation = TRUE
 	var/test_supply_confirmation = TRUE
+	var/test_upgrade_confirmation = TRUE
+	choose_upgrade_parts(datum/extraction_session/S)
+		var/list/ids = list()
+		for (var/list/entry in S.profile["stash"])
+			if (entry["salvage"] && ids.len < S.profile["level"] * 5) ids += entry["id"]
+		return ids
+	confirm_house_upgrade(datum/extraction_session/S, list/ids)
+		if (test_upgrade_confirmation == "move")
+			S.body.forceMove(locate(S.house.x + 4, S.house.y + 4, S.house.z))
+			return TRUE
+		if (test_upgrade_confirmation == "stale")
+			for (var/obj/item/extraction_salvage/I in home_roots(S))
+				I.health--
+				break
+			return TRUE
+		return test_upgrade_confirmation
 	confirm_supplies(mob/living/human/H, offer, price)
 		if (test_supply_confirmation == "move")
 			H.forceMove(locate(H.extraction_session.house.x + 4, H.extraction_session.house.y + 4, 2))
@@ -90,6 +106,13 @@
 	var/obj/item/weapon/gun/projectile/pistol/m9beretta/G
 	for (var/obj/item/weapon/gun/projectile/pistol/m9beretta/I in items) G = I
 	equipment_assert(G, "starter has conventional pistol")
+	var/list/native_detail = M.home_stash_detail(A, G.extraction_item_id, 0)
+	equipment_assert(native_detail && json_encode(native_detail) == json_encode(extraction_ipc_detail_projection(SA.profile, G.extraction_item_id, 0)), "ordinary native stash view shares authoritative bot graph projection")
+	equipment_assert(!M.home_stash_detail(B, G.extraction_item_id, 0), "native stash view denies another account item ID")
+	A.forceMove(locate(SA.house.x + 4, SA.house.y + 4, SA.house.z))
+	equipment_assert(!M.home_stash_detail(A, G.extraction_item_id, 0), "native stash view requires physical terminal access")
+	A.forceMove(get_turf(SA.house))
+	equipment_assert(!M.home_stash_detail(A, G.extraction_item_id, 32) && !M.home_stash_detail(A, G.extraction_item_id, -1), "native stash view rejects out-of-range detail pages")
 	G.forceMove(A)
 	var/obj/effect/extraction_secure_crate/private_crate = M.house_crate(SA)
 	equipment_assert(private_crate && !private_crate.authorized(B), "secure crate access bound to active room owner")
@@ -181,6 +204,14 @@
 	equipment_assert(!SA.extract(SA.profile["raid_sequence"], loot), "return replay rejected")
 	A.forceMove(get_turf(SA.house))
 	for (var/i in 1 to 5) new /obj/item/extraction_salvage(get_turf(SA.house))
+	M.test_upgrade_confirmation = FALSE
+	equipment_assert(!M.upgrade_house(SA) && SA.profile["level"] == 1 && M.home_roots(SA).len == 9, "cancelled native selected-ID upgrade preserves all physical parts")
+	M.test_upgrade_confirmation = "move"
+	equipment_assert(!M.upgrade_house(SA) && SA.profile["level"] == 1, "leaving terminal during quote rejects native upgrade")
+	A.forceMove(get_turf(SA.house))
+	M.test_upgrade_confirmation = "stale"
+	equipment_assert(!M.upgrade_house(SA) && SA.profile["level"] == 1 && M.home_roots(SA).len == 9, "changed physical part invalidates native upgrade quote")
+	M.test_upgrade_confirmation = TRUE
 	equipment_assert(M.upgrade_house(SA), "physical upgrade consumes committed parts")
 	equipment_assert(SA.profile["level"] == 2 && M.home_roots(SA).len == 4, "upgrade durable and physical copies retired")
 	var/home = get_turf(SA.house)

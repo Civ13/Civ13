@@ -118,7 +118,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		if (!istype(H) || !session || session.body != H || H.client?.ckey != session.owner || session.transitioning || session.profile["state"] != "home" || !Adjacent(H)) return
 		var/obj/map_metadata/extraction_survival/M = map
 		if (!istype(M)) return
-		var/choice = WWinput(H, "Carry your loadout to deploy. Insured deployment costs one workshop part per reusable equipment component, paid from parts left at home. Ammunition never returns. [M.round_briefing()] Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts. A level-two garage car costs 25 parts and has no fuel. Supplies exchange parts for game credits and sell crafting materials, gear and fuel.", "Private safe house", "Cancel", list("Deploy", "Deploy car", "Raid group", "Deploy as Scav", "Insure and deploy", "Claim insurance mail", "Visit hub", "Upgrade", "Buy car", "Supplies", "Link Discord", "Save stash", "Cancel"))
+		var/choice = WWinput(H, "Carry your loadout to deploy. Insured deployment costs one workshop part per reusable equipment component, paid from parts left at home. Ammunition never returns. [M.round_briefing()] Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts. A level-two garage car costs 25 parts and has no fuel. Supplies exchange parts for game credits and sell crafting materials, gear and fuel.", "Private safe house", "Cancel", list("Deploy", "Deploy car", "Raid group", "Deploy as Scav", "Insure and deploy", "Inspect stash", "Claim insurance mail", "Visit hub", "Upgrade", "Buy car", "Supplies", "Link Discord", "Save stash", "Cancel"))
 		if (session.body != H || !Adjacent(H) || session.transitioning) return
 		switch (choice)
 			if ("Deploy") M.deploy(H)
@@ -127,6 +127,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 			if ("Deploy as Scav") M.deploy(H, "Scav")
 			if ("Insure and deploy") M.deploy(H, "PMC", TRUE)
 			if ("Claim insurance mail") M.claim_mail(H)
+			if ("Inspect stash") M.inspect_home_stash(H)
 			if ("Save stash") M.save_home(session)
 			if ("Upgrade") M.upgrade_house(session)
 			if ("Buy car") M.buy_car(H)
@@ -549,13 +550,26 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	return TRUE
 
 /obj/map_metadata/extraction_survival/proc/upgrade_house(datum/extraction_session/S)
-	if (!save_home(S)) return FALSE
-	var/list/cost = list()
+	if (!owned(S?.body) || S.body.stat != CONSCIOUS || !S.body.Adjacent(S.house) || !save_home(S)) return FALSE
+	var/list/cost = choose_upgrade_parts(S)
+	var/datum/extraction_ipc_economy/economy = new(accounts)
+	var/list/entries = economy.room_parts(S.profile, cost)
+	if (!entries)
+		to_chat(S.body, "Choose exactly [S.profile["level"] * 5] uninsured workshop parts for a house below level four.")
+		return FALSE
+	var/revision = S.profile["revision"]
+	var/digest = md5(json_encode(S.profile))
+	var/expiry = world.time + 2 MINUTES
+	if (!confirm_house_upgrade(S, cost)) return FALSE
+	if (!owned(S.body) || S.body.stat != CONSCIOUS || !S.body.Adjacent(S.house) || S.transitioning || world.time >= expiry || S.profile["revision"] != revision || md5(json_encode(S.profile)) != digest) return FALSE
+	var/list/actual = records(home_roots(S))
+	if (!actual || json_encode(actual) != json_encode(S.profile["stash"]))
+		to_chat(S.body, "Your equipment changed after the quote. Choose the parts again.")
+		return FALSE
 	var/list/consumed = list()
 	for (var/obj/item/extraction_salvage/I in home_roots(S))
-		if (cost.len >= S.profile["level"] * 5) break
-		cost += I.extraction_item_id
-		consumed += I
+		if (I.extraction_item_id in cost) consumed += I
+	if (consumed.len != cost.len) return FALSE
 	if (!S.upgrade(cost))
 		to_chat(S.body, "Upgrade needs [S.profile["level"] * 5] workshop parts and a house below level four.")
 		return FALSE
@@ -563,6 +577,59 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		if (I.loc == S.body) S.body.unEquip(I, TRUE)
 		qdel(I)
 	to_chat(S.body, "House upgraded to level [S.profile["level"]], capacity [S.capacity()].")
+	return TRUE
+
+/obj/map_metadata/extraction_survival/proc/choose_upgrade_parts(datum/extraction_session/S)
+	var/datum/extraction_ipc_economy/economy = new(accounts)
+	var/list/options = list()
+	for (var/list/entry in S.profile["stash"])
+		if (entry["salvage"] && economy.eligible(entry)) options["Workshop part [entry["id"]]"] = entry["id"]
+	var/list/selected = list()
+	var/required = S.profile["level"] * 5
+	if (required > 15 || options.len < required) return null
+	while (selected.len < required)
+		var/choice = WWinput(S.body, "Choose part [selected.len + 1] of [required]. These exact items will appear in the final upgrade quote.", "Upgrade parts", "Cancel", options + list("Cancel"))
+		if (!owned(S.body) || !S.body.Adjacent(S.house) || !options[choice]) return null
+		selected += options[choice]
+		options -= choice
+	return selected
+
+/obj/map_metadata/extraction_survival/proc/confirm_house_upgrade(datum/extraction_session/S, list/ids)
+	return WWinput(S.body, "Upgrade house [S.profile["level"]] to [S.profile["level"] + 1] for [ids.len] workshop parts? Selected item IDs: [jointext(ids, ", ")].", "Upgrade quote", "Cancel", list("Pay and upgrade", "Cancel")) == "Pay and upgrade"
+
+/obj/map_metadata/extraction_survival/proc/home_stash_detail(mob/living/human/H, item_id, page)
+	if (!supply_access(H) || !isnum(page) || page < 0 || page > 31 || round(page) != page) return null
+	return extraction_ipc_detail_projection(H.extraction_session.profile, item_id, page)
+
+/obj/map_metadata/extraction_survival/proc/stash_node_text(list/node)
+	var/obj/item/prototype = text2path(node["type"])
+	var/list/condition = node["condition"]
+	var/list/ammunition = node["ammo_refs"]
+	return "[initial(prototype.name)] - ID [node["id"]]; part [node["index"]], parent [node["parent"]]; found in raid: [node["found_in_raid"] ? "yes" : "no"]; condition [condition["health"]]/[condition["maxhealth"]]; material [node["material_key"]]; amount [node["amount"]]; ammunition links [json_encode(ammunition)]"
+
+/obj/map_metadata/extraction_survival/proc/inspect_home_stash(mob/living/human/H)
+	if (!supply_access(H) || !save_home(H.extraction_session)) return FALSE
+	var/list/options = list()
+	for (var/list/entry in H.extraction_session.profile["stash"])
+		var/list/projection = extraction_ipc_root_projection(entry)
+		var/list/root = projection["root"]
+		if (!islist(root)) continue
+		var/obj/item/prototype = text2path(root["type"])
+		options["[initial(prototype.name)] - [entry["id"]]"] = entry["id"]
+	if (!options.len)
+		to_chat(H, "Your saved stash has no inspectable items.")
+		return FALSE
+	var/choice = WWinput(H, "Choose a saved item to inspect its original parts, condition, materials and ammunition. Item IDs distinguish otherwise identical items.", "Private stash", "Cancel", options + list("Cancel"))
+	if (!supply_access(H) || !options[choice]) return FALSE
+	var/page = 0
+	while (page <= 31)
+		var/list/detail = home_stash_detail(H, options[choice], page)
+		if (!detail) return FALSE
+		to_chat(H, "Item [detail["item_id"]], saved revision [detail["account_revision"]], parts page [page + 1]:")
+		for (var/list/node in detail["nodes"]) to_chat(H, stash_node_text(node))
+		if (isnull(detail["next_page"])) return TRUE
+		if (WWinput(H, "More parts are available for this item.", "Stash details", "Close", list("Next page", "Close")) != "Next page") return TRUE
+		page = detail["next_page"]
 	return TRUE
 
 /obj/map_metadata/extraction_survival/proc/release(datum/extraction_session/S, save = TRUE)
