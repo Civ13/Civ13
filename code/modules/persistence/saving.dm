@@ -10,7 +10,7 @@
 // Native savefile writes, list copies and fcopy calls remain nonpreemptible.
 /map_storage/proc/save_work_check()
 	saving_work++
-	if(saving_work >= 1024 || world.tick_usage-saving_slice_start >= 20 || world.tick_usage >= 80)
+	if(saving_work >= 8192 || world.tick_usage-saving_slice_start >= 20 || world.tick_usage >= 80)
 		saving_work = 0
 		sleep(world.tick_lag)
 		saving_slice_start = world.tick_usage
