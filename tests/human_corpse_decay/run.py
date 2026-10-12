@@ -83,8 +83,8 @@ def main():
             shutil.copy2(root / rel, destination)
         (out / 'config/config.txt').write_text('', encoding='utf-8')
         log = (out / 'daemon.log').open('w')
-        cmd = [str(daemon), str(out / generated[3].name)]
-        if os.name == 'nt': cmd += ['-invisible', '-close']
+        cmd = [str(daemon), str(out / generated[3].name), '-close']
+        if os.name == 'nt': cmd += ['-invisible']
         cmd += ['-safe', '-params', f'tested_commit={head}', '-log', 'runtime.log']
         proc = subprocess.Popen(cmd, cwd=out, stdout=log, stderr=subprocess.STDOUT, creationflags=flags)
         samples = []
@@ -113,7 +113,11 @@ def main():
             log.close()
             (out / 'rss.json').write_text(json.dumps(samples))
         runtime_text = (out / 'runtime.log').read_text(encoding='utf-8', errors='replace')
-        if 'runtime error:' in runtime_text: raise RuntimeError('Uncaught runtime error in isolated log')
+        daemon_text = (out / 'daemon.log').read_text(encoding='utf-8', errors='replace')
+        if any(marker in (runtime_text + daemon_text).lower() for marker in ('runtime error:', 'bad ref', 'badref', '## bug:')):
+            print('Native runtime log:\n' + runtime_text, flush=True)
+            print('Native daemon output:\n' + daemon_text, flush=True)
+            raise RuntimeError('Uncaught runtime/engine diagnostic in isolated logs')
         result = (out / 'result.txt').read_text(encoding="utf-8").strip()
         print(result)
         if a.negative_control:

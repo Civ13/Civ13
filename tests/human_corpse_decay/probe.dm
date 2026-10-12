@@ -71,9 +71,15 @@ var/corpse_assertions = 0
 	for (var/obj/structure/religious/remains/decaying/B)
 		qdel(B)
 
+/world/OpenPort(port)
+	if (port == "none") return ..()
+	return FALSE
+
 /world/New()
+	OpenPort("none")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "byond" = "[world.byond_version].[world.byond_build]", "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz)), "metadata.json")
 	try
+		corpse_assert(!world.port && !world.OpenPort(0) && !world.port, "isolated port stays closed")
 		config = new
 		config.webhook_can_fire = FALSE
 		config.ToRban = FALSE
