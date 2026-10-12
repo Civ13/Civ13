@@ -140,7 +140,7 @@ By design, d1 is the smallest direction and d2 is the highest
 /obj/structure/cable/attackby(obj/item/W, mob/user, params)
 	if(istype(W, /obj/item/weapon/wirecutters))
 		var/mob/living/human/H = user
-		if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || !H.item_is_in_hands(W) || get_dist(H, src) > 1 || !isturf(loc))
+		if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || !H.item_is_in_hands(W) || H.z != z || get_dist(H, src) > 1 || !isturf(loc))
 			return
 		user.visible_message("[user] cuts the cable.", "<span class='notice'>You cut the cable.</span>")
 		playsound(loc, usesound, 100, FALSE)

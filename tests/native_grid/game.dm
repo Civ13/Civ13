@@ -44,6 +44,7 @@ var/native_grid_failures = 0
 		var/obj/structure/cable/B = coil.place_turf(locate(3,2,1),H,EAST)
 		native_grid_check(B && coil.amount == 1 && (B in A.connections) && (A in B.connections), "adjacent paid reciprocal connection")
 		native_grid_check(!coil.place_turf(locate(6,2,1),H,EAST) && coil.amount == 1, "remote placement spends nothing")
+		native_grid_check(!coil.place_turf(locate(2,2,2),H,EAST) && coil.amount == 1, "other-level placement spends nothing")
 		H.l_hand = null
 		native_grid_check(!coil.place_turf(locate(2,3,1),H,NORTH) && coil.amount == 1, "dropped tool rejected")
 		H.l_hand = coil

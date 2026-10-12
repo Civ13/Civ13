@@ -160,7 +160,7 @@
 /obj/item/connector/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wrench))
 		var/mob/living/human/H = user
-		if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || !H.item_is_in_hands(W) || get_dist(H,src) > 1 || !isturf(loc))
+		if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || !H.item_is_in_hands(W) || H.z != z || get_dist(H,src) > 1 || !isturf(loc))
 			return
 		if (!anchored)
 			for (var/obj/item/connector/other in loc)
@@ -216,7 +216,7 @@
 		qdel(src)
 		return
 
-	if(get_dist(T,user) > 1) // Too far
+	if(T.z != user.z || get_dist(T,user) > 1) // Too far
 		to_chat(user, "<span class='warning'>You can't lay cable at a place that far away!</span>")
 		return
 
