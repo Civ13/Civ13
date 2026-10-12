@@ -526,3 +526,11 @@ Scheduler start replaces its identity token; stale sleeping invocations retire a
 wake, and stop invalidates the token. Process may_run uses one lazy history
 expiry deadline; started cancels it before recording new run history. Native
 lifecycle, immutable baseline and controls live in tests/process_loop_lifecycle.
+
+<!-- 2026-10-12: era-dependent research prototypes -->
+Established factions retain their founding research baseline when another faction
+advances the world era. Prototype recipes must remain obtainable afterward:
+Digital Computing needs the cold-war camera subtype, not its modern camera parent.
+The compiled crafting fixture checks two-faction era advancement and the paid
+recipe; --camera-prototype-negative-control restores its obsolete era cap in
+isolated runtime data and must detect exactly the lost recipe.
