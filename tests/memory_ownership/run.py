@@ -68,6 +68,7 @@ def main():
         if before not in body:
             raise RuntimeError('Negative control anchor missing')
         altered = out/'negative.dm'
+        body = body.replace('#include "garbage_profile.dm"', '#include "' + (root/'code/processes/garbage_profile.dm').as_posix() + '"')
         altered.write_text(body.replace(before, after, 1))
         source = source.replace((root/relative).as_posix(), altered.as_posix())
     probe = out/'probe.dme'
