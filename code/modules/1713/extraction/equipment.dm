@@ -32,6 +32,7 @@ var/global/extraction_identity_sequence = 0
 	if (ispath(path, /obj/item/weapon/gun/projectile/custom)) return FALSE
 	if (ispath(path, /obj/item/weapon/key/extraction_room)) return TRUE
 	if (path in list(/obj/item/stack/material/glass, /obj/item/stack/cable_coil)) return TRUE
+	if (path == /obj/item/extraction_wheel_crate) return TRUE
 	if (path in list(/obj/item/stack/material/copper, /obj/item/stack/material/gold)) return TRUE
 	if (path in list(/obj/item/stack/material/wood, /obj/item/stack/material/woodplank, /obj/item/stack/material/iron, /obj/item/stack/material/steel, /obj/item/stack/material/cloth, /obj/item/stack/material/rope, /obj/item/stack/material/leather, /obj/item/stack/material/kevlar, /obj/item/stack/material/cotton, /obj/item/stack/material/flax, /obj/item/stack/material/rettedfabric)) return TRUE
 	if (path in list(/obj/item/weapon/reagent_containers/glass/barrel/jerrycan, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel)) return TRUE
@@ -67,6 +68,9 @@ var/global/extraction_identity_sequence = 0
 	index[I] = items.len
 	nodes += list(list("type" = "[I.type]", "parent" = parent))
 	var/id = items.len
+	if (I.type == /obj/item/extraction_wheel_crate)
+		var/obj/item/extraction_wheel_crate/W = I
+		return !!W.snapshot_wheel()
 	for (var/atom/movable/child in I.contents)
 		if (!istype(child, /obj/item) || !collect(child, id, depth + 1)) return FALSE
 	return TRUE
@@ -88,6 +92,9 @@ var/global/extraction_identity_sequence = 0
 		node["found_in_raid"] = I.extraction_found_in_raid
 		if (I.extraction_insurance_token) node["insurance_token"] = I.extraction_insurance_token
 		var/list/scalars = list()
+		if (I.type == /obj/item/extraction_wheel_crate)
+			var/obj/item/extraction_wheel_crate/W = I
+			node["packed_wheel"] = W.snapshot_wheel()
 		for (var/key in scalar_fields(I.type))
 			if (!(key in I.vars)) continue
 			var/value = I.vars[key]
@@ -170,6 +177,11 @@ var/global/extraction_identity_sequence = 0
 			if (!isnull(node["insurance_token"]) && (!istext(node["insurance_token"]) || length(node["insurance_token"]) != 32 || ckey(node["insurance_token"]) != node["insurance_token"])) return FALSE
 		var/path = text2path(node["type"])
 		if (!supported(path) || !valid_ref(node["parent"], i - 1) || (i == 1 ? node["parent"] != 0 : node["parent"] == 0)) return FALSE
+		if (path == /obj/item/extraction_wheel_crate)
+			var/list/wheel_record = node["packed_wheel"]
+			if (!extraction_wheel_record_valid(wheel_record) || identities[wheel_record["id"]]) return FALSE
+			identities[wheel_record["id"]] = TRUE
+		else if (!isnull(node["packed_wheel"])) return FALSE
 		var/depth = i == 1 ? 1 : depths[node["parent"]] + 1
 		if (depth > EXTRACTION_EQUIPMENT_DEPTH) return FALSE
 		depths += depth
@@ -307,6 +319,9 @@ var/global/extraction_identity_sequence = 0
 			M.set_material(scalars["material_key"])
 		for (var/key in scalars)
 			if (key in I.vars) I.vars[key] = scalars[key]
+		if (I.type == /obj/item/extraction_wheel_crate)
+			var/obj/item/extraction_wheel_crate/W = I
+			W.restore_wheel(node["packed_wheel"])
 		if (istype(I, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan))
 			I.reagents.clear_reagents()
 			for (var/list/chemical in node["fuel"]) I.reagents.add_reagent(chemical["id"], chemical["volume"], safety = TRUE)

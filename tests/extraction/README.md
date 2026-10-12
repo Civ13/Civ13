@@ -307,7 +307,15 @@ credits) and cable (ten units, 30 game credits) offers. Equipment snapshots reta
 their original identities and bounded quantities, including cable color. Native
 assertions cover restoration without constructor merging and rejection of empty,
 oversized or invalid-color cable graphs; these additions are unrun until a slot
-is granted. Loose wheels and durable build reservations remain pending.
+is granted. A paid level-two standard wheel offer (40 game credits) owns one
+actual unattached native wheel inside its crate. The wheel codec preserves its
+separate identity and wear, rejects attached/anchored contents, and forbids
+performance upgrades in saved payloads. Pending reservations remove exact native
+recipe quantities from available stash and retain the full input graphs in the
+account journal. Interrupted pending reservations quarantine admission; they do
+not refund or recreate components automatically. Native wheel and disk-backed
+reservation assertions are added but unrun. Player-facing assembly, its power
+installation and interrupted-build recovery acceptance remain unfinished.
 
 The mode fixture also assembles a real car and checks the internal physical
 transfer helper: moving/stale vehicles, unexpected footprint/nested cargo and occupied bays

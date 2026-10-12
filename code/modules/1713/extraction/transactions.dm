@@ -116,6 +116,10 @@
 				var/id = node["id"]
 				if (!istext(id) || !length(id) || length(id) > 80 || node_ids[id]) return FALSE
 				node_ids[id] = TRUE
+				if (!isnull(node["packed_wheel"]))
+					var/list/wheel = node["packed_wheel"]
+					if (!islist(wheel) || !istext(wheel["id"]) || !length(wheel["id"]) || length(wheel["id"]) > 80 || node_ids[wheel["id"]]) return FALSE
+					node_ids[wheel["id"]] = TRUE
 			var/list/root = nodes[1]
 			if (root["id"] != entry["id"]) return FALSE
 	return TRUE

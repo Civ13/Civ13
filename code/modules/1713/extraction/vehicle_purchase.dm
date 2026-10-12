@@ -1,3 +1,51 @@
+// Pure paid-component reservation. Commit this snapshot before retiring roots;
+// pending purchases already quarantine admission after any interrupted build.
+/datum/extraction_session/proc/plan_vehicle_construction(list/payment, expected_revision, list/required)
+	if (!active() || profile["state"] != "home" || profile["level"] < 2 || profile["revision"] != expected_revision || !islist(payment) || !payment.len || payment.len > 64 || !islist(required) || required.len != 5 || (islist(profile["garage"]) && profile["garage"].len) || (islist(profile["garage_purchase"]) && profile["garage_purchase"]["status"] == "pending")) return null
+	var/obj/structure/car_workshop/native_workshop = new(null)
+	var/list/native_cost = native_workshop.costs("ASNO Piccolino")
+	qdel(native_workshop)
+	for (var/key in native_cost)
+		if (required[key] != native_cost[key]) return null
+	var/list/wanted = list()
+	for (var/id in payment)
+		if (!istext(id) || wanted[id]) return null
+		wanted[id] = TRUE
+	var/list/candidate = copy_profile()
+	var/list/retained = list()
+	var/list/inputs = list()
+	var/list/ids = list()
+	var/list/totals = list("steel" = 0, "glass" = 0, "cloth" = 0, "cable" = 0, "wheels" = 0)
+	var/datum/extraction_equipment_codec/C = new
+	for (var/list/entry in candidate["stash"])
+		if (!wanted[entry["id"]])
+			retained += list(entry)
+			continue
+		var/list/graph = entry["equipment"]
+		if (!C.validate(graph) || graph["schema"] != 2 || graph["nodes"].len != 1 || entry["secure"]) return null
+		var/list/node = graph["nodes"][1]
+		if (node["id"] != entry["id"] || node["insurance_token"]) return null
+		var/key
+		switch (node["type"])
+			if ("/obj/item/stack/material/steel") key = "steel"
+			if ("/obj/item/stack/material/glass") key = "glass"
+			if ("/obj/item/stack/material/cloth") key = "cloth"
+			if ("/obj/item/stack/cable_coil") key = "cable"
+			if ("/obj/item/extraction_wheel_crate") key = "wheels"
+		if (!key) return null
+		if (key == "wheels")
+			if (node["packed_wheel"]["broken"] || node["packed_wheel"]["config"]["current_health"] <= 0) return null
+			totals[key]++
+		else totals[key] += node["scalars"]["amount"]
+		inputs += list(entry)
+		ids += entry["id"]
+	if (inputs.len != payment.len) return null
+	for (var/key in totals)
+		if (!isnum(required[key]) || required[key] <= 0 || totals[key] != required[key]) return null
+	candidate["stash"] = retained
+	candidate["garage_purchase"] = list("id" = md5("[owner]:assembly:[expected_revision + 1]"), "model" = "piccolino", "kind" = "components", "status" = "pending", "paid_revision" = expected_revision + 1, "payment" = ids, "inputs" = inputs)
+	return candidate
+
 // A car dealer consumes home workshop parts before constructing any car.
 /datum/extraction_session/proc/plan_vehicle_purchase(list/payment, expected_revision)
 	if (!active() || profile["state"] != "home" || profile["level"] < 2 || profile["revision"] != expected_revision || !islist(payment) || payment.len != EXTRACTION_CAR_PRICE || (islist(profile["garage"]) && profile["garage"].len) || (islist(profile["garage_purchase"]) && profile["garage_purchase"]["status"] == "pending")) return null

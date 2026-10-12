@@ -55,6 +55,22 @@ var/equipment_completed = FALSE
 #endif
 
 /proc/equipment_workshop_material_probe(datum/extraction_equipment_codec/C)
+	var/obj/item/extraction_wheel_crate/boxed = new(null)
+	boxed.wheel.wconfig.current_health = 31
+	var/list/wheel_record = C.encode(boxed)
+	equipment_assert(wheel_record && C.validate(wheel_record), "paid wheel crate contains supported actual native wheel")
+	var/obj/item/extraction_wheel_crate/restored_wheel = C.decode(wheel_record, locate(1,1,1))
+	equipment_assert(restored_wheel && restored_wheel.contents.len == 1 && restored_wheel.wheel.loc == restored_wheel && restored_wheel.wheel.extraction_vehicle_part_id == boxed.wheel.extraction_vehicle_part_id && restored_wheel.wheel.wconfig.current_health == 31 && !restored_wheel.wheel.axis && !restored_wheel.wheel.connected, "wheel restoration preserves actual loose component identity and wear without free duplicate")
+	var/list/bad_wheel = json_decode(json_encode(wheel_record))
+	bad_wheel["nodes"][1]["packed_wheel"]["config"]["base_speed"] = 999
+	equipment_assert(!C.validate(bad_wheel), "wheel payload cannot upgrade native performance")
+	bad_wheel = json_decode(json_encode(wheel_record))
+	bad_wheel["nodes"][1]["packed_wheel"]["id"] = bad_wheel["nodes"][1]["id"]
+	equipment_assert(!C.validate(bad_wheel), "wheel and crate cannot share an ownership identity")
+	boxed.wheel.anchored = TRUE
+	equipment_assert(!C.encode(boxed), "anchored wheel cannot become a portable paid component")
+	qdel(boxed)
+	qdel(restored_wheel)
 	var/obj/item/stack/material/glass/glass = new(null)
 	glass.amount = 6
 	var/list/glass_record = C.encode(glass)
@@ -83,6 +99,50 @@ var/equipment_completed = FALSE
 	qdel(restored_cable)
 	qdel(second_cable)
 
+/proc/equipment_workshop_reservation_probe(datum/extraction_equipment_codec/C)
+	var/datum/extraction_service/service = new
+	var/datum/extraction_session/S = service.open("componentbuilder")
+	equipment_assert(S, "construction reservation fixture opens isolated account")
+	var/list/candidate = S.copy_profile()
+	candidate["level"] = 2 // Fixture prerequisite, not evidence of earned upgrade.
+	var/list/items = list()
+	var/list/entries = list()
+	var/list/payment = list()
+	var/list/paths = list(/obj/item/stack/material/steel, /obj/item/stack/material/glass, /obj/item/stack/material/cloth, /obj/item/stack/cable_coil)
+	var/list/amounts = list(40, 6, 4, 10)
+	for (var/i in 1 to paths.len)
+		var/path = paths[i]
+		var/obj/item/stack/I = new path(null)
+		I.amount = amounts[i]
+		items += I
+	for (var/i in 1 to 4) items += new /obj/item/extraction_wheel_crate(null)
+	for (var/obj/item/I in items)
+		var/list/graph = C.encode(I)
+		equipment_assert(graph, "reservation uses actual supported component graph")
+		entries += list(list("id" = I.extraction_item_id, "equipment" = graph, "secure" = FALSE))
+		payment += I.extraction_item_id
+	candidate["stash"] = entries
+	equipment_assert(S.commit(candidate), "construction fixture checkpoints actual paid input identities")
+	var/obj/structure/car_workshop/W = new(null)
+	var/list/required = W.costs("ASNO Piccolino")
+	qdel(W)
+	var/before = json_encode(S.profile)
+	var/list/plan = S.plan_vehicle_construction(payment, S.profile["revision"], required)
+	equipment_assert(plan && !plan["stash"].len && plan["garage_purchase"]["inputs"].len == 8 && json_encode(S.profile) == before, "pure native-cost reservation preserves full paid graph evidence without mutating account")
+	equipment_assert(!S.plan_vehicle_construction(payment, S.profile["revision"] - 1, required), "stale construction quote cannot reserve components")
+	var/list/discount = required.Copy()
+	discount["steel"] = 1
+	equipment_assert(!S.plan_vehicle_construction(payment, S.profile["revision"], discount), "caller cannot discount production workshop recipe")
+	var/list/missing = payment.Copy()
+	missing.len--
+	equipment_assert(!S.plan_vehicle_construction(missing, S.profile["revision"], required), "missing fourth native wheel rejects construction reservation")
+	equipment_assert(S.commit(plan), "construction reservation is durable before physical components retire")
+	var/list/loaded = service.store.load_profile(S.owner)
+	equipment_assert(loaded && loaded["garage_purchase"]["status"] == "pending" && json_encode(loaded["garage_purchase"]["inputs"]) == json_encode(plan["garage_purchase"]["inputs"]), "native journal retains exact interrupted construction component evidence")
+	S.close()
+	equipment_assert(!service.open("componentbuilder"), "interrupted paid construction quarantines admission instead of refunding or reissuing components")
+	for (var/obj/item/I in items) qdel(I)
+
 /proc/run_equipment_probe()
 	try
 		GLOB.all_observable_events = list()
@@ -98,6 +158,7 @@ var/equipment_completed = FALSE
 		run_economy_probe()
 		var/datum/extraction_equipment_codec/C = new
 		equipment_workshop_material_probe(C)
+		equipment_workshop_reservation_probe(C)
 		var/obj/item/weapon/gun/projectile/pistol/m9beretta/G = new(locate(1,1,1))
 		G.health = 123
 		G.ammo_magazine = new /obj/item/ammo_magazine/m9beretta(G)

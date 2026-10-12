@@ -53,7 +53,14 @@
 /datum/extraction_account_store/proc/valid_garage_purchase(list/purchase)
 	if (!islist(purchase) || !istext(purchase["id"]) || !length(purchase["id"]) || length(purchase["id"]) > 80 || purchase["model"] != "piccolino" || !(purchase["status"] in list("pending", "complete", "forfeited")) || !isnum(purchase["paid_revision"]) || purchase["paid_revision"] < 1 || round(purchase["paid_revision"]) != purchase["paid_revision"]) return FALSE
 	var/list/payment = purchase["payment"]
-	if (!islist(payment) || payment.len != EXTRACTION_CAR_PRICE) return FALSE
+	if (!islist(payment)) return FALSE
+	if (purchase["kind"] == "components")
+		var/list/inputs = purchase["inputs"]
+		if (!payment.len || payment.len > 64 || !islist(inputs) || inputs.len != payment.len) return FALSE
+		for (var/i in 1 to inputs.len)
+			var/list/input = inputs[i]
+			if (!islist(input) || input["id"] != payment[i] || !islist(input["equipment"]) || !islist(input["equipment"]["nodes"]) || input["equipment"]["nodes"].len != 1) return FALSE
+	else if (!isnull(purchase["kind"]) || payment.len != EXTRACTION_CAR_PRICE) return FALSE
 	var/list/ids = list()
 	for (var/id in payment)
 		if (!istext(id) || !length(id) || length(id) > 80 || ids[id]) return FALSE
@@ -192,6 +199,8 @@
 		for (var/list/vehicle in P["garage"])
 			for (var/list/node in vehicle["nodes"]) ids[node["id"]] = TRUE
 	var/list/stash = P["stash"].Copy()
+	if (islist(P["garage_purchase"]) && P["garage_purchase"]["kind"] == "components" && P["garage_purchase"]["status"] == "pending")
+		stash += P["garage_purchase"]["inputs"]
 	for (var/list/vehicle in P["garage"])
 		for (var/list/entry in vehicle["cargo"]) stash += list(entry)
 	if (islist(P["insurance_mailbox"]))
@@ -209,6 +218,10 @@
 			for (var/list/node in nodes)
 				if (!islist(node) || !istext(node["id"]) || !length(node["id"]) || ids[node["id"]] || ids.len >= 2048) return null
 				ids[node["id"]] = TRUE
+				if (!isnull(node["packed_wheel"]))
+					var/list/wheel = node["packed_wheel"]
+					if (!islist(wheel) || !istext(wheel["id"]) || !length(wheel["id"]) || length(wheel["id"]) > 80 || ids[wheel["id"]] || ids.len >= 2048) return null
+					ids[wheel["id"]] = TRUE
 		else
 			// Opaque journal fixtures have no schema. Legacy equipment lacks node
 			// identities and needs manual reconciliation rather than inferred safety.
