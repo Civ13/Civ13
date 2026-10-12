@@ -45,6 +45,41 @@ def prepare(repo, mode, size, negative, requests_enabled=False):
                 block = re.search(re.escape(signature) + r'[^\n]*\n[\s\S]*?(?=^/obj/|\Z)', text, re.M).group()
                 constructors += block
             originals += constructors
+    # Count delayed callbacks per owner, including nested baseline spawns.
+    # Queued candidate callbacks remain covered by the busy/queue drain condition.
+    def track_phases(source):
+        lines = source.splitlines(keepends=True)
+        endings = {}
+        starts = {}
+        returns = set()
+        for i, line in enumerate(lines):
+            match = re.match(r'^(\t*)spawn\(([^)]+)\)', line)
+            if not match or match[2] == '18000':
+                continue
+            indent = len(match[1])
+            end = i + 1
+            while end < len(lines):
+                item = lines[end]
+                if item.strip() and not item.lstrip().startswith('//') and len(item) - len(item.lstrip('\t')) <= indent:
+                    break
+                if re.match(r'^\t+return(?:\s|$)', item):
+                    returns.add(end)
+                end += 1
+            starts[i] = match[1] + 'probe_phase_pending++\n'
+            endings.setdefault(end, []).append('\t' * (indent + 1) + 'probe_phase_pending--\n')
+        output = []
+        for i in range(len(lines) + 1):
+            output.extend(reversed(endings.get(i, [])))
+            if i == len(lines):
+                break
+            if i in starts:
+                output.append(starts[i])
+            if i in returns:
+                indent = len(lines[i]) - len(lines[i].lstrip('\t'))
+                output.append('\t' * indent + 'probe_phase_pending--\n')
+            output.append(lines[i])
+        return ''.join(output)
+    seasons = track_phases(seasons)
     seasons = re.sub(r'(^/obj/map_metadata/proc/season_work_pause[^\n]*\n)', r'\1\tprobe_checkpoint(src, epoch, work, discovery)\n', seasons, flags=re.M)
     seasons = seasons.replace('call(src, kind)(value)', 'probe_delayed_call(src, kind, value)')
     seasons = re.sub(r'^(\t*)spawn\(18000\)\n', lambda m: m[1] + 'probe_timer_armed(src, 18000)\n' + m[0] + m[1] + '\tprobe_timer_fired(src)\n', seasons, flags=re.M)
@@ -76,6 +111,15 @@ def prepare(repo, mode, size, negative, requests_enabled=False):
     production += (repo / 'code/_helpers/functional.dm').read_text()
     probe = Path(__file__).with_name('probe.dm').read_text()
     requests = Path(__file__).with_name('requests.dm').read_text()
+    if mode == 'baseline':
+        # Baseline has no candidate request/worker APIs. Shared observers only.
+        requests = """var/atom/probe_current_candidate
+/proc/probe_timer_armed(obj/map_metadata/M, delay)
+	return
+/proc/probe_timer_fired(obj/map_metadata/M)
+	return
+"""
+
     width, height = (660, 550) if size == 'largest' else (64, 48)
     dme = f'''#define TRUE 1
 #define FALSE 0
@@ -84,6 +128,7 @@ def prepare(repo, mode, size, negative, requests_enabled=False):
 #define WIDTH {width}
 #define HEIGHT {height}
 #define CANDIDATE {int(mode == 'candidate')}
+#define OPTRACE {int(size == 'small')}
 #define REQUESTCHECK {int(requests_enabled and mode == 'candidate' and negative == 'none')}
 #define CRASH(message) throw new /exception(message)
 #include "probe.dm"
@@ -156,7 +201,7 @@ def main():
             else:
                 assert result['positive_pause_calls'] > 0, 'Explicit bounded yields were absent'
                 assert min(x['elapsed_ticks'] for x in result['samples']) > 1, 'Transitions did not span ticks'
-                if args.negative_control == 'none':
+                if args.negative_control == 'none' and args.requests:
                     assert result['requests']['failures'] == 0, 'Request ownership/flags/cancellation failed'
         args.output.write_text(json.dumps(result, indent=2))
         print(json.dumps({k: result[k] for k in ('cycles', 'clock', 'identity_failures', 'peak_gap_ticks', 'elapsed_seconds')}))

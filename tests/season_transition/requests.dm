@@ -64,7 +64,7 @@
 	retired.Destroy()
 	probe_wait_idle(retired)
 	start_clock = clock
-	sleep(250)
+	probe_wait_settled(retired)
 	if(clock != start_clock || retired.vars["season_busy"]) failures++
 	results["map_replacement_clock_stable"] = clock == start_clock
 	var/list/checkpoints = probe_checkpoint_requests()
@@ -120,9 +120,7 @@ var/list/timer_fires = list()
 		checkpoint_seen = 0
 		var/start_clock = clock
 		map.seasons(FALSE, FALSE)
-		probe_wait_idle(map)
-		sleep(250)
-		probe_wait_idle(map)
+		probe_wait_settled(map)
 		if(checkpoint_seen != 1 || clock != start_clock + 1) failures++
 		var/stable_rng = rng_index
 		sleep(250)
@@ -147,7 +145,7 @@ var/list/timer_fires = list()
 	probe_wait_idle(map)
 	if(checkpoint_seen != 1 || map != destroyed_owner || !map.vars["season_retired"]) failures++
 	var/destroy_clock = clock
-	sleep(250)
+	probe_wait_settled(map)
 	if(clock != destroy_clock || map.vars["season_busy"]) failures++
 	checkpoints["destroy_cancelled_without_replacement"] = clock == destroy_clock && map == destroyed_owner
 	checkpoint_mode = null

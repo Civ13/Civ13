@@ -7,6 +7,9 @@ deterministic probability decisions and accelerated delayed effects. No producti
 startup, saves, hooks or listening ports are enabled; the fixture closes the initial
 port with `OpenPort("none")` and rejects attempts to reopen it.
 
+The comparator accepts either positional evidence paths or `--baseline` and
+`--candidate` paths, as used by CI.
+
 Use a verified full Python interpreter path (never bare `python` on Windows).
 Preparation launches neither compiler nor daemon:
 
@@ -33,14 +36,20 @@ Largest geometry is 660 x 550 x 1 (363,000 turfs), with 20,000 inert objects and
 80 inert mobs. Four sequential natural seasons compare against immutable baseline
 `e3c8d02f31f1a23c1320eaec949fb4af56e964f3`. The executable comparator rejects
 final ordered per-season terrain hashes, RNG threshold order/count, weather/tree/
-announcement traces or clocks that differ. It also checks positive explicit pauses,
+announcement traces or clocks that differ. Small fixtures additionally compare every
+ordered terrain replacement (coordinates and old/new type), icon update and probability
+decision (threshold, result and current candidate). Largest fixtures disable this trace
+to keep its memory/CPU cost out of the performance comparison. It also checks positive explicit pauses,
 multiple elapsed ticks, and the explicit synthetic one-second heartbeat ceiling.
 That ceiling is a fixture acceptance bound, not a production server SLO.
 
-Telemetry reports native completion ticks, wall-clock heartbeat gaps with midnight
+Every parity snapshot waits for its owner's pending delayed callbacks, queued phases
+and active worker to drain under a bounded deadline, including nested baseline spawns.
+Telemetry reports immediate-work and all-phase native completion ticks, wall-clock heartbeat gaps with midnight
 wrap, actual peak helper snapshot slots, child process CPU, and OS peak working set
 (Windows) or sampled RSS/high-water (Linux). CPU/wall/memory ratios compare only
-identical four-cycle workloads. Additional request scenarios run separately via
+identical four-cycle workloads. Missing CPU/memory samples fail comparison. Heartbeat
+readiness and a pre-cycle tick establish the timestamp before each measured window. Additional request scenarios run separately via
 `--requests`. Generated source and build/runtime logs accompany results; manifests
 identify original/generated sources, HEAD and tracked patch. Metrics describe this
 synthetic fixture and cannot establish full-server performance or memory improvements.
