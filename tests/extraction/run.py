@@ -306,7 +306,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
         if probe == 'vehicles':
             source = '#define EXTRACTION_VEHICLE_PROCESS_PROBE\n' + source
             source += '\n#include "tests/extraction/vehicle_process_probe.dm"\n'
-        source += '\n#include "tests/extraction/economy_probe.dm"\n#include "tests/extraction/scope_insurance_probe.dm"\n#include "tests/extraction/npc_extraction_probe.dm"\n#include "tests/extraction/equipment_probe.dm"\n'
+        source += '\n#include "tests/extraction/economy_probe.dm"\n#include "tests/extraction/scope_insurance_probe.dm"\n#include "tests/extraction/npc_extraction_probe.dm"\n#include "tests/extraction/container_keys_probe.dm"\n#include "tests/extraction/equipment_probe.dm"\n'
         generated[0].write_text(source, encoding='utf-8')
         with tempfile.TemporaryDirectory(prefix='civ13-extraction-equipment-') as temp:
             target = Path(temp)

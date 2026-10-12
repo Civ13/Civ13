@@ -239,6 +239,8 @@ var/equipment_completed = FALSE
 #else
 		run_economy_probe()
 		var/datum/extraction_equipment_codec/C = new
+		container_key_catalog_probe()
+		equipment_container_key_codec_probe(C)
 		equipment_medical_stack_probe(C)
 		equipment_workshop_material_probe(C)
 		equipment_workshop_reservation_probe(C)
@@ -702,3 +704,21 @@ var/equipment_completed = FALSE
 	B = S.open("bagrecoverer")
 	equipment_assert(B.profile["stash"].len == 1 && B.profile["stash"][1]["id"] == bag_id && !equipment_mail_entries(B.service, B.owner).len, "recovered parent ownership remains unchanged with no duplicate insurance credit")
 	B.close()
+
+/proc/equipment_container_key_codec_probe(datum/extraction_equipment_codec/C)
+	for (var/path in extraction_container_key_catalog())
+		var/obj/item/weapon/key/extraction_container/K = new path(null)
+		K.uses_remaining = 2
+		var/list/graph = C.encode(K)
+		equipment_assert(graph, "catalogued key serializes finite uses")
+		var/obj/item/weapon/key/extraction_container/restored = C.decode(graph, locate(3,7,1))
+		equipment_assert(restored && restored.type == K.type && restored.uses_remaining == 2 && restored.extraction_item_id == K.extraction_item_id, "key codec preserves actual identity target subtype and remaining uses")
+		for (var/invalid in list(0, -1, 1.5, 4))
+			graph["nodes"][1]["scalars"]["uses_remaining"] = invalid
+			equipment_assert(!C.validate(graph), "key codec rejects exhausted fractional and oversized use payloads")
+		graph["nodes"][1]["scalars"]["uses_remaining"] = 2
+		graph["nodes"][1]["scalars"]["target_map"] = "forged"
+		equipment_assert(!C.validate(graph), "key codec rejects target injection")
+		qdel(K)
+		qdel(restored)
+	equipment_assert(!C.supported(/obj/item/weapon/key/extraction_container) && !C.supported(/obj/item/weapon/key/extraction_container/uncatalogued_probe), "key codec excludes base and uncatalogued types")
