@@ -81,3 +81,39 @@
 	for (var/atom/movable/O in cleanup.parts) qdel(O)
 	session.close()
 	qdel(W)
+	var/obj/map_metadata/extraction_survival/M = map
+	var/datum/extraction_session/seed = M.accounts.open("garageguest")
+	profile = seed.copy_profile()
+	profile["garage"] = list(snapshot)
+	equipment_assert(seed.commit(profile), "private bay fixture owns committed vehicle before admission")
+	seed.close()
+	var/mob/living/human/owner = new(locate(3,3,1))
+	owner.m_intent = "stealth"
+	M.test_owners[owner] = "garageguest"
+	equipment_assert(M.admit(owner), "account admission restores car into private bay")
+	var/datum/extraction_session/private_session = owner.extraction_session
+	equipment_assert(private_session.garage_vehicle && get_turf(private_session.garage_vehicle) == M.garage_anchor(private_session) && !M.home_roots(private_session).len, "private tank and car parts do not enter loose stash")
+	var/obj/structure/vehicleparts/axis/private_car = private_session.garage_vehicle
+	private_car.engine.fueltank.reagents.remove_any(3)
+	var/obj/structure/vehicleparts/frame/private_frame = private_car.loc
+	private_frame.w_front[5] = 61
+	equipment_assert(M.save_home(private_session), "private garage condition checkpoints through same account transaction")
+	private_car.moving = TRUE
+	var/revision = private_session.profile["revision"]
+	equipment_assert(!M.save_home(private_session) && !M.release(private_session) && private_session.profile["revision"] == revision && private_session.garage_vehicle == private_car, "moving garage blocks save and release without changing ownership")
+	private_car.moving = FALSE
+	var/list/private_parts = private_session.garage_parts.Copy()
+	var/turf/bay = M.garage_anchor(private_session)
+	equipment_assert(M.release(private_session), "private bay release commits before retiring actual parts")
+	equipment_assert(!private_car.loc, "private release also retires nested vehicle controller")
+	for (var/obj/O in private_parts) equipment_assert(!O.loc, "released bay retains no materialized top part")
+	var/obj/bay_blocker = new(bay)
+	equipment_assert(!M.admit(owner) && !owner.extraction_session, "blocked bay cannot expose partial account restoration")
+	qdel(bay_blocker)
+	equipment_assert(M.admit(owner), "cleared private bay restores acknowledged car once")
+	private_session = owner.extraction_session
+	private_car = private_session.garage_vehicle
+	private_frame = private_car.loc
+	equipment_assert(private_car.engine.fueltank.reagents.total_volume == 14 && private_frame.w_front[5] == 61 && private_car.extraction_vehicle_part_id == snapshot["id"], "private reconnect retains paid fuel condition and identity")
+	equipment_assert(M.release(private_session), "private garage fixture releases account cleanly")
+	qdel(owner)

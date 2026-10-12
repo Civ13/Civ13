@@ -140,6 +140,11 @@ loss settlement discards that uncertain garage independently of an empty stash
 and preserves an audit reason. The garage-retention omission control must fail
 at this assertion. Ordinary acknowledged reload and explicit forfeiture are
 separate outcomes; this is not production restart or playable acceptance.
+The mode fixture additionally checks private-bay admission and reconnect,
+fuel/damage checkpoint with the stash, moving-car save/release rejection,
+blocked-bay failure before equipment construction and retirement of both
+top-level parts and the nested controller. Acquisition and raid transfer
+remain separate acceptance requirements.
 
 Record a genuine disposable local playable world after integrated regressions
 pass. Use the exact pinned build and record its full commit, dirty patch when

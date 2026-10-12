@@ -10,8 +10,13 @@ processes verify ordinary reload, condition/fuel preservation, durable removal
 and stale revision rejection. Interrupted debits remain quarantined; explicit
 offline loss settlement forfeits the uncertain garage with an audit receipt.
 An omission control proves the test detects retention of that previous garage.
-Player-facing garage transactions, cargo/capacity and passenger policy remain
-required before a vehicle extraction action is available.
+Account admission now restores an acknowledged car into its bounded private
+bay. Stash and garage condition checkpoint in one account transaction; tank
+parts are excluded from loose stash. A blocked bay exposes no partial account
+restoration. Release saves before retiring top parts and contained controller,
+steering and wheels. Moving, occupied or displaced cars block save/release.
+Paid acquisition, raid ownership transitions, cargo/capacity and passenger
+policy remain required before a vehicle extraction action is available.
 
 Isolated native tests cover account storage, nested equipment restoration,
 bounded NPC combat, extraction cancellation, private rooms and hub navigation.

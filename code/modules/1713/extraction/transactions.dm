@@ -192,10 +192,11 @@
 
 // Only home sessions may replace their materialized home stash. Integration
 // holds a session lock around serialization and freezes interactions until commit.
-/datum/extraction_session/proc/checkpoint_home(list/entries)
+/datum/extraction_session/proc/checkpoint_home(list/entries, list/garage)
 	if (!active() || profile["state"] != "home" || !valid_entries(entries, capacity())) return FALSE
 	var/list/candidate = copy_profile()
 	candidate["stash"] = entries
+	if (!isnull(garage)) candidate["garage"] = garage
 	return commit(candidate)
 
 // Upgrades consume whole stored salvage entries in the same durable snapshot.

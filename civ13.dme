@@ -1249,6 +1249,7 @@
 #include "code\modules\1713\extraction\groups.dm"
 #include "code\modules\1713\extraction\vehicle_transfer.dm"
 #include "code\modules\1713\extraction\vehicle_codec.dm"
+#include "code\modules\1713\extraction\garage.dm"
 #include "code\modules\1713\extraction\loot.dm"
 #include "code\modules\1713\extraction\npcs.dm"
 // BEGIN_SELECTED_MAP

@@ -365,7 +365,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	// One fixed 9x9 room; no whole-world searches or saved turf references.
 	for (var/turf/T in range(4, S.house))
 		for (var/obj/item/I in T)
-			if (I.loc == T) items |= I
+			if (I.loc == T && !(I in S.garage_parts)) items |= I
 	var/obj/effect/extraction_secure_crate/C = house_crate(S)
 	if (C)
 		for (var/obj/item/I in C.contents)
@@ -428,6 +428,10 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		if (!codec.validate(entry["equipment"]) || (entry["secure"] && !house_crate(S)))
 			release(S, FALSE)
 			return FALSE
+	if (!restore_garage(S))
+		to_chat(H, "Garage restoration blocked. The saved account remains unchanged; clear the bay or resolve the recovery lock.")
+		release(S, FALSE)
+		return FALSE
 	for (var/list/entry in stash)
 		var/obj/item/I = codec.decode(entry["equipment"], entry["secure"] ? house_crate(S) : get_turf(house))
 		if (!I)
@@ -444,7 +448,8 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 /obj/map_metadata/extraction_survival/proc/save_home(datum/extraction_session/S)
 	if (!S.active() || S.transitioning || S.profile["state"] != "home") return FALSE
 	var/list/snapshot = records(home_roots(S))
-	if (!snapshot || !S.checkpoint_home(snapshot))
+	var/list/garage = garage_snapshot(S)
+	if (!snapshot || isnull(garage) || !S.checkpoint_home(snapshot, garage))
 		to_chat(S.body, "Stash save rejected. Unsupported equipment, capacity or recovery lock; nothing has been transferred.")
 		return FALSE
 	return TRUE
@@ -546,6 +551,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 			if (I.loc == S.body && S.body.z == 1) continue
 			qdel(I)
 		S.house.session = null
+	retire_garage(S)
 	if (S.body) S.body.extraction_session = null
 	S.house = null
 	S.body = null
@@ -592,7 +598,8 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 			var/datum/extraction_session/S = accounts.sessions[owner]
 			if (!S.active() || S.transitioning || S.profile["state"] != "home") continue
 			var/list/entries = records(home_roots(S))
-			if (entries && json_encode(entries) != json_encode(S.profile["stash"])) save_home(S)
+			var/list/garage = garage_snapshot(S)
+			if (entries && !isnull(garage) && (json_encode(entries) != json_encode(S.profile["stash"]) || json_encode(garage) != json_encode(S.profile["garage"]))) save_home(S)
 	for (var/obj/item/I in raid_items.Copy())
 		var/turf/T = get_turf(I)
 		var/atom/holder = I.loc
