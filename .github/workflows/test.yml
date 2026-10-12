@@ -127,8 +127,27 @@ jobs:
       - name: Explain opt-in runtime coverage
         if: needs.changes.outputs.extensive != 'true'
         run: echo 'Existing regression suites are opt-in. Use Run workflow with extensive_regressions enabled; PRs introducing executable tests run only their corresponding suites.'
+      - name: Verify bounded lighting startup ordering
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/lighting_startup')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          git fetch --no-tags --depth=1 origin 0e9b527ec492196b548d1cf92bc270c30ef30e67
+          python3 tests/lighting_startup/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/lighting-startup/positive"
+          python3 tests/lighting_startup/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control --output "$RUNNER_TEMP/lighting-startup/negative"
+          if [ "${{ needs.changes.outputs.extensive }}" != true ]; then
+            python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/lighting-startup/pool-effects"
+            python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control lighting --output "$RUNNER_TEMP/lighting-startup/pool-effects-control"
+          fi
+      - name: Retain lighting startup evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/lighting_startup'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighting-startup-evidence
+          path: ${{ runner.temp }}/lighting-startup
+          if-no-files-found: error
       - name: Verify lighting queues and production state parity
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/lighting_queues')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/lighting_queues') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/lighting_startup')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"

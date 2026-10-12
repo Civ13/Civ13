@@ -111,6 +111,13 @@ var/global/datum/full_season_constructor_probe/full_season_probe = new
 			throw EXCEPTION("Item identity/location failed: [i]")
 		if (!(i % 256))
 			sleep(world.tick_lag)
+/datum/full_season_constructor_probe/proc/check_movement_lane(var/mob/living/human/A, var/turf/T, var/turf/U)
+	if (!A || A.loc != T || !istype(T, /turf/floor/plating) || !istype(U, /turf/floor/plating) || get_dist(T, U) != 1 || T.density || U.density)
+		throw EXCEPTION("Native movement lane geometry invariant")
+	for (var/turf/lane in list(T, U))
+		for (var/atom/movable/obstacle in lane)
+			if (obstacle != A && obstacle.density)
+				throw EXCEPTION("Native movement lane occupied: [obstacle.type] at [lane.x],[lane.y]")
 // One finite callback per transition, serviced by normal native scheduling.
 /datum/full_season_constructor_probe/proc/exercise_during_season(cycle)
 	var/obj/item/handled
@@ -122,7 +129,8 @@ var/global/datum/full_season_constructor_probe/full_season_probe = new
 			sleep(1)
 		var/mob/living/human/full_season_actor/A = actors[1]
 		var/turf/T = locate(640, 530, 1)
-		var/turf/U = locate(641, 530, 1)
+		var/turf/U = locate(639, 530, 1)
+		check_movement_lane(A, T, U)
 		handled = new /obj/item(T)
 		for (var/i in 1 to 20)
 			if (!active || !A || A.gcDestroyed || A.stat == DEAD)
@@ -136,9 +144,9 @@ var/global/datum/full_season_constructor_probe/full_season_probe = new
 			A.last_movement = 0
 			A.next_move = 0
 			var/turf/destination = A.loc == T ? U : T
-			step(A, A.x == T.x ? EAST : WEST)
+			step(A, get_dir(A.loc, destination))
 			if (A.loc != destination)
-				throw EXCEPTION("Concurrent production movement identity failed")
+				throw EXCEPTION("Concurrent production movement identity failed: cycle=[cycle], iteration=[i], at=[A.x],[A.y], target=[destination.x],[destination.y], density=[A.density], buckled=[A.buckled], drone=[A.using_drone], stat=[A.stat]")
 			moves++
 			inventory_cycles++
 			var/busy_after = map.season_busy
@@ -185,14 +193,14 @@ var/global/datum/full_season_constructor_probe/full_season_probe = new
 			var/turf/T = locate(640 + ((i-1) % 10), 530 - round((i-1)/10), 1)
 			T = T.ChangeTurf(/turf/floor/plating)
 			var/mob/living/human/full_season_actor/H = new(T)
-			H.density = FALSE
 			actors += H
 			if (!(i % 8))
 				sleep(world.tick_lag)
 		var/mob/living/human/full_season_actor/A = actors[1]
 		var/turf/T = A.loc
-		var/turf/U = locate(T.x+1, T.y, 1)
+		var/turf/U = locate(T.x-1, T.y, 1)
 		U = U.ChangeTurf(/turf/floor/plating)
+		check_movement_lane(A, T, U)
 		var/obj/item/handled = new(T)
 		for (var/i in 1 to 20)
 			if (!A.put_in_active_hand(handled) || handled.loc != A)
@@ -204,9 +212,9 @@ var/global/datum/full_season_constructor_probe/full_season_probe = new
 			A.last_movement = 0
 			A.next_move = 0
 			var/turf/destination = A.loc == T ? U : T
-			step(A, A.x == T.x ? EAST : WEST)
+			step(A, get_dir(A.loc, destination))
 			if (A.loc != destination)
-				throw EXCEPTION("Production movement identity failed")
+				throw EXCEPTION("Production movement identity failed: iteration=[i], at=[A.x],[A.y], target=[destination.x],[destination.y], density=[A.density], buckled=[A.buckled], drone=[A.using_drone], stat=[A.stat]")
 			moves++
 			sleep(1)
 		qdel(handled)

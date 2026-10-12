@@ -619,3 +619,12 @@ or native PID discovery. Reused temporary resources can make OpenDream `fcopy`
 copy stale bytes. Write the final spool file before its marker and verify actual
 disk bytes independently of DM resource reads. `verify-dm-controls.py` exercises
 production request/reboot/whitelist bodies in a disposable OpenDream world.
+
+<!-- 2026-10-12: bounded lighting startup -->
+Initial turf New delegates overlay construction to bounded startup sweeps.
+Dynamic excluded-z/void sites still need the compatibility overlay pass.
+Shared corners activate after both overlay passes; runtime build/clear/activity
+requests wait through startup and return after a failed barrier. Preserve
+ordinary prestartup direct calls. tests/lighting_startup checks production
+bodies, shared identity, late replacement and failed waiters against a baseline;
+its adapted rendering does not establish client lighting acceptance.

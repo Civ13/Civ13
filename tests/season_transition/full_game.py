@@ -16,7 +16,7 @@ MAP = 'maps/nomads/nomads_persistence_beta.dmm'
 METADATA = 'code/game/objects/map_metadata/_map_metadata.dm'
 STARTUP = 'code/setup.dm'
 WORLD = 'code/world.dm'
-DIAGNOSTICS = re.compile(r'runtime error|\bBad ref\b|\bBad loc\b|Cannot read null|Cannot execute null|\bBUG:|##\s*ERROR:', re.I)
+DIAGNOSTICS = re.compile(r'Infinite loop suspected|switching proc to background|runtime error|\bBad ref\b|\bBad loc\b|Cannot read null|Cannot execute null|\bBUG:|##\s*ERROR:', re.I)
 SCOPE = 'Full-source actual terrain constructors and headless humans in pregame; no connected players, roundstart mapgen, client rendering, long-term memory or production acceptance'
 
 def git(repo, *args):

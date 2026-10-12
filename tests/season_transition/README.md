@@ -119,6 +119,11 @@ at least one successful operation with the season worker busy before and after
 the native actions. Every human must advance Life in each transition. Dead
 humans fail the initial and every subsequent population check; production cold
 damage is not masked by invulnerability.
+The moving actor uses its original tile at `(640,530,1)` and an additional
+empty plating tile at `(639,530,1)`, outside the other 79 humans' staging cells.
+Movement uses native `step()` with `get_dir()`; human density and Life are
+unchanged. The earlier east-lane fixture failed because it overlapped actor2,
+and normal Life restored that actor's ordinary blocking density.
 These are headless humans, not connected players.
 
 ```
@@ -133,7 +138,8 @@ Native execution compiles with zero errors/warnings and uses fresh temporary
 storage, public tracked configuration, disabled webhook/ToRban/persistence-save
 adapters, a closed port which cannot reopen, and no clients. The pregame lobby
 is held: roundstart nature/map generation, food bootstrap and full round behavior
-are outside this benchmark. Unexpected reboots and runtime/engine diagnostics
+are outside this benchmark. Unexpected reboots and runtime/engine diagnostics (including suspected infinite
+loops and automatic background switches)
 invalidate evidence. The launcher scans at most 64 KiB per poll from the startup
 log and a fixed runtime-error marker (which also covers redirected world logs),
 retaining only a 1 KiB overlap. Native diagnostics terminate the owned child
@@ -151,6 +157,17 @@ world sources are retained, and the result must report `native_loop_checks = 1`.
 This is an explicit execution-context difference from production Beta. Engine
 long-loop aborts still invalidate the run; the harness does not suppress them or
 prove behavior with production loop protection disabled.
+
+Exact `0e9b527ec` CI reached setup readiness but emitted `Infinite loop
+suspected--switching proc to background` in `create_lighting_corners_zlevel()`
+and then failed population movement before any seasonal transition. Those
+137.146 seconds do not establish seasonal performance. The engine warning was
+previously missed by the diagnostic matcher; it now invalidates evidence and
+stops the owned child. The production startup change now yields with an explicit
+overlay-before-activity barrier; `tests/lighting_startup` compares native corner
+ownership and ordering to the immutable baseline. Source-only preparation does
+not establish that the protected full-map benchmark completes; exact-head cloud
+compilation and runtime remain required.
 
 Only seasonal delayed-start waits are accelerated to `30 + delay / 100`
 deciseconds; original numeric delays are recorded. This synthetic schedule
@@ -187,3 +204,11 @@ conservation; compilation/runtime failures do not count as control detection.
 Current verification: source-only preparation of positive/negative variants.
 Native compilation, runtime invariants and performance have not been executed
 locally. Cloud execution requires independent code review and exact-head CI.
+
+
+The isolated transition runner's `--profile` option defaults off. It profiles
+four parity cycles including heartbeats and snapshots, excluding world setup,
+request scenarios and the post-parity service witness. It retains
+`.logs/profile.json` and separate profile-enabled metadata/comparison guards.
+Profiling CPU instrumentation provides attribution; compare the unprofiled
+baseline/candidate pair for performance.
