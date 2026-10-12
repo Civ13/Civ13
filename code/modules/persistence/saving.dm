@@ -10,9 +10,10 @@
 // Native savefile writes, list copies and fcopy calls remain nonpreemptible.
 /map_storage/proc/save_work_check()
 	saving_work++
-	if(saving_work >= 1024 || world.tick_usage >= 20)
+	if(saving_work >= 1024 || world.tick_usage-saving_slice_start >= 20 || world.tick_usage >= 80)
 		saving_work = 0
 		sleep(world.tick_lag)
+		saving_slice_start = world.tick_usage
 
 /map_storage/proc/Save_World()
 	clear_bookkeeping()
@@ -47,6 +48,7 @@
 	log_startup_progress("	Saved metadata.")
 	for(var/A = 1, A <= world.maxz, A++)
 		saving_z = A
+		saving_grid_refs = list()
 		saving_owners = list()
 		saving_content_flags = list()
 		saving_lists = list()
@@ -86,7 +88,14 @@
 			save_work_check()
 		for(var/i = 1, i <= saving_owners.len, i++)
 			if(saving_content_flags[i])
-				savefile["[entry_path(savefile, i)]/content"] << list2params(edges[i])
+				var/list/children = edges[i]
+				var/list/chunks = list()
+				for(var/start = 1, start <= children.len, start += 500)
+					chunks += list2params(children.Copy(start, min(start+500, children.len+1)))
+					save_work_check()
+				// params2list truncates oversized strings. Keep legacy text for
+				// small contents, and bounded text chunks for dense containers.
+				savefile["[entry_path(savefile, i)]/content"] << (chunks.len > 1 ? chunks : (chunks.len ? chunks[1] : ""))
 			save_work_check()
 		sleep(world.tick_lag)
 		savefile.Flush()
@@ -100,7 +109,15 @@
 	return 1
 
 /map_storage/proc/BuildVarDirectory(savefile/F, datum/A, contents = 0, traversal = FALSE)
-	if(!A || istype(A, /client) || !A.should_save || istype(A, /obj/map_metadata))
+	if(!A || istype(A, /client))
+		return 0
+	var/grid_key
+	if(isturf(A))
+		var/turf/T = A
+		grid_key = "[T.x],[T.y],[T.z]"
+		if(saving_grid_refs[grid_key])
+			return saving_grid_refs[grid_key]
+	if(!A.should_save || istype(A, /obj/map_metadata))
 		return 0
 	for(var/ignored in ignore_types)
 		if(istype(A, ignored))
@@ -121,6 +138,7 @@
 	var/ref = saving_reference_pins.len + 1
 	saving_reference_pins += A
 	saving_references[identity] = ref
+	if(grid_key) saving_grid_refs[grid_key] = ref
 	saving_owners += 0
 	saving_content_flags += FALSE
 	A.before_save()

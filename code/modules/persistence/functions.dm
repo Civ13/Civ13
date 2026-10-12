@@ -111,9 +111,11 @@ map_storage
 		list/saving_list_pins = list()
 		list/loaded_lists = list()
 		// Rolling graph ownership is numeric: deleting live atoms cannot erase it.
+		list/saving_grid_refs = list()
 		list/saving_owners = list()
 		list/saving_content_flags = list()
 		list/saving_world_movables = list()
+		var/saving_slice_start = 0
 		var/saving_work = 0
 		var/saving_z = 0
 		var/last_error = null
@@ -140,10 +142,12 @@ map_storage
 	saving_list_pins = list()
 	loaded_lists = list()
 	saved_turfs = list()
+	saving_grid_refs = list()
 	saving_owners = list()
 	saving_content_flags = list()
 	saving_world_movables = list()
 	saving_work = 0
+	saving_slice_start = world.tick_usage
 
 // Returns true if the value is purely numeric, return false if there are non-numeric
 // characters contained within the text string.

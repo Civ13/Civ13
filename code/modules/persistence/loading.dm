@@ -52,7 +52,7 @@
 				continue
 			else if(v == "content")
 				if(nocontents != 2)
-					var/list/refs = params2list(savefile[v])
+					var/list/refs = saved_content_refs(savefile[v])
 					var/atom/container = object
 					if(container)
 						for(var/obj/ob in container.contents.Copy())
@@ -281,7 +281,7 @@
 					if(field == "type")
 						continue
 					if(field == "content")
-						for(var/content_ref in params2list(value))
+						for(var/content_ref in saved_content_refs(value))
 							if(!entry_set["[content_ref]"])
 								throw EXCEPTION("Missing content entry [content_ref] on z=[z]")
 							var/content_type = F["[entry_path(F, content_ref)]/type"]
@@ -381,3 +381,18 @@
 	map.age8_done = (map.ordinal_age >= 8)
 	log_startup_progress("	Restored world metadata (epoch: [map.age], research: [map.default_research]).")
 	return TRUE
+
+// Historical content strings remain valid. Dense new entries use bounded chunks
+// because the native parameter decoder truncates strings beyond its limit.
+/map_storage/proc/saved_content_refs(value)
+	if(istext(value) || isnull(value))
+		return params2list(value)
+	if(!islist(value))
+		throw EXCEPTION("Invalid saved contents")
+	var/list/refs = list()
+	for(var/chunk in value)
+		if(!istext(chunk) || length(chunk) > 32000)
+			throw EXCEPTION("Invalid saved content chunk")
+		refs += params2list(chunk)
+		TICK_CHECK
+	return refs
