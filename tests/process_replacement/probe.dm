@@ -9,6 +9,8 @@
 var/checks = 0
 var/list/faults = list()
 var/setup_calls = 0
+var/replacements_completed = 0
+var/states_completed = 0
 var/list/visits = list()
 var/list/chemical_reactions_list = list("reaction")
 var/list/chemical_reagents_list = list("reagent")
@@ -155,6 +157,7 @@ var/datum/process_slots/processes = new
 		P = new /process/chemistry(S)
 		P._copyStateFrom(old)
 		S.replaceProcess(old,P)
+		replacements_completed++
 		check(owners_absent(S,old), "owners")
 		check(P.idle && !P.running && !P.queued && S.idle.len == 3 && !S.running.len && !S.queued.len, "state")
 		check(S.processes.len == 3 && S.last_queued.len == 3 && S.priorityToProcessMap["2"]:len == 3, "owners")
@@ -180,6 +183,7 @@ var/datum/process_slots/processes = new
 	var/process/chemistry/old = P
 	var/list/pending = old.current_list
 	S.restartProcess("chemistry")
+	replacements_completed++
 	P = processes.chemistry
 	check(P.current_list == pending && pending.len == 2, "snapshot")
 	check(P.active_holders == holders && holders.len == 3, "chemistry")
@@ -199,7 +203,8 @@ var/datum/process_slots/processes = new
 		check(!world.port && !OpenPort(0), "port")
 		for (var/state in list("completed","queued","running"))
 			test_replacement(state)
-		text2file(json_encode(list("checks"=checks,"faults"=faults,"replacements"=39)),"native-result.json")
+			states_completed++
+		text2file(json_encode(list("checks"=checks,"faults"=faults,"replacements"=replacements_completed,"completed_states"=states_completed)),"native-result.json")
 		world.log << "DONE [checks] checks [faults.len] fault categories"
 		del(world)
 /world/Error(exception/E)

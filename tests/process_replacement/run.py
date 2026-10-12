@@ -69,6 +69,7 @@ def main():
         result=json.loads((out/"native-result.json").read_text())
         expected={"baseline":{"owners","config","chemistry","snapshot"},"bookkeeping":{"owners"},"configuration":{"owners","priority","config"},"chemistry":{"chemistry","snapshot"}}
         mode="baseline" if a.baseline else a.negative_control
-        assert result["replacements"]==39 and result["checks"]>=300 and set(result["faults"])==(expected[mode] if mode else set()),result
+        assert result["replacements"]==39 and result["completed_states"]==3 and result["checks"]>=300 and set(result["faults"])==(expected[mode] if mode else set()),result
+        assert re.findall(r"^FAIL (.+)$",log,re.M)==result["faults"],"Fault log/result mismatch"
         print("PASS expected historical/omission faults" if mode else "PASS production replacement")
 if __name__=="__main__": main()
