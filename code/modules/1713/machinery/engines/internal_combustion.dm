@@ -100,6 +100,7 @@
 		return
 
 /obj/structure/engine/internal/turn_on(var/mob/user = null)
+	if (key_axis && !key_axis.key_access(user)) return
 	if (on)
 		return
 	if (broken)

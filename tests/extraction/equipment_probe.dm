@@ -242,6 +242,7 @@ var/equipment_completed = FALSE
 		container_key_catalog_probe()
 		equipment_container_key_codec_probe(C)
 		container_key_sprite_codec_probe()
+		vehicle_key_identity_probe(C)
 		equipment_medical_stack_probe(C)
 		equipment_workshop_material_probe(C)
 		equipment_workshop_reservation_probe(C)
@@ -705,6 +706,45 @@ var/equipment_completed = FALSE
 	B = S.open("bagrecoverer")
 	equipment_assert(B.profile["stash"].len == 1 && B.profile["stash"][1]["id"] == bag_id && !equipment_mail_entries(B.service, B.owner).len, "recovered parent ownership remains unchanged with no duplicate insurance credit")
 	B.close()
+
+/proc/vehicle_key_identity_probe(datum/extraction_equipment_codec/C)
+	var/datum/vehicle_key_service/original = vehicle_key_service
+	vehicle_key_service = new
+	vehicle_key_service.store.root = "data/vehicle_key_identity_probe/"
+	var/obj/structure/vehicleparts/axis/car/A = new(null)
+	equipment_assert(!A.keyed_vehicle_id && A.key_generation == 0, "vehicle constructor never mints keyed identity")
+	var/obj/item/vehicle_key/K = vehicle_key_service.issue_constructed(A, locate(1, 1, 1))
+	equipment_assert(K && K.matches(A) && vehicle_key_service.ready_vehicle(A), "paid construction issuance binds stable vehicle and key generation")
+	var/id = A.keyed_vehicle_id
+	equipment_assert(!vehicle_key_service.issue_constructed(A, locate(1, 1, 1)) && A.keyed_vehicle_id == id, "construction retry never reissues or changes identity")
+	var/list/graph = C.encode(K)
+	equipment_assert(graph && C.validate(graph), "vehicle key graph validates exact binding")
+	var/savefile/F = new("data/vehicle_key_graph.sav")
+	F["key"] << graph
+	var/list/reloaded
+	F["key"] >> reloaded
+	var/obj/item/vehicle_key/copy = C.decode(reloaded, null)
+	equipment_assert(copy && copy.matches(A) && copy.extraction_item_id == K.extraction_item_id, "native disk key graph preserves binding and item identity")
+	copy.vehicle_id = new_extraction_item_id()
+	equipment_assert(!copy.matches(A), "wrong vehicle key rejected")
+	copy.vehicle_id = id
+	copy.key_generation = 0
+	equipment_assert(!C.encode(copy), "zero-generation vehicle key rejected by codec")
+	copy.key_generation = 1
+	var/list/P = vehicle_key_service.store.load_profile(id)
+	P["vehicle_key_state"] = "pending"
+	equipment_assert(vehicle_key_service.store.commit_profile(id, P) && !vehicle_key_service.ready_vehicle(A), "interrupted service quarantines vehicle without key reissue")
+	P["vehicle_key_state"] = "committed"
+	P["key_generation"] = 2
+	equipment_assert(vehicle_key_service.store.commit_profile(id, P), "fixture durable generation transition")
+	A.key_generation = 2
+	equipment_assert(!K.matches(A) && !copy.matches(A), "generation transition invalidates every old copy")
+	A.after_load()
+	equipment_assert(A.keyed_vehicle_id == id && A.key_generation == 2, "load preserves vehicle identity and generation without minting")
+	qdel(copy)
+	qdel(K)
+	qdel(A)
+	vehicle_key_service = original
 
 /proc/equipment_container_key_codec_probe(datum/extraction_equipment_codec/C)
 	for (var/path in extraction_container_key_catalog())

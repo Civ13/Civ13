@@ -1,7 +1,8 @@
 # Constructed vehicle key contract
 
-This staged contract is not implemented or accepted. Native/screen testing and
-live activation remain on hold. Existing modular frames use numeric door codes
+The first source implementation is staged but not compiled or accepted on its
+integrated head. Native/screen testing and live activation remain on hold.
+Existing modular frames use numeric door codes
 and generic keys; the constructed-car contract must not reuse that authority.
 
 Assign each constructed vehicle one immutable durable ID and a positive integer
@@ -64,3 +65,37 @@ restart, garage/deployment/extraction and crash recovery. Use actual DMI preview
 for obtainable keys. Public wiki availability follows verified integration, not
 this contract or local fixture results. Costs and duration remain tuning choices
 until concrete source-backed defaults and meaningful tests are reviewed.
+
+## Current source and remaining acceptance
+
+`vehicle_keys.dm` binds exact vehicle keys to a durable constructed axis ID and
+generation. The workshop issues a key after paid construction. Keyed cars check
+door actions, driving-wheel ignition and direct engine activation. The extraction
+vehicle codec stores the binding and reads older graphs without assigning keys.
+The equipment codec preserves actual key identity and binding. Native load calls
+do not mint keys or identities.
+
+Workshop service currently proposes 2 steel/1 copper and 30 seconds for a copy,
+or 20 steel/5 copper and 300 seconds for rekey, plus a carried wrench/welding
+tool and 20 cable power. These are initial tuning values, not approved balance.
+The actual stopped, empty car must fit the northeast 4x4 service bay. The private
+garage workshop exposes the same service. Transfer is rejected while service is
+reserved. The per-vehicle two-slot journal records pending/committed service,
+generation, operator, costs and issued key identity. An ambiguous write or a
+generation mismatch blocks access; there is no automatic refund or replacement.
+History caps at 128 records and rejects further service rather than deleting
+records. Archival/admin reconciliation and integration with the full economic
+ledger remain unfinished.
+
+Native assertions cover constructor non-minting, one-time issuance, actual key
+graph disk reload, wrong binding, zero generation, pending quarantine and old-key
+invalidation. They are authored but unrun. Timed paid service, cancellation,
+concurrency, ordinary whole-world save/reload and integrated extraction crash
+acceptance still require meaningful fixtures and runtime verification. In
+particular, service-journal commits alone do not prove whole-world material/key
+save ordering after a crash.
+
+![Actual vehicle key sprite](images/extraction-vehicle-key.png)
+
+The preview is the nonempty `key.dmi` modern state used by the real item, not a
+gameplay capture. Regenerate with `tests/extraction/preview_vehicle_keys.py`.

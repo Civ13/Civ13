@@ -42,6 +42,7 @@
 		cargo.Cut()
 		cargo_record = null
 		with_cargo = include_cargo
+		if (A?.key_service_busy) return fail("Vehicle key service is reserved")
 		if (!A || A.vehicle_type != "car" || A.moving || A.currentspeed || A.movement_processes || A.transforming_vehicle || A.driver || !A.engine || A.engine.on || !A.components.len || A.components.len > 16) return FALSE
 		origin = get_turf(A)
 		if (!origin) return FALSE
