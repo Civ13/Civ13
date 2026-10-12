@@ -31,6 +31,8 @@ var/datum/process_group/processes = new
 	return
 /processScheduler/proc/processStarted(process/P)
 	P.started_hooks++
+/processScheduler/proc/processFinished(process/P)
+	return
 /processScheduler/proc/maximum_cadence()
 	var/value = 0
 	for (var/key in cadences)
@@ -38,6 +40,15 @@ var/datum/process_group/processes = new
 	return value
 /process
 	var/processScheduler/main
+	var/disabled = FALSE
+	var/paused = FALSE
+	var/killed = FALSE
+	var/last_fire_as_member = 0
+	var/ticks = 0
+	var/current
+	var/list/current_list
+	var/run_time_tick_usage = 0
+	var/run_time_tick_usage_allowance = -1
 	var/schedule_interval = 4
 	var/runtime_history_reset_at = 0
 	var/run_start = 0
@@ -47,6 +58,22 @@ var/datum/process_group/processes = new
 	var/onstart_hooks = 0
 /process/proc/running()
 	running_hooks++
+/process/proc/idle()
+	return
+/process/proc/onFinish()
+	return
+/process/proc/may_fire()
+	return TRUE
+/process/proc/fire()
+	return
+/process/proc/reset_current_list()
+	current_list = null
+/process/budget_probe/reset_current_list()
+	current_list = list("only")
+/process/budget_probe/fire()
+	for (current in current_list)
+		PROCESS_LIST_CHECK
+		PROCESS_TICK_CHECK
 /process/proc/onStart()
 	onstart_hooks++
 /proc/check(condition, label)
@@ -127,6 +154,43 @@ var/datum/process_group/processes = new
 		S.recordRunTime(P, i)
 	history = S.last_twenty_run_times[P]
 	check(history.len == 20 && history[1] == 31 && history[20] == 50, "runtime history remains bounded")
+	// Use the actual production macros with a deterministic negative allowance:
+	// removing the final entry must not leave an empty snapshot for the next run.
+	var/process/budget_probe/B = new
+	B.main = S
+	B.current_list = list("only")
+	var/fire_result = B.fire()
+	check(fire_result == PROCESS_TICK_CHECK_RETURNED_EARLY && !B.current_list.len, "actual final-entry tick check returns early")
+	B.finished(fire_result)
+	check(isnull(B.current_list) && isnull(B.current), "final-entry budget return releases exhausted snapshot")
+	B.current_list = list("first", "pending")
+	fire_result = B.fire()
+	B.finished(fire_result)
+	check(fire_result == PROCESS_TICK_CHECK_RETURNED_EARLY && B.current_list.len == 1 && B.current_list[1] == "pending", "nonempty budget snapshot remains resumable")
+	var/list/live_list = list("one", "two")
+	B.priority = PROCESS_PRIORITY_VERY_HIGH
+	B.current_list = live_list
+	fire_result = B.fire()
+	B.finished(fire_result)
+	check(isnull(B.current_list) && live_list.len == 2 && live_list[1] == "one" && live_list[2] == "two", "VERY_HIGH completion preserves aliased live list")
+	B.priority = 3
+	B.run_time_tick_usage_allowance = -2
+	B.current_list = list("first", "pending")
+	fire_result = B.process()
+	check(fire_result == PROCESS_TICK_CHECK_RETURNED_EARLY && B.current_list.len == 1, "pending process preserves early completion result")
+	B.current_list = list("only")
+	fire_result = B.process()
+	check(fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY && isnull(B.current_list), "exhausted process returns normal completion")
+	B.current_list = null
+	var/list/relay_queue = list(B)
+	var/dispatches = 0
+	while(relay_queue.len && dispatches < 3)
+		dispatches++
+		S.relayProcess(B, relay_queue)
+	check(dispatches == 1 && !relay_queue.len, "exhausted relay dispatches only once")
+	B.current_list = list("only")
+	fire_result = B.fire_as_member()
+	check(fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY && isnull(B.current_list), "exhausted member returns normal completion")
 	world.log << "METRICS repeated_cadence_max=[repeated_max] restart_cadence_max=[restart_max] watchdog_cadence_max=[watchdog_max] denial_pending_callbacks=[denial_sleepers] instrumented_peak_callbacks=[sleepers_peak]"
 	text2file(json_encode(list("checks" = checks, "failures" = failures, "repeated_cadence_max" = repeated_max, "restart_cadence_max" = restart_max, "watchdog_cadence_max" = watchdog_max, "denial_pending_callbacks" = denial_sleepers, "instrumented_peak_callbacks" = sleepers_peak)), "native-result.json")
 	world.log << "DONE [checks] checks [failures] failures"
