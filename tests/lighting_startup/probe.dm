@@ -210,7 +210,8 @@ var/list/lighting_overlay_list = list()
 		try
 			create_lighting()
 		catch (var/exception/E)
-			caught = TRUE
+			// Only the injected pause failure proves the cleanup path was exercised.
+			caught = E.name == "deliberate startup interruption"
 		sleep(2)
 		probe_failure_release = caught && !failure_corner.active && probe_failure_waiter_done && probe_clear_waiter_done && !lighting_startup_in_progress && !lighting_corners_initialised && !created_lighting_corners_and_overlays
 		// Both direct APIs still work when startup has never begun (or is idle).
