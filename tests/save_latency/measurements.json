@@ -1,0 +1,131 @@
+{
+  "environment": "Windows, BYOND 516.1681, isolated offline adapters, decisecond wall clock",
+  "limitations": [
+    "Separated-time baseline reuse; identical fixture and settings.",
+    "Save-only large measurements skip preflight/import.",
+    "Incomplete backup trials intentionally stopped after rejected first-save results.",
+    "Native unit and OS scheduling causation not established."
+  ],
+  "observations": [
+    {
+      "name": "baseline",
+      "parameters": {
+        "baseline": "7b9ecb794d6827b3bb863200be27802156e6acef",
+        "large": true,
+        "dense": false,
+        "scenario": null,
+        "interrupt": false,
+        "benchmark_only": true,
+        "negative_control": null,
+        "head": "8b538d99f54ed308eec03021c1f9f5d8de4f2115",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "afe5d78b3252099c4dc42a69f329e8ed2d45626938fe7b4f8126aa7caafb6dd2",
+          "code/modules/persistence/saving.dm": "6fb10dcd6f9388a1fd347f5a5369e0548d81e6ce42a486ff0b223fca1e8f7c2a",
+          "code/modules/persistence/loading.dm": "51f3a99006045483f05d9e43d28d1893067bc436654916783138c2653d31a93b",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "first_seconds": 231.3,
+      "backup_seconds": 270.4,
+      "max_gap_seconds": [
+        0.5,
+        0.8
+      ],
+      "status": "passed_save_only",
+      "runtime_sha256": "0393366b1f7a0d3509d3be2df83c8238a96989d1af5392df665ebc75c8ff2edf",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-zkl1e71t"
+    },
+    {
+      "name": "1024_fallback",
+      "parameters": {
+        "baseline": null,
+        "large": true,
+        "dense": false,
+        "scenario": null,
+        "interrupt": false,
+        "benchmark_only": true,
+        "negative_control": null,
+        "head": "8b538d99f54ed308eec03021c1f9f5d8de4f2115",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "eae43f9c598a2911a8984f2d35b01c612c770d6fcbc557cca7d987f242e9ea7c",
+          "code/modules/persistence/saving.dm": "d91e85ded54ef5b994fa878de2dc01da2a4376ec9f74602108aae819e756a259",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "first_seconds": 1026.8,
+      "backup_seconds": null,
+      "max_gap_seconds": [
+        0.8,
+        null
+      ],
+      "status": "first_complete_backup_interrupted",
+      "runtime_sha256": "bd1dc78f48a9e725ede7a77de4daaa607497d5d79b0480e2b0daae6e973bcdfd",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-yocwg1lw"
+    },
+    {
+      "name": "8192_fallback",
+      "parameters": {
+        "baseline": null,
+        "large": true,
+        "dense": false,
+        "scenario": null,
+        "interrupt": false,
+        "benchmark_only": true,
+        "negative_control": null,
+        "head": "ea5e3a7c96305ce98c4a2ce608cfde941db35c40",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "eae43f9c598a2911a8984f2d35b01c612c770d6fcbc557cca7d987f242e9ea7c",
+          "code/modules/persistence/saving.dm": "2e5569761cc7a99002a5bf5b6c751f0489e006d077cecc47df7ece0bca7a4199",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "first_seconds": 980.9,
+      "backup_seconds": null,
+      "max_gap_seconds": [
+        5.0,
+        null
+      ],
+      "status": "first_complete_backup_interrupted",
+      "runtime_sha256": "14f568449435c7c258e2f4c152fdfb7e6226d0ea9e8e33c5fbac238efffa13f9",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-mn6rwls0"
+    },
+    {
+      "name": "8192_dense",
+      "parameters": {
+        "baseline": null,
+        "large": false,
+        "dense": true,
+        "scenario": null,
+        "interrupt": false,
+        "benchmark_only": false,
+        "negative_control": null,
+        "head": "ea5e3a7c96305ce98c4a2ce608cfde941db35c40",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "eae43f9c598a2911a8984f2d35b01c612c770d6fcbc557cca7d987f242e9ea7c",
+          "code/modules/persistence/saving.dm": "2e5569761cc7a99002a5bf5b6c751f0489e006d077cecc47df7ece0bca7a4199",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "first_seconds": 74.4,
+      "backup_seconds": 79.3,
+      "max_gap_seconds": [
+        0.1,
+        0.1
+      ],
+      "status": "passed_roundtrip_20000_children",
+      "runtime_sha256": "a864cb3164d8673e49066b1bcd1ddf87296b25f44e281df74903c52ca1f9bacf",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-_yecxqct"
+    }
+  ]
+}

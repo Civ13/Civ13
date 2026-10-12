@@ -7,6 +7,8 @@ def main():
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--large', action='store_true')
     parser.add_argument('--dense', action='store_true')
+    parser.add_argument('--prepare-only', action='store_true', help='Generate source without compiling or starting BYOND')
+    parser.add_argument('--trace-units', action='store_true', help='Diagnostic native-unit timing; adds overhead')
     parser.add_argument('--interrupt', action='store_true')
     parser.add_argument('--benchmark-only', action='store_true')
     parser.add_argument('--scenario', choices=('movement','concurrent','parent-deletion'))
@@ -20,6 +22,7 @@ def main():
     print(f'Evidence: {output}', flush=True)
     files = ['code/predefines.dm', 'tests/world_save/stubs.dm', 'code/modules/persistence/functions.dm',
              'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm', 'tests/save_latency/probe.dm']
+    if args.trace_units: files.insert(2, 'tests/save_latency/trace.dm')
     hashes = {}
     for relative in files:
         if args.baseline and relative.endswith(('functions.dm', 'saving.dm', 'loading.dm')):
@@ -30,6 +33,28 @@ def main():
             data += b'\n/proc/latency_copy(source, destination)\n\tvar/start = world.timeofday\n\t. = fcopy(source, destination)\n\tworld.log << "IO_METRICS copy=[source] ticks=[(world.timeofday-start+864000)%864000]"\n/proc/latency_flush(savefile/F)\n\tvar/start = world.timeofday\n\tF.Flush()\n\tworld.log << "IO_METRICS flush ticks=[(world.timeofday-start+864000)%864000]"\n'
         if relative.endswith('saving.dm'):
             data = data.replace(b'savefile.Flush()', b'latency_flush(savefile)')
+        if args.trace_units and relative.endswith('saving.dm'):
+            traced = data.decode().replace('\r\n', '\n')
+            traced = re.sub(r'(?m)^(\s*)(F|savefile)\[(.+)\] << (.+)$',
+                lambda match: match[1] + 'latency_write(' + match[2] + ', ' + match[3] + ', ' + match[4] + ')', traced)
+            traced = traced.replace('var/ref = saving_reference_pins.len + 1',
+                'var/latency_previous_stage = latency_stage\n\tlatency_stage = "entry"\n\tvar/latency_index_start = latency_trace_time()\n\tvar/ref = saving_reference_pins.len + 1')
+            traced = traced.replace('A.before_save()',
+                'latency_trace_end(latency_index_start, "reference_index [ref]")\n\tA.before_save()')
+            traced = traced.replace('\treturn ref\n', '\tlatency_stage = latency_previous_stage\n\treturn ref\n')
+            traced = traced.replace('// Visit only this level', 'latency_stage = "grid"\n\t\t// Visit only this level')
+            traced = traced.replace('var/list/edges = list()', 'latency_stage = "edges"\n\t\tvar/list/edges = list()')
+            traced = traced.replace('A.before_save()', 'latency_before_save(A)')
+            traced = traced.replace('A.get_saved_vars()', 'latency_saved_vars(A)')
+            traced = traced.replace('container.contents.Copy()', 'latency_list_copy(container.contents)')
+            traced = traced.replace('L.Copy()', 'latency_list_copy(L)')
+            traced = traced.replace('children.Copy(start, min(start+500, children.len+1))', 'latency_list_copy(children, start, min(start+500, children.len+1))')
+            traced = traced.replace('list2params(', 'latency_list_params(')
+            traced = traced.replace('/map_storage/proc/save_work_check()\n', '/map_storage/proc/save_work_check()\n\tlatency_trace_check(saving_z, saving_work)\n')
+            # Reset after each sleep at its original indentation, excluding wait time.
+            traced = re.sub(r'(?m)^(\s*)sleep\(world.tick_lag\)$',
+                lambda match: match[0] + '\n' + match[1] + 'latency_last_check = latency_trace_time()', traced)
+            data = traced.encode()
         if args.negative_control and relative.endswith('saving.dm'):
             source = data.decode()
             if args.negative_control == 'ownership':
@@ -45,9 +70,10 @@ def main():
     source += '#include "code/predefines.dm"\n#include "tests/world_save/stubs.dm"\n#define fdel(path) delete_file_adapter(path)\n#define fcopy(source, destination) latency_copy(source, destination)\n'
     source += ''.join(f'#include "{path}"\n' for path in files[2:])
     (output / 'probe.dme').write_text(source)
-    (output / 'metadata.json').write_text(json.dumps({'baseline':args.baseline, 'large':args.large, 'dense':args.dense, 'scenario':args.scenario, 'interrupt':args.interrupt, 'benchmark_only':args.benchmark_only, 'negative_control':args.negative_control,
+    (output / 'metadata.json').write_text(json.dumps({'baseline':args.baseline, 'large':args.large, 'dense':args.dense, 'scenario':args.scenario, 'interrupt':args.interrupt, 'benchmark_only':args.benchmark_only, 'negative_control':args.negative_control, 'trace_units':args.trace_units,
         'head': subprocess.check_output(['git','rev-parse','HEAD'], cwd=root, text=True).strip(), 'sources':hashes}, indent=2))
     (output / 'checkout.patch').write_text(subprocess.check_output(['git','diff','HEAD'],cwd=root,text=True))
+    if args.prepare_only: return
     compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     build = subprocess.run([str(compiler), '-max_errors','0','probe.dme'], cwd=output, capture_output=True,text=True,timeout=120,creationflags=flags)
