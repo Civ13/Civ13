@@ -43,6 +43,11 @@
 	corpse_storage_closed = TRUE
 	..()
 
+/obj/item/organ/external/head/corpse_ci
+	var/icon_callbacks = 0
+/obj/item/organ/external/head/corpse_ci/get_icon()
+	icon_callbacks++
+	return ..()
 var/corpse_storage_closed = FALSE
 var/corpse_death_hooks = 0
 /hook/death/proc/corpse_ci(mob/living/human/H, gibbed)
@@ -89,6 +94,37 @@ var/corpse_assertions = 0
 		var/obj/map_metadata/corpse_ci/M = new
 		var/turf/T = locate(2,2,1)
 		var/mob/living/human/H = new(T)
+		// Let unrelated human constructor icon work finish before the focused case.
+		sleep(20)
+		// Native save loading can restore owner before species while New waits.
+		var/obj/item/organ/external/head/corpse_ci/partial_head = new(H)
+		var/datum/species/head_species = partial_head.species
+		partial_head.species = null
+		for (var/style_key in hair_styles_list)
+			var/datum/sprite_accessory/style = hair_styles_list[style_key]
+			if (style.species_allowed && (H.species.get_bodytype() in style.species_allowed))
+				H.h_style = style_key
+				break
+		corpse_assert(hair_styles_list[H.h_style], "real hair style exposes partial species lookup")
+		var/icon_ready = TRUE
+		try
+			partial_head.update_icon()
+		catch (var/exception/icon_error)
+			icon_ready = !icon_error
+		corpse_assert(icon_ready, "partial head icon defers species lookup")
+		sleep(2)
+		corpse_assert(!partial_head.icon_callbacks, "partial organ constructor callback defers")
+		partial_head.species = head_species
+		partial_head.get_icon()
+		corpse_assert(partial_head.icon_callbacks == 1 && partial_head.mob_icon, "hydrated organ can generate native icon")
+		qdel(partial_head)
+		var/retired_icon = partial_head.mob_icon
+		partial_head.update_icon()
+		corpse_assert(QDELETED(partial_head) && partial_head.mob_icon == retired_icon, "retired organ does not redraw")
+		var/obj/item/organ/external/head/corpse_ci/retired_head = new(H)
+		qdel(retired_head)
+		sleep(2)
+		corpse_assert(!retired_head.icon_callbacks, "retired organ constructor callback stays canceled")
 		H.stat = DEAD
 		H.do_rotting()
 		var/datum/corpse_decay_record/R = H.corpse_decay_record

@@ -20,3 +20,5 @@ Evidence includes commit/version/world metadata, dirty patch when applicable, co
 These are BYOND `icon()` exports of the six existing `icons/misc/tribal.dmi` remains states used by production `/obj/structure/religious/remains/New()`. No artwork was generated. The fixture exports the same states into its evidence directory.
 
 ![remains1](sprites/remains1.png) ![remains2](sprites/remains2.png) ![remains3](sprites/remains3.png) ![remains4](sprites/remains4.png) ![remains5](sprites/remains5.png) ![remains6](sprites/remains6.png)
+
+The icon-readiness and icon-callback controls check partial native organ restoration and delayed constructor work. The fixture lets unrelated human initialization finish first, then verifies missing-species deferral, healthy icon generation and retired callback cancellation. Both daemon output and runtime logs reject native errors/engine diagnostics and print the rejected text; the fixture explicitly closes its port and refuses reopening.

@@ -291,6 +291,8 @@ jobs:
           /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control nodrop
           /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control restart
           /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control noop
+          /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control icon-readiness
+          /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control icon-callback
 
       - name: Verify native memory ownership and mutation controls
         if: needs.changes.outputs.game == 'true'

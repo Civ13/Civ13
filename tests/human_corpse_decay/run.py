@@ -30,7 +30,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--byond-bin', type=Path, required=True)
     p.add_argument('--output', type=Path)
-    p.add_argument('--negative-control', nargs='?', const='nodrop', choices=('nodrop', 'restart', 'noop'))
+    p.add_argument('--negative-control', nargs='?', const='nodrop', choices=('nodrop', 'restart', 'noop', 'icon-readiness', 'icon-callback'))
     a = p.parse_args()
     root = Path(__file__).resolve().parents[2]
     out = a.output.resolve() if a.output else Path(tempfile.mkdtemp(prefix='civ13-corpse-decay-'))
@@ -38,7 +38,7 @@ def main():
         raise RuntimeError('Evidence output must be fresh')
     out.mkdir(parents=True, exist_ok=True)
     stem = '.human_corpse_decay_probe'
-    generated = [root / (stem + s) for s in ('.dme', '_world.dm', '_decay.dm', '.dmb', '.rsc')]
+    generated = [root / (stem + s) for s in ('.dme', '_world.dm', '_decay.dm', '.dmb', '.rsc', '_icons.dm', '_external.dm')]
     if any(x.exists() for x in generated):
         raise RuntimeError('Existing probe artifacts must be preserved')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
@@ -54,7 +54,18 @@ def main():
         generated[1].write_text(world, encoding="utf-8")
         source = (root / 'civ13.dme').read_text(encoding="utf-8").replace('code\\world.dm', stem + '_world.dm')
         source = "\n".join(line for line in source.splitlines() if not line.strip().startswith('#include "maps\\'))
-        if a.negative_control:
+        if a.negative_control == 'icon-readiness':
+            icons = (root / 'code/modules/organs/organ_icon.dm').read_text(encoding='utf-8')
+            assert icons.count(' || !species || !owner.body_build') == 1
+            generated[5].write_text(icons.replace(' || !species || !owner.body_build', '', 1), encoding='utf-8')
+            source = source.replace('code\\modules\\organs\\organ_icon.dm', stem + '_icons.dm')
+        elif a.negative_control == 'icon-callback':
+            external = (root / 'code/modules/organs/organ_external.dm').read_text(encoding='utf-8')
+            guard = 'if (!QDELETED(src) && owner && owner.species && species && owner.body_build)'
+            assert external.count(guard) == 1
+            generated[6].write_text(external.replace(guard, 'if (TRUE)', 1), encoding='utf-8')
+            source = source.replace('code\\modules\\organs\\organ_external.dm', stem + '_external.dm')
+        elif a.negative_control:
             decay = (root / 'code/processes/human_corpse_decay.dm').read_text(encoding='utf-8')
             if a.negative_control == 'nodrop':
                 decay = decay.replace('if (I.nodrop || I.anchored || I.nodrop_special_check())', 'if (I.nodrop && !I.nodrop)', 1)
@@ -75,7 +86,7 @@ def main():
         print(text, flush=True)
         if build.returncode or 'DM compiler version 516.1681' not in text or '0 errors, 0 warnings' not in text:
             raise RuntimeError('Pinned compilation failed')
-        for f in generated[3:]: shutil.copy2(f, out / f.name)
+        for f in generated[3:5]: shutil.copy2(f, out / f.name)
         # Only tracked name data; no production config, credentials or saves.
         for rel in subprocess.check_output(['git', 'ls-files', 'config/names'], cwd=root, text=True).splitlines():
             destination = out / rel
@@ -121,7 +132,7 @@ def main():
         result = (out / 'result.txt').read_text(encoding="utf-8").strip()
         print(result)
         if a.negative_control:
-            expected = {'nodrop': 'nodrop gear blocks retirement', 'restart': 'restart retains exposure', 'noop': 'noop movement retains exposure'}[a.negative_control]
+            expected = {'nodrop': 'nodrop gear blocks retirement', 'restart': 'restart retains exposure', 'noop': 'noop movement retains exposure', 'icon-readiness': 'partial head icon defers species lookup', 'icon-callback': 'partial organ constructor callback defers'}[a.negative_control]
             if not result.startswith('FAIL: ' + expected): raise RuntimeError('Negative control did not detect expected mutation')
             print(f'PASS: {a.negative_control} mutation detected')
         elif not result.startswith('PASS:') or proc.returncode:
