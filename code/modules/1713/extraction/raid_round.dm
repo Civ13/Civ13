@@ -72,6 +72,7 @@
 		to_chat(H, "Delivered [claimed.len] returned equipment items to your private house.")
 		return TRUE
 	proc/close_round()
+		if (hub_vote) hub_vote.cancel()
 		round_closing = TRUE
 		if (!round_notice)
 			round_notice = TRUE

@@ -1,11 +1,13 @@
 /obj/map_metadata/extraction_survival
 	var/next_map_id
+	var/datum/vote_handle/hub_vote
 	proc/hub_map_catalog()
 		// IDs match actual DMM basenames accepted by the existing launcher.
 		return list(MAP_EXTRACTION_SURVIVAL = 0, MAP_ALLEYWAY = 0, MAP_BANK_ROBBERY = 0)
 	proc/start_map_vote(mob/living/human/H)
 		if (!owned(H) || H.z != 3 || H.stat != CONSCIOUS || player_roots(H).len) return FALSE
-		return vote.initiate_vote("safehouse map", H.extraction_session.owner, FALSE, list(src, "accept_map_vote"))
+		hub_vote = vote.request_vote("safehouse map", H.extraction_session.owner, FALSE, list(src, "accept_map_vote"))
+		return !!hub_vote
 	proc/accept_map_vote(selection)
 		var/list/catalog = hub_map_catalog()
 		if (round_closing || !istext(selection) || !(selection in catalog)) return FALSE

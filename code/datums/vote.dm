@@ -2,7 +2,60 @@ var/datum/vote/vote = new()
 
 var/global/list/round_voters = list() //Keeps track of the individuals voting for a given round, for use in forcedrafting.
 
+/datum/vote_handle
+	var/state = "pending"
+	var/generation
+	var/winner
+	var/deadline
+	var/datum/vote/manager
+	var/list/completion
+	proc/cancel()
+		return manager ? manager.cancel_request(src) : FALSE
+	proc/resolve()
+		return manager ? manager.result(src) : FALSE
+
 /datum/vote
+	var/generation = 0
+	var/datum/vote_handle/active_request
+	proc/is_current(datum/vote_handle/H)
+		return H && H == active_request && H.manager == src && H.generation == generation && H.state == "pending"
+	proc/close_ui()
+		for (var/client/C in voting.Copy())
+			if (C) C << browse(null, "window=vote")
+	proc/cancel_request(datum/vote_handle/H)
+		if (!is_current(H)) return FALSE
+		H.state = "cancelled"
+		H.completion = null
+		H.manager = null
+		active_request = null
+		reset()
+		return TRUE
+	proc/request_vote(vote_type, initiator_key, automatic = FALSE, list/completion = list())
+		if (!initiate_vote(vote_type, initiator_key, automatic, completion)) return null
+		return active_request
+	proc/request_choices(prompt, list/options, initiator_key, duration, list/completion = list(), automatic = FALSE)
+		if (mode || !islist(options) || !options.len || options.len > 100 || !istext(prompt) || !isnum(duration) || duration < 10 || duration > 6000) return null
+		if (started_time != null && !automatic && !check_rights(R_ADMIN) && started_time + config.vote_delay > world.time) return null
+		for (var/option in options)
+			if (!istext(option) || !length(option)) return null
+		reset()
+		mode = "request"
+		question = prompt
+		initiator = initiator_key
+		started_time = world.time
+		win_threshold = 0
+		for (var/option in options)
+			choices[option] = 0
+		generation++
+		active_request = new
+		active_request.manager = src
+		active_request.generation = generation
+		active_request.deadline = world.time + duration
+		active_request.completion = completion.Copy()
+		time_remaining = round(duration / 10)
+		for (var/client/C in clients)
+			if (C) C << browse(interface(C), "window=vote;size=500x800")
+		return active_request
 	var/initiator = null
 	var/started_time = null
 	var/time_remaining = 0
@@ -27,8 +80,13 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			if (istype(vote))
 				del(vote)
 			vote = src
+	Del()
+		reset()
+		..()
 
 	proc/process()	//called by master_controller
+		var/datum/vote_handle/H = active_request
+		if (!is_current(H)) return
 		if (mode)
 			// No more change mode votes after the game has started.
 			// 3 is GAME_STATE_PLAYING, but that #define is undefined for some reason
@@ -39,23 +97,12 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 			// Calculate how much time is remaining by comparing current time, to time of vote start,
 			// plus vote duration
-			if (mode == "ship selection")
-				if (faction == 0)
-					time_remaining = round((started_time + 450 - world.time)/10)
-				else
-					time_remaining = round((started_time + 300 - world.time)/10)
-			else
-				time_remaining = round((started_time + config.vote_period - world.time)/10)
+			time_remaining = round((H.deadline - world.time)/10)
 
-			if (time_remaining < 0)
-				result()
-				for (var/client/C in voting)
-					if (C)
-						C << browse(null,"window=vote")
-				reset()
+			if (world.time >= H.deadline)
+				result(H)
 			else
-				voting.Cut()
-				for (var/client/C in voting)
+				for (var/client/C in voting.Copy())
 					if (C)
 						C << browse(vote.interface(C),"window=vote")
 
@@ -80,6 +127,13 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 
 	proc/reset()
+		close_ui()
+		if (is_current(active_request))
+			active_request.state = "cancelled"
+			active_request.completion = null
+			active_request.manager = null
+		active_request = null
+		callback = null
 		initiator = null
 		time_remaining = 0
 		mode = null
@@ -139,20 +193,37 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				display_winner = map_id_to_title[newwinner]
 			text += "<b>Vote Result: <span class = 'ping'>[display_winner]</span></b><br>"
 			text += "<b>The vote has ended.</b>"
-			if (callback)
-				if (callback.len == 2)
-					call(callback[1], callback[2])(newwinner)
-				callback = null
 		else
 			text += "<b>Vote Result: <span class = 'ping'>No</span> - Not enough YES votes (59% is needed)</b>"
 		log_vote(text)
 		to_chat(world, "<font color='purple'>[text]</font>")
 		return .
 
-	proc/result()
+	proc/result(datum/vote_handle/H)
+		if (!is_current(H)) return FALSE
+		// No yielding callbacks until the old session is terminal and detached.
+		H.state = "resolved"
+		var/resolved_mode = mode
+		var/resolved_faction = faction
+		var/list/completion = H.completion
+		H.completion = null
+		H.manager = null
 		. = announce_result()
+		H.winner = .
+		active_request = null
+		reset()
+		if ((. || resolved_mode == "request") && completion && completion.len == 2)
+			call(completion[1], completion[2])(.)
+		// A completion may create or cancel another session. Never apply the
+		// old route to it, even if the replacement already finished synchronously.
+		if (generation != H.generation || active_request) return .
+		if (.) apply_result(resolved_mode, resolved_faction, ., completion)
+		return .
+
+	proc/apply_result(resolved_mode, resolved_faction, winner, list/completion)
+		. = winner
 		if (.)
-			switch(mode)
+			switch(resolved_mode)
 				if ("restart")
 					if (. == "Restart Round")
 						to_chat(world, "Round ending due to vote.")
@@ -182,28 +253,29 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					var/string2 = "players:[clients.len]\n"
 					text2file("[string1][string2]","SQL/gamedata.txt")
 				if ("gamemode")
-					processes.gamemode.swap(.)
+					// The legacy process supplies this same swap as its callback.
+					if (!completion || completion.len != 2 || completion[1] != processes.gamemode || completion[2] != "swap")
+						processes.gamemode.swap(.)
 				if ("ship selection")
 					var/obj/map_metadata/battle_ships/battle_ships = map
-					if (faction == 3)
-						return .
-					else if (faction == 0)
+					if (resolved_faction == 0)
 						faction = 1
 						ship_size = .
-					else if (faction == 1)
+					else if (resolved_faction == 1)
 						faction = 2
 						battle_ships.load_map(lowertext(replacetext(., " ", "_")), "south")
-					else if (faction == 2)
+					else if (resolved_faction == 2)
 						faction = 3
 						battle_ships.load_map(lowertext(replacetext(., " ", "_")), "north")
 		return .
 
-	proc/submit_vote(var/ckey, var/vote)
-		if (mode)
+	proc/submit_vote(var/ckey, var/vote, session_generation)
+		if (mode && is_current(active_request) && session_generation == generation)
 			if (vote && vote >= 1 && vote <= choices.len)
+				if (disabled.Find(choices[vote])) return FALSE
 				if (current_votes[ckey])
 					choices[choices[current_votes[ckey]]] = max(0, choices[choices[current_votes[ckey]]]-1)
-				voted += usr.ckey
+				voted |= ckey
 				choices[choices[vote]]++	//check this
 				current_votes[ckey] = vote
 				return vote
@@ -217,6 +289,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					return FALSE
 
 			reset()
+			var/setup_generation = generation
 			win_threshold = 0.00
 			default = null
 
@@ -251,12 +324,16 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						choices.Add(id)
 						choices[id] = 0
 				if ("custom")
-					question = input(usr,"What is the vote for?") as text|null
-					if (!question)	return FALSE
+					var/custom_question = input(usr,"What is the vote for?") as text|null
+					if (!custom_question || mode || generation != setup_generation) return FALSE
+					var/list/custom_options = list()
 					for (var/i=1,i<=10,i++)
 						var/option = capitalize(input(usr,"Please enter an option or hit cancel to finish") as text|null)
-						if (!option || mode || !usr.client)	break
-						choices.Add(option)
+						if (mode || generation != setup_generation || !usr.client) return FALSE
+						if (!option) break
+						custom_options.Add(option)
+					question = custom_question
+					choices = custom_options
 					if (!choices.len)
 						choices.Add("Yes")
 						choices.Add("No")
@@ -350,6 +427,12 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				else
 					return FALSE
 			mode = vote_type
+			generation++
+			active_request = new
+			active_request.generation = generation
+			active_request.manager = src
+			active_request.deadline = world.time + (vote_type == "ship selection" ? (faction == 0 ? 450 : 300) : config.vote_period)
+			active_request.completion = _callback.Copy()
 			initiator = initiator_key
 			started_time = world.time
 			var/text = "[capitalize(mode)] vote started by [initiator]."
@@ -373,7 +456,6 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				if (C)
 					C << browse(interface(C), "window=vote;size=500x800")
 
-			callback = _callback
 			return TRUE
 		return FALSE
 
@@ -414,16 +496,16 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				if (disabled.Find(choices[i]))
 					continue
 				else if (current_votes[C.ckey] == i)
-					. += "<td><b><a href='?src=\ref[src];vote=[i]'>[display_name]</a></b>[display_desc]</td><td align = 'center'>[votes]</td>"
+					. += "<td><b><a href='?src=\ref[src];generation=[generation];vote=[i]'>[display_name]</a></b>[display_desc]</td><td align = 'center'>[votes]</td>"
 				else
-					. += "<td><a href='?src=\ref[src];vote=[i]'>[display_name]</a>[display_desc]</td><td align = 'center'>[votes]</td>"
+					. += "<td><a href='?src=\ref[src];generation=[generation];vote=[i]'>[display_name]</a>[display_desc]</td><td align = 'center'>[votes]</td>"
 				if (additional_text.len >= i)
 					. += additional_text[i]
 				. += "</tr>"
 
 			. += "</table><hr>"
 			if (admin && mode != "map")
-				. += "(<a href='?src=\ref[src];vote=cancel'>Cancel Vote</a>) "
+				. += "(<a href='?src=\ref[src];generation=[generation];vote=cancel'>Cancel Vote</a>) "
 		else
 			. += "<h2>Start a vote:</h2><hr><ul><li>"
 			//restart
@@ -440,13 +522,14 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			if (admin)
 				. += "<li><a href='?src=\ref[src];vote=custom'>Custom</a></li>"
 			. += "</ul><hr>"
-		. += "<a href='?src=\ref[src];vote=close' style='position:absolute;right:50px'>Close</a></body></html>"
+		. += "<a href='?src=\ref[src];generation=[generation];vote=close' style='position:absolute;right:50px'>Close</a></body></html>"
 
 		return .
 
 
 	Topic(href,href_list[],hsrc)
 		if (!usr || !usr.client)	return	//not necessary but meh...just in-case somebody does something stupid
+		if (href_list["vote"] && (mode || href_list["generation"]) && text2num(href_list["generation"]) != generation) return
 		switch(href_list["vote"])
 			if ("close")
 				voting -= usr.client
@@ -480,7 +563,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			else
 				var/t = round(text2num(href_list["vote"]))
 				if (t) // It starts from TRUE, so there's no problem
-					submit_vote(usr.ckey, t)
+					submit_vote(usr.ckey, t, text2num(href_list["generation"]))
 		usr.vote()
 
 

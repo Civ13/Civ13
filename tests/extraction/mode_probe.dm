@@ -29,6 +29,7 @@
 		return TRUE
 
 /proc/extraction_mode_probe()
+	vote_handle_probe()
 	makeDatumRefLists()
 	var/obj/map_metadata/extraction_survival/M = map
 	equipment_assert(istype(M), "original extraction map metadata loaded")
