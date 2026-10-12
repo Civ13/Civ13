@@ -89,8 +89,8 @@ def build(size=SIZE):
             put(z, left+dx, bottom+dy, '/obj/effect/extraction_mall_rubble',
                 floor='/turf/floor/wood_broken' if 'wood' in palette else '/turf/floor/gravel/dust')
         put(z, right-4, bottom+4, '/obj/structure/bed/chair{dir = 8}', floor=palette)
-        put(z, right-5, top-4, '/obj/effect/decal/rubbish{random = FALSE; icon_state = "trash_7"}', floor=palette)
-        put(z, left+4, top-4, '/obj/effect/decal/rubbish{random = FALSE; icon_state = "trash_12"}', floor=palette)
+        put(z, right-5, top-4, '/obj/effect/decal/rubbish{random = 0; icon_state = "trash_7"}', floor=palette)
+        put(z, left+4, top-4, '/obj/effect/decal/rubbish{random = 0; icon_state = "trash_12"}', floor=palette)
         for x, y in ((left+8, bottom+6), (right-8, top-6)):
             loot_id += 1
             put(z, x, y, f'/obj/effect/extraction_loot_marker{{container_id = {loot_id}; pool_kind = "{pool}"}}', floor=palette)
@@ -131,7 +131,7 @@ def build(size=SIZE):
             put(1, x+dx, y+dy, '/obj/effect/extraction_mall_rubble', floor='/turf/floor/gravel/dust')
     for z in areas:
         for i, (x, y) in enumerate(((34, 78), (58, 82), (80, 42), (82, 96), (122, 78), (78, 128))):
-            put(z, x, y, f'/obj/effect/decal/rubbish{{random = FALSE; icon_state = "trash_{1+i*2}"}}', floor=dark)
+            put(z, x, y, f'/obj/effect/decal/rubbish{{random = 0; icon_state = "trash_{1+i*2}"}}', floor=dark)
 
     for x, y in STAIRS:
         for z in areas:

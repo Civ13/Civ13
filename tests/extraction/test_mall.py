@@ -65,6 +65,14 @@ def reachable(layers, start, vehicle=False):
 
 
 class MallTests(unittest.TestCase):
+    def test_dmm_assignments_use_numeric_booleans(self):
+        for filename in ('industrial_district.dmm', 'modern_city_extraction.dmm', 'interchange_mall.dmm'):
+            with self.subTest(map=filename):
+                self.assertIsNone(re.search(r'=\s*(?:TRUE|FALSE)\b',
+                                          (ROOT / 'maps/extraction' / filename).read_text()))
+        for source in (original(), original(city=True), build()):
+            self.assertIsNone(re.search(r'=\s*(?:TRUE|FALSE)\b', source))
+
     def test_post_war_dressing_stays_on_raid_floors(self):
         layers = parse(build())
         for z in (1, 4, 5):
