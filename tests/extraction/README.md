@@ -1,5 +1,15 @@
 # Extraction survival verification
 
+`run_economics.py` accepts explicit `--byond-bin`, `--php`, `--bot-root` and
+`--bot-head` arguments. It checks the bot's immutable head and records runtime
+file hashes, then uses its actual PHP driver against a temporary native spool.
+Every step restarts the full production-source fixture with ordinary startup
+disabled. It exercises quotes, escrow listing, purchase, cancellation, buyback,
+immutable replay and a fresh status query after an interrupted shared receipt.
+The final native assertions check all wallets and exact graph ownership.
+`--output` retains synthetic evidence in a new directory, including failures.
+This does not enable the live bot or establish connected-client acceptance.
+
 Use BYOND 516.1681 and a verified full Python interpreter path:
 
 ```powershell

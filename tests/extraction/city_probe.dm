@@ -31,7 +31,7 @@
 		var/datum/research_node/N = get_research_node(node_id)
 		equipment_assert(N && B.can_assign_node(node_id), "laboratory can study prerequisite [node_id]")
 		equipment_assert(!M.add_research_ticks(faction, node_id, N.cost_ticks - 1) && !M.is_node_done(faction, node_id), "incomplete [node_id] study preserves its gate")
-		equipment_assert(M.add_research_ticks(faction, node_id, 1), "final paid study tick completes [node_id]")
+		equipment_assert(M.add_research_ticks(faction, node_id, 1), "final injected study tick completes [node_id]")
 	cloth.generate_recipes_civs(list(210,210,210), "global", faction)
 	equipment_assert(extraction_city_recipe(cloth.recipes, /obj/item/clothing/under/customuniform), "earned specialist study unlocks the production Modern uniform recipe")
 	var/material/kevlar = new /material/kevlar
