@@ -43,13 +43,15 @@ var/replacements = 0
 	maxz = 1
 	turf = /turf/other
 /world/OpenPort(port)
+	if(port == "none")
+		return ..()
 	return FALSE
 /world/Error(exception/E)
 	world.log << "runtime error: [E]"
 	return ..()
 /world/New()
 	..()
-	world.OpenPort(0)
+	world.OpenPort("none")
 	if(world.port)
 		world.log << "PORT_OPEN"
 		del(world)
