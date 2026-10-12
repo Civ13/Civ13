@@ -279,12 +279,12 @@ var/list/timer_fires = list()
 	map = new(locate(1,1,1))
 	// Area discovery must retain the original native turf sequence and filters.
 	for(var/area/A in area_list)
-		for(var/target in list(/turf, /turf/floor/grass, /turf/floor/dirt/flooded))
+		for(var/target in list(null, /turf, /turf/floor/grass, /turf/floor/dirt/flooded))
 			var/list/expected = list()
 			for(var/area/B in area_list)
 				if(!istype(B, A.type)) continue
 				for(var/turf/T in B.contents)
-					if(istype(T, target)) expected += T
+					if(!target || istype(T, target)) expected += T
 			var/list/actual = get_area_turfs(A, null, target, map, map.season_epoch)
 			if(!probe_same_candidates(expected, actual)) failures++
 	// A broad query reaches a 64-turf checkpoint even in the smallest fixture.
