@@ -38,7 +38,10 @@ Largest geometry is 660 x 550 x 1 (363,000 turfs), with 20,000 inert objects and
 final ordered per-season terrain hashes, RNG threshold order/count, weather/tree/
 announcement traces or clocks that differ. Small fixtures additionally compare every
 ordered terrain replacement (coordinates and old/new type), icon update and probability
-decision (threshold, result and current candidate). Largest fixtures disable this trace
+decision (threshold, result and current candidate identity). Small baseline/candidate
+sources share candidate tracking for full trace fidelity. Largest parity sources
+omit tracking because their operation trace is disabled; request scenarios retain it
+for replacement checks. Largest fixtures disable this trace
 to keep its memory/CPU cost out of the performance comparison. It also checks the explicit synthetic one-second heartbeat ceiling. Cheap transitions
 may finish without a positive pause; ordinary parity uses actual tick usage and reports
 its observed positive/zero pauses and completion times.
@@ -57,7 +60,12 @@ wrap, actual peak helper snapshot slots, child process CPU, and OS peak working 
 (Windows) or sampled RSS/high-water (Linux). CPU/wall/memory ratios compare only equal unforced four-cycle workloads. OS metrics
 cover the whole child and include the candidate-only post-parity witness/drain (up to
 two ticks); this small overhead is explicitly labeled. Request runs are excluded
-from benchmark comparisons. Missing CPU/memory samples fail comparison. Heartbeat
+from benchmark comparisons. Parity sources omit request checkpoint and after-pause replacement callbacks.
+Largest parity sources also omit per-candidate tracking assignments; small sources
+retain shared baseline/candidate tracking for strict RNG candidate identity traces. Shared
+operation/RNG logging, timer/pending instrumentation and helper allocation sampling
+remain; ratios describe these instrumented comparable paths. Missing CPU/memory
+samples fail comparison. Heartbeat
 readiness and a pre-cycle tick establish the timestamp before each measured window. Additional request scenarios run separately via
 `--requests`. Generated source and build/runtime logs accompany results; manifests
 identify original/generated sources, HEAD and tracked patch. Metrics describe this

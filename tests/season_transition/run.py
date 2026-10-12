@@ -81,7 +81,8 @@ def prepare(repo, mode, size, negative, requests_enabled=False):
         return ''.join(output)
     seasons = track_phases(seasons)
     seasons = seasons.replace('world.tick_usage >= 20', '(probe_force_budget ? probe_budget_usage(work, discovery) : world.tick_usage) >= 20')
-    seasons = re.sub(r'(^/obj/map_metadata/proc/season_work_pause[^\n]*\n)', r'\1\tprobe_checkpoint(src, epoch, work, discovery)\n', seasons, flags=re.M)
+    if requests_enabled:
+        seasons = re.sub(r'(^/obj/map_metadata/proc/season_work_pause[^\n]*\n)', r'\1\tprobe_checkpoint(src, epoch, work, discovery)\n', seasons, flags=re.M)
     seasons = seasons.replace('call(src, kind)(value)', 'probe_delayed_call(src, kind, value)')
     seasons = re.sub(r'^(\t*)spawn\(18000\)\n', lambda m: m[1] + 'probe_timer_armed(src, 18000)\n' + m[0] + m[1] + '\tprobe_timer_fired(src)\n', seasons, flags=re.M)
     helper = re.sub(r'^(\t+)return turfs$', lambda m: m[1] + 'probe_helper_peak_slots = max(probe_helper_peak_slots, turfs.len)\n' + m[0], helper, flags=re.M)
@@ -102,11 +103,13 @@ def prepare(repo, mode, size, negative, requests_enabled=False):
         seasons, count = re.subn(r'record_abandonment_season_change\(advance_decay\)', 'record_abandonment_season_change(FALSE)', seasons)
         assert count, 'Clock negative control failed to patch production'
     seasons = re.sub(r'\bsleep\(([^\n]*?)\)', r'probe_pause(\1)', seasons)
-    seasons = seasons.replace('\t\tprobe_pause(world.tick_lag)\n', '\t\tprobe_pause(world.tick_lag)\n\t\tprobe_after_pause(src, epoch, discovery)\n')
+    if requests_enabled:
+        seasons = seasons.replace('\t\tprobe_pause(world.tick_lag)\n', '\t\tprobe_pause(world.tick_lag)\n\t\tprobe_after_pause(src, epoch, discovery)\n')
     def track_candidates(source):
         return re.sub(r'^(\t+)for\s*\(var/(?:turf|obj)/[^\n]*?/([A-Za-z_]\w*)\s+in [^\n]*\)[^\n]*\n', lambda m: m[0] + m[1] + '\tprobe_current_candidate = ' + m[2] + '\n', source, flags=re.M)
-    seasons = track_candidates(seasons)
-    asia = track_candidates(asia)
+    if requests_enabled or size == 'small':
+        seasons = track_candidates(seasons)
+        asia = track_candidates(asia)
     helper = re.sub(r'\bsleep\(([^\n]*?)\)', r'probe_pause(\1)', helper)
     paths = set(re.findall(r'/(?:turf|area|obj)/[A-Za-z_][A-Za-z_0-9/]*', originals))
     callable_paths = set(re.findall(r'^(/obj/[A-Za-z_][A-Za-z_0-9/]*)\(', originals, re.M))
