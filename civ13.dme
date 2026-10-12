@@ -1241,3 +1241,5 @@
 #include "code\modules\1713\animal_harvest.dm"
 // END_INCLUDE
 #include "code\modules\1713\modern_telecom.dm"
+#include "code\modules\1713\modern_telephone.dm"
+#include "code\modules\1713\modern_terminal.dm"

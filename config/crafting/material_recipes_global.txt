@@ -2573,3 +2573,10 @@ RECIPE: /material/lead/,lead-acid accumulator,/obj/structure/battery/lead_acid,5
 RECIPE: /material/wood/,wooden resource sieve,/obj/item/weapon/resource_sieve,4,60,0,1,tools,0,0,0,8,null
 
 RECIPE: /material/steel/,dovetail-to-Picatinny rail adapter,/obj/item/weapon/gun_mount,2,120,0,1,tools,0,80,0,8,null
+RECIPE: /material/electronics/,powered radio program desk,/obj/structure/telecom/station,6,150,1,1,none,105,0,0,8,null
+RECIPE: /material/electronics/,powered broadcast receiver,/obj/structure/telecom,3,80,1,1,none,105,0,0,8,null
+RECIPE: /material/electronics/,educational television receiver,/obj/structure/telecom/tv,3,80,1,1,none,160,0,0,8,null
+RECIPE: /material/electronics/,television program desk,/obj/structure/telecom/station/tv,10,150,1,1,none,160,0,0,8,null
+RECIPE: /material/electronics/,network landline telephone,/obj/item/weapon/telephone/landline,2,120,1,1,none,100,0,0,8,null
+RECIPE: /material/electronics/,cable network terminal,/obj/structure/telecom/terminal,8,150,1,1,none,160,0,0,8,null
+RECIPE: /material/iron/,broadcast antenna,/obj/structure/telecom/antenna,5,100,1,1,none,105,0,0,8,null

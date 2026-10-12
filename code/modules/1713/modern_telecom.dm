@@ -15,6 +15,7 @@ var/global/civ_telecom_cursor = 1
 	var/enabled = FALSE
 	var/television = FALSE
 	var/program = "crafting"
+	var/announcement = ""
 	var/prepared = FALSE
 	var/tmp/next_broadcast = 0
 	var/tmp/program_line = 0
@@ -43,6 +44,9 @@ var/global/civ_telecom_cursor = 1
 	return !retired && (src in civ_telecom_devices) && enabled && anchored && isturf(loc) && draw_cable_power()
 
 /obj/structure/telecom/MouseDrop_T(atom/movable/O, mob/living/human/H)
+	civ_attach_cable(O, H)
+
+/obj/proc/civ_attach_cable(atom/movable/O, mob/living/human/H)
 	if (!istype(O, /obj/structure/cable) || !H || H.stat != CONSCIOUS || !H.can_use_hands() || get_dist(H, src) > 1 || get_dist(H, O) > 1 || get_dist(src, O) > 1 || !anchored || !isturf(loc))
 		return
 	if (powersource)
@@ -54,7 +58,7 @@ var/global/civ_telecom_cursor = 1
 /obj/structure/telecom/attack_hand(mob/living/human/H)
 	if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || get_dist(H, src) > 1)
 		return
-	var/choice = input(H, "Tune or switch. Drag an adjacent laid cable onto the equipment to power it.", name) in list("Power", "Frequency", "Program", "Cancel")
+	var/choice = input(H, "Tune or switch. Drag an adjacent laid cable onto the equipment to power it.", name) in list("Power", "Frequency", "Program", "Announcement", "Cancel")
 	if (!H || H.stat != CONSCIOUS || get_dist(H, src) > 1 || !H.can_use_hands())
 		return
 	if (choice == "Power")
@@ -72,6 +76,10 @@ var/global/civ_telecom_cursor = 1
 			prepared = TRUE
 			program_line = 0
 			to_chat(H, "You prepare the [program] course. Six lessons air ten seconds apart, with a five-minute interval between courses.")
+	if (choice == "Announcement" && istype(src, /obj/structure/telecom/station))
+		var/value = input(H, "Station announcement (maximum 200 characters)", name) as text|null
+		if (H && get_dist(H, src) <= 1 && H.stat == CONSCIOUS && H.can_use_hands())
+			announcement = sanitize(value, 200)
 
 /obj/structure/telecom/tv
 	name = "educational television receiver"
@@ -118,7 +126,7 @@ var/global/civ_telecom_cursor = 1
 	var/line = program_line
 	var/list/delivered = list()
 	for (var/obj/structure/telecom/R in civ_telecom_devices)
-		if (istype(R, /obj/structure/telecom/station) || istype(R, /obj/structure/telecom/antenna) || R.television != television || R.frequency != frequency || R.z != z || get_dist(R, src) > 60 || !R.operational())
+		if (istype(R, /obj/structure/telecom/station) || istype(R, /obj/structure/telecom/antenna) || istype(R, /obj/structure/telecom/terminal) || R.television != television || R.frequency != frequency || R.z != z || get_dist(R, src) > 60 || !R.operational())
 			continue
 		for (var/mob/living/human/H in view(3, R))
 			if (delivered.len >= 32)
@@ -127,28 +135,33 @@ var/global/civ_telecom_cursor = 1
 				continue
 			delivered |= H
 			if (H.client && H.stat == CONSCIOUS)
-				to_chat(H, "[R]: [program] workshop, lesson [line] of 6. [telecom_lesson_text(program)]")
+				if (announcement)
+					to_chat(H, "[R]: [announcement]")
+				to_chat(H, "[R]: [program] workshop, lesson [line] of 6. [telecom_lesson_text(program, line)]")
 				H.learn_broadcast(program, line)
 	if (program_line >= 6)
 		program_line = 0
 		next_broadcast = world.time + 3000
 
-/proc/telecom_lesson_text(skill)
+/proc/telecom_lesson_text(skill, line)
+	var/list/lessons
 	if (skill == "crafting")
-		return "Measure before cutting, select the correct workbench, and connect power before operating equipment."
-	if (skill == "farming")
-		return "Inspect water and nutrition; freshwater channels irrigate, while salt can spoil connected channels."
-	return "Inspect injuries before treatment; medicines require the correct feedstock and clean equipment."
+		lessons = list("Check the recipe and count your materials before starting.", "Use the workbench specified by the recipe.", "Research unlocks and personal skill requirements are separate.", "Connect powered equipment to a working cable network.", "Keep the required tools and ingredients within reach during assembly.", "Inspect the finished item and maintain it through use.")
+	else if (skill == "farming")
+		lessons = list("Choose a crop suited to the local climate.", "Inspect your crop before adding water or nutrients.", "Use freshwater for irrigation.", "Connected channels carry irrigation water between fields.", "Saltwater can spoil connected irrigation channels.", "Keep seed stock for the next planting.")
+	else if (skill == "medical")
+		lessons = list("Examine the patient's condition before selecting a treatment.", "Check the game's medicine ingredients before mixing.", "Different medicines require different feedstocks.", "Keep your treatment tools accessible.", "Observe the patient after administering medicine.", "Use medical books and ordinary practice to continue training.")
+	return lessons && line >= 1 && line <= lessons.len ? lessons[line] : ""
 
 /mob/living/human
 	// Fixed 18-entry curriculum, durable on the actual human save graph.
 	var/list/broadcast_lessons = list()
 
 /mob/living/human/proc/learn_broadcast(skill, line)
-	if (!client || stat != CONSCIOUS || !(skill in list("crafting", "farming", "medical")) || line != round(line) || line < 1 || line > 6)
+	if (!broadcast_online() || stat != CONSCIOUS || (sdisabilities & DEAF) || ear_deaf || find_trait("Deaf") || !(skill in list("crafting", "farming", "medical")) || line != round(line) || line < 1 || line > 6)
 		return FALSE
 	var/list/values = stats[skill]
-	if (!islist(values) || values.len < 2 || values[1] < 10 || values[1] >= 100)
+	if (!islist(values) || values.len < 2 || values[1] < 10 || values[1] >= 100 || values[2] >= 100)
 		return FALSE
 	var/key = "[skill]:[line]"
 	if (key in broadcast_lessons)
@@ -158,8 +171,32 @@ var/global/civ_telecom_cursor = 1
 	var/divisor = skill == "crafting" ? 500 : (skill == "farming" ? 200 : 100)
 	adaptStat(skill, divisor * 0.01)
 	values[1] = min(values[1], 100)
-	values[2] = min(values[2], 100)
+	// Never reduce a pre-existing maximum (for example an injured character).
+	values[2] = min(100, max(values[1], values[2]))
 	return TRUE
+
+/mob/living/human/proc/broadcast_online()
+	return !!client
+
+/mob/living/human/proc/practice_level(skill)
+	var/list/value = stats[skill]
+	if (!islist(value) || value.len < 2)
+		return 0
+	var/list/thresholds = list(20, 40, 60, 80, 100, 125, 150, 180, 215, 250)
+	var/level = 0
+	var/trained = skill == "magic" ? value[2] * 2.5 : value[2]
+	for (var/threshold in thresholds)
+		if (trained >= threshold)
+			level++
+	return level
+
+/mob/living/human/verb/show_practice_progress()
+	set name = "Skill Progress"
+	set category = "IC"
+	to_chat(src, "Practice levels reflect your existing trained maximum; mood and injuries still affect current effectiveness. Books retain their existing training rewards.")
+	for (var/skill in stats)
+		to_chat(src, "[skill]: level [practice_level(skill)]/10, trained [round(stats[skill][2], 0.1)], current [round(stats[skill][1], 0.1)].")
+	to_chat(src, "Educational lessons credited: [broadcast_lessons.len]/18. Courses teach crafting, farming and medicine below 100 raw skill; each unique lesson grants one percent once per character.")
 
 /process/civ_telecom/setup()
 	name = "bounded civilian telecom"
@@ -170,6 +207,7 @@ var/global/civ_telecom_cursor = 1
 	processes.civ_telecom = src
 
 /process/civ_telecom/fire()
+	civ_check_landlines()
 	var/checks = min(16, civ_telecom_devices.len)
 	while (checks-- > 0 && civ_telecom_devices.len)
 		if (civ_telecom_cursor > civ_telecom_devices.len)
