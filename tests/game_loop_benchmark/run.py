@@ -23,6 +23,12 @@ def run(repo,byond,out,variant,head):
         replacements={}
         for index,path in enumerate(PATHS):
             content=git(repo,'show',BASELINE+':'+path) if variant=='baseline' else (repo/path).read_text(encoding='utf-8-sig')
+            if variant == 'baseline' and path == 'code/processes/_process.dm':
+                # Keep the unrelated current interval helper shared with current obj sources.
+                current=(repo/path).read_text(encoding='utf-8-sig')
+                helper=re.search(r'/process/proc/configured_interval_seconds\(\)\n\treturn [^\n]+',current)
+                if not helper or '/process/proc/configured_interval_seconds()' in content: raise RuntimeError('Unexpected shared interval helper')
+                content+='\n'+helper.group()+'\n'
             dest=repo/(prefix+str(index)+'.dm'); dest.write_text(content,encoding='utf-8'); created.append(dest)
             replacements[path]=dest.name
             (out/pathlib.Path(path).name).write_text(content,encoding='utf-8')
@@ -99,7 +105,7 @@ def main():
     repo=pathlib.Path(__file__).resolve().parents[2]; out=args.output.resolve()
     if out.exists() and any(out.iterdir()): raise RuntimeError('Evidence directory must be empty')
     out.mkdir(parents=True,exist_ok=True); head=git(repo,'rev-parse','HEAD').strip()
-    (out/'metadata.json').write_text(json.dumps({'tested_commit':head,'baseline_commit':BASELINE,'baseline_replaced_paths':PATHS,'working_tree_status':git(repo,'status','--porcelain'),'clock':'OS perf_counter seconds; native world.time/timeofday deciseconds; awake gaps are scheduling cadence, not tick execution duration','scope':'Normal Nomads server with 8 instrumented production humans with ssd_check=False adapter, 20 native steps/pickup/drop cycles, 20 scheduled callbacks, 400 effect constructions/qdel calls, 600 natural awake cadences plus 50 rapid-restart cadences (actual elapsed duration recorded); no human/client acceptance'},indent=2))
+    (out/'metadata.json').write_text(json.dumps({'tested_commit':head,'baseline_commit':BASELINE,'baseline_replaced_paths':PATHS,'shared_baseline_helper':'Current configured_interval_seconds retained for shared current obj sources; copied into saved baseline _process.dm','working_tree_status':git(repo,'status','--porcelain'),'clock':'OS perf_counter seconds; native world.time/timeofday deciseconds; awake gaps are scheduling cadence, not tick execution duration','scope':'Normal Nomads server with 8 instrumented production humans with ssd_check=False adapter, 20 native steps/pickup/drop cycles, 20 scheduled callbacks, 400 effect constructions/qdel calls, 600 natural awake cadences plus 50 rapid-restart cadences (actual elapsed duration recorded); no human/client acceptance'},indent=2))
     (out/'tested.patch').write_text(git(repo,'diff','HEAD'))
     for i in range(args.pairs):
         for variant in ([args.variant] if args.variant else (['baseline','current'] if i%2==0 else ['current','baseline'])): run(repo,args.byond_bin,out/(str(i+1)+'-'+variant),variant,head)
