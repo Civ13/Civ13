@@ -45,3 +45,7 @@
 /obj/effect/extraction_hub_guide/operations
 	name = "district operations board"
 	briefing = "The industrial district closes thirty minutes after opening, with a five-minute warning. Extract or commit a shipment before closure. Your private stash and secure crate remain yours; unsent raid gear is lost. Insurance returns eligible reusable equipment in its lost condition after reconciliation. The central desk votes for the next map after this round settles."
+	attack_hand(mob/user)
+		var/mob/living/human/H = user
+		var/obj/map_metadata/extraction_survival/M = map
+		if (istype(H) && istype(M) && M.owned(H) && H.stat == CONSCIOUS && H.z == 3 && z == 3 && Adjacent(H)) to_chat(H, "[M.round_briefing()] Your private stash, secure crate and committed shipments remain yours. Unsent raid gear is lost at closure. Insurance returns eligible reusable equipment in its lost condition after reconciliation. The central desk votes for the next map after settlement.")

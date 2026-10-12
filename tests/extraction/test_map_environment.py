@@ -12,6 +12,25 @@ SPEC.loader.exec_module(MODULE)
 
 
 class MapEnvironmentTests(unittest.TestCase):
+    def test_city_map_is_separate_and_reproducible(self):
+        spec = importlib.util.spec_from_file_location('extraction_build_map', ROOT / 'tests/extraction/build_map.py')
+        generator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(generator)
+        city = (ROOT / 'maps/extraction/modern_city_extraction.dmm').read_text()
+        self.assertEqual(city, generator.build(city=True))
+        self.assertNotEqual(city, generator.build())
+        definitions = dict(re.findall(r'^"([a-z]{2})" = (.+)$', city, re.M))
+        grids = re.findall(r'\(1,1,(\d+)\) = \{"\n(.*?)\n"\}', city, re.S)
+        self.assertEqual([int(z) for z, _ in grids], [1, 2, 3])
+        for _, body in grids:
+            self.assertEqual(len(body.splitlines()), 96)
+            self.assertTrue(all(len(row) == 192 for row in body.splitlines()))
+        raid = {key: definitions[key] for row in grids[0][1].splitlines() for key in (row[i:i+2] for i in range(0, len(row), 2))}
+        self.assertEqual(sum('/obj/effect/extraction_exit/scheduled' in value for value in raid.values()), 2)
+        self.assertFalse(any('/obj/effect/extraction_exit,' in value or '/obj/effect/extraction_exit/locked_room' in value for value in raid.values()))
+        self.assertTrue(any('/obj/structure/wild/berrybush/tinto' in value for value in raid.values()))
+        self.assertTrue(any('/obj/structure/sink' in value for value in raid.values()))
+
     def test_original_hub_navigation_and_private_workspaces(self):
         source = (ROOT / 'maps/extraction/industrial_district.dmm').read_text()
         definitions = dict(re.findall(r'^"([a-z]{2})" = (.+)$', source, re.M))
@@ -50,7 +69,7 @@ class MapEnvironmentTests(unittest.TestCase):
 
     def test_actual_catalog_rewrites_one_unconditional_map(self):
         original = (ROOT / 'civ13.dme').read_text()
-        for path in ('maps/extraction/industrial_district.dmm', 'maps/2013/alleyway.dmm', 'maps/1969/bank_robbery.dmm'):
+        for path in ('maps/extraction/industrial_district.dmm', 'maps/extraction/modern_city_extraction.dmm', 'maps/2013/alleyway.dmm', 'maps/1969/bank_robbery.dmm'):
             self.assertTrue((ROOT / path).is_file())
             changed = MODULE.select_map(original, path)
             block = changed.split(MODULE.BEGIN)[1].split(MODULE.END)[0]

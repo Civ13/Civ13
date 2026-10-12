@@ -4,7 +4,7 @@ from pathlib import Path
 SIZE = 96
 
 
-def build():
+def build(city=False):
     definitions = {}
     layers = []
 
@@ -27,15 +27,23 @@ def build():
     for n in range(1, SIZE + 1):
         for x, y in ((n, 1), (n, SIZE), (1, n), (SIZE, n)):
             put(x, y, wall)
-    for left in (18, 42, 66):
-        for bottom in (18, 42, 66):
+    for left in ((16, 42, 68) if city else (18, 42, 66)):
+        for bottom in ((18, 60) if city else (18, 42, 66)):
             for n in range(17):
                 if n == 8:
                     continue
                 for x, y in ((left+n, bottom), (left+n, bottom+16),
                              (left, bottom+n), (left+16, bottom+n)):
                     put(x, y, wall)
-            number = ((left-18)//24)*3 + (bottom-18)//24
+            number = ((left-16)//26)*2 + (bottom-18)//42 if city else ((left-18)//24)*3 + (bottom-18)//24
+            if city:
+                for y in range(bottom+1, bottom+16):
+                    for x in range(left+1, left+16):
+                        raid[y-1][x-1] = tile('/turf/floor/wood', district)
+                # Apartment partitions leave connected two-tile corridors.
+                for offset in range(1, 16):
+                    if offset not in (7, 8):
+                        put(left+8, bottom+offset, wall)
             put(left+4, bottom+4, f'/obj/effect/extraction_loot_marker{{container_id = {number*2+1}; pool_kind = "workshop"}}')
             kind = 'ammunition' if number % 2 else 'armory'
             put(left+12, bottom+12, f'/obj/effect/extraction_loot_marker{{container_id = {number*2+2}; pool_kind = "{kind}"}}')
@@ -44,20 +52,38 @@ def build():
             put(left+12, bottom+4, f'/obj/effect/extraction_loot_marker{{container_id = {19+number}; pool_kind = "supplies"}}')
     for x, y in ((8, 8), (88, 8), (8, 88), (88, 88)):
         put(x, y, '/obj/effect/extraction_raid_marker')
-    for x, y, kind in ((48, 5, ''), (48, 91, '/pmc'), (5, 48, '/scav'), (91, 48, '/manhole')):
-        put(x, y, '/obj/effect/extraction_exit' + kind)
-    put(2, 2, '/obj/map_metadata/extraction_survival')
+    if city:
+        put(48, 91, '/obj/effect/extraction_exit/scheduled{station_id = "north"; name = "North railway evacuation"}')
+        put(48, 5, '/obj/effect/extraction_exit/scheduled{station_id = "south"; name = "South bus evacuation"}')
+        for y in range(43, 55):
+            for x in range(20, 78):
+                if 44 <= x <= 52:
+                    continue
+                raid[y-1][x-1] = tile('/turf/floor/grass', district)
+        for x in (24, 36, 60, 72):
+            raid[49][x-1] = tile('/obj/structure/wild/tree', '/turf/floor/grass', district)
+            raid[45][x-1] = tile('/obj/structure/wild/berrybush/tinto', '/turf/floor/grass', district)
+        put(56, 42, '/obj/structure/sink')
+        put(40, 42, '/obj/structure/component_workbench')
+        put(48, 84, '/obj/effect/extraction_npc_marker')
+        put(48, 14, '/obj/effect/extraction_npc_marker')
+        put(2, 2, '/obj/map_metadata/extraction_survival/modern_city')
+    else:
+        for x, y, kind in ((48, 5, ''), (48, 91, '/pmc'), (5, 48, '/scav'), (91, 48, '/manhole')):
+            put(x, y, '/obj/effect/extraction_exit' + kind)
+        put(2, 2, '/obj/map_metadata/extraction_survival')
     put(3, 3, '/obj/effect/landmark{name = "JoinLateExtraction"}')
     put(48, 10, '/obj/effect/extraction_drop_box')
     # One bounded, single-door room. The player must unlock, enter, close and lock.
     secure = '/area/extraction_lock_room'
-    for y in range(43, 48):
+    for y in (() if city else range(43, 48)):
         for x in range(7, 12):
             boundary = x in (7, 11) or y in (43, 47)
             raid[y-1][x-1] = tile(*([wall] if boundary else []), floor, secure)
-    raid[42][8] = tile('/obj/structure/simple_door/key_door/extraction_room', floor, secure)
-    raid[43][8] = tile('/obj/effect/extraction_exit/locked_room', floor, secure)
-    put(12, 42, '/obj/item/weapon/key/extraction_room')
+    if not city:
+        raid[42][8] = tile('/obj/structure/simple_door/key_door/extraction_room', floor, secure)
+        raid[43][8] = tile('/obj/effect/extraction_exit/locked_room', floor, secure)
+        put(12, 42, '/obj/item/weapon/key/extraction_room')
     layers.append(raid)
 
     houses = '/area/extraction_houses'
@@ -105,3 +131,4 @@ if __name__ == '__main__':
     path = Path(__file__).resolve().parents[2] / 'maps/extraction/industrial_district.dmm'
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(build(), encoding='utf-8')
+    path.with_name('modern_city_extraction.dmm').write_text(build(city=True), encoding='utf-8')

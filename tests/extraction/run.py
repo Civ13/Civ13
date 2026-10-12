@@ -12,7 +12,7 @@ import uuid
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
-    parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'insurance', 'groups', 'vehicles'), default='store')
+    parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'city', 'insurance', 'groups', 'vehicles'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry'))
     parser.add_argument('--group-negative-control', choices=('debit', 'visibility', 'premium', 'car', 'return'))
@@ -20,7 +20,10 @@ def main():
     parser.add_argument('--vehicle-purchase-negative-control', action='store_true')
     parser.add_argument('--vehicle-raid-negative-control', choices=('debit', 'credit'))
     parser.add_argument('--supply-negative-control', action='store_true')
+    parser.add_argument('--city-presence-negative-control', action='store_true')
     args = parser.parse_args()
+    if args.city_presence_negative_control and (args.probe != 'city' or args.provenance_negative_control or args.vote_negative_control or args.group_negative_control or args.vehicle_loss_negative_control or args.vehicle_purchase_negative_control or args.vehicle_raid_negative_control or args.supply_negative_control):
+        parser.error('City presence control requires the city probe without another control')
     if args.supply_negative_control and (args.probe != 'mode' or args.provenance_negative_control or args.vote_negative_control or args.group_negative_control or args.vehicle_loss_negative_control or args.vehicle_purchase_negative_control or args.vehicle_raid_negative_control):
         parser.error('Supply control requires the mode probe without another control')
     if args.vehicle_raid_negative_control and (args.probe != 'mode' or args.provenance_negative_control or args.vote_negative_control or args.group_negative_control or args.vehicle_loss_negative_control or args.vehicle_purchase_negative_control):
@@ -40,8 +43,8 @@ def main():
     compiler = binary / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
-    if args.probe in ('equipment', 'mode', 'insurance', 'groups', 'vehicles'):
-        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control)
+    if args.probe in ('equipment', 'mode', 'city', 'insurance', 'groups', 'vehicles'):
+        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control)
     with tempfile.TemporaryDirectory(prefix='civ13-extraction-') as temp:
         target = Path(temp)
         (target / 'tests/extraction').mkdir(parents=True)
@@ -71,13 +74,22 @@ def main():
                 raise RuntimeError('Account journal verification failed')
 
 
-def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False):
+def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False):
     prefix = '.extraction_' + uuid.uuid4().hex
     generated = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '.dmb', '.rsc')]
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         expected_vote_failure = None
         expected_group_failure = None
+        if city_presence_control:
+            city_source = (root / 'code/modules/1713/extraction/modern_city.dm').read_text(encoding='utf-8')
+            marker = 'if (!..()) return FALSE'
+            if city_source.count(marker) != 2:
+                raise RuntimeError('City physical presence mutation marker changed')
+            control = root / (prefix + '_modern_city.dm')
+            generated.append(control)
+            control.write_text(city_source.replace(marker, 'if (!H?.extraction_session) return FALSE', 1), encoding='utf-8')
+            source = source.replace('code\\modules\\1713\\extraction\\modern_city.dm', control.name)
         if supply_control:
             progression_source = (root / 'code/modules/1713/extraction/progression.dm').read_text(encoding='utf-8')
             marker = 'candidate["credits"] = game_credits(S) - offer["price"]'
@@ -184,6 +196,9 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
         if probe == 'mode':
             source = '#define EXTRACTION_MODE_PROBE\n' + source
             source += '\n#include "tests/extraction/mode_probe.dm"\n#include "tests/extraction/hub_probe.dm"\n#include "tests/extraction/progression_probe.dm"\n#include "tests/extraction/vote_probe.dm"\n#include "tests/extraction/group_probe.dm"\n#include "tests/extraction/vehicle_probe.dm"\n#include "tests/extraction/loot_probe.dm"\n#include "maps/extraction/industrial_district.dmm"\n'
+        if probe == 'city':
+            source = '#define EXTRACTION_MODE_PROBE\n#define EXTRACTION_CITY_PROBE\n' + source
+            source += '\n#include "tests/extraction/mode_probe.dm"\n#include "tests/extraction/hub_probe.dm"\n#include "tests/extraction/progression_probe.dm"\n#include "tests/extraction/vote_probe.dm"\n#include "tests/extraction/group_probe.dm"\n#include "tests/extraction/vehicle_probe.dm"\n#include "tests/extraction/loot_probe.dm"\n#include "tests/extraction/city_probe.dm"\n#include "maps/extraction/modern_city_extraction.dmm"\n'
         if probe == 'insurance':
             source = '#define EXTRACTION_RETURNS_PROCESS_PROBE\n' + source
             source += '\n#include "tests/extraction/insurance_process_probe.dm"\n'
@@ -219,6 +234,12 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
                 log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''
                 print(result)
+                if city_presence_control:
+                    if ran.returncode or not result.startswith('FAIL:') or 'departure commits only conscious physically present reserved actor' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
+                        print(log)
+                        raise RuntimeError('City presence control failed outside its intended assertion')
+                    print('PASS: absent evacuation presence negative control rejected')
+                    return
                 if supply_control:
                     if ran.returncode or not result.startswith('FAIL:') or 'payment and product share one snapshot without refund or reissue' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
                         print(log)

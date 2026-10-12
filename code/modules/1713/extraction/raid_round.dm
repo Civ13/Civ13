@@ -3,12 +3,15 @@
 	var/datum/extraction_insurance_returns/returns
 	var/round_id
 	var/round_deadline = 0
+	var/round_duration = 30 MINUTES
 	var/round_closing = FALSE
 	var/round_notice = FALSE
 	var/game_over = FALSE
 	var/round_warning = FALSE
 	var/list/round_participants = list()
 	var/insured_nodes_issued = 0
+	proc/round_briefing()
+		return "This district closes after thirty minutes. Extract or ship gear before closure."
 	proc/confirm_insurance(mob/living/human/H, list/offer)
 		return WWinput(H, "Pay [offer["cost"]] workshop parts to insure eligible carried equipment for this round? Returned reusable equipment keeps its lost condition. Ammunition and consumed supplies are excluded.", "Insurance quote", "Cancel", list("Pay and deploy", "Cancel")) == "Pay and deploy"
 	proc/ensure_round()
@@ -17,7 +20,7 @@
 		if (!round_id)
 			if (!ensure_loot_epoch()) return FALSE
 			round_id = "district[loot_epoch]"
-			round_deadline = world.time + 30 MINUTES
+			round_deadline = world.time + round_duration
 		return TRUE
 	proc/apply_issued_tokens(list/roots, list/issued)
 		var/list/tokens = list()

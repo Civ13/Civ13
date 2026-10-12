@@ -9,6 +9,8 @@ Use BYOND 516.1681 and a verified full Python interpreter path:
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe equipment
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe mode
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe mode --supply-negative-control
+& $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe city
+& $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe city --city-presence-negative-control
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control debit
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control visibility
@@ -183,6 +185,14 @@ graph. Partial fuel, opened lids and stack quantities survive native records;
 oversized payloads reject before construction and stacks do not auto-merge during
 restoration. Ordinary pouring transfers restored gasoline into a real vehicle
 tank. This does not establish connected-client purchasing or driving.
+
+The city probe loads its separate original map and uses actual carried loadouts,
+native account transactions and an injected accelerated schedule clock. It checks
+earned currency, production supply purchases, reservations, early denial, present
+versus absent boarding, wrong stations, delayed scheduler rejection, final closure
+and shipment survival through stranding. The presence omission control must fail
+when the absent account extracts. This does not prove six elapsed gameplay hours,
+connected clients, map balance or resumption of an active city after restart.
 
 Record a genuine disposable local playable world after integrated regressions
 pass. Use the exact pinned build and record its full commit, dirty patch when

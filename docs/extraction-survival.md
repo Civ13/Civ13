@@ -226,11 +226,28 @@ Conditions are rechecked at each one-second action segment and immediately
 before the durable extraction commit. Real-client door clicking remains part of
 graphical acceptance; the isolated fixture invokes the production door switch.
 
-A separate original Modern-city Nomads extraction version is authorized but
-not implemented. It will share account APIs, preserve ordinary Nomads and short
-raids, and use announced scheduled evacuation departures. Stranded players lose
-unsent gear; committed shipments remain. Persistent bounded game currency will
-not integrate live CivilizationBot currency. No scaffold constitutes acceptance.
+A separate original Modern-city Nomads version uses the same bounded account,
+shipment, gear, private hub and game-credit services. Select
+`modern_city_extraction.dmm`, or compile with `EXTRACTION_MODERN_CITY_MAP`.
+Ordinary Nomads remains the default compile target. The city has six apartment
+blocks, wide roads, a central park with ordinary trees and food bushes, a public
+workbench and water sink, eighteen finite loot containers and reactive NPCs.
+Modern era baseline crafting remains subject to the existing specialist research
+gates; buying gear does not complete research nodes.
+
+The city runs for six hours. Hourly departures alternate north railway and south
+bus stations, with a five-minute announcement. Click the currently named station
+to reserve, then be beside it conscious at departure. Reservations alone do not
+extract. Boarding checks the same account and raid sequence and synchronously
+commits carried equipment before returning the actor home. A scheduler delayed
+ten seconds or more skips that departure rather than awarding late extraction.
+After the sixth departure's ten-second processing allowance, closing forfeits
+unsent city gear and reconciles insurance. Home currency and committed shipments
+remain. These stations evacuate on foot; car garage return remains available in
+the short district. No active playable city is resumed across process restart.
+Accelerated native tests and an absent-player negative control cover settlement;
+six-hour live behavior, connected clients, survival balance and video acceptance
+remain unverified.
 
 ## First-access loot
 

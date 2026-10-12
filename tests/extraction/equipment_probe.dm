@@ -125,7 +125,11 @@ var/equipment_completed = FALSE
 		equipment_insurance_probe(C)
 		equipment_insurance_returns_probe(C)
 #ifdef EXTRACTION_MODE_PROBE
+#ifdef EXTRACTION_CITY_PROBE
+		extraction_city_probe()
+#else
 		extraction_mode_probe()
+#endif
 #endif
 		equipment_completed = TRUE
 	catch (var/exception/E)
