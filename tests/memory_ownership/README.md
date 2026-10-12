@@ -84,3 +84,16 @@ for increasing them. Existing registry, decal, seasonal debris and corpse/bones
 lifetime changes are retained and covered by their own suites. Player assets are
 not newly opted into expiry. OS memory samples and native timings accompany the
 isolated benchmark; no production soak, tick-p95 improvement or OOM claim follows.
+## Bounded collector mixed workloads
+
+`--case collector` constructs 30 native hard-delete targets and 340 ordinary
+queued atoms, releases the ordinary owners, and verifies native collection.
+Queue ages are accelerated in the fixture; production still waits 30 seconds.
+Across twenty completed mixed cycles, one pass consumes 300 entries (30 forced deletes and 270 already-collected
+records), leaving 70. Restoring the original early hard-budget stop with
+`--negative-control gc-soft-budget` consumes 30 and leaves 340. This is ten
+times as many consumed records in this bounded workload, not a CPU or RSS claim.
+`--negative-control gc-hard-budget` verifies that the 31st live target must wait.
+Timeout, identity reuse, strong-owner release and subsequent-pass checks remain.
+Both the 300-candidate and 30-forced-deletion caps are unchanged. No head cursor,
+adaptive budget, earlier target lookup or different item lifetime is introduced.

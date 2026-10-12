@@ -302,6 +302,18 @@ Group deployment reuses the shared journal under `_settlement/groups/`; exact
 home-to-raid projections come from the solo raid planner. Never move members
 before all account debits commit. `--probe groups` checks three-process recovery
 across eleven cuts; mode fixtures exercise consent/readiness and original atoms.
+<!-- 2026-10-12: opt-in regression CI -->
+Existing game and tooling regression suites are manual opt-in. PRs adding
+executable integration tests select their registered suite only for that PR;
+ordinary game edits and edits to existing tests do not auto-select regressions.
+Keep compilation, workflow validation and publication checks separate. Register
+new suite guards through ci-selection.yml; see docs/ci-selection.md.
+
+<!-- 2026-10-12: official DM reference -->
+`dm_reference_search` and `dm_reference_read` fetch only the official BYOND manual
+over HTTPS, with bounded downloads, cancellation and a temporary in-memory cache.
+Returned source hashes identify reference content, not compiler compatibility;
+the live manual can describe features newer than pinned BYOND 516.1681.
 
 <!-- 2026-10-11: automatic crafting atlas -->
 `scripts/build-crafting-atlas.py --catalog-only --game-catalog UI/crafting-atlas.json`
@@ -556,3 +568,14 @@ independent UTC, midnight, signing and schema vectors without a live bot.
 
 <!-- 2026-10-12: deferred organ icon readiness -->
 External-organ constructor icon work must reject retired or partially hydrated owner/species links. Native save loading may yield between those links; hair style lookup previously dereferenced a missing organ species. tests/human_corpse_decay/run.py includes icon-readiness and icon-callback mutation controls and prints rejected native diagnostics.
+<!-- 2026-10-12: collector mixed workloads -->
+GC may drain already-collected expired records after its forced-delete quota is
+used; the next matching live target waits. Preserve 300 candidate checks, 30
+forced deletes, 30-second expiry and ref timestamp guards. Run the collector
+case and gc-soft-budget/gc-hard-budget controls in tests/memory_ownership/run.py.
+
+<!-- 2026-10-12: scheduler chain and denial history -->
+Scheduler start replaces its identity token; stale sleeping invocations retire at
+wake, and stop invalidates the token. Process may_run uses one lazy history
+expiry deadline; started cancels it before recording new run history. Native
+lifecycle, immutable baseline and controls live in tests/process_loop_lifecycle.
