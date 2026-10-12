@@ -42,6 +42,12 @@
 			var/list/node = nodes[j]
 			if (!islist(node) || !istext(node["id"]) || !length(node["id"]) || length(node["id"]) > 80 || ids[node["id"]] || !istext(node["type"])) return FALSE
 			ids[node["id"]] = TRUE
+		if (!isnull(vehicle["cargo"]))
+			var/list/cargo = vehicle["cargo"]
+			if (!islist(cargo) || cargo.len > 8) return FALSE
+			for (var/k in 1 to cargo.len)
+				var/list/entry = cargo[k]
+				if (!islist(entry) || !istext(entry["id"]) || !islist(entry["equipment"])) return FALSE
 	return TRUE
 
 /datum/extraction_account_store/proc/valid_garage_purchase(list/purchase)
@@ -185,7 +191,9 @@
 		if (!valid_garage(P["garage"])) return null
 		for (var/list/vehicle in P["garage"])
 			for (var/list/node in vehicle["nodes"]) ids[node["id"]] = TRUE
-	var/list/stash = P["stash"]
+	var/list/stash = P["stash"].Copy()
+	for (var/list/vehicle in P["garage"])
+		for (var/list/entry in vehicle["cargo"]) stash += list(entry)
 	if (islist(P["insurance_mailbox"]))
 		stash = stash.Copy()
 		for (var/list/entry in P["insurance_mailbox"]) stash += list(entry)

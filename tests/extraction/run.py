@@ -83,12 +83,12 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             source = source.replace('code\\modules\\1713\\extraction\\vehicle_purchase.dm', control.name)
         if vehicle_loss_control:
             store_source = (root / 'code/modules/1713/extraction/account_store.dm').read_text(encoding='utf-8')
-            marker = '\tP["garage"] = list()'
+            marker = '\tP["stash"] = list()\n\tP["garage"] = list()\n\tP["state"] = "home"'
             if store_source.count(marker) != 1:
                 raise RuntimeError('Garage loss mutation marker changed')
             control = root / (prefix + '_account_store.dm')
             generated.append(control)
-            control.write_text(store_source.replace(marker, '\t// Negative control: retain uncertain garage'), encoding='utf-8')
+            control.write_text(store_source.replace(marker, '\tP["stash"] = list()\n\t// Negative control: retain uncertain garage\n\tP["state"] = "home"'), encoding='utf-8')
             source = source.replace('code\\modules\\1713\\extraction\\account_store.dm', control.name)
         if group_control:
             filename = 'settlement' if group_control == 'debit' else 'transactions'

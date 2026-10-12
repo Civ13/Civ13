@@ -8,12 +8,16 @@
 	var/list/tiles = list()
 	var/consumed = FALSE
 	var/last_error
+	var/list/cargo = list()
+	var/list/cargo_record
+	var/with_cargo = FALSE
 	proc/fail(message)
 		last_error = message
 		return FALSE
 	proc/allowed(atom/movable/O)
 		return istype(O, /obj/structure/vehicleparts) || istype(O, /obj/structure/engine/internal) || istype(O, /obj/structure/bed/chair) || istype(O, /obj/structure/table/carboot) || istype(O, /obj/item/weapon/reagent_containers/glass/barrel/fueltank) || istype(O, /obj/effect/pseudovehicle)
 	proc/linked(atom/movable/O, obj/structure/vehicleparts/axis/A)
+		if (O in cargo) return TRUE
 		if (istype(O, /obj/structure/vehicleparts/frame) && O:axis != A) return fail("Frame belongs to another controller")
 		if (istype(O, /obj/structure/vehicleparts/movement) && O:axis != A) return FALSE
 		if (istype(O, /obj/structure/vehicleparts/license_plate) && O:axis != A) return FALSE
@@ -28,13 +32,16 @@
 			for (var/atom/movable/nested in child.contents)
 				if (!istype(nested, /atom/movable/lighting_overlay)) return fail("Unexpected nested [nested.type] in [child.type]")
 		return TRUE
-	proc/capture(obj/structure/vehicleparts/axis/A)
+	proc/capture(obj/structure/vehicleparts/axis/A, include_cargo = FALSE)
 		last_error = null
 		axis = null
 		parts.Cut()
 		locations.Cut()
 		tiles.Cut()
 		consumed = FALSE
+		cargo.Cut()
+		cargo_record = null
+		with_cargo = include_cargo
 		if (!A || A.vehicle_type != "car" || A.moving || A.currentspeed || A.movement_processes || A.transforming_vehicle || A.driver || !A.engine || A.engine.on || !A.components.len || A.components.len > 16) return FALSE
 		origin = get_turf(A)
 		if (!origin) return FALSE
@@ -45,11 +52,15 @@
 		for (var/turf/T in tiles)
 			for (var/atom/movable/O in T)
 				if (istype(O, /atom/movable/lighting_overlay)) continue
-				if (!allowed(O) || parts.len >= 96) return fail("Unsupported footprint atom [O.type] or part budget")
+				if (!allowed(O) && with_cargo && istype(O, /obj/item) && (locate(/obj/structure/table/carboot) in T)) cargo += O
+				if ((!allowed(O) && !(O in cargo)) || parts.len >= 96) return fail("Unsupported footprint atom [O.type] or part budget")
 				if (!linked(O, A)) return fail(last_error ? last_error : "Unrelated part or occupied contents [O.type]")
 				parts += O
 				locations[O] = T
 		axis = A
+		var/datum/extraction_vehicle_cargo/C = new
+		cargo_record = C.encode(A, cargo)
+		if (isnull(cargo_record)) return fail("Unsupported or over-capacity boot cargo")
 		return TRUE
 	proc/current()
 		if (!axis || consumed || !axis.engine || get_turf(axis) != origin || axis.moving || axis.currentspeed || axis.movement_processes || axis.transforming_vehicle || axis.driver || axis.engine.on) return FALSE
@@ -59,7 +70,9 @@
 				if (istype(O, /atom/movable/lighting_overlay)) continue
 				if (!(O in parts) || locations[O] != T || !linked(O, axis)) return FALSE
 				count++
-		return count == parts.len
+		var/datum/extraction_vehicle_cargo/C = new
+		var/list/current_cargo = C.encode(axis, cargo)
+		return count == parts.len && !isnull(current_cargo) && json_encode(current_cargo) == json_encode(cargo_record)
 	proc/relocate(turf/destination)
 		if (!destination || !current()) return FALSE
 		var/list/targets = list()

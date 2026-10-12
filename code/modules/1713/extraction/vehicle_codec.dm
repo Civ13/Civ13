@@ -65,10 +65,11 @@
 	proc/encode(obj/structure/vehicleparts/axis/A)
 		last_error = null
 		var/datum/extraction_vehicle_transfer/T = new
-		if (!T.capture(A)) return fail("Vehicle is not a stopped, unoccupied bounded car: [T.last_error]")
+		if (!T.capture(A, TRUE)) return fail("Vehicle is not a stopped, unoccupied bounded car: [T.last_error]")
 		objects = list(A)
-		objects |= T.parts
+		objects |= T.parts - T.cargo
 		for (var/obj/O in T.parts)
+			if (O in T.cargo) continue
 			for (var/obj/child in O.contents)
 				if (!istype(child, /atom/movable/lighting_overlay)) objects |= child
 		if (objects.len > 128) return fail("Vehicle exceeds part budget")
@@ -125,7 +126,7 @@
 				node["fuel"] = fuel
 				node["tank_capacity"] = O.reagents.maximum_volume
 			nodes += list(node)
-		var/list/record = list("schema" = 1, "id" = A.extraction_vehicle_part_id, "nodes" = nodes)
+		var/list/record = list("schema" = 1, "id" = A.extraction_vehicle_part_id, "nodes" = nodes, "cargo" = T.cargo_record)
 		objects = null
 		index = null
 		return validate(record) ? record : fail(last_error ? last_error : "Encoded vehicle failed schema validation")
@@ -233,6 +234,9 @@
 				if (ispath(path, /obj/structure/bed/chair/drivers) && (R["axis"] != 1 || R["wheel"] != root_refs["wheel"])) return FALSE
 				if (ispath(path, /obj/structure/engine/internal) && (i != root_refs["engine"] || !R["fueltank"])) return FALSE
 				if (ispath(path, /obj/item/weapon/reagent_containers/glass/barrel/fueltank) && i != nodes[root_refs["engine"]]["refs"]["fueltank"]) return FALSE
+		if (!isnull(record["cargo"]))
+			var/datum/extraction_vehicle_cargo/C = new
+			if (!C.valid(record["cargo"], nodes)) return FALSE
 		return TRUE
 	proc/decode(list/record, turf/destination)
 		if (!destination || !validate(record)) return null
@@ -286,4 +290,13 @@
 		A.check_corners()
 		A.check_matrix()
 		for (var/obj/O in created) O.update_icon()
+		var/datum/extraction_equipment_codec/cargo_codec = new
+		var/list/cargo_created = list()
+		for (var/list/E in record["cargo"])
+			var/obj/item/I = cargo_codec.decode(E["equipment"], locate(destination.x + E["dx"], destination.y + E["dy"], destination.z))
+			if (!I)
+				for (var/obj/item/root in cargo_created) qdel(root)
+				for (var/obj/O in created) qdel(O)
+				return null
+			cargo_created += I
 		return A

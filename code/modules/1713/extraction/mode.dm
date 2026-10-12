@@ -366,7 +366,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	// One fixed 9x9 room; no whole-world searches or saved turf references.
 	for (var/turf/T in range(4, S.house))
 		for (var/obj/item/I in T)
-			if (I.loc == T && !(I in S.garage_parts)) items |= I
+			if (I.loc == T && !(I in S.garage_parts) && !garage_cargo_turf(S, T)) items |= I
 	var/obj/effect/extraction_secure_crate/C = house_crate(S)
 	if (C)
 		for (var/obj/item/I in C.contents)

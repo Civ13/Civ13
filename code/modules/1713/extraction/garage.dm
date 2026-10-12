@@ -27,17 +27,23 @@
 	var/obj/structure/vehicleparts/axis/A = vehicle_codec.decode(garage[1], garage_anchor(S))
 	if (!A) return FALSE
 	var/datum/extraction_vehicle_transfer/T = new
-	if (!T.capture(A))
+	if (!T.capture(A, TRUE))
 		// Decode has validated a closed car graph. Retire every created top atom
 		// by its committed part identity if constructor behavior changed anyway.
 		var/list/ids = list()
 		for (var/list/node in garage[1]["nodes"]) ids[node["id"]] = TRUE
+		var/list/cargo_ids = list()
+		for (var/list/entry in garage[1]["cargo"]) cargo_ids[entry["id"]] = TRUE
 		for (var/turf/F in range(4, S.house))
 			for (var/obj/O in F)
-				if (ids[O.extraction_vehicle_part_id]) qdel(O)
+				if (ids[O.extraction_vehicle_part_id])
+					for (var/obj/child in O.contents.Copy())
+						if (ids[child.extraction_vehicle_part_id]) qdel(child)
+					qdel(O)
+				else if (istype(O, /obj/item) && cargo_ids[O:extraction_item_id]) qdel(O)
 		return FALSE
 	S.garage_vehicle = A
-	S.garage_parts = T.parts.Copy()
+	S.garage_parts = T.parts - T.cargo
 	return TRUE
 
 /obj/map_metadata/extraction_survival/proc/garage_snapshot(datum/extraction_session/S)
@@ -47,15 +53,26 @@
 	var/list/record = vehicle_codec.encode(A)
 	if (!record || !garage_record_fits(S, record)) return null
 	var/datum/extraction_vehicle_transfer/T = new
-	if (!T.capture(A) || T.parts.len != S.garage_parts.len) return null
-	for (var/obj/O in T.parts)
+	if (!T.capture(A, TRUE)) return null
+	var/list/parts = T.parts - T.cargo
+	if (parts.len != S.garage_parts.len) return null
+	for (var/obj/O in parts)
 		if (!(O in S.garage_parts)) return null
 	return list(record)
 
 /obj/map_metadata/extraction_survival/proc/retire_garage(datum/extraction_session/S)
+	var/datum/extraction_vehicle_transfer/T = new
+	if (S.garage_vehicle && T.capture(S.garage_vehicle, TRUE))
+		for (var/obj/item/I in T.cargo) qdel(I)
 	for (var/obj/O in S.garage_parts.Copy())
 		for (var/obj/child in O.contents.Copy())
 			if (child.extraction_vehicle_part_id) qdel(child)
 		qdel(O)
 	S.garage_parts.Cut()
 	S.garage_vehicle = null
+
+/obj/map_metadata/extraction_survival/proc/garage_cargo_turf(datum/extraction_session/S, turf/T)
+	if (!S.garage_vehicle) return FALSE
+	for (var/obj/structure/table/carboot/B in S.garage_parts)
+		if (get_turf(B) == T) return TRUE
+	return FALSE

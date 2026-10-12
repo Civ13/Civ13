@@ -3,7 +3,7 @@
 This mode is under implementation and has not received playable acceptance.
 Vehicle extraction remains incomplete. An internal helper preflights a stopped,
 unoccupied car and a clear floor footprint, then moves its existing parts and
-nested controller, steering and wheels. It rejects loose or nested cargo and
+nested controller, steering and wheels. It rejects loose footprint cargo and
 preserves the actual tank, fuel and wall condition. A bounded explicit vehicle
 codec now persists one car graph through the account journal. Three native
 processes verify ordinary reload, condition/fuel preservation, durable removal
@@ -23,7 +23,13 @@ account revision; reconnect restores that acknowledged graph once. Pending
 construction quarantines the account on restart. Explicit offline forfeiture
 records the purchase identity and receipt, without refund or car reissue.
 A payment-retention mutation control detects keeping spent parts in the stash.
-Raid ownership transitions, cargo/capacity and passenger policy remain required
+Boot tiles now accept up to eight equipment roots and 32 total size units,
+including nested contents. Size uses each approved type's initial item size.
+Cargo saves its original equipment identities, condition and provenance beside
+the car graph, and cannot also appear in the stash. Reload validates boot
+positions and car/cargo identity collisions before constructors run. A changed
+nested cargo graph invalidates a previously captured transfer.
+Raid ownership transitions and passenger policy remain required
 before a vehicle extraction action is available.
 
 Isolated native tests cover account storage, nested equipment restoration,

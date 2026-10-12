@@ -44,9 +44,38 @@
 	equipment_assert(!transfer.relocate(start), "consumed transfer cannot replay")
 	equipment_assert(A.check_matrix() && A.wheels.len == 4 && A.wheel.control:axis == A, "turning wheel and steering links remain assembled")
 	var/datum/extraction_vehicle_codec/codec = new
+	var/obj/structure/table/carboot/boot
+	for (var/obj/structure/table/carboot/B in originals) boot = B
+	equipment_assert(boot, "assembled car supplies actual boot cargo tile")
+	var/obj/item/extraction_salvage/boot_item = new(get_turf(boot))
+	boot_item.extraction_item_id = new_extraction_item_id()
+	boot_item.extraction_found_in_raid = TRUE
+	var/cargo_id = boot_item.extraction_item_id
+	var/obj/item/weapon/storage/backpack/cargo_bag = new(get_turf(boot))
+	var/obj/item/extraction_salvage/cargo_child = new(cargo_bag)
+	cargo_child.health = 37
+	equipment_assert(!transfer.capture(A) && transfer.capture(A, TRUE), "boot cargo requires explicit bounded transfer policy")
+	var/list/extra_cargo = list()
+	for (var/i in 1 to 7) extra_cargo += new /obj/item/extraction_salvage(get_turf(boot))
+	equipment_assert(!transfer.capture(A, TRUE), "nine cargo roots exceed boot capacity before movement")
+	for (var/obj/item/I in extra_cargo) qdel(I)
+	equipment_assert(transfer.capture(A, TRUE), "removing excess cargo restores bounded transfer eligibility")
+	cargo_child.health = 36
+	equipment_assert(!transfer.current(), "nested cargo change invalidates captured transfer")
+	cargo_child.health = 37
+	equipment_assert(transfer.current(), "unchanged nested cargo validates before physical relocation")
 	var/list/snapshot = codec.encode(A)
 	equipment_assert(snapshot && codec.validate(snapshot), "vehicle codec captures actual bounded parts and fuel: [codec.last_error]")
+	equipment_assert(snapshot["cargo"].len == 2 && snapshot["cargo"][1]["id"] == cargo_id, "garage cargo records original equipment identity")
 	var/list/invalid = json_decode(json_encode(snapshot))
+	invalid["cargo"][1]["dx"] = 3
+	invalid["cargo"][1]["dy"] = 3
+	equipment_assert(!codec.validate(invalid), "cargo cannot restore away from an actual boot tile")
+	invalid = json_decode(json_encode(snapshot))
+	invalid["cargo"][1]["id"] = snapshot["id"]
+	invalid["cargo"][1]["equipment"]["nodes"][1]["id"] = snapshot["id"]
+	equipment_assert(!codec.validate(invalid), "cargo and car part identities cannot collide")
+	invalid = json_decode(json_encode(snapshot))
 	invalid["nodes"][1]["parent"] = 1
 	equipment_assert(!codec.validate(invalid) && !codec.decode(invalid, start), "self-parent vehicle graph rejected before construction")
 	invalid = json_decode(json_encode(snapshot))
@@ -65,8 +94,14 @@
 	profile["garage"] = list(snapshot)
 	equipment_assert(session.commit(profile), "actual vehicle snapshot commits through native account journal")
 	var/list/owned_ids = C.store.recovery_ids(session.profile)
-	equipment_assert(owned_ids[snapshot["id"]] && owned_ids.len == snapshot["nodes"].len, "every garage part participates in account ownership inventory")
+	equipment_assert(owned_ids[snapshot["id"]] && owned_ids[cargo_id] && owned_ids[cargo_child.extraction_item_id] && owned_ids.len == snapshot["nodes"].len + 3, "garage parts and nested cargo participate in account ownership inventory")
+	var/list/collision = session.copy_profile()
+	collision["stash"] = list(snapshot["cargo"][1])
+	equipment_assert(!C.store.recovery_ids(collision), "stash cannot also own committed garage cargo")
 	session.close()
+	qdel(boot_item)
+	qdel(cargo_child)
+	qdel(cargo_bag)
 	for (var/atom/movable/O in originals) qdel(O)
 	var/datum/extraction_service/restarted = new
 	restarted.store.root = C.store.root
@@ -77,7 +112,15 @@
 	var/obj/structure/vehicleparts/frame/restored_frame = restored.loc
 	equipment_assert(restored_frame.w_front[5] == 73 && restored.wheels.len == 4 && restored.wheel.control:axis == restored, "vehicle graph restores wall condition and assembled wheel links")
 	var/datum/extraction_vehicle_transfer/cleanup = new
-	equipment_assert(cleanup.capture(restored), "restored car remains eligible for bounded physical transfer")
+	equipment_assert(cleanup.capture(restored, TRUE) && cleanup.cargo.len == 2, "restored car remains eligible for bounded cargo transfer")
+	var/obj/item/restored_cargo = cleanup.cargo[1]
+	equipment_assert(restored_cargo.extraction_item_id == cargo_id && restored_cargo.extraction_found_in_raid, "cargo roundtrip retains identity and raid provenance")
+	var/obj/item/weapon/storage/backpack/restored_bag = cleanup.cargo[2]
+	var/obj/item/restored_child = locate(/obj/item/extraction_salvage) in restored_bag
+	equipment_assert(restored_child && restored_child.extraction_item_id == cargo_child.extraction_item_id && restored_child.health == 37, "nested cargo retains original identity containment and condition")
+	equipment_assert(cleanup.relocate(locate(40,40,3)), "bounded car relocates with actual boot cargo")
+	var/turf/moved_cargo_turf = get_turf(restored_cargo)
+	equipment_assert(moved_cargo_turf.z == 3 && get_dist(moved_cargo_turf, get_turf(restored)) <= 3 && restored_child.loc == restored_bag && restored_child.health == 37, "physical cargo transfer retains actual root and nested atoms")
 	for (var/atom/movable/O in cleanup.parts) qdel(O)
 	session.close()
 	qdel(W)
@@ -92,8 +135,16 @@
 	M.test_owners[owner] = "garageguest"
 	equipment_assert(M.admit(owner), "account admission restores car into private bay")
 	var/datum/extraction_session/private_session = owner.extraction_session
-	equipment_assert(private_session.garage_vehicle && get_turf(private_session.garage_vehicle) == M.garage_anchor(private_session) && !M.home_roots(private_session).len, "private tank and car parts do not enter loose stash")
+	equipment_assert(private_session.garage_vehicle && get_turf(private_session.garage_vehicle) == M.garage_anchor(private_session) && !M.home_roots(private_session).len, "private tank car parts and cargo do not duplicate into loose stash")
 	var/obj/structure/vehicleparts/axis/private_car = private_session.garage_vehicle
+	var/datum/extraction_vehicle_transfer/private_transfer = new
+	equipment_assert(private_transfer.capture(private_car, TRUE) && private_transfer.cargo.len == 2, "private bay materializes committed cargo once")
+	var/obj/item/unloaded = private_transfer.cargo[1]
+	var/turf/boot_turf = get_turf(unloaded)
+	unloaded.forceMove(get_turf(private_session.house))
+	equipment_assert(M.save_home(private_session) && private_session.profile["stash"].len == 1 && private_session.profile["garage"][1]["cargo"].len == 1, "unloading cargo transfers ownership into stash in one snapshot")
+	unloaded.forceMove(boot_turf)
+	equipment_assert(M.save_home(private_session) && !private_session.profile["stash"].len && private_session.profile["garage"][1]["cargo"].len == 2, "loading cargo removes duplicate stash ownership in same snapshot")
 	private_car.engine.fueltank.reagents.remove_any(3)
 	var/obj/structure/vehicleparts/frame/private_frame = private_car.loc
 	private_frame.w_front[5] = 61

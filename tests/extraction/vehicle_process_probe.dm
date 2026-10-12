@@ -26,6 +26,11 @@
 			E.fueltank.reagents.add_reagent(E.fuels[1], 17, safety = TRUE)
 			var/obj/structure/vehicleparts/frame/F = A.loc
 			F.w_front[5] = 73
+			var/datum/extraction_vehicle_transfer/T = new
+			equipment_assert(T.capture(A), "native cargo fixture begins with closed car")
+			for (var/obj/structure/table/carboot/B in T.parts)
+				var/obj/item/extraction_salvage/I = new(get_turf(B))
+				I.extraction_found_in_raid = TRUE
 			var/list/record = C.encode(A)
 			equipment_assert(record, "native process encodes actual assembled car: [C.last_error]")
 			var/list/P = session.copy_profile()
@@ -50,6 +55,10 @@
 			equipment_assert(A && A.extraction_vehicle_part_id == record["id"] && A.engine.fueltank.reagents.total_volume == 17, "fresh process restores stable identity and paid fuel without constructor additions")
 			var/obj/structure/vehicleparts/frame/F = A.loc
 			equipment_assert(F.w_front[5] == 73 && A.wheels.len == 4 && A.wheel.control:axis == A, "fresh process preserves damage and native vehicle links")
+			var/datum/extraction_vehicle_transfer/T = new
+			equipment_assert(T.capture(A, TRUE) && T.cargo.len == record["cargo"].len && T.cargo.len > 0, "fresh process restores actual bounded boot cargo")
+			var/obj/item/I = T.cargo[1]
+			equipment_assert(I.extraction_item_id == record["cargo"][1]["id"] && I.extraction_found_in_raid && S.store.recovery_ids(session.profile)[I.extraction_item_id], "native cargo reload retains provenance and account identity")
 			var/list/P = session.copy_profile()
 			P["garage"] = list()
 			equipment_assert(session.commit(P), "garage removal commits to durable account revision")
