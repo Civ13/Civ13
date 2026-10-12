@@ -749,13 +749,15 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		if (!N.loc || N.stat == DEAD) npcs -= N
 	if (npcs.len < 12 && extraction_npc_markers.len)
 		var/obj/effect/extraction_npc_marker/marker = pick(extraction_npc_markers)
+		var/turf/spawn_turf = get_turf(marker)
+		if (!spawn_turf || !mission_z(spawn_turf.z) || spawn_turf.density) return
 		var/near_player = FALSE
 		for (var/owner in accounts.sessions)
 			var/datum/extraction_session/S = accounts.sessions[owner]
 			if (S.body?.z == marker.z && extraction_mission_z(S.body?.z) && get_dist(S.body, marker) < 12) near_player = TRUE
 		if (!near_player)
 			var/path = npcs.len % 3 == 2 ? /mob/living/simple_animal/hostile/human/extraction/contractor : /mob/living/simple_animal/hostile/human/extraction
-			var/mob/living/simple_animal/hostile/human/extraction/N = new path(get_turf(marker))
+			var/mob/living/simple_animal/hostile/human/extraction/N = new path(spawn_turf)
 			N.pmc_contact_hostile = !N.contractor && npcs.len % 2 == 1
 			npcs += N
 

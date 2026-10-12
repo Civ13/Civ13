@@ -480,3 +480,17 @@ floor near the actual car; groups use the actual car seats. These source changes
 await native regression runs after the quiet window is released. A larger map
 may pad the unchanged private rooms and hub with inaccessible walls, provided
 all z-levels share dimensions and their original coordinates are preserved.
+
+Map size does not expand extraction budgets. Sealed containers require unique
+integer IDs 1 through 64. More shelves must remain decoration unless the loot
+contract is deliberately changed and verified. Raid equipment is capped at
+2048 tracked nodes, NPC population at 12, and round participants at 32; the
+existing 16 private rooms remain a separate admission constraint. Keep entry
+and NPC marker counts bounded instead of scaling them with floor area.
+
+A 256x256x5 map allocates 327680 turfs; 512x512x5 allocates 1310720.
+Inaccessible wall padding still allocates turfs. Shared home scans remain local
+9x9 scans and vehicle deployment checks a radius-four native footprint, but
+these bounds do not establish whole-world startup, lighting, environment or
+save costs. Larger maps require full-map startup and memory measurements and
+runtime checks of navigation and extraction before scalability is accepted.
