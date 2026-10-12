@@ -97,8 +97,13 @@ var/global/blasts = 0
     maxy = 4
     maxz = 2
     turf = /turf/floor
+/world/OpenPort(port)
+    if (port == "none")
+        return ..()
+    return FALSE
 /world/New()
     world.OpenPort("none")
+    check(!world.port, "fixture listening port closed")
     var/turf/floor/dirt/center = new(locate(30,2,1))
     var/turf/floor/grass/near_grass = new(locate(70,1,1))
     var/turf/floor/grass/far_grass = new(locate(139,1,1))
@@ -114,7 +119,8 @@ var/global/blasts = 0
     var/mob/living/human/outdoor = new(locate(139,2,1))
     var/mob/living/human/near_human = new(locate(50,2,1))
     var/turf/inside = locate(138,2,1)
-    inside.loc = new /area/interior
+    var/area/interior/interior = new
+    interior.contents += inside
     var/mob/living/human/indoor = new(inside)
     var/mob/living/human/immune = new(locate(137,2,1))
     immune.inducedSSD = TRUE
