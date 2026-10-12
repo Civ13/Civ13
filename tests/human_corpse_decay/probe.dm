@@ -306,6 +306,7 @@ var/corpse_assertions = 0
 		H.corpse_decay_age = 3456
 		H.corpse_decay_seasons = 3
 		H.corpse_decay_seasonal = TRUE
+		H.exercise_fatigue = 3
 		bag = new(H)
 		child = new(bag)
 		H.back = bag
@@ -320,6 +321,7 @@ var/corpse_assertions = 0
 		var/mob/living/human/restored = map_storage.Load_Entry(F, body_ref, null, T)
 		for (var/datum/loaded in map_storage.all_loaded)
 			loaded.after_load()
+		corpse_assert(restored && restored.exercise_fatigue == 3, "native save retains durable exercise fatigue")
 		corpse_assert(restored && restored != H && restored.stat == DEAD && restored.corpse_decay_record && restored.corpse_decay_age == saved_age && restored.corpse_decay_seasons == 3, "native body roundtrip retains elapsed exposure")
 		corpse_assert((restored in dead_mob_list) && !(restored in living_mob_list) && restored.lying && !restored.canmove, "restored corpse has native dead-list and movement state")
 		corpse_assert(restored.getBruteLoss() == saved_damage && corpse_death_hooks == death_hooks_before, "native dead restore preserves damage without death-hook replay")
