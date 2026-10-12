@@ -106,6 +106,13 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	New()
 		..()
 		extraction_house_markers |= src
+	Destroy()
+		extraction_house_markers -= src
+		session = null
+		return ..()
+	Del()
+		extraction_house_markers -= src
+		..()
 	attack_hand(mob/user)
 		var/mob/living/human/H = user
 		if (!istype(H) || !session || session.body != H || H.client?.ckey != session.owner || session.transitioning || session.profile["state"] != "home" || !Adjacent(H)) return

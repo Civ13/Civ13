@@ -290,19 +290,24 @@
 	for (var/obj/item/weapon/gun/projectile/pistol/m9beretta/I in M.home_roots(S)) G = I
 	G.forceMove(H)
 	G.ammo_magazine = new /obj/item/ammo_magazine/m9beretta(G)
-	for (var/i in 1 to 4) new /obj/item/extraction_salvage(get_turf(S.house))
+	var/obj/item/weapon/gun/projectile/pistol/m9beretta/stolen = new(H)
+	if (stolen.ammo_magazine) qdel(stolen.ammo_magazine)
+	stolen.ammo_magazine = new /obj/item/ammo_magazine/m9beretta(stolen)
+	for (var/i in 1 to 10) new /obj/item/extraction_salvage(get_turf(S.house))
 	equipment_assert(M.save_home(S), "round fixture funds premium with obtainable workshop parts")
 	var/list/offer = M.returns.quote(S, list(G.extraction_item_id), M.round_id)
 	equipment_assert(offer, "mode uses authoritative current-round quote")
 	M.test_insurance_confirmation = FALSE
 	equipment_assert(!M.deploy(H, "PMC", TRUE) && S.profile["state"] == "home" && !S.profile["insurance_claims"], "cancelled terminal quote does not charge premium or issue claim")
 	M.test_insurance_confirmation = TRUE
-	equipment_assert(M.deploy(H, "PMC", TRUE) && G.extraction_insurance_token && S.profile["insurance_claims"].len == 1, "production paid deployment commits premium and binds actual physical tokens")
+	var/deployed = M.deploy(H, "PMC", TRUE)
+	equipment_assert(deployed && G.extraction_insurance_token && stolen.extraction_insurance_token && S.profile["insurance_claims"].len == 2, "production paid deployment commits premium and binds actual physical tokens")
 	H.forceMove(locate(8,8,1))
 	G.health = 54
 	var/id = G.extraction_item_id
 	var/obj/item/weapon/storage/backpack/bag = new(locate(8,8,1))
 	G.forceMove(bag)
+	stolen.forceMove(bag)
 	M.track_loot(bag)
 	M.raid_items[bag] = world.time - 1
 	M.raid_items[G] = world.time - 1
@@ -331,6 +336,28 @@
 	bones.corpse_decay_seasons = ABANDONED_ITEM_SEASON_LIFETIME
 	bones.corpse_decay_record.check(world.time)
 	equipment_assert((!bones || !bones.loc) && bag.loc == death_site && G.loc == bag, "later bones expiry preserves useful actual gear for insurance reconciliation")
+	var/stolen_id = stolen.extraction_item_id
+	var/stolen_token = stolen.extraction_insurance_token
+	var/mob/living/human/thief = new(locate(3,3,1))
+	thief.m_intent = "stealth"
+	M.test_owners[thief] = "pool1"
+	equipment_assert(M.admit(thief) && M.deploy(thief), "separate account enters raid before looting actual corpse gear")
+	thief.forceMove(death_site)
+	stolen.forceMove(thief)
+	var/obj/effect/extraction_exit/theft_exit
+	for (var/obj/effect/extraction_exit/E in world)
+		if (E.type != /obj/effect/extraction_exit || !get_turf(E)) continue
+		thief.forceMove(get_turf(E))
+		if (E.eligible(thief))
+			theft_exit = E
+			break
+	equipment_assert(theft_exit, "production PMC exit exists for corpse theft acceptance")
+	thief.forceMove(get_turf(theft_exit))
+	M.test_wait = "complete"
+	equipment_assert(M.extract_player(thief, theft_exit), "another account successfully extracts the actual insured nested corpse gun")
+	equipment_assert(stolen_token in thief.extraction_session.profile["insurance_recovered"], "successful thief extraction durably excludes original insurance token")
+	equipment_assert(M.release(thief.extraction_session), "thief releases home account with recovered actual gear checkpoint")
+	qdel(thief)
 	var/mob/living/human/stranded = new(locate(3,3,1))
 	stranded.m_intent = "stealth"
 	M.test_owners[stranded] = "strandedowner"
@@ -371,6 +398,14 @@
 	sheltered_reopen.close()
 	var/datum/extraction_session/reopened = M.accounts.open("roundowner")
 	equipment_assert(reopened && reopened.profile["insurance_mailbox"].len == 1, "closed round credits one returned graph from actual lost gear")
+	var/datum/extraction_session/recipient = M.accounts.open("pool1")
+	var/stolen_count = 0
+	for (var/list/stash_entry in recipient.profile["stash"])
+		if (stash_entry["id"] == stolen_id) stolen_count++
+	for (var/list/mail_entry in reopened.profile["insurance_mailbox"])
+		equipment_assert(mail_entry["id"] != stolen_id, "successfully extracted stolen gear cannot return to original insured owner")
+	equipment_assert(stolen_count == 1, "disk reopen retains one successfully stolen stable identity after round reconciliation")
+	recipient.close()
 	var/list/entry = reopened.profile["insurance_mailbox"][1]
 	var/obj/item/weapon/gun/projectile/pistol/m9beretta/returned = M.codec.decode(entry["equipment"], locate(3,3,1))
 	equipment_assert(returned && returned.extraction_item_id == id && returned.health == 54 && (!returned.ammo_magazine || !returned.ammo_magazine.stored_ammo.len), "round consumer preserves retirement condition and identity while excluding ammunition")

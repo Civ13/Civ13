@@ -119,9 +119,12 @@ ordinary loot expiry until the finite thirty-minute district closes. Human bodie
 use the merged bounded corpse lifecycle and release their actual gear.
 
 The mode fixture runs actual human death with a worn backpack containing an
-insured pistol and real magazine. Accelerated scalar age runs production corpse
+two insured pistols and real magazines. Accelerated scalar age runs production corpse
 retirement and later bones expiry, preserving the original nested gear before
-round-end insurance returns one damaged gun and denies delivery replay.
+another account loots and successfully extracts one original gun. Round-end
+insurance returns only the unextracted damaged gun and denies delivery replay;
+disk reopening retains exactly one stolen gun in the thief's stash. The thief
+reuses a previously admitted fixture account, respecting the 32-participant cap.
 `--probe mode --corpse-release-negative-control` omits the production root drop
 in a generated source copy and must fail that integrated assertion. This is
 native isolated evidence, not connected-client or elapsed-hours acceptance.
