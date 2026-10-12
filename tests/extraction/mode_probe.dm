@@ -145,6 +145,9 @@
 	var/obj/effect/extraction_exit/scav/scav_exit = locate() in world
 	var/obj/effect/extraction_exit/manhole/manhole = locate() in world
 	A.forceMove(get_turf(pmc_exit))
+	equipment_assert(!pmc_exit.eligible(A), "PMC exit is initially unavailable")
+	pmc_exit.opens_after = 0
+	scav_exit.opens_after = 0
 	equipment_assert(pmc_exit.eligible(A), "PMC exit accepts durable PMC raid role")
 	A.forceMove(get_turf(scav_exit))
 	equipment_assert(!scav_exit.eligible(A), "Scav exit rejects PMC before wait")
@@ -157,6 +160,13 @@
 	qdel(bag)
 	qdel(outer)
 	equipment_assert(manhole.eligible(A), "manhole accepts inventory without backpack")
+	manhole.extraction_fee = SA.profile["credits"] + 1
+	var/fee_revision = SA.profile["revision"]
+	equipment_assert(!manhole.eligible(A) && !M.extract_player(A, manhole) && SA.profile["revision"] == fee_revision, "unpaid shared exit rejects without an account debit")
+	manhole.extraction_fee = 0
+	manhole.requires_vehicle = TRUE
+	equipment_assert(!M.extract_player(A, manhole) && SA.profile["state"] == "raid", "vehicle-only exit cannot complete a foot extraction")
+	manhole.requires_vehicle = FALSE
 	M.test_wait = "backpack"
 	equipment_assert(!M.extract_player(A, manhole) && !SA.transitioning && SA.profile["state"] == "raid", "backpack acquired during wait rejects final commit")
 	for (var/obj/item/weapon/storage/backpack/I in A.contents) qdel(I)
@@ -340,6 +350,7 @@
 	extraction_group_probe(M)
 	extraction_vehicle_probe()
 	extraction_round_probe(M)
+	extraction_npc_probe()
 
 /proc/extraction_round_probe(obj/map_metadata/extraction_survival/M)
 	var/process/mapswap/extraction_probe/swapper = new

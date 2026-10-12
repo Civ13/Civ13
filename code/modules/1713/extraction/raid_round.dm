@@ -21,7 +21,8 @@
 			if (!ensure_loot_epoch()) return FALSE
 			round_id = "district[loot_epoch]"
 			round_deadline = world.time + round_duration
-		return TRUE
+		if (!accounts.npc_journal) accounts.npc_journal = new(accounts)
+		return accounts.npc_journal.configure(round_id)
 	proc/apply_issued_tokens(list/roots, list/issued)
 		var/list/tokens = list()
 		for (var/list/entry in issued)

@@ -40,6 +40,8 @@
 		carried_salvage.should_save = FALSE
 		projectiletype = /obj/item/projectile/bullet/pistol/a9x19
 	Destroy()
+		extraction_target = null
+		extraction_started = null
 		aggressor = null
 		target_mob = null
 		hostile_entities.Cut()
@@ -139,8 +141,10 @@
 			target_mob = chosen
 			if (chosen && chosen.z == z && (chosen in view(12, src)) && get_dist(src, chosen) > 6) route = cirrAstar(get_turf(src), get_turf(chosen), 5, 64)
 		if (!target_mob)
+			if (extraction_tick(M) || !loc || extraction_retired) return
 			scavenge_tick(M)
 			return
+		extraction_started = null
 		if (target_mob.stat == DEAD || target_mob.z != 1) return
 		if (get_dist(src, target_mob) <= 1)
 			if (world.time >= next_shot)
@@ -158,6 +162,8 @@
 	death()
 		if (stat == DEAD) return
 		..()
+		extraction_target = null
+		extraction_started = null
 		aggressor = null
 		hostile_entities.Cut()
 		target_mob = null

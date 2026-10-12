@@ -94,6 +94,15 @@
 				if (current_owners[id]) return fail("Stored identity is duplicated in mail")
 				current_owners[id] = stored["mail_owner"]
 		var/list/result = list()
+		if (!service.npc_journal) service.npc_journal = new(service)
+		var/list/npc_recovered = service.npc_journal.recovered(round_id)
+		if (!islist(npc_recovered)) return fail("NPC extraction retirement requires recovery")
+		for (var/token in npc_recovered)
+			var/list/claim = claims[token]
+			if (!claim) continue
+			var/list/retired = npc_recovered[token]
+			if (claim["id"] != retired["id"] || claim["type"] != retired["type"]) return fail("NPC extraction token does not match insured identity")
+			recovered[token] = TRUE
 		var/list/unrecovered_ids = list()
 		for (var/token in claims)
 			var/list/claim = claims[token]

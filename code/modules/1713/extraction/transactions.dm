@@ -11,6 +11,7 @@
 	var/tmp/insurance_blocked = FALSE
 	var/tmp/datum/insurance_gate
 	var/datum/extraction_mail_store/mail_store
+	var/datum/extraction_npc_journal/npc_journal
 	proc/mail_service(datum/extraction_equipment_codec/C)
 		if (!mail_store)
 			if (!C) C = new
@@ -18,6 +19,7 @@
 		return mail_store
 	proc/settlement_ready()
 		if (insurance_busy || insurance_blocked) return FALSE
+		if (npc_journal && !npc_journal.ready()) return FALSE
 		if (!group_journal) group_journal = new(src)
 		if (!group_journal.ready()) return FALSE
 		if (insurance_gate && !call(insurance_gate, "ready")()) return FALSE
@@ -238,9 +240,11 @@
 	candidate["state"] = "home"
 	return candidate
 
-/datum/extraction_session/proc/extract(sequence, list/loot)
+/datum/extraction_session/proc/extract(sequence, list/loot, fee = 0)
 	if (!active() || profile["state"] != "raid" || sequence != profile["raid_sequence"] || !valid_entries(loot, 16)) return FALSE
+	if (!isnum(fee) || fee < 0 || fee > 1000000 || round(fee) != fee || profile["credits"] < fee) return FALSE
 	var/list/candidate = copy_profile()
+	candidate["credits"] -= fee
 	var/list/stash = candidate["stash"]
 	for (var/list/entry in loot) stash += list(entry)
 	if (!valid_entries(stash, capacity())) return FALSE

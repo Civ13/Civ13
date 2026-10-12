@@ -63,6 +63,9 @@ var/equipment_completed = FALSE
 		GLOB.dir_set_event = new /decl/observ/dir_set
 		GLOB.moved_event = new /decl/observ/moved
 		GLOB.destroyed_event = new /decl/observ/destroyed
+#ifdef EXTRACTION_NPC_PROBE
+		extraction_npc_probe()
+#else
 		run_economy_probe()
 		var/datum/extraction_equipment_codec/C = new
 		var/obj/item/weapon/gun/projectile/pistol/m9beretta/G = new(locate(1,1,1))
@@ -130,6 +133,7 @@ var/equipment_completed = FALSE
 		extraction_city_probe()
 #else
 		extraction_mode_probe()
+#endif
 #endif
 #endif
 		equipment_completed = TRUE

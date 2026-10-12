@@ -12,7 +12,7 @@ import uuid
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
-    parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'city', 'insurance', 'groups', 'vehicles'), default='store')
+    parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'npc', 'city', 'insurance', 'groups', 'vehicles'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry'))
     parser.add_argument('--group-negative-control', choices=('debit', 'visibility', 'premium', 'car', 'return'))
@@ -24,8 +24,11 @@ def main():
     parser.add_argument('--economic-payment-negative-control', action='store_true')
     parser.add_argument('--room-payment-negative-control', action='store_true')
     parser.add_argument('--corpse-release-negative-control', action='store_true')
+    parser.add_argument('--npc-insurance-negative-control', action='store_true')
     parser.add_argument('--insurance-fixture-output', type=Path)
     args = parser.parse_args()
+    if args.npc_insurance_negative_control and args.probe != 'npc':
+        parser.error('NPC insurance control requires the focused npc probe')
     if args.insurance_fixture_output and (args.probe != 'equipment' or args.insurance_fixture_output.exists()):
         parser.error('Insurance fixture export requires equipment and a new output directory')
     if args.insurance_fixture_output and any(value for key, value in vars(args).items() if key.endswith('negative_control')):
@@ -57,8 +60,8 @@ def main():
     compiler = binary / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
-    if args.probe in ('equipment', 'mode', 'city', 'insurance', 'groups', 'vehicles'):
-        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control, args.room_payment_negative_control, args.corpse_release_negative_control, args.insurance_fixture_output)
+    if args.probe in ('equipment', 'mode', 'npc', 'city', 'insurance', 'groups', 'vehicles'):
+        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control, args.room_payment_negative_control, args.corpse_release_negative_control, args.insurance_fixture_output, args.npc_insurance_negative_control)
     with tempfile.TemporaryDirectory(prefix='civ13-extraction-') as temp:
         target = Path(temp)
         (target / 'tests/extraction').mkdir(parents=True)
@@ -102,11 +105,20 @@ def main():
                 raise RuntimeError('Account journal verification failed')
 
 
-def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False, room_payment_control=False, corpse_release_control=False, insurance_fixture_output=None):
+def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False, room_payment_control=False, corpse_release_control=False, insurance_fixture_output=None, npc_insurance_control=False):
     prefix = '.extraction_' + uuid.uuid4().hex
     generated = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '.dmb', '.rsc')]
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
+        if npc_insurance_control:
+            control = root / (prefix + '_insurance.dm')
+            generated.append(control)
+            production = (root / 'code/modules/1713/extraction/insurance.dm').read_text(encoding='utf-8')
+            marker = '\t\t\trecovered[token] = TRUE\n\t\tvar/list/unrecovered_ids'
+            if production.count(marker) != 1:
+                raise RuntimeError('NPC suppression mutation marker changed')
+            control.write_text(production.replace(marker, '\t\t\t// Negative control: omit NPC suppression\n\t\tvar/list/unrecovered_ids'), encoding='utf-8')
+            source = source.replace('code\\modules\\1713\\extraction\\insurance.dm', control.name)
         if corpse_release_control:
             corpse_source = (root / 'code/processes/human_corpse_decay.dm').read_text(encoding='utf-8')
             marker = '\t\tdrop_from_inventory(I, site)'
@@ -250,13 +262,15 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
         generated[2].write_text(globals_text.replace(marker, marker + '\treturn\n'), encoding='utf-8')
         source = source.replace('code\\world.dm', generated[1].name).replace('code\\controllers\\mc\\globals.dm', generated[2].name)
         source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
-        if probe == 'mode':
+        if probe in ('mode', 'npc'):
             source = '#define EXTRACTION_MODE_PROBE\n' + source
             source += '\n#include "tests/extraction/mode_probe.dm"\n#include "tests/extraction/hub_probe.dm"\n#include "tests/extraction/progression_probe.dm"\n#include "tests/extraction/vote_probe.dm"\n#include "tests/extraction/group_probe.dm"\n#include "tests/extraction/vehicle_probe.dm"\n#include "tests/extraction/loot_probe.dm"\n#include "maps/extraction/industrial_district.dmm"\n'
+        if probe == 'npc':
+            source = '#define EXTRACTION_NPC_PROBE\n' + source
         if probe == 'city':
             source = '#define EXTRACTION_MODE_PROBE\n#define EXTRACTION_CITY_PROBE\n' + source
             source += '\n#include "tests/extraction/mode_probe.dm"\n#include "tests/extraction/hub_probe.dm"\n#include "tests/extraction/progression_probe.dm"\n#include "tests/extraction/vote_probe.dm"\n#include "tests/extraction/group_probe.dm"\n#include "tests/extraction/vehicle_probe.dm"\n#include "tests/extraction/loot_probe.dm"\n#include "tests/extraction/city_probe.dm"\n#include "maps/extraction/modern_city_extraction.dmm"\n'
-        if probe in ('mode', 'city'):
+        if probe in ('mode', 'npc', 'city'):
             source += '\n#include "tests/extraction/native_market_probe.dm"\n'
         source += '\n#include "tests/extraction/insurance_mail_probe.dm"\n'
         if probe == 'city':
@@ -270,7 +284,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
         if probe == 'vehicles':
             source = '#define EXTRACTION_VEHICLE_PROCESS_PROBE\n' + source
             source += '\n#include "tests/extraction/vehicle_process_probe.dm"\n'
-        source += '\n#include "tests/extraction/economy_probe.dm"\n#include "tests/extraction/scope_insurance_probe.dm"\n#include "tests/extraction/equipment_probe.dm"\n'
+        source += '\n#include "tests/extraction/economy_probe.dm"\n#include "tests/extraction/scope_insurance_probe.dm"\n#include "tests/extraction/npc_extraction_probe.dm"\n#include "tests/extraction/equipment_probe.dm"\n'
         generated[0].write_text(source, encoding='utf-8')
         with tempfile.TemporaryDirectory(prefix='civ13-extraction-equipment-') as temp:
             target = Path(temp)
@@ -330,6 +344,12 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                         print(log)
                         raise RuntimeError('Supply payment control failed outside its intended assertion')
                     print('PASS: retained game-credit payment negative control rejected')
+                    return
+                if npc_insurance_control:
+                    if ran.returncode or not result.startswith('FAIL:') or 'NPC successful extraction suppresses every original insured component' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
+                        print(log)
+                        raise RuntimeError('NPC suppression control failed outside its intended assertion')
+                    print('PASS: omitted NPC component suppression negative control rejected')
                     return
                 if vehicle_raid_control and result.startswith('FAIL:'):
                     if ran.returncode or expected_raid_failure not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):

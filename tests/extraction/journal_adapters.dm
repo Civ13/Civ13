@@ -10,3 +10,7 @@
 	var/list/profile
 	proc/ready()
 		return FALSE
+
+/datum/extraction_npc_journal
+	proc/ready()
+		return FALSE

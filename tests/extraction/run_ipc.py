@@ -40,7 +40,7 @@ def main():
             (target / 'ipc_service.dm').write_text(source.replace(marker, ''))
         if args.publication_negative_control:
             source = (target / 'ipc_spool.dm').read_text()
-            marker = ' || extraction_ipc_base64_encode(extraction_crypto_bytes(json_encode(response))) != envelope?["body"]'
+            marker = ' || extraction_ipc_base64_encode(extraction_crypto_bytes(extraction_ipc_reply_json(response))) != envelope?["body"]'
             if source.count(marker) != 1:
                 raise RuntimeError('Durable reply comparison mutation marker changed')
             (target / 'ipc_spool.dm').write_text(source.replace(marker, ''))

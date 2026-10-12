@@ -174,12 +174,20 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	anchored = TRUE
 	var/allowed_faction = "all"
 	var/forbid_backpack = FALSE
+	// Shared balance settings, measured from this district's start.
+	var/opens_after = 0
+	var/extraction_fee = 0
+	var/requires_vehicle = FALSE
+	proc/available()
+		var/obj/map_metadata/extraction_survival/M = map
+		return istype(M) && M.round_id && !M.round_closing && world.time < M.round_deadline && world.time >= M.round_deadline - M.round_duration + opens_after
 	proc/eligible(mob/living/human/H)
 		var/obj/map_metadata/extraction_survival/M = map
-		if (!istype(M) || !M.owned(H) || H.stat != CONSCIOUS || H.z != 1 || z != 1 || !Adjacent(H)) return FALSE
+		if (!available() || !istype(M) || !M.owned(H) || H.stat != CONSCIOUS || H.z != 1 || z != 1 || !Adjacent(H)) return FALSE
 		var/datum/extraction_session/S = H.extraction_session
 		if (S.profile["state"] != "raid" || !(allowed_faction in list("all", "PMC", "Scav"))) return FALSE
 		if (allowed_faction != "all" && S.profile["raid_faction"] != allowed_faction) return FALSE
+		if (!isnum(extraction_fee) || extraction_fee < 0 || extraction_fee > 1000000 || round(extraction_fee) != extraction_fee || S.profile["credits"] < extraction_fee) return FALSE
 		if (forbid_backpack)
 			var/list/pending = M.player_roots(H)
 			var/list/seen = list()
@@ -206,10 +214,12 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 /obj/effect/extraction_exit/pmc
 	name = "PMC extraction point"
 	allowed_faction = "PMC"
+	opens_after = 5 MINUTES
 
 /obj/effect/extraction_exit/scav
 	name = "Scav extraction point"
 	allowed_faction = "Scav"
+	opens_after = 5 MINUTES
 
 /obj/effect/extraction_exit/manhole
 	name = "manhole extraction - no backpacks"
@@ -521,7 +531,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	return TRUE
 
 /obj/map_metadata/extraction_survival/proc/extract_player(mob/living/human/H, obj/effect/extraction_exit/E)
-	if (!E?.eligible(H)) return FALSE
+	if (!E?.eligible(H) || E.requires_vehicle) return FALSE
 	var/datum/extraction_session/S = H.extraction_session
 	if (S.transitioning || S.profile["state"] != "raid") return FALSE
 	S.transitioning = TRUE
@@ -533,7 +543,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		return FALSE
 	var/list/carried = player_roots(H)
 	var/list/loot = records(carried)
-	if (!loot || !S.extract(sequence, loot))
+	if (!loot || !S.extract(sequence, loot, E.extraction_fee))
 		S.transitioning = FALSE
 		to_chat(H, "Extraction rejected: unsupported equipment, full stash or recovery lock.")
 		return FALSE

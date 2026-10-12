@@ -33,10 +33,11 @@
 	plan["vehicle"] = json_decode(json_encode(vehicle))
 	return plan
 
-/datum/extraction_session/proc/credit_vehicle_extraction(sequence, list/loot, list/vehicle, obj/structure/vehicleparts/axis/source_vehicle)
+/datum/extraction_session/proc/credit_vehicle_extraction(sequence, list/loot, list/vehicle, obj/structure/vehicleparts/axis/source_vehicle, fee = 0)
 	var/datum/extraction_vehicle_codec/C = new
 	if (!C.validate(vehicle)) return FALSE
 	if (!active() || profile["state"] != "raid" || sequence != profile["raid_sequence"] || !valid_entries(loot, 16) || !islist(profile["garage"]) || profile["garage"].len) return FALSE
+	if (!isnum(fee) || fee < 0 || fee > 1000000 || round(fee) != fee || profile["credits"] < fee) return FALSE
 	var/list/receipt = profile["vehicle_issued"]
 	if (source_vehicle)
 		var/obj/map_metadata/extraction_survival/M = map
@@ -44,6 +45,7 @@
 		if (!istype(M) || M.accounts != service || !M.owned(body) || !M.raid_vehicles[source_vehicle] || !source_turf || source_turf.z != 1 || source_vehicle.extraction_vehicle_part_id != vehicle["id"] || json_encode(C.encode(source_vehicle)) != json_encode(vehicle)) return FALSE
 	else if (!islist(receipt) || receipt["sequence"] != sequence || receipt["id"] != vehicle["id"]) return FALSE
 	var/list/candidate = copy_profile()
+	candidate["credits"] -= fee
 	var/list/stash = candidate["stash"]
 	for (var/list/entry in loot) stash += list(entry)
 	if (!valid_entries(stash, capacity())) return FALSE
@@ -146,7 +148,7 @@
 	if (!vehicle || !loot || !garage_record_fits(S, vehicle) || !T.capture(A, TRUE) || !T.destination_tiles(garage_anchor(S)))
 		S.transitioning = FALSE
 		return FALSE
-	if (!S.credit_vehicle_extraction(sequence, loot, vehicle, A))
+	if (!S.credit_vehicle_extraction(sequence, loot, vehicle, A, E.extraction_fee))
 		S.transitioning = FALSE
 		return FALSE
 	if (!T.relocate(garage_anchor(S)))
@@ -182,6 +184,9 @@
 	return WWinput(H, "Leave your car seat and extract your carried equipment to your own house? The car and boot cargo return to [car_owner]'s garage only after every rider account is committed.", "Passenger extraction", "Decline", list("Extract", "Decline")) == "Extract"
 
 /obj/map_metadata/extraction_survival/proc/extract_vehicle_riders(mob/living/human/driver, obj/effect/extraction_exit/E, obj/structure/vehicleparts/axis/A)
+	// The shared conservation ledger has no exit-fee recipient yet. Fail closed
+	// for paid party exits rather than destroy currency outside that ledger.
+	if (E.extraction_fee) return FALSE
 	last_vehicle_return_error = "Rider preflight"
 	if (!E.eligible(driver) || E.forbid_backpack || istype(E, /obj/effect/extraction_exit/locked_room) || A.driver != driver || !raid_vehicles[A] || get_dist(get_turf(A), E) > 4 || A.moving || A.currentspeed || A.movement_processes || A.transforming_vehicle || !A.engine || A.engine.on) return FALSE
 	var/list/riders = list()

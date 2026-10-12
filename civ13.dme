@@ -1269,6 +1269,7 @@
 #include "code\modules\1713\extraction\vehicle_raid.dm"
 #include "code\modules\1713\extraction\loot.dm"
 #include "code\modules\1713\extraction\npcs.dm"
+#include "code\modules\1713\extraction\npc_extraction.dm"
 #include "code\modules\1713\extraction\modern_city.dm"
 #include "code\modules\1713\extraction\city_zombies.dm"
 // BEGIN_SELECTED_MAP

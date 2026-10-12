@@ -105,6 +105,25 @@ crafting transformations and trade adapters are not supplied by this ledger.
 
 ## Insurance ownership evidence under implementation
 
+Industrial PMC and Scav exits open five minutes after the district starts.
+Manhole and secured-room exits retain immediate access subject to their actual
+backpack/key/room checks. These timings are implementation balance defaults.
+Exit fees default to zero, and NPC currency defaults to zero. Configured fees
+must be integer credits and are charged with successful solo extraction; unpaid
+actors cannot extract. Paid party vehicle extraction currently fails closed.
+Vehicle-only exits reject foot extraction. NPCs have no private vehicle bay or
+secured-room account, so those exits are unavailable to them; no vehicle, key,
+currency or player account is invented.
+
+NPC extraction uses local perception capped at sixteen exits, existing bounded
+paths and a continuous ten-second adjacent wait. Per-round receipts cap at 128
+NPCs with eight roots each and the ordinary two-MiB journal bound. Original item
+graphs, fees and component identities are persisted before retiring the actual
+atoms. Insurance reads these receipts even after physical retirement. An uncertain
+retirement blocks recovery after restart rather than guessing success.
+`--probe npc` checks actual stolen gun/optic separation, native disk reopening,
+faction/time/payment/backpack/key/vehicle denial and interrupted receipts.
+
 The production equipment probe also covers read-only graph projection for a
 subset of surviving node identities, including a recovered nested optic and
 independent components when their parent gun is recovered. References are

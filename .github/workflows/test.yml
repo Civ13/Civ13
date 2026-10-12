@@ -122,14 +122,17 @@ jobs:
           /usr/bin/python3 tests/extraction/run_ipc.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --proof-negative-control
           /usr/bin/python3 tests/extraction/run_ipc.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --publication-negative-control
           git clone --no-checkout https://github.com/Valgorithms/Civilizationbot.git "$RUNNER_TEMP/extraction-bot-contract"
-          git -C "$RUNNER_TEMP/extraction-bot-contract" checkout --detach 5c36356ffc67b2b7c6fd6ff820ea1eca1ae75a23
-          /usr/bin/python3 tests/extraction/run_economics.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --php /usr/bin/php --bot-root "$RUNNER_TEMP/extraction-bot-contract" --bot-head 5c36356ffc67b2b7c6fd6ff820ea1eca1ae75a23 --output "$RUNNER_TEMP/extraction-economic-roundtrip"
+          git -C "$RUNNER_TEMP/extraction-bot-contract" checkout --detach be8545fc0a279573343d24bfb61876d877b7f24a
+          /usr/bin/python3 tests/extraction/run_economics.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --php /usr/bin/php --bot-root "$RUNNER_TEMP/extraction-bot-contract" --bot-head be8545fc0a279573343d24bfb61876d877b7f24a --output "$RUNNER_TEMP/extraction-economic-roundtrip"
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --insurance-fixture-output "$RUNNER_TEMP/extraction-insurance-roundtrip"
+          /usr/bin/php tests/extraction/insurance_bot_compatibility.php "$RUNNER_TEMP/extraction-bot-contract" "$RUNNER_TEMP/extraction-insurance-roundtrip"
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe restart
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe settlement
           /usr/bin/python3 tests/extraction/test_recovery.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
           /usr/bin/python3 tests/extraction/test_map_environment.py
           /usr/bin/python3 tests/extraction/check_catalog.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe npc --npc-insurance-negative-control
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --corpse-release-negative-control
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --economic-payment-negative-control
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --room-payment-negative-control
