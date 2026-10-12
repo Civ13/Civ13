@@ -17,12 +17,12 @@
 	reference = REF(thing)
 
 /datum/weakref/Destroy(force)
-	var/datum/target = resolve()
-	qdel(target)
-
 	if(!force)
 		return QDEL_HINT_LETMELIVE //Let BYOND autoGC thiswhen nothing is using it anymore.
+	// The handle does not own its target. Forced disposal only detaches it.
+	var/datum/target = resolve()
 	target?.weak_reference = null
+	reference = null
 	return ..()
 
 /datum/weakref/proc/resolve()

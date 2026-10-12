@@ -28,10 +28,10 @@ try {
     if ($Unchecked) { $includes = @('#define UNCHECKED') + $includes }
     Set-Content -LiteralPath (Join-Path $temp 'probe.dme') -Value $includes
     & (Join-Path $ByondBin 'dm.exe') (Join-Path $temp 'probe.dme') 2>&1 | Tee-Object -FilePath (Join-Path $temp 'compile.log')
-    if ($LASTEXITCODE -ne 0) { throw 'Probe compilation failed' }
+    if ($LASTEXITCODE -ne 0 -or (!$Unchecked -and (Get-Content -Raw -LiteralPath (Join-Path $temp 'compile.log')) -notmatch '0 errors, 0 warnings')) { throw 'Probe compilation failed' }
     $log = Join-Path $temp 'runtime.log'
     $security = if ($Unchecked) { '-trusted' } else { '-safe' }
-    $process = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @((Join-Path $temp 'probe.dmb'), '-invisible', $security, '-log', $log) -WorkingDirectory $temp -WindowStyle Hidden -PassThru
+    $process = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @((Join-Path $temp 'probe.dmb'), '-invisible', '-close', $security, '-log', 'runtime.log') -WorkingDirectory $temp -WindowStyle Hidden -PassThru
     $timer = [Diagnostics.Stopwatch]::StartNew()
     $limit = $null
     while (!$process.WaitForExit(100)) {
@@ -44,6 +44,8 @@ try {
     $runtime = Get-Content -Raw -LiteralPath $log
     $runtime | Write-Output
     Write-Output "Process exit: $($process.ExitCode); limit: $limit; PID: $($process.Id); CPU seconds: $($process.TotalProcessorTime.TotalSeconds); peak bytes: $($process.PeakWorkingSet64)"
+    $unexpectedDiagnostics = $runtime -replace '(?im)^.*runtime error:\s*Maximum recursion level reached.*$', ''
+    if ($unexpectedDiagnostics -match '(?i)runtime error:|bad ref|BUG:|##ERROR:|RUNTIME:|infinite loop|segmentation|assertion failed|fatal error|FAIL ') { throw 'Unexpected train engine diagnostic' }
     if ($Baseline -and $Unchecked) {
         Write-Output 'Unchecked baseline: inspect exit code, limit and log; no assumed failure classification.'
     } elseif ($Baseline) {

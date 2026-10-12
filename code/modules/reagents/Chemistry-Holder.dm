@@ -32,6 +32,7 @@
 	reagent_list = null
 	if (my_atom && my_atom.reagents == src)
 		my_atom.reagents = null
+	my_atom = null
 	..()
 /* Internal procs */
 
@@ -81,8 +82,9 @@
 /datum/reagents/proc/delete()
 	for (var/datum/reagent/R in reagent_list)
 		R.holder = null
-	if (my_atom)
+	if (my_atom && my_atom.reagents == src)
 		my_atom.reagents = null
+	my_atom = null
 
 /datum/reagents/proc/handle_reactions()
 	if (processes.chemistry)

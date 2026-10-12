@@ -99,26 +99,30 @@ HELP TO PROC TYPEPATH SHORTCUTS (Purely based on the path in the code)
 
 /// Uses the first argument as target and appends remaining arguments to the stored list.
 /datum/callback/dynamic/Invoke(...)	
+	// Invocation targets belong to this call, including while it sleeps.
+	var/datum/call_target
 	var/list/calling_arguments = arguments
 	if (length(args))
-		object = args[1]
+		call_target = args[1]
 		if (length(arguments))
 			calling_arguments = calling_arguments + args.Copy(2)
 		else
 			calling_arguments = args.Copy(2)
-	if (!object)
+	if (!call_target)
 		return
-	return call(object, delegate)(arglist(calling_arguments))
+	return call(call_target, delegate)(arglist(calling_arguments))
 
 /datum/callback/dynamic/InvokeAsync(...)	
 	set waitfor = FALSE
+	// Invocation targets belong to this call, including while it sleeps.
+	var/datum/call_target
 	var/list/calling_arguments = arguments
 	if (length(args))
-		object = args[1]
+		call_target = args[1]
 		if (length(arguments))
 			calling_arguments = calling_arguments + args.Copy(2)
 		else
 			calling_arguments = args.Copy(2)
-	if (!object)
+	if (!call_target)
 		return
-	return call(object, delegate)(arglist(calling_arguments))
+	return call(call_target, delegate)(arglist(calling_arguments))

@@ -460,3 +460,35 @@ the hourly fallback. Keep new seasonal maps and transition hooks in sync with
 - `code/processes/human_corpse_decay.dm` owns bounded human/bones exposure. Only retirement-created remains expire; use idempotent `do_rotting()` instead of another corpse timer. Native drops retain actual nested gear; blocked roots abort retirement.
 - Persistence restores saved DEAD humans without rejuvenation or death-hook replay. Durable exposure survives reload; runtime record pointers/epochs do not. Native mob qdel deletes immediately, so observe pre-retirement state through the inert `corpse_retired(body, turf)` hook.
 - `tests/human_corpse_decay/run.py` runs production human/inventory/revival/save/GC paths in temporary storage with pinned516.1681 and nodrop/restart/no-op negative controls. Use a fresh savefile for each independent graph; reusing entry directories can mix stale fields.
+
+<!-- 2026-10-11: memory ownership contract -->
+GC synchronizes gcDestroyed/gc_destroyed after cleanup and guards recursive qdel
+with the modern in-progress marker. Callproc retires helpers before invocation;
+its target index must release empty buckets. Pools opt in reviewed families,
+cap each type at 100 and total ownership at 1,000, and evict at most 32 idle
+objects per GC run. Reuse must remove pool_idle ownership before resetting.
+Tests under tests/memory_ownership and the focused *_ownership suites execute
+production procedures with immutable pre-fix/mutation controls. The queue cursor
+experiment was rejected for stale-entry growth; do not change GC budgets based
+on synthetic throughput alone.
+
+<!-- 2026-10-12: pooled activation and snapshot ownership -->
+Effect and effect-system lifetime tokens distinguish sleeping work across reuse;
+they are runtime-only persistence exclusions and are cleared during Destroy.
+Source-bound spark tasks cancel on retirement. Scheduler task processing must
+check whether pre_process/process retired the task before its next phase.
+Completed process snapshots are released; budget-yielded snapshots are retained,
+and a fresh snapshot is populated only when a new pass starts. NanoUI child close
+must detach from its master, and master close iterates a copy of children.
+tests/pool_effects constructs actual effects with isolated startup and observer
+count lists initialized; missing those lists creates misleading fixture errors.
+<!-- 2026-10-12: global controller virtual-list ownership -->
+Materialize `exclude_these.vars` names into an ordinary list before appending global-controller exclusions. Native BYOND 516.1681 can log `Bad ref` during direct virtual-list union even when assertions pass. `tests/global_vars_ownership/run.py` checks production initialization and a historical diagnostic control; the full-game train launcher rejects engine diagnostics and closes/refuses headless ports. Survival/weather/environment fixtures use fixed production initialization unchanged and adapt only the historical union.
+
+<!-- 2026-10-12: bounded memory telemetry -->
+Opt-in memory_lifetime_recorder retains at most 120 numeric awake intervals and
+120 scalar registry/counter rows, with no sampled entity references or world scan.
+Observed interval p95/max includes scheduling and clock resolution, not tick CPU
+time. GC queued_drained counts consumed queue entries, excluding direct deletes.
+Headless humans enter SSD sleep: synchronous inventory fixtures must prepare and
+assert an awake, live actor before real pickup/drop calls.

@@ -1,3 +1,11 @@
+// Close the isolated headless world before production startup and reject reopening.
+/world/OpenPort(port)
+    if(port == "none") return ..()
+    if(world.params["visual"]) return ..()
+    return FALSE
+/world/New()
+    if(!world.params["visual"]) OpenPort("none")
+    ..()
 // Loaded only by run-game.ps1, never by the production dme.
 var/global/datum/train_game_probe/train_game_probe = new
 /datum/train_game_probe
@@ -26,6 +34,8 @@ var/global/datum/train_game_probe/train_game_probe = new
 	cars.Cut()
 /datum/train_game_probe/proc/run_probe()
 	try
+		if(!world.params["visual"])
+			check(!world.port && !world.OpenPort(0) && !world.port, "headless world closes port and refuses reopening")
 		if(!map || !ticker)
 			throw EXCEPTION("Startup did not create map/ticker")
 		world.name = "Civ13 LOCAL train collision probe"
@@ -80,7 +90,7 @@ var/global/datum/train_game_probe/train_game_probe = new
 		sleep(60)
 		for(var/obj/structure/trains/locomotive/L in cars)
 			check(!L.automovement && L.health == 995, "normal locomotive loop stops with collision damage at [L.x]")
-		text2file(json_encode(list("commit" = world.params["tested_commit"], "map_id" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "version" = world.byond_version, "build" = world.byond_build, "failures" = failures)), "train-result.json")
+		text2file(json_encode(list("commit" = world.params["tested_commit"], "map_id" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "version" = world.byond_version, "build" = world.byond_build, "failures" = failures, "port" = world.port)), "train-result.json")
 		text2file("RESULT failures=[failures]", "train-result.txt")
 	catch(var/exception/e)
 		text2file("FAIL: [e]", "train-result.txt")

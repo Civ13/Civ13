@@ -136,11 +136,16 @@
 
 	onStart()
 
-/process/proc/finished()
+/process/proc/finished(fire_result = null)
 	ticks++
 	idle()
 	main.processFinished(src)
 	onFinish()
+	// Budgeted runs retain their remaining snapshot for the scheduler to resume.
+	if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)
+		// Assign null instead of cutting a possibly aliased VERY_HIGH list.
+		current = null
+		current_list = null
 
 /process/proc/fire()
 	return
@@ -153,13 +158,15 @@
 		return
 	if (!may_fire())
 		return
+	if (isnull(current_list))
+		reset_current_list()
 	last_fire_as_member = world.time
 	run_time_tick_usage = world.tick_usage
 	if (run_time_tick_usage_allowance == -1)
 		run_time_tick_usage_allowance = 10 // safe default: 10% budget per member
 	started()
 	. = fire()
-	finished()
+	finished(.)
 
 /process/proc/setup()
 	return
@@ -169,7 +176,7 @@
 	started()
 	if (!paused)
 		. = fire()
-	finished()
+	finished(.)
 	return .
 
 /process/proc/running()

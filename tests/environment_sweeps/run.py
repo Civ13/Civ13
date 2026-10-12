@@ -33,7 +33,9 @@ def main():
         source='\n'.join(line for line in source.splitlines() if not line.strip().startswith('#include "maps\\'))
         globals_source=(root/'code/controllers/mc/globals.dm').read_text(encoding='utf-8')
         target='gvars_datum_in_built_vars = exclude_these.vars + list('
-        if globals_source.count(target)!=1: raise RuntimeError('Global adapter target changed')
+        if globals_source.count(target) not in (0,1): raise RuntimeError('Global adapter target changed')
+        if target not in globals_source and 'for(var/variable_name in exclude_these.vars)' not in globals_source:
+            raise RuntimeError('Fixed global name snapshot anchor changed')
         globals_source=globals_source.replace(target,'gvars_datum_in_built_vars = list()\n\tfor(var/key in exclude_these.vars)\n\t\tgvars_datum_in_built_vars += key\n\tgvars_datum_in_built_vars += list(')
         files[6].write_text(globals_source,encoding='utf-8')
         source=source.replace('code\\controllers\\mc\\globals.dm',files[6].name)

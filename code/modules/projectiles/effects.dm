@@ -10,6 +10,7 @@
 	var/update_time = 0.6
 
 /obj/effect/projectile/New(var/turf/location)
+	effect_lifetime = list()
 	if (istype(location))
 		loc = location
 
@@ -26,9 +27,10 @@
 		qdel(src)
 		return
 	alpha *= alpha_modifier
+	var/list/lifetime = effect_lifetime
 	var/my_call_time = call_time
 	spawn(update_time)
-		if (call_time == my_call_time)
+		if (!QDELETED(src) && effect_lifetime == lifetime && call_time == my_call_time)
 			update()
 
 
@@ -79,9 +81,10 @@
 		ds /= dt 
 	pixel_x += cos(angle) * sqrt(ds)
 	pixel_y += sin(angle) * sqrt(ds)
+	var/list/lifetime = effect_lifetime
 	var/my_call_time = call_time
 	spawn(update_time)
-		if (call_time == my_call_time)
+		if (!QDELETED(src) && effect_lifetime == lifetime && call_time == my_call_time)
 			update()
 
 
@@ -118,9 +121,10 @@
 		ds /= dt 
 	pixel_x += cos(angle) * sqrt(ds)
 	pixel_y += sin(angle) * sqrt(ds)
+	var/list/lifetime = effect_lifetime
 	var/my_call_time = call_time
 	spawn(update_time)
-		if (call_time == my_call_time)
+		if (!QDELETED(src) && effect_lifetime == lifetime && call_time == my_call_time)
 			update()
 
 
@@ -156,9 +160,10 @@
 		qdel(src)
 		return
 	alpha *= alpha_modifier
+	var/list/lifetime = effect_lifetime
 	var/my_call_time = call_time
 	spawn(update_time)
-		if (call_time == my_call_time)
+		if (!QDELETED(src) && effect_lifetime == lifetime && call_time == my_call_time)
 			update()
 
 
@@ -204,7 +209,8 @@
 		ds /= dt * speed_modifier
 	pixel_x += cos(angle) * sqrt(ds)
 	pixel_y += sin(angle) * sqrt(ds)
+	var/list/lifetime = effect_lifetime
 	var/my_call_time = call_time
 	spawn(update_time)
-		if (call_time == my_call_time)
+		if (!QDELETED(src) && effect_lifetime == lifetime && call_time == my_call_time)
 			update()
