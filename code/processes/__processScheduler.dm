@@ -100,9 +100,6 @@ var/global/processScheduler/processScheduler
 	updateStartDelays()
 
 	spawn(0)
-		// after global lists are created
-		for (var/process/P in processes)
-			P.reset_current_list()
 		// organize processes by priority
 		priority_ordered_processes.Cut()
 		for (var/priority in PROCESS_PRIORITY_VERY_HIGH to PROCESS_PRIORITY_IRRELEVANT)
@@ -175,14 +172,13 @@ var/global/processScheduler/processScheduler
 					p.run_time_tick_usage = world.tick_usage
 					if (p.run_time_tick_usage_allowance == -1)
 						p.run_time_tick_usage_allowance = calculate_run_time_allowance(p.priority)
-					// we finished our current run, reset our current_list to a fresh one
+					// Fresh snapshots are prepared by relayProcess only when needed.
 					relayProcess(p, tmpQueued)
 					p.run_failures = 0
 					processed += p
 				else
-					if (p) // p might have been killed between now and when the loop started, causing a runtime
-						p.reset_current_list()
-						tmpQueued -= p
+					// Deferred runs keep any unfinished snapshot for their next pass.
+					tmpQueued -= p
 				if (used_tick_usage >= max_tick_usage)
 					break main
 
@@ -194,9 +190,10 @@ var/global/processScheduler/processScheduler
 
 /processScheduler/proc/relayProcess(var/process/p, var/list/queue)
 	set waitfor = FALSE
+	if (isnull(p.current_list))
+		p.reset_current_list()
 	if (p.process() != PROCESS_TICK_CHECK_RETURNED_EARLY)
 		if (p)
-			p.reset_current_list()
 			queue -= p
 
 /processScheduler/proc/addProcess(var/process/process)

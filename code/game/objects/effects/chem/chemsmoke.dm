@@ -66,9 +66,10 @@
 			if (prob(_prob))
 				destination = t
 
+	var/list/lifetime = effect_lifetime
 	spawn (1)
 
-		if (destination && !dontmove)
+		if (!QDELETED(src) && effect_lifetime == lifetime && destination && !dontmove)
 
 			walk_to(src,destination,0,rand(2,3))
 /*	spawn(30)

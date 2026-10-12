@@ -13,7 +13,21 @@ would spawn and follow the beaker, even if it is carried or thrown.
 	mouse_opacity = FALSE
 	pass_flags = PASSTABLE | PASSGRILLE
 
+/obj/effect
+	// Identity tokens distinguish sleeping callbacks across pooled lifetimes.
+	var/tmp/list/effect_lifetime
+
+/obj/effect/persistence_runtime_var(key)
+	if (key == "effect_lifetime")
+		return TRUE
+	return ..()
+
+/proc/retire_effect_lifetime(obj/effect/E, list/lifetime)
+	if (E && !QDELETED(E) && E.effect_lifetime == lifetime)
+		qdel(E)
+
 /obj/effect/Destroy()
+	effect_lifetime = null
 	if (reagents)
 		reagents.delete()
 	return ..()
@@ -24,6 +38,24 @@ would spawn and follow the beaker, even if it is carried or thrown.
 	var/turf/location
 	var/atom/holder
 	var/setup = FALSE
+	var/tmp/list/system_lifetime
+
+/datum/effect/effect/system/New()
+	system_lifetime = list()
+	return ..()
+
+/datum/effect/effect/system/Destroy()
+	system_lifetime = null
+	holder = null
+	location = null
+	return ..()
+
+/datum/effect/effect/system/persistence_runtime_var(key)
+	if (key == "system_lifetime")
+		return TRUE
+	return ..()
+
+/datum/effect/effect/system
 
 	proc/set_up(n = 3, c = FALSE, turf/loc)
 		if (n > 10)
@@ -60,6 +92,10 @@ steam.start() -- spawns the effect
 	icon_state = "extinguish"
 	density = FALSE
 
+/obj/effect/effect/steam/New()
+	effect_lifetime = list()
+	return ..()
+
 /datum/effect/effect/system/steam_spread
 
 	set_up(n = 3, c = FALSE, turf/loc)
@@ -70,12 +106,16 @@ steam.start() -- spawns the effect
 		location = loc
 
 	start()
+		var/list/activation = system_lifetime
 		var/i = FALSE
 		for (i=0, i<number, i++)
 			spawn(0)
+				if (QDELETED(src) || system_lifetime != activation)
+					return
 				if (holder)
 					location = get_turf(holder)
 				var/obj/effect/effect/steam/steam = PoolOrNew(/obj/effect/effect/steam, location)
+				var/list/effect_activation = steam.effect_lifetime
 				var/direction
 				if (cardinals)
 					direction = pick(cardinal)
@@ -83,12 +123,12 @@ steam.start() -- spawns the effect
 					direction = pick(alldirs)
 				for (var/j=0, j<pick(1,2,3), j++)
 					sleep(5)
-					if (!steam || steam.gcDestroyed || !steam.loc)
+					if (!steam || QDELETED(steam) || !steam.loc || steam.effect_lifetime != effect_activation || system_lifetime != activation)
 						break
 					step(steam,direction)
 				// Hold reference until qdel to prevent OpenDream GC calling del() directly
 				sleep(20)
-				if (steam && !steam.gcDestroyed)
+				if (steam && !QDELETED(steam) && steam.effect_lifetime == effect_activation)
 					qdel(steam)
 
 /////////////////////////////////////////////
@@ -106,12 +146,13 @@ steam.start() -- spawns the effect
 	mouse_opacity = FALSE
 
 /obj/effect/sparks/New()
+	effect_lifetime = list()
 	..()
 	playsound(loc, "sparks", 100, TRUE)
 
 /obj/effect/sparks/initialize()
 	..()
-	schedule_task_in(10 SECONDS, /proc/qdel, list(src))
+	schedule_task_with_source(world.time + 10 SECONDS, src, /datum/proc/qdeleted, list())
 
 /obj/effect/sparks/Destroy()
 	return ..()
@@ -132,14 +173,18 @@ steam.start() -- spawns the effect
 			location = get_turf(loca)
 
 	start()
+		var/list/activation = system_lifetime
 		var/i = FALSE
 		for (i=0, i<number, i++)
 			if (total_sparks > 20)
 				return
 			spawn(0)
+				if (QDELETED(src) || system_lifetime != activation)
+					return
 				if (holder)
 					location = get_turf(holder)
 				var/obj/effect/sparks/sparks = PoolOrNew(/obj/effect/sparks, location)
+				var/list/effect_activation = sparks.effect_lifetime
 				total_sparks++
 				var/direction
 				if (cardinals)
@@ -148,14 +193,15 @@ steam.start() -- spawns the effect
 					direction = pick(alldirs)
 				for (var/j=0, j<pick(1,2,3), j++)
 					sleep(5)
-					if (!sparks || sparks.gcDestroyed || !sparks.loc)
+					if (!sparks || QDELETED(sparks) || !sparks.loc || sparks.effect_lifetime != effect_activation || system_lifetime != activation)
 						break
 					step(sparks,direction)
 				// Hold reference here - nested spawn() would let it escape scope before GC can be stopped
 				sleep(20)
-				if (sparks && !sparks.gcDestroyed)
+				if (sparks && !QDELETED(sparks) && sparks.effect_lifetime == effect_activation)
 					qdel(sparks)
-				total_sparks--
+				if (system_lifetime == activation && !QDELETED(src))
+					total_sparks--
 
 
 
@@ -183,11 +229,13 @@ steam.start() -- spawns the effect
 	layer = 6
 
 /obj/effect/effect/smoke/New()
+	effect_lifetime = list()
+	var/list/lifetime = effect_lifetime
 	..()
 	if (processes.callproc)
 		processes.callproc.queue(src, /datum/proc/qdeleted, null, time_to_live)
 	else
-		spawn(time_to_live) qdel(src)
+		spawn(time_to_live) retire_effect_lifetime(src, lifetime)
 
 /obj/effect/effect/smoke/Crossed(mob/living/human/M as mob )
 	..()
@@ -254,14 +302,12 @@ steam.start() -- spawns the effect
 
 /obj/effect/effect/smoke/bad/New(_loc, move = FALSE)
 	..(_loc)
+	var/list/lifetime = effect_lifetime
 	if (move)
 		for (var/v in 1 to time_to_live/10)
 			spawn (v * 5)
-				step_rand(src)
-	if (processes.callproc)
-		processes.callproc.queue(src, /datum/proc/qdeleted, null, time_to_live)
-	else
-		spawn(time_to_live) qdel(src)
+				if (!QDELETED(src) && effect_lifetime == lifetime)
+					step_rand(src)
 
 /obj/effect/effect/smoke/bad/Move()
 	..()
@@ -358,14 +404,18 @@ steam.start() -- spawns the effect
 		direction = direct
 
 /datum/effect/effect/system/smoke_spread/start()
+	var/list/activation = system_lifetime
 	var/i = FALSE
 	for (i=0, i<number, i++)
 		if (total_smoke > 20)
 			return
 		spawn(0)
+			if (QDELETED(src) || system_lifetime != activation)
+				return
 			if (holder)
 				location = get_turf(holder)
 			var/obj/effect/effect/smoke/smoke = PoolOrNew(smoke_type, location)
+			var/list/effect_activation = smoke.effect_lifetime
 			total_smoke++
 			var/src_direction = direction
 			if (!src_direction)
@@ -375,15 +425,16 @@ steam.start() -- spawns the effect
 					src_direction = pick(alldirs)
 			for (var/j=0, j<pick(0,1,1,1,2,2,2,3), j++)
 				sleep(10)
-				if (!smoke || smoke.gcDestroyed || !smoke.loc)
+				if (!smoke || QDELETED(smoke) || !smoke.loc || smoke.effect_lifetime != effect_activation || system_lifetime != activation)
 					break
 				step(smoke,src_direction)
 			// Hold reference here - nested spawn() would let it escape scope before GC can be stopped
 			var/ttl = smoke ? smoke.time_to_live*0.75+rand(10,30) : 10
 			sleep(ttl)
-			if (smoke && !smoke.gcDestroyed)
+			if (smoke && !QDELETED(smoke) && smoke.effect_lifetime == effect_activation)
 				qdel(smoke)
-			total_smoke--
+			if (system_lifetime == activation && !QDELETED(src))
+				total_smoke--
 
 
 /datum/effect/effect/system/smoke_spread/bad
@@ -449,27 +500,32 @@ steam.start() -- spawns the effect
 		oldposition = get_turf(atom)
 
 	start()
+		var/list/activation = system_lifetime
 		if (!on)
 			on = TRUE
 			processing = TRUE
 		if (processing)
 			processing = FALSE
 			spawn(0)
+				if (QDELETED(src) || system_lifetime != activation)
+					return
 				if (number < 3)
 					var/obj/effect/effect/steam/I = PoolOrNew(/obj/effect/effect/steam, oldposition)
+					var/list/effect_activation = I.effect_lifetime
 					number++
 					oldposition = get_turf(holder)
 					I.set_dir(holder.dir)
 					spawn(10)
-						qdel(I)
-						number--
+						retire_effect_lifetime(I, effect_activation)
+						if (!QDELETED(src) && system_lifetime == activation)
+							number--
 					spawn(2)
-						if (on)
+						if (on && !QDELETED(src) && system_lifetime == activation)
 							processing = TRUE
 							start()
 				else
 					spawn(2)
-						if (on)
+						if (on && !QDELETED(src) && system_lifetime == activation)
 							processing = TRUE
 							start()
 

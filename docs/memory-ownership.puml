@@ -1,0 +1,89 @@
+@startuml ownership
+ title Civ13 retained-reference ownership after GC repairs
+ class Datum {
+   gcDestroyed : legacy timestamp
+   gc_destroyed : modern lifecycle state
+   Destroy()
+   finalize_qdel()
+ }
+ class Atom
+ Datum <|-- Atom
+ class Callproc {
+   queue : pending helpers
+   helpers : at most 5000 cleared helpers
+   by_object : pending targets only
+   release_helper()
+   unqueue(target)
+ }
+ class Helper {
+   target
+   arguments
+   deadline
+   index_target
+ }
+ class GlobalPool {
+   explicit reviewed type families
+   at most 100 per type / 1000 total
+   idle expiry : 5 minutes
+   retire at most 32 per GC run
+ }
+ class Garbage {
+   destroyed : text ref -> timestamp
+   hard_references : HARDDEL hints only
+   300 checks / 30 forced deletes
+   timestamp identity guard
+ }
+ class ProcessSnapshot {
+   retain on budgeted yield
+   release after complete run
+ }
+ class NanoUI {
+   master
+   children
+   close()
+ }
+ class WeakHandle {
+   text reference
+   resolve()
+ }
+ class Reagents {
+   owner backlink
+   cleanup()
+ }
+ Callproc o-- Helper
+ Helper --> Datum : pending target / args
+ GlobalPool o-- Datum : retired reusable objects
+ Garbage ..> Atom : ordinary queue stores text refs
+ Garbage --> Datum : explicit forced ownership
+ ProcessSnapshot --> Datum : active or yielded pass only
+ NanoUI o-- NanoUI : detach independently closed children
+ WeakHandle ..> Datum : never owns or deletes target
+ Atom o-- Reagents
+ Reagents --> Atom : cleared on retirement
+ note bottom
+ Source-level ownership, not heap byte sizes.
+ Runtime reclamation and production latency require observation.
+ end note
+@enduml
+
+@startuml retirement
+ title Retirement and bounded reuse
+ [*] --> Active : construction
+ Active --> Cleaning : qdel / modern reentry guard
+ Cleaning --> Active : LETMELIVE
+ Cleaning --> Retired : cleanup exactly once / cancel pending callbacks
+ Retired --> Pooled : reviewed type within budgets
+ Pooled --> Active : remove idle ownership / ResetVars / New
+ Pooled --> Queued : idle expiry / bounded sweep
+ Retired --> Queued : ordinary atom or HARDDEL
+ Retired --> Reclaimable : IWILLGC
+ Retired --> Deleted : direct finalizer or HARDDEL_NOW
+ Queued --> Reclaimable : all strong owners release
+ Queued --> Deleted : timeout / matching timestamp / bounded forced delete
+ Reclaimable --> [*] : native reclamation, timing opaque
+ Deleted --> [*]
+ note right of Pooled
+ Sleeping effect routines require their original activation token.
+ Old activations cannot move or delete a reused object.
+ end note
+@enduml

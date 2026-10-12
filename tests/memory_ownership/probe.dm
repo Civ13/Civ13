@@ -2,6 +2,7 @@
 #define TRUE 1
 #define FALSE 0
 #define SECONDS * 10
+#define MINUTES * 600
 #define INFINITY 1e30
 #define GAME_STATE_PREGAME 0
 #define GAME_STATE_SETTING_UP 1
@@ -51,6 +52,18 @@ var/datum/process_holder/processes = new
 	var/datum/D = L[L.len]
 	L.Cut(L.len, L.len + 1)
 	return D
+// Type identities only; production constructors are covered by game probes.
+/atom/movable/overlay
+/atom/movable/lighting_overlay
+/obj/effect/mist
+/obj/effect/effect/steam
+/obj/effect/sparks
+/obj/effect/effect/smoke
+/obj/effect/projectile
+/datum/effect/effect/system/spark_spread
+/datum/effect/effect/system/smoke_spread
+/obj/effect/decal/cleanable/blood/splatter
+/obj/item/stack/rods
 #include "../../code/_helpers/datum_pool.dm"
 #include "../../code/processes/garbage.dm"
 #include "../../code/processes/callproc.dm"
@@ -60,6 +73,19 @@ var/list/calls = list()
 /obj/probe
 	var/hint = QDEL_HINT_QUEUE
 	var/reentry = FALSE
+/obj/probe/startup
+/obj/probe/cap1
+/obj/probe/cap2
+/obj/probe/cap3
+/obj/probe/cap4
+/obj/probe/cap5
+/obj/probe/cap6
+/obj/probe/cap7
+/obj/probe/cap8
+/obj/probe/cap9
+/obj/probe/cap10
+/obj/probe/cap11
+/obj/unreviewed
 /obj/probe/Destroy()
 	cleanups++
 	if (reentry && cleanups == 1)
@@ -80,11 +106,18 @@ var/list/calls = list()
 	maxx = 2
 	maxy = 2
 	maxz = 1
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
 /world/New()
+	world.OpenPort("none")
 	try
 		processes.garbage = new
 		processes.callproc = new
 		processes.callproc.setup()
+		if (world.params["policy_tests"])
+			pool_type_roots += /obj/probe
 		var/scenario = world.params["case"]
 		if (scenario == "memory")
 			var/datum/callback_probe/target = new
@@ -167,6 +200,24 @@ var/list/calls = list()
 			catch
 				caught = TRUE
 			check(caught && !processes.callproc.queue.len && processes.callproc.helpers.len == 5000, "throwing callback releases helper before invocation")
+			if ("by_object" in processes.callproc.vars)
+				var/list/index = processes.callproc.vars["by_object"]
+				check(!index.len, "all completed callbacks release cancellation index")
+				var/list/targets = list()
+				for (var/i = 1 to 60)
+					var/datum/callback_probe/T = new
+					targets += T
+					for (var/j = 1 to 10)
+						processes.callproc.queue(T, /datum/callback_probe/proc/hit, null, 100)
+				check(index.len == 60 && processes.callproc.queue.len == 600, "index holds only targets with pending work")
+				processes.callproc.unqueue(targets[30], 1)
+				check(processes.callproc.queue.len == 599 && index[targets[30]]:len == 9, "indexed limited cancellation leaves other targets unchanged")
+				for (var/datum/T in targets)
+					processes.callproc.unqueue(T)
+				check(!index.len && !processes.callproc.queue.len && processes.callproc.helpers.len == 5000, "indexed mass cancellation releases all owners")
+				var/callproc_helper/released = processes.callproc.helpers[1]
+				call(processes.callproc, "release_helper")(released)
+				check(released && processes.callproc.helpers.len == 5000, "duplicate release leaves reserve membership intact")
 		if (scenario == "turf" || !scenario)
 			var/obj/probe/A = new
 			qdel(A)
@@ -200,6 +251,65 @@ var/list/calls = list()
 			for (var/obj/probe/O in objects)
 				qdel(O)
 			check(GlobalPool[/obj/probe].len == 100, "pool respects exact per-type cap")
+		if (world.params["policy_tests"])
+			var/obj/probe/free = new
+			free.hint = QDEL_HINT_IWILLGC
+			var/count = processes.garbage.destroyed.len
+			qdel(free)
+			check(free && QDELETED(free) && isDeleted(free) && processes.garbage.destroyed.len == count, "will-GC retires without a forced queue")
+			var/obj/probe/hard = new
+			hard.hint = QDEL_HINT_HARDDEL
+			qdel(hard)
+			var/refID = "\ref[hard]"
+			check(processes.garbage.hard_references[refID] == hard, "hard-delete hint retains its queued target")
+			var/obj/probe/identity = new
+			qdel(identity)
+			var/identity_ref = "\ref[identity]"
+			// A mismatched queue stamp must not destroy a reused identity.
+			processes.garbage.destroyed[identity_ref] = world.time - 1000
+			processes.garbage.destroyed[refID] = world.time - 1000
+			hard.gcDestroyed = world.time - 1000
+			// Older existing entries otherwise stop the chronological sweep.
+			for (var/key in processes.garbage.destroyed.Copy())
+				if (key != refID && key != identity_ref)
+					processes.garbage.destroyed -= key
+			processes.garbage.fire()
+			check(!hard && !processes.garbage.hard_references.len, "forced deletion releases the strong queue owner")
+			check(identity, "timestamp guard preserves a live reused identity")
+			processes.garbage = null
+			delayed_garbage = list()
+			delayed_hard_garbage = list()
+			var/obj/probe/early = new /obj/probe/startup
+			cleanups = 0
+			qdel(early)
+			qdel(early)
+			check(cleanups == 1 && QDELETED(early) && isDeleted(early) && (early in delayed_garbage), "startup queue retires and cleans once")
+			var/obj/probe/early_hard = new /obj/probe/startup
+			early_hard.hint = QDEL_HINT_HARDDEL
+			qdel(early_hard)
+			processes.garbage = new
+			processes.garbage.setup()
+			check(early.gcDestroyed > 0 && early.gc_destroyed == early.gcDestroyed, "startup queue becomes stamped without repeating cleanup")
+			check(processes.garbage.hard_references["\ref[early_hard]"] == early_hard, "startup hard-delete ownership survives setup")
+			var/obj/unreviewed/U = PoolOrNew(/obj/unreviewed)
+			qdel(U)
+			check(!GlobalPool[/obj/unreviewed], "unreviewed types do not create pools")
+			for (var/typepath in typesof(/obj/probe))
+				if (typepath == /obj/probe)
+					continue
+				var/list/batch = list()
+				for (var/i = 1 to 101)
+					batch += PoolOrNew(typepath)
+				for (var/obj/probe/O in batch)
+					qdel(O)
+				check(GlobalPool[typepath].len <= 100, "each reviewed type stays capped")
+			check(pooled_count == 1000 && pool_idle.len == 1000, "global pool ownership stays capped")
+			for (var/datum/D in pool_idle)
+				pool_idle[D] = world.time - 1
+			ExpirePools(32)
+			check(pooled_count == 968 && pool_idle.len == 968, "idle eviction has a strict per-sweep budget")
+			var/datum/reused = GetFromPool(/obj/probe/cap1, null)
+			check(reused && !QDELETED(reused) && pooled_count == 967 && pool_idle.len == 967, "reuse releases idle bookkeeping and resets state")
 		text2file("PASS: [assertions] memory ownership assertions", "result.txt")
 	catch (var/exception/E)
 		text2file("FAIL: [E]", "result.txt")

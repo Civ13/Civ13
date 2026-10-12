@@ -453,3 +453,25 @@ the hourly fallback. Keep new seasonal maps and transition hooks in sync with
 - `code/processes/human_corpse_decay.dm` owns bounded human/bones exposure. Only retirement-created remains expire; use idempotent `do_rotting()` instead of another corpse timer. Native drops retain actual nested gear; blocked roots abort retirement.
 - Persistence restores saved DEAD humans without rejuvenation or death-hook replay. Durable exposure survives reload; runtime record pointers/epochs do not. Native mob qdel deletes immediately, so observe pre-retirement state through the inert `corpse_retired(body, turf)` hook.
 - `tests/human_corpse_decay/run.py` runs production human/inventory/revival/save/GC paths in temporary storage with pinned516.1681 and nodrop/restart/no-op negative controls. Use a fresh savefile for each independent graph; reusing entry directories can mix stale fields.
+
+<!-- 2026-10-11: memory ownership contract -->
+GC synchronizes gcDestroyed/gc_destroyed after cleanup and guards recursive qdel
+with the modern in-progress marker. Callproc retires helpers before invocation;
+its target index must release empty buckets. Pools opt in reviewed families,
+cap each type at 100 and total ownership at 1,000, and evict at most 32 idle
+objects per GC run. Reuse must remove pool_idle ownership before resetting.
+Tests under tests/memory_ownership and the focused *_ownership suites execute
+production procedures with immutable pre-fix/mutation controls. The queue cursor
+experiment was rejected for stale-entry growth; do not change GC budgets based
+on synthetic throughput alone.
+
+<!-- 2026-10-12: pooled activation and snapshot ownership -->
+Effect and effect-system lifetime tokens distinguish sleeping work across reuse;
+they are runtime-only persistence exclusions and are cleared during Destroy.
+Source-bound spark tasks cancel on retirement. Scheduler task processing must
+check whether pre_process/process retired the task before its next phase.
+Completed process snapshots are released; budget-yielded snapshots are retained,
+and a fresh snapshot is populated only when a new pass starts. NanoUI child close
+must detach from its master, and master close iterates a copy of children.
+tests/pool_effects constructs actual effects with isolated startup and observer
+count lists initialized; missing those lists creates misleading fixture errors.
