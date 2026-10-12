@@ -1,5 +1,6 @@
 """Pinned mall compilation/native probe, offline temporary storage only."""
 import argparse
+import json
 import os
 from pathlib import Path
 import re
@@ -7,6 +8,22 @@ import shutil
 import subprocess
 import tempfile
 import uuid
+
+
+def retain(root, target, prefix, args, stdout='', stderr='', timed_out=False):
+    destination = root / 'data/mall-fixture' / prefix
+    destination.mkdir(parents=True, exist_ok=True)
+    head = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=root, capture_output=True, text=True, check=True).stdout.strip()
+    (destination / 'manifest.json').write_text(json.dumps({'head_sha': head, 'negative_control': args.negative_control, 'timed_out': timed_out}, indent=2), encoding='utf-8')
+    for name in ('result.txt', 'stages.txt', 'runtime.log'):
+        if (target / name).exists():
+            shutil.copy2(target / name, destination / name)
+    for name, value in (('stdout.txt', stdout), ('stderr.txt', stderr)):
+        if isinstance(value, bytes):
+            value = value.decode(errors='replace')
+        (destination / name).write_text(value or '', encoding='utf-8')
+    print('Fixture receipts: '+str(destination), flush=True)
+    return destination
 
 
 def main():
@@ -54,7 +71,7 @@ def main():
         output = compiled.stdout + compiled.stderr
         if compiled.returncode or '516.1681' not in output or '0 errors, 0 warnings' not in output:
             raise RuntimeError(output)
-        print('PASS: pinned mall fixture compile')
+        print('PASS: pinned mall fixture compile', flush=True)
         if args.compile_only:
             return
         with tempfile.TemporaryDirectory(prefix='civ13-mall-') as directory:
@@ -68,9 +85,11 @@ def main():
             except subprocess.TimeoutExpired as error:
                 # subprocess.run kills and waits for this directly owned headless
                 # process before returning. Read diagnostics before temp cleanup.
+                retain(root, target, prefix, args, error.stdout, error.stderr, timed_out=True)
                 log_path = target / 'runtime.log'
                 log = log_path.read_text(errors='replace') if log_path.exists() else 'No runtime log produced'
                 raise RuntimeError('Native mall fixture exceeded 90 seconds:\n'+log) from error
+            retain(root, target, prefix, args, result.stdout, result.stderr)
             report = (target / 'result.txt').read_text(encoding='utf-8') if (target / 'result.txt').exists() else ''
             log = result.stdout + result.stderr + ((target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else '')
             if result.returncode or any(value in log.lower() for value in ('runtime error', 'bad ref', '## error')):

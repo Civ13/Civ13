@@ -1,4 +1,9 @@
 // Offline production interactions; startup/client identity/waits only are injected.
+var/global/mall_fixture_failed = FALSE
+
+/proc/mall_stage(message)
+	text2file(message, "stages.txt")
+
 /obj/map_metadata/extraction_survival/New()
 	map = src
 	icon = null
@@ -19,15 +24,19 @@
 	Export()
 		return null
 	Error(exception/E)
+		mall_fixture_failed = TRUE
 		text2file("FAIL: runtime [E] at [E.file]:[E.line]", "result.txt")
 		world.log << "Runtime error: [E] at [E.file]:[E.line]"
 	New()
+		mall_stage("world New entered")
 		world.OpenPort("none")
 		spawn(2)
 			try
 				mall_probe()
-				text2file("PASS: native mall floors, stairs, loot, highway policy and extraction", "result.txt")
+				if (!mall_fixture_failed)
+					text2file("PASS: native mall floors, stairs, loot, highway policy and extraction", "result.txt")
 			catch (var/exception/E)
+				mall_fixture_failed = TRUE
 				text2file("FAIL: [E]", "result.txt")
 				world.log << "FAIL: [E]"
 			del(world)
@@ -40,17 +49,23 @@
 		return list(list("type" = "/obj/item/extraction_salvage", "quantity" = 1))
 
 /proc/mall_probe()
+	mall_stage("before datum reference lists")
 	makeDatumRefLists()
+	mall_stage("after datum reference lists")
 	var/obj/map_metadata/extraction_survival/mall/M = map
 	mall_assert(istype(M) && world.maxx == 256 && world.maxy == 256 && world.maxz == 5, "mall dimensions and metadata")
 	mall_assert(M.mission_z(1) && M.mission_z(4) && M.mission_z(5) && !M.mission_z(2) && !M.mission_z(3) && !M.mission_z(6), "secure floors excluded by mission policy")
 	M.accounts.store.root = "data/mall_accounts/"
+	mall_stage("before human constructor")
 	var/mob/living/human/H = new(locate(4,4,1))
+	mall_stage("after human constructor")
 	H.m_intent = "stealth"
 	M.fixture_owners[H] = "mallvisitor"
 	mall_assert(M.admit(H) && H.z == 2, "native account admitted to private home")
+	mall_stage("after home admission")
 	var/datum/extraction_session/S = H.extraction_session
 	mall_assert(M.deploy(H) && H.z == 1 && S.profile["state"] == "raid", "native foot infil")
+	mall_stage("after raid deployment")
 	var/obj/structure/extraction_mall_stairs/parking
 	for (var/obj/structure/extraction_mall_stairs/stairs in world)
 		if (stairs.z == 1)
@@ -65,6 +80,7 @@
 	mall_assert(retail && retail.traverse(H) && H.z == 5, "retail to gallery production traverse")
 	var/obj/structure/extraction_mall_stairs/gallery = locate() in get_turf(H)
 	mall_assert(gallery && gallery.traverse(H) && H.z == 4, "gallery return connection")
+	mall_stage("after floor traversal")
 	var/old_destination = retail.destination_z
 	retail.destination_z = 2
 	mall_assert(!retail.traverse(H), "stairs never enter private home")
@@ -84,9 +100,11 @@
 	H.forceMove(get_turf(container))
 	container.test_pool = new /datum/extraction_loot_pool/mall_fixture
 	mall_assert(container && container.prepare(M), "gallery container production journal prepared")
+	mall_stage("after loot prepare")
 	var/list/entry = container.profile["stash"][1]
 	var/obj/item/claimed = container.claim(M, H, entry["id"])
 	mall_assert(claimed && M.raid_items[claimed] && !container.claim(M, H, entry["id"]), "gallery loot claimed once and tracked")
+	mall_stage("after loot claim")
 	for (var/obj/effect/extraction_raid_marker/infil in extraction_raid_markers)
 		mall_assert(M.vehicle_entry_allowed(infil) == istype(infil, /obj/effect/extraction_raid_marker/road), "only road markers admit cars")
 	var/obj/effect/extraction_exit/highway/highway
@@ -98,4 +116,5 @@
 		if (istype(E, /obj/effect/extraction_exit/highway)) highway = E
 	H.forceMove(get_turf(highway))
 	mall_assert(highway && M.extract_player(H, highway) && H.z == 2 && S.profile["state"] == "home", "native mall foot extraction settles home")
+	mall_stage("after final foot extraction")
 	mall_assert(!parking.traverse(H) && world.port == 0, "home actor cannot enter stairs and daemon port closed")
