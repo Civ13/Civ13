@@ -17,6 +17,10 @@
 	maxz = 1
 	fps = 20
 	turf = /turf
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
 /world/Topic(T, addr, master, key)
 	return "Food fixture has no remote operations."
 /world/Error(exception/e, datum/e_src)
@@ -60,4 +64,5 @@
 	food_check(restored.decaytimer > age_before, "restored opened-can food continues aging")
 	text2file("PASS: sealed/opened can aging and native food age restoration", "food_result.txt")
 	del(world)
+
 
