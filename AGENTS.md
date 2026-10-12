@@ -586,3 +586,11 @@ isolated runtime data and must detect exactly the lost recipe.
 
 <!-- 2026-10-12: finite digging completion -->
 Loose snow/dirt/sand stock must be checked after the action wait, because another actor may consume the last unit. Underground pickaxe actions use one wait/completion path. `tests/resource_extraction/digging_probe.dm` runs production handlers with competing completion and cancellation adapters; `-DiggingBaseline` rejects immutable pre-fix source without changing the checkout.
+
+<!-- 2026-10-12: OpenDream local controls -->
+`scripts/opendream/control.py` owns only its launched local server. OpenDream
+restart/map votes enqueue fixed requests with a ready marker; do not use shell
+or native PID discovery. Reused temporary resources can make OpenDream `fcopy`
+copy stale bytes. Write the final spool file before its marker and verify actual
+disk bytes independently of DM resource reads. `verify-dm-controls.py` exercises
+production request/reboot/whitelist bodies in a disposable OpenDream world.
