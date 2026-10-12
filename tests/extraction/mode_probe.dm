@@ -305,6 +305,10 @@
 	M.test_owners[sheltered] = "shelteredowner"
 	equipment_assert(M.admit(sheltered), "home participant remains sheltered before closing")
 	M.returns.test_fail_at = "after_prepare"
+	var/list/closing_car_parts = list()
+	for (var/obj/structure/vehicleparts/axis/A in M.raid_vehicles)
+		closing_car_parts |= A
+		closing_car_parts |= M.raid_vehicles[A]
 	M.round_deadline = world.time
 	M.tick()
 	equipment_assert(M.round_closing && !M.game_over && G.loc && !M.accounts.open("roundowner"), "round deadline gates accounts before physical retirement and holds incomplete payout")
@@ -313,6 +317,7 @@
 	M.tick()
 	equipment_assert(M.game_over && (!G || !G.loc) && (!bag || !bag.loc), "round retry retires physical graph before acknowledging completed settlement")
 	equipment_assert(!M.raid_vehicles.len, "completed finite closure retires remaining physical raid car registry")
+	for (var/obj/O in closing_car_parts) equipment_assert(!O.loc, "finite closure retires actual car parts and nested controller")
 	swapper.restart_triggered = TRUE
 	swapper.fire()
 	equipment_assert(swapper.requests.len == 1 && swapper.requests[1] == MAP_ALLEYWAY && swapper.next_map_title == (map_id_to_title[MAP_ALLEYWAY] ? map_id_to_title[MAP_ALLEYWAY] : MAP_ALLEYWAY), "settled hub vote passes exact ordinary TDM ID to injected launcher without fallback")

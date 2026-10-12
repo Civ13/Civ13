@@ -14,6 +14,8 @@ Use BYOND 516.1681 and a verified full Python interpreter path:
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe vehicles
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe vehicles --vehicle-loss-negative-control
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe mode --vehicle-purchase-negative-control
+& $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe mode --vehicle-raid-negative-control debit
+& $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe mode --vehicle-raid-negative-control credit
 & $PythonPath tests/extraction/test_map_environment.py
 & $PythonPath tests/extraction/check_catalog.py --byond-bin $ByondBin
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe equipment --provenance-negative-control
@@ -129,11 +131,10 @@ pending journals, stale inventory and access-gate release.
 ## Required safe-house concept video
 
 The mode fixture also assembles a real car and checks the internal physical
-transfer helper: moving/stale vehicles, loose/nested cargo and occupied bays
+transfer helper: moving/stale vehicles, unexpected footprint/nested cargo and occupied bays
 are rejected before relocation; original parts, fuel, wall condition and
 steering survive a successful transfer, which cannot replay. These checks do
-not establish player-facing garage transactions, cargo/passenger extraction or
-client interaction. The separate vehicles probe checks a committed explicit
+not establish connected-client interaction or passenger consent. The separate vehicles probe checks a committed explicit
 car graph across three native processes, preserving part identities, wall
 condition and tank contents, then removing ownership and rejecting stale credit.
 An interrupted debit blocks access to the previous garage. Explicit offline
@@ -149,8 +150,19 @@ house upgrade, declined confirmation, debit-before-construction, zero-fuel
 delivery and acknowledged reconnect. Its payment-retention control must fail
 at the durable stash assertion. The vehicles process probe also checks pending
 construction quarantine, exact offline forfeiture binding/receipt and no
-refund/recreation after a third process. Raid transfer remains a separate
-acceptance requirement.
+refund/recreation after a third process. Bounded boot graphs check eight-root
+capacity, nested-condition staleness, part/cargo/stash ID collisions, original
+atoms through physical relocation and atomic home loading/unloading.
+Solo raid tests execute production debit/extraction/cancellation/damage/FIR
+and forfeiture/reconnect paths. An independent looter claims the original car
+and cargo only after a deliberately conflicting acknowledged garage is cleared.
+Finite closure retires both top parts and nested controllers. Native processes
+cover interruption before physical deployment, after acknowledged extraction
+credit and during uncertain credit. Debit/credit omission controls must fail at
+the intended ownership assertions. Account parts and nested equipment have
+`should_save = FALSE`; this fixture does not execute a full-game vehicle world
+save. Connected car driving, passenger/group transactions and playable
+acceptance remain separate requirements.
 
 Record a genuine disposable local playable world after integrated regressions
 pass. Use the exact pinned build and record its full commit, dirty patch when

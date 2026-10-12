@@ -185,10 +185,11 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		var/mob/living/human/H = user
 		var/obj/map_metadata/extraction_survival/M = map
 		if (!istype(H) || !istype(M) || !Adjacent(H)) return
-		if (H.extraction_session?.raid_vehicle && !forbid_backpack && !istype(src, /obj/effect/extraction_exit/locked_room))
-			var/choice = WWinput(H, "Extract on foot or include your parked, empty car and its boot cargo? Vehicle extraction requires the engine off and a clear private bay.", "Extraction", "Cancel", list("Extract car", "On foot", "Cancel"))
+		var/obj/structure/vehicleparts/axis/parked = M.nearby_raid_vehicle(H, src)
+		if (parked && !forbid_backpack && !istype(src, /obj/effect/extraction_exit/locked_room))
+			var/choice = WWinput(H, "Extract on foot or claim the parked [parked.name] and its boot cargo? Vehicle extraction requires the engine off, empty seats and a clear private bay.", "Extraction", "Cancel", list("Extract car", "On foot", "Cancel"))
 			if (!Adjacent(H)) return
-			if (choice == "Extract car") M.extract_vehicle(H, src)
+			if (choice == "Extract car") M.extract_vehicle(H, src, parked)
 			else if (choice == "On foot") M.extract_player(H, src)
 		else M.extract_player(H, src)
 

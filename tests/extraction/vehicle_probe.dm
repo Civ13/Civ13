@@ -240,5 +240,26 @@
 	equipment_assert(buyer_session.forfeit(buyer_session.profile["raid_sequence"]) && M.release(buyer_session, FALSE) && deployed_car.loc && M.raid_vehicles[deployed_car], "death forfeiture leaves actual raid car available without deleting it during account release")
 	equipment_assert(M.admit(buyer) && !buyer.extraction_session.garage_vehicle && !buyer.extraction_session.profile["garage"].len, "reconnect cannot reissue forfeited deployed car")
 	equipment_assert(M.release(buyer.extraction_session), "vehicle raid fixture releases account cleanly")
+	var/mob/living/human/looter = new(locate(3,3,1))
+	looter.m_intent = "stealth"
+	M.test_owners[looter] = "carlooter"
+	equipment_assert(M.admit(looter) && M.deploy(looter), "independent looter deploys without any saved car")
+	var/datum/extraction_session/looter_session = looter.extraction_session
+	equipment_assert(raid_transfer.capture(deployed_car, TRUE) && raid_transfer.relocate(locate(85,85,1)), "forfeited car remains physical loot available to another participant")
+	looter.forceMove(locate(81,83,1))
+	equipment_assert(M.nearby_raid_vehicle(looter, car_exit) == deployed_car, "exit resolves actual nearby registered car without an ownership receipt")
+	var/datum/extraction_session/conflict = M.accounts.open("carconflict")
+	var/list/conflict_profile = conflict.copy_profile()
+	conflict_profile["garage"] = list(M.vehicle_codec.encode(deployed_car))
+	equipment_assert(conflict.commit(conflict_profile), "adversarial fixture records an already acknowledged car identity")
+	var/looter_revision = looter_session.profile["revision"]
+	equipment_assert(!M.extract_vehicle(looter, car_exit, deployed_car) && looter_session.profile["revision"] == looter_revision && deployed_car.loc && !looter_session.garage_vehicle, "looted car cannot duplicate an acknowledged garage in another account")
+	conflict_profile = conflict.copy_profile()
+	conflict_profile["garage"] = list()
+	equipment_assert(conflict.commit(conflict_profile), "fixture resolves conflicting acknowledgement before retry")
+	conflict.close()
+	equipment_assert(M.extract_vehicle(looter, car_exit, deployed_car) && looter_session.garage_vehicle == deployed_car && looter_session.profile["garage"][1]["id"] == deployed_car.extraction_vehicle_part_id && looter_session.profile["garage"][1]["cargo"].len == 2, "independent looter banks original forfeited car and actual cargo once")
+	equipment_assert(M.deploy_vehicle(looter) && looter_session.forfeit(looter_session.profile["raid_sequence"]) && M.release(looter_session, FALSE), "reissued acknowledged car returns to finite raid registry after new forfeiture")
+	qdel(looter)
 	qdel(car_exit)
 	qdel(buyer)

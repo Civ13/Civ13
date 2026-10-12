@@ -21,12 +21,16 @@
 	plan["vehicle"] = json_decode(json_encode(vehicle))
 	return plan
 
-/datum/extraction_session/proc/credit_vehicle_extraction(sequence, list/loot, list/vehicle)
+/datum/extraction_session/proc/credit_vehicle_extraction(sequence, list/loot, list/vehicle, obj/structure/vehicleparts/axis/source_vehicle)
 	var/datum/extraction_vehicle_codec/C = new
 	if (!C.validate(vehicle)) return FALSE
 	if (!active() || profile["state"] != "raid" || sequence != profile["raid_sequence"] || !valid_entries(loot, 16) || !islist(profile["garage"]) || profile["garage"].len) return FALSE
 	var/list/receipt = profile["vehicle_issued"]
-	if (!islist(receipt) || receipt["sequence"] != sequence || receipt["id"] != vehicle["id"]) return FALSE
+	if (source_vehicle)
+		var/obj/map_metadata/extraction_survival/M = map
+		var/turf/source_turf = get_turf(source_vehicle)
+		if (!istype(M) || M.accounts != service || !M.owned(body) || !M.raid_vehicles[source_vehicle] || !source_turf || source_turf.z != 1 || source_vehicle.extraction_vehicle_part_id != vehicle["id"] || json_encode(C.encode(source_vehicle)) != json_encode(vehicle)) return FALSE
+	else if (!islist(receipt) || receipt["sequence"] != sequence || receipt["id"] != vehicle["id"]) return FALSE
 	var/list/candidate = copy_profile()
 	var/list/stash = candidate["stash"]
 	for (var/list/entry in loot) stash += list(entry)
@@ -45,6 +49,21 @@
 		for (var/turf/F in range(4, marker))
 			if (F.z == 1 && T.destination_tiles(F)) return F
 	return null
+
+/obj/map_metadata/extraction_survival/proc/nearby_raid_vehicle(mob/living/human/H, obj/effect/extraction_exit/E)
+	if (!owned(H) || !E.eligible(H)) return null
+	var/obj/structure/vehicleparts/axis/preferred = H.extraction_session.raid_vehicle
+	var/obj/structure/vehicleparts/axis/nearest
+	var/nearest_distance = 5
+	for (var/obj/structure/vehicleparts/axis/A in raid_vehicles)
+		var/turf/T = get_turf(A)
+		if (!T || T.z != 1 || get_dist(T, E) > 4) continue
+		if (A == preferred) return A
+		var/distance = get_dist(T, E)
+		if (distance < nearest_distance)
+			nearest = A
+			nearest_distance = distance
+	return nearest
 
 /obj/map_metadata/extraction_survival/proc/deploy_vehicle(mob/living/human/H)
 	if (!owned(H) || H.stat != CONSCIOUS || raid_vehicles.len >= 32) return FALSE
@@ -91,18 +110,18 @@
 	to_chat(H, "Car and cargo deployed. Park near a vehicle extraction point, stop the engine and leave the seats before extracting. Failed raids forfeit this car.")
 	return TRUE
 
-/obj/map_metadata/extraction_survival/proc/extract_vehicle(mob/living/human/H, obj/effect/extraction_exit/E)
+/obj/map_metadata/extraction_survival/proc/extract_vehicle(mob/living/human/H, obj/effect/extraction_exit/E, obj/structure/vehicleparts/axis/chosen_vehicle)
 	if (!E?.eligible(H) || E.forbid_backpack || istype(E, /obj/effect/extraction_exit/locked_room)) return FALSE
 	var/datum/extraction_session/S = H.extraction_session
-	var/obj/structure/vehicleparts/axis/A = S.raid_vehicle
+	var/obj/structure/vehicleparts/axis/A = chosen_vehicle ? chosen_vehicle : nearby_raid_vehicle(H, E)
 	var/turf/vehicle_turf = get_turf(A)
-	if (S.transitioning || !A || !vehicle_turf || get_dist(vehicle_turf, E) > 4 || vehicle_turf.z != 1) return FALSE
+	if (S.transitioning || !A || !raid_vehicles[A] || !vehicle_turf || get_dist(vehicle_turf, E) > 4 || vehicle_turf.z != 1) return FALSE
 	var/datum/extraction_vehicle_transfer/T = new
 	if (!T.capture(A, TRUE)) return FALSE
 	S.transitioning = TRUE
 	var/sequence = S.profile["raid_sequence"]
 	to_chat(H, "Extracting with parked car. Stay next to this point for ten seconds.")
-	if (!wait_for_extraction(H, E) || !E.eligible(H) || S.profile["raid_sequence"] != sequence || S.raid_vehicle != A || get_dist(get_turf(A), E) > 4)
+	if (!wait_for_extraction(H, E) || !E.eligible(H) || S.profile["raid_sequence"] != sequence || !raid_vehicles[A] || get_dist(get_turf(A), E) > 4)
 		S.transitioning = FALSE
 		return FALSE
 	vehicle_turf = get_turf(A)
@@ -114,7 +133,7 @@
 	if (!vehicle || !loot || !garage_record_fits(S, vehicle) || !T.capture(A, TRUE) || !T.destination_tiles(garage_anchor(S)))
 		S.transitioning = FALSE
 		return FALSE
-	if (!S.credit_vehicle_extraction(sequence, loot, vehicle))
+	if (!S.credit_vehicle_extraction(sequence, loot, vehicle, A))
 		S.transitioning = FALSE
 		return FALSE
 	if (!T.relocate(garage_anchor(S)))
@@ -123,8 +142,11 @@
 		return FALSE
 	S.garage_vehicle = A
 	S.garage_parts = T.parts - T.cargo
-	S.raid_vehicle = null
-	S.raid_vehicle_parts.Cut()
+	for (var/owner in accounts.sessions)
+		var/datum/extraction_session/previous = accounts.sessions[owner]
+		if (previous == S || previous.raid_vehicle == A)
+			previous.raid_vehicle = null
+			previous.raid_vehicle_parts.Cut()
 	raid_vehicles -= A
 	for (var/obj/item/I in player_roots(H) | T.cargo) raid_items -= I
 	H.forceMove(get_turf(S.house))
