@@ -106,7 +106,12 @@ def prepare(repo, mode, size, negative, requests_enabled=False):
     paths = {p for p in paths if not p.startswith('/obj/map_metadata/proc/') and p not in callable_paths}
     types = '\n'.join(sorted(paths)) + '\n/obj/map_metadata/nomads/asia\n/obj/map_metadata/nomads/continental\n'
     # Extract production phase state declarations, never guess runtime defaults.
-    declarations = '\n'.join(line for line in meta.splitlines() if re.match(r'\tvar/(?:tmp/)?(?:list/)?season_', line))
+    metadata_type_block = re.search(r'^/obj/map_metadata[ \t]*\n([\s\S]*?)(?=^/[A-Za-z_]|\Z)', meta, re.M).group(1)
+    declarations = '\n'.join(line for line in metadata_type_block.splitlines() if re.match(r'\tvar/(?:tmp/)?(?:list/)?season_', line))
+    # Procedure locals such as season_work must remain local, never injected fields.
+    field_names = re.findall(r'^\tvar/(?:tmp/)?(?:list/)?(season_\w+)', declarations, re.M)
+    assert len(field_names) == len(set(field_names)), 'Duplicate extracted season fields'
+
     production = types + '\n/obj/map_metadata\n' + declarations + '\n' + seasons + helper + asia + constructors
     production += (repo / 'code/_helpers/functional.dm').read_text()
     probe = Path(__file__).with_name('probe.dm').read_text()
