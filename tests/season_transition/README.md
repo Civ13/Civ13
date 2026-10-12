@@ -82,6 +82,11 @@ after-pause replacement deterministic without adding per-candidate full-tick wai
 must be detected specifically. Neither compiler/runtime failures nor unrelated
 assertion failures count as successful negative-control evidence.
 
+Request runs also compare ordered native references from category-specific turf and
+object discovery against the generic atom scan for every production target type.
+They include nested objects, retired/deleted objects, native turf replacement,
+generic fallback types and cancellation after partial discovery.
+
 Current verification is Python AST, baseline/current source extraction and generated
 checkpoint/control transformation checks only. Native compilation, runtime parity,
 negative-control detection, adversarial scenarios, telemetry and the accepted gap

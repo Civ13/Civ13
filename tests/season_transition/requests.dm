@@ -70,6 +70,9 @@
 	var/list/checkpoints = probe_checkpoint_requests()
 	failures += checkpoints["failures"]
 	results["checkpoints"] = checkpoints
+	var/list/discovery = probe_discovery_sequences()
+	failures += discovery["failures"]
+	results["typed_discovery"] = discovery
 	results["failures"] = failures
 	return results
 var/atom/probe_current_candidate
@@ -83,6 +86,11 @@ var/probe_in_delayed = FALSE
 var/list/timer_arms = list()
 var/list/timer_fires = list()
 /proc/probe_checkpoint(obj/map_metadata/M, epoch, work, discovery)
+	if(checkpoint_mode == "typed_cancel" && discovery && work >= 64)
+		checkpoint_mode = null
+		checkpoint_seen++
+		M.Destroy()
+		return
 	if(checkpoint_mode == "destroy" && discovery && work >= 4096)
 		checkpoint_mode = null
 		checkpoint_seen++
@@ -215,3 +223,58 @@ var/list/timer_fires = list()
 	config.seasons_on = TRUE
 	checkpoints["failures"] = failures
 	return checkpoints
+
+// Compare actual ordered native references, not type counts or final terrain.
+/proc/probe_generic_candidates(atom_type)
+	var/list/result = list()
+	for(var/atom/A in world)
+		if(istype(A, atom_type) && !A.gcDestroyed)
+			result += A
+	return result
+/proc/probe_same_candidates(list/expected, list/actual)
+	if(!islist(actual) || expected.len != actual.len) return FALSE
+	for(var/i in 1 to expected.len)
+		if(expected[i] != actual[i]) return FALSE
+	return TRUE
+/proc/probe_discovery_sequences()
+	var/failures = 0
+	var/list/rows = list()
+	map = new(locate(1,1,1))
+	var/list/targets = list(/turf/floor/dirt/flooded, /turf/floor/dirt/ploughed/flooded, /turf/floor/beach/water/flooded, /turf/floor/dirt/burned, /turf/floor/grass, /obj/structure/sink, /obj/structure/wild/tree/live_tree, /obj/structure/window/barrier/snowwall, /obj/covers/snow_wall, /obj/item/weapon/snowwall)
+	var/obj/inert/container = new(locate(1,1,1))
+	var/list/nested = list()
+	var/x = 1
+	for(var/target in targets)
+		if(ispath(target, /turf))
+			new target(locate(x++,2,1))
+		else
+			nested += new target(container)
+	// Exercise both fresh replacement membership and retired/deleted objects.
+	var/turf/replaced = new /turf/floor/dirt/flooded(locate(12,2,1))
+	new /turf/floor/grass(replaced)
+	var/obj/retired = new /obj/item/weapon/snowwall(container)
+	retired.gcDestroyed = TRUE
+	var/obj/deleted = new /obj/covers/snow_wall(container)
+	del(deleted)
+	// /mob and /atom explicitly exercise the generic fallback too.
+	targets += list(/mob, /atom)
+	for(var/target in targets)
+		var/list/expected = probe_generic_candidates(target)
+		var/list/actual = map.season_world_candidates(target, map.season_epoch)
+		var/equal = probe_same_candidates(expected, actual)
+		if(!equal || !expected.len) failures++
+		rows += list(list("target"="[target]", "expected"=expected.len, "actual"=islist(actual) ? actual.len : -1, "ordered_refs_equal"=equal))
+		if(ispath(target, /obj))
+			for(var/obj/O in nested)
+				if(istype(O, target) && !(O in actual)) failures++
+	// Cancellation must discard partially collected results in every branch.
+	for(var/target in list(/turf, /obj, /atom))
+		map = new(locate(1,1,1))
+		checkpoint_mode = "typed_cancel"
+		checkpoint_seen = 0
+		var/list/cancelled = map.season_world_candidates(target, map.season_epoch)
+		if(checkpoint_seen != 1 || !isnull(cancelled)) failures++
+		if(!isnull(map.season_world_candidates(target, map.season_epoch))) failures++
+	checkpoint_mode = null
+	map = new(locate(1,1,1))
+	return list("failures"=failures, "sequences"=rows)

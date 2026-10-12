@@ -1056,13 +1056,28 @@ var/civmax_research = list(230,230,230)
 		return null
 	var/list/candidates = list()
 	var/work = 0
-	for (var/atom/A in world)
-		// Discovery performs no constructors; check its budget in small blocks.
-		work++
-		if (!(work % 64) && !season_work_pause(epoch, work, TRUE))
-			return null
-		if (istype(A, atom_type) && !A.gcDestroyed)
-			candidates += A
+	// Native category scans avoid unrelated atoms without caching membership.
+	if (ispath(atom_type, /turf))
+		for (var/turf/T in world)
+			work++
+			if (!(work % 64) && !season_work_pause(epoch, work, TRUE))
+				return null
+			if (istype(T, atom_type) && !T.gcDestroyed)
+				candidates += T
+	else if (ispath(atom_type, /obj))
+		for (var/obj/O in world)
+			work++
+			if (!(work % 64) && !season_work_pause(epoch, work, TRUE))
+				return null
+			if (istype(O, atom_type) && !O.gcDestroyed)
+				candidates += O
+	else
+		for (var/atom/A in world)
+			work++
+			if (!(work % 64) && !season_work_pause(epoch, work, TRUE))
+				return null
+			if (istype(A, atom_type) && !A.gcDestroyed)
+				candidates += A
 	if (!season_worker_valid(epoch))
 		return null
 	return candidates
