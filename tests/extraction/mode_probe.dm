@@ -14,6 +14,10 @@
 		if (test_wait == "cancel") return FALSE
 		if (test_wait == "move") H.forceMove(locate(3,3,1))
 		if (test_wait == "dead") H.stat = DEAD
+		if (test_wait == "faction") E.allowed_faction = "Scav"
+		if (test_wait == "backpack") new /obj/item/weapon/storage/backpack(H)
+		if (test_wait == "unlock")
+			for (var/obj/item/weapon/key/extraction_room/K in H.contents) extraction_room_door.attackby(K, H)
 		return TRUE
 
 /proc/extraction_mode_probe()
@@ -52,7 +56,56 @@
 	equipment_assert(SB.profile["stash"]:len == 4, "other account unaffected")
 	var/list/loot = M.records(M.player_roots(A))
 	var/obj/effect/extraction_exit/exit = locate() in world
+	var/obj/effect/extraction_exit/pmc/pmc_exit = locate() in world
+	var/obj/effect/extraction_exit/scav/scav_exit = locate() in world
+	var/obj/effect/extraction_exit/manhole/manhole = locate() in world
+	A.forceMove(get_turf(pmc_exit))
+	equipment_assert(pmc_exit.eligible(A), "PMC exit accepts durable PMC raid role")
+	A.forceMove(get_turf(scav_exit))
+	equipment_assert(!scav_exit.eligible(A), "Scav exit rejects PMC before wait")
+	A.forceMove(get_turf(manhole))
+	var/obj/item/weapon/storage/backpack/bag = new(A)
+	equipment_assert(!manhole.eligible(A), "manhole denies carried backpack")
+	var/obj/item/weapon/storage/backpack/outer = new(A)
+	bag.forceMove(outer)
+	equipment_assert(!manhole.eligible(A), "manhole denies nested backpack")
+	qdel(bag)
+	qdel(outer)
+	equipment_assert(manhole.eligible(A), "manhole accepts inventory without backpack")
+	M.test_wait = "backpack"
+	equipment_assert(!M.extract_player(A, manhole) && !SA.transitioning && SA.profile["state"] == "raid", "backpack acquired during wait rejects final commit")
+	for (var/obj/item/weapon/storage/backpack/I in A.contents) qdel(I)
+	var/obj/effect/extraction_exit/locked_room/room_exit = locate() in world
+	var/obj/item/weapon/key/extraction_room/room_key = locate() in world
+	var/obj/structure/simple_door/key_door/extraction_room/door = extraction_room_door
+	A.forceMove(locate(9,42,1))
+	room_key.forceMove(A)
+	door.attackby(room_key, A)
+	equipment_assert(!door.keyslot.locked && door.unlocked_by == SA.owner, "matching real key records account unlock")
+	// Native hand dispatch requires a real client; execute its production switch
+	// here and leave real-client dispatch to the required concept video.
+	door.SwitchState()
+	sleep(11)
+	equipment_assert(door.state && !door.density, "native keyed door opens")
+	A.forceMove(get_turf(room_exit))
+	equipment_assert(!room_exit.eligible(A), "open extraction room rejected")
+	door.SwitchState()
+	sleep(11)
+	door.attackby(room_key, A)
+	equipment_assert(room_exit.eligible(A), "player locks themselves inside keyed room")
+	B.forceMove(locate(10,45,1))
+	equipment_assert(!room_exit.eligible(A), "second room occupant rejects secure extraction")
+	B.forceMove(get_turf(SB.house))
+	M.test_wait = "unlock"
+	equipment_assert(!M.extract_player(A, room_exit) && SA.profile["state"] == "raid", "unlock during timed extraction rejects commit")
+	door.attackby(room_key, A)
+	room_key.forceMove(get_turf(room_exit))
+	equipment_assert(!room_exit.eligible(A), "losing matching key rejects secure extraction")
+	qdel(room_key)
 	A.forceMove(get_turf(exit))
+	M.test_wait = "faction"
+	equipment_assert(!M.extract_player(A, exit) && SA.profile["state"] == "raid", "faction eligibility changed during wait rejects final commit")
+	exit.allowed_faction = "all"
 	M.test_wait = "cancel"
 	equipment_assert(!M.extract_player(A, exit) && !SA.transitioning && SA.profile["state"] == "raid", "cancelled extraction retains raid ownership")
 	M.test_wait = "move"
@@ -80,12 +133,31 @@
 	for (var/obj/item/weapon/gun/projectile/pistol/m9beretta/I in items) G = I
 	G.forceMove(A)
 	equipment_assert(M.deploy(A), "second deployment")
+	var/obj/item/weapon/gun_mount/shipped_rail = new(G)
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/reddot/shipped_optic = new(shipped_rail)
+	G.optic_rail = shipped_rail
+	shipped_optic.A_attached = TRUE
+	G.recompute_configuration()
+	var/obj/effect/extraction_drop_box/box = locate() in world
+	A.forceMove(get_turf(box))
+	var/list/shipped_entry = M.record_item(G)
+	SA.transitioning = TRUE
+	equipment_assert(!M.deposit_item(A, G, box), "concurrent shipment transition rejected")
+	SA.transitioning = FALSE
+	equipment_assert(!M.deposit_item(B, G, box), "another account cannot deposit carried gear")
+	equipment_assert(M.deposit_item(A, G, box) && !G.loc && SA.profile["state"] == "raid", "native nested shipment commits before physical gear retires")
+	equipment_assert(!SA.deposit(SA.profile["raid_sequence"], list(shipped_entry)), "nested shipment receipt replay rejected")
 	A.stat = DEAD
 	M.tick()
 	equipment_assert(!A.extraction_session && !M.accounts.sessions["fixturealice"] && M.corpses[A], "death releases room and retains bounded raid corpse")
 	var/datum/extraction_service/restarted = new
 	var/datum/extraction_session/reloaded = restarted.open("fixturealice")
-	equipment_assert(reloaded && reloaded.profile["state"] == "home" && reloaded.profile["stash"]:len == 3, "death stays forfeited across disk reopen")
+	equipment_assert(reloaded && reloaded.profile["state"] == "home" && reloaded.profile["stash"]:len == 4, "death forfeits carried loadout but retains committed shipment across disk reopen")
+	var/list/reloaded_stash = reloaded.profile["stash"]
+	var/list/reloaded_entry = reloaded_stash[4]
+	var/obj/item/weapon/gun/projectile/pistol/m9beretta/shipped_gun = M.codec.decode(reloaded_entry["equipment"], locate(3,4,1))
+	equipment_assert(shipped_gun && shipped_gun.scope && shipped_gun.scope.loc == shipped_gun.optic_rail && shipped_gun.extraction_item_id == shipped_entry["id"], "shipped actual nested gear restores with stable identity after death")
+	qdel(shipped_gun)
 	reloaded.close()
 	var/list/stash_before = json_decode(json_encode(SB.profile["stash"]))
 	SB.disconnected_at = world.time - 2 MINUTES

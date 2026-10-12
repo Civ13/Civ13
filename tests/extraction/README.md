@@ -19,6 +19,14 @@ The mode probe uses the original map and production transition procedures with
 injected client identity and accelerated action waits. None replaces gameplay
 acceptance. Generated compilation files are unique and removed on completion.
 
+The mode probe additionally checks PMC/Scav eligibility, carried/nested backpack
+denial, eligibility changes during the extraction wait, actual keyed-door
+unlock/close/lock state, room occupancy and lost-key rejection. Native hand
+dispatch needs a client, so the fixture calls the production door switch and
+leaves real click dispatch for graphical acceptance. Nested item shipment tests
+cover another-account/concurrent/replay rejection, physical retirement after
+commit and actual gun/optic restoration after death and journal reopen.
+
 ## Required safe-house concept video
 
 Record a genuine disposable local playable world after integrated regressions

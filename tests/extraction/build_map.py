@@ -40,10 +40,20 @@ def build():
             put(left+8, bottom+8, '/obj/effect/extraction_npc_marker')
     for x, y in ((8, 8), (88, 8), (8, 88), (88, 88)):
         put(x, y, '/obj/effect/extraction_raid_marker')
-    for x, y in ((48, 5), (48, 91), (5, 48), (91, 48)):
-        put(x, y, '/obj/effect/extraction_exit')
+    for x, y, kind in ((48, 5, ''), (48, 91, '/pmc'), (5, 48, '/scav'), (91, 48, '/manhole')):
+        put(x, y, '/obj/effect/extraction_exit' + kind)
     put(2, 2, '/obj/map_metadata/extraction_survival')
     put(3, 3, '/obj/effect/landmark{name = "JoinLateExtraction"}')
+    put(48, 10, '/obj/effect/extraction_drop_box')
+    # One bounded, single-door room. The player must unlock, enter, close and lock.
+    secure = '/area/extraction_lock_room'
+    for y in range(43, 48):
+        for x in range(7, 12):
+            boundary = x in (7, 11) or y in (43, 47)
+            raid[y-1][x-1] = tile(*([wall] if boundary else []), floor, secure)
+    raid[42][8] = tile('/obj/structure/simple_door/key_door/extraction_room', floor, secure)
+    raid[43][8] = tile('/obj/effect/extraction_exit/locked_room', floor, secure)
+    put(12, 42, '/obj/item/weapon/key/extraction_room')
     layers.append(raid)
 
     houses = '/area/extraction_houses'

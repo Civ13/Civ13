@@ -4,7 +4,7 @@ This mode is under implementation and has not received playable acceptance.
 Isolated native tests cover account storage, nested equipment restoration,
 bounded NPC combat, extraction cancellation, private rooms and hub navigation.
 Existing Factory mode stays available unchanged. Insurance, secure deposits,
-conditional exits, lazy container loot, stack transformations and map voting
+lazy container loot, stack transformations and map voting
 remain pending. The required genuine concept video has not been recorded.
 
 ## Milestones and dependencies
@@ -79,6 +79,32 @@ storage. The `mode` probe exercises production transitions with injected client
 identity/action waits. The provenance negative control intentionally drops the
 tag in a generated source copy and must fail the native reload assertion.
 These checks do not prove full-world startup, real-client identities or graphics.
+
+## Shipments and conditional exits
+
+Use a raid drop box with an item held in your inventory to send its complete
+supported graph home. The account journal commits before the physical copy is
+retired. The raid stays active; death and interrupted-raid recovery preserve
+already committed shipments. Duplicate root or nested identities reject replay.
+The stash capacity also bounds stored shipment history. Pending insurance must
+consume the same ownership identity rather than returning a shipped copy.
+Private secure storage crates remain separate pending work.
+
+Deploy as PMC or Scav using your own equipment. The chosen raid role is committed
+with the loadout debit. The district has all-role, PMC-only, Scav-only and manhole
+exits. A manhole rejects backpacks anywhere in the actual contained inventory.
+The secure room requires its matching key, account unlock during the current
+raid, entering the room, closing the real door and locking it from inside.
+An open/broken/unlocked door, another occupant or losing the key rejects exit.
+Conditions are rechecked at each one-second action segment and immediately
+before the durable extraction commit. Real-client door clicking remains part of
+graphical acceptance; the isolated fixture invokes the production door switch.
+
+A separate original Modern-city Nomads extraction version is authorized but
+not implemented. It will share account APIs, preserve ordinary Nomads and short
+raids, and use announced scheduled evacuation departures. Stranded players lose
+unsent gear; committed shipments remain. Persistent bounded game currency will
+not integrate live CivilizationBot currency. No scaffold constitutes acceptance.
 
 `tests/extraction/run.py --byond-bin <516.1681-bin>` compiles the production
 account journal and executes real native file operations in temporary storage.

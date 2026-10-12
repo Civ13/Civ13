@@ -6,6 +6,44 @@ var/global/list/extraction_raid_markers = list()
 var/global/list/extraction_loot_markers = list()
 var/global/list/extraction_npc_markers = list()
 var/global/obj/effect/extraction_hub_terminal/extraction_hub_terminal
+var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_door
+
+/area/extraction_lock_room
+	name = "Secure extraction room"
+	dynamic_lighting = FALSE
+	luminosity = TRUE
+
+/obj/item/weapon/key/extraction_room
+	name = "secure extraction room key"
+	code = 81732
+	extraction_found_in_raid = TRUE
+
+/obj/structure/simple_door/key_door/extraction_room
+	name = "secure extraction room door"
+	var/tmp/unlocked_by
+	var/tmp/unlocked_sequence
+	var/tmp/secured_by
+	New()
+		..()
+		keyslot.code = 81732
+		extraction_room_door = src
+	Open()
+		secured_by = null
+		return ..()
+	attackby(obj/item/W, mob/user)
+		var/mob/living/human/H = user
+		var/obj/map_metadata/extraction_survival/M = map
+		if (!istype(H) || !istype(M) || !M.owned(H) || !Adjacent(H)) return
+		var/was_locked = keyslot.locked
+		..()
+		if (was_locked && !keyslot.locked && istype(W, /obj/item/weapon/key/extraction_room))
+			unlocked_by = H.extraction_session.owner
+			unlocked_sequence = H.extraction_session.profile["raid_sequence"]
+			secured_by = null
+		if (!was_locked && keyslot.locked)
+			secured_by = null
+			if (!state && density && istype(get_area(H), /area/extraction_lock_room) && unlocked_by == H.extraction_session.owner && unlocked_sequence == H.extraction_session.profile["raid_sequence"])
+				secured_by = unlocked_by
 
 /area/extraction_hub
 	name = "Safe hub concourse"
@@ -66,12 +104,13 @@ var/global/obj/effect/extraction_hub_terminal/extraction_hub_terminal
 	attack_hand(mob/user)
 		var/mob/living/human/H = user
 		if (!istype(H) || !session || session.body != H || H.client?.ckey != session.owner || session.transitioning || session.profile["state"] != "home" || !Adjacent(H)) return
-		var/choice = WWinput(H, "Equipment left in this house stays in your stash. Carry your loadout to deploy. Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts.", "Private safe house", "Cancel", list("Deploy", "Visit hub", "Upgrade", "Save stash", "Cancel"))
+		var/choice = WWinput(H, "Equipment left in this house stays in your stash. Carry your loadout to deploy. PMC and Scav use your own gear and have different exits. Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts.", "Private safe house", "Cancel", list("Deploy", "Deploy as Scav", "Visit hub", "Upgrade", "Save stash", "Cancel"))
 		if (session.body != H || !Adjacent(H) || session.transitioning) return
 		var/obj/map_metadata/extraction_survival/M = map
 		if (!istype(M)) return
 		switch (choice)
 			if ("Deploy") M.deploy(H)
+			if ("Deploy as Scav") M.deploy(H, "Scav")
 			if ("Save stash") M.save_home(session)
 			if ("Upgrade") M.upgrade_house(session)
 			if ("Visit hub") M.visit_hub(H)
@@ -116,10 +155,90 @@ var/global/obj/effect/extraction_hub_terminal/extraction_hub_terminal
 	icon = 'icons/obj/metallurgy.dmi'
 	icon_state = "anvil"
 	anchored = TRUE
+	var/allowed_faction = "all"
+	var/forbid_backpack = FALSE
+	proc/eligible(mob/living/human/H)
+		var/obj/map_metadata/extraction_survival/M = map
+		if (!istype(M) || !M.owned(H) || H.stat != CONSCIOUS || H.z != 1 || z != 1 || !Adjacent(H)) return FALSE
+		var/datum/extraction_session/S = H.extraction_session
+		if (S.profile["state"] != "raid" || !(allowed_faction in list("all", "PMC", "Scav"))) return FALSE
+		if (allowed_faction != "all" && S.profile["raid_faction"] != allowed_faction) return FALSE
+		if (forbid_backpack)
+			var/list/pending = M.player_roots(H)
+			var/list/seen = list()
+			while (pending.len)
+				var/obj/item/I = pending[1]
+				pending.Cut(1, 2)
+				if (seen[I] || seen.len >= EXTRACTION_EQUIPMENT_NODES) return FALSE
+				seen[I] = TRUE
+				if (istype(I, /obj/item/weapon/storage/backpack)) return FALSE
+				for (var/obj/item/child in I.contents) pending += child
+		return TRUE
 	attack_hand(mob/user)
 		var/mob/living/human/H = user
 		var/obj/map_metadata/extraction_survival/M = map
 		if (istype(H) && istype(M) && Adjacent(H)) M.extract_player(H, src)
+
+/obj/effect/extraction_exit/pmc
+	name = "PMC extraction point"
+	allowed_faction = "PMC"
+
+/obj/effect/extraction_exit/scav
+	name = "Scav extraction point"
+	allowed_faction = "Scav"
+
+/obj/effect/extraction_exit/manhole
+	name = "manhole extraction - no backpacks"
+	forbid_backpack = TRUE
+
+/obj/effect/extraction_exit/locked_room
+	name = "secure room extraction"
+	eligible(mob/living/human/H)
+		if (!..()) return FALSE
+		var/obj/structure/simple_door/key_door/extraction_room/D = extraction_room_door
+		if (!D || !D.loc || D.state || !D.density || D.isSwitchingStates || !D.keyslot?.locked || D.health <= 0 || D.secured_by != H.extraction_session.owner || D.unlocked_sequence != H.extraction_session.profile["raid_sequence"] || !istype(get_area(H), /area/extraction_lock_room)) return FALSE
+		var/has_key = FALSE
+		var/list/pending = map:player_roots(H)
+		var/list/seen = list()
+		while (pending.len)
+			var/obj/item/I = pending[1]
+			pending.Cut(1, 2)
+			if (seen[I] || seen.len >= EXTRACTION_EQUIPMENT_NODES) return FALSE
+			seen[I] = TRUE
+			if (istype(I, /obj/item/weapon/key/extraction_room) && I.code == D.keyslot.code) has_key = TRUE
+			for (var/obj/item/child in I.contents) pending += child
+		if (!has_key) return FALSE
+		for (var/mob/living/other in range(2, src))
+			if (other != H && istype(get_area(other), /area/extraction_lock_room)) return FALSE
+		return TRUE
+
+/obj/effect/extraction_drop_box
+	name = "account shipment drop box"
+	desc = "Send a carried item and its contents to your private stash. Completed shipments survive death."
+	icon = 'icons/obj/metallurgy.dmi'
+	icon_state = "anvil"
+	anchored = TRUE
+	attackby(obj/item/I, mob/user)
+		var/mob/living/human/H = user
+		var/obj/map_metadata/extraction_survival/M = map
+		if (istype(H) && istype(M)) M.deposit_item(H, I, src)
+
+/obj/map_metadata/extraction_survival/proc/deposit_item(mob/living/human/H, obj/item/I, obj/effect/extraction_drop_box/box)
+	if (!owned(H) || H.stat != CONSCIOUS || H.z != 1 || box?.z != 1 || !box.Adjacent(H) || I?.loc != H) return FALSE
+	var/datum/extraction_session/S = H.extraction_session
+	if (S.transitioning || S.profile["state"] != "raid") return FALSE
+	S.transitioning = TRUE
+	var/list/entry = record_item(I)
+	if (!entry || !S.deposit(S.profile["raid_sequence"], list(entry)))
+		S.transitioning = FALSE
+		to_chat(H, "Shipment rejected: full stash, unsupported gear, replay or account recovery lock.")
+		return FALSE
+	// The account credit is authoritative before retiring the materialized copy.
+	H.unEquip(I, TRUE)
+	qdel(I)
+	S.transitioning = FALSE
+	to_chat(H, "Shipment committed to your private stash.")
+	return TRUE
 
 /obj/map_metadata/extraction_survival
 	ID = MAP_EXTRACTION_SURVIVAL
@@ -266,7 +385,7 @@ var/global/obj/effect/extraction_hub_terminal/extraction_hub_terminal
 		return FALSE
 	return TRUE
 
-/obj/map_metadata/extraction_survival/proc/deploy(mob/living/human/H)
+/obj/map_metadata/extraction_survival/proc/deploy(mob/living/human/H, raid_faction = "PMC")
 	if (!owned(H) || H.stat != CONSCIOUS || !extraction_raid_markers.len) return FALSE
 	var/datum/extraction_session/S = H.extraction_session
 	if (S.transitioning || S.profile["state"] != "home" || !S.house || H.z != S.house.z || get_dist(H, S.house) > 4 || !save_home(S)) return FALSE
@@ -275,7 +394,7 @@ var/global/obj/effect/extraction_hub_terminal/extraction_hub_terminal
 	if (carried.len > 16) return FALSE
 	for (var/obj/item/I in carried) ids += I.extraction_item_id
 	S.transitioning = TRUE
-	var/list/raid = S.begin_raid(ids)
+	var/list/raid = S.begin_raid(ids, raid_faction)
 	if (!raid)
 		S.transitioning = FALSE
 		return FALSE
@@ -289,14 +408,14 @@ var/global/obj/effect/extraction_hub_terminal/extraction_hub_terminal
 	return TRUE
 
 /obj/map_metadata/extraction_survival/proc/extract_player(mob/living/human/H, obj/effect/extraction_exit/E)
-	if (!owned(H) || H.stat != CONSCIOUS || H.z != 1 || !E.Adjacent(H)) return FALSE
+	if (!E?.eligible(H)) return FALSE
 	var/datum/extraction_session/S = H.extraction_session
 	if (S.transitioning || S.profile["state"] != "raid") return FALSE
 	S.transitioning = TRUE
 	var/sequence = S.profile["raid_sequence"]
 	to_chat(H, "Extracting. Stay next to this point for ten seconds.")
 	var/completed = wait_for_extraction(H, E)
-	if (!completed || !owned(H) || H.stat != CONSCIOUS || H.z != 1 || !E.Adjacent(H) || S.profile["raid_sequence"] != sequence)
+	if (!completed || !E.eligible(H) || S.profile["raid_sequence"] != sequence)
 		S.transitioning = FALSE
 		return FALSE
 	var/list/carried = player_roots(H)
@@ -313,7 +432,9 @@ var/global/obj/effect/extraction_hub_terminal/extraction_hub_terminal
 	return TRUE
 
 /obj/map_metadata/extraction_survival/proc/wait_for_extraction(mob/living/human/H, obj/effect/extraction_exit/E)
-	return do_after(H, 10 SECONDS, E, FALSE, can_move = TRUE)
+	for (var/i in 1 to 10)
+		if (!E.eligible(H) || !do_after(H, 1 SECOND, E, FALSE, can_move = TRUE) || !E.eligible(H)) return FALSE
+	return TRUE
 
 /obj/map_metadata/extraction_survival/proc/upgrade_house(datum/extraction_session/S)
 	if (!save_home(S)) return FALSE

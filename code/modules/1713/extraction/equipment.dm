@@ -28,6 +28,7 @@ var/global/extraction_identity_sequence = 0
 /datum/extraction_equipment_codec/proc/supported(path)
 	if (!ispath(path, /obj/item)) return FALSE
 	if (ispath(path, /obj/item/weapon/gun/projectile/custom)) return FALSE
+	if (ispath(path, /obj/item/weapon/key/extraction_room)) return TRUE
 	return ispath(path, /obj/item/weapon/gun/projectile) || ispath(path, /obj/item/weapon/attachment) || ispath(path, /obj/item/weapon/gun_mount) || ispath(path, /obj/item/ammo_magazine) || ispath(path, /obj/item/ammo_casing) || ispath(path, /obj/item/projectile) || ispath(path, /obj/item/clothing) || ispath(path, /obj/item/weapon/storage) || ispath(path, /obj/item/weapon/material) || ispath(path, /obj/item/blackpowder_part) || ispath(path, /obj/item/extraction_salvage)
 
 /datum/extraction_equipment_codec/proc/scalar_fields(path)
@@ -37,6 +38,7 @@ var/global/extraction_identity_sequence = 0
 	if (ispath(path, /obj/item/ammo_casing)) fields |= list("btype")
 	if (ispath(path, /obj/item/weapon/material)) fields |= list("crafting_quality", "tool_head_material", "tool_handle_material", "tool_head_quality", "tool_handle_quality", "tool_head_condition", "tool_handle_condition")
 	if (ispath(path, /obj/item/blackpowder_part)) fields |= list("quality", "material_name")
+	if (ispath(path, /obj/item/weapon/key/extraction_room)) fields |= "code"
 	return fields
 
 /datum/extraction_equipment_codec/proc/reference_fields(path)

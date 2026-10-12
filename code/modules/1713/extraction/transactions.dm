@@ -77,8 +77,8 @@
 
 // Persist the debit before returning equipment to the caller. Caller must
 // retire its home representations before materializing any raid representation.
-/datum/extraction_session/proc/begin_raid(list/selected_ids)
-	if (!active() || profile["state"] != "home" || !islist(selected_ids) || selected_ids.len > 16) return null
+/datum/extraction_session/proc/begin_raid(list/selected_ids, raid_faction = "PMC")
+	if (!active() || profile["state"] != "home" || !islist(selected_ids) || selected_ids.len > 16 || !(raid_faction in list("PMC", "Scav"))) return null
 	var/list/candidate = copy_profile()
 	var/list/stash = candidate["stash"]
 	if (!valid_entries(stash, capacity())) return null
@@ -99,6 +99,7 @@
 	candidate["stash"] = remaining
 	candidate["raid_sequence"]++
 	candidate["state"] = "raid"
+	candidate["raid_faction"] = raid_faction
 	if (!commit(candidate)) return null
 	return list("sequence" = profile["raid_sequence"], "issued" = issued)
 
@@ -115,6 +116,16 @@
 	if (!active() || profile["state"] != "raid" || sequence != profile["raid_sequence"]) return FALSE
 	var/list/candidate = copy_profile()
 	candidate["state"] = "home"
+	return commit(candidate)
+
+// Credit shipped roots while keeping the raid active. Stable node identities in
+// the stash reject replay and overlapping nested shipments without receipt growth.
+/datum/extraction_session/proc/deposit(sequence, list/shipment)
+	if (!active() || profile["state"] != "raid" || sequence != profile["raid_sequence"] || !valid_entries(shipment, 16) || !shipment.len) return FALSE
+	var/list/candidate = copy_profile()
+	var/list/stash = candidate["stash"]
+	for (var/list/entry in shipment) stash += list(entry)
+	if (!valid_entries(stash, capacity())) return FALSE
 	return commit(candidate)
 
 // Only home sessions may replace their materialized home stash. Integration
