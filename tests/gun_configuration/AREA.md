@@ -35,3 +35,13 @@ The footage does not establish completed cleaning, bench repair or firing.
 Normal startup logged `Bad ref` in `DecRefCount(DM New)` and an unexpected
 nslookup diagnostic. These remain unresolved runtime acceptance limitations;
 area readiness is not a clean full-game runtime pass.
+
+## Capture editing
+
+Keep the exact build, item/tool requirements, selected actions and visible
+before/after outcomes captioned. Use focused zooms and highlights for native
+menus, held parts and Examine text. For future clips, inspect frame changes
+and aggressively trim navigation or compress static waits; retain action
+starts and completions at readable speed. Label every compressed wait with
+its speed or omitted elapsed duration. Conventional editing must not invent
+gameplay or turn artificial condition setup into a maintenance result.
