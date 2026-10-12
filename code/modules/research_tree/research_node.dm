@@ -671,6 +671,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/closet/crate" = "factories",
 		"/obj/structure/closet/crate/bin" = "factories",
 		"/obj/structure/radio" = "factories",
+        "/obj/structure/telecom" = "factories",
+        "/obj/structure/telecom/station" = "factories",
+        "/obj/structure/telecom/antenna" = "factories",
+        "/obj/structure/telecom/tv" = "assembly_line",
+        "/obj/structure/telecom/station/tv" = "assembly_line",
+        "/obj/structure/telecom/terminal" = "assembly_line",
+        "/obj/item/weapon/telephone/landline" = "utilities",
 		"/obj/structure/radio/transmitter" = "factories",
 		// --- field_artillery (5) ---
 		"/obj/item/stack/ammopart/casing/artillery" = "field_artillery",
