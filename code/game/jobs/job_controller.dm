@@ -426,6 +426,7 @@ var/global/datum/controller/occupations/job_master
 		#define SAFE_SPAWN_TIME 4
 		// Add loadout items. spawn(SAFE_SPAWN_TIME) so it happens after our pockets are filled with default job item
 		spawn (SAFE_SPAWN_TIME*2)
+			if (istype(map, /obj/map_metadata/extraction_survival)) return
 			for (var/obj/item/weapon/gun/projectile/gun in H.contents)
 				if (gun.w_class == ITEM_SIZE_HUGE && gun.gun_type == GUN_TYPE_MG) // MG
 					if (H.back && istype(H.back, /obj/item/weapon/storage/backpack))
@@ -605,6 +606,12 @@ var/global/datum/controller/occupations/job_master
 
 		if (!istype(H, /mob/living/human/corpse))
 			relocate(H)
+			if (istype(map, /obj/map_metadata/extraction_survival))
+				var/obj/map_metadata/extraction_survival/extraction_map = map
+				if (!extraction_map.admit(H))
+					H.ghostize()
+					qdel(H)
+					return null
 			if (H.client)
 				H.client.remove_gun_icons()
 		if (H)

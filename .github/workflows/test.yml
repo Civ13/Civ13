@@ -89,6 +89,16 @@ jobs:
           /usr/bin/python3 tests/sprites/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/sprites.json"
           /usr/bin/python3 tests/sprites/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/sprites-negative.json" --negative-control
 
+      - name: Verify extraction accounts, equipment, safe hub and provenance control
+        if: needs.changes.outputs.game == 'true'
+        shell: bash
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe store
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe restart
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --provenance-negative-control
+
       - name: Explain opt-in runtime coverage
         if: needs.changes.outputs.extensive != 'true'
         run: echo 'Extensive runtime suites were not requested. Use Run workflow with extensive_regressions enabled.'

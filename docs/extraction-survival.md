@@ -1,8 +1,11 @@
 # Extraction survival implementation
 
-This mode is under implementation. The account journal is tested in isolation;
-NPC raids, player extraction, private houses and equipment restoration are not
-yet playable or accepted. Existing Factory mode stays available unchanged.
+This mode is under implementation and has not received playable acceptance.
+Isolated native tests cover account storage, nested equipment restoration,
+bounded NPC combat, extraction cancellation, private rooms and hub navigation.
+Existing Factory mode stays available unchanged. Insurance, secure deposits,
+conditional exits, lazy container loot, stack transformations and map voting
+remain pending. The required genuine concept video has not been recorded.
 
 ## Milestones and dependencies
 
@@ -56,6 +59,26 @@ equipment before consuming or transferring it. Bound NPC population, perception,
 pathfinding and cleanup work. Do not add a recurring timer per account.
 
 ## Current verification
+
+The opt-in `EXTRACTION_SURVIVAL_MAP` compile flag selects the original 96x96
+industrial raid, 16 fixed private houses on level 2 and shared concourse on
+level 3. All levels have the same dimensions. Fixed daylight is an explicit map
+design choice. Visiting the concourse requires leaving equipment in private
+storage; the return terminal resolves the current account's bound house.
+
+Equipment graph schema 2 preserves unique identities and found-in-raid status
+for each contained node. Successful extraction retains provenance; bringing
+equipment into a subsequent raid clears it throughout the bounded graph.
+Schema 1 graphs migrate with new identities and no invented provenance.
+Unsupported stack types remain rejected. Duplicate identities within a graph
+or across stash roots are rejected before account transfer.
+
+See [the probe and video acceptance matrix](../tests/extraction/README.md).
+The `restart` probe starts three separate native processes over disposable
+storage. The `mode` probe exercises production transitions with injected client
+identity/action waits. The provenance negative control intentionally drops the
+tag in a generated source copy and must fail the native reload assertion.
+These checks do not prove full-world startup, real-client identities or graphics.
 
 `tests/extraction/run.py --byond-bin <516.1681-bin>` compiles the production
 account journal and executes real native file operations in temporary storage.

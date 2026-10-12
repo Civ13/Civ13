@@ -1,0 +1,443 @@
+#define MAP_EXTRACTION_SURVIVAL "EXTRACTION_SURVIVAL"
+#define EXTRACTION_HOUSES 16
+
+var/global/list/extraction_house_markers = list()
+var/global/list/extraction_raid_markers = list()
+var/global/list/extraction_loot_markers = list()
+var/global/list/extraction_npc_markers = list()
+var/global/obj/effect/extraction_hub_terminal/extraction_hub_terminal
+
+/area/extraction_hub
+	name = "Safe hub concourse"
+	dynamic_lighting = FALSE
+	luminosity = TRUE
+
+/obj/effect/extraction_hub_terminal
+	name = "private house return terminal"
+	desc = "Return to your account's private house. Equipment stays in private storage while visiting the shared concourse."
+	icon = 'icons/obj/metallurgy.dmi'
+	icon_state = "anvil"
+	anchored = TRUE
+	New()
+		..()
+		extraction_hub_terminal = src
+	attack_hand(mob/user)
+		var/mob/living/human/H = user
+		var/obj/map_metadata/extraction_survival/M = map
+		if (istype(H) && istype(M) && Adjacent(H)) M.return_home(H)
+
+/area/extraction_district
+	name = "Industrial district"
+	dynamic_lighting = FALSE
+	luminosity = TRUE
+
+/area/extraction_houses
+	name = "Private safe houses"
+	dynamic_lighting = FALSE
+	luminosity = TRUE
+
+/turf/floor/plating/extraction_house
+	Enter(atom/movable/A, atom/oldloc)
+		if (ismob(A))
+			var/mob/living/human/H = A
+			if (!istype(H) || !H.extraction_session || !H.extraction_session.house || z != H.extraction_session.house.z || get_dist(src, H.extraction_session.house) > 4 || H.extraction_session.profile["state"] != "home") return FALSE
+		return ..()
+
+/mob/living/human
+	var/tmp/datum/extraction_session/extraction_session
+
+/datum/extraction_session
+	var/tmp/mob/living/human/body
+	var/tmp/obj/effect/extraction_house_marker/house
+	var/tmp/disconnected_at = 0
+	var/tmp/transitioning = FALSE
+	var/tmp/home_digest
+
+/obj/effect/extraction_house_marker
+	name = "private house terminal"
+	icon = 'icons/obj/metallurgy.dmi'
+	icon_state = "anvil"
+	anchored = TRUE
+	var/room = 1
+	var/tmp/datum/extraction_session/session
+	New()
+		..()
+		extraction_house_markers |= src
+	attack_hand(mob/user)
+		var/mob/living/human/H = user
+		if (!istype(H) || !session || session.body != H || H.client?.ckey != session.owner || session.transitioning || session.profile["state"] != "home" || !Adjacent(H)) return
+		var/choice = WWinput(H, "Equipment left in this house stays in your stash. Carry your loadout to deploy. Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts.", "Private safe house", "Cancel", list("Deploy", "Visit hub", "Upgrade", "Save stash", "Cancel"))
+		if (session.body != H || !Adjacent(H) || session.transitioning) return
+		var/obj/map_metadata/extraction_survival/M = map
+		if (!istype(M)) return
+		switch (choice)
+			if ("Deploy") M.deploy(H)
+			if ("Save stash") M.save_home(session)
+			if ("Upgrade") M.upgrade_house(session)
+			if ("Visit hub") M.visit_hub(H)
+
+/obj/map_metadata/extraction_survival/proc/visit_hub(mob/living/human/H)
+	if (!owned(H) || H.stat != CONSCIOUS || !extraction_hub_terminal) return FALSE
+	var/datum/extraction_session/S = H.extraction_session
+	if (S.transitioning || S.profile["state"] != "home" || H.z != S.house.z || get_dist(H, S.house) > 4 || player_roots(H).len) return FALSE
+	if (!save_home(S)) return FALSE
+	H.forceMove(get_turf(extraction_hub_terminal))
+	return TRUE
+
+/obj/map_metadata/extraction_survival/proc/return_home(mob/living/human/H)
+	if (!owned(H) || H.stat != CONSCIOUS || !extraction_hub_terminal || !extraction_hub_terminal.Adjacent(H)) return FALSE
+	var/datum/extraction_session/S = H.extraction_session
+	if (S.transitioning || S.profile["state"] != "home" || player_roots(H).len || S.house.session != S) return FALSE
+	H.forceMove(get_turf(S.house))
+	return TRUE
+
+/obj/effect/extraction_raid_marker
+	icon = null
+	New()
+		..()
+		extraction_raid_markers |= src
+
+/obj/effect/extraction_loot_marker
+	icon = null
+	var/tmp/restock_at = 0
+	var/tmp/obj/item/stock
+	New()
+		..()
+		extraction_loot_markers |= src
+
+/obj/effect/extraction_npc_marker
+	icon = null
+	New()
+		..()
+		extraction_npc_markers |= src
+
+/obj/effect/extraction_exit
+	name = "extraction point"
+	icon = 'icons/obj/metallurgy.dmi'
+	icon_state = "anvil"
+	anchored = TRUE
+	attack_hand(mob/user)
+		var/mob/living/human/H = user
+		var/obj/map_metadata/extraction_survival/M = map
+		if (istype(H) && istype(M) && Adjacent(H)) M.extract_player(H, src)
+
+/obj/map_metadata/extraction_survival
+	ID = MAP_EXTRACTION_SURVIVAL
+	title = "Extraction Survival"
+	description = "Loot the industrial district, survive scavengers and hostile contractors, then extract to your private safe house."
+	lobby_icon = "icons/lobby/battleroyale.png"
+	faction_organization = list(CIVILIAN)
+	faction1 = CIVILIAN
+	faction2 = CIVILIAN
+	ordinal_age = 8
+	age = "2019"
+	is_singlefaction = TRUE
+	respawn_delay = 100
+	gamemode = "Extraction Survival"
+	valid_weather_types = list(WEATHER_NONE)
+	no_time_of_day_cycle = TRUE
+	var/datum/extraction_service/accounts = new
+	var/datum/extraction_equipment_codec/codec = new
+	var/list/npcs = list()
+	var/list/raid_items = list()
+	var/list/corpses = list()
+	var/uid = 0
+	var/next_population = 0
+	var/next_checkpoint = 0
+
+/datum/job/civilian/extraction_survival
+	title = "Independent Raider"
+	spawn_location = "JoinLateExtraction"
+	allowed_maps = list(MAP_EXTRACTION_SURVIVAL)
+	min_positions = 1
+	max_positions = 16
+	is_outlaw = TRUE
+
+/datum/job/civilian/extraction_survival/equip(mob/living/human/H)
+	H.add_note("Role", "Use your private house terminal to deploy. Scavengers are neutral until provoked. Contractors are hostile. Click an extraction point and stay nearby for ten seconds to return with your equipment. Gear taken into a failed raid is lost.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	return TRUE
+
+/obj/map_metadata/extraction_survival/update_win_condition()
+	return FALSE
+
+/obj/map_metadata/extraction_survival/proc/identity(mob/living/human/H)
+	return H?.client?.ckey
+
+/obj/map_metadata/extraction_survival/proc/owned(mob/living/human/H)
+	var/datum/extraction_session/S = H?.extraction_session
+	return S && S.active() && S.body == H && identity(H) == S.owner
+
+/obj/map_metadata/extraction_survival/proc/record_item(obj/item/I)
+	var/list/graph = codec.encode(I)
+	if (!graph) return null
+	if (!I.extraction_item_id)
+		uid++
+		I.extraction_item_id = md5("[world.realtime]-[rand(1,1000000)]-[uid]")
+	I.should_save = FALSE
+	return list("id" = I.extraction_item_id, "equipment" = graph, "salvage" = istype(I, /obj/item/extraction_salvage))
+
+/obj/map_metadata/extraction_survival/proc/player_roots(mob/living/human/H)
+	var/list/items = list()
+	if (!H) return items
+	for (var/obj/item/I in H.contents)
+		if (!istype(I, /obj/item/organ) && I.loc == H) items += I
+	return items
+
+/obj/map_metadata/extraction_survival/proc/home_roots(datum/extraction_session/S)
+	var/list/items = player_roots(S.body)
+	if (!S.house) return items
+	// One fixed 9x9 room; no whole-world searches or saved turf references.
+	for (var/turf/T in range(4, S.house))
+		for (var/obj/item/I in T)
+			if (I.loc == T) items |= I
+	return items
+
+/obj/map_metadata/extraction_survival/proc/records(list/items)
+	if (items.len > 64) return null
+	var/list/result = list()
+	var/total_nodes = 0
+	for (var/obj/item/I in items)
+		var/list/entry = record_item(I)
+		if (!entry) return null
+		var/list/equipment = entry["equipment"]
+		var/list/nodes = equipment["nodes"]
+		total_nodes += nodes.len
+		if (total_nodes > 2048) return null
+		result += list(entry)
+	return result
+
+/obj/map_metadata/extraction_survival/proc/admit(mob/living/human/H)
+	if (!identity(H) || H.extraction_session) return FALSE
+	var/obj/effect/extraction_house_marker/house
+	for (var/obj/effect/extraction_house_marker/marker in extraction_house_markers)
+		if (!marker.session)
+			house = marker
+			break
+	if (!house)
+		to_chat(H, "All private houses are occupied. Try again after a room is released.")
+		return FALSE
+	var/datum/extraction_session/S = accounts.open(identity(H))
+	if (!S)
+		to_chat(H, "Account unavailable: [accounts.last_error]")
+		return FALSE
+	S.body = H
+	S.house = house
+	house.session = S
+	H.extraction_session = S
+	H.should_save = FALSE
+	H.status_flags |= GODMODE
+	H.forceMove(get_turf(house))
+	// The starter kit is granted once, durably, before its physical copy appears.
+	if (S.profile["revision"] == 0)
+		var/list/starter = list(new /obj/item/weapon/gun/projectile/pistol/m9beretta(get_turf(house)), new /obj/item/ammo_magazine/m9beretta(get_turf(house)), new /obj/item/clothing/under/us_uni/us_lightuni_modern(get_turf(house)), new /obj/item/clothing/shoes/jackboots(get_turf(house)))
+		var/list/kit = records(starter)
+		var/saved = kit && S.checkpoint_home(kit)
+		for (var/obj/item/I in starter) qdel(I)
+		if (!saved)
+			release(S, FALSE)
+			return FALSE
+	var/list/stash = S.profile["stash"]
+	// Validate the whole account before constructing any of its equipment.
+	if (!S.valid_entries(stash, S.capacity()))
+		release(S, FALSE)
+		return FALSE
+	for (var/list/entry in stash)
+		if (!codec.validate(entry["equipment"]))
+			release(S, FALSE)
+			return FALSE
+	for (var/list/entry in stash)
+		var/obj/item/I = codec.decode(entry["equipment"], get_turf(house))
+		if (!I)
+			to_chat(H, "Equipment restoration failed; account locked for recovery.")
+			release(S, FALSE)
+			return FALSE
+		I.extraction_item_id = entry["id"]
+	to_chat(H, "Private safe house level [S.profile["level"]]. Stash capacity: [S.capacity()] items. Use the terminal to save, upgrade or deploy.")
+	S.home_digest = md5(json_encode(S.profile["stash"]))
+	return TRUE
+
+/obj/map_metadata/extraction_survival/proc/save_home(datum/extraction_session/S)
+	if (!S.active() || S.transitioning || S.profile["state"] != "home") return FALSE
+	var/list/snapshot = records(home_roots(S))
+	if (!snapshot || !S.checkpoint_home(snapshot))
+		to_chat(S.body, "Stash save rejected. Unsupported equipment, capacity or recovery lock; nothing has been transferred.")
+		return FALSE
+	return TRUE
+
+/obj/map_metadata/extraction_survival/proc/deploy(mob/living/human/H)
+	if (!owned(H) || H.stat != CONSCIOUS || !extraction_raid_markers.len) return FALSE
+	var/datum/extraction_session/S = H.extraction_session
+	if (S.transitioning || S.profile["state"] != "home" || !S.house || H.z != S.house.z || get_dist(H, S.house) > 4 || !save_home(S)) return FALSE
+	var/list/carried = player_roots(H)
+	var/list/ids = list()
+	if (carried.len > 16) return FALSE
+	for (var/obj/item/I in carried) ids += I.extraction_item_id
+	S.transitioning = TRUE
+	var/list/raid = S.begin_raid(ids)
+	if (!raid)
+		S.transitioning = FALSE
+		return FALSE
+	for (var/obj/item/I in carried)
+		codec.set_raid_provenance(I, FALSE)
+		track_loot(I)
+	H.forceMove(get_turf(pick(extraction_raid_markers)))
+	H.status_flags &= ~GODMODE
+	S.transitioning = FALSE
+	to_chat(H, "Raid [raid["sequence"]] started. Extract to keep your carried loot. Death or an interrupted server raid forfeits this loadout.")
+	return TRUE
+
+/obj/map_metadata/extraction_survival/proc/extract_player(mob/living/human/H, obj/effect/extraction_exit/E)
+	if (!owned(H) || H.stat != CONSCIOUS || H.z != 1 || !E.Adjacent(H)) return FALSE
+	var/datum/extraction_session/S = H.extraction_session
+	if (S.transitioning || S.profile["state"] != "raid") return FALSE
+	S.transitioning = TRUE
+	var/sequence = S.profile["raid_sequence"]
+	to_chat(H, "Extracting. Stay next to this point for ten seconds.")
+	var/completed = wait_for_extraction(H, E)
+	if (!completed || !owned(H) || H.stat != CONSCIOUS || H.z != 1 || !E.Adjacent(H) || S.profile["raid_sequence"] != sequence)
+		S.transitioning = FALSE
+		return FALSE
+	var/list/carried = player_roots(H)
+	var/list/loot = records(carried)
+	if (!loot || !S.extract(sequence, loot))
+		S.transitioning = FALSE
+		to_chat(H, "Extraction rejected: unsupported equipment, full stash or recovery lock.")
+		return FALSE
+	for (var/obj/item/I in carried) raid_items -= I
+	H.forceMove(get_turf(S.house))
+	H.status_flags |= GODMODE
+	S.transitioning = FALSE
+	to_chat(H, "Extracted. Your equipment is now committed to your private stash.")
+	return TRUE
+
+/obj/map_metadata/extraction_survival/proc/wait_for_extraction(mob/living/human/H, obj/effect/extraction_exit/E)
+	return do_after(H, 10 SECONDS, E, FALSE, can_move = TRUE)
+
+/obj/map_metadata/extraction_survival/proc/upgrade_house(datum/extraction_session/S)
+	if (!save_home(S)) return FALSE
+	var/list/cost = list()
+	var/list/consumed = list()
+	for (var/obj/item/extraction_salvage/I in home_roots(S))
+		if (cost.len >= S.profile["level"] * 5) break
+		cost += I.extraction_item_id
+		consumed += I
+	if (!S.upgrade(cost))
+		to_chat(S.body, "Upgrade needs [S.profile["level"] * 5] workshop parts and a house below level four.")
+		return FALSE
+	for (var/obj/item/I in consumed)
+		if (I.loc == S.body) S.body.unEquip(I, TRUE)
+		qdel(I)
+	to_chat(S.body, "House upgraded to level [S.profile["level"]], capacity [S.capacity()].")
+	return TRUE
+
+/obj/map_metadata/extraction_survival/proc/release(datum/extraction_session/S, save = TRUE)
+	if (save && S.profile["state"] == "home" && !save_home(S)) return FALSE
+	if (S.house)
+		for (var/obj/item/I in home_roots(S))
+			if (I.loc == S.body && S.body.z == 1) continue
+			qdel(I)
+		S.house.session = null
+	if (S.body) S.body.extraction_session = null
+	S.house = null
+	S.body = null
+	S.close()
+	return TRUE
+
+/obj/map_metadata/extraction_survival/tick()
+	// Bounded active sessions; the existing map process provides the single timer.
+	for (var/owner in accounts.sessions.Copy())
+		var/datum/extraction_session/S = accounts.sessions[owner]
+		if (!S.body || S.body.stat == DEAD)
+			if (S.profile["state"] == "raid") S.forfeit(S.profile["raid_sequence"])
+			if (S.body && S.body.z == 1) corpses[S.body] = world.time + 5 MINUTES
+			release(S, FALSE)
+			continue
+		if (!S.body.client)
+			if (!S.disconnected_at) S.disconnected_at = world.time
+			if (world.time >= S.disconnected_at + 2 MINUTES && !S.transitioning)
+				var/mob/living/human/H = S.body
+				if (S.profile["state"] == "raid")
+					S.forfeit(S.profile["raid_sequence"])
+					H.death()
+					corpses[H] = world.time + 5 MINUTES
+					H.ghostize()
+					release(S, FALSE)
+				else if (release(S))
+					H.ghostize()
+					qdel(H)
+		else S.disconnected_at = 0
+	if (world.time >= next_checkpoint)
+		next_checkpoint = world.time + 30 SECONDS
+		for (var/owner in accounts.sessions)
+			var/datum/extraction_session/S = accounts.sessions[owner]
+			if (!S.active() || S.transitioning || S.profile["state"] != "home") continue
+			var/list/entries = records(home_roots(S))
+			if (entries && json_encode(entries) != json_encode(S.profile["stash"])) save_home(S)
+	for (var/obj/item/I in raid_items.Copy())
+		var/turf/T = get_turf(I)
+		var/atom/holder = I.loc
+		for (var/depth in 1 to EXTRACTION_EQUIPMENT_DEPTH)
+			if (!isobj(holder)) break
+			holder = holder.loc
+		if (!I.loc || !T || T.z != 1)
+			raid_items -= I
+		else if (isliving(holder) && holder:stat != DEAD) raid_items[I] = world.time + 30 MINUTES
+		else if (world.time >= raid_items[I])
+			raid_items -= I
+			qdel(I)
+	for (var/mob/M in corpses.Copy())
+		if (!M.loc || world.time >= corpses[M])
+			corpses -= M
+			if (M.client) M.ghostize()
+			qdel(M)
+	population_tick()
+
+/obj/map_metadata/extraction_survival/proc/population_tick()
+	if (world.time < next_population) return
+	next_population = world.time + 30 SECONDS
+	for (var/mob/living/simple_animal/hostile/human/extraction/N in npcs.Copy())
+		if (!N.loc || N.stat == DEAD) npcs -= N
+	if (npcs.len < 12 && extraction_npc_markers.len)
+		var/obj/effect/extraction_npc_marker/marker = pick(extraction_npc_markers)
+		var/near_player = FALSE
+		for (var/owner in accounts.sessions)
+			var/datum/extraction_session/S = accounts.sessions[owner]
+			if (S.body?.z == 1 && get_dist(S.body, marker) < 12) near_player = TRUE
+		if (!near_player)
+			var/path = npcs.len % 3 == 2 ? /mob/living/simple_animal/hostile/human/extraction/contractor : /mob/living/simple_animal/hostile/human/extraction
+			npcs += new path(get_turf(marker))
+	for (var/obj/effect/extraction_loot_marker/L in extraction_loot_markers)
+		if (L.stock?.loc == get_turf(L)) continue
+		L.stock = null
+		if (world.time < L.restock_at || raid_items.len >= 2048) continue
+		L.restock_at = world.time + 10 MINUTES
+		L.stock = spawn_loot(get_turf(L), pick(/obj/item/extraction_salvage, /obj/item/ammo_magazine/m9beretta, /obj/item/weapon/gun/projectile/pistol/m9beretta))
+
+/obj/map_metadata/extraction_survival/proc/track_loot(obj/item/I)
+	if (!I) return FALSE
+	var/list/pending = list(I)
+	var/list/seen = list()
+	var/position = 1
+	while (position <= pending.len)
+		var/obj/item/next = pending[position++]
+		if (seen[next]) continue
+		seen[next] = TRUE
+		if (seen.len > EXTRACTION_EQUIPMENT_NODES || raid_items.len + seen.len > 2048) return FALSE
+		for (var/obj/item/child in next.contents) pending += child
+	for (var/obj/item/next in seen)
+		next.should_save = FALSE
+		raid_items[next] = world.time + 30 MINUTES
+	return TRUE
+
+/obj/map_metadata/extraction_survival/proc/spawn_loot(turf/T, path)
+	if (!T || raid_items.len >= 2048) return null
+	var/obj/item/I = new path(T)
+	if (!codec.set_raid_provenance(I, TRUE))
+		qdel(I)
+		return null
+	if (!track_loot(I))
+		qdel(I)
+		return null
+	return I
