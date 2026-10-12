@@ -307,6 +307,9 @@
 	var/list/tokens = list()
 	var/datum/extraction_session/validator = new
 	if (!isnull(P["insurance_mailbox"]) && !validator.valid_entries(P["insurance_mailbox"], 64)) return FALSE
+	for (var/list/entry in P["insurance_mailbox"])
+		if (isnull(entry["returned_generation"]) && isnull(entry["eligible_generation"])) continue
+		if (!extraction_insurance_generation(entry["returned_generation"]) || !extraction_insurance_generation(entry["eligible_generation"]) || entry["eligible_generation"] != entry["returned_generation"] + 1) return FALSE
 	if (islist(P["insurance_mailbox"]) && P["insurance_mailbox"].len && !islist(store.recovery_ids(P))) return FALSE
 	if (!isnull(P["garage"]) && !islist(store.recovery_ids(P))) return FALSE
 	if (claims)
@@ -329,6 +332,9 @@
 // The caller materializes only after commit, while its normal home freeze holds.
 /datum/extraction_session/proc/claim_insurance_mail(list/selected_ids)
 	if (!active() || profile["state"] != "home" || !islist(selected_ids) || !selected_ids.len || selected_ids.len > 16) return null
+	if (profile["stash"].len + selected_ids.len > capacity()) return null
+	var/datum/extraction_insurance_returns/gate = service.insurance_gate
+	if (!istype(gate) || !gate.ready() || !stamp_legacy_mail(gate.profile["completed_generation"])) return null
 	var/list/candidate = copy_profile()
 	var/list/mailbox = candidate["insurance_mailbox"]
 	if (!islist(mailbox)) return null
@@ -339,7 +345,9 @@
 	var/list/remaining = list()
 	var/list/claimed = list()
 	for (var/list/entry in mailbox)
-		if (wanted[entry["id"]]) claimed += list(entry)
+		if (wanted[entry["id"]])
+			if (!extraction_insurance_generation(entry["eligible_generation"]) || gate.profile["completed_generation"] < entry["eligible_generation"]) return null
+			claimed += list(entry)
 		else remaining += list(entry)
 	if (claimed.len != wanted.len) return null
 	var/list/stash = candidate["stash"]
@@ -348,6 +356,19 @@
 	candidate["insurance_mailbox"] = remaining
 	if (!commit(candidate)) return null
 	return claimed
+
+// Historical unstamped records conservatively wait another full completion.
+// The timestamp is persisted once, so inspection/reconnect cannot reset it.
+/datum/extraction_session/proc/stamp_legacy_mail(generation)
+	if (!extraction_insurance_generation(generation) || generation >= 16777215) return FALSE
+	var/list/candidate = copy_profile()
+	var/changed = FALSE
+	for (var/list/entry in candidate["insurance_mailbox"])
+		if (!isnull(entry["eligible_generation"])) continue
+		entry["returned_generation"] = generation
+		entry["eligible_generation"] = generation + 1
+		changed = TRUE
+	return !changed || commit(candidate)
 
 /datum/extraction_session/proc/record_insurance_recovery(list/candidate, list/entries)
 	var/list/recovered = candidate["insurance_recovered"]

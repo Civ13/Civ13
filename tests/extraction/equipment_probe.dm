@@ -310,10 +310,11 @@ var/equipment_completed = FALSE
 	equipment_assert(!inventory.build("industrial1") && !S.insurance_busy, "unresolved nonparticipant journal prevents insurance inference and releases read gate")
 
 /proc/equipment_insurance_returns_probe(datum/extraction_equipment_codec/C)
+	equipment_insurance_generation_probe(C)
 	equipment_paid_insurance_probe(C)
 	equipment_partial_insurance_probe(C)
 	equipment_insurance_capacity_probe(C)
-	var/list/cuts = list("before_prepare", "after_prepare", "retire1", "retirement_intent", "retirement_snapshot", "after_retirement", "apply1", "finalize_intent", "finalize_snapshot")
+	var/list/cuts = list("before_prepare", "after_prepare", "retire1", "retirement_intent", "retirement_snapshot", "after_retirement", "apply1", "round_intent", "round_snapshot", "finalize_intent", "finalize_snapshot")
 	for (var/i in 1 to cuts.len)
 		var/cut = cuts[i]
 		var/datum/extraction_service/S = new
@@ -353,10 +354,30 @@ var/equipment_completed = FALSE
 		var/obj/item/weapon/gun/projectile/pistol/m9beretta/restored = C.decode(entry["equipment"], locate(7,5,1))
 		equipment_assert(restored && restored.extraction_item_id == id && restored.health == 83 && restored.ammo_magazine && !restored.ammo_magazine.stored_ammo.len, "returned actual gun keeps lost condition and identity without insured ammunition")
 		qdel(restored)
+		equipment_assert(!A.claim_insurance_mail(list(id)), "loss closure and journal reopen cannot unlock pending return")
+		A.close()
+		equipment_assert(returns.prepare("additionalfullround", list()), "a separate full completed round advances durable eligibility")
+		A = S.open("returnowner")
 		equipment_assert(A.claim_insurance_mail(list(id)) && !A.profile["insurance_mailbox"].len && A.profile["stash"].len == 1, "claim moves one mailbox graph into persisted stash")
 		equipment_assert(!A.claim_insurance_mail(list(id)), "mailbox claim replay cannot produce another stored copy")
 		A.close()
 		equipment_assert(!returns.prepare("returnround", list()), "resolved round cannot replay payout")
+
+/proc/equipment_insurance_generation_probe(datum/extraction_equipment_codec/C)
+	var/datum/extraction_service/S = new
+	S.store.root = "data/insurance_generations/"
+	var/datum/extraction_insurance_returns/R = new(S, C)
+	equipment_assert(R.ready() && R.profile["completed_generation"] == 0, "new storage starts with no completed rounds")
+	equipment_assert(R.prepare("earlyround", list(), FALSE) && R.profile["completed_generation"] == 0, "early closure retains completed generation")
+	equipment_assert(R.prepare("fullround", list()) && R.profile["completed_generation"] == 1, "full closure advances completed generation exactly once")
+	R = new(S, C)
+	equipment_assert(R.ready() && R.profile["completed_generation"] == 1 && !R.prepare("earlyround", list()), "restart and historical round replay cannot fabricate a completion")
+	var/list/P = json_decode(json_encode(R.profile))
+	P["completed_generation"] = 16777214
+	equipment_assert(R.journal.commit_profile("world", P), "fixture provisions exact native counter boundary on disk")
+	R = new(S, C)
+	equipment_assert(R.ready() && !R.prepare("overflowround", list()) && R.profile["completed_generation"] == 16777214, "counter overflow fails closed without losing existing records")
+	equipment_assert(!extraction_insurance_generation(-1) && !extraction_insurance_generation(0.5) && !extraction_insurance_generation(16777216), "invalid or inexact generation values are rejected")
 
 /proc/equipment_insurance_capacity_probe(datum/extraction_equipment_codec/C)
 	var/datum/extraction_service/S = new
@@ -413,6 +434,19 @@ var/equipment_completed = FALSE
 	equipment_assert(A.commit(P), "capacity fixture fills home stash")
 	var/revision = A.profile["revision"]
 	equipment_assert(!A.claim_insurance_mail(list(id)) && A.profile["revision"] == revision && A.profile["insurance_mailbox"].len == 64, "full stash withholds delivery without losing mailbox graph or advancing revision")
+	P = A.copy_profile()
+	P["stash"].Cut(1,2)
+	equipment_assert(A.commit(P), "legacy fixture frees exactly one finite stash slot")
+	var/list/legacy = A.profile["insurance_mailbox"][1]
+	var/legacy_id = legacy["id"]
+	equipment_assert(!A.claim_insurance_mail(list(legacy_id)) && A.profile["insurance_mailbox"][1]["eligible_generation"] == returns.profile["completed_generation"] + 1, "legacy unstamped return receives conservative persisted future eligibility")
+	A.close()
+	A = S.open("capacityowner")
+	equipment_assert(!A.claim_insurance_mail(list(legacy_id)), "legacy reconnect preserves pending generation rather than resetting or unlocking it")
+	A.close()
+	equipment_assert(returns.prepare("legacyadditionalround", list()), "legacy return waits for a separate full completed round")
+	A = S.open("capacityowner")
+	equipment_assert(A.claim_insurance_mail(list(legacy_id)) && A.profile["insurance_mailbox"].len == 63, "eligible legacy graph moves once into finite available stash space")
 	A.close()
 
 /proc/equipment_paid_insurance_probe(datum/extraction_equipment_codec/C)

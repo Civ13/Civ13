@@ -481,6 +481,19 @@
 	H.m_intent = "stealth"
 	next.test_owners[H] = "roundowner"
 	equipment_assert(next.admit(H), "next mode reopens committed mailbox in private house")
+	equipment_assert(!next.claim_mail(H), "new mode cannot claim after only the loss-round closure")
+	next.release(H.extraction_session)
+	equipment_assert(next.close_round() && next.returns.profile["completed_generation"] == M.returns.profile["completed_generation"], "early district closure does not count as a full extra round")
+	next = new
+	next.accounts.store.root = M.accounts.store.root
+	next.test_owners[H] = "roundowner"
+	equipment_assert(next.ensure_round(), "a fresh actual district starts after early closure")
+	next.round_deadline = world.time
+	equipment_assert(next.close_round(), "a separate district completes its full deadline before eligibility")
+	next = new
+	next.accounts.store.root = M.accounts.store.root
+	next.test_owners[H] = "roundowner"
+	equipment_assert(next.admit(H), "eligible return reopens after another full district")
 	equipment_assert(next.claim_mail(H) && !H.extraction_session.profile["insurance_mailbox"].len, "house consumer commits mailbox debit before materializing actual returned gun")
 	var/found = 0
 	for (var/obj/item/I in next.home_roots(H.extraction_session))

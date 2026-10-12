@@ -154,9 +154,16 @@ records retirement before applying account projections, and delivers surviving
 insured reusable equipment into a bounded account mailbox. Current condition and
 identity survive; ammunition and uninsured nested items do not return. Claiming
 mail atomically moves its graph into the stash and rejects repeat claims or a
-full stash. The equipment probe checks nine interruption points, changed physical
-state, forged tokens and mailbox capacity. The insurance probe uses three separate
-native processes to check retirement receipts, partial account writes and replay.
+full stash. Returns remain pending through the loss round and become eligible
+only after one additional full completed round. Early closure, reconnect and
+restart do not advance eligibility. Historical unstamped mail conservatively
+waits another completion after its first persisted eligibility stamp. Expiration
+is "to be implemented"; there is no expiration deletion.
+The equipment probe checks eleven interruption points, changed physical state,
+forged tokens, mailbox capacity, legacy eligibility and generation overflow.
+The insurance probe uses three separate native processes to check retirement
+receipts, partial account writes, completed-round ledger recovery and replay.
+The current capped profile mailbox still requires replacement with sharded storage.
 A prepared receipt without durable retirement proof stays blocked after restart.
 The mode closes at its thirty-minute deadline, warns five minutes beforehand,
 forfeits stranded loadouts, checkpoints home accounts, releases sessions, and then

@@ -3,6 +3,7 @@
 	var/datum/extraction_service/service
 	var/datum/extraction_equipment_codec/codec
 	var/datum/extraction_account_store/journal = new
+	var/datum/extraction_account_store/round_journal = new
 	var/list/profile
 	var/tmp/list/retirement_refs
 	var/tmp/busy = FALSE
@@ -13,6 +14,7 @@
 		service = S
 		codec = C
 		journal.root = "[S.store.root]_insurance/"
+		round_journal.root = "[journal.root]_rounds/"
 		S.insurance_gate = src
 	proc/fail(message)
 		last_error = message
@@ -23,6 +25,8 @@
 			profile = journal.load_profile("world")
 			if (!profile && !repair_phase()) return fail("Insurance receipt requires recovery")
 			if (!profile["phase"]) profile["phase"] = "complete"
+			if (isnull(profile["completed_generation"])) profile["completed_generation"] = 0
+		if (!extraction_insurance_generation(profile["completed_generation"])) return fail("Invalid completed-round generation")
 		if (profile["phase"] == "retired") return finish()
 		return profile["phase"] == "complete"
 	proc/insurable(path)
@@ -45,9 +49,12 @@
 		var/list/current = quote(S, offer["selected"], offer["round"])
 		if (!current || json_encode(current) != json_encode(offer)) return null
 		return S.begin_raid(current["selected"], faction, current["insured"], current["round"], current["payment"], current["revision"])
-	proc/prepare(round_id, list/roots)
+	proc/prepare(round_id, list/roots, full_round = TRUE)
 		if (!ready() || service.sessions.len || !islist(roots) || roots.len > 2048) return fail("Release accounts before round-end preparation")
+		if (profile["completed_generation"] >= 16777214) return fail("Completed-round generation cannot advance safely")
 		if (profile["resolved_round"] == round_id) return fail("Round already resolved")
+		var/list/completed = round_journal.load_profile(md5(round_id))
+		if (!completed || completed["resolved_round"] == round_id) return fail("Round already resolved or ledger requires recovery")
 		var/datum/extraction_insurance_inventory/inventory = new(service)
 		var/list/index = inventory.build(round_id)
 		if (!islist(index)) return fail(inventory.last_error)
@@ -55,7 +62,7 @@
 		busy = TRUE
 		var/list/candidate
 		try
-			candidate = plan(round_id, roots, inventory, index)
+			candidate = plan(round_id, roots, inventory, index, full_round)
 		catch
 			candidate = null
 		if (!candidate)
@@ -76,7 +83,7 @@
 		retirement_refs = roots.Copy()
 		if (test_fail_at == "after_prepare") return FALSE
 		return retire()
-	proc/plan(round_id, list/roots, datum/extraction_insurance_inventory/inventory, list/index)
+	proc/plan(round_id, list/roots, datum/extraction_insurance_inventory/inventory, list/index, full_round)
 		if (!inventory.revalidate()) return null
 		var/list/returned = list()
 		var/list/physical = list()
@@ -114,7 +121,8 @@
 				if (!islist(projected)) return null
 				if (!returned[owner]) returned[owner] = list()
 				for (var/list/graph in projected)
-					returned[owner] += list(list("id" = graph["nodes"][1]["id"], "equipment" = graph))
+					var/returned_generation = profile["completed_generation"] + (full_round ? 1 : 0)
+					returned[owner] += list(list("id" = graph["nodes"][1]["id"], "equipment" = graph, "returned_generation" = returned_generation, "eligible_generation" = returned_generation + 1))
 			physical += list(list("id" = I.extraction_item_id, "digest" = md5(json_encode(record))))
 		var/list/parts = list()
 		for (var/owner in inventory.revisions)
@@ -143,9 +151,18 @@
 		var/list/candidate = json_decode(json_encode(profile))
 		candidate["phase"] = "prepared"
 		candidate["round"] = round_id
+		candidate["round_generation"] = profile["completed_generation"] + (full_round ? 1 : 0)
 		candidate["parts"] = parts
 		candidate["physical"] = physical
-		candidate["plan_digest"] = md5(json_encode(list(parts, physical)))
+		var/list/marker_before = round_journal.load_profile(md5(round_id))
+		if (!marker_before || marker_before["resolved_round"]) return null
+		candidate["plan_digest"] = md5(json_encode(list(parts, physical, candidate["round_generation"], marker_before)))
+		var/list/marker_after = json_decode(json_encode(marker_before))
+		marker_after["revision"]++
+		marker_after["resolved_round"] = round_id
+		marker_after["completed_generation"] = candidate["round_generation"]
+		marker_after["plan_digest"] = candidate["plan_digest"]
+		candidate["round_marker"] = list("owner" = md5(round_id), "before" = marker_before, "after" = marker_after)
 		if (length(json_encode(candidate)) > EXTRACTION_PROFILE_LIMIT - 64) return null
 		return candidate
 	proc/retire()
@@ -192,11 +209,21 @@
 		if (test_fail_at == "after_retirement") return FALSE
 		return finish()
 	proc/valid_receipt()
-		return islist(profile["parts"]) && profile["parts"].len <= 32 && islist(profile["physical"]) && profile["physical"].len <= 2048 && profile["plan_digest"] == md5(json_encode(list(profile["parts"], profile["physical"])))
+		var/list/marker = profile["round_marker"]
+		if (!islist(marker) || marker["owner"] != md5(profile["round"]) || !islist(marker["before"]) || !islist(marker["after"])) return FALSE
+		var/list/expected = json_decode(json_encode(marker["before"]))
+		expected["revision"]++
+		expected["resolved_round"] = profile["round"]
+		expected["completed_generation"] = profile["round_generation"]
+		expected["plan_digest"] = profile["plan_digest"]
+		return json_encode(expected) == json_encode(marker["after"]) && islist(profile["parts"]) && profile["parts"].len <= 32 && islist(profile["physical"]) && profile["physical"].len <= 2048 && extraction_insurance_generation(profile["round_generation"]) && profile["round_generation"] >= profile["completed_generation"] && profile["round_generation"] <= profile["completed_generation"] + 1 && profile["plan_digest"] == md5(json_encode(list(profile["parts"], profile["physical"], profile["round_generation"], marker["before"])))
 	proc/final_profile()
 		var/list/final = json_decode(json_encode(profile))
 		final["phase"] = "complete"
 		final["resolved_round"] = profile["round"]
+		final["completed_generation"] = profile["round_generation"]
+		final["round_generation"] = null
+		final["round_marker"] = null
 		final["parts"] = null
 		final["physical"] = null
 		final["plan_digest"] = null
@@ -215,6 +242,9 @@
 				busy = FALSE
 				return FALSE
 		var/list/final = final_profile()
+		if (!record_completed_round())
+			busy = FALSE
+			return fail("Completed round ledger requires recovery")
 		if (test_fail_at == "finalize_intent") journal.test_fail_at = "intent"
 		if (test_fail_at == "finalize_snapshot") journal.test_fail_at = "snapshot"
 		var/success = journal.commit_profile("world", final)
@@ -225,6 +255,14 @@
 			return fail("Insurance finalization interrupted")
 		profile = final
 		return TRUE
+	proc/record_completed_round()
+		var/list/marker = profile["round_marker"]
+		if (!service.settlement) service.settlement = new(service)
+		if (test_fail_at == "round_intent") round_journal.test_fail_at = "intent"
+		if (test_fail_at == "round_snapshot") round_journal.test_fail_at = "snapshot"
+		var/success = service.settlement.apply_projection(round_journal, marker["owner"], marker["before"], marker["after"])
+		round_journal.test_fail_at = null
+		return success
 	proc/repair_phase()
 		var/list/A = journal.read_slot("world", 0)
 		var/list/B = journal.read_slot("world", 1)
@@ -238,10 +276,15 @@
 		if (profile["phase"] == "prepared")
 			after = json_decode(json_encode(profile))
 			after["phase"] = "retired"
-		else if (profile["phase"] == "retired") after = final_profile()
+		else if (profile["phase"] == "retired")
+			if (!record_completed_round()) return FALSE
+			after = final_profile()
 		else return FALSE
 		after["revision"]++
 		if (!service.settlement) service.settlement = new(service)
 		if (!service.settlement.apply_projection(journal, "world", profile, after)) return FALSE
 		profile = after
 		return TRUE
+
+/proc/extraction_insurance_generation(value)
+	return isnum(value) && value >= 0 && value <= 16777215 && round(value) == value

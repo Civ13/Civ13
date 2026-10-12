@@ -13,7 +13,7 @@
 	proc/round_briefing()
 		return "This district closes after thirty minutes. Extract or ship gear before closure."
 	proc/confirm_insurance(mob/living/human/H, list/offer)
-		return WWinput(H, "Pay [offer["cost"]] workshop parts to insure eligible carried equipment for this round? Returned reusable equipment keeps its lost condition. Ammunition and consumed supplies are excluded.", "Insurance quote", "Cancel", list("Pay and deploy", "Cancel")) == "Pay and deploy"
+		return WWinput(H, "Pay [offer["cost"]] workshop parts to insure eligible carried equipment for this round? Returns keep lost condition and require one additional full completed round before reclaim. Ammunition and consumed supplies are excluded. Expiration: to be implemented.", "Insurance quote", "Cancel", list("Pay and deploy", "Cancel")) == "Pay and deploy"
 	proc/ensure_round()
 		if (!returns) returns = new(accounts, codec)
 		if (!returns.ready()) return FALSE
@@ -51,16 +51,21 @@
 		if (!owned(H) || H.stat != CONSCIOUS || !H.Adjacent(H.extraction_session.house)) return FALSE
 		var/datum/extraction_session/S = H.extraction_session
 		if (!save_home(S)) return FALSE
+		if (!ensure_round() || !S.stamp_legacy_mail(returns.profile["completed_generation"])) return FALSE
 		var/list/mail = S.profile["insurance_mailbox"]
 		var/free = min(16, S.capacity() - S.profile["stash"].len)
 		if (!islist(mail) || !mail.len || free < 1)
 			to_chat(H, "No insurance mail can be delivered. Check your mailbox and free stash space.")
 			return FALSE
 		var/list/ids = list()
-		for (var/i in 1 to min(free, mail.len))
-			var/list/entry = mail[i]
+		for (var/list/entry in mail)
+			if (ids.len >= free) break
+			if (returns.profile["completed_generation"] < entry["eligible_generation"]) continue
 			if (!codec.validate(entry["equipment"])) return FALSE
 			ids += entry["id"]
+		if (!ids.len)
+			to_chat(H, "Insurance returns are pending another full completed round. Expiration: to be implemented.")
+			return FALSE
 		var/list/claimed = S.claim_insurance_mail(ids)
 		if (!claimed) return FALSE
 		var/list/materialized = list()
@@ -109,7 +114,7 @@
 					root = root.loc
 				if (istype(root.loc, /obj/item)) return FALSE
 				roots |= root
-			if (!returns.prepare(round_id, roots)) return FALSE
+			if (!returns.prepare(round_id, roots, round_deadline > 0 && world.time >= round_deadline)) return FALSE
 		retire_raid_vehicles()
 		game_over = TRUE
 		if (ticker) ticker.finished = TRUE
