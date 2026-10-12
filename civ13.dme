@@ -1238,6 +1238,8 @@
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
 #include "code\modules\1713\animal_harvest.dm"
+#include "code\modules\1713\extraction\ipc_crypto.dm"
+#include "code\modules\1713\extraction\ipc_wire.dm"
 #include "code\modules\1713\extraction\account_store.dm"
 #include "code\modules\1713\extraction\transactions.dm"
 #include "code\modules\1713\extraction\settlement.dm"

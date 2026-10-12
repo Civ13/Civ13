@@ -307,3 +307,16 @@ account journal and executes real native file operations in temporary storage.
 It checks restart readback, isolation, stale revisions, bounded slot reuse,
 interruption after intent and snapshot writes, corruption and unsupported
 schema rejection. It does not start game systems or verify playable extraction.
+
+The disabled bot transport foundation implements SHA-256 and HMAC in native DM
+with two 16-bit limbs per word, avoiding inexact 32-bit arithmetic. Strict compact
+envelopes match Civilizationbot's `civ13.safehouse.ipc.v1` signing bytes. Decimal
+Unix timestamps are split into days and seconds before comparing the 120-second
+lifetime and five-second future allowance. Canonical base64 rejects invalid
+padding and nonzero unused bits; the MAC comparison visits all 64 characters.
+`tests/extraction/run_crypto.py` compares production code with Python's standard
+library and the bot's public synthetic signing fixture. Its negative control
+changes a SHA-256 constant in a generated copy and must fail the first vector.
+These helpers expose no listener, spool processor, operator key, account handler
+or economic action. Replay protection and authenticated account integration
+remain unfinished; this is not a security acceptance or activation claim.
