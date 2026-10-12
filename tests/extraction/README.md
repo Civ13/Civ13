@@ -129,6 +129,15 @@ reuses a previously admitted fixture account, respecting the 32-participant cap.
 in a generated source copy and must fail that integrated assertion. This is
 native isolated evidence, not connected-client or elapsed-hours acceptance.
 
+The equipment probe also uses native SKS/PSO-1 construction, paid component
+coverage and production configuration removal. Three cases cover the weapon
+extracting while its detached scope remains, another account extracting the
+scope while the weapon remains, and both covered components remaining.
+A replacement scope installed after purchase never gains coverage or returns
+through the insured gun. Stable identity, damage and original FIR state survive
+independent component returns. Actor construction and action waits are injected;
+connected menus and elapsed crafting time are separate acceptance.
+
 The internal return consumer journals its plan before retiring physical roots,
 records retirement before applying account projections, and delivers surviving
 insured reusable equipment into a bounded account mailbox. Current condition and
@@ -251,6 +260,14 @@ journals. Guest identities are rejected. The optional fixture-parts verb injects
 labeled setup supplies; footage must identify this setup and cannot claim those
 parts were earned. Native gameplay payments, action waits and room guards remain
 unchanged. A clean startup does not establish connected interaction acceptance.
+`-VehicleWorldSave` runs an ordinary world-owned car through the actual full-game
+whole-world disk saver and loader, checking its exact graph, stable identities,
+fuel, frame condition/orientation, controller links, live nested boot cargo and
+unchanged house marker count. Encoding for comparison excludes account vehicles
+from world saves by design; this fixture explicitly restores world ownership
+before saving. Account-owned garage vehicles use their separate account journal
+checks. No connected sessions are present, and old queued garbage atoms are not
+counted as live restored duplicates. This does not authorize production loading.
 Use readable captions and zooms/highlights. Compress no-frame-change waits and
 label accelerated periods; preserve genuine completion and before/after frames.
 Do not claim unshown mechanics, production behavior or indefinite durability.

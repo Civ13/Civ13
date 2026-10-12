@@ -453,6 +453,7 @@ var/equipment_completed = FALSE
 	A.close()
 
 /proc/equipment_partial_insurance_probe(datum/extraction_equipment_codec/C)
+	equipment_scope_insurance_probe(C)
 	var/datum/extraction_service/S = new
 	S.store.root = "data/partial_insurance/"
 	var/datum/extraction_session/A = S.open("nestedowner")

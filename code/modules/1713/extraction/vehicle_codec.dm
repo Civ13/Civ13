@@ -4,6 +4,10 @@
 /obj
 	var/tmp/extraction_vehicle_part_id
 
+/obj/effect/get_saved_vars()
+	. = ..()
+	if (extraction_vehicle_part_id) . |= "extraction_vehicle_part_id"
+
 /datum/extraction_vehicle_codec
 	var/last_error
 	var/list/objects

@@ -24,6 +24,7 @@ var/global/datum/extraction_playable_area/extraction_playable_area = new
 			world.log << "EXTRACTION PLAYABLE AREA FAILED: map or journal unavailable"
 			return
 		ready = TRUE
+		if (world.params["vehicle_world_save"]) extraction_full_game_vehicle_save()
 		text2file(json_encode(list("commit" = world.params["tested_commit"], "byond" = "[world.byond_version].[world.byond_build]", "map" = M.ID, "dimensions" = list(world.maxx, world.maxy, world.maxz), "houses" = extraction_house_markers.len, "network_port" = world.port, "storage" = M.accounts.store.root, "outbound_export" = "disabled", "fixture" = "native connected actions; optional labeled setup supplies")), "extraction-area-ready.json")
 		if (!world.params["visual"]) del(world)
 

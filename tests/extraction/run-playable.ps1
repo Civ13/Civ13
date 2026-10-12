@@ -1,5 +1,6 @@
-param([Parameter(Mandatory=$true)][string]$ByondBin, [switch]$Visual, [switch]$City, [ValidateRange(1024,65535)][int]$Port=18342, [ValidateRange(60,900)][int]$TimeoutSeconds=600)
+param([Parameter(Mandatory=$true)][string]$ByondBin, [switch]$Visual, [switch]$City, [switch]$VehicleWorldSave, [ValidateRange(1024,65535)][int]$Port=18342, [ValidateRange(60,900)][int]$TimeoutSeconds=600)
 $ErrorActionPreference = 'Stop'
+if ($VehicleWorldSave -and ($Visual -or $City)) { throw 'VehicleWorldSave requires the nonvisual Industrial disposable fixture' }
 if (![IO.Path]::IsPathRooted($ByondBin)) { throw 'ByondBin must be an absolute path to a trusted BYOND installation' }
 $ByondBin = (Resolve-Path -LiteralPath $ByondBin).Path
 foreach ($binary in @('dm.exe','dd.exe')) {
@@ -16,7 +17,7 @@ New-Item -ItemType Directory -Path $run | Out-Null
 try {
     $mapDefine = '#define EXTRACTION_SURVIVAL_MAP'
     if ($City) { $mapDefine = '#define EXTRACTION_MODERN_CITY_MAP' }
-    [IO.File]::WriteAllText($source, $mapDefine + "`n" + '#include "civ13.dme"' + "`n" + '#include "tests/extraction/playable_area.dm"' + "`n")
+    [IO.File]::WriteAllText($source, $mapDefine + "`n" + '#include "civ13.dme"' + "`n" + '#include "tests/extraction/full_game_vehicle_save.dm"' + "`n" + '#include "tests/extraction/playable_area.dm"' + "`n")
     $build = & (Join-Path $ByondBin 'dm.exe') -max_errors 0 $source 2>&1
     $build | Set-Content -LiteralPath (Join-Path $run 'build.log')
     if ($LASTEXITCODE -ne 0 -or ($build -join "`n") -notmatch '516.1681' -or ($build -join "`n") -notmatch '0 errors, 0 warnings') { throw 'Pinned test-area compilation failed' }
@@ -34,8 +35,9 @@ try {
     $patch = & git -C $repo diff HEAD
     if ($LASTEXITCODE -ne 0) { throw 'Cannot preserve tested patch' }
     $patch | Set-Content -LiteralPath (Join-Path $run 'tested.patch')
-    @{ commit=$commit; dirty=($sourceInventory.Count -gt 0); source_changes=$sourceInventory; city=[bool]$City; visual=[bool]$Visual; byond_bin=$ByondBin; duration_seconds=$TimeoutSeconds; storage='disposable run directory'; adapter_sha256=(Get-FileHash -LiteralPath (Join-Path $repo 'tests/extraction/playable_area.dm') -Algorithm SHA256).Hash } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $run 'invocation.json')
+    @{ commit=$commit; dirty=($sourceInventory.Count -gt 0); source_changes=$sourceInventory; city=[bool]$City; visual=[bool]$Visual; vehicle_world_save=[bool]$VehicleWorldSave; vehicle_probe_sha256=(Get-FileHash -LiteralPath (Join-Path $repo 'tests/extraction/full_game_vehicle_save.dm') -Algorithm SHA256).Hash; byond_bin=$ByondBin; duration_seconds=$TimeoutSeconds; storage='disposable run directory'; adapter_sha256=(Get-FileHash -LiteralPath (Join-Path $repo 'tests/extraction/playable_area.dm') -Algorithm SHA256).Hash } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $run 'invocation.json')
     $parameters = 'tested_commit=' + $commit
+    if ($VehicleWorldSave) { $parameters += '&vehicle_world_save=1' }
     if ($Visual) { $parameters += '&visual=1' }
     $daemonArguments = @('area.dmb',"$Port",'-invisible','-safe','-params',$parameters,'-log','startup.log')
     if (!$Visual) { $daemonArguments = @('area.dmb','0','-close','-invisible','-safe','-params',$parameters,'-log','startup.log') }
@@ -58,6 +60,11 @@ try {
     if ($Visual -and $owned.HasExited) { throw "Visual daemon exited before the bounded test period ended; inspect $run" }
     if (!(Test-Path -LiteralPath $readyPath)) { throw "Area did not become ready; inspect $run" }
     if (!$reportedReady) { Get-Content -LiteralPath $readyPath }
+    if ($VehicleWorldSave) {
+        $vehicleResult = Get-Content -Raw -LiteralPath (Join-Path $run 'vehicle-world-save-result.txt')
+        Write-Output $vehicleResult
+        if ($vehicleResult -notmatch '^PASS:') { throw "Vehicle whole-world save regression failed; inspect $run" }
+    }
     $runtimeFiles = @(Get-ChildItem -LiteralPath (Join-Path $run 'data/logs/runtime') -File -ErrorAction SilentlyContinue)
     foreach ($log in $runtimeFiles) {
         if (Select-String -LiteralPath $log.FullName -Pattern 'runtime error:|Bad ref|## ERROR|Cannot execute' -Quiet) { throw "Runtime error invalidates test-area evidence: $($log.FullName)" }

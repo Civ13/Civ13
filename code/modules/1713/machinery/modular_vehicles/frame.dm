@@ -52,6 +52,11 @@
 	Move(newloc, direct)
 		..()
 		update_icon()
+	after_load()
+		..()
+		// Constructors can render before the saved controller reference exists.
+		if (axis?.vehicle_type == "car") dir = axis.dir
+		update_icon()
 
 /obj/structure/vehicleparts/frame/proc/initialize_walls(f_type="", b_type="", l_type="", r_type="")
 	walls.set_wall(NORTH, f_type)
