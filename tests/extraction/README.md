@@ -230,10 +230,20 @@ pending journals, stale inventory and access-gate release.
 
 ### Connected acceptance preparation
 
-Use two distinct authenticated BYOND accounts, labeled A and B in the recording.
+The human confirmed only one BYOND account is available. Prepare a genuine
+single-account concept capture of room/hub navigation, private stash, paid
+storage/upgrades, reconnect, disposable restart and idle reload where the UI
+supports them. Connected access denial between two distinct accounts remains
+unverified; production-path isolation fixtures provide separate evidence.
+Do not create another account or use guests/synthetic identities as graphical
+privacy proof. The two-account routes below remain acceptance gaps.
+
+When two accounts become available, use distinct authenticated BYOND accounts,
+labeled A and B in the recording.
 Do not capture passwords, login tokens or private reference material. Admission
 uses actual ckeys and rejects guests; two guest windows cannot substitute for
-account isolation. Availability of both signed-in sessions remains unverified.
+account isolation. Only one account is currently available; its signed-in client
+readiness must be checked during the granted screen turn.
 
 The existing disposable launcher is `run-playable.ps1`. Prepare the exact build,
 clean source inventory and passed local regression record before requesting both
