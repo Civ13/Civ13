@@ -104,5 +104,3 @@ def main():
     print(json.dumps({k: result[k] for k in ('cycles', 'comparisons', 'parity_failures', 'bound_failures', 'baseline_slots', 'candidate_slots', 'daemon_elapsed_seconds', 'negative_control')}))
 
 if __name__ == '__main__': main()
-
-

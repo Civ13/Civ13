@@ -65,4 +65,3 @@ shallow saltwater 8,200, underground dirt 6,954, jungle grass 5,599 and jungle
 dirt 3,779. These are source defaults before map generation/runtime seasons.
 Synthetic sparse/dominant modes test opposite density extremes rather than
 reproducing those defaults.
-
