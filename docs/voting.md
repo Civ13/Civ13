@@ -1,5 +1,16 @@
 # Cancellable votes
 
+Administrators with `R_ADMIN` can use **Server - Toggle Round-Ending Votes**.
+The policy blocks automatic and manual restart, epoch and map votes, and generic
+questions whose callback targets the map or epoch transition process. Disabling
+it cancels a pending disruptive vote without invoking its callback. Creation and
+resolution both recheck the policy, including after yielding custom inputs and
+completion callbacks. The epoch admin shortcut checks it before changing process
+flags. Harmless polls, pregame gamemode/ship setup and safe-house map selection
+remain available. This runtime policy defaults to enabled and resets to enabled
+when the server restarts; it adds no saved configuration or automatic restart.
+New callback-based transition routes must be included in `disruptive_action()`.
+
 `vote.request_vote(mode, initiator, automatic, completion)` returns a
 `/datum/vote_handle` or null when a request cannot start. Existing
 `initiate_vote()` callers retain their Boolean adapter and cooldown behavior.
@@ -45,3 +56,9 @@ requests instead of deploying or restarting. `--vote-negative-control stale`,
 `cancel` and `reentry` each mutate a temporary source copy and must fail at the
 corresponding assertion. These tests do not establish connected-client browse
 rendering, production restart behavior or gameplay acceptance.
+
+The same fixture checks the disruptive policy's automatic/manual creation,
+generic process callbacks, pending cancellation, harmless requests and policy
+changes during completion. `--vote-negative-control disruptive_creation`,
+`disruptive_pending` and `disruptive_result` remove separate policy guards in a
+temporary copy and must fail their intended assertions.

@@ -8,10 +8,12 @@
 	var/calls = 0
 	var/reenter = FALSE
 	var/cancel_replacement = FALSE
+	var/disable_disruptive = FALSE
 	var/datum/vote_handle/expected
 	var/datum/vote_handle/replacement
 	proc/complete(winner)
 		calls++
+		if (disable_disruptive) vote.set_disruptive_votes(FALSE)
 		equipment_assert(!vote.active_request, "completion sees detached old vote")
 		if (expected) equipment_assert(expected.state == "resolved" && !expected.manager && !expected.completion, "completion sees terminal state without retained callback")
 		if (reenter)
@@ -70,3 +72,35 @@
 	L.cancel_replacement = TRUE
 	var/routes_before = V.routes.len
 	equipment_assert(F.resolve() && L.replacement.state == "cancelled" && !vote.active_request && V.routes.len == routes_before, "callback-started then cancelled replacement still suppresses old route")
+	L.reenter = FALSE
+	L.cancel_replacement = FALSE
+	L.expected = null
+	var/datum/vote_handle/pending = V.request_choices("Pending round end", list("Choice"), "fixture", 20, list(), TRUE)
+	V.mode = "restart"
+	V.set_disruptive_votes(FALSE)
+	equipment_assert(pending.state == "cancelled" && !pending.resolve() && !V.active_request, "disabling disruptive votes cancels pending action and stale resolution")
+	for (var/automatic in list(FALSE, TRUE))
+		for (var/blocked_mode in list("restart", "epoch", "map"))
+			equipment_assert(!V.initiate_vote(blocked_mode, "fixture", automatic) && !V.request_vote(blocked_mode, "fixture", automatic), "disabled manual and automatic disruptive creation denied")
+	var/process/mapswap/map_transition = new
+	var/process/epochswap/epoch_transition = new
+	equipment_assert(!V.request_choices("Harmless label", list("Yes"), "fixture", 20, list(map_transition, "swap"), TRUE), "generic map transition callback denied regardless of question label")
+	equipment_assert(!V.request_choices("Another label", list("Yes"), "fixture", 20, list(epoch_transition, "swap"), TRUE), "generic epoch transition callback denied regardless of question label")
+	var/datum/vote_handle/poll = V.request_choices("Harmless poll", list("Yes"), "fixture", 20, list(), TRUE)
+	V.set_disruptive_votes(FALSE)
+	equipment_assert(V.is_current(poll) && poll.cancel(), "disabling disruptive votes preserves harmless pending poll")
+	var/datum/vote_handle/hub = V.request_vote("safehouse map", "fixture", TRUE)
+	equipment_assert(hub && hub.cancel(), "disabled disruptive policy permits safe-house selection")
+	equipment_assert(V.action_allowed("gamemode", list(processes.gamemode, "swap")) && V.action_allowed("ship selection", list()), "pregame setup actions remain permitted")
+	V.set_disruptive_votes(TRUE)
+	L.disable_disruptive = TRUE
+	var/datum/vote_handle/during_callback = V.request_choices("Disable during callback", list("Choice"), "fixture", 20, list(L, "complete"), TRUE)
+	V.mode = "restart"
+	V.submit_vote("fixture", 1, during_callback.generation)
+	routes_before = V.routes.len
+	equipment_assert(!during_callback.resolve() && V.routes.len == routes_before, "callback policy change prevents old disruptive result route")
+	L.disable_disruptive = FALSE
+	// Exercise the real route guard too; the lifecycle adapter above never restarts.
+	var/datum/vote/production = new
+	production.set_disruptive_votes(FALSE)
+	equipment_assert(!production.apply_result("restart", 0, "Restart Round", list()), "direct stale production result cannot end round while disabled")

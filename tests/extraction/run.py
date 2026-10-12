@@ -14,7 +14,7 @@ def main():
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'npc', 'city', 'insurance', 'groups', 'vehicles'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
-    parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry'))
+    parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry', 'disruptive_creation', 'disruptive_pending', 'disruptive_result'))
     parser.add_argument('--group-negative-control', choices=('debit', 'visibility', 'premium', 'car', 'return'))
     parser.add_argument('--vehicle-loss-negative-control', action='store_true')
     parser.add_argument('--vehicle-purchase-negative-control', action='store_true')
@@ -231,6 +231,9 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 'stale': (' && session_generation == generation', '', 'stale ballot and timer cannot touch replacement'),
                 'cancel': ('H.state = "cancelled"', 'H.state = "pending"', 'cancel detaches callbacks and clears UI session'),
                 'reentry': ('if (generation != H.generation || active_request) return .', 'reset()\n\t\tif (generation != H.generation || active_request) return .', 'reentrant callback replacement survives old completion'),
+                'disruptive_creation': ('return disruptive_votes_enabled || !disruptive_action(vote_type, completion)', 'return TRUE', 'disabled manual and automatic disruptive creation denied'),
+                'disruptive_pending': ('if (!disruptive_votes_enabled && is_current(active_request) && disruptive_action(mode, active_request.completion))', 'if (FALSE && is_current(active_request))', 'disabling disruptive votes cancels pending action and stale resolution'),
+                'disruptive_result': ('if (!action_allowed(resolved_mode, completion)) return FALSE\n\t\tif (.) apply_result', '// omitted post-callback policy\n\t\tif (.) apply_result', 'callback policy change prevents old disruptive result route'),
             }
             marker, replacement, expected_vote_failure = mutations[vote_control]
             if vote_source.count(marker) != 1:

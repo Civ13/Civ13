@@ -15,6 +15,22 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		return manager ? manager.result(src) : FALSE
 
 /datum/vote
+	// Runtime admin policy. Restarting the server restores the existing enabled default.
+	var/disruptive_votes_enabled = TRUE
+	proc/disruptive_action(vote_type, list/completion)
+		if (vote_type in list("restart", "epoch", "map")) return TRUE
+		if (completion && completion.len == 2)
+			// These process callbacks perform the actual map/server transition,
+			// including when attached to a generically named question.
+			if (istype(completion[1], /process/mapswap) || istype(completion[1], /process/epochswap)) return TRUE
+		return FALSE
+	proc/action_allowed(vote_type, list/completion)
+		return disruptive_votes_enabled || !disruptive_action(vote_type, completion)
+	proc/set_disruptive_votes(enabled)
+		disruptive_votes_enabled = !!enabled
+		if (!disruptive_votes_enabled && is_current(active_request) && disruptive_action(mode, active_request.completion))
+			cancel_request(active_request)
+		return disruptive_votes_enabled
 	var/generation = 0
 	var/datum/vote_handle/active_request
 	proc/is_current(datum/vote_handle/H)
@@ -34,6 +50,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		if (!initiate_vote(vote_type, initiator_key, automatic, completion)) return null
 		return active_request
 	proc/request_choices(prompt, list/options, initiator_key, duration, list/completion = list(), automatic = FALSE)
+		if (!action_allowed("request", completion)) return null
 		if (mode || !islist(options) || !options.len || options.len > 100 || !istext(prompt) || !isnum(duration) || duration < 10 || duration > 6000) return null
 		if (started_time != null && !automatic && !check_rights(R_ADMIN) && started_time + config.vote_delay > world.time) return null
 		for (var/option in options)
@@ -201,6 +218,9 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 	proc/result(datum/vote_handle/H)
 		if (!is_current(H)) return FALSE
+		if (!action_allowed(mode, H.completion))
+			cancel_request(H)
+			return FALSE
 		// No yielding callbacks until the old session is terminal and detached.
 		H.state = "resolved"
 		var/resolved_mode = mode
@@ -217,10 +237,12 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		// A completion may create or cancel another session. Never apply the
 		// old route to it, even if the replacement already finished synchronously.
 		if (generation != H.generation || active_request) return .
+		if (!action_allowed(resolved_mode, completion)) return FALSE
 		if (.) apply_result(resolved_mode, resolved_faction, ., completion)
 		return .
 
 	proc/apply_result(resolved_mode, resolved_faction, winner, list/completion)
+		if (!action_allowed(resolved_mode, completion)) return FALSE
 		. = winner
 		if (.)
 			switch(resolved_mode)
@@ -282,6 +304,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		return FALSE
 
 	proc/initiate_vote(var/vote_type, var/initiator_key, var/automatic = FALSE, var/list/_callback = list())
+		if (!action_allowed(vote_type, _callback)) return FALSE
 		if (!mode)
 			if (started_time != null && !(check_rights(R_ADMIN) || automatic))
 				var/next_allowed_time = (started_time + config.vote_delay)
@@ -426,6 +449,9 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 				else
 					return FALSE
+			if (!action_allowed(vote_type, _callback))
+				reset()
+				return FALSE
 			mode = vote_type
 			generation++
 			active_request = new

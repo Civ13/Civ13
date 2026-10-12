@@ -198,6 +198,11 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-12: extraction NPC retirement -->
+When an NPC's own procedure qdels that actor, its caller can observe a null
+return even after the durable retirement receipt commits. Assert receipt state
+and original-object retirement, and stop subsequent AI when loc is null.
+
 - Follow `docs/game-verification.md` for exact-commit build, isolated-fixture,
   graphical, season-memory, and save-round-trip evidence. Reuse probes present in
   the selected checkout; investigation-branch probes may not be on master yet.
