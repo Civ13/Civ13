@@ -1,10 +1,16 @@
 // Opt-in disposable local area. Never included by production civ13.dme.
 var/global/datum/gun_test_area/gun_test_area = new
+/world/OpenPort(port)
+	if(!world.params["visual"] && port != "none")
+		return FALSE
+	return ..()
 /datum/gun_test_area
 	var/ready = FALSE
 	var/list/equipment = list()
 	var/obj/structure/repair/gun/bench
 	New()
+		if(!world.params["visual"])
+			world.OpenPort("none")
 		if(config)
 			config.webhook_can_fire = FALSE
 			config.ToRban = FALSE
@@ -29,7 +35,7 @@ var/global/datum/gun_test_area/gun_test_area = new
 			var/obj/structure/barricade/B = new(locate(32,y,1))
 			B.name = "local range backstop"
 		ready = TRUE
-		text2file(json_encode(list("commit"=world.params["tested_commit"],"byond"="[world.byond_version].[world.byond_build]","map"=map.ID,"area"="18,18 to 34,28,1","equipment"=equipment.len)),"test-area-ready.json")
+		text2file(json_encode(list("commit"=world.params["tested_commit"],"byond"="[world.byond_version].[world.byond_build]","map"=map.ID,"area"="18,18 to 34,28,1","equipment"=equipment.len,"network_port"=world.port)),"test-area-ready.json")
 		if(!world.params["visual"])
 			del(world)
 
