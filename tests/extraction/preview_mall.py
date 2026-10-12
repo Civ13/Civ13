@@ -36,6 +36,9 @@ def main():
                 if '/obj/covers/generic_wall' in value: color = colors['wall']
                 if '/obj/structure/table' in value: color = colors['table']
                 if '/obj/structure/bed/chair' in value: color = colors['chair']
+                if '/floor/wood_broken' in value or '/floor/gravel/dust' in value: color = '#776d61'
+                if '/extraction_mall_rubble' in value or '/decal/rubbish' in value: color = '#665d4f'
+                if '/obj/structure/props/car_wreck' in value: color = '#503c33'
                 xx, yy = left+x*scale, top+(size-1-y)*scale
                 draw.rectangle((xx, yy, xx+scale-1, yy+scale-1), fill=color)
                 for token, marker_color in markers:

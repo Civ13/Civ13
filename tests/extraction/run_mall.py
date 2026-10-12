@@ -81,7 +81,7 @@ def main():
             shutil.copytree(root / 'config/names', target / 'config/names')
             platform = ['-invisible', '-close'] if os.name == 'nt' else []
             try:
-                result = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-log', 'runtime.log'], cwd=target, capture_output=True, text=True, timeout=90, creationflags=flags)
+                result = subprocess.run([str(daemon), 'probe.dmb', '-port', 'none', *platform, '-safe', '-log', 'runtime.log'], cwd=target, capture_output=True, text=True, timeout=90, creationflags=flags)
             except subprocess.TimeoutExpired as error:
                 # subprocess.run kills and waits for this directly owned headless
                 # process before returning. Read diagnostics before temp cleanup.
@@ -92,7 +92,7 @@ def main():
             retain(root, target, prefix, args, result.stdout, result.stderr)
             report = (target / 'result.txt').read_text(encoding='utf-8') if (target / 'result.txt').exists() else ''
             log = result.stdout + result.stderr + ((target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else '')
-            if result.returncode or any(value in log.lower() for value in ('runtime error', 'bad ref', '## error')):
+            if result.returncode or any(value in log.lower() for value in ('runtime error', 'bad ref', '## error', 'opened on network port')):
                 raise RuntimeError(log)
             if expected:
                 if not report.startswith('FAIL:') or expected not in report:

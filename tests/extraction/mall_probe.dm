@@ -29,6 +29,7 @@ var/global/mall_fixture_failed = FALSE
 		world.log << "Runtime error: [E] at [E.file]:[E.line]"
 	New()
 		mall_stage("world New entered")
+		mall_assert(!world.port, "daemon starts without a listening port")
 		world.OpenPort("none")
 		spawn(2)
 			try
@@ -37,7 +38,7 @@ var/global/mall_fixture_failed = FALSE
 					text2file("PASS: native mall floors, stairs, loot, highway policy and extraction", "result.txt")
 			catch (var/exception/E)
 				mall_fixture_failed = TRUE
-				text2file("FAIL: [E]", "result.txt")
+				text2file("FAIL: [E] at [E.file]:[E.line]", "result.txt")
 				world.log << "FAIL: [E]"
 			del(world)
 
@@ -49,6 +50,13 @@ var/global/mall_fixture_failed = FALSE
 		return list(list("type" = "/obj/item/extraction_salvage", "quantity" = 1))
 
 /proc/mall_probe()
+	GLOB.all_observable_events = list()
+	GLOB.global_listen_count = list()
+	GLOB.event_sources_count = list()
+	GLOB.event_listen_count = list()
+	GLOB.dir_set_event = new /decl/observ/dir_set
+	GLOB.moved_event = new /decl/observ/moved
+	GLOB.destroyed_event = new /decl/observ/destroyed
 	mall_stage("before datum reference lists")
 	makeDatumRefLists()
 	mall_stage("after datum reference lists")

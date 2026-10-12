@@ -50,6 +50,15 @@
 	density = FALSE
 	opacity = FALSE
 
+/obj/effect/extraction_mall_rubble
+	name = "Collapsed masonry and broken shop fittings"
+	desc = "War damage and repeated scavenging have scattered fragments across the floor."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "debris1"
+	anchored = TRUE
+	density = FALSE
+	opacity = FALSE
+
 /obj/structure/extraction_mall_stairs
 	name = "Mall stairs"
 	desc = "Pedestrian stair core. Click to change floors. Vehicles cannot use this route."

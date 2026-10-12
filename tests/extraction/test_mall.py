@@ -25,13 +25,20 @@ def parse(source):
 
 
 def blocked(value):
-    return any(atom in value for atom in ('/obj/covers/generic_wall', '/obj/structure/table', '/obj/structure/bed/chair'))
+    return any(atom in value for atom in ('/obj/covers/generic_wall', '/obj/structure/table', '/obj/structure/bed/chair', '/obj/structure/props/car_wreck'))
 
 
 def reachable(layers, start, vehicle=False):
     size = len(layers[1])
     pending, seen = deque([start]), {start}
     stairs = {}
+    wreck_cells = set()
+    for z in (1, 4, 5):
+        for y, row in enumerate(layers[z], 1):
+            for x, value in enumerate(row, 1):
+                if '/obj/structure/props/car_wreck' in value:
+                    # Native wreck bounding box is 96x64 pixels, or 3x2 tiles.
+                    wreck_cells.update((x+dx, y+dy, z) for dx in range(3) for dy in range(2))
     if not vehicle:
         for z in (1, 4, 5):
             for y, row in enumerate(layers[z], 1):
@@ -48,6 +55,8 @@ def reachable(layers, start, vehicle=False):
             if point in seen or not 2 <= xx < size or not 2 <= yy < size:
                 continue
             radius = 1 if vehicle else 0
+            if any((xx+dx, yy+dy, zz) in wreck_cells for dx in range(-radius, radius+1) for dy in range(-radius, radius+1)):
+                continue
             if any(blocked(layers[zz][cy-1][cx-1]) for cy in range(yy-radius, yy+radius+1) for cx in range(xx-radius, xx+radius+1)):
                 continue
             seen.add(point)
@@ -56,6 +65,18 @@ def reachable(layers, start, vehicle=False):
 
 
 class MallTests(unittest.TestCase):
+    def test_post_war_dressing_stays_on_raid_floors(self):
+        layers = parse(build())
+        for z in (1, 4, 5):
+            tiles = [value for row in layers[z] for value in row]
+            self.assertGreaterEqual(sum('/extraction_mall_rubble' in value for value in tiles), 6)
+            self.assertGreaterEqual(sum('/decal/rubbish' in value for value in tiles), 6)
+        self.assertEqual(sum('/props/car_wreck' in value for row in layers[1] for value in row), 4)
+        for z in (4, 5):
+            self.assertTrue(any('/floor/wood_broken' in value for row in layers[z] for value in row))
+        for z in (2, 3):
+            self.assertFalse(any('/extraction_mall_rubble' in value or '/props/car_wreck' in value for row in layers[z] for value in row))
+
     def test_generated_default_and_protected_levels(self):
         generated = build()
         self.assertEqual((ROOT / 'maps/extraction/interchange_mall.dmm').read_text(), generated)

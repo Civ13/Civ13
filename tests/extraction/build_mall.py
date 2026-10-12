@@ -83,6 +83,14 @@ def build(size=SIZE):
                     if abs(x-c(middle)) < 4 or x % 12 in (0, 1, 2):
                         continue
                     raw(z, x, y, '/obj/structure/table/wood', floor=palette)
+        # Every shop has a scavenged corner: torn-up boards, displaced seating,
+        # discarded packaging and collapsed masonry, using existing sprites.
+        for dx, dy in ((4, 4), (5, 4), (4, 5)):
+            put(z, left+dx, bottom+dy, '/obj/effect/extraction_mall_rubble',
+                floor='/turf/floor/wood_broken' if 'wood' in palette else '/turf/floor/gravel/dust')
+        put(z, right-4, bottom+4, '/obj/structure/bed/chair{dir = 8}', floor=palette)
+        put(z, right-5, top-4, '/obj/effect/decal/rubbish{random = FALSE; icon_state = "trash_7"}', floor=palette)
+        put(z, left+4, top-4, '/obj/effect/decal/rubbish{random = FALSE; icon_state = "trash_12"}', floor=palette)
         for x, y in ((left+8, bottom+6), (right-8, top-6)):
             loot_id += 1
             put(z, x, y, f'/obj/effect/extraction_loot_marker{{container_id = {loot_id}; pool_kind = "{pool}"}}', floor=palette)
@@ -114,6 +122,16 @@ def build(size=SIZE):
             rect(z, x, 26, x+2, 134)
         for y in (74, 106):
             rect(z, 26, y, 134, y+1)
+
+    # Post-war dressing stays off highway lanes and is applied before the clear
+    # stair landing islands. No extra loot roots or free vehicle parts are added.
+    for x, y in ((44, 52), (64, 100), (100, 52), (118, 116)):
+        put(1, x, y, '/obj/structure/props/car_wreck')
+        for dx, dy in ((-2, 0), (4, 1), (1, 3)):
+            put(1, x+dx, y+dy, '/obj/effect/extraction_mall_rubble', floor='/turf/floor/gravel/dust')
+    for z in areas:
+        for i, (x, y) in enumerate(((34, 78), (58, 82), (80, 42), (82, 96), (122, 78), (78, 128))):
+            put(z, x, y, f'/obj/effect/decal/rubbish{{random = FALSE; icon_state = "trash_{1+i*2}"}}', floor=dark)
 
     for x, y in STAIRS:
         for z in areas:

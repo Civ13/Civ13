@@ -48,6 +48,12 @@ authoritative. Capability checks apply before and after extraction waits.
 
 ## Validation stages
 
+The mall is a scavenged post-war site. Every shop contains scattered rubbish,
+collapsed masonry, displaced seating and damaged flooring. Parking has abandoned
+car wrecks with native 3x2-tile bounds. These props are not usable garage cars or
+free loot. The generator restores clear stair landings after dressing; route
+checks account for wreck footprints as well as furniture and walls.
+
 1. Generate the deterministic DMM and verify equal dimensions, dictionary and
    atom ordering, protected home/hub contents and all marker types.
 2. Flood-fill actual passable cells and stair edges; require every entry,
