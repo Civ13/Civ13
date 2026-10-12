@@ -2,7 +2,7 @@
 	name = "cable network terminal"
 	desc = "A powered local text terminal. It sends immediate messages to terminals on the same electrical cable network; no Internet or email storage."
 	icon = 'icons/obj/computers.dmi'
-	icon_state = "ibm_off"
+	icon_state = "ibm"
 	powerneeded = 5
 	var/tmp/last_message = -100
 

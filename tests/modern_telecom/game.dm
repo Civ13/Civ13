@@ -90,6 +90,8 @@ var/telecom_failures = 0
 		var/obj/item/weapon/telephone/landline/Q = new(locate(4,3,1))
 		P.powersource = C
 		Q.powersource = C
+		P.name = "saved phone P"
+		Q.name = "saved phone Q"
 		C.connections |= P
 		C.connections |= Q
 		telecom_check(P.dial(Q.phonenumber) && Q.answer() && P.connected == Q.phonenumber && Q.connected == P.phonenumber, "phones call over the power cable")
@@ -106,6 +108,8 @@ var/telecom_failures = 0
 		C.connections |= T
 		C.connections |= U
 		telecom_check(T.send_network_message("local test") == 1 && !T.send_network_message("rate limited"), "terminals share power cable and rate limit")
+		var/p_number = P.phonenumber
+		var/q_number = Q.phonenumber
 		qdel(antenna)
 		var/mob/living/human/telecom_fixture/H = new(locate(2,2,1))
 		H.stats["crafting"] = list(100,100)
@@ -139,12 +143,22 @@ var/telecom_failures = 0
 		telecom_check(H.learn_broadcast("medical",1) && H.stats["medical"][2] == 125, "reward capped at 125")
 		telecom_fixture_time = 3100
 		telecom_check(!H.learn_broadcast("medical",2), "advanced training requires practice/books")
-		telecom_check(map_storage.Save_World() && map_storage.validate_world_save(), "native learner save")
+		telecom_check(P.dial(Q.phonenumber) && Q.answer(), "active call before save")
+		telecom_check(map_storage.Save_World() && map_storage.validate_world_save(), "native learner and equipment save")
 		map_storage.ClearMap()
 		telecom_check(map_storage.Load_World(), "native learner reload")
 		H = locate(/mob/living/human/telecom_fixture) in locate(2,2,1)
 		telecom_fixture_time = 600
 		telecom_check(H && H.broadcast_lessons.len == 8 && !H.learn_broadcast("crafting",1), "restart preserves credits and rejects rerun")
+		P = null
+		Q = null
+		for (var/obj/item/weapon/telephone/landline/phone in civ_landlines)
+			if (phone.name == "saved phone P")
+				P = phone
+			if (phone.name == "saved phone Q")
+				Q = phone
+		telecom_check(P && Q && P.phonenumber == p_number && Q.phonenumber == q_number && !P.origincall && !Q.origincall && !P.connected && !Q.connected, "phone numbers survive; runtime calls do not")
+		telecom_check(P && Q && P.dial(Q.phonenumber) && Q.answer(), "restored phones route over restored cable")
 	catch (var/exception/e)
 		telecom_check(FALSE,"exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit"=world.params["tested_commit"],"failures"=telecom_failures,"byond_build"=world.byond_build)),"result.json")
