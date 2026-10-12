@@ -106,7 +106,7 @@
 		if (istype(M) && !death_registered)
 			death_registered = TRUE
 			M.npcs -= src
-			M.corpses[src] = world.time + 5 MINUTES
+			M.npc_corpses[src] = world.time + 5 MINUTES
 			if (gun)
 				M.track_loot(gun)
 				gun = null

@@ -287,6 +287,8 @@ var/equipment_completed = FALSE
 	equipment_assert(!inventory.build("industrial1") && !S.insurance_busy, "unresolved nonparticipant journal prevents insurance inference and releases read gate")
 
 /proc/equipment_insurance_returns_probe(datum/extraction_equipment_codec/C)
+	equipment_paid_insurance_probe(C)
+	equipment_partial_insurance_probe(C)
 	equipment_insurance_capacity_probe(C)
 	var/list/cuts = list("before_prepare", "after_prepare", "retire1", "retirement_intent", "retirement_snapshot", "after_retirement", "apply1", "finalize_intent", "finalize_snapshot")
 	for (var/i in 1 to cuts.len)
@@ -358,6 +360,7 @@ var/equipment_completed = FALSE
 	var/token = G.extraction_insurance_token
 	equipment_assert(A.forfeit(raid["sequence"]), "capacity fixture forfeits issued graph")
 	A.close()
+
 	var/datum/extraction_insurance_returns/returns = new(S, C)
 	equipment_assert(!returns.prepare("capacityround", list(G)) && G.loc && returns.ready(), "full mailbox rejects entire plan before physical retirement")
 	A = S.open("capacityowner")
@@ -388,3 +391,76 @@ var/equipment_completed = FALSE
 	var/revision = A.profile["revision"]
 	equipment_assert(!A.claim_insurance_mail(list(id)) && A.profile["revision"] == revision && A.profile["insurance_mailbox"].len == 64, "full stash withholds delivery without losing mailbox graph or advancing revision")
 	A.close()
+
+/proc/equipment_paid_insurance_probe(datum/extraction_equipment_codec/C)
+	var/datum/extraction_service/S = new
+	S.store.root = "data/paid_insurance/"
+	var/datum/extraction_insurance_returns/R = new(S, C)
+	var/datum/extraction_session/A = S.open("paidowner")
+	var/obj/item/weapon/gun/projectile/pistol/m9beretta/G = new(locate(2,6,1))
+	if (G.ammo_magazine) qdel(G.ammo_magazine)
+	G.ammo_magazine = new /obj/item/ammo_magazine/m9beretta(G)
+	var/list/graph = C.encode(G)
+	var/id = G.extraction_item_id
+	qdel(G)
+	var/list/stash = list(list("id" = id, "equipment" = graph))
+	for (var/i in 1 to 4)
+		var/obj/item/extraction_salvage/I = new(locate(2,6,1))
+		var/list/part = C.encode(I)
+		stash += list(list("id" = I.extraction_item_id, "equipment" = part))
+		qdel(I)
+	equipment_assert(A.checkpoint_home(stash), "paid fixture provisions gun, magazine and four obtainable workshop parts")
+	var/list/offer = R.quote(A, list(id), "paidround")
+	equipment_assert(offer && offer["cost"] == 3 && offer["payment"].len == 3, "paid quote charges actual gun, default iron sight and magazine, excluding all ammunition")
+	equipment_assert(A.checkpoint_home(stash) && !R.paid_deploy(A, offer, "PMC"), "stale paid quote cannot debit account or issue claims")
+	offer = R.quote(A, list(id), "paidround")
+	var/list/forged = json_decode(json_encode(offer))
+	forged["cost"] = 0
+	equipment_assert(!R.paid_deploy(A, forged, "PMC") && A.profile["stash"].len == 5, "altered quote cannot bypass payment")
+	var/list/raid = R.paid_deploy(A, offer, "PMC")
+	equipment_assert(raid && A.profile["stash"].len == 1 && A.profile["insurance_claims"].len == 1, "payment, issuance, sequence and stash debit commit together")
+	equipment_assert(!R.paid_deploy(A, offer, "PMC"), "paid deployment replay cannot charge or issue twice")
+	G = C.decode(raid["issued"][1]["equipment"], locate(2,6,1))
+	G.health = 61
+	equipment_assert(A.forfeit(raid["sequence"]), "paid raid loss commits without payout")
+	A.close()
+	equipment_assert(R.prepare("paidround", list(G)), "paid lost gear retires through native return consumer")
+	A = S.open("paidowner")
+	equipment_assert(A && A.profile["stash"].len == 1 && A.profile["insurance_mailbox"].len == 1, "paid claim returns gear once without refunding consumed premium")
+	A.close()
+
+/proc/equipment_partial_insurance_probe(datum/extraction_equipment_codec/C)
+	var/datum/extraction_service/S = new
+	S.store.root = "data/partial_insurance/"
+	var/datum/extraction_session/A = S.open("nestedowner")
+	var/obj/item/weapon/storage/backpack/bag = new(locate(3,6,1))
+	var/obj/item/weapon/gun/projectile/pistol/m9beretta/G = new(bag)
+	var/list/graph = C.encode(bag)
+	var/bag_id = bag.extraction_item_id
+	var/gun_id = G.extraction_item_id
+	qdel(bag)
+	equipment_assert(A.checkpoint_home(list(list("id" = bag_id, "equipment" = graph))), "partial recovery provisions insured bag with nested actual gun")
+	var/list/raid = A.begin_raid(list(bag_id), "PMC", list(bag_id), "partialround")
+	bag = C.decode(raid["issued"][1]["equipment"], locate(3,6,1))
+	G = locate(/obj/item/weapon/gun/projectile/pistol/m9beretta) in bag
+	G.forceMove(locate(3,6,1))
+	G.health = 63
+	equipment_assert(A.forfeit(raid["sequence"]), "partial recovery forfeits original issued bag")
+	A.close()
+	var/datum/extraction_session/B = S.open("bagrecoverer")
+	var/list/other = B.begin_raid(list())
+	equipment_assert(B.extract(other["sequence"], list(list("id" = bag_id, "equipment" = C.encode(bag)))), "another account recovers only empty insured parent bag")
+	qdel(bag)
+	B.close()
+	var/datum/extraction_insurance_returns/R = new(S, C)
+	equipment_assert(R.prepare("partialround", list(G)), "unrecovered detached insured child retires independently of recovered parent")
+	A = S.open("nestedowner")
+	equipment_assert(A.profile["insurance_mailbox"].len == 1 && A.profile["insurance_mailbox"][1]["id"] == gun_id, "partial return credits actual gun without recreating recovered parent")
+	var/list/entry = A.profile["insurance_mailbox"][1]
+	G = C.decode(entry["equipment"], locate(3,6,1))
+	equipment_assert(G && G.extraction_item_id == gun_id && G.health == 63 && istype(G.loc, /turf), "partial returned child retains current condition and independent root placement")
+	qdel(G)
+	A.close()
+	B = S.open("bagrecoverer")
+	equipment_assert(B.profile["stash"].len == 1 && B.profile["stash"][1]["id"] == bag_id && !B.profile["insurance_mailbox"].len, "recovered parent ownership remains unchanged with no duplicate insurance credit")
+	B.close()

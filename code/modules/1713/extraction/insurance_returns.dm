@@ -29,8 +29,36 @@
 		// Reusable equipment only. Ammunition, projectiles, keys and salvage are
 		// deliberately excluded; this table never restores consumed supplies.
 		return codec.supported(path) && (ispath(path, /obj/item/weapon/gun) || ispath(path, /obj/item/weapon/attachment) || ispath(path, /obj/item/weapon/gun_mount) || ispath(path, /obj/item/ammo_magazine) || ispath(path, /obj/item/clothing) || ispath(path, /obj/item/weapon/storage) || ispath(path, /obj/item/weapon/material) || ispath(path, /obj/item/blackpowder_part))
+	proc/quote(datum/extraction_session/S, list/selected_ids, round_id)
+		if (!ready() || !S.active() || S.service != service || S.profile["state"] != "home" || !islist(selected_ids) || selected_ids.len > 16 || !istext(round_id) || !length(round_id) || length(round_id) > 64) return null
+		var/list/wanted = list()
+		for (var/id in selected_ids)
+			if (!istext(id) || wanted[id]) return null
+			wanted[id] = TRUE
+		var/list/insured = list()
+		var/list/payment = list()
+		var/cost = 0
+		var/found = 0
+		for (var/list/entry in S.profile["stash"])
+			var/list/graph = entry["equipment"]
+			if (wanted[entry["id"]])
+				found++
+				if (graph["schema"] != 2 || !codec.validate(graph)) return null
+				if (!insurable(text2path(graph["nodes"][1]["type"]))) continue
+				insured += entry["id"]
+				for (var/list/node in graph["nodes"])
+					if (insurable(text2path(node["type"]))) cost++
+			else if (graph["schema"] == 2 && graph["nodes"].len == 1 && graph["nodes"][1]["type"] == "/obj/item/extraction_salvage") payment += entry["id"]
+		if (found != wanted.len || !cost || cost > 64 || payment.len < cost) return null
+		payment.Cut(cost + 1)
+		return list("revision" = S.profile["revision"], "round" = round_id, "selected" = selected_ids.Copy(), "insured" = insured, "payment" = payment, "cost" = cost)
+	proc/paid_deploy(datum/extraction_session/S, list/offer, faction)
+		if (!islist(offer)) return null
+		var/list/current = quote(S, offer["selected"], offer["round"])
+		if (!current || json_encode(current) != json_encode(offer)) return null
+		return S.begin_raid(current["selected"], faction, current["insured"], current["round"], current["payment"], current["revision"])
 	proc/prepare(round_id, list/roots)
-		if (!ready() || service.sessions.len || !islist(roots) || roots.len > 64) return fail("Release accounts before round-end preparation")
+		if (!ready() || service.sessions.len || !islist(roots) || roots.len > 2048) return fail("Release accounts before round-end preparation")
 		if (profile["resolved_round"] == round_id) return fail("Round already resolved")
 		var/datum/extraction_insurance_inventory/inventory = new(service)
 		var/list/index = inventory.build(round_id)
@@ -176,7 +204,7 @@
 		if (test_fail_at == "after_retirement") return FALSE
 		return finish()
 	proc/valid_receipt()
-		return islist(profile["parts"]) && profile["parts"].len <= 32 && islist(profile["physical"]) && profile["physical"].len <= 64 && profile["plan_digest"] == md5(json_encode(list(profile["parts"], profile["physical"])))
+		return islist(profile["parts"]) && profile["parts"].len <= 32 && islist(profile["physical"]) && profile["physical"].len <= 2048 && profile["plan_digest"] == md5(json_encode(list(profile["parts"], profile["physical"])))
 	proc/final_profile()
 		var/list/final = json_decode(json_encode(profile))
 		final["phase"] = "complete"

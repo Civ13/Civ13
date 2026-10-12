@@ -106,13 +106,15 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	attack_hand(mob/user)
 		var/mob/living/human/H = user
 		if (!istype(H) || !session || session.body != H || H.client?.ckey != session.owner || session.transitioning || session.profile["state"] != "home" || !Adjacent(H)) return
-		var/choice = WWinput(H, "Equipment left in this house stays in your stash. Carry your loadout to deploy. PMC and Scav use your own gear and have different exits. Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts.", "Private safe house", "Cancel", list("Deploy", "Deploy as Scav", "Visit hub", "Upgrade", "Save stash", "Cancel"))
+		var/choice = WWinput(H, "Carry your loadout to deploy. Insured deployment costs one workshop part per reusable equipment component, paid from parts left at home. Ammunition never returns. This district closes after thirty minutes; extract before closure. Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts.", "Private safe house", "Cancel", list("Deploy", "Deploy as Scav", "Insure and deploy", "Claim insurance mail", "Visit hub", "Upgrade", "Save stash", "Cancel"))
 		if (session.body != H || !Adjacent(H) || session.transitioning) return
 		var/obj/map_metadata/extraction_survival/M = map
 		if (!istype(M)) return
 		switch (choice)
 			if ("Deploy") M.deploy(H)
 			if ("Deploy as Scav") M.deploy(H, "Scav")
+			if ("Insure and deploy") M.deploy(H, "PMC", TRUE)
+			if ("Claim insurance mail") M.claim_mail(H)
 			if ("Save stash") M.save_home(session)
 			if ("Upgrade") M.upgrade_house(session)
 			if ("Visit hub") M.visit_hub(H)
@@ -308,7 +310,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	var/datum/extraction_equipment_codec/codec = new
 	var/list/npcs = list()
 	var/list/raid_items = list()
-	var/list/corpses = list()
+	var/list/npc_corpses = list()
 	var/uid = 0
 	var/next_population = 0
 	var/next_checkpoint = 0
@@ -328,14 +330,14 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	return TRUE
 
 /obj/map_metadata/extraction_survival/update_win_condition()
-	return FALSE
+	return game_over
 
 /obj/map_metadata/extraction_survival/proc/identity(mob/living/human/H)
 	return H?.client?.ckey
 
 /obj/map_metadata/extraction_survival/proc/owned(mob/living/human/H)
 	var/datum/extraction_session/S = H?.extraction_session
-	return S && S.active() && S.body == H && identity(H) == S.owner
+	return !round_closing && (!round_deadline || world.time < round_deadline) && S && S.active() && S.body == H && identity(H) == S.owner
 
 /obj/map_metadata/extraction_survival/proc/record_item(obj/item/I)
 	var/list/graph = codec.encode(I)
@@ -381,7 +383,10 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	return result
 
 /obj/map_metadata/extraction_survival/proc/admit(mob/living/human/H)
-	if (!identity(H) || H.extraction_session) return FALSE
+	if (round_closing || !ensure_round() || !identity(H) || H.extraction_session) return FALSE
+	if (!round_participants[identity(H)] && round_participants.len >= 32)
+		to_chat(H, "This district has reached its account limit. Join the next round.")
+		return FALSE
 	var/obj/effect/extraction_house_marker/house
 	for (var/obj/effect/extraction_house_marker/marker in extraction_house_markers)
 		if (!marker.session)
@@ -429,6 +434,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		I.extraction_secure_stored = entry["secure"] == TRUE
 	to_chat(H, "Private safe house level [S.profile["level"]]. Stash capacity: [S.capacity()] items. Use the terminal to save, upgrade or deploy.")
 	S.home_digest = md5(json_encode(S.profile["stash"]))
+	round_participants[S.owner] = TRUE
 	return TRUE
 
 /obj/map_metadata/extraction_survival/proc/save_home(datum/extraction_session/S)
@@ -439,19 +445,39 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		return FALSE
 	return TRUE
 
-/obj/map_metadata/extraction_survival/proc/deploy(mob/living/human/H, raid_faction = "PMC")
+/obj/map_metadata/extraction_survival/proc/deploy(mob/living/human/H, raid_faction = "PMC", insured = FALSE)
 	if (!owned(H) || H.stat != CONSCIOUS || !extraction_raid_markers.len) return FALSE
 	var/datum/extraction_session/S = H.extraction_session
 	if (S.transitioning || S.profile["state"] != "home" || !S.house || H.z != S.house.z || get_dist(H, S.house) > 4 || !save_home(S)) return FALSE
 	var/list/carried = player_roots(H)
 	var/list/ids = list()
 	if (carried.len > 16) return FALSE
+	var/list/graphs = records(carried)
+	if (!graphs) return FALSE
+	var/carried_nodes = 0
+	for (var/list/entry in graphs) carried_nodes += entry["equipment"]["nodes"].len
+	if (raid_items.len + carried_nodes > 2048) return FALSE
 	for (var/obj/item/I in carried) ids += I.extraction_item_id
+	var/list/offer
+	if (insured)
+		if (insured_nodes_issued + carried_nodes > 4096) return FALSE
+		offer = returns.quote(S, ids, round_id)
+		if (!offer)
+			to_chat(H, "Insurance requires eligible reusable equipment and enough workshop parts left at home.")
+			return FALSE
+		if (!confirm_insurance(H, offer) || !owned(H) || S.transitioning || !H.Adjacent(S.house) || json_encode(records(home_roots(S))) != json_encode(S.profile["stash"])) return FALSE
+		// Confirmation yields to other players and NPC population updates.
+		if (H.stat != CONSCIOUS || raid_items.len + carried_nodes > 2048 || insured_nodes_issued + carried_nodes > 4096) return FALSE
 	S.transitioning = TRUE
-	var/list/raid = S.begin_raid(ids, raid_faction)
+	var/list/raid = insured ? returns.paid_deploy(S, offer, raid_faction) : S.begin_raid(ids, raid_faction)
 	if (!raid)
 		S.transitioning = FALSE
 		return FALSE
+	if (insured)
+		insured_nodes_issued += carried_nodes
+		for (var/obj/item/I in home_roots(S))
+			if (I.extraction_item_id in offer["payment"]) qdel(I)
+		apply_issued_tokens(carried, raid["issued"])
 	for (var/obj/item/I in carried)
 		codec.set_raid_provenance(I, FALSE)
 		track_loot(I)
@@ -521,12 +547,22 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	return TRUE
 
 /obj/map_metadata/extraction_survival/tick()
+	if (round_closing)
+		close_round()
+		return
+	if (!ensure_round()) return
+	if (world.time >= round_deadline)
+		close_round()
+		return
+	if (!round_warning && world.time >= round_deadline - 5 MINUTES)
+		round_warning = TRUE
+		world << "The district closes in five minutes. Extract or send your gear home before the deadline."
 	// Bounded active sessions; the existing map process provides the single timer.
 	for (var/owner in accounts.sessions.Copy())
 		var/datum/extraction_session/S = accounts.sessions[owner]
 		if (!S.body || S.body.stat == DEAD)
 			if (S.profile["state"] == "raid") S.forfeit(S.profile["raid_sequence"])
-			if (S.body && S.body.z == 1) corpses[S.body] = world.time + 5 MINUTES
+			if (S.body && S.body.stat == DEAD && S.body.z == 1) S.body.do_rotting()
 			release(S, FALSE)
 			continue
 		if (!S.body.client)
@@ -536,7 +572,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 				if (S.profile["state"] == "raid")
 					S.forfeit(S.profile["raid_sequence"])
 					H.death()
-					corpses[H] = world.time + 5 MINUTES
+					H.do_rotting()
 					H.ghostize()
 					release(S, FALSE)
 				else if (release(S))
@@ -560,12 +596,15 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 			raid_items -= I
 		else if (isliving(holder) && holder:stat != DEAD) raid_items[I] = world.time + 30 MINUTES
 		else if (world.time >= raid_items[I])
+			// Claims retain their actual condition until the bounded round closes.
+			if (contains_insured(I)) continue
 			raid_items -= I
 			qdel(I)
-	for (var/mob/M in corpses.Copy())
-		if (!M.loc || world.time >= corpses[M])
-			corpses -= M
-			if (M.client) M.ghostize()
+	// Simple-animal NPC bodies have already released their finite loadouts.
+	// Human bodies use the shared production corpse lifecycle instead.
+	for (var/mob/M in npc_corpses.Copy())
+		if (!M.loc || world.time >= npc_corpses[M])
+			npc_corpses -= M
 			qdel(M)
 	population_tick()
 

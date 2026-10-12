@@ -100,8 +100,9 @@
 
 // Persist the debit before returning equipment to the caller. Caller must
 // retire its home representations before materializing any raid representation.
-/datum/extraction_session/proc/begin_raid(list/selected_ids, raid_faction = "PMC", list/insured_ids, insurance_round)
+/datum/extraction_session/proc/begin_raid(list/selected_ids, raid_faction = "PMC", list/insured_ids, insurance_round, list/payment_ids, expected_revision)
 	if (!active() || profile["state"] != "home" || !islist(selected_ids) || selected_ids.len > 16 || !(raid_faction in list("PMC", "Scav"))) return null
+	if (!isnull(expected_revision) && expected_revision != profile["revision"]) return null
 	var/list/candidate = copy_profile()
 	var/list/stash = candidate["stash"]
 	if (!valid_entries(stash, capacity())) return null
@@ -115,6 +116,21 @@
 		if (wanted[entry["id"]]) issued += list(entry)
 		else remaining += list(entry)
 	if (issued.len != wanted.len) return null
+	if (payment_ids)
+		if (!islist(payment_ids) || !payment_ids.len || payment_ids.len > 64) return null
+		var/list/payment = list()
+		for (var/id in payment_ids)
+			if (!istext(id) || wanted[id] || payment[id]) return null
+			payment[id] = TRUE
+		var/list/unpaid = list()
+		for (var/list/entry in remaining)
+			if (payment[entry["id"]])
+				var/list/graph = entry["equipment"]
+				if (graph["schema"] != 2 || graph["nodes"].len != 1 || graph["nodes"][1]["type"] != "/obj/item/extraction_salvage") return null
+				payment -= entry["id"]
+			else unpaid += list(entry)
+		if (payment.len) return null
+		remaining = unpaid
 	var/list/insured = list()
 	if (insured_ids)
 		if (!islist(insured_ids) || insured_ids.len > 16 || !istext(insurance_round) || !length(insurance_round) || length(insurance_round) > 64) return null

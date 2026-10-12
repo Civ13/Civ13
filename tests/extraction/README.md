@@ -78,9 +78,14 @@ Claims are bounded to 64 roots and 4096 nodes; recovered tokens are bounded to
 4096. Invalid or full records reject mutation instead of dropping evidence.
 Shared exchanges must preserve these records unchanged.
 
-These interfaces are not enabled by the house UI yet. Paid eligibility, pricing,
-the actual round-end caller and playable mailbox delivery remain pending.
-Issued claims alone never grant gear or prove insurance acceptance.
+The original district house terminal offers insured PMC deployment. A confirmed
+quote charges one obtainable workshop part for each reusable component, including
+default sights and magazines. Parts must remain at home; ammunition is excluded.
+The quoted revision and complete offer are revalidated, then premium consumption,
+claim issuance and loadout debit commit together. Cancellation, stale quotes and
+altered offers cannot issue claims. Insured gear and its outer containers bypass
+ordinary loot expiry until the finite thirty-minute district closes. Human bodies
+use the merged bounded corpse lifecycle and release their actual gear.
 
 The internal return consumer journals its plan before retiring physical roots,
 records retirement before applying account projections, and delivers surviving
@@ -91,9 +96,17 @@ full stash. The equipment probe checks nine interruption points, changed physica
 state, forged tokens and mailbox capacity. The insurance probe uses three separate
 native processes to check retirement receipts, partial account writes and replay.
 A prepared receipt without durable retirement proof stays blocked after restart.
-Condition archival before corpse or loot expiry and integration into actual
-round-end and house interactions remain pending. These fixtures do not establish
-playable insurance acceptance.
+The mode closes at its thirty-minute deadline, warns five minutes beforehand,
+forfeits stranded loadouts, checkpoints home accounts, releases sessions, and then
+settles the bounded physical inventory before acknowledging round end. It caps
+participants at 32 and insured issued nodes at 4096; physical tracking and return
+plans cap at 2048 nodes. The house mail action commits its debit before constructing
+returned objects. Mode tests inject only identity, confirmation and action waits;
+they check actual paid deployment, nested expiry protection, interrupted closure,
+live stranding, sheltered gear, partial recovered-parent ownership and physical
+mail replay. Longer-running Nomads expiry archival, active-world restart and real
+client acceptance remain pending. These fixtures do not establish graphical
+insurance acceptance.
 
 The explicit round inventory reads at most 4096 account directory entries and
 indexes at most 4096 relevant claim tokens. It compares recovered tokens and

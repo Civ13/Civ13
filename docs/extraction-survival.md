@@ -115,6 +115,25 @@ not integrate live CivilizationBot currency. No scaffold constitutes acceptance.
 
 ## First-access loot
 
+The industrial district closes thirty minutes after its round starts and warns
+players five minutes before closure. Extract or use shipment boxes before the
+deadline. Closing forfeits unsent raid gear and saves equipment left at home.
+Human bodies follow the shared corpse lifecycle; extraction does not delete them
+after five minutes.
+
+The private terminal offers insured PMC deployment. Its confirmation shows the
+premium: one workshop part per reusable equipment component, including attached
+sights and magazines. Leave payment parts at home. Ammunition and consumed
+supplies are excluded. Payment and claim issuance commit together. Unrecovered
+insured gear retains its actual condition until closing, then eligible components
+are returned through account mail after their physical sources retire. Gear
+recovered into another account's stash does not also return to its original owner.
+Use the house terminal's mail action in a later round to move returned equipment
+into available stash space. Full mailboxes or unresolved ownership journals hold
+settlement for recovery. A process restart does not resume an active raid or infer
+physical retirement from missing world objects. Connected-client acceptance and
+the separate long-running Nomads version remain pending.
+
 The original district has 18 persistent container journals. Untouched containers
 have no generated contents or journal directory. Workshop, ammunition and armory
 tables use integer basis-point appearance chances (75%, 80% and 35% per slot),
