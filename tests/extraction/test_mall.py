@@ -107,6 +107,34 @@ class MallTests(unittest.TestCase):
         self.assertEqual(len(set(ids)), len(ids))
         self.assertTrue(all(1 <= value <= 64 for value in ids))
 
+    def test_raid_furnishings_use_fixed_catalog(self):
+        # Native furniture can yield saleable materials through damage and tool
+        # paths. Keep every raid placement on the reviewed, map-only variants.
+        allowed = {
+            '/obj/covers/generic_wall/extraction_mall',
+            '/obj/structure/table/extraction_mall',
+            '/obj/structure/table/extraction_mall/shelf',
+            '/obj/structure/table/extraction_mall/coatrack',
+            '/obj/structure/table/extraction_mall/nightstand',
+            '/obj/structure/bed/wood/extraction_mall',
+            '/obj/structure/bed/fieldbed/extraction_mall',
+            '/obj/structure/bed/sofa/extraction_mall',
+            '/obj/structure/bed/chair/extraction_mall',
+            '/obj/structure/closet/extraction_mall',
+            '/obj/structure/closet/fridge/extraction_mall',
+            '/obj/structure/oven/extraction_mall',
+            '/obj/structure/sink/extraction_mall',
+            '/obj/structure/toilet/extraction_mall',
+            '/obj/structure/extraction_mall_stairs',
+            '/obj/structure/props/car_wreck',
+        }
+        layers = parse(build())
+        for z in (1, 4, 5):
+            for row in layers[z]:
+                for value in row:
+                    for path in re.findall(r'/obj/(?:structure|covers)/[A-Za-z0-9_/]+', value):
+                        self.assertIn(path, allowed)
+
     def test_walk_routes_and_native_sized_vehicle_clearance(self):
         for size in (160, 256, 320):
             with self.subTest(size=size):

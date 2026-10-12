@@ -59,6 +59,189 @@
 	density = FALSE
 	opacity = FALSE
 
+
+// Mall raid fixtures are fixed architecture, not an unjournaled material pool.
+// Native table connections and bed/chair material overlays remain unchanged.
+// Guard both interactive tool paths and direct damage/deconstruction callbacks.
+/obj/structure/table/extraction_mall
+	parent_type = /obj/structure/table/wood
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	deconstructable = FALSE
+	parts = null
+	attackby(obj/item/I, mob/user, params)
+		return
+	break_to_parts(full_return = FALSE)
+		return list()
+	table_destroy(destroy_type, mob/user)
+		return
+	check_cover(obj/item/projectile/P, turf/from)
+		// Preserve native unflipped-table cover probability, without damage
+		// accumulation or the parent's resource-producing break callback.
+		if (!get_step(loc, get_dir(from, loc)) || get_dist(P.starting, loc) <= 1)
+			return TRUE
+		var/chance = 20
+		if (ismob(P.original))
+			var/mob/M = P.original
+			if (M.lying) chance += 10
+		return !prob(chance)
+	Flip()
+		return
+	rotate_left()
+		return
+	rotate_right()
+		return
+
+/obj/structure/table/extraction_mall/shelf
+	name = "store shelf"
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "storeshelf"
+	fixedsprite = TRUE
+	low = TRUE
+	update_icon()
+		return
+
+/obj/structure/table/extraction_mall/coatrack
+	name = "coat rack"
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "coatrack"
+	fixedsprite = TRUE
+	low = TRUE
+	update_icon()
+		return
+
+/obj/structure/table/extraction_mall/nightstand
+	name = "night stand"
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "nightstand"
+	fixedsprite = TRUE
+	low = TRUE
+	update_icon()
+		return
+
+/obj/structure/bed/wood/extraction_mall
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	parts = null
+	attackby(obj/item/weapon/W, mob/user)
+		return
+	dismantle()
+		return
+	remove_padding()
+		return
+	add_padding(padding_type)
+		return
+
+/obj/structure/bed/fieldbed/extraction_mall
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	parts = null
+	attackby(obj/item/weapon/W, mob/user)
+		return
+	dismantle()
+		return
+	remove_padding()
+		return
+	add_padding(padding_type)
+		return
+
+/obj/structure/bed/sofa/extraction_mall
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	parts = null
+	attackby(obj/item/weapon/W, mob/user)
+		return
+	dismantle()
+		return
+	remove_padding()
+		return
+	add_padding(padding_type)
+		return
+
+/obj/structure/bed/chair/extraction_mall
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	parts = null
+	attackby(obj/item/weapon/W, mob/user)
+		return
+	dismantle()
+		return
+	remove_padding()
+		return
+	add_padding(padding_type)
+		return
+	rotate_left()
+		return
+	rotate_right()
+		return
+
+/obj/structure/closet/extraction_mall
+	anchored = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	parts = null
+	attackby(obj/item/I, mob/user)
+		return
+
+/obj/structure/closet/fridge/extraction_mall
+	anchored = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	parts = null
+	attackby(obj/item/I, mob/user)
+		return
+
+/obj/structure/oven/extraction_mall
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	parts = null
+	attackby(obj/item/I, mob/living/human/H)
+		return
+	attack_hand(mob/living/human/H)
+		return
+	fire_loop()
+		return
+	process()
+		return
+
+// Disused plumbing retains each actual native sprite without the sink's
+// renewable water / mosquito constructors or its reagent filling handlers.
+/obj/structure/extraction_mall_fixture
+	anchored = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	parts = null
+	attackby(obj/item/I, mob/user)
+		return
+
+/obj/structure/sink/extraction_mall
+	parent_type = /obj/structure/extraction_mall_fixture
+	name = "disused sink"
+	desc = "A damaged washbasin. The mall water supply has been disconnected."
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "sink"
+	density = FALSE
+
+/obj/structure/toilet/extraction_mall
+	parent_type = /obj/structure/extraction_mall_fixture
+	name = "disused toilet"
+	desc = "A damaged porcelain fixture in the abandoned washroom."
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "toilet00"
+	density = FALSE
+
+/obj/covers/generic_wall/extraction_mall
+	not_movable = TRUE
+	amount = 0
+	attackby(obj/item/I, mob/user)
+		return
+	try_destroy()
+		return
+	bullet_act(obj/item/projectile/P)
+		return
+	ex_act(severity)
+		return
+
 /obj/structure/extraction_mall_stairs
 	name = "Mall stairs"
 	desc = "Pedestrian stair core. Click to change floors. Vehicles cannot use this route."

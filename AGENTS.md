@@ -117,6 +117,14 @@ after a normal tick and anchor `run_time_tick_usage` to `world.tick_usage`.
 - Console/machinery objects use `density = TRUE` and `anchored = TRUE` - they block movement.
 - For maps with many objects, define tile keys systematically (e.g., "oa", "ob", "oc"...) to keep things manageable.
 
+<!-- 2026-10-12: fixed extraction scenery -->
+Native furniture can yield materials through damage and direct deconstruction
+callbacks even when generic disassembly is disabled. Mall raid placements use
+map-only variants in `extraction/mall.dm`; the generator preserves native atoms
+on protected home/hub floors. Keep the offline fixture catalog and compiled
+`mall_fixture_dressing_probe()` aligned when adding furnishings. A compiled
+probe is not evidence that its native tool/damage checks have executed.
+
 ## DMI (sprite sheet) file format
 
 DMI files are valid PNGs with an embedded `zTXt` metadata chunk. The chunk keyword is `Description` and its value is zlib-compressed text (after a null-terminator byte following the keyword). Decompressing it yields a plain-text JSON-like DM literal describing every sprite state.

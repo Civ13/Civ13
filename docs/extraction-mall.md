@@ -38,9 +38,10 @@ plus common dining and two washrooms with toilet cubicles and sinks.
 Parking has marked bays, pedestrian crossings, circulation lanes and enclosed
 security, maintenance, dispatch and utility rooms. Sixteen wrecks and scattered
 debris occupy bays while preserving the road approaches and highway loop.
-Fixtures use existing native structures; ordinary closets and fridges begin
-empty, and ovens begin unlit. They do not bypass the sealed-loot economy with
-stocked decoration containers.
+Fixtures use map-specific variants of existing native structures. Closets and
+fridges begin empty; ovens and plumbing are disused. Tool, dismantling and
+damage callbacks cannot convert fixed dressing into saleable resources outside
+the loot journal. Native furniture on other maps keeps its existing behavior.
 
 Shop rows, shelf ends and side aisles interrupt indoor sightlines. Wide public
 concourse routes contrast with narrower service routes; furnishings stay out

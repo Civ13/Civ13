@@ -53,6 +53,83 @@ var/global/mall_fixture_failed = FALSE
 	plan()
 		return list(list("type" = "/obj/item/extraction_salvage", "quantity" = 1))
 
+
+// Bounded native contracts for fixed scenery. These run only when the mall
+// fixture is explicitly launched; source additions are not runtime evidence.
+/proc/mall_fixture_dressing_probe(mob/living/human/H)
+	var/turf/T = get_turf(H)
+	// Keep tools off the cabinet turf: native closet initialization collects
+	// pre-existing floor items, which would invalidate the empty-stock check.
+	var/obj/item/weapon/hammer/hammer = new(H)
+	var/obj/item/weapon/wrench/wrench = new(H)
+	var/obj/item/weapon/wirecutters/cutters = new(H)
+	var/list/types = list(
+		/obj/structure/table/extraction_mall,
+		/obj/structure/table/extraction_mall/shelf,
+		/obj/structure/table/extraction_mall/coatrack,
+		/obj/structure/table/extraction_mall/nightstand,
+		/obj/structure/bed/wood/extraction_mall,
+		/obj/structure/bed/fieldbed/extraction_mall,
+		/obj/structure/bed/sofa/extraction_mall,
+		/obj/structure/bed/chair/extraction_mall,
+		/obj/structure/closet/extraction_mall,
+		/obj/structure/closet/fridge/extraction_mall,
+		/obj/structure/oven/extraction_mall,
+		/obj/structure/sink/extraction_mall,
+		/obj/structure/toilet/extraction_mall,
+		/obj/covers/generic_wall/extraction_mall)
+	var/items_before = 0
+	for (var/obj/item/I in world) items_before++
+	for (var/path in types)
+		var/obj/O = new path(T)
+		mall_assert(O.icon && (O.icon_state || O.overlays.len), "fixed dressing retains a native visible appearance")
+		mall_assert(O.anchored, "fixed dressing starts anchored")
+		O.attackby(hammer, H)
+		O.attackby(wrench, H)
+		O.attackby(cutters, H)
+		if (istype(O, /obj/structure/table))
+			var/obj/structure/table/table = O
+			table.health = 0
+			table.break_to_parts(TRUE)
+			table.table_destroy(1, H)
+			table.table_destroy(2, H)
+			table.table_destroy(3, H)
+			mall_assert(!table.deconstructable && table.density, "fixed display tables remain dense and reject direct yield callbacks")
+		if (istype(O, /obj/structure/bed))
+			var/obj/structure/bed/bed = O
+			var/material/old_material = bed.material
+			bed.padding_material = old_material
+			bed.remove_padding()
+			bed.dismantle()
+			bed.add_padding("steel")
+			mall_assert(bed.padding_material == old_material && bed.material == old_material, "fixed beds reject direct padding and dismantling callbacks")
+		if (istype(O, /obj/structure/oven))
+			var/obj/structure/oven/oven = O
+			oven.fuel = 10
+			oven.attack_hand(H)
+			oven.fire_loop()
+			oven.process()
+			mall_assert(!oven.on && oven.fuel == 10 && !oven.contents.len, "disused ovens cannot accept fuel or manufacture food")
+		if (istype(O, /obj/structure/closet))
+			mall_assert(!O.contents.len && O.density, "fixed empty cabinets provide no stock")
+		if (istype(O, /obj/covers))
+			var/obj/covers/cover = O
+			cover.health = 0
+			cover.try_destroy()
+			cover.ex_act(1)
+			mall_assert(!cover.amount && cover.density, "fixed walls reject direct destruction callbacks")
+		if (path == /obj/structure/sink/extraction_mall)
+			mall_assert(!("volume" in O.vars) && !("mosquito_count" in O.vars), "disused sink has no renewable water or mosquito lifecycle")
+		mall_assert(O.loc == T && O.anchored, "tool and direct callback probes cannot remove or unfasten mapped fixtures")
+		qdel(O)
+	var/items_after = 0
+	for (var/obj/item/I in world) items_after++
+	mall_assert(items_after == items_before, "all fixed fixture constructors and tool/damage callbacks generate no items")
+	qdel(hammer)
+	qdel(wrench)
+	qdel(cutters)
+	mall_stage("after fixed dressing contracts")
+
 /proc/mall_probe()
 	GLOB.all_observable_events = list()
 	GLOB.global_listen_count = list()
@@ -71,6 +148,7 @@ var/global/mall_fixture_failed = FALSE
 	mall_stage("before human constructor")
 	var/mob/living/human/H = new(locate(4,4,1))
 	mall_stage("after human constructor")
+	mall_fixture_dressing_probe(H)
 	H.m_intent = "stealth"
 	M.fixture_owners[H] = "mallvisitor"
 	mall_assert(M.admit(H) && H.z == 2, "native account admitted to private home")

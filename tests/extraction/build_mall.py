@@ -24,6 +24,17 @@ def build(size=SIZE):
     concrete = '/turf/floor/plating/concrete'
     dark = '/turf/floor/plating/dark'
     areas = {1: '/area/extraction_mall/parking', 4: '/area/extraction_mall/retail', 5: '/area/extraction_mall/gallery'}
+    fixtures = {
+        wall: wall + '/extraction_mall',
+        '/obj/structure/table/wood': '/obj/structure/table/extraction_mall',
+        '/obj/structure/table/rack/shelf/store': '/obj/structure/table/extraction_mall/shelf',
+        '/obj/structure/table/rack/coatrack': '/obj/structure/table/extraction_mall/coatrack',
+        '/obj/structure/table/nightstand': '/obj/structure/table/extraction_mall/nightstand',
+        **{f'/obj/structure/bed/{kind}': f'/obj/structure/bed/{kind}/extraction_mall'
+           for kind in ('wood', 'fieldbed', 'sofa', 'chair')},
+        **{f'/obj/structure/{kind}': f'/obj/structure/{kind}/extraction_mall'
+           for kind in ('closet', 'closet/fridge', 'oven', 'sink', 'toilet')},
+    }
 
     def tile(value):
         if value not in definitions:
@@ -34,7 +45,11 @@ def build(size=SIZE):
         return definitions[value]
 
     def atoms(z, objects=(), floor=concrete):
-        return '(' + ','.join((*objects, floor, areas[z])) + ')'
+        fixed = []
+        for obj in objects:
+            path, separator, variables = obj.partition('{')
+            fixed.append(fixtures.get(path, path) + (separator + variables if separator else ''))
+        return '(' + ','.join((*fixed, floor, areas[z])) + ')'
 
     layers = {z: [[tile(atoms(z, () if z == 1 else (wall,))) for _ in range(size)] for _ in range(size)] for z in areas}
 
@@ -61,9 +76,9 @@ def build(size=SIZE):
     for y in (24, 136):
         rect(1, 20, y, 140, y+3, dark)
 
-    # All furnishings below are existing native, initially empty structures.
+    # All furnishings below use fixed mall variants of existing native sprites.
     # Racks have fixed sprites, tables connect to neighbours, bed/sofa/chair
-    # constructors resolve their material. Base ovens start unlit, and base
+    # constructors resolve their material. Ovens and plumbing are disused, and
     # closets/fridges create no stock. No equipped lockers, vending machines,
     # workbench factories or loose item spawners are used as decoration.
     shelf = '/obj/structure/table/rack/shelf/store'
@@ -115,8 +130,8 @@ def build(size=SIZE):
             put(z, x, top-2, '/obj/structure/toilet', floor=floor)
             if x+2 < right:
                 rect(z, x+2, top-3, x+2, top-1, floor, (wall,))
-        # Actual sinks use native water/mosquito lifecycle; limit their count
-        # to plumbing rooms rather than populating every decorative counter.
+        # Disused plumbing keeps the native sprite without renewable water or
+        # mosquito lifecycle. All fixtures remain outside the loot economy.
         for x in range(left+2, right-2, 5):
             put(z, x, bottom+2, '/obj/structure/sink', floor=floor)
 
