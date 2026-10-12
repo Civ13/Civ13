@@ -1041,7 +1041,7 @@ var/civmax_research = list(230,230,230)
 
 // Discovery is cheap; mutation can run constructors and icon callbacks.
 /obj/map_metadata/proc/season_work_pause(var/epoch, var/work, var/discovery = FALSE)
-	if (!season_worker_valid(epoch))
+	if (season_retired || map != src || season_epoch != epoch)
 		return FALSE
 	var/batch = discovery ? 4096 : 256
 	if (world.tick_usage >= 20)
@@ -1049,7 +1049,7 @@ var/civmax_research = list(230,230,230)
 	else if (!(work % batch))
 		// Service ready events without idling a full tick while budget remains.
 		sleep(0)
-	return season_worker_valid(epoch)
+	return !season_retired && map == src && season_epoch == epoch
 
 /obj/map_metadata/proc/season_world_candidates(var/atom_type, var/epoch)
 	if (!season_worker_valid(epoch))
