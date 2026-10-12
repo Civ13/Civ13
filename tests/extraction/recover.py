@@ -14,12 +14,12 @@ def main():
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--store-root', required=True, type=Path)
     parser.add_argument('--owner', required=True)
-    parser.add_argument('--action', choices=('inspect', 'complete-snapshot', 'retire-delivery', 'settle-loss'), default='inspect')
+    parser.add_argument('--action', choices=('inspect', 'complete-snapshot', 'retire-delivery', 'retire-vehicle', 'settle-loss'), default='inspect')
     parser.add_argument('--generation', type=int)
     parser.add_argument('--digest')
     parser.add_argument('--item')
     parser.add_argument('--offline-confirmation', choices=('sole-server-stopped',))
-    parser.add_argument('--loss-confirmation', choices=('discard-account-stash',))
+    parser.add_argument('--loss-confirmation', choices=('discard-account-stash', 'forfeit-paid-car'))
     args = parser.parse_args()
     if args.action != 'inspect' and (not args.offline_confirmation or not args.generation or args.generation < 1):
         parser.error('Mutation requires an exact generation and sole-server-stopped attestation')
@@ -27,7 +27,9 @@ def main():
         parser.error('Snapshot completion requires the inspected intent digest')
     if args.action == 'settle-loss' and not args.loss_confirmation:
         parser.error('Loss settlement permanently discards the entire account stash; explicit loss confirmation required')
-    if args.action == 'retire-delivery' and not args.item:
+    if args.action == 'retire-vehicle' and args.loss_confirmation != 'forfeit-paid-car':
+        parser.error('Vehicle retirement permanently forfeits paid construction without refund; explicit loss confirmation required')
+    if args.action in ('retire-delivery', 'retire-vehicle') and not args.item:
         parser.error('Retirement requires the inspected pending item identity')
     # Parameters use BYOND's delimiter grammar; do not accept delimiter injection.
     for value in (args.owner, args.digest, args.item):

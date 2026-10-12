@@ -70,6 +70,21 @@ def main():
         latest = max(invoke('inspect', True)['slots'], key=lambda slot: slot['generation'])['profile']
         assert latest['stash'] == [] and latest['level'] == 2 and latest['state'] == 'home'
         invoke('settle-loss', False, *flags, '--loss-confirmation', 'discard-account-stash')
+        latest.update(revision=5, garage_purchase=dict(id='paidconstruction', model='piccolino', status='pending', paid_revision=5, payment=[f'paidpart{i}' for i in range(25)]))
+        payload = json.dumps(latest, separators=(',', ':')) + '\n'
+        digest = hashlib.md5(payload.encode()).hexdigest()
+        (owner / '0.snapshot').write_bytes(payload.encode())
+        (owner / '0.intent').write_text(json.dumps(dict(schema=1, owner='fixture', generation=5, digest=digest)), encoding='utf-8')
+        (owner / '0.commit').write_text(json.dumps(dict(generation=5, digest=digest)), encoding='utf-8')
+        flags = ('--generation', '5', '--offline-confirmation', 'sole-server-stopped', '--loss-confirmation', 'forfeit-paid-car')
+        before = {p.name: p.read_bytes() for p in owner.iterdir()}
+        invoke('retire-vehicle', False, *flags, '--item', 'wrongconstruction')
+        assert before == {p.name: p.read_bytes() for p in owner.iterdir()}
+        report = invoke('retire-vehicle', True, *flags, '--item', 'paidconstruction')
+        assert report['revision'] == 6 and (owner / 'garage-recovery.latest.json').exists()
+        latest = max(invoke('inspect', True)['slots'], key=lambda slot: slot['generation'])['profile']
+        assert latest['garage_purchase']['status'] == 'forfeited' and latest['garage'] == [] and latest['stash'] == []
+        invoke('retire-vehicle', False, *flags, '--item', 'paidconstruction')
         assert not list(root.glob('recovery_report_*'))
     print('PASS: native offline recovery inspection, digest rejection, receipts, replay, delivery retirement and explicit loss settlement')
 

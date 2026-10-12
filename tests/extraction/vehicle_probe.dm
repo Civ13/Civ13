@@ -117,3 +117,26 @@
 	equipment_assert(private_car.engine.fueltank.reagents.total_volume == 14 && private_frame.w_front[5] == 61 && private_car.extraction_vehicle_part_id == snapshot["id"], "private reconnect retains paid fuel condition and identity")
 	equipment_assert(M.release(private_session), "private garage fixture releases account cleanly")
 	qdel(owner)
+	var/mob/living/human/buyer = new(locate(3,3,1))
+	buyer.m_intent = "stealth"
+	M.test_owners[buyer] = "carbuyer"
+	equipment_assert(M.admit(buyer), "car buyer receives ordinary private account")
+	var/datum/extraction_session/buyer_session = buyer.extraction_session
+	equipment_assert(!M.buy_car(buyer), "level-one account cannot acquire dealer car")
+	for (var/i in 1 to 5) new /obj/item/extraction_salvage(get_turf(buyer_session.house))
+	equipment_assert(M.upgrade_house(buyer_session), "dealer buyer pays real house upgrade before purchasing")
+	for (var/i in 1 to EXTRACTION_CAR_PRICE) new /obj/item/extraction_salvage(get_turf(buyer_session.house))
+	M.test_car_confirmation = FALSE
+	equipment_assert(!M.buy_car(buyer) && !buyer_session.garage_vehicle && buyer_session.profile["stash"].len == 29, "declined car purchase retains every actual payment part")
+	M.test_car_confirmation = "move"
+	equipment_assert(!M.buy_car(buyer) && !buyer_session.garage_vehicle && buyer_session.profile["stash"].len == 29, "movement during dealer confirmation invalidates quote without spending parts")
+	buyer.forceMove(get_turf(buyer_session.house))
+	M.test_car_confirmation = TRUE
+	equipment_assert(M.buy_car(buyer), "dealer consumes real home payment before assembling and saving car")
+	equipment_assert(buyer_session.garage_vehicle && buyer_session.garage_vehicle.engine.fueltank.reagents.total_volume == 0 && buyer_session.profile["stash"].len == 4 && buyer_session.profile["garage_purchase"]["status"] == "complete", "paid dealer car contains no free fuel or refunded workshop parts")
+	equipment_assert(!M.buy_car(buyer) && buyer_session.profile["garage"].len == 1, "occupied garage cannot repeat dealer acquisition")
+	equipment_assert(M.release(buyer_session) && M.admit(buyer), "paid dealer car survives private account release and reconnect")
+	buyer_session = buyer.extraction_session
+	equipment_assert(buyer_session.garage_vehicle && buyer_session.profile["stash"].len == 4, "reconnect restores one acknowledged dealer car without payment refund")
+	equipment_assert(M.release(buyer_session), "dealer fixture releases paid car cleanly")
+	qdel(buyer)

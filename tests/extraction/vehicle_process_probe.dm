@@ -75,9 +75,43 @@
 			equipment_assert(quarantined && !quarantined.profile["garage"].len && quarantined.profile["loss_settlement"], "third process retains explicit forfeiture without reissuing previous garage")
 			quarantined.close()
 		session.close()
+		run_vehicle_purchase_process_probe(params["phase"])
 		completed = TRUE
 	catch (var/exception/E)
 		equipment_failures++
 		world.log << "FAIL: [E] at [E.file]:[E.line]"
 	text2file(completed && !equipment_failures ? "PASS: native vehicle account process reload, condition and removal replay" : "FAIL: native vehicle process verification", "result.txt")
 	shutdown()
+
+/proc/run_vehicle_purchase_process_probe(phase)
+	var/datum/extraction_service/S = new
+	S.store.root = "data/purchase_vehicle/"
+	if (phase == "write")
+		var/datum/extraction_session/A = S.open("paidcarowner")
+		var/list/P = A.copy_profile()
+		P["level"] = 2
+		var/list/payment = list()
+		var/datum/extraction_equipment_codec/C = new
+		for (var/i in 1 to EXTRACTION_CAR_PRICE)
+			var/obj/item/extraction_salvage/I = new(locate(3,3,1))
+			var/list/graph = C.encode(I)
+			P["stash"] += list(list("id" = I.extraction_item_id, "equipment" = graph, "salvage" = TRUE))
+			payment += I.extraction_item_id
+			qdel(I)
+		equipment_assert(A.commit(P), "purchase restart fixture stores real payment graphs")
+		var/list/plan = A.plan_vehicle_purchase(payment, A.profile["revision"])
+		equipment_assert(plan && A.commit(plan) && !A.profile["stash"].len && A.profile["garage_purchase"]["status"] == "pending", "paid construction intent commits without a visible car")
+		A.close()
+	else if (phase == "reload")
+		equipment_assert(!S.open("paidcarowner"), "fresh process quarantines interrupted paid construction without reissue")
+		var/list/P = S.store.load_profile("paidcarowner")
+		equipment_assert(P && !P["stash"].len && P["garage_purchase"]["status"] == "pending", "quarantine preserves actual payment debit")
+		var/id = P["garage_purchase"]["id"]
+		equipment_assert(!S.store.retire_pending_vehicle("paidcarowner", P["revision"] - 1, id) && !S.store.retire_pending_vehicle("paidcarowner", P["revision"], "wrongpurchase"), "offline car forfeiture rejects stale revision and wrong purchase identity")
+		P = S.store.retire_pending_vehicle("paidcarowner", P["revision"], id)
+		equipment_assert(P && P["garage_purchase"]["status"] == "forfeited" && !P["stash"].len && !P["garage"].len && fexists("data/purchase_vehicle/paidcarowner/garage-recovery.latest.json"), "explicit offline construction forfeiture preserves receipt without refund or car")
+	else
+		var/datum/extraction_session/A = S.open("paidcarowner")
+		equipment_assert(A && A.profile["garage_purchase"]["status"] == "forfeited" && !A.profile["stash"].len && !A.profile["garage"].len, "third process retains paid construction forfeiture without recreation")
+		equipment_assert(!S.store.retire_pending_vehicle("paidcarowner", A.profile["revision"], A.profile["garage_purchase"]["id"]), "construction forfeiture cannot replay")
+		A.close()

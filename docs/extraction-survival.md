@@ -15,8 +15,16 @@ bay. Stash and garage condition checkpoint in one account transaction; tank
 parts are excluded from loose stash. A blocked bay exposes no partial account
 restoration. Release saves before retiring top parts and contained controller,
 steering and wheels. Moving, occupied or displaced cars block save/release.
-Paid acquisition, raid ownership transitions, cargo/capacity and passenger
-policy remain required before a vehicle extraction action is available.
+The private terminal sells a Piccolino for 25 uninsured workshop parts after a
+paid level-two house upgrade. A clear bay and a confirmed, unchanged stash
+revision are required. Payment commits before the production factory creates
+the car, without fuel. Completion records the actual car graph in the next
+account revision; reconnect restores that acknowledged graph once. Pending
+construction quarantines the account on restart. Explicit offline forfeiture
+records the purchase identity and receipt, without refund or car reissue.
+A payment-retention mutation control detects keeping spent parts in the stash.
+Raid ownership transitions, cargo/capacity and passenger policy remain required
+before a vehicle extraction action is available.
 
 Isolated native tests cover account storage, nested equipment restoration,
 bounded NPC combat, extraction cancellation, private rooms and hub navigation.

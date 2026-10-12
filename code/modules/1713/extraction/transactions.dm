@@ -40,6 +40,9 @@
 	if (!insurance_profile_valid(P))
 		last_error = "Insurance ownership records require recovery"
 		return null
+	if (islist(P["garage_purchase"]) && P["garage_purchase"]["status"] == "pending")
+		last_error = "Paid vehicle construction is uncertain; account quarantined for explicit offline forfeiture"
+		return null
 	// An old raid cannot be reconstructed as a free second copy of issued gear.
 	if (P["state"] == "raid")
 		P["state"] = "home"

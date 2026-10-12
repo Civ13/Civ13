@@ -13,6 +13,7 @@ Use BYOND 516.1681 and a verified full Python interpreter path:
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control visibility
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe vehicles
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe vehicles --vehicle-loss-negative-control
+& $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe mode --vehicle-purchase-negative-control
 & $PythonPath tests/extraction/test_map_environment.py
 & $PythonPath tests/extraction/check_catalog.py --byond-bin $ByondBin
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe equipment --provenance-negative-control
@@ -143,8 +144,13 @@ separate outcomes; this is not production restart or playable acceptance.
 The mode fixture additionally checks private-bay admission and reconnect,
 fuel/damage checkpoint with the stash, moving-car save/release rejection,
 blocked-bay failure before equipment construction and retirement of both
-top-level parts and the nested controller. Acquisition and raid transfer
-remain separate acceptance requirements.
+top-level parts and the nested controller. Paid acquisition checks the actual
+house upgrade, declined confirmation, debit-before-construction, zero-fuel
+delivery and acknowledged reconnect. Its payment-retention control must fail
+at the durable stash assertion. The vehicles process probe also checks pending
+construction quarantine, exact offline forfeiture binding/receipt and no
+refund/recreation after a third process. Raid transfer remains a separate
+acceptance requirement.
 
 Record a genuine disposable local playable world after integrated regressions
 pass. Use the exact pinned build and record its full commit, dirty patch when

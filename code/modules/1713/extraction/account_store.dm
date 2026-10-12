@@ -1,6 +1,7 @@
 // Bounded two-slot account journal. Incomplete transfers fail closed.
 #define EXTRACTION_STORE_VERSION 1
 #define EXTRACTION_PROFILE_LIMIT 2097152
+#define EXTRACTION_CAR_PRICE 25
 
 /datum/extraction_account_store
 	var/root = "data/extraction_accounts/"
@@ -23,6 +24,7 @@
 	if (islist(P) && !isnull(P["raid_faction"]) && !(P["raid_faction"] in list("PMC", "Scav"))) return FALSE
 	if (!islist(P)) return FALSE
 	if (!isnull(P["garage"]) && !valid_garage(P["garage"])) return FALSE
+	if (!isnull(P["garage_purchase"]) && !valid_garage_purchase(P["garage_purchase"])) return FALSE
 	var/list/stash = P["stash"]
 	return P["schema"] == EXTRACTION_STORE_VERSION && P["owner"] == owner && isnum(P["revision"]) && P["revision"] >= 0 && round(P["revision"]) == P["revision"] && isnum(P["level"]) && P["level"] >= 1 && P["level"] <= 4 && round(P["level"]) == P["level"] && islist(stash) && stash.len <= 64 && (P["state"] == "home" || P["state"] == "raid") && isnum(P["raid_sequence"]) && P["raid_sequence"] >= 0 && round(P["raid_sequence"]) == P["raid_sequence"]
 
@@ -40,6 +42,16 @@
 			var/list/node = nodes[j]
 			if (!islist(node) || !istext(node["id"]) || !length(node["id"]) || length(node["id"]) > 80 || ids[node["id"]] || !istext(node["type"])) return FALSE
 			ids[node["id"]] = TRUE
+	return TRUE
+
+/datum/extraction_account_store/proc/valid_garage_purchase(list/purchase)
+	if (!islist(purchase) || !istext(purchase["id"]) || !length(purchase["id"]) || length(purchase["id"]) > 80 || purchase["model"] != "piccolino" || !(purchase["status"] in list("pending", "complete", "forfeited")) || !isnum(purchase["paid_revision"]) || purchase["paid_revision"] < 1 || round(purchase["paid_revision"]) != purchase["paid_revision"]) return FALSE
+	var/list/payment = purchase["payment"]
+	if (!islist(payment) || payment.len != EXTRACTION_CAR_PRICE) return FALSE
+	var/list/ids = list()
+	for (var/id in payment)
+		if (!istext(id) || !length(id) || length(id) > 80 || ids[id]) return FALSE
+		ids[id] = TRUE
 	return TRUE
 
 // A newer intent without its exact committed payload blocks automatic rollback.
@@ -229,6 +241,21 @@
 	P["loot_state"] = "ready"
 	P["pending_item"] = null
 	P["retired_delivery"] = list("id" = item_id, "revision" = generation)
+	if (!commit_profile(owner, P)) return null
+	return P
+
+// OFFLINE resolution of an acknowledged debit with uncertain car construction.
+/datum/extraction_account_store/proc/retire_pending_vehicle(owner, generation, purchase_id)
+	var/list/P = load_profile(owner)
+	if (!P || P["revision"] != generation || !islist(P["garage_purchase"])) return fail("Pending vehicle revision changed")
+	var/list/purchase = P["garage_purchase"]
+	if (!istext(purchase_id) || purchase["id"] != purchase_id || purchase["status"] != "pending") return fail("Pending vehicle identity changed")
+	var/receipt = "[root][owner]/garage-recovery.latest.json"
+	if (fexists(receipt)) return fail("Archive existing garage recovery receipt before another forfeiture")
+	if (!write_phase(receipt, json_encode(list("schema" = 1, "action" = "forfeit-uncertain-paid-car", "owner" = owner, "revision" = generation, "purchase" = purchase.Copy(), "before" = P)))) return fail("Garage forfeiture receipt unavailable")
+	P["garage"] = list()
+	P["garage_purchase"]["status"] = "forfeited"
+	P["garage_purchase"]["discarded_revision"] = generation
 	if (!commit_profile(owner, P)) return null
 	return P
 

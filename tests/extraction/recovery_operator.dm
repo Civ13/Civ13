@@ -29,6 +29,7 @@
 			var/list/P
 			if (action == "complete-snapshot") P = S.recover_snapshot(owner, generation, world.params["digest"])
 			if (action == "retire-delivery") P = S.retire_pending_delivery(owner, generation, world.params["item"])
+			if (action == "retire-vehicle" && world.params["loss"] == "forfeit-paid-car") P = S.retire_pending_vehicle(owner, generation, world.params["item"])
 			if (action == "settle-loss" && world.params["loss"] == "discard-account-stash") P = S.settle_pending_loss(owner, generation, world.params["digest"])
 			report["success"] = !!P
 			if (P) report["revision"] = P["revision"]

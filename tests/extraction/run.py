@@ -17,7 +17,10 @@ def main():
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry'))
     parser.add_argument('--group-negative-control', choices=('debit', 'visibility'))
     parser.add_argument('--vehicle-loss-negative-control', action='store_true')
+    parser.add_argument('--vehicle-purchase-negative-control', action='store_true')
     args = parser.parse_args()
+    if args.vehicle_purchase_negative_control and (args.probe != 'mode' or args.provenance_negative_control or args.vote_negative_control or args.group_negative_control or args.vehicle_loss_negative_control):
+        parser.error('Vehicle purchase control requires the mode probe without another control')
     if args.vehicle_loss_negative_control and (args.probe != 'vehicles' or args.provenance_negative_control or args.vote_negative_control or args.group_negative_control):
         parser.error('Vehicle loss control requires the vehicles probe without another control')
     if args.provenance_negative_control and args.probe not in ('equipment', 'mode'):
@@ -32,7 +35,7 @@ def main():
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     if args.probe in ('equipment', 'mode', 'insurance', 'groups', 'vehicles'):
-        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control)
+        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control)
     with tempfile.TemporaryDirectory(prefix='civ13-extraction-') as temp:
         target = Path(temp)
         (target / 'tests/extraction').mkdir(parents=True)
@@ -62,13 +65,22 @@ def main():
                 raise RuntimeError('Account journal verification failed')
 
 
-def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False):
+def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False):
     prefix = '.extraction_' + uuid.uuid4().hex
     generated = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '.dmb', '.rsc')]
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         expected_vote_failure = None
         expected_group_failure = None
+        if vehicle_purchase_control:
+            purchase_source = (root / 'code/modules/1713/extraction/vehicle_purchase.dm').read_text(encoding='utf-8')
+            marker = '\tcandidate["stash"] = retained'
+            if purchase_source.count(marker) != 1:
+                raise RuntimeError('Vehicle payment mutation marker changed')
+            control = root / (prefix + '_vehicle_purchase.dm')
+            generated.append(control)
+            control.write_text(purchase_source.replace(marker, '\tcandidate["stash"] = profile["stash"]'), encoding='utf-8')
+            source = source.replace('code\\modules\\1713\\extraction\\vehicle_purchase.dm', control.name)
         if vehicle_loss_control:
             store_source = (root / 'code/modules/1713/extraction/account_store.dm').read_text(encoding='utf-8')
             marker = '\tP["garage"] = list()'
@@ -170,6 +182,12 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
                 log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''
                 print(result)
+                if vehicle_purchase_control and result.startswith('FAIL:'):
+                    if ran.returncode or 'paid dealer car contains no free fuel or refunded workshop parts' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
+                        print(log)
+                        raise RuntimeError('Vehicle payment control failed outside its intended assertion')
+                    print('PASS: retained vehicle payment negative control rejected')
+                    return
                 if vehicle_loss_control and result.startswith('FAIL:'):
                     if ran.returncode or 'uncertain garage forfeited independently of empty stash' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
                         print(log)
@@ -201,6 +219,8 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 raise RuntimeError('Group control was not detected')
             if vehicle_loss_control:
                 raise RuntimeError('Vehicle loss control was not detected')
+            if vehicle_purchase_control:
+                raise RuntimeError('Vehicle purchase control was not detected')
     finally:
         for path in generated:
             path.unlink(missing_ok=True)

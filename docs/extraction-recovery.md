@@ -90,6 +90,24 @@ Real-client item appearance, concurrent login rejection and whole-world restart
 remain separate acceptance checks. Do not declare a delivery, insurance payout
 or trade settled solely because its account journal was made readable.
 
+An acknowledged `garage_purchase.status = pending` means the dealer payment
+committed but car construction was not acknowledged. Login remains quarantined.
+Do not construct the car again or refund those payment IDs from the preceding
+slot. With the sole server stopped, inspect the exact committed revision and
+purchase ID, then explicitly forfeit uncertain construction:
+
+```powershell
+& $PythonPath tests/extraction/recover.py --byond-bin $ByondBin --store-root $StoreRoot --owner $Owner --action retire-vehicle --generation $Generation --item $PurchaseId --offline-confirmation sole-server-stopped --loss-confirmation forfeit-paid-car
+```
+
+This preserves the original paid purchase and account in the fixed
+`garage-recovery.latest.json` receipt, marks the purchase forfeited and empties
+the garage. It never refunds parts or creates a car. Wrong revision/identity and
+replay are rejected. Preserve and archive an existing receipt before resolving
+another purchase. An interrupted recovery still requires exact snapshot
+reconciliation; a receipt is not proof that its subsequent account commit
+completed. Ordinary acknowledged garage reload is a separate successful path.
+
 Native regressions are `tests/extraction/run.py --probe store` and
 `tests/extraction/test_recovery.py`. They cover matching bytes, wrong bindings,
 nested ownership conflict, no rollback, retained receipts, replay, non-reissuing

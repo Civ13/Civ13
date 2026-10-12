@@ -263,6 +263,11 @@ never serialize movement callbacks, passengers or arbitrary vehicle vars.
 acknowledged reload, removal and quarantined-debit loss settlement. Its
 `--vehicle-loss-negative-control` detects retaining an uncertain old garage
 when stash is empty. These checks do not establish playable vehicle extraction.
+Paid car acquisition journals payment before factory construction. Pending
+construction blocks login; offline `recover.py --action retire-vehicle` requires
+the exact purchase/revision and `--loss-confirmation forfeit-paid-car`, preserves
+a fixed receipt and never refunds or reissues. The mode purchase control detects
+retaining spent parts in the stash.
 
 <!-- 2026-10-11: cancellable voting -->
 Votes expose terminal vote handles with generation-bound ballots and immutable

@@ -14,6 +14,13 @@
 	var/test_wait = "complete"
 	var/test_insurance_confirmation = TRUE
 	var/test_party_confirmation = "accept"
+	var/test_car_confirmation = TRUE
+	confirm_car_purchase(mob/living/human/H)
+		if (test_car_confirmation == "move")
+			var/obj/effect/extraction_house_marker/house = H.extraction_session.house
+			H.forceMove(locate(house.x + 4, house.y + 4, house.z))
+			return TRUE
+		return test_car_confirmation
 	confirm_party(mob/living/human/H, leader, faction)
 		sleep(1)
 		if (test_party_confirmation == "stale")
