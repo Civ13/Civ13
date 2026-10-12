@@ -4,92 +4,101 @@
 "ad" = (/obj/effect/extraction_loot_marker{container_id = 2; pool_kind = "armory"},/turf/floor/plating/dark,/area/extraction_district)
 "ae" = (/obj/effect/extraction_npc_marker,/turf/floor/plating/dark,/area/extraction_district)
 "af" = (/obj/structure/component_workbench,/turf/floor/plating/dark,/area/extraction_district)
-"ag" = (/obj/effect/extraction_loot_marker{container_id = 3; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
-"ah" = (/obj/effect/extraction_loot_marker{container_id = 4; pool_kind = "ammunition"},/turf/floor/plating/dark,/area/extraction_district)
-"ai" = (/obj/effect/extraction_loot_marker{container_id = 5; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
-"aj" = (/obj/effect/extraction_loot_marker{container_id = 6; pool_kind = "armory"},/turf/floor/plating/dark,/area/extraction_district)
-"ak" = (/obj/effect/extraction_loot_marker{container_id = 7; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
-"al" = (/obj/effect/extraction_loot_marker{container_id = 8; pool_kind = "ammunition"},/turf/floor/plating/dark,/area/extraction_district)
-"am" = (/obj/effect/extraction_loot_marker{container_id = 9; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
-"an" = (/obj/effect/extraction_loot_marker{container_id = 10; pool_kind = "armory"},/turf/floor/plating/dark,/area/extraction_district)
-"ao" = (/obj/effect/extraction_loot_marker{container_id = 11; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
-"ap" = (/obj/effect/extraction_loot_marker{container_id = 12; pool_kind = "ammunition"},/turf/floor/plating/dark,/area/extraction_district)
-"aq" = (/obj/effect/extraction_loot_marker{container_id = 13; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
-"ar" = (/obj/effect/extraction_loot_marker{container_id = 14; pool_kind = "armory"},/turf/floor/plating/dark,/area/extraction_district)
-"as" = (/obj/effect/extraction_loot_marker{container_id = 15; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
-"at" = (/obj/effect/extraction_loot_marker{container_id = 16; pool_kind = "ammunition"},/turf/floor/plating/dark,/area/extraction_district)
-"au" = (/obj/effect/extraction_loot_marker{container_id = 17; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
-"av" = (/obj/effect/extraction_loot_marker{container_id = 18; pool_kind = "armory"},/turf/floor/plating/dark,/area/extraction_district)
-"aw" = (/obj/effect/extraction_raid_marker,/turf/floor/plating/dark,/area/extraction_district)
-"ax" = (/obj/effect/extraction_exit,/turf/floor/plating/dark,/area/extraction_district)
-"ay" = (/obj/effect/extraction_exit/pmc,/turf/floor/plating/dark,/area/extraction_district)
-"az" = (/obj/effect/extraction_exit/scav,/turf/floor/plating/dark,/area/extraction_district)
-"ba" = (/obj/effect/extraction_exit/manhole,/turf/floor/plating/dark,/area/extraction_district)
-"bb" = (/obj/map_metadata/extraction_survival,/turf/floor/plating/dark,/area/extraction_district)
-"bc" = (/obj/effect/landmark{name = "JoinLateExtraction"},/turf/floor/plating/dark,/area/extraction_district)
-"bd" = (/obj/effect/extraction_drop_box,/turf/floor/plating/dark,/area/extraction_district)
-"be" = (/obj/covers/generic_wall,/turf/floor/plating/dark,/area/extraction_lock_room)
-"bf" = (/turf/floor/plating/dark,/area/extraction_lock_room)
-"bg" = (/obj/structure/simple_door/key_door/extraction_room,/turf/floor/plating/dark,/area/extraction_lock_room)
-"bh" = (/obj/effect/extraction_exit/locked_room,/turf/floor/plating/dark,/area/extraction_lock_room)
-"bi" = (/obj/item/weapon/key/extraction_room,/turf/floor/plating/dark,/area/extraction_district)
-"bj" = (/obj/covers/generic_wall,/turf/floor/plating/dark,/area/extraction_houses)
-"bk" = (/turf/floor/plating/extraction_house,/area/extraction_houses)
-"bl" = (/obj/effect/extraction_house_marker{room = 1},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"bm" = (/obj/effect/extraction_secure_crate{room = 1},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"bn" = (/obj/structure/component_workbench/extraction_private{room = 1},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"bo" = (/obj/effect/extraction_house_marker{room = 2},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"bp" = (/obj/effect/extraction_secure_crate{room = 2},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"bq" = (/obj/structure/component_workbench/extraction_private{room = 2},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"br" = (/obj/effect/extraction_house_marker{room = 3},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"bs" = (/obj/effect/extraction_secure_crate{room = 3},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"bt" = (/obj/structure/component_workbench/extraction_private{room = 3},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"bu" = (/obj/effect/extraction_house_marker{room = 4},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"bv" = (/obj/effect/extraction_secure_crate{room = 4},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"bw" = (/obj/structure/component_workbench/extraction_private{room = 4},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"bx" = (/obj/effect/extraction_house_marker{room = 5},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"by" = (/obj/effect/extraction_secure_crate{room = 5},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"bz" = (/obj/structure/component_workbench/extraction_private{room = 5},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"ca" = (/obj/effect/extraction_house_marker{room = 6},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cb" = (/obj/effect/extraction_secure_crate{room = 6},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cc" = (/obj/structure/component_workbench/extraction_private{room = 6},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cd" = (/obj/effect/extraction_house_marker{room = 7},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"ce" = (/obj/effect/extraction_secure_crate{room = 7},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cf" = (/obj/structure/component_workbench/extraction_private{room = 7},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cg" = (/obj/effect/extraction_house_marker{room = 8},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"ch" = (/obj/effect/extraction_secure_crate{room = 8},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"ci" = (/obj/structure/component_workbench/extraction_private{room = 8},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cj" = (/obj/effect/extraction_house_marker{room = 9},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"ck" = (/obj/effect/extraction_secure_crate{room = 9},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cl" = (/obj/structure/component_workbench/extraction_private{room = 9},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cm" = (/obj/effect/extraction_house_marker{room = 10},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cn" = (/obj/effect/extraction_secure_crate{room = 10},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"co" = (/obj/structure/component_workbench/extraction_private{room = 10},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cp" = (/obj/effect/extraction_house_marker{room = 11},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cq" = (/obj/effect/extraction_secure_crate{room = 11},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cr" = (/obj/structure/component_workbench/extraction_private{room = 11},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cs" = (/obj/effect/extraction_house_marker{room = 12},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"ct" = (/obj/effect/extraction_secure_crate{room = 12},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cu" = (/obj/structure/component_workbench/extraction_private{room = 12},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cv" = (/obj/effect/extraction_house_marker{room = 13},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cw" = (/obj/effect/extraction_secure_crate{room = 13},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cx" = (/obj/structure/component_workbench/extraction_private{room = 13},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cy" = (/obj/effect/extraction_house_marker{room = 14},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"cz" = (/obj/effect/extraction_secure_crate{room = 14},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"da" = (/obj/structure/component_workbench/extraction_private{room = 14},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"db" = (/obj/effect/extraction_house_marker{room = 15},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"dc" = (/obj/effect/extraction_secure_crate{room = 15},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"dd" = (/obj/structure/component_workbench/extraction_private{room = 15},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"de" = (/obj/effect/extraction_house_marker{room = 16},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"df" = (/obj/effect/extraction_secure_crate{room = 16},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"dg" = (/obj/structure/component_workbench/extraction_private{room = 16},/turf/floor/plating/extraction_house,/area/extraction_houses)
-"dh" = (/obj/covers/generic_wall,/turf/floor/plating/dark,/area/extraction_hub)
-"di" = (/turf/floor/plating/dark,/area/extraction_hub)
-"dj" = (/obj/structure/bed/chair,/turf/floor/plating/dark,/area/extraction_hub)
-"dk" = (/obj/effect/extraction_hub_guide/lounge,/turf/floor/plating/dark,/area/extraction_hub)
-"dl" = (/obj/effect/extraction_hub_guide/workshop,/turf/floor/plating/dark,/area/extraction_hub)
-"dm" = (/obj/effect/extraction_hub_guide/operations,/turf/floor/plating/dark,/area/extraction_hub)
-"dn" = (/obj/effect/extraction_hub_terminal,/turf/floor/plating/dark,/area/extraction_hub)
+"ag" = (/obj/effect/extraction_loot_marker{container_id = 19; pool_kind = "supplies"},/turf/floor/plating/dark,/area/extraction_district)
+"ah" = (/obj/effect/extraction_loot_marker{container_id = 3; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
+"ai" = (/obj/effect/extraction_loot_marker{container_id = 4; pool_kind = "ammunition"},/turf/floor/plating/dark,/area/extraction_district)
+"aj" = (/obj/effect/extraction_loot_marker{container_id = 20; pool_kind = "supplies"},/turf/floor/plating/dark,/area/extraction_district)
+"ak" = (/obj/effect/extraction_loot_marker{container_id = 5; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
+"al" = (/obj/effect/extraction_loot_marker{container_id = 6; pool_kind = "armory"},/turf/floor/plating/dark,/area/extraction_district)
+"am" = (/obj/effect/extraction_loot_marker{container_id = 21; pool_kind = "supplies"},/turf/floor/plating/dark,/area/extraction_district)
+"an" = (/obj/effect/extraction_loot_marker{container_id = 7; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
+"ao" = (/obj/effect/extraction_loot_marker{container_id = 8; pool_kind = "ammunition"},/turf/floor/plating/dark,/area/extraction_district)
+"ap" = (/obj/effect/extraction_loot_marker{container_id = 22; pool_kind = "supplies"},/turf/floor/plating/dark,/area/extraction_district)
+"aq" = (/obj/effect/extraction_loot_marker{container_id = 9; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
+"ar" = (/obj/effect/extraction_loot_marker{container_id = 10; pool_kind = "armory"},/turf/floor/plating/dark,/area/extraction_district)
+"as" = (/obj/effect/extraction_loot_marker{container_id = 23; pool_kind = "supplies"},/turf/floor/plating/dark,/area/extraction_district)
+"at" = (/obj/effect/extraction_loot_marker{container_id = 11; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
+"au" = (/obj/effect/extraction_loot_marker{container_id = 12; pool_kind = "ammunition"},/turf/floor/plating/dark,/area/extraction_district)
+"av" = (/obj/effect/extraction_loot_marker{container_id = 24; pool_kind = "supplies"},/turf/floor/plating/dark,/area/extraction_district)
+"aw" = (/obj/effect/extraction_loot_marker{container_id = 13; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
+"ax" = (/obj/effect/extraction_loot_marker{container_id = 14; pool_kind = "armory"},/turf/floor/plating/dark,/area/extraction_district)
+"ay" = (/obj/effect/extraction_loot_marker{container_id = 25; pool_kind = "supplies"},/turf/floor/plating/dark,/area/extraction_district)
+"az" = (/obj/effect/extraction_loot_marker{container_id = 15; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
+"ba" = (/obj/effect/extraction_loot_marker{container_id = 16; pool_kind = "ammunition"},/turf/floor/plating/dark,/area/extraction_district)
+"bb" = (/obj/effect/extraction_loot_marker{container_id = 26; pool_kind = "supplies"},/turf/floor/plating/dark,/area/extraction_district)
+"bc" = (/obj/effect/extraction_loot_marker{container_id = 17; pool_kind = "workshop"},/turf/floor/plating/dark,/area/extraction_district)
+"bd" = (/obj/effect/extraction_loot_marker{container_id = 18; pool_kind = "armory"},/turf/floor/plating/dark,/area/extraction_district)
+"be" = (/obj/effect/extraction_loot_marker{container_id = 27; pool_kind = "supplies"},/turf/floor/plating/dark,/area/extraction_district)
+"bf" = (/obj/effect/extraction_raid_marker,/turf/floor/plating/dark,/area/extraction_district)
+"bg" = (/obj/effect/extraction_exit,/turf/floor/plating/dark,/area/extraction_district)
+"bh" = (/obj/effect/extraction_exit/pmc,/turf/floor/plating/dark,/area/extraction_district)
+"bi" = (/obj/effect/extraction_exit/scav,/turf/floor/plating/dark,/area/extraction_district)
+"bj" = (/obj/effect/extraction_exit/manhole,/turf/floor/plating/dark,/area/extraction_district)
+"bk" = (/obj/map_metadata/extraction_survival,/turf/floor/plating/dark,/area/extraction_district)
+"bl" = (/obj/effect/landmark{name = "JoinLateExtraction"},/turf/floor/plating/dark,/area/extraction_district)
+"bm" = (/obj/effect/extraction_drop_box,/turf/floor/plating/dark,/area/extraction_district)
+"bn" = (/obj/covers/generic_wall,/turf/floor/plating/dark,/area/extraction_lock_room)
+"bo" = (/turf/floor/plating/dark,/area/extraction_lock_room)
+"bp" = (/obj/structure/simple_door/key_door/extraction_room,/turf/floor/plating/dark,/area/extraction_lock_room)
+"bq" = (/obj/effect/extraction_exit/locked_room,/turf/floor/plating/dark,/area/extraction_lock_room)
+"br" = (/obj/item/weapon/key/extraction_room,/turf/floor/plating/dark,/area/extraction_district)
+"bs" = (/obj/covers/generic_wall,/turf/floor/plating/dark,/area/extraction_houses)
+"bt" = (/turf/floor/plating/extraction_house,/area/extraction_houses)
+"bu" = (/obj/effect/extraction_house_marker{room = 1},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"bv" = (/obj/effect/extraction_secure_crate{room = 1},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"bw" = (/obj/structure/component_workbench/extraction_private{room = 1},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"bx" = (/obj/effect/extraction_house_marker{room = 2},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"by" = (/obj/effect/extraction_secure_crate{room = 2},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"bz" = (/obj/structure/component_workbench/extraction_private{room = 2},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"ca" = (/obj/effect/extraction_house_marker{room = 3},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cb" = (/obj/effect/extraction_secure_crate{room = 3},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cc" = (/obj/structure/component_workbench/extraction_private{room = 3},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cd" = (/obj/effect/extraction_house_marker{room = 4},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"ce" = (/obj/effect/extraction_secure_crate{room = 4},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cf" = (/obj/structure/component_workbench/extraction_private{room = 4},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cg" = (/obj/effect/extraction_house_marker{room = 5},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"ch" = (/obj/effect/extraction_secure_crate{room = 5},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"ci" = (/obj/structure/component_workbench/extraction_private{room = 5},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cj" = (/obj/effect/extraction_house_marker{room = 6},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"ck" = (/obj/effect/extraction_secure_crate{room = 6},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cl" = (/obj/structure/component_workbench/extraction_private{room = 6},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cm" = (/obj/effect/extraction_house_marker{room = 7},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cn" = (/obj/effect/extraction_secure_crate{room = 7},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"co" = (/obj/structure/component_workbench/extraction_private{room = 7},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cp" = (/obj/effect/extraction_house_marker{room = 8},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cq" = (/obj/effect/extraction_secure_crate{room = 8},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cr" = (/obj/structure/component_workbench/extraction_private{room = 8},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cs" = (/obj/effect/extraction_house_marker{room = 9},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"ct" = (/obj/effect/extraction_secure_crate{room = 9},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cu" = (/obj/structure/component_workbench/extraction_private{room = 9},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cv" = (/obj/effect/extraction_house_marker{room = 10},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cw" = (/obj/effect/extraction_secure_crate{room = 10},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cx" = (/obj/structure/component_workbench/extraction_private{room = 10},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cy" = (/obj/effect/extraction_house_marker{room = 11},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"cz" = (/obj/effect/extraction_secure_crate{room = 11},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"da" = (/obj/structure/component_workbench/extraction_private{room = 11},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"db" = (/obj/effect/extraction_house_marker{room = 12},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"dc" = (/obj/effect/extraction_secure_crate{room = 12},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"dd" = (/obj/structure/component_workbench/extraction_private{room = 12},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"de" = (/obj/effect/extraction_house_marker{room = 13},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"df" = (/obj/effect/extraction_secure_crate{room = 13},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"dg" = (/obj/structure/component_workbench/extraction_private{room = 13},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"dh" = (/obj/effect/extraction_house_marker{room = 14},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"di" = (/obj/effect/extraction_secure_crate{room = 14},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"dj" = (/obj/structure/component_workbench/extraction_private{room = 14},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"dk" = (/obj/effect/extraction_house_marker{room = 15},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"dl" = (/obj/effect/extraction_secure_crate{room = 15},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"dm" = (/obj/structure/component_workbench/extraction_private{room = 15},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"dn" = (/obj/effect/extraction_house_marker{room = 16},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"do" = (/obj/effect/extraction_secure_crate{room = 16},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"dp" = (/obj/structure/component_workbench/extraction_private{room = 16},/turf/floor/plating/extraction_house,/area/extraction_houses)
+"dq" = (/obj/covers/generic_wall,/turf/floor/plating/dark,/area/extraction_hub)
+"dr" = (/turf/floor/plating/dark,/area/extraction_hub)
+"ds" = (/obj/structure/bed/chair,/turf/floor/plating/dark,/area/extraction_hub)
+"dt" = (/obj/effect/extraction_hub_guide/lounge,/turf/floor/plating/dark,/area/extraction_hub)
+"du" = (/obj/effect/extraction_hub_guide/workshop,/turf/floor/plating/dark,/area/extraction_hub)
+"dv" = (/obj/effect/extraction_hub_guide/operations,/turf/floor/plating/dark,/area/extraction_hub)
+"dw" = (/obj/effect/extraction_hub_terminal,/turf/floor/plating/dark,/area/extraction_hub)
 
 (1,1,1) = {"
 abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
@@ -97,10 +106,10 @@ abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaayaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabhaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaaaaaaaawaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaawaaaaaaaaaaaaaaab
+abaaaaaaaaaaaabfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabfaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
@@ -110,7 +119,7 @@ abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababababababababaaababababababababaaaaaaaaaaaa
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaajaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaapaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaavaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaalaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaauaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaabdaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
@@ -118,7 +127,7 @@ abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaiafaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaoafaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaauafaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaakafaaaaaaaaaaaaamaaaaaaabaaaaaaaaaaaaaaabaaaaaaatafaaaaaaaaaaaaavaaaaaaabaaaaaaaaaaaaaaabaaaaaabcafaaaaaaaaaaaabeaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
@@ -134,19 +143,19 @@ abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababababababababaaababababababababaaaaaaaaaaaa
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaahaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaanaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaataaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaiaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaraaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaabaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaazaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaabaaaaaaaaaab
-abaaaaaaaaaabebebebebeaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaaaaabebfbfbfbeaaaaaaaaaaaaabaaaaaaagafaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaamafaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaasafaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaaaaabebfbfbfbeaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaaaaabebfbhbfbeaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaaaaabebebgbebeaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaaaaaaaaaaaaaaabiaaaaaaaaaaababababababababaaababababababababaaaaaaaaaaaaaaababababababababaaababababababababaaaaaaaaaaaaaaababababababababaaababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abaaaaaabiaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaabjaaaaaaaaab
+abaaaaaaaaaabnbnbnbnbnaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abaaaaaaaaaabnbobobobnaaaaaaaaaaaaabaaaaaaahafaaaaaaaaaaaaajaaaaaaabaaaaaaaaaaaaaaabaaaaaaaqafaaaaaaaaaaaaasaaaaaaabaaaaaaaaaaaaaaabaaaaaaazafaaaaaaaaaaaabbaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abaaaaaaaaaabnbobobobnaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abaaaaaaaaaabnbobqbobnaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abaaaaaaaaaabnbnbpbnbnaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abaaaaaaaaaaaaaaaaaaaabraaaaaaaaaaababababababababaaababababababababaaaaaaaaaaaaaaababababababababaaababababababababaaaaaaaaaaaaaaababababababababaaababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
@@ -158,7 +167,7 @@ abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababababababababaaababababababababaaaaaaaaaaaa
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaadaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaalaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaraaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaadaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaoaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaxaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
@@ -166,7 +175,7 @@ abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaacafaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaakafaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaqafaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaacafaaaaaaaaaaaaagaaaaaaabaaaaaaaaaaaaaaabaaaaaaanafaaaaaaaaaaaaapaaaaaaabaaaaaaaaaaaaaaabaaaaaaawafaaaaaaaaaaaaayaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaab
@@ -178,212 +187,212 @@ abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabmaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaaaaaaaawaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaawaaaaaaaaaaaaaaab
+abaaaaaaaaaaaabfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabfaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abaabcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
-abbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abaablaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
+abbkaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
 abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
 "}
 
 (1,1,2) = {"
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkcxbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkdabkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkddbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkdgbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkcvcwbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkcyczbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkdbdcbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkdedfbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkclbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkcobkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkcrbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkcubkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkcjckbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkcmcnbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkcpcqbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkcsctbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbzbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkccbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkcfbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkcibkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbxbybkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkcacbbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkcdcebkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkcgchbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbnbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbqbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbtbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbwbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkblbmbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbobpbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbrbsbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbubvbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbkbkbkbkbkbkbkbkbkbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
-bjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbj
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtdgbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtdjbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtdmbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtdpbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtdedfbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtdhdibtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtdkdlbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtdndobtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtcubtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtcxbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtdabtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtddbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtcsctbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtcvcwbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtcyczbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtdbdcbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtcibtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtclbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtcobtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtcrbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtcgchbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtcjckbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtcmcnbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtcpcqbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbwbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbzbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtccbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtcfbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbubvbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbxbybtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtcacbbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtcdcebtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbtbtbtbtbtbtbtbtbtbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
+bsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbs
 "}
 
 (1,1,3) = {"
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididmdidididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdhdhdhdhdhdhdhdididididhdhdhdhdhdhdhdhdhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididjdidididididjdidididididhdidididididididididididididididididididhdidididididjdidididididjdididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdidididididididididididididididididididididididididididididididididididididididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididkdidididididididididididididididididndidididididididididididididididididldididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdidididididididididididididididididididididididididididididididididididididididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdidididididididididididididididididididididididididididididididididididididididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididjdidididididjdidididididhdidididididididididididididididididididhdidididididjdidididididjdididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididjdidididididjdidididididhdidididididididididididididididididididhdidididididjdidididididjdididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdididididididididididididididididhdidididididididididididididididididididhdididididididididididididididididhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
-dhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdh
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdvdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdrdrdrdrdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdsdrdrdrdrdrdsdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdsdrdrdrdrdrdsdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdtdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdwdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdudrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdsdrdrdrdrdrdsdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdsdrdrdrdrdrdsdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdsdrdrdrdrdrdsdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdsdrdrdrdrdrdsdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdrdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
+dqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdq
 "}

@@ -31,6 +31,8 @@ var/global/extraction_identity_sequence = 0
 	if (!ispath(path, /obj/item)) return FALSE
 	if (ispath(path, /obj/item/weapon/gun/projectile/custom)) return FALSE
 	if (ispath(path, /obj/item/weapon/key/extraction_room)) return TRUE
+	if (path in list(/obj/item/stack/material/wood, /obj/item/stack/material/woodplank, /obj/item/stack/material/iron, /obj/item/stack/material/steel, /obj/item/stack/material/cloth, /obj/item/stack/material/rope, /obj/item/stack/material/leather, /obj/item/stack/material/kevlar, /obj/item/stack/material/cotton, /obj/item/stack/material/flax, /obj/item/stack/material/rettedfabric)) return TRUE
+	if (path in list(/obj/item/weapon/reagent_containers/glass/barrel/jerrycan, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel)) return TRUE
 	return ispath(path, /obj/item/weapon/gun/projectile) || ispath(path, /obj/item/weapon/attachment) || ispath(path, /obj/item/weapon/gun_mount) || ispath(path, /obj/item/ammo_magazine) || ispath(path, /obj/item/ammo_casing) || ispath(path, /obj/item/projectile) || ispath(path, /obj/item/clothing) || ispath(path, /obj/item/weapon/storage) || ispath(path, /obj/item/weapon/material) || ispath(path, /obj/item/blackpowder_part) || ispath(path, /obj/item/extraction_salvage)
 
 /datum/extraction_equipment_codec/proc/scalar_fields(path)
@@ -41,6 +43,7 @@ var/global/extraction_identity_sequence = 0
 	if (ispath(path, /obj/item/weapon/material)) fields |= list("crafting_quality", "tool_head_material", "tool_handle_material", "tool_head_quality", "tool_handle_quality", "tool_head_condition", "tool_handle_condition")
 	if (ispath(path, /obj/item/blackpowder_part)) fields |= list("quality", "material_name")
 	if (ispath(path, /obj/item/weapon/key/extraction_room)) fields |= "code"
+	if (ispath(path, /obj/item/stack/material)) fields |= "amount"
 	return fields
 
 /datum/extraction_equipment_codec/proc/reference_fields(path)
@@ -96,6 +99,18 @@ var/global/extraction_identity_sequence = 0
 		if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/M = I
 			scalars["material_key"] = M.material ? M.material.name : M.default_material
+		if (istype(I, /obj/item/stack/material))
+			var/obj/item/stack/material/M = I
+			scalars["material_key"] = M.material?.name
+		if (istype(I, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan))
+			var/list/fuel = list()
+			for (var/datum/reagent/R in I.reagents.reagent_list)
+				if (!(R.id in list("gasoline", "diesel", "ethanol")) || !isnull(R.data))
+					clear()
+					return null
+				fuel += list(list("id" = R.id, "volume" = R.volume))
+			node["fuel"] = fuel
+			node["fuel_open"] = !!I.is_open_container()
 		var/list/refs = list()
 		for (var/key in reference_fields(I.type))
 			if (!(key in I.vars)) continue
@@ -120,6 +135,9 @@ var/global/extraction_identity_sequence = 0
 		node["refs"] = refs
 		node["lists"] = lists
 	var/list/result = list("schema" = 2, "nodes" = nodes)
+	if (!validate(result))
+		clear()
+		return null
 	// Account graphs have one persistence authority, including nested contents.
 	for (var/obj/item/I in items) I.should_save = FALSE
 	clear()
@@ -157,13 +175,27 @@ var/global/extraction_identity_sequence = 0
 		var/list/lists = node["lists"]
 		if (!islist(scalars) || !islist(refs) || !islist(lists)) return FALSE
 		var/list/allowed = scalar_fields(path)
-		if (ispath(path, /obj/item/weapon/material)) allowed |= "material_key"
+		if (ispath(path, /obj/item/weapon/material) || ispath(path, /obj/item/stack/material)) allowed |= "material_key"
 		for (var/key in scalars)
 			var/value = scalars[key]
 			if (!(key in allowed) || (!isnull(value) && !isnum(value) && !istext(value)) || (istext(value) && length(value) > 2048)) return FALSE
 			var/list/text_fields = list("name", "desc", "color", "icon_state", "item_state", "serial", "btype", "material_key", "tool_head_material", "tool_handle_material", "material_name", "attachment_type")
 			if (!isnull(value) && (key in text_fields ? !istext(value) : !isnum(value))) return FALSE
 		if (ispath(path, /obj/item/weapon/material) && !get_material_by_name(scalars["material_key"])) return FALSE
+		if (ispath(path, /obj/item/stack/material))
+			var/obj/item/stack/material/prototype = path
+			if (scalars["material_key"] != initial(prototype.default_type) || !get_material_by_name(scalars["material_key"]) || !isnum(scalars["amount"]) || round(scalars["amount"]) != scalars["amount"] || scalars["amount"] < 1 || scalars["amount"] > initial(prototype.max_amount)) return FALSE
+		if (ispath(path, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan))
+			var/list/fuel = node["fuel"]
+			if (!islist(fuel) || fuel.len > 3 || !(node["fuel_open"] in list(FALSE, TRUE))) return FALSE
+			var/total = 0
+			var/list/seen = list()
+			for (var/list/chemical in fuel)
+				if (!islist(chemical) || !(chemical["id"] in list("gasoline", "diesel", "ethanol")) || !chemical_reagents_list[chemical["id"]] || seen[chemical["id"]] || !isnum(chemical["volume"]) || chemical["volume"] <= 0 || chemical["volume"] > 150) return FALSE
+				seen[chemical["id"]] = TRUE
+				total += chemical["volume"]
+			if (total > 150) return FALSE
+		else if (!isnull(node["fuel"]) || !isnull(node["fuel_open"])) return FALSE
 		for (var/key in refs)
 			if (!(key in reference_fields(path)) || !valid_ref(refs[key], graph.len)) return FALSE
 			if (refs[key] && !ref_type_valid(key, graph[refs[key]])) return FALSE
@@ -250,7 +282,9 @@ var/global/extraction_identity_sequence = 0
 	for (var/i in 1 to graph.len)
 		var/list/node = graph[i]
 		var/path = text2path(node["type"])
-		var/obj/item/I = new path(destination)
+		// Stack constructors merge at their initial location. Restore isolated
+		// quantities before placement so a second graph cannot merge or vanish.
+		var/obj/item/I = new path(ispath(path, /obj/item/stack/material) ? null : destination)
 		created += I
 		// Native constructors may make scopes and bullets. Replace, don't add to
 		// those defaults, or a reload would silently manufacture ammunition.
@@ -268,6 +302,11 @@ var/global/extraction_identity_sequence = 0
 			M.set_material(scalars["material_key"])
 		for (var/key in scalars)
 			if (key in I.vars) I.vars[key] = scalars[key]
+		if (istype(I, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan))
+			I.reagents.clear_reagents()
+			for (var/list/chemical in node["fuel"]) I.reagents.add_reagent(chemical["id"], chemical["volume"], safety = TRUE)
+			if (node["fuel_open"]) I.flags |= OPENCONTAINER
+			else I.flags &= ~OPENCONTAINER
 		var/list/refs = node["refs"]
 		for (var/key in refs)
 			if (key in I.vars) I.vars[key] = refs[key] ? created[refs[key]] : null

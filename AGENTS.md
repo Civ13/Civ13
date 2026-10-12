@@ -203,6 +203,11 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 
 ## Agent self-maintenance
 
+<!-- 2026-10-12: extraction material restoration -->
+Extraction material stacks must construct at null before relocation: native
+stack constructors can otherwise merge into an existing stack. Serialize
+`!!is_open_container()` for boolean lid state; its native return is a flag mask.
+
 <!-- 2026-10-11: world-save verification -->
 - Persistence regressions are in `tests/world_save`; the focused fixture uses
   the actual saver/loader with isolated adapters, and `run-game.ps1` exercises

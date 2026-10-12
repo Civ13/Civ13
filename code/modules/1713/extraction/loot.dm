@@ -19,6 +19,10 @@
 				slots = 1
 				chance = 3500
 				outcomes = list(list("type" = "/obj/item/weapon/gun/projectile/pistol/m9beretta", "rarity" = "rare", "weight" = 950, "quantity" = 1), list("type" = "/obj/item/weapon/attachment/scope/adjustable/advanced/reddot", "rarity" = "exceptional", "weight" = 50, "quantity" = 1))
+			if ("supplies")
+				slots = 3
+				chance = 8500
+				outcomes = list(list("type" = "/obj/item/stack/material/cloth", "rarity" = "common", "weight" = 250, "quantity" = 2), list("type" = "/obj/item/stack/material/rope", "rarity" = "common", "weight" = 200, "quantity" = 2), list("type" = "/obj/item/stack/material/steel", "rarity" = "common", "weight" = 200, "quantity" = 2), list("type" = "/obj/item/stack/material/wood", "rarity" = "common", "weight" = 200, "quantity" = 2), list("type" = "/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline", "rarity" = "rare", "weight" = 150, "quantity" = 1))
 	proc/valid()
 		if (!isnum(slots) || round(slots) != slots || slots < 1 || slots > 4 || !isnum(chance) || round(chance) != chance || chance < 0 || chance > 10000 || !islist(outcomes) || outcomes.len < 1 || outcomes.len > 16) return FALSE
 		var/datum/extraction_equipment_codec/C = new

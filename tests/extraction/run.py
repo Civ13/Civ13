@@ -19,7 +19,10 @@ def main():
     parser.add_argument('--vehicle-loss-negative-control', action='store_true')
     parser.add_argument('--vehicle-purchase-negative-control', action='store_true')
     parser.add_argument('--vehicle-raid-negative-control', choices=('debit', 'credit'))
+    parser.add_argument('--supply-negative-control', action='store_true')
     args = parser.parse_args()
+    if args.supply_negative_control and (args.probe != 'mode' or args.provenance_negative_control or args.vote_negative_control or args.group_negative_control or args.vehicle_loss_negative_control or args.vehicle_purchase_negative_control or args.vehicle_raid_negative_control):
+        parser.error('Supply control requires the mode probe without another control')
     if args.vehicle_raid_negative_control and (args.probe != 'mode' or args.provenance_negative_control or args.vote_negative_control or args.group_negative_control or args.vehicle_loss_negative_control or args.vehicle_purchase_negative_control):
         parser.error('Vehicle raid control requires the mode probe without another control')
     if args.vehicle_purchase_negative_control and (args.probe != 'mode' or args.provenance_negative_control or args.vote_negative_control or args.group_negative_control or args.vehicle_loss_negative_control):
@@ -38,7 +41,7 @@ def main():
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     if args.probe in ('equipment', 'mode', 'insurance', 'groups', 'vehicles'):
-        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control)
+        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control)
     with tempfile.TemporaryDirectory(prefix='civ13-extraction-') as temp:
         target = Path(temp)
         (target / 'tests/extraction').mkdir(parents=True)
@@ -68,13 +71,22 @@ def main():
                 raise RuntimeError('Account journal verification failed')
 
 
-def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None):
+def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False):
     prefix = '.extraction_' + uuid.uuid4().hex
     generated = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '.dmb', '.rsc')]
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         expected_vote_failure = None
         expected_group_failure = None
+        if supply_control:
+            progression_source = (root / 'code/modules/1713/extraction/progression.dm').read_text(encoding='utf-8')
+            marker = 'candidate["credits"] = game_credits(S) - offer["price"]'
+            if progression_source.count(marker) != 1:
+                raise RuntimeError('Supply payment mutation marker changed')
+            control = root / (prefix + '_progression.dm')
+            generated.append(control)
+            control.write_text(progression_source.replace(marker, 'candidate["credits"] = game_credits(S)'), encoding='utf-8')
+            source = source.replace('code\\modules\\1713\\extraction\\progression.dm', control.name)
         if vehicle_raid_control:
             raid_source = (root / 'code/modules/1713/extraction/vehicle_raid.dm').read_text(encoding='utf-8')
             marker = '\tcandidate["garage"] = list()' if vehicle_raid_control == 'debit' else '\tcandidate["garage"] = list(vehicle)'
@@ -171,7 +183,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
         source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
         if probe == 'mode':
             source = '#define EXTRACTION_MODE_PROBE\n' + source
-            source += '\n#include "tests/extraction/mode_probe.dm"\n#include "tests/extraction/hub_probe.dm"\n#include "tests/extraction/vote_probe.dm"\n#include "tests/extraction/group_probe.dm"\n#include "tests/extraction/vehicle_probe.dm"\n#include "tests/extraction/loot_probe.dm"\n#include "maps/extraction/industrial_district.dmm"\n'
+            source += '\n#include "tests/extraction/mode_probe.dm"\n#include "tests/extraction/hub_probe.dm"\n#include "tests/extraction/progression_probe.dm"\n#include "tests/extraction/vote_probe.dm"\n#include "tests/extraction/group_probe.dm"\n#include "tests/extraction/vehicle_probe.dm"\n#include "tests/extraction/loot_probe.dm"\n#include "maps/extraction/industrial_district.dmm"\n'
         if probe == 'insurance':
             source = '#define EXTRACTION_RETURNS_PROCESS_PROBE\n' + source
             source += '\n#include "tests/extraction/insurance_process_probe.dm"\n'
@@ -207,6 +219,12 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
                 log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''
                 print(result)
+                if supply_control:
+                    if ran.returncode or not result.startswith('FAIL:') or 'payment and product share one snapshot without refund or reissue' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
+                        print(log)
+                        raise RuntimeError('Supply payment control failed outside its intended assertion')
+                    print('PASS: retained game-credit payment negative control rejected')
+                    return
                 if vehicle_raid_control and result.startswith('FAIL:'):
                     if ran.returncode or expected_raid_failure not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
                         print(log)

@@ -109,7 +109,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	attack_hand(mob/user)
 		var/mob/living/human/H = user
 		if (!istype(H) || !session || session.body != H || H.client?.ckey != session.owner || session.transitioning || session.profile["state"] != "home" || !Adjacent(H)) return
-		var/choice = WWinput(H, "Carry your loadout to deploy. Insured deployment costs one workshop part per reusable equipment component, paid from parts left at home. Ammunition never returns. This district closes after thirty minutes; extract before closure. Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts. A level-two garage car costs 25 parts and has no fuel.", "Private safe house", "Cancel", list("Deploy", "Deploy car", "Raid group", "Deploy as Scav", "Insure and deploy", "Claim insurance mail", "Visit hub", "Upgrade", "Buy car", "Save stash", "Cancel"))
+		var/choice = WWinput(H, "Carry your loadout to deploy. Insured deployment costs one workshop part per reusable equipment component, paid from parts left at home. Ammunition never returns. This district closes after thirty minutes; extract before closure. Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts. A level-two garage car costs 25 parts and has no fuel. Supplies exchange parts for game credits and sell crafting materials, gear and fuel.", "Private safe house", "Cancel", list("Deploy", "Deploy car", "Raid group", "Deploy as Scav", "Insure and deploy", "Claim insurance mail", "Visit hub", "Upgrade", "Buy car", "Supplies", "Save stash", "Cancel"))
 		if (session.body != H || !Adjacent(H) || session.transitioning) return
 		var/obj/map_metadata/extraction_survival/M = map
 		if (!istype(M)) return
@@ -123,6 +123,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 			if ("Save stash") M.save_home(session)
 			if ("Upgrade") M.upgrade_house(session)
 			if ("Buy car") M.buy_car(H)
+			if ("Supplies") M.manage_supplies(H)
 			if ("Visit hub") M.visit_hub(H)
 
 /obj/map_metadata/extraction_survival/proc/visit_hub(mob/living/human/H)

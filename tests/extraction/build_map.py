@@ -41,6 +41,7 @@ def build():
             put(left+12, bottom+12, f'/obj/effect/extraction_loot_marker{{container_id = {number*2+2}; pool_kind = "{kind}"}}')
             put(left+8, bottom+8, '/obj/effect/extraction_npc_marker')
             put(left+5, bottom+4, '/obj/structure/component_workbench')
+            put(left+12, bottom+4, f'/obj/effect/extraction_loot_marker{{container_id = {19+number}; pool_kind = "supplies"}}')
     for x, y in ((8, 8), (88, 8), (8, 88), (88, 88)):
         put(x, y, '/obj/effect/extraction_raid_marker')
     for x, y, kind in ((48, 5, ''), (48, 91, '/pmc'), (5, 48, '/scav'), (91, 48, '/manhole')):

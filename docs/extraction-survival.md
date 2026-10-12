@@ -186,7 +186,10 @@ Equipment graph schema 2 preserves unique identities and found-in-raid status
 for each contained node. Successful extraction retains provenance; bringing
 equipment into a subsequent raid clears it throughout the bounded graph.
 Schema 1 graphs migrate with new identities and no invented provenance.
-Unsupported stack types remain rejected. Duplicate identities within a graph
+Only the explicitly supported material stack types preserve quantities and
+default material. Jerrycans preserve approved fuel quantities and lid state;
+constructor defaults are cleared before restoration. Other stack and reagent
+container types remain rejected. Duplicate identities within a graph
 or across stash roots are rejected before account transfer.
 
 See [the probe and video acceptance matrix](../tests/extraction/README.md).
@@ -250,13 +253,24 @@ settlement for recovery. A process restart does not resume an active raid or inf
 physical retirement from missing world objects. Connected-client acceptance and
 the separate long-running Nomads version remain pending.
 
-The original district has 18 persistent container journals. Untouched containers
+The original district has 27 persistent container journals. Untouched containers
 have no generated contents or journal directory. Workshop, ammunition and armory
 tables use integer basis-point appearance chances (75%, 80% and 35% per slot),
 explicit common/rare/exceptional weighted outcomes, one to four slots and one or
 two items per outcome. A validated plan commits before constructors run; full
 equipment records commit before the list becomes visible. Partial construction
 retries that plan rather than rolling again. Empty results persist too.
+
+Each warehouse also has a finite supplies container: three slots at 85%
+appearance, with weighted cloth, binding cord, steel, wood and gasoline cans.
+The private terminal's Supplies action exchanges one actual uninsured workshop
+part for ten game credits. Fixed offers sell tool heads and handles, ten-unit
+material bundles, ammunition, an AKM, PASGT helmet, carrier vest and gasoline.
+Advanced gear, steel and fuel require house level two. Prices are displayed and
+confirmed; the account snapshot commits both spent credits and the complete
+product before delivery. Reconnecting restores that identity once. These are
+prototype game prices, separate from external bot currency, without playtested
+economy or connected-client acceptance claims.
 
 Claiming debits the container before exposing a physical item. A pending delivery
 or incomplete acknowledgement locks reconciliation and does not automatically

@@ -17,6 +17,12 @@
 	var/test_car_confirmation = TRUE
 	var/test_ride_confirmation = TRUE
 	var/test_vehicle_return_confirmation = TRUE
+	var/test_supply_confirmation = TRUE
+	confirm_supplies(mob/living/human/H, offer, price)
+		if (test_supply_confirmation == "move")
+			H.forceMove(locate(H.extraction_session.house.x + 4, H.extraction_session.house.y + 4, 2))
+			return TRUE
+		return test_supply_confirmation
 	confirm_vehicle_return(mob/living/human/H, car_owner)
 		if (test_vehicle_return_confirmation == "stale")
 			for (var/obj/item/weapon/gun/G in H.contents) G.health--
@@ -59,8 +65,9 @@
 	var/obj/map_metadata/extraction_survival/M = map
 	equipment_assert(istype(M), "original extraction map metadata loaded")
 	M.accounts.store.root = "data/mode_accounts/"
+	extraction_progression_probe(M)
 	extraction_hub_probe(M)
-	equipment_assert(extraction_house_markers.len == 16 && extraction_raid_markers.len == 4 && extraction_loot_markers.len == 18, "fixed room, deployment and loot pools")
+	equipment_assert(extraction_house_markers.len == 16 && extraction_raid_markers.len == 4 && extraction_loot_markers.len == 27, "fixed room, deployment and loot pools")
 	var/mob/living/human/A = new(locate(3,3,1))
 	var/mob/living/human/B = new(locate(3,3,1))
 	A.m_intent = "stealth"

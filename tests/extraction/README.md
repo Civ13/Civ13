@@ -8,6 +8,7 @@ Use BYOND 516.1681 and a verified full Python interpreter path:
 & $PythonPath tests/extraction/test_recovery.py --byond-bin $ByondBin
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe equipment
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe mode
+& $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe mode --supply-negative-control
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control debit
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control visibility
@@ -173,6 +174,15 @@ native account restoration of the resulting identity, condition and materials.
 This bypasses the assembly wait; production timed assembly has its own component
 checks. `test_map_environment.py` checks that all public hub desks are connected
 and private benches leave the fixed garage anchors clear.
+
+The integrated supplies fixture exchanges actual workshop parts, checks declined
+and stale physical access, buys production head/handle inputs and restores their
+identities with the spent game balance. Its retained-credit mutation must fail
+at the payment assertion. Every fixed offer constructs and restores its actual
+graph. Partial fuel, opened lids and stack quantities survive native records;
+oversized payloads reject before construction and stacks do not auto-merge during
+restoration. Ordinary pouring transfers restored gasoline into a real vehicle
+tank. This does not establish connected-client purchasing or driving.
 
 Record a genuine disposable local playable world after integrated regressions
 pass. Use the exact pinned build and record its full commit, dirty patch when
