@@ -1,7 +1,8 @@
 # Modern civilian communications and skills
 
-This work is in draft pending final exact-head CI and review. The isolated
-runtime, crafting, sprite and native save checks below have passed locally.
+This document describes the implementation and its isolated verification.
+The runtime, crafting, sprite and native save checks below have passed.
+It is not a production deployment announcement.
 
 ## Intended player loop
 
