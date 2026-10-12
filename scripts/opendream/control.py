@@ -1,5 +1,6 @@
 """Local-only OpenDream supervisor. Trusted profiles, no shell or PID discovery."""
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -12,6 +13,114 @@ import time
 import uuid
 
 MAX_REQUEST = 4096
+MAX_OPERATIONS = 256
+OPERATION_SCHEMA = "civ13.lifecycle.v1"
+ACTIONS = {"start", "stop", "restart", "mapswap"}
+
+
+def operation_binding(request, profile_digest, origin):
+    """Canonical identity excludes transport timing; the digest is not authentication."""
+    if not isinstance(request, dict) or origin not in {"cli", "game", "bootstrap"}:
+        raise ValueError("Invalid operation origin or request")
+    if not isinstance(profile_digest, str) or not re.fullmatch(r"[0-9a-f]{64}", profile_digest):
+        raise ValueError("Invalid profile digest")
+    identity = request.get("id")
+    if not isinstance(identity, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", identity):
+        raise ValueError("Invalid operation identity")
+    action, map_id = request.get("action"), request.get("map")
+    if action not in ACTIONS or (action != "mapswap" and map_id is not None):
+        raise ValueError("Invalid operation action")
+    if action == "mapswap" and (not isinstance(map_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", map_id)):
+        raise ValueError("Invalid operation map")
+    if set(request) - {"id", "action", "map", "profile_digest"}:
+        raise ValueError("Unknown operation fields")
+    if request.get("profile_digest", profile_digest) != profile_digest:
+        raise ValueError("Operation profile mismatch")
+    body = {"action": action, "map_id": map_id, "profile_digest": profile_digest, "origin": origin}
+    digest = hashlib.sha256(json.dumps(body, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    return identity, body, digest
+
+
+class OperationStore:
+    """Bounded durable no-replay barriers. Pending operations require operator recovery."""
+    def __init__(self, directory, profile_digest, checkpoint=None):
+        self.directory = Path(directory) / "operations"
+        self.directory.mkdir(exist_ok=True)
+        self.profile_digest = profile_digest
+        self.checkpoint = checkpoint or (lambda phase: None)
+
+    def path(self, identity):
+        if not isinstance(identity, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", identity):
+            raise ValueError("Invalid operation identity")
+        return self.directory / (hashlib.sha256(identity.encode("ascii")).hexdigest() + ".json")
+
+    def inspect(self, identity):
+        path = self.path(identity)
+        if not path.exists():
+            return None
+        receipt = read_json(path)
+        if (not isinstance(receipt, dict) or receipt.get("schema") != OPERATION_SCHEMA
+                or receipt.get("operation_id") != identity or receipt.get("outcome") not in {"pending", "committed"}
+                or not isinstance(receipt.get("request"), dict)):
+            raise ValueError("Invalid operation receipt; recovery required")
+        body = receipt["request"]
+        if set(body) != {"action", "map_id", "profile_digest", "origin"}:
+            raise ValueError("Invalid receipt request; recovery required")
+        _, validated, _ = operation_binding(
+            {"id": identity, "action": body["action"], "map": body["map_id"],
+             "profile_digest": body["profile_digest"]}, self.profile_digest, body["origin"])
+        if body != validated:
+            raise ValueError("Invalid receipt request binding; recovery required")
+        digest = hashlib.sha256(json.dumps(body, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+        if receipt.get("binding_digest") != digest:
+            raise ValueError("Invalid receipt binding; recovery required")
+        if receipt["outcome"] == "committed" and (not isinstance(receipt.get("result"), dict) or receipt["result"].get("ok") is not True):
+            raise ValueError("Invalid terminal receipt; recovery required")
+        if receipt["outcome"] == "pending" and receipt.get("result") is not None:
+            raise ValueError("Invalid pending receipt; recovery required")
+        return receipt
+
+    @staticmethod
+    def response(receipt):
+        if receipt["outcome"] == "pending":
+            return {"ok": False, "error": "operation_pending", "id": receipt["operation_id"], "receipt": receipt}
+        return dict(receipt["result"], id=receipt["operation_id"], receipt=receipt)
+
+    def perform(self, request, origin, effect):
+        identity, body, digest = operation_binding(request, self.profile_digest, origin)
+        path = self.path(identity)
+        lock = path.with_suffix(".lock")
+        with lock.open("x", encoding="ascii"):
+            pass
+        try:
+            existing = self.inspect(identity)
+            if existing is not None:
+                if existing["binding_digest"] != digest:
+                    raise ValueError("Operation identity conflict")
+                return self.response(existing)
+            allocation = self.directory / "allocation.lock"
+            with allocation.open("x", encoding="ascii"):
+                pass
+            try:
+                if len(list(self.directory.glob("*.json"))) >= MAX_OPERATIONS:
+                    raise ValueError("Operation history full; no receipts are automatically discarded")
+                receipt = {"schema": OPERATION_SCHEMA, "operation_id": identity, "binding_digest": digest,
+                           "request": body, "outcome": "pending", "result": None}
+                atomic_json(path, receipt)
+            finally:
+                allocation.unlink(missing_ok=True)
+            self.checkpoint("pending_published")
+            result = effect()
+            self.checkpoint("effect_completed")
+            if not isinstance(result, dict) or result.get("ok") is not True:
+                raise ValueError("Uncertain operation outcome; pending barrier retained")
+            launch = result.pop("launch_identity", None)
+            receipt = dict(receipt, outcome="committed", result=result, launch_identity=launch)
+            atomic_json(path, receipt)
+            self.checkpoint("terminal_published")
+            return self.response(receipt)
+        finally:
+            lock.unlink(missing_ok=True)
 
 
 def topic_status(port):
@@ -44,14 +153,24 @@ def topic_status(port):
 
 def atomic_json(path, value):
     path = Path(path)
+    if path.is_symlink():
+        raise ValueError("Refusing linked control publication")
     path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(path.name + ".tmp")
-    temporary.write_text(json.dumps(value), encoding="utf-8")
-    os.replace(temporary, path)
+    temporary = path.with_name(path.name + "." + uuid.uuid4().hex + ".tmp")
+    try:
+        with temporary.open("x", encoding="utf-8") as handle:
+            handle.write(json.dumps(value))
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def read_json(path):
     path = Path(path)
+    if path.is_symlink():
+        raise ValueError("Refusing linked control input")
     if path.stat().st_size > MAX_REQUEST:
         raise ValueError("Request exceeds size limit")
     return json.loads(path.read_text(encoding="utf-8"))
@@ -60,7 +179,11 @@ def read_json(path):
 class Supervisor:
     def __init__(self, profile):
         self.profile_path = Path(profile).resolve(strict=True)
-        self.profile = json.loads(self.profile_path.read_text(encoding="utf-8"))
+        if self.profile_path.stat().st_size > 65536:
+            raise ValueError("Profile exceeds size limit")
+        profile_bytes = self.profile_path.read_bytes()
+        self.profile_digest = hashlib.sha256(profile_bytes).hexdigest()
+        self.profile = json.loads(profile_bytes)
         if self.profile.get("engine") != "opendream":
             raise ValueError("Only explicit opendream profiles are accepted")
         self.root = Path(self.profile["runtime_dir"]).resolve(strict=True)
@@ -69,6 +192,13 @@ class Supervisor:
         self.child = None
         self.log = None
         self.pending_map = None
+        self.map_id = self.profile.get("map_id")
+        self.instance_id = None
+        self.operations = OperationStore(self.control, self.profile_digest)
+        for field in ("build_id", "map_id"):
+            value = self.profile.get(field)
+            if value is not None and (not isinstance(value, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", value)):
+                raise ValueError("Invalid trusted launch identity")
         for name in ("game_port", "topic_port"):
             port = self.profile[name]
             if type(port) is not int or not 1024 <= port <= 65535:
@@ -92,10 +222,20 @@ class Supervisor:
         if self.log:
             self.log.close()
         self.log = (self.control / "server.log").open("ab")
+        # This identity is ownership correlation, not authentication or game readiness.
+        self.instance_id = uuid.uuid4().hex
+        identity = {"schema": "civ13.launch.v1", "instance_id": self.instance_id,
+                    "profile_digest": self.profile_digest, "build_id": self.profile.get("build_id"),
+                    "map_id": self.map_id, "ready": False, "server_pid": None}
+        atomic_json(self.control / "launch.json", identity)
         self.child = subprocess.Popen(self.profile["server_command"], cwd=self.root,
                                       stdin=subprocess.DEVNULL, stdout=self.log, stderr=subprocess.STDOUT)
+        atomic_json(self.control / "launch.json", dict(identity, server_pid=self.child.pid))
 
     def stop(self):
+        launch = self.control / "launch.json"
+        if launch.exists():
+            atomic_json(launch, dict(read_json(launch), ready=False))
         if self.child and self.child.poll() is None:
             self.child.terminate()
             try:
@@ -138,12 +278,13 @@ class Supervisor:
             if not compiled.is_file() or compiled.stat().st_size == 0:
                 raise ValueError("Compiler produced no JSON; running server preserved")
             if defer:
-                self.pending_map = (staged, compiled)
+                self.pending_map = (staged, compiled, map_id)
                 return
             # Compilation is complete before the owned server is touched.
             self.stop()
             os.replace(compiled, self.root / "civ13.json")
             os.replace(staged, dme)
+            self.map_id = map_id
             self.start()
         finally:
             if not self.pending_map:
@@ -154,13 +295,16 @@ class Supervisor:
         action = request.get("action")
         if action == "status":
             return self.status()
-        if action == "restart":
+        if action == "start":
+            self.start()
+        elif action == "restart":
             self.stop()
             if self.pending_map:
-                staged, compiled = self.pending_map
+                staged, compiled, map_id = self.pending_map
                 os.replace(compiled, self.root / "civ13.json")
                 os.replace(staged, self.root / "civ13.dme")
                 self.pending_map = None
+                self.map_id = map_id
             self.start()
         elif action == "mapswap":
             self.mapswap(request.get("map"), defer=from_game)
@@ -170,13 +314,26 @@ class Supervisor:
             raise ValueError("Unsupported action")
         return self.status()
 
+    def operate(self, request, origin="cli"):
+        if hashlib.sha256(self.profile_path.read_bytes()).hexdigest() != self.profile_digest:
+            raise ValueError("Controller profile changed; explicit review required")
+        if request.get("action") == "status":
+            return dict(self.status(), id=request.get("id"))
+        def effect():
+            result = self.dispatch(request, from_game=origin == "game")
+            path = self.control / "launch.json"
+            result["launch_identity"] = read_json(path) if path.exists() else None
+            return result
+        return self.operations.perform(request, origin, effect)
+
     def run(self):
         lock = self.control / "supervisor.lock"
         # Never recover a stale PID by guessing which process it belongs to.
         with lock.open("x", encoding="utf-8") as handle:
             handle.write(str(os.getpid()))
         try:
-            self.start()
+            if not (self.control / "request.json").exists():
+                self.operate({"id": uuid.uuid4().hex, "action": "start", "map": None}, "bootstrap")
             atomic_json(self.control / "enabled.json", {"enabled": True})
             while True:
                 paths = [self.control / "game-request.json", self.control / "request.json"]
@@ -190,14 +347,22 @@ class Supervisor:
                         request = read_json(path)
                         if not isinstance(request, dict):
                             raise ValueError("Request must be an object")
-                        result = self.dispatch(request, from_game=path.name == "game-request.json")
+                        if path.name == "game-request.json" and "id" not in request:
+                            request["id"] = uuid.uuid4().hex
+                            atomic_json(path, request)
+                        result = self.operate(request, "game" if path.name == "game-request.json" else "cli")
                     except (ValueError, OSError, subprocess.SubprocessError) as error:
                         result = {"ok": False, "error": str(error)}
+                        if isinstance(request, dict) and isinstance(request.get("id"), str) and re.fullmatch(r"[A-Za-z0-9_-]{1,80}", request["id"]):
+                            receipt = self.operations.inspect(request["id"])
+                            if receipt and receipt["outcome"] == "pending":
+                                result = self.operations.response(receipt)
                     result["id"] = request.get("id") if isinstance(request, dict) else None
+                    # Both the durable terminal receipt and transport reply precede request removal.
+                    atomic_json(self.control / ("game-result.json" if path.name.startswith("game-") else "result.json"), result)
                     if path.name == "game-request.json":
                         (self.control / "game-ready").unlink(missing_ok=True)
                     path.unlink(missing_ok=True)
-                    atomic_json(self.control / ("game-result.json" if path.name.startswith("game-") else "result.json"), result)
                     if isinstance(request, dict) and request.get("action") == "stop" and result.get("ok"):
                         return
                 time.sleep(0.1)
@@ -207,16 +372,26 @@ class Supervisor:
             lock.unlink(missing_ok=True)
 
 
-def request(supervisor, action, map_id=None, timeout=200):
+def request(supervisor, action, map_id=None, timeout=200, operation_id=None, start_hook=None):
     directory = supervisor.control
     lock = directory / "request.lock"
     with lock.open("x", encoding="utf-8"):
         pass
     try:
+        token = operation_id or uuid.uuid4().hex
+        body = {"id": token, "action": action, "map": map_id, "profile_digest": supervisor.profile_digest}
+        if action in ACTIONS:
+            _, _, digest = operation_binding(body, supervisor.profile_digest, "cli")
+            previous = supervisor.operations.inspect(token)
+            if previous:
+                if previous["binding_digest"] != digest:
+                    raise ValueError("Operation identity conflict")
+                return supervisor.operations.response(previous)
         if (directory / "request.json").exists():
             raise ValueError("An unresolved request exists; inspect its receipt before retrying")
-        token = uuid.uuid4().hex
-        atomic_json(directory / "request.json", {"id": token, "action": action, "map": map_id})
+        atomic_json(directory / "request.json", body)
+        if start_hook:
+            start_hook()
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
             try:
@@ -234,11 +409,19 @@ def request(supervisor, action, map_id=None, timeout=200):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", required=True)
-    parser.add_argument("action", choices=["start", "stop", "restart", "status", "topic-status", "mapswap", "supervise"])
+    parser.add_argument("action", choices=["start", "stop", "restart", "status", "topic-status", "mapswap", "supervise", "operation-status"])
     parser.add_argument("map", nargs="?")
+    parser.add_argument("--operation-id", help="Immutable lifecycle identity; reuse only to inspect the same action/map/profile")
     args = parser.parse_args()
     try:
         supervisor = Supervisor(args.profile)
+        if args.action == "operation-status":
+            receipt = supervisor.operations.inspect(args.operation_id)
+            if receipt and receipt["request"].get("profile_digest") != supervisor.profile_digest:
+                raise ValueError("Operation profile mismatch")
+            print(json.dumps({"ok": True, "schema": OPERATION_SCHEMA,
+                              "operation_status": receipt["outcome"] if receipt else "not_found", "receipt": receipt}))
+            return 0
         if args.action == "topic-status":
             print(json.dumps({"ok": True, "topic_port": supervisor.profile["topic_port"],
                               "status": topic_status(supervisor.profile["topic_port"])}))
@@ -247,20 +430,22 @@ def main():
             supervisor.run()
             return 0
         if args.action == "start":
-            if not (supervisor.control / "supervisor.lock").exists():
+            def launch_supervisor():
+                if (supervisor.control / "supervisor.lock").exists():
+                    return
                 flags = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
                 subprocess.Popen([sys.executable, str(Path(__file__).resolve()), "--profile",
                                   str(supervisor.profile_path), "supervise"], cwd=supervisor.root,
                                  stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                                  creationflags=flags, start_new_session=os.name != "nt")
-            result = request(supervisor, "status", timeout=20)
+            result = request(supervisor, "start", timeout=20, operation_id=args.operation_id, start_hook=launch_supervisor)
         else:
             if not (supervisor.control / "supervisor.lock").exists():
                 if args.action == "status":
                     print(json.dumps(supervisor.status()))
                     return 0
                 raise ValueError("No owned supervisor; refusing to target another server")
-            result = request(supervisor, args.action, args.map)
+            result = request(supervisor, args.action, args.map, operation_id=args.operation_id)
         print(json.dumps(result))
         return 0 if result.get("ok") else 1
     except (ValueError, OSError, TimeoutError) as error:
