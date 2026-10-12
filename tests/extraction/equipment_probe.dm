@@ -94,6 +94,7 @@ var/equipment_completed = FALSE
 		equipment_assert(!C.validate(bad), "location injection rejected")
 		G.ammo_magazine = new /obj/item/ammo_magazine/m9beretta(locate(5,1,1))
 		equipment_assert(!C.encode(G), "external equipment reference rejected")
+		equipment_settlement_probe(C)
 #ifdef EXTRACTION_MODE_PROBE
 		extraction_mode_probe()
 #endif
@@ -103,3 +104,48 @@ var/equipment_completed = FALSE
 		world.log << "FAIL: [E] at [E.file]:[E.line]"
 	text2file(equipment_completed && !equipment_failures ? "PASS: production equipment disk roundtrip, nested optics, ammo, condition and schema rejection" : "FAIL: equipment verification", "result.txt")
 	shutdown()
+
+/proc/equipment_settlement_probe(datum/extraction_equipment_codec/C)
+	var/datum/extraction_service/S = new
+	S.store.root = "data/production_settlement/"
+	var/obj/item/weapon/gun/projectile/pistol/m9beretta/G = new(locate(1,2,1))
+	G.health = 117
+	G.ammo_magazine = new /obj/item/ammo_magazine/m9beretta(G)
+	var/obj/item/weapon/gun_mount/R = new(G)
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/reddot/O = new(R)
+	O.A_attached = TRUE
+	G.optic_rail = R
+	G.recompute_configuration()
+	equipment_assert(C.set_raid_provenance(G, TRUE), "settlement fixture marks actual nested items")
+	var/list/record = C.encode(G)
+	var/root_id = G.extraction_item_id
+	var/optic_id = O.extraction_item_id
+	var/serial = G.serial
+	var/ammo_count = G.ammo_magazine.stored_ammo.len
+	var/list/A = S.store.load_profile("seller")
+	var/list/B = S.store.load_profile("buyer")
+	A["stash"] = list(list("id" = root_id, "equipment" = record))
+	B["credits"] = 75
+	equipment_assert(S.store.commit_profile("seller", A) && S.store.commit_profile("buyer", B), "production graph stored before release")
+	qdel(G)
+	equipment_assert(!G.loc, "physical source retired before shared settlement")
+	var/list/nextA = json_decode(json_encode(A))
+	var/list/nextB = json_decode(json_encode(B))
+	nextA["revision"]++
+	nextB["revision"]++
+	nextA["stash"] = list()
+	nextA["credits"] = 75
+	nextB["stash"] = A["stash"]
+	nextB["credits"] = 0
+	var/list/parts = list(list("owner" = "seller", "before" = A, "after" = nextA), list("owner" = "buyer", "before" = B, "after" = nextB))
+	equipment_assert(S.settlement_ready() && S.settlement.submit(1, parts), "shared ledger transfers actual compiled graph")
+	S = new
+	S.store.root = "data/production_settlement/"
+	var/datum/extraction_session/seller = S.open("seller")
+	var/datum/extraction_session/buyer = S.open("buyer")
+	equipment_assert(seller && buyer && !seller.profile["stash"].len && seller.profile["credits"] == 75 && buyer.profile["credits"] == 0, "reopened service exposes only settled owners and payment")
+	var/list/entry = buyer.profile["stash"][1]
+	var/obj/item/weapon/gun/projectile/pistol/m9beretta/restored = C.decode(entry["equipment"], locate(2,2,1))
+	equipment_assert(restored && restored.extraction_item_id == root_id && restored.health == 117 && restored.serial == serial && restored.extraction_found_in_raid, "settled actual gun preserves identity condition serial and provenance")
+	equipment_assert(restored.scope && restored.scope.extraction_item_id == optic_id && restored.scope.extraction_found_in_raid && restored.scope.loc == restored.optic_rail && restored.ammo_magazine.stored_ammo.len == ammo_count, "settled actual nested optic and ammunition survive reconstruction")
+	equipment_assert(S.settlement.submit(1, parts) && !seller.profile["stash"].len && buyer.profile["stash"].len == 1, "settled production graph replay does not create another stored copy")

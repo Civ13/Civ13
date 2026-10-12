@@ -12,7 +12,7 @@ import uuid
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
-    parser.add_argument('--probe', choices=('store', 'restart', 'equipment', 'mode'), default='store')
+    parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     args = parser.parse_args()
     if args.provenance_negative_control and args.probe not in ('equipment', 'mode'):
@@ -28,10 +28,11 @@ def main():
         target = Path(temp)
         (target / 'tests/extraction').mkdir(parents=True)
         (target / 'code/modules/1713/extraction').mkdir(parents=True)
-        probe_name = 'restart_probe.dm' if args.probe == 'restart' else 'store_probe.dm'
+        probe_name = 'restart_probe.dm' if args.probe == 'restart' else ('settlement_probe.dm' if args.probe == 'settlement' else 'store_probe.dm')
         shutil.copy2(root / 'tests/extraction' / probe_name, target / 'tests/extraction' / probe_name)
         shutil.copy2(root / 'code/modules/1713/extraction/account_store.dm', target / 'code/modules/1713/extraction/account_store.dm')
         shutil.copy2(root / 'code/modules/1713/extraction/transactions.dm', target / 'code/modules/1713/extraction/transactions.dm')
+        shutil.copy2(root / 'code/modules/1713/extraction/settlement.dm', target / 'code/modules/1713/extraction/settlement.dm')
         (target / 'probe.dme').write_text(f'#include "tests/extraction/{probe_name}"\n', encoding='utf-8')
         built = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=target,
                                capture_output=True, text=True, timeout=60, creationflags=flags)
@@ -39,7 +40,7 @@ def main():
         if built.returncode or '516.1681' not in built.stdout or '0 errors, 0 warnings' not in built.stdout:
             raise RuntimeError('Pinned compile failed')
         platform = ['-invisible', '-close'] if os.name == 'nt' else []
-        phases = ('write', 'reload', 'recover') if args.probe == 'restart' else ('store',)
+        phases = ('write', 'reload', 'recover') if args.probe == 'restart' else (('write', 'reload', 'replay') if args.probe == 'settlement' else ('store',))
         for phase in phases:
             (target / 'result.txt').unlink(missing_ok=True)
             ran = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-params', f'phase={phase}', '-log', 'runtime.log'],

@@ -19,6 +19,7 @@
 	return null
 
 /datum/extraction_account_store/proc/valid_profile(list/P, owner)
+	if (islist(P) && !isnull(P["credits"]) && (!isnum(P["credits"]) || P["credits"] < 0 || P["credits"] > 1000000 || round(P["credits"]) != P["credits"])) return FALSE
 	if (islist(P) && !isnull(P["raid_faction"]) && !(P["raid_faction"] in list("PMC", "Scav"))) return FALSE
 	if (!islist(P)) return FALSE
 	var/list/stash = P["stash"]
@@ -183,6 +184,7 @@
 	for (var/name in entries)
 		if (copytext(name, length(name), 0) != "/") continue
 		var/other = copytext(name, 1, length(name))
+		if (other == "_settlement") continue
 		if (other == owner) continue
 		if (!valid_owner(other)) return fail("Unknown directory in ownership inventory")
 		var/list/other_profile = load_profile(other)

@@ -38,6 +38,29 @@ with a fresh store rejecting its incomplete native journal. These tests reload
 container journals within a fixed raid; they do not establish live-raid process
 restart or rendered container interaction.
 
+## Shared ownership ledger fixture
+
+Run `run.py --byond-bin <516.1681-bin> --probe settlement` to execute three
+separate native processes against temporary journals. This internal ledger moves
+unchanged stored equipment graphs and conserves integer credits among at most
+16 released accounts. A durable shared receipt precedes account projections;
+normal service access remains gated until every projection and finalization
+finishes. Restart finishes the exact forward projection from that receipt.
+An initial receipt intent without its snapshot remains blocked without applying
+account effects. The fixture covers interruptions around receipts, participant
+writes and finalization, reentrant service access, ownership conflicts, modified
+graph/payment rejection and exact replay. A 130-settlement run checks the
+128-receipt history bound and six fixed journal files.
+
+The settlement fixture uses synthetic stored graphs and injected interruption
+points. The separate production equipment probe transfers a real encoded gun,
+nested optic and magazine through released-account settlement, reopens the
+service and reconstructs their identity, condition, serial, provenance and ammo.
+Neither fixture proves multiple server writers, operating
+system power-loss durability, bot authentication or live trading. Callers must
+retire materialized home items and release sessions before submission. Insurance,
+crafting transformations and trade adapters are not supplied by this ledger.
+
 ## Required safe-house concept video
 
 Record a genuine disposable local playable world after integrated regressions

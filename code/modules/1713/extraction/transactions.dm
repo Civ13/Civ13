@@ -5,6 +5,10 @@
 	var/datum/extraction_account_store/store = new
 	var/list/sessions = list()
 	var/last_error
+	var/datum/extraction_settlement/settlement
+	proc/settlement_ready()
+		if (!settlement) settlement = new(src)
+		return settlement.ready()
 
 /datum/extraction_session
 	var/owner
@@ -15,6 +19,9 @@
 
 /datum/extraction_service/proc/open(owner)
 	last_error = null
+	if (!settlement_ready())
+		last_error = settlement.last_error
+		return null
 	if (sessions[owner] || sessions.len >= EXTRACTION_SESSION_LIMIT)
 		last_error = "Account already active or server session capacity reached"
 		return null
@@ -36,7 +43,7 @@
 	return S
 
 /datum/extraction_session/proc/active()
-	return !closed && !locked && service && service.sessions[owner] == src
+	return !closed && !locked && service && service.settlement_ready() && service.sessions[owner] == src
 
 /datum/extraction_session/proc/commit(list/candidate)
 	if (!active()) return FALSE
