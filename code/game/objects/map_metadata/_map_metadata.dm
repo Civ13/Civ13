@@ -1044,18 +1044,27 @@ var/civmax_research = list(230,230,230)
 	if (!season_worker_valid(epoch))
 		return FALSE
 	var/batch = discovery ? 4096 : 256
-	if (!(work % batch) || world.tick_usage >= 20)
+	if (world.tick_usage >= 20)
 		sleep(world.tick_lag)
+	else if (!(work % batch))
+		// Service ready events without idling a full tick while budget remains.
+		sleep(0)
 	return season_worker_valid(epoch)
 
 /obj/map_metadata/proc/season_world_candidates(var/atom_type, var/epoch)
+	if (!season_worker_valid(epoch))
+		return null
 	var/list/candidates = list()
 	var/work = 0
 	for (var/atom/A in world)
-		if (!season_work_pause(epoch, ++work, TRUE))
+		// Discovery performs no constructors; check its budget in small blocks.
+		work++
+		if (!(work % 64) && !season_work_pause(epoch, work, TRUE))
 			return null
-		if (season_candidate_valid(A) && istype(A, atom_type))
+		if (istype(A, atom_type) && !A.gcDestroyed)
 			candidates += A
+	if (!season_worker_valid(epoch))
+		return null
 	return candidates
 
 /obj/map_metadata/proc/season_schedule_phase(var/delay, var/phase, var/epoch)

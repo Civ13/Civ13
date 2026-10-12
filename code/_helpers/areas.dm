@@ -27,7 +27,8 @@
 						turfs += T
 				continue
 			for (var/atom/candidate in A.contents)
-				if (season_owner && !season_owner.season_work_pause(season_epoch, ++season_work, TRUE))
+				season_work++
+				if (!(season_work % 64) && !season_owner.season_work_pause(season_epoch, season_work, TRUE))
 					return null
 				if (!isturf(candidate))
 					continue
@@ -36,6 +37,8 @@
 					continue
 				if (!predicates || all_predicates_true(list(T), predicates))
 					turfs += T
+	if (season_owner && !season_owner.season_worker_valid(season_epoch))
+		return null
 	return turfs
 
 /proc/pick_area_turf(var/areatype, var/list/predicates)

@@ -599,6 +599,10 @@ Base seasons serialize discovery, terrain mutation and delayed phases with
 season_busy/season_epoch; pending natural requests remain distinct. Delayed
 callbacks retain scalar phase/epoch values and stop when metadata is replaced.
 Discovery yields at 4096 candidates, mutation at 256, and both at 20% tick usage.
+Batch checkpoints use sleep(0) while budget remains; exhausted budget waits for
+the next tick. Cheap discovery checks budget/ownership every 64 entries, while
+each mutation checks individually. One constructor or discovery block can
+overshoot before the next checkpoint.
 Season worker fields are explicitly excluded by persistence_runtime_var because
 custom saves enumerate tmp fields. Asia flooding uses season_transition_complete
 inside the same lock. Isolated tests do not establish full-server latency.

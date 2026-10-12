@@ -194,13 +194,3 @@ var/measure_gap = FALSE
 	heartbeat_running = FALSE
 	text2file(json_encode(list("cycles"=4, "clock"=parity_clock, "requests"=requests, "distractors"=owned.len, "identity_failures"=identity_failures, "samples"=samples, "events"=parity_events, "rng_thresholds"=parity_rng, "operation_trace"=parity_operations, "peak_gap_ticks"=peak_gap_ticks, "peak_gap_ds"=peak_gap_ds, "peak_helper_slots"=probe_helper_peak_slots, "positive_pause_calls"=positive_pause_calls)), "result.json")
 	del(world)
-
-
-
-
-
-
-
-
-
-

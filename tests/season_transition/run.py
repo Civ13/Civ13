@@ -86,8 +86,14 @@ def prepare(repo, mode, size, negative, requests_enabled=False):
     helper = re.sub(r'^(\t+)return turfs$', lambda m: m[1] + 'probe_helper_peak_slots = max(probe_helper_peak_slots, turfs.len)\n' + m[0], helper, flags=re.M)
     # Only generated sources use deterministic RNG and accelerated delayed effects.
     seasons = re.sub(r'\bprob\(', 'probe_prob(', seasons)
-    seasons = re.sub(r'spawn\((\d+)\)', lambda m: 'spawn(' + str(30 + int(m[1]) // 100) + ')', seasons)
-    seasons = re.sub(r'season_schedule_phase\((\d+),', lambda m: 'season_schedule_phase(' + str(30 + int(m[1]) // 100) + ',', seasons)
+    # Recurring timers keep the separate 210-ds adapter used by cadence assertions.
+    # Phase delays retain ten times the former spacing: Fall's 900/100-ds
+    # callbacks now have an 80-ds margin instead of 8 ds around yielded main work.
+    phase_delay_divisor = 100 if negative != 'none' or requests_enabled else 10
+    def generated_delay(delay):
+        return 210 if delay == 18000 else 30 + delay // phase_delay_divisor
+    seasons = re.sub(r'spawn\((\d+)\)', lambda m: 'spawn(' + str(generated_delay(int(m[1]))) + ')', seasons)
+    seasons = re.sub(r'season_schedule_phase\((\d+),', lambda m: 'season_schedule_phase(' + str(generated_delay(int(m[1]))) + ',', seasons)
     if negative == 'yield':
         seasons = re.sub(r'\bsleep\([^\n]*?\)', 'sleep(0)', seasons)
         helper = re.sub(r'\bsleep\([^\n]*?\)', 'sleep(0)', helper)
@@ -140,7 +146,7 @@ def prepare(repo, mode, size, negative, requests_enabled=False):
 #include "production.dm"
 #include "requests.dm"
 '''
-    return {'probe.dm': probe, 'production.dm': production, 'requests.dm': requests, 'probe.dme': dme}, {'source_sha256': digest(originals), 'generated_sha256': digest(production), 'dimensions': [width, height, 1], 'mode': mode, 'request_scenarios': requests_enabled, 'negative_control': negative, 'baseline_sha': BASELINE}
+    return {'probe.dm': probe, 'production.dm': production, 'requests.dm': requests, 'probe.dme': dme}, {'source_sha256': digest(originals), 'generated_sha256': digest(production), 'dimensions': [width, height, 1], 'mode': mode, 'request_scenarios': requests_enabled, 'negative_control': negative, 'baseline_sha': BASELINE, 'phase_delay_adapter': {'offset_ds': 30, 'divisor': phase_delay_divisor, 'recurring_delay_ds': 210}, 'daemon_timeout_seconds': 900}
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -184,7 +190,7 @@ def main():
             raise SystemExit(buildlog)
         start = time.monotonic()
         from telemetry import run_native
-        returncode, stdout, stderr, telemetry = run_native([str(daemon), 'probe.dmb'] + (['-invisible'] if os.name == 'nt' else []) + ['-close', '-safe', '-log', 'runtime.log'], root, flags, 600)
+        returncode, stdout, stderr, telemetry = run_native([str(daemon), 'probe.dmb'] + (['-invisible'] if os.name == 'nt' else []) + ['-close', '-safe', '-log', 'runtime.log'], root, flags, 900)
         log = (root / 'runtime.log').read_text(errors='replace') + (stdout + stderr).decode(errors='replace')
         (logs / 'runtime.log').write_text(log)
         if returncode or re.search(r'runtime error|Bad ref|Bad loc|Cannot read null|Cannot execute null|PORT_OPEN|ASSERTION', log, re.I):
@@ -213,10 +219,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-

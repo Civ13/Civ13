@@ -345,14 +345,24 @@ jobs:
           python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --mode baseline --output "$RUNNER_TEMP/season-transition/baseline.json"
           python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/season-transition/candidate.json"
           python3 tests/season_transition/compare.py --baseline "$RUNNER_TEMP/season-transition/baseline.json" --candidate "$RUNNER_TEMP/season-transition/candidate.json" --max-gap-ds 10
+      - name: Verify seasonal requests and mutation controls
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_transition'))
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
           python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --requests --output "$RUNNER_TEMP/season-transition/requests.json"
           python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control yield --output "$RUNNER_TEMP/season-transition/yield.json"
           python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control clock --output "$RUNNER_TEMP/season-transition/clock.json"
+      - name: Compare largest seasonal terrain geometry
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_transition'))
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
           python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --mode baseline --size largest --output "$RUNNER_TEMP/season-transition/large-baseline.json"
           python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --size largest --output "$RUNNER_TEMP/season-transition/large-candidate.json"
           python3 tests/season_transition/compare.py --baseline "$RUNNER_TEMP/season-transition/large-baseline.json" --candidate "$RUNNER_TEMP/season-transition/large-candidate.json" --max-gap-ds 10
       - name: Verify actual largest-map constructors under seasonal work
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_transition')
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_transition'))
         timeout-minutes: 45
         shell: bash
         run: |

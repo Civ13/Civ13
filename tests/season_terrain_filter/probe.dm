@@ -15,6 +15,8 @@ var/replacements = 0
 /obj/inert
 /mob/inert
 /obj/map_metadata
+/obj/map_metadata/proc/season_worker_valid(epoch)
+	return TRUE
 /obj/map_metadata/proc/season_work_pause(epoch, work, discovery)
 	return TRUE
 /proc/even_column(turf/T)

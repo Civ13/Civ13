@@ -43,6 +43,13 @@ to keep its memory/CPU cost out of the performance comparison. It also checks po
 multiple elapsed ticks, and the explicit synthetic one-second heartbeat ceiling.
 That ceiling is a fixture acceptance bound, not a production server SLO.
 
+Parity pairs use generated phase waits of `30 + original / 10` deciseconds,
+with identical scaling on both sizes and modes. Separate request/control runs
+use divisor 100 to shorten dormant waits; they do not establish ordered phase
+parity. Recurring timers use a distinct 210-decisecond adapter. Each result
+records these adapters and the 900-second daemon deadline. The comparator keeps
+strict callback order checks; it must reject an acceleration-induced mismatch.
+
 Every parity snapshot waits for its owner's pending delayed callbacks, queued phases
 and active worker to drain under a bounded deadline, including nested baseline spawns.
 Telemetry reports immediate-work and all-phase native completion ticks, wall-clock heartbeat gaps with midnight
