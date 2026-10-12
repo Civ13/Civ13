@@ -51,6 +51,8 @@ def prepare(repo, mode, negative=False):
     files = {"production.dm": production, "probe.dm": (repo/"tests/lighting_startup/probe.dm").read_text(),
              "probe.dme": '#define TRUE 1\n#define FALSE 0\n#define ASSERT(x) if (!(x)) CRASH("assertion")\n#define PoolOrNew probe_pool\n#define GAME_STATE_PREGAME 0\n#include "probe.dm"\n#include "production.dm"\n'}
     if mode == "candidate": files["probe.dme"] = "#define PROBE_CANDIDATE\n" + files["probe.dme"]
+    assert '/world/OpenPort(port)\n\tif (port == "none")\n\t\treturn ..()\n\treturn FALSE' in files["probe.dm"], "Closed-port adapter changed"
+    assert 'OpenPort("none")' in files["probe.dm"] and 'if (world.port || OpenPort(0) || world.port)' in files["probe.dm"], "Closing/reopening native guards missing"
     files.update({"original-"+Path(path).name: source for path,source in originals.items()})
     manifest = {"head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip(),
                 "baseline": BASELINE, "mode": mode, "negative_control": negative,
@@ -105,7 +107,7 @@ def execute(repo, out, mode, negative, byond):
     (out/"daemon.log").write_text(log)
     assert run.returncode==0 and not re.search(DIAGNOSTICS,log,re.I),log
     result=json.loads((out/"result.json").read_text())
-    assert result["runtime_errors"]==0 and result["native_loop_checks"]==1,result
+    assert result["runtime_errors"]==0 and result["native_loop_checks"]==1 and result["port_closed"],result
     if negative:
         assert result["early_activations"]>0,"Early-activation control was not detected"
     else:

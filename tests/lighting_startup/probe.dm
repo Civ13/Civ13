@@ -1,5 +1,7 @@
 // Isolated native geometry; production corner/overlay constructors are extracted.
 /world
+	hub = ""
+	hub_password = ""
 	maxx = 40
 	maxy = 32
 	maxz = 4
@@ -142,14 +144,18 @@ var/list/lighting_overlay_list = list()
 			slots += "[C.x],[C.y]:[C.active]:[jointext(masters,";")]"
 		rows += "[coord(T)]:[T.type]:[!!T.lighting_overlay]:[jointext(slots,"|")]"
 	probe_snapshots[label] = rows
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
 /world/Error(exception/E)
 	probe_errors++
 	world.log << "runtime error: [E]"
 	return
 /world/New()
-	world.OpenPort(0)
+	OpenPort("none")
 	spawn()
-		if (world.port)
+		if (world.port || OpenPort(0) || world.port)
 			world.log << "PORT_OPEN"
 			del(world)
 			return
@@ -215,6 +221,6 @@ var/list/lighting_overlay_list = list()
 		sleep(2)
 		probe_prestartup_contract = !!prestartup_turf.lighting_overlay && prestartup_corner.active
 		#endif
-		text2file(json_encode(list("snapshots"=probe_snapshots,"overlay_order"=probe_overlay_order,"early_activations"=probe_early,"identity_failures"=probe_identity,"pauses"=probe_pauses,"premature_flags"=probe_premature,"new_callbacks"=probe_new_callbacks,"build_waiters"=probe_build_waiters,"prestartup_contract"=probe_prestartup_contract,"activity_waiter_done"=probe_activity_waiter_done,"activity_waiters"=probe_activity_waiters,"owner_activations"=probe_owner_activations,"owner_duplicates"=probe_owner_duplicates,"failure_release"=probe_failure_release,"runtime_errors"=probe_errors,"native_loop_checks"=world.loop_checks)),"result.json")
+		text2file(json_encode(list("snapshots"=probe_snapshots,"overlay_order"=probe_overlay_order,"early_activations"=probe_early,"identity_failures"=probe_identity,"pauses"=probe_pauses,"premature_flags"=probe_premature,"new_callbacks"=probe_new_callbacks,"build_waiters"=probe_build_waiters,"prestartup_contract"=probe_prestartup_contract,"activity_waiter_done"=probe_activity_waiter_done,"activity_waiters"=probe_activity_waiters,"owner_activations"=probe_owner_activations,"owner_duplicates"=probe_owner_duplicates,"failure_release"=probe_failure_release,"port_closed"=!world.port,"runtime_errors"=probe_errors,"native_loop_checks"=world.loop_checks)),"result.json")
 		del(world)
 		return
