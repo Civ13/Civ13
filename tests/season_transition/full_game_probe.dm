@@ -20,6 +20,7 @@
 	if (full_season_probe)
 		full_season_probe.runtime_error = TRUE
 	world.log << "FULL SEASON runtime error: [error]"
+	text2file("FULL SEASON runtime error: [error]", "full-season-runtime-error.txt")
 	return ..()
 /world/Reboot(reason)
 	throw EXCEPTION("Unexpected reboot in constructor benchmark: [reason]")
@@ -83,7 +84,7 @@ var/global/datum/full_season_constructor_probe/full_season_probe = new
 	fdel("phase.json")
 	text2file(json_encode(row), "phase.json")
 /datum/full_season_constructor_probe/proc/isolation()
-	if (world.port || world.OpenPort(0) || clients.len || config.webhook_can_fire || config.ToRban || !config.skip_persistence_saving || round_progressing)
+	if (world.loop_checks != TRUE || world.port || world.OpenPort(0) || clients.len || config.webhook_can_fire || config.ToRban || !config.skip_persistence_saving || round_progressing)
 		throw EXCEPTION("Full-source isolation invariant failed")
 	if (!istype(map, /obj/map_metadata/nomads/persistence_beta) || world.maxx != 660 || world.maxy != 550 || world.maxz != 1)
 		throw EXCEPTION("Expected actual largest seasonal map 660x550x1")
@@ -281,7 +282,7 @@ var/global/datum/full_season_constructor_probe/full_season_probe = new
 				dead_humans++
 		completed = TRUE
 		active = FALSE
-		text2file(json_encode(list("completed" = completed, "movement_rows" = movement_rows, "passed" = TRUE, "tested_commit" = world.params["tested_commit"], "byond_version" = world.byond_version, "byond_build" = world.byond_build, "map_id" = map.ID, "dimensions" = list(world.maxx, world.maxy, world.maxz), "population" = population, "initial_registries" = initial_registries, "cycles" = cycles, "markers" = markers, "heartbeats" = heartbeat_rows, "actor_service" = services, "dead_humans" = dead_humans, "original_phase_delays_ds" = original_phase_delays, "moves" = moves, "inventory_cycles" = inventory_cycles, "port" = world.port, "connected_clients" = clients.len, "scope" = "Full-source actual largest-map constructors and headless human Life; pregame, no connected-player or full-round acceptance")), "result.json")
+		text2file(json_encode(list("completed" = completed, "movement_rows" = movement_rows, "passed" = TRUE, "tested_commit" = world.params["tested_commit"], "byond_version" = world.byond_version, "byond_build" = world.byond_build, "map_id" = map.ID, "dimensions" = list(world.maxx, world.maxy, world.maxz), "population" = population, "initial_registries" = initial_registries, "cycles" = cycles, "markers" = markers, "heartbeats" = heartbeat_rows, "actor_service" = services, "dead_humans" = dead_humans, "original_phase_delays_ds" = original_phase_delays, "moves" = moves, "inventory_cycles" = inventory_cycles, "native_loop_checks" = world.loop_checks, "port" = world.port, "connected_clients" = clients.len, "scope" = "Full-source actual largest-map constructors and headless human Life; pregame, no connected-player or full-round acceptance")), "result.json")
 	catch (var/exception/E)
 		active = FALSE
 		world.log << "FULL SEASON FAIL: [E] at [E.file]:[E.line]"

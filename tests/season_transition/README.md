@@ -126,8 +126,23 @@ storage, public tracked configuration, disabled webhook/ToRban/persistence-save
 adapters, a closed port which cannot reopen, and no clients. The pregame lobby
 is held: roundstart nature/map generation, food bootstrap and full round behavior
 are outside this benchmark. Unexpected reboots and runtime/engine diagnostics
-invalidate evidence. BYOND engine account/hub activity before DM startup is not
+invalidate evidence. The launcher scans at most 64 KiB per poll from the startup
+log and a fixed runtime-error marker (which also covers redirected world logs),
+retaining only a 1 KiB overlap. Native diagnostics terminate the owned child
+without waiting for the startup deadline. Deliberate population-control FAIL
+markers are evaluated separately and are not treated as runtime diagnostics.
+BYOND engine account/hub activity before DM startup is not
 OS-level network isolation.
+
+The pinned safe-mode Beta run rejected its production `world.loop_checks = FALSE`
+assignment before setup. The generated `code/world.dm` omits only that exact
+Beta conditional assignment and retains native long-loop protection. Replacing
+the generated adapter comment with the original block must reproduce the entire
+original source byte-for-byte after newline normalization. Original/generated
+world sources are retained, and the result must report `native_loop_checks = 1`.
+This is an explicit execution-context difference from production Beta. Engine
+long-loop aborts still invalidate the run; the harness does not suppress them or
+prove behavior with production loop protection disabled.
 
 Only seasonal delayed-start waits are accelerated to `30 + delay / 100`
 deciseconds; original numeric delays are recorded. This synthetic schedule

@@ -15,6 +15,7 @@ import uuid
 MAP = 'maps/nomads/nomads_persistence_beta.dmm'
 METADATA = 'code/game/objects/map_metadata/_map_metadata.dm'
 STARTUP = 'code/setup.dm'
+WORLD = 'code/world.dm'
 DIAGNOSTICS = re.compile(r'runtime error|\bBad ref\b|\bBad loc\b|Cannot read null|Cannot execute null|\bBUG:|##\s*ERROR:', re.I)
 SCOPE = 'Full-source actual terrain constructors and headless humans in pregame; no connected players, roundstart mapgen, client rendering, long-term memory or production acceptance'
 
@@ -70,7 +71,15 @@ def generate(repo, output, prefix, negative, created):
     if not setup.rstrip().endswith('sleep(-1)'):
         raise RuntimeError('Unexpected setup completion boundary')
     setup_adapted = setup.rstrip() + '\n\tfull_season_probe.setup_complete = TRUE\n\ttext2file(json_encode(list("world_time_ds" = world.time, "timeofday_ds" = world.timeofday)), "setup-ready.json")\n'
-    adaptations = {METADATA: adapted, STARTUP: setup_adapted}
+    world_source = (repo / WORLD).read_text(encoding='utf-8-sig')
+    loop_write = '\tif (map && istype(map,/obj/map_metadata/nomads/persistence_beta))\n\t\tloop_checks = FALSE\n'
+    loop_adapter = '\t// Isolated -safe benchmark retains native long-loop protection.\n'
+    if world_source.count(loop_write) != 1:
+        raise RuntimeError('Unexpected Beta native loop-check assignment boundary')
+    world_adapted = world_source.replace(loop_write, loop_adapter)
+    if world_adapted.replace(loop_adapter, loop_write) != world_source:
+        raise RuntimeError('Generated world startup adaptation exceeded native loop-check permission adapter')
+    adaptations = {METADATA: adapted, STARTUP: setup_adapted, WORLD: world_adapted}
     for index, (original, content) in enumerate(adaptations.items()):
         generated = repo / (prefix + '_' + str(index) + '.dm')
         generated.write_text(content, encoding='utf-8')
@@ -148,6 +157,21 @@ def summarize(samples, result):
         summaries[phase] = {'os_samples': len(os_rows), 'sampled_cpu_seconds': os_rows[-1]['cpu_seconds'] - os_rows[0]['cpu_seconds'], 'sampled_wall_seconds': os_rows[-1]['elapsed_seconds'] - os_rows[0]['elapsed_seconds'], 'sampled_peak_rss_bytes': max(row['rss_bytes'] for row in os_rows), 'lifetime_high_water_bytes': max(row['lifetime_high_water_bytes'] for row in os_rows), 'heartbeat_samples': len(native), 'heartbeat_max_ds': max(native) if native else None, 'heartbeat_p95_ds': native[min(len(native)-1, int(.95*len(native)))] if native else None}
     return summaries
 
+def diagnostic_chunk(path, offset, tail):
+    """Inspect at most 64 KiB per poll; retain 1 KiB for split diagnostic text."""
+    try:
+        with path.open('rb') as stream:
+            if path.stat().st_size < offset:
+                offset, tail = 0, ''
+            stream.seek(offset)
+            chunk = stream.read(65536)
+            offset = stream.tell()
+    except FileNotFoundError:
+        return None, offset, tail
+    text = tail + chunk.decode('utf-8', errors='replace')
+    match = DIAGNOSTICS.search(text)
+    return (match.group(0) if match else None), offset, text[-1024:]
+
 def run_daemon(command, output, negative):
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     samples = []
@@ -155,10 +179,16 @@ def run_daemon(command, output, negative):
     started = time.monotonic()
     failure = None
     last_phase = 'startup'
+    diagnostic_offsets = {name: (0, '') for name in ('startup.log', 'full-season-runtime-error.txt')}
     with (output / 'stdout.log').open('w') as stdout, (output / 'stderr.log').open('w') as stderr:
         process = subprocess.Popen(command, cwd=output, stdout=stdout, stderr=stderr, creationflags=flags)
         try:
             while process.poll() is None:
+                for name, (offset, tail) in diagnostic_offsets.items():
+                    diagnostic, offset, tail = diagnostic_chunk(output / name, offset, tail)
+                    diagnostic_offsets[name] = (offset, tail)
+                    if diagnostic:
+                        raise RuntimeError('Native diagnostic detected before deadline: ' + name + ': ' + diagnostic)
                 elapsed = time.monotonic() - started
                 if elapsed > 900:
                     raise RuntimeError('Whole-daemon 900-second deadline')
@@ -196,7 +226,7 @@ def run_daemon(command, output, negative):
     if process.returncode or not (output / 'result.json').exists():
         raise RuntimeError('Native result missing or failed: ' + ((output / 'result.txt').read_text() if (output / 'result.txt').exists() else str(process.returncode)))
     result = json.loads((output / 'result.json').read_text())
-    if not result.get('passed') or not result.get('completed') or result.get('dead_humans') != 0 or result.get('port') or result.get('connected_clients') or result.get('dimensions') != [660, 550, 1] or len(result.get('cycles', [])) != 4:
+    if not result.get('passed') or not result.get('completed') or result.get('dead_humans') != 0 or result.get('native_loop_checks') != 1 or result.get('port') or result.get('connected_clients') or result.get('dimensions') != [660, 550, 1] or len(result.get('cycles', [])) != 4:
         raise RuntimeError('Native result invariants failed')
     if any(not cycle.get('movement_completed') or cycle.get('movement_busy_operations', 0) < 1 or len(cycle.get('human_life_advances', [])) != 80 or min(cycle['human_life_advances']) < 1 for cycle in result['cycles']):
         raise RuntimeError('Concurrent movement or per-cycle human Life evidence missing')
@@ -229,7 +259,7 @@ def main():
     try:
         source, created, hashes = generate(repo, output, prefix, args.negative_control, created)
         head = git(repo, 'rev-parse', 'HEAD').strip()
-        manifest = {'tested_commit': head, 'working_tree_status': git(repo, 'status', '--porcelain'), 'source_hashes': hashes, 'map_source': MAP, 'map_sha256': hashes[MAP], 'scope': SCOPE, 'negative_control': args.negative_control, 'limits': {'startup_seconds': 300, 'whole_daemon_seconds': 900, 'memory_bytes': 2 * 1024**3}, 'adapters': ['closed port; no clients', 'webhooks/ToRban disabled before and after ordinary world startup', 'temporary cwd/config/state with persistence saving disabled', 'pregame round_progressing FALSE', 'human ssd_check FALSE only; inherited constructor/Life', 'only seasonal delayed-start spawn(delay) becomes spawn(30 + delay / 100); relative delay lengths preserved; callback firing order may differ; original delays recorded; real worker pauses unchanged', 'setup completion and main/pending callback timing instrumentation', 'unexpected reboot fails']}
+        manifest = {'tested_commit': head, 'working_tree_status': git(repo, 'status', '--porcelain'), 'source_hashes': hashes, 'map_source': MAP, 'map_sha256': hashes[MAP], 'scope': SCOPE, 'negative_control': args.negative_control, 'limits': {'startup_seconds': 300, 'whole_daemon_seconds': 900, 'memory_bytes': 2 * 1024**3}, 'execution_context': {'daemon_safe_mode': True, 'native_loop_checks': True, 'world_startup_adapter': 'Only the Beta conditional assignment disabling loop_checks is omitted; exact source restoration asserted'}, 'adapters': ['closed port; no clients', 'safe-mode native loop protection retained instead of production Beta loop_checks FALSE; every other world startup statement unchanged', 'webhooks/ToRban disabled before and after ordinary world startup', 'temporary cwd/config/state with persistence saving disabled', 'pregame round_progressing FALSE', 'human ssd_check FALSE only; inherited constructor/Life', 'only seasonal delayed-start spawn(delay) becomes spawn(30 + delay / 100); relative delay lengths preserved; callback firing order may differ; original delays recorded; real worker pauses unchanged', 'setup completion and main/pending callback timing instrumentation', 'unexpected reboot fails']}
         (output / 'manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
         (output / 'tested.patch').write_text(git(repo, 'diff', 'HEAD'), encoding='utf-8')
         shutil.copy2(__file__, output / 'runner.py')
