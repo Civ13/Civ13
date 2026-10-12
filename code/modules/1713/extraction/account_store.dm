@@ -153,6 +153,9 @@
 /datum/extraction_account_store/proc/recovery_ids(list/P)
 	var/list/ids = list()
 	var/list/stash = P["stash"]
+	if (islist(P["insurance_mailbox"]))
+		stash = stash.Copy()
+		for (var/list/entry in P["insurance_mailbox"]) stash += list(entry)
 	for (var/list/entry in stash)
 		if (!islist(entry) || !istext(entry["id"]) || !length(entry["id"]) || ids[entry["id"]]) return null
 		var/list/graph = entry["equipment"]
@@ -184,7 +187,7 @@
 	for (var/name in entries)
 		if (copytext(name, length(name), 0) != "/") continue
 		var/other = copytext(name, 1, length(name))
-		if (other == "_settlement") continue
+		if (other == "_settlement" || other == "_insurance") continue
 		if (other == owner) continue
 		if (!valid_owner(other)) return fail("Unknown directory in ownership inventory")
 		var/list/other_profile = load_profile(other)

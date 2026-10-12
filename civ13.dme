@@ -1238,6 +1238,7 @@
 #include "code\modules\1713\extraction\transactions.dm"
 #include "code\modules\1713\extraction\settlement.dm"
 #include "code\modules\1713\extraction\insurance.dm"
+#include "code\modules\1713\extraction\insurance_returns.dm"
 #include "code\modules\1713\extraction\equipment.dm"
 #include "code\modules\1713\extraction\mode.dm"
 #include "code\modules\1713\extraction\loot.dm"

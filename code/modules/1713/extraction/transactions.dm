@@ -7,8 +7,11 @@
 	var/last_error
 	var/datum/extraction_settlement/settlement
 	var/tmp/insurance_busy = FALSE
+	var/tmp/insurance_blocked = FALSE
+	var/tmp/datum/insurance_gate
 	proc/settlement_ready()
-		if (insurance_busy) return FALSE
+		if (insurance_busy || insurance_blocked) return FALSE
+		if (insurance_gate && !call(insurance_gate, "ready")()) return FALSE
 		if (!settlement) settlement = new(src)
 		return settlement.ready()
 
@@ -22,7 +25,7 @@
 /datum/extraction_service/proc/open(owner)
 	last_error = null
 	if (!settlement_ready())
-		last_error = settlement.last_error
+		last_error = settlement && settlement.last_error ? settlement.last_error : "Account access gated by pending ownership reconciliation"
 		return null
 	if (sessions[owner] || sessions.len >= EXTRACTION_SESSION_LIMIT)
 		last_error = "Account already active or server session capacity reached"
@@ -209,6 +212,8 @@
 	if (!isnull(recovered) && (!islist(recovered) || recovered.len > 4096)) return FALSE
 	var/list/tokens = list()
 	var/datum/extraction_session/validator = new
+	if (!isnull(P["insurance_mailbox"]) && !validator.valid_entries(P["insurance_mailbox"], 64)) return FALSE
+	if (islist(P["insurance_mailbox"]) && P["insurance_mailbox"].len && !islist(store.recovery_ids(P))) return FALSE
 	if (claims)
 		for (var/list/claim in claims)
 			if (!islist(claim) || !istext(claim["round"]) || !length(claim["round"]) || length(claim["round"]) > 64 || !isnum(claim["sequence"]) || claim["sequence"] < 1 || claim["sequence"] > P["raid_sequence"] || round(claim["sequence"]) != claim["sequence"]) return FALSE
@@ -224,6 +229,30 @@
 			if (!istext(token) || length(token) != 32 || ckey(token) != token || seen[token]) return FALSE
 			seen[token] = TRUE
 	return TRUE
+
+// Claiming a return moves graphs between two persisted account partitions.
+// The caller materializes only after commit, while its normal home freeze holds.
+/datum/extraction_session/proc/claim_insurance_mail(list/selected_ids)
+	if (!active() || profile["state"] != "home" || !islist(selected_ids) || !selected_ids.len || selected_ids.len > 16) return null
+	var/list/candidate = copy_profile()
+	var/list/mailbox = candidate["insurance_mailbox"]
+	if (!islist(mailbox)) return null
+	var/list/wanted = list()
+	for (var/id in selected_ids)
+		if (!istext(id) || wanted[id]) return null
+		wanted[id] = TRUE
+	var/list/remaining = list()
+	var/list/claimed = list()
+	for (var/list/entry in mailbox)
+		if (wanted[entry["id"]]) claimed += list(entry)
+		else remaining += list(entry)
+	if (claimed.len != wanted.len) return null
+	var/list/stash = candidate["stash"]
+	for (var/list/entry in claimed) stash += list(entry)
+	if (!valid_entries(stash, capacity())) return null
+	candidate["insurance_mailbox"] = remaining
+	if (!commit(candidate)) return null
+	return claimed
 
 /datum/extraction_session/proc/record_insurance_recovery(list/candidate, list/entries)
 	var/list/recovered = candidate["insurance_recovered"]

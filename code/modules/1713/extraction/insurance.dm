@@ -36,7 +36,7 @@
 		for (var/name in files)
 			if (copytext(name, length(name), 0) != "/") continue
 			var/owner = copytext(name, 1, length(name))
-			if (owner == "_settlement") continue
+			if (owner == "_settlement" || owner == "_insurance") continue
 			if (!revisions[owner]) return FALSE
 			count++
 			var/list/P = service.store.load_profile(owner)
@@ -54,7 +54,7 @@
 		for (var/name in files)
 			if (copytext(name, length(name), 0) != "/") continue
 			var/owner = copytext(name, 1, length(name))
-			if (owner == "_settlement") continue
+			if (owner == "_settlement" || owner == "_insurance") continue
 			if (!service.store.valid_owner(owner)) return fail("Unknown account directory")
 			accounts += owner
 			var/list/P = service.store.load_profile(owner)
@@ -67,7 +67,7 @@
 				for (var/list/node in claim["entry"]["equipment"]["nodes"])
 					var/token = node["insurance_token"]
 					if (claims[token] || claims.len >= EXTRACTION_INSURANCE_INDEX_NODES) return fail("Insurance claim index exceeds budget or repeats tokens")
-					claims[token] = list("owner" = owner, "id" = node["id"], "sequence" = claim["sequence"])
+					claims[token] = list("owner" = owner, "id" = node["id"], "sequence" = claim["sequence"], "type" = node["type"])
 					wanted_ids[node["id"]] = TRUE
 		if (test_access_observer && !call(test_access_observer, "check")(service)) return fail("Insurance inventory exposed an ungated account")
 		// Only IDs and tokens relevant to this round enter the memory index.

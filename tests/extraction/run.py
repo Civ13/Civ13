@@ -12,7 +12,7 @@ import uuid
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
-    parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode'), default='store')
+    parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'insurance'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     args = parser.parse_args()
     if args.provenance_negative_control and args.probe not in ('equipment', 'mode'):
@@ -22,7 +22,7 @@ def main():
     compiler = binary / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
-    if args.probe in ('equipment', 'mode'):
+    if args.probe in ('equipment', 'mode', 'insurance'):
         return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control)
     with tempfile.TemporaryDirectory(prefix='civ13-extraction-') as temp:
         target = Path(temp)
@@ -84,6 +84,9 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False):
         if probe == 'mode':
             source = '#define EXTRACTION_MODE_PROBE\n' + source
             source += '\n#include "tests/extraction/mode_probe.dm"\n#include "tests/extraction/loot_probe.dm"\n#include "maps/extraction/industrial_district.dmm"\n'
+        if probe == 'insurance':
+            source = '#define EXTRACTION_RETURNS_PROCESS_PROBE\n' + source
+            source += '\n#include "tests/extraction/insurance_process_probe.dm"\n'
         source += '\n#include "tests/extraction/equipment_probe.dm"\n'
         generated[0].write_text(source, encoding='utf-8')
         with tempfile.TemporaryDirectory(prefix='civ13-extraction-equipment-') as temp:
@@ -97,20 +100,23 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False):
             shutil.copy2(generated[4], target / 'probe.rsc')
             shutil.copytree(root / 'config/names', target / 'config/names')
             platform = ['-invisible', '-close'] if os.name == 'nt' else []
-            ran = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-log', 'runtime.log'], cwd=target,
+            phases = ('write', 'reload', 'replay') if probe == 'insurance' else ('equipment',)
+            for phase in phases:
+                (target / 'result.txt').unlink(missing_ok=True)
+                ran = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-params', f'phase={phase}', '-log', 'runtime.log'], cwd=target,
                                  capture_output=True, text=True, timeout=60, creationflags=flags)
-            result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
-            log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''
-            print(result)
-            if provenance_control:
-                if ran.returncode or not result.startswith('FAIL:') or 'nested identities and raid provenance survive native disk reload' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
+                result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
+                log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''
+                print(result)
+                if provenance_control:
+                    if ran.returncode or not result.startswith('FAIL:') or 'nested identities and raid provenance survive native disk reload' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
+                        print(log)
+                        raise RuntimeError('Provenance omission was not detected by the intended assertion')
+                    print('PASS: generated provenance-loss control rejected at native disk reload')
+                    return
+                if ran.returncode or not result.startswith('PASS:') or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
                     print(log)
-                    raise RuntimeError('Provenance omission was not detected by the intended assertion')
-                print('PASS: generated provenance-loss control rejected at native disk reload')
-                return
-            if ran.returncode or not result.startswith('PASS:') or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
-                print(log)
-                raise RuntimeError('Production equipment verification failed')
+                    raise RuntimeError('Production equipment verification failed')
     finally:
         for path in generated:
             path.unlink(missing_ok=True)

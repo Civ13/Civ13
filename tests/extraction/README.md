@@ -78,9 +78,22 @@ Claims are bounded to 64 roots and 4096 nodes; recovered tokens are bounded to
 4096. Invalid or full records reject mutation instead of dropping evidence.
 Shared exchanges must preserve these records unchanged.
 
-These interfaces are not enabled by the house UI yet. Eligibility, pricing,
-round-end reconciliation, physical retirement and atomic return delivery remain
-pending. Issued claims alone never grant gear or prove insurance acceptance.
+These interfaces are not enabled by the house UI yet. Paid eligibility, pricing,
+the actual round-end caller and playable mailbox delivery remain pending.
+Issued claims alone never grant gear or prove insurance acceptance.
+
+The internal return consumer journals its plan before retiring physical roots,
+records retirement before applying account projections, and delivers surviving
+insured reusable equipment into a bounded account mailbox. Current condition and
+identity survive; ammunition and uninsured nested items do not return. Claiming
+mail atomically moves its graph into the stash and rejects repeat claims or a
+full stash. The equipment probe checks nine interruption points, changed physical
+state, forged tokens and mailbox capacity. The insurance probe uses three separate
+native processes to check retirement receipts, partial account writes and replay.
+A prepared receipt without durable retirement proof stays blocked after restart.
+Condition archival before corpse or loot expiry and integration into actual
+round-end and house interactions remain pending. These fixtures do not establish
+playable insurance acceptance.
 
 The explicit round inventory reads at most 4096 account directory entries and
 indexes at most 4096 relevant claim tokens. It compares recovered tokens and

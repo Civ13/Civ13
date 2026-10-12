@@ -53,7 +53,7 @@
 			var/list/before = part["before"]
 			var/list/after = part["after"]
 			if (!service.store.valid_profile(before, owner) || !service.store.valid_profile(after, owner) || before["state"] != "home" || after["state"] != "home" || after["revision"] != before["revision"] + 1 || before["level"] != after["level"] || before["raid_sequence"] != after["raid_sequence"] || !valid_wallet(before) || !valid_wallet(after)) return FALSE
-			if (!service.insurance_profile_valid(before) || !service.insurance_profile_valid(after) || md5(json_encode(before["insurance_claims"])) != md5(json_encode(after["insurance_claims"])) || md5(json_encode(before["insurance_recovered"])) != md5(json_encode(after["insurance_recovered"]))) return FALSE
+			if (!service.insurance_profile_valid(before) || !service.insurance_profile_valid(after) || md5(json_encode(before["insurance_claims"])) != md5(json_encode(after["insurance_claims"])) || md5(json_encode(before["insurance_recovered"])) != md5(json_encode(after["insurance_recovered"])) || md5(json_encode(before["insurance_mailbox"])) != md5(json_encode(after["insurance_mailbox"]))) return FALSE
 			var/datum/extraction_session/validator = new
 			if (!validator.valid_entries(before["stash"], before["level"] * 16) || !validator.valid_entries(after["stash"], after["level"] * 16)) return FALSE
 			var/list/old_ids = service.store.recovery_ids(before)
@@ -151,7 +151,7 @@
 		for (var/name in files)
 			if (copytext(name, length(name), 0) != "/") continue
 			var/owner = copytext(name, 1, length(name))
-			if (owners[owner] || owner == "_settlement") continue
+			if (owners[owner] || owner == "_settlement" || owner == "_insurance") continue
 			if (!service.store.valid_owner(owner)) return FALSE
 			var/list/P = service.store.load_profile(owner)
 			if (!P) return FALSE

@@ -30,7 +30,11 @@ var/equipment_completed = FALSE
 /world/New()
 	world.OpenPort("none")
 	spawn(2)
+#ifdef EXTRACTION_RETURNS_PROCESS_PROBE
+		run_insurance_process_probe()
+#else
 		run_equipment_probe()
+#endif
 
 /proc/run_equipment_probe()
 	try
@@ -101,6 +105,7 @@ var/equipment_completed = FALSE
 		equipment_assert(!C.encode(G), "external equipment reference rejected")
 		equipment_settlement_probe(C)
 		equipment_insurance_probe(C)
+		equipment_insurance_returns_probe(C)
 #ifdef EXTRACTION_MODE_PROBE
 		extraction_mode_probe()
 #endif
@@ -280,3 +285,106 @@ var/equipment_completed = FALSE
 	equipment_assert(!S.store.commit_profile("pendingaccount", pending), "inject unresolved nonparticipant account journal")
 	S.store.test_fail_at = null
 	equipment_assert(!inventory.build("industrial1") && !S.insurance_busy, "unresolved nonparticipant journal prevents insurance inference and releases read gate")
+
+/proc/equipment_insurance_returns_probe(datum/extraction_equipment_codec/C)
+	equipment_insurance_capacity_probe(C)
+	var/list/cuts = list("before_prepare", "after_prepare", "retire1", "retirement_intent", "retirement_snapshot", "after_retirement", "apply1", "finalize_intent", "finalize_snapshot")
+	for (var/i in 1 to cuts.len)
+		var/cut = cuts[i]
+		var/datum/extraction_service/S = new
+		S.store.root = "data/insurance_returns[i]/"
+		var/datum/extraction_session/A = S.open("returnowner")
+		var/obj/item/weapon/gun/projectile/pistol/m9beretta/G = new(locate(6,5,1))
+		G.health = 101
+		G.ammo_magazine = new /obj/item/ammo_magazine/m9beretta(G)
+		var/list/record = C.encode(G)
+		var/id = G.extraction_item_id
+		qdel(G)
+		equipment_assert(A.checkpoint_home(list(list("id" = id, "equipment" = record))), "return fixture provisions native gun")
+		var/list/issued = A.begin_raid(list(id), "PMC", list(id), "returnround")
+		G = C.decode(issued["issued"][1]["equipment"], locate(6,5,1))
+		G.health = 83
+		equipment_assert(A.forfeit(issued["sequence"]), "return fixture records death without payout")
+		A.close()
+		var/datum/extraction_insurance_returns/returns = new(S, C)
+		returns.test_fail_at = cut
+		equipment_assert(!returns.prepare("returnround", list(G)), "[cut] interruption does not acknowledge payout")
+		returns.test_fail_at = null
+		if (cut == "before_prepare")
+			equipment_assert(G.loc && returns.ready(), "unaccepted plan leaves physical gun and service available")
+			equipment_assert(returns.prepare("returnround", list(G)), "retry unaccepted return plan")
+		else if (cut == "after_prepare" || cut == "retire1")
+			equipment_assert(!returns.ready() && !S.open("returnowner"), "prepared return remains inaccessible before retirement receipt")
+			equipment_assert(returns.retire(), "same-world retirement resumes exact retained physical references")
+		else
+			S = new
+			S.store.root = "data/insurance_returns[i]/"
+			returns = new(S, C)
+			equipment_assert(returns.ready(), "[cut] native journal reopen finishes only retired account projections")
+		equipment_assert(!G || !G.loc, "physical source retired before returned ownership is exposed")
+		A = S.open("returnowner")
+		equipment_assert(A && !A.profile["stash"].len && !A.profile["insurance_claims"].len && A.profile["insurance_mailbox"].len == 1, "[cut] claim resolution and bounded mailbox credit commit together")
+		var/list/entry = A.profile["insurance_mailbox"][1]
+		var/obj/item/weapon/gun/projectile/pistol/m9beretta/restored = C.decode(entry["equipment"], locate(7,5,1))
+		equipment_assert(restored && restored.extraction_item_id == id && restored.health == 83 && restored.ammo_magazine && !restored.ammo_magazine.stored_ammo.len, "returned actual gun keeps lost condition and identity without insured ammunition")
+		qdel(restored)
+		equipment_assert(A.claim_insurance_mail(list(id)) && !A.profile["insurance_mailbox"].len && A.profile["stash"].len == 1, "claim moves one mailbox graph into persisted stash")
+		equipment_assert(!A.claim_insurance_mail(list(id)), "mailbox claim replay cannot produce another stored copy")
+		A.close()
+		equipment_assert(!returns.prepare("returnround", list()), "resolved round cannot replay payout")
+
+/proc/equipment_insurance_capacity_probe(datum/extraction_equipment_codec/C)
+	var/datum/extraction_service/S = new
+	S.store.root = "data/return_capacity/"
+	var/datum/extraction_session/A = S.open("capacityowner")
+	var/obj/item/extraction_salvage/part = new(locate(1,6,1))
+	var/list/template = C.encode(part)
+	qdel(part)
+	var/list/P = A.copy_profile()
+	P["insurance_mailbox"] = list()
+	for (var/i in 1 to 64)
+		var/list/graph = json_decode(json_encode(template))
+		var/id = md5("existingreturn[i]")
+		graph["nodes"][1]["id"] = id
+		P["insurance_mailbox"] += list(list("id" = id, "equipment" = graph))
+	equipment_assert(A.commit(P), "mailbox capacity fixture stores 64 distinct native graph roots")
+	var/obj/item/weapon/gun/projectile/pistol/m9beretta/G = new(locate(1,6,1))
+	var/list/record = C.encode(G)
+	var/id = G.extraction_item_id
+	qdel(G)
+	equipment_assert(A.checkpoint_home(list(list("id" = id, "equipment" = record))), "capacity fixture provisions insurable gun")
+	var/list/raid = A.begin_raid(list(id), "PMC", list(id), "capacityround")
+	G = C.decode(raid["issued"][1]["equipment"], locate(1,6,1))
+	var/token = G.extraction_insurance_token
+	equipment_assert(A.forfeit(raid["sequence"]), "capacity fixture forfeits issued graph")
+	A.close()
+	var/datum/extraction_insurance_returns/returns = new(S, C)
+	equipment_assert(!returns.prepare("capacityround", list(G)) && G.loc && returns.ready(), "full mailbox rejects entire plan before physical retirement")
+	A = S.open("capacityowner")
+	P = A.copy_profile()
+	P["insurance_mailbox"].Cut(64, 65)
+	equipment_assert(A.commit(P), "capacity fixture opens one mailbox slot")
+	A.close()
+	G.extraction_insurance_token = md5("forgedphysicaltoken")
+	equipment_assert(!returns.prepare("capacityround", list(G)) && G.loc && returns.ready(), "forged physical token cannot silently void or redirect original claim")
+	G.extraction_insurance_token = token
+	returns.test_fail_at = "after_prepare"
+	equipment_assert(!returns.prepare("capacityround", list(G)) && G.loc, "prepare persists plan before physical retirement")
+	returns.test_fail_at = null
+	G.health--
+	equipment_assert(!returns.retire() && G.loc && !returns.ready(), "changed physical condition after receipt blocks retirement and payout")
+	G.health++
+	equipment_assert(returns.retire() && (!G || !G.loc), "exact restored fixture condition permits original retirement plan")
+	A = S.open("capacityowner")
+	equipment_assert(A && A.profile["insurance_mailbox"].len == 64, "one freed slot receives exactly one returned gun")
+	P = A.copy_profile()
+	P["stash"] = list()
+	for (var/i in 1 to 16)
+		var/list/graph = json_decode(json_encode(template))
+		var/stash_id = md5("fullstash[i]")
+		graph["nodes"][1]["id"] = stash_id
+		P["stash"] += list(list("id" = stash_id, "equipment" = graph))
+	equipment_assert(A.commit(P), "capacity fixture fills home stash")
+	var/revision = A.profile["revision"]
+	equipment_assert(!A.claim_insurance_mail(list(id)) && A.profile["revision"] == revision && A.profile["insurance_mailbox"].len == 64, "full stash withholds delivery without losing mailbox graph or advancing revision")
+	A.close()
