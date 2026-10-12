@@ -55,6 +55,25 @@ var/equipment_completed = FALSE
 #endif
 
 /proc/equipment_workshop_material_probe(datum/extraction_equipment_codec/C)
+	equipment_workshop_wheel_install_probe()
+	var/obj/item/extraction_generator_kit/kit = new(null)
+	var/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/tank = kit.tank()
+	equipment_assert(tank && !tank.reagents.total_volume && !kit.engine && !kit.cable, "paid generator has an actual empty tank and no free supply")
+	tank.reagents.add_reagent("gasoline", 17, safety = TRUE)
+	kit.generator_broken = TRUE
+	var/list/power_record = C.encode(kit)
+	var/obj/item/extraction_generator_kit/power_restored = C.decode(power_record, locate(1,1,1))
+	var/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/restored_tank = power_restored?.tank()
+	equipment_assert(power_restored && power_restored.generator_broken && restored_tank?.reagents.get_reagent_amount("gasoline") == 17 && !power_restored.engine && !power_restored.cable, "generator reload preserves paid fuel and damage without restoring live supply or callbacks")
+	var/list/bad_power = json_decode(json_encode(power_record))
+	bad_power["nodes"][1]["scalars"]["generator_broken"] = 100
+	equipment_assert(!C.validate(bad_power), "generator condition cannot become arbitrary supply state")
+	bad_power = json_decode(json_encode(power_record))
+	bad_power["nodes"].Cut(2)
+	equipment_assert(!C.validate(bad_power), "missing actual fuel container rejects before generator restoration")
+	equipment_assert(!kit.install(null), "unowned generator cannot create a native power installation")
+	qdel(kit)
+	qdel(power_restored)
 	var/obj/item/extraction_wheel_crate/boxed = new(null)
 	boxed.wheel.wconfig.current_health = 31
 	var/list/wheel_record = C.encode(boxed)
@@ -99,6 +118,47 @@ var/equipment_completed = FALSE
 	qdel(restored_cable)
 	qdel(second_cable)
 
+/proc/equipment_workshop_wheel_install_probe()
+	var/obj/structure/car_workshop/extraction_private/W = new(null)
+	var/obj/structure/vehicleparts/axis/car/A = new(null)
+	A.wheels = list()
+	A.corners = list()
+	W.paid_wheels = list()
+	var/list/originals = list()
+	for (var/i in 1 to 4)
+		var/obj/structure/vehicleparts/frame/car/F = new(locate(i,7,1))
+		F.axis = A
+		A.corners += F
+		var/obj/structure/vehicleparts/movement/template = new(F)
+		template.axis = A
+		template.connected = F
+		F.mwheel = template
+		A.wheels += template
+		var/obj/item/extraction_wheel_crate/C = new(null)
+		C.wheel.wconfig.current_health = 20 + i
+		originals += C.wheel
+		W.paid_wheels += C
+	var/list/templates = A.wheels.Copy()
+	var/list/full = W.paid_wheels.Copy()
+	W.busy = TRUE
+	W.powerneeded = 20
+	equipment_assert(!W.draw_cable_power(), "unconnected private press cannot manufacture native power")
+	W.finish_work()
+	equipment_assert(!W.busy && !W.powerneeded && !W.paid_wheels && !W.build_session, "cancel cleanup releases busy power and all paid preview references")
+	W.paid_wheels = full.Copy()
+	W.paid_wheels.len = 3
+	equipment_assert(!W.install_paid_wheels(A) && A.wheels.len == 4 && originals[1]:loc == full[1], "missing paid wheel preserves all original crates and template layout")
+	W.paid_wheels = list(full[1], full[1], full[3], full[4])
+	equipment_assert(!W.install_paid_wheels(A) && A.wheels[1] == templates[1], "duplicate paid crate rejects before any wheel retirement")
+	W.paid_wheels = full
+	equipment_assert(W.install_paid_wheels(A) && A.wheels.len == 4, "native attachment substitutes exactly four paid original wheels")
+	for (var/i in 1 to 4)
+		var/obj/structure/vehicleparts/movement/original = originals[i]
+		equipment_assert((original in A.wheels) && original.axis == A && original.connected == A.corners[i] && original.loc == A.corners[i] && original.wconfig.current_health == 20 + i && length(original.extraction_vehicle_part_id), "assembled wheel retains actual identity and paid wear")
+	for (var/obj/structure/vehicleparts/frame/F in A.corners.Copy()) qdel(F)
+	qdel(A)
+	qdel(W)
+
 /proc/equipment_workshop_reservation_probe(datum/extraction_equipment_codec/C)
 	var/datum/extraction_service/service = new
 	var/datum/extraction_session/S = service.open("componentbuilder")
@@ -137,6 +197,12 @@ var/equipment_completed = FALSE
 	missing.len--
 	equipment_assert(!S.plan_vehicle_construction(missing, S.profile["revision"], required), "missing fourth native wheel rejects construction reservation")
 	equipment_assert(S.commit(plan), "construction reservation is durable before physical components retire")
+	var/obj/structure/car_workshop/extraction_private/interrupted = new(null)
+	interrupted.build_session = S
+	interrupted.busy = TRUE
+	interrupted.finish_work()
+	equipment_assert(S.locked && !interrupted.busy && !interrupted.build_session, "paid interruption locks account while releasing runtime work references")
+	qdel(interrupted)
 	var/list/loaded = service.store.load_profile(S.owner)
 	equipment_assert(loaded && loaded["garage_purchase"]["status"] == "pending" && json_encode(loaded["garage_purchase"]["inputs"]) == json_encode(plan["garage_purchase"]["inputs"]), "native journal retains exact interrupted construction component evidence")
 	S.close()

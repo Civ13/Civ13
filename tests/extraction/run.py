@@ -25,8 +25,11 @@ def main():
     parser.add_argument('--room-payment-negative-control', action='store_true')
     parser.add_argument('--corpse-release-negative-control', action='store_true')
     parser.add_argument('--npc-insurance-negative-control', action='store_true')
+    parser.add_argument('--workshop-negative-control', choices=('wear', 'cleanup'))
     parser.add_argument('--insurance-fixture-output', type=Path)
     args = parser.parse_args()
+    if args.workshop_negative_control and (args.probe != 'equipment' or any(value for key, value in vars(args).items() if key.endswith('negative_control') and key != 'workshop_negative_control')):
+        parser.error('Workshop control requires equipment without another mutation')
     if args.npc_insurance_negative_control and args.probe != 'npc':
         parser.error('NPC insurance control requires the focused npc probe')
     if args.insurance_fixture_output and (args.probe != 'equipment' or args.insurance_fixture_output.exists()):
@@ -61,7 +64,7 @@ def main():
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     if args.probe in ('equipment', 'mode', 'npc', 'city', 'insurance', 'groups', 'vehicles'):
-        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control, args.room_payment_negative_control, args.corpse_release_negative_control, args.insurance_fixture_output, args.npc_insurance_negative_control)
+        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control, args.room_payment_negative_control, args.corpse_release_negative_control, args.insurance_fixture_output, args.npc_insurance_negative_control, args.workshop_negative_control)
     with tempfile.TemporaryDirectory(prefix='civ13-extraction-') as temp:
         target = Path(temp)
         (target / 'tests/extraction').mkdir(parents=True)
@@ -105,11 +108,23 @@ def main():
                 raise RuntimeError('Account journal verification failed')
 
 
-def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False, room_payment_control=False, corpse_release_control=False, insurance_fixture_output=None, npc_insurance_control=False):
+def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False, room_payment_control=False, corpse_release_control=False, insurance_fixture_output=None, npc_insurance_control=False, workshop_control=None):
     prefix = '.extraction_' + uuid.uuid4().hex
     generated = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '.dmb', '.rsc')]
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
+        if workshop_control:
+            workshop = (root / 'code/modules/1713/extraction/private_car_workshop.dm').read_text(encoding='utf-8')
+            marker, replacement = {
+                'wear': ('\t\t\tW.update_icon()', '\t\t\tW.wconfig.current_health = W.wconfig.max_health\n\t\t\tW.update_icon()'),
+                'cleanup': ('\t\tpaid_wheels = null', '\t\t// Negative control: retain paid wheel references'),
+            }[workshop_control]
+            if workshop.count(marker) != 1:
+                raise RuntimeError('Workshop mutation marker changed')
+            control = root / (prefix + '_workshop.dm')
+            generated.append(control)
+            control.write_text(workshop.replace(marker, replacement), encoding='utf-8')
+            source = source.replace('code\\modules\\1713\\extraction\\private_car_workshop.dm', control.name)
         if npc_insurance_control:
             control = root / (prefix + '_insurance.dm')
             generated.append(control)
@@ -328,6 +343,12 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                         raise RuntimeError('Corpse release control failed outside its intended assertion')
                     print('PASS: omitted corpse gear release rejected by integrated death/insurance assertion')
                     return
+                if workshop_control:
+                    expected = {'wear': 'assembled wheel retains actual identity and paid wear', 'cleanup': 'cancel cleanup releases busy power and all paid preview references'}[workshop_control]
+                    if ran.returncode or not result.startswith('FAIL:') or expected not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
+                        raise RuntimeError('Workshop control did not fail at its intended ownership assertion')
+                    print(f'PASS: workshop {workshop_control} omission detected')
+                    continue
                 if room_payment_control:
                     if ran.returncode or not result.startswith('FAIL:') or 'native upgrade consumes exactly five roots and preserves unrelated wallet' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
                         print(log)

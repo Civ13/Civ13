@@ -5,6 +5,7 @@
 	offers["Glass sheets"] = list("type" = /obj/item/stack/material/glass, "amount" = 6, "price" = 20, "level" = 2)
 	offers["Workshop cable"] = list("type" = /obj/item/stack/cable_coil, "amount" = 10, "price" = 30, "level" = 2)
 	offers["Standard wheel"] = list("type" = /obj/item/extraction_wheel_crate, "price" = 40, "level" = 2)
+	offers["Private generator kit"] = list("type" = /obj/item/extraction_generator_kit, "price" = 200, "level" = 2)
 	offers["Carved planks"] = list("type" = /obj/item/stack/material/woodplank, "amount" = 10, "price" = 30, "level" = 1)
 	offers["Copper sheets"] = list("type" = /obj/item/stack/material/copper, "amount" = 10, "price" = 40, "level" = 2)
 	offers["Gold research stock"] = list("type" = /obj/item/stack/material/gold, "amount" = 5, "price" = 150, "level" = 3)

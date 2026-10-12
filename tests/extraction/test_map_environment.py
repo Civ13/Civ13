@@ -60,8 +60,16 @@ class MapEnvironmentTests(unittest.TestCase):
         houses = layers[1]
         benches = [point for point, atoms in houses.items() if '/component_workbench/extraction_private' in atoms]
         self.assertEqual(len(benches), 16)
+        presses = [point for point, atoms in houses.items() if '/car_workshop/extraction_private' in atoms]
+        self.assertEqual(len(presses), 16)
         for room in range(16):
             center = (12 + room % 4 * 22, 12 + room // 4 * 22)
+            press = (center[0] - 4, center[1] - 4)
+            self.assertIn(f'room = {room + 1}', houses[press])
+            self.assertIn('/turf/floor/plating/extraction_house', houses[press])
+            # The fixed press stays outside the native garage turning square.
+            self.assertFalse(center[0] - 4 <= press[0] <= center[0] - 2 and
+                             center[1] - 2 <= press[1] <= center[1])
             self.assertIn(f'room = {room + 1}', houses[(center[0] + 3, center[1] + 3)])
             # The paid Piccolino's bay and routes to crate/terminal remain clear.
             self.assertNotIn('/component_workbench', houses[(center[0] - 2, center[1] - 2)])

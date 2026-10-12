@@ -33,6 +33,7 @@ var/global/extraction_identity_sequence = 0
 	if (ispath(path, /obj/item/weapon/key/extraction_room)) return TRUE
 	if (path in list(/obj/item/stack/material/glass, /obj/item/stack/cable_coil)) return TRUE
 	if (path == /obj/item/extraction_wheel_crate) return TRUE
+	if (path == /obj/item/extraction_generator_kit) return TRUE
 	if (path in list(/obj/item/stack/material/copper, /obj/item/stack/material/gold)) return TRUE
 	if (path in list(/obj/item/stack/material/wood, /obj/item/stack/material/woodplank, /obj/item/stack/material/iron, /obj/item/stack/material/steel, /obj/item/stack/material/cloth, /obj/item/stack/material/rope, /obj/item/stack/material/leather, /obj/item/stack/material/kevlar, /obj/item/stack/material/cotton, /obj/item/stack/material/flax, /obj/item/stack/material/rettedfabric)) return TRUE
 	if (path in list(/obj/item/weapon/reagent_containers/glass/barrel/jerrycan, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel)) return TRUE
@@ -48,6 +49,7 @@ var/global/extraction_identity_sequence = 0
 	if (ispath(path, /obj/item/weapon/key/extraction_room)) fields |= "code"
 	if (ispath(path, /obj/item/stack)) fields |= "amount"
 	if (path == /obj/item/stack/cable_coil) fields |= "cable_color"
+	if (path == /obj/item/extraction_generator_kit) fields |= "generator_broken"
 	return fields
 
 /datum/extraction_equipment_codec/proc/reference_fields(path)
@@ -68,6 +70,9 @@ var/global/extraction_identity_sequence = 0
 	index[I] = items.len
 	nodes += list(list("type" = "[I.type]", "parent" = parent))
 	var/id = items.len
+	if (I.type == /obj/item/extraction_generator_kit)
+		var/obj/item/extraction_generator_kit/G = I
+		if (!G.snapshot_installation()) return FALSE
 	if (I.type == /obj/item/extraction_wheel_crate)
 		var/obj/item/extraction_wheel_crate/W = I
 		return !!W.snapshot_wheel()
@@ -189,6 +194,15 @@ var/global/extraction_identity_sequence = 0
 		var/list/refs = node["refs"]
 		var/list/lists = node["lists"]
 		if (!islist(scalars) || !islist(refs) || !islist(lists)) return FALSE
+		if (path == /obj/item/extraction_generator_kit)
+			if (!(scalars["generator_broken"] in list(FALSE, TRUE))) return FALSE
+			var/children = 0
+			for (var/j in 1 to graph.len)
+				var/list/child = graph[j]
+				if (child["parent"] == i)
+					if (child["type"] != "/obj/item/weapon/reagent_containers/glass/barrel/jerrycan") return FALSE
+					children++
+			if (children != 1) return FALSE
 		var/list/allowed = scalar_fields(path)
 		if (ispath(path, /obj/item/weapon/material) || ispath(path, /obj/item/stack/material)) allowed |= "material_key"
 		for (var/key in scalars)

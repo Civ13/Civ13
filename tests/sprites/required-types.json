@@ -23,5 +23,7 @@
   "/obj/item/clothing/head/wolfpelt/white",
   "/obj/item/weapon/shield/chitin",
   "/obj/item/weapon/shield/chitin/large",
-  "/obj/structure/farming/plant/herbs"
+  "/obj/structure/farming/plant/herbs",
+  "/obj/item/extraction_generator_kit",
+  "/obj/structure/car_workshop/extraction_private"
 ]

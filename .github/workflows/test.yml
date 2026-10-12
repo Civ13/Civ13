@@ -159,6 +159,8 @@ jobs:
             /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --vehicle-raid-negative-control debit
             /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --vehicle-raid-negative-control credit
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --provenance-negative-control
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --workshop-negative-control wear
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --workshop-negative-control cleanup
 
       - name: Verify generated atlas assets and native bounded viewer
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/crafting_atlas')

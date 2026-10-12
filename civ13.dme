@@ -1266,6 +1266,8 @@
 #include "code\modules\1713\extraction\garage.dm"
 #include "code\modules\1713\extraction\vehicle_purchase.dm"
 #include "code\modules\1713\extraction\workshop_components.dm"
+#include "code\modules\1713\extraction\private_car_workshop.dm"
+#include "code\modules\1713\extraction\workshop_power.dm"
 #include "code\modules\1713\extraction\vehicle_cargo.dm"
 #include "code\modules\1713\extraction\vehicle_raid.dm"
 #include "code\modules\1713\extraction\loot.dm"

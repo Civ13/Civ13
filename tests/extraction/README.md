@@ -317,6 +317,27 @@ not refund or recreate components automatically. Native wheel and disk-backed
 reservation assertions are added but unrun. Player-facing assembly, its power
 installation and interrupted-build recovery acceptance remain unfinished.
 
+Both generated mission maps place a fixed private automobile press in each
+room, outside its garage turning square. The source adapter retains native
+research, recipe, action-wait and cable-power checks and journals exact inputs
+before consumption. Its attachment step replaces factory template wheels with
+the four actual paid wheels, retaining their identities and wear. A level-two
+private generator kit costs 200 game credits and contains an empty actual
+jerrycan; gasoline is sold separately. Use the kit in your room to install and
+toggle its native engine, refuel it with an actual gasoline jerrycan while off,
+and drag its short laid cable onto the press. Its fuel and damage are saved;
+live supply, connections and callbacks are reconstructed only on installation,
+with the engine off after reload. Electricity research remains required.
+
+The equipment probe adds original-wheel substitution, missing/duplicate payment,
+busy/cancel cleanup, missing power, interrupted pending-account quarantine and
+generator fuel/damage restoration assertions. `--workshop-negative-control wear`
+deliberately resets paid wheel wear; `--workshop-negative-control cleanup` retains
+paid preview references. Both must fail at their respective ownership assertions.
+All new native assertions and compilation remain unrun locally during the quiet
+window. End-to-end assembly, reachable research/power and interruption/restart
+acceptance remain pending; source implementation is not acceptance evidence.
+
 The mode fixture also assembles a real car and checks the internal physical
 transfer helper: moving/stale vehicles, unexpected footprint/nested cargo and occupied bays
 are rejected before relocation; original parts, fuel, wall condition and
