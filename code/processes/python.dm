@@ -46,16 +46,12 @@
 		log_debug("OpenDream supervisor unavailable or request pending.")
 		return FALSE
 	var/request = json_encode(list("action" = action, "map" = map_id))
-	// Build a complete temporary file before exposing it to the supervisor.
-	fdel("[root]game-request.tmp")
-	if (!text2file(request, "[root]game-request.tmp"))
+	// The consumer reads only after the final commit marker. Avoid fcopy:
+	// OpenDream can retain the previous bytes of a reused temporary resource.
+	if (!text2file(request, "[root]game-request.json"))
 		return FALSE
-	var/copied = fcopy("[root]game-request.tmp", "[root]game-request.json")
-	fdel("[root]game-request.tmp")
-	if (!copied)
-		return FALSE
-	// fcopy is not an atomic rename. The consumer waits for this commit marker.
 	if (!text2file("ready", "[root]game-ready"))
 		fdel("[root]game-request.json")
 		return FALSE
 	return TRUE
+

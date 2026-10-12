@@ -124,9 +124,10 @@ class Supervisor:
         try:
             staged.write_text(re.sub(pattern, lambda _: replacement, source,
                                     flags=re.MULTILINE | re.IGNORECASE), encoding="utf-8")
-            compiler = Path(self.profile["compiler"]).resolve(strict=True)
+            compiler = Path(self.profile["compiler"])
             if not compiler.is_absolute():
                 raise ValueError("Compiler must be absolute")
+            compiler = compiler.resolve(strict=True)
             with (self.control / "compile.log").open("wb") as log:
                 subprocess.run([str(compiler), "--version=516.1681", str(staged)], cwd=self.root,
                                stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
@@ -257,3 +258,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+

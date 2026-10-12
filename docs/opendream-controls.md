@@ -57,3 +57,23 @@ matching the old launcher behavior rather than a graceful persistence transactio
 
 Offline control tests: `python -m unittest discover -s tests -p test_opendream_control.py -v`.
 These launch only temporary dummy processes, never a game or external service.
+
+The optional actual-engine check uses production request/reboot/whitelist bodies:
+
+```
+<python> scripts/opendream/verify-dm-controls.py --compiler <absolute-DMCompiler> --server <absolute-Robust.Server> --output <temporary-result.json>
+```
+
+It launches a disposable one-tile OpenDream world on loopback, then closes its
+owned process. The ready marker gates direct request-file writes. Reusing a
+copied temporary OpenDream file resource can retain old bytes, so requests must
+not use `fcopy` from a reused temporary resource. The verifier reads the reboot
+request from disk independently of DM's resource cache.
+
+Local acceptance covered Nomads and Little Creek TDM readiness, repeated Topic
+queries, owned-process restart, compiled map transitions, and two distinct OOC
+file messages consumed by the game. Desert compilation succeeded but startup did
+not reach readiness within the test window; that map is excluded from the local
+allowlist. These checks do not establish all admin commands, graphical gameplay,
+graceful persistence shutdown, or production parity. OpenDream builds retain
+103 compatibility warnings; the native BYOND build has zero errors or warnings.
