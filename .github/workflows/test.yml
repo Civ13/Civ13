@@ -323,6 +323,22 @@ jobs:
             /usr/bin/python3 tests/gc_triage/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
 
+      - name: Verify seasonal terrain selection and allocation bounds
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_terrain_filter')
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/season_terrain_filter/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/season-terrain/positive.json"
+          /usr/bin/python3 tests/season_terrain_filter/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control --output "$RUNNER_TEMP/season-terrain/control.json"
+          /usr/bin/python3 tests/season_terrain_filter/run.py --byond-bin "$PWD/BYOND/byond/bin" --large --output "$RUNNER_TEMP/season-terrain/large.json"
+
+      - name: Retain seasonal terrain comparison evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_terrain_filter'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: season-terrain-comparison
+          path: ${{ runner.temp }}/season-terrain/
+          if-no-files-found: error
+
       - name: Verify bounded GC profiling and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/garbage_profile')
         shell: bash

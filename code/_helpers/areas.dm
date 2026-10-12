@@ -1,6 +1,7 @@
 //Takes: Area type as text string or as typepath OR an instance of the area.
 //Returns: A list of all turfs in areas of that type in the world.
-/proc/get_area_turfs(var/areatype, var/list/predicates)
+//Optional turf_type restricts the fresh snapshot before allocating its entries.
+/proc/get_area_turfs(var/areatype, var/list/predicates, var/turf_type)
 	if (!areatype) return null
 	else if (istext(areatype)) areatype = text2path(areatype)
 	else if (isarea(areatype))
@@ -11,6 +12,8 @@
 	for (var/area/A in area_list)
 		if (istype(A, areatype))
 			for (var/turf/T in A.contents)
+				if (turf_type && !istype(T, turf_type))
+					continue
 				if (!predicates || all_predicates_true(list(T), predicates))
 					turfs += T
 	return turfs
