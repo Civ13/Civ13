@@ -25,7 +25,7 @@
 	del(world)
 	sleep(1)
 /world/New()
-	world.port = 0
+	OpenPort("none")
 	food_check(!world.port, "isolated storage fixture closes its port")
 	if (config)
 		config.webhook_can_fire = FALSE
@@ -60,3 +60,4 @@
 	food_check(restored.decaytimer > age_before, "restored opened-can food continues aging")
 	text2file("PASS: sealed/opened can aging and native food age restoration", "food_result.txt")
 	del(world)
+
