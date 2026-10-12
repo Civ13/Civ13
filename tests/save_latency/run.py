@@ -26,6 +26,10 @@ def main():
             data = subprocess.check_output(['git', 'show', f'{args.baseline}:{relative}'], cwd=root)
         else:
             data = (root / relative).read_bytes()
+        if relative.endswith('stubs.dm'):
+            data += b'\n/proc/latency_copy(source, destination)\n\tvar/start = world.timeofday\n\t. = fcopy(source, destination)\n\tworld.log << "IO_METRICS copy=[source] ticks=[(world.timeofday-start+864000)%864000]"\n/proc/latency_flush(savefile/F)\n\tvar/start = world.timeofday\n\tF.Flush()\n\tworld.log << "IO_METRICS flush ticks=[(world.timeofday-start+864000)%864000]"\n'
+        if relative.endswith('saving.dm'):
+            data = data.replace(b'savefile.Flush()', b'latency_flush(savefile)')
         if args.negative_control and relative.endswith('saving.dm'):
             source = data.decode()
             if args.negative_control == 'ownership':
@@ -38,7 +42,7 @@ def main():
         destination.write_bytes(data)
         hashes[relative] = hashlib.sha256(data).hexdigest()
     source = '#define TRUE 1\n#define FALSE 0\n#define TICK_CHECK fixture_tick_check()\n#define TICK_LIMIT_TO_RUN 100\n#define EXCEPTION(message) new /exception(message)\n'
-    source += '#include "code/predefines.dm"\n#include "tests/world_save/stubs.dm"\n#define fdel(path) delete_file_adapter(path)\n'
+    source += '#include "code/predefines.dm"\n#include "tests/world_save/stubs.dm"\n#define fdel(path) delete_file_adapter(path)\n#define fcopy(source, destination) latency_copy(source, destination)\n'
     source += ''.join(f'#include "{path}"\n' for path in files[2:])
     (output / 'probe.dme').write_text(source)
     (output / 'metadata.json').write_text(json.dumps({'baseline':args.baseline, 'large':args.large, 'dense':args.dense, 'scenario':args.scenario, 'interrupt':args.interrupt, 'benchmark_only':args.benchmark_only, 'negative_control':args.negative_control,
@@ -75,10 +79,17 @@ def main():
                     process.kill()
                     process.wait(timeout=10)
         base_command=command[:command.index('-params')]
+        shutil.copy2(output/'runtime.log', output/'interrupted-writer.log')
         for phase in ('active','backup'):
+            (output/'result.txt').unlink(missing_ok=True)
+            (output/'runtime.log').unlink(missing_ok=True)
             if phase=='backup':
-                shutil.rmtree(output/'map_saves')
-                shutil.copytree(output/'map_backups',output/'map_saves')
+                active = (output/'map_saves').resolve()
+                interrupted = (output/'interrupted-map_saves').resolve()
+                if active.parent != output.resolve() or interrupted.parent != output.resolve():
+                    raise RuntimeError('Recovery paths escape task temporary storage')
+                active.rename(interrupted)
+                shutil.copytree(output/'map_backups',active)
             recovery=subprocess.run(base_command+['-params','recovery='+phase],cwd=output,
                 capture_output=True,text=True,timeout=120,creationflags=flags)
             log=(output/'runtime.log').read_text(errors='replace')
