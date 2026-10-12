@@ -86,6 +86,37 @@ var/list/calls = list()
 		processes.callproc = new
 		processes.callproc.setup()
 		var/scenario = world.params["case"]
+		if (scenario == "memory")
+			var/datum/callback_probe/target = new
+			var/list/payload = list()
+			payload.len = 2000000
+			processes.callproc.queue(target, /datum/callback_probe/proc/hit, payload, 100)
+			payload = null
+			target.gcDestroyed = 1
+			processes.callproc.fire()
+			var/callproc_helper/held = processes.callproc.current
+			var/retained = held && held.args ? held.args.len : 0
+			held = null
+			target = null
+			text2file("retained_argument_slots=[retained]", "benchmark.txt")
+		if (scenario == "benchmark")
+			var/datum/callback_probe/target = new
+			var/start = world.timeofday
+			for (var/i = 1 to 150000)
+				processes.callproc.queue(target, /datum/callback_probe/proc/hit, list(i), 0)
+				processes.callproc.fire()
+				calls.Cut()
+			var/elapsed = world.timeofday - start
+			var/list/retired = list()
+			for (var/i = 1 to 4000)
+				processes.callproc.queue(target, /datum/callback_probe/proc/hit, list(new /datum), 100)
+				retired += processes.callproc.queue[1]
+				processes.callproc.unqueue(target)
+			var/retained = 0
+			for (var/callproc_helper/C in retired)
+				if (C.object || C.args)
+					retained++
+			text2file("elapsed_deciseconds=[elapsed] retained_cancelled_helpers=[retained] reserve=[processes.callproc.helpers.len]", "benchmark.txt")
 		if (scenario == "callback" || !scenario)
 			var/datum/callback_probe/target = new
 			var/datum/argument = new
@@ -172,4 +203,6 @@ var/list/calls = list()
 		text2file("PASS: [assertions] memory ownership assertions", "result.txt")
 	catch (var/exception/E)
 		text2file("FAIL: [E]", "result.txt")
+	if (world.params["case"] == "memory")
+		sleep(20)
 	del(world)
