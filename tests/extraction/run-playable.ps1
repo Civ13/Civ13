@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$ByondBin, [switch]$Visual, [switch]$City, [switch]$VehicleWorldSave, [ValidateRange(1024,65535)][int]$Port=18342, [ValidateRange(60,900)][int]$TimeoutSeconds=600)
+param([Parameter(Mandatory=$true)][string]$ByondBin, [switch]$Visual, [switch]$City, [switch]$VehicleWorldSave, [string]$ResumeRunDirectory, [switch]$ValidateRestartOnly, [ValidateRange(1024,65535)][int]$Port=18342, [ValidateRange(60,900)][int]$TimeoutSeconds=600)
 $ErrorActionPreference = 'Stop'
 if ($VehicleWorldSave -and ($Visual -or $City)) { throw 'VehicleWorldSave requires the nonvisual Industrial disposable fixture' }
 if (![IO.Path]::IsPathRooted($ByondBin)) { throw 'ByondBin must be an absolute path to a trusted BYOND installation' }
@@ -9,12 +9,38 @@ foreach ($binary in @('dm.exe','dd.exe')) {
 $repo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $sourceInventory = @(& git -C $repo status --porcelain --untracked-files=normal)
 if ($LASTEXITCODE -ne 0) { throw 'Cannot inventory tested source' }
+if ($ValidateRestartOnly -and !$ResumeRunDirectory) { throw 'ValidateRestartOnly requires ResumeRunDirectory' }
+$commit = (& git -C $repo rev-parse HEAD).Trim()
+if ($LASTEXITCODE -ne 0) { throw 'Cannot identify tested commit' }
 $nonce = [guid]::NewGuid().ToString('N')
 $source = Join-Path $repo ('.extraction-area-' + $nonce + '.dme')
 $run = Join-Path ([IO.Path]::GetTempPath()) ('civ13-extraction-area-' + $nonce)
 $owned = $null
+if ($ResumeRunDirectory) {
+    if (!$Visual -or $VehicleWorldSave) { throw 'Restart requires Visual and excludes VehicleWorldSave' }
+    $run = (Resolve-Path -LiteralPath $ResumeRunDirectory).Path
+    $runItem = Get-Item -LiteralPath $run
+    $tempRoot = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd([IO.Path]::DirectorySeparatorChar)
+    if (!$runItem.PSIsContainer -or $runItem.Parent.FullName -ine $tempRoot -or $runItem.Name -notmatch '^civ13-extraction-area-[a-f0-9]{32}$' -or ($runItem.Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw 'Restart target must be an original direct disposable temporary directory' }
+    $manifest = Get-Content -LiteralPath (Join-Path $run 'invocation.json') -Raw | ConvertFrom-Json
+    if ($manifest.commit -cne $commit -or $manifest.dirty -or $sourceInventory.Count -or !$manifest.visual -or [bool]$manifest.city -ne [bool]$City -or $manifest.vehicle_world_save -or $manifest.byond_bin -ine $ByondBin) { throw 'Restart provenance must match the clean current commit, pinned runtime and map' }
+    foreach ($artifact in @('area.dmb','area.rsc')) {
+        $artifactPath = Join-Path $run $artifact
+        $expectedHash = $manifest.artifacts.$artifact
+        if (!$expectedHash -or (Get-Item -LiteralPath $artifactPath).Attributes -band [IO.FileAttributes]::ReparsePoint -or (Get-FileHash -LiteralPath $artifactPath -Algorithm SHA256).Hash -cne $expectedHash) { throw "Restart artifact changed: $artifact" }
+    }
+    foreach ($directory in @('data','config','UI','SQL')) {
+        $directoryItem = Get-Item -LiteralPath (Join-Path $run $directory)
+        if (!$directoryItem.PSIsContainer -or ($directoryItem.Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw "Invalid disposable directory: $directory" }
+    }
+    if ($ValidateRestartOnly) { Write-Output "PASS: restart provenance and artifacts verified; storage=$run; no process launched"; return }
+    $nativeProcesses = @(Get-CimInstance Win32_Process -Filter "Name = 'dd.exe'")
+    if ($nativeProcesses.Count) { throw 'Restart requires the native queue to be free of existing daemons; no process will be reused or stopped' }
+} else {
 New-Item -ItemType Directory -Path $run | Out-Null
+}
 try {
+    if (!$ResumeRunDirectory) {
     $mapDefine = '#define EXTRACTION_SURVIVAL_MAP'
     if ($City) { $mapDefine = '#define EXTRACTION_MODERN_CITY_MAP' }
     [IO.File]::WriteAllText($source, $mapDefine + "`n" + '#include "civ13.dme"' + "`n" + '#include "tests/extraction/full_game_vehicle_save.dm"' + "`n" + '#include "tests/extraction/playable_area.dm"' + "`n")
@@ -35,7 +61,15 @@ try {
     $patch = & git -C $repo diff HEAD
     if ($LASTEXITCODE -ne 0) { throw 'Cannot preserve tested patch' }
     $patch | Set-Content -LiteralPath (Join-Path $run 'tested.patch')
-    @{ commit=$commit; dirty=($sourceInventory.Count -gt 0); source_changes=$sourceInventory; city=[bool]$City; visual=[bool]$Visual; vehicle_world_save=[bool]$VehicleWorldSave; vehicle_probe_sha256=(Get-FileHash -LiteralPath (Join-Path $repo 'tests/extraction/full_game_vehicle_save.dm') -Algorithm SHA256).Hash; byond_bin=$ByondBin; duration_seconds=$TimeoutSeconds; storage='disposable run directory'; adapter_sha256=(Get-FileHash -LiteralPath (Join-Path $repo 'tests/extraction/playable_area.dm') -Algorithm SHA256).Hash } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $run 'invocation.json')
+    @{ commit=$commit; dirty=($sourceInventory.Count -gt 0); source_changes=$sourceInventory; city=[bool]$City; visual=[bool]$Visual; vehicle_world_save=[bool]$VehicleWorldSave; artifacts=@{ 'area.dmb'=(Get-FileHash -LiteralPath (Join-Path $run 'area.dmb') -Algorithm SHA256).Hash; 'area.rsc'=(Get-FileHash -LiteralPath (Join-Path $run 'area.rsc') -Algorithm SHA256).Hash }; vehicle_probe_sha256=(Get-FileHash -LiteralPath (Join-Path $repo 'tests/extraction/full_game_vehicle_save.dm') -Algorithm SHA256).Hash; byond_bin=$ByondBin; duration_seconds=$TimeoutSeconds; storage='disposable run directory'; adapter_sha256=(Get-FileHash -LiteralPath (Join-Path $repo 'tests/extraction/playable_area.dm') -Algorithm SHA256).Hash } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $run 'invocation.json')
+    } else {
+        $episode = 'restart-' + $nonce
+        foreach ($file in @('extraction-area-ready.json','startup.log')) {
+            $oldFile = Join-Path $run $file
+            if (Test-Path -LiteralPath $oldFile) { Move-Item -LiteralPath $oldFile -Destination (Join-Path $run ($episode + '-' + $file)) }
+        }
+        @{ commit=$commit; run_directory=$run; artifacts=$manifest.artifacts; duration_seconds=$TimeoutSeconds; port=$Port } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $run ($episode + '.json'))
+    }
     $parameters = 'tested_commit=' + $commit
     if ($VehicleWorldSave) { $parameters += '&vehicle_world_save=1' }
     if ($Visual) { $parameters += '&visual=1' }

@@ -255,10 +255,18 @@ ownership and cleanup. Engine authentication is outside the outbound adapter.
 | Crafting and city parity | Show native workbench payment/completion and identifiable output; repeat privacy, stash and return routes in the Modern city, including its real NPC presence |
 | Same-world restart | Stop only the owned disposable daemon, restart identical saved artifacts over the same retained account directory, then compare both accounts' items and upgrades |
 
-Restart is a launcher gap: a second ordinary invocation creates a fresh run
-directory. Prepare a verified same-directory restart path before filming that
-row; a second fresh world or the three-process journal fixture cannot count as
-connected restart acceptance. No active raid resumption is promised.
+An ordinary second invocation creates fresh storage. For connected restart,
+wait for the first owned daemon to exit, then use the same `-Visual`, `-City`
+choice and pinned `-ByondBin` with `-ResumeRunDirectory <retained-run-directory>`.
+This skips compilation and config copying, reuses `area.dmb`, `area.rsc` and
+account storage, archives the old readiness/startup files, and requires fresh
+readiness. It requires a clean matching current commit, matching map/runtime,
+recorded artifact hashes, an original direct temporary directory, and no existing
+daemon. It never reuses or stops a foreign process. Older manifests without
+artifact hashes cannot restart through this path. The optional
+`-ValidateRestartOnly` checks provenance without launching. Eight offline guard
+tests in `test-playable-restart.ps1` pass using inert files; real restart/client
+acceptance remains pending. No active raid resumption is promised.
 
 Computer-use preparation verified that `@oai/sky` imports through `node_repl`,
 and the pinned `dreamseeker.exe` exists. No window inventory, screenshot or input
