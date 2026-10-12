@@ -95,14 +95,6 @@ var/native_beat_gap = 0
 			S.run_time_tick_usage = world.tick_usage
 			S.run_time_tick_usage_allowance = 0
 			S.fire()
-			// Cancellation returns unconsumed ownership; replacement transfers it.
-			if(cycle == 2)
-				S.onKill()
-			if(cycle == 3)
-				var/process/lighting_sources/replacement = new
-				replacement.copyStateFrom(S)
-				S.onKill()
-				S = replacement
 			// Enqueues while a budgeted batch is suspended, including a destroyed source.
 			var/obj/lighting_queue_probe/extra = new(locate(8,8,1))
 			extra.light_range = 2
@@ -117,6 +109,20 @@ var/native_beat_gap = 0
 			invalid.needs_update = TRUE
 			lighting_update_overlays += invalid
 			lighting_queue_drain(S)
+			O.run_time_tick_usage = world.tick_usage
+			O.run_time_tick_usage_allowance = 0
+			O.fire()
+			// Cancellation returns unconsumed ownership; replacement transfers it.
+			if(cycle == 2)
+				O.onKill()
+			if(cycle == 3)
+				var/process/lighting_overlays/replacement = new
+				replacement.copyStateFrom(O)
+				O.onKill()
+				O = replacement
+			var/atom/movable/lighting_overlay/late_invalid = new(null,TRUE)
+			late_invalid.needs_update = TRUE
+			lighting_update_overlays += late_invalid
 			lighting_queue_drain(O,TRUE)
 			lighting_queue_assert(!cancelled.applied && !cancelled.needs_update, "cancelled light")
 			var/list/signature = list()

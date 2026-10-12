@@ -260,8 +260,8 @@ Native BYOND world.Export returns the remote Topic value, and its caller address
 ## Local MCP tooling
 
 <!-- 2026-10-12: lighting batch ownership -->
-Lighting processes detach at most 2000 pending entries (overlays retain the
-1000/2000 cap), null consumed slots and retain unfinished batches across budget
+Lighting overlays detach bounded 1000/2000-entry batches, null consumed slots
+and retain unfinished batches across budget
 returns. Scheduler replacement must transfer current_list/batch_index;
 cancellation returns unfinished entries to the live queue. Tests in
 tests/lighting_queues compare production color/luminosity and immutable baseline

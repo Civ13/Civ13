@@ -14,6 +14,7 @@ def main():
     root = Path(__file__).resolve().parents[2]
     with tempfile.TemporaryDirectory(prefix='civ13-lighting-') as tmp:
         out = Path(tmp)
+        mutated = False
         for name in ('overlays', 'sources'):
             rel = f'code/processes/lighting/{name}.dm'
             text = subprocess.check_output(['git', 'show', f'{BASELINE}:{rel}'], cwd=root, text=True) if a.baseline else (root/rel).read_text()
@@ -21,8 +22,9 @@ def main():
                 text = text.replace('current_list[batch_index++] = null', 'current_list[batch_index] = null\n\t\tbatch_index += 2')
             if a.negative_control == 'retain':
                 text = text.replace('current_list[batch_index++] = null','batch_index++')
-            if a.negative_control and text == (root/rel).read_text(): raise RuntimeError('Mutation anchor changed')
+            if a.negative_control and text != (root/rel).read_text(): mutated = True
             (out/f'{name}.dm').write_text(text)
+        if a.negative_control and not mutated: raise RuntimeError('Mutation anchor changed')
         probe=(root/'tests/lighting_queues/probe.dm').read_text()
         if a.negative_control == 'skip': probe=probe.replace('if(active_process.current_list[i])','if(active_process.current_list[i] && world.params["retain_check"])')
         (out/'probe.dm').write_text(probe)
