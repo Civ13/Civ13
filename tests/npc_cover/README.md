@@ -9,8 +9,9 @@ Run from the repository root with BYOND 516.1681 and a verified Python interpret
 & '<verified-python>' tests/npc_cover/run.py --byond-bin '<516.1681-bin>' --benchmark --output '<fresh-benchmark.json>'
 ```
 
-The candidate gathers allies once per decision, lazily at the first cover turf,
-without durable caches. Candidate order, strict greater-than tie breaking, LOS
+The candidate uses original native searches for the first cover turf and gathers
+allies once if a second cover turf is scored, without durable caches. Candidate
+order, strict greater-than tie breaking, LOS
 and scoring stay unchanged. A candidate within three tiles can see clumping
 allies within four tiles of the caller and officers within eight. Those broad
 lists are narrowed using the original one/five-tile candidate distances.
@@ -43,4 +44,29 @@ thresholds; runtime suites stay opt-in after their introducing PR.
 
 These checks establish native decision parity in controlled scenes. They do not
 establish combat movement, client presentation, production latency or OOM fixes.
-Validation and measured results will be recorded before the PR is marked ready.
+
+## Recorded native results
+
+Windows BYOND 516.1681, 32x32x2 fixture, five alternating pairs with 1,000
+decisions per variant per scene. `measurements.json` retains every timing sample,
+source/probe hashes and provenance; full parity outputs and logs are preserved
+under `D:/GitHub/civ13-preview-evidence/npc-cover-3109/` locally.
+
+| Scene | Baseline median (ds) | Candidate median (ds) | Interpretation |
+| --- | ---: | ---: | --- |
+| Empty | 0.1875 | 0.2500 | About 6.25 microseconds/call overhead, near timer resolution |
+| One cover | 0.3750 | 0.3750 | Tied at this resolution |
+| Crowded cover | 5.8125 | 5.1250 | About 11.8% lower elapsed time |
+
+All 100 parity scenes and 4,495 candidate scores matched. All 30,000 timed
+decisions matched their baseline choices. The final boundary control detected
+24 mismatched scenes and the tie control detected 21. These controls change
+generated source only. Baseline and candidate have identical cold/LOS helpers.
+
+The first broad-gather candidate improved crowded timing by about 20% but added
+one-cover cost. The first delayed-gather implementation redundantly checked
+already-filtered factions/roles and was slower in the crowded scene. Both were
+rejected in favor of the explicit original first-cover path and filtered cache
+path. The empty-scene overhead remains explicit; this patch targets repeated
+cover scoring, not a universal improvement. No production CPU or latency gain
+is claimed, and no screenshot was needed to resolve the native choice parity.

@@ -37,9 +37,11 @@
 	var/turf/best_turf = null
 	var/best_score = -9999
 	// Decision-local only: candidates are within 3 tiles, so their 1/5-tile
-	// ally searches fit within 4/8 tiles of src. Gather lazily for actual cover.
+	// ally searches fit within 4/8 tiles of src. The first cover uses its small
+	// native searches; only repeated cover candidates justify the broad gather.
 	var/list/nearby_allies
 	var/list/nearby_officers
+	var/cover_count = 0
 	
 	// Scan 7x7 area around self
 	for(var/turf/T in range(3, src))
@@ -51,7 +53,8 @@
 		
 		// Check if it's actually cover relative to the enemy
 		if(is_good_cover(T, enemy))
-			if(isnull(nearby_allies))
+			cover_count++
+			if(cover_count == 2)
 				nearby_allies = list()
 				nearby_officers = list()
 				for(var/mob/living/simple_animal/hostile/human/H in range(role == "officer" ? 4 : 8, src))
@@ -75,16 +78,25 @@
 				score -= 30 // Bad, enemy can still see us here
 				
 			// Penalty for being too close to other allies (avoid grenades/clumping)
-			for(var/mob/living/simple_animal/hostile/human/H in nearby_allies)
-				if(get_dist(T, H) <= 1)
-					score -= 60
-					
-			// Small bonus for being within sight of an officer (leadership)
-			if(role != "officer")
-				for(var/mob/living/simple_animal/hostile/human/H in nearby_officers)
-					if(get_dist(T, H) <= 5)
-						score += 20
-						break
+			if(cover_count == 1)
+				for(var/mob/living/simple_animal/hostile/human/H in range(1, T))
+					if(H != src && H.faction == faction)
+						score -= 60
+				// Small bonus for being within sight of an officer (leadership)
+				if(role != "officer")
+					for(var/mob/living/simple_animal/hostile/human/H in range(5, T))
+						if(H.role == "officer" && H.faction == faction)
+							score += 20
+							break
+			else
+				for(var/mob/living/simple_animal/hostile/human/H in nearby_allies)
+					if(get_dist(T, H) <= 1)
+						score -= 60
+				if(role != "officer")
+					for(var/mob/living/simple_animal/hostile/human/H in nearby_officers)
+						if(get_dist(T, H) <= 5)
+							score += 20
+							break
 					
 		if(score > best_score)
 			best_score = score

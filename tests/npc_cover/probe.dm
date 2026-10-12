@@ -130,7 +130,7 @@ var/comparisons = 0
 				sleep(1)
 				var/start = world.timeofday
 				var/count = 0
-				for(var/call in 1 to 1000)
+				for(var/decision_index in 1 to 1000)
 					var/turf/chosen = current ? H.candidate_bench(E) : H.baseline_bench(E)
 					if(chosen != expected) failures++
 					count++
