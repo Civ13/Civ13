@@ -107,6 +107,7 @@
 				if (istype(root.loc, /obj/item)) return FALSE
 				roots |= root
 			if (!returns.prepare(round_id, roots)) return FALSE
+		retire_raid_vehicles()
 		game_over = TRUE
 		if (ticker) ticker.finished = TRUE
 		return TRUE

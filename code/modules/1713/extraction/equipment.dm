@@ -120,6 +120,8 @@ var/global/extraction_identity_sequence = 0
 		node["refs"] = refs
 		node["lists"] = lists
 	var/list/result = list("schema" = 2, "nodes" = nodes)
+	// Account graphs have one persistence authority, including nested contents.
+	for (var/obj/item/I in items) I.should_save = FALSE
 	clear()
 	return result
 

@@ -109,12 +109,13 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	attack_hand(mob/user)
 		var/mob/living/human/H = user
 		if (!istype(H) || !session || session.body != H || H.client?.ckey != session.owner || session.transitioning || session.profile["state"] != "home" || !Adjacent(H)) return
-		var/choice = WWinput(H, "Carry your loadout to deploy. Insured deployment costs one workshop part per reusable equipment component, paid from parts left at home. Ammunition never returns. This district closes after thirty minutes; extract before closure. Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts. A level-two garage car costs 25 parts and has no fuel.", "Private safe house", "Cancel", list("Deploy", "Raid group", "Deploy as Scav", "Insure and deploy", "Claim insurance mail", "Visit hub", "Upgrade", "Buy car", "Save stash", "Cancel"))
+		var/choice = WWinput(H, "Carry your loadout to deploy. Insured deployment costs one workshop part per reusable equipment component, paid from parts left at home. Ammunition never returns. This district closes after thirty minutes; extract before closure. Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts. A level-two garage car costs 25 parts and has no fuel.", "Private safe house", "Cancel", list("Deploy", "Deploy car", "Raid group", "Deploy as Scav", "Insure and deploy", "Claim insurance mail", "Visit hub", "Upgrade", "Buy car", "Save stash", "Cancel"))
 		if (session.body != H || !Adjacent(H) || session.transitioning) return
 		var/obj/map_metadata/extraction_survival/M = map
 		if (!istype(M)) return
 		switch (choice)
 			if ("Deploy") M.deploy(H)
+			if ("Deploy car") M.deploy_vehicle(H)
 			if ("Raid group") M.manage_party(H)
 			if ("Deploy as Scav") M.deploy(H, "Scav")
 			if ("Insure and deploy") M.deploy(H, "PMC", TRUE)
@@ -183,7 +184,13 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	attack_hand(mob/user)
 		var/mob/living/human/H = user
 		var/obj/map_metadata/extraction_survival/M = map
-		if (istype(H) && istype(M) && Adjacent(H)) M.extract_player(H, src)
+		if (!istype(H) || !istype(M) || !Adjacent(H)) return
+		if (H.extraction_session?.raid_vehicle && !forbid_backpack && !istype(src, /obj/effect/extraction_exit/locked_room))
+			var/choice = WWinput(H, "Extract on foot or include your parked, empty car and its boot cargo? Vehicle extraction requires the engine off and a clear private bay.", "Extraction", "Cancel", list("Extract car", "On foot", "Cancel"))
+			if (!Adjacent(H)) return
+			if (choice == "Extract car") M.extract_vehicle(H, src)
+			else if (choice == "On foot") M.extract_player(H, src)
+		else M.extract_player(H, src)
 
 /obj/effect/extraction_exit/pmc
 	name = "PMC extraction point"

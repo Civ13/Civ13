@@ -95,6 +95,7 @@
 	equipment_assert(session.commit(profile), "actual vehicle snapshot commits through native account journal")
 	var/list/owned_ids = C.store.recovery_ids(session.profile)
 	equipment_assert(owned_ids[snapshot["id"]] && owned_ids[cargo_id] && owned_ids[cargo_child.extraction_item_id] && owned_ids.len == snapshot["nodes"].len + 3, "garage parts and nested cargo participate in account ownership inventory")
+	equipment_assert(!A.should_save && !damaged.should_save && !E.should_save && !tank.should_save && !boot_item.should_save && !cargo_bag.should_save && !cargo_child.should_save, "account vehicle parts and nested cargo cannot also enter world-save ownership")
 	var/list/collision = session.copy_profile()
 	collision["stash"] = list(snapshot["cargo"][1])
 	equipment_assert(!C.store.recovery_ids(collision), "stash cannot also own committed garage cargo")
@@ -189,5 +190,55 @@
 	equipment_assert(M.release(buyer_session) && M.admit(buyer), "paid dealer car survives private account release and reconnect")
 	buyer_session = buyer.extraction_session
 	equipment_assert(buyer_session.garage_vehicle && buyer_session.profile["stash"].len == 4, "reconnect restores one acknowledged dealer car without payment refund")
-	equipment_assert(M.release(buyer_session), "dealer fixture releases paid car cleanly")
+	var/obj/structure/vehicleparts/axis/deployed_car = buyer_session.garage_vehicle
+	var/obj/structure/table/carboot/dealer_boot
+	for (var/obj/structure/table/carboot/B in buyer_session.garage_parts) dealer_boot = B
+	var/obj/item/extraction_salvage/raid_cargo = new(get_turf(dealer_boot))
+	raid_cargo.extraction_found_in_raid = TRUE
+	var/obj/item/extraction_salvage/carried_part = new(buyer)
+	carried_part.extraction_found_in_raid = TRUE
+	equipment_assert(M.save_home(buyer_session), "vehicle fixture checkpoints carried loadout and boot cargo before quote")
+	var/list/stored_vehicle = buyer_session.profile["garage"][1]
+	equipment_assert(!buyer_session.plan_vehicle_raid(list(), buyer_session.profile["revision"] - 1, stored_vehicle["id"], md5(json_encode(stored_vehicle))), "stale vehicle deployment quote cannot debit garage")
+	deployed_car.engine.on = TRUE
+	equipment_assert(!M.deploy_vehicle(buyer) && buyer_session.profile["state"] == "home" && buyer_session.profile["garage"].len == 1, "running engine rejects deployment without garage debit")
+	deployed_car.engine.on = FALSE
+	var/list/raid_markers = extraction_raid_markers.Copy()
+	extraction_raid_markers.Cut()
+	equipment_assert(!M.deploy_vehicle(buyer) && buyer_session.profile["garage"].len == 1 && !buyer_session.raid_vehicle, "missing clear raid entry rejects before durable car debit")
+	extraction_raid_markers = raid_markers
+	equipment_assert(M.deploy_vehicle(buyer) && buyer_session.raid_vehicle == deployed_car && !buyer_session.garage_vehicle && !buyer_session.profile["garage"].len && buyer_session.profile["state"] == "raid", "solo deployment debits saved garage before moving actual car")
+	equipment_assert(M.raid_vehicles[deployed_car] && get_turf(deployed_car) != M.garage_anchor(buyer_session), "deployed car remains registered as actual raid ownership")
+	equipment_assert(!raid_cargo.extraction_found_in_raid && !carried_part.extraction_found_in_raid && buyer_session.profile["stash"].len == 4 && M.raid_items[raid_cargo] && M.raid_items[carried_part], "carried gear and cargo lose brought-in provenance and leave acknowledged home inventory together")
+	for (var/x in 80 to 92)
+		for (var/y in 80 to 92)
+			var/turf/F = locate(x,y,1)
+			for (var/atom/movable/O in F)
+				if (O != buyer) qdel(O)
+			F.ChangeTurf(/turf/floor, FALSE, FALSE)
+	var/datum/extraction_vehicle_transfer/raid_transfer = new
+	equipment_assert(raid_transfer.capture(deployed_car, TRUE) && raid_transfer.relocate(locate(85,85,1)), "actual deployed car parks at bounded exit fixture")
+	var/obj/effect/extraction_exit/car_exit = new(locate(81,84,1))
+	buyer.forceMove(locate(81,83,1))
+	M.test_wait = "cancel"
+	var/raid_revision = buyer_session.profile["revision"]
+	equipment_assert(!M.extract_vehicle(buyer, car_exit) && !buyer_session.transitioning && buyer_session.profile["revision"] == raid_revision && !buyer_session.profile["garage"].len, "cancelled vehicle exit retains durable raid debit")
+	M.test_wait = "complete"
+	deployed_car.engine.on = TRUE
+	equipment_assert(!M.extract_vehicle(buyer, car_exit) && buyer_session.profile["revision"] == raid_revision, "running parked car cannot be credited at extraction")
+	deployed_car.engine.on = FALSE
+	var/obj/structure/vehicleparts/frame/raid_frame = deployed_car.loc
+	raid_frame.w_front[5] = 49
+	var/obj/item/extraction_salvage/new_cargo = new(get_turf(dealer_boot))
+	new_cargo.extraction_found_in_raid = TRUE
+	equipment_assert(M.track_loot(new_cargo), "new raid cargo enters actual loot registry")
+	equipment_assert(M.extract_vehicle(buyer, car_exit) && buyer_session.garage_vehicle == deployed_car && buyer_session.profile["garage"].len == 1 && buyer_session.profile["state"] == "home" && !M.raid_vehicles[deployed_car], "vehicle exit credits actual car before private bay relocation")
+	equipment_assert(buyer_session.profile["stash"].len == 5 && buyer_session.profile["garage"][1]["cargo"].len == 2 && raid_cargo.loc && new_cargo.loc && new_cargo.extraction_found_in_raid && !raid_cargo.extraction_found_in_raid && !M.raid_items[new_cargo], "vehicle extraction banks carried gear and actual cargo with distinct retained provenance")
+	equipment_assert(raid_frame.w_front[5] == 49 && get_turf(deployed_car) == M.garage_anchor(buyer_session), "raid damage survives actual car extraction")
+	equipment_assert(!buyer_session.credit_vehicle_extraction(buyer_session.profile["raid_sequence"], list(), buyer_session.profile["garage"][1]), "vehicle extraction cannot credit twice")
+	equipment_assert(M.deploy_vehicle(buyer), "acknowledged extracted car may deploy into next paid-risk raid")
+	equipment_assert(buyer_session.forfeit(buyer_session.profile["raid_sequence"]) && M.release(buyer_session, FALSE) && deployed_car.loc && M.raid_vehicles[deployed_car], "death forfeiture leaves actual raid car available without deleting it during account release")
+	equipment_assert(M.admit(buyer) && !buyer.extraction_session.garage_vehicle && !buyer.extraction_session.profile["garage"].len, "reconnect cannot reissue forfeited deployed car")
+	equipment_assert(M.release(buyer.extraction_session), "vehicle raid fixture releases account cleanly")
+	qdel(car_exit)
 	qdel(buyer)

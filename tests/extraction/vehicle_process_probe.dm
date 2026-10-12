@@ -85,12 +85,47 @@
 			quarantined.close()
 		session.close()
 		run_vehicle_purchase_process_probe(params["phase"])
+		run_vehicle_raid_process_probe(params["phase"])
 		completed = TRUE
 	catch (var/exception/E)
 		equipment_failures++
 		world.log << "FAIL: [E] at [E.file]:[E.line]"
 	text2file(completed && !equipment_failures ? "PASS: native vehicle account process reload, condition and removal replay" : "FAIL: native vehicle process verification", "result.txt")
 	shutdown()
+
+/proc/run_vehicle_raid_process_probe(phase)
+	for (var/scenario in list("debit", "credit", "uncertain"))
+		var/datum/extraction_service/R = new
+		R.store.root = "data/raid_vehicle_[scenario]/"
+		if (phase == "write")
+			var/datum/extraction_session/A = R.open("raidcarowner")
+			var/list/P = A.copy_profile()
+			var/list/record = json_decode(file2text("vehicle_record.json"))
+			P["garage"] = list(record)
+			equipment_assert(A.commit(P), "restart raid fixture acknowledges original garage")
+			var/list/plan = A.plan_vehicle_raid(list(), A.profile["revision"], record["id"], md5(json_encode(record)))
+			equipment_assert(plan && A.commit(plan["candidate"]) && !A.profile["garage"].len, "raid garage debit persists before any physical relocation")
+			if (scenario != "debit")
+				if (scenario == "uncertain") R.store.test_fail_at = "intent"
+				var/credited = A.credit_vehicle_extraction(A.profile["raid_sequence"], list(), record)
+				equipment_assert(scenario == "credit" ? credited : (!credited && A.locked), "vehicle extraction commit interruption locks uncertain ownership")
+			A.close()
+		else if (phase == "reload" && scenario == "uncertain")
+			equipment_assert(!R.open("raidcarowner"), "uncertain vehicle credit blocks restart materialization")
+			var/list/first = R.store.read_slot("raidcarowner", 0)
+			var/list/second = R.store.read_slot("raidcarowner", 1)
+			var/slot = first["generation"] > second["generation"] ? 0 : 1
+			var/list/intent = json_decode(file2text(R.store.path_for("raidcarowner", slot, "intent")))
+			var/list/lost = R.store.settle_pending_loss("raidcarowner", intent["generation"], intent["digest"])
+			equipment_assert(lost && !lost["garage"].len && !lost["stash"].len, "explicit uncertain-credit forfeiture never resurrects original garage")
+		else
+			var/datum/extraction_session/A = R.open("raidcarowner")
+			equipment_assert(A && A.profile["state"] == "home", "fresh process resolves acknowledged vehicle raid state")
+			if (scenario == "credit")
+				equipment_assert(A.profile["garage"].len == 1 && A.profile["vehicle_returned"] && A.profile["garage"][1]["cargo"].len > 0, "acknowledged vehicle credit reloads car and cargo after interrupted physical return")
+			else equipment_assert(!A.profile["garage"].len, "debit or explicit loss persists without vehicle reissue")
+			equipment_assert(!A.credit_vehicle_extraction(A.profile["raid_sequence"], list(), json_decode(file2text("vehicle_record.json"))), "reloaded vehicle credit cannot replay")
+			A.close()
 
 /proc/run_vehicle_purchase_process_probe(phase)
 	var/datum/extraction_service/S = new

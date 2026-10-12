@@ -29,8 +29,20 @@ Cargo saves its original equipment identities, condition and provenance beside
 the car graph, and cannot also appear in the stash. Reload validates boot
 positions and car/cargo identity collisions before constructors run. A changed
 nested cargo graph invalidates a previously captured transfer.
-Raid ownership transitions and passenger policy remain required
-before a vehicle extraction action is available.
+The terminal now deploys a solo PMC car. A clear raid footprint and stopped,
+empty seats are required before the account atomically debits the car, cargo
+and carried loadout. The original parts move into the raid; brought-in cargo
+loses found-in-raid status. Normal exits offer vehicle extraction for the
+session's parked car within four tiles. Car, current boot cargo and carried
+equipment credit together before the original parts return to the clear bay.
+Cancellation, running engines and occupied bays leave raid ownership intact.
+Death/session release leaves the actual car in the finite raid; reconnect
+cannot reissue it. Remaining raid cars retire after round insurance settlement.
+Native process checks cover interruption before physical deployment, after
+acknowledged extraction credit and during uncertain credit. Account parts and
+nested equipment are excluded from world-save ownership with `should_save`.
+Passenger/group vehicle transactions and extraction of looted cars remain
+unfinished; this solo path rejects occupied seats and is not playable acceptance.
 
 Isolated native tests cover account storage, nested equipment restoration,
 bounded NPC combat, extraction cancellation, private rooms and hub navigation.

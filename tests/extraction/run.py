@@ -18,7 +18,10 @@ def main():
     parser.add_argument('--group-negative-control', choices=('debit', 'visibility'))
     parser.add_argument('--vehicle-loss-negative-control', action='store_true')
     parser.add_argument('--vehicle-purchase-negative-control', action='store_true')
+    parser.add_argument('--vehicle-raid-negative-control', choices=('debit', 'credit'))
     args = parser.parse_args()
+    if args.vehicle_raid_negative_control and (args.probe != 'mode' or args.provenance_negative_control or args.vote_negative_control or args.group_negative_control or args.vehicle_loss_negative_control or args.vehicle_purchase_negative_control):
+        parser.error('Vehicle raid control requires the mode probe without another control')
     if args.vehicle_purchase_negative_control and (args.probe != 'mode' or args.provenance_negative_control or args.vote_negative_control or args.group_negative_control or args.vehicle_loss_negative_control):
         parser.error('Vehicle purchase control requires the mode probe without another control')
     if args.vehicle_loss_negative_control and (args.probe != 'vehicles' or args.provenance_negative_control or args.vote_negative_control or args.group_negative_control):
@@ -35,7 +38,7 @@ def main():
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     if args.probe in ('equipment', 'mode', 'insurance', 'groups', 'vehicles'):
-        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control)
+        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control)
     with tempfile.TemporaryDirectory(prefix='civ13-extraction-') as temp:
         target = Path(temp)
         (target / 'tests/extraction').mkdir(parents=True)
@@ -65,13 +68,23 @@ def main():
                 raise RuntimeError('Account journal verification failed')
 
 
-def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False):
+def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None):
     prefix = '.extraction_' + uuid.uuid4().hex
     generated = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '.dmb', '.rsc')]
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         expected_vote_failure = None
         expected_group_failure = None
+        if vehicle_raid_control:
+            raid_source = (root / 'code/modules/1713/extraction/vehicle_raid.dm').read_text(encoding='utf-8')
+            marker = '\tcandidate["garage"] = list()' if vehicle_raid_control == 'debit' else '\tcandidate["garage"] = list(vehicle)'
+            if raid_source.count(marker) != 1:
+                raise RuntimeError('Vehicle raid mutation marker changed')
+            control = root / (prefix + '_vehicle_raid.dm')
+            generated.append(control)
+            control.write_text(raid_source.replace(marker, '\t// Negative control: omit vehicle ownership transition'), encoding='utf-8')
+            source = source.replace('code\\modules\\1713\\extraction\\vehicle_raid.dm', control.name)
+            expected_raid_failure = 'solo deployment debits saved garage before moving actual car' if vehicle_raid_control == 'debit' else 'vehicle exit credits actual car before private bay relocation'
         if vehicle_purchase_control:
             purchase_source = (root / 'code/modules/1713/extraction/vehicle_purchase.dm').read_text(encoding='utf-8')
             marker = '\tcandidate["stash"] = retained'
@@ -182,6 +195,12 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
                 log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''
                 print(result)
+                if vehicle_raid_control and result.startswith('FAIL:'):
+                    if ran.returncode or expected_raid_failure not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
+                        print(log)
+                        raise RuntimeError('Vehicle raid control failed outside its intended assertion')
+                    print('PASS: vehicle ownership control rejected: ' + vehicle_raid_control)
+                    return
                 if vehicle_purchase_control and result.startswith('FAIL:'):
                     if ran.returncode or 'paid dealer car contains no free fuel or refunded workshop parts' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
                         print(log)
@@ -221,6 +240,8 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 raise RuntimeError('Vehicle loss control was not detected')
             if vehicle_purchase_control:
                 raise RuntimeError('Vehicle purchase control was not detected')
+            if vehicle_raid_control:
+                raise RuntimeError('Vehicle raid control was not detected')
     finally:
         for path in generated:
             path.unlink(missing_ok=True)

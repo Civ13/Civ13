@@ -73,15 +73,19 @@
 		var/datum/extraction_vehicle_cargo/C = new
 		var/list/current_cargo = C.encode(axis, cargo)
 		return count == parts.len && !isnull(current_cargo) && json_encode(current_cargo) == json_encode(cargo_record)
-	proc/relocate(turf/destination)
-		if (!destination || !current()) return FALSE
+	proc/destination_tiles(turf/destination)
+		if (!destination || !current()) return null
 		var/list/targets = list()
 		for (var/turf/T in tiles)
 			var/turf/target = locate(destination.x + T.x-origin.x, destination.y + T.y-origin.y, destination.z)
-			if (!istype(target, /turf/floor) || target.density || (target in tiles)) return FALSE
+			if (!istype(target, /turf/floor) || target.density || (target in tiles)) return null
 			for (var/atom/movable/O in target)
-				if (!istype(O, /atom/movable/lighting_overlay)) return FALSE
+				if (!istype(O, /atom/movable/lighting_overlay)) return null
 			targets[T] = target
+		return targets
+	proc/relocate(turf/destination)
+		var/list/targets = destination_tiles(destination)
+		if (!targets) return FALSE
 		// No waits or constructors after preflight. Keep the actual engine, tank,
 		// damage, seats and nested steering/controller objects in the same graph.
 		consumed = TRUE

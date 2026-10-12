@@ -78,6 +78,7 @@
 		var/list/nodes = list()
 		for (var/obj/O in objects)
 			if (!supported(O.type)) return fail("Unsupported vehicle part [O.type]")
+			O.should_save = FALSE
 			if (istype(O, /obj/structure/engine/internal))
 				var/obj/structure/engine/internal/engine = O
 				if (engine.connections.len) return fail("Engine has external power connections")
