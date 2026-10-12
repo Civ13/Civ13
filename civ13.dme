@@ -1240,4 +1240,8 @@
 #include "interface\skin.dmf"
 #include "maps\nomads\nomads.dmm"
 #include "code\modules\1713\animal_harvest.dm"
+#include "code\modules\1713\active_training.dm"
 // END_INCLUDE
+#include "code\modules\1713\modern_telecom.dm"
+#include "code\modules\1713\modern_telephone.dm"
+#include "code\modules\1713\modern_terminal.dm"
