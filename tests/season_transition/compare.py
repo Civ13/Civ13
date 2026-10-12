@@ -9,6 +9,7 @@ def main():
     p.add_argument('--baseline', type=Path, dest='baseline_option')
     p.add_argument('candidate', type=Path, nargs='?')
     p.add_argument('--candidate', type=Path, dest='candidate_option')
+    p.add_argument('--allow-legacy-loop-baseline', action='store_true', help='Compare correctness against explicitly guarded legacy reference; suppress performance ratios')
     p.add_argument('--max-gap-ds', type=int, required=True)
     a = p.parse_args()
     if (a.baseline and a.baseline_option) or (a.candidate and a.candidate_option):
@@ -27,7 +28,18 @@ def main():
     assert old['phase_delay_adapter'] == new['phase_delay_adapter'], 'Phase adapters differ'
     assert old['daemon_timeout_seconds'] == new['daemon_timeout_seconds']
     assert old['budget_adapter'] == new['budget_adapter'], 'Budget adapter scopes differ'
-    assert old['negative_control'] == new['negative_control'] == 'none'
+    assert new['negative_control'] == 'none'
+    assert new['runtime_diagnostics']['valid'] and new['runtime_diagnostics']['state'] == 'strict-clean'
+    guarded = old['negative_control'] == 'legacy-loop'
+    assert guarded == a.allow_legacy_loop_baseline, 'Guarded baseline requires explicit comparator opt-in'
+    if guarded:
+        assert old['dimensions'] == [660, 550, 1] and old['negative_control_detected']
+        assert old['runtime_diagnostics']['valid'] and old['runtime_diagnostics']['state'] == 'legacy-guarded'
+        assert old['runtime_diagnostics']['recognized_legacy_guard_count'] > 0
+        assert not old['runtime_diagnostics']['unexpected_diagnostics']
+    else:
+        assert old['negative_control'] == 'none'
+        assert old['runtime_diagnostics']['valid'] and old['runtime_diagnostics']['state'] == 'strict-clean'
     assert old['cycles'] == new['cycles'] == 4
     assert len(old['samples']) == len(new['samples']) == 4, 'Exactly four cycle samples are required'
     for result in (old, new):
@@ -49,8 +61,10 @@ def main():
     assert new['budget_service']['seen'] > 0
     assert new['budget_service']['progress'] and new['budget_service']['serviced']
     assert new['peak_gap_ds'] <= a.max_gap_ds, 'Heartbeat gap exceeded explicit bound'
-    ratios = {key: new[key] / old[key] if old.get(key) else None for key in ('process_cpu_seconds', 'daemon_wall_seconds', 'process_peak_memory_bytes', 'peak_helper_slots')}
-    print(json.dumps({'candidate_baseline_ratios': ratios, 'measurement_scope': new['process_metric_scope'], 'dimensions': new['dimensions'], 'peak_gap_ds': new['peak_gap_ds'], 'peak_gap_ticks': new['peak_gap_ticks'], 'completion_ticks': [row['elapsed_ticks'] for row in new['samples']], 'all_phase_completion_ticks': [row['all_phase_completion_ticks'] for row in new['samples']], 'parity_positive_pause_calls': new['positive_pause_calls'], 'parity_zero_pause_calls': new['zero_pause_calls'], 'parity': True}))
+    metric_keys = ('process_cpu_seconds', 'daemon_wall_seconds', 'process_peak_memory_bytes', 'peak_helper_slots')
+    ratios = None if guarded else {key: new[key] / old[key] for key in metric_keys}
+    scopes = {name: {'scope': result['reference_scope'], 'metrics': {key: result[key] for key in metric_keys}, 'diagnostics': result['runtime_diagnostics']['state']} for name, result in (('baseline', old), ('candidate', new))}
+    print(json.dumps({'candidate_baseline_ratios': ratios, 'clean_paired_performance_equivalence': not guarded, 'separate_measurements': scopes, 'measurement_scope': new['process_metric_scope'], 'dimensions': new['dimensions'], 'peak_gap_ds': new['peak_gap_ds'], 'peak_gap_ticks': new['peak_gap_ticks'], 'completion_ticks': [row['elapsed_ticks'] for row in new['samples']], 'all_phase_completion_ticks': [row['all_phase_completion_ticks'] for row in new['samples']], 'parity_positive_pause_calls': new['positive_pause_calls'], 'parity_zero_pause_calls': new['zero_pause_calls'], 'parity': True}))
 
 if __name__ == '__main__':
     main()

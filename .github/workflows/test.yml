@@ -136,6 +136,7 @@ jobs:
           python3 tests/lighting_startup/test_runner.py
           python3 tests/lighting_startup/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/lighting-startup/positive"
           python3 tests/lighting_startup/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control --output "$RUNNER_TEMP/lighting-startup/negative"
+          python3 tests/lighting_startup/run.py --byond-bin "$PWD/BYOND/byond/bin" --bulk-order-control --output "$RUNNER_TEMP/lighting-startup/bulk-order-control"
           if [ "${{ needs.changes.outputs.extensive }}" != true ]; then
             python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/lighting-startup/pool-effects"
             python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control lighting --output "$RUNNER_TEMP/lighting-startup/pool-effects-control"
@@ -365,6 +366,7 @@ jobs:
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_transition')
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/season_transition/test_harness.py
           python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --mode baseline --output "$RUNNER_TEMP/season-transition/baseline.json"
           python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/season-transition/candidate.json"
           python3 tests/season_transition/compare.py --baseline "$RUNNER_TEMP/season-transition/baseline.json" --candidate "$RUNNER_TEMP/season-transition/candidate.json" --max-gap-ds 10
@@ -376,14 +378,21 @@ jobs:
           python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --requests --output "$RUNNER_TEMP/season-transition/requests.json"
           python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control yield --output "$RUNNER_TEMP/season-transition/yield.json"
           python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control clock --output "$RUNNER_TEMP/season-transition/clock.json"
-      - name: Compare largest seasonal terrain geometry
+      - name: Compare largest seasonal correctness with guarded legacy reference
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_transition'))
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
-          python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --mode baseline --size largest --output "$RUNNER_TEMP/season-transition/large-baseline.json"
-          python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --size largest --output "$RUNNER_TEMP/season-transition/large-candidate.json"
-          python3 tests/season_transition/compare.py --baseline "$RUNNER_TEMP/season-transition/large-baseline.json" --candidate "$RUNNER_TEMP/season-transition/large-candidate.json" --max-gap-ds 10
+          status=0
+          python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --mode baseline --size largest --negative-control legacy-loop --output "$RUNNER_TEMP/season-transition/large-baseline.json" || status=1
+          python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --size largest --output "$RUNNER_TEMP/season-transition/large-candidate.json" || status=1
+          if [[ -f "$RUNNER_TEMP/season-transition/large-baseline.json" && -f "$RUNNER_TEMP/season-transition/large-candidate.json" ]]; then
+            python3 tests/season_transition/compare.py --baseline "$RUNNER_TEMP/season-transition/large-baseline.json" --candidate "$RUNNER_TEMP/season-transition/large-candidate.json" --allow-legacy-loop-baseline --max-gap-ds 10 || status=1
+          else
+            echo "Comparison unavailable: baseline or candidate evidence incomplete"
+            status=1
+          fi
+          exit "$status"
       - name: Verify actual largest-map constructors under seasonal work
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_transition'))
         timeout-minutes: 45
@@ -392,14 +401,21 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 tests/season_transition/full_game.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/season-transition/full-game/positive"
           python3 tests/season_transition/full_game.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control --output "$RUNNER_TEMP/season-transition/full-game/population-control"
-      - name: Profile largest seasonal CPU costs
+      - name: Profile independent largest seasonal costs with guarded legacy reference
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_transition'))
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
-          python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --mode baseline --size largest --profile --output "$RUNNER_TEMP/season-transition/profile-baseline.json"
-          python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --size largest --profile --output "$RUNNER_TEMP/season-transition/profile-candidate.json"
-          python3 tests/season_transition/compare.py --baseline "$RUNNER_TEMP/season-transition/profile-baseline.json" --candidate "$RUNNER_TEMP/season-transition/profile-candidate.json" --max-gap-ds 10
+          status=0
+          python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --mode baseline --size largest --profile --negative-control legacy-loop --output "$RUNNER_TEMP/season-transition/profile-baseline.json" || status=1
+          python3 tests/season_transition/run.py --byond-bin "$PWD/BYOND/byond/bin" --size largest --profile --output "$RUNNER_TEMP/season-transition/profile-candidate.json" || status=1
+          if [[ -f "$RUNNER_TEMP/season-transition/profile-baseline.json" && -f "$RUNNER_TEMP/season-transition/profile-candidate.json" ]]; then
+            python3 tests/season_transition/compare.py --baseline "$RUNNER_TEMP/season-transition/profile-baseline.json" --candidate "$RUNNER_TEMP/season-transition/profile-candidate.json" --allow-legacy-loop-baseline --max-gap-ds 10 || status=1
+          else
+            echo "Comparison unavailable: baseline or candidate evidence incomplete"
+            status=1
+          fi
+          exit "$status"
       - name: Retain seasonal transition evidence
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_transition'))
         uses: actions/upload-artifact@v4
@@ -408,6 +424,7 @@ jobs:
           path: ${{ runner.temp }}/season-transition/
           if-no-files-found: error
       - name: Verify seasonal terrain selection and allocation bounds
+        id: season_terrain
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_terrain_filter')
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -416,7 +433,7 @@ jobs:
           /usr/bin/python3 tests/season_terrain_filter/run.py --byond-bin "$PWD/BYOND/byond/bin" --large --output "$RUNNER_TEMP/season-terrain/large.json"
 
       - name: Retain seasonal terrain comparison evidence
-        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_terrain_filter'))
+        if: always() && steps.season_terrain.outcome != 'skipped' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_terrain_filter'))
         uses: actions/upload-artifact@v4
         with:
           name: season-terrain-comparison

@@ -153,8 +153,62 @@ def prepare(repo, mode, size, negative, requests_enabled=False, profile=False):
 '''
     return {'probe.dm': probe, 'production.dm': production, 'requests.dm': requests, 'probe.dme': dme}, {'source_sha256': digest(originals), 'generated_sha256': digest(production), 'dimensions': [width, height, 1], 'mode': mode, 'request_scenarios': requests_enabled, 'negative_control': negative, 'baseline_sha': BASELINE, 'phase_delay_adapter': {'offset_ds': 30, 'divisor': phase_delay_divisor, 'recurring_delay_ds': 210}, 'daemon_timeout_seconds': 900, 'budget_adapter': 'actual tick usage during parity; forced 20 percent only post-parity direct service call and request batch checkpoints', 'process_metric_scope': 'whole child includes candidate post-parity service witness (up to two ticks); requests excluded from benchmark comparisons'}
 
+DIAGNOSTICS = re.compile(r'runtime error|Bad ref|Bad loc|Cannot read null|Cannot execute null|Infinite loop suspected|switching proc to background|PORT_OPEN|ASSERTION', re.I)
+LEGACY_GUARD = re.compile(
+    r'Infinite loop suspected--switching proc to background\.\r?\n'
+    r"If it is not an infinite loop, either do 'set background=1' or set world\.loop_checks=0\.\r?\n"
+    r'proc name: seasons \(/obj/map_metadata/proc/seasons\)\r?\n'
+    r'  usr: null\r?\n'
+    r'  src: [^\r\n]+ \(/obj/map_metadata\)\r?\n'
+    r'  src\.loc: [^\r\n]+\r?\n'
+    r'  call stack:\r?\n'
+    r'[^\r\n]+: seasons\(0, 0, 1\)\r?\n'
+    r'world: New\(\)\r?\n')
+
+def validate_legacy_scope(mode, size, negative, requests):
+    if negative == 'legacy-loop' and (mode != 'baseline' or size != 'largest' or requests):
+        raise ValueError('legacy-loop requires baseline + largest without request scenarios')
+
+def classify_runtime(log, legacy_control=False):
+    recognized = [match.group() for match in LEGACY_GUARD.finditer(log)]
+    residual = LEGACY_GUARD.sub('', log) if legacy_control else log
+    unexpected = DIAGNOSTICS.findall(residual)
+    valid = not unexpected and (bool(recognized) if legacy_control else True)
+    return {'valid': valid, 'state': ('legacy-guarded' if legacy_control else 'strict-clean') if valid else 'rejected',
+            'recognized_legacy_guard_count': len(recognized), 'recognized_legacy_guards': recognized,
+            'unexpected_diagnostics': unexpected, 'legacy_control_requested': legacy_control}
+
+def self_test_diagnostics():
+    guard = """Infinite loop suspected--switching proc to background.
+If it is not an infinite loop, either do 'set background=1' or set world.loop_checks=0.
+proc name: seasons (/obj/map_metadata/proc/seasons)
+  usr: null
+  src: the map metadata (/obj/map_metadata)
+  src.loc: the drywater2 (1,1,1) (/turf/floor/beach/drywater2)
+  call stack:
+the map metadata (/obj/map_metadata): seasons(0, 0, 1)
+world: New()
+"""
+    cases = {'recognized': (guard, True, True), 'strict-candidate': (guard, False, False),
+             'unknown-proc': (guard.replace('proc name: seasons', 'proc name: unknown'), True, False),
+             'mixed-error': (guard + 'runtime error: unrelated\n', True, False),
+             'truncated': (guard.rsplit('world:', 1)[0], True, False),
+             'missing': ('Welcome BYOND!\n', True, False), 'clean': ('Welcome BYOND!\n', False, True)}
+    for name, (log, control, expected) in cases.items():
+        assert classify_runtime(log, control)['valid'] == expected, name
+    invalid_scopes = [('candidate', 'largest', False), ('baseline', 'small', False), ('baseline', 'largest', True)]
+    for mode, size, requests in invalid_scopes:
+        try:
+            validate_legacy_scope(mode, size, 'legacy-loop', requests)
+        except ValueError:
+            continue
+        raise AssertionError('Invalid legacy control scope accepted')
+    validate_legacy_scope('baseline', 'largest', 'legacy-loop', False)
+    print(json.dumps({'diagnostic_parser_cases': len(cases), 'invalid_scope_cases': len(invalid_scopes), 'passed': True}))
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--self-test-diagnostics', action='store_true', help='Compiler-free native diagnostic parser and scope controls')
     parser.add_argument('--prepare-only', type=Path)
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--output', type=Path)
@@ -162,8 +216,15 @@ def main():
     parser.add_argument('--requests', action='store_true', help='Run additional candidate request scenarios separately from comparable parity benchmarks')
     parser.add_argument('--profile', action='store_true', help='Retain native proc profiling for the four parity cycles; compare only with equally profiled evidence')
     parser.add_argument('--size', choices=('small', 'largest'), default='small')
-    parser.add_argument('--negative-control', choices=('none', 'yield', 'clock'), default='none')
+    parser.add_argument('--negative-control', choices=('none', 'yield', 'clock', 'legacy-loop'), default='none')
     args = parser.parse_args()
+    if args.self_test_diagnostics:
+        self_test_diagnostics()
+        return
+    try:
+        validate_legacy_scope(args.mode, args.size, args.negative_control, args.requests)
+    except ValueError as error:
+        parser.error(str(error))
     repo = Path(__file__).resolve().parents[2]
     files, metadata = prepare(repo, args.mode, args.size, args.negative_control, args.requests, args.profile)
     metadata['profiling_enabled'] = args.profile
@@ -201,19 +262,33 @@ def main():
         returncode, stdout, stderr, telemetry = run_native([str(daemon), 'probe.dmb'] + (['-invisible'] if os.name == 'nt' else []) + ['-close', '-safe', '-log', 'runtime.log'], root, flags, 900)
         log = (root / 'runtime.log').read_text(errors='replace') + (stdout + stderr).decode(errors='replace')
         (logs / 'runtime.log').write_text(log)
-        if returncode or re.search(r'runtime error|Bad ref|Bad loc|Cannot read null|Cannot execute null|Infinite loop suspected|switching proc to background|PORT_OPEN|ASSERTION', log, re.I):
-            raise SystemExit(log)
-        result = json.loads((root / 'result.json').read_text())
-        if args.profile:
+        diagnostics = classify_runtime(log, args.negative_control == 'legacy-loop')
+        (logs / 'diagnostics.json').write_text(json.dumps(diagnostics, indent=2))
+        metadata['runtime_diagnostics'] = diagnostics
+        (logs / 'telemetry.json').write_text(json.dumps(telemetry, indent=2))
+        if (root / 'result.json').exists():
+            (logs / 'raw-result.json').write_text((root / 'result.json').read_text())
+        metadata['reference_scope'] = 'immutable legacy guarded reference; no clean paired CPU/wall equivalence' if args.negative_control == 'legacy-loop' else 'strict clean native diagnostics'
+        (logs / 'source-manifest.json').write_text(json.dumps(metadata, indent=2))
+        # Retain profile evidence before rejecting a native diagnostic.
+        if args.profile and (root / 'profile.json').exists():
             profile_text = (root / 'profile.json').read_text()
+            (logs / 'profile.json').write_text(profile_text)
             profile_data = json.loads(profile_text)
             assert isinstance(profile_data, (dict, list)) and profile_data, 'Native proc profile is empty'
-            (logs / 'profile.json').write_text(profile_text)
             metadata['profiling_artifact'] = str(logs / 'profile.json')
+        if returncode or not diagnostics['valid']:
+            raise SystemExit(log + '\nNative diagnostics rejected: ' + json.dumps(diagnostics))
+        if args.profile:
+            assert 'profiling_artifact' in metadata, 'Native profile artifact missing'
+        result = json.loads((root / 'result.json').read_text())
         result.update(metadata, elapsed_seconds=time.monotonic() - start, **telemetry)
         args.output.write_text(json.dumps(result, indent=2))
         assert result['cycles'] == 4 and result['distractors'] == 20080
         assert result['identity_failures'] == 0
+        assert len(result['samples']) == 4, 'Complete four-cycle evidence is required'
+        if args.negative_control == 'legacy-loop':
+            result['negative_control_detected'] = True
         if args.negative_control == 'clock':
             assert result['clock'] != 4, 'Clock negative control was not detected'
             result['negative_control_detected'] = True

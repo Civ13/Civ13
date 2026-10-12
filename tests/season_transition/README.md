@@ -27,9 +27,9 @@ adversarial request scenarios, and both required negative controls:
 <PYTHON> tests/season_transition/run.py --byond-bin <516.1681-bin> --requests --output <fresh-requests.json>
 <PYTHON> tests/season_transition/run.py --byond-bin <516.1681-bin> --negative-control yield --output <fresh-yield.json>
 <PYTHON> tests/season_transition/run.py --byond-bin <516.1681-bin> --negative-control clock --output <fresh-clock.json>
-<PYTHON> tests/season_transition/run.py --byond-bin <516.1681-bin> --mode baseline --size largest --output <fresh-largest-baseline.json>
+<PYTHON> tests/season_transition/run.py --byond-bin <516.1681-bin> --mode baseline --size largest --negative-control legacy-loop --output <fresh-largest-baseline.json>
 <PYTHON> tests/season_transition/run.py --byond-bin <516.1681-bin> --mode candidate --size largest --output <fresh-largest-candidate.json>
-<PYTHON> tests/season_transition/compare.py <largest-baseline.json> <largest-candidate.json> --max-gap-ds 10
+<PYTHON> tests/season_transition/compare.py <largest-baseline.json> <largest-candidate.json> --allow-legacy-loop-baseline --max-gap-ds 10
 ```
 
 Largest geometry is 660 x 550 x 1 (363,000 turfs), with 20,000 inert objects and
@@ -57,7 +57,7 @@ Every parity snapshot waits for its owner's pending delayed callbacks, queued ph
 and active worker to drain under a bounded deadline, including nested baseline spawns.
 Telemetry reports immediate-work and all-phase native completion ticks, wall-clock heartbeat gaps with midnight
 wrap, actual peak helper snapshot slots, child process CPU, and OS peak working set
-(Windows) or sampled RSS/high-water (Linux). CPU/wall/memory ratios compare only equal unforced four-cycle workloads. OS metrics
+(Windows) or sampled RSS/high-water (Linux). CPU/wall/memory ratios are available only for strict clean equal unforced four-cycle workloads. OS metrics
 cover the whole child and include the candidate-only post-parity witness/drain (up to
 two ticks); this small overhead is explicitly labeled. Request runs are excluded
 from benchmark comparisons. Parity sources omit request checkpoint and after-pause replacement callbacks.
@@ -70,6 +70,28 @@ readiness and a pre-cycle tick establish the timestamp before each measured wind
 `--requests`. Generated source and build/runtime logs accompany results; manifests
 identify original/generated sources, HEAD and tracked patch. Metrics describe this
 synthetic fixture and cannot establish full-server performance or memory improvements.
+
+The immutable largest baseline triggers BYOND's native loop guard in `seasons`.
+`--negative-control legacy-loop` explicitly requires that complete recognized guard,
+the exact `seasons(0, 0, 1)` startup call stack, no other diagnostics and complete
+four-cycle evidence. It is limited to baseline + largest without request scenarios.
+The candidate still requires entirely clean diagnostics. Largest correctness and
+heartbeat comparisons require `--allow-legacy-loop-baseline`; their output labels
+the guarded reference and reports separate CPU/wall/memory measurements with no
+ratios or clean paired performance equivalence. Small baseline comparisons remain
+strict. Profiling uses the same explicit control on the largest baseline and retains
+actual diagnostics, raw result, process telemetry and native profile independently
+before diagnostic rejection. CI runs the candidate even if the baseline fails and
+retains failure status for any unexpected fault or incomplete evidence.
+
+The bounded parser regression needs neither compiler nor daemon:
+
+```
+<PYTHON> tests/season_transition/test_harness.py
+```
+
+It rejects unknown procedures, mixed errors, truncated or missing guard blocks,
+invalid control scopes and any guard in strict candidate mode.
 
 Adversarial requests cover preservation of concurrent natural requests, latest
 pending forced decay flags, config-disabled/default/explicit admin decay flags,
@@ -210,5 +232,6 @@ The isolated transition runner's `--profile` option defaults off. It profiles
 four parity cycles including heartbeats and snapshots, excluding world setup,
 request scenarios and the post-parity service witness. It retains
 `.logs/profile.json` and separate profile-enabled metadata/comparison guards.
-Profiling CPU instrumentation provides attribution; compare the unprofiled
-baseline/candidate pair for performance.
+Profiling CPU instrumentation provides attribution. Strict clean unprofiled pairs
+permit ratios; largest guarded baseline and strict candidate costs remain separate
+measurements in both profiled and unprofiled evidence.
