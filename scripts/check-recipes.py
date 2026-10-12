@@ -53,7 +53,7 @@ def main():
             nodes = replace_once(nodes, marker, '"/obj/item/weapon/plough" = "basic_tools"')
             (build / "research_node.dm").write_text(nodes, encoding="utf-8")
             dme = replace_once(dme, r'#include "code\modules\research_tree\research_node.dm"', f'#include "{build.as_posix()}/research_node.dm"')
-        dme += f'\n#include "{root.as_posix()}/tests/crafting/checks.dm"\n#include "{root.as_posix()}/tests/crafting/camera_progression.dm"\n#include "{root.as_posix()}/tests/crafting/telecom_progression.dm"\n'
+        dme += f'\n#include "{root.as_posix()}/tests/crafting/checks.dm"\n#include "{root.as_posix()}/tests/crafting/camera_progression.dm"\n#include "{root.as_posix()}/tests/crafting/exercise_progression.dm"\n#include "{root.as_posix()}/tests/crafting/telecom_progression.dm"\n'
         # Preserve resource lookup from original includes.
         dme = dme.replace('#define FILE_DIR .', f'#define FILE_DIR "{root.as_posix()}"')
         dme = re.sub(r'^#include "([^/":][^":]*)"', lambda m: f'#include "{root.as_posix()}/{m[1].replace(chr(92), "/")}"', dme, flags=re.M)
