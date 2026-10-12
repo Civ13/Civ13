@@ -59,7 +59,7 @@ export function createReference(fetcher = fetch) {
         if (controller.signal.aborted) throw Error('DM reference request cancelled or timed out');
         const content = Buffer.concat(chunks);
         cache = { entries: parseReference(content.toString('utf8')), loaded: Date.now(), sha256: createHash('sha256').update(content).digest('hex') };
-      } finally { loading = false; clearTimeout(timer); signal?.removeEventListener('abort', cancel); }
+      } finally { controller.abort(); loading = false; clearTimeout(timer); signal?.removeEventListener('abort', cancel); }
     }
     const provenance = { source: referenceUrl, fetchedAt: new Date(cache.loaded).toISOString(), sha256: cache.sha256,
       versionNote: 'Live official reference; may describe features newer than Civ13 BYOND 516.1681. Not compiler verification.' };

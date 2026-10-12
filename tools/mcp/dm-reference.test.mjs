@@ -33,7 +33,9 @@ test('streaming size limit, concurrent fetch bound and recovery after cancellati
 });
 test('HTTP, content type, oversize, abort and duplicate topics fail closed', async () => {
   for (const response of [new Response('missing',{status:404}),new Response(html),new Response(html,{headers:{'content-type':'text/html','content-length':'9000000'}})]) {
-    await assert.rejects(createReference(async()=>response)({query:'Cut'}));
+    let fetchSignal;
+    await assert.rejects(createReference(async(_,options)=>{fetchSignal=options.signal; return response;})({query:'Cut'}));
+    assert.equal(fetchSignal.aborted,true);
   }
   const controller = new AbortController(); controller.abort();
   await assert.rejects(createReference(async()=>{throw Error('must not fetch');})({query:'Cut'},controller.signal),/Cancelled/);
