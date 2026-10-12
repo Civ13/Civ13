@@ -26,7 +26,10 @@ world
 	if (actual != expected)
 		failures++
 var/failures = 0
+/world/OpenPort(port)
+	return port == "none" ? ..() : FALSE
 /world/New()
+	OpenPort("none")
 	var/obj/structure/cable/A = new(locate(1,1,1))
 	var/obj/structure/cable/B = new(locate(2,1,1))
 	var/obj/structure/cable/C = new(locate(3,1,1))
@@ -56,4 +59,4 @@ var/failures = 0
 	A.power_off(10)
 	check("source stopped", A.powerflow, 0)
 	world.log << "POWER_PROBE failures=[failures]"
-	shutdown()
+	del(world)
