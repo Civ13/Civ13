@@ -78,3 +78,16 @@ Sources: `code/modules/reagents/reagent_containers/food.dm`,
 `code/game/objects/structures/sea.dm`, `code/modules/1713/production.dm`,
 `config/crafting/material_recipes_global.txt`, and
 `code/modules/research_tree/research_node.dm`.
+
+## Prepared open-can regression
+
+The draft changes only the final ordinary-storage aging branch so opened cans
+accumulate age; sealed cans still return before that branch. Run the existing
+`tests/food_progression/run.py --probe storage --byond-bin <516.1681-bin>`.
+The prepared fixture checks sealed/opened cans, faster floor aging, and actual
+native entry restoration followed by continued aging. `--can-negative-control`
+restores the old opened-can exclusion only in generated source and must fail
+`opened can accumulates food age`. Only the recurring wait is accelerated.
+Neither mode has run yet; Python syntax and whitespace checks are not DM or
+runtime acceptance. This narrow correction does not replace per-food callbacks
+or establish preserved-food conservation, lean-season lifetimes or player access.
