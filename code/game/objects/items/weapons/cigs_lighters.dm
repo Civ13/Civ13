@@ -37,11 +37,14 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	attack_verb = list("burnt", "singed")
 
 /obj/item/weapon/flame/match/process()
+	return process_interval(2)
+
+/obj/item/weapon/flame/match/process_interval(configured_seconds = 2)
 	if (isliving(loc))
 		var/mob/living/M = loc
 		M.IgniteMob()
-	smoketime--
-	if (smoketime < 1)
+	smoketime -= configured_seconds / 2
+	if (smoketime <= 0)
 		burn_out()
 		return
 

@@ -209,3 +209,8 @@
 
 /obj/proc/secondary_attack_self(mob/living/human/user)
 	return
+
+// Configured cadence in seconds, not wall time since the previous callback.
+// Legacy process signatures may take actors/items: never forward this argument.
+/obj/proc/process_interval(configured_seconds)
+	return process()

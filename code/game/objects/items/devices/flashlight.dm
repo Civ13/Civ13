@@ -151,7 +151,10 @@
 		H.throw_mode_off()
 
 /obj/item/flashlight/flare/process()
-	fuel = max(fuel - 1, FALSE)
+	return process_interval(2)
+
+/obj/item/flashlight/flare/process_interval(configured_seconds = 2)
+	fuel = max(fuel - configured_seconds / 2, FALSE)
 	if(fuel <= 0 || !on)
 		burn_out()
 
