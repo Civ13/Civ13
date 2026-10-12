@@ -173,6 +173,24 @@ By design, d1 is the smallest direction and d2 is the highest
 						connections += CB
 	return connections
 
+// Scalar identities contain no cable references. Refresh from the live graph,
+// rather than retaining cached topology across disconnects or imports.
+var/global/cable_identity_sequence = 0
+/obj/structure/cable/var/tmp/grid_serial = 0
+/obj/structure/cable/var/tmp/component_id = 0
+/obj/structure/cable/var/tmp/component_size = 0
+/obj/structure/cable/var/tmp/rebuild_visits = 0
+
+/obj/structure/cable/proc/grid_identity()
+	if (!grid_serial)
+		grid_serial = ++cable_identity_sequence
+	return grid_serial
+
+/obj/structure/cable/persistence_runtime_var(key)
+	if (key in list("grid_serial", "component_id", "component_size", "rebuild_visits"))
+		return TRUE
+	return ..()
+
 //needed as this can, unlike other placements, disconnect cables
 /obj/structure/cable/proc/disconnect()
 	var/list/previous = connections.Copy()
@@ -181,6 +199,8 @@ By design, d1 is the smallest direction and d2 is the highest
 	powered = FALSE
 	powerflow = 0
 	currentflow = 0
+	component_id = 0
+	component_size = 0
 	for (var/obj/OB in previous)
 		if (istype(OB, /obj/structure/cable))
 			var/obj/structure/cable/CB = OB
@@ -197,19 +217,23 @@ By design, d1 is the smallest direction and d2 is the highest
 
 // Capacity is instantaneous engine output, not accumulated energy. Visit each
 // cable and engine once, including when a network contains loops or branches.
-/obj/structure/cable/proc/rebuild_supply()
+/obj/structure/cable/proc/rebuild_supply(obj/requester, request = 0)
+	if (requester && (request <= 0 || requester.powersource != src || !(requester in connections) || !isturf(requester.loc) || get_dist(src, requester) > 1 || requester.z != z))
+		return FALSE
 	var/list/pending = list(src)
 	var/list/cables = list()
+	var/list/discovered = list()
+	discovered[src] = TRUE
 	var/list/engines = list()
 	var/list/batteries = list()
 	var/capacity = 0
 	var/demand = 0
-	while (pending.len)
-		var/obj/structure/cable/CB = pending[pending.len]
-		pending.len--
-		if (CB in cables)
-			continue
-		cables += CB
+	var/index = 1
+	var/identity = grid_identity()
+	while (index <= pending.len)
+		var/obj/structure/cable/CB = pending[index++]
+		cables[CB] = TRUE
+		identity = min(identity, CB.grid_identity())
 		if (!isturf(CB.loc))
 			continue
 		for (var/obj/consumer in CB.power_consumers.Copy())
@@ -223,7 +247,9 @@ By design, d1 is the smallest direction and d2 is the highest
 			if (istype(OB, /obj/structure/cable))
 				var/obj/structure/cable/neighbor = OB
 				if (CB in neighbor.connections)
-					pending |= neighbor
+					if (!discovered[neighbor])
+						discovered[neighbor] = TRUE
+						pending += neighbor
 			else if (istype(OB, /obj/structure/engine))
 				var/obj/structure/engine/EN = OB
 				if (!(EN in engines) && (CB in EN.connections))
@@ -236,11 +262,24 @@ By design, d1 is the smallest direction and d2 is the highest
 				if (!(B in batteries) && B.powersource == CB)
 					batteries += B
 					capacity += B.available_output()
+	var/accepted = FALSE
+	if (requester)
+		var/reserved = power_consumers[requester]
+		if (capacity > 0 && capacity - demand + reserved >= request)
+			power_consumers[requester] = request
+			demand += request - reserved
+			accepted = TRUE
+		else
+			power_consumers -= requester
+			demand -= reserved
 	for (var/obj/structure/cable/CB in cables)
 		CB.currentflow = demand
 		CB.powerflow = capacity
 		CB.powered = capacity > 0
-	return capacity
+		CB.component_id = identity
+		CB.component_size = cables.len
+		CB.rebuild_visits = cables.len
+	return requester ? accepted : capacity
 
 // Reservations are keyed by the consumer, so repeated checks are idempotent.
 /obj/structure/cable/proc/update_power(var/powerval = 0, var/recheck = 0, obj/consumer)
@@ -260,13 +299,8 @@ By design, d1 is the smallest direction and d2 is the highest
 	if (!isturf(loc) || !(src in powersource.connections) || get_dist(src, powersource) > 1 || z != powersource.z)
 		powersource.update_power(-powerneeded, 1, src)
 		return FALSE
-	powersource.rebuild_supply()
-	var/reserved = powersource.power_consumers[src]
-	if (powersource.powered && powersource.powerflow - powersource.currentflow + reserved >= powerneeded)
-		powersource.update_power(powerneeded, 1, src)
-		return TRUE
-	powersource.update_power(-powerneeded, 1, src)
-	return FALSE
+	// Validate capacity and publish the reservation atomically in one traversal.
+	return powersource.rebuild_supply(src, powerneeded)
 
 /obj/structure/cable/proc/power_on(var/maxpower = 0)
 	return rebuild_supply()

@@ -48,8 +48,14 @@ try {
     $compileLog = Get-Content -LiteralPath (Join-Path $temporary 'compile.log') -Raw
     Write-Output $compileLog
     if ($compiler.ExitCode -ne 0 -or $compileLog -notmatch '0 errors, 0 warnings') { throw 'Probe compilation failed.' }
-    $runtime = Start-Process -FilePath (Join-Path $ByondBin $runtimeName) -ArgumentList @((Join-Path $temporary 'probe.dmb'), '-invisible', '-trusted', '-logself') -WorkingDirectory $temporary -PassThru @processOptions
-    if (!$runtime.WaitForExit(30000)) { Stop-Process -Id $runtime.Id; $runtime.WaitForExit(); throw 'Probe timed out.' }
+    $runtime = Start-Process -FilePath (Join-Path $ByondBin $runtimeName) -ArgumentList @((Join-Path $temporary 'probe.dmb'), '0', '-invisible', '-close', '-trusted', '-logself') -WorkingDirectory $temporary -PassThru @processOptions
+    if (!$runtime.WaitForExit(30000)) {
+        Stop-Process -Id $runtime.Id
+        $runtime.WaitForExit()
+        $timeoutLog = Join-Path $temporary 'probe.log'
+        if (Test-Path -LiteralPath $timeoutLog) { Get-Content -LiteralPath $timeoutLog }
+        throw 'Probe timed out.'
+    }
     $log = Get-Content -LiteralPath (Join-Path $temporary 'probe.log') -Raw
     Write-Output $log
     if ($log -notmatch 'POWER_PROBE failures=0' -or $log -match 'runtime error') { throw 'Power regression probe failed.' }
