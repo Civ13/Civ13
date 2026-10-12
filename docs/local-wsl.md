@@ -25,7 +25,8 @@ ordinary Windows PowerShell at the Civ13 checkout, run:
 
 The default distribution is Debian; default Linux user is root for automated
 bootstrap. Use `-LinuxUser` for an existing nonroot account consistently for
-Build/Start/Stop/Status. Root is used only for dependency installation by Prepare.
+Build/Start/Stop/Status. Prepare always uses root for dependency installation;
+the selected Linux user also owns and runs the local game processes.
 No interactive Linux terminal is required. Windows UAC elevation and a restart
 are still needed when the virtualization components are absent.
 
