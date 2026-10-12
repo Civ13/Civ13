@@ -346,7 +346,10 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 if workshop_control:
                     expected = {'wear': 'assembled wheel retains actual identity and paid wear', 'cleanup': 'cancel cleanup releases busy power and all paid preview references'}[workshop_control]
                     if ran.returncode or not result.startswith('FAIL:') or expected not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
-                        raise RuntimeError('Workshop control did not fail at its intended ownership assertion')
+                        print(ran.stdout)
+                        print(ran.stderr)
+                        print(log)
+                        raise RuntimeError(f'Workshop {workshop_control} control did not fail at its intended ownership assertion: {expected}')
                     print(f'PASS: workshop {workshop_control} omission detected')
                     continue
                 if room_payment_control:
