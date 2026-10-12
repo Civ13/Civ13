@@ -19,6 +19,10 @@
 		var/target_id = initial(K.target_container_id)
 		var/target = "[target_map]:[target_id]"
 		container_key_assert(K.icon_state == map_sprites[target_map], "map-specific key sprite")
+		var/original_hint = K.target_hint()
+		container_key_assert(initial(K.target_container_label) != "unidentified cache", "every obtainable key names its intended lock")
+		K.target_container_label = "forged container label"
+		container_key_assert(K.target_hint() == original_hint, "examine target cannot be relabeled by mutable saved fields")
 		container_key_assert(!targets[target], "each key opens a different exact target")
 		targets[target] = TRUE
 		container_key_assert(K.matches(target_map, target_id), "matching unused key")

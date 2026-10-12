@@ -22,6 +22,7 @@
 	dropsound = 'sound/effects/drop_knife.ogg'
 	var/target_map
 	var/target_container_id = 0
+	var/target_container_label = "unidentified cache"
 	var/max_uses = 3
 	var/uses_remaining = 3
 	after_load()
@@ -36,9 +37,12 @@
 		return (type in extraction_container_key_catalog()) && isnum(uses_remaining) && round(uses_remaining) == uses_remaining && uses_remaining >= 1 && uses_remaining <= initial(max_uses)
 	proc/matches(map_id, container_id)
 		return valid_uses() && initial(target_map) == map_id && initial(target_container_id) == container_id && extraction_container_key_type(map_id, container_id) == type
+	proc/target_hint()
+		return "Opens only: [initial(target_container_label)]."
 	examine(mob/user)
 		..(user)
-		to_chat(user, SPAN_NOTICE("[uses_remaining] of [initial(max_uses)] unlocks remain. It opens only the cache named on its tag."))
+		to_chat(user, SPAN_NOTICE(target_hint()))
+		to_chat(user, SPAN_NOTICE("[uses_remaining] of [initial(max_uses)] unlocks remain."))
 
 /obj/item/weapon/key/extraction_container/industrial_tool_cage
 	name = "Industrial District tool cage key"
@@ -46,36 +50,42 @@
 	desc = "Tagged for the locked maintenance stock cage in the southwest warehouse of Industrial District."
 	target_map = MAP_EXTRACTION_SURVIVAL
 	target_container_id = 61
+	target_container_label = "maintenance stock cage, southwest warehouse, Industrial District"
 /obj/item/weapon/key/extraction_container/industrial_dispatch
 	name = "Industrial District dispatch locker key"
 	icon_state = "modern"
 	desc = "Tagged for the dispatch reserves locker in the central warehouse of Industrial District."
 	target_map = MAP_EXTRACTION_SURVIVAL
 	target_container_id = 62
+	target_container_label = "dispatch reserves locker, central warehouse, Industrial District"
 /obj/item/weapon/key/extraction_container/city_pharmacy
 	name = "Modern City pharmacy cabinet key"
 	icon_state = "key"
 	desc = "Tagged for the pharmacy's sealed treatment cabinet in the southwest block of Modern City."
 	target_map = MAP_EXTRACTION_CITY
 	target_container_id = 61
+	target_container_label = "pharmacy treatment cabinet, southwest block, Modern City"
 /obj/item/weapon/key/extraction_container/city_evidence
 	name = "Modern City evidence locker key"
 	icon_state = "key"
 	desc = "Tagged for the abandoned evidence locker in the north central block of Modern City."
 	target_map = MAP_EXTRACTION_CITY
 	target_container_id = 62
+	target_container_label = "evidence locker, north central block, Modern City"
 /obj/item/weapon/key/extraction_container/mall_security
 	name = "Interchange Mall security cache key"
 	icon_state = "treasure_key"
 	desc = "Tagged for the Transit security cache on Interchange Mall's retail floor."
 	target_map = MAP_EXTRACTION_MALL
 	target_container_id = 61
+	target_container_label = "Transit security cache, retail floor, Interchange Mall"
 /obj/item/weapon/key/extraction_container/mall_hardware
 	name = "Interchange Mall hardware reserves key"
 	icon_state = "treasure_key"
 	desc = "Tagged for the Foundry hardware reserves chest on Interchange Mall's retail floor."
 	target_map = MAP_EXTRACTION_MALL
 	target_container_id = 62
+	target_container_label = "Foundry hardware reserves chest, retail floor, Interchange Mall"
 
 // Gameplay access and the unlock receipt belong to the shared loot journal.
 // These mapped subtypes bind a unique container to its own named reward table.

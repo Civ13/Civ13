@@ -14,6 +14,9 @@ black-handled modern key, Modern City a silver skeleton key, and Interchange Mal
 key. Both container keys for a map share that map's sprite; their names identify
 the exact lock. Existing saved keys adopt the correct sprite when loaded without
 changing their identity, target or remaining uses.
+Examining a key explicitly names its one container, location and map, followed
+by its remaining uses. The target line uses immutable type defaults even if
+the key's mutable name or description has been changed.
 
 The shared loot integration rolls a 1% bonus chance when an ordinary container's
 loot is first planned. A successful roll selects one of all six key types with
