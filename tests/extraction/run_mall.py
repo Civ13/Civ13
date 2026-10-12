@@ -65,7 +65,7 @@ def main():
             files[3].write_text(metadata.replace(marker, replacement), encoding='utf-8')
             source = source.replace('code\\modules\\1713\\extraction\\mall.dm', files[3].name)
         source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
-        source += '\n#include "tests/extraction/mall_probe.dm"\n#include "maps/extraction/interchange_mall.dmm"\n'
+        source += '\n#include "tests/extraction/container_keys_probe.dm"\n#include "tests/extraction/mall_probe.dm"\n#include "maps/extraction/interchange_mall.dmm"\n'
         files[0].write_text(source, encoding='utf-8')
         compiled = subprocess.run([str(compiler), '-max_errors', '0', files[0].name], cwd=root, capture_output=True, text=True, timeout=120, creationflags=flags)
         output = compiled.stdout + compiled.stderr
