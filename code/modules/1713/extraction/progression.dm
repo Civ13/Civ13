@@ -1,6 +1,14 @@
 // Bounded game-only currency and fixed offers. Private account snapshots own
 // both payment and product; external bot balances are never read or written.
 /obj/map_metadata/extraction_survival/proc/supply_catalog()
+	var/list/offers = basic_supply_catalog()
+	offers["Carved planks"] = list("type" = /obj/item/stack/material/woodplank, "amount" = 10, "price" = 30, "level" = 1)
+	offers["Copper sheets"] = list("type" = /obj/item/stack/material/copper, "amount" = 10, "price" = 40, "level" = 2)
+	offers["Gold research stock"] = list("type" = /obj/item/stack/material/gold, "amount" = 5, "price" = 150, "level" = 3)
+	offers["Kevlar fabric"] = list("type" = /obj/item/stack/material/kevlar, "amount" = 10, "price" = 100, "level" = 3)
+	return offers
+
+/obj/map_metadata/extraction_survival/proc/basic_supply_catalog()
 	return list("Wooden handle" = list("type" = /obj/item/weapon/material/handle, "price" = 10, "level" = 1), "Iron pickaxe head" = list("type" = /obj/item/weapon/material/part/pickaxe, "material" = "iron", "price" = 20, "level" = 1), "Iron shovel head" = list("type" = /obj/item/weapon/material/part/shovel, "material" = "iron", "price" = 20, "level" = 1), "Iron hatchet head" = list("type" = /obj/item/weapon/material/part/axehead/hatchet, "material" = "iron", "price" = 20, "level" = 1), "Cloth bundle" = list("type" = /obj/item/stack/material/cloth, "amount" = 10, "price" = 20, "level" = 1), "Binding cord" = list("type" = /obj/item/stack/material/rope, "amount" = 10, "price" = 20, "level" = 1), "Steel sheets" = list("type" = /obj/item/stack/material/steel, "amount" = 10, "price" = 30, "level" = 2), "Wood bundle" = list("type" = /obj/item/stack/material/wood, "amount" = 10, "price" = 10, "level" = 1), "AKM rifle" = list("type" = /obj/item/weapon/gun/projectile/submachinegun/ak47, "price" = 120, "level" = 2), "AKM magazine" = list("type" = /obj/item/ammo_magazine/ak47, "price" = 20, "level" = 1), "M9 magazine" = list("type" = /obj/item/ammo_magazine/m9beretta, "price" = 10, "level" = 1), "PASGT helmet" = list("type" = /obj/item/clothing/head/helmet/modern/pasgt, "price" = 50, "level" = 2), "Carrier vest" = list("type" = /obj/item/clothing/accessory/armor/nomads/pcarrierblack, "price" = 80, "level" = 2), "Gasoline jerrycan" = list("type" = /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline, "price" = 30, "level" = 2))
 
 /obj/map_metadata/extraction_survival/proc/supply_access(mob/living/human/H)

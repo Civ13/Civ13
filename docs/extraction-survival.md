@@ -383,6 +383,18 @@ interruption before marker removal, expired recovery, immutable completed replie
 and mismatching signed markers. `--publication-negative-control` removes the
 durable-receipt comparison and must fail at that exact assertion. `--output` can
 export only synthetic request/reply fixtures for isolated bot compatibility tests.
+Exports record the source commit and whether the checkout had local changes.
 Ordinary process restart does not establish filesystem flush ordering through
 power loss. The host must provision a private directory and enforce single-writer
 operation before any separately authorized activation.
+
+City Survivors receive the ordinary Nomads faction and leadership controls.
+The municipal materials laboratory at (42,42) is a shared tier-six research bench:
+it supplies a station, while specialist recipes still require the faction's
+prerequisites, study and any prototype submissions. Progress remains round-scoped
+under the existing research system. Private supplies also offer carved planks,
+copper, gold research stock and kevlar at fixed game-credit prices and house
+levels. Planks support the normal eight-plank research bench and gunsmithing
+station recipes; gold can be crafted into the coins ordinary benches consume.
+The shared laboratory avoids requiring a new bench to be upgraded through six
+tiers during a six-hour city run. These prototype prices still need playtesting.

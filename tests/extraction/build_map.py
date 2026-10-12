@@ -65,6 +65,7 @@ def build(city=False):
             raid[45][x-1] = tile('/obj/structure/wild/berrybush/tinto', '/turf/floor/grass', district)
         put(56, 42, '/obj/structure/sink')
         put(40, 42, '/obj/structure/component_workbench')
+        put(42, 42, '/obj/structure/research_bench{tier = 6; name = "municipal materials laboratory"}')
         put(48, 84, '/obj/effect/extraction_npc_marker')
         put(48, 14, '/obj/effect/extraction_npc_marker')
         put(2, 2, '/obj/map_metadata/extraction_survival/modern_city')

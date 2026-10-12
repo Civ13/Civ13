@@ -232,6 +232,10 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             shutil.copy2(generated[3], target / 'probe.dmb')
             shutil.copy2(generated[4], target / 'probe.rsc')
             shutil.copytree(root / 'config/names', target / 'config/names')
+
+            if probe == 'city':
+                (target / 'config/crafting').mkdir()
+                shutil.copy2(root / 'config/crafting/material_recipes_global.txt', target / 'config/crafting/material_recipes_global.txt')
             platform = ['-invisible', '-close'] if os.name == 'nt' else []
             phases = ('write', 'reload', 'replay') if probe in ('insurance', 'groups', 'vehicles') else ('equipment',)
             for phase in phases:

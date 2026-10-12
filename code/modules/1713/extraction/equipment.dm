@@ -31,6 +31,7 @@ var/global/extraction_identity_sequence = 0
 	if (!ispath(path, /obj/item)) return FALSE
 	if (ispath(path, /obj/item/weapon/gun/projectile/custom)) return FALSE
 	if (ispath(path, /obj/item/weapon/key/extraction_room)) return TRUE
+	if (path in list(/obj/item/stack/material/copper, /obj/item/stack/material/gold)) return TRUE
 	if (path in list(/obj/item/stack/material/wood, /obj/item/stack/material/woodplank, /obj/item/stack/material/iron, /obj/item/stack/material/steel, /obj/item/stack/material/cloth, /obj/item/stack/material/rope, /obj/item/stack/material/leather, /obj/item/stack/material/kevlar, /obj/item/stack/material/cotton, /obj/item/stack/material/flax, /obj/item/stack/material/rettedfabric)) return TRUE
 	if (path in list(/obj/item/weapon/reagent_containers/glass/barrel/jerrycan, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel)) return TRUE
 	return ispath(path, /obj/item/weapon/gun/projectile) || ispath(path, /obj/item/weapon/attachment) || ispath(path, /obj/item/weapon/gun_mount) || ispath(path, /obj/item/ammo_magazine) || ispath(path, /obj/item/ammo_casing) || ispath(path, /obj/item/projectile) || ispath(path, /obj/item/clothing) || ispath(path, /obj/item/weapon/storage) || ispath(path, /obj/item/weapon/material) || ispath(path, /obj/item/blackpowder_part) || ispath(path, /obj/item/extraction_salvage)
