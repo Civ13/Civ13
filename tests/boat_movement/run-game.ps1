@@ -10,6 +10,15 @@ if (Test-Path -LiteralPath $sourcePath) { throw 'Existing probe source must be p
 $temp = Join-Path ([IO.Path]::GetTempPath()) ('civ13-boat-game-' + [guid]::NewGuid())
 New-Item -ItemType Directory $temp | Out-Null
 $process = $null
+$commit = git -C $repo rev-parse HEAD
+if ($LASTEXITCODE -ne 0) { throw 'Cannot determine source revision' }
+$dirty = [bool](git -C $repo status --porcelain)
+if ($LASTEXITCODE -ne 0) { throw 'Cannot determine source state' }
+function Assert-NativeLogs {
+    $files = @(Get-ChildItem -LiteralPath $temp -File -Recurse | Where-Object { $_.Name -match '\.(log|txt)$' -and $_.Name -ne 'compile.log' })
+    $errors = @($files | Select-String -Pattern 'runtime error:|BOAT FAIL:|BOAT EXCEPTION:|\bBad ref\b|\bBad loc\b|^\s*BUG:|##\s*ERROR:|Cannot read null|Cannot execute null')
+    if ($errors.Count) { throw ('Native log errors: ' + ($errors.Line -join '; ')) }
+}
 try {
     $source = Get-Content -Raw -LiteralPath (Join-Path $repo 'civ13.dme')
     [IO.File]::WriteAllText($sourcePath,$source + "`n#include `"tests/boat_movement/game_probe.dm`"`n")
@@ -28,8 +37,6 @@ try {
             Set-Content -LiteralPath $target -Value $lines
         }
     }
-    $commit = git -C $repo rev-parse HEAD
-    $dirty = [bool](git -C $repo status --porcelain -- code tests/boat_movement)
     Write-Output "Full-game source: $commit; working source dirty: $dirty"
     $parameters = 'tested_commit=' + $commit
     if ($Visual) { $parameters += '&visual=1' }
@@ -39,7 +46,10 @@ try {
         ArgumentList = @(('"' + (Join-Path $temp '.boat_game_probe.dmb') + '"'), '-invisible', '-safe', '-params', $parameters, '-log', 'startup.log')
         WorkingDirectory = $temp
         PassThru = $true
+        RedirectStandardOutput = Join-Path $temp 'daemon-output.log'
+        RedirectStandardError = Join-Path $temp 'daemon-error.log'
     }
+    if (!$Visual) { $launch.ArgumentList += '-close' }
     if ($IsWindows) { $launch.WindowStyle = 'Hidden' }
     $process = Start-Process @launch
     $deadline = [DateTimeOffset]::UtcNow.AddSeconds($TimeoutSeconds).ToString('o')
@@ -68,8 +78,7 @@ try {
             $announced = $true
         }
     }
-    $errors = @(Get-ChildItem -LiteralPath (Join-Path $temp 'data/logs/runtime') -File -ErrorAction SilentlyContinue | Select-String -Pattern 'runtime error:|BOAT FAIL:|BOAT EXCEPTION:')
-    if ($errors.Count) { throw ('Runtime log errors: ' + ($errors.Line -join '; ')) }
+    Assert-NativeLogs
     $resultText = Get-Content -Raw -LiteralPath (Join-Path $temp 'boat-result.txt')
     Write-Output $resultText
     if ($process.ExitCode -ne 0 -or $resultText -notmatch '^RESULT failures=0') { throw 'Full-game probe failed' }

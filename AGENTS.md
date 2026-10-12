@@ -484,3 +484,11 @@ tests/pool_effects constructs actual effects with isolated startup and observer
 count lists initialized; missing those lists creates misleading fixture errors.
 <!-- 2026-10-12: global controller virtual-list ownership -->
 Materialize `exclude_these.vars` names into an ordinary list before appending global-controller exclusions. Native BYOND 516.1681 can log `Bad ref` during direct virtual-list union even when assertions pass. `tests/global_vars_ownership/run.py` checks production initialization and a historical diagnostic control; the full-game train launcher rejects engine diagnostics and closes/refuses headless ports. Survival/weather/environment fixtures use fixed production initialization unchanged and adapt only the historical union.
+
+<!-- 2026-10-12: bounded memory telemetry -->
+Opt-in memory_lifetime_recorder retains at most 120 numeric awake intervals and
+120 scalar registry/counter rows, with no sampled entity references or world scan.
+Observed interval p95/max includes scheduling and clock resolution, not tick CPU
+time. GC queued_drained counts consumed queue entries, excluding direct deletes.
+Headless humans enter SSD sleep: synchronous inventory fixtures must prepare and
+assert an awake, live actor before real pickup/drop calls.

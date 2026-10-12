@@ -73,7 +73,7 @@ or multiweek full-server stability.
 
 The earlier memory diagram identified eight areas. Lifecycle states and deletion
 hints, callback release/indexing, turf finalizer cleanup, explicit bounded pools,
-and bounded queue/helper/pool telemetry are implemented here. Ownership review
+and bounded queue/helper/pool telemetry are implemented here. The opt-in lifetime recorder also aligns scalar registry sizes and enqueue/consumed-entry rates with bounded observed awake-interval p95/max and an external OS sampler. It is off by default, retains at most 120 scalar rows and intervals, and neither scans the world nor samples entity references. See [the telemetry suite](../memory_telemetry/README.md) for its native controls and isolated full-game trace. Ownership review
 also repairs weak handles, dynamic callbacks, reagent backlinks, completed process
 snapshots, independently closed NanoUI children and stale pooled-effect routines.
 Native fixtures compare historical behavior or intentionally broken controls.

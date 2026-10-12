@@ -33,6 +33,21 @@
    300 checks / 30 forced deletes
    timestamp identity guard
  }
+ class LifetimeRecorder {
+   default off / explicit finite start
+   at most 120 numeric intervals / 120 scalar rows
+   observed awake interval p95 / max
+   queue enqueue / consumed-entry rates
+   stop / Destroy invalidate activation token
+ }
+ LifetimeRecorder ..> Garbage : scalar counters
+ LifetimeRecorder ..> Callproc : scalar counters
+ LifetimeRecorder ..> GlobalPool : count
+ note right of LifetimeRecorder
+ Existing registry lengths, no world scan or sampled entity references.
+ External bounded OS sampler aligns private bytes / RSS by observed elapsed time.
+ Awake intervals include scheduling and clock resolution, not tick CPU time.
+ end note
  class ProcessSnapshot {
    retain on budgeted yield
    release after complete run

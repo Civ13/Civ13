@@ -10,6 +10,14 @@
 	..()
 	webhook_can_fire = FALSE
 	ToRban = FALSE
+/world/OpenPort(port)
+	if(world.params["visual"] || port == "none")
+		return ..()
+	return FALSE
+/world/New()
+	if(!world.params["visual"])
+		OpenPort("none")
+	return ..()
 var/global/datum/boat_game_probe/boat_game_probe = new
 /datum/boat_game_probe
 	var/list/blast_points = list()
@@ -242,6 +250,13 @@ var/global/datum/boat_game_probe/boat_game_probe = new
 	A.add_transporting()
 	check(!(loose in A.transporting) && loose.is_vehicle_exterior(A),"unarmed exterior grenade is not automatically cargo")
 	var/mob/living/human/loader = locate() in A.transporting
+	// Headless humans enter SSD sleep during normal Life processing. Prepare an
+	// awake actor for this synchronous pickup/drop case; keep real inventory procs.
+	if(loader)
+		loader.Sleeping(0)
+		loader.stat = CONSCIOUS
+		loader.lying = FALSE
+	check(loader && !loader.lying && loader.stat == CONSCIOUS && !QDELETED(loader),"pickup actor is awake and live")
 	check(loader && loader.put_in_active_hand(loose) && loose.loc == loader,"ordinary grenade pickup still works")
 	if(loader)
 		loader.drop_from_inventory(loose)

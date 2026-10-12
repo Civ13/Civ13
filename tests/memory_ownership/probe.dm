@@ -273,7 +273,10 @@ var/list/calls = list()
 			for (var/key in processes.garbage.destroyed.Copy())
 				if (key != refID && key != identity_ref)
 					processes.garbage.destroyed -= key
+			var/drained_before = processes.garbage.queued_drained
+			var/total_before = processes.garbage.total_dels
 			processes.garbage.fire()
+			check(processes.garbage.queued_drained == drained_before + 2 && processes.garbage.total_dels == total_before + 2, "queue drain counter counts exactly the two consumed entries")
 			check(!hard && !processes.garbage.hard_references.len, "forced deletion releases the strong queue owner")
 			check(identity, "timestamp guard preserves a live reused identity")
 			processes.garbage = null
