@@ -118,6 +118,20 @@
 		C.profile = null
 		equipment_assert(!C.unlock(M, H, K) && H.extraction_session.locked, "pending receipt reload cannot replay or unlock")
 		H.extraction_session.locked = FALSE
+	// Storage namespace test uses map IDs only, not a live map transition.
+	var/old_id = M.ID
+	store = new
+	store.root = "data/key_namespace/"
+	M.loot_store = store
+	var/datum/extraction_account_store/first = C.journal_store(M)
+	var/list/first_profile = first.load_profile("container61")
+	first.test_fail_at = "intent"
+	equipment_assert(!first.commit_profile("container61", first_profile) && !first.load_profile("container61"), "one map cache interrupted journal is quarantined")
+	M.ID = old_id == MAP_EXTRACTION_CITY ? MAP_EXTRACTION_SURVIVAL : MAP_EXTRACTION_CITY
+	var/datum/extraction_account_store/second = C.journal_store(M)
+	var/list/second_profile = second.load_profile("container61")
+	equipment_assert(first.root != second.root && second_profile && second.commit_profile("container61", second_profile), "same numbered foreign map cache journal remains independent")
+	M.ID = old_id
 	C.test_fail_after_unlock_receipt = FALSE
 	C.test_fail_unlock_ack = FALSE
 	C.unlock_recovery_required = FALSE

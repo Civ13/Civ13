@@ -76,8 +76,17 @@
 	var/tmp/test_fail_delivery_ack = FALSE
 	var/tmp/list/test_key_rolls
 	var/tmp/unlock_recovery_required = FALSE
+	var/tmp/datum/extraction_account_store/keyed_journal
 	var/tmp/test_fail_after_unlock_receipt = FALSE
 	var/tmp/test_fail_unlock_ack = FALSE
+	proc/journal_store(obj/map_metadata/extraction_survival/M)
+		if (!keyed()) return M.loot_store
+		if (!(M.ID in list(MAP_EXTRACTION_SURVIVAL, MAP_EXTRACTION_CITY, MAP_EXTRACTION_MALL))) return null
+		var/root = "[M.loot_store.root]maps/[ckey(M.ID)]/"
+		if (!keyed_journal || keyed_journal.root != root)
+			keyed_journal = new
+			keyed_journal.root = root
+		return keyed_journal
 	proc/keyed()
 		return istype(src, /obj/effect/extraction_loot_marker/keyed)
 	proc/key_binding_valid(obj/map_metadata/extraction_survival/M)
@@ -94,7 +103,9 @@
 		return path && islist(R) && R["map"] == M.ID && R["container"] == container_id && R["epoch"] == M.loot_epoch && istext(R["owner"]) && length(R["owner"]) && istext(R["key_id"]) && length(R["key_id"]) && R["key_type"] == "[path]" && isnum(R["before"]) && round(R["before"]) == R["before"] && R["before"] >= 1 && R["before"] <= initial(prototype.max_uses) && R["after"] == R["before"] - 1
 	proc/load_container(obj/map_metadata/extraction_survival/M)
 		if (locked || container_id < 1 || container_id > 64 || round(container_id) != container_id || !key_binding_valid(M) || !M.ensure_loot_epoch()) return FALSE
-		if (!profile) profile = M.loot_store.load_profile("container[container_id]")
+		var/datum/extraction_account_store/store = journal_store(M)
+		if (!store) return FALSE
+		if (!profile) profile = store.load_profile("container[container_id]")
 		if (!profile) return FALSE
 		if (profile["loot_state"] == "pending" || profile["unlock_state"] == "pending")
 			unlock_recovery_required = profile["unlock_state"] == "pending"
@@ -138,7 +149,9 @@
 			if (success)
 				var/list/ack = json_decode(json_encode(profile))
 				ack["unlock_state"] = "unlocked"
-				if (test_fail_unlock_ack) M.loot_store.test_fail_at = "intent"
+				if (test_fail_unlock_ack)
+					var/datum/extraction_account_store/store = journal_store(M)
+					store.test_fail_at = "intent"
 				success = commit_container(M, ack)
 		else success = FALSE
 		if (!success)
@@ -166,7 +179,8 @@
 		plan += list(list("type" = "[catalog[choice + 1]]", "rarity" = "rare", "quantity" = 1))
 		return TRUE
 	proc/commit_container(obj/map_metadata/extraction_survival/M, list/candidate)
-		if (locked || !M.loot_store.commit_profile("container[container_id]", candidate))
+		var/datum/extraction_account_store/store = journal_store(M)
+		if (locked || !store || !store.commit_profile("container[container_id]", candidate))
 			locked = TRUE
 			return FALSE
 		profile = candidate
@@ -232,7 +246,9 @@
 		candidate = json_decode(json_encode(profile))
 		candidate["loot_state"] = "ready"
 		candidate["pending_item"] = null
-		if (test_fail_delivery_ack) M.loot_store.test_fail_at = "intent"
+		if (test_fail_delivery_ack)
+			var/datum/extraction_account_store/store = journal_store(M)
+			store.test_fail_at = "intent"
 		if (!commit_container(M, candidate))
 			qdel(I)
 			return null

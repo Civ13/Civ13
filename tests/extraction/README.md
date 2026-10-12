@@ -526,3 +526,12 @@ persistence, factory-construction negative controls and connected gameplay
 acceptance must be established before readiness; codec output alone proves
 neither extraction settlement nor gameplay. Cache placements are owned by the
 stacked map PR and are not included by this shared source change.
+
+Keyed caches retain the existing `container61`/`container62` account-style
+recovery files under a map namespace:
+`data/extraction_loot/maps/<canonical-map-id>/container<ID>/`. Pending receipts
+in one map cannot block the same numbered cache in another. Ordinary container
+paths remain unchanged. There is no automatic migration, replay or refund of
+older ambiguous receipts; preserve those files for explicit reconciliation.
+The native namespace probe interrupts one map's journal and checks a separate
+map's same-number journal can commit; it remains unrun under the native hold.
