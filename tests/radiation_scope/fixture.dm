@@ -82,14 +82,17 @@ var/global/blasts = 0
 /proc/shake_camera(mob/M, duration, strength)
     return
 /proc/explosion(turf/T, devastation, heavy, light, flash)
+    check(isturf(T), "epicenter normalized to turf")
     blasts++
 /proc/check(condition, message)
     if (!condition)
         world.log << "FAIL [message]"
+        world.log << "DONE radiation scope"
         del(world)
 /proc/close_to(value, expected)
     return abs(value - expected) < 0.001
 /world
+    fps = 10
     maxx = 140
     maxy = 4
     maxz = 2
@@ -147,4 +150,5 @@ var/global/blasts = 0
     check(close_to(pulse_near.radiation, 3), "existing pulse duration applies exactly three doses")
     check(pulse_far.radiation == 0 && pulse_other.radiation == 0 && pulse_immune.radiation == 0, "pulse radius, z and immunity unchanged")
     world.log << "PASS radiation scope"
+    world.log << "DONE radiation scope"
     del(world)

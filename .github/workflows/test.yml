@@ -157,6 +157,20 @@ jobs:
           python3 scripts/check-recipes.py --camera-prototype-negative-control
         shell: bash
 
+      - name: Verify direct nuclear fallout scope and controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/radiation_scope')
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/radiation_scope/run.py --byond-bin "$PWD/BYOND/byond/bin" --output-dir "$RUNNER_TEMP/radiation-scope/positive"
+          python3 tests/radiation_scope/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control cross-z --output-dir "$RUNNER_TEMP/radiation-scope/cross-z"
+          python3 tests/radiation_scope/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control normalization --output-dir "$RUNNER_TEMP/radiation-scope/normalization"
+      - name: Retain nuclear fallout scope evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/radiation_scope'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: radiation-scope
+          path: ${{ runner.temp }}/radiation-scope/
+          if-no-files-found: error
       - name: Upload recipe validation report
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/crafting'))
         uses: actions/upload-artifact@v4

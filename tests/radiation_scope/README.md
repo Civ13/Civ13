@@ -15,7 +15,11 @@ once per event. The global +310 remains intentional and is explicitly checked.
 Run `--negative-control cross-z` and `--negative-control normalization` to verify
 that generated source copies restoring those defects fail fixture assertions.
 They never modify production files. The runner requires clean pinned compilation
-and rejects runtime errors; expected failure is required for negative controls.
+and rejects runtime errors in every mode. Each negative control requires its
+specific single assertion failure and a separate completion marker.
+`--output-dir <fresh-path>` retains generated source, source hashes, exact HEAD,
+compile/runtime logs and successful result metadata outside runtime storage.
+Without that option a fresh persistent temporary evidence directory is used.
 
 This checks direct fallout scope, not blast damage, graphical acceptance,
 full-server performance or production survival. The real explosion engine can

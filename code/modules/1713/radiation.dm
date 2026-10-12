@@ -282,10 +282,10 @@
 						H.Weaken(3)
 						if (H.HUDtech.Find("flash"))
 							flick("e_flash", H.HUDtech["flash"])
-		if (istype(T, /obj/structure/window))
+			if (istype(T, /obj/structure/window))
 				var/obj/structure/window/W = T
-			if (W.z == event_z)
-				W.shatter()
+				if (W.z == event_z)
+					W.shatter()
 			else if (istype(T, /obj))
 				if (prob(20) && T.density && T.z == event_z)
 					T.ex_act(1.0)
