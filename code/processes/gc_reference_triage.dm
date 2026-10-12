@@ -5,7 +5,7 @@
 
 /process/garbage/proc/inspect_queue_reference(ref_id, owner_ref, field)
 	var/list/result = list("status" = "not_pending", "matches" = 0, "slots" = 0, "truncated" = FALSE)
-	if (!istext(ref_id) || !istext(owner_ref) || !istext(field) || field == "vars")
+	if (!istext(ref_id) || !istext(owner_ref) || !istext(field) || length(ref_id) > 64 || length(owner_ref) > 64 || length(field) > 128 || field == "vars")
 		return result
 	if (!(ref_id in destroyed))
 		return result
@@ -17,6 +17,7 @@
 		result["status"] = "invalid_owner_field"
 		return result
 	result["status"] = "inspected"
+	result["slots"] = 1
 	var/value = owner.vars[field]
 	if (value == target)
 		result["matches"] = 1

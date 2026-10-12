@@ -8,6 +8,7 @@ import subprocess
 import tempfile
 import time
 import ctypes
+import re
 from ctypes import wintypes
 
 
@@ -17,7 +18,7 @@ def main():
     p.add_argument('--case', choices=('callback', 'turf', 'lifecycle', 'pool', 'benchmark', 'memory', 'collector', 'triage'))
     p.add_argument('--output', type=Path)
     p.add_argument('--baseline-scheduler', action='store_true')
-    p.add_argument('--negative-control', choices=('cancel-retention','deletion-state','pool-cleanup','pool-cap','pool-global','pool-idle','hard-reference','startup','ref-identity','hard-now','let-live','gc-soft-budget','gc-hard-budget'))
+    p.add_argument('--negative-control', choices=('cancel-retention','deletion-state','pool-cleanup','pool-cap','pool-global','pool-idle','hard-reference','startup','ref-identity','hard-now','let-live','gc-soft-budget','gc-hard-budget','triage-slots','triage-identity','triage-lists','triage-metadata'))
     a = p.parse_args()
     root = Path(__file__).resolve().parents[2]
     out = a.output or Path(tempfile.mkdtemp(prefix='civ13-memory-ownership-'))
@@ -29,7 +30,7 @@ def main():
     (out/'dirty.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root))
     source = (root/'tests/memory_ownership/probe.dm').read_text().replace('../../code/', root.as_posix()+'/code/')
     source += '\n' + (root/'tests/memory_ownership/collector.dm').read_text()
-    source += '\n' + (root/'tests/memory_ownership/triage.dm').read_text()
+    source += '\n' + (root/'tests/gc_triage/probe.dm').read_text()
     if a.baseline_scheduler:
         if a.negative_control:
             raise RuntimeError('Do not combine historical baseline with mutation controls')
@@ -41,6 +42,10 @@ def main():
     expected = None
     if a.negative_control:
         controls = {
+            'triage-slots': ('code/processes/gc_reference_triage.dm', '#define GC_TRIAGE_REFERENCE_SLOTS 256', '#define GC_TRIAGE_REFERENCE_SLOTS 100000', 'targeted inspection stops at its slot cap'),
+            'triage-identity': ('code/processes/gc_reference_triage.dm', 'target.gcDestroyed != destroyed[ref_id]', 'FALSE', 'targeted inspection rejects mismatched queue identity'),
+            'triage-lists': ('code/processes/gc_reference_triage.dm', '#define GC_TRIAGE_REFERENCE_LISTS 32', '#define GC_TRIAGE_REFERENCE_LISTS 100000', 'targeted inspection stops at its list cap'),
+            'triage-metadata': ('code/processes/gc_outcome_triage.dm', '#define GC_TRIAGE_PENDING_LIMIT 1024', '#define GC_TRIAGE_PENDING_LIMIT 100000', 'pending outcome metadata stops at exact cap'),
             'gc-soft-budget': ('code/processes/garbage.dm', '\t\tvar/refID = destroyed[1]', '\t\tif (remaining_force_dels <= 0)\n\t\t\tbreak\n\t\tvar/refID = destroyed[1]', 'soft records drain after forced budget without exceeding candidate cap'),
             'gc-hard-budget': ('code/processes/garbage.dm', 'if (remaining_force_dels <= 0)', 'if (remaining_force_dels <= -100000)', 'next forced target waits after the hard-delete cap'),
             'cancel-retention': ('code/processes/callproc.dm', 'C.args = null', '// C.args deliberately retained', 'cancel clears helper target and arguments'),
@@ -57,6 +62,9 @@ def main():
         }
         relative, before, after, expected = controls[a.negative_control]
         body = (root/relative).read_text()
+        # A generated copy must still resolve includes beside its production source.
+        body = re.sub(r'#include "([^"/\\]+\.dm)"',
+                      lambda m: '#include "' + (root/relative).parent.joinpath(m[1]).as_posix() + '"', body)
         if before not in body:
             raise RuntimeError('Negative control anchor missing')
         altered = out/'negative.dm'
