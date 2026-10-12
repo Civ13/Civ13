@@ -14,7 +14,7 @@ from ctypes import wintypes
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--byond-bin', type=Path, required=True)
-    p.add_argument('--case', choices=('callback', 'turf', 'lifecycle', 'pool', 'benchmark', 'memory', 'collector'))
+    p.add_argument('--case', choices=('callback', 'turf', 'lifecycle', 'pool', 'benchmark', 'memory', 'collector', 'triage'))
     p.add_argument('--output', type=Path)
     p.add_argument('--baseline-scheduler', action='store_true')
     p.add_argument('--negative-control', choices=('cancel-retention','deletion-state','pool-cleanup','pool-cap','pool-global','pool-idle','hard-reference','startup','ref-identity','hard-now','let-live','gc-soft-budget','gc-hard-budget'))
@@ -29,6 +29,7 @@ def main():
     (out/'dirty.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root))
     source = (root/'tests/memory_ownership/probe.dm').read_text().replace('../../code/', root.as_posix()+'/code/')
     source += '\n' + (root/'tests/memory_ownership/collector.dm').read_text()
+    source += '\n' + (root/'tests/memory_ownership/triage.dm').read_text()
     if a.baseline_scheduler:
         if a.negative_control:
             raise RuntimeError('Do not combine historical baseline with mutation controls')
@@ -78,7 +79,7 @@ def main():
     params = []
     if a.case:
         params.append('case='+a.case)
-    if a.case not in ('callback', 'turf', 'benchmark', 'memory', 'collector'):
+    if a.case not in ('callback', 'turf', 'benchmark', 'memory', 'collector', 'triage'):
         params.append('policy_tests=1')
     if params:
         command += ['-params', '&'.join(params)]
