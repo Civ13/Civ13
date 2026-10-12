@@ -118,7 +118,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		if (!istype(H) || !session || session.body != H || H.client?.ckey != session.owner || session.transitioning || session.profile["state"] != "home" || !Adjacent(H)) return
 		var/obj/map_metadata/extraction_survival/M = map
 		if (!istype(M)) return
-		var/choice = WWinput(H, "Carry your loadout to deploy. Insured deployment costs one workshop part per reusable equipment component, paid from parts left at home. Ammunition never returns. [M.round_briefing()] Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts. A level-two garage car costs 25 parts and has no fuel. Supplies exchange parts for game credits and sell crafting materials, gear and fuel.", "Private safe house", "Cancel", list("Deploy", "Deploy car", "Raid group", "Deploy as Scav", "Insure and deploy", "Inspect stash", "Claim insurance mail", "Visit hub", "Upgrade", "Buy car", "Supplies", "Link Discord", "Save stash", "Cancel"))
+		var/choice = WWinput(H, "Carry your loadout to deploy. Insured deployment costs one workshop part per reusable equipment component, paid from parts left at home. Ammunition never returns. [M.round_briefing()] Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts. A level-two garage car costs 25 parts and has no fuel. Supplies exchange parts for game credits and sell crafting materials, gear and fuel.", "Private safe house", "Cancel", list("Deploy", "Deploy car", "Raid group", "Deploy as Scav", "Insure and deploy", "Inspect stash", "Insurance mail", "Visit hub", "Upgrade", "Buy car", "Supplies", "Link Discord", "Save stash", "Cancel"))
 		if (session.body != H || !Adjacent(H) || session.transitioning) return
 		switch (choice)
 			if ("Deploy") M.deploy(H)
@@ -126,7 +126,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 			if ("Raid group") M.manage_party(H)
 			if ("Deploy as Scav") M.deploy(H, "Scav")
 			if ("Insure and deploy") M.deploy(H, "PMC", TRUE)
-			if ("Claim insurance mail") M.claim_mail(H)
+			if ("Insurance mail") M.manage_insurance_mail(H)
 			if ("Inspect stash") M.inspect_home_stash(H)
 			if ("Save stash") M.save_home(session)
 			if ("Upgrade") M.upgrade_house(session)

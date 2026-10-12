@@ -460,16 +460,16 @@
 	equipment_assert(sheltered_reopen && sheltered_reopen.profile["stash"].len == 4, "sheltered participant retains complete checkpoint across closing")
 	sheltered_reopen.close()
 	var/datum/extraction_session/reopened = M.accounts.open("roundowner")
-	equipment_assert(reopened && reopened.profile["insurance_mailbox"].len == 1, "closed round credits one returned graph from actual lost gear")
+	equipment_assert(reopened && equipment_mail_entries(reopened.service, reopened.owner).len == 1, "closed round credits one returned graph from actual lost gear")
 	var/datum/extraction_session/recipient = M.accounts.open("pool1")
 	var/stolen_count = 0
 	for (var/list/stash_entry in recipient.profile["stash"])
 		if (stash_entry["id"] == stolen_id) stolen_count++
-	for (var/list/mail_entry in reopened.profile["insurance_mailbox"])
+	for (var/list/mail_entry in equipment_mail_entries(reopened.service, reopened.owner))
 		equipment_assert(mail_entry["id"] != stolen_id, "successfully extracted stolen gear cannot return to original insured owner")
 	equipment_assert(stolen_count == 1, "disk reopen retains one successfully stolen stable identity after round reconciliation")
 	recipient.close()
-	var/list/entry = reopened.profile["insurance_mailbox"][1]
+	var/list/entry = equipment_mail_entries(reopened.service, reopened.owner)[1]
 	var/obj/item/weapon/gun/projectile/pistol/m9beretta/returned = M.codec.decode(entry["equipment"], locate(3,3,1))
 	equipment_assert(returned && returned.extraction_item_id == id && returned.health == 54 && (!returned.ammo_magazine || !returned.ammo_magazine.stored_ammo.len), "round consumer preserves retirement condition and identity while excluding ammunition")
 	qdel(returned)
@@ -494,7 +494,7 @@
 	next.accounts.store.root = M.accounts.store.root
 	next.test_owners[H] = "roundowner"
 	equipment_assert(next.admit(H), "eligible return reopens after another full district")
-	equipment_assert(next.claim_mail(H) && !H.extraction_session.profile["insurance_mailbox"].len, "house consumer commits mailbox debit before materializing actual returned gun")
+	equipment_assert(next.claim_mail(H) && !equipment_mail_entries(H.extraction_session.service, H.extraction_session.owner).len, "house consumer commits mailbox debit before materializing actual returned gun")
 	var/found = 0
 	for (var/obj/item/I in next.home_roots(H.extraction_session))
 		if (I.extraction_item_id == id) found++

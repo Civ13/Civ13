@@ -23,7 +23,7 @@
 		if (request[i] != fields[i]) return null
 	if (request["protocol"] != "civ13.safehouse.v1" || !extraction_ipc_identifier(request["request_id"]) || !extraction_ipc_identifier(request["discord_id"], TRUE, 22)) return null
 	var/action = request["action"]
-	if (!(action in list("link.challenge", "link.complete", "stash.inspect", "stash.detail", "room.inspect", "room.quote", "room.manage", "trade.quote", "trade.confirm", "trade.status", "market.browse", "market.list", "market.buy", "market.cancel"))) return null
+	if (!(action in list("link.challenge", "link.complete", "stash.inspect", "stash.detail", "room.inspect", "room.quote", "room.manage", "insurance.inspect", "trade.quote", "trade.confirm", "trade.status", "market.browse", "market.list", "market.buy", "market.cancel"))) return null
 	var/revision = request["expected_account_revision"]
 	if (!isnull(revision) && (!isnum(revision) || revision < 0 || revision > 1000000 || round(revision) != revision)) return null
 	if (isnull(revision) && (action in list("trade.quote", "trade.confirm", "market.list", "market.buy", "market.cancel", "room.quote", "room.manage"))) return null
@@ -36,6 +36,7 @@
 		if ("stash.inspect", "room.inspect") payload_fields = list("page")
 		if ("stash.detail") payload_fields = list("item_id", "page")
 		if ("market.browse") payload_fields = list("page")
+		if ("insurance.inspect") payload_fields = list("cursor")
 		if ("room.quote") payload_fields = list("operation", "item_ids")
 		if ("room.manage", "trade.confirm", "market.list", "market.buy", "market.cancel") payload_fields = list("confirmation_token")
 		if ("trade.quote")
@@ -48,7 +49,14 @@
 	for (var/i = 1, i <= length(payload_fields), i++)
 		var/field = payload_fields[i]
 		if (!(field in payload)) return null
-		if (field == "page")
+		if (field == "cursor")
+			var/value = payload[field]
+			if (!isnull(value))
+				if (!istext(value) || !length(value) || length(value) > 256) return null
+				for (var/j = 1, j <= length(value), j++)
+					var/n = text2ascii(value, j)
+					if (n < 32 || n > 126) return null
+		else if (field == "page")
 			var/page_limit = action == "stash.detail" ? 31 : (action == "market.browse" ? 15 : 7)
 			if (!isnum(payload[field]) || payload[field] < 0 || payload[field] > page_limit || round(payload[field]) != payload[field]) return null
 		else if (field == "item_id")

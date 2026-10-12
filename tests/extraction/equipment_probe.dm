@@ -310,11 +310,12 @@ var/equipment_completed = FALSE
 	equipment_assert(!inventory.build("industrial1") && !S.insurance_busy, "unresolved nonparticipant journal prevents insurance inference and releases read gate")
 
 /proc/equipment_insurance_returns_probe(datum/extraction_equipment_codec/C)
+	equipment_insurance_shards_probe(C)
 	equipment_insurance_generation_probe(C)
 	equipment_paid_insurance_probe(C)
 	equipment_partial_insurance_probe(C)
 	equipment_insurance_capacity_probe(C)
-	var/list/cuts = list("before_prepare", "after_prepare", "retire1", "retirement_intent", "retirement_snapshot", "after_retirement", "apply1", "round_intent", "round_snapshot", "finalize_intent", "finalize_snapshot")
+	var/list/cuts = list("before_prepare", "after_prepare", "retire1", "retirement_intent", "retirement_snapshot", "after_retirement", "mail_intent", "mail_snapshot", "apply1", "round_intent", "round_snapshot", "finalize_intent", "finalize_snapshot")
 	for (var/i in 1 to cuts.len)
 		var/cut = cuts[i]
 		var/datum/extraction_service/S = new
@@ -349,8 +350,8 @@ var/equipment_completed = FALSE
 			equipment_assert(returns.ready(), "[cut] native journal reopen finishes only retired account projections")
 		equipment_assert(!G || !G.loc, "physical source retired before returned ownership is exposed")
 		A = S.open("returnowner")
-		equipment_assert(A && !A.profile["stash"].len && !A.profile["insurance_claims"].len && A.profile["insurance_mailbox"].len == 1, "[cut] claim resolution and bounded mailbox credit commit together")
-		var/list/entry = A.profile["insurance_mailbox"][1]
+		equipment_assert(A && !A.profile["stash"].len && !A.profile["insurance_claims"].len && equipment_mail_entries(A.service, A.owner).len == 1, "[cut] claim resolution and bounded mailbox credit commit together")
+		var/list/entry = equipment_mail_entries(A.service, A.owner)[1]
 		var/obj/item/weapon/gun/projectile/pistol/m9beretta/restored = C.decode(entry["equipment"], locate(7,5,1))
 		equipment_assert(restored && restored.extraction_item_id == id && restored.health == 83 && restored.ammo_magazine && !restored.ammo_magazine.stored_ammo.len, "returned actual gun keeps lost condition and identity without insured ammunition")
 		qdel(restored)
@@ -358,7 +359,7 @@ var/equipment_completed = FALSE
 		A.close()
 		equipment_assert(returns.prepare("additionalfullround", list()), "a separate full completed round advances durable eligibility")
 		A = S.open("returnowner")
-		equipment_assert(A.claim_insurance_mail(list(id)) && !A.profile["insurance_mailbox"].len && A.profile["stash"].len == 1, "claim moves one mailbox graph into persisted stash")
+		equipment_assert(A.claim_insurance_mail(list(id)) && !equipment_mail_entries(A.service, A.owner).len && A.profile["stash"].len == 1, "claim moves one mailbox graph into persisted stash")
 		equipment_assert(!A.claim_insurance_mail(list(id)), "mailbox claim replay cannot produce another stored copy")
 		A.close()
 		equipment_assert(!returns.prepare("returnround", list()), "resolved round cannot replay payout")
@@ -406,12 +407,6 @@ var/equipment_completed = FALSE
 	A.close()
 
 	var/datum/extraction_insurance_returns/returns = new(S, C)
-	equipment_assert(!returns.prepare("capacityround", list(G)) && G.loc && returns.ready(), "full mailbox rejects entire plan before physical retirement")
-	A = S.open("capacityowner")
-	P = A.copy_profile()
-	P["insurance_mailbox"].Cut(64, 65)
-	equipment_assert(A.commit(P), "capacity fixture opens one mailbox slot")
-	A.close()
 	G.extraction_insurance_token = md5("forgedphysicaltoken")
 	equipment_assert(!returns.prepare("capacityround", list(G)) && G.loc && returns.ready(), "forged physical token cannot silently void or redirect original claim")
 	G.extraction_insurance_token = token
@@ -423,7 +418,7 @@ var/equipment_completed = FALSE
 	G.health++
 	equipment_assert(returns.retire() && (!G || !G.loc), "exact restored fixture condition permits original retirement plan")
 	A = S.open("capacityowner")
-	equipment_assert(A && A.profile["insurance_mailbox"].len == 64, "one freed slot receives exactly one returned gun")
+	equipment_assert(A && equipment_mail_entries(A.service, A.owner).len == 65 && !A.profile["insurance_mailbox"].len, "legacy migration plus surviving gun retains 65 returns without a mailbox cap")
 	P = A.copy_profile()
 	P["stash"] = list()
 	for (var/i in 1 to 16)
@@ -433,20 +428,27 @@ var/equipment_completed = FALSE
 		P["stash"] += list(list("id" = stash_id, "equipment" = graph))
 	equipment_assert(A.commit(P), "capacity fixture fills home stash")
 	var/revision = A.profile["revision"]
-	equipment_assert(!A.claim_insurance_mail(list(id)) && A.profile["revision"] == revision && A.profile["insurance_mailbox"].len == 64, "full stash withholds delivery without losing mailbox graph or advancing revision")
+	equipment_assert(!A.claim_insurance_mail(list(id)) && A.profile["revision"] == revision && equipment_mail_entries(A.service, A.owner).len == 65, "full stash withholds delivery without losing mailbox graph or advancing revision")
 	P = A.copy_profile()
 	P["stash"].Cut(1,2)
 	equipment_assert(A.commit(P), "legacy fixture frees exactly one finite stash slot")
-	var/list/legacy = A.profile["insurance_mailbox"][1]
-	var/legacy_id = legacy["id"]
-	equipment_assert(!A.claim_insurance_mail(list(legacy_id)) && A.profile["insurance_mailbox"][1]["eligible_generation"] == returns.profile["completed_generation"] + 1, "legacy unstamped return receives conservative persisted future eligibility")
+	var/legacy_id = md5("latelegacyreturn")
+	var/list/legacy_graph = json_decode(json_encode(template))
+	legacy_graph["nodes"][1]["id"] = legacy_id
+	P = A.copy_profile()
+	P["insurance_mailbox"] = list(list("id" = legacy_id, "equipment" = legacy_graph))
+	equipment_assert(A.commit(P), "fixture adds a historical unstamped return after current completion")
+	equipment_assert(!A.claim_insurance_mail(list(legacy_id)), "legacy unstamped return receives conservative persisted future eligibility")
+	var/list/legacy_index = returns.mail.identity(legacy_id)
+	var/list/legacy_page = returns.mail.page(A.owner, legacy_index["sequence"])
+	equipment_assert(legacy_page["entries"][legacy_page["entries"].len]["eligible_generation"] == returns.profile["completed_generation"] + 1, "migration persists conservative eligibility in shard")
 	A.close()
 	A = S.open("capacityowner")
 	equipment_assert(!A.claim_insurance_mail(list(legacy_id)), "legacy reconnect preserves pending generation rather than resetting or unlocking it")
 	A.close()
 	equipment_assert(returns.prepare("legacyadditionalround", list()), "legacy return waits for a separate full completed round")
 	A = S.open("capacityowner")
-	equipment_assert(A.claim_insurance_mail(list(legacy_id)) && A.profile["insurance_mailbox"].len == 63, "eligible legacy graph moves once into finite available stash space")
+	equipment_assert(A.claim_insurance_mail(list(legacy_id)) && equipment_mail_entries(A.service, A.owner).len == 65, "eligible legacy graph moves once into finite available stash space")
 	A.close()
 
 /proc/equipment_paid_insurance_probe(datum/extraction_equipment_codec/C)
@@ -483,7 +485,7 @@ var/equipment_completed = FALSE
 	A.close()
 	equipment_assert(R.prepare("paidround", list(G)), "paid lost gear retires through native return consumer")
 	A = S.open("paidowner")
-	equipment_assert(A && A.profile["stash"].len == 1 && A.profile["insurance_mailbox"].len == 1, "paid claim returns gear once without refunding consumed premium")
+	equipment_assert(A && A.profile["stash"].len == 1 && equipment_mail_entries(A.service, A.owner).len == 1, "paid claim returns gear once without refunding consumed premium")
 	A.close()
 
 /proc/equipment_partial_insurance_probe(datum/extraction_equipment_codec/C)
@@ -513,12 +515,12 @@ var/equipment_completed = FALSE
 	var/datum/extraction_insurance_returns/R = new(S, C)
 	equipment_assert(R.prepare("partialround", list(G)), "unrecovered detached insured child retires independently of recovered parent")
 	A = S.open("nestedowner")
-	equipment_assert(A.profile["insurance_mailbox"].len == 1 && A.profile["insurance_mailbox"][1]["id"] == gun_id, "partial return credits actual gun without recreating recovered parent")
-	var/list/entry = A.profile["insurance_mailbox"][1]
+	equipment_assert(equipment_mail_entries(A.service, A.owner).len == 1 && equipment_mail_entries(A.service, A.owner)[1]["id"] == gun_id, "partial return credits actual gun without recreating recovered parent")
+	var/list/entry = equipment_mail_entries(A.service, A.owner)[1]
 	G = C.decode(entry["equipment"], locate(3,6,1))
 	equipment_assert(G && G.extraction_item_id == gun_id && G.health == 63 && istype(G.loc, /turf), "partial returned child retains current condition and independent root placement")
 	qdel(G)
 	A.close()
 	B = S.open("bagrecoverer")
-	equipment_assert(B.profile["stash"].len == 1 && B.profile["stash"][1]["id"] == bag_id && !B.profile["insurance_mailbox"].len, "recovered parent ownership remains unchanged with no duplicate insurance credit")
+	equipment_assert(B.profile["stash"].len == 1 && B.profile["stash"][1]["id"] == bag_id && !equipment_mail_entries(B.service, B.owner).len, "recovered parent ownership remains unchanged with no duplicate insurance credit")
 	B.close()

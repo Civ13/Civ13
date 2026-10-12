@@ -36,7 +36,7 @@
 		for (var/name in files)
 			if (copytext(name, length(name), 0) != "/") continue
 			var/owner = copytext(name, 1, length(name))
-			if (owner == "_settlement" || owner == "_insurance" || owner == "_bot") continue
+			if (owner == "_settlement" || owner == "_insurance" || owner == "_bot" || owner == "_mail") continue
 			if (!revisions[owner]) return FALSE
 			count++
 			var/list/P = service.store.load_profile(owner)
@@ -54,9 +54,11 @@
 		for (var/name in files)
 			if (copytext(name, length(name), 0) != "/") continue
 			var/owner = copytext(name, 1, length(name))
-			if (owner == "_settlement" || owner == "_insurance" || owner == "_bot") continue
+			if (owner == "_settlement" || owner == "_insurance" || owner == "_bot" || owner == "_mail") continue
 			if (!service.store.valid_owner(owner)) return fail("Unknown account directory")
 			accounts += owner
+			var/datum/extraction_mail_store/mail = service.mail_service()
+			if (!mail.ready_owner(owner)) return fail("Unresolved insurance mail transaction")
 			var/list/P = service.store.load_profile(owner)
 			if (!P || !service.insurance_profile_valid(P)) return fail("Unresolved account ownership records")
 			revisions[owner] = list("revision" = P["revision"], "digest" = md5(json_encode(P)))
@@ -84,6 +86,13 @@
 				if (!wanted_ids[id]) continue
 				if (current_owners[id]) return fail("Stored identity is held by multiple accounts")
 				current_owners[id] = owner
+		var/datum/extraction_mail_store/mail = service.mail_service()
+		for (var/id in wanted_ids)
+			var/list/stored = mail.identity(id)
+			if (!stored) return fail("Mail ownership index requires recovery")
+			if (stored["active"])
+				if (current_owners[id]) return fail("Stored identity is duplicated in mail")
+				current_owners[id] = stored["mail_owner"]
 		var/list/result = list()
 		var/list/unrecovered_ids = list()
 		for (var/token in claims)

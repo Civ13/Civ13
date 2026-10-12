@@ -24,7 +24,12 @@ def main():
     parser.add_argument('--economic-payment-negative-control', action='store_true')
     parser.add_argument('--room-payment-negative-control', action='store_true')
     parser.add_argument('--corpse-release-negative-control', action='store_true')
+    parser.add_argument('--insurance-fixture-output', type=Path)
     args = parser.parse_args()
+    if args.insurance_fixture_output and (args.probe != 'equipment' or args.insurance_fixture_output.exists()):
+        parser.error('Insurance fixture export requires equipment and a new output directory')
+    if args.insurance_fixture_output and any(value for key, value in vars(args).items() if key.endswith('negative_control')):
+        parser.error('Insurance fixture export requires unmodified production sources')
     if args.corpse_release_negative_control and (args.probe != 'mode' or any(value for key, value in vars(args).items() if key.endswith('negative_control') and key != 'corpse_release_negative_control')):
         parser.error('Corpse release control requires the mode probe without another mutation')
     if args.room_payment_negative_control and (args.probe != 'equipment' or args.economic_payment_negative_control):
@@ -53,7 +58,7 @@ def main():
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     if args.probe in ('equipment', 'mode', 'city', 'insurance', 'groups', 'vehicles'):
-        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control, args.room_payment_negative_control, args.corpse_release_negative_control)
+        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control, args.room_payment_negative_control, args.corpse_release_negative_control, args.insurance_fixture_output)
     with tempfile.TemporaryDirectory(prefix='civ13-extraction-') as temp:
         target = Path(temp)
         (target / 'tests/extraction').mkdir(parents=True)
@@ -63,7 +68,15 @@ def main():
         shutil.copy2(root / 'code/modules/1713/extraction/account_store.dm', target / 'code/modules/1713/extraction/account_store.dm')
         shutil.copy2(root / 'code/modules/1713/extraction/transactions.dm', target / 'code/modules/1713/extraction/transactions.dm')
         shutil.copy2(root / 'code/modules/1713/extraction/settlement.dm', target / 'code/modules/1713/extraction/settlement.dm')
-        (target / 'probe.dme').write_text(f'#include "tests/extraction/{probe_name}"\n', encoding='utf-8')
+        shutil.copy2(root / 'tests/extraction/journal_adapters.dm', target / 'tests/extraction/journal_adapters.dm')
+        shared_sources = ('ipc_crypto', 'ipc_wire', 'ipc_request', 'insurance_mail')
+        for name in shared_sources:
+            shutil.copy2(root / f'code/modules/1713/extraction/{name}.dm',
+                         target / f'code/modules/1713/extraction/{name}.dm')
+        includes = [f'#include "tests/extraction/{probe_name}"',
+                    '#include "tests/extraction/journal_adapters.dm"']
+        includes.extend(f'#include "code/modules/1713/extraction/{name}.dm"' for name in shared_sources)
+        (target / 'probe.dme').write_text('\n'.join(includes) + '\n', encoding='utf-8')
         built = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=target,
                                capture_output=True, text=True, timeout=60, creationflags=flags)
         print(built.stdout + built.stderr)
@@ -73,8 +86,14 @@ def main():
         phases = ('write', 'reload', 'recover') if args.probe == 'restart' else (('write', 'reload', 'replay') if args.probe == 'settlement' else ('store',))
         for phase in phases:
             (target / 'result.txt').unlink(missing_ok=True)
-            ran = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-params', f'phase={phase}', '-log', 'runtime.log'],
-                             cwd=target, capture_output=True, text=True, timeout=45, creationflags=flags)
+            try:
+                ran = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-params', f'phase={phase}', '-log', 'runtime.log'],
+                                     cwd=target, capture_output=True, text=True, timeout=45, creationflags=flags)
+            except subprocess.TimeoutExpired:
+                log_path = target / 'runtime.log'
+                if log_path.exists():
+                    print(log_path.read_text(errors='replace'))
+                raise
             result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
             log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''
             print(result)
@@ -83,7 +102,7 @@ def main():
                 raise RuntimeError('Account journal verification failed')
 
 
-def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False, room_payment_control=False, corpse_release_control=False):
+def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False, room_payment_control=False, corpse_release_control=False, insurance_fixture_output=None):
     prefix = '.extraction_' + uuid.uuid4().hex
     generated = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '.dmb', '.rsc')]
     try:
@@ -239,6 +258,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             source += '\n#include "tests/extraction/mode_probe.dm"\n#include "tests/extraction/hub_probe.dm"\n#include "tests/extraction/progression_probe.dm"\n#include "tests/extraction/vote_probe.dm"\n#include "tests/extraction/group_probe.dm"\n#include "tests/extraction/vehicle_probe.dm"\n#include "tests/extraction/loot_probe.dm"\n#include "tests/extraction/city_probe.dm"\n#include "maps/extraction/modern_city_extraction.dmm"\n'
         if probe in ('mode', 'city'):
             source += '\n#include "tests/extraction/native_market_probe.dm"\n'
+        source += '\n#include "tests/extraction/insurance_mail_probe.dm"\n'
         if probe == 'city':
             source += '\n#include "tests/extraction/city_zombie_probe.dm"\n'
         if probe == 'insurance':
@@ -272,7 +292,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 (target / 'result.txt').unlink(missing_ok=True)
                 try:
                     ran = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-params', f'phase={phase}', '-log', 'runtime.log'], cwd=target,
-                                         capture_output=True, text=True, timeout=120 if probe == 'mode' else 60, creationflags=flags)
+                                         capture_output=True, text=True, timeout=120 if probe in ('mode', 'equipment') else 60, creationflags=flags)
                 except subprocess.TimeoutExpired:
                     log_path = target / 'runtime.log'
                     print(log_path.read_text(errors='replace')[-12000:] if log_path.exists() else 'Runtime log missing at timeout')
@@ -350,6 +370,8 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 if ran.returncode or not result.startswith('PASS:') or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
                     print(log)
                     raise RuntimeError('Production equipment verification failed')
+            if insurance_fixture_output:
+                shutil.copytree(target / 'data/insurance_bot_fixture', insurance_fixture_output)
             if group_control:
                 raise RuntimeError('Group control was not detected')
             if vehicle_loss_control:

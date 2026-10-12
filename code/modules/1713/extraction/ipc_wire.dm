@@ -154,6 +154,18 @@
 	// Parsing request JSON, digest and account binding belong to the handler.
 	return extraction_ipc_base64_decode(body)
 
+// DM represents booleans as numbers. The insurance wire contract requires
+// JSON booleans, so convert only the validated projection's exact field tokens
+// before signing. Persisted native receipts keep their ordinary numeric values.
+/proc/extraction_ipc_reply_json(list/result)
+	var/body = json_encode(result)
+	if (result["action"] == "insurance.inspect" && result["status"] == "committed")
+		for (var/list/E in result["data"]["entries"])
+			if (!(E["found_in_raid"] in list(FALSE, TRUE))) return null
+		body = replacetext(body, "\"found_in_raid\":0", "\"found_in_raid\":false")
+		body = replacetext(body, "\"found_in_raid\":1", "\"found_in_raid\":true")
+	return body
+
 /proc/extraction_ipc_seal(list/bytes, key, now_text, direction = "reply")
 	if (!islist(bytes) || !length(bytes) || length(bytes) > 8192 || !istext(key) || length(key) < 32 || length(key) > 4096 || !(direction in list("request", "reply")) || !islist(extraction_ipc_time(now_text))) return null
 	var/body = extraction_ipc_base64_encode(bytes)

@@ -149,12 +149,13 @@
 			owners[part["owner"]] = TRUE
 			var/list/ids = service.store.recovery_ids(part["before"])
 			for (var/id in ids) claimed[id] = TRUE
+		if (!service.store.mail_ownership_clear(claimed)) return FALSE
 		var/list/files = flist(service.store.root)
 		if (files.len > 4096) return FALSE
 		for (var/name in files)
 			if (copytext(name, length(name), 0) != "/") continue
 			var/owner = copytext(name, 1, length(name))
-			if (owners[owner] || owner == "_settlement" || owner == "_insurance" || owner == "_bot") continue
+			if (owners[owner] || owner == "_settlement" || owner == "_insurance" || owner == "_bot" || owner == "_mail") continue
 			if (!service.store.valid_owner(owner)) return FALSE
 			var/list/P = service.store.load_profile(owner)
 			if (!P) return FALSE

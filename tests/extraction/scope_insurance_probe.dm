@@ -68,7 +68,7 @@
 		A = S.open("scopeowner")
 		var/guns = 0
 		var/scopes = 0
-		for (var/list/entry in A.profile["insurance_mailbox"])
+		for (var/list/entry in equipment_mail_entries(A.service, A.owner))
 			for (var/list/node in entry["equipment"]["nodes"])
 				equipment_assert(node["id"] != later_id, "new attachment cannot return through old weapon coverage")
 				if (node["id"] == gun_id) guns++

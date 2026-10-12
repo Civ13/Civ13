@@ -47,22 +47,26 @@
 			if (I.extraction_insurance_token) return TRUE
 			for (var/obj/item/child in I.contents) pending += child
 		return FALSE
-	proc/claim_mail(mob/living/human/H)
+	proc/claim_mail(mob/living/human/H, list/selected_ids)
 		if (!owned(H) || H.stat != CONSCIOUS || !H.Adjacent(H.extraction_session.house)) return FALSE
 		var/datum/extraction_session/S = H.extraction_session
 		if (!save_home(S)) return FALSE
 		if (!ensure_round() || !S.stamp_legacy_mail(returns.profile["completed_generation"])) return FALSE
-		var/list/mail = S.profile["insurance_mailbox"]
+		var/list/inspection = S.inspect_insurance_mail(null)
+		var/list/mail = inspection?["entries"]
 		var/free = min(16, S.capacity() - S.profile["stash"].len)
-		if (!islist(mail) || !mail.len || free < 1)
+		if (!islist(mail) || (!mail.len && !islist(selected_ids)) || free < 1)
 			to_chat(H, "No insurance mail can be delivered. Check your mailbox and free stash space.")
 			return FALSE
 		var/list/ids = list()
-		for (var/list/entry in mail)
-			if (ids.len >= free) break
-			if (returns.profile["completed_generation"] < entry["eligible_generation"]) continue
-			if (!codec.validate(entry["equipment"])) return FALSE
-			ids += entry["id"]
+		if (islist(selected_ids))
+			if (!selected_ids.len || selected_ids.len > free) return FALSE
+			ids = selected_ids.Copy()
+		else
+			for (var/list/entry in mail)
+				if (ids.len >= free) break
+				if (entry["state"] != "eligible") continue
+				ids += entry["item_id"]
 		if (!ids.len)
 			to_chat(H, "Insurance returns are pending another full completed round. Expiration: to be implemented.")
 			return FALSE
@@ -78,6 +82,45 @@
 				return FALSE
 			materialized += I
 		to_chat(H, "Delivered [claimed.len] returned equipment items to your private house.")
+		return TRUE
+	proc/manage_insurance_mail(mob/living/human/H)
+		if (!owned(H) || H.stat != CONSCIOUS || !H.Adjacent(H.extraction_session.house)) return FALSE
+		var/datum/extraction_session/S = H.extraction_session
+		if (!save_home(S) || !ensure_round()) return FALSE
+		var/cursor
+		for (var/interaction in 1 to 32)
+			if (!owned(H) || H.extraction_session != S || H.stat != CONSCIOUS || !H.Adjacent(S.house)) return FALSE
+			var/list/data = S.inspect_insurance_mail(cursor)
+			if (!data)
+				to_chat(H, "Insurance mail changed or requires recovery. Reopen the mailbox.")
+				return FALSE
+			var/list/options = list()
+			for (var/list/E in data["entries"])
+				var/label = "[E["name"]] - [E["state"]] - [E["item_id"]]"
+				options[label] = E
+			var/list/choices = options.Copy()
+			if (data["next_cursor"]) choices += "Next page"
+			choices += list("First page", "Cancel")
+			var/choice = WWinput(H, "Returns require one additional full completed round. Completed generation: [data["completed_generation"]]. Expiration: [data["expiration"]]. Select a return to inspect its condition and reclaim eligible equipment.", "Insurance mail", "Cancel", choices)
+			if (!owned(H) || H.extraction_session != S || H.stat != CONSCIOUS || !H.Adjacent(S.house)) return FALSE
+			if (choice == "Cancel" || isnull(choice)) return TRUE
+			if (choice == "Next page" && data["next_cursor"])
+				cursor = data["next_cursor"]
+				continue
+			if (choice == "First page")
+				cursor = null
+				continue
+			var/list/E = options[choice]
+			if (!E) return FALSE
+			var/list/condition = E["condition"]
+			var/list/actions = E["state"] == "eligible" ? list("Reclaim", "Back") : list("Back")
+			var/action = WWinput(H, "[E["name"]]. Item [E["item_id"]]. Condition [condition["health"]]/[condition["maxhealth"]]. Found in raid: [E["found_in_raid"] ? "yes" : "no"]. Returned generation [E["returned_generation"]]; eligible generation [E["eligible_generation"]]. Expiration: to be implemented.", "Returned equipment", "Back", actions)
+			if (!owned(H) || H.extraction_session != S || H.stat != CONSCIOUS || !H.Adjacent(S.house)) return FALSE
+			if (action != "Reclaim") continue
+			var/list/fresh = S.inspect_insurance_mail(cursor)
+			if (!fresh || fresh["mail_revision"] != data["mail_revision"] || fresh["account_revision"] != data["account_revision"]) return FALSE
+			if (!claim_mail(H, list(E["item_id"]))) return FALSE
+			cursor = null
 		return TRUE
 	proc/close_round()
 		if (hub_vote) hub_vote.cancel()

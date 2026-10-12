@@ -4,6 +4,7 @@
 	var/datum/extraction_equipment_codec/codec
 	var/datum/extraction_account_store/journal = new
 	var/datum/extraction_account_store/round_journal = new
+	var/datum/extraction_mail_store/mail
 	var/list/profile
 	var/tmp/list/retirement_refs
 	var/tmp/busy = FALSE
@@ -16,6 +17,7 @@
 		journal.root = "[S.store.root]_insurance/"
 		round_journal.root = "[journal.root]_rounds/"
 		S.insurance_gate = src
+		mail = S.mail_service(C)
 	proc/fail(message)
 		last_error = message
 		return FALSE
@@ -125,6 +127,7 @@
 					returned[owner] += list(list("id" = graph["nodes"][1]["id"], "equipment" = graph, "returned_generation" = returned_generation, "eligible_generation" = returned_generation + 1))
 			physical += list(list("id" = I.extraction_item_id, "digest" = md5(json_encode(record))))
 		var/list/parts = list()
+		var/list/mail_operations = list()
 		for (var/owner in inventory.revisions)
 			var/list/before = service.store.load_profile(owner)
 			var/list/after = json_decode(json_encode(before))
@@ -138,12 +141,21 @@
 			if (old_tokens)
 				for (var/token in old_tokens)
 					if (!index[token]) tokens += token
-			if ((!archive || archive.len == remaining.len) && (!old_tokens || old_tokens.len == tokens.len) && !returned[owner]) continue
+			if ((!archive || archive.len == remaining.len) && (!old_tokens || old_tokens.len == tokens.len) && !returned[owner] && !after["insurance_mailbox"]?.len) continue
 			after["insurance_claims"] = remaining
 			after["insurance_recovered"] = tokens
 			if (!after["insurance_mailbox"]) after["insurance_mailbox"] = list()
 			var/list/mailbox = after["insurance_mailbox"]
+			for (var/list/entry in mailbox)
+				if (isnull(entry["eligible_generation"]))
+					entry["returned_generation"] = profile["completed_generation"]
+					entry["eligible_generation"] = profile["completed_generation"] + 1
 			for (var/list/entry in returned[owner]) mailbox += list(entry)
+			if (mailbox.len)
+				var/list/operations = mail.plan_append(owner, mailbox)
+				if (!operations) return null
+				mail_operations.Add(operations)
+			after["insurance_mailbox"] = list()
 			if (!service.insurance_profile_valid(after)) return null
 			after["revision"]++
 			parts += list(list("owner" = owner, "before" = before, "after" = after))
@@ -154,9 +166,10 @@
 		candidate["round_generation"] = profile["completed_generation"] + (full_round ? 1 : 0)
 		candidate["parts"] = parts
 		candidate["physical"] = physical
+		candidate["mail_operations"] = mail_operations
 		var/list/marker_before = round_journal.load_profile(md5(round_id))
 		if (!marker_before || marker_before["resolved_round"]) return null
-		candidate["plan_digest"] = md5(json_encode(list(parts, physical, candidate["round_generation"], marker_before)))
+		candidate["plan_digest"] = md5(json_encode(list(parts, physical, candidate["round_generation"], marker_before, mail_operations)))
 		var/list/marker_after = json_decode(json_encode(marker_before))
 		marker_after["revision"]++
 		marker_after["resolved_round"] = round_id
@@ -216,7 +229,8 @@
 		expected["resolved_round"] = profile["round"]
 		expected["completed_generation"] = profile["round_generation"]
 		expected["plan_digest"] = profile["plan_digest"]
-		return json_encode(expected) == json_encode(marker["after"]) && islist(profile["parts"]) && profile["parts"].len <= 32 && islist(profile["physical"]) && profile["physical"].len <= 2048 && extraction_insurance_generation(profile["round_generation"]) && profile["round_generation"] >= profile["completed_generation"] && profile["round_generation"] <= profile["completed_generation"] + 1 && profile["plan_digest"] == md5(json_encode(list(profile["parts"], profile["physical"], profile["round_generation"], marker["before"])))
+		if (!islist(profile["mail_operations"]) || profile["mail_operations"].len > 4096) return FALSE
+		return json_encode(expected) == json_encode(marker["after"]) && islist(profile["parts"]) && profile["parts"].len <= 32 && islist(profile["physical"]) && profile["physical"].len <= 2048 && extraction_insurance_generation(profile["round_generation"]) && profile["round_generation"] >= profile["completed_generation"] && profile["round_generation"] <= profile["completed_generation"] + 1 && profile["plan_digest"] == md5(json_encode(list(profile["parts"], profile["physical"], profile["round_generation"], marker["before"], profile["mail_operations"])))
 	proc/final_profile()
 		var/list/final = json_decode(json_encode(profile))
 		final["phase"] = "complete"
@@ -226,12 +240,20 @@
 		final["round_marker"] = null
 		final["parts"] = null
 		final["physical"] = null
+		final["mail_operations"] = null
 		final["plan_digest"] = null
 		return final
 	proc/finish()
 		if (busy || service.sessions.len || profile["phase"] != "retired" || !valid_receipt()) return FALSE
 		busy = TRUE
 		if (!service.settlement) service.settlement = new(service)
+		if (test_fail_at == "mail_intent") mail.journal.test_fail_at = "intent"
+		if (test_fail_at == "mail_snapshot") mail.journal.test_fail_at = "snapshot"
+		var/mail_success = mail.apply(profile["mail_operations"])
+		mail.journal.test_fail_at = null
+		if (!mail_success)
+			busy = FALSE
+			return fail("Insurance mail shard projection requires recovery")
 		var/i = 0
 		for (var/list/part in profile["parts"])
 			i++
@@ -285,6 +307,3 @@
 		if (!service.settlement.apply_projection(journal, "world", profile, after)) return FALSE
 		profile = after
 		return TRUE
-
-/proc/extraction_insurance_generation(value)
-	return isnum(value) && value >= 0 && value <= 16777215 && round(value) == value

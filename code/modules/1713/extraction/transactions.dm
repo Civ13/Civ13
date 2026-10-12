@@ -10,6 +10,12 @@
 	var/tmp/insurance_busy = FALSE
 	var/tmp/insurance_blocked = FALSE
 	var/tmp/datum/insurance_gate
+	var/datum/extraction_mail_store/mail_store
+	proc/mail_service(datum/extraction_equipment_codec/C)
+		if (!mail_store)
+			if (!C) C = new
+			mail_store = new(src, C)
+		return mail_store
 	proc/settlement_ready()
 		if (insurance_busy || insurance_blocked) return FALSE
 		if (!group_journal) group_journal = new(src)
@@ -35,6 +41,10 @@
 		return null
 	if (sessions[owner] || sessions.len >= EXTRACTION_SESSION_LIMIT)
 		last_error = "Account already active or server session capacity reached"
+		return null
+	var/datum/extraction_mail_store/mail = mail_service()
+	if (!mail.ready_owner(owner))
+		last_error = "Insurance mail transaction requires recovery"
 		return null
 	var/list/P = store.load_profile(owner)
 	if (!P)
@@ -335,26 +345,15 @@
 	if (profile["stash"].len + selected_ids.len > capacity()) return null
 	var/datum/extraction_insurance_returns/gate = service.insurance_gate
 	if (!istype(gate) || !gate.ready() || !stamp_legacy_mail(gate.profile["completed_generation"])) return null
+	var/datum/extraction_mail_store/mail = service.mail_service()
+	var/list/plan = mail.plan_claim(owner, selected_ids, gate.profile["completed_generation"])
+	if (!plan) return null
+	var/list/claimed = plan["entries"]
 	var/list/candidate = copy_profile()
-	var/list/mailbox = candidate["insurance_mailbox"]
-	if (!islist(mailbox)) return null
-	var/list/wanted = list()
-	for (var/id in selected_ids)
-		if (!istext(id) || wanted[id]) return null
-		wanted[id] = TRUE
-	var/list/remaining = list()
-	var/list/claimed = list()
-	for (var/list/entry in mailbox)
-		if (wanted[entry["id"]])
-			if (!extraction_insurance_generation(entry["eligible_generation"]) || gate.profile["completed_generation"] < entry["eligible_generation"]) return null
-			claimed += list(entry)
-		else remaining += list(entry)
-	if (claimed.len != wanted.len) return null
 	var/list/stash = candidate["stash"]
 	for (var/list/entry in claimed) stash += list(entry)
 	if (!valid_entries(stash, capacity())) return null
-	candidate["insurance_mailbox"] = remaining
-	if (!commit(candidate)) return null
+	if (!mail.transact(src, plan["operations"], candidate)) return null
 	return claimed
 
 // Historical unstamped records conservatively wait another full completion.
@@ -362,13 +361,24 @@
 /datum/extraction_session/proc/stamp_legacy_mail(generation)
 	if (!extraction_insurance_generation(generation) || generation >= 16777215) return FALSE
 	var/list/candidate = copy_profile()
-	var/changed = FALSE
-	for (var/list/entry in candidate["insurance_mailbox"])
-		if (!isnull(entry["eligible_generation"])) continue
-		entry["returned_generation"] = generation
-		entry["eligible_generation"] = generation + 1
-		changed = TRUE
-	return !changed || commit(candidate)
+	var/list/entries = candidate["insurance_mailbox"]
+	if (!islist(entries) || !entries.len) return TRUE
+	for (var/list/entry in entries)
+		if (isnull(entry["eligible_generation"]))
+			entry["returned_generation"] = generation
+			entry["eligible_generation"] = generation + 1
+	var/datum/extraction_mail_store/mail = service.mail_service()
+	var/list/operations = mail.plan_append(owner, entries)
+	if (!operations) return FALSE
+	candidate["insurance_mailbox"] = list()
+	return mail.transact(src, operations, candidate)
+
+/datum/extraction_session/proc/inspect_insurance_mail(cursor)
+	if (!active() || profile["state"] != "home") return null
+	var/datum/extraction_insurance_returns/gate = service.insurance_gate
+	if (!istype(gate) || !gate.ready() || !stamp_legacy_mail(gate.profile["completed_generation"])) return null
+	var/datum/extraction_mail_store/mail = service.mail_service()
+	return mail.inspect(owner, profile["revision"], gate.profile["completed_generation"], cursor)
 
 /datum/extraction_session/proc/record_insurance_recovery(list/candidate, list/entries)
 	var/list/recovered = candidate["insurance_recovered"]

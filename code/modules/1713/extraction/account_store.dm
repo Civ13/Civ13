@@ -222,13 +222,14 @@
 /datum/extraction_account_store/proc/recovery_ownership_clear(owner, list/P)
 	var/list/wanted = recovery_ids(P)
 	if (!islist(wanted)) return fail("Recovery equipment identities require manual reconciliation")
+	if (!mail_ownership_clear(wanted)) return fail("Recovered identity remains in insurance mail")
 	if (!wanted.len) return TRUE
 	var/list/entries = flist(root)
 	if (entries.len > 4096) return fail("Offline ownership inventory exceeds 4096 entries")
 	for (var/name in entries)
 		if (copytext(name, length(name), 0) != "/") continue
 		var/other = copytext(name, 1, length(name))
-		if (other == "_settlement" || other == "_insurance" || other == "_bot") continue
+		if (other == "_settlement" || other == "_insurance" || other == "_bot" || other == "_mail") continue
 		if (other == owner) continue
 		if (!valid_owner(other)) return fail("Unknown directory in ownership inventory")
 		var/list/other_profile = load_profile(other)
@@ -237,6 +238,16 @@
 		if (!islist(ids)) return fail("Other account equipment identities require reconciliation")
 		for (var/id in wanted)
 			if (ids[id]) return fail("Recovered identity is already held by another account")
+	return TRUE
+
+/datum/extraction_account_store/proc/mail_ownership_clear(list/ids)
+	var/datum/extraction_account_store/mail = new
+	mail.root = "[root]_mail/"
+	if (!fexists("[mail.root]format.json")) return TRUE
+	if (file2text("[mail.root]format.json") != "{\"schema\":1}\n") return FALSE
+	for (var/id in ids)
+		var/list/index = mail.load_profile(md5(json_encode(list(null, "node", id))))
+		if (!index || (index["revision"] && index["item_id"] != id) || index["active"]) return FALSE
 	return TRUE
 
 // OFFLINE loot reconciliation after snapshot recovery. The uncertain item is
@@ -309,3 +320,5 @@
 	var/list/check = read_slot(owner, slot)
 	if (!check || check["pending"] || check["generation"] != generation) return fail("Loss settlement readback failed")
 	return check["profile"]
+/proc/extraction_insurance_generation(value)
+	return isnum(value) && value >= 0 && value <= 16777215 && round(value) == value

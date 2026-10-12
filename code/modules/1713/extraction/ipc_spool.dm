@@ -72,7 +72,7 @@ var/global/list/extraction_ipc_spool_owners = list()
 		var/end = findtextEx(marker, ",", length(prefix) + 1)
 		var/issued = copytext(marker, length(prefix) + 1, end)
 		var/list/bytes = extraction_ipc_verify(marker, service.key, issued, "reply")
-		if (!islist(bytes) || extraction_ipc_base64_encode(extraction_crypto_bytes(json_encode(response))) != envelope?["body"]) return FALSE
+		if (!islist(bytes) || extraction_ipc_base64_encode(extraction_crypto_bytes(extraction_ipc_reply_json(response))) != envelope?["body"]) return FALSE
 		var/existing = read(reply_path)
 		if (existing != marker)
 			// Only an unpublished marker authorizes replacing incomplete bytes.
@@ -93,7 +93,7 @@ var/global/list/extraction_ipc_spool_owners = list()
 		if (!islist(result) || !(result["status"] in list("committed", "rejected"))) return FALSE
 		var/list/durable = service.durable_response(request)
 		if (!islist(durable) || json_encode(durable) != json_encode(result)) return FALSE
-		var/sealed = extraction_ipc_seal(extraction_crypto_bytes(json_encode(result)), service.key, now_text)
+		var/sealed = extraction_ipc_seal(extraction_crypto_bytes(extraction_ipc_reply_json(result)), service.key, now_text)
 		if (!istext(sealed)) return FALSE
 		var/pending_path = path(id, "reply.pending")
 		if (test_fail_at == "before_marker") return FALSE
