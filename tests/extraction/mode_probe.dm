@@ -54,6 +54,7 @@
 	equipment_assert(A.z == 1 && SA.profile["state"] == "raid" && SA.profile["stash"]:len == 3 && !(A.status_flags & GODMODE), "raid owns issued item and clears house immunity")
 	equipment_assert(!G.extraction_found_in_raid && !G.ammo_magazine?.extraction_found_in_raid, "bringing gear into subsequent raid clears found-in-raid status")
 	equipment_assert(SB.profile["stash"]:len == 4, "other account unaffected")
+	loot_mode_probe(M, A)
 	var/list/loot = M.records(M.player_roots(A))
 	var/obj/effect/extraction_exit/exit = locate() in world
 	var/obj/effect/extraction_exit/pmc/pmc_exit = locate() in world

@@ -82,7 +82,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False):
         source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
         if probe == 'mode':
             source = '#define EXTRACTION_MODE_PROBE\n' + source
-            source += '\n#include "tests/extraction/mode_probe.dm"\n#include "maps/extraction/industrial_district.dmm"\n'
+            source += '\n#include "tests/extraction/mode_probe.dm"\n#include "tests/extraction/loot_probe.dm"\n#include "maps/extraction/industrial_district.dmm"\n'
         source += '\n#include "tests/extraction/equipment_probe.dm"\n'
         generated[0].write_text(source, encoding='utf-8')
         with tempfile.TemporaryDirectory(prefix='civ13-extraction-equipment-') as temp:

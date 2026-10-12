@@ -60,16 +60,22 @@
 	if (!islist(entries) || entries.len > max_roots) return FALSE
 	var/list/ids = list()
 	var/list/node_ids = list()
+	var/total_nodes = 0
 	for (var/list/entry in entries)
 		if (!islist(entry) || !istext(entry["id"]) || !length(entry["id"]) || length(entry["id"]) > 80 || ids[entry["id"]] || !islist(entry["equipment"])) return FALSE
 		ids[entry["id"]] = TRUE
 		var/list/equipment = entry["equipment"]
+		if (equipment["schema"] in list(1, 2))
+			var/list/graph = equipment["nodes"]
+			if (!islist(graph) || graph.len < 1 || graph.len > 512) return FALSE
+			total_nodes += graph.len
+			if (total_nodes > 2048) return FALSE
 		if (equipment["schema"] == 2)
 			var/list/nodes = equipment["nodes"]
 			if (!islist(nodes) || !nodes.len) return FALSE
 			for (var/list/node in nodes)
 				var/id = node["id"]
-				if (!istext(id) || !length(id) || node_ids[id]) return FALSE
+				if (!istext(id) || !length(id) || length(id) > 80 || node_ids[id]) return FALSE
 				node_ids[id] = TRUE
 			var/list/root = nodes[1]
 			if (root["id"] != entry["id"]) return FALSE

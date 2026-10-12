@@ -35,8 +35,10 @@ def build():
                 for x, y in ((left+n, bottom), (left+n, bottom+16),
                              (left, bottom+n), (left+16, bottom+n)):
                     put(x, y, wall)
-            put(left+4, bottom+4, '/obj/effect/extraction_loot_marker', '/obj/structure/shelf/palette')
-            put(left+12, bottom+12, '/obj/effect/extraction_loot_marker', '/obj/structure/props/barrel')
+            number = ((left-18)//24)*3 + (bottom-18)//24
+            put(left+4, bottom+4, f'/obj/effect/extraction_loot_marker{{container_id = {number*2+1}; pool_kind = "workshop"}}')
+            kind = 'ammunition' if number % 2 else 'armory'
+            put(left+12, bottom+12, f'/obj/effect/extraction_loot_marker{{container_id = {number*2+2}; pool_kind = "{kind}"}}')
             put(left+8, bottom+8, '/obj/effect/extraction_npc_marker')
     for x, y in ((8, 8), (88, 8), (8, 88), (88, 88)):
         put(x, y, '/obj/effect/extraction_raid_marker')

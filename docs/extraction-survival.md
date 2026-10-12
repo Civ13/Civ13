@@ -4,7 +4,7 @@ This mode is under implementation and has not received playable acceptance.
 Isolated native tests cover account storage, nested equipment restoration,
 bounded NPC combat, extraction cancellation, private rooms and hub navigation.
 Existing Factory mode stays available unchanged. Insurance, secure deposits,
-lazy container loot, stack transformations and map voting
+stack transformations and map voting
 remain pending. The required genuine concept video has not been recorded.
 
 ## Milestones and dependencies
@@ -105,6 +105,26 @@ not implemented. It will share account APIs, preserve ordinary Nomads and short
 raids, and use announced scheduled evacuation departures. Stranded players lose
 unsent gear; committed shipments remain. Persistent bounded game currency will
 not integrate live CivilizationBot currency. No scaffold constitutes acceptance.
+
+## First-access loot
+
+The original district has 18 persistent container journals. Untouched containers
+have no generated contents or journal directory. Workshop, ammunition and armory
+tables use integer basis-point appearance chances (75%, 80% and 35% per slot),
+explicit common/rare/exceptional weighted outcomes, one to four slots and one or
+two items per outcome. A validated plan commits before constructors run; full
+equipment records commit before the list becomes visible. Partial construction
+retries that plan rather than rolling again. Empty results persist too.
+
+Claiming debits the container before exposing a physical item. A pending delivery
+or incomplete acknowledgement locks reconciliation and does not automatically
+replay, including during a later raid. Containers have no periodic restocking.
+Each world instance obtains a durable fresh raid epoch; container records reuse
+their two journal slots instead of accumulating per-round directories. Starting
+a new world currently begins a new raid and forfeits issued player loadouts.
+Reloading a container within the same raid preserves unclaimed/claimed results.
+Resuming an active playable raid across process restart is not established.
+Graphical container interaction and whole-world restart remain acceptance gaps.
 
 `tests/extraction/run.py --byond-bin <516.1681-bin>` compiles the production
 account journal and executes real native file operations in temporary storage.

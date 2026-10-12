@@ -26,6 +26,13 @@ dispatch needs a client, so the fixture calls the production door switch and
 leaves real click dispatch for graphical acceptance. Nested item shipment tests
 cover another-account/concurrent/replay rejection, physical retirement after
 commit and actual gun/optic restoration after death and journal reopen.
+First-access loot checks cover untouched containers, deterministic appearance
+and weight boundaries, incompatible types/weights, maximum quantities, persisted
+empty/results, repeated and concurrent opens, exact single claims, partial
+constructor retry from a committed plan, and interrupted delivery acknowledgement
+with a fresh store rejecting its incomplete native journal. These tests reload
+container journals within a fixed raid; they do not establish live-raid process
+restart or rendered container interaction.
 
 ## Required safe-house concept video
 

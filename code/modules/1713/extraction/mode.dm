@@ -137,9 +137,6 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		extraction_raid_markers |= src
 
 /obj/effect/extraction_loot_marker
-	icon = null
-	var/tmp/restock_at = 0
-	var/tmp/obj/item/stock
 	New()
 		..()
 		extraction_loot_markers |= src
@@ -529,12 +526,6 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		if (!near_player)
 			var/path = npcs.len % 3 == 2 ? /mob/living/simple_animal/hostile/human/extraction/contractor : /mob/living/simple_animal/hostile/human/extraction
 			npcs += new path(get_turf(marker))
-	for (var/obj/effect/extraction_loot_marker/L in extraction_loot_markers)
-		if (L.stock?.loc == get_turf(L)) continue
-		L.stock = null
-		if (world.time < L.restock_at || raid_items.len >= 2048) continue
-		L.restock_at = world.time + 10 MINUTES
-		L.stock = spawn_loot(get_turf(L), pick(/obj/item/extraction_salvage, /obj/item/ammo_magazine/m9beretta, /obj/item/weapon/gun/projectile/pistol/m9beretta))
 
 /obj/map_metadata/extraction_survival/proc/track_loot(obj/item/I)
 	if (!I) return FALSE
