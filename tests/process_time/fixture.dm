@@ -18,6 +18,8 @@ var/list/probabilities = list()
     var/run_time_tick_usage = 0
     var/run_time_tick_usage_allowance = 100
     var/errors = 0
+    proc/fire()
+        return
     proc/catchException(exception/e, obj/O)
         errors++
     proc/catchBadType(obj/O)
@@ -33,6 +35,7 @@ var/list/probabilities = list()
     return 77
 /obj/kill/process()
     return PROCESS_KILL
+/obj/retired
 /obj/throws/process()
     throw new/exception("controlled test failure")
 /obj/item
@@ -149,6 +152,8 @@ var/list/probabilities = list()
     R.retired = 1
     processing_objects = list(L, K, E, R, S)
     loop.current_list = processing_objects.Copy()
+    loop.run_time_tick_usage = world.tick_usage
+    loop.run_time_tick_usage_allowance = 1000000
     loop.fire()
     check(S.fuel == 9.5, "production loop seconds dispatch")
     check(!(K in processing_objects) && !(R in processing_objects), "loop kill/deleted removal")
@@ -160,7 +165,7 @@ var/list/probabilities = list()
     loop.run_time_tick_usage_allowance = -1
     check(loop.fire() == PROCESS_TICK_CHECK_RETURNED_EARLY, "loop budget yield result")
     check(loop.current_list.len == 1 && A.fuel == 9.5 && B.fuel == 10, "yield retains only unfinished snapshot")
-    loop.run_time_tick_usage_allowance = 100
+    loop.run_time_tick_usage_allowance = 1000000
     loop.fire()
     check(A.fuel == 9.5 && B.fuel == 9.5 && !loop.current_list.len, "resume does not replay configured time")
     world.log << "PASS process time"

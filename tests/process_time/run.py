@@ -2,6 +2,7 @@
 import argparse
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import tempfile
 
@@ -33,7 +34,6 @@ def run(byond, control):
             body = match[0]
             if file.endswith('punishment.dm'):
                 body = body.replace('prob(', 'test_probability(')
-                body = body.replace("'sound/effects/gore/bullethit3.ogg'", "'" + (ROOT / 'sound/effects/gore/bullethit3.ogg').as_posix() + "'")
             production.append(body)
     source = '\n'.join(production)
     if control == 'units':
@@ -50,6 +50,9 @@ def run(byond, control):
         source = source.replace('O.process_interval(configured_interval_seconds())', 'O.process()')
     with tempfile.TemporaryDirectory(prefix='civ13-process-time-') as directory:
         temp = Path(directory)
+        sound = Path('sound/effects/gore/bullethit3.ogg')
+        (temp / sound).parent.mkdir(parents=True)
+        shutil.copyfile(ROOT / sound, temp / sound)
         (temp / 'production.dm').write_text(source)
         (temp / 'defines.dm').write_text((ROOT / 'code/processes/___defines.dm').read_text())
         (temp / 'fixture.dm').write_text((Path(__file__).parent / 'fixture.dm').read_text())
