@@ -4,9 +4,15 @@ export const referenceUrl = 'https://www.byond.com/docs/ref/info.html';
 const maxBytes = 8 * 1024 * 1024;
 function plain(html) {
   const entities = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
-  return html.replace(/<!--[^]*?-->|<(script|style)\b[^>]*>[^]*?<\/\1\s*>/gi, '')
-    .replace(/<\s*(?:br|\/p|\/div|\/li|\/h[1-6]|\/pre|\/tr)\b[^>]*>/gi, '\n')
-    .replace(/<[^>]*>/g, '').replace(/&(#x[\da-f]+|#\d+|\w+);/gi, (raw, key) => {
+  // Extract text tokens, rather than treating tag removal as HTML sanitization.
+  // Entity-decoded examples remain plain reference text and must never be rendered as HTML.
+  const tokens = [];
+  for (const match of html.matchAll(/<!--[^]*?-->|<(script|style)\b[^>]*>[^]*?<\/\1\s*>|<[^>]*>|[^<]+|</gi)) {
+    const token = match[0];
+    if (/^<\s*(?:br|\/p|\/div|\/li|\/h[1-6]|\/pre|\/tr)\b/i.test(token)) tokens.push('\n');
+    else if (!token.startsWith('<') || token === '<') tokens.push(token);
+  }
+  return tokens.join('').replace(/&(#x[\da-f]+|#\d+|\w+);/gi, (raw, key) => {
       if (!key.startsWith('#')) return entities[key] ?? raw;
       const n = key[1].toLowerCase() === 'x' ? parseInt(key.slice(2), 16) : Number(key.slice(1));
       return n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : raw;
