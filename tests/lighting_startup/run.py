@@ -16,7 +16,7 @@ OVERLAY = "code/modules/lighting/lighting_overlay.dm"
 TURF = "code/modules/lighting/lighting_turf.dm"
 DIAGNOSTICS = r"runtime error|Bad ref|Bad loc|Cannot read null|Infinite loop suspected|switching proc to background|PORT_OPEN"
 
-def prepare(repo, mode, negative=False):
+def prepare(repo, mode, negative=False, bulk_order_control=False):
     def read(path):
         if mode == "baseline":
             return subprocess.check_output(["git", "show", BASELINE + ":" + path], cwd=repo, text=True)
@@ -34,7 +34,7 @@ def prepare(repo, mode, negative=False):
     support = re.split(r"\n(?=/)", support, maxsplit=1)[0]
     # Real constructor body, instrumented only to record order. Pool/reagents,
     # overlay rendering and hook dispatch are isolated adapters, not acceptance.
-    overlay = overlay.replace("\t. = ..()", "\t. = ..()\n\tprobe_overlay_order += coord(loc)", 1)
+    overlay = overlay.replace("\t. = ..()", "\t. = ..()\n\tprobe_overlay_order += coord(loc)\n\tif (no_update)\n\t\tprobe_bulk_overlay_order += coord(loc)\n\telse\n\t\tprobe_compatibility_overlay_order += coord(loc)", 1)
     corner = corner.replace("\tactive = FALSE", "\tif (probe_startup && !probe_overlays_ready)\n\t\tprobe_early++\n\tprobe_activity_calls++\n\tactive = FALSE", 1)
     if mode == "candidate":
         corner = corner.replace("\tactive = FALSE", "\tif (startup_owner)\n\t\tprobe_owner_activations++\n\t\tif (probe_activated_corners[src])\n\t\t\tprobe_owner_duplicates++\n\t\tprobe_activated_corners[src] = TRUE\n\tactive = FALSE", 1)
@@ -47,6 +47,11 @@ def prepare(repo, mode, negative=False):
         match = re.search(r"^(\t+)create_all_lighting_overlays\(\)\n",system,re.M)
         indent = match[1]
         system = system[:match.start()] + indent + "for (var/datum/lighting_corner/early in fresh_corners)\n" + indent + "\tearly.update_active(TRUE)\n" + system[match.start():]
+    if bulk_order_control:
+        assert mode == "candidate"
+        old_loop = "for (var/turf/T in block(locate(1, 1, zlevel), locate(world.maxx, world.maxy, zlevel)))"
+        assert system.count(old_loop) == 2, "Bulk/corner iterator anchors changed"
+        system = system.replace(old_loop, "for (var/turf/T in probe_reverse(block(locate(1, 1, zlevel), locate(world.maxx, world.maxy, zlevel))))", 1)
     production = system + corner + overlay + turf_new + clear_overlay + build_overlay + support
     files = {"production.dm": production, "probe.dm": (repo/"tests/lighting_startup/probe.dm").read_text(),
              "probe.dme": '#define TRUE 1\n#define FALSE 0\n#define ASSERT(x) if (!(x)) CRASH("assertion")\n#define PoolOrNew probe_pool\n#define GAME_STATE_PREGAME 0\n#include "probe.dm"\n#include "production.dm"\n'}
@@ -55,7 +60,7 @@ def prepare(repo, mode, negative=False):
     assert 'OpenPort("none")' in files["probe.dm"] and 'if (world.port || OpenPort(0) || world.port)' in files["probe.dm"], "Closing/reopening native guards missing"
     files.update({"original-"+Path(path).name: source for path,source in originals.items()})
     manifest = {"head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip(),
-                "baseline": BASELINE, "mode": mode, "negative_control": negative,
+                "baseline": BASELINE, "mode": mode, "negative_control": negative, "bulk_order_control": bulk_order_control,
                 "sources": {path: hashlib.sha256(source.encode()).hexdigest() for path,source in originals.items()},
                 "patch_sha256": hashlib.sha256(subprocess.check_output(["git", "diff", "HEAD"],cwd=repo)).hexdigest(),
                 "adapters": ["isolated map/turf fields, overlay pool/render and startup hook", "64-candidate fixture pause ceiling with real tick_usage threshold", "wall icon resource omitted", "ordering observations only"]}
@@ -88,8 +93,8 @@ def run_logged(command, cwd, log_name, timeout, flags):
         receipt_path.write_text(json.dumps(receipt, indent=2))
 
 
-def execute(repo, out, mode, negative, byond):
-    files,manifest=prepare(repo,mode,negative)
+def execute(repo, out, mode, negative, byond, bulk_order_control=False):
+    files,manifest=prepare(repo,mode,negative,bulk_order_control)
     out.mkdir(parents=True,exist_ok=False)
     for name,source in files.items(): (out/name).write_text(source)
     (out/"manifest.json").write_text(json.dumps(manifest,indent=2))
@@ -117,15 +122,40 @@ def execute(repo, out, mode, negative, byond):
             assert result["build_waiters"]>0 and result["new_callbacks"]<20,result
             assert result["failure_release"] and result["prestartup_contract"],result
             assert result["activity_waiters"]>0 and result["activity_waiter_done"],result
+            assert result["replacement_started"] and len(result["concurrent_snapshot"])==5120,result
+            assert result["concurrent_overlay_order"].count("1,1,1")==2,result
             assert result["owner_activations"]>0 and result["owner_duplicates"]==0,result
     return result
+
+def validate_parity(baseline, candidate):
+    """Compare synchronous bulk order; explicitly validate bounded fallback ordering."""
+    assert baseline["snapshots"] == candidate["snapshots"], "Shared masters/activity/overlay/update registration differs"
+    assert baseline["bulk_overlay_order"] == candidate["bulk_overlay_order"], "Bulk overlay construction order differs"
+    assert sorted(baseline["compatibility_overlay_order"]) == sorted(candidate["compatibility_overlay_order"]), "Compatibility constructor eligibility/multiplicity differs"
+    assert candidate["compatibility_overlay_order"] == candidate["expected_compatibility_order"], "Compatibility constructors do not follow native world traversal"
+    assert baseline["expected_compatibility_order"] == candidate["expected_compatibility_order"], "Compatibility input geometry differs"
+
+
+def validate_bulk_order_control(baseline, candidate):
+    # The generated production iterator changes actual constructor order only.
+    assert baseline["snapshots"] == candidate["snapshots"], "Order control changed final lighting state"
+    assert sorted(baseline["bulk_overlay_order"]) == sorted(candidate["bulk_overlay_order"]), "Order control changed bulk eligibility"
+    try:
+        validate_parity(baseline, candidate)
+    except AssertionError as error:
+        assert str(error) == "Bulk overlay construction order differs", str(error)
+    else:
+        raise AssertionError("Reversed bulk iterator was not detected")
+
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--byond-bin",type=Path)
     parser.add_argument("--output",type=Path)
     parser.add_argument("--prepare-only",action="store_true")
-    parser.add_argument("--negative-control",action="store_true")
+    controls = parser.add_mutually_exclusive_group()
+    controls.add_argument("--negative-control",action="store_true")
+    controls.add_argument("--bulk-order-control",action="store_true")
     args=parser.parse_args()
     if not args.prepare_only and not args.byond_bin: parser.error("Runtime requires --byond-bin")
     repo=Path(__file__).resolve().parents[2]
@@ -133,10 +163,12 @@ def main():
     if args.output: out.mkdir(parents=True,exist_ok=False)
     results={}
     for mode in (["candidate"] if args.negative_control else ["baseline","candidate"]):
-        results[mode]=execute(repo,out/mode,mode,args.negative_control,None if args.prepare_only else args.byond_bin)
+        results[mode]=execute(repo,out/mode,mode,args.negative_control,None if args.prepare_only else args.byond_bin,args.bulk_order_control and mode=="candidate")
     if not args.prepare_only and not args.negative_control:
-        assert results["baseline"]["snapshots"]==results["candidate"]["snapshots"],"Shared masters/activity/overlay order differs"
-        assert results["baseline"]["overlay_order"]==results["candidate"]["overlay_order"],"Overlay construction order differs"
-    print(json.dumps({"output":str(out),"prepared_only":args.prepare_only,"negative_control":args.negative_control}))
+        if args.bulk_order_control:
+            validate_bulk_order_control(results["baseline"], results["candidate"])
+        else:
+            validate_parity(results["baseline"], results["candidate"])
+    print(json.dumps({"output":str(out),"prepared_only":args.prepare_only,"negative_control":args.negative_control,"bulk_order_control":args.bulk_order_control}))
 
 if __name__=="__main__": main()

@@ -1,4 +1,5 @@
 """Compiler-free launcher failure receipt regression."""
+import copy
 import json
 from pathlib import Path
 import subprocess
@@ -43,5 +44,50 @@ class ExecutionReceipts(unittest.TestCase):
             self.assertEqual(receipt["state"], "launch_error")
             self.assertEqual(receipt["exception_type"], "FileNotFoundError")
             self.assertEqual(receipt["command"], ["fixture"])
+
+class OrderingContract(unittest.TestCase):
+    def pair(self):
+        baseline = {"snapshots": {"initial": ["shared:queued:rendered"]},
+                    "bulk_overlay_order": ["1,1,1", "2,1,1"],
+                    "compatibility_overlay_order": ["2,1,3", "1,1,3"],
+                    "expected_compatibility_order": ["1,1,3", "2,1,3"]}
+        candidate = copy.deepcopy(baseline)
+        candidate["compatibility_overlay_order"].reverse()
+        return baseline, candidate
+
+    def test_separate_compatibility_schedule_is_explicit(self):
+        run.validate_parity(*self.pair())
+
+    def test_bulk_order_negative_control(self):
+        baseline, candidate = self.pair()
+        candidate["bulk_overlay_order"].reverse()
+        with self.assertRaisesRegex(AssertionError, "Bulk overlay construction order"):
+            run.validate_parity(baseline, candidate)
+
+    def test_compatibility_traversal_negative_control(self):
+        baseline, candidate = self.pair()
+        candidate["compatibility_overlay_order"].reverse()
+        with self.assertRaisesRegex(AssertionError, "native world traversal"):
+            run.validate_parity(baseline, candidate)
+
+    def test_missing_default_constructor_negative_control(self):
+        baseline, candidate = self.pair()
+        candidate["compatibility_overlay_order"].pop()
+        with self.assertRaisesRegex(AssertionError, "eligibility/multiplicity"):
+            run.validate_parity(baseline, candidate)
+
+    def test_native_order_control_contract(self):
+        baseline, candidate = self.pair()
+        candidate["bulk_overlay_order"].reverse()
+        run.validate_bulk_order_control(baseline, candidate)
+        with self.assertRaisesRegex(AssertionError, "was not detected"):
+            run.validate_bulk_order_control(*self.pair())
+
+    def test_update_registration_negative_control(self):
+        baseline, candidate = self.pair()
+        candidate["snapshots"]["initial"] = ["shared:unqueued:unrendered"]
+        with self.assertRaisesRegex(AssertionError, "update registration"):
+            run.validate_parity(baseline, candidate)
+
 
 if __name__ == "__main__": unittest.main()
