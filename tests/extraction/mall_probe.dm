@@ -170,5 +170,6 @@ var/global/mall_fixture_failed = FALSE
 	mall_assert(M.deploy(H) && key.uses_remaining == 2 && foreign.uses_remaining == 3 && foreign.loc == bag, "later raid retains key charges and nested foreign key")
 	H.forceMove(get_turf(highway))
 	mall_assert(M.extract_player(H, highway) && key.uses_remaining == 2, "repeat extraction does not recharge key")
+	container_key_sprite_codec_probe()
 	mall_stage("after final foot extraction")
 	mall_assert(!parking.traverse(H) && world.port == 0, "home actor cannot enter stairs and daemon port closed")

@@ -11,12 +11,14 @@
 	container_key_assert(catalog.len == 6, "six exact key types")
 	var/list/targets = list()
 	var/list/tables = list()
+	var/list/map_sprites = list(MAP_EXTRACTION_SURVIVAL = "modern", MAP_EXTRACTION_CITY = "key", MAP_EXTRACTION_MALL = "treasure_key")
 	var/datum/keyslot/native_lock = new
 	for (var/path in catalog)
 		var/obj/item/weapon/key/extraction_container/K = new path
 		var/target_map = initial(K.target_map)
 		var/target_id = initial(K.target_container_id)
 		var/target = "[target_map]:[target_id]"
+		container_key_assert(K.icon_state == map_sprites[target_map], "map-specific key sprite")
 		container_key_assert(!targets[target], "each key opens a different exact target")
 		targets[target] = TRUE
 		container_key_assert(K.matches(target_map, target_id), "matching unused key")
@@ -50,6 +52,22 @@
 	container_key_assert(extraction_container_key_catalog().len == 6, "caller cannot mutate catalog")
 	qdel(base)
 	qdel(unknown)
+	return TRUE
+
+/proc/container_key_sprite_codec_probe()
+	var/datum/extraction_equipment_codec/codec = new
+	for (var/path in extraction_container_key_catalog())
+		var/obj/item/weapon/key/extraction_container/K = new path
+		// Restore the previous common sprite through the real equipment codec.
+		K.uses_remaining = 2
+		K.icon_state = "modern"
+		K.color = "#ff0000"
+		var/list/record = codec.encode(K)
+		var/obj/item/weapon/key/extraction_container/restored = codec.decode(record, null)
+		container_key_assert(restored && restored.icon_state == initial(K.icon_state) && restored.color == initial(K.color), "saved presentation restores the map sprite")
+		container_key_assert(restored.uses_remaining == 2 && restored.extraction_item_id == K.extraction_item_id && restored.matches(initial(K.target_map), initial(K.target_container_id)), "sprite migration preserves key identity target and charges")
+		qdel(restored)
+		qdel(K)
 	return TRUE
 
 /proc/container_key_unlock_probe(obj/map_metadata/extraction_survival/M, mob/living/human/H)

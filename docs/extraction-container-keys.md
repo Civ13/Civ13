@@ -1,6 +1,6 @@
 # Extraction container keys
 
-![Existing key and cache sprite states, static export rather than gameplay](images/extraction-container-keys.png)
+![Map-specific key and cache sprite states, static export rather than gameplay](images/extraction-container-keys.png)
 
 Every current Extraction map has two locked caches. Each key opens exactly one
 named container on one map. A foreign-map key is ordinary recoverable equipment:
@@ -8,6 +8,12 @@ extract or ship it home, retain it in storage, and carry it on a later raid.
 Container keys have three uses. One successful unlock spends one use; reopening
 that same cache during the same loot epoch does not spend another. The final
 use removes the key. The unlocked cache is shared raid loot.
+
+Keys have a distinct sprite for their intended map: Industrial District uses a
+black-handled modern key, Modern City a silver skeleton key, and Interchange Mall a gold
+key. Both container keys for a map share that map's sprite; their names identify
+the exact lock. Existing saved keys adopt the correct sprite when loaded without
+changing their identity, target or remaining uses.
 
 The shared loot integration rolls a 1% bonus chance when an ordinary container's
 loot is first planned. A successful roll selects one of all six key types with
