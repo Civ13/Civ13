@@ -41,7 +41,7 @@ def main():
     if a.negative_control:
         controls = {
             'gc-soft-budget': ('code/processes/garbage.dm', '\t\tvar/refID = destroyed[1]', '\t\tif (remaining_force_dels <= 0)\n\t\t\tbreak\n\t\tvar/refID = destroyed[1]', 'soft records drain after forced budget without exceeding candidate cap'),
-            'gc-hard-budget': ('code/processes/garbage.dm', 'if (remaining_force_dels <= 0)', 'if (FALSE)', 'next forced target waits after the hard-delete cap'),
+            'gc-hard-budget': ('code/processes/garbage.dm', 'if (remaining_force_dels <= 0)', 'if (remaining_force_dels <= -100000)', 'next forced target waits after the hard-delete cap'),
             'cancel-retention': ('code/processes/callproc.dm', 'C.args = null', '// C.args deliberately retained', 'cancel clears helper target and arguments'),
             'deletion-state': ('code/processes/garbage.dm', 'A.gc_destroyed = A.gcDestroyed', 'A.gc_destroyed = 0', 'reentry cleans once and deletion markers agree'),
             'pool-cleanup': ('code/_helpers/datum_pool.dm', 'D.ResetVars()\n\tD.gcDestroyed', 'D.Destroy()\n\tD.ResetVars()\n\tD.gcDestroyed', 'pooled deletion cleans once and remains retired'),

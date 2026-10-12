@@ -30,7 +30,7 @@ scheduler = subprocess.check_output(['git','show',BASELINE+':'+scheduler_path], 
 if sum((args.baseline,args.negative_control,args.reset_control)) > 1:
     raise SystemExit('Do not combine baseline and negative control')
 source = '\n'.join(re.search(pattern, source).group() for pattern in PATTERNS)
-for pattern in (r'/processScheduler/proc/relayProcess\([^\n]*\)[\s\S]*?(?=/processScheduler/proc/addProcess\()', r'/processScheduler/proc/start\(\)[\s\S]*?(?=/processScheduler/proc/process\(\))', r'/processScheduler/proc/runQueuedProcesses\(\)[\s\S]*?(?=/processScheduler/proc/relayProcess\()'):
+for pattern in (r'/processScheduler/proc/relayProcess\([^\n]*\)[\s\S]*?(?=/processScheduler/proc/addProcess\()', r'/processScheduler/proc/start\(\)[\s\S]*?(?=/processScheduler/proc/process\()', r'/processScheduler/proc/runQueuedProcesses\(\)[\s\S]*?(?=/processScheduler/proc/relayProcess\()'):
     source += '\n' + re.search(pattern,scheduler).group()
 reset_path = 'code/processes/mob.dm'
 reset_source = subprocess.check_output(['git','show',BASELINE+':'+reset_path],cwd=repo,text=True) if args.baseline else (repo/reset_path).read_text()

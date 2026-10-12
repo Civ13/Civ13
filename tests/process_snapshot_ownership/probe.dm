@@ -53,11 +53,12 @@ var/failures = 0
 	var/list/priority_ordered_processes = list()
 	var/list/queued = list()
 	var/isRunning = FALSE
+	var/list/run_token
 	var/scheduler_sleep_interval = 0
 	var/start_seen = 0
 /processScheduler/proc/updateStartDelays()
 	return
-/processScheduler/proc/process()
+/processScheduler/proc/process(list/token)
 	start_seen++
 /processScheduler/proc/processFinished(process/P)
 	check(P.current && P.current_list && P.current_list.len == P.hook_remaining, "scheduler hook observes run references")

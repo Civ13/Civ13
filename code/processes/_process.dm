@@ -107,6 +107,8 @@
 	var/list/current_list = null
 	// move up our priority if we fail to run too many times
 	var/run_failures = 0
+	// Lazy expiry replaces one sleeping callback per admission denial.
+	var/tmp/runtime_history_reset_at = 0
 	// do we ignore tick_usage checks and run no matter what
 	var/always_runs = FALSE
 
@@ -127,6 +129,8 @@
 	return fires_at_gamestates.len == 4 || (ticker && fires_at_gamestates.Find(ticker.current_state))
 
 /process/proc/started()
+	// A newly admitted run must not lose its history to an old denial.
+	runtime_history_reset_at = 0
 	// Initialize run_start so we can detect hung processes.
 	run_start = TimeOfGame
 
@@ -416,14 +420,18 @@
 		PROCESS_USE_FASTEST_LIST(list())
 
 /process/proc/may_run(tick_usage_allowance)
+	var/list/history = main.last_twenty_run_times[src]
+	if (runtime_history_reset_at && world.time >= runtime_history_reset_at)
+		if (history)
+			history.Cut()
+		runtime_history_reset_at = 0
 	. = 0
-	if (main.last_twenty_run_times[src] && main.last_twenty_run_times[src]:len)
-		for (var/runtime in main.last_twenty_run_times[src])
+	if (history && history.len)
+		for (var/runtime in history)
 			. = max(., runtime)
 	. = . <= ((tick_usage_allowance/100) * world.tick_lag)
-	if (!.)
-		spawn (schedule_interval)
-			main.last_twenty_run_times[src]:Cut()
+	if (!. && !runtime_history_reset_at)
+		runtime_history_reset_at = world.time + max(1, schedule_interval)
 
 /datum/subsystem_module
 	var/name = "module"

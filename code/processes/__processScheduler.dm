@@ -43,6 +43,8 @@ var/global/processScheduler/processScheduler
 
 	// Controls whether the scheduler is running or not
 	var/tmp/isRunning = FALSE
+	// Each start retires the previous sleeping scheduler invocation.
+	var/tmp/list/run_token
 
 	// Setup for these processes will be deferred until all the other processes are set up.
 	var/tmp/list/deferredSetupList = list()
@@ -94,23 +96,27 @@ var/global/processScheduler/processScheduler
 	return TRUE
 
 /processScheduler/proc/start()
+	run_token = list()
+	var/list/token = run_token
 	isRunning = TRUE
 	// tick_lag will have been set by now, so re-initialize these
 	scheduler_sleep_interval = world.tick_lag
 	updateStartDelays()
 
 	spawn(0)
+		if (!isRunning || run_token != token)
+			return
 		// organize processes by priority
 		priority_ordered_processes.Cut()
 		for (var/priority in PROCESS_PRIORITY_VERY_HIGH to PROCESS_PRIORITY_IRRELEVANT)
 			for (var/process/P in processes)
 				if (P.priority == priority)
 					priority_ordered_processes += P
-		process()
+		process(token)
 
-/processScheduler/proc/process()
+/processScheduler/proc/process(list/token)
 
-	while (isRunning)
+	while (isRunning && run_token == token)
 		checkRunningProcesses()
 		queueProcesses()
 		runQueuedProcesses()
@@ -119,6 +125,7 @@ var/global/processScheduler/processScheduler
 
 /processScheduler/proc/stop()
 	isRunning = FALSE
+	run_token = null
 
 /processScheduler/proc/checkRunningProcesses()
 	for (var/process/p in running)

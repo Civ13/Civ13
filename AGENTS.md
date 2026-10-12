@@ -492,3 +492,15 @@ Observed interval p95/max includes scheduling and clock resolution, not tick CPU
 time. GC queued_drained counts consumed queue entries, excluding direct deletes.
 Headless humans enter SSD sleep: synchronous inventory fixtures must prepare and
 assert an awake, live actor before real pickup/drop calls.
+
+<!-- 2026-10-12: collector mixed workloads -->
+GC may drain already-collected expired records after its forced-delete quota is
+used; the next matching live target waits. Preserve 300 candidate checks, 30
+forced deletes, 30-second expiry and ref timestamp guards. Run the collector
+case and gc-soft-budget/gc-hard-budget controls in tests/memory_ownership/run.py.
+
+<!-- 2026-10-12: scheduler chain and denial history -->
+Scheduler start replaces its identity token; stale sleeping invocations retire at
+wake, and stop invalidates the token. Process may_run uses one lazy history
+expiry deadline; started cancels it before recording new run history. Native
+lifecycle, immutable baseline and controls live in tests/process_loop_lifecycle.
