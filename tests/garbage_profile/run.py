@@ -29,8 +29,8 @@ def main():
     if args.negative_control:
         controls = {
             'bound': ('code/processes/garbage_profile.dm', '#define GC_PROFILE_TYPE_LIMIT 128', '#define GC_PROFILE_TYPE_LIMIT 10000', 'type rows stay bounded including overflow'),
-            'cleanup': ('code/processes/garbage.dm', 'profile_cost(profile_type, FALSE, cleanup_started, cleanup_tick)', 'profile_snapshot()', 'cleanup hook counts once across recursive and repeated qdel'),
-            'forced': ('code/processes/garbage.dm', 'profile_cost(forced_type, TRUE, forced_started, forced_tick)', 'profile_snapshot()', 'collector times actual forced deletion'),
+            'cleanup': ('code/processes/garbage.dm', 'profile_cost(profile_type, FALSE, cleanup_started, cleanup_tick)', 'profile_discard(profile_type, FALSE, cleanup_started, cleanup_tick)', 'cleanup hook counts once across recursive and repeated qdel'),
+            'forced': ('code/processes/garbage.dm', 'profile_cost(forced_type, TRUE, forced_started, forced_tick)', 'profile_discard(forced_type, TRUE, forced_started, forced_tick)', 'collector times actual forced deletion'),
             'clock': ('code/processes/garbage_profile.dm', 'elapsed += 864000', 'elapsed += 0', 'elapsed samples handle one midnight wrap'),
         }
         relative, before, after, expected = controls[args.negative_control]
@@ -41,6 +41,8 @@ def main():
             helper = body.replace(before, after, 1)
         else:
             garbage = body.replace(before, after, 1)
+            # Preserve argument reads so missing-hook controls remain warning-free.
+            helper += '\n/process/garbage/proc/profile_discard(type_name, forced, started, start_tick)\n\treturn list(type_name, forced, started, start_tick)\n'
     (out/'garbage_profile.dm').write_text(helper)
     (out/'garbage.dm').write_text(garbage)
     source = source.replace((root/'code/processes/garbage.dm').as_posix(), (out/'garbage.dm').as_posix())
