@@ -277,4 +277,22 @@ var/list/timer_fires = list()
 		if(!isnull(map.season_world_candidates(target, map.season_epoch))) failures++
 	checkpoint_mode = null
 	map = new(locate(1,1,1))
+	// Area discovery must retain the original native turf sequence and filters.
+	for(var/area/A in area_list)
+		for(var/target in list(/turf, /turf/floor/grass, /turf/floor/dirt/flooded))
+			var/list/expected = list()
+			for(var/area/B in area_list)
+				if(!istype(B, A.type)) continue
+				for(var/turf/T in B.contents)
+					if(istype(T, target)) expected += T
+			var/list/actual = get_area_turfs(A, null, target, map, map.season_epoch)
+			if(!probe_same_candidates(expected, actual)) failures++
+	// A broad query reaches a 64-turf checkpoint even in the smallest fixture.
+	checkpoint_mode = "typed_cancel"
+	checkpoint_seen = 0
+	var/list/area_cancelled = get_area_turfs(/area, null, /turf, map, map.season_epoch)
+	if(checkpoint_seen != 1 || !isnull(area_cancelled)) failures++
+	if(!isnull(get_area_turfs(/area, null, /turf, map, map.season_epoch))) failures++
+	checkpoint_mode = null
+	map = new(locate(1,1,1))
 	return list("failures"=failures, "sequences"=rows)
