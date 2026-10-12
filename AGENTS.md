@@ -545,5 +545,14 @@ scheduled run builds
 fresh work; retain only nonempty unfinished snapshots. Assign null without cutting
 aliased VERY_HIGH live lists. tests/process_loop_lifecycle covers the exact
 last-entry boundary and an independent old-guard mutation control.
+
+<!-- 2026-10-12: era-dependent research prototypes -->
+Established factions retain their founding research baseline when another faction
+advances the world era. Prototype recipes must remain obtainable afterward:
+Digital Computing needs the cold-war camera subtype, not its modern camera parent.
+The compiled crafting fixture checks two-faction era advancement and the paid
+recipe; --camera-prototype-negative-control restores its obsolete era cap in
+isolated runtime data and must detect exactly the lost recipe.
+
 <!-- 2026-10-12: finite digging completion -->
 Loose snow/dirt/sand stock must be checked after the action wait, because another actor may consume the last unit. Underground pickaxe actions use one wait/completion path. `tests/resource_extraction/digging_probe.dm` runs production handlers with competing completion and cancellation adapters; `-DiggingBaseline` rejects immutable pre-fix source without changing the checkout.
