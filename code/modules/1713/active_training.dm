@@ -47,7 +47,7 @@
 
 /obj/structure/exercise
 	name = "stone lifting weights"
-	desc = "Paid stone weights for manually completed lifting sets. Click three times, completing each fifteen-second repetition. Leaving the weights, interruption or cancelling loses the unfinished set."
+	desc = "Crafted stone weights for manually completed lifting sets. Click three times, completing each fifteen-second repetition. Leaving the weights, interruption or cancelling loses the unfinished set."
 	icon = 'icons/obj/materials.dmi'
 	icon_state = "sheet-stone"
 	anchored = TRUE
