@@ -129,12 +129,16 @@
 				var/list/raid = A.plan_raid(list(G.extraction_item_id), "PMC")
 				if (car) raid = A.plan_group_vehicle(raid, car["id"], md5(json_encode(car)))
 				equipment_assert(A.commit(raid["candidate"]), "return fixture debits issued car and loadout before credit")
+				// A debit mutation must fail before this fixture indexes a return
+				// projection, which correctly rejects a still-occupied garage.
+				equipment_assert(!A.profile["garage"].len && (!car || A.profile["vehicle_issued"]["id"] == car["id"]), "native group recovery preserves exact vehicle debit without a second car")
 				G.health = 37
 				G.extraction_found_in_raid = TRUE
 				entry["equipment"] = C.encode(G)
 				var/list/loot = list(entry)
 				var/list/before = A.copy_profile()
 				var/list/after = A.plan_vehicle_return(loot, car)
+				equipment_assert(islist(after), "return fixture plans credit only after issued ownership was debited")
 				after["revision"] = before["revision"] + 1
 				parts += list(list("operation" = "vehicle_extract", "owner" = owner, "before" = before, "after" = after, "loot" = loot, "vehicle" = car))
 				qdel(G)
