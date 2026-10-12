@@ -21,3 +21,5 @@ jobs:
         run: |
           source BYOND/byond/bin/byondsetup
           /usr/bin/python3 scripts/check-component-tools.py
+          /usr/bin/python3 scripts/check-component-tools.py --negative-control consumption
+          /usr/bin/python3 scripts/check-component-tools.py --negative-control runtime-save

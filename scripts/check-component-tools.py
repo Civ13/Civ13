@@ -17,6 +17,7 @@ def main():
     parser.add_argument("--report", type=Path)
     parser.add_argument("--compiler", default="DreamMaker")
     parser.add_argument("--runtime", default="DreamDaemon")
+    parser.add_argument("--negative-control", choices=("consumption", "runtime-save"))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     # Assets/includes are resolved relative to the checkout; runtime storage is isolated.
@@ -37,6 +38,14 @@ def main():
             raise RuntimeError("Global-controller isolation marker changed")
         (build / "globals.dm").write_text(globals_source.replace(marker, marker + "\treturn\n"), encoding="utf-8")
         dme = (root / "civ13.dme").read_text(encoding="utf-8")
+        if args.negative_control:
+            bench = (root / "code/game/objects/structures/blacksmithing/component_workbench.dm").read_text(encoding="utf-8")
+            if args.negative_control == "consumption":
+                bench = replace_once(bench, "\tqdel(P)\n\tqdel(B)\n", "\t// Deliberately leave both paid components alive.\n")
+            else:
+                bench = replace_once(bench, '(key in list("busy", "cancelled", "assembler", "assembly_time"))', '(key in list("cancelled", "assembler", "assembly_time"))')
+            (build / "bench.dm").write_text(bench, encoding="utf-8")
+            dme = replace_once(dme, '#include "code\\game\\objects\\structures\\blacksmithing\\component_workbench.dm"', f'#include "{build.as_posix()}/bench.dm"')
         dme = replace_once(dme, '#include "code\\controllers\\mc\\globals.dm"', f'#include "{build.as_posix()}/globals.dm"')
         dme = re.sub(r'^#include ".*\.dmf"\s*$', '', dme, flags=re.M)
         dme = replace_once(dme, '#include "code\\world.dm"', f'#include "{build.as_posix()}/world.dm"')
@@ -70,7 +79,8 @@ def main():
         print(output)
         if runtime.returncode or any(marker in runtime_log.lower() for marker in ("runtime error:", "bug:", "## error:")):
             return 1
-        return 0 if output.rstrip().endswith("PASS") else 1
+        expected = "FAIL" if args.negative_control else "PASS"
+        return 0 if output.rstrip().endswith(expected) else 1
 
 if __name__ == "__main__":
     raise SystemExit(main())
