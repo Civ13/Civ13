@@ -131,6 +131,9 @@ their two journal slots instead of accumulating per-round directories. Starting
 a new world currently begins a new raid and forfeits issued player loadouts.
 Reloading a container within the same raid preserves unclaimed/claimed results.
 Resuming an active playable raid across process restart is not established.
+See [offline journal reconciliation](extraction-recovery.md) for exact-intent
+completion, ownership conflicts, non-reissuing delivery retirement and explicitly
+approved conservative stash-loss settlement. Recovery is never automatic.
 Graphical container interaction and whole-world restart remain acceptance gaps.
 
 `tests/extraction/run.py --byond-bin <516.1681-bin>` compiles the production

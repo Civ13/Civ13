@@ -45,6 +45,26 @@ var/store_failures = 0
 	store_assert(!S.commit_profile("snapshotfailure", P), "snapshot interruption")
 	S = new
 	store_assert(!S.load_profile("snapshotfailure"), "snapshot crash blocks rollback")
+	var/list/recovery_intent = json_decode(file2text(S.path_for("snapshotfailure", 1, "intent")))
+	store_assert(!S.recover_snapshot("snapshotfailure", 2, "00000000000000000000000000000000"), "wrong recovery digest rejected")
+	store_assert(!S.recover_snapshot("other", 2, recovery_intent["digest"]), "other account recovery rejected")
+	P = S.recover_snapshot("snapshotfailure", 2, recovery_intent["digest"])
+	store_assert(P && P["revision"] == 2 && S.load_profile("snapshotfailure"), "exact intended snapshot recovered")
+	store_assert(fexists("data/extraction_accounts/snapshotfailure/recovery.latest.json"), "recovery evidence retained")
+	store_assert(!S.recover_snapshot("snapshotfailure", 2, recovery_intent["digest"]), "recovery replay rejected")
+	recovery_intent = json_decode(file2text(S.path_for("fixture", 0, "intent")))
+	store_assert(!S.recover_snapshot("fixture", recovery_intent["generation"], recovery_intent["digest"]), "missing intended snapshot never falls back")
+	P = S.settle_pending_loss("fixture", recovery_intent["generation"], recovery_intent["digest"])
+	store_assert(P && !P["stash"].len && P["state"] == "home" && P["level"] == 2, "explicit loss settlement unlocks without rollback gear or free upgrade")
+	store_assert(!S.settle_pending_loss("fixture", recovery_intent["generation"], recovery_intent["digest"]), "loss settlement replay rejected")
+	P = S.load_profile("container1")
+	P["loot_state"] = "pending"
+	P["pending_item"] = list("id" = "uncertainitem", "equipment" = list())
+	store_assert(S.commit_profile("container1", P), "uncertain delivery fixture")
+	store_assert(!S.retire_pending_delivery("container1", P["revision"], "wrongitem"), "wrong delivery identity rejected")
+	P = S.retire_pending_delivery("container1", P["revision"], "uncertainitem")
+	store_assert(P && P["loot_state"] == "ready" && !P["pending_item"] && !P["stash"].len, "uncertain delivery retired without issuing gear")
+	store_assert(!S.retire_pending_delivery("container1", 1, "uncertainitem"), "retirement replay rejected")
 	P = S.load_profile("corrupt")
 	store_assert(S.commit_profile("corrupt", P), "corrupt fixture commit")
 	fdel(S.path_for("corrupt", 0, "snapshot"))
@@ -56,8 +76,29 @@ var/store_failures = 0
 	S.busy = TRUE
 	store_assert(!S.commit_profile("other", S.load_profile("other")), "concurrent writer rejected")
 	transaction_probe()
+	recovery_ownership_probe()
 	text2file(store_failures ? "FAIL: [store_failures] journal assertions" : "PASS: account journal restart, isolation, bounds, crash and corruption", "result.txt")
 	shutdown()
+
+/proc/recovery_ownership_probe()
+	var/datum/extraction_account_store/S = new
+	S.root = "data/recovery_ownership/"
+	var/list/A = S.load_profile("alice")
+	store_assert(S.commit_profile("alice", A), "recovery ownership initial account")
+	A["stash"] = list(list("id" = "gun1", "equipment" = list("schema" = 2, "nodes" = list(list("id" = "gun1"), list("id" = "optic1")))))
+	S.test_fail_at = "snapshot"
+	store_assert(!S.commit_profile("alice", A), "recovery ownership interrupted credit")
+	S.test_fail_at = null
+	var/list/B = S.load_profile("bob")
+	B["stash"] = list(list("id" = "gun2", "equipment" = list("schema" = 2, "nodes" = list(list("id" = "gun2"), list("id" = "optic1")))))
+	store_assert(S.commit_profile("bob", B), "other account acquired nested component")
+	var/list/intent = json_decode(file2text(S.path_for("alice", 1, "intent")))
+	store_assert(!S.recover_snapshot("alice", 2, intent["digest"]), "nested ownership conflict blocks recovery credit")
+	store_assert(!fexists("data/recovery_ownership/alice/recovery.latest.json"), "rejected recovery preserves evidence without receipt")
+	B["stash"] = list()
+	store_assert(S.commit_profile("bob", B), "other account relinquished conflicting component")
+	A = S.recover_snapshot("alice", 2, intent["digest"])
+	store_assert(A && A["stash"].len == 1, "ownership-cleared recovery retains exact candidate")
 
 /proc/transaction_probe()
 	var/datum/extraction_service/service = new

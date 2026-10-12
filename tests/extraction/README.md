@@ -5,6 +5,7 @@ Use BYOND 516.1681 and a verified full Python interpreter path:
 ```powershell
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe store
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe restart
+& $PythonPath tests/extraction/test_recovery.py --byond-bin $ByondBin
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe equipment
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe mode
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe equipment --provenance-negative-control
