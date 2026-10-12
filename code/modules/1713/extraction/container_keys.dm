@@ -24,6 +24,14 @@
 	var/target_container_id = 0
 	var/max_uses = 3
 	var/uses_remaining = 3
+	after_load()
+		..()
+		// Old equipment records stored the shared key sprite. Presentation comes
+		// from this exact key type; restoring it must never replenish charges.
+		icon = initial(icon)
+		icon_state = initial(icon_state)
+		item_state = initial(item_state)
+		color = initial(color)
 	proc/valid_uses()
 		return (type in extraction_container_key_catalog()) && isnum(uses_remaining) && round(uses_remaining) == uses_remaining && uses_remaining >= 1 && uses_remaining <= initial(max_uses)
 	proc/matches(map_id, container_id)
@@ -34,31 +42,37 @@
 
 /obj/item/weapon/key/extraction_container/industrial_tool_cage
 	name = "Industrial District tool cage key"
+	icon_state = "modern"
 	desc = "Tagged for the locked maintenance stock cage in the southwest warehouse of Industrial District."
 	target_map = MAP_EXTRACTION_SURVIVAL
 	target_container_id = 61
 /obj/item/weapon/key/extraction_container/industrial_dispatch
 	name = "Industrial District dispatch locker key"
+	icon_state = "modern"
 	desc = "Tagged for the dispatch reserves locker in the central warehouse of Industrial District."
 	target_map = MAP_EXTRACTION_SURVIVAL
 	target_container_id = 62
 /obj/item/weapon/key/extraction_container/city_pharmacy
 	name = "Modern City pharmacy cabinet key"
+	icon_state = "key"
 	desc = "Tagged for the pharmacy's sealed treatment cabinet in the southwest block of Modern City."
 	target_map = MAP_EXTRACTION_CITY
 	target_container_id = 61
 /obj/item/weapon/key/extraction_container/city_evidence
 	name = "Modern City evidence locker key"
+	icon_state = "key"
 	desc = "Tagged for the abandoned evidence locker in the north central block of Modern City."
 	target_map = MAP_EXTRACTION_CITY
 	target_container_id = 62
 /obj/item/weapon/key/extraction_container/mall_security
 	name = "Interchange Mall security cache key"
+	icon_state = "treasure_key"
 	desc = "Tagged for the Transit security cache on Interchange Mall's retail floor."
 	target_map = MAP_EXTRACTION_MALL
 	target_container_id = 61
 /obj/item/weapon/key/extraction_container/mall_hardware
 	name = "Interchange Mall hardware reserves key"
+	icon_state = "treasure_key"
 	desc = "Tagged for the Foundry hardware reserves chest on Interchange Mall's retail floor."
 	target_map = MAP_EXTRACTION_MALL
 	target_container_id = 62

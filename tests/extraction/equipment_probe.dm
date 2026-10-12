@@ -241,6 +241,7 @@ var/equipment_completed = FALSE
 		var/datum/extraction_equipment_codec/C = new
 		container_key_catalog_probe()
 		equipment_container_key_codec_probe(C)
+		container_key_sprite_codec_probe()
 		equipment_medical_stack_probe(C)
 		equipment_workshop_material_probe(C)
 		equipment_workshop_reservation_probe(C)
