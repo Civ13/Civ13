@@ -1201,6 +1201,7 @@
 #include "code\processes\callproc.dm"
 #include "code\processes\casings.dm"
 #include "code\processes\abandoned_items.dm"
+#include "code\processes\human_corpse_decay.dm"
 #include "code\processes\chemistry.dm"
 #include "code\processes\decal_decay.dm"
 #include "code\processes\cleanables.dm"
