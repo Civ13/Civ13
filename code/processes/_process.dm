@@ -443,3 +443,7 @@
 
 /datum/subsystem_module/proc/fire()
 	return
+
+// schedule_interval is BYOND deciseconds. Lag/resumes do not add catch-up time.
+/process/proc/configured_interval_seconds()
+	return schedule_interval / (1 SECOND)
