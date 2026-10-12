@@ -35,9 +35,12 @@ def named(body, name, trace):
         body = body.replace('\t\tif(score >', '\t\tprobe_scores["[T.x],[T.y],[T.z]"] = score\n\t\tif(score >')
     return body
 helpers = baseline[:baseline.index('// Finds the best nearby cover')]
+assert helpers == current[:current.index('// Finds the best nearby cover')], 'Cover/LOS helper drift needs separate baseline handling'
 unsorted = (repo / 'code/_helpers/unsorted.dm').read_text()
 line = re.search(r'^/proc/getline2\([\s\S]*?(?=^#define LOCATE_COORDS)', unsorted, re.M).group()
-source = helpers + line
+macros = (repo / 'code/_macros.dm').read_text()
+get_turf = re.search(r'^#define get_turf\(A\) .+$', macros, re.M).group()
+source = get_turf + '\n' + helpers + line
 for body, prefix in [(cover(baseline), 'baseline'), (candidate, 'candidate')]:
     source += named(body, prefix + '_cover', True)
     source += named(body, prefix + '_bench', False)
@@ -67,7 +70,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-npc-cover-') as temp:
     if run.returncode or re.search(r'runtime error|Bad ref|Bad loc|Cannot read null|Cannot execute null', log, re.I):
         raise SystemExit(log)
     result = json.loads((root / 'result.json').read_text())
-    result.update(head_sha=head, baseline_sha=BASELINE, source_sha256=hashlib.sha256(current.encode()).hexdigest(), compiled_sha256=hashlib.sha256(source.encode()).hexdigest(), probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), platform=os.name, negative_control=args.negative_control, benchmark=args.benchmark)
+    result.update(head_sha=head, baseline_sha=BASELINE, source_sha256=hashlib.sha256(current.encode()).hexdigest(), compiled_sha256=hashlib.sha256(source.encode()).hexdigest(), probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), platform=os.name, byond='516.1681', dimensions=[32,32,2], negative_control=args.negative_control, benchmark=args.benchmark)
     (logs / 'dirty.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=repo))
     args.output.write_text(json.dumps(result, indent=2))
     if result['scenarios'] != 100 or result['score_comparisons'] < 1000:

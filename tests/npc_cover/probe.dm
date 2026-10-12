@@ -15,10 +15,11 @@ var/comparisons = 0
 	turf = /turf
 	New()
 		..()
-		world.SetPort(0)
+		OpenPort("none")
 		spawn(1)
 			run_probe()
 	OpenPort(port)
+		if(port == "none") return ..()
 		return FALSE
 /obj/structure
 /obj/structure/window/barrier
@@ -92,9 +93,9 @@ var/comparisons = 0
 	if(id % 10 == 5)
 		E.loc = null
 	return list(H,E)
-/proc/clamp(value, low, high)
-	return min(high,max(low,value))
 /proc/run_probe()
+	if(world.port || world.OpenPort(12345))
+		failures++
 	for(var/id in 0 to 99)
 		var/list/actors = setup_scene(id)
 		check_scene(actors[1], id == 99 ? null : actors[2], id)
