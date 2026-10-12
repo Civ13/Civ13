@@ -52,13 +52,13 @@ def main():
     source = source.replace((root/'code/processes/garbage.dm').as_posix(), (out/'garbage.dm').as_posix())
     (out/'probe.dme').write_text(source)
     (out/'metadata.json').write_text(json.dumps({
-        'head_sha': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip(),
+        'head_sha': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True, timeout=30).strip(),
         'scope': 'isolated production cleanup/collector, no game startup',
         'negative_control': args.negative_control,
         'source_sha256': {name: hashlib.sha256((out/name).read_bytes()).hexdigest()
                           for name in ('probe.dme', 'garbage.dm', 'garbage_profile.dm')},
     }))
-    (out/'dirty.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root))
+    (out/'dirty.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root, timeout=30))
     win = os.name == 'nt'
     flags = subprocess.CREATE_NO_WINDOW if win else 0
     build = subprocess.run([str(args.byond_bin/('dm.exe' if win else 'DreamMaker')), '-max_errors', '0', 'probe.dme'], cwd=out, capture_output=True, text=True, timeout=60, creationflags=flags)

@@ -70,6 +70,7 @@ def main():
         if before not in body:
             raise RuntimeError('Negative control anchor missing')
         altered = out/'negative.dm'
+        body = body.replace('#include "garbage_profile.dm"', '#include "' + (root/'code/processes/garbage_profile.dm').as_posix() + '"')
         altered.write_text(body.replace(before, after, 1))
         original_path = (root/relative).as_posix()
         if original_path in source:

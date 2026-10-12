@@ -18,7 +18,10 @@ def main():
     parser.add_argument("--compiler", default="DreamMaker")
     parser.add_argument("--runtime", default="DreamDaemon")
     parser.add_argument("--food-bootstrap-negative-control", action="store_true")
+    parser.add_argument("--camera-prototype-negative-control", action="store_true")
     args = parser.parse_args()
+    if args.food_bootstrap_negative_control and args.camera_prototype_negative_control:
+        parser.error("Run one negative control at a time")
     root = Path(__file__).resolve().parents[1]
     # Assets/includes are resolved relative to the checkout; runtime storage is isolated.
     with tempfile.TemporaryDirectory(prefix=".recipe-ci-", dir=root) as build, tempfile.TemporaryDirectory(prefix="civ13-recipes-") as run:
@@ -50,7 +53,7 @@ def main():
             nodes = replace_once(nodes, marker, '"/obj/item/weapon/plough" = "basic_tools"')
             (build / "research_node.dm").write_text(nodes, encoding="utf-8")
             dme = replace_once(dme, r'#include "code\modules\research_tree\research_node.dm"', f'#include "{build.as_posix()}/research_node.dm"')
-        dme += f'\n#include "{root.as_posix()}/tests/crafting/checks.dm"\n'
+        dme += f'\n#include "{root.as_posix()}/tests/crafting/checks.dm"\n#include "{root.as_posix()}/tests/crafting/camera_progression.dm"\n'
         # Preserve resource lookup from original includes.
         dme = dme.replace('#define FILE_DIR .', f'#define FILE_DIR "{root.as_posix()}"')
         dme = re.sub(r'^#include "([^/":][^":]*)"', lambda m: f'#include "{root.as_posix()}/{m[1].replace(chr(92), "/")}"', dme, flags=re.M)
@@ -61,6 +64,10 @@ def main():
             return 1
         shutil.copytree(root / "config/crafting", run / "config/crafting")
         shutil.copytree(root / "config/names", run / "config/names")
+        if args.camera_prototype_negative_control:
+            recipes = run / "config/crafting/material_recipes_global.txt"
+            fixed = "RECIPE: /material/electronics/,early color camera,/obj/item/camera/coldwar,7,150,1,1,none,160,0,0,8,null"
+            recipes.write_text(replace_once(recipes.read_text(), fixed, fixed.replace(",0,0,8,null", ",0,0,7,null")), encoding="utf-8")
         for suffix in (".dmb", ".rsc"):
             shutil.copy2(build / ("recipes" + suffix), run)
         with (run / "runtime.log").open("w", encoding="utf-8") as log:
@@ -86,6 +93,13 @@ def main():
                 print("PASS: food bootstrap research-gate omission detected")
                 return 0
             print("FAIL: food bootstrap control did not produce only the expected gate failures")
+            return 1
+        if args.camera_prototype_negative_control:
+            expected = ["FAIL camera progression: lagging faction retains paid matching prototype after another faction advances the world"]
+            if output.rstrip().splitlines()[1:-1] == expected and output.rstrip().endswith("FAIL"):
+                print("PASS: obsolete camera prototype recipe detected")
+                return 0
+            print("FAIL: camera control did not produce only the expected availability failure")
             return 1
         return 0 if output.rstrip().endswith("PASS") else 1
 
