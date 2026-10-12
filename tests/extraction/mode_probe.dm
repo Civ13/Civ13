@@ -261,6 +261,21 @@
 	world.log << "Retaliation attacker stat=[pmc.stat] z=[pmc.z] visible=[pmc in view(12, scav)] aggressor=[scav.aggressor] clock=[world.time] decision=[scav.next_decision]"
 	scav.handle_ai()
 	equipment_assert(scav.target_mob == pmc, "scav retaliates against actual aggressor")
+	var/turf/pmc_site = get_turf(pmc)
+	pmc.forceMove(locate(30,30,1))
+	scav.next_decision = 0
+	scav.handle_ai()
+	equipment_assert(scav.aggressor == pmc && scav.target_mob == pmc, "visibility loss retains original retaliation entity")
+	var/mob/living/simple_animal/hostile/human/extraction/bystander = new(locate(9,9,1))
+	M.npcs |= bystander
+	bystander.handle_ai()
+	equipment_assert(!bystander.aggressor && !bystander.target_mob, "retaliation does not spread to friendly scav bystander")
+	scav.provoke(bystander)
+	scav.next_decision = 0
+	scav.handle_ai()
+	equipment_assert(scav.aggressor == pmc && (bystander in scav.hostile_entities), "second attacker is remembered without replacing original focus")
+	bystander.forceMove(locate(30,29,1))
+	pmc.forceMove(pmc_site)
 	pmc.handle_ai()
 	equipment_assert(pmc.target_mob == scav, "contractor hunts neutral scav")
 	var/ammo = scav.gun.ammo_magazine.stored_ammo.len
@@ -269,6 +284,7 @@
 	equipment_assert(scav.gun.ammo_magazine.stored_ammo.len == ammo - 1, "NPC consumes actual finite ammunition")
 	var/obj/item/weapon/gun/projectile/dropped = scav.gun
 	scav.death()
+	equipment_assert(!scav.aggressor && !scav.target_mob && !scav.route.len && !scav.hostile_entities.len, "death releases retaliation references")
 	equipment_assert(scav.stat == DEAD && !(scav in M.npcs) && dropped.loc == get_turf(scav) && M.raid_items[dropped], "NPC corpse drops tracked equipment once")
 	var/retained = M.raid_items.len
 	scav.death()

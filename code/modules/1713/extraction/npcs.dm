@@ -16,6 +16,7 @@
 	speak_chance = 0
 	var/contractor = FALSE
 	var/tmp/mob/living/aggressor
+	var/tmp/list/hostile_entities = list()
 	var/tmp/next_decision = 0
 	var/tmp/next_step = 0
 	var/tmp/next_shot = 0
@@ -42,8 +43,11 @@
 		gun.handle_post_fire(src)
 	proc/provoke(mob/living/attacker)
 		if (attacker && attacker != src && attacker.z == 1 && attacker.stat != DEAD)
-			aggressor = attacker
-			target_mob = attacker
+			// Mode population is bounded to 32 participants and 12 NPCs.
+			if (!(attacker in hostile_entities) && hostile_entities.len < 64) hostile_entities += attacker
+			// Keep the original retaliation focus across brief visibility loss.
+			if (!aggressor || !aggressor.loc || aggressor.stat == DEAD) aggressor = attacker
+			target_mob = aggressor
 			next_decision = 0
 	bullet_act(obj/item/projectile/P)
 		if (P && !P.nodamage) provoke(P.firer)
@@ -61,8 +65,11 @@
 		if (world.time >= next_decision)
 			next_decision = world.time + 2 SECONDS
 			var/mob/living/chosen
-			if (aggressor && aggressor.stat != DEAD && aggressor.z == z && (aggressor in view(12, src))) chosen = aggressor
-			else aggressor = null
+			for (var/mob/living/enemy in hostile_entities.Copy())
+				if (!enemy.loc || enemy.stat == DEAD) hostile_entities -= enemy
+			if (aggressor && (!aggressor.loc || aggressor.stat == DEAD)) aggressor = null
+			if (!aggressor && hostile_entities.len) aggressor = hostile_entities[1]
+			if (aggressor) chosen = aggressor
 			if (!chosen && contractor)
 				var/best_distance = 13
 				for (var/owner in M.accounts.sessions)
@@ -81,7 +88,7 @@
 						best_distance = distance
 			if (chosen != target_mob) route = list()
 			target_mob = chosen
-			if (chosen && get_dist(src, chosen) > 6) route = cirrAstar(get_turf(src), get_turf(chosen), 5, 64)
+			if (chosen && chosen.z == z && (chosen in view(12, src)) && get_dist(src, chosen) > 6) route = cirrAstar(get_turf(src), get_turf(chosen), 5, 64)
 		if (!target_mob || target_mob.stat == DEAD || target_mob.z != 1) return
 		if (get_dist(src, target_mob) <= 1)
 			if (world.time >= next_shot)
@@ -100,6 +107,7 @@
 		if (stat == DEAD) return
 		..()
 		aggressor = null
+		hostile_entities.Cut()
 		target_mob = null
 		route = list()
 		var/obj/map_metadata/extraction_survival/M = map
