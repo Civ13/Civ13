@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
+import time
 
 BASELINE = "0e9b527ec492196b548d1cf92bc270c30ef30e67"
 SYSTEM = "code/modules/lighting/lighting_system.dm"
@@ -58,6 +59,33 @@ def prepare(repo, mode, negative=False):
                 "adapters": ["isolated map/turf fields, overlay pool/render and startup hook", "64-candidate fixture pause ceiling with real tick_usage threshold", "wall icon resource omitted", "ordering observations only"]}
     return files,manifest
 
+def run_logged(command, cwd, log_name, timeout, flags):
+    """Retain partial child output and launch/deadline failures before raising."""
+    started = time.monotonic()
+    receipt = {"command": command, "timeout_seconds": timeout, "state": "launching"}
+    receipt_path = cwd / (Path(log_name).stem + "-execution.json")
+    receipt_path.write_text(json.dumps(receipt, indent=2))
+    stdout = stderr = ""
+    def decode(value):
+        return value.decode(errors="replace") if isinstance(value, bytes) else (value or "")
+    try:
+        result = subprocess.run(command, cwd=cwd, capture_output=True, text=True,
+                                timeout=timeout, creationflags=flags)
+        stdout, stderr = result.stdout, result.stderr
+        receipt.update(state="returned", returncode=result.returncode)
+        return result
+    except Exception as error:
+        stdout = decode(getattr(error, "stdout", ""))
+        stderr = decode(getattr(error, "stderr", ""))
+        receipt.update(state="timeout" if isinstance(error, subprocess.TimeoutExpired) else "launch_error",
+                       exception_type=type(error).__name__, error=str(error))
+        raise
+    finally:
+        (cwd / log_name).write_text(stdout + stderr)
+        receipt["elapsed_seconds"] = time.monotonic() - started
+        receipt_path.write_text(json.dumps(receipt, indent=2))
+
+
 def execute(repo, out, mode, negative, byond):
     files,manifest=prepare(repo,mode,negative)
     out.mkdir(parents=True,exist_ok=False)
@@ -67,11 +95,11 @@ def execute(repo, out, mode, negative, byond):
     compiler=byond/("dm.exe" if os.name=="nt" else "DreamMaker")
     daemon=byond/("dd.exe" if os.name=="nt" else "DreamDaemon")
     flags=subprocess.CREATE_NO_WINDOW if os.name=="nt" else 0
-    build=subprocess.run([str(compiler),"-max_errors","0","probe.dme"],cwd=out,capture_output=True,text=True,timeout=120,creationflags=flags)
+    build=run_logged([str(compiler),"-max_errors","0","probe.dme"],out,"compile.log",120,flags)
     log=build.stdout+build.stderr
     (out/"compile.log").write_text(log)
     assert build.returncode==0 and "516.1681" in log and "0 errors, 0 warnings" in log,log
-    run=subprocess.run([str(daemon),"probe.dmb"]+(["-invisible"] if os.name=="nt" else [])+["-close","-safe","-log","runtime.log"],cwd=out,capture_output=True,text=True,timeout=120,creationflags=flags)
+    run=run_logged([str(daemon),"probe.dmb"]+(["-invisible"] if os.name=="nt" else [])+["-close","-safe","-log","runtime.log"],out,"daemon-child.log",120,flags)
     log=(out/"runtime.log").read_text(errors="replace") if (out/"runtime.log").exists() else ""
     log+=run.stdout+run.stderr
     (out/"daemon.log").write_text(log)

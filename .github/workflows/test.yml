@@ -133,6 +133,7 @@ jobs:
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           git fetch --no-tags --depth=1 origin 0e9b527ec492196b548d1cf92bc270c30ef30e67
+          python3 tests/lighting_startup/test_runner.py
           python3 tests/lighting_startup/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/lighting-startup/positive"
           python3 tests/lighting_startup/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control --output "$RUNNER_TEMP/lighting-startup/negative"
           if [ "${{ needs.changes.outputs.extensive }}" != true ]; then

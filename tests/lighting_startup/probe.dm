@@ -37,9 +37,10 @@ var/list/lighting_overlay_list = list()
 	var/list/zlevels_without_lighting = list(3,4)
 /datum/test_ticker
 	var/current_state = 0
-/area/test
+/area
 	var/dynamic_lighting = TRUE
 	var/is_void_area = FALSE
+/area/test
 /turf
 	var/has_opaque_atom = FALSE
 	var/list/corners = list(null,null,null,null)
@@ -70,8 +71,8 @@ var/list/lighting_overlay_list = list()
 			var/turf/replacement = new /turf/test/replacement(old)
 			replacement.corners = saved_corners
 		spawn()
-			var/turf/T = locate(2,2,1)
-			var/datum/lighting_corner/C = T.corners[1]
+			var/turf/activity_turf = locate(2,2,1)
+			var/datum/lighting_corner/C = activity_turf.corners[1]
 			if (lighting_startup_in_progress)
 				probe_activity_waiters++
 			C.update_active()
@@ -83,9 +84,6 @@ var/list/lighting_overlay_list = list()
 	del(A)
 /proc/qdel_list(list/L)
 	L.Cut()
-/proc/CRASH(message)
-	probe_errors++
-	world.log << "runtime error assertion: [message]"
 /proc/pick_TOD()
 	return "Midday"
 /proc/coord(turf/T)
@@ -94,12 +92,12 @@ var/list/lighting_overlay_list = list()
 	if (probe_inject_error)
 		probe_inject_error = FALSE
 		spawn()
-			var/turf/T = locate(1,1,1)
-			T.lighting_build_overlay()
+			var/turf/build_turf = locate(1,1,1)
+			build_turf.lighting_build_overlay()
 			probe_failure_waiter_done = TRUE
 		spawn()
-			var/turf/T = locate(2,2,1)
-			T.lighting_clear_overlay()
+			var/turf/clear_turf = locate(2,2,1)
+			clear_turf.lighting_clear_overlay()
 			probe_clear_waiter_done = TRUE
 		sleep(1)
 		throw new /exception("deliberate startup interruption")
