@@ -4,6 +4,11 @@
 	map = src
 	icon = null
 
+/process/mapswap/extraction_probe
+	var/list/requests = list()
+	execute_map_swap(winner)
+		requests += winner
+
 /obj/map_metadata/extraction_survival
 	var/list/test_owners = list()
 	var/test_wait = "complete"
@@ -238,6 +243,8 @@
 	extraction_round_probe(M)
 
 /proc/extraction_round_probe(obj/map_metadata/extraction_survival/M)
+	var/process/mapswap/extraction_probe/swapper = new
+	equipment_assert(!M.accept_map_vote("UNSUPPORTED_MAP") && M.accept_map_vote(MAP_ALLEYWAY) && !swapper.selected_extraction_map(), "bounded hub selection rejects unsupported IDs and cannot switch before settlement")
 	var/mob/living/human/H = new(locate(3,3,1))
 	H.m_intent = "stealth"
 	M.test_owners[H] = "roundowner"
@@ -288,6 +295,11 @@
 	M.returns.test_fail_at = null
 	M.tick()
 	equipment_assert(M.game_over && (!G || !G.loc) && (!bag || !bag.loc), "round retry retires physical graph before acknowledging completed settlement")
+	swapper.restart_triggered = TRUE
+	swapper.fire()
+	equipment_assert(swapper.requests.len == 1 && swapper.requests[1] == MAP_ALLEYWAY && swapper.next_map_title == (map_id_to_title[MAP_ALLEYWAY] ? map_id_to_title[MAP_ALLEYWAY] : MAP_ALLEYWAY), "settled hub vote passes exact ordinary TDM ID to injected launcher without fallback")
+	swapper.fire()
+	equipment_assert(swapper.requests.len == 1, "scheduled map process does not dispatch completed selection twice")
 	var/datum/extraction_session/stranded_reopen = M.accounts.open("strandedowner")
 	equipment_assert(stranded_reopen && stranded_reopen.profile["state"] == "home" && stranded_reopen.profile["stash"].len == 3 && !stranded_reopen.profile["insurance_mailbox"], "stranded uninsured gun is lost while committed home equipment remains")
 	stranded_reopen.close()

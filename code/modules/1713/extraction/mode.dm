@@ -1,4 +1,3 @@
-#define MAP_EXTRACTION_SURVIVAL "EXTRACTION_SURVIVAL"
 #define EXTRACTION_HOUSES 16
 
 var/global/list/extraction_house_markers = list()
@@ -63,7 +62,11 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	attack_hand(mob/user)
 		var/mob/living/human/H = user
 		var/obj/map_metadata/extraction_survival/M = map
-		if (istype(H) && istype(M) && Adjacent(H)) M.return_home(H)
+		if (!istype(H) || !istype(M) || !Adjacent(H) || !M.owned(H) || H.z != 3) return
+		var/choice = WWinput(H, "Return to your private house or start a vote for the next round. Map changes wait until this district closes and account settlement completes.", "Safe hub", "Cancel", list("Return home", "Vote next map", "Cancel"))
+		if (!Adjacent(H) || !M.owned(H) || H.z != 3) return
+		if (choice == "Return home") M.return_home(H)
+		else if (choice == "Vote next map") M.start_map_vote(H)
 
 /area/extraction_district
 	name = "Industrial district"

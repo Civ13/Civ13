@@ -162,6 +162,13 @@
 	// no SCHECK here
 	done = FALSE
 	if (is_ready())
+		var/selected = selected_extraction_map()
+		if (selected)
+			var/obj/map_metadata/extraction_survival/M = map
+			maps = M.hub_map_catalog()
+			ready = FALSE
+			swap(selected)
+			return
 		ready = FALSE
 		epoch = vote.voted_epoch
 		switch(epoch)
@@ -377,7 +384,7 @@
 	if (!maps.Find(winner))
 		winner = pick(maps)
 	if (!done)
-		processes.python.execute("mapswap.py", list(winner))
+		execute_map_swap(winner)
 		done = TRUE
 
 /process/gamemode

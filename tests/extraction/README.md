@@ -8,6 +8,8 @@ Use BYOND 516.1681 and a verified full Python interpreter path:
 & $PythonPath tests/extraction/test_recovery.py --byond-bin $ByondBin
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe equipment
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe mode
+& $PythonPath tests/extraction/test_map_environment.py
+& $PythonPath tests/extraction/check_catalog.py --byond-bin $ByondBin
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe equipment --provenance-negative-control
 ```
 

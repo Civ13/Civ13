@@ -125,7 +125,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				text = "<b>Vote Tied Between:</b>\n"
 				for (var/option in winners)
 					var/display_opt = option
-					if (mode == "map" && map_id_to_title[option])
+					if ((mode in list("map", "safehouse map")) && map_id_to_title[option])
 						display_opt = map_id_to_title[option]
 					text += "\t[display_opt]\n"
 			var/newwinner = pick(winners)
@@ -135,7 +135,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				if (choices[current_votes[key]] == newwinner)
 					round_voters += key // Keep track of who voted for the winning round.
 			var/display_winner = newwinner
-			if (mode == "map" && map_id_to_title[newwinner])
+			if ((mode in list("map", "safehouse map")) && map_id_to_title[newwinner])
 				display_winner = map_id_to_title[newwinner]
 			text += "<b>Vote Result: <span class = 'ping'>[display_winner]</span></b><br>"
 			text += "<b>The vote has ended.</b>"
@@ -242,6 +242,14 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					for (var/map in processes.mapswap.maps)
 						if (clients.len < processes.mapswap.maps[map])
 							disabled[map] = "[processes.mapswap.maps[map]] players needed"
+				if ("safehouse map")
+					var/obj/map_metadata/extraction_survival/M = map
+					if (!istype(M) || M.round_closing) return FALSE
+					var/list/catalog = M.hub_map_catalog()
+					for (var/id in catalog)
+						if (!default) default = id
+						choices.Add(id)
+						choices[id] = 0
 				if ("custom")
 					question = input(usr,"What is the vote for?") as text|null
 					if (!question)	return FALSE

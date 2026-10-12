@@ -3,9 +3,23 @@
 This mode is under implementation and has not received playable acceptance.
 Isolated native tests cover account storage, nested equipment restoration,
 bounded NPC combat, extraction cancellation, private rooms and hub navigation.
-Existing Factory mode stays available unchanged. Insurance,
-stack transformations and map voting
-remain pending. The required genuine concept video has not been recorded.
+Existing Factory mode stays available unchanged. Stack transformations and
+playable acceptance remain pending. The required genuine concept video has
+not been recorded.
+
+The shared concourse terminal offers a server-wide vote for the next round:
+Industrial District, Alleyway or Bank Robbery. Only these existing map files
+are accepted. Voting records a choice; the map-switch process waits until the
+finite raid has finished durable stash and insurance settlement. The terminal
+also returns players to their private house. Starting a vote requires an empty
+carried inventory and a conscious account owner in the concourse.
+
+The launcher replaces an explicitly marked map-selection block with one
+unconditional include. This avoids leaving a selected TDM map inside the
+inactive extraction compile conditional. Offline tests exercise the rewrite;
+the catalog check compiles all three actual environments with BYOND 516.1681.
+The mode fixture records the switch request through an injected adapter and
+does not deploy, restart production or establish graphical menu acceptance.
 
 ## Milestones and dependencies
 
