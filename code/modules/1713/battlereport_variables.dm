@@ -241,10 +241,8 @@ var/list/recently_died = list()
 			recently_died += storedRoundUID
 			spawn (200)
 				recently_died -= storedRoundUID
-	if (start_to_rot == FALSE)
-		start_to_rot = TRUE
-		do_rotting()
 	..()
+	do_rotting()
 
 
 /mob/living/human/Life()

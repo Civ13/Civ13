@@ -98,6 +98,7 @@
 	spawn(5)
 		nomads_spawn()
 /mob/living/human/Destroy()
+	unregister_corpse_decay()
 	human_mob_list -= src
 	human_clients_mob_list -= src
 	for (var/organ in organs)
@@ -544,6 +545,9 @@ var/list/coefflist = list()
 
 
 /mob/living/human/revive()
+	unregister_corpse_decay()
+	reset_corpse_decay_age()
+	start_to_rot = FALSE
 
 	if (species && !(species.flags & NO_BLOOD))
 		vessel.add_reagent("blood",species.blood_volume-vessel.total_volume)
@@ -1314,7 +1318,10 @@ var/list/coefflist = list()
 	..()
 
 /mob/living/human/Move()
-	..()
+	var/atom/old_location = loc
+	. = ..()
+	if (loc != old_location)
+		reset_corpse_decay_age()
 	handle_looks_with_movement()
 
 	if (phosphor_dye_timer > 0)
