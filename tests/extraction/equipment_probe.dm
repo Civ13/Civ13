@@ -2,8 +2,13 @@
 	hub = ""
 	hub_password = ""
 #ifndef EXTRACTION_MODE_PROBE
+#ifdef EXTRACTION_VEHICLE_PROCESS_PROBE
+	maxx = 24
+	maxy = 24
+#else
 	maxx = 8
 	maxy = 8
+#endif
 	maxz = 1
 #endif
 	turf = /turf
@@ -30,6 +35,9 @@ var/equipment_completed = FALSE
 /world/New()
 	world.OpenPort("none")
 	spawn(2)
+#ifdef EXTRACTION_VEHICLE_PROCESS_PROBE
+		run_vehicle_process_probe()
+#else
 #ifdef EXTRACTION_GROUP_PROCESS_PROBE
 		run_group_process_probe()
 #else
@@ -37,6 +45,7 @@ var/equipment_completed = FALSE
 		run_insurance_process_probe()
 #else
 		run_equipment_probe()
+#endif
 #endif
 #endif
 

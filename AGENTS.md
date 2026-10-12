@@ -249,6 +249,14 @@ zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
 ## Local MCP tooling
 
+<!-- 2026-10-11: extraction vehicle account graph -->
+Extraction garage snapshots use explicit bounded part/link/config/fuel graphs;
+never serialize movement callbacks, passengers or arbitrary vehicle vars.
+`tests/extraction/run.py --probe vehicles` uses three native processes for
+acknowledged reload, removal and quarantined-debit loss settlement. Its
+`--vehicle-loss-negative-control` detects retaining an uncertain old garage
+when stash is empty. These checks do not establish playable vehicle extraction.
+
 <!-- 2026-10-11: cancellable voting -->
 Votes expose terminal vote handles with generation-bound ballots and immutable
 deadlines. Retain and cancel handles when a caller's lifetime ends; completion

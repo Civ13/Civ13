@@ -59,7 +59,7 @@ remains. A successful fresh raid can reset this resolved container normally.
 
 If the intended bytes are missing, corrupt, or conflict with another owner's
 gear, exact completion is unavailable. An explicitly approved loss settlement
-can unlock the journal by discarding the entire stash, including previously
+can unlock the journal by discarding the entire stash and garage, including previously
 secured gear. It preserves only the previously committed house level, clears
 uncertain loot, advances the raid sequence and records the discarded intent.
 This is permanent loss, not selective restoration or a refunded upgrade:

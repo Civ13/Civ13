@@ -11,6 +11,8 @@ Use BYOND 516.1681 and a verified full Python interpreter path:
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control debit
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control visibility
+& $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe vehicles
+& $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe vehicles --vehicle-loss-negative-control
 & $PythonPath tests/extraction/test_map_environment.py
 & $PythonPath tests/extraction/check_catalog.py --byond-bin $ByondBin
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe equipment --provenance-negative-control
@@ -129,8 +131,15 @@ The mode fixture also assembles a real car and checks the internal physical
 transfer helper: moving/stale vehicles, loose/nested cargo and occupied bays
 are rejected before relocation; original parts, fuel, wall condition and
 steering survive a successful transfer, which cannot replay. These checks do
-not establish account garage persistence, cargo/passenger extraction or client
-interaction. Those remain incomplete.
+not establish player-facing garage transactions, cargo/passenger extraction or
+client interaction. The separate vehicles probe checks a committed explicit
+car graph across three native processes, preserving part identities, wall
+condition and tank contents, then removing ownership and rejecting stale credit.
+An interrupted debit blocks access to the previous garage. Explicit offline
+loss settlement discards that uncertain garage independently of an empty stash
+and preserves an audit reason. The garage-retention omission control must fail
+at this assertion. Ordinary acknowledged reload and explicit forfeiture are
+separate outcomes; this is not production restart or playable acceptance.
 
 Record a genuine disposable local playable world after integrated regressions
 pass. Use the exact pinned build and record its full commit, dirty patch when

@@ -22,8 +22,25 @@
 	if (islist(P) && !isnull(P["credits"]) && (!isnum(P["credits"]) || P["credits"] < 0 || P["credits"] > 1000000 || round(P["credits"]) != P["credits"])) return FALSE
 	if (islist(P) && !isnull(P["raid_faction"]) && !(P["raid_faction"] in list("PMC", "Scav"))) return FALSE
 	if (!islist(P)) return FALSE
+	if (!isnull(P["garage"]) && !valid_garage(P["garage"])) return FALSE
 	var/list/stash = P["stash"]
 	return P["schema"] == EXTRACTION_STORE_VERSION && P["owner"] == owner && isnum(P["revision"]) && P["revision"] >= 0 && round(P["revision"]) == P["revision"] && isnum(P["level"]) && P["level"] >= 1 && P["level"] <= 4 && round(P["level"]) == P["level"] && islist(stash) && stash.len <= 64 && (P["state"] == "home" || P["state"] == "raid") && isnum(P["raid_sequence"]) && P["raid_sequence"] >= 0 && round(P["raid_sequence"]) == P["raid_sequence"]
+
+// Core storage checks identity/shape without depending on gameplay constructors.
+// The vehicle codec validates every type, field, link and tank before decode.
+/datum/extraction_account_store/proc/valid_garage(list/garage)
+	if (!islist(garage) || garage.len > 1) return FALSE
+	var/list/ids = list()
+	for (var/i in 1 to garage.len)
+		var/list/vehicle = garage[i]
+		if (!islist(vehicle) || vehicle["schema"] != 1 || !islist(vehicle["nodes"])) return FALSE
+		var/list/nodes = vehicle["nodes"]
+		if (!nodes.len || nodes.len > 128 || !islist(nodes[1]) || nodes[1]["id"] != vehicle["id"]) return FALSE
+		for (var/j in 1 to nodes.len)
+			var/list/node = nodes[j]
+			if (!islist(node) || !istext(node["id"]) || !length(node["id"]) || length(node["id"]) > 80 || ids[node["id"]] || !istext(node["type"])) return FALSE
+			ids[node["id"]] = TRUE
+	return TRUE
 
 // A newer intent without its exact committed payload blocks automatic rollback.
 // The older slot may contain equipment already issued to an interrupted raid.
@@ -152,6 +169,10 @@
 
 /datum/extraction_account_store/proc/recovery_ids(list/P)
 	var/list/ids = list()
+	if (!isnull(P["garage"]))
+		if (!valid_garage(P["garage"])) return null
+		for (var/list/vehicle in P["garage"])
+			for (var/list/node in vehicle["nodes"]) ids[node["id"]] = TRUE
 	var/list/stash = P["stash"]
 	if (islist(P["insurance_mailbox"]))
 		stash = stash.Copy()
@@ -228,6 +249,7 @@
 	var/list/P = previous["generation"] ? json_decode(json_encode(previous["profile"])) : list("schema" = 1, "owner" = owner, "level" = 1, "raid_sequence" = 0)
 	P["revision"] = generation
 	P["stash"] = list()
+	P["garage"] = list()
 	P["state"] = "home"
 	P["raid_sequence"]++
 	P["loot_state"] = "ready"

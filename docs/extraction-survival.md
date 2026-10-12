@@ -4,10 +4,14 @@ This mode is under implementation and has not received playable acceptance.
 Vehicle extraction remains incomplete. An internal helper preflights a stopped,
 unoccupied car and a clear floor footprint, then moves its existing parts and
 nested controller, steering and wheels. It rejects loose or nested cargo and
-preserves the actual tank, fuel and wall condition. It does not credit a garage
-or persist vehicle ownership. Durable garage transactions, cargo/capacity,
-passenger policy and restart recovery are required before a player-facing
-vehicle extraction action is available.
+preserves the actual tank, fuel and wall condition. A bounded explicit vehicle
+codec now persists one car graph through the account journal. Three native
+processes verify ordinary reload, condition/fuel preservation, durable removal
+and stale revision rejection. Interrupted debits remain quarantined; explicit
+offline loss settlement forfeits the uncertain garage with an audit receipt.
+An omission control proves the test detects retention of that previous garage.
+Player-facing garage transactions, cargo/capacity and passenger policy remain
+required before a vehicle extraction action is available.
 
 Isolated native tests cover account storage, nested equipment restoration,
 bounded NPC combat, extraction cancellation, private rooms and hub navigation.

@@ -12,11 +12,14 @@ import uuid
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
-    parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'insurance', 'groups'), default='store')
+    parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'insurance', 'groups', 'vehicles'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry'))
     parser.add_argument('--group-negative-control', choices=('debit', 'visibility'))
+    parser.add_argument('--vehicle-loss-negative-control', action='store_true')
     args = parser.parse_args()
+    if args.vehicle_loss_negative_control and (args.probe != 'vehicles' or args.provenance_negative_control or args.vote_negative_control or args.group_negative_control):
+        parser.error('Vehicle loss control requires the vehicles probe without another control')
     if args.provenance_negative_control and args.probe not in ('equipment', 'mode'):
         parser.error('Provenance control requires the equipment or mode probe')
     if args.vote_negative_control and (args.probe != 'mode' or args.provenance_negative_control):
@@ -28,8 +31,8 @@ def main():
     compiler = binary / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
-    if args.probe in ('equipment', 'mode', 'insurance', 'groups'):
-        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control)
+    if args.probe in ('equipment', 'mode', 'insurance', 'groups', 'vehicles'):
+        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control)
     with tempfile.TemporaryDirectory(prefix='civ13-extraction-') as temp:
         target = Path(temp)
         (target / 'tests/extraction').mkdir(parents=True)
@@ -59,13 +62,22 @@ def main():
                 raise RuntimeError('Account journal verification failed')
 
 
-def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None):
+def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False):
     prefix = '.extraction_' + uuid.uuid4().hex
     generated = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '.dmb', '.rsc')]
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         expected_vote_failure = None
         expected_group_failure = None
+        if vehicle_loss_control:
+            store_source = (root / 'code/modules/1713/extraction/account_store.dm').read_text(encoding='utf-8')
+            marker = '\tP["garage"] = list()'
+            if store_source.count(marker) != 1:
+                raise RuntimeError('Garage loss mutation marker changed')
+            control = root / (prefix + '_account_store.dm')
+            generated.append(control)
+            control.write_text(store_source.replace(marker, '\t// Negative control: retain uncertain garage'), encoding='utf-8')
+            source = source.replace('code\\modules\\1713\\extraction\\account_store.dm', control.name)
         if group_control:
             filename = 'settlement' if group_control == 'debit' else 'transactions'
             group_source = (root / f'code/modules/1713/extraction/{filename}.dm').read_text(encoding='utf-8')
@@ -129,6 +141,9 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
         if probe == 'groups':
             source = '#define EXTRACTION_GROUP_PROCESS_PROBE\n' + source
             source += '\n#include "tests/extraction/group_process_probe.dm"\n'
+        if probe == 'vehicles':
+            source = '#define EXTRACTION_VEHICLE_PROCESS_PROBE\n' + source
+            source += '\n#include "tests/extraction/vehicle_process_probe.dm"\n'
         source += '\n#include "tests/extraction/equipment_probe.dm"\n'
         generated[0].write_text(source, encoding='utf-8')
         with tempfile.TemporaryDirectory(prefix='civ13-extraction-equipment-') as temp:
@@ -142,7 +157,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             shutil.copy2(generated[4], target / 'probe.rsc')
             shutil.copytree(root / 'config/names', target / 'config/names')
             platform = ['-invisible', '-close'] if os.name == 'nt' else []
-            phases = ('write', 'reload', 'replay') if probe in ('insurance', 'groups') else ('equipment',)
+            phases = ('write', 'reload', 'replay') if probe in ('insurance', 'groups', 'vehicles') else ('equipment',)
             for phase in phases:
                 (target / 'result.txt').unlink(missing_ok=True)
                 try:
@@ -155,6 +170,12 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
                 log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''
                 print(result)
+                if vehicle_loss_control and result.startswith('FAIL:'):
+                    if ran.returncode or 'uncertain garage forfeited independently of empty stash' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
+                        print(log)
+                        raise RuntimeError('Vehicle loss control failed outside its intended assertion')
+                    print('PASS: uncertain garage retention negative control rejected')
+                    return
                 if group_control and result.startswith('FAIL:'):
                     if ran.returncode or expected_group_failure not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
                         print(log)
@@ -178,6 +199,8 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                     raise RuntimeError('Production equipment verification failed')
             if group_control:
                 raise RuntimeError('Group control was not detected')
+            if vehicle_loss_control:
+                raise RuntimeError('Vehicle loss control was not detected')
     finally:
         for path in generated:
             path.unlink(missing_ok=True)

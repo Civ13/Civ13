@@ -58,6 +58,7 @@
 
 /datum/extraction_session/proc/commit(list/candidate)
 	if (!active()) return FALSE
+	if (!isnull(candidate["garage"]) && !islist(service.store.recovery_ids(candidate))) return FALSE
 	if (!service.insurance_profile_valid(candidate)) return FALSE
 	if (!service.store.commit_profile(owner, candidate))
 		// A failed phase may have a durable intent. Stop all further mutations.
@@ -237,6 +238,7 @@
 	var/datum/extraction_session/validator = new
 	if (!isnull(P["insurance_mailbox"]) && !validator.valid_entries(P["insurance_mailbox"], 64)) return FALSE
 	if (islist(P["insurance_mailbox"]) && P["insurance_mailbox"].len && !islist(store.recovery_ids(P))) return FALSE
+	if (!isnull(P["garage"]) && !islist(store.recovery_ids(P))) return FALSE
 	if (claims)
 		for (var/list/claim in claims)
 			if (!islist(claim) || !istext(claim["round"]) || !length(claim["round"]) || length(claim["round"]) > 64 || !isnum(claim["sequence"]) || claim["sequence"] < 1 || claim["sequence"] > P["raid_sequence"] || round(claim["sequence"]) != claim["sequence"]) return FALSE
