@@ -45,6 +45,8 @@ class OperationStore:
     """Bounded durable no-replay barriers. Pending operations require operator recovery."""
     def __init__(self, directory, profile_digest, checkpoint=None):
         self.directory = Path(directory) / "operations"
+        if self.directory.is_symlink():
+            raise ValueError("Refusing linked operation directory")
         self.directory.mkdir(exist_ok=True)
         self.profile_digest = profile_digest
         self.checkpoint = checkpoint or (lambda phase: None)
@@ -63,6 +65,11 @@ class OperationStore:
                 or receipt.get("operation_id") != identity or receipt.get("outcome") not in {"pending", "committed"}
                 or not isinstance(receipt.get("request"), dict)):
             raise ValueError("Invalid operation receipt; recovery required")
+        expected = {"schema", "operation_id", "binding_digest", "request", "outcome", "result"}
+        if receipt["outcome"] == "committed":
+            expected.add("launch_identity")
+        if set(receipt) != expected:
+            raise ValueError("Unknown receipt fields; recovery required")
         body = receipt["request"]
         if set(body) != {"action", "map_id", "profile_digest", "origin"}:
             raise ValueError("Invalid receipt request; recovery required")
@@ -76,6 +83,20 @@ class OperationStore:
             raise ValueError("Invalid receipt binding; recovery required")
         if receipt["outcome"] == "committed" and (not isinstance(receipt.get("result"), dict) or receipt["result"].get("ok") is not True):
             raise ValueError("Invalid terminal receipt; recovery required")
+        if receipt["outcome"] == "committed":
+            result = receipt["result"]
+            if set(result) - {"ok", "engine", "running", "game_port", "topic_port", "runtime_dir", "server_pid"}:
+                raise ValueError("Unknown terminal result; recovery required")
+            if "running" in result and type(result["running"]) is not bool:
+                raise ValueError("Invalid terminal process state; recovery required")
+            launch = receipt["launch_identity"]
+            if launch is not None and (not isinstance(launch, dict)
+                    or set(launch) != {"schema", "instance_id", "profile_digest", "build_id", "map_id", "ready", "server_pid"}
+                    or launch.get("schema") != "civ13.launch.v1"
+                    or launch.get("profile_digest") != self.profile_digest or launch.get("ready") is not False
+                    or not isinstance(launch.get("instance_id"), str)
+                    or not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", launch["instance_id"])):
+                raise ValueError("Invalid terminal launch identity; recovery required")
         if receipt["outcome"] == "pending" and receipt.get("result") is not None:
             raise ValueError("Invalid pending receipt; recovery required")
         return receipt
@@ -114,6 +135,7 @@ class OperationStore:
             self.checkpoint("effect_completed")
             if not isinstance(result, dict) or result.get("ok") is not True:
                 raise ValueError("Uncertain operation outcome; pending barrier retained")
+            result = dict(result)
             launch = result.pop("launch_identity", None)
             receipt = dict(receipt, outcome="committed", result=result, launch_identity=launch)
             atomic_json(path, receipt)
@@ -195,6 +217,19 @@ class Supervisor:
         self.map_id = self.profile.get("map_id")
         self.instance_id = None
         self.operations = OperationStore(self.control, self.profile_digest)
+        active = self.control / "active-map.json"
+        if active.exists():
+            record = read_json(active)
+            if (not isinstance(record, dict) or set(record) != {"schema", "profile_digest", "map_id", "dme_sha256", "json_sha256"}
+                    or record.get("schema") != "civ13.active-map.v1"
+                    or record.get("profile_digest") != self.profile_digest
+                    or record.get("map_id") not in self.profile.get("maps", {})):
+                raise ValueError("Active map identity uncertain; operator recovery required")
+            for path, field in ((self.root / "civ13.dme", "dme_sha256"), (self.root / "civ13.json", "json_sha256")):
+                if path.is_symlink() or hashlib.sha256(path.read_bytes()).hexdigest() != record.get(field):
+                    raise ValueError("Active map bytes changed; operator recovery required")
+            self.map_id = record["map_id"]
+        self.restore_map_stage()
         for field in ("build_id", "map_id"):
             value = self.profile.get(field)
             if value is not None and (not isinstance(value, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", value)):
@@ -210,6 +245,41 @@ class Supervisor:
             raise ValueError("server_command must be a trusted argv list")
         if not Path(command[0]).is_absolute():
             raise ValueError("Executable must be absolute")
+
+    def restore_map_stage(self):
+        marker = self.control / "staged-map.json"
+        if not marker.exists():
+            return
+        record = read_json(marker)
+        if (not isinstance(record, dict) or set(record) != {"schema", "profile_digest", "map_id", "state", "dme_sha256", "json_sha256"}
+                or record.get("schema") != "civ13.map-stage.v1"
+                or record.get("profile_digest") != self.profile_digest
+                or record.get("state") != "staged"
+                or record.get("map_id") not in self.profile.get("maps", {})):
+            raise ValueError("Map stage uncertain; operator recovery required")
+        staged = self.root / "opendream-staged.dme"
+        compiled = self.root / "opendream-staged.json"
+        for path, field in ((staged, "dme_sha256"), (compiled, "json_sha256")):
+            if path.is_symlink() or not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != record.get(field):
+                raise ValueError("Map stage changed; operator recovery required")
+        self.pending_map = (staged, compiled, record["map_id"])
+
+    def commit_map_stage(self):
+        # Validate bytes before stopping. Applying survives interrupted multi-file replacement.
+        self.restore_map_stage()
+        staged, compiled, map_id = self.pending_map
+        marker = self.control / "staged-map.json"
+        atomic_json(marker, dict(read_json(marker), state="applying"))
+        self.stop()
+        os.replace(compiled, self.root / "civ13.json")
+        os.replace(staged, self.root / "civ13.dme")
+        record = read_json(marker)
+        atomic_json(self.control / "active-map.json", {
+            "schema": "civ13.active-map.v1", "profile_digest": self.profile_digest,
+            "map_id": map_id, "dme_sha256": record["dme_sha256"], "json_sha256": record["json_sha256"]})
+        self.map_id = map_id
+        self.pending_map = None
+        marker.unlink()
 
     def status(self):
         return {"ok": True, "engine": "opendream", "running": bool(self.child and self.child.poll() is None),
@@ -264,6 +334,8 @@ class Supervisor:
         replacement = '#include "' + target.relative_to(self.root).as_posix() + '"'
         staged = self.root / "opendream-staged.dme"
         compiled = staged.with_suffix(".json")
+        if staged.is_symlink() or compiled.is_symlink():
+            raise ValueError("Refusing linked map stage files")
         try:
             staged.write_text(re.sub(pattern, lambda _: replacement, source,
                                     flags=re.MULTILINE | re.IGNORECASE), encoding="utf-8")
@@ -277,14 +349,16 @@ class Supervisor:
                                timeout=180, check=True)
             if not compiled.is_file() or compiled.stat().st_size == 0:
                 raise ValueError("Compiler produced no JSON; running server preserved")
+            atomic_json(self.control / "staged-map.json", {
+                "schema": "civ13.map-stage.v1", "profile_digest": self.profile_digest,
+                "map_id": map_id, "state": "staged",
+                "dme_sha256": hashlib.sha256(staged.read_bytes()).hexdigest(),
+                "json_sha256": hashlib.sha256(compiled.read_bytes()).hexdigest()})
+            self.pending_map = (staged, compiled, map_id)
             if defer:
-                self.pending_map = (staged, compiled, map_id)
                 return
             # Compilation is complete before the owned server is touched.
-            self.stop()
-            os.replace(compiled, self.root / "civ13.json")
-            os.replace(staged, dme)
-            self.map_id = map_id
+            self.commit_map_stage()
             self.start()
         finally:
             if not self.pending_map:
@@ -298,13 +372,10 @@ class Supervisor:
         if action == "start":
             self.start()
         elif action == "restart":
-            self.stop()
             if self.pending_map:
-                staged, compiled, map_id = self.pending_map
-                os.replace(compiled, self.root / "civ13.json")
-                os.replace(staged, self.root / "civ13.dme")
-                self.pending_map = None
-                self.map_id = map_id
+                self.commit_map_stage()
+            else:
+                self.stop()
             self.start()
         elif action == "mapswap":
             self.mapswap(request.get("map"), defer=from_game)
@@ -332,6 +403,13 @@ class Supervisor:
         with lock.open("x", encoding="utf-8") as handle:
             handle.write(str(os.getpid()))
         try:
+            for receipt_path in self.operations.directory.glob("*.json"):
+                record = read_json(receipt_path)
+                if not isinstance(record, dict) or not isinstance(record.get("operation_id"), str):
+                    raise ValueError("Corrupt operation history; recovery required")
+                receipt = self.operations.inspect(record["operation_id"])
+                if receipt_path != self.operations.path(record["operation_id"]) or receipt["outcome"] == "pending":
+                    raise ValueError("Uncertain operation history; refusing a new supervisor")
             if not (self.control / "request.json").exists():
                 self.operate({"id": uuid.uuid4().hex, "action": "start", "map": None}, "bootstrap")
             atomic_json(self.control / "enabled.json", {"enabled": True})

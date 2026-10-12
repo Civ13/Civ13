@@ -111,8 +111,10 @@ flushes/fsyncs the temporary file and replaces it, but does not establish parent
 directory power-loss ordering or a multi-file transaction.
 
 Current acceptance is review-stage: injected crash/replay/history tests and owned
-dummy-child tests run without any game. Deferred map stages remain volatile and
-require further recovery design before release acceptance. No service activation
+dummy-child tests run without any game. Deferred map stages are persisted with profile and content hashes. Fresh
+controllers restore a validated staged map. An applying marker surviving interrupted
+multi-file replacement quarantines controls for operator recovery. Active map
+identity also binds the installed DME/JSON hashes and survives controller restart. No service activation
 or new readiness endpoint is authorized by this change.
 
 Run both focused suites with a verified Python interpreter:
