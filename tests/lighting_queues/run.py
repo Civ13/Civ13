@@ -59,7 +59,7 @@ def main():
                         try:
                             rows=Path(f'/proc/{proc.pid}/smaps_rollup').read_text().splitlines()
                             private=sum(int(x.split()[1])*1024 for x in rows if x.startswith(('Private_Clean:','Private_Dirty:')))
-                        except FileNotFoundError: break
+                        except (FileNotFoundError, ProcessLookupError): break
                     samples.append(private); peak=max(peak,private)
                     time.sleep(.02)
                 cpu_seconds=None
