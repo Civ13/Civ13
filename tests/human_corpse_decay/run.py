@@ -56,8 +56,9 @@ def main():
         source = "\n".join(line for line in source.splitlines() if not line.strip().startswith('#include "maps\\'))
         if a.negative_control == 'icon-readiness':
             icons = (root / 'code/modules/organs/organ_icon.dm').read_text(encoding='utf-8')
-            assert icons.count(' || !species || !owner.body_build') == 1
-            generated[5].write_text(icons.replace(' || !species || !owner.body_build', '', 1), encoding='utf-8')
+            guard = 'if (QDELETED(src) || !owner || !owner.species || !species || !owner.body_build)'
+            assert icons.count(guard) == 1
+            generated[5].write_text(icons.replace(guard, 'if (QDELETED(src) || !owner || !owner.species)', 1), encoding='utf-8')
             source = source.replace('code\\modules\\organs\\organ_icon.dm', stem + '_icons.dm')
         elif a.negative_control == 'icon-callback':
             external = (root / 'code/modules/organs/organ_external.dm').read_text(encoding='utf-8')
