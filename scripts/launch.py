@@ -1,6 +1,8 @@
 import os
 import shutil
 import time
+import subprocess
+import sys
 currdir = os.path.dirname(os.path.abspath(__file__))
 lines = open(os.path.join(currdir, "paths.txt"))
 all_lines = lines.readlines()
@@ -24,6 +26,7 @@ os.system("sudo git reset --hard origin/master")
 
 print("Rebuilding binaries...")
 
+subprocess.run([sys.executable, "scripts/build-crafting-atlas.py", "--catalog-only", "--game-catalog", "UI/crafting-atlas.json"], check=True)
 os.system("sudo DreamMaker civ13.dme")
 
 os.system("cd")
