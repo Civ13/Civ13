@@ -42,6 +42,7 @@ jobs:
         run: |
           python -m pip install Pillow==11.3.0
           source /tmp/crafting-byond/byond/bin/byondsetup
+          export LD_LIBRARY_PATH="/tmp/crafting-byond/byond/bin:${LD_LIBRARY_PATH:-}"
           python scripts/build-crafting-atlas.py --output dmdoc/crafting --byond-bin /tmp/crafting-byond/byond/bin --game-catalog UI/crafting-atlas.json
           node scripts/atlas/check.mjs dmdoc/crafting
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
