@@ -66,7 +66,6 @@ var/datum/process_holder/processes = new
 /obj/item/stack/rods
 #include "../../code/_helpers/datum_pool.dm"
 #include "../../code/processes/garbage.dm"
-#include "../../code/processes/gc_reference_triage.dm"
 #include "../../code/processes/callproc.dm"
 var/cleanups = 0
 var/assertions = 0

@@ -54,6 +54,12 @@
 /obj/probe/triage_self_delete/Destroy()
 	del(src)
 /datum/triage_direct
+/datum/triage_direct_abort
+	var/reject_delete = TRUE
+/datum/triage_direct_abort/Del()
+	if (reject_delete)
+		throw "controlled direct-delete failure"
+	return ..()
 
 /proc/triage_age(process/garbage/G, obj/probe/A)
 	A.gcDestroyed = world.time - 1000
@@ -66,6 +72,12 @@
 	qdel(direct)
 	var/list/direct_row = G.profile_row("/datum/triage_direct")
 	check(!direct && direct_row["direct_deleted"] == 1 && !direct_row["enqueued"], "direct datum deletion is physically complete and not a queue result")
+	var/datum/triage_direct_abort/direct_abort = new
+	qdel(direct_abort)
+	var/list/abort_row = G.profile_row("/datum/triage_direct_abort")
+	check(direct_abort && abort_row["direct_incomplete"] == 1 && !abort_row["direct_deleted"], "aborted direct Del never claims physical deletion")
+	direct_abort.reject_delete = FALSE
+	del(direct_abort)
 	var/obj/probe/immediate = new /obj/probe/triage_requested
 	immediate.hint = QDEL_HINT_HARDDEL_NOW
 	qdel(immediate)
@@ -133,20 +145,18 @@
 	qdel(failing)
 	triage_age(G, failing)
 	row = G.profile_row("[failing.type]")
-	var/caught = FALSE
-	try
-		G.fire()
-	catch (var/exception/E)
-		caught = TRUE
-	check(caught && row["forced_error"] == 1 && !row["forced_deleted"], "forced-delete exceptions are recorded and propagated without claiming success")
+	G.fire()
+	check(failing && row["forced_incomplete"] == 1 && !row["forced_deleted"], "aborted native Del is incomplete even though its local argument clears")
 	if (failing)
 		failing.reject_delete = FALSE
-		G.fire()
+		del(failing)
 	G.destroyed.Cut()
 	G = new
 	processes.garbage = G
+	var/list/targets = list()
 	for (var/i = 1 to 1200)
 		A = new /obj/probe/triage_absent
+		targets += A
 		qdel(A)
 		triage_age(G, A)
 		A = null
@@ -156,6 +166,8 @@
 	var/list/entry = pending[pending[1]]
 	entry["stamp_ds"] = 99999
 	check(G.destroyed[pending[1]] != 99999, "pending diagnostics copies do not mutate queue state")
+	targets.Cut()
+	targets = null
 	sleep(1)
 	for (var/i = 1 to 5)
 		G.fire()
@@ -165,6 +177,10 @@
 	for (var/i = 1 to 200)
 		G.triage_outcome("none", "collection_failed", "type[i]")
 	check(G.deletion_profile.len == 129, "outcomes share profiling type cap and overflow row")
+	check(!G.triage_forced_type_buckets(), "failure-only rows do not inflate completed forced type buckets")
+	G.profile_cost("/obj/probe/triage_absent", TRUE, world.timeofday, world.time)
+	G.profile_cost("overflow type", TRUE, world.timeofday, world.time)
+	check(G.triage_forced_type_buckets() == 2, "forced telemetry counts bounded named and overflow profile buckets")
 	var/list/protected_row = G.profile_row("/obj/probe/triage_absent")
 	var/field_count = protected_row.len
 	G.triage_outcome("none", "arbitrary_event_key", "/obj/probe/triage_absent")

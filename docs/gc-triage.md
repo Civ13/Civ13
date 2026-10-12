@@ -19,8 +19,10 @@ Outcome fields have these meanings:
 | `immediate_requested` | The immediate hard-delete hint requested deletion. |
 | `forced_deleted` | A forced-delete call returned with its target physically gone. |
 | `forced_incomplete` | A forced-delete call returned while its target remained. |
+| `forced_identity_changed` | A live ref has a different retirement identity after deletion; disappearance cannot be verified. |
 | `forced_error` | A forced-delete call threw; the original exception is propagated. No success is recorded. |
 | `direct_deleted` | Normal finalization or cleanup physically deleted the target. |
+| `direct_incomplete` | Direct finalization returned with a live ref, so disappearance cannot be verified. |
 | `pooled_retired` | Finalization placed the retained target in its pool. |
 | `unchecked_handoff` | The self-collection hint was accepted without tracking physical disappearance. |
 | `let_live` | Cleanup explicitly kept the target alive. |
@@ -33,6 +35,10 @@ records go to overflow and the dropped-admission count is visible. Metadata is
 released when its queue record is processed. A paused collector can keep these
 bounded scalars while its queue waits. No extra target ownership is introduced.
 
+Lifetime telemetry's existing `gc_forced_types` field counts profile buckets
+with completed forced-delete calls, including the aggregate overflow bucket.
+Its maximum is 129; it is not an exact distinct-type count after saturation.
+
 `GC Inspect Owner Field` also requires Debug rights. Supply a pending target ref,
 the suspected owner's ref and one field. Rights and queue identity are checked
 again after the prompts. The old `GC_FINDREF` automatic world scan is removed.
@@ -43,6 +49,13 @@ truncation. Its limits are 256 slots and 32 list traversal entries, with cycle
 detection. A partial inspection cannot establish that no other owners exist.
 It does not discover proc arguments, engine references or unselected fields.
 An inspected target is held only during the synchronous inspection call.
+
+BYOND 516.1681 clears a native `del(A)` call's local argument even if an aborted
+`Del()` leaves the target alive. The controlled native fixture demonstrates
+this for atoms and datums. Completion resolves the saved ref; forced deletion
+also checks its retirement timestamp. A null local is never evidence of
+physical disappearance. A native `Del()` throw in this fixture returns to the
+caller rather than propagating, and therefore records incomplete deletion.
 
 The design is informed by the public TG collector at
 [`49afd5fd7cbf9de60ce81419a9bc97947fc55dc9`](https://github.com/tgstation/tgstation/blob/49afd5fd7cbf9de60ce81419a9bc97947fc55dc9/code/controllers/subsystem/garbage.dm),

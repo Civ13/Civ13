@@ -18,7 +18,7 @@ def main():
     p.add_argument('--case', choices=('callback', 'turf', 'lifecycle', 'pool', 'benchmark', 'memory', 'collector', 'triage'))
     p.add_argument('--output', type=Path)
     p.add_argument('--baseline-scheduler', action='store_true')
-    p.add_argument('--negative-control', choices=('cancel-retention','deletion-state','pool-cleanup','pool-cap','pool-global','pool-idle','hard-reference','startup','ref-identity','hard-now','let-live','gc-soft-budget','gc-hard-budget','triage-slots','triage-identity','triage-lists','triage-metadata'))
+    p.add_argument('--negative-control', choices=('cancel-retention','deletion-state','pool-cleanup','pool-cap','pool-global','pool-idle','hard-reference','startup','ref-identity','hard-now','let-live','gc-soft-budget','gc-hard-budget','triage-slots','triage-identity','triage-lists','triage-metadata','triage-delete-result','triage-requested'))
     a = p.parse_args()
     root = Path(__file__).resolve().parents[2]
     out = a.output or Path(tempfile.mkdtemp(prefix='civ13-memory-ownership-'))
@@ -46,6 +46,8 @@ def main():
             'triage-identity': ('code/processes/gc_reference_triage.dm', 'target.gcDestroyed != destroyed[ref_id]', 'FALSE', 'targeted inspection rejects mismatched queue identity'),
             'triage-lists': ('code/processes/gc_reference_triage.dm', '#define GC_TRIAGE_REFERENCE_LISTS 32', '#define GC_TRIAGE_REFERENCE_LISTS 100000', 'targeted inspection stops at its list cap'),
             'triage-metadata': ('code/processes/gc_outcome_triage.dm', '#define GC_TRIAGE_PENDING_LIMIT 1024', '#define GC_TRIAGE_PENDING_LIMIT 100000', 'pending outcome metadata stops at exact cap'),
+            'triage-delete-result': ('code/processes/gc_outcome_triage.dm', 'var/datum/remaining = locate(ref_id)', 'var/datum/remaining = A', 'aborted native Del is incomplete even though its local argument clears'),
+            'triage-requested': ('code/processes/garbage.dm', '(refID in hard_references) ? "forced_requested" : "collection_failed"', '"forced_requested"', 'retained ordinary queue target records failure and verified forced deletion'),
             'gc-soft-budget': ('code/processes/garbage.dm', '\t\tvar/refID = destroyed[1]', '\t\tif (remaining_force_dels <= 0)\n\t\t\tbreak\n\t\tvar/refID = destroyed[1]', 'soft records drain after forced budget without exceeding candidate cap'),
             'gc-hard-budget': ('code/processes/garbage.dm', 'if (remaining_force_dels <= 0)', 'if (remaining_force_dels <= -100000)', 'next forced target waits after the hard-delete cap'),
             'cancel-retention': ('code/processes/callproc.dm', 'C.args = null', '// C.args deliberately retained', 'cancel clears helper target and arguments'),
@@ -58,7 +60,7 @@ def main():
             'startup': ('code/processes/garbage.dm', 'AddTrash(A)', 'qdel(A)', 'startup queue becomes stamped without repeating cleanup'),
             'ref-identity': ('code/processes/garbage.dm', 'A && A.gcDestroyed == GCd_at_time', 'A', 'timestamp guard preserves a live reused identity'),
             'hard-now': ('code/processes/garbage.dm', '\t\tif (QDEL_HINT_HARDDEL_NOW)\n', '\t\tif (999)\n', 'hard-delete-now hint deletes immediately'),
-            'let-live': ('code/processes/garbage.dm', '\t\tA.gc_destroyed = 0\n\t\treturn', '\t\tA.gc_destroyed = 1\n\t\treturn', 'let-me-live preserves live state and location'),
+            'let-live': ('code/processes/garbage.dm', '\t\tA.gc_destroyed = 0\n', '\t\tA.gc_destroyed = 1\n', 'let-me-live preserves live state and location'),
         }
         relative, before, after, expected = controls[a.negative_control]
         body = (root/relative).read_text()
@@ -68,9 +70,21 @@ def main():
         if before not in body:
             raise RuntimeError('Negative control anchor missing')
         altered = out/'negative.dm'
-        body = body.replace('#include "garbage_profile.dm"', '#include "' + (root/'code/processes/garbage_profile.dm').as_posix() + '"')
         altered.write_text(body.replace(before, after, 1))
-        source = source.replace((root/relative).as_posix(), altered.as_posix())
+        original_path = (root/relative).as_posix()
+        if original_path in source:
+            source = source.replace(original_path, altered.as_posix())
+        else:
+            # Helper controls must redirect the transitive production include too.
+            collector_path = root/'code/processes/garbage.dm'
+            collector_body = re.sub(r'#include "([^"/\\]+\.dm)"',
+                                    lambda m: '#include "' + collector_path.parent.joinpath(m[1]).as_posix() + '"',
+                                    collector_path.read_text())
+            if original_path not in collector_body:
+                raise RuntimeError('Negative control source is not included')
+            generated_collector = out/'garbage.dm'
+            generated_collector.write_text(collector_body.replace(original_path, altered.as_posix()))
+            source = source.replace(collector_path.as_posix(), generated_collector.as_posix())
     probe = out/'probe.dme'
     probe.write_text(source)
     win = os.name == 'nt'

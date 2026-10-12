@@ -266,7 +266,7 @@ jobs:
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           /usr/bin/python3 tests/gc_triage/run.py --byond-bin "$PWD/BYOND/byond/bin"
-          for control in triage-slots triage-identity triage-lists triage-metadata; do
+          for control in triage-slots triage-identity triage-lists triage-metadata triage-delete-result triage-requested; do
             /usr/bin/python3 tests/gc_triage/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
 

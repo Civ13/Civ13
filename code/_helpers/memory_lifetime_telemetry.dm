@@ -9,7 +9,8 @@
 		"gc_enqueued" = G ? G.enqueued : 0,
 		"gc_drained" = G ? G.queued_drained : 0,
 		"gc_forced" = G ? G.hard_dels : 0,
-		"gc_forced_types" = G ? G.logging.len : 0,
+		// At most 128 named profile buckets plus one aggregate overflow bucket.
+		"gc_forced_types" = G ? G.triage_forced_type_buckets() : 0,
 		"gc_forced_owners" = G ? G.hard_references.len : 0,
 		"pooled" = pooled_count,
 		"helper_queued" = C ? C.queue.len : 0,

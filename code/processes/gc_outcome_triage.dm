@@ -19,7 +19,7 @@
 		triage_metadata_dropped++
 
 /process/garbage/proc/triage_outcome(ref_id, outcome, live_type)
-	var/static/list/valid_outcomes = list("queue_absent", "queue_stale_identity", "collection_failed", "forced_requested", "immediate_requested", "forced_deleted", "forced_incomplete", "forced_error", "direct_deleted", "pooled_retired", "unchecked_handoff", "let_live")
+	var/static/list/valid_outcomes = list("queue_absent", "queue_stale_identity", "collection_failed", "forced_requested", "immediate_requested", "forced_deleted", "forced_incomplete", "forced_identity_changed", "forced_error", "direct_deleted", "direct_incomplete", "pooled_retired", "unchecked_handoff", "let_live")
 	if (!(outcome in valid_outcomes) || !istext(ref_id))
 		return
 	var/type_name = triage_pending_types[ref_id]
@@ -43,18 +43,34 @@
 		result[ref_id] = list("type" = type_name ? type_name : "(type metadata unavailable)", "stamp_ds" = destroyed[ref_id])
 	return result
 
+// Bounded profile buckets with completed forced-delete calls, including overflow.
+// This preserves telemetry without restoring an unbounded type registry.
+/process/garbage/proc/triage_forced_type_buckets()
+	var/count = 0
+	for (var/type_name in deletion_profile)
+		var/list/row = deletion_profile[type_name]
+		if (row["forced_count"])
+			count++
+	return count
+
 // The caller's existing timing wrapper still owns forced-delete costs.
 // An observed ordinary queue failure and a completed physical delete differ.
 /process/garbage/proc/triage_force_delete(datum/A, kind)
 	var/type_name = "[A.type]"
 	var/ref_id = "\ref[A]"
+	var/stamp = A.gcDestroyed
 	triage_outcome(ref_id, kind, type_name)
 	try
 		del(A)
 	catch (var/exception/E)
 		triage_outcome(ref_id, "forced_error", type_name)
 		throw E
-	triage_outcome(ref_id, A ? "forced_incomplete" : "forced_deleted", type_name)
+	// Native del can clear its local argument even when Del aborts deletion.
+	var/datum/remaining = locate(ref_id)
+	var/outcome = "forced_deleted"
+	if (remaining)
+		outcome = remaining.gcDestroyed == stamp ? "forced_incomplete" : "forced_identity_changed"
+	triage_outcome(ref_id, outcome, type_name)
 
 #undef GC_TRIAGE_PENDING_LIMIT
 #undef GC_TRIAGE_UNKNOWN_TYPE
