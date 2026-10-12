@@ -3,7 +3,7 @@ var/telecom_failures = 0
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 8
+	maxx = 200
 	maxy = 8
 	maxz = 2
 	turf = /turf
@@ -99,6 +99,55 @@ var/telecom_failures = 0
 		civ_check_landlines()
 		telecom_check(!P.origincall && !Q.origincall, "power loss clears both phone peers")
 		E.on = TRUE
+		var/obj/structure/cable/D = new(locate(4,3,1))
+		var/obj/structure/engine/other_supply = new(locate(4,3,1))
+		other_supply.on = TRUE
+		other_supply.maxpower = 100
+		D.connections |= other_supply
+		other_supply.connections |= D
+		C.connections -= Q
+		Q.powersource = D
+		D.connections |= Q
+		C.connections |= D
+		D.connections |= C
+		telecom_check(P.dial(Q.phonenumber) && Q.answer(), "reciprocal cable bridge routes calls")
+		C.connections -= D
+		D.connections -= C
+		civ_check_landlines()
+		telecom_check(P.draw_cable_power() && Q.draw_cable_power() && !P.origincall && !Q.origincall && !P.dial(Q.phonenumber), "powered split ends call and blocks dialing")
+		C.connections |= D
+		D.connections |= C
+		telecom_check(P.dial(Q.phonenumber) && Q.answer(), "reconnecting cable restores route")
+		P.hang_up()
+		// Larger than the former 128-cable route cap, with power at both ends.
+		var/list/long_grid = list()
+		for (var/x = 1, x <= 200, x++)
+			var/obj/structure/cable/link = new(locate(x,7,1))
+			if (long_grid.len)
+				var/obj/structure/cable/previous = long_grid[long_grid.len]
+				previous.connections |= link
+				link.connections |= previous
+			long_grid += link
+		var/obj/structure/cable/left = long_grid[1]
+		var/obj/structure/cable/right = long_grid[200]
+		var/obj/structure/engine/long_supply = new(left.loc)
+		long_supply.on = TRUE
+		long_supply.maxpower = 20
+		left.connections |= long_supply
+		long_supply.connections |= left
+		var/obj/item/weapon/telephone/landline/long_phone = new(locate(1,6,1))
+		var/obj/item/weapon/telephone/landline/far_phone = new(locate(200,6,1))
+		long_phone.powersource = left
+		far_phone.powersource = right
+		left.connections |= long_phone
+		right.connections |= far_phone
+		telecom_check(long_phone.dial(far_phone.phonenumber) && far_phone.answer() && left.component_size == 200, "200-cable route has no telecom cable-count cutoff")
+		qdel(long_phone)
+		telecom_check(!far_phone.origincall, "deleting phone releases surviving peer")
+		qdel(far_phone)
+		qdel(long_supply)
+		for (var/obj/structure/cable/link in long_grid)
+			qdel(link)
 		var/obj/structure/telecom/terminal/T = new(locate(3,3,1))
 		var/obj/structure/telecom/terminal/U = new(locate(4,3,1))
 		T.enabled = TRUE
@@ -123,9 +172,15 @@ var/telecom_failures = 0
 		season = "WINTER"
 		telecom_check(!civ_broadcast_slot("farming",1800) && civ_broadcast_slot("medical",3000) == 1, "winter farming blocked, medical eligible")
 		telecom_check(abandonment_season_changes == decay_before, "eligibility does not age debris")
+		map.seasons(FALSE, TRUE)
+		telecom_check(season == "SPRING" && civ_broadcast_slot("farming",1800) == 1 && !civ_broadcast_slot("crafting",600) && abandonment_season_changes == decay_before, "actual forced season changes eligibility without aging debris")
 		map.abandonment_season_cycle = FALSE
 		season = "WET SEASON"
 		telecom_check(civ_broadcast_slot("crafting",600) == 1 && civ_broadcast_slot("farming",1800) == 1, "fixed/no-cycle evergreen compatibility")
+		H.ear_deaf = 1
+		telecom_check(!H.learn_broadcast("crafting",1), "deaf learner receives no credit")
+		H.ear_deaf = 0
+		telecom_check(!H.learn_broadcast("crafting",2), "lesson must match current authoritative slot")
 		for (var/line = 1, line <= 6, line++)
 			telecom_fixture_time = 600 + (line-1)*100
 			telecom_check(H.learn_broadcast("crafting",line), "unique lesson [line]")

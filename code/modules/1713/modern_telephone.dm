@@ -6,22 +6,9 @@ var/global/civ_landline_cursor = 1
 /obj/proc/civ_network_connected(obj/target)
 	if (!target || !anchored || !target.anchored || !draw_cable_power() || !target.draw_cable_power())
 		return FALSE
-	var/list/queue = list(powersource)
-	var/index = 1
-	var/edges = 0
-	while (index <= queue.len)
-		var/obj/structure/cable/C = queue[index++]
-		if (C == target.powersource)
-			return TRUE
-		for (var/obj/structure/cable/N in C.connections)
-			if (++edges > 512)
-				return FALSE
-			if (!isturf(N.loc) || N.z != C.z || get_dist(C, N) > 1 || !(C in N.connections) || (N in queue))
-				continue
-			if (queue.len >= CIV_TELECOM_LIMIT)
-				return FALSE
-			queue += N
-	return FALSE
+	// Both power checks refresh identities from the live reciprocal graph.
+	// No second route traversal or arbitrary cable-count cutoff is needed.
+	return powersource.component_id && powersource.component_id == target.powersource.component_id
 
 /proc/civ_phone_route(obj/item/weapon/telephone/landline/A, obj/item/weapon/telephone/landline/B)
 	return A && B && A != B && !A.retired && !B.retired && (A in civ_landlines) && (B in civ_landlines) && A.civ_network_connected(B)

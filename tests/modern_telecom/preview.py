@@ -14,8 +14,8 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     sprites = [
-        ('Radio receiver / desk', 'device.dmi', 'radio_vintage'),
-        ('Television receiver / desk', 'modern_structures.dmi', 'TV'),
+        ('Radio receiver / program desks', 'device.dmi', 'radio_vintage'),
+        ('Television receiver', 'modern_structures.dmi', 'TV'),
         ('Broadcast antenna', 'obj32x64.dmi', 'radio_powered'),
         ('Network landline', 'device.dmi', 'telephone'),
         ('Local terminal', 'computers.dmi', 'ibm'),

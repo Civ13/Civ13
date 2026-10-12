@@ -1,7 +1,7 @@
 # Modern civilian communications and skills
 
-This work is in draft. Its final runtime, crafting, sprite and native save checks
-have not yet passed. It is not a production deployment announcement.
+This work is in draft pending final exact-head CI and review. The isolated
+runtime, crafting, sprite and native save checks below have passed locally.
 
 ## Intended player loop
 
@@ -92,13 +92,16 @@ or program text. The six-line courses above are original Civ13 game guidance.
 
 ## Verification boundaries
 
-Equipment uses existing DMI states. Actual state/pixel audits and static previews
-are still pending. `tests/modern_telecom/run.ps1` compiles all production sources
+Equipment uses existing DMI states. The compiled sprite audit and genuine DMI
+static preview passed. `tests/modern_telecom/run.ps1` compiles all production sources
 with BYOND 516.1681, zero errors and warnings. Its isolated runtime checks real
 powered delivery, mismatched frequencies, power loss, cable phone calls, local
 terminal delivery/rate limits, era/season/time eligibility, finite curriculum
 rewards, reconnect/rerun deduplication and durable credits through world reload.
 
-Required remaining checks include topology changes, call interruption and
-restoration, native recipe registration and research gates, and sprite previews.
+The fixture also checks powered splits, reconnects, phone deletion, restored
+calls and a 200-cable route. Native recipe registration checks all seven paid
+recipes, Modern visibility, completed-node gates and current crafting thresholds.
+Research completion is an injected fixture precondition; actual player research
+and menu interaction have not been exercised by a client.
 Local fixtures do not prove public-server performance or human UI acceptance.
