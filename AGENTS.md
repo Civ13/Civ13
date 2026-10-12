@@ -267,6 +267,12 @@ are cached only within one synchronous decision after its second cover candidate
 keep candidate order and strict score comparison. The benchmark reports native
 wall time, not server CPU or combat movement acceptance.
 
+<!-- 2026-10-12: inherited runtime exclusion precedence -->
+DM `in` binds below `||`; parenthesize membership before combining a runtime-field
+list with `..()`. Otherwise a nonempty list short-circuits the parent exclusion.
+The human corpse fixture checks inherited human/equipment exclusions and its
+`--negative-control runtime-parent` restores the faulty human expression.
+
 <!-- 2026-10-12: lighting batch ownership -->
 Lighting overlays detach bounded 1000/2000-entry batches, null consumed slots
 and retain unfinished batches across budget

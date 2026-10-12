@@ -17,7 +17,7 @@
 	var/tmp/obj/structure/exercise/exercise_equipment
 
 /mob/living/human/persistence_runtime_var(key)
-	return key in list("exercise_rest_epoch", "exercise_equipment") || ..()
+	return (key in list("exercise_rest_epoch", "exercise_equipment")) || ..()
 
 /mob/living/human/proc/recover_exercise()
 	var/now = exercise_time()
@@ -86,7 +86,7 @@
 	reward_rate = 0.004
 
 /obj/structure/exercise/persistence_runtime_var(key)
-	return key in list("actor", "origin", "repetition", "busy", "epoch", "expiry") || ..()
+	return (key in list("actor", "origin", "repetition", "busy", "epoch", "expiry")) || ..()
 
 /obj/structure/exercise/proc/clear_exercise()
 	if (actor)
