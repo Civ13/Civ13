@@ -70,3 +70,4 @@ var/datum/process_list/processes = new
 		next_get_num_processes = world.time + 50
 	else
 		return last_num_processes
+/datum/process_list/var/process/civ_telecom/civ_telecom = null
