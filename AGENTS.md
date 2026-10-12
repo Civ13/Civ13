@@ -517,3 +517,13 @@ Scheduler start replaces its identity token; stale sleeping invocations retire a
 wake, and stop invalidates the token. Process may_run uses one lazy history
 expiry deadline; started cancels it before recording new run history. Native
 lifecycle, immutable baseline and controls live in tests/process_loop_lifecycle.
+
+<!-- 2026-10-12: comparative GC and loop benchmarks -->
+`tests/gc_benchmark`, `tests/scheduler_benchmark`, and
+`tests/game_loop_benchmark` compare production sources with immutable pre-PR3091
+bodies using BYOND 516.1681 and temporary storage. Run performance comparisons
+sequentially to avoid competing test workloads. `PROCESS_TICK_CHECK` returns the
+early-return sentinel; it does not sleep. Isolated queue counts and Windows
+private bytes are separate metrics, and process CPU accounting can have 15.625ms
+quantization. Full-game movement/Life/inventory probes do not establish client
+rendering, multiplayer latency or long-term OOM stability.

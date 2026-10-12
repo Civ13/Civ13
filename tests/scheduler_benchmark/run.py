@@ -33,8 +33,10 @@ def main():
     if a.output.exists() and any(a.output.iterdir()): p.error('Use fresh output')
     a.output.mkdir(parents=True, exist_ok=True)
     head = subprocess.check_output(['git','rev-parse','HEAD'], cwd=ROOT,text=True).strip()
-    metadata = dict(head_sha=head, baseline=BASELINE, byond='516.1681', platform=os.name, repetitions=a.repetitions, sampling_seconds=0.01, random_seed=3091, scope='Isolated unmodified production may_run; total process CPU includes startup, admission, waiting callbacks and shutdown; private bytes sampled separately', dirty_status=subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True))
+    metadata = dict(head_sha=head, baseline=BASELINE, byond='516.1681', platform=os.name, repetitions=a.repetitions, sampling_seconds=0.01, random_seed=3091, observed_cpu_resolution_seconds=0.015625, scope='Isolated unmodified production may_run; total process CPU includes startup, admission, waiting callbacks and shutdown; private bytes sampled separately', dirty_status=subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True))
     (a.output/'metadata.json').write_text(json.dumps(metadata, indent=2))
+    for name in ('run.py','probe.dm'):
+        (a.output/name).write_bytes(Path(__file__).with_name(name).read_bytes())
     (a.output/'tested.patch').write_bytes(subprocess.check_output(['git','diff','HEAD'],cwd=ROOT))
     variants = {}
     for name in ('baseline','fixed'):
@@ -84,7 +86,7 @@ def main():
     results=[]
     for name in ('baseline','fixed'): results.append(run(name,True,1000,'warmup-'+name,True))
     rng=random.Random(3091)
-    workloads=[(True,50000),(False,1000),(False,10000),(False,50000)]
+    workloads=[(True,500000),(False,1000),(False,10000),(False,50000)]
     for healthy,count in workloads:
         for rep in range(a.repetitions):
             names=['baseline','fixed']; rng.shuffle(names)
@@ -99,8 +101,7 @@ def main():
             for metric in ('total_cpu_seconds','peak_private_bytes','settled_private_bytes','wall_seconds'):
                 values=[x[metric] for x in matched]; row[metric]=dict(median=statistics.median(values),minimum=min(values),maximum=max(values))
             aggregate.append(row)
-    report=dict(metadata=metadata,runs=results,aggregate=aggregate,limits=['CPU includes native startup and shutdown; no admission-only precision claim','Sampled private bytes are not retained-reference counts; peaks can fall between polls','Isolated admission histories do not prove client experience or production OOM stability','Raw may_run bodies are unmodified; no callback instrumentation contributes timing overhead'])
+    report=dict(metadata=metadata,runs=results,aggregate=aggregate,limits=['CPU includes native startup and shutdown; no admission-only precision claim','Sampled private bytes are not retained-reference counts; peaks can fall between polls','Isolated admission histories do not prove client experience or production OOM stability','Raw may_run bodies are unmodified; no callback instrumentation contributes timing overhead','Observed Windows CPU accounting quantization is 15.625 ms; zero is below accounting resolution, not zero work'])
     (a.output/'report.json').write_text(json.dumps(report,indent=2))
     print('PASS scheduler benchmark; report '+str(a.output/'report.json'))
 if __name__ == '__main__': main()
-

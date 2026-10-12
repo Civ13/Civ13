@@ -18,7 +18,7 @@ var/failures = 0
 /world/New()
 	OpenPort("none")
 	spawn(0)
-		var/list/params = params2list(world.params)
+		var/list/params = world.params
 		var/count = text2num(params["count"])
 		var/healthy = text2num(params["healthy"])
 		var/processScheduler/S = new
