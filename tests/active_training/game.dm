@@ -89,6 +89,7 @@ var/training_wait_count = 0
 		H.recover_exercise()
 		training_check(H.exercise_fatigue == 5, "one running-server minute recovers one fatigue point")
 		H.exercise_fatigue = 4
+		H.exercise_rest_epoch = training_fixture_time
 		H.stats["strength"] = list(100,100)
 		E.attack_hand(H)
 		E.attack_hand(H)
