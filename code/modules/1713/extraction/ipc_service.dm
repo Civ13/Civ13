@@ -98,6 +98,10 @@
 		if (islist(previous))
 			if (previous["discord_id"] != request["discord_id"] || previous["request_digest"] != request["request_digest"]) return response(request, "rejected", "request_id_conflict")
 			return json_decode(json_encode(previous["response"]))
+		var/linked_owner = profile["links"][request["discord_id"]]
+		if (linked_owner && economic_adapter)
+			var/list/economic_receipt = call(economic_adapter, "receipt")(src, linked_owner, request["request_id"], request["request_digest"])
+			if (islist(economic_receipt) && economic_receipt["status"] == "committed") return economic_receipt
 		if (length(profile["receipts"]) >= 1000) return response(request, "pending", "journal_capacity")
 		var/list/candidate = json_decode(json_encode(profile))
 		var/list/payload = request["payload"]
@@ -124,7 +128,7 @@
 					if (islist(operation)) original = list("discord_id" = actor, "request_digest" = payload["operation_request_digest"], "response" = operation)
 				if (islist(original) && original["discord_id"] == actor && original["request_digest"] == payload["operation_request_digest"])
 					var/list/operation = original["response"]
-					result = response(request, "committed", "operation_status", list("operation_status" = operation["status"], "operation_receipt" = operation))
+					result = response(request, "committed", "operation_status", list("operation_status" = operation["status"], "operation_receipt" = operation["status"] == "pending" ? null : operation))
 				else result = response(request, "committed", "operation_not_found", list("operation_status" = "not_found", "operation_receipt" = null))
 			else if (action in list("stash.inspect", "room.inspect"))
 				var/list/account = accounts.load_profile(owner)
@@ -151,3 +155,15 @@
 		candidate["receipts"][id] = list("request_id" = request["request_id"], "request_digest" = request["request_digest"], "discord_id" = actor, "response" = result)
 		if (!commit(candidate)) return response(request, "pending", "journal_recovery_required")
 		return result
+	// Read-only recovery for an already authenticated immutable request. It does
+	// not authorize execution of an expired request or create another quote.
+	proc/durable_response(list/request)
+		if (!ready() || !islist(request)) return null
+		var/list/receipt = profile["receipts"][extraction_sha256(request["request_id"])]
+		if (islist(receipt))
+			if (receipt["discord_id"] != request["discord_id"] || receipt["request_digest"] != request["request_digest"]) return null
+			return json_decode(json_encode(receipt["response"]))
+		var/owner = profile["links"][request["discord_id"]]
+		if (!owner || !economic_adapter) return null
+		var/list/result = call(economic_adapter, "receipt")(src, owner, request["request_id"], request["request_digest"])
+		return islist(result) && result["status"] == "committed" ? result : null

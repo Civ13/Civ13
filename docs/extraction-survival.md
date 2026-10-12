@@ -357,5 +357,32 @@ funds rejection, replay/status and fresh-service recovery of a pending buyback.
 Its `--economic-payment-negative-control` deliberately omits buyer payment and
 must fail at the purchase assertion because the shared journal rejects creation
 of credits. The adapter and transport remain disabled unless explicitly wired;
-the live spool, player linking UI and connected bot integration remain unfinished. Current checks do not
+the connected bot integration remains unaccepted. Current checks do not
 establish security acceptance, connected bot acceptance or activation readiness.
+
+The private terminal now offers owner-only Discord linking. Host code must
+explicitly configure and enable the adapter with an ASCII key; its default is
+disabled and no key file or network connection is opened. A conscious owner at
+their home terminal receives a five-minute challenge only after checkpointing
+their stash. The proof is shown to that player only. Connected-client interaction
+still needs gameplay acceptance.
+
+The optional native spool uses a private `data/`-relative directory and the
+existing map tick, with eight directory entries per second and a 256-entry cap.
+Configure exactly one native writer for a spool directory. Final reply publication
+creates `<request-sha256>.reply.pending` before copying reply bytes. The bot must
+wait while this marker exists, both before and after its authenticated bound read.
+Marker recovery authenticates the original immutable request and requires the
+matching durable operation receipt; the marker alone never authorizes a mutation
+or replacement. A completed reply is never overwritten. Recovery preserves the
+original signed expiry, so expired operations use a fresh read-only status query.
+
+`tests/extraction/run_ipc.py` uses three disposable native processes and an
+independent Python signer. It checks marker creation failure, partial publication,
+interruption before marker removal, expired recovery, immutable completed replies
+and mismatching signed markers. `--publication-negative-control` removes the
+durable-receipt comparison and must fail at that exact assertion. `--output` can
+export only synthetic request/reply fixtures for isolated bot compatibility tests.
+Ordinary process restart does not establish filesystem flush ordering through
+power loss. The host must provision a private directory and enforce single-writer
+operation before any separately authorized activation.

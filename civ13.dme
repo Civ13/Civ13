@@ -1244,6 +1244,8 @@
 #include "code\modules\1713\extraction\account_store.dm"
 #include "code\modules\1713\extraction\ipc_service.dm"
 #include "code\modules\1713\extraction\ipc_economy.dm"
+#include "code\modules\1713\extraction\ipc_game.dm"
+#include "code\modules\1713\extraction\ipc_spool.dm"
 #include "code\modules\1713\extraction\transactions.dm"
 #include "code\modules\1713\extraction\settlement.dm"
 #include "code\modules\1713\extraction\insurance.dm"

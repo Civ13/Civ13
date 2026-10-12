@@ -269,6 +269,15 @@ scans. `tests/extraction/run.py --probe equipment` checks signed offline market
 flows and interrupted settlement recovery; its economic payment negative control
 must reject a missing buyer debit. This does not enable live IPC or prove bot UI.
 
+<!-- 2026-10-12: native spool publication -->
+Disabled extraction spool replies use `.reply.pending` as a read barrier. Recovery
+requires the authenticated original request and matching durable response, keeps
+the original expiry, and never executes an expired request. `run_ipc.py` checks
+three disposable native processes, partial writes, marker-removal interruption
+and signed mismatching markers; publication negative control must detect omission
+of the receipt comparison. Single-writer ownership is enforced within a world;
+host provisioning must also prevent concurrent processes sharing that directory.
+
 <!-- 2026-10-11: extraction vehicle account graph -->
 Extraction garage snapshots use explicit bounded part/link/config/fuel graphs;
 never serialize movement callbacks, passengers or arbitrary vehicle vars.

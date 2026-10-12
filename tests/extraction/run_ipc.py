@@ -15,7 +15,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--proof-negative-control', action='store_true')
+    parser.add_argument('--publication-negative-control', action='store_true')
+    parser.add_argument('--output', type=Path, help='New directory for synthetic compatibility fixture files')
     args = parser.parse_args()
+    if args.proof_negative_control and args.publication_negative_control:
+        parser.error('Choose one negative control')
+    if args.output and (args.proof_negative_control or args.publication_negative_control or args.output.exists()):
+        parser.error('Output requires a new directory and the unmutated fixture')
     root = Path(__file__).resolve().parents[2]
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     key = b'0123456789abcdef0123456789abcdef'
@@ -23,7 +29,7 @@ def main():
     daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     with tempfile.TemporaryDirectory(prefix='civ13-ipc-service-') as folder:
         target = Path(folder)
-        files = ['account_store.dm', 'ipc_crypto.dm', 'ipc_wire.dm', 'ipc_request.dm', 'ipc_service.dm']
+        files = ['account_store.dm', 'ipc_crypto.dm', 'ipc_wire.dm', 'ipc_request.dm', 'ipc_service.dm', 'ipc_spool.dm']
         for name in files:
             shutil.copy2(root / 'code/modules/1713/extraction' / name, target / name)
         if args.proof_negative_control:
@@ -32,6 +38,12 @@ def main():
             if source.count(marker) != 1:
                 raise RuntimeError('Game-account proof mutation marker changed')
             (target / 'ipc_service.dm').write_text(source.replace(marker, ''))
+        if args.publication_negative_control:
+            source = (target / 'ipc_spool.dm').read_text()
+            marker = ' || extraction_ipc_base64_encode(extraction_crypto_bytes(json_encode(response))) != envelope?["body"]'
+            if source.count(marker) != 1:
+                raise RuntimeError('Durable reply comparison mutation marker changed')
+            (target / 'ipc_spool.dm').write_text(source.replace(marker, ''))
         shutil.copy2(root / 'tests/extraction/ipc_probe.dm', target / 'probe.dm')
         (target / 'probe.dme').write_text(''.join(f'#include "{name}"\n' for name in files + ['probe.dm']))
         built = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=target,
@@ -53,6 +65,12 @@ def main():
                     print(log)
                     raise RuntimeError('Proof omission did not fail at intended account-binding assertion')
                 print('PASS: independent signed request rejects missing game-account proof verification')
+                return False
+            if args.publication_negative_control and phase == 'replay':
+                if ran.returncode or not result.startswith('FAIL: authenticated marker alone cannot replace original durable receipt'):
+                    print(log)
+                    raise RuntimeError('Publication control did not fail at intended durable-receipt assertion')
+                print('PASS: authenticated publication marker cannot substitute a different economic receipt')
                 return False
             if ran.returncode or not result.startswith('PASS:') or any(word in log.lower() for word in ('runtime error', 'bad ref', '## error')):
                 print(log)
@@ -90,7 +108,33 @@ def main():
         (target / 'replay.json').write_text(json.dumps([replay_link, replay_inspect]), encoding='ascii')
         if not run('process'):
             return
-        run('replay')
+        spool = target / 'data/safehouse_spool'
+        inspect_key = hashlib.sha256(b'inspect-1').hexdigest()
+        link_key = hashlib.sha256(b'link-1').hexdigest()
+        if not (spool / f'{inspect_key}.reply.pending').exists():
+            raise RuntimeError('Interrupted reply lost its publication marker')
+        if args.output:
+            shutil.copytree(spool, args.output / 'before-restart')
+        if not run('replay'):
+            return
+        for identifier, file_key in (('inspect-1', inspect_key), ('link-1', link_key)):
+            wire = json.loads((spool / f'{file_key}.reply').read_text())
+            signed = f'civ13.safehouse.ipc.v1\nreply\n{wire["issued_at"]}\n{wire["expires_at"]}\n{wire["body"]}'
+            if wire['mac'] != hmac.new(key, signed.encode(), hashlib.sha256).hexdigest():
+                raise RuntimeError('Native published reply differs from independent signer')
+            response = json.loads(base64.b64decode(wire['body'], validate=True))
+            if response['request_id'] != identifier or response['status'] != 'committed' or wire['issued_at'] != 1000 or wire['expires_at'] != 1120:
+                raise RuntimeError('Recovery changed immutable reply identity or time window')
+            if (spool / f'{file_key}.reply.pending').exists():
+                raise RuntimeError('Completed authenticated reply still marked unpublished')
+        print('PASS: independent signer validates native immutable replies and expired-marker recovery')
+        if args.output:
+            shutil.copytree(spool, args.output / 'after-restart')
+            manifest = {'synthetic': True, 'protocol': 'civ13.safehouse.ipc.v1', 'key': key.decode(), 'clock': 1000,
+                        'issued_at': 1000, 'expires_at': 1120,
+                        'requests': {'inspect-1': inspect_key, 'link-1': link_key}}
+            (args.output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='ascii')
+            print(f'PASS: synthetic bot compatibility fixtures written to {args.output}')
 
 
 if __name__ == '__main__':
