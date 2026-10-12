@@ -78,19 +78,19 @@
 		// live movement. Assemble edges after discovery to avoid duplicate placement.
 		var/list/edges = list()
 		for(var/i = 1, i <= saving_owners.len, i++)
-			edges += list(list())
-			save_work_check()
-		for(var/i = 1, i <= saving_owners.len, i++)
 			var/owner = saving_owners[i]
 			if(owner)
-				var/list/children = edges[owner]
+				var/list/children = edges["[owner]"]
+				if(!children)
+					children = list()
+					edges["[owner]"] = children
 				children += "[i]"
 			save_work_check()
 		for(var/i = 1, i <= saving_owners.len, i++)
 			if(saving_content_flags[i])
-				var/list/children = edges[i]
+				var/list/children = edges["[i]"]
 				var/list/chunks = list()
-				for(var/start = 1, start <= children.len, start += 500)
+				for(var/start = 1, start <= (children ? children.len : 0), start += 500)
 					chunks += list2params(children.Copy(start, min(start+500, children.len+1)))
 					save_work_check()
 				// params2list truncates oversized strings. Keep legacy text for
