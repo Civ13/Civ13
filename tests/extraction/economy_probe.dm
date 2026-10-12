@@ -46,6 +46,17 @@
 	ipc.profile["owners"]["marketbuyer"] = "456"
 	equipment_assert(ipc.commit(json_decode(json_encode(ipc.profile))), "durable test actor bindings")
 	var/datum/extraction_ipc_economy/economy = new(game)
+	var/list/policy_node = list("type" = "/obj/item/clothing/head/helmet/modern/pasgt", "scalars" = list("health" = 50, "maxhealth" = 100))
+	equipment_assert(economy.trade_policy.value(policy_node, "armorer") == 12 && economy.trade_policy.value(policy_node, "quartermaster") == 12, "specialists overlap explicit armor category at minimum condition")
+	equipment_assert(economy.trade_policy.value(policy_node, "salvager") == 0, "specialist rejects unrelated category")
+	equipment_assert(economy.trade_policy.value(policy_node, "fence") == 2, "fence uses substantially lower condition scaled offer")
+	policy_node["scalars"]["health"] = 49
+	equipment_assert(economy.trade_policy.value(policy_node, "armorer") == 0, "specialist rejects below condition threshold")
+	policy_node["type"] = "/obj/item/clothing/head/helmet/modern/pasgt/unlisted"
+	equipment_assert(economy.trade_policy.value(policy_node, "fence") == 0, "fence denies uncatalogued subtype")
+	policy_node["type"] = "/obj/item/stack/material/steel"
+	policy_node["scalars"] = list("amount" = 1.5)
+	equipment_assert(economy.trade_policy.value(policy_node, "quartermaster") == 0, "trade policy rejects fractional stack quantity")
 	ipc.economic_adapter = economy
 	equipment_assert(economy.ready() && !game.open("extractionvendor"), "reserved finite treasury cannot be claimed by a player")
 	var/list/seller = game.store.load_profile("marketseller")

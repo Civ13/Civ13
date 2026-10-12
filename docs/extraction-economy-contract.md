@@ -5,6 +5,17 @@ are complete or accepted. The existing service implements quoted buyback and
 fixed-price escrow. Specialized traders, listing fees, auctions and the admin
 ledger below still require implementation and regression acceptance.
 
+Stage one source now provides `extraction_trade_policy` and `trader_offer`.
+The initial exact-type catalog matches the existing buyback types. Armorer
+accepts weapons/ammunition/armor; quartermaster accepts armor/tools/materials;
+salvager accepts salvage/tools/materials. Initial minimum condition is 50% for
+armorer/quartermaster and 25% for salvager. Fence accepts their category union
+at 20% of condition-scaled value. These are unaccepted tuning defaults. The
+legacy adapter still uses its original root valuation; specialist offers are
+not exposed yet. Specialist graphs reject any uncatalogued nested node, including
+containers not yet assigned a legitimate category. Native assertions are authored
+but remain unrun during the quiet window.
+
 ## Ownership and service boundary
 
 The game owns category policy, valuation, quotes, equipment custody, balances,
