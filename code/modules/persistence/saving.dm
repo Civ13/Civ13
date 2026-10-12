@@ -30,6 +30,7 @@
 			if(name == "map.txt" || copytext(name, max(1, length(name)-3)) == ".sav")
 				if(!fcopy("map_saves/[name]", "[backup_dir][name]"))
 					throw EXCEPTION("Could not back up [name]; existing save retained")
+				sleep(world.tick_lag)
 		sleep(world.tick_lag)
 		if(!fcopy("map_saves/save_complete.txt", "[backup_dir]save_complete.txt"))
 			throw EXCEPTION("Could not mark completed backup; existing save retained")

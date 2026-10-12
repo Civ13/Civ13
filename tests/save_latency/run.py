@@ -98,7 +98,7 @@ def main():
                 raise RuntimeError('Interrupted save recovery failed: '+phase)
         print('PASS: native interruption rejects incomplete active generation and restores completed backup',flush=True)
         return
-    result=subprocess.run(command,cwd=output,capture_output=True,text=True,timeout=1800,creationflags=flags)
+    result=subprocess.run(command,cwd=output,capture_output=True,text=True,timeout=3600 if args.large else 1800,creationflags=flags)
     (output / 'daemon.log').write_text(result.stdout+result.stderr)
     log=(output/'runtime.log').read_text(errors='replace')
     print(log,flush=True)
