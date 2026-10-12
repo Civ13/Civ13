@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
     inputs:
       extensive_regressions:
-        description: 'Opt in to recipes, save, chemistry, power, boats and battery runtime regressions'
+        description: 'Opt in to all existing game and offline regression suites'
         type: boolean
         default: false
 
@@ -33,6 +33,7 @@ jobs:
       extensive: ${{ github.event_name == 'workflow_dispatch' && inputs.extensive_regressions }}
       base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
   evidence-checker:
+    needs: changes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -40,10 +41,13 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
       - name: Test offline evidence checker
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_game_evidence.py')
         run: python3 -m unittest discover -s tests -p test_game_evidence.py -v
       - name: Test current-source atlas generation and negative controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_crafting_atlas.py')
         run: python3 -m unittest discover -s tests -p test_crafting_atlas.py -v
       - name: Test and inventory placed outdoor bootstrap resources
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_outdoor_bootstrap.py')
         run: |
           python3 -m unittest discover -s tests -p test_outdoor_bootstrap.py -v
           python3 scripts/check-outdoor-bootstrap.py
@@ -83,7 +87,7 @@ jobs:
         shell: bash
 
       - name: Verify compiled sprite defaults and wrong-resource control
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/sprites')
         shell: bash
         run: |
           sudo apt-get install -y python3-pil
@@ -92,7 +96,7 @@ jobs:
           /usr/bin/python3 tests/sprites/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/sprites-negative.json" --negative-control
 
       - name: Verify generated atlas assets and native bounded viewer
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/crafting_atlas')
         shell: bash
         run: |
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
@@ -104,36 +108,36 @@ jobs:
 
       - name: Explain opt-in runtime coverage
         if: needs.changes.outputs.extensive != 'true'
-        run: echo 'Extensive runtime suites were not requested. Use Run workflow with extensive_regressions enabled.'
+        run: echo 'Existing regression suites are opt-in. Use Run workflow with extensive_regressions enabled; PRs introducing executable tests run only their corresponding suites.'
       - name: Verify bounded winter survival and cold-loss negative control
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/weather')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           /usr/bin/python3 tests/weather/run.py --byond-bin "$PWD/BYOND/byond/bin"
           /usr/bin/python3 tests/weather/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
       - name: Validate compiled crafting recipes
-        if: needs.changes.outputs.extensive == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/crafting')
         run: |
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
           python3 scripts/check-recipes.py --report recipe-checks.txt
         shell: bash
 
       - name: Upload recipe validation report
-        if: always() && needs.changes.outputs.extensive == 'true'
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/crafting'))
         uses: actions/upload-artifact@v4
         with:
           name: recipe-validation
           path: recipe-checks.txt
           if-no-files-found: warn
       - name: Offline world-save round-trip regression
-        if: needs.changes.outputs.extensive == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save')
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           bash tests/world_save/run.sh
         shell: bash
       - name: Verify isolated chemistry reactions and negative control
-        if: needs.changes.outputs.extensive == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/chemistry')
         shell: bash
         run: |
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
@@ -147,7 +151,7 @@ jobs:
           /usr/bin/python3 tests/chemistry/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe biochemistry --negative-control
 
       - name: Run isolated plant lifecycle regression and baseline
-        if: needs.changes.outputs.extensive == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/plant_lifecycle')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -156,21 +160,21 @@ jobs:
           pwsh -NoProfile -File tests/plant_lifecycle/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Revision e48afe3a84485de779b2076b80841c1119288930 -Baseline
 
       - name: Run automobile construction, movement and save regressions
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/car_workshop')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           pwsh -NoProfile -File tests/car_workshop/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
 
       - name: Run isolated crop diagnostics regression
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/plant_diagnostics')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           pwsh -NoProfile -File tests/plant_diagnostics/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
 
       - name: Run isolated disease and medicine regressions
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/survival')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -178,7 +182,7 @@ jobs:
           /usr/bin/python3 tests/survival/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
 
       - name: Run outdoor crop bootstrap and water regressions
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/outdoor_crops')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -187,7 +191,7 @@ jobs:
           pwsh -NoProfile -File tests/outdoor_crops/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Revision 9e44a2eb25945281979453b8aa060a9b1bad044b -Baseline
 
       - name: Run irrigation propagation regression and baseline
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/irrigation')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -196,7 +200,7 @@ jobs:
           pwsh -NoProfile -File tests/irrigation/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Revision b43ff97a5a97745f29727e11a29c3783257fd619 -Baseline
 
       - name: Run isolated power accounting regressions
-        if: needs.changes.outputs.extensive == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/power')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -204,7 +208,7 @@ jobs:
           bash scripts/check-power-gameplay.sh
 
       - name: Run isolated resource extraction regressions
-        if: needs.changes.outputs.extensive == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/automated_sifting') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/hydraulic_fracturing') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/mining_yields') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/petroleum_lifecycle') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/resource_extraction')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -215,28 +219,28 @@ jobs:
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/petroleum_lifecycle/probe.dm
 
       - name: Run constructed vehicle movement regressions
-        if: needs.changes.outputs.extensive == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/boat_movement')
         shell: bash
         run: |
           source ./BYOND/byond/bin/byondsetup
           pwsh -NoProfile -File ./tests/boat_movement/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
           pwsh -NoProfile -File ./tests/boat_movement/run-game.ps1 -ByondBin "$PWD/BYOND/byond/bin"
       - name: Run isolated battery energy and network regressions
-        if: needs.changes.outputs.extensive == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/batteries')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           pwsh -NoProfile -File scripts/test-batteries.ps1 -ByondBin "$PWD/BYOND/byond/bin"
 
       - name: Check battery construction and durable state with compiled game types
-        if: needs.changes.outputs.extensive == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/batteries')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 scripts/check-battery-items.py
 
       - name: Verify bounded abandoned-item decay and negative control
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/abandoned_items')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -247,7 +251,7 @@ jobs:
           /usr/bin/python3 tests/abandoned_items/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control seasons
 
       - name: Verify native human corpse lifecycle and negative controls
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/human_corpse_decay')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -257,7 +261,7 @@ jobs:
           /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control noop
 
       - name: Verify native memory ownership and mutation controls
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/callback_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/global_vars_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/memory_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nanoui_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/pool_effects') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/process_snapshot_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reagent_ownership') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/weakref_ownership')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -278,7 +282,7 @@ jobs:
           /usr/bin/python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/pool-effects-lifetime-control" --negative-control fallback
           /usr/bin/python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/pool-effects-chem-control" --negative-control chem
       - name: Verify bounded native lifetime telemetry and mutation controls
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/memory_telemetry')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -287,7 +291,7 @@ jobs:
             /usr/bin/python3 tests/memory_telemetry/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/memory-telemetry-$control" --negative-control "$control"
           done
       - name: Verify timed decal lifecycle and historical baseline
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/decal_decay')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -295,7 +299,7 @@ jobs:
           /usr/bin/python3 tests/decal_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --baseline
 
       - name: Verify production food progression and seed-consumption negative control
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/food_progression')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -303,14 +307,14 @@ jobs:
           /usr/bin/python3 tests/food_progression/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
 
       - name: Verify bounded animal harvesting and binding conservation
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/animal_harvest')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           /usr/bin/python3 tests/animal_harvest/run.py --byond-bin "$PWD/BYOND/byond/bin"
 
       - name: Verify flintlock assembly, races, catalog and persistence
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/blackpowder')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -319,7 +323,7 @@ jobs:
           pwsh -NoProfile -File tests/blackpowder/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -ForgeMergeControl
 
       - name: Verify firearm configuration, hardware, maintenance and ownership negative control
-        if: needs.changes.outputs.game == 'true'
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gun_configuration')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"

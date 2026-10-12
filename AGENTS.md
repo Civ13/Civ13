@@ -250,6 +250,13 @@ zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
 ## Local MCP tooling
 
+<!-- 2026-10-12: opt-in regression CI -->
+Existing game and tooling regression suites are manual opt-in. PRs adding
+executable integration tests select their registered suite only for that PR;
+ordinary game edits and edits to existing tests do not auto-select regressions.
+Keep compilation, workflow validation and publication checks separate. Register
+new suite guards through ci-selection.yml; see docs/ci-selection.md.
+
 <!-- 2026-10-12: official DM reference -->
 `dm_reference_search` and `dm_reference_read` fetch only the official BYOND manual
 over HTTPS, with bounded downloads, cancellation and a temporary in-memory cache.

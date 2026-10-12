@@ -3,10 +3,17 @@ on:
   pull_request:
   push:
     branches: [master]
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
+  changes:
+    uses: ./.github/workflows/ci-selection.yml
+    with:
+      base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
   contracts:
+    needs: changes
+    if: github.event_name == 'workflow_dispatch' || contains(fromJSON(needs.changes.outputs.new_tests), 'tools/comment-review')
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
