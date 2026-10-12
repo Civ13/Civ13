@@ -167,6 +167,13 @@ the intended ownership assertions. Account parts and nested equipment have
 save. Connected car driving, rider dialogs, physical transfer and playable
 acceptance remain separate requirements.
 
+The mode fixture also stages actual tool components on an account-bound private
+workbench, rejects a foreign owner, executes production finishing and verifies
+native account restoration of the resulting identity, condition and materials.
+This bypasses the assembly wait; production timed assembly has its own component
+checks. `test_map_environment.py` checks that all public hub desks are connected
+and private benches leave the fixed garage anchors clear.
+
 Record a genuine disposable local playable world after integrated regressions
 pass. Use the exact pinned build and record its full commit, dirty patch when
 applicable, map dimensions, local process IDs, compiler/runtime versions and

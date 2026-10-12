@@ -1247,6 +1247,7 @@
 #include "code\modules\1713\extraction\mode.dm"
 #include "code\modules\1713\extraction\raid_round.dm"
 #include "code\modules\1713\extraction\hub_maps.dm"
+#include "code\modules\1713\extraction\safehouse_hub.dm"
 #include "code\modules\1713\extraction\groups.dm"
 #include "code\modules\1713\extraction\vehicle_transfer.dm"
 #include "code\modules\1713\extraction\vehicle_codec.dm"

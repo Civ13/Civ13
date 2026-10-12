@@ -2,6 +2,8 @@
 import importlib.util
 from pathlib import Path
 import unittest
+import re
+from collections import deque
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('map_environment', ROOT / 'scripts/map_environment.py')
@@ -10,6 +12,42 @@ SPEC.loader.exec_module(MODULE)
 
 
 class MapEnvironmentTests(unittest.TestCase):
+    def test_original_hub_navigation_and_private_workspaces(self):
+        source = (ROOT / 'maps/extraction/industrial_district.dmm').read_text()
+        definitions = dict(re.findall(r'^"([a-z]{2})" = (.+)$', source, re.M))
+        grids = re.findall(r'\(1,1,(\d+)\) = \{"\n(.*?)\n"\}', source, re.S)
+        self.assertEqual([int(z) for z, _ in grids], [1, 2, 3])
+        layers = []
+        for _, body in grids:
+            rows = body.splitlines()
+            self.assertEqual(len(rows), 96)
+            self.assertTrue(all(len(row) == 192 for row in rows))
+            layers.append({(x + 1, 96 - y): definitions[row[x * 2:x * 2 + 2]]
+                           for y, row in enumerate(rows) for x in range(96)})
+        hub = layers[2]
+        reached = {(48, 48)}
+        pending = deque(reached)
+        while pending:
+            x, y = pending.popleft()
+            for point in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                atoms = hub.get(point, '')
+                if point in reached or not atoms or '/obj/covers/generic_wall' in atoms or '/obj/structure/bed/chair' in atoms:
+                    continue
+                reached.add(point)
+                pending.append(point)
+        desks = [point for point, atoms in hub.items() if '/obj/effect/extraction_hub_guide/' in atoms]
+        self.assertEqual(len(desks), 3)
+        self.assertTrue(all(point in reached for point in desks))
+        houses = layers[1]
+        benches = [point for point, atoms in houses.items() if '/component_workbench/extraction_private' in atoms]
+        self.assertEqual(len(benches), 16)
+        for room in range(16):
+            center = (12 + room % 4 * 22, 12 + room // 4 * 22)
+            self.assertIn(f'room = {room + 1}', houses[(center[0] + 3, center[1] + 3)])
+            # The paid Piccolino's bay and routes to crate/terminal remain clear.
+            self.assertNotIn('/component_workbench', houses[(center[0] - 2, center[1] - 2)])
+        self.assertEqual(sum('/obj/structure/component_workbench,' in atoms for atoms in layers[0].values()), 9)
+
     def test_actual_catalog_rewrites_one_unconditional_map(self):
         original = (ROOT / 'civ13.dme').read_text()
         for path in ('maps/extraction/industrial_district.dmm', 'maps/2013/alleyway.dmm', 'maps/1969/bank_robbery.dmm'):

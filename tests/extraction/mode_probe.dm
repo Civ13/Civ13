@@ -59,6 +59,7 @@
 	var/obj/map_metadata/extraction_survival/M = map
 	equipment_assert(istype(M), "original extraction map metadata loaded")
 	M.accounts.store.root = "data/mode_accounts/"
+	extraction_hub_probe(M)
 	equipment_assert(extraction_house_markers.len == 16 && extraction_raid_markers.len == 4 && extraction_loot_markers.len == 18, "fixed room, deployment and loot pools")
 	var/mob/living/human/A = new(locate(3,3,1))
 	var/mob/living/human/B = new(locate(3,3,1))

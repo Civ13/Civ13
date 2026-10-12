@@ -379,6 +379,10 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	if (C)
 		for (var/obj/item/I in C.contents)
 			if (I.loc == C) items |= I
+	var/obj/structure/component_workbench/extraction_private/B = house_workbench(S)
+	if (B)
+		for (var/obj/item/I in B.contents)
+			if (I.loc == B) items |= I
 	return items
 
 /obj/map_metadata/extraction_survival/proc/records(list/items)
@@ -556,6 +560,8 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	leave_party(S.owner)
 	if (save && S.profile["state"] == "home" && !save_home(S)) return FALSE
 	if (S.house)
+		var/obj/structure/component_workbench/extraction_private/B = house_workbench(S)
+		if (B) B.cancelled = TRUE
 		for (var/obj/item/I in home_roots(S))
 			if (I.loc == S.body && S.body.z == 1) continue
 			qdel(I)

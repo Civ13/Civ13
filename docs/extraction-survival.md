@@ -171,6 +171,17 @@ level 3. All levels have the same dimensions. Fixed daylight is an explicit map
 design choice. Visiting the concourse requires leaving equipment in private
 storage; the return terminal resolves the current account's bound house.
 
+The original hub has a central return/voting square, west lounge, east crafting
+reference room and north district briefing room. Four-tile passages connect the
+rooms. The crafting desk opens the existing Crafting Atlas. Each private room
+has an account-bound production tool workbench outside its car bay; nine raid
+warehouses also provide shared benches. Private staged inputs and finished tools
+are included in the account stash checkpoint, and release cancels pending
+assembly and retires those physical items. No second world-save owner is added.
+The native mode fixture verifies access, assembly and condition-preserving
+account restoration; offline map checks verify connected public desks and fixed
+room/bay placement. Connected-client presentation remains unverified.
+
 Equipment graph schema 2 preserves unique identities and found-in-raid status
 for each contained node. Successful extraction retains provenance; bringing
 equipment into a subsequent raid clears it throughout the bounded graph.

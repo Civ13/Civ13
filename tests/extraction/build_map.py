@@ -40,6 +40,7 @@ def build():
             kind = 'ammunition' if number % 2 else 'armory'
             put(left+12, bottom+12, f'/obj/effect/extraction_loot_marker{{container_id = {number*2+2}; pool_kind = "{kind}"}}')
             put(left+8, bottom+8, '/obj/effect/extraction_npc_marker')
+            put(left+5, bottom+4, '/obj/structure/component_workbench')
     for x, y in ((8, 8), (88, 8), (8, 88), (88, 88)):
         put(x, y, '/obj/effect/extraction_raid_marker')
     for x, y, kind in ((48, 5, ''), (48, 91, '/pmc'), (5, 48, '/scav'), (91, 48, '/manhole')):
@@ -68,16 +69,29 @@ def build():
                 house[y-1][x-1] = tile(private, houses)
         house[cy-1][cx-1] = tile(f'/obj/effect/extraction_house_marker{{room = {room+1}}}', private, houses)
         house[cy-1][cx] = tile(f'/obj/effect/extraction_secure_crate{{room = {room+1}}}', private, houses)
+        house[cy+2][cx+2] = tile(f'/obj/structure/component_workbench/extraction_private{{room = {room+1}}}', private, houses)
     layers.append(house)
     # Shared demilitarized concourse, physically separated from private storage.
     hub_area = '/area/extraction_hub'
     hub = [[tile(wall, floor, hub_area) for _ in range(SIZE)] for _ in range(SIZE)]
-    for y in range(34, 63):
-        for x in range(30, 67):
+    for y in range(28, 73):
+        for x in range(22, 75):
             hub[y-1][x-1] = tile(floor, hub_area)
-    for x in (32, 64):
-        for y in (38, 44, 50, 56):
-            hub[y-1][x-1] = tile('/obj/structure/shelf/palette', floor, hub_area)
+    # Lounge west, workshop reference east, operations north. Four-wide
+    # passages preserve a clear central meeting square and return desk.
+    for x in (38, 58):
+        for y in range(28, 73):
+            if y not in range(46, 50):
+                hub[y-1][x-1] = tile(wall, floor, hub_area)
+    for x in range(39, 58):
+        if x not in range(46, 50):
+            hub[59][x-1] = tile(wall, floor, hub_area)
+    for x in (26, 32, 64, 70):
+        for y in (36, 42, 54):
+            hub[y-1][x-1] = tile('/obj/structure/bed/chair', floor, hub_area)
+    hub[47][29] = tile('/obj/effect/extraction_hub_guide/lounge', floor, hub_area)
+    hub[47][65] = tile('/obj/effect/extraction_hub_guide/workshop', floor, hub_area)
+    hub[66][47] = tile('/obj/effect/extraction_hub_guide/operations', floor, hub_area)
     hub[47][47] = tile('/obj/effect/extraction_hub_terminal', floor, hub_area)
     layers.append(hub)
     result = [f'"{key}" = {value}' for value, key in definitions.items()]

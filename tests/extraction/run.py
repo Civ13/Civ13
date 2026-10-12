@@ -171,7 +171,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
         source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
         if probe == 'mode':
             source = '#define EXTRACTION_MODE_PROBE\n' + source
-            source += '\n#include "tests/extraction/mode_probe.dm"\n#include "tests/extraction/vote_probe.dm"\n#include "tests/extraction/group_probe.dm"\n#include "tests/extraction/vehicle_probe.dm"\n#include "tests/extraction/loot_probe.dm"\n#include "maps/extraction/industrial_district.dmm"\n'
+            source += '\n#include "tests/extraction/mode_probe.dm"\n#include "tests/extraction/hub_probe.dm"\n#include "tests/extraction/vote_probe.dm"\n#include "tests/extraction/group_probe.dm"\n#include "tests/extraction/vehicle_probe.dm"\n#include "tests/extraction/loot_probe.dm"\n#include "maps/extraction/industrial_district.dmm"\n'
         if probe == 'insurance':
             source = '#define EXTRACTION_RETURNS_PROCESS_PROBE\n' + source
             source += '\n#include "tests/extraction/insurance_process_probe.dm"\n'
