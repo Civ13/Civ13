@@ -226,6 +226,9 @@ var/corpse_assertions = 0
 		qdel(reentrant)
 		corpse_clear_bones()
 		var/mob/living/human/corpse/map_body = new(T)
+		// Native map-corpse setup schedules its death after equipment initialization.
+		for (var/attempt = 1, attempt <= 20 && map_body.stat != DEAD, attempt++)
+			sleep(1)
 		corpse_assert(map_body.stat == DEAD && map_body.corpse_decay_record, "native map corpse registers")
 		corpse_expire(map_body)
 		corpse_assert(!map_body && locate(/obj/structure/religious/remains/decaying) in T, "native map corpse becomes bones")
