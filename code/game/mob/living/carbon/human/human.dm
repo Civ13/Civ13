@@ -98,6 +98,7 @@
 	spawn(5)
 		nomads_spawn()
 /mob/living/human/Destroy()
+	cancel_exercise()
 	unregister_corpse_decay()
 	human_mob_list -= src
 	human_clients_mob_list -= src

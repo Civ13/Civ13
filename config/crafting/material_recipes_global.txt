@@ -2571,5 +2571,9 @@ RECIPE: /material/copper/,Baghdad-style jar cell assembly,/obj/structure/battery
 RECIPE: /material/copper/,iron-copper voltaic-style pile,/obj/structure/battery/pile,5,120,1,1,electrical,95,0,0,8,null
 RECIPE: /material/lead/,lead-acid accumulator,/obj/structure/battery/lead_acid,5,150,1,1,electrical,105,0,0,8,null
 RECIPE: /material/wood/,wooden resource sieve,/obj/item/weapon/resource_sieve,4,60,0,1,tools,0,0,0,8,null
+RECIPE: /material/stone/,stone lifting weights,/obj/structure/exercise,8,80,1,1,sports,30,0,0,8,null
+RECIPE: /material/wood/,agility and endurance course marker,/obj/structure/exercise/course,6,80,1,1,sports,30,0,0,8,null
+RECIPE: /material/iron/,gym lifting weights,/obj/structure/exercise/modern,12,120,1,1,sports,105,0,0,8,null
+RECIPE: /material/iron/,gym circuit marker,/obj/structure/exercise/modern/course,8,100,1,1,sports,105,0,0,8,null
 
 RECIPE: /material/steel/,dovetail-to-Picatinny rail adapter,/obj/item/weapon/gun_mount,2,120,0,1,tools,0,80,0,8,null

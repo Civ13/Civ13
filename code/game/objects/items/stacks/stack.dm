@@ -304,6 +304,9 @@
 	var/customdesc = ""
 	var/turn_dir = 0
 	var/mob/living/human/H = user
+	if (!exercise_can_build(H, recipe.result_type))
+		to_chat(H, "This training equipment requires its era, completed research and crafting skill.")
+		return
 	var/obj/structure/religious/totem/newtotem = null
 	var/obj/structure/simple_door/key_door/custom/build_override_door = null
 	var/obj/structure/simple_door/key_door/faction_door/faction_override_door = null
@@ -1811,6 +1814,8 @@
 				handReturnMap.Remove(H.key)
 			return
 
+		if (!exercise_can_build(H, recipe.result_type))
+			return
 		if (H)
 			H.adaptStat("crafting", 1*recipe.req_amount)
 	if (findtext(recipe.title, "coil"))

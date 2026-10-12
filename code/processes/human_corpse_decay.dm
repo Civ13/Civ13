@@ -199,6 +199,7 @@ var/global/corpse_decay_cursor = 1
 		reset_corpse_decay_age()
 
 /mob/living/human/Del()
+	cancel_exercise()
 	unregister_corpse_decay()
 	return ..()
 

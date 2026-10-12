@@ -399,6 +399,10 @@ var/global/list/node_grid_col_cache = null
 	// misclassifications. Unmapped paths (not listed here) keep the legacy
 	// threshold gate unchanged (see generate_recipes_civs in civ_recipes.dm).
 	recipe_node_requirements = list(
+		"/obj/structure/exercise" = "basic_tools",
+		"/obj/structure/exercise/course" = "primitive_construction",
+		"/obj/structure/exercise/modern" = "factories",
+		"/obj/structure/exercise/modern/course" = "factories",
 		// --- anesthetic_surgery (2) ---
 		"/obj/item/clothing/mask/sterile" = "anesthetic_surgery",
 		"/obj/item/clothing/suit/storage/jacket/surgeon" = "anesthetic_surgery",
