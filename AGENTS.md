@@ -596,3 +596,8 @@ Discovery yields at 4096 candidates, mutation at 256, and both at 20% tick usage
 Season worker fields are explicitly excluded by persistence_runtime_var because
 custom saves enumerate tmp fields. Asia flooding uses season_transition_complete
 inside the same lock. Isolated tests do not establish full-server latency.
+
+<!-- 2026-10-12: finite native probe completion -->
+Native del(world) does not immediately stop the current procedure. Accumulate
+probe failures before emitting one final result, and return explicitly after
+world disposal so failure paths cannot continue into a passing receipt.

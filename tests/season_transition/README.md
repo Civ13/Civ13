@@ -74,3 +74,74 @@ negative-control detection, adversarial scenarios, telemetry and the accepted ga
 bound have not been executed locally. This harness uses inert weather/tree/crop
 side-effect adapters and does not establish client movement, graphical rendering,
 map-wide gameplay acceptance, live server behavior or production deployment.
+
+## Full-source largest-map constructor benchmark
+
+`full_game.py` generates a complete production DME with the actual
+`maps/nomads/nomads_persistence_beta.dmm` (660x550x1). It retains native terrain
+New/Del/ChangeTurf, icon/registry callbacks and ordinary pregame scheduler setup.
+It constructs 20,000 retained real `/obj/item` instances (plus one handled test
+item) and 80 production human subtypes on 180 bounded plating staging cells,
+which inherit constructors and Life. Only their disconnected-client sleeping
+check is adapted. Twenty initial native movement and hand pickup/drop cycles plus twenty concurrent
+cycles during each of four transitions, final
+item/human identities and locations, per-human Life calls/gaps, grass/water
+registry indices/current-turf membership, and four actual seasonal transitions
+must pass. Each synchronized finite movement callback must complete and record
+at least one successful operation with the season worker busy before and after
+the native actions. Every human must advance Life in each transition. Dead
+humans fail the initial and every subsequent population check; production cold
+damage is not masked by invulnerability.
+These are headless humans, not connected players.
+
+```
+<PYTHON> tests/season_transition/full_game.py --prepare-only
+<PYTHON> tests/season_transition/full_game.py --prepare-only --negative-control
+<PYTHON> tests/season_transition/full_game.py --byond-bin <516.1681-bin> --output <fresh-evidence-directory>
+<PYTHON> tests/season_transition/full_game.py --byond-bin <516.1681-bin> --negative-control --output <fresh-control-directory>
+```
+
+Preparation performs source transformations and hashes without starting BYOND.
+Native execution compiles with zero errors/warnings and uses fresh temporary
+storage, public tracked configuration, disabled webhook/ToRban/persistence-save
+adapters, a closed port which cannot reopen, and no clients. The pregame lobby
+is held: roundstart nature/map generation, food bootstrap and full round behavior
+are outside this benchmark. Unexpected reboots and runtime/engine diagnostics
+invalidate evidence. BYOND engine account/hub activity before DM startup is not
+OS-level network isolation.
+
+Only seasonal delayed-start waits are accelerated to `30 + delay / 100`
+deciseconds; original numeric delays are recorded. This synthetic schedule
+preserves relative delay lengths and allows concurrent service time. Because
+main terrain work keeps its real duration and phases arm at different points,
+callback firing order can differ from ordinary seasonal timing. This benchmark
+establishes constructor and concurrent service coverage, not production delayed
+phase order. Terrain constructors, callbacks, worker pauses and
+human Life are unchanged. A generated pending-callback count includes nested
+callbacks and queued phases; each cycle waits for complete quiescence. Source
+restoration checks constrain the generated worker changes to this timing
+instrumentation. Setup readiness is marked at the actual end of
+`setup_everything()`, rather than inferred from scheduler creation.
+
+Evidence separates setup/startup, population construction, immediate seasonal
+work, all delayed phases and recovery. Own-child CPU/RSS or Windows working-set
+samples are taken every 0.1 seconds and native heartbeat gaps are retained;
+phase boundary uncertainty includes a poll plus file/write/scheduling delay.
+Each phase reports its maximum sampled current RSS separately from the process
+lifetime working-set/VmHWM high-water mark. The latter may belong to an earlier
+phase and must not be interpreted as that phase's allocation peak.
+Generated/original sources, full include hashes including the DMM, exact HEAD,
+tracked patch, compiler/runtime logs and result receipts are retained. CPU,
+completion time and retained registry entries do not establish long-term OOM
+remediation or a gameplay latency SLO.
+
+Limits are 300 seconds for native setup, 900 seconds for the entire daemon,
+2 GiB process lifetime memory high-water cap and 12,000 heartbeat rows. Compilation has a separate
+300-second limit. A timeout preserves observations and fails; these bounds are
+not measured completion promises. The negative control removes one entry from
+the generated item ownership list and must fail specifically on population
+conservation; compilation/runtime failures do not count as control detection.
+
+Current verification: source-only preparation of positive/negative variants.
+Native compilation, runtime invariants and performance have not been executed
+locally. Cloud execution requires independent code review and exact-head CI.
