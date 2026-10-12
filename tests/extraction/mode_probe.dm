@@ -257,6 +257,14 @@
 	M.npcs |= pmc
 	scav.handle_ai()
 	equipment_assert(!scav.target_mob, "unprovoked scav stays neutral")
+	scav.pmc_contact_hostile = TRUE
+	scav.next_decision = 0
+	scav.handle_ai()
+	equipment_assert(scav.target_mob == pmc && !scav.aggressor, "stable hostile contact policy targets PMC without inventing retaliation")
+	scav.pmc_contact_hostile = FALSE
+	scav.next_decision = 0
+	scav.handle_ai()
+	equipment_assert(!scav.target_mob, "neutral PMC contact policy remains unprovoked")
 	scav.provoke(pmc)
 	world.log << "Retaliation attacker stat=[pmc.stat] z=[pmc.z] visible=[pmc in view(12, scav)] aggressor=[scav.aggressor] clock=[world.time] decision=[scav.next_decision]"
 	scav.handle_ai()
@@ -283,9 +291,11 @@
 	scav.Shoot(pmc)
 	equipment_assert(scav.gun.ammo_magazine.stored_ammo.len == ammo - 1, "NPC consumes actual finite ammunition")
 	var/obj/item/weapon/gun/projectile/dropped = scav.gun
+	var/obj/item/extraction_salvage/original_salvage = scav.carried_salvage
 	scav.death()
 	equipment_assert(!scav.aggressor && !scav.target_mob && !scav.route.len && !scav.hostile_entities.len, "death releases retaliation references")
 	equipment_assert(scav.stat == DEAD && !(scav in M.npcs) && dropped.loc == get_turf(scav) && M.raid_items[dropped], "NPC corpse drops tracked equipment once")
+	equipment_assert(original_salvage.loc == get_turf(scav) && M.raid_items[original_salvage] && !scav.carried_salvage, "NPC death releases original finite provision instead of creating loot")
 	var/retained = M.raid_items.len
 	scav.death()
 	equipment_assert(M.raid_items.len == retained, "NPC death callback idempotent")

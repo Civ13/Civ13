@@ -660,7 +660,9 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 			if (S.body?.z == 1 && get_dist(S.body, marker) < 12) near_player = TRUE
 		if (!near_player)
 			var/path = npcs.len % 3 == 2 ? /mob/living/simple_animal/hostile/human/extraction/contractor : /mob/living/simple_animal/hostile/human/extraction
-			npcs += new path(get_turf(marker))
+			var/mob/living/simple_animal/hostile/human/extraction/N = new path(get_turf(marker))
+			N.pmc_contact_hostile = !N.contractor && npcs.len % 2 == 1
+			npcs += N
 
 /obj/map_metadata/extraction_survival/proc/track_loot(obj/item/I)
 	if (!I) return FALSE

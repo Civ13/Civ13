@@ -15,6 +15,9 @@
 	starves = FALSE
 	speak_chance = 0
 	var/contractor = FALSE
+	// Assigned once at spawn. Neutral contacts become hostile only on attack.
+	var/pmc_contact_hostile = FALSE
+	var/tmp/obj/item/extraction_salvage/carried_salvage
 	var/tmp/mob/living/aggressor
 	var/tmp/list/hostile_entities = list()
 	var/tmp/next_decision = 0
@@ -30,7 +33,21 @@
 		var/datum/extraction_equipment_codec/provenance = new
 		provenance.set_raid_provenance(gun, TRUE)
 		gun.should_save = FALSE
+		carried_salvage = new(src)
+		provenance.set_raid_provenance(carried_salvage, TRUE)
+		carried_salvage.should_save = FALSE
 		projectiletype = /obj/item/projectile/bullet/pistol/a9x19
+	Destroy()
+		aggressor = null
+		target_mob = null
+		hostile_entities.Cut()
+		route.Cut()
+		carried_salvage = null
+		var/obj/map_metadata/extraction_survival/M = map
+		if (istype(M))
+			M.npcs -= src
+			M.npc_corpses -= src
+		return ..()
 	do_human_behaviour()
 		return
 	Shoot(atom/target)
@@ -70,18 +87,19 @@
 			if (aggressor && (!aggressor.loc || aggressor.stat == DEAD)) aggressor = null
 			if (!aggressor && hostile_entities.len) aggressor = hostile_entities[1]
 			if (aggressor) chosen = aggressor
-			if (!chosen && contractor)
+			if (!chosen && (contractor || pmc_contact_hostile))
 				var/best_distance = 13
 				for (var/owner in M.accounts.sessions)
 					var/datum/extraction_session/S = M.accounts.sessions[owner]
 					var/mob/living/human/H = S.body
 					if (S.profile["state"] != "raid" || !H || H.stat == DEAD || H.z != 1) continue
+					if (!contractor && S.profile["raid_faction"] != "PMC") continue
 					var/distance = get_dist(src, H)
 					if (distance < best_distance && (H in view(12, src)))
 						chosen = H
 						best_distance = distance
 				for (var/mob/living/simple_animal/hostile/human/extraction/N in M.npcs)
-					if (N == src || N.contractor || N.stat == DEAD || N.z != 1) continue
+					if (N == src || N.stat == DEAD || N.z != 1 || (contractor ? N.contractor : !N.contractor)) continue
 					var/distance = get_dist(src, N)
 					if (distance < best_distance && (N in view(12, src)))
 						chosen = N
@@ -118,7 +136,10 @@
 			if (gun)
 				M.track_loot(gun)
 				gun = null
-			M.spawn_loot(get_turf(src), /obj/item/extraction_salvage)
+			if (carried_salvage)
+				carried_salvage.forceMove(get_turf(src))
+				M.track_loot(carried_salvage)
+				carried_salvage = null
 
 /mob/living/simple_animal/hostile/human/extraction/contractor
 	name = "hostile contractor"
