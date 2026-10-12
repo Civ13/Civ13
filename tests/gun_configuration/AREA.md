@@ -8,7 +8,10 @@ storage. It does not change gun action waits or compatibility checks.
 ./tests/gun_configuration/run-area.ps1 -ByondBin '<BYOND 516.1681 bin>' -Visual -TimeoutSeconds 600
 ```
 
-Connect the local client to the printed loopback address. After readiness,
+Supply an absolute path to a trusted BYOND installation. The launcher never
+starts a client; close the client you manually open when your screen turn ends.
+Visual mode opens the selected game port: use a local, appropriately firewalled
+test machine. Connect the local client to the printed loopback address. After readiness,
 use Local Verification > Enter gun test area. The SVD starts with a PSO-1:
 check that it is unloaded, equip a screwdriver, use Field Strip, remove the
 PSO-1, then use the rail and red dot sight on the held gun. Examine before

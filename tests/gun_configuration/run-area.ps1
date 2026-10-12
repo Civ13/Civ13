@@ -1,5 +1,10 @@
 param([Parameter(Mandatory=$true)][string]$ByondBin, [switch]$Visual, [ValidateRange(1024,65535)][int]$Port=18339, [ValidateRange(60,900)][int]$TimeoutSeconds=600)
 $ErrorActionPreference = 'Stop'
+if (![IO.Path]::IsPathRooted($ByondBin)) { throw 'ByondBin must be an absolute path to a trusted BYOND installation' }
+$ByondBin = (Resolve-Path -LiteralPath $ByondBin).Path
+foreach ($binary in @('dm.exe','dd.exe')) {
+    if (!(Test-Path -LiteralPath (Join-Path $ByondBin $binary) -PathType Leaf)) { throw "Missing BYOND binary: $binary" }
+}
 $repo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $nonce = [guid]::NewGuid().ToString('N')
 $source = Join-Path $repo ('.gun-area-' + $nonce + '.dme')
@@ -24,8 +29,11 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Cannot identify tested commit' }
     $parameters = 'tested_commit=' + $commit
     if ($Visual) { $parameters += '&visual=1' }
-    $owned = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @('area.dmb',"$Port",'-invisible','-safe','-params',$parameters,'-log','startup.log') -WorkingDirectory $run -WindowStyle Hidden -PassThru
-    Write-Output "RUN_DIRECTORY=$run; OWNED_PID=$($owned.Id); LOCAL_CONNECT=byond://127.0.0.1:$Port"
+    $daemonArguments = @('area.dmb',"$Port",'-invisible','-safe','-params',$parameters,'-log','startup.log')
+    if (!$Visual) { $daemonArguments = @('area.dmb','0','-close','-invisible','-safe','-params',$parameters,'-log','startup.log') }
+    $owned = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList $daemonArguments -WorkingDirectory $run -WindowStyle Hidden -PassThru
+    Write-Output "RUN_DIRECTORY=$run; OWNED_PID=$($owned.Id)"
+    if ($Visual) { Write-Output "LOCAL_CONNECT=byond://127.0.0.1:$Port; close your manually launched client after testing" }
     $timer = [Diagnostics.Stopwatch]::StartNew()
     while (!$owned.WaitForExit(200)) {
         if ($timer.Elapsed.TotalSeconds -gt $TimeoutSeconds) {
