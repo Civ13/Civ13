@@ -60,5 +60,7 @@ var/global/datum/gun_test_area/gun_test_area = new
 	if(!istype(G) || !(G in gun_test_area.equipment)) return
 	var/value = input(H,"Test setup only: condition percentage","Local fixture",60) as num|null
 	if(isnull(value)) return
-	G.health = G.maxhealth * clamp(value,1,100)/100
+	if(src.mob != H || H.get_active_hand() != G || !(G in gun_test_area.equipment)) return
+	value = clamp(value,1,100)
+	G.health = G.maxhealth * value/100
 	to_chat(H,"Test setup assigned [value]% condition; native maintenance remains unchanged.")

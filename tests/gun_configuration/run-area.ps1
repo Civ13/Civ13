@@ -35,14 +35,21 @@ try {
     Write-Output "RUN_DIRECTORY=$run; OWNED_PID=$($owned.Id)"
     if ($Visual) { Write-Output "LOCAL_CONNECT=byond://127.0.0.1:$Port; close your manually launched client after testing" }
     $timer = [Diagnostics.Stopwatch]::StartNew()
+    $readyPath = Join-Path $run 'test-area-ready.json'
+    $reportedReady = $false
     while (!$owned.WaitForExit(200)) {
+        if ($Visual -and !$reportedReady -and (Test-Path -LiteralPath $readyPath)) {
+            Get-Content -LiteralPath $readyPath
+            $reportedReady = $true
+        }
         if ($timer.Elapsed.TotalSeconds -gt $TimeoutSeconds) {
-            if ($Visual -and (Test-Path -LiteralPath (Join-Path $run 'test-area-ready.json'))) { break }
+            if ($Visual -and $reportedReady) { break }
             throw 'Test-area startup timed out'
         }
     }
-    if (!(Test-Path -LiteralPath (Join-Path $run 'test-area-ready.json'))) { throw "Area did not become ready; inspect $run" }
-    Get-Content -LiteralPath (Join-Path $run 'test-area-ready.json')
+    if ($Visual -and $owned.HasExited) { throw "Visual daemon exited before the bounded test period ended; inspect $run" }
+    if (!(Test-Path -LiteralPath $readyPath)) { throw "Area did not become ready; inspect $run" }
+    if (!$reportedReady) { Get-Content -LiteralPath $readyPath }
 } finally {
     if ($owned -and !$owned.HasExited) { Stop-Process -Id $owned.Id; $owned.WaitForExit() }
     foreach ($path in @($source,[IO.Path]::ChangeExtension($source,'dmb'),[IO.Path]::ChangeExtension($source,'rsc'))) {
