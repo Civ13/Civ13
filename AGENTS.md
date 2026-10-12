@@ -611,3 +611,11 @@ inside the same lock. Isolated tests do not establish full-server latency.
 Native del(world) does not immediately stop the current procedure. Accumulate
 probe failures before emitting one final result, and return explicitly after
 world disposal so failure paths cannot continue into a passing receipt.
+
+<!-- 2026-10-12: OpenDream local controls -->
+`scripts/opendream/control.py` owns only its launched local server. OpenDream
+restart/map votes enqueue fixed requests with a ready marker; do not use shell
+or native PID discovery. Reused temporary resources can make OpenDream `fcopy`
+copy stale bytes. Write the final spool file before its marker and verify actual
+disk bytes independently of DM resource reads. `verify-dm-controls.py` exercises
+production request/reboot/whitelist bodies in a disposable OpenDream world.
