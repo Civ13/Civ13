@@ -1,5 +1,6 @@
 """Production GC profiling and unchanged collector budgets in offline native storage."""
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -11,7 +12,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--output', type=Path)
-    parser.add_argument('--negative-control', choices=('bound', 'cleanup', 'forced'))
+    parser.add_argument('--negative-control', choices=('bound', 'cleanup', 'forced', 'clock'))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     out = args.output or Path(tempfile.mkdtemp(prefix='civ13-gc-profile-'))
@@ -22,25 +23,34 @@ def main():
     source = source.replace('../../code/', root.as_posix()+'/code/')
     source += '\n' + (root/'tests/memory_ownership/collector.dm').read_text()
     source += '\n' + (root/'tests/garbage_profile/probe.dm').read_text()
+    garbage = (root/'code/processes/garbage.dm').read_text()
+    helper = (root/'code/processes/garbage_profile.dm').read_text()
     expected = None
     if args.negative_control:
         controls = {
             'bound': ('code/processes/garbage_profile.dm', '#define GC_PROFILE_TYPE_LIMIT 128', '#define GC_PROFILE_TYPE_LIMIT 10000', 'type rows stay bounded including overflow'),
             'cleanup': ('code/processes/garbage.dm', 'profile_cost(profile_type, FALSE, cleanup_started, cleanup_tick)', 'profile_snapshot()', 'cleanup hook counts once across recursive and repeated qdel'),
             'forced': ('code/processes/garbage.dm', 'profile_cost(forced_type, TRUE, forced_started, forced_tick)', 'profile_snapshot()', 'collector times actual forced deletion'),
+            'clock': ('code/processes/garbage_profile.dm', 'elapsed += 864000', 'elapsed += 0', 'elapsed samples handle one midnight wrap'),
         }
         relative, before, after, expected = controls[args.negative_control]
         body = (root/relative).read_text()
         if before not in body:
             raise RuntimeError('Missing control anchor')
-        altered = out/'negative.dm'
-        altered.write_text(body.replace(before, after, 1))
-        source = source.replace((root/relative).as_posix(), altered.as_posix())
+        if relative.endswith('garbage_profile.dm'):
+            helper = body.replace(before, after, 1)
+        else:
+            garbage = body.replace(before, after, 1)
+    (out/'garbage_profile.dm').write_text(helper)
+    (out/'garbage.dm').write_text(garbage)
+    source = source.replace((root/'code/processes/garbage.dm').as_posix(), (out/'garbage.dm').as_posix())
     (out/'probe.dme').write_text(source)
     (out/'metadata.json').write_text(json.dumps({
         'head_sha': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip(),
         'scope': 'isolated production cleanup/collector, no game startup',
         'negative_control': args.negative_control,
+        'source_sha256': {name: hashlib.sha256((out/name).read_bytes()).hexdigest()
+                          for name in ('probe.dme', 'garbage.dm', 'garbage_profile.dm')},
     }))
     (out/'dirty.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root))
     win = os.name == 'nt'
@@ -58,6 +68,8 @@ def main():
         subprocess.run(cmd, cwd=out, stdout=stream, stderr=subprocess.STDOUT, timeout=60, creationflags=flags, check=True)
     result = (out/'result.txt').read_text()
     print(result.strip())
+    if (out/'benchmark.txt').exists():
+        print((out/'benchmark.txt').read_text().strip())
     runtime = (out/'runtime.log').read_text(errors='replace') + (out/'daemon.log').read_text(errors='replace')
     if any(marker in runtime.lower() for marker in ('runtime error', 'bad ref', 'infinite loop', 'error:')):
         raise RuntimeError('Runtime/engine diagnostics invalidate evidence')

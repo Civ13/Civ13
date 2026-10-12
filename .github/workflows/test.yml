@@ -284,7 +284,7 @@ jobs:
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           /usr/bin/python3 tests/garbage_profile/run.py --byond-bin "$PWD/BYOND/byond/bin"
-          for control in bound cleanup forced; do
+          for control in bound cleanup forced clock; do
             /usr/bin/python3 tests/garbage_profile/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
 
