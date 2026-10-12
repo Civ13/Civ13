@@ -494,3 +494,11 @@ Inaccessible wall padding still allocates turfs. Shared home scans remain local
 these bounds do not establish whole-world startup, lighting, environment or
 save costs. Larger maps require full-map startup and memory measurements and
 runtime checks of navigation and extraction before scalability is accepted.
+
+Pharmacy loot may persist only the exact medical stack types
+`/obj/item/stack/medical/bruise_pack/bint` and
+`/obj/item/stack/medical/splint`. Their amount must be an integer from one to
+that subtype's native maximum (30 bandages or five splints). The equipment
+probe checks quantity and identity round trips and rejects empty, fractional,
+oversized and uncatalogued subtype payloads. These new native assertions are
+pending CI and do not establish connected gameplay or medical balance.

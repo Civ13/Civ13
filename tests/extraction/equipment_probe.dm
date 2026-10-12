@@ -54,6 +54,22 @@ var/equipment_completed = FALSE
 #endif
 #endif
 
+/proc/equipment_medical_stack_probe(datum/extraction_equipment_codec/C)
+	var/list/paths = list(/obj/item/stack/medical/bruise_pack/bint, /obj/item/stack/medical/splint)
+	for (var/path in paths)
+		var/obj/item/stack/medical/I = new path(null)
+		I.amount = 2
+		var/list/graph = C.encode(I)
+		equipment_assert(graph, "exact pharmacy stack serializes actual quantity")
+		var/obj/item/stack/medical/restored = C.decode(graph, locate(3,7,1))
+		equipment_assert(restored && restored.type == path && restored.amount == 2 && restored.extraction_item_id == I.extraction_item_id, "pharmacy stack roundtrip preserves actual type quantity and identity")
+		for (var/invalid in list(0, -1, 1.5, initial(I.max_amount) + 1))
+			graph["nodes"][1]["scalars"]["amount"] = invalid
+			equipment_assert(!C.validate(graph), "pharmacy stack rejects empty fractional and oversized quantity")
+		qdel(I)
+		qdel(restored)
+	equipment_assert(!C.supported(/obj/item/stack/medical/bruise_pack/bint/medic) && !C.supported(/obj/item/stack/medical/splint/small), "pharmacy codec does not admit uncatalogued medical subtypes")
+
 /proc/equipment_workshop_material_probe(datum/extraction_equipment_codec/C)
 	equipment_workshop_wheel_install_probe()
 	var/obj/item/extraction_generator_kit/kit = new(null)
@@ -223,6 +239,7 @@ var/equipment_completed = FALSE
 #else
 		run_economy_probe()
 		var/datum/extraction_equipment_codec/C = new
+		equipment_medical_stack_probe(C)
 		equipment_workshop_material_probe(C)
 		equipment_workshop_reservation_probe(C)
 		var/obj/item/weapon/gun/projectile/pistol/m9beretta/G = new(locate(1,1,1))

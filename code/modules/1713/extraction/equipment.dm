@@ -32,6 +32,7 @@ var/global/extraction_identity_sequence = 0
 	if (ispath(path, /obj/item/weapon/gun/projectile/custom)) return FALSE
 	if (ispath(path, /obj/item/weapon/key/extraction_room)) return TRUE
 	if (path in list(/obj/item/stack/material/glass, /obj/item/stack/cable_coil)) return TRUE
+	if (path in list(/obj/item/stack/medical/bruise_pack/bint, /obj/item/stack/medical/splint)) return TRUE
 	if (path == /obj/item/extraction_wheel_crate) return TRUE
 	if (path == /obj/item/extraction_generator_kit) return TRUE
 	if (path in list(/obj/item/stack/material/copper, /obj/item/stack/material/gold)) return TRUE
@@ -211,6 +212,9 @@ var/global/extraction_identity_sequence = 0
 			var/list/text_fields = list("name", "desc", "color", "icon_state", "item_state", "serial", "btype", "material_key", "tool_head_material", "tool_handle_material", "material_name", "attachment_type", "cable_color")
 			if (!isnull(value) && (key in text_fields ? !istext(value) : !isnum(value))) return FALSE
 		if (ispath(path, /obj/item/weapon/material) && !get_material_by_name(scalars["material_key"])) return FALSE
+		if (path in list(/obj/item/stack/medical/bruise_pack/bint, /obj/item/stack/medical/splint))
+			var/obj/item/stack/medical/prototype = path
+			if (!isnum(scalars["amount"]) || round(scalars["amount"]) != scalars["amount"] || scalars["amount"] < 1 || scalars["amount"] > initial(prototype.max_amount)) return FALSE
 		if (path == /obj/item/stack/cable_coil)
 			if (!isnum(scalars["amount"]) || round(scalars["amount"]) != scalars["amount"] || scalars["amount"] < 1 || scalars["amount"] > 50 || !(scalars["cable_color"] in cable_colors)) return FALSE
 		if (ispath(path, /obj/item/stack/material))
