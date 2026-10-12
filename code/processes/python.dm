@@ -13,8 +13,10 @@
 
 /process/python/proc/execute(var/command, var/list/py_args = list())
 	#ifdef OPENDREAM
-	log_debug("Opendream cannot run shell() commands yet.")
-	return
+	if (command == "mapswap.py" && py_args.len == 1)
+		return opendream_control_request("mapswap", "[py_args[1]]")
+	log_debug("Unsupported OpenDream script control: [command]")
+	return FALSE
 	#endif
 	if (! shell())
 		return FALSE
@@ -33,3 +35,27 @@
 
 /process/python/proc/getScriptDir()
 	return "scripts"
+
+// OpenDream has no shell(). Only a locally configured supervisor can consume
+// these fixed actions. No arbitrary executable or shell command enters the spool.
+/proc/opendream_control_request(action, map_id = null)
+	if (!(action in list("mapswap", "restart")))
+		return FALSE
+	var/root = "SQL/opendream-control/"
+	if (!fexists("[root]enabled.json") || fexists("[root]game-request.json"))
+		log_debug("OpenDream supervisor unavailable or request pending.")
+		return FALSE
+	var/request = json_encode(list("action" = action, "map" = map_id))
+	// Build a complete temporary file before exposing it to the supervisor.
+	fdel("[root]game-request.tmp")
+	if (!text2file(request, "[root]game-request.tmp"))
+		return FALSE
+	var/copied = fcopy("[root]game-request.tmp", "[root]game-request.json")
+	fdel("[root]game-request.tmp")
+	if (!copied)
+		return FALSE
+	// fcopy is not an atomic rename. The consumer waits for this commit marker.
+	if (!text2file("ready", "[root]game-ready"))
+		fdel("[root]game-request.json")
+		return FALSE
+	return TRUE
