@@ -259,6 +259,14 @@ zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
 ## Local MCP tooling
 
+<!-- 2026-10-12: native GC outcome triage -->
+BYOND 516.1681 can clear a native `del(A)` argument when `Del()` aborts while
+the target remains alive. Verify disappearance with the saved ref and retirement
+identity, not a null local. `tests/gc_triage/run.py` checks production outcomes
+and bounded opt-in owner-field inspection; outcome rows share deletion profiling's
+128 named types plus overflow. `gc_forced_types` telemetry counts these bounded
+forced-call buckets, not exact distinct types after saturation.
+
 <!-- 2026-10-12: opt-in regression CI -->
 Existing game and tooling regression suites are manual opt-in. PRs adding
 executable integration tests select their registered suite only for that PR;

@@ -132,6 +132,8 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/savemap
 	)
 var/list/admin_verbs_debug = list(
+	/client/proc/gc_outcomes,
+	/client/proc/gc_inspect_owner_field,
 	/client/proc/gc_deletion_costs,
 	/client/proc/cmd_admin_list_open_jobs,
 	/client/proc/Debug2,

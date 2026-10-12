@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import tempfile
@@ -44,6 +45,9 @@ def main():
             # Preserve argument reads so missing-hook controls remain warning-free.
             helper += '\n/process/garbage/proc/profile_discard(type_name, forced, started, start_tick)\n\treturn list(type_name, forced, started, start_tick)\n'
     (out/'garbage_profile.dm').write_text(helper)
+    garbage = re.sub(r'#include "([^"/\\]+\.dm)"',
+                     lambda m: '#include "' + (root/'code/processes').joinpath(m[1]).as_posix() + '"' if m[1] != 'garbage_profile.dm' else m[0],
+                     garbage)
     (out/'garbage.dm').write_text(garbage)
     source = source.replace((root/'code/processes/garbage.dm').as_posix(), (out/'garbage.dm').as_posix())
     (out/'probe.dme').write_text(source)

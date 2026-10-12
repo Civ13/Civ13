@@ -976,6 +976,7 @@
 #include "code\modules\admin\verbs\counting.dm"
 #include "code\modules\admin\verbs\deadsay.dm"
 #include "code\modules\admin\verbs\debug.dm"
+#include "code\modules\admin\verbs\gc_triage.dm"
 #include "code\modules\admin\verbs\debug_verbs.dm"
 #include "code\modules\admin\verbs\faction_symbol.dm"
 #include "code\modules\admin\verbs\gameticker.dm"

@@ -278,6 +278,16 @@ jobs:
           /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control restart
           /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control noop
 
+      - name: Verify bounded GC outcome and reference triage
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gc_triage')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/gc_triage/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          for control in triage-slots triage-identity triage-lists triage-metadata triage-delete-result triage-requested; do
+            /usr/bin/python3 tests/gc_triage/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
+
       - name: Verify bounded GC profiling and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/garbage_profile')
         shell: bash
