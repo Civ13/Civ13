@@ -214,3 +214,14 @@
 // Legacy process signatures may take actors/items: never forward this argument.
 /obj/proc/process_interval(configured_seconds)
 	return process()
+
+// Preserve a probability calibrated per two-second legacy object callback.
+// Independent-event survival composes across configured intervals.
+/proc/object_interval_probability(percent, configured_seconds)
+	if (configured_seconds <= 0 || percent <= 0)
+		return 0
+	if (percent >= 100)
+		return 100
+	if (configured_seconds == 2)
+		return percent
+	return 100 * (1 - (1 - percent / 100) ** (configured_seconds / 2))

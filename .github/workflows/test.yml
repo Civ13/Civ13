@@ -95,6 +95,9 @@ jobs:
           python3 tests/process_time/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control units
           python3 tests/process_time/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control legacy
           python3 tests/process_time/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control fuel
+          python3 tests/process_time/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control damage
+          python3 tests/process_time/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control probability
+          python3 tests/process_time/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control dispatch
 
       - name: Verify compiled sprite defaults and wrong-resource control
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/sprites')
