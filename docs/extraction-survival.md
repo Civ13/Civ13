@@ -316,7 +316,26 @@ lifetime and five-second future allowance. Canonical base64 rejects invalid
 padding and nonzero unused bits; the MAC comparison visits all 64 characters.
 `tests/extraction/run_crypto.py` compares production code with Python's standard
 library and the bot's public synthetic signing fixture. Its negative control
-changes a SHA-256 constant in a generated copy and must fail the first vector.
-These helpers expose no listener, spool processor, operator key, account handler
-or economic action. Replay protection and authenticated account integration
-remain unfinished; this is not a security acceptance or activation claim.
+changes a SHA-256 constant in a generated copy and must fail the first hash vector.
+The UTC clock combines coarse calendar dates with precise `world.timeofday`,
+correcting rounded dates across midnight. The clock comparison and synthetic
+midnight cases are independent of envelope signing. Keys must be 32-4096 ASCII
+bytes, such as an operator-provisioned random hexadecimal secret.
+
+The disabled native service now validates exact request schemas/digests, stores
+five-minute game-origin challenges, and atomically commits one-to-one account
+links together with request receipts. Proofs derive from a secret HMAC domain;
+only their SHA-256 digest persists. Replayed request IDs must retain the same
+actor and digest. A fresh actor-bound `trade.status` request can inspect the
+original receipt without repeating its operation. Saved room/stash inspection
+reports a bounded eight-entry page and rejects stale revisions or raid state.
+It reports the saved snapshot, not unsaved physical changes in an occupied room.
+`tests/extraction/run_ipc.py` uses an independent Python signer across challenge,
+processing and restart processes with temporary account storage. Removing the
+proof check must fail the wrong-proof assertion; interrupted journal intents
+block restart rather than rolling back account links.
+
+No listener, spool processor, operator key or player linking interface is enabled.
+Trade quotes, confirmations and market actions return `action_not_available`;
+their escrow/settlement integration remains unfinished. Current checks do not
+establish security acceptance, connected bot acceptance or activation readiness.

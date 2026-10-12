@@ -17,6 +17,57 @@
 	if (abs(day_difference) > 1) return day_difference > 0 ? 172800 : -172800
 	return day_difference * 86400 + later[2] - earlier[2]
 
+/proc/extraction_ipc_time_text(list/time)
+	if (!islist(time) || length(time) != 2 || !isnum(time[1]) || !isnum(time[2]) || time[1] < 0 || time[1] > 115740 || time[2] < 0 || time[2] >= 86400 || round(time[1]) != time[1] || round(time[2]) != time[2]) return null
+	var/day_text = "[time[1]]"
+	var/carry = time[2]
+	var/result = ""
+	for (var/i = length(day_text), i >= 1, i--)
+		var/value = (text2ascii(day_text, i) - 48) * 86400 + carry
+		result = "[value % 10][result]"
+		carry = round(value / 10)
+	while (carry > 0)
+		result = "[carry % 10][result]"
+		carry = round(carry / 10)
+	while (length(result) > 1 && copytext(result, 1, 2) == "0") result = copytext(result, 2)
+	return result
+
+/proc/extraction_ipc_calendar(value)
+	if (!istext(value) || length(value) != 19 || copytext(value, 5, 6) != "-" || copytext(value, 8, 9) != "-" || copytext(value, 11, 12) != " " || copytext(value, 14, 15) != ":" || copytext(value, 17, 18) != ":") return null
+	for (var/i = 1, i <= 19, i++)
+		if (i in list(5, 8, 11, 14, 17)) continue
+		var/digit = text2ascii(value, i)
+		if (digit < 48 || digit > 57) return null
+	var/year = text2num(copytext(value, 1, 5))
+	var/month = text2num(copytext(value, 6, 8))
+	var/day = text2num(copytext(value, 9, 11))
+	var/hour = text2num(copytext(value, 12, 14))
+	var/minute = text2num(copytext(value, 15, 17))
+	var/second = text2num(copytext(value, 18, 20))
+	if (year < 1970 || year > 2100 || month < 1 || month > 12 || hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) return null
+	var/list/month_days = list(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+	if (!(year % 4) && ((year % 100) || !(year % 400))) month_days[2] = 29
+	if (day < 1 || day > month_days[month]) return null
+	var/days = day - 1
+	for (var/current = 1970, current < year, current++) days += 365 + !!(!(current % 4) && ((current % 100) || !(current % 400)))
+	for (var/current = 1, current < month, current++) days += month_days[current]
+	return list(days, hour * 3600 + minute * 60 + second)
+
+/proc/extraction_ipc_now()
+	return extraction_ipc_clock(time2text(world.realtime, "YYYY-MM-DD hh:mm:ss", 0), world.timeofday)
+
+/proc/extraction_ipc_clock(coarse_text, precise_ticks)
+	var/list/coarse = extraction_ipc_calendar(coarse_text)
+	if (!islist(coarse) || !isnum(precise_ticks) || precise_ticks < 0 || precise_ticks >= 864000) return null
+	var/seconds = round(precise_ticks / 10)
+	// Rounded realtime can select the adjacent day around midnight. The precise
+	// UTC time-of-day determines which side of that midnight the date belongs to.
+	var/difference = seconds - coarse[2]
+	if (difference < -43200) coarse[1]++
+	else if (difference > 43200) coarse[1]--
+	coarse[2] = seconds
+	return extraction_ipc_time_text(coarse)
+
 /proc/extraction_ipc_equal(left, right)
 	if (!istext(left) || !istext(right) || length(left) != 64 || length(right) != 64) return FALSE
 	var/difference = 0

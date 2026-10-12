@@ -528,3 +528,11 @@ Observed interval p95/max includes scheduling and clock resolution, not tick CPU
 time. GC queued_drained counts consumed queue entries, excluding direct deletes.
 Headless humans enter SSD sleep: synchronous inventory fixtures must prepare and
 assert an awake, live actor before real pickup/drop calls.
+
+<!-- 2026-10-12: native IPC clock precision -->
+Unix timestamps exceed DM's exact integer range. Keep their decimal text and
+split days/seconds before short expiry comparisons. world.realtime can round by
+several seconds; combine its UTC date with precise world.timeofday and correct
+adjacent-day rounding near midnight. DM logical expressions can return operands,
+so normalize leap-year arithmetic with !!. tests/extraction/run_crypto.py checks
+independent UTC, midnight, signing and schema vectors without a live bot.
