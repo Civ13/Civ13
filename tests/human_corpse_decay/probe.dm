@@ -57,6 +57,27 @@ var/corpse_hook_slots_clear = FALSE
 	return TRUE
 
 var/corpse_assertions = 0
+
+// Test inherited production contracts without starting equipment constructors.
+/obj/structure/exercise/corpse_persistence_ci/New()
+	return
+/obj/item/weapon/attachment/corpse_persistence_ci/New()
+	return
+/obj/item/weapon/gun/corpse_persistence_ci/New()
+	return
+
+/proc/corpse_persistence_contract()
+	var/list/subjects = list(new /obj/structure/exercise/corpse_persistence_ci, new /obj/item/weapon/attachment/corpse_persistence_ci, new /obj/item/weapon/gun/corpse_persistence_ci)
+	var/list/own_keys = list("actor", "configuration_busy", "gun_work_busy")
+	for (var/i = 1, i <= subjects.len, i++)
+		var/atom/movable/A = subjects[i]
+		corpse_assert(A.persistence_runtime_var(own_keys[i]), "subtype runtime field excluded")
+		corpse_assert(A.persistence_runtime_var("corpse_decay_record"), "equipment inherits corpse runtime exclusion")
+		corpse_assert(!A.persistence_runtime_var("name"), "durable equipment fields remain serializable")
+		if (istype(A, /obj/item))
+			corpse_assert(A.persistence_runtime_var("abandonment_since"), "equipment inherits abandonment runtime exclusion")
+		qdel(A)
+
 /proc/corpse_assert(ok, message)
 	corpse_assertions++
 	if (!ok)
@@ -82,7 +103,11 @@ var/corpse_assertions = 0
 		G.setup()
 		var/obj/map_metadata/corpse_ci/M = new
 		var/turf/T = locate(2,2,1)
+		corpse_persistence_contract()
 		var/mob/living/human/H = new(T)
+		corpse_assert(H.persistence_runtime_var("exercise_equipment"), "human exercise runtime field excluded")
+		corpse_assert(H.persistence_runtime_var("corpse_decay_record"), "human inherits corpse runtime exclusion")
+		corpse_assert(!H.persistence_runtime_var("exercise_fatigue"), "durable exercise fatigue remains serializable")
 		H.stat = DEAD
 		H.do_rotting()
 		var/datum/corpse_decay_record/R = H.corpse_decay_record
