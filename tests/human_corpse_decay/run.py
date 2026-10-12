@@ -96,9 +96,12 @@ def main():
                 if memory:
                     sample = {'seconds': round(time.monotonic()-start,3), **memory}
                     cycles = out / 'cycles.jsonl'
-                    if cycles.exists():
+                    try:
                         rows = cycles.read_text().splitlines()
-                        if rows: sample['completed_cycle'] = json.loads(rows[-1])['cycle']
+                        if rows:
+                            sample['completed_cycle'] = json.loads(rows[-1])['cycle']
+                    except (json.JSONDecodeError, FileNotFoundError, KeyError):
+                        pass  # The native writer may still be appending this sample.
                     phase = out / 'phase.json'
                     try:
                         if phase.exists(): sample.update(json.loads(phase.read_text()))
