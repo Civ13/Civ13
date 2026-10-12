@@ -231,6 +231,13 @@ a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10:
 <!-- 2026-10-11: crafting validation -->
 ## Crafting checks
 
+<!-- 2026-10-11: staged component workbench -->
+`scripts/check-component-tools.py` now checks staged bench cancellation,
+concurrent assembly, ingredient removal, destruction and nested native saves.
+Its consumption/runtime-save negative controls mutate generated source only.
+Workbench waits retain their busy lock until returning; runtime actor/wait state
+must never be serialized. Bench contents are actual paid items, not stock counters.
+
 tests/crafting/README.md documents scripts/check-recipes.py, a compiled
 BYOND recipe-schema/registration and isolated crafting-fixture check. Use the
 current research-tree and map-mode gates when testing material registration;

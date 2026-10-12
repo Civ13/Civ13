@@ -23,6 +23,9 @@
 		return TRUE
 
 var/list/component_errors = list()
+/world/OpenPort(port)
+	if (port == "none") return ..()
+	return FALSE
 /proc/component_check(condition, message)
 	if (!condition)
 		component_errors += message
@@ -33,6 +36,7 @@ var/list/component_errors = list()
 	return B
 
 /proc/run_component_checks()
+	world.OpenPort("none")
 	populate_material_list()
 	var/turf/T = locate(1,1,1)
 	var/mob/living/human/component_ci/H = new(T)
@@ -115,9 +119,12 @@ var/list/component_errors = list()
 	B = component_handle(H, "iron")
 	var/obj/item/weapon/material/pickaxe/heavy = A.assemble_work_tool(B, H)
 	component_check(heavy.usespeed < 2 && heavy.maxhealth == round(25 * 1.5), "reinforced handle tradeoff missing")
+	run_workbench_checks(H, T)
 	var/report = "Production assembly, rejection, bounds, condition, provenance and native save/load checks\n"
 	for (var/error in component_errors)
 		report += "FAIL: [error]\n"
 	report += component_errors.len ? "FAIL\n" : "PASS\n"
 	text2file(report, "component-checks.txt")
 	del(world)
+
+#include "workbench.dm"
