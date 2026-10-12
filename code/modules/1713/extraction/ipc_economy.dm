@@ -55,7 +55,10 @@
 	proc/selected(list/account, list/ids, require_fir = FALSE)
 		if (!islist(ids) || !length(ids) || length(ids) > 16) return null
 		var/list/results = list()
+		var/list/seen = list()
 		for (var/id in ids)
+			if (!istext(id) || seen[id]) return null
+			seen[id] = TRUE
 			var/list/found
 			for (var/list/entry in account["stash"])
 				if (entry["id"] == id) found = entry

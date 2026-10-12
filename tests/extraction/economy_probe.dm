@@ -57,6 +57,8 @@
 	graph["nodes"][1]["id"] = "market-part"
 	equipment_assert(codec.validate(graph), "actual market lot equipment graph")
 	seller["stash"] = list(list("id" = "market-part", "equipment" = graph))
+	equipment_assert(!economy.selected(seller, list("market-part", "market-part")), "service selection rejects duplicate IDs independently of wire validation")
+	equipment_assert(!economy.selected(seller, list(42)), "service selection rejects nontext IDs")
 	buyer["credits"] = 100
 	equipment_assert(game.store.commit_profile("marketseller", seller) && game.store.commit_profile("marketbuyer", buyer), "isolated funded accounts")
 	var/digest = md5(json_encode(graph))
