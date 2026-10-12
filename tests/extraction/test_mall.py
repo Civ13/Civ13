@@ -25,7 +25,9 @@ def parse(source):
 
 
 def blocked(value):
-    return any(atom in value for atom in ('/obj/covers/generic_wall', '/obj/structure/table', '/obj/structure/bed/chair', '/obj/structure/props/car_wreck'))
+    # Closets (including fridges) and ovens are dense native furnishings.
+    # Chairs are conservatively reserved; beds, sinks and toilets are walkable.
+    return any(atom in value for atom in ('/obj/covers/generic_wall', '/obj/structure/table', '/obj/structure/bed/chair', '/obj/structure/closet', '/obj/structure/oven', '/obj/structure/props/car_wreck'))
 
 
 def reachable(layers, start, vehicle=False):
@@ -79,7 +81,7 @@ class MallTests(unittest.TestCase):
             tiles = [value for row in layers[z] for value in row]
             self.assertGreaterEqual(sum('/extraction_mall_rubble' in value for value in tiles), 6)
             self.assertGreaterEqual(sum('/decal/rubbish' in value for value in tiles), 6)
-        self.assertEqual(sum('/props/car_wreck' in value for row in layers[1] for value in row), 4)
+        self.assertGreaterEqual(sum('/props/car_wreck' in value for row in layers[1] for value in row), 16)
         for z in (4, 5):
             self.assertTrue(any('/floor/wood_broken' in value for row in layers[z] for value in row))
         for z in (2, 3):
@@ -115,8 +117,10 @@ class MallTests(unittest.TestCase):
                 for z in (1, 4, 5):
                     for y, row in enumerate(layers[z], 1):
                         for x, value in enumerate(row, 1):
-                            if any(token in value for token in ('/extraction_raid_marker', '/extraction_exit', '/extraction_loot_marker', '/extraction_npc_marker', '/extraction_mall_stairs', '/extraction_drop_box')):
+                            if any(token in value for token in ('/extraction_raid_marker', '/extraction_exit', '/extraction_loot_marker', '/extraction_npc_marker', '/extraction_mall_stairs', '/extraction_drop_box', '/extraction_mall_sign')):
                                 self.assertIn((x, y, z), seen, value)
+                            if any(token in value for token in ('/obj/structure/closet', '/obj/structure/oven', '/obj/structure/sink', '/obj/structure/toilet', '/obj/structure/bed/wood', '/obj/structure/bed/fieldbed')):
+                                self.assertTrue(any(point in seen for point in ((x+1, y, z), (x-1, y, z), (x, y+1, z), (x, y-1, z))), (x, y, z, value))
                 self.assertFalse(any(z in (2, 3) for _, _, z in seen))
                 for entry in ROAD_ENTRIES:
                     cars = reachable(layers, (c(entry[0]), c(entry[1]), 1), vehicle=True)

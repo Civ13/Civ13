@@ -27,6 +27,21 @@ actor, actual adjacency, source/destination mission level and a clear landing.
 Cars never use these stairs. No auto-teleporting vehicle or car clone is created.
 
 Three anchor stores have distinct native floor palettes and named signs.
+Hearth has six furnished apartment display suites, a consultation office and
+receiving store. Foundry has sales aisles, checkout counters, repair benches,
+a stockroom and the reserved hardware cage. Harvest has checkout queues,
+broken-up shelf islands and rear bakery, cold storage, receiving, staff and
+accounts rooms. The upper gallery contains 20 named shops with separate staff
+rooms and distinct clinic, fitting-room, kitchen, office and sales layouts,
+plus common dining and two washrooms with toilet cubicles and sinks.
+
+Parking has marked bays, pedestrian crossings, circulation lanes and enclosed
+security, maintenance, dispatch and utility rooms. Sixteen wrecks and scattered
+debris occupy bays while preserving the road approaches and highway loop.
+Fixtures use existing native structures; ordinary closets and fridges begin
+empty, and ovens begin unlit. They do not bypass the sealed-loot economy with
+stocked decoration containers.
+
 Shop rows, shelf ends and side aisles interrupt indoor sightlines. Wide public
 concourse routes contrast with narrower service routes; furnishings stay out
 of core landings. NPC and loot markers occupy stores on both retail floors.
@@ -57,7 +72,8 @@ checks account for wreck footprints as well as furniture and walls.
 1. Generate the deterministic DMM and verify equal dimensions, dictionary and
    atom ordering, protected home/hub contents and all marker types.
 2. Flood-fill actual passable cells and stair edges; require every entry,
-   exit, shop loot tile and core to connect. Check separate vehicle footprint
+   exit, shop loot tile, room sign and core to connect, with reachable approaches
+   to cabinets, appliances, beds and plumbing fixtures. Check separate vehicle footprint
    paths from both road infils to both highway exits.
 3. Compile the selected mall with BYOND 516.1681, then run native traversal,
    raid-floor and vehicle restriction regressions in temporary offline storage.
