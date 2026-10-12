@@ -236,10 +236,38 @@
 // transitions. No gear is copied or moved by the journal itself.
 /datum/extraction_settlement/groups
 	journal_suffix = "_settlement/groups/"
+	proc/valid_vehicle_returns(list/parts)
+		if (!islist(parts) || parts.len < 1 || parts.len > 4) return FALSE
+		var/list/owners = list()
+		var/list/ids = list()
+		var/cars = 0
+		for (var/list/part in parts)
+			if (!islist(part) || part["operation"] != "vehicle_extract" || !service.store.valid_owner(part["owner"]) || owners[part["owner"]]) return FALSE
+			owners[part["owner"]] = TRUE
+			var/list/before = part["before"]
+			var/list/after = part["after"]
+			if (!service.store.valid_profile(before, part["owner"]) || !service.store.valid_profile(after, part["owner"]) || !service.insurance_profile_valid(before) || !service.insurance_profile_valid(after)) return FALSE
+			var/datum/extraction_session/V = new
+			V.owner = part["owner"]
+			V.profile = before
+			V.service = service
+			if (!isnull(part["vehicle"])) cars++
+			var/list/expected = V.plan_vehicle_return(part["loot"], part["vehicle"])
+			if (!expected) return FALSE
+			expected["revision"] = before["revision"] + 1
+			if (json_encode(expected) != json_encode(after)) return FALSE
+			var/list/new_ids = service.store.recovery_ids(after)
+			if (!islist(new_ids)) return FALSE
+			for (var/id in new_ids)
+				if (ids[id]) return FALSE
+				ids[id] = TRUE
+			if (ids.len > 4096) return FALSE
+		return cars == 1
 	participant_available(owner)
 		var/datum/extraction_session/S = service.sessions[owner]
 		return !S || (S.active() && S.vars["transitioning"])
 	valid_participants(list/parts)
+		if (islist(parts) && parts.len && islist(parts[1]) && parts[1]["operation"] == "vehicle_extract") return valid_vehicle_returns(parts)
 		if (!islist(parts) || parts.len < 2 || parts.len > 4) return FALSE
 		var/list/owners = list()
 		var/list/all_ids = list()
@@ -247,6 +275,7 @@
 		var/insurance_round
 		var/vehicle_count = 0
 		for (var/list/part in parts)
+			if (!isnull(part["operation"])) return FALSE
 			if (!islist(part) || !service.store.valid_owner(part["owner"]) || owners[part["owner"]]) return FALSE
 			owners[part["owner"]] = TRUE
 			var/list/before = part["before"]

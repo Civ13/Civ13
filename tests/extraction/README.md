@@ -13,6 +13,7 @@ Use BYOND 516.1681 and a verified full Python interpreter path:
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control visibility
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control premium
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control car
+& $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe groups --group-negative-control return
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe vehicles
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe vehicles --vehicle-loss-negative-control
 & $PythonPath tests/extraction/run.py --byond-bin $ByondBin --probe mode --vehicle-purchase-negative-control
@@ -163,7 +164,7 @@ cover interruption before physical deployment, after acknowledged extraction
 credit and during uncertain credit. Debit/credit omission controls must fail at
 the intended ownership assertions. Account parts and nested equipment have
 `should_save = FALSE`; this fixture does not execute a full-game vehicle world
-save. Connected car driving, passenger/group transactions and playable
+save. Connected car driving, rider dialogs, physical transfer and playable
 acceptance remain separate requirements.
 
 Record a genuine disposable local playable world after integrated regressions

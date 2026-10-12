@@ -209,6 +209,22 @@
 	candidate["vehicle_issued"] = list("id" = vehicle_id, "sequence" = plan["sequence"], "digest" = vehicle_digest)
 	return plan
 
+/datum/extraction_session/proc/plan_vehicle_return(list/loot, list/vehicle)
+	if (profile["state"] != "raid" || !valid_entries(loot, 16)) return null
+	if (!isnull(vehicle) && !islist(vehicle)) return null
+	var/list/candidate = copy_profile()
+	var/list/stash = candidate["stash"]
+	for (var/list/entry in loot) stash += list(entry)
+	if (!valid_entries(stash, capacity())) return null
+	if (!isnull(vehicle))
+		if (!islist(candidate["garage"]) || candidate["garage"].len || !service.store.valid_garage(list(vehicle))) return null
+		candidate["garage"] = list(vehicle)
+		candidate["vehicle_returned"] = list("id" = vehicle["id"], "sequence" = profile["raid_sequence"])
+		if (!record_insurance_recovery(candidate, vehicle["cargo"])) return null
+	if (!islist(service.store.recovery_ids(candidate)) || !record_insurance_recovery(candidate, loot)) return null
+	candidate["state"] = "home"
+	return candidate
+
 /datum/extraction_session/proc/extract(sequence, list/loot)
 	if (!active() || profile["state"] != "raid" || sequence != profile["raid_sequence"] || !valid_entries(loot, 16)) return FALSE
 	var/list/candidate = copy_profile()

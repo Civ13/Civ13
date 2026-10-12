@@ -43,8 +43,13 @@ acknowledged extraction credit and during uncertain credit. Account parts and
 nested equipment are excluded from world-save ownership with `should_save`.
 Looted-car credit verifies the actual registered controller and exact current
 graph, and rejects an identity already acknowledged by another account.
-Passenger extraction transactions remain unfinished; the solo path rejects
-occupied seats and is not playable acceptance.
+Occupied driver/passenger extraction now asks every seated rider for consent.
+It binds their account and carried graph, unloads consenting riders at the exit,
+then waits and revalidates the unchanged car, loadouts and clear private bay.
+One shared receipt credits each rider's own loot and only the driver's garage
+before relocating the actual car and sending each player to their own house.
+Declines preserve occupied seats; cancellation after unloading leaves everyone
+in the raid. This is isolated transaction evidence, not playable acceptance.
 
 Isolated native tests cover account storage, nested equipment restoration,
 bounded NPC combat, extraction cancellation, private rooms and hub navigation.
@@ -83,7 +88,10 @@ actual stopped-car seats and a clear raid footprint, includes the leader's garag
 debit in the same shared receipt, then moves the original car and buckles the
 original players into separate seats. A two-seat car cannot carry three members.
 Interrupted shared deployment cannot restore a second garage car on reconnect.
-Occupied passenger extraction is still pending.
+Passenger return uses the same forward journal with separately validated
+raid-to-home projections. Three native processes exercise eleven interruption
+points for deployment and return; incomplete receipts gate all participant
+accounts, and exact acknowledged return replay does not credit again.
 
 The group journal reuses exact forward settlement beneath `_settlement/groups/`.
 It validates every home-to-raid projection against the same pure debit planner

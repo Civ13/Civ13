@@ -16,6 +16,12 @@
 	var/test_party_confirmation = "accept"
 	var/test_car_confirmation = TRUE
 	var/test_ride_confirmation = TRUE
+	var/test_vehicle_return_confirmation = TRUE
+	confirm_vehicle_return(mob/living/human/H, car_owner)
+		if (test_vehicle_return_confirmation == "stale")
+			for (var/obj/item/weapon/gun/G in H.contents) G.health--
+			return TRUE
+		return test_vehicle_return_confirmation
 	confirm_party_vehicle(mob/living/human/H, datum/extraction_party/P)
 		return test_ride_confirmation
 	confirm_car_purchase(mob/living/human/H)

@@ -110,6 +110,11 @@
 	equipment_assert(M.buy_car(driver), "group car is paid actual dealer vehicle")
 	var/obj/structure/vehicleparts/axis/A = S.garage_vehicle
 	var/obj/structure/vehicleparts/frame/frame = A.loc
+	var/obj/item/weapon/gun/insured_gun
+	for (var/obj/item/weapon/gun/G in M.home_roots(S)) insured_gun = G
+	equipment_assert(insured_gun, "group car insurance uses actual starter equipment")
+	insured_gun.forceMove(driver)
+	for (var/i in 1 to 8) new /obj/item/extraction_salvage(get_turf(S.house))
 	var/datum/extraction_party/P = M.create_party(driver)
 	equipment_assert(M.invite_party(driver, passenger) && M.select_party_vehicle(driver), "leader selects exact paid car after consenting invitation")
 	M.test_ride_confirmation = FALSE
@@ -128,16 +133,63 @@
 	M.accounts.group_journal.test_fail_at = "before_receipt"
 	equipment_assert(!M.deploy_party(driver) && S.garage_vehicle == A && S.profile["garage"].len == 1 && driver.z == 2 && passenger.z == 2, "failed car group receipt does not move riders or debit car")
 	M.accounts.group_journal.test_fail_at = null
-	equipment_assert(M.ready_party(driver) && M.ready_party(passenger) && M.deploy_party(driver), "consenting two-account deployment transfers paid original car and riders")
+	equipment_assert(M.ready_party(driver, TRUE) && M.ready_party(passenger) && M.deploy_party(driver), "consenting two-account deployment transfers paid original car and riders")
+	equipment_assert(insured_gun.extraction_insurance_token && S.profile["insurance_claims"].len == 1, "group car deployment composes one paid member claim with garage debit")
 	equipment_assert(driver.z == 1 && passenger.z == 1 && driver.buckled && passenger.buckled && driver.buckled != passenger.buckled && A.driver == driver && !S.profile["garage"].len && S.raid_vehicle == A && M.raid_vehicles[A], "original driver and passenger occupy separate actual seats after durable garage debit")
-	// Until passenger extraction composition is exercised, release the real seat
-	// links and forfeit these fixture accounts without claiming vehicle return.
 	var/obj/structure/bed/chair/drivers/seat = driver.buckled
+	var/obj/structure/bed/chair/passenger_seat = passenger.buckled
 	if (A.wheel.loc == driver)
 		driver.remove_from_mob(A.wheel)
 		A.wheel.forceMove(seat)
 	seat.unbuckle_mob()
-	passenger.buckled.unbuckle_mob()
-	equipment_assert(M.release(S, FALSE) && M.release(passenger.extraction_session, FALSE) && A.loc && M.raid_vehicles[A], "group forfeiture leaves actual car for raid settlement")
+	passenger_seat.unbuckle_mob()
+	var/turf/car_origin = get_turf(A)
+	driver.forceMove(locate(car_origin.x + 4, car_origin.y, 1))
+	passenger.forceMove(get_turf(driver))
+	for (var/x in 72 to 88)
+		for (var/y in 72 to 88)
+			var/turf/F = locate(x,y,1)
+			for (var/atom/movable/O in F)
+				if (!(O in list(driver, passenger))) qdel(O)
+			F.ChangeTurf(/turf/floor, FALSE, FALSE)
+	var/datum/extraction_vehicle_transfer/T = new
+	equipment_assert(T.capture(A, TRUE) && T.relocate(locate(79,79,1)), "original group car parks at clear extraction fixture footprint")
+	var/turf/exit_turf
+	var/datum/extraction_vehicle_transfer/parked = new
+	equipment_assert(parked.capture(A, TRUE), "parked original group car retains graph")
+	for (var/turf/F in range(1, get_turf(seat)))
+		if (!(F in parked.tiles) && !F.contents.len) exit_turf = F
+	equipment_assert(exit_turf, "group vehicle exit stays outside car footprint")
+	var/obj/effect/extraction_exit/exit = new(exit_turf)
+	driver.forceMove(get_turf(seat))
+	passenger.forceMove(get_turf(passenger_seat))
+	equipment_assert(seat.buckle_mob(driver) && passenger_seat.buckle_mob(passenger), "original riders reboard actual parked seats")
+	M.test_vehicle_return_confirmation = FALSE
+	equipment_assert(!M.extract_vehicle(driver, exit, A) && driver.buckled == seat && passenger.buckled == passenger_seat && S.profile["state"] == "raid", "declined rider extraction preserves every occupied seat and account")
+	M.test_vehicle_return_confirmation = "stale"
+	equipment_assert(!M.extract_vehicle(driver, exit, A) && driver.buckled == seat && passenger.buckled == passenger_seat && S.profile["state"] == "raid", "changed carried condition during rider confirmation invalidates consent before unloading or credit")
+	M.test_vehicle_return_confirmation = TRUE
+	M.test_wait = "cancel"
+	equipment_assert(!M.extract_vehicle(driver, exit, A) && !driver.buckled && !passenger.buckled && S.profile["state"] == "raid" && passenger.extraction_session.profile["state"] == "raid" && M.raid_vehicles[A], "cancelled consenting rider extraction unboards without crediting any account")
+	M.test_wait = "complete"
+	driver.forceMove(get_turf(seat))
+	passenger.forceMove(get_turf(passenger_seat))
+	equipment_assert(seat.buckle_mob(driver) && passenger_seat.buckle_mob(passenger), "cancelled riders may board again")
+	M.accounts.group_journal.test_fail_at = "before_receipt"
+	equipment_assert(!M.extract_vehicle(driver, exit, A) && !S.profile["garage"].len && S.profile["state"] == "raid" && passenger.extraction_session.profile["state"] == "raid", "failed passenger receipt credits neither rider nor garage")
+	M.accounts.group_journal.test_fail_at = null
+	driver.forceMove(get_turf(seat))
+	passenger.forceMove(get_turf(passenger_seat))
+	equipment_assert(seat.buckle_mob(driver) && passenger_seat.buckle_mob(passenger), "riders explicitly board for fresh extraction request")
+	var/obj/item/extraction_salvage/loot = new(passenger)
+	loot.extraction_found_in_raid = TRUE
+	var/returned = M.extract_vehicle(driver, exit, A)
+	if (!returned) world.log << "RIDER ERROR: [M.last_vehicle_return_error]; journal=[M.accounts.group_journal.last_error]"
+	equipment_assert(returned, "all consenting passenger accounts commit before actual car returns")
+	equipment_assert(S.profile["state"] == "home" && passenger.extraction_session.profile["state"] == "home" && S.profile["garage"].len == 1 && S.garage_vehicle == A && driver.z == 2 && passenger.z == 2 && get_turf(driver) != get_turf(passenger) && loot.loc == passenger && loot.extraction_found_in_raid && !M.raid_vehicles[A], "each rider returns to their own house with original loot and only driver receives original car")
+	equipment_assert(insured_gun.loc == driver && (insured_gun.extraction_insurance_token in S.profile["insurance_recovered"]), "passenger receipt records actual paid insured identity recovery")
+	equipment_assert(!M.extract_vehicle(driver, exit, A), "passenger vehicle credit cannot replay")
+	equipment_assert(M.release(S) && M.release(passenger.extraction_session), "returned rider accounts release with acknowledged ownership")
+	qdel(exit)
 	qdel(driver)
 	qdel(passenger)

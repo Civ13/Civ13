@@ -101,9 +101,74 @@
 				var/list/retained_car = json_decode(json_encode(plan["parts"]))
 				retained_car[1]["after"]["garage"] = retained_car[1]["before"]["garage"]
 				equipment_assert(!J.valid_participants(retained_car), "forged retained group car rejected by exact debit authority")
+		extraction_group_return_process_probe(C, phase)
 		completed = TRUE
 	catch (var/exception/E)
 		equipment_failures++
 		world.log << "FAIL: [E] at [E.file]:[E.line]"
-	text2file(completed && !equipment_failures ? "PASS: native group process recovery across eleven interruptions, ownership gates and replay" : "FAIL: native group process verification", "result.txt")
+	text2file(completed && !equipment_failures ? "PASS: native paid group car deployment and passenger credit recovery across eleven interruptions, ownership gates and replay" : "FAIL: native group process verification", "result.txt")
 	shutdown()
+
+/proc/extraction_group_return_process_probe(datum/extraction_equipment_codec/C, phase)
+	var/list/deployments = json_decode(file2text("group_plans.json"))
+	if (phase == "write")
+		var/list/returns = list()
+		var/index = 0
+		for (var/list/deployment in deployments)
+			var/datum/extraction_service/S = new
+			S.store.root = "data/process_returns[++index]/"
+			var/list/vehicle = deployment["parts"][1]["before"]["garage"][1]
+			var/list/parts = list()
+			for (var/owner in list("returnone", "returntwo"))
+				var/datum/extraction_session/A = S.open(owner)
+				var/obj/item/weapon/gun/projectile/pistol/m9beretta/G = new(locate(3,5,1))
+				var/list/graph = C.encode(G)
+				var/list/entry = list("id" = G.extraction_item_id, "equipment" = graph)
+				var/list/car = owner == "returnone" ? vehicle : null
+				equipment_assert(A.checkpoint_home(list(entry), car ? list(car) : list()), "return fixture checkpoints original issued ownership")
+				var/list/raid = A.plan_raid(list(G.extraction_item_id), "PMC")
+				if (car) raid = A.plan_group_vehicle(raid, car["id"], md5(json_encode(car)))
+				equipment_assert(A.commit(raid["candidate"]), "return fixture debits issued car and loadout before credit")
+				G.health = 37
+				G.extraction_found_in_raid = TRUE
+				entry["equipment"] = C.encode(G)
+				var/list/loot = list(entry)
+				var/list/before = A.copy_profile()
+				var/list/after = A.plan_vehicle_return(loot, car)
+				after["revision"] = before["revision"] + 1
+				parts += list(list("operation" = "vehicle_extract", "owner" = owner, "before" = before, "after" = after, "loot" = loot, "vehicle" = car))
+				qdel(G)
+				A.close()
+			var/datum/extraction_settlement/groups/J = S.group_journal
+			var/cut = deployment["cut"]
+			J.test_access_observer = new /datum/group_gate_observer
+			J.test_fail_at = cut
+			if (cut == "account_intent") S.store.test_fail_at = "intent"
+			if (cut == "account_snapshot") S.store.test_fail_at = "snapshot"
+			if (cut == "initial_intent") J.journal.test_fail_at = "intent"
+			if (cut == "initial_snapshot") J.journal.test_fail_at = "snapshot"
+			equipment_assert(!J.submit(1, parts) && !S.open("returnone") && !S.open("returntwo"), "interrupted passenger receipt exposes no partial account credits")
+			returns += list(list("root" = S.store.root, "cut" = cut, "parts" = parts))
+		text2file(json_encode(returns), "return_plans.json")
+	else
+		var/list/returns = json_decode(file2text("return_plans.json"))
+		for (var/list/receipt in returns)
+			var/datum/extraction_service/S = new
+			S.store.root = receipt["root"]
+			if (receipt["cut"] == "initial_intent")
+				equipment_assert(!S.open("returnone") && !S.open("returntwo"), "unknown initial passenger intent remains blocked")
+				continue
+			for (var/i in 1 to 2)
+				var/list/part = receipt["parts"][i]
+				var/datum/extraction_session/A = S.open(part["owner"])
+				equipment_assert(A && json_encode(A.profile) == json_encode(part["after"]) && A.profile["stash"].len == 1 && A.profile["garage"].len == (i == 1 ? 1 : 0), "new process finishes exact passenger loot and single car credit before opening accounts")
+				A.close()
+			var/datum/extraction_settlement/groups/J = S.group_journal
+			equipment_assert(J.submit(1, receipt["parts"]), "acknowledged passenger receipt replay cannot credit twice")
+			for (var/list/part in receipt["parts"]) equipment_assert(json_encode(S.store.load_profile(part["owner"])) == json_encode(part["after"]), "passenger replay preserves exact account bytes")
+			var/list/forged = json_decode(json_encode(receipt["parts"]))
+			forged[2]["after"]["stash"] = list()
+			equipment_assert(!J.valid_participants(forged), "forged passenger credit rejected by return planning authority")
+			var/list/malformed = json_decode(json_encode(receipt["parts"]))
+			malformed[1]["vehicle"] = 0
+			equipment_assert(!J.valid_participants(malformed), "malformed passenger car cannot become an ordinary loot-only receipt")

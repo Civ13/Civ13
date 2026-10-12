@@ -15,7 +15,7 @@ def main():
     parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'insurance', 'groups', 'vehicles'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry'))
-    parser.add_argument('--group-negative-control', choices=('debit', 'visibility', 'premium', 'car'))
+    parser.add_argument('--group-negative-control', choices=('debit', 'visibility', 'premium', 'car', 'return'))
     parser.add_argument('--vehicle-loss-negative-control', action='store_true')
     parser.add_argument('--vehicle-purchase-negative-control', action='store_true')
     parser.add_argument('--vehicle-raid-negative-control', choices=('debit', 'credit'))
@@ -118,6 +118,10 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 marker = '\tcandidate["garage"] = list()'
                 replacement = '\tcandidate["garage"] = profile["garage"]'
                 expected_group_failure = 'native group recovery preserves exact vehicle debit without a second car'
+            elif group_control == 'return':
+                marker = 'if (json_encode(expected) != json_encode(after)) return FALSE'
+                replacement = '// Negative control: permit a missing passenger credit'
+                expected_group_failure = 'forged passenger credit rejected by return planning authority'
             else:
                 marker = 'if (!group_journal.ready()) return FALSE'
                 replacement = 'group_journal.ready()'
