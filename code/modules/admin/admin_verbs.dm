@@ -117,6 +117,7 @@ var/list/admin_verbs_spawn = list(
 	)
 
 var/list/admin_verbs_server = list(
+	/client/proc/control_civilizationbot,
 	/datum/admins/verb/startnow,
 	/datum/admins/proc/restart,
 	/datum/admins/proc/delay,

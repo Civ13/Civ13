@@ -993,6 +993,7 @@
 #include "code\modules\admin\verbs\ticklag.dm"
 #include "code\modules\admin\verbs\time_of_day.dm"
 #include "code\modules\admin\verbs\vote.dm"
+#include "code\modules\admin\verbs\bot_service.dm"
 #include "code\modules\admin\verbs\warn.dm"
 #include "code\modules\admin\verbs\weather.dm"
 #include "code\modules\admin\view_variables\helpers.dm"
