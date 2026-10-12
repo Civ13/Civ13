@@ -14,14 +14,14 @@ Proposed read-only Topic `extraction_status` returns JSON with:
 | Field | Meaning |
 | --- | --- |
 | schema | `civ13.status.v1` |
-| instance_id | Unique boot identity, stable within this world instance |
-| build_id | Trusted configured build identity, otherwise null |
-| map_id / map_name | Current map identity, nullable while loading |
-| generated_at | Decimal BYOND realtime, deciseconds since 2000-01-01 UTC |
+| instance_id | Nonempty opaque ASCII boot identity, at most 80 bytes |
+| build_id | Trusted configured identity at most 80 bytes, otherwise null |
+| map_id / map_name | Nullable UTF-8 map identity, at most 128 bytes per field |
+| generated_at | Canonical nonnegative integer string, BYOND deciseconds since 2000-01-01 UTC |
 | ready | Explicit launcher/map-completion state, not response availability |
-| player_count | Actual connected client count |
-| players | At most 64 canonical ckeys |
-| truncated | True when the list omits connected players |
+| player_count | Actual integer client count, proposed accepted range 0-65535 |
+| players | At most 64 unique ASCII canonical ckeys, each 1-64 bytes |
+| truncated | Strict boolean; true when the list omits connected players |
 
 Keep the existing Topic dispatcher, whitelist and cooldown. Do not globally
 relax legacy address checks. Player identity visibility and any additional
@@ -33,6 +33,21 @@ counts. A fresh ready response with zero players is a valid empty server.
 An unreachable or stale response means offline/unknown, never zero players.
 The accepted freshness budget and clock-skew tolerance must be shared by game
 and bot tests. Truncated lists must not be treated as complete membership.
+
+The bot proposal uses overflow-checked conversion to Unix milliseconds:
+`generated_at * 100 + 946684800000`, with an injected clock. Proposed defaults
+are 30 seconds maximum age and 5 seconds future tolerance; configuration caps
+are 120 seconds age and 5 seconds future tolerance. These values await agreement
+with actual poll cadence. Require strict booleans, integer count and no duplicate
+ckeys. An untruncated list must match count exactly; a truncated list may be
+shorter. Never clamp an out-of-range count into a valid response.
+
+Readiness must invalidate before map replacement or shutdown and remain false
+through initialization, recovery or a failed start. Restore it only after the
+launcher-owned completion boundary for the reported instance/build/map. A new
+boot receives a new opaque identity; the legacy time-derived `game_id` alone
+does not establish uniqueness. Ckey visibility requires explicit access policy;
+the public count endpoint must not incidentally expose a private player list.
 
 Host lifecycle operations need separate update/build/start/stop/map receipts:
 operation ID, requested revision/map, owned process or instance identity,
