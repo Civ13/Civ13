@@ -147,6 +147,15 @@ Movement uses native `step()` with `get_dir()`; human density and Life are
 unchanged. The earlier east-lane fixture failed because it overlapped actor2,
 and normal Life restored that actor's ordinary blocking density.
 These are headless humans, not connected players.
+Population readiness waits at most 30 real seconds for every human's first
+natural inherited Life callback, checking identity, location and death each
+poll. The scheduler retains unfinished population snapshots, so one fixed
+schedule interval does not guarantee newly constructed actors have been visited.
+`service-ready.json` records this wait and all 80 counters. Seasonal per-cycle
+service checks remain unchanged. The service negative control removes actor80
+from live membership and the existing scheduler snapshot, retaining it alive;
+it must reach the readiness deadline with only actor80 unserviced. No Life call
+is invoked directly or disabled in the positive fixture.
 Failed actor population assertions retain `actor-failure.json` with the individual
 identity, location, death and Life-service fields. CI runs this actual-map check
 before the longer isolated comparisons and immediately uploads its evidence as
@@ -155,8 +164,10 @@ before the longer isolated comparisons and immediately uploads its evidence as
 ```
 <PYTHON> tests/season_transition/full_game.py --prepare-only
 <PYTHON> tests/season_transition/full_game.py --prepare-only --negative-control
+<PYTHON> tests/season_transition/full_game.py --prepare-only --service-negative-control
 <PYTHON> tests/season_transition/full_game.py --byond-bin <516.1681-bin> --output <fresh-evidence-directory>
 <PYTHON> tests/season_transition/full_game.py --byond-bin <516.1681-bin> --negative-control --output <fresh-control-directory>
+<PYTHON> tests/season_transition/full_game.py --byond-bin <516.1681-bin> --service-negative-control --output <fresh-service-control-directory>
 ```
 
 Preparation performs source transformations and hashes without starting BYOND.

@@ -62,6 +62,7 @@ var/global/datum/full_season_constructor_probe/full_season_probe = new
 	var/movement_error = null
 	var/movement_busy_count = 0
 	var/list/movement_rows = list()
+	var/list/initial_service = list()
 	var/completed = FALSE
 /datum/full_season_constructor_probe/New()
 	if (config)
@@ -100,12 +101,7 @@ var/global/datum/full_season_constructor_probe/full_season_probe = new
 /datum/full_season_constructor_probe/proc/check_population()
 	if (actors.len != 80 || items.len != 20000)
 		throw EXCEPTION("Finite population count mismatch")
-	for (var/i in 1 to actors.len)
-		var/mob/living/human/full_season_actor/H = actors[i]
-		if (!H || H.gcDestroyed || H.stat == DEAD || H.loc != locate(640 + ((i-1) % 10), 530 - round((i-1)/10), 1) || !H.probe_lives)
-			var/turf/expected = locate(640 + ((i-1) % 10), 530 - round((i-1)/10), 1)
-			text2file(json_encode(list("phase" = phase, "actor_index" = i, "exists" = !!H, "actor_ref" = H ? "\ref[H]" : null, "gc_destroyed" = H ? H.gcDestroyed : null, "stat" = H ? H.stat : null, "life_calls" = H ? H.probe_lives : null, "actual_location" = H ? "[H.loc]" : null, "actual_x" = H ? H.x : null, "actual_y" = H ? H.y : null, "expected_x" = expected.x, "expected_y" = expected.y, "world_time_ds" = world.time)), "actor-failure.json")
-			throw EXCEPTION("Actor identity/location/service failed: [i]")
+	check_actors()
 	for (var/i in 1 to items.len)
 		var/obj/item/I = items[i]
 		var/turf/expected = locate(620 + ((i-1) % 10), 510 - (round((i-1)/10) % 10), 1)
@@ -113,6 +109,42 @@ var/global/datum/full_season_constructor_probe/full_season_probe = new
 			throw EXCEPTION("Item identity/location failed: [i]")
 		if (!(i % 256))
 			sleep(world.tick_lag)
+/datum/full_season_constructor_probe/proc/check_actors(require_life = TRUE)
+	if (actors.len != 80)
+		throw EXCEPTION("Finite population count mismatch")
+	var/all_serviced = TRUE
+	for (var/i in 1 to actors.len)
+		var/mob/living/human/full_season_actor/H = actors[i]
+		if (!H || H.gcDestroyed || H.stat == DEAD || H.loc != locate(640 + ((i-1) % 10), 530 - round((i-1)/10), 1) || (require_life && !H.probe_lives))
+			var/turf/expected = locate(640 + ((i-1) % 10), 530 - round((i-1)/10), 1)
+			text2file(json_encode(list("phase" = phase, "actor_index" = i, "exists" = !!H, "actor_ref" = H ? "\ref[H]" : null, "gc_destroyed" = H ? H.gcDestroyed : null, "stat" = H ? H.stat : null, "life_calls" = H ? H.probe_lives : null, "actual_location" = H ? "[H.loc]" : null, "actual_x" = H ? H.x : null, "actual_y" = H ? H.y : null, "expected_x" = expected.x, "expected_y" = expected.y, "world_time_ds" = world.time)), "actor-failure.json")
+			throw EXCEPTION("Actor identity/location/service failed: [i]")
+		if (!H.probe_lives)
+			all_serviced = FALSE
+	return all_serviced
+/datum/full_season_constructor_probe/proc/wait_initial_service()
+	var/begin = world.timeofday
+	var/begin_world = world.time
+	var/polls = 0
+	while (!check_actors(FALSE))
+		polls++
+		if (elapsed_tod(begin) >= 300)
+			var/list/unserviced = list()
+			for (var/i in 1 to actors.len)
+				var/mob/living/human/full_season_actor/H = actors[i]
+				if (!H.probe_lives)
+					unserviced += i
+			text2file(json_encode(list("wait_wall_ds" = elapsed_tod(begin), "unserviced_actors" = unserviced)), "service-failure.json")
+			throw EXCEPTION("Initial natural Life service deadline")
+		sleep(1)
+	if (elapsed_tod(begin) >= 300)
+		text2file(json_encode(list("wait_wall_ds" = elapsed_tod(begin), "unserviced_actors" = list())), "service-failure.json")
+		throw EXCEPTION("Initial natural Life service deadline")
+	var/list/life_calls = list()
+	for (var/mob/living/human/full_season_actor/H in actors)
+		life_calls += H.probe_lives
+	initial_service = list("wait_wall_ds" = elapsed_tod(begin), "wait_world_ds" = world.time - begin_world, "polls" = polls, "life_calls" = life_calls)
+	text2file(json_encode(initial_service), "service-ready.json")
 /datum/full_season_constructor_probe/proc/check_movement_lane(var/mob/living/human/A, var/turf/T, var/turf/U)
 	if (!A || A.loc != T || !istype(T, /turf/floor/plating) || !istype(U, /turf/floor/plating) || get_dist(T, U) != 1 || T.density || U.density)
 		throw EXCEPTION("Native movement lane geometry invariant")
@@ -235,7 +267,8 @@ var/global/datum/full_season_constructor_probe/full_season_probe = new
 				sleep(world.tick_lag)
 		population_constructed = TRUE
 		var/list/population = list("world_ds" = world.time-population_start, "wall_ds" = elapsed_tod(population_start_tod), "items" = items.len, "humans" = actors.len)
-		sleep(10)
+		mark("service_initial")
+		wait_initial_service()
 		mark("validation_initial")
 		check_population()
 		var/list/initial_registries = registry_snapshot()

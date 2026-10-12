@@ -132,6 +132,7 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 tests/season_transition/full_game.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/season-transition/full-game/positive"
           python3 tests/season_transition/full_game.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control --output "$RUNNER_TEMP/season-transition/full-game/population-control"
+          python3 tests/season_transition/full_game.py --byond-bin "$PWD/BYOND/byond/bin" --service-negative-control --output "$RUNNER_TEMP/season-transition/full-game/service-control"
       - name: Retain actual largest-map constructor evidence
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_transition'))
         uses: actions/upload-artifact@v4
@@ -143,6 +144,7 @@ jobs:
         if: needs.changes.outputs.extensive != 'true'
         run: echo 'Existing regression suites are opt-in. Use Run workflow with extensive_regressions enabled; PRs introducing executable tests run only their corresponding suites.'
       - name: Verify bounded lighting startup ordering
+        id: lighting_startup
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/lighting_startup')
         shell: bash
         run: |
@@ -158,7 +160,7 @@ jobs:
             python3 tests/pool_effects/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control lighting --output "$RUNNER_TEMP/lighting-startup/pool-effects-control"
           fi
       - name: Retain lighting startup evidence
-        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/lighting_startup'))
+        if: always() && steps.lighting_startup.outcome != 'skipped' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/lighting_startup'))
         uses: actions/upload-artifact@v4
         with:
           name: lighting-startup-evidence

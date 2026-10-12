@@ -631,3 +631,6 @@ its adapted rendering does not establish client lighting acceptance.
 
 <!-- 2026-10-12: lighting reinitialization -->
 Lighting startup must reconcile existing inactive shared corners after adding overlays, as well as activating fresh corners. Native largest-startup fixtures exercise a later overlay pass after standalone corner creation; use bounded overlay-master visits without retaining a corner registry.
+
+<!-- 2026-10-12: native population readiness -->
+Mob processing retains unfinished copied population snapshots across budget returns. A fixed schedule interval does not guarantee newly constructed humans received Life. The full seasonal constructor fixture waits at most 30 real seconds for natural first service while checking actor identity/location/death; its service control excludes one retained actor from both live membership and the pending snapshot. Never invoke Life directly to satisfy scheduler evidence.

@@ -25,7 +25,7 @@ def git(repo, *args):
 def digest(data):
     return hashlib.sha256(data).hexdigest()
 
-def generate(repo, output, prefix, negative, created):
+def generate(repo, output, prefix, negative, created, service_negative=False):
     dme = (repo / 'civ13.dme').read_text(encoding='utf-8-sig')
     map_include = re.compile(r'^#include "maps[\\/]nomads[\\/]nomads\.dmm"$', re.M)
     if len(map_include.findall(dme)) != 1:
@@ -97,6 +97,11 @@ def generate(repo, output, prefix, negative, created):
         if probe.count(token) != 1:
             raise RuntimeError('Population negative-control anchor missing')
         probe = probe.replace(token, token + '\t\titems.Cut(items.len, items.len+1) // Generated population conservation defect.\n')
+    if service_negative:
+        token = '\t\t\tactors += H\n'
+        if probe.count(token) != 1:
+            raise RuntimeError('Natural service negative-control anchor missing')
+        probe = probe.replace(token, token + '\t\t\tif (i == 80)\n\t\t\t\tliving_mob_list -= H\n\t\t\t\tif (processes.mob.current_list)\n\t\t\t\t\tprocesses.mob.current_list -= H\n\t\t\t\tH.probe_lives = 0\n')
     generated_probe = repo / (prefix + '_probe.dm')
     generated_probe.write_text(probe, encoding='utf-8')
     created.append(generated_probe)
@@ -220,12 +225,20 @@ def run_daemon(command, output, negative):
         raise RuntimeError('Native runtime/engine diagnostics invalidate evidence')
     if negative:
         text = (output / 'result.txt').read_text() if (output / 'result.txt').exists() else ''
-        if process.returncode or (output / 'result.json').exists() or text.strip() != 'FAIL: Finite population count mismatch':
-            raise RuntimeError('Population negative control failed for an unrelated reason')
-        return {'negative_control_detected': True, 'defect': 'generated omission from the 20000-item ownership list'}, samples
+        expected = 'FAIL: Initial natural Life service deadline' if negative == 'service' else 'FAIL: Finite population count mismatch'
+        if process.returncode or (output / 'result.json').exists() or text.strip() != expected:
+            raise RuntimeError('Negative control failed for an unrelated reason')
+        if negative == 'service':
+            failure = json.loads((output / 'service-failure.json').read_text())
+            if failure['unserviced_actors'] != [80] or failure['wait_wall_ds'] < 300:
+                raise RuntimeError('Withheld natural service control receipt inconsistent')
+        return {'negative_control_detected': True, 'defect': 'generated omission from natural mob scheduling for retained actor80' if negative == 'service' else 'generated omission from the 20000-item ownership list'}, samples
     if process.returncode or not (output / 'result.json').exists():
         raise RuntimeError('Native result missing or failed: ' + ((output / 'result.txt').read_text() if (output / 'result.txt').exists() else str(process.returncode)))
     result = json.loads((output / 'result.json').read_text())
+    initial_service = json.loads((output / 'service-ready.json').read_text())
+    if len(initial_service['life_calls']) != 80 or min(initial_service['life_calls']) < 1 or initial_service['wait_wall_ds'] >= 300:
+        raise RuntimeError('Initial natural Life readiness receipt inconsistent')
     if not result.get('passed') or not result.get('completed') or result.get('dead_humans') != 0 or result.get('native_loop_checks') != 1 or result.get('port') or result.get('connected_clients') or result.get('dimensions') != [660, 550, 1] or len(result.get('cycles', [])) != 4:
         raise RuntimeError('Native result invariants failed')
     if any(not cycle.get('movement_completed') or cycle.get('movement_busy_operations', 0) < 1 or len(cycle.get('human_life_advances', [])) != 80 or min(cycle['human_life_advances']) < 1 for cycle in result['cycles']):
@@ -247,7 +260,9 @@ def main():
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
-    parser.add_argument('--negative-control', action='store_true')
+    controls = parser.add_mutually_exclusive_group()
+    controls.add_argument('--negative-control', action='store_true')
+    controls.add_argument('--service-negative-control', action='store_true')
     args = parser.parse_args()
     repo = Path(__file__).resolve().parents[2]
     output = (args.output or Path(tempfile.gettempdir()) / ('civ13-full-season-' + uuid.uuid4().hex)).resolve()
@@ -257,9 +272,11 @@ def main():
     prefix = '.full_season_' + uuid.uuid4().hex
     created = []
     try:
-        source, created, hashes = generate(repo, output, prefix, args.negative_control, created)
+        source, created, hashes = generate(repo, output, prefix, args.negative_control, created, args.service_negative_control)
         head = git(repo, 'rev-parse', 'HEAD').strip()
         manifest = {'tested_commit': head, 'working_tree_status': git(repo, 'status', '--porcelain'), 'source_hashes': hashes, 'map_source': MAP, 'map_sha256': hashes[MAP], 'scope': SCOPE, 'negative_control': args.negative_control, 'limits': {'startup_seconds': 300, 'whole_daemon_seconds': 900, 'memory_bytes': 2 * 1024**3}, 'execution_context': {'daemon_safe_mode': True, 'native_loop_checks': True, 'world_startup_adapter': 'Only the Beta conditional assignment disabling loop_checks is omitted; exact source restoration asserted'}, 'adapters': ['closed port; no clients', 'safe-mode native loop protection retained instead of production Beta loop_checks FALSE; every other world startup statement unchanged', 'webhooks/ToRban disabled before and after ordinary world startup', 'temporary cwd/config/state with persistence saving disabled', 'pregame round_progressing FALSE', 'human ssd_check FALSE only; inherited constructor/Life', 'only seasonal delayed-start spawn(delay) becomes spawn(30 + delay / 100); relative delay lengths preserved; callback firing order may differ; original delays recorded; real worker pauses unchanged', 'setup completion and main/pending callback timing instrumentation', 'unexpected reboot fails']}
+        manifest['service_negative_control'] = args.service_negative_control
+        manifest['initial_service'] = 'Wait up to 30 real seconds for all 80 inherited Life callbacks through ordinary mob scheduler; actor identity/location/death checked every poll; no direct Life calls'
         (output / 'manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
         (output / 'tested.patch').write_text(git(repo, 'diff', 'HEAD'), encoding='utf-8')
         shutil.copy2(__file__, output / 'runner.py')
@@ -289,11 +306,11 @@ def main():
         if os.name == 'nt':
             command += ['-invisible', '-close']
         command += ['-safe', '-params', 'tested_commit=' + head, '-log', 'startup.log']
-        result, samples = run_daemon(command, output, args.negative_control)
-        if not args.negative_control and result['tested_commit'] != head:
+        result, samples = run_daemon(command, output, 'service' if args.service_negative_control else ('population' if args.negative_control else None))
+        if not args.negative_control and not args.service_negative_control and result['tested_commit'] != head:
             raise RuntimeError('Native exact-head receipt mismatch')
         (output / 'phase-summary.json').write_text(json.dumps(summarize(samples, result), indent=2), encoding='utf-8')
-        print(json.dumps({'passed': True, 'output': str(output), 'tested_commit': head, 'negative_control': args.negative_control, 'scope': SCOPE}))
+        print(json.dumps({'passed': True, 'output': str(output), 'tested_commit': head, 'negative_control': args.negative_control, 'service_negative_control': args.service_negative_control, 'scope': SCOPE}))
     finally:
         for path in created:
             if path.exists():
