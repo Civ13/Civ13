@@ -5,7 +5,7 @@ BASELINE = '7cfa850bd9d2788dcbb9fd35f5c5915ccb528dd2'
 p = argparse.ArgumentParser()
 p.add_argument('--byond-bin', type=Path, required=True)
 p.add_argument('--baseline', action='store_true')
-p.add_argument('--negative-control', choices=('token', 'deadline', 'successful-run'))
+p.add_argument('--negative-control', choices=('token', 'deadline', 'successful-run', 'exhausted-snapshot'))
 p.add_argument('--evidence-dir', type=Path)
 a = p.parse_args()
 if a.baseline and a.negative_control: p.error('Choose one control')
@@ -16,9 +16,16 @@ head = subprocess.check_output(['git','rev-parse','HEAD'], cwd=r, text=True).str
 dirty = subprocess.check_output(['git','status','--porcelain'], cwd=r, text=True)
 patch = subprocess.check_output(['git','diff','HEAD','--'], cwd=r)
 scheduler_patterns = [r'/processScheduler/proc/start\(\)[\s\S]*?(?=/processScheduler/proc/process\()', r'/processScheduler/proc/process\([^\n]*\)[\s\S]*?(?=/processScheduler/proc/stop\()', r'/processScheduler/proc/stop\(\)[\s\S]*?(?=/processScheduler/proc/checkRunningProcesses\()', r'/processScheduler/proc/recordRunTime\([^\n]*\)[\s\S]*?(?=/\*\*)']
-process_patterns = [r'/process/proc/started\(\)[\s\S]*?(?=/process/proc/finished\()', r'/process/proc/may_run\([^\n]*\)[\s\S]*?(?=/datum/subsystem_module)']
+process_patterns = [r'/process/proc/finished\([^\n]*\)[\s\S]*?(?=/process/proc/fire\()', r'/process/proc/started\(\)[\s\S]*?(?=/process/proc/finished\()', r'/process/proc/may_run\([^\n]*\)[\s\S]*?(?=/datum/subsystem_module)']
 source = '\n'.join(re.search(pattern, raw[index]).group() for index, patterns in enumerate([scheduler_patterns, process_patterns]) for pattern in patterns)
-if a.negative_control == 'token':
+defines = (r/'code/processes/___defines.dm').read_text()
+macros = '\n'.join(line for line in defines.splitlines() if line.startswith(('#define PROCESS_TICK_CHECK_RETURNED_EARLY ', '#define PROCESS_LIST_CHECK ', '#define PROCESS_TICK_CHECK ')))
+assert len(macros.splitlines()) == 3
+if a.negative_control == 'exhausted-snapshot':
+    old = 'if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY || !length(current_list))'
+    assert source.count(old) == 1
+    source = source.replace(old, 'if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)')
+elif a.negative_control == 'token':
     for old,new in [('if (!isRunning || run_token != token)', 'if (!isRunning)'), ('while (isRunning && run_token == token)', 'while (isRunning)')]:
         assert source.count(old) == 1
         source = source.replace(old,new)
@@ -38,7 +45,8 @@ if a.baseline:
 else:
     assert old not in source
 expected = {
-    'baseline': ['repeated start has one scheduler cadence', 'stop restart cancels previous sleeping chain', 'watchdog start replaces active scheduler chain', 'repeated denial creates no callback backlog', 'successful bypass run history survives old deadline'],
+    'baseline': ['repeated start has one scheduler cadence', 'stop restart cancels previous sleeping chain', 'watchdog start replaces active scheduler chain', 'repeated denial creates no callback backlog', 'successful bypass run history survives old deadline', 'final-entry budget return releases exhausted snapshot'],
+    'exhausted-snapshot': ['final-entry budget return releases exhausted snapshot'],
     'token': ['repeated start has one scheduler cadence', 'stop restart cancels previous sleeping chain', 'watchdog start replaces active scheduler chain'],
     'deadline': ['denials do not postpone original expiry', 'expired history clears only on admission query'],
     'successful-run': ['successful bypass run history survives old deadline'],
@@ -51,10 +59,10 @@ with tempfile.TemporaryDirectory(prefix='civ13-process-loops-') as directory:
     out = a.evidence_dir or Path(directory)
     if out.exists() and any(out.iterdir()): p.error('Evidence directory must be fresh')
     out.mkdir(parents=True, exist_ok=True)
-    for name, content in [('scheduler-source.dm',raw[0]),('process-source.dm',raw[1]),('production.dm',source),('probe.dm',probe),('probe.dme','#include "probe.dm"\n#include "production.dm"\n')]:
+    for name, content in [('scheduler-source.dm',raw[0]),('process-source.dm',raw[1]),('production-defines.dm',defines),('fixture-macros.dm',macros),('production.dm',source),('probe.dm',probe),('probe.dme','#include "fixture-macros.dm"\n#include "probe.dm"\n#include "production.dm"\n')]:
         (out/name).write_text(content)
     (out/'dirty.patch').write_bytes(patch)
-    metadata = {'head':head,'source_commit':BASELINE if a.baseline else head,'dirty':False if a.baseline else bool(dirty),'checkout_status':dirty,'baseline':a.baseline,'control':a.negative_control,'source_sha256':[hashlib.sha256(x.encode()).hexdigest() for x in raw],'compiled_sha256':hashlib.sha256(source.encode()).hexdigest(),'probe_sha256':hashlib.sha256(probe.encode()).hexdigest(),'callback_instrumentation':bool(a.baseline)}
+    metadata = {'head':head,'source_commit':BASELINE if a.baseline else head,'dirty':False if a.baseline else bool(dirty),'checkout_status':dirty,'baseline':a.baseline,'control':a.negative_control,'source_sha256':[hashlib.sha256(x.encode()).hexdigest() for x in raw],'compiled_sha256':hashlib.sha256(source.encode()).hexdigest(),'probe_sha256':hashlib.sha256(probe.encode()).hexdigest(),'callback_instrumentation':bool(a.baseline),'production_defines_sha256':hashlib.sha256(defines.encode()).hexdigest()}
     (out/'metadata.json').write_text(json.dumps(metadata,indent=2))
     build = subprocess.run([str(compiler),'-max_errors','0','probe.dme'],cwd=out,text=True,capture_output=True,timeout=60,creationflags=flags)
     compile_log = build.stdout+build.stderr
@@ -70,6 +78,6 @@ with tempfile.TemporaryDirectory(prefix='civ13-process-loops-') as directory:
     result = json.loads((out/'native-result.json').read_text())
     errors = re.findall(r'^FAIL (.+)$',log,re.M)
     control = 'baseline' if a.baseline else a.negative_control
-    if result['checks'] != 15 or errors != (expected[control] if control else []) or result['failures'] != len(errors): raise SystemExit('Unexpected native lifecycle assertions')
+    if result['checks'] != 19 or errors != (expected[control] if control else []) or result['failures'] != len(errors): raise SystemExit('Unexpected native lifecycle assertions')
     print('PASS expected historical/mutation control' if control else 'PASS production loop lifecycle')
     if a.evidence_dir: print('Retained evidence: '+str(out))

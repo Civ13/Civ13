@@ -527,3 +527,10 @@ early-return sentinel; it does not sleep. Isolated queue counts and Windows
 private bytes are separate metrics, and process CPU accounting can have 15.625ms
 quantization. Full-game movement/Life/inventory probes do not establish client
 rendering, multiplayer latency or long-term OOM stability.
+
+<!-- 2026-10-12: exhausted budget snapshots -->
+A tick-budget return can happen after PROCESS_LIST_CHECK removes the last entry.
+Release exhausted snapshots in process finished so the next scheduled run builds
+fresh work; retain only nonempty unfinished snapshots. Assign null without cutting
+aliased VERY_HIGH live lists. tests/process_loop_lifecycle covers the exact
+last-entry boundary and an independent old-guard mutation control.

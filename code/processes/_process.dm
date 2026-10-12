@@ -145,8 +145,8 @@
 	idle()
 	main.processFinished(src)
 	onFinish()
-	// Budgeted runs retain their remaining snapshot for the scheduler to resume.
-	if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)
+	// Budgeted runs retain only nonempty snapshots for the scheduler to resume.
+	if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY || !length(current_list))
 		// Assign null instead of cutting a possibly aliased VERY_HIGH list.
 		current = null
 		current_list = null

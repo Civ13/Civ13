@@ -133,6 +133,7 @@ var/global/datum/game_loop_benchmark/game_loop_benchmark = new
             var/natural_calls = natural_lives[actor_index]
             var/restart_calls = H.life_calls-natural_calls
             if(natural_calls < 10 || restart_calls < 1) throw EXCEPTION("Actor service missing in natural/restart phase")
+            if(world.params["variant"] == "current" && (H.natural_max_gap_deciseconds > 15 || H.restart_max_gap_deciseconds > 20)) throw EXCEPTION("Current actor service exceeded natural/restart gap bounds")
             service += list(list("actor"=actor_index,"natural_life_calls"=natural_calls,"restart_life_calls"=restart_calls,"natural_max_gap_deciseconds"=H.natural_max_gap_deciseconds,"restart_max_gap_deciseconds"=H.restart_max_gap_deciseconds))
             if(H.life_calls < 10) throw EXCEPTION("Normal scheduler did not service every human")
         text2file(json_encode(list("rows"=rows,"actor_service"=service,"callbacks"=callbacks,"retained"=retained,"unique_refs"=unique_refs.len,"final_world_time_deciseconds"=world.time,"gc_queued_drained_delta"=processes.garbage.queued_drained-initial_gc_drained)),"observations.json")
