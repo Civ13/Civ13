@@ -85,6 +85,9 @@ with tempfile.TemporaryDirectory(prefix='civ13-list-removal-') as temp:
         raise SystemExit(combined)
     result = json.loads((out / 'result.json').read_text())
     if args.benchmark:
+        if (len(result['samples']) != 51 or result['sink'] != 5_440_000 or
+                any(not row['complete'] or row['remaining'] or row['operations'] != row['count'] * row['passes'] for row in result['samples'])):
+            raise SystemExit('Incomplete benchmark work invalidates throughput evidence')
         for count in (1000, 5000, 10000):
             for mode in dict.fromkeys(row['mode'] for row in result['samples']):
                 rows = [row for row in result['samples'] if row['count'] == count and row['mode'] == mode]
