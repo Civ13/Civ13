@@ -20,7 +20,7 @@ def main():
     files = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '_metadata.dm', '.dmb', '.rsc')]
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
-    daemon = args.byond_bin / ('dreamdaemon.exe' if os.name == 'nt' else 'DreamDaemon')
+    daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         world = (root / 'code/world.dm').read_text(encoding='utf-8')
@@ -63,7 +63,14 @@ def main():
             shutil.copy2(files[5], target / 'probe.rsc')
             shutil.copytree(root / 'config/names', target / 'config/names')
             platform = ['-invisible', '-close'] if os.name == 'nt' else []
-            result = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-log', 'runtime.log'], cwd=target, capture_output=True, text=True, timeout=90, creationflags=flags)
+            try:
+                result = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-log', 'runtime.log'], cwd=target, capture_output=True, text=True, timeout=90, creationflags=flags)
+            except subprocess.TimeoutExpired as error:
+                # subprocess.run kills and waits for this directly owned headless
+                # process before returning. Read diagnostics before temp cleanup.
+                log_path = target / 'runtime.log'
+                log = log_path.read_text(errors='replace') if log_path.exists() else 'No runtime log produced'
+                raise RuntimeError('Native mall fixture exceeded 90 seconds:\n'+log) from error
             report = (target / 'result.txt').read_text(encoding='utf-8') if (target / 'result.txt').exists() else ''
             log = result.stdout + result.stderr + ((target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else '')
             if result.returncode or any(value in log.lower() for value in ('runtime error', 'bad ref', '## error')):
