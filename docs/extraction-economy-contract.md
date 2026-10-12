@@ -24,6 +24,15 @@ lower policy multiplier. Private, admin, quest, secure, insured and unsupported
 graphs are rejected. Validate every nested node, not just the root. Transfer
 unchanged graphs preserving IDs, condition, FIR and insurance metadata.
 
+Insured trading is currently unavailable: `ipc_economy.eligible()` rejects any
+nested insurance token. This is a safety restriction, not permission to strip
+tokens. Enabling it requires an explicit claim-ownership policy and an atomic
+transaction updating the original insurer's claim/recovered-token records,
+escrow and recipient ownership. The initial policy must be agreed through the
+coordinator before implementation. Until then, deny the sale with an explicit
+reason and retain the original item and all metadata unchanged. Test prior-owner
+insurance recovery after sale, nested tokens, cancellation and crash replay.
+
 Quotes bind policy version, trader, graph digest, account revisions, condition,
 quantity, price and expiry. Confirmation repeats eligibility and rejects stale
 condition, duplicate IDs, changed policy and busy or deployed accounts.
