@@ -53,6 +53,9 @@ def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
             modern=typepath.startswith('/obj/structure/exercise/modern')
             conditions+=f' Native crafting skill {105 if modern else 30}; completed research or existing faction baseline required at construction.'
             if modern:conditions+=' Minimum era Modern (ordinal 8).'
+        if typepath.startswith('/obj/structure/telecom') or typepath == '/obj/item/weapon/telephone/landline':
+            skill=100 if typepath.endswith('/landline') else 160 if typepath in ('/obj/structure/telecom/tv','/obj/structure/telecom/station/tv','/obj/structure/telecom/terminal') else 105
+            conditions+=f' Minimum era Modern (ordinal 8); native crafting skill {skill}; completed research node required at construction.'
     inputs=[{'id':canon(a),'name':label(a),'quantity':str(b)} for a,b in inputs]
     outputs=[{'id':canon(a),'name':label(a),'quantity':str(b)} for a,b in outputs]
     records.append(dict(id='r'+str(len(records)),name=name,kind=kind,inputs=inputs,outputs=outputs,file=path,line=line,conditions=conditions,raw=raw))

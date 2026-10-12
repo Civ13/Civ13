@@ -26,5 +26,12 @@
   "/obj/structure/exercise",
   "/obj/structure/exercise/course",
   "/obj/structure/exercise/modern",
-  "/obj/structure/exercise/modern/course"
+  "/obj/structure/exercise/modern/course",
+  "/obj/structure/telecom",
+  "/obj/structure/telecom/station",
+  "/obj/structure/telecom/tv",
+  "/obj/structure/telecom/station/tv",
+  "/obj/structure/telecom/antenna",
+  "/obj/item/weapon/telephone/landline",
+  "/obj/structure/telecom/terminal"
 ]
