@@ -222,6 +222,19 @@ reference material from private repositories.
 
 Request an exclusive bounded screen turn from the coordinator only when the
 build, test scripts and storyboard are ready. There is no standing screen grant.
+`run-playable.ps1 -ByondBin <absolute-516.1681-bin>` compiles and checks normal
+full-game startup with temporary storage and a closed listening port. Add `-City`
+for the Modern city. After an exclusive screen grant, `-Visual -Port 18342
+-TimeoutSeconds 600` keeps that disposable world open for a bounded capture.
+The launcher terminates only its own daemon and retains its run directory,
+compiler log, source provenance and runtime logs. The opt-in adapter disables
+outbound `world.Export`; native BYOND engine login is still outside that hook.
+Two authenticated account clients can use **Local Verification > Enter extraction
+test world**. Admission uses actual client identities and production account
+journals. Guest identities are rejected. The optional fixture-parts verb injects
+labeled setup supplies; footage must identify this setup and cannot claim those
+parts were earned. Native gameplay payments, action waits and room guards remain
+unchanged. A clean startup does not establish connected interaction acceptance.
 Use readable captions and zooms/highlights. Compress no-frame-change waits and
 label accelerated periods; preserve genuine completion and before/after frames.
 Do not claim unshown mechanics, production behavior or indefinite durability.
