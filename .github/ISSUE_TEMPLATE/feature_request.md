@@ -18,3 +18,10 @@ A clear and concise description of any alternative solutions or features you've 
 
 **Additional context**
 Add any other context or screenshots about the feature request here.
+
+**Optional changelog suggestion**
+Suggest one short sentence describing the player-visible feature. Leave blank if
+no announcement is needed. The author of the implementing PR should copy the
+final text into its opening description's `Changelog:` field. Issue text does not
+trigger a Discord post; only the PR field is checked when the PR is merged into
+master.

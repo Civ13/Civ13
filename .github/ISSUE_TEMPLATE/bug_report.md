@@ -36,3 +36,9 @@ If applicable, add screenshots to help explain your problem.
 
 **Additional context**
 Add any other context about the problem here.
+
+**Optional changelog suggestion**
+Suggest one short sentence describing the player-visible fix. Leave blank if no
+announcement is needed. The author of the fixing PR should copy the final text
+into its opening description's `Changelog:` field. Issue text does not trigger
+a Discord post; only the PR field is checked when the PR is merged into master.
