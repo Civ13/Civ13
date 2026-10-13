@@ -33,6 +33,7 @@
 	var/obj/item/weapon/reagent_containers/food/snacks/input = new input_type(T)
 	var/obj/item/weapon/reagent_containers/food/snacks/default_output = new input.dried_type(T)
 	var/default_nutrition = default_output.nutriments_value()
+	var/default_decay = default_output.decay
 	qdel(default_output)
 	for (var/datum/reagent/nutrient in input.reagents.reagent_list.Copy())
 		if (istype(nutrient, /datum/reagent/nutriment))
@@ -55,8 +56,12 @@
 	var/output_nutrition = product.nutriments_value()
 	food_check(output_nutrition <= paid_nutrition + 0.001, "drying does not replenish consumed nutrition")
 	food_check(abs(output_nutrition - min(paid_nutrition, default_nutrition)) < 0.001, "drying retains available nutrition across reagent conversion")
-	food_check(abs(product.decaytimer / product.decay - 1200 / original_decay) < 0.0001, "drying does not erase accumulated age")
-	world.log << "ROUTE [input_type] remaining=[remaining_fraction] paid=[paid_nutrition] output=[output_nutrition] age_fraction=[product.decaytimer / product.decay]"
+	// The rack suspends decay by setting decay to zero and encoding its limit in the name.
+	var/decay_offset = findtext(product.name, "DECAY_") + 6
+	var/encoded_decay = text2num(copytext(product.name, decay_offset, decay_offset + 8))
+	food_check(encoded_decay == default_decay && default_decay > 0, "recipe retains dried lifetime while on rack")
+	food_check(abs(product.decaytimer / default_decay - 1200 / original_decay) < 0.0001, "drying does not erase accumulated age")
+	world.log << "ROUTE [input_type] remaining=[remaining_fraction] paid=[paid_nutrition] output=[output_nutrition] age_fraction=[product.decaytimer / default_decay]"
 	rack.before_save()
 	qdel(product)
 /world/New()
