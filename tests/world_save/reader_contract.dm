@@ -142,7 +142,7 @@ var/rc_role
 	var/type_rejected = RC_FALSE
 	try
 		rc_copy_metadata(42)
-	catch(var/exception/e)
+	catch(var/exception/type_error)
 		type_rejected = RC_TRUE
 	rc_check(type_rejected, "nontext metadata rejected")
 	var/oversized = ""
@@ -151,7 +151,7 @@ var/rc_role
 	var/size_rejected = RC_FALSE
 	try
 		rc_copy_metadata(oversized)
-	catch(var/exception/e)
+	catch(var/exception/size_error)
 		size_rejected = RC_TRUE
 	rc_check(size_rejected, "oversized synthetic metadata rejected")
 	rc_observations["utf8_length_e_acute"] = length("é")
@@ -173,7 +173,7 @@ var/rc_role
 	var/rejected = RC_FALSE
 	try
 		selection.read_level(foreign, level)
-	catch(var/exception/e)
+	catch(var/exception/operation_error)
 		rejected = RC_TRUE
 	rc_check(rejected, "WRONG_OPERATION_REJECTED")
 	var/datum/rc_member/foreign_member = new
@@ -183,14 +183,14 @@ var/rc_role
 	rejected = RC_FALSE
 	try
 		selection.read_level(operation, foreign_member)
-	catch(var/exception/e)
+	catch(var/exception/member_error)
 		rejected = RC_TRUE
 	rc_check(rejected, "foreign member rejected")
 	operation.active = RC_FALSE
 	rejected = RC_FALSE
 	try
 		selection.read_metadata(operation, metadata)
-	catch(var/exception/e)
+	catch(var/exception/inactive_error)
 		rejected = RC_TRUE
 	rc_check(rejected, "inactive operation rejected")
 	operation.active = RC_TRUE
@@ -200,14 +200,14 @@ var/rc_role
 	rejected = RC_FALSE
 	try
 		selection.read_level(operation, level)
-	catch(var/exception/e)
+	catch(var/exception/closed_error)
 		rejected = RC_TRUE
 	rc_check(rejected, "closed selection rejected")
 	var/datum/rc_selection/partial = new
 	rejected = RC_FALSE
 	try
 		partial.acquire_selected(list("level1", "metadata"), operation, RC_TRUE)
-	catch(var/exception/e)
+	catch(var/exception/partial_error)
 		rejected = RC_TRUE
 	var/datum/rc_member/acquired = partial.members[1]
 	rc_check(rejected && partial.closed && partial.members.len == 1 && acquired.closed && acquired.handle.close_calls == 1, "partial acquisition closes exact acquired member")
@@ -216,7 +216,7 @@ var/rc_role
 	rejected = RC_FALSE
 	try
 		duplicate.acquire_selected(list("level1", "level1"), operation)
-	catch(var/exception/e)
+	catch(var/exception/duplicate_error)
 		rejected = RC_TRUE
 	rc_check(rejected && !duplicate.members.len && rc_handles.len == prior_handles, "duplicate manifest rejects before open")
 	rc_observations["adapter_binding_and_cleanup"] = "PASS: fixture identity guards only"
