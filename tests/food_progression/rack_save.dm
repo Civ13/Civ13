@@ -100,8 +100,8 @@
 	var/commit_refused = FALSE
 	try
 		failure_exporter.BuildVarDirectory(failure_file, failure_turf, 1)
-	catch (var/exception/error)
-		commit_refused = !!findtext("[error]", "Fixture refuses paid transfer commit")
+	catch (var/exception/commit_error)
+		commit_refused = !!findtext("[commit_error]", "Fixture refuses paid transfer commit")
 	rack_check(commit_refused && failure_rack.current_process_id == "SAVE_REPAIR_REQUIRED", "failed commit leaves rack requiring repair")
 	sleep(35) // New/reinit callbacks must not restart or reclaim the failed rack.
 	rack_check(failure_rack.current_process_id == "SAVE_REPAIR_REQUIRED" && failure_input.loc == failure_turf, "pending reinit cannot reclaim failed save input")
@@ -143,8 +143,8 @@
 	var/reference_first_refused = FALSE
 	try
 		map_storage.BuildVarDirectory(refused_file, rack, 1)
-	catch (var/exception/error)
-		reference_first_refused = !!findtext("[error]", "owning turf")
+	catch (var/exception/reference_error)
+		reference_first_refused = !!findtext("[reference_error]", "owning turf")
 	rack_check(reference_first_refused, "reference-first rack export refuses missing parent context")
 	rack_check(input.loc == rack.storage && rack.get_dry_timer(input) == 150 && abs(input.nutriments_value() - paid_nutrition) < 0.001, "refused rack export preserves paid input and progress")
 	rack_check(rack.current_process_id == "fixture suspended before export", "refused rack export preserves callback ownership before mutation")
