@@ -18,6 +18,7 @@ def main():
     control.add_argument('--soil-negative-control', action='store_true')
     control.add_argument('--can-negative-control', action='store_true')
     parser.add_argument('--probe', choices=('crop', 'storage', 'preservation'), default='preservation')
+    parser.add_argument('--preservation-control', choices=('nutrition', 'age'))
     parser.add_argument('--output', type=Path)
     parser.add_argument('--stem')
     parser.add_argument('--start-gated', action='store_true')
@@ -76,6 +77,18 @@ def main():
             marker = 'spawn(150) //one tick at 15 seconds will be enough'
             if production.count(marker) != 1:
                 raise RuntimeError('Production drying wait marker changed')
+            if args.preservation_control:
+                if args.preservation_control == 'nutrition':
+                    first = '\t\t\t\t\t\t\tfor (var/nutrient in list("nutriment", "protein"))'
+                    last = '\t\t\t\t\t\t\tvar/decay_offset'
+                    start = production.index(first)
+                    end = production.index(last, start)
+                    production = production[:start] + production[end:]
+                else:
+                    age = '\t\t\t\t\t\t\t\toutput_food.decaytimer = max(output_food.decaytimer, input_food.decaytimer * output_food.decay / original_decay)'
+                    if production.count(age) != 1:
+                        raise RuntimeError('Preservation age control marker changed')
+                    production = production.replace(age, '\t\t\t\t\t\t\t\toutput_food.decaytimer = 0 // omission control')
             generated['_production.dm'].write_text(production.replace(marker, 'spawn(2) // accelerated drying wait'), encoding='utf-8')
             source = source.replace('code\\modules\\1713\\production.dm', generated['_production.dm'].name)
         if args.negative_control:
@@ -100,7 +113,7 @@ def main():
         probe = root / 'tests/food_progression' / ('preservation.dm' if args.probe == 'preservation' else 'storage.dm' if args.probe == 'storage' else 'probe.dm')
         generated['.dme'].write_text(source + '\n#include "' + probe.relative_to(root).as_posix() + '"\n', encoding='utf-8')
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-        (output / 'metadata.json').write_text(json.dumps({'commit': head, 'negative_control': args.negative_control, 'soil_negative_control': args.soil_negative_control, 'can_negative_control': args.can_negative_control, 'probe': args.probe,
+        (output / 'metadata.json').write_text(json.dumps({'commit': head, 'preservation_control': args.preservation_control, 'negative_control': args.negative_control, 'soil_negative_control': args.soil_negative_control, 'can_negative_control': args.can_negative_control, 'probe': args.probe,
             'drying_wait_ticks': 2 if args.probe == 'preservation' else None, 'growth_wait_ticks': 2, 'food_wait_ticks': 2 if args.probe == 'storage' else None, 'normal_startup': False, 'map': 'synthetic 6x3x1 storage fixture' if args.probe == 'storage' else 'synthetic 6x3x1 temperate plot'}), encoding='utf-8')
         (output / 'checkout.patch').write_text(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root, text=True), encoding='utf-8')
         shutil.copy2(probe, output / 'probe.dm')
@@ -132,12 +145,14 @@ def main():
         print(log, flush=True)
         result = (output / 'food_result.txt').read_text(encoding='utf-8')
         print(result, flush=True)
-        expected = ('FAIL: opened can accumulates food age' if args.can_negative_control else
+        expected = ('FAIL: drying does not replenish consumed nutrition' if args.preservation_control == 'nutrition' else
+                    'FAIL: drying does not erase accumulated age' if args.preservation_control == 'age' else
+                    'FAIL: opened can accumulates food age' if args.can_negative_control else
                     'FAIL: production planting consumes one seed' if args.negative_control else
                     'FAIL: full turf entry restores nondefault soil nutrition' if args.soil_negative_control else 'PASS:')
         if runtime.returncode or not result.startswith(expected) or any(x in log.lower() for x in ('runtime error:', '## error:', 'bug:')):
             raise RuntimeError('Production progression probe failed')
-        if args.negative_control or args.soil_negative_control or args.can_negative_control:
+        if args.preservation_control or args.negative_control or args.soil_negative_control or args.can_negative_control:
             print('PASS: expected regression mutation detected', flush=True)
     finally:
         for path in generated.values():

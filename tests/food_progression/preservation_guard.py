@@ -83,6 +83,7 @@ def private(pid):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--inspect', action='store_true')
+parser.add_argument('--preservation-control', choices=('nutrition', 'age'))
 parser.add_argument('--directory', type=Path)
 parser.add_argument('--byond-bin', type=Path)
 parser.add_argument('--timeout', type=int, default=180)
@@ -113,6 +114,8 @@ if not k.SetInformationJobObject(job, 9, C.byref(limits), C.sizeof(limits)):
 stem = '.food_progression_' + uuid.uuid4().hex
 command = [sys.executable, str(Path(__file__).with_name('preservation_run.py')), '--byond-bin', str(args.byond_bin),
            '--output', str(work), '--stem', stem, '--start-gated']
+if args.preservation_control:
+    command += ['--preservation-control', args.preservation_control]
 start, started = time.monotonic(), utc()
 child, reason, cleanup_error = None, None, None
 peak, lowest = 0, free_bytes()
