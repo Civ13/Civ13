@@ -276,9 +276,45 @@ and expected source/destination revisions. Idempotent receipts alone cannot prov
 exclusive custody. This is a contract prerequisite, not an implemented distributed
 transaction; the authoritative journal and host custody owner must be selected.
 
-## Scoped wrapper implementation pending verification
+## Native reader result and concrete provider prerequisites
 
-The current source candidate changes only `functions.dm` in shared production
+The Windows BYOND 516.1681 reader probe passed positive and binding/close controls
+at `12de059fad3d593bc2a4891a6867d7d5a0c7e8f4`. Automated receipt review accepted
+only cooperating-world lock behavior and fixture guards. A same-world second
+handle changed the retained reader's value to LOCAL. Therefore retaining a native
+savefile object, even with these locks, cannot implement immutable input bytes.
+See [the exact probe scope](extraction-reader-contract-probe.md).
+
+The memory/engine host owner must select an actual provider interface and version
+before production reader plumbing. The following are requirements, not available
+APIs or an implemented provider:
+
+| Boundary | Required provider contract | Smallest meaningful acceptance |
+| --- | --- | --- |
+| Host ownership | Name the process identity, storage root, OS/filesystem semantics, and every allowed writer. Private copies must exclude both game-world writes and host writes/replacement for their entire use. | Independent attempts to write, rename and replace selected files during every consumer phase either fail or abort before the next mutation; restoration never silently reads new bytes. |
+| Selection | Acquire one generation and exact level/metadata membership under an operation identity. Reject unknown, missing and duplicate members before clearing. Caller-supplied paths are not reader identities. | Wrong operation/generation/member and partial acquisition reject; acquired resources close exactly once, with no pathname fallback. |
+| Bytes | Supply bounded raw-byte length and SHA-256 plus verified immutable backing for each member. Copied DM text and semantic graph hashes do not supply binary fidelity. | Binary zero/high bytes, size limits, truncation, replacement and digest controls run against the actual selected provider. Bounds apply before allocation as well as during parsing. |
+| Native consumer | Bind every validation/allocation/restoration read to the selected immutable member. If BYOND must open a filename, prove exclusive ownership of that backing path through native close. | Actual native reads across phase transitions observe only selected bytes; foreign and same-world handles cannot change the backing input. |
+| Recovery | Before ClearMap, reserve persistent recovery custody bound to operation/generation. After mutation starts, errors retain that custody independently of closing transient readers. | Process termination/restart at reservation, first mutation, metadata and final admission preserves a recoverable generation; omission controls fail. Flush alone is not a durability proof. |
+| Transfer | One authoritative decision binds transfer ID, exact roots, source/destination generations and expected revisions. Source becomes unusable durably before destination admission. | Lost replies, duplicate claims, concurrent import and restart never create two usable owners or infer rollback/refund from timeout. |
+
+Core supplies the typed operation/member/custody inventory and serializer supplies
+explicit reader parameters through validation, allocation, recursive restoration
+and metadata. The host owner supplies the verified backing store and exclusive
+ownership primitive. No owner may substitute an in-process lease or timestamp for
+that host guarantee. Until the interface/version and these primitives exist,
+configured provider unavailability must reject before ClearMap. Production wiring
+must wait for this concrete implementation evidence, not for generic human review.
+
+Phase 1 should first demonstrate ordinary same-server faction save/restore through
+the selected provider, including interrupted recovery. Phase 2 then adds one
+explicit source/destination counterpart pair and its authoritative transfer journal.
+Do not activate distributed imports or paid convoys by treating idempotent fixture
+receipts as exclusive cross-server custody.
+
+## Scoped wrapper implementation and bounded verification
+
+The wrapper changes only `functions.dm` in shared production
 persistence. `loadmap()` captures the selected storage/policy, acquires a bound
 attempt when configured, validates preflight, obtains a recovery reservation and
 rechecks bindings before ClearMap. Mutation-started is recorded immediately before
@@ -298,8 +334,9 @@ publish restore success. Runtime policy/attempt handles must not be serialized.
 
 No production policy/provider is installed. The default opt-in policy fails closed
 before clearing; null policy retains ordinary successful loading. The injected
-actual-wrapper fixture and metadata/recovery omission controls require separate
-recorded execution results. They can establish callback/receipt behavior
-after execution, not durable reservation storage, immutable readers, host ABA
+actual-wrapper fixture, metadata/recovery omission controls and ordinary legacy/v2
+disk round trip passed at `7eeab21fa1e6668466aecbaf44d5b01cb7268e20` on Windows
+BYOND 516.1681, each with zero compile errors/warnings. They establish bounded
+callback/receipt behavior, not durable reservation storage, immutable readers, host ABA
 exclusion, a global custody fence or multi-tick census admission. `loading.dm`,
 the save schema/readers, physical custody and engine behavior remain unchanged.
