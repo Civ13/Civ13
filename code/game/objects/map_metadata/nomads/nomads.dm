@@ -32,8 +32,7 @@
 
 /obj/map_metadata/nomads/New()
 	..()
-	spawn(18000)
-		seasons()
+	season_schedule_loop()
 
 /obj/map_metadata/nomads/cross_message(faction)
 	return ""

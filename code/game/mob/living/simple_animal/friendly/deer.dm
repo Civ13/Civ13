@@ -19,6 +19,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 50
+	maxHealth = 50
 	mob_size = MOB_LARGE
 	var/babydeer = FALSE
 	behaviour = "scared"
@@ -141,6 +142,7 @@
 	meat_amount = 5
 	var/babyreindeer = FALSE
 	health = 50
+	maxHealth = 50
 	mob_size = MOB_LARGE
 	female = FALSE
 
@@ -170,6 +172,7 @@
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 6
 	health = 80
+	maxHealth = 80
 	female = FALSE
 
 /mob/living/simple_animal/deer/elk/female
@@ -199,6 +202,7 @@
 	meat_amount = 3
 	var/babydikdikdeer = FALSE
 	health = 45
+	maxHealth = 45
 	mob_size = MOB_SMALL
 	female = FALSE
 

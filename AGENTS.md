@@ -267,6 +267,12 @@ are cached only within one synchronous decision after its second cover candidate
 keep candidate order and strict score comparison. The benchmark reports native
 wall time, not server CPU or combat movement acceptance.
 
+<!-- 2026-10-12: inherited runtime exclusion precedence -->
+DM `in` binds below `||`; parenthesize membership before combining a runtime-field
+list with `..()`. Otherwise a nonempty list short-circuits the parent exclusion.
+The human corpse fixture checks inherited human/equipment exclusions and its
+`--negative-control runtime-parent` restores the faulty human expression.
+
 <!-- 2026-10-12: lighting batch ownership -->
 Lighting overlays detach bounded 1000/2000-entry batches, null consumed slots
 and retain unfinished batches across budget
@@ -587,3 +593,59 @@ that inner refresh: it establishes existing open/damaged-wall overlay ordering.
 tests/wall_appearance runs actual wall constructors and ordered appearance/count
 comparisons, production save/load and smoothing/duplicate/overlay controls.
 Measured native callback reductions are not whole-server latency evidence.
+<!-- 2026-10-12: seasonal terrain snapshots -->
+get_area_turfs accepts an optional third turf_type argument. Seasonal callers
+use fresh filtered snapshots, preserving pass order and native replacement refs;
+never cache them across transitions. Filtered predicates must be pure because
+excluded types skip predicate calls. tests/season_terrain_filter compares ordered
+native selections and bounded allocations at 660x550 synthetic geometry; inert
+entities and isolated wall times are not full-game or connected-player evidence.
+
+<!-- 2026-10-12: serialized seasonal terrain -->
+Base seasons serialize discovery, terrain mutation and delayed phases with
+season_busy/season_epoch; pending natural requests remain distinct. Delayed
+callbacks retain scalar phase/epoch values and stop when metadata is replaced.
+Discovery yields at 4096 candidates, mutation at 256, and both at 20% tick usage.
+Batch checkpoints use sleep(0) while budget remains; exhausted budget waits for
+the next tick. Cheap discovery checks budget/ownership every 64 entries, while
+each mutation checks individually. One constructor or discovery block can
+overshoot before the next checkpoint.
+Season worker fields are explicitly excluded by persistence_runtime_var because
+custom saves enumerate tmp fields. Asia flooding uses season_transition_complete
+inside the same lock. Isolated tests do not establish full-server latency.
+
+<!-- 2026-10-12: finite native probe completion -->
+Native del(world) does not immediately stop the current procedure. Accumulate
+probe failures before emitting one final result, and return explicitly after
+world disposal so failure paths cannot continue into a passing receipt.
+
+<!-- 2026-10-12: OpenDream local controls -->
+`scripts/opendream/control.py` owns only its launched local server. OpenDream
+restart/map votes enqueue fixed requests with a ready marker; do not use shell
+or native PID discovery. Reused temporary resources can make OpenDream `fcopy`
+copy stale bytes. Write the final spool file before its marker and verify actual
+disk bytes independently of DM resource reads. `verify-dm-controls.py` exercises
+production request/reboot/whitelist bodies in a disposable OpenDream world.
+
+<!-- 2026-10-12: bounded lighting startup -->
+Initial turf New delegates overlay construction to bounded startup sweeps.
+Dynamic excluded-z/void sites still need the compatibility overlay pass.
+Shared corners activate after both overlay passes; runtime build/clear/activity
+requests wait through startup and return after a failed barrier. Preserve
+ordinary prestartup direct calls. tests/lighting_startup checks production
+bodies, shared identity, late replacement and failed waiters against a baseline;
+its adapted rendering does not establish client lighting acceptance.
+
+<!-- 2026-10-12: lighting reinitialization -->
+Lighting startup must reconcile existing inactive shared corners after adding overlays, as well as activating fresh corners. Native largest-startup fixtures exercise a later overlay pass after standalone corner creation; use bounded overlay-master visits without retaining a corner registry.
+
+<!-- 2026-10-12: native population readiness -->
+Mob processing retains unfinished copied population snapshots across budget returns. A fixed schedule interval does not guarantee newly constructed humans received Life. The full seasonal constructor fixture waits at most 30 real seconds for natural first service while checking actor identity/location/death; its service control excludes one retained actor from both live membership and the pending snapshot. Never invoke Life directly to satisfy scheduler evidence.
+
+<!-- 2026-10-12: animal health and combat dispatch -->
+Simple-animal starting health and maxHealth must match unless an explicit policy
+is documented: Life clamps health and updatehealth recomputes it from maxHealth.
+Do not call parent attackby after an explicit item attack; that repeats damage,
+logs and material wear. tests/animal_combat/run.py checks compiled inherited
+health defaults, native Life, single sharp/blunt attacks and wear across behavior
+branches, noncombat dispatch, healing/death and generated negative controls.

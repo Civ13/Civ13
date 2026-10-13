@@ -26,7 +26,15 @@ var/parent_destroys = 0
 	var/queued_drained = 0
 	var/hard_dels = 0
 	var/list/logging = list()
+	var/list/deletion_profile = list()
 	var/list/hard_references = list()
+/process/garbage/proc/triage_forced_type_buckets()
+	var/count = 0
+	for (var/type_name in deletion_profile)
+		var/list/row = deletion_profile[type_name]
+		if (row["forced_count"])
+			count++
+	return count
 /process/garbage/proc/oldest_queue_seconds()
 	return 7
 /process/callproc
@@ -72,6 +80,8 @@ var/parent_destroys = 0
 	processes.garbage.queued_drained = 50
 	processes.garbage.hard_dels = 11
 	processes.garbage.logging["/test"] = 11
+	processes.garbage.deletion_profile["/forced"] = list("forced_count" = 11)
+	processes.garbage.deletion_profile["/ordinary"] = list("forced_count" = 0)
 	processes.garbage.hard_references += owner
 	processes.callproc.queue += owner
 	processes.callproc.helpers.len = 12
