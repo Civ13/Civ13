@@ -12,7 +12,12 @@
 	saving_work++
 	if(saving_work >= 8192 || world.tick_usage-saving_slice_start >= 20 || world.tick_usage >= 80)
 		saving_work = 0
-		sleep(world.tick_lag)
+		// Service ready callbacks at chunk boundaries, without discarding the
+		// rest of this tick. An exhausted global budget waits for the next tick.
+		if(world.tick_usage >= 80)
+			sleep(world.tick_lag)
+		else
+			sleep(0)
 		saving_slice_start = world.tick_usage
 
 /map_storage/proc/Save_World()

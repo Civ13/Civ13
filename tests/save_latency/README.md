@@ -19,3 +19,9 @@ The 8,192-operation/20% slice candidate also failed large-map acceptance: first 
 
 --trace-units is an optional diagnostic adapter: it times native writes, save hooks, list copies/parameter conversion and reference indexing, and records work intervals of at least 0.2 seconds between cooperative checks by stage. Timing uses decisecond wall clock; a reported interval can include OS scheduling or unrelated machine activity and does not by itself establish causation. Trace adapters add overhead; do not compare their throughput to untraced baselines. --prepare-only generates the fixture/provenance without compiling or launching BYOND.
 Trace wait counters separate explicit saver sleeps and legacy TICK_CHECK/stoplag waits from synchronous work intervals. Earlier traces did not exclude legacy waits from between-check rows; use their individually timed native units for attribution. The large d541 trace completed first save in 1172.3 seconds, heartbeat gap 1.0 second, savefile release 0.4/0.3 seconds and two index resets 0.2 seconds. Its backup was intentionally interrupted at the granted first-save boundary; no backup/load pass or untraced throughput comparison is claimed.
+
+## Experimental duty-cycle comparison
+
+The draft candidate yields sleep(0) at relative20% slice or8192-operation boundaries while absolute tick usage stays below80%, and waits a full tick when80% is exhausted. This increases effective save duty cycle from approximately20% toward80%; it is not an equivalent-budget optimization and is not approved for live installation. Small-fixture correctness and heartbeat observations do not establish full-map latency or production readiness.
+
+--timeout-seconds bounds the normal native daemon runtime (default limits remain unchanged). Interruption testing retains separate synchronization/recovery phase bounds. A timeout terminates the owned subprocess and is an incomplete result, even when both save metrics have been emitted.

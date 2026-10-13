@@ -6,6 +6,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--large', action='store_true')
+    parser.add_argument('--timeout-seconds', type=int, help='Native runtime limit for a bounded offline lease')
     parser.add_argument('--dense', action='store_true')
     parser.add_argument('--prepare-only', action='store_true', help='Generate source without compiling or starting BYOND')
     parser.add_argument('--trace-units', action='store_true', help='Diagnostic native-unit timing; adds overhead')
@@ -15,6 +16,8 @@ def main():
     parser.add_argument('--negative-control', choices=('ownership','yield'))
     parser.add_argument('--baseline', help='Immutable Git commit for the saver and bookkeeping sources')
     args = parser.parse_args()
+    if args.timeout_seconds is not None and not 1 <= args.timeout_seconds <= 3600:
+        parser.error('--timeout-seconds must be between 1 and 3600')
     if args.negative_control == 'yield': args.dense = True
     root = Path(__file__).resolve().parents[2]
     output = Path(tempfile.mkdtemp(prefix='civ13-save-latency-'))
@@ -70,6 +73,7 @@ def main():
             traced = traced.replace('/map_storage/proc/save_work_check()\n', '/map_storage/proc/save_work_check()\n\tlatency_trace_check(saving_z, saving_work)\n')
             # Preserve voluntary waits, exclude them from work intervals, and count them.
             traced = traced.replace('sleep(world.tick_lag)', 'latency_sleep(world.tick_lag)')
+            traced = traced.replace('sleep(0)', 'latency_sleep(0)')
             traced = traced.replace('TICK_CHECK', 'latency_tick_check()')
             boundary = traced.index('/map_storage/proc/Save_World()')
             end = traced.index('/map_storage/proc/BuildVarDirectory', boundary)
@@ -83,8 +87,8 @@ def main():
             if args.negative_control == 'ownership':
                 source = source.replace('saving_owners[ref] = BuildVarDirectory(F, owner, 1, TRUE)', 'saving_owners[ref] = 0')
             else:
-                source = source.replace('sleep(world.tick_lag)', '/* negative control: no yield */')
-                source = source.replace('latency_sleep(world.tick_lag)', '/* negative control: no yield */')
+                source = re.sub(r'(?m)^([ \t]*)(?:latency_)?sleep\((?:world.tick_lag|0)\)$',
+                    r'\1saving_work = 0 // negative control: no yield', source)
             data = source.encode()
         destination = output / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -94,7 +98,7 @@ def main():
     source += '#include "code/predefines.dm"\n#include "tests/world_save/stubs.dm"\n#define fdel(path) delete_file_adapter(path)\n#define fcopy(source, destination) latency_copy(source, destination)\n'
     source += ''.join(f'#include "{path}"\n' for path in files[2:])
     (output / 'probe.dme').write_text(source)
-    (output / 'metadata.json').write_text(json.dumps({'baseline':args.baseline, 'large':args.large, 'dense':args.dense, 'scenario':args.scenario, 'interrupt':args.interrupt, 'benchmark_only':args.benchmark_only, 'negative_control':args.negative_control, 'trace_units':args.trace_units,
+    (output / 'metadata.json').write_text(json.dumps({'baseline':args.baseline, 'large':args.large, 'dense':args.dense, 'scenario':args.scenario, 'interrupt':args.interrupt, 'benchmark_only':args.benchmark_only, 'negative_control':args.negative_control, 'trace_units':args.trace_units, 'timeout_seconds':args.timeout_seconds,
         'head': subprocess.check_output(['git','rev-parse','HEAD'], cwd=root, text=True).strip(), 'sources':hashes}, indent=2))
     (output / 'checkout.patch').write_text(subprocess.check_output(['git','diff','HEAD'],cwd=root,text=True))
     if args.prepare_only: return
@@ -148,7 +152,7 @@ def main():
                 raise RuntimeError('Interrupted save recovery failed: '+phase)
         print('PASS: native interruption rejects incomplete active generation and restores completed backup',flush=True)
         return
-    result=subprocess.run(command,cwd=output,capture_output=True,text=True,timeout=3600 if args.large else 1800,creationflags=flags)
+    result=subprocess.run(command,cwd=output,capture_output=True,text=True,timeout=args.timeout_seconds or (3600 if args.large else 1800),creationflags=flags)
     (output / 'daemon.log').write_text(result.stdout+result.stderr)
     log=(output/'runtime.log').read_text(errors='replace')
     print(log,flush=True)

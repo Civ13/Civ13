@@ -247,6 +247,551 @@
         "One sequential small comparison does not establish a reliable speedup.",
         "Not large-world or production acceptance."
       ]
+    },
+    {
+      "name": "duty20_small_reference",
+      "parameters": {
+        "baseline": "66d59bcddd1c6a75becd262f431e5397afbbfaed",
+        "large": false,
+        "dense": false,
+        "scenario": null,
+        "interrupt": false,
+        "benchmark_only": false,
+        "negative_control": null,
+        "trace_units": false,
+        "head": "66d59bcddd1c6a75becd262f431e5397afbbfaed",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "8a85201e3eb4a842c47591f84921c38a36cda6b07f4f28e9894f2a3da72fd0d2",
+          "code/modules/persistence/saving.dm": "1d9b8f2a46cf6bf802ae0a9cca6d9ac5a53c06d8cdf16a530afa3315fbebb214",
+          "code/modules/persistence/loading.dm": "e4a4ce6cf9c14889b2dba1befb45575a0c2990752b25a42df6a38d6dfebad769",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "metrics": {
+        "first": {
+          "seconds": 7.2,
+          "max_gap_seconds": 0.1,
+          "beats": 76
+        },
+        "backup": {
+          "seconds": 8.2,
+          "max_gap_seconds": 0.1,
+          "beats": 84
+        }
+      },
+      "status": "passed_roundtrip",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-2k924z50",
+      "logs_sha256": {
+        "compile.log": "e02bf3483b404088cbd0fadf4df4674a6b3f1bd254c5f8f8e7a7860edd983ed2",
+        "daemon.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime.log": "46a552048214ad0951d5252e01033cd3cf5802694c922a0db1da326865a951b6"
+      },
+      "checkout_patch_sha256": "7028bad07f08c1f1a774006e22c4e053f99885e1f097f1b1f39cee646281848f",
+      "limitations": [
+        "Experimental20%-toward80%effective duty-cycle increase, not equivalent-budget optimization.",
+        "Small synthetic fixture, no full-map or production latency acceptance.",
+        "Single observations do not establish latency improvement."
+      ]
+    },
+    {
+      "name": "duty80_small_candidate",
+      "parameters": {
+        "baseline": null,
+        "large": false,
+        "dense": false,
+        "scenario": null,
+        "interrupt": false,
+        "benchmark_only": false,
+        "negative_control": null,
+        "trace_units": false,
+        "timeout_seconds": 60,
+        "head": "66d59bcddd1c6a75becd262f431e5397afbbfaed",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "eae43f9c598a2911a8984f2d35b01c612c770d6fcbc557cca7d987f242e9ea7c",
+          "code/modules/persistence/saving.dm": "804b247e3994d07e00127f1a6672639f03c494f1b7ed3839276809c618a93334",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "metrics": {
+        "first": {
+          "seconds": 1.6,
+          "max_gap_seconds": 0.1,
+          "beats": 20
+        },
+        "backup": {
+          "seconds": 1.9,
+          "max_gap_seconds": 0.1,
+          "beats": 21
+        }
+      },
+      "status": "passed_roundtrip",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-uqldqogb",
+      "logs_sha256": {
+        "compile.log": "9a8c9cbe93701193bdb3220224ca05d339a8a9de592471bef4710fb85dddaf66",
+        "daemon.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime.log": "39e842e5335c0a99b866c636a15fe1234e06f99be20aec3d189b22bf0a884777"
+      },
+      "checkout_patch_sha256": "b031a261eb78410ca41f477463f14084a4714220cf17ecc7cb9570c6e8622b9f",
+      "limitations": [
+        "Experimental20%-toward80%effective duty-cycle increase, not equivalent-budget optimization.",
+        "Small synthetic fixture, no full-map or production latency acceptance.",
+        "Single observations do not establish latency improvement."
+      ]
+    },
+    {
+      "name": "duty80_dense_timeout",
+      "parameters": {
+        "baseline": null,
+        "large": false,
+        "dense": true,
+        "scenario": null,
+        "interrupt": false,
+        "benchmark_only": false,
+        "negative_control": null,
+        "trace_units": false,
+        "timeout_seconds": 60,
+        "head": "66d59bcddd1c6a75becd262f431e5397afbbfaed",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "eae43f9c598a2911a8984f2d35b01c612c770d6fcbc557cca7d987f242e9ea7c",
+          "code/modules/persistence/saving.dm": "804b247e3994d07e00127f1a6672639f03c494f1b7ed3839276809c618a93334",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "metrics": {
+        "first": {
+          "seconds": 21.9,
+          "max_gap_seconds": 0.1,
+          "beats": 220
+        },
+        "backup": {
+          "seconds": 21.8,
+          "max_gap_seconds": 0.6,
+          "beats": 205
+        }
+      },
+      "status": "timeout_during_restoration",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-oncm777u",
+      "logs_sha256": {
+        "compile.log": "6cb3a9075a5e63f3ace603fff2d9e0cd1c3d1ab5dd85faab1220067c28819841",
+        "runtime.log": "4b15d1c75a02308cb92951123241994bc588d5a61c11990c3b3b46ed64019a3d"
+      },
+      "checkout_patch_sha256": "b031a261eb78410ca41f477463f14084a4714220cf17ecc7cb9570c6e8622b9f",
+      "limitations": [
+        "Experimental20%-toward80%effective duty-cycle increase, not equivalent-budget optimization.",
+        "Small synthetic fixture, no full-map or production latency acceptance.",
+        "Single observations do not establish latency improvement."
+      ]
+    },
+    {
+      "name": "duty80_dense_candidate",
+      "parameters": {
+        "baseline": null,
+        "large": false,
+        "dense": true,
+        "scenario": null,
+        "interrupt": false,
+        "benchmark_only": false,
+        "negative_control": null,
+        "trace_units": false,
+        "timeout_seconds": 120,
+        "head": "66d59bcddd1c6a75becd262f431e5397afbbfaed",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "eae43f9c598a2911a8984f2d35b01c612c770d6fcbc557cca7d987f242e9ea7c",
+          "code/modules/persistence/saving.dm": "804b247e3994d07e00127f1a6672639f03c494f1b7ed3839276809c618a93334",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "metrics": {
+        "first": {
+          "seconds": 23.9,
+          "max_gap_seconds": 0.2,
+          "beats": 230
+        },
+        "backup": {
+          "seconds": 25.7,
+          "max_gap_seconds": 0.3,
+          "beats": 239
+        }
+      },
+      "status": "passed_roundtrip",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-8_9xbf3y",
+      "logs_sha256": {
+        "compile.log": "bd6b032a98f8380a5f6d1816414f23f521e7f936480c8caba3c0f20bcd0ee382",
+        "daemon.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime.log": "d28b89378bd4bd49926d75c6c16a5daddb48b9bc73c0dc486b354fa87400c277"
+      },
+      "checkout_patch_sha256": "b031a261eb78410ca41f477463f14084a4714220cf17ecc7cb9570c6e8622b9f",
+      "limitations": [
+        "Experimental20%-toward80%effective duty-cycle increase, not equivalent-budget optimization.",
+        "Small synthetic fixture, no full-map or production latency acceptance.",
+        "Single observations do not establish latency improvement."
+      ]
+    },
+    {
+      "name": "duty20_dense_reference",
+      "parameters": {
+        "baseline": "66d59bcddd1c6a75becd262f431e5397afbbfaed",
+        "large": false,
+        "dense": true,
+        "scenario": null,
+        "interrupt": false,
+        "benchmark_only": false,
+        "negative_control": null,
+        "trace_units": false,
+        "timeout_seconds": 180,
+        "head": "66d59bcddd1c6a75becd262f431e5397afbbfaed",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "8a85201e3eb4a842c47591f84921c38a36cda6b07f4f28e9894f2a3da72fd0d2",
+          "code/modules/persistence/saving.dm": "1d9b8f2a46cf6bf802ae0a9cca6d9ac5a53c06d8cdf16a530afa3315fbebb214",
+          "code/modules/persistence/loading.dm": "e4a4ce6cf9c14889b2dba1befb45575a0c2990752b25a42df6a38d6dfebad769",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "metrics": {
+        "first": {
+          "seconds": 74.4,
+          "max_gap_seconds": 0.6,
+          "beats": 737
+        },
+        "backup": {
+          "seconds": 80.3,
+          "max_gap_seconds": 0.1,
+          "beats": 805
+        }
+      },
+      "status": "timeout_during_restoration",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-2_w52mp2",
+      "logs_sha256": {
+        "compile.log": "009284cf7983b9347b0d3ee92618ef08557034ad9ca09815e1ff9a80ea4b8331",
+        "runtime.log": "1800de1406ddf73da1d6b3c0f6032819d19b72a74815670e6c4877596121e3a7"
+      },
+      "checkout_patch_sha256": "b031a261eb78410ca41f477463f14084a4714220cf17ecc7cb9570c6e8622b9f",
+      "limitations": [
+        "Experimental20%-toward80%effective duty-cycle increase, not equivalent-budget optimization.",
+        "Small synthetic fixture, no full-map or production latency acceptance.",
+        "Single observations do not establish latency improvement."
+      ]
+    },
+    {
+      "name": "duty80_movement",
+      "parameters": {
+        "baseline": null,
+        "large": false,
+        "dense": false,
+        "scenario": "movement",
+        "interrupt": false,
+        "benchmark_only": false,
+        "negative_control": null,
+        "trace_units": false,
+        "timeout_seconds": 60,
+        "head": "66d59bcddd1c6a75becd262f431e5397afbbfaed",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "eae43f9c598a2911a8984f2d35b01c612c770d6fcbc557cca7d987f242e9ea7c",
+          "code/modules/persistence/saving.dm": "804b247e3994d07e00127f1a6672639f03c494f1b7ed3839276809c618a93334",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "metrics": {
+        "first": {
+          "seconds": 1.6,
+          "max_gap_seconds": 0.1,
+          "beats": 19
+        }
+      },
+      "status": "passed_movement_roundtrip",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-8vbd7p1w",
+      "logs_sha256": {
+        "compile.log": "7e68212a9fafe576ae85f266a699ddc409f73450496ec98ae84da53bd44b4b09",
+        "daemon.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime.log": "1e3ae140329c67b3e412d86cd10ccd42bb8e9b6d1569ee8c506302070c9b11ea"
+      },
+      "checkout_patch_sha256": "b031a261eb78410ca41f477463f14084a4714220cf17ecc7cb9570c6e8622b9f",
+      "limitations": [
+        "Experimental20%-toward80%effective duty-cycle increase, not equivalent-budget optimization.",
+        "Small synthetic fixture, no full-map or production latency acceptance.",
+        "Single observations do not establish latency improvement."
+      ]
+    },
+    {
+      "name": "duty80_parent_deletion",
+      "parameters": {
+        "baseline": null,
+        "large": false,
+        "dense": false,
+        "scenario": "parent-deletion",
+        "interrupt": false,
+        "benchmark_only": false,
+        "negative_control": null,
+        "trace_units": false,
+        "timeout_seconds": 60,
+        "head": "66d59bcddd1c6a75becd262f431e5397afbbfaed",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "eae43f9c598a2911a8984f2d35b01c612c770d6fcbc557cca7d987f242e9ea7c",
+          "code/modules/persistence/saving.dm": "804b247e3994d07e00127f1a6672639f03c494f1b7ed3839276809c618a93334",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "metrics": {
+        "first": {
+          "seconds": 0.7,
+          "max_gap_seconds": 0.1,
+          "beats": 10
+        }
+      },
+      "status": "passed_parent_deletion_roundtrip",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-celc9ytc",
+      "logs_sha256": {
+        "compile.log": "7e68212a9fafe576ae85f266a699ddc409f73450496ec98ae84da53bd44b4b09",
+        "daemon.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime.log": "9d0eabd15d4d860729f1cd90cb01538c1b73077a91766dde21127e04a120b6c2"
+      },
+      "checkout_patch_sha256": "b031a261eb78410ca41f477463f14084a4714220cf17ecc7cb9570c6e8622b9f",
+      "limitations": [
+        "Experimental20%-toward80%effective duty-cycle increase, not equivalent-budget optimization.",
+        "Small synthetic fixture, no full-map or production latency acceptance.",
+        "Single observations do not establish latency improvement."
+      ]
+    },
+    {
+      "name": "duty80_concurrent",
+      "parameters": {
+        "baseline": null,
+        "large": false,
+        "dense": false,
+        "scenario": "concurrent",
+        "interrupt": false,
+        "benchmark_only": false,
+        "negative_control": null,
+        "trace_units": false,
+        "timeout_seconds": 60,
+        "head": "66d59bcddd1c6a75becd262f431e5397afbbfaed",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "eae43f9c598a2911a8984f2d35b01c612c770d6fcbc557cca7d987f242e9ea7c",
+          "code/modules/persistence/saving.dm": "804b247e3994d07e00127f1a6672639f03c494f1b7ed3839276809c618a93334",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "metrics": {
+        "first": {
+          "seconds": 1.8,
+          "max_gap_seconds": 0.1,
+          "beats": 21
+        },
+        "backup": {
+          "seconds": 1.9,
+          "max_gap_seconds": 0.1,
+          "beats": 21
+        }
+      },
+      "status": "passed_roundtrip",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-fgorh47n",
+      "logs_sha256": {
+        "compile.log": "7e68212a9fafe576ae85f266a699ddc409f73450496ec98ae84da53bd44b4b09",
+        "daemon.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime.log": "eb05f225555f9f20b238d77e100d9a15b27c073192f9313a63767d54a50f55a4"
+      },
+      "checkout_patch_sha256": "b031a261eb78410ca41f477463f14084a4714220cf17ecc7cb9570c6e8622b9f",
+      "limitations": [
+        "Experimental20%-toward80%effective duty-cycle increase, not equivalent-budget optimization.",
+        "Small synthetic fixture, no full-map or production latency acceptance.",
+        "Single observations do not establish latency improvement."
+      ]
+    },
+    {
+      "name": "duty80_interruption",
+      "parameters": {
+        "baseline": null,
+        "large": false,
+        "dense": false,
+        "scenario": null,
+        "interrupt": true,
+        "benchmark_only": false,
+        "negative_control": null,
+        "trace_units": false,
+        "timeout_seconds": 60,
+        "head": "66d59bcddd1c6a75becd262f431e5397afbbfaed",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "eae43f9c598a2911a8984f2d35b01c612c770d6fcbc557cca7d987f242e9ea7c",
+          "code/modules/persistence/saving.dm": "804b247e3994d07e00127f1a6672639f03c494f1b7ed3839276809c618a93334",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "metrics": {},
+      "status": "passed_interruption_recovery",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-s11h99ft",
+      "logs_sha256": {
+        "compile.log": "7e68212a9fafe576ae85f266a699ddc409f73450496ec98ae84da53bd44b4b09",
+        "daemon.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "interrupted-writer.log": "e58798c01a5918c5b0af20eb8074457397bebd1b7dab9be101e3ac58c5f87ee3",
+        "recovery-active.log": "cf777aced8f3cd2ccdda75067e5c0390bd1c763693eb160e71d42865092bdfbb",
+        "recovery-backup.log": "d7fced4f5e177099eadc580bca6edac6f93867f80691283f6f98140bc642f7b1",
+        "runtime.log": "d7fced4f5e177099eadc580bca6edac6f93867f80691283f6f98140bc642f7b1"
+      },
+      "checkout_patch_sha256": "b031a261eb78410ca41f477463f14084a4714220cf17ecc7cb9570c6e8622b9f",
+      "limitations": [
+        "Experimental20%-toward80%effective duty-cycle increase, not equivalent-budget optimization.",
+        "Small synthetic fixture, no full-map or production latency acceptance.",
+        "Single observations do not establish latency improvement."
+      ]
+    },
+    {
+      "name": "duty80_ownership_control",
+      "parameters": {
+        "baseline": null,
+        "large": false,
+        "dense": false,
+        "scenario": null,
+        "interrupt": false,
+        "benchmark_only": false,
+        "negative_control": "ownership",
+        "trace_units": false,
+        "timeout_seconds": 60,
+        "head": "66d59bcddd1c6a75becd262f431e5397afbbfaed",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "eae43f9c598a2911a8984f2d35b01c612c770d6fcbc557cca7d987f242e9ea7c",
+          "code/modules/persistence/saving.dm": "4bbb360a08b40eaeca7682689b09cfe693a78327f78ba896fc1ca7dd63a53b22",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "metrics": {
+        "first": {
+          "seconds": 2.1,
+          "max_gap_seconds": 0.2,
+          "beats": 21
+        },
+        "backup": {
+          "seconds": 1.9,
+          "max_gap_seconds": 0.1,
+          "beats": 21
+        }
+      },
+      "status": "passed_negative_control",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-qa8gfa9h",
+      "logs_sha256": {
+        "compile.log": "7e68212a9fafe576ae85f266a699ddc409f73450496ec98ae84da53bd44b4b09",
+        "daemon.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime.log": "9706f6714cb8b40cf80e88de287db7ae53a893fe49c1f749845d94b8b99b54d6"
+      },
+      "checkout_patch_sha256": "b031a261eb78410ca41f477463f14084a4714220cf17ecc7cb9570c6e8622b9f",
+      "limitations": [
+        "Experimental20%-toward80%effective duty-cycle increase, not equivalent-budget optimization.",
+        "Small synthetic fixture, no full-map or production latency acceptance.",
+        "Single observations do not establish latency improvement."
+      ]
+    },
+    {
+      "name": "duty80_yield_control",
+      "parameters": {
+        "baseline": null,
+        "large": false,
+        "dense": true,
+        "scenario": null,
+        "interrupt": false,
+        "benchmark_only": false,
+        "negative_control": "yield",
+        "trace_units": false,
+        "timeout_seconds": 60,
+        "head": "66d59bcddd1c6a75becd262f431e5397afbbfaed",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "eae43f9c598a2911a8984f2d35b01c612c770d6fcbc557cca7d987f242e9ea7c",
+          "code/modules/persistence/saving.dm": "39a0c30aae1e4be9d63070376ee0475c04bf21f4a894aa1a5d1a2ba8b7bca895",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "metrics": {},
+      "status": "passed_negative_control",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-m9v23p0y",
+      "logs_sha256": {
+        "compile.log": "292c368b47c09bbc661b935f4dcfd34634a843faa088ee56d6f4c46ee9c34d58",
+        "daemon.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime.log": "dc38f4b3d8663db336edba6ceb312c5aca7ae26c3c2221d88d8b3b04096539b6"
+      },
+      "checkout_patch_sha256": "b031a261eb78410ca41f477463f14084a4714220cf17ecc7cb9570c6e8622b9f",
+      "limitations": [
+        "Experimental20%-toward80%effective duty-cycle increase, not equivalent-budget optimization.",
+        "Small synthetic fixture, no full-map or production latency acceptance.",
+        "Single observations do not establish latency improvement."
+      ]
+    },
+    {
+      "name": "duty80_trace",
+      "parameters": {
+        "baseline": null,
+        "large": false,
+        "dense": false,
+        "scenario": null,
+        "interrupt": false,
+        "benchmark_only": false,
+        "negative_control": null,
+        "trace_units": true,
+        "timeout_seconds": 60,
+        "head": "66d59bcddd1c6a75becd262f431e5397afbbfaed",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "tests/save_latency/trace.dm": "c9217366257e50ae516bb96c90be4290507607f86b87d795631bd87f189ef4c5",
+          "code/modules/persistence/functions.dm": "dfd245b2249c5807aa737d39eba7902bad53d5b082179249f9a21e875ddb6a41",
+          "code/modules/persistence/saving.dm": "d3c1bfd31a5786b6c03eec154a1e7f0369445aff7d92e6621c039b3b5fa31781",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "metrics": {
+        "first": {
+          "seconds": 1.8,
+          "max_gap_seconds": 0.1,
+          "beats": 22
+        },
+        "backup": {
+          "seconds": 2.0,
+          "max_gap_seconds": 0.1,
+          "beats": 22
+        }
+      },
+      "status": "passed_roundtrip",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-1eqdadqd",
+      "logs_sha256": {
+        "compile.log": "292c368b47c09bbc661b935f4dcfd34634a843faa088ee56d6f4c46ee9c34d58",
+        "daemon.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime.log": "6fd6fc796e925b9228fcd164fa5fba81853e6b8289f3c46aa182b6d668579f9a"
+      },
+      "checkout_patch_sha256": "b031a261eb78410ca41f477463f14084a4714220cf17ecc7cb9570c6e8622b9f",
+      "limitations": [
+        "Experimental20%-toward80%effective duty-cycle increase, not equivalent-budget optimization.",
+        "Small synthetic fixture, no full-map or production latency acceptance.",
+        "Single observations do not establish latency improvement."
+      ]
     }
   ]
 }
