@@ -126,6 +126,7 @@
 	proc/close_round()
 		if (hub_vote) hub_vote.cancel()
 		round_closing = TRUE
+		if (surface_service && !surface_service.close_round_batch()) return FALSE
 		if (!round_notice)
 			round_notice = TRUE
 			world << "The district has closed. Unsaved raid equipment is forfeited; insured reusable equipment is being reconciled."
