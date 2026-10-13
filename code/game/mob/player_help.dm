@@ -23,6 +23,7 @@ var/global/datum/player_help_service/player_help_service = new
 	var/heartbeat_confirmed = FALSE
 	var/heartbeat_time = -1000
 	var/serial = 0
+	var/request_timeout_seconds = 60
 
 /datum/player_help_service/proc/read_json(path, limit)
 	var/raw = file2text(path)
@@ -37,6 +38,8 @@ var/global/datum/player_help_service/player_help_service = new
 	var/list/health = read_json("[root]health.json", 256)
 	if (!islist(health) || health["enabled"] != TRUE || !istext(health["sequence"]))
 		return FALSE
+	if (isnum(health["request_timeout_seconds"]))
+		request_timeout_seconds = max(60, min(600, health["request_timeout_seconds"]))
 	if (sequence != health["sequence"])
 		if (sequence)
 			heartbeat_confirmed = TRUE
@@ -85,7 +88,7 @@ var/global/datum/player_help_service/player_help_service = new
 		clear_slot(slot)
 		C << "AI gameplay help could not send your question. Please try again later."
 		return FALSE
-	pending["[slot]"] = list("id" = id, "client" = C, "deadline" = world.time + 600)
+	pending["[slot]"] = list("id" = id, "client" = C, "deadline" = world.time + request_timeout_seconds * 10)
 	C.player_help_cooldown = world.time + 300
 	C << "Asking the AI gameplay helper. Answers can be mistaken; check the Crafting Atlas and player wiki."
 	return TRUE

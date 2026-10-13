@@ -6,8 +6,8 @@ service and should not contain personal information. Answers can be wrong. The
 Crafting Atlas and player wiki remain available without an AI service.
 
 Without configuration, a running bridge, or a fresh heartbeat, players see an
-unavailable/configuration notice. An unanswered request times out after 60
-running-server seconds and releases its slot. Failed or empty model answers
+unavailable/configuration notice. An unanswered request times out after a bounded 60..600
+running-server seconds (including the queue budget) and releases its slot. Failed or empty model answers
 show an explicit notice rather than a blank window. Wait until the bridge has
 published two heartbeats (normally a few seconds) before trying the first question.
 
@@ -24,9 +24,12 @@ private directory permissions. Do not share a spool across Nomads and TDM.
 2. Copy `config/player-help.example.json` to an **untracked private file**, for
    example `data/player-help-config.json`. Set `enabled` to `true`, your remote
    `ollama_url`, and the installed `model`. Use either an origin such as
-   `https://ollama.example.net` or its `/api/chat` URL. The service follows the
+   `https://ollama.example.net` its `/v1` base URL, or its `/api/chat` URL. A `/v1` base is normalized to
+   the same host's native `/api/chat` endpoint so context size and thinking controls
+   are honored; OpenAI-compatible proxy-only servers are not supported. The service follows the
    [Ollama chat API](https://docs.ollama.com/api/chat), with streaming disabled.
-3. Set `timeout_seconds` to 1..45 and `workers` to 1..2. The game permits eight
+3. Set `num_ctx` to 1024..32768 and `think` to `true` or `false`.
+   Set `timeout_seconds` to 1..120 and `workers` to 1..2. The game permits eight
    outstanding questions, one per client, and a 30-second per-client cooldown.
    Questions are limited to 500 characters; answers to 4,000. Slow remote
    inference can fill these slots, in which case players receive a busy notice.
@@ -69,7 +72,7 @@ ExecStart=/usr/bin/python3 /srv/civ13/scripts/player_help_bridge.py --game-root 
 EnvironmentFile=-/etc/civ13-player-help.env
 Restart=on-failure
 RestartSec=5
-TimeoutStopSec=50
+TimeoutStopSec=130
 UMask=0077
 [Install]
 WantedBy=multi-user.target

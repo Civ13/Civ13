@@ -56,7 +56,7 @@ class BridgeTests(unittest.TestCase):
         self.assertIn('lost blood', calls[0][1]['messages'][0]['content'])
         self.assertFalse(calls[0][1]['stream'])
         self.assertNotIn('tools', calls[0][1])
-        self.assertEqual(set(calls[0][1]), {'model', 'stream', 'messages', 'options'})
+        self.assertEqual(set(calls[0][1]), {'model', 'stream', 'messages', 'options', 'think'})
         self.assertEqual(len(calls), 1)
         for _ in range(4):
             instance.tick()
@@ -69,6 +69,22 @@ class BridgeTests(unittest.TestCase):
         self.request()
         result = self.finish(instance)
         self.assertEqual(result, {'id': '1-2-3', 'status': 'unavailable'})
+
+    def test_remote_settings_reach_native_api(self):
+        path = self.root / 'config.json'
+        path.write_text(json.dumps({'enabled': True, 'ollama_url': 'http://192.168.0.188:11434/v1', 'model': 'gemma4-agent-32k', 'num_ctx': 32768, 'timeout_seconds': 120, 'think': False, 'workers': 2}))
+        self.config = bridge.load_config(path)
+        calls = []
+        instance = self.make(lambda *args: calls.append(args) or {'message': {'content': 'Known answer'}})
+        self.request()
+        self.assertEqual(self.finish(instance)['status'], 'ok')
+        endpoint, payload, headers, timeout = calls[0]
+        self.assertEqual(endpoint, 'http://192.168.0.188:11434/api/chat')
+        self.assertEqual(payload['options']['num_ctx'], 32768)
+        self.assertIs(payload['think'], False)
+        self.assertEqual(timeout, 120)
+        health = bridge.bounded_json(self.root / 'health.json', 256)
+        self.assertGreater(health['request_timeout_seconds'], timeout)
 
     def test_bounded_output(self):
         instance = self.make(lambda *args: {'message': {'content': 'x' * 9000}})
