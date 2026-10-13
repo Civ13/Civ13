@@ -59,6 +59,8 @@ def main():
             traced = traced.replace('entry_path(', 'latency_entry_path(src, ')
             traced = traced.replace('\t\tsavefile = null',
                 '\t\tvar/latency_close_start = latency_trace_time()\n\t\tsavefile = null\n\t\tlatency_trace_end(latency_close_start, "savefile_release")')
+            traced = traced.replace('/map_storage/proc/Save_World()\n',
+                '/map_storage/proc/Save_World()\n\tlatency_stage = "backup"\n\tlatency_last_check = latency_trace_time()\n')
             traced = traced.replace('A.before_save()', 'latency_before_save(A)')
             traced = traced.replace('A.get_saved_vars()', 'latency_saved_vars(A)')
             traced = traced.replace('container.contents.Copy()', 'latency_list_copy(container.contents)')
