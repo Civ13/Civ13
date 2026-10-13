@@ -179,15 +179,21 @@ deadline/floor check. The child is the same interpreter under `-I -B`, with a
 minimal `runpy` stdin gate. It does not import or parse the oracle before the
 gate. The Job permits one process, has a hard 256 MiB aggregate commit cap and
 kill-on-close; unexpected descendants and unknown live PID measurements fail.
-The 60-second deadline includes setup; teardown adds bounded root/Job waits of
-up to ten seconds each. Synchronous Windows calls themselves have no independent
-timeout. The parent watcher is outside the child Job.
+The 60-second clock starts after source read/hash, output existence checks and
+DLL/API initialization. It includes subsequent directory/Job setup and child
+execution; teardown adds bounded root/Job waits of up to ten seconds each.
+Earlier initialization is outside both the deadline and elapsed receipt.
+Synchronous Windows API, filesystem, log and receipt operations have no
+independent timeout. The parent watcher is outside the child Job.
 
 The wrapper closes process and Job handles, preserves logs/receipt, and deletes
 only its successfully created `owned-temporary` directory after confirmed
 cleanup. Cleanup uncertainty retains that directory and produces a nonzero
-result. Prestart refusal before directory creation prints a receipt without
-creating storage. Child environment changes do not change the parent environment.
+result. A physical-floor refusal inside the guarded try, before directory
+creation, prints a receipt without creating storage. Earlier source read/hash
+errors, oracle mismatch, existing output or DLL/API initialization failures occur
+before receipt handling and emit no JSON receipt. Child environment changes do
+not change the parent environment.
 The commit label is supplied by the caller, not independently verified by the
 wrapper; the lease owner must independently check clean exact HEAD, wrapper and
 interpreter hashes. Hash binding/copying is not host-writer exclusion.
