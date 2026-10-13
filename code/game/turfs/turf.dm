@@ -10,6 +10,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 /turf
 	// Temporary reservation while coupled vehicle parts are being transformed.
 	var/tmp/obj/structure/vehicleparts/axis/vehicle_transforming = null
+	var/tmp/turf_registration_done = FALSE
 	name = "turf"
 	icon = 'icons/turf/floors.dmi'
 	level = TRUE
@@ -268,9 +269,15 @@ var/const/enterloopsanity = 100
 	if (ticker && ticker.current_state == GAME_STATE_PLAYING)
 		new_turfs |= src
 	// Preserve distinct registration without scanning the entire map per tile.
+#ifdef OPENDREAM
+	if (!turf_registration_done)
+		turf_registration_done = TRUE
+		turfs += src
+#else
 	if (!turf_registry_members[src])
 		turf_registry_members[src] = TRUE
 		turfs += src
+#endif
 
 	levelupdate()
 	calculate_window_coeff()

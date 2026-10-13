@@ -23,6 +23,7 @@ var/global/datum/ticker
 /datum/var/current_state = 0
 /turf/proc/levelupdate()
 /turf/proc/calculate_window_coeff()
+/turf/var/tmp/turf_registration_done = FALSE
 /turf/New()
 ''' + body + '''
 /turf/alternate
