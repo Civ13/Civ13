@@ -88,6 +88,5 @@ GLOBAL_VAR_INIT(total_runtimes_skipped, 0)
 	if(GLOB.error_cache)
 		GLOB.error_cache.log_error(e, desclines, e_src = e_src)
 		
-#endif
-
 #undef ERROR_USEFUL_LEN
+#endif

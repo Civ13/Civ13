@@ -257,6 +257,12 @@ zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 - `scripts/test-season-memory.ps1 -ByondBin <BYOND-bin-directory>` executes production turf lifecycle bodies in an isolated world, with accelerated recovery waits and temporary output. It checks repeated replacement, bounded grass registration, one recovery chain per dirt turf, and planted-soil behavior. Synthetic process memory is not full-game memory evidence.
 <!-- 2026-10-11: evidence harness review -->
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
+<!-- 2026-10-13: unsupported OpenDream shell work -->
+OpenDream TTS returns before scheduling shell-backed audio jobs; native TTS
+remains available. Python control uses mutually exclusive engine branches.
+tests/opendream_shell runs both production branches with counted external-effect
+adapters and omission controls, without launching OpenDream or real scripts.
+
 ## Local MCP tooling
 
 <!-- 2026-10-12: NPC cover decision parity -->
@@ -450,9 +456,12 @@ retained entries are distinct from OS private memory. `run-game.ps1 -ExerciseCap
 checks real forward/reverse/stop behavior. Its optional bounded `-Visual` mode
 requires the coordinator's exclusive screen turn; see tests/conveyor/README.md.
 <!-- 2026-10-11: shipped Discord changelog -->
-The standalone publisher in tools/changelog requires reviewed manifests and live
-confirmation or a trusted successful production deployment event. A merge/CI pass
-is not shipment. Preserve the discord-changelog-receipts branch; pending receipts
+The standalone publisher in tools/changelog supports an explicit `Changelog: text`
+line in a PR opening description on merge into master. Missing or blank means no
+post. Use player-facing bullets only, without headings or deployment/update-status
+wording. The older manifest route still requires live confirmation or a trusted
+successful production deployment event. A merge/CI pass is not shipment.
+Preserve the discord-changelog-receipts branch; pending receipts
 block uncertain replay. See tools/changelog/README.md before activation.
 
 <!-- 2026-10-11: hosted API reference -->
@@ -488,6 +497,12 @@ Nomads Europe foraged seeds use biome filtering like its climate-restricted grow
 Cleanable expiry uses code/processes/decal_decay.dm (256 candidates/second), not per-decal sleeping timers or direct Destroy. Preserve existing decay_timer lifetimes; decay_deadline/index are explicitly excluded from native save export/import. tests/decal_decay/run.py compares actual native lifecycle with --baseline historical cleanable source, without normal game startup. Baseline early-qdel retention and missing expiry GC bookkeeping are isolated evidence, not full-game OOM proof.
 
 <!-- 2026-10-11: abandoned debris season clocks -->
+<!-- 2026-10-13: queued season source verification -->
+The abandoned-item source scanner checks both direct `seasons()` overrides and
+the base queued `season_apply()` worker. Run `tests/abandoned_items/run.py
+--check-season-wiring` for a source-only check; missing-hook controls are in
+`tests/abandoned_items/test_season_wiring.py`. This does not launch BYOND.
+
 Abandoned rubbish/spent casings use 2/4 actual season changes on cycling maps,
 or 6/12 running-server hours on static maps. Season routines record scalar
 transitions; startup climate assignments do not. Fixed wet-season labels use

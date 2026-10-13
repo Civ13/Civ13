@@ -26,34 +26,66 @@ def process_memory(pid):
         return {'rss_bytes': resident * os.sysconf('SC_PAGE_SIZE')}
     except (FileNotFoundError, ProcessLookupError): return None
 
-def main():
-    p = argparse.ArgumentParser()
-    p.add_argument('--byond-bin', type=Path, required=True)
-    p.add_argument('--negative-control', nargs='?', const='decay', choices=('decay', 'storage', 'save', 'seasons'))
-    a = p.parse_args()
-    root = Path(__file__).resolve().parents[2]
-    # Assert every production transition is wired, without starting map systems.
+def check_transition_hooks(name, source):
+    assert 'advance_decay = season_decay_requested(force, advance_decay)' in source, name
+    if name != '_map_metadata':
+        assert 'abandonment_season_autonomous = TRUE' in source, name
+    elif '/season_apply(' in source:
+        assert 'season_apply(force, advance_decay, epoch)' in source, name
+        assert 'season_transition_complete(epoch)' in source, name
+    inside = False
+    lines = source.splitlines()
+    transitions = 0
+    for i, line in enumerate(lines):
+        if line.startswith('/'):
+            # Base transitions run in the queued worker; custom cycles still
+            # implement seasons directly. Do not count unrelated assignments.
+            inside = '/seasons(' in line or '/season_apply(' in line
+        if inside and line.lstrip().startswith('season = '):
+            assert i + 1 < len(lines) and lines[i+1].strip() == 'record_abandonment_season_change(advance_decay)', (name, i+1)
+            transitions += 1
+    assert transitions >= 2, name
+    return transitions
+
+
+def check_asia_forwarding(source):
+    if '/obj/map_metadata/nomads/asia/seasons(' in source:
+        assert '..(looping, force, advance_decay)' in source
+    else:
+        # Asia now inherits the queued clock and extends its completion hook.
+        assert '/obj/map_metadata/nomads/asia/season_transition_complete(var/epoch)' in source
+        assert '..(epoch)' in source
+        assert 'season_worker_valid(epoch)' in source
+
+
+def check_season_wiring(root):
+    """Check production clock hooks without a compiler, daemon or map startup."""
     metadata = root / 'code/game/objects/map_metadata'
     for name in ('_map_metadata', 'nomads/nomads_mountain', 'nomads/nomads_ice_age', 'colonia', 'pepelsibirsk'):
         source = (metadata / (name + '.dm')).read_text()
-        assert 'advance_decay = season_decay_requested(force, advance_decay)' in source, name
-        if name != '_map_metadata':
-            assert 'abandonment_season_autonomous = TRUE' in source, name
-        inside = False
-        lines = source.splitlines()
-        transitions = 0
-        for i, line in enumerate(lines):
-            if line.startswith('/'):
-                inside = '/seasons(' in line
-            if inside and line.lstrip().startswith('season = '):
-                assert lines[i+1].strip() == 'record_abandonment_season_change(advance_decay)', (name, i+1)
-                transitions += 1
-        assert transitions >= 2, name
+        check_transition_hooks(name, source)
     asia = (metadata / 'nomads/nomads_asia.dm').read_text()
-    assert '..(looping, force, advance_decay)' in asia
+    check_asia_forwarding(asia)
     admin = (root / 'code/modules/admin/verbs/weather.dm').read_text()
     assert 'map.seasons(FALSE, TRUE, advance_decay)' in admin
     assert '"Keep decay age", "Advance decay age", "Cancel"' in admin
+
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument('--byond-bin', type=Path)
+    p.add_argument('--check-season-wiring', action='store_true', help='Check source hooks only; do not start BYOND')
+    p.add_argument('--negative-control', nargs='?', const='decay', choices=('decay', 'storage', 'save', 'seasons'))
+    a = p.parse_args()
+    if a.check_season_wiring and a.negative_control:
+        p.error('Runtime negative controls cannot be combined with source-only checks')
+    if not a.check_season_wiring and a.byond_bin is None:
+        p.error('--byond-bin is required for the runtime fixture')
+    root = Path(__file__).resolve().parents[2]
+    check_season_wiring(root)
+    if a.check_season_wiring:
+        print('PASS: production season transition hooks')
+        return
     out = Path(tempfile.mkdtemp(prefix='civ13-decay-'))
     stem = '.abandoned_items_probe'
     generated = [root / (stem + s) for s in ('.dme', '_world.dm', '_decay.dm', '.dmb', '.rsc')]
