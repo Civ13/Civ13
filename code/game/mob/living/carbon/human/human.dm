@@ -1040,6 +1040,7 @@ var/list/coefflist = list()
 		return ..()
 
 /mob/living/human/put_in_l_hand(var/obj/item/W)
+	if (W?.extraction_surface_source && (!W.extraction_surface_source.service || !W.extraction_surface_source.service.movement_allowed(W, src))) return FALSE
 	if (!..() || l_hand)
 		return FALSE
 	W.forceMove(src)
@@ -1051,6 +1052,7 @@ var/list/coefflist = list()
 	return TRUE
 
 /mob/living/human/put_in_r_hand(var/obj/item/W)
+	if (W?.extraction_surface_source && (!W.extraction_surface_source.service || !W.extraction_surface_source.service.movement_allowed(W, src))) return FALSE
 	if (!..() || r_hand)
 		return FALSE
 	W.forceMove(src)

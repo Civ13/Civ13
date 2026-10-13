@@ -60,3 +60,58 @@
 	qdel(D)
 	qdel(F)
 	qdel(B)
+	extraction_surface_custody_probe(M, H)
+
+/proc/extraction_surface_custody_probe(obj/map_metadata/extraction_survival/M, mob/living/human/H)
+	var/datum/extraction_surface_service/V = new(M, "data/surface_custody_fixture/")
+	V.enabled = TRUE
+	var/obj/effect/extraction_surface_source/S = new(get_turf(H))
+	S.source_id = 1
+	S.pool_id = "parking_fuel"
+	equipment_assert(V.register_source(S) && V.prepare_source(S) && V.materialize_source(S), "surface custody fixture materializes real fuel graph")
+	var/obj/item/I = S.live_root
+	var/id = I.extraction_item_id
+	var/turf/original = get_turf(I)
+	equipment_assert(!I.forceMove(H) && I.loc == original, "surface alternate forced pickup cannot bypass journal")
+	equipment_assert(!I.Move(get_step(original, EAST), EAST) && I.loc == original, "surface walking drag cannot bypass custody")
+	equipment_assert(!H.put_in_inactive_hand(I) && I.loc == original, "surface alternate hand insertion rejects unacknowledged root")
+	var/obj/item/extraction_salvage/container = new(null)
+	equipment_assert(!I.forceMove(container) && I.loc == original && !container.contents.len, "surface nesting cannot bypass claim")
+	qdel(container)
+	var/before = json_encode(M.codec.encode(I))
+	I.attack_self(H)
+	equipment_assert(json_encode(M.codec.encode(I)) == before, "surface fuel self interaction cannot alter unclaimed graph")
+	// Explicit loader input uses the actual decoded graph and refuses duplicates.
+	var/datum/extraction_surface_service/restart = new(M, "data/surface_custody_fixture/")
+	var/obj/effect/extraction_surface_source/R = new(original)
+	R.source_id = 1
+	R.pool_id = "parking_fuel"
+	I.extraction_surface_source = null
+	equipment_assert(restart.register_source(R) && restart.discover_world_roots(list(I)) && restart.reconcile_source(R) && R.live_root == I, "surface saved-root discovery rebinds actual matching identity")
+	var/datum/extraction_surface_service/conflict = new(M, "data/surface_conflict_fixture/")
+	equipment_assert(conflict.discover_world_roots(list(I)) && !conflict.discover_account_entries(list(S.profile["surface_entry"])) && conflict.discovery_locked, "surface world-account identity duplication quarantines discovery")
+	var/datum/extraction_surface_service/duplicates = new(M, "data/surface_duplicate_fixture/")
+	equipment_assert(!duplicates.discover_world_roots(list(I, I)) && duplicates.discovery_locked, "surface duplicate loaded roots lock discovery")
+	var/datum/extraction_surface_service/malformed = new(M, "data/surface_malformed_fixture/")
+	equipment_assert(!malformed.discover_world_roots(list("invalid")) && malformed.discovery_locked, "surface malformed world discovery locks rather than skips input")
+	var/datum/extraction_surface_service/wrong_entry = new(M, "data/surface_wrong_entry_fixture/")
+	var/list/invalid_entry = json_decode(json_encode(S.profile["surface_entry"]))
+	invalid_entry["id"] = "wrong-root"
+	equipment_assert(!wrong_entry.discover_account_entries(list(invalid_entry)) && wrong_entry.discovery_locked, "surface account discovery rejects mismatched root identity")
+	restart.enabled = TRUE
+	var/old_closing = M.round_closing
+	var/old_over = M.game_over
+	M.round_closing = TRUE
+	equipment_assert(restart.forfeit_source(R) && R.profile["surface_state"] == "forfeited" && (!I || !I.loc) && !R.live_root, "surface round forfeit retires actual root before acknowledgement")
+	var/list/sessions = M.accounts.sessions
+	M.accounts.sessions = list()
+	M.game_over = TRUE
+	var/epoch = restart.epoch_profile["raid_sequence"]
+	equipment_assert(!restart.advance_epoch(epoch + 1), "surface stale epoch advance rejects refill")
+	equipment_assert(restart.advance_epoch(epoch) && restart.prepare_source(R), "surface completed closed round permits terminal next-epoch plan")
+	equipment_assert(R.profile["surface_entry"]["id"] != id && R.profile["surface_retired_entry"]["id"] == id, "surface next epoch preserves retired identity and mints distinct planned root")
+	M.accounts.sessions = sessions
+	M.round_closing = old_closing
+	M.game_over = old_over
+	qdel(S)
+	qdel(R)

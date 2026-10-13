@@ -23,7 +23,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--compile-only', action='store_true', help='Compile the isolated fixture without launching DreamDaemon')
-    parser.add_argument('--surface-negative-control', choices=('epoch', 'claim', 'duplicate'))
+    parser.add_argument('--surface-negative-control', choices=('epoch', 'claim', 'duplicate', 'movement', 'discovery', 'forfeit'))
     parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'npc', 'city', 'insurance', 'groups', 'vehicles'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry', 'disruptive_creation', 'disruptive_pending', 'disruptive_result'))
@@ -136,6 +136,9 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 'epoch': ('\t\tepoch_profile = store.load_profile("epoch")', '\t\tepoch_profile = store.load_profile("epoch")\n\t\tif (epoch_profile && epoch_profile["revision"]) epoch_profile["raid_sequence"]++'),
                 'claim': ('\t\tP["surface_state"] = "claiming"', '\t\tP["surface_state"] = "issued"'),
                 'duplicate': ('\t\tif (other)\n', '\t\tif (FALSE)\n'),
+                'movement': ('else if (!V || !V.movement_allowed(src, destination)) return FALSE', 'else if (FALSE) return FALSE'),
+                'discovery': ('if (discovered_ids[id] || account_ids[id])', 'if (account_ids[id])'),
+                'forfeit': ('\t\t\tqdel(I)\n\t\t\tif (I && I.loc)', '\t\t\t// Negative control: omit root retirement\n\t\t\tif (I && I.loc)'),
             }[surface_control]
             if surface.count(marker) != 1:
                 raise RuntimeError('Surface mutation marker changed')
@@ -374,6 +377,9 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                         'epoch': 'surface restart preserves epoch without refill',
                         'claim': 'surface claim intent survives failed acknowledgement',
                         'duplicate': 'surface duplicate IDs quarantine both sources',
+                        'movement': 'surface alternate forced pickup cannot bypass journal',
+                        'discovery': 'surface duplicate loaded roots lock discovery',
+                        'forfeit': 'surface round forfeit retires actual root before acknowledgement',
                     }[surface_control]
                     if ran.returncode or not result.startswith('FAIL:') or not intended_assertion_only(log, expected):
                         print(log)

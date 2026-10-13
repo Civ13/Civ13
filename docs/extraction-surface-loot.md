@@ -89,26 +89,42 @@ Ordinary item `attack_hand` delegates linked roots to the source claim. The
 service writes actor/identity/epoch intent, moves that actual root through native
 hand placement, verifies observed custody and acknowledges. Failed acknowledgement
 locks the actor and source and returns the actual root to its source when possible.
-Base item `attackby` rejects linked roots. Subtype overrides, dragging, direct
-movement, destruction and consumption are not comprehensively guarded yet.
-Runtime links are excluded from native variable persistence.
+Base item `attackby`, forced movement, walking movement and native human hand
+insertion reject unacknowledged roots. Exact gasoline-container interaction
+handlers prevent consumption through their subtype overrides. Disposal records
+an unresolved intent and quarantines the source; a cleanup callback does not
+prove engine deletion. Runtime item, marker and metadata links are excluded from
+native variable persistence.
 
-Restart reconciliation uses only explicitly registered references. Missing issued
-roots or pending operations quarantine without replay. It does not discover saved
-world/account roots or establish active-raid recovery. Explicit epoch advance
-requires a completed closed round with no sessions and only claimed manifest
-sources; old source records remain fenced rather than automatically refilled.
-Forfeited/unclaimed-root reconciliation and next-epoch reset remain unfinished.
+Explicit discovery inputs accept at most 16 roots or account entries per batch
+and retain at most 2048 identities. Malformed graphs, mismatched account root IDs
+and duplicate world/account identities lock discovery. Reconciliation can bind
+an actual loaded root only when its identity, graph and source position match;
+missing roots and pending operations quarantine without regeneration. These
+inputs are not yet connected to authoritative world/account loaders, and do not
+prove completeness or active-raid recovery. Direct `loc` assignments can bypass
+movement hooks and require an audit before enablement.
+
+Round-close processing visits at most 16 manifest sources per call. Forfeiture
+writes intent, removes the actual unclaimed root from world custody, then
+acknowledges terminal state. A null location proves retirement into the legacy
+deletion queue, not that garbage collection has finished. Explicit epoch advance
+requires a completed closed round, no sessions and only terminal claimed or
+forfeited sources. Preparing a new epoch retains the previous retired entry and
+plans a distinct identity. Historical snapshot reconciliation remains incomplete.
 These limitations prohibit enabling the service on an actual map.
 
 `tests/extraction/surface_probe.dm` exercises the production journal and codec
 for disabled issuance, durable finite identity, restart epoch preservation,
 missing-root quarantine, busy pickup, interrupted claim acknowledgement,
-duplicate IDs, food/cash rejection and shared-node exhaustion. These assertions
+duplicate IDs, food/cash rejection and shared-node exhaustion. Additional vectors
+cover alternate movement/hand/nesting rejection, fuel interaction, explicit
+loaded-root binding, malformed and duplicate discovery, forfeiture and terminal
+next-epoch reset. These assertions
 are authored but UNRUN under the native hold. `run.py --probe mode --compile-only`
 compiles the isolated fixture and returns before DreamDaemon; the offline boundary
 tests verify both mode and store compile-only paths cannot launch the runtime.
-Generated `--surface-negative-control epoch|claim|duplicate` variants remove
+Generated `--surface-negative-control epoch|claim|duplicate|movement|discovery|forfeit` variants remove
 one production guard and must fail at their exact fixture assertion. They are
 authored and UNRUN; compile-only does not establish control detection.
 

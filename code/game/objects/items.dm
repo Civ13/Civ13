@@ -97,6 +97,7 @@
 		M.r_hand.update_held_icon()
 
 /obj/item/Destroy()
+	if (extraction_surface_source?.service) extraction_surface_source.service.observe_disposal(src)
 	unregister_abandoned_item()
 	actions = list()
 	if (ismob(loc))
