@@ -218,7 +218,10 @@
 			return FALSE
 	clear_bookkeeping()
 	saved_turfs = list()
-	if (surface_inventory && !surface_inventory.finish_world_inventory()) return FALSE
+	if (surface_inventory)
+		while (!surface_inventory.world_inventory_complete)
+			if (!surface_inventory.finish_world_inventory()) return FALSE
+			TICK_CHECK
 	log_startup_progress("Finished loading.")
 	return TRUE
 

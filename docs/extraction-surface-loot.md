@@ -206,10 +206,52 @@ inactive indices do not own equipment. Auxiliary completion requires both the
 second journal pass and this page/index reconciliation under the account lease.
 
 These feeds do not establish total ownership or provide an activation procedure.
-A current-world inventory for a fresh unsaved round remains missing. Existing
-world/account duplicates are quarantined conservatively; canonical saved-world
-versus account-home replica ownership still needs a durable owner/location
-contract. Runtime movement and external writers remain outside the read lease.
+A current-world inventory for a fresh unsaved round remains missing. Runtime
+movement and external writers remain outside the account read lease.
+
+`home_replica.dm` provides an explicit, disabled-service maintenance binding for
+floor roots in an unoccupied private room. It reads the actual committed account,
+requires every supplied root to match its stash graph without assigning new IDs,
+and commits map/room/coordinates, the next account revision, graph digests and
+exact floor placements. The marker retains the same owner, revision and binding
+digest for a subsequent native world save. The account commit and world save are
+separate: interrupted or older world copies fail agreement rather than repairing
+or silently reassigning a room. The host must hold exclusive maintenance ownership.
+
+The account census must precede loaded-root reconciliation. Only an identical
+floor root with a matching actual saved marker and complete account read lease
+can join that account's identity set. Wrong owner, revision, graph, room, placement,
+overlapping room footprints and a second physical copy reject. Nested identities
+must all belong to the same approved graph. Bodies, secure crates, benches and
+vehicles have no canonical placement contract in this first candidate.
+
+Admission rejects a profile with a durable replica binding before decoding any
+equipment, including when no surface service is installed. No retirement/unbinding
+or admission handoff is implemented; accepting one world/account representation
+does not authorize materializing another. Ordinary profiles have no binding.
+
+Room selection separately rejects every full or partial persisted marker binding.
+Only no session, null owner/digest and numeric revision zero permit admission or
+maintenance binding. Empty owner/digest strings, missing/non-numeric revisions and
+nonzero revisions reserve the room. This prevents an unrelated unbound account
+from taking a replica owner's room even while its runtime session is absent.
+The marker's parent-calling persistence allowlist explicitly includes `room` and
+all three durable binding fields, preserves inherited effect fields and excludes
+the runtime `session` on both variable enumeration and runtime-field filtering.
+
+Loaded feeds also snapshot the map object, dimensions, map ID and world tick.
+Sessions or an advanced tick invalidate the barrier. Final checks process at most
+16 indexed roots per call and compare their actual graphs and location identities,
+including marker agreement for approved home replicas. This deliberately cannot
+accept a loader that yields into a later tick. It is a conservative disabled
+candidate, not proof of exclusive runtime-world ownership or production loading.
+
+The separate `current_world_complete` gate stays false. BYOND's built-in DMM
+construction has no complete pre-map opt-in ledger in this checkout; restored
+`all_loaded` lists omit unsaved/unrestored constructors. A supplied list cannot
+prove completeness. Fresh census remains unsupported until a bounded constructor
+ledger is established before map construction, with lifecycle/overflow/generation
+coverage. No broad world traversal or global constructor hook was added.
 
 Forfeited graph identities enter a durable epoch retirement index before advancing
 the epoch. The index retains at most 2048 IDs with no eviction; exhaustion blocks
@@ -241,3 +283,17 @@ Generated `--surface-negative-control escrow|mail_binding|auxiliary_pending`
 variants omit the escrow digest comparison, active mail graph/index comparison,
 or shared-journal terminal-phase check. They must fail only their named assertions.
 They are authored and native UNRUN while the quiet window remains active.
+
+The native queue also includes identical approved replicas, wrong owner/revision/
+graph/placement, second-copy refusal, stale load barriers and refusal of incomplete
+fresh-world coverage. Generated controls `home_owner|home_graph|home_placement|
+home_revision|world_stale|fresh_incomplete` omit each named guard in a temporary
+source copy. These fixtures and omission detection remain native UNRUN.
+
+The corrective queue adds an actual second unbound account admitted to a different
+room, denial of entry into the bound owner's room, preservation of that owner's
+real stash, refusal of bound-owner decode, partial marker fields and a production
+disk-backed entry save/load for marker room/binding/inherited fields with no restored
+session. `home_admission` restores session-only selection; `marker_save` omits the
+durable marker allowlist. Both must fail their exact named assertions and remain
+native UNRUN during the quiet window.

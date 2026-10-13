@@ -442,7 +442,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		return FALSE
 	var/obj/effect/extraction_house_marker/house
 	for (var/obj/effect/extraction_house_marker/marker in extraction_house_markers)
-		if (!marker.session)
+		if (marker.admission_available())
 			house = marker
 			break
 	if (!house)
@@ -451,6 +451,11 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	var/datum/extraction_session/S = accounts.open(identity(H))
 	if (!S)
 		to_chat(H, "Account unavailable: [accounts.last_error]")
+		return FALSE
+	// A durable replica binding blocks decode even when no surface service is
+	// installed. Clearing it requires an explicit future retirement contract.
+	if (!isnull(S.profile["home_replica"]))
+		S.close()
 		return FALSE
 	S.body = H
 	S.house = house

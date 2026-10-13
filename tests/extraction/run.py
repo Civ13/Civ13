@@ -23,7 +23,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--compile-only', action='store_true', help='Compile the isolated fixture without launching DreamDaemon')
-    parser.add_argument('--surface-negative-control', choices=('epoch', 'claim', 'duplicate', 'movement', 'discovery', 'forfeit', 'inventory', 'retirement', 'identity', 'escrow', 'mail_binding', 'auxiliary_pending'))
+    parser.add_argument('--surface-negative-control', choices=('epoch', 'claim', 'duplicate', 'movement', 'discovery', 'forfeit', 'inventory', 'retirement', 'identity', 'escrow', 'mail_binding', 'auxiliary_pending', 'home_owner', 'home_graph', 'home_placement', 'home_revision', 'world_stale', 'fresh_incomplete', 'home_admission', 'marker_save'))
     parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'npc', 'city', 'insurance', 'groups', 'vehicles'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry', 'disruptive_creation', 'disruptive_pending', 'disruptive_result'))
@@ -131,7 +131,10 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         if surface_control:
-            surface_path = 'code/modules/1713/extraction/' + ('surface_inventory.dm' if surface_control in ('mail_binding', 'auxiliary_pending') else 'surface_loot.dm')
+            surface_file = ('mode.dm' if surface_control == 'home_admission' else
+                            'home_replica.dm' if surface_control.startswith('home_') or surface_control == 'marker_save' else
+                            'surface_inventory.dm' if surface_control in ('mail_binding', 'auxiliary_pending') else 'surface_loot.dm')
+            surface_path = 'code/modules/1713/extraction/' + surface_file
             surface = (root / surface_path).read_text(encoding='utf-8')
             marker, replacement = {
                 'epoch': ('\t\tepoch_profile = store.load_profile("epoch")', '\t\tepoch_profile = store.load_profile("epoch")\n\t\tif (epoch_profile && epoch_profile["revision"]) epoch_profile["raid_sequence"]++'),
@@ -140,11 +143,19 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 'movement': ('else if (!V || !V.movement_allowed(src, destination)) return FALSE', 'else if (FALSE) return FALSE'),
                 'inventory': ('world_inventory_levels.len != world_inventory_expected', 'FALSE'),
                 'retirement': ('E["surface_retired_ids"] = retired', 'E["surface_retired_ids"] = list()'),
-                'identity': ('var/list/graph = metadata.codec.encode(I, FALSE)', 'var/list/graph = metadata.codec.encode(I)'),
+                'identity': ('var/list/graph = metadata.codec.encode(I, FALSE)\n\t\t\tvar/list/ids = graph_ids(graph, 2048)', 'var/list/graph = metadata.codec.encode(I)\n\t\t\tvar/list/ids = graph_ids(graph, 2048)'),
                 'escrow': ('extraction_sha256(json_encode(entry["equipment"])) != digests[item_id]', 'FALSE'),
                 'mail_binding': ('json_encode(mail_expected_nodes[id]) != json_encode(mail_active_nodes[id])', 'isnull(id)'),
                 'auxiliary_pending': ('P["phase"] != "committed"', 'FALSE'),
-                'discovery': ('if (discovered_ids[id] || account_ids[id])', 'if (account_ids[id])'),
+                'home_owner': ('H.replica_owner != record["owner"]', 'FALSE'),
+                'home_graph': ('extraction_sha256(json_encode(graph)) != R["digest"]', 'FALSE'),
+                'home_placement': ('json_encode(replica_placement(I, H)) != json_encode(R["placement"])', 'FALSE'),
+                'home_revision': ('H.replica_revision != B["revision"]', 'FALSE'),
+                'world_stale': ('world_inventory_stamp == world.time', 'TRUE'),
+                'fresh_incomplete': ('!current_world_complete || ', ''),
+                'home_admission': ('marker.admission_available()', '!marker.session'),
+                'marker_save': ('\t\t. |= list("room", "replica_owner", "replica_revision", "replica_digest")', '\t\t// Negative control: omit durable marker fields'),
+                'discovery': ('if (discovered_ids[id] || (account_ids[id] && !approved_replica))', 'if (account_ids[id] && !approved_replica)'),
                 'forfeit': ('\t\t\tqdel(I)\n\t\t\tif (I && I.loc)', '\t\t\t// Negative control: omit root retirement\n\t\t\tif (I && I.loc)'),
             }[surface_control]
             if surface.count(marker) != 1:
@@ -391,6 +402,14 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                         'escrow': 'market wrong escrow digest rejected',
                         'mail_binding': 'auxiliary mismatched active mail identity fails closed',
                         'auxiliary_pending': 'pending shared projection blocks auxiliary census without repair',
+                        'home_owner': 'private-home replica wrong owner rejected',
+                        'home_graph': 'private-home replica changed graph rejected',
+                        'home_placement': 'private-home replica wrong placement rejected',
+                        'home_revision': 'private-home replica stale revision rejected',
+                        'world_stale': 'stale world load barrier cannot seal census',
+                        'fresh_incomplete': 'saved replica feed cannot authorize incomplete fresh-world census',
+                        'home_admission': 'unbound second owner cannot enter replica-bound room or access its actual stash',
+                        'marker_save': 'native marker entry round trip preserves room binding and parent fields while excluding session',
                         'discovery': 'surface duplicate loaded roots lock discovery',
                         'forfeit': 'surface round forfeit retires actual root before acknowledgement',
                     }[surface_control]
