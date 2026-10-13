@@ -48,6 +48,7 @@
 	var/account_inventory_cursor = 1
 	var/account_inventory_complete = FALSE
 	var/account_inventory_verify_cursor = 1
+	var/datum/extraction_account_read_lease/account_inventory_lease
 	var/auxiliary_inventory_complete = FALSE
 	var/locked = FALSE
 	var/tmp/test_fail_materialize_ack = FALSE
@@ -113,10 +114,20 @@
 		return owners
 	proc/begin_account_inventory()
 		if (enabled || discovery_locked || account_inventory_names || metadata.accounts.sessions.len || account_ids.len || !ensure_epoch()) return discovery_fail()
+		account_inventory_lease = metadata.accounts.store.acquire_read_lease()
+		if (!account_inventory_lease) return discovery_fail()
 		account_inventory_names = account_directories()
 		if (!islist(account_inventory_names)) return discovery_fail()
 		account_inventory_cursor = 1
 		return TRUE
+	proc/account_inventory_lease_valid()
+		return metadata.accounts.store.read_lease_valid(account_inventory_lease)
+	// Abandoning releases the writer fence but never authorizes this census.
+	proc/abandon_account_inventory()
+		if (enabled || !account_inventory_lease) return FALSE
+		discovery_locked = TRUE
+		account_inventory_complete = FALSE
+		return account_inventory_lease.store.release_read_lease(account_inventory_lease)
 	proc/account_profile_ids(list/P)
 		var/datum/extraction_account_store/A = metadata.accounts.store
 		if (!P || !A.valid_profile(P, P["owner"]) || !P["revision"] || P["state"] != "home" || P["pending_delivery"] || P["pending_item"] || P["loot_state"] == "pending" || P["unlock_state"] == "pending" || (islist(P["garage_purchase"]) && P["garage_purchase"]["status"] == "pending")) return null
@@ -132,7 +143,7 @@
 			if (!islist(entry) || !graph_ids(entry["equipment"], 2048) || entry["id"] != entry["equipment"]["nodes"][1]["id"]) return null
 		return A.recovery_ids(P)
 	proc/account_inventory_recheck_batch()
-		if (enabled || discovery_locked || !islist(account_inventory_names) || account_inventory_cursor <= account_inventory_names.len || metadata.accounts.sessions.len) return discovery_fail()
+		if (enabled || discovery_locked || !islist(account_inventory_names) || !account_inventory_lease_valid() || account_inventory_cursor <= account_inventory_names.len || metadata.accounts.sessions.len) return discovery_fail()
 		var/list/current = account_directories()
 		if (!islist(current) || current.len != account_inventory_names.len) return discovery_fail()
 		for (var/owner in current)
@@ -151,9 +162,9 @@
 		return account_inventory_verify_cursor
 	proc/inventory_incomplete()
 		// Shared mail/NPC/settlement/market ownership has no complete feed yet.
-		return (world_inventory_started || islist(account_inventory_names)) && (!world_inventory_complete || !account_inventory_complete || !auxiliary_inventory_complete)
+		return (world_inventory_started || islist(account_inventory_names)) && (!world_inventory_complete || !account_inventory_complete || !account_inventory_lease_valid() || !auxiliary_inventory_complete)
 	proc/account_inventory_batch()
-		if (enabled || discovery_locked || !islist(account_inventory_names) || account_inventory_complete || metadata.accounts.sessions.len) return discovery_fail()
+		if (enabled || discovery_locked || !islist(account_inventory_names) || !account_inventory_lease_valid() || account_inventory_complete || metadata.accounts.sessions.len) return discovery_fail()
 		if (account_inventory_cursor > account_inventory_names.len) return account_inventory_cursor
 		var/last = min(account_inventory_names.len, account_inventory_cursor + 15)
 		for (var/index in account_inventory_cursor to last)

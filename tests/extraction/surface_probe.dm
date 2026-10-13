@@ -176,12 +176,15 @@
 	equipment_assert(accounts.commit_profile("inventoryowner", P), "surface inventory fixture persists ordinary offline account")
 	var/datum/extraction_surface_service/scan = new(M, "data/surface_scan/")
 	equipment_assert(scan.begin_account_inventory() && scan.account_inventory_batch() && scan.account_inventory_recheck_batch() && scan.account_inventory_complete, "surface bounded account pass rechecks stable committed profiles")
+	equipment_assert(scan.abandon_account_inventory() && scan.inventory_incomplete(), "abandoning completed census releases writes without authorizing loot")
 	var/datum/extraction_surface_service/changed = new(M, "data/surface_changed/")
 	equipment_assert(changed.begin_account_inventory() && changed.account_inventory_batch(), "surface revision fixture completes initial pass")
 	P = accounts.load_profile("inventoryowner")
 	P["credits"] = 1
-	equipment_assert(accounts.commit_profile("inventoryowner", P), "surface revision fixture changes actual disk profile")
-	equipment_assert(!changed.account_inventory_recheck_batch() && changed.discovery_locked, "surface profile change before seal locks inventory")
+	equipment_assert(!accounts.commit_profile("inventoryowner", P), "surface account census blocks actual profile writes")
+	equipment_assert(accounts.release_read_lease(changed.account_inventory_lease), "fixture explicitly revokes census lease")
+	equipment_assert(accounts.commit_profile("inventoryowner", P), "surface revoked lease permits ordinary disk write")
+	equipment_assert(!changed.account_inventory_recheck_batch() && changed.discovery_locked, "surface revoked lease cannot seal inventory")
 	accounts.test_fail_at = "snapshot"
 	P = accounts.load_profile("inventoryowner")
 	P["credits"] = 2
@@ -189,5 +192,6 @@
 	accounts.test_fail_at = null
 	var/datum/extraction_surface_service/pending = new(M, "data/surface_pending/")
 	equipment_assert(pending.begin_account_inventory() && !pending.account_inventory_batch() && pending.discovery_locked, "surface newest pending account blocks inventory without rollback")
+	equipment_assert(pending.abandon_account_inventory(), "failed pending census releases only on explicit abandonment")
 	M.accounts.store = original_store
 	M.accounts.sessions = original_sessions

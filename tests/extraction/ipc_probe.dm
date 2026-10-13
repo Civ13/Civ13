@@ -9,9 +9,43 @@
 	text2file("FAIL: runtime [error]", "result.txt")
 	shutdown()
 
+/proc/ipc_receipt_assertions()
+	var/digest = extraction_sha256("fixture")
+	var/list/original = list("protocol" = "civ13.safehouse.v1", "request_id" = "original", "discord_id" = "123", "action" = "stash.inspect", "request_digest" = digest, "status" = "committed", "reason" = "saved_snapshot", "data" = list())
+	var/list/outer = original.Copy()
+	outer["action"] = "trade.status"
+	outer["data"] = list("operation_status" = "committed", "operation_receipt" = original)
+	ipc_assert(extraction_ipc_receipt(outer, "original", "123", digest), "status accepts a different supported original action")
+	for (var/action in list("link.challenge", "link.complete", "stash.inspect", "stash.detail", "room.inspect", "room.quote", "room.manage", "insurance.inspect", "trade.quote", "trade.confirm", "trade.status", "market.browse", "market.list", "market.buy", "market.cancel"))
+		var/list/result = original.Copy()
+		result["action"] = action
+		if (action == "trade.status") result["data"] = list("operation_status" = "not_found", "operation_receipt" = null)
+		ipc_assert(extraction_ipc_receipt(result, "original", "123", digest), "all supported actions have valid terminal receipts")
+	for (var/field in original)
+		var/list/result = original.Copy()
+		result.Remove(field)
+		ipc_assert(!extraction_ipc_receipt(result, "original", "123", digest), "every receipt field is required")
+	for (var/field in list("protocol", "request_id", "discord_id", "action", "request_digest", "status", "reason", "data"))
+		var/list/result = original.Copy()
+		result[field] = 42
+		ipc_assert(!extraction_ipc_receipt(result, "original", "123", digest), "receipt [field] rejects wrong scalar types")
+	var/unicode_reason = ""
+	for (var/index in 1 to 64) unicode_reason += ascii2text(233)
+	ipc_assert(length(unicode_reason) == 128 && extraction_ipc_reason(unicode_reason) && !extraction_ipc_reason("[unicode_reason]a"), "reason bound uses UTF-8 bytes")
+	ipc_assert(!extraction_ipc_reason("") && !extraction_ipc_reason("bad[ascii2text(127)]") && !extraction_ipc_reason("bad[ascii2text(159)]") && !extraction_ipc_reason("bad[ascii2text(10)]"), "empty and C0/C1 reasons rejected")
+	for (var/status in list("pending", "not_found"))
+		outer["data"] = list("operation_status" = status, "operation_receipt" = original)
+		ipc_assert(!extraction_ipc_receipt(outer, "original", "123", digest), "nonterminal status refuses attached receipt")
+		outer["data"] = list("operation_status" = status, "operation_receipt" = null)
+		ipc_assert(extraction_ipc_receipt(outer, "original", "123", digest), "nonterminal status has null receipt")
+	outer["data"] = list("operation_status" = "rejected", "operation_receipt" = original)
+	ipc_assert(!extraction_ipc_receipt(outer, "original", "123", digest), "nested terminal status must agree")
+	ipc_assert(!extraction_ipc_receipt(original, "different", "123", digest) && !extraction_ipc_receipt(original, "original", "456", digest) && !extraction_ipc_receipt(original, "original", "123", extraction_sha256("different")), "receipt identity is bound to original request")
+
 /world/New()
 	world.OpenPort("none")
 	try
+		ipc_receipt_assertions()
 		var/datum/extraction_account_store/accounts = new
 		var/datum/extraction_ipc_service/service = new(accounts)
 		service.key = "0123456789abcdef0123456789abcdef"

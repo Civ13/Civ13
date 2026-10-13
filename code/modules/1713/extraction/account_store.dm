@@ -3,6 +3,57 @@
 #define EXTRACTION_PROFILE_LIMIT 2097152
 #define EXTRACTION_CAR_PRICE 25
 
+// In-process read leases cover every store instance and child journal path.
+// They do not establish an OS lock against another server or external writer.
+var/global/list/extraction_account_read_leases = list()
+
+/proc/extraction_store_path(path)
+	if (!istext(path) || !length(path) || length(path) > 512) return null
+	var/canonical = lowertext(replacetext(path, "\\", "/"))
+	if (copytext(canonical, 1, 2) == "/" || findtext(canonical, "//")) return null
+	var/alphabet = "abcdefghijklmnopqrstuvwxyz0123456789_-/"
+	for (var/index in 1 to length(canonical))
+		if (!findtextEx(alphabet, copytext(canonical, index, index + 1))) return null
+	return canonical
+
+/datum/extraction_account_read_lease
+	var/datum/extraction_account_store/store
+	var/root
+	var/active = TRUE
+
+/datum/extraction_account_store/proc/acquire_read_lease()
+	var/canonical = extraction_store_path(root)
+	if (busy || !canonical || copytext(canonical, length(canonical)) != "/" || extraction_account_read_leases.len >= 8) return fail("Account inventory lease unavailable")
+	for (var/datum/extraction_account_read_lease/existing in extraction_account_read_leases)
+		if (findtext(canonical, existing.root) == 1 || findtext(existing.root, canonical) == 1) return fail("Account inventory already leased")
+	var/datum/extraction_account_read_lease/lease = new
+	lease.store = src
+	lease.root = canonical
+	extraction_account_read_leases += lease
+	return lease
+
+/datum/extraction_account_store/proc/read_lease_valid(datum/extraction_account_read_lease/lease)
+	return lease && lease.active && lease.store == src && lease.root == extraction_store_path(root) && (lease in extraction_account_read_leases)
+
+/datum/extraction_account_store/proc/release_read_lease(datum/extraction_account_read_lease/lease)
+	if (!lease || lease.store != src || !lease.active || !(lease in extraction_account_read_leases)) return FALSE
+	lease.active = FALSE
+	extraction_account_read_leases -= lease
+	return TRUE
+
+/datum/extraction_account_store/proc/inventory_write_blocked(path)
+	if (!extraction_account_read_leases.len) return FALSE
+	// Phase filenames include a dot. Canonicalize the directory, not suffix.
+	var/last_slash = 0
+	var/normalized = replacetext(path, "\\", "/")
+	for (var/index in 1 to length(normalized))
+		if (copytext(normalized, index, index + 1) == "/") last_slash = index
+	var/directory = extraction_store_path(copytext(normalized, 1, last_slash + 1))
+	if (!directory) return TRUE
+	for (var/datum/extraction_account_read_lease/lease in extraction_account_read_leases)
+		if (findtext(directory, lease.root) == 1) return TRUE
+	return FALSE
+
 /datum/extraction_account_store
 	var/root = "data/extraction_accounts/"
 	var/last_error
@@ -112,6 +163,7 @@
 // Native DM has no portable atomic rename. Each flushed, verified phase is
 // copied into an inactive slot; its intent is the durable recovery barrier.
 /datum/extraction_account_store/proc/write_phase(path, payload)
+	if (inventory_write_blocked(path)) return fail("Account inventory holds a read lease")
 	var/temp = "[path].pending"
 	if (fexists(temp) && !fdel(temp)) return FALSE
 	text2file(payload, temp)

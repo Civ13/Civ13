@@ -170,9 +170,19 @@ profile mailbox entries, and registers all their nested and vehicle identities.
 Uncommitted newest journal slots, raid profiles and pending deliveries/purchases
 block the feed without rollback or repair. Revision digests and owner-directory
 membership are checked in a second bounded pass. Empty directories without a
-committed account are rejected. The caller must hold exclusive startup/maintenance
-ownership throughout both passes; these routines do not establish a write lease
-against another account-store instance or process.
+committed account are rejected. The feed acquires a bounded in-process read lease
+before listing owners and retains it across both passes. All account-store
+instances refuse phase writes beneath that root, including direct shared-journal
+projections. Root aliases and overlapping root leases are rejected; changing the
+store root or revoking its token invalidates the census. Failed inventories retain
+the fence until explicit disabled-service abandonment, which releases writes but
+locks that census. There is no expiry or automatic failure unlock.
+
+This is not an OS or cross-process lock. The caller must still establish exclusive
+startup/maintenance ownership against external writers. The lease covers the
+account-store phase writer; arbitrary external/direct filesystem writes and
+runtime world movement are not covered. No host installation or activation path
+has been granted by this source change.
 
 The profile pass does not seal total ownership. Sharded insurance mail, NPC,
 shared settlement, market ownership and cross-account projections remain missing
@@ -190,7 +200,8 @@ unbounded history ledger or permission to restore historical snapshots.
 
 Authored native vectors cover missing-level refusal, successful world-only
 completion, refusal of missing auxiliary completion, stable offline-account
-inventory, disk revision changes, pending account commits and a retired snapshot
+inventory, competing store/child-journal writes, revoked leases, pending account
+commits and a retired snapshot
 loaded after restart. They are UNRUN until native testing is released. Compile-only
 success does not establish successful world restoration, multi-account inventory,
 garage/mail conservation, runtime performance or OpenDream acceptance.

@@ -49,7 +49,7 @@
 			var/list/receipt = receipts[id]
 			if (!islist(receipt) || !islist(receipt["response"]) || !extraction_ipc_identifier(receipt["request_digest"], FALSE, 64) || length(receipt["request_digest"]) != 64 || !extraction_ipc_identifier(receipt["discord_id"], TRUE, 22) || extraction_sha256(receipt["request_id"]) != id) return FALSE
 			var/list/result = receipt["response"]
-			if (result["protocol"] != "civ13.safehouse.v1" || result["request_id"] != receipt["request_id"] || result["discord_id"] != receipt["discord_id"] || result["request_digest"] != receipt["request_digest"] || !(result["status"] in list("committed", "rejected")) || !islist(result["data"])) return FALSE
+			if (!extraction_ipc_receipt(result, receipt["request_id"], receipt["discord_id"], receipt["request_digest"])) return FALSE
 		return TRUE
 	proc/commit(list/candidate)
 		if (!ready() || !valid_state(candidate)) return FALSE
@@ -128,6 +128,9 @@
 					if (islist(operation)) original = list("discord_id" = actor, "request_digest" = payload["operation_request_digest"], "response" = operation)
 				if (islist(original) && original["discord_id"] == actor && original["request_digest"] == payload["operation_request_digest"])
 					var/list/operation = original["response"]
+					if (operation?["status"] == "pending")
+						if (operation.len != 3 || !extraction_ipc_reason(operation["reason"]) || !islist(operation["data"])) return response(request, "pending", "journal_recovery_required")
+					else if (!extraction_ipc_receipt(operation, payload["operation_request_id"], actor, payload["operation_request_digest"])) return response(request, "pending", "journal_recovery_required")
 					result = response(request, "committed", "operation_status", list("operation_status" = operation["status"], "operation_receipt" = operation["status"] == "pending" ? null : operation))
 				else result = response(request, "committed", "operation_not_found", list("operation_status" = "not_found", "operation_receipt" = null))
 			else if (action in list("stash.inspect", "stash.detail", "room.inspect"))
@@ -171,4 +174,4 @@
 		var/owner = profile["links"][request["discord_id"]]
 		if (!owner || !economic_adapter) return null
 		var/list/result = call(economic_adapter, "receipt")(src, owner, request["request_id"], request["request_digest"])
-		return islist(result) && result["status"] == "committed" ? result : null
+		return extraction_ipc_receipt(result, request["request_id"], request["discord_id"], request["request_digest"]) && result["status"] == "committed" ? result : null

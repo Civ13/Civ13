@@ -6,6 +6,37 @@
 		if (!findtextEx(alphabet, copytext(value, i, i + 1))) return FALSE
 	return TRUE
 
+/proc/extraction_ipc_action(action)
+	return action in list("link.challenge", "link.complete", "stash.inspect", "stash.detail", "room.inspect", "room.quote", "room.manage", "insurance.inspect", "trade.quote", "trade.confirm", "trade.status", "market.browse", "market.list", "market.buy", "market.cancel")
+
+// length() and copytext() use byte positions. Round-trip each codepoint to
+// reject malformed/noncanonical UTF-8 without changing the ASCII crypto wire.
+/proc/extraction_ipc_reason(reason)
+	if (!istext(reason) || !length(reason) || length(reason) > 128) return FALSE
+	var/position = 1
+	while (position <= length(reason))
+		var/codepoint = text2ascii(reason, position)
+		if (codepoint < 32 || (codepoint >= 127 && codepoint <= 159) || codepoint > 1114111 || (codepoint >= 55296 && codepoint <= 57343)) return FALSE
+		var/character = ascii2text(codepoint)
+		if (!length(character) || copytext(reason, position, position + length(character)) != character) return FALSE
+		position += length(character)
+	return TRUE
+
+/proc/extraction_ipc_receipt(list/result, request_id, discord_id, request_digest, depth = 0)
+	if (!islist(result) || result.len != 8 || depth > 64) return FALSE
+	for (var/field in list("protocol", "request_id", "discord_id", "action", "request_digest", "status", "reason", "data"))
+		if (!(field in result)) return FALSE
+	if (result["protocol"] != "civ13.safehouse.v1" || !extraction_ipc_identifier(result["request_id"]) || result["request_id"] != request_id || !extraction_ipc_identifier(result["discord_id"], TRUE, 22) || result["discord_id"] != discord_id || !extraction_ipc_identifier(result["request_digest"], FALSE, 64) || length(result["request_digest"]) != 64 || result["request_digest"] != request_digest || !extraction_ipc_action(result["action"]) || !(result["status"] in list("committed", "rejected")) || !extraction_ipc_reason(result["reason"]) || !islist(result["data"])) return FALSE
+	if (result["action"] == "trade.status" && result["status"] == "committed")
+		var/list/data = result["data"]
+		if (!("operation_status" in data) || !("operation_receipt" in data)) return FALSE
+		var/status = data["operation_status"]
+		if (status in list("pending", "not_found")) return isnull(data["operation_receipt"])
+		var/list/original = data["operation_receipt"]
+		if (!(status in list("committed", "rejected")) || !islist(original) || original["status"] != status) return FALSE
+		return extraction_ipc_receipt(original, original["request_id"], discord_id, original["request_digest"], depth + 1)
+	return TRUE
+
 /proc/extraction_ipc_request(list/bytes)
 	if (!islist(bytes) || !length(bytes) || length(bytes) > 8192) return null
 	var/text = ""
@@ -23,7 +54,7 @@
 		if (request[i] != fields[i]) return null
 	if (request["protocol"] != "civ13.safehouse.v1" || !extraction_ipc_identifier(request["request_id"]) || !extraction_ipc_identifier(request["discord_id"], TRUE, 22)) return null
 	var/action = request["action"]
-	if (!(action in list("link.challenge", "link.complete", "stash.inspect", "stash.detail", "room.inspect", "room.quote", "room.manage", "insurance.inspect", "trade.quote", "trade.confirm", "trade.status", "market.browse", "market.list", "market.buy", "market.cancel"))) return null
+	if (!extraction_ipc_action(action)) return null
 	var/revision = request["expected_account_revision"]
 	if (!isnull(revision) && (!isnum(revision) || revision < 0 || revision > 1000000 || round(revision) != revision)) return null
 	if (isnull(revision) && (action in list("trade.quote", "trade.confirm", "market.list", "market.buy", "market.cancel", "room.quote", "room.manage"))) return null

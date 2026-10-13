@@ -92,3 +92,17 @@ instant remains valid; later times reject. IPC expiry uses its existing canonica
 clock representation, not the status DTO's BYOND-decisecond string.
 These are source contracts; native TTL/one-use/crash/replay acceptance is UNRUN.
 Unknown capabilities and unaccepted economy operations remain disabled.
+
+Native stored terminal receipts require all eight response fields, a supported
+original action, matching request ID/digest/Discord actor, terminal status and
+list/object data. Reasons are nonempty canonical UTF-8, at most 128 bytes,
+without C0/C1 controls. Existing ASCII snake_case reason codes remain valid.
+`trade.status` does not require the nested original action to equal its outer
+action: all 15 supported actions can have receipts. Terminal operation status
+must match the nested receipt status; pending/not_found must carry null receipt.
+Recursive status envelopes are bounded to 64 levels. The adapter's three-field
+pending recovery result is never exposed as a terminal receipt.
+
+These new validator assertions are authored but native execution is held until
+the quiet window is released. `tests/extraction/run_ipc.py --compile-only`
+builds the isolated IPC fixture and exits before daemon launch or fixture export.

@@ -16,11 +16,13 @@ def main():
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--proof-negative-control', action='store_true')
     parser.add_argument('--publication-negative-control', action='store_true')
+    parser.add_argument('--receipt-negative-control', choices=('action', 'reason'), help='Omit one production receipt check in generated source only')
     parser.add_argument('--output', type=Path, help='New directory for synthetic compatibility fixture files')
+    parser.add_argument('--compile-only', action='store_true', help='Compile the isolated fixture without launching a daemon')
     args = parser.parse_args()
-    if args.proof_negative_control and args.publication_negative_control:
+    if sum(bool(value) for value in (args.proof_negative_control, args.publication_negative_control, args.receipt_negative_control)) > 1:
         parser.error('Choose one negative control')
-    if args.output and (args.proof_negative_control or args.publication_negative_control or args.output.exists()):
+    if args.output and (args.proof_negative_control or args.publication_negative_control or args.receipt_negative_control or args.compile_only or args.output.exists()):
         parser.error('Output requires a new directory and the unmutated fixture')
     root = Path(__file__).resolve().parents[2]
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
@@ -44,6 +46,13 @@ def main():
             if source.count(marker) != 1:
                 raise RuntimeError('Durable reply comparison mutation marker changed')
             (target / 'ipc_spool.dm').write_text(source.replace(marker, ''))
+        if args.receipt_negative_control:
+            source = (target / 'ipc_request.dm').read_text()
+            marker = {'action': ' || !extraction_ipc_action(result["action"])',
+                      'reason': ' || !extraction_ipc_reason(result["reason"])'}[args.receipt_negative_control]
+            if source.count(marker) != 1:
+                raise RuntimeError('Receipt validation mutation marker changed')
+            (target / 'ipc_request.dm').write_text(source.replace(marker, ''))
         shutil.copy2(root / 'tests/extraction/ipc_probe.dm', target / 'probe.dm')
         # This historical linking fixture deliberately contains opaque legacy
         # equipment. Production graph projection is covered by the full-source
@@ -55,6 +64,9 @@ def main():
         print(built.stdout + built.stderr)
         if built.returncode or '516.1681' not in built.stdout or '0 errors, 0 warnings' not in built.stdout:
             raise RuntimeError('Pinned compiler failed')
+        if args.compile_only:
+            print('PASS: compile-only boundary; native assertions NOT RUN')
+            return
 
         def run(phase):
             (target / 'result.txt').unlink(missing_ok=True)
@@ -64,6 +76,13 @@ def main():
             result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
             log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''
             print(result)
+            if args.receipt_negative_control and phase == 'issue':
+                expected = f'FAIL: receipt {args.receipt_negative_control} rejects wrong scalar types'
+                if ran.returncode or result != expected or any(word in log.lower() for word in ('runtime error', 'bad ref', '## error')):
+                    print(log)
+                    raise RuntimeError('Receipt omission did not fail at the intended assertion')
+                print('PASS: receipt omission caught by the intended assertion')
+                return False
             if args.proof_negative_control and phase == 'process':
                 if ran.returncode or not result.startswith('FAIL: request wrong-proof expected invalid_challenge, got '):
                     print(log)
@@ -81,7 +100,8 @@ def main():
                 raise RuntimeError(f'Native service {phase} failed')
             return True
 
-        run('issue')
+        if not run('issue'):
+            return
         challenge = json.loads((target / 'challenge.json').read_text())
         cases = []
 
