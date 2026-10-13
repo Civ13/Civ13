@@ -76,7 +76,7 @@ var/global/datum/vehicle_key_service/vehicle_key_service = new
 			return null
 		return K
 
-/obj/structure/engine/internal
+/obj/structure/engine
 	var/obj/structure/vehicleparts/axis/key_axis
 	get_saved_vars()
 		. = ..()

@@ -9,9 +9,21 @@ import re
 import uuid
 
 
+def intended_assertion_only(log, expected):
+    """Accept one injected assertion, while rejecting unrelated engine errors."""
+    pattern = r'Runtime error: ' + re.escape(expected) + r'\s+at tests[/\\]extraction[/\\]equipment_probe\.dm:\d+'
+    matches = list(re.finditer(pattern, log))
+    if len(matches) != 1:
+        return False
+    remainder = re.sub(pattern, '', log, count=1).lower()
+    return not any(marker in remainder for marker in ('runtime error', 'bad ref', '## error'))
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
+    parser.add_argument('--compile-only', action='store_true', help='Compile the isolated fixture without launching DreamDaemon')
+    parser.add_argument('--surface-negative-control', choices=('epoch', 'claim', 'duplicate'))
     parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'npc', 'city', 'insurance', 'groups', 'vehicles'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry', 'disruptive_creation', 'disruptive_pending', 'disruptive_result'))
@@ -28,6 +40,8 @@ def main():
     parser.add_argument('--workshop-negative-control', choices=('wear', 'cleanup'))
     parser.add_argument('--insurance-fixture-output', type=Path)
     args = parser.parse_args()
+    if args.surface_negative_control and (args.probe != 'mode' or any(value for key, value in vars(args).items() if key.endswith('negative_control') and key != 'surface_negative_control')):
+        parser.error('Surface control requires the mode probe without another control')
     if args.workshop_negative_control and (args.probe != 'equipment' or any(value for key, value in vars(args).items() if key.endswith('negative_control') and key != 'workshop_negative_control')):
         parser.error('Workshop control requires equipment without another mutation')
     if args.npc_insurance_negative_control and args.probe != 'npc':
@@ -64,7 +78,7 @@ def main():
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     if args.probe in ('equipment', 'mode', 'npc', 'city', 'insurance', 'groups', 'vehicles'):
-        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control, args.room_payment_negative_control, args.corpse_release_negative_control, args.insurance_fixture_output, args.npc_insurance_negative_control, args.workshop_negative_control)
+        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control, args.room_payment_negative_control, args.corpse_release_negative_control, args.insurance_fixture_output, args.npc_insurance_negative_control, args.workshop_negative_control, args.compile_only, args.surface_negative_control)
     with tempfile.TemporaryDirectory(prefix='civ13-extraction-') as temp:
         target = Path(temp)
         (target / 'tests/extraction').mkdir(parents=True)
@@ -88,6 +102,9 @@ def main():
         print(built.stdout + built.stderr)
         if built.returncode or '516.1681' not in built.stdout or '0 errors, 0 warnings' not in built.stdout:
             raise RuntimeError('Pinned compile failed')
+        if args.compile_only:
+            print('COMPILE ONLY: native assertions and negative controls were not executed')
+            return
         platform = ['-invisible', '-close'] if os.name == 'nt' else []
         phases = ('write', 'reload', 'recover') if args.probe == 'restart' else (('write', 'reload', 'replay') if args.probe == 'settlement' else ('store',))
         for phase in phases:
@@ -108,11 +125,24 @@ def main():
                 raise RuntimeError('Account journal verification failed')
 
 
-def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False, room_payment_control=False, corpse_release_control=False, insurance_fixture_output=None, npc_insurance_control=False, workshop_control=None):
+def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False, room_payment_control=False, corpse_release_control=False, insurance_fixture_output=None, npc_insurance_control=False, workshop_control=None, compile_only=False, surface_control=None):
     prefix = '.extraction_' + uuid.uuid4().hex
     generated = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '.dmb', '.rsc')]
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
+        if surface_control:
+            surface = (root / 'code/modules/1713/extraction/surface_loot.dm').read_text(encoding='utf-8')
+            marker, replacement = {
+                'epoch': ('\t\tepoch_profile = store.load_profile("epoch")', '\t\tepoch_profile = store.load_profile("epoch")\n\t\tif (epoch_profile && epoch_profile["revision"]) epoch_profile["raid_sequence"]++'),
+                'claim': ('\t\tP["surface_state"] = "claiming"', '\t\tP["surface_state"] = "issued"'),
+                'duplicate': ('\t\tif (other)\n', '\t\tif (FALSE)\n'),
+            }[surface_control]
+            if surface.count(marker) != 1:
+                raise RuntimeError('Surface mutation marker changed')
+            control = root / (prefix + '_surface.dm')
+            generated.append(control)
+            control.write_text(surface.replace(marker, replacement), encoding='utf-8')
+            source = source.replace('code\\modules\\1713\\extraction\\surface_loot.dm', control.name)
         if workshop_control:
             workshop = (root / 'code/modules/1713/extraction/private_car_workshop.dm').read_text(encoding='utf-8')
             marker, replacement = {
@@ -306,7 +336,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
         if probe == 'vehicles':
             source = '#define EXTRACTION_VEHICLE_PROCESS_PROBE\n' + source
             source += '\n#include "tests/extraction/vehicle_process_probe.dm"\n'
-        source += '\n#include "tests/extraction/economy_probe.dm"\n#include "tests/extraction/scope_insurance_probe.dm"\n#include "tests/extraction/npc_extraction_probe.dm"\n#include "tests/extraction/container_keys_probe.dm"\n#include "tests/extraction/equipment_probe.dm"\n'
+        source += '\n#include "tests/extraction/economy_probe.dm"\n#include "tests/extraction/scope_insurance_probe.dm"\n#include "tests/extraction/npc_extraction_probe.dm"\n#include "tests/extraction/container_keys_probe.dm"\n#include "tests/extraction/equipment_probe.dm"\n#include "tests/extraction/surface_probe.dm"\n'
         generated[0].write_text(source, encoding='utf-8')
         with tempfile.TemporaryDirectory(prefix='civ13-extraction-equipment-') as temp:
             target = Path(temp)
@@ -315,6 +345,9 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             print(built.stdout + built.stderr)
             if built.returncode or '516.1681' not in built.stdout or '0 errors, 0 warnings' not in built.stdout:
                 raise RuntimeError('Pinned equipment compile failed')
+            if compile_only:
+                print('COMPILE ONLY: native assertions and negative controls were not executed')
+                return
             shutil.copy2(generated[3], target / 'probe.dmb')
             shutil.copy2(generated[4], target / 'probe.rsc')
             shutil.copytree(root / 'config/names', target / 'config/names')
@@ -336,6 +369,17 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
                 log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''
                 print(result)
+                if surface_control:
+                    expected = {
+                        'epoch': 'surface restart preserves epoch without refill',
+                        'claim': 'surface claim intent survives failed acknowledgement',
+                        'duplicate': 'surface duplicate IDs quarantine both sources',
+                    }[surface_control]
+                    if ran.returncode or not result.startswith('FAIL:') or not intended_assertion_only(log, expected):
+                        print(log)
+                        raise RuntimeError('Surface control failed outside its intended assertion: ' + expected)
+                    print('PASS: surface omission detected: ' + surface_control)
+                    return
                 if corpse_release_control:
                     expected = 'bones transition releases original nested insured equipment with stable identity and condition'
                     if ran.returncode or not result.startswith('FAIL:') or expected not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
@@ -345,7 +389,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                     return
                 if workshop_control:
                     expected = {'wear': 'assembled wheel retains actual identity and paid wear', 'cleanup': 'cancel cleanup releases busy power and all paid preview references'}[workshop_control]
-                    if ran.returncode or not result.startswith('FAIL:') or expected not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
+                    if ran.returncode or not result.startswith('FAIL:') or not intended_assertion_only(log, expected):
                         print(ran.stdout)
                         print(ran.stderr)
                         print(log)

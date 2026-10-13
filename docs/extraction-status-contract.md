@@ -1,6 +1,6 @@
-# Extraction status adapter draft
+# Extraction status adapter contract
 
-The coordinator approved the strict wire and access policy. Launcher binding
+The narrow count-only DTO below is frozen for bot parser development. Launcher binding
 and poll cadence remain pending. This document describes fields, not an implemented or
 accepted endpoint. Native execution and live probes remain on hold.
 
@@ -20,8 +20,10 @@ Proposed read-only Topic `extraction_status` returns JSON with:
 | generated_at | Canonical nonnegative integer string, BYOND deciseconds since 2000-01-01 UTC |
 | ready | Explicit launcher/map-completion state, not response availability |
 | player_count | Actual integer client count, proposed accepted range 0-65535 |
-| players | At most 64 unique ASCII canonical ckeys, each 1-64 bytes |
-| truncated | Strict boolean; true when the list omits connected players |
+
+The current DTO contains exactly these eight fields. `players` and `truncated`
+are deferred privileged extensions, not accepted fields in this count-only
+contract. Unknown fields and schemas fail closed. No live endpoint is enabled.
 
 Keep the existing Topic dispatcher, whitelist and cooldown. Do not globally
 relax legacy address checks. The adapter is disabled by default and requires a
@@ -42,7 +44,8 @@ The bot proposal uses overflow-checked conversion to Unix milliseconds:
 `generated_at * 100 + 946684800000`, with an injected clock. Proposed defaults
 are 30 seconds maximum age and 5 seconds future tolerance; configuration caps
 are 120 seconds age and 5 seconds future tolerance. These values await agreement
-with actual poll cadence. Require strict booleans, integer count and no duplicate
+with actual poll cadence. Require strict booleans and integer count. A future
+separately versioned privileged-list extension must reject duplicate
 ckeys. An untruncated list must match count exactly; a truncated list may be
 shorter. Never clamp an out-of-range count into a valid response.
 
@@ -70,3 +73,22 @@ ordinary Topic behavior. Mock acceptance does not establish live hosting.
 Include timestamp overflow and epoch conversion, unauthorized privileged queries,
 wrong instance/build/map and transition races. Do not enable the adapter before
 the frozen controller API and shared poll cadence are agreed.
+
+Existing linking receipt contract is `civ13.safehouse.v1`, with exact response
+fields `protocol`, `request_id`, `discord_id`, `action`, `request_digest`,
+`status`, `reason`, `data`. Keep `reason` in the strict parser. Requests use
+`link.challenge` with `{challenge_id}` to inspect an existing game-issued
+challenge, and `link.complete` with `{challenge_id, proof}` to redeem it.
+The bot never issues game proof. Successful challenge inspection returns
+`{challenge_id, expires}`; completion returns the existing bounded receipt data.
+
+Current production game issuance checks owned conscious human/client, matching
+client ckey, home state, no transition, adjacency to that account's home and
+successful home save. It then commits a 300-second challenge with a 64-character
+hex proof digest and ID; the actual proof is shown through the game interaction.
+Completion requires an unused challenge, matching proof digest and unlinked
+actor/owner, and durably marks it used alongside the binding. The exact expiry
+instant remains valid; later times reject. IPC expiry uses its existing canonical
+clock representation, not the status DTO's BYOND-decisecond string.
+These are source contracts; native TTL/one-use/crash/replay acceptance is UNRUN.
+Unknown capabilities and unaccepted economy operations remain disabled.

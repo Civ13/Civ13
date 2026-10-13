@@ -4,7 +4,9 @@ Human scope includes visible items on the ground and world supports: canned food
 on store shelves, mode-appropriate money at cash registers, fuel cans and tires
 in parking. This is a shared contract proposal pending frozen agreement, not an
 accepted surface system. A disabled placement schema is implemented in
-`code/modules/1713/extraction/surface_loot.dm`; issuance and custody are not.
+`code/modules/1713/extraction/surface_loot.dm`. The staged service implements
+finite prepare, materialization and ordinary pickup intents/acknowledgements.
+It is not installed by map startup and defaults to disabled.
 Native execution remains on hold.
 
 The marker path is `/obj/effect/extraction_surface_source`. Map variables are
@@ -22,8 +24,8 @@ for `shelf` and exact `/obj/structure/table/extraction_mall` for `table`. These
 map-owned fixed supports are suitable for disabled marker placement; enabling
 items still requires support existence, direct item interaction and custody
 acceptance. Nightstands are outside the current 40-source placement scope.
-The proposed `/obj/structure/extraction_mall_fixture/register` is pending source
-review. It must be fixed scenery without native closet storage, currency
+The reviewed `/obj/structure/extraction_mall_fixture/register` is approved for
+disabled placement support. It is fixed scenery without native closet storage, currency
 generation or interactive contents. Its sprite does not grant currency authority.
 
 The existing container journal plans finite equipment graphs and debits before
@@ -74,3 +76,45 @@ rolls, support destruction, failed construction, concurrent claim/consume,
 rollback and materialization/claim/ack crashes, save/restart/extraction ownership
 reconciliation, wrong epochs, currency conservation and node-budget overflow.
 Native fixtures and genuine gameplay acceptance remain separate evidence gates.
+
+Current staged implementation uses one exact root per source: gasoline jerrycan,
+boxed native wheel or salvage for parking fuel, parking wheel and repair parts.
+Food and cash cannot prepare, even when an isolated fixture enables the service.
+Explicit registration is capped at 128. Reconciliation batches visit at most 16
+registered sources; graphs are capped at 16 identities including packed wheels.
+Materialization checks the shared 2048 tracked-item limit before construction.
+The map-namespaced epoch is initialized once and retained on restart.
+
+Ordinary item `attack_hand` delegates linked roots to the source claim. The
+service writes actor/identity/epoch intent, moves that actual root through native
+hand placement, verifies observed custody and acknowledges. Failed acknowledgement
+locks the actor and source and returns the actual root to its source when possible.
+Base item `attackby` rejects linked roots. Subtype overrides, dragging, direct
+movement, destruction and consumption are not comprehensively guarded yet.
+Runtime links are excluded from native variable persistence.
+
+Restart reconciliation uses only explicitly registered references. Missing issued
+roots or pending operations quarantine without replay. It does not discover saved
+world/account roots or establish active-raid recovery. Explicit epoch advance
+requires a completed closed round with no sessions and only claimed manifest
+sources; old source records remain fenced rather than automatically refilled.
+Forfeited/unclaimed-root reconciliation and next-epoch reset remain unfinished.
+These limitations prohibit enabling the service on an actual map.
+
+`tests/extraction/surface_probe.dm` exercises the production journal and codec
+for disabled issuance, durable finite identity, restart epoch preservation,
+missing-root quarantine, busy pickup, interrupted claim acknowledgement,
+duplicate IDs, food/cash rejection and shared-node exhaustion. These assertions
+are authored but UNRUN under the native hold. `run.py --probe mode --compile-only`
+compiles the isolated fixture and returns before DreamDaemon; the offline boundary
+tests verify both mode and store compile-only paths cannot launch the runtime.
+Generated `--surface-negative-control epoch|claim|duplicate` variants remove
+one production guard and must fail at their exact fixture assertion. They are
+authored and UNRUN; compile-only does not establish control detection.
+
+Compile-only verification also exposed the earlier vehicle-key declaration on
+an internal-engine subtype while axis/workshop/codec hold base engine references.
+The authority link and saved-variable declaration now live on the engine parent.
+Integrated project and isolated mode fixture compile cleanly with pinned BYOND
+516.1681. Vehicle-key cancellation/concurrency/crash/save runtime acceptance
+remains unproven.
