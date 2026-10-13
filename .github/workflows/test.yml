@@ -418,6 +418,8 @@ jobs:
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           bash tests/world_save/run.sh
+          python3 tests/world_save/run-wrapper.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control metadata
+          python3 tests/world_save/run-wrapper.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control recovery
         shell: bash
       - name: Verify isolated chemistry reactions and negative control
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/chemistry')

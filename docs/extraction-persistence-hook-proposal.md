@@ -190,6 +190,11 @@ binary hashing, crash safety, native gameplay or complete-world acceptance.
 
 ## Concrete restore call-site and abort ledger
 
+The scoped wrapper slice described below now addresses the ignored metadata
+return and introduces typed runtime policy/attempt boundaries. The reader/token
+interfaces in this ledger remain proposals, including propagation through ClearMap
+and loading recursion. This distinction is source status, not runtime acceptance.
+
 Source-only supplement checked at `d3e7aa61934b03388f56ee51d35b2e6ae9d7532e`.
 This locates the previously proposed trailing-token changes; none are implemented.
 The immutable-reader ABI and durable quarantine publication primitive are still
@@ -270,3 +275,31 @@ transfer ID, exact root identities, both server/mode identities and generations,
 and expected source/destination revisions. Idempotent receipts alone cannot prove
 exclusive custody. This is a contract prerequisite, not an implemented distributed
 transaction; the authoritative journal and host custody owner must be selected.
+
+## Scoped wrapper implementation pending verification
+
+The current source candidate changes only `functions.dm` in shared production
+persistence. `loadmap()` captures the selected storage/policy, acquires a bound
+attempt when configured, validates preflight, obtains a recovery reservation and
+rechecks bindings before ClearMap. Mutation-started is recorded immediately before
+ClearMap, conservatively covering partial clearing exceptions. World loading must
+succeed and metadata must return exactly TRUE before reporting a completed load.
+The metadata rule deliberately fixes the old null-policy false-success behavior;
+successful ordinary legacy/v2 restoration remains the compatibility target.
+
+One failure path preserves the original error across failure-receipt, transient
+release and bookkeeping exceptions. A post-mutation failure requires a typed
+receipt bound to that attempt with recovery_retained exactly TRUE. Cleanup errors
+remain separately visible; transient release is attempted once, including when
+the success-path release fails. Acquisition failures before a bound attempt is
+returned remain the provider's cleanup responsibility. Providers must retain
+recovery independently of transient release; this interface does not finalize or
+publish restore success. Runtime policy/attempt handles must not be serialized.
+
+No production policy/provider is installed. The default opt-in policy fails closed
+before clearing; null policy retains ordinary successful loading. The injected
+actual-wrapper fixture and metadata/recovery omission controls require separate
+recorded execution results. They can establish callback/receipt behavior
+after execution, not durable reservation storage, immutable readers, host ABA
+exclusion, a global custody fence or multi-tick census admission. `loading.dm`,
+the save schema/readers, physical custody and engine behavior remain unchanged.

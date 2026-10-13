@@ -69,6 +69,55 @@ Preflight detects structural damage but cannot predict arbitrary constructors or
 restoration has begun, restart from the original map before retrying. Restoration
 is not transactional and cannot roll back arbitrary game hooks.
 
+## Restore wrapper contract
+
+`restore_wrapper.dm` invokes the actual `gameticker.loadmap()` with injected
+storage and policy effects. Both normal and large round-trip runs include it.
+Metadata must return exactly TRUE; FALSE, other truthy values and exceptions
+fail restoration. The existing successful null-policy legacy/v2 path still runs
+against the actual saver/loader after the wrapper cases.
+
+The optional runtime `map_storage.restore_policy` must return an attempt bound to
+the selected storage and policy. Its recovery reservation must return exactly
+TRUE before ClearMap, with the binding rechecked after reservation. The default
+policy has no provider and rejects before clearing. Once mutation begins, the
+failure callback must return a typed, bound receipt confirming retained recovery.
+Transient release runs at most once; cleanup errors remain separate from the
+primary failure in `restore_cleanup_error`. Provider acquisition cleanup before
+a bound attempt is returned remains the provider's responsibility. These runtime
+handles are excluded from custom persistence, including inherited exclusions.
+
+The fixture checks callback order, preflight/binding rejection, conservative
+mutation-started status, clearing/world/metadata exceptions, metadata and world
+FALSE returns, cleanup exceptions, invalid recovery receipts, single release,
+and the busy gate. It proves wrapper invocation and receipt validation only.
+There is no production provider, durable reservation, immutable reader, rollback
+or complete restore admission proof. Transient release never authorizes recovery
+release or publication. A failed restore still needs the recovery procedure above.
+
+`run-wrapper.py` generates a temporary environment and changed source copy for
+each omission control. It requires BYOND 516.1681, a clean compile, no engine
+diagnostics and the intended failing fixture assertion. Production source stays
+unchanged. CI's existing selected world-save step runs both controls:
+
+```sh
+python3 tests/world_save/run-wrapper.py --byond-bin /path/to/byond/bin
+python3 tests/world_save/run-wrapper.py --byond-bin /path/to/byond/bin --roundtrip
+python3 tests/world_save/run-wrapper.py --byond-bin /path/to/byond/bin --negative-control metadata
+python3 tests/world_save/run-wrapper.py --byond-bin /path/to/byond/bin --negative-control recovery
+```
+
+On Windows use a verified full Python interpreter path with the same arguments.
+The compiler and daemon each have a 120-second subprocess timeout. `--roundtrip`
+includes the ordinary legacy/v2 disk checks after wrapper checks, within the same
+daemon timeout; it cannot be combined with an omission control. The ordinary-map
+fixture supplies fail-closed surface-service type adapters for compilation and
+throws if that unrelated service is activated. Extraction probes cover real
+surface-service behavior separately.
+All daemon storage and generated outputs remain in a unique temporary directory;
+the fixture closes its port and has no production startup or outbound adapters.
+Source addition is not test execution; record actual exact-head results separately.
+
 ## Full game probe
 
 `run-game.ps1 -ByondBin 'C:/path/to/byond/bin'` builds a temporary root environment

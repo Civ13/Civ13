@@ -35,6 +35,11 @@ world
 	OpenPort("none")
 	..()
 	try
+		check_restore_wrapper()
+		if(world.params["wrapper_only"])
+			text2file("PASS", "result.txt")
+			shutdown()
+			return
 		check_save_transfers()
 		check_save_identity_and_snapshot()
 		if(world.params["large"])

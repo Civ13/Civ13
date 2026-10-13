@@ -221,25 +221,102 @@ var/global/persistence_save_in_progress = FALSE
 	log_startup_progress("	Saved the map in [stop_watch(watch)]s.")
 	return 1
 
+/map_storage
+	var/tmp/datum/persistence_restore_policy/restore_policy
+	var/tmp/restore_cleanup_error
+	persistence_runtime_var(key)
+		return (key in list("restore_policy", "restore_cleanup_error")) || ..()
+
+// Wrapper custody only. No production provider or full restore proof exists.
+/datum/persistence_restore_policy
+	should_save = FALSE
+	// A provider owns cleanup until it returns an attempt bound to both arguments.
+	proc/begin_attempt(map_storage/storage)
+		return null
+
+/datum/persistence_restore_attempt
+	should_save = FALSE
+	var/map_storage/storage
+	var/datum/persistence_restore_policy/policy
+	proc/before_mutation()
+		return FALSE
+	proc/fail(phase, original_failure, mutation_started)
+		return null
+	proc/release_transients()
+		// This never authorizes releasing recovery custody or publishing success.
+		return FALSE
+	persistence_runtime_var(key)
+		return (key in list("storage", "policy")) || ..()
+
+/datum/persistence_restore_failure
+	should_save = FALSE
+	var/datum/persistence_restore_attempt/attempt
+	var/recovery_retained = FALSE
+	persistence_runtime_var(key)
+		return key == "attempt" || ..()
+
 /datum/controller/gameticker/proc/loadmap()
 	if(persistence_save_in_progress)
 		return FALSE
 	persistence_save_in_progress = TRUE
-	if(!map_storage.validate_world_save())
-		persistence_save_in_progress = FALSE
-		return FALSE
+	var/map_storage/storage = map_storage
+	var/datum/persistence_restore_policy/policy = storage.restore_policy
+	var/datum/persistence_restore_attempt/attempt
+	var/attempt_owned = FALSE
+	var/release_attempted = FALSE
+	var/mutation_started = FALSE
+	var/phase = "preflight"
+	storage.restore_cleanup_error = null
 	var/watch = start_watch()
-	log_startup_progress("Starting map load...")
 	try
-		map_storage.ClearMap()
-		if(!map_storage.Load_World())
-			persistence_save_in_progress = FALSE
-			return FALSE
-		map_storage.load_map_metadata()
+		if(policy)
+			attempt = policy.begin_attempt(storage)
+			if(!istype(attempt) || attempt.storage != storage || attempt.policy != policy)
+				throw EXCEPTION("Restore provider unavailable or returned an unowned attempt")
+			attempt_owned = TRUE
+		if(!storage.validate_world_save())
+			throw EXCEPTION(storage.last_error ? storage.last_error : "World-save preflight rejected")
+		if(attempt_owned && attempt.before_mutation() != TRUE)
+			throw EXCEPTION("Restore recovery reservation unavailable")
+		if(map_storage != storage || storage.restore_policy != policy || (attempt_owned && (attempt.storage != storage || attempt.policy != policy)))
+			throw EXCEPTION("Restore attempt binding changed before mutation")
+		log_startup_progress("Starting map load...")
+		phase = "clear"
+		mutation_started = TRUE
+		storage.ClearMap()
+		phase = "world"
+		if(!storage.Load_World())
+			throw EXCEPTION(storage.last_error ? storage.last_error : "World-save restoration rejected")
+		phase = "metadata"
+		if(storage.load_map_metadata() != TRUE)
+			throw EXCEPTION("World metadata restoration rejected")
+		if(attempt_owned)
+			phase = "release"
+			release_attempted = TRUE
+			if(attempt.release_transients() != TRUE)
+				throw EXCEPTION("Restore transient release rejected")
 	catch(var/exception/e)
-		map_storage.clear_bookkeeping()
-		map_storage.last_error = "[e] on [e.file]:[e.line]"
-		world.log << "World-save import failed: [map_storage.last_error]"
+		var/primary_failure = "[e] on [e.file]:[e.line]"
+		if(attempt_owned)
+			try
+				var/datum/persistence_restore_failure/outcome = attempt.fail(phase, primary_failure, mutation_started)
+				if(!istype(outcome) || outcome.attempt != attempt || (mutation_started && outcome.recovery_retained != TRUE))
+					throw EXCEPTION("Restore failure did not confirm retained recovery custody")
+			catch(var/exception/failure_error)
+				storage.restore_cleanup_error = "[failure_error]"
+			if(!release_attempted)
+				release_attempted = TRUE
+				try
+					if(attempt.release_transients() != TRUE)
+						throw EXCEPTION("Restore transient cleanup rejected")
+				catch(var/exception/release_error)
+					storage.restore_cleanup_error = "[storage.restore_cleanup_error]; [release_error]"
+		try
+			storage.clear_bookkeeping()
+		catch(var/exception/bookkeeping_error)
+			storage.restore_cleanup_error = "[storage.restore_cleanup_error]; [bookkeeping_error]"
+		storage.last_error = primary_failure
+		world.log << "World-save import failed: [storage.last_error]"
 		message_admins("Import failed during restoration; restart from the original map before retrying: [e]")
 		persistence_save_in_progress = FALSE
 		return FALSE
