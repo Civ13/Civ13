@@ -1,12 +1,27 @@
 // Actor construction and action waiting are injected; gun constructors,
 // installation/removal, payment, component graphs and disk I/O are native.
 /mob/living/human/extraction_scope_probe
+	var/tmp/list/corpse_probe_receipt
+	var/tmp/obj/item/corpse_probe_weapon
 	New()
 		return
 	incapacitated(incapacitation_flags = INCAPACITATION_DEFAULT)
 		return FALSE
 	update_icons()
 		return
+
+// Observe native release before qdel clears the retired human reference.
+// Other injected actors do not carry a receipt and leave this hook inert.
+/hook/corpse_retired/proc/extraction_scope_insurance(mob/living/human/body, turf/site)
+	if (!istype(body, /mob/living/human/extraction_scope_probe))
+		return TRUE
+	var/mob/living/human/extraction_scope_probe/H = body
+	if (H.corpse_probe_receipt)
+		H.corpse_probe_receipt["count"]++
+		H.corpse_probe_receipt["hand_clear"] = !H.r_hand
+		H.corpse_probe_receipt["weapon_at_site"] = H.corpse_probe_weapon && H.corpse_probe_weapon.loc == site
+	return TRUE
+
 /obj/item/weapon/gun/projectile/semiautomatic/sks/extraction_scope_probe
 	wait_for_configuration(mob/living/human/H, delay)
 		return TRUE
@@ -57,7 +72,11 @@
 		var/corpse_revision = A.profile["revision"]
 		H.stat = DEAD
 		H.register_corpse_decay()
-		equipment_assert(H.retire_corpse() && G.loc == T && !H.r_hand, "corpse retirement releases the actual configured insured weapon")
+		var/list/corpse_receipt = list("count" = 0)
+		H.corpse_probe_receipt = corpse_receipt
+		H.corpse_probe_weapon = G
+		H.retire_corpse()
+		equipment_assert(corpse_receipt["count"] == 1 && corpse_receipt["hand_clear"] && corpse_receipt["weapon_at_site"] && !H && G.loc == T, "corpse retirement releases the actual configured insured weapon")
 		equipment_assert(json_encode(C.encode(G)) == json_encode(corpse_graph) && O.extraction_item_id == scope_id && O.health == 41, "physical retirement preserves component IDs, insurance tokens, FIR and condition")
 		equipment_assert(A.profile["revision"] == corpse_revision && A.profile["state"] == "raid" && !equipment_mail_entries(S, A.owner).len, "corpse retirement alone cannot settle the raid or credit insurance")
 		var/list/roots = list()

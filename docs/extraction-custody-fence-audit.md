@@ -208,3 +208,28 @@ The packed wheel counts as a native descendant for the depth bound: a crate at
 depth seven can retain its wheel at depth eight, while a crate at depth eight
 is refused. A direct native-containment boundary fixture avoids the independent
 cargo weight limit masking this check and verifies restoration after refusal.
+
+### Remote evidence and corpse observation boundary
+
+Run `38402321373` at `1dfebbaa0352b9c6180534b2d36573009e2f195a`
+compiled the full project with BYOND 516.1681 and zero errors/warnings, but failed
+in the equipment insurance fixture before the vehicle custody tests and four
+omission controls executed. Those controls have no runtime result from that run.
+The secondary missing fallout artifact followed its skipped suite.
+
+Successful production corpse retirement calls `corpse_retired` before deleting
+the human. The fixture must observe cleared hand slots inside that hook rather
+than dereference the retired human afterward. A scoped, inert test hook retains
+only a bounded receipt of exactly-once delivery, hand clearance and original
+weapon placement. After retirement the fixture requires disappearance of the
+human and the surviving weapon at its original turf, then checks unchanged
+component identity, provenance, condition and account/insurance state. This is
+a fixture observation correction; production retirement and item-drop callbacks
+remain unchanged. Its compile/runtime result is pending independent source review
+and remote verification.
+
+Five separately named opt-in CI steps run the existing vehicle positive and
+roster, reservation, issuance and persistence omission commands after an earlier
+failure, unless cancelled. Each failed step still fails the job; the original
+equipment failure remains blocking. Their independence provides diagnostic
+results, not an exemption from required checks or activation blockers.
