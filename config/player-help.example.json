@@ -6,5 +6,6 @@
   "workers": 2,
   "auth_token_env": "CIV13_OLLAMA_TOKEN",
   "num_ctx": 4096,
-  "think": false
+  "think": false,
+  "wiki_root": ""
 }

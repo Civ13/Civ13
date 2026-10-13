@@ -94,7 +94,7 @@ wiki/atlas; the worker does not assume exact unlocks for the current map.
 The worker also loads a bounded projection of the existing player-facing
 `UI/crafting-atlas.json` once at launch. Only recipe names, system, quantities,
 inputs, outputs and conditions are retained; source locations and sprite metadata
-are omitted. At most six matching guide/recipe entries and 8,000 context characters
+are omitted. At most six matching code/wiki/guide/recipe entries and 16,000 context characters
 are sent per question. Unmatched or truncated recipe details must be checked in
 the atlas, including current map and research availability.
 
@@ -121,3 +121,26 @@ heartbeat expiry and cleanup. They do not contact your remote Ollama host or
 prove its model is installed, reachable or knowledgeable. After configuring,
 ask a harmless known question in-game; confirm an answer and then stop the worker
 to confirm the unavailable notice. This live smoke check is owner-controlled.
+
+## Code and wiki retrieval
+
+The bridge retrieves reviewed gameplay excerpts from the game's bloomery and
+anvil implementation in addition to generated recipe data. Excerpt boundary
+changes fail startup rather than silently supplying unrelated code. Source hashes
+identify the files used. This is read-only evidence retrieval, not an admin MCP
+connection or model-controlled source browser.
+
+Set `wiki_root` in the private config to an up-to-date checkout of `civ13-wiki`.
+The bridge reads only `src/guides/Guide_to_Crafting.md`,
+`src/guides/Guide_to_Metallurgy.md` and `src/Starter_Guide.md` at launch.
+No network downloads or recursive repository scans occur. Update that checkout
+and restart the bridge to refresh wiki knowledge. Missing configured pages fail
+startup; omitted `wiki_root` disables wiki retrieval. Code takes precedence over
+conflicting wiki prose. Retrieved text is untrusted evidence, never instructions.
+
+Retrieval reserves space for code, wiki and recipes. Explicit Nomads/Gaia questions
+exclude other material catalogs and prefer global recipes. Without map context,
+the helper must explain gates rather than promise a recipe is unlocked. Adding
+other gameplay systems requires reviewing their source excerpts and player wiki
+pages before extending the allowlist. No hidden loot, credentials, player data,
+admin commands or private reference repositories are indexed.

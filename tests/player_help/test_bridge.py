@@ -86,6 +86,30 @@ class BridgeTests(unittest.TestCase):
         health = bridge.bounded_json(self.root / 'health.json', 256)
         self.assertGreater(health['request_timeout_seconds'], timeout)
 
+    def test_reviewed_code_and_wiki_retrieval(self):
+        wiki = self.root / 'wiki'
+        for relative in ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md'):
+            path = wiki / 'src' / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('Iron ore goes into a bloomery. Work sponge iron on an anvil.')
+        entries = bridge.gameplay_knowledge(ROOT, wiki)
+        self.assertEqual({x['source'] for x in entries}, {'code', 'wiki'})
+        self.assertTrue(all(len(x['sha256']) == 64 for x in entries))
+        self.assertTrue(any('iron_sponge' in x['text'] for x in entries))
+        self.corpus += entries
+        self.corpus += [
+            {'topic': 'bucket', 'source': 'recipe', 'catalog': 'Material / global', 'text': 'bucket requires 2 softwood'},
+            {'topic': 'bucket', 'source': 'recipe', 'catalog': 'Material / camp', 'text': 'bucket requires 4 wood'}]
+        calls = []
+        instance = self.make(lambda *args: calls.append(args) or {'message': {'content': 'Answer'}})
+        instance.answer({'id': '1', 'question': 'How do I craft a bucket in Nomads Gaia?'})
+        prompt = calls[0][1]['messages'][0]['content']
+        self.assertIn('2 softwood', prompt)
+        self.assertNotIn('4 wood', prompt)
+        instance.answer({'id': '2', 'question': 'How do I get iron ingots?'})
+        self.assertIn('CURRENT GAMEPLAY CODE', calls[1][1]['messages'][0]['content'])
+        self.assertIn('PLAYER WIKI https://', calls[1][1]['messages'][0]['content'])
+
     def test_bounded_output(self):
         instance = self.make(lambda *args: {'message': {'content': 'x' * 9000}})
         self.request()
