@@ -36,9 +36,9 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 	for (var/list/recipe in recipes)
 		var/searchable = "[recipe["name"]] [recipe["kind"]]"
 		for (var/list/ingredient in recipe["inputs"])
-			searchable += " [ingredient["name"]]"
+			searchable += " [ingredient["name"]] [ingredient["id"]]"
 		for (var/list/product in recipe["outputs"])
-			searchable += " [product["name"]]"
+			searchable += " [product["name"]] [product["id"]]"
 		recipe["searchable"] = searchable
 	return TRUE
 
@@ -70,7 +70,7 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 				var/filename = "atlas_[md5("[id]")].png"
 				viewer << browse_rsc(preview, filename)
 				image_html = "<img src='[filename]' width='32' height='32' alt='[label]' title='[preview_label]'> "
-	return "[image_html][label] ([quantity])"
+	return "[image_html]<a href='?src=\ref[src];atlas_resource=[url_encode(id)]'>[label]</a> ([quantity])"
 
 /datum/crafting_atlas_reference/proc/page_html(mob/viewer, query = "", page = 1)
 	query = copytext("[query]", 1, 65)
@@ -105,7 +105,28 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 		navigation += " | <a href='?src=\ref[src];atlas_page=[page+1];atlas_query=[url_encode(query)]'>Next</a>"
 	return "<html><head><title>Crafting Atlas</title></head><body><h2>Crafting Atlas</h2><p>[navigation]</p><p>[matched] matching recipes. Page [page]. Map, research, tools and other requirements still apply; alternative catalogs are included.</p>[jointext(body, "")]<p><a href='https://civ13.github.io/Civ13/crafting/'>Open the full resource graph</a></p></body></html>"
 
-/datum/crafting_atlas_reference/proc/show(mob/viewer, query = "", page = 1)
+/datum/crafting_atlas_reference/proc/acquisition_html(resource_id)
+	var/list/all_routes = catalog["acquisition"]
+	var/list/routes = islist(all_routes) ? all_routes[resource_id] : null
+	var/list/body = list("<h2>How to obtain [html_encode(resource_id)]</h2>")
+	if (!islist(routes) || !routes.len)
+		body += "<p>No reviewed gathering instructions for this resource. Producer recipes below may provide processing routes; their requirements still apply.</p>"
+	else
+		var/shown = 0
+		for (var/list/route in routes)
+			if (++shown > 12)
+				body += "<p>More routes are available in the full web atlas.</p>"
+				break
+			body += "<h3>[html_encode("[route["name"]]")]</h3>"
+			for (var/key in list("steps", "tools", "conditions", "era", "map_notes", "status"))
+				var/value = route[key]
+				if (islist(value))
+					value = jointext(value, "; ")
+				if (value)
+					body += "<p>[html_encode(key)]: [html_encode("[value]")]</p>"
+	return jointext(body, "")
+
+/datum/crafting_atlas_reference/proc/show(mob/viewer, query = "", page = 1, resource_id = "")
 	if (!viewer || !viewer.client)
 		return
 	if (world.time < viewer.client.atlas_last_request + 10)
@@ -114,13 +135,20 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 	if (!load_catalog())
 		to_chat(viewer, "The crafting reference is unavailable in this build.")
 		return
-	viewer << browse(page_html(viewer, query, page), "window=crafting_atlas;size=850x650")
+	var/content = page_html(viewer, query, page)
+	if (resource_id)
+		content = replacetext(content, "<h2>Crafting Atlas</h2>", acquisition_html(resource_id))
+	viewer << browse(content, "window=crafting_atlas;size=850x650")
 
 /datum/crafting_atlas_reference/Topic(href, list/href_list)
 	if (!usr || !usr.client)
 		return
 	var/mob/viewer = usr
-	if (href_list["atlas_search"])
+	if (href_list["atlas_resource"])
+		var/resource_id = copytext("[href_list["atlas_resource"]]", 1, 257)
+		if (islist(resources[resource_id]))
+			show(viewer, resource_id, 1, resource_id)
+	else if (href_list["atlas_search"])
 		var/query = input(viewer, "Find a recipe, ingredient or product", "Crafting Atlas") as text|null
 		if (!isnull(query))
 			show(viewer, query)

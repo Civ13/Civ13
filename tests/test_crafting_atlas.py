@@ -22,6 +22,11 @@ class AtlasTests(unittest.TestCase):
             bench=next(r for r in before['recipes'] if r['name']=='Workbench Pickaxe')
             self.assertEqual({x['id'] for x in bench['inputs']},{'/obj/item/weapon/material/part/pickaxe','/obj/item/weapon/material/handle'})
             self.assertEqual(bench['outputs'][0]['id'],'/obj/item/weapon/material/pickaxe')
+            self.assertTrue(before['acquisition'])
+            for resource_id,routes in before['acquisition'].items():
+                self.assertIn(resource_id,before['resources'])
+                self.assertTrue(all(route.get('name') and route.get('file') and route.get('audit_commit') for route in routes))
+            self.assertFalse(any(key.startswith('material:') for key in before['acquisition']))
             direct=next(r for r in before['recipes'] if r['name']=='Flintlock Pistol [iron]')
             self.assertEqual([(x['id'],x['quantity']) for x in direct['inputs']],[('/material/iron','20')])
             finish=next(r for r in before['recipes'] if r['name']=='Finish Flintlock pistol assembly')
