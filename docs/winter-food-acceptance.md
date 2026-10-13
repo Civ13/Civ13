@@ -1,6 +1,6 @@
 # Winter food audit and acceptance
 
-Status: source preparation only. No native runtime or player acceptance is claimed.
+Status: the narrow open-can regression passed isolated native storage and save/load checks at `9851c638742256ad46c657a6ede3d67a1d1aa416`. Broader winter-food and player acceptance remain pending.
 Audit base: `1627730ecec53f385cbf1956b7a9e4385dffa675`.
 
 ## Actual clocks
@@ -69,8 +69,7 @@ stored food.
 
 Map/biome seed compatibility, actual resource paths, authorised research, winter
 fish access, hunting depletion, preservation and edible consumption must be checked
-on supported Nomads maps. Native tests and actual gameplay are pending the shared
-native queue grant. Do not update public player guidance from these hypotheses.
+on supported Nomads maps. Broader native tests and actual gameplay are pending a fresh shared native queue grant. Do not update public player guidance from these hypotheses.
 
 Sources: `code/modules/reagents/reagent_containers/food.dm`,
 `food/grown.dm`, `food/snacks/meat.dm`, `code/game/objects/map_metadata/nomads`,
@@ -88,6 +87,5 @@ The prepared fixture checks sealed/opened cans, faster floor aging, and actual
 native entry restoration followed by continued aging. `--can-negative-control`
 restores the old opened-can exclusion only in generated source and must fail
 `opened can accumulates food age`. Only the recurring wait is accelerated.
-Neither mode has run yet; Python syntax and whitespace checks are not DM or
-runtime acceptance. This narrow correction does not replace per-food callbacks
+Both modes passed at `9851c638742256ad46c657a6ede3d67a1d1aa416` with BYOND 516.1681, zero compile errors/warnings and no runtime errors. The negative control detected the historical opened-can exclusion. This narrow correction does not replace per-food callbacks
 or establish preserved-food conservation, lean-season lifetimes or player access.
