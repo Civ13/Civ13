@@ -62,38 +62,106 @@ def canonical(value, active=None):
         active.remove(id(value))
 
 
-class SnapshotOracle:
-    """Test-owned copy model. No production host ownership assertion."""
+class Ownership:
+    """Explicit model token, not an OS lock."""
     def __init__(self):
+        self.epoch = 1
+        self.active = True
+
+    def require(self, epoch):
+        if not self.active or epoch != self.epoch:
+            raise ValueError('ownership epoch lost')
+
+
+class SnapshotOracle:
+    """Frozen roster and counted copy model; no native format or OS proof."""
+    def __init__(self, declared, levels=1, budget=MAX_BYTES):
+        expected = ('manifest', 'metadata') + tuple(f'level-{i}' for i in range(1, levels + 1))
+        if not 1 <= levels <= 14 or set(declared) != set(expected):
+            raise ValueError('invalid mandatory frozen roster')
+        self.roster = tuple((name, declared[name]) for name in expected)
+        if any(type(size) is not int or size < 0 or size > budget or
+               type(digest) is not str or len(digest) != 64 for _, (digest, size) in self.roster):
+            raise ValueError('invalid declared member')
+        if sum(size for _, (_, size) in self.roster) > budget:
+            raise ValueError('aggregate capacity exceeded')
+        self.budget = budget
+        self.owner = Ownership()
+        self.epoch = self.owner.epoch
         self.readers = {}
         self.acquired = []
         self.released = []
         self.clear_calls = 0
         self.consumed = []
+        self.byte_count = 0
 
-    def acquire(self, paths, declared, inject):
+    def require(self, token=None):
+        self.owner.require(self.epoch)
+        if token is not None and (token[0] is not self or token[1] != self.epoch or token[2] not in self.readers):
+            raise ValueError('wrong operation or member token')
+
+    def acquire(self, paths, inject, reopen_control=False):
         try:
-            for name, path in paths.items():
+            self.require()
+            if set(paths) != {name for name, _ in self.roster}:
+                raise ValueError('paths differ from frozen roster')
+            for name, expected in self.roster:
                 inject('acquire', name)
-                data = path.read_bytes()
+                self.require()
+                pieces = []
+                member_count = 0
+                with paths[name].open('rb') as source:
+                    while True:
+                        piece = source.read(CHUNK)
+                        if not piece:
+                            break
+                        member_count += len(piece)
+                        self.byte_count += len(piece)
+                        if member_count > expected[1] or self.byte_count > self.budget:
+                            raise ValueError('read byte capacity exceeded')
+                        pieces.append(piece)
+                data = b''.join(pieces)
                 digest, size = stream_digest(chunks(data))
-                if (digest, size) != declared[name]:
+                if (digest, size) != expected:
                     raise ValueError('candidate differs before ClearMap')
-                self.readers[name] = data
+                token = (self, self.epoch, name)
+                self.readers[name] = (token, data)
                 self.acquired.append(name)
                 inject('hash', name)
-            for name, data in self.readers.items():
+                self.require(token)
+            for name, expected in self.roster:
+                token, data = self.readers[name]
                 inject('validate', name)
-                if stream_digest(chunks(data)) != declared[name]:
+                self.require(token)
+                if stream_digest(chunks(data)) != expected:
                     raise ValueError('pinned bytes changed')
+            self.require()
             self.clear_calls += 1
-            for name, data in self.readers.items():
+            for name, (token, data) in self.readers.items():
                 inject('decode', name)
+                self.require(token)
+                if reopen_control:
+                    data = paths[name].read_bytes()  # Intentional violating decoder only.
                 self.consumed.append((name, data))
             return self.consumed
         finally:
             self.released.extend(self.acquired)
             self.readers.clear()
+            self.owner.active = False
+
+
+def fixture(folder, level=b'opaque-A\x00'):
+    payloads = {'manifest': b'opaque-manifest', 'metadata': b'opaque-map', 'level-1': level}
+    paths = {name: Path(folder) / name for name in payloads}
+    for name, data in payloads.items():
+        paths[name].write_bytes(data)
+    declared = {name: stream_digest(chunks(data)) for name, data in payloads.items()}
+    return payloads, paths, declared
+
+
+def require_consumed_a(result, payloads):
+    if dict(result) != payloads:
+        raise AssertionError('PINNED_A_CONSUMPTION: decoder consumed changed bytes')
 
 
 class GenerationContract(unittest.TestCase):
@@ -103,12 +171,12 @@ class GenerationContract(unittest.TestCase):
         for phase in ('acquire', 'hash', 'validate', 'decode'):
             for mutation in ('replace', 'truncate', 'delete', 'rename'):
                 with self.subTest(phase=phase, mutation=mutation), TemporaryDirectory() as folder:
-                    path = Path(folder) / 'level.sav'
-                    path.write_bytes(a)
-                    oracle = SnapshotOracle()
+                    payloads, paths, declared = fixture(folder, a)
+                    path = paths['level-1']
+                    oracle = SnapshotOracle(declared)
 
                     def inject(at, name):
-                        if at != phase:
+                        if at != phase or name != 'level-1':
                             return
                         if mutation == 'replace':
                             path.write_bytes(b)
@@ -120,49 +188,96 @@ class GenerationContract(unittest.TestCase):
                             path.rename(path.with_suffix('.moved'))
 
                     try:
-                        result = oracle.acquire({'level': path}, {'level': stream_digest(chunks(a))}, inject)
+                        result = oracle.acquire(paths, inject)
                     except (ValueError, OSError):
                         self.assertEqual(oracle.clear_calls, 0)
                     else:
-                        self.assertEqual(result, [('level', a)])
+                        require_consumed_a(result, payloads)
                     self.assertEqual(oracle.released, oracle.acquired)
                     self.assertFalse(oracle.readers)
 
     def test_hash_then_reopen_negative_control_detects_wrong_bytes(self):
-        with TemporaryDirectory() as folder:
-            path = Path(folder) / 'level.sav'
-            path.write_bytes(b'valid A')
-            proof = stream_digest(chunks(path.read_bytes()))
-            path.write_bytes(b'valid B')
-            self.assertNotEqual(stream_digest(chunks(path.read_bytes())), proof,
-                                'hash-then-reopen cannot satisfy pinned reader contract')
+        for violating in (False, True):
+            with TemporaryDirectory() as folder:
+                payloads, paths, declared = fixture(folder)
+                def inject(at, name):
+                    if at == 'decode' and name == 'level-1':
+                        paths[name].write_bytes(b'opaque-B\x00')
+                result = SnapshotOracle(declared).acquire(paths, inject, reopen_control=violating)
+                if violating:
+                    with self.assertRaisesRegex(AssertionError, '^PINNED_A_CONSUMPTION:'):
+                        require_consumed_a(result, payloads)
+                else:
+                    require_consumed_a(result, payloads)
 
     def test_partial_acquisition_unwinds_exact_members(self):
         with TemporaryDirectory() as folder:
-            first = Path(folder) / 'meta'
-            first.write_bytes(b'metadata')
-            missing = Path(folder) / 'missing.sav'
-            oracle = SnapshotOracle()
+            _, paths, declared = fixture(folder)
+            paths['level-1'].unlink()
+            oracle = SnapshotOracle(declared)
             with self.assertRaises(OSError):
-                oracle.acquire({'meta': first, 'level': missing},
-                               {'meta': stream_digest(chunks(b'metadata'))}, lambda *_: None)
-            self.assertEqual(oracle.acquired, ['meta'])
-            self.assertEqual(oracle.released, ['meta'])
+                oracle.acquire(paths, lambda *_: None)
+            self.assertEqual(oracle.acquired, ['manifest', 'metadata'])
+            self.assertEqual(oracle.released, ['manifest', 'metadata'])
             self.assertEqual(oracle.clear_calls, 0)
 
     def test_metadata_level_and_manifest_share_acquisition_identity(self):
-        payloads = {'metadata': b'mapA', 'v2-level': b'closed-v2-A\x00', 'manifest': b'manifestA'}
         with TemporaryDirectory() as folder:
-            paths = {}
-            for name, data in payloads.items():
-                paths[name] = Path(folder) / name
-                paths[name].write_bytes(data)
-            oracle = SnapshotOracle()
-            result = oracle.acquire(paths, {name: stream_digest(chunks(data)) for name, data in payloads.items()}, lambda *_: None)
-            self.assertEqual(dict(result), payloads)
+            payloads, paths, declared = fixture(folder)
+            oracle = SnapshotOracle(declared)
+            result = oracle.acquire(paths, lambda *_: None)
+            require_consumed_a(result, payloads)
             self.assertEqual(oracle.acquired, list(payloads))
             self.assertEqual(oracle.released, list(payloads))
             self.assertEqual(oracle.clear_calls, 1)
+            with self.assertRaisesRegex(ValueError, 'ownership epoch lost'):
+                oracle.require((oracle, oracle.epoch, 'manifest'))
+
+    def test_roster_and_aggregate_budget_reject_before_clear(self):
+        with TemporaryDirectory() as folder:
+            _, paths, declared = fixture(folder)
+            for names in ({}, {key: value for key, value in paths.items() if key != 'metadata'},
+                          dict(paths, extra=paths['manifest'])):
+                oracle = SnapshotOracle(declared)
+                with self.assertRaisesRegex(ValueError, 'frozen roster'):
+                    oracle.acquire(names, lambda *_: None)
+                self.assertEqual(oracle.clear_calls, 0)
+            for records in ({}, dict(declared, extra=declared['manifest']),
+                            {key: value for key, value in declared.items() if key != 'level-1'}):
+                with self.assertRaisesRegex(ValueError, 'mandatory frozen roster'):
+                    SnapshotOracle(records)
+            with self.assertRaisesRegex(ValueError, 'aggregate capacity'):
+                SnapshotOracle(declared, budget=max(size for _, size in declared.values()))
+            with self.assertRaises(ValueError):
+                SnapshotOracle(declared, levels=15)
+
+    def test_wrong_operation_token_and_ownership_loss(self):
+        with TemporaryDirectory() as folder:
+            _, paths, declared = fixture(folder)
+            for phase in ('acquire', 'hash', 'validate', 'decode'):
+                oracle = SnapshotOracle(declared)
+                def inject(at, name):
+                    if at == phase and name == 'manifest':
+                        oracle.owner.epoch += 1
+                with self.assertRaisesRegex(ValueError, 'ownership epoch lost'):
+                    oracle.acquire(paths, inject)
+                self.assertEqual(oracle.clear_calls, int(phase == 'decode'))
+                self.assertEqual(oracle.released, oracle.acquired)
+            oracle = SnapshotOracle(declared)
+            other = SnapshotOracle(declared)
+            def wrong_token(at, name):
+                if at == 'hash':
+                    oracle.require((other, other.epoch, name))
+            with self.assertRaisesRegex(ValueError, 'wrong operation'):
+                oracle.acquire(paths, wrong_token)
+            self.assertEqual(oracle.clear_calls, 0)
+
+    def test_fixed_sha_known_answers(self):
+        # Fixed SHA-256 known answers, independent of the parity oracle call.
+        self.assertEqual(stream_digest([]),
+                         ('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 0))
+        self.assertEqual(stream_digest([b'a', b'b', b'c']),
+                         ('ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad', 3))
 
     def test_binary_chunk_vectors_and_failure_not_empty(self):
         for size in (0, 1, 63, 64, 65, 65537, MAX_BYTES):
@@ -186,6 +301,12 @@ class GenerationContract(unittest.TestCase):
 
     def test_canonical_types_unicode_order_domains_and_cycles(self):
         self.assertEqual(canonical('é\x00'), b'S3:\xc3\xa9\x00')
+        self.assertEqual(canonical({'b': 1, 'a': False}), b'R2:S1:aFS1:bI1;')
+        self.assertEqual(canonical(16777214), b'I16777214;')
+        self.assertEqual(canonical(['civ13.world-handoff.intent.v1', {'owner': 'alice'}]),
+                         b'A2:S29:civ13.world-handoff.intent.v1R1:S5:ownerS5:alice')
+        self.assertEqual(canonical(['civ13.world-handoff.batch.v1', None]),
+                         b'A2:S28:civ13.world-handoff.batch.v1N')
         self.assertNotEqual(canonical('é'), canonical('e\u0301'))
         self.assertEqual(canonical({'b': 1, 'a': False}), canonical({'a': False, 'b': 1}))
         self.assertEqual(len({canonical(v) for v in (None, False, True, 0, 1, '1', [], {})}), 8)

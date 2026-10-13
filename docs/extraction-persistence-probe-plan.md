@@ -44,28 +44,43 @@ text units. Publication and account-domain CAS use separate reviewed contracts.
 ## Versioned offline reference source
 
 `tests/extraction/test_generation_contract.py` uses only Python standard-library
-temporary files and immutable byte copies. It never launches a process, loads a
+temporary files and counted immutable byte copies. It never launches a process, loads a
 native library, accesses production storage or claims host exclusion. It is a
 reference oracle for expected outcomes, not the chosen production snapshot ABI.
 All its assertions are authored, UNPARSED and UNRUN under the execution hold.
 
 Prepared cases:
 
-- Valid A/B byte sets and replace/truncate/delete/rename injections at acquire,
+- Opaque A/B byte labels and replace/truncate/delete/rename injections at acquire,
   hash, validation and decode: consume pinned A or refuse before the modeled
-  ClearMap boundary. A pathname hash followed by reopening changed B is detected
-  by the reference negative-control comparison.
+  ClearMap boundary. The correct and intentionally reopening decoder use the same
+  `PINNED_A_CONSUMPTION` assertion; the violating decoder must reach its named
+  failure. These byte labels are not native valid version-2 saves.
 - Partial acquisition failure tracks exact acquired/released member identities;
-  metadata, closed-v2 level and manifest share one modeled acquisition.
+  mandatory metadata, level and manifest labels share one modeled acquisition.
+  The frozen nonempty roster requires exact paths and all contiguous levels,
+  rejects missing/extra members, caps members at 16 and checks aggregate declared
+  and read-byte budgets before modeled ClearMap. Normal acquisition reads 4096-byte
+  chunks, not whole-file read_bytes. The deliberately violating decoder retains
+  read_bytes solely as its omission. Byte accounting is not measured resident
+  memory: immutable joins/copies, Python objects and fixtures add overhead.
+  Production whole-set storage/memory limits remain a separate reviewed gate.
+- Explicit operation/member tokens capture an epoch and refuse wrong-operation
+  reuse, ownership loss at each phase and post-release reuse. Loss before decode
+  refuses before ClearMap; loss after modeled ClearMap refuses consumption and
+  requires recovery. These tokens are model identities, not OS/host exclusion.
 - SHA-256 parity for empty, NUL/all-byte data, 63/64/65 byte lengths, more than
   64 KiB and the 1 MiB oracle limit, with strides 1/63/64/65/4096. Oversized chunk,
   capacity overflow, invalid chunk and reader exception reject rather than
-  returning an empty digest. This measures neither native streaming nor memory.
+  returning an empty digest. Fixed empty/abc known answers supplement same-library
+  chunk parity. This measures neither native streaming nor memory.
 - A proposed canonical tagged grammar distinguishes null/Boolean/integer/text/
   array/record; sorts UTF-8 keys; preserves normalization differences and NUL;
-  rejects surrogate, float, range and cyclic inputs. Acyclic intent-to-batch
+  rejects surrogate, float, range and cyclic inputs. Fixed record/numeric and
+  intent/batch domain byte preimages supplement round-trip parity. Acyclic intent-to-batch
   derivation and distinct domain inputs differ. It is not a reviewed schema or
-  duplicate/unknown-key decoder; those remain necessary production checks.
+  duplicate/unknown-key decoder; Python dict input cannot establish duplicate-key
+  rejection. Those remain necessary production checks.
 
 ## Separate acceptance gates after explicit execution release
 
