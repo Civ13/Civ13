@@ -17,6 +17,10 @@ on:
         description: 'Opt in to all existing game and offline regression suites'
         type: boolean
         default: false
+      rack_save_regressions:
+        description: 'Opt in only to the paid rack save probe and its six mutation controls'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -90,6 +94,43 @@ jobs:
         if: needs.changes.outputs.game == 'true'
         run: sudo bash ./scripts/travis_pre_byond.sh
         shell: bash
+
+      - name: Verify paid rack save and six mutation controls
+        if: github.event_name == 'workflow_dispatch' && inputs.rack_save_regressions
+        timeout-minutes: 20
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          evidence="$RUNNER_TEMP/rack-save"
+          mkdir -p "$evidence"
+          failed=0
+          for control in baseline coverage runtime storage stale-wait duplicate conversion; do
+            args=(--probe rack-save --byond-bin "$PWD/BYOND/byond/bin" --output "$evidence/$control")
+            if [[ "$control" != baseline ]]; then
+              args+=(--rack-control "$control")
+            fi
+            if /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}" > "$evidence/$control.log" 2>&1; then
+              printf '%s\tpassed\n' "$control" >> "$evidence/results.tsv"
+            else
+              printf '%s\tfailed\n' "$control" >> "$evidence/results.tsv"
+              failed=1
+            fi
+            cat "$evidence/$control.log"
+          done
+          cat "$evidence/results.tsv"
+          exit "$failed"
+      - name: Upload paid rack save evidence
+        if: always() && github.event_name == 'workflow_dispatch' && inputs.rack_save_regressions
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: rack-save-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/rack-save/
+            !${{ runner.temp }}/rack-save/**/*.dmb
+            !${{ runner.temp }}/rack-save/**/*.rsc
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Verify optional player help bridge and native negative controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/player_help')
