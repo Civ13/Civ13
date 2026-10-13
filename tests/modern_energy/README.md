@@ -1,5 +1,9 @@
 # Modern energy contracts
 
+See [FUEL_ACCEPTANCE.md](FUEL_ACCEPTANCE.md) for the source-only nuclear
+acquisition/processing acceptance design. It is not an executable or passing
+route test; player fuel acquisition remains blocked on the radiation owner.
+
 Run `scripts/check-battery-items.py --probe modern-energy` with BYOND 516.1681
 compiler/runtime paths. Add `--negative-control` to omit the solar charge debit in
 a generated copy only; the duplicate-charge assertion must then fail.
