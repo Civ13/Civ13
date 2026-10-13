@@ -156,6 +156,9 @@
 		qdel(S)
 
 /proc/extraction_surface_inventory_probe(obj/map_metadata/extraction_survival/M)
+	var/datum/extraction_account_store/original_store = M.accounts.store
+	var/list/original_sessions = M.accounts.sessions
+	M.accounts.sessions = list()
 	var/obj/item/extraction_salvage/unidentified = new(null)
 	var/datum/extraction_surface_service/missing_id = new(M, "data/surface_missing_identity/")
 	equipment_assert(!missing_id.discover_world_roots(list(unidentified)) && !unidentified.extraction_item_id && missing_id.discovery_locked, "surface loaded identity discovery never mints missing item identity")
@@ -166,8 +169,6 @@
 	var/datum/extraction_surface_service/complete = new(M, "data/surface_complete_inventory/")
 	equipment_assert(complete.begin_world_inventory(1) && complete.feed_loaded_level(1, list()) && complete.finish_world_inventory() && complete.world_inventory_complete, "surface complete world level feed seals only world inventory")
 	equipment_assert(complete.inventory_incomplete(), "surface world completion cannot authorize missing account auxiliary feeds")
-	var/datum/extraction_account_store/original_store = M.accounts.store
-	var/list/original_sessions = M.accounts.sessions
 	var/datum/extraction_account_store/accounts = new
 	accounts.root = "data/surface_account_inventory/"
 	M.accounts.store = accounts
@@ -195,6 +196,7 @@
 	equipment_assert(pending.begin_account_inventory() && !pending.account_inventory_batch() && pending.discovery_locked, "surface newest pending account blocks inventory without rollback")
 	equipment_assert(pending.abandon_account_inventory(), "failed pending census releases only on explicit abandonment")
 	extraction_surface_auxiliary_probe(M, accounts)
+	extraction_home_replica_probe(M)
 	M.accounts.store = original_store
 	M.accounts.sessions = original_sessions
 
@@ -266,3 +268,56 @@
 	equipment_assert(wrong.begin_account_inventory() && wrong.account_inventory_batch() && wrong.account_inventory_recheck_batch() && wrong.begin_auxiliary_inventory() && wrong.auxiliary_inventory_batch() && wrong.auxiliary_inventory_verify_batch() && !wrong.finish_auxiliary_inventory_batch() && wrong.discovery_locked, "auxiliary mismatched active mail identity fails closed")
 	equipment_assert(wrong.abandon_account_inventory(), "mismatched mail retains lease until abandonment")
 	M.accounts.store = accounts
+
+/proc/extraction_home_replica_probe(obj/map_metadata/extraction_survival/M)
+	var/datum/extraction_account_store/previous_store = M.accounts.store
+	var/datum/extraction_account_store/accounts = new
+	accounts.root = "data/surface_home_replicas/"
+	M.accounts.store = accounts
+	var/obj/effect/extraction_house_marker/house
+	for (var/obj/effect/extraction_house_marker/H in extraction_house_markers)
+		if (!H.session && !H.replica_owner)
+			house = H
+			break
+	equipment_assert(house && istype(get_turf(house), /turf/floor/plating/extraction_house), "replica fixture uses actual unoccupied private home")
+	var/obj/item/extraction_salvage/I = new(get_turf(house))
+	I.extraction_found_in_raid = TRUE
+	var/list/graph = M.codec.encode(I)
+	var/list/P = accounts.load_profile("replicaowner")
+	P["stash"] = list(list("id" = I.extraction_item_id, "equipment" = graph))
+	equipment_assert(accounts.commit_profile("replicaowner", P), "replica fixture commits actual account graph")
+	var/datum/extraction_surface_service/V = new(M, "data/surface_home_scan/")
+	equipment_assert(V.bind_home_replica("replicaowner", house, list(I)), "replica contract durably binds actual graph owner revision and placement")
+	equipment_assert(V.begin_account_inventory() && V.account_inventory_batch() && V.account_inventory_recheck_batch(), "replica account census reads durable binding")
+	equipment_assert(V.begin_auxiliary_inventory() && V.auxiliary_inventory_batch() && V.auxiliary_inventory_verify_batch() && V.finish_auxiliary_inventory_batch() && V.auxiliary_inventory_complete, "replica fixture seals actual empty auxiliary records")
+	var/list/ids = V.graph_ids(graph, 2048)
+	equipment_assert(V.approved_home_replica(I, graph, ids), "identical approved private-home replica accepted")
+	house.replica_owner = "wrongowner"
+	equipment_assert(!V.approved_home_replica(I, graph, ids), "private-home replica wrong owner rejected")
+	house.replica_owner = "replicaowner"
+	house.replica_revision++
+	equipment_assert(!V.approved_home_replica(I, graph, ids), "private-home replica stale revision rejected")
+	house.replica_revision--
+	I.extraction_found_in_raid = FALSE
+	equipment_assert(!V.approved_home_replica(I, M.codec.encode(I, FALSE), ids), "private-home replica changed graph rejected")
+	I.extraction_found_in_raid = TRUE
+	var/turf/original = I.loc
+	I.forceMove(get_step(original, NORTH))
+	equipment_assert(!V.approved_home_replica(I, graph, ids), "private-home replica wrong placement rejected")
+	I.forceMove(original)
+	equipment_assert(V.begin_world_inventory(1) && V.feed_loaded_level(1, list(I)) && V.finish_world_inventory() && V.canonical_home_roots[I.extraction_item_id] == I, "replica census joins one approved account and actual world root")
+	equipment_assert(V.inventory_incomplete() && !V.current_world_complete, "saved replica feed cannot authorize incomplete fresh-world census")
+	var/obj/item/copy = M.codec.decode(graph, original)
+	equipment_assert(copy && !V.discover_world_roots(list(copy)) && V.discovery_locked, "second physical private-home replica rejected")
+	equipment_assert(V.abandon_account_inventory(), "replica scan releases fence only on explicit abandonment")
+	qdel(copy)
+	qdel(I)
+	var/datum/extraction_surface_service/stale = new(M, "data/surface_stale_load/")
+	equipment_assert(stale.begin_world_inventory(1) && stale.feed_loaded_level(1, list()), "stale barrier fixture records actual empty feed")
+	stale.world_inventory_stamp--
+	equipment_assert(!stale.finish_world_inventory() && stale.discovery_locked, "stale world load barrier cannot seal census")
+	// Fixture cleanup only; no production unbinding or replica retirement path.
+	house.replica_owner = null
+	house.replica_revision = 0
+	house.replica_digest = null
+	M.accounts.store = previous_store

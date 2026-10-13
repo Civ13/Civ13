@@ -452,6 +452,11 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	if (!S)
 		to_chat(H, "Account unavailable: [accounts.last_error]")
 		return FALSE
+	// A durable replica binding blocks decode even when no surface service is
+	// installed. Clearing it requires an explicit future retirement contract.
+	if (!isnull(S.profile["home_replica"]))
+		S.close()
+		return FALSE
 	S.body = H
 	S.house = house
 	house.session = S

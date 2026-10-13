@@ -43,6 +43,12 @@
 	var/world_inventory_complete = FALSE
 	var/list/world_inventory_levels = list()
 	var/world_inventory_expected = 0
+	var/world_inventory_stamp
+	var/world_inventory_map
+	var/list/world_inventory_dimensions
+	var/list/world_root_snapshots = list()
+	var/world_verify_cursor = 1
+	var/current_world_complete = FALSE
 	var/list/account_inventory_names
 	var/list/account_inventory_digests = list()
 	var/account_inventory_cursor = 1
@@ -67,9 +73,14 @@
 		if (enabled || discovery_locked || world_inventory_started || discovered_ids.len || !isnum(levels) || round(levels) != levels || levels < 1 || levels > 16) return discovery_fail()
 		world_inventory_started = TRUE
 		world_inventory_expected = levels
+		world_inventory_stamp = world.time
+		world_inventory_map = metadata
+		world_inventory_dimensions = list(world.maxx, world.maxy, world.maxz, metadata.ID)
 		return TRUE
+	proc/world_inventory_barrier_valid()
+		return world_inventory_started && world_inventory_map == metadata && world_inventory_stamp == world.time && json_encode(world_inventory_dimensions) == json_encode(list(world.maxx, world.maxy, world.maxz, metadata.ID)) && !metadata.accounts.sessions.len
 	proc/feed_loaded_level(level, list/loaded)
-		if (!world_inventory_started || discovery_locked || world_inventory_complete || !islist(loaded) || !isnum(level) || round(level) != level || level < 1 || level > world_inventory_expected || world_inventory_levels["[level]"]) return discovery_fail()
+		if (!world_inventory_barrier_valid() || discovery_locked || world_inventory_complete || !islist(loaded) || !isnum(level) || round(level) != level || level < 1 || level > world_inventory_expected || world_inventory_levels["[level]"]) return discovery_fail()
 		var/list/batch = list()
 		for (var/index in 1 to loaded.len)
 			var/datum/D = loaded[index]
@@ -98,7 +109,18 @@
 		world_inventory_levels["[level]"] = TRUE
 		return TRUE
 	proc/finish_world_inventory()
-		if (discovery_locked || !world_inventory_started || world_inventory_levels.len != world_inventory_expected) return discovery_fail()
+		if (discovery_locked || !world_inventory_barrier_valid() || world_inventory_levels.len != world_inventory_expected) return discovery_fail()
+		if (world_verify_cursor <= discovered_roots.len)
+			var/last = min(discovered_roots.len, world_verify_cursor + 15)
+			for (var/index in world_verify_cursor to last)
+				var/id = discovered_roots[index]
+				var/obj/item/I = discovered_roots[id]
+				if (!I) return discovery_fail()
+				var/list/graph = metadata.codec.encode(I, FALSE)
+				if (!graph || extraction_sha256(json_encode(graph)) != world_root_snapshots[id]["digest"] || json_encode(list(REF(I.loc), I.x, I.y, I.z)) != world_root_snapshots[id]["placement"]) return discovery_fail()
+				if (canonical_home_roots[id] && !approved_home_replica(I, graph, graph_ids(graph, 2048))) return discovery_fail()
+			world_verify_cursor = last + 1
+			if (world_verify_cursor <= discovered_roots.len) return TRUE
 		world_inventory_complete = TRUE
 		return TRUE
 	proc/account_directories()
@@ -130,7 +152,7 @@
 		return account_inventory_lease.store.release_read_lease(account_inventory_lease)
 	proc/account_profile_ids(list/P)
 		var/datum/extraction_account_store/A = metadata.accounts.store
-		if (!P || !A.valid_profile(P, P["owner"]) || !P["revision"] || P["state"] != "home" || P["pending_delivery"] || P["pending_item"] || P["loot_state"] == "pending" || P["unlock_state"] == "pending" || (islist(P["garage_purchase"]) && P["garage_purchase"]["status"] == "pending")) return null
+		if (!P || !A.valid_profile(P, P["owner"]) || !home_replica_valid(P) || !P["revision"] || P["state"] != "home" || P["pending_delivery"] || P["pending_item"] || P["loot_state"] == "pending" || P["unlock_state"] == "pending" || (islist(P["garage_purchase"]) && P["garage_purchase"]["status"] == "pending")) return null
 		var/list/entries = P["stash"].Copy()
 		if (!isnull(P["insurance_mailbox"]))
 			if (!islist(P["insurance_mailbox"])) return null
@@ -190,7 +212,7 @@
 		return account_inventory_verify_cursor
 	proc/inventory_incomplete()
 		// Each read-only ownership portion must seal under the same account lease.
-		return (world_inventory_started || islist(account_inventory_names)) && (!world_inventory_complete || !account_inventory_complete || !account_inventory_lease_valid() || !auxiliary_inventory_complete)
+		return (world_inventory_started || islist(account_inventory_names)) && (!world_inventory_complete || !current_world_complete || !account_inventory_complete || !account_inventory_lease_valid() || !auxiliary_inventory_complete)
 	proc/account_inventory_batch()
 		if (enabled || discovery_locked || !islist(account_inventory_names) || !account_inventory_lease_valid() || account_inventory_complete || metadata.accounts.sessions.len) return discovery_fail()
 		if (account_inventory_cursor > account_inventory_names.len) return account_inventory_cursor
@@ -202,6 +224,7 @@
 			if (!ids || account_ids.len + ids.len > 2048) return discovery_fail()
 			for (var/id in ids)
 				if (account_ids[id] || discovered_ids[id] || epoch_profile && epoch_profile["surface_retired_ids"]?[id]) return discovery_fail()
+			if (!index_home_replica(P)) return discovery_fail()
 			for (var/id in ids) account_ids[id] = TRUE
 			account_inventory_digests[owner] = md5(json_encode(P))
 		account_inventory_cursor = last + 1
@@ -475,8 +498,9 @@
 			if (!ids || discovered_ids.len + ids.len > 2048)
 				discovery_locked = TRUE
 				return FALSE
+			var/approved_replica = account_ids[I.extraction_item_id] && approved_home_replica(I, graph, ids)
 			for (var/id in ids)
-				if (discovered_ids[id] || account_ids[id])
+				if (discovered_ids[id] || (account_ids[id] && !approved_replica))
 					discovery_locked = TRUE
 					return FALSE
 			for (var/id in ids)
@@ -485,6 +509,8 @@
 					return FALSE
 			for (var/id in ids) discovered_ids[id] = I
 			discovered_roots[I.extraction_item_id] = I
+			world_root_snapshots[I.extraction_item_id] = list("digest" = extraction_sha256(json_encode(graph)), "placement" = json_encode(list(REF(I.loc), I.x, I.y, I.z)))
+			if (account_replica_roots[I.extraction_item_id]) canonical_home_roots[I.extraction_item_id] = I
 		return TRUE
 	proc/discover_account_entries(list/entries)
 		if (discovery_locked || !islist(entries) || entries.len > 16 || !ensure_epoch()) return FALSE
