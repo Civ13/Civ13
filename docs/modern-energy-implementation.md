@@ -16,9 +16,13 @@ state. Night, unknown labels and indoor areas yield zero. The existing solar_scr
 DMI state represents the controller, not a new panel sprite or gameplay capture.
 The proposed 30-PU midday rating remains unverified balance pending native tests.
 
-Production contract fixtures and an omitted-charge-debit negative control are
-prepared for remote opt-in CI. They have not yet run. Nuclear still requires abstract-fuel
-machinery with finite coolant, controls, wear and maintenance. No global radiation
+Production contract fixtures and an omitted-charge-debit negative control run in
+remote opt-in CI. Early runs found and corrected fixture era/port-qualification
+errors; no passing exact-head native result is claimed until the complete run passes.
+The nuclear source draft now models finite sealed fuel, water coolant, low/high
+controls, material maintenance and bounded same-area/same-z local heat effects.
+It has no player crafting or fuel acquisition route and remains unavailable.
+No global radiation
 flag, radiation sweep or existing radioactive ore behavior may be assumed safe.
 Local hazards require explicit distance, z-level, interior and cancellation tests.
 

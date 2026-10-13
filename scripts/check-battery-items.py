@@ -19,9 +19,12 @@ def main():
     parser.add_argument("--runtime", default="DreamDaemon")
     parser.add_argument("--probe", choices=("batteries", "modern-energy"), default="batteries")
     parser.add_argument("--negative-control", action="store_true")
+    parser.add_argument("--nuclear-negative-control", action="store_true")
     args = parser.parse_args()
-    if args.negative_control and args.probe != "modern-energy":
+    if (args.negative_control or args.nuclear_negative_control) and args.probe != "modern-energy":
         parser.error("The charge-debit negative control requires modern-energy")
+    if args.negative_control and args.nuclear_negative_control:
+        parser.error("Run each negative control independently")
     callback = "run_battery_item_checks" if args.probe == "batteries" else "run_modern_energy_checks"
     root = Path(__file__).resolve().parents[1]
     # Assets/includes are resolved relative to the checkout; runtime storage is isolated.
@@ -50,11 +53,18 @@ def main():
             raise RuntimeError("Expected to remove game maps")
         probe_file = "tests/batteries/items.dm" if args.probe == "batteries" else "tests/modern_energy/probe.dm"
         dme += f'\n#include "{root.as_posix()}/{probe_file}"\n'
+        if args.probe == "modern-energy":
+            dme += f'\n#include "{root.as_posix()}/tests/modern_energy/nuclear.dm"\n'
         if args.negative_control:
             generator = (root / "code/modules/1713/machinery/modern_generation.dm").read_text(encoding="utf-8")
             generator = replace_once(generator, "\tcharge_power += transfer", "\t// Negative control: omitted charge debit")
             (build / "generation.dm").write_text(generator, encoding="utf-8")
             dme = replace_once(dme, '#include "code\\modules\\1713\\machinery\\modern_generation.dm"', f'#include "{build.as_posix()}/generation.dm"')
+        if args.nuclear_negative_control:
+            nuclear = (root / "code/modules/1713/machinery/nuclear_generation.dm").read_text(encoding="utf-8")
+            nuclear = replace_once(nuclear, "\t\tfuel_energy -= output_power", "\t\t// Negative control: omitted fuel prepayment")
+            (build / "nuclear.dm").write_text(nuclear, encoding="utf-8")
+            dme = replace_once(dme, '#include "code\\modules\\1713\\machinery\\nuclear_generation.dm"', f'#include "{build.as_posix()}/nuclear.dm"')
         # Preserve resource lookup from original includes.
         dme = dme.replace('#define FILE_DIR .', f'#define FILE_DIR "{root.as_posix()}"')
         dme = re.sub(r'^#include "([^/":][^":]*)"', lambda m: f'#include "{root.as_posix()}/{m[1].replace(chr(92), "/")}"', dme, flags=re.M)
@@ -83,6 +93,8 @@ def main():
             return 1
         if args.negative_control:
             return 0 if "duplicate charge cannot mint energy" in output and output.rstrip().endswith("FAIL") else 1
+        if args.nuclear_negative_control:
+            return 0 if "FAIL fuel prepaid" in output and output.rstrip().endswith("FAIL") else 1
         return 0 if output.rstrip().endswith("PASS") else 1
 
 if __name__ == "__main__":

@@ -871,6 +871,7 @@
 #include "code\modules\1713\machinery\cables.dm"
 #include "code\modules\1713\machinery\batteries.dm"
 #include "code\modules\1713\machinery\modern_generation.dm"
+#include "code\modules\1713\machinery\nuclear_generation.dm"
 #include "code\modules\1713\machinery\cables_types.dm"
 #include "code\modules\1713\machinery\cell.dm"
 #include "code\modules\1713\machinery\conveyor2.dm"
