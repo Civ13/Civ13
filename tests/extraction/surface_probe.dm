@@ -61,6 +61,7 @@
 	qdel(F)
 	qdel(B)
 	extraction_surface_custody_probe(M, H)
+	extraction_surface_discovery_fence_probe(M, H)
 
 /proc/extraction_surface_custody_probe(obj/map_metadata/extraction_survival/M, mob/living/human/H)
 	var/datum/extraction_surface_service/V = new(M, "data/surface_custody_fixture/")
@@ -126,3 +127,24 @@
 	M.game_over = old_over
 	qdel(S)
 	qdel(R)
+
+/proc/extraction_surface_discovery_fence_probe(obj/map_metadata/extraction_survival/M, mob/living/human/H)
+	for (var/kind in list("malformed", "account", "world"))
+		var/datum/extraction_surface_service/V = new(M, "data/surface_fence_[kind]/")
+		V.enabled = TRUE
+		var/obj/effect/extraction_surface_source/S = new(get_turf(H))
+		S.source_id = 1
+		S.pool_id = "repair_parts"
+		equipment_assert(V.register_source(S) && V.prepare_source(S), "surface discovery fence has private durable plan")
+		var/obj/item/loaded
+		if (kind == "malformed")
+			equipment_assert(!V.discover_world_roots(list("invalid")), "surface fence malformed input rejected")
+			equipment_assert(!V.prepare_source(S), "surface discovery failure blocks planning mutation")
+		else if (kind == "account")
+			equipment_assert(V.discover_account_entries(list(S.profile["surface_entry"])), "surface fence accepts authoritative account graph input")
+		else
+			loaded = M.codec.decode(S.profile["surface_entry"]["equipment"], null)
+			equipment_assert(loaded && V.discover_world_roots(list(loaded)), "surface fence accepts actual loaded graph input")
+		equipment_assert(!V.materialize_source(S) && !S.live_root && S.profile["surface_state"] == "planned", "surface discovery conflict never exposes or issues planned duplicate")
+		if (loaded) qdel(loaded)
+		qdel(S)

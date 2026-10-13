@@ -85,7 +85,7 @@
 			if (support.type == expected && support.anchored) return TRUE
 		return FALSE
 	proc/ensure_epoch()
-		if (locked) return FALSE
+		if (locked || discovery_locked) return FALSE
 		if (epoch_profile) return TRUE
 		epoch_profile = store.load_profile("epoch")
 		if (!epoch_profile) return quarantine(null)
@@ -109,7 +109,7 @@
 			if ("repair_parts") return /obj/item/extraction_salvage
 		return null
 	proc/prepare_source(obj/effect/extraction_surface_source/S)
-		if (!enabled || locked || !S || S.busy || !S.pool_enabled() || !support_valid(S) || !ensure_epoch()) return FALSE
+		if (!enabled || locked || discovery_locked || !S || S.busy || !S.pool_enabled() || !support_valid(S) || !ensure_epoch()) return FALSE
 		if (!S.profile) S.profile = store.load_profile("source[S.source_id]")
 		if (!S.profile) return quarantine(S)
 		if (S.profile["raid_sequence"] != epoch_profile["raid_sequence"] && S.profile["surface_state"])
@@ -160,7 +160,7 @@
 		P["surface_state"] = "planned"
 		return commit_source(S, P)
 	proc/materialize_source(obj/effect/extraction_surface_source/S)
-		if (!enabled || locked || !S || S.busy || !S.pool_enabled() || !support_valid(S) || !ensure_epoch() || !S.profile || S.profile["surface_state"] != "planned") return FALSE
+		if (!enabled || locked || discovery_locked || !S || S.busy || !S.pool_enabled() || !support_valid(S) || !ensure_epoch() || !S.profile || S.profile["surface_state"] != "planned") return FALSE
 		if (S.profile["raid_sequence"] != epoch_profile["raid_sequence"] || S.profile["surface_pool"] != S.pool_id || S.live_root) return quarantine(S)
 		var/list/stash = S.profile["stash"]
 		if (!islist(stash) || stash.len != 1) return quarantine(S)
@@ -170,7 +170,7 @@
 		var/list/ids = graph_ids(graph)
 		if (!ids || issued_ids.len + ids.len > 2048) return quarantine(S)
 		for (var/id in ids)
-			if (issued_ids[id]) return quarantine(S)
+			if (issued_ids[id] || discovered_ids[id] || account_ids[id]) return quarantine(S)
 		for (var/id in ids) issued_ids[id] = S.source_id
 		var/list/P = json_decode(json_encode(S.profile))
 		P["surface_state"] = "materializing"
@@ -199,7 +199,7 @@
 		S.busy = FALSE
 		return TRUE
 	proc/claim_root(obj/effect/extraction_surface_source/S, mob/living/human/H, obj/item/I)
-		if (!enabled || locked || !S || !I || S.busy || !support_valid(S) || !S.profile || S.profile["surface_state"] != "issued" || I != S.live_root || I.extraction_surface_source != S || I.loc != get_turf(S)) return FALSE
+		if (!enabled || locked || discovery_locked || !S || !I || S.busy || !support_valid(S) || !S.profile || S.profile["surface_state"] != "issued" || I != S.live_root || I.extraction_surface_source != S || I.loc != get_turf(S)) return FALSE
 		if (!metadata.owned(H) || H.stat != CONSCIOUS || H.lying || H.get_active_hand() || !S.Adjacent(H) || H.z != S.z || H.extraction_session.locked || H.extraction_session.transitioning || H.extraction_session.profile["state"] != "raid" || metadata.round_closing) return FALSE
 		var/list/entry = S.profile["stash"][1]
 		if (!entry_valid(S, entry) || entry["id"] != I.extraction_item_id || !reconcile_source(S)) return quarantine(S)
@@ -342,7 +342,7 @@
 			if (!reconcile_source(sources[key])) return FALSE
 		return last + 1
 	proc/forfeit_source(obj/effect/extraction_surface_source/S)
-		if (!enabled || locked || !S || S.busy || S.quarantined || !metadata.round_closing || !S.profile) return FALSE
+		if (!enabled || locked || discovery_locked || !S || S.busy || S.quarantined || !metadata.round_closing || !S.profile) return FALSE
 		if (S.profile["surface_state"] in list("claimed", "forfeited")) return !S.live_root
 		if (!(S.profile["surface_state"] in list("planned", "issued")) || !reconcile_source(S)) return quarantine(S)
 		S.busy = TRUE
@@ -391,7 +391,7 @@
 	proc/advance_epoch(expected)
 		// Deliberately restrictive: unresolved issued/forfeited roots require a
 		// future authoritative reconciliation path, not a refill or refund.
-		if (!enabled || locked || !ensure_epoch() || expected != epoch_profile["raid_sequence"] || expected >= 1000000 || !metadata.game_over || !metadata.round_closing || metadata.accounts.sessions.len) return FALSE
+		if (!enabled || locked || discovery_locked || !ensure_epoch() || expected != epoch_profile["raid_sequence"] || expected >= 1000000 || !metadata.game_over || !metadata.round_closing || metadata.accounts.sessions.len) return FALSE
 		var/list/manifest = epoch_profile["surface_sources"]
 		if (!islist(manifest) || manifest.len > 128) return FALSE
 		for (var/id in manifest)
