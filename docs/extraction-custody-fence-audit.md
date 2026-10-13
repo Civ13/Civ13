@@ -142,3 +142,33 @@ case. Proposed coverage should set the reservation after a successful capture,
 require refusal with unchanged physical locations, then release it and verify
 the original graph is eligible again. Both controls remain proposals here;
 neither production hooks nor knowingly failing fixture assertions were added.
+
+### Serializer review: validation and constructor exposure
+
+Vehicle cargo encoding currently calls `equipment.encode(I)` with its default
+`assign_new_ids = TRUE`. Both `capture` and `current` therefore can issue missing
+IDs while checking eligibility, even if the resulting transfer is refused. The
+read-only census uses `encode(FALSE)`; that property does not extend to these
+vehicle paths. The coordinated hook must distinguish authorized issuance from
+read-only comparison at `vehicle_cargo.dm::encode`, propagate that mode through
+equipment traversal, and reject a missing ID without minting during validation.
+Required negative controls clear a captured child's ID and introduce a previously
+unissued child, then verify refusal preserves the missing ID, locations, journal
+and account credit. The existing nonempty-ID drift assertion covers neither case.
+
+`equipment.dm::decode` calls `new path(destination)` for non-stack items before
+`created += I`. A constructor may place/register the root or create defaults
+before returning; checks around `new` and enrollment after return alone do not
+account for those effects across re-entry or a yielding constructor. Operation
+identity and default-child enrollment must exist at the creation boundary, or
+construction must be isolated with audited callback/registration constraints
+and complete quarantine accounting before exposure. Apply the same requirement
+to vehicle construction. This remains a source-derived risk, not evidence that
+every constructor yields.
+
+The proposed typed permit must pin the operation epoch, member/root identity,
+authority and revision; propagate through recursion and waits; check immediately
+before irreversible writes and after callbacks; and record partial effects for
+recovery while rejecting replay. The shared saver's declared-transfer API is a
+separate contract and is not an implemented global custody permit. Serializer
+review accepts this document as an inventory proposal, with these gaps open.
