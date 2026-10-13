@@ -18,6 +18,11 @@
 	if(!world.params["visual"])
 		OpenPort("none")
 	return ..()
+/world/Error(exception/error, datum/error_source)
+	// Startup can fail before the production runtime-log directory is initialized.
+	var/location = istype(error) ? " ([error.file]:[error.line])" : ""
+	text2file("BOAT runtime error: [error][location]", "boat-runtime-error.txt")
+	return ..()
 var/global/datum/boat_game_probe/boat_game_probe = new
 /datum/boat_game_probe
 	var/list/blast_points = list()
@@ -305,7 +310,7 @@ var/global/datum/boat_game_probe/boat_game_probe = new
 /datum/boat_game_probe/proc/run_tests()
 	try
 		if(!map || !ticker)
-			throw EXCEPTION("Map/ticker unavailable")
+			throw EXCEPTION("Map/ticker unavailable: map=[!!map], ticker=[!!ticker], scheduler=[!!processScheduler], world.time=[world.time]")
 		world.name = "Civ13 LOCAL boat verification"
 		// Prepare only this temporary world's capture area; no production storage.
 		for(var/x in 32 to 58)
