@@ -11,6 +11,13 @@
 	var/list/cargo = list()
 	var/list/cargo_record
 	var/with_cargo = FALSE
+	var/list/cargo_roster
+	persistence_runtime_var(key)
+		if (key in list("axis", "origin", "parts", "locations", "tiles", "consumed", "last_error", "cargo", "cargo_record", "with_cargo", "cargo_roster")) return TRUE
+		return ..()
+	proc/clear_cargo_snapshot()
+		cargo_record = null
+		cargo_roster = null
 	proc/fail(message)
 		last_error = message
 		return FALSE
@@ -32,7 +39,9 @@
 			for (var/atom/movable/nested in child.contents)
 				if (!istype(nested, /atom/movable/lighting_overlay)) return fail("Unexpected nested [nested.type] in [child.type]")
 		return TRUE
-	proc/capture(obj/structure/vehicleparts/axis/A, include_cargo = FALSE)
+	// Ordinary capture validates existing identity. Initial codec acquisition opts
+	// into the legacy issuance path; its atomic issuance boundary remains deferred.
+	proc/capture(obj/structure/vehicleparts/axis/A, include_cargo = FALSE, assign_new_ids = FALSE, mutate_persistence = FALSE)
 		last_error = null
 		axis = null
 		parts.Cut()
@@ -40,7 +49,7 @@
 		tiles.Cut()
 		consumed = FALSE
 		cargo.Cut()
-		cargo_record = null
+		clear_cargo_snapshot()
 		with_cargo = include_cargo
 		if (A?.key_service_busy) return fail("Vehicle key service is reserved")
 		if (!A || A.vehicle_type != "car" || A.moving || A.currentspeed || A.movement_processes || A.transforming_vehicle || A.driver || !A.engine || A.engine.on || !A.components.len || A.components.len > 16) return FALSE
@@ -60,10 +69,14 @@
 				locations[O] = T
 		axis = A
 		var/datum/extraction_vehicle_cargo/C = new
-		cargo_record = C.encode(A, cargo)
-		if (isnull(cargo_record)) return fail("Unsupported or over-capacity boot cargo")
+		cargo_roster = list()
+		cargo_record = C.encode(A, cargo, assign_new_ids, cargo_roster, mutate_persistence)
+		if (isnull(cargo_record))
+			clear_cargo_snapshot()
+			return fail("Unsupported or over-capacity boot cargo")
 		return TRUE
 	proc/current()
+		if (axis?.key_service_busy) return FALSE
 		if (!axis || consumed || !axis.engine || get_turf(axis) != origin || axis.moving || axis.currentspeed || axis.movement_processes || axis.transforming_vehicle || axis.driver || axis.engine.on) return FALSE
 		var/count = 0
 		for (var/turf/T in tiles)
@@ -72,8 +85,9 @@
 				if (!(O in parts) || locations[O] != T || !linked(O, axis)) return FALSE
 				count++
 		var/datum/extraction_vehicle_cargo/C = new
-		var/list/current_cargo = C.encode(axis, cargo)
-		return count == parts.len && !isnull(current_cargo) && json_encode(current_cargo) == json_encode(cargo_record)
+		var/list/live_roster = list()
+		var/list/current_cargo = C.encode(axis, cargo, FALSE, live_roster, FALSE)
+		return count == parts.len && !isnull(current_cargo) && C.same_roster(cargo_roster, live_roster) && json_encode(current_cargo) == json_encode(cargo_record)
 	proc/destination_tiles(turf/destination)
 		if (!destination || !current()) return null
 		var/list/targets = list()
@@ -86,13 +100,17 @@
 		return targets
 	proc/relocate(turf/destination)
 		var/list/targets = destination_tiles(destination)
-		if (!targets) return FALSE
+		if (!targets || axis?.key_service_busy) return FALSE
 		// No waits or constructors after preflight. Keep the actual engine, tank,
 		// damage, seats and nested steering/controller objects in the same graph.
 		consumed = TRUE
+		clear_cargo_snapshot()
 		axis.transporting.Cut()
 		axis.matrix_current_locs.Cut()
 		for (var/atom/movable/O in parts) O.forceMove(targets[locations[O]])
 		axis.check_corners()
 		axis.check_matrix()
 		return TRUE
+	Destroy()
+		clear_cargo_snapshot()
+		return ..()

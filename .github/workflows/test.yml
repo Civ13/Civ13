@@ -155,6 +155,10 @@ jobs:
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe groups --group-negative-control fee
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-loss-negative-control
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-custody-negative-control roster
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-custody-negative-control reservation
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-custody-negative-control issuance
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-custody-negative-control persistence
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --vehicle-purchase-negative-control
             /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --vehicle-raid-negative-control debit
             /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --vehicle-raid-negative-control credit

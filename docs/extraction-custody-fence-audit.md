@@ -172,3 +172,35 @@ before irreversible writes and after callbacks; and record partial effects for
 recovery while rejecting replay. The shared saver's declared-transfer API is a
 separate contract and is not an implemented global custody permit. Serializer
 review accepts this document as an inventory proposal, with these gaps open.
+
+### Narrow vehicle stale-capture source implementation
+
+The subsequent source patch adds a bounded actual-member/parent/reference/list
+roster to vehicle cargo snapshots, including the native wheel inside a wheel
+crate. Validation compares that roster and serialized state, rechecks key-service
+reservations, and passes `assign_new_ids = FALSE`. Default capture also refuses
+unissued cargo. Reset, consumed transfer and destruction release cargo rosters;
+all transfer snapshot fields explicitly opt out of custom persistence.
+Equipment encoding preserves its existing defaults and adds an independent
+`mutate_persistence` option; vehicle validation explicitly disables it, preserving
+all item `should_save` flags on both acceptance and refusal. ID issuance and
+persistence mutation are separate options.
+
+Cargo's bounded member traversal rejects installed generator kits before calling
+the equipment codec, avoiding `snapshot_installation`'s live broken-state refresh.
+Portable kits still use the accepted equipment schema. This is a local eligibility
+restriction, not a change to shared equipment serialization or a global fence.
+The initial vehicle codec explicitly selects its existing issuance behavior;
+that legacy subpath still lacks reviewed atomic refusal/rollback/quarantine
+semantics and remains an activation blocker. No new issuance transaction or
+global identity-sequence rollback was implemented.
+
+`tests/extraction/vehicle_custody_probe.dm` uses the native assembled-car fixture
+to isolate equal-value replacement with encoded equality, exact location
+conservation, restoration, post-capture reservation, cleared/unissued IDs,
+generator refresh refusal and runtime-field exclusion/reset. The existing runner
+adds generated-source omission controls for roster comparison, reservation,
+non-issuance and persistence mutation; each requires its named assertion and rejects unrelated errors.
+These are source changes awaiting independent review and remote/native execution.
+The new executable test selects the existing extraction suite through introduced
+tests; the existing CI extraction step includes all four omission controls.
