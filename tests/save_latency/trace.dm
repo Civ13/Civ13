@@ -40,3 +40,8 @@ var/latency_stage = "startup"
 	var/start = latency_trace_time()
 	S.vars[field] = list()
 	latency_trace_end(start, "reset [field] length=[count]")
+
+/proc/latency_entry_path(map_storage/S, savefile/F, ref)
+	var/start = latency_trace_time()
+	. = S.entry_path(F, ref)
+	latency_trace_end(start, "entry_path [ref]")

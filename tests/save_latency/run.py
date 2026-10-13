@@ -56,6 +56,9 @@ def main():
             traced = traced.replace('var/list/edges = list()', 'latency_stage = "edges"\n\t\tvar/list/edges = list()')
             traced = re.sub(r'(?m)^([ \t]*)(saving_\w+|existing_references|found_types) = list\(\)$',
                 lambda match: match[1] + 'latency_reset(src, "' + match[2] + '")', traced)
+            traced = traced.replace('entry_path(', 'latency_entry_path(src, ')
+            traced = traced.replace('\t\tsavefile = null',
+                '\t\tvar/latency_close_start = latency_trace_time()\n\t\tsavefile = null\n\t\tlatency_trace_end(latency_close_start, "savefile_release")')
             traced = traced.replace('A.before_save()', 'latency_before_save(A)')
             traced = traced.replace('A.get_saved_vars()', 'latency_saved_vars(A)')
             traced = traced.replace('container.contents.Copy()', 'latency_list_copy(container.contents)')
