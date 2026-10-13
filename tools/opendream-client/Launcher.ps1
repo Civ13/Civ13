@@ -4,10 +4,16 @@ param(
  [string]$ManifestUrl = 'https://raw.githubusercontent.com/Civ13/Civ13/master/tools/opendream-client/channel.json',
  [string]$ManifestPath,
  [string]$ArchivePath,
- [switch]$InstallOnly
+ [switch]$InstallOnly,
+ [switch]$SkipLauncherUpdate
 )
 $ErrorActionPreference = 'Stop'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+if (!$SkipLauncherUpdate -and !$ManifestPath -and !$InstallOnly) {
+ try { $updated = & (Join-Path $PSScriptRoot 'Update-Launcher.ps1') -InstallRoot $InstallRoot }
+ catch { Write-Host ('Launcher update unavailable: ' + $_.Exception.Message); $updated = $null }
+ if ($updated) { & $updated -InstallRoot $InstallRoot -SkipLauncherUpdate; return }
+}
 function Read-Channel {
  if ($ManifestPath) { return Get-Content -LiteralPath $ManifestPath -Raw | ConvertFrom-Json }
  try {
