@@ -576,3 +576,12 @@ native release: the generated source omits cancellation and must fail only
 `zombie lost perception cancels pursuit before idle cooldown expires`.
 `--compile-only` checks source without launching DreamDaemon; native assertions
 and omission detection remain UNRUN during the hold.
+
+Floor-replica preparation/retirement vectors now include wrong owner, partial
+marker binding, actual graph changes, exact runtime replay, restart refusal,
+interrupted intent, partial root removal and interrupted retirement snapshot.
+The privacy guard remains in all outcomes. Mode omission controls are
+`home_retire_owner|home_retire_partial|home_retire_graph|home_retire_remove|
+home_retire_restart|home_retire_prepare`; each must fail its exact named assertion. Equipment adds a
+full mail page at the decimal sequence boundary and checks preservation of actual
+gear and original claims. These new native assertions remain UNRUN during hold.

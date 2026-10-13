@@ -696,3 +696,11 @@ idle wandering is on cooldown. Track pursuit separately from target_mob because
 native deletion can clear the reference first. The city fixture and
 --city-pursuit-negative-control exercise the stale route; compile-only does not
 execute those native assertions.
+
+<!-- 2026-10-13: replica retirement receipt scope -->
+Floor replica retirement records account/binding before removing actual roots,
+but does not clear room/account bindings. Prepared/retired receipts cannot prove
+an old world save will not restore roots; restart refuses missing runtime refs.
+Final admission/unbinding needs authoritative durable-world generation and
+complete restored-world coverage. The unfinished _home_replica journal makes
+surface auxiliary census fail closed until that contract is supported.

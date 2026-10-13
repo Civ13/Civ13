@@ -589,6 +589,25 @@ var/equipment_completed = FALSE
 	A.close()
 
 	var/datum/extraction_insurance_returns/returns = new(S, C)
+	// Sequence exhaustion is a protocol safety boundary, not permission to
+	// discard an eligible claim. Isolate the mail adapter's fixture storage.
+	var/list/before_capacity = S.store.load_profile("capacityowner")
+	var/mail_root = returns.mail.journal.root
+	returns.mail.journal.root = "data/return_sequence_boundary/"
+	var/sequence = ""
+	for (var/i in 1 to 100) sequence += "9"
+	var/list/meta = returns.mail.metadata("capacityowner")
+	meta["head"] = sequence
+	meta["tail"] = sequence
+	equipment_assert(returns.mail.journal.commit_profile(returns.mail.shard_key("capacityowner", "meta", null), meta), "sequence boundary fixture persists exact text tail")
+	var/list/full_page = returns.mail.page("capacityowner", sequence)
+	for (var/i in 1 to 8)
+		var/list/graph = json_decode(json_encode(template))
+		graph["nodes"][1]["id"] = md5("sequenceboundary[i]")
+		full_page["entries"] += list(list("id" = graph["nodes"][1]["id"], "equipment" = graph, "returned_generation" = 0, "eligible_generation" = 1))
+	equipment_assert(returns.mail.journal.commit_profile(returns.mail.shard_key("capacityowner", "page", sequence), full_page), "sequence boundary fixture persists full existing page")
+	equipment_assert(!returns.prepare("capacityround", list(G)) && G.loc && returns.ready() && json_encode(S.store.load_profile("capacityowner")) == json_encode(before_capacity), "mail sequence exhaustion preserves actual gear and original claims before retirement")
+	returns.mail.journal.root = mail_root
 	G.extraction_insurance_token = md5("forgedphysicaltoken")
 	equipment_assert(!returns.prepare("capacityround", list(G)) && G.loc && returns.ready(), "forged physical token cannot silently void or redirect original claim")
 	G.extraction_insurance_token = token

@@ -297,3 +297,27 @@ disk-backed entry save/load for marker room/binding/inherited fields with no res
 session. `home_admission` restores session-only selection; `marker_save` omits the
 durable marker allowlist. Both must fail their exact named assertions and remain
 native UNRUN during the quiet window.
+
+## Floor-replica retirement preparation (disabled maintenance)
+
+`prepare_home_retirement` now writes an independent account-store journal under
+`_home_replica/` before touching actual roots. It binds the exact account digest,
+original marker binding and retained runtime roots. Replays require those same
+actual references; foreign ownership, partial marker fields, changed graphs or
+placement reject. Account and marker binding fields are not cleared.
+
+`retire_home_replica` validates all remaining roots before removing any, supports
+same-process continuation after partial removal, then journals a retired receipt.
+Preparation and retirement receipt failures retain the existing account binding
+and privacy guard. Restart cannot supply missing roots as evidence, including
+when a retired receipt exists: success is scoped to the original runtime. The
+caller must own exclusive offline maintenance. There is no automatic entry point.
+
+This is the preparation/physical-retirement portion of a handoff, not completed
+unbinding or admission. A retired receipt does not prove an old world save cannot
+restore those atoms. No authoritative durable world-save generation and complete
+restored-world coverage are available here, so final marker release/account decode
+remain unsupported and blocked. The auxiliary census rejects the new unfinished
+journal root rather than treating it as completed ownership. Native fixture and
+six `home_retire_owner|home_retire_partial|home_retire_graph|home_retire_remove|
+home_retire_restart|home_retire_prepare` omission controls are authored but UNRUN under the quiet hold.
