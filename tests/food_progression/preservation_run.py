@@ -81,8 +81,10 @@ def main():
                 if args.preservation_control in ('nutrition', 'conversion'):
                     first = '\t\t\t\t\t\t\t// Preserve hunger value'
                     last = '\t\t\t\t\t\t\tvar/decay_offset'
-                    start = production.index(first)
-                    end = production.index(last, start)
+                    if production.count('\n' + first) != 1 or production.count('\n' + last) != 1:
+                        raise RuntimeError('Preservation nutrition control line markers changed')
+                    start = production.index('\n' + first) + 1
+                    end = production.index('\n' + last, start) + 1
                     replacement = ''
                     if args.preservation_control == 'conversion':
                         replacement = '\t\t\t\t\t\t\tfor (var/nutrient in list("nutriment", "protein"))\n\t\t\t\t\t\t\t\tvar/excess = output_food.reagents.get_reagent_amount(nutrient) - input_food.reagents.get_reagent_amount(nutrient)\n\t\t\t\t\t\t\t\tif (excess > 0)\n\t\t\t\t\t\t\t\t\toutput_food.reagents.remove_reagent(nutrient, excess)\n'

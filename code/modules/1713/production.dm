@@ -789,7 +789,7 @@
 						if (istype(I, /obj/item/weapon/reagent_containers/food) && istype(P, /obj/item/weapon/reagent_containers/food))
 							var/obj/item/weapon/reagent_containers/food/input_food = I
 							var/obj/item/weapon/reagent_containers/food/output_food = P
-								// Preserve hunger value while allowing recipes to convert protein into nutriment.
+							// Preserve hunger value while allowing recipes to convert protein into nutriment.
 							if (istype(input_food, /obj/item/weapon/reagent_containers/food/snacks) && istype(output_food, /obj/item/weapon/reagent_containers/food/snacks))
 								var/obj/item/weapon/reagent_containers/food/snacks/input_snack = input_food
 								var/obj/item/weapon/reagent_containers/food/snacks/output_snack = output_food
