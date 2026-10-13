@@ -119,3 +119,26 @@ their local transactions but provide no shared operation epoch. Proposed control
 must revoke/defer those continuations, with original paid identity and no-refund
 ambiguity retained. This inventory leaves broad subtype closure explicitly open;
 no auth implementation is assigned here.
+
+### Remaining physical-transfer identity controls
+
+Source review of `vehicle_transfer.dm::current` distinguishes root identity
+from nested identity. Footprint atoms are compared against the captured `parts`
+references and locations, but cargo descendants are compared only through
+`vehicle_cargo.dm::encode` and JSON equality. Replacing a nested atom with a
+different atom carrying the same serialized ID, FIR, token and equipment values
+is therefore not distinguished by this comparison. This is a source-derived gap,
+not an executed reproduction. The new ID/FIR/token assertions change serialized
+values and do not cover an equal-value replacement or duplicate identity outside
+the captured graph. A coordinated fix needs a bounded captured descendant
+reference roster as well as serialized state, plus the global duplicate-ID census.
+The negative control should retain the original child outside the vehicle,
+substitute an equal-value child inside its container, and require refusal without
+moving either graph or issuing account credit.
+
+`capture` refuses `axis.key_service_busy`, while `current` does not recheck it.
+A key-service reservation acquired after capture is a separate stale-preflight
+case. Proposed coverage should set the reservation after a successful capture,
+require refusal with unchanged physical locations, then release it and verify
+the original graph is eligible again. Both controls remain proposals here;
+neither production hooks nor knowingly failing fixture assertions were added.
