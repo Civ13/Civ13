@@ -22,7 +22,7 @@
 		return ispath(path, /obj/structure/vehicleparts/axis/car) || ispath(path, /obj/structure/vehicleparts/frame/car) || ispath(path, /obj/structure/vehicleparts/movement) || ispath(path, /obj/structure/vehicleparts/license_plate) || ispath(path, /obj/structure/engine/internal) || ispath(path, /obj/structure/bed/chair) || ispath(path, /obj/structure/table/carboot) || ispath(path, /obj/item/vehicleparts/wheel/modular) || ispath(path, /obj/item/weapon/reagent_containers/glass/barrel/fueltank) || path == /obj/effect/pseudovehicle
 	proc/scalars(path)
 		var/list/fields = list("name", "desc", "dir", "color", "icon_state", "anchored", "density", "opacity")
-		if (ispath(path, /obj/structure/vehicleparts/axis)) fields |= list("vehicle_type", "speeds", "maxpower", "maxdist", "turntimer", "doorcode", "reg_number", "reverse")
+		if (ispath(path, /obj/structure/vehicleparts/axis)) fields |= list("vehicle_type", "speeds", "maxpower", "maxdist", "turntimer", "doorcode", "reg_number", "reverse", "keyed_vehicle_id", "key_generation")
 		if (ispath(path, /obj/structure/vehicleparts/frame)) fields |= list("resistance", "doorcode", "noroof", "removesroof", "override_roof_icon", "override_frame_icon", "broken", "override_color", "hasoverlay")
 		if (ispath(path, /obj/structure/vehicleparts/movement)) fields |= list("broken", "reversed", "ntype", "base_icon", "movement_icon", "type_name")
 		if (ispath(path, /obj/structure/vehicleparts/license_plate)) fields |= "reg_number"
@@ -47,6 +47,8 @@
 		if (kind == "wheel") return list("name", "type_name", "icon_state", "base_icon_state", "movement_icon_state", "base_speed", "armor", "max_health", "current_health", "position", "side", "is_reversed")
 		return list("wall_type", "icon_state", "opacity", "density", "armor", "max_health", "current_health", "can_open", "is_open")
 	proc/scalar_valid(key, value)
+		if (key == "keyed_vehicle_id") return isnull(value) || (istext(value) && length(value) == 32 && ckey(value) == value)
+		if (key == "key_generation") return isnum(value) && round(value) == value && value >= 0 && value <= 1000000
 		var/list/text_fields = list("name", "desc", "color", "icon_state", "vehicle_type", "reg_number", "override_roof_icon", "override_frame_icon", "override_color", "hasoverlay", "ntype", "base_icon", "movement_icon", "type_name", "engineclass", "wall_type", "base_icon_state", "movement_icon_state", "position", "side")
 		if (isnull(value)) return TRUE
 		if (key in text_fields) return istext(value) && length(value) <= 2048
@@ -179,7 +181,12 @@
 			var/list/R = N["refs"]
 			var/list/L = N["lists"]
 			if (!islist(S) || !islist(R) || !islist(L)) return FALSE
-			if (S.len != scalars(path).len) return !!fail("Missing scalar state on [path]")
+			var/legacy_keys = ispath(path, /obj/structure/vehicleparts/axis) && !("keyed_vehicle_id" in S) && !("key_generation" in S)
+			if (S.len != scalars(path).len - (legacy_keys ? 2 : 0)) return !!fail("Missing scalar state on [path]")
+			if (ispath(path, /obj/structure/vehicleparts/axis) && !legacy_keys)
+				if (S["keyed_vehicle_id"])
+					if (S["keyed_vehicle_id"] != N["id"] || !vehicle_key_binding_valid(S["keyed_vehicle_id"], S["key_generation"])) return FALSE
+				else if (S["key_generation"] != 0) return FALSE
 			for (var/key in S)
 				if (!(key in scalars(path)) || !scalar_valid(key, S[key])) return !!fail("Invalid scalar [key] on [path]")
 			if (R.len != references(path).len || L.len != ref_lists(path).len + value_lists(path).len) return !!fail("Incorrect field count on [path]")
@@ -288,6 +295,7 @@
 				for (var/list/fuel in N["fuel"]) O.reagents.add_reagent(fuel["id"], fuel["volume"], fuel["data"], safety = TRUE)
 			O.loc = N["parent"] ? created[N["parent"]] : locate(destination.x + N["dx"], destination.y + N["dy"], destination.z)
 		var/obj/structure/vehicleparts/axis/A = created[1]
+		A.engine.key_axis = A
 		A.engine.on = FALSE
 		A.engine.icon = 'icons/obj/vehicles/vehicleparts.dmi'
 		A.transporting.Cut()

@@ -1,8 +1,56 @@
 // Offline economic projections reuse the production conservation journal.
 // The adapter must be explicitly wired; constructing it does not enable IPC.
+/datum/extraction_trade_policy
+	var/version = "civ13.trade-policy.v1"
+	proc/catalog()
+		return list(
+			"/obj/item/extraction_salvage" = list("category" = "salvage", "value" = 10),
+			"/obj/item/weapon/gun/projectile/submachinegun/ak47" = list("category" = "weapons", "value" = 60),
+			"/obj/item/weapon/gun/projectile/pistol/m9beretta" = list("category" = "weapons", "value" = 40),
+			"/obj/item/ammo_magazine/ak47" = list("category" = "ammunition", "value" = 10),
+			"/obj/item/ammo_magazine/m9beretta" = list("category" = "ammunition", "value" = 5),
+			"/obj/item/clothing/head/helmet/modern/pasgt" = list("category" = "armor", "value" = 25),
+			"/obj/item/clothing/accessory/armor/nomads/pcarrierblack" = list("category" = "armor", "value" = 40),
+			"/obj/item/weapon/material/handle" = list("category" = "tools", "value" = 5),
+			"/obj/item/weapon/material/part/pickaxe" = list("category" = "tools", "value" = 10),
+			"/obj/item/weapon/material/part/shovel" = list("category" = "tools", "value" = 10),
+			"/obj/item/weapon/material/part/axehead/hatchet" = list("category" = "tools", "value" = 10),
+			"/obj/item/stack/material/wood" = list("category" = "materials", "quantity" = TRUE),
+			"/obj/item/stack/material/cloth" = list("category" = "materials", "quantity" = TRUE),
+			"/obj/item/stack/material/rope" = list("category" = "materials", "quantity" = TRUE),
+			"/obj/item/stack/material/steel" = list("category" = "materials", "quantity" = TRUE))
+	proc/traders()
+		// Initial tuning only. No adapter enables these services implicitly.
+		var/list/all = list("salvage", "weapons", "ammunition", "armor", "tools", "materials")
+		return list(
+			"legacy" = list("categories" = all, "minimum_condition" = 0, "rate_bps" = 10000),
+			"armorer" = list("categories" = list("weapons", "ammunition", "armor"), "minimum_condition" = 0.5, "rate_bps" = 10000),
+			"quartermaster" = list("categories" = list("armor", "tools", "materials"), "minimum_condition" = 0.5, "rate_bps" = 10000),
+			"salvager" = list("categories" = list("salvage", "tools", "materials"), "minimum_condition" = 0.25, "rate_bps" = 10000),
+			"fence" = list("categories" = all, "minimum_condition" = 0, "rate_bps" = 2000))
+	proc/condition(list/node)
+		var/list/scalars = node["scalars"]
+		if (!islist(scalars)) return null
+		if (isnull(scalars["health"]) && isnull(scalars["maxhealth"])) return 1
+		if (!isnum(scalars["health"]) || !isnum(scalars["maxhealth"]) || scalars["maxhealth"] <= 0) return null
+		return min(1, max(0, scalars["health"] / scalars["maxhealth"]))
+	proc/value(list/node, trader_id = "legacy")
+		var/list/types = catalog()
+		var/list/policies = traders()
+		var/list/spec = types[node["type"]]
+		var/list/trader = policies[trader_id]
+		if (!islist(spec) || !islist(trader) || !(spec["category"] in trader["categories"])) return 0
+		var/quality = condition(node)
+		if (!isnum(quality) || quality < trader["minimum_condition"]) return 0
+		var/base = spec["quantity"] ? node["scalars"]["amount"] : spec["value"]
+		if (!isnum(base) || base <= 0 || base > 1000000 || round(base) != base) return 0
+		// Scale before applying the bounded multiplier to avoid large integer products.
+		return round(round(base * quality) * (trader["rate_bps"] / 10000))
+
 /datum/extraction_ipc_economy
 	var/datum/extraction_service/game
 	var/datum/extraction_equipment_codec/codec = new
+	var/datum/extraction_trade_policy/trade_policy = new
 	var/blocked = FALSE
 	var/last_error
 	New(datum/extraction_service/service)
@@ -43,19 +91,22 @@
 		return length(json_encode(entry["equipment"])) <= 32768
 	proc/price(list/entry)
 		if (!eligible(entry)) return 0
-		var/list/root = entry["equipment"]["nodes"][1]
-		var/list/table = list("/obj/item/extraction_salvage" = 10, "/obj/item/weapon/gun/projectile/submachinegun/ak47" = 60, "/obj/item/weapon/gun/projectile/pistol/m9beretta" = 40, "/obj/item/ammo_magazine/ak47" = 10, "/obj/item/ammo_magazine/m9beretta" = 5, "/obj/item/clothing/head/helmet/modern/pasgt" = 25, "/obj/item/clothing/accessory/armor/nomads/pcarrierblack" = 40, "/obj/item/weapon/material/handle" = 5, "/obj/item/weapon/material/part/pickaxe" = 10, "/obj/item/weapon/material/part/shovel" = 10, "/obj/item/weapon/material/part/axehead/hatchet" = 10)
-		var/value = table[root["type"]]
-		if (root["type"] in list("/obj/item/stack/material/wood", "/obj/item/stack/material/cloth", "/obj/item/stack/material/rope", "/obj/item/stack/material/steel")) value = root["scalars"]["amount"]
-		if (!isnum(value) || value <= 0 || value > 1000000) return 0
-		var/list/scalars = root["scalars"]
-		if (isnum(scalars["health"]) && isnum(scalars["maxhealth"]) && scalars["maxhealth"] > 0)
-			value = round(value * min(1, max(0, scalars["health"] / scalars["maxhealth"])))
-		return value
+		return trade_policy.value(entry["equipment"]["nodes"][1])
+	proc/trader_offer(list/entry, trader_id)
+		if (!eligible(entry)) return null
+		var/total = 0
+		for (var/list/node in entry["equipment"]["nodes"])
+			var/value = trade_policy.value(node, trader_id)
+			if (!value || total + value > 1000000) return null
+			total += value
+		return list("policy_version" = trade_policy.version, "trader_id" = trader_id, "amount" = total, "graph_digest" = extraction_sha256(json_encode(entry["equipment"])))
 	proc/selected(list/account, list/ids, require_fir = FALSE)
 		if (!islist(ids) || !length(ids) || length(ids) > 16) return null
 		var/list/results = list()
+		var/list/seen = list()
 		for (var/id in ids)
+			if (!istext(id) || seen[id]) return null
+			seen[id] = TRUE
 			var/list/found
 			for (var/list/entry in account["stash"])
 				if (entry["id"] == id) found = entry

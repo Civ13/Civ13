@@ -28,6 +28,7 @@ var/global/extraction_identity_sequence = 0
 	var/list/nodes
 
 /datum/extraction_equipment_codec/proc/supported(path)
+	if (path == /obj/item/vehicle_key) return TRUE
 	if (!ispath(path, /obj/item)) return FALSE
 	if (path in extraction_container_key_catalog()) return TRUE
 	if (ispath(path, /obj/item/weapon/gun/projectile/custom)) return FALSE
@@ -50,6 +51,7 @@ var/global/extraction_identity_sequence = 0
 	if (ispath(path, /obj/item/blackpowder_part)) fields |= list("quality", "material_name")
 	if (ispath(path, /obj/item/weapon/key/extraction_room)) fields |= "code"
 	if (path in extraction_container_key_catalog()) fields |= "uses_remaining"
+	if (path == /obj/item/vehicle_key) fields |= list("vehicle_id", "key_generation")
 	if (ispath(path, /obj/item/stack)) fields |= "amount"
 	if (path == /obj/item/stack/cable_coil) fields |= "cable_color"
 	if (path == /obj/item/extraction_generator_kit) fields |= "generator_broken"
@@ -197,6 +199,7 @@ var/global/extraction_identity_sequence = 0
 		var/list/refs = node["refs"]
 		var/list/lists = node["lists"]
 		if (!islist(scalars) || !islist(refs) || !islist(lists)) return FALSE
+		if (path == /obj/item/vehicle_key && !vehicle_key_binding_valid(scalars["vehicle_id"], scalars["key_generation"])) return FALSE
 		if (path in extraction_container_key_catalog())
 			var/obj/item/weapon/key/extraction_container/key_prototype = path
 			if (!isnum(scalars["uses_remaining"]) || round(scalars["uses_remaining"]) != scalars["uses_remaining"] || scalars["uses_remaining"] < 1 || scalars["uses_remaining"] > initial(key_prototype.max_uses)) return FALSE
@@ -214,7 +217,7 @@ var/global/extraction_identity_sequence = 0
 		for (var/key in scalars)
 			var/value = scalars[key]
 			if (!(key in allowed) || (!isnull(value) && !isnum(value) && !istext(value)) || (istext(value) && length(value) > 2048)) return FALSE
-			var/list/text_fields = list("name", "desc", "color", "icon_state", "item_state", "serial", "btype", "material_key", "tool_head_material", "tool_handle_material", "material_name", "attachment_type", "cable_color")
+			var/list/text_fields = list("name", "desc", "color", "icon_state", "item_state", "serial", "btype", "material_key", "tool_head_material", "tool_handle_material", "material_name", "attachment_type", "cable_color", "vehicle_id")
 			if (!isnull(value) && (key in text_fields ? !istext(value) : !isnum(value))) return FALSE
 		if (ispath(path, /obj/item/weapon/material) && !get_material_by_name(scalars["material_key"])) return FALSE
 		if (path in list(/obj/item/stack/medical/bruise_pack/bint, /obj/item/stack/medical/splint))

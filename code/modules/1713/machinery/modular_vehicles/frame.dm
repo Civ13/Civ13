@@ -257,6 +257,16 @@
 							return TRUE
 	return FALSE
 /obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/human/H)
+	if (axis?.keyed_vehicle_id && (istype(I, /obj/item/vehicle_key) || istype(I, /obj/item/weapon/key)))
+		var/obj/item/vehicle_key/K = I
+		if (!istype(K) || K.loc != H || !K.matches(axis) || !axis.key_access(H) || !Adjacent(H))
+			to_chat(H, "This vehicle requires its matching key.")
+			return
+		for (var/list/wall in list(w_front, w_back, w_left, w_right))
+			if (wall.len >= 7 && wall[6]) wall[7] = !wall[7]
+		update_icon()
+		H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		return
 	if (mwheel && mwheel.broken && istype(I, /obj/item/weapon/weldingtool))
 		var/cantdo = FALSE
 		for (var/obj/structure/vehicleparts/frame/FM in H.loc)

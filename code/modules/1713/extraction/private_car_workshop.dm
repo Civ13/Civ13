@@ -43,6 +43,12 @@
 		if (busy || !Adjacent(H) || !allowed(H)) return
 		var/obj/map_metadata/extraction_survival/M = map
 		var/datum/extraction_session/S = H.extraction_session
+		if (S.garage_vehicle)
+			var/action = WWinput(H, "Physically secure the stopped empty car in its bay. Carry a wrench, welding tool, steel and copper for paid service.", "Vehicle locksmith", "Cancel", list("Copy", "Rekey", "Cancel"))
+			if ((action in list("Copy", "Rekey")) && M.save_home(S))
+				service_vehicle_key(H, S.garage_vehicle, action == "Rekey")
+				if (!M.save_home(S)) S.locked = TRUE
+			return
 		if (!M.save_home(S) || !M.car_bay_clear(S)) return
 		var/list/required = costs("ASNO Piccolino")
 		var/list/totals = list("steel" = 0, "glass" = 0, "cloth" = 0, "cable" = 0, "wheels" = 0)

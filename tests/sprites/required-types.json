@@ -6,6 +6,7 @@
   "/obj/item/weapon/key/extraction_container/city_evidence",
   "/obj/item/weapon/key/extraction_container/mall_security",
   "/obj/item/weapon/key/extraction_container/mall_hardware",
+  "/obj/item/vehicle_key",
   "/obj/item/extraction_wheel_crate",
   "/obj/structure/component_workbench",
   "/obj/item/weapon/reagent_containers/food/snacks/grown/cinchona",
