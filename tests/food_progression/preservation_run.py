@@ -20,7 +20,7 @@ def main():
     control.add_argument('--can-negative-control', action='store_true')
     parser.add_argument('--probe', choices=('crop', 'storage', 'preservation', 'rack-save'), default='preservation')
     parser.add_argument('--preservation-control', choices=('nutrition', 'age', 'conversion'))
-    parser.add_argument('--rack-control', choices=('runtime', 'storage', 'stale-wait', 'duplicate', 'conversion'))
+    parser.add_argument('--rack-control', choices=('coverage', 'runtime', 'storage', 'stale-wait', 'duplicate', 'conversion'))
     parser.add_argument('--output', type=Path)
     parser.add_argument('--stem')
     parser.add_argument('--start-gated', action='store_true')
@@ -83,6 +83,13 @@ def main():
             marker = 'spawn(150) //one tick at 15 seconds will be enough'
             if production.count(marker) != 1:
                 raise RuntimeError('Production drying wait marker changed')
+            if args.rack_control == 'coverage':
+                coverage = ('\tfor (var/atom/movable/child in origin.contents)\n'
+                            '\t\tif (!(child in paid_items))\n'
+                            '\t\t\tthrow EXCEPTION("Dehydrator save has an unrepresented storage child")')
+                if production.count(coverage) != 1:
+                    raise RuntimeError('Rack wrapper coverage control marker changed')
+                production = production.replace(coverage, '\t// omission control permits unrepresented wrapper children')
             if args.rack_control == 'stale-wait':
                 wake_guard = '\t\tif (this_process != current_process_id || !isturf(loc) || !storage || storage.loc != src || storage.master_item != src)'
                 if production.count(wake_guard) != 1:
@@ -182,7 +189,8 @@ def main():
         print(log, flush=True)
         result = (output / 'food_result.txt').read_text(encoding='utf-8')
         print(result, flush=True)
-        expected = ('FAIL: rack export excludes runtime fields' if args.rack_control == 'runtime' else
+        expected = ('FAIL: wrapper coverage refusal mode 0 reaches ownership check' if args.rack_control == 'coverage' else
+                    'FAIL: rack export excludes runtime fields' if args.rack_control == 'runtime' else
                     'FAIL: restored rack rebuilds runtime storage before refill' if args.rack_control == 'storage' else
                     'FAIL: stale drying wait does not advance or consume paid input' if args.rack_control == 'stale-wait' else
                     'FAIL: restored rack contains exactly one paid input' if args.rack_control == 'duplicate' else

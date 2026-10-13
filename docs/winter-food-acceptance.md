@@ -108,6 +108,12 @@ foreign custody. They require specific refusal diagnostics and unchanged
 custody, encoded progress, nutrition and callback ownership. These checks are
 native unrun.
 
+The prepared `--rack-control coverage` omission removes only the production
+wrapper-child membership refusal in generated source. It must fail
+`wrapper coverage refusal mode 0 reaches ownership check`; another failure or a
+compile error does not validate that control. The twelve-child cap and declared
+slot ownership checks remain present. This control is native unrun.
+
 The single diagnostic run at `aac7d1d51f6c56f5390b4eef93007d9288598018`
 compiled with BYOND 516.1681 with zero errors and warnings. It logged zero
 paid-input pins, an empty input reference and empty direct-turf membership,
