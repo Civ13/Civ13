@@ -140,3 +140,20 @@ The authority link and saved-variable declaration now live on the engine parent.
 Integrated project and isolated mode fixture compile cleanly with pinned BYOND
 516.1681. Vehicle-key cancellation/concurrency/crash/save runtime acceptance
 remains unproven.
+
+The next custody audit also guards storage eligibility/removal and generic safe
+equipment/equip-or-drop before destructive failure handling or direct location
+assignment. Quick-equip uses the guarded safe equipment path. Fixture negatives
+exercise linked-root rejection and ordinary unlinked storage insertion/removal;
+these native assertions remain UNRUN.
+
+Loader audit: `map_storage.Load` resets `all_loaded` per saved z-level and invokes
+`after_load` after each level. A complete feed therefore needs successful batches
+from every requested level and an explicit completion barrier after the entire
+load; a failed level cannot seal discovery. Account `load_profile(owner)` reads
+one named owner and can return a new profile for an absent account. It is not a
+complete account directory inventory. Feeding only joined sessions would miss
+stored duplicate identities. A durable owner manifest or bounded authoritative
+directory enumeration, pending-slot recovery and garage identity inclusion are
+required before enabling restored sources. No loader hook or completeness claim
+is installed by this milestone.
