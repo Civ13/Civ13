@@ -79,10 +79,17 @@ class SnapshotOracle:
         expected = ('manifest', 'metadata') + tuple(f'level-{i}' for i in range(1, levels + 1))
         if not 1 <= levels <= 14 or set(declared) != set(expected):
             raise ValueError('invalid mandatory frozen roster')
-        self.roster = tuple((name, declared[name]) for name in expected)
-        if any(type(size) is not int or size < 0 or size > budget or
-               type(digest) is not str or len(digest) != 64 for _, (digest, size) in self.roster):
-            raise ValueError('invalid declared member')
+        captured = []
+        for name in expected:
+            record = declared[name]
+            if type(record) not in (tuple, list) or len(record) != 2:
+                raise ValueError('invalid declared member')
+            digest, size = record
+            if (type(size) is not int or size < 0 or size > budget or
+                    type(digest) is not str or len(digest) != 64):
+                raise ValueError('invalid declared member')
+            captured.append((name, (digest, size)))
+        self.roster = tuple(captured)
         if sum(size for _, (_, size) in self.roster) > budget:
             raise ValueError('aggregate capacity exceeded')
         self.budget = budget
@@ -270,6 +277,38 @@ class GenerationContract(unittest.TestCase):
                     oracle.require((other, other.epoch, name))
             with self.assertRaisesRegex(ValueError, 'wrong operation'):
                 oracle.acquire(paths, wrong_token)
+            self.assertEqual(oracle.clear_calls, 0)
+
+    def test_caller_mutation_cannot_change_captured_proof_or_budget(self):
+        with TemporaryDirectory() as folder:
+            _, paths, declared = fixture(folder)
+            caller = {name: list(record) for name, record in declared.items()}
+            oracle = SnapshotOracle(caller)
+            captured = oracle.roster
+            budget = oracle.budget
+            replacement = b'opaque-B-with-more-bytes\x00'
+            replacement_proof = stream_digest(chunks(replacement))
+            caller['level-1'][:] = replacement_proof
+            caller['metadata'][1] = MAX_BYTES
+            caller['extra'] = ['0' * 64, 0]
+            paths['level-1'].write_bytes(replacement)
+            self.assertEqual(oracle.roster, captured)
+            self.assertEqual(dict(oracle.roster), declared)
+            self.assertEqual(oracle.budget, budget)
+            with self.assertRaisesRegex(ValueError, 'read byte capacity exceeded|candidate differs before ClearMap'):
+                oracle.acquire(paths, lambda *_: None)
+            self.assertEqual(oracle.clear_calls, 0)
+            self.assertEqual(oracle.released, oracle.acquired)
+
+    def test_file_growth_after_preflight_rejects_read_capacity(self):
+        with TemporaryDirectory() as folder:
+            _, paths, declared = fixture(folder)
+            oracle = SnapshotOracle(declared)
+            def inject(at, name):
+                if at == 'acquire' and name == 'level-1':
+                    paths[name].write_bytes(bytes(CHUNK + 1))
+            with self.assertRaisesRegex(ValueError, 'read byte capacity exceeded'):
+                oracle.acquire(paths, inject)
             self.assertEqual(oracle.clear_calls, 0)
 
     def test_fixed_sha_known_answers(self):

@@ -65,6 +65,11 @@ Prepared cases:
   read_bytes solely as its omission. Byte accounting is not measured resident
   memory: immutable joins/copies, Python objects and fixtures add overhead.
   Production whole-set storage/memory limits remain a separate reviewed gate.
+  Captured digest/size records copy validated scalar fields into fresh immutable
+  tuples. Caller list/dictionary mutation cannot update proof, roster or budget;
+  a changed source file still rejects before modeled ClearMap. An additional
+  source vector grows an actual temporary file after preflight and checks the
+  counted-read capacity rejection. Both controls remain unrun.
 - Explicit operation/member tokens capture an epoch and refuse wrong-operation
   reuse, ownership loss at each phase and post-release reuse. Loss before decode
   refuses before ClearMap; loss after modeled ClearMap refuses consumption and
