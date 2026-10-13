@@ -77,6 +77,7 @@ var/global/mall_fixture_failed = FALSE
 		/obj/structure/oven/extraction_mall,
 		/obj/structure/sink/extraction_mall,
 		/obj/structure/toilet/extraction_mall,
+		/obj/structure/extraction_mall_fixture/register,
 		/obj/covers/generic_wall/extraction_mall)
 	var/items_before = 0
 	for (var/obj/item/I in world) items_before++

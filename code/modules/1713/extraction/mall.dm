@@ -214,6 +214,19 @@
 	attackby(obj/item/I, mob/user)
 		return
 
+// A support for visible surface loot, without native closet storage or stock.
+/obj/structure/extraction_mall_fixture/register
+	name = "ransacked cash register"
+	desc = "A battered cash register with its drawer forced open."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "cash_register_opened"
+	layer = OBJ_LAYER - 0.1
+	density = FALSE
+	opacity = FALSE
+	flammable = FALSE
+	attack_hand(mob/user)
+		return
+
 /obj/structure/sink/extraction_mall
 	parent_type = /obj/structure/extraction_mall_fixture
 	name = "disused sink"
