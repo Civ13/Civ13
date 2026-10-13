@@ -1,7 +1,8 @@
 # Modern energy implementation checkpoint
 
-This branch is a source-only draft, not an available player feature. The new
-source and process files are deliberately not included in the DME yet. No native
+This branch is an incomplete implementation draft, not a verified player feature.
+Solar source/process files are now included in the DME with cable/storage accounting
+and a 20-electronics Modern Digital Computing recipe at crafting skill 105. No native
 compiler, daemon, benchmark, screen control or restart has been run.
 
 The first source contract registers at most 128 machines in one shared scheduler,
@@ -15,8 +16,8 @@ state. Night, unknown labels and indoor areas yield zero. The existing solar_scr
 DMI state represents the controller, not a new panel sprite or gameplay capture.
 The proposed 30-PU midday rating remains unverified balance pending native tests.
 
-Next bounded source work: coordinate cable and battery charging integration, add
-paid Modern recipes and research/skill gates, and implement abstract-fuel nuclear
+Production contract fixtures and an omitted-charge-debit negative control are
+prepared for remote opt-in CI. They have not yet run. Nuclear still requires abstract-fuel
 machinery with finite coolant, controls, wear and maintenance. No global radiation
 flag, radiation sweep or existing radioactive ore behavior may be assumed safe.
 Local hazards require explicit distance, z-level, interior and cancellation tests.

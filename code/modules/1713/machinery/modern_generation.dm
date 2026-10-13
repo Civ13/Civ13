@@ -3,6 +3,14 @@
 
 var/global/list/civ_generators = list()
 
+/proc/civ_generation_era(result_type)
+	return !ispath(result_type, /obj/structure/civ_generator) || (map && map.ordinal_age >= 8)
+
+/proc/civ_generation_can_build(mob/living/human/H, result_type)
+	if (!ispath(result_type, /obj/structure/civ_generator))
+		return TRUE
+	return H && H.stat == CONSCIOUS && civ_generation_era(result_type) && H.getStat("crafting") >= 105 && map.is_node_done(H.civilization, get_recipe_node_req("[result_type]"))
+
 /obj/structure/civ_generator
 	name = "electrical generator"
 	anchored = TRUE
@@ -86,6 +94,47 @@ var/global/list/civ_generators = list()
 /obj/structure/civ_generator/proc/rated_output()
 	return 0
 
+/obj/structure/civ_generator/examine(mob/user)
+	..()
+	to_chat(user, "Generator: [enabled ? "enabled" : "off"]. Available output: [available_output()] PU. Maximum: [rated_output()] PU.")
+
+/obj/structure/civ_generator/attack_hand(mob/user)
+	if (!registered || !connected() || !map || map.ordinal_age < 8)
+		to_chat(user, "Secure and cable this Modern generator first. The shared registry supports at most 128 generators.")
+		return
+	if (enabled)
+		stop_generation()
+	else
+		enabled = TRUE
+	// Enabling never resets an already spent interval or issues instant output.
+	powersource.rebuild_supply()
+	to_chat(user, "Generator [enabled ? "enabled" : "off"].")
+
+/obj/structure/civ_generator/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/weapon/wrench))
+		if (powersource)
+			to_chat(user, "Cut the cable first.")
+			return
+		stop_generation()
+		anchored = !anchored
+		return
+	if (istype(W, /obj/item/stack/cable_coil))
+		if (!anchored || powersource || !registered)
+			return
+		var/obj/item/stack/cable_coil/CC = W
+		var/obj/structure/cable/CB = CC.place_turf(get_turf(src), user, turn(get_dir(user, src), 180))
+		if (!CB)
+			return
+		powersource = CB
+		CB.connections |= src
+		for (var/obj/structure/cable/N in range(1, CB))
+			if (N != CB && N.z == CB.z && N.cable_color == CB.cable_color && N.tiledir == CB.tiledir && ((CB.tiledir == "horizontal" && N.y == CB.y) || (CB.tiledir == "vertical" && N.x == CB.x)))
+				CB.connections |= N
+				N.connections |= CB
+		CB.rebuild_supply()
+		return
+	..()
+
 /obj/structure/civ_generator/proc/settle_generation()
 	var/epoch = round(world.time / 10)
 	if (retired || output_epoch == epoch)
@@ -99,6 +148,7 @@ var/global/list/civ_generators = list()
 	output_power = max(0, rated_output())
 	// A delayed scheduler expires output rather than backfilling missed energy.
 	output_until = world.time + 10
+	powersource.rebuild_supply()
 
 /obj/structure/civ_generator/proc/available_output()
 	if (!enabled || !connected() || !map || map.ordinal_age < 8 || world.time >= output_until)
