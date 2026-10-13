@@ -10,6 +10,9 @@ Temporary runtime storage and a closed port avoid live state. Tests cover day,
 night, unknown labels, indoors, wet weather, source debit and expiry, repeated
 charging/toggles, accumulator charging, movement/reload exclusions and the registry
 cap. Crafting progression is checked by `scripts/check-recipes.py`.
+Native entry export/import checks reject forged output/enabled/registration values.
+`preview.py --output <png>` verifies nonempty actual controller DMI pixels without
+launching BYOND; it renders a labeled source preview, not a gameplay screenshot.
 
 These are contract tests, not gameplay captures, full-world solar save round trips,
 balance acceptance or production performance evidence. Local native runs require

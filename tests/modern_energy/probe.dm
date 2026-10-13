@@ -103,6 +103,30 @@ var/list/energy_ci_errors = list()
 	energy_ci_check("reload clears output", G.output_power, 0)
 	for (var/key in list("enabled", "registered", "retired", "output_power", "output_until", "output_epoch", "charge_power", "powersource"))
 		energy_ci_check("runtime excluded [key]", G.persistence_runtime_var(key), TRUE)
+	G.name = "saved solar controller"
+	G.enabled = TRUE
+	G.output_power = 30
+	G.output_until = world.time + 10
+	var/savefile/F = new("solar-state.sav")
+	F["/format_version"] << 2
+	map_storage.saving_z = 2
+	var/saved_ref = map_storage.BuildVarDirectory(F, G, 2)
+	energy_ci_check("native entry exported", !!saved_ref, TRUE)
+	F.cd = map_storage.entry_path(F, saved_ref)
+	energy_ci_check("native exporter omits output", ("output_power" in F.dir), FALSE)
+	// Forged legacy runtime values must be rejected during import too.
+	F["enabled"] << list("kind" = "value", "value" = TRUE)
+	F["output_power"] << list("kind" = "value", "value" = 999)
+	F["registered"] << list("kind" = "value", "value" = FALSE)
+	map_storage.clear_bookkeeping()
+	var/obj/structure/civ_generator/solar/restored = map_storage.Load_Entry(F, saved_ref, null, locate(2,2,2))
+	energy_ci_check("native entry restored", !!restored, TRUE)
+	if (restored)
+		energy_ci_check("native name retained", restored.name, "saved solar controller")
+		energy_ci_check("native import starts off", restored.enabled, FALSE)
+		energy_ci_check("native import rejects stale output", restored.output_power, 0)
+		energy_ci_check("native import reconstructs registry", restored.registered, TRUE)
+		restored.retire_generator()
 	G.retire_generator()
 	energy_ci_check("retirement releases registry", (G in civ_generators), FALSE)
 	var/list/created = list()

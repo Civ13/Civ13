@@ -61,7 +61,7 @@ def main():
         (build / "recipes.dme").write_text(dme, encoding="utf-8")
         compiled = subprocess.run([args.compiler, "-max_errors", "0", str(build / "recipes.dme")], cwd=root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=180)
         print(compiled.stdout)
-        if compiled.returncode or "0 errors, 0 warnings" not in compiled.stdout:
+        if compiled.returncode or "0 errors, 0 warnings" not in compiled.stdout or (args.probe == "modern-energy" and "516.1681" not in compiled.stdout):
             return 1
         shutil.copytree(root / "config/crafting", run / "config/crafting")
         shutil.copytree(root / "config/names", run / "config/names")
