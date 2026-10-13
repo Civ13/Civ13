@@ -127,6 +127,20 @@ class BridgeTests(unittest.TestCase):
         self.assertEqual(bridge.public_game_context({'game_context': 'invalid'}), {})
         self.assertEqual(len(bridge.public_game_context({'game_context': {'map': 'x' * 1000}})['map']), 120)
 
+    def test_player_context_is_bounded_and_private_fields_excluded(self):
+        request = {'game_context': {'season': 'WINTER', 'time_of_day': 'Night', 'player': {'health_percent': 45, 'wetness_percent': 500, 'hydration_percent': float('nan'), 'nutrition_percent': True, 'body_temperature_kelvin': 300, 'outdoors': True, 'local_weather': 'Wet weather', 'active_effects': ['On fire', 'SECRET EVENT', 'On fire'], 'ckey': 'SECRET ID', 'disease': 'SECRET DIAGNOSIS'}}}
+        projected = bridge.public_game_context(request)
+        self.assertEqual(projected['player']['health_percent'], 45)
+        self.assertEqual(projected['player']['wetness_percent'], 100)
+        self.assertNotIn('hydration_percent', projected['player'])
+        self.assertNotIn('nutrition_percent', projected['player'])
+        self.assertEqual(projected['player']['active_effects'], ['On fire'])
+        self.assertNotIn('SECRET', json.dumps(projected))
+        calls = []
+        self.make(lambda *args: calls.append(args) or {'message': {'content': 'Answer'}}).answer(dict(request, id='1', question='How do I survive winter?'))
+        self.assertIn('WINTER', calls[0][1]['messages'][0]['content'])
+        self.assertIn('health_percent', calls[0][1]['messages'][0]['content'])
+
     def test_bounded_output(self):
         instance = self.make(lambda *args: {'message': {'content': 'x' * 9000}})
         self.request()

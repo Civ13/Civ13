@@ -14,6 +14,30 @@ PRELUDE = '''
 #define GAME_STATE_PLAYING 3
 #define GAME_STATE_FINISHED 4
 #define PROCESS_PRIORITY_LOW 1
+#define AREA_OUTSIDE 1
+#define WEATHER_NONE 1
+#define WEATHER_WET 2
+#define WEATHER_EXTREME 3
+#define WEATHER_SMOG 4
+var/season = "WINTER"
+var/time_of_day = "Night"
+/area
+    var/location = AREA_OUTSIDE
+    var/weather = WEATHER_WET
+/proc/get_area(mob/M)
+    return M.loc
+/mob/living/human
+    var/health = 45
+    var/maxHealth = 100
+    var/nutrition = 200
+    var/max_nutrition = 400
+    var/water = 175
+    var/max_water = 350
+    var/bodytemperature = 300
+    var/cold_wetness = 0.5
+    var/on_fire = TRUE
+    var/stunned = FALSE
+    var/weakened = FALSE
 var/list/clients = list()
 var/datum/probe_map/map = new
 /datum/probe_map
@@ -47,6 +71,16 @@ var/failures = 0
     H.root = "spool/"
     var/list/context = H.game_context()
     check(context["map"] == "Nomads (Gaia)" && context["gamemode"] == map.gamemode, "actual map and mode snapshot")
+    var/area/local_area = new
+    var/mob/living/human/player = new(local_area)
+    var/list/snapshot = H.game_context(player)
+    var/list/condition = snapshot["player"]
+    check(condition["health_percent"] == 45 && condition["wetness_percent"] == 50, "asking player condition")
+    check(snapshot["season"] == "WINTER" && snapshot["time_of_day"] == "Night", "public environment")
+    check("On fire" in condition["active_effects"], "active public effect")
+    player.health = 80
+    check(H.game_context(player)["player"]["health_percent"] == 80 && condition["health_percent"] == 45, "fresh detached snapshot")
+    check(!context["player"], "no player condition without asking human")
     map = null
     check(H.game_context()["map"] == "Unknown", "unavailable map snapshot")
     map = new
@@ -88,13 +122,15 @@ var/failures = 0
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', type=Path, required=True)
-    parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity'])
+    parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity', 'player-context'])
     args = parser.parse_args()
     with tempfile.TemporaryDirectory(prefix='civ13-player-help-') as directory:
         temp = Path(directory)
         (temp / 'spool').mkdir()
         production = (ROOT / 'code/game/mob/player_help.dm').read_text()
-        if args.negative_control == 'escaping':
+        if args.negative_control == 'player-context':
+            production = production.replace('round(100 * H.health / max(1, H.maxHealth))', '100')
+        elif args.negative_control == 'escaping':
             production = production.replace('html_encode(answer)', 'answer')
         elif args.negative_control == 'heartbeat':
             production = production.replace('return heartbeat_confirmed && world.time - heartbeat_time < 100', 'return TRUE')

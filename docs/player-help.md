@@ -150,3 +150,7 @@ era/ordinal and civilization flag. These are captured from map metadata at
 submission, not inferred from player wording. No account identity, coordinates,
 inventory, hidden map state or faction secrets are included. Unknown/uninitialized
 map metadata is marked unknown. Era does not prove faction research unlocks.
+
+### Player and environment snapshot
+
+Each question includes the current map, mode, era, season and time of day. For the asking human it also includes health, nutrition, hydration and wetness percentages, body temperature in kelvin, indoor/outdoor exposure, local weather and active fire/incapacitation/weather exposure. This is a detached snapshot taken when submitting the question, not continuous monitoring. No account identity, other players, hidden disease diagnoses or private admin events are sent. Missing context remains unknown; the effects list is not an exhaustive event catalog. The input dialog tells players their gameplay condition is sent to the configured AI service. Collection performs no world scan, HTTP request or spawned timer.
