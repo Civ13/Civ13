@@ -51,6 +51,8 @@ var/last_identity
 /obj/item/dense
 	var/number = 0
 	var/list/payload
+/proc/fixture_payload_valid(obj/item/dense/item)
+	return islist(item.payload) && item.payload.len == 3 && item.payload["key"] == item.number && item.payload[2] == item.number && item.payload[3] == "literal"
 /world/OpenPort(port)
 	return ..("none")
 /world/New()
@@ -72,7 +74,7 @@ var/last_identity
 				var/list/recovery_seen = list()
 				for(var/obj/item/dense/item in recovered)
 					TICK_CHECK
-					if(recovery_seen["[item.number]"] || item.number < 1 || item.number > expected || (!world.params["dense"] && item.payload["key"] != item.number)) throw EXCEPTION("backup child duplicate or corrupt")
+					if(recovery_seen["[item.number]"] || item.number < 1 || item.number > expected || (!world.params["dense"] && !fixture_payload_valid(item))) throw EXCEPTION("backup child duplicate or corrupt")
 					recovery_seen["[item.number]"] = TRUE
 				if(recovery_seen.len != expected) throw EXCEPTION("backup child type or count lost")
 				world.log << "BACKUP_RESTORED children=[expected]"
@@ -150,8 +152,9 @@ var/last_identity
 		if(!box || box.number != (world.params["verify_backup"] ? -2 : -1) || box.contents.len != count) throw EXCEPTION("dense contents lost")
 		var/list/seen = list()
 		for(var/obj/item/dense/item in box)
-			if(seen["[item.number]"] || (!world.params["dense"] && item.payload["key"] != item.number)) throw EXCEPTION("duplicate or corrupt child")
+			if(seen["[item.number]"] || item.number < 1 || item.number > count || (!world.params["dense"] && !fixture_payload_valid(item))) throw EXCEPTION("duplicate or corrupt child")
 			seen["[item.number]"] = TRUE
+		if(seen.len != count) throw EXCEPTION("active child type or count lost")
 		text2file("PASS", "result.txt")
 	catch(var/exception/E)
 		world.log << "FAIL: [E]"
