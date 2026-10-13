@@ -67,7 +67,15 @@ var/last_identity
 			else
 				if(!map_storage.validate_world_save() || !map_storage.Load_World()) throw EXCEPTION("completed backup recovery failed")
 				var/obj/item/dense/recovered = locate(/obj/item/dense) in locate(1,1,1)
-				if(!recovered || recovered.contents.len != 1000) throw EXCEPTION("backup graph lost")
+				var/expected = world.params["dense"] ? 20000 : (world.params["large"] ? 10000 : 1000)
+				if(!recovered || recovered.number != -1 || recovered.contents.len != expected) throw EXCEPTION("backup graph lost")
+				var/list/recovery_seen = list()
+				for(var/obj/item/dense/item in recovered)
+					TICK_CHECK
+					if(recovery_seen["[item.number]"] || item.number < 1 || item.number > expected || (!world.params["dense"] && item.payload["key"] != item.number)) throw EXCEPTION("backup child duplicate or corrupt")
+					recovery_seen["[item.number]"] = TRUE
+				if(recovery_seen.len != expected) throw EXCEPTION("backup child type or count lost")
+				world.log << "BACKUP_RESTORED children=[expected]"
 			text2file("PASS", "result.txt")
 			del(world)
 			return
@@ -123,6 +131,7 @@ var/last_identity
 		heartbeat_max = 0
 		heartbeat_count = 0
 		start = world.timeofday
+		if(world.params["verify_backup"]) box.number = -2
 		interruption_armed = TRUE
 		map_storage.Save_World()
 		elapsed = (world.timeofday-start+864000)%864000
@@ -138,7 +147,7 @@ var/last_identity
 		if(!map_storage.Load_World()) throw EXCEPTION("load failed")
 		box = locate(/obj/item/dense) in locate(1,1,1)
 		world.log << "DENSE_RESTORED number=[box ? box.number : null] children=[box ? box.contents.len : null] expected=[count]"
-		if(!box || box.number != -1 || box.contents.len != count) throw EXCEPTION("dense contents lost")
+		if(!box || box.number != (world.params["verify_backup"] ? -2 : -1) || box.contents.len != count) throw EXCEPTION("dense contents lost")
 		var/list/seen = list()
 		for(var/obj/item/dense/item in box)
 			if(seen["[item.number]"] || (!world.params["dense"] && item.payload["key"] != item.number)) throw EXCEPTION("duplicate or corrupt child")

@@ -25,3 +25,15 @@ Trace wait counters separate explicit saver sleeps and legacy TICK_CHECK/stoplag
 The draft candidate yields sleep(0) at relative20% slice or8192-operation boundaries while absolute tick usage stays below80%, and waits a full tick when80% is exhausted. This increases effective save duty cycle from approximately20% toward80%; it is not an equivalent-budget optimization and is not approved for live installation. Small-fixture correctness and heartbeat observations do not establish full-map latency or production readiness.
 
 --timeout-seconds bounds the normal native daemon runtime (default limits remain unchanged). Interruption testing retains separate synchronization/recovery phase bounds. A timeout terminates the owned subprocess and is an incomplete result, even when both save metrics have been emitted.
+
+## Proposed representative acceptance plan
+
+Freeze candidate and reference source hashes and run sequentially in a memory-owner-approved quiet window. Reference is66d59bcddd1c6a75becd262f431e5397afbbfaed, which has the same correct dense-content format and path cache but the20% duty policy. Use --large --verify-backup --timeout-seconds2700 for each, with --baseline<reference> on the reference only. No --trace-units or --benchmark-only. Budget90minutes plus a separate cleanup buffer; agree the actual start/deadline with the coordinator before launch. Timeouts remain incomplete and never justify extending the lease.
+
+--verify-backup restores both generations in temporary storage, checks10000 unique children/payloads on the large fixture, and distinguishes first-generation box marker-1 from active marker-2. The runtime budget covers normal save/load and subsequent backup recovery together. Compile/provenance setup and bounded file-copy cleanup need lease buffer.
+
+Proposed criteria, requiring coordinator acceptance before the benchmark:
+- All native compilation, active/backup restoration, completion markers and runtime diagnostics pass; source/log/patch hashes and process start/end timestamps are retained.
+- Candidate first and backup saves each take at most50% of the matched20%-duty reference. Additionally target at most290/340seconds respectively, approximately125% of the historical231.3/270.4second save-only baseline.
+- Each candidate save has maximum heartbeat gap at most1.0second and no more than0.2second above the worst matched reference save. Neither tracing overhead nor small-fixture results establish production latency.
+- Keep incomplete observations, retain no live effects, terminate only owned processes, release the window, then obtain final exact-head CI/review. Failing a criterion holds merge/install; do not lower criteria after observing results.

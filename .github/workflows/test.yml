@@ -283,7 +283,7 @@ jobs:
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --dense
-          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --trace-units
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --trace-units --verify-backup
           python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --scenario movement
           python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --scenario parent-deletion
           python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --scenario concurrent

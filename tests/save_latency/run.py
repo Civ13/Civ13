@@ -12,12 +12,15 @@ def main():
     parser.add_argument('--trace-units', action='store_true', help='Diagnostic native-unit timing; adds overhead')
     parser.add_argument('--interrupt', action='store_true')
     parser.add_argument('--benchmark-only', action='store_true')
+    parser.add_argument('--verify-backup', action='store_true', help='Restore the completed backup after the active roundtrip')
     parser.add_argument('--scenario', choices=('movement','concurrent','parent-deletion'))
     parser.add_argument('--negative-control', choices=('ownership','yield'))
     parser.add_argument('--baseline', help='Immutable Git commit for the saver and bookkeeping sources')
     args = parser.parse_args()
     if args.timeout_seconds is not None and not 1 <= args.timeout_seconds <= 3600:
         parser.error('--timeout-seconds must be between 1 and 3600')
+    if args.verify_backup and (args.benchmark_only or args.interrupt or args.scenario or args.negative_control):
+        parser.error('--verify-backup requires a normal complete roundtrip')
     if args.negative_control == 'yield': args.dense = True
     root = Path(__file__).resolve().parents[2]
     output = Path(tempfile.mkdtemp(prefix='civ13-save-latency-'))
@@ -98,7 +101,7 @@ def main():
     source += '#include "code/predefines.dm"\n#include "tests/world_save/stubs.dm"\n#define fdel(path) delete_file_adapter(path)\n#define fcopy(source, destination) latency_copy(source, destination)\n'
     source += ''.join(f'#include "{path}"\n' for path in files[2:])
     (output / 'probe.dme').write_text(source)
-    (output / 'metadata.json').write_text(json.dumps({'baseline':args.baseline, 'large':args.large, 'dense':args.dense, 'scenario':args.scenario, 'interrupt':args.interrupt, 'benchmark_only':args.benchmark_only, 'negative_control':args.negative_control, 'trace_units':args.trace_units, 'timeout_seconds':args.timeout_seconds,
+    (output / 'metadata.json').write_text(json.dumps({'baseline':args.baseline, 'large':args.large, 'dense':args.dense, 'scenario':args.scenario, 'interrupt':args.interrupt, 'benchmark_only':args.benchmark_only, 'negative_control':args.negative_control, 'trace_units':args.trace_units, 'timeout_seconds':args.timeout_seconds, 'verify_backup':args.verify_backup,
         'head': subprocess.check_output(['git','rev-parse','HEAD'], cwd=root, text=True).strip(), 'sources':hashes}, indent=2))
     (output / 'checkout.patch').write_text(subprocess.check_output(['git','diff','HEAD'],cwd=root,text=True))
     if args.prepare_only: return
@@ -114,6 +117,7 @@ def main():
     parameters = ([] if not args.large else ['large=1']) + ([] if not args.scenario else ['scenario='+args.scenario])
     if args.benchmark_only: parameters += ['benchmark=1']
     if args.dense: parameters += ['dense=1']
+    if args.verify_backup: parameters += ['verify_backup=1']
     if args.interrupt: parameters += ['interrupt=1']
     if not args.baseline: parameters += ['bounded=1']
     if parameters: command += ['-params','&'.join(parameters)]
@@ -152,7 +156,9 @@ def main():
                 raise RuntimeError('Interrupted save recovery failed: '+phase)
         print('PASS: native interruption rejects incomplete active generation and restores completed backup',flush=True)
         return
-    result=subprocess.run(command,cwd=output,capture_output=True,text=True,timeout=args.timeout_seconds or (3600 if args.large else 1800),creationflags=flags)
+    runtime_limit=args.timeout_seconds or (3600 if args.large else 1800)
+    runtime_started=time.monotonic()
+    result=subprocess.run(command,cwd=output,capture_output=True,text=True,timeout=runtime_limit,creationflags=flags)
     (output / 'daemon.log').write_text(result.stdout+result.stderr)
     log=(output/'runtime.log').read_text(errors='replace')
     print(log,flush=True)
@@ -160,5 +166,33 @@ def main():
                 'FAIL: dense contents lost' if args.negative_control == 'ownership' else 'PASS')
     if result.returncode or not (output/'result.txt').read_text().strip().startswith(expected) or re.search(r'runtime error:|bad ref|BUG:|RUNTIME:|infinite loop|fatal error',log,re.I):
         raise RuntimeError('Native save probe failed')
+    if args.verify_backup:
+        shutil.copy2(output/'runtime.log', output/'active-roundtrip.log')
+        (output/'result.txt').unlink()
+        (output/'runtime.log').unlink()
+        active=(output/'map_saves').resolve()
+        completed=(output/'completed-map_saves').resolve()
+        backup=(output/'map_backups').resolve()
+        if any(path.parent != output.resolve() for path in (active,completed,backup)):
+            raise RuntimeError('Backup verification paths escape temporary storage')
+        active.rename(completed)
+        shutil.copytree(backup,active)
+        remaining=runtime_limit-(time.monotonic()-runtime_started)
+        if remaining <= 0:
+            raise RuntimeError('Backup verification runtime budget exhausted')
+        recovery_parameters=['recovery=backup']
+        if args.large: recovery_parameters.append('large=1')
+        if args.dense: recovery_parameters.append('dense=1')
+        recovery_command=command[:command.index('-params')] if '-params' in command else command
+        recovery=subprocess.run(recovery_command+['-params','&'.join(recovery_parameters)],cwd=output,
+            capture_output=True,text=True,timeout=remaining,creationflags=flags)
+        (output/'backup-daemon.log').write_text(recovery.stdout+recovery.stderr)
+        recovery_log=(output/'runtime.log').read_text(errors='replace')
+        (output/'backup-roundtrip.log').write_text(recovery_log)
+        print(recovery_log,flush=True)
+        if recovery.returncode or (output/'result.txt').read_text().strip() != 'PASS' or re.search(r'runtime error:|bad ref|BUG:|RUNTIME:|infinite loop|fatal error',recovery_log,re.I):
+            raise RuntimeError('Completed backup roundtrip failed')
+        print('PASS: active and completed backup generations restored',flush=True)
+
 
 if __name__=='__main__': main()
