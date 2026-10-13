@@ -442,7 +442,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		return FALSE
 	var/obj/effect/extraction_house_marker/house
 	for (var/obj/effect/extraction_house_marker/marker in extraction_house_markers)
-		if (!marker.session)
+		if (marker.admission_available())
 			house = marker
 			break
 	if (!house)

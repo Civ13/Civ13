@@ -301,6 +301,12 @@ Loaded surface feeds require the same map/dimensions/world tick and recheck root
 yielding loaders fail this conservative barrier. Fresh-world completeness stays
 false: no authoritative opt-in constructor ledger is established before DMM load.
 
+<!-- 2026-10-13: replica room selection and effect persistence -->
+Admission must reserve markers carrying any partial replica binding, not just
+session owners. `admission_available()` requires exact null owner/digest and numeric
+revision zero. Effect partial persistence requires an explicit parent-calling
+marker allowlist for room and binding fields; runtime session is excluded.
+
 <!-- 2026-10-12: extraction bot economics -->
 Extraction bot economic mutations use the shared conservation journal and put
 operation receipts in the participant snapshot. Reserved vendor/market accounts

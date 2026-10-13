@@ -23,7 +23,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--compile-only', action='store_true', help='Compile the isolated fixture without launching DreamDaemon')
-    parser.add_argument('--surface-negative-control', choices=('epoch', 'claim', 'duplicate', 'movement', 'discovery', 'forfeit', 'inventory', 'retirement', 'identity', 'escrow', 'mail_binding', 'auxiliary_pending', 'home_owner', 'home_graph', 'home_placement', 'home_revision', 'world_stale', 'fresh_incomplete'))
+    parser.add_argument('--surface-negative-control', choices=('epoch', 'claim', 'duplicate', 'movement', 'discovery', 'forfeit', 'inventory', 'retirement', 'identity', 'escrow', 'mail_binding', 'auxiliary_pending', 'home_owner', 'home_graph', 'home_placement', 'home_revision', 'world_stale', 'fresh_incomplete', 'home_admission', 'marker_save'))
     parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'npc', 'city', 'insurance', 'groups', 'vehicles'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry', 'disruptive_creation', 'disruptive_pending', 'disruptive_result'))
@@ -131,7 +131,8 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         if surface_control:
-            surface_file = ('home_replica.dm' if surface_control.startswith('home_') else
+            surface_file = ('mode.dm' if surface_control == 'home_admission' else
+                            'home_replica.dm' if surface_control.startswith('home_') or surface_control == 'marker_save' else
                             'surface_inventory.dm' if surface_control in ('mail_binding', 'auxiliary_pending') else 'surface_loot.dm')
             surface_path = 'code/modules/1713/extraction/' + surface_file
             surface = (root / surface_path).read_text(encoding='utf-8')
@@ -152,6 +153,8 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 'home_revision': ('H.replica_revision != B["revision"]', 'FALSE'),
                 'world_stale': ('world_inventory_stamp == world.time', 'TRUE'),
                 'fresh_incomplete': ('!current_world_complete || ', ''),
+                'home_admission': ('marker.admission_available()', '!marker.session'),
+                'marker_save': ('\t\t. |= list("room", "replica_owner", "replica_revision", "replica_digest")', '\t\t// Negative control: omit durable marker fields'),
                 'discovery': ('if (discovered_ids[id] || (account_ids[id] && !approved_replica))', 'if (account_ids[id] && !approved_replica)'),
                 'forfeit': ('\t\t\tqdel(I)\n\t\t\tif (I && I.loc)', '\t\t\t// Negative control: omit root retirement\n\t\t\tif (I && I.loc)'),
             }[surface_control]
@@ -405,6 +408,8 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                         'home_revision': 'private-home replica stale revision rejected',
                         'world_stale': 'stale world load barrier cannot seal census',
                         'fresh_incomplete': 'saved replica feed cannot authorize incomplete fresh-world census',
+                        'home_admission': 'unbound second owner cannot enter replica-bound room or access its actual stash',
+                        'marker_save': 'native marker entry round trip preserves room binding and parent fields while excluding session',
                         'discovery': 'surface duplicate loaded roots lock discovery',
                         'forfeit': 'surface round forfeit retires actual root before acknowledgement',
                     }[surface_control]

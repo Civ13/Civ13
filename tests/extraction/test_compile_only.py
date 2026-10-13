@@ -53,7 +53,7 @@ class CompileOnlyBoundary(unittest.TestCase):
     def test_auxiliary_controls_compile_without_runtime(self):
         root = Path(__file__).resolve().parents[2]
         result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1681\n0 errors, 0 warnings', '')
-        for control in ('escrow', 'mail_binding', 'auxiliary_pending', 'home_owner', 'home_graph', 'home_placement', 'home_revision', 'world_stale', 'fresh_incomplete'):
+        for control in ('escrow', 'mail_binding', 'auxiliary_pending', 'home_owner', 'home_graph', 'home_placement', 'home_revision', 'world_stale', 'fresh_incomplete', 'home_admission', 'marker_save'):
             with self.subTest(control=control):
                 with patch.object(RUNNER.subprocess, 'run', return_value=result) as execute:
                     RUNNER.equipment(root, Path('compiler'), Path('daemon'), 0, 'mode', compile_only=True, surface_control=control)

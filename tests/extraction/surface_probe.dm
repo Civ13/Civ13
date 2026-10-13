@@ -276,7 +276,7 @@
 	M.accounts.store = accounts
 	var/obj/effect/extraction_house_marker/house
 	for (var/obj/effect/extraction_house_marker/H in extraction_house_markers)
-		if (!H.session && !H.replica_owner)
+		if (H.admission_available())
 			house = H
 			break
 	equipment_assert(house && istype(get_turf(house), /turf/floor/plating/extraction_house), "replica fixture uses actual unoccupied private home")
@@ -310,6 +310,8 @@
 	var/obj/item/copy = M.codec.decode(graph, original)
 	equipment_assert(copy && !V.discover_world_roots(list(copy)) && V.discovery_locked, "second physical private-home replica rejected")
 	equipment_assert(V.abandon_account_inventory(), "replica scan releases fence only on explicit abandonment")
+	extraction_replica_admission_probe(M, house, I)
+	extraction_replica_marker_save_probe()
 	qdel(copy)
 	qdel(I)
 	var/datum/extraction_surface_service/stale = new(M, "data/surface_stale_load/")
@@ -321,3 +323,58 @@
 	house.replica_revision = 0
 	house.replica_digest = null
 	M.accounts.store = previous_store
+
+/proc/extraction_replica_admission_probe(obj/map_metadata/extraction_survival/M, obj/effect/extraction_house_marker/house, obj/item/owner_item)
+	var/turf/original = get_turf(owner_item)
+	var/owner_id = owner_item.extraction_item_id
+	var/owner_graph = json_encode(M.codec.encode(owner_item, FALSE))
+	var/mob/living/human/other = new(locate(3,3,1))
+	M.test_owners[other] = "replicaother"
+	equipment_assert(M.admit(other) && other.extraction_session.house != house && house.session == null && owner_item.loc == original && owner_item.extraction_item_id == owner_id && json_encode(M.codec.encode(owner_item, FALSE)) == owner_graph && !original.Enter(other, get_turf(other)), "unbound second owner cannot enter replica-bound room or access its actual stash")
+	equipment_assert(M.release(other.extraction_session, FALSE), "other owner releases only its unbound room")
+	M.round_participants -= "replicaother"
+	M.test_owners -= other
+	qdel(other)
+	var/mob/living/human/bound = new(locate(3,3,1))
+	M.test_owners[bound] = "replicaowner"
+	equipment_assert(!M.admit(bound) && !bound.extraction_session && owner_item.loc == original, "bound owner cannot decode another copy before retirement handoff")
+	M.test_owners -= bound
+	qdel(bound)
+	// Each partial-field negative uses a real marker but cannot touch its stash.
+	var/obj/effect/extraction_house_marker/partial = new(null)
+	equipment_assert(partial.admission_available(), "default marker is available for ordinary admission")
+	partial.replica_owner = ""
+	equipment_assert(!partial.admission_available(), "empty persisted replica owner reserves room")
+	partial.replica_owner = null
+	partial.replica_digest = ""
+	equipment_assert(!partial.admission_available(), "empty persisted replica digest reserves room")
+	partial.replica_digest = null
+	for (var/revision in list(1, -1, null, "0"))
+		partial.replica_revision = revision
+		equipment_assert(!partial.admission_available(), "partial persisted replica revision reserves room")
+	qdel(partial)
+
+/proc/extraction_replica_marker_save_probe()
+	var/obj/effect/extraction_house_marker/saved = new(null)
+	saved.room = 23
+	saved.name = "saved replica marker"
+	saved.replica_owner = "savedowner"
+	saved.replica_revision = 7
+	saved.replica_digest = extraction_sha256("actual marker binding")
+	saved.extraction_vehicle_part_id = "parent-effect-field"
+	saved.session = new
+	var/datum/extraction_session/runtime_session = saved.session
+	var/map_storage/storage = new("extraction_marker_probe")
+	var/savefile/F = new("data/surface_house_marker.sav")
+	F["/format_version"] << 2
+	var/ref = storage.BuildVarDirectory(F, saved, 1)
+	F = null
+	storage.clear_bookkeeping()
+	F = new("data/surface_house_marker.sav")
+	var/obj/effect/extraction_house_marker/restored = storage.Load_Entry(F, ref, starting_loc = null)
+	equipment_assert(restored && restored.room == saved.room && restored.replica_owner == saved.replica_owner && restored.replica_revision == saved.replica_revision && restored.replica_digest == saved.replica_digest && restored.name == saved.name && restored.extraction_vehicle_part_id == saved.extraction_vehicle_part_id && isnull(restored.session) && !restored.admission_available(), "native marker entry round trip preserves room binding and parent fields while excluding session")
+	storage.clear_bookkeeping()
+	saved.session = null
+	qdel(runtime_session)
+	qdel(saved)
+	qdel(restored)

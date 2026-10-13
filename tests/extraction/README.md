@@ -21,6 +21,13 @@ and load freshness barriers. Queue `home_owner`, `home_graph`, `home_placement`,
 Bindings block admission until a future explicit retirement/unbinding handoff;
 the current-world completeness gate stays false because no authoritative pre-map
 constructor ledger exists. Fixtures and omission detection are native UNRUN.
+
+Add `home_admission` and `marker_save` to that queue: the actual two-owner admission
+fixture guards the bound room and physical stash, while the production native
+entry round trip guards room/binding/parent-field preservation and session exclusion.
+Partial binding fields always reserve the room. These assertions and omission
+detection are native UNRUN; compile-only does not establish runtime privacy or save
+acceptance.
 `test_compile_only.py` verifies that boundary using injected subprocess results;
 it does not execute native assertions. Mode covers census lease revocation and
 abandonment; store covers competing writers and direct child-journal projections.

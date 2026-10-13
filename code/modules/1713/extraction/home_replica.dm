@@ -3,6 +3,17 @@
 	var/replica_owner
 	var/replica_revision = 0
 	var/replica_digest
+	proc/admission_available()
+		// Every partial binding is occupied, including empty owner/digest strings
+		// and a missing/non-numeric revision. Only the exact default is free.
+		return !session && isnull(replica_owner) && isnum(replica_revision) && replica_revision == 0 && isnull(replica_digest)
+	get_saved_vars()
+		. = ..()
+		. |= list("room", "replica_owner", "replica_revision", "replica_digest")
+		. -= "session"
+	persistence_runtime_var(key)
+		if (key == "session") return TRUE
+		return ..()
 
 /datum/extraction_surface_service
 	var/list/account_replica_roots = list()
@@ -63,7 +74,7 @@
 	proc/bind_home_replica(owner, obj/effect/extraction_house_marker/H, list/roots)
 		// Host must own an exclusive maintenance window and subsequently save the
 		// marker with the world. Interrupted or stale world copies fail closed.
-		if (enabled || discovery_locked || world_inventory_started || account_inventory_names || metadata.accounts.sessions.len || !H || H.session || H.replica_owner || !islist(roots) || roots.len > 64) return FALSE
+		if (enabled || discovery_locked || world_inventory_started || account_inventory_names || metadata.accounts.sessions.len || !H || !H.admission_available() || !islist(roots) || roots.len > 64) return FALSE
 		var/list/P = metadata.accounts.store.load_profile(owner)
 		if (!account_profile_ids(P) || !isnull(P["home_replica"]) || (islist(P["garage"]) && P["garage"].len) || roots.len != P["stash"].len) return FALSE
 		var/list/B = list("schema" = 1, "map_id" = metadata.ID, "revision" = P["revision"] + 1, "room" = H.room, "x" = H.x, "y" = H.y, "z" = H.z, "roots" = list())
@@ -86,4 +97,3 @@
 		H.replica_revision = P["revision"]
 		H.replica_digest = extraction_sha256(json_encode(B))
 		return TRUE
-

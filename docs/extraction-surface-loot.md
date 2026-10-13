@@ -230,6 +230,15 @@ equipment, including when no surface service is installed. No retirement/unbindi
 or admission handoff is implemented; accepting one world/account representation
 does not authorize materializing another. Ordinary profiles have no binding.
 
+Room selection separately rejects every full or partial persisted marker binding.
+Only no session, null owner/digest and numeric revision zero permit admission or
+maintenance binding. Empty owner/digest strings, missing/non-numeric revisions and
+nonzero revisions reserve the room. This prevents an unrelated unbound account
+from taking a replica owner's room even while its runtime session is absent.
+The marker's parent-calling persistence allowlist explicitly includes `room` and
+all three durable binding fields, preserves inherited effect fields and excludes
+the runtime `session` on both variable enumeration and runtime-field filtering.
+
 Loaded feeds also snapshot the map object, dimensions, map ID and world tick.
 Sessions or an advanced tick invalidate the barrier. Final checks process at most
 16 indexed roots per call and compare their actual graphs and location identities,
@@ -280,3 +289,11 @@ graph/placement, second-copy refusal, stale load barriers and refusal of incompl
 fresh-world coverage. Generated controls `home_owner|home_graph|home_placement|
 home_revision|world_stale|fresh_incomplete` omit each named guard in a temporary
 source copy. These fixtures and omission detection remain native UNRUN.
+
+The corrective queue adds an actual second unbound account admitted to a different
+room, denial of entry into the bound owner's room, preservation of that owner's
+real stash, refusal of bound-owner decode, partial marker fields and a production
+disk-backed entry save/load for marker room/binding/inherited fields with no restored
+session. `home_admission` restores session-only selection; `marker_save` omits the
+durable marker allowlist. Both must fail their exact named assertions and remain
+native UNRUN during the quiet window.
