@@ -37,6 +37,13 @@ merge-event description and uses the same `pr-NUMBER` receipt. Reconcile a pendi
 receipt as described below before rerunning; never copy the announcement into a
 new manifest or delete receipts to work around a failed run.
 
+Released actionlint 1.7.12 predates `concurrency.queue`. CI uses
+`node tools/changelog/check-queues.mjs` to require these two publishers' exact
+shared, non-cancelling `max` queues and reject other queue configurations. Only
+actionlint's unsupported-key diagnostic for this option is ignored; other
+workflow diagnostics remain errors. Remove this compatibility guard when a
+released actionlint supports the option.
+
 The `discord-changelog` environment must have `DISCORD_MERGE_CHANGELOG_ENABLED=true`
 and the existing `DISCORD_CHANGELOG_WEBHOOK` secret and receipt branch described
 below. This setting enables only the merge route. The older manifest publisher

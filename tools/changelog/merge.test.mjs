@@ -1,6 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { changelogLine, run, channel } from './publish.mjs';
+import { checkQueues } from './check-queues.mjs';
+
+test('publisher queue compatibility guard rejects dropped runs and unknown queue syntax', () => {
+  const valid = 'concurrency:\n  group: discord-changelog\n  cancel-in-progress: false\n  queue: max\njobs:\n';
+  const files = { 'changelog.yml': valid, 'changelog-merge.yml': valid };
+  checkQueues(files);
+  for (const invalid of [valid.replace('max', 'single'), valid.replace('false', 'true'), valid.replace('  queue: max\n', ''), valid.replace('discord-changelog', 'another-group')]) assert.throws(() => checkQueues({ ...files, 'changelog-merge.yml': invalid }));
+  assert.throws(() => checkQueues({ ...files, 'other.yml': 'concurrency:\n  queue: nonsense\n' }));
+});
 
 test('only an explicit visible single line opts in', () => {
   for (const body of [null, '', 'Ordinary description', 'Changelog:', 'Changelog:  ', '<!-- Changelog: example -->', '```md\nChangelog: example\n```', '> Changelog: quoted', '    Changelog: code']) assert.equal(changelogLine(body), null);
