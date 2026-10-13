@@ -1103,6 +1103,7 @@
 #include "code\modules\organs\subtypes\unbreakable.dm"
 #include "code\modules\persistence\admin.dm"
 #include "code\modules\persistence\functions.dm"
+#include "code\modules\persistence\admission_contract.dm"
 #include "code\modules\persistence\loading.dm"
 #include "code\modules\persistence\persistence.dm"
 #include "code\modules\persistence\saving.dm"

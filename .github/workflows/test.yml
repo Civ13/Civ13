@@ -415,6 +415,25 @@ jobs:
           name: recipe-validation
           path: recipe-checks.txt
           if-no-files-found: warn
+      - name: Verify persistence admission adapter and ordinary restore compatibility
+        id: persistence_admission
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_admission')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/persistence-admission"
+          export TMPDIR="$RUNNER_TEMP/persistence-admission"
+          python3 tests/persistence_admission/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/persistence_admission/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control binding
+          python3 tests/persistence_admission/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control recheck
+          python3 tests/world_save/run-wrapper.py --byond-bin "$PWD/BYOND/byond/bin" --roundtrip
+      - name: Retain persistence admission evidence
+        if: always() && steps.persistence_admission.outcome != 'skipped' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_admission'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: persistence-admission
+          path: ${{ runner.temp }}/persistence-admission/
+          if-no-files-found: error
       - name: Offline world-save round-trip regression
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save')
         run: |
