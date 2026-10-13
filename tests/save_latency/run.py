@@ -44,11 +44,14 @@ def main():
             traced = data.decode().replace('\r\n', '\n')
             traced = re.sub(r'(?m)^(\s*)(F|savefile)\[(.+)\] << (.+)$',
                 lambda match: match[1] + 'latency_write(' + match[2] + ', ' + match[3] + ', ' + match[4] + ')', traced)
-            traced = traced.replace('var/ref = saving_reference_pins.len + 1',
-                'var/latency_previous_stage = latency_stage\n\tlatency_stage = "entry"\n\tvar/latency_index_start = latency_trace_time()\n\tvar/ref = saving_reference_pins.len + 1')
+            traced, index_matches = re.subn(r'(?m)^\t(?:var/)?ref = saving_reference_pins.len \+ 1$',
+                lambda match: '\tvar/latency_previous_stage = latency_stage\n\tlatency_stage = "entry"\n\tvar/latency_index_start = latency_trace_time()\n' + match[0], traced)
+            if index_matches != 1:
+                raise RuntimeError('Trace reference-index boundary missing or ambiguous')
             traced = traced.replace('A.before_save()',
                 'latency_trace_end(latency_index_start, "reference_index [ref]")\n\tA.before_save()')
             traced = traced.replace('\treturn ref\n', '\tlatency_stage = latency_previous_stage\n\treturn ref\n')
+            traced = traced.replace('for(var/turf/T in world)', 'latency_stage = "grid"\n\t\tfor(var/turf/T in world)')
             traced = traced.replace('// Visit only this level', 'latency_stage = "grid"\n\t\t// Visit only this level')
             traced = traced.replace('var/list/edges = list()', 'latency_stage = "edges"\n\t\tvar/list/edges = list()')
             traced = re.sub(r'(?m)^([ \t]*)(saving_\w+|existing_references|found_types) = list\(\)$',
