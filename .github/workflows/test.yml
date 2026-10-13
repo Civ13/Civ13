@@ -277,6 +277,20 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           bash tests/world_save/run.sh
         shell: bash
+      - name: Bounded world-save graph and heartbeat regression
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_latency')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --dense
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --trace-units --verify-backup
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --scenario movement
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --scenario parent-deletion
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --scenario concurrent
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --interrupt
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control ownership
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control yield
+
       - name: Verify isolated chemistry reactions and negative control
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/chemistry')
         shell: bash

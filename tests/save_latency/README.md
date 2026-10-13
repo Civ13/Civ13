@@ -1,0 +1,45 @@
+# Save latency regression
+
+`run.py --byond-bin <516.1681-bin>` compiles the production serializer and loader with offline world-save adapters, temporary storage and disabled network ports. It measures an independent one-tick heartbeat during first save and whole-generation backup, then verifies dense contents and list values through a native load.
+
+`--large --benchmark-only` measures save/backup latency without running preflight or import; it is not load acceptance. `--large` uses 500x500x2 turfs and 10,000 contained objects. `--baseline <immutable-commit>` selects the baseline serializer and bookkeeping while keeping the same probe. Run comparisons sequentially in a quiet CPU window. Retained evidence includes source hashes, checkout patch, compiler/runtime logs and native saves. These are synthetic latency observations, not production latency or graphical acceptance.
+
+BYOND `world.timeofday` provides decisecond wall-clock samples (with midnight wrapping); avoid `world.realtime`, whose float precision loses sub-minute differences at current epoch values.
+
+`--dense` selects 20,000 flat scalar-only contained objects, isolating recursive object work from existing list yield checks. The positive probe requires heartbeats inside that graph. `--scenario movement` replaces an already captured turf, moves a captured child across levels and deletes a live child during export. `--scenario concurrent` exercises production ticker save/load rejection and lock release. `--interrupt` kills only the temporary writer after active-marker removal, verifies active-generation rejection, and restores the completed backup in a separate native process. `--negative-control ownership` removes captured placement; `--negative-control yield` removes saver sleep points and requires the dense heartbeat assertion to detect it.
+
+The serializer preserves format 2 envelopes/shards and legacy reading. Small `content` values remain historical text; dense values become lists of bounded text chunks understood by the updated reader. Old readers do not support those dense chunk values. It captures entry fields and parent identity before yielding, then assembles parent edges from numeric captured ownership. World state is a rolling snapshot, not an atomic transaction: later changes are picked up by the next save. A previously captured turf's coordinates retain its original grid entry across native turf replacement. Objects that subsequently move across levels are not duplicated in a later level; cross-level variable references still reject unsupported graphs. In-flight locks, observer state and client/session data remain excluded.
+
+Cooperative limits apply between bounded DM work units. `before_save`, `get_saved_vars`, native list copying/parameter serialization, individual savefile operations/Flush, and each whole-file backup copy cannot be preempted. Synthetic heartbeat results do not guarantee a production upper bound for those operations or unrelated game work.
+
+`--scenario parent-deletion` deletes the live container while its captured child is being serialized; the rolling snapshot must retain a valid captured parent/child graph without dereferencing the deleted object.
+
+The operation fallback is 8,192 checks; the 20-percentage-point slice and 80% global tick limits can yield earlier. A post-restart 500x500x2 save-only comparison on Windows found the prior 1,024 fallback over-yielded: baseline first/backup 231.3/270.4 seconds, heartbeat gaps 0.5/0.8 seconds; prior changed first 1,026.8 seconds, gap 0.8 seconds. Its backup was deliberately interrupted and did not pass. These measurements justify revising the fallback, not a claim about the revised limit. Dense-container and matched large measurements must verify the revision before acceptance.
+The 8,192-operation/20% slice candidate also failed large-map acceptance: first save 980.9 seconds, maximum heartbeat gap 5.0 seconds, with two 0.3-second native backup copies. Its backup trial was deliberately interrupted and remains unverified. The immutable baseline was reused with unchanged fixture/settings, but the runs were separated in time.
+
+--trace-units is an optional diagnostic adapter: it times native writes, save hooks, list copies/parameter conversion and reference indexing, and records work intervals of at least 0.2 seconds between cooperative checks by stage. Timing uses decisecond wall clock; a reported interval can include OS scheduling or unrelated machine activity and does not by itself establish causation. Trace adapters add overhead; do not compare their throughput to untraced baselines. --prepare-only generates the fixture/provenance without compiling or launching BYOND.
+Trace wait counters separate explicit saver sleeps and legacy TICK_CHECK/stoplag waits from synchronous work intervals. Earlier traces did not exclude legacy waits from between-check rows; use their individually timed native units for attribution. The large d541 trace completed first save in 1172.3 seconds, heartbeat gap 1.0 second, savefile release 0.4/0.3 seconds and two index resets 0.2 seconds. Its backup was intentionally interrupted at the granted first-save boundary; no backup/load pass or untraced throughput comparison is claimed.
+
+## Experimental duty-cycle comparison
+
+The draft candidate yields sleep(0) at relative20% slice or8192-operation boundaries while absolute tick usage stays below80%, and waits a full tick when80% is exhausted. This increases effective save duty cycle from approximately20% toward80%; it is not an equivalent-budget optimization and is not approved for live installation. Small-fixture correctness and heartbeat observations do not establish full-map latency or production readiness.
+
+--timeout-seconds bounds the normal native daemon runtime (default limits remain unchanged). Interruption testing retains separate synchronization/recovery phase bounds. A timeout terminates the owned subprocess and is an incomplete result, even when both save metrics have been emitted.
+
+## Proposed representative acceptance plan
+
+Freeze candidate and reference source hashes and run sequentially in a memory-owner-approved quiet window. Reference is66d59bcddd1c6a75becd262f431e5397afbbfaed, which has the same correct dense-content format and path cache but the20% duty policy. Use --large --verify-backup --timeout-seconds2700 for each, with --baseline<reference> on the reference only. No --trace-units or --benchmark-only. Budget90minutes plus a separate cleanup buffer; agree the actual start/deadline with the coordinator before launch. Timeouts remain incomplete and never justify extending the lease.
+
+--verify-backup restores both generations in temporary storage, checks10000 unique in-range child IDs and all payload fields on the large fixture, and distinguishes first-generation box marker-1 from active marker-2. The runtime budget covers normal save/load and subsequent backup recovery together. Compile/provenance setup and bounded file-copy cleanup need lease buffer.
+
+Coordinator accepted the following provisional offline gates. They do not authorize live installation or establish gameplay latency. The future exclusive window remains ungranted:
+- All native compilation, active/backup restoration, completion markers and runtime diagnostics pass; source/log/patch hashes and process start/end timestamps are retained.
+- Candidate first and backup saves each take at most50% of the matched20%-duty reference. Additionally target at most290/340seconds respectively, approximately125% of the historical231.3/270.4second save-only baseline.
+- Each candidate save has maximum heartbeat gap at most1.0second and no more than0.2second above the worst matched reference save. Neither tracing overhead nor small-fixture results establish production latency.
+- Keep incomplete observations, retain no live effects, terminate only owned processes, release the window, then obtain final exact-head CI/review. Failing a criterion holds merge/install; do not lower criteria after observing results.
+
+### Scaled complete prequalification proposal
+
+A192x192x2 fixture (--large --dimension192 --verify-backup) retains10000 list-bearing children and completes first/backup save plus restoration of both generations on each serializer. Proposed native budgets are780seconds for reference and360seconds for candidate, with a1200second overall lease including setup/cleanup. Do not begin the candidate unless its full budget plus cleanup fits. Timeout ends the attempt; no retry extension. This is prequalification, not500x500x2 acceptance. Historical290/340second guards apply to the full-size case; scaled comparison uses the agreed relative-throughput/pause/correctness gates.
+
+Before launch, read actual host free memory and Gaia private bytes. Propose at least6GiB free at entry and a2GiB task-private-memory cap; monitor only the verified owned process, stop on cap/material contention, and retain peak measurements and exit timestamps. Those are proposed resource limits, requiring coordinator/memory-owner agreement. No native window is granted by this document.

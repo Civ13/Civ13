@@ -110,6 +110,13 @@ map_storage
 		list/saving_reference_pins = list()
 		list/saving_list_pins = list()
 		list/loaded_lists = list()
+		// Rolling graph ownership is numeric: deleting live atoms cannot erase it.
+		list/saving_grid_refs = list()
+		list/saving_owners = list()
+		list/saving_content_flags = list()
+		list/saving_world_movables = list()
+		var/saving_slice_start = 0
+		var/saving_work = 0
 		var/saving_z = 0
 		var/last_error = null
 		var/per_pause = 200
@@ -135,6 +142,12 @@ map_storage
 	saving_list_pins = list()
 	loaded_lists = list()
 	saved_turfs = list()
+	saving_grid_refs = list()
+	saving_owners = list()
+	saving_content_flags = list()
+	saving_world_movables = list()
+	saving_work = 0
+	saving_slice_start = world.tick_usage
 
 // Returns true if the value is purely numeric, return false if there are non-numeric
 // characters contained within the text string.
@@ -200,7 +213,7 @@ var/global/persistence_save_in_progress = FALSE
 		return 0
 	persistence_save_in_progress = TRUE
 	var/watch = start_watch()
-	to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP! THIS USUALLY TAKES UNDER A MINUTE</B></FONT>")
+	to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP. COMPLETION TIME DEPENDS ON WORLD SIZE.</B></FONT>")
 	sleep(5)
 	try
 		map_storage.Save_World()
