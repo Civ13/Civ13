@@ -7,6 +7,10 @@ by this contract. No shared implementation or adapter has landed. Mutation-fence
 coverage remains partial pending the subtype, custody and asynchronous unified
 patch. Local execution and shared implementation remain held.
 
+Revision 4 in `extraction-persistence-review-v4.md` refines G2-local marker
+correspondence, acyclic digest preimages, the single pending candidate and
+external input pinning. Those refinements take precedence over this revision.
+
 ## One map selection and one release batch
 
 Use one coordinator journal per exact map identity and dimensions, rooted at
