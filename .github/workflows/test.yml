@@ -51,11 +51,16 @@ jobs:
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_opendream_launcher.ps1')
         shell: pwsh
         run: |
+          # Negative-control children must fail; inspect each status ourselves.
+          $PSNativeCommandUseErrorActionPreference = $false
           & ./tests/test_opendream_launcher.ps1
           foreach ($control in @(@('Ancestor','Expected rejection: ancestor'), @('StateWrite','Failed record write must stop exact launched client'))) {
             $output = & pwsh -NoProfile -File ./tests/test_opendream_launcher.ps1 -NegativeControl $control[0] 2>&1
             if ($LASTEXITCODE -eq 0 -or !($output -match [regex]::Escape($control[1]))) {throw "Launcher control did not reject intended regression: $($control[0])"}
           }
+          # GitHub's pwsh wrapper otherwise returns the last expected child failure.
+          $LASTEXITCODE = 0
+          Write-Output 'PASS both launcher ownership omission controls'
       - name: Test current-source atlas generation and negative controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_crafting_atlas.py')
         run: python3 -m unittest discover -s tests -p test_crafting_atlas.py -v
