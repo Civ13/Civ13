@@ -585,6 +585,27 @@
 	var/tmp/obj/item/weapon/storage/internal/storage //storage for dryed raw items (for algorithm purpose)
 	var/tmp/current_process_id = "" //for control of only one process at time to one dehydrator
 
+/obj/structure/dehydrator/persistence_runtime_var(key)
+	return (key in list("slots", "storage", "current_process_id")) || ..()
+
+/obj/structure/dehydrator/proc/ensure_runtime_storage()
+	// Load_Entry replaces constructor contents. Reuse a legacy restored wrapper,
+	// or rebuild an absent one, without retaining the detached constructor child.
+	if (!storage || storage.loc != src)
+		storage = null
+		for (var/obj/item/weapon/storage/internal/candidate in contents)
+			if (candidate.loc == src)
+				storage = candidate
+				break
+		if (!storage)
+			storage = new/obj/item/weapon/storage/internal(src)
+	storage.master_item = src
+	storage.storage_slots = 12
+	storage.max_storage_space = 120000
+	// before_save drops the paid inputs to their turf; this empty wrapper is runtime state.
+	storage.should_save = FALSE
+	return storage
+
 /obj/structure/dehydrator/update_icon()
 	var/icon/I = new('icons/obj/food/dryer.dmi')
 	for (var/L in overlays)
@@ -889,15 +910,16 @@
 
 /obj/structure/dehydrator/proc/reinit()
 	spawn(rand(5,15)) //To prevent too much load when starting the server and to slightly spread the processes of dehydrators loaded from the map in time.
+		if (!isturf(loc))
+			return
+		ensure_runtime_storage()
 		refill()
 		current_process_id = "[time2text(world.realtime,"DDhhmmss")]-[num2text(rand(1,99999),5,10)]" //New value will kill old process on next Call
 		dry_process()
 
 /obj/structure/dehydrator/New()
 	. = ..()
-	storage = new/obj/item/weapon/storage/internal(src)
-	storage.storage_slots = 12 //enough
-	storage.max_storage_space = 120000 //may be enough
+	ensure_runtime_storage()
 	spawn(rand(5,15))
 		reinit()
 
@@ -934,7 +956,8 @@
 	. = ..()
 
 /obj/structure/dehydrator/after_load() //after load from map save
-	current_process_id = "" //because save algorithm may save this var, or load algorithm may leave old process
+	current_process_id = "" //Invalidate callbacks from before restoration.
+	ensure_runtime_storage()
 	spawn(50+rand(50,100))
 		reinit()
 	..()

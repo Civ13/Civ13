@@ -3,6 +3,9 @@
 		text2file("FAIL: [message]", "food_result.txt")
 		del(world)
 		sleep(1)
+// Fixture-only parent policy catches lost parent delegation and DM membership precedence.
+/obj/structure/persistence_runtime_var(key)
+	return key == "rack_fixture_parent_runtime" || ..()
 /world
 	hub = ""
 	hub_password = ""
@@ -35,6 +38,7 @@
 	initialize_chemical_reagents()
 	var/turf/T = locate(2,2,1)
 	var/obj/structure/dehydrator/rack = new(T)
+	rack_check(rack.persistence_runtime_var("rack_fixture_parent_runtime"), "rack preserves parent runtime exclusions")
 	rack.name = "rack save paid-input fixture"
 	sleep(35)
 	var/obj/item/weapon/reagent_containers/food/snacks/octopus/input = new(T)
@@ -55,9 +59,6 @@
 	rack_check(turf_ref && rack_ref, "native graph exports owning turf and rack")
 	rack_check(input.loc == T && !rack.storage.contents.len, "graph export invokes production before_save drop")
 	var/rack_path = map_storage.entry_path(F, rack_ref)
-#ifdef RACK_CONTROL_RUNTIME
-	F["[rack_path]/current_process_id"] << list("kind" = "value", "value" = "obsolete process")
-#endif
 	F.cd = rack_path
 	var/list/rack_keys = F.dir.Copy()
 	for (var/key in list("slots", "storage", "current_process_id"))
@@ -65,6 +66,7 @@
 		rack_check(!(key in rack_keys), "rack export excludes runtime fields")
 	var/saved_inputs = 0
 	for (var/datum/saved in map_storage.saving_reference_pins)
+		rack_check(!istype(saved, /obj/item/weapon/storage/internal), "rack graph excludes empty runtime storage wrapper")
 		if (saved.type == /obj/item/weapon/reagent_containers/food/snacks/octopus)
 			saved_inputs++
 	rack_check(saved_inputs == 1, "native turf graph saves exactly one paid input")
@@ -98,6 +100,18 @@
 			var/obj/loaded_object = loaded
 			if (loaded_object.load_datums && loaded_object.reagents)
 				loaded_object.reagents.my_atom = loaded_object
+	rack_check(restored_rack.storage && restored_rack.storage.loc == restored_rack, "restored rack rebuilds runtime storage before refill")
+	var/obj/item/weapon/storage/internal/rebuilt_storage = restored_rack.storage
+	rack_check(restored_rack.ensure_runtime_storage() == rebuilt_storage, "rack storage rebuild is idempotent")
+	// Legacy saves may restore the empty wrapper in contents even though its pointer is excluded.
+	qdel(rebuilt_storage)
+	var/obj/item/weapon/storage/internal/legacy_storage = new(restored_rack)
+	rack_check(restored_rack.ensure_runtime_storage() == legacy_storage, "rack adopts legacy restored storage contents")
+	rack_check(legacy_storage.master_item == restored_rack && !legacy_storage.should_save, "legacy rack storage is rebound and excluded from future saves")
+	var/storage_count = 0
+	for (var/obj/item/weapon/storage/internal/candidate in restored_rack.contents)
+		storage_count++
+	rack_check(storage_count == 1, "rack owns exactly one live runtime storage wrapper")
 	map_storage.clear_bookkeeping()
 	sleep(170) // Allow native constructor and production after_load/reinit waits, unchanged.
 	rack_check(restored_rack.storage && restored_rack.storage.loc == restored_rack, "restored rack owns live runtime storage")

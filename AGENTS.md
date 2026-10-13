@@ -265,6 +265,13 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
 
+<!-- 2026-10-13: dehydrator native save baseline -->
+`tests/food_progression/rack_save.dm` exports the owning turf and rack graph.
+The 769ae4911 baseline compiled cleanly but failed exporting runtime `slots`.
+Load_Entry replaces constructor contents even for an empty saved record; rack
+runtime pointers must be excluded and live internal storage rebound or rebuilt.
+Source-only preparation does not establish native candidate or control acceptance.
+
 <!-- 2026-10-12: NPC cover decision parity -->
 `tests/npc_cover/run.py` compiles production cover scoring, LOS and line helpers
 with native BYOND ranges in an isolated 32x32x2 world. It compares every score

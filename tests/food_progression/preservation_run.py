@@ -20,7 +20,7 @@ def main():
     control.add_argument('--can-negative-control', action='store_true')
     parser.add_argument('--probe', choices=('crop', 'storage', 'preservation', 'rack-save'), default='preservation')
     parser.add_argument('--preservation-control', choices=('nutrition', 'age', 'conversion'))
-    parser.add_argument('--rack-control', choices=('runtime', 'duplicate', 'conversion'))
+    parser.add_argument('--rack-control', choices=('runtime', 'storage', 'duplicate', 'conversion'))
     parser.add_argument('--output', type=Path)
     parser.add_argument('--stem')
     parser.add_argument('--start-gated', action='store_true')
@@ -83,6 +83,18 @@ def main():
             marker = 'spawn(150) //one tick at 15 seconds will be enough'
             if production.count(marker) != 1:
                 raise RuntimeError('Production drying wait marker changed')
+            if args.rack_control == 'runtime':
+                exclusion = '\treturn (key in list("slots", "storage", "current_process_id")) || ..()'
+                if production.count(exclusion) != 1:
+                    raise RuntimeError('Rack runtime exclusion control marker changed')
+                production = production.replace(exclusion, '\treturn ..() // omission control restores runtime export/import')
+            if args.rack_control == 'storage':
+                reinit = '\t\tensure_runtime_storage()\n\t\trefill()'
+                after_load = '\tcurrent_process_id = "" //Invalidate callbacks from before restoration.\n\tensure_runtime_storage()'
+                if production.count(reinit) != 1 or production.count(after_load) != 1:
+                    raise RuntimeError('Rack storage rebuild control markers changed')
+                production = production.replace(reinit, '\t\trefill()')
+                production = production.replace(after_load, '\tcurrent_process_id = "" // omission control leaves detached constructor storage')
             production_control = 'nutrition' if args.rack_control == 'conversion' else args.preservation_control
             if production_control:
                 if production_control in ('nutrition', 'conversion'):
@@ -125,7 +137,7 @@ def main():
             source = source.replace('code\\modules\\persistence\\functions.dm', generated['_persistence.dm'].name)
         source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
         probe = root / 'tests/food_progression' / ('rack_save.dm' if args.probe == 'rack-save' else 'preservation.dm' if args.probe == 'preservation' else 'storage.dm' if args.probe == 'storage' else 'probe.dm')
-        control_define = '#define RACK_CONTROL_' + args.rack_control.upper() + '\n' if args.rack_control in ('runtime', 'duplicate') else ''
+        control_define = '#define RACK_CONTROL_DUPLICATE\n' if args.rack_control == 'duplicate' else ''
         generated['.dme'].write_text(source + '\n' + control_define + '#include "' + probe.relative_to(root).as_posix() + '"\n', encoding='utf-8')
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         hash_paths = [probe, Path(__file__), Path(__file__).with_name('preservation_guard.py'), Path(__file__).with_name('guard_cleanup.py')] + [root / name for name in ('code/modules/1713/production.dm', 'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm', 'code/modules/reagents/reagent_containers/food/snacks.dm', 'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Food-Drinks.dm')]
