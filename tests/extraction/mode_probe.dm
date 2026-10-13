@@ -99,6 +99,16 @@
 	var/datum/extraction_session/SB = B.extraction_session
 	world.log << "Room A [SA.house.room] at [A.x],[A.y],[A.z]; room B [SB.house.room] at [B.x],[B.y],[B.z]"
 	equipment_assert(SA.house != SB.house && A.z == 2 && B.z == 2, "private physical rooms differ")
+	var/mob/living/human/duplicate_owner = new(locate(3,3,1))
+	M.test_owners[duplicate_owner] = SA.owner
+	var/identity_revision = SA.profile["revision"]
+	equipment_assert(!M.admit(duplicate_owner) && !duplicate_owner.extraction_session && M.accounts.sessions[SA.owner] == SA && SA.profile["revision"] == identity_revision, "duplicate canonical owner cannot obtain second session or starter checkpoint")
+	M.test_owners -= duplicate_owner
+	qdel(duplicate_owner)
+	M.test_owners[A] = SB.owner
+	equipment_assert(!M.owned(A) && !M.visit_hub(A) && !M.deploy(A) && SA.profile["revision"] == identity_revision, "changed client identity cannot operate original account session")
+	M.test_owners[A] = SA.owner
+	equipment_assert(M.owned(A) && M.owned(B), "original distinct identities retain their own sessions")
 	var/turf/other = locate(SB.house.x + 1, SB.house.y, SB.house.z)
 	equipment_assert(!other.Enter(A, get_turf(A)), "other private room denies movement")
 	equipment_assert(extraction_hub_terminal && extraction_hub_terminal.z == 3, "original shared hub separate from private rooms")

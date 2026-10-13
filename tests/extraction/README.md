@@ -300,6 +300,11 @@ restart/deployment, screen control, live economy or release of queue/native/shar
 implementation holds. Coordinate the current launcher owner's package before
 any connected run; no such run was performed by this documentation change.
 
+See [the OpenDream readiness audit](../../docs/extraction-opendream-readiness.md)
+for the client-to-account ownership path, runtime room allocation, journal engine
+contracts and prepared identity-refusal vectors. Those vectors remain uncompiled
+and unrun while execution is held.
+
 The human confirmed only one BYOND account is available. Prepare a genuine
 single-account concept capture of room/hub navigation, private stash, paid
 storage/upgrades, reconnect, disposable restart and idle reload where the UI
