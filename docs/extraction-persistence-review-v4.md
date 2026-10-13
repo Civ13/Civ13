@@ -140,3 +140,8 @@ Future controls cover roster/member/account changes on both sides of reconciliat
 and finish, policy removal/replacement, authorized CAS pin updates, unrelated
 writer refusal and account change after fence release before issuance. Design
 review does not establish exhaustive subtype/custody/async or native crash acceptance.
+
+The source-backed [primitive and fence inventory](extraction-persistence-primitive-inventory.md)
+records candidate API signatures, proposed proof types and remaining implementation
+contracts. Its native candidates are unverified on 516.1681; it supplies no execution
+grant or shared implementation acceptance.
