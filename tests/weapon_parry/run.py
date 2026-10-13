@@ -42,5 +42,5 @@ with tempfile.TemporaryDirectory(prefix='civ13-parry-') as temp:
         raise SystemExit(log)
     result = json.loads((root / 'result.json').read_text())
     assert result['scenarios'] == 32, result
-    assert bool(result['failures']) == bool(args.negative_control), result
+    assert result['failures'] == (8 if args.negative_control else 0), result
     print(json.dumps(dict(result, negative_control=args.negative_control, byond='516.1681')))
