@@ -123,8 +123,10 @@ Source addition is not test execution; record actual exact-head results separate
 `reader_contract.dm` is a standalone two-world savefile API experiment.
 `run-reader-contract.py` uses pinned BYOND 516.1681, a unique temporary directory,
 60-second compiler timeout and 45-second shared runtime deadline with bounded
-owned-process cleanup. It is source-only until exact execution results are
-recorded. It never loads the production game or provides host immutability.
+owned-process cleanup. Positive and binding/close omission controls passed on
+Windows BYOND 516.1681 at `12de059fad3d593bc2a4891a6867d7d5a0c7e8f4` with
+zero compile errors/warnings. It never loads the production game or provides
+host immutability; the retained same-world reader observed a second handle's write.
 
 ```sh
 python3 tests/world_save/run-reader-contract.py --byond-bin /path/to/byond/bin

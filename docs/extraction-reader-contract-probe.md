@@ -1,9 +1,27 @@
 # Native reader-contract primitive probe
 
-Source candidate, uncompiled and unrun. This slice adds a standalone primitive
-experiment and fixture-only adapter checks. It changes no production loader,
+The standalone primitive experiment and fixture-only adapter checks passed on
+Windows BYOND 516.1681 at commit `12de059fad3d593bc2a4891a6867d7d5a0c7e8f4`.
+The positive run and binding/close omission controls each compiled with zero errors
+and warnings and passed all-stream engine-diagnostic gates. This changes no production loader,
 save schema, engine, custody or provider binding. There is no production immutable
 reader or durable-quarantine acceptance.
+
+The positive receipts show locked-open refusal, shared reads of A after unlock,
+write-lock refusal while the owner retains its reader, successful locking after
+the last reader closes, and a reopened read of B after the peer writes. A second
+handle in the same world changed the retained reader's value to LOCAL, so this
+native mechanism does not provide immutable bytes against same-world writers.
+Unlock returned 1 in these runs; that is an observation, not a required contract.
+The e-acute text length was 2; arbitrary binary and normalization remain untested.
+
+The controls produced the exact intended results `WRONG_OPERATION_REJECTED` and
+`PEER_LOCK_AFTER_OWNER_CLOSE`. Positive worlds and assertion-producing worlds
+exited cleanly. The close control explicitly terminated its still-waiting owner,
+which had neither receipt nor result; cleanup reported no errors. The granted
+slot was released at 18:00:55 UTC on October 13, 2026. Prior compilation failures
+(duplicate declarations, then unused-variable warnings) remain retained and do
+not count as runtime success. OpenDream and remote exact-head CI are separate.
 
 The selected production proposal remains an immutable private snapshot backed by
 demonstrated exclusive host ownership. This probe measures a native candidate

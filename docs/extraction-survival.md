@@ -275,8 +275,10 @@ The secure room requires its matching key, account unlock during the current
 raid, entering the room, closing the real door and locking it from inside.
 An open/broken/unlocked door, another occupant or losing the key rejects exit.
 Conditions are rechecked at each one-second action segment and immediately
-before the durable extraction commit. Real-client door clicking remains part of
-graphical acceptance; the isolated fixture invokes the production door switch.
+before the durable extraction commit. The isolated fixture invokes the production
+door switch. Acceptance requires automated coverage of the ordinary interaction
+dispatch and these exit guards; capture is needed only if behavioral uncertainty
+remains after that verification.
 
 A separate original Modern-city Nomads version uses the same bounded account,
 shipment, gear, private hub and game-credit services. Select
@@ -417,8 +419,8 @@ The private terminal now offers owner-only Discord linking. Host code must
 explicitly configure and enable the adapter with an ASCII key; its default is
 disabled and no key file or network connection is opened. A conscious owner at
 their home terminal receives a five-minute challenge only after checkpointing
-their stash. The proof is shown to that player only. Connected-client interaction
-still needs gameplay acceptance.
+their stash. The proof is shown to that player only. Automated integration still
+needs to establish ordinary interaction dispatch, challenge privacy and expiry.
 
 The optional native spool uses a private `data/`-relative directory and the
 existing map tick, with eight directory entries per second and a 256-entry cap.
