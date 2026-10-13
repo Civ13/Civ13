@@ -428,6 +428,7 @@
 
 	loc_temp = get_temp(src)
 	cold_wetness = min(1, max(0, cold_wetness))
+	var/previous_wetness = cold_wetness
 	// Rain and immersion soak insulation; shelter and nearby heat let it dry.
 	// This scalar needs no retained references, spawned timers or registries.
 	if (istype(get_turf(src), /turf/floor/beach/water))
@@ -436,6 +437,10 @@
 		cold_wetness = min(1, cold_wetness + 0.01)
 	else
 		cold_wetness = max(0, cold_wetness - (loc_temp >= 18 ? 0.01 : 0.002))
+	if (cold_wetness >= 1 && previous_wetness < 1)
+		to_chat(src, "<span class='warning'>You are soaked through. Get out of the rain or water and find warmth to dry off.</span>")
+	else if (cold_wetness <= 0 && previous_wetness > 0)
+		to_chat(src, "<span class='notice'>You have dried off completely.</span>")
 
 	for (var/obj/structure/bed/bedroll/BRL in src.loc)
 		if (BRL.used == TRUE && BRL.buckled_mob == src)
@@ -491,6 +496,15 @@
 
 
 	species.get_environment_discomfort(src)
+
+/mob/living/human/proc/get_wetness_description()
+	if (cold_wetness <= 0)
+		return "Dry"
+	if (cold_wetness < 0.25)
+		return "Damp"
+	if (cold_wetness < 0.75)
+		return "Wet"
+	return "Soaked"
 
 /mob/living/human/proc/stabilize_body_temperature()
 
