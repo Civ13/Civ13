@@ -37,3 +37,9 @@ Coordinator accepted the following provisional offline gates. They do not author
 - Candidate first and backup saves each take at most50% of the matched20%-duty reference. Additionally target at most290/340seconds respectively, approximately125% of the historical231.3/270.4second save-only baseline.
 - Each candidate save has maximum heartbeat gap at most1.0second and no more than0.2second above the worst matched reference save. Neither tracing overhead nor small-fixture results establish production latency.
 - Keep incomplete observations, retain no live effects, terminate only owned processes, release the window, then obtain final exact-head CI/review. Failing a criterion holds merge/install; do not lower criteria after observing results.
+
+### Scaled complete prequalification proposal
+
+A192x192x2 fixture (--large --dimension192 --verify-backup) retains10000 list-bearing children and completes first/backup save plus restoration of both generations on each serializer. Proposed native budgets are780seconds for reference and360seconds for candidate, with a1200second overall lease including setup/cleanup. Do not begin the candidate unless its full budget plus cleanup fits. Timeout ends the attempt; no retry extension. This is prequalification, not500x500x2 acceptance. Historical290/340second guards apply to the full-size case; scaled comparison uses the agreed relative-throughput/pause/correctness gates.
+
+Before launch, read actual host free memory and Gaia private bytes. Propose at least6GiB free at entry and a2GiB task-private-memory cap; monitor only the verified owned process, stop on cap/material contention, and retain peak measurements and exit timestamps. Those are proposed resource limits, requiring coordinator/memory-owner agreement. No native window is granted by this document.

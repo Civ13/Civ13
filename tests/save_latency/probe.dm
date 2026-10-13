@@ -60,8 +60,10 @@ var/last_identity
 	..()
 	try
 		if(world.params["large"])
-			world.maxx = 500
-			world.maxy = 500
+			var/dimension = world.params["dimension"] ? text2num(world.params["dimension"]) : 500
+			if(dimension < 2 || dimension > 500 || round(dimension) != dimension) throw EXCEPTION("invalid fixture dimension")
+			world.maxx = dimension
+			world.maxy = dimension
 		map = new /obj/map_metadata(locate(1,1,1))
 		if(world.params["recovery"])
 			if(world.params["recovery"] == "active")

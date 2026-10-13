@@ -6,6 +6,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--large', action='store_true')
+    parser.add_argument('--dimension', type=int, help='Bounded scaled large fixture side length')
     parser.add_argument('--timeout-seconds', type=int, help='Native runtime limit for a bounded offline lease')
     parser.add_argument('--dense', action='store_true')
     parser.add_argument('--prepare-only', action='store_true', help='Generate source without compiling or starting BYOND')
@@ -21,6 +22,8 @@ def main():
         parser.error('--timeout-seconds must be between 1 and 3600')
     if args.verify_backup and (args.benchmark_only or args.interrupt or args.scenario or args.negative_control):
         parser.error('--verify-backup requires a normal complete roundtrip')
+    if args.dimension is not None and (not args.large or not 2 <= args.dimension <= 500):
+        parser.error('--dimension requires --large and a value from 2 to 500')
     if args.negative_control == 'yield': args.dense = True
     root = Path(__file__).resolve().parents[2]
     output = Path(tempfile.mkdtemp(prefix='civ13-save-latency-'))
@@ -101,7 +104,7 @@ def main():
     source += '#include "code/predefines.dm"\n#include "tests/world_save/stubs.dm"\n#define fdel(path) delete_file_adapter(path)\n#define fcopy(source, destination) latency_copy(source, destination)\n'
     source += ''.join(f'#include "{path}"\n' for path in files[2:])
     (output / 'probe.dme').write_text(source)
-    (output / 'metadata.json').write_text(json.dumps({'baseline':args.baseline, 'large':args.large, 'dense':args.dense, 'scenario':args.scenario, 'interrupt':args.interrupt, 'benchmark_only':args.benchmark_only, 'negative_control':args.negative_control, 'trace_units':args.trace_units, 'timeout_seconds':args.timeout_seconds, 'verify_backup':args.verify_backup,
+    (output / 'metadata.json').write_text(json.dumps({'baseline':args.baseline, 'large':args.large, 'dense':args.dense, 'scenario':args.scenario, 'interrupt':args.interrupt, 'benchmark_only':args.benchmark_only, 'negative_control':args.negative_control, 'trace_units':args.trace_units, 'timeout_seconds':args.timeout_seconds, 'verify_backup':args.verify_backup, 'dimension':args.dimension,
         'head': subprocess.check_output(['git','rev-parse','HEAD'], cwd=root, text=True).strip(), 'sources':hashes}, indent=2))
     (output / 'checkout.patch').write_text(subprocess.check_output(['git','diff','HEAD'],cwd=root,text=True))
     if args.prepare_only: return
@@ -118,6 +121,7 @@ def main():
     if args.benchmark_only: parameters += ['benchmark=1']
     if args.dense: parameters += ['dense=1']
     if args.verify_backup: parameters += ['verify_backup=1']
+    if args.dimension is not None: parameters += ['dimension='+str(args.dimension)]
     if args.interrupt: parameters += ['interrupt=1']
     if not args.baseline: parameters += ['bounded=1']
     if parameters: command += ['-params','&'.join(parameters)]
@@ -182,6 +186,7 @@ def main():
             raise RuntimeError('Backup verification runtime budget exhausted')
         recovery_parameters=['recovery=backup']
         if args.large: recovery_parameters.append('large=1')
+        if args.dimension is not None: recovery_parameters.append('dimension='+str(args.dimension))
         if args.dense: recovery_parameters.append('dense=1')
         recovery_command=command[:command.index('-params')] if '-params' in command else command
         recovery=subprocess.run(recovery_command+['-params','&'.join(recovery_parameters)],cwd=output,
