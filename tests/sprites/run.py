@@ -43,7 +43,7 @@ def main():
             source = source.replace('code\\modules\\1713\\weapons\\attachment.dm', prefix + '_attachments.dm')
         fixture=(ROOT / 'tests/sprites/fixture.dm').read_text(encoding='utf-8')
         if args.atlas_assets:
-            fixture=fixture.replace('typesof(/obj/item, /obj/structure, /obj/machinery)', 'typesof(/obj, /turf)')
+            fixture=fixture.replace('typesof(/obj/item, /obj/structure, /obj/machinery)', 'typesof(/obj, /turf, /mob)')
             fixture=fixture.replace('"invisibility" = initial(T:invisibility)', '"dir" = initial(T:dir), "invisibility" = initial(T:invisibility)')
             fixture=fixture.replace('\ttext2file(json_encode(rows)', '\tvar/list/requests = json_decode(file2text("requests.json"))\n\tvar/list/exports = list()\n\tfor(var/typepath in requests)\n\t\tvar/T = text2path(typepath)\n\t\tif(!T)\n\t\t\tcontinue\n\t\tvar/I = initial(T:icon)\n\t\tvar/S = initial(T:icon_state)\n\t\tif(I && (S in icon_states(I)))\n\t\t\tvar/icon/preview = icon(I, S, initial(T:dir), 1)\n\t\t\tvar/filename = "sprite_[exports.len].png"\n\t\t\tfcopy(preview, filename)\n\t\t\texports[typepath] = filename\n\ttext2file(json_encode(exports), "exports.json")\n\ttext2file(json_encode(rows)')
             fixture=fixture.replace('var/T = text2path(typepath)', 'var/list/parts = splittext(typepath, "#")\n\t\tvar/T = text2path(parts[1])')

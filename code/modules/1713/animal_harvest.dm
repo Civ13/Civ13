@@ -64,6 +64,35 @@
 		user.put_in_any_hand_if_possible(cord)
 		to_chat(user, SPAN_NOTICE("You twist the sinew into binding cord."))
 
+/obj/item/stack/grass_cuttings
+	name = "grass cuttings"
+	desc = "Fresh grass fibres. Use in hand to twist two portions into crude twine."
+	icon = 'icons/obj/materials.dmi'
+	icon_state = "rope"
+	color = "#709744"
+	singular_name = "grass cutting"
+	max_amount = 20
+	w_class = ITEM_SIZE_SMALL
+
+/obj/item/stack/grass_cuttings/attack_self(mob/user)
+	if (QDELETED(src) || QDELETED(user) || loc != user || user.stat != CONSCIOUS || amount < 2)
+		return
+	if (use(2))
+		var/obj/item/stack/crude_twine/cord = new(get_turf(user), 1, FALSE)
+		user.put_in_any_hand_if_possible(cord)
+		to_chat(user, SPAN_NOTICE("You twist the grass cuttings into crude twine."))
+
+// Weak binding is deliberately separate from general-purpose rope recipes.
+/obj/item/stack/crude_twine
+	name = "crude twine"
+	desc = "Twisted grass fibres. Can bind a flint axe, but the binding wears out quickly."
+	icon = 'icons/obj/materials.dmi'
+	icon_state = "rope"
+	color = "#A59A61"
+	singular_name = "twine binding"
+	max_amount = 20
+	w_class = ITEM_SIZE_SMALL
+
 /mob/living/simple_animal
 	// Persist only the completed claim; an interrupted wait must not lock a save.
 	var/harvested = FALSE

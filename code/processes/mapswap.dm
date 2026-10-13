@@ -377,8 +377,13 @@
 	if (!maps.Find(winner))
 		winner = pick(maps)
 	if (!done)
+		#ifdef OPENDREAM
+		if (processes.python.execute("mapswap.py", list(winner)))
+			done = TRUE
+		#else
 		processes.python.execute("mapswap.py", list(winner))
 		done = TRUE
+		#endif
 
 /process/gamemode
 	var/ready = TRUE

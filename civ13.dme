@@ -1223,6 +1223,7 @@
 #include "code\processes\ping_track.dm"
 #include "code\processes\projectile.dm"
 #include "code\processes\python.dm"
+#include "code\game\mob\player_help.dm"
 #include "code\processes\research_tree.dm"
 #include "code\processes\scheduler.dm"
 #include "code\processes\self_cleaning.dm"

@@ -325,6 +325,19 @@
 	main = target.main
 	name = target.name
 	schedule_interval = target.schedule_interval
+	// BEGIN replacement configuration
+	start_delay = target.start_delay
+	priority = target.priority
+	fires_at_gamestates = target.fires_at_gamestates.Copy()
+	disabled = target.disabled
+	paused = target.paused
+	paused_nonvital = target.paused_nonvital
+	always_runs = target.always_runs
+	hang_warning_time = target.hang_warning_time
+	hang_alert_time = target.hang_alert_time
+	hang_restart_time = target.hang_restart_time
+	last_fire_as_member = target.last_fire_as_member
+	// END replacement configuration
 	run_start = 0
 	times_killed = target.times_killed
 	ticks = target.ticks

@@ -17,7 +17,7 @@
 	var/tmp/obj/structure/exercise/exercise_equipment
 
 /mob/living/human/persistence_runtime_var(key)
-	return key in list("exercise_rest_epoch", "exercise_equipment") || ..()
+	return (key in list("exercise_rest_epoch", "exercise_equipment")) || ..()
 
 /mob/living/human/proc/recover_exercise()
 	var/now = exercise_time()
@@ -47,7 +47,7 @@
 
 /obj/structure/exercise
 	name = "stone lifting weights"
-	desc = "Paid stone weights for manually completed lifting sets. Click three times, completing each fifteen-second repetition. Leaving the weights, interruption or cancelling loses the unfinished set."
+	desc = "Crafted stone weights for manually completed lifting sets. Click three times, completing each fifteen-second repetition. Leaving the weights, interruption or cancelling loses the unfinished set."
 	icon = 'icons/obj/materials.dmi'
 	icon_state = "sheet-stone"
 	anchored = TRUE
@@ -86,7 +86,7 @@
 	reward_rate = 0.004
 
 /obj/structure/exercise/persistence_runtime_var(key)
-	return key in list("actor", "origin", "repetition", "busy", "epoch", "expiry") || ..()
+	return (key in list("actor", "origin", "repetition", "busy", "epoch", "expiry")) || ..()
 
 /obj/structure/exercise/proc/clear_exercise()
 	if (actor)

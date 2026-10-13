@@ -295,7 +295,7 @@
 /obj/structure/catapult/verb/rotate_left()
 	set category = null
 	set name = "Rotate Left"
-	set src in range(2, usr)
+	set src in range(2)
 	if (anchored)
 		to_chat(user, "<span class='notice'>You need to unsecure the catapult first!</span>")
 	else
@@ -305,7 +305,7 @@
 /obj/structure/catapult/verb/rotate_right()
 	set category = null
 	set name = "Rotate Right"
-	set src in range(2, usr)
+	set src in range(2)
 	if (anchored)
 		to_chat(user, "<span class='notice'>You need to unsecure the catapult first!</span>")
 	else

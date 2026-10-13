@@ -195,6 +195,42 @@ var/global/harvest_duplicate_result = null
 			qdel(H)
 			qdel(binding)
 			harvest_clear(site)
+		for (var/action in list("cancel", "drop", "disconnect", "concurrent", "complete"))
+			var/obj/item/weapon/branch/sharpened/harvest_tester/B = new(U)
+			var/obj/item/weapon/flint/sharpened/H = new(U)
+			var/obj/item/stack/crude_twine/binding = new(U, 2)
+			B.test_action = action
+			B.assemble_flint_axe(U, H)
+			var/obj/item/weapon/material/hatchet/tribal/flint/axe = locate() in site
+			if (action == "complete" || action == "concurrent")
+				var/obj/item/weapon/material/hatchet/tribal/flint/normal = new(site)
+				harvest_assert(axe && axe.maxhealth == max(1, normal.maxhealth * 0.25) && axe.health == axe.maxhealth && binding.amount == 1, "Weak binding durability/conservation: [action]")
+				qdel(normal)
+			else
+				harvest_assert(!axe && binding.amount == 2, "Interrupted twine consumed: [action]")
+			qdel(B)
+			qdel(H)
+			qdel(binding)
+			harvest_clear(site)
+		for (var/action in list("complete", "cancel", "drop", "concurrent"))
+			var/turf/floor/grass/twine_tester/G = site.ChangeTurf(/turf/floor/grass/twine_tester)
+			var/obj/item/weapon/flint/sharpened/H = new(U)
+			G.test_action = action
+			G.gather_grass_cuttings(U, H)
+			var/obj/item/stack/grass_cuttings/cuttings = locate() in site
+			if (action == "complete" || action == "concurrent")
+				harvest_assert(cuttings && cuttings.amount == 2 && istype(site, /turf/floor/dirt), "Grass harvest conservation: [action]")
+				cuttings.loc = U
+				cuttings.attack_self(U)
+				var/obj/item/stack/crude_twine/cord = locate() in U
+				if (!cord)
+					cord = locate() in site
+				harvest_assert(!cuttings.loc && cord && cord.amount == 1, "Twine conversion conservation")
+				qdel(cord)
+			else
+				harvest_assert(!cuttings && !G.busy && istype(site, /turf/floor/grass), "Interrupted grass harvest: [action]")
+			qdel(H)
+			harvest_clear(site)
 		var/obj/structure/oven/oven = new(site)
 		var/obj/item/weapon/reagent_containers/food/snacks/meat/offal/heart/heart = new(oven)
 		oven.process()
@@ -233,4 +269,18 @@ var/global/harvest_duplicate_result = null
 	if (test_action == "concurrent")
 		var/obj/item/weapon/flint/H = locate() in user
 		assemble_flint_axe(user, H)
+	return TRUE
+
+/turf/floor/grass/twine_tester
+	var/test_action = "complete"
+/turf/floor/grass/twine_tester/grass_cutting_actor_connected(mob/user)
+	return user != null
+/turf/floor/grass/twine_tester/grass_cutting_wait(mob/user)
+	var/obj/item/weapon/flint/H = locate() in user
+	if (test_action == "cancel")
+		return FALSE
+	if (test_action == "drop")
+		H.loc = get_turf(user)
+	if (test_action == "concurrent")
+		gather_grass_cuttings(user, H)
 	return TRUE

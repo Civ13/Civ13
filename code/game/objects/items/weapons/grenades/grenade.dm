@@ -728,7 +728,7 @@
 /obj/item/weapon/grenade/suicide_vest/verb/arm()
 	set category = null
 	set name = "Arm/Disarm"
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (armed == "armed")
 		to_chat(usr, "You disarm \the [src].")
@@ -795,7 +795,7 @@
 /obj/item/weapon/grenade/suicide_vest/kamikaze/verb/arm1()
 	set category = null
 	set name = "Arm/Disarm"
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (armed1 == "armed")
 		to_chat(usr, "You disarm \the [src].")

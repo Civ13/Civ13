@@ -19,5 +19,6 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 25
+	maxHealth = 25
 	mob_size = MOB_SMALL
 	behaviour = "scared"

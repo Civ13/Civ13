@@ -99,7 +99,7 @@
 /obj/structure/computer/verb/toggle_power(var/mob/living/human/H)
 	set category = null
 	set name = "Turn On"
-	set src in range(1, usr)
+	set src in range(1)
 	if(src.active)
 		name = "Turn Off"
 	if(!powersource && powerneeded)

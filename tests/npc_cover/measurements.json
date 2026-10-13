@@ -1,0 +1,903 @@
+{
+  "schema_version": 1,
+  "final": {
+    "head_sha": "7823bf9d16ac5d1b10432fef141043b2623a40f5",
+    "baseline_sha": "1627730ecec53f385cbf1956b7a9e4385dffa675",
+    "source_sha256": "a87caa055f1943136026992aeb97d2bfec58da83d5a62e489551f4e57bb22cff",
+    "compiled_sha256": "00756fe8146b3f1cc92248efd9750a941fb99da0958a1eb90a61e2fa513bdeda",
+    "probe_sha256": "edcb9d1dc9b78ee52bb991bd36262e8d46ea38fe819da2003120aea6f8e40745",
+    "platform": "nt",
+    "byond": "516.1681",
+    "dimensions": [
+      32,
+      32,
+      2
+    ],
+    "scenarios": 100,
+    "score_comparisons": 4495,
+    "failures": 0,
+    "samples": [
+      {
+        "mode": "empty",
+        "pair": 1,
+        "candidate": 0,
+        "calls": 1000,
+        "elapsed_ds": 0.25
+      },
+      {
+        "mode": "empty",
+        "pair": 1,
+        "candidate": 1,
+        "calls": 1000,
+        "elapsed_ds": 0.3125
+      },
+      {
+        "mode": "empty",
+        "pair": 2,
+        "candidate": 1,
+        "calls": 1000,
+        "elapsed_ds": 0.3125
+      },
+      {
+        "mode": "empty",
+        "pair": 2,
+        "candidate": 0,
+        "calls": 1000,
+        "elapsed_ds": 0.25
+      },
+      {
+        "mode": "empty",
+        "pair": 3,
+        "candidate": 0,
+        "calls": 1000,
+        "elapsed_ds": 0.1875
+      },
+      {
+        "mode": "empty",
+        "pair": 3,
+        "candidate": 1,
+        "calls": 1000,
+        "elapsed_ds": 0.25
+      },
+      {
+        "mode": "empty",
+        "pair": 4,
+        "candidate": 1,
+        "calls": 1000,
+        "elapsed_ds": 0.25
+      },
+      {
+        "mode": "empty",
+        "pair": 4,
+        "candidate": 0,
+        "calls": 1000,
+        "elapsed_ds": 0.1875
+      },
+      {
+        "mode": "empty",
+        "pair": 5,
+        "candidate": 0,
+        "calls": 1000,
+        "elapsed_ds": 0.1875
+      },
+      {
+        "mode": "empty",
+        "pair": 5,
+        "candidate": 1,
+        "calls": 1000,
+        "elapsed_ds": 0.25
+      },
+      {
+        "mode": "sparse",
+        "pair": 1,
+        "candidate": 0,
+        "calls": 1000,
+        "elapsed_ds": 0.375
+      },
+      {
+        "mode": "sparse",
+        "pair": 1,
+        "candidate": 1,
+        "calls": 1000,
+        "elapsed_ds": 0.375
+      },
+      {
+        "mode": "sparse",
+        "pair": 2,
+        "candidate": 1,
+        "calls": 1000,
+        "elapsed_ds": 0.375
+      },
+      {
+        "mode": "sparse",
+        "pair": 2,
+        "candidate": 0,
+        "calls": 1000,
+        "elapsed_ds": 0.375
+      },
+      {
+        "mode": "sparse",
+        "pair": 3,
+        "candidate": 0,
+        "calls": 1000,
+        "elapsed_ds": 0.375
+      },
+      {
+        "mode": "sparse",
+        "pair": 3,
+        "candidate": 1,
+        "calls": 1000,
+        "elapsed_ds": 0.375
+      },
+      {
+        "mode": "sparse",
+        "pair": 4,
+        "candidate": 1,
+        "calls": 1000,
+        "elapsed_ds": 0.375
+      },
+      {
+        "mode": "sparse",
+        "pair": 4,
+        "candidate": 0,
+        "calls": 1000,
+        "elapsed_ds": 0.3125
+      },
+      {
+        "mode": "sparse",
+        "pair": 5,
+        "candidate": 0,
+        "calls": 1000,
+        "elapsed_ds": 0.3125
+      },
+      {
+        "mode": "sparse",
+        "pair": 5,
+        "candidate": 1,
+        "calls": 1000,
+        "elapsed_ds": 0.375
+      },
+      {
+        "mode": "crowded",
+        "pair": 1,
+        "candidate": 0,
+        "calls": 1000,
+        "elapsed_ds": 5.625
+      },
+      {
+        "mode": "crowded",
+        "pair": 1,
+        "candidate": 1,
+        "calls": 1000,
+        "elapsed_ds": 4.9375
+      },
+      {
+        "mode": "crowded",
+        "pair": 2,
+        "candidate": 1,
+        "calls": 1000,
+        "elapsed_ds": 4.875
+      },
+      {
+        "mode": "crowded",
+        "pair": 2,
+        "candidate": 0,
+        "calls": 1000,
+        "elapsed_ds": 6.375
+      },
+      {
+        "mode": "crowded",
+        "pair": 3,
+        "candidate": 0,
+        "calls": 1000,
+        "elapsed_ds": 5.9375
+      },
+      {
+        "mode": "crowded",
+        "pair": 3,
+        "candidate": 1,
+        "calls": 1000,
+        "elapsed_ds": 5.125
+      },
+      {
+        "mode": "crowded",
+        "pair": 4,
+        "candidate": 1,
+        "calls": 1000,
+        "elapsed_ds": 5.75
+      },
+      {
+        "mode": "crowded",
+        "pair": 4,
+        "candidate": 0,
+        "calls": 1000,
+        "elapsed_ds": 5.6875
+      },
+      {
+        "mode": "crowded",
+        "pair": 5,
+        "candidate": 0,
+        "calls": 1000,
+        "elapsed_ds": 5.8125
+      },
+      {
+        "mode": "crowded",
+        "pair": 5,
+        "candidate": 1,
+        "calls": 1000,
+        "elapsed_ds": 5.5625
+      }
+    ]
+  },
+  "raw_evidence": "D:/GitHub/civ13-preview-evidence/npc-cover-3109",
+  "final_report_sha256": "E8ECA8A66696DBEAFC1AC655901D5D1442B0EA374563C1A08CDA8871F57FC617",
+  "negative_controls": {
+    "tie": 21,
+    "boundary": 24
+  },
+  "rejected_variants": [
+    {
+      "report": "benchmark-2.json",
+      "provenance": {
+        "head_sha": "7823bf9d16ac5d1b10432fef141043b2623a40f5",
+        "source_sha256": "7c3b7897a196e144a42d3299b0d9e9a6cd1812fdeb7a24a3c496a43c4bfd2e42",
+        "compiled_sha256": "3d209f2b187e2cb970738e6498d6bfd87b7ea66841bd4bcf165002f2b749616a",
+        "probe_sha256": "edcb9d1dc9b78ee52bb991bd36262e8d46ea38fe819da2003120aea6f8e40745"
+      },
+      "samples": [
+        {
+          "mode": "empty",
+          "pair": 1,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.1875
+        },
+        {
+          "mode": "empty",
+          "pair": 1,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 2,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.1875
+        },
+        {
+          "mode": "empty",
+          "pair": 2,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.1875
+        },
+        {
+          "mode": "empty",
+          "pair": 3,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.1875
+        },
+        {
+          "mode": "empty",
+          "pair": 3,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 4,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 4,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.1875
+        },
+        {
+          "mode": "empty",
+          "pair": 5,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.1875
+        },
+        {
+          "mode": "empty",
+          "pair": 5,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "sparse",
+          "pair": 1,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.3125
+        },
+        {
+          "mode": "sparse",
+          "pair": 1,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 2,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 2,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.3125
+        },
+        {
+          "mode": "sparse",
+          "pair": 3,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.3125
+        },
+        {
+          "mode": "sparse",
+          "pair": 3,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 4,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 4,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 5,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.3125
+        },
+        {
+          "mode": "sparse",
+          "pair": 5,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "crowded",
+          "pair": 1,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 5.75
+        },
+        {
+          "mode": "crowded",
+          "pair": 1,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 4.625
+        },
+        {
+          "mode": "crowded",
+          "pair": 2,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 4.5
+        },
+        {
+          "mode": "crowded",
+          "pair": 2,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 5.5
+        },
+        {
+          "mode": "crowded",
+          "pair": 3,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 5.625
+        },
+        {
+          "mode": "crowded",
+          "pair": 3,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 4.5625
+        },
+        {
+          "mode": "crowded",
+          "pair": 4,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 4.625
+        },
+        {
+          "mode": "crowded",
+          "pair": 4,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 5.9375
+        },
+        {
+          "mode": "crowded",
+          "pair": 5,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 8.4375
+        },
+        {
+          "mode": "crowded",
+          "pair": 5,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 7.375
+        }
+      ]
+    },
+    {
+      "report": "benchmark-second-cover.json",
+      "provenance": {
+        "head_sha": "7823bf9d16ac5d1b10432fef141043b2623a40f5",
+        "source_sha256": "9c150aa3eddab6e8ff9114825c0c9e664cc20cb06a2f32ea657f29edc2be8cef",
+        "compiled_sha256": "070f4fdac5a3f53f268ccaed0ba1e9834e495b756dcd6739a65ad87d4ef69499",
+        "probe_sha256": "edcb9d1dc9b78ee52bb991bd36262e8d46ea38fe819da2003120aea6f8e40745"
+      },
+      "samples": [
+        {
+          "mode": "empty",
+          "pair": 1,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.1875
+        },
+        {
+          "mode": "empty",
+          "pair": 1,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 2,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 2,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 3,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 3,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 4,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 4,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 5,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 5,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "sparse",
+          "pair": 1,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 1,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.4375
+        },
+        {
+          "mode": "sparse",
+          "pair": 2,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.4375
+        },
+        {
+          "mode": "sparse",
+          "pair": 2,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 3,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 3,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.4375
+        },
+        {
+          "mode": "sparse",
+          "pair": 4,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.4375
+        },
+        {
+          "mode": "sparse",
+          "pair": 4,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.3125
+        },
+        {
+          "mode": "sparse",
+          "pair": 5,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 5,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.4375
+        },
+        {
+          "mode": "crowded",
+          "pair": 1,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 5.75
+        },
+        {
+          "mode": "crowded",
+          "pair": 1,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 6.5625
+        },
+        {
+          "mode": "crowded",
+          "pair": 2,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 6.625
+        },
+        {
+          "mode": "crowded",
+          "pair": 2,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 5.75
+        },
+        {
+          "mode": "crowded",
+          "pair": 3,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 5.9375
+        },
+        {
+          "mode": "crowded",
+          "pair": 3,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 7.25
+        },
+        {
+          "mode": "crowded",
+          "pair": 4,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 6.5625
+        },
+        {
+          "mode": "crowded",
+          "pair": 4,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 5.6875
+        },
+        {
+          "mode": "crowded",
+          "pair": 5,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 5.75
+        },
+        {
+          "mode": "crowded",
+          "pair": 5,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 6.375
+        }
+      ]
+    },
+    {
+      "report": "benchmark-hybrid-filtered.json",
+      "provenance": {
+        "head_sha": "7823bf9d16ac5d1b10432fef141043b2623a40f5",
+        "source_sha256": "0e3f48abff272b94193a919e2c410649611674f899d1dbf7ecbd699ba6a609d4",
+        "compiled_sha256": "ab9937171c68d0d5aea3cc3113674ee6726833206646298b8658d632653d42e6",
+        "probe_sha256": "edcb9d1dc9b78ee52bb991bd36262e8d46ea38fe819da2003120aea6f8e40745"
+      },
+      "samples": [
+        {
+          "mode": "empty",
+          "pair": 1,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.1875
+        },
+        {
+          "mode": "empty",
+          "pair": 1,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 2,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 2,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.1875
+        },
+        {
+          "mode": "empty",
+          "pair": 3,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 3,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.1875
+        },
+        {
+          "mode": "empty",
+          "pair": 4,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 4,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.1875
+        },
+        {
+          "mode": "empty",
+          "pair": 5,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "empty",
+          "pair": 5,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.25
+        },
+        {
+          "mode": "sparse",
+          "pair": 1,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 1,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 2,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 2,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.3125
+        },
+        {
+          "mode": "sparse",
+          "pair": 3,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 3,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 4,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 4,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 5,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "sparse",
+          "pair": 5,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 0.375
+        },
+        {
+          "mode": "crowded",
+          "pair": 1,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 5.5625
+        },
+        {
+          "mode": "crowded",
+          "pair": 1,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 5.5625
+        },
+        {
+          "mode": "crowded",
+          "pair": 2,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 5.375
+        },
+        {
+          "mode": "crowded",
+          "pair": 2,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 5.8125
+        },
+        {
+          "mode": "crowded",
+          "pair": 3,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 5.5
+        },
+        {
+          "mode": "crowded",
+          "pair": 3,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 5.375
+        },
+        {
+          "mode": "crowded",
+          "pair": 4,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 5.875
+        },
+        {
+          "mode": "crowded",
+          "pair": 4,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 6.5625
+        },
+        {
+          "mode": "crowded",
+          "pair": 5,
+          "candidate": 0,
+          "calls": 1000,
+          "elapsed_ds": 5.875
+        },
+        {
+          "mode": "crowded",
+          "pair": 5,
+          "candidate": 1,
+          "calls": 1000,
+          "elapsed_ds": 5.375
+        }
+      ]
+    }
+  ]
+}
