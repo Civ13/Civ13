@@ -266,7 +266,7 @@
 		if (!istype(P,/obj/item/weapon/attachment/scope/iron_sights)) choices += P
 	if (optic_rail) choices += optic_rail
 	var/choice = WWinput(H,"Remove which part?","Field Strip","Cancel",choices)
-	if (choice != "Cancel" && choice in choices && !remove_configuration(choice,H))
+	if (choice != "Cancel" && (choice in choices) && !remove_configuration(choice,H))
 		to_chat(H,SPAN_WARNING("Cannot remove this part now. Unload, keep holding the gun, and supply the required tools. Remove the optic before its rail."))
 
 /obj/structure/repair/gun

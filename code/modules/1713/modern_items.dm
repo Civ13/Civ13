@@ -410,7 +410,7 @@
 /obj/structure/refinery/verb/empty()
 	set category = null
 	set name = "Remove Barrel"
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (active)
 		to_chat(usr, SPAN_NOTICE("You need to shut the refinery down first!"))
@@ -432,7 +432,7 @@
 /obj/structure/refinery/verb/set_product()
 	set category = null
 	set name = "Set Output"
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (active)
 		to_chat(usr, SPAN_NOTICE("You need to shut the refinery down first!"))
@@ -614,7 +614,7 @@
 /obj/structure/refinery/biofuel/set_product()
 	set category = null
 	set name = "Set Output"
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (active)
 		to_chat(usr, "You need to shut the refinery down first!")
@@ -760,7 +760,7 @@
 /obj/structure/bakelizer/verb/empty()
 	set category = null
 	set name = "Remove Plastic"
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (!plastic)
 		to_chat(usr, "Theres no finished plastic in the [src].")
