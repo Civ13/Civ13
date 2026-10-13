@@ -23,3 +23,8 @@ or when extensive regressions are explicitly enabled. Ordinary future edits do
 not enable existing regressions automatically.
 
 The native probe checks season/time, asking-human condition, active fire and detached fresh snapshots. `--negative-control player-context` replaces real health with a constant and must be rejected. Bridge tests verify the final prompt carries projected context while excluding identities, diagnoses, unrecognized effects, booleans used as numbers and nonfinite values. These are production-path fixtures with minimal human/area adapters, not client or complete-world acceptance.
+
+The combined inventory budget probe counts entry and child visits in a generated
+copy of production code. A bag with 70 non-item children must stop at exactly 64
+combined inspections; `--negative-control inventory-budget` restores the faulty
+doubled-child counter and must fail that boundary assertion.

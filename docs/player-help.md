@@ -98,8 +98,9 @@ are omitted. At most six matching code/wiki/guide/recipe entries and 16,000 cont
 are sent per question. Unmatched or truncated recipe details must be checked in
 the atlas, including current map and research availability.
 
-Only question text and the approved guide are sent. No account name, inventory,
-chat history, filesystem, developer MCP tools or administration API is exposed.
+Question text, approved guidance and the bounded gameplay/inventory snapshot
+described below are sent. No account name, chat history, filesystem, developer
+MCP tools or administration API is exposed.
 There is no conversational memory, command execution or tool calling. Questions
 are temporary spool files, removed when completed, disconnected or timed out;
 the remote service may keep its own logs, so owners should disclose its policy.

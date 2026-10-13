@@ -57,6 +57,7 @@ var/time_of_day = "Night"
     var/amount = 5
 /obj/item/weapon/storage
 var/list/clients = list()
+var/probe_inspections = 0
 var/datum/probe_map/map = new
 /datum/probe_map
     var/title = "Nomads (Gaia)"
@@ -104,6 +105,13 @@ var/failures = 0
         new /obj/item(player.back)
     inventory = H.inventory_context(player)
     check(inventory["items"].len == 24 && inventory["truncated"], "bounded inventory flagged incomplete")
+    var/mob/living/human/budget_player = new(local_area)
+    budget_player.back = new /obj/item/weapon/storage(budget_player)
+    for(var/i=1,i<=70,i++)
+        new /obj(budget_player.back)
+    probe_inspections = 0
+    var/list/budget_inventory = H.inventory_context(budget_player)
+    check(probe_inspections == 64 && budget_inventory["truncated"], "combined entry and child inspection budget reaches exactly 64")
     var/list/snapshot = H.game_context(player)
     var/list/condition = snapshot["player"]
     check(condition["health_percent"] == 45 && condition["wetness_percent"] == 50, "asking player condition")
@@ -153,13 +161,16 @@ var/failures = 0
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', type=Path, required=True)
-    parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity', 'player-context'])
+    parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity', 'player-context', 'inventory-budget'])
     args = parser.parse_args()
     with tempfile.TemporaryDirectory(prefix='civ13-player-help-') as directory:
         temp = Path(directory)
         (temp / 'spool').mkdir()
         production = (ROOT / 'code/game/mob/player_help.dm').read_text()
-        if args.negative_control == 'player-context':
+        production = production.replace('inspected++', 'inspected++; probe_inspections++')
+        if args.negative_control == 'inventory-budget':
+            production = production.replace('queue.len >= 64 || inspected + children_inspected >= 64', 'queue.len >= 64 || children_inspected + children_inspected >= 64')
+        elif args.negative_control == 'player-context':
             production = production.replace('round(100 * H.health / max(1, H.maxHealth))', '100')
         elif args.negative_control == 'escaping':
             production = production.replace('html_encode(answer)', 'answer')

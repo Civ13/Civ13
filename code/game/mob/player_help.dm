@@ -94,7 +94,7 @@ var/global/datum/player_help_service/player_help_service = new
 					truncated = TRUE
 			else
 				for (var/atom/child in I.contents)
-					if (queue.len >= 64 || children_inspected + children_inspected >= 64)
+					if (queue.len >= 64 || inspected + children_inspected >= 64)
 						truncated = TRUE
 						break
 					children_inspected++
