@@ -7,7 +7,7 @@ import re
 import shutil
 import uuid
 
-ENGINE_HEAD = '1081910e3280deb28d895162d03db44b5c539b95'
+ENGINE_HEAD = 'ebc7a8289e7aea4ca1d2ed7c6c296ba97706649d'
 ROBUST_HEAD = 'af2a7d0406b410c4d960f0f4b34513651c6dc742'
 LOADER = 'RobustToolbox/bin/Client/Robust.Client.dll'
 

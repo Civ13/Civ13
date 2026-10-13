@@ -140,7 +140,7 @@ must read the logged-in BYOND account and native CID before connecting. Its acco
 display is read-only, and reconnecting must obtain a fresh native observation.
 
 This source candidate requires the complete Windows coherent package from
-OpenDream PR #18 at `1081910e3280deb28d895162d03db44b5c539b95`, with its
+OpenDream PR #18 at `ebc7a8289e7aea4ca1d2ed7c6c296ba97706649d`, with its
 exact-commit CI accepted independently. Copy `scripts/opendream/launcher.example.json`
 to the trusted installation's `launcher.json` and replace its absolute paths.
 `client_package` contains both `receipt.json` and `standalone-layout.json`.
