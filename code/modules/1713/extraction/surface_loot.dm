@@ -141,7 +141,35 @@
 		for (var/index in 1 to entries.len)
 			var/list/entry = entries[index]
 			if (!islist(entry) || !graph_ids(entry["equipment"], 2048) || entry["id"] != entry["equipment"]["nodes"][1]["id"]) return null
+		if (P["owner"] == "extractionmarket" && !market_inventory_valid(P)) return null
+		if (P["owner"] != "extractionmarket" && (!isnull(P["listings"]) || P["economy_system"] == "extractionmarket")) return null
 		return A.recovery_ids(P)
+	// Listings reference current escrow stash graphs; they are not extra copies.
+	proc/market_inventory_valid(list/P)
+		if (!islist(P) || P["owner"] != "extractionmarket" || P["economy_system"] != "extractionmarket" || P["level"] != 4 || P["state"] != "home" || !islist(P["stash"]) || !islist(P["listings"]) || P["listings"].len > 128) return FALSE
+		var/list/stash = list()
+		var/list/bound = list()
+		for (var/index in 1 to P["stash"].len)
+			var/list/entry = P["stash"][index]
+			if (!islist(entry) || stash[entry["id"]] || !graph_ids(entry["equipment"], 2048) || entry["id"] != entry["equipment"]["nodes"][1]["id"] || entry["secure"]) return FALSE
+			stash[entry["id"]] = entry
+		for (var/id in P["listings"])
+			var/list/listing = P["listings"][id]
+			if (!extraction_ipc_identifier(id, FALSE, 64) || length(id) != 64 || !islist(listing) || !metadata.accounts.store.valid_owner(listing["owner"]) || !(listing["state"] in list("active", "sold", "cancelled")) || !isnum(listing["revision"]) || listing["revision"] < 1 || listing["revision"] > 1000000 || round(listing["revision"]) != listing["revision"] || !isnum(listing["price"]) || listing["price"] < 1 || listing["price"] > 1000000 || round(listing["price"]) != listing["price"]) return FALSE
+			var/list/ids = listing["item_ids"]
+			var/list/digests = listing["graph_digests"]
+			var/list/seen = list()
+			if (!islist(ids) || !ids.len || ids.len > 16 || !islist(digests) || digests.len != ids.len) return FALSE
+			for (var/item_id in ids)
+				if (!extraction_ipc_identifier(item_id, FALSE, 80) || seen[item_id] || !extraction_ipc_identifier(digests[item_id], FALSE, 64) || length(digests[item_id]) != 64) return FALSE
+				seen[item_id] = TRUE
+				if (listing["state"] != "active") continue
+				var/list/entry = stash[item_id]
+				if (!islist(entry) || bound[item_id] || extraction_sha256(json_encode(entry["equipment"])) != digests[item_id]) return FALSE
+				for (var/list/node in entry["equipment"]["nodes"])
+					if (node["insurance_token"]) return FALSE
+				bound[item_id] = TRUE
+		return bound.len == stash.len
 	proc/account_inventory_recheck_batch()
 		if (enabled || discovery_locked || !islist(account_inventory_names) || !account_inventory_lease_valid() || account_inventory_cursor <= account_inventory_names.len || metadata.accounts.sessions.len) return discovery_fail()
 		var/list/current = account_directories()
@@ -161,7 +189,7 @@
 		account_inventory_complete = account_inventory_verify_cursor > account_inventory_names.len
 		return account_inventory_verify_cursor
 	proc/inventory_incomplete()
-		// Shared mail/NPC/settlement/market ownership has no complete feed yet.
+		// Each read-only ownership portion must seal under the same account lease.
 		return (world_inventory_started || islist(account_inventory_names)) && (!world_inventory_complete || !account_inventory_complete || !account_inventory_lease_valid() || !auxiliary_inventory_complete)
 	proc/account_inventory_batch()
 		if (enabled || discovery_locked || !islist(account_inventory_names) || !account_inventory_lease_valid() || account_inventory_complete || metadata.accounts.sessions.len) return discovery_fail()

@@ -7,6 +7,13 @@ each `--replay-negative-control cached` / `--replay-negative-control processed`,
 `--byond-bin` to every command. The new receipt/census-lease assertions are
 authored but UNRUN until native permission is released. During the hold,
 `--compile-only` on these runners compiles without launching DreamDaemon.
+
+The surface mode queue also includes `--surface-negative-control escrow`,
+`mail_binding` and `auxiliary_pending`. These mutate generated copies only and
+must fail their exact ownership assertion. The actual escrow and sharded mail
+census fixtures and all three controls are authored but native UNRUN until the
+quiet window is released. Full-world/private-home replica reconciliation remains
+incomplete; auxiliary completion does not authorize service activation.
 `test_compile_only.py` verifies that boundary using injected subprocess results;
 it does not execute native assertions. Mode covers census lease revocation and
 abandonment; store covers competing writers and direct child-journal projections.

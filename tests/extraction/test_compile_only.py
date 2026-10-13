@@ -50,6 +50,16 @@ class CompileOnlyBoundary(unittest.TestCase):
         self.assertEqual(execute.call_count, 1)
         self.assertIn(execute.call_args.args[0][0].split('/')[-1].split('\\')[-1], ('dm.exe', 'DreamMaker'))
 
+    def test_auxiliary_controls_compile_without_runtime(self):
+        root = Path(__file__).resolve().parents[2]
+        result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1681\n0 errors, 0 warnings', '')
+        for control in ('escrow', 'mail_binding', 'auxiliary_pending'):
+            with self.subTest(control=control):
+                with patch.object(RUNNER.subprocess, 'run', return_value=result) as execute:
+                    RUNNER.equipment(root, Path('compiler'), Path('daemon'), 0, 'mode', compile_only=True, surface_control=control)
+                self.assertEqual(execute.call_count, 1)
+                self.assertEqual(execute.call_args.args[0][0], 'compiler')
+
 
 if __name__ == '__main__':
     unittest.main()

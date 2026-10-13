@@ -284,6 +284,15 @@ zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
 ## Local MCP tooling
 
+<!-- 2026-10-13: extraction auxiliary census -->
+Extraction surface ownership reads actual auxiliary journal records through
+`surface_inventory.dm`, never recovery/repair readers. Market listings bind the
+actual escrow stash root/digest once; mail ownership joins page graphs to active
+node owner/page/root indices. Terminal NPC receipts are historical, not permanent
+identity tombstones because insurance can return those IDs. This disabled census
+still lacks a fresh-world/private-home replica contract; compile-only controls
+do not establish native ownership acceptance.
+
 <!-- 2026-10-12: extraction bot economics -->
 Extraction bot economic mutations use the shared conservation journal and put
 operation receipts in the participant snapshot. Reserved vendor/market accounts
