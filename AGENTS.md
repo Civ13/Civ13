@@ -494,6 +494,12 @@ Nomads Europe foraged seeds use biome filtering like its climate-restricted grow
 Cleanable expiry uses code/processes/decal_decay.dm (256 candidates/second), not per-decal sleeping timers or direct Destroy. Preserve existing decay_timer lifetimes; decay_deadline/index are explicitly excluded from native save export/import. tests/decal_decay/run.py compares actual native lifecycle with --baseline historical cleanable source, without normal game startup. Baseline early-qdel retention and missing expiry GC bookkeeping are isolated evidence, not full-game OOM proof.
 
 <!-- 2026-10-11: abandoned debris season clocks -->
+<!-- 2026-10-13: queued season source verification -->
+The abandoned-item source scanner checks both direct `seasons()` overrides and
+the base queued `season_apply()` worker. Run `tests/abandoned_items/run.py
+--check-season-wiring` for a source-only check; missing-hook controls are in
+`tests/abandoned_items/test_season_wiring.py`. This does not launch BYOND.
+
 Abandoned rubbish/spent casings use 2/4 actual season changes on cycling maps,
 or 6/12 running-server hours on static maps. Season routines record scalar
 transitions; startup climate assignments do not. Fixed wet-season labels use
