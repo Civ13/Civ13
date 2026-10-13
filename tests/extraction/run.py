@@ -33,6 +33,7 @@ def main():
     parser.add_argument('--vehicle-raid-negative-control', choices=('debit', 'credit'))
     parser.add_argument('--supply-negative-control', action='store_true')
     parser.add_argument('--city-presence-negative-control', action='store_true')
+    parser.add_argument('--city-pursuit-negative-control', action='store_true')
     parser.add_argument('--economic-payment-negative-control', action='store_true')
     parser.add_argument('--room-payment-negative-control', action='store_true')
     parser.add_argument('--corpse-release-negative-control', action='store_true')
@@ -40,6 +41,8 @@ def main():
     parser.add_argument('--workshop-negative-control', choices=('wear', 'cleanup'))
     parser.add_argument('--insurance-fixture-output', type=Path)
     args = parser.parse_args()
+    if args.city_pursuit_negative_control and (args.probe != 'city' or any(value for key, value in vars(args).items() if key.endswith('negative_control') and key != 'city_pursuit_negative_control')):
+        parser.error('City pursuit control requires the city probe without another control')
     if args.surface_negative_control and (args.probe != 'mode' or any(value for key, value in vars(args).items() if key.endswith('negative_control') and key != 'surface_negative_control')):
         parser.error('Surface control requires the mode probe without another control')
     if args.workshop_negative_control and (args.probe != 'equipment' or any(value for key, value in vars(args).items() if key.endswith('negative_control') and key != 'workshop_negative_control')):
@@ -78,7 +81,7 @@ def main():
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     if args.probe in ('equipment', 'mode', 'npc', 'city', 'insurance', 'groups', 'vehicles'):
-        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control, args.room_payment_negative_control, args.corpse_release_negative_control, args.insurance_fixture_output, args.npc_insurance_negative_control, args.workshop_negative_control, args.compile_only, args.surface_negative_control)
+        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control, args.room_payment_negative_control, args.corpse_release_negative_control, args.insurance_fixture_output, args.npc_insurance_negative_control, args.workshop_negative_control, args.compile_only, args.surface_negative_control, args.city_pursuit_negative_control)
     with tempfile.TemporaryDirectory(prefix='civ13-extraction-') as temp:
         target = Path(temp)
         (target / 'tests/extraction').mkdir(parents=True)
@@ -125,7 +128,7 @@ def main():
                 raise RuntimeError('Account journal verification failed')
 
 
-def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False, room_payment_control=False, corpse_release_control=False, insurance_fixture_output=None, npc_insurance_control=False, workshop_control=None, compile_only=False, surface_control=None):
+def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False, room_payment_control=False, corpse_release_control=False, insurance_fixture_output=None, npc_insurance_control=False, workshop_control=None, compile_only=False, surface_control=None, city_pursuit_control=False):
     prefix = '.extraction_' + uuid.uuid4().hex
     generated = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '.dmb', '.rsc')]
     try:
@@ -216,6 +219,15 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             generated.append(control)
             control.write_text(economic_source.replace(marker, 'actor_after["credits"] = wallet(current)'), encoding='utf-8')
             source = source.replace('code\\modules\\1713\\extraction\\ipc_economy.dm', control.name)
+        if city_pursuit_control:
+            zombie_source = (root / 'code/modules/1713/extraction/city_zombies.dm').read_text(encoding='utf-8')
+            marker = 'if (!chosen && city_pursuing)'
+            if zombie_source.count(marker) != 1:
+                raise RuntimeError('City pursuit mutation marker changed')
+            control = root / (prefix + '_city_zombies.dm')
+            generated.append(control)
+            control.write_text(zombie_source.replace(marker, 'if (FALSE)'), encoding='utf-8')
+            source = source.replace('code\\modules\\1713\\extraction\\city_zombies.dm', control.name)
         if city_presence_control:
             city_source = (root / 'code/modules/1713/extraction/modern_city.dm').read_text(encoding='utf-8')
             marker = 'if (!..()) return FALSE'
@@ -446,6 +458,13 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                         raise RuntimeError('Economic payment control failed outside its intended assertion')
                     print('PASS: shared conservation journal rejects retained market buyer payment')
                     return
+                if city_pursuit_control:
+                    expected = 'zombie lost perception cancels pursuit before idle cooldown expires'
+                    if ran.returncode or not result.startswith('FAIL:') or not intended_assertion_only(log, expected):
+                        print(log)
+                        raise RuntimeError('City pursuit control failed outside its intended assertion')
+                    print('PASS: stale city pursuit negative control rejected')
+                    return
                 if city_presence_control:
                     if ran.returncode or not result.startswith('FAIL:') or 'departure commits only conscious physically present reserved actor' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
                         print(log)
@@ -507,6 +526,8 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 shutil.copytree(target / 'data/insurance_bot_fixture', insurance_fixture_output)
             if group_control:
                 raise RuntimeError('Group control was not detected')
+            if city_pursuit_control:
+                raise RuntimeError('City pursuit control was not detected')
             if vehicle_loss_control:
                 raise RuntimeError('Vehicle loss control was not detected')
             if vehicle_purchase_control:

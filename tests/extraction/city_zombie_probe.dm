@@ -42,9 +42,22 @@
 	Z.handle_ai()
 	equipment_assert(Z.target_mob == A && Z.city_route.len <= 32, "city zombie defends visible area against actual admitted raid survivor")
 	A.forceMove(locate(1,1,2))
+	// Keep idle wandering on cooldown and retain a real native pursuit path.
+	// The old code steps along that path despite having lost its visible target.
+	Z.next_city_wander = world.time + 10 SECONDS
+	Z.city_route = cirrAstar(get_turf(Z), locate(Z.x + 2, Z.y, Z.z), 1, 32)
+	equipment_assert(Z.city_route.len > 1, "lost-target fixture retains a traversable native pursuit route")
+	var/turf/lost_position = get_turf(Z)
 	Z.next_city_decision = 0
 	Z.handle_ai()
-	equipment_assert(!Z.target_mob, "zombie local perception does not chase private-home or absent survivors")
+	equipment_assert(!Z.target_mob && !Z.city_route.len && !Z.wander_goal && get_turf(Z) == lost_position, "zombie lost perception cancels pursuit before idle cooldown expires")
+	// Native deletion can clear a mob reference before the next AI decision.
+	Z.target_mob = null
+	Z.city_pursuing = TRUE
+	Z.city_route = cirrAstar(get_turf(Z), locate(Z.x + 2, Z.y, Z.z), 1, 32)
+	Z.next_city_decision = 0
+	Z.handle_ai()
+	equipment_assert(!Z.city_pursuing && !Z.city_route.len && get_turf(Z) == lost_position, "cleared target reference cannot preserve cached zombie pursuit")
 	A.forceMove(old_a)
 	B.forceMove(old_b)
 	Z.death()

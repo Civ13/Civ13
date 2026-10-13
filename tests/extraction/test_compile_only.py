@@ -50,6 +50,14 @@ class CompileOnlyBoundary(unittest.TestCase):
         self.assertEqual(execute.call_count, 1)
         self.assertIn(execute.call_args.args[0][0].split('/')[-1].split('\\')[-1], ('dm.exe', 'DreamMaker'))
 
+    def test_city_pursuit_control_cli_compiles_without_runtime(self):
+        result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1681\n0 errors, 0 warnings', '')
+        with patch.object(sys, 'argv', ['run.py', '--byond-bin', '.', '--probe', 'city', '--compile-only', '--city-pursuit-negative-control']):
+            with patch.object(RUNNER.subprocess, 'run', return_value=result) as execute:
+                RUNNER.main()
+        self.assertEqual(execute.call_count, 1)
+        self.assertIn(execute.call_args.args[0][0].split('/')[-1].split('\\')[-1], ('dm.exe', 'DreamMaker'))
+
     def test_auxiliary_controls_compile_without_runtime(self):
         root = Path(__file__).resolve().parents[2]
         result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1681\n0 errors, 0 warnings', '')

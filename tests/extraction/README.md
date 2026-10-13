@@ -567,3 +567,12 @@ paths remain unchanged. There is no automatic migration, replay or refund of
 older ambiguous receipts; preserve those files for explicit reconciliation.
 The native namespace probe interrupts one map's journal and checks a separate
 map's same-number journal can commit; it remains unrun under the native hold.
+
+City pursuit correction: the normal city probe checks immediate route/goal
+cancellation when a visible survivor leaves, with the idle wander timer still on
+cooldown. It also checks a cleared target reference cannot preserve pursuit.
+Run `run.py --probe city --city-pursuit-negative-control --byond-bin <bin>` after
+native release: the generated source omits cancellation and must fail only
+`zombie lost perception cancels pursuit before idle cooldown expires`.
+`--compile-only` checks source without launching DreamDaemon; native assertions
+and omission detection remain UNRUN during the hold.

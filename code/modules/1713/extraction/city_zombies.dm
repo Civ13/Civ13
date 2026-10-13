@@ -29,6 +29,7 @@
 	var/tmp/next_city_decision = 0
 	var/tmp/next_city_wander = 0
 	var/tmp/list/city_route = list()
+	var/tmp/city_pursuing = FALSE
 	New()
 		..()
 		should_save = FALSE
@@ -48,6 +49,12 @@
 			if (distance < best)
 				chosen = H
 				best = distance
+		// Losing perception ends pursuit immediately, even while idle wandering
+		// is on cooldown. Never follow a cached route to an absent survivor.
+		if (!chosen && city_pursuing)
+			city_route.Cut()
+			wander_goal = null
+		city_pursuing = !!chosen
 		target_mob = chosen
 		if (chosen)
 			wander_goal = null
@@ -72,6 +79,7 @@
 		if (stat == DEAD) return
 		..()
 		target_mob = null
+		city_pursuing = FALSE
 		wander_goal = null
 		city_route.Cut()
 		if (city)
@@ -84,5 +92,6 @@
 		city = null
 		wander_goal = null
 		target_mob = null
+		city_pursuing = FALSE
 		city_route.Cut()
 		return ..()

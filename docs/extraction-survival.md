@@ -478,3 +478,31 @@ Signed bodies are limited to 8192 bytes, wire envelopes to 12000 and spool files
 to 12001 before outer transport whitespace trimming (including Windows CRLF).
 Signed body bytes are unchanged. Oversized projections reject explicitly with
 `response_too_large`; nodes or fields are never silently truncated.
+
+## Full-scope source audit (2026-10-13)
+
+This inventory distinguishes implemented source contracts and authored probes from
+new runtime acceptance. The native quiet window remains held.
+
+| Requested scope | Source and focused fixture | Remaining limit |
+|---|---|---|
+| Consenting party deployment | `groups.dm`, shared `settlement.dm`, `group_probe.dm`: two-to-four accounts, membership/version/readiness, per-owner premium, selected garage car, durable group debit | Connected consent and physical group deployment still need acceptance |
+| Garage construction, storage, selection and extraction | `private_car_workshop.dm`, `garage.dm`, `vehicle_raid.dm`, `vehicle_transfer.dm`, `vehicle_probe.dm`: paid native component construction, exact saved car, mission support guard and shared rider return receipt | City stations remain pedestrian; uncertain post-commit movement locks recovery |
+| Trader and Modern crafting access | `progression.dm`, `modern_city.dm`, map laboratory and `city_probe.dm`: paid stock, native faction research, public tier-six bench and original prerequisite gates | Actual player progression, prices and map interaction need playtesting |
+| Nomads city zombies | `city_zombies.dm`, `city_zombie_probe.dm`: separate capped roster, native appearance/melee, bounded local wandering and visible-survivor defense | Fresh pursuit cancellation fixtures are native UNRUN; connected combat and balance remain unverified |
+| Existing weapon-component insurance | `transactions.dm`, `insurance_returns.dm`, `scope_insurance_probe.dm`: purchase-time component identities, later attachments excluded, other-account extraction suppresses returns | New native evidence waits for the quiet window |
+| Return delay and queue | `insurance_mail.dm`, `equipment_probe.dm`: one additional completed-round generation, disk-sharded eight-entry pages and bounded transactions | There is no automatic expiry; expiry policy is TBI. Sharding avoids a fixed mailbox entry cap, but transaction, account, byte and exact sequence budgets still fail closed; this is not literal infinite storage |
+
+The next implemented gap is stale zombie pursuit: loss of visible targets now
+clears the old route and wander goal immediately, even before idle wandering is
+eligible again. A separate runtime pursuit flag also handles target references
+cleared by deletion. The fixture retains a real native path, moves the survivor
+out of the mission level, and checks no stale step; a second vector clears the
+mob reference. `--city-pursuit-negative-control` omits the cancellation guard and
+must fail only the exact lost-perception assertion. Compilation alone does not
+establish either assertion or omission detection.
+
+Surface loot stays disabled and uninstalled. Authoritative fresh-world constructor
+coverage before DMM creation remains unsupported; saved-load lists cannot supply
+that proof. The floor-only home replica contract still has no durable retirement
+or admission handoff and does not cover bodies, containers, benches or vehicles.
