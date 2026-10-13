@@ -81,6 +81,13 @@ retains the durable recovery block and does not hide the original exception.
 
 ## Unified custody and asynchronous fence audit still required
 
+The [custody and asynchronous fence matrix](extraction-custody-fence-audit.md)
+now traces concrete extraction, inherited item, vehicle, corpse, GC and journal
+boundaries and identifies missing production controls. It supplies minimal hook
+proposals and existing CI registration paths. Broad accepted subtype closure and
+the unified operation implementation remain blockers; the matrix does not claim
+an exhaustive or runtime-verified global fence.
+
 The following concrete paths establish audit obligations, not exhaustive coverage:
 
 | Source path | Gap that the unified operation must close |
