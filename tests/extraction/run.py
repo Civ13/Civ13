@@ -23,7 +23,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--compile-only', action='store_true', help='Compile the isolated fixture without launching DreamDaemon')
-    parser.add_argument('--surface-negative-control', choices=('epoch', 'claim', 'duplicate', 'movement', 'discovery', 'forfeit'))
+    parser.add_argument('--surface-negative-control', choices=('epoch', 'claim', 'duplicate', 'movement', 'discovery', 'forfeit', 'inventory', 'retirement', 'identity'))
     parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'npc', 'city', 'insurance', 'groups', 'vehicles'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry', 'disruptive_creation', 'disruptive_pending', 'disruptive_result'))
@@ -137,6 +137,9 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 'claim': ('\t\tP["surface_state"] = "claiming"', '\t\tP["surface_state"] = "issued"'),
                 'duplicate': ('\t\tif (other)\n', '\t\tif (FALSE)\n'),
                 'movement': ('else if (!V || !V.movement_allowed(src, destination)) return FALSE', 'else if (FALSE) return FALSE'),
+                'inventory': ('world_inventory_levels.len != world_inventory_expected', 'FALSE'),
+                'retirement': ('E["surface_retired_ids"] = retired', 'E["surface_retired_ids"] = list()'),
+                'identity': ('var/list/graph = metadata.codec.encode(I, FALSE)', 'var/list/graph = metadata.codec.encode(I)'),
                 'discovery': ('if (discovered_ids[id] || account_ids[id])', 'if (account_ids[id])'),
                 'forfeit': ('\t\t\tqdel(I)\n\t\t\tif (I && I.loc)', '\t\t\t// Negative control: omit root retirement\n\t\t\tif (I && I.loc)'),
             }[surface_control]
@@ -378,6 +381,9 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                         'claim': 'surface claim intent survives failed acknowledgement',
                         'duplicate': 'surface duplicate IDs quarantine both sources',
                         'movement': 'surface alternate forced pickup cannot bypass journal',
+                        'inventory': 'surface incomplete world levels cannot seal discovery',
+                        'retirement': 'surface forfeited identity remains in durable epoch retirement index',
+                        'identity': 'surface loaded identity discovery never mints missing item identity',
                         'discovery': 'surface duplicate loaded roots lock discovery',
                         'forfeit': 'surface round forfeit retires actual root before acknowledgement',
                     }[surface_control]
