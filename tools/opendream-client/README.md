@@ -43,3 +43,23 @@ connected server remain unchanged until the candidate handoff is accepted.
 
 The patch contains MIT-licensed OpenDream-derived code; see
 `OPENDREAM-LICENSE.txt`. No upstream pull request or production deployment is implied.
+
+## Simplified launcher and update channel
+
+Distribute `Civ13-Launcher-Windows.zip` containing Civ13.cmd, Launcher.ps1,
+Install-Client.ps1, channel.json and LAUNCHER-README.txt. Testers extract it and
+run Civ13.cmd. It downloads the complete client and offers sign-in and game
+choices. Updates use master/tools/opendream-client/channel.json, restricted to
+HTTPS release assets in Civ13/Civ13 with a mandatory SHA256 checksum. The bundled
+manifest provides the original published client before the channel is available.
+A successful installation caches the manifest for offline use; no running version
+or authentication storage is replaced. A file lock serializes updates. Disk-full,
+interruption or failed validation leaves the previous version usable. Failed
+staging folders and old versions are retained for recovery and manual cleanup.
+
+Publish a new immutable release asset only after acceptance. Verify its downloaded
+SHA256, then change channel.json version/url/sha256 in a reviewed repository
+commit. Never point the channel at an unaccepted candidate. The small launcher
+scripts themselves are fixed in this download; changes to updater behavior require
+a new launcher package. Run Test-Launcher.ps1 for isolated native PowerShell
+installation and rejection tests, with no network calls, credentials or game start.
