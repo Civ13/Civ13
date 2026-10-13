@@ -47,7 +47,6 @@
 /turf/wall/proc/set_material(var/material/newmaterial)
 	material = newmaterial
 	update_material()
-	check_relatives(1,1)
 
 /turf/wall/update_icon()
 	if (!material)

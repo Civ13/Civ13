@@ -1,0 +1,11 @@
+{
+  "enabled": false,
+  "ollama_url": "http://127.0.0.1:11434",
+  "model": "gemma3:27b",
+  "timeout_seconds": 45,
+  "workers": 2,
+  "auth_token_env": "CIV13_OLLAMA_TOKEN",
+  "num_ctx": 4096,
+  "think": false,
+  "wiki_root": ""
+}

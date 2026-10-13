@@ -591,6 +591,13 @@ Loose snow/dirt/sand stock must be checked after the action wait, because anothe
 - Save work yields within entries/lists and builds content edges from first-captured numeric ownership; turf replacement retains the captured coordinate entry. This is a rolling snapshot, not an atomic world transaction.
 - Native params2list truncates oversized content strings. New dense contents use 500-reference text chunks; the loader retains historical text support. An older reader cannot load chunked dense entries.
 - tests/save_latency/run.py checks dense graph heartbeat progress, movement/deletion/turf replacement, concurrent requests and actual interrupted-write backup recovery in temporary storage. Measure with world.timeofday, not the low-precision epoch value world.realtime. Whole-file fcopy, Flush, list copies and synchronous hooks remain nonpreemptible.
+
+<!-- 2026-10-12: wall material appearance parity -->
+set_material relies on update_material's final neighbor refresh. Do not remove
+that inner refresh: it establishes existing open/damaged-wall overlay ordering.
+tests/wall_appearance runs actual wall constructors and ordered appearance/count
+comparisons, production save/load and smoothing/duplicate/overlay controls.
+Measured native callback reductions are not whole-server latency evidence.
 <!-- 2026-10-12: seasonal terrain snapshots -->
 get_area_turfs accepts an optional third turf_type argument. Seasonal callers
 use fresh filtered snapshots, preserving pass order and native replacement refs;
