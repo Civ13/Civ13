@@ -86,6 +86,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 
 /turf/Destroy()
 	turfs -= src
+	turf_registry_members -= src
 	for (var/obj/o in contents)
 		if (o.special_id == "seasons")
 			if (overlays.Find(o))
@@ -266,7 +267,10 @@ var/const/enterloopsanity = 100
 			return
 	if (ticker && ticker.current_state == GAME_STATE_PLAYING)
 		new_turfs |= src
-	turfs |= src
+	// Preserve distinct registration without scanning the entire map per tile.
+	if (!turf_registry_members[src])
+		turf_registry_members[src] = TRUE
+		turfs += src
 
 	levelupdate()
 	calculate_window_coeff()

@@ -74,6 +74,7 @@ var/global/list/alphabet_uppercase = list("A","B","C","D","E","F","G","H","I","J
 #define all_genders_define_list list(MALE,FEMALE,PLURAL,NEUTER)
 
 var/global/list/turfs = list()						//list of all turfs
+var/global/list/turf_registry_members = list() // Constant-time membership for turf registration.
 var/global/list/new_turfs = list()						//list of all non-default turfs
 var/global/list/grass_turf_list = list() // list of all /turf/floor/grass
 var/global/list/water_turf_list = list() // list of all /turf/floor/grass
