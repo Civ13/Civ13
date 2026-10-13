@@ -5,6 +5,7 @@
 	check(text2file(text, "map_saves/map.txt"), "fixture metadata write failed")
 
 /proc/check_round_metadata()
+	check(!errors.len, "unexpected errors before round metadata fixture")
 	var/list/keys = list("persistence", "research_active", "resourceresearch", "perschadplus")
 	for(var/pass = 1, pass <= 2, pass++)
 		for(var/i = 1, i <= keys.len, i++) map.vars[keys[i]] = (i % 2 == pass % 2)
@@ -28,6 +29,7 @@
 		for(var/key in keys) check(map.vars[key] == FALSE, "legacy mode defaults changed")
 	// Malformed extensions must fail preflight and leave all live metadata alone.
 	for(var/bad in list("partial", "nonboolean", "empty", "extra"))
+		var/error_count = errors.len
 		var/list/invalid = rows.Copy(1, 15)
 		if(bad == "partial") invalid.Cut(12)
 		if(bad == "nonboolean") invalid[11] = "2"
@@ -45,5 +47,10 @@
 		check(!map_storage.load_map_metadata(), "invalid round extension imported: [bad]")
 		check(map.age == "live sentinel", "invalid round extension changed base metadata: [bad]")
 		for(var/key in keys) check(map.vars[key] == FALSE, "invalid round extension changed mode: [bad]")
+		// Both direct preflight and the wrapper report this intentional rejection.
+		check(errors.len == error_count + 2, "unexpected rejection message count: [bad]")
+		for(var/i = error_count + 1, i <= errors.len, i++)
+			check(errors[i] == "Save rejected before clearing the world: Save round-mode metadata is malformed", "unexpected rejection message: [bad]")
+		errors.Cut(error_count + 1)
 	write_round_metadata_fixture(saved)
 	check(map_storage.load_map_metadata() && map_storage.validate_world_save(), "round fixture did not restore completed save")
