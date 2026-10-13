@@ -413,6 +413,7 @@ jobs:
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 -m unittest discover -s tests/abandoned_items -p 'test_*.py'
           /usr/bin/python3 tests/abandoned_items/run.py --byond-bin "$PWD/BYOND/byond/bin"
           /usr/bin/python3 tests/abandoned_items/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
           /usr/bin/python3 tests/abandoned_items/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control storage
