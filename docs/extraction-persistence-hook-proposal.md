@@ -289,6 +289,14 @@ The memory/engine host owner must select an actual provider interface and versio
 before production reader plumbing. The following are requirements, not available
 APIs or an implemented provider:
 
+The memory/engine owner confirmed on October 13, 2026 that no selected or
+implemented host provider currently supplies this guarantee. PR18's
+`NativeIdentityCoordinator` and `FileNativeObserverHost` observe identity; they
+do not supply serializer-reader custody. Package/manifest hashes, `FileShare.Read`
+and the cooperating-BYOND probe must not be promoted into immutable host ownership
+or durable recovery evidence. This is a concrete unavailable primitive, not a
+manual feature-acceptance gate.
+
 | Boundary | Required provider contract | Smallest meaningful acceptance |
 | --- | --- | --- |
 | Host ownership | Name the process identity, storage root, OS/filesystem semantics, and every allowed writer. Private copies must exclude both game-world writes and host writes/replacement for their entire use. | Independent attempts to write, rename and replace selected files during every consumer phase either fail or abort before the next mutation; restoration never silently reads new bytes. |
