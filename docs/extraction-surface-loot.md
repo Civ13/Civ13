@@ -157,3 +157,9 @@ stored duplicate identities. A durable owner manifest or bounded authoritative
 directory enumeration, pending-slot recovery and garage identity inclusion are
 required before enabling restored sources. No loader hook or completeness claim
 is installed by this milestone.
+
+Discovery failure fences planning, materialization, claims, forfeiture and epoch
+mutation. Materialization checks issued, discovered-world and account identities
+before decoding. Authored fence vectors prepare a source, then supply malformed
+input or a world/account copy of its planned graph; each must retain the planned
+state with no live root. These vectors remain native UNRUN.
