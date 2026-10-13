@@ -143,7 +143,7 @@ var/rc_role
 	try
 		rc_copy_metadata(42)
 	catch(var/exception/type_error)
-		type_rejected = RC_TRUE
+		type_rejected = !!type_error
 	rc_check(type_rejected, "nontext metadata rejected")
 	var/oversized = ""
 	for(var/i = 1, i <= 1025, i++)
@@ -152,7 +152,7 @@ var/rc_role
 	try
 		rc_copy_metadata(oversized)
 	catch(var/exception/size_error)
-		size_rejected = RC_TRUE
+		size_rejected = !!size_error
 	rc_check(size_rejected, "oversized synthetic metadata rejected")
 	rc_observations["utf8_length_e_acute"] = length("é")
 	var/datum/rc_native_handle/seed = new("adapter_level.sav")
@@ -174,7 +174,7 @@ var/rc_role
 	try
 		selection.read_level(foreign, level)
 	catch(var/exception/operation_error)
-		rejected = RC_TRUE
+		rejected = !!operation_error
 	rc_check(rejected, "WRONG_OPERATION_REJECTED")
 	var/datum/rc_member/foreign_member = new
 	foreign_member.label = level.label
@@ -184,14 +184,14 @@ var/rc_role
 	try
 		selection.read_level(operation, foreign_member)
 	catch(var/exception/member_error)
-		rejected = RC_TRUE
+		rejected = !!member_error
 	rc_check(rejected, "foreign member rejected")
 	operation.active = RC_FALSE
 	rejected = RC_FALSE
 	try
 		selection.read_metadata(operation, metadata)
 	catch(var/exception/inactive_error)
-		rejected = RC_TRUE
+		rejected = !!inactive_error
 	rc_check(rejected, "inactive operation rejected")
 	operation.active = RC_TRUE
 	selection.close_once()
@@ -201,14 +201,14 @@ var/rc_role
 	try
 		selection.read_level(operation, level)
 	catch(var/exception/closed_error)
-		rejected = RC_TRUE
+		rejected = !!closed_error
 	rc_check(rejected, "closed selection rejected")
 	var/datum/rc_selection/partial = new
 	rejected = RC_FALSE
 	try
 		partial.acquire_selected(list("level1", "metadata"), operation, RC_TRUE)
 	catch(var/exception/partial_error)
-		rejected = RC_TRUE
+		rejected = !!partial_error
 	var/datum/rc_member/acquired = partial.members[1]
 	rc_check(rejected && partial.closed && partial.members.len == 1 && acquired.closed && acquired.handle.close_calls == 1, "partial acquisition closes exact acquired member")
 	var/datum/rc_selection/duplicate = new
@@ -217,7 +217,7 @@ var/rc_role
 	try
 		duplicate.acquire_selected(list("level1", "level1"), operation)
 	catch(var/exception/duplicate_error)
-		rejected = RC_TRUE
+		rejected = !!duplicate_error
 	rc_check(rejected && !duplicate.members.len && rc_handles.len == prior_handles, "duplicate manifest rejects before open")
 	rc_observations["adapter_binding_and_cleanup"] = "PASS: fixture identity guards only"
 	rc_observations["metadata_copy"] = "PASS: bounded synthetic text copied by value; no binary snapshot proof"
