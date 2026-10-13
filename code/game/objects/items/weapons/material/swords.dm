@@ -52,6 +52,7 @@
 				user.visible_message("<font color='#E55300'><big>\The [src] flies out of \the [user]'s hand!</big></font>")
 				user.drop_from_inventory(src)
 				throw_at(get_edge_target_turf(src, pick(alldirs)), rand(1,3), throw_speed)//Throw that sheesh away
+		check_health()
 		return 1
 	return 0
 
