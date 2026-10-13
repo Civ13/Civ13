@@ -1,11 +1,40 @@
-# Shipped player changelogs
+# Player changelogs
 
 This standalone GitHub Actions publisher needs no bot process, Codex, OpenAI API
 or desktop scheduler. It posts ordinary messages to Civ13/14 #changelog:
 https://discord.com/channels/468979034571931648/468980578289713176
 It does not crosspost announcement messages to following servers.
 
-## Contribution contract
+## PR description field (automatic on merge)
+
+Add exactly one line to the pull request's opening description, outside HTML
+comments, quotes and fenced code:
+
+```text
+Changelog: Fixed crafting consuming ingredients when assembly is cancelled.
+```
+
+Merging that PR into master posts `- Fixed crafting consuming ingredients when
+assembly is cancelled.` to #changelog. Missing or blank fields post nothing.
+Comments, titles and linked issues are not read. Multiple fields, mentions,
+control characters and text over 1500 UTF-16 units fail closed. Use only concise
+player-facing text, with no heading, PR/CI details or deployment/update-status
+wording. The field is reviewed with the PR; it is not generated from commits.
+
+The merge event freezes the description for retries. The publisher confirms the
+PR's merge SHA and default-branch ancestry through GitHub before sending. It runs
+only trusted base-branch code, never a fork/PR head. Receipt IDs are `pr-NUMBER`;
+do not use this reserved prefix for manual manifests. Reruns suppress confirmed
+deliveries and block uncertain deliveries rather than risk duplicate posts.
+Do not also announce the same change through the older manifest route.
+
+The `discord-changelog` environment must have `DISCORD_MERGE_CHANGELOG_ENABLED=true`
+and the existing `DISCORD_CHANGELOG_WEBHOOK` secret and receipt branch described
+below. This setting enables only the merge route. The older manifest publisher
+has its separate `DISCORD_CHANGELOG_ENABLED` flag. No deployment or server restart
+is performed, and publication does not establish deployment.
+
+## Older reviewed-manifest contribution contract
 
 After a player change is merged, add a reviewed `changelogs/<unique-id>.json`
 manifest in a separate PR. Its commit is the full SHA of the game version to ship,
@@ -26,7 +55,7 @@ Example (replace SHA with actual game commit, and text with verified changes):
 }
 ```
 
-Use concise informal bullets; optional heading for a substantial feature. Include
+Use concise informal bullets with no heading or deployment/update-status wording. Include
 practical controls/recipes when helpful. Include only enabled, verified changes
 players can use. Exclude CI, docs, tooling, MCP, internal refactors, dormant features,
 unproven performance claims, PR numbers and CI logs. Do not claim deployment from
@@ -45,7 +74,8 @@ The validator checks structure and safety; review establishes meaning.
 
 Inspection on 2026-10-11 found no GitHub releases or deployments. Existing launch/
 update scripts pull/build/copy on the server without GitHub success reporting.
-Consequently there is NO announcement on merge, push or CI success.
+The older manifest route does not announce on merge, push or CI success. The
+explicit PR field route above announces on merge independently of deployment.
 
 1. Create a Discord incoming webhook scoped to the channel above. Store its URL
    only in the GitHub environment `discord-changelog` secret
