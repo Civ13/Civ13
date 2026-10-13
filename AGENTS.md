@@ -580,3 +580,10 @@ isolated runtime data and must detect exactly the lost recipe.
 
 <!-- 2026-10-12: finite digging completion -->
 Loose snow/dirt/sand stock must be checked after the action wait, because another actor may consume the last unit. Underground pickaxe actions use one wait/completion path. `tests/resource_extraction/digging_probe.dm` runs production handlers with competing completion and cancellation adapters; `-DiggingBaseline` rejects immutable pre-fix source without changing the checkout.
+
+<!-- 2026-10-12: wall material appearance parity -->
+set_material relies on update_material's final neighbor refresh. Do not remove
+that inner refresh: it establishes existing open/damaged-wall overlay ordering.
+tests/wall_appearance runs actual wall constructors and ordered appearance/count
+comparisons, production save/load and smoothing/duplicate/overlay controls.
+Measured native callback reductions are not whole-server latency evidence.
