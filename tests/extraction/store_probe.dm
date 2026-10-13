@@ -19,6 +19,25 @@ var/store_failures = 0
 /world/New()
 	world.OpenPort("none")
 	var/datum/extraction_account_store/S = new
+	var/datum/extraction_account_store/leased_store = new
+	leased_store.root = "data/lease_fixture/"
+	var/list/lease_profile = leased_store.load_profile("owner")
+	store_assert(leased_store.commit_profile("owner", lease_profile), "lease fixture initial account")
+	var/datum/extraction_account_read_lease/lease = leased_store.acquire_read_lease()
+	store_assert(leased_store.read_lease_valid(lease), "lease has bound root and instance")
+	var/datum/extraction_account_store/other_writer = new
+	other_writer.root = "DATA/LEASE_FIXTURE/"
+	store_assert(!other_writer.acquire_read_lease(), "root aliases cannot acquire competing lease")
+	other_writer.root = leased_store.root
+	var/list/other_profile = other_writer.load_profile("owner")
+	store_assert(!other_writer.commit_profile("owner", other_profile) && other_writer.load_profile("owner")["revision"] == 1, "other instance blocked before durable intent")
+	store_assert(!other_writer.write_phase("data/lease_fixture/_settlement/world/0.snapshot", "projection"), "direct child-journal projection blocked")
+	store_assert(!other_writer.release_read_lease(lease), "other instance cannot release lease")
+	leased_store.root = "data/other_fixture/"
+	store_assert(!leased_store.read_lease_valid(lease), "changed store root invalidates census")
+	leased_store.root = "data/lease_fixture/"
+	store_assert(leased_store.release_read_lease(lease) && !leased_store.read_lease_valid(lease) && !leased_store.release_read_lease(lease), "explicit single release invalidates token")
+	store_assert(other_writer.commit_profile("owner", other_profile), "ordinary writes resume after lease release")
 	store_assert(!S.load_profile("../other") && !S.load_profile("Guest123"), "identity rejection")
 	var/list/P = S.load_profile("fixture")
 	store_assert(P && P["level"] == 1, "new account")

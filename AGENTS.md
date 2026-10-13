@@ -1,5 +1,14 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-13: extraction census and receipt boundaries -->
+Extraction census read leases guard account_store.write_phase across store
+instances and child journals, not external processes or runtime world movement.
+Failed scans retain their lease until explicit abandonment; abandonment locks the
+census. Surface auxiliary ownership remains incomplete and disabled.
+extraction_crypto_bytes is ASCII-only. Receipt reason validation instead uses
+DM byte length and canonical codepoint round trips for UTF-8; text2ascii positions
+are bytes. tests/extraction/run_ipc.py --compile-only never launches a daemon.
+
 <!-- 2026-10-11: extraction vehicle graph -->
 Modular car wheels are contained in their connected frames; the controller is
 also nested in a frame and steering in the driver seat. Use get_turf() for their

@@ -1,5 +1,15 @@
 # Extraction survival verification
 
+The native quiet-window queue includes `run_ipc.py` normally and with each
+`--receipt-negative-control action` / `--receipt-negative-control reason`, then
+`run.py --probe store` and `run.py --probe mode`. Supply the pinned explicit
+`--byond-bin` to every command. The new receipt/census-lease assertions are
+authored but UNRUN until native permission is released. During the hold,
+`--compile-only` on these runners compiles without launching DreamDaemon.
+`test_compile_only.py` verifies that boundary using injected subprocess results;
+it does not execute native assertions. Mode covers census lease revocation and
+abandonment; store covers competing writers and direct child-journal projections.
+
 `run_economics.py` accepts explicit `--byond-bin`, `--php`, `--bot-root` and
 `--bot-head` arguments. It checks the bot's immutable head and records runtime
 file hashes, then uses its actual PHP driver against a temporary native spool.
