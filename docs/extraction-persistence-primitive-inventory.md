@@ -110,3 +110,7 @@ reader plumbing; extraction supplies its owned journal/census/issuance adapters;
 then run the v2-v4 boundary controls and ordinary null-policy regression. Keep
 activation held until both shared patch review and meaningful native controls
 pass. No step is accepted merely because the design review has no new blocker.
+
+The [private snapshot proposal and offline probe plan](extraction-persistence-probe-plan.md)
+selects a mechanism for review and prepares versioned reference vectors. Both
+the proposed host ABI and native integration remain unimplemented and unverified.
