@@ -15,8 +15,7 @@
 		for (var/i = 1, i <= 30, i++)
 			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/nomads/forest/Jungle/river))
 			new/obj/structure/piranha(areaspawn)
-	spawn(18000)
-		seasons()
+	season_schedule_loop()
 
 /obj/map_metadata/nomads/continental/faction2_can_cross_blocks()
 	return (ordinal_age >= 2)
