@@ -244,3 +244,17 @@ diagnostics with every required gate; omission cases reject removal of each gate
 and reject failure masking. Ordinary regression suite guards stay unchanged.
 The corrected policy and fixture remain unexecuted locally and need exact-head
 remote verification.
+
+Run `38411520695` at `fbb8311fc8f0467265949534902221c2c611da0a`
+passed policy selection, full pinned compilation, equipment disk round-trip
+(including the corrected corpse observation) and the independent vehicle positive
+through write/reload/replay. The later mode probe failed at the private-home
+replica census; full extraction acceptance remains blocked.
+Each of the four vehicle omissions reached its exact intended assertion, but
+the runner rejected the caught `FAIL:` records because its ordinary oracle
+expects `Runtime error:` records. These controls remain failed results from this
+run. A custody-specific parser now requires one exact caught assertion at the
+fixture helper location and rejects duplicates, unrelated failures, engine errors,
+wrong assertions/files and trailing text. The ordinary oracle, process-exit gate
+and result-file failure gate remain unchanged. The parser correction needs
+independent source review and remote execution before any control pass claim.

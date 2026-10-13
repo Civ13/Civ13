@@ -42,6 +42,21 @@ class CompileOnlyBoundary(unittest.TestCase):
         self.assertEqual(execute.call_count, 1)
         self.assertEqual(execute.call_args.args[0][0], 'compiler')
 
+    def test_vehicle_control_accepts_only_one_exact_caught_assertion(self):
+        expected = 'equal-value replacement refuses captured native identity'
+        assertion = f'FAIL: {expected} at tests/extraction/equipment_probe.dm:38\n'
+        self.assertTrue(RUNNER.caught_vehicle_assertion_only(assertion, expected))
+        self.assertFalse(RUNNER.intended_assertion_only(assertion, expected))
+        for log in (assertion + assertion, assertion + 'FAIL: unrelated\n',
+                    assertion + 'Runtime error: unrelated\n',
+                    assertion + 'Bad ref\n', assertion + '## ERROR\n',
+                    assertion.replace('equipment_probe.dm', 'production.dm'),
+                    assertion.replace(expected, 'different assertion'),
+                    assertion.replace('FAIL:', 'Runtime error:'),
+                    assertion.rstrip() + ' unexpected suffix\n'):
+            with self.subTest(log=log):
+                self.assertFalse(RUNNER.caught_vehicle_assertion_only(log, expected))
+
     def test_store_returns_before_runtime(self):
         result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1681\n0 errors, 0 warnings', '')
         with patch.object(sys, 'argv', ['run.py', '--byond-bin', '.', '--probe', 'store', '--compile-only']):

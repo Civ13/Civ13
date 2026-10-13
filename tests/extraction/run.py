@@ -19,6 +19,18 @@ def intended_assertion_only(log, expected):
     return not any(marker in remainder for marker in ('runtime error', 'bad ref', '## error'))
 
 
+def caught_vehicle_assertion_only(log, expected):
+    """Vehicle process catches assertions; accept its single exact log record."""
+    pattern = (r'^FAIL: ' + re.escape(expected)
+               + r' at tests[/\\]extraction[/\\]equipment_probe\.dm:\d+[ \t]*\r?$')
+    matches = list(re.finditer(pattern, log, re.MULTILINE))
+    if len(matches) != 1:
+        return False
+    remainder = re.sub(pattern, '', log, count=1, flags=re.MULTILINE).lower()
+    return not any(marker in remainder for marker in
+                   ('fail:', 'runtime error', 'bad ref', '## error'))
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
@@ -526,7 +538,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                     print('PASS: retained vehicle payment negative control rejected')
                     return
                 if vehicle_custody_control:
-                    if ran.returncode or not result.startswith('FAIL:') or not intended_assertion_only(log, custody_failure):
+                    if ran.returncode or not result.startswith('FAIL:') or not caught_vehicle_assertion_only(log, custody_failure):
                         print(log)
                         raise RuntimeError('Vehicle custody control failed outside its intended assertion: ' + custody_failure)
                     print('PASS: vehicle custody control rejected: ' + vehicle_custody_control)
