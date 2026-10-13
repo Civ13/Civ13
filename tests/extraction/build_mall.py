@@ -21,6 +21,58 @@ PARKING_LOOT = (
     (64, 121, 36, 'workshop', 'Utility repair supplies'),
 )
 
+# Reserved surface identities are separate from container IDs. Every pool is
+# disabled in the core API; these markers do not issue items. Keep IDs stable.
+# Fields: source ID, raid z, normalized x/y, reserved pool, exact support kind.
+SURFACE_SOURCES = (
+    (1, 1, 27, 113, 'parking_fuel', 'floor'),
+    (2, 1, 40, 113, 'parking_fuel', 'floor'),
+    (3, 1, 120, 27, 'parking_fuel', 'floor'),
+    (4, 1, 130, 32, 'parking_fuel', 'floor'),
+    (5, 1, 29, 117, 'parking_wheel', 'floor'),
+    (6, 1, 40, 117, 'parking_wheel', 'floor'),
+    (7, 1, 117, 130, 'parking_wheel', 'floor'),
+    (8, 1, 127, 130, 'parking_wheel', 'floor'),
+    (9, 1, 25, 111, 'repair_parts', 'shelf'),
+    (10, 1, 35, 116, 'repair_parts', 'shelf'),
+    (11, 1, 113, 128, 'repair_parts', 'shelf'),
+    (12, 1, 123, 133, 'repair_parts', 'shelf'),
+    (13, 4, 30, 118, 'canned_food', 'shelf'),
+    (14, 4, 50, 118, 'canned_food', 'shelf'),
+    (15, 4, 60, 118, 'canned_food', 'shelf'),
+    (16, 4, 100, 118, 'canned_food', 'shelf'),
+    (17, 4, 110, 118, 'canned_food', 'shelf'),
+    (18, 4, 40, 122, 'canned_food', 'shelf'),
+    (19, 4, 60, 122, 'canned_food', 'shelf'),
+    (20, 4, 100, 122, 'canned_food', 'shelf'),
+    (21, 4, 32, 111, 'register_cash', 'register'),
+    (22, 4, 39, 111, 'register_cash', 'register'),
+    (23, 4, 48, 111, 'register_cash', 'register'),
+    (24, 4, 57, 111, 'register_cash', 'register'),
+    (25, 4, 95, 33, 'repair_parts', 'shelf'),
+    (26, 4, 105, 45, 'repair_parts', 'shelf'),
+    (27, 4, 125, 51, 'repair_parts', 'shelf'),
+    (28, 4, 115, 57, 'repair_parts', 'shelf'),
+    (29, 4, 46, 66, 'repair_parts', 'shelf'),
+    (30, 4, 49, 66, 'repair_parts', 'shelf'),
+    (31, 4, 56, 66, 'repair_parts', 'shelf'),
+    (32, 4, 59, 66, 'repair_parts', 'shelf'),
+    (33, 5, 96, 37, 'canned_food', 'table'),
+    (34, 5, 96, 61, 'canned_food', 'table'),
+    (35, 5, 96, 99, 'canned_food', 'table'),
+    (36, 5, 96, 123, 'canned_food', 'table'),
+    (37, 5, 39, 34, 'repair_parts', 'shelf'),
+    (38, 5, 29, 54, 'repair_parts', 'shelf'),
+    (39, 5, 99, 37, 'register_cash', 'register'),
+    (40, 5, 99, 99, 'register_cash', 'register'),
+)
+SURFACE_SUPPORTS = {
+    'floor': None,
+    'shelf': '/obj/structure/table/extraction_mall/shelf',
+    'table': '/obj/structure/table/extraction_mall',
+    'register': '/obj/structure/extraction_mall_fixture/register',
+}
+
 
 def coordinate(value, size=SIZE):
     return 1 + round((value-1) * (size-1) / 159)
@@ -389,6 +441,18 @@ def build(size=SIZE):
         put(1, x, y, f'/obj/effect/extraction_loot_marker{{container_id = {container_id}; pool_kind = "{pool}"; name = "{name}"}}')
     put(4, 74, 100, '/obj/effect/extraction_loot_marker/keyed/mall_security{container_id = 61}')
     put(4, 113, 40, '/obj/effect/extraction_loot_marker/keyed/mall_hardware{container_id = 62}', floor=dark)
+    # Overlay markers on existing scenery instead of replacing its floor or
+    # furniture. Registers sit on the existing checkout/cafe counters.
+    source_tiles = {key: value for value, key in definitions.items()}
+    for source_id, z, x, y, pool, kind in SURFACE_SOURCES:
+        xx, yy = c(x)-1, c(y)-1
+        existing = source_tiles[layers[z][yy][xx]]
+        support = SURFACE_SUPPORTS[kind]
+        marker = (f'/obj/effect/extraction_surface_source{{source_id = {source_id}; '
+                  f'pool_id = "{pool}"; support_kind = "{kind}"; '
+                  f'support_type = {support or "null"}}}')
+        register = support + ',' if kind == 'register' else ''
+        layers[z][yy][xx] = tile(f'({marker},{register}{existing[1:]}')
     result = [f'"{key}" = {value}' for value, key in definitions.items()]
     for z in sorted(layers):
         result += ['', f'(1,1,{z}) = {{"', *(''.join(row) for row in reversed(layers[z])), '"}']

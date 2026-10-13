@@ -139,6 +139,7 @@ class MallTests(unittest.TestCase):
             '/obj/structure/sink/extraction_mall',
             '/obj/structure/toilet/extraction_mall',
             '/obj/structure/extraction_mall_stairs',
+            '/obj/structure/extraction_mall_fixture/register',
             '/obj/structure/props/car_wreck',
         }
         layers = parse(build())
@@ -160,7 +161,7 @@ class MallTests(unittest.TestCase):
                         for x, value in enumerate(row, 1):
                             if any(token in value for token in ('/extraction_raid_marker', '/extraction_exit', '/extraction_loot_marker', '/extraction_npc_marker', '/extraction_mall_stairs', '/extraction_drop_box', '/extraction_mall_sign')):
                                 self.assertIn((x, y, z), seen, value)
-                            if any(token in value for token in ('/obj/structure/closet', '/obj/structure/oven', '/obj/structure/sink', '/obj/structure/toilet', '/obj/structure/bed/wood', '/obj/structure/bed/fieldbed')):
+                            if any(token in value for token in ('/obj/structure/closet', '/obj/structure/oven', '/obj/structure/sink', '/obj/structure/toilet', '/obj/structure/bed/wood', '/obj/structure/bed/fieldbed', '/extraction_surface_source')):
                                 self.assertTrue(any(point in seen for point in ((x+1, y, z), (x-1, y, z), (x, y+1, z), (x, y-1, z))), (x, y, z, value))
                 self.assertFalse(any(z in (2, 3) for _, _, z in seen))
                 for entry in ROAD_ENTRIES:
@@ -168,6 +169,44 @@ class MallTests(unittest.TestCase):
                     for exit_point in HIGHWAY_EXITS:
                         self.assertIn((c(exit_point[0]), c(exit_point[1]), 1), cars)
                     self.assertFalse(any(z != 1 for _, _, z in cars))
+
+    def test_surface_sources_keep_unique_ids_and_real_supports(self):
+        supports = {
+            'floor': 'null',
+            'shelf': '/obj/structure/table/extraction_mall/shelf',
+            'table': '/obj/structure/table/extraction_mall',
+            'register': '/obj/structure/extraction_mall_fixture/register',
+        }
+        for size in (160, 256, 320):
+            with self.subTest(size=size):
+                layers = parse(build(size))
+                ids = []
+                by_floor = {}
+                kinds = []
+                for z, rows in layers.items():
+                    for row in rows:
+                        for value in row:
+                            markers = re.findall(r'/obj/effect/extraction_surface_source\{([^}]+)\}', value)
+                            if not markers:
+                                continue
+                            self.assertEqual(len(markers), 1)
+                            fields = dict(field.strip().split(' = ', 1) for field in markers[0].split(';'))
+                            ids.append(int(fields['source_id']))
+                            by_floor[z] = by_floor.get(z, 0) + 1
+                            kind = fields['support_kind'].strip('"')
+                            kinds.append(kind)
+                            self.assertEqual(fields['support_type'], supports[kind])
+                            self.assertIn(fields['pool_id'].strip('"'), ('parking_fuel', 'parking_wheel', 'repair_parts', 'canned_food', 'register_cash'))
+                            placed = [atom.split('{', 1)[0] for atom in value[1:-1].split(',')]
+                            if kind == 'floor':
+                                self.assertFalse(blocked(value))
+                            else:
+                                self.assertEqual(placed.count(supports[kind]), 1)
+                            if kind == 'register':
+                                self.assertIn(supports['table'], placed)
+                self.assertCountEqual(ids, range(1, 41))
+                self.assertEqual(by_floor, {1: 12, 4: 20, 5: 8})
+                self.assertCountEqual(kinds, ['floor']*8 + ['shelf']*22 + ['table']*4 + ['register']*6)
 
     def test_disconnected_stair_control_is_detected(self):
         layers = parse(build(160))

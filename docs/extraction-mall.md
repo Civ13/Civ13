@@ -107,6 +107,16 @@ no shelf/counter/ground loot-population system; static renders show scenery
 and source containers, not their randomized contents. Native restart recovery
 and active-raid acceptance remain separate verification requirements.
 
+Forty disabled surface-source markers reserve future loose-loot locations:
+12 parking, 20 retail and eight gallery. Their IDs 1..40 are separate from the
+container namespace. Eight use clear floor, 22 use store shelves, four use cafe
+tables and six use ransacked register fixtures on existing counters. Registers
+use the native open-drawer sprite and have no closet storage, stock or currency
+behavior. These placements preserve the existing turf and furniture and have
+reachable approaches at sizes 160, 256 and 320. All five reserved pools remain
+disabled; these markers do not spawn items. Core materialization, custody,
+food/currency support and restart reconciliation are still required.
+
 Transit security and Foundry hardware each have one exact-key cache on the
 retail floor. Their keys can be recovered on any Extraction map and retain
 their remaining uses when extracted. See [container keys](extraction-container-keys.md)
