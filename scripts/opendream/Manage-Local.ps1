@@ -92,7 +92,9 @@ if ($Action -in @('Play','Client')) {
         try {
             $env:DOTNET_ROOT = "$trial/sdk"
             $env:ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW = "$trial/RobustToolbox/Robust.Client.WebView/bin/Release/net10.0"
-            $arguments = "`"$trial/RobustToolbox/bin/Client/Robust.Client.dll`" --self-contained --mount-zip `"$trial/server/OpenDreamServer_win-x64/Content.Client.zip`" --connect --connect-address udp://127.0.0.1:$($configuration.game_port) --username OpenDreamTester"
+            # The native-aware client reads this address into its menu and obtains
+            # the account/CID from BYOND before connecting. Never supply a username.
+            $arguments = "`"$trial/RobustToolbox/bin/Client/Robust.Client.dll`" --self-contained --mount-zip `"$trial/server/OpenDreamServer_win-x64/Content.Client.zip`" --connect-address udp://127.0.0.1:$($configuration.game_port)"
             $client = Start-Process -FilePath "$trial/sdk/dotnet.exe" -ArgumentList $arguments -WorkingDirectory "$trial/RobustToolbox/bin/Client" -WindowStyle Hidden -RedirectStandardOutput "$profile/client.stdout.log" -RedirectStandardError "$profile/client.stderr.log" -PassThru
             $state.client = @{id=$client.Id;path=$client.Path;startedUtc=$client.StartTime.ToUniversalTime().ToString('o')}
             $state | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $statePath

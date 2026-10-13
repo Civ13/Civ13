@@ -131,3 +131,25 @@ HTTP mutations require caller operation IDs and its recovery query never replays
 an action. The versioned bot `tests/local/lifecycle-wire.py` imports this actual
 OperationStore and verifies Python-produced receipts with the PHP adapter using
 synthetic effects and temporary storage. No runtime activation is implied.
+
+## Native identity launcher candidate
+
+The local launcher no longer supplies `OpenDreamTester` or any other username.
+It opens the client menu with the selected server address. The native-aware client
+must read the logged-in BYOND account and native CID before connecting. Its account
+display is read-only, and reconnecting must obtain a fresh native observation.
+
+This source change depends on the native identity client/bridge candidate in
+OpenDream PR #18. That candidate currently fails closed while the real observer,
+channel handoff and server gate are incomplete. It is not an installed or playable
+launcher update. Do not tell players to switch yet or change the published client
+channel based on this launcher patch alone.
+
+After the complete candidate has passed native login/CID parity and connection
+acceptance and is published, players will need to install the supported BYOND
+client, sign into their BYOND account there, update the Civ13 launcher, select a
+server, and connect using the displayed BYOND account. They will not type a
+username or give the Civ13 launcher their BYOND password. The native observer
+can disconnect an existing native BYOND world; the completed launcher must tell
+players before running that step. Final player instructions must match the
+verified shipped flow.
