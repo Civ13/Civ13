@@ -192,6 +192,10 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-13: native catch variable scope -->
+BYOND 516.1681 treats catch variable declarations as proc-scoped. Use distinct
+names for separate catch blocks in one proc or compilation fails with duplicate definition.
+
 - Follow `docs/game-verification.md` for exact-commit build, isolated-fixture,
   graphical, season-memory, and save-round-trip evidence. Reuse probes present in
   the selected checkout; investigation-branch probes may not be on master yet.
@@ -264,6 +268,13 @@ tests/opendream_shell runs both production branches with counted external-effect
 adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
+
+<!-- 2026-10-13: dehydrator native save baseline -->
+`tests/food_progression/rack_save.dm` exports the owning turf and rack graph.
+The 769ae4911 baseline compiled cleanly but failed exporting runtime `slots`.
+Load_Entry replaces constructor contents even for an empty saved record; rack
+runtime pointers must be excluded and live internal storage rebound or rebuilt.
+Source-only preparation does not establish native candidate or control acceptance.
 
 <!-- 2026-10-12: NPC cover decision parity -->
 `tests/npc_cover/run.py` compiles production cover scoring, LOS and line helpers

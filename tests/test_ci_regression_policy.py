@@ -75,6 +75,10 @@ class RegressionPolicyTests(unittest.TestCase):
             if 'uses: actions/upload-artifact' in block:
                 continue
             if re.search(r'(tests/|unittest discover|scripts/(check-recipes|test-power|test-batteries|check-battery-items))', block):
+                if block.startswith('      - name: Verify paid rack save and six mutation controls\n'):
+                    self.assertIn("        if: github.event_name == 'workflow_dispatch' && inputs.rack_save_regressions\n", block)
+                    self.assertRegex(workflow, r'rack_save_regressions:\n        description: [^\n]+\n        type: boolean\n        default: false\n')
+                    continue
                 self.assertRegex(block, r"if: (?:always\(\) && \()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests\)")
         self.assertIn("if: needs.changes.outputs.game == 'true'\n        run: sudo bash", workflow)
 
