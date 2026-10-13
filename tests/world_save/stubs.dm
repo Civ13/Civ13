@@ -51,6 +51,10 @@ var/list/mutate_on_tick = null
 	var/chad_mode = 0
 	var/chad_mode_plus = 0
 	var/gamemode = "test"
+	var/persistence = FALSE
+	var/research_active = FALSE
+	var/resourceresearch = FALSE
+	var/perschadplus = FALSE
 	var/age1_done
 	var/age2_done
 	var/age3_done
