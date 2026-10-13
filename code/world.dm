@@ -192,7 +192,7 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	var/list/filtering_whitelist = config.topic_filtering_whitelist
 	var/host = splittext_char(addr, ":")
-	if(!filtering_whitelist[host[1]]) // We only ever check the host, not the port (if provided)
+	if(!(host[1] in filtering_whitelist)) // Supports the configured positional host list and associative keys.
 		if(length_char(T) >= MAX_TOPIC_LEN)
 			/*log_admin_private("*/
 			diary << "TOPIC: [addr] banned from topic calls for a round for too long status message"
@@ -227,6 +227,11 @@ var/world_topic_spam_protect_time = world.timeofday
 
 
 /world/Reboot(var/reason)
+	#ifdef OPENDREAM
+	if (!opendream_control_request("restart"))
+		log_debug("OpenDream restart rejected: no available local supervisor.")
+	return
+	#endif
 
 	/* Wait for serverswap to do its magic
 	 * this was 50 but now it's 70 to let the entire JOJO meme play even when the server restarts quickly

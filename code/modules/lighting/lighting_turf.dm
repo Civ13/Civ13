@@ -18,10 +18,13 @@
 
 	if (opacity)
 		has_opaque_atom = TRUE
-	spawn(5)
-		var/area/A = get_area(src)
-		if (A.dynamic_lighting)
-			lighting_build_overlay()
+	// Initial map turfs are covered by bulk startup, without one sleeper each.
+	// Replacements made during startup still retain their runtime request.
+	if (created_lighting_corners_and_overlays || lighting_startup_in_progress)
+		spawn(5)
+			var/area/A = get_area(src)
+			if (A && A.dynamic_lighting)
+				lighting_build_overlay()
 
 /turf/proc/get_window_coeff()
 	if (window_coeff_dirty)
@@ -50,9 +53,17 @@
 
 // Builds a lighting overlay for us, but only if our area is dynamic.
 /turf/proc/lighting_build_overlay()
+	// Only actual runtime requests can wait here; initial map New schedules none.
+	var/startup_request = FALSE
+	while (lighting_startup_in_progress)
+		startup_request = TRUE
+		sleep(world.tick_lag)
+	// An interrupted startup releases its waiters without publishing readiness.
+	if (startup_request && !created_lighting_corners_and_overlays)
+		return
 	if (!lighting_overlay)
 		var/area/A = loc
-		if (A.dynamic_lighting)
+		if (A && A.dynamic_lighting)
 			PoolOrNew(/atom/movable/lighting_overlay, src)
 
 			for (var/LC in corners)

@@ -26,6 +26,11 @@ continuation failures. `--reset-control` deliberately restores post-completion
 reset and requires exactly the copied-snapshot release failure. Neither control
 accepts compiler warnings, runtime errors, unexpected assertions or a pass marker.
 
+The unconditional-clear mutation targets the current guard, including exhausted
+snapshot handling. Its assertions still require nonempty budgeted snapshots to
+survive both scheduler and member early returns; changing the anchor does not
+relax the expected failures.
+
 `--baseline` pins all extracted process/scheduler/reset/define sources to commit
 `f556e39b93fc97f41020b2d8c5f2abed63fab497`. The unmodified historical callers use a
 real initial registry reset, matching their startup contract. Successful control

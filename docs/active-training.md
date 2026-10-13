@@ -1,5 +1,8 @@
 # Active physical training
 
+Players craft and place this equipment, then use it directly. Training requires
+no gym membership or money payment; the listed costs are construction materials.
+
 Stone lifting weights cost eight stone blocks and require Basic Toolmaking.
 An agility/endurance course marker costs six wood and requires Primitive
 Construction. Both require 30 current crafting skill. These early research

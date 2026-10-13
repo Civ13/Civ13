@@ -42,6 +42,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = TRUE
+	maxHealth = TRUE
 	var/amount_grown = FALSE
 	pass_flags = PASSTABLE
 	mob_size = MOB_MINISCULE
@@ -93,6 +94,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 10
+	maxHealth = 10
 	eggsleft = 5
 	var/roosting_icon = "brownhen_roosting"
 	var/body_color
@@ -202,6 +204,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 15
+	maxHealth = 15
 	var/roosting_icon = "brownrooster_roosting"
 	var/body_color
 	var/egg_timer = FALSE
@@ -259,6 +262,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 12
+	maxHealth = 12
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
 	flying = TRUE
@@ -287,6 +291,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 12
+	maxHealth = 12
 	harm_intent_damage = 4
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
@@ -314,6 +319,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 12
+	maxHealth = 12
 	harm_intent_damage = 7
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
@@ -342,6 +348,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 12
+	maxHealth = 12
 	harm_intent_damage = 7
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
@@ -370,6 +377,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 12
+	maxHealth = 12
 	harm_intent_damage = 7
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
@@ -399,6 +407,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 12
+	maxHealth = 12
 	harm_intent_damage = 7
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
@@ -432,6 +441,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 12
+	maxHealth = 12
 	harm_intent_damage = 7
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
@@ -465,6 +475,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = TRUE
+	maxHealth = TRUE
 	var/amount_grown = FALSE
 	pass_flags = PASSTABLE
 	mob_size = MOB_MINISCULE
