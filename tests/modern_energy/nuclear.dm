@@ -53,7 +53,7 @@
 	var/mob/living/human/energy_ci/far = new(locate(4,4,1))
 	var/mob/living/human/energy_ci/other_z = new(locate(2,2,2))
 	var/turf/inside = locate(3,2,1)
-	inside.loc = new /area/energy_interior
+	ChangeArea(inside, new /area/energy_interior)
 	var/mob/living/human/energy_ci/interior = new(inside)
 	energy_ci_check("distant heat target rejected", N.local_heat_target(far), FALSE)
 	energy_ci_check("other z heat target rejected", N.local_heat_target(other_z), FALSE)
