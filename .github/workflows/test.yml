@@ -209,6 +209,7 @@ jobs:
         with:
           name: wall-appearance-comparison
           path: ${{ runner.temp }}/wall-*
+          if-no-files-found: error
       - name: Verify weapon parry break boundaries
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/weapon_parry')
         shell: bash
