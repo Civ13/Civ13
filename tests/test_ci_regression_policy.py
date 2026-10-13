@@ -14,6 +14,12 @@ spec.loader.exec_module(selection)
 
 
 class RegressionPolicyTests(unittest.TestCase):
+    ADMISSION_STEP = 'Verify persistence admission adapter and ordinary restore compatibility'
+    ADMISSION_GATES = (
+        '!cancelled()', "needs.changes.result == 'success'",
+        "steps.byond_setup.outcome == 'success'",
+        "(needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_admission'))",
+    )
     VEHICLE_DIAGNOSTICS = {
         'Diagnose extraction vehicle custody ' + suffix
         for suffix in ('positive', 'roster omission', 'reservation omission',
@@ -28,6 +34,23 @@ class RegressionPolicyTests(unittest.TestCase):
     def assert_vehicle_diagnostic_guard(self, block):
         self.assertIn('if: ${{ ' + ' && '.join(self.VEHICLE_GATES) + ' }}', block)
         self.assertNotIn('continue-on-error:', block)
+
+    def assert_admission_guard(self, block):
+        self.assertIn('        if: ${{ ' + ' && '.join(self.ADMISSION_GATES) + ' }}\n', block)
+        self.assertNotIn('continue-on-error:', block)
+
+    def test_admission_policy_requires_complete_independent_gate(self):
+        block = '        if: ${{ ' + ' && '.join(self.ADMISSION_GATES) + ' }}\n'
+        self.assert_admission_guard(block)
+        for omitted in self.ADMISSION_GATES:
+            with self.subTest(omitted=omitted), self.assertRaises(AssertionError):
+                self.assert_admission_guard(
+                    '        if: ${{ ' + ' && '.join(gate for gate in self.ADMISSION_GATES
+                                                      if gate != omitted) + ' }}\n')
+        with self.assertRaises(AssertionError):
+            self.assert_admission_guard(block.replace('tests/persistence_admission', 'tests/unrelated'))
+        with self.assertRaises(AssertionError):
+            self.assert_admission_guard(block + '        continue-on-error: true\n')
 
     def test_vehicle_diagnostic_policy_accepts_only_complete_gate(self):
         block = 'if: ${{ ' + ' && '.join(self.VEHICLE_GATES) + ' }}'
@@ -98,8 +121,13 @@ class RegressionPolicyTests(unittest.TestCase):
         workflow = (ROOT / '.github/workflows/test.yml').read_text()
         import re
         diagnostics = []
+        admission_steps = 0
         for block in re.split(r'(?=      - name:)', workflow):
             name = re.search(r'^      - name: (.+)$', block, re.MULTILINE)
+            if name and name.group(1) == self.ADMISSION_STEP:
+                admission_steps += 1
+                self.assert_admission_guard(block)
+                continue
             if name and name.group(1) in self.VEHICLE_DIAGNOSTICS:
                 diagnostics.append(name.group(1))
                 self.assert_vehicle_diagnostic_guard(block)
@@ -113,6 +141,7 @@ class RegressionPolicyTests(unittest.TestCase):
                     continue
                 self.assertRegex(block, r"if: (?:always\(\) && \()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests\)")
         self.assertEqual(sorted(diagnostics), sorted(self.VEHICLE_DIAGNOSTICS))
+        self.assertEqual(admission_steps, 1)
         self.assertIn("id: byond_setup\n        if: needs.changes.outputs.game == 'true'\n        run: sudo bash", workflow)
         self.assertIn("if: needs.changes.outputs.game == 'true'\n        run: sudo bash", workflow)
 

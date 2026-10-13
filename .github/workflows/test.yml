@@ -417,7 +417,7 @@ jobs:
           if-no-files-found: warn
       - name: Verify persistence admission adapter and ordinary restore compatibility
         id: persistence_admission
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_admission')
+        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.byond_setup.outcome == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_admission')) }}
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
