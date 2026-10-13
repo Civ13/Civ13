@@ -418,6 +418,7 @@
 //such as when picking up all the items on a tile with one click.
 /obj/item/weapon/storage/proc/handle_item_insertion(obj/item/W as obj, prevent_warning = FALSE)
 	if (!istype(W)) return FALSE
+	if (W.extraction_surface_source) return FALSE
 	if (usr)
 		usr.remove_from_mob(W)
 		usr.update_icons()	//update our overlays

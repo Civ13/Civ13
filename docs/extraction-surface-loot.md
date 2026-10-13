@@ -90,7 +90,8 @@ service writes actor/identity/epoch intent, moves that actual root through nativ
 hand placement, verifies observed custody and acknowledges. Failed acknowledgement
 locks the actor and source and returns the actual root to its source when possible.
 Base item `attackby`, forced movement, walking movement and native human hand
-insertion reject unacknowledged roots. Exact gasoline-container interaction
+insertion reject unacknowledged roots. Native storage insertion and human slot
+equipment reject them before direct location or slot changes. Exact gasoline-container interaction
 handlers prevent consumption through their subtype overrides. Disposal records
 an unresolved intent and quarantines the source; a cleanup callback does not
 prove engine deletion. Runtime item, marker and metadata links are excluded from
@@ -103,7 +104,12 @@ an actual loaded root only when its identity, graph and source position match;
 missing roots and pending operations quarantine without regeneration. These
 inputs are not yet connected to authoritative world/account loaders, and do not
 prove completeness or active-raid recovery. Direct `loc` assignments can bypass
-movement hooks and require an audit before enablement.
+movement hooks. Remaining storage removal/quick-equip paths and persistence
+loader construction need an audit before enablement. Relevant source entry points
+are `storage/storage.dm` insertion/removal, `human/inventory.dm` slot operations,
+`mob/inventory.dm` equip-or-drop, and `persistence/loading.dm` loaded-root and
+`after_load` processing. The account feed must cover all durable profiles, not
+only the currently connected account in `extraction/mode.dm` entry restoration.
 
 Round-close processing visits at most 16 manifest sources per call. Forfeiture
 writes intent, removes the actual unclaimed root from world custody, then
