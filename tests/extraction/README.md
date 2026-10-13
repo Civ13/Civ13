@@ -282,6 +282,24 @@ pending journals, stale inventory and access-gate release.
 
 ### Connected acceptance preparation
 
+On October 13, the human selected OpenDream for the end-of-day extraction
+connected-client/playable-loop target, relayed through the extraction coordinator.
+Package provenance must record the exact source head, OpenDream compiler/server/
+client identities, selected map and artifact hashes. Track room/hub navigation,
+storage, paid progression and return/reconnect results against that runtime.
+Pinned BYOND 516.1681 compilation and isolated native probes remain a separate
+compatibility/evidence track; neither engine's result establishes the other's.
+
+The BYOND launcher and account preparation below are existing verification paths,
+not an implemented OpenDream launcher. This checkout has no tracked OpenDream
+launcher identified in the bounded source inventory. OpenDream authentication,
+account identity mapping, save compatibility and client readiness remain explicit
+acceptance gaps. Do not reuse BYOND DMB/RSC or retained-run receipts as OpenDream
+artifacts. Selecting OpenDream grants no launcher/startup changes, production
+restart/deployment, screen control, live economy or release of queue/native/shared
+implementation holds. Coordinate the current launcher owner's package before
+any connected run; no such run was performed by this documentation change.
+
 The human confirmed only one BYOND account is available. Prepare a genuine
 single-account concept capture of room/hub navigation, private stash, paid
 storage/upgrades, reconnect, disposable restart and idle reload where the UI
