@@ -506,3 +506,15 @@ Surface loot stays disabled and uninstalled. Authoritative fresh-world construct
 coverage before DMM creation remains unsupported; saved-load lists cannot supply
 that proof. The floor-only home replica contract still has no durable retirement
 or admission handoff and does not cover bodies, containers, benches or vehicles.
+
+The 2026-10-13 capacity audit confirms insurance mail has no fixed total item or
+entry entitlement cap. Full eight-entry pages roll forward with decimal text
+sequences; the existing 65-return fixture crosses the old mailbox limit without
+expiring or deleting returns. Per-transaction work/index/byte bounds and disk or
+sequence failures are recovery limits. Planning failures occur before actual
+gear retirement; uncertain post-retirement writes retain the durable prepared or
+retired plan and block admission/reissue. Expiry remains TBI. A new native fixture
+provisions a full page at the 100-digit sequence boundary and asserts append
+refusal leaves actual gear, original claims and account bytes intact. It is UNRUN
+during the native hold. Disk exhaustion and OS power-loss durability remain
+unverified; injected journal cuts do not establish those outcomes.

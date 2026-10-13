@@ -23,7 +23,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--compile-only', action='store_true', help='Compile the isolated fixture without launching DreamDaemon')
-    parser.add_argument('--surface-negative-control', choices=('epoch', 'claim', 'duplicate', 'movement', 'discovery', 'forfeit', 'inventory', 'retirement', 'identity', 'escrow', 'mail_binding', 'auxiliary_pending', 'home_owner', 'home_graph', 'home_placement', 'home_revision', 'world_stale', 'fresh_incomplete', 'home_admission', 'marker_save'))
+    parser.add_argument('--surface-negative-control', choices=('epoch', 'claim', 'duplicate', 'movement', 'discovery', 'forfeit', 'inventory', 'retirement', 'identity', 'escrow', 'mail_binding', 'auxiliary_pending', 'home_owner', 'home_graph', 'home_placement', 'home_revision', 'world_stale', 'fresh_incomplete', 'home_admission', 'marker_save', 'home_retire_owner', 'home_retire_partial', 'home_retire_graph', 'home_retire_remove', 'home_retire_restart', 'home_retire_prepare'))
     parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'npc', 'city', 'insurance', 'groups', 'vehicles'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry', 'disruptive_creation', 'disruptive_pending', 'disruptive_result'))
@@ -158,6 +158,12 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 'fresh_incomplete': ('!current_world_complete || ', ''),
                 'home_admission': ('marker.admission_available()', '!marker.session'),
                 'marker_save': ('\t\t. |= list("room", "replica_owner", "replica_revision", "replica_digest")', '\t\t// Negative control: omit durable marker fields'),
+                'home_retire_owner': ('H.replica_owner == owner', 'TRUE'),
+                'home_retire_partial': ('H.replica_digest == extraction_sha256(json_encode(B))', 'TRUE'),
+                'home_retire_graph': ('expected["digest"] != extraction_sha256(json_encode(graph))', 'FALSE'),
+                'home_retire_remove': ('if (I && I.loc) qdel(I)', '// Negative control: omit actual root removal'),
+                'home_retire_restart': ('return home_retirement_refs[owner] == "retired"', 'return TRUE'),
+                'home_retire_prepare': ('if (!J.commit_profile(owner, receipt)) return FALSE\n\t\thome_retirement_refs[owner] = roots.Copy()', 'home_retirement_refs[owner] = roots.Copy()'),
                 'discovery': ('if (discovered_ids[id] || (account_ids[id] && !approved_replica))', 'if (account_ids[id] && !approved_replica)'),
                 'forfeit': ('\t\t\tqdel(I)\n\t\t\tif (I && I.loc)', '\t\t\t// Negative control: omit root retirement\n\t\t\tif (I && I.loc)'),
             }[surface_control]
@@ -422,6 +428,12 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                         'fresh_incomplete': 'saved replica feed cannot authorize incomplete fresh-world census',
                         'home_admission': 'unbound second owner cannot enter replica-bound room or access its actual stash',
                         'marker_save': 'native marker entry round trip preserves room binding and parent fields while excluding session',
+                        'home_retire_owner': 'marker owned by another account cannot authorize retirement',
+                        'home_retire_partial': 'partial marker binding cannot authorize replica retirement',
+                        'home_retire_graph': 'changed actual replica graph blocks retirement before removal',
+                        'home_retire_remove': 'partial runtime retirement leaves durable binding and admission reserved',
+                        'home_retire_restart': 'retired replica receipt never releases room or account before durable world proof',
+                        'home_retire_prepare': 'interrupted replica retirement intent preserves actual gear and account',
                         'discovery': 'surface duplicate loaded roots lock discovery',
                         'forfeit': 'surface round forfeit retires actual root before acknowledgement',
                     }[surface_control]

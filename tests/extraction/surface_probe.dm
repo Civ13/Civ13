@@ -313,32 +313,37 @@
 	extraction_replica_admission_probe(M, house, I)
 	extraction_replica_marker_save_probe()
 	qdel(copy)
+	extraction_home_retirement_probe(M, house, I)
 	qdel(I)
 	var/datum/extraction_surface_service/stale = new(M, "data/surface_stale_load/")
 	equipment_assert(stale.begin_world_inventory(1) && stale.feed_loaded_level(1, list()), "stale barrier fixture records actual empty feed")
 	stale.world_inventory_stamp--
 	equipment_assert(!stale.finish_world_inventory() && stale.discovery_locked, "stale world load barrier cannot seal census")
-	// Fixture cleanup only; no production unbinding or replica retirement path.
+	// Fixture cleanup only; production never unbinds before saved-world proof.
 	house.replica_owner = null
 	house.replica_revision = 0
 	house.replica_digest = null
 	M.accounts.store = previous_store
 
 /proc/extraction_replica_admission_probe(obj/map_metadata/extraction_survival/M, obj/effect/extraction_house_marker/house, obj/item/owner_item)
+	// The injected owner adapter exists only in the mode fixture. This shared
+	// probe also compiles in equipment-only worlds that do not declare it.
+	var/list/test_owners = M.vars["test_owners"]
+	equipment_assert(islist(test_owners), "replica admission fixture requires injected mode owner adapter")
 	var/turf/original = get_turf(owner_item)
 	var/owner_id = owner_item.extraction_item_id
 	var/owner_graph = json_encode(M.codec.encode(owner_item, FALSE))
 	var/mob/living/human/other = new(locate(3,3,1))
-	M.test_owners[other] = "replicaother"
+	test_owners[other] = "replicaother"
 	equipment_assert(M.admit(other) && other.extraction_session.house != house && house.session == null && owner_item.loc == original && owner_item.extraction_item_id == owner_id && json_encode(M.codec.encode(owner_item, FALSE)) == owner_graph && !original.Enter(other, get_turf(other)), "unbound second owner cannot enter replica-bound room or access its actual stash")
 	equipment_assert(M.release(other.extraction_session, FALSE), "other owner releases only its unbound room")
 	M.round_participants -= "replicaother"
-	M.test_owners -= other
+	test_owners -= other
 	qdel(other)
 	var/mob/living/human/bound = new(locate(3,3,1))
-	M.test_owners[bound] = "replicaowner"
+	test_owners[bound] = "replicaowner"
 	equipment_assert(!M.admit(bound) && !bound.extraction_session && owner_item.loc == original, "bound owner cannot decode another copy before retirement handoff")
-	M.test_owners -= bound
+	test_owners -= bound
 	qdel(bound)
 	// Each partial-field negative uses a real marker but cannot touch its stash.
 	var/obj/effect/extraction_house_marker/partial = new(null)
@@ -378,3 +383,47 @@
 	qdel(runtime_session)
 	qdel(saved)
 	qdel(restored)
+
+/datum/extraction_surface_service/home_retirement_failure_probe
+	var/test_suffix
+	home_retirement_store()
+		var/datum/extraction_account_store/J = ..()
+		J.root = "[metadata.accounts.store.root]_home_replica_[test_suffix]/"
+		return J
+
+/proc/extraction_home_retirement_probe(obj/map_metadata/extraction_survival/M, obj/effect/extraction_house_marker/H, obj/item/I)
+	var/datum/extraction_surface_service/R = new(M, "data/home_retirement_probe/")
+	var/list/account = M.accounts.store.load_profile("replicaowner")
+	var/account_digest = extraction_sha256(json_encode(account))
+	var/marker_digest = H.replica_digest
+	equipment_assert(!R.prepare_home_retirement("replicaother", H, list(I)) && I.loc, "other owner cannot prepare replica retirement")
+	H.replica_owner = "replicaother"
+	equipment_assert(!R.prepare_home_retirement("replicaowner", H, list(I)) && I.loc, "marker owned by another account cannot authorize retirement")
+	H.replica_owner = "replicaowner"
+	H.replica_digest = ""
+	equipment_assert(!R.prepare_home_retirement("replicaowner", H, list(I)) && I.loc, "partial marker binding cannot authorize replica retirement")
+	H.replica_digest = marker_digest
+	var/datum/extraction_surface_service/home_retirement_failure_probe/failed = new(M, "data/home_retirement_failure/")
+	failed.test_suffix = "intent"
+	failed.home_retirement_fail_at = "prepare_intent"
+	equipment_assert(!failed.prepare_home_retirement("replicaowner", H, list(I)) && I.loc && !H.admission_available() && extraction_sha256(json_encode(M.accounts.store.load_profile("replicaowner"))) == account_digest, "interrupted replica retirement intent preserves actual gear and account")
+	var/datum/extraction_surface_service/home_retirement_failure_probe/receipt_failure = new(M, "data/home_retirement_receipt_failure/")
+	receipt_failure.test_suffix = "receipt"
+	equipment_assert(receipt_failure.prepare_home_retirement("replicaowner", H, list(I)), "receipt failure fixture journals actual prepared root")
+	equipment_assert(R.prepare_home_retirement("replicaowner", H, list(I)) && I.loc && !H.admission_available(), "replica retirement intent commits before physical removal")
+	var/datum/extraction_account_store/prepared_store = R.home_retirement_store()
+	var/list/prepared_receipt = prepared_store.load_profile("replicaowner")
+	equipment_assert(prepared_receipt && prepared_receipt["home_retirement"]["phase"] == "prepared" && prepared_receipt["home_retirement"]["account_digest"] == account_digest, "replica retirement preparation has actual durable account-bound receipt")
+	equipment_assert(R.prepare_home_retirement("replicaowner", H, list(I)), "same runtime exact retirement preparation is idempotent")
+	var/datum/extraction_surface_service/restarted = new(M, "data/home_retirement_restart/")
+	equipment_assert(!restarted.retire_home_replica("replicaowner", H) && I.loc, "restart cannot infer replica retirement from supplied or missing roots")
+	I.extraction_found_in_raid = FALSE
+	equipment_assert(!R.retire_home_replica("replicaowner", H) && I.loc, "changed actual replica graph blocks retirement before removal")
+	I.extraction_found_in_raid = TRUE
+	R.home_retirement_fail_at = "retire1"
+	equipment_assert(!R.retire_home_replica("replicaowner", H) && !I.loc && !H.admission_available(), "partial runtime retirement leaves durable binding and admission reserved")
+	R.home_retirement_fail_at = null
+	receipt_failure.home_retirement_fail_at = "retirement_snapshot"
+	equipment_assert(!receipt_failure.retire_home_replica("replicaowner", H) && !I.loc && !H.admission_available() && extraction_sha256(json_encode(M.accounts.store.load_profile("replicaowner"))) == account_digest, "interrupted retirement receipt preserves binding and account for recovery")
+	equipment_assert(R.retire_home_replica("replicaowner", H) && R.retire_home_replica("replicaowner", H), "exact runtime retirement finishes once and replays without physical reissue")
+	equipment_assert(!restarted.retire_home_replica("replicaowner", H) && !H.admission_available() && H.replica_digest == marker_digest && extraction_sha256(json_encode(M.accounts.store.load_profile("replicaowner"))) == account_digest, "retired replica receipt never releases room or account before durable world proof")
