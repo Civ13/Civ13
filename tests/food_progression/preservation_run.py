@@ -1,5 +1,6 @@
-"""Bounded production planting/harvest probe with temporary runtime storage."""
+"""Bounded production food probes with temporary runtime storage."""
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -17,12 +18,16 @@ def main():
     control.add_argument('--negative-control', action='store_true')
     control.add_argument('--soil-negative-control', action='store_true')
     control.add_argument('--can-negative-control', action='store_true')
-    parser.add_argument('--probe', choices=('crop', 'storage', 'preservation'), default='preservation')
+    parser.add_argument('--probe', choices=('crop', 'storage', 'preservation', 'rack-save'), default='preservation')
     parser.add_argument('--preservation-control', choices=('nutrition', 'age', 'conversion'))
+    parser.add_argument('--rack-control', choices=('runtime', 'duplicate', 'conversion'))
     parser.add_argument('--output', type=Path)
     parser.add_argument('--stem')
     parser.add_argument('--start-gated', action='store_true')
+    parser.add_argument('--prepare-only', action='store_true', help='Generate/hash isolated sources without launching BYOND')
     args = parser.parse_args()
+    if args.rack_control and (args.probe != 'rack-save' or args.preservation_control):
+        parser.error('Rack controls require --probe rack-save and no preservation control')
     if args.start_gated and input() != 'start':
         raise RuntimeError('Missing resource guard release')
     if args.can_negative_control:
@@ -34,6 +39,7 @@ def main():
     generated = {suffix: root / (stem + suffix) for suffix in
                  ('.dme', '_world.dm', '_globals.dm', '_farming.dm', '_floor.dm', '_persistence.dm', '_food.dm', '_production.dm', '.dmb', '.rsc')}
     output = args.output or Path(tempfile.mkdtemp(prefix='civ13-food-preservation-'))
+    output.mkdir(parents=True, exist_ok=True)
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     print(f'Evidence: {output}', flush=True)
     try:
@@ -72,13 +78,14 @@ def main():
                 food = food.replace(guard, 'else if (!istype(loc, /obj/item/weapon/can))')
             generated['_food.dm'].write_text(food, encoding='utf-8')
             source = source.replace('code\\modules\\reagents\\reagent_containers\\food.dm', generated['_food.dm'].name)
-        if args.probe == 'preservation':
+        if args.probe in ('preservation', 'rack-save'):
             production = (root / 'code/modules/1713/production.dm').read_text(encoding='utf-8')
             marker = 'spawn(150) //one tick at 15 seconds will be enough'
             if production.count(marker) != 1:
                 raise RuntimeError('Production drying wait marker changed')
-            if args.preservation_control:
-                if args.preservation_control in ('nutrition', 'conversion'):
+            production_control = 'nutrition' if args.rack_control == 'conversion' else args.preservation_control
+            if production_control:
+                if production_control in ('nutrition', 'conversion'):
                     first = '\t\t\t\t\t\t\t// Preserve hunger value'
                     last = '\t\t\t\t\t\t\tvar/decay_offset'
                     if production.count('\n' + first) != 1 or production.count('\n' + last) != 1:
@@ -86,7 +93,7 @@ def main():
                     start = production.index('\n' + first) + 1
                     end = production.index('\n' + last, start) + 1
                     replacement = ''
-                    if args.preservation_control == 'conversion':
+                    if production_control == 'conversion':
                         replacement = '\t\t\t\t\t\t\tfor (var/nutrient in list("nutriment", "protein"))\n\t\t\t\t\t\t\t\tvar/excess = output_food.reagents.get_reagent_amount(nutrient) - input_food.reagents.get_reagent_amount(nutrient)\n\t\t\t\t\t\t\t\tif (excess > 0)\n\t\t\t\t\t\t\t\t\toutput_food.reagents.remove_reagent(nutrient, excess)\n'
                     production = production[:start] + replacement + production[end:]
                 else:
@@ -94,7 +101,9 @@ def main():
                     if production.count(age) != 1:
                         raise RuntimeError('Preservation age control marker changed')
                     production = production.replace(age, '\t\t\t\t\t\t\t\toutput_food.decaytimer = 0 // omission control')
-            generated['_production.dm'].write_text(production.replace(marker, 'spawn(2) // accelerated drying wait'), encoding='utf-8')
+            if args.probe == 'preservation':
+                production = production.replace(marker, 'spawn(2) // accelerated drying wait')
+            generated['_production.dm'].write_text(production, encoding='utf-8')
             source = source.replace('code\\modules\\1713\\production.dm', generated['_production.dm'].name)
         if args.negative_control:
             floor = (root / 'code/game/turfs/floor_attackby.dm').read_text(encoding='utf-8')
@@ -115,16 +124,22 @@ def main():
             generated['_persistence.dm'].write_text(persistence.replace(marker, '\t// negative control omits soil nutrition'), encoding='utf-8')
             source = source.replace('code\\modules\\persistence\\functions.dm', generated['_persistence.dm'].name)
         source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
-        probe = root / 'tests/food_progression' / ('preservation.dm' if args.probe == 'preservation' else 'storage.dm' if args.probe == 'storage' else 'probe.dm')
-        generated['.dme'].write_text(source + '\n#include "' + probe.relative_to(root).as_posix() + '"\n', encoding='utf-8')
+        probe = root / 'tests/food_progression' / ('rack_save.dm' if args.probe == 'rack-save' else 'preservation.dm' if args.probe == 'preservation' else 'storage.dm' if args.probe == 'storage' else 'probe.dm')
+        control_define = '#define RACK_CONTROL_' + args.rack_control.upper() + '\n' if args.rack_control in ('runtime', 'duplicate') else ''
+        generated['.dme'].write_text(source + '\n' + control_define + '#include "' + probe.relative_to(root).as_posix() + '"\n', encoding='utf-8')
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-        (output / 'metadata.json').write_text(json.dumps({'commit': head, 'preservation_control': args.preservation_control, 'negative_control': args.negative_control, 'soil_negative_control': args.soil_negative_control, 'can_negative_control': args.can_negative_control, 'probe': args.probe,
-            'drying_wait_ticks': 2 if args.probe == 'preservation' else None, 'growth_wait_ticks': 2, 'food_wait_ticks': 2 if args.probe == 'storage' else None, 'normal_startup': False, 'map': 'synthetic 6x3x1 preservation fixture' if args.probe == 'preservation' else 'synthetic 6x3x1 storage fixture' if args.probe == 'storage' else 'synthetic 6x3x1 temperate plot'}), encoding='utf-8')
+        hash_paths = [probe, Path(__file__), Path(__file__).with_name('preservation_guard.py')] + [root / name for name in ('code/modules/1713/production.dm', 'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm', 'code/modules/reagents/reagent_containers/food/snacks.dm', 'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Food-Drinks.dm')]
+        source_hashes = {path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest() for path in hash_paths}
+        (output / 'metadata.json').write_text(json.dumps({'commit': head, 'prepare_only': args.prepare_only, 'source_hashes': source_hashes, 'rack_control': args.rack_control, 'preservation_control': args.preservation_control, 'negative_control': args.negative_control, 'soil_negative_control': args.soil_negative_control, 'can_negative_control': args.can_negative_control, 'probe': args.probe,
+            'drying_wait_ticks': 2 if args.probe == 'preservation' else 150 if args.probe == 'rack-save' else None, 'growth_wait_ticks': 2, 'food_wait_ticks': 2 if args.probe == 'storage' else None, 'normal_startup': False, 'map': 'synthetic 6x3x1 rack/turf graph' if args.probe == 'rack-save' else 'synthetic 6x3x1 preservation fixture' if args.probe == 'preservation' else 'synthetic 6x3x1 storage fixture' if args.probe == 'storage' else 'synthetic 6x3x1 temperate plot'}), encoding='utf-8')
         (output / 'checkout.patch').write_text(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root, text=True), encoding='utf-8')
         shutil.copy2(probe, output / 'probe.dm')
         for path in generated.values():
             if path.exists():
                 shutil.copy2(path, output / path.name)
+        if args.prepare_only:
+            print('PREPARED: isolated sources only; no compiler or daemon launched', flush=True)
+            return
         compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
         daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
         build = subprocess.run([str(compiler), '-max_errors', '0', str(generated['.dme'])], cwd=root,
@@ -150,7 +165,10 @@ def main():
         print(log, flush=True)
         result = (output / 'food_result.txt').read_text(encoding='utf-8')
         print(result, flush=True)
-        expected = ('FAIL: drying does not replenish consumed nutrition' if args.preservation_control == 'nutrition' else
+        expected = ('FAIL: rack export excludes runtime fields' if args.rack_control == 'runtime' else
+                    'FAIL: restored rack contains exactly one paid input' if args.rack_control == 'duplicate' else
+                    'FAIL: restored conversion retains paid nutrition' if args.rack_control == 'conversion' else
+                    'FAIL: drying does not replenish consumed nutrition' if args.preservation_control == 'nutrition' else
                     'FAIL: drying retains available nutrition across reagent conversion' if args.preservation_control == 'conversion' else
                     'FAIL: drying does not erase accumulated age' if args.preservation_control == 'age' else
                     'FAIL: opened can accumulates food age' if args.can_negative_control else
@@ -158,7 +176,7 @@ def main():
                     'FAIL: full turf entry restores nondefault soil nutrition' if args.soil_negative_control else 'PASS:')
         if runtime.returncode or not result.startswith(expected) or any(x in log.lower() for x in ('runtime error:', '## error:', 'bug:')):
             raise RuntimeError('Production progression probe failed')
-        if args.preservation_control or args.negative_control or args.soil_negative_control or args.can_negative_control:
+        if args.rack_control or args.preservation_control or args.negative_control or args.soil_negative_control or args.can_negative_control:
             print('PASS: expected regression mutation detected', flush=True)
     finally:
         for path in generated.values():

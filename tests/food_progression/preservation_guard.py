@@ -84,6 +84,8 @@ def private(pid):
 parser = argparse.ArgumentParser()
 parser.add_argument('--inspect', action='store_true')
 parser.add_argument('--preservation-control', choices=('nutrition', 'age', 'conversion'))
+parser.add_argument('--probe', choices=('preservation', 'rack-save'), default='preservation')
+parser.add_argument('--rack-control', choices=('runtime', 'duplicate', 'conversion'))
 parser.add_argument('--directory', type=Path)
 parser.add_argument('--byond-bin', type=Path)
 parser.add_argument('--timeout', type=int, default=180)
@@ -116,6 +118,10 @@ command = [sys.executable, str(Path(__file__).with_name('preservation_run.py')),
            '--output', str(work), '--stem', stem, '--start-gated']
 if args.preservation_control:
     command += ['--preservation-control', args.preservation_control]
+if args.probe != 'preservation':
+    command += ['--probe', args.probe]
+if args.rack_control:
+    command += ['--rack-control', args.rack_control]
 start, started = time.monotonic(), utc()
 child, reason, cleanup_error = None, None, None
 peak, lowest = 0, free_bytes()
