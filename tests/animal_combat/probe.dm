@@ -72,7 +72,7 @@
 		I.force = 10
 		I.health = 100
 		I.maxhealth = 100
-		for (var/path in list(/mob/living/simple_animal/pig_gilt, /mob/living/simple_animal/camel))
+		for (var/path in list(/mob/living/simple_animal/pig_gilt, /mob/living/simple_animal/camel, /mob/living/simple_animal/hostile/human/kenobi))
 			var/mob/living/simple_animal/A = new path(site)
 			var/start_health = A.health
 			combat_assert(A.maxHealth == start_health, "Health cap mismatch: [path]")

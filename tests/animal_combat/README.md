@@ -3,7 +3,7 @@
 Run `run.py --byond-bin <516.1681-bin>` with a verified Python interpreter.
 The complete production sources compile without maps or normal startup. Native
 constructors, Life, item dispatch, damage, material wear, healing, feeding,
-leashing, zero-force taps, sharp hostage fallback and death run in temporary
+leashing, zero-force taps, sharp hostage fallback, Kenobi overrides and death run in temporary
 storage with ports closed. A test material makes ordinary wear deterministic;
 actor animation and normal world startup are isolated adapters.
 
@@ -13,8 +13,8 @@ needs a separate decision. Missing declarations are fixed explicitly, preserving
 existing runtime construction and damage policies. The zombie constructor sets
 health/maxHealth together dynamically.
 
-`--negative-control health`, `chick`, and `duplicate` mutate generated copies
-only and must detect the old camel cap, chick cap, and repeated parent attack.
+`--negative-control health`, `chick`, `duplicate`, and `kenobi` mutate generated copies
+only and must detect the old camel cap, chick cap, and repeated base/custom parent attacks.
 Compilation warnings, runtime errors or missing completion invalidate a run.
 Evidence is retained under ignored `data/animal-combat-tests/`.
 

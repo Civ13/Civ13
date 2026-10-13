@@ -11,7 +11,7 @@ import tempfile
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
-    parser.add_argument('--negative-control', choices=('health', 'duplicate', 'chick'))
+    parser.add_argument('--negative-control', choices=('health', 'duplicate', 'chick', 'kenobi'))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     binary = args.byond_bin.resolve()
@@ -31,13 +31,13 @@ def main():
         start = world.index('/world/New()')
         parent = world.index('\n\t..()', start)
         world = world[:parent] + world[parent:].replace('\n\t..()', '', 1)
-        world = world.replace('/world/New()', '/world/proc/unused_harvest_startup()', 1)
+        world = world.replace('/world/New()', '/world/proc/unused_combat_startup()', 1)
         generated[1].write_text(world, encoding='utf-8')
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         source = source.replace('code\\world.dm', prefix + '_world.dm')
         expected = None
         if args.negative_control:
-            path = {'health': 'friendly/farm_animals.dm', 'duplicate': 'simple_animal.dm', 'chick': 'friendly/birds.dm'}[args.negative_control]
+            path = {'health': 'friendly/farm_animals.dm', 'duplicate': 'simple_animal.dm', 'chick': 'friendly/birds.dm', 'kenobi': 'hostile/commanded/kenobi.dm'}[args.negative_control]
             original = root / 'code/game/mob/living/simple_animal' / path
             mutated = original.read_text(encoding='utf-8')
             if args.negative_control == 'health':
@@ -48,7 +48,8 @@ def main():
                 expected = 'Unexpected compiled health mismatch: /mob/living/simple_animal/chick'
             else:
                 mutated = mutated.replace('\treturn attack_result', '\t..()\n\treturn attack_result', 1)
-                expected = 'Duplicate click:'
+                expected = ('Duplicate click: /mob/living/simple_animal/hostile/human/kenobi'
+                            if args.negative_control == 'kenobi' else 'Duplicate click: /mob/living/simple_animal/pig_gilt')
             if mutated == original.read_text(encoding='utf-8'):
                 raise RuntimeError('Negative control made no change')
             generated[4].write_text(mutated, encoding='utf-8')
