@@ -44,6 +44,10 @@ LOG_ADMIN
 ## log admin chat
 LOG_ADMINCHAT
 
+## Disabled until the bot supervisor/cgroup migration and host installation checks are complete.
+## See scripts/bot-service/README.md before enabling game-to-bot service control.
+BOT_SERVICE_CONTROL 0
+
 ## log client access (logon/logoff)
 LOG_ACCESS
 
