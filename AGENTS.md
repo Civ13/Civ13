@@ -456,9 +456,12 @@ retained entries are distinct from OS private memory. `run-game.ps1 -ExerciseCap
 checks real forward/reverse/stop behavior. Its optional bounded `-Visual` mode
 requires the coordinator's exclusive screen turn; see tests/conveyor/README.md.
 <!-- 2026-10-11: shipped Discord changelog -->
-The standalone publisher in tools/changelog requires reviewed manifests and live
-confirmation or a trusted successful production deployment event. A merge/CI pass
-is not shipment. Preserve the discord-changelog-receipts branch; pending receipts
+The standalone publisher in tools/changelog supports an explicit `Changelog: text`
+line in a PR opening description on merge into master. Missing or blank means no
+post. Use player-facing bullets only, without headings or deployment/update-status
+wording. The older manifest route still requires live confirmation or a trusted
+successful production deployment event. A merge/CI pass is not shipment.
+Preserve the discord-changelog-receipts branch; pending receipts
 block uncertain replay. See tools/changelog/README.md before activation.
 
 <!-- 2026-10-11: hosted API reference -->
