@@ -6,11 +6,11 @@ from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
-import shutil
 import subprocess
 import sys
 import time
 import uuid
+from guard_cleanup import finish_owned_run
 
 class MemoryStatus(C.Structure):
     _fields_ = [('length', W.DWORD), ('load', W.DWORD)] + [(n, C.c_ulonglong) for n in
@@ -93,8 +93,11 @@ args = parser.parse_args()
 if args.inspect:
     print(json.dumps({'utc': utc(), 'available_physical': free_bytes(), 'watcher_private': private(os.getpid())}))
     sys.exit(0)
-if not args.directory or not args.byond_bin or not args.byond_bin.is_absolute() or not args.byond_bin.is_dir() or not 1 <= args.timeout <= 180:
-    parser.error('Unique output directory, absolute SDK executable and deadline <=180 seconds required')
+if not args.directory or not args.byond_bin or not args.byond_bin.is_absolute() or not args.byond_bin.is_dir() or not 20 <= args.timeout <= 180:
+    parser.error('Unique output directory, absolute SDK executable and total deadline 20-180 seconds required')
+start, started = time.monotonic(), utc()
+overall_deadline = start + args.timeout
+execution_deadline = overall_deadline - 12  # Reserve termination, file cleanup and receipt time.
 out = args.directory.resolve()
 if out.exists():
     raise RuntimeError('Use a new owner-specific output directory')
@@ -102,17 +105,8 @@ floor, cap = 6 * 1024**3, 2 * 1024**3
 if free_bytes() < floor:
     raise RuntimeError('Host free physical memory below 6 GiB; audit not started')
 out.mkdir(parents=True)
-work = out / 'owned-temporary'
+work = out / 'evidence'  # Retain outputs in place; no unbounded copy or recursive cleanup.
 work.mkdir()
-job = k.CreateJobObjectW(None, None)
-if not job:
-    raise OSError(C.get_last_error())
-limits = ExtendedLimits()
-limits.basic.flags = 0x2200  # KILL_ON_JOB_CLOSE | JOB_MEMORY: hard aggregate commit cap
-limits.job_memory = cap
-if not k.SetInformationJobObject(job, 9, C.byref(limits), C.sizeof(limits)):
-    k.CloseHandle(job)
-    raise OSError(C.get_last_error())
 stem = '.food_progression_' + uuid.uuid4().hex
 command = [sys.executable, str(Path(__file__).with_name('preservation_run.py')), '--byond-bin', str(args.byond_bin),
            '--output', str(work), '--stem', stem, '--start-gated']
@@ -122,16 +116,26 @@ if args.probe != 'preservation':
     command += ['--probe', args.probe]
 if args.rack_control:
     command += ['--rack-control', args.rack_control]
-start, started = time.monotonic(), utc()
-child, reason, cleanup_error = None, None, None
+child, job, assigned, reason = None, None, False, None
 peak, lowest = 0, free_bytes()
 try:
+    job = k.CreateJobObjectW(None, None)
+    if not job:
+        raise OSError(C.get_last_error(), 'CreateJobObjectW failed')
+    limits = ExtendedLimits()
+    limits.basic.flags = 0x2200  # KILL_ON_JOB_CLOSE | JOB_MEMORY: hard aggregate commit cap
+    limits.job_memory = cap
+    if not k.SetInformationJobObject(job, 9, C.byref(limits), C.sizeof(limits)):
+        raise OSError(C.get_last_error(), 'SetInformationJobObject failed')
+    if time.monotonic() >= execution_deadline:
+        raise TimeoutError('Execution budget exhausted before launch')
     with (out / 'watchdog-process.log').open('w', encoding='utf-8') as log, (out / 'resource-trace.jsonl').open('w', encoding='utf-8') as trace:
         child = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=log, stderr=subprocess.STDOUT, creationflags=0x08000000)
         if not k.AssignProcessToJobObject(job, W.HANDLE(child._handle)):
-            child.terminate()
-            child.wait(timeout=10)
             raise OSError(C.get_last_error(), 'Unable to assign gated root to owned job')
+        assigned = True
+        if time.monotonic() >= execution_deadline:
+            raise TimeoutError('Execution budget exhausted before gated release')
         child.stdin.write(b'start\n')
         child.stdin.close()
         while True:
@@ -147,45 +151,48 @@ try:
             trace.write(json.dumps({'utc': utc(), 'seconds': elapsed, 'owned_private': total,
                                    'host_free': available, 'owned_pids': inventory, 'unmeasured_pids': unknown}) + '\n')
             trace.flush()
-            if elapsed >= args.timeout or total > cap or available < floor or unknown:
-                reason = 'deadline' if elapsed >= args.timeout else 'owned-private-cap' if total > cap else 'host-free-floor' if available < floor else 'unmeasured-owned-process'
+            if time.monotonic() >= execution_deadline or total > cap or available < floor or unknown:
+                reason = 'execution-deadline' if time.monotonic() >= execution_deadline else 'owned-private-cap' if total > cap else 'host-free-floor' if available < floor else 'unmeasured-owned-process'
                 break
             if child.poll() is not None:
                 if pids(job):
                     reason = 'descendants-survived-root'
                 break
-            time.sleep(0.5)
+            time.sleep(min(0.5, max(0, execution_deadline - time.monotonic())))
 except Exception as exc:
     reason = 'guard-error: ' + str(exc)
 finally:
-    k.TerminateJobObject(job, 137)
-    if child:
+    def terminate_owned():
+        if child and not assigned and child.poll() is None:
+            child.terminate()  # The gated root has not launched any descendants.
+        if job and not k.TerminateJobObject(job, 137):
+            raise OSError(C.get_last_error(), 'TerminateJobObject failed')
+        return True
+
+    def write_receipt(value):
+        value['exit'] = child.returncode if child else None
+        value['overall_deadline_reached'] = time.monotonic() >= overall_deadline
         try:
-            child.wait(timeout=10)
-            deadline = time.monotonic() + 10
-            while pids(job) and time.monotonic() < deadline:
-                time.sleep(0.1)
-            if pids(job):
-                cleanup_error = 'owned descendants still present'
+            (out / 'watchdog-receipt.json').write_text(json.dumps(value, indent=2), encoding='utf-8')
         except Exception as exc:
-            cleanup_error = str(exc)
-    k.CloseHandle(job)
+            value['receipt_write_error'] = str(exc)
+        finally:
+            if time.monotonic() >= overall_deadline:
+                value['overall_deadline_reached'] = True
+            print(json.dumps(value), flush=True)
+
     repo = Path(__file__).resolve().parents[2]
-    for suffix in ('.dme', '_world.dm', '_globals.dm', '_farming.dm', '_floor.dm', '_persistence.dm', '_food.dm', '_production.dm', '.dmb', '.rsc'):
-        (repo / (stem + suffix)).unlink(missing_ok=True)
-    if work.resolve().parent != out or work.name != 'owned-temporary':
-        cleanup_error = 'temporary path validation failed'
-    else:
-        try:
-            shutil.copytree(work, out / 'evidence')
-            shutil.rmtree(work)
-        except Exception as exc:
-            cleanup_error = str(exc)
-receipt = {'started_utc': started, 'ended_utc': utc(), 'elapsed_including_cleanup': time.monotonic() - start,
-           'owned_root_pid': child.pid if child else None, 'exit': child.returncode if child else None,
-           'stop_reason': reason, 'cleanup_error': cleanup_error, 'peak_owned_private': peak,
-           'lowest_host_free': lowest, 'private_cap': cap, 'host_free_floor': floor, 'command': command,
-           'runtime_installation': 'unchanged'}
-(out / 'watchdog-receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
-print(json.dumps(receipt))
-sys.exit(1 if reason or cleanup_error or not child else child.returncode)
+    paths = [repo / (stem + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '_farming.dm', '_floor.dm', '_persistence.dm', '_food.dm', '_production.dm', '.dmb', '.rsc')]
+    receipt = finish_owned_run(
+        receipt={'started_utc': started, 'owned_root_pid': child.pid if child else None,
+                 'stop_reason': reason, 'peak_owned_private': peak, 'lowest_host_free': lowest,
+                 'private_cap': cap, 'host_free_floor': floor, 'command': command,
+                 'total_timeout_seconds': args.timeout, 'cleanup_reserve_seconds': 12,
+                 'evidence_directory': str(work), 'runtime_installation': 'unchanged'},
+        terminate=terminate_owned, inventory=lambda: pids(job) if job else [],
+        close_job=lambda: bool(k.CloseHandle(job)) if job else True, child=child,
+        paths=paths, unlink=lambda path: path.unlink(missing_ok=True),
+        deadline=overall_deadline - 2,
+        process_deadline=min(time.monotonic() + 6, overall_deadline - 4),
+        started=start, utc=utc, write_receipt=write_receipt)
+sys.exit(1 if reason or receipt.get('cleanup_error') or receipt.get('receipt_write_error') or receipt.get('overall_deadline_reached') or not child else child.returncode)
