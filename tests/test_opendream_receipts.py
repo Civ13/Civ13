@@ -272,5 +272,29 @@ print(store.perform({'id':'worker-1','action':'restart'},'cli',effect)['ok'])
                 child.communicate(timeout=5)
 
 
+    def test_non_scalar_action_and_origin_reject_before_effect(self):
+        for field, value in [('action', []), ('action', {}), ('map', []), ('profile_digest', [])]:
+            request = dict(id='invalid-shape', action='restart', **{})
+            request[field] = value
+            with self.assertRaises(ValueError):
+                self.supervisor.operations.perform(request, 'cli', lambda: self.fail('invalid effect'))
+        with self.assertRaises(ValueError):
+            self.supervisor.operations.perform({'id':'bad-origin','action':'restart'}, [], lambda: self.fail('effect'))
+
+    def test_uncertain_effect_quarantines_running_writer(self):
+        from unittest.mock import patch
+        request_path = self.supervisor.control / 'request.json'
+        control.atomic_json(request_path, {'id':'uncertain-stop','action':'stop','map':None})
+        with patch.object(self.supervisor, 'dispatch', side_effect=ValueError('uncertain effect')) as effect, patch.object(self.supervisor, 'stop'):
+            self.supervisor.run()
+            effect.assert_called_once()
+        reply = control.read_json(self.supervisor.control / 'result.json')
+        self.assertEqual('operation_pending', reply['error'])
+        self.assertFalse((self.supervisor.control / 'supervisor.lock').exists())
+        with patch.object(self.supervisor, 'operate') as effect, patch.object(self.supervisor, 'stop'):
+            with self.assertRaises(ValueError): self.supervisor.run()
+            effect.assert_not_called()
+
+
 if __name__ == '__main__':
     unittest.main()

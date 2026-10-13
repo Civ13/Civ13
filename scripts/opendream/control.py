@@ -20,7 +20,7 @@ ACTIONS = {"start", "stop", "restart", "mapswap"}
 
 def operation_binding(request, profile_digest, origin):
     """Canonical identity excludes transport timing; the digest is not authentication."""
-    if not isinstance(request, dict) or origin not in {"cli", "game", "bootstrap"}:
+    if not isinstance(request, dict) or not isinstance(origin, str) or origin not in {"cli", "game", "bootstrap"}:
         raise ValueError("Invalid operation origin or request")
     if not isinstance(profile_digest, str) or not re.fullmatch(r"[0-9a-f]{64}", profile_digest):
         raise ValueError("Invalid profile digest")
@@ -28,7 +28,7 @@ def operation_binding(request, profile_digest, origin):
     if not isinstance(identity, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", identity):
         raise ValueError("Invalid operation identity")
     action, map_id = request.get("action"), request.get("map")
-    if action not in ACTIONS or (action != "mapswap" and map_id is not None):
+    if not isinstance(action, str) or action not in ACTIONS or (action != "mapswap" and map_id is not None):
         raise ValueError("Invalid operation action")
     if action == "mapswap" and (not isinstance(map_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", map_id)):
         raise ValueError("Invalid operation map")
@@ -62,7 +62,8 @@ class OperationStore:
             return None
         receipt = read_json(path)
         if (not isinstance(receipt, dict) or receipt.get("schema") != OPERATION_SCHEMA
-                or receipt.get("operation_id") != identity or receipt.get("outcome") not in {"pending", "committed"}
+                or receipt.get("operation_id") != identity or not isinstance(receipt.get("outcome"), str)
+                or receipt.get("outcome") not in {"pending", "committed"}
                 or not isinstance(receipt.get("request"), dict)):
             raise ValueError("Invalid operation receipt; recovery required")
         expected = {"schema", "operation_id", "binding_digest", "request", "outcome", "result"}
@@ -223,6 +224,7 @@ class Supervisor:
             if (not isinstance(record, dict) or set(record) != {"schema", "profile_digest", "map_id", "dme_sha256", "json_sha256"}
                     or record.get("schema") != "civ13.active-map.v1"
                     or record.get("profile_digest") != self.profile_digest
+                    or not isinstance(record.get("map_id"), str)
                     or record.get("map_id") not in self.profile.get("maps", {})):
                 raise ValueError("Active map identity uncertain; operator recovery required")
             for path, field in ((self.root / "civ13.dme", "dme_sha256"), (self.root / "civ13.json", "json_sha256")):
@@ -255,6 +257,7 @@ class Supervisor:
                 or record.get("schema") != "civ13.map-stage.v1"
                 or record.get("profile_digest") != self.profile_digest
                 or record.get("state") != "staged"
+                or not isinstance(record.get("map_id"), str)
                 or record.get("map_id") not in self.profile.get("maps", {})):
             raise ValueError("Map stage uncertain; operator recovery required")
         staged = self.root / "opendream-staged.dme"
@@ -441,6 +444,9 @@ class Supervisor:
                     if path.name == "game-request.json":
                         (self.control / "game-ready").unlink(missing_ok=True)
                     path.unlink(missing_ok=True)
+                    if result.get("error") == "operation_pending":
+                        # Quarantine the writer, not just this request, after an uncertain effect.
+                        return
                     if isinstance(request, dict) and request.get("action") == "stop" and result.get("ok"):
                         return
                 time.sleep(0.1)
