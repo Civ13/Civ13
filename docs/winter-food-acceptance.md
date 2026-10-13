@@ -89,3 +89,9 @@ restores the old opened-can exclusion only in generated source and must fail
 `opened can accumulates food age`. Only the recurring wait is accelerated.
 Both modes passed at `9851c638742256ad46c657a6ede3d67a1d1aa416` with BYOND 516.1681, zero compile errors/warnings and no runtime errors. The negative control detected the historical opened-can exclusion. This narrow correction does not replace per-food callbacks
 or establish preserved-food conservation, lean-season lifetimes or player access.
+
+## Isolated drying conservation evidence
+
+At `a73c30e9f9058375977d2d224f4b8ef42751e6ca`, the production octopus drying probe passed with BYOND 516.1681, zero compiler errors/warnings and no runtime errors. The fixture removes nutrition to represent a partially consumed paid input, exercises production rack insertion and `before_save` cleanup, and restores its partial nutrition, accumulated age and encoded drying progress from a native disk entry before finishing production drying. Output nutrient caps and accumulated age assertions passed. Independent generated-source omissions of the nutrition cap and age carry each failed their corresponding assertion.
+
+The recurring drying wait alone is accelerated. This is a synthetic 6x3 fixture with normal startup disabled and temporary storage; it does not prove player consumption, every drying recipe, a full-world rack save round trip, multi-season food availability, or winter map access. The Windows guarded batch used 41 seconds, remained below 218 MB owned private memory and above 13 GB free physical memory, and cleaned its owned processes and generated temporary files. Candidate production changes and their CI remain separate from the previously tested opened-can correction in #3110. No public player or wiki availability claim follows from this fixture.
