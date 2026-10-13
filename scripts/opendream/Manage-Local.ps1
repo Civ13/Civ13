@@ -14,6 +14,33 @@ $controlProfile = Join-Path $profile 'control-profile.json'
 $controller = Join-Path $InstallationRoot 'control.py'
 $configuration = Get-Content -LiteralPath $controlProfile -Raw | ConvertFrom-Json
 $trial = $settings.trial
+$packageVerifier = Join-Path $PSScriptRoot 'verify-client-package.py'
+function Test-ClientPackage([switch]$StageRuntime) {
+    foreach ($name in @('client_package','native_byond_bin','native_observer_directory')) {
+        $value = [string]$settings.$name
+        if (!$value -or $value.Contains('"') -or $value.Contains("`r") -or $value.Contains("`n") -or !$([IO.Path]::IsPathRooted($value))) {
+            throw "Configure an absolute trusted launcher path: $name"
+        }
+    }
+    $validationArguments = @('-B',$packageVerifier,'--package',$settings.client_package,
+        '--byond-bin',$settings.native_byond_bin,'--observer',$settings.native_observer_directory)
+    if ($StageRuntime) {$validationArguments += @('--stage-parent',(Join-Path $profile 'client-runtime'))}
+    $output = & $settings.python @validationArguments
+    if ($LASTEXITCODE -ne 0) {throw 'Coherent client package or native observer verification failed.'}
+    return ($output | ConvertFrom-Json)
+}
+function Remove-OwnedClientRuntime {
+    if (!$state.client -or !$state.client.runtime) {return}
+    $parent = [IO.Path]::GetFullPath((Join-Path $profile 'client-runtime')).TrimEnd([IO.Path]::DirectorySeparatorChar)
+    $target = [IO.Path]::GetFullPath([string]$state.client.runtime)
+    if ([IO.Path]::GetDirectoryName($target) -ne $parent -or [IO.Path]::GetFileName($target) -notmatch '^[0-9a-f]{32}$') {
+        throw 'Refusing client runtime cleanup outside its owned staging directory.'
+    }
+    if (Test-Path -LiteralPath $target) {
+        if ((Get-Item -LiteralPath $target).Attributes -band [IO.FileAttributes]::ReparsePoint) {throw 'Linked client runtime cleanup rejected.'}
+        Remove-Item -LiteralPath $target -Recurse -Force
+    }
+}
 $statePath = Join-Path $profile 'processes.json'
 $state = if (Test-Path -LiteralPath $statePath) {Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json} else {[pscustomobject]@{server=$null;client=$null}}
 if ($state.server) {throw 'Legacy server record exists. Stop it using the old launcher before migrating.'}
@@ -37,11 +64,10 @@ function Invoke-Control([string]$operation, [string]$map) {
 }
 if ($DryRun) {
     foreach ($path in @($settings.python,$controller,$configuration.server_command[0],$configuration.compiler,
-        "$profile/source/civ13.json","$trial/sdk/dotnet.exe","$trial/RobustToolbox/bin/Client/Robust.Client.dll",
-        "$trial/server/OpenDreamServer_win-x64/Content.Client.zip",
-        "$trial/RobustToolbox/Robust.Client.WebView/bin/Release/net10.0/Robust.Client.WebView.dll")) {
+        "$profile/source/civ13.json","$trial/sdk/dotnet.exe",$packageVerifier)) {
         if (!(Test-Path -LiteralPath $path)) {throw "Missing installed dependency: $path"}
     }
+    Test-ClientPackage | Out-Null
     Write-Output "Validated $Mode OpenDream controls; no process started."
     return
 }
@@ -57,6 +83,7 @@ if ($Action -eq 'Stop') {
         & "$env:SystemRoot/System32/taskkill.exe" /PID $client.Id /T /F | Out-Null
         if ($LASTEXITCODE -ne 0 -or !$client.WaitForExit(10000)) {throw 'Could not stop owned client.'}
     }
+    Remove-OwnedClientRuntime
     $state.client = $null
     $state | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $statePath
     if (Test-Path -LiteralPath (Join-Path $configuration.runtime_dir 'SQL/opendream-control/supervisor.lock')) {
@@ -64,6 +91,7 @@ if ($Action -eq 'Stop') {
     }
     return
 }
+if ($Action -in @('Play','Client')) {Test-ClientPackage | Out-Null}
 if ($Action -in @('Play','Start','Restart','MapSwap')) {
     if ($Action -eq 'Restart') {Invoke-Control 'restart' | Out-Null}
     elseif ($Action -eq 'MapSwap') {
@@ -87,20 +115,40 @@ if ($Action -in @('Play','Start','Restart','MapSwap')) {
 if ($Action -in @('Play','Client')) {
     if (!(Invoke-Control 'status').running) {throw 'Start this local server before connecting.'}
     if (!(Get-OwnedClient)) {
+        Remove-OwnedClientRuntime
+        $state.client = $null
+        $state | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $statePath
+        $verified = Test-ClientPackage -StageRuntime
+        $oldEnvironment = @{}
+        foreach ($entry in Get-ChildItem Env:) {
+            if ($entry.Name -eq 'ROBUST_DISABLE_SANDBOX' -or $entry.Name -like 'ROBUST_AUTH_*' -or $entry.Name -like 'ROBUST_CVAR_*' -or $entry.Name -like 'ROBUST_MODULE_*') {
+                $oldEnvironment[$entry.Name] = $entry.Value
+                Remove-Item -LiteralPath "Env:$($entry.Name)"
+            }
+        }
         $oldDotnetRoot = $env:DOTNET_ROOT
         $oldWebview = $env:ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW
+        $client = $null
         try {
             $env:DOTNET_ROOT = "$trial/sdk"
-            $env:ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW = "$trial/RobustToolbox/Robust.Client.WebView/bin/Release/net10.0"
-            # The native-aware client reads this address into its menu and obtains
-            # the account/CID from BYOND before connecting. Never supply a username.
-            $arguments = "`"$trial/RobustToolbox/bin/Client/Robust.Client.dll`" --self-contained --mount-zip `"$trial/server/OpenDreamServer_win-x64/Content.Client.zip`" --connect-address udp://127.0.0.1:$($configuration.game_port)"
-            $client = Start-Process -FilePath "$trial/sdk/dotnet.exe" -ArgumentList $arguments -WorkingDirectory "$trial/RobustToolbox/bin/Client" -WindowStyle Hidden -RedirectStandardOutput "$profile/client.stdout.log" -RedirectStandardError "$profile/client.stderr.log" -PassThru
-            $state.client = @{id=$client.Id;path=$client.Path;startedUtc=$client.StartTime.ToUniversalTime().ToString('o')}
+            $env:ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW = $verified.webview
+            # Operator paths are frozen by the trusted host before sandboxed content loads.
+            # Open the menu at an explicit address. Account and CID come from native BYOND.
+            $arguments = "`"$($verified.loader)`" --self-contained --connect-address udp://127.0.0.1:$($configuration.game_port) --cvar `"opendream.native_byond_bin=$($settings.native_byond_bin)`" --cvar `"opendream.native_observer_directory=$($settings.native_observer_directory)`""
+            $client = Start-Process -FilePath "$trial/sdk/dotnet.exe" -ArgumentList $arguments -WorkingDirectory $verified.root -WindowStyle Hidden -RedirectStandardOutput "$profile/client.stdout.log" -RedirectStandardError "$profile/client.stderr.log" -PassThru
+            $state.client = @{id=$client.Id;path=$client.Path;startedUtc=$client.StartTime.ToUniversalTime().ToString('o');runtime=$verified.staging_root}
             $state | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $statePath
+        } catch {
+            if (!$client) {
+                $state.client = @{runtime=$verified.staging_root}
+                Remove-OwnedClientRuntime
+                $state.client = $null
+            }
+            throw
         } finally {
             $env:DOTNET_ROOT = $oldDotnetRoot
             $env:ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW = $oldWebview
+            foreach ($name in $oldEnvironment.Keys) {Set-Item -LiteralPath "Env:$name" -Value $oldEnvironment[$name]}
         }
     }
 }

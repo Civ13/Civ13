@@ -45,7 +45,7 @@ jobs:
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_game_evidence.py')
         run: python3 -m unittest discover -s tests -p test_game_evidence.py -v
       - name: Test isolated OpenDream process and control adapter
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_opendream_control.py') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_opendream_receipts.py')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_opendream_control.py') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_opendream_receipts.py') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_opendream_client_package.py')
         run: python3 -m unittest discover -s tests -p 'test_opendream*.py' -v
       - name: Test current-source atlas generation and negative controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_crafting_atlas.py')
