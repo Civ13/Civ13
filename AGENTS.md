@@ -634,3 +634,11 @@ Lighting startup must reconcile existing inactive shared corners after adding ov
 
 <!-- 2026-10-12: native population readiness -->
 Mob processing retains unfinished copied population snapshots across budget returns. A fixed schedule interval does not guarantee newly constructed humans received Life. The full seasonal constructor fixture waits at most 30 real seconds for natural first service while checking actor identity/location/death; its service control excludes one retained actor from both live membership and the pending snapshot. Never invoke Life directly to satisfy scheduler evidence.
+
+<!-- 2026-10-12: animal health and combat dispatch -->
+Simple-animal starting health and maxHealth must match unless an explicit policy
+is documented: Life clamps health and updatehealth recomputes it from maxHealth.
+Do not call parent attackby after an explicit item attack; that repeats damage,
+logs and material wear. tests/animal_combat/run.py checks compiled inherited
+health defaults, native Life, single sharp/blunt attacks and wear across behavior
+branches, noncombat dispatch, healing/death and generated negative controls.

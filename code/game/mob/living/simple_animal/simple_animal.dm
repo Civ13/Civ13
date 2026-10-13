@@ -476,6 +476,7 @@
 	return 1
 
 /mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
+	var/attack_result = FALSE
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		if ((H.a_intent == I_DISARM || H.a_intent == I_HARM) && (istype(src, /mob/living/simple_animal/hostile/human/voyage) || istype(src, /mob/living/simple_animal/hostile/human/voyage/pirate/friendly)) && src.behaviour != "Hostile")
@@ -524,7 +525,7 @@
 			var/tgt = user.targeted_organ
 			if (user.targeted_organ == "random")
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
-			O.attack(src, user, tgt)
+			attack_result = O.attack(src, user, tgt)
 	else if (O.sharp && !istype(src, /mob/living/simple_animal/hostage))
 		if (!istype(O, /obj/item/weapon/reagent_containers) && stat == DEAD && (user.a_intent == I_HARM || user.a_intent == I_GRAB))
 			harvest_animal(user, O, user.a_intent == I_GRAB)
@@ -533,7 +534,7 @@
 			var/tgt = user.targeted_organ
 			if (user.targeted_organ == "random")
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
-			O.attack(src, user, tgt)
+			attack_result = O.attack(src, user, tgt)
 	if (behaviour == "defends" || behaviour == "hunt" || behaviour == "hostile")
 		if (stance == HOSTILE_STANCE_ATTACK && target_mob && target_mob != user)
 			if (prob(75))
@@ -542,13 +543,15 @@
 			target_mob = user
 		stance = HOSTILE_STANCE_ATTACK
 		stance_step = 6
-		..()
 	else
 		if (behaviour == "scared" || (behaviour == "wander" && mob_size < user.mob_size))
 			do_behaviour("scared")
 		else if (behaviour == "wander")
 			do_behaviour("defends")
-		..()
+	// Explicit attacks above already invoke item damage, logs and wear once.
+	if (O.sharp && istype(src, /mob/living/simple_animal/hostage))
+		return ..()
+	return attack_result
 
 /mob/living/simple_animal/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
 

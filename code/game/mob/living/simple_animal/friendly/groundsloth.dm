@@ -20,5 +20,6 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 550
+	maxHealth = 550
 	mob_size = MOB_HUGE
 	behaviour = "defends"
