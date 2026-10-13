@@ -140,6 +140,38 @@ the exact native stages, receipt gates, fixture adapter limits, omission asserti
 and unsupported outcomes. Same-world writes, other cooperating BYOND worlds and
 arbitrary host writers are separate boundaries. OpenDream is not tested here.
 
+## Windows read-only native-open candidate
+
+`readonly_open.dm` and `run-readonly-open.py` are source-only and uncompiled/unrun.
+They seed one synthetic savefile in a unique temporary directory, close the seed
+world, set its Windows read-only attribute, and require a Python write attempt to
+be refused before pinned BYOND 516.1681 opens and reads the original A value.
+This tests compatibility with that attribute only; it creates no OS identities or
+ACLs and cannot establish host ownership or immutable bytes.
+
+The `writable` control omits sealing and must hit WRITABLE_BACKING_REJECTED before
+a consumer starts. The `value` control changes one generated consumer expectation
+and must produce paired UNSUPPORTED: READ_VALUE_MATCH with clean exit and the
+actual seeded value `A` in the consumer receipt. Positive reads also require `A`. Seed
+failures, engine diagnostics, cancellation, missing/mismatched results and cleanup
+errors reject acceptance. Every compiler/daemon is recorded with PID, runner
+parent, command, launch-request timestamp, exit and cleanup status. A timestamp is
+not independently observed OS process-start attestation.
+
+Compiler timeout is 60 seconds; seed and consumer each have 15 seconds, with
+four-second terminate and two-second kill waits per owned process. There is at
+most one process at a time. Logs/receipts are capped at 1 MiB when read; the
+synthetic seed has a 1 MiB post-creation size guard. No OS memory or pre-write
+storage bound is established. Preserve files/logs for review and run only in a
+fresh bounded slot. Unsupported native read-only opens require consumer redesign,
+not relaxed permissions or mutable-path fallback.
+
+```powershell
+& '<verified-Python-path>' tests/world_save/run-readonly-open.py --byond-bin '<516.1681-bin>'
+& '<verified-Python-path>' tests/world_save/run-readonly-open.py --byond-bin '<516.1681-bin>' --negative-control writable
+& '<verified-Python-path>' tests/world_save/run-readonly-open.py --byond-bin '<516.1681-bin>' --negative-control value
+```
+
 ## Full game probe
 
 `run-game.ps1 -ByondBin 'C:/path/to/byond/bin'` builds a temporary root environment
