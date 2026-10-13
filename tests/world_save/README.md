@@ -118,6 +118,26 @@ All daemon storage and generated outputs remain in a unique temporary directory;
 the fixture closes its port and has no production startup or outbound adapters.
 Source addition is not test execution; record actual exact-head results separately.
 
+## Reader primitive experiment
+
+`reader_contract.dm` is a standalone two-world savefile API experiment.
+`run-reader-contract.py` uses pinned BYOND 516.1681, a unique temporary directory,
+60-second compiler timeout and 45-second shared runtime deadline with bounded
+owned-process cleanup. It is source-only until exact execution results are
+recorded. It never loads the production game or provides host immutability.
+
+```sh
+python3 tests/world_save/run-reader-contract.py --byond-bin /path/to/byond/bin
+python3 tests/world_save/run-reader-contract.py --byond-bin /path/to/byond/bin --negative-control binding
+python3 tests/world_save/run-reader-contract.py --byond-bin /path/to/byond/bin --negative-control close
+```
+
+On Windows use a verified full Python interpreter path. See
+[the reader-contract probe](../../docs/extraction-reader-contract-probe.md) for
+the exact native stages, receipt gates, fixture adapter limits, omission assertions
+and unsupported outcomes. Same-world writes, other cooperating BYOND worlds and
+arbitrary host writers are separate boundaries. OpenDream is not tested here.
+
 ## Full game probe
 
 `run-game.ps1 -ByondBin 'C:/path/to/byond/bin'` builds a temporary root environment
