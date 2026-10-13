@@ -211,6 +211,26 @@ through the insured gun. Stable identity, damage and original FIR state survive
 independent component returns. Actor construction and action waits are injected;
 connected menus and elapsed crafting time are separate acceptance.
 
+The component fixture now carries the configured weapon through production
+`retire_corpse()` before each split outcome. It uses an injected actor and direct
+DEAD state, bypassing elapsed corpse age; the mode fixture above retains actual
+human death coverage. It compares the complete weapon graph across native root
+release, checks the detached optic's identity and damage, and requires retirement
+alone to leave the raid account revision and mailbox unchanged. Returned roots
+must remain unclaimable after the loss round and account reopening, become
+claimable after one additional full round, and reject repeat delivery. These new
+component/corpse assertions are authored only, uncompiled and unrun while local
+execution is held. Run the normal equipment probe and the existing mode corpse
+release negative control after explicit quiet-window release.
+
+The `corpse_retired` hook remains observational. It neither mints identities nor
+settles a raid, grants credits, recreates gear or advances insurance eligibility.
+Physical retirement preserves actual roots; `forfeit()` changes account raid
+state, while the round-end return consumer reconciles per-node coverage against
+all account custody. Another account's extracted component is excluded even
+when the original owner's remaining weapon qualifies for return. This source
+contract does not establish native execution or persistence-generation acceptance.
+
 The internal return consumer journals its plan before retiring physical roots,
 records retirement before applying account projections, and delivers surviving
 insured reusable equipment into journaled mailbox shards of eight roots per page. Current condition and

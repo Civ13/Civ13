@@ -48,6 +48,18 @@
 		var/later_id = later.extraction_item_id
 		G.forceMove(T)
 		H.r_hand = null
+		// Exercise the production physical release with an injected actor. This
+		// deliberately bypasses elapsed corpse age, not inventory drop callbacks.
+		G.forceMove(H)
+		H.r_hand = G
+		tool.forceMove(T)
+		var/list/corpse_graph = C.encode(G)
+		var/corpse_revision = A.profile["revision"]
+		H.stat = DEAD
+		H.register_corpse_decay()
+		equipment_assert(H.retire_corpse() && G.loc == T && !H.r_hand, "corpse retirement releases the actual configured insured weapon")
+		equipment_assert(json_encode(C.encode(G)) == json_encode(corpse_graph) && O.extraction_item_id == scope_id && O.health == 41, "physical retirement preserves component IDs, insurance tokens, FIR and condition")
+		equipment_assert(A.profile["revision"] == corpse_revision && A.profile["state"] == "raid" && !equipment_mail_entries(S, A.owner).len, "corpse retirement alone cannot settle the raid or credit insurance")
 		var/list/roots = list()
 		if (scenario == 1)
 			equipment_assert(A.extract(raid["sequence"], list(list("id" = gun_id, "equipment" = C.encode(G)))), "weapon extracts while original scope remains behind")
@@ -76,6 +88,15 @@
 					scopes++
 					equipment_assert(node["scalars"]["health"] == 41 && !node["scalars"]["A_attached"] && !node["found_in_raid"], "detached return preserves damage, identity and original FIR")
 		equipment_assert(guns == (scenario == 1 ? 0 : 1) && scopes == (scenario == 2 ? 0 : 1), "unextracted covered components return exactly once")
+		var/list/pending_ids = list()
+		for (var/list/entry in equipment_mail_entries(S, A.owner)) pending_ids += entry["id"]
+		equipment_assert(pending_ids.len && !A.claim_insurance_mail(pending_ids), "corpse component returns remain unavailable during the loss round")
+		A.close()
+		A = S.open("scopeowner")
+		equipment_assert(!A.claim_insurance_mail(pending_ids), "reopening the corpse owner's account cannot advance component eligibility")
+		A.close()
+		equipment_assert(R.prepare("scopeadditionalround", list()), "one additional full round advances corpse component eligibility")
+		A = S.open("scopeowner")
+		equipment_assert(A.claim_insurance_mail(pending_ids) && !A.claim_insurance_mail(pending_ids), "eligible corpse components transfer to stash exactly once")
 		A.close()
 		qdel(tool)
-		qdel(H)

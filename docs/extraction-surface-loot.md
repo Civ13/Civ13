@@ -349,3 +349,34 @@ Saved `all_loaded` entries alone cannot prove that coverage. These are required
 contracts for the next implementation, not capabilities of the current saver or
 surface service. Native interrupted-save, old-generation restore and coverage
 controls remain pending until the local execution hold is explicitly released.
+
+### Shared persistence ownership dependency
+
+The memory owner confirmed no active saver, loader or bootstrap edits on
+2026-10-13. The shared API decision is pending with the main coordinator and
+persistence/serializer owner. Extraction must preserve the current shared files
+until their frozen head and path ownership are coordinated. The decision needs
+to cover these concrete boundaries:
+
+| Boundary | Required contract | Shared source affected |
+| --- | --- | --- |
+| Generation publication | Close level save handles, bind metadata and every expected level's bytes, then publish one complete manifest. Failed publication cannot authorize release. | `code/modules/persistence/saving.dm` |
+| Restore admission | Validate the selected generation against durable retirement state before `ClearMap()` or any turf/entry mutation. Reject a stale backup even if its hashes and structure are valid. Direct restore calls must enforce the same guard. | `code/modules/persistence/functions.dm`, `loading.dm` |
+| Mutation fence | Identify one operation and generation across yielding clear/load batches and `after_load()` callbacks. Unexpected construction, custody changes or a failed fence invalidate completion; every failure path keeps admission reserved. A wrapper Boolean alone is insufficient. | `functions.dm`, `loading.dm`, selected constructor/custody entry points |
+| Constructor coverage | Establish an opt-in ledger before DMM construction; include constructor-created children, restored identities assigned after construction and later creations. Maintain deletion/replacement bookkeeping and detect missed registration. | `code/world.dm`, item lifecycle and identity restoration hooks |
+| Final release | Bind the exact owner, account revision/digest, marker binding and retirement operation to a validated generation. Persist a recovery barrier before independently changing account and marker state; interruption cannot permit duplicate decode. | `code/modules/1713/extraction/home_replica.dm`, account admission, generation recovery |
+
+`/datum/global_init/New()` is the documented pre-map phase; `world/New()` runs
+after DMM objects exist. Installing a ledger in `world/New()` would miss those
+constructors. An opt-in parent hook also needs a defined policy for subtypes that
+omit their parent constructor, and identity assignment during `Load_Entry()` must
+not leave the ledger indexed under a temporary identity. These coverage decisions
+must precede a claim that a loaded-root list is authoritative.
+
+Legacy version-2 saves must remain usable by ordinary persistence without being
+upgraded into retirement evidence. A valid hash authenticates selected content;
+it does not establish freshness, exclusion of retired roots or a crash-safe
+cross-store release. The serializer owner must decide the durable anti-rollback
+record location, backup-selection policy, operation-fence ownership and ledger
+scope, or explicitly delegate those shared paths to extraction. Until then this
+is a blocking source contract, with no new disabled adapter or release bypass.
