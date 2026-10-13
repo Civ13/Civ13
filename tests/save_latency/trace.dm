@@ -2,6 +2,10 @@
 // Trace runs add overhead and must not be compared to untraced baselines.
 var/latency_last_check = 0
 var/latency_stage = "startup"
+var/latency_wait_count = 0
+var/latency_wait_ticks = 0
+var/latency_legacy_wait_count = 0
+var/latency_legacy_wait_ticks = 0
 /proc/latency_trace_time()
 	return world.timeofday
 /proc/latency_trace_end(start, unit)
@@ -45,3 +49,25 @@ var/latency_stage = "startup"
 	var/start = latency_trace_time()
 	. = S.entry_path(F, ref)
 	latency_trace_end(start, "entry_path [ref]")
+
+// Count voluntary waits separately from synchronous work intervals.
+/proc/latency_wait_begin()
+	latency_wait_count = 0
+	latency_wait_ticks = 0
+	latency_legacy_wait_count = 0
+	latency_legacy_wait_ticks = 0
+/proc/latency_sleep(ticks)
+	var/start = latency_trace_time()
+	sleep(ticks)
+	latency_wait_count++
+	latency_wait_ticks += (latency_trace_time()-start+864000)%864000
+	latency_last_check = latency_trace_time()
+/proc/latency_tick_check()
+	var/start = latency_trace_time()
+	. = fixture_tick_check()
+	if(.)
+		latency_legacy_wait_count++
+		latency_legacy_wait_ticks += (latency_trace_time()-start+864000)%864000
+		latency_last_check = latency_trace_time()
+/proc/latency_wait_summary()
+	world.log << "TRACE_WAITS explicit_count=[latency_wait_count] explicit_ticks=[latency_wait_ticks] legacy_count=[latency_legacy_wait_count] legacy_ticks=[latency_legacy_wait_ticks]"

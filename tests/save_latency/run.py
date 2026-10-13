@@ -68,9 +68,15 @@ def main():
             traced = traced.replace('children.Copy(start, min(start+500, children.len+1))', 'latency_list_copy(children, start, min(start+500, children.len+1))')
             traced = traced.replace('list2params(', 'latency_list_params(')
             traced = traced.replace('/map_storage/proc/save_work_check()\n', '/map_storage/proc/save_work_check()\n\tlatency_trace_check(saving_z, saving_work)\n')
-            # Reset after each sleep at its original indentation, excluding wait time.
-            traced = re.sub(r'(?m)^(\s*)sleep\(world.tick_lag\)$',
-                lambda match: match[0] + '\n' + match[1] + 'latency_last_check = latency_trace_time()', traced)
+            # Preserve voluntary waits, exclude them from work intervals, and count them.
+            traced = traced.replace('sleep(world.tick_lag)', 'latency_sleep(world.tick_lag)')
+            traced = traced.replace('TICK_CHECK', 'latency_tick_check()')
+            boundary = traced.index('/map_storage/proc/Save_World()')
+            end = traced.index('/map_storage/proc/BuildVarDirectory', boundary)
+            body = traced[boundary:end]
+            body = body.replace('clear_bookkeeping()', 'latency_wait_begin()\n\tclear_bookkeeping()', 1)
+            body = body.replace('\treturn 1\n', '\tlatency_wait_summary()\n\treturn 1\n', 1)
+            traced = traced[:boundary] + body + traced[end:]
             data = traced.encode()
         if args.negative_control and relative.endswith('saving.dm'):
             source = data.decode()
@@ -78,6 +84,7 @@ def main():
                 source = source.replace('saving_owners[ref] = BuildVarDirectory(F, owner, 1, TRUE)', 'saving_owners[ref] = 0')
             else:
                 source = source.replace('sleep(world.tick_lag)', '/* negative control: no yield */')
+                source = source.replace('latency_sleep(world.tick_lag)', '/* negative control: no yield */')
             data = source.encode()
         destination = output / relative
         destination.parent.mkdir(parents=True, exist_ok=True)

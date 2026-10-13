@@ -126,6 +126,55 @@
       "status": "passed_roundtrip_20000_children",
       "runtime_sha256": "a864cb3164d8673e49066b1bcd1ddf87296b25f44e281df74903c52ca1f9bacf",
       "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-_yecxqct"
+    },
+    {
+      "name": "large_trace_d541",
+      "parameters": {
+        "baseline": null,
+        "large": true,
+        "dense": false,
+        "scenario": null,
+        "interrupt": false,
+        "benchmark_only": true,
+        "negative_control": null,
+        "trace_units": true,
+        "head": "d541b2b73eccce4334c1a52775cf81592ae5953f",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "tests/save_latency/trace.dm": "486b8a89eb253d1ca0d6a3ed0512c8cf65f9345ddaa82466f0313225ddece008",
+          "code/modules/persistence/functions.dm": "dfd245b2249c5807aa737d39eba7902bad53d5b082179249f9a21e875ddb6a41",
+          "code/modules/persistence/saving.dm": "a5e91f7963d0ea3a903c2fd63c44246e653ca0813d486e01e78b45b60e4f0049",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "first_seconds": 1172.3,
+      "backup_seconds": null,
+      "max_gap_seconds": [
+        1.0
+      ],
+      "status": "first_completed_backup_intentionally_interrupted",
+      "runtime_sha256": "a7d2a7804d23c66d1b53ae522874beee6e72646ed396c3b1f7a4e96c8e0c648f",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-d07f2cjk",
+      "native_units_seconds": {
+        "savefile_release": [
+          0.4,
+          0.3
+        ],
+        "reset_grid_refs": [
+          0.2
+        ],
+        "reset_references": [
+          0.2
+        ]
+      },
+      "limitations": [
+        "Diagnostic overhead prevents untraced throughput comparison.",
+        "Between-check rows include legacy stoplag waits.",
+        "No backup or load acceptance; watchdog stopped verified owned process after first metric.",
+        "Prior five-second gap not reproduced."
+      ]
     }
   ]
 }
