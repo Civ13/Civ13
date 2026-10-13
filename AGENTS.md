@@ -257,6 +257,12 @@ zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 - `scripts/test-season-memory.ps1 -ByondBin <BYOND-bin-directory>` executes production turf lifecycle bodies in an isolated world, with accelerated recovery waits and temporary output. It checks repeated replacement, bounded grass registration, one recovery chain per dirt turf, and planted-soil behavior. Synthetic process memory is not full-game memory evidence.
 <!-- 2026-10-11: evidence harness review -->
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
+<!-- 2026-10-13: unsupported OpenDream shell work -->
+OpenDream TTS returns before scheduling shell-backed audio jobs; native TTS
+remains available. Python control uses mutually exclusive engine branches.
+tests/opendream_shell runs both production branches with counted external-effect
+adapters and omission controls, without launching OpenDream or real scripts.
+
 ## Local MCP tooling
 
 <!-- 2026-10-12: NPC cover decision parity -->
