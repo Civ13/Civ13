@@ -108,7 +108,9 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 /datum/crafting_atlas_reference/proc/acquisition_html(resource_id)
 	var/list/all_routes = catalog["acquisition"]
 	var/list/routes = islist(all_routes) ? all_routes[resource_id] : null
-	var/list/body = list("<h2>How to obtain [html_encode(resource_id)]</h2>")
+	var/list/resource_data = resources[resource_id]
+	var/resource_name = islist(resource_data) && resource_data["name"] ? resource_data["name"] : resource_id
+	var/list/body = list("<h2>How to obtain [html_encode(resource_name)]</h2>")
 	if (!islist(routes) || !routes.len)
 		body += "<p>No reviewed gathering instructions for this resource. Producer recipes below may provide processing routes; their requirements still apply.</p>"
 	else
@@ -124,6 +126,19 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 					value = jointext(value, "; ")
 				if (value)
 					body += "<p>[html_encode(key)]: [html_encode("[value]")]</p>"
+			for (var/field in list("inputs", "outputs"))
+				var/list/related = route[field]
+				if (!islist(related))
+					continue
+				var/list/links = list()
+				for (var/id in related)
+					var/list/details = resources[id]
+					var/name = islist(details) && details["name"] ? details["name"] : id
+					links += "<a href='?src=\ref[src];atlas_resource=[url_encode(id)]'>[html_encode(name)]</a>"
+				var/heading = field == "inputs" ? "Needs" : "Can provide (conditional)"
+				body += "<p>[heading]: [jointext(links, "; ")]</p>"
+			if (route["file"] && route["audit_commit"])
+				body += "<p><a href='https://github.com/Civ13/Civ13/blob/[html_encode("[route["audit_commit"]]")]/[html_encode("[route["file"]]")]#L[route["line"]]'>Reviewed source</a></p>"
 	return jointext(body, "")
 
 /datum/crafting_atlas_reference/proc/show(mob/viewer, query = "", page = 1, resource_id = "")
