@@ -2584,3 +2584,4 @@ RECIPE: /material/electronics/,television program desk,/obj/structure/telecom/st
 RECIPE: /material/electronics/,network landline telephone,/obj/item/weapon/telephone/landline,2,120,1,1,none,100,0,0,8,null
 RECIPE: /material/electronics/,cable network terminal,/obj/structure/telecom/terminal,8,150,1,1,none,160,0,0,8,null
 RECIPE: /material/iron/,broadcast antenna,/obj/structure/telecom/antenna,5,100,1,1,none,105,0,0,8,null
+RECIPE: /material/electronics/,solar array controller,/obj/structure/civ_generator/solar,20,200,1,1,none,105,0,0,8,null

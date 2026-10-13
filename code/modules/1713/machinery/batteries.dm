@@ -205,6 +205,7 @@
 	if (requested <= 0) return 0
 	var/epoch = round(world.time / 10)
 	var/list/engines = list()
+	var/list/generators = list()
 	var/list/loads = list()
 	var/available = 0
 	var/demand = 0
@@ -229,6 +230,11 @@
 					E.battery_charge_epoch = epoch
 					E.battery_charge_power = 0
 				available += max(0, E.maxpower - E.battery_charge_power)
+			else if (istype(OB, /obj/structure/civ_generator))
+				var/obj/structure/civ_generator/G = OB
+				if (!(G in generators) && G.powersource == CB)
+					generators += G
+					available += G.available_output()
 			else if (!istype(OB, /obj/structure/cable) && !istype(OB, /obj/structure/battery) && OB.powersource == CB && !(OB in loads))
 				loads += OB
 				// Conservative reservation includes idle consumers.
@@ -239,4 +245,6 @@
 		var/draw = min(remaining, max(0, E.maxpower - E.battery_charge_power))
 		E.battery_charge_power += draw
 		remaining -= draw
+	for (var/obj/structure/civ_generator/G in generators)
+		remaining -= G.reserve_charge(remaining)
 	return transfer

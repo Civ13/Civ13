@@ -412,6 +412,15 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           pwsh -NoProfile -File scripts/test-batteries.ps1 -ByondBin "$PWD/BYOND/byond/bin"
 
+      - name: Verify Modern solar accounting and omitted-debit negative control
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/modern_energy')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 scripts/check-battery-items.py --probe modern-energy
+          python3 scripts/check-battery-items.py --probe modern-energy --negative-control
+          python3 scripts/check-recipes.py
+
       - name: Check battery construction and durable state with compiled game types
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/batteries')
         shell: bash
