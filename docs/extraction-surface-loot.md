@@ -101,15 +101,13 @@ Explicit discovery inputs accept at most 16 roots or account entries per batch
 and retain at most 2048 identities. Malformed graphs, mismatched account root IDs
 and duplicate world/account identities lock discovery. Reconciliation can bind
 an actual loaded root only when its identity, graph and source position match;
-missing roots and pending operations quarantine without regeneration. These
-inputs are not yet connected to authoritative world/account loaders, and do not
-prove completeness or active-raid recovery. Direct `loc` assignments can bypass
-movement hooks. Remaining storage removal/quick-equip paths and persistence
-loader construction need an audit before enablement. Relevant source entry points
-are `storage/storage.dm` insertion/removal, `human/inventory.dm` slot operations,
-`mob/inventory.dm` equip-or-drop, and `persistence/loading.dm` loaded-root and
-`after_load` processing. The account feed must cover all durable profiles, not
-only the currently connected account in `extraction/mode.dm` entry restoration.
+missing roots and pending operations quarantine without regeneration. The optional
+world-loader feed and explicit account passes below do not prove complete
+ownership or active-raid recovery. Direct `loc` assignments can bypass movement
+hooks; audited storage and equipment paths are guarded, while loader construction
+and canonical saved-world/account replica ownership still require acceptance.
+The account feed must cover all durable profiles and shared ownership records,
+not only currently connected sessions.
 
 Round-close processing visits at most 16 manifest sources per call. Forfeiture
 writes intent, removes the actual unclaimed root from world custody, then
@@ -141,25 +139,68 @@ Integrated project and isolated mode fixture compile cleanly with pinned BYOND
 516.1681. Vehicle-key cancellation/concurrency/crash/save runtime acceptance
 remains unproven.
 
-The next custody audit also guards storage eligibility/removal and generic safe
+The custody audit guards storage eligibility/removal and generic safe
 equipment/equip-or-drop before destructive failure handling or direct location
 assignment. Quick-equip uses the guarded safe equipment path. Fixture negatives
 exercise linked-root rejection and ordinary unlinked storage insertion/removal;
 these native assertions remain UNRUN.
 
-Loader audit: `map_storage.Load` resets `all_loaded` per saved z-level and invokes
-`after_load` after each level. A complete feed therefore needs successful batches
-from every requested level and an explicit completion barrier after the entire
-load; a failed level cannot seal discovery. Account `load_profile(owner)` reads
-one named owner and can return a new profile for an absent account. It is not a
-complete account directory inventory. Feeding only joined sessions would miss
-stored duplicate identities. A durable owner manifest or bounded authoritative
-directory enumeration, pending-slot recovery and garage identity inclusion are
-required before enabling restored sources. No loader hook or completeness claim
-is installed by this milestone.
 
 Discovery failure fences planning, materialization, claims, forfeiture and epoch
 mutation. Materialization checks issued, discovered-world and account identities
 before decoding. Authored fence vectors prepare a source, then supply malformed
 input or a world/account copy of its planned graph; each must retain the planned
 state with no live root. These vectors remain native UNRUN.
+
+## Staged loader and account inventory candidate
+
+`Load_World` now feeds an explicitly installed optional surface service after
+real `after_load` callbacks on every saved level. Outer item graphs are submitted
+in batches of 16; nested item IDs and actual loaded vehicle-part IDs share the
+2048-identity cap. A missing, repeated or failed level locks discovery, and a
+successful final callback seals only the world portion. Ordinary maps and absent
+surface services use their existing loader path. No service is installed by this
+change. A started inventory blocks surface mutation until all ownership portions
+are complete.
+
+The explicit account feed enumerates the actual configured account directory,
+rejects unknown directories and caps the listing at 4096 entries. It reads at
+most 16 owners per call, validates current stash, garage graphs/cargo and legacy
+profile mailbox entries, and registers all their nested and vehicle identities.
+Uncommitted newest journal slots, raid profiles and pending deliveries/purchases
+block the feed without rollback or repair. Revision digests and owner-directory
+membership are checked in a second bounded pass. Empty directories without a
+committed account are rejected. The caller must hold exclusive startup/maintenance
+ownership throughout both passes; these routines do not establish a write lease
+against another account-store instance or process.
+
+The profile pass does not seal total ownership. Sharded insurance mail, NPC,
+shared settlement, market ownership and cross-account projections remain missing
+feeds, as does a current-world inventory for a fresh unsaved round. The auxiliary
+completion flag remains false and no activation procedure is provided. Existing
+world/account duplicates are quarantined conservatively; canonical saved-world
+versus account-home replica ownership still needs an explicit contract.
+
+Forfeited graph identities enter a durable epoch retirement index before advancing
+the epoch. The index retains at most 2048 IDs with no eviction; exhaustion blocks
+advance rather than permitting historical replay. Claimed identities remain owned
+by account/world reconciliation and are not marked forfeited. Both materialization
+and discovery reject retired identities. This is a bounded lifetime fence, not an
+unbounded history ledger or permission to restore historical snapshots.
+
+Authored native vectors cover missing-level refusal, successful world-only
+completion, refusal of missing auxiliary completion, stable offline-account
+inventory, disk revision changes, pending account commits and a retired snapshot
+loaded after restart. They are UNRUN until native testing is released. Compile-only
+success does not establish successful world restoration, multi-account inventory,
+garage/mail conservation, runtime performance or OpenDream acceptance.
+
+Discovery and custody reconciliation use the codec's explicit no-new-IDs mode.
+Missing loaded item identities fail rather than being minted during inspection;
+ordinary encoding retains its existing identity-assignment behavior. The added
+missing-ID vector checks rejection and that the real item's ID remains absent.
+
+Generated `--surface-negative-control inventory|retirement|identity` variants
+omit the expected-level guard, retired-ID persistence or no-new-ID encoding
+respectively. Each must fail only its named fixture assertion. These controls
+are authored and native UNRUN; compilation is not omission detection evidence.

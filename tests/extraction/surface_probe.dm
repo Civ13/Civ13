@@ -62,6 +62,7 @@
 	qdel(B)
 	extraction_surface_custody_probe(M, H)
 	extraction_surface_discovery_fence_probe(M, H)
+	extraction_surface_inventory_probe(M)
 
 /proc/extraction_surface_custody_probe(obj/map_metadata/extraction_survival/M, mob/living/human/H)
 	var/datum/extraction_surface_service/V = new(M, "data/surface_custody_fixture/")
@@ -122,6 +123,11 @@
 	equipment_assert(!restart.advance_epoch(epoch + 1), "surface stale epoch advance rejects refill")
 	equipment_assert(restart.advance_epoch(epoch) && restart.prepare_source(R), "surface completed closed round permits terminal next-epoch plan")
 	equipment_assert(R.profile["surface_entry"]["id"] != id && R.profile["surface_retired_entry"]["id"] == id, "surface next epoch preserves retired identity and mints distinct planned root")
+	equipment_assert(restart.epoch_profile["surface_retired_ids"][id], "surface forfeited identity remains in durable epoch retirement index")
+	var/obj/item/stale = M.codec.decode(R.profile["surface_retired_entry"]["equipment"], null)
+	var/datum/extraction_surface_service/history = new(M, "data/surface_custody_fixture/")
+	equipment_assert(stale && !history.discover_world_roots(list(stale)) && history.discovery_locked, "surface restart refuses historical forfeited snapshot identity")
+	qdel(stale)
 	M.accounts.sessions = sessions
 	M.round_closing = old_closing
 	M.game_over = old_over
@@ -148,3 +154,40 @@
 		equipment_assert(!V.materialize_source(S) && !S.live_root && S.profile["surface_state"] == "planned", "surface discovery conflict never exposes or issues planned duplicate")
 		if (loaded) qdel(loaded)
 		qdel(S)
+
+/proc/extraction_surface_inventory_probe(obj/map_metadata/extraction_survival/M)
+	var/obj/item/extraction_salvage/unidentified = new(null)
+	var/datum/extraction_surface_service/missing_id = new(M, "data/surface_missing_identity/")
+	equipment_assert(!missing_id.discover_world_roots(list(unidentified)) && !unidentified.extraction_item_id && missing_id.discovery_locked, "surface loaded identity discovery never mints missing item identity")
+	qdel(unidentified)
+	var/datum/extraction_surface_service/worlds = new(M, "data/surface_world_inventory/")
+	equipment_assert(worlds.begin_world_inventory(2) && worlds.feed_loaded_level(1, list()), "surface loader accepts first actual empty level batch")
+	equipment_assert(!worlds.finish_world_inventory() && worlds.discovery_locked && !worlds.world_inventory_complete, "surface incomplete world levels cannot seal discovery")
+	var/datum/extraction_surface_service/complete = new(M, "data/surface_complete_inventory/")
+	equipment_assert(complete.begin_world_inventory(1) && complete.feed_loaded_level(1, list()) && complete.finish_world_inventory() && complete.world_inventory_complete, "surface complete world level feed seals only world inventory")
+	equipment_assert(complete.inventory_incomplete(), "surface world completion cannot authorize missing account auxiliary feeds")
+	var/datum/extraction_account_store/original_store = M.accounts.store
+	var/list/original_sessions = M.accounts.sessions
+	var/datum/extraction_account_store/accounts = new
+	accounts.root = "data/surface_account_inventory/"
+	M.accounts.store = accounts
+	M.accounts.sessions = list()
+	var/list/P = accounts.load_profile("inventoryowner")
+	equipment_assert(accounts.commit_profile("inventoryowner", P), "surface inventory fixture persists ordinary offline account")
+	var/datum/extraction_surface_service/scan = new(M, "data/surface_scan/")
+	equipment_assert(scan.begin_account_inventory() && scan.account_inventory_batch() && scan.account_inventory_recheck_batch() && scan.account_inventory_complete, "surface bounded account pass rechecks stable committed profiles")
+	var/datum/extraction_surface_service/changed = new(M, "data/surface_changed/")
+	equipment_assert(changed.begin_account_inventory() && changed.account_inventory_batch(), "surface revision fixture completes initial pass")
+	P = accounts.load_profile("inventoryowner")
+	P["credits"] = 1
+	equipment_assert(accounts.commit_profile("inventoryowner", P), "surface revision fixture changes actual disk profile")
+	equipment_assert(!changed.account_inventory_recheck_batch() && changed.discovery_locked, "surface profile change before seal locks inventory")
+	accounts.test_fail_at = "snapshot"
+	P = accounts.load_profile("inventoryowner")
+	P["credits"] = 2
+	equipment_assert(!accounts.commit_profile("inventoryowner", P), "surface pending fixture interrupts actual account commit")
+	accounts.test_fail_at = null
+	var/datum/extraction_surface_service/pending = new(M, "data/surface_pending/")
+	equipment_assert(pending.begin_account_inventory() && !pending.account_inventory_batch() && pending.discovery_locked, "surface newest pending account blocks inventory without rollback")
+	M.accounts.store = original_store
+	M.accounts.sessions = original_sessions

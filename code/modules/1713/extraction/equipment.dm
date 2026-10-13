@@ -85,7 +85,7 @@ var/global/extraction_identity_sequence = 0
 		if (!istype(child, /obj/item) || !collect(child, id, depth + 1)) return FALSE
 	return TRUE
 
-/datum/extraction_equipment_codec/proc/encode(obj/item/root)
+/datum/extraction_equipment_codec/proc/encode(obj/item/root, assign_new_ids = TRUE)
 	last_error = null
 	items = list()
 	index = list()
@@ -97,7 +97,12 @@ var/global/extraction_identity_sequence = 0
 	for (var/i in 1 to items.len)
 		var/obj/item/I = items[i]
 		var/list/node = nodes[i]
-		if (!I.extraction_item_id) I.extraction_item_id = new_extraction_item_id()
+		if (!I.extraction_item_id)
+			if (!assign_new_ids)
+				last_error = "Loaded equipment lacks durable identity"
+				clear()
+				return null
+			I.extraction_item_id = new_extraction_item_id()
 		node["id"] = I.extraction_item_id
 		node["found_in_raid"] = I.extraction_found_in_raid
 		if (I.extraction_insurance_token) node["insurance_token"] = I.extraction_insurance_token

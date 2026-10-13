@@ -39,6 +39,16 @@
 	var/list/discovered_ids = list()
 	var/list/account_ids = list()
 	var/discovery_locked = FALSE
+	var/world_inventory_started = FALSE
+	var/world_inventory_complete = FALSE
+	var/list/world_inventory_levels = list()
+	var/world_inventory_expected = 0
+	var/list/account_inventory_names
+	var/list/account_inventory_digests = list()
+	var/account_inventory_cursor = 1
+	var/account_inventory_complete = FALSE
+	var/account_inventory_verify_cursor = 1
+	var/auxiliary_inventory_complete = FALSE
 	var/locked = FALSE
 	var/tmp/test_fail_materialize_ack = FALSE
 	var/tmp/test_fail_claim_ack = FALSE
@@ -49,6 +59,115 @@
 			locked = TRUE
 			return
 		store.root = "[storage_root][ckey(M.ID)]/"
+	proc/discovery_fail()
+		discovery_locked = TRUE
+		return FALSE
+	proc/begin_world_inventory(levels)
+		if (enabled || discovery_locked || world_inventory_started || discovered_ids.len || !isnum(levels) || round(levels) != levels || levels < 1 || levels > 16) return discovery_fail()
+		world_inventory_started = TRUE
+		world_inventory_expected = levels
+		return TRUE
+	proc/feed_loaded_level(level, list/loaded)
+		if (!world_inventory_started || discovery_locked || world_inventory_complete || !islist(loaded) || !isnum(level) || round(level) != level || level < 1 || level > world_inventory_expected || world_inventory_levels["[level]"]) return discovery_fail()
+		var/list/batch = list()
+		for (var/index in 1 to loaded.len)
+			var/datum/D = loaded[index]
+			if (!D) return discovery_fail()
+			if (istype(D, /obj))
+				var/obj/O = D
+				var/part_id = O.extraction_vehicle_part_id
+				if (part_id)
+					if (!istext(part_id) || length(part_id) > 80 || discovered_ids[part_id] || account_ids[part_id] || discovered_ids.len >= 2048 || !ensure_epoch() || epoch_profile["surface_retired_ids"]?[part_id]) return discovery_fail()
+					discovered_ids[part_id] = O
+			if (!istype(D, /obj/item)) continue
+			var/obj/item/I = D
+			if (!I.extraction_item_id)
+				if (I.extraction_found_in_raid || I.extraction_insurance_token) return discovery_fail()
+				continue
+			// Encode each outer item once; its graph owns nested identities.
+			if (istype(I.loc, /obj/item))
+				var/obj/item/parent = I.loc
+				if (parent.extraction_item_id) continue
+			batch += I
+			if (batch.len == 16)
+				if (!discover_world_roots(batch)) return FALSE
+				batch = list()
+			TICK_CHECK
+		if (batch.len && !discover_world_roots(batch)) return FALSE
+		world_inventory_levels["[level]"] = TRUE
+		return TRUE
+	proc/finish_world_inventory()
+		if (discovery_locked || !world_inventory_started || world_inventory_levels.len != world_inventory_expected) return discovery_fail()
+		world_inventory_complete = TRUE
+		return TRUE
+	proc/account_directories()
+		var/list/files = flist(metadata.accounts.store.root)
+		if (!islist(files) || files.len > 4096) return null
+		var/list/owners = list()
+		for (var/name in files)
+			if (copytext(name, length(name), 0) != "/") return null
+			var/owner = copytext(name, 1, length(name))
+			if (owner in list("_settlement", "_insurance", "_bot", "_mail")) continue
+			if (!metadata.accounts.store.valid_owner(owner) || owners[owner]) return null
+			owners[owner] = TRUE
+		return owners
+	proc/begin_account_inventory()
+		if (enabled || discovery_locked || account_inventory_names || metadata.accounts.sessions.len || account_ids.len || !ensure_epoch()) return discovery_fail()
+		account_inventory_names = account_directories()
+		if (!islist(account_inventory_names)) return discovery_fail()
+		account_inventory_cursor = 1
+		return TRUE
+	proc/account_profile_ids(list/P)
+		var/datum/extraction_account_store/A = metadata.accounts.store
+		if (!P || !A.valid_profile(P, P["owner"]) || !P["revision"] || P["state"] != "home" || P["pending_delivery"] || P["pending_item"] || P["loot_state"] == "pending" || P["unlock_state"] == "pending" || (islist(P["garage_purchase"]) && P["garage_purchase"]["status"] == "pending")) return null
+		var/list/entries = P["stash"].Copy()
+		if (!isnull(P["insurance_mailbox"]))
+			if (!islist(P["insurance_mailbox"])) return null
+			entries += P["insurance_mailbox"]
+		for (var/list/vehicle in P["garage"])
+			if (!metadata.vehicle_codec.validate(vehicle)) return null
+			for (var/list/entry in vehicle["cargo"]) entries += list(entry)
+		for (var/index in 1 to entries.len)
+			var/list/entry = entries[index]
+			if (!islist(entry) || !graph_ids(entry["equipment"], 2048) || entry["id"] != entry["equipment"]["nodes"][1]["id"]) return null
+		return A.recovery_ids(P)
+	proc/account_inventory_recheck_batch()
+		if (enabled || discovery_locked || !islist(account_inventory_names) || account_inventory_cursor <= account_inventory_names.len || metadata.accounts.sessions.len) return discovery_fail()
+		var/list/current = account_directories()
+		if (!islist(current) || current.len != account_inventory_names.len) return discovery_fail()
+		for (var/owner in current)
+			if (!account_inventory_names[owner]) return discovery_fail()
+		if (!account_inventory_names.len)
+			account_inventory_complete = TRUE
+			return 1
+		if (account_inventory_verify_cursor > account_inventory_names.len) return account_inventory_verify_cursor
+		var/last = min(account_inventory_names.len, account_inventory_verify_cursor + 15)
+		for (var/index in account_inventory_verify_cursor to last)
+			var/owner = account_inventory_names[index]
+			var/list/P = metadata.accounts.store.load_profile(owner)
+			if (!P || md5(json_encode(P)) != account_inventory_digests[owner]) return discovery_fail()
+		account_inventory_verify_cursor = last + 1
+		account_inventory_complete = account_inventory_verify_cursor > account_inventory_names.len
+		return account_inventory_verify_cursor
+	proc/inventory_incomplete()
+		// Shared mail/NPC/settlement/market ownership has no complete feed yet.
+		return (world_inventory_started || islist(account_inventory_names)) && (!world_inventory_complete || !account_inventory_complete || !auxiliary_inventory_complete)
+	proc/account_inventory_batch()
+		if (enabled || discovery_locked || !islist(account_inventory_names) || account_inventory_complete || metadata.accounts.sessions.len) return discovery_fail()
+		if (account_inventory_cursor > account_inventory_names.len) return account_inventory_cursor
+		var/last = min(account_inventory_names.len, account_inventory_cursor + 15)
+		for (var/index in account_inventory_cursor to last)
+			var/owner = account_inventory_names[index]
+			var/list/P = metadata.accounts.store.load_profile(owner)
+			var/list/ids = account_profile_ids(P)
+			if (!ids || account_ids.len + ids.len > 2048) return discovery_fail()
+			for (var/id in ids)
+				if (account_ids[id] || discovered_ids[id] || epoch_profile && epoch_profile["surface_retired_ids"]?[id]) return discovery_fail()
+			for (var/id in ids) account_ids[id] = TRUE
+			account_inventory_digests[owner] = md5(json_encode(P))
+		account_inventory_cursor = last + 1
+		// Completion needs a separate bounded revision recheck, not this pass.
+		return account_inventory_cursor
 	proc/register_source(obj/effect/extraction_surface_source/S)
 		if (locked || !S || !S.schema_valid() || S.service || sources.len >= 128) return FALSE
 		var/key = "[S.source_id]"
@@ -86,14 +205,21 @@
 		return FALSE
 	proc/ensure_epoch()
 		if (locked || discovery_locked) return FALSE
-		if (epoch_profile) return TRUE
+		if (epoch_profile) return epoch_history_valid()
 		epoch_profile = store.load_profile("epoch")
 		if (!epoch_profile) return quarantine(null)
 		if (!epoch_profile["revision"])
 			epoch_profile["raid_sequence"] = 1
 			if (!store.commit_profile("epoch", epoch_profile)) return quarantine(null)
 		var/epoch = epoch_profile["raid_sequence"]
-		return isnum(epoch) && round(epoch) == epoch && epoch >= 1 && epoch <= 1000000
+		return isnum(epoch) && round(epoch) == epoch && epoch >= 1 && epoch <= 1000000 && epoch_history_valid()
+	proc/epoch_history_valid()
+		var/list/retired = epoch_profile["surface_retired_ids"]
+		if (isnull(retired)) return TRUE
+		if (!islist(retired) || retired.len > 2048) return quarantine(null)
+		for (var/id in retired)
+			if (!istext(id) || !length(id) || length(id) > 80 || retired[id] != TRUE) return quarantine(null)
+		return TRUE
 	proc/quarantine(obj/effect/extraction_surface_source/S)
 		if (S) S.quarantined = TRUE
 		else locked = TRUE
@@ -109,7 +235,7 @@
 			if ("repair_parts") return /obj/item/extraction_salvage
 		return null
 	proc/prepare_source(obj/effect/extraction_surface_source/S)
-		if (!enabled || locked || discovery_locked || !S || S.busy || !S.pool_enabled() || !support_valid(S) || !ensure_epoch()) return FALSE
+		if (!enabled || locked || discovery_locked || inventory_incomplete() || !S || S.busy || !S.pool_enabled() || !support_valid(S) || !ensure_epoch()) return FALSE
 		if (!S.profile) S.profile = store.load_profile("source[S.source_id]")
 		if (!S.profile) return quarantine(S)
 		if (S.profile["raid_sequence"] != epoch_profile["raid_sequence"] && S.profile["surface_state"])
@@ -160,7 +286,7 @@
 		P["surface_state"] = "planned"
 		return commit_source(S, P)
 	proc/materialize_source(obj/effect/extraction_surface_source/S)
-		if (!enabled || locked || discovery_locked || !S || S.busy || !S.pool_enabled() || !support_valid(S) || !ensure_epoch() || !S.profile || S.profile["surface_state"] != "planned") return FALSE
+		if (!enabled || locked || discovery_locked || inventory_incomplete() || !S || S.busy || !S.pool_enabled() || !support_valid(S) || !ensure_epoch() || !S.profile || S.profile["surface_state"] != "planned") return FALSE
 		if (S.profile["raid_sequence"] != epoch_profile["raid_sequence"] || S.profile["surface_pool"] != S.pool_id || S.live_root) return quarantine(S)
 		var/list/stash = S.profile["stash"]
 		if (!islist(stash) || stash.len != 1) return quarantine(S)
@@ -170,7 +296,7 @@
 		var/list/ids = graph_ids(graph)
 		if (!ids || issued_ids.len + ids.len > 2048) return quarantine(S)
 		for (var/id in ids)
-			if (issued_ids[id] || discovered_ids[id] || account_ids[id]) return quarantine(S)
+			if (issued_ids[id] || discovered_ids[id] || account_ids[id] || epoch_profile["surface_retired_ids"]?[id]) return quarantine(S)
 		for (var/id in ids) issued_ids[id] = S.source_id
 		var/list/P = json_decode(json_encode(S.profile))
 		P["surface_state"] = "materializing"
@@ -199,7 +325,7 @@
 		S.busy = FALSE
 		return TRUE
 	proc/claim_root(obj/effect/extraction_surface_source/S, mob/living/human/H, obj/item/I)
-		if (!enabled || locked || discovery_locked || !S || !I || S.busy || !support_valid(S) || !S.profile || S.profile["surface_state"] != "issued" || I != S.live_root || I.extraction_surface_source != S || I.loc != get_turf(S)) return FALSE
+		if (!enabled || locked || discovery_locked || inventory_incomplete() || !S || !I || S.busy || !support_valid(S) || !S.profile || S.profile["surface_state"] != "issued" || I != S.live_root || I.extraction_surface_source != S || I.loc != get_turf(S)) return FALSE
 		if (!metadata.owned(H) || H.stat != CONSCIOUS || H.lying || H.get_active_hand() || !S.Adjacent(H) || H.z != S.z || H.extraction_session.locked || H.extraction_session.transitioning || H.extraction_session.profile["state"] != "raid" || metadata.round_closing) return FALSE
 		var/list/entry = S.profile["stash"][1]
 		if (!entry_valid(S, entry) || entry["id"] != I.extraction_item_id || !reconcile_source(S)) return quarantine(S)
@@ -272,7 +398,7 @@
 		if (!I)
 			I = discovered_roots[stash[1]["id"]]
 			if (I && I.loc == get_turf(S) && !I.extraction_surface_source)
-				var/list/saved = metadata.codec.encode(I)
+				var/list/saved = metadata.codec.encode(I, FALSE)
 				if (!saved || md5(json_encode(saved)) != md5(json_encode(stash[1]["equipment"]))) return quarantine(S)
 				if (!metadata.track_loot(I)) return quarantine(S)
 				for (var/id in ids) issued_ids[id] = S.source_id
@@ -280,7 +406,7 @@
 				I.anchored = TRUE
 				S.live_root = I
 		if (!I || I.loc != get_turf(S) || I.extraction_surface_source != S || !islist(stash) || stash.len != 1 || I.extraction_item_id != stash[1]["id"]) return quarantine(S)
-		var/list/actual = metadata.codec.encode(I)
+		var/list/actual = metadata.codec.encode(I, FALSE)
 		if (!actual || md5(json_encode(actual)) != md5(json_encode(stash[1]["equipment"]))) return quarantine(S)
 		return TRUE
 	proc/movement_allowed(obj/item/I, atom/destination)
@@ -299,13 +425,13 @@
 		return TRUE
 	proc/discover_world_roots(list/roots)
 		// Caller supplies loaded roots in bounded batches; never scan the world.
-		if (discovery_locked || !islist(roots) || roots.len > 16) return FALSE
+		if (discovery_locked || !islist(roots) || roots.len > 16 || !ensure_epoch()) return FALSE
 		for (var/index in 1 to roots.len)
 			if (!istype(roots[index], /obj/item))
 				discovery_locked = TRUE
 				return FALSE
 			var/obj/item/I = roots[index]
-			var/list/graph = metadata.codec.encode(I)
+			var/list/graph = metadata.codec.encode(I, FALSE)
 			var/list/ids = graph_ids(graph, 2048)
 			if (!ids || discovered_ids.len + ids.len > 2048)
 				discovery_locked = TRUE
@@ -314,11 +440,15 @@
 				if (discovered_ids[id] || account_ids[id])
 					discovery_locked = TRUE
 					return FALSE
+			for (var/id in ids)
+				if (epoch_profile && epoch_profile["surface_retired_ids"]?[id])
+					discovery_locked = TRUE
+					return FALSE
 			for (var/id in ids) discovered_ids[id] = I
 			discovered_roots[I.extraction_item_id] = I
 		return TRUE
 	proc/discover_account_entries(list/entries)
-		if (discovery_locked || !islist(entries) || entries.len > 16) return FALSE
+		if (discovery_locked || !islist(entries) || entries.len > 16 || !ensure_epoch()) return FALSE
 		for (var/index in 1 to entries.len)
 			if (!islist(entries[index]))
 				discovery_locked = TRUE
@@ -329,7 +459,7 @@
 				discovery_locked = TRUE
 				return FALSE
 			for (var/id in ids)
-				if (account_ids[id] || discovered_ids[id])
+				if (account_ids[id] || discovered_ids[id] || epoch_profile && epoch_profile["surface_retired_ids"]?[id])
 					discovery_locked = TRUE
 					return FALSE
 			for (var/id in ids) account_ids[id] = TRUE
@@ -342,7 +472,7 @@
 			if (!reconcile_source(sources[key])) return FALSE
 		return last + 1
 	proc/forfeit_source(obj/effect/extraction_surface_source/S)
-		if (!enabled || locked || discovery_locked || !S || S.busy || S.quarantined || !metadata.round_closing || !S.profile) return FALSE
+		if (!enabled || locked || discovery_locked || inventory_incomplete() || !S || S.busy || S.quarantined || !metadata.round_closing || !S.profile) return FALSE
 		if (S.profile["surface_state"] in list("claimed", "forfeited")) return !S.live_root
 		if (!(S.profile["surface_state"] in list("planned", "issued")) || !reconcile_source(S)) return quarantine(S)
 		S.busy = TRUE
@@ -391,13 +521,26 @@
 	proc/advance_epoch(expected)
 		// Deliberately restrictive: unresolved issued/forfeited roots require a
 		// future authoritative reconciliation path, not a refill or refund.
-		if (!enabled || locked || discovery_locked || !ensure_epoch() || expected != epoch_profile["raid_sequence"] || expected >= 1000000 || !metadata.game_over || !metadata.round_closing || metadata.accounts.sessions.len) return FALSE
+		if (!enabled || locked || discovery_locked || inventory_incomplete() || !ensure_epoch() || expected != epoch_profile["raid_sequence"] || expected >= 1000000 || !metadata.game_over || !metadata.round_closing || metadata.accounts.sessions.len) return FALSE
 		var/list/manifest = epoch_profile["surface_sources"]
 		if (!islist(manifest) || manifest.len > 128) return FALSE
 		for (var/id in manifest)
 			var/obj/effect/extraction_surface_source/S = sources["[id]"]
 			if (!S || S.busy || S.quarantined || S.live_root || !S.profile || !(S.profile["surface_state"] in list("claimed", "forfeited"))) return FALSE
+		var/list/retired = epoch_profile["surface_retired_ids"]
+		if (isnull(retired)) retired = list()
+		if (!islist(retired) || retired.len > 2048) return quarantine(null)
+		retired = retired.Copy()
+		for (var/id in manifest)
+			var/obj/effect/extraction_surface_source/S = sources["[id]"]
+			if (S.profile["surface_state"] != "forfeited") continue
+			var/list/ids = graph_ids(S.profile["surface_entry"]["equipment"])
+			if (!ids) return quarantine(S)
+			for (var/item_id in ids)
+				if (!retired[item_id] && retired.len >= 2048) return FALSE
+				retired[item_id] = TRUE
 		var/list/E = json_decode(json_encode(epoch_profile))
+		E["surface_retired_ids"] = retired
 		E["raid_sequence"] = expected + 1
 		E["surface_sources"] = list()
 		E["surface_close_cursor"] = null
