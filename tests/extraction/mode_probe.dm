@@ -81,6 +81,10 @@
 		return TRUE
 
 /proc/extraction_mode_probe()
+	// Normal world startup is isolated, but real turf Enter callbacks require
+	// the production movement clock. Construct it without starting its loop.
+	if (!movementMachine) movementMachine = new
+	equipment_assert(movementMachine && movementMachine.ticks == 0, "isolated mode provides production movement clock without scheduler startup")
 	vote_handle_probe()
 	makeDatumRefLists()
 	var/obj/map_metadata/extraction_survival/M = map

@@ -334,6 +334,7 @@
 	var/yielded_stamp = yielded.world_inventory_stamp
 	sleep(1)
 	equipment_assert(world.time > yielded_stamp && !yielded.finish_world_inventory() && yielded.discovery_locked && !yielded.world_inventory_complete, "actual yield between feed and finish cannot seal census")
+	world.log << "PASS: ordinary census rejects actual yield between feed and finish"
 	// Fixture cleanup only; production never unbinds before saved-world proof.
 	house.replica_owner = null
 	house.replica_revision = 0
