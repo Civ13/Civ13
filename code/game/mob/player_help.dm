@@ -59,6 +59,12 @@ var/global/datum/player_help_service/player_help_service = new
 		return response
 	return null
 
+// Read public map metadata directly; never accept player text as server state.
+/datum/player_help_service/proc/game_context()
+	if (!map)
+		return list("map" = "Unknown", "gamemode" = "Unknown")
+	return list("map" = copytext("[map.title]", 1, 121), "map_id" = copytext("[map.ID]", 1, 121), "gamemode" = copytext("[map.gamemode]", 1, 121), "era" = copytext("[map.age]", 1, 121), "era_ordinal" = map.ordinal_age, "civilizations" = map.civilizations ? TRUE : FALSE)
+
 /datum/player_help_service/proc/submit(client/C, question)
 	if (!available())
 		C << "AI gameplay help is unavailable. Please use the Crafting Atlas or try again later."
@@ -83,7 +89,7 @@ var/global/datum/player_help_service/player_help_service = new
 	clear_slot(slot)
 	serial++
 	var/id = "[world.realtime]-[rand(1, 999999)]-[serial]"
-	var/list/request = list("id" = id, "question" = question)
+	var/list/request = list("id" = id, "question" = question, "game_context" = game_context())
 	if (!text2file(json_encode(request), "[root][slot].request.json") || !text2file(id, "[root][slot].ready"))
 		clear_slot(slot)
 		C << "AI gameplay help could not send your question. Please try again later."

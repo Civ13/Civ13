@@ -144,3 +144,9 @@ the helper must explain gates rather than promise a recipe is unlocked. Adding
 other gameplay systems requires reviewing their source excerpts and player wiki
 pages before extending the allowlist. No hidden loot, credentials, player data,
 admin commands or private reference repositories are indexed.
+
+Each question automatically includes the server's public map title/ID, game mode,
+era/ordinal and civilization flag. These are captured from map metadata at
+submission, not inferred from player wording. No account identity, coordinates,
+inventory, hidden map state or faction secrets are included. Unknown/uninitialized
+map metadata is marked unknown. Era does not prove faction research unlocks.

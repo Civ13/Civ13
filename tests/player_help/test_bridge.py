@@ -110,6 +110,23 @@ class BridgeTests(unittest.TestCase):
         self.assertIn('CURRENT GAMEPLAY CODE', calls[1][1]['messages'][0]['content'])
         self.assertIn('PLAYER WIKI https://', calls[1][1]['messages'][0]['content'])
 
+    def test_authoritative_game_context_is_bounded_and_filters_recipes(self):
+        self.corpus = [
+            {'topic': 'bucket', 'source': 'recipe', 'catalog': 'Material / global', 'text': 'bucket requires 2 softwood'},
+            {'topic': 'bucket', 'source': 'recipe', 'catalog': 'Material / camp', 'text': 'bucket requires 4 wood'}]
+        calls = []
+        instance = self.make(lambda *args: calls.append(args) or {'message': {'content': 'Answer'}})
+        request = {'id': '1', 'question': 'How do I craft a bucket?', 'game_context': {'map': 'Nomads (Gaia)', 'gamemode': 'Classic', 'era': '5000 BC', 'civilizations': True, 'secret': 'DO NOT SEND'}}
+        instance.answer(request)
+        prompt = calls[0][1]['messages'][0]['content']
+        self.assertIn('Nomads (Gaia)', prompt)
+        self.assertIn('Classic', prompt)
+        self.assertIn('2 softwood', prompt)
+        self.assertNotIn('4 wood', prompt)
+        self.assertNotIn('DO NOT SEND', prompt)
+        self.assertEqual(bridge.public_game_context({'game_context': 'invalid'}), {})
+        self.assertEqual(len(bridge.public_game_context({'game_context': {'map': 'x' * 1000}})['map']), 120)
+
     def test_bounded_output(self):
         instance = self.make(lambda *args: {'message': {'content': 'x' * 9000}})
         self.request()
