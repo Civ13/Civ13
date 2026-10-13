@@ -50,7 +50,7 @@
 /obj/item/connector/verb/hiding()
 	set category = null
 	set name = "Under/Over tiles"
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (!anchored)
 		to_chat(usr, "Place it first.")

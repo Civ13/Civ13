@@ -1029,7 +1029,7 @@
 
 /turf/floor/verb/Dig()
 	set category = null
-	set src in range(1, usr)
+	set src in range(1)
 
 	var/mob/living/human/user
 

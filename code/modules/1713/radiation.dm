@@ -199,7 +199,7 @@
 /obj/item/weapon/geiger_counter/verb/turn_on()
 	set category = null
 	set name = "Turn On/Off"
-	set src in range(1, usr)
+	set src in range(1)
 
 	scanning = !scanning
 	update_icon()

@@ -1061,7 +1061,7 @@
 /mob/living/simple_animal/camel/verb/remove_from_storage()
 	set category = null
 	set name = "Remove Pack"
-	set src in range(2, usr)
+	set src in range(2)
 	if (!content_size)
 		to_chat(usr, "The camel is not carrying anything.")
 		return
