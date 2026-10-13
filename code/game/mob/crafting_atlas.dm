@@ -155,13 +155,18 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 		content = replacetext(content, "<h2>Crafting Atlas</h2>", acquisition_html(resource_id))
 	viewer << browse(content, "window=crafting_atlas;size=850x650")
 
+/datum/crafting_atlas_reference/proc/resource_exists(resource_id)
+	if (!load_catalog())
+		return FALSE
+	return islist(resources[resource_id])
+
 /datum/crafting_atlas_reference/Topic(href, list/href_list)
 	if (!usr || !usr.client)
 		return
 	var/mob/viewer = usr
 	if (href_list["atlas_resource"])
 		var/resource_id = copytext("[href_list["atlas_resource"]]", 1, 257)
-		if (islist(resources[resource_id]))
+		if (resource_exists(resource_id))
 			show(viewer, resource_id, 1, resource_id)
 	else if (href_list["atlas_search"])
 		var/query = input(viewer, "Find a recipe, ingredient or product", "Crafting Atlas") as text|null

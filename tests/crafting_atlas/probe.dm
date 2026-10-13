@@ -15,6 +15,11 @@ var/atlas_failed = FALSE
 		text2file(message, "failed.txt")
 /world/New()
 	OpenPort("none")
+	var/datum/crafting_atlas_reference/cold_reference = new
+	check_atlas(cold_reference.resource_exists("fixture"), "cold resource navigation loads catalog")
+	check_atlas(!cold_reference.resource_exists("absent"), "unknown resource rejected")
+	cold_reference.resources = null
+	check_atlas(!cold_reference.resource_exists("fixture"), "invalid catalog resource lookup fails closed")
 	var/mob/viewer = new
 	check_atlas(crafting_atlas_reference.load_catalog(), "catalog load")
 	var/first_page = crafting_atlas_reference.page_html(viewer)
