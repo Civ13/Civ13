@@ -7,6 +7,10 @@ PR3105 is experimental, not a baseline. The initial diff in
 `extraction-persistence-hook-proposal.md` is superseded and must not be applied.
 Local helpers, compilers, runtime, benchmarks and screen actions remain held.
 
+Revision 3 in `extraction-persistence-review-v3.md` supersedes this document's
+release schema and marker acknowledgement/owner-selection design. Reader pinning
+and checked-cleanup requirements remain; the mutation fence is still partial.
+
 ## Pinned generation consumed by every reader
 
 `acquire_restore(storage, captured_policy)` must obtain exclusive operation
