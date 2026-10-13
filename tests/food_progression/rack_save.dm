@@ -9,6 +9,51 @@
 // Inject only the external export outcome; execute the production rack hook.
 /map_storage/rack_commit_failure/commit_save_transfer(datum/save_transfer/ticket)
 	throw EXCEPTION("Fixture refuses paid transfer commit")
+/proc/rack_wrapper_refusal(mode)
+	var/turf/T = locate(5,2,1)
+	var/obj/structure/dehydrator/rack = new(T)
+	var/obj/item/weapon/reagent_containers/food/snacks/fishfillet/input = new(T)
+	rack_check(rack.hang_on(input), "coverage fixture accepts paid input")
+	rack.set_dry_timer(input, 150)
+	var/original_name = input.name
+	var/original_nutrition = input.nutriments_value()
+	var/obj/item/weapon/storage/internal/foreign_owner
+	if (mode == 2)
+		foreign_owner = new(T)
+		input.loc = foreign_owner // Leave a stale slot pointing to foreign custody.
+	else
+		for (var/row = 1, row <= 4, row++)
+			for (var/column = 1, column <= 3, column++)
+				rack.slots[row][column] = null // Legacy wrapper exists before queued refill.
+	var/obj/item/weapon/reagent_containers/food/snacks/fishfillet/represented
+	if (mode == 1)
+		represented = new(T)
+		rack_check(rack.hang_on(represented), "partial coverage fixture accepts represented input")
+	var/atom/original_location = input.loc
+	rack.current_process_id = "coverage fixture suspended"
+	var/map_storage/exporter = new
+	exporter.saving_z = 1
+	var/savefile/F = new("rack_coverage_[mode].sav")
+	var/refused_for_coverage = FALSE
+	try
+		exporter.BuildVarDirectory(F, T, 1)
+	catch (var/exception/error)
+		refused_for_coverage = !!findtext("[error]", mode == 2 ? "paid child left its storage" : "unrepresented storage child")
+	rack_check(refused_for_coverage, "wrapper coverage refusal mode [mode] reaches ownership check")
+	rack_check(input.loc == original_location && input.name == original_name && rack.get_dry_timer(input) == 150 && abs(input.nutriments_value() - original_nutrition) < 0.001, "wrapper coverage refusal mode [mode] preserves input custody and progress")
+	rack_check(rack.current_process_id == "coverage fixture suspended" && (!represented || represented.loc == rack.storage), "wrapper coverage refusal mode [mode] precedes drop and callback mutation")
+	exporter.clear_bookkeeping()
+	if (mode == 2)
+		// Teardown must not invoke Destroy's ordinary slot removal on foreign input.
+		for (var/row = 1, row <= 4, row++)
+			for (var/column = 1, column <= 3, column++)
+				rack.slots[row][column] = null
+	qdel(rack)
+	qdel(input)
+	if (represented)
+		qdel(represented)
+	if (foreign_owner)
+		qdel(foreign_owner)
 /world
 	hub = ""
 	hub_password = ""
@@ -39,6 +84,9 @@
 	GLOB.name_set_event = new /decl/observ/name_set
 	GLOB.stat_set_event = new /decl/observ/stat_set
 	initialize_chemical_reagents()
+	rack_wrapper_refusal(0)
+	rack_wrapper_refusal(1)
+	rack_wrapper_refusal(2)
 	var/turf/failure_turf = locate(4,2,1)
 	var/obj/structure/dehydrator/failure_rack = new(failure_turf)
 	var/obj/item/weapon/reagent_containers/food/snacks/octopus/failure_input = new(failure_turf)
@@ -53,7 +101,7 @@
 	try
 		failure_exporter.BuildVarDirectory(failure_file, failure_turf, 1)
 	catch (var/exception/error)
-		commit_refused = TRUE
+		commit_refused = !!findtext("[error]", "Fixture refuses paid transfer commit")
 	rack_check(commit_refused && failure_rack.current_process_id == "SAVE_REPAIR_REQUIRED", "failed commit leaves rack requiring repair")
 	sleep(35) // New/reinit callbacks must not restart or reclaim the failed rack.
 	rack_check(failure_rack.current_process_id == "SAVE_REPAIR_REQUIRED" && failure_input.loc == failure_turf, "pending reinit cannot reclaim failed save input")
@@ -96,7 +144,7 @@
 	try
 		map_storage.BuildVarDirectory(refused_file, rack, 1)
 	catch (var/exception/error)
-		reference_first_refused = TRUE
+		reference_first_refused = !!findtext("[error]", "owning turf")
 	rack_check(reference_first_refused, "reference-first rack export refuses missing parent context")
 	rack_check(input.loc == rack.storage && rack.get_dry_timer(input) == 150 && abs(input.nutriments_value() - paid_nutrition) < 0.001, "refused rack export preserves paid input and progress")
 	rack_check(rack.current_process_id == "fixture suspended before export", "refused rack export preserves callback ownership before mutation")

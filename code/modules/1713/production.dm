@@ -982,14 +982,21 @@
 			if (!istype(slot, /obj/item))
 				throw EXCEPTION("Dehydrator save contains an invalid paid slot")
 			paid_items |= slot
-	if (!paid_items.len)
-		return before_save()
 	var/obj/item/weapon/storage/internal/origin = storage
-	if (!save_storage || !origin || origin.loc != src || origin.master_item != src || paid_items.len > 12)
+	if (!origin || origin.loc != src || origin.master_item != src || paid_items.len > 12 || origin.contents.len > 12)
 		throw EXCEPTION("Dehydrator save has invalid paid-child ownership")
 	for (var/obj/item/item in paid_items)
 		if (item.loc != origin)
 			throw EXCEPTION("Dehydrator save paid child left its storage")
+	// An adopted wrapper can contain paid food before queued refill builds slots.
+	// It is excluded from saves, so never let undeclared children disappear.
+	for (var/atom/movable/child in origin.contents)
+		if (!(child in paid_items))
+			throw EXCEPTION("Dehydrator save has an unrepresented storage child")
+	if (!paid_items.len)
+		return before_save()
+	if (!save_storage)
+		throw EXCEPTION("Dehydrator save has no export context")
 	var/turf/destination = get_turf(src)
 	// The serializer rejects unsupported discovery or parent ownership before
 	// the production hook clears slots or moves any paid child.

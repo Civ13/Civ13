@@ -98,6 +98,16 @@ The recurring drying wait alone is accelerated. This is a synthetic 6x3 fixture 
 
 ## Rack graph diagnostic and pending transfer contract
 
+The current source correction checks actual wrapper contents before the empty
+slot path or any drop. It refuses more than twelve wrapper children, any slot
+item outside the wrapper, and every wrapper child absent from the unique paid
+handles. This prevents omitted food during legacy restoration before queued
+refill, or when only some wrapper children have slots. Prepared fixtures cover
+empty and partial slots with orphan paid inputs, and stale slots pointing to
+foreign custody. They require specific refusal diagnostics and unchanged
+custody, encoded progress, nutrition and callback ownership. These checks are
+native unrun.
+
 The single diagnostic run at `aac7d1d51f6c56f5390b4eef93007d9288598018`
 compiled with BYOND 516.1681 with zero errors and warnings. It logged zero
 paid-input pins, an empty input reference and empty direct-turf membership,
