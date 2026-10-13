@@ -15,6 +15,14 @@ PRELUDE = '''
 #define GAME_STATE_FINISHED 4
 #define PROCESS_PRIORITY_LOW 1
 var/list/clients = list()
+var/datum/probe_map/map = new
+/datum/probe_map
+    var/title = "Nomads (Gaia)"
+    var/ID = "NOMADS_GAIA"
+    var/gamemode = "Classic (Stone Age Start)"
+    var/age = "5000 B.C."
+    var/ordinal_age = 0
+    var/civilizations = TRUE
 var/datum/probe_processes/processes = new
 /datum/probe_processes
     var/process/player_help/player_help
@@ -37,6 +45,11 @@ var/failures = 0
     world.log << "BEGIN"
     var/datum/player_help_service/H = player_help_service
     H.root = "spool/"
+    var/list/context = H.game_context()
+    check(context["map"] == "Nomads (Gaia)" && context["gamemode"] == map.gamemode, "actual map and mode snapshot")
+    map = null
+    check(H.game_context()["map"] == "Unknown", "unavailable map snapshot")
+    map = new
     check(!H.available(), "unconfigured")
     text2file(json_encode(list("enabled"=TRUE,"sequence"="old")), "spool/health.json")
     check(!H.available(), "first heartbeat is not proof of running worker")

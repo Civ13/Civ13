@@ -6,8 +6,8 @@ service and should not contain personal information. Answers can be wrong. The
 Crafting Atlas and player wiki remain available without an AI service.
 
 Without configuration, a running bridge, or a fresh heartbeat, players see an
-unavailable/configuration notice. An unanswered request times out after 60
-running-server seconds and releases its slot. Failed or empty model answers
+unavailable/configuration notice. An unanswered request times out after a bounded 60..600
+running-server seconds (including the queue budget) and releases its slot. Failed or empty model answers
 show an explicit notice rather than a blank window. Wait until the bridge has
 published two heartbeats (normally a few seconds) before trying the first question.
 
@@ -24,9 +24,12 @@ private directory permissions. Do not share a spool across Nomads and TDM.
 2. Copy `config/player-help.example.json` to an **untracked private file**, for
    example `data/player-help-config.json`. Set `enabled` to `true`, your remote
    `ollama_url`, and the installed `model`. Use either an origin such as
-   `https://ollama.example.net` or its `/api/chat` URL. The service follows the
+   `https://ollama.example.net` its `/v1` base URL, or its `/api/chat` URL. A `/v1` base is normalized to
+   the same host's native `/api/chat` endpoint so context size and thinking controls
+   are honored; OpenAI-compatible proxy-only servers are not supported. The service follows the
    [Ollama chat API](https://docs.ollama.com/api/chat), with streaming disabled.
-3. Set `timeout_seconds` to 1..45 and `workers` to 1..2. The game permits eight
+3. Set `num_ctx` to 1024..32768 and `think` to `true` or `false`.
+   Set `timeout_seconds` to 1..120 and `workers` to 1..2. The game permits eight
    outstanding questions, one per client, and a 30-second per-client cooldown.
    Questions are limited to 500 characters; answers to 4,000. Slow remote
    inference can fill these slots, in which case players receive a busy notice.
@@ -69,7 +72,7 @@ ExecStart=/usr/bin/python3 /srv/civ13/scripts/player_help_bridge.py --game-root 
 EnvironmentFile=-/etc/civ13-player-help.env
 Restart=on-failure
 RestartSec=5
-TimeoutStopSec=50
+TimeoutStopSec=130
 UMask=0077
 [Install]
 WantedBy=multi-user.target
@@ -91,7 +94,7 @@ wiki/atlas; the worker does not assume exact unlocks for the current map.
 The worker also loads a bounded projection of the existing player-facing
 `UI/crafting-atlas.json` once at launch. Only recipe names, system, quantities,
 inputs, outputs and conditions are retained; source locations and sprite metadata
-are omitted. At most six matching guide/recipe entries and 8,000 context characters
+are omitted. At most six matching code/wiki/guide/recipe entries and 16,000 context characters
 are sent per question. Unmatched or truncated recipe details must be checked in
 the atlas, including current map and research availability.
 
@@ -118,3 +121,32 @@ heartbeat expiry and cleanup. They do not contact your remote Ollama host or
 prove its model is installed, reachable or knowledgeable. After configuring,
 ask a harmless known question in-game; confirm an answer and then stop the worker
 to confirm the unavailable notice. This live smoke check is owner-controlled.
+
+## Code and wiki retrieval
+
+The bridge retrieves reviewed gameplay excerpts from the game's bloomery and
+anvil implementation in addition to generated recipe data. Excerpt boundary
+changes fail startup rather than silently supplying unrelated code. Source hashes
+identify the files used. This is read-only evidence retrieval, not an admin MCP
+connection or model-controlled source browser.
+
+Set `wiki_root` in the private config to an up-to-date checkout of `civ13-wiki`.
+The bridge reads only `src/guides/Guide_to_Crafting.md`,
+`src/guides/Guide_to_Metallurgy.md` and `src/Starter_Guide.md` at launch.
+No network downloads or recursive repository scans occur. Update that checkout
+and restart the bridge to refresh wiki knowledge. Missing configured pages fail
+startup; omitted `wiki_root` disables wiki retrieval. Code takes precedence over
+conflicting wiki prose. Retrieved text is untrusted evidence, never instructions.
+
+Retrieval reserves space for code, wiki and recipes. Explicit Nomads/Gaia questions
+exclude other material catalogs and prefer global recipes. Without map context,
+the helper must explain gates rather than promise a recipe is unlocked. Adding
+other gameplay systems requires reviewing their source excerpts and player wiki
+pages before extending the allowlist. No hidden loot, credentials, player data,
+admin commands or private reference repositories are indexed.
+
+Each question automatically includes the server's public map title/ID, game mode,
+era/ordinal and civilization flag. These are captured from map metadata at
+submission, not inferred from player wording. No account identity, coordinates,
+inventory, hidden map state or faction secrets are included. Unknown/uninitialized
+map metadata is marked unknown. Era does not prove faction research unlocks.

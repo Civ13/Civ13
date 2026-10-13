@@ -23,6 +23,7 @@ var/global/datum/player_help_service/player_help_service = new
 	var/heartbeat_confirmed = FALSE
 	var/heartbeat_time = -1000
 	var/serial = 0
+	var/request_timeout_seconds = 60
 
 /datum/player_help_service/proc/read_json(path, limit)
 	var/raw = file2text(path)
@@ -37,6 +38,8 @@ var/global/datum/player_help_service/player_help_service = new
 	var/list/health = read_json("[root]health.json", 256)
 	if (!islist(health) || health["enabled"] != TRUE || !istext(health["sequence"]))
 		return FALSE
+	if (isnum(health["request_timeout_seconds"]))
+		request_timeout_seconds = max(60, min(600, health["request_timeout_seconds"]))
 	if (sequence != health["sequence"])
 		if (sequence)
 			heartbeat_confirmed = TRUE
@@ -55,6 +58,12 @@ var/global/datum/player_help_service/player_help_service = new
 	if (islist(response) && response["id"] == id)
 		return response
 	return null
+
+// Read public map metadata directly; never accept player text as server state.
+/datum/player_help_service/proc/game_context()
+	if (!map)
+		return list("map" = "Unknown", "gamemode" = "Unknown")
+	return list("map" = copytext("[map.title]", 1, 121), "map_id" = copytext("[map.ID]", 1, 121), "gamemode" = copytext("[map.gamemode]", 1, 121), "era" = copytext("[map.age]", 1, 121), "era_ordinal" = map.ordinal_age, "civilizations" = map.civilizations ? TRUE : FALSE)
 
 /datum/player_help_service/proc/submit(client/C, question)
 	if (!available())
@@ -80,12 +89,12 @@ var/global/datum/player_help_service/player_help_service = new
 	clear_slot(slot)
 	serial++
 	var/id = "[world.realtime]-[rand(1, 999999)]-[serial]"
-	var/list/request = list("id" = id, "question" = question)
+	var/list/request = list("id" = id, "question" = question, "game_context" = game_context())
 	if (!text2file(json_encode(request), "[root][slot].request.json") || !text2file(id, "[root][slot].ready"))
 		clear_slot(slot)
 		C << "AI gameplay help could not send your question. Please try again later."
 		return FALSE
-	pending["[slot]"] = list("id" = id, "client" = C, "deadline" = world.time + 600)
+	pending["[slot]"] = list("id" = id, "client" = C, "deadline" = world.time + request_timeout_seconds * 10)
 	C.player_help_cooldown = world.time + 300
 	C << "Asking the AI gameplay helper. Answers can be mistaken; check the Crafting Atlas and player wiki."
 	return TRUE
