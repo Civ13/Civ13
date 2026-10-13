@@ -24,6 +24,7 @@ permissions:
 concurrency:
   group: discord-changelog
   cancel-in-progress: false
+  queue: max
 jobs:
   publish:
     if: github.repository == 'Civ13/Civ13' && (github.event_name == 'workflow_dispatch' || (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'production' && github.event.deployment.production_environment == true && github.event.deployment.ref == 'master'))

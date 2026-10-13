@@ -28,6 +28,15 @@ do not use this reserved prefix for manual manifests. Reruns suppress confirmed
 deliveries and block uncertain deliveries rather than risk duplicate posts.
 Do not also announce the same change through the older manifest route.
 
+Both publishers retain up to 100 waiting runs in the shared concurrency queue.
+If the queue fills, GitHub cancels additional runs; it does not replace an older
+waiting run. Check cancelled **Discord PR changelog** runs after large merge
+bursts. Once the queue has room, use **Re-run all jobs** on the original cancelled
+run (or `gh run rerun RUN_ID --repo Civ13/Civ13`). This preserves the original
+merge-event description and uses the same `pr-NUMBER` receipt. Reconcile a pending
+receipt as described below before rerunning; never copy the announcement into a
+new manifest or delete receipts to work around a failed run.
+
 The `discord-changelog` environment must have `DISCORD_MERGE_CHANGELOG_ENABLED=true`
 and the existing `DISCORD_CHANGELOG_WEBHOOK` secret and receipt branch described
 below. This setting enables only the merge route. The older manifest publisher

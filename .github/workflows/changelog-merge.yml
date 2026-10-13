@@ -8,6 +8,7 @@ permissions:
 concurrency:
   group: discord-changelog
   cancel-in-progress: false
+  queue: max
 jobs:
   publish:
     if: github.repository == 'Civ13/Civ13' && github.event.pull_request.merged == true
