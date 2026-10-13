@@ -45,6 +45,7 @@ var/datum/process_list/processes = new
 	var/process/human_corpse_decay/human_corpse_decay = null
 	var/process/garbage/garbage = null
 	var/process/python/python = null
+	var/process/player_help/player_help = null
 
 	// --- Standalone processes (run directly by the main scheduler) ---
 	// (processes not yet migrated to a subsystem remain here)
@@ -71,3 +72,4 @@ var/datum/process_list/processes = new
 	else
 		return last_num_processes
 /datum/process_list/var/process/civ_telecom/civ_telecom = null
+/datum/process_list/var/process/civ_generation/civ_generation = null

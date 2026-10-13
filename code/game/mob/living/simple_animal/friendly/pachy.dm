@@ -20,6 +20,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 140
+	maxHealth = 140
 	mob_size = MOB_MEDIUM
 	layer = 3.99
 	a_intent = I_HARM

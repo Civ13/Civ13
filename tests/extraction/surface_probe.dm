@@ -305,6 +305,9 @@
 	I.forceMove(get_step(original, NORTH))
 	equipment_assert(!V.approved_home_replica(I, graph, ids), "private-home replica wrong placement rejected")
 	I.forceMove(original)
+	// Start this bounded positive on an ordinary fresh tick, preserving the
+	// production budget yield and same-tick freshness barrier inside the census.
+	sleep(1)
 	var/census_begin = V.begin_world_inventory(1)
 	var/census_feed = census_begin && V.feed_loaded_level(1, list(I))
 	var/census_finish = census_feed && V.finish_world_inventory()
@@ -325,6 +328,12 @@
 	equipment_assert(stale.begin_world_inventory(1) && stale.feed_loaded_level(1, list()), "stale barrier fixture records actual empty feed")
 	stale.world_inventory_stamp--
 	equipment_assert(!stale.finish_world_inventory() && stale.discovery_locked, "stale world load barrier cannot seal census")
+	var/datum/extraction_surface_service/yielded = new(M, "data/surface_yielded_load/")
+	sleep(1)
+	equipment_assert(yielded.begin_world_inventory(1) && yielded.feed_loaded_level(1, list()), "yielded barrier fixture records actual empty feed")
+	var/yielded_stamp = yielded.world_inventory_stamp
+	sleep(1)
+	equipment_assert(world.time > yielded_stamp && !yielded.finish_world_inventory() && yielded.discovery_locked && !yielded.world_inventory_complete, "actual yield between feed and finish cannot seal census")
 	// Fixture cleanup only; production never unbinds before saved-world proof.
 	house.replica_owner = null
 	house.replica_revision = 0

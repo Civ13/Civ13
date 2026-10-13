@@ -1,12 +1,26 @@
 # Extraction survival verification
 
+Local native tests, compilers and helper runners remain held until the quiet
+window is explicitly released. Remote CI evidence is tracked separately.
+Run 38416330211 at `734e06b4e231a299337f049e118dbadc57ab19d2`
+passed the equipment/corpse fixture and all five independent vehicle diagnostics
+(positive and roster/reservation/issuance/persistence omissions), but failed the
+mode replica census. Its begin and feed succeeded; finish rejected a world tick
+change from 2 to 3. The overall run failed and does not establish mode acceptance.
+The pending fixture experiment begins the bounded one-root positive on a fresh
+ordinary tick and adds an actual yield-between-feed-and-finish rejection. It
+preserves production budget yields, freshness guards and ownership assertions.
+Neither this experiment nor the master reconciliation has runtime acceptance.
+Large yielding production restoration still needs a shared ownership contract.
+
 The native quiet-window queue includes `run_ipc.py` normally and with each
 `--receipt-negative-control action` / `--receipt-negative-control reason`, then
 each `--replay-negative-control cached` / `--replay-negative-control processed`,
 `run.py --probe store` and `run.py --probe mode`. Supply the pinned explicit
 `--byond-bin` to every command. The new receipt/census-lease assertions are
-authored but UNRUN until native permission is released. During the hold,
-`--compile-only` on these runners compiles without launching DreamDaemon.
+authored but UNRUN until native permission is released. `--compile-only` on
+these runners compiles without launching DreamDaemon; the current local hold
+also covers compilation.
 
 The surface mode queue also includes `--surface-negative-control escrow`,
 `mail_binding` and `auxiliary_pending`. These mutate generated copies only and

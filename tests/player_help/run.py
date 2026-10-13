@@ -1,0 +1,203 @@
+"""Compile actual DM help service with minimal offline adapters; no game startup."""
+import argparse
+from pathlib import Path
+import subprocess
+import tempfile
+
+ROOT = Path(__file__).resolve().parents[2]
+PRELUDE = '''
+#define TRUE 1
+#define FALSE 0
+#define SECONDS * 10
+#define GAME_STATE_PREGAME 1
+#define GAME_STATE_SETTING_UP 2
+#define GAME_STATE_PLAYING 3
+#define GAME_STATE_FINISHED 4
+#define PROCESS_PRIORITY_LOW 1
+#define AREA_OUTSIDE 1
+#define WEATHER_NONE 1
+#define WEATHER_WET 2
+#define WEATHER_EXTREME 3
+#define WEATHER_SMOG 4
+var/season = "WINTER"
+var/time_of_day = "Night"
+/area
+    var/location = AREA_OUTSIDE
+    var/weather = WEATHER_WET
+/proc/get_area(mob/M)
+    return M.loc
+/mob/living/human
+    var/obj/item/l_hand
+    var/obj/item/r_hand
+    var/obj/item/back
+    var/obj/item/wear_mask
+    var/obj/item/wear_suit
+    var/obj/item/w_uniform
+    var/obj/item/shoes
+    var/obj/item/belt
+    var/obj/item/gloves
+    var/obj/item/head
+    var/obj/item/l_ear
+    var/obj/item/r_ear
+    var/obj/item/wear_id
+    var/obj/item/l_store
+    var/obj/item/r_store
+    var/health = 45
+    var/maxHealth = 100
+    var/nutrition = 200
+    var/max_nutrition = 400
+    var/water = 175
+    var/max_water = 350
+    var/bodytemperature = 300
+    var/cold_wetness = 0.5
+    var/on_fire = TRUE
+    var/stunned = FALSE
+    var/weakened = FALSE
+/obj/item/stack
+    var/amount = 5
+/obj/item/weapon/storage
+var/list/clients = list()
+var/probe_inspections = 0
+var/datum/probe_map/map = new
+/datum/probe_map
+    var/title = "Nomads (Gaia)"
+    var/ID = "NOMADS_GAIA"
+    var/gamemode = "Classic (Stone Age Start)"
+    var/age = "5000 B.C."
+    var/ordinal_age = 0
+    var/civilizations = TRUE
+var/datum/probe_processes/processes = new
+/datum/probe_processes
+    var/process/player_help/player_help
+/process
+    var/name
+    var/schedule_interval
+    var/list/fires_at_gamestates
+    var/priority
+    proc/setup()
+    proc/fire()
+'''
+PROBE = '''
+/proc/check(condition, label)
+    if (!condition)
+        world.log << "FAIL: [label]"
+        failures++
+var/failures = 0
+/world/New()
+    world.OpenPort("none")
+    world.log << "BEGIN"
+    var/datum/player_help_service/H = player_help_service
+    H.root = "spool/"
+    var/list/context = H.game_context()
+    check(context["map"] == "Nomads (Gaia)" && context["gamemode"] == map.gamemode, "actual map and mode snapshot")
+    var/area/local_area = new
+    var/mob/living/human/player = new(local_area)
+    player.back = new /obj/item/weapon/storage(player)
+    player.back.name = "backpack"
+    var/obj/item/stack/material = new(player.back)
+    material.name = "iron"
+    var/obj/item/hidden = new(player)
+    hidden.name = "not an equipment slot"
+    var/list/inventory = H.inventory_context(player)
+    var/list/rows = inventory["items"]
+    check(rows.len == 2 && rows[2]["quantity"] == 5 && rows[2]["place"] == "backpack", "carried storage and stack quantities only")
+    for(var/i=1,i<=30,i++)
+        new /obj/item(player.back)
+    inventory = H.inventory_context(player)
+    check(inventory["items"].len == 24 && inventory["truncated"], "bounded inventory flagged incomplete")
+    var/mob/living/human/budget_player = new(local_area)
+    budget_player.back = new /obj/item/weapon/storage(budget_player)
+    for(var/i=1,i<=70,i++)
+        new /obj(budget_player.back)
+    probe_inspections = 0
+    var/list/budget_inventory = H.inventory_context(budget_player)
+    check(probe_inspections == 64 && budget_inventory["truncated"], "combined entry and child inspection budget reaches exactly 64")
+    var/list/snapshot = H.game_context(player)
+    var/list/condition = snapshot["player"]
+    check(condition["health_percent"] == 45 && condition["wetness_percent"] == 50, "asking player condition")
+    check(snapshot["season"] == "WINTER" && snapshot["time_of_day"] == "Night", "public environment")
+    check("On fire" in condition["active_effects"], "active public effect")
+    player.health = 80
+    check(H.game_context(player)["player"]["health_percent"] == 80 && condition["health_percent"] == 45, "fresh detached snapshot")
+    check(!context["player"], "no player condition without asking human")
+    map = null
+    check(H.game_context()["map"] == "Unknown", "unavailable map snapshot")
+    map = new
+    check(!H.available(), "unconfigured")
+    text2file(json_encode(list("enabled"=TRUE,"sequence"="old")), "spool/health.json")
+    check(!H.available(), "first heartbeat is not proof of running worker")
+    fdel("spool/health.json")
+    text2file(json_encode(list("enabled"=TRUE,"sequence"="new")), "spool/health.json")
+    check(H.available(), "changed heartbeat ready")
+    sleep(101)
+    check(!H.available(), "stale heartbeat")
+    fdel("spool/health.json")
+    text2file(json_encode(list("enabled"=FALSE,"sequence"="disabled")), "spool/health.json")
+    check(!H.available(), "disabled")
+    text2file("not json", "spool/bad.json")
+    check(isnull(H.read_json("spool/bad.json", 100)), "malformed")
+    check(isnull(H.read_json("spool/bad.json", 2)), "oversized")
+    var/rendered = H.render_answer("<script>alert('x')</script>")
+    check(!findtext(rendered, "<script>"), "escaped HTML")
+    check(findtext(rendered, "&lt;script&gt;"), "text retained")
+    text2file(json_encode(list("id"="old", "status"="ok", "answer"="old answer")), "spool/1.response.json")
+    check(isnull(H.matching_response(1, "new")), "wrong response identity rejected")
+    check(islist(H.matching_response(1, "old")), "matching response accepted")
+    fdel("spool/1.response.json")
+    for(var/i=1,i<=8,i++)
+        H.pending["[i]"] = list("id"="1-2-3", "client"=null, "deadline"=0)
+        text2file("request", "spool/[i].request.json")
+        text2file("1-2-3", "spool/[i].ready")
+        text2file("answer", "spool/[i].response.json")
+    H.poll()
+    check(!H.pending.len, "disconnected clients release all slots")
+    for(var/i=1,i<=8,i++)
+        check(!fexists("spool/[i].ready") && !fexists("spool/[i].request.json") && !fexists("spool/[i].response.json"), "spool cleanup")
+    world.log << "RESULT: [failures]"
+    del(world)
+'''
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--byond-bin', type=Path, required=True)
+    parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity', 'player-context', 'inventory-budget'])
+    args = parser.parse_args()
+    with tempfile.TemporaryDirectory(prefix='civ13-player-help-') as directory:
+        temp = Path(directory)
+        (temp / 'spool').mkdir()
+        production = (ROOT / 'code/game/mob/player_help.dm').read_text()
+        production = production.replace('inspected++', 'inspected++; probe_inspections++')
+        if args.negative_control == 'inventory-budget':
+            production = production.replace('queue.len >= 64 || inspected + children_inspected >= 64', 'queue.len >= 64 || children_inspected + children_inspected >= 64')
+        elif args.negative_control == 'player-context':
+            production = production.replace('round(100 * H.health / max(1, H.maxHealth))', '100')
+        elif args.negative_control == 'escaping':
+            production = production.replace('html_encode(answer)', 'answer')
+        elif args.negative_control == 'heartbeat':
+            production = production.replace('return heartbeat_confirmed && world.time - heartbeat_time < 100', 'return TRUE')
+        elif args.negative_control == 'identity':
+            production = production.replace('islist(response) && response["id"] == id', 'islist(response)')
+        (temp / 'production.dm').write_text(production)
+        (temp / 'probe.dme').write_text(PRELUDE + '\n#include "production.dm"\n' + PROBE)
+        compiler = args.byond_bin / ('dm.exe' if (args.byond_bin / 'dm.exe').exists() else 'DreamMaker')
+        daemon = args.byond_bin / ('dd.exe' if (args.byond_bin / 'dd.exe').exists() else 'DreamDaemon')
+        built = subprocess.run([str(compiler), 'probe.dme'], cwd=temp, capture_output=True, text=True, timeout=90)
+        print(built.stdout)
+        if built.returncode or '0 errors, 0 warnings' not in built.stdout:
+            raise SystemExit('Fixture compilation failed')
+        ran = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-trusted', '-close', '-log', 'probe.log'], cwd=temp, capture_output=True, text=True, timeout=40)
+        output = ran.stdout + ran.stderr + (temp / 'probe.log').read_text(errors='replace')
+        if args.negative_control:
+            if 'FAIL:' not in output:
+                raise SystemExit('Negative control not detected')
+            print('Expected negative control detected:', args.negative_control)
+        elif 'RESULT: 0' not in output or 'FAIL:' in output or any(error in output.lower() for error in ('runtime error:', 'bad ref', 'unhandled exception')):
+            print(output)
+            raise SystemExit('Native help probe failed')
+        else:
+            print('Native help probe PASS')
+
+
+if __name__ == '__main__':
+    main()

@@ -1,5 +1,11 @@
 # Abandoned debris and long rounds
 
+The source-only season wiring check runs with `tests/abandoned_items/run.py --check-season-wiring`.
+It checks both direct custom `seasons()` implementations and the base queued
+`season_apply()` worker. `python -m unittest discover -s tests/abandoned_items`
+also checks that removing a production clock hook fails verification. These
+checks do not compile or launch the game; the native fixture remains separate.
+
 Discarded rubbish and empty, unrecoverable spent casings weather away after **4 actual season changes** on maps with a changing seasonal cycle. Examining debris after **2 changes** warns that it will crumble away. There is no server-hour deadline on those maps. Four changes represent a year in the four-season cycle; wet/dry and ice-age cycles also use the chosen four-change threshold. Startup climate setup does not age debris.
 
 Maps without an active seasonal cycle use **12 hours of elapsed running-server time**, with a warning after **6 hours**. A fixed wet-season label and disabled standard seasons use this fallback. Custom seasonal cycles that run independently of the seasons setting retain seasonal aging. Day/night acceleration and time while the server is stopped do not count. Changing between clocks grants a fresh window.

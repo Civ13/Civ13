@@ -16,7 +16,7 @@
 		return TRUE
 
 /process/mapswap/proc/execute_map_swap(winner)
-	processes.python.execute("mapswap.py", list(winner))
+	return processes.python.execute("mapswap.py", list(winner))
 
 /process/mapswap/proc/selected_extraction_map()
 	var/obj/map_metadata/extraction_survival/M = map

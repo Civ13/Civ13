@@ -384,8 +384,13 @@
 	if (!maps.Find(winner))
 		winner = pick(maps)
 	if (!done)
+		#ifdef OPENDREAM
+		if (execute_map_swap(winner))
+			done = TRUE
+		#else
 		execute_map_swap(winner)
 		done = TRUE
+		#endif
 
 /process/gamemode
 	var/ready = TRUE

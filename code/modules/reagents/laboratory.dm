@@ -105,7 +105,7 @@
 
 /obj/structure/reaction_bench/verb/eject_beaker()
 	set name = "Remove reaction beaker"
-	set src in range(1, usr)
+	set src in range(1)
 	remove_beaker()
 
 /obj/structure/reaction_bench/Destroy()

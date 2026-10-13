@@ -81,11 +81,11 @@
 	if (!site)
 		return
 	for (var/obj/item/stack/S in user.contents + site.contents)
-		if (!QDELETED(S) && S.amount >= 1 && (istype(S, /obj/item/stack/sinew) || istype(S, /obj/item/stack/material/rope)))
+		if (!QDELETED(S) && S.amount >= 1 && (istype(S, /obj/item/stack/sinew) || istype(S, /obj/item/stack/material/rope) || istype(S, /obj/item/stack/crude_twine)))
 			return S
 
 /obj/item/weapon/branch/proc/axe_parts_valid(mob/user, obj/item/weapon/flint/head, obj/item/stack/binding)
-	return !QDELETED(src) && !QDELETED(user) && !QDELETED(head) && !QDELETED(binding) && sharpened && head.sharpened && user.stat == CONSCIOUS && (loc == user || loc == get_turf(user)) && head.loc == user && binding.amount >= 1 && (binding.loc == user || binding.loc == get_turf(user)) && (istype(binding, /obj/item/stack/sinew) || istype(binding, /obj/item/stack/material/rope))
+	return !QDELETED(src) && !QDELETED(user) && !QDELETED(head) && !QDELETED(binding) && sharpened && head.sharpened && user.stat == CONSCIOUS && (loc == user || loc == get_turf(user)) && head.loc == user && binding.amount >= 1 && (binding.loc == user || binding.loc == get_turf(user)) && (istype(binding, /obj/item/stack/sinew) || istype(binding, /obj/item/stack/material/rope) || istype(binding, /obj/item/stack/crude_twine))
 
 /obj/item/weapon/branch/proc/axe_assembly_wait(mob/user)
 	return do_after(user, 100, src)
@@ -98,7 +98,7 @@
 		return
 	var/obj/item/stack/binding = axe_binding(user)
 	if (!binding)
-		to_chat(user, SPAN_WARNING("You need one portion of sinew or rope in your inventory or on the ground beneath you to bind the axe head."))
+		to_chat(user, SPAN_WARNING("You need one portion of sinew, rope or crude twine in your inventory or on the ground beneath you to bind the axe head."))
 		return
 	if (!axe_parts_valid(user, head, binding))
 		return
@@ -110,12 +110,17 @@
 	assembling_axe = FALSE
 	if (!completed || !axe_actor_connected(user) || !axe_parts_valid(user, head, binding))
 		return
+	var/weak_binding = istype(binding, /obj/item/stack/crude_twine)
 	if (!binding.use(1))
 		return
 	// Invalidate the reusable head before creating the completed tool.
 	head.sharpened = FALSE
 	qdel(head)
-	new /obj/item/weapon/material/hatchet/tribal/flint(get_turf(user))
+	var/obj/item/weapon/material/hatchet/tribal/flint/axe = new(get_turf(user))
+	if (weak_binding)
+		axe.maxhealth = max(1, axe.maxhealth * 0.25)
+		axe.health = axe.maxhealth
+		axe.desc += " Its crude grass binding wears out quickly."
 	to_chat(user, SPAN_NOTICE("You finish making the bound flint axe."))
 	qdel(src)
 

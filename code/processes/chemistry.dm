@@ -13,6 +13,18 @@
 	priority = PROCESS_PRIORITY_HIGH
 	processes.chemistry = src
 
+// Restart transfers existing chemistry work; setup would discard live holders.
+/process/chemistry/copyStateFrom(var/process/chemistry/target)
+	..()
+	// BEGIN replacement chemistry
+	active_holders = target.active_holders
+	chemical_reactions = target.chemical_reactions
+	chemical_reagents = target.chemical_reagents
+	current_list = target.current_list
+	target.active_holders = null
+	target.current_list = null
+	// END replacement chemistry
+
 /process/chemistry/fire()
 
 	for (current in current_list)

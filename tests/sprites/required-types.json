@@ -1,6 +1,7 @@
 [
   "/obj/item/vehicle_key",
   "/obj/item/extraction_wheel_crate",
+  "/obj/structure/civ_generator/solar",
   "/obj/structure/component_workbench",
   "/obj/item/weapon/reagent_containers/food/snacks/grown/cinchona",
   "/obj/item/weapon/material/handle",

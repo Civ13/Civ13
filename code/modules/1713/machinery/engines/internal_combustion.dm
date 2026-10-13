@@ -69,7 +69,7 @@
 /obj/structure/engine/internal/verb/remove_fueltank()
 	set category = null
 	set name = "Remove Fueltank"
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (!ishuman(usr))
 		return

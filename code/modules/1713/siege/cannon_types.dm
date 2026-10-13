@@ -504,7 +504,7 @@
 /obj/structure/cannon/mortar/foldable/verb/retrieve()
 	set category = null
 	set name = "Retrieve"
-	set src in range(1, usr)
+	set src in range(1)
 	if (usr.l_hand && usr.r_hand)
 		to_chat(usr, (SPAN_WARNING("You need to have a hand free to do this.")))
 		return

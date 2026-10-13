@@ -202,7 +202,7 @@
 
 /obj/structure/fuelpump/verb/Manage()
 	set category = null
-	set src in range(1, usr)
+	set src in range(1)
 
 	var/mob/living/human/user
 

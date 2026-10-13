@@ -185,7 +185,7 @@
 /obj/structure/machinery/factory/verb/empty()
 	set category = null
 	set name = "Empty"
-	set src in range(1, usr)
+	set src in range(1)
 	if (iron > 0)
 		var/obj/item/stack/ore/iron/emptyediron = new/obj/item/stack/ore/iron(src.loc)
 		emptyediron.amount = iron
@@ -394,7 +394,7 @@
 /obj/structure/machinery/factory/coinsmelter/verb/emptycoin()
 	set category = null
 	set name = "Empty"
-	set src in range(1, usr)
+	set src in range(1)
 	if (goldcoin > 0)
 		var/obj/item/stack/money/goldcoin/emptyedgoldcoin = new/obj/item/stack/money/goldcoin/(src.loc)
 		emptyedgoldcoin.amount = goldcoin

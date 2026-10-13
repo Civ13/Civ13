@@ -8,6 +8,7 @@
 	var/list/requests = list()
 	execute_map_swap(winner)
 		requests += winner
+		return TRUE
 
 /obj/map_metadata/extraction_survival
 	var/list/test_owners = list()
