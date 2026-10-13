@@ -47,6 +47,19 @@
 	input.decaytimer = 1200
 	var/paid_nutrition = input.nutriments_value()
 	rack_check(rack.hang_on(input), "rack accepts paid partial input")
+	// Schedule a real production wait, replace its owner, then let the unchanged
+	// 150-tick wait wake. A stale callback must neither advance progress nor claim input.
+	rack.set_dry_timer(input, TIME_TO_DRY - 150)
+	rack.current_process_id = "fixture obsolete waiting callback"
+	rack.dry_process("fixture obsolete waiting callback")
+	rack.current_process_id = "fixture replacement holds paid input"
+	sleep(155)
+	var/stale_input_unchanged = input && input.loc == rack.storage && rack.get_dry_timer(input) == TIME_TO_DRY - 150
+	rack_check(stale_input_unchanged, "stale drying wait does not advance or consume paid input")
+	var/stale_products = 0
+	for (var/obj/item/weapon/reagent_containers/food/snacks/octopus/dried/candidate in rack.storage.contents)
+		stale_products++
+	rack_check(stale_products == 0 && abs(input.nutriments_value() - paid_nutrition) < 0.001, "stale drying wait creates no product or nutrition change")
 	rack.set_dry_timer(input, 150)
 	rack.current_process_id = "fixture suspended before export"
 	var/savefile/F = new("rack_turf.sav")

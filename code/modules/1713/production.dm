@@ -796,7 +796,8 @@
 	if (this_process<>current_process_id) //only one process for one dehydrator and this process must die
 		return
 	spawn(150) //one tick at 15 seconds will be enough
-		if (!storage) //storage remove, dehydrator dismantled, process must die
+		// Ownership can change during the wait; obsolete callbacks must not mutate current inputs.
+		if (this_process != current_process_id || !isturf(loc) || !storage || storage.loc != src || storage.master_item != src)
 			return
 		if (storage.contents.len>0)
 			for (I in storage.contents)
