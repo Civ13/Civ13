@@ -118,6 +118,15 @@ jobs:
           path: data/process-replacement
           if-no-files-found: error
 
+      - name: Verify unsupported shell compatibility with offline adapters
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/opendream_shell')
+        shell: bash
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          python3 tests/opendream_shell/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/shell-compat"
+          python3 tests/opendream_shell/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/shell-tts-control" --negative-control tts
+          python3 tests/opendream_shell/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/shell-dispatch-control" --negative-control dispatch
+
       - name: Verify explicit object processing units and negative controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/process_time')
         shell: bash
