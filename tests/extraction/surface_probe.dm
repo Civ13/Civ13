@@ -176,6 +176,7 @@
 	equipment_assert(accounts.commit_profile("inventoryowner", P), "surface inventory fixture persists ordinary offline account")
 	var/datum/extraction_surface_service/scan = new(M, "data/surface_scan/")
 	equipment_assert(scan.begin_account_inventory() && scan.account_inventory_batch() && scan.account_inventory_recheck_batch() && scan.account_inventory_complete, "surface bounded account pass rechecks stable committed profiles")
+	equipment_assert(scan.begin_auxiliary_inventory() && scan.auxiliary_inventory_batch() && scan.auxiliary_inventory_verify_batch() && scan.finish_auxiliary_inventory_batch() && scan.auxiliary_inventory_complete && scan.inventory_incomplete(), "empty auxiliary census seals only auxiliary ownership")
 	equipment_assert(scan.abandon_account_inventory() && scan.inventory_incomplete(), "abandoning completed census releases writes without authorizing loot")
 	var/datum/extraction_surface_service/changed = new(M, "data/surface_changed/")
 	equipment_assert(changed.begin_account_inventory() && changed.account_inventory_batch(), "surface revision fixture completes initial pass")
@@ -193,5 +194,75 @@
 	var/datum/extraction_surface_service/pending = new(M, "data/surface_pending/")
 	equipment_assert(pending.begin_account_inventory() && !pending.account_inventory_batch() && pending.discovery_locked, "surface newest pending account blocks inventory without rollback")
 	equipment_assert(pending.abandon_account_inventory(), "failed pending census releases only on explicit abandonment")
+	extraction_surface_auxiliary_probe(M, accounts)
 	M.accounts.store = original_store
 	M.accounts.sessions = original_sessions
+
+/proc/extraction_surface_auxiliary_probe(obj/map_metadata/extraction_survival/M, datum/extraction_account_store/accounts)
+	var/datum/extraction_surface_service/check = new(M, "data/surface_auxiliary_check/")
+	var/obj/item/extraction_salvage/item = new(null)
+	item.extraction_found_in_raid = TRUE
+	var/list/graph = M.codec.encode(item)
+	var/list/entry = list("id" = item.extraction_item_id, "equipment" = graph)
+	var/list/market = accounts.load_profile("extractionmarket")
+	market["level"] = 4
+	market["economy_system"] = "extractionmarket"
+	market["stash"] = list(entry)
+	var/listing_id = extraction_sha256("listing-fixture")
+	market["listings"] = list()
+	market["listings"][listing_id] = list("owner" = "inventoryowner", "state" = "active", "revision" = 1, "price" = 20, "item_ids" = list(entry["id"]), "graph_digests" = list())
+	market["listings"][listing_id]["graph_digests"][entry["id"]] = extraction_sha256(json_encode(graph))
+	equipment_assert(check.market_inventory_valid(market), "market binds actual escrow graph exactly once")
+	var/list/bad = json_decode(json_encode(market))
+	bad["listings"][listing_id]["graph_digests"][entry["id"]] = extraction_sha256("wrong")
+	equipment_assert(!check.market_inventory_valid(bad), "market wrong escrow digest rejected")
+	bad = json_decode(json_encode(market))
+	bad["stash"] = list()
+	equipment_assert(!check.market_inventory_valid(bad), "market missing actual escrow root rejected")
+	bad = json_decode(json_encode(market))
+	bad["listings"][extraction_sha256("duplicate-listing")] = bad["listings"][listing_id].Copy()
+	equipment_assert(!check.market_inventory_valid(bad), "market duplicate listing ownership rejected")
+	bad = json_decode(json_encode(market))
+	bad["listings"][listing_id]["state"] = "sold"
+	equipment_assert(!check.market_inventory_valid(bad), "market unbound escrow root rejected")
+	bad["stash"] = list()
+	equipment_assert(check.market_inventory_valid(bad), "closed listing is historical rather than owned escrow")
+	qdel(item)
+	// Read actual two-slot shared records, never invoke settlement ready/repair.
+	var/datum/extraction_account_store/shared = new
+	var/list/P
+	var/datum/extraction_account_store/fresh_accounts = new
+	fresh_accounts.root = "data/surface_auxiliary_accounts/"
+	M.accounts.store = fresh_accounts
+	P = fresh_accounts.load_profile("auxowner")
+	equipment_assert(fresh_accounts.commit_profile("auxowner", P), "persist auxiliary fixture owner")
+	shared.root = "[fresh_accounts.root]_settlement/"
+	P = shared.load_profile("world")
+	P["phase"] = "pending"
+	P["sequence"] = 1
+	P["history"] = list()
+	equipment_assert(shared.commit_profile("world", P), "persist isolated pending auxiliary projection")
+	var/datum/extraction_surface_service/pending = new(M, "data/surface_auxiliary_pending/")
+	equipment_assert(pending.begin_account_inventory() && pending.account_inventory_batch() && pending.account_inventory_recheck_batch() && pending.begin_auxiliary_inventory() && !pending.auxiliary_inventory_batch() && pending.discovery_locked, "pending shared projection blocks auxiliary census without repair")
+	equipment_assert(shared.load_profile("world")["phase"] == "pending" && pending.abandon_account_inventory(), "census preserves pending journal and explicit lease fence")
+	P = shared.load_profile("world")
+	P["phase"] = "committed"
+	P["sequence"] = 0
+	equipment_assert(shared.commit_profile("world", P), "fixture supplies terminal shared journal")
+	var/datum/extraction_mail_store/mail = new(M.accounts, M.codec)
+	var/list/returned = json_decode(json_encode(entry))
+	returned["returned_generation"] = 1
+	returned["eligible_generation"] = 2
+	var/list/operations = mail.plan_append("auxowner", list(returned))
+	equipment_assert(operations && mail.apply(operations), "fixture writes actual sharded mail page and identity index")
+	var/datum/extraction_surface_service/positive = new(M, "data/surface_auxiliary_positive/")
+	equipment_assert(positive.begin_account_inventory() && positive.account_inventory_batch() && positive.account_inventory_recheck_batch() && positive.begin_auxiliary_inventory() && positive.auxiliary_inventory_batch() && positive.auxiliary_inventory_verify_batch() && positive.finish_auxiliary_inventory_batch() && positive.auxiliary_inventory_complete && positive.account_ids[entry["id"]], "auxiliary census joins actual mail graphs and active identity indices")
+	equipment_assert(positive.abandon_account_inventory(), "positive auxiliary scan remains explicitly abandonable")
+	var/node_key = mail.shard_key(null, "node", entry["id"])
+	P = mail.journal.load_profile(node_key)
+	P["entry_id"] = "wrong-root"
+	equipment_assert(mail.journal.commit_profile(node_key, P), "fixture persists mismatched actual mail identity binding")
+	var/datum/extraction_surface_service/wrong = new(M, "data/surface_auxiliary_wrong/")
+	equipment_assert(wrong.begin_account_inventory() && wrong.account_inventory_batch() && wrong.account_inventory_recheck_batch() && wrong.begin_auxiliary_inventory() && wrong.auxiliary_inventory_batch() && wrong.auxiliary_inventory_verify_batch() && !wrong.finish_auxiliary_inventory_batch() && wrong.discovery_locked, "auxiliary mismatched active mail identity fails closed")
+	equipment_assert(wrong.abandon_account_inventory(), "mismatched mail retains lease until abandonment")
+	M.accounts.store = accounts

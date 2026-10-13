@@ -184,12 +184,32 @@ account-store phase writer; arbitrary external/direct filesystem writes and
 runtime world movement are not covered. No host installation or activation path
 has been granted by this source change.
 
-The profile pass does not seal total ownership. Sharded insurance mail, NPC,
-shared settlement, market ownership and cross-account projections remain missing
-feeds, as does a current-world inventory for a fresh unsaved round. The auxiliary
-completion flag remains false and no activation procedure is provided. Existing
+The profile pass validates market listings against actual escrow stash graphs:
+each active listing must bind the stored root ID and SHA-256 graph digest, no root
+can serve two active listings, and every current escrow root must be bound. Closed
+listings are historical references rather than additional owned copies. Actual
+escrow graphs enter the common account identity registry once.
+
+The read-only auxiliary census in `surface_inventory.dm` lists at most 4096
+records across settlement, groups, insurance, resolved rounds, NPC receipts,
+bot receipts and sharded mail. Each batch reads at most 16 actual journal profiles,
+rejects pending or unsupported records, then rechecks directory membership and
+profile digests. It never calls recovery, repair or equipment decoding helpers.
+Terminal NPC history is validated but is not treated as another live copy or a
+permanent tombstone: insurance can legitimately return the same identity.
+
+Mail pages contribute their actual equipment graphs to the shared 2048-ID registry.
+The final pass traverses at most 16 pages per call and rejects missing links,
+orphan pages and mismatched active node indices. Every active node must bind the
+same owner, page sequence and graph root as the stored mail graph. Historical
+inactive indices do not own equipment. Auxiliary completion requires both the
+second journal pass and this page/index reconciliation under the account lease.
+
+These feeds do not establish total ownership or provide an activation procedure.
+A current-world inventory for a fresh unsaved round remains missing. Existing
 world/account duplicates are quarantined conservatively; canonical saved-world
-versus account-home replica ownership still needs an explicit contract.
+versus account-home replica ownership still needs a durable owner/location
+contract. Runtime movement and external writers remain outside the read lease.
 
 Forfeited graph identities enter a durable epoch retirement index before advancing
 the epoch. The index retains at most 2048 IDs with no eviction; exhaustion blocks
@@ -201,7 +221,8 @@ unbounded history ledger or permission to restore historical snapshots.
 Authored native vectors cover missing-level refusal, successful world-only
 completion, refusal of missing auxiliary completion, stable offline-account
 inventory, competing store/child-journal writes, revoked leases, pending account
-commits and a retired snapshot
+commits, pending shared projections, actual escrow digest/root binding, sharded
+mail graph/index reconciliation, mismatched active mail indices and a retired snapshot
 loaded after restart. They are UNRUN until native testing is released. Compile-only
 success does not establish successful world restoration, multi-account inventory,
 garage/mail conservation, runtime performance or OpenDream acceptance.
@@ -215,3 +236,8 @@ Generated `--surface-negative-control inventory|retirement|identity` variants
 omit the expected-level guard, retired-ID persistence or no-new-ID encoding
 respectively. Each must fail only its named fixture assertion. These controls
 are authored and native UNRUN; compilation is not omission detection evidence.
+
+Generated `--surface-negative-control escrow|mail_binding|auxiliary_pending`
+variants omit the escrow digest comparison, active mail graph/index comparison,
+or shared-journal terminal-phase check. They must fail only their named assertions.
+They are authored and native UNRUN while the quiet window remains active.

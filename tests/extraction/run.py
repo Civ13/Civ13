@@ -23,7 +23,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--compile-only', action='store_true', help='Compile the isolated fixture without launching DreamDaemon')
-    parser.add_argument('--surface-negative-control', choices=('epoch', 'claim', 'duplicate', 'movement', 'discovery', 'forfeit', 'inventory', 'retirement', 'identity'))
+    parser.add_argument('--surface-negative-control', choices=('epoch', 'claim', 'duplicate', 'movement', 'discovery', 'forfeit', 'inventory', 'retirement', 'identity', 'escrow', 'mail_binding', 'auxiliary_pending'))
     parser.add_argument('--probe', choices=('store', 'restart', 'settlement', 'equipment', 'mode', 'npc', 'city', 'insurance', 'groups', 'vehicles'), default='store')
     parser.add_argument('--provenance-negative-control', action='store_true')
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry', 'disruptive_creation', 'disruptive_pending', 'disruptive_result'))
@@ -131,7 +131,8 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         if surface_control:
-            surface = (root / 'code/modules/1713/extraction/surface_loot.dm').read_text(encoding='utf-8')
+            surface_path = 'code/modules/1713/extraction/' + ('surface_inventory.dm' if surface_control in ('mail_binding', 'auxiliary_pending') else 'surface_loot.dm')
+            surface = (root / surface_path).read_text(encoding='utf-8')
             marker, replacement = {
                 'epoch': ('\t\tepoch_profile = store.load_profile("epoch")', '\t\tepoch_profile = store.load_profile("epoch")\n\t\tif (epoch_profile && epoch_profile["revision"]) epoch_profile["raid_sequence"]++'),
                 'claim': ('\t\tP["surface_state"] = "claiming"', '\t\tP["surface_state"] = "issued"'),
@@ -140,6 +141,9 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 'inventory': ('world_inventory_levels.len != world_inventory_expected', 'FALSE'),
                 'retirement': ('E["surface_retired_ids"] = retired', 'E["surface_retired_ids"] = list()'),
                 'identity': ('var/list/graph = metadata.codec.encode(I, FALSE)', 'var/list/graph = metadata.codec.encode(I)'),
+                'escrow': ('extraction_sha256(json_encode(entry["equipment"])) != digests[item_id]', 'FALSE'),
+                'mail_binding': ('json_encode(mail_expected_nodes[id]) != json_encode(mail_active_nodes[id])', 'isnull(id)'),
+                'auxiliary_pending': ('P["phase"] != "committed"', 'FALSE'),
                 'discovery': ('if (discovered_ids[id] || account_ids[id])', 'if (account_ids[id])'),
                 'forfeit': ('\t\t\tqdel(I)\n\t\t\tif (I && I.loc)', '\t\t\t// Negative control: omit root retirement\n\t\t\tif (I && I.loc)'),
             }[surface_control]
@@ -148,7 +152,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             control = root / (prefix + '_surface.dm')
             generated.append(control)
             control.write_text(surface.replace(marker, replacement), encoding='utf-8')
-            source = source.replace('code\\modules\\1713\\extraction\\surface_loot.dm', control.name)
+            source = source.replace(surface_path.replace('/', '\\'), control.name)
         if workshop_control:
             workshop = (root / 'code/modules/1713/extraction/private_car_workshop.dm').read_text(encoding='utf-8')
             marker, replacement = {
@@ -384,6 +388,9 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                         'inventory': 'surface incomplete world levels cannot seal discovery',
                         'retirement': 'surface forfeited identity remains in durable epoch retirement index',
                         'identity': 'surface loaded identity discovery never mints missing item identity',
+                        'escrow': 'market wrong escrow digest rejected',
+                        'mail_binding': 'auxiliary mismatched active mail identity fails closed',
+                        'auxiliary_pending': 'pending shared projection blocks auxiliary census without repair',
                         'discovery': 'surface duplicate loaded roots lock discovery',
                         'forfeit': 'surface round forfeit retires actual root before acknowledgement',
                     }[surface_control]
