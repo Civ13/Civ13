@@ -35,6 +35,7 @@ world
 	OpenPort("none")
 	..()
 	try
+		check_save_transfers()
 		check_save_identity_and_snapshot()
 		if(world.params["large"])
 			world.maxx = 500
@@ -107,6 +108,7 @@ world
 		check(map_storage.Save_World(), "second export failed")
 		check(fexists("map_backups/save_complete.txt"), "backup completion marker missing")
 		check(map_storage.validate_world_save(), "second export rejected")
+		check_transfer_failed_generation()
 		if(!world.params["large"])
 			delete_failure_path = "map_saves/save_complete.txt"
 			var/datum/controller/gameticker/deletion_failure_ticker = new
