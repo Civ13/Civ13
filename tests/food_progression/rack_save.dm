@@ -82,7 +82,13 @@
 		rack_check(!istype(saved, /obj/item/weapon/storage/internal), "rack graph excludes empty runtime storage wrapper")
 		if (saved.type == /obj/item/weapon/reagent_containers/food/snacks/octopus)
 			saved_inputs++
+	var/input_ref = map_storage.saving_references["\ref[input]"]
+	var/turf_path = map_storage.entry_path(F, turf_ref)
+	var/list/turf_content_refs = params2list(F["[turf_path]/content"])
+	var/input_reachable = input_ref && ("[input_ref]" in turf_content_refs)
+	world.log << "RACK_GRAPH paid_input_pins=[saved_inputs] input_ref=[input_ref] direct_turf_ref=[input_reachable] dropped_to_turf=[input.loc == T] turf_content_count=[turf_content_refs.len]"
 	rack_check(saved_inputs == 1, "native turf graph saves exactly one paid input")
+	rack_check(input_reachable, "owning turf graph references saved paid input")
 	// Insert an obsolete field after the clean-export assertion to check import exclusion too.
 	F["[rack_path]/current_process_id"] << list("kind" = "value", "value" = "obsolete imported process")
 	map_storage.clear_bookkeeping()
