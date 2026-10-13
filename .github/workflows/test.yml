@@ -346,6 +346,7 @@ jobs:
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --baseline --output "$RUNNER_TEMP/lighting-baseline.json"
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --compare "$RUNNER_TEMP/lighting-baseline.json" --output "$RUNNER_TEMP/lighting-current.json"
       - name: Verify native wall appearance and neighbor work
+        id: wall_appearance
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/wall_appearance')
         shell: bash
         run: |
@@ -355,7 +356,7 @@ jobs:
           python3 tests/wall_appearance/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control duplicate --output "$RUNNER_TEMP/wall-duplicate.json"
           python3 tests/wall_appearance/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control overlay --output "$RUNNER_TEMP/wall-overlay.json"
       - name: Retain wall appearance comparison evidence
-        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/wall_appearance'))
+        if: always() && steps.wall_appearance.outcome != 'skipped' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/wall_appearance'))
         uses: actions/upload-artifact@v4
         with:
           name: wall-appearance-comparison
@@ -393,6 +394,7 @@ jobs:
         shell: bash
 
       - name: Verify direct nuclear fallout scope and controls
+        id: radiation_scope
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/radiation_scope')
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -400,7 +402,7 @@ jobs:
           python3 tests/radiation_scope/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control cross-z --output-dir "$RUNNER_TEMP/radiation-scope/cross-z"
           python3 tests/radiation_scope/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control normalization --output-dir "$RUNNER_TEMP/radiation-scope/normalization"
       - name: Retain nuclear fallout scope evidence
-        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/radiation_scope'))
+        if: always() && steps.radiation_scope.outcome != 'skipped' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/radiation_scope'))
         uses: actions/upload-artifact@v4
         with:
           name: radiation-scope
