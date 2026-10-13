@@ -75,6 +75,74 @@ recovery. Reconnection cannot silently refresh an expired selection.
 
 ## Publication and recovery ordering
 
+### Smallest existing game adapter seam
+
+The current production seam is `map_storage.restore_policy`, consumed by
+`gameticker.loadmap()` in `code/modules/persistence/functions.dm`. It is optional
+to preserve ordinary map loading. Its base implementation rejects a provider
+attempt; no production broker subclass or authenticated host channel exists.
+
+| Current implemented call | Proposed host responsibility | Missing input |
+| --- | --- | --- |
+| `policy.begin_attempt(storage)` | Bind one process instance, operation, generation and exact member set; acquire a selected reader set | Authenticated host identity/channel and immutable member custody |
+| `storage.validate_world_save()` | Validate the same selected level/metadata bytes later consumed | Serializer reader adapter; current pathname validation is not pinned selection proof |
+| `attempt.before_mutation()` | Commit reservation and conservatively durable mutation-started before returning exact TRUE | Journal writer, durable commit barrier and bound reservation/transition receipt |
+| `attempt.fail(phase, error, mutation_started)` | Preserve journal recovery; return a failure receipt bound to the attempt | Authoritative recovery lookup and unfinished-operation admission gate |
+| `attempt.release_transients()` | Close selected readers exactly once without finalizing or deleting recovery | Host close-selection acknowledgment and ownership lifecycle |
+| No current call | `finalize_restore` after restored world, metadata and custody verification | New explicit finalize/admission seam; transient cleanup cannot substitute |
+| No current call | `recover_pending` before game or account admission | Startup reconciliation owner and admission integration |
+
+The existing wrapper returns success after world/metadata restoration and transient
+release. That success is not broker finalization, admission approval or faction
+asset ownership proof. Do not implement a provider that hides finalization inside
+`release_transients`: the wrapper invokes that method on both success and failure.
+The ordinary null-policy path is not a durable faction-war activation path.
+
+The wrapper's `mutation_started = TRUE` immediately before `ClearMap()` is only
+a local failure-accounting flag. There is no provider callback between the
+reservation hook and first disposal. For the smallest existing-seam candidate,
+`before_mutation()` must conservatively commit both reserved and mutation-started
+in the durable journal before returning TRUE. A later binding rejection or abort
+before disposal may therefore leave a mutation-started record and retain recovery.
+Never infer that the world is untouched from journal state alone. An alternative
+requires a new explicit durable transition hook before `ClearMap()`; it cannot
+rely on the existing Boolean as a host receipt.
+
+Before adding a production subclass, the host owner must supply the selected
+API's authenticated caller/process binding, persistent operation/recovery identity,
+generation/member schema and durable journal location outside every rollback-world
+namespace. The serializer owner must select the acquire/read/close adapter that
+consumes the reserved members. The admission owner must identify the actual startup,
+reconnect, deployment and cross-server transfer entry points to gate. These are
+required inputs, not tasks delegated to a new competing provider.
+
+The smallest proposed transaction contract is monotonic: reserved, mutation
+started, restore verified, finalized. Each unfinished durable state blocks
+admission; process death or channel loss does not erase it. A retry of the same
+operation with the same generation and members returns the existing recovery
+record. Reuse of an operation identity with different generation, members or
+decision rejects. Retry binding also includes the world/root/server identity and
+every durable reservation field. A newly authenticated process may reconcile an
+existing recovery record, but must acquire a newly bound transient selection;
+it cannot silently reuse the previous process's handles. Finalize retries return the journal's existing decision only
+when all binding fields match; a conflicting decision never overwrites it.
+Restart reconciliation reads journal state rather than inferring completion from
+world contents, a callback return, absent native handles or a lost acknowledgment.
+
+This is a source contract proposal, not an implemented journal or a tested host
+transaction. A bounded next candidate must supply the durable mutation-started
+bridge as well as the explicit finalize/startup gate
+only after the above owners provide their exact APIs and integration entry points.
+No synthetic receipt should be accepted as durable provider evidence.
+
+Initial source locations for the admission owner's inventory include
+`code/setup.dm` and `code/modules/persistence/admin.dm` callers of `loadmap`,
+extraction `mode.dm` admission/deployment, `groups.dm` party deployment,
+`vehicle_raid.dm` vehicle deployment, `code/game/jobs/job_controller.dm` extraction
+admission, and `native_market.dm` re-admission after settlement. This is a starting
+inventory, not exhaustive faction/reconnect/cross-server ownership coverage or
+authorization to edit another owner's entry points.
+
 The broker bounds member count, per-member bytes and aggregate bytes before and
 during streaming copy. It hashes raw bytes while copying to a new staging
 directory. Source files must already be closed and held under the save operation's
