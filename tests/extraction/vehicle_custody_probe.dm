@@ -1,5 +1,6 @@
 // Uses the already assembled fixture car. No accounts or credits are modified.
 /proc/extraction_vehicle_custody_probe(obj/structure/vehicleparts/axis/A)
+	extraction_vehicle_custody_depth_probe()
 	var/datum/extraction_vehicle_transfer/T = new
 	equipment_assert(T.capture(A, TRUE), "custody fixture begins with issued existing cargo")
 	var/obj/structure/table/carboot/boot
@@ -88,6 +89,32 @@
 	T.capture(null)
 	equipment_assert(isnull(T.cargo_roster) && isnull(T.cargo_record), "capture reset releases cargo reference roster")
 	qdel(bag)
+
+/proc/extraction_vehicle_custody_depth_probe()
+	// Exercise native containment independently of the cargo weight limit, so
+	// capacity refusal cannot hide an off-by-one in the actual member roster.
+	var/obj/item/weapon/storage/backpack/root = new(null)
+	var/obj/item/weapon/storage/backpack/parent = root
+	for (var/i in 1 to 5)
+		parent = new /obj/item/weapon/storage/backpack(parent)
+	var/obj/item/extraction_wheel_crate/crate = new(parent)
+	var/datum/extraction_vehicle_cargo/C = new
+	var/datum/extraction_equipment_codec/E = new
+	var/list/members = list()
+	var/list/seen = list()
+	equipment_assert(C.collect_members(root, members, seen, 1, E) && members.len == 8 && members[8] == crate.wheel, "native packed wheel is accepted at actual depth eight")
+	var/obj/item/weapon/storage/backpack/extra = new(parent)
+	crate.forceMove(extra)
+	members = list()
+	seen = list()
+	equipment_assert(!C.collect_members(root, members, seen, 1, E), "native packed wheel refuses actual depth nine")
+	crate.forceMove(parent)
+	extra.forceMove(null)
+	qdel(extra)
+	members = list()
+	seen = list()
+	equipment_assert(C.collect_members(root, members, seen, 1, E) && members.len == 8 && members[8] == crate.wheel, "restored packed wheel depth validates original membership")
+	qdel(root)
 
 /proc/extraction_vehicle_custody_save_flags(list/flags, message)
 	for (var/atom/movable/member in flags)

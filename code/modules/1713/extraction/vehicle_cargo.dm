@@ -15,7 +15,7 @@
 		members += I
 		if (I.type == /obj/item/extraction_wheel_crate)
 			var/obj/item/extraction_wheel_crate/W = I
-			if (!W.wheel || W.wheel.loc != W || seen[W.wheel] || members.len >= EXTRACTION_EQUIPMENT_NODES) return FALSE
+			if (!W.wheel || W.wheel.loc != W || seen[W.wheel] || depth >= EXTRACTION_EQUIPMENT_DEPTH || members.len >= EXTRACTION_EQUIPMENT_NODES) return FALSE
 			seen[W.wheel] = TRUE
 			members += W.wheel
 			return TRUE

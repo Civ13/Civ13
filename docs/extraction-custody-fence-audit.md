@@ -204,3 +204,7 @@ non-issuance and persistence mutation; each requires its named assertion and rej
 These are source changes awaiting independent review and remote/native execution.
 The new executable test selects the existing extraction suite through introduced
 tests; the existing CI extraction step includes all four omission controls.
+The packed wheel counts as a native descendant for the depth bound: a crate at
+depth seven can retain its wheel at depth eight, while a crate at depth eight
+is refused. A direct native-containment boundary fixture avoids the independent
+cargo weight limit masking this check and verifies restoration after refusal.
