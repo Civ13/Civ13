@@ -141,6 +141,15 @@ class BridgeTests(unittest.TestCase):
         self.assertIn('WINTER', calls[0][1]['messages'][0]['content'])
         self.assertIn('health_percent', calls[0][1]['messages'][0]['content'])
 
+    def test_inventory_projection_bounds_and_excludes_internal_data(self):
+        rows = [{'name': 'iron' * 100, 'quantity': 5, 'place': 'backpack', 'serial': 'SECRET'}] * 30
+        result = bridge.public_game_context({'game_context': {'player': {'inventory': {'items': rows, 'truncated': False}}}})
+        inventory = result['player']['inventory']
+        self.assertEqual(len(inventory['items']), 24)
+        self.assertTrue(inventory['truncated'])
+        self.assertEqual(len(inventory['items'][0]['name']), 80)
+        self.assertNotIn('SECRET', json.dumps(result))
+
     def test_bounded_output(self):
         instance = self.make(lambda *args: {'message': {'content': 'x' * 9000}})
         self.request()

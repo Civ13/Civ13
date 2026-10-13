@@ -27,6 +27,21 @@ var/time_of_day = "Night"
 /proc/get_area(mob/M)
     return M.loc
 /mob/living/human
+    var/obj/item/l_hand
+    var/obj/item/r_hand
+    var/obj/item/back
+    var/obj/item/wear_mask
+    var/obj/item/wear_suit
+    var/obj/item/w_uniform
+    var/obj/item/shoes
+    var/obj/item/belt
+    var/obj/item/gloves
+    var/obj/item/head
+    var/obj/item/l_ear
+    var/obj/item/r_ear
+    var/obj/item/wear_id
+    var/obj/item/l_store
+    var/obj/item/r_store
     var/health = 45
     var/maxHealth = 100
     var/nutrition = 200
@@ -38,6 +53,9 @@ var/time_of_day = "Night"
     var/on_fire = TRUE
     var/stunned = FALSE
     var/weakened = FALSE
+/obj/item/stack
+    var/amount = 5
+/obj/item/weapon/storage
 var/list/clients = list()
 var/datum/probe_map/map = new
 /datum/probe_map
@@ -73,6 +91,19 @@ var/failures = 0
     check(context["map"] == "Nomads (Gaia)" && context["gamemode"] == map.gamemode, "actual map and mode snapshot")
     var/area/local_area = new
     var/mob/living/human/player = new(local_area)
+    player.back = new /obj/item/weapon/storage(player)
+    player.back.name = "backpack"
+    var/obj/item/stack/material = new(player.back)
+    material.name = "iron"
+    var/obj/item/hidden = new(player)
+    hidden.name = "not an equipment slot"
+    var/list/inventory = H.inventory_context(player)
+    var/list/rows = inventory["items"]
+    check(rows.len == 2 && rows[2]["quantity"] == 5 && rows[2]["place"] == "backpack", "carried storage and stack quantities only")
+    for(var/i=1,i<=30,i++)
+        new /obj/item(player.back)
+    inventory = H.inventory_context(player)
+    check(inventory["items"].len == 24 && inventory["truncated"], "bounded inventory flagged incomplete")
     var/list/snapshot = H.game_context(player)
     var/list/condition = snapshot["player"]
     check(condition["health_percent"] == 45 && condition["wetness_percent"] == 50, "asking player condition")

@@ -12,7 +12,7 @@ var/global/datum/player_help_service/player_help_service = new
 	if (!player_help_service.available())
 		src << "AI gameplay help is not configured or its service is unavailable. You can still use the Crafting Atlas."
 		return
-	var/question = input(src, "Ask a gameplay question. Your question and gameplay condition (health, exposure and public server state) are sent to the server owner's AI service. Do not enter personal information.", "Ask for help") as text|null
+	var/question = input(src, "Ask a gameplay question. Your question and gameplay condition (health, inventory, exposure and public server state) are sent to the server owner's AI service. Do not enter personal information.", "Ask for help") as text|null
 	if (client && question)
 		player_help_service.submit(client, question)
 
@@ -59,6 +59,49 @@ var/global/datum/player_help_service/player_help_service = new
 		return response
 	return null
 
+// Traverse only carried equipment and storage, never implants or other mobs.
+// At most 24 items, 64 inspected entries and two container levels per question.
+/datum/player_help_service/proc/inventory_context(mob/living/human/H)
+	var/list/slots = list("left hand" = H.l_hand, "right hand" = H.r_hand, "back" = H.back, "mask" = H.wear_mask, "suit" = H.wear_suit, "uniform" = H.w_uniform, "shoes" = H.shoes, "belt" = H.belt, "gloves" = H.gloves, "head" = H.head, "left ear" = H.l_ear, "right ear" = H.r_ear, "ID slot" = H.wear_id, "left pocket" = H.l_store, "right pocket" = H.r_store)
+	var/list/queue = list()
+	for (var/slot in slots)
+		var/obj/item/I = slots[slot]
+		if (I && I.loc == H)
+			queue += list(list("item" = I, "place" = slot, "depth" = 0))
+	var/list/items = list()
+	var/list/seen = list()
+	var/inspected = 0
+	var/children_inspected = 0
+	var/truncated = FALSE
+	for (var/index = 1, index <= queue.len, index++)
+		if (items.len >= 24 || inspected + children_inspected >= 64)
+			truncated = TRUE
+			break
+		var/list/entry = queue[index]
+		var/obj/item/I = entry["item"]
+		inspected++
+		if (!I || (I in seen))
+			continue
+		seen += I
+		var/quantity = 1
+		if (istype(I, /obj/item/stack))
+			var/obj/item/stack/S = I
+			quantity = max(0, min(100000, S.amount))
+		items += list(list("name" = copytext(html_decode("[I.name]"), 1, 81), "quantity" = quantity, "place" = copytext(entry["place"], 1, 81)))
+		if (istype(I, /obj/item/weapon/storage))
+			if (entry["depth"] >= 2)
+				if (I.contents.len)
+					truncated = TRUE
+			else
+				for (var/atom/child in I.contents)
+					if (queue.len >= 64 || children_inspected + children_inspected >= 64)
+						truncated = TRUE
+						break
+					children_inspected++
+					if (istype(child, /obj/item))
+						queue += list(list("item" = child, "place" = copytext(html_decode("[I.name]"), 1, 81), "depth" = entry["depth"] + 1))
+	return list("items" = items, "truncated" = truncated)
+
 // Read public map metadata directly; never accept player text as server state.
 /datum/player_help_service/proc/game_context(mob/asking_player)
 	var/list/context = list("map" = "Unknown", "gamemode" = "Unknown")
@@ -81,6 +124,7 @@ var/global/datum/player_help_service/player_help_service = new
 			if (A.location == AREA_OUTSIDE && A.weather != WEATHER_NONE)
 				events += "Exposed to local weather"
 		condition["active_effects"] = events
+		condition["inventory"] = inventory_context(H)
 		context["player"] = condition
 	return context
 
