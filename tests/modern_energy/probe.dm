@@ -17,7 +17,7 @@ var/list/energy_ci_errors = list()
 	if (actual != expected)
 		energy_ci_errors += label
 /proc/run_modern_energy_checks()
-	OpenPort("none")
+	world.OpenPort("none")
 	GLOB.moved_event = new /decl/observ/moved
 	makeDatumRefLists()
 	populate_material_list()
