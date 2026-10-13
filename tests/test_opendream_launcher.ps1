@@ -54,7 +54,11 @@ try {
     (Get-Item -LiteralPath $parent -Force).Delete()
     Move-Item -LiteralPath $originalParent -Destination $parent
 
-    function Start-ClientProcess {return $fakeClient}
+    function Start-ClientProcess {
+        Require (!$env:ROBUST_CVAR_LAUNCHER_TEST) 'Child must exclude inherited per-variable configuration'
+        Require (!$env:ROBUST_CVARS) 'Child must exclude inherited bulk configuration'
+        return $fakeClient
+    }
     function Stop-ClientProcessTree($process) {
         Require ($process -eq $fakeClient) 'Stop must use the returned launch handle'
         $script:stopped = $true
@@ -78,7 +82,9 @@ try {
     $configuration = [pscustomobject]@{game_port=18452}
     $state.client = $null
     $oldOverride = $env:ROBUST_CVAR_LAUNCHER_TEST
+    $oldBulkOverride = $env:ROBUST_CVARS
     $env:ROBUST_CVAR_LAUNCHER_TEST = 'fixture'
+    $env:ROBUST_CVARS = 'opendream.native_byond_bin=fixture-untrusted'
     try {
         Expect-Failure {Start-VerifiedClient $verified} 'injected state-write failure'
         Require $script:stopped 'Failed record write must stop exact launched client'
@@ -86,7 +92,11 @@ try {
         Require (!$state.client) 'Failed launch must clear client state after confirmed exit'
         Require (!(Test-Path -LiteralPath $owned)) 'Failed launch must reclaim its runtime after exit'
         Require ($env:ROBUST_CVAR_LAUNCHER_TEST -eq 'fixture') 'Calling environment must be restored'
-    } finally {$env:ROBUST_CVAR_LAUNCHER_TEST = $oldOverride}
+        Require ($env:ROBUST_CVARS -eq 'opendream.native_byond_bin=fixture-untrusted') 'Calling bulk configuration must be restored'
+    } finally {
+        $env:ROBUST_CVAR_LAUNCHER_TEST = $oldOverride
+        $env:ROBUST_CVARS = $oldBulkOverride
+    }
     Write-Output 'PASS production launcher ownership, redirected-parent rejection and state-write recovery (injected effects)'
 } finally {
     $resolved = [IO.Path]::GetFullPath($temporary)

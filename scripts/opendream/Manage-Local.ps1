@@ -81,7 +81,7 @@ function Stop-LaunchedClient($process) {
 function Start-VerifiedClient($verified) {
     $oldEnvironment = @{}
     foreach ($entry in Get-ChildItem Env:) {
-        if ($entry.Name -eq 'ROBUST_DISABLE_SANDBOX' -or $entry.Name -like 'ROBUST_AUTH_*' -or $entry.Name -like 'ROBUST_CVAR_*' -or $entry.Name -like 'ROBUST_MODULE_*') {
+        if ($entry.Name -eq 'ROBUST_DISABLE_SANDBOX' -or $entry.Name -eq 'ROBUST_CVARS' -or $entry.Name -like 'ROBUST_AUTH_*' -or $entry.Name -like 'ROBUST_CVAR_*' -or $entry.Name -like 'ROBUST_MODULE_*') {
             $oldEnvironment[$entry.Name] = $entry.Value
             Remove-Item -LiteralPath "Env:$($entry.Name)"
         }
