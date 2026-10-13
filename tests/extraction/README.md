@@ -2,6 +2,7 @@
 
 The native quiet-window queue includes `run_ipc.py` normally and with each
 `--receipt-negative-control action` / `--receipt-negative-control reason`, then
+each `--replay-negative-control cached` / `--replay-negative-control processed`,
 `run.py --probe store` and `run.py --probe mode`. Supply the pinned explicit
 `--byond-bin` to every command. The new receipt/census-lease assertions are
 authored but UNRUN until native permission is released. During the hold,

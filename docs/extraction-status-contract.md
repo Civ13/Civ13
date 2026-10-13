@@ -102,6 +102,12 @@ action: all 15 supported actions can have receipts. Terminal operation status
 must match the nested receipt status; pending/not_found must carry null receipt.
 Recursive status envelopes are bounded to 64 levels. The adapter's three-field
 pending recovery result is never exposed as a terminal receipt.
+Direct economic replay and account-receipt returns pass the same validator before
+returning from `process_wire`, including equality with the known request action.
+Malformed receipts return pending recovery without committing a replacement;
+`durable_response` also refuses them. The injected replay fixture covers both
+cached adapter receipts and adapter processing returns, including a supported
+but incorrect action. Spool validation is not the only return-path guard.
 
 These new validator assertions are authored but native execution is held until
 the quiet window is released. `tests/extraction/run_ipc.py --compile-only`
