@@ -9,7 +9,12 @@ adapter, receipts, opt-in ledger and tests. Serializer PR3105 at
 or an accepted generation API. Shared implementation requires exact-diff review
 and coordinator scope release. All local execution remains held.
 
-The minimal shared entry-point changes below specify token propagation, explicit
+The initial entry-point diff below is superseded by the revised contract in
+`extraction-persistence-review-v2.md`. It is retained as review history and must
+not be applied: it reopened mutable paths, ignored callback results and lacked
+complete token propagation. The revised contract is still review-only.
+
+The initial shared entry-point changes below specify token propagation, explicit
 file closure and callback locations. The serializer must supply the policy and
 operation types before any patch is applied. These are exact replacement hunks,
 with source context, rather than a working implementation of the policy. Tabs in the diff block are encoded as literal \t for Markdown; decode them before a whitespace-aware applicability check against the CRLF checkout.
