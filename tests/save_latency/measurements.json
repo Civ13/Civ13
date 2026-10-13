@@ -175,6 +175,78 @@
         "No backup or load acceptance; watchdog stopped verified owned process after first metric.",
         "Prior five-second gap not reproduced."
       ]
+    },
+    {
+      "name": "small_before_entry_path_cache",
+      "parameters": {
+        "baseline": null,
+        "large": false,
+        "dense": false,
+        "scenario": null,
+        "interrupt": false,
+        "benchmark_only": false,
+        "negative_control": null,
+        "trace_units": false,
+        "head": "083cebd74f0c7c7cac51ea9bb1f7164da7ab2d1d",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "eae43f9c598a2911a8984f2d35b01c612c770d6fcbc557cca7d987f242e9ea7c",
+          "code/modules/persistence/saving.dm": "2e5569761cc7a99002a5bf5b6c751f0489e006d077cecc47df7ece0bca7a4199",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "first_seconds": 6.4,
+      "backup_seconds": 6.7,
+      "max_gap_seconds": [
+        0.1,
+        0.1
+      ],
+      "status": "passed_roundtrip",
+      "restored_children": 1000,
+      "runtime_sha256": "fd52144d15a0c2a4ef8e94835563beb9e9835a3e47813f82e0b84ab9e300675a",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-rmho4tbj",
+      "limitations": [
+        "One sequential small comparison does not establish a reliable speedup.",
+        "Not large-world or production acceptance."
+      ]
+    },
+    {
+      "name": "small_entry_path_cache",
+      "parameters": {
+        "baseline": null,
+        "large": false,
+        "dense": false,
+        "scenario": null,
+        "interrupt": false,
+        "benchmark_only": false,
+        "negative_control": null,
+        "trace_units": false,
+        "head": "083cebd74f0c7c7cac51ea9bb1f7164da7ab2d1d",
+        "sources": {
+          "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+          "tests/world_save/stubs.dm": "520179d6798f082ca8dd8db6d190da361f36ae1fcbaebd5695b8f99d1336cb30",
+          "code/modules/persistence/functions.dm": "eae43f9c598a2911a8984f2d35b01c612c770d6fcbc557cca7d987f242e9ea7c",
+          "code/modules/persistence/saving.dm": "682c8d80d4702dab7df66ef78a53b33521f2f1d2e25de3bccdb30fb9dee98b84",
+          "code/modules/persistence/loading.dm": "dfa9881553d9d3fbe1d828338bc8424d437dd1d361f470c203ddfa54a700a29a",
+          "tests/save_latency/probe.dm": "429218e4e59b5649d008a1b1910121c88478051da6002c55f48f321afed84baf"
+        }
+      },
+      "first_seconds": 6.0,
+      "backup_seconds": 6.7,
+      "max_gap_seconds": [
+        0.1,
+        0.1
+      ],
+      "status": "passed_roundtrip",
+      "restored_children": 1000,
+      "runtime_sha256": "d08aedffc90e1e47b5cd92dd3e25fb3683bd46ca7cb5a7cc63a9b3522060e520",
+      "evidence_directory": "C:\\Users\\valza\\AppData\\Local\\Temp\\civ13-save-latency-nchu7f3m",
+      "limitations": [
+        "One sequential small comparison does not establish a reliable speedup.",
+        "Not large-world or production acceptance."
+      ]
     }
   ]
 }

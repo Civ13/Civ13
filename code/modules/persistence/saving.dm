@@ -170,7 +170,9 @@
 		if(A.vars.Find(key))
 			saved_keys += key
 			values += list(A.vars[key])
-	F["[entry_path(F, ref)]/type"] << saved_type
+	// The format and numeric entry identity are fixed for this savefile.
+	var/entry_directory = entry_path(F, ref)
+	F["[entry_directory]/type"] << saved_type
 	saving_content_flags[ref] = capture_contents
 	// Capturing ancestors also covers objects discovered through saved variables
 	// before their turf is scanned. Pins terminate parent/child reference cycles.
@@ -183,7 +185,7 @@
 		save_work_check()
 	for(var/i = 1, i <= saved_keys.len, i++)
 		var/encoded = encode_saved_value(F, values[i])
-		F["[entry_path(F, ref)]/[saved_keys[i]]"] << encoded
+		F["[entry_directory]/[saved_keys[i]]"] << encoded
 		save_work_check()
 	return ref
 
