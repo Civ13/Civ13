@@ -42,6 +42,37 @@
 	ipc_assert(!extraction_ipc_receipt(outer, "original", "123", digest), "nested terminal status must agree")
 	ipc_assert(!extraction_ipc_receipt(original, "different", "123", digest) && !extraction_ipc_receipt(original, "original", "456", digest) && !extraction_ipc_receipt(original, "original", "123", extraction_sha256("different")), "receipt identity is bound to original request")
 
+/datum/ipc_replay_fixture
+	var/list/result
+	var/cached = TRUE
+	proc/receipt(datum/extraction_ipc_service/service, owner, request_id, digest)
+		return cached ? result.Copy() : null
+	proc/process(datum/extraction_ipc_service/service, list/request, list/candidate, now_text, owner)
+		var/list/reply = result.Copy()
+		reply["account_receipt"] = TRUE
+		return reply
+
+/proc/ipc_direct_replay_assertions(datum/extraction_ipc_service/service)
+	var/list/test = json_decode(file2text("replay_guard.json"))
+	var/list/request = extraction_ipc_request(extraction_ipc_verify(test["wire"], service.key, "1000"))
+	ipc_assert(islist(request), "independent replay-guard wire authenticates")
+	var/datum/ipc_replay_fixture/adapter = new
+	service.economic_adapter = adapter
+	var/revision = service.profile["revision"]
+	for (var/cached in list(TRUE, FALSE))
+		adapter.cached = cached
+		adapter.result = service.response(request, "committed", "fixture_receipt")
+		var/list/valid = service.process_wire(test["wire"], "1000")
+		ipc_assert(valid?["status"] == "committed" && valid["action"] == request["action"], "valid economic replay remains available")
+		for (var/field in list("action", "reason", "discord_id", "request_id", "request_digest", "status", "data"))
+			adapter.result = service.response(request, "committed", "fixture_receipt")
+			adapter.result[field] = field == "action" ? "stash.inspect" : 42
+			var/list/invalid = service.process_wire(test["wire"], "1000")
+			ipc_assert(invalid?["status"] == "pending" && invalid["reason"] == "journal_recovery_required", "direct economic replay refuses malformed [field] in cached=[cached]")
+			ipc_assert(!service.durable_response(request), "malformed economic replay has no durable response")
+	ipc_assert(service.profile["revision"] == revision, "economic replay validation has no journal effect")
+	service.economic_adapter = null
+
 /world/New()
 	world.OpenPort("none")
 	try
@@ -71,6 +102,7 @@
 					var/list/data = response["data"]
 					ipc_assert(length(data["items"]) == test["items"] && data["revision"] == 1 && data["level"] == 2, "bound saved account page")
 			ipc_assert(service.profile["links"]["123"] == "alice" && service.profile["owners"]["alice"] == "123" && length(service.profile["links"]) == 1, "one durable actor/owner binding")
+			ipc_direct_replay_assertions(service)
 			if (params["phase"] == "replay") ipc_assert(service.profile["revision"] == before_replay_revision, "receipt replay has no new mutation")
 			var/revision = service.profile["revision"]
 			ipc_assert(!service.process_wire("tampered", "1000") && service.profile["revision"] == revision, "unauthenticated input has no journal effect")

@@ -101,7 +101,9 @@
 		var/linked_owner = profile["links"][request["discord_id"]]
 		if (linked_owner && economic_adapter)
 			var/list/economic_receipt = call(economic_adapter, "receipt")(src, linked_owner, request["request_id"], request["request_digest"])
-			if (islist(economic_receipt) && economic_receipt["status"] == "committed") return economic_receipt
+			if (islist(economic_receipt) && economic_receipt["status"] == "committed")
+				if (!extraction_ipc_receipt(economic_receipt, request["request_id"], request["discord_id"], request["request_digest"]) || economic_receipt["action"] != request["action"]) return response(request, "pending", "journal_recovery_required")
+				return economic_receipt
 		if (length(profile["receipts"]) >= 1000) return response(request, "pending", "journal_capacity")
 		var/list/candidate = json_decode(json_encode(profile))
 		var/list/payload = request["payload"]
@@ -158,6 +160,7 @@
 		if (length(extraction_crypto_bytes(json_encode(result))) > 8192) result = response(request, "rejected", "response_too_large")
 		if (result["account_receipt"])
 			result.Remove("account_receipt")
+			if (!extraction_ipc_receipt(result, request["request_id"], actor, request["request_digest"]) || result["action"] != action) return response(request, "pending", "journal_recovery_required")
 			return result
 		if (result["status"] == "pending") return result
 		candidate["receipts"][id] = list("request_id" = request["request_id"], "request_digest" = request["request_digest"], "discord_id" = actor, "response" = result)
@@ -174,4 +177,4 @@
 		var/owner = profile["links"][request["discord_id"]]
 		if (!owner || !economic_adapter) return null
 		var/list/result = call(economic_adapter, "receipt")(src, owner, request["request_id"], request["request_digest"])
-		return extraction_ipc_receipt(result, request["request_id"], request["discord_id"], request["request_digest"]) && result["status"] == "committed" ? result : null
+		return extraction_ipc_receipt(result, request["request_id"], request["discord_id"], request["request_digest"]) && result["action"] == request["action"] && result["status"] == "committed" ? result : null

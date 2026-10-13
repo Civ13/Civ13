@@ -17,12 +17,13 @@ def main():
     parser.add_argument('--proof-negative-control', action='store_true')
     parser.add_argument('--publication-negative-control', action='store_true')
     parser.add_argument('--receipt-negative-control', choices=('action', 'reason'), help='Omit one production receipt check in generated source only')
+    parser.add_argument('--replay-negative-control', choices=('cached', 'processed'), help='Omit one direct replay guard in generated source only')
     parser.add_argument('--output', type=Path, help='New directory for synthetic compatibility fixture files')
     parser.add_argument('--compile-only', action='store_true', help='Compile the isolated fixture without launching a daemon')
     args = parser.parse_args()
-    if sum(bool(value) for value in (args.proof_negative_control, args.publication_negative_control, args.receipt_negative_control)) > 1:
+    if sum(bool(value) for value in (args.proof_negative_control, args.publication_negative_control, args.receipt_negative_control, args.replay_negative_control)) > 1:
         parser.error('Choose one negative control')
-    if args.output and (args.proof_negative_control or args.publication_negative_control or args.receipt_negative_control or args.compile_only or args.output.exists()):
+    if args.output and (args.proof_negative_control or args.publication_negative_control or args.receipt_negative_control or args.replay_negative_control or args.compile_only or args.output.exists()):
         parser.error('Output requires a new directory and the unmutated fixture')
     root = Path(__file__).resolve().parents[2]
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
@@ -53,6 +54,15 @@ def main():
             if source.count(marker) != 1:
                 raise RuntimeError('Receipt validation mutation marker changed')
             (target / 'ipc_request.dm').write_text(source.replace(marker, ''))
+        if args.replay_negative_control:
+            source = (target / 'ipc_service.dm').read_text()
+            marker = {
+                'cached': '\t\t\t\tif (!extraction_ipc_receipt(economic_receipt, request["request_id"], request["discord_id"], request["request_digest"]) || economic_receipt["action"] != request["action"]) return response(request, "pending", "journal_recovery_required")\n',
+                'processed': '\t\t\tif (!extraction_ipc_receipt(result, request["request_id"], actor, request["request_digest"]) || result["action"] != action) return response(request, "pending", "journal_recovery_required")\n',
+            }[args.replay_negative_control]
+            if source.count(marker) != 1:
+                raise RuntimeError('Direct replay mutation marker changed')
+            (target / 'ipc_service.dm').write_text(source.replace(marker, ''))
         shutil.copy2(root / 'tests/extraction/ipc_probe.dm', target / 'probe.dm')
         # This historical linking fixture deliberately contains opaque legacy
         # equipment. Production graph projection is covered by the full-source
@@ -76,6 +86,14 @@ def main():
             result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
             log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''
             print(result)
+            if args.replay_negative_control and phase == 'process':
+                cached = int(args.replay_negative_control == 'cached')
+                expected = f'FAIL: direct economic replay refuses malformed action in cached={cached}'
+                if ran.returncode or result != expected or any(word in log.lower() for word in ('runtime error', 'bad ref', '## error')):
+                    print(log)
+                    raise RuntimeError('Replay omission did not fail at the intended assertion')
+                print('PASS: direct replay omission caught by the intended assertion')
+                return False
             if args.receipt_negative_control and phase == 'issue':
                 expected = f'FAIL: receipt {args.receipt_negative_control} rejects wrong scalar types'
                 if ran.returncode or result != expected or any(word in log.lower() for word in ('runtime error', 'bad ref', '## error')):
@@ -128,6 +146,9 @@ def main():
         request('status-1', '123', 'trade.status', {'operation_request_id': linked['request_id'], 'operation_request_digest': linked['request_digest']}, 'committed', 'operation_status')
         request('wrong-status', '123', 'trade.status', {'operation_request_id': linked['request_id'], 'operation_request_digest': '0' * 64}, 'committed', 'operation_not_found')
         request('link-1', '777', 'link.complete', {'challenge_id': challenge['challenge_id'], 'proof': challenge['proof']}, 'rejected', 'request_id_conflict')
+        _, replay_guard = request('economic-replay-guard', '123', 'trade.confirm', {'confirmation_token': 'fixture'}, 'committed', 'fixture_receipt', 1)
+        cases.pop()  # Separate injected-adapter check, never ordinary processing.
+        (target / 'replay_guard.json').write_text(json.dumps(replay_guard), encoding='ascii')
         (target / 'requests.json').write_text(json.dumps(cases), encoding='ascii')
         (target / 'replay.json').write_text(json.dumps([replay_link, replay_inspect]), encoding='ascii')
         if not run('process'):
