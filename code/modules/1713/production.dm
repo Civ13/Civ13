@@ -786,6 +786,18 @@
 					if (dry_timer >= TIME_TO_DRY)
 						pos = split_size(text2num(copytext(I.name, findtext(I.name,"POS_")+4, findtext(I.name,"POS_")+5), 16))
 						P = new I.dried_type(null)
+						if (istype(I, /obj/item/weapon/reagent_containers/food) && istype(P, /obj/item/weapon/reagent_containers/food))
+							var/obj/item/weapon/reagent_containers/food/input_food = I
+							var/obj/item/weapon/reagent_containers/food/output_food = P
+							// Constructors must not refill nutrition already consumed from the paid input.
+							for (var/nutrient in list("nutriment", "protein"))
+								var/excess = output_food.reagents.get_reagent_amount(nutrient) - input_food.reagents.get_reagent_amount(nutrient)
+								if (excess > 0)
+									output_food.reagents.remove_reagent(nutrient, excess)
+							var/decay_offset = findtext(I.name, "DECAY_") + 6
+							var/original_decay = text2num(copytext(I.name, decay_offset, decay_offset + 8))
+							if (original_decay > 0 && output_food.decay > 0)
+								output_food.decaytimer = max(output_food.decaytimer, input_food.decaytimer * output_food.decay / original_decay)
 						var/obj/item/I_s = slots[pos[1]][pos[2]]
 						is_rotated = !!findtext(I_s.name, "_ROTATED_")
 						sizeHV = split_size(I_s.dry_size, is_rotated)
