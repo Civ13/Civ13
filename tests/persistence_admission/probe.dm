@@ -1,4 +1,5 @@
 // Injected provider checks actual adapter contracts, not host custody.
+var/list/admission_probe_failures = list()
 world
 	maxx = 1
 	maxy = 1
@@ -52,9 +53,8 @@ world
 		if(change == "validate_revoke") C.guard.revoke()
 		return validate_result
 /world
-	var/list/failures = list()
 	proc/check(value, message)
-		if(!value) failures += "FAIL: [message]"
+		if(!value) admission_probe_failures += "FAIL: [message]"
 	proc/selection()
 		return list("server" = "test-server", "world" = "test-world", "root" = "test-root", "process" = "test-process", "operation" = "test-operation", "generation" = 1, "members" = "test-manifest", "schema" = "existing-test-formats")
 	proc/execute()
@@ -151,6 +151,6 @@ world
 		try
 			execute()
 		catch(var/exception/e)
-			failures += "UNEXPECTED: [e]"
-		text2file(failures.len ? jointext(failures, "\n") : "PASS", "result.txt")
+			admission_probe_failures += "UNEXPECTED: [e]"
+		text2file(admission_probe_failures.len ? jointext(admission_probe_failures, "\n") : "PASS", "result.txt")
 		shutdown()
