@@ -119,3 +119,15 @@ or new readiness endpoint is authorized by this change.
 
 Run both focused suites with a verified Python interpreter:
 `-m unittest discover -s tests -p 'test_opendream*.py' -v`.
+
+Receipt inspection remains available when an interrupted map replacement
+quarantines controls. This constructor mode skips map recovery only for the
+read-only receipt query and rejects every process effect before writing another
+pending operation. It never repairs or clears the interrupted map marker.
+
+CivilizationBot opts into this protocol with `controls.lifecycle_schema` set to
+`civ13.lifecycle.v1`; null preserves its original controller DTO. Its versioned
+HTTP mutations require caller operation IDs and its recovery query never replays
+an action. The versioned bot `tests/local/lifecycle-wire.py` imports this actual
+OperationStore and verifies Python-produced receipts with the PHP adapter using
+synthetic effects and temporary storage. No runtime activation is implied.

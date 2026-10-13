@@ -150,6 +150,11 @@ class TransportAndStages(unittest.TestCase):
                 self.supervisor.commit_map_stage()
         with self.assertRaisesRegex(ValueError, 'uncertain'):
             control.Supervisor(self.profile_path)
+        inspector = control.Supervisor(self.profile_path, inspect_receipts_only=True)
+        self.assertIsNone(inspector.operations.inspect('missing'))
+        for effect in (inspector.start, inspector.stop, inspector.run, lambda: inspector.mapswap('B'), lambda: inspector.operate({'id': 'read-only', 'action': 'restart'})):
+            with self.assertRaises(ValueError): effect()
+        self.assertIsNone(inspector.operations.inspect('read-only'))
 
     def test_timeout_and_cancellation_preserve_exact_request(self):
         from unittest.mock import patch

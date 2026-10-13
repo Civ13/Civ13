@@ -200,7 +200,8 @@ def read_json(path):
 
 
 class Supervisor:
-    def __init__(self, profile):
+    def __init__(self, profile, inspect_receipts_only=False):
+        self.inspect_receipts_only = inspect_receipts_only
         self.profile_path = Path(profile).resolve(strict=True)
         if self.profile_path.stat().st_size > 65536:
             raise ValueError("Profile exceeds size limit")
@@ -219,7 +220,7 @@ class Supervisor:
         self.instance_id = None
         self.operations = OperationStore(self.control, self.profile_digest)
         active = self.control / "active-map.json"
-        if active.exists():
+        if active.exists() and not inspect_receipts_only:
             record = read_json(active)
             if (not isinstance(record, dict) or set(record) != {"schema", "profile_digest", "map_id", "dme_sha256", "json_sha256"}
                     or record.get("schema") != "civ13.active-map.v1"
@@ -231,7 +232,8 @@ class Supervisor:
                 if path.is_symlink() or hashlib.sha256(path.read_bytes()).hexdigest() != record.get(field):
                     raise ValueError("Active map bytes changed; operator recovery required")
             self.map_id = record["map_id"]
-        self.restore_map_stage()
+        if not inspect_receipts_only:
+            self.restore_map_stage()
         for field in ("build_id", "map_id"):
             value = self.profile.get(field)
             if value is not None and (not isinstance(value, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", value)):
@@ -290,6 +292,8 @@ class Supervisor:
                 "runtime_dir": str(self.root), "server_pid": self.child.pid if self.child else None}
 
     def start(self):
+        if self.inspect_receipts_only:
+            raise ValueError("Receipt inspector cannot control processes")
         if self.child and self.child.poll() is None:
             return
         if self.log:
@@ -306,6 +310,8 @@ class Supervisor:
         atomic_json(self.control / "launch.json", dict(identity, server_pid=self.child.pid))
 
     def stop(self):
+        if self.inspect_receipts_only:
+            raise ValueError("Receipt inspector cannot control processes")
         launch = self.control / "launch.json"
         if launch.exists():
             atomic_json(launch, dict(read_json(launch), ready=False))
@@ -321,6 +327,8 @@ class Supervisor:
             self.log = None
 
     def mapswap(self, map_id, defer=False):
+        if self.inspect_receipts_only:
+            raise ValueError("Receipt inspector cannot control processes")
         if self.pending_map:
             raise ValueError("A compiled game map is pending the round restart")
         maps = self.profile.get("maps", {})
@@ -389,6 +397,8 @@ class Supervisor:
         return self.status()
 
     def operate(self, request, origin="cli"):
+        if self.inspect_receipts_only:
+            raise ValueError("Receipt inspector cannot control processes")
         if hashlib.sha256(self.profile_path.read_bytes()).hexdigest() != self.profile_digest:
             raise ValueError("Controller profile changed; explicit review required")
         if request.get("action") == "status":
@@ -401,6 +411,8 @@ class Supervisor:
         return self.operations.perform(request, origin, effect)
 
     def run(self):
+        if self.inspect_receipts_only:
+            raise ValueError("Receipt inspector cannot control processes")
         lock = self.control / "supervisor.lock"
         # Never recover a stale PID by guessing which process it belongs to.
         with lock.open("x", encoding="utf-8") as handle:
@@ -498,7 +510,7 @@ def main():
     parser.add_argument("--operation-id", help="Immutable lifecycle identity; reuse only to inspect the same action/map/profile")
     args = parser.parse_args()
     try:
-        supervisor = Supervisor(args.profile)
+        supervisor = Supervisor(args.profile, inspect_receipts_only=args.action == "operation-status")
         if args.action == "operation-status":
             receipt = supervisor.operations.inspect(args.operation_id)
             if receipt and receipt["request"].get("profile_digest") != supervisor.profile_digest:
