@@ -168,3 +168,38 @@ Pin the future complete wrapper/oracle source head and interpreter hash before
 requesting the lease. The oracle source remains unchanged from
 `8e2314d58b2a1735e53a08ac9ede036565a8db1c`, unparsed and unrun. No current memory
 availability, host ownership or native acceptance is inferred from this review.
+
+### Extraction wrapper source prepared after design authorization
+
+`tests/extraction/guard-oracle-windows.py` now implements the proposed adaptation
+as SOURCE ONLY. It reuses the reviewed structures and API signatures, binds the
+oracle to the required raw SHA-256, writes the captured bytes to its own temporary
+directory and executes that copy after a successful Job assignment and fresh
+deadline/floor check. The child is the same interpreter under `-I -B`, with a
+minimal `runpy` stdin gate. It does not import or parse the oracle before the
+gate. The Job permits one process, has a hard 256 MiB aggregate commit cap and
+kill-on-close; unexpected descendants and unknown live PID measurements fail.
+The 60-second deadline includes setup; teardown adds bounded root/Job waits of
+up to ten seconds each. Synchronous Windows calls themselves have no independent
+timeout. The parent watcher is outside the child Job.
+
+The wrapper closes process and Job handles, preserves logs/receipt, and deletes
+only its successfully created `owned-temporary` directory after confirmed
+cleanup. Cleanup uncertainty retains that directory and produces a nonzero
+result. Prestart refusal before directory creation prints a receipt without
+creating storage. Child environment changes do not change the parent environment.
+The commit label is supplied by the caller, not independently verified by the
+wrapper; the lease owner must independently check clean exact HEAD, wrapper and
+interpreter hashes. Hash binding/copying is not host-writer exclusion.
+
+The proposed future command is the verified interpreter followed by `-I -B`,
+the absolute `tests/extraction/guard-oracle-windows.py` path, `--directory` with
+a new absolute extraction-owned receipt directory, `--source-head` with the
+complete reviewed wrapper commit, and `--oracle-sha256`
+`11d3a26ffffedf142b5fd63c5f3b15a01886d8fc6ecfd2a9f56b0065518a5a6a`.
+That raw oracle hash was read without executing Python. The source oracle is
+unchanged from `8e2314d58b2a1735e53a08ac9ede036565a8db1c`.
+
+Independent review of this exact wrapper source and ONE renewed execution grant
+are still required. Neither wrapper nor oracle has been parsed or executed;
+no fresh memory query, native/client run or shared serializer change occurred.
