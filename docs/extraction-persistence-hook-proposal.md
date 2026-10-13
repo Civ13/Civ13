@@ -209,7 +209,7 @@ path while requiring the following explicit boundaries for an opted-in policy.
 | `loading.dm::Load_Entry` recursive calls at contents, reference and legacy-list restoration; typed field call into decode_saved_value | Add trailing operation without shifting existing positional/optional arguments; every recursion retains reader membership and cache ownership. Direct opted-in calls without an operation reject. | Serializer; caches and partially constructed objects cannot be returned as complete on token loss. |
 | `loading.dm::decode_saved_value` entry recursion and list key/value recursion | Pass the same operation to Load_Entry and both recursive decode calls. Cached list/reference records are operation-owned. | Serializer; foreign/replayed token or reader fails before new writes. |
 | Load_World allocation, recursive loading, after_load, level feed and bounded final verification | Check stable custody at each resumed batch/callback; return distinct typed progress until all expected levels and root rechecks finish. | One wrapper abort path covers initial allocation and final verification as well as per-level catch. |
-| `functions.dm::loadmap` calls `load_map_metadata()` but currently ignores its FALSE return | Proposed opted-in path must require exactly TRUE or throw, under same operation/readers; metadata is finalized before restore proof publication. | Serializer aborts/quarantines missing or rejected metadata after world mutation. Ordinary behavior is a separate compatibility check. |
+| Historical `functions.dm::loadmap` baseline ignored `load_map_metadata()` FALSE; the reviewed wrapper now requires exactly TRUE | Future selected-reader path must retain that gate under the same operation/readers; metadata is finalized before restore proof publication. | Serializer aborts/quarantines missing or rejected metadata after world mutation. Ordinary behavior remains a separate compatibility check. |
 | `loading.dm::load_map_metadata` reopens map.txt and writes map fields | Bind metadata bytes to selected immutable generation reader; validate operation before writes and afterward. | Serializer; account/auxiliary pin owner joins final proof after metadata. |
 | Wrapper resets persistence_save_in_progress after Load_World FALSE or exception | This Boolean release is not recovery. Publish/retain an operation-bound durable recovery block on any post-mutation failure; admission, economic issuance and checkpoint/map transition remain refused. | Serializer coordinates extraction recovery owner. The verified durable primitive and every consumer gate are prerequisites, not existing behavior. |
 
@@ -277,6 +277,10 @@ exclusive custody. This is a contract prerequisite, not an implemented distribut
 transaction; the authoritative journal and host custody owner must be selected.
 
 ## Native reader result and concrete provider prerequisites
+
+The next buildable candidate is described in the
+[snapshot broker architecture proposal](persistence-snapshot-broker-proposal.md).
+It is not an available provider or permission to install identities/services.
 
 The Windows BYOND 516.1681 reader probe passed positive and binding/close controls
 at `12de059fad3d593bc2a4891a6867d7d5a0c7e8f4`. Automated receipt review accepted
