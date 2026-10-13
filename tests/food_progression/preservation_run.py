@@ -10,6 +10,9 @@ import subprocess
 import tempfile
 import uuid
 
+# Rack waits total 555 deciseconds before export/load overhead. Keep the
+# daemon allowance inside the outer watchdog's 180-second total budget.
+RACK_RUNTIME_TIMEOUT_SECONDS = 75
 
 def main():
     parser = argparse.ArgumentParser()
@@ -155,7 +158,7 @@ def main():
         hash_paths = [probe, Path(__file__), Path(__file__).with_name('preservation_guard.py'), Path(__file__).with_name('guard_cleanup.py')] + [root / name for name in ('code/modules/1713/production.dm', 'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm', 'code/modules/reagents/reagent_containers/food/snacks.dm', 'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Food-Drinks.dm')]
         source_hashes = {path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest() for path in hash_paths}
         (output / 'metadata.json').write_text(json.dumps({'commit': head, 'prepare_only': args.prepare_only, 'source_hashes': source_hashes, 'rack_control': args.rack_control, 'preservation_control': args.preservation_control, 'negative_control': args.negative_control, 'soil_negative_control': args.soil_negative_control, 'can_negative_control': args.can_negative_control, 'probe': args.probe,
-            'drying_wait_ticks': 2 if args.probe == 'preservation' else 150 if args.probe == 'rack-save' else None, 'runtime_timeout_seconds': 45 if args.probe == 'rack-save' else 30, 'growth_wait_ticks': 2, 'food_wait_ticks': 2 if args.probe == 'storage' else None, 'normal_startup': False, 'map': 'synthetic 6x3x1 rack/turf graph' if args.probe == 'rack-save' else 'synthetic 6x3x1 preservation fixture' if args.probe == 'preservation' else 'synthetic 6x3x1 storage fixture' if args.probe == 'storage' else 'synthetic 6x3x1 temperate plot'}), encoding='utf-8')
+            'drying_wait_ticks': 2 if args.probe == 'preservation' else 150 if args.probe == 'rack-save' else None, 'runtime_timeout_seconds': RACK_RUNTIME_TIMEOUT_SECONDS if args.probe == 'rack-save' else 30, 'growth_wait_ticks': 2, 'food_wait_ticks': 2 if args.probe == 'storage' else None, 'normal_startup': False, 'map': 'synthetic 6x3x1 rack/turf graph' if args.probe == 'rack-save' else 'synthetic 6x3x1 preservation fixture' if args.probe == 'preservation' else 'synthetic 6x3x1 storage fixture' if args.probe == 'storage' else 'synthetic 6x3x1 temperate plot'}), encoding='utf-8')
         (output / 'checkout.patch').write_text(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root, text=True), encoding='utf-8')
         shutil.copy2(probe, output / 'probe.dm')
         for path in generated.values():
@@ -183,7 +186,7 @@ def main():
         if os.name == 'nt':
             command += ['-invisible', '-close']
         runtime = subprocess.run(command + ['-safe', '-log', 'runtime.log'], cwd=output,
-                                 capture_output=True, text=True, timeout=45 if args.probe == 'rack-save' else 30, creationflags=flags)
+                                 capture_output=True, text=True, timeout=RACK_RUNTIME_TIMEOUT_SECONDS if args.probe == 'rack-save' else 30, creationflags=flags)
         (output / 'daemon.log').write_text(runtime.stdout + runtime.stderr, encoding='utf-8')
         log = (output / 'runtime.log').read_text(encoding='utf-8', errors='replace')
         print(log, flush=True)
