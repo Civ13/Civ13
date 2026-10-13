@@ -96,6 +96,59 @@ At `a73c30e9f9058375977d2d224f4b8ef42751e6ca`, the production octopus drying pro
 
 The recurring drying wait alone is accelerated. This is a synthetic 6x3 fixture with normal startup disabled and temporary storage; it does not prove player consumption, every drying recipe, a full-world rack save round trip, multi-season food availability, or winter map access. The Windows guarded batch used 41 seconds, remained below 218 MB owned private memory and above 13 GB free physical memory, and cleaned its owned processes and generated temporary files. Candidate production changes and their CI remain separate from the previously tested opened-can correction in #3110. No public player or wiki availability claim follows from this fixture.
 
+## Rack graph diagnostic and pending transfer contract
+
+The single diagnostic run at `aac7d1d51f6c56f5390b4eef93007d9288598018`
+compiled with BYOND 516.1681 with zero errors and warnings. It logged zero
+paid-input pins, an empty input reference and empty direct-turf membership,
+despite the input reaching the turf; the turf contained one saved child
+reference. The original paid-input graph assertion failed. Import, refill and
+conversion assertions were not reached. Runtime-field exclusion and stale-wait
+assertions passed before this failure; omission controls remain unrun.
+
+The guard completed in 37.828 seconds including cleanup, with peak owned
+private memory 223,088,640 bytes and minimum host-free memory 9,095,430,144
+bytes. Checked termination succeeded, with no remaining owned processes,
+deferred files or cleanup errors. Independent inspection confirmed generated
+files absent and the existing Gaia process, three tracked file hashes and
+listening ports unchanged. The local runtime slot was explicitly released.
+Evidence is retained under
+`D:/GitHub/Civ13/.codex-remote-attachments/rack-save-aac7d1d51-positive-native`.
+
+The source candidate uses a serializer-owned active parent context and
+bounded rack relocation reporting. Before dropping anything, the rack must
+capture at most twelve unique actual slot items, validate wrapper ownership,
+and obtain an active, unfinished owning-turf export frame. It then validates
+each captured identity reached that same turf before declaring the transfer.
+The serializer must attach declared identities exactly once, including hints
+discovered during saved-variable recursion, before finalizing the parent's
+content graph. Variable-first rack discovery without an active parent is
+refused before mutation. Invalid ownership, replaced parents, unsupported
+destinations or excess hints invalidate save completion. Failure cleanup and
+retention of a prior complete save generation belong to the shared serializer
+contract. The rack hook is prepared against the owner's `before_save_context`,
+`prepare_save_transfer` and `commit_save_transfer` APIs. Shared commit
+`9f335f1091f0900eb63c6a0a18d72037363e1318` is integrated into this branch. This is native
+unrun source and does not change PR #3105's separate snapshot/yield contract.
+
+If drop or commit throws, the rack sets its runtime process owner to
+`SAVE_REPAIR_REQUIRED`, remains
+quiescent and throws an explicit repair error. It does not schedule delayed
+refill: ownership could change during that wait, allowing stale slot references
+to reclaim another owner's item. Cleanup performs no food conversion, nutrition
+change or reconstruction of runtime slots. Paid items retain their actual
+locations and encoded progress for explicit recovery.
+Pending reinitialization callbacks check this repair marker after waking and
+return without refilling or restarting drying. The fixture injects a commit
+failure while a real reinitialization wait is pending and checks that the paid
+input stays on its turf with unchanged nutrition and progress.
+
+The prepared fixture now also counts the exact input identity in pinned entries
+and its exact direct-parent reference occurrences. It also requires rack-first
+export without an active parent to refuse before changing paid input, progress,
+nutrition or callback ownership. These additions are native unrun. Another
+compile, runtime, control or live save requires a fresh grant.
+
 ## Prepared recipe conversion correction
 
 Source review at `b828d4c3bd579af19c605e6d0682d06b247a7318` found that separate reagent caps could remove all nutrition from dried fish, salmon and raw cutlets: these inputs provide protein while their outputs construct nutriment. Both inherit `nutriment_factor = 30` from `/datum/reagent/nutriment`; its ingestion procedure adds that factor times the ingested volume to hunger nutrition. The existing snack `nutriments_value()` sums those factors, including nutritional drink reagents.

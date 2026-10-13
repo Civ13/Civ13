@@ -911,6 +911,8 @@
 
 /obj/structure/dehydrator/proc/reinit()
 	spawn(rand(5,15)) //To prevent too much load when starting the server and to slightly spread the processes of dehydrators loaded from the map in time.
+		if (current_process_id == "SAVE_REPAIR_REQUIRED")
+			return
 		if (!isturf(loc))
 			return
 		ensure_runtime_storage()
@@ -967,6 +969,41 @@
 	//Don't know which algorithm will be used, but we have reinit() and may safely drop all items to ground without changes
 	clean_drop_slots()
 	..()
+
+/obj/structure/dehydrator/before_save_context(map_storage/save_storage, datum/save_export_frame/frame)
+	// Only declare actual paid children. Busy strings reserve layout cells, and
+	// one item may occupy several cells; neither adds a second transfer identity.
+	var/list/paid_items = list()
+	for (var/row = 1, row <= 4, row++)
+		for (var/column = 1, column <= 3, column++)
+			var/slot = slots[row][column]
+			if (isnull(slot) || (istext(slot) && findtext(slot, "busy")))
+				continue
+			if (!istype(slot, /obj/item))
+				throw EXCEPTION("Dehydrator save contains an invalid paid slot")
+			paid_items |= slot
+	if (!paid_items.len)
+		return before_save()
+	var/obj/item/weapon/storage/internal/origin = storage
+	if (!save_storage || !origin || origin.loc != src || origin.master_item != src || paid_items.len > 12)
+		throw EXCEPTION("Dehydrator save has invalid paid-child ownership")
+	for (var/obj/item/item in paid_items)
+		if (item.loc != origin)
+			throw EXCEPTION("Dehydrator save paid child left its storage")
+	var/turf/destination = get_turf(src)
+	// The serializer rejects unsupported discovery or parent ownership before
+	// the production hook clears slots or moves any paid child.
+	var/datum/save_transfer/ticket = save_storage.prepare_save_transfer(frame, origin, destination, paid_items)
+	if (!ticket)
+		throw EXCEPTION("Dehydrator save transfer was not admitted")
+	try
+		before_save()
+		save_storage.commit_save_transfer(ticket)
+	catch (var/exception/error)
+		// Keep real paid items and encoded progress. Delayed refill could reclaim
+		// an item whose ownership changed while sleeping; leave failure quiescent.
+		current_process_id = "SAVE_REPAIR_REQUIRED"
+		throw EXCEPTION("Dehydrator save failed; rack ownership requires repair: [error]")
 
 ////////////////////////////////////////////////////////////////////////
 //  Fermentation jar  //////////////////////////////////////////////////

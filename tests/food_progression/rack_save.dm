@@ -6,6 +6,9 @@
 // Fixture-only parent policy catches lost parent delegation and DM membership precedence.
 /obj/structure/persistence_runtime_var(key)
 	return key == "rack_fixture_parent_runtime" || ..()
+// Inject only the external export outcome; execute the production rack hook.
+/map_storage/rack_commit_failure/commit_save_transfer(datum/save_transfer/ticket)
+	throw EXCEPTION("Fixture refuses paid transfer commit")
 /world
 	hub = ""
 	hub_password = ""
@@ -36,6 +39,28 @@
 	GLOB.name_set_event = new /decl/observ/name_set
 	GLOB.stat_set_event = new /decl/observ/stat_set
 	initialize_chemical_reagents()
+	var/turf/failure_turf = locate(4,2,1)
+	var/obj/structure/dehydrator/failure_rack = new(failure_turf)
+	var/obj/item/weapon/reagent_containers/food/snacks/octopus/failure_input = new(failure_turf)
+	var/failure_nutrition = failure_input.nutriments_value()
+	rack_check(failure_rack.hang_on(failure_input), "failure fixture accepts paid input")
+	failure_rack.set_dry_timer(failure_input, 150)
+	failure_rack.reinit() // Queue a real production wait before the failing save.
+	var/map_storage/rack_commit_failure/failure_exporter = new
+	failure_exporter.saving_z = 1
+	var/savefile/failure_file = new("rack_commit_refused.sav")
+	var/commit_refused = FALSE
+	try
+		failure_exporter.BuildVarDirectory(failure_file, failure_turf, 1)
+	catch (var/exception/error)
+		commit_refused = TRUE
+	rack_check(commit_refused && failure_rack.current_process_id == "SAVE_REPAIR_REQUIRED", "failed commit leaves rack requiring repair")
+	sleep(35) // New/reinit callbacks must not restart or reclaim the failed rack.
+	rack_check(failure_rack.current_process_id == "SAVE_REPAIR_REQUIRED" && failure_input.loc == failure_turf, "pending reinit cannot reclaim failed save input")
+	rack_check(failure_rack.get_dry_timer(failure_input) == 150 && abs(failure_input.nutriments_value() - failure_nutrition) < 0.001, "failed commit preserves paid nutrition and progress")
+	failure_exporter.clear_bookkeeping()
+	qdel(failure_rack)
+	qdel(failure_input)
 	var/turf/T = locate(2,2,1)
 	var/obj/structure/dehydrator/rack = new(T)
 	rack_check(rack.persistence_runtime_var("rack_fixture_parent_runtime"), "rack preserves parent runtime exclusions")
@@ -62,6 +87,19 @@
 	rack_check(stale_products == 0 && abs(input.nutriments_value() - paid_nutrition) < 0.001, "stale drying wait creates no product or nutrition change")
 	rack.set_dry_timer(input, 150)
 	rack.current_process_id = "fixture suspended before export"
+	// Reference-first discovery has no active owning-turf frame. Refuse it
+	// before the production hook can move input or clear the rack's slots.
+	var/savefile/refused_file = new("rack_refused.sav")
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/reference_first_refused = FALSE
+	try
+		map_storage.BuildVarDirectory(refused_file, rack, 1)
+	catch (var/exception/error)
+		reference_first_refused = TRUE
+	rack_check(reference_first_refused, "reference-first rack export refuses missing parent context")
+	rack_check(input.loc == rack.storage && rack.get_dry_timer(input) == 150 && abs(input.nutriments_value() - paid_nutrition) < 0.001, "refused rack export preserves paid input and progress")
+	rack_check(rack.current_process_id == "fixture suspended before export", "refused rack export preserves callback ownership before mutation")
 	var/savefile/F = new("rack_turf.sav")
 	F["/format_version"] << 2
 	map_storage.clear_bookkeeping()
@@ -78,17 +116,30 @@
 		world.log << "RACK_EXPORT runtime_field=[key] saved=[key in rack_keys]"
 		rack_check(!(key in rack_keys), "rack export excludes runtime fields")
 	var/saved_inputs = 0
+	var/input_identity_pins = 0
 	for (var/datum/saved in map_storage.saving_reference_pins)
+		if (saved == input)
+			input_identity_pins++
 		rack_check(!istype(saved, /obj/item/weapon/storage/internal), "rack graph excludes empty runtime storage wrapper")
 		if (saved.type == /obj/item/weapon/reagent_containers/food/snacks/octopus)
 			saved_inputs++
 	var/input_ref = map_storage.saving_references["\ref[input]"]
 	var/turf_path = map_storage.entry_path(F, turf_ref)
-	var/list/turf_content_refs = params2list(F["[turf_path]/content"])
+	var/content_text = F["[turf_path]/content"]
+	var/list/turf_content_refs = params2list(content_text)
 	var/input_reachable = input_ref && ("[input_ref]" in turf_content_refs)
-	world.log << "RACK_GRAPH paid_input_pins=[saved_inputs] input_ref=[input_ref] direct_turf_ref=[input_reachable] dropped_to_turf=[input.loc == T] turf_content_count=[turf_content_refs.len]"
+	var/input_content_occurrences = 0
+	// params2list collapses repeated keys. Count the serialized numeric tokens
+	// before decoding so duplicate parent edges cannot hide behind membership.
+	var/list/content_tokens = splittext(content_text, "&")
+	for (var/content_ref in content_tokens)
+		if (input_ref && content_ref == "[input_ref]")
+			input_content_occurrences++
+	world.log << "RACK_GRAPH paid_input_pins=[saved_inputs] identity_pins=[input_identity_pins] input_ref=[input_ref] direct_turf_ref=[input_reachable] direct_occurrences=[input_content_occurrences] dropped_to_turf=[input.loc == T] turf_content_count=[turf_content_refs.len]"
 	rack_check(saved_inputs == 1, "native turf graph saves exactly one paid input")
+	rack_check(input_identity_pins == 1, "native graph pins paid input identity exactly once")
 	rack_check(input_reachable, "owning turf graph references saved paid input")
+	rack_check(input_content_occurrences == 1, "owning turf graph references paid input identity exactly once")
 	// Insert an obsolete field after the clean-export assertion to check import exclusion too.
 	F["[rack_path]/current_process_id"] << list("kind" = "value", "value" = "obsolete imported process")
 	map_storage.clear_bookkeeping()
