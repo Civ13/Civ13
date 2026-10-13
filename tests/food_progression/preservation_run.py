@@ -18,7 +18,7 @@ def main():
     control.add_argument('--soil-negative-control', action='store_true')
     control.add_argument('--can-negative-control', action='store_true')
     parser.add_argument('--probe', choices=('crop', 'storage', 'preservation'), default='preservation')
-    parser.add_argument('--preservation-control', choices=('nutrition', 'age'))
+    parser.add_argument('--preservation-control', choices=('nutrition', 'age', 'conversion'))
     parser.add_argument('--output', type=Path)
     parser.add_argument('--stem')
     parser.add_argument('--start-gated', action='store_true')
@@ -78,12 +78,15 @@ def main():
             if production.count(marker) != 1:
                 raise RuntimeError('Production drying wait marker changed')
             if args.preservation_control:
-                if args.preservation_control == 'nutrition':
-                    first = '\t\t\t\t\t\t\tfor (var/nutrient in list("nutriment", "protein"))'
+                if args.preservation_control in ('nutrition', 'conversion'):
+                    first = '\t\t\t\t\t\t\t// Preserve hunger value'
                     last = '\t\t\t\t\t\t\tvar/decay_offset'
                     start = production.index(first)
                     end = production.index(last, start)
-                    production = production[:start] + production[end:]
+                    replacement = ''
+                    if args.preservation_control == 'conversion':
+                        replacement = '\t\t\t\t\t\t\tfor (var/nutrient in list("nutriment", "protein"))\n\t\t\t\t\t\t\t\tvar/excess = output_food.reagents.get_reagent_amount(nutrient) - input_food.reagents.get_reagent_amount(nutrient)\n\t\t\t\t\t\t\t\tif (excess > 0)\n\t\t\t\t\t\t\t\t\toutput_food.reagents.remove_reagent(nutrient, excess)\n'
+                    production = production[:start] + replacement + production[end:]
                 else:
                     age = '\t\t\t\t\t\t\t\toutput_food.decaytimer = max(output_food.decaytimer, input_food.decaytimer * output_food.decay / original_decay)'
                     if production.count(age) != 1:
@@ -114,7 +117,7 @@ def main():
         generated['.dme'].write_text(source + '\n#include "' + probe.relative_to(root).as_posix() + '"\n', encoding='utf-8')
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         (output / 'metadata.json').write_text(json.dumps({'commit': head, 'preservation_control': args.preservation_control, 'negative_control': args.negative_control, 'soil_negative_control': args.soil_negative_control, 'can_negative_control': args.can_negative_control, 'probe': args.probe,
-            'drying_wait_ticks': 2 if args.probe == 'preservation' else None, 'growth_wait_ticks': 2, 'food_wait_ticks': 2 if args.probe == 'storage' else None, 'normal_startup': False, 'map': 'synthetic 6x3x1 storage fixture' if args.probe == 'storage' else 'synthetic 6x3x1 temperate plot'}), encoding='utf-8')
+            'drying_wait_ticks': 2 if args.probe == 'preservation' else None, 'growth_wait_ticks': 2, 'food_wait_ticks': 2 if args.probe == 'storage' else None, 'normal_startup': False, 'map': 'synthetic 6x3x1 preservation fixture' if args.probe == 'preservation' else 'synthetic 6x3x1 storage fixture' if args.probe == 'storage' else 'synthetic 6x3x1 temperate plot'}), encoding='utf-8')
         (output / 'checkout.patch').write_text(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root, text=True), encoding='utf-8')
         shutil.copy2(probe, output / 'probe.dm')
         for path in generated.values():
@@ -146,6 +149,7 @@ def main():
         result = (output / 'food_result.txt').read_text(encoding='utf-8')
         print(result, flush=True)
         expected = ('FAIL: drying does not replenish consumed nutrition' if args.preservation_control == 'nutrition' else
+                    'FAIL: drying retains available nutrition across reagent conversion' if args.preservation_control == 'conversion' else
                     'FAIL: drying does not erase accumulated age' if args.preservation_control == 'age' else
                     'FAIL: opened can accumulates food age' if args.can_negative_control else
                     'FAIL: production planting consumes one seed' if args.negative_control else

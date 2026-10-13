@@ -789,11 +789,17 @@
 						if (istype(I, /obj/item/weapon/reagent_containers/food) && istype(P, /obj/item/weapon/reagent_containers/food))
 							var/obj/item/weapon/reagent_containers/food/input_food = I
 							var/obj/item/weapon/reagent_containers/food/output_food = P
-							// Constructors must not refill nutrition already consumed from the paid input.
-							for (var/nutrient in list("nutriment", "protein"))
-								var/excess = output_food.reagents.get_reagent_amount(nutrient) - input_food.reagents.get_reagent_amount(nutrient)
-								if (excess > 0)
-									output_food.reagents.remove_reagent(nutrient, excess)
+								// Preserve hunger value while allowing recipes to convert protein into nutriment.
+							if (istype(input_food, /obj/item/weapon/reagent_containers/food/snacks) && istype(output_food, /obj/item/weapon/reagent_containers/food/snacks))
+								var/obj/item/weapon/reagent_containers/food/snacks/input_snack = input_food
+								var/obj/item/weapon/reagent_containers/food/snacks/output_snack = output_food
+								var/input_nutrition = input_snack.nutriments_value()
+								var/output_nutrition = output_snack.nutriments_value()
+								if (output_nutrition > input_nutrition)
+									var/retained_fraction = max(0, input_nutrition) / output_nutrition
+									for (var/datum/reagent/nutrient in output_food.reagents.reagent_list.Copy())
+										if (istype(nutrient, /datum/reagent/nutriment) || istype(nutrient, /datum/reagent/drink))
+											output_food.reagents.remove_reagent(nutrient.id, nutrient.volume * (1 - retained_fraction))
 							var/decay_offset = findtext(I.name, "DECAY_") + 6
 							var/original_decay = text2num(copytext(I.name, decay_offset, decay_offset + 8))
 							if (original_decay > 0 && output_food.decay > 0)

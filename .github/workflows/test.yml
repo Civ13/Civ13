@@ -594,6 +594,7 @@ jobs:
           /usr/bin/python3 tests/food_progression/preservation_run.py --byond-bin "$PWD/BYOND/byond/bin"
           /usr/bin/python3 tests/food_progression/preservation_run.py --byond-bin "$PWD/BYOND/byond/bin" --preservation-control nutrition
           /usr/bin/python3 tests/food_progression/preservation_run.py --byond-bin "$PWD/BYOND/byond/bin" --preservation-control age
+          /usr/bin/python3 tests/food_progression/preservation_run.py --byond-bin "$PWD/BYOND/byond/bin" --preservation-control conversion
 
       - name: Verify animal health, single-hit damage and tool wear
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/animal_combat')

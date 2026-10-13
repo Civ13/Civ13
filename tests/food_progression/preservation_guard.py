@@ -83,7 +83,7 @@ def private(pid):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--inspect', action='store_true')
-parser.add_argument('--preservation-control', choices=('nutrition', 'age'))
+parser.add_argument('--preservation-control', choices=('nutrition', 'age', 'conversion'))
 parser.add_argument('--directory', type=Path)
 parser.add_argument('--byond-bin', type=Path)
 parser.add_argument('--timeout', type=int, default=180)
