@@ -11,6 +11,10 @@ var/failures = 0
 	maxx = 1
 	maxy = 1
 	maxz = 1
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
 /mob
 	var/fixture_client = TRUE
 /mob/living
@@ -44,7 +48,8 @@ var/failures = 0
 		world.log << "FAIL [label]"
 
 /world/New()
-	world.port = 0
+	world.OpenPort("none")
+	check(!world.port, "fixture listening port closed")
 	var/mob/listener = new()
 	var/mob/living/speaker = new()
 	var/process/python/runner = new()
