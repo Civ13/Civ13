@@ -149,7 +149,8 @@ admin commands or private reference repositories are indexed.
 Each question automatically includes the server's public map title/ID, game mode,
 era/ordinal and civilization flag. These are captured from map metadata at
 submission, not inferred from player wording. No account identity, coordinates,
-inventory, hidden map state or faction secrets are included. Unknown/uninitialized
+hidden map state or faction secrets are included. The bounded asking-player
+inventory snapshot is described below. Unknown/uninitialized
 map metadata is marked unknown. Era does not prove faction research unlocks.
 
 ### Player and environment snapshot
