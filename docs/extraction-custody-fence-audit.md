@@ -233,3 +233,14 @@ roster, reservation, issuance and persistence omission commands after an earlier
 failure, unless cancelled. Each failed step still fails the job; the original
 equipment failure remains blocking. Their independence provides diagnostic
 results, not an exemption from required checks or activation blockers.
+
+Run `38407884889` at `13c167e4f662e3e3032f52538e70c01572b464a1`
+failed CI policy validation before BYOND installation or any gameplay assertion.
+All five diagnostic steps failed sourcing the missing setup file; these are
+infrastructure failures, not vehicle results. The equipment fixture was skipped.
+Diagnostic guards now also require successful change selection and the named
+BYOND setup step's successful outcome. The policy permits only the five named
+diagnostics with every required gate; omission cases reject removal of each gate
+and reject failure masking. Ordinary regression suite guards stay unchanged.
+The corrected policy and fixture remain unexecuted locally and need exact-head
+remote verification.
