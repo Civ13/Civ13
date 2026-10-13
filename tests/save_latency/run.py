@@ -33,6 +33,13 @@ def main():
             data += b'\n/proc/latency_copy(source, destination)\n\tvar/start = world.timeofday\n\t. = fcopy(source, destination)\n\tworld.log << "IO_METRICS copy=[source] ticks=[(world.timeofday-start+864000)%864000]"\n/proc/latency_flush(savefile/F)\n\tvar/start = world.timeofday\n\tF.Flush()\n\tworld.log << "IO_METRICS flush ticks=[(world.timeofday-start+864000)%864000]"\n'
         if relative.endswith('saving.dm'):
             data = data.replace(b'savefile.Flush()', b'latency_flush(savefile)')
+        if args.trace_units and relative.endswith('functions.dm'):
+            traced = data.decode().replace('\r\n', '\n')
+            begin = traced.index('/map_storage/proc/clear_bookkeeping()')
+            end = traced.index('\n// Returns true', begin)
+            body = re.sub(r'(?m)^(\t)(\w+) = list\(\)$',
+                lambda match: match[1] + 'latency_reset(src, "' + match[2] + '")', traced[begin:end])
+            data = (traced[:begin] + body + traced[end:]).encode()
         if args.trace_units and relative.endswith('saving.dm'):
             traced = data.decode().replace('\r\n', '\n')
             traced = re.sub(r'(?m)^(\s*)(F|savefile)\[(.+)\] << (.+)$',
@@ -44,6 +51,8 @@ def main():
             traced = traced.replace('\treturn ref\n', '\tlatency_stage = latency_previous_stage\n\treturn ref\n')
             traced = traced.replace('// Visit only this level', 'latency_stage = "grid"\n\t\t// Visit only this level')
             traced = traced.replace('var/list/edges = list()', 'latency_stage = "edges"\n\t\tvar/list/edges = list()')
+            traced = re.sub(r'(?m)^([ \t]*)(saving_\w+|existing_references|found_types) = list\(\)$',
+                lambda match: match[1] + 'latency_reset(src, "' + match[2] + '")', traced)
             traced = traced.replace('A.before_save()', 'latency_before_save(A)')
             traced = traced.replace('A.get_saved_vars()', 'latency_saved_vars(A)')
             traced = traced.replace('container.contents.Copy()', 'latency_list_copy(container.contents)')

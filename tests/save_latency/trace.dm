@@ -35,3 +35,8 @@ var/latency_stage = "startup"
 	if(latency_last_check)
 		latency_trace_end(latency_last_check, "between_checks stage=[latency_stage] level=[level] work=[work]")
 	latency_last_check = now
+/proc/latency_reset(map_storage/S, field)
+	var/count = length(S.vars[field])
+	var/start = latency_trace_time()
+	S.vars[field] = list()
+	latency_trace_end(start, "reset [field] length=[count]")
