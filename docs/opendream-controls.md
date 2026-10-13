@@ -166,6 +166,13 @@ inventory. Stop first confirms the owned client's exit, then removes only its
 recorded staging directory. The next Client run also reclaims a recorded copy
 after its owned process has exited. Failed copy verification cleans its own copy.
 Client crash recovery without a process record still requires operator inspection.
+Cleanup rejects linked ancestors and descendants and rechecks resolved confinement
+before deletion. If launch succeeds but process metadata or the state write fails,
+it stops and waits for that exact launch before reclaiming its copy. A termination
+failure retains the copy. `tests/test_opendream_launcher.ps1` exercises production
+functions with injected process/state effects and temporary directories, including
+parent redirection and a failed state write; its two omission controls must fail
+for their respective assertions. It starts no real process or game.
 
 Offline package contracts run with a verified Python interpreter:
 `-B -m unittest discover -s tests -p test_opendream_client_package.py -v`.

@@ -36,9 +36,82 @@ function Remove-OwnedClientRuntime {
     if ([IO.Path]::GetDirectoryName($target) -ne $parent -or [IO.Path]::GetFileName($target) -notmatch '^[0-9a-f]{32}$') {
         throw 'Refusing client runtime cleanup outside its owned staging directory.'
     }
-    if (Test-Path -LiteralPath $target) {
-        if ((Get-Item -LiteralPath $target).Attributes -band [IO.FileAttributes]::ReparsePoint) {throw 'Linked client runtime cleanup rejected.'}
-        Remove-Item -LiteralPath $target -Recurse -Force
+    Assert-UnlinkedClientPath $target
+    if (!(Test-Path -LiteralPath $target)) {return}
+    $resolvedParent = (Resolve-Path -LiteralPath $parent).ProviderPath.TrimEnd([IO.Path]::DirectorySeparatorChar)
+    $resolvedTarget = (Resolve-Path -LiteralPath $target).ProviderPath
+    if ([IO.Path]::GetDirectoryName($resolvedTarget) -ne $resolvedParent) {throw 'Resolved client runtime escaped its parent.'}
+    # Walk without following links. Reject linked descendants as well as ancestors.
+    $directories = New-Object 'System.Collections.Generic.Queue[string]'
+    $directories.Enqueue($target)
+    while ($directories.Count) {
+        $directory = $directories.Dequeue()
+        Assert-UnlinkedClientPath $directory
+        foreach ($entry in Get-ChildItem -LiteralPath $directory -Force) {
+            if ($entry.Attributes -band [IO.FileAttributes]::ReparsePoint) {throw 'Linked client runtime descendant rejected.'}
+            if ($entry.PSIsContainer) {$directories.Enqueue($entry.FullName)}
+        }
+    }
+    Assert-UnlinkedClientPath $target
+    Remove-Item -LiteralPath $target -Recurse -Force
+}
+function Assert-UnlinkedClientPath([string]$path) {
+    $current = [IO.Path]::GetFullPath($path)
+    while ($current) {
+        if ((Test-Path -LiteralPath $current) -and ((Get-Item -LiteralPath $current -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+            throw 'Linked client runtime ancestor rejected.'
+        }
+        $current = [IO.Path]::GetDirectoryName($current)
+    }
+}
+function Save-ClientState {
+    $state | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $statePath
+}
+function Start-ClientProcess([string]$arguments, [string]$workingDirectory) {
+    Start-Process -FilePath "$trial/sdk/dotnet.exe" -ArgumentList $arguments -WorkingDirectory $workingDirectory -WindowStyle Hidden -RedirectStandardOutput "$profile/client.stdout.log" -RedirectStandardError "$profile/client.stderr.log" -PassThru
+}
+function Stop-ClientProcessTree($process) {
+    & "$env:SystemRoot/System32/taskkill.exe" /PID $process.Id /T /F | Out-Null
+    if ($LASTEXITCODE -ne 0) {throw 'Could not terminate the exact owned client tree.'}
+}
+function Stop-LaunchedClient($process) {
+    if (!$process.HasExited) {Stop-ClientProcessTree $process}
+    if (!$process.WaitForExit(10000)) {throw 'Owned client did not exit; runtime retained.'}
+}
+function Start-VerifiedClient($verified) {
+    $oldEnvironment = @{}
+    foreach ($entry in Get-ChildItem Env:) {
+        if ($entry.Name -eq 'ROBUST_DISABLE_SANDBOX' -or $entry.Name -like 'ROBUST_AUTH_*' -or $entry.Name -like 'ROBUST_CVAR_*' -or $entry.Name -like 'ROBUST_MODULE_*') {
+            $oldEnvironment[$entry.Name] = $entry.Value
+            Remove-Item -LiteralPath "Env:$($entry.Name)"
+        }
+    }
+    $oldDotnetRoot = $env:DOTNET_ROOT
+    $oldWebview = $env:ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW
+    $client = $null
+    try {
+        $env:DOTNET_ROOT = "$trial/sdk"
+        $env:ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW = $verified.webview
+        # Operator paths are frozen by the trusted host before sandboxed content loads.
+        # Open the menu at an explicit address. Account and CID come from native BYOND.
+        $arguments = "`"$($verified.loader)`" --self-contained --connect-address udp://127.0.0.1:$($configuration.game_port) --cvar `"opendream.native_byond_bin=$($settings.native_byond_bin)`" --cvar `"opendream.native_observer_directory=$($settings.native_observer_directory)`""
+        $client = Start-ClientProcess $arguments $verified.root
+        $state.client = @{id=$client.Id;path=$client.Path;startedUtc=$client.StartTime.ToUniversalTime().ToString('o');runtime=$verified.staging_root}
+        Save-ClientState
+    } catch {
+        $startFailure = $_
+        # A returned Process is this launch's handle, even if metadata or the
+        # durable state write fails. Stop it before deleting its runtime.
+        if ($client) {Stop-LaunchedClient $client}
+        $state.client = @{runtime=$verified.staging_root}
+        Remove-OwnedClientRuntime
+        $state.client = $null
+        Save-ClientState
+        throw $startFailure
+    } finally {
+        $env:DOTNET_ROOT = $oldDotnetRoot
+        $env:ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW = $oldWebview
+        foreach ($name in $oldEnvironment.Keys) {Set-Item -LiteralPath "Env:$name" -Value $oldEnvironment[$name]}
     }
 }
 $statePath = Join-Path $profile 'processes.json'
@@ -80,12 +153,11 @@ if ($Action -eq 'Status') {
 if ($Action -eq 'Stop') {
     $client = Get-OwnedClient
     if ($client) {
-        & "$env:SystemRoot/System32/taskkill.exe" /PID $client.Id /T /F | Out-Null
-        if ($LASTEXITCODE -ne 0 -or !$client.WaitForExit(10000)) {throw 'Could not stop owned client.'}
+        Stop-LaunchedClient $client
     }
     Remove-OwnedClientRuntime
     $state.client = $null
-    $state | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $statePath
+    Save-ClientState
     if (Test-Path -LiteralPath (Join-Path $configuration.runtime_dir 'SQL/opendream-control/supervisor.lock')) {
         Invoke-Control 'stop'
     }
@@ -119,36 +191,6 @@ if ($Action -in @('Play','Client')) {
         $state.client = $null
         $state | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $statePath
         $verified = Test-ClientPackage -StageRuntime
-        $oldEnvironment = @{}
-        foreach ($entry in Get-ChildItem Env:) {
-            if ($entry.Name -eq 'ROBUST_DISABLE_SANDBOX' -or $entry.Name -like 'ROBUST_AUTH_*' -or $entry.Name -like 'ROBUST_CVAR_*' -or $entry.Name -like 'ROBUST_MODULE_*') {
-                $oldEnvironment[$entry.Name] = $entry.Value
-                Remove-Item -LiteralPath "Env:$($entry.Name)"
-            }
-        }
-        $oldDotnetRoot = $env:DOTNET_ROOT
-        $oldWebview = $env:ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW
-        $client = $null
-        try {
-            $env:DOTNET_ROOT = "$trial/sdk"
-            $env:ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW = $verified.webview
-            # Operator paths are frozen by the trusted host before sandboxed content loads.
-            # Open the menu at an explicit address. Account and CID come from native BYOND.
-            $arguments = "`"$($verified.loader)`" --self-contained --connect-address udp://127.0.0.1:$($configuration.game_port) --cvar `"opendream.native_byond_bin=$($settings.native_byond_bin)`" --cvar `"opendream.native_observer_directory=$($settings.native_observer_directory)`""
-            $client = Start-Process -FilePath "$trial/sdk/dotnet.exe" -ArgumentList $arguments -WorkingDirectory $verified.root -WindowStyle Hidden -RedirectStandardOutput "$profile/client.stdout.log" -RedirectStandardError "$profile/client.stderr.log" -PassThru
-            $state.client = @{id=$client.Id;path=$client.Path;startedUtc=$client.StartTime.ToUniversalTime().ToString('o');runtime=$verified.staging_root}
-            $state | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $statePath
-        } catch {
-            if (!$client) {
-                $state.client = @{runtime=$verified.staging_root}
-                Remove-OwnedClientRuntime
-                $state.client = $null
-            }
-            throw
-        } finally {
-            $env:DOTNET_ROOT = $oldDotnetRoot
-            $env:ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW = $oldWebview
-            foreach ($name in $oldEnvironment.Keys) {Set-Item -LiteralPath "Env:$name" -Value $oldEnvironment[$name]}
-        }
+        Start-VerifiedClient $verified
     }
 }
