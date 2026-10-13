@@ -27,9 +27,9 @@
 	var/advance_decay = decay_choice == "Advance decay age"
 	map.seasons(FALSE, TRUE, advance_decay)
 	var/decay_action = advance_decay ? "with debris aging enabled" : "without advancing debris age"
-	to_chat(src, "<span class = 'good'>Changed the season [decay_action].</span>")
-	message_admins("[key_name(src)] changed the season [decay_action].", key_name(src))
-	log_admin("[key_name(src)] changed the season [decay_action].")
+	to_chat(src, "<span class = 'good'>Requested a season change [decay_action].</span>")
+	message_admins("[key_name(src)] requested a season change [decay_action].", key_name(src))
+	log_admin("[key_name(src)] requested a season change [decay_action].")
 
 /client/proc/toggle_season()
 	set category = "Debug"
@@ -44,4 +44,3 @@
 		config.seasons_on = TRUE
 		to_chat(src, "<span class = 'good'>Seasons are now <b>enabled.</span>")
 		message_admins("[key_name(src)] enabled season change.", key_name(src))
-	

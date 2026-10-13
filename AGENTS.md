@@ -586,6 +586,31 @@ isolated runtime data and must detect exactly the lost recipe.
 
 <!-- 2026-10-12: finite digging completion -->
 Loose snow/dirt/sand stock must be checked after the action wait, because another actor may consume the last unit. Underground pickaxe actions use one wait/completion path. `tests/resource_extraction/digging_probe.dm` runs production handlers with competing completion and cancellation adapters; `-DiggingBaseline` rejects immutable pre-fix source without changing the checkout.
+<!-- 2026-10-12: seasonal terrain snapshots -->
+get_area_turfs accepts an optional third turf_type argument. Seasonal callers
+use fresh filtered snapshots, preserving pass order and native replacement refs;
+never cache them across transitions. Filtered predicates must be pure because
+excluded types skip predicate calls. tests/season_terrain_filter compares ordered
+native selections and bounded allocations at 660x550 synthetic geometry; inert
+entities and isolated wall times are not full-game or connected-player evidence.
+
+<!-- 2026-10-12: serialized seasonal terrain -->
+Base seasons serialize discovery, terrain mutation and delayed phases with
+season_busy/season_epoch; pending natural requests remain distinct. Delayed
+callbacks retain scalar phase/epoch values and stop when metadata is replaced.
+Discovery yields at 4096 candidates, mutation at 256, and both at 20% tick usage.
+Batch checkpoints use sleep(0) while budget remains; exhausted budget waits for
+the next tick. Cheap discovery checks budget/ownership every 64 entries, while
+each mutation checks individually. One constructor or discovery block can
+overshoot before the next checkpoint.
+Season worker fields are explicitly excluded by persistence_runtime_var because
+custom saves enumerate tmp fields. Asia flooding uses season_transition_complete
+inside the same lock. Isolated tests do not establish full-server latency.
+
+<!-- 2026-10-12: finite native probe completion -->
+Native del(world) does not immediately stop the current procedure. Accumulate
+probe failures before emitting one final result, and return explicitly after
+world disposal so failure paths cannot continue into a passing receipt.
 
 <!-- 2026-10-12: OpenDream local controls -->
 `scripts/opendream/control.py` owns only its launched local server. OpenDream
@@ -594,3 +619,18 @@ or native PID discovery. Reused temporary resources can make OpenDream `fcopy`
 copy stale bytes. Write the final spool file before its marker and verify actual
 disk bytes independently of DM resource reads. `verify-dm-controls.py` exercises
 production request/reboot/whitelist bodies in a disposable OpenDream world.
+
+<!-- 2026-10-12: bounded lighting startup -->
+Initial turf New delegates overlay construction to bounded startup sweeps.
+Dynamic excluded-z/void sites still need the compatibility overlay pass.
+Shared corners activate after both overlay passes; runtime build/clear/activity
+requests wait through startup and return after a failed barrier. Preserve
+ordinary prestartup direct calls. tests/lighting_startup checks production
+bodies, shared identity, late replacement and failed waiters against a baseline;
+its adapted rendering does not establish client lighting acceptance.
+
+<!-- 2026-10-12: lighting reinitialization -->
+Lighting startup must reconcile existing inactive shared corners after adding overlays, as well as activating fresh corners. Native largest-startup fixtures exercise a later overlay pass after standalone corner creation; use bounded overlay-master visits without retaining a corner registry.
+
+<!-- 2026-10-12: native population readiness -->
+Mob processing retains unfinished copied population snapshots across budget returns. A fixed schedule interval does not guarantee newly constructed humans received Life. The full seasonal constructor fixture waits at most 30 real seconds for natural first service while checking actor identity/location/death; its service control excludes one retained actor from both live membership and the pending snapshot. Never invoke Life directly to satisfy scheduler evidence.
