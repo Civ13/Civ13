@@ -1,6 +1,10 @@
 # Extraction custody and asynchronous fence inventory
 
 Source baseline: `b9ef785b73f2515aa22df63fbdb0ab0eeff831d1`, October 13.
+
+The yielding-restore closure supplement below was checked against integrated
+`8e6948ce9632b7edc03aab9a23c566fedaf9fd71`. Earlier rows retain their original
+baseline and evidence scope.
 No helper, compiler, native runtime, client or resource query was executed.
 This inventory supplies concrete integration boundaries for the serializer owner;
 it does not establish an exhaustive global fence. All fence hooks below are
@@ -258,3 +262,48 @@ fixture helper location and rejects duplicates, unrelated failures, engine error
 wrong assertions/files and trailing text. The ordinary oracle, process-exit gate
 and result-file failure gate remain unchanged. The parser correction needs
 independent source review and remote execution before any control pass claim.
+
+## Yielding restore hook closure supplement
+
+This is a proposed contract from source review, not implemented hook coverage.
+The ordinary census continues to require its original same-tick freshness.
+Only a distinct, explicit restore operation may authorize multi-tick traversal;
+`persistence_save_in_progress` and an ambient global token are insufficient.
+
+| Reachable entry or continuation | Existing protection at integrated baseline | Required restore boundary and owner | Closure status |
+| --- | --- | --- | --- |
+| `functions.dm::loadmap`, `ClearMap` | Wrapper excludes overlapping wrapper calls; validation precedes try scope. ClearMap sleeps before both mob and object disposal. | Serializer acquires typed operation and immutable readers before ClearMap; verify after both sleeps and before disposal. Wrap acquisition, validation and cleanup with original-cause retention. | Missing operation token; preflight exception and disposal callback coverage must be closed. |
+| `loading.dm::Load_World` initial allocation | Begins census before turf allocation; TICK_CHECK can yield; initial allocation lies outside per-level catch. | Serializer checks token before/after ChangeTurf and every resumed batch, and aborts through the same quarantine owner. | Missing; callbacks and mutation classification remain unaudited. |
+| `loading.dm::Load_Entry`, `decode_saved_value` | Recursive constructors, direct variable/location restoration, saved reference decoding and sleep(10) can re-enter. | Explicit trailing operation and reader parameters through every recursive call; enforce reader membership and expected epoch around each dispatched callback. | Missing; no immutable reader ABI has been established. |
+| `loading.dm::Load_World` after_load and `load_map_metadata` | Native subtype after_load runs before level feed; metadata restoration happens after Load_World returns. | Serializer records restore-owned mutations under the same operation; token validation after callback, before level acknowledgment and after metadata. | Missing; unsupported subtype callbacks must block restoration. |
+| `surface_loot.dm::feed_loaded_level`, `finish_world_inventory` | Feed checks same-tick barrier on entry then yields internally; finish checks root digest/placement in batches of 16 and loader yields between batches. | Extraction supplies separate token-bound restore feed/progress/proof adapters; preserve unique levels, identity joins, root snapshots and default same-tick API. | Missing; final finish loop is outside per-level catch and needs explicit abort ownership. |
+| `mode.dm::admit`, `owned`; `transactions.dm::open`, session `active` | Admission checks round/identity/session state and durable replica binding; session checks local ownership, not a restore epoch. | Extraction rejects pending/open admission and all consumer capabilities during restore/recovery; final admission reacquires pins and consumes one typed capability. | Missing global restore/recovery gate; admission_available alone is insufficient. |
+| `equipment.dm::decode`, `mode.dm::record_item`; storage/guns/stacks/reagents and vehicle rows above | Codec can construct, write and move graphs; local locks and surface guards cover only their owned transitions. | Extraction gates issuance; each shared physical owner guards or defers direct loc, scalar/ref/list edits and post-wait callbacks, registering authorized restore writes under token. | Partial local guards only; accepted subtype and direct-location closure remains a blocker. |
+| `account_store.dm::write_phase`; settlement/mail/insurance/IPC | Account read lease blocks matching in-process root/child writes. | Extraction pins the whole account/auxiliary set; every recovery/readiness projection observes token. Host owner excludes external writers or provides verified immutable selected readers. | In-process lease exists; host replacement/ABA exclusion is unverified. |
+| NPC/corpse/GC, admin replacement, mapswap and process continuations | Actor lifetime/retirement receipts and mapswap acknowledgment have local checks. | Respective owners reject/defer unrelated mutation before effects; token/epoch loss invalidates stale sleepers and disposal callbacks. | No global operation closure; base Move/forceMove cannot cover this set. |
+
+Before implementation acceptance, each missing row needs an owner-reviewed
+classification: operation-owned mutation, guarded refusal, deferred continuation,
+or unsupported/blocking callback. Merely adding a check after an irreversible
+mutation cannot establish external mutation exclusion. A map/dimension/epoch
+change invalidates the operation; successful checks never refresh a time stamp.
+Authorized restore-owned mutations update operation-local progress/revision under
+the same custody epoch; any unowned mutation attempt fails or defers before effects
+or irreversibly invalidates custody. No callback may advance or rebase the captured
+custody epoch to bless intervening writes. The custody epoch changes only on
+invalidation or ownership turnover, independently of authorized restore progress.
+
+A failure before mutation releases readers and transient custody. A failure after
+ClearMap or any constructor/restoration effect invalidates all proofs, retains a
+durable recovery block and forbids admission, issuance, map transition and
+checkpoint publication. Cleanup closes readers and references without asserting
+rollback or clearing recovery. Owner-authorized recovery starts from the original
+map and the selected validated generation, with no silent partial-load retry.
+
+Required named controls include an actual multi-tick positive restore and unchanged
+ordinary yield refusal; duplicate/missing levels; stale/foreign/replayed tokens;
+session admission at each yield; account/auxiliary pin changes; same-path input
+replacement; root movement/deletion; constructor, after_load and metadata failures;
+fence release before admission; cleanup failure retaining recovery; and null-policy
+ordinary-map behavior. Named assertion failures, not compilation or engine errors,
+must establish omission detection. All new controls remain unimplemented/unrun.
