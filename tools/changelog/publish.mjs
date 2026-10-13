@@ -94,9 +94,9 @@ export async function deliver(m, { load, save, post, verify }) {
 export async function run(env, event, deps = {}) {
   requireValue(env.GITHUB_REPOSITORY === 'Civ13/Civ13', 'Unexpected repository');
   const http = deps.http ?? request;
-  const api = deps.api ?? ((path, options) => request('https://api.github.com/repos/Civ13/Civ13/' + path, {
+  const api = deps.api ?? ((path, options) => request('https://api.github.com/repos/Civ13/Civ13' + (path ? '/' + path : ''), {
     ...options, headers: { Authorization: 'Bearer ' + env.GITHUB_TOKEN, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' }
-  }));
+  }, { fetcher: deps.fetcher }));
   const repo = await api('');
   const branch = repo.default_branch;
   let commit, name, m;

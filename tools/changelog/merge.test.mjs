@@ -55,6 +55,16 @@ test('absent or blank fields require no credentials or external effects', async 
     await run({ ...env, MERGE_CHANGELOG_ENABLED: '', DISCORD_CHANGELOG_WEBHOOK: '' }, e, { api: async path => { assert.equal(path, ''); return { default_branch: 'master' }; }, http: async () => { throw Error('Must not call Discord'); } });
   }
 });
+test('real API adapter uses the canonical repository URL without a trailing slash', async () => {
+  const e = event(); e.pull_request.body = null;
+  const calls = [];
+  await run(env, e, { fetcher: async url => {
+    calls.push(url);
+    assert.equal(url, 'https://api.github.com/repos/Civ13/Civ13');
+    return { ok: true, status: 200, json: async () => ({ default_branch: 'master' }) };
+  } });
+  assert.equal(calls.length, 1);
+});
 test('unmerged, foreign, wrong branch, stale merge and disabled publishing fail closed', async () => {
   for (const change of [{ merged: false }, { base: { ref: 'other', repo: pr.base.repo } }, { base: { ref: 'master', repo: { full_name: 'other/repo' } } }, { merge_commit_sha: 'c'.repeat(40) }]) {
     const e = event(); Object.assign(e.pull_request, change);
