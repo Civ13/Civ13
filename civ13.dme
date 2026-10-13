@@ -1272,6 +1272,7 @@
 #include "code\modules\1713\extraction\vehicle_cargo.dm"
 #include "code\modules\1713\extraction\vehicle_raid.dm"
 #include "code\modules\1713\extraction\loot.dm"
+#include "code\modules\1713\extraction\surface_loot.dm"
 #include "code\modules\1713\extraction\container_keys.dm"
 #include "code\modules\1713\extraction\npcs.dm"
 #include "code\modules\1713\extraction\npc_extraction.dm"
