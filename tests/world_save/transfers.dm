@@ -85,6 +85,7 @@
 		try
 			map_storage.BuildVarDirectory(F, mode == "reference-first" ? P : T, 1)
 		catch(var/exception/e)
+			check(length("[e]"), "Transfer refusal has no diagnostic")
 			refused = TRUE
 		check(refused, "Transfer case [mode] must refuse export")
 		if(mode in list("reference-first", "limit", "duplicate", "uncommitted"))
