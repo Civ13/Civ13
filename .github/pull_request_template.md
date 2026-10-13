@@ -6,10 +6,19 @@ Describe the problem and resulting behavior.
 
 Describe the checks actually run and any remaining limitations.
 
-<!-- Optional: put one Changelog: line below, outside this comment.
-Use concise player-facing text only. It is posted as a bullet to #changelog
-when this PR is merged into master. No heading, PR number, or deployment/update
-status wording. Missing or blank means no post. Example:
+## Optional changelog
+
+Fill in the single `Changelog:` line below with the exact player-facing text to
+post as a bullet to Discord's #changelog when this PR is merged into master.
+Keep it on one line. Leave it blank or remove it if no announcement is needed;
+a missing or blank field posts nothing.
+
+Describe the player-visible change without a heading, PR number, mentions, or
+merge, deployment, server availability, or next-update status wording.
+
+Example (replace the blank line below, do not add a second field):
+```text
 Changelog: Fixed crafting consuming ingredients when assembly is cancelled.
--->
+```
+
 Changelog:
