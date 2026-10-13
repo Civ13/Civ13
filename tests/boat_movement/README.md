@@ -39,4 +39,12 @@ Replicate manual construction with the rudder/controller in the northwest frame,
 
 ## Headless pickup precondition
 
+`run-game.ps1 -ArtifactDirectory <directory>` retains a unique runtime directory
+under that destination. Assertion results include their failed labels. On early
+failures and timeouts the launcher prints bounded result/native-log diagnostics
+before returning the original failure. CI uploads results, source metadata and
+logs with `always()` so a failure count does not strand its evidence in `/tmp`.
+The upload excludes compiled game binaries and save files. These logs establish
+the reported assertion and native diagnostics, not a graphical reproduction.
+
 The full-game inventory case explicitly wakes its test actor immediately before the synchronous pickup/drop. Normal SSD handling puts humans without a client to sleep, which rejects hand pickup. The fixture asserts the actor is awake and live, then calls unchanged production inventory procedures and verifies actual location and cargo membership. The headless launcher closes its port, refuses reopening and rejects native engine diagnostics as well as runtime/assertion failures. This is isolated compatibility evidence, not player or graphical acceptance.

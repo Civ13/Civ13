@@ -8,6 +8,20 @@ Icons are compiled from inherited defaults without constructing any items.
 The hosted searchable diagram is published alongside source documentation at
 https://civ13.github.io/Civ13/crafting/ by the existing Pages workflow.
 
+## Obtaining resources
+
+Select an ingredient or product to see reviewed gathering and processing routes,
+including steps, tools or stations, restrictions and conditional outcomes. The
+same route data appears in the in-game reference, with at most 12 routes per
+resource view. Producer recipes remain available for following processing chains.
+Resources without reviewed instructions say so explicitly; raw production-site
+occurrences are never presented as player acquisition instructions.
+
+Annotations in `scripts/atlas/resource-sources.json` carry their reviewed source
+commit. They are curated source interpretations rather than live map inventory
+or guaranteed yields. Recipe additions regenerate automatically; changes to
+procedural gathering behavior still require annotation review.
+
 ## Updating recipes
 
 Production build scripts regenerate `UI/crafting-atlas.json` before compilation.

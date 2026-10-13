@@ -43,13 +43,14 @@
 	icon_state = "connector"
 	var/list/connections = list()
 	var/list/turflist = list()
+	var/list/junction_pairs = list()
 	var/tilepos = "over"
 	flags = CONDUCT
 
 /obj/item/connector/verb/hiding()
 	set category = null
 	set name = "Under/Over tiles"
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (!anchored)
 		to_chat(usr, "Place it first.")
@@ -66,24 +67,112 @@
 		return
 
 /obj/item/connector/attack_self(mob/user)
-	for(var/obj/structure/cable/CL in get_turf(user))
-		turflist += CL
-		CL.connections += src
-	for(var/obj/structure/cable/CLC in turflist)
-		for(var/obj/structure/cable/CLD in turflist)
-			if (!(CLD in CLC.connections) && CLC != CLD)
-				CLC.connections += CLD
+	var/mob/living/human/H = user
+	if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || !H.item_is_in_hands(src) || anchored || !isturf(H.loc))
+		return
+	for (var/obj/item/connector/other in H.loc)
+		if (other != src && other.anchored)
+			to_chat(H, "There is already a secured connector here.")
+			return
 	user.drop_from_inventory(src)
 	anchored = TRUE
+	connect_cables()
 	to_chat(user, "You connect the cables on this tile.")
-	for (var/obj/structure/cable/CB in turflist)
-		CB.rebuild_supply()
 	return
+
+/obj/item/connector/proc/disconnect_cables()
+	var/list/previous = turflist.Copy()
+	for (var/list/pair in junction_pairs)
+		var/obj/structure/cable/A = pair[1]
+		var/obj/structure/cable/B = pair[2]
+		if (A)
+			A.connections -= B
+		if (B)
+			B.connections -= A
+	for (var/obj/structure/cable/C in previous)
+		C.connections -= src
+	junction_pairs.Cut()
+	turflist.Cut()
+	connections.Cut()
+	for (var/obj/structure/cable/C in previous)
+		C.rebuild_supply()
+
+/obj/item/connector/proc/forget_cable(obj/structure/cable/C)
+	for (var/list/pair in junction_pairs.Copy())
+		if (C in pair)
+			junction_pairs -= list(pair)
+	turflist -= C
+	connections -= C
+
+/obj/item/connector/proc/connect_cables()
+	disconnect_cables()
+	if (!anchored || !isturf(loc))
+		return
+	for (var/obj/structure/cable/C in loc)
+		if (turflist.len >= 16)
+			return
+		turflist |= C
+	for (var/i = 1, i <= turflist.len, i++)
+		var/obj/structure/cable/A = turflist[i]
+		A.connections |= src
+		connections |= A
+		for (var/j = i + 1, j <= turflist.len, j++)
+			var/obj/structure/cable/B = turflist[j]
+			A.connections |= B
+			B.connections |= A
+			junction_pairs += list(list(A,B))
+	if (turflist.len)
+		var/obj/structure/cable/root = turflist[1]
+		root.rebuild_supply()
+
+/obj/item/connector/after_load()
+	..()
+	// Older native saves have the junction edges but no ownership pairs.
+	if (!anchored || !isturf(loc) || junction_pairs.len)
+		return
+	for (var/i = 1, i <= turflist.len, i++)
+		var/obj/structure/cable/A = turflist[i]
+		if (!A || A.loc != loc)
+			continue
+		for (var/j = i + 1, j <= turflist.len, j++)
+			var/obj/structure/cable/B = turflist[j]
+			if (B && B.loc == loc && (B in A.connections) && (A in B.connections))
+				junction_pairs += list(list(A,B))
+
+/obj/item/connector/Destroy()
+	disconnect_cables()
+	return ..()
+/obj/item/connector/Del()
+	disconnect_cables()
+	..()
+/obj/item/connector/Move()
+	var/atom/previous = loc
+	. = ..()
+	if (. && loc != previous)
+		disconnect_cables()
+		anchored = FALSE
+/obj/item/connector/forceMove(atom/destination, special_event)
+	var/atom/previous = loc
+	. = ..()
+	if (. && loc != previous)
+		disconnect_cables()
+		anchored = FALSE
 /obj/item/connector/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wrench))
+		var/mob/living/human/H = user
+		if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || !H.item_is_in_hands(W) || H.z != z || get_dist(H,src) > 1 || !isturf(loc))
+			return
+		if (!anchored)
+			for (var/obj/item/connector/other in loc)
+				if (other != src && other.anchored)
+					return
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
 		anchored = !anchored
+		if (anchored)
+			connect_cables()
+		else
+			disconnect_cables()
 		return
 
 ///////////////////////////////////
@@ -113,7 +202,8 @@
 
 // called when cable_coil is placed on a turf
 /obj/item/stack/cable_coil/proc/place_turf(turf/T, mob/user, dirnew)
-	if(!isturf(user.loc))
+	var/mob/living/human/H = user
+	if(!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || !H.item_is_in_hands(src) || !isturf(H.loc))
 		return
 
 	if(!isturf(T))
@@ -122,10 +212,11 @@
 
 	if(amount < 1) // Out of cable
 		to_chat(user, "<span class='warning'>There is no cable left!</span>")
+		user.remove_from_mob(src)
 		qdel(src)
 		return
 
-	if(get_dist(T,user) > 1) // Too far
+	if(T.z != user.z || get_dist(T,user) > 1) // Too far
 		to_chat(user, "<span class='warning'>You can't lay cable at a place that far away!</span>")
 		return
 
@@ -168,33 +259,26 @@
 	if (opdir1 != 0 && opdir2 != 0)
 		for(var/obj/structure/cable/NCOO in get_turf(get_step(C,opdir1)))
 			if ((NCOO.tiledir == C.tiledir) && NCOO != C)
-				if (!(C in NCOO.connections) && !list_cmp(C.connections, NCOO.connections))
-					NCOO.connections += C
-				if (!(NCOO in C.connections) && !list_cmp(C.connections, NCOO.connections))
-					C.connections += NCOO
+				NCOO.connections |= C
+				C.connections |= NCOO
 				to_chat(user, "You connect the two cables.")
 
 		for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir2)))
 			if ((NCOC.tiledir == C.tiledir) && NCOC != C)
-				if (!(C in NCOC.connections) && !list_cmp(C.connections, NCOC.connections))
-					NCOC.connections += C
-				if (!(NCOC in C.connections) && !list_cmp(C.connections, NCOC.connections))
-					C.connections += NCOC
+				NCOC.connections |= C
+				C.connections |= NCOC
 				to_chat(user, "You connect the two cables.")
-	var/list/turflist = list()
-	for(var/obj/structure/cable/CL in get_turf(user))
-		turflist += CL
-		if (CL != C)
-			CL.connections += C
-	for(var/obj/structure/cable/CLC in turflist)
-		for(var/obj/structure/cable/CLD in turflist)
-			if (!(CLD in CLC.connections) && CLC != CLD)
-				CLC.connections += CLD
-	if (turflist.len > 1)
-		to_chat(user, "You connect the cables on this tile.")
-	for (var/obj/structure/cable/CB in turflist)
-		CB.rebuild_supply()
+	// Crossing directions join only through a secured connector.
+	for (var/obj/item/connector/junction in T)
+		if (junction.anchored)
+			junction.connect_cables()
+			break
 	C.rebuild_supply()
+	if (amount <= 0)
+		user.remove_from_mob(src)
+		qdel(src)
+	else
+		update_icon()
 	return C
 
 //////////////////////////////

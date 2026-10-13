@@ -39,6 +39,7 @@ def material_stack(typepath):
         parent=parent.rsplit('/',1)[0]
     return '/obj/item/stack/material/'+typepath.removeprefix('/material/')
 def canon(s):
+    if s.startswith('material:'):s='/material/'+s.split(':',1)[1]
     s=s.strip().strip('"').rstrip('/')
     if s.startswith('reagent:'):return s.removeprefix('reagent:')
     if s.startswith('material:'):s='/material/'+s.removeprefix('material:')
@@ -48,6 +49,14 @@ def canon(s):
     return s
 records=[]; issues=[]; occurrence=[]
 def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
+    for typepath,_ in outputs:
+        if typepath.startswith('/obj/structure/exercise'):
+            modern=typepath.startswith('/obj/structure/exercise/modern')
+            conditions+=f' Native crafting skill {105 if modern else 30}; completed research or existing faction baseline required at construction.'
+            if modern:conditions+=' Minimum era Modern (ordinal 8).'
+        if typepath.startswith('/obj/structure/telecom') or typepath == '/obj/item/weapon/telephone/landline':
+            skill=100 if typepath.endswith('/landline') else 160 if typepath in ('/obj/structure/telecom/tv','/obj/structure/telecom/station/tv','/obj/structure/telecom/terminal') else 105
+            conditions+=f' Minimum era Modern (ordinal 8); native crafting skill {skill}; completed research node required at construction.'
     inputs=[{'id':canon(a),'name':label(a),'quantity':str(b)} for a,b in inputs]
     outputs=[{'id':canon(a),'name':label(a),'quantity':str(b)} for a,b in outputs]
     records.append(dict(id='r'+str(len(records)),name=name,kind=kind,inputs=inputs,outputs=outputs,file=path,line=line,conditions=conditions,raw=raw))
@@ -205,12 +214,27 @@ if source_path.exists():
     data['sources']['audit_commit']=data['sources'].pop('source_commit')
     data['limitations'].append('Acquisition annotations were audited at '+data['sources']['audit_commit']+'; current recipes and sprites regenerate, procedural annotations require review when behavior changes.')
     for x in data['sources'].get('mechanisms',[]):
+        for field in ('inputs','outputs'):
+            x[field]=[canon(value) for value in x.get(field,[]) if isinstance(value,str)]
         outputs=[(o,'conditional yield') for o in x.get('outputs',[]) if isinstance(o,str)]
         inputs=[(i,'conditional') for i in x.get('inputs',[]) if isinstance(i,str)]
         if outputs:add(x['name'],'Acquisition / processing', inputs or [('source:'+x['name'],'see source inputs')],outputs,x['file'],x.get('line',1),x.get('conditions',x.get('gate',''))+'; '+x.get('status','')+'; outputs may be alternatives, not a simultaneous bundle.')
+# Curated player acquisition routes, separate from raw production occurrences.
+acquisition={}
+for route in data['sources'].get('mechanisms',[]) if isinstance(data['sources'],dict) else []:
+    entry={k:v for k,v in route.items() if k in ('name','file','line','conditions','status','tools','steps','map_notes','era','inputs','outputs')}
+    entry['audit_commit']=route.get('source_commit',data['sources'].get('audit_commit',''))
+    if isinstance(entry.get('tools'),list):entry['tools']=[label(tool) if isinstance(tool,str) and tool.startswith('/') else tool for tool in entry['tools']]
+    for output in route.get('outputs',[]):
+        if not isinstance(output,str):continue
+        key='/material/'+output.split(':',1)[1] if output.startswith('material:') else output
+        key=canon(key)
+        acquisition.setdefault(key,[]).append(entry)
+data['acquisition']=acquisition
 resource_ids=sorted({x['id'] for r in records for x in r['inputs']+r['outputs']})
+resource_names={x['id']:x['name'] for r in records for x in r['inputs']+r['outputs']}
 if options.catalog_only:
-    game=dict(recipes=[{k:v for k,v in r.items() if k not in ('raw',)} for r in records],resources={x:dict(type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
+    game=dict(acquisition=acquisition,recipes=[{k:v for k,v in r.items() if k not in ('raw',)} for r in records],resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
     game_text=json.dumps(game,separators=(',',':'),ensure_ascii=True)+'\n'
     if options.game_catalog:
         options.game_catalog.parent.mkdir(parents=True,exist_ok=True)
@@ -240,7 +264,7 @@ for resource in resource_ids:
     row=rows[typepath.split('#')[0]]
     mode='source symbol; abstract or dynamic appearance unresolved' if not direct else 'reviewed state; runtime overlays may differ' if '#' in resource else 'material exemplar; runtime recoloring may differ' if resource.startswith('/material/') else 'compiled default'
     data['resources'][resource]=dict(type=typepath.split('#')[0],icon=row['icon'],state=typepath.split('#')[1] if '#' in typepath else row['state'],dir=row['dir'],image='sprites/'+exports[typepath],label=mode,source_symbol=not direct)
-game=dict(recipes=[{k:v for k,v in r.items() if k not in ('raw',)} for r in records],resources={x:dict(type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
+game=dict(acquisition=acquisition,recipes=[{k:v for k,v in r.items() if k not in ('raw',)} for r in records],resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
 game_text=json.dumps(game,separators=(',',':'),ensure_ascii=True)+'\n'
 if options.game_catalog:
     options.game_catalog.parent.mkdir(parents=True,exist_ok=True)

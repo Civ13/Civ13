@@ -1,0 +1,848 @@
+{
+  "date": "2026-10-12",
+  "platform": "Windows, BYOND 516.1681, 32-bit daemon",
+  "baseline": "4e6211fe1a50519f91104fa32da32990baf0f4d4",
+  "candidate_head": "b73db0020b469adff1d9a0960bd4f4aa807c46cc",
+  "adopted_overlay_git_blob": "506d55e673c4be59510b2d2bc87f90871ad6e320",
+  "decision": "Keep measured overlay batching; reject source batching because native source drain worsened. Final source code equals baseline. Whole-process CPU and private bytes below describe the two-process candidate, not the final overlay-only patch.",
+  "method": "Engine phase tick-usage differences are not OS CPU seconds. OS CPU includes construction and teardown; 20ms private-byte samples are not exact peaks or settled retention. Native candidate measurements precede moving ownership controls from sources to overlays in the final correctness probe.",
+  "limits": "Five cycles per run; no server/client/OOM/long-runtime claim. Normal native source engine usage increased about 3%, overload about 7%. Source per-entry implementation is retained. All native paired states match. No source timing gain is claimed.",
+  "records": [
+    {
+      "name": "final-normal-baseline",
+      "report_sha256": "7fcc88e2e46eb73644e8603c23a29248319fbbedb160279267c006e6ab02d8fb",
+      "tested_head": "08e5a07b422ec1d3df72c9b8344c73ee473e3896",
+      "baseline_queue_commit": "4e6211fe1a50519f91104fa32da32990baf0f4d4",
+      "cycles": 5,
+      "process_cpu_seconds": 0.0625,
+      "peak_private_bytes": 5636096,
+      "final_sample_private_bytes": 3715072,
+      "phases": {
+        "overlay": {
+          "cpu_tick_percent_sum": {
+            "mean": 1.35248,
+            "min": 0,
+            "max": 1.8322
+          },
+          "peak_tick_percent": {
+            "mean": 1.35248,
+            "min": 0,
+            "max": 1.8322
+          },
+          "passes": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "drain_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "max_lateness_ticks": {
+            "mean": 0,
+            "min": 0,
+            "max": 0
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 0.8,
+            "min": 0,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        },
+        "source": {
+          "cpu_tick_percent_sum": {
+            "mean": 2.61252,
+            "min": 2.1416,
+            "max": 3.0692
+          },
+          "peak_tick_percent": {
+            "mean": 2.61252,
+            "min": 2.1416,
+            "max": 3.0692
+          },
+          "passes": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "drain_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "max_lateness_ticks": {
+            "mean": 0,
+            "min": 0,
+            "max": 0
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        }
+      },
+      "size": 500,
+      "performance_use": "paired quiet window; native is real callbacks, standalone is bookkeeping with trivial adapters"
+    },
+    {
+      "name": "final-normal-current",
+      "report_sha256": "0f8ff73f3f22e15de76a68ef6b5204b516844294dbdd903ac1c0a5d331b0118e",
+      "tested_head": "08e5a07b422ec1d3df72c9b8344c73ee473e3896",
+      "baseline_queue_commit": null,
+      "cycles": 5,
+      "process_cpu_seconds": 0.0,
+      "peak_private_bytes": 5537792,
+      "final_sample_private_bytes": 3653632,
+      "phases": {
+        "overlay": {
+          "cpu_tick_percent_sum": {
+            "mean": 1.60908,
+            "min": 0,
+            "max": 2.147
+          },
+          "peak_tick_percent": {
+            "mean": 1.60908,
+            "min": 0,
+            "max": 2.147
+          },
+          "passes": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "drain_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "max_lateness_ticks": {
+            "mean": 0,
+            "min": 0,
+            "max": 0
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 0.8,
+            "min": 0,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        },
+        "source": {
+          "cpu_tick_percent_sum": {
+            "mean": 2.72288,
+            "min": 1.8522,
+            "max": 3.2228
+          },
+          "peak_tick_percent": {
+            "mean": 2.72288,
+            "min": 1.8522,
+            "max": 3.2228
+          },
+          "passes": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "drain_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "max_lateness_ticks": {
+            "mean": 0,
+            "min": 0,
+            "max": 0
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        }
+      },
+      "size": 500,
+      "performance_use": "paired quiet window; native is real callbacks, standalone is bookkeeping with trivial adapters"
+    },
+    {
+      "name": "final-overload-baseline",
+      "report_sha256": "3767e985f50e04b12b2ba07b49a560e8f14bce6688687ee947dcb4f8b7d3b49b",
+      "tested_head": "5b0bb55914cd51a4b821e0e63db7cb1abaf0d5ad",
+      "baseline_queue_commit": "4e6211fe1a50519f91104fa32da32990baf0f4d4",
+      "cycles": 5,
+      "process_cpu_seconds": 6.625,
+      "peak_private_bytes": 12365824,
+      "final_sample_private_bytes": 5279744,
+      "phases": {
+        "overlay": {
+          "cpu_tick_percent_sum": {
+            "mean": 1063.011,
+            "min": 944.555,
+            "max": 1166.56
+          },
+          "peak_tick_percent": {
+            "mean": 12.13356,
+            "min": 11.5388,
+            "max": 13.0376
+          },
+          "passes": {
+            "mean": 99,
+            "min": 90,
+            "max": 107
+          },
+          "drain_ticks": {
+            "mean": 99,
+            "min": 90,
+            "max": 107
+          },
+          "max_lateness_ticks": {
+            "mean": 98,
+            "min": 89,
+            "max": 106
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        },
+        "source": {
+          "cpu_tick_percent_sum": {
+            "mean": 887.111,
+            "min": 878.037,
+            "max": 900.737
+          },
+          "peak_tick_percent": {
+            "mean": 10.55068,
+            "min": 10.4196,
+            "max": 10.8916
+          },
+          "passes": {
+            "mean": 87.8,
+            "min": 87,
+            "max": 89
+          },
+          "drain_ticks": {
+            "mean": 87.8,
+            "min": 87,
+            "max": 89
+          },
+          "max_lateness_ticks": {
+            "mean": 86.8,
+            "min": 86,
+            "max": 88
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        }
+      },
+      "size": 20000,
+      "performance_use": "paired quiet window; native is real callbacks, standalone is bookkeeping with trivial adapters"
+    },
+    {
+      "name": "final-overload-current",
+      "report_sha256": "298e6836dc947b178268d250ff948de14b4ac04a1a8408eb478c2203fdb5d681",
+      "tested_head": "5b0bb55914cd51a4b821e0e63db7cb1abaf0d5ad",
+      "baseline_queue_commit": null,
+      "cycles": 5,
+      "process_cpu_seconds": 4.453125,
+      "peak_private_bytes": 11956224,
+      "final_sample_private_bytes": 3919872,
+      "phases": {
+        "overlay": {
+          "cpu_tick_percent_sum": {
+            "mean": 59.8606,
+            "min": 54.3578,
+            "max": 66.6224
+          },
+          "peak_tick_percent": {
+            "mean": 8.11804,
+            "min": 6.1866,
+            "max": 9.0672
+          },
+          "passes": {
+            "mean": 10,
+            "min": 10,
+            "max": 10
+          },
+          "drain_ticks": {
+            "mean": 10,
+            "min": 10,
+            "max": 10
+          },
+          "max_lateness_ticks": {
+            "mean": 9,
+            "min": 9,
+            "max": 9
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        },
+        "source": {
+          "cpu_tick_percent_sum": {
+            "mean": 83.6264,
+            "min": 79.8988,
+            "max": 87.1902
+          },
+          "peak_tick_percent": {
+            "mean": 9.78004,
+            "min": 8.9074,
+            "max": 9.999
+          },
+          "passes": {
+            "mean": 10.8,
+            "min": 10,
+            "max": 11
+          },
+          "drain_ticks": {
+            "mean": 10.8,
+            "min": 10,
+            "max": 11
+          },
+          "max_lateness_ticks": {
+            "mean": 9.8,
+            "min": 9,
+            "max": 10
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        }
+      },
+      "size": 20000,
+      "performance_use": "paired quiet window; native is real callbacks, standalone is bookkeeping with trivial adapters"
+    },
+    {
+      "name": "native-normal-baseline",
+      "report_sha256": "fcfc5bcec3fe37e8c88569266abb8ba9a1c94db4f58648f2ede785cd7a5f7700",
+      "tested_head": "b73db0020b469adff1d9a0960bd4f4aa807c46cc",
+      "baseline_queue_commit": "4e6211fe1a50519f91104fa32da32990baf0f4d4",
+      "cycles": 5,
+      "process_cpu_seconds": 0.25,
+      "peak_private_bytes": 118460416,
+      "final_sample_private_bytes": 5623808,
+      "phases": {
+        "overlay": {
+          "cpu_tick_percent_sum": {
+            "mean": 20.60288,
+            "min": 19.5418,
+            "max": 24.5342
+          },
+          "peak_tick_percent": {
+            "mean": 10.04836,
+            "min": 10.0214,
+            "max": 10.0894
+          },
+          "passes": {
+            "mean": 2.2,
+            "min": 2,
+            "max": 3
+          },
+          "drain_ticks": {
+            "mean": 2.2,
+            "min": 2,
+            "max": 3
+          },
+          "max_lateness_ticks": {
+            "mean": 1.2,
+            "min": 1,
+            "max": 2
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        },
+        "source": {
+          "cpu_tick_percent_sum": {
+            "mean": 226.5808,
+            "min": 200.738,
+            "max": 237.59
+          },
+          "peak_tick_percent": {
+            "mean": 11.27048,
+            "min": 10.825,
+            "max": 11.698
+          },
+          "passes": {
+            "mean": 22.2,
+            "min": 20,
+            "max": 23
+          },
+          "drain_ticks": {
+            "mean": 22.2,
+            "min": 20,
+            "max": 23
+          },
+          "max_lateness_ticks": {
+            "mean": 21.2,
+            "min": 19,
+            "max": 22
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        }
+      },
+      "queue_hashes": {
+        "overlays.dm": "cce722cb37401c8bbcfe2bccd812c2d0169a16f19e450edabe569773e49c7b72",
+        "sources.dm": "eb0647bfc5fbcaabbe49ac63bbf97ef1987368b7543afb85b9b7a08aa6c845d3"
+      },
+      "size": 32,
+      "lights": 200,
+      "lighting_state_sha256": "0d9ca7729b6c3a7d6c3d78c35cfc7eaf1a33eb2908a6bf888396ac44c746728e",
+      "performance_use": "paired quiet window; native is real callbacks, standalone is bookkeeping with trivial adapters"
+    },
+    {
+      "name": "native-normal-current",
+      "report_sha256": "466e24eaf11cde55c28f57917b8e761b9a54a1534ab3d590d6c3f22d2259dc35",
+      "tested_head": "b73db0020b469adff1d9a0960bd4f4aa807c46cc",
+      "baseline_queue_commit": null,
+      "cycles": 5,
+      "process_cpu_seconds": 0.1875,
+      "peak_private_bytes": 118468608,
+      "final_sample_private_bytes": 6057984,
+      "phases": {
+        "overlay": {
+          "cpu_tick_percent_sum": {
+            "mean": 18.20452,
+            "min": 17.394,
+            "max": 18.5502
+          },
+          "peak_tick_percent": {
+            "mean": 10.00536,
+            "min": 10.0006,
+            "max": 10.011
+          },
+          "passes": {
+            "mean": 2,
+            "min": 2,
+            "max": 2
+          },
+          "drain_ticks": {
+            "mean": 2,
+            "min": 2,
+            "max": 2
+          },
+          "max_lateness_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        },
+        "source": {
+          "cpu_tick_percent_sum": {
+            "mean": 233.6484,
+            "min": 213.505,
+            "max": 248.988
+          },
+          "peak_tick_percent": {
+            "mean": 11.31668,
+            "min": 11.153,
+            "max": 11.6078
+          },
+          "passes": {
+            "mean": 23.2,
+            "min": 22,
+            "max": 24
+          },
+          "drain_ticks": {
+            "mean": 23.2,
+            "min": 22,
+            "max": 24
+          },
+          "max_lateness_ticks": {
+            "mean": 22.2,
+            "min": 21,
+            "max": 23
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        }
+      },
+      "queue_hashes": {
+        "overlays.dm": "a23e30966def37cedfbe170d1a5ffa5d63c71661e72a2f74b0f0d6b267506820",
+        "sources.dm": "aa5e108a8e7dd96bea430b3c2c183ca23d504be08d001cf41f84c122225cdb52"
+      },
+      "size": 32,
+      "lights": 200,
+      "lighting_state_sha256": "0d9ca7729b6c3a7d6c3d78c35cfc7eaf1a33eb2908a6bf888396ac44c746728e",
+      "performance_use": "paired quiet window; native is real callbacks, standalone is bookkeeping with trivial adapters"
+    },
+    {
+      "name": "native-overload-baseline",
+      "report_sha256": "ed31a03f00a5371c273543ae87e78e3da4a5e6568c7f412b02228fac5617df53",
+      "tested_head": "b73db0020b469adff1d9a0960bd4f4aa807c46cc",
+      "baseline_queue_commit": "4e6211fe1a50519f91104fa32da32990baf0f4d4",
+      "cycles": 5,
+      "process_cpu_seconds": 2.046875,
+      "peak_private_bytes": 167124992,
+      "final_sample_private_bytes": 19034112,
+      "phases": {
+        "overlay": {
+          "cpu_tick_percent_sum": {
+            "mean": 305.2638,
+            "min": 262.712,
+            "max": 336.241
+          },
+          "peak_tick_percent": {
+            "mean": 10.64784,
+            "min": 10.601,
+            "max": 10.8
+          },
+          "passes": {
+            "mean": 30.2,
+            "min": 26,
+            "max": 33
+          },
+          "drain_ticks": {
+            "mean": 30.2,
+            "min": 26,
+            "max": 33
+          },
+          "max_lateness_ticks": {
+            "mean": 29.2,
+            "min": 25,
+            "max": 32
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        },
+        "source": {
+          "cpu_tick_percent_sum": {
+            "mean": 2590.888,
+            "min": 2136.61,
+            "max": 2764.61
+          },
+          "peak_tick_percent": {
+            "mean": 11.88996,
+            "min": 11.7566,
+            "max": 12.2318
+          },
+          "passes": {
+            "mean": 243.6,
+            "min": 203,
+            "max": 259
+          },
+          "drain_ticks": {
+            "mean": 243.6,
+            "min": 203,
+            "max": 259
+          },
+          "max_lateness_ticks": {
+            "mean": 242.6,
+            "min": 202,
+            "max": 258
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        }
+      },
+      "queue_hashes": {
+        "overlays.dm": "cce722cb37401c8bbcfe2bccd812c2d0169a16f19e450edabe569773e49c7b72",
+        "sources.dm": "eb0647bfc5fbcaabbe49ac63bbf97ef1987368b7543afb85b9b7a08aa6c845d3"
+      },
+      "size": 128,
+      "lights": 2000,
+      "lighting_state_sha256": "685e5ed8a814467950d38c0b564826ac10217c3a1e565867cb2b3a231efa3c25",
+      "performance_use": "paired quiet window; native is real callbacks, standalone is bookkeeping with trivial adapters"
+    },
+    {
+      "name": "native-overload-current",
+      "report_sha256": "dae607fc706c57ec08e820bdd3a28da4ec47d2ec6a5aa71eff7f36641135df03",
+      "tested_head": "b73db0020b469adff1d9a0960bd4f4aa807c46cc",
+      "baseline_queue_commit": null,
+      "cycles": 5,
+      "process_cpu_seconds": 1.296875,
+      "peak_private_bytes": 168181760,
+      "final_sample_private_bytes": 13295616,
+      "phases": {
+        "overlay": {
+          "cpu_tick_percent_sum": {
+            "mean": 173.7998,
+            "min": 163.513,
+            "max": 186.786
+          },
+          "peak_tick_percent": {
+            "mean": 10.06324,
+            "min": 10.0148,
+            "max": 10.1912
+          },
+          "passes": {
+            "mean": 19.2,
+            "min": 18,
+            "max": 21
+          },
+          "drain_ticks": {
+            "mean": 19.2,
+            "min": 18,
+            "max": 21
+          },
+          "max_lateness_ticks": {
+            "mean": 18.2,
+            "min": 17,
+            "max": 20
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        },
+        "source": {
+          "cpu_tick_percent_sum": {
+            "mean": 2780.366,
+            "min": 2399.61,
+            "max": 2974.2
+          },
+          "peak_tick_percent": {
+            "mean": 12.11884,
+            "min": 11.6726,
+            "max": 12.3374
+          },
+          "passes": {
+            "mean": 260.8,
+            "min": 227,
+            "max": 279
+          },
+          "drain_ticks": {
+            "mean": 260.8,
+            "min": 227,
+            "max": 279
+          },
+          "max_lateness_ticks": {
+            "mean": 259.8,
+            "min": 226,
+            "max": 278
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        }
+      },
+      "queue_hashes": {
+        "overlays.dm": "a23e30966def37cedfbe170d1a5ffa5d63c71661e72a2f74b0f0d6b267506820",
+        "sources.dm": "aa5e108a8e7dd96bea430b3c2c183ca23d504be08d001cf41f84c122225cdb52"
+      },
+      "size": 128,
+      "lights": 2000,
+      "lighting_state_sha256": "685e5ed8a814467950d38c0b564826ac10217c3a1e565867cb2b3a231efa3c25",
+      "performance_use": "paired quiet window; native is real callbacks, standalone is bookkeeping with trivial adapters"
+    },
+    {
+      "name": "native-overload-reverse-current",
+      "report_sha256": "3b71d290daa8e111ac83c7f957cb0f53b10dd3c28d2e7dad428894e0a8207803",
+      "tested_head": "b73db0020b469adff1d9a0960bd4f4aa807c46cc",
+      "baseline_queue_commit": null,
+      "cycles": 5,
+      "process_cpu_seconds": 1.890625,
+      "peak_private_bytes": 167485440,
+      "final_sample_private_bytes": 10620928,
+      "phases": {
+        "overlay": {
+          "cpu_tick_percent_sum": {
+            "mean": 188.1504,
+            "min": 165.394,
+            "max": 249.377
+          },
+          "peak_tick_percent": {
+            "mean": 10.06708,
+            "min": 10.0214,
+            "max": 10.2068
+          },
+          "passes": {
+            "mean": 20.8,
+            "min": 18,
+            "max": 26
+          },
+          "drain_ticks": {
+            "mean": 20.8,
+            "min": 18,
+            "max": 26
+          },
+          "max_lateness_ticks": {
+            "mean": 19.8,
+            "min": 17,
+            "max": 25
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        },
+        "source": {
+          "cpu_tick_percent_sum": {
+            "mean": 2808.37,
+            "min": 2553.54,
+            "max": 2986.89
+          },
+          "peak_tick_percent": {
+            "mean": 12.13364,
+            "min": 11.7974,
+            "max": 12.3142
+          },
+          "passes": {
+            "mean": 263.2,
+            "min": 240,
+            "max": 279
+          },
+          "drain_ticks": {
+            "mean": 263.2,
+            "min": 240,
+            "max": 279
+          },
+          "max_lateness_ticks": {
+            "mean": 262.2,
+            "min": 239,
+            "max": 278
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        }
+      },
+      "queue_hashes": {
+        "overlays.dm": "a23e30966def37cedfbe170d1a5ffa5d63c71661e72a2f74b0f0d6b267506820",
+        "sources.dm": "aa5e108a8e7dd96bea430b3c2c183ca23d504be08d001cf41f84c122225cdb52"
+      },
+      "size": 128,
+      "lights": 2000,
+      "lighting_state_sha256": "685e5ed8a814467950d38c0b564826ac10217c3a1e565867cb2b3a231efa3c25",
+      "performance_use": "excluded: unrelated equipment probes overlapped reverse baseline; repeat current is only supporting observation"
+    },
+    {
+      "name": "native-overload-reverse-baseline",
+      "report_sha256": "2fb208632913e46e0f207628b3e1ed409b2035243943156b7e35141c870ff433",
+      "tested_head": "b73db0020b469adff1d9a0960bd4f4aa807c46cc",
+      "baseline_queue_commit": "4e6211fe1a50519f91104fa32da32990baf0f4d4",
+      "cycles": 5,
+      "process_cpu_seconds": 1.734375,
+      "peak_private_bytes": 167940096,
+      "final_sample_private_bytes": 10379264,
+      "phases": {
+        "overlay": {
+          "cpu_tick_percent_sum": {
+            "mean": 324.3864,
+            "min": 250.725,
+            "max": 411.595
+          },
+          "peak_tick_percent": {
+            "mean": 10.70744,
+            "min": 10.4488,
+            "max": 11.2026
+          },
+          "passes": {
+            "mean": 32,
+            "min": 25,
+            "max": 40
+          },
+          "drain_ticks": {
+            "mean": 32,
+            "min": 25,
+            "max": 40
+          },
+          "max_lateness_ticks": {
+            "mean": 31,
+            "min": 24,
+            "max": 39
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        },
+        "source": {
+          "cpu_tick_percent_sum": {
+            "mean": 2578.546,
+            "min": 2049.81,
+            "max": 2887.08
+          },
+          "peak_tick_percent": {
+            "mean": 12.02624,
+            "min": 11.2486,
+            "max": 12.3514
+          },
+          "passes": {
+            "mean": 241.6,
+            "min": 195,
+            "max": 270
+          },
+          "drain_ticks": {
+            "mean": 241.6,
+            "min": 195,
+            "max": 270
+          },
+          "max_lateness_ticks": {
+            "mean": 240.6,
+            "min": 194,
+            "max": 269
+          },
+          "heartbeat_max_gap_ticks": {
+            "mean": 1,
+            "min": 1,
+            "max": 1
+          },
+          "completed_queue_entries": 0
+        }
+      },
+      "queue_hashes": {
+        "overlays.dm": "cce722cb37401c8bbcfe2bccd812c2d0169a16f19e450edabe569773e49c7b72",
+        "sources.dm": "eb0647bfc5fbcaabbe49ac63bbf97ef1987368b7543afb85b9b7a08aa6c845d3"
+      },
+      "size": 128,
+      "lights": 2000,
+      "lighting_state_sha256": "685e5ed8a814467950d38c0b564826ac10217c3a1e565867cb2b3a231efa3c25",
+      "performance_use": "excluded: unrelated equipment probes overlapped reverse baseline; repeat current is only supporting observation"
+    }
+  ]
+}

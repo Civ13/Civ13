@@ -1224,6 +1224,7 @@
 #include "code\processes\ping_track.dm"
 #include "code\processes\projectile.dm"
 #include "code\processes\python.dm"
+#include "code\game\mob\player_help.dm"
 #include "code\processes\research_tree.dm"
 #include "code\processes\scheduler.dm"
 #include "code\processes\self_cleaning.dm"
@@ -1241,4 +1242,8 @@
 #include "interface\skin.dmf"
 #include "maps\nomads\nomads.dmm"
 #include "code\modules\1713\animal_harvest.dm"
+#include "code\modules\1713\active_training.dm"
 // END_INCLUDE
+#include "code\modules\1713\modern_telecom.dm"
+#include "code\modules\1713\modern_telephone.dm"
+#include "code\modules\1713\modern_terminal.dm"

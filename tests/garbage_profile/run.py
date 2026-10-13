@@ -44,6 +44,13 @@ def main():
             garbage = body.replace(before, after, 1)
             # Preserve argument reads so missing-hook controls remain warning-free.
             helper += '\n/process/garbage/proc/profile_discard(type_name, forced, started, start_tick)\n\treturn list(type_name, forced, started, start_tick)\n'
+    # Inject only the sampled clock in generated source. Ordinary lifecycle
+    # checks retain the native clock; boundary arithmetic uses valid fixed times.
+    clock_anchor = 'var/elapsed = world.timeofday - started'
+    if helper.count(clock_anchor) != 1:
+        raise RuntimeError('Missing unique profiling clock anchor')
+    helper = helper.replace(clock_anchor, 'var/elapsed = profile_fixture_timeofday() - started', 1)
+    helper += '\nvar/profile_fixture_clock = null\n/proc/profile_fixture_timeofday()\n\treturn isnull(profile_fixture_clock) ? world.timeofday : profile_fixture_clock\n'
     (out/'garbage_profile.dm').write_text(helper)
     garbage = re.sub(r'#include "([^"/\\]+\.dm)"',
                      lambda m: '#include "' + (root/'code/processes').joinpath(m[1]).as_posix() + '"' if m[1] != 'garbage_profile.dm' else m[0],

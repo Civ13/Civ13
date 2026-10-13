@@ -98,6 +98,7 @@
 	spawn(5)
 		nomads_spawn()
 /mob/living/human/Destroy()
+	cancel_exercise()
 	unregister_corpse_decay()
 	human_mob_list -= src
 	human_clients_mob_list -= src
@@ -144,6 +145,7 @@ var/list/coefflist = list()
 			client.add_stat("<h3>Character</h3>", "")
 			client.add_stat("<b>Attack Intent:</b>", a_intent)
 			client.add_stat("<b>Move Mode:</b>", m_intent)
+			client.add_stat("<b>Wetness:</b>", get_wetness_description())
 			if (stats["stamina"] && stats["stamina"][2] > 0)
 				client.add_stat("<b>Stamina:</b> ", "[round((getStat("stamina")/stats["stamina"][2]) * 100)]%")
 			client.add_stat("<h3>Factions</h3>", "")

@@ -75,7 +75,7 @@ class RegressionPolicyTests(unittest.TestCase):
             if 'uses: actions/upload-artifact' in block:
                 continue
             if re.search(r'(tests/|unittest discover|scripts/(check-recipes|test-power|test-batteries|check-battery-items))', block):
-                self.assertIn("if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests)", block)
+                self.assertRegex(block, r"if: (?:always\(\) && \()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests\)")
         self.assertIn("if: needs.changes.outputs.game == 'true'\n        run: sudo bash", workflow)
 
 

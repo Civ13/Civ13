@@ -25,10 +25,10 @@
 	var/tmp/configuration_busy = FALSE
 
 /obj/item/weapon/attachment/persistence_runtime_var(key)
-	return key in list("configuration_busy", "ongun", "zoomed", "looking", "actions", "azoom") || ..()
+	return (key in list("configuration_busy", "ongun", "zoomed", "looking", "actions", "azoom")) || ..()
 
 /obj/item/weapon/gun/persistence_runtime_var(key)
-	return key in list("gun_work_busy", "configuration_base_actions", "configuration_base_verbs", "actions", "scope_image", "barrel_image", "under_image", "launcher_image", "mag_image") || ..()
+	return (key in list("gun_work_busy", "configuration_base_actions", "configuration_base_verbs", "actions", "scope_image", "barrel_image", "under_image", "launcher_image", "mag_image")) || ..()
 
 /obj/item/weapon/gun/proc/configuration_slot(obj/item/P)
 	if (istype(P, /obj/item/weapon/attachment))
@@ -266,7 +266,7 @@
 		if (!istype(P,/obj/item/weapon/attachment/scope/iron_sights)) choices += P
 	if (optic_rail) choices += optic_rail
 	var/choice = WWinput(H,"Remove which part?","Field Strip","Cancel",choices)
-	if (choice != "Cancel" && choice in choices && !remove_configuration(choice,H))
+	if (choice != "Cancel" && (choice in choices) && !remove_configuration(choice,H))
 		to_chat(H,SPAN_WARNING("Cannot remove this part now. Unload, keep holding the gun, and supply the required tools. Remove the optic before its rail."))
 
 /obj/structure/repair/gun
