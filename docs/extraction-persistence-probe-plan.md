@@ -107,3 +107,64 @@ Prepared cases:
 No CI job, suite selection, library installation or execution is added by this
 preparation. Existing standard compilation excludes this offline source and
 cannot establish its assertions or native compatibility.
+
+## Replacement resource preflight proposal (not executed)
+
+The previous one-attempt offline lease was consumed by a prestart CIM memory
+query returning Access denied. Python never started. A future attempt requires a
+new specific lease; neither this plan nor an older free-memory receipt releases
+the execution hold.
+
+The existing adapter reviewed as source is
+`D:/GitHub/Civ13/.worktrees/opendream-savefile-cleanup/tests/savefile_cleanup/guard-windows.py`,
+with matching declarations in `tests/memory_roots/guard-windows.py` in that
+worktree. The coordinator supplied source head
+`2e589f689c81232896be83f250c8c2653da5427c`; the savefile guard's raw file SHA-256
+was independently read as
+`111F7B53CB3493C8F0B244E225E6E664472DCBF76A68A94693DEBC3E3E42A8A4`.
+The worktree HEAD at review was
+`a49ab0d2f64de6d703732aaf25e3d0cc90175e47`; the guard bytes still match the
+supplied hash. No foreign file was changed or executed.
+
+`MemoryStatus` contains two DWORD fields and seven unsigned 64-bit fields.
+`free_bytes()` sets `length` to the structure size, calls
+`kernel32.GlobalMemoryStatusEx` with a structure pointer and BOOL return, raises
+`OSError(get_last_error())` on a false return, and returns `available` physical
+bytes on success. This API declaration/adapter should be reused, rather than
+inventing another resource query. Its synchronous call has no independent timeout;
+polling intervals are not a bound on a hung API call.
+
+The existing guard's `--inspect` prints UTC, available physical bytes and watcher
+private bytes, then exits without creating a Job or starting its test. Its normal
+path is specific to the savefile `run.py` and a .NET executable; it cannot run the
+extraction oracle through its current arguments. It checks a 6 GiB physical floor,
+sets a 2 GiB aggregate Job commit cap and kill-on-close, starts a gated child,
+assigns it to the Job before releasing its stdin gate, then polls owned PIDs,
+private bytes and host free bytes every 0.5 seconds. Unknown live PID measurements
+fail closed. Process handles close in `finally`; normal guard teardown terminates
+the Job, waits up to ten seconds for its root and up to ten seconds for remaining
+owned PIDs, closes the Job handle and validates its owned temporary path before
+removal. Its receipt includes stop reason and cleanup errors. Setup operations
+before its main `try` require care when adapting exception cleanup.
+
+Proposed future extraction-specific reuse, subject to source review and a fresh
+lease: retain those API declarations and ownership cleanup, use an extraction-owned
+wrapper with one child, a 60-second child deadline, 0.1-second sampling, a hard
+256 MiB aggregate Job commit cap and a 6 GiB host physical floor before launch
+and during polling. Private bytes are a separate sampled diagnostic; Job commit
+is not working-set memory. The watcher itself is outside the child Job. Fail
+closed on query errors, missing measurements, Job assignment failure, deadline,
+unexpected descendants or cleanup failure. Create only a unique guarded temporary
+directory and receipt/logs; do not install libraries or alter foreign guards.
+Ensure the oracle body cannot run before assignment; the original oracle has no
+stdin gate, so a reviewed gate adaptation is necessary before granting execution.
+
+The intended child argv is the verified bundled interpreter
+`C:/Users/valza/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe`,
+`-I`, `-B`,
+`D:/GitHub/Civ13/.worktrees/extraction-survival/tests/extraction/test_generation_contract.py`,
+`-v`. This is a proposed child command, not a runnable replacement guard command.
+Pin the future complete wrapper/oracle source head and interpreter hash before
+requesting the lease. The oracle source remains unchanged from
+`8e2314d58b2a1735e53a08ac9ede036565a8db1c`, unparsed and unrun. No current memory
+availability, host ownership or native acceptance is inferred from this review.
