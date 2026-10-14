@@ -35,7 +35,7 @@ world
 /world/New()
 	OpenPort("none")
 	..()
-	var/list/receipt = list("scope" = "isolated actual-backend legacy saver smoke", "mode" = world.params["verify"] ? "VERIFY" : "SAVE", "fake_clock" = FALSE, "full_gaia_recovery" = FALSE)
+	var/list/receipt = list("scope" = "isolated actual-backend legacy saver smoke", "mode" = world.params["verify"] ? "VERIFY" : "SAVE", "stop_route" = "owner console shutdown after disk receipts", "fake_clock" = FALSE, "full_gaia_recovery" = FALSE)
 	try
 		// OpenDream sleep uses game ticks. Its startup loop can consume up to
 		// five queued ticks together; two startup ticks need not span 0.1s.
@@ -114,4 +114,7 @@ world
 	text2file(json_encode(receipt), "backend_[mode]_result.json")
 	text2file(receipt["result"], "backend_[mode]_result.txt")
 	world.log << "BACKEND_RESULT [json_encode(receipt)]"
-	del(world)
+	// The owned host validates BOTH disk receipts, then sends the supported
+	// console shutdown command and waits for clean exit before fresh VERIFY.
+	// Returning keeps world alive; this does not fix or exercise del(world).
+	return

@@ -40,3 +40,12 @@ This is a source-supported timing hypothesis, not a proven cause or getter fix.
 The clock advancement assertion remains mandatory; game-time advancement is
 also required. No polling, fake clock, production threshold change or assertion
 waiver is introduced. Preserve the original failed packet and logs.
+
+The third fixture packet changes only the declared isolated stop route: after
+writing its terminal JSON and TXT receipts the fixture returns, leaving the
+world idle. The owner waits for both bounded disk results, sends the pinned
+Robust console `shutdown` command through its owned input pipe and verifies a
+clean exit with no runtime diagnostics before starting fresh VERIFY. A failed
+or malformed result still requires shutdown but cannot accept the phase. This
+does not fix or exercise `del(world)`; the original shutdown failure remains
+separate. Clock, save, payload, phase and fresh-process assertions are unchanged.
