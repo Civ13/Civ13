@@ -15,6 +15,10 @@
 		savefile.cd = entry_path(savefile, ind)
 		if(!ispath(type, /datum))
 			throw EXCEPTION("Invalid saved type at entry [ind]: [type]")
+		// Older completed saves can contain client HUD graphs. Never construct
+		// their screen/datum objects without the live client owner they require.
+		if(ispath(type, /obj/screen) || ispath(type, /datum/hud))
+			return null
 		if(ispath(type, /obj/map_metadata))
 			existing_references["[ind]"] = map
 			return map
