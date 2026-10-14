@@ -30,18 +30,13 @@ def main():
     parser.add_argument('--source-root', type=Path, required=True)
     parser.add_argument('--wrapper-dir', type=Path, required=True)
     parser.add_argument('--output-dir', type=Path, required=True)
-    parser.add_argument('--setup-readiness-marker', action='store_true',
-                        help='Test-only marker after original setup_everything final yield')
     args = parser.parse_args()
     source = args.source_root.resolve(strict=True)
     output = args.output_dir.resolve()
     if output.exists() or output == source or source in output.parents:
         raise ValueError('Output must be a new directory outside the source')
     originals = {}
-    pins = dict(PINS)
-    if args.setup_readiness_marker:
-        pins['code/setup.dm'] = 'a748fd96ef63a6cc6322766baad3684b6aee9579cbe4e3ebd3e76cfc69b6f30d'
-    for name, expected in pins.items():
+    for name, expected in PINS.items():
         data = (source / name).read_bytes()
         if digest(data) != expected:
             raise ValueError('Frozen input mismatch: ' + name)
@@ -91,12 +86,6 @@ def main():
         'tests/world_save/gaia-phase-profile.dm': (here / 'phase-profile.dm').read_bytes(),
         'tests/world_save/gaia-host-save-wrapper.dm': wrapper,
     }
-    if args.setup_readiness_marker:
-        setup = originals['code/setup.dm']
-        if not text(setup).endswith('\tadmin_notice("<span class=\'danger\'>Initializations complete.</span>", R_DEBUG)\n\tsleep(-1)'):
-            raise ValueError('Unexpected original setup completion tail')
-        # Append after the original final yield. Preserve every original byte and wait.
-        generated['code/setup.dm'] = setup + b'\n\tnew_process_dispatch_init_complete = TRUE\n'
     # Resolve all edits before output creation; preserve every original source byte.
     inventory = {}
     output.mkdir(parents=True)
@@ -122,8 +111,7 @@ def main():
     manifest = dict(scope='source-only full Gaia legacy closure; uncompiled and no recovery/cost acceptance',
                     base_commit='cbf0ebb0a46c7dceb2be8bb02010f49db49cac72',
                     source_root=str(source), source_inventory=inventory,
-                    original_pins=pins, generated_sha256={name: digest(data) for name, data in generated.items()},
-                    setup_readiness_marker=args.setup_readiness_marker,
+                    original_pins=PINS, generated_sha256={name: digest(data) for name, data in generated.items()},
                     generator_sha256=digest(Path(__file__).read_bytes()),
                     phase_generator_sha256=digest(generator.read_bytes()),
                     helper_input_sha256=digest((here / 'progress-probe.dm').read_bytes()),
