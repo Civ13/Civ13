@@ -18,11 +18,14 @@ def main():
     parser.add_argument('--negative-control', action='store_true')
     parser.add_argument('--datum-constructor-negative-control', action='store_true')
     parser.add_argument('--matrix-fields-negative-control', action='store_true')
+    parser.add_argument('--matrix-trace', action='store_true')
     parser.add_argument('--progress', action='store_true')
     parser.add_argument('--progress-fault-stage', choices=('save_entered', 'level_serialized', 'completion_marker'))
     parser.add_argument('--progress-fault-operation', choices=('delete', 'write', 'json'))
     parser.add_argument('--progress-negative-control', action='store_true')
     args = parser.parse_args()
+    if args.matrix_trace and (args.matrix_fields_negative_control or args.datum_constructor_negative_control or args.negative_control or args.progress):
+        parser.error('Keep matrix trace separate from other controls')
     if args.matrix_fields_negative_control and (args.datum_constructor_negative_control or args.negative_control or args.progress):
         parser.error('Keep matrix field controls separate from constructor/metadata/progress controls')
     if args.datum_constructor_negative_control and (args.negative_control or args.progress):
@@ -89,6 +92,22 @@ def main():
             if source.count(before) != 1:
                 raise RuntimeError('Matrix control needs exactly one complete coefficient override')
             source = source.replace(before, '', 1)
+        if original.name == 'loading.dm' and args.matrix_trace:
+            before = '\t\t\t\tobject.vars[v] = decode_saved_value(savefile, savefile[v])\n'
+            if source.count(before) != 1:
+                raise RuntimeError('Matrix trace needs exactly one typed field assignment')
+            after = ('\t\t\t\tvar/decoded = decode_saved_value(savefile, savefile[v])\n'
+                     '\t\t\t\tif(v == "transform" || istype(object, /matrix))\n'
+                     '\t\t\t\t\tworld.log << "MATRIX_TRACE entry=[ind] field=[v] decoded=[decoded]"\n'
+                     '\t\t\t\tif(v == "transform" && istype(decoded, /matrix))\n'
+                     '\t\t\t\t\tvar/matrix/M = decoded\n'
+                     '\t\t\t\t\tworld.log << "MATRIX_TRACE decoded coefficients=[M.a],[M.b],[M.c],[M.d],[M.e],[M.f]"\n'
+                     '\t\t\t\tobject.vars[v] = decoded\n'
+                     '\t\t\t\tif(v == "transform" && istype(object, /atom))\n'
+                     '\t\t\t\t\tvar/atom/AT = object\n'
+                     '\t\t\t\t\tvar/matrix/M = AT.transform\n'
+                     '\t\t\t\t\tworld.log << "MATRIX_TRACE assigned coefficients=[M.a],[M.b],[M.c],[M.d],[M.e],[M.f]"\n')
+            source = source.replace(before, after, 1)
         if original == production and progress_saving is not None:
             source = progress_saving
         if original == production and args.negative_control:
@@ -210,6 +229,7 @@ def main():
         'scope': __doc__, 'result': actual, 'negative_control': args.negative_control,
         'datum_constructor_negative_control': args.datum_constructor_negative_control,
         'matrix_fields_negative_control': args.matrix_fields_negative_control,
+        'matrix_trace': args.matrix_trace,
         'progress': args.progress, 'progress_fault_stage': args.progress_fault_stage,
         'progress_fault_operation': args.progress_fault_operation,
         'progress_negative_control': args.progress_negative_control,
