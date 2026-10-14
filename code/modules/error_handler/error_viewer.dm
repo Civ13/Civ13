@@ -92,6 +92,7 @@ GLOBAL_DATUM_INIT(error_cache, /datum/error_viewer/error_cache, new)
 /datum/error_viewer/error_cache/show_to(user, datum/error_viewer/back_to, linear)
 	var/html = build_header()
 	html += "<b>[GLOB.total_runtimes]</b> runtimes, <b>[GLOB.total_runtimes_skipped]</b> skipped<br><br>"
+	html += "Recent history: [errors.len]/[ERROR_HISTORY_LIMIT] entries; at most [ERROR_SOURCE_HISTORY_LIMIT] per source (including skip summaries).<br><br>"
 	if (!linear)
 		html += "organized | [make_link("linear", null, 1)]<hr>"
 		var/datum/error_viewer/error_source/error_source
@@ -121,6 +122,14 @@ GLOBAL_DATUM_INIT(error_cache, /datum/error_viewer/error_cache, new)
 	errors += error_entry
 	error_source.errors += error_entry
 	if (skip_count)
+		error_source.total_skipped += skip_count
+	else
+		error_source.total_logged++
+	while (error_source.errors.len > ERROR_SOURCE_HISTORY_LIMIT)
+		retire_error(error_source.errors[1])
+	while (errors.len > ERROR_HISTORY_LIMIT)
+		retire_error(errors[1])
+	if (skip_count)
 		return // Skip notifying admins about skipped errors.
 
 	// Show the error to admins with debug messages turned on, but only if one
@@ -131,9 +140,31 @@ GLOBAL_DATUM_INIT(error_cache, /datum/error_viewer/error_cache, new)
 		log_debug("Runtime in [e.file],[e.line]: [html_encode(e.name)] [error_entry.make_link(viewtext)]")
 		error_source.next_message_at = world.time + ERROR_MSG_DELAY
 
+/datum/error_viewer/error_cache/proc/retire_error(datum/error_viewer/error_entry/error_entry)
+	if (!error_entry || error_entry.retired)
+		return
+	errors -= error_entry
+	var/datum/error_viewer/error_source/error_source = error_entry.error_source
+	if (error_source)
+		error_source.errors -= error_entry
+		error_source.total_retired++
+	// Break both sides of the cycle, including references held by old viewers.
+	// No qdel queue is needed: an unreferenced plain datum can be autocollected.
+	error_entry.error_source = null
+	error_entry.usr_loc = null
+	error_entry.usr_ref = null
+	error_entry.desc = ""
+	error_entry.info_name = null
+	error_entry.info = null
+	error_entry.name = "Expired runtime history entry"
+	error_entry.retired = TRUE
+
 /datum/error_viewer/error_source
 	var/list/errors = list()
 	var/next_message_at = 0
+	var/total_logged = 0
+	var/total_skipped = 0
+	var/total_retired = 0
 
 /datum/error_viewer/error_source/New(exception/e)
 	if (!istype(e))
@@ -147,6 +178,7 @@ GLOBAL_DATUM_INIT(error_cache, /datum/error_viewer/error_cache, new)
 		back_to = GLOB.error_cache
 
 	var/html = build_header(back_to)
+	html += "[total_logged] logged runtimes, [total_skipped] skipped; [errors.len] recent entries, [total_retired] retired.<br><br>"
 	for (var/datum/error_viewer/error_entry/error_entry in errors)
 		html += "[error_entry.make_link(null, src)]<br>"
 
@@ -158,6 +190,7 @@ GLOBAL_DATUM_INIT(error_cache, /datum/error_viewer/error_cache, new)
 	var/usr_ref
 	var/turf/usr_loc
 	var/is_skip_count
+	var/retired = FALSE
 
 	var/info_name
 	var/info
@@ -189,6 +222,9 @@ GLOBAL_DATUM_INIT(error_cache, /datum/error_viewer/error_cache, new)
 		usr_loc = get_turf(usr)
 
 /datum/error_viewer/error_entry/show_to(user, datum/error_viewer/back_to, linear)
+	if (retired)
+		browse_to(user, "[build_header(GLOB.error_cache, linear)]This runtime detail has expired from the recent history.")
+		return
 	if (!istype(back_to))
 		back_to = error_source
 

@@ -269,6 +269,15 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
 
+<!-- 2026-10-14: bounded runtime detail history -->
+Error history keeps 1000 recent entries globally and 100 per file/line source,
+including skip summaries. Retirement removes both memberships and clears entry
+backreferences, captured usr locations and detail text. Source metadata and
+world/Error cooldown dictionaries remain for the round; distinct synthetic
+file/line identities are not bounded. `tests/error_history/run.py` checks real
+logging, viewer bodies and retirement in an isolated native world, with an
+immutable historical log_error control. `--prepare-only` runs no native tools.
+
 <!-- 2026-10-13: dehydrator native save baseline -->
 `tests/food_progression/rack_save.dm` exports the owning turf and rack graph.
 The 769ae4911 baseline compiled cleanly but failed exporting runtime `slots`.
