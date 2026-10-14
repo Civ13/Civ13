@@ -684,3 +684,10 @@ Do not call parent attackby after an explicit item attack; that repeats damage,
 logs and material wear. tests/animal_combat/run.py checks compiled inherited
 health defaults, native Life, single sharp/blunt attacks and wear across behavior
 branches, noncombat dispatch, healing/death and generated negative controls.
+
+<!-- 2026-10-14: chemical smoke source retirement -->
+Chemical smoke systems are single-use: their two reaction callers construct fresh
+systems. The hidden reagent source must survive every queued spawn callback, then
+retire through atom/reagent cleanup. `tests/chemical_smoke_ownership/run.py` checks
+production copies, lifetime bounds and repeated holder/membership cleanup against
+an immutable historical negative control in temporary offline storage.
