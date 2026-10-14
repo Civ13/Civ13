@@ -34,8 +34,9 @@
 	if(!active || world.time != start_tick)
 		throw EXCEPTION("Capture detected a tick transition or was cancelled")
 	elapsed_deciseconds = (clock_now() - start_clock + 864000) % 864000
-	if(elapsed_deciseconds > max_pause_deciseconds || world.tick_usage > max_tick_usage)
-		throw EXCEPTION("Capture pause/work budget exceeded")
+	var/current_tick_usage = world.tick_usage
+	if(elapsed_deciseconds > max_pause_deciseconds || current_tick_usage > max_tick_usage)
+		throw EXCEPTION("Capture pause/work budget exceeded: elapsed=[elapsed_deciseconds] max_pause=[max_pause_deciseconds] tick_usage=[current_tick_usage] max_tick_usage=[max_tick_usage]")
 	if(node_count > max_nodes || edge_count > max_edges || reserved_bytes > max_reserved_bytes)
 		throw EXCEPTION("Capture graph/allocation reservation exceeded")
 

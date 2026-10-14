@@ -53,6 +53,9 @@ var/capture_projection_calls = 0
 /world/New()
 	OpenPort("none")
 	..()
+	// Native startup tick_usage is not a normal processing-tick budget.
+	// Yield before capture begins; captures and their guards remain synchronous.
+	sleep(1)
 	try
 		var/datum/capture_input/A = new
 		A.shared = list("paid" = 11)
