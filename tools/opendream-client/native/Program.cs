@@ -68,10 +68,6 @@ public static class Program {
                 });
             }
         } catch (Exception e) {
-            if (args.Length >= 8 && args[0] == "--apply-update") {
-                try { Updater.AtomicText(Path.Combine(args[7], "native-update-result.json"), JsonSerializer.Serialize(new { success = false, error = e.Message })); }
-                catch (Exception logError) when (logError is IOException or UnauthorizedAccessException) { }
-            }
             Console.Error.WriteLine("Civ13: " + e.Message);
             if (!(args.Length > 0 && args[0] == "--apply-update") && !Console.IsInputRedirected) { Console.WriteLine("Press Enter to close."); Console.ReadLine(); }
             return 1;
@@ -96,15 +92,24 @@ public static class Program {
             if (parent.StartTime.ToUniversalTime().Ticks != ticks) throw new IOException("Update parent identity changed.");
             if (!parent.WaitForExit(120000)) throw new IOException("Original launcher did not exit; update cancelled.");
         } catch (ArgumentException) { /* Original process has already exited. */ }
-        using (Updater.Lock(args[7])) {
-            Updater.ReplaceLauncher(args[3], Path.GetFullPath(args[4]), args[5], args[6]);
-            Updater.AtomicText(Path.Combine(args[7], "native-update-result.json"), JsonSerializer.Serialize(new { success = true, version = args[6], sha256 = args[5] }));
-        }
         var target = Path.GetFullPath(args[4]);
-        var restart = new ProcessStartInfo(target) { UseShellExecute = args.Length == 8, CreateNoWindow = args.Length == 9, WorkingDirectory = Path.GetDirectoryName(target)! };
-        if (args.Length == 9) restart.ArgumentList.Add("--self-check");
-        using var restarted = Process.Start(restart) ?? throw new IOException("Updated launcher could not restart.");
-        if (args.Length == 9 && (!restarted.WaitForExit(30000) || restarted.ExitCode != 0)) throw new IOException("Updated launcher self-check failed.");
+        Updater.ApplyVerifiedUpdate(args[3], target, args[5], args[6], args[7], CheckStartup, path => {
+            var restart = new ProcessStartInfo(path) { UseShellExecute = args.Length == 8, CreateNoWindow = args.Length == 9, WorkingDirectory = Path.GetDirectoryName(path)! };
+            if (args.Length == 9) restart.ArgumentList.Add("--self-check");
+            using var restarted = Process.Start(restart) ?? throw new IOException("Updated launcher could not restart.");
+            if (args.Length == 9 && (!restarted.WaitForExit(30000) || restarted.ExitCode != 0)) throw new IOException("Updated launcher self-check failed.");
+        });
         return 0;
+    }
+    private static void CheckStartup(string path) {
+        var start = new ProcessStartInfo(path) { UseShellExecute = false, CreateNoWindow = true };
+        start.ArgumentList.Add("--self-check");
+        using var process = Process.Start(start) ?? throw new IOException("Updated launcher startup check could not start.");
+        if (!process.WaitForExit(30000)) {
+            process.Kill(true);
+            process.WaitForExit();
+            throw new IOException("Updated launcher startup check timed out.");
+        }
+        if (process.ExitCode != 0) throw new IOException("Updated launcher startup check failed.");
     }
 }

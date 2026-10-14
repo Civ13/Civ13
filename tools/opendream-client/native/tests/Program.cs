@@ -136,6 +136,14 @@ try {
         var exe = Path.GetFullPath(args[0]);
         var executableVersion = args.Length == 2 ? args[1] : "1.0.0";
         Updater.ValidateExecutable(exe, executableVersion); assertions++;
+        var actualChannel = exeChannel with { Version = executableVersion, Sha256 = Updater.Hash(exe) };
+        var actualTransport = new MockTransport(exe, JsonSerializer.Serialize(actualChannel));
+        var actualStage = await Updater.StageLauncher(actualChannel, new Version(0, 0, 0), install, actualTransport);
+        Require(actualStage is not null && Updater.Hash(actualStage) == Updater.Hash(exe), "actual EXE download/version/hash stage failed");
+        actualTransport.InterruptAfterCopy = true;
+        await RejectAsync(() => Updater.StageLauncher(actualChannel, new Version(0, 0, 0), install, actualTransport), "actual EXE interrupted download");
+        actualTransport.InterruptAfterCopy = false;
+        Require(await Updater.StageLauncher(actualChannel, Version.Parse(executableVersion), install, actualTransport) is null, "actual EXE no-update failed");
         var target = Path.Combine(root, "Civ13.exe");
         File.Copy(exe, target);
         Updater.ReplaceLauncher(exe, target, Updater.Hash(exe), executableVersion);
@@ -159,6 +167,22 @@ try {
         Require(helper.ExitCode == 0, "actual update helper failed: " + helper.StandardError.ReadToEnd());
         Require(Updater.Hash(target) == Updater.Hash(exe) && Updater.Hash(target + ".previous") == Updater.Hash(exe), "post-exit replacement/backup failed");
         Require(File.ReadAllText(Path.Combine(install, "native-update-result.json")).Contains("\"success\":true"), "post-exit update receipt missing");
+        foreach (var failStartup in new[] { true, false }) {
+            File.WriteAllText(target, "previous controlled launcher bytes");
+            var previousHash = Updater.Hash(target);
+            var restarted = false;
+            Reject(() => Updater.ApplyVerifiedUpdate(exe, target, Updater.Hash(exe), executableVersion, install,
+                _ => { if (failStartup) throw new IOException("controlled startup failure"); },
+                _ => { restarted = true; throw new IOException("controlled relaunch failure"); }), "failed update rollback");
+            Require(Updater.Hash(target) == previousHash && Updater.Hash(target + ".failed") == Updater.Hash(exe), "failed startup/relaunch did not restore previous EXE");
+            Require(restarted != failStartup && File.ReadAllText(settings) == "preserve me" && Directory.Exists(first), "failure changed data/install or restarted failed startup");
+            Require(File.ReadAllText(Path.Combine(install, "native-update-result.json")).Contains("\"rolledBack\":true"), "rollback receipt missing");
+        }
+        File.Copy(exe, target, true);
+        using (var lockedTarget = new FileStream(target, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+            Reject(() => Updater.ApplyVerifiedUpdate(exe, target, Updater.Hash(exe), executableVersion, install, _ => { }, _ => { }), "locked target install failure");
+            Require(Updater.Hash(target) == Updater.Hash(exe), "locked target failure altered executable");
+        }
     }
     Console.WriteLine($"PASS: {assertions} native launcher assertions; isolated mock transport, no accounts or game processes.");
 } catch (Exception e) {
