@@ -121,3 +121,12 @@ completion marker. The runner retains original/generated source hashes and
 owned process exit records, with 120-second per-process bounds. Use the
 coordinated aggregate memory/process guard as well; these per-process timeouts
 do not supply an aggregate memory bound.
+
+The fixture also requires the actual `icons/turf/floors.dmi` resource through
+its `FILE_DIR`. Frozen source packets must include it; the resource at game
+commit `cbf0ebb0a46c7dceb2be8bb02010f49db49cac72` has SHA256
+`229e603ee10ce9dd4070a285674c733c3727004e647af2f1e0328e24d683c6de`.
+The include inventory does not cover that resource or the final generated
+`probe.dme`; retain their hashes and the runner hash in the outer job receipt.
+A missing resource is a staging/compilation failure, not the metadata-write
+negative control.
