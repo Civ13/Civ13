@@ -49,3 +49,23 @@ clean exit with no runtime diagnostics before starting fresh VERIFY. A failed
 or malformed result still requires shutdown but cannot accept the phase. This
 does not fix or exercise `del(world)`; the original shutdown failure remains
 separate. Clock, save, payload, phase and fresh-process assertions are unchanged.
+
+The actual v3 SAVE passed, but fresh VERIFY rejected matrix construction. The
+stopped save contains `/matrix` entries referenced by item transform fields.
+Legacy `Load_Entry` calls `new type(starting_loc)` even for non-atom datums;
+OpenDream's matrix constructor rejects that explicit null argument rather than
+using its no-argument identity constructor. `--datum-constructor-mode no-location`
+changes only the generated loader's construction branch: atoms retain the
+location argument and non-atom datums receive no arguments. The manifest binds
+both original and generated loader hashes, and the original loader is retained.
+This is an explicit source change to the legacy closure, not original-source
+backend acceptance or a production patch.
+
+The strengthened fixture saves standalone and transform matrices with six
+non-default coefficients and requires exact restoration of every coefficient.
+Generate the same fixture with `--datum-constructor-mode original` for the
+constructor negative control. It must fail the fresh load at the original matrix
+constructor error; a null/default fallback, matrix exclusion or missing receipt
+cannot pass. The positive must pass SAVE and fresh VERIFY without runtime errors,
+with stopped generation hashes unchanged by VERIFY. Native BYOND compatibility
+and production adoption remain separate work for the runtime owner.

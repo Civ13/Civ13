@@ -21,6 +21,7 @@ world
 	var/list/complex
 	var/list/alias
 	var/turf/destination
+	var/matrix/matrix_value
 /datum/backend_test
 	var/value = 0
 /obj/item/backend_test/before_save()
@@ -30,6 +31,11 @@ world
 	world_save_progress_stoplag()
 /proc/backend_check(condition, message)
 	if(!condition) throw EXCEPTION(message)
+/proc/backend_check_matrix(matrix/M, list/expected, label)
+	backend_check(istype(M, /matrix), "[label] matrix missing")
+	var/list/keys = list("a", "b", "c", "d", "e", "f")
+	for(var/i = 1, i <= keys.len, i++)
+		backend_check(M.vars[keys[i]] == expected[i], "[label] matrix coefficient [keys[i]] changed")
 /world/OpenPort(port)
 	return ..("none")
 /world/New()
@@ -65,6 +71,8 @@ world
 			var/obj/item/backend_test/B = locate(/obj/item/backend_test) in A
 			backend_check(B && B.number == 42, "nested item scalar lost")
 			backend_check(A.reference && A.reference.value == 73, "typed datum lost")
+			backend_check_matrix(A.matrix_value, list(2,3,4,5,6,7), "standalone")
+			backend_check_matrix(A.transform, list(8,9,10,11,12,13), "transform")
 			backend_check(A.complex["key"]["nested"] == 23, "nested associative list lost")
 			backend_check(A.alias == A.complex && A.complex[A.complex.len] == A.complex, "list alias or cycle lost")
 			backend_check(A.destination == locate(8,6,2), "cross-level turf reference lost")
@@ -80,6 +88,8 @@ world
 			B.number = 42
 			A.reference = new /datum/backend_test
 			A.reference.value = 73
+			A.matrix_value = new /matrix(2,3,4,5,6,7)
+			A.transform = new /matrix(8,9,10,11,12,13)
 			A.complex = list("literal **entry7", "key" = list("nested" = 23))
 			A.alias = A.complex
 			A.complex += list(A.complex)

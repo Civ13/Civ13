@@ -18,6 +18,7 @@ def main():
     parser.add_argument('--functions-source', type=Path, required=True)
     parser.add_argument('--tick-source', type=Path, required=True)
     parser.add_argument('--output-dir', type=Path, required=True)
+    parser.add_argument('--datum-constructor-mode', choices=('original', 'no-location'), default='original')
     args = parser.parse_args()
     here = Path(__file__).resolve().parent
     generator = here / 'build-progress-probe.py'
@@ -47,6 +48,13 @@ def main():
         if result.returncode:
             raise ValueError(result.stderr.decode(errors='replace'))
         outputs[target] = result.stdout
+    original_loading = outputs['loading.dm']
+    if args.datum_constructor_mode == 'no-location':
+        loading = original_loading.decode().replace('\r\n', '\n')
+        outputs['loading.dm'] = module.replace_once(loading,
+            '\t\telse\n\t\t\tobject = new type(starting_loc)\n',
+            '\t\telse if(ispath(type, /atom))\n\t\t\tobject = new type(starting_loc)\n'
+            '\t\telse\n\t\t\tobject = new type()\n').encode()
     outputs['backend.dme'] = b'''#define TRUE 1
 #define FALSE 0
 #define EXCEPTION(message) new /exception(message)
@@ -67,6 +75,8 @@ def main():
                     original_sha256={name: module.digest(data) for name, data in originals.items()},
                     generator_sha256=module.digest(Path(__file__).read_bytes()),
                     progress_generator_sha256=module.digest(generator.read_bytes()),
+                    datum_constructor_mode=args.datum_constructor_mode,
+                    original_loading_sha256=module.digest(original_loading),
                     generated_sha256={name: module.digest(data) for name, data in outputs.items()},
                     launch='Runtime owner selects and records exact engine source/compiler/runtime artifacts. SAVE then VERIFY in distinct guarded processes sharing only temporary storage; verify parameter enables VERIFY.',
                     limits='Legacy before_save closure only; minimal offline type adapters and explicit real-yield fixture hook. Does not exercise current atomic hooks, full Gaia, crash recovery, production IO or server latency. No fake clock. Phase yield overlaps engine flush timings; do not add them.')
@@ -79,6 +89,7 @@ def main():
         path = args.output_dir / 'original' / name
         path.parent.mkdir(exist_ok=True)
         path.write_bytes(data)
+    (args.output_dir / 'original' / 'loading.dm').write_bytes(original_loading)
     (args.output_dir / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     print(json.dumps(manifest, indent=2))
 
