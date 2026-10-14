@@ -60,7 +60,9 @@ var/capture_projection_calls = 0
 		A.alias = A.shared
 		A.next = A
 		var/datum/immutable_world_capture/frame = new_capture_frame()
-		check(frame.capture(list(A)), "detached graph capture failed")
+		var/capture_ok = frame.capture(list(A))
+		if(!capture_ok) world.log << "Capture rejection detail: [frame.error]"
+		check(capture_ok, "detached graph capture failed")
 		var/text = frame.captured_text
 		A.paid_units = 99
 		A.shared["paid"] = 77

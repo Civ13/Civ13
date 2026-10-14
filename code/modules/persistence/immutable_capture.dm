@@ -151,7 +151,7 @@
 		// live atom/list access. This is not a generation receipt or cutoff.
 		captured_text = text
 	catch(var/exception/E)
-		error = "[E]"
+		error = "[E.name] ([E.file]:[E.line])"
 	active = FALSE
 	nodes = null
 	identities = null
