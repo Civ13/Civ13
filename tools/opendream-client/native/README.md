@@ -24,7 +24,13 @@ absolute unlinked folder chosen with measured headroom; the prepared child uses
 it for working directory and TEMP/TMP/TMPDIR. Normal launcher-owned update/client
 files use that root, which is retained on update restart. This does not imply
 third-party native client files stay there. The injectable strict-D source mode
-still rejects unknown or C: user-data settings; it is not the normal CLI path.
+still rejects unknown or C: user-data settings. Add `--strict-d-output` only to
+the explicit local test invocation to require it; public/default paths keep their
+normal policy. Production strict mode currently blocks before client launch:
+no verified read-only adapter for native 516.1681's configured user/cache directory
+is implemented. This is the exact missing control, not a permission requirement.
+Existing C: binaries may be reused read-only; TEMP variables do not verify BYOND's
+independent cache directory. The launcher does not change global preferences.
 Host admission requires the owner's genuine receipt, verified serving process
 and sufficient output space, with monitoring and an owned-output cleanup plan.
 Local compilation and 73 injected controls passed without accounts or game
