@@ -259,6 +259,7 @@
 		qdel(src)
 
 /datum/effect/effect/system/smoke_spread/chem/proc/emit_cloud()
+	var/list/activation = system_lifetime
 	if (!location)
 		return
 
@@ -294,7 +295,7 @@
 		if (!radius)
 			pending_smoke++
 			spawn(0)
-				spawn_owned_smoke(location, I, TRUE, TRUE)
+				spawn_owned_smoke(activation, location, I, TRUE, TRUE)
 			continue
 
 		var/offset = FALSE
@@ -314,9 +315,11 @@
 			if (T in targetTurfs)
 				pending_smoke++
 				spawn(0)
-					spawn_owned_smoke(T, I, range)
+					spawn_owned_smoke(activation, T, I, range)
 
-/datum/effect/effect/system/smoke_spread/chem/proc/spawn_owned_smoke(turf/T, icon/I, smoke_duration, dist = TRUE)
+/datum/effect/effect/system/smoke_spread/chem/proc/spawn_owned_smoke(list/activation, turf/T, icon/I, smoke_duration, dist = TRUE)
+	if (QDELETED(src) || system_lifetime != activation)
+		return
 	try
 		if (!QDELETED(src) && chemholder)
 			spawnSmoke(T, I, smoke_duration, dist)

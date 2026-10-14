@@ -77,9 +77,9 @@ var/list/smoke_ownership_particles = list()
         S.start()
         smoke_check(S.chemholder == H && R.my_atom == H, "queued emission keeps holder alive")
         sleep(1)
-        released = released && !S.chemholder && !R.my_atom && !(R in processes.chemistry.active_holders)
+        released = released && (!S || !S.chemholder) && !H.reagents && (!R || !R.my_atom) && !(R in processes.chemistry.active_holders)
         // Test-owned handles allow lifecycle inspection; then remove all owners.
-        if(S.chemholder) qdel(H)
+        if(S && S.chemholder) qdel(H)
         qdel(S)
         H = null
         R = null
@@ -100,11 +100,30 @@ var/list/smoke_ownership_particles = list()
         qdel(canceled)
         qdel(canceled)
         sleep(1)
-        smoke_check(smoke_ownership_emissions == before && !canceled.chemholder && !old_reagents.my_atom, "cancellation is idempotent and cancels pending emission")
+        smoke_check(smoke_ownership_emissions == before && (!canceled || !canceled.chemholder) && !old_holder.reagents && (!old_reagents || !old_reagents.my_atom), "cancellation is idempotent and cancels pending emission")
+        smoke_fixture_empty()
+        var/datum/effect/effect/system/smoke_spread/chem/previous = PoolOrNew(/datum/effect/effect/system/smoke_spread/chem)
+        previous.show_log = FALSE
+        previous.set_up(feed.reagents, 10, FALSE, T)
+        previous.start()
+        qdel(previous)
+        var/datum/effect/effect/system/smoke_spread/chem/reused = PoolOrNew(/datum/effect/effect/system/smoke_spread/chem)
+        smoke_check(reused == previous, "reuse exercises same system identity")
+        reused.show_log = FALSE
+        reused.set_up(feed.reagents, 3, FALSE, T)
+        var/obj/reused_holder = reused.chemholder
+        before = smoke_ownership_emissions
+        // Queued after old emissions, before the new emission: observe ownership.
+        spawn(0)
+            smoke_check(reused.chemholder == reused_holder && smoke_ownership_emissions == before, "obsolete callbacks cannot emit or retire reused system")
+        reused.start()
+        sleep(1)
+        smoke_check(smoke_ownership_emissions == before + 1 && !reused.chemholder, "current reused emission retires its source")
+        smoke_fixture_empty()
         var/datum/effect/effect/system/smoke_spread/chem/empty = new
         old_reagents = empty.chemholder.reagents
         empty.start()
-        smoke_check(!empty.chemholder && !old_reagents.my_atom, "no-location start releases hidden holder")
+        smoke_check((!empty || !empty.chemholder) && (!old_reagents || !old_reagents.my_atom), "no-location start releases hidden holder")
         var/datum/effect/effect/system/smoke_spread/chem/multiple = new
         multiple.show_log = FALSE
         multiple.set_up(feed.reagents, 10, FALSE, T)
@@ -112,7 +131,7 @@ var/list/smoke_ownership_particles = list()
         multiple.start()
         smoke_check(multiple.chemholder, "multiple emissions keep shared source until callbacks")
         sleep(1)
-        smoke_check(smoke_ownership_emissions > before + 1 && !multiple.chemholder, "last callback retires multiple-emission source")
+        smoke_check(smoke_ownership_emissions > before + 1 && (!multiple || !multiple.chemholder), "last callback retires multiple-emission source")
         smoke_fixture_empty()
     qdel(feed)
     world.log << "DONE chemical smoke ownership"

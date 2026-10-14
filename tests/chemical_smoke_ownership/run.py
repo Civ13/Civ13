@@ -100,7 +100,7 @@ def main():
             raise ValueError('Pinned compiler failed')
         for suffix in ('.dmb', '.rsc'): shutil.copy2(ROOT/(prefix+suffix), a.output/('probe'+suffix))
         (a.output/'binary-hashes.json').write_text(json.dumps({name: hashlib.sha256((a.output/name).read_bytes()).hexdigest() for name in ('probe.dmb', 'probe.rsc')}, indent=2))
-        (a.output/'config').mkdir()
+        shutil.copytree(ROOT/'config/names', a.output/'config/names')
         (a.output/'config/config.txt').write_text('tts_on 0\n')
         run = subprocess.run([str(daemon),'probe.dmb','-invisible','-close','-safe','-params',
                               'historical='+str(int(a.negative_control)), '-log','runtime.log'],

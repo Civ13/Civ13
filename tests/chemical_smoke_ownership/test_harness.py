@@ -21,7 +21,8 @@ class HarnessTests(unittest.TestCase):
         fixed = (runner.ROOT/'code/game/objects/effects/chem/chemsmoke.dm').read_text()
         old = baseline.split('/datum/effect/effect/system/smoke_spread/chem/start()\n', 1)[1].split('//------------------------------------------', 1)[0].strip()
         new = fixed.split('/datum/effect/effect/system/smoke_spread/chem/proc/emit_cloud()\n', 1)[1].split('/datum/effect/effect/system/smoke_spread/chem/proc/spawn_owned_smoke', 1)[0].strip()
-        new = re.sub(r'^\s*pending_smoke\+\+\n', '', new, flags=re.M).replace('spawn_owned_smoke(', 'spawnSmoke(')
+        new = new.replace('var/list/activation = system_lifetime\n', '').lstrip()
+        new = re.sub(r'^\s*pending_smoke\+\+\n', '', new, flags=re.M).replace('spawn_owned_smoke(activation, ', 'spawnSmoke(')
         self.assertEqual(old, new)
         anchor = '/datum/effect/effect/system/smoke_spread/chem/proc/spawnSmoke('
         self.assertEqual(baseline.split(anchor, 1)[1], fixed.split(anchor, 1)[1])
