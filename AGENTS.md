@@ -279,6 +279,15 @@ file/line identities are not bounded. `tests/error_history/run.py` checks real
 logging, viewer bodies and retirement in an isolated native world, with an
 immutable historical log_error control. `--prepare-only` runs no native tools.
 
+<!-- 2026-10-14: native launcher packaging -->
+`tools/opendream-client/native/Build.ps1` builds the single-file self-contained
+Windows x64 launcher. Its offline console tests cover mock updates plus actual
+EXE replacement after parent exit and BYOND prerequisite adapters, without accounts
+or a game. Release publication builds the exact tag and verifies immutable asset
+readback before advancing the separate native feed; prereleases do not activate it.
+Preserve the existing client channel and distinguish package integrity/BYOND setup
+from identity/gameplay acceptance. Never silently accept installer licenses.
+
 <!-- 2026-10-13: dehydrator native save baseline -->
 `tests/food_progression/rack_save.dm` exports the owning turf and rack graph.
 The 769ae4911 baseline compiled cleanly but failed exporting runtime `slots`.
