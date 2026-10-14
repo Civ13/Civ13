@@ -8,12 +8,12 @@ public static class Connection {
     public const string Host = "valzargaming.com";
     public static async Task<string[]> Resolve(Func<string, Task<IPAddress[]>>? resolver = null) {
         try {
-            var addresses = await (resolver ?? (name => Dns.GetHostAddressesAsync(name)))(Host);
+            var addresses = await (resolver ?? (name => Dns.GetHostAddressesAsync(name)))(Host).WaitAsync(TimeSpan.FromSeconds(10));
             var result = addresses.Where(address => address.AddressFamily is AddressFamily.InterNetwork or AddressFamily.InterNetworkV6)
                 .Select(address => address.ToString()).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
             if (result.Length == 0) throw new IOException("No IP addresses returned.");
             return result;
-        } catch (Exception e) when (e is SocketException or IOException) {
+        } catch (Exception e) when (e is SocketException or IOException or TimeoutException) {
             throw new IOException("Could not resolve " + Host + ". Check your connection and try Play again. No game was started.", e);
         }
     }

@@ -27,6 +27,7 @@ try {
     Require(resolverCalls == 2 && !initialAddresses.SequenceEqual(changedAddresses), "connection cached a stale DNS answer");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(Array.Empty<System.Net.IPAddress>())), "empty DNS answer");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromException<System.Net.IPAddress[]>(new System.Net.Sockets.SocketException())), "DNS failure");
+    await RejectAsync(() => Connection.Resolve(_ => Task.FromException<System.Net.IPAddress[]>(new TimeoutException())), "DNS timeout");
     File.WriteAllText(Path.Combine(root, "Connect.ps1"), "fixture never executed");
     foreach (var mode in new[] { "Nomads", "TDM" }) {
         var start = Connection.Start(root, mode);
