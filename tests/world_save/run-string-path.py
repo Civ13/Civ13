@@ -97,13 +97,13 @@ def main():
             if source.count(before) != 1:
                 raise RuntimeError('Matrix trace needs exactly one typed field assignment')
             after = ('\t\t\t\tvar/decoded = decode_saved_value(savefile, savefile[v])\n'
-                     '\t\t\t\tif(v == "transform" || istype(object, /matrix) || ind == 2)\n'
+                     '\t\t\t\tif(v == "transform" || istype(object, /matrix) || "[ind]" == "2")\n'
                      '\t\t\t\t\tworld.log << "MATRIX_TRACE entry=[ind] field=[v] decoded=[decoded]"\n'
                      '\t\t\t\tif(v == "transform" && istype(decoded, /matrix))\n'
                      '\t\t\t\t\tvar/matrix/M = decoded\n'
                      '\t\t\t\t\tworld.log << "MATRIX_TRACE decoded coefficients=[M.a],[M.b],[M.c],[M.d],[M.e],[M.f]"\n'
                      '\t\t\t\tobject.vars[v] = decoded\n'
-                     '\t\t\t\tif((v == "transform" || ind == 2) && istype(object, /atom))\n'
+                     '\t\t\t\tif((v == "transform" || "[ind]" == "2") && istype(object, /atom))\n'
                      '\t\t\t\t\tvar/atom/AT = object\n'
                      '\t\t\t\t\tvar/matrix/M = AT.transform\n'
                      '\t\t\t\t\tworld.log << "MATRIX_TRACE entry=[ind] after=[v] assigned coefficients=[M.a],[M.b],[M.c],[M.d],[M.e],[M.f]"\n')
