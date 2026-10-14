@@ -199,6 +199,9 @@ both generated helpers to the isolated DME. No production file is edited.
 Each wrapper calls the original once, forwards the arguments/return value and
 restores its caller's phase on success or exception. Recursive calls change the
 active phase rather than accumulating overlapping inclusive durations.
+Before a save or after diagnostics disable themselves, wrappers delegate
+directly to the original procedures and do not access timing counters. Existing
+pre-save transfer/identity checks remain enabled in the measurement smoke.
 
 `phase_wall_ds` partitions active wall-clock intervals into `traversal`,
 `object`, `value`, `index`, `yield` and `other`:
@@ -235,6 +238,12 @@ overhead, then freeze one source-bound Gaia packet and retain original receipts.
 controls, positive call counts, exact visited/selected counts and the wall-time
 partition. Add `--phase-profile-negative-control` to suppress the value counter;
 it must fail that exact assertion after preserving the successful save marker.
+Add `--phase-profile-clock-contract` in a separate profile run to test known
+exclusive category intervals, actual nested object/value wrapper returns,
+original hook exceptions and inactive delegation with a deterministic clock.
+`--phase-profile-attribution-negative-control` collapses value time into object
+time and must fail the exact category assertion with the save marker preserved.
+The fake clock validates accounting, not actual engine elapsed time or overhead.
 This is a new measurement-contract smoke, not a rerun to recover inaccessible
 original diagnostic cases. Actual OpenDream clock/phase behavior needs the
 runtime owner's distinct small smoke before a full Gaia launch. A partial save

@@ -78,7 +78,9 @@ def instrument_phases(saving):
         ('encode_saved_value', 'savefile/F, value', 'F, value', 'value', 'values'),
     ):
         before = f'/map_storage/proc/{name}({signature})\n'
-        wrapper = (before + f'\tworld_save_profile_{counter}++\n'
+        wrapper = (before + '\tif(!world_save_progress_active || !world_save_profile_totals)\n'
+                   f'\t\treturn world_save_profile_original_{name}({arguments})\n'
+                   f'\tworld_save_profile_{counter}++\n'
                    f'\tvar/previous_phase = world_save_profile_phase("{phase}")\n'
                    '\ttry\n'
                    f'\t\t. = world_save_profile_original_{name}({arguments})\n'
@@ -91,8 +93,9 @@ def instrument_phases(saving):
 
 
 def profile_helper(helper):
-    helper = replace_once(helper, '\tworld_save_progress_active = TRUE\n',
-                          '\tworld_save_profile_begin()\n\tworld_save_progress_active = TRUE\n')
+    begin_anchor = '\tworld_save_progress_last_write = world_save_progress_started\n'
+    helper = replace_once(helper, begin_anchor,
+                          begin_anchor + '\tworld_save_profile_begin(world_save_progress_started)\n')
     helper = replace_once(helper, '\t. = stoplag()\n',
                           '\tvar/previous_phase = world_save_profile_phase("yield")\n'
                           '\t. = stoplag()\n\tworld_save_profile_phase(previous_phase)\n')

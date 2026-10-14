@@ -24,11 +24,17 @@ def main():
     parser.add_argument('--progress-clock-negative-control', action='store_true')
     parser.add_argument('--phase-profile', action='store_true')
     parser.add_argument('--phase-profile-negative-control', action='store_true')
+    parser.add_argument('--phase-profile-clock-contract', action='store_true')
+    parser.add_argument('--phase-profile-attribution-negative-control', action='store_true')
     args = parser.parse_args()
     if args.phase_profile and (not args.progress or args.progress_clock_probe or args.progress_fault_stage or args.progress_negative_control):
         parser.error('Phase profile requires --progress and separate clock/fault controls')
     if args.phase_profile_negative_control and not args.phase_profile:
         parser.error('Phase negative control requires --phase-profile')
+    if args.phase_profile_clock_contract and (not args.phase_profile or args.phase_profile_negative_control):
+        parser.error('Phase clock contract requires a separate --phase-profile run')
+    if args.phase_profile_attribution_negative_control and not args.phase_profile_clock_contract:
+        parser.error('Attribution negative control requires --phase-profile-clock-contract')
     if args.progress_clock_probe and (not args.progress or args.progress_fault_stage or args.progress_negative_control):
         parser.error('Clock probe requires --progress and separate fault controls')
     if args.progress_clock_negative_control and not args.progress_clock_probe:
@@ -96,6 +102,16 @@ def main():
             hashes['tests/world_save/phase-profile.dm'] = hashlib.sha256(phase_path.read_bytes()).hexdigest()
             generated[phase_target.name] = hashlib.sha256(phase_target.read_bytes()).hexdigest()
             progress_helper_include += f'#include "{phase_target.as_posix()}"\n'
+            if args.phase_profile_clock_contract:
+                environment = '#define WORLD_SAVE_PROGRESS_TEST_CLOCK\n' + environment
+                if args.phase_profile_attribution_negative_control:
+                    environment = '#define WORLD_SAVE_PHASE_COLLAPSE_VALUES\n' + environment
+                contract_path = fixture / 'phase-profile-clock-probe.dm'
+                contract_target = output / contract_path.name
+                contract_target.write_bytes(contract_path.read_bytes())
+                hashes['tests/world_save/phase-profile-clock-probe.dm'] = hashlib.sha256(contract_path.read_bytes()).hexdigest()
+                generated[contract_target.name] = hashlib.sha256(contract_target.read_bytes()).hexdigest()
+                progress_helper_include += f'#include "{contract_target.as_posix()}"\n'
         if args.progress_clock_probe:
             environment = '#define WORLD_SAVE_PROGRESS_TEST_CLOCK\n' + environment
             if args.progress_clock_negative_control:
@@ -137,6 +153,9 @@ def main():
                     source = source.replace(anchor, anchor + '\t\tworld_save_progress_test_clock_contract()\n', 1)
                 if args.phase_profile:
                     anchor = f'\t\tcheck(world_save_progress_unavailable == {expected}, "wrong diagnostic fault availability")\n'
+                    first_save = '\t\tcheck(map_storage.Save_World(), "export failed")\n'
+                    source = source.replace(first_save,
+                        '\t\tcheck(!world_save_progress_active && world_save_profile_objects == 0 && world_save_profile_values == 0, "pre-save calls activated profile")\n' + first_save, 1)
                     checks = ('\t\tvar/list/phase_row = json_decode(file2text("world_save_progress.json"))\n'
                               '\t\tcheck(phase_row["value_calls_including_recursive"] > 0, "phase value calls missing")\n'
                               '\t\tcheck(phase_row["visited_turfs_all_levels"] == world.maxx * world.maxy * world.maxz * world.maxz, "wrong visited turf count")\n'
@@ -147,8 +166,10 @@ def main():
                               '\t\tfor(var/phase_name in phase_totals)\n'
                               '\t\t\tcheck(phase_totals[phase_name] >= 0, "negative phase duration")\n'
                               '\t\t\tphase_sum += phase_totals[phase_name]\n'
-                              '\t\tcheck(abs(phase_sum - phase_row["elapsed_real_ds"]) <= 1, "phase wall intervals overlap or lose time")\n')
+                              '\t\tcheck(phase_sum == phase_row["elapsed_real_ds"], "phase wall intervals overlap or lose time")\n')
                     source = source.replace(anchor, anchor + checks, 1)
+                    if args.phase_profile_clock_contract:
+                        source = source.replace(checks, checks + '\t\tworld_save_profile_clock_contract()\n', 1)
                 for label in ('failed marker deletion changed active completion or retained lock',
                               'failed export retained completion marker or lock'):
                     line = next((line for line in source.splitlines(keepends=True) if label in line), None)
@@ -209,7 +230,13 @@ def main():
         raise RuntimeError('Pinned clean compilation required')
     owned('daemon', [str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'])
     actual = read(output / 'result.txt').strip()
-    if args.phase_profile_negative_control:
+    if args.phase_profile_attribution_negative_control:
+        failure = read(output / 'failure-name.txt').strip()
+        if failure != 'phase category attribution failed' or not actual.startswith('FAIL:'):
+            raise RuntimeError(f'Wrong attribution negative failure: {actual!r}, {failure!r}')
+        if not (output / 'map_saves/save_complete.txt').exists():
+            raise RuntimeError('Attribution control changed completed save marker')
+    elif args.phase_profile_negative_control:
         failure = read(output / 'failure-name.txt').strip()
         if failure != 'phase value calls missing' or not actual.startswith('FAIL:'):
             raise RuntimeError(f'Wrong phase negative failure: {actual!r}, {failure!r}')
@@ -246,10 +273,12 @@ def main():
         'progress_clock_negative_control': args.progress_clock_negative_control,
         'phase_profile': args.phase_profile,
         'phase_profile_negative_control': args.phase_profile_negative_control,
+        'phase_profile_clock_contract': args.phase_profile_clock_contract,
+        'phase_profile_attribution_negative_control': args.phase_profile_attribution_negative_control,
         'sources_sha256': hashes, 'generated_sha256': generated, 'processes': processes,
         'opendream_verified': False, 'fresh_process_recovery_verified': False,
         'crash_rpo_verified': False, 'clean_shutdown_verified': False}, indent=2), encoding='utf-8')
-    negative = args.negative_control or args.progress_negative_control or args.progress_clock_negative_control or args.phase_profile_negative_control
+    negative = args.negative_control or args.progress_negative_control or args.progress_clock_negative_control or args.phase_profile_negative_control or args.phase_profile_attribution_negative_control
     print(f'PASS: string-path regression {"negative" if negative else "positive"}')
 
 
