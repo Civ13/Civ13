@@ -85,12 +85,12 @@ def main():
     labels = re.findall(r'^FAIL (.*)$', log, re.M)
     expected = [
         'per-source history bounded',
-        'retired external holder releases source and usr location',
-        'retired external holder releases detail text',
+        'retired external holder and native ref invalidated',
+        'retirement clears source location and text before native deletion',
         'retired external holder absent from both roots',
         'source FIFO keeps newest details chronologically',
-        'expired holder shows safe refresh navigation',
-        'retired unheld entry autocollects natively',
+        'expired browser link uses existing missing viewer message',
+        'retired entry disappears natively without collection wait',
         'global history bounded across sources',
         'global FIFO retains newest sources in order',
         'native memberships and source backrefs bounded and consistent',

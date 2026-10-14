@@ -141,7 +141,7 @@ GLOBAL_DATUM_INIT(error_cache, /datum/error_viewer/error_cache, new)
 		error_source.next_message_at = world.time + ERROR_MSG_DELAY
 
 /datum/error_viewer/error_cache/proc/retire_error(datum/error_viewer/error_entry/error_entry)
-	if (!error_entry || error_entry.retired)
+	if (!error_entry)
 		return
 	errors -= error_entry
 	var/datum/error_viewer/error_source/error_source = error_entry.error_source
@@ -149,7 +149,7 @@ GLOBAL_DATUM_INIT(error_cache, /datum/error_viewer/error_cache, new)
 		error_source.errors -= error_entry
 		error_source.total_retired++
 	// Break both sides of the cycle, including references held by old viewers.
-	// No qdel queue is needed: an unreferenced plain datum can be autocollected.
+	// Explicit deletion avoids relying on engine collection timing or old holders.
 	error_entry.error_source = null
 	error_entry.usr_loc = null
 	error_entry.usr_ref = null
@@ -157,7 +157,7 @@ GLOBAL_DATUM_INIT(error_cache, /datum/error_viewer/error_cache, new)
 	error_entry.info_name = null
 	error_entry.info = null
 	error_entry.name = "Expired runtime history entry"
-	error_entry.retired = TRUE
+	del(error_entry)
 
 /datum/error_viewer/error_source
 	var/list/errors = list()
@@ -190,7 +190,6 @@ GLOBAL_DATUM_INIT(error_cache, /datum/error_viewer/error_cache, new)
 	var/usr_ref
 	var/turf/usr_loc
 	var/is_skip_count
-	var/retired = FALSE
 
 	var/info_name
 	var/info
@@ -222,9 +221,6 @@ GLOBAL_DATUM_INIT(error_cache, /datum/error_viewer/error_cache, new)
 		usr_loc = get_turf(usr)
 
 /datum/error_viewer/error_entry/show_to(user, datum/error_viewer/back_to, linear)
-	if (retired)
-		browse_to(user, "[build_header(GLOB.error_cache, linear)]This runtime detail has expired from the recent history.")
-		return
 	if (!istype(back_to))
 		back_to = error_source
 

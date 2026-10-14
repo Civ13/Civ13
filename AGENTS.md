@@ -272,7 +272,8 @@ adapters and omission controls, without launching OpenDream or real scripts.
 <!-- 2026-10-14: bounded runtime detail history -->
 Error history keeps 1000 recent entries globally and 100 per file/line source,
 including skip summaries. Retirement removes both memberships and clears entry
-backreferences, captured usr locations and detail text. Source metadata and
+backreferences, captured usr locations and detail text before explicit plain-datum
+deletion invalidates old holders. Source metadata and
 world/Error cooldown dictionaries remain for the round; distinct synthetic
 file/line identities are not bounded. `tests/error_history/run.py` checks real
 logging, viewer bodies and retirement in an isolated native world, with an

@@ -3,9 +3,10 @@
 The production cache retains the newest 1000 detail entries, with at most 100
 per source. Normal details and skipped-runtime summaries share both limits.
 Retirement removes both list memberships, breaks the source backreference and
-clears captured user locations and detail strings. An external holder sees an
-expiry message; once it releases the entry, native datum autocollection is
-possible without adding a garbage-queue task.
+clears captured user locations and detail strings before explicitly deleting the
+plain detail datum. External holders are invalidated and stale browser links
+use the existing missing-viewer message. Retirement needs no garbage-queue task
+and does not rely on engine autocollection timing.
 
 Source metadata and its notification cooldown remain for the round. Counters
 show lifetime logged runtimes and skipped occurrences separately from recent
@@ -27,8 +28,8 @@ standalone fixture includes actual production logging, retirement, constructors,
 viewers and world/Error. Browser and logging outputs use isolated sinks and only
 the delayed silence-summary wait is accelerated to two ticks. It refuses network
 ports and starts no game controllers, maps, production config or persistence.
-It checks FIFO memberships, backreferences, native autocollection, actual usr
-location release, expired external holders, lifetime counters, skip summaries,
+It checks FIFO memberships, backreferences, explicit native deletion, actual usr
+location capture/release, invalidated external holders, lifetime counters, skip summaries,
 notification cooldowns, viewer text and world/Error totals/disk logging. The
 historical control replaces only log_error with the immutable pre-fix body from
 3ce4ece23 and must fail the eleven named retention contracts.

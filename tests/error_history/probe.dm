@@ -11,6 +11,9 @@ var/list/dd_messages = list()
 var/checks = 0
 var/failures = 0
 var/last_html = ""
+var/last_chat = ""
+var/retired_entries = 0
+var/cleared_entries = 0
 /datum/test_globals
 	var/datum/error_viewer/error_cache/error_cache
 	var/total_runtimes = 0
@@ -25,7 +28,12 @@ var/last_html = ""
 /datum/browser/proc/open()
 	return
 /proc/to_chat(user, text)
-	return
+	last_chat = text
+/datum/error_viewer/error_entry/Del()
+	retired_entries++
+	if (!error_source && !usr_loc && !usr_ref && !desc && !info && !info_name)
+		cleared_entries++
+	return ..()
 /proc/time_stamp()
 	return "fixture"
 /proc/rhtml_encode(text)
@@ -79,8 +87,8 @@ var/last_html = ""
 	for (var/i = 2 to 250)
 		C.log_error(E, list("detail [i]"), i % 2 ? 3 : 0)
 	check(C.errors.len == ERROR_SOURCE_HISTORY_LIMIT && S.errors.len == ERROR_SOURCE_HISTORY_LIMIT, "per-source history bounded")
-	check(held.retired && !held.error_source && !held.usr_loc && !held.usr_ref, "retired external holder releases source and usr location")
-	check(!held.desc && !held.info && !held.info_name, "retired external holder releases detail text")
+	check(!held && !locate(held_ref), "retired external holder and native ref invalidated")
+	check(retired_entries == 150 && cleared_entries == 150, "retirement clears source location and text before native deletion")
 	check(!(held in C.errors) && !(held in S.errors), "retired external holder absent from both roots")
 	check(C.errors[1] == S.errors[1] && C.errors[C.errors.len] == S.errors[S.errors.len], "source FIFO matches global history")
 	var/datum/error_viewer/error_entry/second = C.errors[2]
@@ -89,11 +97,10 @@ var/last_html = ""
 #ifndef HISTORICAL_ERROR_HISTORY
 	check(S.total_logged == 126 && S.total_skipped == 372 && S.total_retired == 150, "source lifetime counters include retired skip summaries")
 #endif
-	held.show_to(null)
-	check(findtext(last_html, "expired from the recent history") && findtext(last_html, "Refresh"), "expired holder shows safe refresh navigation")
-	held = null
-	sleep(1)
-	check(!locate(held_ref), "retired unheld entry autocollects natively")
+	if (!locate(held_ref))
+		C.Topic(null, list("viewruntime" = held_ref))
+	check(findtext(last_chat, "viewer no longer exists"), "expired browser link uses existing missing viewer message")
+	check(!locate(held_ref), "retired entry disappears natively without collection wait")
 	// Distinct fixed source lines exercise the global cap independently.
 	for (var/i = 2 to 16)
 		E = test_exception(i)
