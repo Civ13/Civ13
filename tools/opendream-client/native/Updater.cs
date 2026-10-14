@@ -196,4 +196,32 @@ public static class Updater {
         try { File.Replace(adjacent, target, target + ".previous", true); }
         finally { if (File.Exists(adjacent)) File.Delete(adjacent); }
     }
+    public static void ApplyVerifiedUpdate(string candidate, string target, string expected, string version,
+        string root, Action<string> checkStartup, Action<string> restart) {
+        var replaced = false;
+        try {
+            using (Lock(root)) {
+                ReplaceLauncher(candidate, target, expected, version);
+                replaced = true;
+                checkStartup(target);
+            }
+            // The new launcher must be able to acquire the setup lock.
+            restart(target);
+            AtomicText(Path.Combine(root, "native-update-result.json"), JsonSerializer.Serialize(new { success = true, version, sha256 = expected }));
+        } catch (Exception failure) {
+            var rolledBack = false;
+            try {
+                if (replaced) {
+                    using (Lock(root)) {
+                        CheckHash(target, expected);
+                        File.Replace(target + ".previous", target, target + ".failed", true);
+                        rolledBack = true;
+                    }
+                }
+            } finally {
+                AtomicText(Path.Combine(root, "native-update-result.json"), JsonSerializer.Serialize(new { success = false, rolledBack, error = failure.Message }));
+            }
+            throw;
+        }
+    }
 }
