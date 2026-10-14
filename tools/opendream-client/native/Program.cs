@@ -35,16 +35,13 @@ public static class Program {
             if (args.Length > 0 && args[0] == "--apply-update") return ApplyUpdate(args);
             string? explicitRoot = null;
             string? localReceipt = null;
-            var strictDOutput = false;
             for (var index = 0; index < args.Length; index++) {
                 if (args[index] == "--root" && explicitRoot == null && index + 1 < args.Length)
                     explicitRoot = LocalDreamDaemon.RequirePath(args[++index]);
                 else if (args[index] == "--local-dreamdaemon" && localReceipt == null && index + 1 < args.Length)
                     localReceipt = LocalDreamDaemon.RequirePath(args[++index]);
-                else if (args[index] == "--strict-d-output" && !strictDOutput) strictDOutput = true;
-                else throw new ArgumentException("Supported options: --version, --self-check, --root <absolute folder>, --local-dreamdaemon <absolute host receipt>, --strict-d-output.");
+                else throw new ArgumentException("Supported options: --version, --self-check, --root <absolute folder>, --local-dreamdaemon <absolute host receipt>.");
             }
-            if (strictDOutput && localReceipt == null) throw new IOException("Strict test output mode requires --local-dreamdaemon.");
             var root = explicitRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Civ13");
             if (localReceipt != null) {
                 if (explicitRoot == null) throw new IOException("Local DreamDaemon testing requires an explicit --root.");
@@ -57,7 +54,7 @@ public static class Program {
                     break;
                 }
                 if (bin == null) throw new IOException("Existing verified BYOND 516.1681 client missing; this local path never installs it.");
-                var start = LocalDreamDaemon.Prepare(receipt, bin, root, strictDOutput: strictDOutput);
+                var start = LocalDreamDaemon.Prepare(receipt, bin, root);
                 using var process = Process.Start(start) ?? throw new IOException("BYOND client did not start.");
                 return 0;
             }
