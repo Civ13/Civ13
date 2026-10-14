@@ -27,7 +27,7 @@
 	if (fexists("map_saves/save_complete.txt"))
 		if(!fdel("map_saves/save_complete.txt"))
 			throw EXCEPTION("Could not invalidate completion marker; existing save retained")
-	var/F0 = file("map_saves/map.txt")
+	var/F0 = "map_saves/map.txt"
 	if (fexists(F0))
 		if(!fdel(F0))
 			throw EXCEPTION("Could not replace save metadata")

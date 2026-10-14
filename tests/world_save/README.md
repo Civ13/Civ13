@@ -101,3 +101,32 @@ production's initial stat value. Native disk round trips assert dead humans rema
 DEAD without rejuvenation, while unconscious living humans rejuvenate once. The
 fixture closes its port at startup and rejects reopening. These checks exercise
 the actual saver/loader with an injected rejuvenation adapter, not human gameplay.
+
+`string_path_roundtrip.dme` reuses the offline production saver/loader round trip
+with a `text2file` adapter that rejects non-string paths and delegates string
+paths to the native disk writer. This models the path contract in OpenDream
+engine commit `3a20a7876a52513596edf195a75e08459afd4e9a`. Compile and run it in
+temporary storage with the same process bounds and diagnostic checks as the
+ordinary fixture. Its negative control restores `file("map_saves/map.txt")` for
+`F0` in a generated copy of `saving.dm`; require the metadata-write failure and
+absence of a completion marker. The adapter is a compatibility regression,
+not proof of an OpenDream save or fresh-process recovery.
+
+`run-string-path.py --byond-bin <516.1681-bin> --expected-saving-sha256
+<reviewed-source-hash>` stages the fixture and production includes in temporary
+storage and checks clean compilation, runtime diagnostics and the exact result.
+Run again with `--negative-control` to restore the resource argument only in
+the generated source. The negative requires the exact exception name and no
+completion marker. The runner retains original/generated source hashes and
+owned process exit records, with 120-second per-process bounds. Use the
+coordinated aggregate memory/process guard as well; these per-process timeouts
+do not supply an aggregate memory bound.
+
+The fixture also requires the actual `icons/turf/floors.dmi` resource through
+its `FILE_DIR`. Frozen source packets must include it; the resource at game
+commit `cbf0ebb0a46c7dceb2be8bb02010f49db49cac72` has SHA256
+`229e603ee10ce9dd4070a285674c733c3727004e647af2f1e0328e24d683c6de`.
+The include inventory does not cover that resource or the final generated
+`probe.dme`; retain their hashes and the runner hash in the outer job receipt.
+A missing resource is a staging/compilation failure, not the metadata-write
+negative control.
