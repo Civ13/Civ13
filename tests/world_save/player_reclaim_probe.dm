@@ -52,7 +52,7 @@
 	rejected = FALSE
 	try
 		map_storage.validate_saved_player_owner(F, ref, list())
-	catch(var/exception/e)
+	catch(var/exception/malformed_owner_error)
 		rejected = TRUE
 	check(rejected, "malformed saved ownership not rejected")
 	map_storage.reset_player_restoration()
