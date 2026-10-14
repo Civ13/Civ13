@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>Civ13</AssemblyName>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Company>Civ13</Company>
     <Product>Civ13 Launcher</Product>
     <Description>Portable Civ13 launcher with verified client and launcher updates</Description>
@@ -16,6 +16,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Updater.cs" />
     <Compile Include="Byond.cs" />
+    <Compile Include="Connection.cs" />
     <EmbeddedResource Include="../channel.json" LogicalName="client-channel.json" />
     <EmbeddedResource Include="byond.json" LogicalName="byond.json" />
   </ItemGroup>

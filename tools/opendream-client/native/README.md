@@ -97,3 +97,13 @@ run during offline verification.
 This prerequisite prepares the BYOND binaries. It neither logs a user into BYOND
 nor validates or implements the separate PR18 BYOND-derived identity handshake.
 The current published client's authentication flow remains unchanged.
+
+## Game server hostname
+
+Each native launcher Play attempt resolves and displays `valzargaming.com`, then
+passes that hostname to the installed client's `Connect.ps1 -ServerAddress`.
+Nomads and TDM retain that script's existing ports (18452 and 18453 in the current
+published package) and protocol/authentication behavior. Changed DNS answers are
+reported; lookup failure keeps the menu open for retry without starting a game.
+DNS resolution does not authenticate a server. Windows script policies remain in
+effect. Older direct Play CMD files retain their packaged connection defaults.

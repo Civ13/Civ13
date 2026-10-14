@@ -35,7 +35,8 @@ jobs:
       - name: Isolated updater contracts and actual executable replacement
         shell: pwsh
         run: |
-          dotnet run --project tools/opendream-client/native/tests/Launcher.Tests.csproj -- tools/opendream-client/native/publish/Civ13.exe
+          $version = (Get-Content tools/opendream-client/native/version.json -Raw | ConvertFrom-Json).version
+          dotnet run --project tools/opendream-client/native/tests/Launcher.Tests.csproj -- tools/opendream-client/native/publish/Civ13.exe $version
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

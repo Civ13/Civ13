@@ -57,15 +57,23 @@ public static class Program {
             Console.WriteLine("Client version: " + client.Version);
             var destination = await Updater.EnsureClient(client, root, transport);
             owner.Dispose();
+            string[]? previousAddresses = null;
             while (true) {
                 Console.WriteLine("\nCiv13 - 1: Sign in   2: Play Nomads   3: Play TDM   4: Exit");
                 Console.Write("Choose a number (sign in before your first game): ");
                 var choice = Console.ReadLine();
                 if (choice is null or "4") return 0;
-                var file = choice switch { "1" => "Sign-In.cmd", "2" => "Play-Nomads.cmd", "3" => "Play-TDM.cmd", _ => null };
-                if (file is not null) Process.Start(new ProcessStartInfo(Path.Combine(destination, file)) {
-                    UseShellExecute = true, WorkingDirectory = destination
-                });
+                if (choice == "1") Process.Start(new ProcessStartInfo(Path.Combine(destination, "Sign-In.cmd")) { UseShellExecute = true, WorkingDirectory = destination });
+                if (choice is "2" or "3") {
+                    try {
+                        var addresses = await Connection.Resolve();
+                        if (previousAddresses is not null && !previousAddresses.SequenceEqual(addresses)) Console.WriteLine("Server DNS addresses changed since the last connection attempt.");
+                        previousAddresses = addresses;
+                        Console.WriteLine(Connection.Host + " currently resolves to: " + string.Join(", ", addresses));
+                        // Pass the hostname, so the client also resolves it at connection time.
+                        Process.Start(Connection.Start(destination, choice == "2" ? "Nomads" : "TDM"));
+                    } catch (IOException e) { Console.WriteLine(e.Message); }
+                }
             }
         } catch (Exception e) {
             Console.Error.WriteLine("Civ13: " + e.Message);
