@@ -30,7 +30,7 @@ def prepare(root, evidence, historical=False):
         'handler.dm': (root / 'code/modules/error_handler/error_handler.dm').read_text(),
         'defines.dm': definitions,
         'probe.dme': ('#define HISTORICAL_ERROR_HISTORY\n' if historical else '') +
-                     '#include "probe.dm"\n#include "defines.dm"\n#include "viewer.dm"\n#include "handler.dm"\n',
+                     '#include "defines.dm"\n#include "probe.dm"\n#include "viewer.dm"\n#include "handler.dm"\n',
     }
     for name, content in files.items():
         (evidence / name).write_text(content, encoding='utf-8')
