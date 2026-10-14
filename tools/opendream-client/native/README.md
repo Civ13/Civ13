@@ -27,8 +27,9 @@ third-party native client files stay there. The injectable strict-D source mode
 still rejects unknown or C: user-data settings; it is not the normal CLI path.
 Host admission requires the owner's genuine receipt, verified serving process
 and sufficient output space, with monitoring and an owned-output cleanup plan.
-Added source controls are unrun pending source review and runtime admission.
-The existing 84 checks do not establish this feature or an actual DreamDaemon join.
+Local compilation and 73 injected controls passed without accounts or game
+processes. Actual dispatch remains pending runtime admission and a genuine host
+receipt. The earlier 84 checks do not establish an actual DreamDaemon join.
 
 `Civ13.exe` is a native .NET 8, Windows x64, self-contained console launcher.
 Players need no .NET installation or companion scripts. Double-click the file,
