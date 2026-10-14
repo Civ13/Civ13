@@ -47,8 +47,13 @@ public static class Program {
                 if (explicitRoot == null) throw new IOException("Local DreamDaemon testing requires an explicit --root.");
                 var receipt = LocalDreamDaemon.Read(localReceipt);
                 var desktop = new WindowsByondDesktop();
-                var bin = desktop.Candidates(root, RequiredByond()).FirstOrDefault(candidate => desktop.Matches(candidate, RequiredByond()))
-                    ?? throw new IOException("Existing verified BYOND 516.1681 client missing; this local path never installs it.");
+                string? bin = null;
+                foreach (var candidate in desktop.Candidates(root, RequiredByond())) {
+                    if (!desktop.Matches(candidate, RequiredByond())) continue;
+                    bin = candidate;
+                    break;
+                }
+                if (bin == null) throw new IOException("Existing verified BYOND 516.1681 client missing; this local path never installs it.");
                 var start = LocalDreamDaemon.Prepare(receipt, bin, root);
                 using var process = Process.Start(start) ?? throw new IOException("BYOND client did not start.");
                 return 0;
