@@ -130,3 +130,49 @@ The include inventory does not cover that resource or the final generated
 `probe.dme`; retain their hashes and the runner hash in the outer job receipt.
 A missing resource is a staging/compilation failure, not the metadata-write
 negative control.
+
+### Serialization progress diagnostics
+
+`build-progress-probe.py` generates test-only copies of `saving.dm` and
+`functions.dm`, plus `progress-probe.dm`. Supply both original paths and their
+reviewed raw SHA256 hashes with `--saving-source`, `--functions-source`,
+`--tick-source`, `--expected-saving-sha256`, `--expected-functions-sha256`,
+`--expected-tick-sha256` and a new
+`--output-dir`. A hash or insertion-anchor mismatch rejects the packet before
+creating outputs. The pinned tick source must contain the supported production
+tick-check definition. Replace only the saver include in an isolated DME and
+append the generated helper; never add the helper to `civ13.dme`.
+
+The helper overwrites `world_save_progress.json` and emits `SAVE_PROGRESS`
+console records. It checks each 1024 completed turfs and writes at most once
+per ten real seconds, except forced save/metadata/level/completion boundaries.
+Rows include actual map dimensions, the active level's completed turf and
+entry/list counts, real elapsed deciseconds, world time, tick usage and
+serializer-only `stoplag()` call/wait totals. The scoped tick-check wrapper
+uses the same production threshold and calls the original `stoplag()` once.
+The original thresholds,
+sleeps, traversal, serialization and completion assertions remain intact.
+Wait totals include engine flush time while a sleeping proc resumes; they are
+not CPU measurements. Diagnostic JSON/deletion/write/log errors are caught:
+progress disables itself and records unavailability, without changing the save
+result. A save exception resets the active flag and rethrows the original
+exception. Latest-state JSON replacement is not atomic; a reader must treat
+missing/partial JSON as unavailable diagnostics, never as a failed save.
+A level's serialization progress is not durable save
+completion, and a completion marker alone is not fresh-process restoration.
+
+Use the runtime owner's existing isolated process guard, finite phase timeout,
+source/resource inventory and stopped-process receipts. The generator launches
+no compiler or game and supplies no process/memory guard. Keep diagnostic
+overhead explicit when comparing performance: baseline and candidate need the
+same map, populated contents, engine, storage and instrumentation.
+
+`run-string-path.py --progress` runs the original production round-trip controls
+with generated diagnostics. Add `--progress-fault-stage` (`save_entered`,
+`level_serialized`, `completion_marker`) and `--progress-fault-operation`
+(`delete`, `write`, `json`) to inject a diagnostic exception before that
+operation. Each must preserve the successful save and its marker, while reporting
+diagnostic unavailability. `--progress-negative-control` deliberately propagates
+the injected exception and requires its exact failure and expected marker state.
+The native fixture retains its existing mutation-on-tick adapter; these checks
+verify IO isolation and save semantics, not full-game timing or CPU performance.
