@@ -94,6 +94,18 @@ class ClientPackageTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'coherent receipt'):
             package.verify(self.root)
 
+    def test_previous_engine_package_rejected(self):
+        self.receipt['engine_head'] = 'ebc7a8289e7aea4ca1d2ed7c6c296ba97706649d'
+        self.write()
+        with self.assertRaisesRegex(ValueError, 'exact-head'):
+            package.verify(self.root)
+
+    def test_wrong_robust_dependency_rejected(self):
+        self.receipt['robust_head'] = '0' * 40
+        self.write()
+        with self.assertRaisesRegex(ValueError, 'exact-head'):
+            package.verify(self.root)
+
     def test_traversal_and_case_collision(self):
         for name in ['../external.dll', 'Resources/./test', 'resources/MANIFEST.yml']:
             self.files[name] = {'bytes': 7, 'sha256': hashlib.sha256(b'fixture').hexdigest()}
