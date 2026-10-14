@@ -269,6 +269,16 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
 
+<!-- 2026-10-14: bounded runtime detail history -->
+Error history keeps 1000 recent entries globally and 100 per file/line source,
+including skip summaries. Retirement removes both memberships and clears entry
+backreferences, captured usr locations and detail text before explicit plain-datum
+deletion invalidates old holders. Source metadata and
+world/Error cooldown dictionaries remain for the round; distinct synthetic
+file/line identities are not bounded. `tests/error_history/run.py` checks real
+logging, viewer bodies and retirement in an isolated native world, with an
+immutable historical log_error control. `--prepare-only` runs no native tools.
+
 <!-- 2026-10-14: native launcher packaging -->
 `tools/opendream-client/native/Build.ps1` builds the single-file self-contained
 Windows x64 launcher. Its offline console tests cover mock updates plus actual
