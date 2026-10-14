@@ -37,14 +37,14 @@ public static class Program {
             string? localReceipt = null;
             for (var index = 0; index < args.Length; index++) {
                 if (args[index] == "--root" && explicitRoot == null && index + 1 < args.Length)
-                    explicitRoot = LocalDreamDaemon.RequireDPath(args[++index]);
+                    explicitRoot = LocalDreamDaemon.RequirePath(args[++index]);
                 else if (args[index] == "--local-dreamdaemon" && localReceipt == null && index + 1 < args.Length)
-                    localReceipt = LocalDreamDaemon.RequireDPath(args[++index]);
-                else throw new ArgumentException("Supported options: --version, --self-check, --root D:\\folder, --local-dreamdaemon D:\\host-receipt.json.");
+                    localReceipt = LocalDreamDaemon.RequirePath(args[++index]);
+                else throw new ArgumentException("Supported options: --version, --self-check, --root <absolute folder>, --local-dreamdaemon <absolute host receipt>.");
             }
             var root = explicitRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Civ13");
             if (localReceipt != null) {
-                if (explicitRoot == null) throw new IOException("Local DreamDaemon testing requires an explicit D: --root.");
+                if (explicitRoot == null) throw new IOException("Local DreamDaemon testing requires an explicit --root.");
                 var receipt = LocalDreamDaemon.Read(localReceipt);
                 var desktop = new WindowsByondDesktop();
                 var bin = desktop.Candidates(root, RequiredByond()).FirstOrDefault(candidate => desktop.Matches(candidate, RequiredByond()))
@@ -126,7 +126,7 @@ public static class Program {
         Updater.ApplyVerifiedUpdate(args[3], target, args[5], args[6], args[7], CheckStartup, path => {
             var restart = new ProcessStartInfo(path) { UseShellExecute = args.Length == 8, CreateNoWindow = args.Length == 9, WorkingDirectory = Path.GetDirectoryName(path)! };
             if (args.Length == 9) restart.ArgumentList.Add("--self-check");
-            else if (Path.GetFullPath(args[7]).StartsWith("D:\\", StringComparison.OrdinalIgnoreCase)) {
+            else {
                 restart.ArgumentList.Add("--root");
                 restart.ArgumentList.Add(args[7]);
             }

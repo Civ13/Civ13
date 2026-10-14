@@ -9,9 +9,9 @@ public sealed record LocalHostReceipt(int Schema, int Port, int Pid, long StartT
 public sealed record LocalHostIdentity(long StartTimeUtcTicks, string Executable, string Version);
 
 public static class LocalDreamDaemon {
-    public static string RequireDPath(string path) {
-        if (!Path.IsPathFullyQualified(path) || !Path.GetFullPath(path).StartsWith("D:\\", StringComparison.OrdinalIgnoreCase))
-            throw new IOException("The isolated test requires an absolute D: path.");
+    public static string RequirePath(string path) {
+        if (!Path.IsPathFullyQualified(path))
+            throw new IOException("The isolated test requires an absolute path.");
         var full = Path.GetFullPath(path);
         if (File.Exists(full) && (File.GetAttributes(full) & FileAttributes.ReparsePoint) != 0)
             throw new IOException("Linked test files are not allowed.");
@@ -20,8 +20,14 @@ public static class LocalDreamDaemon {
                 throw new IOException("Linked test paths are not allowed.");
         return full;
     }
+    public static string RequireDPath(string path) {
+        var full = RequirePath(path);
+        if (!full.StartsWith("D:\\", StringComparison.OrdinalIgnoreCase))
+            throw new IOException("Strict D: output mode requires a D: path.");
+        return full;
+    }
     public static LocalHostReceipt Read(string path) {
-        path = RequireDPath(path);
+        path = RequirePath(path);
         var file = new FileInfo(path);
         if (!file.Exists || file.Length > 16384 || (file.Attributes & FileAttributes.ReparsePoint) != 0)
             throw new IOException("Invalid local host receipt.");
@@ -39,13 +45,13 @@ public static class LocalDreamDaemon {
     }
     public static ProcessStartInfo Prepare(LocalHostReceipt receipt, string byondBin, string root,
         Func<int, LocalHostIdentity>? inspectHost = null, Func<string?>? inspectUserData = null,
-        Func<string, string>? hash = null, Func<string, bool>? matchesClient = null) {
+        Func<string, string>? hash = null, Func<string, bool>? matchesClient = null, bool strictDOutput = false) {
         if (receipt.Schema != 1 || receipt.Port is < 1024 or > 65535 || receipt.Pid <= 0 || receipt.StartTimeUtcTicks <= 0 ||
             !Regex.IsMatch(receipt.SourceCommit ?? "", "^[0-9a-f]{40}$") ||
             !Regex.IsMatch(receipt.WorldSha256 ?? "", "^[0-9a-f]{64}$") || string.IsNullOrWhiteSpace(receipt.Map))
             throw new IOException("Invalid local host identity/source/map binding.");
-        root = RequireDPath(root);
-        var world = RequireDPath(receipt.World);
+        root = strictDOutput ? RequireDPath(root) : RequirePath(root);
+        var world = RequirePath(receipt.World);
         var host = (inspectHost ?? InspectHost)(receipt.Pid);
         if (host.StartTimeUtcTicks != receipt.StartTimeUtcTicks ||
             !string.Equals(Path.GetFullPath(host.Executable), Path.GetFullPath(receipt.Daemon), StringComparison.OrdinalIgnoreCase) ||
@@ -56,10 +62,11 @@ public static class LocalDreamDaemon {
             throw new IOException("Verified BYOND 516.1681 client is unavailable.");
         // No proven per-process BYOND user-directory override is available yet.
         // Do not equate a receipt assertion, working directory or TEMP with its real cache location.
-        var userData = (inspectUserData ?? (() => null))();
-        if (userData == null)
-            throw new IOException("BYOND user-data location is unverified. In BYOND Pager, open File > Preferences > Advanced and verify its user-data folder is on D:. A read-only configuration adapter must verify that setting before this test can launch; no account/data is copied automatically.");
-        RequireDPath(userData);
+        if (strictDOutput) {
+            var userData = inspectUserData?.Invoke();
+            if (userData == null) throw new IOException("Strict D: mode requires a verified BYOND user-data setting; it is currently unavailable.");
+            RequireDPath(userData);
+        }
         var start = new ProcessStartInfo(Path.Combine(Path.GetFullPath(byondBin), "dreamseeker.exe")) {
             UseShellExecute = false, WorkingDirectory = root
         };

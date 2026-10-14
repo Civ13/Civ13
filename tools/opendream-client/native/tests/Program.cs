@@ -22,7 +22,10 @@ try {
     ProcessStartInfo LocalStart(LocalHostReceipt receipt, Func<string?> userData, Func<int, LocalHostIdentity>? inspector = null,
         Func<string, string>? worldHash = null, Func<string, bool>? client = null) =>
         LocalDreamDaemon.Prepare(receipt, @"C:\verified", @"D:\isolated", inspector ?? InspectLocal,
-            userData, worldHash ?? (_ => new string('a', 64)), client ?? (_ => true));
+            userData, worldHash ?? (_ => new string('a', 64)), client ?? (_ => true), strictDOutput: true);
+    var normalLocalStart = LocalDreamDaemon.Prepare(localHost, @"C:\verified", @"C:\isolated",
+        InspectLocal, hash: _ => new string('a', 64), matchesClient: _ => true);
+    Require(normalLocalStart.ArgumentList.Single() == "byond://127.0.0.1:18459", "normal BYOND cache policy blocked local dispatch");
     var localStart = LocalStart(localHost, () => @"D:\BYOND-user");
     Require(localStart.ArgumentList.Single() == "byond://127.0.0.1:18459" && !localStart.UseShellExecute,
         "isolated DD endpoint escaped loopback or used URI association");

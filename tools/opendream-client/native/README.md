@@ -4,7 +4,7 @@ The pending isolated DreamDaemon test path accepts
 `Civ13.exe --root D:\isolated\launcher --local-dreamdaemon D:\isolated\host.json`.
 It reads and checks the host receipt before updater, client setup or menu work.
 The receipt has schema 1, `port`, `pid`, `startTimeUtcTicks`, absolute `daemon`
-and D: `world` paths, `worldSha256`, 40-character `sourceCommit` and `map`.
+and `world` paths, `worldSha256`, 40-character `sourceCommit` and `map`.
 The trusted host owner supplies it after starting the isolated host. The launcher
 checks the live PID/start time, executable path and 516.1681 PE version, and world
 hash, then constructs only `byond://127.0.0.1:<port>` for the verified installed
@@ -18,17 +18,17 @@ only `DreamDaemon.exe`; an actual `dd.exe` host or GUI parent requires a reviewe
 executable policy and the real serving process identity before testing.
 Normal public Play continues to enforce the fresh DNS policy.
 
-Actual local launch is currently blocked: the production read-only BYOND
-user-data inspector has no verified setting adapter and returns unknown. In
-BYOND Pager, File > Preferences > Advanced exposes the user-data directory;
-that setting must be verified on D: by an implemented read-only adapter before
-launch is enabled. The launcher does not move accounts/cache, change preferences,
-or treat TEMP/working-directory/receipt assertions as proof of the cache path.
-The prepared child uses D: working directory and TEMP/TMP/TMPDIR. `--root` also redirects
-normal launcher-owned update/client files to D: and is retained on update restart;
-it does not prove third-party native client paths. Added source controls are
-unrun pending source review and the disk/runtime gates. The existing 84 checks
-do not establish this feature or an actual DreamDaemon join.
+Normal BYOND settings/cache are allowed under the current storage policy. The
+launcher does not move accounts/cache or change preferences. `--root` can be any
+absolute unlinked folder chosen with measured headroom; the prepared child uses
+it for working directory and TEMP/TMP/TMPDIR. Normal launcher-owned update/client
+files use that root, which is retained on update restart. This does not imply
+third-party native client files stay there. The injectable strict-D source mode
+still rejects unknown or C: user-data settings; it is not the normal CLI path.
+Host admission requires the owner's genuine receipt, verified serving process
+and sufficient output space, with monitoring and an owned-output cleanup plan.
+Added source controls are unrun pending source review and runtime admission.
+The existing 84 checks do not establish this feature or an actual DreamDaemon join.
 
 `Civ13.exe` is a native .NET 8, Windows x64, self-contained console launcher.
 Players need no .NET installation or companion scripts. Double-click the file,
