@@ -33,8 +33,31 @@ public static class Program {
             if (!OperatingSystem.IsWindows() || !Environment.Is64BitOperatingSystem)
                 throw new PlatformNotSupportedException("Civ13 requires Windows x64.");
             if (args.Length > 0 && args[0] == "--apply-update") return ApplyUpdate(args);
-            if (args.Length != 0) throw new ArgumentException("Supported options: --version, --self-check.");
-            var root = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Civ13");
+            string? explicitRoot = null;
+            string? localReceipt = null;
+            for (var index = 0; index < args.Length; index++) {
+                if (args[index] == "--root" && explicitRoot == null && index + 1 < args.Length)
+                    explicitRoot = LocalDreamDaemon.RequireDPath(args[++index]);
+                else if (args[index] == "--local-dreamdaemon" && localReceipt == null && index + 1 < args.Length)
+                    localReceipt = LocalDreamDaemon.RequireDPath(args[++index]);
+                else throw new ArgumentException("Supported options: --version, --self-check, --root D:\\folder, --local-dreamdaemon D:\\host-receipt.json.");
+            }
+            var root = explicitRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Civ13");
+            if (localReceipt != null) {
+                if (explicitRoot == null) throw new IOException("Local DreamDaemon testing requires an explicit D: --root.");
+                var receipt = LocalDreamDaemon.Read(localReceipt);
+                var desktop = new WindowsByondDesktop();
+                var bin = desktop.Candidates(root, RequiredByond()).FirstOrDefault(candidate => desktop.Matches(candidate, RequiredByond()))
+                    ?? throw new IOException("Existing verified BYOND 516.1681 client missing; this local path never installs it.");
+                var start = LocalDreamDaemon.Prepare(receipt, bin, root);
+                using var process = Process.Start(start) ?? throw new IOException("BYOND client did not start.");
+                return 0;
+            }
+            if (explicitRoot != null) {
+                Directory.CreateDirectory(root);
+                Environment.SetEnvironmentVariable("TEMP", root);
+                Environment.SetEnvironmentVariable("TMP", root);
+            }
             using var owner = Updater.Lock(root);
             using var transport = new ReleaseTransport();
             Console.WriteLine("Civ13 Launcher " + version.ToString(3));
@@ -102,6 +125,10 @@ public static class Program {
         Updater.ApplyVerifiedUpdate(args[3], target, args[5], args[6], args[7], CheckStartup, path => {
             var restart = new ProcessStartInfo(path) { UseShellExecute = args.Length == 8, CreateNoWindow = args.Length == 9, WorkingDirectory = Path.GetDirectoryName(path)! };
             if (args.Length == 9) restart.ArgumentList.Add("--self-check");
+            else if (Path.GetFullPath(args[7]).StartsWith("D:\\", StringComparison.OrdinalIgnoreCase)) {
+                restart.ArgumentList.Add("--root");
+                restart.ArgumentList.Add(args[7]);
+            }
             using var restarted = Process.Start(restart) ?? throw new IOException("Updated launcher could not restart.");
             if (args.Length == 9 && (!restarted.WaitForExit(30000) || restarted.ExitCode != 0)) throw new IOException("Updated launcher self-check failed.");
         });

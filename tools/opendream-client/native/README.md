@@ -1,5 +1,29 @@
 # Single-file Windows launcher
 
+The pending isolated DreamDaemon test path accepts
+`Civ13.exe --root D:\isolated\launcher --local-dreamdaemon D:\isolated\host.json`.
+It reads and checks the host receipt before updater, client setup or menu work.
+The receipt has schema 1, `port`, `pid`, `startTimeUtcTicks`, absolute `daemon`
+and D: `world` paths, `worldSha256`, 40-character `sourceCommit` and `map`.
+The trusted host owner supplies it after starting the isolated host. The launcher
+checks the live PID/start time, executable path and 516.1681 PE version, and world
+hash, then constructs only `byond://127.0.0.1:<port>` for the verified installed
+Dream Seeker. This operator-configured test path is not automatic engine detection.
+Source/map labels belong to the trusted host receipt; they are not inferred from
+the game binary. Normal public Play continues to enforce the fresh DNS policy.
+
+Actual local launch is currently blocked: the production read-only BYOND
+user-data inspector has no verified setting adapter and returns unknown. In
+BYOND Pager, File > Preferences > Advanced exposes the user-data directory;
+that setting must be verified on D: by an implemented read-only adapter before
+launch is enabled. The launcher does not move accounts/cache, change preferences,
+or treat TEMP/working-directory/receipt assertions as proof of the cache path.
+The prepared child uses D: working directory and TEMP/TMP. `--root` also redirects
+normal launcher-owned update/client files to D: and is retained on update restart;
+it does not prove third-party native client paths. Added source controls are
+unrun pending source review and the disk/runtime gates. The existing 84 checks
+do not establish this feature or an actual DreamDaemon join.
+
 `Civ13.exe` is a native .NET 8, Windows x64, self-contained console launcher.
 Players need no .NET installation or companion scripts. Double-click the file,
 let it obtain the complete verified client, and use its sign-in/play menu. The

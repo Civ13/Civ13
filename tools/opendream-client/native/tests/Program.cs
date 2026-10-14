@@ -16,6 +16,26 @@ async Task RejectAsync(Func<Task> action, string message) {
     throw new Exception("Negative control accepted: " + message);
 }
 try {
+    var localHost = new LocalHostReceipt(1, 18459, 123, 456, @"C:\verified\DreamDaemon.exe",
+        @"D:\isolated\civ13.dmb", new string('a', 64), new string('b', 40), "Gaia Nomads");
+    LocalHostIdentity InspectLocal(int pid) => new(456, localHost.Daemon, "5.0.516.1681");
+    ProcessStartInfo LocalStart(LocalHostReceipt receipt, Func<string?> userData, Func<int, LocalHostIdentity>? inspector = null,
+        Func<string, string>? worldHash = null, Func<string, bool>? client = null) =>
+        LocalDreamDaemon.Prepare(receipt, @"C:\verified", @"D:\isolated", inspector ?? InspectLocal,
+            userData, worldHash ?? (_ => new string('a', 64)), client ?? (_ => true));
+    var localStart = LocalStart(localHost, () => @"D:\BYOND-user");
+    Require(localStart.ArgumentList.Single() == "byond://127.0.0.1:18459" && !localStart.UseShellExecute,
+        "isolated DD endpoint escaped loopback or used URI association");
+    Require(localStart.Environment["TEMP"] == @"D:\isolated" && localStart.Environment["TMP"] == @"D:\isolated",
+        "isolated DD temporary output not on D");
+    Reject(() => LocalStart(localHost, () => null), "unverified BYOND user cache");
+    Reject(() => LocalStart(localHost, () => @"C:\BYOND-user"), "C BYOND user cache");
+    Reject(() => LocalStart(localHost, () => @"D:\BYOND-user", _ => new(999, localHost.Daemon, "5.0.516.1681")), "reused host PID");
+    Reject(() => LocalStart(localHost, () => @"D:\BYOND-user", _ => new(456, localHost.Daemon, "5.0.516.1669")), "wrong native host version");
+    Reject(() => LocalStart(localHost, () => @"D:\BYOND-user", worldHash: _ => new string('0', 64)), "changed host world");
+    Reject(() => LocalStart(localHost, () => @"D:\BYOND-user", client: _ => false), "missing BYOND client");
+    Reject(() => LocalDreamDaemon.RequireDPath(@"C:\isolated"), "C launcher root");
+    Reject(() => LocalStart(localHost with { Port = 0 }, () => @"D:\BYOND-user"), "invalid local port");
     var resolverCalls = 0;
     Task<System.Net.IPAddress[]> ResolveFixture(string name) {
         Require(name == "valzargaming.com", "connection resolved a different hostname");

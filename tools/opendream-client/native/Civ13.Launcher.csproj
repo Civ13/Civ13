@@ -17,6 +17,7 @@
     <Compile Include="Updater.cs" />
     <Compile Include="Byond.cs" />
     <Compile Include="Connection.cs" />
+    <Compile Include="LocalDreamDaemon.cs" />
     <EmbeddedResource Include="../channel.json" LogicalName="client-channel.json" />
     <EmbeddedResource Include="byond.json" LogicalName="byond.json" />
   </ItemGroup>
