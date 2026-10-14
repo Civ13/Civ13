@@ -101,3 +101,13 @@ production's initial stat value. Native disk round trips assert dead humans rema
 DEAD without rejuvenation, while unconscious living humans rejuvenate once. The
 fixture closes its port at startup and rejects reopening. These checks exercise
 the actual saver/loader with an injected rejuvenation adapter, not human gameplay.
+
+`string_path_roundtrip.dme` reuses the offline production saver/loader round trip
+with a `text2file` adapter that rejects non-string paths and delegates string
+paths to the native disk writer. This models the path contract in OpenDream
+engine commit `3a20a7876a52513596edf195a75e08459afd4e9a`. Compile and run it in
+temporary storage with the same process bounds and diagnostic checks as the
+ordinary fixture. Its negative control restores `file("map_saves/map.txt")` for
+`F0` in a generated copy of `saving.dm`; require the metadata-write failure and
+absence of a completion marker. The adapter is a compatibility regression,
+not proof of an OpenDream save or fresh-process recovery.
