@@ -46,10 +46,10 @@
 	check(world_save_profile_objects == 2 && world_save_profile_values == 2, "nested wrapper changed call counts")
 	check(world_save_profile_totals["object"] == 10, "nested wrapper lost exclusive object time")
 	var/list/envelope
-	F["/entries/[ref]/value"] >> envelope
+	F["[map_storage.entry_path(F, ref)]/value"] >> envelope
 	check(envelope["kind"] == "entry", "profile changed original encoded return")
 	var/child_ref = envelope["ref"]
-	F["/entries/[child_ref]/value"] >> envelope
+	F["[map_storage.entry_path(F, child_ref)]/value"] >> envelope
 	check(envelope["kind"] == "value" && envelope["value"] == 17, "profile changed nested scalar encoding")
 	var/datum/test/phase_probe/failing = new
 	failing.throw_from_hook = TRUE
