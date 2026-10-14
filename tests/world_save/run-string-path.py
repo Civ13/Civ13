@@ -16,7 +16,19 @@ def main():
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--expected-saving-sha256', required=True)
     parser.add_argument('--negative-control', action='store_true')
+    parser.add_argument('--progress', action='store_true')
+    parser.add_argument('--progress-fault-stage', choices=('save_entered', 'level_serialized', 'completion_marker'))
+    parser.add_argument('--progress-fault-operation', choices=('delete', 'write', 'json'))
+    parser.add_argument('--progress-negative-control', action='store_true')
     args = parser.parse_args()
+    if bool(args.progress_fault_stage) != bool(args.progress_fault_operation):
+        parser.error('Both progress fault stage and operation are required')
+    if (args.progress_fault_stage or args.progress_negative_control) and not args.progress:
+        parser.error('Progress fault controls require --progress')
+    if args.progress_negative_control and not args.progress_fault_stage:
+        parser.error('Progress negative control requires a fault')
+    if args.progress and args.negative_control:
+        parser.error('Keep metadata and diagnostic negative controls separate')
     root = Path(__file__).resolve().parents[2]
     fixture = root / 'tests/world_save'
     byond = args.byond_bin.resolve(strict=True)
@@ -33,11 +45,40 @@ def main():
     environment = environment.replace('#define FILE_DIR "../.."', f'#define FILE_DIR "{root.as_posix()}"')
     hashes = {}
     generated = {}
+    progress_saving = None
+    progress_helper_include = ''
+    if args.progress:
+        import importlib.util
+        generator_path = fixture / 'build-progress-probe.py'
+        spec = importlib.util.spec_from_file_location('progress_generator', generator_path)
+        generator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(generator)
+        function_path = root / 'code/modules/persistence/functions.dm'
+        progress_saving, _ = generator.instrument(production.read_text(encoding='utf-8'),
+                                                  function_path.read_text(encoding='utf-8'))
+        hashes['tests/world_save/build-progress-probe.py'] = hashlib.sha256(generator_path.read_bytes()).hexdigest()
+        helper_path = fixture / 'progress-probe.dm'
+        helper_target = output / 'progress-probe.dm'
+        helper_target.write_bytes(helper_path.read_bytes())
+        hashes['tests/world_save/progress-probe.dm'] = hashlib.sha256(helper_path.read_bytes()).hexdigest()
+        generated[helper_target.name] = hashlib.sha256(helper_target.read_bytes()).hexdigest()
+        # Retain fixture mutation-on-tick controls; this is an IO-isolation test,
+        # not a performance measurement of the real game tick threshold.
+        environment = '#define WORLD_SAVE_PROGRESS_TICK_CHECK fixture_tick_check()\n' + environment
+        if args.progress_fault_stage:
+            environment = (f'#define WORLD_SAVE_PROGRESS_FAULT_STAGE "{args.progress_fault_stage}"\n'
+                           f'#define WORLD_SAVE_PROGRESS_FAULT_OPERATION "{args.progress_fault_operation}"\n'
+                           + environment)
+        if args.progress_negative_control:
+            environment = '#define WORLD_SAVE_PROGRESS_PROPAGATE_FAULT\n' + environment
+        progress_helper_include = f'\n#include "{helper_target.as_posix()}"\n'
 
     def include(match):
         original = (fixture / match.group(1)).resolve(strict=True)
         source = original.read_text(encoding='utf-8')
         hashes[original.relative_to(root).as_posix()] = hashlib.sha256(original.read_bytes()).hexdigest()
+        if original == production and progress_saving is not None:
+            source = progress_saving
         if original == production and args.negative_control:
             before = 'var/F0 = "map_saves/map.txt"'
             if source.count(before) != 1:
@@ -48,6 +89,21 @@ def main():
             if source.count(before) != 1:
                 raise RuntimeError('Fixture must have one failure handler')
             source = source.replace(before, before + '\t\ttext2file(e.name, "failure-name.txt")\n', 1)
+            if args.progress:
+                before = '\t\tcheck(map_storage.Save_World(), "export failed")\n'
+                if source.count(before) != 1:
+                    raise RuntimeError('Progress fixture needs one first export')
+                expected = 'TRUE' if args.progress_fault_stage else 'FALSE'
+                source = source.replace(before, before +
+                    '\t\tcheck(!world_save_progress_active, "progress retained active flag after success")\n'
+                    '\t\tcheck(fexists("map_saves/save_complete.txt"), "diagnostic changed completion marker")\n'
+                    f'\t\tcheck(world_save_progress_unavailable == {expected}, "wrong diagnostic fault availability")\n', 1)
+                for label in ('failed marker deletion changed active completion or retained lock',
+                              'failed export retained completion marker or lock'):
+                    line = next((line for line in source.splitlines(keepends=True) if label in line), None)
+                    if line is None:
+                        raise RuntimeError('Progress fixture missing failed-save control')
+                    source = source.replace(line, line + '\t\t\tcheck(!world_save_progress_active, "progress retained active flag after save throw")\n', 1)
         target = output / original.name
         if target.exists():
             raise RuntimeError('Ambiguous source basename')
@@ -56,6 +112,7 @@ def main():
         return f'#include "{target.as_posix()}"'
 
     environment = re.sub(r'^#include "([^"]+)"', include, environment, flags=re.MULTILINE)
+    environment += progress_helper_include
     (output / 'probe.dme').write_text(environment, encoding='utf-8')
     hashes['tests/world_save/string_path_roundtrip.dme'] = hashlib.sha256((fixture / 'string_path_roundtrip.dme').read_bytes()).hexdigest()
     processes = []
@@ -101,7 +158,15 @@ def main():
         raise RuntimeError('Pinned clean compilation required')
     owned('daemon', [str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'])
     actual = read(output / 'result.txt').strip()
-    if args.negative_control:
+    if args.progress_negative_control:
+        failure = read(output / 'failure-name.txt').strip()
+        expected = f'Injected progress {args.progress_fault_operation} failure at {args.progress_fault_stage}'
+        if failure != expected or not actual.startswith('FAIL:'):
+            raise RuntimeError(f'Wrong diagnostic negative failure: {actual!r}, {failure!r}')
+        marker = (output / 'map_saves/save_complete.txt').exists()
+        if marker != (args.progress_fault_stage == 'completion_marker'):
+            raise RuntimeError('Diagnostic negative marker state mismatch')
+    elif args.negative_control:
         failure = read(output / 'failure-name.txt').strip()
         if failure != 'Could not write world-save metadata' or not actual.startswith('FAIL:'):
             raise RuntimeError(f'Wrong negative failure: {actual!r}, {failure!r}')
@@ -111,6 +176,9 @@ def main():
         raise RuntimeError(f'Positive regression failed: {actual!r}')
     (output / 'summary.json').write_text(json.dumps({
         'scope': __doc__, 'result': actual, 'negative_control': args.negative_control,
+        'progress': args.progress, 'progress_fault_stage': args.progress_fault_stage,
+        'progress_fault_operation': args.progress_fault_operation,
+        'progress_negative_control': args.progress_negative_control,
         'sources_sha256': hashes, 'generated_sha256': generated, 'processes': processes,
         'opendream_verified': False, 'fresh_process_recovery_verified': False,
         'crash_rpo_verified': False, 'clean_shutdown_verified': False}, indent=2), encoding='utf-8')
