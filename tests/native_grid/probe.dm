@@ -30,6 +30,10 @@ world
 	var/battery_charge_power = 0
 /obj/structure/battery/proc/available_output()
 	return 0
+/obj/structure/civ_generator/proc/available_output()
+	return 0
+/obj/structure/civ_generator/proc/stop_generation()
+	return
 /proc/isemptylist(list/L)
 	return !L.len
 var/grid_probe_calls = 0

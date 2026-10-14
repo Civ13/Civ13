@@ -329,7 +329,7 @@
 /obj/structure/oven/verb/empty()
 	set category = null
 	set name = "Empty"
-	set src in range(1, usr)
+	set src in range(1)
 	for (var/obj/item/I in contents)
 		I.loc = get_turf(src)
 

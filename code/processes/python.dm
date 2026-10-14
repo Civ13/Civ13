@@ -17,7 +17,7 @@
 		return opendream_control_request("mapswap", "[py_args[1]]")
 	log_debug("Unsupported OpenDream script control: [command]")
 	return FALSE
-	#endif
+	#else
 	if (! shell())
 		return FALSE
 	if (world.realtime - last < 300)
@@ -32,6 +32,7 @@
 		if (world.system_type == UNIX)
 			return shell("sudo python3 [getScriptDir()]/[command]")
 		return shell("python3 [getScriptDir()]/windows/[command]")
+	#endif
 
 /process/python/proc/getScriptDir()
 	return "scripts"

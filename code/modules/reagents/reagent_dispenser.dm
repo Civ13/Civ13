@@ -135,7 +135,7 @@
 	set name = "Switch Mode"
 	set desc = "Switch between dispensing and refilling"
 	set category = null
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (!isliving(usr))
 		return

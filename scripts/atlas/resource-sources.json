@@ -1,6 +1,6 @@
 {
-  "source_commit": "f18b6dbee8ef9620c51e967672ce73a07aa414d5",
-  "status": "read-only static audit of origin/master blobs; no build/gameplay/map availability verification",
+  "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+  "status": "Curated source-reviewed acquisition; legacy lexical inventories are historical and do not establish availability.",
   "files": [
     "code/game/mob/living/simple_animal/friendly/bats.dm",
     "code/game/mob/living/simple_animal/friendly/birds.dm",
@@ -11784,992 +11784,2178 @@
     {
       "name": "Bloomery",
       "file": "code/game/objects/structures/blacksmithing/refining.dm",
-      "line": 147,
-      "inputs": [],
+      "line": 145,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/stack/ore/iron"
+      ],
       "outputs": [
         "/obj/item/stack/ore/iron_sponge"
       ],
+      "tools": [
+        "/obj/structure/furnace"
+      ],
+      "steps": [
+        "Load iron ore and fuel into a bloomery, then turn it on. Collect sponge iron after smelting."
+      ],
       "conditions": "fuel > 1; fuel payment 2; 250-tick smelting; output amount equals stored iron",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Blast furnace",
       "file": "code/game/objects/structures/blacksmithing/refining.dm",
-      "line": 246,
-      "inputs": [],
+      "line": 244,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/stack/ore/iron"
+      ],
       "outputs": [
         "/obj/item/stack/ore/iron_pig"
       ],
+      "tools": [
+        "/obj/structure/furnace/blast_furnace"
+      ],
+      "steps": [
+        "Load iron ore and fuel into a blast furnace, then turn it on. Collect pig iron after smelting."
+      ],
       "conditions": "fuel and smelting process; output amount equals stored iron",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Bronze alloy mold",
       "file": "code/game/objects/structures/blacksmithing/refining.dm",
-      "line": 99,
-      "inputs": [],
+      "line": 359,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/stack/ore/copper",
+        "/obj/item/stack/ore/tin"
+      ],
       "outputs": [
-        "material:bronze"
+        "/material/bronze"
+      ],
+      "tools": [
+        "/obj/structure/furnace/kiln",
+        "/obj/item/weapon/clay/mold/clayjug",
+        "/obj/item/weapon/clay/mold/claypot"
+      ],
+      "steps": [
+        "Load copper and tin into a fired clay jug or clay pot and place the filled mold in a fueled kiln. After alloying, use the filled bronze mold to cast its product."
       ],
       "conditions": "fired empty mold, kiln; capacity=min(copper,tin); equal consumed units; material-state change inside mold",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Biological extraction kit",
       "file": "code/modules/reagents/biochemistry.dm",
-      "line": 2,
-      "inputs": [],
+      "line": 108,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/meat"
+      ],
       "outputs": [
         "reagent:collagen"
       ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on fresh raw meat to obtain four units of collagen. The meat is consumed."
+      ],
       "conditions": "fresh raw unroasted meat; empty extraction kit with >=4 space; source consumed; 4 reagent units",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Biological extraction kit",
       "file": "code/modules/reagents/biochemistry.dm",
-      "line": 9,
-      "inputs": [],
+      "line": 108,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/effect/decal/cleanable/vomit"
+      ],
       "outputs": [
         "reagent:proteolytic_enzyme"
       ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on a vomit decal to obtain four units of digestive protease. The decal is consumed."
+      ],
       "conditions": "empty extraction kit with >=4 space; source consumed; 4 reagent units",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Biological extraction kit",
       "file": "code/modules/reagents/biochemistry.dm",
-      "line": 16,
-      "inputs": [],
+      "line": 108,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/papaya"
+      ],
       "outputs": [
         "reagent:fruit_protease"
       ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on fresh papaya to obtain four units of fruit protease. The fruit is consumed."
+      ],
       "conditions": "non-rotten papaya; empty extraction kit; source consumed; 4 reagent units",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Fracking batch",
       "file": "code/modules/1713/hydraulic_fracturing.dm",
-      "line": 4,
-      "inputs": [],
+      "line": 51,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/turf/floor/dirt/underground",
+        "reagent:water",
+        "/obj/item/stack/ore/glass"
+      ],
       "outputs": [
         "reagent:petroleum"
       ],
+      "tools": [
+        "/obj/structure/drill/fracking",
+        "/obj/item/weapon/reagent_containers/glass/barrel"
+      ],
+      "steps": [
+        "Anchor the fracking rig beside mineable underground rock. Connect 300 cable power and load pure freshwater, raw sand and a petroleum-only or empty output barrel. Start a two-minute batch."
+      ],
       "conditions": "adjacent mineable underground terrain consumed; 20 pure freshwater + 5 sand -> 50 petroleum; anchored rig; cable capacity300; two-minute batch",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Oil well",
       "file": "code/modules/1713/production.dm",
-      "line": 1301,
-      "inputs": [],
+      "line": 1344,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/structure/oil_spring"
+      ],
       "outputs": [
         "reagent:petroleum"
       ],
+      "tools": [
+        "/obj/structure/oilwell",
+        "/obj/item/weapon/reagent_containers/glass/barrel"
+      ],
+      "steps": [
+        "Build the wooden oil well on an oil spring. Load a barrel into the well; collect petroleum while the spring has reserves."
+      ],
       "conditions": "linked spring; native contained output barrel with free space; min(free space,10) per extraction callback",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Sinew twisting",
       "file": "code/modules/1713/animal_harvest.dm",
-      "line": 62,
-      "inputs": [],
+      "line": 55,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/stack/sinew"
+      ],
       "outputs": [
         "/obj/item/stack/material/rope"
       ],
+      "tools": [],
+      "steps": [
+        "Use one held sinew portion in hand to twist it into binding cord, which functions as rope."
+      ],
       "conditions": "one held sinew unit consumed -> one named sinew binding cord",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Pot boiling",
       "file": "code/game/objects/structures/kitchen/pot.dm",
       "line": 6,
-      "inputs": [],
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/spaghetti"
+      ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/boiledspagetti"
       ],
+      "tools": [
+        "/obj/structure/pot"
+      ],
+      "steps": [
+        "Put spaghetti in a water-filled heated pot and wait for boiling."
+      ],
       "conditions": "BOIL_MAP; water/heat/timing required",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Pot boiling",
       "file": "code/game/objects/structures/kitchen/pot.dm",
       "line": 6,
-      "inputs": [],
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/rice"
+      ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/boiledrice"
       ],
+      "tools": [
+        "/obj/structure/pot"
+      ],
+      "steps": [
+        "Put milled rice in a water-filled heated pot and wait for boiling."
+      ],
       "conditions": "BOIL_MAP; water/heat/timing required",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Pot boiling",
       "file": "code/game/objects/structures/kitchen/pot.dm",
       "line": 6,
-      "inputs": [],
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/rawlobster"
+      ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/rawlobster/boiled"
       ],
+      "tools": [
+        "/obj/structure/pot"
+      ],
+      "steps": [
+        "Put raw lobster in a water-filled heated pot and wait for boiling."
+      ],
       "conditions": "BOIL_MAP; water/heat/timing required",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Pot boiling",
       "file": "code/game/objects/structures/kitchen/pot.dm",
       "line": 6,
-      "inputs": [],
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/noodles"
+      ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/ramen"
       ],
+      "tools": [
+        "/obj/structure/pot"
+      ],
+      "steps": [
+        "Put noodles in a water-filled heated pot and wait for boiling."
+      ],
       "conditions": "BOIL_MAP; water/heat/timing required",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Oven",
       "file": "code/game/objects/structures/kitchen/oven.dm",
-      "line": 168,
-      "inputs": [],
+      "line": 152,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/dough"
+      ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread"
       ],
+      "tools": [
+        "/obj/structure/oven"
+      ],
+      "steps": [
+        "Place dough in a fueled oven and cook it into bread."
+      ],
       "conditions": "fuel, cooking process; consume source",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Oven",
       "file": "code/game/objects/structures/kitchen/oven.dm",
-      "line": 172,
-      "inputs": [],
+      "line": 152,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/cocoa"
+      ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/chocolatebar"
       ],
+      "tools": [
+        "/obj/structure/oven"
+      ],
+      "steps": [
+        "Place harvested cocoa in a fueled oven and cook it into a chocolate bar."
+      ],
       "conditions": "fuel, cooking process; consume source",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Oven",
       "file": "code/game/objects/structures/kitchen/oven.dm",
-      "line": 176,
-      "inputs": [],
+      "line": 152,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/sliceable/flatdough"
+      ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/flatbread"
       ],
+      "tools": [
+        "/obj/structure/oven"
+      ],
+      "steps": [
+        "Place flat dough in a fueled oven and cook it into flatbread."
+      ],
       "conditions": "fuel, cooking process; consume source",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Oven",
       "file": "code/game/objects/structures/kitchen/oven.dm",
-      "line": 180,
-      "inputs": [],
+      "line": 152,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/rawsticks"
+      ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/fries"
       ],
+      "tools": [
+        "/obj/structure/oven"
+      ],
+      "steps": [
+        "Place raw potato sticks in a fueled oven and cook them into fries."
+      ],
       "conditions": "fuel, cooking process; consume source",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Oven",
       "file": "code/game/objects/structures/kitchen/oven.dm",
-      "line": 156,
-      "inputs": [],
+      "line": 152,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/stack/ore/diamond"
+      ],
       "outputs": [
         "/obj/item/stack/material/diamond"
       ],
+      "tools": [
+        "/obj/structure/oven"
+      ],
+      "steps": [
+        "Heat diamond ore in a fueled oven to obtain an equal stack amount of diamond material."
+      ],
       "conditions": "same stack amount",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Oven",
       "file": "code/game/objects/structures/kitchen/oven.dm",
-      "line": 162,
-      "inputs": [],
+      "line": 152,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/stack/ore/glass"
+      ],
       "outputs": [
         "/obj/item/stack/material/glass"
       ],
+      "tools": [
+        "/obj/structure/oven"
+      ],
+      "steps": [
+        "Heat raw sand in a fueled oven to obtain an equal stack amount of glass material."
+      ],
       "conditions": "same stack amount",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Oven boiling",
       "file": "code/game/objects/structures/kitchen/oven.dm",
-      "line": 142,
-      "inputs": [],
+      "line": 131,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "reagent:ash"
+      ],
       "outputs": [
         "reagent:lye"
       ],
+      "tools": [
+        "/obj/structure/oven",
+        "/obj/item/weapon/reagent_containers/glass/small_pot"
+      ],
+      "steps": [
+        "Heat an ash-containing container on the stove. The game converts five units of ash into one unit of lye."
+      ],
       "conditions": "in container atop stove; consume ash, produce ash amount/5 lye",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Oven boiling",
       "file": "code/game/objects/structures/kitchen/oven.dm",
-      "line": 146,
-      "inputs": [],
+      "line": 131,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "reagent:lard"
+      ],
       "outputs": [
         "reagent:fat_oil"
       ],
+      "tools": [
+        "/obj/structure/oven",
+        "/obj/item/weapon/reagent_containers/glass/small_pot"
+      ],
+      "steps": [
+        "Heat a lard-containing container on the stove. The game converts two units of lard into one unit of fat oil."
+      ],
       "conditions": "in container atop stove; consume lard, produce amount/2 fat_oil",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Oven evaporation",
       "file": "code/game/objects/structures/kitchen/oven.dm",
-      "line": 135,
-      "inputs": [],
+      "line": 131,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "reagent:water",
+        "reagent:sodiumchloride"
+      ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/condiment/saltpile/empty"
       ],
+      "tools": [
+        "/obj/structure/oven",
+        "/obj/item/weapon/reagent_containers/glass/small_pot"
+      ],
+      "steps": [
+        "Heat a container containing salt and water on the stove. Collect the salt pile after the water is removed."
+      ],
       "conditions": "salt quantity preserved in new pile; water removed",
-      "status": "source-derived conditional transformation; runtime/map availability unverified"
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
-      "name": "loom processing",
+      "name": "Loom processing",
       "file": "code/modules/1713/production.dm",
       "line": 325,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/item/stack/material/cotton",
+        "/obj/item/stack/material/cotton"
+      ],
+      "outputs": [
+        "/obj/item/stack/material/cloth"
+      ],
+      "tools": [
+        "/obj/structure/Loom"
+      ],
+      "steps": [
+        "Secure the Loom in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
+      ],
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Loom processing",
+      "file": "code/modules/1713/production.dm",
+      "line": 325,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
         "/obj/item/stack/material/rettedfabric"
       ],
       "outputs": [
         "/obj/item/stack/material/cloth"
       ],
-      "conditions": "anchoring/skill/mood/delay and machine-specific power/amount rules apply",
-      "status": "source-defined conditional transform"
+      "tools": [
+        "/obj/structure/Loom"
+      ],
+      "steps": [
+        "Secure the Loom in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
+      ],
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
-      "name": "loom processing",
+      "name": "Loom processing",
       "file": "code/modules/1713/production.dm",
       "line": 328,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/material/preparedkevlar"
       ],
       "outputs": [
         "/obj/item/stack/material/kevlar"
       ],
-      "conditions": "anchoring/skill/mood/delay and machine-specific power/amount rules apply",
-      "status": "source-defined conditional transform"
+      "tools": [
+        "/obj/structure/Loom"
+      ],
+      "steps": [
+        "Secure the Loom in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
+      ],
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
-      "name": "loom processing",
+      "name": "Loom processing",
       "file": "code/modules/1713/production.dm",
       "line": 331,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/material/wool"
       ],
       "outputs": [
         "/obj/item/stack/material/woolcloth"
       ],
-      "conditions": "anchoring/skill/mood/delay and machine-specific power/amount rules apply",
-      "status": "source-defined conditional transform"
+      "tools": [
+        "/obj/structure/Loom"
+      ],
+      "steps": [
+        "Secure the Loom in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
+      ],
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
-      "name": "mill processing",
+      "name": "Mill processing",
       "file": "code/modules/1713/production.dm",
       "line": 513,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/grown/wheat"
       ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/condiment/flour"
       ],
-      "conditions": "anchoring/skill/mood/delay and machine-specific power/amount rules apply",
-      "status": "source-defined conditional transform"
+      "tools": [
+        "/obj/structure/Mill"
+      ],
+      "steps": [
+        "Secure the Mill in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
+      ],
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
-      "name": "mill processing",
+      "name": "Mill processing",
       "file": "code/modules/1713/production.dm",
       "line": 516,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/grown/oat"
       ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/condiment/flour/oatflour"
       ],
-      "conditions": "anchoring/skill/mood/delay and machine-specific power/amount rules apply",
-      "status": "source-defined conditional transform"
+      "tools": [
+        "/obj/structure/Mill"
+      ],
+      "steps": [
+        "Secure the Mill in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
+      ],
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
-      "name": "mill processing",
+      "name": "Mill processing",
       "file": "code/modules/1713/production.dm",
       "line": 519,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/grown/barley"
       ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/condiment/flour/barleyflour"
       ],
-      "conditions": "anchoring/skill/mood/delay and machine-specific power/amount rules apply",
-      "status": "source-defined conditional transform"
+      "tools": [
+        "/obj/structure/Mill"
+      ],
+      "steps": [
+        "Secure the Mill in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
+      ],
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
-      "name": "mill processing",
+      "name": "Mill processing",
       "file": "code/modules/1713/production.dm",
       "line": 522,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/grown/rice"
       ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/rice"
       ],
-      "conditions": "anchoring/skill/mood/delay and machine-specific power/amount rules apply",
-      "status": "source-defined conditional transform"
+      "tools": [
+        "/obj/structure/Mill"
+      ],
+      "steps": [
+        "Secure the Mill in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
+      ],
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
-      "name": "sawmill processing",
+      "name": "Sawmill processing",
       "file": "code/modules/1713/production.dm",
       "line": 2225,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/material/wood"
       ],
       "outputs": [
         "/obj/item/stack/material/woodplank"
       ],
-      "conditions": "anchoring/skill/mood/delay and machine-specific power/amount rules apply",
-      "status": "source-defined conditional transform"
+      "tools": [
+        "/obj/structure/Sawmill"
+      ],
+      "steps": [
+        "Secure the Sawmill in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
+      ],
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest poppy",
       "file": "code/game/objects/farming.dm",
       "line": 411,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/poppy"
+        "/obj/item/stack/farming/seeds/poppy"
       ],
       "outputs": [
-        "/obj/item/stack/material/poppy"
+        "/obj/item/stack/material/poppy",
+        "/obj/item/stack/farming/seeds/poppy"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"jungle\", \"savanna\", \"desert\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest tobacco",
       "file": "code/game/objects/farming.dm",
       "line": 420,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/tobacco"
+        "/obj/item/stack/farming/seeds/tobacco"
       ],
       "outputs": [
-        "/obj/item/stack/material/tobacco_green"
+        "/obj/item/stack/material/tobacco_green",
+        "/obj/item/stack/farming/seeds/tobacco"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"desert\", \"jungle\", \"savanna\", \"semiarid\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest hemp",
       "file": "code/game/objects/farming.dm",
       "line": 429,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/hemp"
+        "/obj/item/stack/farming/seeds/hemp"
       ],
       "outputs": [
-        "/obj/item/stack/material/hemp"
+        "/obj/item/stack/material/hemp",
+        "/obj/item/stack/farming/seeds/hemp"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"jungle\", \"savanna\", \"sea\", \"semiarid\", \"desert\"); seasons: list(\"SUMMER\", \"SPRING\", \"FALL\", \"Wet Season\", \"Dry Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest flax",
       "file": "code/game/objects/farming.dm",
       "line": 439,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/flax"
+        "/obj/item/stack/farming/seeds/flax"
       ],
       "outputs": [
-        "/obj/item/stack/material/flax"
+        "/obj/item/stack/material/flax",
+        "/obj/item/stack/farming/seeds/flax"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"taiga\", \"tundra\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest sugarcane",
       "file": "code/game/objects/farming.dm",
       "line": 448,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/sugarcane"
+        "/obj/item/stack/farming/seeds/sugarcane"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/condiment/bsugar"
+        "/obj/item/weapon/reagent_containers/food/condiment/bsugar",
+        "/obj/item/stack/farming/seeds/sugarcane"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"jungle\", \"savanna\", \"sea\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest tea",
       "file": "code/game/objects/farming.dm",
       "line": 457,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/tea"
+        "/obj/item/stack/farming/seeds/tea"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/condiment/tealeaves"
+        "/obj/item/weapon/reagent_containers/food/condiment/tealeaves",
+        "/obj/item/stack/farming/seeds/tea"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"jungle\", \"savanna\", \"sea\", \"semiarid\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest peyote",
       "file": "code/game/objects/farming.dm",
       "line": 466,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/peyote"
+        "/obj/item/stack/farming/seeds/peyote"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/peyote"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/peyote",
+        "/obj/item/stack/farming/seeds/peyote"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"desert\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest coffee",
       "file": "code/game/objects/farming.dm",
       "line": 474,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/coffee"
+        "/obj/item/stack/farming/seeds/coffee"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/coffee"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/coffee",
+        "/obj/item/stack/farming/seeds/coffee"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"jungle\", \"savanna\", \"desert\", \"semiarid\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest juniper",
       "file": "code/game/objects/farming.dm",
       "line": 482,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/juniper"
+        "/obj/item/stack/farming/seeds/juniper"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/juniper"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/juniper",
+        "/obj/item/stack/farming/seeds/juniper"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"tundra\", \"taiga\", \"temperate\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest cotton",
       "file": "code/game/objects/farming.dm",
       "line": 490,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/cotton"
+        "/obj/item/stack/farming/seeds/cotton"
       ],
       "outputs": [
-        "/obj/item/stack/material/cotton"
+        "/obj/item/stack/material/cotton",
+        "/obj/item/stack/farming/seeds/cotton"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"desert\", \"sea\", \"semiarid\"); seasons: list( \"SUMMER\", \"SPRING\", \"Wet Season\", \"Dry Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest tree",
       "file": "code/game/objects/farming.dm",
       "line": 501,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/tree"
+        "/obj/item/stack/farming/seeds/tree"
       ],
       "outputs": [
-        "/obj/item/stack/material/wood"
+        "/obj/item/stack/material/wood",
+        "/obj/item/stack/farming/seeds/tree"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: inherited; seasons: list( \"SUMMER\", \"SPRING\", \"FALL\", \"Wet Season\", \"Dry Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest bamboo",
       "file": "code/game/objects/farming.dm",
       "line": 512,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/bamboo"
+        "/obj/item/stack/farming/seeds/bamboo"
       ],
       "outputs": [
-        "/obj/item/stack/material/bamboo"
+        "/obj/item/stack/material/bamboo",
+        "/obj/item/stack/farming/seeds/bamboo"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"jungle\", \"sea\"); seasons: list(\"WINTER\", \"SUMMER\", \"SPRING\", \"FALL\", \"Wet Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest coca",
       "file": "code/game/objects/farming.dm",
       "line": 524,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/coca"
+        "/obj/item/stack/farming/seeds/coca"
       ],
       "outputs": [
-        "/obj/item/stack/material/coca"
+        "/obj/item/stack/material/coca",
+        "/obj/item/stack/farming/seeds/coca"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"jungle\", \"savanna\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest mushroom",
       "file": "code/game/objects/farming.dm",
       "line": 533,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/mushroom"
+        "/obj/item/stack/farming/seeds/mushroom"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/mushroom"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/mushroom",
+        "/obj/item/stack/farming/seeds/mushroom"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"sea\", \"tundra\", \"taiga\", \"jungle\", \"savanna\"); seasons: list(\"WINTER\", \"SUMMER\", \"SPRING\", \"FALL\", \"Wet Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest mushroompsy",
       "file": "code/game/objects/farming.dm",
       "line": 543,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/mushroompsy"
+        "/obj/item/stack/farming/seeds/mushroompsy"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/mushroompsy"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/mushroompsy",
+        "/obj/item/stack/farming/seeds/mushroompsy"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"sea\", \"tundra\", \"taiga\", \"jungle\", \"savanna\"); seasons: list(\"WINTER\", \"SUMMER\", \"SPRING\", \"FALL\", \"Wet Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest herbs",
       "file": "code/game/objects/farming.dm",
       "line": 554,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/herbs"
+        "/obj/item/stack/medical/advanced/herbs"
       ],
       "outputs": [
         "/obj/item/stack/medical/advanced/herbs"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"semiarid\", \"sea\", \"jungle\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest wheat",
       "file": "code/game/objects/farming.dm",
       "line": 571,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/wheat"
+        "/obj/item/stack/farming/seeds/wheat"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/wheat"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/wheat",
+        "/obj/item/stack/farming/seeds/wheat"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"tundra\", \"taiga\", \"sea\", \"desert\", \"semiarid\"); seasons: list( \"SUMMER\", \"SPRING\", \"FALL\", \"Wet Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest oat",
       "file": "code/game/objects/farming.dm",
       "line": 580,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/oat"
+        "/obj/item/stack/farming/seeds/oat"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/oat"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/oat",
+        "/obj/item/stack/farming/seeds/oat"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"tundra\", \"taiga\", \"sea\"); seasons: list( \"SUMMER\", \"SPRING\", \"FALL\", \"Wet Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest barley",
       "file": "code/game/objects/farming.dm",
       "line": 589,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/barley"
+        "/obj/item/stack/farming/seeds/barley"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/barley"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/barley",
+        "/obj/item/stack/farming/seeds/barley"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"semiarid\", \"temperate\", \"taiga\", \"sea\"); seasons: list( \"SUMMER\", \"SPRING\", \"FALL\", \"Wet Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest rice",
       "file": "code/game/objects/farming.dm",
       "line": 598,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/rice"
+        "/obj/item/stack/farming/seeds/rice"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/rice"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/rice",
+        "/obj/item/stack/farming/seeds/rice"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"jungle\", \"savanna\", \"sea\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
-      "name": "Harvest potato",
+      "name": "Harvest sweetpotato",
       "file": "code/game/objects/farming.dm",
       "line": 612,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/potato"
+        "/obj/item/stack/farming/seeds/sweetpotato"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/sweetpotato"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/sweetpotato",
+        "/obj/item/stack/farming/seeds/sweetpotato"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"jungle\", \"savanna\", \"sea\"); seasons: list(\"SUMMER\", \"SPRING\", \"Wet Season\", \"Dry Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest carrot",
       "file": "code/game/objects/farming.dm",
       "line": 631,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/carrot"
+        "/obj/item/stack/farming/seeds/carrot"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/carrot"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/carrot",
+        "/obj/item/stack/farming/seeds/carrot"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: inherited; seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest cabbage",
       "file": "code/game/objects/farming.dm",
       "line": 639,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/cabbage"
+        "/obj/item/stack/farming/seeds/cabbage"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage",
+        "/obj/item/stack/farming/seeds/cabbage"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"tundra\", \"taiga\", \"sea\", \"semiarid\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest tomato",
       "file": "code/game/objects/farming.dm",
       "line": 648,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/tomato"
+        "/obj/item/stack/farming/seeds/tomato"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/tomato"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/tomato",
+        "/obj/item/stack/farming/seeds/tomato"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"sea\", \"semiarid\", \"desert\", \"jungle\", \"savanna\"); seasons: list(\"SUMMER\", \"SPRING\", \"Wet Season\", \"Dry Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest corn",
       "file": "code/game/objects/farming.dm",
       "line": 658,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/corn"
+        "/obj/item/stack/farming/seeds/corn"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/corn"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/corn",
+        "/obj/item/stack/farming/seeds/corn"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"jungle\", \"savanna\", \"desert\", \"sea\", \"semiarid\", \"taiga\"); seasons: list( \"SUMMER\", \"SPRING\", \"Wet Season\", \"Dry Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest beans",
       "file": "code/game/objects/farming.dm",
       "line": 668,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/beans"
+        "/obj/item/stack/farming/seeds/beans"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/beans"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/beans",
+        "/obj/item/stack/farming/seeds/beans"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"savanna\", \"desert\", \"sea\", \"semiarid\", \"taiga\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest parsnip",
       "file": "code/game/objects/farming.dm",
       "line": 677,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/parsnip"
+        "/obj/item/stack/farming/seeds/parsnip"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/parsnip"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/parsnip",
+        "/obj/item/stack/farming/seeds/parsnip"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"semiarid\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest apple",
       "file": "code/game/objects/farming.dm",
       "line": 691,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/apple"
+        "/obj/item/stack/farming/seeds/apple"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/apple"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/apple",
+        "/obj/item/stack/farming/seeds/apple"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"tundra\", \"taiga\", \"sea\", \"semiarid\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest orange",
       "file": "code/game/objects/farming.dm",
       "line": 700,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/orange"
+        "/obj/item/stack/farming/seeds/orange"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/orange"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/orange",
+        "/obj/item/stack/farming/seeds/orange"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"desert\", \"sea\", \"semiarid\", \"jungle\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest lime",
       "file": "code/game/objects/farming.dm",
       "line": 709,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/lime"
+        "/obj/item/stack/farming/seeds/lime"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/lime"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/lime",
+        "/obj/item/stack/farming/seeds/lime"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"desert\", \"sea\", \"semiarid\", \"jungle\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest lemon",
       "file": "code/game/objects/farming.dm",
       "line": 718,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/lemon"
+        "/obj/item/stack/farming/seeds/lemon"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/lemon"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/lemon",
+        "/obj/item/stack/farming/seeds/lemon"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"desert\", \"sea\", \"semiarid\", \"jungle\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest watermelon",
       "file": "code/game/objects/farming.dm",
       "line": 727,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/watermelon"
+        "/obj/item/stack/farming/seeds/watermelon"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon",
+        "/obj/item/stack/farming/seeds/watermelon"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"desert\", \"semiarid\", \"jungle\"); seasons: list( \"SUMMER\", \"SPRING\", \"Wet Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest pumpkin",
       "file": "code/game/objects/farming.dm",
       "line": 737,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/pumpkin"
+        "/obj/item/stack/farming/seeds/pumpkin"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/pumpkin"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/pumpkin",
+        "/obj/item/stack/farming/seeds/pumpkin"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"taiga\", \"tundra\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest grapes",
       "file": "code/game/objects/farming.dm",
       "line": 746,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/grapes"
+        "/obj/item/stack/farming/seeds/grapes"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/grapes"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/grapes",
+        "/obj/item/stack/farming/seeds/grapes"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"desert\", \"sea\", \"semiarid\"); seasons: list(\"SUMMER\", \"SPRING\", \"FALL\", \"Wet Season\", \"Dry Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest banana",
       "file": "code/game/objects/farming.dm",
       "line": 756,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/banana"
+        "/obj/item/stack/farming/seeds/banana"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/banana"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/banana",
+        "/obj/item/stack/farming/seeds/banana"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"jungle\", \"savanna\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest olives",
       "file": "code/game/objects/farming.dm",
       "line": 765,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/olives"
+        "/obj/item/stack/farming/seeds/olives"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/olives"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/olives",
+        "/obj/item/stack/farming/seeds/olives"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"desert\", \"sea\", \"semiarid\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest zucchini",
       "file": "code/game/objects/farming.dm",
       "line": 774,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/zucchini"
+        "/obj/item/stack/farming/seeds/zucchini"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/zucchini"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/zucchini",
+        "/obj/item/stack/farming/seeds/zucchini"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"sea\", \"jungle\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest cherry",
       "file": "code/game/objects/farming.dm",
       "line": 783,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/cherry"
+        "/obj/item/stack/farming/seeds/cherry"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/cherry"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/cherry",
+        "/obj/item/stack/farming/seeds/cherry"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"jungle\", \"temperate\", \"desert\", \"savanna\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest redpepper",
       "file": "code/game/objects/farming.dm",
       "line": 792,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/redpepper"
+        "/obj/item/stack/farming/seeds/redpepper"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/redpepper"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/redpepper",
+        "/obj/item/stack/farming/seeds/redpepper"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"desert\", \"temperate\", \"semiarid\", \"sea\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest sapodilla",
       "file": "code/game/objects/farming.dm",
       "line": 801,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/sapodilla"
+        "/obj/item/stack/farming/seeds/sapodilla"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/sapodilla"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/sapodilla",
+        "/obj/item/stack/farming/seeds/sapodilla"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"jungle\", \"sea\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest agave",
       "file": "code/game/objects/farming.dm",
       "line": 810,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/agave"
+        "/obj/item/stack/farming/seeds/agave"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/agave"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/agave",
+        "/obj/item/stack/farming/seeds/agave"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"desert\", \"semiarid\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest parsley",
       "file": "code/game/objects/farming.dm",
       "line": 819,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/parsley"
+        "/obj/item/stack/farming/seeds/parsley"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/parsley"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/parsley",
+        "/obj/item/stack/farming/seeds/parsley"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"semiarid\", \"sea\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest celery",
       "file": "code/game/objects/farming.dm",
       "line": 828,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/celery"
+        "/obj/item/stack/farming/seeds/celery"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/celery"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/celery",
+        "/obj/item/stack/farming/seeds/celery"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"semiarid\", \"sea\", \"jungle\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest liquorice",
       "file": "code/game/objects/farming.dm",
       "line": 837,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/liquorice"
+        "/obj/item/stack/farming/seeds/liquorice"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/liquorice"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/liquorice",
+        "/obj/item/stack/farming/seeds/liquorice"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"semiarid\", \"sea\", \"desert\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest apricot",
       "file": "code/game/objects/farming.dm",
       "line": 846,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/apricot"
+        "/obj/item/stack/farming/seeds/apricot"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/apricot"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/apricot",
+        "/obj/item/stack/farming/seeds/apricot"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"jungle\", \"temperate\", \"desert\", \"savanna\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest coconut",
       "file": "code/game/objects/farming.dm",
       "line": 855,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/coconut"
+        "/obj/item/stack/farming/seeds/coconut"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/coconut"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/coconut",
+        "/obj/item/stack/farming/seeds/coconut"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"sea\", \"jungle\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest cocoa",
       "file": "code/game/objects/farming.dm",
       "line": 864,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/cocoa"
+        "/obj/item/stack/farming/seeds/cocoa"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/cocoa"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/cocoa",
+        "/obj/item/stack/farming/seeds/cocoa"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"jungle\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest sapote",
       "file": "code/game/objects/farming.dm",
       "line": 873,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/sapote"
+        "/obj/item/stack/farming/seeds/sapote"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/sapote"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/sapote",
+        "/obj/item/stack/farming/seeds/sapote"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"jungle\", \"temperate\",); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Harvest papaya",
       "file": "code/modules/reagents/biochemistry.dm",
       "line": 160,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/structure/farming/plant/papaya"
+        "/obj/item/stack/farming/seeds/papaya"
       ],
       "outputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/papaya"
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/papaya",
+        "/obj/item/stack/farming/seeds/papaya"
       ],
-      "conditions": "living harvestable crop; local biome/season/water fields in plant_harvest_mappings",
-      "status": "declared harvest; map reachability unverified"
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"jungle\", \"savanna\"); seasons: list(\"SUMMER\", \"SPRING\", \"Wet Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
-      "name": "Trace soil sifting",
+      "name": "Sift soil by hand or sieve",
       "file": "code/modules/1713/resource_sifting.dm",
-      "line": 15,
-      "inputs": [],
+      "line": 14,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/turf/floor/dirt",
+        "/turf/floor/beach/sand"
+      ],
+      "outputs": [
+        "/obj/item/stack/material/stone",
+        "/obj/item/stack/ore/glass",
+        "/obj/item/stack/ore/copper",
+        "/obj/item/stack/ore/tin"
+      ],
+      "tools": [
+        "/obj/item/weapon/resource_sieve"
+      ],
+      "steps": [
+        "Stand on uncovered non-mineable dirt or sand.",
+        "Use Crafting > Sift soil for resources, or use a held wooden resource sieve. Choose a resource.",
+        "Stay on the tile until the action finishes: three minutes by hand or two with a sieve, for one unit."
+      ],
+      "conditions": "Renewable trace gathering. Tile must not contain covers; action must remain uninterrupted.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Sift iron ore",
+      "file": "code/modules/1713/resource_sifting.dm",
+      "line": 17,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/turf/floor/dirt",
+        "/turf/floor/beach/sand"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/iron"
+      ],
+      "tools": [
+        "/obj/item/weapon/resource_sieve"
+      ],
+      "steps": [
+        "Stand on uncovered non-mineable dirt or sand. Choose iron in the soil-sifting menu. Complete the three-minute hand action or two-minute sieve action for one unit."
+      ],
+      "conditions": "Renewable trace gathering; same position and tool guards as soil sifting.",
+      "map_notes": "",
+      "era": "Map ordinal age must be at least 1.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Sift later-era minerals",
+      "file": "code/modules/1713/resource_sifting.dm",
+      "line": 19,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/turf/floor/dirt",
+        "/turf/floor/beach/sand"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/coal",
+        "/obj/item/stack/ore/saltpeter",
+        "/obj/item/stack/ore/sulphur",
+        "/obj/item/stack/ore/lead"
+      ],
+      "tools": [
+        "/obj/item/weapon/resource_sieve"
+      ],
+      "steps": [
+        "Stand on uncovered non-mineable dirt or sand. Choose the mineral in the soil-sifting menu. Complete the three-minute hand action or two-minute sieve action for one unit."
+      ],
+      "conditions": "Renewable trace gathering; same position and tool guards as soil sifting.",
+      "map_notes": "",
+      "era": "Map ordinal age must be at least 2.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Pan river sediment",
+      "file": "code/modules/1713/resource_sifting.dm",
+      "line": 45,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/turf/floor/dirt",
+        "/turf/floor/beach/sand"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/copper",
+        "/obj/item/stack/ore/tin",
+        "/obj/item/stack/ore/silver",
+        "/obj/item/stack/ore/gold"
+      ],
+      "tools": [
+        "/obj/item/kitchen/wood_bowl"
+      ],
+      "steps": [
+        "Stand on uncovered non-mineable dirt or sand beside shallow fresh water. Hold a wooden bowl and use Pan river sediment.",
+        "Choose a metal and remain there for two uninterrupted minutes to obtain one ore unit."
+      ],
+      "conditions": "Adjacent natural water tile must be fresh, water_level <= 30 and watertile true. Bottled water does not qualify.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Powered soil sifter",
+      "file": "code/modules/1713/automated_sifting.dm",
+      "line": 2,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/turf/floor/dirt",
+        "/turf/floor/beach/sand"
+      ],
       "outputs": [
         "/obj/item/stack/material/stone",
         "/obj/item/stack/ore/glass",
@@ -12781,309 +13967,1095 @@
         "/obj/item/stack/ore/sulphur",
         "/obj/item/stack/ore/lead"
       ],
-      "conditions": "uncovered non-mineable dirt/sand; 1 unit per 1800 ticks hand or 1200 sieve; iron age>=1; coal/saltpeter/sulphur/lead age>=2",
-      "status": "conditional static acquisition; subtype/map availability not verified"
+      "tools": [
+        "/obj/structure/drill/sifter"
+      ],
+      "steps": [
+        "Anchor a powered soil sifter on uncovered non-mineable dirt or sand. Connect its power cable.",
+        "Run it and clear its output tile; it selects a random mineral and produces two units per two-minute cycle."
+      ],
+      "conditions": "Requires 150 available power for active processing and inherited cable connection. Output accumulation is bounded; construction/research gates apply separately.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
-      "name": "River panning",
-      "file": "code/modules/1713/resource_sifting.dm",
-      "line": 15,
-      "inputs": [],
+      "name": "Powered river panner",
+      "file": "code/modules/1713/automated_sifting.dm",
+      "line": 14,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/turf/floor/dirt",
+        "/turf/floor/beach/sand"
+      ],
       "outputs": [
         "/obj/item/stack/ore/copper",
         "/obj/item/stack/ore/tin",
         "/obj/item/stack/ore/silver",
         "/obj/item/stack/ore/gold"
       ],
-      "conditions": "held wooden bowl; adjacent shallow freshwater; eligible dirt/sand; 1 unit/1200 ticks",
-      "status": "conditional static acquisition; subtype/map availability not verified"
+      "tools": [
+        "/obj/structure/drill/sifter/panner"
+      ],
+      "steps": [
+        "Anchor and power a river panner on uncovered non-mineable soil beside shallow fresh water.",
+        "Run it and clear its output tile; random copper, tin, silver or gold ore is produced in two-unit batches."
+      ],
+      "conditions": "Natural fresh water within one tile, water_level <= 30, plus machine power and output-space guards.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
-      "name": "Finite mining",
+      "name": "Cut grass fibres",
       "file": "code/game/turfs/floor_attackby.dm",
-      "line": 846,
-      "inputs": [],
-      "outputs": [
-        "/obj/item/stack/material/fossil",
-        "/obj/item/stack/material/marble",
-        "/obj/item/stack/material/sandstone",
-        "/obj/item/stack/material/stone",
-        "/obj/item/stack/ore/coal",
-        "/obj/item/stack/ore/copper",
-        "/obj/item/stack/ore/diamond",
-        "/obj/item/stack/ore/gold",
-        "/obj/item/stack/ore/iron",
-        "/obj/item/stack/ore/lead",
-        "/obj/item/stack/ore/obsidian",
-        "/obj/item/stack/ore/saltpeter",
-        "/obj/item/stack/ore/silver",
-        "/obj/item/stack/ore/sulphur",
-        "/obj/item/stack/ore/tin"
+      "line": 13,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/turf/floor/grass"
       ],
-      "conditions": "mining_proc random branches, age and map conditions; terrain conversion; special caves double most yields; fossil=1 or2",
-      "status": "conditional static acquisition; subtype/map availability not verified"
+      "outputs": [
+        "/obj/item/stack/grass_cuttings"
+      ],
+      "tools": [
+        "/obj/item/weapon/flint"
+      ],
+      "steps": [
+        "Sharpen flint against a rock, then use it on grass. Remain adjacent with the tool while cutting. Collect two portions of grass cuttings."
+      ],
+      "conditions": "Conscious connected actor holding sharpened flint; action changes the grass turf, so this is a terrain-consuming route.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
-      "name": "Wild gathering",
-      "file": "code/game/objects/structures/wild.dm",
-      "line": 129,
-      "inputs": [],
-      "outputs": [
-        "/obj/item/stack/material/wood",
-        "/obj/item/stack/material/bamboo",
-        "/obj/item/stack/material/leaf",
-        "/obj/item/stack/material/leaf/palm",
-        "/obj/item/stack/material/leaf/fern",
-        "/obj/item/stack/medical/advanced/herbs",
-        "/obj/item/weapon/reagent_containers/food/snacks/grown/cinchona",
-        "/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap"
-      ],
-      "conditions": "branches/seeds regrow; biome seeds; tree destruction wood/leaves; specific palm/fern/herb/cinchona/bamboo interactions",
-      "status": "conditional static acquisition; subtype/map availability not verified"
-    },
-    {
-      "name": "Fishing cages and rods",
-      "file": "code/game/objects/structures/sea.dm",
-      "line": 109,
-      "inputs": [],
-      "outputs": [
-        "/obj/item/shellfish",
-        "/obj/item/weapon/reagent_containers/food/snacks/octopus",
-        "/obj/item/weapon/reagent_containers/food/snacks/pink_squid",
-        "/obj/item/weapon/reagent_containers/food/snacks/rawfish",
-        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod",
-        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon",
-        "/obj/item/weapon/reagent_containers/food/snacks/rawlobster"
-      ],
-      "conditions": "water subtype and probabilistic catches; cage waits18000-24000 ticks; rods have separate conditions",
-      "status": "conditional static acquisition; subtype/map availability not verified"
-    },
-    {
-      "name": "Animal harvest",
+      "name": "Twist crude twine",
       "file": "code/modules/1713/animal_harvest.dm",
-      "line": 3,
-      "inputs": [],
+      "line": 77,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/stack/grass_cuttings"
+      ],
+      "outputs": [
+        "/obj/item/stack/crude_twine"
+      ],
+      "tools": [],
+      "steps": [
+        "Use a held stack containing at least two grass cuttings. Two portions become one crude twine binding."
+      ],
+      "conditions": "Held stack must contain two portions.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Extract trace ground chemicals",
+      "file": "code/game/turfs/floor_attackby.dm",
+      "line": 693,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/turf/floor"
+      ],
+      "outputs": [
+        "reagent:nitrogen",
+        "reagent:phosphorus",
+        "reagent:chlorine",
+        "reagent:potassium",
+        "reagent:iodine",
+        "reagent:lithium",
+        "reagent:fluorine",
+        "reagent:magnesium",
+        "reagent:aluminum",
+        "reagent:calcium",
+        "reagent:arsenic",
+        "reagent:tungsten",
+        "reagent:bromine"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on suitable ground and finish the extraction action. Collect five units of a randomly selected chemical in the kit."
+      ],
+      "conditions": "Random output; the procedure overwrites its initial larger element list, so only the listed 13 elements are reachable here. No ore stack is consumed.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Shovel sand",
+      "file": "code/game/turfs/floor_attackby.dm",
+      "line": 247,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/turf/floor/beach/sand"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/glass"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/shovel"
+      ],
+      "steps": [
+        "Use a shovel on sand and complete the digging action. Collect the sand ore stack."
+      ],
+      "conditions": "Terrain sand stock must remain available; finite supply and post-wait guards apply.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Gather and sharpen flint",
+      "file": "code/game/objects/structures/rocks.dm",
+      "line": 24,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/structure/wild/rock"
+      ],
+      "outputs": [
+        "/obj/item/weapon/flint"
+      ],
+      "tools": [],
+      "steps": [
+        "Use Grab intent on a rock and complete the search to collect flint.",
+        "Use the flint against a rock until sharpening succeeds."
+      ],
+      "conditions": "Rock must have flint stock; gathering depletes stock, which regenerates. Sharpening has a random success chance.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Forage crop seeds",
+      "file": "code/game/objects/structures/wild.dm",
+      "line": 594,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/structure/wild/smallbush"
+      ],
+      "outputs": [
+        "/obj/item/stack/farming/seeds/agave",
+        "/obj/item/stack/farming/seeds/apple",
+        "/obj/item/stack/farming/seeds/apricot",
+        "/obj/item/stack/farming/seeds/bamboo",
+        "/obj/item/stack/farming/seeds/banana",
+        "/obj/item/stack/farming/seeds/barley",
+        "/obj/item/stack/farming/seeds/beans",
+        "/obj/item/stack/farming/seeds/cabbage",
+        "/obj/item/stack/farming/seeds/carrot",
+        "/obj/item/stack/farming/seeds/celery",
+        "/obj/item/stack/farming/seeds/cherry",
+        "/obj/item/stack/farming/seeds/coca",
+        "/obj/item/stack/farming/seeds/cocoa",
+        "/obj/item/stack/farming/seeds/coconut",
+        "/obj/item/stack/farming/seeds/coffee",
+        "/obj/item/stack/farming/seeds/corn",
+        "/obj/item/stack/farming/seeds/cotton",
+        "/obj/item/stack/farming/seeds/flax",
+        "/obj/item/stack/farming/seeds/grapes",
+        "/obj/item/stack/farming/seeds/hemp",
+        "/obj/item/stack/farming/seeds/juniper",
+        "/obj/item/stack/farming/seeds/lemon",
+        "/obj/item/stack/farming/seeds/lime",
+        "/obj/item/stack/farming/seeds/liquorice",
+        "/obj/item/stack/farming/seeds/mushroom",
+        "/obj/item/stack/farming/seeds/mushroompsy",
+        "/obj/item/stack/farming/seeds/oat",
+        "/obj/item/stack/farming/seeds/olives",
+        "/obj/item/stack/farming/seeds/orange",
+        "/obj/item/stack/farming/seeds/papaya",
+        "/obj/item/stack/farming/seeds/parsley",
+        "/obj/item/stack/farming/seeds/parsnip",
+        "/obj/item/stack/farming/seeds/peyote",
+        "/obj/item/stack/farming/seeds/poppy",
+        "/obj/item/stack/farming/seeds/pumpkin",
+        "/obj/item/stack/farming/seeds/redpepper",
+        "/obj/item/stack/farming/seeds/rice",
+        "/obj/item/stack/farming/seeds/sapodilla",
+        "/obj/item/stack/farming/seeds/sapote",
+        "/obj/item/stack/farming/seeds/sugarcane",
+        "/obj/item/stack/farming/seeds/sweetpotato",
+        "/obj/item/stack/farming/seeds/tea",
+        "/obj/item/stack/farming/seeds/tobacco",
+        "/obj/item/stack/farming/seeds/tomato",
+        "/obj/item/stack/farming/seeds/tree",
+        "/obj/item/stack/farming/seeds/watermelon",
+        "/obj/item/stack/farming/seeds/wheat",
+        "/obj/item/stack/farming/seeds/zucchini"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "With Help intent, use a kitchen knife on a small bush whose seed stock has regrown. Collect the random seed result."
+      ],
+      "conditions": "Random seed catalog excludes herbs; seedtimer stock must be ready.",
+      "map_notes": "Six Nomads map families filter seeds by the area climate, including Nomads Europe. Other maps use their applicable seed catalog. Listing a seed does not guarantee that biome exists.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Chop trees for wood",
+      "file": "code/game/objects/structures/wild.dm",
+      "line": 344,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/structure/wild/tree"
+      ],
+      "outputs": [
+        "/obj/item/stack/material/wood"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/hatchet"
+      ],
+      "steps": [
+        "Use a suitable chopping tool on a tree until it is destroyed. Collect its wood stack."
+      ],
+      "conditions": "Tree subtype controls yield: live tree 7, dead tree 4-7, generic tree 4; palms yield 3. Not every wild object follows this route.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Chop bamboo",
+      "file": "code/game/objects/structures/wild.dm",
+      "line": 1144,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/structure/wild/bamboo"
+      ],
+      "outputs": [
+        "/obj/item/stack/material/bamboo"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/hatchet"
+      ],
+      "steps": [
+        "Chop a bamboo plant with a suitable chopping tool until destroyed. Collect five bamboo."
+      ],
+      "conditions": "Requires bamboo placed or generated on the selected map.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Forage medicinal herbs",
+      "file": "code/game/objects/structures/wild.dm",
+      "line": 744,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/structure/wild/junglebush"
+      ],
+      "outputs": [
+        "/obj/item/stack/medical/advanced/herbs"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Use a kitchen knife on a jungle bush. A successful medicinal-leaf search yields an herb portion, which can also be planted in ploughed soil."
+      ],
+      "conditions": "Random 25% branch, radiation below 15, and remaining bush health/stock required.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Harvest cinchona bark",
+      "file": "code/game/objects/structures/wild.dm",
+      "line": 1024,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/structure/wild/junglebush/cinchona"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/cinchona"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Use a kitchen knife on a cinchona bush with harvestable parts. Collect the cinchona."
+      ],
+      "conditions": "Harvestable bush health required; wait for regrowth if exhausted.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Mine finite deposits",
+      "file": "code/game/turfs/floor_attackby.dm",
+      "line": 719,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/turf/floor/dirt/underground"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/copper",
+        "/obj/item/stack/ore/tin",
+        "/obj/item/stack/ore/iron",
+        "/obj/item/stack/ore/silver",
+        "/obj/item/stack/ore/gold",
+        "/obj/item/stack/ore/diamond",
+        "/obj/item/stack/material/stone"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/pickaxe"
+      ],
+      "steps": [
+        "Use a pickaxe on a mineable underground deposit. Complete the mining action and collect the randomly selected mineral.",
+        "Mining converts the deposit terrain, so find another mineable tile for the next batch."
+      ],
+      "conditions": "Random branch and finite deposit; copper/tin/iron 12-24, silver/gold/diamond ore 4, stone branch or bonus varies. Special caves can double output. Uranium and mercury branches are commented out and excluded.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Mine later-era finite minerals",
+      "file": "code/game/turfs/floor_attackby.dm",
+      "line": 767,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/turf/floor/dirt/underground"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/coal",
+        "/obj/item/stack/ore/saltpeter",
+        "/obj/item/stack/ore/sulphur",
+        "/obj/item/stack/ore/lead"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/pickaxe"
+      ],
+      "steps": [
+        "Mine a mineable underground deposit with a pickaxe. The random later-era branch yields coal, saltpeter, sulphur or lead plus stone."
+      ],
+      "conditions": "Finite terrain; random branch, coal 24-32 or other listed minerals 8, with special-cave doubling.",
+      "map_notes": "Unavailable through this branch on Antarctica.",
+      "era": "Map ordinal age at least 2.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Butcher large mammals",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 148,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/meat",
-        "/obj/item/weapon/reagent_containers/food/snacks/meat/offal",
-        "/obj/item/weapon/reagent_containers/food/snacks/rawcrab",
-        "/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog",
-        "/obj/item/weapon/pigleg",
-        "/obj/item/weapon/chicken_carcass",
         "/obj/item/stack/sinew",
         "/obj/item/stack/material/bone",
         "/obj/item/stack/material/leather",
-        "/obj/item/weapon/reagent_containers/food/snacks/animalfat"
+        "/obj/item/weapon/reagent_containers/food/snacks/meat/offal/heart",
+        "/obj/item/weapon/reagent_containers/food/snacks/meat/offal/liver",
+        "/obj/item/weapon/reagent_containers/food/snacks/meat/offal/kidneys",
+        "/obj/item/weapon/reagent_containers/food/snacks/meat/offal/lungs",
+        "/obj/item/weapon/reagent_containers/food/snacks/meat/offal/brain",
+        "/obj/item/weapon/reagent_containers/food/snacks/meat/offal/intestines"
       ],
-      "conditions": "dead unclaimed carcass, sharp held tool, adjacency and wait; meat type conditional pig/chicken/crab/poison frog; mammal anatomy offal; size bounded1..8; skin selects pelts/leather/bone",
-      "status": "conditional static acquisition; subtype/map availability not verified"
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Place a dead eligible mammal corpse on a turf. Use a sharp held tool and choose butcher.",
+        "Remain adjacent until harvesting finishes. Collect meat, organs, bones, sinew and leather according to species and size."
+      ],
+      "conditions": "Only harvest_mammal-listed species; size >= 3 required for sinew and named organs. Pig species yield pig legs instead of ordinary meat; chicken, crab and poisonous frog have separate products. Corpse can be claimed only once; zombie meat is unsafe.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
-      "name": "Animal milk/wool/eggs",
+      "name": "Harvest animal fat",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 190,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/animalfat"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Butcher an eligible dead mammal with fat using a sharp held tool. Collect any animal fat produced with the other corpse products."
+      ],
+      "conditions": "has_fat and bounded size/fat modifiers must permit a positive yield; maximum two portions.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Butcher Pig legs",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 151,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/mob/living/simple_animal/pig_gilt"
+      ],
+      "outputs": [
+        "/obj/item/weapon/pigleg"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Use a sharp held tool on the dead animal and complete the harvesting action. Collect the listed species product."
+      ],
+      "conditions": "Dead, unharvested corpse on a turf; connected conscious adjacent actor. Pig route also includes pig_boar, boar_gilt and boar_boar; chicken route also includes rooster.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Butcher Chicken carcass",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 151,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/mob/living/simple_animal/chicken"
+      ],
+      "outputs": [
+        "/obj/item/weapon/chicken_carcass"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Use a sharp held tool on the dead animal and complete the harvesting action. Collect the listed species product."
+      ],
+      "conditions": "Dead, unharvested corpse on a turf; connected conscious adjacent actor. Pig route also includes pig_boar, boar_gilt and boar_boar; chicken route also includes rooster.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Butcher Crab meat",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 151,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/mob/living/simple_animal/crab"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/rawcrab"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Use a sharp held tool on the dead animal and complete the harvesting action. Collect the listed species product."
+      ],
+      "conditions": "Dead, unharvested corpse on a turf; connected conscious adjacent actor. Pig route also includes pig_boar, boar_gilt and boar_boar; chicken route also includes rooster.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Milk female farm animals",
       "file": "code/game/mob/living/simple_animal/friendly/farm_animals.dm",
       "line": 1,
-      "inputs": [],
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/mob/living/simple_animal/cattle/cow",
+        "/mob/living/simple_animal/pig_gilt",
+        "/mob/living/simple_animal/boar_gilt",
+        "/mob/living/simple_animal/goat/female",
+        "/mob/living/simple_animal/sheep/female"
+      ],
       "outputs": [
-        "reagent:milk",
+        "reagent:milk"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass"
+      ],
+      "steps": [
+        "Use an open glass reagent container on a conscious milk-producing female animal. Milk transfers from its udder into the container.",
+        "If the udder is dry, wait for its species-dependent regeneration."
+      ],
+      "conditions": "Requires udder stock and container room; does not apply to all animals or all sexes.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Shear sheep",
+      "file": "code/game/mob/living/simple_animal/friendly/farm_animals.dm",
+      "line": 954,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/mob/living/simple_animal/sheep"
+      ],
+      "outputs": [
         "/obj/item/stack/material/wool"
       ],
-      "conditions": "species and life/state conditions; milk udders, sheep shearing, chicken egg production; egg products indexed separately; output list omits unresolved egg constructor type",
-      "status": "conditional static acquisition; subtype/map availability not verified"
+      "tools": [
+        "/obj/item/weapon/shears"
+      ],
+      "steps": [
+        "Use shears on an unsheared sheep and complete the shearing action. Collect wool. Wait for coat regrowth before repeating."
+      ],
+      "conditions": "Sheared flag prevents immediate repeat; both male and female sheep have shearing branches.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Deep saltwater cage fishing",
+      "file": "code/game/objects/structures/sea.dm",
+      "line": 95,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/turf/floor/beach/water/deep/saltwater"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/octopus",
+        "/obj/item/weapon/reagent_containers/food/snacks/rawlobster",
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod",
+        "/obj/item/weapon/reagent_containers/food/snacks/pink_squid"
+      ],
+      "tools": [
+        "/obj/structure/fishing_cage"
+      ],
+      "steps": [
+        "Place a fishing cage in deep salt water. Leave it there for the 30-40 minute catch cycle, then open the cage by hand."
+      ],
+      "conditions": "Random catch; cage must still be in qualifying water when cycle finishes.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Shallow saltwater cage fishing",
+      "file": "code/game/objects/structures/sea.dm",
+      "line": 105,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/turf/floor/beach/water/shallowsaltwater"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish",
+        "/obj/item/shellfish",
+        "/mob/living/simple_animal/crab/small/dead"
+      ],
+      "tools": [
+        "/obj/structure/fishing_cage"
+      ],
+      "steps": [
+        "Place a fishing cage in shallow salt water. Wait 30-40 minutes and open it by hand. A crab catch is a corpse that must be butchered for crab meat."
+      ],
+      "conditions": "Random catch; cage must remain in qualifying water.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Freshwater cage fishing",
+      "file": "code/game/objects/structures/sea.dm",
+      "line": 112,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/turf/floor/beach/water"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon",
+        "/obj/item/shellfish"
+      ],
+      "tools": [
+        "/obj/structure/fishing_cage"
+      ],
+      "steps": [
+        "Place a fishing cage in eligible water. Wait 30-40 minutes and open it by hand."
+      ],
+      "conditions": "Jungle, deep jungle and flooded water yield salmon; other eligible waters randomly yield salmon or shellfish. Swamp, deep swamp and ice branches produce no catch.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Collect chicken eggs",
+      "file": "code/game/mob/living/simple_animal/friendly/birds.dm",
+      "line": 129,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/mob/living/simple_animal/chicken"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/egg"
+      ],
+      "tools": [],
+      "steps": [
+        "Keep a live chicken and collect eggs it lays on its turf. Egg production depends on its available egg stock and Life-cycle timer."
+      ],
+      "conditions": "Requires conscious live chicken, egg_timer >= 120 and eggsleft > 0. Timer is Life calls, not a verified real-time duration.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Forage fern leaves",
+      "file": "code/game/objects/structures/wild.dm",
+      "line": 758,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/structure/wild/junglebush"
+      ],
+      "outputs": [
+        "/obj/item/stack/material/leaf/fern"
+      ],
+      "tools": [],
+      "steps": [
+        "With Grab intent, interact with an edible jungle bush that has leaves. Complete the foraging action to collect two fern leaf portions."
+      ],
+      "conditions": "Human actor, edible bush and leaves >= 1; stock rechecked after the wait.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin Sheep",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 256,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/mob/living/simple_animal/sheep"
+      ],
+      "outputs": [
+        "/obj/item/stack/material/pelt/sheeppelt"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Use a sharp held tool on the dead animal and choose skin. Stay adjacent until the harvesting action finishes, then collect the species pelt and other bounded corpse products."
+      ],
+      "conditions": "Dead, unharvested corpse on a turf. One claim per corpse; pelt yield depends on species subtype.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin Goat",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 258,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/mob/living/simple_animal/goat"
+      ],
+      "outputs": [
+        "/obj/item/stack/material/pelt/goatpelt"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Use a sharp held tool on the dead animal and choose skin. Stay adjacent until the harvesting action finishes, then collect the species pelt and other bounded corpse products."
+      ],
+      "conditions": "Dead, unharvested corpse on a turf. One claim per corpse; pelt yield depends on species subtype.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin Cattle",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 260,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/mob/living/simple_animal/cattle"
+      ],
+      "outputs": [
+        "/obj/item/stack/material/pelt/cowpelt"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Use a sharp held tool on the dead animal and choose skin. Stay adjacent until the harvesting action finishes, then collect the species pelt and other bounded corpse products."
+      ],
+      "conditions": "Dead, unharvested corpse on a turf. One claim per corpse; pelt yield depends on species subtype.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin Bison",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 264,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/mob/living/simple_animal/bison"
+      ],
+      "outputs": [
+        "/obj/item/stack/material/pelt/bisonpelt"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Use a sharp held tool on the dead animal and choose skin. Stay adjacent until the harvesting action finishes, then collect the species pelt and other bounded corpse products."
+      ],
+      "conditions": "Dead, unharvested corpse on a turf. One claim per corpse; pelt yield depends on species subtype.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Campfire charcoal",
+      "file": "code/game/objects/structures/kitchen/oven.dm",
+      "line": 147,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/structure/oven/fireplace"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/charcoal"
+      ],
+      "tools": [
+        "/obj/structure/oven/fireplace"
+      ],
+      "steps": [
+        "Light a consumable campfire and let its fuel run out. Collect the charcoal left when it burns away."
+      ],
+      "conditions": "Only ovens with consume_itself TRUE use this burnout branch; ordinary persistent ovens do not automatically yield charcoal.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Ore extraction kit",
       "file": "code/modules/1713/ores.dm",
-      "line": 59,
+      "line": 43,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/ore/iron"
       ],
       "outputs": [
         "reagent:iron"
       ],
-      "conditions": "empty held extraction kit; timed purification; qdel consumes ore object, not one unit of stack; quantities in expression",
-      "status": "source-defined conditional transformation"
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Ore extraction kit",
       "file": "code/modules/1713/ores.dm",
-      "line": 82,
+      "line": 65,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/ore/iron_sponge"
       ],
       "outputs": [
         "reagent:iron"
       ],
-      "conditions": "empty held extraction kit; timed purification; qdel consumes ore object, not one unit of stack; quantities in expression",
-      "status": "source-defined conditional transformation"
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Ore extraction kit",
       "file": "code/modules/1713/ores.dm",
-      "line": 104,
+      "line": 87,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/ore/iron_pig"
       ],
       "outputs": [
         "reagent:iron"
       ],
-      "conditions": "empty held extraction kit; timed purification; qdel consumes ore object, not one unit of stack; quantities in expression",
-      "status": "source-defined conditional transformation"
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Ore extraction kit",
       "file": "code/modules/1713/ores.dm",
-      "line": 131,
+      "line": 114,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/ore/silver"
       ],
       "outputs": [
         "reagent:silver"
       ],
-      "conditions": "empty held extraction kit; timed purification; qdel consumes ore object, not one unit of stack; quantities in expression",
-      "status": "source-defined conditional transformation"
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Ore extraction kit",
       "file": "code/modules/1713/ores.dm",
-      "line": 153,
+      "line": 136,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/ore/gold"
       ],
       "outputs": [
         "reagent:gold"
       ],
-      "conditions": "empty held extraction kit; timed purification; qdel consumes ore object, not one unit of stack; quantities in expression",
-      "status": "source-defined conditional transformation"
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Ore extraction kit",
       "file": "code/modules/1713/ores.dm",
-      "line": 174,
+      "line": 158,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/ore/copper"
       ],
       "outputs": [
         "reagent:copper"
       ],
-      "conditions": "empty held extraction kit; timed purification; qdel consumes ore object, not one unit of stack; quantities in expression",
-      "status": "source-defined conditional transformation"
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Ore extraction kit",
       "file": "code/modules/1713/ores.dm",
-      "line": 195,
+      "line": 179,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/ore/tin"
       ],
       "outputs": [
         "reagent:tin"
       ],
-      "conditions": "empty held extraction kit; timed purification; qdel consumes ore object, not one unit of stack; quantities in expression",
-      "status": "source-defined conditional transformation"
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Ore extraction kit",
       "file": "code/modules/1713/ores.dm",
-      "line": 244,
+      "line": 224,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/ore/uranium"
       ],
       "outputs": [
         "reagent:uranium"
       ],
-      "conditions": "empty held extraction kit; timed purification; qdel consumes ore object, not one unit of stack; quantities in expression",
-      "status": "source-defined conditional transformation"
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Ore extraction kit",
       "file": "code/modules/1713/ores.dm",
-      "line": 271,
+      "line": 253,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/ore/saltpeter"
       ],
       "outputs": [
         "reagent:potassium"
       ],
-      "conditions": "empty held extraction kit; timed purification; qdel consumes ore object, not one unit of stack; quantities in expression",
-      "status": "source-defined conditional transformation"
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Ore extraction kit",
       "file": "code/modules/1713/ores.dm",
-      "line": 272,
+      "line": 253,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/ore/saltpeter"
       ],
       "outputs": [
         "reagent:nitrogen"
       ],
-      "conditions": "empty held extraction kit; timed purification; qdel consumes ore object, not one unit of stack; quantities in expression",
-      "status": "source-defined conditional transformation"
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Ore extraction kit",
       "file": "code/modules/1713/ores.dm",
-      "line": 295,
+      "line": 277,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/ore/coal"
       ],
       "outputs": [
         "reagent:carbon"
       ],
-      "conditions": "empty held extraction kit; timed purification; qdel consumes ore object, not one unit of stack; quantities in expression",
-      "status": "source-defined conditional transformation"
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Ore extraction kit",
       "file": "code/modules/1713/ores.dm",
-      "line": 322,
+      "line": 304,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/ore/charcoal"
       ],
       "outputs": [
         "reagent:charcoal"
       ],
-      "conditions": "empty held extraction kit; timed purification; qdel consumes ore object, not one unit of stack; quantities in expression",
-      "status": "source-defined conditional transformation"
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Ore extraction kit",
       "file": "code/modules/1713/ores.dm",
-      "line": 345,
+      "line": 327,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/ore/sulphur"
       ],
       "outputs": [
         "reagent:sulfur"
       ],
-      "conditions": "empty held extraction kit; timed purification; qdel consumes ore object, not one unit of stack; quantities in expression",
-      "status": "source-defined conditional transformation"
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Ore extraction kit",
       "file": "code/modules/1713/ores.dm",
-      "line": 369,
+      "line": 350,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/ore/lead"
       ],
       "outputs": [
         "reagent:lead"
       ],
-      "conditions": "empty held extraction kit; timed purification; qdel consumes ore object, not one unit of stack; quantities in expression",
-      "status": "source-defined conditional transformation"
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
       "name": "Ore extraction kit",
       "file": "code/modules/1713/ores.dm",
-      "line": 393,
+      "line": 374,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
         "/obj/item/stack/ore/mercury"
       ],
       "outputs": [
         "reagent:mercury"
       ],
-      "conditions": "empty held extraction kit; timed purification; qdel consumes ore object, not one unit of stack; quantities in expression",
-      "status": "source-defined conditional transformation"
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     }
   ],
   "mechanism_overview": [
@@ -13186,5 +15158,25 @@
       "file": "code/game/objects/structures/factory/factory.dm",
       "gate": "factory tables and vehicle/component construction; lexical appendix does not resolve all dynamic component layouts"
     }
-  ]
+  ],
+  "historical_audit_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+  "procedural_occurrences_source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+  "legacy_inventories_source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+  "acquisition_review": {
+    "reviewed_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+    "scope": "Curated player acquisition and processing routes read from source; not exhaustive reachability.",
+    "excluded": [
+      "Admin/test-only spawns",
+      "Commented uranium and mercury mining branches",
+      "Generic constructor/disposal drops as gameplay acquisition"
+    ],
+    "limitations": [
+      "No full map bootstrap or research reachability execution.",
+      "Historical lexical occurrence appendix remains potential spawn/transform evidence, not player acquisition.",
+      "Wild general leaf gathering requires gorillaman; generic hand branches were not promoted.",
+      "Animal hide subtype yields, fishing rods, stone subtype mining conditions, clay bootstrap, vendors/loot and all machinery production chains remain incompletely curated.",
+      "Crop catalog lists possible seed results; biome filtering and world generation decide actual availability.",
+      "Tools list alternatives where source accepts several; required machine construction recipes are separate catalog dependencies."
+    ]
+  }
 }

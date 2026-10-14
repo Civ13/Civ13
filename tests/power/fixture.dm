@@ -216,3 +216,7 @@ var/list/processing_objects = list()
 
 /obj/structure/battery/proc/available_output()
 	return 0
+/obj/structure/civ_generator/proc/available_output()
+	return 0
+/obj/structure/civ_generator/proc/stop_generation()
+	return

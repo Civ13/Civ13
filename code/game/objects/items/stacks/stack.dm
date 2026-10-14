@@ -304,6 +304,9 @@
 	var/customdesc = ""
 	var/turn_dir = 0
 	var/mob/living/human/H = user
+	if (!civ_generation_can_build(H, recipe.result_type))
+		to_chat(user, "This generator requires Modern research and crafting skill 105.")
+		return
 	if (!exercise_can_build(H, recipe.result_type))
 		to_chat(H, "This training equipment requires its era, completed research and crafting skill.")
 		return
@@ -1817,7 +1820,7 @@
 				handReturnMap.Remove(H.key)
 			return
 
-		if (!exercise_can_build(H, recipe.result_type) || !civ_telecom_can_build(H, recipe.result_type))
+		if (!exercise_can_build(H, recipe.result_type) || !civ_telecom_can_build(H, recipe.result_type) || !civ_generation_can_build(H, recipe.result_type))
 			return
 		if (H)
 			H.adaptStat("crafting", 1*recipe.req_amount)

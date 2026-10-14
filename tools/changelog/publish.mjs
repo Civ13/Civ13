@@ -8,6 +8,29 @@ const shaPattern = /^[a-f0-9]{40}$/;
 const idPattern = /^[a-z0-9][a-z0-9-]{0,79}$/;
 const hash = x => createHash('sha256').update(JSON.stringify(x)).digest('hex');
 function requireValue(ok, message) { if (!ok) throw new Error(message); }
+export function changelogLine(body) {
+  if (body == null) return null;
+  requireValue(typeof body === 'string' && body.length <= 65536, 'Invalid PR body');
+  // Examples inside comments or fenced code are not opt-ins.
+  const visible = body.replace(/<!--[\s\S]*?(?:-->|$)/g, '');
+  let fence = null;
+  const entries = [];
+  for (const line of visible.split(/\r?\n/)) {
+    const delimiter = line.match(/^\s*(`{3,}|~{3,})/);
+    if (delimiter) {
+      if (!fence) fence = delimiter[1];
+      else if (delimiter[1][0] === fence[0] && delimiter[1].length >= fence.length) fence = null;
+      continue;
+    }
+    if (fence) continue;
+    const match = line.match(/^Changelog:[ \t]*(.*)$/i);
+    if (match) entries.push(match[1].trim());
+  }
+  requireValue(entries.length <= 1, 'Use only one Changelog: line');
+  if (!entries[0]) return null;
+  format({ schema: 1, id: 'validation', commit: 'a'.repeat(40), heading: '', entries, skip: '' });
+  return entries[0];
+}
 export function format(m) {
   requireValue(m && m.schema === 1 && idPattern.test(m.id) && shaPattern.test(m.commit), 'Invalid manifest identity/commit');
   requireValue(Array.isArray(m.entries) && m.entries.length <= 40, 'Invalid entries');
@@ -71,14 +94,25 @@ export async function deliver(m, { load, save, post, verify }) {
 export async function run(env, event, deps = {}) {
   requireValue(env.GITHUB_REPOSITORY === 'Civ13/Civ13', 'Unexpected repository');
   const http = deps.http ?? request;
-  const api = deps.api ?? ((path, options) => request('https://api.github.com/repos/Civ13/Civ13/' + path, {
+  const api = deps.api ?? ((path, options) => request('https://api.github.com/repos/Civ13/Civ13' + (path ? '/' + path : ''), {
     ...options, headers: { Authorization: 'Bearer ' + env.GITHUB_TOKEN, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' }
-  }));
+  }, { fetcher: deps.fetcher }));
   const repo = await api('');
   const branch = repo.default_branch;
-  let commit, name;
+  let commit, name, m;
+  const mergedPR = env.GITHUB_EVENT_NAME === 'pull_request_target';
   const dry = env.GITHUB_EVENT_NAME === 'workflow_dispatch' && event.inputs?.dry_run !== 'false';
-  if (env.GITHUB_EVENT_NAME === 'workflow_dispatch') {
+  if (mergedPR) {
+    const pr = event.pull_request;
+    requireValue(event.action === 'closed' && pr?.merged === true && pr.base?.ref === branch && pr.base?.repo?.full_name === env.GITHUB_REPOSITORY, 'Not a merged default-branch PR');
+    requireValue(Number.isSafeInteger(pr.number) && pr.number > 0 && event.number === pr.number, 'Invalid PR number');
+    const entry = changelogLine(pr.body);
+    if (!entry) { console.log('No changelog line; nothing to publish.'); return; }
+    const current = await api('pulls/' + pr.number);
+    requireValue(current.merged === true && current.base?.ref === branch && current.base?.repo?.full_name === env.GITHUB_REPOSITORY && current.merge_commit_sha === pr.merge_commit_sha, 'PR merge confirmation mismatch');
+    commit = pr.merge_commit_sha; name = 'pr-' + pr.number;
+    m = { schema: 1, id: name, commit, heading: '', entries: [entry], skip: '' };
+  } else if (env.GITHUB_EVENT_NAME === 'workflow_dispatch') {
     requireValue(env.GITHUB_REF === 'refs/heads/' + branch, 'Dispatch must run on default branch');
     commit = event.inputs?.commit; name = event.inputs?.manifest;
     requireValue(dry || event.inputs?.confirm_live === 'true', 'Explicit live confirmation required');
@@ -95,13 +129,15 @@ export async function run(env, event, deps = {}) {
   requireValue(shaPattern.test(commit) && idPattern.test(name), 'Full SHA and manifest ID required');
   const comparison = await api('compare/' + commit + '...' + encodeURIComponent(branch));
   requireValue(['ahead', 'identical'].includes(comparison.status), 'Commit must be on default branch history');
-  const file = await api('contents/changelogs/' + name + '.json?ref=' + encodeURIComponent(branch));
-  requireValue(file.type === 'file' && file.size <= 70000, 'Manifest must be a bounded file');
-  const m = JSON.parse(Buffer.from(file.content, 'base64').toString('utf8'));
+  if (!m) {
+    const file = await api('contents/changelogs/' + name + '.json?ref=' + encodeURIComponent(branch));
+    requireValue(file.type === 'file' && file.size <= 70000, 'Manifest must be a bounded file');
+    m = JSON.parse(Buffer.from(file.content, 'base64').toString('utf8'));
+  }
   requireValue(m.id === name && m.commit === commit, 'Manifest/ship commit mismatch');
   const chunks = format(m);
   if (dry) { console.log(JSON.stringify({ dry_run: true, manifest: name, commit, chunks, skip: m.skip }, null, 2)); return; }
-  requireValue(env.CHANGELOG_ENABLED === 'true', 'Publishing disabled');
+  requireValue((mergedPR ? env.MERGE_CHANGELOG_ENABLED : env.CHANGELOG_ENABLED) === 'true', 'Publishing disabled');
   requireValue(env.DISCORD_CHANGELOG_WEBHOOK, 'Missing DISCORD_CHANGELOG_WEBHOOK');
   const url = new URL(env.DISCORD_CHANGELOG_WEBHOOK);
   requireValue(url.protocol === 'https:' && url.hostname === 'discord.com' && /^\/api\/webhooks\/\d+\/[A-Za-z0-9_-]+$/.test(url.pathname) && !url.search && !url.hash && !url.username && !url.password, 'Invalid webhook URL');

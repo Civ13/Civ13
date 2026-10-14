@@ -192,6 +192,10 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-13: native catch variable scope -->
+BYOND 516.1681 treats catch variable declarations as proc-scoped. Use distinct
+names for separate catch blocks in one proc or compilation fails with duplicate definition.
+
 - Follow `docs/game-verification.md` for exact-commit build, isolated-fixture,
   graphical, season-memory, and save-round-trip evidence. Reuse probes present in
   the selected checkout; investigation-branch probes may not be on master yet.
@@ -257,7 +261,20 @@ zero legacy thresholds alone do not unlock node-gated or mode-only recipes.
 - `scripts/test-season-memory.ps1 -ByondBin <BYOND-bin-directory>` executes production turf lifecycle bodies in an isolated world, with accelerated recovery waits and temporary output. It checks repeated replacement, bounded grass registration, one recovery chain per dirt turf, and planted-soil behavior. Synthetic process memory is not full-game memory evidence.
 <!-- 2026-10-11: evidence harness review -->
 Native BYOND world.Export returns the remote Topic value, and its caller address includes a port (127.0.0.1:port). Reject empty/non-JSON replies and authenticate the tested commit before reporting evidence success. PowerShell native Git failures need explicit LASTEXITCODE checks; ErrorActionPreference alone is insufficient. The isolated evidence launcher must verify daemon readiness and clean its unique temporary DME/DMB/RSC outputs.
+<!-- 2026-10-13: unsupported OpenDream shell work -->
+OpenDream TTS returns before scheduling shell-backed audio jobs; native TTS
+remains available. Python control uses mutually exclusive engine branches.
+tests/opendream_shell runs both production branches with counted external-effect
+adapters and omission controls, without launching OpenDream or real scripts.
+
 ## Local MCP tooling
+
+<!-- 2026-10-13: dehydrator native save baseline -->
+`tests/food_progression/rack_save.dm` exports the owning turf and rack graph.
+The 769ae4911 baseline compiled cleanly but failed exporting runtime `slots`.
+Load_Entry replaces constructor contents even for an empty saved record; rack
+runtime pointers must be excluded and live internal storage rebound or rebuilt.
+Source-only preparation does not establish native candidate or control acceptance.
 
 <!-- 2026-10-12: NPC cover decision parity -->
 `tests/npc_cover/run.py` compiles production cover scoring, LOS and line helpers
@@ -450,9 +467,12 @@ retained entries are distinct from OS private memory. `run-game.ps1 -ExerciseCap
 checks real forward/reverse/stop behavior. Its optional bounded `-Visual` mode
 requires the coordinator's exclusive screen turn; see tests/conveyor/README.md.
 <!-- 2026-10-11: shipped Discord changelog -->
-The standalone publisher in tools/changelog requires reviewed manifests and live
-confirmation or a trusted successful production deployment event. A merge/CI pass
-is not shipment. Preserve the discord-changelog-receipts branch; pending receipts
+The standalone publisher in tools/changelog supports an explicit `Changelog: text`
+line in a PR opening description on merge into master. Missing or blank means no
+post. Use player-facing bullets only, without headings or deployment/update-status
+wording. The older manifest route still requires live confirmation or a trusted
+successful production deployment event. A merge/CI pass is not shipment.
+Preserve the discord-changelog-receipts branch; pending receipts
 block uncertain replay. See tools/changelog/README.md before activation.
 
 <!-- 2026-10-11: hosted API reference -->
@@ -488,6 +508,12 @@ Nomads Europe foraged seeds use biome filtering like its climate-restricted grow
 Cleanable expiry uses code/processes/decal_decay.dm (256 candidates/second), not per-decal sleeping timers or direct Destroy. Preserve existing decay_timer lifetimes; decay_deadline/index are explicitly excluded from native save export/import. tests/decal_decay/run.py compares actual native lifecycle with --baseline historical cleanable source, without normal game startup. Baseline early-qdel retention and missing expiry GC bookkeeping are isolated evidence, not full-game OOM proof.
 
 <!-- 2026-10-11: abandoned debris season clocks -->
+<!-- 2026-10-13: queued season source verification -->
+The abandoned-item source scanner checks both direct `seasons()` overrides and
+the base queued `season_apply()` worker. Run `tests/abandoned_items/run.py
+--check-season-wiring` for a source-only check; missing-hook controls are in
+`tests/abandoned_items/test_season_wiring.py`. This does not launch BYOND.
+
 Abandoned rubbish/spent casings use 2/4 actual season changes on cycling maps,
 or 6/12 running-server hours on static maps. Season routines record scalar
 transitions; startup climate assignments do not. Fixed wet-season labels use
@@ -586,6 +612,13 @@ isolated runtime data and must detect exactly the lost recipe.
 
 <!-- 2026-10-12: finite digging completion -->
 Loose snow/dirt/sand stock must be checked after the action wait, because another actor may consume the last unit. Underground pickaxe actions use one wait/completion path. `tests/resource_extraction/digging_probe.dm` runs production handlers with competing completion and cancellation adapters; `-DiggingBaseline` rejects immutable pre-fix source without changing the checkout.
+
+<!-- 2026-10-12: wall material appearance parity -->
+set_material relies on update_material's final neighbor refresh. Do not remove
+that inner refresh: it establishes existing open/damaged-wall overlay ordering.
+tests/wall_appearance runs actual wall constructors and ordered appearance/count
+comparisons, production save/load and smoothing/duplicate/overlay controls.
+Measured native callback reductions are not whole-server latency evidence.
 <!-- 2026-10-12: seasonal terrain snapshots -->
 get_area_turfs accepts an optional third turf_type argument. Seasonal callers
 use fresh filtered snapshots, preserving pass order and native replacement refs;
@@ -634,3 +667,11 @@ Lighting startup must reconcile existing inactive shared corners after adding ov
 
 <!-- 2026-10-12: native population readiness -->
 Mob processing retains unfinished copied population snapshots across budget returns. A fixed schedule interval does not guarantee newly constructed humans received Life. The full seasonal constructor fixture waits at most 30 real seconds for natural first service while checking actor identity/location/death; its service control excludes one retained actor from both live membership and the pending snapshot. Never invoke Life directly to satisfy scheduler evidence.
+
+<!-- 2026-10-12: animal health and combat dispatch -->
+Simple-animal starting health and maxHealth must match unless an explicit policy
+is documented: Life clamps health and updatehealth recomputes it from maxHealth.
+Do not call parent attackby after an explicit item attack; that repeats damage,
+logs and material wear. tests/animal_combat/run.py checks compiled inherited
+health defaults, native Life, single sharp/blunt attacks and wear across behavior
+branches, noncombat dispatch, healing/death and generated negative controls.

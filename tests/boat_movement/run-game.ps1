@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$ByondBin, [switch]$Visual, [switch]$TankOnly, [ValidateRange(1,900)][int]$TimeoutSeconds = 120)
+param([Parameter(Mandatory=$true)][string]$ByondBin, [switch]$Visual, [switch]$TankOnly, [ValidateRange(1,900)][int]$TimeoutSeconds = 120, [string]$ArtifactDirectory)
 $ErrorActionPreference = 'Stop'
 if ($Visual -and !$IsWindows) { throw 'Visual mode uses a Windows Dream Seeker client' }
 if ($Visual -and $TankOnly) { throw 'TankOnly is for diagnostic batch checks, not a visual world' }
@@ -7,13 +7,27 @@ $daemon = if ($IsWindows) { 'dd.exe' } else { 'DreamDaemon' }
 $repo = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $sourcePath = Join-Path $repo '.boat_game_probe.dme'
 if (Test-Path -LiteralPath $sourcePath) { throw 'Existing probe source must be preserved' }
-$temp = Join-Path ([IO.Path]::GetTempPath()) ('civ13-boat-game-' + [guid]::NewGuid())
+$artifactRoot = if ($ArtifactDirectory) { [IO.Path]::GetFullPath($ArtifactDirectory) } else { [IO.Path]::GetTempPath() }
+$temp = Join-Path $artifactRoot ('civ13-boat-game-' + [guid]::NewGuid())
 New-Item -ItemType Directory $temp | Out-Null
 $process = $null
 $commit = git -C $repo rev-parse HEAD
 if ($LASTEXITCODE -ne 0) { throw 'Cannot determine source revision' }
 $dirty = [bool](git -C $repo status --porcelain)
 if ($LASTEXITCODE -ne 0) { throw 'Cannot determine source state' }
+@{commit=$commit;dirty=$dirty;visual=[bool]$Visual;tank_only=[bool]$TankOnly;timeout_seconds=$TimeoutSeconds;os=[Environment]::OSVersion.ToString()} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $temp 'source-metadata.json')
+function Write-ProbeDiagnostics {
+    foreach ($name in @('boat-result.json','boat-result.txt','boat-drift.txt')) {
+        $path = Join-Path $temp $name
+        if (Test-Path -LiteralPath $path) {
+            Write-Output "Probe diagnostic: $name"
+            Get-Content -LiteralPath $path -Tail 100
+        }
+    }
+    $files = @(Get-ChildItem -LiteralPath $temp -File -Recurse | Where-Object { $_.Extension -in @('.log','.txt') -and $_.Name -ne 'compile.log' })
+    $errors = @($files | Select-String -Pattern 'runtime error:|BOAT FAIL:|BOAT EXCEPTION:|\bBad ref\b|\bBad loc\b|^\s*BUG:|##\s*ERROR:|Cannot read null|Cannot execute null')
+    $errors | Select-Object -Last 100 | ForEach-Object { Write-Output "Probe diagnostic: $($_.Path):$($_.LineNumber): $($_.Line)" }
+}
 function Assert-NativeLogs {
     $files = @(Get-ChildItem -LiteralPath $temp -File -Recurse | Where-Object { $_.Name -match '\.(log|txt)$' -and $_.Name -ne 'compile.log' })
     $errors = @($files | Select-String -Pattern 'runtime error:|BOAT FAIL:|BOAT EXCEPTION:|\bBad ref\b|\bBad loc\b|^\s*BUG:|##\s*ERROR:|Cannot read null|Cannot execute null')
@@ -65,7 +79,10 @@ try {
         if (!$announced -and (Test-Path -LiteralPath $resultPath)) {
             $result = Get-Content -Raw -LiteralPath $resultPath | ConvertFrom-Json
             if ($Visual -and $result.phase -notlike 'READY:*' -and !$result.failures) { continue }
-            if ($result.failures) { throw ('Full-game assertion failures: ' + $result.failures) }
+            if ($result.failures) {
+                Write-ProbeDiagnostics
+                throw ('Full-game assertion failures: ' + $result.failures + '; labels: ' + ($result.failure_labels -join '; '))
+            }
             $errors = @(Get-ChildItem -LiteralPath (Join-Path $temp 'data/logs/runtime') -File -ErrorAction SilentlyContinue | Select-String -Pattern 'runtime error:|BOAT FAIL:|BOAT EXCEPTION:')
             if ($errors.Count) { throw ('Runtime log errors: ' + ($errors.Line -join '; ')) }
             if (!$Visual) { Write-Output 'Full-game assertions completed; no visual world requested'; $announced = $true; continue }
@@ -84,6 +101,8 @@ try {
     if ($process.ExitCode -ne 0 -or $resultText -notmatch '^RESULT failures=0') { throw 'Full-game probe failed' }
 } finally {
     if ($process -and !$process.HasExited) { Stop-Process -Id $process.Id; $process.WaitForExit() }
+    # A timeout, native diagnostic or early assertion failure must retain its evidence.
+    try { Write-ProbeDiagnostics } catch { Write-Warning "Could not read probe diagnostics: $_" }
     if (Test-Path -LiteralPath $sourcePath) { Remove-Item -LiteralPath $sourcePath -Force }
     Write-Output "Full-game artifacts: $temp"
 }

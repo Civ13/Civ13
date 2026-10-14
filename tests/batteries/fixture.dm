@@ -45,6 +45,12 @@ world
 	world.log << "CHECK [label]: [actual] expected [expected] [actual == expected ? "PASS" : "FAIL"]"
 	if (actual != expected) failures++
 var/failures = 0
+/obj/structure/civ_generator/proc/available_output()
+	return 0
+/obj/structure/civ_generator/proc/reserve_charge(requested)
+	return 0
+/obj/structure/civ_generator/proc/stop_generation()
+	return
 /proc/connect(obj/structure/battery/B, obj/structure/cable/C)
 	B.loc = C.loc
 	B.powersource = C

@@ -17,7 +17,12 @@ def main():
     parser.add_argument("--report", type=Path)
     parser.add_argument("--compiler", default="DreamMaker")
     parser.add_argument("--runtime", default="DreamDaemon")
+    parser.add_argument("--probe", choices=("batteries", "modern-energy"), default="batteries")
+    parser.add_argument("--negative-control", action="store_true")
     args = parser.parse_args()
+    if args.negative_control and args.probe != "modern-energy":
+        parser.error("The charge-debit negative control requires modern-energy")
+    callback = "run_battery_item_checks" if args.probe == "batteries" else "run_modern_energy_checks"
     root = Path(__file__).resolve().parents[1]
     # Assets/includes are resolved relative to the checkout; runtime storage is isolated.
     with tempfile.TemporaryDirectory(prefix=".battery-items-", dir=root) as build, tempfile.TemporaryDirectory(prefix="civ13-battery-items-") as run:
@@ -25,7 +30,7 @@ def main():
         source = (root / "code/world.dm").read_text(encoding="utf-8")
         for marker, replacement in [
             ("/datum/global_init/New()\n", "\treturn\n"),
-            ("/world/New()\n", "\tspawn(1)\n\t\trun_battery_item_checks()\n\treturn\n"),
+            ("/world/New()\n", f"\tspawn(1)\n\t\t{callback}()\n\treturn\n"),
         ]:
             if source.count(marker) != 1:
                 raise RuntimeError(f"Startup isolation marker changed: {marker!r}")
@@ -43,14 +48,20 @@ def main():
         dme, maps = re.subn(r'^#include ".*\.dmm"\s*$', '', dme, flags=re.M)
         if not maps:
             raise RuntimeError("Expected to remove game maps")
-        dme += f'\n#include "{root.as_posix()}/tests/batteries/items.dm"\n'
+        probe_file = "tests/batteries/items.dm" if args.probe == "batteries" else "tests/modern_energy/probe.dm"
+        dme += f'\n#include "{root.as_posix()}/{probe_file}"\n'
+        if args.negative_control:
+            generator = (root / "code/modules/1713/machinery/modern_generation.dm").read_text(encoding="utf-8")
+            generator = replace_once(generator, "\tcharge_power += transfer", "\t// Negative control: omitted charge debit")
+            (build / "generation.dm").write_text(generator, encoding="utf-8")
+            dme = replace_once(dme, '#include "code\\modules\\1713\\machinery\\modern_generation.dm"', f'#include "{build.as_posix()}/generation.dm"')
         # Preserve resource lookup from original includes.
         dme = dme.replace('#define FILE_DIR .', f'#define FILE_DIR "{root.as_posix()}"')
         dme = re.sub(r'^#include "([^/":][^":]*)"', lambda m: f'#include "{root.as_posix()}/{m[1].replace(chr(92), "/")}"', dme, flags=re.M)
         (build / "recipes.dme").write_text(dme, encoding="utf-8")
         compiled = subprocess.run([args.compiler, "-max_errors", "0", str(build / "recipes.dme")], cwd=root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=180)
         print(compiled.stdout)
-        if compiled.returncode or "0 errors, 0 warnings" not in compiled.stdout:
+        if compiled.returncode or "0 errors, 0 warnings" not in compiled.stdout or (args.probe == "modern-energy" and "516.1681" not in compiled.stdout):
             return 1
         shutil.copytree(root / "config/crafting", run / "config/crafting")
         shutil.copytree(root / "config/names", run / "config/names")
@@ -70,6 +81,8 @@ def main():
         print(output)
         if runtime.returncode or any(marker in runtime_log.lower() for marker in ("runtime error:", "bug:", "## error:")):
             return 1
+        if args.negative_control:
+            return 0 if "duplicate charge cannot mint energy" in output and output.rstrip().endswith("FAIL") else 1
         return 0 if output.rstrip().endswith("PASS") else 1
 
 if __name__ == "__main__":

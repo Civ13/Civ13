@@ -84,3 +84,50 @@ countdown and save hooks. Explicit console `mapswap` switches immediately.
 A second map change is rejected while a game map is pending. After a supervisor
 crash, pending staged files require manual inspection along with its stale lock;
 they are never automatically replayed by a new supervisor.
+
+## Lifecycle operation receipts (review-stage)
+
+Mutating CLI requests accept `--operation-id` (ASCII letters, digits, underscore,
+hyphen; 1-80 characters). Reusing an ID with the same action, map, origin and
+SHA256 of exact trusted profile bytes returns its original receipt. Changed
+bindings reject. The digest is identity, not authentication; filesystem access
+and the trusted profile remain the control boundary.
+
+`operation-status --operation-id ID` is read-only and returns
+`{ok:true,schema:"civ13.lifecycle.v1",operation_status:"pending"|"committed"|"not_found",receipt}`.
+A committed receipt proves only completion of the owned process action. It does
+not prove game initialization, Topic readiness, requested build or active map.
+The separate `civ13.launch.v1` projection carries instance/profile/build/map/PID
+and currently always declares `ready:false`. No game readiness integration is
+claimed.
+
+Each operation is published pending before effects, then committed before the
+transport request is removed. A crash or unsuccessful effect leaves pending;
+retry does not repeat it. An actual process crash can retain exclusive lock
+files: operator recovery is required, never automatic PID discovery or replay.
+There is a hard 256-receipt allocation limit. Nothing is automatically pruned,
+including unresolved operations; full storage fails closed. File publication
+flushes/fsyncs the temporary file and replaces it, but does not establish parent
+directory power-loss ordering or a multi-file transaction.
+
+Current acceptance is review-stage: injected crash/replay/history tests and owned
+dummy-child tests run without any game. Deferred map stages are persisted with profile and content hashes. Fresh
+controllers restore a validated staged map. An applying marker surviving interrupted
+multi-file replacement quarantines controls for operator recovery. Active map
+identity also binds the installed DME/JSON hashes and survives controller restart. No service activation
+or new readiness endpoint is authorized by this change.
+
+Run both focused suites with a verified Python interpreter:
+`-m unittest discover -s tests -p 'test_opendream*.py' -v`.
+
+Receipt inspection remains available when an interrupted map replacement
+quarantines controls. This constructor mode skips map recovery only for the
+read-only receipt query and rejects every process effect before writing another
+pending operation. It never repairs or clears the interrupted map marker.
+
+CivilizationBot opts into this protocol with `controls.lifecycle_schema` set to
+`civ13.lifecycle.v1`; null preserves its original controller DTO. Its versioned
+HTTP mutations require caller operation IDs and its recovery query never replays
+an action. The versioned bot `tests/local/lifecycle-wire.py` imports this actual
+OperationStore and verifies Python-produced receipts with the PHP adapter using
+synthetic effects and temporary storage. No runtime activation is implied.

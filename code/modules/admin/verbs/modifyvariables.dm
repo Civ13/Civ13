@@ -279,7 +279,8 @@ var/list/VVckey_edit = list("key", "ckey")
 			mod_list(variable, O, original_name, objectvar)
 
 		if ("restore to default")
-			new_var = initial(variable)
+			// List entries have no declared initial value; retain the selected value.
+			new_var = variable
 			if (assoc)
 				L[assoc_key] = new_var
 			else
