@@ -150,6 +150,9 @@
 	var/list/wallList
 	var/density
 	var/show_log = TRUE
+	var/tmp/smoke_started = FALSE
+	var/tmp/smoke_emitting = FALSE
+	var/tmp/pending_smoke = 0
 /*8
 /datum/effect/effect/system/smoke_spread/chem/spores
 	show_log = FALSE
@@ -166,6 +169,21 @@
 	..()
 	chemholder = new/obj()
 	chemholder.create_reagents(500)
+
+/datum/effect/effect/system/smoke_spread/chem/Destroy()
+	// Particle callbacks own their copied reagents, not this hidden source atom.
+	var/obj/old_holder = chemholder
+	chemholder = null
+	if (old_holder)
+		qdel(old_holder)
+	targetTurfs = null
+	wallList = null
+	return ..()
+
+/datum/effect/effect/system/smoke_spread/chem/persistence_runtime_var(key)
+	if (key in list("smoke_started", "smoke_emitting", "pending_smoke"))
+		return TRUE
+	return ..()
 
 //Sets up the chem smoke effect
 // Calculates the max range smoke can travel, then gets all turfs in that view range.
@@ -223,6 +241,24 @@
 // Also calculates target locations to spawn the visual smoke effect on, so the whole area
 // is covered fairly evenly.
 /datum/effect/effect/system/smoke_spread/chem/start()
+	// Both reaction callers create a fresh, single-use system. Keep its source
+	// alive until every spawn(0) callback has copied the original reagent mix.
+	if (smoke_started || QDELETED(src))
+		return
+	smoke_started = TRUE
+	smoke_emitting = TRUE
+	try
+		emit_cloud()
+	catch (var/exception/E)
+		smoke_emitting = FALSE
+		if (!pending_smoke)
+			qdel(src)
+		throw E
+	smoke_emitting = FALSE
+	if (!pending_smoke)
+		qdel(src)
+
+/datum/effect/effect/system/smoke_spread/chem/proc/emit_cloud()
 	if (!location)
 		return
 
@@ -256,8 +292,9 @@
 	for (var/i = FALSE, i < range, i++) //calculate positions for smoke coverage - then spawn smoke
 		var/radius = i * 1.5
 		if (!radius)
+			pending_smoke++
 			spawn(0)
-				spawnSmoke(location, I, TRUE, TRUE)
+				spawn_owned_smoke(location, I, TRUE, TRUE)
 			continue
 
 		var/offset = FALSE
@@ -275,8 +312,23 @@
 			if (!T)
 				continue
 			if (T in targetTurfs)
+				pending_smoke++
 				spawn(0)
-					spawnSmoke(T, I, range)
+					spawn_owned_smoke(T, I, range)
+
+/datum/effect/effect/system/smoke_spread/chem/proc/spawn_owned_smoke(turf/T, icon/I, smoke_duration, dist = TRUE)
+	try
+		if (!QDELETED(src) && chemholder)
+			spawnSmoke(T, I, smoke_duration, dist)
+	catch (var/exception/E)
+		finish_smoke_callback()
+		throw E
+	finish_smoke_callback()
+
+/datum/effect/effect/system/smoke_spread/chem/proc/finish_smoke_callback()
+	pending_smoke--
+	if (!pending_smoke && !smoke_emitting && !QDELETED(src))
+		qdel(src)
 
 //------------------------------------------
 // Randomizes and spawns the smoke effect.
