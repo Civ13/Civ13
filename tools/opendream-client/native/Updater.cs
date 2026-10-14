@@ -68,7 +68,7 @@ public sealed class ReleaseTransport : ITransport, IDisposable {
 
 public static class Updater {
     public const string ClientChannelUrl = "https://raw.githubusercontent.com/Civ13/Civ13/master/tools/opendream-client/channel.json";
-    public const string LauncherChannelUrl = "https://raw.githubusercontent.com/Civ13/Civ13/master/tools/opendream-client/native-launcher-channel.json";
+    public const string LauncherChannelUrl = "https://raw.githubusercontent.com/Civ13/Civ13/native-launcher-updates/native-launcher-channel.json";
     public static readonly string[] Required = ["Sign-In.cmd", "Play-Nomads.cmd", "Play-TDM.cmd", "Connect.ps1",
         "dotnet/dotnet.exe", "RobustToolbox/bin/ClientAuth/Robust.Client.dll", "Content.Client.zip"];
     public static FileStream Lock(string root) {

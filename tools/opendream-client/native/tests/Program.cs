@@ -84,15 +84,63 @@ try {
     var second = await Updater.InstallClient(secondChannel, install, new MockTransport(secondArchive, JsonSerializer.Serialize(secondChannel)));
     Require(second != first && File.ReadAllText(Path.Combine(first, "Sign-In.cmd")) == "fixture never executed", "side-by-side install changed previous client");
     Require(File.ReadAllText(settings) == "preserve me", "new version changed account settings");
+    var officialRequirement = Civ13.Launcher.Program.RequiredByond();
+    Require(officialRequirement.Version == "516.1681" && officialRequirement.Matches(5, 0, 516, 1681) && !officialRequirement.Matches(5, 0, 516, 1688), "BYOND requirement does not match exact game pin");
+    Reject(() => (officialRequirement with { Url = "https://example.com/byond.exe" }).Validate(), "nonofficial BYOND origin");
+    var byondFixture = Path.Combine(root, "byond-fixture.exe");
+    File.WriteAllText(byondFixture, "fixture never executed");
+    var byondRequirement = officialRequirement with { Sha256 = Updater.Hash(byondFixture) };
+    var byondRoot = Path.Combine(root, "byond-install");
+    Directory.CreateDirectory(byondRoot);
+    var byondTransport = new MockTransport(byondFixture, "unused");
+    var presentByond = new FakeByondDesktop { HasRequired = true, Bin = Path.Combine(root, "existing", "bin") };
+    Require(await Byond.Ensure(byondRequirement, byondRoot, byondTransport, presentByond) == presentByond.Bin && byondTransport.Downloads == 0 && presentByond.Installs == 0, "present BYOND was reinstalled");
+    var missingByond = new FakeByondDesktop();
+    var installedByond = await Byond.Ensure(byondRequirement, byondRoot, byondTransport, missingByond);
+    Require(missingByond.Installs == 1 && byondTransport.Downloads == 1 && File.Exists(Path.Combine(byondRoot, "byond-install.json")), "missing BYOND did not install/record exact version");
+    Require(await Byond.Ensure(byondRequirement, byondRoot, byondTransport, missingByond) == installedByond && missingByond.Installs == 1 && byondTransport.Downloads == 1, "BYOND first-run setup is not idempotent");
+    var wrongRoot = Path.Combine(root, "byond-wrong-version");
+    var oldByond = Path.Combine(wrongRoot, "BYOND", "516.1681");
+    Directory.CreateDirectory(oldByond);
+    File.WriteAllText(Path.Combine(oldByond, "keep.txt"), "older version preserved");
+    var wrongByond = new FakeByondDesktop { Bin = Path.Combine(oldByond, "bin") };
+    await Byond.Ensure(byondRequirement, wrongRoot, byondTransport, wrongByond);
+    Require(wrongByond.Bin != Path.Combine(oldByond, "bin") && File.ReadAllText(Path.Combine(oldByond, "keep.txt")) == "older version preserved", "wrong-version existing directory overwritten");
+    var failedRoot = Path.Combine(root, "byond-failed");
+    var failedByond = new FakeByondDesktop();
+    byondTransport.Offline = true;
+    await RejectAsync(() => Byond.Ensure(byondRequirement, failedRoot, byondTransport, failedByond), "BYOND failed download");
+    Require(failedByond.Installs == 0 && !File.Exists(Path.Combine(failedRoot, "byond-install.json")), "failed BYOND download reached installer");
+    byondTransport.Offline = false;
+    byondTransport.InterruptAfterCopy = true;
+    await RejectAsync(() => Byond.Ensure(byondRequirement, failedRoot, byondTransport, failedByond), "interrupted BYOND download");
+    Require(Directory.GetFiles(Path.Combine(failedRoot, "BYOND", "installers"), "*.part").Length == 1 && failedByond.Installs == 0, "interrupted download was executed or lost diagnostics");
+    byondTransport.InterruptAfterCopy = false;
+    Require(await Byond.Ensure(byondRequirement, failedRoot, byondTransport, failedByond) == failedByond.Bin && failedByond.Installs == 1, "interrupted BYOND setup did not recover");
+    failedByond = new FakeByondDesktop();
+    failedRoot = Path.Combine(root, "byond-bad-hash");
+    await RejectAsync(() => Byond.Ensure(byondRequirement with { Sha256 = new string('0', 64) }, failedRoot, byondTransport, failedByond), "BYOND hash failure");
+    Require(failedByond.Installs == 0 && failedByond.Validations == 0, "unverified BYOND installer reached execution/validation");
+    var declinedByond = new FakeByondDesktop { Confirm = false };
+    var beforeDeclined = byondTransport.Downloads;
+    await RejectAsync(() => Byond.Ensure(byondRequirement, Path.Combine(root, "byond-declined"), byondTransport, declinedByond), "BYOND user decline");
+    Require(byondTransport.Downloads == beforeDeclined && declinedByond.Installs == 0, "declining BYOND installed or downloaded anything");
+    var cancelledByond = new FakeByondDesktop { ExitCode = 1 };
+    await RejectAsync(() => Byond.Ensure(byondRequirement, Path.Combine(root, "byond-cancelled"), byondTransport, cancelledByond), "BYOND installer cancellation");
+    Require(!File.Exists(Path.Combine(root, "byond-cancelled", "byond-install.json")), "cancelled BYOND setup recorded success");
+    var wrongInstalledByond = new FakeByondDesktop { InstallReportsWrongVersion = true };
+    await RejectAsync(() => Byond.Ensure(byondRequirement, Path.Combine(root, "byond-wrong-installed"), byondTransport, wrongInstalledByond), "installer returned success with wrong installed version");
+    Require(!File.Exists(Path.Combine(root, "byond-wrong-installed", "byond-install.json")), "wrong installed BYOND recorded success");
     // Optional actual self-contained binary closes the packaging boundary without launching a game.
-    if (args.Length == 1) {
+    if (args.Length is 1 or 2) {
         var exe = Path.GetFullPath(args[0]);
-        Updater.ValidateExecutable(exe, "1.0.0"); assertions++;
+        var executableVersion = args.Length == 2 ? args[1] : "1.0.0";
+        Updater.ValidateExecutable(exe, executableVersion); assertions++;
         var target = Path.Combine(root, "Civ13.exe");
         File.Copy(exe, target);
-        Updater.ReplaceLauncher(exe, target, Updater.Hash(exe), "1.0.0");
+        Updater.ReplaceLauncher(exe, target, Updater.Hash(exe), executableVersion);
         Require(Updater.Hash(target) == Updater.Hash(exe) && File.Exists(target + ".previous"), "actual atomic executable replacement/backup failed");
-        Reject(() => Updater.ReplaceLauncher(exe, target, new string('0', 64), "1.0.0"), "actual replacement hash rejection");
+        Reject(() => Updater.ReplaceLauncher(exe, target, new string('0', 64), executableVersion), "actual replacement hash rejection");
         Require(Updater.Hash(target) == Updater.Hash(exe), "rejected replacement changed executable");
         File.WriteAllText(target + ".previous", "before parent exit");
         var waitStart = new ProcessStartInfo("C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe") {
@@ -103,7 +151,7 @@ try {
         var helperPath = Path.Combine(root, "UpdateHelper.exe");
         File.Copy(exe, helperPath);
         var helperStart = new ProcessStartInfo(helperPath) { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
-        foreach (var arg in new[] { "--apply-update", parent.Id.ToString(), parent.StartTime.ToUniversalTime().Ticks.ToString(), exe, target, Updater.Hash(exe), "1.0.0", install, "--self-check" }) helperStart.ArgumentList.Add(arg);
+        foreach (var arg in new[] { "--apply-update", parent.Id.ToString(), parent.StartTime.ToUniversalTime().Ticks.ToString(), exe, target, Updater.Hash(exe), executableVersion, install, "--self-check" }) helperStart.ArgumentList.Add(arg);
         using var helper = Process.Start(helperStart) ?? throw new Exception("Actual update helper failed to start");
         Thread.Sleep(200);
         Require(!parent.HasExited && File.ReadAllText(target + ".previous") == "before parent exit", "helper replaced launcher before parent exit");
@@ -124,6 +172,7 @@ return 0;
 
 sealed class MockTransport(string archive, string manifest) : ITransport {
     public bool Offline { get; set; }
+    public bool InterruptAfterCopy { get; set; }
     public string Manifest { get; set; } = manifest;
     public int Downloads { get; private set; }
     public Task<string> Text(string url) => Offline ? Task.FromException<string>(new IOException("offline fixture")) : Task.FromResult(Manifest);
@@ -131,6 +180,28 @@ sealed class MockTransport(string archive, string manifest) : ITransport {
         if (Offline) throw new IOException("offline fixture");
         Downloads++;
         File.Copy(archive, destination);
+        if (InterruptAfterCopy) throw new IOException("interrupted fixture download");
         return Task.CompletedTask;
+    }
+}
+
+sealed class FakeByondDesktop : IByondDesktop {
+    public bool HasRequired { get; set; }
+    public string Bin { get; set; } = "missing";
+    public bool Confirm { get; set; } = true;
+    public int ExitCode { get; set; }
+    public bool InstallReportsWrongVersion { get; set; }
+    public int Installs { get; private set; }
+    public int Validations { get; private set; }
+    public IEnumerable<string> Candidates(string root, ByondRequirement requirement) => [Bin];
+    public bool Matches(string path, ByondRequirement requirement) => HasRequired && path == Bin;
+    public string? ChooseExisting() => null;
+    public bool ConfirmInstall(ByondRequirement requirement) => Confirm;
+    public void ValidateInstaller(string installer, ByondRequirement requirement) { Validations++; }
+    public Task<int> Install(string installer, string destination) {
+        Installs++;
+        Bin = Path.Combine(destination, "bin");
+        HasRequired = ExitCode == 0 && !InstallReportsWrongVersion;
+        return Task.FromResult(ExitCode);
     }
 }

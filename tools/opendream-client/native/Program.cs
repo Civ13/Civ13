@@ -11,6 +11,12 @@ public static class Program {
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
     }
+    public static ByondRequirement RequiredByond() {
+        using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("byond.json")
+            ?? throw new InvalidOperationException("Bundled BYOND requirement missing.");
+        using var reader = new StreamReader(stream);
+        return ByondRequirement.Read(reader.ReadToEnd());
+    }
     public static async Task<int> Main(string[] args) {
         try {
             var version = Assembly.GetExecutingAssembly().GetName().Version!;
@@ -20,7 +26,8 @@ public static class Program {
             }
             if (args.SequenceEqual(["--self-check"])) {
                 Channel.Read(BundledChannel()).Validate();
-                Console.WriteLine("PASS: embedded client manifest and native launcher entrypoint.");
+                RequiredByond().Validate();
+                Console.WriteLine("PASS: embedded client/BYOND manifests and native launcher entrypoint.");
                 return 0;
             }
             if (!OperatingSystem.IsWindows() || !Environment.Is64BitOperatingSystem)
@@ -43,6 +50,10 @@ public static class Program {
                 Console.WriteLine("Launcher update unavailable: " + e.Message);
             }
             var client = await Updater.ClientChannel(transport, root, BundledChannel());
+            using var byondTransport = new ByondTransport();
+            var byond = await Byond.Ensure(RequiredByond(), root, byondTransport, new WindowsByondDesktop());
+            Console.WriteLine("BYOND " + RequiredByond().Version + " available at " + byond);
+            Console.WriteLine("Installing BYOND does not sign you in. Use your own account in the published client's sign-in flow.");
             Console.WriteLine("Client version: " + client.Version);
             var destination = await Updater.EnsureClient(client, root, transport);
             owner.Dispose();
