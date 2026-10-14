@@ -253,7 +253,8 @@ var/global/persistence_save_in_progress = FALSE
 			map_storage.reset_player_restoration()
 			persistence_save_in_progress = FALSE
 			return FALSE
-		map_storage.load_map_metadata()
+		if(!map_storage.load_map_metadata())
+			throw EXCEPTION("Saved world metadata restoration failed")
 	catch(var/exception/e)
 		map_storage.clear_bookkeeping()
 		map_storage.reset_player_restoration()

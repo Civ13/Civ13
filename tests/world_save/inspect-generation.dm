@@ -42,6 +42,7 @@
 						root = parents[root]
 					var/list/row = list("z" = z, "entry" = "[ref]", "position" = coordinates[root])
 					row["snapshot"] = generation_snapshot(F, ref, list())
+					row["serialized_snapshot"] = json_encode(row["snapshot"])
 					humans += list(row)
 		catch(var/exception/e)
 			report["error"] = "[e] on [e.file]:[e.line]"
