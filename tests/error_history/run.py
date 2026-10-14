@@ -107,6 +107,7 @@ def main():
             raise SystemExit(f'Historical control did not fail at its named contracts: {labels}')
     elif labels or result['failures']:
         raise SystemExit('Production fixture failed')
+    print(json.dumps(result, sort_keys=True))
     print('PASS historical retention control' if args.historical else 'PASS bounded production history')
 
 

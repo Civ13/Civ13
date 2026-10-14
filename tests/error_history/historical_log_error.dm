@@ -23,4 +23,3 @@
 		//log_debug("Runtime in <b>[e.file]</b>, line <b>[e.line]</b>: <b>[rhtml_encode(e.name)]</b> [error_entry.make_link(viewtext)]")
 		log_debug("Runtime in [e.file],[e.line]: [html_encode(e.name)] [error_entry.make_link(viewtext)]")
 		error_source.next_message_at = world.time + ERROR_MSG_DELAY
-
