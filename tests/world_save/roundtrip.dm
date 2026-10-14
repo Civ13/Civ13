@@ -22,19 +22,45 @@ world
 	var/area/current_area
 	var/obj/map_metadata/metadata
 	var/obj/item/test/other_z
+	var/matrix/matrix_value
 /datum/test
 	var/value = 0
 	var/datum/test/next
 	var/obj/item/test/backlink
+	var/tmp/constructor_argument_count = -1
+/datum/test/New()
+	constructor_argument_count = args.len
+	..()
+/datum/test/persistence_runtime_var(key)
+	return key == "constructor_argument_count" || ..()
 /proc/check(condition, message)
 	if(!condition)
 		throw EXCEPTION(message)
+/proc/check_matrix(matrix/M, list/expected, label)
+	check(istype(M, /matrix), "[label] matrix missing")
+	var/list/keys = list("a", "b", "c", "d", "e", "f")
+	for(var/i = 1, i <= keys.len, i++)
+		check(M.vars[keys[i]] == expected[i], "[label] matrix coefficient [keys[i]] changed")
+/proc/check_datum_constructor()
+	var/savefile/F = new("constructor.sav")
+	F["/format_version"] << 2
+	var/datum/test/original = new
+	original.value = 73
+	var/ref = map_storage.BuildVarDirectory(F, original)
+	map_storage.clear_bookkeeping()
+	var/datum/test/restored = map_storage.Load_Entry(F, ref)
+	check(restored && restored.constructor_argument_count == 0, "datum constructor received location argument")
+	check(restored.value == 73, "datum constructor probe value lost")
+	map_storage.clear_bookkeeping()
+	qdel(original)
+	qdel(restored)
 /world/OpenPort(port)
 	return ..("none")
 /world/New()
 	OpenPort("none")
 	..()
 	try
+		check_datum_constructor()
 		check_save_transfers()
 		check_save_identity_and_snapshot()
 		if(world.params["large"])
@@ -52,6 +78,8 @@ world
 		A.reference.value = 123
 		A.reference.next = A.reference
 		A.reference.backlink = A
+		A.matrix_value = new /matrix(2,3,4,5,6,7)
+		A.transform = new /matrix(8,9,10,11,12,13)
 		A.complex = list("literal **entry7", 7, 7, "key" = list("nested" = 42))
 		A.alias = A.complex
 		A.complex += list(A.complex)
@@ -85,6 +113,9 @@ world
 		B = locate(/obj/item/test) in A
 		check(B && B.number == 99, "nested contents lost")
 		check(A.reference && A.reference.value == 123, "datum reference lost")
+		check(A.reference.constructor_argument_count == 0, "loaded datum received location argument")
+		check_matrix(A.matrix_value, list(2,3,4,5,6,7), "standalone")
+		check_matrix(A.transform, list(8,9,10,11,12,13), "transform")
 		check(A.reference.next == A.reference && A.reference.backlink == A, "datum/object cycle lost")
 		check(islist(A.items) && !A.items.len, "empty list reverted to default")
 		check(A.complex[1] == "literal **entry7", "literal marker string changed")

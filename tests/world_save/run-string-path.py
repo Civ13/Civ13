@@ -16,11 +16,14 @@ def main():
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--expected-saving-sha256', required=True)
     parser.add_argument('--negative-control', action='store_true')
+    parser.add_argument('--datum-constructor-negative-control', action='store_true')
     parser.add_argument('--progress', action='store_true')
     parser.add_argument('--progress-fault-stage', choices=('save_entered', 'level_serialized', 'completion_marker'))
     parser.add_argument('--progress-fault-operation', choices=('delete', 'write', 'json'))
     parser.add_argument('--progress-negative-control', action='store_true')
     args = parser.parse_args()
+    if args.datum_constructor_negative_control and (args.negative_control or args.progress):
+        parser.error('Keep datum constructor controls separate from metadata/progress controls')
     if bool(args.progress_fault_stage) != bool(args.progress_fault_operation):
         parser.error('Both progress fault stage and operation are required')
     if (args.progress_fault_stage or args.progress_negative_control) and not args.progress:
@@ -84,6 +87,14 @@ def main():
             if source.count(before) != 1:
                 raise RuntimeError('Negative control needs exactly one corrected metadata path')
             source = source.replace(before, 'var/F0 = file("map_saves/map.txt")', 1)
+        if original.name == 'loading.dm' and args.datum_constructor_negative_control:
+            before = ('\t\telse if(ispath(type, /atom))\n\t\t\tobject = new type(starting_loc)\n'
+                      '\t\telse\n\t\t\t// Non-atom datums have no location argument. In particular, matrix\n'
+                      '\t\t\t// construction must use its no-argument identity initializer.\n'
+                      '\t\t\tobject = new type()\n')
+            if source.count(before) != 1:
+                raise RuntimeError('Datum control needs exactly one corrected constructor branch')
+            source = source.replace(before, '\t\telse\n\t\t\tobject = new type(starting_loc)\n', 1)
         if original.name == 'roundtrip.dm':
             before = '\tcatch(var/exception/e)\n'
             if source.count(before) != 1:
@@ -166,6 +177,12 @@ def main():
         marker = (output / 'map_saves/save_complete.txt').exists()
         if marker != (args.progress_fault_stage == 'completion_marker'):
             raise RuntimeError('Diagnostic negative marker state mismatch')
+    elif args.datum_constructor_negative_control:
+        failure = read(output / 'failure-name.txt').strip()
+        if failure != 'datum constructor received location argument' or not actual.startswith('FAIL:'):
+            raise RuntimeError(f'Wrong datum constructor failure: {actual!r}, {failure!r}')
+        if (output / 'map_saves/save_complete.txt').exists():
+            raise RuntimeError('Constructor control should fail before world export')
     elif args.negative_control:
         failure = read(output / 'failure-name.txt').strip()
         if failure != 'Could not write world-save metadata' or not actual.startswith('FAIL:'):
@@ -176,6 +193,7 @@ def main():
         raise RuntimeError(f'Positive regression failed: {actual!r}')
     (output / 'summary.json').write_text(json.dumps({
         'scope': __doc__, 'result': actual, 'negative_control': args.negative_control,
+        'datum_constructor_negative_control': args.datum_constructor_negative_control,
         'progress': args.progress, 'progress_fault_stage': args.progress_fault_stage,
         'progress_fault_operation': args.progress_fault_operation,
         'progress_negative_control': args.progress_negative_control,

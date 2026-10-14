@@ -5,6 +5,22 @@ loader, with isolated substitutes for game startup, chat, deletion, turf change,
 and reagent hooks. It never starts a production game or accesses original saves.
 It is offline integration evidence, not full playable-world acceptance.
 
+`Load_Entry` supplies a location only when constructing atoms. Non-atom datums,
+including matrices, are constructed with no arguments before saved fields are
+restored. The fixture records constructor argument counts without persisting
+that runtime field, checks an actual saved-entry datum construction, and restores
+all six non-default coefficients of both a standalone matrix and an item
+transform. Existing atom placement, nested contents, typed lists and legacy
+flat-entry loading remain part of the ordinary fixture.
+
+The bounded `run-string-path.py --datum-constructor-negative-control` mode
+restores the old location-for-every-type branch only in its generated loader.
+It requires the exact `datum constructor received location argument` failure
+before world export and rejects a completion marker. Keep this control separate
+from metadata and diagnostic controls. The same runner without the flag must
+pass the full ordinary fixture. Native tests require the current runtime owner's
+exclusive execution window; source generation does not establish a runtime pass.
+
 Use BYOND 516.1681. From the repository root on Windows:
 
 ```powershell
