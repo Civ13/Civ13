@@ -218,6 +218,16 @@ names for separate catch blocks in one proc or compilation fails with duplicate 
   `pixloc`, or client session fields as ordinary variables. Linux DreamDaemon
   `-safe` requires a relative log path inside the isolated working directory.
 
+<!-- 2026-10-14: optional save fields and player reclaim -->
+- Reading an absent native savefile field can create a null directory entry.
+  Check `F.dir` membership before reading optional legacy fields; otherwise
+  typed-value validation can reject a valid generation. The reclaim suite's
+  `legacy` control checks this mutation before broader world preflight.
+- `lastKnownCkey` is login history, not unique body ownership. Reclaim uses the
+  explicit canonical owner, complete-load readiness and ordinary admission
+  guards. Legacy migration requires a reviewed generation-bound unique body
+  mapping and a fresh derived save; preserve all original generations.
+
 This file is read by every agent at session start. If you discover something
 useful about the codebase that future agents should know, **update this file**.
 Good candidates for additions:
