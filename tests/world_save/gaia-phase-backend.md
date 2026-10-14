@@ -28,3 +28,15 @@ timings provide separate attribution; yield includes those flushes, so the two
 measurements must not be added together. A matching accepted smoke enables the
 owner's next full Gaia profile; only a completed stopped full-world generation
 can enable its fresh-process recovery check.
+
+The first actual 644 backend run compiled without warnings, then rejected equal
+timeofday samples across the startup `sleep(2)`; no SAVE generation or VERIFY
+was accepted. Its shutdown runtime errors remain a separate engine investigation.
+The successor moves sampling after eight normal ticks, then observes four normal
+ticks and records both game time and timeofday. This follows pinned 644 native
+sleep's tick deadlines and its af2a7d04 Robust game loop's five queued tick limit:
+startup catch-up can advance game ticks inside one 0.1-second clock interval.
+This is a source-supported timing hypothesis, not a proven cause or getter fix.
+The clock advancement assertion remains mandatory; game-time advancement is
+also required. No polling, fake clock, production threshold change or assertion
+waiver is introduced. Preserve the original failed packet and logs.

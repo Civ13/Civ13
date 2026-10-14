@@ -37,11 +37,24 @@ world
 	..()
 	var/list/receipt = list("scope" = "isolated actual-backend legacy saver smoke", "mode" = world.params["verify"] ? "VERIFY" : "SAVE", "fake_clock" = FALSE, "full_gaia_recovery" = FALSE)
 	try
+		// OpenDream sleep uses game ticks. Its startup loop can consume up to
+		// five queued ticks together; two startup ticks need not span 0.1s.
+		// Move beyond that bounded queue before sampling the real getter.
+		receipt["startup_world_time_ds"] = world.time
+		receipt["startup_tick_lag_ds"] = world.tick_lag
+		sleep(8 * world.tick_lag)
 		var/start_clock = world_save_progress_now()
-		sleep(2)
+		var/start_time = world.time
+		var/sample_tick_lag = world.tick_lag
+		sleep(4 * sample_tick_lag)
 		var/end_clock = world_save_progress_now()
 		receipt["clock_start_ds"] = start_clock
 		receipt["clock_end_ds"] = end_clock
+		receipt["sample_world_start_ds"] = start_time
+		receipt["sample_world_end_ds"] = world.time
+		receipt["sample_tick_lag_ds"] = sample_tick_lag
+		world.log << "BACKEND_CLOCK [json_encode(receipt)]"
+		backend_check(world.time > start_time, "game time did not advance across clock sample")
 		backend_check(world_save_progress_elapsed(start_clock, end_clock) > 0, "actual timeofday did not advance")
 		map = new /obj/map_metadata(locate(1,1,1))
 		if(world.params["verify"])
