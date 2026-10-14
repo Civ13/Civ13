@@ -19,13 +19,15 @@ def main():
     parser.add_argument('--datum-constructor-negative-control', action='store_true')
     parser.add_argument('--appearance-negative-control', action='store_true')
     parser.add_argument('--hud-negative-control', choices=('export', 'import', 'constructor'))
-    parser.add_argument('--player-reclaim-negative-control', choices=('owner', 'state', 'duplicate', 'ready'))
+    parser.add_argument('--player-reclaim-negative-control', choices=('owner', 'state', 'duplicate', 'ready', 'legacy', 'ban', 'guest'))
+    parser.add_argument('--player-admission', action='store_true')
     parser.add_argument('--matrix-trace', action='store_true')
     parser.add_argument('--progress', action='store_true')
     parser.add_argument('--progress-fault-stage', choices=('save_entered', 'level_serialized', 'completion_marker'))
     parser.add_argument('--progress-fault-operation', choices=('delete', 'write', 'json'))
     parser.add_argument('--progress-negative-control', action='store_true')
     args = parser.parse_args()
+    admission = args.player_admission or args.player_reclaim_negative_control in ('ban', 'guest')
     if args.player_reclaim_negative_control and any((args.negative_control, args.datum_constructor_negative_control,
                                                     args.appearance_negative_control, args.hud_negative_control,
                                                     args.matrix_trace, args.progress)):
@@ -98,12 +100,25 @@ def main():
         if original.name == 'player_reclaim.dm' and args.player_reclaim_negative_control:
             if args.player_reclaim_negative_control == 'owner':
                 source += '\n/mob/living/human/persistence_runtime_var(key)\n\treturn key == "persistence_owner_ckey" || ..()\n'
-            elif args.player_reclaim_negative_control in ('duplicate', 'ready'):
+            elif args.player_reclaim_negative_control in ('duplicate', 'ready', 'legacy', 'ban', 'guest'):
                 before, after = {'duplicate': ('bodies.len != 1', '!bodies.len'),
-                                 'ready': ('!persistence_player_restore_ready || ', '')}[args.player_reclaim_negative_control]
+                                 'ready': ('!persistence_player_restore_ready || ', ''),
+                                 'legacy': ('\tif(!("persistence_owner_ckey" in F.dir)) return\n', ''),
+                                 'ban': ('C.quickBan_isbanned("Playing") || ', ''),
+                                 'guest': ('IsGuestKey(C.key) || ', '')}[args.player_reclaim_negative_control]
                 if source.count(before) != 1:
                     raise RuntimeError('Player reclaim mutation target changed')
                 source = source.replace(before, after, 1)
+        if original.name == 'player_reclaim.dm' and admission:
+            start = source.index('/map_storage/proc/reclaim_saved_player(')
+            end = source.index('/map_storage/proc/finish_player_restoration()', start)
+            body = source[start:end]
+            if body.count('H.key = C.key') != 1 or body.count('var/client/C') != 1:
+                raise RuntimeError('Reclaim external-effect adapter markers changed')
+            body = body.replace('lobby.client', 'lobby.claim_client')
+            body = body.replace('var/client/C', 'var/datum/reclaim_client_fixture/C')
+            body = body.replace('H.key = C.key', 'fixture_player_transfer(C, H)')
+            source = source[:start] + body + source[end:]
         if original.name == 'loading.dm' and args.player_reclaim_negative_control == 'state':
             before = 'H.stat != DEAD && !H.persistence_owner_ckey'
             if source.count(before) != 1:
@@ -182,6 +197,11 @@ def main():
                 raise RuntimeError('Datum control needs exactly one corrected constructor branch')
             source = source.replace(before, '\t\telse\n\t\t\tobject = new type(starting_loc)\n', 1)
         if original.name == 'roundtrip.dm':
+            if admission:
+                marker = '\t\tcheck_player_reclaim()\n'
+                if source.count(marker) != 1:
+                    raise RuntimeError('Player admission fixture marker changed')
+                source = source.replace(marker, marker + '\t\tcheck_player_admission()\n', 1)
             before = '\tcatch(var/exception/e)\n'
             if source.count(before) != 1:
                 raise RuntimeError('Fixture must have one failure handler')
@@ -209,6 +229,13 @@ def main():
         return f'#include "{target.as_posix()}"'
 
     environment = re.sub(r'^#include "([^"]+)"', include, environment, flags=re.MULTILINE)
+    if admission:
+        original = fixture / 'player_admission_probe.dm'
+        target = output / original.name
+        target.write_bytes(original.read_bytes())
+        hashes[original.relative_to(root).as_posix()] = hashlib.sha256(original.read_bytes()).hexdigest()
+        generated[target.name] = hashlib.sha256(target.read_bytes()).hexdigest()
+        environment += f'\n#include "{target.as_posix()}"\n'
     environment += progress_helper_include
     (output / 'probe.dme').write_text(environment, encoding='utf-8')
     hashes['tests/world_save/string_path_roundtrip.dme'] = hashlib.sha256((fixture / 'string_path_roundtrip.dme').read_bytes()).hexdigest()
@@ -257,7 +284,9 @@ def main():
     actual = read(output / 'result.txt').strip()
     if args.player_reclaim_negative_control:
         expected = {'owner': 'saved player owner lost', 'state': 'owned saved medical state changed',
-                    'duplicate': 'duplicate player owner accepted', 'ready': 'player restored before load completed'}[args.player_reclaim_negative_control]
+                    'duplicate': 'duplicate player owner accepted', 'ready': 'player restored before load completed',
+                    'legacy': 'legacy owner read materialized missing field',
+                    'ban': 'playing ban bypassed by reclaim', 'guest': 'guest client reclaimed registered body'}[args.player_reclaim_negative_control]
         failure = read(output / 'failure-name.txt').strip()
         if failure != expected or not actual.startswith('FAIL:'):
             raise RuntimeError(f'Wrong player reclaim negative failure: {actual!r}, {failure!r}')
@@ -301,6 +330,7 @@ def main():
         'appearance_negative_control': args.appearance_negative_control,
         'hud_negative_control': args.hud_negative_control,
         'player_reclaim_negative_control': args.player_reclaim_negative_control,
+        'player_admission_adapter': admission,
         'matrix_trace': args.matrix_trace,
         'progress': args.progress, 'progress_fault_stage': args.progress_fault_stage,
         'progress_fault_operation': args.progress_fault_operation,

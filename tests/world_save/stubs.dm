@@ -3,6 +3,16 @@ var/TimeOfGame = 0
 var/obj/map_metadata/map
 var/list/errors = list()
 var/list/clients = list()
+/client/proc/quickBan_isbanned(kind)
+	return FALSE
+// The raw-key form used by client/New, including web guests.
+/proc/IsGuestKey(key)
+	if(findtext(key, "Guest-", TRUE, 7) != TRUE) return FALSE
+	var/start = copytext(key, 7, 8) == "W" ? 8 : 7
+	for(var/i = start, i <= length(key), i++)
+		var/character = text2ascii(key, i)
+		if(character < 48 || character > 57) return FALSE
+	return TRUE
 /proc/get_turf(atom/A)
 	while(A && !isturf(A))
 		A = A.loc

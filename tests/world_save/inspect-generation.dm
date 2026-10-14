@@ -19,6 +19,8 @@
 				var/list/entries = generation_entries(F)
 				var/list/parents = list()
 				for(var/ref in entries)
+					F.cd = map_storage.entry_path(F, ref)
+					if(!("content" in F.dir)) continue
 					var/contents = F["[map_storage.entry_path(F, ref)]/content"]
 					for(var/child in params2list(contents))
 						if(parents["[child]"])
@@ -44,6 +46,10 @@
 					row["snapshot"] = generation_snapshot(F, ref, list())
 					row["serialized_snapshot"] = json_encode(row["snapshot"])
 					humans += list(row)
+#ifdef WORLD_SAVE_PLAYER_MIGRATION
+			generation_migrate_player(humans)
+			report["ownership_migrated"] = TRUE
+#endif
 		catch(var/exception/e)
 			report["error"] = "[e] on [e.file]:[e.line]"
 		if(!text2file(json_encode(report), "generation-inspection.json"))
@@ -76,8 +82,41 @@
 		if(field == "content") continue
 		values[field] = F["[map_storage.entry_path(F, ref)]/[field]"]
 	var/list/children = result["contents"]
-	var/content = F["[map_storage.entry_path(F, ref)]/content"]
-	for(var/child in params2list(content))
-		children += list(generation_snapshot(F, child, visited, depth + 1))
-		TICK_CHECK
+	if("content" in fields)
+		var/content = F["[map_storage.entry_path(F, ref)]/content"]
+		for(var/child in params2list(content))
+			children += list(generation_snapshot(F, child, visited, depth + 1))
+			TICK_CHECK
 	return result
+
+#ifdef WORLD_SAVE_PLAYER_MIGRATION
+/proc/generation_migrate_player(list/humans)
+	var/list/manifest = json_decode(file2text("migration-manifest.json"))
+	var/account = manifest["account"]
+	if(manifest["schema"] != 1 || !istext(account) || !length(account) || ckey(account) != account || persistence_guest_account(account))
+		throw EXCEPTION("Invalid migration account or manifest")
+	var/list/selected
+	for(var/list/row in humans)
+		var/list/snapshot = row["snapshot"]
+		var/list/fields = snapshot["fields"]
+		if("persistence_owner_ckey" in fields)
+			throw EXCEPTION("Migration requires an unowned legacy generation")
+		if(row["z"] == manifest["z"] && row["entry"] == manifest["entry"])
+			if(selected) throw EXCEPTION("Ambiguous migration entry")
+			selected = row
+	if(!selected || selected["serialized_snapshot"] != manifest["serialized_snapshot"])
+		throw EXCEPTION("Migration body fingerprint differs from reviewed generation")
+	var/list/selected_snapshot = selected["snapshot"]
+	var/list/selected_fields = selected_snapshot["fields"]
+	var/list/audit = selected_fields["lastKnownCkey"]
+	if(!islist(audit) || audit["kind"] != "value" || audit["value"] != account)
+		throw EXCEPTION("Migration account audit differs from authenticated observation")
+	var/z = selected["z"]
+	var/ref = selected["entry"]
+	var/savefile/F = new("map_saves/[z].sav")
+	if(F["/format_version"] != 2) throw EXCEPTION("Migration requires typed version 2")
+	F["[map_storage.entry_path(F, ref)]/persistence_owner_ckey"] << list("kind" = "value", "value" = account)
+	F = null
+	if(!map_storage.validate_world_save())
+		throw EXCEPTION("Derived migration failed production validation")
+#endif
