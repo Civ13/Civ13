@@ -34,6 +34,11 @@
 			to_save |= "name"
 	return to_save
 
+// The composite appearance is not a supported saved datum. Restoring its null
+// envelope resets independently restored fields such as transform and color.
+/atom/persistence_runtime_var(key)
+	return key == "appearance" || ..()
+
 // Dirt uses the turf allowlist rather than the object changed-vars encoder.
 // Preserve finite fertility across exports without serializing recovery tokens.
 /turf/floor/dirt/get_saved_vars()

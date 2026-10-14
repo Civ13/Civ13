@@ -36,8 +36,12 @@
 			object = locate(xa,ya,za)
 		else if(replacement)
 			object = replacement
-		else
+		else if(ispath(type, /atom))
 			object = new type(starting_loc)
+		else
+			// Non-atom datums have no location argument. In particular, matrix
+			// construction must use its no-argument identity initializer.
+			object = new type()
 		if(!object)
 			throw EXCEPTION("Could not create saved entry [ind] ([type])")
 		all_loaded += object
