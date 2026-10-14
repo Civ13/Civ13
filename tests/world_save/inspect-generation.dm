@@ -19,7 +19,7 @@
 				var/list/entries = generation_entries(F)
 				var/list/parents = list()
 				for(var/ref in entries)
-					var/contents = F["[entry_path(F, ref)]/content"]
+					var/contents = F["[map_storage.entry_path(F, ref)]/content"]
 					for(var/child in params2list(contents))
 						if(parents["[child]"])
 							throw EXCEPTION("Multiple saved containment parents for [child]")
@@ -32,7 +32,7 @@
 						coordinates["[ref]"] = list(x, y, z)
 						TICK_CHECK
 				for(var/ref in entries)
-					var/type = F["[entry_path(F, ref)]/type"]
+					var/type = F["[map_storage.entry_path(F, ref)]/type"]
 					if(!ispath(type, /mob/living/human)) continue
 					var/root = "[ref]"
 					var/list/seen = list()
@@ -67,15 +67,15 @@
 		throw EXCEPTION("Saved body snapshot exceeds inspection bound")
 	if(visited["[ref]"]) return list("alias_entry" = "[ref]")
 	visited["[ref]"] = TRUE
-	F.cd = entry_path(F, ref)
+	F.cd = map_storage.entry_path(F, ref)
 	var/list/fields = F.dir.Copy()
 	var/list/result = list("entry" = "[ref]", "fields" = list(), "contents" = list())
 	var/list/values = result["fields"]
 	for(var/field in fields)
 		if(field == "content") continue
-		values[field] = F["[entry_path(F, ref)]/[field]"]
+		values[field] = F["[map_storage.entry_path(F, ref)]/[field]"]
 	var/list/children = result["contents"]
-	var/content = F["[entry_path(F, ref)]/content"]
+	var/content = F["[map_storage.entry_path(F, ref)]/content"]
 	for(var/child in params2list(content))
 		children += list(generation_snapshot(F, child, visited, depth + 1))
 		TICK_CHECK

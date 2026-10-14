@@ -60,6 +60,9 @@ def main():
         adapters[relative] = target
     def include(match):
         relative = match.group(1).replace('\\', '/')
+        if relative.endswith('.dmf'):
+            shutil.copyfile(root / relative, output / Path(relative).name)
+            return '#include "' + Path(relative).name + '"'
         return '#include "' + adapters.get(relative, root / relative).as_posix() + '"'
     environment = re.sub(r'^#include "([^"]+)"', include, environment, flags=re.M)
     environment = re.sub(r'^#define FILE_DIR .*$', '#define FILE_DIR "' + root.as_posix() + '"', environment, flags=re.M)

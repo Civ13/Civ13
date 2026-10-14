@@ -48,7 +48,7 @@
 	catch(var/exception/e)
 		rejected = TRUE
 	check(rejected, "duplicate saved player ownership not rejected")
-	F["[entry_path(F, ref)]/persistence_owner_ckey"] << list("kind" = "value", "value" = "Test Account")
+	F["[map_storage.entry_path(F, ref)]/persistence_owner_ckey"] << list("kind" = "value", "value" = "Test Account")
 	rejected = FALSE
 	try
 		map_storage.validate_saved_player_owner(F, ref, list())
