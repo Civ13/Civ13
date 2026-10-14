@@ -22,7 +22,7 @@ graph and second-level turf/item in a fresh process. It must only run after the
 SAVE process has stopped successfully and the complete generation is retained.
 
 This is a small actual backend smoke, not full Gaia recovery, crash recovery,
-current atomic export coverage or a speed measurement. Ten-decisecond wall
+current atomic export coverage or a speed measurement. One-decisecond wall
 clock resolution permits zero short phase intervals. Engine monotonic flush
 timings provide separate attribution; yield includes those flushes, so the two
 measurements must not be added together. A matching accepted smoke enables the
