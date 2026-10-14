@@ -82,6 +82,8 @@ world
 		A.reference.backlink = A
 		A.matrix_value = new /matrix(2,3,4,5,6,7)
 		A.transform = new /matrix(8,9,10,11,12,13)
+		A.color = "#123456"
+		A.alpha = 173
 		check_matrix(A.transform, list(8,9,10,11,12,13), "source transform")
 		A.complex = list("literal **entry7", 7, 7, "key" = list("nested" = 42))
 		A.alias = A.complex
@@ -119,6 +121,7 @@ world
 		check(A.reference.constructor_argument_count == 0, "loaded datum received location argument")
 		check_matrix(A.matrix_value, list(2,3,4,5,6,7), "standalone")
 		check_matrix(A.transform, list(8,9,10,11,12,13), "transform")
+		check(A.color == "#123456" && A.alpha == 173, "individual appearance fields changed")
 		check(A.reference.next == A.reference && A.reference.backlink == A, "datum/object cycle lost")
 		check(islist(A.items) && !A.items.len, "empty list reverted to default")
 		check(A.complex[1] == "literal **entry7", "literal marker string changed")

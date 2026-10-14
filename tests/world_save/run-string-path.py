@@ -17,16 +17,16 @@ def main():
     parser.add_argument('--expected-saving-sha256', required=True)
     parser.add_argument('--negative-control', action='store_true')
     parser.add_argument('--datum-constructor-negative-control', action='store_true')
-    parser.add_argument('--matrix-fields-negative-control', action='store_true')
+    parser.add_argument('--appearance-negative-control', action='store_true')
     parser.add_argument('--matrix-trace', action='store_true')
     parser.add_argument('--progress', action='store_true')
     parser.add_argument('--progress-fault-stage', choices=('save_entered', 'level_serialized', 'completion_marker'))
     parser.add_argument('--progress-fault-operation', choices=('delete', 'write', 'json'))
     parser.add_argument('--progress-negative-control', action='store_true')
     args = parser.parse_args()
-    if args.matrix_trace and (args.matrix_fields_negative_control or args.datum_constructor_negative_control or args.negative_control or args.progress):
+    if args.matrix_trace and (args.appearance_negative_control or args.datum_constructor_negative_control or args.negative_control or args.progress):
         parser.error('Keep matrix trace separate from other controls')
-    if args.matrix_fields_negative_control and (args.datum_constructor_negative_control or args.negative_control or args.progress):
+    if args.appearance_negative_control and (args.datum_constructor_negative_control or args.negative_control or args.progress):
         parser.error('Keep matrix field controls separate from constructor/metadata/progress controls')
     if args.datum_constructor_negative_control and (args.negative_control or args.progress):
         parser.error('Keep datum constructor controls separate from metadata/progress controls')
@@ -86,11 +86,11 @@ def main():
         original = (fixture / match.group(1)).resolve(strict=True)
         source = original.read_text(encoding='utf-8')
         hashes[original.relative_to(root).as_posix()] = hashlib.sha256(original.read_bytes()).hexdigest()
-        if original.name == 'functions.dm' and args.matrix_fields_negative_control:
-            before = ('/matrix/get_saved_vars()\n\t. = ..()\n'
-                      '\t. |= list("a", "b", "c", "d", "e", "f")\n')
+        if original.name == 'functions.dm' and args.appearance_negative_control:
+            before = ('/atom/persistence_runtime_var(key)\n'
+                      '\treturn key == "appearance" || ..()\n')
             if source.count(before) != 1:
-                raise RuntimeError('Matrix control needs exactly one complete coefficient override')
+                raise RuntimeError('Appearance control needs exactly one composite exclusion')
             source = source.replace(before, '', 1)
         if original.name == 'loading.dm' and args.matrix_trace:
             before = '\t\t\t\tobject.vars[v] = decode_saved_value(savefile, savefile[v])\n'
@@ -224,7 +224,7 @@ def main():
         marker = (output / 'map_saves/save_complete.txt').exists()
         if marker != (args.progress_fault_stage == 'completion_marker'):
             raise RuntimeError('Diagnostic negative marker state mismatch')
-    elif args.matrix_fields_negative_control:
+    elif args.appearance_negative_control:
         failure = read(output / 'failure-name.txt').strip()
         if failure != 'transform matrix coefficient a changed' or not actual.startswith('FAIL:'):
             raise RuntimeError(f'Wrong matrix field failure: {actual!r}, {failure!r}')
@@ -247,7 +247,7 @@ def main():
     (output / 'summary.json').write_text(json.dumps({
         'scope': __doc__, 'result': actual, 'negative_control': args.negative_control,
         'datum_constructor_negative_control': args.datum_constructor_negative_control,
-        'matrix_fields_negative_control': args.matrix_fields_negative_control,
+        'appearance_negative_control': args.appearance_negative_control,
         'matrix_trace': args.matrix_trace,
         'progress': args.progress, 'progress_fault_stage': args.progress_fault_stage,
         'progress_fault_operation': args.progress_fault_operation,

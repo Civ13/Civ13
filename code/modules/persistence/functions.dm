@@ -34,11 +34,10 @@
 			to_save |= "name"
 	return to_save
 
-// Atom transform reads return matrix copies. Persist the complete affine value,
-// rather than relying on changed-variable detection for an engine-created copy.
-/matrix/get_saved_vars()
-	. = ..()
-	. |= list("a", "b", "c", "d", "e", "f")
+// The composite appearance is not a supported saved datum. Restoring its null
+// envelope resets independently restored fields such as transform and color.
+/atom/persistence_runtime_var(key)
+	return key == "appearance" || ..()
 
 // Dirt uses the turf allowlist rather than the object changed-vars encoder.
 // Preserve finite fertility across exports without serializing recovery tokens.
