@@ -1,6 +1,7 @@
 """Pure source preparation and evidence-parser adversaries; never launch BYOND."""
 import importlib.util
 from pathlib import Path
+import re
 import unittest
 spec = importlib.util.spec_from_file_location('smoke_runner', Path(__file__).with_name('run.py'))
 runner = importlib.util.module_from_spec(spec)
@@ -14,6 +15,16 @@ class HarnessTests(unittest.TestCase):
             self.assertIn('/datum/global_init/New()\n\treturn\n', files['.smoke_test_world.dm'])
             self.assertEqual(files['.smoke_test_chem.dm'].count('smoke_fixture_observe('), 1)
             self.assertEqual('spawn_owned_smoke' in files['.smoke_test_chem.dm'], not historical)
+
+    def test_emission_and_particle_bodies_preserve_historical_behavior(self):
+        baseline = (runner.ROOT/'tests/chemical_smoke_ownership/baseline.dm').read_text()
+        fixed = (runner.ROOT/'code/game/objects/effects/chem/chemsmoke.dm').read_text()
+        old = baseline.split('/datum/effect/effect/system/smoke_spread/chem/start()\n', 1)[1].split('//------------------------------------------', 1)[0].strip()
+        new = fixed.split('/datum/effect/effect/system/smoke_spread/chem/proc/emit_cloud()\n', 1)[1].split('/datum/effect/effect/system/smoke_spread/chem/proc/spawn_owned_smoke', 1)[0].strip()
+        new = re.sub(r'^\s*pending_smoke\+\+\n', '', new, flags=re.M).replace('spawn_owned_smoke(', 'spawnSmoke(')
+        self.assertEqual(old, new)
+        anchor = '/datum/effect/effect/system/smoke_spread/chem/proc/spawnSmoke('
+        self.assertEqual(baseline.split(anchor, 1)[1], fixed.split(anchor, 1)[1])
 
     def test_strict_positive(self):
         runner.verify('DONE chemical smoke ownership\nPASS chemical smoke ownership\n', 0)

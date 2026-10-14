@@ -340,7 +340,12 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: chemical-smoke-ownership
-          path: ${{ runner.temp }}/chemical-smoke
+          path: |
+            ${{ runner.temp }}/chemical-smoke/
+            !${{ runner.temp }}/chemical-smoke/**/*.dmb
+            !${{ runner.temp }}/chemical-smoke/**/*.rsc
+          include-hidden-files: true
+          retention-days: 7
           if-no-files-found: error
 
       - name: Verify isolated chemistry reactions and negative control
