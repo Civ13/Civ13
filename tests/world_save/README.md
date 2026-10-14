@@ -13,6 +13,13 @@ all six non-default coefficients of both a standalone matrix and an item
 transform. Existing atom placement, nested contents, typed lists and legacy
 flat-entry loading remain part of the ordinary fixture.
 
+Matrix exports explicitly include all six affine coefficients, including copies
+returned by an atom's transform getter. The source transform is checked before
+export, and restoration failures log the expected and actual coefficient.
+`run-string-path.py --matrix-fields-negative-control` removes only this export
+override in generated source and requires the original transform-coefficient
+failure after a completed save. It cannot be combined with other controls.
+
 The bounded `run-string-path.py --datum-constructor-negative-control` mode
 restores the old location-for-every-type branch only in its generated loader.
 It requires the exact `datum constructor received location argument` failure

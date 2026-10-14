@@ -40,6 +40,8 @@ world
 	check(istype(M, /matrix), "[label] matrix missing")
 	var/list/keys = list("a", "b", "c", "d", "e", "f")
 	for(var/i = 1, i <= keys.len, i++)
+		if(M.vars[keys[i]] != expected[i])
+			world.log << "Matrix mismatch: [label].[keys[i]] expected=[expected[i]] actual=[M.vars[keys[i]]]"
 		check(M.vars[keys[i]] == expected[i], "[label] matrix coefficient [keys[i]] changed")
 /proc/check_datum_constructor()
 	var/savefile/F = new("constructor.sav")
@@ -80,6 +82,7 @@ world
 		A.reference.backlink = A
 		A.matrix_value = new /matrix(2,3,4,5,6,7)
 		A.transform = new /matrix(8,9,10,11,12,13)
+		check_matrix(A.transform, list(8,9,10,11,12,13), "source transform")
 		A.complex = list("literal **entry7", 7, 7, "key" = list("nested" = 42))
 		A.alias = A.complex
 		A.complex += list(A.complex)
