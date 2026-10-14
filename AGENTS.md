@@ -269,6 +269,13 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
 
+<!-- 2026-10-14: native launcher packaging -->
+`tools/opendream-client/native/Build.ps1` builds the single-file self-contained
+Windows x64 launcher. Its offline console tests cover mock updates plus actual
+EXE replacement after parent exit, without accounts or a game. Native executable
+updates use a separate inactive-until-release channel; preserve the existing client
+channel and distinguish package integrity from identity/gameplay acceptance.
+
 <!-- 2026-10-13: dehydrator native save baseline -->
 `tests/food_progression/rack_save.dm` exports the owning turf and rack graph.
 The 769ae4911 baseline compiled cleanly but failed exporting runtime `slots`.
