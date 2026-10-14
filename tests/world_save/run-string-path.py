@@ -102,12 +102,31 @@ def main():
                      '\t\t\t\tif(v == "transform" && istype(decoded, /matrix))\n'
                      '\t\t\t\t\tvar/matrix/M = decoded\n'
                      '\t\t\t\t\tworld.log << "MATRIX_TRACE decoded coefficients=[M.a],[M.b],[M.c],[M.d],[M.e],[M.f]"\n'
+                     '\t\t\t\t\tif(M.a == 8 && istype(object, /atom))\n'
+                     '\t\t\t\t\t\tworld_save_matrix_trace_target = object\n'
                      '\t\t\t\tobject.vars[v] = decoded\n'
                      '\t\t\t\tif((v == "transform" || "[ind]" == "2") && istype(object, /atom))\n'
                      '\t\t\t\t\tvar/atom/AT = object\n'
                      '\t\t\t\t\tvar/matrix/M = AT.transform\n'
                      '\t\t\t\t\tworld.log << "MATRIX_TRACE entry=[ind] after=[v] assigned coefficients=[M.a],[M.b],[M.c],[M.d],[M.e],[M.f]"\n')
             source = source.replace(before, after, 1)
+            traced = []
+            for line_number, line in enumerate(source.splitlines(keepends=True), 1):
+                if line.strip() and not line.lstrip().startswith('//'):
+                    indent = line[:len(line) - len(line.lstrip('\t'))]
+                    if len(indent) >= 3 and not line.lstrip().startswith(('else', 'catch')):
+                        traced.append(indent + f'world_save_matrix_trace_state("before loading line {line_number}")\n')
+                traced.append(line)
+            source = ('var/atom/world_save_matrix_trace_target\n'
+                      'var/world_save_matrix_trace_last\n'
+                      '/proc/world_save_matrix_trace_state(stage)\n'
+                      '\tif(!world_save_matrix_trace_target) return\n'
+                      '\tvar/matrix/M = world_save_matrix_trace_target.transform\n'
+                      '\tvar/current = "[M.a],[M.b],[M.c],[M.d],[M.e],[M.f]"\n'
+                      '\tif(current != world_save_matrix_trace_last)\n'
+                      '\t\tworld.log << "MATRIX_STATE [stage] ref=\\ref[world_save_matrix_trace_target] loc=[world_save_matrix_trace_target.x],[world_save_matrix_trace_target.y],[world_save_matrix_trace_target.z] coefficients=[current]"\n'
+                      '\t\tworld_save_matrix_trace_last = current\n'
+                      + ''.join(traced))
         if original == production and progress_saving is not None:
             source = progress_saving
         if original == production and args.negative_control:
