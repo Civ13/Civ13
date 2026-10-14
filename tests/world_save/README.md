@@ -190,3 +190,53 @@ and requires the exact missing-periodic-report failure after a successful save.
 Keep these separate from injected IO faults. The fake clock checks arithmetic
 and throttling; verify the real engine clock separately before using runtime
 duration reports.
+
+### Opt-in Gaia phase profile
+
+The generator's `--phase-profile` adds `phase-profile.dm` and generated wrappers
+around the original `BuildVarDirectory` and `encode_saved_value` bodies. Append
+both generated helpers to the isolated DME. No production file is edited.
+Each wrapper calls the original once, forwards the arguments/return value and
+restores its caller's phase on success or exception. Recursive calls change the
+active phase rather than accumulating overlapping inclusive durations.
+
+`phase_wall_ds` partitions active wall-clock intervals into `traversal`,
+`object`, `value`, `index`, `yield` and `other`:
+
+- Traversal covers the turf iterator, level selection and skipped levels.
+- Object covers entry validation, hooks, content discovery and variable
+  selection, excluding nested value encoding and scoped stoplag waits.
+- Value covers typed envelopes and list discovery/writes, excluding nested
+  object work and scoped stoplag waits.
+- Index covers the top-level turf-coordinate reference write and tick check.
+- Yield covers the original scoped `stoplag()` wait, including native engine
+  work performed before that sleeping proc resumes.
+- Other covers metadata, level setup and finalization outside those regions.
+
+The JSON also records cumulative visited/selected turfs, object calls including
+reference hits and value calls including recursion. Counts reset per save,
+not per level. A complete two-level map visits its entire turf inventory twice.
+These are source regions, not six independent CPU or storage phases. Immediate
+native savefile encoding belongs to the calling region. Hooks that sleep through
+another API remain in that region; only scoped stoplag waits are excluded.
+Diagnostic and clock/counter overhead is included. The clock has 0.1-second
+resolution, midnight wrap and the existing under-24-hour/nonmonotonic limits.
+Short intervals can measure zero; no per-object latency claim is supported.
+
+The engine owner must separately measure dirty-tick whole-tree JSON encoding,
+formatting and disk writes with a host monotonic stopwatch, recording flush
+counts and bytes. Engine flush measurements can overlap the source `yield`
+region, so never add them to the DM partition as additional exclusive time.
+CPU needs a separate process/thread CPU metric; elapsed wall time is not CPU.
+Compare the small smoke with instrumentation disabled/enabled before interpreting
+overhead, then freeze one source-bound Gaia packet and retain original receipts.
+
+`run-string-path.py --progress --phase-profile` exercises unchanged round-trip
+controls, positive call counts, exact visited/selected counts and the wall-time
+partition. Add `--phase-profile-negative-control` to suppress the value counter;
+it must fail that exact assertion after preserving the successful save marker.
+This is a new measurement-contract smoke, not a rerun to recover inaccessible
+original diagnostic cases. Actual OpenDream clock/phase behavior needs the
+runtime owner's distinct small smoke before a full Gaia launch. A partial save
+still rejects recovery; fresh-process VERIFY requires a complete stopped,
+source-bound generation.

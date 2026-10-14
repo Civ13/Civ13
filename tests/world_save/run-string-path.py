@@ -22,7 +22,13 @@ def main():
     parser.add_argument('--progress-negative-control', action='store_true')
     parser.add_argument('--progress-clock-probe', action='store_true')
     parser.add_argument('--progress-clock-negative-control', action='store_true')
+    parser.add_argument('--phase-profile', action='store_true')
+    parser.add_argument('--phase-profile-negative-control', action='store_true')
     args = parser.parse_args()
+    if args.phase_profile and (not args.progress or args.progress_clock_probe or args.progress_fault_stage or args.progress_negative_control):
+        parser.error('Phase profile requires --progress and separate clock/fault controls')
+    if args.phase_profile_negative_control and not args.phase_profile:
+        parser.error('Phase negative control requires --phase-profile')
     if args.progress_clock_probe and (not args.progress or args.progress_fault_stage or args.progress_negative_control):
         parser.error('Clock probe requires --progress and separate fault controls')
     if args.progress_clock_negative_control and not args.progress_clock_probe:
@@ -61,11 +67,16 @@ def main():
         spec.loader.exec_module(generator)
         function_path = root / 'code/modules/persistence/functions.dm'
         progress_saving, _ = generator.instrument(production.read_text(encoding='utf-8'),
-                                                  function_path.read_text(encoding='utf-8'))
+                                                  function_path.read_text(encoding='utf-8'), phase_profile=args.phase_profile)
+        if args.phase_profile_negative_control:
+            progress_saving = generator.replace_once(progress_saving, '\tworld_save_profile_values++\n',
+                                                     '\tworld_save_profile_values += 0\n')
         hashes['tests/world_save/build-progress-probe.py'] = hashlib.sha256(generator_path.read_bytes()).hexdigest()
         helper_path = fixture / 'progress-probe.dm'
         helper_target = output / 'progress-probe.dm'
         helper_target.write_bytes(helper_path.read_bytes())
+        if args.phase_profile:
+            helper_target.write_text(generator.profile_helper(helper_path.read_text(encoding='utf-8')), encoding='utf-8')
         hashes['tests/world_save/progress-probe.dm'] = hashlib.sha256(helper_path.read_bytes()).hexdigest()
         generated[helper_target.name] = hashlib.sha256(helper_target.read_bytes()).hexdigest()
         # Retain fixture mutation-on-tick controls; this is an IO-isolation test,
@@ -78,6 +89,13 @@ def main():
         if args.progress_negative_control:
             environment = '#define WORLD_SAVE_PROGRESS_PROPAGATE_FAULT\n' + environment
         progress_helper_include = f'\n#include "{helper_target.as_posix()}"\n'
+        if args.phase_profile:
+            phase_path = fixture / 'phase-profile.dm'
+            phase_target = output / phase_path.name
+            phase_target.write_bytes(phase_path.read_bytes())
+            hashes['tests/world_save/phase-profile.dm'] = hashlib.sha256(phase_path.read_bytes()).hexdigest()
+            generated[phase_target.name] = hashlib.sha256(phase_target.read_bytes()).hexdigest()
+            progress_helper_include += f'#include "{phase_target.as_posix()}"\n'
         if args.progress_clock_probe:
             environment = '#define WORLD_SAVE_PROGRESS_TEST_CLOCK\n' + environment
             if args.progress_clock_negative_control:
@@ -117,6 +135,20 @@ def main():
                 if args.progress_clock_probe:
                     anchor = f'\t\tcheck(world_save_progress_unavailable == {expected}, "wrong diagnostic fault availability")\n'
                     source = source.replace(anchor, anchor + '\t\tworld_save_progress_test_clock_contract()\n', 1)
+                if args.phase_profile:
+                    anchor = f'\t\tcheck(world_save_progress_unavailable == {expected}, "wrong diagnostic fault availability")\n'
+                    checks = ('\t\tvar/list/phase_row = json_decode(file2text("world_save_progress.json"))\n'
+                              '\t\tcheck(phase_row["value_calls_including_recursive"] > 0, "phase value calls missing")\n'
+                              '\t\tcheck(phase_row["visited_turfs_all_levels"] == world.maxx * world.maxy * world.maxz * world.maxz, "wrong visited turf count")\n'
+                              '\t\tcheck(phase_row["selected_turfs_all_levels"] == world.maxx * world.maxy * world.maxz, "wrong selected turf count")\n'
+                              '\t\tcheck(phase_row["object_calls_including_references"] >= phase_row["selected_turfs_all_levels"], "phase object calls missing")\n'
+                              '\t\tvar/list/phase_totals = phase_row["phase_wall_ds"]\n'
+                              '\t\tvar/phase_sum = 0\n'
+                              '\t\tfor(var/phase_name in phase_totals)\n'
+                              '\t\t\tcheck(phase_totals[phase_name] >= 0, "negative phase duration")\n'
+                              '\t\t\tphase_sum += phase_totals[phase_name]\n'
+                              '\t\tcheck(abs(phase_sum - phase_row["elapsed_real_ds"]) <= 1, "phase wall intervals overlap or lose time")\n')
+                    source = source.replace(anchor, anchor + checks, 1)
                 for label in ('failed marker deletion changed active completion or retained lock',
                               'failed export retained completion marker or lock'):
                     line = next((line for line in source.splitlines(keepends=True) if label in line), None)
@@ -177,7 +209,13 @@ def main():
         raise RuntimeError('Pinned clean compilation required')
     owned('daemon', [str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'])
     actual = read(output / 'result.txt').strip()
-    if args.progress_clock_negative_control:
+    if args.phase_profile_negative_control:
+        failure = read(output / 'failure-name.txt').strip()
+        if failure != 'phase value calls missing' or not actual.startswith('FAIL:'):
+            raise RuntimeError(f'Wrong phase negative failure: {actual!r}, {failure!r}')
+        if not (output / 'map_saves/save_complete.txt').exists():
+            raise RuntimeError('Phase control changed completed save marker')
+    elif args.progress_clock_negative_control:
         failure = read(output / 'failure-name.txt').strip()
         if failure != 'periodic progress not emitted after ten seconds' or not actual.startswith('FAIL:'):
             raise RuntimeError(f'Wrong clock negative failure: {actual!r}, {failure!r}')
@@ -206,10 +244,12 @@ def main():
         'progress_negative_control': args.progress_negative_control,
         'progress_clock_probe': args.progress_clock_probe,
         'progress_clock_negative_control': args.progress_clock_negative_control,
+        'phase_profile': args.phase_profile,
+        'phase_profile_negative_control': args.phase_profile_negative_control,
         'sources_sha256': hashes, 'generated_sha256': generated, 'processes': processes,
         'opendream_verified': False, 'fresh_process_recovery_verified': False,
         'crash_rpo_verified': False, 'clean_shutdown_verified': False}, indent=2), encoding='utf-8')
-    negative = args.negative_control or args.progress_negative_control or args.progress_clock_negative_control
+    negative = args.negative_control or args.progress_negative_control or args.progress_clock_negative_control or args.phase_profile_negative_control
     print(f'PASS: string-path regression {"negative" if negative else "positive"}')
 
 
