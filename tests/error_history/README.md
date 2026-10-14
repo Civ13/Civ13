@@ -25,7 +25,9 @@ python3 tests/error_history/run.py --byond-bin /trusted/byond/bin --evidence-dir
 
 On Windows use a verified full Python path, never bare python/python3. The
 standalone fixture includes actual production logging, retirement, constructors,
-viewers and world/Error. Browser and logging outputs use isolated sinks and only
+viewers and world/Error. Entry construction adds a test-only serial to distinguish
+native ref-ID reuse from the continued lifetime of the retired identity.
+Browser and logging outputs use isolated sinks and only
 the delayed silence-summary wait is accelerated to two ticks. It refuses network
 ports and starts no game controllers, maps, production config or persistence.
 It checks FIFO memberships, backreferences, explicit native deletion, actual usr

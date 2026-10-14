@@ -12,6 +12,10 @@ def prepare(root, evidence, historical=False):
     evidence.mkdir(parents=True, exist_ok=True)
     viewer = (root / 'code/modules/error_handler/error_viewer.dm').read_text()
     original = viewer
+    constructor = '/datum/error_viewer/error_entry/New(exception/e, list/desclines, skip_count)\n'
+    assert viewer.count(constructor) == 1
+    # Test-only identity stamp distinguishes native ref-ID reuse from liveness.
+    viewer = viewer.replace(constructor, constructor + '\thistory_probe_serial = ++entry_serial\n')
     browse_start = viewer.index('/datum/error_viewer/proc/browse_to(')
     browse_end = viewer.index('/datum/error_viewer/proc/build_header(', browse_start)
     viewer = viewer[:browse_start] + '/datum/error_viewer/proc/browse_to(client/user, html)\n\tlast_html = html\n\n' + viewer[browse_end:]
@@ -40,7 +44,7 @@ def prepare(root, evidence, historical=False):
         'historical': historical,
         'viewer_sha256': hashlib.sha256(original.encode()).hexdigest(),
         'compiled_viewer_sha256': hashlib.sha256(viewer.encode()).hexdigest(),
-        'adapter': 'standalone world, browser/log sinks; silence wait 2 ticks; no production startup/config/storage',
+        'adapter': 'standalone world, browser/log sinks; entry identity serial; silence wait 2 ticks; no production startup/config/storage',
     }
     (evidence / 'metadata.json').write_text(json.dumps(metadata, indent=2))
     (evidence / 'dirty.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD', '--'], cwd=root))
@@ -85,12 +89,12 @@ def main():
     labels = re.findall(r'^FAIL (.*)$', log, re.M)
     expected = [
         'per-source history bounded',
-        'retired external holder and native ref invalidated',
+        'retired external holder and native identity invalidated',
         'retirement clears source location and text before native deletion',
         'retired external holder absent from both roots',
         'source FIFO keeps newest details chronologically',
         'expired browser link uses existing missing viewer message',
-        'retired entry disappears natively without collection wait',
+        'retired identity disappears natively without collection wait',
         'global history bounded across sources',
         'global FIFO retains newest sources in order',
         'native memberships and source backrefs bounded and consistent',

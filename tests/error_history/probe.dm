@@ -14,6 +14,9 @@ var/last_html = ""
 var/last_chat = ""
 var/retired_entries = 0
 var/cleared_entries = 0
+var/entry_serial = 0
+/datum/error_viewer/error_entry
+	var/history_probe_serial
 /datum/test_globals
 	var/datum/error_viewer/error_cache/error_cache
 	var/total_runtimes = 0
@@ -82,12 +85,14 @@ var/cleared_entries = 0
 	usr = null
 	var/datum/error_viewer/error_entry/held = C.errors[1]
 	var/held_ref = "\ref[held]"
+	var/held_serial = held.history_probe_serial
 	check(held.usr_loc == actor.loc && held.usr_ref == "\ref[actor]", "production captures actual usr location")
 	var/datum/error_viewer/error_source/S = held.error_source
 	for (var/i = 2 to 250)
 		C.log_error(E, list("detail [i]"), i % 2 ? 3 : 0)
 	check(C.errors.len == ERROR_SOURCE_HISTORY_LIMIT && S.errors.len == ERROR_SOURCE_HISTORY_LIMIT, "per-source history bounded")
-	check(!held && !locate(held_ref), "retired external holder and native ref invalidated")
+	var/datum/error_viewer/error_entry/reused = locate(held_ref)
+	check(!held && (!istype(reused) || reused.history_probe_serial != held_serial), "retired external holder and native identity invalidated")
 	check(retired_entries == 150 && cleared_entries == 150, "retirement clears source location and text before native deletion")
 	check(!(held in C.errors) && !(held in S.errors), "retired external holder absent from both roots")
 	check(C.errors[1] == S.errors[1] && C.errors[C.errors.len] == S.errors[S.errors.len], "source FIFO matches global history")
@@ -97,10 +102,20 @@ var/cleared_entries = 0
 #ifndef HISTORICAL_ERROR_HISTORY
 	check(S.total_logged == 126 && S.total_skipped == 372 && S.total_retired == 150, "source lifetime counters include retired skip summaries")
 #endif
-	if (!locate(held_ref))
-		C.Topic(null, list("viewruntime" = held_ref))
+	var/fresh_ref = held_ref
+	var/fresh_serial = held_serial
+#ifndef HISTORICAL_ERROR_HISTORY
+	// A textual ref may be reused during later allocations. Exercise the stale
+	// browser route immediately, not after 249 further entry constructions.
+	var/datum/error_viewer/error_entry/fresh = C.errors[1]
+	fresh_ref = "\ref[fresh]"
+	fresh_serial = fresh.history_probe_serial
+	C.retire_error(fresh)
+	C.Topic(null, list("viewruntime" = fresh_ref))
+#endif
 	check(findtext(last_chat, "viewer no longer exists"), "expired browser link uses existing missing viewer message")
-	check(!locate(held_ref), "retired entry disappears natively without collection wait")
+	reused = locate(fresh_ref)
+	check(!istype(reused) || reused.history_probe_serial != fresh_serial, "retired identity disappears natively without collection wait")
 	// Distinct fixed source lines exercise the global cap independently.
 	for (var/i = 2 to 16)
 		E = test_exception(i)
