@@ -2,6 +2,11 @@
 var/TimeOfGame = 0
 var/obj/map_metadata/map
 var/list/errors = list()
+var/list/clients = list()
+/proc/get_turf(atom/A)
+	while(A && !isturf(A))
+		A = A.loc
+	return A
 var/delete_failure_path = null
 var/list/mutate_on_tick = null
 /proc/fixture_tick_check()
@@ -49,6 +54,9 @@ var/list/mutate_on_tick = null
 /obj/screen
 /datum/hud
 /mob/new_player
+	var/spawning = FALSE
+/mob/new_player/proc/close_spawn_windows()
+	return
 /mob/living/human
 	var/tmp/rejuvenate_calls = 0
 /mob/living/human/proc/rejuvenate()

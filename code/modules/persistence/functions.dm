@@ -240,6 +240,7 @@ var/global/persistence_save_in_progress = FALSE
 /datum/controller/gameticker/proc/loadmap()
 	if(persistence_save_in_progress)
 		return FALSE
+	map_storage.reset_player_restoration()
 	persistence_save_in_progress = TRUE
 	if(!map_storage.validate_world_save())
 		persistence_save_in_progress = FALSE
@@ -249,11 +250,13 @@ var/global/persistence_save_in_progress = FALSE
 	try
 		map_storage.ClearMap()
 		if(!map_storage.Load_World())
+			map_storage.reset_player_restoration()
 			persistence_save_in_progress = FALSE
 			return FALSE
 		map_storage.load_map_metadata()
 	catch(var/exception/e)
 		map_storage.clear_bookkeeping()
+		map_storage.reset_player_restoration()
 		map_storage.last_error = "[e] on [e.file]:[e.line]"
 		world.log << "World-save import failed: [map_storage.last_error]"
 		message_admins("Import failed during restoration; restart from the original map before retrying: [e]")
@@ -261,6 +264,7 @@ var/global/persistence_save_in_progress = FALSE
 		return FALSE
 	persistence_save_in_progress = FALSE
 	log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
+	map_storage.finish_player_restoration()
 	return 1
 
 /datum/proc/before_save_context(map_storage/exporter, datum/save_export_frame/frame)

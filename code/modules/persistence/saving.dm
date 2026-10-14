@@ -7,6 +7,7 @@
 // You can also specify a name and password for the map, along with any extra
 // variables (in params format) that you want saved along with the map file.
 /map_storage/proc/Save_World()
+	prepare_player_ownership()
 	clear_bookkeeping()
 	// ***** MAP SECTION *****
 	var/backup_dir = "map_backups/"

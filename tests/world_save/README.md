@@ -158,6 +158,10 @@ negative control.
 
 ### Serialization progress diagnostics
 
+Saved account/body ownership and its isolated negative controls are documented
+in `docs/saved-player-reclaim.md`. Offline lookup tests do not establish real
+client transfer, HUD rendering or control after restart.
+
 `build-progress-probe.py` generates test-only copies of `saving.dm` and
 `functions.dm`, plus `progress-probe.dm`. Supply both original paths and their
 reviewed raw SHA256 hashes with `--saving-source`, `--functions-source`,

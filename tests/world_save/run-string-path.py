@@ -19,12 +19,17 @@ def main():
     parser.add_argument('--datum-constructor-negative-control', action='store_true')
     parser.add_argument('--appearance-negative-control', action='store_true')
     parser.add_argument('--hud-negative-control', choices=('export', 'import', 'constructor'))
+    parser.add_argument('--player-reclaim-negative-control', choices=('owner', 'state', 'duplicate', 'ready'))
     parser.add_argument('--matrix-trace', action='store_true')
     parser.add_argument('--progress', action='store_true')
     parser.add_argument('--progress-fault-stage', choices=('save_entered', 'level_serialized', 'completion_marker'))
     parser.add_argument('--progress-fault-operation', choices=('delete', 'write', 'json'))
     parser.add_argument('--progress-negative-control', action='store_true')
     args = parser.parse_args()
+    if args.player_reclaim_negative_control and any((args.negative_control, args.datum_constructor_negative_control,
+                                                    args.appearance_negative_control, args.hud_negative_control,
+                                                    args.matrix_trace, args.progress)):
+        parser.error('Keep player reclaim controls separate from other mutations')
     if args.hud_negative_control and any((args.negative_control, args.datum_constructor_negative_control,
                                          args.appearance_negative_control, args.matrix_trace, args.progress)):
         parser.error('Keep HUD controls separate from other mutations')
@@ -90,6 +95,20 @@ def main():
         original = (fixture / match.group(1)).resolve(strict=True)
         source = original.read_text(encoding='utf-8')
         hashes[original.relative_to(root).as_posix()] = hashlib.sha256(original.read_bytes()).hexdigest()
+        if original.name == 'player_reclaim.dm' and args.player_reclaim_negative_control:
+            if args.player_reclaim_negative_control == 'owner':
+                source += '\n/mob/living/human/persistence_runtime_var(key)\n\treturn key == "persistence_owner_ckey" || ..()\n'
+            elif args.player_reclaim_negative_control in ('duplicate', 'ready'):
+                before, after = {'duplicate': ('bodies.len != 1', '!bodies.len'),
+                                 'ready': ('!persistence_player_restore_ready || ', '')}[args.player_reclaim_negative_control]
+                if source.count(before) != 1:
+                    raise RuntimeError('Player reclaim mutation target changed')
+                source = source.replace(before, after, 1)
+        if original.name == 'loading.dm' and args.player_reclaim_negative_control == 'state':
+            before = 'H.stat != DEAD && !H.persistence_owner_ckey'
+            if source.count(before) != 1:
+                raise RuntimeError('Player medical state mutation target changed')
+            source = source.replace(before, 'H.stat != DEAD', 1)
         if original.name == 'functions.dm' and args.hud_negative_control == 'export':
             before = ('/mob/persistence_runtime_var(key)\n'
                       '\treturn (key in list("hud_used", "HUDneed", "HUDinventory", "HUDfrippery", "HUDprocess", "HUDtech", "hands", "pullin", "purged", "i_select", "m_select", "zone_sel")) || ..()\n')
@@ -236,7 +255,13 @@ def main():
         raise RuntimeError('Pinned clean compilation required')
     owned('daemon', [str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'])
     actual = read(output / 'result.txt').strip()
-    if args.hud_negative_control:
+    if args.player_reclaim_negative_control:
+        expected = {'owner': 'saved player owner lost', 'state': 'owned saved medical state changed',
+                    'duplicate': 'duplicate player owner accepted', 'ready': 'player restored before load completed'}[args.player_reclaim_negative_control]
+        failure = read(output / 'failure-name.txt').strip()
+        if failure != expected or not actual.startswith('FAIL:'):
+            raise RuntimeError(f'Wrong player reclaim negative failure: {actual!r}, {failure!r}')
+    elif args.hud_negative_control:
         expected = {'export': 'HUD runtime field exported', 'import': 'HUD runtime field imported',
                     'constructor': 'ownerless HUD constructor reached'}[args.hud_negative_control]
         failure = read(output / 'failure-name.txt').strip()
@@ -275,6 +300,7 @@ def main():
         'datum_constructor_negative_control': args.datum_constructor_negative_control,
         'appearance_negative_control': args.appearance_negative_control,
         'hud_negative_control': args.hud_negative_control,
+        'player_reclaim_negative_control': args.player_reclaim_negative_control,
         'matrix_trace': args.matrix_trace,
         'progress': args.progress, 'progress_fault_stage': args.progress_fault_stage,
         'progress_fault_operation': args.progress_fault_operation,

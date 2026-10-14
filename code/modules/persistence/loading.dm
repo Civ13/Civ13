@@ -110,7 +110,7 @@
 		if (ishuman(object))
 			var/mob/living/human/H = object
 			// A saved corpse must stay dead; do not replay death hooks on import.
-			if (H.stat != DEAD)
+			if (H.stat != DEAD && !H.persistence_owner_ckey)
 				H.rejuvenate()
 			if (!H.name && savefile["name"])
 				H.name = savefile["name"]
@@ -204,6 +204,7 @@
 				var/datum/ob = all_loaded[i]
 				if (ob)
 					ob.after_load()
+					register_restored_player(ob)
 				if(istype(ob, /obj))
 					var/obj/obbie = ob
 					if(obbie.load_datums)
@@ -232,6 +233,7 @@
 		var/list/meta = splittext(file2text("map_saves/map.txt"), "\n")
 		if(meta.len < 9 || meta[1] != map.ID)
 			throw EXCEPTION("Save metadata does not match the current map")
+		var/list/player_owners = list()
 		for(var/z = 1, z <= world.maxz, z++)
 			if(!fexists("map_saves/[z].sav"))
 				throw EXCEPTION("Missing saved z-level [z]")
@@ -282,6 +284,8 @@
 				var/type = F["type"]
 				if(!ispath(type, /datum) || ispath(type, /area) || (ispath(type, /turf) && !turf_refs["[ref]"]))
 					throw EXCEPTION("Unsupported or unplaced saved entry [ref] on z=[z]")
+				if(ispath(type, /mob/living/human))
+					validate_saved_player_owner(F, ref, player_owners)
 				var/list/fields = F.dir.Copy()
 				for(var/field in fields)
 					F.cd = entry_path(F, ref)
