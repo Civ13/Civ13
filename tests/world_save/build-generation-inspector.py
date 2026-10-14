@@ -23,6 +23,9 @@ def main():
     hashes = {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in names}
     output.mkdir(parents=True)
     (output / 'map_saves').mkdir()
+    # Some production globals read name catalogs even with startup disabled.
+    # Only versioned checkout defaults, never the running host configuration.
+    shutil.copytree(root / 'config', output / 'config')
     for name in names:
         shutil.copyfile(source / name, output / 'map_saves' / name)
     # Keep Gaia's exact area topology for production area-reference validation.
