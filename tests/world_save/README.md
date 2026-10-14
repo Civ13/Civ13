@@ -111,3 +111,13 @@ ordinary fixture. Its negative control restores `file("map_saves/map.txt")` for
 `F0` in a generated copy of `saving.dm`; require the metadata-write failure and
 absence of a completion marker. The adapter is a compatibility regression,
 not proof of an OpenDream save or fresh-process recovery.
+
+`run-string-path.py --byond-bin <516.1681-bin> --expected-saving-sha256
+<reviewed-source-hash>` stages the fixture and production includes in temporary
+storage and checks clean compilation, runtime diagnostics and the exact result.
+Run again with `--negative-control` to restore the resource argument only in
+the generated source. The negative requires the exact exception name and no
+completion marker. The runner retains original/generated source hashes and
+owned process exit records, with 120-second per-process bounds. Use the
+coordinated aggregate memory/process guard as well; these per-process timeouts
+do not supply an aggregate memory bound.
