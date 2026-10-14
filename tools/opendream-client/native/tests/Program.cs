@@ -26,7 +26,8 @@ try {
     var localStart = LocalStart(localHost, () => @"D:\BYOND-user");
     Require(localStart.ArgumentList.Single() == "byond://127.0.0.1:18459" && !localStart.UseShellExecute,
         "isolated DD endpoint escaped loopback or used URI association");
-    Require(localStart.Environment["TEMP"] == @"D:\isolated" && localStart.Environment["TMP"] == @"D:\isolated",
+    Require(localStart.Environment["TEMP"] == @"D:\isolated" && localStart.Environment["TMP"] == @"D:\isolated" &&
+        localStart.Environment["TMPDIR"] == @"D:\isolated",
         "isolated DD temporary output not on D");
     Reject(() => LocalStart(localHost, () => null), "unverified BYOND user cache");
     Reject(() => LocalStart(localHost, () => @"C:\BYOND-user"), "C BYOND user cache");

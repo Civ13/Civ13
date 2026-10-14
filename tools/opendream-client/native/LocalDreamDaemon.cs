@@ -13,6 +13,8 @@ public static class LocalDreamDaemon {
         if (!Path.IsPathFullyQualified(path) || !Path.GetFullPath(path).StartsWith("D:\\", StringComparison.OrdinalIgnoreCase))
             throw new IOException("The isolated test requires an absolute D: path.");
         var full = Path.GetFullPath(path);
+        if (File.Exists(full) && (File.GetAttributes(full) & FileAttributes.ReparsePoint) != 0)
+            throw new IOException("Linked test files are not allowed.");
         for (var item = new DirectoryInfo(full); item != null; item = item.Parent)
             if (item.Exists && (item.Attributes & FileAttributes.ReparsePoint) != 0)
                 throw new IOException("Linked test paths are not allowed.");
@@ -49,7 +51,7 @@ public static class LocalDreamDaemon {
             !string.Equals(Path.GetFullPath(host.Executable), Path.GetFullPath(receipt.Daemon), StringComparison.OrdinalIgnoreCase) ||
             host.Version != "5.0.516.1681" || !Path.GetFileName(host.Executable).Equals("DreamDaemon.exe", StringComparison.OrdinalIgnoreCase) ||
             (hash ?? Updater.Hash)(world) != receipt.WorldSha256)
-            throw new IOException("Local DreamDaemon process/world binding changed. Ask the host owner for a fresh receipt.");
+            throw new IOException("Local DreamDaemon process identity or world file hash changed. Ask the host owner for a fresh receipt.");
         if (!(matchesClient ?? MatchesClient)(byondBin))
             throw new IOException("Verified BYOND 516.1681 client is unavailable.");
         // No proven per-process BYOND user-directory override is available yet.
@@ -64,6 +66,7 @@ public static class LocalDreamDaemon {
         start.ArgumentList.Add("byond://127.0.0.1:" + receipt.Port);
         start.Environment["TEMP"] = root;
         start.Environment["TMP"] = root;
+        start.Environment["TMPDIR"] = root;
         return start;
     }
     private static bool MatchesClient(string bin) {

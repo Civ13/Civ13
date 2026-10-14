@@ -57,6 +57,7 @@ public static class Program {
                 Directory.CreateDirectory(root);
                 Environment.SetEnvironmentVariable("TEMP", root);
                 Environment.SetEnvironmentVariable("TMP", root);
+                Environment.SetEnvironmentVariable("TMPDIR", root);
             }
             using var owner = Updater.Lock(root);
             using var transport = new ReleaseTransport();
