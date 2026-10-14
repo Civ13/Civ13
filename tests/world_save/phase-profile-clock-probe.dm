@@ -38,6 +38,8 @@
 	F["/format_version"] << 2
 	var/datum/test/phase_probe/parent = new
 	var/datum/test/phase_probe/child = new
+	// Datums export changed vars; a default scalar would not call the encoder.
+	child.value = 17
 	parent.value = child
 	var/ref = map_storage.BuildVarDirectory(F, parent)
 	check(ref && world_save_profile_current == "traversal", "nested wrapper failed to restore caller phase")
@@ -46,6 +48,9 @@
 	var/list/envelope
 	F["/entries/[ref]/value"] >> envelope
 	check(envelope["kind"] == "entry", "profile changed original encoded return")
+	var/child_ref = envelope["ref"]
+	F["/entries/[child_ref]/value"] >> envelope
+	check(envelope["kind"] == "value" && envelope["value"] == 17, "profile changed nested scalar encoding")
 	var/datum/test/phase_probe/failing = new
 	failing.throw_from_hook = TRUE
 	var/caught = FALSE
