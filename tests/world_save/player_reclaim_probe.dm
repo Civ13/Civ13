@@ -1,3 +1,11 @@
+/proc/check_legacy_player_owner()
+	var/savefile/legacy = new("player-legacy-owner.sav")
+	legacy["/format_version"] << 2
+	legacy["/entries/0/1/type"] << /mob/living/human
+	map_storage.validate_saved_player_owner(legacy, 1, list())
+	legacy.cd = "/entries/0/1"
+	check(!("persistence_owner_ckey" in legacy.dir), "legacy owner read materialized missing field")
+
 /proc/check_player_reclaim()
 	check(persistence_guest_account("guest123") && persistence_guest_account("guestw123"), "canonical guest ownership accepted")
 	check(!persistence_guest_account("guestworker") && !persistence_guest_account("guest"), "registered guest-prefix account rejected")
@@ -48,28 +56,23 @@
 	try
 		map_storage.validate_saved_player_owner(F, ref, owners)
 	catch(var/exception/e)
-		rejected = TRUE
+		rejected = e.name == "Invalid or duplicate saved player ownership"
 	check(rejected, "duplicate saved player ownership not rejected")
 	F["[map_storage.entry_path(F, ref)]/persistence_owner_ckey"] << list("kind" = "value", "value" = "Test Account")
 	rejected = FALSE
 	try
 		map_storage.validate_saved_player_owner(F, ref, list())
 	catch(var/exception/malformed_owner_error)
-		rejected = TRUE
+		rejected = malformed_owner_error.name == "Invalid or duplicate saved player ownership"
 	check(rejected, "malformed saved ownership not rejected")
 	F["[map_storage.entry_path(F, ref)]/persistence_owner_ckey"] << list("kind" = "value", "value" = "guest123")
 	rejected = FALSE
 	try
 		map_storage.validate_saved_player_owner(F, ref, list())
 	catch(var/exception/guest_owner_error)
-		rejected = TRUE
+		rejected = guest_owner_error.name == "Invalid or duplicate saved player ownership"
 	check(rejected, "guest saved ownership not rejected")
-	var/savefile/legacy = new("player-legacy-owner.sav")
-	legacy["/format_version"] << 2
-	legacy["/entries/0/1/type"] << /mob/living/human
-	map_storage.validate_saved_player_owner(legacy, 1, list())
-	legacy.cd = "/entries/0/1"
-	check(!("persistence_owner_ckey" in legacy.dir), "legacy owner read materialized missing field")
+	check_legacy_player_owner()
 	map_storage.reset_player_restoration()
 	check(!map_storage.find_restored_player("testaccount"), "reset retained player body claim")
 	map_storage.clear_bookkeeping()

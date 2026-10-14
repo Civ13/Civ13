@@ -197,6 +197,11 @@ def main():
                 raise RuntimeError('Datum control needs exactly one corrected constructor branch')
             source = source.replace(before, '\t\telse\n\t\t\tobject = new type(starting_loc)\n', 1)
         if original.name == 'roundtrip.dm':
+            if args.player_reclaim_negative_control == 'legacy':
+                marker = '\ttry\n\t\tcheck_datum_constructor()\n'
+                if source.count(marker) != 1:
+                    raise RuntimeError('Early legacy probe marker changed')
+                source = source.replace(marker, '\ttry\n\t\tcheck_legacy_player_owner()\n\t\tcheck_datum_constructor()\n', 1)
             if admission:
                 marker = '\t\tcheck_player_reclaim()\n'
                 if source.count(marker) != 1:
