@@ -63,7 +63,6 @@ world
 	..()
 	try
 		check_datum_constructor()
-		check_hud_runtime_save()
 		check_save_transfers()
 		check_save_identity_and_snapshot()
 		if(world.params["large"])
@@ -123,6 +122,7 @@ world
 		check_matrix(A.matrix_value, list(2,3,4,5,6,7), "standalone")
 		check_matrix(A.transform, list(8,9,10,11,12,13), "transform")
 		check(A.color == "#123456" && A.alpha == 173, "individual appearance fields changed")
+		check_hud_runtime_save()
 		check(A.reference.next == A.reference && A.reference.backlink == A, "datum/object cycle lost")
 		check(islist(A.items) && !A.items.len, "empty list reverted to default")
 		check(A.complex[1] == "literal **entry7", "literal marker string changed")
