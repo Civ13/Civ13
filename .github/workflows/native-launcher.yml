@@ -1,0 +1,44 @@
+name: Native Windows launcher
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - tools/opendream-client/native/**
+      - tools/opendream-client/channel.json
+      - .github/workflows/native-launcher.yml
+      - .github/workflows/native-launcher-release.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  launcher:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: '8.0.x'
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Simulated release metadata, failure and idempotence controls
+        shell: pwsh
+        run: |
+          $python = (Get-Command python).Source
+          & $python -m unittest discover -s tools/opendream-client/native/tests -p test_release.py -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Build self-contained executable and check startup
+        shell: pwsh
+        run: ./tools/opendream-client/native/Build.ps1 -Dotnet (Get-Command dotnet).Source
+      - name: Isolated updater contracts and actual executable replacement
+        shell: pwsh
+        run: |
+          dotnet run --project tools/opendream-client/native/tests/Launcher.Tests.csproj -- tools/opendream-client/native/publish/Civ13.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Civ13-Windows-launcher
+          path: tools/opendream-client/native/publish/Civ13.exe
+          if-no-files-found: error
