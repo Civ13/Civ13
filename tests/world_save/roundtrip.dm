@@ -261,7 +261,7 @@ world
 	F.cd = map_storage.entry_path(F, id)
 	for(var/key in list("hud_used", "HUDneed", "HUDinventory", "HUDfrippery", "HUDprocess", "HUDtech", "hands", "pullin", "purged", "i_select", "m_select", "zone_sel"))
 		check(!(key in F.dir), "HUD runtime field exported")
-	check(H.persistence_runtime_var("appearance"), "HUD exclusion lost atom parent")
+	check(H.persistence_runtime_var("persistence_export_frame"), "HUD exclusion lost datum parent")
 	check(!map_storage.BuildVarDirectory(F, S) && !map_storage.BuildVarDirectory(F, U), "HUD runtime object exported")
 	// Reproduce an old save with an ownerless screen entry and a HUD field.
 	F["[map_storage.entry_path(F, 900)]/type"] << /obj/screen/HUDthrow
