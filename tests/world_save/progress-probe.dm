@@ -50,6 +50,7 @@ var/global/world_save_progress_error = null
 		try
 			world.log << "SAVE_PROGRESS_UNAVAILABLE [world_save_progress_error]"
 		catch(var/exception/log_error)
+			world_save_progress_error = copytext("[world_save_progress_error]; log: [log_error.name]", 1, 513)
 			return
 
 /proc/world_save_progress_fault(stage, operation)
