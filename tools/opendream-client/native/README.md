@@ -100,10 +100,14 @@ The current published client's authentication flow remains unchanged.
 
 ## Game server hostname
 
-Each native launcher Play attempt resolves and displays `valzargaming.com`, then
-passes that hostname to the installed client's `Connect.ps1 -ServerAddress`.
+Each native launcher Play attempt resolves `valzargaming.com`, excludes
+`192.64.119.81`, and requires the remaining answer to be the operator-approved
+`72.218.249.221`. It displays and passes only that freshly verified DNS address to
+the installed client's `Connect.ps1 -ServerAddress`, preventing a second lookup
+from selecting the excluded address. A changed/unverified endpoint blocks Play
+until its configuration is reviewed; the launcher never falls back to a stale IP.
 Nomads and TDM retain that script's existing ports (18452 and 18453 in the current
-published package) and protocol/authentication behavior. Changed DNS answers are
-reported; lookup failure keeps the menu open for retry without starting a game.
+published package) and protocol/authentication behavior. Lookup failure, timeout,
+or an unverified address keeps the menu open for retry without starting a game.
 DNS resolution does not authenticate a server. Windows script policies remain in
 effect. Older direct Play CMD files retain their packaged connection defaults.

@@ -20,20 +20,23 @@ try {
     Task<System.Net.IPAddress[]> ResolveFixture(string name) {
         Require(name == "valzargaming.com", "connection resolved a different hostname");
         resolverCalls++;
-        return Task.FromResult(new[] { System.Net.IPAddress.Parse(resolverCalls == 1 ? "192.0.2.1" : "192.0.2.2") });
+        return Task.FromResult(new[] { System.Net.IPAddress.Parse("192.64.119.81"), System.Net.IPAddress.Parse(resolverCalls == 1 ? "72.218.249.221" : "192.0.2.2") });
     }
     var initialAddresses = await Connection.Resolve(ResolveFixture);
-    var changedAddresses = await Connection.Resolve(ResolveFixture);
-    Require(resolverCalls == 2 && !initialAddresses.SequenceEqual(changedAddresses), "connection cached a stale DNS answer");
+    await RejectAsync(() => Connection.Resolve(ResolveFixture), "changed unverified DNS endpoint");
+    Require(resolverCalls == 2 && initialAddresses.SequenceEqual(new[] { "72.218.249.221" }), "connection cached DNS or retained excluded address");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(Array.Empty<System.Net.IPAddress>())), "empty DNS answer");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromException<System.Net.IPAddress[]>(new System.Net.Sockets.SocketException())), "DNS failure");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromException<System.Net.IPAddress[]>(new TimeoutException())), "DNS timeout");
     File.WriteAllText(Path.Combine(root, "Connect.ps1"), "fixture never executed");
     foreach (var mode in new[] { "Nomads", "TDM" }) {
-        var start = Connection.Start(root, mode);
-        Require(start.ArgumentList.TakeLast(4).SequenceEqual(new[] { "-Mode", mode, "-ServerAddress", "valzargaming.com" }), "connection mode/hostname override lost");
-        Require(!start.ArgumentList.Contains("Bypass") && !start.ArgumentList.Any(value => value.Contains("192.0.2.")), "connection bypassed policy or pinned resolved IP");
+        var start = Connection.Start(root, mode, initialAddresses.Single());
+        Require(start.ArgumentList.TakeLast(4).SequenceEqual(new[] { "-Mode", mode, "-ServerAddress", "72.218.249.221" }), "connection mode/verified address override lost");
+        Require(!start.ArgumentList.Contains("Bypass") && !start.ArgumentList.Any(value => value.Contains("192.0.2.") || value.Contains("192.64.119.81")), "connection bypassed policy or used unverified/excluded address");
     }
+    await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(new[] { System.Net.IPAddress.Parse("192.64.119.81") })), "excluded-only DNS answer");
+    await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(new[] { System.Net.IPAddress.Parse("72.218.249.221"), System.Net.IPAddress.Parse("192.0.2.3") })), "mixed unverified endpoint answer");
+    Reject(() => Connection.Start(root, "Nomads", "192.64.119.81"), "excluded connection address");
     var package = Path.Combine(root, "package", "Civ13-OpenDream-Windows");
     Directory.CreateDirectory(package);
     foreach (var name in Updater.Required) {

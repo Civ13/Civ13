@@ -57,7 +57,6 @@ public static class Program {
             Console.WriteLine("Client version: " + client.Version);
             var destination = await Updater.EnsureClient(client, root, transport);
             owner.Dispose();
-            string[]? previousAddresses = null;
             while (true) {
                 Console.WriteLine("\nCiv13 - 1: Sign in   2: Play Nomads   3: Play TDM   4: Exit");
                 Console.Write("Choose a number (sign in before your first game): ");
@@ -67,11 +66,10 @@ public static class Program {
                 if (choice is "2" or "3") {
                     try {
                         var addresses = await Connection.Resolve();
-                        if (previousAddresses is not null && !previousAddresses.SequenceEqual(addresses)) Console.WriteLine("Server DNS addresses changed since the last connection attempt.");
-                        previousAddresses = addresses;
                         Console.WriteLine(Connection.Host + " currently resolves to: " + string.Join(", ", addresses));
-                        // Pass the hostname, so the client also resolves it at connection time.
-                        Process.Start(Connection.Start(destination, choice == "2" ? "Nomads" : "TDM"));
+                        // Pass only the approved address from this lookup, avoiding a second
+                        // unrestricted lookup that could select the explicitly excluded address.
+                        Process.Start(Connection.Start(destination, choice == "2" ? "Nomads" : "TDM", addresses.Single()));
                     } catch (IOException e) { Console.WriteLine(e.Message); }
                 }
             }
