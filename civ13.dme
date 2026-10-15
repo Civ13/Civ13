@@ -1245,6 +1245,7 @@
 #include "maps\nomads\nomads.dmm"
 #include "code\modules\1713\animal_harvest.dm"
 #include "code\modules\1713\flax_processing.dm"
+#include "code\modules\1713\dew_collector.dm"
 #include "code\modules\1713\active_training.dm"
 // END_INCLUDE
 #include "code\modules\1713\modern_telecom.dm"
