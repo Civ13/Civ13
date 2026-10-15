@@ -46,6 +46,12 @@
 		ticker = new
 		ticker.current_state = GAME_STATE_PREGAME
 		game_id = "lighting-disk-round"
+		// Startup is isolated; initialize the real observation hooks used by forceMove.
+		if(!GLOB) GLOB = new /datum/controller/global_vars
+		GLOB.gvars_datum_init_order = list()
+		GLOB.InitGlobalall_observable_events()
+		GLOB.InitGlobalmoved_event()
+		GLOB.InitGlobaldir_set_event()
 		text2file("lighting fixture globals ready", "probe-progress.log")
 		map = new /obj/map_metadata/persistence_lighting_probe(locate(1,1,1))
 		var/obj/item/persistence_light_container/carrier = new(locate(3,3,1))
