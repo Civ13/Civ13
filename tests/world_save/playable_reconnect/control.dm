@@ -8,6 +8,14 @@
 		return list("reason" = "isolated acceptance host", "message" = "Only the test operator may join")
 	return ..()
 
+/proc/gaia_probe_seed_entry()
+	if(world.params["gaia_intent_seed"] != "1") return
+	var/list/R = list("stage" = "world_new_entry", "seed_param" = world.params["gaia_intent_seed"], "seed_param_is_text" = istext(world.params["gaia_intent_seed"]), "initial_port" = world.port)
+	world.visibility = FALSE
+	world.OpenPort("none")
+	R["closed_port"] = world.port
+	text2file(json_encode(R), "seed-entry.json")
+
 /proc/gaia_probe_seed_intent()
 	world.visibility = FALSE
 	var/list/result = list("passed" = FALSE)

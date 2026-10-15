@@ -31,11 +31,11 @@ def verify_originals(original):
 
 def instrument_world(source):
     topic = '/world/Topic(T, addr, master, key)\n'
-    startup = '\tmap_storage.record_compiled_dimensions()\n'
+    startup = '/world/New()\n\tmap_storage.record_compiled_dimensions()\n'
     if source.count(topic) != 1 or source.count(startup) != 1:
         raise ValueError('Expected unique production startup/Topic anchors')
     source = source.replace(topic, topic + '\tif("gaia_probe" in params2list(T))\n\t\treturn gaia_probe_topic(T, addr)\n', 1)
-    return source.replace(startup, startup + '\tif(world.params["gaia_intent_seed"] == "1")\n\t\tspawn(0) gaia_probe_seed_intent()\n\t\treturn\n', 1)
+    return source.replace(startup, '/world/New()\n\tgaia_probe_seed_entry()\n\tmap_storage.record_compiled_dimensions()\n' + '\tif(world.params["gaia_intent_seed"] == "1")\n\t\tspawn(0) gaia_probe_seed_intent()\n\t\treturn\n', 1)
 
 
 def prepare(repository, original, output):

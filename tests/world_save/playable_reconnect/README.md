@@ -7,9 +7,9 @@ the copies. An existing output directory is refused. No build or runtime starts
 from prepare.py. Original saves are never written. Host configuration in this
 isolated export permanently names ValZarGaming, as explicitly authorized.
 
-The generated world includes only two source insertions: early authenticated
+The generated world includes bounded source insertions: early authenticated
 status dispatch before ordinary Topic logging, and an opt-in intent-seeding branch
-after compiled dimension recording. Normal startup is unchanged without the
+after compiled dimension recording, plus a seed-only entry diagnostic before that recording. Normal startup is unchanged without the
 seed parameter. The observer admits only the authenticated ValZarGaming account
 from IPv4 loopback; seed mode denies all clients. The private32hex lifecycle token
 is never printed. Configuration strips public hub, webhook, webclient and optional
@@ -18,7 +18,7 @@ external reputation settings before any native launch.
 After source review and exclusive native admission, compile playable-gaia.dme
 with BYOND516.1681 and require0errors/0warnings. Run the seed phase with
 `-params gaia_intent_seed=1`, `-close`, `-safe`, a relative log and the isolated
-working directory. The seed branch closes the port, validates/allocates saved
+working directory. The entry diagnostic closes the port synchronously and writes seed-entry.json with the actual parameter and port values. The seed branch validates/allocates saved
 dimensions through production code, then uses actual current_identity/publish to
 create a new ordinary four-field intent. It writes seed-result.json and exits.
 Require passed=true, clean diagnostics, expected generation and unchanged hashes
@@ -46,7 +46,7 @@ only the newly owned handle may be stopped, and retain its evidence/storage.
 Offline checks: run test_prepare.py with the verified Python interpreter. These
 checks cover copy hash rejection, unique reversible startup/Topic insertions and
 pinned digest shape. They do not establish compilation, native seed correctness
-or real-client recovery. The seed adapter and actual client flow remain unrun.
+or real-client recovery. Full-world seed completion and the actual client flow remain unproven.
 
 Native port correction: the first seed attempt at94c20 was stopped after observing
 an unexpected listener. OpenPort(0) requests an available port; it does not close
@@ -58,3 +58,13 @@ OS census. Native startup may briefly assign a port before the seed entry; all
 clients are denied in this phase. Do not infer listener absence from -close.
 Run test_port.py --byond-bin <516.1681-bin> for this native contract. The preserved
 failed full seed remains failed; tiny port success is not full seed acceptance.
+
+The second full seed at de31e4838 was also stopped with a listener and without
+an entry/result receipt. Neither stopped attempt establishes that world/New was
+reached: native global and map constructors run before it. The native tiny test
+now uses prepare.instrument_world on the actual production startup prefix and
+extracts the actual port/admission/entry guards. It verifies the CLI parameter is
+text "1", seed branch selection, entry marker, compiled-dimension call, skipped
+ordinary startup, closed ports and denied reopen calls, plus a live zero-listener
+census. This does not measure full Gaia constructor time. BYOND can open a native
+port before world/New; seed mode denies every client throughout that interval.

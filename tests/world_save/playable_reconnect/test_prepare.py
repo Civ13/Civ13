@@ -29,7 +29,7 @@ class Preparation(unittest.TestCase):
         observed = m.instrument_world(original)
         seed = '\tif(world.params["gaia_intent_seed"] == "1")\n\t\tspawn(0) gaia_probe_seed_intent()\n\t\treturn\n'
         topic = '\tif("gaia_probe" in params2list(T))\n\t\treturn gaia_probe_topic(T, addr)\n'
-        self.assertEqual(observed.replace(seed, '').replace(topic, ''), original)
+        self.assertEqual(observed.replace(seed, '').replace(topic, '').replace('\tgaia_probe_seed_entry()\n', ''), original)
         self.assertLess(observed.index('gaia_probe_seed_intent()'), observed.index('persistence_restart.detect_startup()'))
         with self.assertRaises(ValueError):
             m.instrument_world(original + original)
