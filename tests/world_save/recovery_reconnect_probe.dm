@@ -47,6 +47,11 @@ var/recovery_fixture_late_arrived = FALSE
 /world/New()
 	world.OpenPort(0)
 	try
+		// Normal global startup is disabled; real mob removal still emits these.
+		GLOB.moved_event = new /decl/observ/moved
+		GLOB.dir_set_event = new /decl/observ/dir_set
+		GLOB.name_set_event = new /decl/observ/name_set
+		GLOB.stat_set_event = new /decl/observ/stat_set
 		map_storage = new /map_storage/recovery_probe
 		map_storage.record_compiled_dimensions()
 		config = new
