@@ -138,12 +138,14 @@ def main():
         if not result_path.is_file():
             raise RuntimeError('Native daemon exited without a result; see daemon-exit.json and probe-progress.log')
         result = json.loads(result_path.read_text(encoding='utf-8'))
-        expected = {'season': 'environment phase reset', 'preflight': 'omitted metadata mutated world',
+        expected = {'season': 'environment phase reset', 'preflight': 'malformed artillery sentinel mutated world',
                     'reachability': 'orphan metadata reference accepted', 'callback': 'restored callback duplicated',
                     'timer-restore': 'persisted callback was not restored'}
         if args.negative_control:
             if result.get('done') or result.get('error') != expected[args.negative_control]:
                 raise RuntimeError('Negative control failed outside its intended assertion: ' + str(result))
+            if args.negative_control == 'preflight' and result.get('checks') != 7:
+                raise RuntimeError('Preflight control did not reach its first malformed-wire assertion')
         elif not result.get('done') or result.get('checks', 0) < 19:
             raise RuntimeError('Native integration fixture incomplete: ' + str(result))
         receipt['result'] = result
