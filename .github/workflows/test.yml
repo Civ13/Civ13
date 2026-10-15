@@ -21,6 +21,22 @@ on:
         description: 'Opt in only to the paid rack save probe and its six mutation controls'
         type: boolean
         default: false
+      persistence_integration_regressions:
+        description: 'Opt in to combined persistence, lighting, building and continuous-round controls'
+        type: boolean
+        default: false
+      restart_transaction_regressions:
+        description: 'Opt in only to isolated save restart transaction checks'
+        type: boolean
+        default: false
+      world_save_regressions:
+        description: 'Opt in only to isolated world-save and expanded-level recovery checks'
+        type: boolean
+        default: false
+      lighting_recovery_regressions:
+        description: 'Opt in only to actual-constructor lighting persistence recovery and controls'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -386,6 +402,22 @@ jobs:
           name: cooked-meals-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/cooked-meals/
           retention-days: 7
+      - name: Verify linked building levels and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/building_levels') || inputs.persistence_integration_regressions == true
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/building_levels/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/positive"
+          for control in pair support removal foundation persistence; do
+            python3 tests/building_levels/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/building-levels/$control"
+          done
+      - name: Upload linked building evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/building_levels') || inputs.persistence_integration_regressions == true)
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: building-levels-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/building-levels/
+          retention-days: 7
       - name: Validate compiled crafting recipes
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/crafting')
         run: |
@@ -415,19 +447,87 @@ jobs:
           name: recipe-validation
           path: recipe-checks.txt
           if-no-files-found: warn
+      - name: Isolated save restart transaction regression
+        id: restart_transaction
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.restart_transaction_regressions == true || inputs.persistence_integration_regressions == true
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/restart-transaction"
+          export TMPDIR="$RUNNER_TEMP/restart-transaction"
+          python3 tests/world_save/run-restart-transaction.py --byond-bin "$PWD/BYOND/byond/bin"
+          for control in generation consume import deferred-reboot; do
+            python3 tests/world_save/run-restart-transaction.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
+            python3 tests/world_save/run-lifecycle.py --byond-bin "$PWD/BYOND/byond/bin"
+            for control in authentication shutdown-generation; do
+              python3 tests/world_save/run-lifecycle.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+            done
+      - name: Retain restart transaction evidence
+        if: always() && steps.restart_transaction.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: restart-transaction
+          path: ${{ runner.temp }}/restart-transaction/
+          if-no-files-found: error
+      - name: Offline lighting recovery regression
+        id: lighting_recovery
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.lighting_recovery_regressions == true || inputs.persistence_integration_regressions == true
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/lighting-recovery"
+          export TMPDIR="$RUNNER_TEMP/lighting-recovery"
+          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --lighting
+          for control in lighting-export lighting-legacy lighting-rebuild lighting-opacity lighting-view; do
+            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --lighting --negative-control "$control"
+          done
+        shell: bash
+      - name: Retain lighting recovery evidence
+        if: always() && steps.lighting_recovery.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighting-recovery
+          path: ${{ runner.temp }}/lighting-recovery/
+          if-no-files-found: error
       - name: Offline world-save round-trip regression
         id: world_save
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.persistence_integration_regressions == true || inputs.world_save_regressions == true
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           mkdir -p "$RUNNER_TEMP/world-save"
           export TMPDIR="$RUNNER_TEMP/world-save"
           bash tests/world_save/run.sh
+          python3 tests/world_save/run-dimension-bootstrap.py --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/world_save/run-dimension-bootstrap.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control preflight
           python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control restore
           python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control preflight
+          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control integrity
+          python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin"
+          for control in generation alias binding; do
+            python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
+          python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --alist
+          for control in alist-values alist-kind alist-alias alist-binding; do
+            python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
+          python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --contracts
+          for control in clock omission timer infinity; do
+            python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
+          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --startup-only
+          for profile in gaia europe; do
+            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile"
+            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile" --dimension-bootstrap
+            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile" --recovery-reconnect
+              python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile" --lifecycle-shutdown
+          done
+          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --recovery-reconnect --negative-control reclaim-order
+          for control in season preflight reachability callback timer-restore; do
+            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
         shell: bash
       - name: Retain ordinary world-save evidence
-        if: always() && steps.world_save.outcome != 'skipped' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save'))
+        if: always() && steps.world_save.outcome != 'skipped'
         uses: actions/upload-artifact@v4
         with:
           name: world-save
@@ -829,7 +929,8 @@ jobs:
           /usr/bin/python3 tests/animal_combat/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control kenobi
 
       - name: Verify continuous persistence rounds and negative controls
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_round')
+        id: persistence_round
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_round') || inputs.persistence_integration_regressions == true
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -837,6 +938,15 @@ jobs:
           /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control vote
           /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control ticker
           /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control deferred
+          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control save
+          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control startup
+      - name: Retain continuous-round integration evidence
+        if: always() && steps.persistence_round.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: persistence-round
+          path: data/persistence-round-tests/
+          if-no-files-found: error
 
       - name: Verify bounded animal harvesting and binding conservation
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/animal_harvest')

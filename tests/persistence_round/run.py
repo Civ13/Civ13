@@ -11,7 +11,7 @@ import tempfile
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
-    parser.add_argument('--negative-control', choices=['vote', 'ticker', 'deferred'])
+    parser.add_argument('--negative-control', choices=['vote', 'ticker', 'deferred', 'save', 'startup'])
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     binary = args.byond_bin.resolve()
@@ -45,6 +45,14 @@ def main():
             expected_count = 1 if args.negative_control == 'ticker' else 2
             assert ticker_source.count(old) == expected_count, 'Mutation anchor drift'
             ticker_source = ticker_source.replace(old, 'if (FALSE)')
+        if args.negative_control == 'save':
+            old = 'if(persistence_save_in_progress) return FALSE'
+            assert ticker_source.count(old) == 1, 'Mutation anchor drift'
+            ticker_source = ticker_source.replace(old, 'if(FALSE) return FALSE', 1)
+        if args.negative_control == 'startup':
+            old = 'if(persistence_restart.startup_hold) return FALSE'
+            assert ticker_source.count(old) == 1, 'Mutation anchor drift'
+            ticker_source = ticker_source.replace(old, 'if(FALSE) return FALSE', 1)
         generated[5].write_text(ticker_source, encoding='utf-8')
         source = source.replace('code\\game\\gameticker.dm', generated[5].name)
         if args.negative_control == 'vote':
@@ -81,7 +89,7 @@ def main():
         errors = logs / 'errors.txt'
         diagnostic = re.search(r'runtime error:|BUG:|Bad ref|Unhandled exception', log + runtime.stdout + runtime.stderr, re.I) or (errors.exists() and errors.stat().st_size)
         if args.negative_control:
-            expected = {'vote': 'vote creation blocked', 'ticker': 'finished flag cleared', 'deferred': 'deferred round end cancelled'}[args.negative_control]
+            expected = {'vote': 'vote creation blocked', 'ticker': 'finished flag cleared', 'deferred': 'deferred round end cancelled', 'save': 'save guard preserves persistent round state', 'startup': 'startup guard preserves persistent round state'}[args.negative_control]
             if runtime.returncode or diagnostic or not result.startswith('FAIL:') or expected not in result:
                 raise RuntimeError('Negative control did not fail at its intended assertion')
             print('PASS: intended negative control detected', flush=True)

@@ -45,6 +45,8 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 /datum/controller/gameticker/proc/pregame()
 
 	spawn (0)
+		while(persistence_restart.startup_hold) sleep(10)
+		if(map_storage.round_restored) return
 
 		current_state = GAME_STATE_PREGAME // just in case
 
@@ -54,6 +56,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 		login_music = lobby_music_player.get_song()
 
 		do
+			if(map_storage.round_restored) return
 			pregame_timeleft = GAMETICKER_PREGAME_TIME
 			maytip = TRUE
 
@@ -64,6 +67,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 				for (var/i=0, i<10, i++)
 					sleep(1)
 					vote.process()
+				if(map_storage.round_restored) return
 				if (round_progressing)
 					pregame_timeleft--
 				if (pregame_timeleft == config.vote_autogamemode_timeleft)
@@ -72,6 +76,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 						while (vote.time_remaining)
 							for (var/i=0, i<10, i++)
 								sleep(1)
+								if(map_storage.round_restored) return
 								vote.process()
 				if (pregame_timeleft == 20)
 					if (tip)
@@ -97,16 +102,33 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 
 /datum/controller/gameticker/proc/setup()
+	if(persistence_restart.startup_hold)
+		sleep(1)
+		return FALSE
+	// A successful import resumes its phase without fresh equipment/map seeding.
+	if(map_storage.round_restored) return TRUE
+	if(persistence_save_in_progress)
+		sleep(1)
+		if(map_storage.round_restored) return TRUE
+		current_state = GAME_STATE_PREGAME
+		return FALSE
 
-	current_state = GAME_STATE_PLAYING
-
-	job_master.ResetOccupations()
-
-	if (!map || !map.can_start() && !admin_started)
+	var/can_start_round = map && (admin_started || map.can_start())
+	// Admission checks can yield while the autoload completes.
+	if(map_storage.round_restored) return TRUE
+	if(persistence_save_in_progress)
+		sleep(1)
+		if(map_storage.round_restored) return TRUE
+		current_state = GAME_STATE_PREGAME
+		return FALSE
+	if (!can_start_round)
 		to_chat(world, "<b>Unable to start the game.</b> Not enough players, [map.required_players] active players needed. Reverting to the pre-game lobby.")
 		current_state = GAME_STATE_PREGAME
 		job_master.ResetOccupations()
 		return FALSE
+	current_state = GAME_STATE_PLAYING
+	stop_lobby_music()
+	job_master.ResetOccupations()
 
 	create_characters() //Create player characters and transfer them
 	collect_minds()
@@ -169,6 +191,8 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 				WB.give_sticker_pack(player)
 
 /datum/controller/gameticker/proc/process()
+	if(persistence_restart.startup_hold) return FALSE
+	if(persistence_save_in_progress) return FALSE
 	if (persistence_round_active() && current_state >= GAME_STATE_PLAYING)
 		finished = FALSE
 		current_state = GAME_STATE_PLAYING

@@ -14,7 +14,7 @@ DIAGNOSTIC = re.compile(r'runtime error:|bad ref|BUG:|##\s*ERROR\s*:|RUNTIME:|as
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
-    parser.add_argument('--negative-control', choices=('restore', 'preflight'))
+    parser.add_argument('--negative-control', choices=('restore', 'preflight', 'integrity'))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     fixture = root / 'tests/world_save'
@@ -25,7 +25,8 @@ def main():
         raise RuntimeError('Missing configured compiler or daemon')
     output = Path(tempfile.mkdtemp(prefix='civ13-round-metadata-'))
     print(f'Evidence: {output}', flush=True)
-    loader = root / 'code/modules/persistence/loading.dm'
+    loader = root / ('code/modules/persistence/functions.dm' if args.negative_control == 'integrity'
+                     else 'code/modules/persistence/loading.dm')
     source = loader.read_text(encoding='utf-8')
     expected = 'PASS'
     if args.negative_control == 'restore':
@@ -36,18 +37,22 @@ def main():
         before = 'if(isnull(round_mode_metadata(meta)))'
         after = 'if(FALSE && isnull(round_mode_metadata(meta)))'
         expected = 'FAIL: invalid round extension passed preflight: partial'
+    elif args.negative_control == 'integrity':
+        before = 'state["metadata"] != md5(file2text("map_saves/map.txt")) || '
+        after = ''
+        expected = 'FAIL: modern metadata tamper passed preflight'
     if args.negative_control:
         if source.count(before) != 1:
             raise RuntimeError('Control requires one unique production guard')
         source = source.replace(before, after, 1)
-    (output / 'loading.dm').write_text(source, encoding='utf-8')
+    (output / loader.name).write_text(source, encoding='utf-8')
     environment = (fixture / 'roundtrip.dme').read_text(encoding='utf-8')
     environment = environment.replace('#define FILE_DIR "../.."', f'#define FILE_DIR "{root.as_posix()}"')
     hashes = {}
 
     def include(match):
         original = (fixture / match.group(1)).resolve(strict=True)
-        target = output / 'loading.dm' if original == loader else original
+        target = output / loader.name if original == loader else original
         hashes[original.relative_to(root).as_posix()] = hashlib.sha256(target.read_bytes()).hexdigest()
         return f'#include "{target.as_posix()}"'
 

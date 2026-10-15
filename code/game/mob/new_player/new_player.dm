@@ -257,7 +257,7 @@ var/global/redirect_all_players = null
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!ticker.players_can_join)
+		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
@@ -289,7 +289,7 @@ var/global/redirect_all_players = null
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!ticker.players_can_join)
+		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
@@ -331,7 +331,7 @@ var/global/redirect_all_players = null
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!ticker.players_can_join)
+		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
@@ -378,7 +378,7 @@ var/global/redirect_all_players = null
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!ticker.players_can_join)
+		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
@@ -455,7 +455,7 @@ var/global/redirect_all_players = null
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!ticker.players_can_join)
+		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
@@ -536,7 +536,7 @@ var/global/redirect_all_players = null
 					WWalert(usr,"The game is currently only accepting approved players. Visit the Discord to get approved.", "Error")
 				return
 
-		if (!ticker.players_can_join)
+		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 

@@ -14,6 +14,10 @@
 		H.defaultHUD = H.client.prefs.UI_style
 		++recreate_flag
 
+	// World persistence excludes client screen objects, while defaultHUD persists.
+	if (!H.HUDinventory.len || !H.HUDneed.len)
+		recreate_flag = TRUE
+
 	if (recreate_flag)
 		H.destroy_HUD()
 		H.create_HUD()

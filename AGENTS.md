@@ -210,6 +210,13 @@ names for separate catch blocks in one proc or compilation fails with duplicate 
 
 ## Agent self-maintenance
 
+<!-- 2026-10-15: durable invulnerable areas -->
+Placed admin/sewer areas use native `INFINITY` for `artillery_integrity`.
+Durable JSON uses the exact `positive_infinity` sentinel only for that field;
+ordinary numbers remain finite and bounded. Preserve finite legacy values and
+reject malformed/wrong-field sentinels before world mutation. Contract probes
+and the full metadata fixture audit inherited area defaults and placed areas.
+
 <!-- 2026-10-11: world-save verification -->
 - Persistence regressions are in `tests/world_save`; the focused fixture uses
   the actual saver/loader with isolated adapters, and `run-game.ps1` exercises
@@ -217,6 +224,16 @@ names for separate catch blocks in one proc or compilation fails with duplicate 
   and sharded entries; retain legacy flat-entry reading. Never restore `loc`,
   `pixloc`, or client session fields as ordinary variables. Linux DreamDaemon
   `-safe` requires a relative log path inside the isolated working directory.
+
+<!-- 2026-10-14: optional save fields and player reclaim -->
+- Reading an absent native savefile field can create a null directory entry.
+  Check `F.dir` membership before reading optional legacy fields; otherwise
+  typed-value validation can reject a valid generation. The reclaim suite's
+  `legacy` control checks this mutation before broader world preflight.
+- `lastKnownCkey` is login history, not unique body ownership. Reclaim uses the
+  explicit canonical owner, complete-load readiness and ordinary admission
+  guards. Legacy migration requires a reviewed generation-bound unique body
+  mapping and a fresh derived save; preserve all original generations.
 
 This file is read by every agent at session start. If you discover something
 useful about the codebase that future agents should know, **update this file**.
@@ -290,6 +307,19 @@ revalidates stationary targets. Keep masked names behind `get_visible_name()`,
 require a screen slot for inventory visibility, and forward runtime persistence
 exclusions. `tests/hover_name/run.py` exercises native production decisions with
 an injected client boundary, not real client mouse delivery or rendering.
+<!-- 2026-10-15: lighting persistence ownership -->
+Custom saves enumerate tmp lighting fields too. Exclude light/light_sources and
+derived light_source/lighting_corner/lighting_overlay graphs on export and import;
+their constructors require live owners/turfs. Rebuild sources after durable atom
+fields and after_load. tests/world_save/run-durable-world.py --lighting checks
+actual constructors and legacy graph recovery; full-map acceptance is separate.
+
+<!-- 2026-10-15: isolated recovery observer setup -->
+When normal global startup is disabled, fixtures that remove real mobs must
+initialize `GLOB.all_observable_events = list()` before constructing the moved,
+direction, name and stat observer events. Otherwise event construction can turn
+the null registry into one datum, and the second event raises a type mismatch.
+Missing direction observers also make real contained-item removal fail.
 
 <!-- 2026-10-14: local CID source comparison -->
 `tools/cid/get-cid.ps1` calls the reviewed Windows BYOND 516.1681 library's
@@ -746,6 +776,13 @@ retire through atom/reagent cleanup. `tests/chemical_smoke_ownership/run.py` che
 production copies, lifetime bounds and repeated holder/membership cleanup against
 an immutable historical negative control in temporary offline storage.
 
+<!-- 2026-10-15: native associative collections -->
+`code/_macros.dm` redefines `islist(A)` as `istype(A, /list)`, excluding `/alist`
+although native BYOND `islist` accepts it. Squad and leader defaults are alists
+with numeric keys and null associations. Collection codecs must handle `/alist`
+explicitly; isolated probes must import the production macro. Numeric alist
+indexing addresses keys, so iterate keys instead of positional indexes.
+
 <!-- 2026-10-15: paid wood residue and plant nitrary -->
 Wood-fuel residue uses a saved scalar ledger shared by existing ovens, furnaces
 and factories; unknown legacy fuel earns no ash. The existing compost bin's
@@ -754,3 +791,14 @@ excluding its runtime clock. Feedstock uses stack.use without a human argument:
 Production religion otherwise discounts consumption and breaks conservation.
 See docs/wood-ash-compost.md and tests/wood_ash_compost/run.py for isolated
 production-path/native-save checks and generated-source mutation controls.
+
+<!-- 2026-10-15: save and continuous-round guard ordering -->
+Ticker save-in-progress gating precedes continuous persistence-round recovery.
+Do not clear a saved finished flag or change round state while serialization is
+yielding. tests/persistence_round/run.py --negative-control save removes that
+guard and must fail the production ticker/save interaction assertion.
+<!-- 2026-10-15: persistence runtime view helper -->
+ClearMap must preserve the global dview_mob identity. Retiring this runtime mob
+breaks FOR_DVIEW in post-import lighting processing after GC clears the global.
+The lighting recovery fixture runs production lighting_sources.fire(), not only
+light constructor/registration checks; lighting-view removes the preservation guard.

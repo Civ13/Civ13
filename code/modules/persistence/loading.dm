@@ -19,6 +19,10 @@
 		// their screen/datum objects without the live client owner they require.
 		if(ispath(type, /obj/screen) || ispath(type, /datum/hud))
 			return null
+		// Historical saves can retain derived lighting graphs through item vars.
+		// Their constructors require live owners/turfs; never import those graphs.
+		if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay))
+			return null
 		if(ispath(type, /obj/map_metadata))
 			existing_references["[ind]"] = map
 			return map
@@ -48,8 +52,14 @@
 			object = new type()
 		if(!object)
 			throw EXCEPTION("Could not create saved entry [ind] ([type])")
+		// Mark before field decoding can yield to the constructor's spawn callback.
+		// This applies to unowned legacy humans as well as reclaimable players.
+		if(ishuman(object))
+			var/mob/living/human/restored_human = object
+			restored_human.persistence_restored = TRUE
 		all_loaded += object
 		existing_references["[ind]"] = object
+		if(durable_import) durable_import.accept_entry(loading_z, ind, object)
 		for(var/v in savefile.dir)
 			savefile.cd = entry_path(savefile, ind)
 			if(object.persistence_runtime_var(v))
@@ -110,7 +120,7 @@
 		if (ishuman(object))
 			var/mob/living/human/H = object
 			// A saved corpse must stay dead; do not replay death hooks on import.
-			if (H.stat != DEAD)
+			if (H.stat != DEAD && !H.persistence_owner_ckey)
 				H.rejuvenate()
 			if (!H.name && savefile["name"])
 				H.name = savefile["name"]
@@ -170,6 +180,7 @@
 				T.ChangeTurf(type, FALSE, FALSE)
 				TICK_CHECK
 	for(var/B = 1, B <= world.maxz, B++)
+		loading_z = B
 		try
 			var/watch = start_watch()
 			existing_references = list()
@@ -204,11 +215,18 @@
 				var/datum/ob = all_loaded[i]
 				if (ob)
 					ob.after_load()
+					register_restored_player(ob)
 				if(istype(ob, /obj))
 					var/obj/obbie = ob
 					if(obbie.load_datums)
 						if(obbie.reagents)
 							obbie.reagents.my_atom = ob
+			// Constructors see defaults before saved fields/contents are restored.
+			// Rebuild obstruction caches before queuing any final source updates.
+			for(var/turf/light_turf in all_loaded)
+				light_turf.recalc_atom_opacity()
+			for(var/atom/light_owner in all_loaded)
+				light_owner.update_light()
 			log_startup_progress("	Loaded z-level [B] in [stop_watch(watch)]s.")
 		catch(var/exception/e)
 			last_error = "[e] on [e.file]:[e.line]"
@@ -226,22 +244,27 @@
 // use the same grid; the completion marker is required by the startup contract.
 /map_storage/proc/validate_world_save()
 	last_error = null
+	release_durable_world()
 	try
 		if(!fexists("map_saves/save_complete.txt") || !fexists("map_saves/map.txt"))
 			throw EXCEPTION("Save is incomplete: metadata or completion marker missing")
 		var/list/meta = splittext(file2text("map_saves/map.txt"), "\n")
 		if(meta.len < 9 || meta[1] != map.ID)
 			throw EXCEPTION("Save metadata does not match the current map")
+		var/list/round_state = read_round_state()
+		var/list/player_owners = list()
 		if(isnull(round_mode_metadata(meta)))
 			throw EXCEPTION("Save round-mode metadata is malformed")
-		for(var/z = 1, z <= world.maxz, z++)
+		for(var/z = 1, z <= save_validation_maxz(), z++)
 			if(!fexists("map_saves/[z].sav"))
 				throw EXCEPTION("Missing saved z-level [z]")
 			var/savefile/F = new("map_saves/[z].sav")
+			if(round_state.len && F["/generation"] != round_state["generation"])
+				throw EXCEPTION("Saved level belongs to another round generation")
 			var/version = F["/format_version"]
 			if(version && version != 2)
 				throw EXCEPTION("Unsupported save version [version]")
-			if(version == 2 && (F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != world.maxz))
+			if(version == 2 && (F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()))
 				throw EXCEPTION("Saved world dimensions differ from the current world")
 			var/list/validated_lists = list()
 			var/list/turf_refs = list()
@@ -284,6 +307,8 @@
 				var/type = F["type"]
 				if(!ispath(type, /datum) || ispath(type, /area) || (ispath(type, /turf) && !turf_refs["[ref]"]))
 					throw EXCEPTION("Unsupported or unplaced saved entry [ref] on z=[z]")
+				if(ispath(type, /mob/living/human))
+					validate_saved_player_owner(F, ref, player_owners)
 				var/list/fields = F.dir.Copy()
 				for(var/field in fields)
 					F.cd = entry_path(F, ref)
@@ -306,8 +331,10 @@
 						for(var/item in params2list(copytext(value, 7)))
 							if(findtext(item, "**entry") == 1 && !entry_set[copytext(item, 8)])
 								throw EXCEPTION("Missing legacy list entry on z=[z]")
+		if(round_state["version"] == 2) validate_durable_world(round_state["world_state"], round_state["generation"])
 		return TRUE
 	catch(var/exception/e)
+		release_durable_world()
 		last_error = "[e] on [e.file]:[e.line]"
 		world.log << "World-save preflight rejected: [last_error]"
 		message_admins("Save rejected before clearing the world: [e]")
@@ -322,8 +349,8 @@
 		if("area")
 			if(!ispath(value["type"], /area))
 				throw EXCEPTION("Invalid saved area type")
-			var/turf/T = locate(value["x"], value["y"], value["z"])
-			if(!T || !istype(T.loc, value["type"]))
+			var/area_type = save_validation_area_type(value["x"], value["y"], value["z"])
+			if(!ispath(area_type, value["type"]))
 				throw EXCEPTION("Referenced area differs from the current map")
 			return TRUE
 		if("value")
@@ -337,7 +364,7 @@
 				var/coordinate = value[axis]
 				if(!isnum(coordinate) || coordinate < 1 || coordinate != round(coordinate))
 					throw EXCEPTION("Invalid saved turf coordinate")
-			if(!locate(value["x"], value["y"], value["z"]))
+			if(!save_validation_coordinate(value["x"], value["y"], value["z"]))
 				throw EXCEPTION("Saved turf reference is outside world dimensions")
 			return TRUE
 		if("list")

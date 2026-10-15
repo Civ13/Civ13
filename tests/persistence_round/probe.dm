@@ -40,6 +40,13 @@ var/global/persistence_test_reboots = 0
 		ticker.current_state = GAME_STATE_PLAYING
 		config.allowedgamemodes = "TDM"
 		map.persistence = TRUE
+		ticker.finished = TRUE
+		persistence_save_in_progress = TRUE
+		persistent_assert(!ticker.process() && ticker.finished && ticker.current_state == GAME_STATE_PLAYING, "save guard preserves persistent round state")
+		persistence_save_in_progress = FALSE
+		persistence_restart.startup_hold = TRUE
+		persistent_assert(!ticker.process() && ticker.finished && ticker.current_state == GAME_STATE_PLAYING, "startup guard preserves persistent round state")
+		persistence_restart.startup_hold = FALSE
 		var/datum/persistence_callback/C = new
 		for (var/kind in list("restart", "epoch", "map", "gamemode"))
 			vote.reset()

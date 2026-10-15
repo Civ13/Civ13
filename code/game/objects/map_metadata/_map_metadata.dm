@@ -299,11 +299,15 @@ var/civmax_research = list(230,230,230)
 				i[3] = pick("paracetamol", "penicillin", "opium", "cocaine", "sal_acid")
 //	spawn(5000)
 //		pollution()
-	spawn(2400)
-		wind()
-	spawn(2000)
-		religious_timer()
-		tip_process()
+	if(!durable_schedule("wind", 2400))
+		spawn(2400)
+			wind()
+	if(!durable_schedule("religion", 2000))
+		spawn(2000)
+			religious_timer()
+	if(!durable_schedule("tips", 2000))
+		spawn(2000)
+			tip_process()
 
 	if (nomads || civilizations || ID==MAP_COLONY || ID==MAP_FOUR_COLONIES || ID==MAP_PIONEERS)
 		var/amt_to_create = (world.maxx*world.maxy)/5000
@@ -356,6 +360,7 @@ var/civmax_research = list(230,230,230)
 				custom_religions[rel][3] -= 0.2
 			if (custom_religions[rel][3] < 0)
 				custom_religions[rel][3] = 0
+	if(durable_schedule("religion", 1200)) return
 	spawn(1200)
 		religious_timer()
 
@@ -388,7 +393,9 @@ var/civmax_research = list(230,230,230)
 		to_chat(world, "<big>The wind changes strength. It is now <b>[windspeed]</b>.</big>")
 	if (winddirection != oldwind)
 		to_chat(world, "<big>The wind changes direction. It is now blowing from the <b>[winddirection]</b>.</big>")
-	spawn(rand(3600,6000))
+	var/next_wind_delay = rand(3600,6000)
+	if(durable_schedule("wind", next_wind_delay)) return
+	spawn(next_wind_delay)
 		wind()
 
 /obj/map_metadata/proc/pollution()
@@ -403,12 +410,14 @@ var/civmax_research = list(230,230,230)
 		set_global_pollution(0)
 	else
 		change_global_pollution(-80)
+	if(durable_schedule("pollution", 9000)) return
 	spawn(9000) //every 15 mins
 		pollution()
 
 /obj/map_metadata/proc/tip_process()
 	var/list/tips = file2list("config/tips.txt")
 	show_tip(tips)
+	if(durable_schedule("tips", 6000)) return
 	spawn(6000) //every 10 mins
 		tip_process()
 
@@ -444,22 +453,26 @@ var/civmax_research = list(230,230,230)
 
 /obj/map_metadata/proc/autoresearch_proc()
 	if (autoresearch && default_research < 230)
+		if(durable_schedule("autoresearch", 600)) return
 		spawn(600) //1 minute = 0.03 points (by default)
-			default_research += autoresearch_mult
-			if (map.ID == MAP_CIVILIZATIONS)
-				civa_research = list(default_research,default_research,default_research,null,0)
-				civb_research = list(default_research,default_research,default_research,null,0)
-				civc_research = list(default_research,default_research,default_research,null,0)
-				civd_research = list(default_research,default_research,default_research,null,0)
-				cive_research = list(default_research,default_research,default_research,null,0)
-				civf_research = list(default_research,default_research,default_research,null,0)
-			else
-				for(var/i = 1, i <= map.custom_civs.len, i++)
-					var/key = map.custom_civs[i]
-					map.custom_civs[key][1] = default_research
-					map.custom_civs[key][2] = default_research
-					map.custom_civs[key][3] = default_research
-			autoresearch_proc()
+			autoresearch_step()
+
+/obj/map_metadata/proc/autoresearch_step()
+	default_research += autoresearch_mult
+	if (map.ID == MAP_CIVILIZATIONS)
+		civa_research = list(default_research,default_research,default_research,null,0)
+		civb_research = list(default_research,default_research,default_research,null,0)
+		civc_research = list(default_research,default_research,default_research,null,0)
+		civd_research = list(default_research,default_research,default_research,null,0)
+		cive_research = list(default_research,default_research,default_research,null,0)
+		civf_research = list(default_research,default_research,default_research,null,0)
+	else
+		for(var/i = 1, i <= map.custom_civs.len, i++)
+			var/key = map.custom_civs[i]
+			map.custom_civs[key][1] = default_research
+			map.custom_civs[key][2] = default_research
+			map.custom_civs[key][3] = default_research
+	autoresearch_proc()
 // called from the map process
 /obj/map_metadata/proc/tick()
 	if (ar_to_close_timeleft > 0)
@@ -510,12 +523,12 @@ var/civmax_research = list(230,230,230)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
-				if (count > age1_lim && world.time > 36000)
+				if (count > age1_lim && research_time() > 36000)
 					to_chat(world, "<big>The world has advanced into the Bronze Age!</big>")
 					age = "313 B.C."
 					set_ordinal_age()
 					age1_done = TRUE
-					age2_timer = (world.time + age2_timer)
+					age2_timer = (research_time() + age2_timer)
 					if (!map.chad_mode && !map.chad_mode_plus)
 						default_research = 25
 					break
@@ -524,12 +537,12 @@ var/civmax_research = list(230,230,230)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
-				if (count > age2_lim && world.time >= age2_timer)
+				if (count > age2_lim && research_time() >= age2_timer)
 					to_chat(world, "<big>The world has advanced into the Medieval Age!</big>")
 					age = "1013"
 					set_ordinal_age()
 					age2_done = TRUE
-					age3_timer = (world.time + age3_timer)
+					age3_timer = (research_time() + age3_timer)
 					if (!map.chad_mode && !map.chad_mode_plus)
 						default_research = 50
 					break
@@ -538,7 +551,7 @@ var/civmax_research = list(230,230,230)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
-				if (count > age3_lim && world.time >= age3_timer)
+				if (count > age3_lim && research_time() >= age3_timer)
 					to_chat(world, "<big>The world has advanced into the Imperial Age!</big>")
 					age = "1713"
 					set_ordinal_age()
@@ -551,7 +564,7 @@ var/civmax_research = list(230,230,230)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
-				if (count > age4_lim && world.time >= age4_timer)
+				if (count > age4_lim && research_time() >= age4_timer)
 					to_chat(world, "<big>The world has advanced into the Industrial Age!</big>")
 					age = "1873"
 					set_ordinal_age()
@@ -563,7 +576,7 @@ var/civmax_research = list(230,230,230)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
-				if (count > age5_lim && world.time >= age5_timer)
+				if (count > age5_lim && research_time() >= age5_timer)
 					to_chat(world, "<big>The world has advanced into the Early Modern Age!</big>")
 					age = "1903"
 					set_ordinal_age()
@@ -575,7 +588,7 @@ var/civmax_research = list(230,230,230)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
-				if (count > age6_lim && world.time >= age6_timer)
+				if (count > age6_lim && research_time() >= age6_timer)
 					to_chat(world, "<big>The world has advanced into the Second World War!</big>")
 					age = "1943"
 					set_ordinal_age()
@@ -587,7 +600,7 @@ var/civmax_research = list(230,230,230)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
-				if (count > age7_lim && world.time >= age7_timer)
+				if (count > age7_lim && research_time() >= age7_timer)
 					to_chat(world, "<big>The world has advanced into the Cold War!</big>")
 					age = "1969"
 					set_ordinal_age()
@@ -599,7 +612,7 @@ var/civmax_research = list(230,230,230)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
-				if (count > age8_lim && world.time >= age8_timer)
+				if (count > age8_lim && research_time() >= age8_timer)
 					to_chat(world, "<big>The world has advanced into the Modern Age!</big>")
 					age = "2013"
 					set_ordinal_age()
@@ -1029,6 +1042,9 @@ var/civmax_research = list(230,230,230)
 
 /////////////////////////////////SEASONS//////////////////////////
 /obj/map_metadata/Destroy()
+	if(durable_callbacks)
+		durable_callbacks.Destroy()
+		durable_callbacks = null
 	season_retired = TRUE
 	season_epoch++
 	season_queue = list()
@@ -1086,6 +1102,7 @@ var/civmax_research = list(230,230,230)
 /obj/map_metadata/proc/season_schedule_phase(var/delay, var/phase, var/epoch)
 	if (!season_worker_valid(epoch))
 		return
+	if(durable_schedule(phase, delay)) return
 	spawn(delay)
 		if (!season_worker_valid(epoch))
 			return
@@ -1096,6 +1113,7 @@ var/civmax_research = list(230,230,230)
 	if (season_retired || season_loop_scheduled || map != src)
 		return
 	season_loop_scheduled = TRUE
+	if(durable_schedule("season_loop", 18000)) return
 	spawn(18000)
 		season_loop_scheduled = FALSE
 		if (!season_retired && map == src)
@@ -1133,6 +1151,7 @@ var/civmax_research = list(230,230,230)
 				var/epoch = season_epoch
 				if ((force || config.seasons_on) && (season in list("FALL", "WINTER", "SPRING", "SUMMER")))
 					season_epoch++
+					durable_cancel_season_phases()
 					epoch = season_epoch
 					season_apply(force, advance_decay, epoch)
 				// Subtype completion historically also ran when seasons were disabled.
@@ -1152,7 +1171,7 @@ var/civmax_research = list(230,230,230)
 	return
 
 /obj/map_metadata/persistence_runtime_var(var/key)
-	if (key in list("season_retired", "season_busy", "season_epoch", "season_queue", "season_loop_scheduled"))
+	if (key in list("durable_callbacks", "research_clock_offset", "season_retired", "season_busy", "season_epoch", "season_queue", "season_loop_scheduled"))
 		return TRUE
 	return ..(key)
 

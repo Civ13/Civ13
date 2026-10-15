@@ -124,6 +124,7 @@ world
 		check_matrix(A.transform, list(8,9,10,11,12,13), "transform")
 		check(A.color == "#123456" && A.alpha == 173, "individual appearance fields changed")
 		check_hud_runtime_save()
+		check_player_reclaim()
 		check(A.reference.next == A.reference && A.reference.backlink == A, "datum/object cycle lost")
 		check(islist(A.items) && !A.items.len, "empty list reverted to default")
 		check(A.complex[1] == "literal **entry7", "literal marker string changed")
