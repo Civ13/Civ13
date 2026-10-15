@@ -7,8 +7,16 @@ ERA_NAMES = ['Stone Age', 'Bronze Age', 'Middle Ages', 'Imperial Age',
 
 def annotate_eras(records, nodes, splitargs):
     tiers = {}
-    for match in re.finditer(r'new /datum/research_node\(([^\n]+)\)', nodes):
-        args = splitargs(match[1])
+    for match in re.finditer(r'new /datum/research_node\(', nodes):
+        end, depth, quoted = match.end(), 1, False
+        while end < len(nodes) and depth:
+            char = nodes[end]
+            if char == '"' and nodes[end-1] != '\\':
+                quoted = not quoted
+            if not quoted:
+                depth += (char == '(') - (char == ')')
+            end += 1
+        args = splitargs(nodes[match.end():end-1])
         if len(args) >= 8 and args[7].isdigit():
             tiers[args[0].strip('"')] = int(args[7])
     gates = dict(re.findall(r'"(/obj/[^"\n]+)"\s*=\s*"([^"\n]+)"', nodes))
@@ -62,6 +70,9 @@ def add_processors(files, add, records):
     yields = re.findall(r'current_work = new P\(null, W.amount \* (\d+), FALSE\)', saw)
     if yields != ['10', '12', '4'] or 'give_exp' not in finish or 'clamp(ceil(this_production.amount/2' not in finish or '/obj/item/stack/material/woodplank' not in attack:
         raise ValueError('Sawmill source contract changed; review atlas quantities and conditions')
+    for required in ('!H.in_mood()', '!anchored', 'istype(src, /obj/structure/sawmill/powered) && powered == FALSE', 'if (current_work)', 'if (do_after(H, work_time_amount, src.loc))'):
+        if required not in saw:
+            raise ValueError('Sawmill source contract changed; review atlas conditions')
     for suffix, name, amount in [('', 'Primitive sawmill', yields[2]), ('/large', 'Large sawmill', yields[0]), ('/powered', 'Powered sawmill', yields[1])]:
         station = '/obj/structure/sawmill' + suffix
         conditions = 'Anchored, idle sawmill; actor in mood; complete the action. Nominal yield per log; skill failure can reduce output. Interrupting can lose inputs. Time depends on stack size, crafting and dexterity.'
@@ -75,6 +86,9 @@ def add_processors(files, add, records):
     pairs = re.findall(r'istype\(W,\s*(/obj/[^)]+)\)\)\s*\n\s*produce\(W, H, (/obj/[^)]+)\)', mill)
     if len(pairs) != 4 or 'new current_work.type(src.loc)' not in mill_finish or 'current_work = new P(null)' not in mill_work:
         raise ValueError('Grain mill source contract changed; review atlas conversions')
+    for required in ('!anchored', 'H.stats["stamina"][2]*0.1', '!H.in_mood()', 'while (complete_percent<100)', 'spawn(30+rand(1,30))'):
+        if required not in mill_work:
+            raise ValueError('Grain mill source contract changed; review atlas conditions')
     for feed, product in pairs:
         for suffix, name in [('', 'Manual grain mill'), ('/large', 'Large grain mill')]:
             conditions = 'Anchored mill; one whole grain item becomes one fresh product item (not equal reagent volume). '

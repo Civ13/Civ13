@@ -202,10 +202,13 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 	if (!load_catalog())
 		to_chat(viewer, "The crafting reference is unavailable in this build.")
 		return
+	viewer << browse(render_html(viewer, query, page, resource_id, legacy, era, processor, recipe_id), "window=crafting_atlas;size=1000x700")
+
+/datum/crafting_atlas_reference/proc/render_html(mob/viewer, query = "", page = 1, resource_id = "", legacy = FALSE, era = "", processor = "", recipe_id = "")
 	var/content = legacy ? page_html(viewer, query, page) : graph_html(viewer, query, era, processor, recipe_id)
 	if (resource_id)
 		content = replacetext(content, "<h2>Crafting Atlas</h2>", acquisition_html(resource_id))
-	viewer << browse(content, "window=crafting_atlas;size=850x650")
+	return content
 
 /datum/crafting_atlas_reference/proc/resource_exists(resource_id)
 	if (!load_catalog())
