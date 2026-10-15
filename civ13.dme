@@ -686,6 +686,7 @@
 #include "code\game\objects\structures\key_doors\types\groups_unaligned.dm"
 #include "code\game\objects\structures\kitchen\oven.dm"
 #include "code\game\objects\structures\kitchen\pot.dm"
+#include "code\game\objects\structures\kitchen\cooked_meals.dm"
 #include "code\game\objects\structures\stool_bed_chair_nest\bed.dm"
 #include "code\game\objects\structures\stool_bed_chair_nest\chairs.dm"
 #include "code\game\objects\structures\stool_bed_chair_nest\stools.dm"
