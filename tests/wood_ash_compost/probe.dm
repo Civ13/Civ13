@@ -222,12 +222,18 @@
 		W = new(H)
 		W.amount = 2
 		stove.attackby(W,H)
+		check_nitrary(stove.fuel == 2 && P.loc == get_turf(stove) && P.on_stove, "paid stove ignition preconditions")
 		stove.attack_hand(H)
-		sleep(2)
+		var/deadline = world.time + 20
+		while (P.on_stove && world.time < deadline)
+			sleep(1)
+		world.log << "NITRARY stove fuel=[stove.fuel] on=[stove.on] pot_on=[P.on_stove] leachate=[P.reagents.get_reagent_amount("nitrate_leachate")] potassium=[P.reagents.get_reagent_amount("potassium")] nitrogen=[P.reagents.get_reagent_amount("nitrogen")]"
 		check_nitrary(!P.reagents.get_reagent_amount("nitrate_leachate") && P.reagents.get_reagent_amount("potassium") == 1 && P.reagents.get_reagent_amount("nitrogen") == 1, "actual small pot callback recovers legacy mineral IDs")
 		stove.attackby(P,H)
 		stove.attack_hand(H)
-		sleep(2)
+		deadline = world.time + 20
+		while (P.on_stove && world.time < deadline)
+			sleep(1)
 		check_nitrary(P.reagents.get_reagent_amount("potassium") == 1 && P.reagents.get_reagent_amount("nitrogen") == 1, "reboiling spent extract cannot mint minerals")
 		text2file("PASS: wood residue and nitrary native disk round trips", "result.txt")
 	catch (var/exception/E)
