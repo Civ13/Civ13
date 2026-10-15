@@ -211,6 +211,8 @@ def main():
             raise RuntimeError(f'Native daemon exited with {run.returncode}; see daemon-exit.json')
         log = (output / 'runtime.log').read_text(encoding='utf-8', errors='replace')
         diagnostics = (log + run.stdout + run.stderr).lower()
+        if args.lighting and re.search(r'\bbug:', diagnostics):
+            raise RuntimeError('Native lighting engine diagnostic invalidated fixture')
         if (re.search(r'##\s*error\s*:', diagnostics) or
                 any(word in diagnostics for word in ('unexpected runtime', 'bad ref', 'runtime error:', 'infinite loop', 'fatal error', 'segmentation', 'assertion failed'))):
             raise RuntimeError('Native engine diagnostic invalidated fixture')
