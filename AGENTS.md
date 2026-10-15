@@ -358,6 +358,14 @@ Missing/transparent defaults use a labeled actual paper DMI source symbol;
 constructor graphics and material recoloring remain dynamic. See
 docs/crafting-atlas.md; acquisition annotations retain their historical audit SHA.
 
+<!-- 2026-10-15: atlas unlock and processing contracts -->
+`scripts/atlas/catalog_metadata.py` keeps unlock research tiers/minimum gates
+separate from catalog field 12's maximum allowed era. Parse research constructors
+with balanced arguments; the enclosing registration call adds another closing
+parenthesis. Processor tiers describe station construction, not use restrictions.
+`tests/crafting_atlas/run.py --compile-only` never starts DreamDaemon; runtime
+navigation and omission controls require the normal isolated runner or CI.
+
 <!-- 2026-10-11: bounded animal harvesting -->
 - `code/modules/1713/animal_harvest.dm` centralizes corpse claims and bounded species products. The custom saver enumerates `tmp` fields, so in-progress harvesting/axe locks explicitly opt out via `persistence_runtime_var`.
 - `tests/animal_harvest/run.py --byond-bin <516.1681-bin>` executes production yields, cancellation/concurrency, binding conservation and object save/load in temporary offline storage. `preview.py` renders existing DMI states for PR sprite review; it is not a gameplay capture or full-server memory test.
