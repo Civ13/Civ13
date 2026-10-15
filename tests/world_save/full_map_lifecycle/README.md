@@ -1,7 +1,7 @@
 # Full-size Europe recovery probe (candidate)
 
 This test-only adapter targets frozen gameplay source
-`b75564225f09153b006af97aa8229bbd38db421c`, including the reviewed lighting
+`b0e398add3800a0cc505bce1574d536904c5a9d5`, including the reviewed lighting
 runtime graph fix. It prepares a new source tree and
 adds a fixed authenticated local control surface before normal Topic logging.
 It does not modify the existing Europe host on port 18462.
