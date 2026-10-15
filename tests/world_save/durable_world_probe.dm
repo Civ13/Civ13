@@ -57,6 +57,9 @@ var/durable_probe_tips = 0
 		text2file(json_encode(traits), "map-default-traits.json")
 		game_id = "metadata-disk-round"
 		var/mob/living/human/durable_probe_leader/leader = new(locate(2,2,2))
+		// Synthetic durable account selects the production saved-player path.
+		// An unowned human is correctly rejuvenated, requiring full physiology.
+		leader.persistence_owner_ckey = "metadatafixture"
 		durable_world_check(istype(map.faction1_squads, /alist) && istype(map.faction1_squad_leaders, /alist), "actual map associative defaults absent")
 		map.faction1_squads[0] = null
 		map.faction1_squads[7] = list(leader)
@@ -182,7 +185,7 @@ var/durable_probe_tips = 0
 		var/list/first = map.faction_research["first"]
 		durable_world_check(first == map.faction_research["second"] && first["self"] == first && first["points"] == 123.5, "metadata aliases changed")
 		var/mob/living/human/durable_probe_leader/restored_leader = map.faction_research_director["first"]
-		durable_world_check(istype(restored_leader) && restored_leader != leader && get_turf(restored_leader) == locate(2,2,2), "leader was duplicated or not rebound")
+		durable_world_check(istype(restored_leader) && restored_leader != leader && get_turf(restored_leader) == locate(2,2,2) && restored_leader.persistence_owner_ckey == "metadatafixture", "leader was duplicated or not rebound")
 		durable_world_check(istype(map.faction1_squads, /alist) && istype(map.faction1_squad_leaders, /alist) && (0 in map.faction1_squads) && isnull(map.faction1_squads[0]) && map.faction1_squads[7][1] == restored_leader && map.faction1_squad_leaders[7] == restored_leader && (1 in map.faction1_squad_leaders) && isnull(map.faction1_squad_leaders[1]), "squad associations or human identity changed")
 		durable_world_check(A.climate == "tundra" && A.artillery_integrity == 37 && A.weather_intensity == 0.4, "area state reset")
 		durable_world_check(weather == WEATHER_WET && weather_intensity == 0.75 && global_pollution == 29 && abandonment_season_changes == 17, "global weather or season age reset")

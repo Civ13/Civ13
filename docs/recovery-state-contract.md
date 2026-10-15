@@ -138,6 +138,9 @@ fail at their exact intended assertions. It is not a connected-player or
 representative full-map performance test; integrated native results are pending.
 The leader is a human subtype whose physiology startup is bypassed in this
 identity fixture; it still traverses the ordinary spatial saver and loader.
+It has a synthetic durable account to select the saved-player import branch,
+which preserves medical state instead of rejuvenating unowned humans. This is
+not authenticated-account or physiology acceptance.
 
 The Windows integrated and `--startup-only` probes compiled cleanly but the
 native daemon exited with `0xC0000409` before the first observed probe entry.
@@ -161,6 +164,12 @@ exact macro to exercise the same semantics. The codec explicitly accepts both
 kinds and the schema distinguishes them. Actual integration field traits are
 retained for the next run. The macro-aligned fixture, explicit codec fix and
 staging changes require fresh native and exact-head Linux evidence.
+
+At `883c6d1cd`, Linux production compilation, the helper tests and controls,
+clean startup, disk export and preflight rejection checks passed. Import stopped
+because the identity-only human lacked physiology yet entered the unowned-human
+rejuvenation path. The fixture now assigns synthetic durable ownership before
+saving and verifies it after loading. The production loader is unchanged.
 
 ## Save-speed investigation
 
