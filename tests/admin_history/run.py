@@ -53,7 +53,7 @@ def prepare(evidence, control=None, root=ROOT):
     }
     evidence.mkdir(parents=True, exist_ok=True)
     for name, value in inputs.items():
-        (evidence / name).write_text(value, encoding='utf-8')
+        (evidence / name).write_text(value, encoding='utf-8', newline='\n')
     metadata = {
         'head': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip(),
         'status': subprocess.check_output(['git', 'status', '--porcelain'], cwd=root, text=True),

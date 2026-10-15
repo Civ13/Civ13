@@ -1,4 +1,5 @@
 """Pure preparation checks: no native compiler, daemon or production state."""
+import hashlib
 import tempfile
 from pathlib import Path
 import unittest
@@ -15,6 +16,8 @@ class SourcePreparation(unittest.TestCase):
                     metadata = prepare(output, control)
                     source = (output / 'history.dm').read_text()
                     self.assertEqual(metadata['control'], control)
+                    for name, digest in metadata['compiled_sha256'].items():
+                        self.assertEqual(hashlib.sha256((output / name).read_bytes()).hexdigest(), digest)
                     self.assertIn('admin_log.Add(text)', source)
                     self.assertIn('game_log("ADMIN", text)', source)
                     self.assertIn('history_probe_write(payload, diary)', source)
