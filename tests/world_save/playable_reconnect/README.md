@@ -78,3 +78,10 @@ The tiny fixture's opt-in --hold-seconds130 comparison passed cleanly including
 native login. It does not reproduce the full map constructor workload or explain
 the full-world diagnostic. An attempted sleeping-global-constructor timing control
 entered world/New immediately and is invalid for that comparison; it was removed.
+
+The opt-in --compiled-hub condition copies the checkout hub metadata into the
+otherwise unchanged tiny fixture. The130second comparison also passed cleanly,
+so compiled hub metadata alone was insufficient to reproduce the full-world BUG.
+Both conditions use the same pinned engine, invisible/safe startup, seed parameter,
+actual port/admission guards and zero-listener census. No diagnostic is suppressed.
+This does not establish that the full-world diagnostic is harmless or fixed.

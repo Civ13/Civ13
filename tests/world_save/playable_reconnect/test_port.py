@@ -15,6 +15,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--byond-bin', type=Path, required=True)
     p.add_argument('--hold-seconds', type=int, default=5, help='Keep the closed fixture alive to observe delayed engine diagnostics (5-180 seconds)')
+    p.add_argument('--compiled-hub', action='store_true', help='Include checkout hub metadata to compare native startup against the default fixture')
     a = p.parse_args()
     if not 5 <= a.hold_seconds <= 180:
         p.error('--hold-seconds must be between5 and180')
@@ -59,7 +60,11 @@ var/datum/probe_storage/map_storage = new
     del(world)
 '''
     (root / 'probe.dm').write_text('#define FALSE 0\n#define TRUE 1\n' + guard + startup + fixture.replace('sleep(50)', f'sleep({a.hold_seconds * 10})'), encoding='utf-8')
-    (root / 'probe.dme').write_text('#include "probe.dm"\n', encoding='utf-8')
+    includes = '#include "probe.dm"\n'
+    if a.compiled_hub:
+        (root / 'hub.dm').write_bytes((production.parents[1] / 'code/hub.dm').read_bytes())
+        includes += '#include "hub.dm"\n'
+    (root / 'probe.dme').write_text(includes, encoding='utf-8')
     compiler = a.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = a.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     built = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=root, capture_output=True, text=True, timeout=60)
