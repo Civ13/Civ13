@@ -490,6 +490,14 @@ crash behavior. Do not replace required gameplay captures with fixture output.
 retained entries are distinct from OS private memory. `run-game.ps1 -ExerciseCapture`
 checks real forward/reverse/stop behavior. Its optional bounded `-Visual` mode
 requires the coordinator's exclusive screen turn; see tests/conveyor/README.md.
+<!-- 2026-10-15: player-facing changelog review -->
+Major player-facing PRs need a concise reviewed Changelog section before being
+marked ready or merged. When using the merged-SHA manifest route, add the manifest
+in a linked follow-up PR and link it from the original PR. Choose one announcement
+route per change; the explicit `Changelog: text` field opts into merge-time
+publication and requires that publication to be authorized. Changelog creation
+and linkage alone do not authorize publisher activation or live confirmation.
+
 <!-- 2026-10-11: shipped Discord changelog -->
 The standalone publisher in tools/changelog supports an explicit `Changelog: text`
 line in a PR opening description on merge into master. Missing or blank means no
