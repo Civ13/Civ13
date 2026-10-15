@@ -42,6 +42,10 @@ class AtlasNavigationTests(unittest.TestCase):
         self.assertEqual(multi['era_status'], 'multiple')
         self.assertEqual(unknown['unlock_eras'], [])
         self.assertEqual(unknown['maximum_era'], 8)
+        partial = record(['/obj/a', '/obj/unmapped'])
+        metadata.annotate_eras([partial], nodes, lambda s: [x.strip() for x in s.split(',')])
+        self.assertEqual(partial['unlock_eras'], [])
+        self.assertIn('Combined unlock unknown', partial['era_basis'])
         # The deliberately wrong expiry-as-unlock candidate fails this contract.
         def accepts(candidate):
             return candidate['unlock_eras'] == [] and candidate['era_sort'] == 99

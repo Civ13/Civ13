@@ -28,11 +28,17 @@ def annotate_eras(records, nodes, splitargs):
         if recipe['kind'].startswith('Material /') or recipe.get('processor'):
             targets = ([recipe['station']] if recipe.get('processor') else
                        [x['id'] for x in recipe['outputs']])
+            unknown = []
             for target in targets:
                 node = gates.get(target)
                 if node in tiers:
                     eras.add(tiers[node])
                     evidence.append(('Station construction research: ' if recipe.get('processor') else 'Research node: ') + node)
+                else:
+                    unknown.append(target)
+            if unknown:
+                eras.clear()
+                evidence.append('Combined unlock unknown; unmapped: ' + ', '.join(unknown))
         bounds = re.search(r'Era ordinals (\d+) through (\d+)', recipe['conditions'])
         if bounds and recipe['kind'] == 'Anvil':
             eras.add(int(bounds[1]))

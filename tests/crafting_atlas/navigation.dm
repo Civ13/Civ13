@@ -31,3 +31,5 @@
 	check_atlas(findtext(reference.graph_html(viewer, processor = "invalid"), "0 matching recipes"), "navigation invalid processor empty")
 	check_atlas(findtext(reference.graph_html(viewer, "Entry 160"), "Entry 160"), "navigation search reaches beyond index bound")
 	check_atlas(findtext(reference.graph_html(viewer, "missing"), "No matching recipes"), "navigation empty search")
+	var/unsafe_query = reference.graph_html(viewer, "'><script>")
+	check_atlas(!findtext(unsafe_query, "'><script>") && findtext(unsafe_query, "&#39;"), "navigation query attribute escaping")
