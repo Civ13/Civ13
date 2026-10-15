@@ -72,6 +72,7 @@ var/world_is_open = TRUE
 
 #define RECOMMENDED_VERSION 516
 /world/New()
+	map_storage.record_compiled_dimensions()
 	// Detect before any startup yield, ticker setup or admission can run.
 	persistence_restart.detect_startup()
 

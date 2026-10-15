@@ -143,18 +143,17 @@
 					var/coordinate = node[axis]
 					if(!isnum(coordinate) || coordinate < 1 || coordinate != round(coordinate))
 						throw EXCEPTION("Invalid durable metadata coordinate")
-				var/turf/T = locate(node["x"], node["y"], node["z"])
 				var/type = istext(node["type"]) ? text2path(node["type"]) : null
-				if(!T || !ispath(type, node["kind"] == "area" ? /area : /turf))
+				if(!map_storage.save_validation_coordinate(node["x"], node["y"], node["z"]) || !ispath(type, node["kind"] == "area" ? /area : /turf))
 					throw EXCEPTION("Invalid durable metadata location")
-				if(node["kind"] == "area" && T.loc.type != type)
+				if(node["kind"] == "area" && map_storage.save_validation_area_type(node["x"], node["y"], node["z"]) != type)
 					throw EXCEPTION("Durable metadata area differs from the map")
 			if("entry")
 				check_fields(node, list("kind", "type", "z", "ref"))
 				var/z = node["z"]
 				var/ref = node["ref"]
 				var/type = istext(node["type"]) ? text2path(node["type"]) : null
-				if(!isnum(z) || z < 1 || z > world.maxz || z != round(z) || !isnum(ref) || ref < 1 || ref != round(ref) || !ispath(type, /atom/movable) || ispath(type, /obj/screen) || ispath(type, /mob/new_player))
+				if(!isnum(z) || z < 1 || z > map_storage.save_validation_maxz() || z != round(z) || !isnum(ref) || ref < 1 || ref != round(ref) || !ispath(type, /atom/movable) || ispath(type, /obj/screen) || ispath(type, /mob/new_player))
 					throw EXCEPTION("Invalid durable metadata entry identity")
 				var/savefile/F = new("map_saves/[z].sav")
 				if(F["/generation"] != generation || F["[map_storage.entry_path(F, ref)]/type"] != type)

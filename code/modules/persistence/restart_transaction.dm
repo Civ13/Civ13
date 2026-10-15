@@ -78,6 +78,9 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	throw EXCEPTION("Native restart returned without replacing the world")
 
 /datum/persistence_restart_transaction/proc/execute()
+	if(building_allocating_z || map_storage.dimension_recovery_required)
+		report("Save/restart refused: building allocation is incomplete; finish allocation or restart recovery")
+		return FALSE
 	if(busy || startup_hold || persistence_save_in_progress || exists())
 		report("Save/restart refused: another save, import or unresolved restart intent owns recovery")
 		return FALSE
@@ -113,6 +116,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	busy = TRUE
 	try
 		var/list/I = read_intent()
+		if(!map_storage.prepare_saved_dimensions(I)) throw EXCEPTION("Saved dimension bootstrap failed: [map_storage.last_error]")
 		if(!matches(I, current_identity())) throw EXCEPTION("Restart intent does not match the completed generation")
 		expected_generation = I["generation"]
 		if(import_started && !import_complete)

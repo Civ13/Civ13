@@ -218,6 +218,35 @@ map_storage
 
 var/global/persistence_save_in_progress = FALSE
 
+/map_storage
+	var/compiled_maxz = 0
+	var/validation_maxz = 0
+	var/dimension_bootstrap_busy = FALSE
+	var/dimension_recovery_required = FALSE
+
+/map_storage/proc/record_compiled_dimensions()
+	if(!compiled_maxz) compiled_maxz = building_base_maxz()
+
+/map_storage/proc/save_validation_maxz()
+	return validation_maxz ? validation_maxz : world.maxz
+
+/map_storage/proc/save_validation_coordinate(x, y, z)
+	return isnum(x) && isnum(y) && isnum(z) && x == round(x) && y == round(y) && z == round(z) && x >= 1 && x <= world.maxx && y >= 1 && y <= world.maxy && z >= 1 && z <= save_validation_maxz()
+
+/map_storage/proc/save_validation_area_type(x, y, z)
+	if(!save_validation_coordinate(x, y, z)) return null
+	if(z > world.maxz) return world.area
+	var/turf/T = locate(x, y, z)
+	return T ? T.loc.type : null
+
+/map_storage/proc/save_validation_area_key(x, y, z)
+	if(!save_validation_coordinate(x, y, z)) return null
+	if(z <= world.maxz)
+		var/turf/T = locate(x, y, z)
+		return T ? "\ref[T.loc]" : null
+	var/area/A = locate(world.area)
+	return A ? "\ref[A]" : "prospective:[world.area]"
+
 /datum/controller/gameticker/proc/savemap(datum/persistence_restart_transaction/transaction)
 	if (persistence_save_in_progress || persistence_restart.startup_hold || (persistence_restart.busy && transaction != persistence_restart) || (!transaction && persistence_restart.exists()))
 		return 0
@@ -245,6 +274,9 @@ var/global/persistence_save_in_progress = FALSE
 		return FALSE
 	map_storage.reset_player_restoration()
 	persistence_save_in_progress = TRUE
+	if(!map_storage.prepare_saved_dimensions())
+		persistence_save_in_progress = FALSE
+		return FALSE
 	if(!map_storage.validate_world_save())
 		persistence_save_in_progress = FALSE
 		return FALSE
@@ -297,7 +329,7 @@ var/global/persistence_save_in_progress = FALSE
 	if(!fexists("map_saves/round.json"))
 		throw EXCEPTION("Completed generation is missing round state")
 	var/list/state = json_decode(file2text("map_saves/round.json"))
-	if(!islist(state) || state.len != (version == 2 ? 12 : 11) || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != world.maxz)
+	if(!islist(state) || state.len != (version == 2 ? 12 : 11) || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
 		throw EXCEPTION("Round state does not match completed generation")
 	if(version == 2 && !islist(state["world_state"]))
 		throw EXCEPTION("Completed generation is missing durable world state")
@@ -489,3 +521,63 @@ var/global/persistence_save_in_progress = FALSE
 	frame.source_identity = null
 	frame.file = null
 	frame.exporter = null
+
+// A candidate validation context describes prospective empty levels without
+// allocating turfs. Normal validation continues to use actual world dimensions.
+/map_storage/proc/saved_dimension_target()
+	if(!fexists("map_saves/save_complete.txt") || !fexists("map_saves/map.txt"))
+		throw EXCEPTION("Dimension bootstrap requires a completed generation")
+	var/marker = trim(file2text("map_saves/save_complete.txt"))
+	if(copytext(marker, 1, 10) != "round-v2:" && copytext(marker, 1, 10) != "round-v1:")
+		return world.maxz // Historical map-only saves retain the exact old path.
+	var/list/R = json_decode(file2text("map_saves/round.json"))
+	if(!islist(R) || R["maxx"] != world.maxx || R["maxy"] != world.maxy)
+		throw EXCEPTION("Saved horizontal dimensions differ from the compiled map")
+	var/z = R["maxz"]
+	if(z == world.maxz) return z // Matching saves need no expansion policy or allocator.
+	if(!isnum(z) || z != round(z) || z < world.maxz || z > BUILDING_MAX_Z || !compiled_maxz || z > compiled_maxz + BUILDING_EXTRA_LEVELS)
+		throw EXCEPTION("Saved level count exceeds the building expansion policy")
+	if(z > world.maxz && world.maxx * world.maxy > BUILDING_MAX_LEVEL_CELLS)
+		throw EXCEPTION("Saved added level exceeds the building cell budget")
+	return z
+
+/map_storage/proc/allocate_saved_level(target_z)
+	return building_allocate_level(target_z, TRUE)
+
+/map_storage/proc/prepare_saved_dimensions(list/expected_intent)
+	if(dimension_recovery_required)
+		last_error = "Saved level allocation previously failed; restart from the original map before retrying"
+		return FALSE
+	if(!persistence_save_in_progress || dimension_bootstrap_busy || validation_maxz || building_allocating_z)
+		last_error = "Dimension validation already owns recovery"
+		return FALSE
+	dimension_bootstrap_busy = TRUE
+	var/target_z
+	try
+		if(expected_intent && (expected_intent["generation"] != trim(file2text("map_saves/save_complete.txt")) || expected_intent["metadata"] != md5(file2text("map_saves/map.txt")) || expected_intent["round"] != md5(file2text("map_saves/round.json"))))
+			throw EXCEPTION("Restart intent differs before dimension allocation")
+		target_z = saved_dimension_target()
+		if(target_z == world.maxz)
+			dimension_bootstrap_busy = FALSE
+			return TRUE
+		validation_maxz = target_z
+		var/valid = validate_world_save()
+		validation_maxz = 0
+		if(!valid) throw EXCEPTION("Prospective saved world failed validation: [last_error]")
+		// Full structural/coordinate/metadata validation has completed before the
+		// first allocation. Allocation may append only, never replace mapped turfs.
+		dimension_recovery_required = TRUE
+		for(var/z = world.maxz + 1, z <= target_z, z++)
+			if(!allocate_saved_level(z) || world.maxz != z)
+				throw EXCEPTION("Saved level allocation failed; preserve files and restart before retrying")
+		if(!validate_world_save())
+			throw EXCEPTION("Allocated saved world failed exact validation: [last_error]")
+		dimension_recovery_required = FALSE
+		dimension_bootstrap_busy = FALSE
+		return TRUE
+	catch(var/exception/e)
+		validation_maxz = 0
+		dimension_bootstrap_busy = FALSE
+		release_durable_world()
+		last_error = "[e] on [e.file]:[e.line]"
+		return FALSE

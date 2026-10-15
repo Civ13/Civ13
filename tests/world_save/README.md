@@ -1,5 +1,30 @@
 # World-save regression world
 
+`run-dimension-bootstrap.py --byond-bin <bin>` writes a temporary three-level
+generation, then launches fresh two-level readers. It runs the production saver,
+preflight, loader and shared building allocator. The runner stages the allocator
+and sky definition verbatim from `building_levels.dm`; its later construction,
+support and `Entered` gameplay methods are covered separately by
+`tests/building_levels`. The tiny fixture checks upper-level typed references,
+paid nested contents, unchanged mapped turfs, matching two-level saves, invalid
+dimensions, missing levels, corrupt grids/generations/references and a mismatched
+restart intent. Malformed saves must fail before the first allocation. Allocation
+failure and a post-allocation exact-header mismatch must latch recovery, reject
+retry and preserve the completed generation against saving. The `preflight`
+negative control bypasses the prospective validation and must detect an unwanted
+allocation for a missing level. `--prepare-only` stages source without running
+BYOND and is not runtime evidence.
+
+Expansion requires unchanged x/y, at most 32 total levels, at most eight levels
+beyond the compiled baseline, and at most two million cells per added level.
+All saved grids, entries, references and durable metadata are validated against
+the prospective bounded dimensions before the shared allocator runs. Normal exact
+dimension validation runs again afterward. Existing mapped levels are never
+resized. A partial allocation requires restarting from the original compiled map;
+the loader does not shrink or roll back a live world. This focused fixture uses
+round-v1 metadata; fresh-process expanded round-v2 Gaia/Europe metadata and actual
+admin save/restart/same-body recovery remain separate acceptance work.
+
 This fixture includes the repository's actual persistence functions, saver and
 loader, with isolated substitutes for game startup, chat, deletion, turf change,
 and reagent hooks. It never starts a production game or accesses original saves.
