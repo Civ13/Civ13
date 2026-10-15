@@ -131,6 +131,122 @@ var/global/mall_fixture_failed = FALSE
 	qdel(cutters)
 	mall_stage("after fixed dressing contracts")
 
+// Test-only living occupancy has no AI or constructor side effects.
+/mob/living/mall_fixture_occupant
+	New()
+		return
+
+/obj/effect/mall_fixture_blocker
+	density = TRUE
+	anchored = TRUE
+
+/proc/mall_all_stairs_probe(mob/living/human/H)
+	var/turf/starting = get_turf(H)
+	var/list/cores = list()
+	var/list/by_floor = list("1" = 0, "4" = 0, "5" = 0)
+	var/list/directed = list()
+	var/list/parking_positions = list()
+	for (var/obj/structure/extraction_mall_stairs/stairs in world)
+		var/edge = "[stairs.x],[stairs.y],[stairs.z],[stairs.destination_z]"
+		mall_assert(!directed[edge], "each mapped directed stair has a unique position and destination")
+		directed[edge] = TRUE
+		cores += stairs
+		by_floor["[stairs.z]"]++
+		if (stairs.z == 1)
+			var/position = "[stairs.x],[stairs.y]"
+			mall_assert(!parking_positions[position], "each parking stair identifies a distinct core")
+			parking_positions[position] = stairs
+	mall_assert(cores.len == 24 && by_floor["1"] == 6 && by_floor["4"] == 12 && by_floor["5"] == 6, "all six cores expose all four directed stair connections")
+	mall_assert(parking_positions.len == 6, "six distinct parking positions define the six mapped cores")
+	for (var/position in parking_positions)
+		var/obj/structure/extraction_mall_stairs/parking = parking_positions[position]
+		var/x = parking.x
+		var/y = parking.y
+		mall_assert(directed["[x],[y],1,4"] && directed["[x],[y],4,1"] && directed["[x + 2],[y],4,5"] && directed["[x + 2],[y],5,4"], "each distinct core has its exact four directed parking retail and gallery edges")
+	for (var/obj/structure/extraction_mall_stairs/stairs in cores)
+		var/turf/source = get_turf(stairs)
+		var/turf/landing = locate(stairs.x, stairs.y, stairs.destination_z)
+		mall_assert(landing, "every stair has an actual landing")
+		var/obj/structure/extraction_mall_stairs/reciprocal = locate() in landing
+		mall_assert(reciprocal && reciprocal.destination_z == stairs.z, "every stair has its mapped reciprocal connection")
+		H.forceMove(source)
+		mall_assert(stairs.traverse(H) && get_turf(H) == landing, "every directed stair traverses to its exact landing")
+		mall_assert(reciprocal.traverse(H) && get_turf(H) == source, "every directed stair returns to its exact source")
+		var/old_density = landing.density
+		landing.density = TRUE
+		mall_assert(!stairs.traverse(H) && get_turf(H) == source, "all cores reject dense destination turf without moving the actor")
+		landing.density = old_density
+		var/obj/effect/mall_fixture_blocker/blocker = new(landing)
+		mall_assert(!stairs.traverse(H) && get_turf(H) == source, "all cores reject dense destination occupancy without moving the actor")
+		blocker.forceMove(null)
+		qdel(blocker)
+		var/mob/living/mall_fixture_occupant/occupant = new(landing)
+		occupant.density = FALSE
+		mall_assert(!stairs.traverse(H) && get_turf(H) == source, "all cores reject a non-dense living occupant without moving the actor")
+		occupant.forceMove(null)
+		qdel(occupant)
+		reciprocal.forceMove(null)
+		mall_assert(!stairs.traverse(H) && get_turf(H) == source, "all cores reject a missing return stair without moving the actor")
+		reciprocal.forceMove(landing)
+		var/old_return = reciprocal.destination_z
+		reciprocal.destination_z = 3
+		mall_assert(!stairs.traverse(H) && get_turf(H) == source, "all cores reject a mismatched return stair without moving the actor")
+		reciprocal.destination_z = old_return
+		mall_assert(stairs.traverse(H) && reciprocal.traverse(H) && get_turf(H) == source, "restored landings permit the same round trip")
+	H.forceMove(starting)
+	mall_stage("after all-core round trips and landing denials")
+
+// Compare the actor/source's actual item graphs and the exact raid registry.
+// This avoids unrelated world-item counts while detecting a refused call that
+// silently creates, removes, replaces or relocates an item and returns null.
+/proc/mall_loot_identity_snapshot(obj/map_metadata/extraction_survival/mall/M, mob/living/human/H, turf/source)
+	var/list/pending = list()
+	for (var/obj/item/I in H.contents) pending += I
+	for (var/obj/item/I in source.contents) pending += I
+	var/list/physical = list()
+	var/index = 1
+	while (index <= pending.len)
+		var/obj/item/I = pending[index++]
+		var/identity = "\ref[I]"
+		if (physical[identity]) continue
+		physical[identity] = list("id" = I.extraction_item_id, "location" = "\ref[I.loc]")
+		for (var/obj/item/child in I.contents) pending += child
+	var/list/tracked = list()
+	for (var/obj/item/I in M.raid_items)
+		tracked["\ref[I]"] = list("id" = I.extraction_item_id, "location" = "\ref[I.loc]", "expiry" = M.raid_items[I])
+	return json_encode(list("physical" = physical, "tracked" = tracked, "registry_count" = M.raid_items.len))
+
+/proc/mall_all_floor_loot_probe(obj/map_metadata/extraction_survival/mall/M, mob/living/human/H)
+	var/list/counts = list("1" = 0, "4" = 0, "5" = 0)
+	var/list/ordinary = list()
+	for (var/obj/effect/extraction_loot_marker/L in extraction_loot_markers)
+		mall_assert(L.container_id >= 1 && L.container_id <= 64 && M.mission_z(L.z), "bounded containers occupy raid floors")
+		counts["[L.z]"]++
+		if (!L.keyed() && !ordinary["[L.z]"]) ordinary["[L.z]"] = L
+	mall_assert(counts["1"] == 6 && counts["4"] == 18 && counts["5"] == 40, "actual loaded containers populate all three raid floors")
+	var/list/claimed_ids = list()
+	for (var/level in list(1, 4, 5))
+		var/obj/effect/extraction_loot_marker/container = ordinary["[level]"]
+		mall_assert(container, "each raid floor has an ordinary source")
+		H.forceMove(get_turf(container))
+		container.test_pool = new /datum/extraction_loot_pool/mall_fixture
+		mall_assert(container.prepare(M) && container.profile["stash"]:len == 1, "each floor prepares one injected outcome through the production journal")
+		var/saved_plan = json_encode(container.profile["loot_plan"])
+		var/list/entry = container.profile["stash"][1]
+		var/entry_id = entry["id"]
+		var/obj/item/claimed = container.claim(M, H, entry_id)
+		mall_assert(claimed && claimed.loc == H && claimed.extraction_item_id == entry_id && M.raid_items[claimed], "each floor issues the original planned identity to the actor")
+		mall_assert(!(entry_id in claimed_ids), "different floor sources issue distinct identities")
+		claimed_ids += entry_id
+		var/turf/source = get_turf(container)
+		var/before_repeat = mall_loot_identity_snapshot(M, H, source)
+		mall_assert(!container.claim(M, H, entry_id) && !container.profile["stash"]:len && claimed && claimed.loc == H && claimed.extraction_item_id == entry_id && mall_loot_identity_snapshot(M, H, source) == before_repeat, "ordinary container claim is unique before reopening")
+		container.profile = null
+		mall_assert(container.prepare(M) && json_encode(container.profile["loot_plan"]) == saved_plan && !container.profile["stash"]:len && mall_loot_identity_snapshot(M, H, source) == before_repeat, "ordinary source reload preserves its exact consumed plan")
+		var/before_reopened_repeat = mall_loot_identity_snapshot(M, H, source)
+		mall_assert(!container.claim(M, H, entry_id) && claimed && claimed.loc == H && claimed.extraction_item_id == entry_id && mall_loot_identity_snapshot(M, H, source) == before_reopened_repeat, "ordinary source reload cannot repeat delivery or replace the actual item")
+	mall_stage("after ordinary source claim and reopen on all floors")
+
 /proc/mall_probe()
 	GLOB.all_observable_events = list()
 	GLOB.global_listen_count = list()
@@ -184,18 +300,8 @@ var/global/mall_fixture_failed = FALSE
 	H.stat = CONSCIOUS
 	H.forceMove(locate(5,5,4))
 	mall_assert(!retail.traverse(H), "remote actor cannot traverse")
-	var/obj/effect/extraction_loot_marker/container
-	for (var/obj/effect/extraction_loot_marker/L in extraction_loot_markers)
-		mall_assert(L.container_id >= 1 && L.container_id <= 64 && M.mission_z(L.z), "bounded containers occupy raid floors")
-		if (L.z == 5) container = L
-	H.forceMove(get_turf(container))
-	container.test_pool = new /datum/extraction_loot_pool/mall_fixture
-	mall_assert(container && container.prepare(M), "gallery container production journal prepared")
-	mall_stage("after loot prepare")
-	var/list/entry = container.profile["stash"][1]
-	var/obj/item/claimed = container.claim(M, H, entry["id"])
-	mall_assert(claimed && M.raid_items[claimed] && !container.claim(M, H, entry["id"]), "gallery loot claimed once and tracked")
-	mall_stage("after loot claim")
+	mall_all_stairs_probe(H)
+	mall_all_floor_loot_probe(M, H)
 	container_key_catalog_probe()
 	var/obj/effect/extraction_loot_marker/keyed/mall_security/cache = locate() in world
 	H.forceMove(get_turf(cache))

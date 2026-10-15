@@ -66,6 +66,41 @@ def reachable(layers, start, vehicle=False):
     return seen
 
 
+def actual_surface_sources(layers):
+    # Read actual generated tiles, independently of SURFACE_SOURCES manifest.
+    for z, rows in layers.items():
+        for y, row in enumerate(rows, 1):
+            for x, value in enumerate(row, 1):
+                for marker in re.findall(r'/obj/effect/extraction_surface_source\{([^}]+)\}', value):
+                    fields = dict(field.strip().split(' = ', 1) for field in marker.split(';'))
+                    yield int(fields['source_id']), fields['support_kind'].strip('"'), (x, y, z), value
+
+
+def surface_placement_issues(layers):
+    size = len(layers[1])
+    start = (coordinate(ROAD_ENTRIES[0][0], size),
+             coordinate(ROAD_ENTRIES[0][1], size), 1)
+    seen = reachable(layers, start)
+    issues = []
+    for source_id, kind, point, value in actual_surface_sources(layers):
+        x, y, z = point
+        # Each issue names the exact actual source, not just a global failure.
+        identity = (source_id, kind, point)
+        approaches = ((x+1, y, z), (x-1, y, z), (x, y+1, z), (x, y-1, z))
+        if not any(approach in seen for approach in approaches):
+            issues.append(('no_cardinal_approach', *identity))
+        if kind == 'floor' and (blocked(value) or point not in seen):
+            issues.append(('unreachable_floor_source', *identity))
+        # Match tile atom paths, not incidental words in names/descriptions.
+        atoms = re.findall(r'(?:^\(|,)\s*(/[^,{)\s]+)', value)
+        if any(atom == '/obj/effect/extraction_loot_marker' or
+               atom.startswith('/obj/effect/extraction_loot_marker/') for atom in atoms):
+            issues.append(('container_authority_overlap', *identity))
+        if any(atom == '/obj/item' or atom.startswith('/obj/item/') for atom in atoms):
+            issues.append(('unmanaged_static_item', *identity))
+    return issues
+
+
 class MallTests(unittest.TestCase):
     def test_dmm_assignments_use_numeric_booleans(self):
         for filename in ('industrial_district.dmm', 'modern_city_extraction.dmm', 'interchange_mall.dmm'):
@@ -207,6 +242,48 @@ class MallTests(unittest.TestCase):
                 self.assertCountEqual(ids, range(1, 41))
                 self.assertEqual(by_floor, {1: 12, 4: 20, 5: 8})
                 self.assertCountEqual(kinds, ['floor']*8 + ['shelf']*22 + ['table']*4 + ['register']*6)
+
+    def test_actual_surface_sources_have_reachable_single_authority_placements(self):
+        for size in (160, 256, 320):
+            with self.subTest(size=size):
+                layers = parse(build(size))
+                self.assertTrue(list(actual_surface_sources(layers)))
+                self.assertEqual(surface_placement_issues(layers), [])
+
+    def test_blocked_cardinal_surface_approaches_are_detected_for_every_support_kind(self):
+        areas = {1: 'parking', 4: 'retail', 5: 'gallery'}
+        for kind in ('floor', 'shelf', 'table', 'register'):
+            with self.subTest(kind=kind):
+                layers = parse(build(160))
+                self.assertEqual(surface_placement_issues(layers), [])
+                source_id, _, point, _ = next(
+                    source for source in actual_surface_sources(layers) if source[1] == kind)
+                x, y, z = point
+                for xx, yy in ((x+1, y), (x-1, y), (x, y+1), (x, y-1)):
+                    self.assertTrue(1 <= xx <= 160 and 1 <= yy <= 160)
+                    layers[z][yy-1][xx-1] = (
+                        '(/obj/covers/generic_wall/extraction_mall,'
+                        f'/turf/floor/plating/concrete,/area/extraction_mall/{areas[z]})')
+                issues = surface_placement_issues(layers)
+                self.assertIn(('no_cardinal_approach', source_id, kind, point), issues)
+                if kind == 'floor':
+                    self.assertIn(('unreachable_floor_source', source_id, kind, point), issues)
+
+    def test_surface_container_and_unmanaged_item_overlap_controls_are_detected(self):
+        controls = (
+            ('/obj/effect/extraction_loot_marker{container_id = 64; pool_kind = "workshop"}',
+             'container_authority_overlap'),
+            ('/obj/item/extraction_salvage', 'unmanaged_static_item'),
+        )
+        for atom, expected in controls:
+            with self.subTest(atom=atom):
+                layers = parse(build(160))
+                self.assertEqual(surface_placement_issues(layers), [])
+                source_id, kind, point, value = next(actual_surface_sources(layers))
+                x, y, z = point
+                layers[z][y-1][x-1] = '(' + atom + ',' + value[1:]
+                self.assertEqual(surface_placement_issues(layers),
+                                 [(expected, source_id, kind, point)])
 
     def test_disconnected_stair_control_is_detected(self):
         layers = parse(build(160))

@@ -78,9 +78,11 @@ checks account for wreck footprints as well as furniture and walls.
    paths from both road infils to both highway exits.
 3. Compile the selected mall with BYOND 516.1681, then run native traversal,
    raid-floor and vehicle restriction regressions in temporary offline storage.
-4. Review genuine in-game appearance and interactions when available. Source
-   topology and compilation alone do not establish player readability, driving,
-   live-server performance or graphical acceptance.
+4. Accept each behavior through the smallest meaningful automated source,
+   topology, native interaction and negative-control checks. Human/admin review
+   and connected-client capture are not default prerequisites. Use a genuine
+   capture only for a named material uncertainty that these checks cannot resolve.
+   Compilation alone does not establish runtime movement or storage behavior.
 
 Generate with the verified Python interpreter and `tests/extraction/build_mall.py`
 (optional `--size 320`, for example). The generator adds proportional shelf rows;
@@ -121,3 +123,97 @@ Transit security and Foundry hardware each have one exact-key cache on the
 retail floor. Their keys can be recovered on any Extraction map and retain
 their remaining uses when extracted. See [container keys](extraction-container-keys.md)
 for the catalog, acquisition rule and verification boundaries.
+
+## Automated acceptance checklist
+
+The October 13, 2026 acceptance policy removes blanket human, admin and capture
+holds. Automated agent review and meaningful tests can establish acceptance.
+An unresolved architectural decision or actual runtime/resource lease remains
+an explicit dependency. The checklist below records behavior, not a requirement
+for someone to click through a demonstration.
+
+The audit baseline is `71be023f3e6f0f9737b816e11c36668f126e9388`.
+Its standard CI compiled production with BYOND 516.1681 and zero errors/warnings;
+opt-in native Extraction tests were skipped. The following native assertions
+must not be described as passed merely because their fixture compiles.
+
+| Requirement | Existing automated evidence path | Remaining work |
+| --- | --- | --- |
+| Five equal-sized levels, protected homes/hub, all loot/support locations and walk routes | `test_mall.py` parses generated maps, checks IDs and flood-fills scaled routes; disconnected-stair control detects loss of upper-floor access | Run unchanged checks on the selected acceptance head; topology is not native movement. |
+| Highway clearance | `test_mall.py` checks conservative 3x3 footprints from both road entries to both highway exits at 160, 256 and 320 | Execute an assembled car's actual movement/turning through representative mall approaches; static clearance alone does not exercise vehicle callbacks. |
+| Floor travel and denied stair use | `mall_probe.dm` requires six distinct cores and 24 unique directed links, exercises every round trip, and checks dense turf, dense/nondense living occupancy and missing/mismatched returns alongside the existing actor restrictions | Compile/run the amended probe and `stair_landing`/`stair_return` omission controls. Authored assertions are not runtime results. |
+| First-search loot on all three floors | Counts require 6 parking, 18 retail and 40 upper containers; the native probe claims one ordinary item per floor through the journal and compares actual item and raid-registry identities across repeat refusal/reopening | Compile/run the amended probe and `ordinary_replay` omission control. This is representative ordinary-source coverage; the injected pool tests journal behavior, not random-drop frequency. |
+| Exact-map consumable keys and durable extraction | `test_key_maps.py`, shared key probes and `run_mall.py` cover target placement, unlock/retry, remaining uses, nested foreign-map keys, extraction and redeployment | Run normal mall and `key_charge`/`key_construction` controls; core owner covers journal/concurrency/drop-rule assertions. |
+| Fixed scenery cannot mint supplies | Native mall probe constructs each fixture and exercises tool, damage and dismantling callbacks with an item-count invariant | Run the existing probe. Nonempty icon/overlay checks are limited appearance evidence, not proof of every rendered pixel. |
+| Car arrival and return only through highway-capable points | Mall probe checks actual marker/exit policy and rejects pedestrian exits; its `vehicle` control removes the highway guard | Run the control, then add a positive actual mall car deployment/return with the same IDs, fuel/wear, cargo and garage debit/credit. Reuse core vehicle/party contracts without duplicating their ownership. |
+| Crash/restart custody and loose surface loot | Core account, equipment, vehicle and surface recovery suites own these shared contracts | Complete actual missing implementation and native recovery controls. All 40 mall surface markers stay disabled until their dependencies pass. |
+
+Start with the offline launcher/topology/key-map checks. After an authorized
+clean positive native run, execute `mission`, `vehicle`, `key_charge`,
+`key_construction`, `stair_landing`, `stair_return` and `ordinary_replay`. An
+omission control must fail at its expected assertion; a compiler error, timeout
+or unrelated runtime failure does not establish detection.
+
+Using a verified Python interpreter, run `-m unittest discover -s
+tests/extraction -p test_mall_runner.py -v` for the 27 mocked launcher cases and
+`-m unittest discover -s tests/extraction -p test_mall.py -v` for the 11 offline
+map checks. Launcher children are injected fakes; these commands do not launch
+BYOND. The shared CI owner must register the new launcher file and three added
+native omission controls in the existing opt-in Extraction job.
+
+`run_mall.py` requires the pinned BYOND bin directory, uses unique generated
+source names and temporary save storage, and rejects outbound Export/port
+opening. `mall_run_support.py` records commands, stage output, failures and
+direct-child exit/cleanup results under `data/mall-fixture/`, including compiler
+failures before a daemon can launch. Its stage waits share a 240-second budget
+(Git up to 10 seconds, compiler up to 120, daemon up to 90), followed by a shared
+15-second cleanup allowance. Success prints only after receipt retention and
+cleanup complete. Failed retention or uncertain direct-child exit preserves
+owned files; runtime removal also checks the original directory identity.
+Atomic receipt replacement retries Windows sharing/access denials at most four
+times with three 50 ms pauses. Exhaustion retains the previous receipt and
+prepared temporary file; other errors propagate without retry.
+
+The helper owns direct child handles, not descendants. Process creation and
+filesystem I/O can block outside these wait budgets, and abrupt interpreter
+termination can bypass cleanup, so an outer watchdog remains necessary. Run
+the injected-process contracts with `test_mall_runner.py` before native use.
+No runtime grant is implied by this document.
+
+Required run receipts identify the exact Git head, fixture/control, command,
+result and relevant negative assertion. Preserve timeout/runtime diagnostics;
+verify the task-owned compiler/daemon exited and generated files were removed.
+Do not terminate another task's process. If the positive run fails, diagnose that
+failure before spending the queue slot on omission controls. Standard CI, source
+review, topology, native assertions and deployment remain distinct evidence.
+
+## Ground and support loot prerequisites
+
+Visible ground and support loot remains an incomplete required feature. Container
+counts do not satisfy it. The 40 reserved locations comprise eight ground sources,
+22 shelves, four tables and six registers. Staged core paths cover four fuel
+sources, four wheel sources and 14 repair-parts sources. Twelve food sources and
+six cash sources cannot issue their intended items, even when the service is
+explicitly enabled by an isolated fixture. No source is active on this map.
+
+Core owns the service lifecycle, pool/item codecs, currency authority, custody,
+durable epoch and complete world/account/shared ownership reconciliation. The
+final durable API and actual host provider are not available. The mall owner must
+receive that implemented contract before installing the service or enabling any
+of these locations. Shared faction persistence work keeps its existing priority.
+
+`test_mall.py` checks connected interaction approaches at 160, 256 and 320, with
+deliberate blocked-approach controls for ground, shelf, table and register
+sources. A source tile must not also carry an independent container source or
+unmanaged preplaced item. Native tests must additionally
+prove one materialization and claim per source graph, exact root/nested IDs,
+unchanged surrounding container journals, and no refill after extraction or
+reconciliation. Distinct sources may roll the same item type; duplicate custody
+or reward for one graph is the failure. Food/register rejection tests document
+the missing implementation and cannot count as positive loot acceptance.
+
+The all-core stair/all-floor ordinary-loot and support-placement amendments are
+now integrated with the launcher. The October 15 source-review baseline remains
+`71be023f`; later test receipts must identify their own candidate. Offline Python
+checks do not compile or execute the DM assertions, establish actual car travel,
+or enable any of the forty reserved surface sources.
