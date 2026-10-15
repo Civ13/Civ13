@@ -76,3 +76,11 @@ The prior frozen42007/cb4 probe and its failed Europe generation remain unchange
 This successor starts from a fresh temporary host and writes a new generation;
 it does not overwrite or silently migrate the earlier failed save. Historical
 lighting-entry suppression is also checked by the separate lighting fixture.
+
+`replay.py <existing-run-root>` rechecks retained before/after/native receipts
+without launching BYOND or overwriting the original result. Raw file hashes
+must remain identical; metadata text identities additionally normalize CRLF
+like the observed BYOND `file2text()` result. LF/CRLF controls reject altered
+content, incorrect identities and even text-equivalent newline rewrites.
+Replay reports functional checks separately from strict native diagnostics and
+returns failure when diagnostics remain. It is artifact analysis, not a rerun.

@@ -1,5 +1,6 @@
 """Offline acceptance controls; these never compile or launch BYOND."""
 import copy
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -9,7 +10,7 @@ from unittest.mock import patch
 
 from prepare import BASE, HOOK, instrument_lifecycle, instrument_world
 from query import request
-from run import compare, diagnostic_failures, owned_daemon
+from run import compare, diagnostic_failures, owned_daemon, verify_completed_files
 
 
 class RecoveryAcceptance(unittest.TestCase):
@@ -54,6 +55,40 @@ class RecoveryAcceptance(unittest.TestCase):
                 changed['fixture'][key] = value
                 with self.assertRaises(AssertionError):
                     compare(self.before, changed, self.receipt)
+
+
+class CompletedFileIdentity(unittest.TestCase):
+    def test_raw_parity_and_normalized_text_identity(self):
+        for newline in (b'\n', b'\r\n'):
+            with self.subTest(newline=newline), tempfile.TemporaryDirectory() as temp:
+                game = Path(temp)
+                saves = game / 'map_saves'
+                saves.mkdir()
+                payloads = {'map.txt': b'NOMADS_EUROPE' + newline,
+                            'round.json': b'{"round":"saved"}' + newline,
+                            '1.sav': b'\x00\r\n\xff'}
+                receipt = {'files_md5': {}}
+                for name, content in payloads.items():
+                    (saves / name).write_bytes(content)
+                    receipt['files_md5'][name] = hashlib.md5(content).hexdigest()
+                for key, name in (('metadata', 'map.txt'), ('round', 'round.json')):
+                    receipt[key] = hashlib.md5(payloads[name].replace(b'\r\n', b'\n')).hexdigest()
+                verify_completed_files(game, receipt)
+                for key in ('metadata', 'round'):
+                    changed = copy.deepcopy(receipt)
+                    changed[key] = 'wrong'
+                    with self.assertRaises(AssertionError):
+                        verify_completed_files(game, changed)
+                for name, content in payloads.items():
+                    (saves / name).write_bytes(content + b'changed')
+                    with self.assertRaises(AssertionError):
+                        verify_completed_files(game, receipt)
+                    (saves / name).write_bytes(content)
+                if newline == b'\r\n':
+                    # Even a text-equivalent newline rewrite must fail raw parity.
+                    (saves / 'map.txt').write_bytes(payloads['map.txt'].replace(b'\r\n', b'\n'))
+                    with self.assertRaises(AssertionError):
+                        verify_completed_files(game, receipt)
 
 
 class ProductionInstrumentation(unittest.TestCase):

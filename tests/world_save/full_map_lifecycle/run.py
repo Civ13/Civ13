@@ -93,6 +93,20 @@ def compare(before, after, receipt):
             raise AssertionError('Representative object identity or coordinates changed')
 
 
+def verify_completed_files(game, receipt):
+    for name, expected in receipt['files_md5'].items():
+        if Path(name).name != name:
+            raise AssertionError('Invalid save receipt path')
+        if hashlib.md5((game / 'map_saves' / name).read_bytes()).hexdigest() != expected:
+            raise AssertionError(f'Completed save file changed: {name}')
+    # current_identity hashes file2text(), which normalizes CRLF. Keep the
+    # independent raw-file checks above so newline changes still fail parity.
+    for key, name in (('metadata', 'map.txt'), ('round', 'round.json')):
+        text_bytes = (game / 'map_saves' / name).read_bytes().replace(b'\r\n', b'\n')
+        if hashlib.md5(text_bytes).hexdigest() != receipt[key]:
+            raise AssertionError(f'Completed {name} text identity differs')
+
+
 def run(args):
     if args.port in PROTECTED_PORTS or not 1024 <= args.port <= 65535:
         raise ValueError('Existing protected hosts and invalid ports are excluded')
@@ -197,16 +211,7 @@ def run(args):
                 write_json(root / 'after.json', after)
                 receipt = json.loads((game / 'full-map-before-reboot.json').read_text(encoding='utf-8'))
                 compare(before, after, receipt)
-                for name, expected in receipt['files_md5'].items():
-                    if Path(name).name != name:
-                        raise AssertionError('Invalid save receipt path')
-                    if hashlib.md5((game / 'map_saves' / name).read_bytes()).hexdigest() != expected:
-                        raise AssertionError(f'Completed save file changed: {name}')
-                # Production identity hashes map.txt and round.json synchronously.
-                # Compare raw text MD5 exactly as the transaction does.
-                for key, name in (('metadata', 'map.txt'), ('round', 'round.json')):
-                    if hashlib.md5((game / 'map_saves' / name).read_bytes()).hexdigest() != receipt[key]:
-                        raise AssertionError(f'Completed {name} changed after reboot')
+                verify_completed_files(game, receipt)
                 saves = {str(p.relative_to(game)): {'bytes': p.stat().st_size, 'sha256': digest(p)}
                          for p in sorted((game / 'map_saves').rglob('*')) if p.is_file()}
                 failures = diagnostic_failures(root)
