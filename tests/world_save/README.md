@@ -189,7 +189,13 @@ append the generated helper; never add the helper to `civ13.dme`.
 
 The helper overwrites `world_save_progress.json` and emits `SAVE_PROGRESS`
 console records. It checks each 1024 completed turfs and writes at most once
-per ten real seconds, except forced save/metadata/level/completion boundaries.
+per ten wall-clock seconds, except forced save/metadata/level/completion boundaries.
+The clock uses `world.timeofday` with midnight wrap, for bounded runs shorter
+than 24 hours. It is not monotonic; host clock adjustments can affect intervals.
+The outer process guard's monotonic timer remains authoritative for timeouts.
+Older helpers used `world.realtime`; OpenDream commit `3a20a787` returned only
+its 0-9 decisecond component, preventing periodic reports. Those reports cannot
+establish elapsed or yield duration, or prove traversal stalled.
 Rows include actual map dimensions, the active level's completed turf and
 entry/list counts, real elapsed deciseconds, world time, tick usage and
 serializer-only `stoplag()` call/wait totals. The scoped tick-check wrapper
@@ -220,6 +226,14 @@ diagnostic unavailability. `--progress-negative-control` deliberately propagates
 the injected exception and requires its exact failure and expected marker state.
 The native fixture retains its existing mutation-on-tick adapter; these checks
 verify IO isolation and save semantics, not full-game timing or CPU performance.
+
+Add `--progress-clock-probe` to verify the ten-second reporting boundary,
+midnight wrap and the original stoplag return with a deterministic fixture
+clock. `--progress-clock-negative-control` restores the 0-9 component defect
+and requires the exact missing-periodic-report failure after a successful save.
+Keep these separate from injected IO faults. The fake clock checks arithmetic
+and throttling; verify the real engine clock separately before using runtime
+duration reports.
 
 HUD migration coverage in `run-string-path.py` checks that client HUD fields and
 screen/HUD objects do not enter new saves, old saved HUD fields are skipped and

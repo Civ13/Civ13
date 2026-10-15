@@ -1386,6 +1386,7 @@ var/global/list/node_grid_col_cache = null
 		// --- resource_processing (9) ---
 		"/obj/structure/compost" = "resource_processing",
 		"/obj/structure/converter/retting_trough" = "resource_processing",
+		"/obj/structure/flax_comb" = "resource_processing",
 		"/obj/structure/converter/tanning" = "resource_processing",
 		"/obj/structure/dehydrator" = "resource_processing",
 		"/obj/structure/distillery" = "resource_processing",

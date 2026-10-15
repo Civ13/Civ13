@@ -1996,6 +1996,7 @@ RECIPE: /material/wood/soft/,small mill,/obj/structure/mill,4,90,1,1,economy & p
 RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,economy & production,4,0,0,8,null
 RECIPE: /material/wood/soft/,loom,/obj/structure/loom,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,retting trough,/obj/structure/converter/retting_trough,8,150,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/soft/,flax comb,/obj/structure/flax_comb,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,compost bin,/obj/structure/compost,10,150,1,1,economy & production,35,0,0,8,null
 RECIPE: /material/wood/soft/,oil well,/obj/structure/oilwell,40,270,1,1,economy & production,105,0,0,8,null
 RECIPE: /material/wood/soft/,oil deposit,/obj/structure/oil_deposits,6,100,1,1,economy & production,105,0,0,8,null
