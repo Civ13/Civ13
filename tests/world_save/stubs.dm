@@ -34,6 +34,20 @@ var/list/mutate_on_tick = null
 /obj/covers
 /mob
 	var/stat = FALSE // Production mob_defines.dm default; states from predefines.dm.
+	var/datum/hud/hud_used
+	var/list/HUDneed = list()
+	var/list/HUDinventory = list()
+	var/list/HUDfrippery = list()
+	var/list/HUDprocess = list()
+	var/list/HUDtech = list()
+	var/obj/screen/hands
+	var/obj/screen/pullin
+	var/obj/screen/purged
+	var/obj/screen/i_select
+	var/obj/screen/m_select
+	var/obj/screen/zone_sel
+/obj/screen
+/datum/hud
 /mob/new_player
 /mob/living/human
 	var/tmp/rejuvenate_calls = 0
@@ -51,6 +65,10 @@ var/list/mutate_on_tick = null
 	var/chad_mode = 0
 	var/chad_mode_plus = 0
 	var/gamemode = "test"
+	var/persistence = FALSE
+	var/research_active = FALSE
+	var/resourceresearch = FALSE
+	var/perschadplus = FALSE
 	var/age1_done
 	var/age2_done
 	var/age3_done
@@ -59,5 +77,19 @@ var/list/mutate_on_tick = null
 	var/age6_done
 	var/age7_done
 	var/age8_done
+// Ordinary-map fixture only. Surface admission is tested by extraction probes;
+// accidental activation here must fail instead of supplying synthetic success.
+/obj/map_metadata/extraction_survival
+	var/datum/extraction_surface_service/surface_service
+/datum/extraction_surface_service
+	var/world_inventory_complete = FALSE
+	proc/begin_world_inventory(levels)
+		throw EXCEPTION("Surface service outside ordinary world-save fixture")
+	proc/feed_loaded_level(level, list/objects)
+		throw EXCEPTION("Surface service outside ordinary world-save fixture")
+	proc/discovery_fail()
+		throw EXCEPTION("Surface service outside ordinary world-save fixture")
+	proc/finish_world_inventory()
+		throw EXCEPTION("Surface service outside ordinary world-save fixture")
 /turf/proc/ChangeTurf(path, tell_universe, force_lighting_update)
 	return new path(src)

@@ -158,8 +158,9 @@ Using a verified Python interpreter, run `-m unittest discover -s
 tests/extraction -p test_mall_runner.py -v` for the 27 mocked launcher cases and
 `-m unittest discover -s tests/extraction -p test_mall.py -v` for the 11 offline
 map checks. Launcher children are injected fakes; these commands do not launch
-BYOND. The shared CI owner must register the new launcher file and three added
-native omission controls in the existing opt-in Extraction job.
+BYOND. The existing opt-in Extraction job registers the launcher file and all
+seven native omission controls. Registration does not establish their execution;
+check each selected run's results against the tested commit.
 
 `run_mall.py` requires the pinned BYOND bin directory, uses unique generated
 source names and temporary save storage, and rejects outbound Export/port

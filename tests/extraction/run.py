@@ -19,6 +19,18 @@ def intended_assertion_only(log, expected):
     return not any(marker in remainder for marker in ('runtime error', 'bad ref', '## error'))
 
 
+def caught_vehicle_assertion_only(log, expected):
+    """Vehicle process catches assertions; accept its single exact log record."""
+    pattern = (r'^FAIL: ' + re.escape(expected)
+               + r' at tests[/\\]extraction[/\\]equipment_probe\.dm:\d+[ \t]*\r?$')
+    matches = list(re.finditer(pattern, log, re.MULTILINE))
+    if len(matches) != 1:
+        return False
+    remainder = re.sub(pattern, '', log, count=1, flags=re.MULTILINE).lower()
+    return not any(marker in remainder for marker in
+                   ('fail:', 'runtime error', 'bad ref', '## error'))
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
@@ -29,6 +41,7 @@ def main():
     parser.add_argument('--vote-negative-control', choices=('stale', 'cancel', 'reentry', 'disruptive_creation', 'disruptive_pending', 'disruptive_result'))
     parser.add_argument('--group-negative-control', choices=('debit', 'visibility', 'premium', 'car', 'return', 'fee'))
     parser.add_argument('--vehicle-loss-negative-control', action='store_true')
+    parser.add_argument('--vehicle-custody-negative-control', choices=('roster', 'reservation', 'issuance', 'persistence'))
     parser.add_argument('--vehicle-purchase-negative-control', action='store_true')
     parser.add_argument('--vehicle-raid-negative-control', choices=('debit', 'credit'))
     parser.add_argument('--supply-negative-control', action='store_true')
@@ -75,13 +88,15 @@ def main():
         parser.error('Vote control requires the mode probe without another control')
     if args.group_negative_control and (args.probe != 'groups' or args.provenance_negative_control or args.vote_negative_control):
         parser.error('Group control requires the groups probe without another control')
+    if args.vehicle_custody_negative_control and (args.probe != 'vehicles' or any(value for key, value in vars(args).items() if key.endswith('negative_control') and key != 'vehicle_custody_negative_control')):
+        parser.error('Vehicle custody control requires the vehicles probe without another control')
     root = Path(__file__).resolve().parents[2]
     binary = args.byond_bin.resolve()
     compiler = binary / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     if args.probe in ('equipment', 'mode', 'npc', 'city', 'insurance', 'groups', 'vehicles'):
-        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control, args.room_payment_negative_control, args.corpse_release_negative_control, args.insurance_fixture_output, args.npc_insurance_negative_control, args.workshop_negative_control, args.compile_only, args.surface_negative_control, args.city_pursuit_negative_control)
+        return equipment(root, compiler, daemon, flags, args.probe, args.provenance_negative_control, args.vote_negative_control, args.group_negative_control, args.vehicle_loss_negative_control, args.vehicle_purchase_negative_control, args.vehicle_raid_negative_control, args.supply_negative_control, args.city_presence_negative_control, args.economic_payment_negative_control, args.room_payment_negative_control, args.corpse_release_negative_control, args.insurance_fixture_output, args.npc_insurance_negative_control, args.workshop_negative_control, args.compile_only, args.surface_negative_control, args.city_pursuit_negative_control, args.vehicle_custody_negative_control)
     with tempfile.TemporaryDirectory(prefix='civ13-extraction-') as temp:
         target = Path(temp)
         (target / 'tests/extraction').mkdir(parents=True)
@@ -128,11 +143,26 @@ def main():
                 raise RuntimeError('Account journal verification failed')
 
 
-def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False, room_payment_control=False, corpse_release_control=False, insurance_fixture_output=None, npc_insurance_control=False, workshop_control=None, compile_only=False, surface_control=None, city_pursuit_control=False):
+def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vote_control=None, group_control=None, vehicle_loss_control=False, vehicle_purchase_control=False, vehicle_raid_control=None, supply_control=False, city_presence_control=False, economic_payment_control=False, room_payment_control=False, corpse_release_control=False, insurance_fixture_output=None, npc_insurance_control=False, workshop_control=None, compile_only=False, surface_control=None, city_pursuit_control=False, vehicle_custody_control=None):
     prefix = '.extraction_' + uuid.uuid4().hex
     generated = [root / (prefix + suffix) for suffix in ('.dme', '_world.dm', '_globals.dm', '.dmb', '.rsc')]
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
+        if vehicle_custody_control:
+            relative = 'vehicle_cargo.dm' if vehicle_custody_control == 'persistence' else 'vehicle_transfer.dm'
+            transfer = (root / 'code/modules/1713/extraction' / relative).read_text(encoding='utf-8')
+            marker, replacement, custody_failure = {
+                'roster': ('C.same_roster(cargo_roster, live_roster)', 'TRUE', 'equal-value replacement refuses captured native identity'),
+                'reservation': ('\t\tif (axis?.key_service_busy) return FALSE', '\t\tif (FALSE) return FALSE', 'post-capture key reservation refuses validation'),
+                'issuance': ('C.encode(axis, cargo, FALSE, live_roster, FALSE)', 'C.encode(axis, cargo, TRUE, live_roster, FALSE)', 'cleared cargo ID refuses validation without minting'),
+                'persistence': ('C.encode(I, assign_new_ids, mutate_persistence)', 'C.encode(I, assign_new_ids)', 'successful current preserves cargo persistence flags'),
+            }[vehicle_custody_control]
+            if transfer.count(marker) != 1:
+                raise RuntimeError('Vehicle custody control marker changed')
+            control = root / (prefix + '_vehicle_transfer.dm')
+            generated.append(control)
+            control.write_text(transfer.replace(marker, replacement), encoding='utf-8')
+            source = source.replace('code\\modules\\1713\\extraction\\' + relative, control.name)
         if surface_control:
             surface_file = ('mode.dm' if surface_control == 'home_admission' else
                             'home_replica.dm' if surface_control.startswith('home_') or surface_control == 'marker_save' else
@@ -374,7 +404,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             source += '\n#include "tests/extraction/group_process_probe.dm"\n'
         if probe == 'vehicles':
             source = '#define EXTRACTION_VEHICLE_PROCESS_PROBE\n' + source
-            source += '\n#include "tests/extraction/vehicle_process_probe.dm"\n'
+            source += '\n#include "tests/extraction/vehicle_custody_probe.dm"\n#include "tests/extraction/vehicle_process_probe.dm"\n'
         source += '\n#include "tests/extraction/economy_probe.dm"\n#include "tests/extraction/scope_insurance_probe.dm"\n#include "tests/extraction/npc_extraction_probe.dm"\n#include "tests/extraction/container_keys_probe.dm"\n#include "tests/extraction/equipment_probe.dm"\n#include "tests/extraction/surface_probe.dm"\n'
         generated[0].write_text(source, encoding='utf-8')
         with tempfile.TemporaryDirectory(prefix='civ13-extraction-equipment-') as temp:
@@ -507,6 +537,12 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                         raise RuntimeError('Vehicle payment control failed outside its intended assertion')
                     print('PASS: retained vehicle payment negative control rejected')
                     return
+                if vehicle_custody_control:
+                    if ran.returncode or not result.startswith('FAIL:') or not caught_vehicle_assertion_only(log, custody_failure):
+                        print(log)
+                        raise RuntimeError('Vehicle custody control failed outside its intended assertion: ' + custody_failure)
+                    print('PASS: vehicle custody control rejected: ' + vehicle_custody_control)
+                    return
                 if vehicle_loss_control and result.startswith('FAIL:'):
                     if ran.returncode or 'uncertain garage forfeited independently of empty stash' not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
                         print(log)
@@ -542,6 +578,8 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 raise RuntimeError('City pursuit control was not detected')
             if vehicle_loss_control:
                 raise RuntimeError('Vehicle loss control was not detected')
+            if vehicle_custody_control:
+                raise RuntimeError('Vehicle custody control was not detected')
             if vehicle_purchase_control:
                 raise RuntimeError('Vehicle purchase control was not detected')
             if vehicle_raid_control:

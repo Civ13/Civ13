@@ -1,12 +1,26 @@
 # Extraction survival verification
 
+Local native tests, compilers and helper runners remain held until the quiet
+window is explicitly released. Remote CI evidence is tracked separately.
+Run 38416330211 at `734e06b4e231a299337f049e118dbadc57ab19d2`
+passed the equipment/corpse fixture and all five independent vehicle diagnostics
+(positive and roster/reservation/issuance/persistence omissions), but failed the
+mode replica census. Its begin and feed succeeded; finish rejected a world tick
+change from 2 to 3. The overall run failed and does not establish mode acceptance.
+The pending fixture experiment begins the bounded one-root positive on a fresh
+ordinary tick and adds an actual yield-between-feed-and-finish rejection. It
+preserves production budget yields, freshness guards and ownership assertions.
+Neither this experiment nor the master reconciliation has runtime acceptance.
+Large yielding production restoration still needs a shared ownership contract.
+
 The native quiet-window queue includes `run_ipc.py` normally and with each
 `--receipt-negative-control action` / `--receipt-negative-control reason`, then
 each `--replay-negative-control cached` / `--replay-negative-control processed`,
 `run.py --probe store` and `run.py --probe mode`. Supply the pinned explicit
 `--byond-bin` to every command. The new receipt/census-lease assertions are
-authored but UNRUN until native permission is released. During the hold,
-`--compile-only` on these runners compiles without launching DreamDaemon.
+authored but UNRUN until native permission is released. `--compile-only` on
+these runners compiles without launching DreamDaemon; the current local hold
+also covers compilation.
 
 The surface mode queue also includes `--surface-negative-control escrow`,
 `mail_binding` and `auxiliary_pending`. These mutate generated copies only and
@@ -282,6 +296,29 @@ pending journals, stale inventory and access-gate release.
 
 ### Connected acceptance preparation
 
+On October 13, the human selected OpenDream for the end-of-day extraction
+connected-client/playable-loop target, relayed through the extraction coordinator.
+Package provenance must record the exact source head, OpenDream compiler/server/
+client identities, selected map and artifact hashes. Track room/hub navigation,
+storage, paid progression and return/reconnect results against that runtime.
+Pinned BYOND 516.1681 compilation and isolated native probes remain a separate
+compatibility/evidence track; neither engine's result establishes the other's.
+
+The BYOND launcher and account preparation below are existing verification paths,
+not an implemented OpenDream launcher. This checkout has no tracked OpenDream
+launcher identified in the bounded source inventory. OpenDream authentication,
+account identity mapping, save compatibility and client readiness remain explicit
+acceptance gaps. Do not reuse BYOND DMB/RSC or retained-run receipts as OpenDream
+artifacts. Selecting OpenDream grants no launcher/startup changes, production
+restart/deployment, screen control, live economy or release of queue/native/shared
+implementation holds. Coordinate the current launcher owner's package before
+any connected run; no such run was performed by this documentation change.
+
+See [the OpenDream readiness audit](../../docs/extraction-opendream-readiness.md)
+for the client-to-account ownership path, runtime room allocation, journal engine
+contracts and prepared identity-refusal vectors. Those vectors remain uncompiled
+and unrun while execution is held.
+
 The human confirmed only one BYOND account is available. Prepare a genuine
 single-account concept capture of room/hub navigation, private stash, paid
 storage/upgrades, reconnect, disposable restart and idle reload where the UI
@@ -537,7 +574,10 @@ Map size does not expand extraction budgets. Sealed containers require unique
 integer IDs 1 through 64. More shelves must remain decoration unless the loot
 contract is deliberately changed and verified. Raid equipment is capped at
 2048 tracked nodes, NPC population at 12, and round participants at 32; the
-existing 16 private rooms remain a separate admission constraint. Keep entry
+existing 16 private rooms remain a separate admission constraint. The requested
+64-player mixed PMC/Scav capacity and four teams of four are not implemented by
+these existing limits; see the current integration target in
+[`docs/extraction-survival.md`](../../docs/extraction-survival.md). Keep entry
 and NPC marker counts bounded instead of scaling them with floor area.
 
 A 256x256x5 map allocates 327680 turfs; 512x512x5 allocates 1310720.

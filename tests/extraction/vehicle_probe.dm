@@ -37,6 +37,7 @@
 	A.engine = E
 	var/list/originals = transfer.parts.Copy()
 	equipment_assert(transfer.relocate(locate(40,40,3)), "clear garage relocates actual assembled car")
+	equipment_assert(isnull(transfer.cargo_roster) && isnull(transfer.cargo_record), "consumed transfer releases captured cargo references")
 	equipment_assert(get_turf(A) == locate(40,40,3) && A.engine == E && E.fueltank == tank && damaged.w_front[5] == 73 && E.fueltank.reagents.total_volume == 17, "same engine tank wall damage and fuel survive physical transfer")
 	for (var/atom/movable/O in originals)
 		var/turf/T = get_turf(O)
@@ -54,6 +55,8 @@
 	var/obj/item/weapon/storage/backpack/cargo_bag = new(get_turf(boot))
 	var/obj/item/extraction_salvage/cargo_child = new(cargo_bag)
 	cargo_child.health = 37
+	var/datum/extraction_equipment_codec/cargo_issuer = new
+	equipment_assert(cargo_issuer.encode(cargo_bag), "vehicle fixture explicitly issues nested cargo identity before capture")
 	equipment_assert(!transfer.capture(A) && transfer.capture(A, TRUE), "boot cargo requires explicit bounded transfer policy")
 	var/list/extra_cargo = list()
 	for (var/i in 1 to 7) extra_cargo += new /obj/item/extraction_salvage(get_turf(boot))
@@ -64,6 +67,22 @@
 	equipment_assert(!transfer.current(), "nested cargo change invalidates captured transfer")
 	cargo_child.health = 37
 	equipment_assert(transfer.current(), "unchanged nested cargo validates before physical relocation")
+	var/custody_id = cargo_child.extraction_item_id
+	var/custody_fir = cargo_child.extraction_found_in_raid
+	var/custody_token = cargo_child.extraction_insurance_token
+	cargo_child.extraction_item_id = new_extraction_item_id()
+	equipment_assert(!transfer.current(), "nested cargo stable identity change invalidates captured transfer")
+	cargo_child.extraction_item_id = custody_id
+	cargo_child.extraction_found_in_raid = !custody_fir
+	equipment_assert(!transfer.current(), "nested cargo FIR change invalidates captured transfer")
+	cargo_child.extraction_found_in_raid = custody_fir
+	cargo_child.extraction_insurance_token = md5("custody fixture token")
+	equipment_assert(!transfer.current(), "nested cargo insurance token change invalidates captured transfer")
+	cargo_child.extraction_insurance_token = custody_token
+	cargo_child.forceMove(get_turf(boot))
+	equipment_assert(!transfer.current(), "nested cargo becoming a separate root invalidates captured transfer")
+	cargo_child.forceMove(cargo_bag)
+	equipment_assert(transfer.current(), "restored nested custody graph matches original transfer capture")
 	var/list/snapshot = codec.encode(A)
 	equipment_assert(snapshot && codec.validate(snapshot), "vehicle codec captures actual bounded parts and fuel: [codec.last_error]")
 	equipment_assert(snapshot["cargo"].len == 2 && snapshot["cargo"][1]["id"] == cargo_id, "garage cargo records original equipment identity")

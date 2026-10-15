@@ -124,7 +124,7 @@ Current Defines (_defines/attachment.dm)
 	name = "sniper scope"
 	icon = 'icons/obj/gun_att.dmi'
 	icon_state = "sniper_scope"
-	desc = "You can attach this to rifles... or use them as binoculars. Amplifies 8x."
+	desc = "You can attach this to rifles... or use it as binoculars. Amplifies 8x."
 	mount = "sniper_scope_mount"
 	max_zoom = ZOOM_CONSTANT*2
 
@@ -132,13 +132,13 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/type97
 	name = "Type 97 Optic"
-	desc = "You can attach this to japanese arisaka rifles."
+	desc = "You can attach this to Japanese Arisaka rifles."
 	icon_state = "type97"
 	mount = "type97_cronstein"
 
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/type99
 	name = "Type 99 Optic"
-	desc = "You can attach this to japanese mgs."
+	desc = "You can attach this to Japanese machine guns."
 	icon_state = "type99"
 	mount = "type99_cronstein"
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/type99/type96
@@ -146,7 +146,7 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/type97tank
 	name = "Type 97 Scope"
-	desc = "You can attach this to the type 97 heavy tank rifle."
+	desc = "You can attach this to the Type 97 heavy tank rifle."
 	icon_state = "type97_tank"
 	mount = "type97_tank"
 
@@ -154,7 +154,7 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/apx
 	name = "APX"
-	desc = "You can attach this to french ww1 sniper rifles"
+	desc = "You can attach this to French WWI sniper rifles."
 	icon_state = "apx"
 	mount = "apx_cronstein"
 
@@ -162,13 +162,13 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/pu
 	name = "PU"
-	desc = "You can attach this scope to sniper Mosin-Nagan and SVT rifles"
+	desc = "You can attach this scope to Mosin-Nagant and SVT sniper rifles."
 	icon_state = "pu"
 	mount = "kochetov"
 
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/pu/ppu8
 	name = "PPU-8"
-	desc = "You can attach this scope to DTM machinegun."
+	desc = "You can attach this scope to a DTM machine gun."
 	icon = 'icons/obj/guns/parts.dmi'
 	icon_state = "ppu8"
 	mount = "dt_mount"
@@ -176,20 +176,20 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1
 	name = "PSO-1"
-	desc = "You can attach this scope to any rifle with dovetail rail"
+	desc = "You can attach this scope to any rifle with a dovetail rail."
 	icon_state = "pso1"
 	mount = "dovetail"
 	max_zoom = ZOOM_CONSTANT+3
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso4
 	name = "PSO-4"
-	desc = "You can attach this scope to any rifle with dovetail rail"
+	desc = "You can attach this scope to any rifle with a dovetail rail."
 	icon_state = "pso4"
 	mount = "dovetail"
 	max_zoom = ZOOM_CONSTANT+4
 	ergonomics = 1.15
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/spp
 	name = "SPP"
-	desc = "Optical sight designed for heavy machineguns. You can attach this scope to any rifle with dovetail rail"
+	desc = "Optical sight designed for heavy machine guns. You can attach this scope to any rifle with a dovetail rail."
 	icon_state = "spp"
 	mount = "dovetail"
 	max_zoom = ZOOM_CONSTANT+3
@@ -226,7 +226,7 @@ Current Defines (_defines/attachment.dm)
 	ergonomics = 1.25
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan
 	name = "Elcan"
-	desc = "You can attach this to any rifle with Picatinny rail."
+	desc = "You can attach this to any rifle with a Picatinny rail."
 	icon_state = "elcan"
 	mount = "picatinny"
 	max_zoom = ZOOM_CONSTANT+2
@@ -239,7 +239,7 @@ Current Defines (_defines/attachment.dm)
 	icon_state = "elcan_winter"
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/vortex_viper
 	name = "Viper Vortex"
-	desc = "You can attach this to any rifle with picatinny rail"
+	desc = "You can attach this to any rifle with a Picatinny rail."
 	icon = 'icons/obj/guns/parts.dmi'
 	icon_state = "vortex_viper"
 	mount = "picatinny"
@@ -275,7 +275,7 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment/scope/adjustable/advanced/nvs
 	name = "night vision scope"
-	desc = "A bulky scope that allows images be produced in levels of light approaching total darkness."
+	desc = "A bulky scope that allows images to be produced in levels of light approaching total darkness."
 	icon_state = "nvs"
 	mount = "picatinny"
 	max_zoom = ZOOM_CONSTANT
@@ -410,7 +410,7 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/silencer/smg
 	name = "smg suppressor"
 	icon_state = "modern_smg_suppressor"
-	desc = "A smg suppressor."
+	desc = "An SMG suppressor."
 	reduction = 50
 	fits = list("smg")
 	ergonomics = 1.5
@@ -418,7 +418,7 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/silencer/smg/ww2
 	name = "smg suppressor"
 	icon_state = "ww2_smg_suppressor"
-	desc = "A smg suppressor."
+	desc = "An SMG suppressor."
 	reduction = 35
 	ergonomics = 1.25
 

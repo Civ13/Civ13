@@ -632,6 +632,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
 		"/obj/structure/cell_tower" = "digital_computing",
+		"/obj/structure/civ_generator/solar" = "digital_computing",
+		"/obj/structure/civ_generator/nuclear" = "nuclear_power",
+		"/obj/structure/reactor_fuel_processor" = "nuclear_power",
 		// --- early_economy (10) ---
 		"/obj/item/clothing/accessory/storage/coinpouch" = "early_economy",
 		"/obj/item/stack/money/coppercoin" = "early_economy",
@@ -1383,6 +1386,8 @@ var/global/list/node_grid_col_cache = null
 		// --- resource_processing (9) ---
 		"/obj/structure/compost" = "resource_processing",
 		"/obj/structure/converter/retting_trough" = "resource_processing",
+		"/obj/structure/flax_comb" = "resource_processing",
+		"/obj/structure/reagent_dispensers/dew_collector" = "basic_agriculture",
 		"/obj/structure/converter/tanning" = "resource_processing",
 		"/obj/structure/dehydrator" = "resource_processing",
 		"/obj/structure/distillery" = "resource_processing",

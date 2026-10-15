@@ -80,7 +80,7 @@
 			decaytimer += 50 //to be readjusted according to gameplay, since freezers don't require power
 		else if (isturf(loc)) //if on the floor (i.e. not stored inside something), decay faster
 			decaytimer += 600
-		else if (!istype(loc, /obj/item/weapon/can)) //if not canned, since canned food doesn't spoil
+		else // Closed cans already returned above; opened cans age like ordinary storage.
 			decaytimer += 300
 		if (decaytimer >= decay)
 			qdel(src)

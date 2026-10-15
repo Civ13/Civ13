@@ -81,6 +81,13 @@ retains the durable recovery block and does not hide the original exception.
 
 ## Unified custody and asynchronous fence audit still required
 
+The [custody and asynchronous fence matrix](extraction-custody-fence-audit.md)
+now traces concrete extraction, inherited item, vehicle, corpse, GC and journal
+boundaries and identifies missing production controls. It supplies minimal hook
+proposals and existing CI registration paths. Broad accepted subtype closure and
+the unified operation implementation remain blockers; the matrix does not claim
+an exhaustive or runtime-verified global fence.
+
 The following concrete paths establish audit obligations, not exhaustive coverage:
 
 | Source path | Gap that the unified operation must close |
@@ -110,3 +117,48 @@ reader plumbing; extraction supplies its owned journal/census/issuance adapters;
 then run the v2-v4 boundary controls and ordinary null-policy regression. Keep
 activation held until both shared patch review and meaningful native controls
 pass. No step is accepted merely because the design review has no new blocker.
+
+The [private snapshot proposal and offline probe plan](extraction-persistence-probe-plan.md)
+selects a mechanism for review and prepares versioned reference vectors. Both
+the proposed host ABI and native integration remain unimplemented and unverified.
+
+## Proposed yielding-restore interface boundary
+
+Source supplement at `8e6948ce9632b7edc03aab9a23c566fedaf9fd71`, pending
+serializer review. These are interface requirements, not available native APIs.
+The existing operation/generation/restore/admission datum separation above remains
+mandatory. Add a distinct typed restore progress result containing operation
+identity, selected generation, captured custody epoch, acknowledged level set and
+bounded verification cursor. The captured epoch is the stable custody/fence epoch,
+which changes only on invalidation or ownership turnover. Authorized restore-owned
+mutations update operation-local progress/revision under the same custody epoch;
+any unowned mutation attempt fails or defers before effects or irreversibly
+invalidates custody. No callback may advance or rebase the captured custody epoch
+to bless intervening writes. Progress never grants world completeness, admission
+or issuance; an ordinary Boolean success cannot stand in for this result.
+
+A restore operation is acquired before ClearMap and binds the exact storage,
+policy/map identity, dimensions, immutable selected reader set and complete
+account/auxiliary pins. Explicit operation parameters accompany ClearMap,
+Load_World, Load_Entry, decode_saved_value and load_map_metadata; no ambient token
+lookup grants custody. Restore feed accepts each authenticated level once under
+that operation and returns typed progress. Finalization occurs after constructors,
+recursive contents, after_load and metadata restoration, rechecks the complete
+unique graph and pins under the same epoch, and returns a typed restore proof.
+`accept_restored` must return exactly TRUE under the still-held operation.
+
+The ordinary census API retains exact world.time freshness. Its stale/yield
+refusal must not be converted into restore permission. A restore proof cannot
+survive fence release as an unfenced completeness Boolean. Admission reacquires
+the exact generation/pins with fresh epoch validation and consumes a single-use
+owner/session/revision capability. Post-mutation failure invalidates operation,
+progress, proof and capability and retains recovery quarantine; cleanup cannot
+manufacture rollback or hide the original exception.
+
+The concrete [hook closure supplement](extraction-custody-fence-audit.md#yielding-restore-hook-closure-supplement)
+identifies current missing entry/yield/abort gates. Immutable reader ABI, host
+writer exclusion and accepted subtype mutation closure remain blocking contracts;
+this interface does not establish that those primitives exist. Serializer owns
+reader/recursive entry plumbing; extraction owns journal/census/consumer adapters;
+physical/process owners must close their mutation rows before shared implementation
+acceptance. No production code or local native verification is authorized here.

@@ -31,6 +31,9 @@
 			for (var/obj/structure/table/carboot/B in T.parts)
 				var/obj/item/extraction_salvage/I = new(get_turf(B))
 				I.extraction_found_in_raid = TRUE
+				var/datum/extraction_equipment_codec/issuer = new
+				equipment_assert(issuer.encode(I), "native cargo fixture explicitly issues initial identity")
+			extraction_vehicle_custody_probe(A)
 			var/list/record = C.encode(A)
 			equipment_assert(record, "native process encodes actual assembled car: [C.last_error]")
 			var/list/P = session.copy_profile()

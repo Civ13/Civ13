@@ -38,8 +38,16 @@
 	loot.health = 41
 	M.codec.encode(loot)
 	var/loot_id = loot.extraction_item_id
+	var/datum/extraction_native_market_offer/invalid_condition = M.native_market_quote(A, list("sale_kind" = "player_listing", "item_ids" = list(loot_id)))
+	equipment_assert(invalid_condition?.result?["reason"] == "pricing_unavailable" && loot.loc && loot.extraction_item_id == loot_id, "native listing rejects health without a valid maximum before retiring original")
+	loot.maxhealth = 100
+	M.codec.set_raid_provenance(loot, FALSE)
+	var/datum/extraction_native_market_offer/nonfir_loot = M.native_market_quote(A, list("sale_kind" = "player_listing", "item_ids" = list(loot_id)))
+	equipment_assert(nonfir_loot?.result?["reason"] == "item_ineligible" && loot.loc && loot.extraction_item_id == loot_id, "valid-condition original still requires raid provenance")
+	M.codec.set_raid_provenance(loot, TRUE)
 	var/datum/extraction_native_market_offer/listing = M.native_market_quote(A, list("sale_kind" = "player_listing", "item_ids" = list(loot_id)))
 	equipment_assert(listing?.result?["reason"] == "quote_created", "native listing quotes exact found-in-raid original")
+	equipment_assert(listing.result["data"]["price"]["amount"] == 8, "native damaged salvage listing uses bounded condition price")
 	var/list/listed = M.native_market_confirm(A, listing)
 	equipment_assert(listed?["status"] == "committed" && !loot.loc, "native listing moves original graph into shared escrow")
 	var/list/catalog = M.native_market_catalog(B)

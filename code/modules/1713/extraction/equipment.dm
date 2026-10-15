@@ -85,7 +85,7 @@ var/global/extraction_identity_sequence = 0
 		if (!istype(child, /obj/item) || !collect(child, id, depth + 1)) return FALSE
 	return TRUE
 
-/datum/extraction_equipment_codec/proc/encode(obj/item/root, assign_new_ids = TRUE)
+/datum/extraction_equipment_codec/proc/encode(obj/item/root, assign_new_ids = TRUE, mutate_persistence = TRUE)
 	last_error = null
 	items = list()
 	index = list()
@@ -164,7 +164,8 @@ var/global/extraction_identity_sequence = 0
 		clear()
 		return null
 	// Account graphs have one persistence authority, including nested contents.
-	for (var/obj/item/I in items) I.should_save = FALSE
+	if (mutate_persistence)
+		for (var/obj/item/I in items) I.should_save = FALSE
 	clear()
 	return result
 

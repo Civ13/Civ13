@@ -18,10 +18,16 @@
 	if(!world.params["visual"])
 		OpenPort("none")
 	return ..()
+/world/Error(exception/error, datum/error_source)
+	// Startup can fail before the production runtime-log directory is initialized.
+	var/location = istype(error) ? " ([error.file]:[error.line])" : ""
+	text2file("BOAT runtime error: [error][location]", "boat-runtime-error.txt")
+	return ..()
 var/global/datum/boat_game_probe/boat_game_probe = new
 /datum/boat_game_probe
 	var/list/blast_points = list()
 	var/failures = 0
+	var/list/failure_labels = list()
 	var/passed = 0
 	var/running = FALSE
 	var/phase = "Preparing isolated boat world"
@@ -48,6 +54,7 @@ var/global/datum/boat_game_probe/boat_game_probe = new
 		world.log << "BOAT PASS: [label]"
 	else
 		failures++
+		failure_labels += label
 		world.log << "BOAT FAIL: [label]"
 /datum/boat_game_probe/proc/clear()
 	for(var/obj/structure/vehicleparts/axis/A in boats)
@@ -297,13 +304,13 @@ var/global/datum/boat_game_probe/boat_game_probe = new
 	clear()
 /datum/boat_game_probe/proc/save_result()
 	fdel("boat-result.json")
-	text2file(json_encode(list("commit"=world.params["tested_commit"], "map_id"=map.ID, "maxx"=world.maxx, "maxy"=world.maxy, "maxz"=world.maxz, "version"=world.byond_version, "build"=world.byond_build, "passed"=passed, "failures"=failures, "phase"=phase, "adapters"="test-only scene preparation and inspection; real production boat procedures and forceMove")), "boat-result.json")
+	text2file(json_encode(list("commit"=world.params["tested_commit"], "map_id"=map.ID, "maxx"=world.maxx, "maxy"=world.maxy, "maxz"=world.maxz, "version"=world.byond_version, "build"=world.byond_build, "passed"=passed, "failures"=failures, "failure_labels"=failure_labels, "phase"=phase, "adapters"="test-only scene preparation and inspection; real production boat procedures and forceMove")), "boat-result.json")
 	fdel("boat-result.txt")
 	text2file("RESULT failures=[failures]; passed=[passed]", "boat-result.txt")
 /datum/boat_game_probe/proc/run_tests()
 	try
 		if(!map || !ticker)
-			throw EXCEPTION("Map/ticker unavailable")
+			throw EXCEPTION("Map/ticker unavailable: map=[!!map], ticker=[!!ticker], scheduler=[!!processScheduler], world.time=[world.time]")
 		world.name = "Civ13 LOCAL boat verification"
 		// Prepare only this temporary world's capture area; no production storage.
 		for(var/x in 32 to 58)
@@ -351,6 +358,7 @@ var/global/datum/boat_game_probe/boat_game_probe = new
 	catch(var/exception/e)
 		failures++
 		phase = "Probe exception during [phase]: [e] ([e.file]:[e.line])"
+		failure_labels += phase
 		save_result()
 		world.log << "BOAT EXCEPTION: [e]"
 		if(!world.params["visual"])

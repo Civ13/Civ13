@@ -119,6 +119,7 @@
 	return
 
 /mob/living/simple_animal/hostile/human/kenobi/attackby(var/obj/item/O, var/mob/user)
+	var/attack_result = FALSE
 	if (istype(O, /obj/item/weapon/leash) && behaviour != "defends" && behaviour != "hunt")
 		var/obj/item/weapon/leash/L = O
 		if (L.onedefined == FALSE)
@@ -155,7 +156,7 @@
 			var/tgt = user.targeted_organ
 			if (user.targeted_organ == "random")
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
-			O.attack(src, user, tgt)
+			attack_result = O.attack(src, user, tgt)
 	else if (O.sharp && !istype(src, /mob/living/simple_animal/hostage))
 		if (!istype(O, /obj/item/weapon/reagent_containers) && stat == DEAD && (user.a_intent == I_HARM || user.a_intent == I_GRAB))
 			harvest_animal(user, O, user.a_intent == I_GRAB)
@@ -164,20 +165,18 @@
 			var/tgt = user.targeted_organ
 			if (user.targeted_organ == "random")
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
-			O.attack(src, user, tgt)
+			attack_result = O.attack(src, user, tgt)
 	if (behaviour == "defends")
 		stance = HOSTILE_STANCE_ATTACK
 		stance_step = 6
 		target_mob = user
-		..()
 	else if (behaviour == "hunt")
 		stance = HOSTILE_STANCE_ATTACK
 		stance_step = 6
 		target_mob = user
-		..()
 	else
 		if (behaviour == "scared" && mob_size < user.mob_size)
 			do_behaviour("defends")
 		else if (behaviour == "hostile")
 			do_behaviour("wander")
-		..()
+	return attack_result

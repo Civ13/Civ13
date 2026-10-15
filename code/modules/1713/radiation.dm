@@ -11,7 +11,7 @@
 /// RAD_LEVEL_DEADLY 500 //Always kills
 
 //severity: mSv per second. duration: duration in seconds
-/proc/radiation_pulse(turf/epicenter, range, severity, duration, log = TRUE)
+/proc/radiation_pulse(turf/epicenter, range, severity, duration, log = TRUE, local_only = FALSE)
 	duration = round(duration)
 	var/last = world.time + duration
 	if(!epicenter || !severity || duration < 1) return FALSE
@@ -20,6 +20,8 @@
 		epicenter = get_turf(epicenter.loc)
 
 	for(var/atom/T in range(range, epicenter))
+		if (local_only && T.z != epicenter.z)
+			continue
 		var/cseverity=severity/100
 		var/distance = get_dist(epicenter, T)
 		if(distance < 0)
@@ -28,12 +30,13 @@
 			T.rad_act(cseverity)
 		else if (distance > 1 && distance <= range)
 			T.rad_act(cseverity*(1-(distance/range)))
-	if (world.time <= last && duration > 0)
+	if (world.time <= last && duration > 0 && (!local_only || duration > 1))
 		spawn(10)
-			radiation_pulse(epicenter, range, severity, duration-1, 0)
+			radiation_pulse(epicenter, range, severity, duration-1, 0, local_only)
 	if (log)
 		log_game("Radiation emission at ([epicenter.x],[epicenter.y],[epicenter.z]) with size ([range]), severity [severity] mSv, duration [duration/10] minutes and in area [epicenter.loc.name] ")
-	change_global_radiation((severity/100)/10000) //Very slow radiation of the entire world. Even slower now because ungas love leaving uranium around.
+	if (!local_only)
+		change_global_radiation((severity/100)/10000) // Preserve existing non-ore callers.
 
 	return TRUE
 
@@ -199,7 +202,7 @@
 /obj/item/weapon/geiger_counter/verb/turn_on()
 	set category = null
 	set name = "Turn On/Off"
-	set src in range(1, usr)
+	set src in range(1)
 
 	scanning = !scanning
 	update_icon()

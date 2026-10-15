@@ -98,6 +98,10 @@
 var/global/sound_tts_num = 0
 
 /mob/proc/play_tts(message,var/mob/living/speaker)
+	#ifdef OPENDREAM
+	// OpenDream has no shell-backed speech generator. Avoid a job per listener.
+	return
+	#else
 	if (!message || message == "" || !client || !speaker || !istype(speaker))
 		return
 	message = replacetext(message, "&#39", "'")
@@ -125,6 +129,7 @@ var/global/sound_tts_num = 0
 			spawn(50)
 				fdel(fpath)
 	return
+	#endif
 
 
 /////AMAZON AWS POLLY VOICES///////////////

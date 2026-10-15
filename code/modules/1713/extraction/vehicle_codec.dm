@@ -71,7 +71,9 @@
 	proc/encode(obj/structure/vehicleparts/axis/A)
 		last_error = null
 		var/datum/extraction_vehicle_transfer/T = new
-		if (!T.capture(A, TRUE)) return fail("Vehicle is not a stopped, unoccupied bounded car: [T.last_error]")
+		// Explicit legacy initial issuance. This is not a read-only census or an
+		// atomic issuance permit; refusal-side conservation remains a separate gate.
+		if (!T.capture(A, TRUE, TRUE, TRUE)) return fail("Vehicle is not a stopped, unoccupied bounded car: [T.last_error]")
 		objects = list(A)
 		objects |= T.parts - T.cargo
 		for (var/obj/O in T.parts)

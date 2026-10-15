@@ -4,6 +4,25 @@
 /turf/floor/proc/collapse_check()
 	return
 
+/turf/floor/grass/proc/grass_cutting_wait(mob/user)
+	return do_after(user, 30, src)
+
+/turf/floor/grass/proc/grass_cutting_actor_connected(mob/user)
+	return user && user.client
+
+/turf/floor/grass/proc/gather_grass_cuttings(mob/user, obj/item/weapon/flint/tool)
+	if (busy || !grass_cutting_actor_connected(user) || QDELETED(tool) || user.stat != CONSCIOUS || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1)
+		return
+	busy = TRUE
+	to_chat(user, SPAN_NOTICE("You start cutting grass fibres..."))
+	var/completed = grass_cutting_wait(user)
+	busy = FALSE
+	if (!completed || !grass_cutting_actor_connected(user) || user.stat != CONSCIOUS || QDELETED(tool) || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1 || !istype(src, /turf/floor/grass))
+		return
+	change_the_turf()
+	new /obj/item/stack/grass_cuttings(get_turf(user), 2)
+	to_chat(user, SPAN_NOTICE("You gather two portions of grass cuttings."))
+
 /turf/floor/dirt/underground/collapse_check()
 	spawn(50)
 		var/area/A = get_area(src)
@@ -68,6 +87,12 @@
 
 	if (!C || !user)
 		return FALSE
+	if (istype(src, /turf/floor/grass) && istype(C, /obj/item/weapon/flint))
+		var/obj/item/weapon/flint/F = C
+		if (F.sharpened)
+			var/turf/floor/grass/G = src
+			G.gather_grass_cuttings(user, F)
+			return TRUE
 
 	if (istype(src, /turf/floor/beach/water))
 		var/turf/floor/beach/water/WT = src
@@ -786,6 +811,11 @@
 						H.adaptStat("strength", 1)
 			change_the_turf()
 			return
+	// Preserve common ore branches above; uranium uses only their fallback.
+	if (is_mineable && map.ordinal_age >= 8 && prob(5))
+		new /obj/item/stack/ore/uranium(src)
+		change_the_turf()
+		return
 	/*
 					else if (prob(10) && map.ordinal_age >= 6)
 						var/obj/item/stack/ore/uranium/mineral = new/obj/item/stack/ore/uranium(src)
@@ -1004,7 +1034,7 @@
 
 /turf/floor/verb/Dig()
 	set category = null
-	set src in range(1, usr)
+	set src in range(1)
 
 	var/mob/living/human/user
 

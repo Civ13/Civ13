@@ -33,6 +33,39 @@
 	var/rotting_stage = 0
 
 	var/healing_stage = 0 //for beds
+	var/tmp/survival_rest_since = null
+	var/tmp/survival_actions = 0
+
+// Existing input and movement clocks avoid a per-mob timer or world scan.
+/mob/living/human/proc/survival_metabolism_time()
+	return world.time
+
+/mob/living/human/proc/survival_input_inactivity()
+	return client ? client.inactivity : -1
+
+/mob/living/human/survival_action_started()
+	survival_actions++
+	survival_rest_since = survival_metabolism_time()
+
+/mob/living/human/survival_action_finished()
+	survival_actions = max(0, survival_actions - 1)
+	survival_rest_since = survival_metabolism_time()
+
+/mob/living/human/proc/survival_idle_multiplier()
+	var/now = survival_metabolism_time()
+	var/inactive = survival_input_inactivity()
+	if (isnull(survival_rest_since) || now < survival_rest_since)
+		survival_rest_since = now
+	// NPCs and disconnected mobs retain the existing rates. SSD is handled separately.
+	if (inactive < 0)
+		return 1
+	survival_rest_since = min(now, max(survival_rest_since, now - inactive, last_movement, next_click))
+	if (survival_actions || !may_do_after || !may_do_mob || next_move > now || exercise_equipment)
+		survival_rest_since = now
+		return 1
+	// Sixty seconds without input, movement or an ongoing action: 90% less consumption.
+	return now - survival_rest_since >= 600 ? 0.1 : 1
+
 /mob/living/human/Life()
 
 	handle_look_stuff()
@@ -183,6 +216,7 @@
 			food_m *= 1.5
 			water_m *= 5
 
+		var/activity_m = stat == CONSCIOUS ? survival_idle_multiplier() : 1
 		if (inducedSSD) //if sleeping in SSD mode = takes ~72 hours to starve
 			nutrition -= 0
 			water -= 0
@@ -194,16 +228,16 @@
 		else if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
 			switch (stat)
 				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
-					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
+					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
 				if (UNCONSCIOUS) // takes over an hour to starve
 					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
 					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m)
 		else
 			switch (stat)
 				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
-					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
+					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
 				if (UNCONSCIOUS) // takes over an hour to starve
 					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
 					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
@@ -428,6 +462,7 @@
 
 	loc_temp = get_temp(src)
 	cold_wetness = min(1, max(0, cold_wetness))
+	var/previous_wetness = cold_wetness
 	// Rain and immersion soak insulation; shelter and nearby heat let it dry.
 	// This scalar needs no retained references, spawned timers or registries.
 	if (istype(get_turf(src), /turf/floor/beach/water))
@@ -436,6 +471,10 @@
 		cold_wetness = min(1, cold_wetness + 0.01)
 	else
 		cold_wetness = max(0, cold_wetness - (loc_temp >= 18 ? 0.01 : 0.002))
+	if (cold_wetness >= 1 && previous_wetness < 1)
+		to_chat(src, "<span class='warning'>You are soaked through. Get out of the rain or water and find warmth to dry off.</span>")
+	else if (cold_wetness <= 0 && previous_wetness > 0)
+		to_chat(src, "<span class='notice'>You have dried off completely.</span>")
 
 	for (var/obj/structure/bed/bedroll/BRL in src.loc)
 		if (BRL.used == TRUE && BRL.buckled_mob == src)
@@ -491,6 +530,15 @@
 
 
 	species.get_environment_discomfort(src)
+
+/mob/living/human/proc/get_wetness_description()
+	if (cold_wetness <= 0)
+		return "Dry"
+	if (cold_wetness < 0.25)
+		return "Damp"
+	if (cold_wetness < 0.75)
+		return "Wet"
+	return "Soaked"
 
 /mob/living/human/proc/stabilize_body_temperature()
 

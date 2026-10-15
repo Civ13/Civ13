@@ -99,7 +99,7 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/foldable/verb/retrieve()
 	set category = null
 	set name = "Retrieve"
-	set src in range(1, usr)
+	set src in range(1)
 	if (usr.l_hand && usr.r_hand)
 		to_chat(usr, SPAN_WARNING("You need to have a hand free to do this."))
 		return
@@ -285,7 +285,7 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/type98/verb/disassemble()
 	set category = null
 	set name = "Disassemble"
-	set src in range(1, usr)
+	set src in range(1)
 	if (usr.l_hand && usr.r_hand)
 		to_chat(usr, SPAN_WARNING("You need to have a hand free to do this."))
 		return
@@ -709,7 +709,7 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/verb/retrieve()
 	set category = null
 	set name = "Retrieve"
-	set src in range(1, usr)
+	set src in range(1)
 	if (usr.l_hand && usr.r_hand)
 		to_chat(usr, SPAN_WARNING("You need to have a hand free to do this."))
 		return

@@ -27,11 +27,13 @@
 	if (fexists("map_saves/save_complete.txt"))
 		if(!fdel("map_saves/save_complete.txt"))
 			throw EXCEPTION("Could not invalidate completion marker; existing save retained")
-	var/F0 = file("map_saves/map.txt")
+	var/F0 = "map_saves/map.txt"
 	if (fexists(F0))
 		if(!fdel(F0))
 			throw EXCEPTION("Could not replace save metadata")
 	var/list/metadata = list(map.ID, "[map.age]", "[map.ordinal_age]", "[map.default_research]", "[map.autoresearch]", "[map.autoresearch_mult]", "[map.chad_mode]", "[map.chad_mode_plus]", "[map.gamemode]", time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)"))
+	// Preserve the legacy fields and timestamp; append ordinary round-mode flags.
+	metadata += list("[map.persistence]", "[map.research_active]", "[map.resourceresearch]", "[map.perschadplus]")
 	if(!text2file(jointext(metadata, "\n"), F0))
 		throw EXCEPTION("Could not write world-save metadata")
 	log_startup_progress("	Saved metadata.")
@@ -87,52 +89,63 @@
 	ref = saving_reference_pins.len + 1
 	saving_reference_pins += A
 	saving_references["\ref[A]"] = ref
-	A.before_save()
-	savefile.cd = entry_path(savefile, ref)
-	if (A.type)
-		savefile["type"] << A.type
-	var/list/content_refs = list()
-	if(A.load_contents)
-		var/atom/movable/Ad = A
-		if(contents)
-			for(var/obj/content in Ad.contents)
-				if(content.loc != Ad) continue
-				var/conparams = BuildVarDirectory(savefile, content, 1)
-				savefile.cd = entry_path(savefile, ref)
-				if(!conparams)
-					continue
-				content_refs += "[conparams]"
-			for(var/mob/mcontent in Ad.contents)
-				if(mcontent.loc != Ad) continue
-				var/mconparams = BuildVarDirectory(savefile, mcontent, 1)
-				savefile.cd = entry_path(savefile, ref)
-				if(!mconparams)
-					continue
-				content_refs += "[mconparams]"
-		var/final_params = list2params(content_refs)
+	var/datum/save_export_frame/frame = new
+	frame.exporter = src
+	frame.file = savefile
+	frame.source = A
+	frame.source_identity = "\ref[A]"
+	frame.entry = ref
+	if(isturf(A))
+		A:persistence_export_frame = frame
+	frame.accepts_children = A.load_contents && contents && istype(A, /atom)
+	saving_export_frames["[ref]"] = frame
+	saving_export_stack += frame
+	try
+		A.before_save_context(src, frame)
+		require_export_frame(frame)
+		for(var/datum/save_transfer/ticket in frame.tickets)
+			if(!ticket.committed)
+				throw EXCEPTION("Save hook left a prepared transfer uncommitted")
 		savefile.cd = entry_path(savefile, ref)
-		savefile["content"] << final_params
-	var/list/changing_vars
-	// Changed variables depend on the instance, not just its type.
-	changing_vars = A.get_saved_vars()
-	
-	if(istype(A, /atom/movable))
-		var/atom/movable/AM = A
-		if(contents && AM.load_datums)
-			changing_vars += "reagents"
-	for(var/v in changing_vars)
-		if(A.persistence_runtime_var(v))
-			continue
-		// Location is reconstructed by the map grid and contents graph. Saving it
-		// recursively used to create turf entries outside that graph.
-		if(v in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))
-			continue
-		if(A.vars.Find(v))
-			var/value = encode_saved_value(savefile, A.vars[v])
+		savefile["type"] << A.type
+		if(frame.accepts_children)
+			var/atom/parent = A
+			// Keep obj-before-mob order; only declared transfers extend discovery.
+			for(var/obj/content in parent.contents)
+				if(content.loc != parent) continue
+				var/child_ref = BuildVarDirectory(savefile, content, 1)
+				require_export_frame(frame)
+				add_export_content(frame, child_ref)
+			for(var/mob/content in parent.contents)
+				if(content.loc != parent) continue
+				var/child_ref = BuildVarDirectory(savefile, content, 1)
+				require_export_frame(frame)
+				add_export_content(frame, child_ref)
+		var/list/changing_vars = A.get_saved_vars()
+		if(istype(A, /atom/movable))
+			var/atom/movable/AM = A
+			if(contents && AM.load_datums)
+				changing_vars += "reagents"
+		for(var/v in changing_vars)
+			if(A.persistence_runtime_var(v))
+				continue
+			if(v in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))
+				continue
+			if(A.vars.Find(v))
+				var/value = encode_saved_value(savefile, A.vars[v])
+				require_export_frame(frame)
+				savefile.cd = entry_path(savefile, ref)
+				savefile[v] << value
+		// Saved-variable recursion can declare a sibling after direct traversal.
+		drain_save_transfers(frame)
+		if(frame.accepts_children)
 			savefile.cd = entry_path(savefile, ref)
-			savefile[v] << value
-			continue
-	savefile.cd = ".."
+			savefile["content"] << list2params(frame.content_refs)
+		savefile.cd = ".."
+	catch(var/exception/e)
+		release_export_frame(frame)
+		throw e
+	release_export_frame(frame)
 	return ref
 
 // Typed envelopes preserve literal marker strings and associative/nested lists.

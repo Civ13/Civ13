@@ -187,3 +187,168 @@ constructors omitting parent calls, late/restored ID assignment, missed deletion
 ledger overflow, genuine fresh-DMM coverage and ordinary legacy-v2 positive
 round trips. None ran for this proposal. Source review is not pinned compiler,
 binary hashing, crash safety, native gameplay or complete-world acceptance.
+
+## Concrete restore call-site and abort ledger
+
+The scoped wrapper slice described below now addresses the ignored metadata
+return and introduces typed runtime policy/attempt boundaries. The reader/token
+interfaces in this ledger remain proposals, including propagation through ClearMap
+and loading recursion. This distinction is source status, not runtime acceptance.
+
+Source-only supplement checked at `d3e7aa61934b03388f56ee51d35b2e6ae9d7532e`.
+This locates the previously proposed trailing-token changes; none are implemented.
+The immutable-reader ABI and durable quarantine publication primitive are still
+unavailable as verified checkout interfaces. Preserve the null-policy ordinary-map
+path while requiring the following explicit boundaries for an opted-in policy.
+
+| Current entry/call site | Required proposed interface and acceptance condition | Failure owner |
+| --- | --- | --- |
+| `functions.dm::loadmap`, before `validate_world_save()` and `ClearMap()` | Acquire typed restore operation before any mutation, bind selected generation/readers/pins/custody epoch, and perform structural validation using those same readers. Admission must be reserved during preflight. | Serializer wrapper releases transient resources on pre-mutation rejection; original live world remains untouched. |
+| `loading.dm::validate_world_save` opens each pathname; Load_World opens it again for allocation and again for restoration | Pass explicit operation and selected reader membership through all phases. Pre/post pathname hashes alone cannot close replacement/ABA. | Reader/host owner must provide verified immutability or keep extraction restore blocked. |
+| `functions.dm::ClearMap` sleeps before mob and object qdel passes | Pass operation; check custody after each sleep, before each disposal and after callbacks. | Serializer abort owner records mutation-started status before first effect; physical owner classifies disposal continuations. |
+| `loading.dm::Load_Entry` recursive calls at contents, reference and legacy-list restoration; typed field call into decode_saved_value | Add trailing operation without shifting existing positional/optional arguments; every recursion retains reader membership and cache ownership. Direct opted-in calls without an operation reject. | Serializer; caches and partially constructed objects cannot be returned as complete on token loss. |
+| `loading.dm::decode_saved_value` entry recursion and list key/value recursion | Pass the same operation to Load_Entry and both recursive decode calls. Cached list/reference records are operation-owned. | Serializer; foreign/replayed token or reader fails before new writes. |
+| Load_World allocation, recursive loading, after_load, level feed and bounded final verification | Check stable custody at each resumed batch/callback; return distinct typed progress until all expected levels and root rechecks finish. | One wrapper abort path covers initial allocation and final verification as well as per-level catch. |
+| Historical `functions.dm::loadmap` baseline ignored `load_map_metadata()` FALSE; the reviewed wrapper now requires exactly TRUE | Future selected-reader path must retain that gate under the same operation/readers; metadata is finalized before restore proof publication. | Serializer aborts/quarantines missing or rejected metadata after world mutation. Ordinary behavior remains a separate compatibility check. |
+| `loading.dm::load_map_metadata` reopens map.txt and writes map fields | Bind metadata bytes to selected immutable generation reader; validate operation before writes and afterward. | Serializer; account/auxiliary pin owner joins final proof after metadata. |
+| Wrapper resets persistence_save_in_progress after Load_World FALSE or exception | This Boolean release is not recovery. Publish/retain an operation-bound durable recovery block on any post-mutation failure; admission, economic issuance and checkpoint/map transition remain refused. | Serializer coordinates extraction recovery owner. The verified durable primitive and every consumer gate are prerequisites, not existing behavior. |
+
+The current wrapper records `last_error`, clears bookkeeping on caught exceptions
+and reports restart guidance; those actions do not implement persistent quarantine
+or rollback. Cleanup must preserve the original failure, close readers once and
+leave durable recovery intact even if cleanup itself fails. No Boolean completion
+or successful level feed permits admission before final proof acceptance and the
+separate, revalidated single-use admission capability.
+
+Required source review before implementation: exact trailing-token signature and
+all recursive callers; selected reader acquisition/release and host writer owner;
+mutation-started/abort ownership covering allocation and metadata; rejection of
+FALSE metadata completion; and recovery gates at admission, issuance, checkpoint
+and mapswap. Required controls preserve actual ordinary-yield refusal and exercise
+post-mutation metadata rejection, input replacement between phases, recursive foreign
+token, initial/final abort and cleanup failure. These controls are not yet authored
+or executed and do not replace accepted-subtype continuation closure.
+
+Token and reader checks must precede the `Load_Entry` cached-object fast path,
+which can write an existing object's location, and the `decode_saved_value`
+cached-list fast return. Checking only before new construction leaves both
+cached paths outside custody validation. Keep every positional Load_Entry
+argument and named nocontents/lag_fix call compatible when adding the trailing
+operation; cache membership is bound to that exact operation.
+
+The storage constructor at `storage.dm::New` schedules `spawn(5)` to sum current
+contents and update max_storage_space. Load_Entry construction can enqueue this
+continuation before decoded writes, and it can run during or after restoration.
+It needs an owner-reviewed operation-owned, deferred or blocking classification
+and a post-resume custody check. Decode return and final census completion alone
+do not fence it. This confirms that accepted-subtype closure must include delayed
+constructor continuations, not just synchronous New/after_load bodies.
+
+## Shared faction-war persistence implementation priority
+
+Human priority now places shared faction-war persistence ahead of standalone
+extraction. The following phases reuse the existing serializer, extraction
+custody/journal and engine owners; they do not authorize bypassing the runtime
+hold or editing another owner's shared files. Faction-war is an implementation
+priority, while the unverified reader/host/closure prerequisites remain blockers.
+
+| Phase | Concrete owned implementation target | Required acceptance before next phase |
+| --- | --- | --- |
+| 1 - durable shared generation | Serializer supplies the reviewed typed operation/readers/commit/restore entry plumbing; host owner supplies verified immutable generation custody and publication/quarantine. Extraction supplies its explicit policy adapter and joins. | Preflight leaves live world untouched; post-mutation failure keeps recovery; restart/replay, input replacement and ordinary null-policy controls pass on exact head. No fixture claims of multiweek stability. |
+| 2 - faction assets and counterpart handoff | Shared adapter defines versioned mode/faction/server/generation identity, explicit supported equipment/vehicle graphs and a one-owner transfer journal. Export/import uses selected immutable inputs, compatibility validation and idempotent receipts; no export creates an unacknowledged second usable copy. | Same-server counterpart and separate-server staged handoffs preserve identity/condition/currency and reject wrong mode/faction/schema/generation, concurrent/replayed claims and interruption at every custody transition. Host authorization and destination ownership are explicit. |
+| 3 - physical faction convoy | Faction-war owner binds expensive paid cargo to an actual shipment and escort vehicle reaching world extraction. Surviving vehicles return for reuse; destroyed vehicles require paid rebuilding. Gate to explicitly selected WWII-and-later faction-war modes, with reviewed era mapping. | Actual player escort/extraction/failure route, physical cargo and surviving/destroyed vehicle outcomes, durable save/restart and omission controls. No menu or journal-only fixture substitutes for player acceptance. |
+| 4 - long-running rounds | Engine owner measures retained objects, callbacks/queues, persistence cost and repeated save/restart behavior on representative faction worlds; define recovery and bounded growth budgets before optimization. | Exact-head regression and runtime observations with duration/workload stated. Weeks-long stability requires correspondingly long representative observation, not accelerated fixtures or memory counts alone. |
+
+Immediate coordination boundary: serializer owns shared persistence plumbing,
+extraction core owns custody/journal adapters and inventories, faction-war owner
+must supply the selected map/faction/era and counterpart compatibility contract,
+and engine/host owners own runtime budgets and immutable external custody. Confirm
+those owners and the smallest released shared patch before implementation. Bot,
+mall and surface activation stay disabled until their independent acceptance.
+
+Cross-server phase 2 inherits the ambiguous/failed no-refund/no-inferred-release
+rule. Before destination assets become usable, source assets must durably enter
+unusable reserved/export-pending custody. Lost acknowledgment, uncertain destination
+commit or partition retains recovery custody; timeout never implies rollback,
+refund or permission to re-enable the source. The journal decision and receipt bind
+transfer ID, exact root identities, both server/mode identities and generations,
+and expected source/destination revisions. Idempotent receipts alone cannot prove
+exclusive custody. This is a contract prerequisite, not an implemented distributed
+transaction; the authoritative journal and host custody owner must be selected.
+
+## Native reader result and concrete provider prerequisites
+
+The next buildable candidate is described in the
+[snapshot broker architecture proposal](persistence-snapshot-broker-proposal.md).
+It is not an available provider or permission to install identities/services.
+
+The Windows BYOND 516.1681 reader probe passed positive and binding/close controls
+at `12de059fad3d593bc2a4891a6867d7d5a0c7e8f4`. Automated receipt review accepted
+only cooperating-world lock behavior and fixture guards. A same-world second
+handle changed the retained reader's value to LOCAL. Therefore retaining a native
+savefile object, even with these locks, cannot implement immutable input bytes.
+See [the exact probe scope](extraction-reader-contract-probe.md).
+
+The memory/engine host owner must select an actual provider interface and version
+before production reader plumbing. The following are requirements, not available
+APIs or an implemented provider:
+
+The memory/engine owner confirmed on October 13, 2026 that no selected or
+implemented host provider currently supplies this guarantee. PR18's
+`NativeIdentityCoordinator` and `FileNativeObserverHost` observe identity; they
+do not supply serializer-reader custody. Package/manifest hashes, `FileShare.Read`
+and the cooperating-BYOND probe must not be promoted into immutable host ownership
+or durable recovery evidence. This is a concrete unavailable primitive, not a
+manual feature-acceptance gate.
+
+| Boundary | Required provider contract | Smallest meaningful acceptance |
+| --- | --- | --- |
+| Host ownership | Name the process identity, storage root, OS/filesystem semantics, and every allowed writer. Private copies must exclude both game-world writes and host writes/replacement for their entire use. | Independent attempts to write, rename and replace selected files during every consumer phase either fail or abort before the next mutation; restoration never silently reads new bytes. |
+| Selection | Acquire one generation and exact level/metadata membership under an operation identity. Reject unknown, missing and duplicate members before clearing. Caller-supplied paths are not reader identities. | Wrong operation/generation/member and partial acquisition reject; acquired resources close exactly once, with no pathname fallback. |
+| Bytes | Supply bounded raw-byte length and SHA-256 plus verified immutable backing for each member. Copied DM text and semantic graph hashes do not supply binary fidelity. | Binary zero/high bytes, size limits, truncation, replacement and digest controls run against the actual selected provider. Bounds apply before allocation as well as during parsing. |
+| Native consumer | Bind every validation/allocation/restoration read to the selected immutable member. If BYOND must open a filename, prove exclusive ownership of that backing path through native close. | Actual native reads across phase transitions observe only selected bytes; foreign and same-world handles cannot change the backing input. |
+| Recovery | Before ClearMap, reserve persistent recovery custody bound to operation/generation. After mutation starts, errors retain that custody independently of closing transient readers. | Process termination/restart at reservation, first mutation, metadata and final admission preserves a recoverable generation; omission controls fail. Flush alone is not a durability proof. |
+| Transfer | One authoritative decision binds transfer ID, exact roots, source/destination generations and expected revisions. Source becomes unusable durably before destination admission. | Lost replies, duplicate claims, concurrent import and restart never create two usable owners or infer rollback/refund from timeout. |
+
+Core supplies the typed operation/member/custody inventory and serializer supplies
+explicit reader parameters through validation, allocation, recursive restoration
+and metadata. The host owner supplies the verified backing store and exclusive
+ownership primitive. No owner may substitute an in-process lease or timestamp for
+that host guarantee. Until the interface/version and these primitives exist,
+configured provider unavailability must reject before ClearMap. Production wiring
+must wait for this concrete implementation evidence, not for generic human review.
+
+Phase 1 should first demonstrate ordinary same-server faction save/restore through
+the selected provider, including interrupted recovery. Phase 2 then adds one
+explicit source/destination counterpart pair and its authoritative transfer journal.
+Do not activate distributed imports or paid convoys by treating idempotent fixture
+receipts as exclusive cross-server custody.
+
+## Scoped wrapper implementation and bounded verification
+
+The wrapper changes only `functions.dm` in shared production
+persistence. `loadmap()` captures the selected storage/policy, acquires a bound
+attempt when configured, validates preflight, obtains a recovery reservation and
+rechecks bindings before ClearMap. Mutation-started is recorded immediately before
+ClearMap, conservatively covering partial clearing exceptions. World loading must
+succeed and metadata must return exactly TRUE before reporting a completed load.
+The metadata rule deliberately fixes the old null-policy false-success behavior;
+successful ordinary legacy/v2 restoration remains the compatibility target.
+
+One failure path preserves the original error across failure-receipt, transient
+release and bookkeeping exceptions. A post-mutation failure requires a typed
+receipt bound to that attempt with recovery_retained exactly TRUE. Cleanup errors
+remain separately visible; transient release is attempted once, including when
+the success-path release fails. Acquisition failures before a bound attempt is
+returned remain the provider's cleanup responsibility. Providers must retain
+recovery independently of transient release; this interface does not finalize or
+publish restore success. Runtime policy/attempt handles must not be serialized.
+
+No production policy/provider is installed. The default opt-in policy fails closed
+before clearing; null policy retains ordinary successful loading. The injected
+actual-wrapper fixture, metadata/recovery omission controls and ordinary legacy/v2
+disk round trip passed at `7eeab21fa1e6668466aecbaf44d5b01cb7268e20` on Windows
+BYOND 516.1681, each with zero compile errors/warnings. They establish bounded
+callback/receipt behavior, not durable reservation storage, immutable readers, host ABA
+exclusion, a global custody fence or multi-tick census admission. `loading.dm`,
+the save schema/readers, physical custody and engine behavior remain unchanged.
