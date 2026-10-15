@@ -96,10 +96,45 @@
 /proc/attack_log(category, text)
 	attack_log << "\[[time_stamp()]] [game_id] [category]: [text][log_end]"
 
+#define ADMIN_HISTORY_RECENT_LIMIT 1024
+#define ADMIN_HISTORY_ARCHIVE_BATCH 64
+#define ADMIN_HISTORY_ARCHIVE_RETRY 600
+
+// No retained list or timer: failed archival only owns these cooldown scalars.
+var/admin_history_archive_retry_at = 0
+var/admin_history_archive_warning_at = 0
+
+/proc/archive_admin_history(list/entries)
+	if (!diary)
+		return FALSE
+	// Like mob attack history, retiring the in-memory history preserves the exact
+	// older rows even when optional ordinary event logging is disabled.
+	var/payload = json_encode(list("category" = "ARCHIVED_ADMIN_HISTORY", "time" = time_stamp(), "game_id" = game_id, "entries" = entries))
+	return text2file("\n[payload]", diary)
+
 /proc/log_admin(text)
 	admin_log.Add(text)
 	if (config.log_admin)
 		game_log("ADMIN", text)
+	if (admin_log.len <= ADMIN_HISTORY_RECENT_LIMIT || world.time < admin_history_archive_retry_at)
+		return
+
+	// Bound the work per event, including a backlog retained during disk failure.
+	// Keep list identity for any active reader; archive before releasing the rows.
+	var/archive_count = min(ADMIN_HISTORY_ARCHIVE_BATCH, admin_log.len - 1)
+	var/list/entries = admin_log.Copy(1, archive_count + 1)
+	var/archived = FALSE
+	try
+		archived = archive_admin_history(entries)
+	catch
+		archived = FALSE
+	if (!archived)
+		admin_history_archive_retry_at = world.time + ADMIN_HISTORY_ARCHIVE_RETRY
+		if (world.time >= admin_history_archive_warning_at)
+			admin_history_archive_warning_at = world.time + ADMIN_HISTORY_ARCHIVE_RETRY
+			world.log << "Admin history archive unavailable; older entries retained in memory. Further attempts and warnings are limited to once per minute."
+		return
+	admin_log.Cut(1, archive_count + 1)
 
 /proc/log_discord(text)
 	if (config.log_admin)
