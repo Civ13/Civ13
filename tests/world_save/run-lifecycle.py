@@ -36,7 +36,7 @@ def main():
         anchor = 'if(peer[1] != "127.0.0.1" || '
         if endpoint.count(anchor) != 1:
             raise RuntimeError('Authentication anchor changed')
-        endpoint = endpoint.replace(anchor, 'if(FALSE && peer[1] != "127.0.0.1" || ', 1)
+        endpoint = endpoint.replace(anchor, 'if(peer[1] == "disabled-negative-control" || ', 1)
     (output / 'endpoint.dm').write_text(endpoint, encoding='utf-8')
     transaction = (output / 'transaction.dm').read_text(encoding='utf-8')
     if args.negative_control == 'shutdown-generation':
