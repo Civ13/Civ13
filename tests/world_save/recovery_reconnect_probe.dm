@@ -48,6 +48,7 @@ var/recovery_fixture_late_arrived = FALSE
 	world.OpenPort(0)
 	try
 		// Normal global startup is disabled; real mob removal still emits these.
+		GLOB.all_observable_events = list()
 		GLOB.moved_event = new /decl/observ/moved
 		GLOB.dir_set_event = new /decl/observ/dir_set
 		GLOB.name_set_event = new /decl/observ/name_set
