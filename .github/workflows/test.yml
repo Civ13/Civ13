@@ -828,6 +828,15 @@ jobs:
           /usr/bin/python3 tests/animal_combat/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control duplicate
           /usr/bin/python3 tests/animal_combat/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control kenobi
 
+      - name: Verify continuous persistence rounds and negative controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_round')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control vote
+          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control ticker
+
       - name: Verify bounded animal harvesting and binding conservation
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/animal_harvest')
         shell: bash
