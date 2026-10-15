@@ -716,3 +716,10 @@ systems. The hidden reagent source must survive every queued spawn callback, the
 retire through atom/reagent cleanup. `tests/chemical_smoke_ownership/run.py` checks
 production copies, lifetime bounds and repeated holder/membership cleanup against
 an immutable historical negative control in temporary offline storage.
+
+<!-- 2026-10-15: native associative collections -->
+`code/_macros.dm` redefines `islist(A)` as `istype(A, /list)`, excluding `/alist`
+although native BYOND `islist` accepts it. Squad and leader defaults are alists
+with numeric keys and null associations. Collection codecs must handle `/alist`
+explicitly; isolated probes must import the production macro. Numeric alist
+indexing addresses keys, so iterate keys instead of positional indexes.

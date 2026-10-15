@@ -113,6 +113,10 @@ kind and binding controls caught their intended assertions. After correcting
 its staging anchor, the alias control also caught its sole intended failure.
 The initial failed fixture compilation and control staging attempt are retained
 separately from these accepted native helper results.
+The complete seven-case batch also passed after importing Civ13's actual
+`islist` macro: associative 19/0, all four intended mutation controls, ordinary
+graph 21/0 and field/timers 37/0. Those receipts are retained separately from the
+earlier builtin-only fixture results; the production codec hash is unchanged.
 The production `Save_World` and recovery paths now call the metadata helpers.
 The intermediate integration compiled with BYOND 516.1681 with zero errors and
 warnings. This is source/build evidence, not accepted season recovery.
@@ -149,11 +153,14 @@ integrity regressions passed. Startup reached the probe, then Gaia capture
 rejected `faction1_squads` before any integration assertions completed. Global
 initializers also reported missing public `config/names` files, so that startup
 was not clean acceptance. The runner now stages those public files and rejects
-engine `## ERROR:` diagnostics. Windows minimal probes show `alist` satisfies
-both `islist` and `istype(/alist)` and survives a subtype skipping parent `New`;
-neither initial hypothesis explains the Linux capture rejection. Actual
-integration field traits are retained for the next run. The explicit codec fix
-and staging changes require fresh native and exact-head Linux evidence.
+engine `## ERROR:` diagnostics. Minimal probes show the native `islist` accepts
+`alist` and the value survives a subtype skipping parent `New`. Production
+instead defines `islist(A)` as `istype(A, /list)` in `code/_macros.dm`, excluding
+`alist` and explaining capture rejection. The isolated runner now imports this
+exact macro to exercise the same semantics. The codec explicitly accepts both
+kinds and the schema distinguishes them. Actual integration field traits are
+retained for the next run. The macro-aligned fixture, explicit codec fix and
+staging changes require fresh native and exact-head Linux evidence.
 
 ## Save-speed investigation
 

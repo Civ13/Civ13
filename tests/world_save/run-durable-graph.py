@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 
@@ -85,7 +86,11 @@ def main():
     defaults_end = metadata_source.index('\tvar/required_players', defaults_start)
     defaults = metadata_source[defaults_start:defaults_end]
     probe = probe.replace('/obj/map_metadata\n', '/obj/map_metadata\n' + defaults, 1)
-    environment = '#include "probe.dm"\n#include "graph.dm"\n'
+    macros = (root / 'code/_macros.dm').read_text(encoding='utf-8')
+    list_macro = re.findall(r'^#define islist\(A\) .+$', macros, re.M)
+    if len(list_macro) != 1:
+        raise RuntimeError('Production islist macro anchor changed')
+    environment = list_macro[0] + '\n#include "probe.dm"\n#include "graph.dm"\n'
     if args.alist:
         probe = probe.replace('\t\tcheck_graph()\n', '\t\tcheck_alist_graph()\n', 1)
         alist_probe = probe_path.with_name('durable_alist_probe.dm')
