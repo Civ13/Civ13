@@ -29,6 +29,10 @@ on:
         description: 'Opt in only to isolated world-save and expanded-level recovery checks'
         type: boolean
         default: false
+      lighting_recovery_regressions:
+        description: 'Opt in only to actual-constructor lighting persistence recovery and controls'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -382,6 +386,25 @@ jobs:
         with:
           name: restart-transaction
           path: ${{ runner.temp }}/restart-transaction/
+          if-no-files-found: error
+      - name: Offline lighting recovery regression
+        id: lighting_recovery
+        if: needs.changes.outputs.extensive == 'true' || inputs.lighting_recovery_regressions == true
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/lighting-recovery"
+          export TMPDIR="$RUNNER_TEMP/lighting-recovery"
+          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --lighting
+          for control in lighting-export lighting-legacy lighting-rebuild; do
+            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --lighting --negative-control "$control"
+          done
+        shell: bash
+      - name: Retain lighting recovery evidence
+        if: always() && steps.lighting_recovery.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighting-recovery
+          path: ${{ runner.temp }}/lighting-recovery/
           if-no-files-found: error
       - name: Offline world-save round-trip regression
         id: world_save

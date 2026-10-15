@@ -286,6 +286,13 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
 
+<!-- 2026-10-15: lighting persistence ownership -->
+Custom saves enumerate tmp lighting fields too. Exclude light/light_sources and
+derived light_source/lighting_corner/lighting_overlay graphs on export and import;
+their constructors require live owners/turfs. Rebuild sources after durable atom
+fields and after_load. tests/world_save/run-durable-world.py --lighting checks
+actual constructors and legacy graph recovery; full-map acceptance is separate.
+
 <!-- 2026-10-15: isolated recovery observer setup -->
 When normal global startup is disabled, fixtures that remove real mobs must
 initialize `GLOB.all_observable_events = list()` before constructing the moved,

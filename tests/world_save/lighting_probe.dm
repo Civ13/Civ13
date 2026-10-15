@@ -1,0 +1,102 @@
+// Actual production lighting constructors, saver and loader. No scheduler/client.
+/obj/map_metadata/persistence_lighting_probe/New()
+	map = src
+/obj/map_metadata/persistence_lighting_probe
+	ID = "LIGHTING_FIXTURE"
+/obj/item/persistence_light_container
+	var/list/legacy_runtime_refs
+	var/datum/light_source/indirect_source
+	var/datum/lighting_corner/indirect_corner
+	var/atom/movable/lighting_overlay/indirect_overlay
+/obj/item/persistence_custom_light
+/obj/item/persistence_default_light
+	light_range = 2
+	light_power = 1
+	light_color = "#112233"
+
+/proc/lighting_saved_ref(savefile/F, wanted_type)
+	F.cd = "/entries"
+	var/list/shards = F.dir.Copy()
+	for(var/shard in shards)
+		F.cd = "/entries/[shard]"
+		var/list/entries = F.dir.Copy()
+		for(var/ref in entries)
+			if(F["[map_storage.entry_path(F, ref)]/type"] == wanted_type)
+				return ref
+	return null
+
+/world/IsBanned(key, address, computer_id)
+	return list("reason" = "Offline lighting fixture")
+/world/New()
+	text2file("lighting world-New entered", "probe-progress.log")
+	world.OpenPort(0)
+	try
+		config = new
+		config.webhook_can_fire = FALSE
+		config.ToRban = FALSE
+		ticker = new
+		text2file("lighting fixture globals ready", "probe-progress.log")
+		map = new /obj/map_metadata/persistence_lighting_probe(locate(1,1,1))
+		var/obj/item/persistence_light_container/carrier = new(locate(3,3,1))
+		var/obj/item/persistence_custom_light/lamp = new(carrier)
+		lamp.set_light(5, 2, "#224466")
+		var/obj/item/persistence_default_light/default_lamp = new(locate(4,3,1))
+		var/datum/light_source/original_source = lamp.light
+		durable_world_check(original_source && original_source.source_atom == lamp && original_source.top_atom == carrier, "real custom light constructor binding failed")
+		durable_world_check(default_lamp.light && default_lamp.light.source_atom == default_lamp, "real default light constructor failed")
+		durable_world_check(carrier.light_sources.len == 1 && lamp.light_sources.len == 1, "initial source registered more than once")
+		var/datum/lighting_corner/corner = new(locate(3,3,1), NORTHEAST, TRUE)
+		var/atom/movable/lighting_overlay/overlay = new(locate(3,3,1), TRUE)
+		carrier.indirect_source = original_source
+		carrier.indirect_corner = corner
+		carrier.indirect_overlay = overlay
+		durable_world_check(!original_source.should_save && !corner.should_save, "derived lighting datums are exportable")
+		durable_world_check(!overlay.should_save, "derived overlay is exportable")
+		durable_world_check(map_storage.Save_World(), "lighting world save failed")
+		var/savefile/F = new("map_saves/1.sav")
+		var/lamp_ref = lighting_saved_ref(F, /obj/item/persistence_custom_light)
+		var/carrier_ref = lighting_saved_ref(F, /obj/item/persistence_light_container)
+		durable_world_check(lamp_ref && carrier_ref, "saved light or container missing")
+		F.cd = map_storage.entry_path(F, lamp_ref)
+		durable_world_check(!("light" in F.dir) && !("light_sources" in F.dir), "runtime atom lighting fields exported")
+		F.cd = map_storage.entry_path(F, carrier_ref)
+		durable_world_check(!("light_sources" in F.dir), "container source registry exported")
+		durable_world_check(!lighting_saved_ref(F, /datum/light_source) && !lighting_saved_ref(F, /datum/lighting_corner) && !lighting_saved_ref(F, /atom/movable/lighting_overlay), "indirect lighting graph exported")
+		// Preserve the shape of historical runtime graphs, including indirect refs.
+		var/list/runtime_types = list(/datum/light_source, /datum/lighting_corner, /atom/movable/lighting_overlay)
+		for(var/i = 1, i <= runtime_types.len, i++)
+			var/ref = "[900 + i]"
+			F["[map_storage.entry_path(F, ref)]/type"] << runtime_types[i]
+			F["/lists/900/[i]/key"] << list("kind" = "entry", "ref" = ref)
+			F["/lists/900/[i]/value"] << list("kind" = "value", "value" = null)
+		F["/lists/900/length"] << 3
+		F["[map_storage.entry_path(F, carrier_ref)]/legacy_runtime_refs"] << list("kind" = "list", "ref" = "900")
+		F["[map_storage.entry_path(F, lamp_ref)]/light"] << list("kind" = "entry", "ref" = "901")
+		F["[map_storage.entry_path(F, lamp_ref)]/light_sources"] << list("kind" = "list", "ref" = "900")
+		durable_world_check(map_storage.validate_world_save(), "legacy lighting save preflight rejected")
+		map_storage.ClearMap()
+		durable_world_check(map_storage.Load_World(), "legacy lighting graph prevented import")
+		carrier = locate(/obj/item/persistence_light_container)
+		lamp = locate(/obj/item/persistence_custom_light)
+		default_lamp = locate(/obj/item/persistence_default_light)
+		durable_world_check(carrier && lamp && lamp.loc == carrier, "nested light placement lost")
+		durable_world_check(lamp.light, "restored custom light not rebuilt")
+		durable_world_check(lamp.light != original_source && lamp.light.source_atom == lamp && lamp.light.top_atom == carrier, "restored source owner/top binding differs")
+		durable_world_check(lamp.light_power == 2 && lamp.light_range == 5 && lamp.light_color == "#224466", "durable light properties changed")
+		durable_world_check(default_lamp.light && default_lamp.light.source_atom == default_lamp, "default source lost during import")
+		durable_world_check(lamp.light_sources.len == 1 && carrier.light_sources.len == 1 && default_lamp.light_sources.len == 1, "restored source registration duplicated")
+		durable_world_check(islist(carrier.legacy_runtime_refs) && carrier.legacy_runtime_refs.len == 3, "legacy reference list shape changed")
+		for(var/i = 1, i <= carrier.legacy_runtime_refs.len, i++)
+			durable_world_check(isnull(carrier.legacy_runtime_refs[i]), "legacy runtime reference constructed")
+		durable_world_check(!carrier.indirect_source && !carrier.indirect_corner && !carrier.indirect_overlay, "indirect source graph restored")
+		var/obj/item/persistence_light_container/new_carrier = new(locate(5,3,1))
+		lamp.loc = new_carrier
+		durable_world_check(lamp.light.top_atom == new_carrier && !carrier.light_sources.len && new_carrier.light_sources.len == 1, "restored light movement left stale top registration")
+		lamp.set_light(0)
+		durable_world_check(!lamp.light && !new_carrier.light_sources.len && !lamp.light_sources.len, "restored light switch-off retained registrations")
+		if(durable_probe_failed) throw EXCEPTION("native runtime error occurred")
+		text2file(json_encode(list("done" = TRUE, "checks" = durable_probe_checks)), "metadata-result.json")
+	catch(var/exception/E)
+		world.log << "FAIL: [E] at [E.file]:[E.line]"
+		text2file(json_encode(list("done" = FALSE, "checks" = durable_probe_checks, "error" = "[E]", "import_error" = map_storage.last_error)), "metadata-result.json")
+	del(world)

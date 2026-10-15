@@ -388,3 +388,20 @@ original representation; malformed/wrong-field sentinels, negative infinity,
 NaN and raw nonfinite wire values are rejected. The full metadata fixture audits
 every inherited area subtype default and places a production invulnerable admin
 area before the disk save. Its corrupt-sentinel checks reject before ClearMap.
+
+# Lighting runtime graph recovery
+
+`run-durable-world.py --lighting --byond-bin <516.1681-bin>` uses production
+light-source, corner and overlay constructors, the actual world saver and loader,
+and temporary disk storage. It checks customized and default light properties,
+nested owner bindings, omitted runtime graphs, historical indirect graph entries,
+source rebuilding, movement and switch-off registration cleanup. The scheduler
+and normal game startup are disabled; this does not establish full Europe import
+or rendered illumination. Controls `lighting-export`, `lighting-legacy` and
+`lighting-rebuild` each remove one production safeguard in generated source.
+The legacy control must reproduce the ownerless `light_sources` constructor error.
+
+The native CI workflow accepts `lighting_recovery_regressions=true` for these
+four cases. On this Windows host, even the existing startup-only control exits
+with `0xC0000409` before its entry marker. Clean compilation is separate evidence;
+run the actual assertions on Linux CI rather than treating that exit as a pass.

@@ -37,7 +37,21 @@
 // The composite appearance is not a supported saved datum. Restoring its null
 // envelope resets independently restored fields such as transform and color.
 /atom/persistence_runtime_var(key)
-	return key == "appearance" || ..()
+	return (key in list("appearance", "light", "light_sources")) || ..()
+
+// Lighting graphs belong to the current map/owners and are rebuilt after import.
+// The custom serializer enumerates tmp fields as well as durable fields.
+/datum/light_source
+	should_save = FALSE
+
+/datum/lighting_corner
+	should_save = FALSE
+
+/atom/movable/lighting_overlay
+	should_save = FALSE
+
+/turf/persistence_runtime_var(key)
+	return (key in list("affecting_lights", "lighting_overlay", "corners", "has_opaque_atom", "window_coeff_dirty", "next_calculate_window_coeff")) || ..()
 
 // HUD objects belong to a client session and are rebuilt by the normal HUD path.
 // The custom saver visits tmp vars too; exclude these on both export and import.

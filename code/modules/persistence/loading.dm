@@ -19,6 +19,10 @@
 		// their screen/datum objects without the live client owner they require.
 		if(ispath(type, /obj/screen) || ispath(type, /datum/hud))
 			return null
+		// Historical saves can retain derived lighting graphs through item vars.
+		// Their constructors require live owners/turfs; never import those graphs.
+		if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay))
+			return null
 		if(ispath(type, /obj/map_metadata))
 			existing_references["[ind]"] = map
 			return map
@@ -211,6 +215,9 @@
 				var/datum/ob = all_loaded[i]
 				if (ob)
 					ob.after_load()
+					if(istype(ob, /atom))
+						var/atom/light_owner = ob
+						light_owner.update_light()
 					register_restored_player(ob)
 				if(istype(ob, /obj))
 					var/obj/obbie = ob

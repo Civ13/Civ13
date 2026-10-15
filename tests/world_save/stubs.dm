@@ -80,6 +80,9 @@ var/list/mutate_on_tick = null
 /proc/ishuman(D)
 	return istype(D, /mob/living/human)
 /atom/movable/lighting_overlay
+/atom/proc/update_light()
+	// Focused serializer adapter; the lighting regression uses production lighting.
+	return
 /atom/movable
 	var/load_datums = FALSE
 /obj

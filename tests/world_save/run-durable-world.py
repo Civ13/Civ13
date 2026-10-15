@@ -15,6 +15,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
+    parser.add_argument('--lighting', action='store_true',
+                        help='Run real lighting constructors and legacy runtime graph recovery')
     parser.add_argument('--dimension-bootstrap', action='store_true',
                         help='Run fresh expanded round-v2 writer and compiled-size reader processes')
     parser.add_argument('--recovery-reconnect', action='store_true',
@@ -24,8 +26,13 @@ def main():
     parser.add_argument('--startup-only', action='store_true',
                         help='Diagnose production initialization without running any persistence assertions')
     parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
-    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order'))
+    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild'))
     args = parser.parse_args()
+    lighting_control = bool(args.negative_control and args.negative_control.startswith('lighting-'))
+    if args.lighting and (args.dimension_bootstrap or args.recovery_reconnect or args.lifecycle_shutdown or args.startup_only or (args.negative_control and not lighting_control)):
+        parser.error('Lighting recovery runs separately from other fixture modes')
+    if lighting_control and not args.lighting:
+        parser.error('Lighting controls require --lighting')
     if args.lifecycle_shutdown and (args.recovery_reconnect or args.dimension_bootstrap or args.startup_only or args.negative_control):
         parser.error('Lifecycle shutdown runs separately from other fixture modes')
     if args.recovery_reconnect and (args.dimension_bootstrap or args.startup_only or args.negative_control not in (None, 'reclaim-order')):
@@ -44,6 +51,7 @@ def main():
     dme = root / (prefix + '.dme')
     generated = []
     receipt = {'profile': args.profile, 'negative_control': args.negative_control,
+               'lighting': args.lighting,
                'dimension_bootstrap': args.dimension_bootstrap, 'recovery_reconnect': args.recovery_reconnect,
                'lifecycle_shutdown': args.lifecycle_shutdown,
                'prepared_only': args.prepare_only, 'startup_only': args.startup_only,
@@ -73,6 +81,9 @@ def main():
             'callback': ('code/modules/persistence/durable_timers.dm', '\t\tif(!owner || revision != expected_revision || pending[key] != row) return', '\t\tif(!owner) return'),
             'timer-restore': ('code/modules/persistence/durable_world.dm', '\tmap.durable_timer_queue().restore(timers)', '\t// Negative control: omit restoring persisted callbacks.'),
             'reclaim-order': ('code/modules/persistence/restart_transaction.dm', '\t\tplayers_ready = map_storage.finish_player_restoration()\n', ''),
+            'lighting-export': ('code/modules/persistence/functions.dm', 'return (key in list("appearance", "light", "light_sources")) || ..()', 'return key == "appearance" || ..()'),
+            'lighting-legacy': ('code/modules/persistence/loading.dm', 'if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay))', 'if(FALSE)'),
+            'lighting-rebuild': ('code/modules/persistence/loading.dm', '\t\t\t\t\t\tlight_owner.update_light()', '\t\t\t\t\t\tif(FALSE) light_owner.update_light()'),
         }
         if args.negative_control:
             relative, before, after = mutations[args.negative_control]
@@ -112,6 +123,10 @@ def main():
             source = source.replace(original_include, generated_path.name)
             (output / generated_path.name).write_text(text, encoding='utf-8', newline='\n')
         probe = (root / 'tests/world_save/durable_world_probe.dm').read_text(encoding='utf-8')
+        if args.lighting:
+            lighting_probe = root / 'tests/world_save/lighting_probe.dm'
+            probe = probe[:probe.index('/world/New()')] + lighting_probe.read_text(encoding='utf-8')
+            receipt['lighting_probe_hash'] = hashlib.sha256(lighting_probe.read_bytes()).hexdigest()
         if args.dimension_bootstrap:
             probe = probe[:probe.index('/world/New()')] + (root / 'tests/world_save/durable_dimension_probe.dm').read_text(encoding='utf-8')
         if args.recovery_reconnect:
@@ -208,7 +223,10 @@ def main():
         expected = {'season': 'environment phase reset', 'preflight': 'malformed artillery sentinel mutated world',
                     'reachability': 'orphan metadata reference accepted', 'callback': 'restored callback duplicated',
                     'timer-restore': 'persisted callback was not restored',
-                    'reclaim-order': 'waiting authenticated client not reclaimed after recovery'}
+                    'reclaim-order': 'waiting authenticated client not reclaimed after recovery',
+                    'lighting-export': 'runtime atom lighting fields exported',
+                    'lighting-legacy': 'legacy lighting graph prevented import',
+                    'lighting-rebuild': 'restored custom light not rebuilt'}
         if args.negative_control:
             if result.get('done') or result.get('error') != expected[args.negative_control]:
                 raise RuntimeError('Negative control failed outside its intended assertion: ' + str(result))
@@ -216,6 +234,10 @@ def main():
                 raise RuntimeError('Preflight control did not reach its first malformed-wire assertion')
             if args.negative_control == 'reclaim-order' and result.get('checks') != 8:
                 raise RuntimeError('Reclaim ordering control did not reach its intended first failure')
+            if args.negative_control == 'lighting-legacy':
+                import_error = result.get('import_error') or ''
+                if 'Cannot read null.light_sources' not in import_error or 'lighting_source.dm:35' not in import_error:
+                    raise RuntimeError('Legacy lighting control did not reproduce the ownerless source constructor: ' + import_error)
         elif not result.get('done') or result.get('checks', 0) < (7 if args.lifecycle_shutdown else 19):
             raise RuntimeError('Native integration fixture incomplete: ' + str(result))
         receipt['result'] = result
