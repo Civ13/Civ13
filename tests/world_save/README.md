@@ -273,6 +273,15 @@ separate acceptance. Use temporary storage and the sole live-test owner's execut
 
 # Round identity and phase recovery
 
+The durable metadata graph also has native associative coverage:
+`run-durable-graph.py --alist --byond-bin <516.1681-bin>`. Controls
+`alist-values`, `alist-kind`, `alist-alias` and `alist-binding` verify numeric
+associations, collection type, cycles and normal saved-entry ownership. These
+use actual map squad defaults. `run-durable-world.py` checks strict root kinds,
+invalid association edges before mutation, and a human identity shared between
+the normal spatial import and squad/research metadata. Its human constructor
+bypasses physiology startup, so full-game acceptance remains separate.
+
 New generations store a `round.json` header bound to their completion marker,
 map metadata digest, dimensions and a nonce in every level. Preflight rejects
 missing, malformed or mismatched new headers before clearing the world. Backups

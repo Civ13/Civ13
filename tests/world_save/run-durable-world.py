@@ -112,6 +112,7 @@ def main():
             shutil.copy2(dme.with_suffix(suffix), output / dme.with_suffix(suffix).name)
         (output / 'config').mkdir()
         shutil.copy2(root / 'config/tips.txt', output / 'config/tips.txt')
+        shutil.copytree(root / 'config/names', output / 'config/names')
         platform_flags = ['-invisible', '-close'] if os.name == 'nt' else []
         run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-safe',
                               '-params', 'profile=' + args.profile, '-log', 'runtime.log'], cwd=output,
@@ -122,7 +123,8 @@ def main():
             raise RuntimeError(f'Native daemon exited with {run.returncode}; see daemon-exit.json')
         log = (output / 'runtime.log').read_text(encoding='utf-8', errors='replace')
         diagnostics = (log + run.stdout + run.stderr).lower()
-        if any(word in diagnostics for word in ('unexpected runtime', 'bad ref', 'runtime error:', 'infinite loop', 'fatal error')):
+        if (re.search(r'##\s*error\s*:', diagnostics) or
+                any(word in diagnostics for word in ('unexpected runtime', 'bad ref', 'runtime error:', 'infinite loop', 'fatal error', 'segmentation', 'assertion failed'))):
             raise RuntimeError('Native engine diagnostic invalidated fixture')
         if args.startup_only:
             startup = json.loads((output / 'startup-result.json').read_text(encoding='utf-8'))

@@ -8,7 +8,8 @@
 		"text" = list("faction1", "faction2", "current_win_condition", "age", "gamemode", "winddirection", "windspeed", "winddesc", "ar_to_close", "ar_to_close_string"),
 		"nullable_text" = list("current_winner", "current_loser"),
 		"nullable_scalar" = list("last_win_condition"),
-		"list" = list("last_crossing_block_status", "availablefactions", "faction_organization", "initial_faction_organization", "faction_distribution_coeffs", "roundend_condition_sides", "faction1_squads", "faction2_squads", "faction1_squad_leaders", "faction2_squad_leaders", "faction_targets", "awards", "scores", "warrants", "vehicle_registrations", "gun_registrations", "times_of_day", "custom_faction_nr", "custom_civs", "custom_religions", "custom_religion_nr", "custom_company", "custom_company_nr", "custom_company_value", "custom_company_fiat_value", "sales_registry", "custom_company_colors", "civa_research", "civb_research", "civc_research", "civd_research", "cive_research", "civf_research", "facl", "globalmarketplace", "marketplaceaccounts", "pending_warrants", "emails", "assign_precursors", "precursor_stocks", "berryeffects", "human", "faction_research", "faction_bench_cap_bonus", "faction_forge_progress", "faction_research_director", "faction_director_title", "faction_baseline_era", "faction_motto", "faction_flavour", "faction_symbol_grid"),
+		"alist" = list("faction1_squads", "faction2_squads", "faction1_squad_leaders", "faction2_squad_leaders"),
+		"list" = list("last_crossing_block_status", "availablefactions", "faction_organization", "initial_faction_organization", "faction_distribution_coeffs", "roundend_condition_sides", "faction_targets", "awards", "scores", "warrants", "vehicle_registrations", "gun_registrations", "times_of_day", "custom_faction_nr", "custom_civs", "custom_religions", "custom_religion_nr", "custom_company", "custom_company_nr", "custom_company_value", "custom_company_fiat_value", "sales_registry", "custom_company_colors", "civa_research", "civb_research", "civc_research", "civd_research", "cive_research", "civf_research", "facl", "globalmarketplace", "marketplaceaccounts", "pending_warrants", "emails", "assign_precursors", "precursor_stocks", "berryeffects", "human", "faction_research", "faction_bench_cap_bonus", "faction_forge_progress", "faction_research_director", "faction_director_title", "faction_baseline_era", "faction_motto", "faction_flavour", "faction_symbol_grid"),
 		// These are offsets, never imported as raw old-runtime clock values.
 		"world_time_deadline" = list("next_win"),
 		"world_time_origin" = list("artillery_last"),
@@ -26,7 +27,8 @@
 
 /proc/durable_metadata_scalar_valid(value, kind)
 	switch(kind)
-		if("list") return islist(value)
+		if("list") return islist(value) && !istype(value, /alist)
+		if("alist") return istype(value, /alist)
 		if("text") return istext(value) && length(value) <= 1048576
 		if("nullable_scalar") return isnull(value) || (isnum(value) && abs(value) <= 1e15) || (istext(value) && length(value) <= 1048576)
 		if("nullable_text") return isnull(value) || (istext(value) && length(value) <= 1048576)

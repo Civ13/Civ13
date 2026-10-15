@@ -26,16 +26,23 @@
 		return add_node(list("kind" = "value", "value" = value))
 	if(ispath(value, /datum))
 		return add_node(list("kind" = "path", "type" = "[value]"))
-	if(islist(value))
+	if(islist(value) || istype(value, /alist))
 		var/identity = "\ref[value]"
 		if(list_ids[identity]) return list_ids[identity]
 		var/list/keys = list()
 		var/list/values = list()
-		var/id = add_node(list("kind" = "list", "keys" = keys, "values" = values))
+		var/is_associative = istype(value, /alist)
+		var/id = add_node(list("kind" = is_associative ? "alist" : "list", "keys" = keys, "values" = values))
 		list_ids[identity] = id
 		list_pins += list(value)
 		var/list/source = value
 		var/list/snapshot = source.Copy()
+		if(is_associative)
+			// alist numeric indexing addresses keys, never ordered positions.
+			for(var/key in snapshot)
+				keys += encode(key, depth + 1)
+				values += encode(snapshot[key], depth + 1)
+			return id
 		for(var/i = 1, i <= snapshot.len, i++)
 			var/key = snapshot[i]
 			keys += encode(key, depth + 1)
@@ -119,7 +126,7 @@
 					throw EXCEPTION("Invalid durable metadata type path")
 			if("map")
 				check_fields(node, list("kind"))
-			if("list")
+			if("list", "alist")
 				check_fields(node, list("kind", "keys", "values"))
 				var/list/keys = node["keys"]
 				var/list/values = node["values"]
@@ -155,7 +162,31 @@
 				entry_targets["[z]:[ref]"] = TRUE
 			else
 				throw EXCEPTION("Unknown durable metadata node kind")
+	// Validate semantic keys after every node and edge has been checked. Separate
+	// scalar nodes can denote the same key; duplicate keys would silently merge.
+	for(var/list/node in nodes)
+		if(node["kind"] != "alist") continue
+		var/list/seen_keys = list()
+		var/list/keys = node["keys"]
+		for(var/id in keys)
+			var/signature = key_signature(id)
+			if(signature in seen_keys) throw EXCEPTION("Duplicate durable metadata associative key")
+			seen_keys[signature] = TRUE
 	return TRUE
+
+/datum/durable_save_graph/proc/key_signature(id)
+	var/list/node = nodes[id]
+	switch(node["kind"])
+		if("value") return json_encode(list("value", node["value"]))
+		if("path") return json_encode(list("path", node["type"]))
+		if("map") return "map"
+		if("entry") return json_encode(list("entry", node["z"], node["ref"]))
+		if("turf") return json_encode(list("turf", node["x"], node["y"], node["z"]))
+		if("area")
+			var/turf/T = locate(node["x"], node["y"], node["z"])
+			return "area:\ref[T.loc]"
+		if("list", "alist") return "collection:[id]"
+	throw EXCEPTION("Invalid durable metadata associative key")
 
 /datum/durable_save_graph/proc/accept_entry(z, ref, datum/A)
 	var/key = "[z]:[ref]"
@@ -172,6 +203,7 @@
 			if("path") restored[i] = text2path(node["type"])
 			if("map") restored[i] = map
 			if("list") restored[i] = list()
+			if("alist") restored[i] = alist()
 			if("turf") restored[i] = locate(node["x"], node["y"], node["z"])
 			if("area")
 				var/turf/T = locate(node["x"], node["y"], node["z"])
@@ -186,12 +218,15 @@
 				restored[i] = A
 	for(var/i = 1, i <= nodes.len, i++)
 		var/list/node = nodes[i]
-		if(node["kind"] != "list") continue
+		if(!(node["kind"] in list("list", "alist"))) continue
 		var/list/target = restored[i]
 		var/list/keys = node["keys"]
 		var/list/values = node["values"]
 		for(var/j = 1, j <= keys.len, j++)
 			var/key = restored[keys[j]]
+			if(node["kind"] == "alist")
+				target[key] = restored[values[j]]
+				continue
 			target += list(key)
 			if(!isnum(key) && !isnull(key)) target[key] = restored[values[j]]
 	return restored

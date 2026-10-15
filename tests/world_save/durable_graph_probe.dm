@@ -9,8 +9,11 @@
 	fps = 10
 /datum/var/should_save = TRUE
 /obj/map_metadata
+/obj/map_metadata/fixture_no_parent/New()
+	return
 /obj/screen
 /mob/new_player
+/mob/living/human
 /obj/fixture_leader
 /obj/fixture_other
 /map_storage/proc/entry_path(savefile/F, ref)
@@ -35,6 +38,27 @@ var/fixture_failures = 0
 		if(!rejected_error) return FALSE
 		return TRUE
 	return FALSE
+/proc/check_alist_semantics()
+	// Pin the primitive behavior used by production squad defaults on 516.1681.
+	var/alist/A = alist(0 = null, 1 = "one", 7 = "seven")
+	var/list/observed = list("alist" = list("islist" = islist(A), "isalist_type" = istype(A, /alist)))
+	var/obj/map_metadata/defaults = new(locate(1,1,1))
+	for(var/key in list("faction1_squads", "faction2_squads", "faction1_squad_leaders", "faction2_squad_leaders"))
+		var/value = defaults.vars[key]
+		observed[key] = list("islist" = islist(value), "isalist_type" = istype(value, /alist), "isnull" = isnull(value), "isnum" = isnum(value), "text" = "[value]")
+	var/obj/map_metadata/fixture_no_parent/skipped = new(locate(1,1,1))
+	var/skipped_value = skipped.faction1_squads
+	observed["no_parent_faction1_squads"] = list("islist" = islist(skipped_value), "isalist_type" = istype(skipped_value, /alist), "isnull" = isnull(skipped_value), "text" = "[skipped_value]")
+	text2file(json_encode(observed), "alist-semantics.json")
+	check(istype(A, /alist), "native alist kind differs")
+	var/list/keys = list()
+	for(var/key in A) keys += list(key)
+	check(keys.len == 3 && (0 in keys) && (1 in keys) && (7 in keys), "native alist key iteration differs")
+	check(A[1] == "one" && A[7] == "seven" && (0 in A) && isnull(A[0]), "native alist numeric associations differ")
+	A["self"] = A
+	var/alist/copied = A.Copy()
+	check(istype(copied, /alist) && copied["self"] == A && copied[7] == "seven", "native alist copy semantics differ")
+	check("\ref[A]" != "\ref[copied]", "native alist identity differs")
 /proc/check_graph()
 	map = new(locate(1,1,1))
 	var/obj/fixture_leader/leader = new(locate(2,2,2))
@@ -99,6 +123,7 @@ var/fixture_failures = 0
 	..()
 	world.OpenPort(0)
 	try
+		check_alist_semantics()
 		check_graph()
 	catch(var/exception/E)
 		fixture_failures++

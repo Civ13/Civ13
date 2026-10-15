@@ -91,11 +91,28 @@ native pass. Broader metadata/timer omission and clock-shift controls, integrate
 full-game compilation, full Gaia/Europe cycles, source review and exact-head CI
 are still required before accepting the new recovery format.
 
+Squad and leader defaults are native `alist` collections, with numeric keys and
+null associations. Their four field contracts require `alist`, distinct from
+ordered lists. The graph stores that kind explicitly, allocates both collection
+shells before linking, and preserves key/value references without constructing
+atoms. Preflight rejects duplicate semantic associative keys and malformed edges.
+The existing ordered-list encoding remains readable. `--alist` exercises actual
+default declarations, sparse numeric keys, nulls, mixed cycles and disk-backed
+entry/map/turf/area keys and values. Its `alist-values`, `alist-kind`,
+`alist-alias` and `alist-binding` controls remove one corresponding safeguard.
+
 The isolated graph positive passed 16 checks on BYOND 516.1681, and generation,
 alias and binding controls caught their intended failures. Each build had zero
 errors and warnings. The separate field/timer positive passed 32 checks; clock,
 omission and timer controls caught their exact expected assertion failures.
 The runner rejects unrelated failures and unexpected caught exceptions.
+After the associative codec change, the Windows native associative positive
+passed 19 checks, the existing graph passed 21 checks including primitive
+observations, and the field/timer positive passed 37 checks. Numeric-value,
+kind and binding controls caught their intended assertions. After correcting
+its staging anchor, the alias control also caught its sole intended failure.
+The initial failed fixture compilation and control staging attempt are retained
+separately from these accepted native helper results.
 The production `Save_World` and recovery paths now call the metadata helpers.
 The intermediate integration compiled with BYOND 516.1681 with zero errors and
 warnings. This is source/build evidence, not accepted season recovery.
@@ -115,6 +132,8 @@ the production callback restore call and must fail on the missing saved timer.
 Its `season`, `preflight`, `reachability` and `callback` mutation controls must
 fail at their exact intended assertions. It is not a connected-player or
 representative full-map performance test; integrated native results are pending.
+The leader is a human subtype whose physiology startup is bypassed in this
+identity fixture; it still traverses the ordinary spatial saver and loader.
 
 The Windows integrated and `--startup-only` probes compiled cleanly but the
 native daemon exited with `0xC0000409` before the first observed probe entry.
@@ -124,3 +143,35 @@ Startup-only mode writes a separate result and never claims persistence checks.
 The existing world-save CI step also runs the graph, field/timer and integrated
 Gaia/Europe probes with their exact mutation controls on Linux BYOND 516.1681;
 its retained artifact distinguishes platform results from local diagnosis.
+
+At `d2bec55c2`, Linux compilation and the ordinary metadata compatibility and
+integrity regressions passed. Startup reached the probe, then Gaia capture
+rejected `faction1_squads` before any integration assertions completed. Global
+initializers also reported missing public `config/names` files, so that startup
+was not clean acceptance. The runner now stages those public files and rejects
+engine `## ERROR:` diagnostics. Windows minimal probes show `alist` satisfies
+both `islist` and `istype(/alist)` and survives a subtype skipping parent `New`;
+neither initial hypothesis explains the Linux capture rejection. Actual
+integration field traits are retained for the next run. The explicit codec fix
+and staging changes require fresh native and exact-head Linux evidence.
+
+## Save-speed investigation
+
+The saver currently scans every world turf once per z-level, then serializes
+matching turfs. A level-indexed traversal could remove repeated filtering, but
+must preserve turf order and the behavior of replacements during yielding.
+`get_saved_vars()` repeatedly parses the partial-save allowlist and scans
+changed variables on complete-save types. Candidate savings include caching a
+validated immutable allowlist and avoiding repeated constant exclusion-list
+allocation in the variable loop. Changed-var results themselves cannot be
+cached across mutable instances. Native savefile writes and `stoplag()` waits
+may dominate any of these costs.
+
+Measure serialization time, serializer wait time, entry/list counts and final
+output size on the same populated generation, engine, storage and diagnostic
+settings before choosing a change. Separate backup copying, serialization,
+completion and fresh-process load times. A longer save timeout permits completion
+but does not establish higher throughput. No speed optimization is included in
+this correctness patch, and the tiny metadata fixture is not a performance
+benchmark. Preserve transfer hooks, snapshot/reference identity, cancellation,
+generation validation and completion-marker ordering in any measured candidate.

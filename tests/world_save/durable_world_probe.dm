@@ -14,8 +14,11 @@
 	map = src
 /obj/map_metadata/nomads/europe/New()
 	map = src
-/obj/durable_probe_leader
+/mob/living/human/durable_probe_leader
 	name = "saved metadata leader"
+/mob/living/human/durable_probe_leader/New()
+	// Identity-only human fixture: ordinary disk import, without physiology startup.
+	return
 var/durable_probe_checks = 0
 var/durable_probe_failed = FALSE
 var/durable_probe_tips = 0
@@ -47,8 +50,17 @@ var/durable_probe_tips = 0
 		var/map_type = world.params["profile"] == "europe" ? /obj/map_metadata/nomads/europe : /obj/map_metadata/nomads/gaia
 		text2file("construct map", "probe-progress.log")
 		map = new map_type(locate(1,1,1))
+		var/list/traits = list()
+		for(var/key in list("faction1_squads", "faction2_squads", "faction1_squad_leaders", "faction2_squad_leaders"))
+			var/value = map.vars[key]
+			traits[key] = list("islist" = islist(value), "isalist_type" = istype(value, /alist), "isnull" = isnull(value), "text" = "[value]")
+		text2file(json_encode(traits), "map-default-traits.json")
 		game_id = "metadata-disk-round"
-		var/obj/durable_probe_leader/leader = new(locate(2,2,2))
+		var/mob/living/human/durable_probe_leader/leader = new(locate(2,2,2))
+		durable_world_check(istype(map.faction1_squads, /alist) && istype(map.faction1_squad_leaders, /alist), "actual map associative defaults absent")
+		map.faction1_squads[0] = null
+		map.faction1_squads[7] = list(leader)
+		map.faction1_squad_leaders[7] = leader
 		var/list/shared = list("points" = 123.5)
 		shared["self"] = shared
 		map.faction_research = list("first" = shared, "second" = shared)
@@ -109,9 +121,22 @@ var/durable_probe_tips = 0
 		fields -= "age"
 		fdel("map_saves/round.json")
 		text2file(json_encode(state), "map_saves/round.json")
-		durable_world_check(!map_storage.validate_world_save() && locate(/obj/durable_probe_leader) == leader && season == "SUMMER", "omitted metadata mutated world")
+		durable_world_check(!map_storage.validate_world_save() && locate(/mob/living/human/durable_probe_leader) == leader && season == "SUMMER", "omitted metadata mutated world")
 		fields["age"] = saved_age
 		var/list/nodes = W["nodes"]
+		var/list/squad_node = nodes[fields["faction1_squads"]]
+		squad_node["kind"] = "list"
+		fdel("map_saves/round.json")
+		text2file(json_encode(state), "map_saves/round.json")
+		durable_world_check(!map_storage.validate_world_save() && locate(/mob/living/human/durable_probe_leader) == leader, "wrong associative root kind mutated world")
+		squad_node["kind"] = "alist"
+		var/list/squad_values = squad_node["values"]
+		var/saved_squad_value = squad_values[1]
+		squad_values[1] = nodes.len + 1
+		fdel("map_saves/round.json")
+		text2file(json_encode(state), "map_saves/round.json")
+		durable_world_check(!map_storage.validate_world_save() && locate(/mob/living/human/durable_probe_leader) == leader, "malformed associative edge mutated world")
+		squad_values[1] = saved_squad_value
 		var/list/entry
 		for(var/list/node in nodes)
 			if(node["kind"] == "entry") entry = node
@@ -119,14 +144,14 @@ var/durable_probe_tips = 0
 		var/savefile/F = new("map_saves/2.sav")
 		var/ref = entry["ref"]
 		var/path = map_storage.entry_path(F, ref)
-		F["[path]/type"] << /obj/durable_probe_leader
+		F["[path]/type"] << /mob/living/human/durable_probe_leader
 		var/turf_ref = F["/map/2/2/2"]
 		var/content_path = "[map_storage.entry_path(F, turf_ref)]/content"
 		var/old_content = F[content_path]
 		F[content_path] << ""
 		fdel("map_saves/round.json")
 		text2file(header, "map_saves/round.json")
-		durable_world_check(!map_storage.validate_world_save() && locate(/obj/durable_probe_leader) == leader, "orphan metadata reference accepted")
+		durable_world_check(!map_storage.validate_world_save() && locate(/mob/living/human/durable_probe_leader) == leader, "orphan metadata reference accepted")
 		F[content_path] << old_content
 		durable_world_check(map_storage.validate_world_save(), "valid metadata generation rejected")
 		// Advance the native runtime before import: old absolute deadlines cannot
@@ -156,8 +181,9 @@ var/durable_probe_tips = 0
 		durable_world_check(map.next_win > world.time && map.artillery_last < world.time, "map deadlines did not rebase")
 		var/list/first = map.faction_research["first"]
 		durable_world_check(first == map.faction_research["second"] && first["self"] == first && first["points"] == 123.5, "metadata aliases changed")
-		var/obj/durable_probe_leader/restored_leader = map.faction_research_director["first"]
+		var/mob/living/human/durable_probe_leader/restored_leader = map.faction_research_director["first"]
 		durable_world_check(istype(restored_leader) && restored_leader != leader && get_turf(restored_leader) == locate(2,2,2), "leader was duplicated or not rebound")
+		durable_world_check(istype(map.faction1_squads, /alist) && istype(map.faction1_squad_leaders, /alist) && (0 in map.faction1_squads) && isnull(map.faction1_squads[0]) && map.faction1_squads[7][1] == restored_leader && map.faction1_squad_leaders[7] == restored_leader && (1 in map.faction1_squad_leaders) && isnull(map.faction1_squad_leaders[1]), "squad associations or human identity changed")
 		durable_world_check(A.climate == "tundra" && A.artillery_integrity == 37 && A.weather_intensity == 0.4, "area state reset")
 		durable_world_check(weather == WEATHER_WET && weather_intensity == 0.75 && global_pollution == 29 && abandonment_season_changes == 17, "global weather or season age reset")
 		var/icon/after_icon = map.faction_symbol_icon["first"]

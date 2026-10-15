@@ -8,8 +8,8 @@ import subprocess
 import tempfile
 
 
-def adjudicate(result, log, control, contracts):
-    minimum = 1 if control == 'binding' else (32 if contracts else 16)
+def adjudicate(result, log, control, contracts, associative=False):
+    minimum = {'binding': 1, 'alist-binding': 4, 'alist-kind': 3, 'alist-values': 6}.get(control, 13 if associative else (32 if contracts else 16))
     if not result.get('done') or result.get('checks', 0) < minimum:
         raise RuntimeError('Native fixture omitted required checks')
     if any(marker in log.lower() for marker in ('runtime error', 'bad ref', 'unexpected exception')):
@@ -21,6 +21,10 @@ def adjudicate(result, log, control, contracts):
         'generation': ('cross-generation leader accepted',),
         'alias': ('list alias/cycle changed',),
         'binding': ('unsaved metadata leader was silently dropped',),
+        'alist-values': ('alist numeric associations lost',),
+        'alist-kind': ('alist graph kind lost',),
+        'alist-alias': ('alist alias or mixed cycle lost',),
+        'alist-binding': ('alist unsaved leader was silently dropped',),
         'clock': ('clock values did not rebase:',),
         'omission': ('missing field mutated metadata', 'invalid field mutated metadata'),
         'timer': ('old callback survived restored timer or new callback duplicated',
@@ -42,12 +46,17 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
-    parser.add_argument('--negative-control', choices=('generation', 'alias', 'binding', 'clock', 'omission', 'timer'))
+    parser.add_argument('--negative-control', choices=('generation', 'alias', 'binding', 'clock', 'omission', 'timer', 'alist-values', 'alist-kind', 'alist-alias', 'alist-binding'))
+    parser.add_argument('--alist', action='store_true', help='Verify native associative collections and actual map squad defaults')
     parser.add_argument('--contracts', action='store_true',
                         help='Also verify the actual field and portable-timer contracts')
     args = parser.parse_args()
     if args.negative_control in ('clock', 'omission', 'timer'):
         args.contracts = True
+    if args.negative_control and args.negative_control.startswith('alist-'):
+        args.alist = True
+    if args.alist and args.contracts:
+        parser.error('Keep associative graph and scalar contract controls separate')
     if not args.prepare_only and not args.byond_bin:
         parser.error('--byond-bin is required to launch native verification')
     root = Path(__file__).resolve().parents[2]
@@ -58,6 +67,10 @@ def main():
         'generation': ('F["/generation"] != generation || ', ''),
         'alias': ('if(list_ids[identity]) return list_ids[identity]', 'if(list_ids[identity]) return add_node(list("kind" = "value", "value" = null))'),
         'binding': ('if(node["kind"] == "entry" && !node["ref"])', 'if(node["kind"] == "entry" && node["ref"] < 0)'),
+        'alist-binding': ('if(node["kind"] == "entry" && !node["ref"])', 'if(node["kind"] == "entry" && node["ref"] < 0)'),
+        'alist-values': ('values += encode(snapshot[key], depth + 1)', 'values += encode(null, depth + 1)'),
+        'alist-kind': ('is_associative ? "alist" : "list"', '"list"'),
+        'alist-alias': ('\t\t\t\ttarget[key] = restored[values[j]]\n', '\t\t\t\ttarget[key] = restored[values[j]] == target ? null : restored[values[j]]\n'),
     }
     if args.negative_control in mutations:
         before, after = mutations[args.negative_control]
@@ -67,7 +80,19 @@ def main():
     output = Path(tempfile.mkdtemp(prefix='civ13-durable-graph-'))
     (output / 'graph.dm').write_text(source, encoding='utf-8', newline='\n')
     probe = probe_path.read_text(encoding='utf-8')
+    metadata_source = (root / 'code/game/objects/map_metadata/_map_metadata.dm').read_text(encoding='utf-8')
+    defaults_start = metadata_source.index('\tvar/list/list/faction1_squads = alist(')
+    defaults_end = metadata_source.index('\tvar/required_players', defaults_start)
+    defaults = metadata_source[defaults_start:defaults_end]
+    probe = probe.replace('/obj/map_metadata\n', '/obj/map_metadata\n' + defaults, 1)
     environment = '#include "probe.dm"\n#include "graph.dm"\n'
+    if args.alist:
+        probe = probe.replace('\t\tcheck_graph()\n', '\t\tcheck_alist_graph()\n', 1)
+        alist_probe = probe_path.with_name('durable_alist_probe.dm')
+        (output / alist_probe.name).write_bytes(alist_probe.read_bytes())
+        environment += f'#include "{alist_probe.name}"\n'
+        if args.negative_control in ('alist-kind', 'alist-binding', 'alist-values'):
+            environment = '#define DURABLE_' + args.negative_control.upper().replace('-', '_') + '_CONTROL\n' + environment
     if args.negative_control == 'binding':
         environment = '#define DURABLE_BINDING_CONTROL\n' + environment
     if args.contracts:
@@ -106,7 +131,7 @@ def main():
     receipt = {'source_sha256': hashlib.sha256(source_path.read_bytes()).hexdigest(),
                'probe_sha256': hashlib.sha256(probe_path.read_bytes()).hexdigest(),
                'negative_control': args.negative_control, 'prepared_only': args.prepare_only,
-               'contracts': args.contracts,
+               'contracts': args.contracts, 'alist': args.alist,
                'generated_sha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                     for p in output.iterdir() if p.suffix in ('.dm', '.dme')}}
     (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
@@ -128,7 +153,7 @@ def main():
     log = (output / 'native.log').read_text(encoding='utf-8', errors='replace')
     if run.returncode:
         raise RuntimeError('Native fixture did not complete cleanly')
-    adjudicate(result, log, args.negative_control, args.contracts)
+    adjudicate(result, log, args.negative_control, args.contracts, args.alist)
     receipt.update(result=result, expected_failure_caught=bool(args.negative_control))
     (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
     print(json.dumps(receipt, indent=2))

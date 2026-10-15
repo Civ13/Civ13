@@ -47,6 +47,10 @@ def main():
                 'persistence', 'research_active', 'resourceresearch', 'perschadplus'}
     if required - fields.keys():
         raise RuntimeError('Required durable domains disappeared')
+    associative = {'faction1_squads', 'faction2_squads',
+                   'faction1_squad_leaders', 'faction2_squad_leaders'}
+    if any(fields.get(name) != 'alist' for name in associative):
+        raise RuntimeError('Native squad associations lost their collection contract')
     print(json.dumps({'map_fields': len(fields), 'declared': True,
                       'runtime_exclusions_checked': True,
                       'native_compilation': 'not performed',

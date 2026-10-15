@@ -64,8 +64,8 @@
 		G.check_index(fields[key])
 		var/list/node = G.nodes[fields[key]]
 		var/kind = schema[key]
-		if(kind == "list")
-			if(node["kind"] != "list") throw EXCEPTION("Invalid durable list field [key]")
+		if(kind in list("list", "alist"))
+			if(node["kind"] != kind) throw EXCEPTION("Invalid durable collection field [key]")
 		else
 			if(node["kind"] != "value") throw EXCEPTION("Invalid durable scalar field [key]")
 			var/list/value = list()

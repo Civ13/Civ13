@@ -352,6 +352,10 @@ jobs:
           for control in generation alias binding; do
             python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
+          python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --alist
+          for control in alist-values alist-kind alist-alias alist-binding; do
+            python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
           python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --contracts
           for control in clock omission timer; do
             python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
