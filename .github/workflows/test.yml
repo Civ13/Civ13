@@ -67,6 +67,9 @@ jobs:
       - name: Test attack history writer ownership and source preparation
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/attack_history')
         run: python3 -m unittest discover -s tests/attack_history -p test_sources.py -v
+      - name: Test admin history source preparation
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/admin_history')
+        run: python3 -m unittest discover -s tests/admin_history -p test_sources.py -v
       - name: Test isolated OpenDream process and control adapter
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_opendream_control.py') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_opendream_receipts.py')
         run: python3 -m unittest discover -s tests -p 'test_opendream*.py' -v
@@ -870,6 +873,23 @@ jobs:
           for control in overflow rate retention; do
             /usr/bin/python3 tests/memory_telemetry/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/memory-telemetry-$control" --negative-control "$control"
           done
+      - name: Verify archived admin history and loss alias and batch controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/admin_history')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/admin_history/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/admin-history-positive"
+          for control in failure-trim alias batch; do
+            /usr/bin/python3 tests/admin_history/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/admin-history-$control" --negative-control "$control"
+          done
+      - name: Upload admin history contract evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/admin_history'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: admin-history-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/admin-history-*
+          if-no-files-found: error
+          retention-days: 7
       - name: Verify archived attack history and loss alias and batch controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/attack_history')
         shell: bash
