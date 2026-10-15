@@ -2,6 +2,7 @@ name: Changelog contracts
 on:
   pull_request:
     branches: [master]
+    types: [opened, synchronize, reopened, edited]
   push:
     branches: [master]
   workflow_dispatch:
@@ -23,6 +24,9 @@ jobs:
         with:
           node-version: '24'
       - run: node --test tools/changelog/*.test.mjs
+      - name: Validate the PR description
+        if: github.event_name == 'pull_request'
+        run: node tools/changelog/check-pr.mjs
       - run: node tools/changelog/publish.mjs --validate
       - name: Validate changelog workflow syntax
         run: |

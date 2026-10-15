@@ -30,6 +30,17 @@ export function changelogLine(body) {
   }
   requireValue(entries.length <= 1, 'Use only one Changelog: line');
   if (!entries[0]) return null;
+  // A template marker is not announcement copy, even if prose follows on
+  // later lines. Do not silently publish the marker or guess at that prose.
+  const marker = entries[0].normalize('NFKC').toLowerCase()
+    .replace(/^[\s`*_[\]{}:]+|[\s`*_[\]{}:.!?]+$/g, '').trim();
+  const placeholders = new Set(['required', 'optional', 'todo', 'to do', 'tbd',
+    'to be determined', 'fixme', 'pending', 'placeholder', 'example', 'none',
+    'n/a', 'not applicable', 'no changelog', 'your changelog here',
+    'changelog text here', 'player-facing text here']);
+  requireValue(!placeholders.has(marker) &&
+    !/^(?:enter|insert|write|add|fill in|describe|replace)(?: the| your| a)? (?:changelog|player-facing|player-visible)(?:\b|$)/u.test(marker),
+  'Changelog placeholder is not announcement text; fill in the same line or leave it blank');
   format({ schema: 1, id: 'validation', commit: 'a'.repeat(40), heading: '', entries, skip: '' });
   return entries[0];
 }
