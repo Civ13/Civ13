@@ -394,6 +394,7 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           mkdir -p "$RUNNER_TEMP/lighting-recovery"
           export TMPDIR="$RUNNER_TEMP/lighting-recovery"
+          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin"
           python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --lighting
           for control in lighting-export lighting-legacy lighting-rebuild lighting-opacity lighting-view; do
             python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --lighting --negative-control "$control"
