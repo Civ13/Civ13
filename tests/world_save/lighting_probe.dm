@@ -71,6 +71,11 @@
 		var/savefile/F = new("map_saves/1.sav")
 		var/lamp_ref = lighting_saved_ref(F, /obj/item/persistence_custom_light)
 		var/carrier_ref = lighting_saved_ref(F, /obj/item/persistence_light_container)
+		var/opaque_ref = lighting_saved_ref(F, /obj/item/persistence_clear_fixture)
+		var/clear_ref = lighting_saved_ref(F, /obj/item/persistence_opaque_fixture)
+		var/list/opaque_saved = F["[map_storage.entry_path(F, opaque_ref)]/opacity"]
+		var/list/clear_saved = F["[map_storage.entry_path(F, clear_ref)]/opacity"]
+		durable_world_check(islist(opaque_saved) && islist(clear_saved) && opaque_saved["value"] && !clear_saved["value"], "obstruction fixture values not exported")
 		durable_world_check(lamp_ref && carrier_ref, "saved light or container missing")
 		F.cd = map_storage.entry_path(F, lamp_ref)
 		durable_world_check(!("light" in F.dir) && !("light_sources" in F.dir), "runtime atom lighting fields exported")
@@ -91,13 +96,15 @@
 		durable_world_check(map_storage.validate_world_save(), "legacy lighting save preflight rejected")
 		map_storage.ClearMap()
 		durable_world_check(map_storage.Load_World(), "legacy lighting graph prevented import")
-		carrier = locate(/obj/item/persistence_light_container)
-		lamp = locate(/obj/item/persistence_custom_light)
-		default_lamp = locate(/obj/item/persistence_default_light)
-		opaque_item = locate(/obj/item/persistence_clear_fixture)
-		clear_item = locate(/obj/item/persistence_opaque_fixture)
+		// Locate spatially: ClearMap queues old objects for deferred disposal.
+		carrier = locate(/obj/item/persistence_light_container) in locate(3,3,1)
+		lamp = locate(/obj/item/persistence_custom_light) in carrier
+		default_lamp = locate(/obj/item/persistence_default_light) in locate(4,3,1)
+		opaque_item = locate(/obj/item/persistence_clear_fixture) in locate(3,4,1)
+		clear_item = locate(/obj/item/persistence_opaque_fixture) in locate(4,4,1)
 		var/turf/opaque_turf = locate(3,4,1)
 		var/turf/clear_turf = locate(4,4,1)
+		text2file(json_encode(list("opaque_ref" = "\ref[opaque_item]", "clear_ref" = "\ref[clear_item]", "opaque_value" = opaque_item.opacity, "clear_value" = clear_item.opacity, "opaque_cache" = opaque_turf.has_opaque_atom, "clear_cache" = clear_turf.has_opaque_atom)), "lighting-restored.json")
 		durable_world_check(opaque_item.opacity && !clear_item.opacity, "saved obstruction properties changed")
 		durable_world_check(opaque_turf.has_opaque_atom && !clear_turf.has_opaque_atom, "restored obstruction caches stale")
 		durable_world_check(carrier && lamp && lamp.loc == carrier, "nested light placement lost")
