@@ -81,10 +81,11 @@ def main():
         complete = (work / 'result.txt').read_text() if (work / 'result.txt').exists() else ''
         (args.output / 'runtime.log').write_text(runtime + result.stdout + result.stderr, encoding='utf-8')
         (args.output / 'result.txt').write_text(complete, encoding='utf-8')
-        expected = {'idle': 'FAIL: idle ordinary food', 'action': 'FAIL: stationary unrestricted action',
+        expected = {'idle': 'FAIL: idle ordinary food', 'action': 'FAIL: stationary unrestricted action food',
                     'persistence': 'FAIL: runtime clock exclusion'}.get(args.negative_control, 'PASS: idle metabolism')
         diagnostics = runtime + result.stdout + result.stderr
-        if result.returncode or not complete.startswith(expected) or any(x in diagnostics for x in ('runtime error:', 'Runtime error:', 'runtime:', 'BUG:')):
+        matched = complete.strip() == expected if args.negative_control else complete.startswith(expected)
+        if result.returncode or not matched or any(x in diagnostics for x in ('runtime error:', 'Runtime error:', 'runtime:', 'BUG:')):
             raise RuntimeError(f'Fixture failed; expected {expected!r}, got {complete!r}')
         print(('PASS expected negative control: ' if args.negative_control else '') + complete.strip())
 

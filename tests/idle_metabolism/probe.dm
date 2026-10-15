@@ -64,6 +64,7 @@ var/obj/map_metadata/map
 	if (!condition)
 		text2file("FAIL: [label]", "result.txt")
 		shutdown()
+		sleep(100) // shutdown is deferred; do not continue into unrelated assertions.
 /proc/consume(mob/living/human/H, food, drink, label)
 	H.nutrition = 100
 	H.water = 100
