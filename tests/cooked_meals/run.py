@@ -13,6 +13,7 @@ import uuid
 ROOT = Path(__file__).resolve().parents[2]
 CORE = 'code/game/objects/structures/kitchen/cooked_meals.dm'
 CONTROLS = {
+ 'human': ('istype(H) && H.stat == CONSCIOUS', 'H && H.stat == CONSCIOUS', 'FAIL: nonhuman readiness rejected without lock'),
  'payment': ('F.reagents.trans_to_holder(reagents, F.reagents.total_volume)', 'reagents.add_reagent("nutriment", 50)', 'FAIL: paid nutrients conserved'),
  'portions': ('reagents.total_volume / meal_portions', 'reagents.total_volume', 'FAIL: equal paid portions'),
  'reward': ('mood = floor_mood', 'mood += floor_mood', 'FAIL: substantial actual ingestion earns seasoned reward'),

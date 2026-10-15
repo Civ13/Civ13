@@ -56,7 +56,7 @@
 	return protein ? 2 : 1
 
 /obj/structure/pot/proc/meal_ready(mob/living/human/H)
-	return H && H.stat == CONSCIOUS && H.loc && get_turf(src) && H.z == z && get_dist(H, src) <= 1 && fullness == 100 && (state == STATE_WATER || state == STATE_BOILING) && !meal_portions && meal_heat() && meal_recipe()
+	return istype(H) && H.stat == CONSCIOUS && H.loc && get_turf(src) && H.z == z && get_dist(H, src) <= 1 && fullness == 100 && (state == STATE_WATER || state == STATE_BOILING) && !meal_portions && meal_heat() && meal_recipe()
 
 /mob/living/human/proc/meal_cooking_wait(obj/structure/pot/P)
 	return do_after(src, 10, P)

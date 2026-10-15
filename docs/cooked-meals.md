@@ -64,7 +64,7 @@ compiles production sources with maps/global startup disabled, closes the port,
 and runs bounded ingredient, heat, interruption, portion, ingestion, reward and
 native disk-save checks in temporary storage. Actor startup, inventory UI and
 cooking waits are adapters; the production recipe, transfer, quality and save
-paths execute. Controls `payment`, `portions`, `reward`, `persistence`, and `heat`
+paths execute. Controls `human`, `payment`, `portions`, `reward`, `persistence`, and `heat`
 mutate generated source only and must fail their named assertion. CI selects
 this new suite for this PR; existing suites remain opt-in. This is isolated
 production-path evidence, not full-map, client, live server or deployment proof.

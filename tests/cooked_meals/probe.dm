@@ -63,6 +63,9 @@
 		r_hand = W
 	return TRUE
 
+/mob/living/meal_nonhuman/New()
+	return
+
 /obj/map_metadata/meal_tester/New()
 	return
 
@@ -121,6 +124,10 @@
 		var/obj/structure/pot/P = meal_pot(site,3)
 		meal_assert(!P.cook_meal(U) && P.contents.len == 4, "unlit fire cannot cook")
 		fire.on = TRUE
+		var/mob/living/meal_nonhuman/nonhuman = new(site)
+		nonhuman.stat = CONSCIOUS
+		meal_assert(!P.meal_ready(nonhuman) && !P.meal_cooking, "nonhuman readiness rejected without lock")
+		meal_assert(!P.cook_meal(nonhuman) && !P.meal_cooking && P.contents.len == 4, "nonhuman action preserves unlocked ingredients")
 		U.loc = locate(3,3,2)
 		meal_assert(!P.cook_meal(U), "different z level rejected")
 		U.loc = site
@@ -155,6 +162,12 @@
 			meal_assert(!P.cook_meal(U) && P.contents.len == 4 && !P.meal_cooking && !P.meal_portions, "interruption preserves ingredients: [mode]")
 			U.loc = site
 			fire.on = TRUE
+		var/list/paid_ingredients = P.contents.Copy()
+		U.wait_mode = "remove"
+		meal_assert(!P.cook_meal(U) && P.contents.len == 3 && !P.meal_cooking && !P.meal_portions, "ingredient removal cancels without spending")
+		for (var/obj/item/paid in paid_ingredients)
+			paid.loc = P
+		meal_assert(P.contents.len == 4, "removed paid ingredient remains available")
 		U.wait_mode = "overlap"
 		meal_assert(P.cook_meal(U), "cooking succeeds after paid wait")
 		meal_assert(P.reagents.get_reagent_amount("nutriment") == 16 && P.contents.len == 0, "paid nutrients conserved")

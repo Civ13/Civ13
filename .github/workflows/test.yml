@@ -376,7 +376,7 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 -m unittest discover -s tests/cooked_meals -p test_runner.py -v
           python3 tests/cooked_meals/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/cooked-meals/positive"
-          for control in payment portions reward persistence heat; do
+          for control in human payment portions reward persistence heat; do
             python3 tests/cooked_meals/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/cooked-meals/$control"
           done
       - name: Upload cooked meal evidence
