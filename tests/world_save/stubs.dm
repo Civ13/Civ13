@@ -20,6 +20,8 @@ var/datum/persistence_restart_transaction/persistence_restart = new
 /datum/persistence_restart_transaction/proc/exists()
 	return FALSE
 var/obj/map_metadata/map
+// ClearMap preserves the production view singleton; focused probes have none.
+var/mob/dview_mob
 var/list/errors = list()
 var/list/clients = list()
 var/game_id = "fixture-round"
