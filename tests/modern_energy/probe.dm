@@ -18,6 +18,7 @@ var/list/energy_ci_errors = list()
 		energy_ci_errors += label
 /proc/run_modern_energy_checks()
 	world.OpenPort("none")
+	GLOB.all_observable_events = list()
 	GLOB.moved_event = new /decl/observ/moved
 	GLOB.dir_set_event = new /decl/observ/dir_set
 	movementMachine = new

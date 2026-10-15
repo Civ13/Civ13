@@ -18,6 +18,8 @@ var/list/energy_mining_rolls = list()
 		return craft_skill
 	getStatCoeff(stat_name)
 		return 1
+	update_icons()
+		return
 /obj/item/stack/ore/uranium/energy_ci
 	var/mode = "complete"
 	uranium_extraction_wait(mob/living/human/H, obj/item/weapon/reagent_containers/glass/extraction_kit/ET, delay)
@@ -146,8 +148,7 @@ var/list/energy_mining_rolls = list()
 	energy_ci_check("destroyed processor cannot issue output", energy_cartridges(locate(4,1,1)), 1)
 	qdel(restored)
 	var/obj/structure/reactor_fuel_processor/energy_ci/retirement = new(locate(4,1,1))
-	var/obj/item/stack/ore/uranium/retired_input = new(H)
-	retired_input.amount = 2
+	var/obj/item/stack/ore/uranium/retired_input = new(H,2,FALSE)
 	retirement.input = retired_input
 	retirement.mode = "destroy_input"
 	retirement.attackby(retired_input,H)
