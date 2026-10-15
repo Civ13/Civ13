@@ -1,16 +1,14 @@
 // Only local bounded files are read here. The optional bridge owns HTTP/model work.
 var/global/datum/player_help_service/player_help_service = new
 
-/mob/verb/ask_player_help()
+/client/verb/ask_player_help()
 	set name = "Ask for help"
 	set category = "Help!"
-	if (!client)
-		return
 	var/question = player_help_prompt()
-	if (client && question)
-		player_help_service.submit(client, question)
+	if (question && (src in clients))
+		player_help_service.submit(src, question)
 
-/mob/proc/player_help_prompt()
+/client/proc/player_help_prompt()
 	return input(src, "Ask a gameplay question. Your question and gameplay condition (health, inventory, exposure and public server state) are sent to the server owner's AI service. Do not enter personal information.", "Ask for help") as text|null
 
 /datum/player_help_service

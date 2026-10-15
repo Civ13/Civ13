@@ -35,11 +35,14 @@ var/time_of_day = "Night"
     var/probe_submits = 0
     var/probe_question
     var/probe_result
+    var/probe_disconnect_on_prompt = FALSE
     proc/probe_submit(question)
         probe_submits++
         probe_result = player_help_service.enqueue(md5("injected authenticated client"), question, null)
 /mob/probe_help/player_help_prompt()
     probe_prompts++
+    if (probe_disconnect_on_prompt)
+        probe_connected = FALSE
     return probe_question
 /datum/player_help_service/probe_limits
     var/clock = 1000
@@ -188,6 +191,17 @@ var/failures = 0
     player_help_service = B
     asker.ask_player_help()
     check(asker.probe_result == TRUE && B.pending.len == 1, "actual verb prompt submission publishes ready backend request")
+    asker.ask_player_help()
+    check(findtext(asker.probe_result, "pending") && B.pending.len == 1, "repeated adapter submission retains pending account")
+    var/mob/probe_help/reconnected = new
+    reconnected.probe_question = "Second question"
+    reconnected.ask_player_help()
+    check(findtext(reconnected.probe_result, "pending") && B.pending.len == 1, "second adapter with same account cannot duplicate dispatch")
+    var/mob/probe_help/leaving = new
+    leaving.probe_question = "Disconnected during input"
+    leaving.probe_disconnect_on_prompt = TRUE
+    leaving.ask_player_help()
+    check(leaving.probe_prompts == 1 && !leaving.probe_submits, "disconnect during prompt cannot submit")
     B.clear_slot(1)
     B.accounts = list()
     B.global_times = list()
@@ -289,11 +303,14 @@ def main():
         temp = Path(directory)
         (temp / 'spool').mkdir()
         production = (ROOT / 'code/game/mob/player_help.dm').read_text()
+        if production.count('/client/verb/ask_player_help()') != 1 or '/mob/verb/ask_player_help()' in production:
+            raise SystemExit('Help must have one client-owned verb, matching Adminhelp ownership')
         # Inject only the unavailable native client/input boundary. The actual
         # verb body runs; reserve/poll below are unmodified production paths.
-        production = production.replace('if (!client)', 'if (!probe_connected)')
-        production = production.replace('if (client && question)', 'if (probe_connected && question)')
-        production = production.replace('player_help_service.submit(client, question)', 'probe_submit(question)')
+        production = production.replace('/client/verb/ask_player_help()', '/mob/verb/ask_player_help()')
+        production = production.replace('/client/proc/player_help_prompt()', '/mob/proc/player_help_prompt()')
+        production = production.replace('if (question && (src in clients))', 'if (question && probe_connected)')
+        production = production.replace('player_help_service.submit(src, question)', 'probe_submit(question)')
         if args.negative_control == 'rate-limit':
             production = production.replace('if (retry)', 'if (FALSE && retry)')
         elif args.negative_control == 'prompt-first':

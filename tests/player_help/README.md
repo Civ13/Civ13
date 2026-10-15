@@ -13,11 +13,14 @@ normal world startup. The native fixture verifies heartbeat startup/expiry,
 malformed files, escaped HTML, request identity and disconnected-slot cleanup.
 It closes its port immediately and uses isolated disk files.
 
-The actual verb runs with only its client-connected/input/submit boundary
-injected. Its submit boundary calls the actual server enqueue path: the probe
+Client ownership and absence of a duplicate mob verb are source-checked. The
+production verb/helper bodies run relocated to a mob proxy with injected
+connected/input/submit boundaries. The submit adapter calls actual server enqueue;
+same-account proxy reuse checks admission, not real login or body transfers. The probe
 checks prompt-first unavailable handling, cancellation without allowance,
 ready request publication and failure cleanup. Native input/browser delivery
-and client timeout notification remain unverified by this isolated fixture.
+and client timeout notification, login/reconnect and body transfers remain
+unverified by this isolated fixture.
 No remote endpoint, deployed bridge or model knowledge is tested. Game compilation
 is separate; screenshots are unnecessary for these file/protocol contracts.
 
