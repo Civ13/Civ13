@@ -1,4 +1,10 @@
 [
+  "/obj/item/flax_bundle",
+  "/obj/item/flax_work",
+  "/obj/item/stack/rotten_flax",
+  "/obj/item/stack/flax_tow",
+  "/obj/item/stack/textile_lint",
+  "/obj/structure/flax_comb",
   "/obj/structure/civ_generator/solar",
   "/obj/structure/component_workbench",
   "/obj/item/weapon/reagent_containers/food/snacks/grown/cinchona",

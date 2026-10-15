@@ -1,7 +1,7 @@
 # Flax processing
 
-Draft implementation: registration, construction and native acceptance are pending.
-The dedicated source file is not yet included in the game build.
+Draft implementation: the source is included and the comb is registered for
+eight softwood planks under Resource Processing. Native acceptance is pending.
 
 ## Proposed player route
 
@@ -46,4 +46,20 @@ production-path processing, cancellation and overlap, water replacement and
 salt rejection, output conservation, recovery after destruction, and disk
 round trips of partly soaked bundles and partly combed batches. Mutation
 controls must detect free inputs, replayed outputs and persisted locks.
-No runtime, CI, graphical or live-server acceptance is claimed yet.
+The versioned fixture is `tests/flax_processing/run.py`. Its source check
+validates unique mutation targets without invoking native tools:
+
+```text
+<verified-python> tests/flax_processing/run.py --source-check
+```
+
+Native runs require pinned BYOND 516.1681 and an empty evidence directory:
+
+```text
+<verified-python> tests/flax_processing/run.py --byond-bin <516.1681-bin> --output <evidence>
+```
+
+Run each of `--negative-control payment`, `replay` and `persistence` with
+separate evidence directories. Remote CI selects this new suite for its PR;
+local native runs require the exclusive runtime lease. No runtime, CI,
+graphical or live-server acceptance is claimed yet.

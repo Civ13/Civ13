@@ -308,6 +308,22 @@ jobs:
           name: idle-metabolism-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/idle-metabolism/
           retention-days: 7
+      - name: Verify staged flax processing and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/flax_processing')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/flax_processing/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/flax-processing/positive"
+          for control in payment replay persistence; do
+            python3 tests/flax_processing/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/flax-processing/$control"
+          done
+      - name: Upload flax processing evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/flax_processing'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: flax-processing-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/flax-processing/
+          retention-days: 7
       - name: Validate compiled crafting recipes
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/crafting')
         run: |
