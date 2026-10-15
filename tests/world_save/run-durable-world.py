@@ -15,9 +15,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
+    parser.add_argument('--startup-only', action='store_true',
+                        help='Diagnose production initialization without running any persistence assertions')
     parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
     parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback'))
     args = parser.parse_args()
+    if args.startup_only and args.negative_control:
+        parser.error('Startup diagnostics cannot run persistence mutation controls')
     if not args.prepare_only and not args.byond_bin:
         parser.error('--byond-bin is required for native execution')
     root = Path(__file__).resolve().parents[2]
@@ -26,7 +30,8 @@ def main():
     dme = root / (prefix + '.dme')
     generated = []
     receipt = {'profile': args.profile, 'negative_control': args.negative_control,
-               'prepared_only': args.prepare_only, 'production_hashes': {}}
+               'prepared_only': args.prepare_only, 'startup_only': args.startup_only,
+               'production_hashes': {}}
     print(f'Retained evidence: {output}', flush=True)
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
@@ -66,11 +71,26 @@ def main():
                 raise RuntimeError('Production include anchor changed')
             source = source.replace(original_include, generated_path.name)
             (output / generated_path.name).write_text(text, encoding='utf-8', newline='\n')
-        source += '\n#include "tests/world_save/durable_world_probe.dm"\n'
+        probe = (root / 'tests/world_save/durable_world_probe.dm').read_text(encoding='utf-8')
+        if args.startup_only:
+            marker = '/world/New()\n'
+            if probe.count(marker) != 1:
+                raise RuntimeError('Startup diagnostic probe anchor changed')
+            probe = probe[:probe.index(marker)] + marker + (
+                '\ttext2file("startup-only world-New entered", "probe-progress.log")\n'
+                '\tworld.OpenPort(0)\n'
+                '\ttext2file(json_encode(list("startup_only" = TRUE)), "startup-result.json")\n'
+                '\tdel(world)\n')
+        probe_path = root / (prefix + '_probe.dm')
+        probe_path.write_text(probe, encoding='utf-8', newline='\n')
+        generated.append(probe_path)
+        (output / probe_path.name).write_text(probe, encoding='utf-8', newline='\n')
+        source += '\n#include "' + probe_path.name + '"\n'
         dme.write_text(source, encoding='utf-8', newline='\n')
         for path in (root / 'code/modules/persistence').glob('*.dm'):
             receipt['production_hashes'][path.relative_to(root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
         receipt['probe_hash'] = hashlib.sha256((root / 'tests/world_save/durable_world_probe.dm').read_bytes()).hexdigest()
+        receipt['generated_probe_hash'] = hashlib.sha256(probe_path.read_bytes()).hexdigest()
         receipt['base_commit'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         (output / 'tested.patch').write_bytes(subprocess.check_output(['git', 'diff'], cwd=root))
         (output / 'probe.dme').write_text(source, encoding='utf-8')
@@ -99,13 +119,21 @@ def main():
         if run.returncode:
             raise RuntimeError(f'Native daemon exited with {run.returncode}; see daemon-exit.json')
         log = (output / 'runtime.log').read_text(encoding='utf-8', errors='replace')
+        diagnostics = (log + run.stdout + run.stderr).lower()
+        if any(word in diagnostics for word in ('unexpected runtime', 'bad ref', 'runtime error:', 'infinite loop', 'fatal error')):
+            raise RuntimeError('Native engine diagnostic invalidated fixture')
+        if args.startup_only:
+            startup = json.loads((output / 'startup-result.json').read_text(encoding='utf-8'))
+            if startup != {'startup_only': 1}:
+                raise RuntimeError('Startup diagnostic did not complete')
+            receipt['startup_result'] = startup
+            (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+            print('Startup diagnostic completed; no persistence assertions ran.')
+            return
         result_path = output / 'metadata-result.json'
         if not result_path.is_file():
             raise RuntimeError('Native daemon exited without a result; see daemon-exit.json and probe-progress.log')
         result = json.loads(result_path.read_text(encoding='utf-8'))
-        diagnostics = (log + run.stdout + run.stderr).lower()
-        if run.returncode or any(word in diagnostics for word in ('unexpected runtime', 'bad ref', 'runtime error:', 'infinite loop', 'fatal error')):
-            raise RuntimeError('Native engine diagnostic invalidated fixture')
         expected = {'season': 'environment phase reset', 'preflight': 'omitted metadata mutated world',
                     'reachability': 'orphan metadata reference accepted', 'callback': 'restored callback duplicated'}
         if args.negative_control:
