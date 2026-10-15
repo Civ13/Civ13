@@ -38,7 +38,10 @@ export function changelogLine(body) {
     'to be determined', 'fixme', 'pending', 'placeholder', 'example', 'none',
     'n/a', 'not applicable', 'no changelog', 'your changelog here',
     'changelog text here', 'player-facing text here']);
-  requireValue(!placeholders.has(marker) &&
+  // A flattened second label must not turn a template marker into copy.
+  const nestedMarker = marker.split(/\s+player changelog\s*:/u)[0]
+    .replace(/[\s`*_[\]{}:.!?]+$/g, '').trim();
+  requireValue(!placeholders.has(nestedMarker) &&
     !/^(?:enter|insert|write|add|fill in|describe|replace)(?: the| your| a)? (?:changelog|player-facing|player-visible)(?:\b|$)/u.test(marker),
   'Changelog placeholder is not announcement text; fill in the same line or leave it blank');
   format({ schema: 1, id: 'validation', commit: 'a'.repeat(40), heading: '', entries, skip: '' });

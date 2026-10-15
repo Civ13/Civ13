@@ -14,6 +14,7 @@ Keep it on one line. Leave it blank or remove it if no announcement is needed;
 a missing or blank field posts nothing.
 Do not enter placeholders such as `required`, `TODO`, or `TBD`. Text on the next
 line is not part of the entry; put the complete announcement on the field's line.
+Replace the blank field directly; do not add a second `Player changelog:` label.
 
 Describe the player-visible change without a heading, PR number, mentions, or
 merge, deployment, server availability, or next-update status wording.
