@@ -1,6 +1,6 @@
 # Dew collector
 
-Implementation in progress. Build a dew collector from eight softwood planks
+Build a dew collector from eight softwood planks
 after Basic Agriculture. It starts empty, stores at most 200 units, and reuses
 the existing wooden-barrel sprite.
 
@@ -16,7 +16,9 @@ minutes and in-progress drawing are runtime state and reset on load. Closing
 the cover or losing eligible conditions cancels partial collection. Lag and
 offline time do not produce a backlog. Retirement unregisters the collector.
 
-Acceptance requires production construction/research, exposure/time/weather,
-capacity, transfer conservation/cancellation, repeated lifecycle and native disk
-round-trip checks with mutation controls. No gameplay, runtime or CI pass is
-claimed by this draft document.
+`tests/dew_collector/run.py` checks production construction/research,
+exposure/time/weather, capacity, click-chain transfer conservation/cancellation,
+lifecycle and native disk round trips. Its cap, exposure, timing, persistence
+and click controls must each fail at the named assertion. The fixture adapts
+actor/roof startup, clock samples and action waits; its success does not prove
+an ordinary-player walkthrough or live-server behavior.

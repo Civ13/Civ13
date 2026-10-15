@@ -155,7 +155,8 @@
 		A.location = AREA_OUTSIDE
 		var/obj/roof/dew_tester/R = new(site)
 		dew_assert(D.collection_rate() == 0, "roof rejected")
-		qdel(R)
+		// This adapter has no roof overlays/area transition to tear down.
+		R.loc = null
 		D.radiation = 1
 		dew_assert(D.collection_rate() == 0, "radiation rejected")
 		D.radiation = 0
