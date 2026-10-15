@@ -3,6 +3,25 @@ var/TimeOfGame = 0
 var/obj/map_metadata/map
 var/list/errors = list()
 var/list/clients = list()
+var/game_id = "fixture-round"
+var/round_start_time = 0
+var/round_elapsed_offset = 0
+var/roundstart_time = 0
+var/next_duration_update = 0
+var/next_duration_update_days = 0
+var/last_roundduration2text = 0
+var/last_roundduration2text_days = 0
+var/datum/controller/gameticker/ticker
+var/datum/fixture_processes/processes = new
+/datum/fixture_processes
+	var/datum/fixture_ticker_process/ticker = new
+/datum/fixture_ticker_process
+	var/playtime_elapsed = 0
+/proc/TOD_loop()
+	return
+/proc/trim(value)
+	var/list/lines = splittext(value, "\n")
+	return lines[1]
 /client/proc/quickBan_isbanned(kind)
 	return FALSE
 // The raw-key form used by client/New, including web guests.
@@ -73,6 +92,11 @@ var/list/mutate_on_tick = null
 	rejuvenate_calls++
 	stat = CONSCIOUS
 /datum/controller/gameticker
+	var/current_state = GAME_STATE_PREGAME
+	var/finished = FALSE
+	var/list/minds = list()
+/datum/controller/gameticker/proc/collect_minds()
+	return
 /obj/map_metadata
 	var/ID = "TEST"
 	var/age = "test epoch"

@@ -15,6 +15,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--expected-saving-sha256', required=True)
+    parser.add_argument('--prepare-only', action='store_true', help='Generate hash-bound sources without compiling or launching')
     parser.add_argument('--negative-control', action='store_true')
     parser.add_argument('--datum-constructor-negative-control', action='store_true')
     parser.add_argument('--appearance-negative-control', action='store_true')
@@ -23,12 +24,20 @@ def main():
     parser.add_argument('--player-ui', action='store_true')
     parser.add_argument('--player-ui-negative-control', choices=('hud', 'registry'))
     parser.add_argument('--player-admission', action='store_true')
+    parser.add_argument('--round-state', action='store_true')
+    parser.add_argument('--round-state-negative-control', choices=('setup', 'clock', 'generation'))
     parser.add_argument('--matrix-trace', action='store_true')
     parser.add_argument('--progress', action='store_true')
     parser.add_argument('--progress-fault-stage', choices=('save_entered', 'level_serialized', 'completion_marker'))
     parser.add_argument('--progress-fault-operation', choices=('delete', 'write', 'json'))
     parser.add_argument('--progress-negative-control', action='store_true')
     args = parser.parse_args()
+    round_state = args.round_state or bool(args.round_state_negative_control)
+    if round_state and any((args.negative_control, args.datum_constructor_negative_control,
+                            args.appearance_negative_control, args.hud_negative_control,
+                            args.player_reclaim_negative_control, args.player_ui_negative_control,
+                            args.progress, args.matrix_trace)):
+        parser.error('Keep round-state controls separate from other mutations')
     admission = args.player_admission or args.player_reclaim_negative_control in ('ban', 'guest')
     if args.player_reclaim_negative_control and any((args.negative_control, args.datum_constructor_negative_control,
                                                     args.appearance_negative_control, args.hud_negative_control,
@@ -103,6 +112,17 @@ def main():
     def include(match):
         original = (fixture / match.group(1)).resolve(strict=True)
         source = original.read_text(encoding='utf-8')
+        if original.name == 'functions.dm' and args.round_state_negative_control == 'clock':
+            marker = '\tround_elapsed_offset = state["elapsed"]\n'
+            if source.count(marker) != 1:
+                raise RuntimeError('Round clock mutation target changed')
+            source = source.replace(marker, '\tround_elapsed_offset = 0\n', 1)
+        if original.name == 'loading.dm' and args.round_state_negative_control == 'generation':
+            marker = ('\t\t\tif(round_state.len && F["/generation"] != round_state["generation"])\n'
+                      '\t\t\t\tthrow EXCEPTION("Saved level belongs to another round generation")\n')
+            if source.count(marker) != 1:
+                raise RuntimeError('Round generation mutation target changed')
+            source = source.replace(marker, '', 1)
         hashes[original.relative_to(root).as_posix()] = hashlib.sha256(original.read_bytes()).hexdigest()
         if original.name == 'player_reclaim.dm' and args.player_reclaim_negative_control:
             if args.player_reclaim_negative_control == 'owner':
@@ -207,6 +227,11 @@ def main():
                 raise RuntimeError('Datum control needs exactly one corrected constructor branch')
             source = source.replace(before, '\t\telse\n\t\t\tobject = new type(starting_loc)\n', 1)
         if original.name == 'roundtrip.dm':
+            if round_state:
+                marker = '\t\tworld.log << "PASS: world-save round trip'
+                if source.count(marker) != 1:
+                    raise RuntimeError('Round fixture completion marker changed')
+                source = source.replace(marker, '\t\tcheck_round_state()\n' + marker, 1)
             if ui:
                 marker = '\t\tcheck_player_reclaim()\n'
                 if source.count(marker) != 1:
@@ -257,6 +282,21 @@ def main():
         generated[target.name] = hashlib.sha256(target.read_bytes()).hexdigest()
         environment += f'\n#include "{target.as_posix()}"\n'
     environment += progress_helper_include
+    if round_state:
+        import importlib.util
+        adapter_path = fixture / 'build-round-adapter.py'
+        spec = importlib.util.spec_from_file_location('round_adapter', adapter_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        adapted, round_hashes = module.generate(root, args.round_state_negative_control)
+        hashes.update(round_hashes)
+        probe_path = fixture / 'round_state_probe.dm'
+        for path in (adapter_path, probe_path):
+            hashes[path.relative_to(root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+        target = output / 'round_state_adapter.dm'
+        target.write_text(probe_path.read_text(encoding='utf-8') + '\n' + adapted, encoding='utf-8')
+        generated[target.name] = hashlib.sha256(target.read_bytes()).hexdigest()
+        environment += f'\n#include "{target.as_posix()}"\n'
     if ui:
         import importlib.util
         adapter_path = fixture / 'build-ui-adapter.py'
@@ -312,12 +352,22 @@ def main():
         return logs
 
     (output / 'source-inputs.json').write_text(json.dumps({'original': hashes, 'generated': generated}, indent=2), encoding='utf-8')
+    if args.prepare_only:
+        print('PREPARED ONLY: native compilation and runtime checks were not run')
+        return
     build = owned('compile', [str(compiler), '-max_errors', '0', 'probe.dme'])
     if '516.1681' not in build or '0 errors, 0 warnings' not in build:
         raise RuntimeError('Pinned clean compilation required')
     owned('daemon', [str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'])
     actual = read(output / 'result.txt').strip()
-    if args.player_ui_negative_control:
+    if args.round_state_negative_control:
+        expected = {'setup': 'resumed round reran fresh setup',
+                    'clock': 'round clock reset across process',
+                    'generation': 'mismatched round generation accepted'}[args.round_state_negative_control]
+        failure = read(output / 'failure-name.txt').strip()
+        if failure != expected or not actual.startswith('FAIL:'):
+            raise RuntimeError(f'Wrong round-state negative failure: {actual!r}, {failure!r}')
+    elif args.player_ui_negative_control:
         expected = {'hud': 'same-style empty HUD not rebuilt',
                     'registry': 'human Login omitted playing registry'}[args.player_ui_negative_control]
         failure = read(output / 'failure-name.txt').strip()
@@ -373,6 +423,7 @@ def main():
         'player_reclaim_negative_control': args.player_reclaim_negative_control,
         'player_ui': ui, 'player_ui_negative_control': args.player_ui_negative_control,
         'player_admission_adapter': admission,
+        'round_state': round_state, 'round_state_negative_control': args.round_state_negative_control,
         'matrix_trace': args.matrix_trace,
         'progress': args.progress, 'progress_fault_stage': args.progress_fault_stage,
         'progress_fault_operation': args.progress_fault_operation,
@@ -380,7 +431,7 @@ def main():
         'sources_sha256': hashes, 'generated_sha256': generated, 'processes': processes,
         'opendream_verified': False, 'fresh_process_recovery_verified': False,
         'crash_rpo_verified': False, 'clean_shutdown_verified': False}, indent=2), encoding='utf-8')
-    control = (args.player_ui_negative_control or args.player_reclaim_negative_control
+    control = (args.round_state_negative_control or args.player_ui_negative_control or args.player_reclaim_negative_control
                or args.hud_negative_control or args.progress_negative_control
                or args.appearance_negative_control or args.datum_constructor_negative_control
                or args.negative_control)

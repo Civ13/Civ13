@@ -232,4 +232,35 @@ The human's dead status, name and nested paid item survive the native round trip
 `--hud-negative-control export`, `import` and `constructor` independently remove
 each safeguard in generated source and require its exact failure. The constructor
 sentinel models the owner requirement; full-game same-generation restoration is
-separate acceptance. Use D: TEMP/TMP and the sole live-test owner's executor.
+separate acceptance. Use temporary storage and the sole live-test owner's executor.
+
+# Round identity and phase recovery
+
+New generations store a `round.json` header bound to their completion marker,
+map metadata digest, dimensions and a nonce in every level. Preflight rejects
+missing, malformed or mismatched new headers before clearing the world. Backups
+include the header. The header preserves game ID, ticker phase, active-server
+elapsed ticks and round-start realtime. Restoration rebases the elapsed clock
+onto the new process, excludes offline downtime, invalidates display caches and
+synchronizes ticker playtime. Resumed rounds skip fresh character creation,
+equipment, map seeding and round-start hooks. The time-of-day loop is idempotent.
+
+Run `run-string-path.py --round-state` with the existing pinned BYOND and saving
+hash arguments. Controls `--round-state-negative-control setup`, `clock` and
+`generation` must fail at the named regression assertion, with clean native
+compilation and no unexpected diagnostics. `--prepare-only` generates sources
+and input hashes without compiling or launching; it is source preparation only.
+The probe imports the header from disk, checks process-clock rebasing, malformed
+and partial header rejection, level-generation mismatch, setup side-effect
+counters and legacy ownership decisions. These adapters do not prove a fresh
+full-game process restart or connected-player acceptance.
+
+Legacy timestamp markers retain compatibility. A successfully loaded legacy
+world with a unique living durable-owned restored human resumes the active
+phase without fresh setup. Its historical game ID and duration are unavailable;
+the current session establishes continuity for subsequent new saves. Unowned
+legacy worlds retain historical behavior. This header does not yet restore
+map-specific faction/civilization controllers, day/night phase, station calendar,
+vote state or every map timer. Startup messages/webhooks emitted before loading
+are not retroactively rewritten. No faster world-save claim follows from this
+correctness change.

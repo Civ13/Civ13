@@ -130,6 +130,7 @@ map_storage
 		list/loaded_lists = list()
 		var/saving_z = 0
 		var/last_error = null
+		var/round_restored = FALSE
 		var/per_pause = 200
 		var/so_far = 0
 	New(game_id, backdoor, ignore)
@@ -248,6 +249,8 @@ var/global/persistence_save_in_progress = FALSE
 	var/watch = start_watch()
 	log_startup_progress("Starting map load...")
 	try
+		// Snapshot the validated header before any destructive restoration.
+		var/list/saved_round = map_storage.read_round_state()
 		map_storage.ClearMap()
 		if(!map_storage.Load_World())
 			map_storage.reset_player_restoration()
@@ -255,6 +258,7 @@ var/global/persistence_save_in_progress = FALSE
 			return FALSE
 		if(!map_storage.load_map_metadata())
 			throw EXCEPTION("Saved world metadata restoration failed")
+		map_storage.restore_round_state(src, saved_round)
 	catch(var/exception/e)
 		map_storage.clear_bookkeeping()
 		map_storage.reset_player_restoration()
@@ -267,6 +271,73 @@ var/global/persistence_save_in_progress = FALSE
 	log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
 	map_storage.finish_player_restoration()
 	return 1
+
+// The completion marker and each level carry the same generation nonce. Legacy
+// markers have no historical round identity/clock; owned bodies allow a bounded
+// phase-only fallback after the rest of their world has loaded successfully.
+/map_storage/proc/capture_round_state(generation)
+	if(ticker && ticker.current_state == GAME_STATE_SETTING_UP)
+		throw EXCEPTION("Cannot save during fresh round setup")
+	var/elapsed = (round_start_time || round_elapsed_offset) ? max(0, world.time - round_start_time) + round_elapsed_offset : 0
+	return list("version" = 1, "generation" = generation, "map" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "game_id" = global.game_id, "state" = ticker ? ticker.current_state : GAME_STATE_PREGAME, "elapsed" = elapsed, "roundstart_time" = roundstart_time)
+
+/map_storage/proc/read_round_state()
+	var/marker = trim(file2text("map_saves/save_complete.txt"))
+	if(copytext(marker, 1, 10) != "round-v1:") return list()
+	if(!fexists("map_saves/round.json"))
+		throw EXCEPTION("Completed generation is missing round state")
+	var/list/state = json_decode(file2text("map_saves/round.json"))
+	if(!islist(state) || state.len != 11 || state["version"] != 1 || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != world.maxz)
+		throw EXCEPTION("Round state does not match completed generation")
+	if(!istext(state["game_id"]) || !length(state["game_id"]) || length(state["game_id"]) > 128)
+		throw EXCEPTION("Invalid saved round identity")
+	if(!(state["state"] in list(GAME_STATE_PREGAME, GAME_STATE_PLAYING, GAME_STATE_FINISHED)))
+		throw EXCEPTION("Invalid saved round phase")
+	for(var/key in list("elapsed", "roundstart_time"))
+		var/value = state[key]
+		if(!isnum(value) || value < 0 || value > 1e15)
+			throw EXCEPTION("Invalid saved round clock")
+	return state
+
+/map_storage/proc/restore_round_state(datum/controller/gameticker/target, list/state)
+	if(!state.len)
+		// Owned characters establish a previously playable legacy generation,
+		// but cannot reconstruct its historical ID or elapsed time.
+		var/legacy_player = FALSE
+		for(var/account in persistence_restored_bodies)
+			var/list/bodies = persistence_restored_bodies[account]
+			if(bodies.len != 1) continue
+			var/mob/living/human/H = bodies[1]
+			if(H && H.persistence_restored && H.persistence_owner_ckey == account && get_turf(H) && H.stat != DEAD)
+				legacy_player = TRUE
+				break
+		if(!legacy_player) return
+		world.log << "Legacy player save: resuming active phase; historical round ID and duration unavailable."
+		if(!round_start_time) round_start_time = world.time
+		if(!roundstart_time) roundstart_time = world.realtime
+		round_restored = TRUE
+		target.current_state = GAME_STATE_PLAYING
+		target.finished = FALSE
+		target.minds = list()
+		target.collect_minds()
+		TOD_loop()
+		return
+	global.game_id = state["game_id"]
+	round_elapsed_offset = state["elapsed"]
+	round_start_time = state["state"] == GAME_STATE_PREGAME ? 0 : world.time
+	roundstart_time = state["roundstart_time"]
+	next_duration_update = 0
+	next_duration_update_days = 0
+	last_roundduration2text = 0
+	last_roundduration2text_days = 0
+	if(processes.ticker) processes.ticker.playtime_elapsed = state["elapsed"]
+	round_restored = state["state"] != GAME_STATE_PREGAME
+	target.current_state = state["state"]
+	target.finished = state["state"] == GAME_STATE_FINISHED
+	if(round_restored)
+		target.minds = list()
+		target.collect_minds()
+		TOD_loop()
 
 /datum/proc/before_save_context(map_storage/exporter, datum/save_export_frame/frame)
 	return before_save()
