@@ -99,6 +99,7 @@
 	C.MouseEntered(A, null, "map", "")
 	check(C.mouse_x == 9 && C.mouse_y == 8, "existing coordinates")
 	check(findtext(L.maptext, "&lt;b&gt;scope &amp; mount&lt;/b&gt;"), "escaped public name")
+	check(findtext(L.maptext, "vertical-align:top;text-align:left"), "explicit top-left text alignment")
 	C.MouseEntered(B, null, "map", "")
 	check(findtext(L.maptext, "rifle"), "target transition")
 	C.MouseExited(A, null, "map", "")

@@ -55,7 +55,7 @@
 	if (!length(label))
 		clear_target()
 		return
-	maptext = "<span style='font-size:12px;color:white;background-color:black'>[html_encode(copytext(label, 1, 129))]</span>"
+	maptext = "<span style='vertical-align:top;text-align:left;font-size:12px;color:white;background-color:black'>[html_encode(copytext(label, 1, 129))]</span>"
 
 /client/proc/hover_name_widget()
 	if (mob)
