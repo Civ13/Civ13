@@ -337,6 +337,22 @@ jobs:
           name: flax-processing-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/flax-processing/
           retention-days: 7
+      - name: Verify linked building levels and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/building_levels')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/building_levels/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/positive"
+          for control in pair support; do
+            python3 tests/building_levels/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/building-levels/$control"
+          done
+      - name: Upload linked building evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/building_levels'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: building-levels-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/building-levels/
+          retention-days: 7
       - name: Verify dew collector lifecycle and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/dew_collector')
         shell: bash
