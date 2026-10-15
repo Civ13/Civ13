@@ -51,9 +51,17 @@ jobs:
       - name: Test isolated OpenDream process and control adapter
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_opendream_control.py') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_opendream_receipts.py')
         run: python3 -m unittest discover -s tests -p 'test_opendream*.py' -v
+      - name: Test local WSL staging and owned-process failure paths without WSL
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_local_wsl.py')
+        run: python3 -m unittest discover -s tests -p test_local_wsl.py -v
       - name: Test current-source atlas generation and negative controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_crafting_atlas.py')
         run: python3 -m unittest discover -s tests -p test_crafting_atlas.py -v
+      - name: Test source-backed atlas entrypoints eras and processor controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_atlas_navigation.py')
+        run: |
+          python3 -m unittest discover -s tests -p test_atlas_navigation.py -v
+          node tests/crafting_atlas/navigation.test.mjs
       - name: Test and inventory placed outdoor bootstrap resources
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_outdoor_bootstrap.py')
         run: |
@@ -138,10 +146,14 @@ jobs:
         run: |
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
           python3 -m unittest discover -s tests/player_help -v
+          python3 tests/player_help/run-bridge-control.py
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control escaping
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control heartbeat
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control identity
+          python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control rate-limit
+          python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control prompt-first
+          python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control disconnect
       - name: Verify scheduler replacement ownership and omission controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/process_replacement')
         shell: bash
@@ -286,12 +298,16 @@ jobs:
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/crafting_atlas')
         shell: bash
         run: |
+          sudo apt-get install -y python3-pil
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
           /usr/bin/python3 scripts/build-crafting-atlas.py --output "$RUNNER_TEMP/crafting" --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --check-game-catalog UI/crafting-atlas.json
           node scripts/atlas/check.mjs "$RUNNER_TEMP/crafting"
           /usr/bin/python3 tests/crafting_atlas/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
           /usr/bin/python3 tests/crafting_atlas/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control
           /usr/bin/python3 tests/crafting_atlas/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --full-catalog
+          for control in default era processor output; do
+            /usr/bin/python3 tests/crafting_atlas/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --navigation-negative-control "$control"
+          done
 
       - name: Verify actual largest-map constructors under seasonal work
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_transition'))
@@ -378,6 +394,16 @@ jobs:
           python3 tests/npc_cover/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/npc-cover.json"
           python3 tests/npc_cover/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control boundary --output "$RUNNER_TEMP/npc-cover-boundary.json"
           python3 tests/npc_cover/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control tie --output "$RUNNER_TEMP/npc-cover-tie.json"
+      - name: Verify hover HUD production callbacks and negative controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/hover_name')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/hover_name/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/hover_name/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control identity
+          python3 tests/hover_name/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control exit
+          python3 tests/hover_name/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control stale
+          python3 tests/hover_name/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control parent
       - name: Verify bounded winter survival and cold-loss negative control
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/weather')
         shell: bash
@@ -385,6 +411,54 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           /usr/bin/python3 tests/weather/run.py --byond-bin "$PWD/BYOND/byond/bin"
           /usr/bin/python3 tests/weather/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
+      - name: Verify idle metabolism and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/idle_metabolism')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/idle_metabolism/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/idle-metabolism/positive"
+          for control in idle action persistence; do
+            python3 tests/idle_metabolism/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/idle-metabolism/$control"
+          done
+      - name: Upload idle metabolism evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/idle_metabolism'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: idle-metabolism-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/idle-metabolism/
+          retention-days: 7
+      - name: Verify staged flax processing and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/flax_processing')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/flax_processing/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/flax-processing/positive"
+          for control in payment replay persistence; do
+            python3 tests/flax_processing/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/flax-processing/$control"
+          done
+      - name: Upload flax processing evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/flax_processing'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: flax-processing-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/flax-processing/
+          retention-days: 7
+      - name: Verify dew collector lifecycle and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/dew_collector')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/dew_collector/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/dew-collector/positive"
+          for control in cap exposure timing persistence click; do
+            python3 tests/dew_collector/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/dew-collector/$control"
+          done
+      - name: Upload dew collector evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/dew_collector'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dew-collector-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/dew-collector/
+          retention-days: 7
       - name: Validate compiled crafting recipes
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/crafting')
         run: |
@@ -435,16 +509,50 @@ jobs:
           path: ${{ runner.temp }}/persistence-admission/
           if-no-files-found: error
       - name: Offline world-save round-trip regression
+        id: world_save
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save')
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/world-save"
+          export TMPDIR="$RUNNER_TEMP/world-save"
           bash tests/world_save/run.sh
           python3 tests/world_save/run-wrapper.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control metadata
           python3 tests/world_save/run-wrapper.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control recovery
           python3 tests/world_save/run-reader-contract.py --byond-bin "$PWD/BYOND/byond/bin"
           python3 tests/world_save/run-reader-contract.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control binding
           python3 tests/world_save/run-reader-contract.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control close
+          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control restore
+          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control preflight
         shell: bash
+      - name: Retain ordinary world-save evidence
+        if: always() && steps.world_save.outcome != 'skipped' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: world-save
+          path: ${{ runner.temp }}/world-save/
+          if-no-files-found: error
+
+      - name: Verify chemical smoke source ownership and historical control
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/chemical_smoke_ownership')
+        shell: bash
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/chemical_smoke_ownership/test_harness.py
+          /usr/bin/python3 tests/chemical_smoke_ownership/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/chemical-smoke/fixed"
+          /usr/bin/python3 tests/chemical_smoke_ownership/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/chemical-smoke/historical" --negative-control
+      - name: Upload chemical smoke ownership evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/chemical_smoke_ownership'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: chemical-smoke-ownership
+          path: |
+            ${{ runner.temp }}/chemical-smoke/
+            !${{ runner.temp }}/chemical-smoke/**/*.dmb
+            !${{ runner.temp }}/chemical-smoke/**/*.rsc
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: error
+
       - name: Verify isolated chemistry reactions and negative control
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/chemistry')
         shell: bash
@@ -578,6 +686,12 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 scripts/check-battery-items.py --probe modern-energy
           python3 scripts/check-battery-items.py --probe modern-energy --negative-control
+          python3 scripts/check-battery-items.py --probe modern-energy --nuclear-negative-control
+          python3 scripts/check-battery-items.py --probe modern-energy --route-negative-control debit
+          python3 scripts/check-battery-items.py --probe modern-energy --route-negative-control completion
+          python3 scripts/check-battery-items.py --probe modern-energy --route-negative-control radiation
+          python3 scripts/check-battery-items.py --probe modern-energy --route-negative-control retirement
+          python3 scripts/check-battery-items.py --probe modern-energy --route-negative-control final-interval
           python3 scripts/check-recipes.py
 
       - name: Check battery construction and durable state with compiled game types
@@ -756,6 +870,14 @@ jobs:
           for control in overflow rate retention; do
             /usr/bin/python3 tests/memory_telemetry/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/memory-telemetry-$control" --negative-control "$control"
           done
+      - name: Verify bounded runtime history and historical retention control
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/error_history')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/error_history/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/error-history-fixed"
+          /usr/bin/python3 tests/error_history/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/error-history-historical" --historical
+
       - name: Verify timed decal lifecycle and historical baseline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/decal_decay')
         shell: bash
@@ -820,3 +942,6 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           pwsh -NoProfile -File tests/gun_configuration/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
           pwsh -NoProfile -File tests/gun_configuration/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -NegativeControl
+          for control in install remove service premature; do
+            pwsh -NoProfile -File tests/gun_configuration/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -FeedbackNegativeControl "$control"
+          done

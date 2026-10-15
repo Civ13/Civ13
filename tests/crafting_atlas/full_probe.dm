@@ -1,6 +1,7 @@
 /world/New()
 	OpenPort("none")
 	var/mob/viewer = new
+	check_navigation(viewer)
 	check_atlas(crafting_atlas_reference.load_catalog(), "full production catalog load")
 	check_atlas(crafting_atlas_reference.recipes.len == ATLAS_EXPECTED_RECIPES, "all current records loaded")
 	var/first_page = crafting_atlas_reference.page_html(viewer)
@@ -13,6 +14,10 @@
 	var/iron_guidance = crafting_atlas_reference.acquisition_html("/obj/item/stack/ore/iron")
 	check_atlas(findtext(iron_guidance, "Powered soil sifter") && findtext(iron_guidance, "150"), "full catalog source restriction rendering")
 	check_atlas(constructed_items == 0, "full catalog no item constructors")
+	var/sawmill = crafting_atlas_reference.render_html(viewer, processor = "sawmill")
+	check_atlas(findtext(sawmill, "3 matching recipes") && findtext(sawmill, "nominal") && findtext(sawmill, "skill failure"), "full production sawmill conversions")
+	var/grain = crafting_atlas_reference.render_html(viewer, processor = "grain_mill")
+	check_atlas(findtext(grain, "8 matching recipes") && findtext(grain, "grain item") && findtext(grain, "stamina"), "full production grain conversions")
 	if (!atlas_failed)
 		text2file("PASS", "passed.txt")
 	del(world)

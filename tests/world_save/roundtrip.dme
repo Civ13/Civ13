@@ -13,3 +13,4 @@
 #include "roundtrip.dm"
 #include "transfers.dm"
 #include "restore_wrapper.dm"
+#include "round_metadata.dm"

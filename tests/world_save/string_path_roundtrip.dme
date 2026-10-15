@@ -1,0 +1,21 @@
+// Offline production round trip with engine3a20 text2file path semantics.
+// Restore file("map_saves/map.txt") in generated saving.dm as a negative control.
+#define TRUE 1
+#define FALSE 0
+#define TICK_CHECK fixture_tick_check()
+#define TICK_LIMIT_TO_RUN 100
+#define EXCEPTION(message) new /exception(message)
+#define FILE_DIR "../.."
+#include "../../code/predefines.dm"
+#include "stubs.dm"
+/proc/string_path_text2file(text, path)
+	if(!istext(path))
+		return 0
+	return text2file(text, path)
+#define text2file(text, path) string_path_text2file(text, path)
+#define fdel(path) delete_file_adapter(path)
+#include "../../code/modules/persistence/functions.dm"
+#include "../../code/modules/persistence/saving.dm"
+#include "../../code/modules/persistence/loading.dm"
+#include "roundtrip.dm"
+#include "transfers.dm"
