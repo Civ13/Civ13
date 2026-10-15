@@ -89,7 +89,7 @@
 		var/mob/living/human/nitrary_tester/H = new(site)
 		H.a_intent = I_HELP
 		var/obj/structure/oven/O = new(site)
-		var/obj/item/stack/material/wood/W = new(H)
+		var/obj/item/stack/material/wood/W = new(H, 1, FALSE)
 		W.amount = 2
 		O.attackby(W,H)
 		check_nitrary(O.fuel == 2 && O.wood_residue.wood_remaining == 2 && !W.loc && ash_count(site) == 0, "refueling pays wood without producing ash")
@@ -115,13 +115,13 @@
 		fire.attack_hand(H)
 		check_nitrary(fire.fuel == 3 && ash_count(get_turf(fire)) == 1, "campfire construction wood produces paid residue")
 		var/obj/structure/furnace/F = new(locate(6,3,1))
-		W = new(H)
+		W = new(H, 1, FALSE)
 		W.amount = 3
 		F.attackby(W,H)
 		F.attack_hand(H)
 		check_nitrary(F.fuel == 1 && F.wood_residue.wood_remaining == 1 && ash_count(get_turf(F)) == 2, "bloomery production ignition debits wood")
 		var/obj/structure/machinery/factory/M = new(locate(7,3,1))
-		W = new(H)
+		W = new(H, 1, FALSE)
 		W.amount = 3
 		M.attackby(W,H)
 		M.attack_hand(H)
@@ -156,7 +156,7 @@
 		C.current = 0
 		C = C.nitrary_convert(H)
 		check_nitrary(istype(C, /obj/structure/compost/plant_nitrary), "existing empty bin converts without new station")
-		W = new(H)
+		W = new(H, 1, FALSE)
 		nitrary_hold(H,W)
 		C.attackby(W,H)
 		P.reagents.clear_reagents()
@@ -219,14 +219,18 @@
 		stove.attackby(P,H)
 		sleep(2)
 		check_nitrary(P.reagents.get_reagent_amount("nitrate_leachate") == 10, "unlit stove does not boil leachate")
-		W = new(H)
+		W = new(H, 1, FALSE)
 		W.amount = 2
 		stove.attackby(W,H)
-		check_nitrary(stove.fuel == 2 && P.loc == get_turf(stove) && P.on_stove, "paid stove ignition preconditions")
+		world.log << "NITRARY preconditions fuel=[stove.fuel] pot_loc=[P.loc] stove_turf=[get_turf(stove)] pot_on=[P.on_stove]"
+		check_nitrary(stove.fuel == 2, "stove has paid ignition fuel")
+		check_nitrary(P.loc == get_turf(stove), "small pot placed on stove turf")
+		check_nitrary(P.on_stove, "small pot stove placement marker set")
 		stove.attack_hand(H)
 		var/deadline = world.time + 20
 		while (P.on_stove && world.time < deadline)
 			sleep(1)
+		check_nitrary(!P.on_stove, "first actual boiling callback completed before deadline")
 		world.log << "NITRARY stove fuel=[stove.fuel] on=[stove.on] pot_on=[P.on_stove] leachate=[P.reagents.get_reagent_amount("nitrate_leachate")] potassium=[P.reagents.get_reagent_amount("potassium")] nitrogen=[P.reagents.get_reagent_amount("nitrogen")]"
 		check_nitrary(!P.reagents.get_reagent_amount("nitrate_leachate") && P.reagents.get_reagent_amount("potassium") == 1 && P.reagents.get_reagent_amount("nitrogen") == 1, "actual small pot callback recovers legacy mineral IDs")
 		stove.attackby(P,H)
@@ -234,6 +238,7 @@
 		deadline = world.time + 20
 		while (P.on_stove && world.time < deadline)
 			sleep(1)
+		check_nitrary(!P.on_stove, "second actual boiling callback completed before deadline")
 		check_nitrary(P.reagents.get_reagent_amount("potassium") == 1 && P.reagents.get_reagent_amount("nitrogen") == 1, "reboiling spent extract cannot mint minerals")
 		text2file("PASS: wood residue and nitrary native disk round trips", "result.txt")
 	catch (var/exception/E)
