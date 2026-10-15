@@ -277,6 +277,7 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 <!-- 2026-10-15: archived combat histories -->
 Combat history writers use `append_attack_log`; ghosts share the body's list.
+Keep the mob history declared as `var/list` for native list method resolution.
 Retire rows in place only after the private archive write succeeds. Archive
 failure deliberately retains history, with scalar retry/warning cooldowns.
 `tests/attack_history` checks writer coverage and isolated production contracts;

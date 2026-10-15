@@ -1,6 +1,6 @@
 /mob/var/lastattacker = null
 /mob/var/lastattacked = null
-/mob/var/attack_log = list()
+/mob/var/list/attack_log = list()
 
 #define ATTACK_HISTORY_RECENT_LIMIT 1024
 #define ATTACK_HISTORY_ARCHIVE_BATCH 64
@@ -32,7 +32,7 @@ var/attack_history_archive_warning_at = 0
 	var/archived = FALSE
 	try
 		archived = archive_attack_history(src, entries)
-	catch (var/exception/e)
+	catch
 		archived = FALSE
 	if (!archived)
 		attack_history_archive_retry_at = world.time + ATTACK_HISTORY_ARCHIVE_RETRY

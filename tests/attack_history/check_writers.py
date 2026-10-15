@@ -9,7 +9,7 @@ import re
 ROOT = Path(__file__).resolve().parents[2]
 HELPER = 'code/modules/admin/admin_attack_log.dm'
 ALLOWED = {
-    (HELPER, '/mob/var/attack_log = list()'),
+    (HELPER, '/mob/var/list/attack_log = list()'),
     (HELPER, 'attack_log = list()'),
     (HELPER, 'attack_log += entry'),
     (HELPER, 'attack_log.Cut(1, archive_count + 1)'),
