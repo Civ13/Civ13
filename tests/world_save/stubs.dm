@@ -34,6 +34,20 @@ var/list/mutate_on_tick = null
 /obj/covers
 /mob
 	var/stat = FALSE // Production mob_defines.dm default; states from predefines.dm.
+	var/datum/hud/hud_used
+	var/list/HUDneed = list()
+	var/list/HUDinventory = list()
+	var/list/HUDfrippery = list()
+	var/list/HUDprocess = list()
+	var/list/HUDtech = list()
+	var/obj/screen/hands
+	var/obj/screen/pullin
+	var/obj/screen/purged
+	var/obj/screen/i_select
+	var/obj/screen/m_select
+	var/obj/screen/zone_sel
+/obj/screen
+/datum/hud
 /mob/new_player
 /mob/living/human
 	var/tmp/rejuvenate_calls = 0

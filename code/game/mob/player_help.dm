@@ -1,20 +1,15 @@
 // Only local bounded files are read here. The optional bridge owns HTTP/model work.
 var/global/datum/player_help_service/player_help_service = new
 
-/client
-	var/player_help_cooldown = 0
-
-/mob/verb/ask_player_help()
+/client/verb/ask_player_help()
 	set name = "Ask for help"
 	set category = "Help!"
-	if (!client)
-		return
-	if (!player_help_service.available())
-		src << "AI gameplay help is not configured or its service is unavailable. You can still use the Crafting Atlas."
-		return
-	var/question = input(src, "Ask a gameplay question. Your question and gameplay condition (health, inventory, exposure and public server state) are sent to the server owner's AI service. Do not enter personal information.", "Ask for help") as text|null
-	if (client && question)
-		player_help_service.submit(client, question)
+	var/question = player_help_prompt()
+	if (question && (src in clients))
+		player_help_service.submit(src, question)
+
+/client/proc/player_help_prompt()
+	return input(src, "Ask a gameplay question. Your question and gameplay condition (health, inventory, exposure and public server state) are sent to the server owner's AI service. Do not enter personal information.", "Ask for help") as text|null
 
 /datum/player_help_service
 	var/root = "SQL/player-help/"
@@ -24,6 +19,83 @@ var/global/datum/player_help_service/player_help_service = new
 	var/heartbeat_time = -1000
 	var/serial = 0
 	var/request_timeout_seconds = 60
+	var/account_salt
+	var/list/accounts = list()
+	var/list/global_times = list()
+	var/list/limits = list("cooldown_seconds"=30, "burst_requests"=3, "burst_seconds"=120, "window_requests"=10, "window_seconds"=600, "global_requests"=30, "global_seconds"=60, "max_accounts"=2048, "queue_slots"=8)
+
+// Account identity comes only from the authenticated client, never player input.
+// A per-server salt keeps account names out of the bridge and model payload.
+/datum/player_help_service/proc/account_key(client/C)
+	if (!C || !C.ckey || IsGuestKey(C.ckey))
+		return null
+	if (!account_salt)
+		account_salt = "[world.realtime]-[rand(1, 1000000000)]"
+	return md5("[account_salt]:[C.ckey]")
+
+/datum/player_help_service/proc/refresh_limits()
+	var/list/settings = read_json("[root]limits.json", 1024)
+	if (!islist(settings))
+		return
+	for (var/key in limits)
+		var/value = settings[key]
+		var/ceiling = findtext(key, "seconds") ? 86400 : 4096
+		if (key == "queue_slots")
+			ceiling = 8
+		if (isnum(value) && value == round(value) && value >= 1 && value <= ceiling)
+			limits[key] = value
+
+// No sleeps or external calls between admission and reservation.
+// Return a slot number or private rejection text. Reconnects share account state.
+/datum/player_help_service/proc/reserve(account)
+	if (!istext(account) || length(account) != 32)
+		return "Please sign in to a BYOND account to ask for AI gameplay help."
+	var/now = limit_time()
+	var/retention = max(limits["cooldown_seconds"], limits["burst_seconds"], limits["window_seconds"]) * 10
+	for (var/key in accounts.Copy())
+		var/list/times = accounts[key]
+		while (times.len && now - times[1] >= retention)
+			times.Cut(1, 2)
+		if (!times.len)
+			accounts -= key
+	while (global_times.len && now - global_times[1] >= limits["global_seconds"] * 10)
+		global_times.Cut(1, 2)
+	var/slot = 0
+	for (var/i = 1, i <= 8, i++)
+		var/list/entry = pending["[i]"]
+		if (entry && entry["account"] == account)
+			return "Your previous question is still pending."
+		if (!entry && !slot && i <= limits["queue_slots"])
+			slot = i
+	var/list/history = accounts[account]
+	if (history)
+		var/retry = 0
+		var/list/caps = list(1, limits["burst_requests"], limits["window_requests"])
+		var/list/spans = list(limits["cooldown_seconds"], limits["burst_seconds"], limits["window_seconds"])
+		for (var/index = 1, index <= 3, index++)
+			var/count = 0
+			var/first = 0
+			for (var/timestamp in history)
+				if (now - timestamp < spans[index] * 10)
+					if (!count)
+						first = timestamp
+					count++
+			if (count >= caps[index])
+				retry = max(retry, spans[index] * 10 - (now - first))
+		if (retry)
+			return "Please wait [round(retry / 10) + 1] seconds before asking another gameplay question."
+	if (!slot || global_times.len >= limits["global_requests"] || (!history && accounts.len >= limits["max_accounts"]))
+		return "AI gameplay help is busy. Please wait at least 5 seconds before trying again."
+	if (!history)
+		history = list()
+		accounts[account] = history
+	history += now
+	global_times += now
+	pending["[slot]"] = list("account"=account, "deadline"=now + request_timeout_seconds * 10)
+	return slot
+
+/datum/player_help_service/proc/limit_time()
+	return world.time
 
 /datum/player_help_service/proc/read_json(path, limit)
 	var/raw = file2text(path)
@@ -35,6 +107,7 @@ var/global/datum/player_help_service/player_help_service = new
 		return null
 
 /datum/player_help_service/proc/available()
+	refresh_limits()
 	var/list/health = read_json("[root]health.json", 256)
 	if (!islist(health) || health["enabled"] != TRUE || !istext(health["sequence"]))
 		return FALSE
@@ -129,38 +202,38 @@ var/global/datum/player_help_service/player_help_service = new
 	return context
 
 /datum/player_help_service/proc/submit(client/C, question)
-	if (!available())
-		C << "AI gameplay help is unavailable. Please use the Crafting Atlas or try again later."
+	if (!C || !istext(question) || !length(question))
 		return FALSE
-	if (length(question) > 500)
-		C << "Please keep your question to 500 characters or fewer."
+	var/result = enqueue(account_key(C), question, C)
+	if (istext(result))
+		C << result
 		return FALSE
-	if (world.time < C.player_help_cooldown)
-		C << "Please wait before asking another gameplay question."
-		return FALSE
-	var/slot = 0
-	for (var/i = 1, i <= 8, i++)
-		var/list/existing = pending["[i]"]
-		if (islist(existing) && existing["client"] == C)
-			C << "Your previous question is still pending."
-			return FALSE
-		if (!existing && !slot)
-			slot = i
-	if (!slot)
-		C << "AI gameplay help is busy. Please try again later."
-		return FALSE
-	clear_slot(slot)
-	serial++
-	var/id = "[world.realtime]-[rand(1, 999999)]-[serial]"
-	var/list/request = list("id" = id, "question" = question, "game_context" = game_context(C.mob))
-	if (!text2file(json_encode(request), "[root][slot].request.json") || !text2file(id, "[root][slot].ready"))
-		clear_slot(slot)
-		C << "AI gameplay help could not send your question. Please try again later."
-		return FALSE
-	pending["[slot]"] = list("id" = id, "client" = C, "deadline" = world.time + request_timeout_seconds * 10)
-	C.player_help_cooldown = world.time + 300
 	C << "Asking the AI gameplay helper. Answers can be mistaken; check the Crafting Atlas and player wiki."
 	return TRUE
+
+// Server-owned queue boundary; no client/Topic-supplied account identifiers.
+/datum/player_help_service/proc/enqueue(account, question, client/C)
+	if (!available())
+		return "AI gameplay help is unavailable. Please use the Crafting Atlas or try again later."
+	if (!istext(question) || !length(question) || length(question) > 500)
+		return "Please keep your question to 1 through 500 characters."
+	var/slot = reserve(account)
+	if (!isnum(slot))
+		return slot
+	serial++
+	var/id = "[world.realtime]-[rand(1, 999999)]-[serial]"
+	var/list/request = list("id" = id, "account" = account, "question" = question, "game_context" = game_context(C ? C.mob : null))
+	fdel("[root][slot].ready")
+	fdel("[root][slot].request.json")
+	fdel("[root][slot].response.json")
+	if (!write_request(slot, request))
+		clear_slot(slot)
+		return "AI gameplay help could not send your question. Please try again later."
+	pending["[slot]"] = list("id" = id, "account" = account, "client" = C, "deadline" = world.time + request_timeout_seconds * 10)
+	return TRUE
+
+/datum/player_help_service/proc/write_request(slot, list/request)
+	return text2file(json_encode(request), "[root][slot].request.json") && text2file(request["id"], "[root][slot].ready")
 
 /datum/player_help_service/proc/poll()
 	available()
@@ -169,18 +242,23 @@ var/global/datum/player_help_service/player_help_service = new
 		if (!islist(entry))
 			continue
 		var/client/C = entry["client"]
-		if (!C || !(C in clients))
-			clear_slot(i)
-			continue
+		// Disconnect does not cancel work or release the account's pending lock.
+		if (C && !(C in clients))
+			C = null
 		var/list/response = matching_response(i, entry["id"])
 		if (islist(response))
-			if (response["status"] == "ok" && istext(response["answer"]) && length(response["answer"]) <= 4000)
+			if (C && response["status"] == "ok" && istext(response["answer"]) && length(response["answer"]) <= 4000)
 				C << browse(render_answer(response["answer"]), "window=player_help;size=600x500")
-			else
+			else if (C && response["status"] == "rate_limited")
+				C << "AI gameplay help rate limit reached. Please wait [max(1, min(86400, text2num("[response["retry_seconds"]]")))] seconds and try again."
+			else if (C && (response["status"] == "busy" || response["status"] == "pending"))
+				C << "AI gameplay help is busy or your previous question is pending. Please wait [max(1, min(86400, text2num("[response["retry_seconds"]]")))] seconds before trying again."
+			else if (C)
 				C << "AI gameplay help did not receive a usable response. Please try again later or use the Crafting Atlas."
 			clear_slot(i)
 		else if (world.time >= entry["deadline"])
-			C << "AI gameplay help timed out without a response. Please try again later or use the Crafting Atlas."
+			if (C)
+				C << "AI gameplay help timed out without a response. Please try again later or use the Crafting Atlas."
 			clear_slot(i)
 
 /datum/player_help_service/proc/render_answer(answer)

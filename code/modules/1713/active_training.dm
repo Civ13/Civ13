@@ -17,7 +17,7 @@
 	var/tmp/obj/structure/exercise/exercise_equipment
 
 /mob/living/human/persistence_runtime_var(key)
-	return (key in list("exercise_rest_epoch", "exercise_equipment")) || ..()
+	return (key in list("exercise_rest_epoch", "exercise_equipment", "survival_rest_since", "survival_actions")) || ..()
 
 /mob/living/human/proc/recover_exercise()
 	var/now = exercise_time()

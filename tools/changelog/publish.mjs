@@ -15,7 +15,9 @@ export function changelogLine(body) {
   const visible = body.replace(/<!--[\s\S]*?(?:-->|$)/g, '');
   let fence = null;
   const entries = [];
-  for (const line of visible.split(/\r?\n/)) {
+  // Repeated Windows newline translation can produce CRCRLF. Only consume
+  // CRs immediately before LF; embedded CRs remain invalid line content.
+  for (const line of visible.split(/\r*\n/)) {
     const delimiter = line.match(/^\s*(`{3,}|~{3,})/);
     if (delimiter) {
       if (!fence) fence = delimiter[1];

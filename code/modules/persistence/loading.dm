@@ -15,6 +15,10 @@
 		savefile.cd = entry_path(savefile, ind)
 		if(!ispath(type, /datum))
 			throw EXCEPTION("Invalid saved type at entry [ind]: [type]")
+		// Older completed saves can contain client HUD graphs. Never construct
+		// their screen/datum objects without the live client owner they require.
+		if(ispath(type, /obj/screen) || ispath(type, /datum/hud))
+			return null
 		if(ispath(type, /obj/map_metadata))
 			existing_references["[ind]"] = map
 			return map
@@ -36,8 +40,12 @@
 			object = locate(xa,ya,za)
 		else if(replacement)
 			object = replacement
-		else
+		else if(ispath(type, /atom))
 			object = new type(starting_loc)
+		else
+			// Non-atom datums have no location argument. In particular, matrix
+			// construction must use its no-argument identity initializer.
+			object = new type()
 		if(!object)
 			throw EXCEPTION("Could not create saved entry [ind] ([type])")
 		all_loaded += object

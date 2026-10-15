@@ -32,7 +32,7 @@
 		to_chat(user, "You begin smithing the steel...")
 		playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
 		if (do_after(user,15*P.amount,src))
-			to_chat(user, "<span class='notice'>You smite the steel.</span>")
+			to_chat(user, "<span class='notice'>You finish smithing the steel.</span>")
 			steel_amt += P.amount
 			qdel(P)
 		return

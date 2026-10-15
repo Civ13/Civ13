@@ -21,6 +21,16 @@ const commit = 'b'.repeat(40);
 const pr = { number: 42, merged: true, body: 'Changelog: Fixed crafting.', merge_commit_sha: commit, base: { ref: 'master', repo: { full_name: 'Civ13/Civ13' } } };
 const event = () => ({ action: 'closed', number: 42, pull_request: structuredClone(pr) });
 const env = { GITHUB_REPOSITORY: 'Civ13/Civ13', GITHUB_EVENT_NAME: 'pull_request_target', MERGE_CHANGELOG_ENABLED: 'true', DISCORD_CHANGELOG_WEBHOOK: 'https://discord.com/api/webhooks/123/token' };
+
+test('repeated CR before LF preserves explicit single-line changelogs', () => {
+  const newline = '\r\r\n'; // Windows text output can translate an existing CRLF again.
+  assert.equal(changelogLine(`Details${newline}changelog: Fixed crafting.${newline}`), 'Fixed crafting.');
+  assert.throws(() => changelogLine(`Changelog: one${newline}Changelog: two${newline}`), /only one/);
+  assert.equal(changelogLine(`\`\`\`md${newline}Changelog: example${newline}\`\`\`${newline}`), null);
+  assert.equal(changelogLine(`> Changelog: quoted${newline}`), null);
+  assert.equal(changelogLine(`Changelog: first\rsecond${newline}`), null);
+});
+
 function harness() {
   let stored, posts = 0;
   const api = async (path, options) => {
@@ -47,6 +57,14 @@ test('merged PR sends once and rejects changed content on replay', async () => {
   assert.equal(h.posts(), 1);
   const changed = event(); changed.pull_request.body = 'Changelog: Different.';
   await assert.rejects(run(env, changed, h), /changed/);
+  assert.equal(h.posts(), 1);
+});
+test('merged CRCRLF event uses the same guarded receipt and suppresses replay', async () => {
+  const h = harness();
+  const e = event();
+  e.pull_request.body = 'Details\r\r\nchangelog: Fixed crafting.\r\r\n';
+  await run(env, e, h);
+  await run(env, e, h);
   assert.equal(h.posts(), 1);
 });
 test('absent or blank fields require no credentials or external effects', async () => {
