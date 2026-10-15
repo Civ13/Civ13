@@ -53,9 +53,11 @@ public static class LocalDreamDaemon {
         root = strictDOutput ? RequireDPath(root) : RequirePath(root);
         var world = RequirePath(receipt.World);
         var host = (inspectHost ?? InspectHost)(receipt.Pid);
+        var hostName = Path.GetFileName(host.Executable);
         if (host.StartTimeUtcTicks != receipt.StartTimeUtcTicks ||
             !string.Equals(Path.GetFullPath(host.Executable), Path.GetFullPath(receipt.Daemon), StringComparison.OrdinalIgnoreCase) ||
-            host.Version != "5.0.516.1681" || !Path.GetFileName(host.Executable).Equals("DreamDaemon.exe", StringComparison.OrdinalIgnoreCase) ||
+            host.Version != "5.0.516.1681" ||
+            !(hostName.Equals("DreamDaemon.exe", StringComparison.OrdinalIgnoreCase) || hostName.Equals("dd.exe", StringComparison.OrdinalIgnoreCase)) ||
             (hash ?? Updater.Hash)(world) != receipt.WorldSha256)
             throw new IOException("Local DreamDaemon process identity or world file hash changed. Ask the host owner for a fresh receipt.");
         if (!(matchesClient ?? MatchesClient)(byondBin))

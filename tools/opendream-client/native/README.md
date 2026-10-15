@@ -13,10 +13,11 @@ Source/map labels belong to the trusted host receipt; they are not inferred from
 the game binary. The hash checks the current file on disk, not the loaded world;
 the receipt's port does not prove TCP ownership by that PID. Before actual host
 acceptance, the host owner must establish receipt provenance, the original frozen
-world hash, immutable staging and process/port ownership. This scaffold accepts
-only `DreamDaemon.exe`; an actual `dd.exe` host or GUI parent requires a reviewed
-executable policy and the real serving process identity before testing.
+world hash, immutable staging and process/port ownership. Receipts must identify the real serving process rather than a GUI parent.
 Normal public Play continues to enforce the fresh DNS policy.
+Local receipts accept the official BYOND `DreamDaemon.exe` and console `dd.exe`
+hosts, with the same pinned version, process start, executable path and world
+hash checks for both entry points.
 
 Normal BYOND settings/cache are allowed under the current storage policy. The
 launcher does not move accounts/cache or change preferences. `--root` can be any

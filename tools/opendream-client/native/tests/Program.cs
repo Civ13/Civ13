@@ -37,6 +37,12 @@ try {
     var normalLocalStart = LocalDreamDaemon.Prepare(localHost, @"C:\verified", @"C:\isolated",
         InspectLocal, hash: _ => new string('a', 64), matchesClient: _ => true);
     Require(normalLocalStart.ArgumentList.Single() == "byond://127.0.0.1:18459", "normal BYOND cache policy blocked local dispatch");
+    var consoleHost = localHost with { Daemon = @"C:\verified\dd.exe" };
+    var consoleStart = LocalDreamDaemon.Prepare(consoleHost, @"C:\verified", @"D:\isolated",
+        _ => new(456, consoleHost.Daemon, "5.0.516.1681"), hash: _ => new string('a', 64), matchesClient: _ => true);
+    Require(consoleStart.ArgumentList.Single() == "byond://127.0.0.1:18459", "official console daemon rejected");
+    Reject(() => LocalDreamDaemon.Prepare(consoleHost with { Daemon = @"C:\verified\other.exe" }, @"C:\verified", @"D:\isolated",
+        _ => new(456, @"C:\verified\other.exe", "5.0.516.1681"), hash: _ => new string('a', 64)), "unrecognized daemon executable");
     var localStart = LocalStart(localHost, () => @"D:\BYOND-user");
     Require(localStart.ArgumentList.Single() == "byond://127.0.0.1:18459" && !localStart.UseShellExecute,
         "isolated DD endpoint escaped loopback or used URI association");
