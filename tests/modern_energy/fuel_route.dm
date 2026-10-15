@@ -33,6 +33,8 @@ var/list/energy_mining_rolls = list()
 /obj/structure/reactor_fuel_processor/energy_ci
 	var/mode = "complete"
 	var/obj/item/stack/ore/uranium/input
+	persistence_runtime_var(key)
+		return (key in list("mode", "input")) || ..()
 	processing_wait(mob/living/human/H)
 		if (mode == "cancel")
 			return FALSE
@@ -129,6 +131,8 @@ var/list/energy_mining_rolls = list()
 	energy_ci_check("processor native save restores no work", restored && !restored.fuel_processing, TRUE)
 	P.fuel_processing = FALSE
 	var/obj/item/stack/reactor_fuel/paid = locate() in P.loc
+	save = new("fuel-route-cartridge.sav")
+	save["/format_version"] << 2
 	map_storage.clear_bookkeeping()
 	map_storage.saving_z = 1
 	ref = map_storage.BuildVarDirectory(save,paid,1)
@@ -163,6 +167,8 @@ var/list/energy_mining_rolls = list()
 	var/obj/structure/closet/crate/lead/lead = new(locate(1,1,1))
 	U.forceMove(lead)
 	U.uranium_extracting = TRUE
+	save = new("fuel-route-lead.sav")
+	save["/format_version"] << 2
 	map_storage.clear_bookkeeping()
 	map_storage.saving_z = 1
 	ref = map_storage.BuildVarDirectory(save,lead,1)

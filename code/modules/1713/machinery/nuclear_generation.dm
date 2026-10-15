@@ -113,7 +113,7 @@
 	return do_after(H, 100, src)
 
 /obj/structure/reactor_fuel_processor/proc/processing_access(mob/living/human/H, obj/item/stack/ore/uranium/U)
-	if (!H || !U || H.gc_destroyed || H.gcDestroyed || U.gc_destroyed || U.gcDestroyed || U.uranium_retired || U.amount < 1 || !civ_generation_can_build(H, type) || !(U.loc == H || isturf(U.loc)))
+	if (!H || !U || H.gc_destroyed || H.gcDestroyed || U.gc_destroyed || U.gcDestroyed || U.uranium_retired || U.amount < 1 || !civ_generation_can_build(H, /obj/structure/reactor_fuel_processor) || !(U.loc == H || isturf(U.loc)))
 		return FALSE
 	var/turf/source_turf = get_turf(src)
 	var/turf/actor_turf = get_turf(H)
