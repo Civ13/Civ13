@@ -117,7 +117,7 @@
 		return ..()
 	var/obj/item/stack/ore/uranium/U = W
 	var/mob/living/human/H = user
-	if (fuel_processing || fuel_retired || U.uranium_extracting || U.uranium_retired || U.amount < 1 || !isturf(loc) || !civ_generation_can_build(H, type) || get_dist(H, src) > 1 || get_dist(U, src) > 1)
+	if (fuel_processing || fuel_retired || U.uranium_extracting || U.uranium_retired || U.amount < 1 || !isturf(loc) || !civ_generation_can_build(H, type) || !(U.loc == H || isturf(U.loc)) || get_dist(H, src) > 1 || get_dist(U, src) > 1)
 		return
 	fuel_processing = TRUE
 	U.uranium_extracting = TRUE

@@ -30,7 +30,7 @@
 			T.rad_act(cseverity)
 		else if (distance > 1 && distance <= range)
 			T.rad_act(cseverity*(1-(distance/range)))
-	if (world.time <= last && duration > 0)
+	if (world.time <= last && duration > 0 && (!local_only || duration > 1))
 		spawn(10)
 			radiation_pulse(epicenter, range, severity, duration-1, 0, local_only)
 	if (log)

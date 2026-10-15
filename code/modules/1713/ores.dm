@@ -249,9 +249,9 @@
 				var/timera = 110/(H.getStatCoeff("dexterity"))
 				if (do_after(H, timera))
 					if (!uranium_retired && amount >= 1 && loc == start_loc && ET.loc == kit_loc && get_dist(H, src) <= 1 && ET.reagents.total_volume <= 0)
-						ET.reagents.add_reagent("uranium",5)
-						ET.update_icon()
-						use(1)
+						if (use(1))
+							ET.reagents.add_reagent("uranium",5)
+							ET.update_icon()
 				uranium_extracting = FALSE
 		else
 			..()
@@ -288,6 +288,10 @@
 
 /obj/item/stack/ore/uranium/persistence_runtime_var(key)
 	return (key in list("uranium_emitting", "uranium_retired", "uranium_extracting")) || ..()
+
+/obj/item/stack/ore/uranium/after_load()
+	..()
+	process_radioactivity()
 /obj/item/stack/ore/uranium/random
 	New()
 		..()

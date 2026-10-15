@@ -13,8 +13,9 @@ var/list/energy_mining_rolls = list()
 		pulses++
 		dose += severity
 /mob/living/human/energy_ci/fuel_actor
+	var/craft_skill = 105
 	getStat(stat_name)
-		return 105
+		return craft_skill
 /obj/structure/reactor_fuel_processor/energy_ci
 	var/mode = "complete"
 	var/obj/item/stack/ore/uranium/input
@@ -33,6 +34,11 @@ var/list/energy_mining_rolls = list()
 	for (var/obj/item/stack/reactor_fuel/F in T)
 		total += F.amount
 	return total
+/proc/energy_ore_units(turf/T)
+	var/total = 0
+	for (var/obj/item/stack/ore/uranium/U in T)
+		total += U.amount
+	return total
 /proc/run_nuclear_fuel_route_checks()
 	build_research_tree()
 	map.ordinal_age = 8
@@ -44,7 +50,7 @@ var/list/energy_mining_rolls = list()
 	node[RNODE_ENTRY_STATUS] = RNODE_DONE
 	var/obj/structure/reactor_fuel_processor/energy_ci/P = new(H.loc)
 	var/turf/mine = new /turf/floor/dirt/underground(locate(1,4,1))
-	mine.is_mineable = TRUE
+	energy_ci_check("real underground terrain is mineable", mine.is_mineable, TRUE)
 	energy_mining_rolls = list(FALSE,FALSE,FALSE,TRUE)
 	mine.mining_proc(null)
 	mine = locate(1,4,1)
@@ -54,9 +60,28 @@ var/list/energy_mining_rolls = list()
 	if (!U)
 		qdel(P)
 		return
+	energy_mining_rolls = list(FALSE,FALSE,FALSE,TRUE)
+	mine.mining_proc(null)
+	energy_ci_check("depleted terrain cannot mint more uranium", energy_ore_units(locate(1,4,1)), 1)
+	var/turf/early = new /turf/floor/dirt/underground(locate(4,4,1))
+	map.ordinal_age = 7
+	energy_mining_rolls = list(FALSE,FALSE,FALSE,TRUE)
+	early.mining_proc(null)
+	energy_ci_check("preModern mining cannot yield uranium", energy_ore_units(locate(4,4,1)), 0)
+	map.ordinal_age = 8
 	U.forceMove(H)
 	U.amount = 3
 	P.input = U
+	P.mode = "complete"
+	node[RNODE_ENTRY_STATUS] = RNODE_AVAILABLE
+	P.attackby(U,H)
+	energy_ci_check("locked processing cannot debit", U.amount, 3)
+	energy_ci_check("locked processing cannot issue cartridge", energy_cartridges(P.loc), 0)
+	node[RNODE_ENTRY_STATUS] = RNODE_DONE
+	H.craft_skill = 104
+	P.attackby(U,H)
+	energy_ci_check("under skilled processing cannot debit", U.amount, 3)
+	H.craft_skill = 105
 	P.mode = "cancel"
 	P.attackby(U,H)
 	energy_ci_check("interrupted processing preserves input", U.amount, 3)
@@ -81,6 +106,14 @@ var/list/energy_mining_rolls = list()
 	var/obj/structure/reactor_fuel_processor/restored = map_storage.Load_Entry(save,ref,null,locate(3,1,1))
 	energy_ci_check("processor native save restores no work", restored && !restored.fuel_processing, TRUE)
 	P.fuel_processing = FALSE
+	var/obj/item/stack/reactor_fuel/paid = locate() in P.loc
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	ref = map_storage.BuildVarDirectory(save,paid,1)
+	map_storage.clear_bookkeeping()
+	var/obj/item/stack/reactor_fuel/paid_restored = map_storage.Load_Entry(save,ref,null,locate(2,4,1))
+	energy_ci_check("paid cartridge native save amount", paid_restored ? paid_restored.amount : -1, 1)
+	qdel(paid_restored)
 	P.mode = "destroy"
 	P.attackby(U,H)
 	energy_ci_check("destroyed processor cannot consume", U.amount, 2)
@@ -106,11 +139,13 @@ var/list/energy_mining_rolls = list()
 	var/radiation_before = global_radiation
 	var/obj/item/energy_rad_receiver/nearby = new(locate(1,1,1))
 	var/obj/item/energy_rad_receiver/other_z = new(locate(1,1,2))
+	var/obj/item/energy_rad_receiver/boundary = new(locate(4,1,1))
 	radiation_pulse(locate(1,1,1),3,7,2,FALSE,TRUE)
 	sleep(11)
 	energy_ci_check("local recursion never changes global", global_radiation, radiation_before)
 	energy_ci_check("local recursion exact two pulses", nearby.pulses, 2)
 	energy_ci_check("local pulse excludes other z", other_z.pulses, 0)
+	energy_ci_check("radius boundary receives zero dose", boundary.dose, 0)
 	nearby.pulses = 0
 	var/obj/item/stack/ore/uranium/emitter = new(locate(1,1,1))
 	emitter.process_radioactivity()
@@ -127,6 +162,14 @@ var/list/energy_mining_rolls = list()
 	var/hits = nearby.pulses
 	sleep(11)
 	energy_ci_check("retired ore does not rearm", nearby.pulses, hits)
+	var/obj/item/stack/ore/uranium/queued = new(shield)
+	queued.gc_destroyed = GC_QUEUED_FOR_QUEUING
+	sleep(11)
+	energy_ci_check("pre garbage queue marker stops chain", queued.uranium_emitting, FALSE)
+	sleep(11)
+	energy_ci_check("pre garbage queue cannot emit", nearby.pulses, hits)
+	queued.gc_destroyed = 0
+	qdel(queued)
 	radiation_pulse(locate(1,1,1),3,7,1,FALSE)
 	energy_ci_check("default pulse retains global behavior", global_radiation > radiation_before, TRUE)
 	qdel(shield)
