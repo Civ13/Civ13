@@ -47,10 +47,13 @@
 		check(!map_storage.load_map_metadata(), "invalid round extension imported: [bad]")
 		check(map.age == "live sentinel", "invalid round extension changed base metadata: [bad]")
 		for(var/key in keys) check(map.vars[key] == FALSE, "invalid round extension changed mode: [bad]")
-		// Both direct preflight and the wrapper report this intentional rejection.
-		check(errors.len == error_count + 2, "unexpected rejection message count: [bad]")
-		for(var/i = error_count + 1, i <= errors.len, i++)
+		// Direct preflight and wrapper preflight each report the malformed save;
+		// the wrapper also reports its caught failure without mutating the world.
+		check(errors.len == error_count + 3, "unexpected rejection message count: [bad]")
+		for(var/i = error_count + 1, i <= error_count + 2, i++)
 			check(errors[i] == "Save rejected before clearing the world: Save round-mode metadata is malformed", "unexpected rejection message: [bad]")
+		var/wrapper_report = errors[error_count + 3]
+		check(findtext(wrapper_report, "Import failed during restoration; restart from the original map before retrying: Save round-mode metadata is malformed on ") == 1, "unexpected wrapper rejection message: [bad]")
 		errors.Cut(error_count + 1)
 	write_round_metadata_fixture(saved)
 	check(map_storage.load_map_metadata() && map_storage.validate_world_save(), "round fixture did not restore completed save")

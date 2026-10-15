@@ -254,9 +254,10 @@
 	deployed_car.engine.on = FALSE
 	var/obj/structure/vehicleparts/frame/raid_frame = deployed_car.loc
 	raid_frame.w_front[5] = 49
-	var/obj/item/extraction_salvage/new_cargo = new(get_turf(dealer_boot))
-	new_cargo.extraction_found_in_raid = TRUE
-	equipment_assert(M.track_loot(new_cargo), "new raid cargo enters actual loot registry")
+	// Use production loot issuance: capture validates existing IDs and must not
+	// mint an identity for an ad hoc object placed on the boot tile.
+	var/obj/item/extraction_salvage/new_cargo = M.spawn_loot(get_turf(dealer_boot), /obj/item/extraction_salvage)
+	equipment_assert(new_cargo && new_cargo.extraction_item_id && new_cargo.extraction_found_in_raid && M.raid_items[new_cargo], "new raid cargo enters actual loot registry with issued identity")
 	equipment_assert(M.extract_vehicle(buyer, car_exit) && buyer_session.garage_vehicle == deployed_car && buyer_session.profile["garage"].len == 1 && buyer_session.profile["state"] == "home" && !M.raid_vehicles[deployed_car], "vehicle exit credits actual car before private bay relocation")
 	equipment_assert(buyer_session.profile["stash"].len == 5 && buyer_session.profile["garage"][1]["cargo"].len == 2 && raid_cargo.loc && new_cargo.loc && new_cargo.extraction_found_in_raid && !raid_cargo.extraction_found_in_raid && !M.raid_items[new_cargo], "vehicle extraction banks carried gear and actual cargo with distinct retained provenance")
 	equipment_assert(raid_frame.w_front[5] == 49 && get_turf(deployed_car) == M.garage_anchor(buyer_session), "raid damage survives actual car extraction")
