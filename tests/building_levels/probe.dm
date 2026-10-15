@@ -141,6 +141,22 @@
 		var/obj/item/weapon/roofbuilder/building_tester/builder = new(U)
 		builder.attack_self(U)
 		building_assert((locate(/obj/roof) in build_site) && !builder.loc, "roof builder consumes item after successful slab")
+		var/turf/wall/test_wall = new /turf/wall(locate(8,1,1), "stone")
+		var/obj/roof/wall_roof = building_construct_roof(test_wall, /obj/roof/wood, null)
+		building_assert(wall_roof, "turf wall supports slab")
+		new /turf/floor/dirt(test_wall)
+		persistence_save_in_progress = TRUE
+		sleep(60)
+		building_assert(wall_roof.loc, "collapse waits during save")
+		persistence_save_in_progress = FALSE
+		sleep(60)
+		building_assert(!wall_roof.loc, "removed wall collapses after save")
+		var/obj/structure/simple_door/test_door = new(locate(1,8,1), "wood")
+		var/obj/roof/door_roof = building_construct_roof(get_turf(test_door), /obj/roof/wood, null)
+		building_assert(door_roof, "door supports slab")
+		qdel(test_door)
+		sleep(60)
+		building_assert(!door_roof.loc, "removed door collapses slab")
 		text2file("PASS: linked building levels", "result.txt")
 	catch (var/exception/E)
 		world.log << "BUILDING exception: [E] at [E.file]:[E.line]"

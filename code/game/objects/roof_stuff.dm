@@ -252,7 +252,10 @@
 
 /obj/roof/proc/collapse_check()
 	spawn(50)
-		if (!src || gcDestroyed || gc_destroyed || persistence_save_in_progress)
+		if (!src || gcDestroyed || gc_destroyed)
+			return
+		if (persistence_save_in_progress)
+			collapse_check()
 			return
 		var/supportfound = FALSE
 		if (istype(src, /obj/roof/canopy))

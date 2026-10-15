@@ -9,7 +9,8 @@ Run with pinned BYOND 516.1681:
 ```
 
 The offline native world runs production slab allocation, roof/covers constructors,
-support resolution, paired removal, and per-level disk entry saves/restores.
+support resolution, paired removal, wall/door support removal, save-overlap
+collapse retry, and per-level disk entry saves/restores.
 Normal map/controller startup and networking are disabled. The probe is not a
 connected-player test, full-map performance benchmark, or fresh-process expanded
 world restoration test. The latter depends on the saved-dimension bootstrap work.
