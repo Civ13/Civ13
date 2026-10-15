@@ -36,6 +36,8 @@
 				if (prob(30))
 					new/obj/effect/fire(loc)
 					visible_message(SPAN_DANGER("The roof catches fire!"))
+			if (health <= 0)
+				qdel(src)
 			return
 	if (istype(W, /obj/item/weapon/hammer))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
@@ -50,6 +52,8 @@
 				health -= W.force * TRUE
 			if ("brute")
 				health -= W.force * 0.20
+		if (health <= 0)
+			qdel(src)
 		return
 	..()
 
@@ -233,6 +237,7 @@
 	roofs_list += roof_overlay
 
 /obj/roof/Destroy()
+	building_remove_floor()
 	new current_area_type(get_turf(src))
 	for (var/atom/movable/lighting_overlay/LO in get_turf(src))
 		LO.update_overlay()
@@ -247,6 +252,8 @@
 
 /obj/roof/proc/collapse_check()
 	spawn(50)
+		if (!src || gcDestroyed || gc_destroyed || persistence_save_in_progress)
+			return
 		var/supportfound = FALSE
 		if (istype(src, /obj/roof/canopy))
 			for (var/obj/structure/tent/TT in loc)
@@ -262,6 +269,8 @@
 		for (var/obj/covers/C in range(1, src))
 			if (C.wall == TRUE)
 				supportfound = TRUE
+		if (building_pair_id)
+			supportfound = building_supported_height(get_turf(src)) > 0
 	//if no support >> roof falls down
 		if (!supportfound)
 			playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
@@ -269,7 +278,6 @@
 				M.adjustBruteLoss(rand(17,27))
 				M.Weaken(15)
 				to_chat(M, "The roof collapses!")
-			Destroy()
 			qdel(src)
 
 /obj/item/weapon/roofbuilder
@@ -347,58 +355,33 @@
 	target_type = /obj/roof/mayan
 
 /obj/item/weapon/roofbuilder/attack_self(mob/user)
-	var/your_dir = "NORTH"
-
-	switch (user.dir)
-		if (NORTH)
-			your_dir = "NORTH"
-		if (SOUTH)
-			your_dir = "SOUTH"
-		if (EAST)
-			your_dir = "EAST"
-		if (WEST)
-			your_dir = "WEST"
-
+	var/turf/target = get_step(user, user.dir)
+	var/turf/start = get_turf(user)
+	var/error = building_roof_error(target)
+	if (error)
+		to_chat(user, SPAN_WARNING(error))
+		return
 	var/covers_time = 80
-
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		covers_time /= H.getStatCoeff("strength")
-		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-	var/area/currentarea = get_area(get_step(user, user.dir))
-	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall))
-		to_chat(user, "You cannot build a roof here.")
+		covers_time /= H.getStatCoeff("crafting") ** 2
+	if (WWinput(user, "Build a roof [dir2text(user.dir)] of you, with a walkable floor above?", "Roof Construction", "Continue", list("Continue", "Stop")) != "Continue")
 		return
-	for (var/obj/roof/RF in get_step(user, user.dir))
-		to_chat(user, "That area is already roofed!")
+	if (get_turf(user) != start || done)
 		return
-	var/confirm = FALSE
-	for(var/obj/structure/roof_support/RS in range(3, get_step(user, user.dir)))
-		confirm = TRUE
-	for(var/obj/structure/mine_support/stone/SS in range(2, get_step(user, user.dir)))
-		confirm = TRUE
-	for(var/obj/covers/CV in range(1, get_step(user, user.dir)))
-		if (CV.wall)
-			confirm = TRUE
-	if (!confirm)
-		to_chat(user, "This area doesn't have a support for the roof! Build one first!")
+	visible_message(SPAN_NOTICE("[user] starts building the roof."))
+	if (!do_after(user, covers_time, start) || !src || done || get_turf(user) != start)
 		return
-	if (WWinput(user, "This will start building a roof [your_dir] of you.", "Roof Construction", "Continue", list("Continue", "Stop")) == "Continue")
-		visible_message(SPAN_DANGER("[user] starts building the roof."))
-		visible_message(user, SPAN_DANGER("You start building the roof."))
-		if (do_after(user, covers_time, user.loc) && src && !done)
-			for (var/obj/roof/RF in get_step(user, user.dir))
-				to_chat(user, "That area is already roofed!")
-				return
-			done = TRUE
-			new target_type(get_step(user, user.dir), user)
-			visible_message(SPAN_DANGER("[user] finishes building the roof."))
-
-			if (ishuman(user))
-				var/mob/living/human/H = user
-				H.adaptStat("crafting", 1)
-			qdel(src)
+	done = TRUE
+	if (!building_construct_roof(target, target_type, user))
+		done = FALSE
 		return
+	visible_message(SPAN_NOTICE("[user] finishes building the roof and upper floor."))
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		H.adaptStat("crafting", 1)
+	qdel(src)
 
 /obj/structure/roof_support
 	name = "roof support"
@@ -598,7 +581,7 @@
 /obj/structure/mine_support/proc/try_destroy()
 	if (health <= 0)
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
-		Destroy()
+		qdel(src)
 		return
 
 /obj/structure/roof_support/attackby(obj/item/weapon/W as obj, mob/user as mob)
@@ -617,7 +600,7 @@
 /obj/structure/roof_support/proc/try_destroy()
 	if (health <= 0)
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
-		Destroy()
+		qdel(src)
 		return
 
 /obj/structure/roof_support/Destroy()
@@ -626,6 +609,8 @@
 	..()
 
 /obj/structure/mine_support/Destroy()
+	for (var/obj/roof/R in range(3, src))
+		R.collapse_check()
 	if (istype(get_turf(src), /turf/floor))
 		for(var/turf/floor/T in range(3,get_turf(src)))
 			T.collapse_check()

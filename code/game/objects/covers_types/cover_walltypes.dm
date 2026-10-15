@@ -38,6 +38,7 @@
 	check_relatives(1,1)
 
 /obj/covers/Destroy()
+	building_remove_roof()
 	check_relatives(0,1)
 	..()
 
