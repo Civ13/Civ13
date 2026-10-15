@@ -1,5 +1,9 @@
 // Durable account ownership is separate from client sessions and login audit data.
 /mob/living/human/var/persistence_owner_ckey
+/mob/living/human/var/tmp/persistence_restored = FALSE
+
+/mob/living/human/persistence_runtime_var(key)
+	return key == "persistence_restored" || ..()
 
 var/global/list/persistence_restored_bodies = list()
 var/global/persistence_player_restore_ready = FALSE

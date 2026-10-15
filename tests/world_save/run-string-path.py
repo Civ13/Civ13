@@ -99,7 +99,10 @@ def main():
         hashes[original.relative_to(root).as_posix()] = hashlib.sha256(original.read_bytes()).hexdigest()
         if original.name == 'player_reclaim.dm' and args.player_reclaim_negative_control:
             if args.player_reclaim_negative_control == 'owner':
-                source += '\n/mob/living/human/persistence_runtime_var(key)\n\treturn key == "persistence_owner_ckey" || ..()\n'
+                before = 'return key == "persistence_restored" || ..()'
+                if source.count(before) != 1:
+                    raise RuntimeError('Player runtime exclusion mutation target changed')
+                source = source.replace(before, 'return (key in list("persistence_restored", "persistence_owner_ckey")) || ..()', 1)
             elif args.player_reclaim_negative_control in ('duplicate', 'ready', 'legacy', 'ban', 'guest'):
                 before, after = {'duplicate': ('bodies.len != 1', '!bodies.len'),
                                  'ready': ('!persistence_player_restore_ready || ', ''),

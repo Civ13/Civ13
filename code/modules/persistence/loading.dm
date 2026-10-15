@@ -48,6 +48,11 @@
 			object = new type()
 		if(!object)
 			throw EXCEPTION("Could not create saved entry [ind] ([type])")
+		// Mark before field decoding can yield to the constructor's spawn callback.
+		// This applies to unowned legacy humans as well as reclaimable players.
+		if(ishuman(object))
+			var/mob/living/human/restored_human = object
+			restored_human.persistence_restored = TRUE
 		all_loaded += object
 		existing_references["[ind]"] = object
 		for(var/v in savefile.dir)

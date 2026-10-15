@@ -46,6 +46,19 @@ generations stay untouched. No test adapter assigns a player's key.
 
 ## Verification
 
+Restored humans carry a runtime-only `persistence_restored` marker before field
+decoding. The constructor's delayed `nomads_spawn()` skips these bodies, preserving
+saved names, languages and appearance for both owned and unowned legacy humans.
+The marker is excluded from export and import, including crafted saved values.
+
+With BYOND 516.1681 and `TEMP` on D:, the sole runtime owner can run
+`tests/world_save/run-game.ps1 -ByondBin <bin> -PlayerIdentity` in an isolated
+Gaia checkout. This uses real human constructors and production entry saves and
+loads, waits past the delayed spawn callback, checks both ownership cases and
+keeps fresh-body customization active. Add `-IdentityNegativeControl` to remove
+only the generated spawn guard and require the exact deferred identity failure.
+This fixture does not load the human's preserved world or establish client control.
+
 `tests/world_save/run-string-path.py` exercises actual production owner export,
 import, unchanged medical state and nested inventory, load readiness, account
 matching, duplicates, native key occupancy, dead bodies and failed-generation

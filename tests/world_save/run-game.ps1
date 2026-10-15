@@ -1,11 +1,24 @@
-param([Parameter(Mandatory=$true)][string]$ByondBin, [switch]$Visual, [ValidateRange(1,3600)][int]$TimeoutSeconds = 360)
+param([Parameter(Mandatory=$true)][string]$ByondBin, [switch]$Visual, [switch]$PlayerIdentity, [switch]$IdentityNegativeControl, [ValidateRange(1,3600)][int]$TimeoutSeconds = 360)
 $ErrorActionPreference = 'Stop'
+if ($IdentityNegativeControl -and -not $PlayerIdentity) { throw 'Identity negative control requires -PlayerIdentity' }
+if ($PlayerIdentity -and ([IO.Path]::GetPathRoot($env:TEMP) -ne 'D:\')) { throw 'Identity evidence TEMP must be on D:' }
 $repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $probeSource = Join-Path $repoRoot '.world_save_probe.dme'
+$identitySource = Join-Path $repoRoot '.world_save_identity_nomads.dm'
 if (Test-Path -LiteralPath $probeSource) { throw 'Existing probe source must be preserved' }
+if (Test-Path -LiteralPath $identitySource) { throw 'Existing identity source must be preserved' }
 Push-Location -LiteralPath $repoRoot
 try {
     $source = Get-Content -LiteralPath 'civ13.dme' -Raw
+    if ($IdentityNegativeControl) {
+        $nomads = (Get-Content -LiteralPath 'code/game/mob/living/carbon/human/nomads_spawn.dm' -Raw).Replace("`r`n", "`n")
+        $guard = "`tif(persistence_restored)`n`t`treturn`n"
+        if (($nomads.Split($guard, [StringSplitOptions]::None).Count - 1) -ne 1) { throw 'Identity guard mutation target changed' }
+        [IO.File]::WriteAllText($identitySource, $nomads.Replace($guard, ''))
+        $include = 'code\game\mob\living\carbon\human\nomads_spawn.dm'
+        if (-not $source.Contains($include)) { throw 'Nomads include missing' }
+        $source = $source.Replace($include, '.world_save_identity_nomads.dm')
+    }
     [IO.File]::WriteAllText($probeSource, $source + "`n#include `"tests/world_save/full_game_probe.dm`"`n")
     $build = & (Join-Path $ByondBin 'dm.exe') -max_errors 0 $probeSource 2>&1
     $build | Write-Output
@@ -21,6 +34,7 @@ try {
     $testedCommit = git rev-parse HEAD
     if ($LASTEXITCODE -ne 0) { throw 'Cannot identify tested commit' }
     $parameters = "tested_commit=$testedCommit" + $(if ($Visual) { '&visual=1' } else { '' })
+    if ($PlayerIdentity) { $parameters += '&player_identity=1' }
     Write-Output "Isolated full-game runtime: $testRun"
     Push-Location -LiteralPath $testRun
     try {
@@ -44,8 +58,13 @@ try {
     } finally { Pop-Location }
     $result = Get-Content -LiteralPath (Join-Path $testRun 'full_game_result.txt') -Raw
     Write-Output $result
-    if ($result -notmatch '^PASS:') { throw 'Full-game probe failed' }
+    if ($IdentityNegativeControl) {
+        $failure = (Get-Content -LiteralPath (Join-Path $testRun 'full_game_failure.txt') -Raw).Trim()
+        if ($result -notmatch '^FAIL:' -or $failure -ne 'Deferred spawn overwrote saved identity') { throw 'Wrong identity negative-control failure' }
+        Write-Output 'PASS: identity negative control caught deferred name overwrite'
+    } elseif ($result -notmatch '^PASS:') { throw 'Full-game probe failed' }
 } finally {
     Remove-Item -LiteralPath $probeSource
+    if ($IdentityNegativeControl -and (Test-Path -LiteralPath $identitySource)) { Remove-Item -LiteralPath $identitySource }
     Pop-Location
 }
