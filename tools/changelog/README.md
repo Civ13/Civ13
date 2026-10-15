@@ -7,6 +7,14 @@ It does not crosspost announcement messages to following servers.
 
 ## PR description field (automatic on merge)
 
+The optional field must contain actual announcement text on the same line.
+Placeholders such as `required`, `TODO`, `TBD`, and template instructions fail
+validation and publication, including when followed by real prose on later lines.
+Leave it blank for no post. PR description edits rerun the changelog contract
+check, which validates the event description through the same parser as the
+publisher. Comments and fenced examples do not opt in. Validation cannot decide
+whether text describes a meaningful player change; review still establishes that.
+
 Add exactly one line to the pull request's opening description, outside HTML
 comments, quotes and fenced code:
 
