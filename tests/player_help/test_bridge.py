@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import hashlib
 from pathlib import Path
 import tempfile
 import threading
@@ -33,7 +34,7 @@ class BridgeTests(unittest.TestCase):
         return instance
 
     def request(self, request_id='1-2-3', slot=1, question='How do I bandage?'):
-        (self.root / f'{slot}.request.json').write_text(json.dumps({'id': request_id, 'question': question}))
+        (self.root / f'{slot}.request.json').write_text(json.dumps({'id': request_id, 'question': question, 'account': hashlib.md5(request_id.encode()).hexdigest()}))
         (self.root / f'{slot}.ready').write_text(request_id)
 
     def finish(self, instance, slot=1):
@@ -102,11 +103,11 @@ class BridgeTests(unittest.TestCase):
             {'topic': 'bucket', 'source': 'recipe', 'catalog': 'Material / camp', 'text': 'bucket requires 4 wood'}]
         calls = []
         instance = self.make(lambda *args: calls.append(args) or {'message': {'content': 'Answer'}})
-        instance.answer({'id': '1', 'question': 'How do I craft a bucket in Nomads Gaia?'})
+        instance.answer({'id': '1', 'account': 'a' * 32, 'question': 'How do I craft a bucket in Nomads Gaia?'})
         prompt = calls[0][1]['messages'][0]['content']
         self.assertIn('2 softwood', prompt)
         self.assertNotIn('4 wood', prompt)
-        instance.answer({'id': '2', 'question': 'How do I get iron ingots?'})
+        instance.answer({'id': '2', 'account': 'b' * 32, 'question': 'How do I get iron ingots?'})
         self.assertIn('CURRENT GAMEPLAY CODE', calls[1][1]['messages'][0]['content'])
         self.assertIn('PLAYER WIKI https://', calls[1][1]['messages'][0]['content'])
 
@@ -116,7 +117,7 @@ class BridgeTests(unittest.TestCase):
             {'topic': 'bucket', 'source': 'recipe', 'catalog': 'Material / camp', 'text': 'bucket requires 4 wood'}]
         calls = []
         instance = self.make(lambda *args: calls.append(args) or {'message': {'content': 'Answer'}})
-        request = {'id': '1', 'question': 'How do I craft a bucket?', 'game_context': {'map': 'Nomads (Gaia)', 'gamemode': 'Classic', 'era': '5000 BC', 'civilizations': True, 'secret': 'DO NOT SEND'}}
+        request = {'id': '1', 'account': 'a' * 32, 'question': 'How do I craft a bucket?', 'game_context': {'map': 'Nomads (Gaia)', 'gamemode': 'Classic', 'era': '5000 BC', 'civilizations': True, 'secret': 'DO NOT SEND'}}
         instance.answer(request)
         prompt = calls[0][1]['messages'][0]['content']
         self.assertIn('Nomads (Gaia)', prompt)
@@ -137,7 +138,7 @@ class BridgeTests(unittest.TestCase):
         self.assertEqual(projected['player']['active_effects'], ['On fire'])
         self.assertNotIn('SECRET', json.dumps(projected))
         calls = []
-        self.make(lambda *args: calls.append(args) or {'message': {'content': 'Answer'}}).answer(dict(request, id='1', question='How do I survive winter?'))
+        self.make(lambda *args: calls.append(args) or {'message': {'content': 'Answer'}}).answer(dict(request, id='1', account='a' * 32, question='How do I survive winter?'))
         self.assertIn('WINTER', calls[0][1]['messages'][0]['content'])
         self.assertIn('health_percent', calls[0][1]['messages'][0]['content'])
 
@@ -217,6 +218,84 @@ class BridgeTests(unittest.TestCase):
                 bridge.network('http://localhost/api/chat', {}, {}, 1)
             self.assertEqual(run.call_args.kwargs['timeout'], 1)
             self.assertNotIn('http://localhost', ' '.join(run.call_args.args[0]))
+
+    def test_direct_bridge_repeats_reconnect_and_account_not_in_payload(self):
+        calls = []
+        instance = self.make(lambda *args: calls.append(args) or {'message': {'content': 'answer'}})
+        now = [100.0]
+        instance.limiter.clock = lambda: now[0]
+        request = {'id': '1', 'account': 'a' * 32, 'question': 'Help'}
+        self.assertEqual(instance.answer(request)['status'], 'ok')
+        # New request/client identity cannot evade the authenticated account quota.
+        self.assertEqual(instance.answer(dict(request, id='2'))['status'], 'rate_limited')
+        self.assertEqual(len(calls), 1)
+        self.assertNotIn('a' * 32, json.dumps(calls))
+        for timestamp in (130, 160):
+            now[0] = timestamp
+            self.assertEqual(instance.answer(request)['status'], 'ok')
+        now[0] = 190
+        self.assertEqual(instance.answer(request)['retry_seconds'], 30)
+        now[0] = 220
+        self.assertEqual(instance.answer(request)['status'], 'ok')
+
+    def test_window_global_and_state_capacity_expire_without_eviction_bypass(self):
+        self.config['limits'] = {'cooldown_seconds': 1, 'burst_requests': 10,
+                                 'window_requests': 2, 'window_seconds': 10,
+                                 'burst_seconds': 10, 'global_requests': 3, 'max_accounts': 2}
+        instance = self.make(lambda *args: {'message': {'content': 'answer'}})
+        now = [100.0]
+        instance.limiter.clock = lambda: now[0]
+        a = {'id': '1', 'account': 'a' * 32, 'question': 'Help'}
+        self.assertEqual(instance.answer(a)['status'], 'ok')
+        now[0] += 1
+        self.assertEqual(instance.answer(a)['status'], 'ok')
+        now[0] += 1
+        self.assertEqual(instance.answer(a)['status'], 'rate_limited')
+        self.assertEqual(instance.answer(dict(a, account='b' * 32))['status'], 'ok')
+        self.assertEqual(instance.answer(dict(a, account='c' * 32))['status'], 'busy')
+        self.assertLessEqual(len(instance.limiter.accounts), 2)
+        now[0] += 121
+        self.assertEqual(instance.answer(dict(a, account='c' * 32))['status'], 'ok')
+        self.assertEqual(len(instance.limiter.accounts), 1)
+
+    def test_concurrent_same_account_and_global_workers_are_enforced_at_dispatch(self):
+        started, release = threading.Event(), threading.Event()
+        def transport(*args):
+            started.set()
+            release.wait(2)
+            return {'message': {'content': 'answer'}}
+        instance = self.make(transport)
+        request = {'id': '1', 'account': 'a' * 32, 'question': 'Help'}
+        worker = threading.Thread(target=instance.answer, args=(request,))
+        worker.start()
+        try:
+            self.assertTrue(started.wait(1))
+            self.assertEqual(instance.answer(request)['status'], 'pending')
+            self.assertEqual(instance.answer(dict(request, account='b' * 32))['status'], 'busy')
+        finally:
+            release.set()
+            worker.join(2)
+        self.assertFalse(instance.limiter.active)
+
+    def test_timeout_failure_release_pending_but_keep_consumed_quota(self):
+        def failing(*args):
+            raise subprocess.TimeoutExpired('injected transport', 1)
+        instance = self.make(failing)
+        request = {'id': '1', 'account': 'a' * 32, 'question': 'Help'}
+        self.assertEqual(instance.answer(request)['status'], 'unavailable')
+        self.assertFalse(instance.limiter.active)
+        self.assertEqual(instance.answer(request)['status'], 'rate_limited')
+
+    def test_direct_bridge_missing_identity_oversize_disabled_and_config_bounds(self):
+        instance = self.make(lambda *args: self.fail('External dispatch'))
+        for request in ({'id': '1', 'question': 'Help'},
+                        {'id': '1', 'account': 'a' * 32, 'question': 'x' * 501},
+                        {'id': '1', 'account': 'a' * 32, 'question': '  '}):
+            self.assertEqual(instance.answer(request)['status'], 'unavailable')
+        self.assertFalse(instance.limiter.accounts)
+        for limits in ({'cooldown_seconds': 0}, {'queue_slots': 9}, {'max_accounts': 4097}, {'burst_requests': True}):
+            with self.assertRaises(ValueError):
+                bridge.help_limits({'limits': limits})
 
     def test_atlas_projection_excludes_source_and_bounds(self):
         path = self.root / 'atlas.json'
