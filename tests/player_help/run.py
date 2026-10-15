@@ -176,7 +176,8 @@ var/failures = 0
     H.pending["1"] = list("id"="disconnected", "account"=account, "deadline"=world.time + 100)
     H.poll()
     check(H.pending.len == 1, "disconnect does not release pending account")
-    H.pending["1"]["deadline"] = 0
+    if (H.pending["1"])
+        H.pending["1"]["deadline"] = 0
     H.poll()
     check(!H.pending.len, "timeout releases disconnected request")
     var/datum/player_help_service/probe_backend/B = new
