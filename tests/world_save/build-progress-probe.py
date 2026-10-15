@@ -94,8 +94,8 @@ def main():
                              for n, entry in sources.items()},
                     generated={n: digest(data) for n, data in outputs.items()},
                     integration='Replace only saving.dm in the isolated source copy; append progress-probe.dm to the isolated DME. functions.dm is an unchanged inventory copy',
-                    cadence='Check each 1024 completed turfs; overwrite latest JSON at most once per 10 real seconds except phase boundaries',
-                    limits='Counts describe the active level; elapsed real clock includes yields and engine flushes; level_serialized is not durable completion')
+                    cadence='Check each 1024 completed turfs; overwrite latest JSON at most once per 10 wall-clock seconds except phase boundaries',
+                    limits='world.timeofday with midnight wrap for runs under 24 hours is not monotonic; counts describe active level; elapsed includes yields and engine flushes; level_serialized is not durable completion')
     (args.output_dir / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(manifest, indent=2))
 

@@ -6,11 +6,31 @@ var/global/world_save_progress_yields = 0
 var/global/world_save_progress_yield_ds = 0
 var/global/world_save_progress_unavailable = FALSE
 var/global/world_save_progress_error = null
+#ifdef WORLD_SAVE_PROGRESS_TEST_CLOCK
+var/global/world_save_progress_test_clock = 0
+#endif
+
+/proc/world_save_progress_now()
+#ifdef WORLD_SAVE_PROGRESS_TEST_CLOCK
+#ifdef WORLD_SAVE_PROGRESS_COMPONENT_CLOCK
+	// Fixture-only reproduction of the frozen OpenDream realtime component bug.
+	return world_save_progress_test_clock % 10
+#else
+	return world_save_progress_test_clock
+#endif
+#else
+	return world.timeofday
+#endif
+
+/proc/world_save_progress_elapsed(started, now)
+	// Bounded diagnostic runs are shorter than one day. This is wall time,
+	// not a monotonic clock or CPU measurement.
+	return (now - started + 864000) % 864000
 
 /proc/world_save_progress_begin()
 	world_save_progress_active = TRUE
-	world_save_progress_started = world.realtime
-	world_save_progress_last_write = world.realtime
+	world_save_progress_started = world_save_progress_now()
+	world_save_progress_last_write = world_save_progress_started
 	world_save_progress_yields = 0
 	world_save_progress_yield_ds = 0
 	world_save_progress_unavailable = FALSE
@@ -19,17 +39,21 @@ var/global/world_save_progress_error = null
 
 /proc/world_save_progress_stoplag()
 	if(!world_save_progress_active) return stoplag()
-	var/started = world.realtime
+	var/started = world_save_progress_now()
 	world_save_progress_yields++
 	. = stoplag()
-	world_save_progress_yield_ds += max(0, world.realtime - started)
+	world_save_progress_yield_ds += world_save_progress_elapsed(started, world_save_progress_now())
 
 /proc/world_save_progress_emit(stage, level, completed_turfs, force = FALSE)
 	if(!world_save_progress_active) return
-	if(!force && world.realtime - world_save_progress_last_write < 100) return
-	world_save_progress_last_write = world.realtime
+	var/now = world_save_progress_now()
+	if(!force && world_save_progress_elapsed(world_save_progress_last_write, now) < 100) return
+	world_save_progress_last_write = now
 	try
-		var/list/row = list("scope" = "test-only serialization progress", "stage" = stage, "level" = level, "completed_turfs" = completed_turfs, "turfs_per_level" = world.maxx * world.maxy, "levels" = world.maxz, "elapsed_real_ds" = max(0, world.realtime - world_save_progress_started), "world_time_ds" = world.time, "tick_usage_percent" = world.tick_usage, "stoplag_calls" = world_save_progress_yields, "stoplag_elapsed_real_ds" = world_save_progress_yield_ds, "entries_active_level" = map_storage.saving_reference_pins.len, "lists_active_level" = map_storage.saving_list_pins.len, "save_complete_marker" = fexists("map_saves/save_complete.txt"))
+		var/list/row = list("scope" = "test-only serialization progress", "clock_source" = "world.timeofday (24-hour wrap)", "stage" = stage, "level" = level, "completed_turfs" = completed_turfs, "turfs_per_level" = world.maxx * world.maxy, "levels" = world.maxz, "elapsed_real_ds" = world_save_progress_elapsed(world_save_progress_started, now), "world_time_ds" = world.time, "tick_usage_percent" = world.tick_usage, "stoplag_calls" = world_save_progress_yields, "stoplag_elapsed_real_ds" = world_save_progress_yield_ds, "entries_active_level" = map_storage.saving_reference_pins.len, "lists_active_level" = map_storage.saving_list_pins.len, "save_complete_marker" = fexists("map_saves/save_complete.txt"))
+#ifdef WORLD_SAVE_PROGRESS_TEST_CLOCK
+		row["clock_source"] = "fixture timeofday (24-hour wrap)"
+#endif
 		var/path = "world_save_progress.json"
 		world_save_progress_fault(stage, "json")
 		var/encoded = json_encode(row)
