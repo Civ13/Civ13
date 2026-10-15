@@ -113,11 +113,21 @@ def main():
                 raise RuntimeError('Run Build first')
             with (runtime / 'logs/daemon.log').open('ab') as log:
                 process = subprocess.Popen([str(BIN / 'DreamDaemon'), str(runtime / 'civ13.dmb'), str(PORTS[args.server]), '-safe', '-log', 'logs/world.log'], cwd=runtime, env=env, stdin=subprocess.DEVNULL, stdout=log, stderr=log, start_new_session=True)
-                fields = Path(f'/proc/{process.pid}/stat').read_text().rsplit(')', 1)[1].split()
-                state.write_text(json.dumps({'pid': process.pid, 'started': fields[19]}))
-                time.sleep(2)
-                if process.poll() is not None:
-                    raise RuntimeError('Daemon exited; inspect local logs')
+                try:
+                    fields = Path(f'/proc/{process.pid}/stat').read_text().rsplit(')', 1)[1].split()
+                    state.write_text(json.dumps({'pid': process.pid, 'started': fields[19]}))
+                    time.sleep(2)
+                    if process.poll() is not None:
+                        raise RuntimeError('Daemon exited; inspect local logs')
+                except BaseException:
+                    try:
+                        if process.poll() is None:
+                            process.terminate()
+                        process.wait(timeout=10)
+                    except (OSError, subprocess.TimeoutExpired) as cleanup:
+                        raise RuntimeError(f'Failed launch: owned daemon {process.pid} exit unconfirmed; retain any process.json and inspect local logs') from cleanup
+                    state.unlink(missing_ok=True)
+                    raise
             print('Daemon launched; client admission and runtime diagnostics still require verification')
 
 

@@ -48,5 +48,9 @@ verification. `Status` checks owned process identity, not successful player logi
 After startup inspect logs for engine diagnostics and verify client admission,
 selected maps and actual save/reload. A two-second surviving process is not
 gameplay acceptance. Stop sends SIGTERM only to the recorded matching process;
-it does not force-kill stalled saves. WSL startup failure
+it does not force-kill stalled saves. A failed start terminates and waits up to
+ten seconds for its exact launched child before removing the identity record.
+If exit cannot be confirmed, the launcher reports its PID and retains any
+identity record for investigation; it does not claim cleanup or force-kill it.
+WSL startup failure
 `HCS_E_HYPERV_NOT_INSTALLED` is a Windows prerequisite blocker.
