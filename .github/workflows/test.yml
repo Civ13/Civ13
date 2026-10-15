@@ -285,6 +285,16 @@ jobs:
           python3 tests/npc_cover/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/npc-cover.json"
           python3 tests/npc_cover/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control boundary --output "$RUNNER_TEMP/npc-cover-boundary.json"
           python3 tests/npc_cover/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control tie --output "$RUNNER_TEMP/npc-cover-tie.json"
+      - name: Verify hover HUD production callbacks and negative controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/hover_name')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/hover_name/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/hover_name/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control identity
+          python3 tests/hover_name/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control exit
+          python3 tests/hover_name/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control stale
+          python3 tests/hover_name/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control parent
       - name: Verify bounded winter survival and cold-loss negative control
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/weather')
         shell: bash
