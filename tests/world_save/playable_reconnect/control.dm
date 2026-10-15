@@ -53,4 +53,3 @@
 	if(peer[1] != "127.0.0.1" || !nomads_lifecycle_hex(token, 32) || Q["token"] != token || Q.len != 3 || Q["gaia_probe"] != "1" || Q["action"] != "status")
 		return "rejected"
 	return json_encode(gaia_probe_status())
-
