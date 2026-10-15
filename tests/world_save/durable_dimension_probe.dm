@@ -8,6 +8,7 @@
 		config.webhook_can_fire = FALSE
 		config.ToRban = FALSE
 		ticker = new
+		global.game_id = "dimension-bootstrap-fixture"
 		processes.time_of_day = new
 		processes.weather = new
 		var/map_type = world.params["profile"] == "europe" ? /obj/map_metadata/nomads/europe : /obj/map_metadata/nomads/gaia
@@ -30,7 +31,7 @@
 			map.faction_research = list("upper" = upper, "area" = upper.loc)
 			map.faction_research_director = list("first" = leader)
 			durable_world_check(map_storage.Save_World(), "expanded durable export failed")
-			durable_world_check(map_storage.validate_world_save(), "expanded writer validation failed")
+			durable_world_check(map_storage.validate_world_save(), "expanded writer validation failed: [map_storage.last_error]")
 		else
 			durable_world_check(world.maxz == 2 && map_storage.compiled_maxz == 2, "reader did not start with compiled dimensions")
 			var/header = file2text("map_saves/round.json")
