@@ -63,5 +63,10 @@ identity reader are injected fixtures; denied requests and generation failures
 must not reach the shutdown effect. The final positive request invokes actual
 native world deletion after durable intent publication. Authentication and final
 generation negative controls must produce their exact assertion failures.
-This fixture is separate from full production disk round trips and the actual
-Windows supervisor recovery cycle. It does not use real account sessions.
+`tests/world_save/run-durable-world.py --lifecycle-shutdown --profile gaia`
+(also `europe`) separately exercises actual production Topic dispatch, token
+file reads, disk serialization, generation validation, bound intent publication
+and native graceful exit in a tiny isolated world. It does not adapt the saver,
+validator or native exit. The launcher requires clean process completion and its
+assertion receipt. These fixtures do not use real account sessions or establish
+the actual Windows supervisor recovery cycle.

@@ -19,11 +19,15 @@ def main():
                         help='Run fresh expanded round-v2 writer and compiled-size reader processes')
     parser.add_argument('--recovery-reconnect', action='store_true',
                         help='Run production recovery and waiting-client reclaim with client IO adapted')
+    parser.add_argument('--lifecycle-shutdown', action='store_true',
+                        help='Run real Topic dispatch, production disk save and native graceful shutdown')
     parser.add_argument('--startup-only', action='store_true',
                         help='Diagnose production initialization without running any persistence assertions')
     parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
     parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order'))
     args = parser.parse_args()
+    if args.lifecycle_shutdown and (args.recovery_reconnect or args.dimension_bootstrap or args.startup_only or args.negative_control):
+        parser.error('Lifecycle shutdown runs separately from other fixture modes')
     if args.recovery_reconnect and (args.dimension_bootstrap or args.startup_only or args.negative_control not in (None, 'reclaim-order')):
         parser.error('Recovery reconnect checks run separately from other fixture modes')
     if args.negative_control == 'reclaim-order' and not args.recovery_reconnect:
@@ -41,6 +45,7 @@ def main():
     generated = []
     receipt = {'profile': args.profile, 'negative_control': args.negative_control,
                'dimension_bootstrap': args.dimension_bootstrap, 'recovery_reconnect': args.recovery_reconnect,
+               'lifecycle_shutdown': args.lifecycle_shutdown,
                'prepared_only': args.prepare_only, 'startup_only': args.startup_only,
                'production_hashes': {}}
     print(f'Retained evidence: {output}', flush=True)
@@ -111,6 +116,8 @@ def main():
             probe = probe[:probe.index('/world/New()')] + (root / 'tests/world_save/durable_dimension_probe.dm').read_text(encoding='utf-8')
         if args.recovery_reconnect:
             probe = probe[:probe.index('/world/New()')] + (root / 'tests/world_save/recovery_reconnect_probe.dm').read_text(encoding='utf-8')
+        if args.lifecycle_shutdown:
+            probe = probe[:probe.index('/world/New()')] + (root / 'tests/world_save/lifecycle_disk_probe.dm').read_text(encoding='utf-8')
         if args.startup_only:
             marker = '/world/New()\n'
             if probe.count(marker) != 1:
@@ -209,7 +216,7 @@ def main():
                 raise RuntimeError('Preflight control did not reach its first malformed-wire assertion')
             if args.negative_control == 'reclaim-order' and result.get('checks') != 8:
                 raise RuntimeError('Reclaim ordering control did not reach its intended first failure')
-        elif not result.get('done') or result.get('checks', 0) < 19:
+        elif not result.get('done') or result.get('checks', 0) < (7 if args.lifecycle_shutdown else 19):
             raise RuntimeError('Native integration fixture incomplete: ' + str(result))
         receipt['result'] = result
         receipt['expected_failure_caught'] = bool(args.negative_control)
