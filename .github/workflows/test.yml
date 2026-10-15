@@ -327,6 +327,27 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           bash tests/world_save/run.sh
         shell: bash
+      - name: Verify chemical smoke source ownership and historical control
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/chemical_smoke_ownership')
+        shell: bash
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/chemical_smoke_ownership/test_harness.py
+          /usr/bin/python3 tests/chemical_smoke_ownership/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/chemical-smoke/fixed"
+          /usr/bin/python3 tests/chemical_smoke_ownership/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/chemical-smoke/historical" --negative-control
+      - name: Upload chemical smoke ownership evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/chemical_smoke_ownership'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: chemical-smoke-ownership
+          path: |
+            ${{ runner.temp }}/chemical-smoke/
+            !${{ runner.temp }}/chemical-smoke/**/*.dmb
+            !${{ runner.temp }}/chemical-smoke/**/*.rsc
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: error
+
       - name: Verify isolated chemistry reactions and negative control
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/chemistry')
         shell: bash
@@ -636,6 +657,14 @@ jobs:
           for control in overflow rate retention; do
             /usr/bin/python3 tests/memory_telemetry/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/memory-telemetry-$control" --negative-control "$control"
           done
+      - name: Verify bounded runtime history and historical retention control
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/error_history')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/error_history/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/error-history-fixed"
+          /usr/bin/python3 tests/error_history/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/error-history-historical" --historical
+
       - name: Verify timed decal lifecycle and historical baseline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/decal_decay')
         shell: bash
