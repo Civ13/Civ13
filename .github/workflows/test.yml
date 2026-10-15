@@ -343,7 +343,7 @@ jobs:
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 tests/building_levels/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/positive"
-          for control in pair support; do
+          for control in pair support removal foundation persistence; do
             python3 tests/building_levels/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/building-levels/$control"
           done
       - name: Upload linked building evidence
