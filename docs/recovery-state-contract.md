@@ -108,6 +108,10 @@ the actual saver, preflight, loader, metadata restore and callback queue on an
 8x8x2 temporary world. It checks omitted fields and orphan references before
 mutation, disk-backed aliases and leader rebinding, portable clocks, area and
 weather state, displayed-versus-draft symbols and repeated callback restoration.
+The callback check reloads a timer from the saved disk generation twice, verifies
+that offline time did not consume its remaining delay, and waits for exactly one
+callback after cancelling the older sleepers. Its `timer-restore` control omits
+the production callback restore call and must fail on the missing saved timer.
 Its `season`, `preflight`, `reachability` and `callback` mutation controls must
 fail at their exact intended assertions. It is not a connected-player or
 representative full-map performance test; integrated native results are pending.

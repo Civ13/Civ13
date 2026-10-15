@@ -90,7 +90,7 @@ var/durable_probe_tips = 0
 		map.faction_symbol_icon["first"] = icon('icons/obj/banners.dmi', "b_star")
 		var/icon/before_icon = map.faction_symbol_icon["first"]
 		before_icon.DrawBox("#123456", 4, 7, 4, 7)
-		map.durable_schedule("tips", 1000)
+		map.durable_schedule("tips", 30)
 		persistence_save_in_progress = TRUE
 		text2file("save begins", "probe-progress.log")
 		durable_world_check(map_storage.Save_World(), "metadata disk export failed")
@@ -100,6 +100,9 @@ var/durable_probe_tips = 0
 		durable_world_check(state["version"] == 2, "metadata envelope absent")
 		var/list/W = state["world_state"]
 		var/list/E = W["environment"]
+		var/list/saved_timers = W["timers"]
+		var/saved_tip_delay = saved_timers["tips"]
+		durable_world_check(isnum(saved_tip_delay) && saved_tip_delay > 5, "saved callback remainder absent")
 		var/research_clock = E["research_clock"]
 		var/list/fields = W["fields"]
 		var/saved_age = fields["age"]
@@ -128,7 +131,8 @@ var/durable_probe_tips = 0
 		durable_world_check(map_storage.validate_world_save(), "valid metadata generation rejected")
 		// Advance the native runtime before import: old absolute deadlines cannot
 		// satisfy the portable-clock checks, and no callback may fire while locked.
-		sleep(5)
+		sleep(saved_tip_delay + 5)
+		durable_world_check(durable_probe_tips == 0, "callback fired while persistence locked")
 		season = "SPRING"
 		time_of_day = "Morning"
 		map.faction_research = list()
@@ -159,12 +163,23 @@ var/durable_probe_tips = 0
 		var/icon/after_icon = map.faction_symbol_icon["first"]
 		durable_world_check(after_icon.GetPixel(4,7) == "#123456" && map.faction_symbol_grid["first"][1] == "#FFFFFF", "active symbol confused with draft")
 		var/datum/durable_timer_queue/Q = map.durable_timer_queue()
-		Q.cancel_all()
-		Q.schedule("tips", 3)
 		var/list/timers = Q.snapshot()
-		Q.restore(timers)
-		Q.restore(timers)
-		sleep(8)
+		durable_world_check(isnum(timers["tips"]), "persisted callback was not restored")
+		durable_world_check(abs(timers["tips"] - saved_tip_delay) <= 1, "offline time consumed callback remainder")
+		sleep(5)
+		durable_world_check(durable_probe_tips == 0, "restored callback duplicated")
+		// Reload the same disk generation through the actual import path. The
+		// first restored sleeper and the original pre-save sleeper must retire.
+		persistence_save_in_progress = TRUE
+		durable_world_check(map_storage.validate_world_save(), "callback reload preflight failed")
+		map_storage.suspend_durable_world()
+		map_storage.ClearMap()
+		durable_world_check(map_storage.Load_World() && map_storage.load_map_metadata(), "callback reload import failed")
+		map_storage.restore_durable_world()
+		persistence_save_in_progress = FALSE
+		timers = Q.snapshot()
+		durable_world_check(isnum(timers["tips"]) && abs(timers["tips"] - saved_tip_delay) <= 1, "callback reload remainder changed")
+		sleep(saved_tip_delay + 5)
 		durable_world_check(durable_probe_tips == 1, "restored callback duplicated")
 		durable_world_check(!map_storage.durable_import && !map_storage.durable_state && !map_storage.durable_export, "metadata retained graph pins")
 		if(durable_probe_failed) throw EXCEPTION("native runtime error occurred")

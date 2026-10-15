@@ -8,7 +8,10 @@ It is offline integration evidence, not full playable-world acceptance.
 `round_metadata.dm` additionally exercises actual disk metadata restoration of
 `persistence`, `research_active`, `resourceresearch` and `perschadplus`, with both
 boolean values, legacy nine-field and ten-field records, and malformed extension
-rejection before map disposal. New records retain the existing nine fields and
+rejection before map disposal. Legacy cases select the legacy completion format;
+parser cases retain a matching modern digest. A separate modern digest-tamper
+case verifies rejection before either preflight or the load wrapper mutates live
+state. New records retain the existing nine fields and
 timestamp, then append those four flags as `0` or `1`. Old records leave these
 flags at their existing live/map defaults; they cannot recover omitted historical
 values. This slice does not restore custom civilizations, faction research,
@@ -18,9 +21,10 @@ forge/leader state, saved-body ownership or derived runtime configuration.
 temporary storage. Its `--negative-control restore` and `--negative-control
 preflight` options mutate one unique production loader guard in generated source
 and require exactly the corresponding failed assertion. Engine errors, unexpected
-results, timeouts and unclean child exits reject evidence. CI runs the normal
-fixture and both controls and retains attempted-run logs/saves on failure.
-No local execution result is claimed for this candidate. BYOND fixture success
+results, timeouts and unclean child exits reject evidence. Its `--negative-control
+integrity` removes only the production metadata digest comparison and must fail
+the independent modern tamper assertion. CI runs the normal fixture and all three
+controls and retains attempted-run logs/saves on failure. BYOND fixture success
 would not establish OpenDream behavior, coherent snapshot recovery, the 300-second
 crash-loss bound, zero-loss clean stopping or a month of crash-free operation.
 

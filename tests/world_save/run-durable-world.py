@@ -18,7 +18,7 @@ def main():
     parser.add_argument('--startup-only', action='store_true',
                         help='Diagnose production initialization without running any persistence assertions')
     parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
-    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback'))
+    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore'))
     args = parser.parse_args()
     if args.startup_only and args.negative_control:
         parser.error('Startup diagnostics cannot run persistence mutation controls')
@@ -55,6 +55,7 @@ def main():
             'preflight': ('code/modules/persistence/durable_world.dm', '\tvar/list/fields = state["fields"]', '\tif(islist(state["fields"])) return TRUE\n\tvar/list/fields = state["fields"]'),
             'reachability': ('code/modules/persistence/durable_world.dm', '\tvalidate_durable_reachability(G)', '\tif(FALSE) validate_durable_reachability(G)'),
             'callback': ('code/modules/persistence/durable_timers.dm', '\t\tif(!owner || revision != expected_revision || pending[key] != row) return', '\t\tif(!owner) return'),
+            'timer-restore': ('code/modules/persistence/durable_world.dm', '\tmap.durable_timer_queue().restore(timers)', '\t// Negative control: omit restoring persisted callbacks.'),
         }
         if args.negative_control:
             relative, before, after = mutations[args.negative_control]
@@ -136,7 +137,8 @@ def main():
             raise RuntimeError('Native daemon exited without a result; see daemon-exit.json and probe-progress.log')
         result = json.loads(result_path.read_text(encoding='utf-8'))
         expected = {'season': 'environment phase reset', 'preflight': 'omitted metadata mutated world',
-                    'reachability': 'orphan metadata reference accepted', 'callback': 'restored callback duplicated'}
+                    'reachability': 'orphan metadata reference accepted', 'callback': 'restored callback duplicated',
+                    'timer-restore': 'persisted callback was not restored'}
         if args.negative_control:
             if result.get('done') or result.get('error') != expected[args.negative_control]:
                 raise RuntimeError('Negative control failed outside its intended assertion: ' + str(result))

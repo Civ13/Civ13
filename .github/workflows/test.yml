@@ -347,6 +347,7 @@ jobs:
           bash tests/world_save/run.sh
           python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control restore
           python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control preflight
+          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control integrity
           python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin"
           for control in generation alias binding; do
             python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
@@ -359,7 +360,7 @@ jobs:
           for profile in gaia europe; do
             python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile"
           done
-          for control in season preflight reachability callback; do
+          for control in season preflight reachability callback timer-restore; do
             python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
         shell: bash
