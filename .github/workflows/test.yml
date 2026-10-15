@@ -862,3 +862,20 @@ jobs:
           for control in install remove service premature; do
             pwsh -NoProfile -File tests/gun_configuration/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -FeedbackNegativeControl "$control"
           done
+      - name: Verify wood residue and plant nitrary
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/wood_ash_compost')
+        timeout-minutes: 30
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/wood_ash_compost/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/wood-ash-compost/positive"
+          for control in wood classification payment aging replay persistence constructor; do
+            python3 tests/wood_ash_compost/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/wood-ash-compost/$control"
+          done
+      - name: Upload wood residue and nitrary evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/wood_ash_compost'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: wood-ash-compost-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/wood-ash-compost/
+          retention-days: 7

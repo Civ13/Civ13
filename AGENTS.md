@@ -745,3 +745,12 @@ systems. The hidden reagent source must survive every queued spawn callback, the
 retire through atom/reagent cleanup. `tests/chemical_smoke_ownership/run.py` checks
 production copies, lifetime bounds and repeated holder/membership cleanup against
 an immutable historical negative control in temporary offline storage.
+
+<!-- 2026-10-15: paid wood residue and plant nitrary -->
+Wood-fuel residue uses a saved scalar ledger shared by existing ovens, furnaces
+and factories; unknown legacy fuel earns no ash. The existing compost bin's
+optional nitrary mode stores paid feedstock and remaining active-server time,
+excluding its runtime clock. Feedstock uses stack.use without a human argument:
+Production religion otherwise discounts consumption and breaks conservation.
+See docs/wood-ash-compost.md and tests/wood_ash_compost/run.py for isolated
+production-path/native-save checks and generated-source mutation controls.
