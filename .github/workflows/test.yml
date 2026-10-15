@@ -343,7 +343,7 @@ jobs:
           if-no-files-found: warn
       - name: Isolated save restart transaction regression
         id: restart_transaction
-        if: inputs.restart_transaction_regressions == true || needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.restart_transaction_regressions == true
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           mkdir -p "$RUNNER_TEMP/restart-transaction"
