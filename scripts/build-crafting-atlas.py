@@ -1,6 +1,7 @@
 """Generate current-source recipes and genuine isolated BYOND icon previews."""
 from pathlib import Path
 import subprocess, re, json, hashlib, argparse, sys
+from atlas.catalog_metadata import add_processors, annotate_eras
 
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
@@ -231,6 +232,9 @@ for route in data['sources'].get('mechanisms',[]) if isinstance(data['sources'],
         key=canon(key)
         acquisition.setdefault(key,[]).append(entry)
 data['acquisition']=acquisition
+add_processors(files, add, records)
+annotate_eras(records, uncomment(nodes), splitargs)
+data['limitations'].append('Unlock eras use explicit minimum gates or mapped research tiers; processor eras describe station construction research. Research can be ahead of the map era. Unknown entries are not assigned an era from their maximum expiry. No filter guarantees current faction availability.')
 resource_ids=sorted({x['id'] for r in records for x in r['inputs']+r['outputs']})
 resource_names={x['id']:x['name'] for r in records for x in r['inputs']+r['outputs']}
 if options.catalog_only:
