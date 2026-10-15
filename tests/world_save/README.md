@@ -24,6 +24,31 @@ No local execution result is claimed for this candidate. BYOND fixture success
 would not establish OpenDream behavior, coherent snapshot recovery, the 300-second
 crash-loss bound, zero-loss clean stopping or a month of crash-free operation.
 
+`Load_Entry` supplies a location only when constructing atoms. Non-atom datums,
+including matrices, are constructed with no arguments before saved fields are
+restored. The fixture records constructor argument counts without persisting
+that runtime field, checks an actual saved-entry datum construction, and restores
+all six non-default coefficients of both a standalone matrix and an item
+transform. Existing atom placement, nested contents, typed lists and legacy
+flat-entry loading remain part of the ordinary fixture.
+
+The native composite `appearance` is excluded from both export and import:
+its unsupported saved envelope restores null and resets independently restored
+visual fields. Transform, color and alpha retain their normal field encodings.
+The source transform is checked before export; restoration checks all six
+coefficients plus color and alpha, and logs expected/actual coefficients on failure.
+`run-string-path.py --appearance-negative-control` removes only this exclusion
+in generated source and requires the original transform-coefficient failure
+after a completed save. It cannot be combined with other controls.
+
+The bounded `run-string-path.py --datum-constructor-negative-control` mode
+restores the old location-for-every-type branch only in its generated loader.
+It requires the exact `datum constructor received location argument` failure
+before world export and rejects a completion marker. Keep this control separate
+from metadata and diagnostic controls. The same runner without the flag must
+pass the full ordinary fixture. Native tests require the current runtime owner's
+exclusive execution window; source generation does not establish a runtime pass.
+
 Use BYOND 516.1681. From the repository root on Windows:
 
 ```powershell
@@ -120,3 +145,87 @@ production's initial stat value. Native disk round trips assert dead humans rema
 DEAD without rejuvenation, while unconscious living humans rejuvenate once. The
 fixture closes its port at startup and rejects reopening. These checks exercise
 the actual saver/loader with an injected rejuvenation adapter, not human gameplay.
+
+`string_path_roundtrip.dme` reuses the offline production saver/loader round trip
+with a `text2file` adapter that rejects non-string paths and delegates string
+paths to the native disk writer. This models the path contract in OpenDream
+engine commit `3a20a7876a52513596edf195a75e08459afd4e9a`. Compile and run it in
+temporary storage with the same process bounds and diagnostic checks as the
+ordinary fixture. Its negative control restores `file("map_saves/map.txt")` for
+`F0` in a generated copy of `saving.dm`; require the metadata-write failure and
+absence of a completion marker. The adapter is a compatibility regression,
+not proof of an OpenDream save or fresh-process recovery.
+
+`run-string-path.py --byond-bin <516.1681-bin> --expected-saving-sha256
+<reviewed-source-hash>` stages the fixture and production includes in temporary
+storage and checks clean compilation, runtime diagnostics and the exact result.
+Run again with `--negative-control` to restore the resource argument only in
+the generated source. The negative requires the exact exception name and no
+completion marker. The runner retains original/generated source hashes and
+owned process exit records, with 120-second per-process bounds. Use the
+coordinated aggregate memory/process guard as well; these per-process timeouts
+do not supply an aggregate memory bound.
+
+The fixture also requires the actual `icons/turf/floors.dmi` resource through
+its `FILE_DIR`. Frozen source packets must include it; the resource at game
+commit `cbf0ebb0a46c7dceb2be8bb02010f49db49cac72` has SHA256
+`229e603ee10ce9dd4070a285674c733c3727004e647af2f1e0328e24d683c6de`.
+The include inventory does not cover that resource or the final generated
+`probe.dme`; retain their hashes and the runner hash in the outer job receipt.
+A missing resource is a staging/compilation failure, not the metadata-write
+negative control.
+
+### Serialization progress diagnostics
+
+`build-progress-probe.py` generates test-only copies of `saving.dm` and
+`functions.dm`, plus `progress-probe.dm`. Supply both original paths and their
+reviewed raw SHA256 hashes with `--saving-source`, `--functions-source`,
+`--tick-source`, `--expected-saving-sha256`, `--expected-functions-sha256`,
+`--expected-tick-sha256` and a new
+`--output-dir`. A hash or insertion-anchor mismatch rejects the packet before
+creating outputs. The pinned tick source must contain the supported production
+tick-check definition. Replace only the saver include in an isolated DME and
+append the generated helper; never add the helper to `civ13.dme`.
+
+The helper overwrites `world_save_progress.json` and emits `SAVE_PROGRESS`
+console records. It checks each 1024 completed turfs and writes at most once
+per ten real seconds, except forced save/metadata/level/completion boundaries.
+Rows include actual map dimensions, the active level's completed turf and
+entry/list counts, real elapsed deciseconds, world time, tick usage and
+serializer-only `stoplag()` call/wait totals. The scoped tick-check wrapper
+uses the same production threshold and calls the original `stoplag()` once.
+The original thresholds,
+sleeps, traversal, serialization and completion assertions remain intact.
+Wait totals include engine flush time while a sleeping proc resumes; they are
+not CPU measurements. Diagnostic JSON/deletion/write/log errors are caught:
+progress disables itself and records unavailability, without changing the save
+result. A save exception resets the active flag and rethrows the original
+exception. Latest-state JSON replacement is not atomic; a reader must treat
+missing/partial JSON as unavailable diagnostics, never as a failed save.
+A level's serialization progress is not durable save
+completion, and a completion marker alone is not fresh-process restoration.
+
+Use the runtime owner's existing isolated process guard, finite phase timeout,
+source/resource inventory and stopped-process receipts. The generator launches
+no compiler or game and supplies no process/memory guard. Keep diagnostic
+overhead explicit when comparing performance: baseline and candidate need the
+same map, populated contents, engine, storage and instrumentation.
+
+`run-string-path.py --progress` runs the original production round-trip controls
+with generated diagnostics. Add `--progress-fault-stage` (`save_entered`,
+`level_serialized`, `completion_marker`) and `--progress-fault-operation`
+(`delete`, `write`, `json`) to inject a diagnostic exception before that
+operation. Each must preserve the successful save and its marker, while reporting
+diagnostic unavailability. `--progress-negative-control` deliberately propagates
+the injected exception and requires its exact failure and expected marker state.
+The native fixture retains its existing mutation-on-tick adapter; these checks
+verify IO isolation and save semantics, not full-game timing or CPU performance.
+
+HUD migration coverage in `run-string-path.py` checks that client HUD fields and
+screen/HUD objects do not enter new saves, old saved HUD fields are skipped and
+old HUD entries are suppressed before their owner-dependent constructors run.
+The human's dead status, name and nested paid item survive the native round trip.
+`--hud-negative-control export`, `import` and `constructor` independently remove
+each safeguard in generated source and require its exact failure. The constructor
+sentinel models the owner requirement; full-game same-generation restoration is
+separate acceptance. Use D: TEMP/TMP and the sole live-test owner's executor.

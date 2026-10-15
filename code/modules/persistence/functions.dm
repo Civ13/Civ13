@@ -34,6 +34,22 @@
 			to_save |= "name"
 	return to_save
 
+// The composite appearance is not a supported saved datum. Restoring its null
+// envelope resets independently restored fields such as transform and color.
+/atom/persistence_runtime_var(key)
+	return key == "appearance" || ..()
+
+// HUD objects belong to a client session and are rebuilt by the normal HUD path.
+// The custom saver visits tmp vars too; exclude these on both export and import.
+/mob/persistence_runtime_var(key)
+	return (key in list("hud_used", "HUDneed", "HUDinventory", "HUDfrippery", "HUDprocess", "HUDtech", "hands", "pullin", "purged", "i_select", "m_select", "zone_sel")) || ..()
+
+/obj/screen
+	should_save = FALSE
+
+/datum/hud
+	should_save = FALSE
+
 // Dirt uses the turf allowlist rather than the object changed-vars encoder.
 // Preserve finite fertility across exports without serializing recovery tokens.
 /turf/floor/dirt/get_saved_vars()
