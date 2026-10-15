@@ -100,7 +100,11 @@
 		F["[map_storage.entry_path(F, lamp_ref)]/light"] << list("kind" = "entry", "ref" = "901")
 		F["[map_storage.entry_path(F, lamp_ref)]/light_sources"] << list("kind" = "list", "ref" = "900")
 		durable_world_check(map_storage.validate_world_save(), "legacy lighting save preflight rejected")
+		var/mob/dview/runtime_view = dview_mob
+		var/mob/ordinary_mob = new(locate(6,6,1))
 		map_storage.ClearMap()
+		durable_world_check(dview_mob == runtime_view && dview_mob && !dview_mob.gcDestroyed && !dview_mob.gc_destroyed, "map clearing retired runtime view helper")
+		durable_world_check(!ordinary_mob || ordinary_mob.gcDestroyed || ordinary_mob.gc_destroyed, "map clearing retained ordinary mob")
 		durable_world_check(map_storage.Load_World(), "legacy lighting graph prevented import")
 		// Locate spatially: ClearMap queues old objects for deferred disposal.
 		carrier = locate(/obj/item/persistence_light_container) in locate(3,3,1)
@@ -123,6 +127,15 @@
 		for(var/i = 1, i <= carrier.legacy_runtime_refs.len, i++)
 			durable_world_check(isnull(carrier.legacy_runtime_refs[i]), "legacy runtime reference constructed")
 		durable_world_check(!carrier.indirect_source && !carrier.indirect_corner && !carrier.indirect_overlay, "indirect source graph restored")
+		// Run the production light queue through native view(), not only bindings.
+		var/process/lighting_sources/light_process = new
+		light_process.run_time_tick_usage_allowance = 10
+		for(var/attempt = 1, attempt <= 20 && lighting_update_lights.len, attempt++)
+			light_process.run_time_tick_usage = world.tick_usage
+			light_process.fire()
+			sleep(1)
+		durable_world_check(lamp.light.applied && default_lamp.light.applied && !lamp.light.needs_update && !default_lamp.light.needs_update, "restored lights failed native application")
+		durable_world_check(dview_mob == runtime_view && !dview_mob.loc && !dview_mob.gcDestroyed && !dview_mob.gc_destroyed, "native light application retired runtime view helper")
 		var/obj/item/persistence_light_container/new_carrier = new(locate(5,3,1))
 		// Use the production movement API, which dispatches Entered/Exited hooks.
 		durable_world_check(lamp.forceMove(new_carrier), "restored light movement refused")

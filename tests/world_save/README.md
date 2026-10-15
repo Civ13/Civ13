@@ -395,14 +395,14 @@ area before the disk save. Its corrupt-sentinel checks reject before ClearMap.
 light-source, corner and overlay constructors, the actual world saver and loader,
 and temporary disk storage. It checks customized and default light properties,
 nested owner bindings, omitted runtime graphs, historical indirect graph entries,
-source rebuilding, movement and switch-off registration cleanup. The scheduler
+source rebuilding, movement and switch-off registration cleanup. It preserves the runtime view singleton across map clearing and calls the production lighting queue through native view(). The recurring scheduler
 and normal game startup are disabled; this does not establish full Europe import
 or rendered illumination. Controls `lighting-export`, `lighting-legacy` and
-`lighting-rebuild` and `lighting-opacity` each remove one production safeguard in generated source.
+`lighting-rebuild`, `lighting-opacity` and `lighting-view` each remove one production safeguard in generated source.
 The legacy control must reproduce the ownerless `light_sources` constructor error.
 
 The native CI workflow accepts `lighting_recovery_regressions=true` for these
-five cases. The fixture closes its native port, rejects reopening and checks a
+six cases. The fixture closes its native port, rejects reopening and checks a
 live OS socket census; a brief native startup listener can precede its entry.
 Obstruction caches rebuild after contents/fields/hooks and before source updates.
 On this Windows host, even the existing startup-only control exits

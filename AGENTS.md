@@ -744,3 +744,9 @@ although native BYOND `islist` accepts it. Squad and leader defaults are alists
 with numeric keys and null associations. Collection codecs must handle `/alist`
 explicitly; isolated probes must import the production macro. Numeric alist
 indexing addresses keys, so iterate keys instead of positional indexes.
+
+<!-- 2026-10-15: persistence runtime view helper -->
+ClearMap must preserve the global dview_mob identity. Retiring this runtime mob
+breaks FOR_DVIEW in post-import lighting processing after GC clears the global.
+The lighting recovery fixture runs production lighting_sources.fire(), not only
+light constructor/registration checks; lighting-view removes the preservation guard.
