@@ -1,14 +1,19 @@
 // Isolated acceptance observer. Never included by the production DME.
+/world/OpenPort(port)
+	if(world.params["gaia_intent_seed"] == "1" && port != "none") return FALSE
+	return ..()
+
 /world/IsBanned(key, address, computer_id, type)
 	if(world.params["gaia_intent_seed"] == "1" || address != "127.0.0.1" || ckey(key) != "valzargaming")
 		return list("reason" = "isolated acceptance host", "message" = "Only the test operator may join")
 	return ..()
 
 /proc/gaia_probe_seed_intent()
-	world.OpenPort(0)
 	world.visibility = FALSE
 	var/list/result = list("passed" = FALSE)
 	try
+		world.OpenPort("none")
+		if(world.port) throw EXCEPTION("Seed requires a closed network port")
 		if(persistence_restart.exists()) throw EXCEPTION("Refusing existing intent")
 		persistence_save_in_progress = TRUE
 		if(!map_storage.prepare_saved_dimensions()) throw EXCEPTION("Dimension validation failed: [map_storage.last_error]")

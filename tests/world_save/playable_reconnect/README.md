@@ -47,3 +47,14 @@ Offline checks: run test_prepare.py with the verified Python interpreter. These
 checks cover copy hash rejection, unique reversible startup/Topic insertions and
 pinned digest shape. They do not establish compilation, native seed correctness
 or real-client recovery. The seed adapter and actual client flow remain unrun.
+
+Native port correction: the first seed attempt at94c20 was stopped after observing
+an unexpected listener. OpenPort(0) requests an available port; it does not close
+one. The corrected seed uses OpenPort("none"), checks world.port before validation
+and rejects later opens while seeding. The minimal native test extracts the actual
+OpenPort/admission guards, records the initial native startup port separately,
+then verifies closed entry, denied random/fixed reopen and a live zero-listener
+OS census. Native startup may briefly assign a port before the seed entry; all
+clients are denied in this phase. Do not infer listener absence from -close.
+Run test_port.py --byond-bin <516.1681-bin> for this native contract. The preserved
+failed full seed remains failed; tiny port success is not full seed acceptance.
