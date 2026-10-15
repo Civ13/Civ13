@@ -14,7 +14,10 @@ from prepare import instrument_world
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--byond-bin', type=Path, required=True)
+    p.add_argument('--hold-seconds', type=int, default=5, help='Keep the closed fixture alive to observe delayed engine diagnostics (5-180 seconds)')
     a = p.parse_args()
+    if not 5 <= a.hold_seconds <= 180:
+        p.error('--hold-seconds must be between5 and180')
     root = Path(tempfile.mkdtemp(prefix='civ13-gaia-seed-port-'))
     print(f'Evidence: {root}', flush=True)
     control = Path(__file__).with_name('control.dm').read_text(encoding='utf-8-sig')
@@ -55,7 +58,7 @@ var/datum/probe_storage/map_storage = new
     sleep(50)
     del(world)
 '''
-    (root / 'probe.dm').write_text('#define FALSE 0\n#define TRUE 1\n' + guard + startup + fixture, encoding='utf-8')
+    (root / 'probe.dm').write_text('#define FALSE 0\n#define TRUE 1\n' + guard + startup + fixture.replace('sleep(50)', f'sleep({a.hold_seconds * 10})'), encoding='utf-8')
     (root / 'probe.dme').write_text('#include "probe.dm"\n', encoding='utf-8')
     compiler = a.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = a.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
@@ -78,7 +81,7 @@ var/datum/probe_storage/map_storage = new
                 (root / 'listener.json').write_text(json.dumps(census), encoding='utf-8')
                 if census['listeners'] or child.poll() is not None:
                     raise RuntimeError('Port probe not alive with zero listeners at census')
-            code = child.wait(timeout=30)
+            code = child.wait(timeout=a.hold_seconds + 30)
         finally:
             if child.poll() is None:
                 child.kill()

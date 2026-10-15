@@ -68,3 +68,13 @@ text "1", seed branch selection, entry marker, compiled-dimension call, skipped
 ordinary startup, closed ports and denied reopen calls, plus a live zero-listener
 census. This does not measure full Gaia constructor time. BYOND can open a native
 port before world/New; seed mode denies every client throughout that interval.
+
+Full c450 seed observation: world/New entry after about102seconds, initial native
+port54534 closed to0, subsequent OS listener samples0, production intent published
+for the expected d94fe939 generation, native exit0 and all five original/copy hashes
+unchanged. seed-verification.json preserves a BUG: Unexpected nslookup event(pid2)
+from seed-native.log:6; clean acceptance failed and recovery was not launched.
+The tiny fixture's opt-in --hold-seconds130 comparison passed cleanly including
+native login. It does not reproduce the full map constructor workload or explain
+the full-world diagnostic. An attempted sleeping-global-constructor timing control
+entered world/New immediately and is invalid for that comparison; it was removed.
