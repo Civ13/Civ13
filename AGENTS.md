@@ -490,6 +490,15 @@ crash behavior. Do not replace required gameplay captures with fixture output.
 retained entries are distinct from OS private memory. `run-game.ps1 -ExerciseCapture`
 checks real forward/reverse/stop behavior. Its optional bounded `-Visual` mode
 requires the coordinator's exclusive screen turn; see tests/conveyor/README.md.
+<!-- 2026-10-15: player-facing changelog review -->
+Meaningful player-facing PRs must include exactly one reviewed `changelog: text`
+line in their opening description before being marked ready or merged, outside
+comments, quotes and fenced code. Use concise player-facing text compatible with
+tools/changelog/README.md so the existing GitHub Action can announce it to Discord.
+Use one announcement route per change; do not also add a manifest for that change.
+This requirement does not authorize manual posts, publisher settings changes,
+deployment or claims that the change is running on a server.
+
 <!-- 2026-10-11: shipped Discord changelog -->
 The standalone publisher in tools/changelog supports an explicit `Changelog: text`
 line in a PR opening description on merge into master. Missing or blank means no
