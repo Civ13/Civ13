@@ -86,9 +86,16 @@ world
 	maxy = 1
 	maxz = 1
 	view = 1
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
 world/New()
-	world.port = 0
-	check(!world.port, "fixture has no listening port")
+	OpenPort("none")
+	spawn(0)
+		run_tests()
+/proc/run_tests()
+	check(!world.port && !world.OpenPort(12345), "fixture refuses listening ports")
 	reset_history()
 	var/datum/admin_secret_item/admin_secret/admin_logs/viewer = new
 	viewer.execute(null)
