@@ -345,6 +345,10 @@ jobs:
           mkdir -p "$RUNNER_TEMP/world-save"
           export TMPDIR="$RUNNER_TEMP/world-save"
           bash tests/world_save/run.sh
+          python3 tests/world_save/run-restart-transaction.py --byond-bin "$PWD/BYOND/byond/bin"
+          for control in generation consume import; do
+            python3 tests/world_save/run-restart-transaction.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
           python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control restore
           python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control preflight
           python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control integrity

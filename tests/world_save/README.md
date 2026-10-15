@@ -317,3 +317,11 @@ map-specific faction/civilization controllers, day/night phase, station calendar
 vote state or every map timer. Startup messages/webhooks emitted before loading
 are not retroactively rewritten. No faster world-save claim follows from this
 correctness change.
+# Native save/restart transaction
+
+`run-restart-transaction.py --byond-bin <516.1681-bin>` checks the production
+one-shot restart state machine in temporary storage with injected save/load and
+restart effects. Run `--negative-control generation`, `consume` and `import` too.
+`--prepare-only` stages source and hash receipts without launching BYOND.
+See [the admin recovery guide](../../docs/world-save-restart.md). This fixture
+does not establish full-map restart, client relogin or performance acceptance.

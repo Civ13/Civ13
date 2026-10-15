@@ -72,6 +72,8 @@ var/world_is_open = TRUE
 
 #define RECOMMENDED_VERSION 516
 /world/New()
+	// Detect before any startup yield, ticker setup or admission can run.
+	persistence_restart.detect_startup()
 
 	if (map && istype(map,/obj/map_metadata/nomads/persistence_beta))
 		loop_checks = FALSE
@@ -226,7 +228,20 @@ var/world_topic_spam_protect_time = world.timeofday
 	return handler.TryRun(input)
 
 
-/world/Reboot(var/reason)
+/world/Reboot(var/reason, recovery_generation)
+	if(recovery_generation)
+		if(!persistence_restart.busy || persistence_restart.startup_hold || recovery_generation != persistence_restart.expected_generation || trim(file2text("map_saves/save_complete.txt")) != recovery_generation)
+			return FALSE
+#ifndef OPENDREAM
+		// Parent reboot performs native shutdown/relogin. Do not stop the
+		// scheduler here: a returned/rejected restart must leave it running.
+		return ..(reason)
+#else
+		return FALSE
+#endif
+	if(persistence_restart.busy || persistence_restart.startup_hold)
+		message_admins("Reboot blocked by save/restart recovery; inspect the recovery transaction first.")
+		return FALSE
 	#ifdef OPENDREAM
 	if (!opendream_control_request("restart"))
 		log_debug("OpenDream restart rejected: no available local supervisor.")
@@ -237,6 +252,7 @@ var/world_topic_spam_protect_time = world.timeofday
 	 * this was 50 but now it's 70 to let the entire JOJO meme play even when the server restarts quickly
 	 * because sometimes it takes 1 second to restart other times 30 seconds :thinking: - Kachnov */
 	spawn (150)
+		if(persistence_restart.busy || persistence_restart.startup_hold) return
 
 		var/sleeptime = 0
 		to_chat(world, SPAN_DANGER("Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[world.internet_address]:[port]</b>"))
@@ -335,7 +351,7 @@ var/global/persistence_reboot_scheduled = FALSE
 /proc/start_persistence_loop()
 	if (! config.skip_persistence_saving)
 		spawn(300)
-			if (map && map.persistence)
+			if (map && map.persistence && !persistence_restart.startup_hold && !persistence_restart.busy)
 				var/minsleft = 60-text2num(time2text(world.realtime,"mm"))
 				var/secsleft = 60-text2num(time2text(world.realtime,"ss"))
 				var/hr = (text2num(time2text(world.realtime,"hh")) & 0x1) //only odd hours

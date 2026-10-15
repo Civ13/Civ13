@@ -218,15 +218,16 @@ map_storage
 
 var/global/persistence_save_in_progress = FALSE
 
-/datum/controller/gameticker/proc/savemap()
-	if (persistence_save_in_progress)
+/datum/controller/gameticker/proc/savemap(datum/persistence_restart_transaction/transaction)
+	if (persistence_save_in_progress || persistence_restart.startup_hold || (persistence_restart.busy && transaction != persistence_restart) || (!transaction && persistence_restart.exists()))
 		return 0
 	persistence_save_in_progress = TRUE
 	var/watch = start_watch()
 	to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP! THIS USUALLY TAKES UNDER A MINUTE</B></FONT>")
 	sleep(5)
 	try
-		map_storage.Save_World()
+		if(!map_storage.Save_World())
+			throw EXCEPTION("Save_World did not complete")
 	catch(var/exception/e)
 		map_storage.clear_bookkeeping()
 		map_storage.release_durable_world()
@@ -239,8 +240,8 @@ var/global/persistence_save_in_progress = FALSE
 	log_startup_progress("	Saved the map in [stop_watch(watch)]s.")
 	return 1
 
-/datum/controller/gameticker/proc/loadmap()
-	if(persistence_save_in_progress)
+/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction)
+	if(persistence_save_in_progress || ((persistence_restart.startup_hold || persistence_restart.busy || persistence_restart.exists()) && transaction != persistence_restart))
 		return FALSE
 	map_storage.reset_player_restoration()
 	persistence_save_in_progress = TRUE
@@ -252,6 +253,8 @@ var/global/persistence_save_in_progress = FALSE
 	try
 		// Snapshot the validated header before any destructive restoration.
 		var/list/saved_round = map_storage.read_round_state()
+		if(transaction && saved_round["generation"] != transaction.expected_generation)
+			throw EXCEPTION("Restart generation changed before import")
 		map_storage.suspend_durable_world()
 		map_storage.ClearMap()
 		if(!map_storage.Load_World())

@@ -45,6 +45,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 /datum/controller/gameticker/proc/pregame()
 
 	spawn (0)
+		while(persistence_restart.startup_hold) sleep(10)
 		if(map_storage.round_restored) return
 
 		current_state = GAME_STATE_PREGAME // just in case
@@ -101,6 +102,9 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 
 /datum/controller/gameticker/proc/setup()
+	if(persistence_restart.startup_hold)
+		sleep(1)
+		return FALSE
 	// A successful import resumes its phase without fresh equipment/map seeding.
 	if(map_storage.round_restored) return TRUE
 	if(persistence_save_in_progress)
@@ -187,6 +191,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 				WB.give_sticker_pack(player)
 
 /datum/controller/gameticker/proc/process()
+	if(persistence_restart.startup_hold) return FALSE
 	if(persistence_save_in_progress) return FALSE
 	if (current_state != GAME_STATE_PLAYING)
 		return FALSE
