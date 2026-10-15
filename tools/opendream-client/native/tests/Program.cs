@@ -16,6 +16,31 @@ async Task RejectAsync(Func<Task> action, string message) {
     throw new Exception("Negative control accepted: " + message);
 }
 try {
+    const string privateFailure = "PRIVATE https://name:password@example.test/private?token=secret\r\nINJECTED";
+    var reset = new System.Net.Sockets.SocketException(10054);
+    var tls = new System.Security.Authentication.AuthenticationException(privateFailure, reset);
+    var requestFailure = new HttpRequestException(HttpRequestError.SecureConnectionError, privateFailure, tls);
+    var safeTls = Updater.DescribeFailure(requestFailure);
+    Require(safeTls.Contains("SecureConnectionError") && safeTls.Contains("AuthenticationException"), "TLS diagnostic lost nested framework classification");
+    Require(safeTls.Contains("SocketException") && safeTls.Contains("native=10054/0x00002746"), "TLS diagnostic lost actual nested socket reset code");
+    Require(safeTls.Contains("HRESULT=0x"), "TLS diagnostic omitted numeric HRESULT");
+    Require(!safeTls.Contains("PRIVATE") && !safeTls.Contains("password") && !safeTls.Contains("token=") && !safeTls.Contains("example.test"), "TLS diagnostic leaked exception message or URL credentials");
+    Require(safeTls.All(character => character is >= ' ' and <= '~'), "TLS diagnostic included injected line breaks or non-printable content");
+    var certificateFailure = new System.Security.Authentication.AuthenticationException(privateFailure,
+        new System.ComponentModel.Win32Exception(unchecked((int)0x80090325)));
+    var safeCertificate = Updater.DescribeFailure(certificateFailure);
+    Require(safeCertificate.Contains("Win32Exception") && safeCertificate.Contains("0x80090325"), "certificate failure diagnostic lost native code");
+    Require(!safeCertificate.Contains("PRIVATE") && !safeCertificate.Contains("password"), "certificate diagnostic leaked untrusted error text");
+    var responseFailure = new HttpRequestException(HttpRequestError.HttpProtocolError, privateFailure, null, System.Net.HttpStatusCode.ServiceUnavailable);
+    Require(Updater.DescribeFailure(responseFailure).Contains("HTTP=503"), "HTTP response diagnostic lost actual status code");
+    Exception deepFailure = requestFailure;
+    for (var index = 0; index < 100; index++) deepFailure = new IOException(privateFailure, deepFailure);
+    var safeDeep = Updater.DescribeFailure(deepFailure);
+    Require(safeDeep.Length <= 512 && safeDeep.EndsWith("..."), "deep exception chain was not bounded and marked incomplete");
+    Require(!safeDeep.Contains("PRIVATE") && !safeDeep.Contains("token="), "deep exception chain leaked message content");
+    Require(Updater.DescribeFailure(new Exception(privateFailure)).StartsWith("Exception HRESULT=0x"), "unknown exception diagnostic was not safely classified");
+    Reject(() => ServerCatalog.OpenDreamPort("Nomads", null), "unconfigured OpenDream service");
+    Require(ServerCatalog.OpenDreamPort("Nomads", "18462") == 18462, "explicit OpenDream operator port changed");
     var expectedLinks = new[] { "https://civ13.com/", "https://civ13.github.io/civ13-wiki/", "https://civ13.com/discord", "https://github.com/civ13/civ13/" };
     Require(CommunityLinks.Items.Values.Select(link => link.Url).SequenceEqual(expectedLinks), "official community destinations changed");
     foreach (var item in CommunityLinks.Items) {
@@ -64,6 +89,21 @@ try {
         return Task.FromResult(new[] { System.Net.IPAddress.Parse("192.64.119.81"), System.Net.IPAddress.Parse(resolverCalls == 1 ? "72.218.249.221" : "192.0.2.2") });
     }
     var initialAddresses = await Connection.Resolve(ResolveFixture);
+    foreach (var mode in new[] { "Nomads", "TDM" }) {
+        var server = ServerCatalog.Select("ValZarGaming", mode);
+        var native = ServerCatalog.NativeStart(server, root, initialAddresses.Single(), Civ13.Launcher.Program.RequiredByond(), _ => true);
+        var expectedNativePort = mode == "Nomads" ? 1714 : 1715;
+        Require(server.Engine == "BYOND" && server.Port == expectedNativePort, "public server engine/port mismatch");
+        Require(native.FileName == Path.Combine(root, "dreamseeker.exe") && !native.UseShellExecute &&
+            native.ArgumentList.SequenceEqual(new[] { $"byond://72.218.249.221:{expectedNativePort}" }), "public server did not dispatch exact native client URL");
+        Reject(() => ServerCatalog.NativeStart(server with { Engine = "OpenDream" }, root, initialAddresses.Single(), Civ13.Launcher.Program.RequiredByond(), _ => true), "OpenDream substituted for DreamDaemon");
+        Reject(() => ServerCatalog.NativeStart(server with { Port = 18459 }, root, initialAddresses.Single(), Civ13.Launcher.Program.RequiredByond(), _ => true), "isolated test port substituted for public server");
+        Reject(() => ServerCatalog.NativeStart(server, root, initialAddresses.Single(), Civ13.Launcher.Program.RequiredByond(), _ => false), "wrong BYOND version");
+        foreach (var endpoint in new[] { "192.64.119.81", "192.0.2.2", "valzargaming.com", "72.218.249.221;calc.exe" })
+            Reject(() => ServerCatalog.NativeStart(server, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => true), "unverified native endpoint");
+    }
+    Reject(() => ServerCatalog.Select("unknown", "Nomads"), "unknown public server");
+    Reject(() => ServerCatalog.Select("ValZarGaming", "unknown"), "unknown public mode");
     await RejectAsync(() => Connection.Resolve(ResolveFixture), "changed unverified DNS endpoint");
     Require(resolverCalls == 2 && initialAddresses.SequenceEqual(new[] { "72.218.249.221" }), "connection cached DNS or retained excluded address");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(Array.Empty<System.Net.IPAddress>())), "empty DNS answer");

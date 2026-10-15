@@ -501,7 +501,7 @@ var/civmax_research = list(230,230,230)
 	last_crossing_block_status[faction2] = faction2_can_cross_blocks()
 	last_crossing_block_status[faction1] = faction1_can_cross_blocks()
 
-	if (processes.ticker.playtime_elapsed > 6000 && world.realtime > lastcheck && !is_singlefaction && !is_RP && !nomads && !civilizations)
+	if (!persistence_round_active() && processes.ticker.playtime_elapsed > 6000 && world.realtime > lastcheck && !is_singlefaction && !is_RP && !nomads && !civilizations)
 		if (!(alive_n_of_side(faction1)))
 			current_winner = roundend_condition_def2army(faction2)
 			current_loser = roundend_condition_def2army(faction1)
@@ -515,7 +515,8 @@ var/civmax_research = list(230,230,230)
 
 		lastcheck = world.realtime + 600
 
-	update_win_condition()
+	if (!persistence_round_active())
+		update_win_condition()
 	check_events()
 	if (nomads)
 		if (!age1_done)

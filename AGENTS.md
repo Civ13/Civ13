@@ -255,6 +255,12 @@ a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10:
 <!-- 2026-10-11: crafting validation -->
 ## Crafting checks
 
+<!-- 2026-10-15: Modern processor recipe validation -->
+The recipe catalog fixture defaults to era 0. New era-gated machine families
+must select their real supported era in tests/crafting/checks.dm; the reactor
+fuel processor is Modern despite not inheriting civ_generator. Keep separate
+locked-era/node tests so a fixture-era fix cannot bypass production gating.
+
 <!-- 2026-10-11: staged component workbench -->
 `scripts/check-component-tools.py` now checks staged bench cancellation,
 concurrent assembly, ingredient removal, destruction and nested native saves.
@@ -285,6 +291,22 @@ tests/opendream_shell runs both production branches with counted external-effect
 adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
+
+<!-- 2026-10-15: archived combat histories -->
+Combat history writers use `append_attack_log`; ghosts share the body's list.
+Keep the mob history declared as `var/list` for native list method resolution.
+Retire rows in place only after the private archive write succeeds. Archive
+failure deliberately retains history, with scalar retry/warning cooldowns.
+`tests/attack_history` checks writer coverage and isolated production contracts;
+its row counts do not establish live process RAM or crash durability.
+
+<!-- 2026-10-15: hover name HUD -->
+`code/_onclick/hud/hover_name.dm` uses a weak target reference on a disposable
+human HUD screen object. Mouse events update it; the existing HUD process
+revalidates stationary targets. Keep masked names behind `get_visible_name()`,
+require a screen slot for inventory visibility, and forward runtime persistence
+exclusions. `tests/hover_name/run.py` exercises native production decisions with
+an injected client boundary, not real client mouse delivery or rendering.
 
 <!-- 2026-10-14: local CID source comparison -->
 `tools/cid/get-cid.ps1` calls the reviewed Windows BYOND 516.1681 library's
@@ -368,6 +390,14 @@ also emits `crafting/` with isolated BYOND 516.1681 inherited sprite exports.
 Missing/transparent defaults use a labeled actual paper DMI source symbol;
 constructor graphics and material recoloring remain dynamic. See
 docs/crafting-atlas.md; acquisition annotations retain their historical audit SHA.
+
+<!-- 2026-10-15: atlas unlock and processing contracts -->
+`scripts/atlas/catalog_metadata.py` keeps unlock research tiers/minimum gates
+separate from catalog field 12's maximum allowed era. Parse research constructors
+with balanced arguments; the enclosing registration call adds another closing
+parenthesis. Processor tiers describe station construction, not use restrictions.
+`tests/crafting_atlas/run.py --compile-only` never starts DreamDaemon; runtime
+navigation and omission controls require the normal isolated runner or CI.
 
 <!-- 2026-10-11: bounded animal harvesting -->
 - `code/modules/1713/animal_harvest.dm` centralizes corpse claims and bounded species products. The custom saver enumerates `tmp` fields, so in-progress harvesting/axe locks explicitly opt out via `persistence_runtime_var`.
@@ -507,6 +537,15 @@ crash behavior. Do not replace required gameplay captures with fixture output.
 retained entries are distinct from OS private memory. `run-game.ps1 -ExerciseCapture`
 checks real forward/reverse/stop behavior. Its optional bounded `-Visual` mode
 requires the coordinator's exclusive screen turn; see tests/conveyor/README.md.
+<!-- 2026-10-15: player-facing changelog review -->
+Meaningful player-facing PRs must include exactly one reviewed `changelog: text`
+line in their opening description before being marked ready or merged, outside
+comments, quotes and fenced code. Use concise player-facing text compatible with
+tools/changelog/README.md so the existing GitHub Action can announce it to Discord.
+Use one announcement route per change; do not also add a manifest for that change.
+This requirement does not authorize manual posts, publisher settings changes,
+deployment or claims that the change is running on a server.
+
 <!-- 2026-10-11: shipped Discord changelog -->
 The standalone publisher in tools/changelog supports an explicit `Changelog: text`
 line in a PR opening description on merge into master. Missing or blank means no
@@ -730,3 +769,18 @@ although native BYOND `islist` accepts it. Squad and leader defaults are alists
 with numeric keys and null associations. Collection codecs must handle `/alist`
 explicitly; isolated probes must import the production macro. Numeric alist
 indexing addresses keys, so iterate keys instead of positional indexes.
+
+<!-- 2026-10-15: paid wood residue and plant nitrary -->
+Wood-fuel residue uses a saved scalar ledger shared by existing ovens, furnaces
+and factories; unknown legacy fuel earns no ash. The existing compost bin's
+optional nitrary mode stores paid feedstock and remaining active-server time,
+excluding its runtime clock. Feedstock uses stack.use without a human argument:
+Production religion otherwise discounts consumption and breaks conservation.
+See docs/wood-ash-compost.md and tests/wood_ash_compost/run.py for isolated
+production-path/native-save checks and generated-source mutation controls.
+
+<!-- 2026-10-15: save and continuous-round guard ordering -->
+Ticker save-in-progress gating precedes continuous persistence-round recovery.
+Do not clear a saved finished flag or change round state while serialization is
+yielding. tests/persistence_round/run.py --negative-control save removes that
+guard and must fail the production ticker/save interaction assertion.

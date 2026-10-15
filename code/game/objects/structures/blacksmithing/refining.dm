@@ -24,6 +24,8 @@
 		set_light(0)
 
 /obj/structure/furnace/attackby(var/obj/item/I, var/mob/living/human/H)
+	if (!I || !I.loc)
+		return
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)
@@ -46,34 +48,42 @@
 
 		if (istype(I, /obj/item/stack/))
 			if (istype(I, /obj/item/stack/material/wood))
+				record_wood_fuel(I, I.amount)
 				fuel += I.amount
 				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 
 			else if (istype(I, /obj/item/stack/material/bamboo))
+				record_wood_fuel(I, I.amount)
 				fuel += I.amount
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 
 			else if (istype(I, /obj/item/weapon/branch))
+				record_wood_fuel(I, I.amount+0.5)
 				fuel += I.amount+0.5
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 
 			else if (istype(I, /obj/item/stack/material/leaf))
+				record_wood_fuel(I, I.amount+0.5)
 				fuel += I.amount+0.5
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 
 			else if (istype(I, /obj/item/stack/dung))
+				record_wood_fuel(I, I.amount+1)
 				fuel += I.amount+1
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 
 			else if (istype(I, /obj/item/stack/ore/charcoal))
+				record_wood_fuel(I, I.amount*2.5)
 				fuel += I.amount*2.5
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 
 			else if (istype(I, /obj/item/stack/ore/coal))
+				record_wood_fuel(I, I.amount*3)
 				fuel += I.amount*3
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 
 			else if (istype(I, /obj/item/stack/material/woodplank))
+				record_wood_fuel(I, I.amount)
 				fuel += I.amount
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 
@@ -93,6 +103,7 @@
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
 			if (MT.get_material_name() == "wood")
+				record_wood_fuel(I, 1)
 				fuel += 1
 				to_chat(H, "You break \the [MT] and put it into the [src], refueling it.")
 				qdel(I)
@@ -131,7 +142,7 @@
 	if (!on && fuel > 1)
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
 		on = TRUE
-		fuel -=2
+		burn_structure_fuel(2)
 		update_icon()
 		spawn (250)
 			on = FALSE
@@ -167,6 +178,8 @@
 	base_state = "blast_furnace"
 
 /obj/structure/furnace/blast_furnace/attackby(var/obj/item/I, var/mob/living/human/H)
+	if (!I || !I.loc)
+		return
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)
@@ -189,34 +202,42 @@
 
 		if (istype(I, /obj/item/stack/))
 			if (istype(I, /obj/item/stack/material/wood))
+				record_wood_fuel(I, I.amount)
 				fuel += I.amount
 				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 
 			else if (istype(I, /obj/item/stack/material/bamboo))
+				record_wood_fuel(I, I.amount)
 				fuel += I.amount
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 
 			else if (istype(I, /obj/item/weapon/branch))
+				record_wood_fuel(I, I.amount+0.5)
 				fuel += I.amount+0.5
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 
 			else if (istype(I, /obj/item/stack/material/leaf))
+				record_wood_fuel(I, I.amount+0.5)
 				fuel += I.amount+0.5
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 
 			else if (istype(I, /obj/item/stack/dung))
+				record_wood_fuel(I, I.amount+1)
 				fuel += I.amount+1
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 
 			else if (istype(I, /obj/item/stack/ore/charcoal))
+				record_wood_fuel(I, I.amount*2.5)
 				fuel += I.amount*2.5
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 
 			else if (istype(I, /obj/item/stack/ore/coal))
+				record_wood_fuel(I, I.amount*3)
 				fuel += I.amount*3
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 
 			else if (istype(I, /obj/item/stack/material/woodplank))
+				record_wood_fuel(I, I.amount)
 				fuel += I.amount
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 
@@ -235,6 +256,7 @@
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
 			if (MT.get_material_name() == "wood")
+				record_wood_fuel(I, 1)
 				fuel += 1
 				to_chat(H, "You break \the [MT] and put it into the [src], refueling it.")
 				qdel(I)
@@ -269,6 +291,8 @@
 	base_state = "sandstone_kiln"
 
 /obj/structure/furnace/kiln/attackby(var/obj/item/I, var/mob/living/human/H)
+	if (!I || !I.loc)
+		return
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)
@@ -291,41 +315,49 @@
 
 		if (istype(I, /obj/item/stack/))
 			if (istype(I, /obj/item/stack/material/wood))
+				record_wood_fuel(I, I.amount)
 				fuel += I.amount
 				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/material/bamboo))
+				record_wood_fuel(I, I.amount)
 				fuel += I.amount
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/weapon/branch))
+				record_wood_fuel(I, I.amount+0.5)
 				fuel += I.amount+0.5
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/material/leaf))
+				record_wood_fuel(I, I.amount+0.5)
 				fuel += I.amount+0.5
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/dung))
+				record_wood_fuel(I, I.amount+1)
 				fuel += I.amount+1
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/charcoal))
+				record_wood_fuel(I, I.amount*2.5)
 				fuel += I.amount*2.5
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/coal))
+				record_wood_fuel(I, I.amount*3)
 				fuel += I.amount*3
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/material/woodplank))
+				record_wood_fuel(I, I.amount)
 				fuel += I.amount
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
@@ -338,6 +370,7 @@
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
 			if (MT.get_material_name() == "wood")
+				record_wood_fuel(I, 1)
 				fuel += 1
 				to_chat(H, "You break \the [MT] and put it into the [src], refueling it.")
 				qdel(I)

@@ -23,6 +23,8 @@
 		icon_state = base_state
 
 /obj/structure/oven/attackby(var/obj/item/I, var/mob/living/human/H)
+	if (!I || !I.loc)
+		return
 	if (!istype(H))
 		return
 
@@ -35,36 +37,43 @@
 		return TRUE
 
 	if (istype(I, /obj/item/stack/material/wood))	//FUEL NORMAL (without * multiplication or + addition, only input)
+		record_wood_fuel(I, I.amount)
 		fuel += I.amount
 		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/stack/material/bamboo))
+		record_wood_fuel(I, I.amount)
 		fuel += I.amount
 		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/weapon/branch))	// FUEL +0.5 (adds a flat numerical addition ontop of the input reagent's baseline fuel, recommended for non stack objects)
+		record_wood_fuel(I, I.amount+0.5)
 		fuel += I.amount+0.5
 		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/stack/material/leaf))
+		record_wood_fuel(I, I.amount+0.5)
 		fuel += I.amount+0.5
 		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/stack/dung))	// FUEL +1
+		record_wood_fuel(I, I.amount+1)
 		fuel += I.amount+1
 		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/stack/ore/charcoal))	//FUEL *2.5 (multiplies it by 2 and a half)
+		record_wood_fuel(I, I.amount*2.5)
 		fuel += I.amount*2.5
 		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/stack/ore/coal))	//FUEL *3
+		record_wood_fuel(I, I.amount*3)
 		fuel += I.amount*3
 		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
@@ -108,7 +117,7 @@
 
 /obj/structure/oven/proc/fire_loop()
 	if (on && fuel > 0)
-		fuel -=1
+		burn_structure_fuel(1)
 		update_icon()
 		if (name == "campfire" || name == "furnace")
 			set_light(5)
@@ -130,6 +139,7 @@
 					I.on_stove = FALSE
 					I.reagents.del_reagent("food_poisoning")
 					I.reagents.del_reagent("cholera")
+					I.reagents.boil_nitrary()
 					visible_message("<span class = 'notice'>\The [I] finishes boiling.</span>")
 					if (I.reagents.get_reagent_amount("sodiumchloride")>0 && I.reagents.get_reagent_amount("water")>0)
 						var/obj/item/weapon/reagent_containers/food/condiment/saltpile/empty/NSP = new /obj/item/weapon/reagent_containers/food/condiment/saltpile/empty(get_turf(src))

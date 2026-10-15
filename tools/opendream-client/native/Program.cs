@@ -83,33 +83,52 @@ public static class Program {
                     return 0;
                 }
             } catch (Exception e) when (e is HttpRequestException or IOException or InvalidDataException or TaskCanceledException or JsonException or FormatException) {
-                Console.WriteLine("Launcher update unavailable: " + e.Message);
+                Console.WriteLine("Launcher update unavailable: " + Updater.DescribeFailure(e));
             }
-            var client = await Updater.ClientChannel(transport, root, BundledChannel());
             using var byondTransport = new ByondTransport();
             var byond = await Byond.Ensure(RequiredByond(), root, byondTransport, new WindowsByondDesktop());
             Console.WriteLine("BYOND " + RequiredByond().Version + " available at " + byond);
-            Console.WriteLine("Installing BYOND does not sign you in. Use your own account in the published client's sign-in flow.");
-            Console.WriteLine("Client version: " + client.Version);
-            var destination = await Updater.EnsureClient(client, root, transport);
+            Console.WriteLine("Sign in to your BYOND account in the BYOND Pager before joining.");
             owner.Dispose();
             while (true) {
-                Console.WriteLine("\nCiv13 - 1: Sign in   2: Play Nomads   3: Play TDM   4: Exit");
+                Console.WriteLine("\nCiv13 - 1: BYOND sign in   2: ValZarGaming servers   3: OpenDream (experimental)   4: Exit");
                 foreach (var link in CommunityLinks.Items)
                     Console.WriteLine($"{link.Key}: {link.Value.Label} - {link.Value.Url}");
-                Console.Write("Choose a number (sign in before your first game): ");
+                Console.Write("Choose a number: ");
                 var choice = Console.ReadLine();
                 if (choice is null or "4") return 0;
                 if (CommunityLinks.TryOpen(choice, start => { using var browser = Process.Start(start); }, Console.Out)) continue;
-                if (choice == "1") Process.Start(new ProcessStartInfo(Path.Combine(destination, "Sign-In.cmd")) { UseShellExecute = true, WorkingDirectory = destination });
-                if (choice is "2" or "3") {
+                if (choice == "1") Process.Start(new ProcessStartInfo(Path.Combine(byond, "byond.exe")) { UseShellExecute = false, WorkingDirectory = byond });
+                if (choice == "2") {
+                    Console.WriteLine("ValZarGaming - 1: Nomads   2: TDM   3: Back");
+                    var modeChoice = Console.ReadLine();
+                    if (modeChoice is not ("1" or "2")) continue;
                     try {
+                        if (serverPort != null) throw new IOException("Public server selections use their catalog port; omit --server-port.");
+                        var server = ServerCatalog.Select("ValZarGaming", modeChoice == "1" ? "Nomads" : "TDM");
+                        var addresses = await Connection.Resolve();
+                        Console.WriteLine($"Connecting to {server.Name} {server.Mode} using BYOND {RequiredByond().Version} on port {server.Port}.");
+                        var desktop = new WindowsByondDesktop();
+                        Process.Start(ServerCatalog.NativeStart(server, byond, addresses.Single(), RequiredByond(), path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond())));
+                    } catch (IOException e) { Console.WriteLine(e.Message); }
+                }
+                if (choice == "3") {
+                    try {
+                        using var clientOwner = Updater.Lock(root);
+                        var client = await Updater.ClientChannel(transport, root, BundledChannel());
+                        var destination = await Updater.EnsureClient(client, root, transport);
+                        Console.WriteLine("OpenDream - 1: Sign in   2: Operator Nomads target   3: Operator TDM target   4: Back");
+                        Console.WriteLine("No public OpenDream game service is configured. Joining requires an operator's verified --server-port.");
+                        var engineChoice = Console.ReadLine();
+                        if (engineChoice == "1") { Process.Start(new ProcessStartInfo(Path.Combine(destination, "Sign-In.cmd")) { UseShellExecute = true, WorkingDirectory = destination }); continue; }
+                        if (engineChoice is not ("2" or "3")) continue;
+                        var mode = engineChoice == "2" ? "Nomads" : "TDM";
+                        var openDreamPort = ServerCatalog.OpenDreamPort(mode, serverPort);
                         var addresses = await Connection.Resolve();
                         Console.WriteLine(Connection.Host + " currently resolves to: " + string.Join(", ", addresses));
                         // Pass only the approved address from this lookup, avoiding a second
                         // unrestricted lookup that could select the explicitly excluded address.
-                        var mode = choice == "2" ? "Nomads" : "TDM";
-                        Console.WriteLine($"Connecting to {mode} on port {Connection.Port(mode, serverPort)}.");
+                        Console.WriteLine($"Connecting to experimental OpenDream {mode} on operator port {openDreamPort}.");
                         Process.Start(Connection.Start(destination, mode, addresses.Single(), serverPort));
                     } catch (IOException e) { Console.WriteLine(e.Message); }
                 }

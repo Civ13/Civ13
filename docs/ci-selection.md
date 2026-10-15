@@ -54,3 +54,9 @@ These checks cover real Git additions, edits, renames, post-merge comparisons,
 manual opt-in, failed comparisons and suite guards. A skipped suite is not
 regression or gameplay evidence; run relevant checks locally or explicitly opt
 in before making an acceptance claim. Publication remains master-only.
+
+The manual `persistence_integration_regressions` input selects the existing
+world-save and continuous-round suites together, including their mutation
+controls. It does not select unrelated extensive regressions. Both suites
+retain native logs as artifacts; fixture success is separate from full-map
+save/reboot/recovery and public supervisor acceptance.

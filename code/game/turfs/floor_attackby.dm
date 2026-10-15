@@ -811,6 +811,11 @@
 						H.adaptStat("strength", 1)
 			change_the_turf()
 			return
+	// Preserve common ore branches above; uranium uses only their fallback.
+	if (is_mineable && map.ordinal_age >= 8 && prob(5))
+		new /obj/item/stack/ore/uranium(src)
+		change_the_turf()
+		return
 	/*
 					else if (prob(10) && map.ordinal_age >= 6)
 						var/obj/item/stack/ore/uranium/mineral = new/obj/item/stack/ore/uranium(src)

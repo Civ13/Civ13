@@ -188,6 +188,11 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 /datum/controller/gameticker/proc/process()
 	if(persistence_save_in_progress) return FALSE
+	if (persistence_round_active() && current_state >= GAME_STATE_PLAYING)
+		finished = FALSE
+		current_state = GAME_STATE_PLAYING
+		return TRUE
+
 	if (current_state != GAME_STATE_PLAYING)
 		return FALSE
 
@@ -197,6 +202,10 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 
 		spawn(50)
+			if (persistence_round_active())
+				finished = FALSE
+				current_state = GAME_STATE_PLAYING
+				return
 
 			callHook("roundend")
 
@@ -219,6 +228,10 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 			if (!delay_end)
 				sleep(restart_after)
+				if (persistence_round_active())
+					finished = FALSE
+					current_state = GAME_STATE_PLAYING
+					return
 				if (!delay_end)
 					world.Reboot()
 				else
