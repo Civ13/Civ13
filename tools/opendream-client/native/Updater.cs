@@ -1,5 +1,8 @@
 using System.Diagnostics;
+using System.ComponentModel;
+using System.Net.Sockets;
 using System.IO.Compression;
+using System.Security.Authentication;
 using System.Security.Cryptography;
 using System.Text.Json;
 
@@ -67,6 +70,42 @@ public sealed class ReleaseTransport : ITransport, IDisposable {
 }
 
 public static class Updater {
+    // Exception messages/stack traces can contain signed URLs or credentials.
+    // Keep only framework classifications and numeric codes from a bounded chain.
+    public static string DescribeFailure(Exception error) {
+        ArgumentNullException.ThrowIfNull(error);
+        var parts = new List<string>();
+        Exception? current = error;
+        for (var depth = 0; current is not null && depth < 6; depth++, current = current.InnerException) {
+            var kind = current switch {
+                HttpRequestException => "HttpRequestException",
+                AuthenticationException => "AuthenticationException",
+                SocketException => "SocketException",
+                Win32Exception => "Win32Exception",
+                TaskCanceledException => "TaskCanceledException",
+                OperationCanceledException => "OperationCanceledException",
+                IOException => "IOException",
+                JsonException => "JsonException",
+                FormatException => "FormatException",
+                _ => "Exception"
+            };
+            var part = kind + FormattableString.Invariant($" HRESULT=0x{unchecked((uint)current.HResult):X8}");
+            if (current is HttpRequestException request) {
+                part += " " + request.HttpRequestError;
+                if (request.StatusCode is { } status)
+                    part += FormattableString.Invariant($" HTTP={(int)status}");
+            }
+            if (current is SocketException socket)
+                part += " " + socket.SocketErrorCode;
+            if (current is Win32Exception native)
+                part += FormattableString.Invariant($" native={native.NativeErrorCode}/0x{unchecked((uint)native.NativeErrorCode):X8}");
+            parts.Add(part);
+        }
+        if (current is not null) parts.Add("...");
+        var result = string.Join(" -> ", parts);
+        return result.Length > 512 ? result[..509] + "..." : result;
+    }
+
     public const string ClientChannelUrl = "https://raw.githubusercontent.com/Civ13/Civ13/master/tools/opendream-client/channel.json";
     public const string LauncherChannelUrl = "https://raw.githubusercontent.com/Civ13/Civ13/native-launcher-updates/native-launcher-channel.json";
     public static readonly string[] Required = ["Sign-In.cmd", "Play-Nomads.cmd", "Play-TDM.cmd", "Connect.ps1",

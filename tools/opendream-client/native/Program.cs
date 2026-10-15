@@ -83,7 +83,7 @@ public static class Program {
                     return 0;
                 }
             } catch (Exception e) when (e is HttpRequestException or IOException or InvalidDataException or TaskCanceledException or JsonException or FormatException) {
-                Console.WriteLine("Launcher update unavailable: " + e.Message);
+                Console.WriteLine("Launcher update unavailable: " + Updater.DescribeFailure(e));
             }
             using var byondTransport = new ByondTransport();
             var byond = await Byond.Ensure(RequiredByond(), root, byondTransport, new WindowsByondDesktop());
