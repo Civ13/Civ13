@@ -1,7 +1,10 @@
 # Nuclear acquisition acceptance design
 
-Status: implemented draft route, with remote native verification in progress.
-PR #3141 remains draft until exact-head checks and route acceptance are complete.
+Status: isolated native production-route acceptance passed at
+`58add31964d5ab7dbeb282df0a3b7d940d405250` in
+[CI 38761753146](https://github.com/Civ13/Civ13/actions/runs/38761753146), including
+the positive route, all seven mutation controls and whole-catalog recipe checks.
+Independent full source and radiation-owner reviews accepted that source.
 The coordinator's 2026-10-15 Decision B permits uranium-only mining, per-unit
 processing and local emission changes under the radiation owner's exact-diff
 review. No local native runtime or screen lease is granted.
@@ -72,5 +75,5 @@ payment, interruption/concurrency and retirement, raw-input/cartridge/reactor
 native saves, paid output through reactor generation, local pulse recursion,
 shielding and callback retirement. Independent debit, completion, recursive
 local-flag and retirement-guard mutation controls are wired into remote CI.
-Actual ordinary-player acquisition/build/use acceptance remains distinct from
+Observed ordinary-player acquisition/build/use remains distinct from
 these isolated production procedures, which adapt RNG, waits and actor setup.
