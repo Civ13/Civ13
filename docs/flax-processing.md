@@ -1,9 +1,9 @@
 # Flax processing
 
-Draft implementation: the source is included and the comb is registered for
-eight softwood planks under Resource Processing. Native acceptance is pending.
+The comb is registered for eight softwood planks under Resource Processing.
+Current verification evidence is recorded in [PR #3163](https://github.com/Civ13/Civ13/pull/3163).
 
-## Proposed player route
+## Player route
 
 1. Hold at least two raw flax portions and use **Tie Flax Bundle**. The two
    portions are bound with their own fibres; existing twine is not required.
@@ -61,5 +61,6 @@ Native runs require pinned BYOND 516.1681 and an empty evidence directory:
 
 Run each of `--negative-control payment`, `replay` and `persistence` with
 separate evidence directories. Remote CI selects this new suite for its PR;
-local native runs require the exclusive runtime lease. No runtime, CI,
-graphical or live-server acceptance is claimed yet.
+local native runs require the exclusive runtime lease. These isolated checks
+do not establish an ordinary-player acquisition walkthrough, graphical
+acceptance or live-server behavior.
