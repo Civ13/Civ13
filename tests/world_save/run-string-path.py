@@ -380,7 +380,11 @@ def main():
         'sources_sha256': hashes, 'generated_sha256': generated, 'processes': processes,
         'opendream_verified': False, 'fresh_process_recovery_verified': False,
         'crash_rpo_verified': False, 'clean_shutdown_verified': False}, indent=2), encoding='utf-8')
-    print(f'PASS: string-path regression {"negative" if args.negative_control else "positive"}')
+    control = (args.player_ui_negative_control or args.player_reclaim_negative_control
+               or args.hud_negative_control or args.progress_negative_control
+               or args.appearance_negative_control or args.datum_constructor_negative_control
+               or args.negative_control)
+    print(f'PASS: string-path regression {"negative control caught expected failure" if control else "positive"}')
 
 
 if __name__ == '__main__':

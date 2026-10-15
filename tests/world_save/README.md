@@ -115,6 +115,15 @@ game exceptions are in `data/logs/runtime/`. The non-visual probe defaults to a
 daemon on timeout, and retains diagnostics. `-Visual` keeps the world running
 after the test for local Dream Seeker inspection and runtime capture.
 
+`-PlayerIdentity` selects `maps/nomads/nomads_gaia.dmm` only in the generated
+environment. It requires Gaia's real human constructors and checks restored
+identity after delayed customization; `-IdentityNegativeControl` removes the
+restoration guard only in a generated source copy. Launch input hashes are
+retained in `launch-inputs.json`. Non-visual runs retain stdout, stderr and
+`daemon-exit.json` with the numeric exit code, elapsed time and timeout status,
+including early exits before the DM probe can write a result. An early native
+exit is failed execution, never a successful negative control.
+
 `inspect.dme` is a standalone read-only entry inspector. Compile it and copy its
 binary into isolated save storage, then run with `-params
 'file=map_saves/2.sav&ref=20042'`. It logs only the requested entry and never

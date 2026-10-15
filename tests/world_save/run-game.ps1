@@ -10,6 +10,11 @@ if (Test-Path -LiteralPath $identitySource) { throw 'Existing identity source mu
 Push-Location -LiteralPath $repoRoot
 try {
     $source = Get-Content -LiteralPath 'civ13.dme' -Raw
+    if ($PlayerIdentity) {
+        $mapInclude = '#include "maps\nomads\nomads.dmm"'
+        if (($source.Split($mapInclude, [StringSplitOptions]::None).Count - 1) -ne 1) { throw 'Identity probe needs one default Nomads map include' }
+        $source = $source.Replace($mapInclude, '#include "maps\nomads\nomads_gaia.dmm"')
+    }
     if ($IdentityNegativeControl) {
         $nomads = (Get-Content -LiteralPath 'code/game/mob/living/carbon/human/nomads_spawn.dm' -Raw).Replace("`r`n", "`n")
         $guard = "`tif(persistence_restored)`n`t`treturn`n"
@@ -35,6 +40,14 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Cannot identify tested commit' }
     $parameters = "tested_commit=$testedCommit" + $(if ($Visual) { '&visual=1' } else { '' })
     if ($PlayerIdentity) { $parameters += '&player_identity=1' }
+    [ordered]@{
+        tested_commit = $testedCommit
+        player_identity = [bool]$PlayerIdentity
+        identity_negative_control = [bool]$IdentityNegativeControl
+        map_source = $(if ($PlayerIdentity) { 'maps/nomads/nomads_gaia.dmm' } else { 'maps/nomads/nomads.dmm' })
+        dmb_sha256 = (Get-FileHash -LiteralPath (Join-Path $testRun '.world_save_probe.dmb') -Algorithm SHA256).Hash.ToLowerInvariant()
+        rsc_sha256 = (Get-FileHash -LiteralPath (Join-Path $testRun '.world_save_probe.rsc') -Algorithm SHA256).Hash.ToLowerInvariant()
+    } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $testRun 'launch-inputs.json') -Encoding UTF8
     Write-Output "Isolated full-game runtime: $testRun"
     Push-Location -LiteralPath $testRun
     try {
@@ -42,16 +55,21 @@ try {
             & (Join-Path $ByondBin 'dd.exe') '.world_save_probe.dmb' -invisible -safe -params $parameters -log 'startup.log'
             if ($LASTEXITCODE -ne 0) { throw 'Full-game daemon failed' }
         } else {
-            $daemon = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @('.world_save_probe.dmb','-invisible','-safe','-params',$parameters,'-log','startup.log') -WorkingDirectory $testRun -WindowStyle Hidden -PassThru
+            $runtimeWatch = [Diagnostics.Stopwatch]::StartNew()
+            $daemon = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @('.world_save_probe.dmb','-invisible','-safe','-params',$parameters,'-log','startup.log') -WorkingDirectory $testRun -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $testRun 'daemon-stdout.log') -RedirectStandardError (Join-Path $testRun 'daemon-stderr.log')
+            $timedOut = $false
             try {
                 if (-not $daemon.WaitForExit($TimeoutSeconds * 1000)) {
+                    $timedOut = $true
                     Stop-Process -Id $daemon.Id
                     $daemon.WaitForExit()
                     throw "Full-game probe timed out after $TimeoutSeconds seconds; logs retained at $testRun"
                 }
-                if ($daemon.ExitCode -ne 0) { throw 'Full-game daemon failed' }
+                if ($daemon.ExitCode -ne 0) { throw "Full-game daemon failed with exit $($daemon.ExitCode); logs retained at $testRun" }
             } finally {
                 if (-not $daemon.HasExited) { Stop-Process -Id $daemon.Id; $daemon.WaitForExit() }
+                $runtimeWatch.Stop()
+                [ordered]@{ pid = $daemon.Id; exit_code = $daemon.ExitCode; timed_out = $timedOut; elapsed_seconds = $runtimeWatch.Elapsed.TotalSeconds } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $testRun 'daemon-exit.json') -Encoding UTF8
                 $daemon.Dispose()
             }
         }

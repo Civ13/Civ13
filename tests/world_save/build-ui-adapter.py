@@ -26,7 +26,7 @@ def generate(root, control=None):
     update = update.replace('/human/update_hud()', '/human/proc/update_hud()', 1)
     update = re.sub(r'\bclient\b', 'fixture_client', update)
     if control == 'registry':
-        marker = '\t\thuman_clients_mob_list |= src\n'
+        marker = '\tif(fixture_client)\n\t\thuman_clients_mob_list |= src\n'
         if login.count(marker) != 1:
             raise RuntimeError('Registry mutation target changed')
         login = login.replace(marker, '', 1)
