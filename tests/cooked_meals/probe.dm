@@ -74,7 +74,7 @@
 /proc/meal_ingredient(obj/structure/pot/P, path, amount = 4)
 	var/obj/item/weapon/reagent_containers/food/snacks/F = new path(P)
 	F.reagents.clear_reagents()
-	F.reagents.add_reagent("nutriment", amount)
+	F.reagents.add_reagent("nutriment", amount, F.nutriment_desc)
 	return F
 
 /proc/meal_pot(turf/site, quality = 1)
@@ -147,9 +147,9 @@
 		meal_assert(!P.meal_recipe(), "rotten ingredient rejected")
 		F.rotten = FALSE
 		F.reagents.clear_reagents()
-		F.reagents.add_reagent("nutriment", 0.1)
+		F.reagents.add_reagent("nutriment", 0.1, F.nutriment_desc)
 		meal_assert(!P.meal_recipe(), "trace ingredient cannot qualify")
-		F.reagents.add_reagent("nutriment", 3.9)
+		F.reagents.add_reagent("nutriment", 3.9, F.nutriment_desc)
 		for (var/mode in list("cancel", "heat", "move"))
 			U.wait_mode = mode
 			meal_assert(!P.cook_meal(U) && P.contents.len == 4 && !P.meal_cooking && !P.meal_portions, "interruption preserves ingredients: [mode]")
