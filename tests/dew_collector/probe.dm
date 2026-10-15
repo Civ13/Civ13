@@ -59,6 +59,16 @@
 /obj/structure/reagent_dispensers/dew_collector/add_fingerprint(mob/living/M, ignoregloves = FALSE)
 	return
 
+/obj/item/weapon/reagent_containers/glass/beaker/dew_tester/add_fingerprint(mob/living/M, ignoregloves = FALSE)
+	return
+
+// Retain real item resolution and the top-level afterattack fallback.
+/proc/dew_click(obj/item/C, atom/target, mob/user)
+	var/resolved = C.resolve_attackby(target, user, 16, 16)
+	if (!resolved)
+		C.afterattack(target, user, TRUE, "")
+	return resolved
+
 /proc/dew_assert(condition, message)
 	if (!condition)
 		throw EXCEPTION(message)
@@ -178,7 +188,18 @@
 		season = "WINTER"
 		dew_assert(D.collection_rate() == 0, "frozen collection rejected")
 		season = "SPRING"
-		var/obj/item/weapon/reagent_containers/glass/beaker/C = new(U)
+		var/obj/item/weapon/reagent_containers/glass/beaker/dew_tester/C = new(U)
+		U.wait_mode = "cancel"
+		dew_click(C,D,U)
+		dew_assert(C.reagents.total_volume == 0 && D.reagents.total_volume == 200, "cancelled click conserves water")
+		D.drawing = TRUE
+		dew_click(C,D,U)
+		dew_assert(C.reagents.total_volume == 0 && D.reagents.total_volume == 200, "busy click cannot use generic refill")
+		D.drawing = FALSE
+		U.wait_mode = "complete"
+		dew_assert(dew_click(C,D,U) && C.reagents.total_volume == 20 && D.reagents.total_volume == 180, "successful click draws exactly once")
+		C.reagents.clear_reagents()
+		D.reagents.add_reagent("water",20)
 		U.wait_mode = "cancel"
 		dew_assert(!D.draw_water(C,U) && C.reagents.total_volume == 0 && D.reagents.total_volume == 200 && !D.drawing, "cancelled drawing conserves water")
 		U.wait_mode = "overlap"

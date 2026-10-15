@@ -97,7 +97,7 @@
 /obj/structure/reagent_dispensers/dew_collector/attackby(obj/item/O, mob/user)
 	if (istype(O, /obj/item/weapon/reagent_containers))
 		draw_water(O, user)
-		return
+		return TRUE // Consume cancelled clicks too; block generic dispenser refill.
 	// Collection is one-way; other barrel refill/lock modes are not applicable.
 	return
 

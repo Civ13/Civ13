@@ -343,7 +343,7 @@ jobs:
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 tests/dew_collector/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/dew-collector/positive"
-          for control in cap exposure timing persistence; do
+          for control in cap exposure timing persistence click; do
             python3 tests/dew_collector/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/dew-collector/$control"
           done
       - name: Upload dew collector evidence

@@ -13,6 +13,7 @@ import uuid
 ROOT = Path(__file__).resolve().parents[2]
 CORE = 'code/modules/1713/dew_collector.dm'
 CONTROLS = {
+    'click': ('return TRUE // Consume cancelled clicks too; block generic dispenser refill.', 'return FALSE // Restore inherited refill fallthrough.', 'FAIL: cancelled click conserves water'),
     'cap': ('max_capacity = 200', 'max_capacity = 2000', 'FAIL: capacity bounds collection'),
     'exposure': ('A.location != AREA_OUTSIDE', 'FALSE', 'FAIL: indoors rejected'),
     'timing': ('var/elapsed = min(2, max(0, configured_seconds), max(0, (world.time - last_collection_tick) / 10))', 'var/elapsed = 600', 'FAIL: delayed tick cannot replay backlog'),
