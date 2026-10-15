@@ -3,6 +3,10 @@
 var/list/recovery_fixture_clients = list()
 var/recovery_fixture_loads = 0
 var/recovery_fixture_late_arrived = FALSE
+/mob/living/human/durable_probe_leader/update_icons()
+	// Identity-only constructors have no physiology/species or real HUD.
+	// Keep disposal and disk inventory restoration real; adapt presentation IO.
+	return
 /mob/new_player/var/datum/recovery_fixture_client/claim_client
 /mob/new_player/recovery_probe/New()
 	return
