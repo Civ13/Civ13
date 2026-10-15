@@ -11,6 +11,7 @@ from unittest.mock import patch
 from prepare import BASE, HOOK, instrument_lifecycle, instrument_world
 from query import request
 from run import compare, diagnostic_failures, owned_daemon, verify_completed_files
+from replay import replay
 
 
 class RecoveryAcceptance(unittest.TestCase):
@@ -58,6 +59,19 @@ class RecoveryAcceptance(unittest.TestCase):
 
 
 class CompletedFileIdentity(unittest.TestCase):
+    def test_replay_rejects_each_missing_diagnostic_log(self):
+        required = ('daemon.stdout.log', 'daemon.stderr.log', 'game/native.log')
+        for missing in required:
+            with self.subTest(missing=missing), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                for relative in required:
+                    target = root / relative
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_text('Retained log\n', encoding='utf-8')
+                (root / missing).unlink()
+                with self.assertRaisesRegex(FileNotFoundError, 'Incomplete diagnostic evidence'):
+                    replay(root)
+
     def test_raw_parity_and_normalized_text_identity(self):
         for newline in (b'\n', b'\r\n'):
             with self.subTest(newline=newline), tempfile.TemporaryDirectory() as temp:

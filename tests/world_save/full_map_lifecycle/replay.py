@@ -7,6 +7,9 @@ from run import compare, diagnostic_failures, verify_completed_files
 
 
 def replay(root):
+    for relative in ('daemon.stdout.log', 'daemon.stderr.log', 'game/native.log'):
+        if not (root / relative).is_file():
+            raise FileNotFoundError(f'Incomplete diagnostic evidence: {relative}')
     game = root / 'game'
     before = json.loads((root / 'before.json').read_text(encoding='utf-8'))
     after = json.loads((root / 'after.json').read_text(encoding='utf-8'))
