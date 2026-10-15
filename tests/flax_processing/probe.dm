@@ -96,6 +96,12 @@
 	OpenPort("none")
 	sleep(1)
 	try
+		GLOB.all_observable_events = list()
+		GLOB.moved_event = new
+		GLOB.dir_set_event = new
+		GLOB.destroyed_event = new
+		GLOB.stat_set_event = new
+		GLOB.name_set_event = new
 		text2file(json_encode(list("byond_version" = world.byond_version, "byond_build" = world.byond_build, "dimensions" = "8x8x1", "network" = "closed", "startup" = "disabled")), "fixture.json")
 		var/turf/site = locate(3,3,1)
 		var/mob/living/human/flax_tester/U = new(site)
@@ -119,7 +125,7 @@
 		flax_assert(recipe && recipe.req_amount == 8 && recipe.time == 150 && recipe.one_per_turf && recipe.on_floor, "paid registered comb recipe")
 		// Skip only the generic crafting wait; retain production payment/build.
 		recipe.time = 0
-		var/obj/item/stack/material/wood/soft/wood = new(site, 7, FALSE)
+		var/obj/item/stack/material/woodplank/wood = new(site, 7, FALSE)
 		wood.produce_recipe(recipe, 1, U)
 		flax_assert(!(locate(/obj/structure/flax_comb) in site), "insufficient construction input rejected")
 		wood.amount = 9
