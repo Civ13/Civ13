@@ -14,3 +14,4 @@
 #include "roundtrip.dm"
 #include "transfers.dm"
 #include "player_reclaim_probe.dm"
+#include "round_metadata.dm"

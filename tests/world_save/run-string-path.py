@@ -31,6 +31,8 @@ def main():
     parser.add_argument('--progress-fault-stage', choices=('save_entered', 'level_serialized', 'completion_marker'))
     parser.add_argument('--progress-fault-operation', choices=('delete', 'write', 'json'))
     parser.add_argument('--progress-negative-control', action='store_true')
+    parser.add_argument('--progress-clock-probe', action='store_true')
+    parser.add_argument('--progress-clock-negative-control', action='store_true')
     args = parser.parse_args()
     round_state = args.round_state or bool(args.round_state_negative_control)
     if round_state and any((args.negative_control, args.datum_constructor_negative_control,
@@ -43,6 +45,10 @@ def main():
                                                     args.appearance_negative_control, args.hud_negative_control,
                                                     args.matrix_trace, args.progress)):
         parser.error('Keep player reclaim controls separate from other mutations')
+    if args.progress_clock_probe and (not args.progress or args.progress_fault_stage or args.progress_negative_control):
+        parser.error('Clock probe requires --progress and separate fault controls')
+    if args.progress_clock_negative_control and not args.progress_clock_probe:
+        parser.error('Clock negative control requires --progress-clock-probe')
     if args.hud_negative_control and any((args.negative_control, args.datum_constructor_negative_control,
                                          args.appearance_negative_control, args.matrix_trace, args.progress)):
         parser.error('Keep HUD controls separate from other mutations')
@@ -110,6 +116,16 @@ def main():
         if args.progress_negative_control:
             environment = '#define WORLD_SAVE_PROGRESS_PROPAGATE_FAULT\n' + environment
         progress_helper_include = f'\n#include "{helper_target.as_posix()}"\n'
+        if args.progress_clock_probe:
+            environment = '#define WORLD_SAVE_PROGRESS_TEST_CLOCK\n' + environment
+            if args.progress_clock_negative_control:
+                environment = '#define WORLD_SAVE_PROGRESS_COMPONENT_CLOCK\n' + environment
+            clock_path = fixture / 'progress-clock-probe.dm'
+            clock_target = output / clock_path.name
+            clock_target.write_bytes(clock_path.read_bytes())
+            hashes['tests/world_save/progress-clock-probe.dm'] = hashlib.sha256(clock_path.read_bytes()).hexdigest()
+            generated[clock_target.name] = hashlib.sha256(clock_target.read_bytes()).hexdigest()
+            progress_helper_include += f'#include "{clock_target.as_posix()}"\n'
 
     def include(match):
         original = (fixture / match.group(1)).resolve(strict=True)
@@ -270,6 +286,9 @@ def main():
                     '\t\tcheck(!world_save_progress_active, "progress retained active flag after success")\n'
                     '\t\tcheck(fexists("map_saves/save_complete.txt"), "diagnostic changed completion marker")\n'
                     f'\t\tcheck(world_save_progress_unavailable == {expected}, "wrong diagnostic fault availability")\n', 1)
+                if args.progress_clock_probe:
+                    anchor = f'\t\tcheck(world_save_progress_unavailable == {expected}, "wrong diagnostic fault availability")\n'
+                    source = source.replace(anchor, anchor + '\t\tworld_save_progress_test_clock_contract()\n', 1)
                 for label in ('failed marker deletion changed active completion or retained lock',
                               'failed export retained completion marker or lock'):
                     line = next((line for line in source.splitlines(keepends=True) if label in line), None)
@@ -409,6 +428,12 @@ def main():
         failure = read(output / 'failure-name.txt').strip()
         if failure != expected or not actual.startswith('FAIL:'):
             raise RuntimeError(f'Wrong player reclaim negative failure: {actual!r}, {failure!r}')
+    elif args.progress_clock_negative_control:
+        failure = read(output / 'failure-name.txt').strip()
+        if failure != 'periodic progress not emitted after ten seconds' or not actual.startswith('FAIL:'):
+            raise RuntimeError(f'Wrong clock negative failure: {actual!r}, {failure!r}')
+        if not (output / 'map_saves/save_complete.txt').exists():
+            raise RuntimeError('Clock control changed completed save marker')
     elif args.hud_negative_control:
         expected = {'export': 'HUD runtime field exported', 'import': 'HUD runtime field imported',
                     'constructor': 'ownerless HUD constructor reached'}[args.hud_negative_control]
@@ -456,13 +481,15 @@ def main():
         'progress': args.progress, 'progress_fault_stage': args.progress_fault_stage,
         'progress_fault_operation': args.progress_fault_operation,
         'progress_negative_control': args.progress_negative_control,
+        'progress_clock_probe': args.progress_clock_probe,
+        'progress_clock_negative_control': args.progress_clock_negative_control,
         'sources_sha256': hashes, 'generated_sha256': generated, 'processes': processes,
         'opendream_verified': False, 'fresh_process_recovery_verified': False,
         'crash_rpo_verified': False, 'clean_shutdown_verified': False}, indent=2), encoding='utf-8')
     control = (args.round_state_negative_control or args.player_ui_negative_control or args.player_reclaim_negative_control
                or args.hud_negative_control or args.progress_negative_control
                or args.appearance_negative_control or args.datum_constructor_negative_control
-               or args.negative_control)
+               or args.progress_clock_negative_control or args.negative_control)
     print(f'PASS: string-path regression {"negative control caught expected failure" if control else "positive"}')
 
 

@@ -1,8 +1,44 @@
 # Single-file Windows launcher
 
+The pending isolated DreamDaemon test path accepts
+`Civ13.exe --root D:\isolated\launcher --local-dreamdaemon D:\isolated\host.json`.
+It reads and checks the host receipt before updater, client setup or menu work.
+The receipt has schema 1, `port`, `pid`, `startTimeUtcTicks`, absolute `daemon`
+and `world` paths, `worldSha256`, 40-character `sourceCommit` and `map`.
+The trusted host owner supplies it after starting the isolated host. The launcher
+checks the live PID/start time, executable path and 516.1681 PE version, and world
+hash, then constructs only `byond://127.0.0.1:<port>` for the verified installed
+Dream Seeker. This operator-configured test path is not automatic engine detection.
+Source/map labels belong to the trusted host receipt; they are not inferred from
+the game binary. The hash checks the current file on disk, not the loaded world;
+the receipt's port does not prove TCP ownership by that PID. Before actual host
+acceptance, the host owner must establish receipt provenance, the original frozen
+world hash, immutable staging and process/port ownership. Receipts must identify the real serving process rather than a GUI parent.
+Normal public Play continues to enforce the fresh DNS policy.
+Local receipts accept the official BYOND `DreamDaemon.exe` and console `dd.exe`
+hosts, with the same pinned version, process start, executable path and world
+hash checks for both entry points.
+
+Normal BYOND settings/cache are allowed under the current storage policy. The
+launcher does not move accounts/cache or change preferences. `--root` can be any
+absolute unlinked folder chosen with measured headroom; the prepared child uses
+it for working directory and TEMP/TMP/TMPDIR. Normal launcher-owned update/client
+files use that root, which is retained on update restart. This does not imply
+third-party native client files stay there. The injectable strict-D source mode
+still rejects unknown or C: user-data settings; it is not the normal CLI path.
+Host admission requires the owner's genuine receipt, verified serving process
+and sufficient output space, with monitoring and an owned-output cleanup plan.
+Local compilation and 73 injected controls passed without accounts or game
+processes. Actual dispatch remains pending runtime admission and a genuine host
+receipt. The earlier 84 checks do not establish an actual DreamDaemon join.
+
 `Civ13.exe` is a native .NET 8, Windows x64, self-contained console launcher.
 Players need no .NET installation or companion scripts. Double-click the file,
 let it obtain the complete verified client, and use its sign-in/play menu. The
+menu also offers numbered Website, Wiki, Discord and GitHub links, with their
+full addresses visible. Enter 5, 6, 7 or 8 to open the selected resource in your
+default browser. If opening fails, the launcher prints the address to copy.
+The
 published client remains selected by the existing `channel.json`; this packaging
 change does not establish BYOND identity, server compatibility or game readiness.
 
@@ -97,3 +133,23 @@ run during offline verification.
 This prerequisite prepares the BYOND binaries. It neither logs a user into BYOND
 nor validates or implements the separate PR18 BYOND-derived identity handshake.
 The current published client's authentication flow remains unchanged.
+
+## Game server hostname
+
+Each native launcher Play attempt resolves `valzargaming.com`, excludes
+`192.64.119.81`, and requires the remaining answer to be the operator-approved
+`72.218.249.221`. It displays and passes only that freshly verified DNS address to
+the installed client's bundled runtime, preventing a second lookup
+from selecting the excluded address. A changed/unverified endpoint blocks Play
+until its configuration is reviewed; the launcher never falls back to a stale IP.
+The native launcher defaults to **Nomads port 1715** and **TDM port 1714**, matching
+the website and player guide. `Civ13.exe --server-port 18459` explicitly overrides
+the port for either selected mode (valid range 1-65535). Local DreamDaemon mode
+continues to use its verified receipt port and rejects this separate override.
+The launcher invokes the packaged `dotnet.exe` and `Robust.Client.dll` directly
+with the existing UDP connection arguments, content mount, runtime/webview
+environment and `+launchauth`. It does not rewrite installed package scripts.
+Lookup failure, timeout,
+or an unverified address keeps the menu open for retry without starting a game.
+DNS resolution does not authenticate a server. Older direct Play CMD files retain their packaged test ports (Nomads
+18452, TDM 18453); use the native launcher for these updated defaults.

@@ -279,6 +279,11 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
 
+<!-- 2026-10-14: local CID source comparison -->
+`tools/cid/get-cid.ps1` calls the reviewed Windows BYOND 516.1681 library's
+fingerprint/CRC routines in 32-bit PowerShell. Private offsets require its exact
+documented library hash. `run-local.ps1` compares with a real local client's
+`computer_id`; its negative control tests equality only, with no spoof detection.
 <!-- 2026-10-14: bounded runtime detail history -->
 Error history keeps 1000 recent entries globally and 100 per file/line source,
 including skip summaries. Retirement removes both memberships and clears entry
