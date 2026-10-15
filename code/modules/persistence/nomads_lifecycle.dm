@@ -64,7 +64,7 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 
 /datum/nomads_lifecycle_control/proc/run_operation()
 	try
-		persistence_restart.execute(TRUE)
+		persistence_restart.execute(TRUE, operation, boot_session())
 		last_error = persistence_restart.last_error ? persistence_restart.last_error : "shutdown_returned"
 	catch(var/exception/e)
 		last_error = "[e]"

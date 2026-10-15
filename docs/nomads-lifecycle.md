@@ -39,9 +39,14 @@ identity; do not resend an uncertain mutation. Concurrent saves, startup holds,
 unresolved intents and incomplete dimension allocation refuse the request.
 Failed saving or validation leaves the process running. Successful saving uses
 the existing completed-generation validator and publishes
-`map_saves/restart_intent.json`, with exactly `version` (1), `generation`
+`map_saves/restart_intent.json`, with `version` (1), `generation`
 (`round-v2:` prefix), `metadata` (MD5 of `map.txt`) and `round` (MD5 of
-`round.json`). Those hashes are existing generation ownership checks, not
+`round.json`), plus paired `lifecycle_operation` and `lifecycle_session`
+(32 lowercase hex characters each). The supervisor must compare both bindings
+with its acknowledged request before treating process exit as a saved shutdown.
+An unrelated older valid generation cannot satisfy that request. Ordinary admin
+restart intents retain the original four fields; lifecycle intents have six.
+Partial or malformed bindings fail closed. Those hashes are existing generation ownership checks, not
 authentication credentials. The final shutdown boundary validates ownership
 again and checks the intent and completion marker after the yielding validator.
 Only then does native `del(world)` close the process.

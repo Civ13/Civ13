@@ -1,5 +1,6 @@
 """Exercise production local lifecycle authentication and native shutdown guards."""
 import argparse
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -50,6 +51,9 @@ def main():
     (output / 'transaction.dm').write_text(transaction, encoding='utf-8')
     (output / 'probe.dme').write_text('#define GAME_STATE_PLAYING 3\n' + dme + '#include "endpoint.dm"\n', encoding='utf-8')
     receipt.update(negative_control=args.negative_control, prepared_only=args.prepare_only)
+    receipt['production_hashes']['code/modules/persistence/nomads_lifecycle.dm'] = hashlib.sha256((root / 'code/modules/persistence/nomads_lifecycle.dm').read_bytes()).hexdigest()
+    receipt['generated_hashes'] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in output.iterdir() if p.suffix in ('.dm', '.dme')}
+    (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
     print(f'Evidence: {output}', flush=True)
     if args.prepare_only:
         return

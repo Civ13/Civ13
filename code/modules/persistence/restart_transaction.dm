@@ -2,6 +2,12 @@
 // world serializer an atomic snapshot of every gameplay operation.
 var/global/datum/persistence_restart_transaction/persistence_restart = new
 
+/proc/persistence_lifecycle_hex(value)
+	if(!istext(value) || length(value) != 32) return FALSE
+	for(var/i = 1, i <= 32, i++)
+		if(!findtext("0123456789abcdef", copytext(value, i, i+1))) return FALSE
+	return TRUE
+
 /datum/persistence_restart_transaction
 	var/busy = FALSE
 	var/startup_hold = FALSE
@@ -11,6 +17,8 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	var/expected_generation
 	var/last_error
 	var/intent_path = "map_saves/restart_intent.json"
+	var/lifecycle_operation
+	var/lifecycle_session
 
 /datum/persistence_restart_transaction/proc/exists()
 	return fexists(intent_path)
@@ -22,8 +30,12 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 
 /datum/persistence_restart_transaction/proc/read_intent()
 	var/list/I = json_decode(file2text(intent_path))
-	if(!islist(I) || I.len != 4 || I["version"] != 1 || !istext(I["generation"]) || copytext(I["generation"], 1, 10) != "round-v2:" || !istext(I["metadata"]) || !istext(I["round"]))
+	if(!islist(I) || !(I.len in list(4, 6)) || I["version"] != 1 || !istext(I["generation"]) || copytext(I["generation"], 1, 10) != "round-v2:" || !istext(I["metadata"]) || !istext(I["round"]))
 		throw EXCEPTION("Malformed restart intent; preserve map_saves and inspect restart_intent.json")
+	if(I.len == 6 && (!persistence_lifecycle_hex(I["lifecycle_operation"]) || !persistence_lifecycle_hex(I["lifecycle_session"])))
+		throw EXCEPTION("Malformed lifecycle restart binding")
+	if(I.len == 4 && (("lifecycle_operation" in I) || ("lifecycle_session" in I)))
+		throw EXCEPTION("Partial lifecycle restart binding")
 	return I
 
 /datum/persistence_restart_transaction/proc/current_identity()
@@ -32,10 +44,14 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	var/list/R = map_storage.read_round_state()
 	if(R["version"] != 2)
 		throw EXCEPTION("Restart recovery requires a durable round-v2 generation")
-	return list("version" = 1, "generation" = R["generation"], "metadata" = md5(file2text("map_saves/map.txt")), "round" = md5(file2text("map_saves/round.json")))
+	var/list/I = list("version" = 1, "generation" = R["generation"], "metadata" = md5(file2text("map_saves/map.txt")), "round" = md5(file2text("map_saves/round.json")))
+	if(lifecycle_operation)
+		I["lifecycle_operation"] = lifecycle_operation
+		I["lifecycle_session"] = lifecycle_session
+	return I
 
 /datum/persistence_restart_transaction/proc/matches(list/A, list/B)
-	for(var/key in list("version", "generation", "metadata", "round"))
+	for(var/key in list("version", "generation", "metadata", "round", "lifecycle_operation", "lifecycle_session"))
 		if(A[key] != B[key]) return FALSE
 	return TRUE
 
@@ -90,7 +106,10 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	del(world)
 	throw EXCEPTION("Native shutdown returned without closing the world")
 
-/datum/persistence_restart_transaction/proc/execute(shutdown = FALSE)
+/datum/persistence_restart_transaction/proc/execute(shutdown = FALSE, operation, session)
+	if(shutdown && (!persistence_lifecycle_hex(operation) || !persistence_lifecycle_hex(session)))
+		report("Save/shutdown refused: invalid lifecycle binding")
+		return FALSE
 	if(building_allocating_z || map_storage.dimension_recovery_required)
 		report("Save/restart refused: building allocation is incomplete; finish allocation or restart recovery")
 		return FALSE
@@ -101,6 +120,8 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		report("Save/restart currently supports native BYOND Gaia and Europe only")
 		return FALSE
 	busy = TRUE
+	lifecycle_operation = shutdown ? operation : null
+	lifecycle_session = shutdown ? session : null
 	var/list/published
 	try
 		if(!save_generation()) throw EXCEPTION("World save failed; server remains running")
@@ -126,6 +147,8 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		report("[e].[cleanup]")
 	busy = FALSE
 	expected_generation = null
+	lifecycle_operation = null
+	lifecycle_session = null
 	return FALSE
 
 /datum/persistence_restart_transaction/proc/resume_startup()
@@ -133,6 +156,8 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	busy = TRUE
 	try
 		var/list/I = read_intent()
+		lifecycle_operation = I["lifecycle_operation"]
+		lifecycle_session = I["lifecycle_session"]
 		if(!map_storage.prepare_saved_dimensions(I)) throw EXCEPTION("Saved dimension bootstrap failed: [map_storage.last_error]")
 		if(!matches(I, current_identity())) throw EXCEPTION("Restart intent does not match the completed generation")
 		expected_generation = I["generation"]

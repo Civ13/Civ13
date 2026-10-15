@@ -6,6 +6,8 @@ var/allow_native_shutdown = FALSE
 var/change_final_marker = FALSE
 /proc/lifecycle_native_shutdown()
 	shutdown_calls++
+	var/list/I = persistence_restart.read_intent()
+	check(I["lifecycle_operation"] == persistence_restart.lifecycle_operation && I["lifecycle_session"] == persistence_restart.lifecycle_session && persistence_lifecycle_hex(I["lifecycle_operation"]), "shutdown intent missing acknowledged request binding")
 	if(allow_native_shutdown)
 		text2file(json_encode(list("done" = TRUE, "checks" = checks, "failures" = failures, "intent_durable" = persistence_restart.exists())), "result.json")
 		del(world)
@@ -13,6 +15,9 @@ var/change_final_marker = FALSE
 	identity_calls++
 	if(!validation_ok) throw EXCEPTION("fixture invalid generation")
 	var/list/I = identity.Copy()
+	if(lifecycle_operation)
+		I["lifecycle_operation"] = lifecycle_operation
+		I["lifecycle_session"] = lifecycle_session
 	if(change_final_marker && identity_calls == 3)
 		fdel("map_saves/save_complete.txt")
 		text2file("round-v2:changed", "map_saves/save_complete.txt")
@@ -118,7 +123,7 @@ var/change_final_marker = FALSE
 		T = new_transaction()
 		change_final_marker = TRUE
 		var/before = shutdown_calls
-		T.execute(TRUE)
+		T.execute(TRUE, md5("final-operation"), L.boot_session())
 		check(shutdown_calls == before && !T.exists(), "changed final generation reached shutdown")
 		before = shutdown_calls
 		change_final_marker = FALSE
@@ -129,6 +134,20 @@ var/change_final_marker = FALSE
 		I["operation"] = L.used_operations[1]
 		R = lifecycle_reply(L, I)
 		check(!R["ok"], "old operation replay after capacity")
+		T = new_transaction()
+		var/list/bound = T.identity.Copy()
+		bound["lifecycle_operation"] = md5("binding")
+		text2file(json_encode(bound), T.intent_path)
+		var/rejected = FALSE
+		try
+			T.read_intent()
+		catch(var/exception/e)
+			rejected = !!e
+		check(rejected, "partial lifecycle intent accepted")
+		fdel(T.intent_path)
+		bound["lifecycle_session"] = md5("binding-session")
+		T.publish(bound)
+		check(T.detect_startup() && T.resume_startup() && T.players_ready && !T.exists(), "bound intent did not recover and consume")
 		check(shutdown_calls == before, "denied requests reached shutdown")
 		T = new_transaction()
 		L = new
