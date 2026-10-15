@@ -337,6 +337,22 @@ jobs:
           name: flax-processing-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/flax-processing/
           retention-days: 7
+      - name: Verify dew collector lifecycle and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/dew_collector')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/dew_collector/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/dew-collector/positive"
+          for control in cap exposure timing persistence click; do
+            python3 tests/dew_collector/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/dew-collector/$control"
+          done
+      - name: Upload dew collector evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/dew_collector'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dew-collector-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/dew-collector/
+          retention-days: 7
       - name: Validate compiled crafting recipes
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/crafting')
         run: |

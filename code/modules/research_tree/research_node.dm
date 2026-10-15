@@ -1387,6 +1387,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/compost" = "resource_processing",
 		"/obj/structure/converter/retting_trough" = "resource_processing",
 		"/obj/structure/flax_comb" = "resource_processing",
+		"/obj/structure/reagent_dispensers/dew_collector" = "basic_agriculture",
 		"/obj/structure/converter/tanning" = "resource_processing",
 		"/obj/structure/dehydrator" = "resource_processing",
 		"/obj/structure/distillery" = "resource_processing",
