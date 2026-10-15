@@ -8,7 +8,7 @@ import secrets
 import subprocess
 import zipfile
 
-BASE = '54ed0decb0e898799e438472c4c4ddf0fcb20068'
+BASE = 'b75564225f09153b006af97aa8229bbd38db421c'
 DISPATCH = '/world/Topic(T, addr, master, key)\n'
 HOOK = ('\tif("full_map_probe" in params2list(T))\n'
         '\t\treturn full_map_probe_topic(T, addr)\n')
