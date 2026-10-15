@@ -21,7 +21,8 @@
 	var/control_setting = 20 // low 20 PU or high 60 PU; off inserts controls.
 
 /obj/structure/civ_generator/nuclear/rated_output()
-	if (heat >= 80 || wear >= 120 || coolant < 1)
+	// Reject an interval that would cross a safety limit before spending inputs.
+	if (heat + (control_setting == 60 ? 3 : 1) >= 80 || wear + 1 >= 120 || coolant < 1)
 		return 0
 	return min(control_setting == 60 ? 60 : 20, max(0, fuel_energy))
 
@@ -47,7 +48,9 @@
 		coolant--
 		wear++
 		heat = min(100, heat + (control_setting == 60 ? 3 : 1))
-	if (heat >= 80 || wear >= 120 || coolant < 1 || fuel_energy <= 0)
+	// A safe prepaid final interval remains usable until its ordinary expiry.
+	// The next settlement sees exhausted inputs and stops without another debit.
+	if (output_power <= 0)
 		stop_generation()
 	if (heat >= 80 && isturf(loc))
 		var/targets = 0

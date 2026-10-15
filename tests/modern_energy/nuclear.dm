@@ -93,3 +93,42 @@
 		energy_ci_check("restored reactor output off", restored.available_output(), 0)
 		restored.retire_generator()
 	N.retire_generator()
+	for (var/setting in list(20,60))
+		var/obj/structure/civ_generator/nuclear/final_reactor = new(locate(2,2,1))
+		final_reactor.powersource = C
+		C.connections |= final_reactor
+		final_reactor.control_setting = setting
+		final_reactor.fuel_energy = setting
+		final_reactor.coolant = 2
+		final_reactor.enabled = TRUE
+		final_reactor.settle_generation()
+		energy_ci_check("final fuel interval remains usable at [setting]", final_reactor.available_output(), setting)
+		energy_ci_check("final fuel interval pays exactly at [setting]", final_reactor.fuel_energy, 0)
+		final_reactor.output_epoch = -1
+		final_reactor.settle_generation()
+		energy_ci_check("exhausted fuel stops at [setting]", final_reactor.enabled, FALSE)
+		energy_ci_check("exhausted fuel preserves remaining coolant at [setting]", final_reactor.coolant, 1)
+		final_reactor.fuel_energy = 2*setting
+		final_reactor.coolant = 1
+		final_reactor.enabled = TRUE
+		final_reactor.output_epoch = -1
+		final_reactor.settle_generation()
+		energy_ci_check("final coolant interval remains usable at [setting]", final_reactor.available_output(), setting)
+		energy_ci_check("final coolant interval pays exactly at [setting]", final_reactor.coolant, 0)
+		final_reactor.output_epoch = -1
+		final_reactor.settle_generation()
+		energy_ci_check("exhausted coolant stops at [setting]", final_reactor.enabled, FALSE)
+		energy_ci_check("exhausted coolant preserves fuel at [setting]", final_reactor.fuel_energy, setting)
+		for (var/boundary in list("heat","wear"))
+			final_reactor.fuel_energy = 100
+			final_reactor.coolant = 10
+			final_reactor.heat = boundary == "heat" ? (setting == 60 ? 78 : 80) : 0
+			final_reactor.wear = boundary == "wear" ? 119 : 0
+			final_reactor.enabled = TRUE
+			final_reactor.output_epoch = -1
+			final_reactor.settle_generation()
+			energy_ci_check("[boundary] crossing rejects output at [setting]", final_reactor.available_output(), 0)
+			energy_ci_check("[boundary] crossing preserves fuel at [setting]", final_reactor.fuel_energy, 100)
+			energy_ci_check("[boundary] crossing preserves coolant at [setting]", final_reactor.coolant, 10)
+			energy_ci_check("[boundary] crossing stops safely at [setting]", final_reactor.enabled, FALSE)
+		final_reactor.retire_generator()

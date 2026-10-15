@@ -45,6 +45,10 @@ the opt-in local pulse cannot change global radiation. Existing default pulse
 callers retain their behavior. Chemical extraction pays one ore unit for the
 existing five reagent units and preserves the remaining stack.
 
+The reactor exposes a safe final fuel/coolant interval until normal output
+expiry. Its next settlement stops on exhausted inputs. An interval that would
+reach the heat or wear safety limit is rejected before spending inputs.
+
 These changes still require current exact-head remote native tests and the
 radiation owner's final review. Ordinary-player route acceptance, sustained
 balance and deployment remain separate from isolated fixture results. PR #3141

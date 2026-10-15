@@ -22,8 +22,10 @@ Modern underground uranium depletion, research/skill rejection, per-unit debit,
 interruption, retirement, same-z access, concurrent work, nested input/cartridge
 saves and actual paid cartridge loading into reactor output and saved state.
 Independent `--route-negative-control` values are `debit`, `completion`,
-`radiation` and `retirement`; each mutates only generated source and must fail
+`radiation`, `retirement` and `final-interval`; each mutates only generated source and must fail
 at its named contract. `--nuclear-negative-control` omits reactor fuel prepayment.
+Low/high final fuel and coolant intervals stay usable until normal expiry;
+prospective heat/wear limit crossings stop before paying for unusable output.
 `preview.py --output <png>` verifies nonempty actual controller DMI pixels without
 launching BYOND; it renders a labeled source preview, not a gameplay screenshot.
 

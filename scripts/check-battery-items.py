@@ -20,7 +20,7 @@ def main():
     parser.add_argument("--probe", choices=("batteries", "modern-energy"), default="batteries")
     parser.add_argument("--negative-control", action="store_true")
     parser.add_argument("--nuclear-negative-control", action="store_true")
-    parser.add_argument("--route-negative-control", choices=("debit", "completion", "radiation", "retirement"))
+    parser.add_argument("--route-negative-control", choices=("debit", "completion", "radiation", "retirement", "final-interval"))
     args = parser.parse_args()
     if (args.negative_control or args.nuclear_negative_control) and args.probe != "modern-energy":
         parser.error("The charge-debit negative control requires modern-energy")
@@ -77,7 +77,10 @@ def main():
             (build / "nuclear.dm").write_text(nuclear, encoding="utf-8")
             dme = replace_once(dme, '#include "code\\modules\\1713\\machinery\\nuclear_generation.dm"', f'#include "{build.as_posix()}/nuclear.dm"')
         if args.route_negative_control:
-            if args.route_negative_control == "retirement":
+            if args.route_negative_control == "final-interval":
+                path = "code/modules/1713/machinery/nuclear_generation.dm"
+                old, new = "if (output_power <= 0)\n\t\tstop_generation()", "if (heat >= 80 || wear >= 120 || coolant < 1 || fuel_energy <= 0)\n\t\tstop_generation()"
+            elif args.route_negative_control == "retirement":
                 path = "code/modules/1713/ores.dm"
                 old, new = "uranium_retired || gc_destroyed || gcDestroyed || !loc || amount < 1", "amount < 1"
             elif args.route_negative_control == "radiation":
@@ -121,7 +124,7 @@ def main():
         if args.nuclear_negative_control:
             return 0 if "FAIL fuel prepaid" in output and output.rstrip().endswith("FAIL") else 1
         if args.route_negative_control:
-            expected = {"debit": "processing pays one ore unit", "completion": "destroyed processor cannot consume", "radiation": "local recursion never changes global", "retirement": "retired ore stops pending chain"}[args.route_negative_control]
+            expected = {"debit": "processing pays one ore unit", "completion": "destroyed processor cannot consume", "radiation": "local recursion never changes global", "retirement": "retired ore stops pending chain", "final-interval": "final fuel interval remains usable at 20"}[args.route_negative_control]
             return 0 if f"FAIL {expected}" in output and output.rstrip().endswith("FAIL") else 1
         return 0 if output.rstrip().endswith("PASS") else 1
 
