@@ -69,12 +69,24 @@ try {
     await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(Array.Empty<System.Net.IPAddress>())), "empty DNS answer");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromException<System.Net.IPAddress[]>(new System.Net.Sockets.SocketException())), "DNS failure");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromException<System.Net.IPAddress[]>(new TimeoutException())), "DNS timeout");
-    File.WriteAllText(Path.Combine(root, "Connect.ps1"), "fixture never executed");
+    foreach (var file in new[] { "dotnet/dotnet.exe", "RobustToolbox/bin/ClientAuth/Robust.Client.dll", "Content.Client.zip" }) {
+        var path = Path.Combine(root, file);
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllText(path, "fixture never executed");
+    }
     foreach (var mode in new[] { "Nomads", "TDM" }) {
         var start = Connection.Start(root, mode, initialAddresses.Single());
-        Require(start.ArgumentList.TakeLast(4).SequenceEqual(new[] { "-Mode", mode, "-ServerAddress", "72.218.249.221" }), "connection mode/verified address override lost");
+        var expectedPort = mode == "Nomads" ? 1715 : 1714;
+        Require(start.ArgumentList.SequenceEqual(new[] { Path.Combine(root, "RobustToolbox", "bin", "ClientAuth", "Robust.Client.dll"), "--self-contained", "--mount-zip", Path.Combine(root, "Content.Client.zip"), "--connect", "--connect-address", $"udp://72.218.249.221:{expectedPort}", "+launchauth" }), "connection default routing or authentication changed");
+        Require(start.FileName == Path.Combine(root, "dotnet", "dotnet.exe") && !start.UseShellExecute && start.WorkingDirectory == Path.Combine(root, "RobustToolbox", "bin", "ClientAuth"), "packaged runtime/working directory changed");
+        Require(start.Environment["DOTNET_ROOT"] == Path.Combine(root, "dotnet") && start.Environment["ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW"] == Path.Combine(root, "webview"), "packaged runtime environment lost");
+        foreach (var port in new[] { "1", "18459", "65535" })
+            Require(Connection.Start(root, mode, initialAddresses.Single(), port).ArgumentList.Contains($"udp://72.218.249.221:{port}"), "explicit port override lost");
         Require(!start.ArgumentList.Contains("Bypass") && !start.ArgumentList.Any(value => value.Contains("192.0.2.") || value.Contains("192.64.119.81")), "connection bypassed policy or used unverified/excluded address");
     }
+    foreach (var invalid in new[] { "0", "65536", "-1", "abc", "1714;calc.exe", "" })
+        Reject(() => Connection.Start(root, "Nomads", Connection.ApprovedEndpoint, invalid), "invalid port accepted");
+    Reject(() => Connection.Start(Path.Combine(root, "missing-client"), "Nomads", Connection.ApprovedEndpoint), "missing client runtime accepted");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(new[] { System.Net.IPAddress.Parse("192.64.119.81") })), "excluded-only DNS answer");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(new[] { System.Net.IPAddress.Parse("72.218.249.221"), System.Net.IPAddress.Parse("192.0.2.3") })), "mixed unverified endpoint answer");
     Reject(() => Connection.Start(root, "Nomads", "192.64.119.81"), "excluded connection address");

@@ -35,15 +35,21 @@ public static class Program {
             if (args.Length > 0 && args[0] == "--apply-update") return ApplyUpdate(args);
             string? explicitRoot = null;
             string? localReceipt = null;
+            string? serverPort = null;
             for (var index = 0; index < args.Length; index++) {
                 if (args[index] == "--root" && explicitRoot == null && index + 1 < args.Length)
                     explicitRoot = LocalDreamDaemon.RequirePath(args[++index]);
                 else if (args[index] == "--local-dreamdaemon" && localReceipt == null && index + 1 < args.Length)
                     localReceipt = LocalDreamDaemon.RequirePath(args[++index]);
-                else throw new ArgumentException("Supported options: --version, --self-check, --root <absolute folder>, --local-dreamdaemon <absolute host receipt>.");
+                else if (args[index] == "--server-port" && serverPort == null && index + 1 < args.Length) {
+                    serverPort = args[++index];
+                    Connection.Port("Nomads", serverPort);
+                }
+                else throw new ArgumentException("Supported options: --version, --self-check, --root <absolute folder>, --local-dreamdaemon <absolute host receipt>, --server-port <1-65535>.");
             }
             var root = explicitRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Civ13");
             if (localReceipt != null) {
+                if (serverPort != null) throw new IOException("Local DreamDaemon connections use the verified host receipt port; omit --server-port.");
                 if (explicitRoot == null) throw new IOException("Local DreamDaemon testing requires an explicit --root.");
                 var receipt = LocalDreamDaemon.Read(localReceipt);
                 var desktop = new WindowsByondDesktop();
@@ -102,7 +108,9 @@ public static class Program {
                         Console.WriteLine(Connection.Host + " currently resolves to: " + string.Join(", ", addresses));
                         // Pass only the approved address from this lookup, avoiding a second
                         // unrestricted lookup that could select the explicitly excluded address.
-                        Process.Start(Connection.Start(destination, choice == "2" ? "Nomads" : "TDM", addresses.Single()));
+                        var mode = choice == "2" ? "Nomads" : "TDM";
+                        Console.WriteLine($"Connecting to {mode} on port {Connection.Port(mode, serverPort)}.");
+                        Process.Start(Connection.Start(destination, mode, addresses.Single(), serverPort));
                     } catch (IOException e) { Console.WriteLine(e.Message); }
                 }
             }

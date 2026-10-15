@@ -139,11 +139,17 @@ The current published client's authentication flow remains unchanged.
 Each native launcher Play attempt resolves `valzargaming.com`, excludes
 `192.64.119.81`, and requires the remaining answer to be the operator-approved
 `72.218.249.221`. It displays and passes only that freshly verified DNS address to
-the installed client's `Connect.ps1 -ServerAddress`, preventing a second lookup
+the installed client's bundled runtime, preventing a second lookup
 from selecting the excluded address. A changed/unverified endpoint blocks Play
 until its configuration is reviewed; the launcher never falls back to a stale IP.
-Nomads and TDM retain that script's existing ports (18452 and 18453 in the current
-published package) and protocol/authentication behavior. Lookup failure, timeout,
+The native launcher defaults to **Nomads port 1715** and **TDM port 1714**, matching
+the website and player guide. `Civ13.exe --server-port 18459` explicitly overrides
+the port for either selected mode (valid range 1-65535). Local DreamDaemon mode
+continues to use its verified receipt port and rejects this separate override.
+The launcher invokes the packaged `dotnet.exe` and `Robust.Client.dll` directly
+with the existing UDP connection arguments, content mount, runtime/webview
+environment and `+launchauth`. It does not rewrite installed package scripts.
+Lookup failure, timeout,
 or an unverified address keeps the menu open for retry without starting a game.
-DNS resolution does not authenticate a server. Windows script policies remain in
-effect. Older direct Play CMD files retain their packaged connection defaults.
+DNS resolution does not authenticate a server. Older direct Play CMD files retain their packaged test ports (Nomads
+18452, TDM 18453); use the native launcher for these updated defaults.
