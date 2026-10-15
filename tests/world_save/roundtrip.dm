@@ -100,6 +100,7 @@ world
 		var/mob/living/human/living = new(locate(3,1,1))
 		living.stat = UNCONSCIOUS
 		check(map_storage.Save_World(), "export failed")
+		if(!world.params["large"]) check_round_metadata()
 		check(!map_storage.saving_reference_pins.len && !map_storage.saving_list_pins.len, "save pins retained after completion")
 		check(map_storage.validate_world_save(), "valid export rejected")
 		// Force import to allocate a different turf, rather than only rehydrate
