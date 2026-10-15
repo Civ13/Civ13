@@ -7,6 +7,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	var/startup_hold = FALSE
 	var/import_started = FALSE
 	var/import_complete = FALSE
+	var/players_ready = FALSE
 	var/expected_generation
 	var/last_error
 	var/intent_path = "map_saves/restart_intent.json"
@@ -77,7 +78,19 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	// A normal successful native reboot does not resume this transaction.
 	throw EXCEPTION("Native restart returned without replacing the world")
 
-/datum/persistence_restart_transaction/proc/execute()
+/datum/persistence_restart_transaction/proc/request_shutdown()
+	var/list/I = read_intent()
+	if(!busy || startup_hold || !expected_generation || I["generation"] != expected_generation || !matches(I, current_identity()))
+		throw EXCEPTION("Validated shutdown lost its generation ownership")
+	// Validation can yield. Recheck the durable ownership at the final boundary.
+	if(!matches(I, read_intent()) || trim(file2text("map_saves/save_complete.txt")) != expected_generation)
+		throw EXCEPTION("Validated shutdown generation changed after validation")
+	// Native graceful world deletion lets the external supervisor preserve the
+	// completed generation and replace the binary before the next startup.
+	del(world)
+	throw EXCEPTION("Native shutdown returned without closing the world")
+
+/datum/persistence_restart_transaction/proc/execute(shutdown = FALSE)
 	if(building_allocating_z || map_storage.dimension_recovery_required)
 		report("Save/restart refused: building allocation is incomplete; finish allocation or restart recovery")
 		return FALSE
@@ -97,8 +110,12 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		publish(I)
 		expected_generation = I["generation"]
 		if(!matches(I, current_identity())) throw EXCEPTION("Completed generation changed before restart")
-		to_chat(world, "<b>Save validated. Restarting now; reconnect to resume the saved generation.</b>")
-		request_restart()
+		if(shutdown)
+			to_chat(world, "<b>Save validated. Shutting down for the local updater.</b>")
+			request_shutdown()
+		else
+			to_chat(world, "<b>Save validated. Restarting now; reconnect to resume the saved generation.</b>")
+			request_restart()
 	catch(var/exception/e)
 		var/cleanup = ""
 		if(published && exists())
@@ -133,6 +150,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		report("Intended generation restored and one-shot intent consumed")
 		last_error = null
 		map_storage.finish_player_restoration()
+		players_ready = TRUE
 		return TRUE
 	catch(var/exception/e)
 		persistence_save_in_progress = TRUE

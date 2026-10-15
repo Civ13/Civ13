@@ -372,6 +372,10 @@ jobs:
           for control in generation consume import deferred-reboot; do
             python3 tests/world_save/run-restart-transaction.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
+            python3 tests/world_save/run-lifecycle.py --byond-bin "$PWD/BYOND/byond/bin"
+            for control in authentication shutdown-generation; do
+              python3 tests/world_save/run-lifecycle.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+            done
       - name: Retain restart transaction evidence
         if: always() && steps.restart_transaction.outcome != 'skipped'
         uses: actions/upload-artifact@v4

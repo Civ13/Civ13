@@ -1104,6 +1104,7 @@
 #include "code\modules\persistence\admin.dm"
 #include "code\modules\persistence\functions.dm"
 #include "code\modules\persistence\restart_transaction.dm"
+#include "code\modules\persistence\nomads_lifecycle.dm"
 #include "code\modules\persistence\durable_graph.dm"
 #include "code\modules\persistence\durable_contract.dm"
 #include "code\modules\persistence\durable_timers.dm"
