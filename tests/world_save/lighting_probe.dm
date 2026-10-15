@@ -118,7 +118,8 @@
 			durable_world_check(isnull(carrier.legacy_runtime_refs[i]), "legacy runtime reference constructed")
 		durable_world_check(!carrier.indirect_source && !carrier.indirect_corner && !carrier.indirect_overlay, "indirect source graph restored")
 		var/obj/item/persistence_light_container/new_carrier = new(locate(5,3,1))
-		lamp.loc = new_carrier
+		// Use the production movement API, which dispatches Entered/Exited hooks.
+		durable_world_check(lamp.forceMove(new_carrier), "restored light movement refused")
 		durable_world_check(lamp.light.top_atom == new_carrier && !carrier.light_sources.len && new_carrier.light_sources.len == 1, "restored light movement left stale top registration")
 		lamp.set_light(0)
 		durable_world_check(!lamp.light && !new_carrier.light_sources.len && !lamp.light_sources.len, "restored light switch-off retained registrations")
