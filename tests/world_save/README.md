@@ -5,6 +5,31 @@ loader, with isolated substitutes for game startup, chat, deletion, turf change,
 and reagent hooks. It never starts a production game or accesses original saves.
 It is offline integration evidence, not full playable-world acceptance.
 
+`Load_Entry` supplies a location only when constructing atoms. Non-atom datums,
+including matrices, are constructed with no arguments before saved fields are
+restored. The fixture records constructor argument counts without persisting
+that runtime field, checks an actual saved-entry datum construction, and restores
+all six non-default coefficients of both a standalone matrix and an item
+transform. Existing atom placement, nested contents, typed lists and legacy
+flat-entry loading remain part of the ordinary fixture.
+
+The native composite `appearance` is excluded from both export and import:
+its unsupported saved envelope restores null and resets independently restored
+visual fields. Transform, color and alpha retain their normal field encodings.
+The source transform is checked before export; restoration checks all six
+coefficients plus color and alpha, and logs expected/actual coefficients on failure.
+`run-string-path.py --appearance-negative-control` removes only this exclusion
+in generated source and requires the original transform-coefficient failure
+after a completed save. It cannot be combined with other controls.
+
+The bounded `run-string-path.py --datum-constructor-negative-control` mode
+restores the old location-for-every-type branch only in its generated loader.
+It requires the exact `datum constructor received location argument` failure
+before world export and rejects a completion marker. Keep this control separate
+from metadata and diagnostic controls. The same runner without the flag must
+pass the full ordinary fixture. Native tests require the current runtime owner's
+exclusive execution window; source generation does not establish a runtime pass.
+
 Use BYOND 516.1681. From the repository root on Windows:
 
 ```powershell
@@ -190,3 +215,12 @@ and requires the exact missing-periodic-report failure after a successful save.
 Keep these separate from injected IO faults. The fake clock checks arithmetic
 and throttling; verify the real engine clock separately before using runtime
 duration reports.
+
+HUD migration coverage in `run-string-path.py` checks that client HUD fields and
+screen/HUD objects do not enter new saves, old saved HUD fields are skipped and
+old HUD entries are suppressed before their owner-dependent constructors run.
+The human's dead status, name and nested paid item survive the native round trip.
+`--hud-negative-control export`, `import` and `constructor` independently remove
+each safeguard in generated source and require its exact failure. The constructor
+sentinel models the owner requirement; full-game same-generation restoration is
+separate acceptance. Use D: TEMP/TMP and the sole live-test owner's executor.

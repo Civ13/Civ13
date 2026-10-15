@@ -16,6 +16,10 @@ def main():
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--expected-saving-sha256', required=True)
     parser.add_argument('--negative-control', action='store_true')
+    parser.add_argument('--datum-constructor-negative-control', action='store_true')
+    parser.add_argument('--appearance-negative-control', action='store_true')
+    parser.add_argument('--hud-negative-control', choices=('export', 'import', 'constructor'))
+    parser.add_argument('--matrix-trace', action='store_true')
     parser.add_argument('--progress', action='store_true')
     parser.add_argument('--progress-fault-stage', choices=('save_entered', 'level_serialized', 'completion_marker'))
     parser.add_argument('--progress-fault-operation', choices=('delete', 'write', 'json'))
@@ -27,6 +31,15 @@ def main():
         parser.error('Clock probe requires --progress and separate fault controls')
     if args.progress_clock_negative_control and not args.progress_clock_probe:
         parser.error('Clock negative control requires --progress-clock-probe')
+    if args.hud_negative_control and any((args.negative_control, args.datum_constructor_negative_control,
+                                         args.appearance_negative_control, args.matrix_trace, args.progress)):
+        parser.error('Keep HUD controls separate from other mutations')
+    if args.matrix_trace and (args.appearance_negative_control or args.datum_constructor_negative_control or args.negative_control or args.progress):
+        parser.error('Keep matrix trace separate from other controls')
+    if args.appearance_negative_control and (args.datum_constructor_negative_control or args.negative_control or args.progress):
+        parser.error('Keep matrix field controls separate from constructor/metadata/progress controls')
+    if args.datum_constructor_negative_control and (args.negative_control or args.progress):
+        parser.error('Keep datum constructor controls separate from metadata/progress controls')
     if bool(args.progress_fault_stage) != bool(args.progress_fault_operation):
         parser.error('Both progress fault stage and operation are required')
     if (args.progress_fault_stage or args.progress_negative_control) and not args.progress:
@@ -93,6 +106,63 @@ def main():
         original = (fixture / match.group(1)).resolve(strict=True)
         source = original.read_text(encoding='utf-8')
         hashes[original.relative_to(root).as_posix()] = hashlib.sha256(original.read_bytes()).hexdigest()
+        if original.name == 'functions.dm' and args.hud_negative_control == 'export':
+            before = ('/mob/persistence_runtime_var(key)\n'
+                      '\treturn (key in list("hud_used", "HUDneed", "HUDinventory", "HUDfrippery", "HUDprocess", "HUDtech", "hands", "pullin", "purged", "i_select", "m_select", "zone_sel")) || ..()\n')
+            if source.count(before) != 1:
+                raise RuntimeError('HUD export mutation target changed')
+            source = source.replace(before, '', 1)
+        if original.name == 'loading.dm' and args.hud_negative_control == 'import':
+            before = 'if(object.persistence_runtime_var(v))'
+            if source.count(before) != 1:
+                raise RuntimeError('HUD import mutation target changed')
+            source = source.replace(before, 'if(object.persistence_runtime_var(v) && v != "HUDneed" && v != "hud_used")', 1)
+        if original.name == 'loading.dm' and args.hud_negative_control == 'constructor':
+            before = '\t\tif(ispath(type, /obj/screen) || ispath(type, /datum/hud))\n\t\t\treturn null\n'
+            if source.count(before) != 1:
+                raise RuntimeError('HUD constructor mutation target changed')
+            source = source.replace(before, '', 1)
+        if original.name == 'functions.dm' and args.appearance_negative_control:
+            before = ('/atom/persistence_runtime_var(key)\n'
+                      '\treturn key == "appearance" || ..()\n')
+            if source.count(before) != 1:
+                raise RuntimeError('Appearance control needs exactly one composite exclusion')
+            source = source.replace(before, '', 1)
+        if original.name == 'loading.dm' and args.matrix_trace:
+            before = '\t\t\t\tobject.vars[v] = decode_saved_value(savefile, savefile[v])\n'
+            if source.count(before) != 1:
+                raise RuntimeError('Matrix trace needs exactly one typed field assignment')
+            after = ('\t\t\t\tvar/decoded = decode_saved_value(savefile, savefile[v])\n'
+                     '\t\t\t\tif(v == "transform" || istype(object, /matrix) || "[ind]" == "2")\n'
+                     '\t\t\t\t\tworld.log << "MATRIX_TRACE entry=[ind] field=[v] decoded=[decoded]"\n'
+                     '\t\t\t\tif(v == "transform" && istype(decoded, /matrix))\n'
+                     '\t\t\t\t\tvar/matrix/M = decoded\n'
+                     '\t\t\t\t\tworld.log << "MATRIX_TRACE decoded coefficients=[M.a],[M.b],[M.c],[M.d],[M.e],[M.f]"\n'
+                     '\t\t\t\t\tif(M.a == 8 && istype(object, /atom))\n'
+                     '\t\t\t\t\t\tworld_save_matrix_trace_target = object\n'
+                     '\t\t\t\tobject.vars[v] = decoded\n'
+                     '\t\t\t\tif((v == "transform" || "[ind]" == "2") && istype(object, /atom))\n'
+                     '\t\t\t\t\tvar/atom/AT = object\n'
+                     '\t\t\t\t\tvar/matrix/M = AT.transform\n'
+                     '\t\t\t\t\tworld.log << "MATRIX_TRACE entry=[ind] after=[v] assigned coefficients=[M.a],[M.b],[M.c],[M.d],[M.e],[M.f]"\n')
+            source = source.replace(before, after, 1)
+            traced = []
+            for line_number, line in enumerate(source.splitlines(keepends=True), 1):
+                if line.strip() and not line.lstrip().startswith('//'):
+                    indent = line[:len(line) - len(line.lstrip('\t'))]
+                    if len(indent) >= 3 and not line.lstrip().startswith(('else', 'catch')):
+                        traced.append(indent + f'world_save_matrix_trace_state("before loading line {line_number}")\n')
+                traced.append(line)
+            source = ('var/atom/world_save_matrix_trace_target\n'
+                      'var/world_save_matrix_trace_last\n'
+                      '/proc/world_save_matrix_trace_state(stage)\n'
+                      '\tif(!world_save_matrix_trace_target) return\n'
+                      '\tvar/matrix/M = world_save_matrix_trace_target.transform\n'
+                      '\tvar/current = "[M.a],[M.b],[M.c],[M.d],[M.e],[M.f]"\n'
+                      '\tif(current != world_save_matrix_trace_last)\n'
+                      '\t\tworld.log << "MATRIX_STATE [stage] ref=\\ref[world_save_matrix_trace_target] loc=[world_save_matrix_trace_target.x],[world_save_matrix_trace_target.y],[world_save_matrix_trace_target.z] coefficients=[current]"\n'
+                      '\t\tworld_save_matrix_trace_last = current\n'
+                      + ''.join(traced))
         if original == production and progress_saving is not None:
             source = progress_saving
         if original == production and args.negative_control:
@@ -100,6 +170,14 @@ def main():
             if source.count(before) != 1:
                 raise RuntimeError('Negative control needs exactly one corrected metadata path')
             source = source.replace(before, 'var/F0 = file("map_saves/map.txt")', 1)
+        if original.name == 'loading.dm' and args.datum_constructor_negative_control:
+            before = ('\t\telse if(ispath(type, /atom))\n\t\t\tobject = new type(starting_loc)\n'
+                      '\t\telse\n\t\t\t// Non-atom datums have no location argument. In particular, matrix\n'
+                      '\t\t\t// construction must use its no-argument identity initializer.\n'
+                      '\t\t\tobject = new type()\n')
+            if source.count(before) != 1:
+                raise RuntimeError('Datum control needs exactly one corrected constructor branch')
+            source = source.replace(before, '\t\telse\n\t\t\tobject = new type(starting_loc)\n', 1)
         if original.name == 'roundtrip.dm':
             before = '\tcatch(var/exception/e)\n'
             if source.count(before) != 1:
@@ -183,6 +261,12 @@ def main():
             raise RuntimeError(f'Wrong clock negative failure: {actual!r}, {failure!r}')
         if not (output / 'map_saves/save_complete.txt').exists():
             raise RuntimeError('Clock control changed completed save marker')
+    elif args.hud_negative_control:
+        expected = {'export': 'HUD runtime field exported', 'import': 'HUD runtime field imported',
+                    'constructor': 'ownerless HUD constructor reached'}[args.hud_negative_control]
+        failure = read(output / 'failure-name.txt').strip()
+        if failure != expected or not actual.startswith('FAIL:'):
+            raise RuntimeError(f'Wrong HUD negative failure: {actual!r}, {failure!r}')
     elif args.progress_negative_control:
         failure = read(output / 'failure-name.txt').strip()
         expected = f'Injected progress {args.progress_fault_operation} failure at {args.progress_fault_stage}'
@@ -191,6 +275,18 @@ def main():
         marker = (output / 'map_saves/save_complete.txt').exists()
         if marker != (args.progress_fault_stage == 'completion_marker'):
             raise RuntimeError('Diagnostic negative marker state mismatch')
+    elif args.appearance_negative_control:
+        failure = read(output / 'failure-name.txt').strip()
+        if failure != 'transform matrix coefficient a changed' or not actual.startswith('FAIL:'):
+            raise RuntimeError(f'Wrong matrix field failure: {actual!r}, {failure!r}')
+        if not (output / 'map_saves/save_complete.txt').exists():
+            raise RuntimeError('Matrix control must complete export before restoration fails')
+    elif args.datum_constructor_negative_control:
+        failure = read(output / 'failure-name.txt').strip()
+        if failure != 'datum constructor received location argument' or not actual.startswith('FAIL:'):
+            raise RuntimeError(f'Wrong datum constructor failure: {actual!r}, {failure!r}')
+        if (output / 'map_saves/save_complete.txt').exists():
+            raise RuntimeError('Constructor control should fail before world export')
     elif args.negative_control:
         failure = read(output / 'failure-name.txt').strip()
         if failure != 'Could not write world-save metadata' or not actual.startswith('FAIL:'):
@@ -201,6 +297,10 @@ def main():
         raise RuntimeError(f'Positive regression failed: {actual!r}')
     (output / 'summary.json').write_text(json.dumps({
         'scope': __doc__, 'result': actual, 'negative_control': args.negative_control,
+        'datum_constructor_negative_control': args.datum_constructor_negative_control,
+        'appearance_negative_control': args.appearance_negative_control,
+        'hud_negative_control': args.hud_negative_control,
+        'matrix_trace': args.matrix_trace,
         'progress': args.progress, 'progress_fault_stage': args.progress_fault_stage,
         'progress_fault_operation': args.progress_fault_operation,
         'progress_negative_control': args.progress_negative_control,

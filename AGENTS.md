@@ -269,6 +269,25 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
 
+<!-- 2026-10-14: bounded runtime detail history -->
+Error history keeps 1000 recent entries globally and 100 per file/line source,
+including skip summaries. Retirement removes both memberships and clears entry
+backreferences, captured usr locations and detail text before explicit plain-datum
+deletion invalidates old holders. Source metadata and
+world/Error cooldown dictionaries remain for the round; distinct synthetic
+file/line identities are not bounded. `tests/error_history/run.py` checks real
+logging, viewer bodies and retirement in an isolated native world, with an
+immutable historical log_error control. `--prepare-only` runs no native tools.
+
+<!-- 2026-10-14: native launcher packaging -->
+`tools/opendream-client/native/Build.ps1` builds the single-file self-contained
+Windows x64 launcher. Its offline console tests cover mock updates plus actual
+EXE replacement after parent exit and BYOND prerequisite adapters, without accounts
+or a game. Release publication builds the exact tag and verifies immutable asset
+readback before advancing the separate native feed; prereleases do not activate it.
+Preserve the existing client channel and distinguish package integrity/BYOND setup
+from identity/gameplay acceptance. Never silently accept installer licenses.
+
 <!-- 2026-10-13: dehydrator native save baseline -->
 `tests/food_progression/rack_save.dm` exports the owning turf and rack graph.
 The 769ae4911 baseline compiled cleanly but failed exporting runtime `slots`.
@@ -675,3 +694,10 @@ Do not call parent attackby after an explicit item attack; that repeats damage,
 logs and material wear. tests/animal_combat/run.py checks compiled inherited
 health defaults, native Life, single sharp/blunt attacks and wear across behavior
 branches, noncombat dispatch, healing/death and generated negative controls.
+
+<!-- 2026-10-14: chemical smoke source retirement -->
+Chemical smoke systems are single-use: their two reaction callers construct fresh
+systems. The hidden reagent source must survive every queued spawn callback, then
+retire through atom/reagent cleanup. `tests/chemical_smoke_ownership/run.py` checks
+production copies, lifetime bounds and repeated holder/membership cleanup against
+an immutable historical negative control in temporary offline storage.
