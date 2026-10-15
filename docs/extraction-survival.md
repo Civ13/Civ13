@@ -1,5 +1,54 @@
 # Extraction survival implementation
 
+## Current integration target (2026-10-15)
+
+The requested scale is up to 64 mixed PMC and Scav players, with capacity for at
+least four PMC teams of four. This is a design target, not the current admission
+limit: `mode.dm` still caps distinct round participants at 32, and the existing
+map supplies 16 private rooms. Increasing one limit alone cannot establish the
+requested capacity. Room allocation, account exclusion, group deployment and
+round settlement must be checked together. Four-person teams do not imply that
+solo players or smaller consenting groups must be rejected.
+
+There is no existing TDM map selected as the safe-house hub. Design an original
+hub and generate its repeated private-room layout so capacity can grow without
+hand-copying map tiles. Keep every z-level the same dimensions. The current
+mission-floor guards deliberately exclude private homes on z2 and the public
+hub on z3; a new layout must preserve those boundaries or explicitly revise and
+test the affected guards. A larger visual footprint does not by itself expand
+account, equipment, NPC, container or insurance budgets.
+
+The remaining shared interaction work is extraction-only sequential searching
+across inventories and timed transfers to or from external inventories. Moving
+items within the same player's equipped inventory is exempt from that transfer
+delay. Searches and waits need cancellation and post-wait checks against the
+actual actor, target, access and item identity before movement. Reuse the shared
+interaction rules for faction-war modes where appropriate; their scope must be
+explicit rather than changing all inventory movement as a side effect. These
+requirements are not reported as implemented or natively verified here.
+
+### Recovery ownership boundary
+
+The ordinary saved-body recovery PR stack does not complete extraction restart
+recovery. Admission in `mode.dm` assigns a runtime `extraction_session` and sets
+the body to `should_save = FALSE`. Extraction equipment and garage graphs have
+separate account-journal ownership. A restored human body alone therefore does
+not establish an active account session, its room, raid settlement or item
+custody, and must not trigger a second account-graph materialization.
+
+Compose the extraction recovery hooks with the current persistence preflight,
+metadata restoration, HUD exclusion and export-frame guards. Do not replace
+those shared files with their older extraction-branch versions. The custody
+fence and constructor-ledger proposal remains a separate integration contract;
+see [the persistence hook proposal](extraction-persistence-hook-proposal.md) and
+[custody audit](extraction-custody-fence-audit.md). Acceptance needs interrupted
+save/import cases, preserved identities and aliases, account/session rebuilding,
+replay rejection and absence of duplicate physical gear. Bounded fixtures and
+ordinary Nomads recovery do not establish cross-server ownership or a long-lived
+extraction world.
+
+## Existing implementation and evidence
+
 This mode is under implementation and has not received playable acceptance.
 Connected vehicle acceptance remains incomplete. Paid party-vehicle exit fees
 pass isolated native regression verification; connected-client acceptance remains pending.

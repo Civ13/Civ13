@@ -574,7 +574,10 @@ Map size does not expand extraction budgets. Sealed containers require unique
 integer IDs 1 through 64. More shelves must remain decoration unless the loot
 contract is deliberately changed and verified. Raid equipment is capped at
 2048 tracked nodes, NPC population at 12, and round participants at 32; the
-existing 16 private rooms remain a separate admission constraint. Keep entry
+existing 16 private rooms remain a separate admission constraint. The requested
+64-player mixed PMC/Scav capacity and four teams of four are not implemented by
+these existing limits; see the current integration target in
+[`docs/extraction-survival.md`](../../docs/extraction-survival.md). Keep entry
 and NPC marker counts bounded instead of scaling them with floor area.
 
 A 256x256x5 map allocates 327680 turfs; 512x512x5 allocates 1310720.
