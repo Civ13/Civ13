@@ -124,6 +124,16 @@ retained in `launch-inputs.json`. Non-visual runs retain stdout, stderr and
 including early exits before the DM probe can write a result. An early native
 exit is failed execution, never a successful negative control.
 
+`prepare-startup-trace.py` accepts a staged source root, explicit entrypoint,
+new output directory and a JSON SHA-256 mapping for the entrypoint, `code/world.dm`,
+base map metadata and Nomads metadata sources. It writes three instrumented
+copies and a new `.startup-construction-trace.dme` directly in the staged root,
+preserving the entrypoint's relative resources, map and local adapter includes.
+It never compiles or launches. Existing output files and mismatched inputs are
+rejected. The receipt records generated paths/hashes; run only through the
+exclusive runtime owner. Markers append to `startup-construction-trace.log` in
+the engine's runtime directory. Preserve previous marker logs before a new run.
+
 `inspect.dme` is a standalone read-only entry inspector. Compile it and copy its
 binary into isolated save storage, then run with `-params
 'file=map_saves/2.sav&ref=20042'`. It logs only the requested entry and never

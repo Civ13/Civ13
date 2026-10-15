@@ -1,7 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$ByondBin, [switch]$Visual, [switch]$PlayerIdentity, [switch]$IdentityNegativeControl, [ValidateRange(1,3600)][int]$TimeoutSeconds = 360)
 $ErrorActionPreference = 'Stop'
 if ($IdentityNegativeControl -and -not $PlayerIdentity) { throw 'Identity negative control requires -PlayerIdentity' }
-if ($PlayerIdentity -and ([IO.Path]::GetPathRoot($env:TEMP) -ne 'D:\')) { throw 'Identity evidence TEMP must be on D:' }
 $repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $probeSource = Join-Path $repoRoot '.world_save_probe.dme'
 $identitySource = Join-Path $repoRoot '.world_save_identity_nomads.dm'
