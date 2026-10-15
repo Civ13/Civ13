@@ -112,12 +112,20 @@
 /obj/structure/reactor_fuel_processor/proc/processing_wait(mob/living/human/H)
 	return do_after(H, 100, src)
 
+/obj/structure/reactor_fuel_processor/proc/processing_access(mob/living/human/H, obj/item/stack/ore/uranium/U)
+	if (!H || !U || H.gc_destroyed || H.gcDestroyed || U.gc_destroyed || U.gcDestroyed || U.uranium_retired || U.amount < 1 || !civ_generation_can_build(H, type) || !(U.loc == H || isturf(U.loc)))
+		return FALSE
+	var/turf/source_turf = get_turf(src)
+	var/turf/actor_turf = get_turf(H)
+	var/turf/input_turf = get_turf(U)
+	return source_turf && actor_turf && input_turf && actor_turf.z == source_turf.z && input_turf.z == source_turf.z && get_dist(source_turf, actor_turf) <= 1 && get_dist(source_turf, input_turf) <= 1
+
 /obj/structure/reactor_fuel_processor/attackby(obj/item/W, mob/user)
 	if (!istype(W, /obj/item/stack/ore/uranium))
 		return ..()
 	var/obj/item/stack/ore/uranium/U = W
 	var/mob/living/human/H = user
-	if (fuel_processing || fuel_retired || U.uranium_extracting || U.uranium_retired || U.amount < 1 || !isturf(loc) || !civ_generation_can_build(H, type) || !(U.loc == H || isturf(U.loc)) || get_dist(H, src) > 1 || get_dist(U, src) > 1)
+	if (fuel_processing || fuel_retired || !processing_access(H,U) || U.uranium_extracting || !isturf(loc))
 		return
 	fuel_processing = TRUE
 	U.uranium_extracting = TRUE
@@ -125,7 +133,7 @@
 	var/atom/actor_loc = H.loc
 	var/atom/machine_loc = loc
 	if (processing_wait(H))
-		if (!fuel_retired && loc == machine_loc && H.loc == actor_loc && U.loc == input_loc && !U.uranium_retired && U.amount >= 1 && get_dist(H, src) <= 1 && get_dist(U, src) <= 1 && civ_generation_can_build(H, type))
+		if (!fuel_retired && loc == machine_loc && processing_access(H,U) && H.loc == actor_loc && U.loc == input_loc)
 			if (U.use(1))
 				new /obj/item/stack/reactor_fuel(get_turf(src))
 	if (U)

@@ -47,6 +47,8 @@
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
+			if (!ET.reagents || ET.gc_destroyed || ET.gcDestroyed)
+				return
 			if (ET.reagents.total_volume > 0)
 				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
@@ -239,7 +241,7 @@
 				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
-				if (uranium_extracting || amount < 1)
+				if (uranium_extracting || !uranium_extraction_valid(H, ET))
 					return
 				uranium_extracting = TRUE
 				var/atom/start_loc = loc
@@ -247,14 +249,25 @@
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
 				playsound(src,'sound/effects/pickaxe.ogg',100,1)
 				var/timera = 110/(H.getStatCoeff("dexterity"))
-				if (do_after(H, timera))
-					if (!uranium_retired && amount >= 1 && loc == start_loc && ET.loc == kit_loc && get_dist(H, src) <= 1 && ET.reagents.total_volume <= 0)
+				if (uranium_extraction_wait(H, ET, timera))
+					if (uranium_extraction_valid(H, ET) && loc == start_loc && ET.loc == kit_loc)
 						if (use(1))
 							ET.reagents.add_reagent("uranium",5)
 							ET.update_icon()
 				uranium_extracting = FALSE
 		else
 			..()
+/obj/item/stack/ore/uranium/proc/uranium_extraction_valid(mob/living/human/H, obj/item/weapon/reagent_containers/glass/extraction_kit/ET)
+	if (!H || !ET || !ET.reagents || uranium_retired || gc_destroyed || gcDestroyed || H.gc_destroyed || H.gcDestroyed || ET.gc_destroyed || ET.gcDestroyed || amount < 1 || H.stat != CONSCIOUS || ET.reagents.total_volume > 0)
+		return FALSE
+	var/turf/source_turf = get_turf(src)
+	var/turf/actor_turf = get_turf(H)
+	var/turf/kit_turf = get_turf(ET)
+	return source_turf && actor_turf && kit_turf && source_turf.z == actor_turf.z && source_turf.z == kit_turf.z && get_dist(source_turf, actor_turf) <= 1 && get_dist(source_turf, kit_turf) <= 1
+
+/obj/item/stack/ore/uranium/proc/uranium_extraction_wait(mob/living/human/H, obj/item/weapon/reagent_containers/glass/extraction_kit/ET, delay)
+	return do_after(H, delay, ET)
+
 /obj/item/stack/ore/uranium/process_radioactivity()
 	if (uranium_emitting || uranium_retired)
 		return

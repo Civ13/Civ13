@@ -16,6 +16,20 @@ var/list/energy_mining_rolls = list()
 	var/craft_skill = 105
 	getStat(stat_name)
 		return craft_skill
+	getStatCoeff(stat_name)
+		return 1
+/obj/item/stack/ore/uranium/energy_ci
+	var/mode = "complete"
+	uranium_extraction_wait(mob/living/human/H, obj/item/weapon/reagent_containers/glass/extraction_kit/ET, delay)
+		if (mode == "cancel")
+			return FALSE
+		if (mode == "kit")
+			qdel(ET)
+		if (mode == "actor")
+			qdel(H)
+		if (mode == "ore")
+			qdel(src)
+		return TRUE
 /obj/structure/reactor_fuel_processor/energy_ci
 	var/mode = "complete"
 	var/obj/item/stack/ore/uranium/input
@@ -28,6 +42,10 @@ var/list/energy_mining_rolls = list()
 			attackby(input,H)
 		if (mode == "destroy")
 			qdel(src)
+		if (mode == "destroy_input")
+			qdel(input)
+		if (mode == "destroy_actor")
+			qdel(H)
 		return TRUE
 /proc/energy_cartridges(turf/T)
 	var/total = 0
@@ -82,6 +100,10 @@ var/list/energy_mining_rolls = list()
 	P.attackby(U,H)
 	energy_ci_check("under skilled processing cannot debit", U.amount, 3)
 	H.craft_skill = 105
+	H.forceMove(locate(4,1,2))
+	P.attackby(U,H)
+	energy_ci_check("other z actor cannot process", U.amount, 3)
+	H.forceMove(locate(4,1,1))
 	P.mode = "cancel"
 	P.attackby(U,H)
 	energy_ci_check("interrupted processing preserves input", U.amount, 3)
@@ -119,6 +141,24 @@ var/list/energy_mining_rolls = list()
 	energy_ci_check("destroyed processor cannot consume", U.amount, 2)
 	energy_ci_check("destroyed processor cannot issue output", energy_cartridges(locate(4,1,1)), 1)
 	qdel(restored)
+	var/obj/structure/reactor_fuel_processor/energy_ci/retirement = new(locate(4,1,1))
+	var/obj/item/stack/ore/uranium/retired_input = new(H)
+	retired_input.amount = 2
+	retirement.input = retired_input
+	retirement.mode = "destroy_input"
+	retirement.attackby(retired_input,H)
+	energy_ci_check("retired input produces nothing", energy_cartridges(locate(4,1,1)), 1)
+	var/mob/living/human/energy_ci/fuel_actor/retired_actor = new(locate(4,1,1))
+	retired_actor.civilization = H.civilization
+	var/obj/item/stack/ore/uranium/actor_input = new(locate(4,1,1))
+	actor_input.amount = 2
+	retirement.input = actor_input
+	retirement.mode = "destroy_actor"
+	retirement.attackby(actor_input,retired_actor)
+	energy_ci_check("retired actor cannot debit", actor_input.amount, 2)
+	energy_ci_check("retired actor produces nothing", energy_cartridges(locate(4,1,1)), 1)
+	qdel(actor_input)
+	qdel(retirement)
 	// Native nested storage retains paid input and excludes the processing lock.
 	var/obj/structure/closet/crate/lead/lead = new(locate(1,1,1))
 	U.forceMove(lead)
@@ -135,6 +175,25 @@ var/list/energy_mining_rolls = list()
 	qdel(saved_ore)
 	qdel(lead)
 	qdel(loaded)
+	for (var/action in list("complete","cancel","kit","actor","ore","other_z"))
+		var/mob/living/human/energy_ci/fuel_actor/extractor = new(locate(4,4,1))
+		var/obj/item/stack/ore/uranium/energy_ci/raw = new(locate(4,4,1))
+		raw.amount = 2
+		raw.mode = action
+		var/obj/item/weapon/reagent_containers/glass/extraction_kit/kit = new(locate(4,4,1))
+		if (action == "other_z")
+			extractor.forceMove(locate(4,4,2))
+		raw.attackby(kit,extractor)
+		if (action == "complete")
+			energy_ci_check("chemical extraction pays one ore unit", raw.amount, 1)
+			energy_ci_check("chemical extraction preserves five unit yield", kit.reagents.get_reagent_amount("uranium"), 5)
+		else if (action != "ore")
+			energy_ci_check("chemical extraction rejects [action]", raw.amount, 2)
+		if (raw)
+			energy_ci_check("chemical extraction releases [action] lock", raw.uranium_extracting, FALSE)
+		qdel(raw)
+		qdel(kit)
+		qdel(extractor)
 	// Explicit local-only recursive propagation and unchanged default caller.
 	var/radiation_before = global_radiation
 	var/obj/item/energy_rad_receiver/nearby = new(locate(1,1,1))
