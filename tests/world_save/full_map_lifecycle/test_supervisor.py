@@ -24,6 +24,8 @@ class RecoveryAcceptance(unittest.TestCase):
         self.after = copy.deepcopy(self.before)
         self.after.update(session='new', import_complete=True, generation='round-v2:new')
         self.receipt = dict(generation='round-v2:new', status=copy.deepcopy(self.before))
+        self.receipt['saved_environment'] = {k: self.before[k] for k in
+                                            ('season', 'time_of_day', 'research_clock')}
 
     def test_complete_recovery(self):
         compare(self.before, self.after, self.receipt)

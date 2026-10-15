@@ -76,11 +76,11 @@ def compare(before, after, receipt):
     if receipt['generation'] != after['generation']:
         raise AssertionError('Completed generation changed during reboot')
     for field in ('season', 'time_of_day'):
-        if receipt['status'][field] != after[field]:
+        if receipt['saved_environment'][field] != after[field]:
             raise AssertionError(f'Recovery changed saved {field}')
     # The research clock advances during ordinary gameplay; only backwards
     # movement across the saved boundary is invalid.
-    if after['research_clock'] < receipt['status']['research_clock']:
+    if after['research_clock'] < receipt['saved_environment']['research_clock']:
         raise AssertionError('Research clock moved backwards across recovery')
     for status in (before, receipt['status'], after):
         if status['clients'] != 0:

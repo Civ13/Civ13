@@ -11,13 +11,16 @@ var/global/list/full_map_probe_nature_done = list()
 	return list("reason" = "isolated recovery probe", "message" = "Offline recovery test host")
 
 /proc/full_map_probe_ready()
-	return full_map_probe_setup_done && full_map_probe_nature_done.len == 4 && ticker && ticker.current_state == GAME_STATE_PLAYING
+	return full_map_probe_setup_done && full_map_probe_nature_done.len == 4 && ticker && ticker.current_state == GAME_STATE_PLAYING && map && !map.season_busy && !map.season_queue.len && !environment_weather_running && processes.time_of_day && processes.weather && (!processes.time_of_day_change || !processes.time_of_day_change.updating_lighting)
 
 /proc/full_map_probe_record_generation()
 	// Synchronous receipt immediately before the unchanged native reboot call.
 	var/list/I = persistence_restart.current_identity()
 	I["fixture"] = full_map_probe_fixture_status()
 	I["status"] = full_map_probe_status()
+	var/list/round_state = map_storage.read_round_state()
+	var/list/world_state = round_state["world_state"]
+	I["saved_environment"] = world_state["environment"]
 	var/list/files = list()
 	for(var/name in flist("map_saves/"))
 		if(name == "map.txt" || name == "round.json" || name == "save_complete.txt" || copytext(name, max(1, length(name)-3)) == ".sav")
