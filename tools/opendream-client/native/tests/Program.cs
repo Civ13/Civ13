@@ -16,6 +16,29 @@ async Task RejectAsync(Func<Task> action, string message) {
     throw new Exception("Negative control accepted: " + message);
 }
 try {
+    const string privateFailure = "PRIVATE https://name:password@example.test/private?token=secret\r\nINJECTED";
+    var reset = new System.Net.Sockets.SocketException(10054);
+    var tls = new System.Security.Authentication.AuthenticationException(privateFailure, reset);
+    var requestFailure = new HttpRequestException(HttpRequestError.SecureConnectionError, privateFailure, tls);
+    var safeTls = Updater.DescribeFailure(requestFailure);
+    Require(safeTls.Contains("SecureConnectionError") && safeTls.Contains("AuthenticationException"), "TLS diagnostic lost nested framework classification");
+    Require(safeTls.Contains("SocketException") && safeTls.Contains("native=10054/0x00002746"), "TLS diagnostic lost actual nested socket reset code");
+    Require(safeTls.Contains("HRESULT=0x"), "TLS diagnostic omitted numeric HRESULT");
+    Require(!safeTls.Contains("PRIVATE") && !safeTls.Contains("password") && !safeTls.Contains("token=") && !safeTls.Contains("example.test"), "TLS diagnostic leaked exception message or URL credentials");
+    Require(safeTls.All(character => character is >= ' ' and <= '~'), "TLS diagnostic included injected line breaks or non-printable content");
+    var certificateFailure = new System.Security.Authentication.AuthenticationException(privateFailure,
+        new System.ComponentModel.Win32Exception(unchecked((int)0x80090325)));
+    var safeCertificate = Updater.DescribeFailure(certificateFailure);
+    Require(safeCertificate.Contains("Win32Exception") && safeCertificate.Contains("0x80090325"), "certificate failure diagnostic lost native code");
+    Require(!safeCertificate.Contains("PRIVATE") && !safeCertificate.Contains("password"), "certificate diagnostic leaked untrusted error text");
+    var responseFailure = new HttpRequestException(HttpRequestError.HttpProtocolError, privateFailure, null, System.Net.HttpStatusCode.ServiceUnavailable);
+    Require(Updater.DescribeFailure(responseFailure).Contains("HTTP=503"), "HTTP response diagnostic lost actual status code");
+    Exception deepFailure = requestFailure;
+    for (var index = 0; index < 100; index++) deepFailure = new IOException(privateFailure, deepFailure);
+    var safeDeep = Updater.DescribeFailure(deepFailure);
+    Require(safeDeep.Length <= 512 && safeDeep.EndsWith("..."), "deep exception chain was not bounded and marked incomplete");
+    Require(!safeDeep.Contains("PRIVATE") && !safeDeep.Contains("token="), "deep exception chain leaked message content");
+    Require(Updater.DescribeFailure(new Exception(privateFailure)).StartsWith("Exception HRESULT=0x"), "unknown exception diagnostic was not safely classified");
     Reject(() => ServerCatalog.OpenDreamPort("Nomads", null), "unconfigured OpenDream service");
     Require(ServerCatalog.OpenDreamPort("Nomads", "18462") == 18462, "explicit OpenDream operator port changed");
     var expectedLinks = new[] { "https://civ13.com/", "https://civ13.github.io/civ13-wiki/", "https://civ13.com/discord", "https://github.com/civ13/civ13/" };
