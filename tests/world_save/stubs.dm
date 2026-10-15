@@ -83,6 +83,8 @@ var/list/mutate_on_tick = null
 /atom/proc/update_light()
 	// Focused serializer adapter; the lighting regression uses production lighting.
 	return
+/turf/proc/recalc_atom_opacity()
+	return
 /atom/movable
 	var/load_datums = FALSE
 /obj

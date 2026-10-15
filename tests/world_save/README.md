@@ -398,10 +398,13 @@ nested owner bindings, omitted runtime graphs, historical indirect graph entries
 source rebuilding, movement and switch-off registration cleanup. The scheduler
 and normal game startup are disabled; this does not establish full Europe import
 or rendered illumination. Controls `lighting-export`, `lighting-legacy` and
-`lighting-rebuild` each remove one production safeguard in generated source.
+`lighting-rebuild` and `lighting-opacity` each remove one production safeguard in generated source.
 The legacy control must reproduce the ownerless `light_sources` constructor error.
 
 The native CI workflow accepts `lighting_recovery_regressions=true` for these
-four cases. On this Windows host, even the existing startup-only control exits
+five cases. The fixture closes its native port, rejects reopening and checks a
+live OS socket census; a brief native startup listener can precede its entry.
+Obstruction caches rebuild after contents/fields/hooks and before source updates.
+On this Windows host, even the existing startup-only control exits
 with `0xC0000409` before its entry marker. Clean compilation is separate evidence;
 run the actual assertions on Linux CI rather than treating that exit as a pass.

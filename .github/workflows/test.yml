@@ -395,7 +395,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/lighting-recovery"
           export TMPDIR="$RUNNER_TEMP/lighting-recovery"
           python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --lighting
-          for control in lighting-export lighting-legacy lighting-rebuild; do
+          for control in lighting-export lighting-legacy lighting-rebuild lighting-opacity; do
             python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --lighting --negative-control "$control"
           done
         shell: bash

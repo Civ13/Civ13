@@ -8,6 +8,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+import time
 import uuid
 
 
@@ -26,7 +27,7 @@ def main():
     parser.add_argument('--startup-only', action='store_true',
                         help='Diagnose production initialization without running any persistence assertions')
     parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
-    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild'))
+    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity'))
     args = parser.parse_args()
     lighting_control = bool(args.negative_control and args.negative_control.startswith('lighting-'))
     if args.lighting and (args.dimension_bootstrap or args.recovery_reconnect or args.lifecycle_shutdown or args.startup_only or (args.negative_control and not lighting_control)):
@@ -83,7 +84,8 @@ def main():
             'reclaim-order': ('code/modules/persistence/restart_transaction.dm', '\t\tplayers_ready = map_storage.finish_player_restoration()\n', ''),
             'lighting-export': ('code/modules/persistence/functions.dm', 'return (key in list("appearance", "light", "light_sources")) || ..()', 'return key == "appearance" || ..()'),
             'lighting-legacy': ('code/modules/persistence/loading.dm', 'if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay))', 'if(FALSE)'),
-            'lighting-rebuild': ('code/modules/persistence/loading.dm', '\t\t\t\t\t\tlight_owner.update_light()', '\t\t\t\t\t\tif(FALSE) light_owner.update_light()'),
+            'lighting-rebuild': ('code/modules/persistence/loading.dm', '\t\t\t\tlight_owner.update_light()', '\t\t\t\tif(FALSE) light_owner.update_light()'),
+            'lighting-opacity': ('code/modules/persistence/loading.dm', '\t\t\t\tlight_turf.recalc_atom_opacity()', '\t\t\t\tif(FALSE) light_turf.recalc_atom_opacity()'),
         }
         if args.negative_control:
             relative, before, after = mutations[args.negative_control]
@@ -196,9 +198,13 @@ def main():
                 (output / 'metadata-result.json').unlink()
             print(json.dumps(receipt, indent=2))
             return
-        run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-safe',
-                              '-params', 'profile=' + args.profile, '-log', 'runtime.log'], cwd=output,
-                             capture_output=True, text=True, timeout=90, creationflags=flags)
+        command = [str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-safe',
+                   '-params', 'profile=' + args.profile, '-log', 'runtime.log']
+        if args.lighting:
+            run = run_lighting(command, output, flags)
+        else:
+            run = subprocess.run(command, cwd=output, capture_output=True, text=True,
+                                 timeout=90, creationflags=flags)
         (output / 'daemon.log').write_text(run.stdout + run.stderr, encoding='utf-8')
         (output / 'daemon-exit.json').write_text(json.dumps({'exit_code': run.returncode}), encoding='utf-8')
         if run.returncode:
@@ -226,7 +232,8 @@ def main():
                     'reclaim-order': 'waiting authenticated client not reclaimed after recovery',
                     'lighting-export': 'runtime atom lighting fields exported',
                     'lighting-legacy': 'legacy lighting graph prevented import',
-                    'lighting-rebuild': 'restored custom light not rebuilt'}
+                    'lighting-rebuild': 'restored custom light not rebuilt',
+                    'lighting-opacity': 'restored obstruction caches stale'}
         if args.negative_control:
             if result.get('done') or result.get('error') != expected[args.negative_control]:
                 raise RuntimeError('Negative control failed outside its intended assertion: ' + str(result))
@@ -247,6 +254,55 @@ def main():
     finally:
         for path in [dme, dme.with_suffix('.dmb'), dme.with_suffix('.rsc'), *generated]:
             path.unlink(missing_ok=True)
+
+
+def run_lighting(command, output, flags):
+    """Check the live fixture's OS sockets during its deliberate entry hold."""
+    child = subprocess.Popen(command, cwd=output, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE, text=True, creationflags=flags)
+    try:
+        ready = output / 'lighting-port-ready.json'
+        deadline = time.monotonic() + 30
+        while not ready.is_file():
+            if child.poll() is not None or time.monotonic() > deadline:
+                raise RuntimeError('Lighting fixture exited or timed out before closed-port census')
+            time.sleep(0.02)
+        state = json.loads(ready.read_text(encoding='utf-8'))
+        if state.get('port'):
+            raise RuntimeError('Lighting fixture reports an open native port')
+        if os.name == 'nt':
+            script = (f'$L=@(Get-NetTCPConnection -State Listen -ErrorAction Stop | '
+                      f'Where-Object OwningProcess -eq {child.pid}); $L.Count')
+            census = subprocess.run(['powershell', '-NoProfile', '-Command', script],
+                                    capture_output=True, text=True, timeout=20, check=True)
+            listeners = int(census.stdout.strip())
+        else:
+            sockets = set()
+            for fd in Path(f'/proc/{child.pid}/fd').iterdir():
+                try:
+                    link = os.readlink(fd)
+                except FileNotFoundError:
+                    continue
+                if link.startswith('socket:['):
+                    sockets.add(link[8:-1])
+            listeners = 0
+            for table in ('tcp', 'tcp6'):
+                for row in Path(f'/proc/{child.pid}/net/{table}').read_text().splitlines()[1:]:
+                    fields = row.split()
+                    if fields[3] == '0A' and fields[9] in sockets:
+                        listeners += 1
+        if child.poll() is not None or listeners:
+            raise RuntimeError('Lighting fixture not alive with zero listeners at census')
+        (output / 'listener-census.json').write_text(json.dumps(
+            {'pid': child.pid, 'listeners': listeners, 'native_port': state['port']}), encoding='utf-8')
+        stdout, stderr = child.communicate(timeout=90)
+        return subprocess.CompletedProcess(command, child.returncode, stdout, stderr)
+    finally:
+        if child.poll() is None:
+            child.kill()
+            child.wait(timeout=10)
+        (output / 'lighting-process-exit.json').write_text(json.dumps(
+            {'pid': child.pid, 'exit_code': child.returncode}), encoding='utf-8')
 
 
 if __name__ == '__main__':

@@ -9,6 +9,9 @@
 	var/datum/lighting_corner/indirect_corner
 	var/atom/movable/lighting_overlay/indirect_overlay
 /obj/item/persistence_custom_light
+/obj/item/persistence_clear_fixture
+/obj/item/persistence_opaque_fixture
+	opacity = TRUE
 /obj/item/persistence_default_light
 	light_range = 2
 	light_power = 1
@@ -25,22 +28,34 @@
 				return ref
 	return null
 
-/world/IsBanned(key, address, computer_id)
+/world/OpenPort(port)
+	if(port != "none") return FALSE
+	return ..()
+/world/IsBanned(key, address, computer_id, type)
 	return list("reason" = "Offline lighting fixture")
 /world/New()
 	text2file("lighting world-New entered", "probe-progress.log")
-	world.OpenPort(0)
+	world.OpenPort("none")
 	try
+		durable_world_check(!world.port && !world.OpenPort(0) && !world.OpenPort(18465) && !world.port, "lighting fixture opened a listener")
+		text2file(json_encode(list("port" = world.port)), "lighting-port-ready.json")
+		sleep(20)
 		config = new
 		config.webhook_can_fire = FALSE
 		config.ToRban = FALSE
 		ticker = new
+		ticker.current_state = GAME_STATE_PREGAME
+		game_id = "lighting-disk-round"
 		text2file("lighting fixture globals ready", "probe-progress.log")
 		map = new /obj/map_metadata/persistence_lighting_probe(locate(1,1,1))
 		var/obj/item/persistence_light_container/carrier = new(locate(3,3,1))
 		var/obj/item/persistence_custom_light/lamp = new(carrier)
 		lamp.set_light(5, 2, "#224466")
 		var/obj/item/persistence_default_light/default_lamp = new(locate(4,3,1))
+		var/obj/item/persistence_clear_fixture/opaque_item = new(locate(3,4,1))
+		opaque_item.set_opacity(TRUE)
+		var/obj/item/persistence_opaque_fixture/clear_item = new(locate(4,4,1))
+		clear_item.set_opacity(FALSE)
 		var/datum/light_source/original_source = lamp.light
 		durable_world_check(original_source && original_source.source_atom == lamp && original_source.top_atom == carrier, "real custom light constructor binding failed")
 		durable_world_check(default_lamp.light && default_lamp.light.source_atom == default_lamp, "real default light constructor failed")
@@ -79,6 +94,12 @@
 		carrier = locate(/obj/item/persistence_light_container)
 		lamp = locate(/obj/item/persistence_custom_light)
 		default_lamp = locate(/obj/item/persistence_default_light)
+		opaque_item = locate(/obj/item/persistence_clear_fixture)
+		clear_item = locate(/obj/item/persistence_opaque_fixture)
+		var/turf/opaque_turf = locate(3,4,1)
+		var/turf/clear_turf = locate(4,4,1)
+		durable_world_check(opaque_item.opacity && !clear_item.opacity, "saved obstruction properties changed")
+		durable_world_check(opaque_turf.has_opaque_atom && !clear_turf.has_opaque_atom, "restored obstruction caches stale")
 		durable_world_check(carrier && lamp && lamp.loc == carrier, "nested light placement lost")
 		durable_world_check(lamp.light, "restored custom light not rebuilt")
 		durable_world_check(lamp.light != original_source && lamp.light.source_atom == lamp && lamp.light.top_atom == carrier, "restored source owner/top binding differs")

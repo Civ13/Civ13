@@ -215,15 +215,18 @@
 				var/datum/ob = all_loaded[i]
 				if (ob)
 					ob.after_load()
-					if(istype(ob, /atom))
-						var/atom/light_owner = ob
-						light_owner.update_light()
 					register_restored_player(ob)
 				if(istype(ob, /obj))
 					var/obj/obbie = ob
 					if(obbie.load_datums)
 						if(obbie.reagents)
 							obbie.reagents.my_atom = ob
+			// Constructors see defaults before saved fields/contents are restored.
+			// Rebuild obstruction caches before queuing any final source updates.
+			for(var/turf/light_turf in all_loaded)
+				light_turf.recalc_atom_opacity()
+			for(var/atom/light_owner in all_loaded)
+				light_owner.update_light()
 			log_startup_progress("	Loaded z-level [B] in [stop_watch(watch)]s.")
 		catch(var/exception/e)
 			last_error = "[e] on [e.file]:[e.line]"
