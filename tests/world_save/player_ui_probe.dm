@@ -7,8 +7,11 @@ var/list/human_clients_mob_list = list()
 	var/UI_style = "1713Style"
 	var/UI_style_color = "#FFFFFF"
 	var/UI_style_alpha = 255
+	var/cursor = "fixture cursor"
 /datum/ui_fixture_client
 	var/datum/ui_fixture_preferences/prefs = new
+	var/mouse_pointer_icon
+	var/list/screen = list()
 /mob/living/human
 	var/datum/ui_fixture_client/fixture_client
 	var/defaultHUD = "1713Style"
@@ -36,9 +39,11 @@ var/list/human_clients_mob_list = list()
 /proc/check_player_ui()
 	var/mob/living/human/H = new(locate(4,2,1))
 	H.fixture_client = new
-	check(H.fixture_ui_login(), "human parent Login result lost")
+	var/obj/item/item = new(H)
+	H.fixture_ui_login()
 	check(H in human_clients_mob_list, "human Login omitted playing registry")
 	check(H.ui_creates == 1 && H.HUDneed.len && H.HUDinventory.len && H.ui_shows == 1, "same-style empty HUD not rebuilt")
+	check((item in H.fixture_client.screen) && H.fixture_client.mouse_pointer_icon == H.fixture_client.prefs.cursor, "human Login lost inventory screen or cursor restoration")
 	H.fixture_ui_login()
 	check(human_clients_mob_list.len == 1 && H.ui_creates == 1 && H.ui_shows == 2, "human reconnect duplicated registry or HUD")
 	H.fixture_client.prefs.UI_style = "other"
@@ -51,4 +56,5 @@ var/list/human_clients_mob_list = list()
 	check(H.ui_parent_calls == 5, "parent Login or Logout skipped")
 	qdel(H.fixture_client.prefs)
 	qdel(H.fixture_client)
+	qdel(item)
 	qdel(H)

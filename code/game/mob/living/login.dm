@@ -10,9 +10,3 @@
 	//If they're SSD, remove it so they can wake back up.
 //	update_antag_icons(mind)
 	return .
-
-/mob/living/human/Login()
-	. = ..()
-	if(client)
-		human_clients_mob_list |= src
-		check_HUD()
