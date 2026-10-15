@@ -111,3 +111,12 @@ weather state, displayed-versus-draft symbols and repeated callback restoration.
 Its `season`, `preflight`, `reachability` and `callback` mutation controls must
 fail at their exact intended assertions. It is not a connected-player or
 representative full-map performance test; integrated native results are pending.
+
+The Windows integrated and `--startup-only` probes compiled cleanly but the
+native daemon exited with `0xC0000409` before the first observed probe entry.
+Replacing the save/load test body did not remove that startup failure. These
+runs establish neither a serializer failure nor successful metadata recovery.
+Startup-only mode writes a separate result and never claims persistence checks.
+The existing world-save CI step also runs the graph, field/timer and integrated
+Gaia/Europe probes with their exact mutation controls on Linux BYOND 516.1681;
+its retained artifact distinguishes platform results from local diagnosis.

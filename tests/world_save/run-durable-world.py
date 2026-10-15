@@ -111,7 +111,8 @@ def main():
             shutil.copy2(dme.with_suffix(suffix), output / dme.with_suffix(suffix).name)
         (output / 'config').mkdir()
         shutil.copy2(root / 'config/tips.txt', output / 'config/tips.txt')
-        run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, '-invisible', '-close', '-safe',
+        platform_flags = ['-invisible', '-close'] if os.name == 'nt' else []
+        run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-safe',
                               '-params', 'profile=' + args.profile, '-log', 'runtime.log'], cwd=output,
                              capture_output=True, text=True, timeout=90, creationflags=flags)
         (output / 'daemon.log').write_text(run.stdout + run.stderr, encoding='utf-8')
