@@ -30,7 +30,7 @@ class SupervisorTests(unittest.TestCase):
         folder.mkdir()
         marker = 'round-v2:' + 'a' * 32
         (folder / 'map.txt').write_text('NOMADS_EUROPE')
-        (folder / 'round.json').write_text(json.dumps({'version': 2, 'generation': marker, 'maxz': 1}))
+        (folder / 'round.json').write_text(json.dumps({'version': 2, 'generation': marker, 'map': 'NOMADS_EUROPE', 'maxx': 375, 'maxy': 447, 'maxz': 1}))
         (folder / 'save_complete.txt').write_text(marker)
         (folder / '1.sav').write_bytes(b'isolated save bytes')
         (folder / 'restart_intent.json').write_text(json.dumps({'version': 1, 'generation': marker, 'metadata': m.digest(folder / 'map.txt', 'md5'), 'round': m.digest(folder / 'round.json', 'md5')}))
@@ -92,6 +92,19 @@ class SupervisorTests(unittest.TestCase):
         source = self.generation()
         (source / 'map.txt').write_text('tampered')
         with self.assertRaisesRegex(RuntimeError, 'metadata mismatch'):
+            m.validate_generation(source)
+
+    def test_matching_intent_for_other_map_rejected(self):
+        source = self.generation()
+        path = source / 'round.json'
+        state = json.loads(path.read_text())
+        state['map'] = 'NOMADS_GAIA'
+        path.write_text(json.dumps(state))
+        intent_path = source / 'restart_intent.json'
+        intent = json.loads(intent_path.read_text())
+        intent['round'] = m.digest(path, 'md5')
+        intent_path.write_text(json.dumps(intent))
+        with self.assertRaisesRegex(RuntimeError, 'another map'):
             m.validate_generation(source)
 
     def test_native_lock_rejected(self):

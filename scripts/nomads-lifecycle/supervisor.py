@@ -120,6 +120,10 @@ def validate_generation(folder, operation=None, session=None):
         raise RuntimeError('Saved intent does not belong to the acknowledged lifecycle operation')
     if intent.get('metadata') != digest(folder / 'map.txt', 'md5') or intent.get('round') != digest(folder / 'round.json', 'md5'):
         raise RuntimeError('Restart intent metadata mismatch')
+    if state.get('map') != 'NOMADS_EUROPE':
+        raise RuntimeError('Saved generation belongs to another map')
+    if any(type(state.get(axis)) is not int or not 1 <= state[axis] <= 32767 for axis in ('maxx', 'maxy')):
+        raise RuntimeError('Invalid saved horizontal dimensions')
     levels = state.get('maxz')
     if not isinstance(levels, int) or not 1 <= levels <= 128:
         raise RuntimeError('Invalid saved level count')
