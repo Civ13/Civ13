@@ -114,6 +114,7 @@
 		M.icon_state = "stew"
 	// Divide the remaining pool, then debit it. The final bowl gets the remainder.
 	reagents.trans_to_holder(M.reagents, reagents.total_volume / meal_portions)
+	M.meal_reward_food = M.reagents.get_reagent_amount("nutriment") + M.reagents.get_reagent_amount("protein")
 	H.remove_from_mob(I)
 	qdel(I)
 	H.equip_to_slot(M, slot)
@@ -136,6 +137,7 @@
 	satisfaction = 0
 	bitesize = 3
 	var/meal_quality = 0
+	var/meal_reward_food = 0 // Finite paid credit; refilling a bowl cannot renew quality.
 
 /obj/item/weapon/reagent_containers/food/snacks/prepared_meal/examine(mob/user)
 	..()
@@ -166,5 +168,8 @@
 	reagents.trans_to_mob(H, amount, CHEM_INGEST)
 	if (istype(src, /obj/item/weapon/reagent_containers/food/snacks/prepared_meal))
 		var/obj/item/weapon/reagent_containers/food/snacks/prepared_meal/M = src
+		var/food = max(0, before - reagents.get_reagent_amount("nutriment") - reagents.get_reagent_amount("protein"))
+		var/paid_credit = min(food, max(0, M.meal_reward_food))
+		M.meal_reward_food = max(0, M.meal_reward_food - food)
 		if (!rotten)
-			H.credit_prepared_meal(M.meal_quality, max(0, before - reagents.get_reagent_amount("nutriment") - reagents.get_reagent_amount("protein")))
+			H.credit_prepared_meal(M.meal_quality, paid_credit)

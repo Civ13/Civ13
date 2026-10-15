@@ -178,7 +178,7 @@
 		meal_assert(abs(total - 16) < 0.001 && !loaded.meal_portions && loaded.reagents.total_volume < 0.001, "all portions conserve whole batch")
 		meal_assert(!loaded.serve_meal(new /obj/item/kitchen/wood_bowl(U),U), "empty batch cannot replay")
 		var/obj/item/weapon/reagent_containers/food/snacks/prepared_meal/restored = meal_load(M,site,"meal.sav")
-		meal_assert(restored.meal_quality == 3 && !restored.non_vegetarian && abs(restored.reagents.get_reagent_amount("nutriment") - 16/3) < 0.001, "food metadata and contents native disk round trip")
+		meal_assert(restored.meal_quality == 3 && !restored.non_vegetarian && abs(restored.meal_reward_food - 16/3) < 0.001 && abs(restored.reagents.get_reagent_amount("nutriment") - 16/3) < 0.001, "food metadata and contents native disk round trip")
 		U.mood = 50
 		restored.take_food_bite(U, 0.1)
 		meal_assert(U.mood == 50 && U.meal_food_credit > 0 && U.meal_food_credit < 1, "tiny bite has no reward")
@@ -189,6 +189,10 @@
 		U.ingested.add_reagent("nutriment",100)
 		restored.take_food_bite(U,1)
 		meal_assert(U.mood == 50 && U.meal_food_credit == 0, "failed ingestion cannot earn credit")
+		U.ingested.clear_reagents()
+		restored.reagents.add_reagent("nutriment",10,list("vegetables" = 1))
+		restored.take_food_bite(U,100)
+		meal_assert(U.mood == 50 && U.meal_food_credit < 1 && restored.meal_reward_food == 0, "refilling cannot renew paid quality credit")
 		U.mood = 60
 		U.credit_prepared_meal(3,4)
 		meal_assert(U.mood == 65, "reward has a floor not additive stacking")

@@ -37,7 +37,9 @@ content, switching tiers resets partial credit, and repeated portions cannot
 stack above that floor. Higher mood is preserved. Normal mood decay still
 applies. This changes no hunger, idle-metabolism, stamina or healing rates.
 The existing mood system may affect performance through its normal modifiers.
-Prepared bowls retain their quality and dietary flag in native saves; batches
+Each bowl has a finite quality-credit budget from its original paid food;
+refilling it cannot renew that budget. Prepared bowls retain this budget, their
+quality and dietary flag in native saves; batches
 retain their remaining portions and pool. In-progress cooking locks are excluded
 from export and import. A restored interrupted batch must be prepared again.
 
