@@ -20,6 +20,13 @@ CONTROLS = {
  'persistence': ('key == "nitrary_last_tick" || ', '', 'FAIL: runtime clock excluded'),
 }
 CONTROLS['classification'] = ('if (is_plant)', 'if (is_plant || istype(I, /obj/item/stack/ore/coal))', 'FAIL: coal does not supply wood residue')
+# Restore the historical unsafe constructor's ordinary floor claim in a generated
+# subtype only. This must fail on real occupied-destination native restoration.
+CONTROLS['constructor'] = (
+ '/obj/structure/compost/proc/nitrary_feed',
+ '/obj/structure/compost/plant_nitrary/New()\n\t..()\n\tnitrary_mode = FALSE\n\tauto_load()\n\tnitrary_mode = TRUE\n\n/obj/structure/compost/proc/nitrary_feed',
+ 'FAIL: native nitrary construction does not claim floor feedstock')
+
 
 
 
