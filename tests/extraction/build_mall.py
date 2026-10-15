@@ -5,9 +5,9 @@ import re
 from build_map import build as build_homes
 
 SIZE = 256
-ROAD_ENTRIES = ((10, 12), (150, 148))
+ROAD_ENTRIES = ((56, 12), (104, 148))
 FOOT_ENTRIES = ((12, 148), (148, 12), (12, 80), (148, 80))
-STAIRS = ((30, 30), (130, 30), (30, 94), (130, 94), (54, 126), (106, 126))
+STAIRS = ((30, 18), (130, 18), (20, 94), (138, 94), (58, 140), (102, 140))
 HIGHWAY_EXITS = ((10, 8), (150, 152))
 # Keep the original shop IDs 1..56 and keyed caches 61/62 stable. Parking
 # sources use the remaining journal IDs, with the same finite first-access
@@ -166,8 +166,10 @@ def build(size=SIZE):
         middle = (left+right)//2
         partition(z, left, bottom, right, bottom, (middle, bottom), floor)
         rect(z, left, top, right, top, floor, (wall,))
-        rect(z, left, bottom+1, left, top-1, floor, (wall,))
-        rect(z, right, bottom+1, right, top-1, floor, (wall,))
+        # Include the corners: at enlarged sizes c(bottom+1) is more than one
+        # physical tile from c(bottom), leaving an unintended wall opening.
+        rect(z, left, bottom, left, top, floor, (wall,))
+        rect(z, right, bottom, right, top, floor, (wall,))
         sign(z, middle, bottom+1, name, floor)
 
     def desk(z, x, y, floor=concrete):
@@ -307,10 +309,22 @@ def build(size=SIZE):
         put(z, middle, middle_y, '/obj/effect/extraction_npc_marker', floor=palette)
 
     for z in (4, 5):
-        rect(z, 24, 24, 136, 136)
-        for side in ((24, 24, 136, 24), (24, 136, 136, 136), (24, 24, 24, 136), (136, 24, 136, 136)):
+        # Public circulation is built around the shops, with stairs in the
+        # perimeter galleries. Shop interiors never double as the only route
+        # between floors, and landing clearance cannot erase their loot.
+        rect(z, 18, 14, 144, 148)
+        for side in ((18, 14, 144, 14), (18, 148, 144, 148), (18, 14, 18, 148), (144, 14, 144, 148)):
             rect(z, *side, objects=(wall,))
-        rect(z, 76, 26, 84, 134, dark)
+        for gallery in ((19, 15, 143, 25), (19, 25, 25, 147),
+                        (135, 25, 143, 147), (25, 131, 135, 147)):
+            rect(z, *gallery, dark)
+        if z == 4:
+            rect(z, 69, 26, 91, 87, dark)
+        else:
+            for x in (45, 67, 89, 111):
+                rect(z, x, 26, x+2, 134, dark)
+            for y1, y2 in ((45, 49), (69, 87), (107, 111)):
+                rect(z, 26, y1, 134, y2, dark)
         rect(z, 26, 76, 134, 84, dark)
         if z == 4:
             store(z, (26, 26, 68, 72), 'Hearth furnishings', 'supplies', '/turf/floor/wood/fancywood', 'furniture')
@@ -318,6 +332,11 @@ def build(size=SIZE):
             store(z, (26, 108, 134, 134), 'Harvest hypermarket', 'supplies', '/turf/floor/wood', 'grocery')
             for i, box in enumerate([(26+22*i, 88, 44+22*i, 104) for i in range(5)]):
                 store(z, box, ('Book exchange', 'Travel goods', 'Transit security', 'Radio repair', 'Field clinic')[i], ('supplies', 'supplies', 'armory', 'workshop', 'supplies')[i], concrete, ('retail', 'fashion', 'office', 'retail', 'clinic')[i])
+            room(z, (75, 48, 85, 58), 'Ransacked information kiosk', dark)
+            desk(z, 77, 54, dark)
+            put(z, 83, 55, cupboard, floor=dark)
+            rect(z, 75, 52, 75, 54, dark)
+            damage(z, 76, 49, dark)
         else:
             for i, box in enumerate([(26+22*i, y, 44+22*i, y+18) for y in (26, 50, 88, 112) for i in range(5)]):
                 names = ('Circuit repair', 'Apothecary', 'Winter outfitter', 'Coffee counter', 'Mall administration',
@@ -328,16 +347,24 @@ def build(size=SIZE):
                 store(z, box, names[i], ('workshop', 'supplies', 'armory', 'supplies', 'ammunition')[i % 5], '/turf/floor/wood' if i % 5 == 3 else concrete, profiles[i % 5])
         label = 'retail' if z == 4 else 'upper gallery'
         put(z, 80, 80, f'/obj/effect/extraction_mall_sign{{name = "Central concourse - {label}"}}', floor=dark)
-        for x in (70, 88):
-            rect(z, x, 26, x+2, 134)
+        # These gaps lie between store footprints, not through their walls.
+        for x in (45, 67, 89, 111):
+            rect(z, x, 88, x+2, 107, dark)
         for y in (74, 106):
-            rect(z, 26, y, 134, y+1)
+            rect(z, 26, y, 134, y+1, dark)
 
         # Concourse islands stay clear of the central through routes. A food
         # court has shared seating near kitchens, rather than isolated cafes.
         for x in (36, 52, 104, 120):
             rect(z, x, 78, x+3, 78, dark, ('/obj/structure/bed/sofa',))
             rect(z, x, 82, x+3, 82, dark, ('/obj/structure/bed/sofa{dir = 1}',))
+        # Ruined kiosks break the long horizontal sightline, leaving an upper
+        # and lower passage plus open cross-aisles around every island.
+        for x, y in ((44, 77), (94, 79)):
+            rect(z, x, y, x+5, y+4, dark, (wall,))
+            damage(z, x-4, y+1, dark)
+        for x, y in ((21, 48), (139, 62), (72, 20), (83, 144)):
+            damage(z, x, y, dark)
         if z == 5:
             for x in (32, 42, 54, 98, 110, 122):
                 dining(z, x, 70, concrete)
@@ -354,6 +381,14 @@ def build(size=SIZE):
                 rect(z, x, 138, x+7, 138, dark, (shelf,))
                 damage(z, x, 140, dark)
             sign(z, 80, 140, 'Loading gallery - receiving and service stairs', dark)
+            # Two distributed receiving routes survive closure of the central
+            # doorway. Clear the rear partition and exterior wall together;
+            # merely punching a door behind a shelf would not make a route.
+            for x in (48, 112):
+                rect(z, x-1, 124, x+1, 136, '/turf/floor/wood')
+                sign(z, x, 135, 'Receiving access', dark)
+            sign(z, 22, 80, 'West public gallery', dark)
+            sign(z, 140, 80, 'East public gallery', dark)
 
     # Parking is organized into repeated bays, marked pedestrian crossings and
     # two clear circulation spines. Keep the entire highway ring unobstructed.
@@ -391,13 +426,19 @@ def build(size=SIZE):
     room(1, (116, 22, 138, 38), 'Generator service and utility store')
     racks(1, (119, 25, 134, 34))
     damage(1, 117, 23)
+    # Separated service entrances give each parking destination an escape
+    # route even if its main doorway is watched. Keep workshop surface sources
+    # and interior partitions intact.
+    for x, y in ((48, 119), (110, 120), (42, 30), (116, 34)):
+        rect(1, x, y-1, x, y+1)
 
     # Post-war dressing stays off highway lanes and is applied before the clear
     # stair landing islands. No extra loot roots or free vehicle parts are added.
     for x, y in ((44, 44), (64, 44), (92, 44), (120, 44),
                  (30, 68), (44, 68), (64, 68), (92, 68), (120, 68),
                  (30, 92), (44, 92), (64, 92), (92, 92), (120, 92),
-                 (64, 116), (92, 116)):
+                 (64, 116), (92, 116), (36, 44), (110, 44),
+                 (36, 68), (110, 68), (36, 92), (110, 92)):
         put(1, x, y, '/obj/structure/props/car_wreck')
         for dx, dy in ((-2, 0), (4, 1), (1, 3)):
             put(1, x+dx, y+dy, '/obj/effect/extraction_mall_rubble', floor='/turf/floor/gravel/dust')

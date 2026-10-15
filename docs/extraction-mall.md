@@ -15,13 +15,14 @@ These are separate secure spaces, never stair destinations.
 | Level | Spatial role | Main routes |
 | --- | --- | --- |
 | z1 | Perimeter highways, sheltered parking, loading aisles | Broad drivable perimeter loop, parking through-routes, six stair cores |
-| z4 | Hearth furnishings southwest, Foundry hardware southeast, Harvest hypermarket north | Central north-south concourse, east-west shopping street, two side service aisles |
+| z4 | Hearth furnishings southwest, Foundry hardware southeast, Harvest hypermarket north | Front concourse, east-west shopping street, public perimeter galleries and three receiving approaches |
 | z5 | Smaller stores, electronics, pharmacy, food court and operations rooms | Gallery loop with cross passages, same six stair cores |
 
 The following coordinates are on a normalized 160-unit design grid, scaled
-by the generator for the selected size. Mall envelope x24..136/y24..136.
-Six cores at (30,30), (130,30), (30,94),
-(130,94), (54,126), (106,126) connect parking to retail and retail to gallery.
+by the generator for the selected size. Mall envelope x18..144/y14..148.
+Six cores at (30,18), (130,18), (20,94),
+(138,94), (58,140), (102,140) connect parking to retail and retail to gallery.
+They open onto public galleries rather than cutting through shop interiors.
 Every core is human-only and validates owned raid state, conscious/unrestrained
 actor, actual adjacency, source/destination mission level and a clear landing.
 Cars never use these stairs. No auto-teleporting vehicle or car clone is created.
@@ -36,24 +37,41 @@ rooms and distinct clinic, fitting-room, kitchen, office and sales layouts,
 plus common dining and two washrooms with toilet cubicles and sinks.
 
 Parking has marked bays, pedestrian crossings, circulation lanes and enclosed
-security, maintenance, dispatch and utility rooms. Sixteen wrecks and scattered
+security, maintenance, dispatch and utility rooms. Each room has a separate
+service entrance as well as its main door. Twenty-two wrecks and scattered
 debris occupy bays while preserving the road approaches and highway loop.
 Fixtures use map-specific variants of existing native structures. Closets and
 fridges begin empty; ovens and plumbing are disused. Tool, dismantling and
 damage callbacks cannot convert fixed dressing into saleable resources outside
 the loot journal. Native furniture on other maps keeps its existing behavior.
 
-Shop rows, shelf ends and side aisles interrupt indoor sightlines. Wide public
-concourse routes contrast with narrower service routes; furnishings stay out
+Shop rows, shelf ends, ruined kiosks and side aisles interrupt indoor sightlines.
+Wide public concourse routes contrast with narrower service routes; furnishings stay out
 of core landings. NPC and loot markers occupy stores on both retail floors.
 The bounded existing NPC AI operates locally on each floor; it is not a
-cross-level pathfinding system.
+cross-level pathfinding system. Upper-floor public paths run between the five
+shop columns and around the perimeter. They remain connected with all 20 shops
+closed, without using another floor as a detour. The retail loading gallery has
+west and east receiving lanes as well as the central approach, each extending
+through both the rear partition and exterior supermarket wall.
+
+The Europe/event-map review informed these changes: useful named destinations,
+separated approaches and return paths, public circulation distinct from staff
+rooms, and cover that creates decisions without sealing the route. The review
+also exposed two scale bugs: stairs erased two containers at 160, and room side
+walls left corner gaps above 160. Public stair placement and continuous room
+perimeters resolve those defects. Loot IDs, pools and exact keyed targets are
+unchanged. Container counts alone do not establish equal reward value or raid
+balance. Nomads-style preparation belongs in the safehouse economy; fixed mall
+furnishings still yield no renewable water, fuel or saleable building materials.
 
 ## Entries and exits
 
-Two road infil markers at southwest and northeast highway approaches are the
+Two road infil markers at (56,12) and (104,148) on the highway approaches are the
 only car arrival candidates. Four additional perimeter markers admit foot raids.
-Road vehicle footprints and highway approaches have no dense props.
+Road vehicle footprints and highway approaches have no dense props. Each road
+arrival is at least 40 normalized tiles from either highway exit; players must
+travel along the perimeter to return rather than spawning beside an exit.
 
 West and east highway evacuation points support foot and car return. North
 rail embankment and east service footgate accept foot extraction only. West
@@ -76,17 +94,23 @@ checks account for wreck footprints as well as furniture and walls.
    exit, shop loot tile, room sign and core to connect, with reachable approaches
    to cabinets, appliances, beds and plumbing fixtures. Check separate vehicle footprint
    paths from both road infils to both highway exits.
-3. Compile the selected mall with BYOND 516.1681, then run native traversal,
+3. Close individual parking entrances and require continued access to their
+   rewards; close both and require isolation. Block every upper shop and check
+   same-floor public circulation. Cut each receiving lane and require the
+   bounded route test to fail. Check all 64 container identities at 160, 256,
+   320 and 512, not merely the markers that survived generation.
+4. Compile the selected mall with BYOND 516.1681, then run native traversal,
    raid-floor and vehicle restriction regressions in temporary offline storage.
-4. Accept each behavior through the smallest meaningful automated source,
+5. Accept each behavior through the smallest meaningful automated source,
    topology, native interaction and negative-control checks. Human/admin review
    and connected-client capture are not default prerequisites. Use a genuine
    capture only for a named material uncertainty that these checks cannot resolve.
    Compilation alone does not establish runtime movement or storage behavior.
 
 Generate with the verified Python interpreter and `tests/extraction/build_mall.py`
-(optional `--size 320`, for example). The generator adds proportional shelf rows;
-scale changes still require layout and travel-time review. 256 x 256 x 5 allocates
+(optional `--size 320`, for example). Room and shelf footprints scale, while
+container counts stay fixed. Larger sizes therefore still require density and
+travel-time review. 256 x 256 x 5 allocates
 327,680 turfs; 512 x 512 x 5 allocates 1,310,720. Wall padding is allocated too.
 Generation/topology support is not startup, memory, performance or balance
 acceptance for larger sizes. Budgets are 62 ordinary containers plus two keyed
@@ -155,10 +179,9 @@ omission control must fail at its expected assertion; a compiler error, timeout
 or unrelated runtime failure does not establish detection.
 
 Using a verified Python interpreter, run `-m unittest discover -s
-tests/extraction -p test_mall_runner.py -v` for the 27 mocked launcher cases and
-`-m unittest discover -s tests/extraction -p test_mall.py -v` for the 11 offline
-map checks. Launcher children are injected fakes; these commands do not launch
-BYOND. The existing opt-in Extraction job registers the launcher file and all
+tests/extraction -p "test_mall*.py" -v` for 27 mocked launcher cases and 16 offline
+map/circulation checks. Launcher children are injected fakes; these commands do
+not launch BYOND. The existing opt-in Extraction job registers these files and all
 seven native omission controls. Registration does not establish their execution;
 check each selected run's results against the tested commit.
 
