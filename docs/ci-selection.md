@@ -13,6 +13,15 @@ to run all game/offline suites. The option defaults to false. For MCP, comment
 review, changelog, environment sweeps, component tools or trains, manually run
 that named workflow to opt in to its tests. No production game is launched.
 
+For the paid drying-rack owning-turf save fixture, enable **rack_save_regressions**
+on **CI** and leave **extensive_regressions** disabled for focused coverage.
+This manual option runs the positive rack-save probe and the coverage, runtime,
+storage, stale-wait, duplicate and conversion mutation controls independently.
+Each control must reach its existing named failed assertion; a compile error,
+runtime error or timeout fails the check. Logs, source manifests and per-case
+results are retained in the exact-head `rack-save-<SHA>` artifact for seven days.
+This fixture does not establish full-world saves or player/map acceptance.
+
 A PR introducing executable integration tests runs the corresponding registered
 suite automatically. `scripts/select-ci.py` compares the PR base and exact head,
 using added files with rename detection. New `.dm`, `.py`, `.ps1` or `.sh` files

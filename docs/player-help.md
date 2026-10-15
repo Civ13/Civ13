@@ -1,0 +1,192 @@
+# Optional Ollama gameplay help
+
+Players use **Help! > Ask for help**. It opens a question dialog, then a private
+answer window. The prompt warns that the question goes to the server owner's AI
+service and should not contain personal information. Answers can be wrong. The
+Crafting Atlas and player wiki remain available without an AI service.
+
+The question dialog opens before service checks. Opening or cancelling it uses
+no request allowance. Without configuration, a running bridge, or a fresh
+heartbeat, submission shows an unavailable notice. An unanswered request times out after a bounded 60..600
+running-server seconds (including the queue budget) and releases its slot. Failed or empty model answers
+show an explicit notice rather than a blank window. Wait until the bridge has
+published two heartbeats (normally a few seconds) before trying the first question.
+
+## Owner setup
+
+The game never performs model HTTP calls. A separately supervised Python 3.10+
+worker exchanges small local files under `SQL/player-help`. This supports native
+BYOND 516.1681 and OpenDream without rust-g or shell execution in the game.
+Run one worker per game directory, with the same OS user as the game or suitable
+private directory permissions. Do not share a spool across Nomads and TDM.
+
+1. Install an Ollama model on your own Ollama host. This integration does not
+   download a model, expose the host, or change its network configuration.
+2. Copy `config/player-help.example.json` to an **untracked private file**, for
+   example `data/player-help-config.json`. Set `enabled` to `true`, your remote
+   `ollama_url`, and the installed `model`. Use either an origin such as
+   `https://ollama.example.net` its `/v1` base URL, or its `/api/chat` URL. A `/v1` base is normalized to
+   the same host's native `/api/chat` endpoint so context size and thinking controls
+   are honored; OpenAI-compatible proxy-only servers are not supported. The service follows the
+   [Ollama chat API](https://docs.ollama.com/api/chat), with streaming disabled.
+3. Set `num_ctx` to 1024..32768 and `think` to `true` or `false`.
+   Set `timeout_seconds` to 1..120 and `workers` to 1..2. The game permits eight
+   outstanding questions, one per account, and a 30-second per-account cooldown.
+   Questions are limited to 500 characters; answers to 4,000. Slow remote
+   inference can fill these slots, in which case players receive a busy notice.
+4. For a protected HTTPS proxy, put its bearer token in the worker's private
+   `CIV13_OLLAMA_TOKEN` environment variable (or change `auth_token_env`). Never
+   put credentials in a URL, tracked config, player text, or public service logs.
+   HTTP is appropriate only across a trusted private connection; HTTPS protects
+   questions and tokens over other networks. The worker disables redirects and
+   ambient HTTP proxy settings so requests go only to the configured endpoint.
+5. Launch the worker below and keep it supervised. Configuration is read at
+   launch; restart the worker after changing it. Shutdown marks help unavailable.
+   Restart clears old spool questions rather than re-sending them. Do not run
+   multiple workers against the same spool.
+
+## Request limits
+
+The optional `limits` configuration sets the same policy in the bridge and game
+(published through a bounded local `limits.json`). Defaults allow three requests
+per account per 120 seconds, ten per 600 seconds, and thirty across the server
+per 60 seconds, in addition to the cooldown and one outstanding request per
+account. The bridge enforces admission again immediately before model dispatch,
+including direct calls and copied/replayed spool requests. Only 1..2 configured
+workers run model calls; eight fixed spool slots bound the queue. Requests
+rejected for size, unavailability, rate or capacity never reach the model.
+
+Cooldown and quotas use the authenticated client's account, rather than its
+connection, so reconnecting does not reset them. Guest accounts cannot submit
+questions because a new guest identity would evade account limits. The bridge receives a salted
+account hash used only for admission; it is excluded from model payloads. Each
+game process creates its own salt. Limits are per running game/bridge, not a
+cross-server or restart-persistent account ban. Local spool write access is
+trusted server access; it is not a player authentication mechanism.
+
+Limiter storage caps at 2,048 accounts by default (configurable up to 4,096),
+refusing new accounts while full rather than evicting active cooldowns. Expired
+histories are reclaimed on admission. Limits use positive integer seconds or
+counts; time settings cap at 86,400 seconds, counts at 4,096, and queue slots at
+eight. Failed dispatches/timeouts release pending locks but retain consumed
+allowance, preventing failures from becoming a retry flood. Disconnecting does
+not cancel a pending model call; the game retains its account lock until a
+response or timeout. After changing worker configuration, restart the worker
+through the normal authorized service procedure.
+
+## Running the bridge
+
+The worker atomically claims `SQL/player-help/worker.lock`; a second instance
+refuses to start. After an abrupt crash, confirm that the PID in `worker.lock/pid`
+is no longer the bridge process before removing that exact stale lock directory.
+Never remove an active worker's lock to start a competing instance.
+
+Windows PowerShell (replace the interpreter and game paths with yours):
+
+```powershell
+& 'C:\Python312\python.exe' 'D:\Civ13\scripts\player_help_bridge.py' --game-root 'D:\Civ13' --config 'D:\Civ13\data\player-help-config.json'
+```
+
+For unattended Windows hosting, use Task Scheduler with the same executable and
+arguments, the game directory as **Start in**, restart on failure, and a private
+service account environment. The script does not need Administrator privileges.
+
+Example Linux systemd unit `/etc/systemd/system/civ13-player-help.service`:
+
+```ini
+[Unit]
+Description=Civ13 optional gameplay help
+After=network-online.target
+[Service]
+User=civ13
+WorkingDirectory=/srv/civ13
+ExecStart=/usr/bin/python3 /srv/civ13/scripts/player_help_bridge.py --game-root /srv/civ13 --config /srv/civ13/data/player-help-config.json
+EnvironmentFile=-/etc/civ13-player-help.env
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=130
+UMask=0077
+[Install]
+WantedBy=multi-user.target
+```
+
+Use `systemctl daemon-reload` and `systemctl enable --now civ13-player-help` after
+adjusting paths/user. If used, protect `/etc/civ13-player-help.env` with mode 600.
+Stop/disable the unit or set `enabled: false` and restart it to disable AI help.
+The bridge does not start, stop, or restart game servers.
+
+## Knowledge and privacy
+
+`UI/player-help.json` is a small, explicitly reviewed **player-safe** guide.
+It covers atlas use, winter/wetness and external bandaging. Expand it with
+documented player mechanics as needed, keeping secrets, admin tools, hidden
+loot tables and implementation notes out. Do not point it at arbitrary source
+trees or internal documentation. Unknown questions should be referred to the
+wiki/atlas; the worker does not assume exact unlocks for the current map.
+The worker also loads a bounded projection of the existing player-facing
+`UI/crafting-atlas.json` once at launch. Only recipe names, system, quantities,
+inputs, outputs and conditions are retained; source locations and sprite metadata
+are omitted. At most six matching code/wiki/guide/recipe entries and 16,000 context characters
+are sent per question. Unmatched or truncated recipe details must be checked in
+the atlas, including current map and research availability.
+
+Question text, approved guidance and the bounded gameplay/inventory snapshot
+described below are sent. No account name, chat history, filesystem, developer
+MCP tools or administration API is exposed.
+There is no conversational memory, command execution or tool calling. Questions
+are temporary spool files, removed when completed, disconnected or timed out;
+the remote service may keep its own logs, so owners should disclose its policy.
+Model text is rendered as escaped text, never executable HTML or links.
+
+The worker is separate from the developer MCP server: player requests do not
+receive developer tools. Do not expose MCP credentials to the worker.
+
+## Verification
+
+```sh
+python3 -m unittest discover -s tests/player_help -v
+python3 tests/player_help/run.py --byond-bin /path/to/byond/bin
+```
+
+These use temporary storage and an injected fake network transport. They verify
+disabled/failure paths, stale request identity, output bounds, escaped rendering,
+heartbeat expiry and cleanup. They do not contact your remote Ollama host or
+prove its model is installed, reachable or knowledgeable. After configuring,
+ask a harmless known question in-game; confirm an answer and then stop the worker
+to confirm the unavailable notice. This live smoke check is owner-controlled.
+
+## Code and wiki retrieval
+
+The bridge retrieves reviewed gameplay excerpts from the game's bloomery and
+anvil implementation in addition to generated recipe data. Excerpt boundary
+changes fail startup rather than silently supplying unrelated code. Source hashes
+identify the files used. This is read-only evidence retrieval, not an admin MCP
+connection or model-controlled source browser.
+
+Set `wiki_root` in the private config to an up-to-date checkout of `civ13-wiki`.
+The bridge reads only `src/guides/Guide_to_Crafting.md`,
+`src/guides/Guide_to_Metallurgy.md` and `src/Starter_Guide.md` at launch.
+No network downloads or recursive repository scans occur. Update that checkout
+and restart the bridge to refresh wiki knowledge. Missing configured pages fail
+startup; omitted `wiki_root` disables wiki retrieval. Code takes precedence over
+conflicting wiki prose. Retrieved text is untrusted evidence, never instructions.
+
+Retrieval reserves space for code, wiki and recipes. Explicit Nomads/Gaia questions
+exclude other material catalogs and prefer global recipes. Without map context,
+the helper must explain gates rather than promise a recipe is unlocked. Adding
+other gameplay systems requires reviewing their source excerpts and player wiki
+pages before extending the allowlist. No hidden loot, credentials, player data,
+admin commands or private reference repositories are indexed.
+
+Each question automatically includes the server's public map title/ID, game mode,
+era/ordinal and civilization flag. These are captured from map metadata at
+submission, not inferred from player wording. No account identity, coordinates,
+hidden map state or faction secrets are included. The bounded asking-player
+inventory snapshot is described below. Unknown/uninitialized
+map metadata is marked unknown. Era does not prove faction research unlocks.
+
+### Player and environment snapshot
+
+Each question includes the current map, mode, era, season and time of day. For the asking human it also includes health, nutrition, hydration and wetness percentages, body temperature in kelvin, indoor/outdoor exposure, local weather and active fire/incapacitation/weather exposure. This is a detached snapshot taken when submitting the question, not continuous monitoring. No account identity, other players, hidden disease diagnoses or private admin events are sent. Missing context remains unknown; the effects list is not an exhaustive event catalog. The input dialog tells players their gameplay condition is sent to the configured AI service. Collection performs no world scan, HTTP request or spawned timer.
+
+Inventory context includes occupied equipment/hand/pocket slots and carried storage contents, with item names, stack quantities and their slot/container labels. It excludes body internals and item IDs, and stops at 24 items, 64 inspected entries or two container levels. An explicit truncation flag tells the model that omitted ingredients may still be present. Item labels are untrusted text, not instructions. The request file budget is 16 KiB to accommodate bounded inventory snapshots.

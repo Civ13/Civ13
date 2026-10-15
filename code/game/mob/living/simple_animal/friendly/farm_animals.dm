@@ -64,6 +64,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 50
+	maxHealth = 50
 	var/datum/reagents/udder = null
 	var/pregnant = FALSE
 	var/birthCountdown = 0
@@ -94,6 +95,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 65
+	maxHealth = 65
 	mob_size = MOB_LARGE
 	herbivore = 1
 	wandersounds = list('sound/animals/cow/cow_1.ogg','sound/animals/cow/cow_2.ogg','sound/animals/cow/cow_3.ogg')
@@ -416,6 +418,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 60
+	maxHealth = 60
 	var/piglet = FALSE
 	var/datum/reagents/udder = null
 	var/pregnant = FALSE
@@ -585,6 +588,7 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 60
+	maxHealth = 60
 	var/piglet = FALSE
 	var/datum/reagents/udder = null
 	var/pregnant = FALSE
@@ -1024,6 +1028,7 @@
 	attacktext = "kicked"
 	var/packed = FALSE
 	health = 110
+	maxHealth = 110
 	mob_size = MOB_LARGE
 	var/max_content_size = 35
 	var/content_size = 0
@@ -1056,7 +1061,7 @@
 /mob/living/simple_animal/camel/verb/remove_from_storage()
 	set category = null
 	set name = "Remove Pack"
-	set src in range(2, usr)
+	set src in range(2)
 	if (!content_size)
 		to_chat(usr, "The camel is not carrying anything.")
 		return

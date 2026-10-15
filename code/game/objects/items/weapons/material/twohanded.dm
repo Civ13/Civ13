@@ -66,6 +66,7 @@
 			health -= 5
 		else
 			health-= 0.5
+		check_health()
 		return 1
 	return 0
 

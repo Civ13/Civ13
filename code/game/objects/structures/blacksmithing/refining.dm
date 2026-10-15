@@ -151,7 +151,7 @@
 /obj/structure/furnace/verb/empty()
 	set category = null
 	set name = "Empty"
-	set src in range(1, usr)
+	set src in range(1)
 	if (iron > 0)
 		var/obj/item/stack/ore/iron/emptyediron = new/obj/item/stack/ore/iron(src.loc)
 		emptyediron.amount = iron

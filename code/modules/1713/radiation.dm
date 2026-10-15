@@ -11,7 +11,7 @@
 /// RAD_LEVEL_DEADLY 500 //Always kills
 
 //severity: mSv per second. duration: duration in seconds
-/proc/radiation_pulse(turf/epicenter, range, severity, duration, log = TRUE)
+/proc/radiation_pulse(turf/epicenter, range, severity, duration, log = TRUE, local_only = FALSE)
 	duration = round(duration)
 	var/last = world.time + duration
 	if(!epicenter || !severity || duration < 1) return FALSE
@@ -20,6 +20,8 @@
 		epicenter = get_turf(epicenter.loc)
 
 	for(var/atom/T in range(range, epicenter))
+		if (local_only && T.z != epicenter.z)
+			continue
 		var/cseverity=severity/100
 		var/distance = get_dist(epicenter, T)
 		if(distance < 0)
@@ -28,12 +30,13 @@
 			T.rad_act(cseverity)
 		else if (distance > 1 && distance <= range)
 			T.rad_act(cseverity*(1-(distance/range)))
-	if (world.time <= last && duration > 0)
+	if (world.time <= last && duration > 0 && (!local_only || duration > 1))
 		spawn(10)
-			radiation_pulse(epicenter, range, severity, duration-1, 0)
+			radiation_pulse(epicenter, range, severity, duration-1, 0, local_only)
 	if (log)
 		log_game("Radiation emission at ([epicenter.x],[epicenter.y],[epicenter.z]) with size ([range]), severity [severity] mSv, duration [duration/10] minutes and in area [epicenter.loc.name] ")
-	change_global_radiation((severity/100)/10000) //Very slow radiation of the entire world. Even slower now because ungas love leaving uranium around.
+	if (!local_only)
+		change_global_radiation((severity/100)/10000) // Preserve existing non-ore callers.
 
 	return TRUE
 
@@ -199,7 +202,7 @@
 /obj/item/weapon/geiger_counter/verb/turn_on()
 	set category = null
 	set name = "Turn On/Off"
-	set src in range(1, usr)
+	set src in range(1)
 
 	scanning = !scanning
 	update_icon()
@@ -240,33 +243,36 @@
 /proc/nuke_map(turf/epicenter, severity, duration, log)
 	duration = round(duration)
 	var/last = world.time + duration
+	epicenter = get_turf(epicenter)
 	if(!epicenter || !severity || duration < 1) return FALSE
-	if(!istype(epicenter, /turf))
-		epicenter = get_turf(epicenter.loc)
+	var/event_z = epicenter.z
 	explosion(epicenter, 10, 18, 23, 200)
 	spawn(9)
 		for (var/turf/floor/TF in range(25,epicenter))
 			if (istype(TF, /turf/floor/dirt) || istype(TF, /turf/floor/grass) || istype(TF, /turf/floor/plating) || istype(TF, /turf/floor/beach/sand))
 				if (prob(100*(1-(get_dist(TF,epicenter)/25))))
-					TF.ChangeTurf(/turf/floor/dirt/burned)
+					TF = TF.ChangeTurf(/turf/floor/dirt/burned)
 				else
 					if (prob(50))
 						new/obj/effect/fire(TF)
-			TF.radiation = 20
+			if (TF)
+				TF.radiation = 20
 	spawn(14)
 		for (var/mob/m in player_list)
 			if (m.client)
 				shake_camera(m, 3, (5 - (0.5)))
 	spawn (20)
 		for (var/turf/floor/grass/G in grass_turf_list)
-			G.rad_act(severity /3)
+			if (G.z == event_z)
+				G.rad_act(severity /3)
 	spawn (23)
 		for (var/turf/floor/beach/water/G in water_turf_list)
-			G.rad_act(severity /3)
+			if (G.z == event_z)
+				G.rad_act(severity /3)
 	spawn(26)
 		for(var/atom/T)
 			var/area/A = get_area(T)
-			if (T.z == epicenter.z && (istype(T, /mob/living) || istype(T, /obj)))
+			if (T.z == event_z && (istype(T, /mob/living) || istype(T, /obj)))
 				var/cseverity=severity/3
 				if (ismob(T))
 					if (A.location == 0)
@@ -281,9 +287,10 @@
 							flick("e_flash", H.HUDtech["flash"])
 			if (istype(T, /obj/structure/window))
 				var/obj/structure/window/W = T
-				W.shatter()
+				if (W.z == event_z)
+					W.shatter()
 			else if (istype(T, /obj))
-				if (prob(20) && T.density && T.z == epicenter.z)
+				if (prob(20) && T.density && T.z == event_z)
 					T.ex_act(1.0)
 		if (world.time <= last && duration > 0)
 			spawn(10)
@@ -294,10 +301,12 @@
 						0.1, 0.1, 0.8)
 	spawn(50)
 		for (var/obj/structure/wild/W)
-			W.rad_act(22)
+			if (W.z == event_z)
+				W.rad_act(22)
 	spawn(65)
 		for (var/obj/structure/farming/F)
-			F.rad_act(22)
+			if (F.z == event_z)
+				F.rad_act(22)
 
 	if (log)
 		log_game("<font color='red'>Nuke detonated in the map!</font>")

@@ -325,7 +325,7 @@
 /obj/structure/lab_distillery/verb/empty()
 	set category = null
 	set name = "Remove Beaker"
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (!collector)
 		to_chat(usr, "There is no beaker to remove from \the [src].")
@@ -468,7 +468,7 @@
 /obj/structure/centrifuge/verb/empty()
 	set category = null
 	set name = "Remove Vial"
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (!collector)
 		to_chat(usr, "There is no vial to remove from \the [src].")
@@ -615,7 +615,7 @@
 /obj/structure/grinder/verb/empty()
 	set category = null
 	set name = "Remove Inserted"
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (!inserted)
 		to_chat(usr, "There is no object to remove from \the [src].")
@@ -1016,7 +1016,7 @@
 /obj/structure/distillery/verb/empty()
 	set category = null
 	set name = "Remove Collector"
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (!collector)
 		to_chat(usr, "There is nothing to remove from \the [src].")

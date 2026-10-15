@@ -239,6 +239,24 @@ var/global/processScheduler/processScheduler
 	processes.Remove(oldProcess)
 	processes.Add(newProcess)
 
+	// BEGIN replacement owners
+	last_queued.Remove(oldProcess)
+	var/old_priority_key = num2text(oldProcess.priority)
+	var/new_priority_key = num2text(newProcess.priority)
+	var/list/old_priority_members = priorityToProcessMap[old_priority_key]
+	if (old_priority_key == new_priority_key && old_priority_members && old_priority_members.Find(oldProcess))
+		old_priority_members[old_priority_members.Find(oldProcess)] = newProcess
+	else
+		if (old_priority_members)
+			old_priority_members.Remove(oldProcess)
+		if (!priorityToProcessMap[new_priority_key])
+			priorityToProcessMap[new_priority_key] = list()
+		priorityToProcessMap[new_priority_key] += newProcess
+	// Do not mutate a cached list already borrowed by an in-flight dispatcher.
+	last_priority_ordered_processes = null
+	next_get_priority_ordered_processes = 0
+	// END replacement owners
+
 	newProcess.idle()
 	idle.Remove(oldProcess)
 	running.Remove(oldProcess)

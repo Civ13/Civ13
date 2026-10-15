@@ -255,7 +255,7 @@
 		to_chat(user, "<span class = 'notice'>[message]</span>")
 
 /obj/structure/pot/verb/empty()
-	set src in range(1, usr)
+	set src in range(1)
 	set name = "Empty"
 	set category = null
 	if (state == STATE_EMPTY)

@@ -571,7 +571,7 @@
 	verb/open_close()
 		set name = "Open/Close"
 		set category = null
-		set src in range(1, usr)
+		set src in range(1)
 
 		if (!istype(usr, /mob/living/human))
 			return

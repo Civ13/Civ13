@@ -58,7 +58,7 @@ By design, d1 is the smallest direction and d2 is the highest
 /obj/structure/cable/verb/hiding()
 	set category = null
 	set name = "Under/Over tiles"
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (!istype(usr, /mob/living/human))
 		return
@@ -227,6 +227,9 @@ var/global/cable_identity_sequence = 0
 				var/obj/item/connector/J = OB
 				J.forget_cable(src)
 			if (OB.powersource == src)
+				if (istype(OB, /obj/structure/civ_generator))
+					var/obj/structure/civ_generator/G = OB
+					G.stop_generation()
 				OB.powersource = null
 				OB.powered = FALSE
 			if (istype(OB, /obj/structure/engine))
@@ -246,6 +249,7 @@ var/global/cable_identity_sequence = 0
 	discovered[src] = TRUE
 	var/list/engines = list()
 	var/list/batteries = list()
+	var/list/generators = list()
 	var/capacity = 0
 	var/demand = 0
 	var/index = 1
@@ -277,6 +281,11 @@ var/global/cable_identity_sequence = 0
 					if (EN.on && !EN.broken && EN.maxpower > 0)
 						var/charging = EN.battery_charge_epoch == round(world.time / 10) ? EN.battery_charge_power : 0
 						capacity += max(0, EN.maxpower - charging)
+			else if (istype(OB, /obj/structure/civ_generator))
+				var/obj/structure/civ_generator/G = OB
+				if (!(G in generators) && G.powersource == CB)
+					generators += G
+					capacity += G.available_output()
 			else if (istype(OB, /obj/structure/battery))
 				var/obj/structure/battery/B = OB
 				if (!(B in batteries) && B.powersource == CB)

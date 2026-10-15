@@ -21,7 +21,7 @@
 	// luminosity values based on the time of day
 	var/window_coeff = 0.25
 
-/datum/lighting_corner/New(var/turf/new_turf, var/diagonal)
+/datum/lighting_corner/New(var/turf/new_turf, var/diagonal, var/defer_activity = FALSE)
 	. = ..()
 
 	masters[new_turf] = turn(diagonal, 180)
@@ -59,10 +59,25 @@
 		i			= LIGHTING_CORNER_DIAGONAL.Find(turn(masters[T], 180))
 		T.corners[i] = src
 
-	spawn() // Lighting overlays get initialized AFTER corners, so this spawn() will make sure the activity (which checks for overlays) is updated after the overlays are generated.
-		update_active()
+	// Ordinary runtime construction keeps its deferred callback. Startup owns
+	// activation explicitly after the overlay barrier, because discovery yields.
+	if (!defer_activity)
+		var/startup_activity = lighting_startup_in_progress
+		spawn()
+			while (lighting_startup_in_progress)
+				startup_activity = TRUE
+				sleep(world.tick_lag)
+			if (!startup_activity || created_lighting_corners_and_overlays)
+				update_active()
 
-/datum/lighting_corner/proc/update_active()
+/datum/lighting_corner/proc/update_active(var/startup_owner = FALSE)
+	// Direct clear/area-change requests also respect the startup barrier.
+	var/startup_request = FALSE
+	while (lighting_startup_in_progress && !startup_owner)
+		startup_request = TRUE
+		sleep(world.tick_lag)
+	if (startup_request && !created_lighting_corners_and_overlays)
+		return
 	active = FALSE
 	for (var/TT in masters)
 		var/turf/T = TT

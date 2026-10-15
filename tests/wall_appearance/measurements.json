@@ -1,0 +1,254 @@
+{
+  "parity": {
+    "scenes": 1536,
+    "comparisons": 4608,
+    "appearance_failures": 0,
+    "count_failures": 0,
+    "count_samples": [
+      {
+        "type": "/turf/wall/baseline",
+        "baseline": 15,
+        "candidate": 10,
+        "baseline_rebuilds": 16,
+        "candidate_rebuilds": 11
+      },
+      {
+        "type": "/turf/wall/baseline/sub_bulkhead",
+        "baseline": 15,
+        "candidate": 10,
+        "baseline_rebuilds": 16,
+        "candidate_rebuilds": 11
+      },
+      {
+        "type": "/turf/wall/baseline/abashiri",
+        "baseline": 20,
+        "candidate": 15,
+        "baseline_rebuilds": 21,
+        "candidate_rebuilds": 16
+      },
+      {
+        "type": "/turf/wall/baseline/old_stone",
+        "baseline": 10,
+        "candidate": 5,
+        "baseline_rebuilds": 11,
+        "candidate_rebuilds": 6
+      }
+    ],
+    "cache_entries": 34,
+    "save_comparisons": 4,
+    "save_failures": 0,
+    "head_sha": "e3899444a7376fb35bddfa19f8b2cef7c1ef0c46",
+    "baseline_sha": "e3c8d02f31f1a23c1320eaec949fb4af56e964f3",
+    "source_sha256": "4b2667a64f1c5297c0374dc93f0a4efbfcb0ea0185ddb58038c745af914a1b83",
+    "compiled_sha256": "a217327a8edb496f76d591ddae0ffdfc910ea70bd5e4b48290e50a57073d54bd",
+    "probe_sha256": "47b6f38ceaa4428e9cec7cba84a2a34395cf7f6cb93ded25711d0828af632f72",
+    "byond": "516.1681",
+    "platform": "nt",
+    "dimensions": [
+      32,
+      32,
+      1
+    ],
+    "negative_control": null,
+    "support_sha256": {
+      "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+      "tests/world_save/stubs.dm": "f46a4b1fa30f770ef368ce3294eca3f8a254ef528b285f8d1ce7ae0e1442cca2",
+      "code/modules/persistence/functions.dm": "afe5d78b3252099c4dc42a69f329e8ed2d45626938fe7b4f8126aa7caafb6dd2",
+      "code/modules/persistence/saving.dm": "6fb10dcd6f9388a1fd347f5a5369e0548d81e6ce42a486ff0b223fca1e8f7c2a",
+      "code/modules/persistence/loading.dm": "51f3a99006045483f05d9e43d28d1893067bc436654916783138c2653d31a93b"
+    },
+    "resource_sha256": {
+      "wall_masks.dmi": "c3440dbc201be52d35117aece6a00eb85a83c781fa6108295ba8f72bba266e8a",
+      "walls.dmi": "5bdc6a93df93121c5637c01b6ca1e13d20254f592bc439567a850b930d2f1df6"
+    }
+  },
+  "smoothing": {
+    "scenes": 1536,
+    "comparisons": 4608,
+    "appearance_failures": 3000,
+    "count_failures": 3072,
+    "count_samples": [
+      {
+        "type": "/turf/wall/baseline",
+        "baseline": 15,
+        "candidate": 5,
+        "baseline_rebuilds": 16,
+        "candidate_rebuilds": 6
+      },
+      {
+        "type": "/turf/wall/baseline/sub_bulkhead",
+        "baseline": 15,
+        "candidate": 5,
+        "baseline_rebuilds": 16,
+        "candidate_rebuilds": 6
+      },
+      {
+        "type": "/turf/wall/baseline/abashiri",
+        "baseline": 20,
+        "candidate": 10,
+        "baseline_rebuilds": 21,
+        "candidate_rebuilds": 11
+      },
+      {
+        "type": "/turf/wall/baseline/old_stone",
+        "baseline": 10,
+        "candidate": 0,
+        "baseline_rebuilds": 11,
+        "candidate_rebuilds": 1
+      }
+    ],
+    "cache_entries": 34,
+    "save_comparisons": 4,
+    "save_failures": 0,
+    "head_sha": "e3899444a7376fb35bddfa19f8b2cef7c1ef0c46",
+    "baseline_sha": "e3c8d02f31f1a23c1320eaec949fb4af56e964f3",
+    "source_sha256": "4b2667a64f1c5297c0374dc93f0a4efbfcb0ea0185ddb58038c745af914a1b83",
+    "compiled_sha256": "ce57ceb13b047a50ae4424fb3939f935ff17c8e7201cd5b6b16a4fe688063eb5",
+    "probe_sha256": "47b6f38ceaa4428e9cec7cba84a2a34395cf7f6cb93ded25711d0828af632f72",
+    "byond": "516.1681",
+    "platform": "nt",
+    "dimensions": [
+      32,
+      32,
+      1
+    ],
+    "negative_control": "smoothing",
+    "support_sha256": {
+      "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+      "tests/world_save/stubs.dm": "f46a4b1fa30f770ef368ce3294eca3f8a254ef528b285f8d1ce7ae0e1442cca2",
+      "code/modules/persistence/functions.dm": "afe5d78b3252099c4dc42a69f329e8ed2d45626938fe7b4f8126aa7caafb6dd2",
+      "code/modules/persistence/saving.dm": "6fb10dcd6f9388a1fd347f5a5369e0548d81e6ce42a486ff0b223fca1e8f7c2a",
+      "code/modules/persistence/loading.dm": "51f3a99006045483f05d9e43d28d1893067bc436654916783138c2653d31a93b"
+    },
+    "resource_sha256": {
+      "wall_masks.dmi": "c3440dbc201be52d35117aece6a00eb85a83c781fa6108295ba8f72bba266e8a",
+      "walls.dmi": "5bdc6a93df93121c5637c01b6ca1e13d20254f592bc439567a850b930d2f1df6"
+    }
+  },
+  "duplicate": {
+    "scenes": 1536,
+    "comparisons": 4608,
+    "appearance_failures": 0,
+    "count_failures": 3072,
+    "count_samples": [
+      {
+        "type": "/turf/wall/baseline",
+        "baseline": 15,
+        "candidate": 15,
+        "baseline_rebuilds": 16,
+        "candidate_rebuilds": 16
+      },
+      {
+        "type": "/turf/wall/baseline/sub_bulkhead",
+        "baseline": 15,
+        "candidate": 15,
+        "baseline_rebuilds": 16,
+        "candidate_rebuilds": 16
+      },
+      {
+        "type": "/turf/wall/baseline/abashiri",
+        "baseline": 20,
+        "candidate": 20,
+        "baseline_rebuilds": 21,
+        "candidate_rebuilds": 21
+      },
+      {
+        "type": "/turf/wall/baseline/old_stone",
+        "baseline": 10,
+        "candidate": 10,
+        "baseline_rebuilds": 11,
+        "candidate_rebuilds": 11
+      }
+    ],
+    "cache_entries": 34,
+    "save_comparisons": 4,
+    "save_failures": 0,
+    "head_sha": "e3899444a7376fb35bddfa19f8b2cef7c1ef0c46",
+    "baseline_sha": "e3c8d02f31f1a23c1320eaec949fb4af56e964f3",
+    "source_sha256": "4b2667a64f1c5297c0374dc93f0a4efbfcb0ea0185ddb58038c745af914a1b83",
+    "compiled_sha256": "38173a17bfe3314160a17b13ae17ec0194ad97ebfa6d491a778f6dcd12ddf285",
+    "probe_sha256": "47b6f38ceaa4428e9cec7cba84a2a34395cf7f6cb93ded25711d0828af632f72",
+    "byond": "516.1681",
+    "platform": "nt",
+    "dimensions": [
+      32,
+      32,
+      1
+    ],
+    "negative_control": "duplicate",
+    "support_sha256": {
+      "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+      "tests/world_save/stubs.dm": "f46a4b1fa30f770ef368ce3294eca3f8a254ef528b285f8d1ce7ae0e1442cca2",
+      "code/modules/persistence/functions.dm": "afe5d78b3252099c4dc42a69f329e8ed2d45626938fe7b4f8126aa7caafb6dd2",
+      "code/modules/persistence/saving.dm": "6fb10dcd6f9388a1fd347f5a5369e0548d81e6ce42a486ff0b223fca1e8f7c2a",
+      "code/modules/persistence/loading.dm": "51f3a99006045483f05d9e43d28d1893067bc436654916783138c2653d31a93b"
+    },
+    "resource_sha256": {
+      "wall_masks.dmi": "c3440dbc201be52d35117aece6a00eb85a83c781fa6108295ba8f72bba266e8a",
+      "walls.dmi": "5bdc6a93df93121c5637c01b6ca1e13d20254f592bc439567a850b930d2f1df6"
+    }
+  },
+  "overlay": {
+    "scenes": 1536,
+    "comparisons": 4608,
+    "appearance_failures": 1152,
+    "count_failures": 0,
+    "count_samples": [
+      {
+        "type": "/turf/wall/baseline",
+        "baseline": 15,
+        "candidate": 10,
+        "baseline_rebuilds": 16,
+        "candidate_rebuilds": 11
+      },
+      {
+        "type": "/turf/wall/baseline/sub_bulkhead",
+        "baseline": 15,
+        "candidate": 10,
+        "baseline_rebuilds": 16,
+        "candidate_rebuilds": 11
+      },
+      {
+        "type": "/turf/wall/baseline/abashiri",
+        "baseline": 20,
+        "candidate": 15,
+        "baseline_rebuilds": 21,
+        "candidate_rebuilds": 16
+      },
+      {
+        "type": "/turf/wall/baseline/old_stone",
+        "baseline": 10,
+        "candidate": 5,
+        "baseline_rebuilds": 11,
+        "candidate_rebuilds": 6
+      }
+    ],
+    "cache_entries": 34,
+    "save_comparisons": 4,
+    "save_failures": 1,
+    "head_sha": "e3899444a7376fb35bddfa19f8b2cef7c1ef0c46",
+    "baseline_sha": "e3c8d02f31f1a23c1320eaec949fb4af56e964f3",
+    "source_sha256": "4b2667a64f1c5297c0374dc93f0a4efbfcb0ea0185ddb58038c745af914a1b83",
+    "compiled_sha256": "7fac2f37ae51d57dfb649c9d78b4537fe39a7ddff92f3a012683c77c67a4021a",
+    "probe_sha256": "47b6f38ceaa4428e9cec7cba84a2a34395cf7f6cb93ded25711d0828af632f72",
+    "byond": "516.1681",
+    "platform": "nt",
+    "dimensions": [
+      32,
+      32,
+      1
+    ],
+    "negative_control": "overlay",
+    "support_sha256": {
+      "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+      "tests/world_save/stubs.dm": "f46a4b1fa30f770ef368ce3294eca3f8a254ef528b285f8d1ce7ae0e1442cca2",
+      "code/modules/persistence/functions.dm": "afe5d78b3252099c4dc42a69f329e8ed2d45626938fe7b4f8126aa7caafb6dd2",
+      "code/modules/persistence/saving.dm": "6fb10dcd6f9388a1fd347f5a5369e0548d81e6ce42a486ff0b223fca1e8f7c2a",
+      "code/modules/persistence/loading.dm": "51f3a99006045483f05d9e43d28d1893067bc436654916783138c2653d31a93b"
+    },
+    "resource_sha256": {
+      "wall_masks.dmi": "c3440dbc201be52d35117aece6a00eb85a83c781fa6108295ba8f72bba266e8a",
+      "walls.dmi": "5bdc6a93df93121c5637c01b6ca1e13d20254f592bc439567a850b930d2f1df6"
+    }
+  }
+}

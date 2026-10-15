@@ -110,7 +110,7 @@
 /** Management menu for owners to change the vendor name, adjust prices, remove stock, or change accepted currency. */
 /obj/structure/vending/sales/verb/Manage()
 	set category = null
-	set src in range(1, usr)
+	set src in range(1)
 
 	if (!istype(usr, /mob/living/human))
 		return
