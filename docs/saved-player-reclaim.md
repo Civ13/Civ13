@@ -59,6 +59,13 @@ keeps fresh-body customization active. Add `-IdentityNegativeControl` to remove
 only the generated spawn guard and require the exact deferred identity failure.
 This fixture does not load the human's preserved world or establish client control.
 
+`run-string-path.py --player-ui` extracts production human Login/Logout and HUD
+rebuild decisions with injected client preferences, parent Login and screen
+construction effects. It checks same-style empty HUD reconstruction, repeated
+Login, style changes/fallback and registry removal on Logout. Use separate
+`--player-ui-negative-control hud` and `registry` runs for exact failure controls.
+This adapter does not verify rendered screen objects, native Login or movement.
+
 `tests/world_save/run-string-path.py` exercises actual production owner export,
 import, unchanged medical state and nested inventory, load readiness, account
 matching, duplicates, native key occupancy, dead bodies and failed-generation

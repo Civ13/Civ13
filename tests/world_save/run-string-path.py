@@ -20,6 +20,8 @@ def main():
     parser.add_argument('--appearance-negative-control', action='store_true')
     parser.add_argument('--hud-negative-control', choices=('export', 'import', 'constructor'))
     parser.add_argument('--player-reclaim-negative-control', choices=('owner', 'state', 'duplicate', 'ready', 'legacy', 'ban', 'guest'))
+    parser.add_argument('--player-ui', action='store_true')
+    parser.add_argument('--player-ui-negative-control', choices=('hud', 'registry'))
     parser.add_argument('--player-admission', action='store_true')
     parser.add_argument('--matrix-trace', action='store_true')
     parser.add_argument('--progress', action='store_true')
@@ -50,6 +52,11 @@ def main():
     if args.progress and args.negative_control:
         parser.error('Keep metadata and diagnostic negative controls separate')
     root = Path(__file__).resolve().parents[2]
+    ui = args.player_ui or bool(args.player_ui_negative_control)
+    if args.player_ui_negative_control and any((args.player_reclaim_negative_control, args.hud_negative_control,
+                                              args.negative_control, args.datum_constructor_negative_control,
+                                              args.appearance_negative_control, args.progress, args.matrix_trace)):
+        parser.error('Keep UI controls separate from other mutations')
     fixture = root / 'tests/world_save'
     byond = args.byond_bin.resolve(strict=True)
     compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
@@ -200,6 +207,11 @@ def main():
                 raise RuntimeError('Datum control needs exactly one corrected constructor branch')
             source = source.replace(before, '\t\telse\n\t\t\tobject = new type(starting_loc)\n', 1)
         if original.name == 'roundtrip.dm':
+            if ui:
+                marker = '\t\tcheck_player_reclaim()\n'
+                if source.count(marker) != 1:
+                    raise RuntimeError('UI fixture marker changed')
+                source = source.replace(marker, marker + '\t\tcheck_player_ui()\n', 1)
             if args.player_reclaim_negative_control == 'legacy':
                 marker = '\ttry\n\t\tcheck_datum_constructor()\n'
                 if source.count(marker) != 1:
@@ -245,6 +257,21 @@ def main():
         generated[target.name] = hashlib.sha256(target.read_bytes()).hexdigest()
         environment += f'\n#include "{target.as_posix()}"\n'
     environment += progress_helper_include
+    if ui:
+        import importlib.util
+        adapter_path = fixture / 'build-ui-adapter.py'
+        spec = importlib.util.spec_from_file_location('ui_adapter', adapter_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        adapted, ui_hashes = module.generate(root, args.player_ui_negative_control)
+        hashes.update(ui_hashes)
+        hashes['tests/world_save/build-ui-adapter.py'] = hashlib.sha256(adapter_path.read_bytes()).hexdigest()
+        probe_path = fixture / 'player_ui_probe.dm'
+        hashes['tests/world_save/player_ui_probe.dm'] = hashlib.sha256(probe_path.read_bytes()).hexdigest()
+        target = output / 'player_ui_adapter.dm'
+        target.write_text(probe_path.read_text(encoding='utf-8') + '\n' + adapted, encoding='utf-8')
+        generated[target.name] = hashlib.sha256(target.read_bytes()).hexdigest()
+        environment += f'\n#include "{target.as_posix()}"\n'
     (output / 'probe.dme').write_text(environment, encoding='utf-8')
     hashes['tests/world_save/string_path_roundtrip.dme'] = hashlib.sha256((fixture / 'string_path_roundtrip.dme').read_bytes()).hexdigest()
     processes = []
@@ -290,7 +317,13 @@ def main():
         raise RuntimeError('Pinned clean compilation required')
     owned('daemon', [str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'])
     actual = read(output / 'result.txt').strip()
-    if args.player_reclaim_negative_control:
+    if args.player_ui_negative_control:
+        expected = {'hud': 'same-style empty HUD not rebuilt',
+                    'registry': 'human Login omitted playing registry'}[args.player_ui_negative_control]
+        failure = read(output / 'failure-name.txt').strip()
+        if failure != expected or not actual.startswith('FAIL:'):
+            raise RuntimeError(f'Wrong UI negative failure: {actual!r}, {failure!r}')
+    elif args.player_reclaim_negative_control:
         expected = {'owner': 'saved player owner lost', 'state': 'owned saved medical state changed',
                     'duplicate': 'duplicate player owner accepted', 'ready': 'player restored before load completed',
                     'legacy': 'legacy owner read materialized missing field',
@@ -338,6 +371,7 @@ def main():
         'appearance_negative_control': args.appearance_negative_control,
         'hud_negative_control': args.hud_negative_control,
         'player_reclaim_negative_control': args.player_reclaim_negative_control,
+        'player_ui': ui, 'player_ui_negative_control': args.player_ui_negative_control,
         'player_admission_adapter': admission,
         'matrix_trace': args.matrix_trace,
         'progress': args.progress, 'progress_fault_stage': args.progress_fault_stage,

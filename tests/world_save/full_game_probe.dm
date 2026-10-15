@@ -11,6 +11,7 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 	try
 		if(!map || !ticker)
 			throw EXCEPTION("Game startup did not create map/ticker")
+		text2file(json_encode(list("commit" = world.params["tested_commit"], "map_id" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "probe_metadata.json")
 		if(world.params["player_identity"])
 			check_player_identity()
 			text2file("PASS: real human constructors preserve owned and legacy identity after deferred spawn", "full_game_result.txt")
@@ -18,7 +19,6 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 				del(world)
 			return
 		world.name = "Civ13 LOCAL full-game world-save probe"
-		text2file(json_encode(list("commit" = world.params["tested_commit"], "map_id" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "probe_metadata.json")
 		var/turf/T = locate(20,20,1)
 		var/saved_turf_type = T.type
 		var/obj/structure/closet/crate/C = new(T)
@@ -111,6 +111,9 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 		fresh.b_hair = 31
 		fresh.s_tone = -33
 		fresh.persistence_owner_ckey = owned ? "testaccount" : null
+		var/list/saved_languages = list()
+		for(var/datum/language/L in fresh.languages)
+			saved_languages += "[L.type]"
 		var/savefile/F = new(owned ? "identity-owned.sav" : "identity-legacy.sav")
 		F["/format_version"] << 2
 		map_storage.clear_bookkeeping()
@@ -131,6 +134,19 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 			throw EXCEPTION("Deferred spawn overwrote saved identity")
 		if(!restored.persistence_restored || restored.r_hair != 17 || restored.g_hair != 23 || restored.b_hair != 31 || restored.s_tone != -33)
 			throw EXCEPTION("Deferred spawn overwrote saved appearance")
+		var/list/restored_languages = list()
+		for(var/datum/language/L in restored.languages)
+			restored_languages += "[L.type]"
+		if(jointext(saved_languages, ";") != jointext(restored_languages, ";"))
+			throw EXCEPTION("Deferred spawn overwrote saved languages")
+		var/savefile/exported = new(owned ? "identity-owned-reexport.sav" : "identity-legacy-reexport.sav")
+		exported["/format_version"] << 2
+		map_storage.clear_bookkeeping()
+		map_storage.saving_z = 2
+		var/export_ref = map_storage.BuildVarDirectory(exported, restored, 1)
+		exported.cd = map_storage.entry_path(exported, export_ref)
+		if("persistence_restored" in exported.dir)
+			throw EXCEPTION("True restoration marker exported")
 		qdel(restored)
 	qdel(fresh)
 	map_storage.clear_bookkeeping()
