@@ -201,3 +201,12 @@ diagnostic unavailability. `--progress-negative-control` deliberately propagates
 the injected exception and requires its exact failure and expected marker state.
 The native fixture retains its existing mutation-on-tick adapter; these checks
 verify IO isolation and save semantics, not full-game timing or CPU performance.
+
+HUD migration coverage in `run-string-path.py` checks that client HUD fields and
+screen/HUD objects do not enter new saves, old saved HUD fields are skipped and
+old HUD entries are suppressed before their owner-dependent constructors run.
+The human's dead status, name and nested paid item survive the native round trip.
+`--hud-negative-control export`, `import` and `constructor` independently remove
+each safeguard in generated source and require its exact failure. The constructor
+sentinel models the owner requirement; full-game same-generation restoration is
+separate acceptance. Use D: TEMP/TMP and the sole live-test owner's executor.

@@ -122,6 +122,7 @@ world
 		check_matrix(A.matrix_value, list(2,3,4,5,6,7), "standalone")
 		check_matrix(A.transform, list(8,9,10,11,12,13), "transform")
 		check(A.color == "#123456" && A.alpha == 173, "individual appearance fields changed")
+		check_hud_runtime_save()
 		check(A.reference.next == A.reference && A.reference.backlink == A, "datum/object cycle lost")
 		check(islist(A.items) && !A.items.len, "empty list reverted to default")
 		check(A.complex[1] == "literal **entry7", "literal marker string changed")
@@ -235,6 +236,66 @@ world
 	map_storage.clear_bookkeeping()
 	check(!map_storage.saving_reference_pins.len && !map_storage.saving_list_pins.len, "save pins retained after cleanup")
 	qdel(replacement)
+
+/proc/check_hud_runtime_save()
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/savefile/F = new("hud-runtime.sav")
+	F["/format_version"] << 2
+	var/mob/living/human/H = new(locate(1,1,1))
+	H.name = "durable human"
+	H.stat = DEAD
+	var/obj/item/test/I = new(H)
+	I.number = 731
+	var/obj/screen/S = new
+	var/datum/hud/U = new
+	H.hud_used = U
+	H.HUDneed = list("throw" = S)
+	H.HUDinventory = list(S)
+	H.HUDfrippery = list(S)
+	H.HUDprocess = list(S)
+	H.HUDtech = list(S)
+	for(var/key in list("hands", "pullin", "purged", "i_select", "m_select", "zone_sel"))
+		H.vars[key] = S
+	var/id = map_storage.BuildVarDirectory(F, H, 1)
+	F.cd = map_storage.entry_path(F, id)
+	for(var/key in list("hud_used", "HUDneed", "HUDinventory", "HUDfrippery", "HUDprocess", "HUDtech", "hands", "pullin", "purged", "i_select", "m_select", "zone_sel"))
+		check(!(key in F.dir), "HUD runtime field exported")
+	check(H.persistence_runtime_var("persistence_export_frame"), "HUD exclusion lost datum parent")
+	check(!map_storage.BuildVarDirectory(F, S) && !map_storage.BuildVarDirectory(F, U), "HUD runtime object exported")
+	// Reproduce an old save with an ownerless screen entry and a HUD field.
+	F["[map_storage.entry_path(F, 900)]/type"] << /obj/screen/HUDthrow
+	F["[map_storage.entry_path(F, 901)]/type"] << /datum/hud
+	F["/lists/900/length"] << 1
+	F["/lists/900/1/key"] << list("kind" = "value", "value" = "throw")
+	F["/lists/900/1/value"] << list("kind" = "entry", "ref" = "900")
+	F.cd = map_storage.entry_path(F, id)
+	F["HUDneed"] << list("kind" = "list", "ref" = "900")
+	F["hud_used"] << list("kind" = "entry", "ref" = "901")
+	for(var/key in list("hands", "pullin", "purged", "i_select", "m_select", "zone_sel"))
+		F[key] << list("kind" = "entry", "ref" = "900")
+	map_storage.clear_bookkeeping()
+	var/mob/living/human/R = map_storage.Load_Entry(F, id)
+	check(R && R.name == "durable human" && R.stat == DEAD, "HUD migration lost durable human")
+	var/obj/item/test/RI = locate() in R
+	check(RI && RI.number == 731, "HUD migration lost nested inventory")
+	check(!R.hud_used && !R.HUDneed.len, "HUD runtime field imported")
+	for(var/key in list("hands", "pullin", "purged", "i_select", "m_select", "zone_sel"))
+		check(isnull(R.vars[key]), "HUD screen field imported")
+	check(!map_storage.Load_Entry(F, "900") && !map_storage.Load_Entry(F, "901"), "HUD runtime entry constructed")
+	map_storage.clear_bookkeeping()
+	qdel(H)
+	qdel(R)
+	qdel(S)
+	qdel(U)
+
+// Deliberately preserve the owner-dependent production throw constructor contract.
+/obj/screen/HUDthrow
+	var/mob/parentmob
+/obj/screen/HUDthrow/New(_name, _screen_loc, mob/_parentmob)
+	parentmob = _parentmob
+	if(!parentmob)
+		throw EXCEPTION("ownerless HUD constructor reached")
 
 /client/New()
 	..()
