@@ -526,6 +526,12 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 scripts/check-battery-items.py --probe modern-energy
           python3 scripts/check-battery-items.py --probe modern-energy --negative-control
+          python3 scripts/check-battery-items.py --probe modern-energy --nuclear-negative-control
+          python3 scripts/check-battery-items.py --probe modern-energy --route-negative-control debit
+          python3 scripts/check-battery-items.py --probe modern-energy --route-negative-control completion
+          python3 scripts/check-battery-items.py --probe modern-energy --route-negative-control radiation
+          python3 scripts/check-battery-items.py --probe modern-energy --route-negative-control retirement
+          python3 scripts/check-battery-items.py --probe modern-energy --route-negative-control final-interval
           python3 scripts/check-recipes.py
 
       - name: Check battery construction and durable state with compiled game types

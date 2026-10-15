@@ -633,6 +633,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
 		"/obj/structure/cell_tower" = "digital_computing",
 		"/obj/structure/civ_generator/solar" = "digital_computing",
+		"/obj/structure/civ_generator/nuclear" = "nuclear_power",
+		"/obj/structure/reactor_fuel_processor" = "nuclear_power",
 		// --- early_economy (10) ---
 		"/obj/item/clothing/accessory/storage/coinpouch" = "early_economy",
 		"/obj/item/stack/money/coppercoin" = "early_economy",
