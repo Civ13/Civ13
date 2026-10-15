@@ -24,7 +24,7 @@ save restoration and omitted-charge-debit negative-control checks in
 These checks establish bounded production contracts, not full-game graphical
 acceptance, sustained balance or deployment. No local native runtime was used.
 
-Nuclear machinery and its still-unavailable player fuel acquisition route are
+Nuclear machinery and its pending-acceptance player fuel acquisition route are
 separate draft work in [PR #3141](https://github.com/Civ13/Civ13/pull/3141).
 
 ## Nuclear draft boundary
@@ -32,6 +32,20 @@ separate draft work in [PR #3141](https://github.com/Civ13/Civ13/pull/3141).
 PR #3141 adds finite cartridge fuel, coolant, wear, maintenance, safe controls and
 bounded local heat effects. Native isolated contracts at 1679a19c7d6cf738ee27e9b424a6faaca7d376ba
 passed CI run 38410067410, including an omitted-fuel-debit negative control.
-Player fuel acquisition and processing remain unimplemented and require the
-radiation owner's verified safe route. No reactor crafting route or player
-availability is claimed. Integration with current master requires fresh CI.
+The draft now implements a finite uranium-only fallback after existing common
+underground mining outcomes in the Modern era. A paid processor consumes one
+raw ore unit per sealed 1800 PU-second cartridge; canceled or invalidated work
+must consume nothing. Processing and both machine recipes require Nuclear Power
+research and crafting 105. The processor costs 20 steel; the reactor costs 40
+electronics. The geiger-counter prerequisite uses the existing Factories node.
+
+Raw uranium emits one local radius-3, severity-7 pulse each second on its source
+z-level. Lead crates shield it. Retirement stops its single callback chain;
+the opt-in local pulse cannot change global radiation. Existing default pulse
+callers retain their behavior. Chemical extraction pays one ore unit for the
+existing five reagent units and preserves the remaining stack.
+
+These changes still require current exact-head remote native tests and the
+radiation owner's final review. Ordinary-player route acceptance, sustained
+balance and deployment remain separate from isolated fixture results. PR #3141
+remains draft until the route acceptance is resolved.

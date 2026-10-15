@@ -1,8 +1,8 @@
 # Modern energy contracts
 
-See [FUEL_ACCEPTANCE.md](FUEL_ACCEPTANCE.md) for the source-only nuclear
-acquisition/processing acceptance design. It is not an executable or passing
-route test; player fuel acquisition remains blocked on the radiation owner.
+See [FUEL_ACCEPTANCE.md](FUEL_ACCEPTANCE.md) for the nuclear route and acceptance
+boundary. `fuel_route.dm` executes production mining, paid processing, local
+radiation and native-save procedures with isolated actor/wait/RNG adapters.
 
 Run `scripts/check-battery-items.py --probe modern-energy` with BYOND 516.1681
 compiler/runtime paths. Add `--negative-control` to omit the solar charge debit in
@@ -17,11 +17,18 @@ cap. Crafting progression is checked by `scripts/check-recipes.py`.
 Native entry export/import checks reject forged output/enabled/registration values.
 Nuclear source checks cover finite fuel/coolant, wear/maintenance shutdown, eight
 local targets at most, distance/z/interior rejection, repeat-interval rejection,
-unchanged global radiation and durable native entry state. Its fuel/recipe route
-is deliberately unavailable pending the radiation owner's safety audit.
+unchanged global radiation and durable native entry state. Route checks cover
+Modern underground uranium depletion, research/skill rejection, per-unit debit,
+interruption, retirement, same-z access, concurrent work, nested input/cartridge
+saves and actual paid cartridge loading into reactor output and saved state.
+Independent `--route-negative-control` values are `debit`, `completion`,
+`radiation` and `retirement`; each mutates only generated source and must fail
+at its named contract. `--nuclear-negative-control` omits reactor fuel prepayment.
 `preview.py --output <png>` verifies nonempty actual controller DMI pixels without
 launching BYOND; it renders a labeled source preview, not a gameplay screenshot.
 
 These are contract tests, not gameplay captures, full-world solar save round trips,
 balance acceptance or production performance evidence. Local native runs require
-the coordinator's exclusive runtime grant. Nuclear behavior remains unverified.
+the coordinator's exclusive runtime grant. Current route acceptance requires
+exact-head remote CI and owner/coordinator acceptance; draft source alone does
+not establish an accepted ordinary-player route.

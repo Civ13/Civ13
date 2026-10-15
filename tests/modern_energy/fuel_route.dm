@@ -163,6 +163,35 @@ var/list/energy_mining_rolls = list()
 	energy_ci_check("retired actor produces nothing", energy_cartridges(locate(4,1,1)), 1)
 	qdel(actor_input)
 	qdel(retirement)
+	// Carry the actual paid processor output through loading, power and native save.
+	var/obj/structure/civ_generator/nuclear/reactor = new(locate(3,1,1))
+	var/obj/structure/cable/cable = new(reactor.loc)
+	reactor.powersource = cable
+	cable.connections |= reactor
+	reactor.attackby(paid,H)
+	energy_ci_check("route cartridge credits finite reactor fuel", reactor.fuel_energy, 1800)
+	energy_ci_check("route cartridge consumed", energy_cartridges(locate(4,1,1)), 0)
+	var/obj/item/weapon/reagent_containers/glass/beaker/water = new(reactor.loc)
+	water.reagents.add_reagent("water",10)
+	reactor.attackby(water,H)
+	reactor.enabled = TRUE
+	reactor.settle_generation()
+	energy_ci_check("paid route supplies cable output", reactor.available_output(), 20)
+	energy_ci_check("paid route fuel debit", reactor.fuel_energy, 1780)
+	energy_ci_check("paid route coolant debit", reactor.coolant, 9)
+	save = new("fuel-route-reactor.sav")
+	save["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	ref = map_storage.BuildVarDirectory(save,reactor,1)
+	map_storage.clear_bookkeeping()
+	var/obj/structure/civ_generator/nuclear/reloaded = map_storage.Load_Entry(save,ref,null,locate(2,4,1))
+	energy_ci_check("paid route native reactor retains fuel", reloaded ? reloaded.fuel_energy : -1, 1780)
+	energy_ci_check("paid route native reactor starts off", reloaded ? reloaded.enabled : TRUE, FALSE)
+	qdel(reactor)
+	qdel(reloaded)
+	qdel(cable)
+	qdel(water)
 	// Native nested storage retains paid input and excludes the processing lock.
 	var/obj/structure/closet/crate/lead/lead = new(locate(1,1,1))
 	U.forceMove(lead)
