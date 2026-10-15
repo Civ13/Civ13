@@ -23,7 +23,7 @@ class SupervisorTests(unittest.TestCase):
         self.supervisor = m.Supervisor({'root': str(self.root / 'runtime'), 'config_directory': str(config), 'port': 1714})
 
     def running(self):
-        self.supervisor.state = {'revision': 'b' * 40, 'host': {'pid': 123, 'creation_filetime': 456, 'workdir': str(self.root / 'game')}}
+        self.supervisor.state = {'revision': 'b' * 40, 'phase': 'ready', 'host': {'pid': 123, 'creation_filetime': 456, 'workdir': str(self.root / 'game')}}
 
     def generation(self):
         folder = self.root / 'save'
@@ -112,6 +112,45 @@ class SupervisorTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'session challenge'):
                 self.supervisor.stop_saved('d' * 32)
             query.assert_not_called()
+
+    def test_resumed_starting_phase_cannot_skip_generation_verification(self):
+        self.running()
+        self.supervisor.state.update(phase='starting', generation='round-v2:expected')
+        with patch.object(self.supervisor, 'candidate', return_value='b' * 40), patch.object(self.supervisor, 'alive', return_value=True), patch.object(self.supervisor, 'status', return_value={'ready': 1, 'generation': 'round-v2:wrong', 'restart_import_complete': 1}):
+            with self.assertRaisesRegex(RuntimeError, 'intended generation'):
+                self.supervisor.cycle()
+        self.assertEqual(self.supervisor.state['phase'], 'starting')
+
+    def test_new_candidate_cannot_bypass_pending_recovery(self):
+        self.running()
+        self.supervisor.state.update(phase='starting', generation='round-v2:expected')
+        with patch.object(self.supervisor, 'candidate', return_value='c' * 40), patch.object(self.supervisor, 'alive', return_value=True), patch.object(self.supervisor, 'status', return_value={'ready': 1, 'generation': 'round-v2:wrong', 'restart_import_complete': 1}), patch.object(self.supervisor, 'build') as build:
+            with self.assertRaisesRegex(RuntimeError, 'intended generation'):
+                self.supervisor.cycle()
+            build.assert_not_called()
+
+    def test_stale_lifecycle_intent_rejected(self):
+        source = self.generation()
+        with self.assertRaisesRegex(RuntimeError, 'acknowledged lifecycle operation'):
+            m.snapshot(source, self.root / 'backup', 'd' * 32, 'e' * 32)
+        self.assertFalse((self.root / 'backup').exists())
+
+    def test_lifecycle_intent_requires_both_operation_and_session(self):
+        source = self.generation()
+        path = source / 'restart_intent.json'
+        intent = json.loads(path.read_text())
+        intent.update(lifecycle_operation='d' * 32, lifecycle_session='e' * 32)
+        path.write_text(json.dumps(intent))
+        m.validate_generation(source, 'd' * 32, 'e' * 32)
+        for operation, session in (('f' * 32, 'e' * 32), ('d' * 32, 'f' * 32)):
+            with self.subTest(operation=operation), self.assertRaisesRegex(RuntimeError, 'acknowledged lifecycle operation'):
+                m.validate_generation(source, operation, session)
+
+    def test_pending_intent_or_hold_cannot_report_recovered(self):
+        for override in ({'restart_intent': 1}, {'restart_hold': 1}, {'restart_import_complete': 0}):
+            status = {'ready': 1, 'generation': 'round-v2:expected', 'restart_import_complete': 1, **override}
+            with self.subTest(override=override), self.assertRaises(RuntimeError):
+                self.supervisor.accept_ready(status, 'round-v2:expected')
 
     def test_mutation_sent_once_with_process_session_on_failure(self):
         self.running()

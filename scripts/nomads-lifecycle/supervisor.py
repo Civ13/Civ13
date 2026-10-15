@@ -107,7 +107,7 @@ def query(port, token, action='status', operation=None, session=None):
         return result
 
 
-def validate_generation(folder):
+def validate_generation(folder, operation=None, session=None):
     folder = Path(folder)
     intent = json.loads((folder / 'restart_intent.json').read_text(encoding='utf-8-sig'))
     state = json.loads((folder / 'round.json').read_text(encoding='utf-8-sig'))
@@ -116,6 +116,8 @@ def validate_generation(folder):
         raise RuntimeError('A completed durable round-v2 generation is required')
     if intent.get('version') != 1 or intent.get('generation') != marker or state.get('generation') != marker:
         raise RuntimeError('Save/intent generation mismatch')
+    if operation is not None and (intent.get('lifecycle_operation') != operation or intent.get('lifecycle_session') != session):
+        raise RuntimeError('Saved intent does not belong to the acknowledged lifecycle operation')
     if intent.get('metadata') != digest(folder / 'map.txt', 'md5') or intent.get('round') != digest(folder / 'round.json', 'md5'):
         raise RuntimeError('Restart intent metadata mismatch')
     levels = state.get('maxz')
@@ -130,8 +132,8 @@ def validate_generation(folder):
     return state, names
 
 
-def snapshot(folder, destination):
-    state, names = validate_generation(folder)
+def snapshot(folder, destination, operation=None, session=None):
+    state, names = validate_generation(folder, operation, session)
     destination = Path(destination)
     destination.mkdir(parents=True, exist_ok=False)
     hashes = {}
@@ -233,6 +235,12 @@ class Supervisor:
             raise RuntimeError('Running host revision/map differs from owned state')
         return value
 
+    def accept_ready(self, status, generation):
+        if not status.get('ready') or status.get('busy') or status.get('error') or status.get('restart_hold'):
+            raise RuntimeError('Running host is not ready')
+        if generation and (status.get('generation') != generation or status.get('restart_intent') or not status.get('restart_import_complete')):
+            raise RuntimeError('Startup did not restore the intended generation')
+
     def stop_saved(self, operation):
         before = self.status()
         if not before.get('ready') or before.get('busy') or before.get('error'):
@@ -256,7 +264,7 @@ class Supervisor:
             except (OSError, TimeoutError):
                 pass
         backup = self.root / 'backups' / operation
-        generation = snapshot(Path(self.state['host']['workdir']) / 'map_saves', backup)
+        generation = snapshot(Path(self.state['host']['workdir']) / 'map_saves', backup, operation, session)
         self.record('validated_shutdown_backup', operation=operation, generation=generation, backup=str(backup))
         return backup, generation
 
@@ -288,8 +296,7 @@ class Supervisor:
                 if status.get('error'):
                     raise RuntimeError('Startup recovery failed; preserve this host and matched backup')
                 if status.get('ready'):
-                    if generation and (status.get('generation') != generation or status.get('restart_intent') or not status.get('restart_import_complete')):
-                        raise RuntimeError('Startup did not restore the intended generation')
+                    self.accept_ready(status, generation)
                     self.state['phase'] = 'ready'
                     write_json(self.state_path, self.state)
                     public_status = {key: value for key, value in status.items() if key not in ('session', 'token')}
@@ -306,10 +313,14 @@ class Supervisor:
         revision = self.candidate()
         if self.state and not self.alive():
             raise RuntimeError('Previously owned host exited unexpectedly; refusing automatic restart')
+        if self.state and self.state.get('phase') != 'ready':
+            self.accept_ready(self.status(), self.state.get('generation'))
+            self.state['phase'] = 'ready'
+            write_json(self.state_path, self.state)
+            self.record('reconciled_ready', revision=self.state['revision'], generation=self.state.get('generation'))
         if self.state.get('revision') == revision and not force:
             status = self.status()
-            if not status.get('ready') or status.get('error'):
-                raise RuntimeError('Unchanged running host is unhealthy')
+            self.accept_ready(status, self.state.get('generation'))
             return
         build = self.build(revision)  # Compile before requesting any save/shutdown.
         operation = uuid.uuid4().hex

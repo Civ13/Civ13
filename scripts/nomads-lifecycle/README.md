@@ -11,6 +11,8 @@ revision in `config/lifecycle-revision.txt`, and a process session challenge.
 The API must reject non-loopback callers, replay and concurrent mutation, and
 keep the current process alive after save failure. This supervisor submits each
 mutation once, including when the reply is lost. It does not offer debug/eval.
+Lifecycle restart intents bind `lifecycle_operation` and `lifecycle_session`
+to the acknowledged request. An older internally consistent save is insufficient.
 
 ## Configure and install
 
@@ -43,6 +45,8 @@ they never trigger forced termination, a fresh round, or an automatic retry.
 Inspect the failure and actual process identity before any operator recovery.
 The PID and creation FILETIME must match; PID reuse refuses ownership. The lock
 serializes supervisors. An unexpected owned exit also requires operator action.
+Reclaiming a supervisor stopped during startup requires the same expected
+generation, completed import and consumed intent checks before any next update.
 
 Each update retains the old run, exact staged binaries, and a hash-verified copy
 of the completed round-v2 save plus its matching one-shot restart intent. The
