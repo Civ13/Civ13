@@ -1,7 +1,9 @@
 # Hover name HUD
 
-The human HUD shows the pointer target's public name near the top center of
-the map, including items in visible inventory slots. All existing human HUD
+The human HUD shows the pointer target's public name at the top-left corner of
+the map, including items in visible inventory slots. A black inline backdrop
+fits the text only; clearing or an empty name removes both text and backdrop.
+All existing human HUD
 styles share the same attachment. This is pointer feedback, not a click or
 examine action. Moving onto empty space or a HUD control clears the text.
 Human names use `get_visible_name()` so masks do not disclose `real_name`.

@@ -10,8 +10,12 @@
 	maxy = 15
 	maxz = 1
 	view = 5
+	turf = /turf
+/world/Error(exception/e)
+	world.log << "runtime error: [e] [e.file]:[e.line]"
+	del(world)
 /world/OpenPort(port)
-	if (isnull(port))
+	if (port == "none")
 		return ..()
 	return FALSE
 /datum
@@ -64,11 +68,16 @@
 	last_mouse_params = params
 /proc/check(condition, message)
 	if (!condition)
-		world.log << "FAIL [message]"
-		del(world)
+		throw message
 /world/New()
-	OpenPort(null)
-	check(!port, "fixture port closed")
+	OpenPort("none")
+	try
+		run_hover_probe()
+	catch (var/failure)
+		world.log << "FAIL [failure]"
+	del(world)
+/proc/run_hover_probe()
+	check(!world.port && !world.OpenPort(12345), "fixture port closed")
 	var/mob/living/human/viewer = new(locate(8,8,1))
 	var/datum/hover_client/C = new
 	C.mob = viewer
@@ -79,6 +88,7 @@
 	viewer.HUDneed["hover name"] = L
 	C.screen += L
 	check(!L.mouse_opacity && !L.icon && L.maptext_width == 384 && L.maptext_height == 32, "text-only HUD defaults")
+	check(L.screen_loc == "WEST:2,NORTH:-2" && !L.maptext_y && !L.maptext, "top-left anchor starts without backdrop")
 	check(!L.should_save, "widget save excluded")
 	check(L.persistence_runtime_var("hover_target") && L.persistence_runtime_var("parentmob") && L.persistence_runtime_var("maptext"), "widget runtime exclusions")
 	check(L.persistence_runtime_var("persistence_export_frame"), "parent exclusion")
@@ -95,6 +105,10 @@
 	check(findtext(L.maptext, "rifle"), "late exit")
 	C.MouseExited(B, null, "map", "")
 	check(!L.maptext && !L.hover_target, "exit clears")
+	B.name = ""
+	C.MouseEntered(B, null, "map", "")
+	check(!L.maptext && !L.hover_target, "empty name has no backdrop")
+	B.name = "rifle"
 	C.MouseMove(A, null, "map", "screen-loc=2:1,3:1")
 	check(L.maptext && C.last_mouse_params == "screen-loc=2:1,3:1", "move dispatch")
 	C.MouseMove(null, null, "map", "")
@@ -129,6 +143,7 @@
 	C.screen -= B
 	L.process()
 	check(!L.maptext, "inventory slot removed")
+	B.loc = locate(10,8,1)
 	C.MouseEntered(A, null, "map", "")
 	del(A)
 	L.process()
@@ -157,4 +172,3 @@
 	C.MouseEntered(null, null, "map", "")
 	check(!C.mouse_x && !C.mouse_y, "null enter safe")
 	world.log << "PASS hover name"
-	del(world)

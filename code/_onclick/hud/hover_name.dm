@@ -2,7 +2,7 @@
 /obj/screen/hover_name
 	name = "hover name"
 	icon = null
-	screen_loc = "CENTER-6,NORTH-1"
+	screen_loc = "WEST:2,NORTH:-2"
 	maptext_width = 384
 	maptext_height = 32
 	mouse_opacity = FALSE
@@ -52,6 +52,9 @@
 	if (ishuman(target))
 		var/mob/living/human/H = target
 		label = H.get_visible_name()
+	if (!length(label))
+		clear_target()
+		return
 	maptext = "<span style='font-size:12px;color:white;background-color:black'>[html_encode(copytext(label, 1, 129))]</span>"
 
 /client/proc/hover_name_widget()
