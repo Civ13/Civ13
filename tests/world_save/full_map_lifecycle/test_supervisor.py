@@ -124,10 +124,20 @@ class ProcessAndDiagnosticControls(unittest.TestCase):
             log = root / 'daemon.stderr.log'
             log.write_text('Normal startup\n', encoding='utf-8')
             self.assertEqual(diagnostic_failures(root), [])
-            for marker in ('runtime error:', 'Bad ref', 'Bad loc', '##ERROR', 'BUG:'):
+            for marker in ('runtime error:', 'Bad ref', 'Bad loc', '##ERROR', 'BUG:',
+                           '[timestamp] Runtime in saving.dm,12: exception',
+                           'Uncaught exception:', '## ERROR:'):
                 log.write_text(f'Normal startup\n{marker} injected\n', encoding='utf-8')
                 with self.subTest(marker=marker):
                     self.assertEqual(diagnostic_failures(root)[0]['line'], 2)
+            log.write_text('Normal startup\n', encoding='utf-8')
+            for relative in ('game/native.log', 'game/data/logs/runtime/probe-runtime.txt'):
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text('[timestamp] Runtime in saving.dm,12: exception\n', encoding='utf-8')
+                with self.subTest(path=relative):
+                    self.assertTrue(any(row['path'] == str(Path(relative)) for row in diagnostic_failures(root)))
+                target.write_text('Normal startup\n', encoding='utf-8')
 
 
 if __name__ == '__main__':

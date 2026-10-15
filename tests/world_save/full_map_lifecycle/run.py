@@ -30,7 +30,8 @@ def owned_daemon(command, **kwargs):
 
 
 def diagnostic_failures(root):
-    markers = ('runtime error:', 'bad ref', 'bad loc', '##error', 'bug:')
+    markers = ('runtime error:', 'runtime in ', 'uncaught exception:',
+               'bad ref', 'bad loc', '##error', '## error:', 'bug:')
     failures = []
     paths = [root / 'daemon.stdout.log', root / 'daemon.stderr.log', root / 'game/native.log']
     paths += sorted((root / 'game/data/logs/runtime').glob('*'))
