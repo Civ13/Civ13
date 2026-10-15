@@ -43,6 +43,11 @@ function contract(html) {
   assert(elements.get('catalog').children.length === 4, 'resource navigation resets restrictive filters');
   elements.get('search').value = 'absent';
   assert.deepEqual(result(), [], 'empty search');
+  elements.get('reset').onclick();
+  elements.get('catalog').children[0].onclick();
+  elements.get('search').value = 'absent';
+  result();
+  assert.equal(elements.get('diagram').children.length, 0, 'empty filter clears stale diagram');
 }
 contract(template);
 const badEra = template.replace('r.unlock_eras.includes(Number(e))', 'true');

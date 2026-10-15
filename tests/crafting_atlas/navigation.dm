@@ -21,6 +21,7 @@
 	check_atlas(findtext(default_view, "4 nominal") && findtext(default_view, "Outputs"), "navigation output quantity rendered")
 	check_atlas(!findtext(default_view, "<script>") && findtext(default_view, "&lt;script&gt;"), "navigation resource escaping")
 	check_atlas(findtext(default_view, "Legacy paginated list"), "navigation deliberate legacy link")
+	check_atlas(findtext(default_view, "action='byond://?'") && findtext(default_view, "name='src'") && findtext(default_view, "name='atlas_open'"), "navigation form uses explicit BYOND Topic route")
 	check_atlas(findtext(reference.render_html(viewer, legacy = TRUE), "Page 1."), "navigation explicit legacy route")
 	var/filtered = reference.graph_html(viewer, era = "4")
 	check_atlas(findtext(filtered, "1 matching recipes") && findtext(filtered, "Entry 2") && !findtext(filtered, "Entry 1</a>"), "navigation era membership filter")
