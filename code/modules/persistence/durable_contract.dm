@@ -23,10 +23,11 @@
 	return schema
 
 /proc/durable_metadata_area_schema()
-	return list("climate" = "text", "weather" = "number", "weather_intensity" = "number", "capturable" = "flag", "artillery_integrity" = "number", "has_gravity" = "flag", "no_air" = "nullable_number")
+	return list("climate" = "text", "weather" = "number", "weather_intensity" = "number", "capturable" = "flag", "artillery_integrity" = "artillery_integrity", "has_gravity" = "flag", "no_air" = "nullable_number")
 
 /proc/durable_metadata_scalar_valid(value, kind)
 	switch(kind)
+		if("artillery_integrity") return isnum(value) && (value == INFINITY || abs(value) <= 1e15)
 		if("list") return islist(value) && !istype(value, /alist)
 		if("alist") return istype(value, /alist)
 		if("text") return istext(value) && length(value) <= 1048576
@@ -45,6 +46,9 @@
 		var/kind = schema[key]
 		if(!durable_metadata_scalar_valid(value, kind))
 			throw EXCEPTION("Durable metadata field has an unsupported value: [key]")
+		// JSON cannot represent native infinity. Only this gameplay field has
+		// the invulnerable-area sentinel; all ordinary numbers remain bounded.
+		if(kind == "artillery_integrity" && value == INFINITY) value = "positive_infinity"
 		if(kind == "world_time_deadline") value = value == -1 ? null : max(0, value - world.time)
 		if(kind == "world_time_origin") value = max(0, world.time - value)
 		if(kind == "realtime_deadline") value = max(0, value - world.realtime)
@@ -58,6 +62,11 @@
 		if(!(key in values)) throw EXCEPTION("Durable metadata field is missing: [key]")
 		var/kind = schema[key]
 		var/value = values[key]
+		if(kind == "artillery_integrity")
+			if(value == "positive_infinity") continue
+			if(!durable_metadata_scalar_valid(value, "number"))
+				throw EXCEPTION("Invalid durable artillery integrity")
+			continue
 		if(kind == "world_time_deadline" && isnull(value)) continue
 		if(!durable_metadata_scalar_valid(value, kind))
 			throw EXCEPTION("Invalid durable metadata field: [key]")
@@ -70,6 +79,7 @@
 	for(var/key in schema)
 		var/kind = schema[key]
 		var/value = values[key]
+		if(kind == "artillery_integrity" && value == "positive_infinity") value = INFINITY
 		if(kind == "world_time_deadline") value = isnull(value) ? -1 : world.time + value
 		if(kind == "world_time_origin") value = world.time - value
 		if(kind == "realtime_deadline") value = world.realtime + value

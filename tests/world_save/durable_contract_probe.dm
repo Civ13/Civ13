@@ -3,6 +3,7 @@ var/persistence_save_in_progress = FALSE
 /datum/proc/Destroy()
 	return
 /datum/fixture_metadata
+	var/integrity = INFINITY
 	var/flag = TRUE
 	var/value = 17
 	var/name_value = "SUMMER"
@@ -56,6 +57,29 @@ var/persistence_save_in_progress = FALSE
 	catch(var/exception/invalid_error)
 		invalid_rejected = !!invalid_error
 	check(invalid_rejected && target.name_value == "SUMMER", "invalid field mutated metadata")
+	var/list/integrity_schema = list("integrity" = durable_metadata_area_schema()["artillery_integrity"])
+	var/list/integrity_state = durable_metadata_snapshot_fields(source, integrity_schema)
+	check(integrity_state["integrity"] == "positive_infinity", "infinite artillery integrity was not encoded as a JSON sentinel")
+	integrity_state = json_decode(json_encode(integrity_state))
+	target.integrity = 29
+	durable_metadata_restore_fields(target, integrity_state, integrity_schema)
+	check(target.integrity == INFINITY, "infinite artillery integrity did not restore")
+	for(var/value in list(0, 37, -2, 1e15))
+		source.integrity = value
+		integrity_state = durable_metadata_snapshot_fields(source, integrity_schema)
+		durable_metadata_restore_fields(target, json_decode(json_encode(integrity_state)), integrity_schema)
+		check(target.integrity == value, "finite artillery integrity changed")
+	var/not_a_number = INFINITY - INFINITY
+	for(var/value in list(null, "infinity", "positive_infinity ", -INFINITY, INFINITY, not_a_number, 1e16, list()))
+		target.integrity = 73
+		integrity_state["integrity"] = value
+		var/rejected = FALSE
+		try
+			durable_metadata_restore_fields(target, integrity_state, integrity_schema)
+		catch(var/exception/e)
+			rejected = !!e
+		check(rejected && target.integrity == 73, "invalid artillery wire value mutated target")
+	check(!durable_metadata_scalar_valid("positive_infinity", "number") && !durable_metadata_scalar_valid(INFINITY, "number") && !durable_metadata_scalar_valid(-INFINITY, "artillery_integrity") && !durable_metadata_scalar_valid(not_a_number, "artillery_integrity"), "artillery sentinel weakened another numeric contract")
 
 /proc/check_timers()
 	var/datum/fixture_timer_owner/owner = new

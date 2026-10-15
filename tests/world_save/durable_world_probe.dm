@@ -50,6 +50,19 @@ var/durable_probe_tips = 0
 		var/map_type = world.params["profile"] == "europe" ? /obj/map_metadata/nomads/europe : /obj/map_metadata/nomads/gaia
 		text2file("construct map", "probe-progress.log")
 		map = new map_type(locate(1,1,1))
+		// Audit inherited production defaults before the fixture changes them.
+		durable_metadata_snapshot_fields(map, durable_metadata_map_schema())
+		durable_metadata_snapshot_fields(processes.weather, durable_weather_schema())
+		var/area_defaults_checked = 0
+		for(var/area_type in typesof(/area))
+			var/area/default_area = new area_type
+			var/list/default_fields = durable_metadata_snapshot_fields(default_area, durable_metadata_area_schema())
+			durable_metadata_validate_fields(json_decode(json_encode(default_fields)), durable_metadata_area_schema())
+			area_defaults_checked++
+		durable_world_check(area_defaults_checked > 100, "production area subtype defaults were not audited")
+		var/area/caribbean/admin/protected_area = new
+		ChangeArea(locate(8,8,1), protected_area)
+		durable_world_check(protected_area.artillery_integrity == INFINITY, "placed production admin area lacks infinite integrity")
 		var/list/traits = list()
 		for(var/key in list("faction1_squads", "faction2_squads", "faction1_squad_leaders", "faction2_squad_leaders"))
 			var/value = map.vars[key]
@@ -114,6 +127,21 @@ var/durable_probe_tips = 0
 		var/list/state = map_storage.read_round_state()
 		durable_world_check(state["version"] == 2, "metadata envelope absent")
 		var/list/W = state["world_state"]
+		var/list/saved_areas = W["areas"]
+		var/list/protected_fields
+		for(var/list/area_row in saved_areas)
+			if(area_row["type"] == "[protected_area.type]") protected_fields = area_row["fields"]
+		durable_world_check(protected_fields && protected_fields["artillery_integrity"] == "positive_infinity", "placed infinite area did not reach durable JSON")
+		protected_fields["artillery_integrity"] = "negative_infinity"
+		fdel("map_saves/round.json")
+		text2file(json_encode(state), "map_saves/round.json")
+		durable_world_check(!map_storage.validate_world_save() && locate(/mob/living/human/durable_probe_leader) == leader && protected_area.artillery_integrity == INFINITY, "malformed artillery sentinel mutated world")
+		protected_fields["artillery_integrity"] = "positive_infinity"
+		protected_fields["weather_intensity"] = "positive_infinity"
+		fdel("map_saves/round.json")
+		text2file(json_encode(state), "map_saves/round.json")
+		durable_world_check(!map_storage.validate_world_save() && locate(/mob/living/human/durable_probe_leader) == leader, "wrong-field artillery sentinel mutated world")
+		protected_fields["weather_intensity"] = protected_area.weather_intensity
 		var/list/E = W["environment"]
 		var/list/saved_timers = W["timers"]
 		var/saved_tip_delay = saved_timers["tips"]
@@ -171,6 +199,7 @@ var/durable_probe_tips = 0
 		map.research_active = FALSE
 		A.climate = "desert"
 		A.artillery_integrity = 100
+		protected_area.artillery_integrity = 27
 		map_storage.suspend_durable_world()
 		map_storage.ClearMap()
 		durable_world_check(map_storage.Load_World(), "metadata world import failed")
@@ -188,6 +217,7 @@ var/durable_probe_tips = 0
 		durable_world_check(istype(restored_leader) && restored_leader != leader && get_turf(restored_leader) == locate(2,2,2) && restored_leader.persistence_owner_ckey == "metadatafixture", "leader was duplicated or not rebound")
 		durable_world_check(istype(map.faction1_squads, /alist) && istype(map.faction1_squad_leaders, /alist) && (0 in map.faction1_squads) && isnull(map.faction1_squads[0]) && map.faction1_squads[7][1] == restored_leader && map.faction1_squad_leaders[7] == restored_leader && (1 in map.faction1_squad_leaders) && isnull(map.faction1_squad_leaders[1]), "squad associations or human identity changed")
 		durable_world_check(A.climate == "tundra" && A.artillery_integrity == 37 && A.weather_intensity == 0.4, "area state reset")
+		durable_world_check(protected_area.artillery_integrity == INFINITY, "placed infinite area lost invulnerability")
 		durable_world_check(weather == WEATHER_WET && weather_intensity == 0.75 && global_pollution == 29 && abandonment_season_changes == 17, "global weather or season age reset")
 		var/icon/after_icon = map.faction_symbol_icon["first"]
 		durable_world_check(after_icon.GetPixel(4,7) == "#123456" && map.faction_symbol_grid["first"][1] == "#FFFFFF", "active symbol confused with draft")

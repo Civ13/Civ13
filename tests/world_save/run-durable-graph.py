@@ -19,6 +19,7 @@ def adjudicate(result, log, control, contracts, associative=False):
     if result.get('failures') != len(failures):
         raise RuntimeError('Fixture failure count differs from native log')
     expected = {
+        'infinity': ('infinite artillery integrity did not restore',),
         'generation': ('cross-generation leader accepted',),
         'alias': ('list alias/cycle changed',),
         'binding': ('unsaved metadata leader was silently dropped',),
@@ -47,12 +48,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
-    parser.add_argument('--negative-control', choices=('generation', 'alias', 'binding', 'clock', 'omission', 'timer', 'alist-values', 'alist-kind', 'alist-alias', 'alist-binding'))
+    parser.add_argument('--negative-control', choices=('generation', 'alias', 'binding', 'clock', 'omission', 'timer', 'infinity', 'alist-values', 'alist-kind', 'alist-alias', 'alist-binding'))
     parser.add_argument('--alist', action='store_true', help='Verify native associative collections and actual map squad defaults')
     parser.add_argument('--contracts', action='store_true',
                         help='Also verify the actual field and portable-timer contracts')
     args = parser.parse_args()
-    if args.negative_control in ('clock', 'omission', 'timer'):
+    if args.negative_control in ('clock', 'omission', 'timer', 'infinity'):
         args.contracts = True
     if args.negative_control and args.negative_control.startswith('alist-'):
         args.alist = True
@@ -91,6 +92,10 @@ def main():
     if len(list_macro) != 1:
         raise RuntimeError('Production islist macro anchor changed')
     environment = list_macro[0] + '\n#include "probe.dm"\n#include "graph.dm"\n'
+    infinity_macro = re.findall(r'^#define INFINITY\s+.+$', (root / 'code/predefines.dm').read_text(encoding='utf-8'), re.M)
+    if len(infinity_macro) != 1:
+        raise RuntimeError('Production infinity macro anchor changed')
+    environment = infinity_macro[0] + '\n' + environment
     if args.alist:
         probe = probe.replace('\t\tcheck_graph()\n', '\t\tcheck_alist_graph()\n', 1)
         alist_probe = probe_path.with_name('durable_alist_probe.dm')
@@ -110,6 +115,9 @@ def main():
         for name in ('durable_contract.dm', 'durable_timers.dm'):
             part = source_path.with_name(name).read_text(encoding='utf-8')
             contract_mutations = {
+                'infinity': ('durable_contract.dm',
+                             'if(kind == "artillery_integrity" && value == "positive_infinity") value = INFINITY',
+                             'if(kind == "artillery_integrity" && value == "positive_infinity") value = 0'),
                 'clock': ('durable_contract.dm',
                           '\t\tif(kind == "world_time_deadline") value = isnull(value) ? -1 : world.time + value',
                           '\t\tif(kind == "world_time_deadline") value = isnull(value) ? -1 : value'),
