@@ -471,7 +471,7 @@ jobs:
           if-no-files-found: error
       - name: Offline lighting recovery regression
         id: lighting_recovery
-        if: needs.changes.outputs.extensive == 'true' || inputs.lighting_recovery_regressions == true || inputs.persistence_integration_regressions == true
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.lighting_recovery_regressions == true || inputs.persistence_integration_regressions == true
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           mkdir -p "$RUNNER_TEMP/lighting-recovery"
