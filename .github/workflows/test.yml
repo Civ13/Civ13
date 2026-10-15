@@ -25,6 +25,10 @@ on:
         description: 'Opt in only to isolated save restart transaction checks'
         type: boolean
         default: false
+      world_save_regressions:
+        description: 'Opt in only to isolated world-save and expanded-level recovery checks'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -377,7 +381,7 @@ jobs:
           if-no-files-found: error
       - name: Offline world-save round-trip regression
         id: world_save
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.world_save_regressions == true
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           mkdir -p "$RUNNER_TEMP/world-save"
@@ -403,13 +407,14 @@ jobs:
           python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --startup-only
           for profile in gaia europe; do
             python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile"
+            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile" --dimension-bootstrap
           done
           for control in season preflight reachability callback timer-restore; do
             python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
         shell: bash
       - name: Retain ordinary world-save evidence
-        if: always() && steps.world_save.outcome != 'skipped' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save'))
+        if: always() && steps.world_save.outcome != 'skipped' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.world_save_regressions == true)
         uses: actions/upload-artifact@v4
         with:
           name: world-save

@@ -15,11 +15,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
+    parser.add_argument('--dimension-bootstrap', action='store_true',
+                        help='Run fresh expanded round-v2 writer and compiled-size reader processes')
     parser.add_argument('--startup-only', action='store_true',
                         help='Diagnose production initialization without running any persistence assertions')
     parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
     parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore'))
     args = parser.parse_args()
+    if args.dimension_bootstrap and (args.startup_only or args.negative_control):
+        parser.error('Expanded fresh-process checks run separately from existing mutation/startup cases')
     if args.startup_only and args.negative_control:
         parser.error('Startup diagnostics cannot run persistence mutation controls')
     if not args.prepare_only and not args.byond_bin:
@@ -30,6 +34,7 @@ def main():
     dme = root / (prefix + '.dme')
     generated = []
     receipt = {'profile': args.profile, 'negative_control': args.negative_control,
+               'dimension_bootstrap': args.dimension_bootstrap,
                'prepared_only': args.prepare_only, 'startup_only': args.startup_only,
                'production_hashes': {}}
     print(f'Retained evidence: {output}', flush=True)
@@ -73,6 +78,8 @@ def main():
             source = source.replace(original_include, generated_path.name)
             (output / generated_path.name).write_text(text, encoding='utf-8', newline='\n')
         probe = (root / 'tests/world_save/durable_world_probe.dm').read_text(encoding='utf-8')
+        if args.dimension_bootstrap:
+            probe = probe[:probe.index('/world/New()')] + (root / 'tests/world_save/durable_dimension_probe.dm').read_text(encoding='utf-8')
         if args.startup_only:
             marker = '/world/New()\n'
             if probe.count(marker) != 1:
@@ -114,6 +121,28 @@ def main():
         shutil.copy2(root / 'config/tips.txt', output / 'config/tips.txt')
         shutil.copytree(root / 'config/names', output / 'config/names')
         platform_flags = ['-invisible', '-close'] if os.name == 'nt' else []
+        if args.dimension_bootstrap:
+            # Both use the identical compiled two-level DMB. Only disk files
+            # survive from the writer to the fresh reader process.
+            for mode, minimum_checks in (('write', 3), ('read', 12)):
+                run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-safe',
+                    '-params', f'profile={args.profile};dimension_mode={mode}', '-log', f'{mode}-runtime.log'],
+                    cwd=output, capture_output=True, text=True, timeout=120, creationflags=flags)
+                (output / f'{mode}-daemon.log').write_text(run.stdout + run.stderr, encoding='utf-8')
+                log = (output / f'{mode}-runtime.log').read_text(encoding='utf-8', errors='replace')
+                diagnostics = log + run.stdout + run.stderr
+                if run.returncode or re.search(r'##\s*error\s*:|unexpected runtime|bad ref|runtime error:|infinite loop|fatal error|segmentation|assertion failed', diagnostics, re.I):
+                    raise RuntimeError(f'Expanded {mode} native diagnostics invalidated evidence')
+                result = json.loads((output / 'metadata-result.json').read_text(encoding='utf-8'))
+                (output / f'{mode}-result.json').write_text(json.dumps(result, indent=2), encoding='utf-8')
+                receipt[mode] = result
+                (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+                if not result.get('done') or result.get('checks', 0) < minimum_checks:
+                    raise RuntimeError(f'Expanded {mode} assertions incomplete: {result}')
+                # A reader must write its own completion record.
+                (output / 'metadata-result.json').unlink()
+            print(json.dumps(receipt, indent=2))
+            return
         run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-safe',
                               '-params', 'profile=' + args.profile, '-log', 'runtime.log'], cwd=output,
                              capture_output=True, text=True, timeout=90, creationflags=flags)

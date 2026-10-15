@@ -13,6 +13,13 @@ to run all game/offline suites. The option defaults to false. For MCP, comment
 review, changelog, environment sweeps, component tools or trains, manually run
 that named workflow to opt in to its tests. No production game is launched.
 
+For the isolated world serializer, durable graph and expanded-level restart
+fixtures, enable **world_save_regressions** on **CI** with
+**extensive_regressions** disabled. This supports focused verification of stacked
+draft branches whose PR base is not `master`; those PRs do not trigger the
+master-only CI pull-request subscription automatically. The native transaction
+state-machine suite retains its separate **restart_transaction_regressions** flag.
+
 For the paid drying-rack owning-turf save fixture, enable **rack_save_regressions**
 on **CI** and leave **extensive_regressions** disabled for focused coverage.
 This manual option runs the positive rack-save probe and the coverage, runtime,

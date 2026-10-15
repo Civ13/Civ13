@@ -22,8 +22,14 @@ the prospective bounded dimensions before the shared allocator runs. Normal exac
 dimension validation runs again afterward. Existing mapped levels are never
 resized. A partial allocation requires restarting from the original compiled map;
 the loader does not shrink or roll back a live world. This focused fixture uses
-round-v1 metadata; fresh-process expanded round-v2 Gaia/Europe metadata and actual
-admin save/restart/same-body recovery remain separate acceptance work.
+round-v1 metadata. `run-durable-world.py --dimension-bootstrap --profile gaia`
+(and `--profile europe`) uses complete production sources with normal startup
+disabled, then launches a writer and fresh reader of the same compiled two-level
+DMB. It checks round-v2 metadata roots pointing to a third-level turf and player
+entry, rejects out-of-bounds prospective graph roots before allocation, and
+restores metadata aliases and environment state after shared allocation. These
+are tiny offline fixtures; actual admin save/restart/same-body recovery remains
+separate acceptance work.
 
 This fixture includes the repository's actual persistence functions, saver and
 loader, with isolated substitutes for game startup, chat, deletion, turf change,
