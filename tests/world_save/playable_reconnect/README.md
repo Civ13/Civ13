@@ -46,7 +46,7 @@ only the newly owned handle may be stopped, and retain its evidence/storage.
 Offline checks: run test_prepare.py with the verified Python interpreter. These
 checks cover copy hash rejection, unique reversible startup/Topic insertions and
 pinned digest shape. They do not establish compilation, native seed correctness
-or real-client recovery. Full-world seed completion and the actual client flow remain unproven.
+or real-client recovery. Tiny success alone does not establish full-world seed completion or client recovery.
 
 Native port correction: the first seed attempt at94c20 was stopped after observing
 an unexpected listener. OpenPort(0) requests an available port; it does not close
@@ -73,7 +73,8 @@ Full c450 seed observation: world/New entry after about102seconds, initial nativ
 port54534 closed to0, subsequent OS listener samples0, production intent published
 for the expected d94fe939 generation, native exit0 and all five original/copy hashes
 unchanged. seed-verification.json preserves a BUG: Unexpected nslookup event(pid2)
-from seed-native.log:6; clean acceptance failed and recovery was not launched.
+from seed-native.log:6; clean acceptance failed. Recovery was initially held; the later authorized
+diagnostic functional result is recorded below.
 The tiny fixture's opt-in --hold-seconds130 comparison passed cleanly including
 native login. It does not reproduce the full map constructor workload or explain
 the full-world diagnostic. An attempted sleeping-global-constructor timing control
@@ -85,3 +86,21 @@ so compiled hub metadata alone was insufficient to reproduce the full-world BUG.
 Both conditions use the same pinned engine, invisible/safe startup, seed parameter,
 actual port/admission guards and zero-listener census. No diagnostic is suppressed.
 This does not establish that the full-world diagnostic is harmless or fixed.
+
+
+Terminal diagnostic functional recovery on BYOND516.1681 used frozen gameplay
+02993f52411a94c5f0c7cfedf801bef99def7059 and tested adapter c4503548c.
+After comparison and explicit coordinator authorization, the same waiting client
+[0x5000000] automatically reclaimed Meira Yasai [0x3000044] without another
+connection or manual attachment. PLAYING3, ready/players_ready/import_complete1,
+hold/intent/busy0, errornull and saved game_id cHY-cHXv were observed. Name,
+account, mind.current linkage and direct inventory19 matched the historical
+receipt. A genuine Right-key input moved the same body390,126,2 to391,126,2;
+HUD and movement captures were retained. All five original/copied hashes remain
+unchanged; the owned native process was verified and stopped, with no listener.
+The preserved nslookup diagnostic keeps strict clean acceptance FAIL. This
+functional PASS does not establish recursive inventory parity, public startup,
+ordinary launcher acceptance, deployment, or save performance. Evidence root:
+D:/GitHub/civ13-preview-evidence/playable-gaia-reconnect-02993-entry-20261015,
+with assertions and limitations in recovery-result.json. Current source successors
+only add tiny-fixture controls/docs; they were not the full-world tested binary.
