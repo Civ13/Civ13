@@ -20,11 +20,14 @@ def main():
     parser.add_argument("--probe", choices=("batteries", "modern-energy"), default="batteries")
     parser.add_argument("--negative-control", action="store_true")
     parser.add_argument("--nuclear-negative-control", action="store_true")
+    parser.add_argument("--route-negative-control", choices=("debit", "completion", "radiation"))
     args = parser.parse_args()
     if (args.negative_control or args.nuclear_negative_control) and args.probe != "modern-energy":
         parser.error("The charge-debit negative control requires modern-energy")
     if args.negative_control and args.nuclear_negative_control:
         parser.error("Run each negative control independently")
+    if args.route_negative_control and (args.probe != "modern-energy" or args.negative_control or args.nuclear_negative_control):
+        parser.error("Route controls require modern-energy and run independently")
     callback = "run_battery_item_checks" if args.probe == "batteries" else "run_modern_energy_checks"
     root = Path(__file__).resolve().parents[1]
     # Assets/includes are resolved relative to the checkout; runtime storage is isolated.
@@ -55,6 +58,14 @@ def main():
         dme += f'\n#include "{root.as_posix()}/{probe_file}"\n'
         if args.probe == "modern-energy":
             dme += f'\n#include "{root.as_posix()}/tests/modern_energy/nuclear.dm"\n'
+            dme += f'\n#include "{root.as_posix()}/tests/modern_energy/fuel_route.dm"\n'
+            floor = (root / "code/game/turfs/floor_attackby.dm").read_text(encoding="utf-8")
+            start = floor.index("/turf/proc/mining_proc(")
+            end_match = re.search(r"\n/[^\n]+", floor[start + 1:])
+            end = start + 1 + end_match.start() if end_match else len(floor)
+            floor = floor[:start] + re.sub(r"\bprob\(", "energy_mining_prob(", floor[start:end]) + floor[end:]
+            (build / "floor.dm").write_text(floor, encoding="utf-8")
+            dme = replace_once(dme, '#include "code\\game\\turfs\\floor_attackby.dm"', f'#include "{build.as_posix()}/floor.dm"')
         if args.negative_control:
             generator = (root / "code/modules/1713/machinery/modern_generation.dm").read_text(encoding="utf-8")
             generator = replace_once(generator, "\tcharge_power += transfer", "\t// Negative control: omitted charge debit")
@@ -65,6 +76,17 @@ def main():
             nuclear = replace_once(nuclear, "\t\tfuel_energy -= output_power", "\t\t// Negative control: omitted fuel prepayment")
             (build / "nuclear.dm").write_text(nuclear, encoding="utf-8")
             dme = replace_once(dme, '#include "code\\modules\\1713\\machinery\\nuclear_generation.dm"', f'#include "{build.as_posix()}/nuclear.dm"')
+        if args.route_negative_control:
+            if args.route_negative_control == "radiation":
+                path = "code/modules/1713/radiation.dm"
+                old, new = "duration-1, 0, local_only)", "duration-1, 0)"
+            else:
+                path = "code/modules/1713/machinery/nuclear_generation.dm"
+                old, new = ("if (U.use(1))", "if (TRUE)") if args.route_negative_control == "debit" else ("!fuel_retired && loc == machine_loc && ", "")
+            mutated = replace_once((root / path).read_text(encoding="utf-8"), old, new)
+            (build / "route-control.dm").write_text(mutated, encoding="utf-8")
+            original_include = '#include "' + path.replace("/", chr(92)) + '"'
+            dme = replace_once(dme, original_include, f'#include "{build.as_posix()}/route-control.dm"')
         # Preserve resource lookup from original includes.
         dme = dme.replace('#define FILE_DIR .', f'#define FILE_DIR "{root.as_posix()}"')
         dme = re.sub(r'^#include "([^/":][^":]*)"', lambda m: f'#include "{root.as_posix()}/{m[1].replace(chr(92), "/")}"', dme, flags=re.M)
@@ -95,6 +117,9 @@ def main():
             return 0 if "duplicate charge cannot mint energy" in output and output.rstrip().endswith("FAIL") else 1
         if args.nuclear_negative_control:
             return 0 if "FAIL fuel prepaid" in output and output.rstrip().endswith("FAIL") else 1
+        if args.route_negative_control:
+            expected = {"debit": "processing pays one ore unit", "completion": "destroyed processor cannot consume", "radiation": "local recursion never changes global"}[args.route_negative_control]
+            return 0 if f"FAIL {expected}" in output and output.rstrip().endswith("FAIL") else 1
         return 0 if output.rstrip().endswith("PASS") else 1
 
 if __name__ == "__main__":

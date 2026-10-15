@@ -229,6 +229,9 @@
 	flammable = FALSE
 	value = 5
 	flags = CONDUCT
+	var/tmp/uranium_emitting = FALSE
+	var/tmp/uranium_retired = FALSE
+	var/tmp/uranium_extracting = FALSE
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
@@ -236,16 +239,55 @@
 				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
 			if (istype(H))
+				if (uranium_extracting || amount < 1)
+					return
+				uranium_extracting = TRUE
+				var/atom/start_loc = loc
+				var/atom/kit_loc = ET.loc
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
 				playsound(src,'sound/effects/pickaxe.ogg',100,1)
 				var/timera = 110/(H.getStatCoeff("dexterity"))
 				if (do_after(H, timera))
-					if (ET.reagents.total_volume <= 0)
+					if (!uranium_retired && amount >= 1 && loc == start_loc && ET.loc == kit_loc && get_dist(H, src) <= 1 && ET.reagents.total_volume <= 0)
 						ET.reagents.add_reagent("uranium",5)
 						ET.update_icon()
-						qdel(src)
+						use(1)
+				uranium_extracting = FALSE
 		else
 			..()
+/obj/item/stack/ore/uranium/process_radioactivity()
+	if (uranium_emitting || uranium_retired)
+		return
+	uranium_emitting = TRUE
+	uranium_emission_tick()
+
+/obj/item/stack/ore/uranium/proc/uranium_emission_tick()
+	if (uranium_retired || gc_destroyed || gcDestroyed || !loc || amount < 1 || !radioactive || radioactive_amt <= 0)
+		uranium_emitting = FALSE
+		return
+	// One pulse per second, ten pulses per 100 ticks, with no recursive burst.
+	var/atom/container = loc
+	var/shielded = FALSE
+	while (container && !isturf(container))
+		if (istype(container, /obj/structure/closet/crate/lead))
+			shielded = TRUE
+			break
+		container = container.loc
+	if (!shielded)
+		radiation_pulse(get_turf(src), 3, radioactive_amt, 1, FALSE, TRUE)
+	spawn(10)
+		uranium_emission_tick()
+
+/obj/item/stack/ore/uranium/Destroy()
+	uranium_retired = TRUE
+	return ..()
+
+/obj/item/stack/ore/uranium/Del()
+	uranium_retired = TRUE
+	..()
+
+/obj/item/stack/ore/uranium/persistence_runtime_var(key)
+	return (key in list("uranium_emitting", "uranium_retired", "uranium_extracting")) || ..()
 /obj/item/stack/ore/uranium/random
 	New()
 		..()

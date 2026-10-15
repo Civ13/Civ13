@@ -139,6 +139,7 @@ var/list/energy_ci_errors = list()
 		item.retire_generator()
 	energy_ci_check("registry released after cycles", civ_generators.len, 0)
 	run_nuclear_energy_checks()
+	run_nuclear_fuel_route_checks()
 	var/report = "Modern energy production contract checks\n"
 	for (var/error in energy_ci_errors)
 		report += "FAIL [error]\n"
