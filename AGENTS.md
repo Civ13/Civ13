@@ -491,12 +491,13 @@ retained entries are distinct from OS private memory. `run-game.ps1 -ExerciseCap
 checks real forward/reverse/stop behavior. Its optional bounded `-Visual` mode
 requires the coordinator's exclusive screen turn; see tests/conveyor/README.md.
 <!-- 2026-10-15: player-facing changelog review -->
-Major player-facing PRs need a concise reviewed Changelog section before being
-marked ready or merged. When using the merged-SHA manifest route, add the manifest
-in a linked follow-up PR and link it from the original PR. Choose one announcement
-route per change; the explicit `Changelog: text` field opts into merge-time
-publication and requires that publication to be authorized. Changelog creation
-and linkage alone do not authorize publisher activation or live confirmation.
+Meaningful player-facing PRs must include exactly one reviewed `changelog: text`
+line in their opening description before being marked ready or merged, outside
+comments, quotes and fenced code. Use concise player-facing text compatible with
+tools/changelog/README.md so the existing GitHub Action can announce it to Discord.
+Use one announcement route per change; do not also add a manifest for that change.
+This requirement does not authorize manual posts, publisher settings changes,
+deployment or claims that the change is running on a server.
 
 <!-- 2026-10-11: shipped Discord changelog -->
 The standalone publisher in tools/changelog supports an explicit `Changelog: text`
