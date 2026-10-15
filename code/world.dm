@@ -258,6 +258,9 @@ var/world_topic_spam_protect_time = world.timeofday
 		to_chat(world, SPAN_DANGER("Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[world.internet_address]:[port]</b>"))
 
 		sleep(sleeptime) // I think this is needed so C << link() doesn't fail
+		// sleep(0) yields too. A transaction can acquire ownership while the
+		// ordinary reboot callback is asleep; check at the shutdown boundary.
+		if(persistence_restart.busy || persistence_restart.startup_hold) return
 		if (processScheduler) // just in case
 			processScheduler.stop() // will be started again after the serverswap occurs
 		..(reason)

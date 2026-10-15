@@ -349,7 +349,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/restart-transaction"
           export TMPDIR="$RUNNER_TEMP/restart-transaction"
           python3 tests/world_save/run-restart-transaction.py --byond-bin "$PWD/BYOND/byond/bin"
-          for control in generation consume import; do
+          for control in generation consume import deferred-reboot; do
             python3 tests/world_save/run-restart-transaction.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
       - name: Retain restart transaction evidence

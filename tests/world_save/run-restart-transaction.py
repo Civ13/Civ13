@@ -17,19 +17,24 @@ def prepare(root, output, control=None):
         'consume': ('\t\tconsume(I)\n', '\t\t// Negative control: retain successful intent.\n'),
         'import': ('if(!load_generation()) throw EXCEPTION("Intended generation import failed: [map_storage.last_error]")', 'load_generation() // Negative control: ignore import failure.'),
     }
-    if control:
+    if control and control != 'deferred-reboot':
         before, after = mutations[control]
         if source.count(before) != 1:
             raise RuntimeError('Mutation anchor changed')
         source = source.replace(before, after, 1)
     world = (root / 'code/world.dm').read_text(encoding='utf-8')
     start = world.index('/world/Reboot(var/reason, recovery_generation)')
-    end = world.index('\n\t#ifdef OPENDREAM\n', start)
+    end = world.index('\n#define COLOR_LIGHT_SEPIA', start)
     reboot = world[start:end]
-    if reboot.count('return ..(reason)') != 1:
+    if reboot.count('..(reason)') != 2 or reboot.count('spawn (150)') != 1:
         raise RuntimeError('Native reboot adapter anchor changed')
-    reboot = reboot.replace('return ..(reason)', 'return fixture_native_reboot(reason)', 1)
-    reboot += '\n\treturn fixture_ordinary_reboot(reason)\n'
+    reboot = reboot.replace('..(reason)', 'fixture_native_reboot(reason)')
+    reboot = reboot.replace('spawn (150)', 'spawn (0)', 1)
+    if control == 'deferred-reboot':
+        anchor = '\t\tif(persistence_restart.busy || persistence_restart.startup_hold) return\n\t\tif (processScheduler)'
+        if reboot.count(anchor) != 1:
+            raise RuntimeError('Final deferred guard anchor changed')
+        reboot = reboot.replace(anchor, '\t\tif (processScheduler)', 1)
     probe = root / 'tests/world_save/restart_transaction_probe.dm'
     (output / 'probe.dm').write_bytes(probe.read_bytes())
     (output / 'transaction.dm').write_text(source, encoding='utf-8', newline='\n')
@@ -37,7 +42,7 @@ def prepare(root, output, control=None):
     macro = re.findall(r'^#define islist\(A\) .+$', (root / 'code/_macros.dm').read_text(encoding='utf-8'), re.M)
     if len(macro) != 1:
         raise RuntimeError('Production list macro changed')
-    (output / 'probe.dme').write_text(macro[0] + '\n#include "probe.dm"\n#define fdel(path) restart_delete_adapter(path)\n#include "transaction.dm"\n#include "reboot.dm"\n', encoding='utf-8')
+    (output / 'probe.dme').write_text(macro[0] + '\n#define SPAN_DANGER(text) text\n#include "probe.dm"\n#define fdel(path) restart_delete_adapter(path)\n#include "transaction.dm"\n#define sleep(delay) restart_sleep_adapter(delay)\n#include "reboot.dm"\n', encoding='utf-8')
     return {'negative_control': control, 'production_hashes': {
         name: hashlib.sha256((root / name).read_bytes()).hexdigest()
         for name in (relative, 'code/world.dm', 'code/_macros.dm')},
@@ -49,7 +54,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
-    parser.add_argument('--negative-control', choices=('generation', 'consume', 'import'))
+    parser.add_argument('--negative-control', choices=('generation', 'consume', 'import', 'deferred-reboot'))
     args = parser.parse_args()
     if not args.prepare_only and not args.byond_bin:
         parser.error('--byond-bin is required for native execution')
@@ -76,13 +81,14 @@ def main():
     if run.returncode or re.search(r'runtime error:|bad ref|BUG:|##\s*ERROR\s*:|RUNTIME:|infinite loop|fatal error', log, re.I):
         raise RuntimeError('Unexpected engine diagnostic')
     result = json.loads((output / 'result.json').read_text(encoding='utf-8'))
-    if not result.get('done') or result.get('checks', 0) < 22:
+    if not result.get('done') or result.get('checks', 0) < 24:
         raise RuntimeError('Missing transaction assertions')
     failures = [line[6:] for line in log.splitlines() if line.startswith('FAIL: ')]
     expected = {
         'generation': ['stale completed generation restarted'],
         'consume': ['startup recovery failed to consume after successful load', 'failed consumption claimed completion', 'consumption retry reimported world'],
         'import': ['failed import discarded intent or released hold'],
+        'deferred-reboot': ['ordinary reboot crossed final-yield transaction ownership'],
     }.get(args.negative_control, [])
     if failures != expected or result['failures'] != len(expected):
         raise RuntimeError(f'Unexpected assertion failures: {failures}')

@@ -52,6 +52,9 @@ its supervisor protocol is outside this native transaction's acceptance.
 `tests/world_save/run-restart-transaction.py` compiles the production state machine
 and immediate reboot guards with isolated filesystem, saver/loader and native
 restart adapters. It does not reboot a real game. Its generation, consumption and
-import mutation controls must fail their specific assertions. A full-map native
+import and deferred-reboot mutation controls must fail their specific assertions.
+The deferred path uses the production reboot body, shortens its initial delay,
+activates transaction ownership during its final yield, and injects only native
+restart/scheduler effects. A full-map native
 save/restart/rejoin test remains separate acceptance, including the native parent
 reboot behavior on BYOND 516.1681. This change makes no save-speed claim.

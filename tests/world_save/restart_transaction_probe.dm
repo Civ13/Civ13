@@ -9,6 +9,16 @@ var/datum/controller/gameticker/ticker = new
 var/delete_failure = FALSE
 var/native_calls = 0
 var/ordinary_calls = 0
+var/activate_during_reboot_yield = FALSE
+var/datum/fixture_restart_scheduler/processScheduler = new
+/datum/fixture_restart_scheduler/proc/stop()
+	ordinary_calls++
+/proc/restart_sleep_adapter(delay)
+	if(activate_during_reboot_yield)
+		spawn(0)
+			persistence_restart.busy = TRUE
+	// Exercise an actual yield; only the duration is adapted for determinism.
+	sleep(max(1, delay))
 var/checks = 0
 var/failures = 0
 /map_storage
@@ -35,9 +45,6 @@ var/failures = 0
 /proc/fixture_native_reboot(reason)
 	native_calls++
 	return FALSE
-/proc/fixture_ordinary_reboot(reason)
-	ordinary_calls++
-	return TRUE
 /proc/check(condition, message)
 	checks++
 	if(!condition)
@@ -154,5 +161,18 @@ var/failures = 0
 		var/before = native_calls
 		check(!world.Reboot(0, T.expected_generation) && native_calls == before, "last native generation guard bypassed")
 		check(!world.Reboot(0) && !ordinary_calls, "ordinary reboot bypassed active save")
+		T.busy = FALSE
+		before = native_calls
+		activate_during_reboot_yield = TRUE
+		world.Reboot(0)
+		sleep(3)
+		check(T.busy && native_calls == before && ordinary_calls == 0, "ordinary reboot crossed final-yield transaction ownership")
+		T.busy = FALSE
+		activate_during_reboot_yield = FALSE
+		ordinary_calls = 0
+		before = native_calls
+		world.Reboot(0)
+		sleep(3)
+		check(native_calls == before + 1 && ordinary_calls == 1, "ordinary reboot adapter did not exercise deferred shutdown")
 		text2file(json_encode(list("done" = TRUE, "checks" = checks, "failures" = failures)), "result.json")
 		shutdown()
