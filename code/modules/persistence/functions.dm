@@ -210,7 +210,8 @@ map_storage
 	sleep(1)
 	world.log << "Clearing mobs..."
 	for (var/mob/mob in world)
-		if (!istype(mob, /mob/new_player))
+		// Lighting's runtime view singleton must outlive map contents.
+		if (!istype(mob, /mob/new_player) && mob != dview_mob)
 			qdel(mob)
 	sleep(1)
 	world.log << "Clearing objects..."
