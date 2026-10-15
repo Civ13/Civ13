@@ -309,7 +309,9 @@ var/global/persistence_save_in_progress = FALSE
 		return FALSE
 	persistence_save_in_progress = FALSE
 	log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
-	map_storage.finish_player_restoration()
+	// Restart recovery releases its generation-bound hold only after consuming
+	// the intent. Its waiting clients must be reclaimed at that later boundary.
+	if(!transaction) map_storage.finish_player_restoration()
 	return 1
 
 // The completion marker and each level carry the same generation nonce. Legacy

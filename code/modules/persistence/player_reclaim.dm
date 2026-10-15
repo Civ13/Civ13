@@ -100,10 +100,13 @@ var/global/persistence_player_restore_ready = FALSE
 	return TRUE
 
 /map_storage/proc/finish_player_restoration()
+	if(persistence_save_in_progress || persistence_restart.startup_hold || last_error)
+		return FALSE
 	persistence_player_restore_ready = TRUE
 	for(var/client/C in clients)
 		if(istype(C.mob, /mob/new_player))
 			reclaim_saved_player(C.mob)
+	return TRUE
 
 /map_storage/proc/validate_saved_player_owner(savefile/F, ref, list/owners)
 	F.cd = entry_path(F, ref)

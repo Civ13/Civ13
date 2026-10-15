@@ -229,6 +229,25 @@ The include inventory does not cover that resource or the final generated
 A missing resource is a staging/compilation failure, not the metadata-write
 negative control.
 
+### Clients waiting through restart recovery
+
+`run-durable-world.py --recovery-reconnect --profile gaia` (or `europe`)
+uses production disk save/load, generation validation, restart intent consumption
+and player reclaim in temporary storage. Client enumeration, admission responses
+and key transfer use explicit fixture adapters; no real account, HUD or native
+reboot is exercised. The probe checks clients waiting before and arriving during
+import, a failed intent-consumption boundary and safe retry without reimport,
+exactly one transfer after release, preserved body health/inventory/metadata alias,
+ban/guest restrictions, disconnected sessions and retained rejected claims.
+`--negative-control reclaim-order` moves the readiness sweep back before intent
+consumption, reproducing the stale lobby failure. It must fail specifically at
+the waiting authenticated client's missing reclaim assertion.
+
+Ordinary map loads finish player restoration after load. Restart transactions
+finish it after the matching intent is consumed and the startup/save hold is
+released. A client already in the lobby therefore receives the same normal
+reclaim/Login path as one connecting after recovery completes.
+
 ### Serialization progress diagnostics
 
 Saved account/body ownership and its isolated negative controls are documented

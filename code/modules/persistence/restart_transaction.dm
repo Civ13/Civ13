@@ -132,6 +132,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		busy = FALSE
 		report("Intended generation restored and one-shot intent consumed")
 		last_error = null
+		map_storage.finish_player_restoration()
 		return TRUE
 	catch(var/exception/e)
 		persistence_save_in_progress = TRUE

@@ -17,11 +17,17 @@ def main():
     parser.add_argument('--prepare-only', action='store_true')
     parser.add_argument('--dimension-bootstrap', action='store_true',
                         help='Run fresh expanded round-v2 writer and compiled-size reader processes')
+    parser.add_argument('--recovery-reconnect', action='store_true',
+                        help='Run production recovery and waiting-client reclaim with client IO adapted')
     parser.add_argument('--startup-only', action='store_true',
                         help='Diagnose production initialization without running any persistence assertions')
     parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
-    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore'))
+    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order'))
     args = parser.parse_args()
+    if args.recovery_reconnect and (args.dimension_bootstrap or args.startup_only or args.negative_control not in (None, 'reclaim-order')):
+        parser.error('Recovery reconnect checks run separately from other fixture modes')
+    if args.negative_control == 'reclaim-order' and not args.recovery_reconnect:
+        parser.error('Reclaim ordering control requires --recovery-reconnect')
     if args.dimension_bootstrap and (args.startup_only or args.negative_control):
         parser.error('Expanded fresh-process checks run separately from existing mutation/startup cases')
     if args.startup_only and args.negative_control:
@@ -34,7 +40,7 @@ def main():
     dme = root / (prefix + '.dme')
     generated = []
     receipt = {'profile': args.profile, 'negative_control': args.negative_control,
-               'dimension_bootstrap': args.dimension_bootstrap,
+               'dimension_bootstrap': args.dimension_bootstrap, 'recovery_reconnect': args.recovery_reconnect,
                'prepared_only': args.prepare_only, 'startup_only': args.startup_only,
                'production_hashes': {}}
     print(f'Retained evidence: {output}', flush=True)
@@ -61,6 +67,7 @@ def main():
             'reachability': ('code/modules/persistence/durable_world.dm', '\tvalidate_durable_reachability(G)', '\tif(FALSE) validate_durable_reachability(G)'),
             'callback': ('code/modules/persistence/durable_timers.dm', '\t\tif(!owner || revision != expected_revision || pending[key] != row) return', '\t\tif(!owner) return'),
             'timer-restore': ('code/modules/persistence/durable_world.dm', '\tmap.durable_timer_queue().restore(timers)', '\t// Negative control: omit restoring persisted callbacks.'),
+            'reclaim-order': ('code/modules/persistence/restart_transaction.dm', '\t\tmap_storage.finish_player_restoration()\n', ''),
         }
         if args.negative_control:
             relative, before, after = mutations[args.negative_control]
@@ -68,6 +75,28 @@ def main():
             if text.count(before) != 1:
                 raise RuntimeError('Negative-control anchor changed')
             replacements[relative] = text.replace(before, after, 1)
+            if args.negative_control == 'reclaim-order':
+                # Reproduce the observed old ordering: the one readiness sweep
+                # occurs while the startup hold still rejects saved claims.
+                anchor = '\t\tconsume(I)\n'
+                if replacements[relative].count(anchor) != 1:
+                    raise RuntimeError('Reclaim ordering mutation anchor changed')
+                replacements[relative] = replacements[relative].replace(anchor, '\t\tmap_storage.finish_player_restoration()\n' + anchor, 1)
+        if args.recovery_reconnect:
+            relative = 'code/modules/persistence/player_reclaim.dm'
+            text = (root / relative).read_text(encoding='utf-8')
+            start = text.index('/map_storage/proc/reclaim_saved_player(')
+            end = text.index('/map_storage/proc/validate_saved_player_owner(', start)
+            body = text[start:end]
+            for before, after in (('lobby.client', 'lobby.claim_client'),
+                                  ('var/client/C', 'var/datum/recovery_fixture_client/C'),
+                                  ('H.key = C.key', 'recovery_fixture_transfer(C, H)'),
+                                  (' in clients)', ' in recovery_fixture_clients)')):
+                expected = 2 if before == 'var/client/C' else (3 if before == 'lobby.client' else 1)
+                if body.count(before) != expected:
+                    raise RuntimeError('Reclaim client IO adapter anchor changed: ' + before)
+                body = body.replace(before, after)
+            replacements[relative] = text[:start] + body + text[end:]
         for index, (relative, text) in enumerate(replacements.items()):
             generated_path = root / (prefix + f'_{index}.dm')
             generated_path.write_text(text, encoding='utf-8', newline='\n')
@@ -80,6 +109,8 @@ def main():
         probe = (root / 'tests/world_save/durable_world_probe.dm').read_text(encoding='utf-8')
         if args.dimension_bootstrap:
             probe = probe[:probe.index('/world/New()')] + (root / 'tests/world_save/durable_dimension_probe.dm').read_text(encoding='utf-8')
+        if args.recovery_reconnect:
+            probe = probe[:probe.index('/world/New()')] + (root / 'tests/world_save/recovery_reconnect_probe.dm').read_text(encoding='utf-8')
         if args.startup_only:
             marker = '/world/New()\n'
             if probe.count(marker) != 1:
@@ -169,12 +200,15 @@ def main():
         result = json.loads(result_path.read_text(encoding='utf-8'))
         expected = {'season': 'environment phase reset', 'preflight': 'malformed artillery sentinel mutated world',
                     'reachability': 'orphan metadata reference accepted', 'callback': 'restored callback duplicated',
-                    'timer-restore': 'persisted callback was not restored'}
+                    'timer-restore': 'persisted callback was not restored',
+                    'reclaim-order': 'waiting authenticated client not reclaimed after recovery'}
         if args.negative_control:
             if result.get('done') or result.get('error') != expected[args.negative_control]:
                 raise RuntimeError('Negative control failed outside its intended assertion: ' + str(result))
             if args.negative_control == 'preflight' and result.get('checks') != 7:
                 raise RuntimeError('Preflight control did not reach its first malformed-wire assertion')
+            if args.negative_control == 'reclaim-order' and result.get('checks') != 8:
+                raise RuntimeError('Reclaim ordering control did not reach its intended first failure')
         elif not result.get('done') or result.get('checks', 0) < 19:
             raise RuntimeError('Native integration fixture incomplete: ' + str(result))
         receipt['result'] = result
