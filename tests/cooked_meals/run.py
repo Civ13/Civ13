@@ -32,6 +32,15 @@ def source_for(control):
     return source
 
 
+DIAGNOSTIC_MARKERS = ('runtime error:', 'runtime in ', 'uncaught exception:',
+                      'bug:', '## error:', 'bad ref', 'bad loc')
+
+
+def verify_result(returncode, actual, expected, diagnostics):
+    if returncode or actual != expected or any(marker in diagnostics.lower() for marker in DIAGNOSTIC_MARKERS):
+        raise RuntimeError(f'Expected {expected!r}, got {actual!r}; diagnostics: {diagnostics[-2500:]}')
+
+
 def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--byond-bin', type=Path)
@@ -118,8 +127,7 @@ def main():
             (args.output / 'daemon.log').write_text(result.stdout + result.stderr, encoding='utf-8')
             actual = (work / 'result.txt').read_text(encoding='utf-8').strip() if (work / 'result.txt').exists() else ''
             expected = CONTROLS[args.negative_control][2] if args.negative_control else 'PASS: cooking and native disk round trips'
-            if result.returncode or actual != expected or any(marker in diagnostics.lower() for marker in ('runtime error:', 'bug:', '## error:')):
-                raise RuntimeError(f'Expected {expected!r}, got {actual!r}; diagnostics: {diagnostics[-2500:]}')
+            verify_result(result.returncode, actual, expected, diagnostics)
             print(('PASS expected mutation: ' if args.negative_control else '') + actual)
     finally:
         for path in generated:
