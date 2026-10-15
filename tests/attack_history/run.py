@@ -113,7 +113,7 @@ def main():
     if run.returncode or re.search(r'runtime error|Bad ref|Bad loc|BUG:|## ERROR:', combined, re.I):
         raise SystemExit('Native diagnostics invalidate evidence:\n' + combined)
     result = json.loads((evidence / 'result.json').read_text())
-    if result['checks'] != 27 or 'COMPLETE attack history fixture' not in log:
+    if result['checks'] != 28 or 'COMPLETE attack history fixture' not in log:
         raise SystemExit(f'Incomplete fixture: {result}')
     if args.negative_control:
         required = CONTROLS[args.negative_control][2]

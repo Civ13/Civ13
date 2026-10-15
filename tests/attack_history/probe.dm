@@ -91,6 +91,7 @@ var/list/metrics = list()
 	var/list/shared = body.attack_log
 	var/mob/other = new
 	check(shared == ghost.attack_log && shared != other.attack_log, "ghost shares only its body's list")
+	attack_log << "ORDINARY_SYNTHETIC_BEFORE"
 	var/list/expected = list()
 	for (var/i = 1 to 1100)
 		var/entry = i % 11 ? "\[synthetic-time\] <font color='red'>row [i] \"quoted\"\nline</font>" : "duplicate row"
@@ -99,6 +100,7 @@ var/list/metrics = list()
 			body.append_attack_log(entry)
 		else
 			ghost.append_attack_log(entry)
+	attack_log << "ORDINARY_SYNTHETIC_AFTER"
 	check(body.attack_log == shared && ghost.attack_log == shared, "retirement preserves body and ghost list identity")
 	check(body.attack_log.len <= ATTACK_HISTORY_RECENT_LIMIT, "normal recent history bounded")
 	check(same_rows(expected, combined_rows(body)), "archived plus recent rows preserve exact order text and duplicates")
@@ -109,8 +111,10 @@ var/list/metrics = list()
 	check(!config.log_attack && archived_entries.len > 0, "optional ordinary logger cannot disable archival")
 	var/list/disk_rows = list()
 	var/metadata_ok = TRUE
-	for (var/line in splittext(file2text(attack_log), "\n"))
-		if (!length(line))
+	var/disk_text = file2text(attack_log)
+	check(findtext(disk_text, "ORDINARY_SYNTHETIC_BEFORE") && findtext(disk_text, "ORDINARY_SYNTHETIC_AFTER"), "ordinary stream writes coexist with archive appends in the same file")
+	for (var/line in splittext(disk_text, "\n"))
+		if (copytext(line, 1, 2) != "{")
 			continue
 		var/list/packet = json_decode(line)
 		metadata_ok = metadata_ok && packet["category"] == "ARCHIVED_MOB_ATTACK_HISTORY" && packet["game_id"] == game_id && length(packet["subject_ref"])

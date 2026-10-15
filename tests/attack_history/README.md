@@ -49,8 +49,9 @@ port. Every name and history row is synthetic.
 python3 tests/attack_history/run.py --byond-bin /trusted/byond/bin --evidence-dir /fresh/evidence
 ```
 
-The 27 contracts cover exact ordering/text/duplicates, shared identity, archive
-before cut, disabled ordinary logging, actual disk round trip, zero/throw/missing
+The 28 contracts cover exact ordering/text/duplicates, shared identity, archive
+before cut, disabled ordinary logging, actual disk round trip interleaved with
+ordinary stream writes, zero/throw/missing
 file failures, bounded warnings/retries, and gradual legacy catchup. Negative
 controls `failure-trim`, `alias` and `batch` must complete without engine errors
 and fail their named contracts. The PR's existing introduced-test CI selector
