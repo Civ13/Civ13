@@ -254,9 +254,9 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		//A spoon for mom, a spoon for dad. If we are here, then food is go to mouth to human type species, not others!
 		playsound(M.loc,"eat", rand(40,85), TRUE)
 		if (reagents.total_volume > bitesize)
-			reagents.trans_to_mob(M, bitesize, CHEM_INGEST)
+			take_food_bite(M, bitesize)
 		else
-			reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
+			take_food_bite(M, reagents.total_volume)
 		bitecount++
 		On_Consume(M)
 		return TRUE

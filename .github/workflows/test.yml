@@ -369,6 +369,22 @@ jobs:
           name: dew-collector-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/dew-collector/
           retention-days: 7
+      - name: Verify cooked meals and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/cooked_meals')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/cooked_meals/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/cooked-meals/positive"
+          for control in payment portions reward persistence heat; do
+            python3 tests/cooked_meals/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/cooked-meals/$control"
+          done
+      - name: Upload cooked meal evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/cooked_meals'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: cooked-meals-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/cooked-meals/
+          retention-days: 7
       - name: Validate compiled crafting recipes
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/crafting')
         run: |
