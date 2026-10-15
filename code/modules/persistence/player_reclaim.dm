@@ -68,7 +68,7 @@ var/global/persistence_player_restore_ready = FALSE
 	bodies |= H
 
 /map_storage/proc/find_restored_player(account)
-	if(!persistence_player_restore_ready || persistence_save_in_progress || last_error)
+	if(!persistence_player_restore_ready || persistence_save_in_progress || persistence_restart.startup_hold || last_error)
 		return null
 	if(!istext(account) || !length(account) || ckey(account) != account || persistence_guest_account(account))
 		return null

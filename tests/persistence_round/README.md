@@ -19,5 +19,11 @@ being saved. It must return without clearing the finish flag or changing round
 state. `--negative-control save` removes only the save guard and must fail that
 interaction check before any vote or delayed round-end assertions.
 
+The transaction startup hold is checked separately with the save flag cleared,
+so the save guard cannot hide a missing startup guard. The ticker must preserve
+the finish flag and PLAYING state. `--negative-control startup` removes only
+that production guard and must fail this exact assertion.
+
 This is a production-procedure integration test, not a full public-server test
-or a save/reboot proof. The administrative save/restart transaction is unchanged.
+or a save/reboot proof. The separate restart-transaction suite checks the
+administrative save/restart contract with isolated external-effect adapters.

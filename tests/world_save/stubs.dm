@@ -1,5 +1,14 @@
 // Offline adapters: no game startup, players, network, SQL, or production files.
 var/TimeOfGame = 0
+// Ordinary serializer probes do not execute reboot effects. Transaction tests
+// compile the complete production state machine with their own adapters.
+var/datum/persistence_restart_transaction/persistence_restart = new
+/datum/persistence_restart_transaction
+	var/startup_hold = FALSE
+	var/busy = FALSE
+	var/expected_generation
+/datum/persistence_restart_transaction/proc/exists()
+	return FALSE
 var/obj/map_metadata/map
 var/list/errors = list()
 var/list/clients = list()

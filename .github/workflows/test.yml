@@ -22,7 +22,11 @@ on:
         type: boolean
         default: false
       persistence_integration_regressions:
-        description: 'Opt in to world-save and continuous-round integration controls'
+        description: 'Opt in to world-save, restart transaction and continuous-round integration controls'
+        type: boolean
+        default: false
+      restart_transaction_regressions:
+        description: 'Opt in only to isolated save restart transaction checks'
         type: boolean
         default: false
 
@@ -419,6 +423,24 @@ jobs:
           name: recipe-validation
           path: recipe-checks.txt
           if-no-files-found: warn
+      - name: Isolated save restart transaction regression
+        id: restart_transaction
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.restart_transaction_regressions == true || inputs.persistence_integration_regressions == true
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/restart-transaction"
+          export TMPDIR="$RUNNER_TEMP/restart-transaction"
+          python3 tests/world_save/run-restart-transaction.py --byond-bin "$PWD/BYOND/byond/bin"
+          for control in generation consume import deferred-reboot; do
+            python3 tests/world_save/run-restart-transaction.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
+      - name: Retain restart transaction evidence
+        if: always() && steps.restart_transaction.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: restart-transaction
+          path: ${{ runner.temp }}/restart-transaction/
+          if-no-files-found: error
       - name: Offline world-save round-trip regression
         id: world_save
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.persistence_integration_regressions == true
@@ -863,6 +885,7 @@ jobs:
           /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control ticker
           /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control deferred
           /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control save
+          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control startup
       - name: Retain continuous-round integration evidence
         if: always() && steps.persistence_round.outcome != 'skipped'
         uses: actions/upload-artifact@v4
