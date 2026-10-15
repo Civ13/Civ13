@@ -47,8 +47,6 @@
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
-			if (!ET.reagents || ET.gc_destroyed || ET.gcDestroyed)
-				return
 			if (ET.reagents.total_volume > 0)
 				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
@@ -237,6 +235,8 @@
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
+			if (!ET.reagents || ET.gc_destroyed || ET.gcDestroyed)
+				return
 			if (ET.reagents.total_volume > 0)
 				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
 				return
