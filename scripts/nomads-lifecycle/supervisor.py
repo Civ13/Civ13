@@ -30,6 +30,16 @@ def digest(path, algorithm='sha256'):
         return hashlib.file_digest(stream, algorithm).hexdigest()
 
 
+def verify_binaries(folder, manifest, revision):
+    if manifest.get('revision') != revision or manifest.get('map') != 'NOMADS_EUROPE':
+        raise RuntimeError('Staged build identity changed')
+    if set(manifest.get('binaries', {})) != {'civ13.dmb', 'civ13.rsc'}:
+        raise RuntimeError('Staged build manifest is incomplete')
+    for name, expected in manifest['binaries'].items():
+        if digest(Path(folder) / name) != expected:
+            raise RuntimeError('Staged build binary changed')
+
+
 @contextmanager
 def exclusive_lock(path):
     with Path(path).open('a+b') as stream:
@@ -193,13 +203,7 @@ class Supervisor:
         folder = self.root / 'builds' / revision
         if folder.exists():
             manifest = json.loads((folder / 'build.json').read_text())
-            if manifest.get('revision') != revision or manifest.get('map') != 'NOMADS_EUROPE':
-                raise RuntimeError('Previously staged build identity changed')
-            if set(manifest.get('binaries', {})) != {'civ13.dmb', 'civ13.rsc'}:
-                raise RuntimeError('Previously staged build manifest is incomplete')
-            for name, expected in manifest['binaries'].items():
-                if digest(folder / 'game' / name) != expected:
-                    raise RuntimeError('Previously staged build changed')
+            verify_binaries(folder / 'game', manifest, revision)
             return folder
         folder.mkdir(parents=True)
         archive = folder / 'source.zip'
@@ -280,6 +284,8 @@ class Supervisor:
             probe.bind(('0.0.0.0', c['port']))
         run = self.root / 'runs' / operation
         shutil.copytree(build / 'game', run)
+        manifest = json.loads((build / 'build.json').read_text())
+        verify_binaries(run, manifest, build.name)
         shutil.copytree(c['config_directory'], run / 'config', dirs_exist_ok=True)
         (run / 'config/lifecycle-revision.txt').write_text(build.name, encoding='ascii')
         if backup:
@@ -287,7 +293,7 @@ class Supervisor:
         flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
         child = subprocess.Popen([c['daemon'], 'civ13.dmb', str(c['port']), '-trusted', '-invisible', '-log', 'supervisor-runtime.log'], cwd=run, creationflags=flags)
         previous = {key: self.state.get(key) for key in ('revision', 'host', 'generation', 'backup', 'operation')} if self.state else None
-        self.state = {'revision': build.name, 'phase': 'starting', 'generation': generation, 'backup': str(backup) if backup else None, 'previous': previous, 'host': {'pid': child.pid, 'creation_filetime': process_identity(child.pid), 'workdir': str(run)}, 'operation': operation}
+        self.state = {'revision': build.name, 'binaries': manifest['binaries'], 'phase': 'starting', 'generation': generation, 'backup': str(backup) if backup else None, 'previous': previous, 'host': {'pid': child.pid, 'creation_filetime': process_identity(child.pid), 'workdir': str(run)}, 'operation': operation}
         write_json(self.state_path, self.state)
         self.record('started', revision=build.name, pid=child.pid, workdir=str(run), operation=operation)
         deadline = self.clock() + c.get('startup_timeout_seconds', 1800)

@@ -65,6 +65,17 @@ class SupervisorTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'PID was reused'):
                 self.supervisor.alive()
 
+    def test_modified_binary_rejected_again_after_copy(self):
+        folder = self.root / 'binaries'
+        folder.mkdir()
+        for name in ('civ13.dmb', 'civ13.rsc'):
+            (folder / name).write_bytes(b'compiled bytes')
+        manifest = {'revision': 'b' * 40, 'map': 'NOMADS_EUROPE', 'binaries': {name: m.digest(folder / name) for name in ('civ13.dmb', 'civ13.rsc')}}
+        m.verify_binaries(folder, manifest, 'b' * 40)
+        (folder / 'civ13.dmb').write_bytes(b'changed after staging')
+        with self.assertRaisesRegex(RuntimeError, 'binary changed'):
+            m.verify_binaries(folder, manifest, 'b' * 40)
+
     def test_halt_latch_prevents_fetch_or_restart(self):
         (self.supervisor.root / 'HALTED.json').write_text('{}')
         with patch.object(self.supervisor, 'candidate') as candidate:
