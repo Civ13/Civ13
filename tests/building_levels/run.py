@@ -13,6 +13,9 @@ import uuid
 ROOT = Path(__file__).resolve().parents[2]
 CORE = 'code/game/objects/building_levels.dm'
 CONTROLS = {
+    'removal': ('\t\tqdel(C)', '\t\treturn', 'FAIL: roof removal removes floor'),
+    'foundation': ('if (building_floor_height(get_turf(A), depth, max(h + 1, required_height)) >= 0)', 'if (TRUE)', 'FAIL: strong upper pillar cannot bypass weaker foundation'),
+    'persistence': ('"building_pair_id", "building_floor_z", "health"', '"building_floor_z", "health"', 'FAIL: disk restored slab links'),
     'pair': ('R.building_pair_id = id', 'R.building_pair_id = null', 'FAIL: pair resolves both faces'),
     'support': ('max(h + 1, required_height) <= tier', 'TRUE', 'FAIL: wood height limit'),
 }

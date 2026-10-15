@@ -115,6 +115,8 @@
 	return TRUE
 
 /obj/item/weapon/covers/attack_self(mob/user)
+	if (!building_item_usable(src, user))
+		return
 	var/turf/target = get_step(user, user.dir)
 	var/turf/start = get_turf(user)
 	if (!target || istype(target, /turf/wall) || istype(target, /turf/floor/beach/water/deep/saltwater))
@@ -131,7 +133,7 @@
 		covers_time /= H.getStatCoeff("crafting") ** 2
 	if (WWinput(user, "Build a floor [dir2text(user.dir)] of you?", "Floor Construction", "Continue", list("Continue", "Stop")) != "Continue")
 		return
-	if (get_turf(user) != start || !do_after(user, covers_time, start) || !src || get_turf(user) != start)
+	if (get_turf(user) != start || !do_after(user, covers_time, start) || !building_item_usable(src, user) || get_turf(user) != start)
 		return
 	error = building_floor_error(target)
 	if (error)

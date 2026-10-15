@@ -354,7 +354,15 @@
 	flammable = FALSE
 	target_type = /obj/roof/mayan
 
+/obj/item/weapon/roofbuilder/proc/building_confirm(mob/user, direction)
+	return WWinput(user, "Build a roof [dir2text(direction)] of you, with a walkable floor above?", "Roof Construction", "Continue", list("Continue", "Stop")) == "Continue"
+
+/obj/item/weapon/roofbuilder/proc/building_wait(mob/user, duration, turf/start)
+	return do_after(user, duration, start)
+
 /obj/item/weapon/roofbuilder/attack_self(mob/user)
+	if (!building_item_usable(src, user))
+		return
 	var/turf/target = get_step(user, user.dir)
 	var/turf/start = get_turf(user)
 	var/error = building_roof_error(target)
@@ -366,15 +374,15 @@
 		var/mob/living/human/H = user
 		covers_time /= H.getStatCoeff("strength")
 		covers_time /= H.getStatCoeff("crafting") ** 2
-	if (WWinput(user, "Build a roof [dir2text(user.dir)] of you, with a walkable floor above?", "Roof Construction", "Continue", list("Continue", "Stop")) != "Continue")
+	if (!building_confirm(user, user.dir))
 		return
 	if (get_turf(user) != start || done)
 		return
 	visible_message(SPAN_NOTICE("[user] starts building the roof."))
-	if (!do_after(user, covers_time, start) || !src || done || get_turf(user) != start)
+	if (!building_wait(user, covers_time, start) || !building_item_usable(src, user) || done || get_turf(user) != start)
 		return
 	done = TRUE
-	if (!building_construct_roof(target, target_type, user))
+	if (!building_construct_roof(target, target_type, user, src))
 		done = FALSE
 		return
 	visible_message(SPAN_NOTICE("[user] finishes building the roof and upper floor."))

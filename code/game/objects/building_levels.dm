@@ -157,7 +157,7 @@ var/building_compiled_maxz = 0
 	return 0
 
 /proc/building_roof_error(turf/T)
-	if (!T || building_allocating_z)
+	if (!T || building_allocating_z || persistence_save_in_progress)
 		return "The upper building level is not ready. Try again shortly."
 	if (istype(get_area(T), /area/caribbean/no_mans_land))
 		return "You cannot build a roof here."
@@ -175,7 +175,9 @@ var/building_compiled_maxz = 0
 	return null
 
 /proc/building_floor_error(turf/T)
-	if (!T || !building_open_turf(T))
+	if (!T)
+		return "The target floor no longer exists."
+	if (!building_open_turf(T))
 		return null // Ground-level finishes do not create ceilings underground.
 	if (building_allocating_z || T.z <= 1 || (locate(/obj/covers) in T))
 		return "You cannot build another floor here."
@@ -194,7 +196,10 @@ var/building_compiled_maxz = 0
 	C.building_roof_z = R.z
 	return TRUE
 
-/proc/building_construct_roof(turf/T, roof_type, mob/user)
+/proc/building_item_usable(obj/item/I, mob/user)
+	return I && user && I.loc == user && !I.gcDestroyed && !I.gc_destroyed
+
+/proc/building_construct_roof(turf/T, roof_type, mob/user, obj/item/source)
 	var/error = building_roof_error(T)
 	if (error)
 		to_chat(user, SPAN_WARNING(error))
@@ -205,6 +210,8 @@ var/building_compiled_maxz = 0
 	error = building_roof_error(T)
 	if (error)
 		to_chat(user, SPAN_WARNING(error))
+		return null
+	if (source && (!building_item_usable(source, user) || user.z != T.z || get_dist(user, T) > 1))
 		return null
 	var/obj/roof/R = new roof_type(T)
 	var/obj/covers/repairedfloor/C = new(locate(T.x, T.y, T.z + 1))
@@ -220,6 +227,8 @@ var/building_compiled_maxz = 0
 
 /obj/covers/proc/building_finish_floor()
 	var/turf/T = get_turf(src)
+	if (!T)
+		return FALSE
 	if (!building_open_turf(T))
 		return TRUE
 	var/turf/below = locate(x, y, z - 1)
