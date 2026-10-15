@@ -307,6 +307,19 @@ revalidates stationary targets. Keep masked names behind `get_visible_name()`,
 require a screen slot for inventory visibility, and forward runtime persistence
 exclusions. `tests/hover_name/run.py` exercises native production decisions with
 an injected client boundary, not real client mouse delivery or rendering.
+<!-- 2026-10-15: lighting persistence ownership -->
+Custom saves enumerate tmp lighting fields too. Exclude light/light_sources and
+derived light_source/lighting_corner/lighting_overlay graphs on export and import;
+their constructors require live owners/turfs. Rebuild sources after durable atom
+fields and after_load. tests/world_save/run-durable-world.py --lighting checks
+actual constructors and legacy graph recovery; full-map acceptance is separate.
+
+<!-- 2026-10-15: isolated recovery observer setup -->
+When normal global startup is disabled, fixtures that remove real mobs must
+initialize `GLOB.all_observable_events = list()` before constructing the moved,
+direction, name and stat observer events. Otherwise event construction can turn
+the null registry into one datum, and the second event raises a type mismatch.
+Missing direction observers also make real contained-item removal fail.
 
 <!-- 2026-10-14: local CID source comparison -->
 `tools/cid/get-cid.ps1` calls the reviewed Windows BYOND 516.1681 library's
@@ -784,3 +797,8 @@ Ticker save-in-progress gating precedes continuous persistence-round recovery.
 Do not clear a saved finished flag or change round state while serialization is
 yielding. tests/persistence_round/run.py --negative-control save removes that
 guard and must fail the production ticker/save interaction assertion.
+<!-- 2026-10-15: persistence runtime view helper -->
+ClearMap must preserve the global dview_mob identity. Retiring this runtime mob
+breaks FOR_DVIEW in post-import lighting processing after GC clears the global.
+The lighting recovery fixture runs production lighting_sources.fire(), not only
+light constructor/registration checks; lighting-view removes the preservation guard.

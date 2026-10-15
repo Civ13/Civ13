@@ -1,4 +1,14 @@
 // Offline adapters: no game startup, players, network, SQL, or production files.
+#ifndef BUILDING_MAX_Z
+#define BUILDING_MAX_Z 32
+#define BUILDING_EXTRA_LEVELS 8
+#define BUILDING_MAX_LEVEL_CELLS 2000000
+var/building_allocating_z = 0
+/proc/building_base_maxz()
+	return world.maxz
+/proc/building_allocate_level(target_z, bootstrap = FALSE)
+	return FALSE // Ordinary legacy fixtures never expand a level.
+#endif
 var/TimeOfGame = 0
 // Ordinary serializer probes do not execute reboot effects. Transaction tests
 // compile the complete production state machine with their own adapters.
@@ -10,6 +20,8 @@ var/datum/persistence_restart_transaction/persistence_restart = new
 /datum/persistence_restart_transaction/proc/exists()
 	return FALSE
 var/obj/map_metadata/map
+// ClearMap preserves the production view singleton; focused probes have none.
+var/mob/dview_mob
 var/list/errors = list()
 var/list/clients = list()
 var/game_id = "fixture-round"
@@ -70,6 +82,11 @@ var/list/mutate_on_tick = null
 /proc/ishuman(D)
 	return istype(D, /mob/living/human)
 /atom/movable/lighting_overlay
+/atom/proc/update_light()
+	// Focused serializer adapter; the lighting regression uses production lighting.
+	return
+/turf/proc/recalc_atom_opacity()
+	return
 /atom/movable
 	var/load_datums = FALSE
 /obj

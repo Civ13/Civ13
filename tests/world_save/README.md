@@ -1,5 +1,36 @@
 # World-save regression world
 
+`run-dimension-bootstrap.py --byond-bin <bin>` writes a temporary three-level
+generation, then launches fresh two-level readers. It runs the production saver,
+preflight, loader and shared building allocator. The runner stages the allocator
+and sky definition verbatim from `building_levels.dm`; its later construction,
+support and `Entered` gameplay methods are covered separately by
+`tests/building_levels`. The tiny fixture checks upper-level typed references,
+paid nested contents, unchanged mapped turfs, matching two-level saves, invalid
+dimensions, missing levels, corrupt grids/generations/references and a mismatched
+restart intent. Malformed saves must fail before the first allocation. Allocation
+failure and a post-allocation exact-header mismatch must latch recovery, reject
+retry and preserve the completed generation against saving. The `preflight`
+negative control bypasses the prospective validation and must detect an unwanted
+allocation for a missing level. `--prepare-only` stages source without running
+BYOND and is not runtime evidence.
+
+Expansion requires unchanged x/y, at most 32 total levels, at most eight levels
+beyond the compiled baseline, and at most two million cells per added level.
+All saved grids, entries, references and durable metadata are validated against
+the prospective bounded dimensions before the shared allocator runs. Normal exact
+dimension validation runs again afterward. Existing mapped levels are never
+resized. A partial allocation requires restarting from the original compiled map;
+the loader does not shrink or roll back a live world. This focused fixture uses
+round-v1 metadata. `run-durable-world.py --dimension-bootstrap --profile gaia`
+(and `--profile europe`) uses complete production sources with normal startup
+disabled, then launches a writer and fresh reader of the same compiled two-level
+DMB. It checks round-v2 metadata roots pointing to a third-level turf and player
+entry, rejects out-of-bounds prospective graph roots before allocation, and
+restores metadata aliases and environment state after shared allocation. These
+are tiny offline fixtures; actual admin save/restart/same-body recovery remains
+separate acceptance work.
+
 This fixture includes the repository's actual persistence functions, saver and
 loader, with isolated substitutes for game startup, chat, deletion, turf change,
 and reagent hooks. It never starts a production game or accesses original saves.
@@ -198,6 +229,25 @@ The include inventory does not cover that resource or the final generated
 A missing resource is a staging/compilation failure, not the metadata-write
 negative control.
 
+### Clients waiting through restart recovery
+
+`run-durable-world.py --recovery-reconnect --profile gaia` (or `europe`)
+uses production disk save/load, generation validation, restart intent consumption
+and player reclaim in temporary storage. Client enumeration, admission responses
+and key transfer use explicit fixture adapters; no real account, HUD or native
+reboot is exercised. The probe checks clients waiting before and arriving during
+import, a failed intent-consumption boundary and safe retry without reimport,
+exactly one transfer after release, preserved body health/inventory/metadata alias,
+ban/guest restrictions, disconnected sessions and retained rejected claims.
+`--negative-control reclaim-order` moves the readiness sweep back before intent
+consumption, reproducing the stale lobby failure. It must fail specifically at
+the waiting authenticated client's missing reclaim assertion.
+
+Ordinary map loads finish player restoration after load. Restart transactions
+finish it after the matching intent is consumed and the startup/save hold is
+released. A client already in the lobby therefore receives the same normal
+reclaim/Login path as one connecting after recovery completes.
+
 ### Serialization progress diagnostics
 
 Saved account/body ownership and its isolated negative controls are documented
@@ -338,3 +388,23 @@ original representation; malformed/wrong-field sentinels, negative infinity,
 NaN and raw nonfinite wire values are rejected. The full metadata fixture audits
 every inherited area subtype default and places a production invulnerable admin
 area before the disk save. Its corrupt-sentinel checks reject before ClearMap.
+
+# Lighting runtime graph recovery
+
+`run-durable-world.py --lighting --byond-bin <516.1681-bin>` uses production
+light-source, corner and overlay constructors, the actual world saver and loader,
+and temporary disk storage. It checks customized and default light properties,
+nested owner bindings, omitted runtime graphs, historical indirect graph entries,
+source rebuilding, movement and switch-off registration cleanup. It preserves the runtime view singleton across map clearing and calls the production lighting queue through native view(). The recurring scheduler
+and normal game startup are disabled; this does not establish full Europe import
+or rendered illumination. Controls `lighting-export`, `lighting-legacy` and
+`lighting-rebuild`, `lighting-opacity` and `lighting-view` each remove one production safeguard in generated source.
+The legacy control must reproduce the ownerless `light_sources` constructor error.
+
+The native CI workflow accepts `lighting_recovery_regressions=true` for these
+six cases. The fixture closes its native port, rejects reopening and checks a
+live OS socket census; a brief native startup listener can precede its entry.
+Obstruction caches rebuild after contents/fields/hooks and before source updates.
+On this Windows host, even the existing startup-only control exits
+with `0xC0000409` before its entry marker. Clean compilation is separate evidence;
+run the actual assertions on Linux CI rather than treating that exit as a pass.

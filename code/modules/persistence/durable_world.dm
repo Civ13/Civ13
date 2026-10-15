@@ -90,13 +90,15 @@
 		G.check_fields(row, list("x", "y", "z", "type", "fields"))
 		for(var/axis in list("x", "y", "z"))
 			if(!isnum(row[axis]) || row[axis] != round(row[axis]) || row[axis] < 1) throw EXCEPTION("Invalid durable area coordinate")
-		var/turf/T = locate(row["x"], row["y"], row["z"])
-		if(!T || "[T.loc.type]" != row["type"] || seen[T.loc]) throw EXCEPTION("Invalid or duplicate durable area")
-		seen[T.loc] = TRUE
+		var/area_key = save_validation_area_key(row["x"], row["y"], row["z"])
+		if(!area_key || "[save_validation_area_type(row["x"], row["y"], row["z"])]" != row["type"] || seen[area_key]) throw EXCEPTION("Invalid or duplicate durable area")
+		seen[area_key] = TRUE
 		durable_metadata_validate_fields(row["fields"], durable_metadata_area_schema())
 	for(var/area/A in world)
 		var/turf/T = locate(/turf) in A
-		if(T && !seen[A]) throw EXCEPTION("Missing durable area")
+		if(T && !seen["\ref[A]"]) throw EXCEPTION("Missing durable area")
+	if(save_validation_maxz() > world.maxz && !seen[save_validation_area_key(1, 1, save_validation_maxz())])
+		throw EXCEPTION("Missing prospective durable area")
 	var/list/symbols = state["symbols"]
 	if(!islist(symbols) || symbols.len > 1024) throw EXCEPTION("Invalid durable faction symbols")
 	for(var/faction in symbols)
@@ -121,7 +123,7 @@
 // A metadata atom must belong to the saved spatial ownership tree, not merely
 // exist as an orphan entry. This mirrors normal contents loading from turfs.
 /map_storage/proc/validate_durable_reachability(datum/durable_save_graph/G)
-	for(var/z = 1, z <= world.maxz, z++)
+	for(var/z = 1, z <= save_validation_maxz(), z++)
 		var/list/wanted = list()
 		for(var/key in G.entry_targets)
 			var/list/parts = splittext(key, ":")

@@ -7,6 +7,8 @@
 // You can also specify a name and password for the map, along with any extra
 // variables (in params format) that you want saved along with the map file.
 /map_storage/proc/Save_World()
+	if(building_allocating_z || dimension_recovery_required)
+		throw EXCEPTION("Cannot save an incomplete building level; finish allocation or restart recovery")
 	prepare_player_ownership()
 	var/list/world_state = capture_durable_world()
 	var/prefix = world_state ? "round-v2" : "round-v1"

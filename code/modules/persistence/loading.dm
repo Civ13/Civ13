@@ -19,6 +19,10 @@
 		// their screen/datum objects without the live client owner they require.
 		if(ispath(type, /obj/screen) || ispath(type, /datum/hud))
 			return null
+		// Historical saves can retain derived lighting graphs through item vars.
+		// Their constructors require live owners/turfs; never import those graphs.
+		if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay))
+			return null
 		if(ispath(type, /obj/map_metadata))
 			existing_references["[ind]"] = map
 			return map
@@ -217,6 +221,12 @@
 					if(obbie.load_datums)
 						if(obbie.reagents)
 							obbie.reagents.my_atom = ob
+			// Constructors see defaults before saved fields/contents are restored.
+			// Rebuild obstruction caches before queuing any final source updates.
+			for(var/turf/light_turf in all_loaded)
+				light_turf.recalc_atom_opacity()
+			for(var/atom/light_owner in all_loaded)
+				light_owner.update_light()
 			log_startup_progress("	Loaded z-level [B] in [stop_watch(watch)]s.")
 		catch(var/exception/e)
 			last_error = "[e] on [e.file]:[e.line]"
@@ -245,7 +255,7 @@
 		var/list/player_owners = list()
 		if(isnull(round_mode_metadata(meta)))
 			throw EXCEPTION("Save round-mode metadata is malformed")
-		for(var/z = 1, z <= world.maxz, z++)
+		for(var/z = 1, z <= save_validation_maxz(), z++)
 			if(!fexists("map_saves/[z].sav"))
 				throw EXCEPTION("Missing saved z-level [z]")
 			var/savefile/F = new("map_saves/[z].sav")
@@ -254,7 +264,7 @@
 			var/version = F["/format_version"]
 			if(version && version != 2)
 				throw EXCEPTION("Unsupported save version [version]")
-			if(version == 2 && (F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != world.maxz))
+			if(version == 2 && (F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()))
 				throw EXCEPTION("Saved world dimensions differ from the current world")
 			var/list/validated_lists = list()
 			var/list/turf_refs = list()
@@ -339,8 +349,8 @@
 		if("area")
 			if(!ispath(value["type"], /area))
 				throw EXCEPTION("Invalid saved area type")
-			var/turf/T = locate(value["x"], value["y"], value["z"])
-			if(!T || !istype(T.loc, value["type"]))
+			var/area_type = save_validation_area_type(value["x"], value["y"], value["z"])
+			if(!ispath(area_type, value["type"]))
 				throw EXCEPTION("Referenced area differs from the current map")
 			return TRUE
 		if("value")
@@ -354,7 +364,7 @@
 				var/coordinate = value[axis]
 				if(!isnum(coordinate) || coordinate < 1 || coordinate != round(coordinate))
 					throw EXCEPTION("Invalid saved turf coordinate")
-			if(!locate(value["x"], value["y"], value["z"]))
+			if(!save_validation_coordinate(value["x"], value["y"], value["z"]))
 				throw EXCEPTION("Saved turf reference is outside world dimensions")
 			return TRUE
 		if("list")

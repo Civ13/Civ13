@@ -3,6 +3,7 @@
 #define FALSE 0
 #define EXCEPTION(message) new /exception(message)
 var/persistence_save_in_progress = FALSE
+var/building_allocating_z = 0
 var/map_storage/map_storage = new
 var/obj/map_metadata/map = new
 var/datum/controller/gameticker/ticker = new
@@ -23,8 +24,13 @@ var/checks = 0
 var/failures = 0
 /map_storage
 	var/last_error
+	var/dimension_recovery_required = FALSE
 /map_storage/proc/validate_world_save()
 	return TRUE
+/map_storage/proc/prepare_saved_dimensions(list/expected_intent)
+	return TRUE // Dimension allocation is covered by the separate fresh-process fixture.
+/map_storage/proc/finish_player_restoration()
+	return TRUE // Waiting-client integration uses production saver/loader/reclaim.
 /map_storage/proc/read_round_state()
 	return list("version" = 2, "generation" = "round-v2:probe")
 /obj/map_metadata/proc/uses_durable_metadata()

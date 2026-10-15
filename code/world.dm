@@ -72,6 +72,7 @@ var/world_is_open = TRUE
 
 #define RECOMMENDED_VERSION 516
 /world/New()
+	map_storage.record_compiled_dimensions()
 	// Detect before any startup yield, ticker setup or admission can run.
 	persistence_restart.detect_startup()
 
@@ -212,6 +213,9 @@ var/world_topic_spam_protect_time = world.timeofday
 		lasttimeaddr[addr] = world.time + 1200 //2 секунды
 
 	var/list/input = params2list(T)
+	// Lifecycle credentials never enter generic Topic logging or dispatch.
+	if("nomads_lifecycle" in input)
+		return nomads_lifecycle.handle(input, addr)
 	var/datum/world_topic/handler
 	for(var/I in topic_handlers)
 		if(I in input)

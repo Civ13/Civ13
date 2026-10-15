@@ -19,6 +19,13 @@
 /map_storage/proc/entry_path(savefile/F, ref)
 	return "/entries/[ref]"
 var/map_storage/map_storage = new
+/map_storage/proc/save_validation_maxz()
+	return world.maxz
+/map_storage/proc/save_validation_coordinate(x, y, z)
+	return isnum(x) && isnum(y) && isnum(z) && x == round(x) && y == round(y) && z == round(z) && x >= 1 && x <= world.maxx && y >= 1 && y <= world.maxy && z >= 1 && z <= world.maxz
+/map_storage/proc/save_validation_area_type(x, y, z)
+	var/turf/T = save_validation_coordinate(x, y, z) ? locate(x, y, z) : null
+	return T ? T.loc.type : null
 var/obj/map_metadata/map
 var/fixture_checks = 0
 var/fixture_failures = 0
