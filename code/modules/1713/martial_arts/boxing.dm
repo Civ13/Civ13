@@ -40,7 +40,7 @@
 	to_chat(A, "<span class='danger'>You [atk_verb]ed [D]!</span>")
 
 	D.stats["stamina"][1] = max(0,D.stats["stamina"][1] - (0.5*0.45)/D.getStatCoeff("strength"))
-	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Punched (boxing) by [A.name] ([A.ckey])</font>"
+	D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Punched (boxing) by [A.name] ([A.ckey])</font>")
 	if(D.stats["stamina"][1] < 50 && istype(D.mind?.martial_art, /datum/martial_art/boxing))
 		var/knockout_prob = D.stats["stamina"][1] + rand(-15,15)
 		if((D.stat != DEAD) && prob(knockout_prob))
@@ -49,5 +49,5 @@
 			to_chat(A, "<span class='danger'>You knock [D] out with a haymaker!</span>")
 			D.apply_effect(200,STUN,armor_block)
 			D.SetSleeping(100)
-			D.attack_log += "\[[time_stamp()]\] <font color='orange'>Knocked out (boxing) by [A.name] ([A.ckey])</font>"
+			D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Knocked out (boxing) by [A.name] ([A.ckey])</font>")
 	return TRUE

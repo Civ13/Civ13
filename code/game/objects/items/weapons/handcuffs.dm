@@ -66,8 +66,8 @@
 
 	admin_attack_log(user, H, "Attempted to handcuff the victim", "Was target of an attempted handcuff", "attempted to handcuff")
 
-	H.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been handcuffed by [user.name] ([user.ckey])</font>")
-	user.attack_log += text("\[[time_stamp()]\] <font color='red'>Handcuff [H.name] ([H.ckey])</font>")
+	H.append_attack_log(text("\[[time_stamp()]\] <font color='orange'>Has been handcuffed by [user.name] ([user.ckey])</font>"))
+	user.append_attack_log(text("\[[time_stamp()]\] <font color='red'>Handcuff [H.name] ([H.ckey])</font>"))
 
 
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)

@@ -8,6 +8,7 @@
 *.dmm           text    eol=lf
 *.md            text    eol=lf
 *.html          text    eol=lf
+scripts/setup-local-wsl.sh text eol=lf
 
 # Custom for Visual Studio
 *.cs     diff=csharp
