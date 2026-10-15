@@ -17,6 +17,15 @@
 	if (!condition)
 		throw EXCEPTION(message)
 
+var/global/persistence_test_hooks = 0
+var/global/persistence_test_reboots = 0
+
+/proc/persistence_test_roundend()
+	persistence_test_hooks++
+
+/proc/persistence_test_reboot()
+	persistence_test_reboots++
+
 /datum/persistence_callback
 	var/called = FALSE
 	proc/receive(winner)
@@ -75,6 +84,22 @@
 		ticker.current_state = GAME_STATE_PLAYING
 		persistent_assert(!persistence_blocks_vote("restart") && !persistence_blocks_vote("map"), "ordinary rounds retain ending votes")
 		persistent_assert(E.is_ready() && M.is_ready(), "ordinary round rotation retained")
+		processes.epochswap = E
+		E.finished_at = world.time - 1000
+		ticker.finished = TRUE
+		ticker.process()
+		map.persistence = TRUE
+		sleep(51)
+		persistent_assert(!ticker.finished && ticker.current_state == GAME_STATE_PLAYING && !persistence_test_hooks, "deferred round end cancelled before hook")
+		map.persistence = FALSE
+		E.finished_at = world.time - 1000
+		ticker.finished = TRUE
+		ticker.process()
+		sleep(51)
+		persistent_assert(persistence_test_hooks == 1 && ticker.current_state == GAME_STATE_FINISHED, "ordinary round end hook retained")
+		map.persistence = TRUE
+		sleep(301)
+		persistent_assert(!ticker.finished && ticker.current_state == GAME_STATE_PLAYING && !persistence_test_reboots, "pending reboot cancelled after restart sleep")
 		text2file("PASS: production persistence votes, callbacks, rotation and ticker guards; lobby and ordinary-round controls", "result.txt")
 	catch (var/exception/error)
 		text2file("FAIL: [error]", "result.txt")

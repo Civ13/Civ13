@@ -1,7 +1,8 @@
 # Continuous persistence rounds
 
-Persistence rounds keep playing until an administrator explicitly stops or
-restarts the server. Victory conditions and automatic map rotation cannot finish
+Persistence rounds keep playing across server sessions. Explicit administrative
+save/restarts and configured daily maintenance save/restarts remain available;
+loading resumes the saved round. Victory conditions and automatic map rotation cannot finish
 the round. Restart votes are unavailable; after play begins, map, epoch and game
 mode votes are also rejected. Existing votes of those kinds are cancelled before
 their results or callbacks can change the round. Ordinary custom polls remain
