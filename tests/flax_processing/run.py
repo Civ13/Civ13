@@ -55,7 +55,9 @@ def main():
                  ('.dme', '_world.dm', '_globals.dm', '_flax.dm', '.dmb', '.rsc')]
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     paths = [CORE, 'code/modules/persistence/saving.dm',
-             'code/modules/persistence/loading.dm', 'code/modules/persistence/functions.dm']
+             'code/modules/persistence/loading.dm', 'code/modules/persistence/functions.dm',
+             'config/crafting/material_recipes_global.txt', 'code/modules/research_tree/research_node.dm',
+             'tests/flax_processing/probe.dm', 'tests/flax_processing/run.py']
     metadata = {'head_sha': commit, 'control': args.negative_control,
                 'source_sha256': {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in paths}}
     (args.output / 'metadata.json').write_text(json.dumps(metadata, indent=2), encoding='utf-8')
@@ -96,6 +98,8 @@ def main():
             work = Path(temporary)
             for path in generated[4:]:
                 shutil.copy2(path, work / path.name)
+            (work / 'config/crafting').mkdir(parents=True)
+            shutil.copy2(ROOT / 'config/crafting/material_recipes_global.txt', work / 'config/crafting/material_recipes_global.txt')
             result = subprocess.run([str(daemon), str(work / generated[4].name),
                                      *(['-invisible', '-close'] if os.name == 'nt' else []),
                                      '-safe', '-log', 'runtime.log'], cwd=work,

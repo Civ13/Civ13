@@ -22,6 +22,16 @@
 /mob/living/human/flax_tester/New()
 	return
 
+/mob/living/human/flax_tester/religion_check()
+	return "none"
+
+/obj/map_metadata/flax_tester/New()
+	return
+
+// No forensic UI state is needed for a paid construction regression.
+/obj/structure/flax_comb/add_fingerprint(mob/living/M, ignoregloves = FALSE)
+	return
+
 /mob/living/human/flax_tester/put_in_any_hand_if_possible(obj/item/W, prioritize_active_hand = FALSE)
 	return FALSE
 
@@ -69,6 +79,19 @@
 			total += S.amount
 	return total
 
+/proc/flax_comb_recipe(list/recipes)
+	for (var/entry in recipes)
+		if (istype(entry, /datum/stack_recipe_list))
+			var/datum/stack_recipe_list/group = entry
+			var/datum/stack_recipe/found = flax_comb_recipe(group.recipes)
+			if (found)
+				return found
+		else if (istype(entry, /datum/stack_recipe))
+			var/datum/stack_recipe/R = entry
+			if (R.result_type == /obj/structure/flax_comb)
+				return R
+	return null
+
 /world/New()
 	OpenPort("none")
 	sleep(1)
@@ -76,6 +99,38 @@
 		text2file(json_encode(list("byond_version" = world.byond_version, "byond_build" = world.byond_build, "dimensions" = "8x8x1", "network" = "closed", "startup" = "disabled")), "fixture.json")
 		var/turf/site = locate(3,3,1)
 		var/mob/living/human/flax_tester/U = new(site)
+		map = new /obj/map_metadata/flax_tester
+		map.ordinal_age = 0
+		build_research_tree()
+		craftlist_lists["global"] = list()
+		for (var/line in file2list("config/crafting/material_recipes_global.txt", "\n"))
+			if (findtext(line, "RECIPE: ") && !findtext(line, "//"))
+				craftlist_lists["global"] += list(splittext(replacetext(line, "RECIPE: ", ""), ","))
+		var/material/wood/soft/planks = new
+		var/faction = "flax_fixture"
+		map.faction_baseline_era[faction] = 0
+		planks.generate_recipes_civs(list(0,0,0), "global", faction)
+		flax_assert(!flax_comb_recipe(planks.recipes), "unresearched comb hidden")
+		flax_assert(get_recipe_node_req("/obj/structure/flax_comb") == "resource_processing", "comb research mapping")
+		var/list/research_entry = map.ensure_node_entry(faction, "resource_processing")
+		research_entry[RNODE_ENTRY_STATUS] = RNODE_DONE
+		planks.generate_recipes_civs(list(0,0,0), "global", faction)
+		var/datum/stack_recipe/recipe = flax_comb_recipe(planks.recipes)
+		flax_assert(recipe && recipe.req_amount == 8 && recipe.time == 150 && recipe.one_per_turf && recipe.on_floor, "paid registered comb recipe")
+		// Skip only the generic crafting wait; retain production payment/build.
+		recipe.time = 0
+		var/obj/item/stack/material/wood/soft/wood = new(site, 7, FALSE)
+		wood.produce_recipe(recipe, 1, U)
+		flax_assert(!(locate(/obj/structure/flax_comb) in site), "insufficient construction input rejected")
+		wood.amount = 9
+		wood.produce_recipe(recipe, 1, U)
+		var/obj/structure/flax_comb/constructed = locate() in site
+		flax_assert(constructed && wood.amount == 1, "construction consumes eight planks")
+		wood.amount = 9
+		wood.produce_recipe(recipe, 1, U)
+		flax_assert(wood.amount == 9, "occupied construction turf rejected")
+		qdel(constructed)
+		qdel(wood)
 		var/obj/item/stack/material/flax/raw = new(U, 3, FALSE)
 		flax_assert(raw.tie_bundle(U), "bundle available without twine")
 		flax_assert(raw.amount == 1, "bundle payment")
