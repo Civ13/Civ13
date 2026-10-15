@@ -98,6 +98,7 @@ def main():
             work = Path(temporary)
             for path in generated[4:]:
                 shutil.copy2(path, work / path.name)
+            shutil.copytree(ROOT / 'config/names', work / 'config/names')
             (work / 'config/crafting').mkdir(parents=True)
             shutil.copy2(ROOT / 'config/crafting/material_recipes_global.txt', work / 'config/crafting/material_recipes_global.txt')
             result = subprocess.run([str(daemon), str(work / generated[4].name),

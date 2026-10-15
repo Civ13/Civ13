@@ -20,7 +20,8 @@
 	var/waits = 0
 
 /mob/living/human/flax_tester/New()
-	return
+	species = new /datum/species/human
+	body_build = new /datum/body_build
 
 /mob/living/human/flax_tester/religion_check()
 	return "none"
@@ -71,6 +72,7 @@
 /proc/flax_assert(condition, message)
 	if (!condition)
 		throw EXCEPTION(message)
+	world.log << "FLAX PASS: [message]"
 
 /proc/flax_amount(atom/site, path)
 	var/total = 0
@@ -247,5 +249,6 @@
 		map_storage.clear_bookkeeping()
 		text2file("PASS: flax processing and native disk round trips", "result.txt")
 	catch (var/exception/E)
+		world.log << "FLAX exception: [E] at [E.file]:[E.line]"
 		text2file("FAIL: [E.name]", "result.txt")
 	shutdown()
