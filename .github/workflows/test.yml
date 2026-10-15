@@ -223,6 +223,18 @@ jobs:
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe settlement
           /usr/bin/python3 tests/extraction/test_recovery.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
           /usr/bin/python3 tests/extraction/test_map_environment.py
+          /usr/bin/python3 tests/extraction/test_mall.py
+          /usr/bin/python3 tests/extraction/test_mall_routes.py
+          /usr/bin/python3 tests/extraction/test_mall_runner.py
+          /usr/bin/python3 tests/extraction/test_key_maps.py
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control mission
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control vehicle
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control key_charge
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control key_construction
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control stair_landing
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control stair_return
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control ordinary_replay
           /usr/bin/python3 tests/extraction/check_catalog.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe npc --npc-insurance-negative-control

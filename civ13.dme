@@ -1289,6 +1289,7 @@
 #include "code\modules\1713\extraction\npc_extraction.dm"
 #include "code\modules\1713\extraction\modern_city.dm"
 #include "code\modules\1713\extraction\city_zombies.dm"
+#include "code\modules\1713\extraction\mall.dm"
 // BEGIN_SELECTED_MAP
 #ifdef EXTRACTION_MODERN_CITY_MAP
 #include "maps\extraction\modern_city_extraction.dmm"
