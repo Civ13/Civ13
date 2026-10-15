@@ -25,6 +25,10 @@ def main():
     spec.loader.exec_module(module)
     receipt = module.prepare(root, output)
     base = (output / 'probe.dm').read_text(encoding='utf-8').split('/world/New()')[0]
+    anchor = 'return TRUE // Waiting-client integration uses production saver/loader/reclaim.'
+    if base.count(anchor) != 1:
+        raise RuntimeError('Reclaim completion adapter anchor changed')
+    base = base.replace(anchor, 'return lifecycle_reclaim_ok', 1)
     probe = (root / 'tests/world_save/lifecycle_probe.dm').read_text(encoding='utf-8')
     (output / 'probe.dm').write_text(base + probe, encoding='utf-8')
     endpoint = (root / 'code/modules/persistence/nomads_lifecycle.dm').read_text(encoding='utf-8')

@@ -72,7 +72,7 @@ def main():
             'reachability': ('code/modules/persistence/durable_world.dm', '\tvalidate_durable_reachability(G)', '\tif(FALSE) validate_durable_reachability(G)'),
             'callback': ('code/modules/persistence/durable_timers.dm', '\t\tif(!owner || revision != expected_revision || pending[key] != row) return', '\t\tif(!owner) return'),
             'timer-restore': ('code/modules/persistence/durable_world.dm', '\tmap.durable_timer_queue().restore(timers)', '\t// Negative control: omit restoring persisted callbacks.'),
-            'reclaim-order': ('code/modules/persistence/restart_transaction.dm', '\t\tmap_storage.finish_player_restoration()\n', ''),
+            'reclaim-order': ('code/modules/persistence/restart_transaction.dm', '\t\tplayers_ready = map_storage.finish_player_restoration()\n', ''),
         }
         if args.negative_control:
             relative, before, after = mutations[args.negative_control]

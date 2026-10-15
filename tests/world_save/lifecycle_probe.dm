@@ -4,6 +4,7 @@ var/list/clients = list()
 var/shutdown_calls = 0
 var/allow_native_shutdown = FALSE
 var/change_final_marker = FALSE
+var/lifecycle_reclaim_ok = TRUE
 /proc/lifecycle_native_shutdown()
 	shutdown_calls++
 	var/list/I = persistence_restart.read_intent()
@@ -24,7 +25,7 @@ var/change_final_marker = FALSE
 	if(change_before_restart && identity_calls > 1) I["generation"] = "round-v2:replacement"
 	return I
 /datum/nomads_lifecycle_control/probe
-	var/fixture_token = "0123456789abcdef0123456789abcdef"
+	var/fixture_token = "fedcba9876543210fedcba9876543210"
 	var/fixture_revision = "0123456789abcdef0123456789abcdef01234567"
 /datum/nomads_lifecycle_control/probe/read_token()
 	return fixture_token
@@ -56,7 +57,7 @@ var/change_final_marker = FALSE
 		L.fixture_token = null
 		R = lifecycle_reply(L, I)
 		check(!R["ok"], "missing token enabled endpoint")
-		L.fixture_token = "0123456789abcdef0123456789abcdef"
+		L.fixture_token = "fedcba9876543210fedcba9876543210"
 		L.fixture_revision = "invalid"
 		R = lifecycle_reply(L, I)
 		check(!R["ok"], "invalid revision enabled endpoint")
@@ -148,6 +149,14 @@ var/change_final_marker = FALSE
 		bound["lifecycle_session"] = md5("binding-session")
 		T.publish(bound)
 		check(T.detect_startup() && T.resume_startup() && T.players_ready && !T.exists(), "bound intent did not recover and consume")
+		T = new_transaction()
+		T.publish(T.identity)
+		T.detect_startup()
+		lifecycle_reclaim_ok = FALSE
+		T.resume_startup()
+		R = L.snapshot()
+		check(!T.players_ready && !R["ready"], "failed reclaim sweep reported ready")
+		lifecycle_reclaim_ok = TRUE
 		check(shutdown_calls == before, "denied requests reached shutdown")
 		T = new_transaction()
 		L = new
