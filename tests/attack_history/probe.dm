@@ -1,5 +1,3 @@
-#define TRUE 1
-#define FALSE 0
 var/attack_log
 var/game_id = "synthetic-fixture"
 var/datum/configuration/config = new

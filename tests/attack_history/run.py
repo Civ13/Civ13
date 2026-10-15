@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 HELPER = 'code/modules/admin/admin_attack_log.dm'
 GHOST = 'code/game/mob/observer/ghost/ghost.dm'
 CONTROLS = {
-    'failure-trim': ('\tif (!archived)\n', '\tif (FALSE)\n',
+    'failure-trim': ('\tif (!archived)\n', '\tif (!archived && attack_log.len < 0)\n',
                      'zero return retains the entire shared history'),
     'alias': ('\tattack_log.Cut(1, archive_count + 1)\n',
               '\tattack_log = attack_log.Copy(archive_count + 1)\n',
@@ -55,7 +55,7 @@ def prepare(evidence, control=None, root=ROOT):
         'probe.dm': (root / 'tests/attack_history/probe.dm').read_text(encoding='utf-8'),
         'history.dm': helper,
         'ghost.dm': ghost,
-        'probe.dme': '#include "probe.dm"\n#include "history.dm"\n#include "ghost.dm"\n',
+        'probe.dme': '#define TRUE 1\n#define FALSE 0\n#include "history.dm"\n#include "probe.dm"\n#include "ghost.dm"\n',
     }
     for name, value in inputs.items():
         (evidence / name).write_text(value, encoding='utf-8')
