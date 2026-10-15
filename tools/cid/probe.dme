@@ -1,0 +1,22 @@
+/world
+    name = "Local CID comparison"
+    hub = ""
+    maxx = 1
+    maxy = 1
+    maxz = 1
+    New()
+        ..()
+        text2file("READY", "ready.txt")
+        spawn(600)
+            shutdown()
+
+/client/New()
+    ..()
+    if(address && address != "127.0.0.1" && address != "::1")
+        del(src)
+        return
+    var/list/parameters = world.params
+    var/list/result = list("expected" = parameters["expected"], "observed" = computer_id, "match" = computer_id == parameters["expected"], "version" = byond_version, "build" = byond_build)
+    text2file(json_encode(result), "result.json")
+    spawn(5)
+        shutdown()
