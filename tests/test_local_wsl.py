@@ -41,6 +41,13 @@ class LocalWslTests(unittest.TestCase):
                 module.build(Path(directory), Path(directory), {})
             run.assert_not_called()
 
+    def test_stop_identity_rejects_incomplete_process_metadata(self):
+        root = Path('/tmp/nomads')
+        command = (str(module.BIN / 'DreamDaemon') + '\0' + str(root / 'civ13.dmb') + '\0').encode()
+        for stat in ('', '77 (DreamDaemon)', '77 (DreamDaemon) S 0'):
+            with self.subTest(stat=stat), patch.object(Path, 'read_text', return_value=stat), patch.object(Path, 'read_bytes', return_value=command):
+                self.assertFalse(module.process_matches({'pid': 77, 'started': '123'}, root))
+
 
 if __name__ == '__main__':
     unittest.main()

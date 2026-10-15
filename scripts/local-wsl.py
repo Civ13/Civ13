@@ -30,7 +30,7 @@ def process_matches(record, runtime):
         return (fields[19] == record['started'] and
                 str(runtime / 'civ13.dmb').encode() in args and
                 args[0] == str(BIN / 'DreamDaemon').encode())
-    except (OSError, ValueError, KeyError):
+    except (OSError, ValueError, KeyError, IndexError):
         return False
 
 
