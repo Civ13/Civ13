@@ -5,7 +5,7 @@
 	if(WWinput(usr, "Save this world, restart immediately after validation and automatically resume that generation? Actions during serialization may not be preserved. Stop gameplay before confirming. Supported on native Gaia/Europe only.", "Save, Restart and Resume", "No", list("Yes", "No")) != "Yes") return
 	if(!check_rights(R_SERVER)) return
 	spawn(0)
-		persistence_restart.run()
+		persistence_restart.execute()
 
 /datum/admins/proc/resume_pending_recovery()
 	set category = "Server"

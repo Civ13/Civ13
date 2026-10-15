@@ -59,7 +59,7 @@ var/failures = 0
 	return TRUE
 /datum/persistence_restart_transaction/probe/save_generation()
 	saves++
-	if(concurrent) check(!run(), "concurrent transaction admitted")
+	if(concurrent) check(!execute(), "concurrent transaction admitted")
 	if(save_ok)
 		fdel("map_saves/save_complete.txt")
 		text2file(identity["generation"], "map_saves/save_complete.txt")
@@ -91,10 +91,10 @@ var/failures = 0
 		var/datum/persistence_restart_transaction/probe/T = new_transaction()
 		check(!T.detect_startup(), "missing intent imposed startup hold")
 		T.save_ok = FALSE
-		check(!T.run() && T.saves == 1 && !T.exists() && !T.restarts && !T.busy, "failed save restarted or locked server")
+		check(!T.execute() && T.saves == 1 && !T.exists() && !T.restarts && !T.busy, "failed save restarted or locked server")
 		T = new_transaction()
 		T.concurrent = TRUE
-		check(!T.run() && T.saves == 1 && T.restarts == 1 && !T.busy && !T.exists(), "returned restart did not cancel matching intent/release guard")
+		check(!T.execute() && T.saves == 1 && T.restarts == 1 && !T.busy && !T.exists(), "returned restart did not cancel matching intent/release guard")
 		check(native_calls == 1, "immediate native adapter not called once")
 		// Simulate process loss AFTER durable publication, BEFORE native reboot.
 		fcopy("crash-boundary.json", T.intent_path)
@@ -120,7 +120,7 @@ var/failures = 0
 		check(!T.resume_startup() && T.loads == 1, "failed destructive import retried in same world")
 		T = new_transaction()
 		T.change_before_restart = TRUE
-		check(!T.run() && !T.restarts && !T.exists() && !T.busy, "stale completed generation restarted")
+		check(!T.execute() && !T.restarts && !T.exists() && !T.busy, "stale completed generation restarted")
 		T = new_transaction()
 		text2file("{broken", T.intent_path)
 		T.detect_startup()
@@ -140,13 +140,13 @@ var/failures = 0
 		try
 			T.consume(other)
 		catch(var/exception/e)
-			rejected = TRUE
+			rejected = !!e
 		check(rejected && T.exists(), "cleanup deleted another operation's intent")
 		T = new_transaction()
 		delete_failure = TRUE
-		check(!T.run() && !T.busy && T.exists() && findtext(T.last_error, "cleanup FAILED"), "restart return with failed cleanup hid unresolved intent")
+		check(!T.execute() && !T.busy && T.exists() && findtext(T.last_error, "cleanup FAILED"), "restart return with failed cleanup hid unresolved intent")
 		delete_failure = FALSE
-		check(!T.run() && T.saves == 1, "unresolved intent allowed overwrite")
+		check(!T.execute() && T.saves == 1, "unresolved intent allowed overwrite")
 		T = new_transaction()
 		T.busy = TRUE
 		T.expected_generation = "round-v2:probe"

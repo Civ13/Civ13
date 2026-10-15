@@ -77,7 +77,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	// A normal successful native reboot does not resume this transaction.
 	throw EXCEPTION("Native restart returned without replacing the world")
 
-/datum/persistence_restart_transaction/proc/run()
+/datum/persistence_restart_transaction/proc/execute()
 	if(busy || startup_hold || persistence_save_in_progress || exists())
 		report("Save/restart refused: another save, import or unresolved restart intent owns recovery")
 		return FALSE
