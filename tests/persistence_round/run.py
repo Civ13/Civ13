@@ -73,7 +73,7 @@ def main():
         print(result, flush=True)
         log = (logs / 'runtime.log').read_text(encoding='utf-8', errors='replace')
         errors = logs / 'errors.txt'
-        diagnostic = re.search(r'runtime error:|BUG:|Bad ref|Unhandled exception', log, re.I) or (errors.exists() and errors.stat().st_size)
+        diagnostic = re.search(r'runtime error:|BUG:|Bad ref|Unhandled exception', log + runtime.stdout + runtime.stderr, re.I) or (errors.exists() and errors.stat().st_size)
         if args.negative_control:
             expected = 'vote creation blocked' if args.negative_control == 'vote' else 'finished flag cleared'
             if runtime.returncode or diagnostic or not result.startswith('FAIL:') or expected not in result:
