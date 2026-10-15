@@ -20,8 +20,9 @@ Map clock values have distinct policies. Victory deadlines store a remaining
 delay with a separate disabled sentinel. Artillery cooldowns store elapsed
 time since their origin. Realtime deadlines store remaining delays. Restoring
 these values must rebase them against the new runtime's corresponding clock.
-Era research thresholds are durations; their caller must use recovered elapsed
-round time instead of the new process's `world.time`.
+Era research thresholds retain their existing duration/deadline semantics.
+Their callers use a portable research clock which resumes its captured value
+instead of starting again at the new process's `world.time`.
 
 The graph codec preserves nested associative lists, aliases, cycles, literal
 marker strings, paths, turf/area references and existing saved atoms. A faction
@@ -31,8 +32,8 @@ cannot make another copy of that leader. Unsupported values and references to
 unsaved/session objects fail export rather than disappearing silently.
 
 Preflight checks graph shape, bounded node/edge counts, supported value kinds,
-coordinates, entry types and generation. The integration must also validate the
-root field inventory and world-entry reachability before `ClearMap`. A decoded
+coordinates, entry types and generation. The current integration also validates the
+root field inventory and spatial contents reachability before `ClearMap`. A decoded
 field inventory check after destructive loading is insufficient.
 
 ## Callback lifecycle
@@ -44,8 +45,8 @@ callback. The queue defers callbacks while persistence owns the save/load lock.
 Timer cancellation identities are runtime state and do not represent historical
 season progress.
 
-Integration must replace hidden season, terrain-phase, wind, religion,
-autoresearch and weather-event sleepers. Season capture must reject an active
+Gaia/Europe now schedule season, terrain-phase, wind, religion,
+tips, autoresearch and weather-event callbacks through the named queue. Season capture must reject an active
 terrain transition instead of combining partially transformed terrain with a
 completed-transition claim. Time-of-day restoration must restore phase progress
 and rebuild lighting without advancing to another phase. Save/restart must not
@@ -53,12 +54,12 @@ execute fresh round setup, equipment grants or constructor world generation.
 
 ## Outstanding domains and supported maps
 
-The explicit map-field inventory does not by itself cover global season,
-historical season changes, day/night phase/progress, pollution/radiation, mutable
-area climate, weather scheduler policy, pending event stages, active banner
-pixels or subtype-specific calendars and progression. These need explicit root
-records and validation as part of integration. Banner draft pixels and displayed
-pixels can differ and must be kept separately.
+The round-v2 world envelope now contains explicit records for global season,
+historical season changes, day/night phase/progress, pollution/radiation, global
+trade taxes, mutable area climate, weather scheduler policy, pending event stages
+and active banner pixels. Banner draft pixels remain in the map graph; displayed
+pixels are captured separately. Subtype calendars and progression beyond the
+two declared profiles still require contracts.
 
 Gaia and Europe declare no additional subtype data fields, but still need all
 shared domains and callback acceptance. Other maps have extra state and timers,
@@ -95,6 +96,18 @@ alias and binding controls caught their intended failures. Each build had zero
 errors and warnings. The separate field/timer positive passed 32 checks; clock,
 omission and timer controls caught their exact expected assertion failures.
 The runner rejects unrelated failures and unexpected caught exceptions.
-The new helpers are included in the environment but are not yet
-called by `Save_World` or recovery; they cannot fix the season gap until that
-integration and its acceptance are complete.
+The production `Save_World` and recovery paths now call the metadata helpers.
+The intermediate integration compiled with BYOND 516.1681 with zero errors and
+warnings. This is source/build evidence, not accepted season recovery.
+
+`run-durable-world.py --prepare-only` stages an integrated native probe without
+launching it. With an exclusive native lease, use `--byond-bin <516.1681-bin>`
+and `--profile gaia` or `europe`. This compiles the actual production game
+sources with ordinary startup and map-constructor effects isolated, then runs
+the actual saver, preflight, loader, metadata restore and callback queue on an
+8x8x2 temporary world. It checks omitted fields and orphan references before
+mutation, disk-backed aliases and leader rebinding, portable clocks, area and
+weather state, displayed-versus-draft symbols and repeated callback restoration.
+Its `season`, `preflight`, `reachability` and `callback` mutation controls must
+fail at their exact intended assertions. It is not a connected-player or
+representative full-map performance test; integrated native results are pending.

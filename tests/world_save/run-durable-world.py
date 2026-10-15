@@ -1,0 +1,126 @@
+"""Run production world/metadata persistence on a tiny isolated native world."""
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import tempfile
+import uuid
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--byond-bin', type=Path)
+    parser.add_argument('--prepare-only', action='store_true')
+    parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
+    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback'))
+    args = parser.parse_args()
+    if not args.prepare_only and not args.byond_bin:
+        parser.error('--byond-bin is required for native execution')
+    root = Path(__file__).resolve().parents[2]
+    output = Path(tempfile.mkdtemp(prefix='civ13-durable-world-'))
+    prefix = '.durable_world_' + uuid.uuid4().hex
+    dme = root / (prefix + '.dme')
+    generated = []
+    receipt = {'profile': args.profile, 'negative_control': args.negative_control,
+               'prepared_only': args.prepare_only, 'production_hashes': {}}
+    print(f'Retained evidence: {output}', flush=True)
+    try:
+        source = (root / 'civ13.dme').read_text(encoding='utf-8')
+        source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
+        replacements = {}
+        for relative in ('code/world.dm', 'code/controllers/mc/globals.dm'):
+            text = (root / relative).read_text(encoding='utf-8')
+            if relative == 'code/world.dm':
+                start = text.index('/world/New()')
+                parent = text.index('\n\t..()', start)
+                text = text[:parent] + text[parent:].replace('\n\t..()', '', 1)
+                text = text.replace('/world/New()', '/world/proc/unused_durable_startup()', 1)
+                marker = '/datum/global_init/New()\n'
+            else:
+                marker = '/datum/controller/global_vars/New()\n'
+            if text.count(marker) != 1:
+                raise RuntimeError('Startup isolation anchor changed')
+            replacements[relative] = text.replace(marker, marker + '\treturn\n', 1)
+        mutations = {
+            'season': ('code/modules/persistence/durable_world.dm', '\tseason = E["season"]', '\tseason = "SPRING"'),
+            'preflight': ('code/modules/persistence/durable_world.dm', '\tvar/list/fields = state["fields"]', '\tif(islist(state["fields"])) return TRUE\n\tvar/list/fields = state["fields"]'),
+            'reachability': ('code/modules/persistence/durable_world.dm', '\tvalidate_durable_reachability(G)', '\tif(FALSE) validate_durable_reachability(G)'),
+            'callback': ('code/modules/persistence/durable_timers.dm', '\t\tif(!owner || revision != expected_revision || pending[key] != row) return', '\t\tif(!owner) return'),
+        }
+        if args.negative_control:
+            relative, before, after = mutations[args.negative_control]
+            text = (root / relative).read_text(encoding='utf-8')
+            if text.count(before) != 1:
+                raise RuntimeError('Negative-control anchor changed')
+            replacements[relative] = text.replace(before, after, 1)
+        for index, (relative, text) in enumerate(replacements.items()):
+            generated_path = root / (prefix + f'_{index}.dm')
+            generated_path.write_text(text, encoding='utf-8', newline='\n')
+            generated.append(generated_path)
+            original_include = relative.replace('/', chr(92))
+            if source.count(original_include) != 1:
+                raise RuntimeError('Production include anchor changed')
+            source = source.replace(original_include, generated_path.name)
+            (output / generated_path.name).write_text(text, encoding='utf-8', newline='\n')
+        source += '\n#include "tests/world_save/durable_world_probe.dm"\n'
+        dme.write_text(source, encoding='utf-8', newline='\n')
+        for path in (root / 'code/modules/persistence').glob('*.dm'):
+            receipt['production_hashes'][path.relative_to(root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+        receipt['probe_hash'] = hashlib.sha256((root / 'tests/world_save/durable_world_probe.dm').read_bytes()).hexdigest()
+        receipt['base_commit'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
+        (output / 'tested.patch').write_bytes(subprocess.check_output(['git', 'diff'], cwd=root))
+        (output / 'probe.dme').write_text(source, encoding='utf-8')
+        (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+        if args.prepare_only:
+            return
+        byond = args.byond_bin.resolve(strict=True)
+        compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
+        daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
+        flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
+        build = subprocess.run([str(compiler), '-max_errors', '0', dme.name], cwd=root,
+                               capture_output=True, text=True, timeout=180, creationflags=flags)
+        build_log = build.stdout + build.stderr
+        (output / 'compile.log').write_text(build_log, encoding='utf-8')
+        if build.returncode or '0 errors, 0 warnings' not in build_log or '516.1681' not in build_log:
+            raise RuntimeError('Pinned native compilation failed; see compile.log')
+        for suffix in ('.dmb', '.rsc'):
+            shutil.copy2(dme.with_suffix(suffix), output / dme.with_suffix(suffix).name)
+        (output / 'config').mkdir()
+        shutil.copy2(root / 'config/tips.txt', output / 'config/tips.txt')
+        run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, '-invisible', '-close', '-safe',
+                              '-params', 'profile=' + args.profile, '-log', 'runtime.log'], cwd=output,
+                             capture_output=True, text=True, timeout=90, creationflags=flags)
+        (output / 'daemon.log').write_text(run.stdout + run.stderr, encoding='utf-8')
+        (output / 'daemon-exit.json').write_text(json.dumps({'exit_code': run.returncode}), encoding='utf-8')
+        if run.returncode:
+            raise RuntimeError(f'Native daemon exited with {run.returncode}; see daemon-exit.json')
+        log = (output / 'runtime.log').read_text(encoding='utf-8', errors='replace')
+        result_path = output / 'metadata-result.json'
+        if not result_path.is_file():
+            raise RuntimeError('Native daemon exited without a result; see daemon-exit.json and probe-progress.log')
+        result = json.loads(result_path.read_text(encoding='utf-8'))
+        diagnostics = (log + run.stdout + run.stderr).lower()
+        if run.returncode or any(word in diagnostics for word in ('unexpected runtime', 'bad ref', 'runtime error:', 'infinite loop', 'fatal error')):
+            raise RuntimeError('Native engine diagnostic invalidated fixture')
+        expected = {'season': 'environment phase reset', 'preflight': 'omitted metadata mutated world',
+                    'reachability': 'orphan metadata reference accepted', 'callback': 'restored callback duplicated'}
+        if args.negative_control:
+            if result.get('done') or result.get('error') != expected[args.negative_control]:
+                raise RuntimeError('Negative control failed outside its intended assertion: ' + str(result))
+        elif not result.get('done') or result.get('checks', 0) < 19:
+            raise RuntimeError('Native integration fixture incomplete: ' + str(result))
+        receipt['result'] = result
+        receipt['expected_failure_caught'] = bool(args.negative_control)
+        (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+        print(json.dumps(receipt, indent=2))
+    finally:
+        for path in [dme, dme.with_suffix('.dmb'), dme.with_suffix('.rsc'), *generated]:
+            path.unlink(missing_ok=True)
+
+
+if __name__ == '__main__':
+    main()

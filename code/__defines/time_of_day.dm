@@ -65,7 +65,7 @@ var/TOD_loop_started = FALSE
 	if(TOD_loop_started) return
 	TOD_loop_started = TRUE
 	spawn while (1)
-		if (TOD_may_automatically_change)
+		if (TOD_may_automatically_change && !persistence_save_in_progress)
 			TOD_may_automatically_change = FALSE
 			progress_time_of_day()
 		sleep (100)

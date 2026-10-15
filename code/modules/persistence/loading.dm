@@ -55,6 +55,7 @@
 			restored_human.persistence_restored = TRUE
 		all_loaded += object
 		existing_references["[ind]"] = object
+		if(durable_import) durable_import.accept_entry(loading_z, ind, object)
 		for(var/v in savefile.dir)
 			savefile.cd = entry_path(savefile, ind)
 			if(object.persistence_runtime_var(v))
@@ -175,6 +176,7 @@
 				T.ChangeTurf(type, FALSE, FALSE)
 				TICK_CHECK
 	for(var/B = 1, B <= world.maxz, B++)
+		loading_z = B
 		try
 			var/watch = start_watch()
 			existing_references = list()
@@ -232,6 +234,7 @@
 // use the same grid; the completion marker is required by the startup contract.
 /map_storage/proc/validate_world_save()
 	last_error = null
+	release_durable_world()
 	try
 		if(!fexists("map_saves/save_complete.txt") || !fexists("map_saves/map.txt"))
 			throw EXCEPTION("Save is incomplete: metadata or completion marker missing")
@@ -316,8 +319,10 @@
 						for(var/item in params2list(copytext(value, 7)))
 							if(findtext(item, "**entry") == 1 && !entry_set[copytext(item, 8)])
 								throw EXCEPTION("Missing legacy list entry on z=[z]")
+		if(round_state["version"] == 2) validate_durable_world(round_state["world_state"], round_state["generation"])
 		return TRUE
 	catch(var/exception/e)
+		release_durable_world()
 		last_error = "[e] on [e.file]:[e.line]"
 		world.log << "World-save preflight rejected: [last_error]"
 		message_admins("Save rejected before clearing the world: [e]")

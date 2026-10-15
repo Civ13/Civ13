@@ -121,3 +121,28 @@ var/list/mutate_on_tick = null
 	var/age8_done
 /turf/proc/ChangeTurf(path, tell_universe, force_lighting_update)
 	return new path(src)
+
+// This legacy serializer fixture has no supported world metadata profile.
+// Actual round-v2 integration is tested by run-durable-world.py instead.
+/map_storage
+	var/datum/durable_save_graph/durable_export
+	var/datum/durable_save_graph/durable_import
+	var/loading_z = 0
+/datum/durable_save_graph/proc/bind_entry(datum/A, z, ref)
+	return
+/datum/durable_save_graph/proc/accept_entry(z, ref, datum/A)
+	return
+/datum/durable_save_graph/proc/finish_export()
+	return null
+/map_storage/proc/capture_durable_world()
+	return null
+/map_storage/proc/validate_durable_world(list/state, generation)
+	throw EXCEPTION("Unsupported fixture metadata profile")
+/map_storage/proc/suspend_durable_world()
+	return
+/map_storage/proc/restore_durable_world()
+	return
+/map_storage/proc/release_durable_world()
+	durable_export = null
+	durable_import = null
+	loading_z = 0

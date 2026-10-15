@@ -1105,6 +1105,8 @@
 #include "code\modules\persistence\durable_graph.dm"
 #include "code\modules\persistence\durable_contract.dm"
 #include "code\modules\persistence\durable_timers.dm"
+#include "code\modules\persistence\durable_environment.dm"
+#include "code\modules\persistence\durable_world.dm"
 #include "code\modules\persistence\player_reclaim.dm"
 #include "code\modules\persistence\loading.dm"
 #include "code\modules\persistence\persistence.dm"

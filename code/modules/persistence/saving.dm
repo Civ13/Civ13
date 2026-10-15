@@ -8,8 +8,13 @@
 // variables (in params format) that you want saved along with the map file.
 /map_storage/proc/Save_World()
 	prepare_player_ownership()
-	var/generation = "round-v1:[md5("[world.realtime]-[world.time]-[rand(1, 1000000000)]")]"
+	var/list/world_state = capture_durable_world()
+	var/prefix = world_state ? "round-v2" : "round-v1"
+	var/generation = "[prefix]:[md5("[world.realtime]-[world.time]-[rand(1, 1000000000)]")]"
 	var/list/round_state = capture_round_state(generation)
+	if(world_state)
+		round_state["version"] = 2
+		round_state["world_state"] = world_state
 	clear_bookkeeping()
 	// ***** MAP SECTION *****
 	var/backup_dir = "map_backups/"
@@ -38,10 +43,6 @@
 	if(!text2file(jointext(metadata, "\n"), F0))
 		throw EXCEPTION("Could not write world-save metadata")
 	round_state["metadata"] = md5(file2text(F0))
-	if(fexists("map_saves/round.json") && !fdel("map_saves/round.json"))
-		throw EXCEPTION("Could not replace round state")
-	if(!text2file(json_encode(round_state), "map_saves/round.json"))
-		throw EXCEPTION("Could not write round state")
 	log_startup_progress("	Saved metadata.")
 	for(var/A = 1, A <= world.maxz, A++)
 		saving_z = A
@@ -70,6 +71,13 @@
 				TICK_CHECK
 		log_startup_progress("	Saved z-level [A].")
 	clear_bookkeeping()
+	if(world_state)
+		world_state["nodes"] = durable_export.finish_export()
+		durable_export = null
+	if(fexists("map_saves/round.json") && !fdel("map_saves/round.json"))
+		throw EXCEPTION("Could not replace round state")
+	if(!text2file(json_encode(round_state), "map_saves/round.json"))
+		throw EXCEPTION("Could not write round state")
 	if(!text2file(generation,"map_saves/save_complete.txt"))
 		throw EXCEPTION("Could not write save completion marker")
 	log_startup_progress("Finished saving.")
@@ -96,6 +104,7 @@
 	ref = saving_reference_pins.len + 1
 	saving_reference_pins += A
 	saving_references["\ref[A]"] = ref
+	if(durable_export) durable_export.bind_entry(A, saving_z, ref)
 	var/datum/save_export_frame/frame = new
 	frame.exporter = src
 	frame.file = savefile

@@ -229,6 +229,7 @@ var/global/persistence_save_in_progress = FALSE
 		map_storage.Save_World()
 	catch(var/exception/e)
 		map_storage.clear_bookkeeping()
+		map_storage.release_durable_world()
 		persistence_save_in_progress = FALSE
 		map_storage.last_error = "[e] on [e.file]:[e.line]"
 		world.log << "World-save export failed: [map_storage.last_error]"
@@ -251,16 +252,20 @@ var/global/persistence_save_in_progress = FALSE
 	try
 		// Snapshot the validated header before any destructive restoration.
 		var/list/saved_round = map_storage.read_round_state()
+		map_storage.suspend_durable_world()
 		map_storage.ClearMap()
 		if(!map_storage.Load_World())
+			map_storage.release_durable_world()
 			map_storage.reset_player_restoration()
 			persistence_save_in_progress = FALSE
 			return FALSE
 		if(!map_storage.load_map_metadata())
 			throw EXCEPTION("Saved world metadata restoration failed")
+		map_storage.restore_durable_world()
 		map_storage.restore_round_state(src, saved_round)
 	catch(var/exception/e)
 		map_storage.clear_bookkeeping()
+		map_storage.release_durable_world()
 		map_storage.reset_player_restoration()
 		map_storage.last_error = "[e] on [e.file]:[e.line]"
 		world.log << "World-save import failed: [map_storage.last_error]"
@@ -284,12 +289,15 @@ var/global/persistence_save_in_progress = FALSE
 
 /map_storage/proc/read_round_state()
 	var/marker = trim(file2text("map_saves/save_complete.txt"))
-	if(copytext(marker, 1, 10) != "round-v1:") return list()
+	var/version = copytext(marker, 1, 10) == "round-v2:" ? 2 : 1
+	if(copytext(marker, 1, 10) != "round-v1:" && version != 2) return list()
 	if(!fexists("map_saves/round.json"))
 		throw EXCEPTION("Completed generation is missing round state")
 	var/list/state = json_decode(file2text("map_saves/round.json"))
-	if(!islist(state) || state.len != 11 || state["version"] != 1 || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != world.maxz)
+	if(!islist(state) || state.len != (version == 2 ? 12 : 11) || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != world.maxz)
 		throw EXCEPTION("Round state does not match completed generation")
+	if(version == 2 && !islist(state["world_state"]))
+		throw EXCEPTION("Completed generation is missing durable world state")
 	if(!istext(state["game_id"]) || !length(state["game_id"]) || length(state["game_id"]) > 128)
 		throw EXCEPTION("Invalid saved round identity")
 	if(!(state["state"] in list(GAME_STATE_PREGAME, GAME_STATE_PLAYING, GAME_STATE_FINISHED)))
