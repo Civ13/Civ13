@@ -238,6 +238,12 @@ a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10:
 <!-- 2026-10-11: crafting validation -->
 ## Crafting checks
 
+<!-- 2026-10-15: Modern processor recipe validation -->
+The recipe catalog fixture defaults to era 0. New era-gated machine families
+must select their real supported era in tests/crafting/checks.dm; the reactor
+fuel processor is Modern despite not inheriting civ_generator. Keep separate
+locked-era/node tests so a fixture-era fix cannot bypass production gating.
+
 <!-- 2026-10-11: staged component workbench -->
 `scripts/check-component-tools.py` now checks staged bench cancellation,
 concurrent assembly, ingredient removal, destruction and nested native saves.
