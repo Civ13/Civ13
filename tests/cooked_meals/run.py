@@ -15,7 +15,7 @@ CORE = 'code/game/objects/structures/kitchen/cooked_meals.dm'
 CONTROLS = {
  'payment': ('F.reagents.trans_to_holder(reagents, F.reagents.total_volume)', 'reagents.add_reagent("nutriment", 50)', 'FAIL: paid nutrients conserved'),
  'portions': ('reagents.total_volume / meal_portions', 'reagents.total_volume', 'FAIL: equal paid portions'),
- 'reward': ('mood = floor_mood', 'mood += floor_mood', 'FAIL: reward has a floor not additive stacking'),
+ 'reward': ('mood = floor_mood', 'mood += floor_mood', 'FAIL: substantial actual ingestion earns seasoned reward'),
  'persistence': ('key == "meal_cooking" || ..()', '..()', 'FAIL: cooking lock excluded'),
  'heat': ('&& meal_heat() && meal_recipe()', '&& meal_recipe()', 'FAIL: unlit fire cannot cook'),
 }
