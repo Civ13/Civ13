@@ -98,8 +98,9 @@ are omitted. At most six matching code/wiki/guide/recipe entries and 16,000 cont
 are sent per question. Unmatched or truncated recipe details must be checked in
 the atlas, including current map and research availability.
 
-Only question text and the approved guide are sent. No account name, inventory,
-chat history, filesystem, developer MCP tools or administration API is exposed.
+Question text, approved guidance and the bounded gameplay/inventory snapshot
+described below are sent. No account name, chat history, filesystem, developer
+MCP tools or administration API is exposed.
 There is no conversational memory, command execution or tool calling. Questions
 are temporary spool files, removed when completed, disconnected or timed out;
 the remote service may keep its own logs, so owners should disclose its policy.
@@ -148,5 +149,12 @@ admin commands or private reference repositories are indexed.
 Each question automatically includes the server's public map title/ID, game mode,
 era/ordinal and civilization flag. These are captured from map metadata at
 submission, not inferred from player wording. No account identity, coordinates,
-inventory, hidden map state or faction secrets are included. Unknown/uninitialized
+hidden map state or faction secrets are included. The bounded asking-player
+inventory snapshot is described below. Unknown/uninitialized
 map metadata is marked unknown. Era does not prove faction research unlocks.
+
+### Player and environment snapshot
+
+Each question includes the current map, mode, era, season and time of day. For the asking human it also includes health, nutrition, hydration and wetness percentages, body temperature in kelvin, indoor/outdoor exposure, local weather and active fire/incapacitation/weather exposure. This is a detached snapshot taken when submitting the question, not continuous monitoring. No account identity, other players, hidden disease diagnoses or private admin events are sent. Missing context remains unknown; the effects list is not an exhaustive event catalog. The input dialog tells players their gameplay condition is sent to the configured AI service. Collection performs no world scan, HTTP request or spawned timer.
+
+Inventory context includes occupied equipment/hand/pocket slots and carried storage contents, with item names, stack quantities and their slot/container labels. It excludes body internals and item IDs, and stops at 24 items, 64 inspected entries or two container levels. An explicit truncation flag tells the model that omitted ingredients may still be present. Item labels are untrusted text, not instructions. The request file budget is 16 KiB to accommodate bounded inventory snapshots.

@@ -192,6 +192,10 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-13: native catch variable scope -->
+BYOND 516.1681 treats catch variable declarations as proc-scoped. Use distinct
+names for separate catch blocks in one proc or compilation fails with duplicate definition.
+
 - Follow `docs/game-verification.md` for exact-commit build, isolated-fixture,
   graphical, season-memory, and save-round-trip evidence. Reuse probes present in
   the selected checkout; investigation-branch probes may not be on master yet.
@@ -264,6 +268,37 @@ tests/opendream_shell runs both production branches with counted external-effect
 adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
+
+<!-- 2026-10-14: local CID source comparison -->
+`tools/cid/get-cid.ps1` calls the reviewed Windows BYOND 516.1681 library's
+fingerprint/CRC routines in 32-bit PowerShell. Private offsets require its exact
+documented library hash. `run-local.ps1` compares with a real local client's
+`computer_id`; its negative control tests equality only, with no spoof detection.
+<!-- 2026-10-14: bounded runtime detail history -->
+Error history keeps 1000 recent entries globally and 100 per file/line source,
+including skip summaries. Retirement removes both memberships and clears entry
+backreferences, captured usr locations and detail text before explicit plain-datum
+deletion invalidates old holders. Source metadata and
+world/Error cooldown dictionaries remain for the round; distinct synthetic
+file/line identities are not bounded. `tests/error_history/run.py` checks real
+logging, viewer bodies and retirement in an isolated native world, with an
+immutable historical log_error control. `--prepare-only` runs no native tools.
+
+<!-- 2026-10-14: native launcher packaging -->
+`tools/opendream-client/native/Build.ps1` builds the single-file self-contained
+Windows x64 launcher. Its offline console tests cover mock updates plus actual
+EXE replacement after parent exit and BYOND prerequisite adapters, without accounts
+or a game. Release publication builds the exact tag and verifies immutable asset
+readback before advancing the separate native feed; prereleases do not activate it.
+Preserve the existing client channel and distinguish package integrity/BYOND setup
+from identity/gameplay acceptance. Never silently accept installer licenses.
+
+<!-- 2026-10-13: dehydrator native save baseline -->
+`tests/food_progression/rack_save.dm` exports the owning turf and rack graph.
+The 769ae4911 baseline compiled cleanly but failed exporting runtime `slots`.
+Load_Entry replaces constructor contents even for an empty saved record; rack
+runtime pointers must be excluded and live internal storage rebound or rebuilt.
+Source-only preparation does not establish native candidate or control acceptance.
 
 <!-- 2026-10-12: NPC cover decision parity -->
 `tests/npc_cover/run.py` compiles production cover scoring, LOS and line helpers
@@ -664,3 +699,10 @@ Do not call parent attackby after an explicit item attack; that repeats damage,
 logs and material wear. tests/animal_combat/run.py checks compiled inherited
 health defaults, native Life, single sharp/blunt attacks and wear across behavior
 branches, noncombat dispatch, healing/death and generated negative controls.
+
+<!-- 2026-10-14: chemical smoke source retirement -->
+Chemical smoke systems are single-use: their two reaction callers construct fresh
+systems. The hidden reagent source must survive every queued spawn callback, then
+retire through atom/reagent cleanup. `tests/chemical_smoke_ownership/run.py` checks
+production copies, lifetime bounds and repeated holder/membership cleanup against
+an immutable historical negative control in temporary offline storage.

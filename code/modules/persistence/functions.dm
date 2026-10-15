@@ -13,7 +13,7 @@
 
 // Custom persistence iterates vars, including tmp. Runtime fields require explicit exclusion.
 /datum/proc/persistence_runtime_var(key)
-	return FALSE
+	return key == "persistence_export_frame"
 
 /datum/proc/get_saved_vars()
 	var/list/to_save = list()
@@ -33,6 +33,22 @@
 				to_save |= key
 			to_save |= "name"
 	return to_save
+
+// The composite appearance is not a supported saved datum. Restoring its null
+// envelope resets independently restored fields such as transform and color.
+/atom/persistence_runtime_var(key)
+	return key == "appearance" || ..()
+
+// HUD objects belong to a client session and are rebuilt by the normal HUD path.
+// The custom saver visits tmp vars too; exclude these on both export and import.
+/mob/persistence_runtime_var(key)
+	return (key in list("hud_used", "HUDneed", "HUDinventory", "HUDfrippery", "HUDprocess", "HUDtech", "hands", "pullin", "purged", "i_select", "m_select", "zone_sel")) || ..()
+
+/obj/screen
+	should_save = FALSE
+
+/datum/hud
+	should_save = FALSE
 
 // Dirt uses the turf allowlist rather than the object changed-vars encoder.
 // Preserve finite fertility across exports without serializing recovery tokens.
@@ -103,6 +119,8 @@ map_storage
 		list/obj_references = list()
 		list/existing_references = list()
 		list/saving_references = list()
+		list/saving_export_frames = list()
+		list/saving_export_stack = list()
 		list/all_loaded = list()
 		list/found_types = list()
 		list/saved_turfs = list()
@@ -126,6 +144,10 @@ map_storage
 // collected - these lists otherwise pin every atom they touched until the next
 // save/load runs. Called after a save or load finishes, successfully or not.
 /map_storage/proc/clear_bookkeeping()
+	for(var/datum/save_export_frame/frame in saving_export_stack.Copy())
+		release_export_frame(frame)
+	saving_export_frames = list()
+	saving_export_stack = list()
 	saving_references = list()
 	existing_references = list()
 	found_types = list()
@@ -240,3 +262,138 @@ var/global/persistence_save_in_progress = FALSE
 	persistence_save_in_progress = FALSE
 	log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
 	return 1
+
+/datum/proc/before_save_context(map_storage/exporter, datum/save_export_frame/frame)
+	return before_save()
+
+/turf/var/tmp/datum/save_export_frame/persistence_export_frame
+
+/datum/save_export_frame
+	var/map_storage/exporter
+	var/savefile/file
+	var/datum/source
+	var/source_identity
+	var/entry
+	var/accepts_children = FALSE
+	var/active = TRUE
+	var/list/content_refs = list()
+	var/list/content_seen = list()
+	var/list/declared_children = list()
+	var/list/declared_seen = list()
+	var/declared_cursor = 1
+	var/list/tickets = list()
+
+/datum/save_transfer
+	var/datum/save_export_frame/producer
+	var/datum/save_export_frame/parent
+	var/atom/origin
+	var/turf/destination
+	var/list/items = list()
+	var/committed = FALSE
+
+/map_storage/proc/require_export_frame(datum/save_export_frame/frame)
+	if(!frame || !frame.active || frame.exporter != src || !frame.source || "\ref[frame.source]" != frame.source_identity || saving_references[frame.source_identity] != frame.entry || saving_reference_pins[frame.entry] != frame.source || saving_export_frames["[frame.entry]"] != frame)
+		throw EXCEPTION("Save export frame is no longer valid")
+	if(isturf(frame.source) && frame.source:persistence_export_frame != frame)
+		throw EXCEPTION("Save export turf was replaced")
+	return TRUE
+
+/map_storage/proc/prepare_save_transfer(datum/save_export_frame/frame, atom/origin, turf/destination, list/items)
+	require_export_frame(frame)
+	if(saving_export_stack[saving_export_stack.len] != frame || !istype(frame.source, /atom/movable) || !origin || origin.loc != frame.source || !destination)
+		throw EXCEPTION("Save transfer requires the current producer and its owned storage")
+	var/atom/movable/producer = frame.source
+	var/parent_ref = saving_references["\ref[destination]"]
+	var/datum/save_export_frame/parent = saving_export_frames["[parent_ref]"]
+	if(!parent || parent == frame || parent.file != frame.file || !parent.accepts_children || parent.source != destination || producer.loc != destination)
+		throw EXCEPTION("Save transfer requires an active direct owning turf")
+	require_export_frame(parent)
+	if(frame.tickets.len || !islist(items) || !items.len || items.len > 12)
+		throw EXCEPTION("Save transfer exceeds its twelve-item bound")
+	var/datum/save_transfer/ticket = new
+	ticket.producer = frame
+	ticket.parent = parent
+	ticket.origin = origin
+	ticket.destination = destination
+	var/list/seen = list()
+	for(var/obj/item/I in items)
+		if(!I || I.loc != origin || !I.should_save || saving_references["\ref[I]"])
+			throw EXCEPTION("Save transfer item is unavailable or already captured")
+		for(var/ignored in ignore_types)
+			if(istype(I, ignored))
+				throw EXCEPTION("Save transfer item is excluded from persistence")
+		var/identity = "\ref[I]"
+		if(!seen[identity])
+			seen[identity] = TRUE
+			ticket.items += I
+	if(ticket.items.len != items.len)
+		throw EXCEPTION("Save transfer requires unique item handles")
+	frame.tickets += ticket
+	return ticket
+
+/map_storage/proc/commit_save_transfer(datum/save_transfer/ticket)
+	if(!ticket)
+		throw EXCEPTION("Missing save transfer ticket")
+	require_export_frame(ticket.producer)
+	require_export_frame(ticket.parent)
+	if(saving_export_stack[saving_export_stack.len] != ticket.producer || ticket.producer.source:loc != ticket.destination || !(ticket in ticket.producer.tickets) || !ticket.origin || ticket.origin.loc != ticket.producer.source || ticket.destination != ticket.parent.source)
+		throw EXCEPTION("Save transfer ticket is not owned by the current hook")
+	for(var/obj/item/I in ticket.items)
+		if(!I || I.loc != ticket.destination)
+			throw EXCEPTION("Paid save transfer did not reach its declared turf")
+	if(ticket.committed)
+		return TRUE
+	for(var/obj/item/I in ticket.items)
+		var/identity = "\ref[I]"
+		if(!ticket.parent.declared_seen[identity])
+			ticket.parent.declared_seen[identity] = I
+			ticket.parent.declared_children += I
+	ticket.committed = TRUE
+	return TRUE
+
+/map_storage/proc/add_export_content(datum/save_export_frame/frame, ref)
+	if(!ref) return
+	var/key = "[ref]"
+	if(!frame.content_seen[key])
+		frame.content_seen[key] = TRUE
+		frame.content_refs += key
+
+/map_storage/proc/drain_save_transfers(datum/save_export_frame/frame)
+	require_export_frame(frame)
+	while(frame.declared_cursor <= frame.declared_children.len)
+		var/obj/item/I = frame.declared_children[frame.declared_cursor++]
+		if(!I || I.loc != frame.source)
+			throw EXCEPTION("Declared paid child moved or disappeared during export")
+		var/ref = BuildVarDirectory(frame.file, I, 1)
+		require_export_frame(frame)
+		if(!I || I.loc != frame.source || !ref)
+			throw EXCEPTION("Declared paid child could not be saved in its owning turf")
+		add_export_content(frame, ref)
+	for(var/obj/item/I in frame.declared_children)
+		if(!I || I.loc != frame.source)
+			throw EXCEPTION("Declared paid child changed before content publication")
+	return TRUE
+
+/map_storage/proc/release_export_frame(datum/save_export_frame/frame)
+	if(!frame) return
+	if(isturf(frame.source) && frame.source:persistence_export_frame == frame)
+		frame.source:persistence_export_frame = null
+	if(saving_export_frames["[frame.entry]"] == frame)
+		saving_export_frames -= "[frame.entry]"
+	saving_export_stack -= frame
+	for(var/datum/save_transfer/ticket in frame.tickets)
+		ticket.producer = null
+		ticket.parent = null
+		ticket.origin = null
+		ticket.destination = null
+		ticket.items = list()
+	frame.tickets = list()
+	frame.declared_children = list()
+	frame.declared_seen = list()
+	frame.content_refs = list()
+	frame.content_seen = list()
+	frame.active = FALSE
+	frame.source = null
+	frame.source_identity = null
+	frame.file = null
+	frame.exporter = null

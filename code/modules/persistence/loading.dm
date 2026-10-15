@@ -15,6 +15,10 @@
 		savefile.cd = entry_path(savefile, ind)
 		if(!ispath(type, /datum))
 			throw EXCEPTION("Invalid saved type at entry [ind]: [type]")
+		// Older completed saves can contain client HUD graphs. Never construct
+		// their screen/datum objects without the live client owner they require.
+		if(ispath(type, /obj/screen) || ispath(type, /datum/hud))
+			return null
 		if(ispath(type, /obj/map_metadata))
 			existing_references["[ind]"] = map
 			return map
@@ -36,8 +40,12 @@
 			object = locate(xa,ya,za)
 		else if(replacement)
 			object = replacement
-		else
+		else if(ispath(type, /atom))
 			object = new type(starting_loc)
+		else
+			// Non-atom datums have no location argument. In particular, matrix
+			// construction must use its no-argument identity initializer.
+			object = new type()
 		if(!object)
 			throw EXCEPTION("Could not create saved entry [ind] ([type])")
 		all_loaded += object
@@ -224,6 +232,8 @@
 		var/list/meta = splittext(file2text("map_saves/map.txt"), "\n")
 		if(meta.len < 9 || meta[1] != map.ID)
 			throw EXCEPTION("Save metadata does not match the current map")
+		if(isnull(round_mode_metadata(meta)))
+			throw EXCEPTION("Save round-mode metadata is malformed")
 		for(var/z = 1, z <= world.maxz, z++)
 			if(!fexists("map_saves/[z].sav"))
 				throw EXCEPTION("Missing saved z-level [z]")
@@ -357,12 +367,29 @@
 // Restores the world-level state written at the top of Save_World(). Load_World()
 // only rebuilds turfs (see the /turf/ check in Load_Entry()), so without this the
 // epoch and research progress would reset to map defaults on every reload.
+/map_storage/proc/round_mode_metadata(list/metadata)
+	if(!islist(metadata)) return null
+	var/list/meta = metadata.Copy()
+	// text2file may append a newline; it is not an additional positional field.
+	if(meta.len > 9 && meta[meta.len] == "") meta.Cut(meta.len)
+	if(meta.len == 9 || meta.len == 10) return list()
+	if(meta.len != 14) return null
+	var/list/keys = list("persistence", "research_active", "resourceresearch", "perschadplus")
+	var/list/modes = list()
+	for(var/i = 1, i <= keys.len, i++)
+		var/value = meta[10 + i]
+		if(value != "0" && value != "1") return null
+		modes[keys[i]] = text2num(value)
+	return modes
+
 /map_storage/proc/load_map_metadata()
 	if (!map || !fexists("map_saves/map.txt"))
 		return FALSE
 	var/list/meta = splittext(file2text("map_saves/map.txt"), "\n")
 	if (meta.len < 9 || meta[1] != map.ID)
 		return FALSE
+	var/list/round_modes = round_mode_metadata(meta)
+	if(isnull(round_modes)) return FALSE
 	map.age = meta[2]
 	map.ordinal_age = text2num(meta[3])
 	map.default_research = text2num(meta[4])
@@ -371,6 +398,7 @@
 	map.chad_mode = text2num(meta[7])
 	map.chad_mode_plus = text2num(meta[8])
 	map.gamemode = meta[9]
+	for(var/key in round_modes) map.vars[key] = round_modes[key]
 	map.age1_done = (map.ordinal_age >= 1)
 	map.age2_done = (map.ordinal_age >= 2)
 	map.age3_done = (map.ordinal_age >= 3)
