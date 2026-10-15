@@ -30,8 +30,11 @@ the selected Linux user also owns and runs the local game processes.
 No interactive Linux terminal is required. Windows UAC elevation and a restart
 are still needed when the virtualization components are absent.
 
-BYOND is pinned to 516.1681. Builds use a committed Git snapshot and reject
-tracked local edits. They regenerate the crafting catalog and require zero
+BYOND is pinned to 516.1681. Builds fetch the selected local commit into an
+independent temporary Git repository, check it out detached and reject tracked
+local edits. The temporary HEAD and index support the real crafting catalog
+generator without switching the operator's checkout or registering a worktree.
+Builds regenerate the crafting catalog and require zero
 compiler errors/warnings. Build while the selected local server is stopped.
 Run `git pull --ff-only origin master` in Windows before rebuilding to update
 the source; this launcher does not hard-reset the checkout.

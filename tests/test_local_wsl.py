@@ -1,6 +1,7 @@
 """Offline contracts. No WSL, compiler, daemon, signals or live sockets."""
 import importlib.util
 from contextlib import ExitStack
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -16,6 +17,77 @@ spec.loader.exec_module(module)
 
 
 class LocalWslTests(unittest.TestCase):
+    def test_build_runs_production_catalog_in_detached_git_snapshot(self):
+        real_run = module.subprocess.run
+        root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory(prefix='civ13-local-build-') as directory:
+            temporary = Path(directory)
+            source, runtime = temporary / 'source', temporary / 'runtime'
+            source.mkdir()
+            (runtime / 'config').mkdir(parents=True)
+            env = dict(os.environ, GIT_CONFIG_NOSYSTEM='1', GIT_CONFIG_GLOBAL=os.devnull,
+                       GIT_TERMINAL_PROMPT='0', GIT_CEILING_DIRECTORIES=str(temporary.parent))
+
+            def git(*arguments):
+                return real_run(['git', '-C', str(source), *arguments], env=env,
+                                check=True, capture_output=True, text=True).stdout.strip()
+
+            for name in ('scripts/build-crafting-atlas.py', 'scripts/atlas/catalog_metadata.py',
+                         'code/modules/1713/production.dm'):
+                path = source / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes((root / name).read_bytes())
+            for name, value in {'config/crafting/fixture.txt':
+                                'RECIPE: /material/wood/,fixture item,/obj/item/fixture,1,1,0,1,none,0,0,0,8,null\n',
+                                'maps/fixture.txt': 'synthetic map placeholder\n',
+                                'UI/fixture.txt': 'synthetic UI placeholder\n',
+                                'civ13.dme': '// Compiler is injected, never executed.\n'}.items():
+                path = source / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(value)
+            git('init', '--quiet')
+            git('config', 'core.hooksPath', str(temporary / 'no-hooks'))
+            git('add', '.')
+            git('-c', 'user.name=Offline fixture', '-c', 'user.email=fixture@example.invalid',
+                'commit', '--quiet', '-m', 'synthetic source')
+            sha = git('rev-parse', 'HEAD')
+            refs, worktrees = git('show-ref'), git('worktree', 'list', '--porcelain')
+            stages = []
+
+            def run(command, **kwargs):
+                if command[0] == 'python3':
+                    return real_run([sys.executable, *command[1:]], **kwargs)
+                if command[0] == str(module.BIN / 'DreamMaker'):
+                    stage = Path(kwargs['cwd'])
+                    stages.append(stage)
+                    self.assertNotEqual(stage, source)
+                    actual = real_run(['git', '-C', str(stage), 'rev-parse', 'HEAD'], env=env,
+                                      check=True, capture_output=True, text=True).stdout.strip()
+                    self.assertEqual(actual, sha)
+                    detached = real_run(['git', '-C', str(stage), 'symbolic-ref', '-q', 'HEAD'],
+                                        env=env, capture_output=True)
+                    self.assertEqual(detached.returncode, 1)
+                    catalog = module.json.loads((stage / 'UI/crafting-atlas.json').read_text())
+                    self.assertTrue(any(row['name'] == 'fixture item' for row in catalog['recipes']))
+                    (stage / 'civ13.dmb').write_bytes(b'fake compiler output')
+                    (stage / 'civ13.rsc').write_bytes(b'fake resource output')
+                    return module.subprocess.CompletedProcess(command, 0, '0 errors, 0 warnings')
+                if command[0] == 'git':
+                    return real_run(command, **kwargs)
+                raise AssertionError('Unexpected executable: ' + command[0])
+
+            with patch.object(module.subprocess, 'run', side_effect=run):
+                module.build(source, runtime, env)
+            self.assertEqual(len(stages), 1)
+            self.assertFalse(stages[0].exists())
+            self.assertEqual((runtime / 'source-sha.txt').read_text().strip(), sha)
+            self.assertTrue((runtime / 'UI/crafting-atlas.json').is_file())
+            self.assertFalse((source / 'UI/crafting-atlas.json').exists())
+            self.assertEqual(git('status', '--porcelain'), '')
+            self.assertEqual(git('rev-parse', 'HEAD'), sha)
+            self.assertEqual(git('show-ref'), refs)
+            self.assertEqual(git('worktree', 'list', '--porcelain'), worktrees)
+
     def start_fixture(self, failure=None, cleanup_timeout=False):
         stack = self.enterContext(ExitStack())
         directory = stack.enter_context(tempfile.TemporaryDirectory())

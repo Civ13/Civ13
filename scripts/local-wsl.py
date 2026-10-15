@@ -1,13 +1,11 @@
 """PC-only game runtimes, invoked through local-wsl.ps1. No production scripts."""
 import argparse
 import fcntl
-import io
 import json
 import os
 from pathlib import Path
 import signal
 import subprocess
-import tarfile
 import tempfile
 import time
 
@@ -35,20 +33,21 @@ def process_matches(record, runtime):
 
 
 def build(source, runtime, env):
+    source = source.resolve(strict=True)
     sha = subprocess.check_output(['git', '-C', str(source), 'rev-parse', 'HEAD'], text=True).strip()
     tracked = subprocess.check_output(['git', '-C', str(source), 'status', '--porcelain', '--untracked-files=no'], text=True)
     if tracked.strip():
         raise RuntimeError('Commit tracked changes before building an immutable local runtime')
-    archive = subprocess.check_output(['git', '-C', str(source), 'archive', sha])
     with tempfile.TemporaryDirectory(prefix='civ13-build-') as directory:
         stage = Path(directory)
-        with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
-            for member in tar.getmembers():
-                target = (stage / member.name).resolve()
-                if not target.is_relative_to(stage) or not (member.isfile() or member.isdir()):
-                    raise RuntimeError('Unsafe archive entry')
-            # All entries were validated above; no links or special files accepted.
-            tar.extractall(stage)
+        # The catalog generator requires HEAD and the tracked-file index. Fetch
+        # only this local commit into an independent temporary repository;
+        # source branches, index, worktrees and private untracked files stay put.
+        subprocess.run(['git', 'init', '--quiet', str(stage)], env=env, check=True)
+        subprocess.run(['git', '-C', str(stage), 'fetch', '--quiet', '--no-tags',
+                        '--no-recurse-submodules', '--depth=1', str(source), sha], env=env, check=True)
+        subprocess.run(['git', '-C', str(stage), '-c', 'core.hooksPath=' + str(stage / '.git/no-hooks'),
+                        'checkout', '--quiet', '--detach', sha], env=env, check=True)
         subprocess.run(['python3', 'scripts/build-crafting-atlas.py', '--catalog-only', '--game-catalog', 'UI/crafting-atlas.json'], cwd=stage, check=True, env=env)
         result = subprocess.run([str(BIN / 'DreamMaker'), '-max_errors', '0', 'civ13.dme'], cwd=stage, env=env, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         print(result.stdout)
