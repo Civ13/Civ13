@@ -15,7 +15,6 @@ import subprocess
 import time
 import urllib.parse
 import uuid
-import zipfile
 
 
 def write_json(path, value):
@@ -206,12 +205,12 @@ class Supervisor:
             verify_binaries(folder / 'game', manifest, revision)
             return folder
         folder.mkdir(parents=True)
-        archive = folder / 'source.zip'
-        with archive.open('wb') as stream:
-            subprocess.run([c['git'], 'archive', '--format=zip', revision], cwd=c['repository'], stdout=stream, check=True, timeout=300)
         game = folder / 'game'
-        with zipfile.ZipFile(archive) as source:
-            source.extractall(game)
+        # The catalog generator reads HEAD and tracked paths. A bare archive
+        # cannot run it. Shared objects keep this exact detached checkout cheap;
+        # no command checks out or edits the operator's repository.
+        self.command([c['git'], 'clone', '--shared', '--no-checkout', c['repository'], str(game)], log=folder / 'clone.log', timeout=300)
+        self.command([c['git'], 'checkout', '--detach', revision], game, folder / 'checkout.log', timeout=300)
         self.command([c['python'], 'scripts/build-crafting-atlas.py', '--catalog-only', '--game-catalog', 'UI/crafting-atlas.json'], game, folder / 'atlas.log')
         dme = (game / 'civ13.dme').read_text(encoding='utf-8')
         import re
@@ -283,7 +282,7 @@ class Supervisor:
                 probe.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
             probe.bind(('0.0.0.0', c['port']))
         run = self.root / 'runs' / operation
-        shutil.copytree(build / 'game', run)
+        shutil.copytree(build / 'game', run, ignore=shutil.ignore_patterns('.git'))
         manifest = json.loads((build / 'build.json').read_text())
         verify_binaries(run, manifest, build.name)
         shutil.copytree(c['config_directory'], run / 'config', dirs_exist_ok=True)

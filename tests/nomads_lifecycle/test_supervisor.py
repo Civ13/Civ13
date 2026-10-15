@@ -3,6 +3,8 @@ import importlib.util
 import json
 from pathlib import Path
 import tempfile
+import subprocess
+import sys
 import unittest
 from unittest.mock import patch
 
@@ -51,6 +53,39 @@ class SupervisorTests(unittest.TestCase):
                 self.supervisor.cycle()
             save.assert_not_called()
             start.assert_not_called()
+
+    def test_staging_retains_exact_git_identity_for_catalog_generator(self):
+        repository = self.root / 'repository'
+        repository.mkdir()
+        git = m.shutil.which('git')
+        if not git:
+            self.skipTest('Git is unavailable')
+        def run_git(*args):
+            return subprocess.check_output([git, '-C', str(repository), *args], stderr=subprocess.STDOUT).decode().strip()
+        run_git('init')
+        (repository / 'scripts').mkdir()
+        (repository / 'UI').mkdir()
+        (repository / 'code/modules/persistence').mkdir(parents=True)
+        (repository / 'code/modules/persistence/nomads_lifecycle.dm').write_text('// fixture')
+        (repository / 'civ13.dme').write_text('#include "maps/original.dmm"\n')
+        (repository / 'scripts/build-crafting-atlas.py').write_text('import subprocess\nfrom pathlib import Path\nPath("UI/crafting-atlas.json").write_text(subprocess.check_output(["git","rev-parse","HEAD"]).decode().strip())\n')
+        (repository / 'UI/.keep').write_text('')
+        run_git('add', '.')
+        run_git('-c', 'user.name=Lifecycle Test', '-c', 'user.email=lifecycle@example.invalid', 'commit', '-m', 'fixture')
+        revision = run_git('rev-parse', 'HEAD')
+        self.supervisor.config.update(git=git, repository=str(repository), python=sys.executable, compiler='injected-compiler')
+        original = self.supervisor.command
+        def command(arguments, cwd=None, log=None, timeout=1800):
+            if arguments[0] == 'injected-compiler':
+                for name in ('civ13.dmb', 'civ13.rsc'):
+                    (Path(cwd) / name).write_bytes(b'fixture output')
+                return '0 errors, 0 warnings'
+            return original(arguments, cwd, log, timeout)
+        with patch.object(self.supervisor, 'command', side_effect=command):
+            build = self.supervisor.build(revision)
+        self.assertEqual((build / 'game/UI/crafting-atlas.json').read_text(), revision)
+        self.assertEqual(run_git('rev-parse', 'HEAD'), revision)
+        self.assertIn('nomads_europe.dmm', (build / 'game/civ13.dme').read_text())
 
     def test_save_failure_never_starts_replacement(self):
         self.running()
