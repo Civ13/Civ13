@@ -1,5 +1,8 @@
 """Compile actual DM help service with minimal offline adapters; no game startup."""
 import argparse
+import contextlib
+import hashlib
+import json
 from pathlib import Path
 import subprocess
 import tempfile
@@ -21,9 +24,36 @@ PRELUDE = '''
 #define WEATHER_SMOG 4
 var/season = "WINTER"
 var/time_of_day = "Night"
+/proc/IsGuestKey(key)
+    return findtext(key, "guest") == 1
 /area
     var/location = AREA_OUTSIDE
     var/weather = WEATHER_WET
+/mob
+    var/probe_connected = TRUE
+    var/probe_prompts = 0
+    var/probe_submits = 0
+    var/probe_question
+    var/probe_result
+    proc/probe_submit(question)
+        probe_submits++
+        probe_result = player_help_service.enqueue(md5("injected authenticated client"), question, null)
+/mob/probe_help/player_help_prompt()
+    probe_prompts++
+    return probe_question
+/datum/player_help_service/probe_limits
+    var/clock = 1000
+    limit_time()
+        return clock
+/datum/player_help_service/probe_backend
+    var/online = TRUE
+    var/fail_write = FALSE
+    available()
+        return online
+    write_request(slot, list/request)
+        if (fail_write)
+            return FALSE
+        return ..()
 /proc/get_area(mob/M)
     return M.loc
 /mob/living/human
@@ -84,10 +114,97 @@ PROBE = '''
         failures++
 var/failures = 0
 /world/New()
-    world.OpenPort("none")
+    world.OpenPort(0)
     world.log << "BEGIN"
     var/datum/player_help_service/H = player_help_service
     H.root = "spool/"
+    var/mob/probe_help/asker = new
+    asker.ask_player_help()
+    check(asker.probe_prompts == 1 && !asker.probe_submits && !H.accounts.len, "unavailable service still prompts and cancellation consumes no allowance")
+    asker.probe_question = "How do I play?"
+    asker.ask_player_help()
+    check(asker.probe_prompts == 2 && asker.probe_submits == 1, "actual verb submits only after prompt")
+    check(findtext(asker.probe_result, "unavailable"), "verb submission returns unavailable after prompt")
+    var/datum/player_help_service/probe_limits/L = new
+    var/account = md5("same authenticated account across reconnect")
+    check(L.reserve(account) == 1, "first account admission")
+    check(findtext(L.reserve(account), "pending"), "one outstanding across reconnect")
+    L.clear_slot(1)
+    check(findtext(L.reserve(account), "wait"), "rapid repeats retain account cooldown")
+    L.clock += 300
+    check(L.reserve(account) == 1, "cooldown expiry")
+    L.clear_slot(1)
+    L.clock += 300
+    check(L.reserve(account) == 1, "third burst admission")
+    L.clear_slot(1)
+    L.clock += 300
+    check(findtext(L.reserve(account), "wait"), "burst quota after cooldown")
+    L.clock += 300
+    check(L.reserve(account) == 1, "burst expiry")
+    L.clear_slot(1)
+    L.accounts = list()
+    L.global_times = list()
+    L.limits["window_requests"] = 2
+    for(var/i=1,i<=2,i++)
+        check(L.reserve(account) == 1, "window setup admission")
+        L.clear_slot(1)
+        L.clock += 300
+    check(findtext(L.reserve(account), "wait"), "long window quota")
+    L.accounts = list()
+    L.global_times = list()
+    L.limits["global_requests"] = 1
+    check(L.reserve(md5("global one")) == 1, "global first")
+    L.clear_slot(1)
+    check(findtext(L.reserve(md5("global two")), "busy"), "global quota rejects distinct accounts")
+    L.global_times = list()
+    L.accounts = list()
+    L.limits["global_requests"] = 30
+    L.limits["max_accounts"] = 1
+    check(L.reserve(md5("bounded one")) == 1, "state capacity setup")
+    L.clear_slot(1)
+    check(findtext(L.reserve(md5("bounded two")), "busy") && L.accounts.len == 1, "bounded account state rejects without evicting cooldown")
+    L.clock += 6000
+    check(L.reserve(md5("bounded two")) == 1, "expired account state reclaimed")
+    L.clear_slot(1)
+    L.accounts = list()
+    L.global_times = list()
+    L.limits["max_accounts"] = 2048
+    for(var/i=1,i<=8,i++)
+        check(L.reserve(md5("queue [i]")) == i, "bounded queue admission")
+    check(findtext(L.reserve(md5("queue overflow")), "busy"), "global queue saturation")
+    // Disconnected recipients still reserve their accounts until completion/timeout.
+    H.pending["1"] = list("id"="disconnected", "account"=account, "deadline"=world.time + 100)
+    H.poll()
+    check(H.pending.len == 1, "disconnect does not release pending account")
+    H.pending["1"]["deadline"] = 0
+    H.poll()
+    check(!H.pending.len, "timeout releases disconnected request")
+    var/datum/player_help_service/probe_backend/B = new
+    B.root = "spool/"
+    B.online = FALSE
+    check(findtext(B.enqueue(account, "Question", null), "unavailable") && !B.accounts.len, "unavailable submission spends no allowance")
+    B.online = TRUE
+    player_help_service = B
+    asker.ask_player_help()
+    check(asker.probe_result == TRUE && B.pending.len == 1, "actual verb prompt submission publishes ready backend request")
+    B.clear_slot(1)
+    B.accounts = list()
+    B.global_times = list()
+    player_help_service = H
+    var/long_question = ""
+    for(var/i=1,i<=501,i++)
+        long_question += "x"
+    check(findtext(B.enqueue(account, long_question, null), "500") && !B.accounts.len, "oversized submission spends no allowance")
+    B.fail_write = TRUE
+    check(findtext(B.enqueue(account, "Question", null), "could not send") && !B.pending.len, "write failure releases pending lock")
+    check(findtext(B.enqueue(account, "Question", null), "wait"), "write failure retains cooldown against retry flood")
+    B.fail_write = FALSE
+    check(B.enqueue(md5("backend success"), "Question", null) == TRUE, "actual queue publishes request")
+    var/list/sent = B.read_json("spool/1.request.json", 16384)
+    check(sent["account"] == md5("backend success") && sent["question"] == "Question", "server request includes bounded account and question")
+    text2file(json_encode(list("id"=sent["id"], "status"="unavailable")), "spool/1.response.json")
+    B.poll()
+    check(!B.pending.len && !fexists("spool/1.ready"), "failed response releases queue and removes dispatch marker")
     var/list/context = H.game_context()
     check(context["map"] == "Nomads (Gaia)" && context["gamemode"] == map.gamemode, "actual map and mode snapshot")
     var/area/local_area = new
@@ -161,12 +278,27 @@ var/failures = 0
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', type=Path, required=True)
-    parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity', 'player-context', 'inventory-budget'])
+    parser.add_argument('--output', type=Path, help='Retain isolated sources, logs and hashes in a new directory')
+    parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity', 'player-context', 'inventory-budget', 'rate-limit', 'prompt-first', 'disconnect'])
     args = parser.parse_args()
-    with tempfile.TemporaryDirectory(prefix='civ13-player-help-') as directory:
+    if args.output:
+        args.output.mkdir(parents=True, exist_ok=False)
+    storage = contextlib.nullcontext(str(args.output)) if args.output else tempfile.TemporaryDirectory(prefix='civ13-player-help-')
+    with storage as directory:
         temp = Path(directory)
         (temp / 'spool').mkdir()
         production = (ROOT / 'code/game/mob/player_help.dm').read_text()
+        # Inject only the unavailable native client/input boundary. The actual
+        # verb body runs; reserve/poll below are unmodified production paths.
+        production = production.replace('if (!client)', 'if (!probe_connected)')
+        production = production.replace('if (client && question)', 'if (probe_connected && question)')
+        production = production.replace('player_help_service.submit(client, question)', 'probe_submit(question)')
+        if args.negative_control == 'rate-limit':
+            production = production.replace('if (retry)', 'if (FALSE && retry)')
+        elif args.negative_control == 'prompt-first':
+            production = production.replace('var/question = player_help_prompt()', 'if (!player_help_service.available())\n\t\treturn\n\tvar/question = player_help_prompt()')
+        elif args.negative_control == 'disconnect':
+            production = production.replace('if (C && !(C in clients))', 'if (!C)\n\t\t\tclear_slot(i)\n\t\t\tcontinue\n\t\tif (C && !(C in clients))')
         production = production.replace('inspected++', 'inspected++; probe_inspections++')
         if args.negative_control == 'inventory-budget':
             production = production.replace('queue.len >= 64 || inspected + children_inspected >= 64', 'queue.len >= 64 || children_inspected + children_inspected >= 64')
@@ -183,13 +315,31 @@ def main():
         compiler = args.byond_bin / ('dm.exe' if (args.byond_bin / 'dm.exe').exists() else 'DreamMaker')
         daemon = args.byond_bin / ('dd.exe' if (args.byond_bin / 'dd.exe').exists() else 'DreamDaemon')
         built = subprocess.run([str(compiler), 'probe.dme'], cwd=temp, capture_output=True, text=True, timeout=90)
+        (temp / 'compile.log').write_text(built.stdout + built.stderr)
         print(built.stdout)
-        if built.returncode or '0 errors, 0 warnings' not in built.stdout:
+        if built.returncode or '0 errors, 0 warnings' not in built.stdout or '516.1681' not in built.stdout:
             raise SystemExit('Fixture compilation failed')
         ran = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-trusted', '-close', '-log', 'probe.log'], cwd=temp, capture_output=True, text=True, timeout=40)
         output = ran.stdout + ran.stderr + (temp / 'probe.log').read_text(errors='replace')
+        (temp / 'runtime.log').write_text(output)
+        (temp / 'receipt.json').write_text(json.dumps({
+            'control': args.negative_control, 'compiler_exit': built.returncode,
+            'daemon_exit': ran.returncode, 'production_sha256': hashlib.sha256((ROOT / 'code/game/mob/player_help.dm').read_bytes()).hexdigest(),
+            'generated_sha256': hashlib.sha256(production.encode()).hexdigest(),
+            'scope': 'Actual verb with injected client/input boundary; actual queue/admission/poll with isolated storage, no live client or LLM'
+        }, indent=2))
+        if ran.returncode:
+            raise SystemExit('Native daemon exited unexpectedly')
         if args.negative_control:
-            if 'FAIL:' not in output:
+            expected = {'escaping': 'escaped HTML', 'heartbeat': 'unconfigured',
+                        'identity': 'wrong response identity rejected',
+                        'player-context': 'asking player condition',
+                        'inventory-budget': 'combined entry and child inspection budget reaches exactly 64',
+                        'rate-limit': 'rapid repeats retain account cooldown',
+                        'prompt-first': 'unavailable service still prompts and cancellation consumes no allowance',
+                        'disconnect': 'disconnect does not release pending account'}[args.negative_control]
+            if ('FAIL: ' + expected) not in output or any(error in output.lower() for error in ('runtime error:', 'bad ref', 'unhandled exception')):
+                print(output)
                 raise SystemExit('Negative control not detected')
             print('Expected negative control detected:', args.negative_control)
         elif 'RESULT: 0' not in output or 'FAIL:' in output or any(error in output.lower() for error in ('runtime error:', 'bad ref', 'unhandled exception')):

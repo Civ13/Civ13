@@ -13,8 +13,11 @@ normal world startup. The native fixture verifies heartbeat startup/expiry,
 malformed files, escaped HTML, request identity and disconnected-slot cleanup.
 It closes its port immediately and uses isolated disk files.
 
-There are no authenticated clients in this fixture: actual input/browser delivery
-and client timeout notification are source-reviewed, not graphical acceptance.
+The actual verb runs with only its client-connected/input/submit boundary
+injected. Its submit boundary calls the actual server enqueue path: the probe
+checks prompt-first unavailable handling, cancellation without allowance,
+ready request publication and failure cleanup. Native input/browser delivery
+and client timeout notification remain unverified by this isolated fixture.
 No remote endpoint, deployed bridge or model knowledge is tested. Game compilation
 is separate; screenshots are unnecessary for these file/protocol contracts.
 
@@ -28,3 +31,18 @@ The combined inventory budget probe counts entry and child visits in a generated
 copy of production code. A bag with 70 non-item children must stop at exactly 64
 combined inspections; `--negative-control inventory-budget` restores the faulty
 doubled-child counter and must fail that boundary assertion.
+
+Rate-limit probes exercise production account reservations, cooldown, burst and
+long-window quotas, account-state capacity, global quota/queue saturation,
+disconnect retention, timeout, response failure and write-failure cleanup.
+Repeat with `--negative-control rate-limit`, `prompt-first` and `disconnect` to
+remove those guards in generated source. Each must fail its named assertion
+without runtime errors. `--output <new-directory>` preserves logs and source
+hashes. These probes never connect to the retained game or an external LLM.
+
+The Python suite also calls the real bridge dispatch boundary directly with
+injected transport/clock: rapid repeats, account continuity, concurrency,
+global saturation, state capacity/expiry and transport timeout are covered.
+`run-bridge-control.py` removes admission from generated production source and
+requires the direct rapid-repeat assertion to catch it. Account hashes must
+never appear in the captured model payload.
