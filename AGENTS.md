@@ -275,6 +275,13 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
 
+<!-- 2026-10-15: archived combat histories -->
+Combat history writers use `append_attack_log`; ghosts share the body's list.
+Retire rows in place only after the private archive write succeeds. Archive
+failure deliberately retains history, with scalar retry/warning cooldowns.
+`tests/attack_history` checks writer coverage and isolated production contracts;
+its row counts do not establish live process RAM or crash durability.
+
 <!-- 2026-10-15: hover name HUD -->
 `code/_onclick/hud/hover_name.dm` uses a weak target reference on a disposable
 human HUD screen object. Mouse events update it; the existing HUD process
