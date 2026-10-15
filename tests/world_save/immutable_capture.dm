@@ -1,5 +1,6 @@
 var/capture_hook_calls = 0
 var/capture_projection_calls = 0
+var/capture_runtime_calls = 0
 /datum/capture_input
 	var/paid_units = 17
 	var/list/shared
@@ -16,7 +17,7 @@ var/capture_projection_calls = 0
 	paid_units = 0
 	return ..()
 /datum/capture_input/mutating/persistence_runtime_var(key)
-	capture_projection_calls++
+	capture_runtime_calls++
 	paid_units = 0
 	return FALSE
 /datum/capture_input/mutating/unreviewed
@@ -104,6 +105,7 @@ var/capture_projection_calls = 0
 		var/datum/capture_input/mutating/mutating = new
 		frame = new_capture_frame()
 		check(frame.capture(list(mutating)), "pure field projection failed")
+		check(!capture_runtime_calls, "capture invoked runtime exclusion callback")
 		check(!capture_projection_calls && mutating.paid_units == 17, "capture invoked mutating projection")
 		var/datum/capture_input/yielding/yielding = new
 		frame = new_capture_frame()

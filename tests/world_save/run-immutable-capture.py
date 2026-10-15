@@ -11,10 +11,36 @@ import tempfile
 DIAGNOSTIC = re.compile(r'runtime error:|bad ref|BUG:|##\s*ERROR\s*:|RUNTIME:|assertion failed|infinite loop|segmentation|fatal error', re.I)
 
 
+def prepare_source(source, negative_control=None):
+    if negative_control is None:
+        return source, 'PASS'
+    controls = {
+        'callback': (
+            'var/list/saved = projection_manifest["[source.type]"]',
+            'var/list/saved = projection_manifest["[source.type]"]\n\tif(source.type == text2path("/datum/capture_input/mutating")) saved = source.get_saved_vars()',
+            'FAIL: capture invoked mutating projection'),
+        'runtime-callback': (
+            '\t\tfields[key] = encode(source.vars[key], depth + 1)',
+            '\t\tif(source.type == text2path("/datum/capture_input/mutating") && source.persistence_runtime_var(key)) continue\n\t\tfields[key] = encode(source.vars[key], depth + 1)',
+            'FAIL: capture invoked runtime exclusion callback'),
+        'admission': (
+            'if(!islist(saved)) throw EXCEPTION("No audited exact-type capture projection")',
+            'if(!islist(saved)) saved = list()',
+            'FAIL: unreviewed projection admitted'),
+        'hook': (
+            '\treject_hook(source)\n', '\tif(FALSE) reject_hook(source)\n',
+            'FAIL: mutating paid hook admitted'),
+    }
+    before, after, expected = controls[negative_control]
+    if source.count(before) != 1:
+        raise RuntimeError('Omission control requires unique production guard')
+    return source.replace(before, after, 1), expected
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', required=True, type=Path)
-    parser.add_argument('--negative-control', choices=('callback', 'admission', 'hook'))
+    parser.add_argument('--negative-control', choices=('callback', 'runtime-callback', 'admission', 'hook'))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     fixture = root / 'tests/world_save'
@@ -27,24 +53,7 @@ def main():
     print(f'Retained evidence: {output}', flush=True)
     prototype = root / 'code/modules/persistence/immutable_capture.dm'
     source = prototype.read_text(encoding='utf-8')
-    expected = 'PASS'
-    if args.negative_control == 'callback':
-        before = 'var/list/saved = projection_manifest["[source.type]"]'
-        # Restrict the deliberate callback regression to its paid-state input;
-        # unrelated world projections must not mask the exact failure oracle.
-        after = before + '\n\tif(source.type == text2path("/datum/capture_input/mutating")) saved = source.get_saved_vars()'
-        expected = 'FAIL: capture invoked mutating projection'
-    elif args.negative_control == 'admission':
-        before = 'if(!islist(saved)) throw EXCEPTION("No audited exact-type capture projection")'
-        after = 'if(!islist(saved)) saved = list()'
-        expected = 'FAIL: unreviewed projection admitted'
-    elif args.negative_control == 'hook':
-        before, after = '\treject_hook(source)\n', '\tif(FALSE) reject_hook(source)\n'
-        expected = 'FAIL: mutating paid hook admitted'
-    if args.negative_control:
-        if source.count(before) != 1:
-            raise RuntimeError('Omission control requires unique production guard')
-        source = source.replace(before, after, 1)
+    source, expected = prepare_source(source, args.negative_control)
     (output / 'immutable_capture.dm').write_text(source, encoding='utf-8')
     environment = (fixture / 'immutable_capture.dme').read_text(encoding='utf-8')
     environment = environment.replace('#define FILE_DIR "../.."', f'#define FILE_DIR "{root.as_posix()}"')
