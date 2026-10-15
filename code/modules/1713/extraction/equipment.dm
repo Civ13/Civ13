@@ -1,0 +1,393 @@
+// Explicit equipment schema: no mobs, clients, arbitrary variables or world refs.
+#define EXTRACTION_EQUIPMENT_NODES 512
+#define EXTRACTION_EQUIPMENT_DEPTH 8
+
+/obj/item
+	var/tmp/extraction_item_id
+	var/tmp/extraction_found_in_raid = FALSE
+	var/tmp/extraction_secure_stored = FALSE
+	var/tmp/extraction_insurance_token
+
+var/global/extraction_identity_sequence = 0
+
+/proc/new_extraction_item_id()
+	extraction_identity_sequence++
+	return md5("[world.realtime]:[rand(1,1000000)]:[extraction_identity_sequence]")
+
+/obj/item/extraction_salvage
+	name = "salvaged workshop parts"
+	desc = "Useful parts for improving a private safe house."
+	icon = 'icons/obj/metallurgy.dmi'
+	icon_state = "crude_axehead"
+	w_class = ITEM_SIZE_SMALL
+
+/datum/extraction_equipment_codec
+	var/last_error
+	var/list/items
+	var/list/index
+	var/list/nodes
+
+/datum/extraction_equipment_codec/proc/supported(path)
+	if (path == /obj/item/vehicle_key) return TRUE
+	if (!ispath(path, /obj/item)) return FALSE
+	if (path in extraction_container_key_catalog()) return TRUE
+	if (ispath(path, /obj/item/weapon/gun/projectile/custom)) return FALSE
+	if (ispath(path, /obj/item/weapon/key/extraction_room)) return TRUE
+	if (path in list(/obj/item/stack/material/glass, /obj/item/stack/cable_coil)) return TRUE
+	if (path in list(/obj/item/stack/medical/bruise_pack/bint, /obj/item/stack/medical/splint)) return TRUE
+	if (path == /obj/item/extraction_wheel_crate) return TRUE
+	if (path == /obj/item/extraction_generator_kit) return TRUE
+	if (path in list(/obj/item/stack/material/copper, /obj/item/stack/material/gold)) return TRUE
+	if (path in list(/obj/item/stack/material/wood, /obj/item/stack/material/woodplank, /obj/item/stack/material/iron, /obj/item/stack/material/steel, /obj/item/stack/material/cloth, /obj/item/stack/material/rope, /obj/item/stack/material/leather, /obj/item/stack/material/kevlar, /obj/item/stack/material/cotton, /obj/item/stack/material/flax, /obj/item/stack/material/rettedfabric)) return TRUE
+	if (path in list(/obj/item/weapon/reagent_containers/glass/barrel/jerrycan, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel)) return TRUE
+	return ispath(path, /obj/item/weapon/gun/projectile) || ispath(path, /obj/item/weapon/attachment) || ispath(path, /obj/item/weapon/gun_mount) || ispath(path, /obj/item/ammo_magazine) || ispath(path, /obj/item/ammo_casing) || ispath(path, /obj/item/projectile) || ispath(path, /obj/item/clothing) || ispath(path, /obj/item/weapon/storage) || ispath(path, /obj/item/weapon/material) || ispath(path, /obj/item/blackpowder_part) || ispath(path, /obj/item/extraction_salvage)
+
+/datum/extraction_equipment_codec/proc/scalar_fields(path)
+	var/list/fields = list("name", "desc", "health", "maxhealth", "color", "dir", "weight", "icon_state", "item_state")
+	if (ispath(path, /obj/item/weapon/gun)) fields |= list("serial", "sel_mode", "safetyon", "configuration_base_ergonomics", "configuration_base_weight", "attachment_slots")
+	if (ispath(path, /obj/item/weapon/attachment)) fields |= list("A_attached", "attachable", "attachment_type", "ergonomics")
+	if (ispath(path, /obj/item/ammo_casing)) fields |= list("btype")
+	if (ispath(path, /obj/item/weapon/material)) fields |= list("crafting_quality", "tool_head_material", "tool_handle_material", "tool_head_quality", "tool_handle_quality", "tool_head_condition", "tool_handle_condition")
+	if (ispath(path, /obj/item/blackpowder_part)) fields |= list("quality", "material_name")
+	if (ispath(path, /obj/item/weapon/key/extraction_room)) fields |= "code"
+	if (path in extraction_container_key_catalog()) fields |= "uses_remaining"
+	if (path == /obj/item/vehicle_key) fields |= list("vehicle_id", "key_generation")
+	if (ispath(path, /obj/item/stack)) fields |= "amount"
+	if (path == /obj/item/stack/cable_coil) fields |= "cable_color"
+	if (path == /obj/item/extraction_generator_kit) fields |= "generator_broken"
+	return fields
+
+/datum/extraction_equipment_codec/proc/reference_fields(path)
+	var/list/fields = list()
+	if (ispath(path, /obj/item/weapon/gun/projectile)) fields |= list("chambered", "ammo_magazine", "scope", "under", "silencer", "bayonet", "launcher", "optic_rail")
+	if (ispath(path, /obj/item/ammo_casing)) fields |= "BB"
+	return fields
+
+/datum/extraction_equipment_codec/proc/list_fields(path)
+	var/list/fields = list()
+	if (ispath(path, /obj/item/weapon/gun/projectile)) fields |= list("loaded", "attachments")
+	if (ispath(path, /obj/item/ammo_magazine)) fields |= "stored_ammo"
+	return fields
+
+/datum/extraction_equipment_codec/proc/collect(obj/item/I, parent, depth)
+	if (!I || !supported(I.type) || items.len >= EXTRACTION_EQUIPMENT_NODES || depth > EXTRACTION_EQUIPMENT_DEPTH || index[I]) return FALSE
+	items += I
+	index[I] = items.len
+	nodes += list(list("type" = "[I.type]", "parent" = parent))
+	var/id = items.len
+	if (I.type == /obj/item/extraction_generator_kit)
+		var/obj/item/extraction_generator_kit/G = I
+		if (!G.snapshot_installation()) return FALSE
+	if (I.type == /obj/item/extraction_wheel_crate)
+		var/obj/item/extraction_wheel_crate/W = I
+		return !!W.snapshot_wheel()
+	for (var/atom/movable/child in I.contents)
+		if (!istype(child, /obj/item) || !collect(child, id, depth + 1)) return FALSE
+	return TRUE
+
+/datum/extraction_equipment_codec/proc/encode(obj/item/root, assign_new_ids = TRUE, mutate_persistence = TRUE)
+	last_error = null
+	items = list()
+	index = list()
+	nodes = list()
+	if (!collect(root, 0, 1))
+		last_error = "Unsupported equipment, cycle or node/depth budget exceeded"
+		clear()
+		return null
+	for (var/i in 1 to items.len)
+		var/obj/item/I = items[i]
+		var/list/node = nodes[i]
+		if (!I.extraction_item_id)
+			if (!assign_new_ids)
+				last_error = "Loaded equipment lacks durable identity"
+				clear()
+				return null
+			I.extraction_item_id = new_extraction_item_id()
+		node["id"] = I.extraction_item_id
+		node["found_in_raid"] = I.extraction_found_in_raid
+		if (I.extraction_insurance_token) node["insurance_token"] = I.extraction_insurance_token
+		var/list/scalars = list()
+		if (I.type == /obj/item/extraction_wheel_crate)
+			var/obj/item/extraction_wheel_crate/W = I
+			node["packed_wheel"] = W.snapshot_wheel()
+		for (var/key in scalar_fields(I.type))
+			if (!(key in I.vars)) continue
+			var/value = I.vars[key]
+			if (!isnull(value) && !isnum(value) && !istext(value))
+				last_error = "Unsupported scalar [key]"
+				clear()
+				return null
+			if (istext(value) && length(value) > 2048)
+				clear()
+				return null
+			scalars[key] = value
+		if (istype(I, /obj/item/weapon/material))
+			var/obj/item/weapon/material/M = I
+			scalars["material_key"] = M.material ? M.material.name : M.default_material
+		if (istype(I, /obj/item/stack/material))
+			var/obj/item/stack/material/M = I
+			scalars["material_key"] = M.material?.name
+		if (istype(I, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan))
+			var/list/fuel = list()
+			for (var/datum/reagent/R in I.reagents.reagent_list)
+				if (!(R.id in list("gasoline", "diesel", "ethanol")) || !isnull(R.data))
+					clear()
+					return null
+				fuel += list(list("id" = R.id, "volume" = R.volume))
+			node["fuel"] = fuel
+			node["fuel_open"] = !!I.is_open_container()
+		var/list/refs = list()
+		for (var/key in reference_fields(I.type))
+			if (!(key in I.vars)) continue
+			var/value = I.vars[key]
+			if (value && !index[value])
+				last_error = "Equipment reference leaves its contained graph"
+				clear()
+				return null
+			refs[key] = value ? index[value] : 0
+		var/list/lists = list()
+		for (var/key in list_fields(I.type))
+			if (!(key in I.vars)) continue
+			var/list/value = I.vars[key]
+			var/list/encoded = list()
+			for (var/entry in value)
+				if (!index[entry])
+					clear()
+					return null
+				encoded += index[entry]
+			lists[key] = encoded
+		node["scalars"] = scalars
+		node["refs"] = refs
+		node["lists"] = lists
+	var/list/result = list("schema" = 2, "nodes" = nodes)
+	if (!validate(result))
+		clear()
+		return null
+	// Account graphs have one persistence authority, including nested contents.
+	if (mutate_persistence)
+		for (var/obj/item/I in items) I.should_save = FALSE
+	clear()
+	return result
+
+/datum/extraction_equipment_codec/proc/clear()
+	items = null
+	index = null
+	nodes = null
+
+/datum/extraction_equipment_codec/proc/valid_ref(id, count)
+	return isnum(id) && round(id) == id && id >= 0 && id <= count
+
+/datum/extraction_equipment_codec/proc/validate(list/record)
+	if (!islist(record) || !(record["schema"] in list(1, 2))) return FALSE
+	var/list/graph = record["nodes"]
+	if (!islist(graph) || graph.len < 1 || graph.len > EXTRACTION_EQUIPMENT_NODES) return FALSE
+	var/list/depths = list()
+	var/list/identities = list()
+	for (var/i in 1 to graph.len)
+		var/list/node = graph[i]
+		if (!islist(node) || !istext(node["type"])) return FALSE
+		if (record["schema"] == 2)
+			var/id = node["id"]
+			if (!istext(id) || !length(id) || length(id) > 80 || identities[id] || !(node["found_in_raid"] in list(FALSE, TRUE))) return FALSE
+			identities[id] = TRUE
+			if (!isnull(node["insurance_token"]) && (!istext(node["insurance_token"]) || length(node["insurance_token"]) != 32 || ckey(node["insurance_token"]) != node["insurance_token"])) return FALSE
+		var/path = text2path(node["type"])
+		if (!supported(path) || !valid_ref(node["parent"], i - 1) || (i == 1 ? node["parent"] != 0 : node["parent"] == 0)) return FALSE
+		if (path == /obj/item/extraction_wheel_crate)
+			var/list/wheel_record = node["packed_wheel"]
+			if (!extraction_wheel_record_valid(wheel_record) || identities[wheel_record["id"]]) return FALSE
+			identities[wheel_record["id"]] = TRUE
+		else if (!isnull(node["packed_wheel"])) return FALSE
+		var/depth = i == 1 ? 1 : depths[node["parent"]] + 1
+		if (depth > EXTRACTION_EQUIPMENT_DEPTH) return FALSE
+		depths += depth
+		var/list/scalars = node["scalars"]
+		var/list/refs = node["refs"]
+		var/list/lists = node["lists"]
+		if (!islist(scalars) || !islist(refs) || !islist(lists)) return FALSE
+		if (path == /obj/item/vehicle_key && !vehicle_key_binding_valid(scalars["vehicle_id"], scalars["key_generation"])) return FALSE
+		if (path in extraction_container_key_catalog())
+			var/obj/item/weapon/key/extraction_container/key_prototype = path
+			if (!isnum(scalars["uses_remaining"]) || round(scalars["uses_remaining"]) != scalars["uses_remaining"] || scalars["uses_remaining"] < 1 || scalars["uses_remaining"] > initial(key_prototype.max_uses)) return FALSE
+		if (path == /obj/item/extraction_generator_kit)
+			if (!(scalars["generator_broken"] in list(FALSE, TRUE))) return FALSE
+			var/children = 0
+			for (var/j in 1 to graph.len)
+				var/list/child = graph[j]
+				if (child["parent"] == i)
+					if (child["type"] != "/obj/item/weapon/reagent_containers/glass/barrel/jerrycan") return FALSE
+					children++
+			if (children != 1) return FALSE
+		var/list/allowed = scalar_fields(path)
+		if (ispath(path, /obj/item/weapon/material) || ispath(path, /obj/item/stack/material)) allowed |= "material_key"
+		for (var/key in scalars)
+			var/value = scalars[key]
+			if (!(key in allowed) || (!isnull(value) && !isnum(value) && !istext(value)) || (istext(value) && length(value) > 2048)) return FALSE
+			var/list/text_fields = list("name", "desc", "color", "icon_state", "item_state", "serial", "btype", "material_key", "tool_head_material", "tool_handle_material", "material_name", "attachment_type", "cable_color", "vehicle_id")
+			if (!isnull(value) && (key in text_fields ? !istext(value) : !isnum(value))) return FALSE
+		if (ispath(path, /obj/item/weapon/material) && !get_material_by_name(scalars["material_key"])) return FALSE
+		if (path in list(/obj/item/stack/medical/bruise_pack/bint, /obj/item/stack/medical/splint))
+			var/obj/item/stack/medical/prototype = path
+			if (!isnum(scalars["amount"]) || round(scalars["amount"]) != scalars["amount"] || scalars["amount"] < 1 || scalars["amount"] > initial(prototype.max_amount)) return FALSE
+		if (path == /obj/item/stack/cable_coil)
+			if (!isnum(scalars["amount"]) || round(scalars["amount"]) != scalars["amount"] || scalars["amount"] < 1 || scalars["amount"] > 50 || !(scalars["cable_color"] in cable_colors)) return FALSE
+		if (ispath(path, /obj/item/stack/material))
+			var/obj/item/stack/material/prototype = path
+			if (scalars["material_key"] != initial(prototype.default_type) || !get_material_by_name(scalars["material_key"]) || !isnum(scalars["amount"]) || round(scalars["amount"]) != scalars["amount"] || scalars["amount"] < 1 || scalars["amount"] > initial(prototype.max_amount)) return FALSE
+		if (ispath(path, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan))
+			var/list/fuel = node["fuel"]
+			if (!islist(fuel) || fuel.len > 3 || !(node["fuel_open"] in list(FALSE, TRUE))) return FALSE
+			var/total = 0
+			var/list/seen = list()
+			for (var/list/chemical in fuel)
+				if (!islist(chemical) || !(chemical["id"] in list("gasoline", "diesel", "ethanol")) || !chemical_reagents_list[chemical["id"]] || seen[chemical["id"]] || !isnum(chemical["volume"]) || chemical["volume"] <= 0 || chemical["volume"] > 150) return FALSE
+				seen[chemical["id"]] = TRUE
+				total += chemical["volume"]
+			if (total > 150) return FALSE
+		else if (!isnull(node["fuel"]) || !isnull(node["fuel_open"])) return FALSE
+		for (var/key in refs)
+			if (!(key in reference_fields(path)) || !valid_ref(refs[key], graph.len)) return FALSE
+			if (refs[key] && !ref_type_valid(key, graph[refs[key]])) return FALSE
+		for (var/key in reference_fields(path))
+			if (!(key in refs)) return FALSE
+		for (var/key in lists)
+			if (!(key in list_fields(path))) return FALSE
+			var/list/values = lists[key]
+			if (!islist(values) || values.len > EXTRACTION_EQUIPMENT_NODES) return FALSE
+			for (var/id in values)
+				if (!valid_ref(id, graph.len) || !id || !ref_type_valid(key, graph[id])) return FALSE
+		for (var/key in list_fields(path))
+			if (!(key in lists)) return FALSE
+	return TRUE
+
+/datum/extraction_equipment_codec/proc/ref_type_valid(key, list/node)
+	if (!islist(node) || !istext(node["type"])) return FALSE
+	var/path = text2path(node["type"])
+	switch (key)
+		if ("chambered", "loaded", "stored_ammo") return ispath(path, /obj/item/ammo_casing)
+		if ("ammo_magazine") return ispath(path, /obj/item/ammo_magazine)
+		if ("BB") return ispath(path, /obj/item/projectile)
+		if ("optic_rail") return ispath(path, /obj/item/weapon/gun_mount)
+	return ispath(path, /obj/item/weapon/attachment)
+
+// Read-only projection for ownership reconciliation. The caller supplies the
+// authoritative surviving identities; this never decides who owns an item.
+// Removing a container does not remove its independently surviving children.
+/datum/extraction_equipment_codec/proc/project_identities(list/record, list/surviving_ids)
+	if (!validate(record) || record["schema"] != 2 || !islist(surviving_ids) || surviving_ids.len > EXTRACTION_EQUIPMENT_NODES) return null
+	var/list/wanted = list()
+	for (var/id in surviving_ids)
+		if (!istext(id) || wanted[id]) return null
+		wanted[id] = TRUE
+	var/list/source = record["nodes"]
+	var/list/group_for = list()
+	var/list/local_index = list()
+	var/list/groups = list()
+	var/found = 0
+	for (var/i in 1 to source.len)
+		var/list/node = source[i]
+		if (!wanted[node["id"]]) continue
+		found++
+		var/group = group_for["[node["parent"]]"]
+		if (!group)
+			groups += list(list())
+			group = groups.len
+		var/list/members = groups[group]
+		members += i
+		group_for["[i]"] = group
+		local_index["[i]"] = members.len
+	if (found != wanted.len) return null
+	var/list/result = list()
+	for (var/group in 1 to groups.len)
+		var/list/members = groups[group]
+		var/list/projected = list()
+		for (var/i in members)
+			var/list/node = json_decode(json_encode(source[i]))
+			var/parent = node["parent"]
+			node["parent"] = group_for["[parent]"] == group ? local_index["[parent]"] : 0
+			if (!node["parent"] && ispath(text2path(node["type"]), /obj/item/weapon/attachment)) node["scalars"]["A_attached"] = FALSE
+			var/list/refs = node["refs"]
+			for (var/key in refs)
+				var/target = refs[key]
+				refs[key] = group_for["[target]"] == group ? local_index["[target]"] : 0
+			var/list/lists = node["lists"]
+			for (var/key in lists)
+				var/list/values = list()
+				for (var/target in lists[key])
+					if (group_for["[target]"] == group) values += local_index["[target]"]
+				lists[key] = values
+			projected += list(node)
+		var/list/output = list("schema" = 2, "nodes" = projected)
+		if (!validate(output)) return null
+		result += list(output)
+	return result
+
+// All shape/type/ref validation completes before constructors run. Callers hold
+// the session freeze until the resulting graph has been fully installed.
+/datum/extraction_equipment_codec/proc/decode(list/record, atom/destination)
+	if (!validate(record)) return null
+	var/list/graph = record["nodes"]
+	var/list/created = list()
+	for (var/i in 1 to graph.len)
+		var/list/node = graph[i]
+		var/path = text2path(node["type"])
+		// Stack constructors merge at their initial location. Restore isolated
+		// quantities before placement so a second graph cannot merge or vanish.
+		var/obj/item/I = new path(ispath(path, /obj/item/stack) ? null : destination)
+		created += I
+		// Native constructors may make scopes and bullets. Replace, don't add to
+		// those defaults, or a reload would silently manufacture ammunition.
+		for (var/atom/movable/A in I.contents.Copy()) qdel(A)
+		I.should_save = FALSE
+	for (var/i in 1 to graph.len)
+		var/list/node = graph[i]
+		var/obj/item/I = created[i]
+		I.extraction_item_id = record["schema"] == 2 ? node["id"] : new_extraction_item_id()
+		I.extraction_found_in_raid = record["schema"] == 2 ? node["found_in_raid"] : FALSE
+		I.extraction_insurance_token = record["schema"] == 2 ? node["insurance_token"] : null
+		var/list/scalars = node["scalars"]
+		if (istype(I, /obj/item/weapon/material))
+			var/obj/item/weapon/material/M = I
+			M.set_material(scalars["material_key"])
+		for (var/key in scalars)
+			if (key in I.vars) I.vars[key] = scalars[key]
+		if (I.type == /obj/item/extraction_wheel_crate)
+			var/obj/item/extraction_wheel_crate/W = I
+			W.restore_wheel(node["packed_wheel"])
+		if (istype(I, /obj/item/weapon/reagent_containers/glass/barrel/jerrycan))
+			I.reagents.clear_reagents()
+			for (var/list/chemical in node["fuel"]) I.reagents.add_reagent(chemical["id"], chemical["volume"], safety = TRUE)
+			if (node["fuel_open"]) I.flags |= OPENCONTAINER
+			else I.flags &= ~OPENCONTAINER
+		var/list/refs = node["refs"]
+		for (var/key in refs)
+			if (key in I.vars) I.vars[key] = refs[key] ? created[refs[key]] : null
+		var/list/lists = node["lists"]
+		for (var/key in lists)
+			var/list/restored = list()
+			for (var/id in lists[key]) restored += created[id]
+			if (key in I.vars) I.vars[key] = restored
+		// forceMove dispatches Crossed: existing stacks merge an incoming stack
+		// unless it is throwing. Suppress only this restoration placement, then
+		// restore the runtime flag before exposing the completed graph.
+		var/was_throwing = I.throwing
+		if (istype(I, /obj/item/stack)) I.throwing = TRUE
+		I.forceMove(node["parent"] ? created[node["parent"]] : destination)
+		I.throwing = was_throwing
+	for (var/obj/item/I in created) I.after_load()
+	return created[1]
+
+// Validate the full bounded graph before changing any nested provenance.
+/datum/extraction_equipment_codec/proc/set_raid_provenance(obj/item/root, value)
+	if (!(value in list(FALSE, TRUE))) return FALSE
+	items = list()
+	index = list()
+	nodes = list()
+	if (!collect(root, 0, 1))
+		clear()
+		return FALSE
+	for (var/obj/item/I in items)
+		if (!I.extraction_item_id) I.extraction_item_id = new_extraction_item_id()
+		I.extraction_found_in_raid = value
+	clear()
+	return TRUE

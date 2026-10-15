@@ -4,6 +4,7 @@ import shutil
 import time
 import psutil
 import signal
+from map_environment import select_map
 
 def getListOfFiles(dirName):
     # create a list of file and sub directories 
@@ -46,7 +47,6 @@ os.system("git reset --hard origin/master")
 os.system("git pull")
 
 map = sys.argv[1]
-dmms = []
 mapname = "{}.dmm".format(map.lower())
 maploc = "{}civ13-git/maps/".format(mdir)
 maplist = getListOfFiles(maploc)
@@ -72,8 +72,6 @@ if done == 0:
 if done == 0:
 	print("Invalid argument.")
 	sys.exit()
-else:
-	dmms.append("#include \"{}\"".format(maploc))
 
 DME = "{}civ13-git/civ13.dme".format(mdir)
 
@@ -83,20 +81,9 @@ with open(DME, "r") as search:
 		lines.append(line)
 	search.close()
 
-wroteDMMs = False
-DME = open(DME, "w")
-for line in lines:
-	if ".dmm" in line:
-		if not wroteDMMs:
-			for line2 in dmms:
-				DME.write(line2)
-				DME.write("\n")
-			dmms = []
-			wroteDMMs = True
-	else:
-		DME.write(line)
-
-DME.close()
+selected_source = select_map("".join(lines), maploc)
+with open(DME, "w") as environment:
+	environment.write(selected_source)
 
 t1 = time.time()
 

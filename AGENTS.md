@@ -1,5 +1,20 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-13: extraction census and receipt boundaries -->
+Extraction census read leases guard account_store.write_phase across store
+instances and child journals, not external processes or runtime world movement.
+Failed scans retain their lease until explicit abandonment; abandonment locks the
+census. Surface auxiliary ownership remains incomplete and disabled.
+extraction_crypto_bytes is ASCII-only. Receipt reason validation instead uses
+DM byte length and canonical codepoint round trips for UTF-8; text2ascii positions
+are bytes. tests/extraction/run_ipc.py --compile-only never launches a daemon.
+
+<!-- 2026-10-11: extraction vehicle graph -->
+Modular car wheels are contained in their connected frames; the controller is
+also nested in a frame and steering in the driver seat. Use get_turf() for their
+coordinates. tests/extraction/vehicle_probe.dm checks physical transfer only;
+it does not establish durable garage ownership or cargo/passenger extraction.
+
 ## Language & toolchain
 NEVER use "—": always use "-" instead.
 - **DM** (DreamMaker) - BYOND's proprietary language. Sources have `.dm` extension.
@@ -192,6 +207,10 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-12: extraction NPC retirement -->
+When an NPC's own procedure qdels that actor, its caller can observe a null
+return even after the durable retirement receipt commits. Assert receipt state
+and original-object retirement, and stop subsequent AI when loc is null.
 <!-- 2026-10-13: native catch variable scope -->
 BYOND 516.1681 treats catch variable declarations as proc-scoped. Use distinct
 names for separate catch blocks in one proc or compilation fails with duplicate definition.
@@ -209,6 +228,11 @@ names for separate catch blocks in one proc or compilation fails with duplicate 
   production restarts, live season transitions/imports, or publishing captures.
 
 ## Agent self-maintenance
+
+<!-- 2026-10-12: extraction material restoration -->
+Extraction material stacks must construct at null before relocation: native
+stack constructors can otherwise merge into an existing stack. Serialize
+`!!is_open_container()` for boolean lid state; its native return is a flag mask.
 
 <!-- 2026-10-11: world-save verification -->
 - Persistence regressions are in `tests/world_save`; the focused fixture uses
@@ -275,6 +299,70 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
 
+<!-- 2026-10-13: extraction auxiliary census -->
+Extraction surface ownership reads actual auxiliary journal records through
+`surface_inventory.dm`, never recovery/repair readers. Market listings bind the
+actual escrow stash root/digest once; mail ownership joins page graphs to active
+node owner/page/root indices. Terminal NPC receipts are historical, not permanent
+identity tombstones because insurance can return those IDs. This disabled census
+still lacks a fresh-world/private-home replica contract; compile-only controls
+do not establish native ownership acceptance.
+
+<!-- 2026-10-13: explicit home replicas -->
+`home_replica.dm` binds floor-only account/world replicas to actual marker owner,
+revision, graph digest and placement under explicit maintenance ownership. Bound
+profiles refuse admission before decode until a future retirement handoff.
+Loaded surface feeds require the same map/dimensions/world tick and recheck roots;
+yielding loaders fail this conservative barrier. Fresh-world completeness stays
+false: no authoritative opt-in constructor ledger is established before DMM load.
+
+<!-- 2026-10-13: replica room selection and effect persistence -->
+Admission must reserve markers carrying any partial replica binding, not just
+session owners. `admission_available()` requires exact null owner/digest and numeric
+revision zero. Effect partial persistence requires an explicit parent-calling
+marker allowlist for room and binding fields; runtime session is excluded.
+
+<!-- 2026-10-12: extraction bot economics -->
+Extraction bot economic mutations use the shared conservation journal and put
+operation receipts in the participant snapshot. Reserved vendor/market accounts
+cannot be player sessions; `_bot` is an internal journal directory in ownership
+scans. `tests/extraction/run.py --probe equipment` checks signed offline market
+flows and interrupted settlement recovery; its economic payment negative control
+must reject a missing buyer debit. This does not enable live IPC or prove bot UI.
+
+<!-- 2026-10-12: native spool publication -->
+Disabled extraction spool replies use `.reply.pending` as a read barrier. Recovery
+requires the authenticated original request and matching durable response, keeps
+the original expiry, and never executes an expired request. `run_ipc.py` checks
+three disposable native processes, partial writes, marker-removal interruption
+and signed mismatching markers; publication negative control must detect omission
+of the receipt comparison. Single-writer ownership is enforced within a world;
+host provisioning must also prevent concurrent processes sharing that directory.
+
+<!-- 2026-10-11: extraction vehicle account graph -->
+Extraction garage snapshots use explicit bounded part/link/config/fuel graphs;
+never serialize movement callbacks, passengers or arbitrary vehicle vars.
+`tests/extraction/run.py --probe vehicles` uses three native processes for
+acknowledged reload, removal and quarantined-debit loss settlement. Its
+`--vehicle-loss-negative-control` detects retaining an uncertain old garage
+when stash is empty. These checks do not establish playable vehicle extraction.
+Paid car acquisition journals payment before factory construction. Pending
+construction blocks login; offline `recover.py --action retire-vehicle` requires
+the exact purchase/revision and `--loss-confirmation forfeit-paid-car`, preserves
+a fixed receipt and never refunds or reissues. The mode purchase control detects
+retaining spent parts in the stash.
+
+<!-- 2026-10-11: cancellable voting -->
+Votes expose terminal vote handles with generation-bound ballots and immutable
+deadlines. Retain and cancel handles when a caller's lifetime ends; completion
+callbacks run after detachment and may start another vote. See docs/voting.md
+and tests/extraction/vote_probe.dm; adapters isolate restart/deployment effects.
+
+<!-- 2026-10-11: atomic raid groups -->
+Group deployment reuses the shared journal under `_settlement/groups/`; exact
+home-to-raid projections come from the solo raid planner. Never move members
+before all account debits commit. `--probe groups` checks three-process recovery
+across eleven cuts; mode fixtures exercise consent/readiness and original atoms.
 <!-- 2026-10-15: hover name HUD -->
 `code/_onclick/hud/hover_name.dm` uses a weak target reference on a disposable
 human HUD screen object. Mouse events update it; the existing HUD process
@@ -626,6 +714,16 @@ time. GC queued_drained counts consumed queue entries, excluding direct deletes.
 Headless humans enter SSD sleep: synchronous inventory fixtures must prepare and
 assert an awake, live actor before real pickup/drop calls.
 
+<!-- 2026-10-12: native IPC clock precision -->
+Unix timestamps exceed DM's exact integer range. Keep their decimal text and
+split days/seconds before short expiry comparisons. world.realtime can round by
+several seconds; combine its UTC date with precise world.timeofday and correct
+adjacent-day rounding near midnight. DM logical expressions can return operands,
+so normalize leap-year arithmetic with !!. tests/extraction/run_crypto.py checks
+independent UTC, midnight, signing and schema vectors without a live bot.
+
+<!-- 2026-10-12: deferred organ icon readiness -->
+External-organ constructor icon work must reject retired or partially hydrated owner/species links. Native save loading may yield between those links; hair style lookup previously dereferenced a missing organ species. tests/human_corpse_decay/run.py includes icon-readiness and icon-callback mutation controls and prints rejected native diagnostics.
 <!-- 2026-10-12: collector mixed workloads -->
 GC may drain already-collected expired records after its forced-delete quota is
 used; the next matching live target waits. Preserve 300 candidate checks, 30
@@ -638,6 +736,10 @@ wake, and stop invalidates the token. Process may_run uses one lazy history
 expiry deadline; started cancels it before recording new run history. Native
 lifecycle, immutable baseline and controls live in tests/process_loop_lifecycle.
 
+<!-- 2026-10-12: native path starting tile -->
+`cirrAstar()` includes the starting turf in its returned path. Discard leading
+current-turf entries before calling `step_towards()`, especially when replanning
+on every decision. Otherwise a successful path can repeatedly produce no move.
 <!-- 2026-10-12: comparative GC and loop benchmarks -->
 `tests/gc_benchmark`, `tests/scheduler_benchmark`, and
 `tests/game_loop_benchmark` compare production sources with immutable pre-PR3091
@@ -668,6 +770,20 @@ isolated runtime data and must detect exactly the lost recipe.
 <!-- 2026-10-12: finite digging completion -->
 Loose snow/dirt/sand stock must be checked after the action wait, because another actor may consume the last unit. Underground pickaxe actions use one wait/completion path. `tests/resource_extraction/digging_probe.dm` runs production handlers with competing completion and cancellation adapters; `-DiggingBaseline` rejects immutable pre-fix source without changing the checkout.
 
+<!-- 2026-10-13: city zombie pursuit cancellation -->
+City zombie cached paths must clear immediately on lost perception, even while
+idle wandering is on cooldown. Track pursuit separately from target_mob because
+native deletion can clear the reference first. The city fixture and
+--city-pursuit-negative-control exercise the stale route; compile-only does not
+execute those native assertions.
+
+<!-- 2026-10-13: replica retirement receipt scope -->
+Floor replica retirement records account/binding before removing actual roots,
+but does not clear room/account bindings. Prepared/retired receipts cannot prove
+an old world save will not restore roots; restart refuses missing runtime refs.
+Final admission/unbinding needs authoritative durable-world generation and
+complete restored-world coverage. The unfinished _home_replica journal makes
+surface auxiliary census fail closed until that contract is supported.
 <!-- 2026-10-12: wall material appearance parity -->
 set_material relies on update_material's final neighbor refresh. Do not remove
 that inner refresh: it establishes existing open/damaged-wall overlay ordering.
