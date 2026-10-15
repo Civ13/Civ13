@@ -51,7 +51,7 @@ var/global/datum/player_help_service/player_help_service = new
 // Return a slot number or private rejection text. Reconnects share account state.
 /datum/player_help_service/proc/reserve(account)
 	if (!istext(account) || length(account) != 32)
-		return "AI gameplay help requires an authenticated account."
+		return "Please sign in to a BYOND account to ask for AI gameplay help."
 	var/now = limit_time()
 	var/retention = max(limits["cooldown_seconds"], limits["burst_seconds"], limits["window_seconds"]) * 10
 	for (var/key in accounts.Copy())
