@@ -14,6 +14,7 @@ The endpoint is disabled unless the isolated host has these runtime files:
 
 Restrict the token file to the host operator and supervisor. Never commit its
 contents or include it in command logs, status receipts, PRs or crash reports.
+Both runtime configuration files are excluded by the repository's `.gitignore`.
 The endpoint accepts only IPv4 loopback, including BYOND's address-with-port
 format. Its dispatch precedes generic Topic logging to avoid logging credentials.
 

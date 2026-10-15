@@ -286,6 +286,13 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
 
+<!-- 2026-10-15: isolated recovery observer setup -->
+When normal global startup is disabled, fixtures that remove real mobs must
+initialize `GLOB.all_observable_events = list()` before constructing the moved,
+direction, name and stat observer events. Otherwise event construction can turn
+the null registry into one datum, and the second event raises a type mismatch.
+Missing direction observers also make real contained-item removal fail.
+
 <!-- 2026-10-14: local CID source comparison -->
 `tools/cid/get-cid.ps1` calls the reviewed Windows BYOND 516.1681 library's
 fingerprint/CRC routines in 32-bit PowerShell. Private offsets require its exact
