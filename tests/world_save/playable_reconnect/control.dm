@@ -29,10 +29,10 @@
 		var/list/items = list()
 		for(var/obj/item/I in H.contents)
 			items += list(list("type" = "[I.type]", "name" = I.name))
-		humans += list(list("name" = H.name, "ref" = "\ref[H]", "owner" = H.persistence_owner_ckey, "restored" = H.persistence_restored, "client" = !!H.client, "account" = H.client ? H.client.ckey : null, "mind_active" = H.mind ? H.mind.active : null, "stat" = H.stat, "health" = H.health, "x" = T ? T.x : 0, "y" = T ? T.y : 0, "z" = T ? T.z : 0, "inventory" = items))
+		humans += list(list("name" = H.name, "ref" = "\ref[H]", "owner" = H.persistence_owner_ckey, "restored" = H.persistence_restored, "client" = !!H.client, "client_ref" = H.client ? "\ref[H.client]" : null, "mind_current_is_body" = H.mind ? H.mind.current == H : FALSE, "account" = H.client ? H.client.ckey : null, "mind_active" = H.mind ? H.mind.active : null, "stat" = H.stat, "health" = H.health, "x" = T ? T.x : 0, "y" = T ? T.y : 0, "z" = T ? T.z : 0, "inventory" = items))
 	var/list/accounts = list()
 	for(var/client/C in clients)
-		accounts += list(list("account" = C.ckey, "mob_type" = "[C.mob.type]", "mob_ref" = "\ref[C.mob]"))
+		accounts += list(list("account" = C.ckey, "client_ref" = "\ref[C]", "mob_type" = "[C.mob.type]", "mob_ref" = "\ref[C.mob]"))
 	var/list/S = nomads_lifecycle.snapshot()
 	S["import_started"] = persistence_restart.import_started
 	S["players_ready"] = persistence_restart.players_ready
@@ -53,3 +53,4 @@
 	if(peer[1] != "127.0.0.1" || !nomads_lifecycle_hex(token, 32) || Q["token"] != token || Q.len != 3 || Q["gaia_probe"] != "1" || Q["action"] != "status")
 		return "rejected"
 	return json_encode(gaia_probe_status())
+
