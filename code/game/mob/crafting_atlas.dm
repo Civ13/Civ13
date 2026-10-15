@@ -134,7 +134,7 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 		else if (era == "multiple")
 			if (!islist(eras) || eras.len < 2)
 				continue
-		else if (era && (!islist(eras) || !(text2num(era) in eras)))
+		else if (era && (!islist(eras) || !isnum(text2num(era)) || !(text2num(era) in eras)))
 			continue
 		matched++
 		if (!selected || recipe["id"] == recipe_id)

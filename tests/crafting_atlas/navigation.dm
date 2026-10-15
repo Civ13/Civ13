@@ -27,6 +27,7 @@
 	check_atlas(findtext(filtered, "1 matching recipes") && findtext(filtered, "Entry 2") && !findtext(filtered, "Entry 1</a>"), "navigation era membership filter")
 	check_atlas(findtext(reference.graph_html(viewer, era = "multiple"), "1 matching recipes"), "navigation multiple era filter")
 	check_atlas(findtext(reference.graph_html(viewer, era = "unknown"), "1 matching recipes"), "navigation unknown era filter")
+	check_atlas(findtext(reference.graph_html(viewer, era = "invalid"), "0 matching recipes"), "navigation invalid era is not Stone Age")
 	check_atlas(findtext(reference.graph_html(viewer, processor = "sawmill"), "1 matching recipes"), "navigation processor filter")
 	check_atlas(findtext(reference.graph_html(viewer, processor = "invalid"), "0 matching recipes"), "navigation invalid processor empty")
 	check_atlas(findtext(reference.graph_html(viewer, "Entry 160"), "Entry 160"), "navigation search reaches beyond index bound")
