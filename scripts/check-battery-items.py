@@ -88,7 +88,7 @@ def main():
                 old, new = "duration-1, 0, local_only)", "duration-1, 0)"
             else:
                 path = "code/modules/1713/machinery/nuclear_generation.dm"
-                old, new = ("if (U.use(1))", "if (TRUE)") if args.route_negative_control == "debit" else ("!fuel_retired && loc == machine_loc && processing_access(H,U)", "H && U && !H.gc_destroyed && !H.gcDestroyed && !U.gc_destroyed && !U.gcDestroyed")
+                old, new = ("if (U.use(1))", "if (TRUE)") if args.route_negative_control == "debit" else ("!fuel_retired && loc == machine_loc && processing_access(H,U)", "machine_loc && H && U && !H.gc_destroyed && !H.gcDestroyed && !U.gc_destroyed && !U.gcDestroyed")
             mutated = replace_once((root / path).read_text(encoding="utf-8"), old, new)
             (build / "route-control.dm").write_text(mutated, encoding="utf-8")
             original_include = '#include "' + path.replace("/", chr(92)) + '"'
