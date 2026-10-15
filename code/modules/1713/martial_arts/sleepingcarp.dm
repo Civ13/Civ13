@@ -37,7 +37,7 @@
 					"<span class='userdanger'>[A] [atk_verb]s you!</span>", null, null, A)
 	to_chat(A, "<span class='danger'>You [atk_verb] [D]!</span>")
 	playsound(get_turf(D), 'sound/weapons/punch1.ogg', 25, TRUE, -1)
-	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Strong punched (Sleeping Carp) by [A.name] ([A.ckey])</font>"
+	D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Strong punched (Sleeping Carp) by [A.name] ([A.ckey])</font>")
 	D.apply_damage(20, BRUTE, affecting)
 	return
 
@@ -50,7 +50,7 @@
 	var/atom/throw_target = get_edge_target_turf(D, A.dir)
 	D.throw_at(throw_target, 7, 14, A)
 	D.apply_damage(15, BRUTE, "chest")
-	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Launchkicked (Sleeping Carp) by [A.name] ([A.ckey])</font>"
+	D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Launchkicked (Sleeping Carp) by [A.name] ([A.ckey])</font>")
 	return
 
 ///Keelhaul: Harm Grab combo, knocks people down, deals stamina damage while they're on the floor
@@ -70,14 +70,14 @@
 		D.drop_r_hand()
 		D.visible_message("<span class='warning'>[A] kicks [D] in the head!</span>", \
 					"<span class='userdanger'>You are kicked in the head by [A]!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>")
-	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Dropkicked (Sleeping Carp) by [A.name] ([A.ckey])</font>"
+	D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Dropkicked (Sleeping Carp) by [A.name] ([A.ckey])</font>")
 	return
 
 /datum/martial_art/the_sleeping_carp/grab_act(mob/living/human/A, mob/living/human/D)
 	add_to_streak("G",D)
 	if(check_streak(A,D))
 		return TRUE
-	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Grabbed (Sleeping Carp) by [A.name] ([A.ckey])</font>"
+	D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Grabbed (Sleeping Carp) by [A.name] ([A.ckey])</font>")
 	return ..()
 
 /datum/martial_art/the_sleeping_carp/harm_act(mob/living/human/A, mob/living/human/D)
@@ -92,12 +92,12 @@
 	to_chat(A, "<span class='danger'>You [atk_verb] [D]!</span>")
 	D.apply_damage(rand(10,15), BRUTE, affecting)
 	playsound(get_turf(D), 'sound/weapons/punch1.ogg', 25, TRUE, -1)
-	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Punched (Sleeping Carp) by [A.name] ([A.ckey])</font>"
+	D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Punched (Sleeping Carp) by [A.name] ([A.ckey])</font>")
 	return TRUE
 
 /datum/martial_art/the_sleeping_carp/disarm_act(mob/living/human/A, mob/living/human/D)
 	add_to_streak("D",D)
 	if(check_streak(A,D))
-		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Disarmed (Sleeping Carp) by [A.name] ([A.ckey])</font>"
+		D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Disarmed (Sleeping Carp) by [A.name] ([A.ckey])</font>")
 		return TRUE
 	return ..()
