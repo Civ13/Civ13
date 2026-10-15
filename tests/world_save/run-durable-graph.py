@@ -28,7 +28,8 @@ def adjudicate(result, log, control, contracts, associative=False):
         'alist-alias': ('alist alias or mixed cycle lost',),
         'alist-binding': ('alist unsaved leader was silently dropped',),
         'clock': ('clock values did not rebase:',),
-        'omission': ('missing field mutated metadata', 'invalid field mutated metadata'),
+        'omission': ('missing field mutated metadata', 'invalid field mutated metadata')
+                    + ('invalid artillery wire value mutated target',) * 8,
         'timer': ('old callback survived restored timer or new callback duplicated',
                   'repeated restoration stacked callbacks',
                   'invalid restore cancelled valid pending callback',
