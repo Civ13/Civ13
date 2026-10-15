@@ -16,6 +16,17 @@ async Task RejectAsync(Func<Task> action, string message) {
     throw new Exception("Negative control accepted: " + message);
 }
 try {
+    var expectedLinks = new[] { "https://civ13.com/", "https://civ13.github.io/civ13-wiki/", "https://civ13.com/discord", "https://github.com/civ13/civ13/" };
+    Require(CommunityLinks.Items.Values.Select(link => link.Url).SequenceEqual(expectedLinks), "official community destinations changed");
+    foreach (var item in CommunityLinks.Items) {
+        ProcessStartInfo? opened = null;
+        Require(CommunityLinks.TryOpen(item.Key, start => opened = start, TextWriter.Null), "resource choice was not handled");
+        Require(opened?.FileName == item.Value.Url && opened.UseShellExecute, "resource did not dispatch to default browser");
+    }
+    Require(!CommunityLinks.TryOpen("2", _ => throw new Exception("Play opened browser"), TextWriter.Null), "resource handler consumed Play");
+    using var linkError = new StringWriter();
+    CommunityLinks.TryOpen("7", _ => throw new System.ComponentModel.Win32Exception("No browser"), linkError);
+    Require(linkError.ToString().Contains("Could not open Discord") && linkError.ToString().Contains(expectedLinks[2]), "browser failure omitted usable destination");
     var localHost = new LocalHostReceipt(1, 18459, 123, 456, @"C:\verified\DreamDaemon.exe",
         @"D:\isolated\civ13.dmb", new string('a', 64), new string('b', 40), "Gaia Nomads");
     LocalHostIdentity InspectLocal(int pid) => new(456, localHost.Daemon, "5.0.516.1681");

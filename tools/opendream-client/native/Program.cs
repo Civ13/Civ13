@@ -88,9 +88,12 @@ public static class Program {
             owner.Dispose();
             while (true) {
                 Console.WriteLine("\nCiv13 - 1: Sign in   2: Play Nomads   3: Play TDM   4: Exit");
+                foreach (var link in CommunityLinks.Items)
+                    Console.WriteLine($"{link.Key}: {link.Value.Label} - {link.Value.Url}");
                 Console.Write("Choose a number (sign in before your first game): ");
                 var choice = Console.ReadLine();
                 if (choice is null or "4") return 0;
+                if (CommunityLinks.TryOpen(choice, start => { using var browser = Process.Start(start); }, Console.Out)) continue;
                 if (choice == "1") Process.Start(new ProcessStartInfo(Path.Combine(destination, "Sign-In.cmd")) { UseShellExecute = true, WorkingDirectory = destination });
                 if (choice is "2" or "3") {
                     try {

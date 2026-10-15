@@ -34,6 +34,10 @@ receipt. The earlier 84 checks do not establish an actual DreamDaemon join.
 `Civ13.exe` is a native .NET 8, Windows x64, self-contained console launcher.
 Players need no .NET installation or companion scripts. Double-click the file,
 let it obtain the complete verified client, and use its sign-in/play menu. The
+menu also offers numbered Website, Wiki, Discord and GitHub links, with their
+full addresses visible. Enter 5, 6, 7 or 8 to open the selected resource in your
+default browser. If opening fails, the launcher prints the address to copy.
+The
 published client remains selected by the existing `channel.json`; this packaging
 change does not establish BYOND identity, server compatibility or game readiness.
 
