@@ -122,7 +122,10 @@ def main():
                       '\t\t\t\tthrow EXCEPTION("Saved level belongs to another round generation")\n')
             if source.count(marker) != 1:
                 raise RuntimeError('Round generation mutation target changed')
-            source = source.replace(marker, '', 1)
+            # Retain header validation and a nonempty-level guard, but weaken
+            # equality so a different nonempty generation is wrongly accepted.
+            source = source.replace(marker, marker.replace('F["/generation"] != round_state["generation"]',
+                                                            '!F["/generation"]'), 1)
         hashes[original.relative_to(root).as_posix()] = hashlib.sha256(original.read_bytes()).hexdigest()
         if original.name == 'player_reclaim.dm' and args.player_reclaim_negative_control:
             if args.player_reclaim_negative_control == 'owner':
