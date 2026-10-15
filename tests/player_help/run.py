@@ -349,7 +349,7 @@ def main():
         if ran.returncode:
             raise SystemExit('Native daemon exited unexpectedly')
         if args.negative_control:
-            expected = {'escaping': 'escaped HTML', 'heartbeat': 'unconfigured',
+            expected = {'escaping': 'escaped HTML', 'heartbeat': 'first heartbeat is not proof of running worker',
                         'identity': 'wrong response identity rejected',
                         'player-context': 'asking player condition',
                         'inventory-budget': 'combined entry and child inspection budget reaches exactly 64',
