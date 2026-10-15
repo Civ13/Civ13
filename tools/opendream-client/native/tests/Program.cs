@@ -16,6 +16,80 @@ async Task RejectAsync(Func<Task> action, string message) {
     throw new Exception("Negative control accepted: " + message);
 }
 try {
+    var expectedLinks = new[] { "https://civ13.com/", "https://civ13.github.io/civ13-wiki/", "https://civ13.com/discord", "https://github.com/civ13/civ13/" };
+    Require(CommunityLinks.Items.Values.Select(link => link.Url).SequenceEqual(expectedLinks), "official community destinations changed");
+    foreach (var item in CommunityLinks.Items) {
+        ProcessStartInfo? opened = null;
+        Require(CommunityLinks.TryOpen(item.Key, start => opened = start, TextWriter.Null), "resource choice was not handled");
+        Require(opened?.FileName == item.Value.Url && opened.UseShellExecute, "resource did not dispatch to default browser");
+    }
+    Require(!CommunityLinks.TryOpen("2", _ => throw new Exception("Play opened browser"), TextWriter.Null), "resource handler consumed Play");
+    using var linkError = new StringWriter();
+    CommunityLinks.TryOpen("7", _ => throw new System.ComponentModel.Win32Exception("No browser"), linkError);
+    Require(linkError.ToString().Contains("Could not open Discord") && linkError.ToString().Contains(expectedLinks[2]), "browser failure omitted usable destination");
+    var localHost = new LocalHostReceipt(1, 18459, 123, 456, @"C:\verified\DreamDaemon.exe",
+        @"D:\isolated\civ13.dmb", new string('a', 64), new string('b', 40), "Gaia Nomads");
+    LocalHostIdentity InspectLocal(int pid) => new(456, localHost.Daemon, "5.0.516.1681");
+    ProcessStartInfo LocalStart(LocalHostReceipt receipt, Func<string?> userData, Func<int, LocalHostIdentity>? inspector = null,
+        Func<string, string>? worldHash = null, Func<string, bool>? client = null) =>
+        LocalDreamDaemon.Prepare(receipt, @"C:\verified", @"D:\isolated", inspector ?? InspectLocal,
+            userData, worldHash ?? (_ => new string('a', 64)), client ?? (_ => true), strictDOutput: true);
+    var normalLocalStart = LocalDreamDaemon.Prepare(localHost, @"C:\verified", @"C:\isolated",
+        InspectLocal, hash: _ => new string('a', 64), matchesClient: _ => true);
+    Require(normalLocalStart.ArgumentList.Single() == "byond://127.0.0.1:18459", "normal BYOND cache policy blocked local dispatch");
+    var consoleHost = localHost with { Daemon = @"C:\verified\dd.exe" };
+    var consoleStart = LocalDreamDaemon.Prepare(consoleHost, @"C:\verified", @"D:\isolated",
+        _ => new(456, consoleHost.Daemon, "5.0.516.1681"), hash: _ => new string('a', 64), matchesClient: _ => true);
+    Require(consoleStart.ArgumentList.Single() == "byond://127.0.0.1:18459", "official console daemon rejected");
+    Reject(() => LocalDreamDaemon.Prepare(consoleHost with { Daemon = @"C:\verified\other.exe" }, @"C:\verified", @"D:\isolated",
+        _ => new(456, @"C:\verified\other.exe", "5.0.516.1681"), hash: _ => new string('a', 64)), "unrecognized daemon executable");
+    var localStart = LocalStart(localHost, () => @"D:\BYOND-user");
+    Require(localStart.ArgumentList.Single() == "byond://127.0.0.1:18459" && !localStart.UseShellExecute,
+        "isolated DD endpoint escaped loopback or used URI association");
+    Require(localStart.Environment["TEMP"] == @"D:\isolated" && localStart.Environment["TMP"] == @"D:\isolated" &&
+        localStart.Environment["TMPDIR"] == @"D:\isolated",
+        "isolated DD temporary output not on D");
+    Reject(() => LocalStart(localHost, () => null), "unverified BYOND user cache");
+    Reject(() => LocalStart(localHost, () => @"C:\BYOND-user"), "C BYOND user cache");
+    Reject(() => LocalStart(localHost, () => @"D:\BYOND-user", _ => new(999, localHost.Daemon, "5.0.516.1681")), "reused host PID");
+    Reject(() => LocalStart(localHost, () => @"D:\BYOND-user", _ => new(456, localHost.Daemon, "5.0.516.1669")), "wrong native host version");
+    Reject(() => LocalStart(localHost, () => @"D:\BYOND-user", worldHash: _ => new string('0', 64)), "changed host world");
+    Reject(() => LocalStart(localHost, () => @"D:\BYOND-user", client: _ => false), "missing BYOND client");
+    Reject(() => LocalDreamDaemon.RequireDPath(@"C:\isolated"), "C launcher root");
+    Reject(() => LocalStart(localHost with { Port = 0 }, () => @"D:\BYOND-user"), "invalid local port");
+    var resolverCalls = 0;
+    Task<System.Net.IPAddress[]> ResolveFixture(string name) {
+        Require(name == "valzargaming.com", "connection resolved a different hostname");
+        resolverCalls++;
+        return Task.FromResult(new[] { System.Net.IPAddress.Parse("192.64.119.81"), System.Net.IPAddress.Parse(resolverCalls == 1 ? "72.218.249.221" : "192.0.2.2") });
+    }
+    var initialAddresses = await Connection.Resolve(ResolveFixture);
+    await RejectAsync(() => Connection.Resolve(ResolveFixture), "changed unverified DNS endpoint");
+    Require(resolverCalls == 2 && initialAddresses.SequenceEqual(new[] { "72.218.249.221" }), "connection cached DNS or retained excluded address");
+    await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(Array.Empty<System.Net.IPAddress>())), "empty DNS answer");
+    await RejectAsync(() => Connection.Resolve(_ => Task.FromException<System.Net.IPAddress[]>(new System.Net.Sockets.SocketException())), "DNS failure");
+    await RejectAsync(() => Connection.Resolve(_ => Task.FromException<System.Net.IPAddress[]>(new TimeoutException())), "DNS timeout");
+    foreach (var file in new[] { "dotnet/dotnet.exe", "RobustToolbox/bin/ClientAuth/Robust.Client.dll", "Content.Client.zip" }) {
+        var path = Path.Combine(root, file);
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllText(path, "fixture never executed");
+    }
+    foreach (var mode in new[] { "Nomads", "TDM" }) {
+        var start = Connection.Start(root, mode, initialAddresses.Single());
+        var expectedPort = mode == "Nomads" ? 1715 : 1714;
+        Require(start.ArgumentList.SequenceEqual(new[] { Path.Combine(root, "RobustToolbox", "bin", "ClientAuth", "Robust.Client.dll"), "--self-contained", "--mount-zip", Path.Combine(root, "Content.Client.zip"), "--connect", "--connect-address", $"udp://72.218.249.221:{expectedPort}", "+launchauth" }), "connection default routing or authentication changed");
+        Require(start.FileName == Path.Combine(root, "dotnet", "dotnet.exe") && !start.UseShellExecute && start.WorkingDirectory == Path.Combine(root, "RobustToolbox", "bin", "ClientAuth"), "packaged runtime/working directory changed");
+        Require(start.Environment["DOTNET_ROOT"] == Path.Combine(root, "dotnet") && start.Environment["ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW"] == Path.Combine(root, "webview"), "packaged runtime environment lost");
+        foreach (var port in new[] { "1", "18459", "65535" })
+            Require(Connection.Start(root, mode, initialAddresses.Single(), port).ArgumentList.Contains($"udp://72.218.249.221:{port}"), "explicit port override lost");
+        Require(!start.ArgumentList.Contains("Bypass") && !start.ArgumentList.Any(value => value.Contains("192.0.2.") || value.Contains("192.64.119.81")), "connection bypassed policy or used unverified/excluded address");
+    }
+    foreach (var invalid in new[] { "0", "65536", "-1", "abc", "1714;calc.exe", "" })
+        Reject(() => Connection.Start(root, "Nomads", Connection.ApprovedEndpoint, invalid), "invalid port accepted");
+    Reject(() => Connection.Start(Path.Combine(root, "missing-client"), "Nomads", Connection.ApprovedEndpoint), "missing client runtime accepted");
+    await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(new[] { System.Net.IPAddress.Parse("192.64.119.81") })), "excluded-only DNS answer");
+    await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(new[] { System.Net.IPAddress.Parse("72.218.249.221"), System.Net.IPAddress.Parse("192.0.2.3") })), "mixed unverified endpoint answer");
+    Reject(() => Connection.Start(root, "Nomads", "192.64.119.81"), "excluded connection address");
     var package = Path.Combine(root, "package", "Civ13-OpenDream-Windows");
     Directory.CreateDirectory(package);
     foreach (var name in Updater.Required) {

@@ -33,8 +33,44 @@ public static class Program {
             if (!OperatingSystem.IsWindows() || !Environment.Is64BitOperatingSystem)
                 throw new PlatformNotSupportedException("Civ13 requires Windows x64.");
             if (args.Length > 0 && args[0] == "--apply-update") return ApplyUpdate(args);
-            if (args.Length != 0) throw new ArgumentException("Supported options: --version, --self-check.");
-            var root = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Civ13");
+            string? explicitRoot = null;
+            string? localReceipt = null;
+            string? serverPort = null;
+            for (var index = 0; index < args.Length; index++) {
+                if (args[index] == "--root" && explicitRoot == null && index + 1 < args.Length)
+                    explicitRoot = LocalDreamDaemon.RequirePath(args[++index]);
+                else if (args[index] == "--local-dreamdaemon" && localReceipt == null && index + 1 < args.Length)
+                    localReceipt = LocalDreamDaemon.RequirePath(args[++index]);
+                else if (args[index] == "--server-port" && serverPort == null && index + 1 < args.Length) {
+                    serverPort = args[++index];
+                    Connection.Port("Nomads", serverPort);
+                }
+                else throw new ArgumentException("Supported options: --version, --self-check, --root <absolute folder>, --local-dreamdaemon <absolute host receipt>, --server-port <1-65535>.");
+            }
+            var root = explicitRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Civ13");
+            if (localReceipt != null) {
+                if (serverPort != null) throw new IOException("Local DreamDaemon connections use the verified host receipt port; omit --server-port.");
+                if (explicitRoot == null) throw new IOException("Local DreamDaemon testing requires an explicit --root.");
+                var receipt = LocalDreamDaemon.Read(localReceipt);
+                var desktop = new WindowsByondDesktop();
+                string? bin = null;
+                foreach (var candidate in desktop.Candidates(root, RequiredByond())) {
+                    if (!desktop.Matches(candidate, RequiredByond())) continue;
+                    bin = candidate;
+                    break;
+                }
+                if (bin == null) throw new IOException("Existing verified BYOND 516.1681 client missing; this local path never installs it.");
+                var start = LocalDreamDaemon.Prepare(receipt, bin, root);
+                Directory.CreateDirectory(root);
+                using var process = Process.Start(start) ?? throw new IOException("BYOND client did not start.");
+                return 0;
+            }
+            if (explicitRoot != null) {
+                Directory.CreateDirectory(root);
+                Environment.SetEnvironmentVariable("TEMP", root);
+                Environment.SetEnvironmentVariable("TMP", root);
+                Environment.SetEnvironmentVariable("TMPDIR", root);
+            }
             using var owner = Updater.Lock(root);
             using var transport = new ReleaseTransport();
             Console.WriteLine("Civ13 Launcher " + version.ToString(3));
@@ -59,13 +95,24 @@ public static class Program {
             owner.Dispose();
             while (true) {
                 Console.WriteLine("\nCiv13 - 1: Sign in   2: Play Nomads   3: Play TDM   4: Exit");
+                foreach (var link in CommunityLinks.Items)
+                    Console.WriteLine($"{link.Key}: {link.Value.Label} - {link.Value.Url}");
                 Console.Write("Choose a number (sign in before your first game): ");
                 var choice = Console.ReadLine();
                 if (choice is null or "4") return 0;
-                var file = choice switch { "1" => "Sign-In.cmd", "2" => "Play-Nomads.cmd", "3" => "Play-TDM.cmd", _ => null };
-                if (file is not null) Process.Start(new ProcessStartInfo(Path.Combine(destination, file)) {
-                    UseShellExecute = true, WorkingDirectory = destination
-                });
+                if (CommunityLinks.TryOpen(choice, start => { using var browser = Process.Start(start); }, Console.Out)) continue;
+                if (choice == "1") Process.Start(new ProcessStartInfo(Path.Combine(destination, "Sign-In.cmd")) { UseShellExecute = true, WorkingDirectory = destination });
+                if (choice is "2" or "3") {
+                    try {
+                        var addresses = await Connection.Resolve();
+                        Console.WriteLine(Connection.Host + " currently resolves to: " + string.Join(", ", addresses));
+                        // Pass only the approved address from this lookup, avoiding a second
+                        // unrestricted lookup that could select the explicitly excluded address.
+                        var mode = choice == "2" ? "Nomads" : "TDM";
+                        Console.WriteLine($"Connecting to {mode} on port {Connection.Port(mode, serverPort)}.");
+                        Process.Start(Connection.Start(destination, mode, addresses.Single(), serverPort));
+                    } catch (IOException e) { Console.WriteLine(e.Message); }
+                }
             }
         } catch (Exception e) {
             Console.Error.WriteLine("Civ13: " + e.Message);
@@ -96,6 +143,10 @@ public static class Program {
         Updater.ApplyVerifiedUpdate(args[3], target, args[5], args[6], args[7], CheckStartup, path => {
             var restart = new ProcessStartInfo(path) { UseShellExecute = args.Length == 8, CreateNoWindow = args.Length == 9, WorkingDirectory = Path.GetDirectoryName(path)! };
             if (args.Length == 9) restart.ArgumentList.Add("--self-check");
+            else {
+                restart.ArgumentList.Add("--root");
+                restart.ArgumentList.Add(args[7]);
+            }
             using var restarted = Process.Start(restart) ?? throw new IOException("Updated launcher could not restart.");
             if (args.Length == 9 && (!restarted.WaitForExit(30000) || restarted.ExitCode != 0)) throw new IOException("Updated launcher self-check failed.");
         });

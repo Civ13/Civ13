@@ -354,11 +354,24 @@ jobs:
           path: recipe-checks.txt
           if-no-files-found: warn
       - name: Offline world-save round-trip regression
+        id: world_save
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save')
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/world-save"
+          export TMPDIR="$RUNNER_TEMP/world-save"
           bash tests/world_save/run.sh
+          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control restore
+          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control preflight
         shell: bash
+      - name: Retain ordinary world-save evidence
+        if: always() && steps.world_save.outcome != 'skipped' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: world-save
+          path: ${{ runner.temp }}/world-save/
+          if-no-files-found: error
+
       - name: Verify chemical smoke source ownership and historical control
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/chemical_smoke_ownership')
         shell: bash

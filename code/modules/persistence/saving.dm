@@ -32,6 +32,8 @@
 		if(!fdel(F0))
 			throw EXCEPTION("Could not replace save metadata")
 	var/list/metadata = list(map.ID, "[map.age]", "[map.ordinal_age]", "[map.default_research]", "[map.autoresearch]", "[map.autoresearch_mult]", "[map.chad_mode]", "[map.chad_mode_plus]", "[map.gamemode]", time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)"))
+	// Preserve the legacy fields and timestamp; append ordinary round-mode flags.
+	metadata += list("[map.persistence]", "[map.research_active]", "[map.resourceresearch]", "[map.perschadplus]")
 	if(!text2file(jointext(metadata, "\n"), F0))
 		throw EXCEPTION("Could not write world-save metadata")
 	log_startup_progress("	Saved metadata.")
