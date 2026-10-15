@@ -96,7 +96,7 @@ var/checks = 0
 		try
 			map_storage.Save_World()
 		catch(var/exception/e)
-			save_rejected = TRUE
+			save_rejected = findtext("[e]", "Cannot save an incomplete building level") == 1
 		check(save_rejected && file2text("map_saves/save_complete.txt") == marker, "failed allocation allowed save overwrite")
 		check(locate(8, 6, 2) == original && sentinel.loc == original && sentinel.number == 77, "allocation failure changed mapped world")
 		return
