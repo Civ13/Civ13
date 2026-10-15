@@ -3,7 +3,7 @@
 	hub_password = ""
 	maxx = 8
 	maxy = 8
-	maxz = 1
+	maxz = 2
 	turf = /turf/floor/plating
 	area = /area
 	visibility = 0
@@ -27,6 +27,12 @@
 	return "none"
 
 /mob/living/human/meal_tester/meal_cooking_wait(obj/structure/pot/P)
+	if (wait_mode == "real_complete")
+		return do_after(src, 1, P, progress = FALSE)
+	if (wait_mode == "real_move")
+		spawn(1)
+			loc = locate(8,8,1)
+		return do_after(src, 2, P, progress = FALSE)
 	if (wait_mode == "cancel")
 		return FALSE
 	if (wait_mode == "heat")
@@ -106,7 +112,7 @@
 		GLOB.destroyed_event = new
 		GLOB.stat_set_event = new
 		GLOB.name_set_event = new
-		text2file(json_encode(list("byond_version" = world.byond_version, "byond_build" = world.byond_build, "dimensions" = "8x8x1", "network" = "closed", "startup" = "disabled")), "fixture.json")
+		text2file(json_encode(list("byond_version" = world.byond_version, "byond_build" = world.byond_build, "dimensions" = "8x8x2", "network" = "closed", "startup" = "disabled")), "fixture.json")
 		var/turf/site = locate(3,3,1)
 		map = new /obj/map_metadata/meal_tester
 		var/mob/living/human/meal_tester/U = new(site)
@@ -115,6 +121,24 @@
 		var/obj/structure/pot/P = meal_pot(site,3)
 		meal_assert(!P.cook_meal(U) && P.contents.len == 4, "unlit fire cannot cook")
 		fire.on = TRUE
+		U.loc = locate(3,3,2)
+		meal_assert(!P.cook_meal(U), "different z level rejected")
+		U.loc = site
+		var/obj/structure/pot/fresh = new(site)
+		fresh.fullness = 100
+		fresh.state = "water"
+		new /obj/item/weapon/reagent_containers/food/snacks/grown/potato(fresh)
+		new /obj/item/weapon/reagent_containers/food/snacks/grown/carrot(fresh)
+		new /obj/item/weapon/reagent_containers/food/snacks/grown/beans(fresh)
+		new /obj/item/weapon/reagent_containers/food/snacks/grown/tomato(fresh)
+		fresh.reagents.add_reagent("sodiumchloride", 0.5)
+		meal_assert(fresh.meal_recipe() == 3, "unaltered produce constructors qualify")
+		U.wait_mode = "real_move"
+		meal_assert(!fresh.cook_meal(U) && fresh.contents.len == 4, "real action cancels movement")
+		U.loc = site
+		U.wait_mode = "real_complete"
+		meal_assert(fresh.cook_meal(U) && fresh.meal_portions == 3, "real action completes with paid produce")
+		U.wait_mode = "complete"
 		for (var/q in 1 to 3)
 			var/obj/structure/pot/recipe = meal_pot(site,q)
 			meal_assert(recipe.meal_recipe() == q, "realistic recipe tier [q]")
@@ -160,6 +184,11 @@
 		meal_assert(U.mood == 50 && U.meal_food_credit > 0 && U.meal_food_credit < 1, "tiny bite has no reward")
 		restored.take_food_bite(U, 5)
 		meal_assert(U.mood == 65, "substantial actual ingestion earns seasoned reward")
+		U.mood = 50
+		U.meal_food_credit = 0
+		U.ingested.add_reagent("nutriment",100)
+		restored.take_food_bite(U,1)
+		meal_assert(U.mood == 50 && U.meal_food_credit == 0, "failed ingestion cannot earn credit")
 		U.mood = 60
 		U.credit_prepared_meal(3,4)
 		meal_assert(U.mood == 65, "reward has a floor not additive stacking")

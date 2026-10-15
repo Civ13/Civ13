@@ -56,7 +56,7 @@
 	return protein ? 2 : 1
 
 /obj/structure/pot/proc/meal_ready(mob/living/human/H)
-	return H && H.stat == CONSCIOUS && H.loc && get_turf(src) && get_dist(H, src) <= 1 && fullness == 100 && (state == STATE_WATER || state == STATE_BOILING) && !meal_portions && meal_heat() && meal_recipe()
+	return H && H.stat == CONSCIOUS && H.loc && get_turf(src) && H.z == z && get_dist(H, src) <= 1 && fullness == 100 && (state == STATE_WATER || state == STATE_BOILING) && !meal_portions && meal_heat() && meal_recipe()
 
 /mob/living/human/proc/meal_cooking_wait(obj/structure/pot/P)
 	return do_after(src, 10, P)
@@ -99,7 +99,7 @@
 	return TRUE
 
 /obj/structure/pot/proc/serve_meal(obj/item/I, mob/living/human/H)
-	if (!meal_portions || meal_cooking || !H || H.stat != CONSCIOUS || get_dist(H, src) > 1 || !get_turf(src))
+	if (!meal_portions || meal_cooking || !H || H.stat != CONSCIOUS || H.z != z || get_dist(H, src) > 1 || !get_turf(src))
 		return FALSE
 	if (!(istype(I, /obj/item/kitchen/wood_bowl) || istype(I, /obj/item/kitchen/snack_bowl)) || (H.l_hand != I && H.r_hand != I))
 		to_chat(H, "Hold an empty bowl to serve the meal.")
