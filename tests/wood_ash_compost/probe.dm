@@ -61,7 +61,10 @@
 	F = null
 	F = new(filename)
 	map_storage.clear_bookkeeping()
-	return map_storage.Load_Entry(F,id,starting_loc = site)
+	var/datum/restored = map_storage.Load_Entry(F,id,starting_loc = site)
+	for (var/datum/L in map_storage.all_loaded)
+		L.after_load()
+	return restored
 
 /proc/nitrary_age(obj/structure/compost/C, ticks)
 	while (ticks > 0)
@@ -151,7 +154,8 @@
 		C.current = 1
 		check_nitrary(!C.nitrary_convert(H), "ordinary paid compost cannot be overwritten")
 		C.current = 0
-		check_nitrary(C.nitrary_convert(H), "existing empty bin converts without new station")
+		C = C.nitrary_convert(H)
+		check_nitrary(istype(C, /obj/structure/compost/plant_nitrary), "existing empty bin converts without new station")
 		var/obj/item/stack/material/leaf/L = new(H)
 		L.amount = 40
 		nitrary_hold(H,L)
@@ -159,7 +163,10 @@
 		check_nitrary(L.amount == 8 && C.nitrary_plants == 8, "plant feedstock paid in full")
 		C.attackby(L,H)
 		check_nitrary(L.amount == 8 && C.nitrary_plants == 8 && C.nitrary_stage == 0, "plant credit capped and water required")
+		var/obj/item/stack/material/leaf/floor_leaves = new(locate(4,7,1))
+		floor_leaves.amount = 4
 		var/obj/structure/compost/partial = nitrary_load(C,locate(4,7,1),"partial.sav")
+		check_nitrary(floor_leaves.loc && floor_leaves.amount == 4 && partial.current == 0, "native nitrary construction does not claim floor feedstock")
 		check_nitrary(partial.nitrary_mode && partial.nitrary_plants == 8 && partial.nitrary_water == 0, "native partial feedstock restored")
 		P.reagents.clear_reagents()
 		P.reagents.add_reagent("water",15)

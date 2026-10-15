@@ -2110,6 +2110,10 @@
 
 /obj/structure/compost/initialize()
 	. = ..()
+	if (nitrary_mode)
+		nitrary_last_tick = world.time
+		processing_objects |= src
+		return
 	if (!composting)
 		auto_load()
 		composting = TRUE

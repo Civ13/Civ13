@@ -88,13 +88,20 @@
 /obj/structure/compost/proc/nitrary_convert(mob/living/human/H)
 	if (!nitrary_actor(H) || nitrary_mode || current > 0 || contents.len)
 		return FALSE
+	// A subtype keeps constructor-time ordinary auto-loading out of restored
+	// nitraries. Replace only an empty bin, retaining its placement and anchoring.
 	nitrary_mode = TRUE
+	var/obj/structure/compost/plant_nitrary/N = new(loc)
+	N.dir = dir
+	N.anchored = anchored
+	qdel(src)
+	to_chat(H, "This empty bin is now a plant nitrary. Add 32 leaves or eight crop plants, then ten units of water. Aging takes thirty running-server minutes. Mature compost then needs one unit of ash and a minute to leach. Draw the result with an empty small pot and boil it.")
+	return N
+
+/obj/structure/compost/plant_nitrary
 	name = "plant nitrary"
 	desc = "An airy compost bin dedicated to aging plant waste for nitrate leaching."
-	nitrary_last_tick = world.time
-	processing_objects |= src
-	to_chat(H, "This empty bin is now a plant nitrary. Add 32 leaves or eight crop plants, then ten units of water. Aging takes thirty running-server minutes. Mature compost then needs one unit of ash and a minute to leach. Draw the result with an empty small pot and boil it.")
-	return TRUE
+	nitrary_mode = TRUE
 
 /obj/structure/compost/proc/nitrary_feed(obj/item/W, mob/living/human/H)
 	if (!nitrary_mode || !nitrary_actor(H) || !W || !W.loc || (H.l_hand != W && H.r_hand != W))
@@ -158,6 +165,10 @@
 
 /obj/structure/compost/proc/nitrary_examine(mob/user)
 	to_chat(user, "Plant nitrary: stage [nitrary_stage]/4; plants [nitrary_plants]/8; water [nitrary_water]/10; [round(nitrary_time_left / 600, 0.1)] running-server minutes remain. Add 32 leaves or eight crop plants and ten units of water; age for thirty minutes, add one ash, leach for one minute, then draw into an empty small pot and boil. This mode does not accept ordinary food, wood, urine or fertilizer as plant credit.")
+
+/obj/structure/compost/Destroy()
+	processing_objects -= src
+	return ..()
 
 /obj/structure/compost/Del()
 	processing_objects -= src
