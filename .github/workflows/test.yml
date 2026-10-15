@@ -357,7 +357,7 @@ jobs:
             python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
           python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --contracts
-          for control in clock omission timer; do
+          for control in clock omission timer infinity; do
             python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
           python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --startup-only

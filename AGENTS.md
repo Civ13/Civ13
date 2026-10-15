@@ -210,6 +210,13 @@ names for separate catch blocks in one proc or compilation fails with duplicate 
 
 ## Agent self-maintenance
 
+<!-- 2026-10-15: durable invulnerable areas -->
+Placed admin/sewer areas use native `INFINITY` for `artillery_integrity`.
+Durable JSON uses the exact `positive_infinity` sentinel only for that field;
+ordinary numbers remain finite and bounded. Preserve finite legacy values and
+reject malformed/wrong-field sentinels before world mutation. Contract probes
+and the full metadata fixture audit inherited area defaults and placed areas.
+
 <!-- 2026-10-11: world-save verification -->
 - Persistence regressions are in `tests/world_save`; the focused fixture uses
   the actual saver/loader with isolated adapters, and `run-game.ps1` exercises

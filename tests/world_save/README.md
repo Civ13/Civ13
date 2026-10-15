@@ -317,3 +317,12 @@ map-specific faction/civilization controllers, day/night phase, station calendar
 vote state or every map timer. Startup messages/webhooks emitted before loading
 are not retroactively rewritten. No faster world-save claim follows from this
 correctness change.
+# Infinite area integrity
+
+The contract fixture round-trips the production `INFINITY` artillery value through
+JSON using a field-specific sentinel. `run-durable-graph.py --negative-control
+infinity` must catch omitted sentinel restoration. Finite values retain their
+original representation; malformed/wrong-field sentinels, negative infinity,
+NaN and raw nonfinite wire values are rejected. The full metadata fixture audits
+every inherited area subtype default and places a production invulnerable admin
+area before the disk save. Its corrupt-sentinel checks reject before ClearMap.
