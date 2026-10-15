@@ -17,8 +17,12 @@ var/datum/fixture_processes/processes = new
 	var/datum/fixture_ticker_process/ticker = new
 /datum/fixture_ticker_process
 	var/playtime_elapsed = 0
+#ifndef WORLD_SAVE_MUSIC_ADAPTER
 /proc/TOD_loop()
 	return
+/proc/stop_lobby_music()
+	return
+#endif
 /proc/trim(value)
 	var/list/lines = splittext(value, "\n")
 	return lines[1]

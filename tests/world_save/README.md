@@ -246,13 +246,20 @@ synchronizes ticker playtime. Resumed rounds skip fresh character creation,
 equipment, map seeding and round-start hooks. The time-of-day loop is idempotent.
 
 Run `run-string-path.py --round-state` with the existing pinned BYOND and saving
-hash arguments. Controls `--round-state-negative-control setup`, `clock` and
-`generation` must fail at the named regression assertion, with clean native
+hash arguments. Controls `--round-state-negative-control setup`, `clock`,
+`generation`, `busy`, `tod`, `music-body`, `music-round` and `music-lobby`
+must fail at the named regression assertion, with clean native
 compilation and no unexpected diagnostics. `--prepare-only` generates sources
 and input hashes without compiling or launching; it is source preparation only.
 The probe imports the header from disk, checks process-clock rebasing, malformed
 and partial header rejection, level-generation mismatch, setup side-effect
-counters and legacy ownership decisions. These adapters do not prove a fresh
+counters and legacy ownership decisions. It also extracts the actual pregame
+orchestration with a one-second fixture countdown and delayed import completion,
+round-duration formatters, TOD-loop ownership and lobby audio decisions. A
+bounded visit counter prevents the deliberately unsafe busy control from hanging
+the engine. Sound transport is injected: normal/restored living Login and active
+round transition stop only channel 1, while a pregame lobby still plays and an
+active round cannot replay it. These adapters do not prove a fresh
 full-game process restart or connected-player acceptance.
 
 Legacy timestamp markers retain compatibility. A successfully loaded legacy

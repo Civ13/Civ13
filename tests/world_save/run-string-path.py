@@ -25,7 +25,7 @@ def main():
     parser.add_argument('--player-ui-negative-control', choices=('hud', 'registry'))
     parser.add_argument('--player-admission', action='store_true')
     parser.add_argument('--round-state', action='store_true')
-    parser.add_argument('--round-state-negative-control', choices=('setup', 'clock', 'generation'))
+    parser.add_argument('--round-state-negative-control', choices=('setup', 'clock', 'generation', 'busy', 'tod', 'music-body', 'music-round', 'music-lobby'))
     parser.add_argument('--matrix-trace', action='store_true')
     parser.add_argument('--progress', action='store_true')
     parser.add_argument('--progress-fault-stage', choices=('save_entered', 'level_serialized', 'completion_marker'))
@@ -78,6 +78,8 @@ def main():
     if hashlib.sha256(production.read_bytes()).hexdigest() != args.expected_saving_sha256.lower():
         raise RuntimeError('Production saving source hash mismatch')
     environment = (fixture / 'string_path_roundtrip.dme').read_text(encoding='utf-8')
+    if round_state:
+        environment = '#define WORLD_SAVE_MUSIC_ADAPTER\n' + environment
     environment = environment.replace('#define FILE_DIR "../.."', f'#define FILE_DIR "{root.as_posix()}"')
     hashes = {}
     generated = {}
@@ -112,6 +114,11 @@ def main():
     def include(match):
         original = (fixture / match.group(1)).resolve(strict=True)
         source = original.read_text(encoding='utf-8')
+        if original.name == 'loading.dm' and round_state:
+            marker = '/map_storage/proc/Load_World()\n'
+            if source.count(marker) != 1:
+                raise RuntimeError('Post-preflight import failure anchor changed')
+            source = source.replace(marker, marker + '\tif(fixture_round_load_failure) return FALSE\n', 1)
         if original.name == 'functions.dm' and args.round_state_negative_control == 'clock':
             marker = '\tround_elapsed_offset = state["elapsed"]\n'
             if source.count(marker) != 1:
@@ -300,6 +307,19 @@ def main():
         target.write_text(probe_path.read_text(encoding='utf-8') + '\n' + adapted, encoding='utf-8')
         generated[target.name] = hashlib.sha256(target.read_bytes()).hexdigest()
         environment += f'\n#include "{target.as_posix()}"\n'
+        adapter_path = fixture / 'build-music-adapter.py'
+        spec = importlib.util.spec_from_file_location('music_adapter', adapter_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        adapted, music_hashes = module.generate(root, args.round_state_negative_control)
+        hashes.update(music_hashes)
+        probe_path = fixture / 'music_probe.dm'
+        for path in (adapter_path, probe_path):
+            hashes[path.relative_to(root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+        target = output / 'music_adapter.dm'
+        target.write_text(probe_path.read_text(encoding='utf-8') + '\n' + adapted, encoding='utf-8')
+        generated[target.name] = hashlib.sha256(target.read_bytes()).hexdigest()
+        environment += f'\n#include "{target.as_posix()}"\n'
     if ui:
         import importlib.util
         adapter_path = fixture / 'build-ui-adapter.py'
@@ -366,7 +386,12 @@ def main():
     if args.round_state_negative_control:
         expected = {'setup': 'resumed round reran fresh setup',
                     'clock': 'round clock reset across process',
-                    'generation': 'mismatched round generation accepted'}[args.round_state_negative_control]
+                    'generation': 'mismatched round generation accepted',
+                    'busy': 'pregame busy retry did not yield',
+                    'tod': 'round restoration duplicated TOD loop',
+                    'music-body': 'body control retained lobby music',
+                    'music-round': 'round transition retained lobby music',
+                    'music-lobby': 'active round replayed lobby music'}[args.round_state_negative_control]
         failure = read(output / 'failure-name.txt').strip()
         if failure != expected or not actual.startswith('FAIL:'):
             raise RuntimeError(f'Wrong round-state negative failure: {actual!r}, {failure!r}')

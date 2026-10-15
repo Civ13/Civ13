@@ -279,7 +279,8 @@ var/global/persistence_save_in_progress = FALSE
 	if(ticker && ticker.current_state == GAME_STATE_SETTING_UP)
 		throw EXCEPTION("Cannot save during fresh round setup")
 	var/elapsed = (round_start_time || round_elapsed_offset) ? max(0, world.time - round_start_time) + round_elapsed_offset : 0
-	return list("version" = 1, "generation" = generation, "map" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "game_id" = global.game_id, "state" = ticker ? ticker.current_state : GAME_STATE_PREGAME, "elapsed" = elapsed, "roundstart_time" = roundstart_time)
+	var/phase = ticker ? ticker.current_state : GAME_STATE_PREGAME
+	return list("version" = 1, "generation" = generation, "map" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "game_id" = global.game_id, "state" = phase, "elapsed" = phase == GAME_STATE_PREGAME ? 0 : elapsed, "roundstart_time" = phase == GAME_STATE_PREGAME ? 0 : roundstart_time)
 
 /map_storage/proc/read_round_state()
 	var/marker = trim(file2text("map_saves/save_complete.txt"))
@@ -297,6 +298,8 @@ var/global/persistence_save_in_progress = FALSE
 		var/value = state[key]
 		if(!isnum(value) || value < 0 || value > 1e15)
 			throw EXCEPTION("Invalid saved round clock")
+	if(state["state"] == GAME_STATE_PREGAME && (state["elapsed"] || state["roundstart_time"]))
+		throw EXCEPTION("Unstarted round has an active clock")
 	return state
 
 /map_storage/proc/restore_round_state(datum/controller/gameticker/target, list/state)
@@ -317,6 +320,7 @@ var/global/persistence_save_in_progress = FALSE
 		if(!roundstart_time) roundstart_time = world.realtime
 		round_restored = TRUE
 		target.current_state = GAME_STATE_PLAYING
+		stop_lobby_music()
 		target.finished = FALSE
 		target.minds = list()
 		target.collect_minds()
@@ -333,6 +337,7 @@ var/global/persistence_save_in_progress = FALSE
 	if(processes.ticker) processes.ticker.playtime_elapsed = state["elapsed"]
 	round_restored = state["state"] != GAME_STATE_PREGAME
 	target.current_state = state["state"]
+	if(round_restored) stop_lobby_music()
 	target.finished = state["state"] == GAME_STATE_FINISHED
 	if(round_restored)
 		target.minds = list()

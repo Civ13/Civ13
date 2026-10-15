@@ -103,18 +103,27 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 /datum/controller/gameticker/proc/setup()
 	// A successful import resumes its phase without fresh equipment/map seeding.
 	if(map_storage.round_restored) return TRUE
-	if(persistence_save_in_progress) return FALSE
+	if(persistence_save_in_progress)
+		sleep(1)
+		if(map_storage.round_restored) return TRUE
+		current_state = GAME_STATE_PREGAME
+		return FALSE
 
 	var/can_start_round = map && (admin_started || map.can_start())
 	// Admission checks can yield while the autoload completes.
 	if(map_storage.round_restored) return TRUE
-	if(persistence_save_in_progress) return FALSE
+	if(persistence_save_in_progress)
+		sleep(1)
+		if(map_storage.round_restored) return TRUE
+		current_state = GAME_STATE_PREGAME
+		return FALSE
 	if (!can_start_round)
 		to_chat(world, "<b>Unable to start the game.</b> Not enough players, [map.required_players] active players needed. Reverting to the pre-game lobby.")
 		current_state = GAME_STATE_PREGAME
 		job_master.ResetOccupations()
 		return FALSE
 	current_state = GAME_STATE_PLAYING
+	stop_lobby_music()
 	job_master.ResetOccupations()
 
 	create_characters() //Create player characters and transfer them
