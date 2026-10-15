@@ -247,16 +247,16 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 			if (!do_after(user, 30, M, check_for_repeats = FALSE))
 				return FALSE
-			M.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been fed [name] by [user.name] ([user.ckey]) Reagents: [reagentlist(src)]</font>")
-			user.attack_log += text("\[[time_stamp()]\] <font color='red'>Fed [name] by [M.name] ([M.ckey]) Reagents: [reagentlist(src)]</font>")
+			M.append_attack_log(text("\[[time_stamp()]\] <font color='orange'>Has been fed [name] by [user.name] ([user.ckey]) Reagents: [reagentlist(src)]</font>"))
+			user.append_attack_log(text("\[[time_stamp()]\] <font color='red'>Fed [name] by [M.name] ([M.ckey]) Reagents: [reagentlist(src)]</font>"))
 			msg_admin_attack("[key_name(user)] fed [key_name(M)] with [name] Reagents: [reagentlist(src)] (INTENT: [uppertext(user.a_intent)])", key_name(user), key_name(M))
 			user.visible_message("<span class='danger'>[user] feeds [M] [src].</span>")
 		//A spoon for mom, a spoon for dad. If we are here, then food is go to mouth to human type species, not others!
 		playsound(M.loc,"eat", rand(40,85), TRUE)
 		if (reagents.total_volume > bitesize)
-			reagents.trans_to_mob(M, bitesize, CHEM_INGEST)
+			take_food_bite(M, bitesize)
 		else
-			reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
+			take_food_bite(M, reagents.total_volume)
 		bitecount++
 		On_Consume(M)
 		return TRUE

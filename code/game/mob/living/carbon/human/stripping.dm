@@ -41,8 +41,8 @@
 
 			if (istype(A, /obj/item/clothing/accessory/medal))
 				user.visible_message("<span class='danger'>\The [user] tears off \the [A] from [src]'s [suit.name]!</span>")
-			attack_log += "\[[time_stamp()]\] <font color='orange'>Has had \the [A] removed by [user.name] ([user.ckey])</font>"
-			user.attack_log += "\[[time_stamp()]\] <font color='red'>Attempted to remove [name]'s ([ckey]) [A.name]</font>"
+			append_attack_log("\[[time_stamp()]\] <font color='orange'>Has had \the [A] removed by [user.name] ([user.ckey])</font>")
+			user.append_attack_log("\[[time_stamp()]\] <font color='red'>Attempted to remove [name]'s ([ckey]) [A.name]</font>")
 			A.on_removed(user)
 			suit.accessories -= A
 			update_inv_w_uniform()

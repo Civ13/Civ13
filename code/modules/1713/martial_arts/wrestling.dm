@@ -123,7 +123,7 @@ If you make a derivative work from this code, you must include this notification
 
 /datum/martial_art/wrestling/harm_act(mob/living/human/A, mob/living/human/D)
 	if(check_streak(A,D))
-		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Punched with wrestling by [A.name] ([A.ckey])</font>"
+		D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Punched with wrestling by [A.name] ([A.ckey])</font>")
 		return 1
 	..()
 
@@ -199,7 +199,7 @@ If you make a derivative work from this code, you must include this notification
 			if (!D.stat)
 				D.emote("scream")
 			D.throw_at(T, 10, 4, A, TRUE, TRUE)
-		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Thrown with wrestling by [A.name] ([A.ckey])</font>"
+		D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Thrown with wrestling by [A.name] ([A.ckey])</font>")
 	return
 
 /datum/martial_art/wrestling/proc/FlipAnimation(mob/living/D)
@@ -318,7 +318,7 @@ If you make a derivative work from this code, you must include this notification
 			D.pixel_x = 0
 			D.pixel_y = 0
 
-	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Body-slammed by [A.name] ([A.ckey])</font>"
+	D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Body-slammed by [A.name] ([A.ckey])</font>")
 	return
 
 /datum/martial_art/wrestling/proc/CheckStrikeTurf(mob/living/A, turf/T)
@@ -342,7 +342,7 @@ If you make a derivative work from this code, you must include this notification
 		D.adjustBruteLoss(rand(10,20))
 		playsound(A.loc, "swing_hit", 50, TRUE)
 		D.Paralyse(20)
-		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Headbutted with wrestling by [A.name] ([A.ckey])</font>"
+		D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Headbutted with wrestling by [A.name] ([A.ckey])</font>")
 
 /datum/martial_art/wrestling/proc/kick(mob/living/human/A, mob/living/human/D)
 	if(!D)
@@ -361,7 +361,7 @@ If you make a derivative work from this code, you must include this notification
 	if (T && isturf(T))
 		D.Paralyse(20)
 		D.throw_at(T, 3, 2)
-		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Roundhouse-kicked by [A.name] ([A.ckey])</font>"
+		D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Roundhouse-kicked by [A.name] ([A.ckey])</font>")
 
 /datum/martial_art/wrestling/proc/drop(mob/living/human/A, mob/living/human/D)
 	if(!D)
@@ -431,12 +431,12 @@ If you make a derivative work from this code, you must include this notification
 	else
 		if (A)
 			A.pixel_y = 0
-		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Legdropped by [A.name] ([A.ckey])</font>"
+		D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Legdropped by [A.name] ([A.ckey])</font>")
 	return
 
 /datum/martial_art/wrestling/disarm_act(mob/living/human/A, mob/living/human/D)
 	if(check_streak(A,D))
-		D.attack_log += "\[[time_stamp()]\] <font color='orange'>disarmed with wrestling by [A.name] ([A.ckey])</font>"
+		D.append_attack_log("\[[time_stamp()]\] <font color='orange'>disarmed with wrestling by [A.name] ([A.ckey])</font>")
 		return 1
 	..()
 
@@ -450,5 +450,5 @@ If you make a derivative work from this code, you must include this notification
 					"<span class='userdanger'>You're put into a cinch by [A]!</span>", "<span class='hear'>You hear aggressive shuffling!</span>")
 	to_chat(A, "<span class='danger'>You get [D] in a cinch!</span>")
 	D.Stun(rand(60,100))
-	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Cinched by [A.name] ([A.ckey])</font>"
+	D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Cinched by [A.name] ([A.ckey])</font>")
 	return 1

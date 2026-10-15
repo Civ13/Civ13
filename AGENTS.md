@@ -275,6 +275,22 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
 
+<!-- 2026-10-15: archived combat histories -->
+Combat history writers use `append_attack_log`; ghosts share the body's list.
+Keep the mob history declared as `var/list` for native list method resolution.
+Retire rows in place only after the private archive write succeeds. Archive
+failure deliberately retains history, with scalar retry/warning cooldowns.
+`tests/attack_history` checks writer coverage and isolated production contracts;
+its row counts do not establish live process RAM or crash durability.
+
+<!-- 2026-10-15: hover name HUD -->
+`code/_onclick/hud/hover_name.dm` uses a weak target reference on a disposable
+human HUD screen object. Mouse events update it; the existing HUD process
+revalidates stationary targets. Keep masked names behind `get_visible_name()`,
+require a screen slot for inventory visibility, and forward runtime persistence
+exclusions. `tests/hover_name/run.py` exercises native production decisions with
+an injected client boundary, not real client mouse delivery or rendering.
+
 <!-- 2026-10-14: local CID source comparison -->
 `tools/cid/get-cid.ps1` calls the reviewed Windows BYOND 516.1681 library's
 fingerprint/CRC routines in 32-bit PowerShell. Private offsets require its exact
