@@ -98,6 +98,6 @@ def generate(root, control=None):
         tod = tod.replace('\tif(TOD_loop_started) return\n', '', 1)
     occupations, occupation_hashes = occupation_adapter(root)
     hashes.update(occupation_hashes)
-    return ('#define GAMETICKER_PREGAME_TIME 1\n#define SPAN_NOTICE(text) text\n'
+    return ('#define GAMETICKER_PREGAME_TIME 1\n#define SPAN_NOTICE(text) text\n#define SPAN_DANGER(text) text\n'
             + units + '\n' + macro + '\n' + pregame + '\n' + body + '\n' + formatting + '\n' + tod
             + '\n' + occupations), hashes

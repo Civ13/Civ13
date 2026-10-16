@@ -19,5 +19,6 @@
 #include "../../code/modules/persistence/saving.dm"
 #include "../../code/modules/persistence/loading.dm"
 #include "roundtrip.dm"
+#include "round_metadata.dm"
 #include "transfers.dm"
 #include "player_reclaim_probe.dm"

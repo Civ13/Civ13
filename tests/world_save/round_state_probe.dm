@@ -188,6 +188,10 @@ var/datum/fixture_jobs/job_master = new
 	sleep(25)
 	check(fixture_round_delayed_load && !fixture_round_busy_spin, "pregame busy retry did not yield")
 	check(T.current_state == GAME_STATE_PLAYING && !fixture_round_equips && !fixture_round_hooks && !fixture_round_creates, "pregame delayed import reran fresh setup")
+	// The production worker can first wake while the import lock is held.
+	// Allow its real 100-tick interval to pass after that lock is released.
+	for(var/wait_tick = 0, wait_tick < 110 && !fixture_tod_progress, wait_tick++)
+		sleep(1)
 	check(fixture_tod_progress == 1, "initial TOD worker did not progress")
 	TOD_may_automatically_change = TRUE
 	TOD_loop()
