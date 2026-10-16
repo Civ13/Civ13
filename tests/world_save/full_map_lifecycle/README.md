@@ -1,8 +1,8 @@
 # Full-size Europe recovery probe (candidate)
 
 This test-only adapter targets frozen gameplay source
-`e8cad598a3b8ad7e7e9500839bf0c1a8806fc606`, including the reviewed lighting
-runtime graph fix and preservation of the runtime view singleton. It prepares a new source tree and
+`e6be0cc25d5dad2385e0a7ff226a8b7c95302cfd`, including merged PR #3189 and
+the subsequent admin history change. It prepares a new source tree and
 adds a fixed authenticated local control surface before normal Topic logging.
 It does not modify the existing Europe host on port 18462.
 
@@ -13,6 +13,14 @@ private random token stays in the generated configuration, outside the tracked
 source tree. Preparation neither builds nor launches a host. Exported config
 still requires isolation review, including outbound integrations and listener
 exposure, before an independently reviewed launch.
+
+Preparation also runs the pinned startup tracer against hashes of the staged
+sources. The compiler uses `full-map-europe-traced.dme`, which redirects only
+the three traced source includes to generated copies. The original staged
+inputs remain unchanged. `startup-trace/source-receipt.json` records hashes;
+`game/startup-construction-trace.log` records global initialization, metadata
+constructors and world startup boundaries if native execution reaches them.
+These markers diagnose an early exit; their presence does not prove recovery.
 
 The adapter accepts exactly four query fields. It checks IPv4 loopback, a
 private token and a fresh per-boot session for mutations. It exposes only:

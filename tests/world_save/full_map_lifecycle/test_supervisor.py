@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from prepare import BASE, HOOK, instrument_lifecycle, instrument_world
+from prepare import BASE, HOOK, instrument_lifecycle, instrument_world, prepare
 from query import request
 from run import compare, diagnostic_failures, owned_daemon, verify_completed_files
 from replay import replay
@@ -106,6 +106,30 @@ class CompletedFileIdentity(unittest.TestCase):
 
 
 class ProductionInstrumentation(unittest.TestCase):
+    def test_prepared_trace_preserves_observers_and_staged_inputs(self):
+        repository = Path(__file__).resolve().parents[3]
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / 'packet'
+            manifest = prepare(repository, output)
+            game = output / 'game'
+            trace = manifest['startup_trace']
+            self.assertFalse(manifest['launched'])
+            self.assertFalse(trace['native_execution'])
+            for name, expected in trace['inputs_sha256'].items():
+                self.assertEqual(hashlib.sha256((game / name).read_bytes()).hexdigest(), expected)
+            entry = (game / manifest['entrypoint']).read_text(encoding='utf-8')
+            for include in ('full-map-probe.dm', 'tests/world_save/progress-probe.dm'):
+                self.assertIn(f'#include "{include}"', entry)
+            for name in ('code/world.dm', 'code/game/objects/map_metadata/_map_metadata.dm',
+                         'code/game/objects/map_metadata/nomads/nomads.dm'):
+                observed = (output / 'startup-trace' / ('trace-' + Path(name).name)).read_text(encoding='utf-8')
+                restored = ''.join(line for line in observed.splitlines(keepends=True)
+                                   if '"startup-construction-trace.log")' not in line)
+                self.assertEqual(restored, (game / name).read_text(encoding='utf-8'))
+            self.assertIn(HOOK, (output / 'startup-trace/trace-world.dm').read_text(encoding='utf-8'))
+            with self.assertRaises(FileExistsError):
+                prepare(repository, output)
+
     def test_frozen_anchors_and_reversible_observers(self):
         repository = Path(__file__).resolve().parents[3]
         paths = ('code/world.dm', 'code/game/gameticker.dm',

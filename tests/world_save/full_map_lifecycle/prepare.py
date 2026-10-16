@@ -8,7 +8,7 @@ import secrets
 import subprocess
 import zipfile
 
-BASE = 'e8cad598a3b8ad7e7e9500839bf0c1a8806fc606'
+BASE = 'e6be0cc25d5dad2385e0a7ff226a8b7c95302cfd'
 DISPATCH = '/world/Topic(T, addr, master, key)\n'
 HOOK = ('\tif("full_map_probe" in params2list(T))\n'
         '\t\treturn full_map_probe_topic(T, addr)\n')
@@ -93,6 +93,19 @@ def prepare(repository, output):
     (game / 'full-map-europe.dme').write_text(
         environment + '\n#include "full-map-probe.dm"\n#include "tests/world_save/progress-probe.dm"\n',
         encoding='utf-8', newline='\n')
+    # Diagnose constructor/global initialization failures in generated copies.
+    # Hash the staged inputs after the existing observer insertions so the
+    # tracer cannot silently replace or discard those observers.
+    trace_path = game / 'tests/world_save/prepare-startup-trace.py'
+    trace_spec = importlib.util.spec_from_file_location('frozen_startup_trace', trace_path)
+    trace = importlib.util.module_from_spec(trace_spec)
+    trace_spec.loader.exec_module(trace)
+    trace_inputs = ('full-map-europe.dme', *trace.INPUTS[1:])
+    expected = {name: hashlib.sha256((game / name).read_bytes()).hexdigest()
+                for name in trace_inputs}
+    trace_receipt = trace.generate(game, output / 'startup-trace', expected,
+                                   entrypoint='full-map-europe.dme',
+                                   dme_output=game / 'full-map-europe-traced.dme')
     # Exported configuration still needs isolation review before launch.
     # Preparation does not expose a listener or copy production configuration.
     (game / 'config/full-map-probe-token.txt').write_text(secrets.token_hex(32), encoding='ascii')
@@ -101,7 +114,8 @@ def prepare(repository, output):
                 'original_world_sha256': hashlib.sha256(original_world.encode()).hexdigest(),
                 'instrumented_world_sha256': hashlib.sha256(world_path.read_bytes()).hexdigest(),
                 'lifecycle_instrumentation': instrumented,
-                'entrypoint': 'full-map-europe.dme', 'launched': False,
+                'entrypoint': 'full-map-europe-traced.dme',
+                'startup_trace': trace_receipt, 'launched': False,
                 'configuration_review_required': True,
                 'limits': ['No real client, player-body or inventory acceptance',
                            'No save or recovery has run during preparation']}
