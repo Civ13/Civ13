@@ -169,6 +169,10 @@
 			return L
 	throw EXCEPTION("Unknown saved value kind: [value["kind"]]")
 /map_storage/proc/Load_World()
+	return run_world_operation("load")
+
+/map_storage/proc/load_world_contents(datum/persistence_world_operation/operation)
+	if(!operation || !operation.enter_contents(src, "load")) return FALSE
 	// Allocate all levels first so references to turfs on later levels stay valid.
 	for(var/z = 1, z <= world.maxz, z++)
 		var/savefile/F = new("map_saves/[z].sav")
