@@ -14,6 +14,10 @@
 		H.defaultHUD = H.client.prefs.UI_style
 		++recreate_flag
 
+	// World persistence excludes client screen objects, while defaultHUD persists.
+	if (!H.HUDinventory.len || !H.HUDneed.len)
+		recreate_flag = TRUE
+
 	if (recreate_flag)
 		H.destroy_HUD()
 		H.create_HUD()
@@ -104,6 +108,11 @@
 			if (HUD.process_flag)
 				H.HUDprocess += HUD
 
+	var/obj/screen/hover_name/hover_label = new("hover name", null, H)
+	// The base screen constructor selects the preference icon; this is text only.
+	hover_label.icon = null
+	H.HUDneed["hover name"] = hover_label
+	H.HUDprocess += hover_label
 	return
 /mob/living/human/create_HUDfrippery()
 	var/mob/living/human/H = src

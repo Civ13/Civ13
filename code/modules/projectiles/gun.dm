@@ -545,7 +545,7 @@
 		else
 			playsound(user, fire_sound, 50, TRUE,50)
 
-		M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> shot themselves in the mouth (tried to commit suicide)"
+		M.append_attack_log("\[[time_stamp()]\] [M]/[M.ckey]</b> shot themselves in the mouth (tried to commit suicide)")
 
 		in_chamber.on_hit(M)
 		if (in_chamber.damage_type != HALLOSS)
@@ -558,7 +558,7 @@
 
 			user.apply_damage(in_chamber.damage*2.5, in_chamber.damage_type, "head", used_weapon = "Point blank shot in the mouth with \a [in_chamber]", sharp=1)
 			user.death()
-			M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> shot themselves in the mouth (committed suicide)"
+			M.append_attack_log("\[[time_stamp()]\] [M]/[M.ckey]</b> shot themselves in the mouth (committed suicide)")
 		else
 			to_chat(user, "<span class = 'notice'>Ow...</span>")
 			user.apply_effect(110,AGONY,0)
@@ -613,7 +613,7 @@
 			else
 				playsound(user, fire_sound, 100, TRUE,100)
 
-			user.attack_log += "\[[time_stamp()]\] [user]/[user.ckey]</b> shot themselves in the [organ_name]"
+			user.append_attack_log("\[[time_stamp()]\] [user]/[user.ckey]</b> shot themselves in the [organ_name]")
 
 			in_chamber.on_hit(user)
 			if (in_chamber.damage_type != HALLOSS)

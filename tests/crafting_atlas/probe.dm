@@ -21,6 +21,7 @@ var/atlas_failed = FALSE
 	cold_reference.resources = null
 	check_atlas(!cold_reference.resource_exists("fixture"), "invalid catalog resource lookup fails closed")
 	var/mob/viewer = new
+	check_navigation(viewer)
 	check_atlas(crafting_atlas_reference.load_catalog(), "catalog load")
 	var/first_page = crafting_atlas_reference.page_html(viewer)
 	check_atlas(findtext(first_page, "12 matching recipes") == 0, "fixture contains thirteen records")

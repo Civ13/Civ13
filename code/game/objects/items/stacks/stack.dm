@@ -238,6 +238,7 @@
 		var/datum/stack_recipe_list/srl = recipe_list[recipes_sublist]
 		recipe_list = srl.recipes
 	var/t1 = text("<HTML style='line-height: 1.8;'><HEAD>[common_browser_style]<title>Crafting</title></HEAD><body bgcolor='#392611' style='border-color: #392611;'><br><tt><center><strong><font color='white' size='4'>[]</font><br><font color='white' size='3'>Amount Left: []</strong></font><br><br><font color='white' size='2'>", src, amount)
+	t1 += "<a href='?src=\ref[crafting_atlas_reference];atlas_open=1'>Crafting Atlas: ingredients, products and unlock eras</a><br>"
 	for (var/i=1;i<=recipe_list.len;i++)
 		var/E = recipe_list[i]
 		if (isnull(E))
@@ -1906,12 +1907,28 @@
 			return
 		circuit_iron.use(quantity)
 
+	// Structural floors on open air need a supported ceiling below. Recheck
+	// after the action wait and before material consumption.
+	var/building_floor_recipe = FALSE
+	if (ispath(recipe.result_type, /obj/covers))
+		var/obj/covers/floor_type = recipe.result_type
+		building_floor_recipe = !initial(floor_type.wall) && initial(floor_type.layer) < 2.1
+	if (building_floor_recipe)
+		var/building_error = building_floor_error(get_turf(user))
+		if (building_error)
+			to_chat(user, SPAN_WARNING(building_error))
+			return
+
 	if (use(required,H))
 		var/atom/O
 		if (recipe && recipe.use_material && recipe.result_type)
 			O = new recipe.result_type(user.loc, recipe.use_material)
 		else
 			O = new recipe.result_type(user.loc)
+
+		if (building_floor_recipe)
+			var/obj/covers/floor = O
+			floor.building_finish_floor()
 
 		if(istype(O, /obj/structure/cannon/modern/tank))
 			var/obj/structure/cannon/modern/tank/T = O

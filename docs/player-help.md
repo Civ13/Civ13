@@ -5,8 +5,9 @@ answer window. The prompt warns that the question goes to the server owner's AI
 service and should not contain personal information. Answers can be wrong. The
 Crafting Atlas and player wiki remain available without an AI service.
 
-Without configuration, a running bridge, or a fresh heartbeat, players see an
-unavailable/configuration notice. An unanswered request times out after a bounded 60..600
+The question dialog opens before service checks. Opening or cancelling it uses
+no request allowance. Without configuration, a running bridge, or a fresh
+heartbeat, submission shows an unavailable notice. An unanswered request times out after a bounded 60..600
 running-server seconds (including the queue budget) and releases its slot. Failed or empty model answers
 show an explicit notice rather than a blank window. Wait until the bridge has
 published two heartbeats (normally a few seconds) before trying the first question.
@@ -30,7 +31,7 @@ private directory permissions. Do not share a spool across Nomads and TDM.
    [Ollama chat API](https://docs.ollama.com/api/chat), with streaming disabled.
 3. Set `num_ctx` to 1024..32768 and `think` to `true` or `false`.
    Set `timeout_seconds` to 1..120 and `workers` to 1..2. The game permits eight
-   outstanding questions, one per client, and a 30-second per-client cooldown.
+   outstanding questions, one per account, and a 30-second per-account cooldown.
    Questions are limited to 500 characters; answers to 4,000. Slow remote
    inference can fill these slots, in which case players receive a busy notice.
 4. For a protected HTTPS proxy, put its bearer token in the worker's private
@@ -43,6 +44,37 @@ private directory permissions. Do not share a spool across Nomads and TDM.
    launch; restart the worker after changing it. Shutdown marks help unavailable.
    Restart clears old spool questions rather than re-sending them. Do not run
    multiple workers against the same spool.
+
+## Request limits
+
+The optional `limits` configuration sets the same policy in the bridge and game
+(published through a bounded local `limits.json`). Defaults allow three requests
+per account per 120 seconds, ten per 600 seconds, and thirty across the server
+per 60 seconds, in addition to the cooldown and one outstanding request per
+account. The bridge enforces admission again immediately before model dispatch,
+including direct calls and copied/replayed spool requests. Only 1..2 configured
+workers run model calls; eight fixed spool slots bound the queue. Requests
+rejected for size, unavailability, rate or capacity never reach the model.
+
+Cooldown and quotas use the authenticated client's account, rather than its
+connection, so reconnecting does not reset them. Guest accounts cannot submit
+questions because a new guest identity would evade account limits. The bridge receives a salted
+account hash used only for admission; it is excluded from model payloads. Each
+game process creates its own salt. Limits are per running game/bridge, not a
+cross-server or restart-persistent account ban. Local spool write access is
+trusted server access; it is not a player authentication mechanism.
+
+Limiter storage caps at 2,048 accounts by default (configurable up to 4,096),
+refusing new accounts while full rather than evicting active cooldowns. Expired
+histories are reclaimed on admission. Limits use positive integer seconds or
+counts; time settings cap at 86,400 seconds, counts at 4,096, and queue slots at
+eight. Failed dispatches/timeouts release pending locks but retain consumed
+allowance, preventing failures from becoming a retry flood. Disconnecting does
+not cancel a pending model call; the game retains its account lock until a
+response or timeout. After changing worker configuration, restart the worker
+through the normal authorized service procedure.
+
+## Running the bridge
 
 The worker atomically claims `SQL/player-help/worker.lock`; a second instance
 refuses to start. After an abrupt crash, confirm that the PID in `worker.lock/pid`
@@ -98,8 +130,9 @@ are omitted. At most six matching code/wiki/guide/recipe entries and 16,000 cont
 are sent per question. Unmatched or truncated recipe details must be checked in
 the atlas, including current map and research availability.
 
-Only question text and the approved guide are sent. No account name, inventory,
-chat history, filesystem, developer MCP tools or administration API is exposed.
+Question text, approved guidance and the bounded gameplay/inventory snapshot
+described below are sent. No account name, chat history, filesystem, developer
+MCP tools or administration API is exposed.
 There is no conversational memory, command execution or tool calling. Questions
 are temporary spool files, removed when completed, disconnected or timed out;
 the remote service may keep its own logs, so owners should disclose its policy.
@@ -148,5 +181,12 @@ admin commands or private reference repositories are indexed.
 Each question automatically includes the server's public map title/ID, game mode,
 era/ordinal and civilization flag. These are captured from map metadata at
 submission, not inferred from player wording. No account identity, coordinates,
-inventory, hidden map state or faction secrets are included. Unknown/uninitialized
+hidden map state or faction secrets are included. The bounded asking-player
+inventory snapshot is described below. Unknown/uninitialized
 map metadata is marked unknown. Era does not prove faction research unlocks.
+
+### Player and environment snapshot
+
+Each question includes the current map, mode, era, season and time of day. For the asking human it also includes health, nutrition, hydration and wetness percentages, body temperature in kelvin, indoor/outdoor exposure, local weather and active fire/incapacitation/weather exposure. This is a detached snapshot taken when submitting the question, not continuous monitoring. No account identity, other players, hidden disease diagnoses or private admin events are sent. Missing context remains unknown; the effects list is not an exhaustive event catalog. The input dialog tells players their gameplay condition is sent to the configured AI service. Collection performs no world scan, HTTP request or spawned timer.
+
+Inventory context includes occupied equipment/hand/pocket slots and carried storage contents, with item names, stack quantities and their slot/container labels. It excludes body internals and item IDs, and stops at 24 items, 64 inspected entries or two container levels. An explicit truncation flag tells the model that omitted ingredients may still be present. Item labels are untrusted text, not instructions. The request file budget is 16 KiB to accommodate bounded inventory snapshots.

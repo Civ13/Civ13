@@ -192,6 +192,10 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-13: native catch variable scope -->
+BYOND 516.1681 treats catch variable declarations as proc-scoped. Use distinct
+names for separate catch blocks in one proc or compilation fails with duplicate definition.
+
 - Follow `docs/game-verification.md` for exact-commit build, isolated-fixture,
   graphical, season-memory, and save-round-trip evidence. Reuse probes present in
   the selected checkout; investigation-branch probes may not be on master yet.
@@ -206,6 +210,13 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 
 ## Agent self-maintenance
 
+<!-- 2026-10-15: durable invulnerable areas -->
+Placed admin/sewer areas use native `INFINITY` for `artillery_integrity`.
+Durable JSON uses the exact `positive_infinity` sentinel only for that field;
+ordinary numbers remain finite and bounded. Preserve finite legacy values and
+reject malformed/wrong-field sentinels before world mutation. Contract probes
+and the full metadata fixture audit inherited area defaults and placed areas.
+
 <!-- 2026-10-11: world-save verification -->
 - Persistence regressions are in `tests/world_save`; the focused fixture uses
   the actual saver/loader with isolated adapters, and `run-game.ps1` exercises
@@ -213,6 +224,16 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
   and sharded entries; retain legacy flat-entry reading. Never restore `loc`,
   `pixloc`, or client session fields as ordinary variables. Linux DreamDaemon
   `-safe` requires a relative log path inside the isolated working directory.
+
+<!-- 2026-10-14: optional save fields and player reclaim -->
+- Reading an absent native savefile field can create a null directory entry.
+  Check `F.dir` membership before reading optional legacy fields; otherwise
+  typed-value validation can reject a valid generation. The reclaim suite's
+  `legacy` control checks this mutation before broader world preflight.
+- `lastKnownCkey` is login history, not unique body ownership. Reclaim uses the
+  explicit canonical owner, complete-load readiness and ordinary admission
+  guards. Legacy migration requires a reviewed generation-bound unique body
+  mapping and a fresh derived save; preserve all original generations.
 
 This file is read by every agent at session start. If you discover something
 useful about the codebase that future agents should know, **update this file**.
@@ -233,6 +254,12 @@ a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10:
 
 <!-- 2026-10-11: crafting validation -->
 ## Crafting checks
+
+<!-- 2026-10-15: Modern processor recipe validation -->
+The recipe catalog fixture defaults to era 0. New era-gated machine families
+must select their real supported era in tests/crafting/checks.dm; the reactor
+fuel processor is Modern despite not inheriting civ_generator. Keep separate
+locked-era/node tests so a fixture-era fix cannot bypass production gating.
 
 <!-- 2026-10-11: staged component workbench -->
 `scripts/check-component-tools.py` now checks staged bench cancellation,
@@ -264,6 +291,72 @@ tests/opendream_shell runs both production branches with counted external-effect
 adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
+
+<!-- 2026-10-15: native graceful shutdown boundary -->
+Native BYOND `del(world)` can return before process exit. Yield before declaring
+shutdown failure, or transaction cleanup can erase the published recovery intent.
+The lifecycle disk fixture checks the intent after exit; its `shutdown-return`
+negative control reproduces the old immediate cleanup.
+
+<!-- 2026-10-15: archived combat histories -->
+Combat history writers use `append_attack_log`; ghosts share the body's list.
+Keep the mob history declared as `var/list` for native list method resolution.
+Retire rows in place only after the private archive write succeeds. Archive
+failure deliberately retains history, with scalar retry/warning cooldowns.
+`tests/attack_history` checks writer coverage and isolated production contracts;
+its row counts do not establish live process RAM or crash durability.
+
+<!-- 2026-10-15: hover name HUD -->
+`code/_onclick/hud/hover_name.dm` uses a weak target reference on a disposable
+human HUD screen object. Mouse events update it; the existing HUD process
+revalidates stationary targets. Keep masked names behind `get_visible_name()`,
+require a screen slot for inventory visibility, and forward runtime persistence
+exclusions. `tests/hover_name/run.py` exercises native production decisions with
+an injected client boundary, not real client mouse delivery or rendering.
+<!-- 2026-10-15: lighting persistence ownership -->
+Custom saves enumerate tmp lighting fields too. Exclude light/light_sources and
+derived light_source/lighting_corner/lighting_overlay graphs on export and import;
+their constructors require live owners/turfs. Rebuild sources after durable atom
+fields and after_load. tests/world_save/run-durable-world.py --lighting checks
+actual constructors and legacy graph recovery; full-map acceptance is separate.
+
+<!-- 2026-10-15: isolated recovery observer setup -->
+When normal global startup is disabled, fixtures that remove real mobs must
+initialize `GLOB.all_observable_events = list()` before constructing the moved,
+direction, name and stat observer events. Otherwise event construction can turn
+the null registry into one datum, and the second event raises a type mismatch.
+Missing direction observers also make real contained-item removal fail.
+
+<!-- 2026-10-14: local CID source comparison -->
+`tools/cid/get-cid.ps1` calls the reviewed Windows BYOND 516.1681 library's
+fingerprint/CRC routines in 32-bit PowerShell. Private offsets require its exact
+documented library hash. `run-local.ps1` compares with a real local client's
+`computer_id`; its negative control tests equality only, with no spoof detection.
+<!-- 2026-10-14: bounded runtime detail history -->
+Error history keeps 1000 recent entries globally and 100 per file/line source,
+including skip summaries. Retirement removes both memberships and clears entry
+backreferences, captured usr locations and detail text before explicit plain-datum
+deletion invalidates old holders. Source metadata and
+world/Error cooldown dictionaries remain for the round; distinct synthetic
+file/line identities are not bounded. `tests/error_history/run.py` checks real
+logging, viewer bodies and retirement in an isolated native world, with an
+immutable historical log_error control. `--prepare-only` runs no native tools.
+
+<!-- 2026-10-14: native launcher packaging -->
+`tools/opendream-client/native/Build.ps1` builds the single-file self-contained
+Windows x64 launcher. Its offline console tests cover mock updates plus actual
+EXE replacement after parent exit and BYOND prerequisite adapters, without accounts
+or a game. Release publication builds the exact tag and verifies immutable asset
+readback before advancing the separate native feed; prereleases do not activate it.
+Preserve the existing client channel and distinguish package integrity/BYOND setup
+from identity/gameplay acceptance. Never silently accept installer licenses.
+
+<!-- 2026-10-13: dehydrator native save baseline -->
+`tests/food_progression/rack_save.dm` exports the owning turf and rack graph.
+The 769ae4911 baseline compiled cleanly but failed exporting runtime `slots`.
+Load_Entry replaces constructor contents even for an empty saved record; rack
+runtime pointers must be excluded and live internal storage rebound or rebuilt.
+Source-only preparation does not establish native candidate or control acceptance.
 
 <!-- 2026-10-12: NPC cover decision parity -->
 `tests/npc_cover/run.py` compiles production cover scoring, LOS and line helpers
@@ -316,6 +409,14 @@ also emits `crafting/` with isolated BYOND 516.1681 inherited sprite exports.
 Missing/transparent defaults use a labeled actual paper DMI source symbol;
 constructor graphics and material recoloring remain dynamic. See
 docs/crafting-atlas.md; acquisition annotations retain their historical audit SHA.
+
+<!-- 2026-10-15: atlas unlock and processing contracts -->
+`scripts/atlas/catalog_metadata.py` keeps unlock research tiers/minimum gates
+separate from catalog field 12's maximum allowed era. Parse research constructors
+with balanced arguments; the enclosing registration call adds another closing
+parenthesis. Processor tiers describe station construction, not use restrictions.
+`tests/crafting_atlas/run.py --compile-only` never starts DreamDaemon; runtime
+navigation and omission controls require the normal isolated runner or CI.
 
 <!-- 2026-10-11: bounded animal harvesting -->
 - `code/modules/1713/animal_harvest.dm` centralizes corpse claims and bounded species products. The custom saver enumerates `tmp` fields, so in-progress harvesting/axe locks explicitly opt out via `persistence_runtime_var`.
@@ -455,6 +556,15 @@ crash behavior. Do not replace required gameplay captures with fixture output.
 retained entries are distinct from OS private memory. `run-game.ps1 -ExerciseCapture`
 checks real forward/reverse/stop behavior. Its optional bounded `-Visual` mode
 requires the coordinator's exclusive screen turn; see tests/conveyor/README.md.
+<!-- 2026-10-15: player-facing changelog review -->
+Meaningful player-facing PRs must include exactly one reviewed `changelog: text`
+line in their opening description before being marked ready or merged, outside
+comments, quotes and fenced code. Use concise player-facing text compatible with
+tools/changelog/README.md so the existing GitHub Action can announce it to Discord.
+Use one announcement route per change; do not also add a manifest for that change.
+This requirement does not authorize manual posts, publisher settings changes,
+deployment or claims that the change is running on a server.
+
 <!-- 2026-10-11: shipped Discord changelog -->
 The standalone publisher in tools/changelog supports an explicit `Changelog: text`
 line in a PR opening description on merge into master. Missing or blank means no
@@ -664,3 +774,37 @@ Do not call parent attackby after an explicit item attack; that repeats damage,
 logs and material wear. tests/animal_combat/run.py checks compiled inherited
 health defaults, native Life, single sharp/blunt attacks and wear across behavior
 branches, noncombat dispatch, healing/death and generated negative controls.
+
+<!-- 2026-10-14: chemical smoke source retirement -->
+Chemical smoke systems are single-use: their two reaction callers construct fresh
+systems. The hidden reagent source must survive every queued spawn callback, then
+retire through atom/reagent cleanup. `tests/chemical_smoke_ownership/run.py` checks
+production copies, lifetime bounds and repeated holder/membership cleanup against
+an immutable historical negative control in temporary offline storage.
+
+<!-- 2026-10-15: native associative collections -->
+`code/_macros.dm` redefines `islist(A)` as `istype(A, /list)`, excluding `/alist`
+although native BYOND `islist` accepts it. Squad and leader defaults are alists
+with numeric keys and null associations. Collection codecs must handle `/alist`
+explicitly; isolated probes must import the production macro. Numeric alist
+indexing addresses keys, so iterate keys instead of positional indexes.
+
+<!-- 2026-10-15: paid wood residue and plant nitrary -->
+Wood-fuel residue uses a saved scalar ledger shared by existing ovens, furnaces
+and factories; unknown legacy fuel earns no ash. The existing compost bin's
+optional nitrary mode stores paid feedstock and remaining active-server time,
+excluding its runtime clock. Feedstock uses stack.use without a human argument:
+Production religion otherwise discounts consumption and breaks conservation.
+See docs/wood-ash-compost.md and tests/wood_ash_compost/run.py for isolated
+production-path/native-save checks and generated-source mutation controls.
+
+<!-- 2026-10-15: save and continuous-round guard ordering -->
+Ticker save-in-progress gating precedes continuous persistence-round recovery.
+Do not clear a saved finished flag or change round state while serialization is
+yielding. tests/persistence_round/run.py --negative-control save removes that
+guard and must fail the production ticker/save interaction assertion.
+<!-- 2026-10-15: persistence runtime view helper -->
+ClearMap must preserve the global dview_mob identity. Retiring this runtime mob
+breaks FOR_DVIEW in post-import lighting processing after GC clears the global.
+The lighting recovery fixture runs production lighting_sources.fire(), not only
+light constructor/registration checks; lighting-view removes the preservation guard.

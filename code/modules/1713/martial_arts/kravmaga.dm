@@ -89,7 +89,7 @@
 	playsound(get_turf(A), 'sound/weapons/kick.ogg', 50, TRUE, -1)
 	D.stats["stamina"][1] = max(0, D.stats["stamina"][1] - rand(20,30))
 	D.Weaken(60)
-	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Leg sweeped by [A.name] ([A.ckey])</font>"
+	D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Leg sweeped by [A.name] ([A.ckey])</font>")
 	return TRUE
 
 /datum/martial_art/krav_maga/proc/quick_choke(mob/living/human/A, mob/living/human/D)//is actually lung punch
@@ -100,7 +100,7 @@
 	if(D.losebreath <= 10)
 		D.losebreath = clamp(D.losebreath + 5, 0, 10)
 	D.adjustOxyLoss(10)
-	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Quickchoked by [A.name] ([A.ckey])</font>"
+	D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Quickchoked by [A.name] ([A.ckey])</font>")
 	return TRUE
 
 /datum/martial_art/krav_maga/proc/neck_chop(mob/living/human/A, mob/living/human/D)
@@ -113,19 +113,19 @@
 		var/mob/living/human/human_defender = D
 		if(human_defender.silent <= 10)
 			human_defender.silent = clamp(human_defender.silent + 10, 0, 10)
-	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Neck chopped by [A.name] ([A.ckey])</font>"
+	D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Neck chopped by [A.name] ([A.ckey])</font>")
 	return TRUE
 
 /datum/martial_art/krav_maga/grab_act(mob/living/human/A, mob/living/human/D)
 	if(check_streak(A,D))
 		return TRUE
-	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Grabbed (Krav Maga) by [A.name] ([A.ckey])</font>"
+	D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Grabbed (Krav Maga) by [A.name] ([A.ckey])</font>")
 	..()
 
 /datum/martial_art/krav_maga/harm_act(mob/living/human/A, mob/living/human/D)
 	if(check_streak(A,D))
 		return TRUE
-	D.attack_log += "\[[time_stamp()]\] <font color='orange'>Punched by [A.name] ([A.ckey])</font>"
+	D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Punched by [A.name] ([A.ckey])</font>")
 	var/picked_hit_type = pick("punch", "kick")
 	var/bonus_damage = 0
 	if(D.lying)
@@ -141,7 +141,7 @@
 	D.visible_message("<span class='danger'>[A] [picked_hit_type]s [D]!</span>", \
 					"<span class='userdanger'>You're [picked_hit_type]ed by [A]!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>")
 	to_chat(A, "<span class='danger'>You [picked_hit_type] [D]!</span>")
-	D.attack_log += "\[[time_stamp()]\] <font color='orange'>[picked_hit_type] by [A.name] ([A.ckey])</font>"
+	D.append_attack_log("\[[time_stamp()]\] <font color='orange'>[picked_hit_type] by [A.name] ([A.ckey])</font>")
 	return TRUE
 
 /datum/martial_art/krav_maga/disarm_act(mob/living/human/A, mob/living/human/D)
@@ -154,7 +154,7 @@
 		A.do_attack_animation(D)
 		playsound(D, 'sound/weapons/punch1.ogg', 50, TRUE, -1)
 		D.stats["stamina"][1] = max(0, D.stats["stamina"][1] - rand(5,10))
-		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Punched nonlethally by [A.name] ([A.ckey])</font>"
+		D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Punched nonlethally by [A.name] ([A.ckey])</font>")
 	if(D.lying)
 		D.visible_message("<span class='danger'>[A] reprimands [D]!</span>", \
 					"<span class='userdanger'>You're manhandled by [A]!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>")
@@ -162,7 +162,7 @@
 		A.do_attack_animation(D)
 		playsound(D, 'sound/weapons/punch1.ogg', 50, TRUE, -1)
 		D.stats["stamina"][1] = max(0, D.stats["stamina"][1] - rand(10,15))
-		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Stomped nonlethally by [A.name] ([A.ckey])</font>"
+		D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Stomped nonlethally by [A.name] ([A.ckey])</font>")
 	if(prob(D.stats["stamina"][2] - D.stats["stamina"][1]))
 		D.visible_message("<span class='warning'>[D] sputters and recoils in pain!</span>", "<span class='userdanger'>You recoil in pain as you are jabbed in a nerve!</span>")
 		D.drop_l_hand()

@@ -15,6 +15,8 @@ serverdata.txt
 
 .DS_Store
 config/host.txt
+config/lifecycle-token.txt
+config/lifecycle-revision.txt
 recipes.txt
 .vscode/
 cfg/admin.txt
