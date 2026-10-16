@@ -46,6 +46,10 @@ An experimental open-source BYOND reimplementation. `.vscode/launch.json` has an
 
 ### DMM format rules
 
+<!-- 2026-10-16: standalone map constants -->
+- Emit literal DMM overrides such as `locked = 1`, not DM macros such as `TRUE`.
+  MapDiffBot's standalone map reader rejects unresolved variables in map values.
+
 - All tile keys within a map **must be the same length** (all 2-char or all 1-char). Mixing breaks BYOND's parser.
 - Every grid row must have exactly `world.maxx` tile keys. Different row widths cause load failures.
 - Grid rows in the file are ordered top-to-bottom (Y=maxy first, Y=1 last).

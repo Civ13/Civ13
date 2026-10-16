@@ -41,6 +41,11 @@ def parse_dmm(text, world):
     for match in re.finditer(pattern, remainder, re.M):
         key, atoms = match.groups()
         require(key not in definitions, "duplicate DMM key")
+        # Standalone map readers do not preprocess DM macros such as TRUE.
+        # This draft deliberately permits only string/number/null overrides.
+        assignments = re.findall(r'\b\w+\s*=\s*("[^"]*"|[^;}]+)', atoms)
+        require(all(re.fullmatch(r'"[^"]*"|-?\d+(?:\.\d+)?|null', value.strip())
+                    for value in assignments), "DMM overrides must use literal values")
         area_match = re.fullmatch(r'(.*),/area\{name = "([^"]+)"; location = 0\}', atoms)
         require(area_match is not None, "DMM objects/turf/area order or active area")
         body, area = area_match.groups()

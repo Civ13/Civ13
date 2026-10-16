@@ -3,6 +3,7 @@ import copy
 import tempfile
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 
 import build_map
 from validate_map import parse_dmm, validate
@@ -28,6 +29,15 @@ class LayoutTests(unittest.TestCase):
     def test_generated_and_checked_in_artifacts(self):
         self.assertEqual(validate(self.layout, self.dmm)["raid_berths"], 2)
         self.assertEqual(build_map.MAP_PATH.read_text(encoding="utf-8"), self.dmm)
+
+    def test_unresolved_dmm_constants_even_in_source_palette(self):
+        original = build_map.PALETTE["gate"]
+        for value in ("TRUE", "FALSE", "NORTH"):
+            with self.subTest(value=value):
+                bad_gate = (original[0].replace("locked = 1", f"locked = {value}"), *original[1:])
+                with patch.dict(build_map.PALETTE, {"gate": bad_gate}):
+                    with self.assertRaisesRegex(ValueError, "literal values"):
+                        parse_dmm(build_map.render_dmm(self.grid), self.layout["world"])
         import json
         self.assertEqual(json.loads(build_map.LAYOUT_PATH.read_text(encoding="utf-8")), self.layout)
 

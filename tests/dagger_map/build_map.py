@@ -22,7 +22,7 @@ PALETTE = {
     "berth": ("/turf/floor/plating/dark", "#34444e", True),
     "platform": ("/turf/floor/plating/concrete", "#b5a16d", True),
     "door": ("/obj/structure/simple_door,/turf/floor/plating/steel", "#ceaa5a", True),
-    "gate": ('/obj/structure/simple_door{name = "Party boundary - draft only"; locked = TRUE},/turf/floor/wood', "#ffde7a", True),
+    "gate": ('/obj/structure/simple_door{name = "Party boundary - draft only"; locked = 1},/turf/floor/wood', "#ffde7a", True),
     "bed": ("/obj/structure/bed,/turf/floor/wood", "#9cc6bc", False),
     "crate": ("/obj/structure/closet/crate,/turf/floor/plating/steel", "#aa7954", False),
     "rack": ("/obj/structure/table/rack,/turf/floor/plating/steel", "#9eacb8", False),

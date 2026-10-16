@@ -14,7 +14,7 @@
 "am" = (/obj/structure/simple_door,/turf/floor/plating/steel,/area{name = "Dagger exposed study"; location = 0})
 "an" = (/obj/structure/simple_door,/turf/floor/plating/steel,/area{name = "Dagger protected study"; location = 0})
 "ao" = (/turf/floor/plating/steel,/area{name = "Dagger exposed study"; location = 0})
-"ap" = (/obj/structure/simple_door{name = "Party boundary - draft only"; locked = TRUE},/turf/floor/wood,/area{name = "Dagger protected study"; location = 0})
+"ap" = (/obj/structure/simple_door{name = "Party boundary - draft only"; locked = 1},/turf/floor/wood,/area{name = "Dagger protected study"; location = 0})
 "aq" = (/turf/wall/iron,/area{name = "Dagger exposed study"; location = 0})
 "ar" = (/turf/wall/iron,/area{name = "Dagger protected study"; location = 0})
 "as" = (/turf/floor/plating/concrete,/area{name = "Boarding platform"; location = 0})
