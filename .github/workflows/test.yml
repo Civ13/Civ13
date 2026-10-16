@@ -524,6 +524,7 @@ jobs:
             python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile" --recovery-reconnect
               python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile" --lifecycle-shutdown
           done
+          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --profile europe --lifecycle-shutdown --negative-control shutdown-return
           python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --recovery-reconnect --negative-control reclaim-order
           for control in season preflight reachability callback timer-restore; do
             python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"

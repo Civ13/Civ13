@@ -68,6 +68,11 @@ generation negative controls must produce their exact assertion failures.
 (also `europe`) separately exercises actual production Topic dispatch, token
 file reads, disk serialization, generation validation, bound intent publication
 and native graceful exit in a tiny isolated world. It does not adapt the saver,
-validator or native exit. The launcher requires clean process completion and its
-assertion receipt. These fixtures do not use real account sessions or establish
+validator or native exit. The launcher checks the published intent and generation
+again after the native process exits; a receipt written before deletion alone
+cannot establish that failure cleanup left recovery intact. Run
+`--lifecycle-shutdown --negative-control shutdown-return` to reproduce the old
+missing-yield cleanup bug. Native `del(world)` may return before shutdown, so the
+transaction yields once before treating continued execution as failure.
+These fixtures do not use real account sessions or establish
 the actual Windows supervisor recovery cycle.
