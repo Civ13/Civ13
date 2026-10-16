@@ -259,6 +259,7 @@ var/global/persistence_load_recovery_required = FALSE
 	var/backend_started = FALSE
 	var/contents_started = FALSE
 	var/mutation_started = FALSE
+	var/restoring_players = FALSE
 	proc/current(map_storage/expected_storage, expected_kind)
 		return persistence_active_operation == src && storage == expected_storage && kind == expected_kind
 	proc/enter_backend(map_storage/expected_storage, expected_kind)
@@ -385,7 +386,9 @@ var/global/persistence_load_recovery_required = FALSE
 		log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
 		// Client restoration can dispatch callbacks too. Keep this operation's
 		// identity until normal import completion, including those callbacks.
-		if(!transaction) map_storage.finish_player_restoration()
+		if(!transaction)
+			operation.restoring_players = TRUE
+			map_storage.finish_player_restoration()
 	catch(var/exception/e)
 		map_storage.cleanup_world_operation()
 		try

@@ -13,7 +13,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
-    parser.add_argument('--negative-control', choices=('admission', 'stale', 'recovery'))
+    parser.add_argument('--negative-control', choices=('admission', 'stale', 'recovery', 'player-ready'))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     output = Path(tempfile.mkdtemp(prefix='civ13-world-operations-'))
@@ -32,6 +32,7 @@ def main():
                 'admission': (' || persistence_active_operation ||', ' || FALSE ||'),
                 'stale': ('if(persistence_active_operation != src) return FALSE', 'if(FALSE) return FALSE'),
                 'recovery': ('if(!success && kind == "load" && mutation_started)', 'if(FALSE)'),
+                'player-ready': ('operation.restoring_players = TRUE', 'operation.restoring_players = FALSE'),
             }
             before, after = controls[args.negative_control]
             if source.count(before) != 1:
@@ -85,7 +86,8 @@ def main():
     failure = (output / 'failure.txt').read_text().strip() if (output / 'failure.txt').exists() else ''
     expected = {'admission': 'announcement sleep: wrapper save rejected',
                 'stale': 'stale finish rejected',
-                'recovery': 'mutating failure retains recovery hold'}
+                'recovery': 'mutating failure retains recovery hold',
+                'player-ready': 'final callback restores players while operation held'}
     if args.negative_control:
         if result != 'FAIL' or failure != expected[args.negative_control]:
             raise RuntimeError(f'Wrong control outcome: {result}, {failure}')

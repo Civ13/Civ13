@@ -53,6 +53,7 @@ var/datum/operation_job_adapter/job_master = new
 	restore_round_state(datum/controller/gameticker/T, list/state)
 		return
 	finish_player_restoration()
+		check(..(), "final callback restores players while operation held")
 		if(finish_callback) overlap("client callback")
 	clear_bookkeeping()
 		if(cleanup_failure) throw EXCEPTION("expected cleanup")

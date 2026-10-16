@@ -68,7 +68,7 @@ var/global/persistence_player_restore_ready = FALSE
 	bodies |= H
 
 /map_storage/proc/find_restored_player(account)
-	if(!persistence_player_restore_ready || persistence_save_in_progress || persistence_restart.startup_hold || last_error)
+	if(!persistence_player_restore_ready || player_restoration_blocked())
 		return null
 	if(!istext(account) || !length(account) || ckey(account) != account || persistence_guest_account(account))
 		return null
@@ -99,8 +99,14 @@ var/global/persistence_player_restore_ready = FALSE
 	qdel(lobby)
 	return TRUE
 
+/map_storage/proc/player_restoration_blocked()
+	// The import has restored the world before this phase begins. Its operation
+	// still owns admission while player callbacks run; no new save/load may enter.
+	var/final_import = persistence_active_operation && persistence_active_operation.current(src, "load") && persistence_active_operation.restoring_players
+	return (persistence_save_in_progress && !final_import) || persistence_restart.startup_hold || last_error
+
 /map_storage/proc/finish_player_restoration()
-	if(persistence_save_in_progress || persistence_restart.startup_hold || last_error)
+	if(player_restoration_blocked())
 		return FALSE
 	persistence_player_restore_ready = TRUE
 	for(var/client/C in clients)
