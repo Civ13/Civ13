@@ -373,6 +373,7 @@ var/global/persistence_load_recovery_required = FALSE
 		var/list/saved_round = map_storage.read_round_state()
 		if(transaction && saved_round["generation"] != transaction.expected_generation)
 			throw EXCEPTION("Restart generation changed before import")
+		map_storage.require_durable_world_idle()
 		operation.mutation_started = TRUE
 		map_storage.reset_player_restoration()
 		map_storage.suspend_durable_world()
@@ -392,7 +393,8 @@ var/global/persistence_load_recovery_required = FALSE
 	catch(var/exception/e)
 		map_storage.cleanup_world_operation()
 		try
-			map_storage.reset_player_restoration()
+			if(operation.mutation_started)
+				map_storage.reset_player_restoration()
 		catch(var/exception/reset_error)
 			world.log << "World-save player cleanup failed: [reset_error]"
 		map_storage.last_error = "[e] on [e.file]:[e.line]"

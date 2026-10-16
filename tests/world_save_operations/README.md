@@ -17,3 +17,21 @@ These are isolated native admission regressions, not full-world recovery or
 connected-client acceptance. Existing world-save round trips cover serialization.
 The final callback invokes production player-restoration admission; a dedicated
 control removes the completed-import phase and must detect blocked restoration.
+
+Busy-transition regression uses the exact source-bound production idle helper for
+all four transition predicates. Seeded registry/body/readiness must survive safe
+rejection, with zero backend/ClearMap calls, no recovery hold and a successful
+retry after the transition settles. Legacy imports preserve the no-state no-op.
+Two additional controls move the preflight after mutation marking or restore
+unconditional catch cleanup; both must fail the retained-registry assertion.
+The durable timer suspension body remains an adapter here; its recheck and timer
+ordering require source review, not a claim of full-world timer recovery.
+
+For edits to this existing suite, dispatch CI at the exact candidate head with
+world_save_operation_regressions=true. Verify that the named native step and all
+six controls ran; a skipped pull-request step is not acceptance. Source-only
+preparation does not establish native compilation/runtime or deployment.
+The shared serializer-only stubs keep a no-op idle callback alongside their
+existing no-op metadata suspension. This operation fixture defines
+`WORLD_SAVE_REAL_DURABLE_IDLE` before those stubs and includes the extracted
+production predicate, so its busy/retry and omission controls use the real guard.

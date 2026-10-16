@@ -29,6 +29,18 @@ var/datum/operation_job_adapter/job_master = new
 		text2file("[checks]", "checks.txt")
 		shutdown()
 
+// Synthetic transition flags; the idle predicate itself is production source.
+var/environment_weather_running = FALSE
+/obj/map_metadata
+	var/season_busy = FALSE
+	var/list/season_queue = list()
+/datum/fixture_processes
+	var/datum/operation_lighting_adapter/time_of_day_change = new
+/datum/operation_lighting_adapter
+	var/updating_lighting = FALSE
+/map_storage
+	var/list/durable_state
+
 /map_storage/operation_probe
 	var/entries = 0
 	var/clears = 0
@@ -37,12 +49,15 @@ var/datum/operation_job_adapter/job_master = new
 	var/backend_callback = FALSE
 	var/finish_callback = FALSE
 	var/cleanup_failure = FALSE
+	var/durable_fixture = FALSE
 	var/result = TRUE
 	prepare_saved_dimensions()
 		if(preflight_callback) overlap("preflight")
 		if(mode == "preflight-throw") throw EXCEPTION("expected preflight")
 		return mode != "preflight-false"
 	validate_world_save()
+		last_error = null
+		durable_state = durable_fixture ? list("fixture" = TRUE) : null
 		return TRUE
 	read_round_state()
 		return list("generation" = "probe")
@@ -141,6 +156,40 @@ var/datum/operation_job_adapter/job_master = new
 		check(!ticker.loadmap(), "[fault] rejected")
 		check(!S.clears && !S.entries, "[fault] no mutation")
 		check_idle("[fault] releases admission")
+	// A busy durable transition must reject before resetting the old player registry.
+	map = new
+	for(var/busy in list("season-busy", "season-queue", "weather", "daylight"))
+		S = fresh_probe()
+		S.durable_fixture = TRUE
+		var/mob/living/human/retained = new(locate(1,1,1))
+		retained.persistence_owner_ckey = "retainedowner"
+		var/list/registry = list("retainedowner" = list(retained))
+		persistence_restored_bodies = registry
+		persistence_player_restore_ready = TRUE
+		if(busy == "season-busy") map.season_busy = TRUE
+		if(busy == "season-queue") map.season_queue += "fixture"
+		if(busy == "weather") environment_weather_running = TRUE
+		if(busy == "daylight") processes.time_of_day_change.updating_lighting = TRUE
+		check(!ticker.loadmap(), "[busy]: transition rejected")
+		check(!S.clears && !S.entries, "[busy]: no map or backend mutation")
+		var/list/retained_bodies = persistence_restored_bodies["retainedowner"]
+		check(persistence_restored_bodies == registry && retained_bodies && retained_bodies.len == 1 && retained_bodies[1] == retained && persistence_player_restore_ready, "[busy]: prior player restoration preserved")
+		check_idle("[busy]: rejection releases admission without recovery hold")
+		// last_error is diagnostic until successful validation; no immediate reclaim claim.
+		map.season_busy = FALSE
+		map.season_queue.Cut()
+		environment_weather_running = FALSE
+		processes.time_of_day_change.updating_lighting = FALSE
+		check(ticker.loadmap(), "[busy]: settled transition permits retry")
+		check(S.clears == 1 && S.entries == 1, "[busy]: retry imports once")
+		check_idle("[busy]: retry releases admission")
+	// Legacy imports without durable state retain the original no-op predicate.
+	S = fresh_probe()
+	map.season_busy = TRUE
+	check(ticker.loadmap(), "legacy import ignores unrelated transition")
+	check_idle("legacy import releases admission")
+	map.season_busy = FALSE
+
 	S = fresh_probe()
 	S.mode = "backend-throw"
 	S.cleanup_failure = TRUE

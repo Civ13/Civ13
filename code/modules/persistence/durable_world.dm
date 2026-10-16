@@ -147,10 +147,15 @@
 			for(var/child in params2list(F["[path]/content"])) queue += child
 		if(wanted.len) throw EXCEPTION("Durable metadata references an unreachable world entry")
 
-/map_storage/proc/suspend_durable_world()
+// Read-only rejection before player ownership or timer state is changed.
+/map_storage/proc/require_durable_world_idle()
 	if(!durable_state) return
 	if(map.season_busy || map.season_queue.len || environment_weather_running || (processes.time_of_day_change && processes.time_of_day_change.updating_lighting))
 		throw EXCEPTION("World metadata is transitioning; retry loading after it settles")
+
+/map_storage/proc/suspend_durable_world()
+	if(!durable_state) return
+	require_durable_world_idle()
 	map.durable_timer_queue().cancel_all()
 	map.season_epoch++
 	map.season_loop_scheduled = FALSE
