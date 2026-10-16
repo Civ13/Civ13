@@ -14,6 +14,21 @@ from query import request
 PROTECTED_PORTS = (18459, 18460, 18461, 18462)
 
 
+def listener_identity(port, pid):
+    # CIM initialization can exceed 30 seconds during full-map startup. This
+    # read-only query has its own bounded deadline and still fails closed.
+    ownership = subprocess.run(['powershell', '-NoProfile', '-NonInteractive', '-Command',
+        f"$listeners = @(Get-NetTCPConnection -State Listen -LocalPort {port} -ErrorAction Stop); "
+        f"[ordered]@{{owners=@($listeners | Select-Object -ExpandProperty OwningProcess -Unique); "
+        f"addresses=@($listeners | Select-Object -ExpandProperty LocalAddress -Unique); "
+        f"process_start_utc=(Get-Process -Id {pid}).StartTime.ToUniversalTime().ToString('o')}} | ConvertTo-Json -Compress"],
+        capture_output=True, text=True, check=True, timeout=120)
+    listener = json.loads(ownership.stdout)
+    if set(listener['owners']) != {pid}:
+        raise RuntimeError('Listener is not exclusively owned by the new daemon')
+    return listener
+
+
 @contextmanager
 def owned_daemon(command, **kwargs):
     process = subprocess.Popen(command, **kwargs)
@@ -184,15 +199,7 @@ def run(args):
 
                 initial = poll(lambda s: s['state'] == 1 and not s['restart_hold'], 600, 'startup')
                 # Query response alone cannot establish PID ownership.
-                ownership = subprocess.run(['powershell', '-NoProfile', '-Command',
-                    f"$listeners = @(Get-NetTCPConnection -State Listen -LocalPort {args.port} -ErrorAction Stop); "
-                    f"[ordered]@{{owners=@($listeners | Select-Object -ExpandProperty OwningProcess -Unique); "
-                    f"addresses=@($listeners | Select-Object -ExpandProperty LocalAddress -Unique); "
-                    f"process_start_utc=(Get-Process -Id {process.pid}).StartTime.ToUniversalTime().ToString('o')}} | ConvertTo-Json -Compress"],
-                    capture_output=True, text=True, check=True, timeout=30)
-                listener = json.loads(ownership.stdout)
-                if set(listener['owners']) != {process.pid}:
-                    raise RuntimeError('Listener is not exclusively owned by the new daemon')
+                listener = listener_identity(args.port, process.pid)
                 write_json(root / 'listener.json', listener)
                 for bad_token, action, session in ((('0' * 64 if token != '0' * 64 else '1' * 64), 'status', 'observe'),
                                                     (token, 'start', 'stale-session')):

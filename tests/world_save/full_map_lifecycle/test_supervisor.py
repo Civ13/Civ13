@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 from prepare import BASE, HOOK, instrument_lifecycle, instrument_world, prepare
 from query import request
-from run import compare, diagnostic_failures, owned_daemon, verify_completed_files
+from run import compare, diagnostic_failures, listener_identity, owned_daemon, verify_completed_files
 from replay import replay
 
 
@@ -177,6 +177,22 @@ class Framing(unittest.TestCase):
 
 
 class ProcessAndDiagnosticControls(unittest.TestCase):
+    def test_listener_query_keeps_exclusive_ownership_and_bounded_timeout(self):
+        for owners in ([123], [], [456], [123, 456]):
+            response = subprocess.CompletedProcess([], 0, json.dumps(dict(owners=owners)))
+            with self.subTest(owners=owners), patch('run.subprocess.run', return_value=response) as query:
+                if owners == [123]:
+                    self.assertEqual(listener_identity(18463, 123)['owners'], owners)
+                else:
+                    with self.assertRaises(RuntimeError):
+                        listener_identity(18463, 123)
+                self.assertEqual(query.call_args.kwargs['timeout'], 120)
+                self.assertTrue(query.call_args.kwargs['check'])
+                self.assertIn('-NonInteractive', query.call_args.args[0])
+        with patch('run.subprocess.run', side_effect=subprocess.TimeoutExpired('query', 120)):
+            with self.assertRaises(subprocess.TimeoutExpired):
+                listener_identity(18463, 123)
+
     def test_launch_record_failure_stops_only_new_handle(self):
         class Process:
             stopped = False

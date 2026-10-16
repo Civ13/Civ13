@@ -65,6 +65,11 @@ a process. The test host rejects all player connections and uses native safe
 mode, public exported config with hub/webclient/outbound settings removed, plus
 startup webhook/Tor guards. No live configuration or saves are copied.
 
+The read-only Windows listener ownership query has a separate 120-second
+deadline because its earlier 30-second deadline expired after full-map startup.
+It still requires the listener's sole owner to match the newly launched PID;
+query failure or timeout aborts the run and triggers owned-process cleanup.
+
 Preparation reuses the frozen `build-progress-probe.py` instrumentation and
 helper. `save-progress.jsonl` samples actual serializer progress; diagnostic
 replacement can be partial and never determines save success. Original tick
