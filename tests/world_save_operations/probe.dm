@@ -100,14 +100,17 @@ var/datum/operation_job_adapter/job_master = new
 	ticker = new
 	var/map_storage/operation_probe/S = fresh_probe()
 	// The real wrapper sleeps before calling its backend. Race all public paths.
-	var/save_done = FALSE
+	// spawn copies scalar locals; use a shared list for completion handoff.
+	var/list/save_state = list("done" = FALSE)
 	spawn(0)
 		check(ticker.savemap(), "yielding save succeeds")
-		save_done = TRUE
+		save_state["done"] = TRUE
 	sleep(1)
 	check(persistence_active_operation != null, "save acquired before announcement sleep")
 	S.overlap("announcement sleep")
-	while(!save_done) sleep(1)
+	var/deadline = world.time + 20
+	while(!save_state["done"] && world.time < deadline) sleep(1)
+	check(save_state["done"], "save completion callback returned")
 	check_idle("save completion releases")
 	S.backend_callback = TRUE
 	check(S.Save_World(), "direct save callback completes")
