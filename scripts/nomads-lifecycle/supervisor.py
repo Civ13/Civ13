@@ -256,7 +256,7 @@ class Supervisor:
 
     def stop_saved(self, operation):
         before = self.status()
-        if not before.get('ready') or before.get('busy') or before.get('error'):
+        if not before.get('ready') or before.get('busy') or before.get('error') or before.get('clients') or before.get('restart_hold') or before.get('restart_intent'):
             raise RuntimeError('Current world is not ready for a safe update')
         session = before.get('session', '')
         if len(session) != 32 or any(c not in '0123456789abcdef' for c in session):
@@ -333,10 +333,20 @@ class Supervisor:
             self.state['phase'] = 'ready'
             write_json(self.state_path, self.state)
             self.record('reconciled_ready', revision=self.state['revision'], generation=self.state.get('generation'))
-        if self.state.get('revision') == revision and not force:
+        if self.state:
             status = self.status()
-            self.accept_ready(status, self.state.get('generation'))
-            return
+            # An ordinary admin save temporarily clears ready and replaces the
+            # completion generation. Startup binding is checked above; it must
+            # not be reapplied to later saves of the same running world.
+            if status.get('busy') and not status.get('error') and not status.get('restart_hold'):
+                return
+            self.accept_ready(status, None)
+            if status.get('restart_intent'):
+                raise RuntimeError('Running host has an unconsumed restart intent')
+            if status.get('clients'):
+                return
+            if self.state.get('revision') == revision and not force:
+                return
         build = self.build(revision)  # Compile before requesting any save/shutdown.
         operation = uuid.uuid4().hex
         if self.state:

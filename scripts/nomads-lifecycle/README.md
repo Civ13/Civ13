@@ -4,6 +4,11 @@ Windows supervisor for the native BYOND test server. It fetches the configured
 branch every 300 seconds by default, stages and compiles a separate Europe build,
 then requests the production authenticated save-and-shutdown operation. It never
 pulls into the running directory. An unchanged revision only checks health.
+Ordinary saves defer polling while busy. Once ready, a later ordinary save's
+generation is allowed; the original startup generation remains the recovery
+binding, rather than a permanent restriction on future saves. Errors, holds
+and unconsumed intents still fail closed. Connected players defer updates, and
+client count is checked again immediately before requesting save/shutdown.
 
 The game must implement `nomads_lifecycle=1` status and `save_shutdown`, with a
 32-character lowercase hex token in `config/lifecycle-token.txt`, runtime build

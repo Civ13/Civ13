@@ -343,7 +343,7 @@ equipment, map seeding and round-start hooks. The time-of-day loop is idempotent
 
 Run `run-string-path.py --round-state` with the existing pinned BYOND and saving
 hash arguments. Controls `--round-state-negative-control setup`, `clock`,
-`generation`, `busy`, `tod`, `music-body`, `music-round` and `music-lobby`
+`generation`, `busy`, `tod`, `music-body`, `music-round`, `music-lobby` and `jobs`
 must fail at the named regression assertion, with clean native
 compilation and no unexpected diagnostics. `--prepare-only` generates sources
 and input hashes without compiling or launching; it is source preparation only.
@@ -357,6 +357,17 @@ the engine. Sound transport is injected: normal/restored living Login and active
 round transition stop only channel 1, while a pregame lobby still plays and an
 active round cannot replay it. These adapters do not prove a fresh
 full-game process restart or connected-player acceptance.
+
+The round-state fixture extracts production occupation construction, capacity
+initialization, lookup, fresh-join availability and role assignment procedures,
+using the production Nomad title and capacity defaults. Current disk imports
+and owned legacy restores must admit a fresh Nomad; unowned legacy and pregame
+restores must not initialize active capacity. Existing occupancy and round/world
+state remain intact, disabled/missing/full jobs remain unavailable, and capacity
+initialization is idempotent. The `jobs` control omits both restore initialization
+calls in generated source and must fail `restored Nomad fresh-join gate unavailable`.
+The probe checks the real availability/assignment gates with offline actors;
+it does not create authenticated BYOND accounts or prove connected fresh joining.
 
 Legacy timestamp markers retain compatibility. A successfully loaded legacy
 world with a unique living durable-owned restored human resumes the active

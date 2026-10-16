@@ -25,7 +25,7 @@ def main():
     parser.add_argument('--player-ui-negative-control', choices=('hud', 'registry'))
     parser.add_argument('--player-admission', action='store_true')
     parser.add_argument('--round-state', action='store_true')
-    parser.add_argument('--round-state-negative-control', choices=('setup', 'clock', 'generation', 'busy', 'tod', 'music-body', 'music-round', 'music-lobby'))
+    parser.add_argument('--round-state-negative-control', choices=('setup', 'clock', 'generation', 'busy', 'tod', 'music-body', 'music-round', 'music-lobby', 'jobs'))
     parser.add_argument('--matrix-trace', action='store_true')
     parser.add_argument('--progress', action='store_true')
     parser.add_argument('--progress-fault-stage', choices=('save_entered', 'level_serialized', 'completion_marker'))
@@ -135,6 +135,11 @@ def main():
             if source.count(marker) != 1:
                 raise RuntimeError('Post-preflight import failure anchor changed')
             source = source.replace(marker, marker + '\tif(fixture_round_load_failure) return FALSE\n', 1)
+        if original.name == 'functions.dm' and args.round_state_negative_control == 'jobs':
+            marker = '\t\tjob_master.initialize_position_limits()\n'
+            if source.count(marker) != 2:
+                raise RuntimeError('Restored occupation capacity targets changed')
+            source = source.replace(marker, '')
         if original.name == 'functions.dm' and args.round_state_negative_control == 'clock':
             marker = '\tround_elapsed_offset = state["elapsed"]\n'
             if source.count(marker) != 1:
@@ -410,7 +415,8 @@ def main():
                     'tod': 'round restoration duplicated TOD loop',
                     'music-body': 'body control retained lobby music',
                     'music-round': 'round transition retained lobby music',
-                    'music-lobby': 'active round replayed lobby music'}[args.round_state_negative_control]
+                    'music-lobby': 'active round replayed lobby music',
+                    'jobs': 'restored Nomad fresh-join gate unavailable'}[args.round_state_negative_control]
         failure = read(output / 'failure-name.txt').strip()
         if failure != expected or not actual.startswith('FAIL:'):
             raise RuntimeError(f'Wrong round-state negative failure: {actual!r}, {failure!r}')

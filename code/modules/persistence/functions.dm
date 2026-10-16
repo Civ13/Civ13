@@ -378,6 +378,7 @@ var/global/persistence_save_in_progress = FALSE
 		world.log << "Legacy player save: resuming active phase; historical round ID and duration unavailable."
 		if(!round_start_time) round_start_time = world.time
 		if(!roundstart_time) roundstart_time = world.realtime
+		job_master.initialize_position_limits()
 		round_restored = TRUE
 		target.current_state = GAME_STATE_PLAYING
 		stop_lobby_music()
@@ -400,6 +401,7 @@ var/global/persistence_save_in_progress = FALSE
 	if(round_restored) stop_lobby_music()
 	target.finished = state["state"] == GAME_STATE_FINISHED
 	if(round_restored)
+		job_master.initialize_position_limits()
 		target.minds = list()
 		target.collect_minds()
 		TOD_loop()
