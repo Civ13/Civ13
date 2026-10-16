@@ -95,10 +95,13 @@ class ClientPackageTests(unittest.TestCase):
             package.verify(self.root)
 
     def test_previous_engine_package_rejected(self):
-        self.receipt['engine_head'] = 'ebc7a8289e7aea4ca1d2ed7c6c296ba97706649d'
-        self.write()
-        with self.assertRaisesRegex(ValueError, 'exact-head'):
-            package.verify(self.root)
+        for previous in ('ebc7a8289e7aea4ca1d2ed7c6c296ba97706649d',
+                         '3a20a7876a52513596edf195a75e08459afd4e9a'):
+            with self.subTest(previous=previous):
+                self.receipt['engine_head'] = previous
+                self.write()
+                with self.assertRaisesRegex(ValueError, 'exact-head'):
+                    package.verify(self.root)
 
     def test_wrong_robust_dependency_rejected(self):
         self.receipt['robust_head'] = '0' * 40
@@ -123,10 +126,12 @@ class ClientPackageTests(unittest.TestCase):
             'bridge.dmb': hashlib.sha256(b'fixture').hexdigest(), 'bridge.rsc': None}}
         (native / 'native-observer.json').write_text(json.dumps(manifest), encoding='utf-8')
         package.verify_native(native, native)
-        manifest['source_commit'] = '0' * 40
-        (native / 'native-observer.json').write_text(json.dumps(manifest), encoding='utf-8')
-        with self.assertRaisesRegex(ValueError, 'Unsupported'):
-            package.verify_native(native, native)
+        for wrong in ('0' * 40, '3a20a7876a52513596edf195a75e08459afd4e9a'):
+            with self.subTest(source_commit=wrong):
+                manifest['source_commit'] = wrong
+                (native / 'native-observer.json').write_text(json.dumps(manifest), encoding='utf-8')
+                with self.assertRaisesRegex(ValueError, 'Unsupported'):
+                    package.verify_native(native, native)
         manifest['source_commit'] = package.ENGINE_HEAD
         (native / 'native-observer.json').write_text(json.dumps(manifest), encoding='utf-8')
         (native / 'bridge.rsc').write_bytes(b'unbound')

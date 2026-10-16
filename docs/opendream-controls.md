@@ -140,7 +140,7 @@ must read the logged-in BYOND account and native CID before connecting. Its acco
 display is read-only, and reconnecting must obtain a fresh native observation.
 
 This source candidate requires the complete Windows coherent package from
-OpenDream PR #18 at `3a20a7876a52513596edf195a75e08459afd4e9a`, with its
+OpenDream PR #18 at `483765d2824eb3f315b949c3857856cb887b4aaa`, with its
 exact-commit CI accepted independently. Copy `scripts/opendream/launcher.example.json`
 to the trusted installation's `launcher.json` and replace its absolute paths.
 `client_package` contains both `receipt.json` and `standalone-layout.json`.
@@ -148,6 +148,21 @@ The validator requires those inventories to agree and checks every byte of the
 standalone loader, client/Shared assemblies, WebView, game Resources and pinned
 Robust Resources. Added, missing or altered files reject. A hash receipt binds
 inputs; it is not a signature or independent CI acceptance.
+
+The matching Windows package is artifact `12055151203` from provenance run
+`38919674269` (ZIP SHA256
+`46455902911751ff1a435d4da2be5db3404b7116ca583099425f401a7ddddc1a`).
+Its complete archive and all 740 standalone file hashes/lengths were checked;
+the same run's Linux artifact `12053844736` passed all 742 standalone entries
+(ZIP SHA256 `597b1c76fcf48967ca07808082e5a7763421d455f55236c264a75fa983094b8c`).
+The compiled native helper is artifact `12053888665` from run `38919673987`
+(ZIP SHA256 `86dbf3ca3c3818ea228cf019c70aac372d3060ea81aeb213129463c7638a3b3d`).
+Its manifest binds that same source commit, the checked DM/DME source hashes,
+compiled DMB hash and explicit resource-free RSC absence. Both hosted startup
+logs show sandbox type checking, one normal client Update and graceful exit.
+These are static package and account-free startup checks, not genuine native
+identity, rendering, admission or save acceptance. Artifacts can expire; use
+their recorded immutable identity and refresh availability before retrieval.
 
 The launcher uses `standalone/RobustToolbox/bin/Client/Robust.Client.dll`,
 `standalone/RobustToolbox/Resources`, `standalone/Resources`,
