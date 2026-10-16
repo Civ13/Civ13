@@ -48,11 +48,45 @@ class SupervisorTests(unittest.TestCase):
 
     def test_compile_failure_preserves_current_host(self):
         self.running()
-        with patch.object(self.supervisor, 'candidate', return_value='c' * 40), patch.object(self.supervisor, 'alive', return_value=True), patch.object(self.supervisor, 'build', side_effect=RuntimeError('compile failed')), patch.object(self.supervisor, 'stop_saved') as save, patch.object(self.supervisor, 'start') as start:
+        with patch.object(self.supervisor, 'candidate', return_value='c' * 40), patch.object(self.supervisor, 'alive', return_value=True), patch.object(self.supervisor, 'status', return_value={'ready': 1}), patch.object(self.supervisor, 'build', side_effect=RuntimeError('compile failed')), patch.object(self.supervisor, 'stop_saved') as save, patch.object(self.supervisor, 'start') as start:
             with self.assertRaisesRegex(RuntimeError, 'compile failed'):
                 self.supervisor.cycle()
             save.assert_not_called()
             start.assert_not_called()
+
+    def test_ordinary_save_busy_defers_same_or_new_candidate(self):
+        for revision in ('b' * 40, 'c' * 40):
+            self.running()
+            with self.subTest(revision=revision), patch.object(self.supervisor, 'candidate', return_value=revision), patch.object(self.supervisor, 'alive', return_value=True), patch.object(self.supervisor, 'status', return_value={'ready': 0, 'busy': 1}), patch.object(self.supervisor, 'build') as build, patch.object(self.supervisor, 'stop_saved') as save:
+                self.supervisor.cycle()
+                build.assert_not_called()
+                save.assert_not_called()
+
+    def test_completed_ordinary_save_does_not_rebind_startup_generation(self):
+        self.running()
+        self.supervisor.state['generation'] = 'round-v2:startup'
+        with patch.object(self.supervisor, 'candidate', return_value='b' * 40), patch.object(self.supervisor, 'alive', return_value=True), patch.object(self.supervisor, 'status', return_value={'ready': 1, 'generation': 'round-v2:later-save'}), patch.object(self.supervisor, 'build') as build:
+            self.supervisor.cycle()
+            build.assert_not_called()
+        self.assertEqual(self.supervisor.state['generation'], 'round-v2:startup')
+
+    def test_busy_errors_and_holds_still_fail_closed(self):
+        for override in ({'error': 'save failed'}, {'restart_hold': 1}):
+            self.running()
+            with self.subTest(override=override), patch.object(self.supervisor, 'candidate', return_value='b' * 40), patch.object(self.supervisor, 'alive', return_value=True), patch.object(self.supervisor, 'status', return_value={'ready': 0, 'busy': 1, **override}):
+                with self.assertRaisesRegex(RuntimeError, 'not ready'):
+                    self.supervisor.cycle()
+
+    def test_ready_intent_rejected_and_connected_clients_defer_update(self):
+        for status in ({'ready': 1, 'restart_intent': 1}, {'ready': 1, 'clients': 1}):
+            self.running()
+            with self.subTest(status=status), patch.object(self.supervisor, 'candidate', return_value='c' * 40), patch.object(self.supervisor, 'alive', return_value=True), patch.object(self.supervisor, 'status', return_value=status), patch.object(self.supervisor, 'build') as build:
+                if status.get('restart_intent'):
+                    with self.assertRaisesRegex(RuntimeError, 'unconsumed restart intent'):
+                        self.supervisor.cycle()
+                else:
+                    self.supervisor.cycle()
+                build.assert_not_called()
 
     def test_staging_retains_exact_git_identity_for_catalog_generator(self):
         repository = self.root / 'repository'
@@ -89,7 +123,7 @@ class SupervisorTests(unittest.TestCase):
 
     def test_save_failure_never_starts_replacement(self):
         self.running()
-        with patch.object(self.supervisor, 'candidate', return_value='c' * 40), patch.object(self.supervisor, 'alive', return_value=True), patch.object(self.supervisor, 'build', return_value=self.root), patch.object(self.supervisor, 'stop_saved', side_effect=RuntimeError('save failed')), patch.object(self.supervisor, 'start') as start:
+        with patch.object(self.supervisor, 'candidate', return_value='c' * 40), patch.object(self.supervisor, 'alive', return_value=True), patch.object(self.supervisor, 'status', return_value={'ready': 1}), patch.object(self.supervisor, 'build', return_value=self.root), patch.object(self.supervisor, 'stop_saved', side_effect=RuntimeError('save failed')), patch.object(self.supervisor, 'start') as start:
             with self.assertRaisesRegex(RuntimeError, 'save failed'):
                 self.supervisor.cycle()
             start.assert_not_called()
@@ -201,6 +235,13 @@ class SupervisorTests(unittest.TestCase):
         self.running()
         with patch.object(self.supervisor, 'status', return_value={'ready': 1}), patch.object(m, 'query') as query:
             with self.assertRaisesRegex(RuntimeError, 'session challenge'):
+                self.supervisor.stop_saved('d' * 32)
+            query.assert_not_called()
+
+    def test_client_arriving_during_build_prevents_shutdown(self):
+        self.running()
+        with patch.object(self.supervisor, 'status', return_value={'ready': 1, 'clients': 1, 'session': 'e' * 32}), patch.object(m, 'query') as query:
+            with self.assertRaisesRegex(RuntimeError, 'not ready for a safe update'):
                 self.supervisor.stop_saved('d' * 32)
             query.assert_not_called()
 
