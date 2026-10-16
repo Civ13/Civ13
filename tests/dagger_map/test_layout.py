@@ -1,12 +1,13 @@
 """Negative controls use actual serialized DMM and isolated manifest copies."""
 import copy
+import json
 import tempfile
 from pathlib import Path
 import unittest
 from unittest.mock import patch
 
 import build_map
-from validate_map import parse_dmm, validate
+from validate_map import check_arrivals, parse_dmm, rectangle, validate
 
 
 class LayoutTests(unittest.TestCase):
@@ -26,9 +27,15 @@ class LayoutTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, message):
             validate(self.layout, build_map.render_dmm(grid))
 
+    def local_world(self, point):
+        slot = next(s for s in self.layout["slots"] if s["id"] == self.layout["prototype"]["slot"])
+        x, y, z = slot["origin"]
+        return x + point[0], y + point[1], z
+
     def test_generated_and_checked_in_artifacts(self):
         self.assertEqual(validate(self.layout, self.dmm)["raid_berths"], 2)
         self.assertEqual(build_map.MAP_PATH.read_text(encoding="utf-8"), self.dmm)
+        self.assertEqual(json.loads(build_map.LAYOUT_PATH.read_text(encoding="utf-8")), self.layout)
 
     def test_unresolved_dmm_constants_even_in_source_palette(self):
         original = build_map.PALETTE["gate"]
@@ -38,14 +45,12 @@ class LayoutTests(unittest.TestCase):
                 with patch.dict(build_map.PALETTE, {"gate": bad_gate}):
                     with self.assertRaisesRegex(ValueError, "literal values"):
                         parse_dmm(build_map.render_dmm(self.grid), self.layout["world"])
-        import json
-        self.assertEqual(json.loads(build_map.LAYOUT_PATH.read_text(encoding="utf-8")), self.layout)
 
     def test_coordinate_orientation(self):
         grid = parse_dmm(self.dmm, self.layout["world"])
-        self.assertEqual(grid[27, 44, 1][0], "gate")
-        self.assertEqual(grid[20, 50, 1][0], "door")
-        self.assertEqual(grid[54, 62, 2][0], "platform")
+        self.assertEqual(grid[self.local_world(self.layout["protected"]["boundary_gates"][0])][0], "gate")
+        self.assertEqual(grid[self.local_world(self.layout["exposed"]["boarding_ports"][0])][0], "door")
+        self.assertEqual(grid[tuple(self.layout["slots"][2]["platform_anchors"][0])][0], "platform")
 
     def test_duplicate_berth_identity(self):
         self.reject_layout(lambda x: x["slots"][3].update(id="raid_west"), "duplicate slot ID")
@@ -80,57 +85,105 @@ class LayoutTests(unittest.TestCase):
         self.reject_layout(lambda x: x.update(reservation_groups=[]), "whole-pair reservation")
 
     def test_padded_reservation_overlap(self):
-        self.reject_layout(lambda x: x["slots"][3].update(reserved_bounds=[52, 33, 82, 89]), "padded reservations overlap")
+        self.reject_layout(lambda x: x["slots"][3]["reserved_bounds"].__setitem__(0, x["slots"][2]["reserved_bounds"][2]), "padded reservations overlap")
 
     def test_offset_footprint_does_not_fit(self):
-        self.reject_layout(lambda x: x["slots"][3].update(origin=[70, 36, 2]), "does not fit")
+        self.reject_layout(lambda x: x["slots"][3]["origin"].__setitem__(0, x["world"]["width"]), "does not fit")
 
     def test_world_bounds(self):
-        self.reject_layout(lambda x: x["slots"][3].update(reserved_bounds=[62, 33, 129, 89]), "out of bounds")
+        self.reject_layout(lambda x: x["slots"][3]["reserved_bounds"].__setitem__(2, x["world"]["width"] + 1), "out of bounds")
 
     def test_berth_mask_gap(self):
         def mutate(layout):
-            layout["slots"][2]["berth_mask_rows_south_to_north"][0] = "0" + "1" * 14
+            rows = layout["slots"][2]["berth_mask_rows_south_to_north"]
+            rows[0] = "0" + rows[0][1:]
         self.reject_layout(mutate, "berth mask gaps")
 
     def test_bridge_mask_gap(self):
         self.reject_layout(lambda x: x["slots"][2]["bridge_cells"].pop(), "bridge mask gaps")
 
     def test_platform_anchor_offset(self):
-        self.reject_layout(lambda x: x["slots"][2]["platform_anchors"][0].__setitem__(0, 55), "anchor offset")
+        self.reject_layout(lambda x: x["slots"][2]["platform_anchors"][0].__setitem__(0, 1), "anchor offset")
 
     def test_actual_empty_destination_cells(self):
-        for coordinate in ((84, 24, 1), (36, 36, 2), (79, 86, 2)):
+        for coordinate in (tuple(s["origin"]) for s in self.layout["slots"][1:]):
             with self.subTest(coordinate=coordinate):
                 self.reject_tile(coordinate, "crate", "destination DMM is occupied")
 
     def test_actual_bridge_blocked(self):
-        self.reject_tile((52, 62, 2), "hull", "blocked anchor bridge")
+        shared = {(x, y, access["z"]) for access in self.layout["shared_access"] for x, y in rectangle(access["bounds"])}
+        for raid in self.layout["slots"][2:]:
+            # Include the outside edge of the entire three-wide boarding band.
+            bridge = next(p for p in raid["bridge_cells"] if tuple(p) not in shared)
+            self.reject_tile(tuple(bridge), "hull", "blocked anchor bridge")
 
     def test_unsafe_boarding_declaration(self):
         self.reject_layout(lambda x: x["exposed"]["boarding_ports"].append([0, 10]), "boarding ports")
 
     def test_actual_protected_exterior_open(self):
-        self.reject_tile((20, 34, 1), "door", "protected exterior is open")
+        self.reject_tile(self.local_world([0, 10]), "door", "protected exterior is open")
 
     def test_actual_gate_bypass(self):
-        self.reject_tile((26, 44, 1), "floor", "bypasses boundary gate")
+        gate = self.layout["protected"]["boundary_gates"][0]
+        self.reject_tile(self.local_world([gate[0] - 1, gate[1]]), "floor", "bypasses boundary gate")
 
     def test_actual_gate_removed(self):
-        self.reject_tile((27, 44, 1), "floor", "missing boundary gate")
+        self.reject_tile(self.local_world(self.layout["protected"]["boundary_gates"][0]), "floor", "exactly two single door")
+
+    def test_safe_compartment_sustenance_declaration(self):
+        mutations = {"nutrition": "drain", "hydration": "drain", "cap": "unbounded", "rate": 1,
+                     "requires_actual_occupancy": False, "requires_party_authorization": False,
+                     "suppresses_ordinary_drain": False, "single_metabolism_update": False,
+                     "resume_ordinary_on_exit": False, "enforced_by_this_map": True}
+        for field, value in mutations.items():
+            with self.subTest(field=field):
+                self.reject_layout(lambda x: x["protected"]["sustenance"].update({field: value}), "sustenance")
+
+    def test_airlock_declarations_and_empty_interior(self):
+        for field, value in (("interlocked", False), ("authorize_from_either_side", False),
+                             ("enforced_by_this_map", True), ("safe_egress_policy", "invented"),
+                             ("policy", "everyone")):
+            with self.subTest(field=field):
+                self.reject_layout(lambda x: x["protected"]["airlock"].update({field: value}), "airlock authorization")
+        point = self.layout["protected"]["airlock"]["interior_bounds"][:2]
+        self.reject_tile(self.local_world(point), "crate", "airlock interior must be empty")
+
+    def test_inner_airlock_bypass(self):
+        door = self.layout["protected"]["airlock"]["inner_door"]
+        self.reject_tile(self.local_world([door[0] + 1, door[1]]), "safe", "closed airlock door")
+
+    def test_sustenance_excludes_airlock(self):
+        self.reject_layout(lambda x: x["protected"]["sustenance"].update(bounds=x["protected"]["bounds"]), "outside sustenance zone")
+
+    def test_shared_access_exclusion_encroachment(self):
+        self.reject_layout(lambda x: x["shared_access"][0]["bounds"].__setitem__(0, x["slots"][2]["reserved_bounds"][2]), "encroaches reservation exclusion")
+
+    def test_build_pads_do_not_occupy_main_routes(self):
+        self.reject_layout(lambda x: x["build_pads"][0].update(bounds=x["keep_clear"][0]["bounds"]), "build pads overlap main routes")
+
+    def test_actual_dmm_two_arrival_routing_negative_control(self):
+        parsed = parse_dmm(self.dmm, self.layout["world"])
+        footprint = rectangle(self.layout["footprint"]["bounds"])
+        actual = {p: parsed[self.local_world(p)][0] for p in footprint}
+        ports = {tuple(p) for p in self.layout["exposed"]["boarding_ports"]}
+        check_arrivals(self.layout, parsed, actual, ports)
+        # Both source trains are composed with every real boarding cell blocked.
+        blocked = {p: ("hull" if p in ports else kind) for p, kind in actual.items()}
+        with self.assertRaisesRegex(ValueError, "simultaneous arrivals cannot route"):
+            check_arrivals(self.layout, parsed, blocked, ports)
 
     def test_actual_anchor_and_pad_access(self):
-        self.reject_tile((27, 54, 1), "hull", "unreachable anchor")
-        self.reject_tile((22, 52, 1), "hull", "blocked build pad")
+        self.reject_tile(self.local_world(self.layout["anchors"]["workshop"]), "hull", "unreachable anchor")
+        self.reject_tile(self.local_world(self.layout["build_pads"][0]["bounds"][:2]), "hull", "blocked build pad")
 
     def test_unreachable_room(self):
-        self.reject_tile((25, 28, 1), "hull", "disconnected internal floor")
+        self.reject_layout(lambda x: x["rooms"][0].update(bounds=[0, 0, 0, 0]), "unreachable room")
 
     def test_malformed_dmm_keys_and_rows(self):
         with self.assertRaisesRegex(ValueError, "mixed DMM key lengths"):
             validate(self.layout, self.dmm.replace('"aa" =', '"aaa" =', 1))
         lines = self.dmm.splitlines()
-        index = next(i for i, line in enumerate(lines) if len(line) == 256 and line.isalpha())
+        index = next(i for i, line in enumerate(lines) if len(line) == self.layout["world"]["width"] * 2 and line.isalpha())
         lines[index] = lines[index][:-2]
         with self.assertRaisesRegex(ValueError, "DMM row width"):
             validate(self.layout, "\n".join(lines) + "\n")

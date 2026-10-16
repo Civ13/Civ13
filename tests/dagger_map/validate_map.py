@@ -88,6 +88,28 @@ def flood(start, passable):
     return visited
 
 
+def check_arrivals(layout, grid, actual, ports):
+    """Overlay both trains onto parsed empty destinations for route analysis."""
+    raids = [s for s in layout["slots"] if s["kind"] == "raid_berth"]
+    for raid_z in {s["origin"][2] for s in raids}:
+        composition = {(x, y): kind for (x, y, zz), (kind, area) in grid.items() if zz == raid_z}
+        for arrival in raids:
+            ax, ay, az = arrival["origin"]
+            if az == raid_z:
+                composition.update({(ax + x, ay + y): kind for (x, y), kind in actual.items()})
+        composed_passable = {p for p, kind in composition.items() if source.PALETTE[kind][2]}
+        shared_cells = set().union(*(rectangle(a["bounds"]) for a in layout["shared_access"] if a["z"] == raid_z))
+        require(bool(shared_cells), "missing shared arrival access")
+        shared_reachable = flood([next(iter(shared_cells))], composed_passable)
+        require(shared_cells <= shared_reachable, "simultaneous arrivals disconnect shared platform")
+        for arrival in raids:
+            ax, ay, az = arrival["origin"]
+            if az != raid_z:
+                continue
+            require({(ax + x, ay + y) for x, y in ports} <= shared_reachable, "simultaneous arrivals cannot route to platform")
+            require(all((ax + p[0], ay + p[1]) in shared_reachable for p in layout["anchors"].values()), "simultaneous arrival internal route blocked")
+
+
 def _validate(layout, dmm_text, root):
     require(layout["schema_version"] == 1, "unsupported schema")
     require(layout["coordinates"]["rotation_degrees"] == 0, "unsupported rotation")
@@ -134,40 +156,82 @@ def _validate(layout, dmm_text, root):
             require(all(grid[x, y, z] == ("berth", slot["id"]) for x, y in placed), "destination DMM is occupied or mask has gaps")
     by_id = {s["id"]: s for s in slots}
     require(layout["prototype"]["slot"] in by_id, "missing prototype slot")
+    for access in layout["shared_access"]:
+        access_cells = rectangle(access["bounds"])
+        az = access["z"]
+        require(all(1 <= x <= world["width"] and 1 <= y <= world["height"] for x, y in access_cells), "shared access out of bounds")
+        for rz, reserved in reservations:
+            require(az != rz or not access_cells & reserved, "shared access encroaches reservation exclusion")
+        require(all(source.PALETTE[grid[x, y, az][0]][2] for x, y in access_cells), "shared access blocked")
+    bands = layout["exposed"]["boarding_bands"]
+    band_ports = {(x, y) for lo, hi in bands for y in range(lo, hi + 1) for x in (bounds[0], bounds[2])}
+    require({tuple(p) for p in layout["exposed"]["boarding_ports"]} == band_ports, "boarding ports must cover complete bands")
     for slot in raids:
         ox, oy, z = slot["origin"]
         anchors = slot["platform_anchors"]
         require(len(anchors) == 2 and len({tuple(p) for p in anchors}) == 2, "two distinct platform anchors required")
         side_x = ox + bounds[2] if slot["platform_side"] == "east" else ox + bounds[0]
         require(slot["platform_side"] in ("east", "west"), "invalid platform side")
-        expected_y = {oy + p[1] for p in layout["exposed"]["boarding_ports"]}
+        require(slot["boarding_width"] == 3 and all(hi - lo + 1 == slot["boarding_width"] for lo, hi in bands), "boarding band width")
+        require(slot["platform_gap_tiles"] == 6, "platform gap width")
+        expected_y = {oy + (lo + hi) // 2 for lo, hi in bands}
         require({a[1] for a in anchors} == expected_y, "platform anchors miss boarding ports")
         expected_bridges = set()
         for ax, ay, az in anchors:
-            require(az == z and ax == side_x + (4 if slot["platform_side"] == "east" else -4), "platform anchor offset")
+            offset = slot["platform_gap_tiles"] + 1
+            require(az == z and ax == side_x + (offset if slot["platform_side"] == "east" else -offset), "platform anchor offset")
             require(grid.get((ax, ay, az), (None,))[0] == "platform", "platform anchor missing from DMM")
-            bridge = {(x, ay) for x in range(min(ax, side_x) + 1, max(ax, side_x))}
-            expected_bridges.update((x, y, z) for x, y in bridge | {(ax, ay)})
+            xs = range(side_x + 1, ax + 1) if ax > side_x else range(ax, side_x)
+            bridge = {(x, y) for x in xs for y in range(ay - 1, ay + 2)}
+            expected_bridges.update((x, y, z) for x, y in bridge)
             require(all(source.PALETTE[grid[x, y, z][0]][2] for x, y in bridge), "blocked anchor bridge")
             for other_z, other in placed_masks:
-                require(z != other_z or not (bridge | {(ax, ay)}) & other, "anchor bridge overlaps train mask")
+                require(z != other_z or not bridge & other, "anchor bridge overlaps train mask")
         require(len(slot["bridge_cells"]) == len(expected_bridges) and {tuple(p) for p in slot["bridge_cells"]} == expected_bridges, "bridge mask gaps or offset")
     slot = by_id[layout["prototype"]["slot"]]
     ox, oy, z = slot["origin"]
     actual = {p: grid[ox + p[0], oy + p[1], z][0] for p in footprint}
     passable = {p for p, kind in actual.items() if source.PALETTE[kind][2]}
     protected = rectangle(layout["protected"]["bounds"])
+    require(layout["protected"]["region_id"] == "dagger_party_safe_compartment", "safe compartment identity")
+    sustenance = layout["protected"]["sustenance"]
+    for field in ("nutrition", "hydration"):
+        require(sustenance[field] == "passive_increase", "sustenance must passively increase nutrition and hydration")
+    require(sustenance["cap"] == "normal_healthy_limits" and sustenance["rate"] is None, "sustenance healthy cap and unspecified rate required")
+    for field in ("requires_actual_occupancy", "requires_party_authorization", "suppresses_ordinary_drain", "single_metabolism_update", "resume_ordinary_on_exit"):
+        require(sustenance[field] is True, f"sustenance requires {field}")
+    require(sustenance["enforced_by_this_map"] is False and layout["protected"]["while_raid_docked"] is True, "sustenance declaration must apply docked without runtime claim")
+    eligible = rectangle(sustenance["bounds"])
+    require(eligible <= protected, "sustenance bounds outside protected region")
+    airlock = layout["protected"]["airlock"]
+    vestibule = rectangle(airlock["bounds"])
+    interior = rectangle(airlock["interior_bounds"])
+    ix0, iy0, ix1, iy1 = airlock["interior_bounds"]
+    require(ix1 - ix0 + 1 == 4 and iy1 - iy0 + 1 == 5, "airlock interior must be four by five")
+    inner, outer = tuple(airlock["inner_door"]), tuple(airlock["outer_door"])
+    require(len(interior) == 20 and interior <= vestibule <= protected and not vestibule & eligible, "airlock must have twenty interior tiles outside sustenance zone")
+    require(inner != outer and inner in vestibule and outer in vestibule, "airlock distinct single doors required")
+    require(actual[inner] == "inner_gate" and actual[outer] == "gate"
+            and {p for p, kind in actual.items() if kind in ("gate", "inner_gate")} == {inner, outer}, "airlock requires exactly two single door atoms")
+    require(all(actual[p] == "safe" for p in interior), "airlock interior must be empty safe floor")
+    require(airlock["policy"] == "owning_party_only" and airlock["interlocked"] is True
+            and airlock["authorize_from_either_side"] is True and airlock["enforced_by_this_map"] is False
+            and airlock["safe_egress_policy"] is None, "airlock authorization/interlock declaration or unresolved egress mismatch")
     exposed = rectangle(layout["exposed"]["bounds"])
     require(not protected & exposed and protected | exposed == footprint, "protected/exposed partition")
     gates = {tuple(p) for p in layout["protected"]["boundary_gates"]}
     ports = {tuple(p) for p in layout["exposed"]["boarding_ports"]}
     require(gates and gates <= protected and all(actual[p] == "gate" for p in gates), "missing boundary gate")
+    require(gates == {outer}, "outer airlock door must be the sole protected boundary gate")
     require(ports <= exposed and not ports & protected and all(actual[p] == "door" for p in ports), "unsafe boarding ports")
     edge = {p for p in footprint if any(q not in footprint for q in ((p[0]-1,p[1]), (p[0]+1,p[1]), (p[0],p[1]-1), (p[0],p[1]+1)))}
     require(not edge & protected & passable, "protected exterior is open")
-    reachable = flood(ports, passable)
+    reachable = flood([min(ports)], passable)
     require(passable <= reachable, "disconnected internal floor")
     require(not flood(exposed & passable, passable - gates) & protected, "route bypasses boundary gate")
+    require(interior <= reachable, "airlock interior unreachable")
+    for door in (inner, outer):
+        require(not flood(exposed & passable, passable - {door}) & eligible, "closed airlock door does not separate eligible compartment")
     for p in layout["anchors"].values():
         require(tuple(p) in reachable, "unreachable anchor")
     for room in layout["rooms"]:
@@ -176,6 +240,12 @@ def _validate(layout, dmm_text, root):
         require(bool(room_cells & reachable), "unreachable room")
     for pad in layout["build_pads"] + layout["keep_clear"]:
         require(rectangle(pad["bounds"]) <= reachable, "blocked build pad or keep-clear route")
+    occupied_pads = set().union(*(rectangle(pad["bounds"]) for pad in layout["build_pads"]))
+    clear_routes = set().union(*(rectangle(route["bounds"]) for route in layout["keep_clear"]))
+    require(not occupied_pads & clear_routes, "build pads overlap main routes")
+    remaining = flood([min(ports)], passable - occupied_pads)
+    require(ports | clear_routes <= remaining and all(tuple(p) in remaining for p in layout["anchors"].values()), "occupied build pads cut main routes")
+    check_arrivals(layout, grid, actual, ports)
     include = (Path(root) / "civ13.dme").read_text(encoding="utf-8")
     require(not re.search(r'^\s*#include\s+[^\n]*dagger_train_home', include, re.M | re.I), "draft map registered in civ13.dme")
     expected_grid, expected_layout = source.build()

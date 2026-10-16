@@ -1,16 +1,20 @@
-# Dagger train home: first map draft
+# Dagger train home: enlarged map draft
 
 This is an **inactive map study**, with editable DMM output and a declarative
 layout manifest. It is not selectable, does not load player saves, and adds no
 shuttle controller or transport callback. The prototype is original Civ13
 geometry using existing Civ13 turf and furniture types.
 
+Revision 2 supersedes the smaller diagram and renders at `69161d0ae`. Both train
+dimensions and both staging dimensions are doubled. The world still has two
+levels; this changes the WIP source only and allocates no live instances.
+
 ![Source layout diagram, not gameplay](images/dagger-train-map-preview.png)
 
 ## Layout
 
-The train occupies a fixed **15 x 51 tile** rectangle, facing north. A three-tile
-central passage links its carriages. One **128 x 128 x 2** staging map contains
+The train occupies a fixed **30 x 102 tile** rectangle, facing north. A four-tile
+central passage links its main work areas. One **256 x 256 x 2** staging map contains
 the prototype at a western home slot on z1, an empty eastern home slot, and two
 empty raid berths on z2. Both z-levels have equal dimensions. The two home slots
 demonstrate isolation and reuse requirements; they do **not** establish a
@@ -18,27 +22,73 @@ production train, crew, bed, or party-size cap.
 
 | Local space | Purpose | Required protection |
 | --- | --- | --- |
-| Rear compartment, y0..20 | Crew bunks, mess/wash nook, party stores and quiet repair nook | Owning party only, including while raid-docked |
-| Centre carriage, y22..37 | Two 3 x 5 build pads, salvage racks, anvil/work surface and boarding cross passages | Exposed to boarding and looting |
-| Forward cabin, y39..49 | Utility stores and proposed helm position | Exposed |
+| Rear rooms, y0..38 | Bunks, gear lockers, party stores, mess/kitchen counter, wash stalls, treatment and repair rooms | Owning party only, including while raid-docked |
+| Airlock, x12..17/y39..45 | A 4 x 5 vestibule between two distinct door placeholders | Party-only entry from either side; two-door interlock required |
+| Centre carriage, y46..77 | Receiving stores, two 9 x 10 build pads, crafting/sorting benches and boarding cross passages | Exposed to boarding and looting |
+| Forward rooms, y80..100 | Separate utility maintenance, spare-parts storage and helm cabin | Exposed |
 
-The layout gives stored gear, sleeping space, basic repair and dining separate
-rooms. Larger construction is placed in the exposed carriage. Four side ports
-at local y26 and y35 support two approaches on either side; each raid berth has
-two boarding links to the common platform. Build pads sit outside the central
-passage and both boarding cross passages. Worn floor patches and displaced
-station cargo suggest a repaired, scavenged train rather than a pristine base.
+The interior is redesigned with fourteen distinct room/working zones instead of
+enlarging the old furniture. Six crew bunks have individual gear storage; two
+treatment beds are separate from sleeping and eating spaces. Wash stalls have
+privacy doors. Receiving stores, workbenches, large build bays and forward spare
+stores support different activities. Bunk and furniture counts are not crew caps.
+
+Four three-tile side openings at local y52..54 and y68..70 support two approaches
+on either side. Each raid berth has two 7 x 3 boarding links to a sixteen-tile
+shared platform. Both 9 x 10 build pads sit outside the four-tile spine and both
+boarding cross passages, which remain connected with the pads fully occupied.
+Worn floor patches and displaced station cargo suggest a repaired, scavenged
+train rather than a pristine base.
 The draft does not grant free production resources or decide starter inventory:
 these are prototype furniture placements, not an accepted economy loadout.
 
-The protected compartment has no exterior door. Its single gate is local
-`(7,20)`. A closed-gate static route check must separate exposed and protected
-floor. **The ordinary locked door in the DMM is only a visible boundary marker.**
-It is not party authorization, invulnerability, or an accepted lock mechanic.
+The protected compartment has no exterior boarding door. Its only entry passes
+through the airlock: inner door `(14,39)`, outer door `(15,45)`, and clear interior
+x13..16/y40..44. Closing either door must statically separate the safe rooms from
+the exposed carriage. **Both ordinary locked doors are visible placeholders.**
+They do not enforce party authorization, interlocking or invulnerability.
 Runtime protection must cover entry, remote interactions, projectiles, damage,
 contents, construction and other relevant paths, with the party check unchanged
 when docked. The map must remain inactive until those contracts are implemented.
 The player's confirmed protected-compartment rule is independent of Enginefall.
+
+The boundary is interpreted as the protected safe compartment to the exposed
+train section. The required airlock permits only party members to enter from
+either side and must never have both doors open. Runtime work must cover cycling,
+forced entry, bypass and occupancy. Safe egress after membership changes or
+disconnect remains an unresolved policy decision; this map chooses no trapping
+or forced-ejection behavior.
+
+The manifest's `dagger_party_safe_compartment` marker and sustenance bounds
+x0..29/y0..38 identify the safe rooms separately from the vestibule. While an
+authorized party member actually occupies those rooms, nutrition and hydration
+must passively increase up to normal healthy caps instead of ordinary drain,
+including when raid-docked. No rate has been chosen. The mechanics owner must
+apply this once per metabolism update, prevent overflow/double application and
+resume ordinary behavior on exit. These are declarative markers and requirements;
+no shared metabolism code is changed or runtime recovery claimed.
+
+## Size and resource implications
+
+| Measure | Superseded draft | Enlarged draft |
+| --- | ---: | ---: |
+| Train dimensions | 15 x 51 | 30 x 102 |
+| Full footprint tiles per train | 765 | 3,060 |
+| Staging dimensions | 128 x 128 x 2 | 256 x 256 x 2 |
+| Staging turfs | 32,768 | 131,072 |
+| Padded reservation per slot | 21 x 57 = 1,197 | 42 x 114 = 4,788 |
+| Clear build pad tiles | 30 | 180 |
+| Placed object entries on prototype | 42 | 267 |
+| Placed object entries in staging map | 54 | 291 |
+
+Both footprint and staging tile counts are four times larger. Object entries
+include furniture, doors and decals; they are source placements, not measured
+live atom counts. Transport mask checks and any full-footprint saves now have
+3,060 candidate tiles per train instead of 765. More furnishings may increase
+constructor, save and interaction work. Actual RAM, timing and saved byte growth
+have not been measured and cannot be inferred as exactly fourfold. Runtime
+allocation still needs bounded active slots, reuse and quotas; the demonstration
+neither adds z-levels nor sets a production party limit.
 
 ## Files and coordinate contract
 
@@ -59,17 +109,23 @@ the hull and the filled corners around coupling passages.
 
 | Slot ID | World origin | Inclusive reservation on that z |
 | --- | --- | --- |
-| `home_west` | (20,24,1) | x17..37, y21..77 |
-| `home_east` | (84,24,1) | x81..101, y21..77 |
-| `raid_west` | (36,36,2) | x33..53, y33..89 |
-| `raid_east` | (65,36,2) | x62..82, y33..89 |
+| `home_west` | (40,48,1) | x34..75, y42..155 |
+| `home_east` | (168,48,1) | x162..203, y42..155 |
+| `raid_west` | (72,72,2) | x66..107, y66..179 |
+| `raid_east` | (130,72,2) | x124..165, y66..179 |
 
 Each named slot supplies its own berth mask and anchor. The two raid reservation
-rectangles are disjoint, as are their translated 15 x 51 arrival footprints.
-Their exposed sides face the shared x54..61 platform. Bridge cells are world
+rectangles are disjoint, as are their translated 30 x 102 arrival footprints.
+Their exposed sides face the shared x108..123 platform. Bridge cells are world
 triples outside the arrival masks; the destination floor is empty of furniture
 and actors in the draft. Two arrivals can geometrically fit at once. That is
 not evidence that concurrent loading or travel is safe.
+
+Shared platform/concourse exclusions remain outside every train reservation.
+Both arrival masks are empty before loading. Static composition places both
+complete trains in their berths and checks connected platform access at every
+declared boarding tile. Neither train's footprint or claimed padding may take
+the other berth or the common access space.
 
 `berth_geometry_groups.raid_pair_v1` links `raid_west` and `raid_east` for
 cross-berth geometry validation only. **Each train/party atomically reserves
@@ -128,9 +184,11 @@ py -3 -m unittest discover -s tests/dagger_map -p "test_*.py" -v
 ```
 
 The source preview additionally requires Pillow. Static checks cover encoded
-DMM dimensions, tile definitions, deterministic output, disjoint slot masks,
-empty arrival footprints, declared routes, protected boundary topology and
-inactive integration. Deliberately overlapping or obstructing data must be
+DMM dimensions, literal tile overrides, deterministic output, disjoint slot masks,
+empty arrival footprints, shared-space exclusions, both trains placed together,
+full-width boarding routes, occupied build pads, airlock topology and inactive
+integration. They also enforce the declared sustenance/airlock requirement flags
+without simulating their future runtime behavior. Overlapping or obstructing data must be
 rejected. These checks do not execute DM, constructors, doors, party checks,
 crafting, saves, movement or transactions.
 
@@ -143,7 +201,9 @@ Native acceptance belongs to the separate mechanics/persistence work: two
 different crews, simultaneous arrivals, occupied destination rejection before
 construction, unrelated contents preserved, repeated home/raid return with
 unchanged train/contents identity, protected-compartment access and damage while
-docked, interrupted movement and save recovery, quota exhaustion and safe reuse.
+docked, interlocked airlock cycling/unauthorized entry/safe egress, nutrition and
+hydration entry/exit/cap/double-tick behavior, interrupted movement and save
+recovery, quota exhaustion and safe reuse.
 This draft supplies the geometry for those checks, not their implementation.
 
 ## Inspiration
