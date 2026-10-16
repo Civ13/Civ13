@@ -134,6 +134,38 @@ class SupervisorTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'generation mismatch'):
             m.snapshot(source, self.root / 'backup')
 
+    def test_native_crlf_text_identity_preserves_raw_backup_hashes(self):
+        source = self.generation()
+        metadata = b'NOMADS_EUROPE\n5000\n'
+        round_text = (source / 'round.json').read_bytes() + b'\n'
+        intent_path = source / 'restart_intent.json'
+        intent = json.loads(intent_path.read_text())
+        # BYOND's published identity hashes file2text(), not on-disk CRLF bytes.
+        import hashlib
+        intent.update(metadata=hashlib.md5(metadata).hexdigest(), round=hashlib.md5(round_text).hexdigest())
+        intent_path.write_text(json.dumps(intent))
+        (source / 'map.txt').write_bytes(metadata.replace(b'\n', b'\r\n'))
+        (source / 'round.json').write_bytes(round_text.replace(b'\n', b'\r\n'))
+        self.assertNotEqual(m.digest(source / 'map.txt', 'md5'), intent['metadata'])
+        self.assertNotEqual(m.digest(source / 'round.json', 'md5'), intent['round'])
+        target = self.root / 'backup'
+        m.snapshot(source, target)
+        receipt = json.loads((target / 'receipt.json').read_text())
+        for name in ('map.txt', 'round.json'):
+            self.assertEqual((target / name).read_bytes(), (source / name).read_bytes())
+            self.assertEqual(receipt['files'][name], m.digest(source / name))
+        # Text-equivalent rewrites still change the independently retained raw
+        # byte receipt. Actual content corruption must fail the text identity.
+        (target / 'map.txt').write_bytes(metadata)
+        self.assertNotEqual(m.digest(target / 'map.txt'), receipt['files']['map.txt'])
+        for name in ('map.txt', 'round.json'):
+            with self.subTest(tampered=name):
+                original = (source / name).read_bytes()
+                (source / name).write_bytes(original + b' ')
+                with self.assertRaisesRegex(RuntimeError, 'metadata mismatch'):
+                    m.validate_generation(source)
+                (source / name).write_bytes(original)
+
     def test_tampered_metadata_rejected(self):
         source = self.generation()
         (source / 'map.txt').write_text('tampered')

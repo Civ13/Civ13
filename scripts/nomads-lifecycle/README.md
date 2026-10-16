@@ -58,6 +58,9 @@ loop is implemented. Preserve newer progress before selecting an older backup.
 
 `events.jsonl` records build revision, process identity, operation and completion
 status; `backups/<operation>/receipt.json` records generation and file SHA-256s.
+Restart text identities follow BYOND `file2text()` CRLF normalization. Backup
+copies and receipts still compare original raw bytes with SHA-256; a
+text-equivalent newline rewrite does not match a retained raw-byte receipt.
 No token is logged. Current tests exercise injected control flow and disk copies,
 not a real DreamDaemon or Windows scheduled task. A successful full-game cycle
 is separate required deployment evidence.

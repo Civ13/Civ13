@@ -29,6 +29,12 @@ def digest(path, algorithm='sha256'):
         return hashlib.file_digest(stream, algorithm).hexdigest()
 
 
+def byond_text_md5(path):
+    # file2text() normalizes native Windows CRLF. Only the transaction's text
+    # identities use this contract; backup receipts retain SHA-256 of raw bytes.
+    return hashlib.md5(Path(path).read_bytes().replace(b'\r\n', b'\n')).hexdigest()
+
+
 def verify_binaries(folder, manifest, revision):
     if manifest.get('revision') != revision or manifest.get('map') != 'NOMADS_EUROPE':
         raise RuntimeError('Staged build identity changed')
@@ -127,7 +133,7 @@ def validate_generation(folder, operation=None, session=None):
         raise RuntimeError('Save/intent generation mismatch')
     if operation is not None and (intent.get('lifecycle_operation') != operation or intent.get('lifecycle_session') != session):
         raise RuntimeError('Saved intent does not belong to the acknowledged lifecycle operation')
-    if intent.get('metadata') != digest(folder / 'map.txt', 'md5') or intent.get('round') != digest(folder / 'round.json', 'md5'):
+    if intent.get('metadata') != byond_text_md5(folder / 'map.txt') or intent.get('round') != byond_text_md5(folder / 'round.json'):
         raise RuntimeError('Restart intent metadata mismatch')
     if state.get('map') != 'NOMADS_EUROPE':
         raise RuntimeError('Saved generation belongs to another map')
