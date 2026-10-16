@@ -90,14 +90,17 @@ if not a.lease_receipt:
     raise SystemExit('Native execution held: reviewed core lease receipt required')
 lease = json.loads(a.lease_receipt.read_text())
 assert lease['head'] == subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip()
-assert datetime.now(timezone.utc) < datetime.fromisoformat(lease['expires_utc'])
+issued = datetime.fromisoformat(lease['issued_utc'])
+expires = datetime.fromisoformat(lease['expires_utc'])
+assert 0 < (expires - issued).total_seconds() <= 90, 'All commands share at most one 90-second lease'
+assert issued <= datetime.now(timezone.utc) < expires
 mode = 'benchmark' if a.benchmark else (a.negative_control or 'parity')
 assert mode in lease['modes'] and a.calls <= lease['max_calls']
 assert a.expected_inputs and json.loads(a.expected_inputs.read_text())['inputs'] == inputs, 'Frozen inputs differ'
 assert a.byond_bin, '--byond-bin required for native execution'
 logs = a.output.with_suffix('.logs')
 logs.mkdir(exist_ok=False)
-budget = Budget()
+budget = Budget((expires - datetime.now(timezone.utc)).total_seconds())
 with tempfile.TemporaryDirectory(prefix='civ13-exclusion-') as temp:
     root = Path(temp)
     (root / 'production.dm').write_text(source)

@@ -57,3 +57,6 @@ the fixture also closes the port and rejects reopening. Sampling cannot prove
 no transient listener between observations; the fixed argv supplies the binding
 constraint. Source-only outputs retain generated inputs and hashes including
 runner/monitor text. Native mode must match a separately reviewed input receipt.
+All five invocations use the same issued/expires UTC receipt with at most 90
+seconds between those timestamps. Each process monitor converts the remaining
+shared window to a monotonic deadline, so later commands cannot reset the budget.

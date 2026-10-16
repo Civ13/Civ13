@@ -59,8 +59,9 @@ def snapshot(process):
     raise RuntimeError('Native resource monitoring currently supports Windows only')
 
 class Budget:
-    def __init__(self):
+    def __init__(self, remaining_lease_seconds):
         self.started = time.monotonic()
+        self.deadline = self.started + min(90, remaining_lease_seconds)
 
     def run(self, command, cwd, receipt, wall_limit=30, diagnostic_file=None):
         if os.name != 'nt':
@@ -85,7 +86,7 @@ class Budget:
             state['aggregate_wall_seconds'] = time.monotonic() - self.started
             if resources['cpu_seconds'] > 40 or resources['peak_working_set'] > 512 * 1024**2:
                 raise RuntimeError('CPU or memory limit')
-            if state['wall_seconds'] > wall_limit or state['aggregate_wall_seconds'] > 90:
+            if state['wall_seconds'] > wall_limit or time.monotonic() > self.deadline:
                 raise RuntimeError('Wall limit')
             if diagnostic_file and diagnostic_file.exists() and DIAGNOSTIC.search(diagnostic_file.read_text(errors='replace')):
                 raise RuntimeError('Engine diagnostic')
