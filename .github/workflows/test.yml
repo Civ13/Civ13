@@ -495,6 +495,28 @@ jobs:
           name: lighting-recovery
           path: ${{ runner.temp }}/lighting-recovery/
           if-no-files-found: error
+      - name: Save/load operation admission regression
+        id: world_save_operations
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save_operations')
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/world-save-operations"
+          export TMPDIR="$RUNNER_TEMP/world-save-operations"
+          python3 tests/world_save_operations/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          for control in admission stale recovery; do
+            python3 tests/world_save_operations/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
+          saving_sha=$(sha256sum code/modules/persistence/saving.dm | cut -d' ' -f1)
+          python3 tests/world_save/run-string-path.py --byond-bin "$PWD/BYOND/byond/bin" --expected-saving-sha256 "$saving_sha"
+          python3 tests/world_save/run-string-path.py --byond-bin "$PWD/BYOND/byond/bin" --expected-saving-sha256 "$saving_sha" --round-state
+        shell: bash
+      - name: Retain save/load operation evidence
+        if: always() && steps.world_save_operations.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: world-save-operations
+          path: ${{ runner.temp }}/world-save-operations/
+          if-no-files-found: error
       - name: Offline world-save round-trip regression
         id: world_save
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.persistence_integration_regressions == true || inputs.world_save_regressions == true

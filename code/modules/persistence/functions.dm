@@ -232,6 +232,83 @@ map_storage
 //////////////////////////////////////////
 
 var/global/persistence_save_in_progress = FALSE
+var/global/datum/persistence_world_operation/persistence_active_operation
+var/global/persistence_load_recovery_required = FALSE
+
+// One admission point for verbs, automatic saves, lifecycle recovery and direct
+// lower-level calls. The identity, not the legacy busy flag, owns release.
+/proc/begin_persistence_operation(map_storage/storage, kind, datum/persistence_restart_transaction/transaction)
+	if(!storage || !(kind in list("save", "load")) || persistence_active_operation || persistence_load_recovery_required || storage.dimension_recovery_required)
+		return null
+	if(transaction && transaction != persistence_restart) return null
+	var/restart_owner = transaction == persistence_restart && transaction
+	if(kind == "save" && persistence_restart.startup_hold) return null
+	if(persistence_save_in_progress && !(restart_owner && persistence_restart.startup_hold)) return null
+	if((persistence_restart.startup_hold || persistence_restart.busy || persistence_restart.exists()) && !restart_owner) return null
+	var/datum/persistence_world_operation/operation = new
+	operation.storage = storage
+	operation.kind = kind
+	persistence_active_operation = operation
+	persistence_save_in_progress = TRUE
+	return operation
+
+/datum/persistence_world_operation
+	should_save = FALSE
+	var/map_storage/storage
+	var/kind
+	var/backend_started = FALSE
+	var/contents_started = FALSE
+	var/mutation_started = FALSE
+	proc/current(map_storage/expected_storage, expected_kind)
+		return persistence_active_operation == src && storage == expected_storage && kind == expected_kind
+	proc/enter_backend(map_storage/expected_storage, expected_kind)
+		if(!current(expected_storage, expected_kind) || backend_started) return FALSE
+		backend_started = TRUE
+		if(kind == "load") mutation_started = TRUE
+		return TRUE
+	proc/enter_contents(map_storage/expected_storage, expected_kind)
+		if(!current(expected_storage, expected_kind) || !backend_started || contents_started) return FALSE
+		contents_started = TRUE
+		return TRUE
+	proc/finish(success)
+		if(persistence_active_operation != src) return FALSE
+		if(!success && kind == "load" && mutation_started)
+			persistence_load_recovery_required = TRUE
+		persistence_active_operation = null
+		persistence_save_in_progress = persistence_load_recovery_required || storage.dimension_recovery_required || persistence_restart.startup_hold
+		return TRUE
+
+// Direct calls acquire their own operation. A wrapper explicitly passes its
+// existing identity; a second backend entry is rejected even with that identity.
+/map_storage/proc/run_world_operation(kind, datum/persistence_world_operation/operation)
+	var/owns_operation = !operation
+	if(owns_operation) operation = begin_persistence_operation(src, kind)
+	if(!operation || !operation.enter_backend(src, kind)) return FALSE
+	var/success = FALSE
+	try
+		if(kind == "save") success = save_world_contents(operation)
+		else success = load_world_contents(operation)
+	catch(var/exception/e)
+		if(owns_operation)
+			cleanup_world_operation()
+			operation.finish(FALSE)
+		throw e
+	if(owns_operation)
+		if(!success) cleanup_world_operation()
+		operation.finish(success)
+	return success
+
+// Cleanup can dispatch subtype code. Keep admission until every attempted
+// cleanup finishes, and contain cleanup exceptions so release still occurs.
+/map_storage/proc/cleanup_world_operation()
+	try
+		clear_bookkeeping()
+	catch(var/exception/e)
+		world.log << "World-save bookkeeping cleanup failed: [e]"
+	try
+		release_durable_world()
+	catch(var/exception/e)
+		world.log << "World-save durable cleanup failed: [e]"
 
 /map_storage
 	var/compiled_maxz = 0
@@ -263,70 +340,65 @@ var/global/persistence_save_in_progress = FALSE
 	return A ? "\ref[A]" : "prospective:[world.area]"
 
 /datum/controller/gameticker/proc/savemap(datum/persistence_restart_transaction/transaction)
-	if (persistence_save_in_progress || persistence_restart.startup_hold || (persistence_restart.busy && transaction != persistence_restart) || (!transaction && persistence_restart.exists()))
-		return 0
-	persistence_save_in_progress = TRUE
-	var/watch = start_watch()
-	to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP! THIS USUALLY TAKES UNDER A MINUTE</B></FONT>")
-	sleep(5)
+	var/datum/persistence_world_operation/operation = begin_persistence_operation(map_storage, "save", transaction)
+	if(!operation) return FALSE
 	try
-		if(!map_storage.Save_World())
+		var/watch = start_watch()
+		to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP! THIS USUALLY TAKES UNDER A MINUTE</B></FONT>")
+		sleep(5)
+		if(!map_storage.run_world_operation("save", operation))
 			throw EXCEPTION("Save_World did not complete")
+		log_startup_progress("	Saved the map in [stop_watch(watch)]s.")
 	catch(var/exception/e)
-		map_storage.clear_bookkeeping()
-		map_storage.release_durable_world()
-		persistence_save_in_progress = FALSE
+		map_storage.cleanup_world_operation()
 		map_storage.last_error = "[e] on [e.file]:[e.line]"
+		operation.finish(FALSE)
 		world.log << "World-save export failed: [map_storage.last_error]"
 		message_admins("EXCEPTION IN MAP SAVING!! [e] on [e.file]:[e.line]")
 		return 0
-	persistence_save_in_progress = FALSE
-	log_startup_progress("	Saved the map in [stop_watch(watch)]s.")
+	operation.finish(TRUE)
 	return 1
 
 /datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction)
-	if(persistence_save_in_progress || ((persistence_restart.startup_hold || persistence_restart.busy || persistence_restart.exists()) && transaction != persistence_restart))
-		return FALSE
-	map_storage.reset_player_restoration()
-	persistence_save_in_progress = TRUE
-	if(!map_storage.prepare_saved_dimensions())
-		persistence_save_in_progress = FALSE
-		return FALSE
-	if(!map_storage.validate_world_save())
-		persistence_save_in_progress = FALSE
-		return FALSE
-	var/watch = start_watch()
-	log_startup_progress("Starting map load...")
+	var/datum/persistence_world_operation/operation = begin_persistence_operation(map_storage, "load", transaction)
+	if(!operation) return FALSE
 	try
+		if(!map_storage.prepare_saved_dimensions() || !map_storage.validate_world_save())
+			operation.finish(FALSE)
+			return FALSE
+		var/watch = start_watch()
+		log_startup_progress("Starting map load...")
 		// Snapshot the validated header before any destructive restoration.
 		var/list/saved_round = map_storage.read_round_state()
 		if(transaction && saved_round["generation"] != transaction.expected_generation)
 			throw EXCEPTION("Restart generation changed before import")
+		operation.mutation_started = TRUE
+		map_storage.reset_player_restoration()
 		map_storage.suspend_durable_world()
 		map_storage.ClearMap()
-		if(!map_storage.Load_World())
-			map_storage.release_durable_world()
-			map_storage.reset_player_restoration()
-			persistence_save_in_progress = FALSE
-			return FALSE
+		if(!map_storage.run_world_operation("load", operation))
+			throw EXCEPTION("Load_World did not complete")
 		if(!map_storage.load_map_metadata())
 			throw EXCEPTION("Saved world metadata restoration failed")
 		map_storage.restore_durable_world()
 		map_storage.restore_round_state(src, saved_round)
+		log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
+		// Client restoration can dispatch callbacks too. Keep this operation's
+		// identity until normal import completion, including those callbacks.
+		if(!transaction) map_storage.finish_player_restoration()
 	catch(var/exception/e)
-		map_storage.clear_bookkeeping()
-		map_storage.release_durable_world()
-		map_storage.reset_player_restoration()
+		map_storage.cleanup_world_operation()
+		try
+			map_storage.reset_player_restoration()
+		catch(var/exception/reset_error)
+			world.log << "World-save player cleanup failed: [reset_error]"
 		map_storage.last_error = "[e] on [e.file]:[e.line]"
+		operation.finish(FALSE)
 		world.log << "World-save import failed: [map_storage.last_error]"
 		message_admins("Import failed during restoration; restart from the original map before retrying: [e]")
-		persistence_save_in_progress = FALSE
 		return FALSE
-	persistence_save_in_progress = FALSE
-	log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
-	// Restart recovery releases its generation-bound hold only after consuming
-	// the intent. Its waiting clients must be reclaimed at that later boundary.
-	if(!transaction) map_storage.finish_player_restoration()
+	operation.finish(TRUE)
+	// Restart recovery reclaims waiting clients after consuming its intent.
 	return 1
 
 // The completion marker and each level carry the same generation nonce. Legacy

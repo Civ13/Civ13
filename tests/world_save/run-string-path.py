@@ -131,7 +131,7 @@ def main():
         original = (fixture / match.group(1)).resolve(strict=True)
         source = original.read_text(encoding='utf-8')
         if original.name == 'loading.dm' and round_state:
-            marker = '/map_storage/proc/Load_World()\n'
+            marker = '/map_storage/proc/load_world_contents(datum/persistence_world_operation/operation)\n\tif(!operation || !operation.enter_contents(src, "load")) return FALSE\n'
             if source.count(marker) != 1:
                 raise RuntimeError('Post-preflight import failure anchor changed')
             source = source.replace(marker, marker + '\tif(fixture_round_load_failure) return FALSE\n', 1)
