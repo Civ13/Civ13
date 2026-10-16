@@ -3,6 +3,49 @@ import hashlib
 import re
 
 
+def occupation_adapter(root):
+    """Keep actual capacity, lookup, assignment and fresh-join gate bodies."""
+    hashes = {}
+
+    def read(name):
+        path = root / name
+        hashes[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+        return path.read_text(encoding='utf-8')
+
+    def proc(source, marker):
+        if source.count(marker) != 1:
+            raise RuntimeError('Occupation fixture marker changed: ' + marker)
+        tail = source[source.index(marker):]
+        match = re.search(r'\n(?=[^\s/]|/(?:datum|mob|proc)/)', tail)
+        return tail[:match.start()] if match else tail
+
+    jobs = read('code/game/jobs/job_controller.dm')
+    base = read('code/game/jobs/job.dm')
+    special = read('code/modules/1713/jobs/_special.dm')
+    civilians = read('code/modules/1713/jobs/civilian.dm')
+    nomads = read('code/modules/1713/jobs/nomads.dm')
+    players = read('code/game/mob/new_player/new_player.dm')
+    # Only declaration fields needed by these procedures; values come from source.
+    declarations = ['/datum/job']
+    for key in ('title', 'faction', 'total_positions', 'current_positions'):
+        line = next(line for line in base.splitlines() if line.startswith('\tvar/' + key + ' ='))
+        declarations.append(line)
+    for key in ('min_positions', 'max_positions'):
+        declarations.append(next(line for line in special.splitlines() if line.startswith('/datum/job/var/' + key + ' =')))
+    declarations += ['/datum/job/civilian', civilians.split('/datum/job/civilian\n', 1)[1].splitlines()[0]]
+    nomad = nomads.split('/datum/job/civilian/civnomad\n', 1)[1].split('/datum/job/civilian/civnomad/equip', 1)[0]
+    declarations.append('/datum/job/civilian/civnomad')
+    for key in ('title', 'min_positions', 'max_positions'):
+        declarations.append(next(line for line in nomad.splitlines() if line.startswith('\t' + key + ' =')))
+    bodies = [proc(jobs, '/datum/controller/occupations/proc/' + name) for name in
+              ('initialize_position_limits()', 'SetupOccupations(var/faction = "Human")',
+               'GetJob(var/rank)', 'AssignRole(var/mob/new_player/player, var/rank, var/latejoin = FALSE)')]
+    bodies = [body.replace('/datum/controller/occupations/', '/datum/fixture_jobs/') for body in bodies]
+    bodies += [proc(base, '/datum/job/proc/is_position_available('),
+               proc(players, '/mob/new_player/proc/IsJobAvailable(')]
+    return '\n'.join(declarations + bodies), hashes
+
+
 def generate(root, control=None):
     path = root / 'code/game/gameticker.dm'
     source = path.read_text(encoding='utf-8')
@@ -53,5 +96,8 @@ def generate(root, control=None):
     tod = tod_source[start:end]
     if control == 'tod':
         tod = tod.replace('\tif(TOD_loop_started) return\n', '', 1)
+    occupations, occupation_hashes = occupation_adapter(root)
+    hashes.update(occupation_hashes)
     return ('#define GAMETICKER_PREGAME_TIME 1\n#define SPAN_NOTICE(text) text\n'
-            + units + '\n' + macro + '\n' + pregame + '\n' + body + '\n' + formatting + '\n' + tod), hashes
+            + units + '\n' + macro + '\n' + pregame + '\n' + body + '\n' + formatting + '\n' + tod
+            + '\n' + occupations), hashes

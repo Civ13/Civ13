@@ -73,6 +73,13 @@ starting extra recurring cycles from the admin command.
 
 ### Player spawning
 
+<!-- 2026-10-16: restored occupation capacity -->
+Active saved-round restoration skips fresh setup/autobalance. Initialize job
+position limits separately via `job_master.initialize_position_limits()` in
+current and owned-legacy restores; do not rerun faction/squad/map setup or reset
+current occupancy. The world-save round-state fixture extracts the actual
+fresh-join availability/assignment gates; its `jobs` omission control must fail.
+
 - Jobs define `spawn_location = "JoinLateXXX"` (a string key).
 - Maps place `/obj/effect/landmark{name = "JoinLateXXX"}` objects in the DMM at spawn turfs.
 - At load time, `/obj/effect/landmark/New()` stores the turf in `latejoin_turfs[name]` (global assoc list), then `qdel(self)`.

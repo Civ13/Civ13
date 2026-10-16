@@ -40,6 +40,18 @@ var/datum/fixture_config/config = new
 	var/maytip
 	var/tip
 var/datum/fixture_jobs/job_master = new
+/datum/fixture_jobs/var/list/occupations = list()
+/mob/new_player/var/datum/fixture_job_mind/mind
+/mob/new_player/var/datum/job/original_job
+/mob/new_player/var/original_job_title
+/mob/new_player/var/desired_job
+/datum/fixture_job_mind
+	var/assigned_role
+	var/datum/job/assigned_job
+/datum/job/civilian/fixture_disabled
+	title = "N/A"
+	min_positions = 9
+	max_positions = 9
 /datum/fixture_jobs/proc/ResetOccupations()
 	fixture_round_reset++
 /datum/controller/gameticker/var/admin_started = FALSE
@@ -56,7 +68,31 @@ var/datum/fixture_jobs/job_master = new
 	if(fixture_admission_restore) map_storage.round_restored = TRUE
 	return TRUE
 
+/proc/check_restored_nomad_admission(mob/new_player/fresh)
+	var/datum/job/nomad = job_master.GetJob("Nomad")
+	check(fresh.IsJobAvailable("Nomad"), "restored Nomad fresh-join gate unavailable")
+	check(nomad.total_positions == 9999, "restored Nomad capacity differs from fresh setup")
+	var/datum/job/disabled = job_master.GetJob("N/A")
+	check(disabled.total_positions == 0, "disabled occupation gained capacity")
+	fresh.mind = new
+	check(job_master.AssignRole(fresh, "Nomad", TRUE), "restored fresh player role assignment failed")
+	check(fresh.original_job == nomad && fresh.mind.assigned_job == nomad && fresh.mind.assigned_role == "Nomad", "fresh player role identity changed")
+	var/current = nomad.current_positions
+	job_master.initialize_position_limits()
+	check(nomad.current_positions == current && fresh.IsJobAvailable("Nomad"), "capacity initialization reset occupancy")
+	nomad.current_positions = nomad.total_positions
+	check(!fresh.IsJobAvailable("Nomad"), "full occupation bypassed fresh-join gate")
+	check(!job_master.AssignRole(fresh, "Nomad", TRUE), "full occupation accepted role assignment")
+	nomad.current_positions = current
+	check(!fresh.IsJobAvailable("unknown job"), "missing occupation bypassed fresh-join gate")
+
 /proc/check_round_state()
+	check(job_master.SetupOccupations(), "occupation construction failed")
+	var/datum/job/nomad = job_master.GetJob("Nomad")
+	check(nomad && nomad.min_positions == 9999 && nomad.max_positions == 9999, "production Nomad declaration changed")
+	nomad.current_positions = 4
+	var/mob/new_player/fresh = new
+	check(!fresh.IsJobAvailable("Nomad"), "uninitialized Nomad control unexpectedly available")
 	check(map_storage.Save_World(), "round probe export failed")
 	var/header = file2text("map_saves/round.json")
 	var/marker = file2text("map_saves/save_complete.txt")
@@ -110,6 +146,8 @@ var/datum/fixture_jobs/job_master = new
 	fdel("map_saves/round.json")
 	text2file(json_encode(state), "map_saves/round.json")
 	check(T.loadmap(), "round-state disk import failed")
+	check(nomad.current_positions == 4, "round restoration reset existing occupancy")
+	check_restored_nomad_admission(fresh)
 	check(!music_test_client.sound_channels["1"] && music_test_client.sound_channels["778"] == "unrelated ambience", "round transition retained lobby music")
 	check(game_id == "durable-round-123" && roundstart_time == 123456, "round identity changed")
 	check(round_start_time == world.time && round_elapsed_offset == 123456, "round clock reset across process")
@@ -122,7 +160,9 @@ var/datum/fixture_jobs/job_master = new
 		if(phase == GAME_STATE_PREGAME)
 			phase_state["elapsed"] = 0
 			phase_state["roundstart_time"] = 0
+			nomad.total_positions = 17
 		map_storage.restore_round_state(T, phase_state)
+		if(phase == GAME_STATE_PREGAME) check(nomad.total_positions == 17, "pregame restore initialized active job capacity")
 		check(T.current_state == phase && T.finished == (phase == GAME_STATE_FINISHED), "saved nonplaying phase lost")
 		if(phase == GAME_STATE_PREGAME) check(!map_storage.round_restored && roundduration2text() == "00:00", "pregame restore started round clock")
 	map_storage.restore_round_state(T, state)
@@ -157,18 +197,22 @@ var/datum/fixture_jobs/job_master = new
 	var/list/owners = persistence_restored_bodies
 	persistence_restored_bodies = list()
 	T.current_state = GAME_STATE_PREGAME
+	job_master.SetupOccupations()
 	map_storage.restore_round_state(T, list())
 	check(T.current_state == GAME_STATE_PREGAME && !map_storage.round_restored, "unowned legacy save resumed")
+	check(!fresh.IsJobAvailable("Nomad"), "unowned legacy initialized job capacity")
 	var/mob/living/human/H = new(locate(2,2,1))
 	H.persistence_restored = TRUE
 	H.persistence_owner_ckey = "testaccount"
 	persistence_restored_bodies["testaccount"] = list(H)
 	map_storage.restore_round_state(T, list())
 	check(T.current_state == GAME_STATE_PLAYING && map_storage.round_restored, "owned legacy save did not resume")
+	check_restored_nomad_admission(fresh)
 	check(game_id == "durable-round-123", "legacy fallback invented historical identity")
 	check_fresh_round_music(T)
 	persistence_restored_bodies = owners
 	qdel(H)
+	qdel(fresh)
 	qdel(paid)
 	map_storage.round_restored = FALSE
 	round_start_time = 0
