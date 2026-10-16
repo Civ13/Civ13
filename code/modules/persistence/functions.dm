@@ -307,8 +307,8 @@ var/global/persistence_load_recovery_required = FALSE
 		world.log << "World-save bookkeeping cleanup failed: [e]"
 	try
 		release_durable_world()
-	catch(var/exception/e)
-		world.log << "World-save durable cleanup failed: [e]"
+	catch(var/exception/durable_error)
+		world.log << "World-save durable cleanup failed: [durable_error]"
 
 /map_storage
 	var/compiled_maxz = 0
