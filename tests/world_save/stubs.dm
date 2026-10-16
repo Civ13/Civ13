@@ -168,6 +168,12 @@ var/list/mutate_on_tick = null
 	return null
 /map_storage/proc/validate_durable_world(list/state, generation)
 	throw EXCEPTION("Unsupported fixture metadata profile")
+#ifndef WORLD_SAVE_REAL_DURABLE_IDLE
+// Serializer-only fixtures omit metadata transitions, like suspension below.
+// The operation probe opts out and includes the production predicate instead.
+/map_storage/proc/require_durable_world_idle()
+	return
+#endif
 /map_storage/proc/suspend_durable_world()
 	return
 /map_storage/proc/restore_durable_world()

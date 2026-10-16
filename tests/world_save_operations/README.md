@@ -31,3 +31,7 @@ For edits to this existing suite, dispatch CI at the exact candidate head with
 world_save_operation_regressions=true. Verify that the named native step and all
 six controls ran; a skipped pull-request step is not acceptance. Source-only
 preparation does not establish native compilation/runtime or deployment.
+The shared serializer-only stubs keep a no-op idle callback alongside their
+existing no-op metadata suspension. This operation fixture defines
+`WORLD_SAVE_REAL_DURABLE_IDLE` before those stubs and includes the extracted
+production predicate, so its busy/retry and omission controls use the real guard.

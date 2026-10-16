@@ -62,6 +62,7 @@ def main():
         (output / target).write_text(source, encoding='utf-8')
     environment = '''#define TRUE 1
 #define FALSE 0
+#define WORLD_SAVE_REAL_DURABLE_IDLE
 #define TICK_CHECK fixture_tick_check()
 #define TICK_LIMIT_TO_RUN 100
 #define EXCEPTION(message) new /exception(message)
