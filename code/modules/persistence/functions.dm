@@ -26,12 +26,15 @@
 	if (partial)
 		to_save |= params2list(map_storage_saved_vars)
 	else
+		var/name_saved = FALSE
 		for (var/key in src.vars)
 			if (persistence_runtime_var(key))
 				continue
 			if (src.vars[key] != initial(src.vars[key]) && key != "verbs" && key != "locs" && key != "group")
 				to_save |= key
-			to_save |= "name"
+			if (!name_saved)
+				to_save |= "name"
+				name_saved = TRUE
 	return to_save
 
 // The composite appearance is not a supported saved datum. Restoring its null

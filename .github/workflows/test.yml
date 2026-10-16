@@ -298,6 +298,22 @@ jobs:
           python3 tests/lighting_queues/run.py --byond-bin "$PWD/BYOND/byond/bin" --size 500 --negative-control retain --output "$RUNNER_TEMP/lighting-retain.json"
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --baseline --output "$RUNNER_TEMP/lighting-baseline.json"
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --compare "$RUNNER_TEMP/lighting-baseline.json" --output "$RUNNER_TEMP/lighting-current.json"
+      - name: Verify saved-variable selection and bounded name work
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/saved_vars_work')
+        shell: bash
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          python3 tests/saved_vars_work/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/saved-vars-parity.json"
+          python3 tests/saved_vars_work/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control order --output "$RUNNER_TEMP/saved-vars-order.json"
+          python3 tests/saved_vars_work/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control exclusion --output "$RUNNER_TEMP/saved-vars-exclusion.json"
+          python3 tests/saved_vars_work/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control repeat --output "$RUNNER_TEMP/saved-vars-repeat.json"
+      - name: Retain saved-variable comparison evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/saved_vars_work'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: saved-vars-comparison
+          path: ${{ runner.temp }}/saved-vars-*
+          if-no-files-found: error
       - name: Verify native wall appearance and neighbor work
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/wall_appearance')
         shell: bash
