@@ -257,6 +257,8 @@
 /turf/floor/dirt/var/datum/soil_recovery_token/soil_recovery_token
 
 /turf/floor/dirt/New()
+	if (building_allocating_z && z == building_allocating_z)
+		return ..()
 	soil_recovery_token = new
 	soil_nutrition_recover() // Starts soil nutrition recover
 	return ..()

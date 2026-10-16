@@ -1,0 +1,435 @@
+{
+  "source_commit": "a24ae39a29f304ef5bec570f4634e4fb279973e6",
+  "writers": [
+    {
+      "path": "code/_helpers/mobs.dm",
+      "owner": "user.",
+      "expression_sha256": "a4a3ba798db67f09e0fe3fb76f5f1028ff8e3046c5af78f30ed9fcf3f29a184d"
+    },
+    {
+      "path": "code/_helpers/mobs.dm",
+      "owner": "target.",
+      "expression_sha256": "076ff91ceead8585c75a19fad99c2d1db656ba8e0bfdc30831b583908d0396e2"
+    },
+    {
+      "path": "code/_onclick/item_attack.dm",
+      "owner": "user.",
+      "expression_sha256": "7ab709ac8bf9e33538eb9117e2e5c9c242dfefb466b79cd1a70d4c9124251d72"
+    },
+    {
+      "path": "code/_onclick/item_attack.dm",
+      "owner": "M.",
+      "expression_sha256": "ccebfef688bc52eae5a412c302fdbef34f5e0c2d171aeea26c0977dbb67105de"
+    },
+    {
+      "path": "code/game/mob/grab.dm",
+      "owner": "affecting.",
+      "expression_sha256": "f08a55f03afffc970b7ce30e5ce0a4f11d13df58f562f3d911dbb668284ce871"
+    },
+    {
+      "path": "code/game/mob/grab.dm",
+      "owner": "assailant.",
+      "expression_sha256": "14ccc7f120ebc4b2e578c5103cc69fd53f6083f38efbbe7cf5bf8c040a378567"
+    },
+    {
+      "path": "code/game/mob/grab.dm",
+      "owner": "affecting.",
+      "expression_sha256": "03cff6ca9fc63e5d53a26da60572de2a1ab2d7ef07547942a10dae82c4a7ee02"
+    },
+    {
+      "path": "code/game/mob/grab.dm",
+      "owner": "assailant.",
+      "expression_sha256": "b41448ab2e93f882b9ed59e602089e2ebbc577cd49ec3a79273ff382b5048297"
+    },
+    {
+      "path": "code/game/mob/living/carbon/carbon.dm",
+      "owner": "M.",
+      "expression_sha256": "67dd777cf2deb55398203ac3fcbe654a0bfd920d78cefb30c3de08db3b17d3e9"
+    },
+    {
+      "path": "code/game/mob/living/carbon/carbon.dm",
+      "owner": "usr.",
+      "expression_sha256": "c8b0e828d8c3d43c6baf917c4721490b094af44272ca7eb916564b6702189cb9"
+    },
+    {
+      "path": "code/game/mob/living/carbon/carbon_defense.dm",
+      "owner": "user.",
+      "expression_sha256": "44aee6a780df86edfe22e570d0f9a6dfa875211307c1687952deacaaf300694e"
+    },
+    {
+      "path": "code/game/mob/living/carbon/carbon_defense.dm",
+      "owner": "",
+      "expression_sha256": "fe1b3576a68d9cf8a20aa472e709303c9f2eb9e645dd1ae239b27ebe112e60c9"
+    },
+    {
+      "path": "code/game/mob/living/carbon/human/human_attackhand.dm",
+      "owner": "H.",
+      "expression_sha256": "4d4d6725a2f5c74b94204d8747baa057dd8ba71f02274692af6c3c1f2caebbc0"
+    },
+    {
+      "path": "code/game/mob/living/carbon/human/human_attackhand.dm",
+      "owner": "",
+      "expression_sha256": "08d2c2c991f771895559426f6cad3fee4ba02eb24c0cb453ae0b4b2bf686308a"
+    },
+    {
+      "path": "code/game/mob/living/carbon/human/human_attackhand.dm",
+      "owner": "M.",
+      "expression_sha256": "9263d69fc23db7e5251b4309a5418fe972982eaa3c72d0fe4bee9bf3e3dd5b3e"
+    },
+    {
+      "path": "code/game/mob/living/carbon/human/human_attackhand.dm",
+      "owner": "",
+      "expression_sha256": "231966b624781a8635506458be5143f484915cd0019b0a2b3932a97e92e6cf6f"
+    },
+    {
+      "path": "code/game/mob/living/carbon/human/human_attackhand.dm",
+      "owner": "user.",
+      "expression_sha256": "7d8bd7725d3129f6ed18a1551bb1bf1666892dec5bd37c837be63db97117d99c"
+    },
+    {
+      "path": "code/game/mob/living/carbon/human/human_attackhand.dm",
+      "owner": "",
+      "expression_sha256": "287f59e364a6257bc6bd8a97a1a81348ac2ab9377f157c783d3a236aa3dff4d0"
+    },
+    {
+      "path": "code/game/mob/living/carbon/human/human_defense.dm",
+      "owner": "",
+      "expression_sha256": "6aeeafdb78f8f4ee758919562fde4924d6e3539a58b0e27a59b2a94ffc7ccbf2"
+    },
+    {
+      "path": "code/game/mob/living/carbon/human/human_defense.dm",
+      "owner": "M.",
+      "expression_sha256": "b8ec80906fb218f2210769a2c1a604fd84205a74ac2e14c7c74762b61a1ad4b3"
+    },
+    {
+      "path": "code/game/mob/living/carbon/human/stripping.dm",
+      "owner": "",
+      "expression_sha256": "073529ffa9a28e1487d51d891a17fa8651a597dcad0bf5e1e22695b23f94b35e"
+    },
+    {
+      "path": "code/game/mob/living/carbon/human/stripping.dm",
+      "owner": "user.",
+      "expression_sha256": "5dff35c10ea452dc964029d46ab728eb03b8faee8cb9cb655cb60c2809736ac8"
+    },
+    {
+      "path": "code/game/mob/living/living_defense.dm",
+      "owner": "",
+      "expression_sha256": "6aeeafdb78f8f4ee758919562fde4924d6e3539a58b0e27a59b2a94ffc7ccbf2"
+    },
+    {
+      "path": "code/game/mob/living/living_defense.dm",
+      "owner": "M.",
+      "expression_sha256": "e11630fc8980eb9c004c19296b88475433452e776855cedb93f0fbb0cb3ec07f"
+    },
+    {
+      "path": "code/game/mob/living/living_defense.dm",
+      "owner": "user.",
+      "expression_sha256": "7d8bd7725d3129f6ed18a1551bb1bf1666892dec5bd37c837be63db97117d99c"
+    },
+    {
+      "path": "code/game/mob/living/living_defense.dm",
+      "owner": "",
+      "expression_sha256": "287f59e364a6257bc6bd8a97a1a81348ac2ab9377f157c783d3a236aa3dff4d0"
+    },
+    {
+      "path": "code/game/mob/mob_grab_specials.dm",
+      "owner": "attacker.",
+      "expression_sha256": "60185abd341c00ed52e64542df04d906eae5e8f1d31cdafc46d0c93e134b2651"
+    },
+    {
+      "path": "code/game/mob/mob_grab_specials.dm",
+      "owner": "target.",
+      "expression_sha256": "7dc946061c968b594fdd21edc22e1156ad0362ea649e63b31559f852ad2a2b4c"
+    },
+    {
+      "path": "code/game/mob/mob_grab_specials.dm",
+      "owner": "attacker.",
+      "expression_sha256": "0ab06b1f25b538bcbc0d3359b5dff87e433d593412d9d12f753e63f62cce6571"
+    },
+    {
+      "path": "code/game/mob/mob_grab_specials.dm",
+      "owner": "target.",
+      "expression_sha256": "f8f5b1ddc4391afa868a58acb457d0877a17ac4022d6e2254d26eaab97682ad6"
+    },
+    {
+      "path": "code/game/objects/items/pen.dm",
+      "owner": "target.",
+      "expression_sha256": "1ccc4b0c5f7f7c80cfadb40fbcf9331f7ca3a8c7eaa4ab50d58a152d4880bac9"
+    },
+    {
+      "path": "code/game/objects/items/pen.dm",
+      "owner": "user.",
+      "expression_sha256": "4920a5a398093f575305ddd111a77bd0a3b390d17b4035aabfa7cea198ab3fde"
+    },
+    {
+      "path": "code/game/objects/items/weapons/handcuffs.dm",
+      "owner": "H.",
+      "expression_sha256": "d98ad513c641823c2a0c3cc453860b6d8f539456b44b283b689b1870b32e0aa9"
+    },
+    {
+      "path": "code/game/objects/items/weapons/handcuffs.dm",
+      "owner": "user.",
+      "expression_sha256": "c7f413de2efb6bbf6cbf187cd853794c193bbb1c8e45de26d5427973d798a07f"
+    },
+    {
+      "path": "code/game/objects/items/weapons/material/kitchen.dm",
+      "owner": "M.",
+      "expression_sha256": "d2670ebf451b2f2bd1f6a9284b9e8430ca828535e3f735f3d68bb60c65ecf48a"
+    },
+    {
+      "path": "code/game/objects/items/weapons/trays.dm",
+      "owner": "M.",
+      "expression_sha256": "dcd563025a1640765a376c865a528b812aebd223502bc1bb04b9b782ef5e96b2"
+    },
+    {
+      "path": "code/game/objects/items/weapons/trays.dm",
+      "owner": "user.",
+      "expression_sha256": "f7bc61645c5f6962b40bebda6d80d61bdd03862887d1b7b8bf2fe0fbc2b90518"
+    },
+    {
+      "path": "code/game/objects/items.dm",
+      "owner": "user.",
+      "expression_sha256": "20238236e910ca86d0a25c33f0e639684168d2b5f3acf3bd64dc739dab4cc25d"
+    },
+    {
+      "path": "code/game/objects/items.dm",
+      "owner": "M.",
+      "expression_sha256": "9d3cd8b00ebf7b3f6641d5725b605ee46e9c21e5082e8f57c7f26810376229d9"
+    },
+    {
+      "path": "code/game/objects/structures/stool_bed_chair_nest/wheelchair.dm",
+      "owner": "pulling.",
+      "expression_sha256": "ce83e187987f4801484f75895efdcf2dfd32b0faaba939436684cb6997a7c907"
+    },
+    {
+      "path": "code/game/objects/structures/stool_bed_chair_nest/wheelchair.dm",
+      "owner": "occupant.",
+      "expression_sha256": "e93e5627017d18190a87e909ed45e02f21ace705970902ebd97bc837faf86d61"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/boxing.dm",
+      "owner": "D.",
+      "expression_sha256": "0a73dac01c55ec2c12363fe8e02221592e4e0389c0443801ff5c5c9dd1c0e94a"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/boxing.dm",
+      "owner": "D.",
+      "expression_sha256": "760f5740721d8989dbc86267377cc1c8f37cce2589a8eed6544baa5b41bc23d2"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/kravmaga.dm",
+      "owner": "D.",
+      "expression_sha256": "1be04b142c89af48a7ce14a44c5f7be3d45a1fe2e89650ae5ce890c04ab96d6e"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/kravmaga.dm",
+      "owner": "D.",
+      "expression_sha256": "942286a30117d5585f3a156368448733efbb4d595e8170529c1ae18925e66192"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/kravmaga.dm",
+      "owner": "D.",
+      "expression_sha256": "8f1ed63eae3e4bd3d86dadd7e11f4d764241598cc70c7a58728e53ae7d53a89d"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/kravmaga.dm",
+      "owner": "D.",
+      "expression_sha256": "1c5937c8391552ea4bbdaf2ad773c877b4549f2d905e44938a7113ffc928729f"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/kravmaga.dm",
+      "owner": "D.",
+      "expression_sha256": "40ae3782a4a26ef3229547fd1f262623dca9b77d71b0b23135e835b45b923964"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/kravmaga.dm",
+      "owner": "D.",
+      "expression_sha256": "920d1ac9cc31e8cd9778b3a326b0db8247b794ec85ede30793d6e79baff12545"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/kravmaga.dm",
+      "owner": "D.",
+      "expression_sha256": "399d1bae9e4a9e6d16a09f6c67aeb27045e3505022e67c5e06613219acf21d23"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/kravmaga.dm",
+      "owner": "D.",
+      "expression_sha256": "bbadc3997f6374bf69839b178b58106c6648e93810d0c2ac82cc57869a24b209"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/sleepingcarp.dm",
+      "owner": "D.",
+      "expression_sha256": "49e7ee0aa5c5f13cf1cac581a762aeb9390684f9141716ecfa567af5c28cd3fe"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/sleepingcarp.dm",
+      "owner": "D.",
+      "expression_sha256": "d09c30a108c3294c78dc80026ddfb43d8e64cb6f70dbac37a9c0123fa59fa657"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/sleepingcarp.dm",
+      "owner": "D.",
+      "expression_sha256": "99a5e39d672e68d1e2a781916bdca29f434b17df8bc4da3117d2c04147b935aa"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/sleepingcarp.dm",
+      "owner": "D.",
+      "expression_sha256": "f6ea94dd8e7178863efd64498a21d8adc1a9e1209ebc3d3e60ae09f46c2f5d52"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/sleepingcarp.dm",
+      "owner": "D.",
+      "expression_sha256": "7393e53579ade690a9a6ef90ef27d22e62dd623adc5f76f9ded3e3154ff04d18"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/sleepingcarp.dm",
+      "owner": "D.",
+      "expression_sha256": "5456cb754b6563aa54b67fbf6c08e3c69a90cf7820ee79cfcc87e87bc55ad5d9"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/wrestling.dm",
+      "owner": "D.",
+      "expression_sha256": "0dd48f35b594d1a07c6230d14e556ca42f820438f3ee06875f28b45a633848d3"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/wrestling.dm",
+      "owner": "D.",
+      "expression_sha256": "9d1c74e3fdce4b9e49d9570f3908948e6c2118e2964cfd9ade6fefc13ec201ad"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/wrestling.dm",
+      "owner": "D.",
+      "expression_sha256": "a3e15e1175a99f5bb3f4920d57c0fc70535a462313922e8a897487bba80d0e11"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/wrestling.dm",
+      "owner": "D.",
+      "expression_sha256": "8d36cee92148473097dfcfe1c53d8a08523abcc156dd038ace7297f204f16a77"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/wrestling.dm",
+      "owner": "D.",
+      "expression_sha256": "753b089539bea753cb89b4fed5d1796beb9982c160fc94d2650c38e86195b8a8"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/wrestling.dm",
+      "owner": "D.",
+      "expression_sha256": "1ceaabe527d414002ece5afe77cc732a119abb6de953fe9bb55f8ad8dacbd1a2"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/wrestling.dm",
+      "owner": "D.",
+      "expression_sha256": "ff77625908cc9624ade6707f0346aa83ed6b7fef2bc275d8ad8f7cabf55c572e"
+    },
+    {
+      "path": "code/modules/1713/martial_arts/wrestling.dm",
+      "owner": "D.",
+      "expression_sha256": "9cac0874443297cb78732b628da27db1e5c3e750d0c8bda7d5657d294514a35e"
+    },
+    {
+      "path": "code/modules/admin/admin_attack_log.dm",
+      "owner": "victim.",
+      "expression_sha256": "9966a6e826e0e420753b8488c6bf4f3a9f8a9129f3b5f846180903dda974f726"
+    },
+    {
+      "path": "code/modules/admin/admin_attack_log.dm",
+      "owner": "attacker.",
+      "expression_sha256": "4beabb6d26da2dbeed6711b4b46d77c866a366fb973d77551a7fb6e87a2c7fcb"
+    },
+    {
+      "path": "code/modules/organs/organ.dm",
+      "owner": "user.",
+      "expression_sha256": "134f686777c6017c9b624832ea16765442e798a0d3f0fa0b07c1aea570abf894"
+    },
+    {
+      "path": "code/modules/organs/organ.dm",
+      "owner": "owner.",
+      "expression_sha256": "5a77db8c0e9f93be27d562f6ce28afaa6badc41d3f666476cf49b1d6bfcd14bb"
+    },
+    {
+      "path": "code/modules/projectiles/gun.dm",
+      "owner": "M.",
+      "expression_sha256": "cad524d51e9057eb3bbae5c6dbd0d1b5572b8ac9735fded6cf8802e40f65e382"
+    },
+    {
+      "path": "code/modules/projectiles/gun.dm",
+      "owner": "M.",
+      "expression_sha256": "09005162a057062d3096f942a032f1ea401e773c516298550e77c783d0908e08"
+    },
+    {
+      "path": "code/modules/projectiles/gun.dm",
+      "owner": "user.",
+      "expression_sha256": "78d1e38f9a069bd35eb4c9202bff66dea541a502b798aff6e1a4a25ceb8beec1"
+    },
+    {
+      "path": "code/modules/projectiles/projectile.dm",
+      "owner": "target_mob.",
+      "expression_sha256": "95b038de802764418f5546343b1693b1c3135547a943c873ed2fa5a364edb9c6"
+    },
+    {
+      "path": "code/modules/reagents/reagent_containers/dropper.dm",
+      "owner": "M.",
+      "expression_sha256": "ea9b625fd88782f8be4f1c28a05653d0ac3aeabe1f474c368150bd7aac395eea"
+    },
+    {
+      "path": "code/modules/reagents/reagent_containers/dropper.dm",
+      "owner": "user.",
+      "expression_sha256": "47697b22e981d07e48d5343d8553db8c9178b73153ae0055f25faab8cf14df55"
+    },
+    {
+      "path": "code/modules/reagents/reagent_containers/food/snacks.dm",
+      "owner": "M.",
+      "expression_sha256": "43a8cdc13d5f1c8f4e8d0b07349c3b4f447962e2e991bbf5649e98b7313e8bb1"
+    },
+    {
+      "path": "code/modules/reagents/reagent_containers/food/snacks.dm",
+      "owner": "user.",
+      "expression_sha256": "dff719326815b3a87b61d010568aa8e391c13caa243bb8566ba7fb4664073435"
+    },
+    {
+      "path": "code/modules/reagents/reagent_containers/pill.dm",
+      "owner": "M.",
+      "expression_sha256": "3a796310b685885634ee1bccfd9f6fccc158a9d107ae446fecac6df0a6ef2905"
+    },
+    {
+      "path": "code/modules/reagents/reagent_containers/pill.dm",
+      "owner": "user.",
+      "expression_sha256": "e5a34aea3e2c5ad4ae403785b76ffddb6a1ab5939789845d6b71b85958605a86"
+    },
+    {
+      "path": "code/modules/reagents/reagent_containers/pill.dm",
+      "owner": "user.",
+      "expression_sha256": "7ec58efddc1b50e8da9a4f3d0f0213706aa3cec11dcceec42cb3c5b83930be48"
+    },
+    {
+      "path": "code/modules/reagents/reagent_containers/syringe.dm",
+      "owner": "user.",
+      "expression_sha256": "5b092f86427ad6cf388230c7224b2add9b8ecefebdae61ddb79ea357ed28346a"
+    },
+    {
+      "path": "code/modules/reagents/reagent_containers/syringe.dm",
+      "owner": "target.",
+      "expression_sha256": "80d43dfe9fcfba35369daa37014f41cef3112303a16698df929ebd8e75bacaed"
+    },
+    {
+      "path": "code/modules/reagents/reagent_containers.dm",
+      "owner": "target.",
+      "expression_sha256": "cd78c30abde8afae11662052f3faa25641094f9319e2bc4c36ff8e4c50184bf6"
+    },
+    {
+      "path": "code/modules/reagents/reagent_containers.dm",
+      "owner": "user.",
+      "expression_sha256": "bce553af320523b475044f5a1a303538f94973bafdddaac72d09f98841598009"
+    },
+    {
+      "path": "code/modules/reagents/reagent_containers.dm",
+      "owner": "target.",
+      "expression_sha256": "b2eaa4ace6ab1688fb6e92e95481e21b3fe4affc12d970b0d1bd5d4a5ef012aa"
+    },
+    {
+      "path": "code/modules/reagents/reagent_containers.dm",
+      "owner": "user.",
+      "expression_sha256": "3c078696279fc9462cc1e2858bac617e5d7652930319958365baa06fd575a0e5"
+    }
+  ]
+}

@@ -1,0 +1,340 @@
+"""Run production world/metadata persistence on a tiny isolated native world."""
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import tempfile
+import time
+import uuid
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--byond-bin', type=Path)
+    parser.add_argument('--prepare-only', action='store_true')
+    parser.add_argument('--lighting', action='store_true',
+                        help='Run real lighting constructors and legacy runtime graph recovery')
+    parser.add_argument('--dimension-bootstrap', action='store_true',
+                        help='Run fresh expanded round-v2 writer and compiled-size reader processes')
+    parser.add_argument('--recovery-reconnect', action='store_true',
+                        help='Run production recovery and waiting-client reclaim with client IO adapted')
+    parser.add_argument('--lifecycle-shutdown', action='store_true',
+                        help='Run real Topic dispatch, production disk save and native graceful shutdown')
+    parser.add_argument('--startup-only', action='store_true',
+                        help='Diagnose production initialization without running any persistence assertions')
+    parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
+    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity', 'lighting-view', 'shutdown-return'))
+    args = parser.parse_args()
+    lighting_control = bool(args.negative_control and args.negative_control.startswith('lighting-'))
+    if args.lighting and (args.dimension_bootstrap or args.recovery_reconnect or args.lifecycle_shutdown or args.startup_only or (args.negative_control and not lighting_control)):
+        parser.error('Lighting recovery runs separately from other fixture modes')
+    if lighting_control and not args.lighting:
+        parser.error('Lighting controls require --lighting')
+    if args.lifecycle_shutdown and (args.recovery_reconnect or args.dimension_bootstrap or args.startup_only or args.negative_control not in (None, 'shutdown-return')):
+        parser.error('Lifecycle shutdown runs separately from other fixture modes')
+    if args.negative_control == 'shutdown-return' and not args.lifecycle_shutdown:
+        parser.error('Shutdown return control requires --lifecycle-shutdown')
+    if args.recovery_reconnect and (args.dimension_bootstrap or args.startup_only or args.negative_control not in (None, 'reclaim-order')):
+        parser.error('Recovery reconnect checks run separately from other fixture modes')
+    if args.negative_control == 'reclaim-order' and not args.recovery_reconnect:
+        parser.error('Reclaim ordering control requires --recovery-reconnect')
+    if args.dimension_bootstrap and (args.startup_only or args.negative_control):
+        parser.error('Expanded fresh-process checks run separately from existing mutation/startup cases')
+    if args.startup_only and args.negative_control:
+        parser.error('Startup diagnostics cannot run persistence mutation controls')
+    if not args.prepare_only and not args.byond_bin:
+        parser.error('--byond-bin is required for native execution')
+    root = Path(__file__).resolve().parents[2]
+    output = Path(tempfile.mkdtemp(prefix='civ13-durable-world-'))
+    prefix = '.durable_world_' + uuid.uuid4().hex
+    dme = root / (prefix + '.dme')
+    generated = []
+    receipt = {'profile': args.profile, 'negative_control': args.negative_control,
+               'lighting': args.lighting,
+               'dimension_bootstrap': args.dimension_bootstrap, 'recovery_reconnect': args.recovery_reconnect,
+               'lifecycle_shutdown': args.lifecycle_shutdown,
+               'prepared_only': args.prepare_only, 'startup_only': args.startup_only,
+               'production_hashes': {}}
+    print(f'Retained evidence: {output}', flush=True)
+    try:
+        source = (root / 'civ13.dme').read_text(encoding='utf-8')
+        source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
+        replacements = {}
+        for relative in ('code/world.dm', 'code/controllers/mc/globals.dm'):
+            text = (root / relative).read_text(encoding='utf-8')
+            if relative == 'code/world.dm':
+                start = text.index('/world/New()')
+                parent = text.index('\n\t..()', start)
+                text = text[:parent] + text[parent:].replace('\n\t..()', '', 1)
+                text = text.replace('/world/New()', '/world/proc/unused_durable_startup()', 1)
+                marker = '/datum/global_init/New()\n'
+            else:
+                marker = '/datum/controller/global_vars/New()\n'
+            if text.count(marker) != 1:
+                raise RuntimeError('Startup isolation anchor changed')
+            replacements[relative] = text.replace(marker, marker + '\treturn\n', 1)
+        mutations = {
+            'season': ('code/modules/persistence/durable_world.dm', '\tseason = E["season"]', '\tseason = "SPRING"'),
+            'preflight': ('code/modules/persistence/durable_world.dm', '\tvar/list/fields = state["fields"]', '\tif(islist(state["fields"])) return TRUE\n\tvar/list/fields = state["fields"]'),
+            'reachability': ('code/modules/persistence/durable_world.dm', '\tvalidate_durable_reachability(G)', '\tif(FALSE) validate_durable_reachability(G)'),
+            'callback': ('code/modules/persistence/durable_timers.dm', '\t\tif(!owner || revision != expected_revision || pending[key] != row) return', '\t\tif(!owner) return'),
+            'timer-restore': ('code/modules/persistence/durable_world.dm', '\tmap.durable_timer_queue().restore(timers)', '\t// Negative control: omit restoring persisted callbacks.'),
+            'reclaim-order': ('code/modules/persistence/restart_transaction.dm', '\t\tplayers_ready = map_storage.finish_player_restoration()\n', ''),
+            'lighting-export': ('code/modules/persistence/functions.dm', 'return (key in list("appearance", "light", "light_sources")) || ..()', 'return key == "appearance" || ..()'),
+            'lighting-legacy': ('code/modules/persistence/loading.dm', 'if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay))', 'if(FALSE)'),
+            'lighting-rebuild': ('code/modules/persistence/loading.dm', '\t\t\t\tlight_owner.update_light()', '\t\t\t\tif(FALSE) light_owner.update_light()'),
+            'lighting-opacity': ('code/modules/persistence/loading.dm', '\t\t\t\tlight_turf.recalc_atom_opacity()', '\t\t\t\tif(FALSE) light_turf.recalc_atom_opacity()'),
+            'lighting-view': ('code/modules/persistence/functions.dm', '!istype(mob, /mob/new_player) && mob != dview_mob', '!istype(mob, /mob/new_player)'),
+            'shutdown-return': ('code/modules/persistence/restart_transaction.dm', '\tdel(world)\n\t// Native deletion can return until the current execution yields. Give BYOND\n\t// that boundary before failure cleanup can consume the valid restart intent.\n\tsleep(1)\n', '\tdel(world)\n'),
+        }
+        if args.negative_control:
+            relative, before, after = mutations[args.negative_control]
+            text = (root / relative).read_text(encoding='utf-8')
+            if text.count(before) != 1:
+                raise RuntimeError('Negative-control anchor changed')
+            replacements[relative] = text.replace(before, after, 1)
+            if args.negative_control == 'reclaim-order':
+                # Reproduce the observed old ordering: the one readiness sweep
+                # occurs while the startup hold still rejects saved claims.
+                anchor = '\t\tconsume(I)\n'
+                if replacements[relative].count(anchor) != 1:
+                    raise RuntimeError('Reclaim ordering mutation anchor changed')
+                replacements[relative] = replacements[relative].replace(anchor, '\t\tmap_storage.finish_player_restoration()\n' + anchor, 1)
+        if args.recovery_reconnect:
+            relative = 'code/modules/persistence/player_reclaim.dm'
+            text = (root / relative).read_text(encoding='utf-8')
+            start = text.index('/map_storage/proc/reclaim_saved_player(')
+            end = text.index('/map_storage/proc/validate_saved_player_owner(', start)
+            body = text[start:end]
+            for before, after in (('lobby.client', 'lobby.claim_client'),
+                                  ('var/client/C', 'var/datum/recovery_fixture_client/C'),
+                                  ('H.key = C.key', 'recovery_fixture_transfer(C, H)'),
+                                  (' in clients)', ' in recovery_fixture_clients)')):
+                expected = 2 if before == 'var/client/C' else (3 if before == 'lobby.client' else 1)
+                if body.count(before) != expected:
+                    raise RuntimeError('Reclaim client IO adapter anchor changed: ' + before)
+                body = body.replace(before, after)
+            replacements[relative] = text[:start] + body + text[end:]
+        for index, (relative, text) in enumerate(replacements.items()):
+            generated_path = root / (prefix + f'_{index}.dm')
+            generated_path.write_text(text, encoding='utf-8', newline='\n')
+            generated.append(generated_path)
+            original_include = relative.replace('/', chr(92))
+            if source.count(original_include) != 1:
+                raise RuntimeError('Production include anchor changed')
+            source = source.replace(original_include, generated_path.name)
+            (output / generated_path.name).write_text(text, encoding='utf-8', newline='\n')
+        probe = (root / 'tests/world_save/durable_world_probe.dm').read_text(encoding='utf-8')
+        if args.lighting:
+            lighting_probe = root / 'tests/world_save/lighting_probe.dm'
+            probe = probe[:probe.index('/world/New()')] + lighting_probe.read_text(encoding='utf-8')
+            receipt['lighting_probe_hash'] = hashlib.sha256(lighting_probe.read_bytes()).hexdigest()
+        if args.dimension_bootstrap:
+            probe = probe[:probe.index('/world/New()')] + (root / 'tests/world_save/durable_dimension_probe.dm').read_text(encoding='utf-8')
+        if args.recovery_reconnect:
+            probe = probe[:probe.index('/world/New()')] + (root / 'tests/world_save/recovery_reconnect_probe.dm').read_text(encoding='utf-8')
+        if args.lifecycle_shutdown:
+            probe = probe[:probe.index('/world/New()')] + (root / 'tests/world_save/lifecycle_disk_probe.dm').read_text(encoding='utf-8')
+        if args.startup_only:
+            marker = '/world/New()\n'
+            if probe.count(marker) != 1:
+                raise RuntimeError('Startup diagnostic probe anchor changed')
+            probe = probe[:probe.index(marker)] + marker + (
+                '\ttext2file("startup-only world-New entered", "probe-progress.log")\n'
+                '\tworld.OpenPort(0)\n'
+                '\ttext2file(json_encode(list("startup_only" = TRUE)), "startup-result.json")\n'
+                '\tdel(world)\n')
+        probe_path = root / (prefix + '_probe.dm')
+        probe_path.write_text(probe, encoding='utf-8', newline='\n')
+        generated.append(probe_path)
+        (output / probe_path.name).write_text(probe, encoding='utf-8', newline='\n')
+        source += '\n#include "' + probe_path.name + '"\n'
+        dme.write_text(source, encoding='utf-8', newline='\n')
+        for path in (root / 'code/modules/persistence').glob('*.dm'):
+            receipt['production_hashes'][path.relative_to(root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+        receipt['probe_hash'] = hashlib.sha256((root / 'tests/world_save/durable_world_probe.dm').read_bytes()).hexdigest()
+        receipt['generated_probe_hash'] = hashlib.sha256(probe_path.read_bytes()).hexdigest()
+        receipt['base_commit'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
+        (output / 'tested.patch').write_bytes(subprocess.check_output(['git', 'diff'], cwd=root))
+        (output / 'probe.dme').write_text(source, encoding='utf-8')
+        (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+        if args.prepare_only:
+            return
+        byond = args.byond_bin.resolve(strict=True)
+        compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
+        daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
+        flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
+        build = subprocess.run([str(compiler), '-max_errors', '0', dme.name], cwd=root,
+                               capture_output=True, text=True, timeout=180, creationflags=flags)
+        build_log = build.stdout + build.stderr
+        (output / 'compile.log').write_text(build_log, encoding='utf-8')
+        if build.returncode or '0 errors, 0 warnings' not in build_log or '516.1681' not in build_log:
+            raise RuntimeError('Pinned native compilation failed; see compile.log')
+        for suffix in ('.dmb', '.rsc'):
+            shutil.copy2(dme.with_suffix(suffix), output / dme.with_suffix(suffix).name)
+        (output / 'config').mkdir()
+        shutil.copy2(root / 'config/tips.txt', output / 'config/tips.txt')
+        shutil.copytree(root / 'config/names', output / 'config/names')
+        platform_flags = ['-invisible', '-close'] if os.name == 'nt' else []
+        if args.dimension_bootstrap:
+            # Both use the identical compiled two-level DMB. Only disk files
+            # survive from the writer to the fresh reader process.
+            for mode, minimum_checks in (('write', 3), ('read', 12)):
+                run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-safe',
+                    '-params', f'profile={args.profile};dimension_mode={mode}', '-log', f'{mode}-runtime.log'],
+                    cwd=output, capture_output=True, text=True, timeout=120, creationflags=flags)
+                (output / f'{mode}-daemon.log').write_text(run.stdout + run.stderr, encoding='utf-8')
+                log = (output / f'{mode}-runtime.log').read_text(encoding='utf-8', errors='replace')
+                diagnostics = log + run.stdout + run.stderr
+                if run.returncode or re.search(r'##\s*error\s*:|unexpected runtime|bad ref|runtime error:|infinite loop|fatal error|segmentation|assertion failed', diagnostics, re.I):
+                    raise RuntimeError(f'Expanded {mode} native diagnostics invalidated evidence')
+                result = json.loads((output / 'metadata-result.json').read_text(encoding='utf-8'))
+                (output / f'{mode}-result.json').write_text(json.dumps(result, indent=2), encoding='utf-8')
+                receipt[mode] = result
+                (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+                if not result.get('done') or result.get('checks', 0) < minimum_checks:
+                    raise RuntimeError(f'Expanded {mode} assertions incomplete: {result}')
+                # A reader must write its own completion record.
+                (output / 'metadata-result.json').unlink()
+            print(json.dumps(receipt, indent=2))
+            return
+        command = [str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-safe',
+                   '-params', 'profile=' + args.profile, '-log', 'runtime.log']
+        if args.lighting:
+            run = run_lighting(command, output, flags)
+        else:
+            run = subprocess.run(command, cwd=output, capture_output=True, text=True,
+                                 timeout=90, creationflags=flags)
+        (output / 'daemon.log').write_text(run.stdout + run.stderr, encoding='utf-8')
+        (output / 'daemon-exit.json').write_text(json.dumps({'exit_code': run.returncode}), encoding='utf-8')
+        if run.returncode:
+            raise RuntimeError(f'Native daemon exited with {run.returncode}; see daemon-exit.json')
+        log = (output / 'runtime.log').read_text(encoding='utf-8', errors='replace')
+        diagnostics = (log + run.stdout + run.stderr).lower()
+        if args.lighting and re.search(r'\bbug:', diagnostics):
+            raise RuntimeError('Native lighting engine diagnostic invalidated fixture')
+        if (re.search(r'##\s*error\s*:', diagnostics) or
+                any(word in diagnostics for word in ('unexpected runtime', 'bad ref', 'runtime error:', 'infinite loop', 'fatal error', 'segmentation', 'assertion failed'))):
+            raise RuntimeError('Native engine diagnostic invalidated fixture')
+        if args.startup_only:
+            startup = json.loads((output / 'startup-result.json').read_text(encoding='utf-8'))
+            if startup != {'startup_only': 1}:
+                raise RuntimeError('Startup diagnostic did not complete')
+            receipt['startup_result'] = startup
+            (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+            print('Startup diagnostic completed; no persistence assertions ran.')
+            return
+        result_path = output / 'metadata-result.json'
+        if not result_path.is_file():
+            raise RuntimeError('Native daemon exited without a result; see daemon-exit.json and probe-progress.log')
+        result = json.loads(result_path.read_text(encoding='utf-8'))
+        if args.lifecycle_shutdown:
+            # The DM receipt is written before native deletion. Acceptance must
+            # inspect disk after the process exits, including delayed cleanup.
+            if not result.get('done') or result.get('checks', 0) < 7:
+                raise RuntimeError('Native shutdown assertions incomplete: ' + str(result))
+            intent_path = output / 'map_saves/restart_intent.json'
+            if args.negative_control == 'shutdown-return':
+                if intent_path.exists() or 'Native shutdown returned without closing the world' not in log:
+                    raise RuntimeError('Shutdown return control did not reproduce intent cleanup')
+                receipt['post_exit_intent_preserved'] = False
+                receipt['expected_failure_caught'] = True
+            else:
+                intent_text = intent_path.read_text(encoding='utf-8-sig')
+                intent = json.loads(intent_text)
+                marker = (output / 'map_saves/save_complete.txt').read_text().strip()
+                if (hashlib.md5(intent_text.encode('utf-8')).hexdigest() != result.get('intent_hash') or
+                        intent.get('generation') != result.get('generation') or marker != intent['generation']):
+                    raise RuntimeError('Native shutdown changed the published recovery intent')
+                receipt['post_exit_intent_preserved'] = True
+                receipt['expected_failure_caught'] = False
+            receipt['result'] = result
+            (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+            print(json.dumps(receipt, indent=2))
+            return
+        expected = {'season': 'environment phase reset', 'preflight': 'malformed artillery sentinel mutated world',
+                    'reachability': 'orphan metadata reference accepted', 'callback': 'restored callback duplicated',
+                    'timer-restore': 'persisted callback was not restored',
+                    'reclaim-order': 'waiting authenticated client not reclaimed after recovery',
+                    'lighting-export': 'runtime atom lighting fields exported',
+                    'lighting-legacy': 'legacy lighting graph prevented import',
+                    'lighting-rebuild': 'restored custom light not rebuilt',
+                    'lighting-opacity': 'restored obstruction caches stale',
+                    'lighting-view': 'map clearing retired runtime view helper'}
+        if args.negative_control:
+            if result.get('done') or result.get('error') != expected[args.negative_control]:
+                raise RuntimeError('Negative control failed outside its intended assertion: ' + str(result))
+            if args.negative_control == 'preflight' and result.get('checks') != 7:
+                raise RuntimeError('Preflight control did not reach its first malformed-wire assertion')
+            if args.negative_control == 'reclaim-order' and result.get('checks') != 8:
+                raise RuntimeError('Reclaim ordering control did not reach its intended first failure')
+            if args.negative_control == 'lighting-legacy':
+                import_error = result.get('import_error') or ''
+                if 'Cannot read null.light_sources' not in import_error or 'lighting_source.dm:35' not in import_error:
+                    raise RuntimeError('Legacy lighting control did not reproduce the ownerless source constructor: ' + import_error)
+        elif not result.get('done') or result.get('checks', 0) < (7 if args.lifecycle_shutdown else 19):
+            raise RuntimeError('Native integration fixture incomplete: ' + str(result))
+        receipt['result'] = result
+        receipt['expected_failure_caught'] = bool(args.negative_control)
+        (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+        print(json.dumps(receipt, indent=2))
+    finally:
+        for path in [dme, dme.with_suffix('.dmb'), dme.with_suffix('.rsc'), *generated]:
+            path.unlink(missing_ok=True)
+
+
+def run_lighting(command, output, flags):
+    """Check the live fixture's OS sockets during its deliberate entry hold."""
+    child = subprocess.Popen(command, cwd=output, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE, text=True, creationflags=flags)
+    try:
+        ready = output / 'lighting-port-ready.json'
+        deadline = time.monotonic() + 30
+        while not ready.is_file():
+            if child.poll() is not None or time.monotonic() > deadline:
+                raise RuntimeError('Lighting fixture exited or timed out before closed-port census')
+            time.sleep(0.02)
+        state = json.loads(ready.read_text(encoding='utf-8'))
+        if state.get('port'):
+            raise RuntimeError('Lighting fixture reports an open native port')
+        if os.name == 'nt':
+            script = (f'$L=@(Get-NetTCPConnection -State Listen -ErrorAction Stop | '
+                      f'Where-Object OwningProcess -eq {child.pid}); $L.Count')
+            census = subprocess.run(['powershell', '-NoProfile', '-Command', script],
+                                    capture_output=True, text=True, timeout=20, check=True)
+            listeners = int(census.stdout.strip())
+        else:
+            sockets = set()
+            for fd in Path(f'/proc/{child.pid}/fd').iterdir():
+                try:
+                    link = os.readlink(fd)
+                except FileNotFoundError:
+                    continue
+                if link.startswith('socket:['):
+                    sockets.add(link[8:-1])
+            listeners = 0
+            for table in ('tcp', 'tcp6'):
+                for row in Path(f'/proc/{child.pid}/net/{table}').read_text().splitlines()[1:]:
+                    fields = row.split()
+                    if fields[3] == '0A' and fields[9] in sockets:
+                        listeners += 1
+        if child.poll() is not None or listeners:
+            raise RuntimeError('Lighting fixture not alive with zero listeners at census')
+        (output / 'listener-census.json').write_text(json.dumps(
+            {'pid': child.pid, 'listeners': listeners, 'native_port': state['port']}), encoding='utf-8')
+        stdout, stderr = child.communicate(timeout=90)
+        return subprocess.CompletedProcess(command, child.returncode, stdout, stderr)
+    finally:
+        if child.poll() is None:
+            child.kill()
+            child.wait(timeout=10)
+        (output / 'lighting-process-exit.json').write_text(json.dumps(
+            {'pid': child.pid, 'exit_code': child.returncode}), encoding='utf-8')
+
+
+if __name__ == '__main__':
+    main()

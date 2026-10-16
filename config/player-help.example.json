@@ -7,5 +7,16 @@
   "auth_token_env": "CIV13_OLLAMA_TOKEN",
   "num_ctx": 4096,
   "think": false,
-  "wiki_root": ""
+  "wiki_root": "",
+  "limits": {
+    "cooldown_seconds": 30,
+    "burst_requests": 3,
+    "burst_seconds": 120,
+    "window_requests": 10,
+    "window_seconds": 600,
+    "global_requests": 30,
+    "global_seconds": 60,
+    "max_accounts": 2048,
+    "queue_slots": 8
+  }
 }

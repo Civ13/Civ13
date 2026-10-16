@@ -51,12 +51,13 @@ if (!$NoShortcuts) {
     New-Item -ItemType Directory -Path $menu -Force | Out-Null
     $shell = New-Object -ComObject WScript.Shell
     foreach ($name in @('Sign-In','Play-Nomads','Play-TDM')) {
-        $shortcut = $shell.CreateShortcut((Join-Path $menu "Civ13 $name.lnk"))
+        $shortcut = $shell.CreateShortcut((Join-Path $menu "Civ13 OpenDream $name.lnk"))
         $shortcut.TargetPath = Join-Path $destination "$name.cmd"
         $shortcut.WorkingDirectory = $destination
         $shortcut.Save()
     }
 }
 Write-Host "Installed: $destination"
-Write-Host 'First run Sign-In.cmd and log into your own account. Then run Play-Nomads.cmd or Play-TDM.cmd.'
+Write-Host 'These scripts and shortcuts launch experimental OpenDream only. For native BYOND servers use Civ13.exe.'
+Write-Host 'For OpenDream, first run Sign-In.cmd and log into your own account. Then run Play-Nomads.cmd or Play-TDM.cmd.'
 Write-Host 'No Administrator access is needed. Native BYOND is unchanged.'

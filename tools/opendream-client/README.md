@@ -46,6 +46,11 @@ The patch contains MIT-licensed OpenDream-derived code; see
 
 ## Simplified launcher and update channel
 
+For the single-file native Windows launcher, build and distribute `Civ13.exe`
+from [native/README.md](native/README.md). Its separate executable update channel
+remains inactive until release deployment builds and verifies an immutable binary
+and its downloaded checksum. The script package below remains available for existing users.
+
 Distribute `Civ13-Launcher-Windows.zip` containing Civ13.cmd, Launcher.ps1,
 Install-Client.ps1, channel.json and LAUNCHER-README.txt. Testers extract it and
 run Civ13.cmd. It downloads the complete client and offers sign-in and game

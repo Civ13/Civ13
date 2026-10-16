@@ -15,7 +15,9 @@ export function changelogLine(body) {
   const visible = body.replace(/<!--[\s\S]*?(?:-->|$)/g, '');
   let fence = null;
   const entries = [];
-  for (const line of visible.split(/\r?\n/)) {
+  // Repeated Windows newline translation can produce CRCRLF. Only consume
+  // CRs immediately before LF; embedded CRs remain invalid line content.
+  for (const line of visible.split(/\r*\n/)) {
     const delimiter = line.match(/^\s*(`{3,}|~{3,})/);
     if (delimiter) {
       if (!fence) fence = delimiter[1];
@@ -28,6 +30,20 @@ export function changelogLine(body) {
   }
   requireValue(entries.length <= 1, 'Use only one Changelog: line');
   if (!entries[0]) return null;
+  // A template marker is not announcement copy, even if prose follows on
+  // later lines. Do not silently publish the marker or guess at that prose.
+  const marker = entries[0].normalize('NFKC').toLowerCase()
+    .replace(/^[\s`*_[\]{}:]+|[\s`*_[\]{}:.!?]+$/g, '').trim();
+  const placeholders = new Set(['required', 'optional', 'todo', 'to do', 'tbd',
+    'to be determined', 'fixme', 'pending', 'placeholder', 'example', 'none',
+    'n/a', 'not applicable', 'no changelog', 'your changelog here',
+    'changelog text here', 'player-facing text here']);
+  // A flattened second label must not turn a template marker into copy.
+  const nestedMarker = marker.split(/\s+player changelog\s*:/u)[0]
+    .replace(/[\s`*_[\]{}:.!?]+$/g, '').trim();
+  requireValue(!placeholders.has(nestedMarker) &&
+    !/^(?:enter|insert|write|add|fill in|describe|replace)(?: the| your| a)? (?:changelog|player-facing|player-visible)(?:\b|$)/u.test(marker),
+  'Changelog placeholder is not announcement text; fill in the same line or leave it blank');
   format({ schema: 1, id: 'validation', commit: 'a'.repeat(40), heading: '', entries, skip: '' });
   return entries[0];
 }

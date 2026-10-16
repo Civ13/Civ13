@@ -18,7 +18,10 @@ var/list/energy_ci_errors = list()
 		energy_ci_errors += label
 /proc/run_modern_energy_checks()
 	world.OpenPort("none")
+	GLOB.all_observable_events = list()
 	GLOB.moved_event = new /decl/observ/moved
+	GLOB.dir_set_event = new /decl/observ/dir_set
+	movementMachine = new
 	makeDatumRefLists()
 	populate_material_list()
 	map = new /obj/map_metadata/energy_ci
@@ -138,6 +141,8 @@ var/list/energy_ci_errors = list()
 	for (var/obj/structure/civ_generator/item in created)
 		item.retire_generator()
 	energy_ci_check("registry released after cycles", civ_generators.len, 0)
+	run_nuclear_energy_checks()
+	run_nuclear_fuel_route_checks()
 	var/report = "Modern energy production contract checks\n"
 	for (var/error in energy_ci_errors)
 		report += "FAIL [error]\n"

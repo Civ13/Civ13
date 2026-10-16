@@ -566,29 +566,9 @@
 				return
 
 	else if (istype(C, /obj/item/weapon/covers))
-		if (!istype(src, /turf/floor/beach/water/deep/saltwater) || map.ID == MAP_VOYAGE)
-			var/covers_time = 80
-
-			if (ishuman(user))
-				var/mob/living/human/H = user
-				covers_time /= H.getStatCoeff("strength")
-				covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-
-			if (src == get_step(user, user.dir))
-				if (WWinput(user, "This will start building a floor cover [dir2text(user.dir)] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
-					user.visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
-					if (do_after(user, covers_time, user.loc))
-						if (!istype(src, /turf/floor/beach/water/deep/saltwater) || map.ID == MAP_VOYAGE)
-							qdel(C)
-							if (istype(C, /obj/item/weapon/covers/ship))
-								new/obj/covers/repairedfloor/ship(src, user)
-							else
-								new/obj/covers/repairedfloor(src, user)
-							user.visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>", "<span class = 'notice'>You finish placing the floor cover.</span>")
-							if (ishuman(user))
-								var/mob/living/human/H = user
-								H.adaptStat("crafting", 3)
-					return
+		if (src == get_step(user, user.dir))
+			C.attack_self(user)
+		return
 
 
 	if (flooring)
@@ -811,6 +791,11 @@
 						H.adaptStat("strength", 1)
 			change_the_turf()
 			return
+	// Preserve common ore branches above; uranium uses only their fallback.
+	if (is_mineable && map.ordinal_age >= 8 && prob(5))
+		new /obj/item/stack/ore/uranium(src)
+		change_the_turf()
+		return
 	/*
 					else if (prob(10) && map.ordinal_age >= 6)
 						var/obj/item/stack/ore/uranium/mineral = new/obj/item/stack/ore/uranium(src)

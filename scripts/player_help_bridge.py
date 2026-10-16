@@ -12,11 +12,66 @@ import signal
 import subprocess
 import sys
 import time
+import threading
 import urllib.parse
 import urllib.request
 import uuid
 
 MAX_RESPONSE = 65536
+LIMIT_DEFAULTS = {'cooldown_seconds': 30, 'burst_requests': 3, 'burst_seconds': 120,
+                  'window_requests': 10, 'window_seconds': 600, 'global_requests': 30,
+                  'global_seconds': 60, 'max_accounts': 2048, 'queue_slots': 8}
+
+
+def help_limits(config):
+    limits = dict(LIMIT_DEFAULTS, **config.get('limits', {}))
+    for key, value in limits.items():
+        if key not in LIMIT_DEFAULTS or type(value) is not int or not 1 <= value <= (86400 if key.endswith('seconds') else 4096):
+            raise ValueError('Invalid help limit: ' + key)
+    if limits['queue_slots'] > 8 or limits['max_accounts'] > 4096:
+        raise ValueError('Help storage limits exceeded')
+    return limits
+
+
+class RequestLimiter:
+    """Admission is atomic across workers; identifiers never enter the model payload."""
+    def __init__(self, config, clock=time.monotonic):
+        self.limits, self.clock = help_limits(config), clock
+        self.accounts, self.active, self.global_times = {}, set(), []
+        self.max_active = min(self.limits['queue_slots'], config.get('workers', 1))
+        self.lock = threading.Lock()
+
+    def acquire(self, account):
+        with self.lock:
+            now, limits = self.clock(), self.limits
+            retention = max(limits['window_seconds'], limits['burst_seconds'], limits['cooldown_seconds'])
+            self.accounts = {key: [t for t in times if now - t < retention]
+                             for key, times in self.accounts.items()
+                             if key in self.active or (times and now - times[-1] < retention)}
+            self.global_times = [t for t in self.global_times if now - t < limits['global_seconds']]
+            times = self.accounts.get(account, [])
+            if account in self.active:
+                return 'pending', 1
+            retry = max([0] + [int(math.ceil(span - (now - relevant[0])))
+                        for cap, span in ((1, limits['cooldown_seconds']),
+                                          (limits['burst_requests'], limits['burst_seconds']),
+                                          (limits['window_requests'], limits['window_seconds']))
+                        if len(relevant := [t for t in times if now - t < span]) >= cap])
+            if retry:
+                return 'rate_limited', retry
+            if len(self.global_times) >= limits['global_requests']:
+                return 'busy', max(1, math.ceil(limits['global_seconds'] - (now - self.global_times[0])))
+            if (len(self.active) >= self.max_active or
+                    (account not in self.accounts and len(self.accounts) >= limits['max_accounts'])):
+                return 'busy', 5
+            self.accounts[account] = times + [now]
+            self.global_times.append(now)
+            self.active.add(account)
+            return None, 0
+
+    def release(self, account):
+        with self.lock:
+            self.active.discard(account)
 
 
 def recipe_context(path):
@@ -158,6 +213,7 @@ def load_config(path):
         raise ValueError('Set a model name')
     config['timeout_seconds'] = float(config.get('timeout_seconds', 45))
     config['workers'] = int(config.get('workers', 2))
+    config['limits'] = help_limits(config)
     if not 1 <= config['timeout_seconds'] <= 120 or not 1 <= config['workers'] <= 2:
         raise ValueError('timeout_seconds must be 1..120 and workers 1..2')
     config['num_ctx'] = config.get('num_ctx', 4096)
@@ -203,6 +259,7 @@ class Bridge:
         self.root, self.config, self.corpus, self.transport = root, config, corpus, transport
         self.executor = ThreadPoolExecutor(max_workers=config.get('workers', 1))
         self.active = {}
+        self.limiter = RequestLimiter(config)
         self.running = True
         self.root.mkdir(parents=True, exist_ok=True)
         self.lock = self.root / 'worker.lock'
@@ -210,6 +267,21 @@ class Bridge:
         (self.lock / 'pid').write_text(str(os.getpid()), encoding='ascii')
 
     def answer(self, request):
+        # This boundary also protects direct calls, not just spool/UI submissions.
+        account, question = request.get('account'), request.get('question')
+        if (not self.config['enabled'] or not isinstance(account, str) or
+                not re.fullmatch(r'[a-f0-9]{32}', account) or
+                not isinstance(question, str) or not question.strip() or len(question) > 500):
+            return {'id': request.get('id'), 'status': 'unavailable'}
+        status, retry = self.limiter.acquire(account)
+        if status:
+            return {'id': request['id'], 'status': status, 'retry_seconds': retry}
+        try:
+            return self._answer(request)
+        finally:
+            self.limiter.release(account)
+
+    def _answer(self, request):
         question = request['question']
         words = set(re.findall(r'[a-z]{3,}', question.lower()))
         words -= {'how', 'the', 'get', 'craft', 'can', 'make', 'with', 'and', 'nomads', 'gaia'}
@@ -249,6 +321,7 @@ class Bridge:
             return {'id': request['id'], 'status': 'unavailable'}
 
     def tick(self):
+        atomic_json(self.root / 'limits.json', self.limiter.limits)
         atomic_json(self.root / 'health.json', {'enabled': self.config['enabled'], 'sequence': uuid.uuid4().hex, 'request_timeout_seconds': min(600, int(self.config.get('timeout_seconds', 45) * 8 / self.config.get('workers', 1)) + 15)})
         for slot, (request_id, future) in list(self.active.items()):
             ready = self.root / f'{slot}.ready'
