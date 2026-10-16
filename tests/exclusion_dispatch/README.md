@@ -36,3 +36,24 @@ exclude inter-sample sleeps. If resolution is inadequate, report that limitation
 do not infer equality or improvement. Larger 20000/40000 workloads require a fresh
 explicit resource plan/lease. No native run has yet been authorized or performed.
 No verified opcode, production CPU, server latency, disk-save or client claim.
+
+Native execution currently fails closed before launching any process while the
+corrected frozen packet awaits core review. No override flag bypasses that gate.
+`--source-only --output <fresh.json>` validates source extraction and transformations
+without requiring a BYOND installation. CI uses only this mode while native is held.
+The prepared Windows monitor samples each owned process every 25 ms, checks 40 CPU
+seconds/512 MiB peak working set, per-process wall and 90-second aggregate wall,
+checks diagnostics including BUG during execution and after exit, and retains PID,
+creation FILETIME, owned IPv4/IPv6 listener observations, final resource status,
+exit code, captured output and cleanup
+receipts even on failure. A failed final query fails closed. The monitor itself
+has not yet been exercised against native BYOND; no monitoring acceptance is claimed.
+
+The revised authorized boundary permits a temporary listener bound only to
+127.0.0.1. Frozen runtime argv includes separate `-ip`, `127.0.0.1` values.
+The bundled 516.1681 reference documents this address-binding option. The monitor
+rejects every observed owned listener with another address or an IPv6 family;
+the fixture also closes the port and rejects reopening. Sampling cannot prove
+no transient listener between observations; the fixed argv supplies the binding
+constraint. Source-only outputs retain generated inputs and hashes including
+runner/monitor text. Native mode must match a separately reviewed input receipt.
