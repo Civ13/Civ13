@@ -1,5 +1,6 @@
 // Production admission/wrapper code; storage adapters expose callback boundaries.
 world
+	sleep_offline = FALSE
 	maxx = 2
 	maxy = 2
 	maxz = 1
@@ -11,6 +12,8 @@ world
 	Error(exception/E)
 		file("unexpected.txt") << "[E] [E.file]:[E.line]"
 		shutdown()
+	OpenPort(port)
+		return port == "none" ? ..("none") : 0
 
 var/checks = 0
 var/probe_failure
