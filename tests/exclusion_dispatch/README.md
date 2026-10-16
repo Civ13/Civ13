@@ -66,3 +66,20 @@ and exact compiler/daemon arguments. Both binaries are checked again immediately
 before launch and must match the lease; compiler and daemon banners are required.
 The probe retains pre-close address/port, close success, closed port, reopen
 rejection and final closed port, failing with a diagnostic if they differ.
+
+## First native attempt
+
+The authorized one-shot sequence at `e1b4521710e4e36308c5df676a57bd5a3b0a345c`
+started 2026-10-16 22:03:07 UTC. Compilation passed with zero errors and warnings.
+The monitor stopped the first parity run after detecting an engine diagnostic;
+the sequence ended after 1.141 seconds. No completed parity result, controls or
+timing samples were obtained. The owned compiler/daemon were reaped; no unexpected
+listener was sampled, which is not positive loopback-bind evidence. The exact
+diagnostic was lost because temporary cleanup preceded the old runner's log copy;
+the cause remains unknown. No unchanged retry was made and the slot was released.
+
+Failure-path retention now copies engine/network/result logs in finally before
+temporary cleanup. Three fake-process tests check diagnostic retention, pre-spawn
+deadline rejection and fast-exit final-query failure cleanup. They pass without
+starting BYOND and do not replace native parity or timing. This remains a draft
+candidate without a demonstrated performance benefit.

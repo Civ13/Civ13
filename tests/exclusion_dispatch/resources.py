@@ -144,6 +144,8 @@ class Budget:
             if expired and not state['stop_reason']:
                 state['stop_reason'] = 'Shared lease expired during final accounting'
             Path(receipt).write_text(json.dumps(state, indent=2) + '\n')
+            if diagnostic_file and diagnostic_file.exists():
+                Path(str(receipt) + '.engine.log').write_bytes(diagnostic_file.read_bytes())
             Path(str(receipt) + '.stdout').write_bytes(stdout or tail_out)
             Path(str(receipt) + '.stderr').write_bytes(stderr or tail_err)
             if expired:

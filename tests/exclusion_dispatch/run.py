@@ -127,7 +127,13 @@ with tempfile.TemporaryDirectory(prefix='civ13-exclusion-') as temp:
     (logs / 'compile.log').write_text(log)
     assert build.returncode == 0 and '516.1681' in log and '0 errors, 0 warnings' in log, log
     assert binary_info(daemon) == binaries['daemon']
-    run = budget.run([str(daemon)] + daemon_args, cwd=root, receipt=logs / 'runtime-resource.json', wall_limit=60, diagnostic_file=root / 'runtime.log')
+    try:
+        run = budget.run([str(daemon)] + daemon_args, cwd=root, receipt=logs / 'runtime-resource.json', wall_limit=60, diagnostic_file=root / 'runtime.log')
+    finally:
+        # Preserve failure diagnostics before TemporaryDirectory removes them.
+        for name in ['runtime.log', 'network-failure.json', 'result.json']:
+            if (root / name).exists():
+                (logs / name).write_bytes((root / name).read_bytes())
     log = (root / 'runtime.log').read_text(errors='replace') + (run.stdout + run.stderr).decode(errors='replace')
     (logs / 'runtime.log').write_text(log)
     if (root / 'network-failure.json').exists():
