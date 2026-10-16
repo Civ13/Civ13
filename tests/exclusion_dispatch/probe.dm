@@ -6,6 +6,7 @@ var/list/details = list()
 var/list/samples = list()
 var/list/parent_trace = list()
 var/mutate_parent = FALSE
+var/list/network_receipt = list()
 /datum
 	var/name = "fixture"
 	var/map_storage_saved_vars = "name;dir"
@@ -30,7 +31,17 @@ var/mutate_parent = FALSE
 	return FALSE
 /world/New()
 	..()
-	OpenPort("none")
+	network_receipt["preclose_address"] = address
+	network_receipt["preclose_port"] = port
+	network_receipt["close_result"] = OpenPort("none")
+	network_receipt["closed_port"] = port
+	network_receipt["reopen_result"] = OpenPort(0)
+	network_receipt["after_reopen_port"] = port
+	if(network_receipt["preclose_address"] != "127.0.0.1" || network_receipt["close_result"] != 1 || network_receipt["closed_port"] != 0 || network_receipt["reopen_result"] != FALSE || port != 0)
+		text2file(json_encode(network_receipt),"network-failure.json")
+		world.log << "BUG: fixture network contract failed"
+		del(world)
+		return
 	spawn(1) run_probe()
 /proc/assert_equal(a, b, label)
 	cases++
@@ -98,5 +109,5 @@ var/mutate_parent = FALSE
 				sleep(1)
 		del(D)
 #endif
-	text2file(json_encode(list("cases"=cases,"failures"=failures,"details"=details,"samples"=samples)),"result.json")
+	text2file(json_encode(list("cases"=cases,"failures"=failures,"details"=details,"samples"=samples,"network"=network_receipt)),"result.json")
 	del(world)

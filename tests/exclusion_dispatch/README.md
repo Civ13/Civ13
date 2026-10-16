@@ -57,6 +57,12 @@ the fixture also closes the port and rejects reopening. Sampling cannot prove
 no transient listener between observations; the fixed argv supplies the binding
 constraint. Source-only outputs retain generated inputs and hashes including
 runner/monitor text. Native mode must match a separately reviewed input receipt.
-All five invocations use the same issued/expires UTC receipt with at most 90
-seconds between those timestamps. Each process monitor converts the remaining
-shared window to a monotonic deadline, so later commands cannot reset the budget.
+All five invocations use the same issued/expires UTC and system-monotonic receipt
+with at most 90 seconds between issued/deadline timestamps. Each process monitor
+uses that exact shared monotonic deadline, including a check before Popen and
+final accounting, so later commands cannot reset the budget. Frozen packets also
+contain trusted executable paths, SHA-256 hashes, static file version resources
+and exact compiler/daemon arguments. Both binaries are checked again immediately
+before launch and must match the lease; compiler and daemon banners are required.
+The probe retains pre-close address/port, close success, closed port, reopen
+rejection and final closed port, failing with a diagnostic if they differ.

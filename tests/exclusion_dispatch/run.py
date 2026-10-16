@@ -9,7 +9,8 @@ import re
 import subprocess
 import sys
 import tempfile
-from resources import Budget, DIAGNOSTIC
+import time
+from resources import Budget, DIAGNOSTIC, binary_info
 
 BASE = '41e2d02fe1f9130e0987aee0efd2eba0ca7b3bf1'
 PATH = 'code/modules/persistence/functions.dm'
@@ -72,6 +73,13 @@ inputs = {name: hashlib.sha256(content.encode()).hexdigest() for name, content i
     'production.dm': source, 'probe.dm': probe, 'probe.dme': header,
     'runner.py': Path(__file__).read_text(), 'resources.py': Path(__file__).with_name('resources.py').read_text(),
 }.items()}
+compiler = a.byond_bin.resolve() / ('dm.exe' if os.name == 'nt' else 'DreamMaker') if a.byond_bin else None
+daemon = a.byond_bin.resolve() / ('dd.exe' if os.name == 'nt' else 'DreamDaemon') if a.byond_bin else None
+compiler_args = ['-max_errors', '0', 'probe.dme']
+daemon_args = ['probe.dmb', '-ip', '127.0.0.1', '-invisible', '-close', '-safe', '-log', 'runtime.log']
+binaries = {name: binary_info(path)
+            for name, path in [('compiler', compiler), ('daemon', daemon)] if path}
+commands = dict(compiler=compiler_args, daemon=daemon_args)
 assert not a.output.exists(), 'Output must be fresh'
 a.output.parent.mkdir(parents=True, exist_ok=True)
 if a.source_only:
@@ -82,7 +90,8 @@ if a.source_only:
     a.output.write_text(json.dumps(dict(status='source-only; native not run',
         head_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(),
         baseline_sha=BASE, compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
-        probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), inputs=inputs), indent=2) + '\n')
+        probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), inputs=inputs, binaries=binaries,
+        commands=commands, required_version='516.1681'), indent=2) + '\n')
     sys.exit(0)
 # A lease receipt is recorded only after the core owner explicitly grants a slot.
 # It is an audit guard, not a substitute for that authorization.
@@ -94,28 +103,36 @@ issued = datetime.fromisoformat(lease['issued_utc'])
 expires = datetime.fromisoformat(lease['expires_utc'])
 assert 0 < (expires - issued).total_seconds() <= 90, 'All commands share at most one 90-second lease'
 assert issued <= datetime.now(timezone.utc) < expires
+assert 0 < lease['deadline_monotonic'] - lease['issued_monotonic'] <= 90
+assert lease['issued_monotonic'] <= time.monotonic() < lease['deadline_monotonic']
 mode = 'benchmark' if a.benchmark else (a.negative_control or 'parity')
 assert mode in lease['modes'] and a.calls <= lease['max_calls']
-assert a.expected_inputs and json.loads(a.expected_inputs.read_text())['inputs'] == inputs, 'Frozen inputs differ'
+frozen = json.loads(a.expected_inputs.read_text()) if a.expected_inputs else {}
+assert frozen.get('inputs') == inputs, 'Frozen inputs differ'
+assert binaries and frozen['binaries'] == binaries == lease['binaries'], 'Trusted binaries differ'
+assert commands == frozen['commands'] == lease['commands'], 'Frozen argv differs'
+assert lease['required_version'] == frozen['required_version'] == '516.1681'
 assert a.byond_bin, '--byond-bin required for native execution'
 logs = a.output.with_suffix('.logs')
 logs.mkdir(exist_ok=False)
-budget = Budget((expires - datetime.now(timezone.utc)).total_seconds())
+budget = Budget(lease['issued_monotonic'], lease['deadline_monotonic'])
 with tempfile.TemporaryDirectory(prefix='civ13-exclusion-') as temp:
     root = Path(temp)
     (root / 'production.dm').write_text(source)
     (root / 'probe.dm').write_text(probe)
     (root / 'probe.dme').write_text(header)
-    compiler = a.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
-    daemon = a.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
-    build = budget.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=root, receipt=logs / 'compile-resource.json')
+    assert binary_info(compiler) == binaries['compiler']
+    build = budget.run([str(compiler)] + compiler_args, cwd=root, receipt=logs / 'compile-resource.json')
     log = (build.stdout + build.stderr).decode(errors='replace')
     (logs / 'compile.log').write_text(log)
     assert build.returncode == 0 and '516.1681' in log and '0 errors, 0 warnings' in log, log
-    run = budget.run([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-invisible', '-close', '-safe', '-log', 'runtime.log'], cwd=root, receipt=logs / 'runtime-resource.json', wall_limit=60, diagnostic_file=root / 'runtime.log')
+    assert binary_info(daemon) == binaries['daemon']
+    run = budget.run([str(daemon)] + daemon_args, cwd=root, receipt=logs / 'runtime-resource.json', wall_limit=60, diagnostic_file=root / 'runtime.log')
     log = (root / 'runtime.log').read_text(errors='replace') + (run.stdout + run.stderr).decode(errors='replace')
     (logs / 'runtime.log').write_text(log)
-    assert run.returncode == 0 and not DIAGNOSTIC.search(log), log
+    if (root / 'network-failure.json').exists():
+        (logs / 'network-failure.json').write_bytes((root / 'network-failure.json').read_bytes())
+    assert run.returncode == 0 and '516.1681' in log and not DIAGNOSTIC.search(log), log
     result = json.loads((root / 'result.json').read_text())
     result.update(head_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(), baseline_sha=BASE, negative_control=a.negative_control, benchmark=a.benchmark, calls=a.calls, byond='516.1681', platform=os.name,
                   source_sha256=hashlib.sha256(current.encode()).hexdigest(), compiled_sha256=hashlib.sha256(source.encode()).hexdigest(), probe_sha256=hashlib.sha256(probe.encode()).hexdigest())

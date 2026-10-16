@@ -2,6 +2,7 @@
 import ctypes
 from ctypes import wintypes as w
 import json
+import hashlib
 import os
 from pathlib import Path
 import re
@@ -11,6 +12,24 @@ import struct
 import time
 
 DIAGNOSTIC = re.compile(r'\bBUG\b|runtime error|Bad ref|Bad loc|Cannot read null|Cannot execute null', re.I)
+
+def binary_info(path):
+    if os.name != 'nt':
+        raise RuntimeError('Frozen native binaries currently support Windows only')
+    api = ctypes.windll.version
+    size = api.GetFileVersionInfoSizeW(str(path), None)
+    if not size:
+        raise OSError('Missing native version resource')
+    data = ctypes.create_string_buffer(size)
+    pointer = ctypes.c_void_p()
+    length = w.UINT()
+    if not api.GetFileVersionInfoW(str(path), 0, size, data) or not api.VerQueryValueW(data, '\\', ctypes.byref(pointer), ctypes.byref(length)):
+        raise OSError('Native version query failed')
+    fixed = ctypes.cast(pointer, ctypes.POINTER(w.DWORD))
+    assert fixed[0] == 0xFEEF04BD and length.value >= 52
+    version = '.'.join(str(n) for n in [fixed[2] >> 16, fixed[2] & 65535, fixed[3] >> 16, fixed[3] & 65535])
+    assert version == '5.0.516.1681', version
+    return dict(path=str(path), sha256=hashlib.sha256(path.read_bytes()).hexdigest(), file_version=version)
 
 def listeners(pid):
     """Query only listener rows belonging to the exact owned PID."""
@@ -59,13 +78,17 @@ def snapshot(process):
     raise RuntimeError('Native resource monitoring currently supports Windows only')
 
 class Budget:
-    def __init__(self, remaining_lease_seconds):
-        self.started = time.monotonic()
-        self.deadline = self.started + min(90, remaining_lease_seconds)
+    def __init__(self, issued_monotonic, deadline_monotonic):
+        self.started = issued_monotonic
+        self.deadline = deadline_monotonic
+        assert 0 < self.deadline - self.started <= 90
+        assert self.started <= time.monotonic() < self.deadline
 
     def run(self, command, cwd, receipt, wall_limit=30, diagnostic_file=None):
         if os.name != 'nt':
             raise RuntimeError('No reviewed native monitor for this platform')
+        if time.monotonic() >= self.deadline:
+            raise RuntimeError('Shared lease expired before process creation')
         began = time.monotonic()
         child = subprocess.Popen(command, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                  creationflags=subprocess.CREATE_NO_WINDOW)
@@ -116,6 +139,12 @@ class Budget:
                 child.kill()
             tail_out, tail_err = child.communicate()
             state.update(returncode=child.returncode, reaped=child.poll() is not None)
+            state['final_accounting_monotonic'] = time.monotonic()
+            expired = state['final_accounting_monotonic'] > self.deadline
+            if expired and not state['stop_reason']:
+                state['stop_reason'] = 'Shared lease expired during final accounting'
             Path(receipt).write_text(json.dumps(state, indent=2) + '\n')
             Path(str(receipt) + '.stdout').write_bytes(stdout or tail_out)
             Path(str(receipt) + '.stderr').write_bytes(stderr or tail_err)
+            if expired:
+                raise RuntimeError('Shared lease expired during final accounting')
