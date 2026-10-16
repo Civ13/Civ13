@@ -14,6 +14,9 @@ world
 
 var/checks = 0
 var/probe_failure
+var/datum/operation_job_adapter/job_master = new
+/datum/operation_job_adapter/proc/initialize_position_limits()
+	return
 /proc/check(condition, label)
 	checks++
 	if(!condition && !probe_failure)
@@ -139,7 +142,7 @@ var/probe_failure
 			if(direct) S.Load_World()
 			else ticker.loadmap()
 		catch(var/exception/E)
-			check(direct, "only direct backend rethrows")
+			check(direct && E.name == "expected backend", "only direct backend rethrows")
 		check(persistence_load_recovery_required && persistence_save_in_progress && !persistence_active_operation, "mutating failure retains recovery hold")
 		check(!ticker.savemap() && !ticker.loadmap() && !S.Save_World() && !S.Load_World(), "recovery hold rejects all entry points")
 	S = fresh_probe()
