@@ -27,15 +27,17 @@ def main():
     parser.add_argument('--startup-only', action='store_true',
                         help='Diagnose production initialization without running any persistence assertions')
     parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
-    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity', 'lighting-view'))
+    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity', 'lighting-view', 'shutdown-return'))
     args = parser.parse_args()
     lighting_control = bool(args.negative_control and args.negative_control.startswith('lighting-'))
     if args.lighting and (args.dimension_bootstrap or args.recovery_reconnect or args.lifecycle_shutdown or args.startup_only or (args.negative_control and not lighting_control)):
         parser.error('Lighting recovery runs separately from other fixture modes')
     if lighting_control and not args.lighting:
         parser.error('Lighting controls require --lighting')
-    if args.lifecycle_shutdown and (args.recovery_reconnect or args.dimension_bootstrap or args.startup_only or args.negative_control):
+    if args.lifecycle_shutdown and (args.recovery_reconnect or args.dimension_bootstrap or args.startup_only or args.negative_control not in (None, 'shutdown-return')):
         parser.error('Lifecycle shutdown runs separately from other fixture modes')
+    if args.negative_control == 'shutdown-return' and not args.lifecycle_shutdown:
+        parser.error('Shutdown return control requires --lifecycle-shutdown')
     if args.recovery_reconnect and (args.dimension_bootstrap or args.startup_only or args.negative_control not in (None, 'reclaim-order')):
         parser.error('Recovery reconnect checks run separately from other fixture modes')
     if args.negative_control == 'reclaim-order' and not args.recovery_reconnect:
@@ -87,6 +89,7 @@ def main():
             'lighting-rebuild': ('code/modules/persistence/loading.dm', '\t\t\t\tlight_owner.update_light()', '\t\t\t\tif(FALSE) light_owner.update_light()'),
             'lighting-opacity': ('code/modules/persistence/loading.dm', '\t\t\t\tlight_turf.recalc_atom_opacity()', '\t\t\t\tif(FALSE) light_turf.recalc_atom_opacity()'),
             'lighting-view': ('code/modules/persistence/functions.dm', '!istype(mob, /mob/new_player) && mob != dview_mob', '!istype(mob, /mob/new_player)'),
+            'shutdown-return': ('code/modules/persistence/restart_transaction.dm', '\tdel(world)\n\t// Native deletion can return until the current execution yields. Give BYOND\n\t// that boundary before failure cleanup can consume the valid restart intent.\n\tsleep(1)\n', '\tdel(world)\n'),
         }
         if args.negative_control:
             relative, before, after = mutations[args.negative_control]
@@ -229,6 +232,30 @@ def main():
         if not result_path.is_file():
             raise RuntimeError('Native daemon exited without a result; see daemon-exit.json and probe-progress.log')
         result = json.loads(result_path.read_text(encoding='utf-8'))
+        if args.lifecycle_shutdown:
+            # The DM receipt is written before native deletion. Acceptance must
+            # inspect disk after the process exits, including delayed cleanup.
+            if not result.get('done') or result.get('checks', 0) < 7:
+                raise RuntimeError('Native shutdown assertions incomplete: ' + str(result))
+            intent_path = output / 'map_saves/restart_intent.json'
+            if args.negative_control == 'shutdown-return':
+                if intent_path.exists() or 'Native shutdown returned without closing the world' not in log:
+                    raise RuntimeError('Shutdown return control did not reproduce intent cleanup')
+                receipt['post_exit_intent_preserved'] = False
+                receipt['expected_failure_caught'] = True
+            else:
+                intent_text = intent_path.read_text(encoding='utf-8-sig')
+                intent = json.loads(intent_text)
+                marker = (output / 'map_saves/save_complete.txt').read_text().strip()
+                if (hashlib.md5(intent_text.encode('utf-8')).hexdigest() != result.get('intent_hash') or
+                        intent.get('generation') != result.get('generation') or marker != intent['generation']):
+                    raise RuntimeError('Native shutdown changed the published recovery intent')
+                receipt['post_exit_intent_preserved'] = True
+                receipt['expected_failure_caught'] = False
+            receipt['result'] = result
+            (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+            print(json.dumps(receipt, indent=2))
+            return
         expected = {'season': 'environment phase reset', 'preflight': 'malformed artillery sentinel mutated world',
                     'reachability': 'orphan metadata reference accepted', 'callback': 'restored callback duplicated',
                     'timer-restore': 'persisted callback was not restored',

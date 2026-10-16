@@ -78,6 +78,8 @@ def main():
     expected = {'authentication': ['nonloopback accepted'], 'shutdown-generation': ['changed final generation reached shutdown']}.get(args.negative_control, [])
     if failures != expected or not result.get('done') or not result.get('intent_durable') or result.get('checks', 0) < 25 or result.get('failures') != len(expected):
         raise RuntimeError(f'Unexpected lifecycle assertions: {result}, {failures}')
+    if not (output / 'map_saves/restart_intent.json').is_file():
+        raise RuntimeError('Native shutdown consumed the published intent after its success receipt')
     receipt['result'] = result
     (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
     print(json.dumps(result))

@@ -292,6 +292,12 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
 
+<!-- 2026-10-15: native graceful shutdown boundary -->
+Native BYOND `del(world)` can return before process exit. Yield before declaring
+shutdown failure, or transaction cleanup can erase the published recovery intent.
+The lifecycle disk fixture checks the intent after exit; its `shutdown-return`
+negative control reproduces the old immediate cleanup.
+
 <!-- 2026-10-15: archived combat histories -->
 Combat history writers use `append_attack_log`; ghosts share the body's list.
 Keep the mob history declared as `var/list` for native list method resolution.

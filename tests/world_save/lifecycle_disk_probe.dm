@@ -7,7 +7,7 @@ var/lifecycle_disk_session
 	durable_world_check(matches(I, current_identity()), "disk intent lost completed generation")
 	durable_world_check(I["lifecycle_operation"] == lifecycle_disk_operation && I["lifecycle_session"] == lifecycle_disk_session, "disk intent lost acknowledged request binding")
 	durable_world_check(fexists("map_saves/1.sav") && fexists("map_saves/2.sav") && fexists("map_saves/round.json"), "disk generation files incomplete")
-	text2file(json_encode(list("done" = !durable_probe_failed, "checks" = durable_probe_checks)), "metadata-result.json")
+	text2file(json_encode(list("done" = !durable_probe_failed, "checks" = durable_probe_checks, "intent_hash" = md5(file2text(intent_path)), "generation" = I["generation"])), "metadata-result.json")
 	return ..()
 /world/New()
 	world.OpenPort(0)

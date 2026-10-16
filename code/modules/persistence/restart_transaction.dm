@@ -104,6 +104,9 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	// Native graceful world deletion lets the external supervisor preserve the
 	// completed generation and replace the binary before the next startup.
 	del(world)
+	// Native deletion can return until the current execution yields. Give BYOND
+	// that boundary before failure cleanup can consume the valid restart intent.
+	sleep(1)
 	throw EXCEPTION("Native shutdown returned without closing the world")
 
 /datum/persistence_restart_transaction/proc/execute(shutdown = FALSE, operation, session)
