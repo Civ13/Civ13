@@ -84,7 +84,7 @@ def main():
         raise RuntimeError(f'Unexpected native diagnostic; inspect {output}')
     result = (output / 'result.txt').read_text().strip()
     failure = (output / 'failure.txt').read_text().strip() if (output / 'failure.txt').exists() else ''
-    expected = {'admission': 'announcement sleep: wrapper save rejected',
+    expected = {'admission': 'announcement sleep: direct save rejected',
                 'stale': 'stale finish rejected',
                 'recovery': 'mutating failure retains recovery hold',
                 'player-ready': 'final callback restores players while operation held'}

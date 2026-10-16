@@ -54,7 +54,12 @@ var/datum/operation_job_adapter/job_master = new
 		return
 	finish_player_restoration()
 		check(..(), "final callback restores players while operation held")
-		if(finish_callback) overlap("client callback")
+		if(finish_callback)
+			var/mob/living/human/H = new(locate(1,1,1))
+			H.persistence_owner_ckey = "probeowner"
+			register_restored_player(H)
+			check(find_restored_player("probeowner") == H, "held final phase permits owned player lookup")
+			overlap("client callback")
 	clear_bookkeeping()
 		if(cleanup_failure) throw EXCEPTION("expected cleanup")
 		return ..()
@@ -75,10 +80,10 @@ var/datum/operation_job_adapter/job_master = new
 		var/before_entries = entries
 		var/before_clears = clears
 		var/datum/persistence_world_operation/owner = persistence_active_operation
-		check(!ticker.savemap(), "[label]: wrapper save rejected")
-		check(!ticker.loadmap(), "[label]: wrapper load rejected")
 		check(!Save_World(), "[label]: direct save rejected")
 		check(!Load_World(), "[label]: direct load rejected")
+		check(!ticker.savemap(), "[label]: wrapper save rejected")
+		check(!ticker.loadmap(), "[label]: wrapper load rejected")
 		if(owner.backend_started)
 			check(!run_world_operation(owner.kind, owner), "[label]: repeated backend rejected")
 		check(entries == before_entries && clears == before_clears, "[label]: no rejected mutation")
