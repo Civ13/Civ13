@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 from collections import deque
+from functools import lru_cache
 import json
 from pathlib import Path
 import re
@@ -88,30 +89,88 @@ def flood(start, passable):
     return visited
 
 
+def extrude(cells, levels):
+    return {(x, y, z) for z in levels for x, y in cells}
+
+
+def translated(points, origin):
+    return {tuple(a + b for a, b in zip(point, origin)) for point in points}
+
+
+def flood3(start, passable, links=()):
+    vertical = {}
+    for lower, upper in links:
+        vertical.setdefault(lower, set()).add(upper)
+        vertical.setdefault(upper, set()).add(lower)
+    visited = set(start) & passable
+    pending = deque(visited)
+    while pending:
+        point = pending.popleft()
+        x, y, z = point
+        neighbors = {(x-1, y, z), (x+1, y, z), (x, y-1, z), (x, y+1, z)} | vertical.get(point, set())
+        for neighbor in neighbors:
+            if neighbor in passable and neighbor not in visited:
+                visited.add(neighbor)
+                pending.append(neighbor)
+    return visited
+
+
+def stair_links(layout, actual):
+    links, endpoints, ids, areas = [], set(), set(), set()
+    for stair in layout["stairs"]:
+        lower, upper = tuple(stair["lower"]), tuple(stair["upper"])
+        require(stair["id"] not in ids and stair["pair_area_id"] not in areas, "duplicate stair identity")
+        ids.add(stair["id"])
+        areas.add(stair["pair_area_id"])
+        require(len(lower) == len(upper) == 3 and lower[:2] == upper[:2] and upper[2] == lower[2] + 1,
+                "stairs must pair adjacent local decks at matching XY")
+        require(lower in actual and upper in actual and not {lower, upper} & endpoints, "stair endpoint outside footprint or duplicated")
+        endpoints.update((lower, upper))
+        for point, field in ((lower, "lower_palette"), (upper, "upper_palette")):
+            palette = stair[field]
+            require(actual[point] == palette and source.PALETTE[palette][2], "missing or blocked stair endpoint")
+            require(f'area_id = "{stair["pair_area_id"]}"' in source.PALETTE[palette][0], "stair pair area identity mismatch")
+        links.append((lower, upper))
+    require(len(links) == 6 and {p for p, kind in actual.items() if kind.startswith("stair_")} == endpoints,
+            "all six stair pairs must be declared exactly")
+    return links
+
+
 def check_arrivals(layout, grid, actual, ports):
-    """Overlay both trains onto parsed empty destinations for route analysis."""
+    """Overlay both complete 3D trains; only declared stairs link decks."""
     raids = [s for s in layout["slots"] if s["kind"] == "raid_berth"]
-    for raid_z in {s["origin"][2] for s in raids}:
-        composition = {(x, y): kind for (x, y, zz), (kind, area) in grid.items() if zz == raid_z}
-        for arrival in raids:
-            ax, ay, az = arrival["origin"]
-            if az == raid_z:
-                composition.update({(ax + x, ay + y): kind for (x, y), kind in actual.items()})
-        composed_passable = {p for p, kind in composition.items() if source.PALETTE[kind][2]}
-        shared_cells = set().union(*(rectangle(a["bounds"]) for a in layout["shared_access"] if a["z"] == raid_z))
-        require(bool(shared_cells), "missing shared arrival access")
-        shared_reachable = flood([next(iter(shared_cells))], composed_passable)
-        require(shared_cells <= shared_reachable, "simultaneous arrivals disconnect shared platform")
-        for arrival in raids:
-            ax, ay, az = arrival["origin"]
-            if az != raid_z:
-                continue
-            require({(ax + x, ay + y) for x, y in ports} <= shared_reachable, "simultaneous arrivals cannot route to platform")
-            require(all((ax + p[0], ay + p[1]) in shared_reachable for p in layout["anchors"].values()), "simultaneous arrival internal route blocked")
+    levels = {z for slot in raids for z in range(slot["reserved_z"][0], slot["reserved_z"][1] + 1)}
+    composition = {p: kind for p, (kind, area) in grid.items() if p[2] in levels}
+    links = []
+    for arrival in raids:
+        origin = arrival["origin"]
+        composition.update({tuple(a+b for a, b in zip(p, origin)): kind for p, kind in actual.items()})
+        for stair in layout["stairs"]:
+            lower, upper = (tuple(a+b for a,b in zip(stair[field], origin)) for field in ("lower", "upper"))
+            links.append((lower, upper))
+    composed_passable = {p for p, kind in composition.items() if source.PALETTE[kind][2]}
+    shared_cells = set().union(*(extrude(rectangle(a["bounds"]), [a["z"]]) for a in layout["shared_access"]))
+    require(bool(shared_cells), "missing shared arrival access")
+    shared_reachable = flood3([min(shared_cells)], composed_passable, links)
+    require(shared_cells <= shared_reachable, "simultaneous arrivals disconnect shared platform")
+    for arrival in raids:
+        require(translated(extrude(ports, [0]), arrival["origin"]) <= shared_reachable, "simultaneous arrivals cannot route to platform")
+        require(translated({p for p, kind in actual.items() if source.PALETTE[kind][2]}, arrival["origin"]) <= shared_reachable,
+                "simultaneous arrival deck or roof route blocked")
+
+
+def check_core_separation(layout, passable, links):
+    protected = extrude(rectangle(layout["protected"]["bounds"]), [0])
+    eligible = extrude(rectangle(layout["protected"]["sustenance"]["bounds"]), [0])
+    outside = passable - protected
+    for field in ("inner_door", "outer_door"):
+        door = tuple(layout["protected"]["airlock"][field]) + (0,)
+        require(not flood3(outside, passable - {door}, links) & eligible,
+                "closed airlock door permits a 3D protected-core bypass")
 
 
 def _validate(layout, dmm_text, root):
-    require(layout["schema_version"] == 1, "unsupported schema")
+    require(layout["schema_version"] == 2, "unsupported schema")
     require(layout["coordinates"]["rotation_degrees"] == 0, "unsupported rotation")
     world = layout["world"]
     grid = parse_dmm(dmm_text.replace("\r\n", "\n"), world)
@@ -119,6 +178,12 @@ def _validate(layout, dmm_text, root):
     footprint = rectangle(bounds)
     require(mask(bounds, layout["footprint"]["mask_rows_south_to_north"]) == footprint, "full rectangular footprint required")
     require(footprint == set(source.train()), "footprint differs from source train")
+    levels = layout["footprint"]["local_z_levels"]
+    require(levels == [0, 1, 2, 3], "four local decks required")
+    footprint3 = extrude(footprint, levels)
+    require(set(source.train_levels()) == footprint3, "all-layer source footprint mismatch")
+    require([(level["id"], level["local_z"]) for level in layout["levels"]] == list(zip(("ground", "upper_1", "upper_2", "roof"), levels))
+            and all(level["build_supported"] is True and level["protected"] is (level["local_z"] == 0) for level in layout["levels"]), "deck identities or build/protection declaration mismatch")
     slots = layout["slots"]
     require(len({s["id"] for s in slots}) == len(slots), "duplicate slot ID")
     raids = [s for s in slots if s["kind"] == "raid_berth"]
@@ -136,32 +201,35 @@ def _validate(layout, dmm_text, root):
     require(policy["atomic_reservation_before_load_or_move"] is True, "own berth and footprint reservation must be atomic")
     require(policy["other_berths_remain_available"] is True, "other berths must remain available")
     require(policy["enforced_by_this_map"] is False, "map must not claim runtime reservation enforcement")
+    require(policy["all_levels_together"] is True, "reservation must claim all levels together")
     reservations = []
     placed_masks = []
     for slot in slots:
         ox, oy, z = slot["origin"]
         require(1 <= z <= world["levels"], "slot z out of bounds")
-        reserved = rectangle(slot["reserved_bounds"])
-        require(all(1 <= x <= world["width"] and 1 <= y <= world["height"] for x, y in reserved), "reservation out of bounds")
-        placed = {(ox + x, oy + y) for x, y in footprint}
+        rz0, rz1 = slot["reserved_z"]
+        require(slot["local_z_levels"] == levels and [rz0, rz1] == [z, z + 3], "slot must reserve all four relative decks")
+        reserved = extrude(rectangle(slot["reserved_bounds"]), range(rz0, rz1 + 1))
+        require(all(1 <= x <= world["width"] and 1 <= y <= world["height"] and 1 <= zz <= world["levels"] for x, y, zz in reserved), "reservation out of bounds")
+        placed = translated(footprint3, (ox, oy, z))
         require(placed <= reserved, "full footprint does not fit reservation")
-        for other_z, other in reservations:
-            require(z != other_z or not reserved & other, "padded reservations overlap")
-        reservations.append((z, reserved))
-        placed_masks.append((z, placed))
+        for other in reservations:
+            require(not reserved & other, "padded reservations overlap")
+        reservations.append(reserved)
+        placed_masks.append(placed)
         rows = slot.get("berth_mask_rows_south_to_north")
         if rows is not None:
             require(mask(bounds, rows) == footprint, "berth mask gaps")
         if slot["id"] != layout["prototype"]["slot"]:
-            require(all(grid[x, y, z] == ("berth", slot["id"]) for x, y in placed), "destination DMM is occupied or mask has gaps")
+            require(all(grid[p] == ("berth", slot["id"]) for p in placed), "destination DMM is occupied or mask has gaps")
     by_id = {s["id"]: s for s in slots}
     require(layout["prototype"]["slot"] in by_id, "missing prototype slot")
     for access in layout["shared_access"]:
         access_cells = rectangle(access["bounds"])
         az = access["z"]
         require(all(1 <= x <= world["width"] and 1 <= y <= world["height"] for x, y in access_cells), "shared access out of bounds")
-        for rz, reserved in reservations:
-            require(az != rz or not access_cells & reserved, "shared access encroaches reservation exclusion")
+        for reserved in reservations:
+            require(not extrude(access_cells, [az]) & reserved, "shared access encroaches reservation exclusion")
         require(all(source.PALETTE[grid[x, y, az][0]][2] for x, y in access_cells), "shared access blocked")
     bands = layout["exposed"]["boarding_bands"]
     band_ports = {(x, y) for lo, hi in bands for y in range(lo, hi + 1) for x in (bounds[0], bounds[2])}
@@ -185,14 +253,26 @@ def _validate(layout, dmm_text, root):
             bridge = {(x, y) for x in xs for y in range(ay - 1, ay + 2)}
             expected_bridges.update((x, y, z) for x, y in bridge)
             require(all(source.PALETTE[grid[x, y, z][0]][2] for x, y in bridge), "blocked anchor bridge")
-            for other_z, other in placed_masks:
-                require(z != other_z or not bridge & other, "anchor bridge overlaps train mask")
+            for other in placed_masks:
+                require(not extrude(bridge, [z]) & other, "anchor bridge overlaps train mask")
         require(len(slot["bridge_cells"]) == len(expected_bridges) and {tuple(p) for p in slot["bridge_cells"]} == expected_bridges, "bridge mask gaps or offset")
     slot = by_id[layout["prototype"]["slot"]]
     ox, oy, z = slot["origin"]
     actual = {p: grid[ox + p[0], oy + p[1], z][0] for p in footprint}
+    actual3 = {p: grid[ox + p[0], oy + p[1], z + p[2]][0] for p in footprint3}
+    links = stair_links(layout, actual3)
+    identity = layout["stair_identity_contract"]
+    require(identity["draft_pair_ids_only"] is True
+            and identity["runtime_pair_identity"] == "stable_train_id plus relative stair link ID"
+            and identity["rebind_after_restore_or_move"] is True
+            and identity["validate_actual_endpoint_occupancy"] is True
+            and identity["enforced_by_this_map"] is False, "stair identity requires stable train/link rebinding and actual endpoint validation")
+    passable3 = {p for p, kind in actual3.items() if source.PALETTE[kind][2]}
+    reachable3 = flood3([tuple(layout["exposed"]["boarding_ports"][0]) + (0,)], passable3, links)
+    require(passable3 <= reachable3, "disconnected deck or roof floor")
     passable = {p for p, kind in actual.items() if source.PALETTE[kind][2]}
     protected = rectangle(layout["protected"]["bounds"])
+    require(layout["protected"]["local_z"] == 0, "protected compartment belongs on ground deck")
     require(layout["protected"]["region_id"] == "dagger_party_safe_compartment", "safe compartment identity")
     sustenance = layout["protected"]["sustenance"]
     for field in ("nutrition", "hydration"):
@@ -232,25 +312,53 @@ def _validate(layout, dmm_text, root):
     require(interior <= reachable, "airlock interior unreachable")
     for door in (inner, outer):
         require(not flood(exposed & passable, passable - {door}) & eligible, "closed airlock door does not separate eligible compartment")
+    check_core_separation(layout, passable3, links)
     for p in layout["anchors"].values():
         require(tuple(p) in reachable, "unreachable anchor")
     for room in layout["rooms"]:
         room_cells = rectangle(room["bounds"])
-        require(room_cells <= (protected if room["protected"] else exposed), "room region mismatch")
-        require(bool(room_cells & reachable), "unreachable room")
+        local_z = room["local_z"]
+        region = (protected if room["protected"] else exposed) if local_z == 0 else footprint
+        require(local_z in levels and (local_z == 0 or room["protected"] is False) and room_cells <= region, "room region mismatch")
+        require(bool(extrude(room_cells, [local_z]) & reachable3), "unreachable room")
     boundary = layout["protected"]["boundary_protection"]
     expected_boundary = set()
     for ring in (protected, vestibule):
         expected_boundary |= {p for p in ring if any(q not in ring for q in ((p[0]-1,p[1]), (p[0]+1,p[1]), (p[0],p[1]-1), (p[0],p[1]+1)))}
-    expected_walls = {p for p in expected_boundary if actual[p] == "hull"}
+    expected_walls = {p for p in expected_boundary if actual[p] in ("hull", "pillar")}
     walls = [tuple(p) for p in boundary["wall_tiles"]]
     doors = [tuple(p) for p in boundary["door_tiles"]]
     require(len(walls) == len(set(walls)) and set(walls) == expected_walls
             and len(doors) == 2 and set(doors) == {inner, outer}, "boundary protection must cover exact protected walls and airlock doors")
     require(boundary["mode"] == "deny_mutation_not_health_only"
             and set(boundary["denied_paths"]) == {"damage", "deconstruction", "forced_entry", "removal", "replacement"}, "boundary protection must deny all mutation paths")
-    require(boundary["preserve_on_transport_and_restore"] is True and boundary["exposed_walls_protected"] is False
+    require(boundary["preserve_on_transport_and_restore"] is True and boundary["exposed_walls_protected"] is True
             and boundary["enforced_by_this_map"] is False, "boundary protection scope or runtime declaration mismatch")
+    vertical_boundary = layout["protected"]["vertical_boundary"]
+    require(vertical_boundary["floor_local_z"] == 0 and vertical_boundary["ceiling_local_z"] == 1
+            and rectangle(vertical_boundary["bounds"]) == protected
+            and vertical_boundary["no_uncontrolled_vertical_entry"] is True
+            and vertical_boundary["enforced_by_this_map"] is False, "protected vertical boundary declaration mismatch")
+    require(all(not (set(pair) & extrude(protected, [0])) for pair in links), "stairs bypass protected vertical boundary")
+    structural = layout["structure_protection"]
+    floor_layers = structural["floor_layers"]
+    require(len(floor_layers) == 4 and {layer["local_z"] for layer in floor_layers} == set(levels)
+            and all(rectangle(layer["bounds"]) == footprint for layer in floor_layers), "permanent floors must cover every entire deck")
+    for field, expected in (("wall_tiles", {p for p, kind in actual3.items() if kind == "hull"}),
+                            ("pillar_tiles", {p for p, kind in actual3.items() if kind == "pillar"}),
+                            ("door_tiles", {p for p, kind in actual3.items() if kind in ("door", "gate", "inner_gate")}),
+                            ("stair_tiles", {p for pair in links for p in pair})):
+        points = [tuple(p) for p in structural[field]]
+        require(len(points) == len(set(points)) and set(points) == expected, "permanent structure mask must cover exact walls pillars doors and stairs")
+    require(structural["mode"] == "deny_mutation_not_health_only"
+            and set(structural["denied_paths"]) == {"damage", "deconstruction", "forced_entry", "removal", "replacement"}
+            and structural["preserve_on_transport_and_restore"] is True
+            and structural["player_built_contents_inherit_protection"] is False
+            and structural["enforced_by_this_map"] is False, "permanent structure protection must exclude player contents and remain declarative")
+    transit = layout["transit_3d_contract"]
+    require(transit["operations"] == ["reserve", "save", "restore", "move", "retire"]
+            and all(transit[field] is True for field in ("all_levels_together", "stable_relative_z", "bounded_allocation", "post_callback_revalidation", "rollback_or_quarantine"))
+            and transit["enforced_by_this_map"] is False, "3D transit must preserve all decks with bounded atomic lifecycle declarations")
     infrastructure = layout["protected"]["infrastructure"]
     rooms = {room["id"]: room for room in layout["rooms"]}
     for name, room_id, palette in (("helm_controls", "helm", "helm_control"), ("engine_room", "engine", "engine_mount")):
@@ -286,19 +394,26 @@ def _validate(layout, dmm_text, root):
             and all(isinstance(sequence["requirements"][state], str) and sequence["requirements"][state].strip() for state in states), "raid sequence requires all ordered states and requirements")
     require(sequence["timings"] is None and sequence["enforced_by_this_map"] is False, "raid sequence timings unspecified and runtime disabled")
     for pad in layout["build_pads"] + layout["keep_clear"]:
-        require(rectangle(pad["bounds"]) <= reachable, "blocked build pad or keep-clear route")
-    occupied_pads = set().union(*(rectangle(pad["bounds"]) for pad in layout["build_pads"]))
-    clear_routes = set().union(*(rectangle(route["bounds"]) for route in layout["keep_clear"]))
+        require(extrude(rectangle(pad["bounds"]), [pad["local_z"]]) <= reachable3, "blocked build pad or keep-clear route")
+    occupied_pads = set().union(*(extrude(rectangle(pad["bounds"]), [pad["local_z"]]) for pad in layout["build_pads"]))
+    clear_routes = set().union(*(extrude(rectangle(route["bounds"]), [route["local_z"]]) for route in layout["keep_clear"]))
     require(not occupied_pads & clear_routes, "build pads overlap main routes")
-    remaining = flood([min(ports)], passable - occupied_pads)
-    require(ports | clear_routes <= remaining and all(tuple(p) in remaining for p in layout["anchors"].values()), "occupied build pads cut main routes")
-    check_arrivals(layout, grid, actual, ports)
+    remaining = flood3([min(ports) + (0,)], passable3 - occupied_pads, links)
+    require(extrude(ports, [0]) | clear_routes <= remaining and all(tuple(p) + (0,) in remaining for p in layout["anchors"].values())
+            and all(point in remaining for pair in links for point in pair), "occupied build pads cut main routes")
+    check_arrivals(layout, grid, actual3, ports)
     include = (Path(root) / "civ13.dme").read_text(encoding="utf-8")
     require(not re.search(r'^\s*#include\s+[^\n]*dagger_train_home', include, re.M | re.I), "draft map registered in civ13.dme")
-    expected_grid, expected_layout = source.build()
+    expected_dmm, expected_layout = expected_outputs()
     require(layout == expected_layout, "layout is not reproducible from generator")
-    require(dmm_text.replace("\r\n", "\n") == source.render_dmm(expected_grid), "DMM is not reproducible from generator")
-    return {"slots": len(slots), "raid_berths": len(raids), "reachable_train_tiles": len(reachable)}
+    require(dmm_text.replace("\r\n", "\n") == expected_dmm, "DMM is not reproducible from generator")
+    return {"slots": len(slots), "raid_berths": len(raids), "reachable_train_tiles": len(reachable3), "train_decks": len(levels)}
+
+
+@lru_cache(maxsize=1)
+def expected_outputs():
+    grid, layout = source.build()
+    return source.render_dmm(grid), layout
 
 
 def validate(layout, dmm_text, root=ROOT):

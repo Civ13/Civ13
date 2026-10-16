@@ -10,14 +10,22 @@ MAP_PATH = ROOT / "maps/WIP/dagger_train_home.dmm"
 LAYOUT_PATH = ROOT / "maps/WIP/dagger_train_home.layout.json"
 SIZE = 256
 WIDTH, LENGTH = 30, 102
+TRAIN_LEVELS = 4
+WORLD_LEVELS = 8
 PROTECTED_END = 45
 BOARDING_BANDS = ((52, 54), (68, 70))
+PILLARS = [(x, y) for x in (12, 17) for y in (13, 26, 39, 45, 93)] + [(11, 78), (18, 78)]
+STAIRS = [{"id": f"{core}{z}", "lower": [x, y + z, z], "upper": [x, y + z, z + 1],
+           "lower_palette": f"stair_{core}{z}_up", "upper_palette": f"stair_{core}{z}_down",
+           "pair_area_id": f"dagger_draft_{core}{z}"}
+          for core, x, y in (("a", 13, 72), ("b", 16, 87)) for z in range(3)]
 
 # Source palette is also consumed by the static preview/validator. Doors are
 # passable only for geometric route analysis; this is not authorization logic.
 PALETTE = {
     "void": ("/turf/wall/iron", "#171f27", False),
     "hull": ("/turf/wall/iron", "#596975", False),
+    "pillar": ('/turf/wall/iron{name = "Permanent Dagger support pillar - draft only"}', "#9babb7", False),
     "floor": ("/turf/floor/plating/steel", "#657b83", True),
     "safe": ("/turf/floor/wood", "#4b9b91", True),
     "yard": ("/turf/floor/plating/concrete", "#535e63", True),
@@ -38,6 +46,22 @@ PALETTE = {
     "toilet": ("/obj/structure/toilet,/turf/floor/wood", "#d3e3d9", False),
     "dirt": ("/obj/effect/decal/cleanable/dirt,/turf/floor/plating/steel", "#756d5c", True),
 }
+for stair in STAIRS:
+    for endpoint, suffix in (("lower", "up"), ("upper", "down")):
+        PALETTE[stair[f"{endpoint}_palette"]] = (
+            f'/obj/structure/multiz/ladder/ww2/stairs{suffix}{{area_id = "{stair["pair_area_id"]}"; dir = 1}},/turf/floor/plating/steel',
+            "#9eb8eb", True)
+
+
+def add_structure_and_stairs(tiles, local_z):
+    for point in PILLARS:
+        tiles[point] = "pillar"
+    for stair in STAIRS:
+        for endpoint in ("lower", "upper"):
+            x, y, z = stair[endpoint]
+            if z == local_z:
+                tiles[x, y] = stair[f"{endpoint}_palette"]
+    return tiles
 
 
 def cells(rect):
@@ -167,19 +191,56 @@ def train():
     tiles[3, 96] = tiles[26, 96] = "rack"
     for p in ((2, 53), (27, 54), (4, 69), (25, 70), (3, 72), (11, 75), (21, 88), (5, 97)):
         tiles[p] = "dirt"
-    return tiles
+    return add_structure_and_stairs(tiles, 0)
+
+
+def upper_deck(local_z):
+    """Permanent frame and empty build bays; furnishings are not starter stock."""
+    tiles = {(x, y): "floor" for y in range(LENGTH) for x in range(WIDTH)}
+    for x in range(WIDTH):
+        tiles[x, 0] = tiles[x, LENGTH - 1] = "hull"
+    for y in range(LENGTH):
+        tiles[0, y] = tiles[WIDTH - 1, y] = "hull"
+    if local_z < 3:
+        for x in (12, 17):
+            for y in range(1, 101):
+                tiles[x, y] = "hull"
+            for y in (6, 7, 19, 20, 32, 33, 48, 49, 60, 61, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 85, 86, 97, 98):
+                tiles[x, y] = "door" if y < 68 or y > 77 else "floor"
+        for y in (26, 45, 78, 79, 93):
+            for x in list(range(1, 12)) + list(range(18, 29)):
+                tiles[x, y] = "hull"
+        # Side utility benches leave build rectangles and stair landings clear.
+        for x in (2, 3, 4, 25, 26, 27):
+            tiles[x, 76] = "table" if local_z == 1 else "rack"
+        for x, y in ((3, 70), (26, 73), (6, 90), (23, 40)):
+            tiles[x, y] = "dirt"
+    else:
+        # Walkable roof with a permanent perimeter and aligned supports.
+        # Empty rectangles are construction zones, not free equipment.
+        for x, y in ((3, 8), (26, 36), (5, 70), (25, 96)):
+            tiles[x, y] = "dirt"
+    return add_structure_and_stairs(tiles, local_z)
+
+
+def train_levels():
+    return {(x, y, z): kind for z in range(TRAIN_LEVELS)
+            for (x, y), kind in (train() if z == 0 else upper_deck(z)).items()}
 
 
 def manifest():
     layout = {
-        "schema_version": 1,
-        "template_id": "dagger_home_draft_v3",
+        "schema_version": 2,
+        "template_id": "dagger_home_draft_v4",
         "status": "map study only; runtime integration disabled",
-        "coordinates": {"local": "zero-based southwest; +x east, +y north",
+        "coordinates": {"local": "zero-based southwest; +x east, +y north, +z up",
                         "world": "BYOND one-based", "transform": "world = origin + local", "rotation_degrees": 0},
-        "world": {"width": SIZE, "height": SIZE, "levels": 2},
-        "footprint": {"bounds": [0, 0, WIDTH - 1, LENGTH - 1], "mask_rows_south_to_north": ["1" * WIDTH] * LENGTH},
-        "protected": {"bounds": [0, 0, 29, PROTECTED_END], "policy": "owning_party_only", "while_raid_docked": True,
+        "world": {"width": SIZE, "height": SIZE, "levels": WORLD_LEVELS},
+        "levels": [{"id": name, "local_z": z, "build_supported": True, "protected": z == 0}
+                   for z, name in enumerate(("ground", "upper_1", "upper_2", "roof"))],
+        "footprint": {"bounds": [0, 0, WIDTH - 1, LENGTH - 1], "local_z_levels": list(range(TRAIN_LEVELS)),
+                      "mask_rows_south_to_north": ["1" * WIDTH] * LENGTH},
+        "protected": {"bounds": [0, 0, 29, PROTECTED_END], "local_z": 0, "policy": "owning_party_only", "while_raid_docked": True,
                       "region_id": "dagger_party_safe_compartment", "boundary_gates": [[15, 45]], "enforced_by_this_map": False,
                       "sustenance": {"bounds": [0, 0, 29, 38], "nutrition": "passive_increase", "hydration": "passive_increase",
                                      "cap": "normal_healthy_limits", "rate": None, "requires_actual_occupancy": True,
@@ -226,6 +287,7 @@ def manifest():
                                    "exclusive_reservation": False}],
         "reservation_policy": {"scope": "selected_berth_and_whole_footprint",
                                "atomic_reservation_before_load_or_move": True,
+                               "all_levels_together": True,
                                "other_berths_remain_available": True, "enforced_by_this_map": False},
         "draft_limits": {"demonstration_home_slots": 2, "simultaneous_raid_berths": 2,
                          "production_train_or_party_limit": None, "dynamic_z_allocation": False},
@@ -252,7 +314,7 @@ def manifest():
                     "departure": "revalidate custody and durable movement; release claims only after verified empty-slot retirement"},
                 "timings": None, "enforced_by_this_map": False},
             "enforced_by_this_map": False},
-        "runtime_contract_pending": ["atomic reservation of only the selected berth and own whole footprint before construction, load or move",
+        "runtime_contract_pending": ["atomic reservation of only the selected berth and own whole four-level footprint before construction, load or move",
                                      "other berth remains available to another party; pair geometry is not an exclusive claim",
                                      "exclusive train custody across home and berth",
                                      "party access and damage protection in every location",
@@ -267,6 +329,50 @@ def manifest():
                                      "post-callback occupancy revalidation",
                                      "durable move/load rollback or quarantine", "bounded retirement and verified empty slot reuse"],
     }
+    for collection in ("rooms", "build_pads", "keep_clear"):
+        for item in layout[collection]:
+            item["local_z"] = 0
+    # Upper decks have independent work/build rooms with a four-wide spine.
+    # Their floor forms an unbroken ceiling over the protected ground core.
+    segments = [(1, 25, 2, 23, "rear"), (27, 44, 28, 42, "mid"),
+                (46, 67, 47, 65, "workshop"), (80, 92, 81, 90, "utility"),
+                (94, 100, 95, 99, "forward")]
+    for z in (1, 2):
+        for side, x0, x1 in (("west", 1, 11), ("east", 18, 28)):
+            for y0, y1, py0, py1, name in segments:
+                identifier = f"upper_{z}_{side}_{name}"
+                layout["rooms"].append({"id": identifier, "name": f"Upper {z} {side} {name} build room",
+                                        "bounds": [x0, y0, x1, y1], "local_z": z, "protected": False})
+                layout["build_pads"].append({"id": identifier, "bounds": [x0 + 1, py0, x1 - 1, py1], "local_z": z})
+        layout["rooms"].append({"id": f"upper_{z}_landing", "name": f"Upper {z} sorting and stair landing",
+                                "bounds": [1, 68, 28, 77], "local_z": z, "protected": False})
+        layout["keep_clear"].extend([{"id": f"upper_{z}_spine", "bounds": [13, 1, 16, 100], "local_z": z},
+                                     {"id": f"upper_{z}_crossing", "bounds": [1, 68, 28, 70], "local_z": z}])
+    for side, x0, x1 in (("west", 2, 10), ("east", 19, 27)):
+        for y0, y1, name in ((2, 38, "rear"), (46, 66, "centre"), (80, 99, "forward")):
+            identifier = f"roof_{side}_{name}"
+            bounds = [x0, y0, x1, y1]
+            layout["rooms"].append({"id": identifier, "name": f"Roof {side} {name} build zone",
+                                    "bounds": bounds, "local_z": 3, "protected": False})
+            layout["build_pads"].append({"id": identifier, "bounds": bounds, "local_z": 3})
+    layout["keep_clear"].extend([{"id": "roof_spine", "bounds": [13, 1, 16, 100], "local_z": 3},
+                                 {"id": "roof_crossing", "bounds": [1, 68, 28, 70], "local_z": 3}])
+    layout["stairs"] = STAIRS
+    layout["stair_identity_contract"] = {
+        "draft_pair_ids_only": True, "runtime_pair_identity": "stable_train_id plus relative stair link ID",
+        "rebind_after_restore_or_move": True, "validate_actual_endpoint_occupancy": True, "enforced_by_this_map": False}
+    layout["transit_3d_contract"] = {
+        "operations": ["reserve", "save", "restore", "move", "retire"], "all_levels_together": True,
+        "stable_relative_z": True, "bounded_allocation": True, "post_callback_revalidation": True,
+        "rollback_or_quarantine": True, "enforced_by_this_map": False}
+    layout["protected"]["vertical_boundary"] = {
+        "floor_local_z": 0, "ceiling_local_z": 1, "bounds": list(layout["protected"]["bounds"]),
+        "no_uncontrolled_vertical_entry": True, "enforced_by_this_map": False}
+    layout["runtime_contract_pending"].extend([
+        "all permanent structure on ground, both upper floors and roof denies damage, deconstruction, forced entry, removal and replacement; player-built contents do not inherit invincibility",
+        "reserve, save, restore, move and retire all four levels together with bounded allocation, exclusive custody and recovery",
+        "protected core floor and ceiling reject vertical, roof, construction and removal bypass",
+        "rebind stair pairs by stable train identity and relative link ID after move or restore; validate endpoints without crossing parties"])
     protected_bounds = layout["protected"]["bounds"]
     boundary = {(x, y) for x, y in cells(protected_bounds)
                 if x in (0, WIDTH - 1) or y in (0, PROTECTED_END)}
@@ -275,28 +381,48 @@ def manifest():
     boundary |= {(x, y) for x, y in cells(airlock_bounds) if x in (ax0, ax1) or y in (ay0, ay1)}
     source_train = train()
     layout["protected"]["boundary_protection"] = {
-        "wall_tiles": [list(p) for p in sorted(boundary) if source_train[p] == "hull"],
+        "wall_tiles": [list(p) for p in sorted(boundary) if source_train[p] in ("hull", "pillar")],
         "door_tiles": [[14, 39], [15, 45]],
         "mode": "deny_mutation_not_health_only",
         "denied_paths": ["damage", "deconstruction", "forced_entry", "removal", "replacement"],
-        "preserve_on_transport_and_restore": True, "exposed_walls_protected": False,
+        "preserve_on_transport_and_restore": True, "exposed_walls_protected": True,
         "enforced_by_this_map": False}
     layout["protected"]["infrastructure"] = {
         "helm_controls": {"room_id": "helm", "marker": [24, 37], "palette": "helm_control", "upgradeable": True},
         "engine_room": {"room_id": "engine", "marker": [25, 29], "palette": "engine_mount", "upgradeable": True},
         "upgrade_costs": None, "upgrade_effects": None, "enforced_by_this_map": False}
+    volume = train_levels()
+    layout["structure_protection"] = {
+        "floor_layers": [{"local_z": z, "bounds": list(layout["footprint"]["bounds"])} for z in range(TRAIN_LEVELS)],
+        "wall_tiles": [list(p) for p, kind in sorted(volume.items()) if kind == "hull"],
+        "pillar_tiles": [list(p) for p, kind in sorted(volume.items()) if kind == "pillar"],
+        "door_tiles": [list(p) for p, kind in sorted(volume.items()) if kind in ("door", "gate", "inner_gate")],
+        "stair_tiles": [list(p) for p, kind in sorted(volume.items()) if kind.startswith("stair_")],
+        "mode": "deny_mutation_not_health_only",
+        "denied_paths": ["damage", "deconstruction", "forced_entry", "removal", "replacement"],
+        "preserve_on_transport_and_restore": True, "player_built_contents_inherit_protection": False,
+        "enforced_by_this_map": False}
     for slot in layout["slots"]:
+        if slot["kind"] == "raid_berth":
+            slot["origin"][2] = 5
+            for anchor in slot["platform_anchors"]:
+                anchor[2] = 5
+        base_z = slot["origin"][2]
+        slot["reserved_z"] = [base_z, base_z + TRAIN_LEVELS - 1]
+        slot["local_z_levels"] = list(range(TRAIN_LEVELS))
         slot["berth_mask_rows_south_to_north"] = ["1" * WIDTH] * LENGTH
         if slot["kind"] == "raid_berth":
             slot["boarding_width"], slot["platform_gap_tiles"] = 3, 6
             bridge_x = range(102, 109) if slot["platform_side"] == "east" else range(123, 130)
-            slot["bridge_cells"] = [[x, y, 2] for _, ay, _ in slot["platform_anchors"] for y in range(ay - 1, ay + 2) for x in bridge_x]
+            slot["bridge_cells"] = [[x, y, base_z] for _, ay, _ in slot["platform_anchors"] for y in range(ay - 1, ay + 2) for x in bridge_x]
+    for access in layout["shared_access"]:
+        access["z"] = 5
     return layout
 
 
 def build():
     layout = manifest()
-    grid = {(x, y, z): ("void", "Outside draft") for z in (1, 2) for y in range(1, SIZE + 1) for x in range(1, SIZE + 1)}
+    grid = {(x, y, z): ("void", "Outside draft") for z in range(1, WORLD_LEVELS + 1) for y in range(1, SIZE + 1) for x in range(1, SIZE + 1)}
 
     def fill(rect, z, kind, area):
         for x, y in cells(rect):
@@ -307,20 +433,24 @@ def build():
     fill([24, 32, 85, 167], 1, "yard", "Home west study")
     fill([152, 32, 213, 167], 1, "yard", "Home east study")
     # Two parallel destination berths share an exposed central platform.
-    fill([54, 52, 177, 197], 2, "yard", "Raid station study")
+    fill([54, 52, 177, 197], 5, "yard", "Raid station study")
     for access in layout["shared_access"]:
         fill(access["bounds"], access["z"], "platform", access["id"])
     for slot in layout["slots"]:
         x, y, z = slot["origin"]
-        fill([x, y, x + WIDTH - 1, y + LENGTH - 1], z, "berth", slot["id"])
+        for dz in slot["local_z_levels"]:
+            fill([x, y, x + WIDTH - 1, y + LENGTH - 1], z + dz, "berth", slot["id"])
     for x, y in ((58, 62), (172, 62), (58, 184), (172, 184), (84, 193), (144, 193)):
         for dx, dy in ((0, 0), (1, 0), (0, 1)):
-            grid[x + dx, y + dy, 2] = "crate", "Raid station study"
+            grid[x + dx, y + dy, 5] = "crate", "Raid station study"
     for x, y in ((60, 90), (170, 94), (60, 152), (170, 156), (96, 194), (136, 194)):
-        grid[x, y, 2] = "dirt", "Raid station study"
-    for (dx, dy), kind in train().items():
-        area = "Dagger safe sustenance study" if dy <= 38 else "Dagger airlock study" if dy <= PROTECTED_END else "Dagger exposed study"
-        grid[40 + dx, 48 + dy, 1] = kind, area
+        grid[x, y, 5] = "dirt", "Raid station study"
+    for (dx, dy, dz), kind in train_levels().items():
+        if dz == 0:
+            area = "Dagger safe sustenance study" if dy <= 38 else "Dagger airlock study" if dy <= PROTECTED_END else "Dagger exposed ground study"
+        else:
+            area = f'Dagger {layout["levels"][dz]["id"]} exposed study'
+        grid[40 + dx, 48 + dy, 1 + dz] = kind, area
     return grid, layout
 
 
@@ -332,7 +462,7 @@ def render_dmm(grid):
     for (kind, area), key in keys.items():
         atoms = PALETTE[kind][0]
         lines.append(f'"{key}" = ({atoms},/area{{name = "{area}"; location = 0}})')
-    for z in (1, 2):
+    for z in range(1, WORLD_LEVELS + 1):
         lines.extend(["", f'(1,1,{z}) = {{"'])
         for y in range(SIZE, 0, -1):
             lines.append("".join(keys[grid[x, y, z]] for x in range(1, SIZE + 1)))

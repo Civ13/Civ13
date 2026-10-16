@@ -7,13 +7,14 @@ import unittest
 from unittest.mock import patch
 
 import build_map
-from validate_map import check_arrivals, parse_dmm, rectangle, validate
+from validate_map import check_arrivals, check_core_separation, extrude, flood3, parse_dmm, rectangle, stair_links, translated, validate
 
 
 class LayoutTests(unittest.TestCase):
-    def setUp(self):
-        self.grid, self.layout = build_map.build()
-        self.dmm = build_map.render_dmm(self.grid)
+    @classmethod
+    def setUpClass(cls):
+        cls.grid, cls.layout = build_map.build()
+        cls.dmm = build_map.render_dmm(cls.grid)
 
     def reject_layout(self, mutate, message):
         layout = copy.deepcopy(self.layout)
@@ -30,7 +31,7 @@ class LayoutTests(unittest.TestCase):
     def local_world(self, point):
         slot = next(s for s in self.layout["slots"] if s["id"] == self.layout["prototype"]["slot"])
         x, y, z = slot["origin"]
-        return x + point[0], y + point[1], z
+        return x + point[0], y + point[1], z + (point[2] if len(point) == 3 else 0)
 
     def test_generated_and_checked_in_artifacts(self):
         self.assertEqual(validate(self.layout, self.dmm)["raid_berths"], 2)
@@ -152,7 +153,7 @@ class LayoutTests(unittest.TestCase):
         self.reject_layout(lambda x: x["protected"]["boundary_protection"]["wall_tiles"].pop(), "cover exact protected")
         self.reject_layout(lambda x: x["protected"]["boundary_protection"]["door_tiles"].pop(), "cover exact protected")
         for field, value in (("mode", "health_only"), ("denied_paths", ["damage"]),
-                             ("preserve_on_transport_and_restore", False), ("exposed_walls_protected", True),
+                             ("preserve_on_transport_and_restore", False), ("exposed_walls_protected", False),
                              ("enforced_by_this_map", True)):
             with self.subTest(field=field):
                 self.reject_layout(lambda x: x["protected"]["boundary_protection"].update({field: value}), "boundary protection")
@@ -204,18 +205,96 @@ class LayoutTests(unittest.TestCase):
 
     def test_actual_dmm_two_arrival_routing_negative_control(self):
         parsed = parse_dmm(self.dmm, self.layout["world"])
-        footprint = rectangle(self.layout["footprint"]["bounds"])
+        footprint = extrude(rectangle(self.layout["footprint"]["bounds"]), self.layout["footprint"]["local_z_levels"])
         actual = {p: parsed[self.local_world(p)][0] for p in footprint}
         ports = {tuple(p) for p in self.layout["exposed"]["boarding_ports"]}
         check_arrivals(self.layout, parsed, actual, ports)
         # Both source trains are composed with every real boarding cell blocked.
-        blocked = {p: ("hull" if p in ports else kind) for p, kind in actual.items()}
+        blocked = {p: ("hull" if p in extrude(ports, [0]) else kind) for p, kind in actual.items()}
         with self.assertRaisesRegex(ValueError, "simultaneous arrivals cannot route"):
             check_arrivals(self.layout, parsed, blocked, ports)
 
+    def test_every_destination_deck_is_empty(self):
+        for slot in self.layout["slots"][1:]:
+            for local_z in (1, 3):
+                x, y, z = slot["origin"]
+                with self.subTest(slot=slot["id"], deck=local_z):
+                    self.reject_tile((x + 2, y + 2, z + local_z), "crate", "destination DMM is occupied")
+
+    def test_all_deck_slot_reservations_and_relative_transform(self):
+        self.reject_layout(lambda x: x["slots"][2]["reserved_z"].__setitem__(1, x["slots"][2]["reserved_z"][1] - 1), "all four relative decks")
+        self.reject_layout(lambda x: x["slots"][2].update(local_z_levels=[0, 1, 2]), "all four relative decks")
+        self.reject_layout(lambda x: x["footprint"].update(local_z_levels=[0, 1, 2]), "four local decks")
+        self.assertEqual(translated({(1, 2, 3)}, (10, 20, 5)), {(11, 22, 8)})
+        self.reject_layout(lambda x: x["reservation_policy"].update(all_levels_together=False), "all levels together")
+
+    def test_reserved_upper_decks_collide_even_with_distinct_bases(self):
+        def mutate(layout):
+            west, east = layout["slots"][:2]
+            # Base z differs, but east ground intersects west roof at world z4.
+            east["origin"] = west["origin"][:2] + [4]
+            east["reserved_bounds"] = west["reserved_bounds"][:]
+            east["reserved_z"] = [4, 7]
+        self.reject_layout(mutate, "padded reservations overlap")
+
+    def test_roof_and_upper_build_routes_remain_clear(self):
+        for local_z in (1, 3):
+            pad = next(p for p in self.layout["build_pads"] if p["local_z"] == local_z)
+            self.reject_tile(self.local_world(pad["bounds"][:2] + [local_z]), "crate", "blocked build pad")
+        self.reject_layout(lambda x: x["build_pads"][-1].update(bounds=x["keep_clear"][-1]["bounds"], local_z=x["keep_clear"][-1]["local_z"]), "build pads overlap main routes")
+
+    def test_structure_masks_exclude_contents_and_cover_roof(self):
+        self.reject_layout(lambda x: x["structure_protection"]["floor_layers"].pop(), "every entire deck")
+        for field in ("wall_tiles", "pillar_tiles", "door_tiles", "stair_tiles"):
+            with self.subTest(field=field):
+                self.reject_layout(lambda x: x["structure_protection"][field].pop(), "exact walls pillars doors and stairs")
+        self.reject_layout(lambda x: x["structure_protection"]["wall_tiles"].append(x["protected"]["infrastructure"]["helm_controls"]["marker"] + [0]), "exact walls pillars doors and stairs")
+        for field, value in (("player_built_contents_inherit_protection", True), ("mode", "health_only"),
+                             ("enforced_by_this_map", True), ("preserve_on_transport_and_restore", False)):
+            self.reject_layout(lambda x: x["structure_protection"].update({field: value}), "permanent structure protection")
+
+    def test_stairs_require_actual_endpoints_and_distinct_pairs(self):
+        stair = self.layout["stairs"][-1]
+        self.reject_tile(self.local_world(stair["upper"]), "floor", "missing or blocked stair endpoint")
+        self.reject_layout(lambda x: x["stairs"][-1].update(pair_area_id=x["stairs"][0]["pair_area_id"]), "duplicate stair identity")
+        self.reject_layout(lambda x: x["stairs"][-1]["upper"].__setitem__(2, 4), "adjacent local decks")
+
+    def test_no_automatic_vertical_adjacency_or_roof_access(self):
+        self.assertEqual(flood3([(0, 0, 0)], {(0, 0, 0), (0, 0, 1)}), {(0, 0, 0)})
+        actual = {p: self.grid[self.local_world(p)][0] for p in build_map.train_levels()}
+        links = stair_links(self.layout, actual)
+        passable = {p for p, kind in actual.items() if build_map.PALETTE[kind][2]}
+        start = tuple(self.layout["exposed"]["boarding_ports"][0]) + (0,)
+        self.assertTrue(any(p[2] == 3 for p in flood3([start], passable, links)))
+        without_roof_links = [pair for pair in links if pair[1][2] != 3]
+        self.assertFalse(any(p[2] == 3 for p in flood3([start], passable, without_roof_links)))
+
+    def test_stair_identity_requires_rebinding_after_restore_or_move(self):
+        for field, value in (("draft_pair_ids_only", False), ("runtime_pair_identity", "shared_draft_area"),
+                             ("rebind_after_restore_or_move", False), ("validate_actual_endpoint_occupancy", False),
+                             ("enforced_by_this_map", True)):
+            self.reject_layout(lambda x: x["stair_identity_contract"].update({field: value}), "stair identity requires")
+
+    def test_upper_deck_cannot_bypass_either_closed_airlock_door(self):
+        actual = {p: self.grid[self.local_world(p)][0] for p in build_map.train_levels()}
+        links = stair_links(self.layout, actual)
+        passable = {p for p, kind in actual.items() if build_map.PALETTE[kind][2]}
+        check_core_separation(self.layout, passable, links)
+        eligible = extrude(rectangle(self.layout["protected"]["sustenance"]["bounds"]), [0])
+        ground = next(p for p in eligible & passable if (p[0], p[1], 1) in passable)
+        # Negative control deliberately adds a forbidden vertical edge from above.
+        with self.assertRaisesRegex(ValueError, "3D protected-core bypass"):
+            check_core_separation(self.layout, passable, links + [(ground, (ground[0], ground[1], 1))])
+
+    def test_three_dimensional_transit_and_vertical_safe_boundary(self):
+        for field in ("all_levels_together", "stable_relative_z", "bounded_allocation", "post_callback_revalidation", "rollback_or_quarantine"):
+            self.reject_layout(lambda x: x["transit_3d_contract"].update({field: False}), "3D transit")
+        self.reject_layout(lambda x: x["transit_3d_contract"].update(enforced_by_this_map=True), "3D transit")
+        self.reject_layout(lambda x: x["protected"]["vertical_boundary"].update(no_uncontrolled_vertical_entry=False), "vertical boundary")
+
     def test_actual_anchor_and_pad_access(self):
         self.reject_tile(self.local_world(self.layout["anchors"]["workshop"]), "hull", "unreachable anchor")
-        self.reject_tile(self.local_world(self.layout["build_pads"][0]["bounds"][:2]), "hull", "blocked build pad")
+        self.reject_tile(self.local_world(self.layout["build_pads"][0]["bounds"][:2]), "crate", "blocked build pad")
 
     def test_unreachable_room(self):
         self.reject_layout(lambda x: x["rooms"][0].update(bounds=[0, 0, 0, 0]), "unreachable room")

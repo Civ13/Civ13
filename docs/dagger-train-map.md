@@ -5,30 +5,32 @@ layout manifest. It is not selectable, does not load player saves, and adds no
 shuttle controller or transport callback. The prototype is original Civ13
 geometry using existing Civ13 turf and furniture types.
 
-Revision 3 moves the helm and engine room inside the protected compartment.
-Both train dimensions and both staging dimensions are doubled from the original
-smaller draft. The world still has two
-levels; this changes the WIP source only and allocates no live instances.
+Revision 4 retains the protected helm and engine room and expands each train to
+four levels: ground, upper 1, upper 2 and roof. It supersedes the single-deck
+revision at `513988966`. The WIP staging source allocates fixed home and raid
+level banks; it creates no live train instances or runtime allocator.
 
 ![Source layout diagram, not gameplay](images/dagger-train-map-preview.png)
 
 ## Layout
 
-The train occupies a fixed **30 x 102 tile** rectangle, facing north. A four-tile
-central passage links its main work areas. One **256 x 256 x 2** staging map contains
-the prototype at a western home slot on z1, an empty eastern home slot, and two
-empty raid berths on z2. Both z-levels have equal dimensions. The two home slots
+Each train level occupies a fixed **30 x 102 tile** rectangle, facing north.
+A four-tile central passage links the ground-level work areas. One
+**256 x 256 x 8** staging map provides a four-level home bank at z1..4 and a
+four-level raid bank at z5..8. All levels have equal dimensions. The western
+home slot contains the prototype; the eastern home slot and two raid berths
+remain empty for static arrival checks. The two home slots
 demonstrate isolation and reuse requirements; they do **not** establish a
 production train, crew, bed, or party-size cap.
 
-| Local space | Purpose | Required protection |
+| Ground-level local space | Purpose | Required protection |
 | --- | --- | --- |
 | Rear rooms, y0..38 | Bunks, gear lockers, party stores, mess/kitchen counter, wash stalls, treatment, engine room and upgradeable helm controls | Owning party only, including while raid-docked |
 | Airlock, x12..17/y39..45 | A 4 x 5 vestibule between two distinct door placeholders | Party-only entry from either side; two-door interlock required |
 | Centre carriage, y46..77 | Receiving stores, two 9 x 10 build pads, crafting/sorting benches and boarding cross passages | Exposed to boarding and looting |
 | Forward rooms, y80..100 | Separate utility maintenance, spare-parts storage and forward cargo | Exposed |
 
-The interior is redesigned with fifteen distinct room/working zones instead of
+The ground interior retains fifteen distinct room/working zones instead of
 enlarging the old furniture. Six crew bunks have individual gear storage; two
 treatment beds are separate from sleeping and eating spaces. Wash stalls have
 privacy doors. Receiving stores, workbenches, large build bays and forward spare
@@ -50,7 +52,38 @@ costs, effects or progression. The `helm_control` marker at `(24,37)` is an
 ordinary table. The `engine_mount` marker at `(25,29)` is the existing inert
 `/obj/structure/props/engineprops` prop with its `gasoline_static` sprite. Neither
 is working fuel, control or upgrade machinery. The former exposed helm room is
-forward cargo. Exposed hull and room walls do not require invincibility.
+forward cargo.
+
+The two upper levels and roof provide space for player building. Permanent train
+structure throughout all four levels, including hull, floors, pillars, doors and
+stairs, must be
+invincible. This includes permanent structure around exposed build areas:
+exposure permits boarding and interaction with player-built contents, not hull
+destruction. Player-built walls, furnishings and other contents remain a distinct
+category; permanent-structure protection must not automatically make every
+player-built object invincible. Build placement, costs, limits and supported
+structures need separate mechanics acceptance.
+Six static stair links form two routes, each with three adjacent-level pairs,
+outside the protected ground core. Their twelve endpoints use existing WW2 stair
+objects. The draft's `area_id` pair labels are unique for its one prototype.
+They describe route geometry, not accepted runtime travel. Runtime stair pairing
+must remain scoped to the same persistent train instance through cloning,
+transport and restore; shared labels must never connect different parties' trains
+or stale slots.
+
+| Layer | Local z | Room/working zones | Build pads | Clear build tiles | Object entries |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Ground | 0 | 15 | 2 | 180 | 268 |
+| Upper 1 | 1 | 11 | 10 | 1,278 | 42 |
+| Upper 2 | 2 | 11 | 10 | 1,278 | 42 |
+| Roof | 3 | 6 | 6 | 1,404 | 6 |
+| Total | | 43 | 28 | 4,140 | 358 |
+
+Upper enclosed build rooms flank circulation routes; the roof has six open build
+zones within a permanent perimeter. The declared frame includes 1,981 wall tiles,
+48 pillar tiles, 108 door objects and twelve stair endpoints. Permanent foundation
+coverage spans the full 12,240-tile volume, including hull positions. These are
+source categories, not measurements of live construction or structural physics.
 
 The protected compartment has no exterior boarding door. Its only entry passes
 through the airlock: inner door `(14,39)`, outer door `(15,45)`, and clear interior
@@ -64,8 +97,16 @@ entry, remote interactions, projectiles, contents, construction and other
 relevant paths, with the party check unchanged when docked. The engine room and
 helm controls receive the same protected-compartment coverage. The map must
 remain inactive until those contracts are implemented.
-The manifest enumerates 162 boundary wall tiles and the two airlock doors;
-transport and save restoration must preserve their required protection.
+Transport and save restoration must preserve permanent structure and the
+protected boundary, including its vertical faces and overhead coverage. Access
+from upper levels or the roof, holes, replacement turfs, ladders and player-built
+routes must not bypass the party core or its two-door interlock. The engine room
+and helm remain inside that core; upper building access does not grant entry to
+it. The draft supplies static geometry and declarative protection markers only.
+The ground core retains 162 boundary wall tiles and two airlock doors. Its
+protected floor at local z0 and continuous ceiling at local z1 cover the core;
+the upper build spaces above it are exposed. Sustenance recovery applies only to
+the ground safe rooms, not every tile vertically above them.
 The player's confirmed protected-compartment rule is independent of Enginefall.
 
 The boundary is interpreted as the protected safe compartment to the exposed
@@ -109,11 +150,11 @@ transition that consumes it.
 
 | State | Required future behavior |
 | --- | --- |
-| Reservation | Atomically claim only the selected berth and train footprint; validate loaded fuel and the target-section pass |
+| Reservation | Atomically claim only the selected berth and the train's whole four-level footprint; validate loaded fuel and the target-section pass |
 | Call | Authorize an idempotent request tied to the current train identity and reservation |
-| Arrival | Revalidate ownership and occupancy before placement and after callbacks; retain boundary protection |
+| Arrival | Revalidate ownership and occupancy on all four destination layers before placement and after callbacks; retain boundary protection |
 | Boarding | Track actual participants; enforce the protected party airlock while exposed sections remain boardable |
-| Departure | Revalidate custody and durable movement; release claims only after verified empty-slot retirement |
+| Departure | Revalidate custody and durable movement of all four layers; release claims only after verified empty-slot retirement |
 
 Loaded fuel and the target-section pass need one server-authoritative atomic
 commit decision. Concurrent or repeated requests must not spend either twice,
@@ -132,25 +173,27 @@ authorizes no runtime, server, client, live 1714 or SDK actions.
 
 ## Size and resource implications
 
-| Measure | Superseded draft | Enlarged draft |
+| Measure | Superseded single-deck revision | Four-level draft |
 | --- | ---: | ---: |
-| Train dimensions | 15 x 51 | 30 x 102 |
-| Full footprint tiles per train | 765 | 3,060 |
-| Staging dimensions | 128 x 128 x 2 | 256 x 256 x 2 |
-| Staging turfs | 32,768 | 131,072 |
-| Padded reservation per slot | 21 x 57 = 1,197 | 42 x 114 = 4,788 |
-| Clear build pad tiles | 30 | 180 |
-| Placed object entries on prototype | 42 | 266 |
-| Placed object entries in staging map | 54 | 290 |
+| Train dimensions | 30 x 102 x 1 | 30 x 102 x 4 |
+| Full footprint tiles per train | 3,060 | 12,240 |
+| Staging dimensions | 256 x 256 x 2 | 256 x 256 x 8 |
+| Staging turfs | 131,072 | 524,288 |
+| Padded reservation per slot | 42 x 114 = 4,788 | 42 x 114 x 4 = 19,152 |
+| Clear build pad tiles | 180 | 4,140 |
+| Placed object entries on prototype | 266 | 358 |
+| Placed object entries in staging map | 290 | 382 |
 
-Both footprint and staging tile counts are four times larger. Object entries
+Both footprint volume and staging tile counts are four times the single-deck
+revision. Object entries
 include furniture, doors and decals; they are source placements, not measured
 live atom counts. Transport mask checks and any full-footprint saves now have
-3,060 candidate tiles per train instead of 765. More furnishings may increase
+12,240 candidate tiles per train instead of 3,060. More furnishings may increase
 constructor, save and interaction work. Actual RAM, timing and saved byte growth
 have not been measured and cannot be inferred as exactly fourfold. Runtime
-allocation still needs bounded active slots, reuse and quotas; the demonstration
-neither adds z-levels nor sets a production party limit.
+allocation still needs bounded active slots, reuse and quotas. The WIP source
+adds six fixed z-levels; it sets no production party limit or runtime allocation
+policy.
 
 ## Files and coordinate contract
 
@@ -161,26 +204,28 @@ neither adds z-levels nor sets a production party limit.
 - `tests/dagger_map/test_layout.py`: focused static checks and mutation controls.
 - `tests/dagger_map/preview.py`: source diagram export; it is not a native render.
 
-Local coordinates start at the southwest tile `(0,0)`. World coordinates are
+Local coordinates start at the ground southwest tile `(0,0,0)`. World coordinates are
 BYOND's one-based `(x,y,z)`. The transform is `world = slot.origin + local`;
 the origin is a world coordinate, not a tile offset to be incremented again.
-Only zero-degree rotation is described by v1. Bounds are inclusive. Mask rows
+Only zero-degree rotation is described by schema version 2. Bounds are inclusive. Mask rows
 are explicitly ordered **south to north**, unlike DMM text rows, which are
-written north to south. Every mask bit belongs to the moved rectangle, including
-the hull and the filled corners around coupling passages.
+written north to south. The 2D 30 x 102 mask is extruded across
+`footprint.local_z_levels` 0..3. Every mask bit on every layer belongs to the moved
+volume, including the hull and the filled corners around coupling passages.
 
-| Slot ID | World origin | Inclusive reservation on that z |
+| Slot ID | Ground world origin | Inclusive 3D reservation |
 | --- | --- | --- |
-| `home_west` | (40,48,1) | x34..75, y42..155 |
-| `home_east` | (168,48,1) | x162..203, y42..155 |
-| `raid_west` | (72,72,2) | x66..107, y66..179 |
-| `raid_east` | (130,72,2) | x124..165, y66..179 |
+| `home_west` | (40,48,1) | x34..75, y42..155, z1..4 |
+| `home_east` | (168,48,1) | x162..203, y42..155, z1..4 |
+| `raid_west` | (72,72,5) | x66..107, y66..179, z5..8 |
+| `raid_east` | (130,72,5) | x124..165, y66..179, z5..8 |
 
 Each named slot supplies its own berth mask and anchor. The two raid reservation
-rectangles are disjoint, as are their translated 30 x 102 arrival footprints.
+volumes are disjoint, as are their translated 30 x 102 x 4 arrival footprints.
 Their exposed sides face the shared x108..123 platform. Bridge cells are world
-triples outside the arrival masks; the destination floor is empty of furniture
-and actors in the draft. Two arrivals can geometrically fit at once. That is
+triples outside the arrival masks; platforms and boarding bridges are on raid
+ground z5 only. All four destination layers are empty of furniture and actors in
+the draft. Two arrivals can geometrically fit at once. That is
 not evidence that concurrent loading or travel is safe.
 
 Shared platform/concourse exclusions remain outside every train reservation.
@@ -191,12 +236,17 @@ the other berth or the common access space.
 
 `berth_geometry_groups.raid_pair_v1` links `raid_west` and `raid_east` for
 cross-berth geometry validation only. **Each train/party atomically reserves
-only its selected berth and its own whole footprint.** The second berth stays
+only its selected berth and its own whole three-dimensional footprint across all
+four layers.** The second berth stays
 available for another party to arrive while the first train is docked. The
 geometry group grants no exclusive occupancy or lease over both berths. The
 manifest's `reservation_policy` declares this requirement; it does not implement
 a lock. Partial acquisition of the selected berth/footprint must not permit
-construction, loading or placement.
+construction, loading or placement. Saving, restoration and movement must handle
+the same four-layer identity atomically. Success on a subset of decks is not a
+successful train transfer; recovery must not duplicate or strand decks or their
+contents. Another party may still claim the other berth's complete four-layer
+footprint independently.
 
 The static template ID identifies a version of the design. It is **not a saved
 train identity**. The manifest deliberately contains no sample persistent
@@ -234,6 +284,9 @@ without treating this two-slot demonstration as the production quota. Durable
 claims must prevent two trains taking one berth and one train appearing twice,
 while allowing different parties to occupy the two distinct berths together.
 The existing area teleporter must not be substituted for these contracts.
+The eight fixed source levels are a geometry allocation, not evidence that a
+runtime allocator can create, retire or reuse train instances. Production quotas,
+bounded work and recovery remain mechanics/persistence responsibilities.
 
 ## Verification and next acceptance work
 
@@ -253,6 +306,9 @@ integration. They also enforce the declared sustenance/airlock requirement flags
 without simulating their future runtime behavior. Overlapping or obstructing data must be
 rejected. These checks do not execute DM, constructors, doors, party checks,
 crafting, saves, movement or transactions.
+Static route analysis links all 9,993 passable source cells across four levels.
+It does not execute stair interactions or prove native pathfinding, construction
+support or runtime invincibility.
 
 The `Dagger map static checks` workflow uses the existing CI suite-selection
 policy: it runs this newly introduced suite on the introducing PR, then becomes
@@ -273,8 +329,14 @@ construction, unrelated contents preserved, repeated home/raid return with
 unchanged train/contents identity, protected-compartment access and damage while
 docked, interlocked airlock cycling/unauthorized entry/safe egress, nutrition and
 hydration entry/exit/cap/double-tick behavior, interrupted movement and save
-recovery, quota exhaustion and safe reuse. Acceptance must also exercise protected
-wall/door damage, deconstruction, forced-entry, removal and replacement attempts;
+recovery, quota exhaustion and safe reuse. Four-level acceptance must reject a
+blocked destination on any deck before partial placement, retain identity and
+contents through all-deck saves/restores/moves, and recover interruption without
+duplicate or stranded layers. Acceptance must also exercise permanent hull,
+floor and pillar damage/deconstruction/removal/replacement attempts across all
+levels; vertical/roof routes around the protected core; player-built contents'
+distinct protection policy; protected-door forced-entry attempts;
+instance-isolated stairs before and after movement and restoration;
 upgradeable helm controls and engine-room protection; pass-free breaches of target
 compartment doors; loaded-fuel and section-pass rejection; forward-section cost/
 loot progression; and every extraction state with concurrent calls, duplicate
