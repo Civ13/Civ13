@@ -469,7 +469,7 @@ def main():
         if not (output / 'map_saves/save_complete.txt').exists():
             raise RuntimeError('Phase control changed completed save marker')
 
-    if args.round_state_negative_control:
+    elif args.round_state_negative_control:
         expected = {'setup': 'resumed round reran fresh setup',
                     'clock': 'round clock reset across process',
                     'generation': 'mismatched round generation accepted',

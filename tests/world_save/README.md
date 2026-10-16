@@ -314,8 +314,11 @@ duration reports.
 
 ### Opt-in Gaia phase profile
 
-Current-source reconciliation (2026-10-16): the four offline source-binding
-tests also pass with the persistence sources from master `ed520998f8c8`.
+Current-source reconciliation (2026-10-16): the five offline tests pass on the
+combined checkout; the four source-binding tests also pass with the persistence
+sources from master `ed520998f8c8`. The fifth checks the actual result dispatcher:
+expected phase-control failures are accepted without falling through into the
+positive-result check, while unrelated failures remain rejected.
 `run-string-path.py --prepare-only --progress --phase-profile
 --phase-profile-clock-contract` prepares the combined fixture successfully.
 These checks generate source only; they do not compile or run BYOND.

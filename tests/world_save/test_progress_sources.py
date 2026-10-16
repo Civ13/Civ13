@@ -1,5 +1,6 @@
 """Offline source-binding checks. Never compile or start a game."""
 import argparse
+import ast
 from contextlib import redirect_stdout
 import hashlib
 import importlib.util
@@ -9,6 +10,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 
@@ -28,6 +30,37 @@ backend = load('backend_source_test', 'build-gaia-phase-backend.py')
 
 
 class ProgressSources(unittest.TestCase):
+    def test_phase_negative_results_do_not_fall_through_to_positive_check(self):
+        # Execute the runner's actual result dispatcher without compiling DM.
+        tree = ast.parse((HERE / 'run-string-path.py').read_text())
+        main = next(node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == 'main')
+        dispatch = next(node for node in main.body if isinstance(node, ast.If)
+                        and isinstance(node.test, ast.Attribute)
+                        and node.test.attr == 'phase_profile_attribution_negative_control')
+        dispatch_nodes = []
+        for node in main.body[main.body.index(dispatch):]:
+            if not isinstance(node, ast.If):
+                break
+            dispatch_nodes.append(node)
+        executable = compile(ast.Module(body=dispatch_nodes, type_ignores=[]), '<result-dispatch>', 'exec')
+        marker = self.root / 'map_saves/save_complete.txt'
+        marker.parent.mkdir()
+        marker.write_text('completed generation')
+        for control, failure in (
+            ('phase_profile_attribution_negative_control', 'phase category attribution failed'),
+            ('phase_profile_negative_control', 'phase value calls missing'),
+        ):
+            with self.subTest(control=control):
+                arguments = SimpleNamespace(phase_profile_attribution_negative_control=False,
+                                            phase_profile_negative_control=False)
+                setattr(arguments, control, True)
+                environment = dict(args=arguments, output=self.root, actual='FAIL: expected control',
+                                   read=lambda path: failure)
+                exec(executable, environment)
+                environment['read'] = lambda path: 'unrelated failure'
+                with self.assertRaisesRegex(RuntimeError, 'Wrong .* negative failure'):
+                    exec(executable, environment)
+
     def setUp(self):
         temporary = tempfile.TemporaryDirectory(prefix='civ13-progress-sources-')
         self.addCleanup(temporary.cleanup)
