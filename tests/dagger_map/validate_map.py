@@ -238,6 +238,53 @@ def _validate(layout, dmm_text, root):
         room_cells = rectangle(room["bounds"])
         require(room_cells <= (protected if room["protected"] else exposed), "room region mismatch")
         require(bool(room_cells & reachable), "unreachable room")
+    boundary = layout["protected"]["boundary_protection"]
+    expected_boundary = set()
+    for ring in (protected, vestibule):
+        expected_boundary |= {p for p in ring if any(q not in ring for q in ((p[0]-1,p[1]), (p[0]+1,p[1]), (p[0],p[1]-1), (p[0],p[1]+1)))}
+    expected_walls = {p for p in expected_boundary if actual[p] == "hull"}
+    walls = [tuple(p) for p in boundary["wall_tiles"]]
+    doors = [tuple(p) for p in boundary["door_tiles"]]
+    require(len(walls) == len(set(walls)) and set(walls) == expected_walls
+            and len(doors) == 2 and set(doors) == {inner, outer}, "boundary protection must cover exact protected walls and airlock doors")
+    require(boundary["mode"] == "deny_mutation_not_health_only"
+            and set(boundary["denied_paths"]) == {"damage", "deconstruction", "forced_entry", "removal", "replacement"}, "boundary protection must deny all mutation paths")
+    require(boundary["preserve_on_transport_and_restore"] is True and boundary["exposed_walls_protected"] is False
+            and boundary["enforced_by_this_map"] is False, "boundary protection scope or runtime declaration mismatch")
+    infrastructure = layout["protected"]["infrastructure"]
+    rooms = {room["id"]: room for room in layout["rooms"]}
+    for name, room_id, palette in (("helm_controls", "helm", "helm_control"), ("engine_room", "engine", "engine_mount")):
+        marker = infrastructure[name]
+        point = tuple(marker["marker"])
+        require(marker["room_id"] == room_id and rooms[room_id]["protected"] is True
+                and point in rectangle(rooms[room_id]["bounds"]) & eligible
+                and marker["palette"] == palette and actual[point] == palette
+                and sum(kind == palette for kind in actual.values()) == 1, "infrastructure marker must occur once in intended protected room")
+        require(marker["upgradeable"] is True, "protected infrastructure must declare upgrades")
+        neighbors = {(point[0]-1,point[1]), (point[0]+1,point[1]), (point[0],point[1]-1), (point[0],point[1]+1)}
+        require(bool(neighbors & reachable), "protected infrastructure is unreachable")
+    require(infrastructure["upgrade_costs"] is None and infrastructure["upgrade_effects"] is None
+            and infrastructure["enforced_by_this_map"] is False, "infrastructure balance unspecified and runtime disabled")
+    raid = layout["raid_access"]
+    inputs = {"loaded_fuel", "target_section_boarding_pass"}
+    require(len(raid["required_inputs"]) == 2 and set(raid["required_inputs"]) == inputs, "raid requires loaded fuel and target-section pass")
+    require(raid["front_sections"] == {"loot": "better", "entry_cost": "higher"}
+            and raid["balance_values"] is None and raid["enforced_by_this_map"] is False, "raid front rewards/costs must remain unbalanced declarations")
+    target = raid["target_compartment_doors"]
+    require(target["breachable_without_pass"] is True and target["inherits_dagger_boundary_protection"] is False, "target doors must remain breachable without Dagger protection")
+    transaction = raid["transaction"]
+    require(transaction["authority"] == "server" and transaction["atomic_commit"] is True
+            and transaction["atomic_refund"] is True and transaction["idempotent"] is True
+            and len(transaction["inputs"]) == 2 and set(transaction["inputs"]) == inputs,
+            "raid transaction requires server atomic idempotent fuel/pass commit and refund")
+    require(transaction["commit_point"] is None and transaction["refund_policy"] is None
+            and transaction["failure_resolution"] == "rollback_or_quarantine_without_duplicate_value"
+            and transaction["enforced_by_this_map"] is False, "raid transaction policy unresolved without duplicate value or runtime claim")
+    sequence = raid["extraction_sequence"]
+    states = ["reservation", "call", "arrival", "boarding", "departure"]
+    require(sequence["states"] == states and set(sequence["requirements"]) == set(states)
+            and all(isinstance(sequence["requirements"][state], str) and sequence["requirements"][state].strip() for state in states), "raid sequence requires all ordered states and requirements")
+    require(sequence["timings"] is None and sequence["enforced_by_this_map"] is False, "raid sequence timings unspecified and runtime disabled")
     for pad in layout["build_pads"] + layout["keep_clear"]:
         require(rectangle(pad["bounds"]) <= reachable, "blocked build pad or keep-clear route")
     occupied_pads = set().union(*(rectangle(pad["bounds"]) for pad in layout["build_pads"]))

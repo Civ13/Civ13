@@ -139,6 +139,47 @@ class LayoutTests(unittest.TestCase):
             with self.subTest(field=field):
                 self.reject_layout(lambda x: x["protected"]["sustenance"].update({field: value}), "sustenance")
 
+    def test_protected_upgradeable_infrastructure(self):
+        for name in ("helm_controls", "engine_room"):
+            marker = self.layout["protected"]["infrastructure"][name]
+            self.reject_tile(self.local_world(marker["marker"]), "table", "infrastructure marker")
+            self.reject_layout(lambda x: x["protected"]["infrastructure"][name].update(marker=x["anchors"]["workshop"]), "infrastructure marker")
+            self.reject_layout(lambda x: x["protected"]["infrastructure"][name].update(upgradeable=False), "declare upgrades")
+        self.reject_layout(lambda x: x["protected"]["infrastructure"].update(upgrade_costs=100), "balance unspecified")
+        self.reject_layout(lambda x: x["protected"]["infrastructure"].update(enforced_by_this_map=True), "runtime disabled")
+
+    def test_boundary_protection_exact_scope(self):
+        self.reject_layout(lambda x: x["protected"]["boundary_protection"]["wall_tiles"].pop(), "cover exact protected")
+        self.reject_layout(lambda x: x["protected"]["boundary_protection"]["door_tiles"].pop(), "cover exact protected")
+        for field, value in (("mode", "health_only"), ("denied_paths", ["damage"]),
+                             ("preserve_on_transport_and_restore", False), ("exposed_walls_protected", True),
+                             ("enforced_by_this_map", True)):
+            with self.subTest(field=field):
+                self.reject_layout(lambda x: x["protected"]["boundary_protection"].update({field: value}), "boundary protection")
+
+    def test_raid_input_reward_and_target_door_declarations(self):
+        self.reject_layout(lambda x: x["raid_access"].update(required_inputs=["loaded_fuel"]), "loaded fuel and target-section pass")
+        self.reject_layout(lambda x: x["raid_access"]["front_sections"].update(entry_cost="same"), "front rewards/costs")
+        self.reject_layout(lambda x: x["raid_access"].update(balance_values=100), "front rewards/costs")
+        for field, value in (("breachable_without_pass", False), ("inherits_dagger_boundary_protection", True)):
+            self.reject_layout(lambda x: x["raid_access"]["target_compartment_doors"].update({field: value}), "target doors")
+
+    def test_raid_atomic_server_transaction(self):
+        for field, value in (("authority", "client"), ("atomic_commit", False), ("atomic_refund", False),
+                             ("idempotent", False), ("inputs", ["loaded_fuel"]), ("atomic_refund", 1)):
+            with self.subTest(field=field):
+                self.reject_layout(lambda x: x["raid_access"]["transaction"].update({field: value}), "server atomic idempotent")
+        for field, value in (("commit_point", "arrival"), ("refund_policy", "never"),
+                             ("failure_resolution", "duplicate"), ("enforced_by_this_map", True)):
+            self.reject_layout(lambda x: x["raid_access"]["transaction"].update({field: value}), "policy unresolved")
+
+    def test_raid_sequence_states_and_undefined_timings(self):
+        self.reject_layout(lambda x: x["raid_access"]["extraction_sequence"]["states"].pop(), "all ordered states")
+        self.reject_layout(lambda x: x["raid_access"]["extraction_sequence"]["requirements"].pop("boarding"), "all ordered states")
+        self.reject_layout(lambda x: x["raid_access"]["extraction_sequence"]["requirements"].update(arrival=""), "all ordered states")
+        for field, value in (("timings", 60), ("enforced_by_this_map", True)):
+            self.reject_layout(lambda x: x["raid_access"]["extraction_sequence"].update({field: value}), "timings unspecified")
+
     def test_airlock_declarations_and_empty_interior(self):
         for field, value in (("interlocked", False), ("authorize_from_either_side", False),
                              ("enforced_by_this_map", True), ("safe_egress_policy", "invented"),

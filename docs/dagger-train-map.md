@@ -5,8 +5,9 @@ layout manifest. It is not selectable, does not load player saves, and adds no
 shuttle controller or transport callback. The prototype is original Civ13
 geometry using existing Civ13 turf and furniture types.
 
-Revision 2 supersedes the smaller diagram and renders at `69161d0ae`. Both train
-dimensions and both staging dimensions are doubled. The world still has two
+Revision 3 moves the helm and engine room inside the protected compartment.
+Both train dimensions and both staging dimensions are doubled from the original
+smaller draft. The world still has two
 levels; this changes the WIP source only and allocates no live instances.
 
 ![Source layout diagram, not gameplay](images/dagger-train-map-preview.png)
@@ -22,12 +23,12 @@ production train, crew, bed, or party-size cap.
 
 | Local space | Purpose | Required protection |
 | --- | --- | --- |
-| Rear rooms, y0..38 | Bunks, gear lockers, party stores, mess/kitchen counter, wash stalls, treatment and repair rooms | Owning party only, including while raid-docked |
+| Rear rooms, y0..38 | Bunks, gear lockers, party stores, mess/kitchen counter, wash stalls, treatment, engine room and upgradeable helm controls | Owning party only, including while raid-docked |
 | Airlock, x12..17/y39..45 | A 4 x 5 vestibule between two distinct door placeholders | Party-only entry from either side; two-door interlock required |
 | Centre carriage, y46..77 | Receiving stores, two 9 x 10 build pads, crafting/sorting benches and boarding cross passages | Exposed to boarding and looting |
-| Forward rooms, y80..100 | Separate utility maintenance, spare-parts storage and helm cabin | Exposed |
+| Forward rooms, y80..100 | Separate utility maintenance, spare-parts storage and forward cargo | Exposed |
 
-The interior is redesigned with fourteen distinct room/working zones instead of
+The interior is redesigned with fifteen distinct room/working zones instead of
 enlarging the old furniture. Six crew bunks have individual gear storage; two
 treatment beds are separate from sleeping and eating spaces. Wash stalls have
 privacy doors. Receiving stores, workbenches, large build bays and forward spare
@@ -42,14 +43,29 @@ train rather than a pristine base.
 The draft does not grant free production resources or decide starter inventory:
 these are prototype furniture placements, not an accepted economy loadout.
 
+The former quiet repair room is split into an engine room at x18..28/y27..31 and
+a helm room at x18..28/y33..38 inside the protected compartment. Helm controls and
+engine infrastructure must support upgrades; the draft does not choose upgrade
+costs, effects or progression. The `helm_control` marker at `(24,37)` is an
+ordinary table. The `engine_mount` marker at `(25,29)` is the existing inert
+`/obj/structure/props/engineprops` prop with its `gasoline_static` sprite. Neither
+is working fuel, control or upgrade machinery. The former exposed helm room is
+forward cargo. Exposed hull and room walls do not require invincibility.
+
 The protected compartment has no exterior boarding door. Its only entry passes
 through the airlock: inner door `(14,39)`, outer door `(15,45)`, and clear interior
 x13..16/y40..44. Closing either door must statically separate the safe rooms from
 the exposed carriage. **Both ordinary locked doors are visible placeholders.**
 They do not enforce party authorization, interlocking or invulnerability.
-Runtime protection must cover entry, remote interactions, projectiles, damage,
-contents, construction and other relevant paths, with the party check unchanged
-when docked. The map must remain inactive until those contracts are implemented.
+The protected boundary walls and doors, including both airlock doors, must resist
+damage, deconstruction, forced entry, removal and replacement bypasses. High
+health alone does not meet this requirement. Runtime protection must also cover
+entry, remote interactions, projectiles, contents, construction and other
+relevant paths, with the party check unchanged when docked. The engine room and
+helm controls receive the same protected-compartment coverage. The map must
+remain inactive until those contracts are implemented.
+The manifest enumerates 162 boundary wall tiles and the two airlock doors;
+transport and save restoration must preserve their required protection.
 The player's confirmed protected-compartment rule is independent of Enginefall.
 
 The boundary is interpreted as the protected safe compartment to the exposed
@@ -68,6 +84,52 @@ apply this once per metabolism update, prevent overflow/double application and
 resume ordinary behavior on exit. These are declarative markers and requirements;
 no shared metabolism code is changed or runtime recovery claimed.
 
+## Raid entry and extraction contract
+
+Raid entry requires both loaded fuel and a boarding pass for the selected target
+train section. Sections nearer the front of the target train offer better loot
+and require a higher entry cost. This is a requirement for the future mechanics
+owner; the draft defines no fuel quantity, pass price, tier names, loot tables,
+travel time or extraction timer. These target-train progression rules do not
+change the Dagger's protected-compartment boundary.
+
+Target-train compartment doors must be breachable without a boarding pass. A
+pass gates the entry transaction for its target section; it must not become an
+unbreakable lock on every target compartment. Those breachable doors are distinct
+from the invincible protected-boundary walls and airlock doors on the Dagger.
+The target train and its compartment doors are not built by this map draft.
+
+The future extraction controller must expose explicit reservation, call, arrival,
+boarding and departure states, with completion and failure outcomes. A call is
+not an arrival; arrival is not successful boarding or departure. State transitions
+must revalidate the party, train identity, selected section, resource eligibility,
+destination reservation and current occupancy on the server. Reservation must
+precede constructors, loading or movement, and remain exclusive through the
+transition that consumes it.
+
+| State | Required future behavior |
+| --- | --- |
+| Reservation | Atomically claim only the selected berth and train footprint; validate loaded fuel and the target-section pass |
+| Call | Authorize an idempotent request tied to the current train identity and reservation |
+| Arrival | Revalidate ownership and occupancy before placement and after callbacks; retain boundary protection |
+| Boarding | Track actual participants; enforce the protected party airlock while exposed sections remain boardable |
+| Departure | Revalidate custody and durable movement; release claims only after verified empty-slot retirement |
+
+Loaded fuel and the target-section pass need one server-authoritative atomic
+commit decision. Concurrent or repeated requests must not spend either twice,
+consume one without the other, or produce a free trip. Retries, callbacks,
+disconnects, cancellation and restart recovery must be idempotent. The mechanics
+owner must choose and document when resources are reserved and committed, which
+failure states release reservations or refund payment, how refunds are recorded
+exactly once, and when rollback or explicit quarantine is required. No refund
+policy is selected here. A refund must not leave a completed transfer or duplicate
+train/resources behind. Arrival, boarding and departure must each have explicit
+failure handling rather than assuming a preceding successful state is enough.
+
+All of this is a declarative handoff to the separate mechanics/persistence owner.
+It adds no fuel/pass economy, extraction runtime or native SDK integration and
+authorizes no runtime, server, client, live 1714 or SDK actions.
+
 ## Size and resource implications
 
 | Measure | Superseded draft | Enlarged draft |
@@ -78,8 +140,8 @@ no shared metabolism code is changed or runtime recovery claimed.
 | Staging turfs | 32,768 | 131,072 |
 | Padded reservation per slot | 21 x 57 = 1,197 | 42 x 114 = 4,788 |
 | Clear build pad tiles | 30 | 180 |
-| Placed object entries on prototype | 42 | 267 |
-| Placed object entries in staging map | 54 | 291 |
+| Placed object entries on prototype | 42 | 266 |
+| Placed object entries in staging map | 54 | 290 |
 
 Both footprint and staging tile counts are four times larger. Object entries
 include furniture, doors and decals; they are source placements, not measured
@@ -197,13 +259,26 @@ policy: it runs this newly introduced suite on the introducing PR, then becomes
 opt-in through `workflow_dispatch`. It performs only the three static commands
 above; the existing production compile does not include this inactive WIP map.
 
+For each PR map or icon revision:
+
+- Regenerate the DMM, manifest and source diagram from the current source.
+- Wait for the static map render at the current PR SHA.
+- Replace inline PR preview images with that revision's images, then confirm
+  they load and visually agree with the current layout.
+- Label source diagrams, static renders and actual gameplay captures accurately.
+
 Native acceptance belongs to the separate mechanics/persistence work: two
 different crews, simultaneous arrivals, occupied destination rejection before
 construction, unrelated contents preserved, repeated home/raid return with
 unchanged train/contents identity, protected-compartment access and damage while
 docked, interlocked airlock cycling/unauthorized entry/safe egress, nutrition and
 hydration entry/exit/cap/double-tick behavior, interrupted movement and save
-recovery, quota exhaustion and safe reuse.
+recovery, quota exhaustion and safe reuse. Acceptance must also exercise protected
+wall/door damage, deconstruction, forced-entry, removal and replacement attempts;
+upgradeable helm controls and engine-room protection; pass-free breaches of target
+compartment doors; loaded-fuel and section-pass rejection; forward-section cost/
+loot progression; and every extraction state with concurrent calls, duplicate
+callbacks, resource commit/refund, rollback and restart failure controls.
 This draft supplies the geometry for those checks, not their implementation.
 
 ## Inspiration

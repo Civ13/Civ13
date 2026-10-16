@@ -19,7 +19,7 @@ def main():
     grid, layout = build()
     tiles = train()
     world = layout['world']
-    im = Image.new('RGB', (2200, 1900), BG)
+    im = Image.new('RGB', (2200, 2030), BG)
     d = ImageDraw.Draw(im)
 
     def text(x, y, value, size=23, color=TEXT, bold=False):
@@ -31,7 +31,7 @@ def main():
     def card(box):
         d.rounded_rectangle(box,radius=22,fill=PANEL)
 
-    text(60,30,'DAGGER / MAP STUDY 02',21,TEAL,True)
+    text(60,30,'DAGGER / MAP STUDY 03',21,TEAL,True)
     text(60,69,'Dagger train home - enlarged draft',50,bold=True)
     text(60,137,'Static source diagram | North up | Original prototype geometry | Runtime integration disabled',24,MUTED)
     card((40,202,1210,1715))
@@ -71,9 +71,15 @@ def main():
         elif kind=='chair': d.arc((a+pad,b+pad,e-pad,f-pad),0,300,fill=color,width=2)
         elif kind in ('anvil','sink','toilet'):
             text(a+1,b-2,{'anvil':'A','sink':'S','toilet':'T'}[kind],max(10,cell-2),color,True)
+        elif kind in ('engine_mount','helm_control'):
+            d.rectangle((a+1,b+1,e-1,f-1),fill=PALETTE[kind][1])
+            text(a+1,b-2,'E' if kind=='engine_mount' else 'H',max(10,cell-2),BG,True)
         elif kind=='dirt': d.ellipse((a+3,b+4,a+5,b+6),fill='#a59069')
 
     for (x,y),kind in tiles.items(): drawtile(x,y,kind)
+    boundary=layout['protected']['boundary_protection']
+    for x,y in boundary['wall_tiles']+boundary['door_tiles']:
+        d.rectangle(box(x,y),outline=TEAL,width=2)
     for pad in layout['build_pads']:
         x0,y0,x1,y1=pad['bounds']
         a,b,_,_=box(x0,y1)
@@ -87,14 +93,16 @@ def main():
         color=TEAL if room['protected'] else AMBER
         d.ellipse((a-11,b-8,a+19,b+22),fill=BG,outline=color,width=2)
         text(a-5,b-9,f'{i:02}',16,color,True)
-        yy=315+(i-1)*48
+        yy=315+(i-1)*42
         text(646,yy,f'{i:02}',22,color,True)
         text(696,yy,room['name'],22,TEXT)
     text(76,346,'N',23,TEAL,True)
     line([(88,338),(88,308)],TEAL,3)
     d.polygon([(88,301),(81,314),(95,314)],fill=TEAL)
-    text(646,1005,'4-wide central aisle',23,AMBER,True)
-    text(646,1041,'3-wide boarding passages remain clear.',21,MUTED)
+    text(646,956,'H / E: protected helm + engine markers',22,TEAL,True)
+    text(646,988,'Upgradeable design; costs and effects pending.',20,MUTED)
+    text(646,1030,'4-wide aisle / 3-wide boarding passages',22,AMBER,True)
+    text(646,1064,'Full build pads leave circulation clear.',20,MUTED)
 
     airlock=layout['protected']['airlock']
     ax0,ay0,ax1,ay1=airlock['bounds']
@@ -158,8 +166,11 @@ def main():
     text(305,1742,'Exposed carriage',24,AMBER,True)
     text(600,1742,'Furniture: outlined bunk / crossed crate / rack / table / A anvil / S sink / T toilet',21,MUTED)
     text(60,1787,f'Staging 128 x 128 x 2 -> {world["width"]} x {world["height"]} x {world["levels"]} | 4x tiles per level; no z-level added.',25,TEXT,True)
-    text(60,1830,'PROTOTYPE ONLY - Protection, airlock interlock, sustenance, movement and persistence remain unimplemented.',23,TEXT,True)
-    text(60,1868,'Demo slots and furnishings do not define a production party cap. Static source diagram, not native rendering or gameplay evidence.',20,MUTED)
+    text(60,1830,'Teal boundary walls + airlock doors: invincibility required; deny damage, deconstruction, forced entry, removal and replacement.',23,TEAL,True)
+    text(60,1868,'Boundary enforcement remains pending in home and raid. Exposed walls need not be invincible.',22,MUTED)
+    text(60,1910,'PROTOTYPE ONLY - Protection, airlock, sustenance, helm/engine upgrades, travel and persistence remain unimplemented.',23,TEXT,True)
+    text(60,1950,'Raid design: loaded fuel + target-section pass; reservation -> call -> arrival -> boarding -> departure. Runtime pending.',22,MUTED)
+    text(60,1990,'Demo slots and furnishings do not define a production party cap. Static source diagram, not native rendering or gameplay evidence.',20,MUTED)
     OUTPUT.parent.mkdir(parents=True,exist_ok=True)
     im.save(OUTPUT)
     print(OUTPUT)

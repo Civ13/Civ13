@@ -26,6 +26,8 @@ PALETTE = {
     "door": ("/obj/structure/simple_door,/turf/floor/plating/steel", "#ceaa5a", True),
     "gate": ('/obj/structure/simple_door{name = "Party airlock outer door - draft only"; locked = 1},/turf/floor/wood', "#ffde7a", True),
     "inner_gate": ('/obj/structure/simple_door{name = "Party airlock inner door - draft only"; locked = 1},/turf/floor/wood', "#ffde7a", True),
+    "helm_control": ('/obj/structure/table{name = "Upgradeable Dagger helm controls - draft only"; desc = "Protected helm placeholder. Upgrades and raid controls are not implemented."},/turf/floor/wood', "#74b9e8", False),
+    "engine_mount": ('/obj/structure/props/engineprops{name = "Upgradeable Dagger engine mount - draft only"; desc = "Protected engine-room placeholder. Fuel, upgrades and propulsion are not implemented."},/turf/floor/plating/steel', "#dd9265", False),
     "bed": ("/obj/structure/bed,/turf/floor/wood", "#9cc6bc", False),
     "crate": ("/obj/structure/closet/crate,/turf/floor/plating/steel", "#aa7954", False),
     "rack": ("/obj/structure/table/rack,/turf/floor/plating/steel", "#9eacb8", False),
@@ -107,9 +109,18 @@ def train():
                     (21, 25): "toilet", (25, 15): "bed", (27, 15): "bed",
                     (25, 24): "table", (27, 24): "rack", (25, 22): "chair"}.items():
         tiles[p] = kind
-    row(19, 22, 28, "table")
-    row(25, 27, 36, "table")
-    tiles[20, 36], tiles[26, 29], tiles[27, 29] = "anvil", "rack", "rack"
+    # Engine and helm are inside the protected hull, with independent access.
+    # Inert table/engine-prop markers add no fuel or travel callbacks.
+    tiles[17, 32] = tiles[17, 33] = "hull"
+    for y in (29, 30, 35, 36):
+        tiles[17, y] = "door"
+    row(18, 28, 32, "hull")
+    row(19, 21, 28, "table")
+    tiles[25, 29] = "engine_mount"
+    tiles[27, 28], tiles[27, 30] = "rack", "rack"
+    row(22, 26, 37, "table")
+    tiles[24, 37] = "helm_control"
+    tiles[24, 36] = "chair"
 
     # Exposed incoming stores, followed by two large independent build bays.
     for x in (12, 17):
@@ -138,7 +149,7 @@ def train():
         tiles[x, 73] = "crate"
         tiles[x, 76] = "rack"
 
-    # Forward utility rooms feed a separate full-width helm cabin.
+    # Forward utility rooms feed exposed cargo, never the protected controls.
     for x in (12, 17):
         fill([x, 80, x, 92], "hull")
         tiles[x, 85] = tiles[x, 86] = "door"
@@ -150,8 +161,9 @@ def train():
     tiles[3, 84] = "anvil"
     row(1, 28, 93, "hull")
     row(13, 16, 93, "floor")
-    row(10, 19, 99, "table")
-    tiles[12, 98] = tiles[17, 98] = "chair"
+    for x in (3, 7, 22, 26):
+        tiles[x, 99] = "crate"
+    row(10, 12, 99, "table")
     tiles[3, 96] = tiles[26, 96] = "rack"
     for p in ((2, 53), (27, 54), (4, 69), (25, 70), (3, 72), (11, 75), (21, 88), (5, 97)):
         tiles[p] = "dirt"
@@ -161,7 +173,7 @@ def train():
 def manifest():
     layout = {
         "schema_version": 1,
-        "template_id": "dagger_home_draft_v2",
+        "template_id": "dagger_home_draft_v3",
         "status": "map study only; runtime integration disabled",
         "coordinates": {"local": "zero-based southwest; +x east, +y north",
                         "world": "BYOND one-based", "transform": "world = origin + local", "rotation_degrees": 0},
@@ -179,7 +191,7 @@ def manifest():
                                   "enforced_by_this_map": False, "safe_egress_policy": None}},
         "exposed": {"bounds": [0, PROTECTED_END + 1, 29, 101], "boarding_bands": [list(b) for b in BOARDING_BANDS],
                     "boarding_ports": [[x, y] for x in (0, WIDTH - 1) for y0, y1 in BOARDING_BANDS for y in range(y0, y1 + 1)]},
-        "anchors": {"crew_spawn": [14, 20], "workshop": [14, 60], "helm": [14, 96]},
+        "anchors": {"crew_spawn": [14, 20], "workshop": [14, 60], "helm": [20, 35], "engine": [20, 29]},
         "rooms": [
             {"id": "crew", "name": "Crew bunks", "bounds": [1, 1, 11, 12], "protected": True},
             {"id": "mess", "name": "Mess and kitchen counter", "bounds": [18, 1, 28, 12], "protected": True},
@@ -187,14 +199,15 @@ def manifest():
             {"id": "wash", "name": "Wash stalls", "bounds": [18, 14, 22, 25], "protected": True},
             {"id": "clinic", "name": "Treatment room", "bounds": [24, 14, 28, 25], "protected": True},
             {"id": "stores", "name": "Party stores", "bounds": [1, 27, 11, 38], "protected": True},
-            {"id": "repair", "name": "Quiet repair room", "bounds": [18, 27, 28, 38], "protected": True},
+            {"id": "engine", "name": "Protected engine room", "bounds": [18, 27, 28, 31], "protected": True},
+            {"id": "helm", "name": "Protected helm controls", "bounds": [18, 33, 28, 38], "protected": True},
             {"id": "receiving", "name": "Incoming salvage stores", "bounds": [1, 46, 28, 51], "protected": False},
             {"id": "west_build", "name": "West build bay", "bounds": [1, 55, 11, 67], "protected": False},
             {"id": "east_build", "name": "East build bay", "bounds": [18, 55, 28, 67], "protected": False},
             {"id": "crafting", "name": "Crafting and sorting benches", "bounds": [1, 71, 28, 77], "protected": False},
             {"id": "utility", "name": "Utility maintenance", "bounds": [1, 80, 11, 92], "protected": False},
             {"id": "spares", "name": "Exposed spare parts store", "bounds": [18, 80, 28, 92], "protected": False},
-            {"id": "helm", "name": "Helm cabin", "bounds": [1, 94, 28, 100], "protected": False},
+            {"id": "forward_cargo", "name": "Forward cargo cabin", "bounds": [1, 94, 28, 100], "protected": False},
         ],
         "build_pads": [{"id": "west_build", "bounds": [2, 56, 10, 65]}, {"id": "east_build", "bounds": [19, 56, 27, 65]}],
         "keep_clear": [{"id": "spine", "bounds": [13, 46, 16, 97]},
@@ -219,16 +232,59 @@ def manifest():
         "future_identity": {"stable_train_id": "runtime-assigned persistent ID, never a slot/area/coordinate",
                             "crew_id": "runtime-owned stable crew identity; not a temporary party object",
                             "required_fences": ["schema_version", "train_generation", "reservation_token", "crew_authorization", "occupancy_generation"]},
+        "raid_access": {
+            "required_inputs": ["loaded_fuel", "target_section_boarding_pass"],
+            "front_sections": {"loot": "better", "entry_cost": "higher"},
+            "balance_values": None,
+            "target_compartment_doors": {"breachable_without_pass": True, "inherits_dagger_boundary_protection": False},
+            "transaction": {"authority": "server", "atomic_commit": True, "atomic_refund": True,
+                            "idempotent": True, "commit_point": None, "refund_policy": None,
+                            "failure_resolution": "rollback_or_quarantine_without_duplicate_value",
+                            "inputs": ["loaded_fuel", "target_section_boarding_pass"],
+                            "enforced_by_this_map": False},
+            "extraction_sequence": {
+                "states": ["reservation", "call", "arrival", "boarding", "departure"],
+                "requirements": {
+                    "reservation": "atomically claim selected berth and own whole footprint; validate loaded fuel and target-section pass",
+                    "call": "server-authorized idempotent request tied to current train identity and reservation",
+                    "arrival": "revalidate occupancy and ownership before placement and after callbacks; retain protected boundary",
+                    "boarding": "track actual participants; enforce party-only protected airlock while exposed sections remain boardable",
+                    "departure": "revalidate custody and durable movement; release claims only after verified empty-slot retirement"},
+                "timings": None, "enforced_by_this_map": False},
+            "enforced_by_this_map": False},
         "runtime_contract_pending": ["atomic reservation of only the selected berth and own whole footprint before construction, load or move",
                                      "other berth remains available to another party; pair geometry is not an exclusive claim",
                                      "exclusive train custody across home and berth",
                                      "party access and damage protection in every location",
+                                     "protected boundary walls and airlock doors deny damage, deconstruction, forced entry, removal and replacement bypass; preserve across transport and restore",
+                                     "upgradeable helm controls and engine room stay inside protected compartment; upgrade costs and effects unspecified",
+                                     "loaded fuel and target-section pass gate raid travel; front target sections have better loot and higher entry cost",
+                                     "target train compartment doors remain breachable without a pass and do not inherit Dagger boundary protection",
+                                     "server-side atomic fuel/pass commit and refund with idempotent reservation, call, arrival, boarding and departure states",
                                      "party-only airlock entry from either side with enforced two-door interlock",
                                      "safe airlock egress on membership change or disconnect remains a required policy decision",
                                      "safe-zone nutrition and hydration recovery replaces drain at normal healthy caps; recovery rate is unspecified",
                                      "post-callback occupancy revalidation",
                                      "durable move/load rollback or quarantine", "bounded retirement and verified empty slot reuse"],
     }
+    protected_bounds = layout["protected"]["bounds"]
+    boundary = {(x, y) for x, y in cells(protected_bounds)
+                if x in (0, WIDTH - 1) or y in (0, PROTECTED_END)}
+    airlock_bounds = layout["protected"]["airlock"]["bounds"]
+    ax0, ay0, ax1, ay1 = airlock_bounds
+    boundary |= {(x, y) for x, y in cells(airlock_bounds) if x in (ax0, ax1) or y in (ay0, ay1)}
+    source_train = train()
+    layout["protected"]["boundary_protection"] = {
+        "wall_tiles": [list(p) for p in sorted(boundary) if source_train[p] == "hull"],
+        "door_tiles": [[14, 39], [15, 45]],
+        "mode": "deny_mutation_not_health_only",
+        "denied_paths": ["damage", "deconstruction", "forced_entry", "removal", "replacement"],
+        "preserve_on_transport_and_restore": True, "exposed_walls_protected": False,
+        "enforced_by_this_map": False}
+    layout["protected"]["infrastructure"] = {
+        "helm_controls": {"room_id": "helm", "marker": [24, 37], "palette": "helm_control", "upgradeable": True},
+        "engine_room": {"room_id": "engine", "marker": [25, 29], "palette": "engine_mount", "upgradeable": True},
+        "upgrade_costs": None, "upgrade_effects": None, "enforced_by_this_map": False}
     for slot in layout["slots"]:
         slot["berth_mask_rows_south_to_north"] = ["1" * WIDTH] * LENGTH
         if slot["kind"] == "raid_berth":
