@@ -403,9 +403,11 @@
 		TSFSR = FALSE,
 	)
 	var/obj/map_metadata/campaign_new/MC = map
-	src << browse(null, "window=latechoices")
+	if (!lobby_join_validation)
+		src << browse(null, "window=latechoices")
 
 	var/list/dat = list("<center>")
+	var/list/join_jobs = list()
 	dat += "<big><b>Welcome, [key].</b></big>"
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text_days()]"
@@ -468,11 +470,12 @@
 		if (job)
 			var/active = processes.job_data.get_active_positions(job)
 			dat += "<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] (Active: [active])</a><br>"
+			join_jobs |= job.title
 			++available_jobs_per_side[job.base_type_flag()]
 
 	dat += "</center>"
 
-	show_latechoices_window(dat)
+	show_latechoices_window(dat, join_jobs)
 
 /obj/map_metadata/campaign_new/update_win_condition()
 	// Win when timer reaches zero
