@@ -199,6 +199,13 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-17: maintainer rules -->
+- Art: reuse and transform existing art assets where possible. Never use image
+  generation tools (Stable Diffusion and similar). New art made from scratch must
+  use appropriate graphic tools such as vector-based graphics.
+- DreamDaemon must always run as trusted (`-trusted`). Some existing runners still
+  pass `-safe`; converting them is pending maintainer-approved follow-up.
+
 <!-- 2026-10-13: native catch variable scope -->
 BYOND 516.1681 treats catch variable declarations as proc-scoped. Use distinct
 names for separate catch blocks in one proc or compilation fails with duplicate definition.
