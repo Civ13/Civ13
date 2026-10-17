@@ -200,6 +200,38 @@ class HelpManagerTests(unittest.TestCase):
         self.assertEqual(observed, ['optional_files_unavailable', 'running'])
         self.spawn.assert_called_once()
 
+    def test_entrypoint_stop_marker_drains_owned_worker_without_console_signals(self):
+        original_manager = module.HelpManager
+        observed = []
+        def construct(*args, **kwargs):
+            self.manager = original_manager(*args, **kwargs,
+                identity=lambda pid: self.identities.get(pid), spawn=self.spawn,
+                clock=lambda: self.now)
+            original_tick = self.manager.tick
+            def tick():
+                result = original_tick()
+                observed.append(result)
+                return result
+            self.manager.tick = tick
+            return self.manager
+        def advance(_):
+            if len(observed) == 1:
+                (self.root / 'help-manager.stop').touch()
+            elif len(observed) == 2:
+                self.assertTrue(Path(self.manager.record['stop_file']).exists())
+                self.child.poll.return_value = 0
+            else:
+                self.assertLessEqual(len(observed), 3, 'Observer did not stop')
+        argv = ['help_manager', '--root', str(self.root), '--python', str(self.files[0]),
+                '--bridge', str(self.files[1]), '--config', str(self.files[2])]
+        with patch.object(sys, 'argv', argv), patch.object(module, 'HelpManager', construct):
+            with patch.object(module.signal, 'signal'), patch.object(module.time, 'sleep', advance):
+                module.main()
+        self.assertEqual(observed, ['running', 'stopping', 'worker_exited'])
+        self.spawn.assert_called_once()
+        self.child.kill.assert_not_called()
+        self.child.terminate.assert_not_called()
+
 
 if __name__ == '__main__':
     unittest.main()

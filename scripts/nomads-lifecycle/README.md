@@ -106,7 +106,11 @@ intent requires operator reconciliation; it is never automatically adopted.
 `help-worker.log` retains worker diagnostics. It is local, private operational
 material and should follow the installation's log-retention policy.
 
-On a run change or manager shutdown, the manager creates its unique stop file.
+For graceful observer shutdown on Windows, create `ROOT/help-manager.stop`
+(or the explicit `--stop-file` path). Remove that operator-owned marker before
+starting another observer. This also works without a console; Windows process
+termination does not deliver Python's signal handlers.
+On a run change or requested manager shutdown, the manager creates its unique worker stop file.
 The bridge stops accepting questions and drains its bounded in-flight requests.
 After 150 seconds without exit, the manager records `stop_timeout` and exits
 without forced termination or replacement. Reconcile that exact PID/creation

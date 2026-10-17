@@ -151,7 +151,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for argument in ('root', 'python', 'bridge', 'config'):
         parser.add_argument('--' + argument, type=Path, required=True)
+    parser.add_argument('--stop-file', type=Path,
+                        help='Graceful observer shutdown marker; default ROOT/help-manager.stop')
     args = parser.parse_args()
+    stop_file = args.stop_file or args.root / 'help-manager.stop'
     stopping = False
 
     def request_stop(*_):
@@ -164,6 +167,8 @@ def main():
         manager = HelpManager(args.root, args.python.resolve(strict=True),
                               args.bridge.resolve(), args.config.resolve())
         while True:
+            if stop_file.exists():
+                stopping = True
             if stopping:
                 manager.stop()
                 if manager.child is None:
