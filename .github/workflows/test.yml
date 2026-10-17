@@ -412,6 +412,23 @@ jobs:
           name: cooked-meals-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/cooked-meals/
           retention-days: 7
+      - name: Verify yeast bread and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/yeast_bread')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/yeast_bread/run.py --source-check
+          python3 tests/yeast_bread/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/yeast-bread/positive"
+          for control in oven payment rising persistence load; do
+            python3 tests/yeast_bread/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/yeast-bread/$control"
+          done
+      - name: Upload yeast bread evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/yeast_bread'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: yeast-bread-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/yeast-bread/
+          retention-days: 7
       - name: Verify linked building levels and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/building_levels') || inputs.persistence_integration_regressions == true
         shell: bash

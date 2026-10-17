@@ -365,6 +365,15 @@ Load_Entry replaces constructor contents even for an empty saved record; rack
 runtime pointers must be excluded and live internal storage rebound or rebuilt.
 Source-only preparation does not establish native candidate or control acceptance.
 
+<!-- 2026-10-17: yeast bread -->
+Dough bakes into a sliceable loaf only after yeast (5 `enzyme` units) is kneaded
+in and its 5-minute rise deadline passes; otherwise ovens produce flatbread.
+`rise_ready_at` is runtime-only and restarted by `after_load()`; `check_risen()`
+is lazy so a lost wait cannot strand dough. Oven `process()` ejects products onto
+its turf, so fixtures must inspect the turf, not oven contents. `map_storage.Load_Entry`
+does not call `after_load()`; isolated fixtures must call it like the world loader.
+`tests/yeast_bread/run.py` covers this with five generated-source controls.
+
 <!-- 2026-10-12: NPC cover decision parity -->
 `tests/npc_cover/run.py` compiles production cover scoring, LOS and line helpers
 with native BYOND ranges in an isolated 32x32x2 world. It compares every score
