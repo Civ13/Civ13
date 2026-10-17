@@ -327,9 +327,9 @@ class Bridge:
             # Never expose endpoint, headers, credentials, raw response or exception to player/log.
             return {'id': request['id'], 'status': 'unavailable'}
 
-    def tick(self):
+    def tick(self, admit=True):
         atomic_json(self.root / 'limits.json', self.limiter.limits)
-        atomic_json(self.root / 'health.json', {'enabled': self.config['enabled'], 'sequence': uuid.uuid4().hex, 'request_timeout_seconds': min(600, int(self.config.get('timeout_seconds', 45) * 8 / self.config.get('workers', 1)) + 15)})
+        atomic_json(self.root / 'health.json', {'enabled': self.config['enabled'] and admit, 'sequence': uuid.uuid4().hex, 'request_timeout_seconds': min(600, int(self.config.get('timeout_seconds', 45) * 8 / self.config.get('workers', 1)) + 15)})
         for slot, (request_id, future) in list(self.active.items()):
             ready = self.root / f'{slot}.ready'
             try:
@@ -340,7 +340,7 @@ class Bridge:
                 if current == request_id:
                     atomic_json(self.root / f'{slot}.response.json', future.result())
                 del self.active[slot]
-        if not self.config['enabled']:
+        if not self.config['enabled'] or not admit:
             return
         for slot in range(1, 9):
             if slot in self.active or len(self.active) >= self.config['workers']:
@@ -403,7 +403,13 @@ def main():
             bridge.tick()
             time.sleep(1)
     finally:
-        bridge.close()
+        try:
+            while bridge.active:
+                bridge.tick(admit=False)
+                if bridge.active:
+                    time.sleep(1)
+        finally:
+            bridge.close()
 
 
 if __name__ == '__main__':

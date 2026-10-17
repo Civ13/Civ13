@@ -88,7 +88,7 @@ class PublicationTests(unittest.TestCase):
     def test_existing_stop_marker_drains_without_accepting_new_requests(self):
         stop = self.path.parent / 'stop'
         stop.touch()
-        instance = mock.Mock(root=self.path.parent, running=True)
+        instance = mock.Mock(root=self.path.parent, running=True, active={})
         corpus = [{'topic': 'test', 'text': 'test'}]
         with mock.patch('sys.argv', ['bridge', '--game-root', str(self.path.parent),
                 '--config', str(self.path), '--stop-file', str(stop)]):
@@ -101,6 +101,60 @@ class PublicationTests(unittest.TestCase):
                     bridge.main()
         instance.tick.assert_not_called()
         instance.close.assert_called_once()
+
+    def test_main_stop_drains_pending_answer_without_admitting_second_request(self):
+        root = self.path.parent
+        stop = root / 'stop'
+        config = {'enabled': True, 'model': 'test', 'endpoint': 'http://localhost/api/chat',
+                  'workers': 1, 'timeout_seconds': 1}
+        corpus = [{'topic': 'bandage', 'text': 'Use a bandage.'}]
+        release = threading.Event()
+        calls = []
+        def transport(*args):
+            calls.append(args)
+            self.assertTrue(release.wait(2), 'Drain did not release pending answer')
+            return {'message': {'content': 'Use a bandage.'}}
+        instance = bridge.Bridge(root / 'SQL/player-help', config, corpus, transport)
+        real_tick = instance.tick
+        def tick(admit=True):
+            if admit:
+                for slot in (1, 2):
+                    request = {'id': f'1-2-{slot}', 'question': 'How do I bandage?',
+                               'account': str(slot) * 32}
+                    (instance.root / f'{slot}.request.json').write_text(json.dumps(request))
+                    (instance.root / f'{slot}.ready').write_text(request['id'])
+                real_tick()
+                self.assertEqual(len(instance.active), 1)
+                stop.touch()
+            else:
+                self.assertTrue(config['enabled'])
+                release.set()
+                next(iter(instance.active.values()))[1].result(timeout=2)
+                real_tick(admit=False)
+        real_bounded_json = bridge.bounded_json
+        def read(path, limit):
+            return corpus if Path(path).name == 'player-help.json' else real_bounded_json(path, limit)
+        instance.tick = tick
+        try:
+            with mock.patch('sys.argv', ['bridge', '--game-root', str(root),
+                    '--config', str(self.path), '--stop-file', str(stop)]):
+                with mock.patch.multiple(bridge, load_config=mock.Mock(return_value=config),
+                        bounded_json=mock.Mock(side_effect=read),
+                        recipe_context=mock.Mock(return_value=[]),
+                        gameplay_knowledge=mock.Mock(return_value=[]),
+                        Bridge=mock.Mock(return_value=instance)):
+                    with mock.patch.object(bridge.signal, 'signal'), mock.patch.object(bridge.time, 'sleep'):
+                        bridge.main()
+            response = json.loads((instance.root / '1.response.json').read_text())
+            self.assertEqual(response, {'id': '1-2-1', 'status': 'ok', 'answer': 'Use a bandage.'})
+            self.assertFalse((instance.root / '2.response.json').exists())
+            self.assertEqual(len(calls), 1)
+            self.assertTrue(config['enabled'])
+            self.assertFalse(json.loads((instance.root / 'health.json').read_text())['enabled'])
+            self.assertFalse(instance.lock.exists())
+        finally:
+            release.set()
+            instance.close()
 
 
 if __name__ == '__main__':
