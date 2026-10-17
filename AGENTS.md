@@ -481,6 +481,16 @@ Linux DreamDaemon safe mode rejects an absolute `-log` path. Use a relative
 log filename with the runtime working directory set to temporary storage.
 
 <!-- 2026-10-11: chemistry recipe acceptance -->
+<!-- 2026-10-17: chemical registration -->
+`initialize_chemical_reagents()` keys reagents by `id` and skips nameless types:
+a subtype without its own `id` silently replaces its parent (cafe latte once
+made `"coffee"` resolve to Cafe Latte). Give every concrete reagent an `id` and
+abstract parents `name = null`. A proc on a misspelled path creates a phantom
+registered type. Never redeclare `/datum/chemical_reaction/` with defaults: its
+`required_reagents` were inherited by `kevlar` and `wizard_boy_recipe`. Reactions
+only queue in `handle_reactions()`; fixtures call `process_reactions()`.
+`tests/chemical_registration/run.py` audits all of this natively.
+
 `tests/chemistry/run.py --probe biochemistry` checks production acquisition,
 construction, controlled reactions, heated polymers, gelatin separation and
 engine fuel in temporary storage. See docs/chemistry-recipes.md for game yields,

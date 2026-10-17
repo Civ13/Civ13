@@ -227,13 +227,6 @@ datum/admins/proc/print_chemical_reactions()
 // https://discord.com/channels/468979034571931648/1127619013447520266/1127644788502564864
 /* Common reactions */
 
-/datum/chemical_reaction/
-	name = ""
-	id = ""
-	result = ""
-	required_reagents = list("acetone" = 1, "carbon" = 1, "sugar" = 1)
-	result_amount = 3
-
 // Mostly used for chromatography, foam production & fuel
 /datum/chemical_reaction/pentane
 	name = "Pentane"
@@ -720,7 +713,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Baking soda"
 	id = "baking_soda"
 	result = "baking_soda"
-	required_reagents = list("carbon_dioxide" = 1, "ammonia" = 1, "sodium_chloride" = 2)
+	required_reagents = list("carbon_dioxide" = 1, "ammonia" = 1, "sodiumchloride" = 2)
 	result_amount = 2
 
 /datum/chemical_reaction/bleach
@@ -1146,8 +1139,8 @@ datum/admins/proc/print_chemical_reactions()
 
 /datum/chemical_reaction/coca_wine
 	name = "Coca Wine"
-	id = "cocawine"
-	result = "cocawine"
+	id = "coca_wine"
+	result = "coca_wine"
 	required_reagents = list("wine"= 10, "cocaine" = 1)
 	catalysts = list("enzyme" = 5)
 	result_amount = 10
@@ -1282,20 +1275,6 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("rum" = 1, "whiskey" = 1, "lemonjuice" = 1)
 	result_amount = 3
 
-/datum/chemical_reaction/snowwhite
-	name = "Snow White"
-	id = "snowwhite"
-	result = "snowwhite"
-	required_reagents = list("beer" = 1, "lemon_lime" = 1)
-	result_amount = 2
-
-/datum/chemical_reaction/syndicatebomb
-	name = "Syndicate Bomb"
-	id = "syndicatebomb"
-	result = "syndicatebomb"
-	required_reagents = list("beer" = 1, "whiskeycola" = 1)
-	result_amount = 2
-
 /datum/chemical_reaction/driestmartini
 	name = "Driest Martini"
 	id = "driestmartini"
@@ -1308,13 +1287,6 @@ datum/admins/proc/print_chemical_reactions()
 	id = "lemonade"
 	result = "lemonade"
 	required_reagents = list("lemonjuice" = 1, "sugar" = 1, "water" = 1)
-	result_amount = 3
-
-/datum/chemical_reaction/kiraspecial
-	name = "Kira Special"
-	id = "kiraspecial"
-	result = "kiraspecial"
-	required_reagents = list("orangejuice" = 1, "limejuice" = 1, "sodawater" = 1)
 	result_amount = 3
 
 /datum/chemical_reaction/milkshake
@@ -1333,8 +1305,9 @@ datum/admins/proc/print_chemical_reactions()
 
 /datum/chemical_reaction/sterilizine
 	name = "sterilizine"
-	result = /datum/reagent/sterilizine
-	required_reagents = list(/datum/reagent/ethanol = 1, /datum/reagent/anti_toxin = 1, /datum/reagent/acid/hydrochloric = 1)
+	id = "sterilizine"
+	result = "sterilizine"
+	required_reagents = list("ethanol" = 1, "anti_toxin" = 1, "hclacid" = 1)
 	result_amount = 3
 
 //fermentation

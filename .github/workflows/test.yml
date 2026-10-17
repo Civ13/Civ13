@@ -412,6 +412,23 @@ jobs:
           name: cooked-meals-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/cooked-meals/
           retention-days: 7
+      - name: Verify chemical registration and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/chemical_registration')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/chemical_registration/run.py --source-check
+          python3 tests/chemical_registration/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/chemical-registration/positive"
+          for control in base latte parent product sterilizine; do
+            python3 tests/chemical_registration/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/chemical-registration/$control"
+          done
+      - name: Upload chemical registration evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/chemical_registration'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: chemical-registration-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/chemical-registration/
+          retention-days: 7
       - name: Verify yeast bread and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/yeast_bread')
         shell: bash
