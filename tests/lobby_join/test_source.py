@@ -21,6 +21,17 @@ def digest(value):
 
 
 class LobbyJoinSource(unittest.TestCase):
+    def test_native_file_menu_invokes_the_same_verb(self):
+        skin = (ROOT / "interface/skin.dmf").read_text()
+        menu = skin[skin.index('menu "menu"'):]
+        match = re.search(r'\telem "join-round"\n(.*?)(?=\telem |\Z)', menu, re.S)
+        self.assertIsNotNone(match)
+        item = match.group(1)
+        self.assertIn('name = "&Join round"', item)
+        self.assertIn('category = "&File"', item)
+        self.assertEqual(re.findall(r'^\s*command = "(.*)"$', item, re.M), ['Join'])
+        self.assertNotIn('byond://', item)
+
     def test_canonical_admission_and_job_body_preserved(self):
         source = (ROOT / "code/game/mob/new_player/new_player.dm").read_text()
         body = procedure(source, "/mob/new_player/proc/process_lobby_join(")

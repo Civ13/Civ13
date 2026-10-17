@@ -1,7 +1,9 @@
 # Lobby Join verification
 
 The typed `Join` command is available on lobby mobs in the Lobby verb category.
-Enter `Join` in the BYOND command bar. Direct-spawn modes use their usual join
+Enter `Join` in the BYOND command bar or select **File > Join round** from the
+native client menu. Both routes invoke exactly the same server verb.
+Direct-spawn modes use their usual join
 handler; modes with role lists use a native BYOND role prompt. Cancel the prompt
 to remain in the lobby. This source change requires a rebuilt server before use.
 
@@ -25,7 +27,8 @@ Run with a verified Python interpreter:
 <python> -m unittest discover -s tests/lobby_join -p test_source.py
 ```
 
-Four source checks preserve the admission body and the four menu filter bodies
+Five source checks verify the native File menu command and preserve the admission
+body and the four role-menu filter bodies
 against immutable baseline `41e2d02fe1f9130e0987aee0efd2eba0ca7b3bf1`, normalizing
 only the documented factoring, native title collection and prompt wrappers.
 They also check title/link branch alignment, shared routing, owner cleanup and
