@@ -25,7 +25,7 @@ CONTROLS = {
                 '/datum/reagents/proc/process_reactions()\n\tif (my_atom && istype(my_atom, /obj/item/weapon/reagent_containers/glass/beaker/large))\n\t\tvar/list/core_boot_control = null\n\t\tcore_boot_control.Cut()\n',
                 'runtime diagnostic'),
 }
-DEADLINE_SECONDS = 600
+DEADLINE_SECONDS = 1500
 
 
 def git(*args):
@@ -43,8 +43,15 @@ def scan_logs(work):
     return hits
 
 
-def generate(control, created):
+def generate(control, created, lighting_load=False, map_path=None, lighting_restart=False):
     dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8-sig')
+    if map_path:
+        if not (ROOT / map_path).is_file():
+            raise RuntimeError('Map not found: ' + map_path)
+        default = re.compile(r'^#include "maps[\\/]nomads[\\/]nomads\.dmm"$', re.M)
+        if len(default.findall(dme)) != 1:
+            raise RuntimeError('Expected one default map include')
+        dme = default.sub('#include "' + map_path.replace('/', '\\\\') + '"', dme)
     if control:
         path, old, new, _ = CONTROLS[control]
         source = (ROOT / path).read_text(encoding='utf-8-sig')
@@ -57,6 +64,9 @@ def generate(control, created):
         if dme.count(include) != 1:
             raise RuntimeError('Control include missing: ' + path)
         dme = dme.replace(include, '#include "' + generated.name + '"')
+    if lighting_load or lighting_restart:
+        define = 'CORE_BOOT_LIGHTING_RESTART' if lighting_restart else 'CORE_BOOT_LIGHTING_LOAD'
+        dme = '#define ' + define + '\n' + dme + '\n#include "tests\\core_boot\\lighting_load.dm"\n'
     dme += '\n#include "tests\\core_boot\\probe.dm"\n'
     source = ROOT / ('.core_boot_' + uuid.uuid4().hex + '.dme')
     source.write_text(dme, encoding='utf-8')
@@ -69,6 +79,11 @@ def main():
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--negative-control', choices=CONTROLS)
+    parser.add_argument('--lighting-load', action='store_true',
+                        help='Also save and load the world, comparing turf lighting overlays')
+    parser.add_argument('--lighting-restart', action='store_true',
+                        help='Save in one process, then compare lighting after a fresh process imports the save')
+    parser.add_argument('--map', help='Repository-relative .dmm replacing the default Nomads map include')
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     if any(args.output.iterdir()):
@@ -85,7 +100,7 @@ def main():
     (args.output / 'tested.patch').write_text(git('diff', 'HEAD'), encoding='utf-8')
     created = []
     try:
-        source = generate(args.negative_control, created)
+        source = generate(args.negative_control, created, args.lighting_load, args.map, args.lighting_restart)
         build = subprocess.run([str(compiler), '-max_errors', '0', str(source)], cwd=ROOT,
                                capture_output=True, text=True, timeout=600, creationflags=flags)
         compile_log = build.stdout + build.stderr
@@ -100,28 +115,46 @@ def main():
                 destination = work / path
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(ROOT / path, destination)
-            command = [str(daemon), 'probe.dmb']
-            if os.name == 'nt':
-                command += ['-invisible', '-close']
-            command += ['-safe', '-log', 'startup.log']
-            started = time.monotonic()
-            with (work / 'stdout.log').open('w') as stdout, (work / 'stderr.log').open('w') as stderr:
-                process = subprocess.Popen(command, cwd=work, stdout=stdout, stderr=stderr, creationflags=flags)
-                try:
-                    process.wait(timeout=DEADLINE_SECONDS)
-                except subprocess.TimeoutExpired:
-                    process.kill()
-                    process.wait(timeout=10)
-            wall = time.monotonic() - started
-            hits = scan_logs(work)
+            if args.lighting_restart:
+                config_path = work / 'config/config.txt'
+                text = config_path.read_text(encoding='utf-8')
+                if text.count('ALLOWED_GAMEMODES ALL') != 1:
+                    raise RuntimeError('Expected ALLOWED_GAMEMODES ALL in config')
+                config_path.write_text(text.replace('ALLOWED_GAMEMODES ALL', 'ALLOWED_GAMEMODES PERSISTENCE'), encoding='utf-8')
+            phases = [('save', 'PASS: restart save phase'), ('load', 'PASS: restart import lighting')] if args.lighting_restart else [('boot', EXPECTED)]
+            summary = {'phases': []}
+            hits = []
+            result = ''
+            wall = 0
+            for name, phase_expected in phases:
+                (work / 'result.txt').unlink(missing_ok=True)
+                command = [str(daemon), 'probe.dmb']
+                if os.name == 'nt':
+                    command += ['-invisible', '-close']
+                command += ['-safe', '-log', name + '-startup.log']
+                started = time.monotonic()
+                with (work / (name + '-stdout.log')).open('w') as stdout, (work / (name + '-stderr.log')).open('w') as stderr:
+                    process = subprocess.Popen(command, cwd=work, stdout=stdout, stderr=stderr, creationflags=flags)
+                    try:
+                        process.wait(timeout=DEADLINE_SECONDS)
+                    except subprocess.TimeoutExpired:
+                        process.kill()
+                        process.wait(timeout=10)
+                wall = time.monotonic() - started
+                hits = scan_logs(work)
+                result = (work / 'result.txt').read_text(errors='replace').strip() if (work / 'result.txt').exists() else ''
+                shutil.copy2(work / 'result.txt', work / (name + '-result.txt')) if (work / 'result.txt').exists() else None
+                summary['phases'].append({'phase': name, 'returncode': process.returncode, 'wall_seconds': round(wall, 1), 'result': result})
+                if result != phase_expected or hits:
+                    break
             for path in work.rglob('*'):
                 if path.is_file() and path.suffix in ('.log', '.txt', '.json') and path.stat().st_size < 8 * 1024 * 1024:
                     destination = args.output / 'runtime' / path.relative_to(work)
                     destination.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copy2(path, destination)
-            result = (work / 'result.txt').read_text(errors='replace').strip() if (work / 'result.txt').exists() else ''
-            summary = {'returncode': process.returncode, 'wall_seconds': round(wall, 1), 'result': result, 'diagnostics': hits[:200]}
+            summary['diagnostics'] = hits[:200]
             (args.output / 'summary.json').write_text(json.dumps(summary, indent=2), encoding='utf-8')
+            expected_final = phases[-1][1]
         if args.negative_control:
             expected = CONTROLS[args.negative_control][3]
             detected = bool(hits) if expected == 'runtime diagnostic' else result == expected
@@ -129,7 +162,7 @@ def main():
                 raise RuntimeError(f'Negative control {args.negative_control} was not detected: {summary}')
             print(f'PASS expected mutation: {args.negative_control} detected ({result or hits[0]})')
             return
-        if hits or result != EXPECTED or wall >= DEADLINE_SECONDS:
+        if hits or result != expected_final or wall >= DEADLINE_SECONDS:
             raise RuntimeError('Core boot failed: ' + json.dumps(summary, indent=2)[:6000])
         print(f'{result} ({wall:.0f}s)')
     finally:

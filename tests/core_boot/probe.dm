@@ -122,6 +122,14 @@ var/global/datum/core_boot_probe/core_boot_probe = new
 /datum/core_boot_probe/proc/exercise()
 	try
 		mark("startup")
+#ifdef CORE_BOOT_LIGHTING_RESTART
+		if (fexists("map_saves/save_complete.txt"))
+			restart_load_phase()
+			finished = TRUE
+			text2file("PASS: restart import lighting", "result.txt")
+			shutdown()
+			return
+#endif
 		wait_until(src, /datum/core_boot_probe/proc/scheduler_ready, 300, "every scheduled process fires after startup")
 		mark("scheduler_ready")
 		check(runtime_errors == 0, "startup reported zero world errors")
@@ -173,6 +181,18 @@ var/global/datum/core_boot_probe/core_boot_probe = new
 				A.loc = get_step(site, pick(cardinal))
 				qdel(A)
 		mark("object_churn")
+
+#ifdef CORE_BOOT_LIGHTING_LOAD
+		load_cycle_lighting()
+		mark("lighting_load")
+#endif
+#ifdef CORE_BOOT_LIGHTING_RESTART
+		restart_save_phase()
+		finished = TRUE
+		text2file("PASS: restart save phase", "result.txt")
+		shutdown()
+		return
+#endif
 
 		// Let every process keep running after the exercise.
 		sleep(200)
