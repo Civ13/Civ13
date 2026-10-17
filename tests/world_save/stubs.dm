@@ -38,6 +38,16 @@ var/datum/fixture_processes/processes = new
 	var/datum/fixture_ticker_process/ticker = new
 /datum/fixture_ticker_process
 	var/playtime_elapsed = 0
+// Restored rounds call job_master.initialize_position_limits(). Runners that
+// supply their own occupation adapter define WORLD_SAVE_JOBS_PROVIDED.
+#ifndef WORLD_SAVE_JOBS_PROVIDED
+var/datum/world_save_jobs_stub/job_master = new
+/datum/world_save_jobs_stub/proc/initialize_position_limits()
+	return
+#endif
+// Production applies restored daylight in the lighting module; fixtures have no overlays.
+/proc/apply_restored_lighting()
+	return FALSE
 #ifndef WORLD_SAVE_MUSIC_ADAPTER
 /proc/TOD_loop()
 	return

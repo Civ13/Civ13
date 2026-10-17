@@ -34,6 +34,8 @@
 	var/duplicate = 0
 	var/misplaced = 0
 	var/dark = 0
+	var/unlit = 0 // native visibility: an overlay with luminosity 0 leaves its tile black
+	var/turf_lum = 0
 	var/total_brightness = 0
 	var/list/turfs_sampled = sample_turfs()
 	for (var/turf/T in turfs_sampled)
@@ -51,12 +53,16 @@
 			misplaced++
 		if (O.invisibility > INVISIBILITY_LIGHTING)
 			hidden++
+		if (!O.luminosity)
+			unlit++
+		if (T.luminosity)
+			turf_lum++
 		var/b = overlay_brightness(O)
 		rows["[T.x],[T.y]"] = b
 		total_brightness += max(b, 0)
 		if (b >= 0 && b < 0.05)
 			dark++
-	var/list/summary = list("label" = label, "time_of_day" = time_of_day, "sampled" = turfs_sampled.len, "missing" = missing, "hidden" = hidden, "duplicate" = duplicate, "misplaced" = misplaced, "dark" = dark, "mean_brightness" = turfs_sampled.len ? round(total_brightness / turfs_sampled.len, 0.001) : 0, "overlay_list" = lighting_overlay_list.len)
+	var/list/summary = list("label" = label, "time_of_day" = time_of_day, "sampled" = turfs_sampled.len, "missing" = missing, "hidden" = hidden, "duplicate" = duplicate, "misplaced" = misplaced, "dark" = dark, "unlit" = unlit, "turf_luminous" = turf_lum, "mean_brightness" = turfs_sampled.len ? round(total_brightness / turfs_sampled.len, 0.001) : 0, "overlay_list" = lighting_overlay_list.len)
 	world.log << "CORE BOOT LIGHTING [label]: [json_encode(summary)]"
 	lighting_samples[label] = list("summary" = summary, "rows" = rows)
 	return summary
@@ -108,3 +114,4 @@
 	check(!after["hidden"], "overlays are visible after the restart import ([after["hidden"]] hidden)")
 	check(after["mean_brightness"] >= before["mean_brightness"] * 0.95, "daylight brightness survives the restart import ([after["mean_brightness"]] vs [before["mean_brightness"]])")
 	check(after["dark"] <= before["dark"] + round(before["sampled"] / 100), "no new dark turfs after the restart import ([after["dark"]] vs [before["dark"]])")
+	check(after["unlit"] <= before["unlit"] + round(before["sampled"] / 100), "no newly unlit overlays after the restart import ([after["unlit"]] vs [before["unlit"]])")

@@ -24,6 +24,12 @@ CONTROLS = {
                 '/datum/reagents/proc/process_reactions()\n',
                 '/datum/reagents/proc/process_reactions()\n\tif (my_atom && istype(my_atom, /obj/item/weapon/reagent_containers/glass/beaker/large))\n\t\tvar/list/core_boot_control = null\n\t\tcore_boot_control.Cut()\n',
                 'runtime diagnostic'),
+    # With --lighting-restart: a restored round with no daylight application, as
+    # legacy saves had before restored lighting moved out of durable metadata.
+    'restored-lighting': ('code/modules/lighting/lighting_system.dm',
+                '\tP.lighting_revision++\n\treturn P.apply_daylight(time_of_day, P.lighting_revision)',
+                '\treturn FALSE',
+                'FAIL: daylight brightness survives the restart import'),
 }
 DEADLINE_SECONDS = 1500
 
@@ -157,7 +163,7 @@ def main():
             expected_final = phases[-1][1]
         if args.negative_control:
             expected = CONTROLS[args.negative_control][3]
-            detected = bool(hits) if expected == 'runtime diagnostic' else result == expected
+            detected = bool(hits) if expected == 'runtime diagnostic' else result.startswith(expected)
             if not detected:
                 raise RuntimeError(f'Negative control {args.negative_control} was not detected: {summary}')
             print(f'PASS expected mutation: {args.negative_control} detected ({result or hits[0]})')

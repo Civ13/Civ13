@@ -86,6 +86,7 @@ def main():
     environment = (fixture / 'string_path_roundtrip.dme').read_text(encoding='utf-8')
     if round_state:
         environment = '#define WORLD_SAVE_MUSIC_ADAPTER\n' + environment
+    environment = '#define WORLD_SAVE_JOBS_PROVIDED\n' + environment
     environment = environment.replace('#define FILE_DIR "../.."', f'#define FILE_DIR "{root.as_posix()}"')
     if not round_state:
         # The ordinary serializer probe has no occupation system. Round-state

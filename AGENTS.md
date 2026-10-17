@@ -809,6 +809,19 @@ bodies, shared identity, late replacement and failed waiters against a baseline;
 its adapted rendering does not establish client lighting acceptance.
 
 <!-- 2026-10-12: lighting reinitialization -->
+<!-- 2026-10-17: restored-round lighting -->
+Startup's bulk sweep builds overlays with `no_update`: an all-zero colour matrix
+and overlay `luminosity` 0, which BYOND renders as pitch-black tiles (turf
+luminosity is always 0; visibility comes from overlay luminosity). Corner
+activation does not queue overlay updates; only light sources and daylight do.
+Fresh rounds apply daylight through the roundstart hook, but restored rounds skip
+`ticker.setup()`, so `restore_round_state()` calls `apply_restored_lighting()`
+for every restored round, including legacy saves without durable metadata.
+`tests/core_boot/run.py --lighting-restart --map maps/nomads/nomads_europe.dmm`
+checks a real save, fresh-process import and sampled overlay luminosity; its
+`restored-lighting` control removes that application. Default Nomads cannot be
+saved (cross-level ladders), so use a single-level persistence map.
+
 Lighting startup must reconcile existing inactive shared corners after adding overlays, as well as activating fresh corners. Native largest-startup fixtures exercise a later overlay pass after standalone corner creation; use bounded overlay-master visits without retaining a corner registry.
 
 <!-- 2026-10-12: native population readiness -->
