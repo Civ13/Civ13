@@ -34,6 +34,13 @@ connected-client interaction, campaign accounting, delayed spawning or readiness
 
 ## Bounded native control fixture
 
+`run.py --byond-bin <516.1681-bin>` prepares and runs the control fixture in
+temporary storage, preserving logs on failure, with a 45-second timeout per
+compiler/runtime process. The focused CI guard selects this suite when first
+introduced on this PR or when extensive regressions are explicitly requested.
+Local native investigations can use the reviewed retained-handle Job wrapper
+for additional process, memory and socket observations.
+
 `prepare.py --output <new-evidence-directory>` stages sources and a SHA-256
 manifest only. It launches no processes. Compile its generated `control.dme`
 with pinned BYOND 516.1681, then run `control.dmb` from that isolated directory
