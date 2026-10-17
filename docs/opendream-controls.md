@@ -131,3 +131,77 @@ HTTP mutations require caller operation IDs and its recovery query never replays
 an action. The versioned bot `tests/local/lifecycle-wire.py` imports this actual
 OperationStore and verifies Python-produced receipts with the PHP adapter using
 synthetic effects and temporary storage. No runtime activation is implied.
+
+## Native identity launcher candidate
+
+The local launcher no longer supplies `OpenDreamTester` or any other username.
+It opens the client menu with the selected server address. The native-aware client
+must read the logged-in BYOND account and native CID before connecting. Its account
+display is read-only, and reconnecting must obtain a fresh native observation.
+
+This source candidate requires the complete Windows coherent package from
+OpenDream PR #18 at `483765d2824eb3f315b949c3857856cb887b4aaa`, with its
+exact-commit CI accepted independently. Copy `scripts/opendream/launcher.example.json`
+to the trusted installation's `launcher.json` and replace its absolute paths.
+`client_package` contains both `receipt.json` and `standalone-layout.json`.
+The validator requires those inventories to agree and checks every byte of the
+standalone loader, client/Shared assemblies, WebView, game Resources and pinned
+Robust Resources. Added, missing or altered files reject. A hash receipt binds
+inputs; it is not a signature or independent CI acceptance.
+
+The matching Windows package is artifact `12055151203` from provenance run
+`38919674269` (ZIP SHA256
+`46455902911751ff1a435d4da2be5db3404b7116ca583099425f401a7ddddc1a`).
+Its complete archive and all 740 standalone file hashes/lengths were checked;
+the same run's Linux artifact `12053844736` passed all 742 standalone entries
+(ZIP SHA256 `597b1c76fcf48967ca07808082e5a7763421d455f55236c264a75fa983094b8c`).
+The compiled native helper is artifact `12053888665` from run `38919673987`
+(ZIP SHA256 `86dbf3ca3c3818ea228cf019c70aac372d3060ea81aeb213129463c7638a3b3d`).
+Its manifest binds that same source commit, the checked DM/DME source hashes,
+compiled DMB hash and explicit resource-free RSC absence. Both hosted startup
+logs show sandbox type checking, one normal client Update and graceful exit.
+These are static package and account-free startup checks, not genuine native
+identity, rendering, admission or save acceptance. Artifacts can expire; use
+their recorded immutable identity and refresh availability before retrieval.
+
+The launcher uses `standalone/RobustToolbox/bin/Client/Robust.Client.dll`,
+`standalone/RobustToolbox/Resources`, `standalone/Resources`,
+`standalone/bin/Content.Client` and `standalone/auth-webview` from that one
+package. It does not mix the old trial loader or client zip into these inputs.
+The native BYOND bin and compiled observer directory are separate trusted
+operator settings, checked against the observer's native 516.1681 manifest.
+The trusted host freezes those paths before loading content. The launcher clears
+inherited sandbox-disable, account and CVar override variables for the child,
+then restores the calling environment. It never supplies a username.
+
+`-DryRun` verifies the installed dependencies without launching anything.
+`Client` and `Play` verify the original package and a unique runtime copy before
+launch. Self-contained user data goes into that owned copy, preserving the build
+inventory. Stop first confirms the owned client's exit, then removes only its
+recorded staging directory. The next Client run also reclaims a recorded copy
+after its owned process has exited. Failed copy verification cleans its own copy.
+Client crash recovery without a process record still requires operator inspection.
+Cleanup rejects linked ancestors and descendants and rechecks resolved confinement
+before deletion. If launch succeeds but process metadata or the state write fails,
+it stops and waits for that exact launch before reclaiming its copy. A termination
+failure retains the copy. `tests/test_opendream_launcher.ps1` exercises production
+functions with injected process/state effects and temporary directories, including
+parent redirection and a failed state write; its two omission controls must fail
+for their respective assertions. It starts no real process or game.
+
+Offline package contracts run with a verified Python interpreter:
+`-B -m unittest discover -s tests -p test_opendream_client_package.py -v`.
+They use tiny fake files, including changed Shared, missing Resources, added user
+data, wrong-head/startup receipts, metadata disagreement, traversal/case collisions,
+native helper hash changes and staging cleanup. They do not run a game.
+
+This is not an installed or playable launcher update. Native account/exact CID,
+guest rejection, reconnect/cleanup, actual rendering, admin joining and saving
+remain separate acceptance gates. Do not change a published client channel from
+source or synthetic package checks alone.
+
+After the complete candidate passes those gates and is published, players will
+need the supported BYOND client and a logged-in BYOND account. They will select
+a server and connect using the displayed native account without giving this
+launcher their BYOND password. The native observer can disconnect an existing
+native BYOND world; verified player instructions must explain that step.
