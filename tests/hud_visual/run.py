@@ -24,8 +24,8 @@ def prepare(out):
     if git('diff', 'HEAD') or git('diff', '--cached'):
         raise RuntimeError('Commit the reviewed fixture before freezing')
     out.mkdir(parents=True)
-    source = (ROOT / 'civ13.dme').read_text()
-    world = (ROOT / 'code/world.dm').read_text()
+    source = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+    world = (ROOT / 'code/world.dm').read_text(encoding='utf-8')
     anchor = world.index('/world/New()')
     parent = world.index('\n\t..()', anchor)
     world = world[:parent] + world[parent:].replace('\n\t..()', '', 1)
@@ -34,11 +34,11 @@ def prepare(out):
     dme = ROOT / '.hud_visual_fixture.dme'
     if world_path.exists() or dme.exists():
         raise RuntimeError('Preserve existing generated inputs')
-    world_path.write_text(world)
+    world_path.write_text(world,encoding='utf-8')
     source = source.replace('code\\world.dm', world_path.name)
     source = re.sub(r'^#include\s+"[^"\n]+\.dmm"\s*$', '', source, flags=re.M)
     source += '\n#include "tests/hud_visual/probe.dm"\n'
-    dme.write_text(source)
+    dme.write_text(source,encoding='utf-8')
     generated = {str(p.relative_to(ROOT)): digest(p) for p in (dme,world_path)}
     harness = {str(p.relative_to(ROOT)): digest(p) for p in (ROOT/'tests/hud_visual').glob('*.py')}
     production = {}
@@ -71,8 +71,8 @@ def prepare(out):
     print(json.dumps(dict(packet=str(out/'packet.json'),sha256=digest(out/'packet.json'),head=packet['head'])))
 
 def execute(out, grant):
-    p=json.loads((out/'packet.json').read_text())
-    g=json.loads(grant.read_text())
+    p=json.loads((out/'packet.json').read_text(encoding='utf-8'))
+    g=json.loads(grant.read_text(encoding='utf-8'))
     now=dt.datetime.now(dt.timezone.utc)
     if g['packet_sha256'] != digest(out/'packet.json') or g['head'] != p['head'] or not g['exclusive_blackout_only']:
         raise RuntimeError('Exact parent lease mismatch')
@@ -140,7 +140,7 @@ def execute(out, grant):
                 row['final']['cpu_seconds']>p['limits'][phase+'_cpu_seconds'] or
                 row['elapsed']>p['limits'][phase+'_seconds'] or time.monotonic()-start>110):
                 raise RuntimeError('Phase did not exit successfully')
-        result=(out/'result.txt').read_text()
+        result=(out/'result.txt').read_text(encoding='utf-8')
         logs='\n'.join(f.read_text(errors='replace') for f in out.glob('*.log'))
         if not result.startswith('PASS ') or any(s in logs for s in ('BUG:','UNEXPECTED','Runtime in','runtime error','Bad ref','FAIL ')):
             raise RuntimeError('Native result or diagnostic failure: '+result)
