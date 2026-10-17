@@ -29,7 +29,7 @@ CONTROLS = {
     'restored-lighting': ('code/modules/lighting/lighting_system.dm',
                 '\tP.lighting_revision++\n\treturn P.apply_daylight(time_of_day, P.lighting_revision)',
                 '\treturn FALSE',
-                'FAIL: daylight brightness survives the restart import'),
+                'FAIL: overlays are visible after the restart import'),
 }
 DEADLINE_SECONDS = 1500
 

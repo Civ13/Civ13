@@ -130,10 +130,11 @@ var/created_lighting_corners_and_overlays = FALSE
 	lighting_startup_in_progress = FALSE
 
 // A restored round skips ticker.setup() and its roundstart hook, which is what
-// normally applies daylight. Startup builds overlays without updating them
-// (luminosity 0, rendered pitch black), so world restoration applies the restored
-// time of day for every restored round, including legacy saves without durable
-// metadata. Imports run after startup has built the overlays.
+// normally applies daylight. Overlays built during pregame stay hidden from
+// players (invisibility 100) and carry the startup time of day until daylight is
+// applied, so world restoration applies the restored time of day for every
+// restored round, including legacy saves without durable metadata. Imports run
+// after startup has built the overlays.
 /proc/apply_restored_lighting()
 	var/process/time_of_day_change/P = processes.time_of_day_change
 	if (!P || !created_lighting_corners_and_overlays)
