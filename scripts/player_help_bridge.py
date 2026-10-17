@@ -185,7 +185,14 @@ def public_game_context(request):
 def atomic_json(path, value):
     temporary = path.with_suffix(path.suffix + '.tmp')
     temporary.write_text(json.dumps(value, ensure_ascii=True), encoding='utf-8')
-    os.replace(temporary, path)
+    for attempt in range(21):
+        try:
+            os.replace(temporary, path)
+            return
+        except PermissionError as error:
+            if getattr(error, 'winerror', None) not in (5, 32, 33) or attempt == 20:
+                raise
+            time.sleep(.05)
 
 
 def bounded_json(path, limit):
@@ -374,6 +381,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--game-root', type=Path, required=True)
     parser.add_argument('--config', type=Path, required=True)
+    parser.add_argument('--stop-file', type=Path)
     args = parser.parse_args()
     config = load_config(args.config)
     corpus = bounded_json(args.game_root / 'UI/player-help.json', 32768)
@@ -391,7 +399,7 @@ def main():
     signal.signal(signal.SIGTERM, stop)
     signal.signal(signal.SIGINT, stop)
     try:
-        while bridge.running:
+        while bridge.running and not (args.stop_file and args.stop_file.exists()):
             bridge.tick()
             time.sleep(1)
     finally:
