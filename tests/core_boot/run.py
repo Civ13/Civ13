@@ -49,8 +49,10 @@ def scan_logs(work):
     return hits
 
 
-def generate(control, created, lighting_load=False, map_path=None, lighting_restart=False):
+def generate(control, created, lighting_load=False, map_path=None, lighting_restart=False, diverge=False):
     dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8-sig')
+    if diverge:
+        dme = '#define CORE_BOOT_DIVERGE_TURFS\n' + dme
     if map_path:
         if not (ROOT / map_path).is_file():
             raise RuntimeError('Map not found: ' + map_path)
@@ -89,6 +91,8 @@ def main():
                         help='Also save and load the world, comparing turf lighting overlays')
     parser.add_argument('--lighting-restart', action='store_true',
                         help='Save in one process, then compare lighting after a fresh process imports the save')
+    parser.add_argument('--diverge-turfs', action='store_true',
+                        help='With --lighting-restart, change alternate sampled turfs before saving so the import replaces them')
     parser.add_argument('--map', help='Repository-relative .dmm replacing the default Nomads map include')
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
@@ -106,7 +110,7 @@ def main():
     (args.output / 'tested.patch').write_text(git('diff', 'HEAD'), encoding='utf-8')
     created = []
     try:
-        source = generate(args.negative_control, created, args.lighting_load, args.map, args.lighting_restart)
+        source = generate(args.negative_control, created, args.lighting_load, args.map, args.lighting_restart, args.diverge_turfs)
         build = subprocess.run([str(compiler), '-max_errors', '0', str(source)], cwd=ROOT,
                                capture_output=True, text=True, timeout=600, creationflags=flags)
         compile_log = build.stdout + build.stderr

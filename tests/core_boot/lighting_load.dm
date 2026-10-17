@@ -91,7 +91,23 @@
 /datum/core_boot_probe/proc/restored_and_playing()
 	return map_storage.round_restored && ticker && ticker.current_state == GAME_STATE_PLAYING && persistence_active_operation == null
 
+// Live worlds diverge from the compiled map, so the import replaces many turfs.
+// Change alternate sampled turfs to a different floor type before saving.
+/datum/core_boot_probe/var/changed_turfs = 0
+/datum/core_boot_probe/proc/diverge_sampled_turfs()
+	var/i = 0
+	for (var/turf/T in sample_turfs())
+		if (++i % 2)
+			continue
+		var/path = istype(T, /turf/floor/wood) ? /turf/floor/dirt : /turf/floor/wood
+		T.ChangeTurf(path)
+		changed_turfs++
+	world.log << "CORE BOOT LIGHTING diverged [changed_turfs] sampled turfs before saving"
+
 /datum/core_boot_probe/proc/restart_save_phase()
+#ifdef CORE_BOOT_DIVERGE_TURFS
+	diverge_sampled_turfs()
+#endif
 	update_lighting("Midday", null, FALSE)
 	wait_until(src, /datum/core_boot_probe/proc/lighting_quiet, 120, "lighting settles at Midday before saving")
 	var/list/before = lighting_snapshot("before_save")
