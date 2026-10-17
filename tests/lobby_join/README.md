@@ -32,6 +32,26 @@ They also check title/link branch alignment, shared routing, owner cleanup and
 native selection re-entry. They do not compile or run BYOND and do not establish
 connected-client interaction, campaign accounting, delayed spawning or readiness.
 
+## Bounded native control fixture
+
+`prepare.py --output <new-evidence-directory>` stages sources and a SHA-256
+manifest only. It launches no processes. Compile its generated `control.dme`
+with pinned BYOND 516.1681, then run `control.dmb` from that isolated directory
+with a relative log path and finite process/resource limits. Require compiler
+zero errors/warnings, runtime exit zero, no native diagnostics, `result.json`
+with `pass: true`, all named assertions and a closed native port. Preserve
+failure output and do not retry automatically under a larger memory limit.
+
+The fixture extracts production request ownership, identity checks, mode routing,
+prompt wrappers, fresh-menu validation and native selector control. It injects
+actor/client references, native prompt responses and small map/job collaborators.
+It exercises cancellation, duplicate re-entry, exceptions, actor/map/round
+changes, holds, ban/trait changes, role removal, rights revocation and campaign
+policy/membership changes. Generated unsafe identity and role-confirmation
+controls must demonstrate acceptance of stale responses. It does not execute
+the full production admission/SelectedJob bodies or real delayed-spawn callbacks.
+Those limits cannot be replaced by the fixture passing.
+
 ## Required remaining verification
 
 Compile the complete changed checkout with BYOND 516.1681 and zero warnings.
