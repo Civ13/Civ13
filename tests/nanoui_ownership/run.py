@@ -36,7 +36,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-nanoui-ownership-') as directory:
     print(build.stdout + build.stderr)
     if build.returncode or 'DM compiler version 516.1681' not in build.stdout or '0 errors, 0 warnings' not in build.stdout:
         raise SystemExit('Pinned compilation failed')
-    command = [str(daemon), 'probe.dmb'] + (['-invisible', '-close'] if win else []) + ['-safe', '-log', 'runtime.log']
+    command = [str(daemon), 'probe.dmb'] + (['-invisible', '-close'] if win else []) + ['-trusted', '-log', 'runtime.log']
     run = subprocess.run(command, cwd=temp, capture_output=True, text=True, timeout=30, creationflags=flags)
     log = (temp/'runtime.log').read_text()
     print(log)

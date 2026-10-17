@@ -53,7 +53,7 @@ def main():
             (args.output / (mode + "-compile.log")).write_text(build_log, encoding="utf-8")
             if build.returncode or "516.1681" not in build_log or "0 errors, 0 warnings" not in build_log:
                 raise RuntimeError(build_log)
-            runtime = subprocess.run([str(daemon.resolve()), "probe.dmb", "-invisible", "-safe", "-close", "-log", "runtime.log"],
+            runtime = subprocess.run([str(daemon.resolve()), "probe.dmb", "-invisible", "-trusted", "-close", "-log", "runtime.log"],
                                      cwd=root, capture_output=True, text=True, timeout=15)
             log = (root / "runtime.log").read_text(encoding="utf-8", errors="replace")
             log += runtime.stdout + runtime.stderr

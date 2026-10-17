@@ -203,8 +203,9 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 - Art: reuse and transform existing art assets where possible. Never use image
   generation tools (Stable Diffusion and similar). New art made from scratch must
   use appropriate graphic tools such as vector-based graphics.
-- DreamDaemon must always run as trusted (`-trusted`). Some existing runners still
-  pass `-safe`; converting them is pending maintainer-approved follow-up.
+- DreamDaemon must always run as trusted (`-trusted`), with maintainer approval.
+  All repository runners launch `-trusted`; never add `-safe`. Fixtures must still
+  disable outbound hooks/shell effects through their startup adapters.
 
 <!-- 2026-10-13: native catch variable scope -->
 BYOND 516.1681 treats catch variable declarations as proc-scoped. Use distinct
@@ -237,7 +238,7 @@ and the full metadata fixture audit inherited area defaults and placed areas.
   real constructors in temporary storage. New saves use version-2 typed values
   and sharded entries; retain legacy flat-entry reading. Never restore `loc`,
   `pixloc`, or client session fields as ordinary variables. Linux DreamDaemon
-  `-safe` requires a relative log path inside the isolated working directory.
+  needs a relative log path inside the isolated working directory.
 
 <!-- 2026-10-14: optional save fields and player reclaim -->
 - Reading an absent native savefile field can create a null directory entry.

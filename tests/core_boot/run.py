@@ -131,7 +131,7 @@ def main():
                 command = [str(daemon), 'probe.dmb']
                 if os.name == 'nt':
                     command += ['-invisible', '-close']
-                command += ['-safe', '-log', name + '-startup.log']
+                command += ['-trusted', '-log', name + '-startup.log']
                 started = time.monotonic()
                 with (work / (name + '-stdout.log')).open('w') as stdout, (work / (name + '-stderr.log')).open('w') as stderr:
                     process = subprocess.Popen(command, cwd=work, stdout=stdout, stderr=stderr, creationflags=flags)

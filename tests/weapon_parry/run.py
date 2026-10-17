@@ -36,7 +36,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-parry-') as temp:
     log = build.stdout + build.stderr
     if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
         raise SystemExit(log)
-    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'], cwd=root, capture_output=True, timeout=60, creationflags=flags)
+    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'], cwd=root, capture_output=True, timeout=60, creationflags=flags)
     log = (root / 'runtime.log').read_text(errors='replace') + (run.stdout + run.stderr).decode(errors='replace')
     if run.returncode or re.search(r'runtime error|Bad ref|Bad loc|Cannot read null', log, re.I):
         raise SystemExit(log)

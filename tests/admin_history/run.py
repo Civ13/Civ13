@@ -97,7 +97,7 @@ def main():
     (evidence / 'compile.log').write_text(compilation, encoding='utf-8')
     if build.returncode or '516.1681' not in compilation or '0 errors, 0 warnings' not in compilation:
         raise SystemExit('Pinned compilation failed:\n' + compilation)
-    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'],
+    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'],
                          cwd=evidence, capture_output=True, timeout=60, creationflags=flags)
     (evidence / 'daemon.log').write_bytes(run.stdout + run.stderr)
     log = (evidence / 'runtime.log').read_text(errors='replace')
