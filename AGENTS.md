@@ -299,6 +299,13 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
 
+<!-- 2026-10-17: bounded own-host agent diagnostics -->
+`docs/agent-debug-tools.md` documents schema-1 recovery/vision/3x3 tile reads on
+the existing loopback/token/R_HOST lifecycle transport. Pair/trace/bundle are
+offline and allowlist public summaries; raw query files remain private. Trace
+is bounded cached observations, not an engine event log or rendering evidence.
+The DM collector/status extension requires a rebuilt world restart.
+
 <!-- 2026-10-15: native graceful shutdown boundary -->
 Native BYOND `del(world)` can return before process exit. Yield before declaring
 shutdown failure, or transaction cleanup can erase the published recovery intent.

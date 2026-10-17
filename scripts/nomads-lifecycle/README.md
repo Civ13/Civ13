@@ -1,5 +1,10 @@
 # Nomads TEST1714 lifecycle
 
+For the separate bounded read-only own-host diagnostics and offline sanitized
+pair/trace/bundle commands, see [agent debug tools](../../docs/agent-debug-tools.md).
+Their DM collector requires a reviewed rebuild/restart; discovery and offline
+processing do not install or activate a runtime.
+
 Windows supervisor for the native BYOND test server. It fetches the configured
 branch every 300 seconds by default, stages and compiles a separate Europe build,
 then requests the production authenticated save-and-shutdown operation. It never
