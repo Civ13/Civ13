@@ -39,12 +39,12 @@ def stage(output):
     # Inert generated mutants establish that the stale-round and stale-role
     # assertions distinguish the unsafe alternatives in this same process.
     current = procedure(adapted, "/mob/new_player/proc/lobby_join_current(")
-    unsafe_round = current.replace("/mob/new_player/proc/", "/mob/new_player/unsafe_round/proc/", 1)
+    unsafe_round = current.replace("/mob/new_player/proc/", "/mob/new_player/unsafe_round/", 1)
     round_guard = " && map == lobby_join_map && game_id == lobby_join_game_id"
     assert unsafe_round.count(round_guard) == 1
     unsafe_round = unsafe_round.replace(round_guard, "")
     confirmation = procedure(adapted, "/mob/new_player/proc/lobby_join_confirmation(")
-    unsafe_role = confirmation.replace("/mob/new_player/proc/", "/mob/new_player/unsafe_role/proc/", 1)
+    unsafe_role = confirmation.replace("/mob/new_player/proc/", "/mob/new_player/unsafe_role/", 1)
     role_guard = " || !lobby_join_job_available(selected_job)"
     assert unsafe_role.count(role_guard) == 1
     unsafe_role = unsafe_role.replace(role_guard, "")
