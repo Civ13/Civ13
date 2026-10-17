@@ -312,6 +312,120 @@ Keep these separate from injected IO faults. The fake clock checks arithmetic
 and throttling; verify the real engine clock separately before using runtime
 duration reports.
 
+### Opt-in Gaia phase profile
+
+Current-source reconciliation (2026-10-16): the five offline tests pass on the
+combined checkout; the four source-binding tests also pass with the persistence
+sources from master `ed520998f8c8`. The fifth checks the actual result dispatcher:
+expected phase-control failures are accepted without falling through into the
+positive-result check, while unrelated failures remain rejected.
+`run-string-path.py --prepare-only --progress --phase-profile
+--phase-profile-clock-contract` prepares the combined fixture successfully.
+These checks generate source only; they do not compile or run BYOND.
+
+The current full-map Europe observation at gameplay `e6be0cc25` recorded
+130.3 seconds inside the instrumented serializer and at least 148.281 seconds
+after its completion observation while a pre-reboot receipt was still absent.
+The latter interval includes validation, identity and receipt work; it is not
+an isolated measurement of validator CPU. The workloads differ from the older
+Gaia samples, so these numbers establish no speedup or regression comparison.
+This profiler ends at the serializer marker and cannot attribute that interval.
+Before a performance change, extend the generated-copy measurement boundary
+to the transaction's repeated `current_identity()` calls, full
+`validate_world_save()` calls, intent publication and return from native save
+closure. Keep nested calls exclusive and preserve failure results and original
+call counts. Retain raw save hashes and recursive path-restoration controls;
+removing repeated `savefile.cd` restoration can corrupt recursive serialization.
+Native timing, representative overhead and fresh-process recovery of that
+extended measurement remain unrun.
+
+The generator's `--phase-profile` adds `phase-profile.dm` and generated wrappers
+around the original `BuildVarDirectory` and `encode_saved_value` bodies. Append
+both generated helpers to the isolated DME. No production file is edited.
+Each wrapper calls the original once, forwards the arguments/return value and
+restores its caller's phase on success or exception. Recursive calls change the
+active phase rather than accumulating overlapping inclusive durations.
+Before a save or after diagnostics disable themselves, wrappers delegate
+directly to the original procedures and do not access timing counters. Existing
+pre-save transfer/identity checks remain enabled in the measurement smoke.
+
+`phase_wall_ds` partitions active wall-clock intervals into `traversal`,
+`object`, `value`, `index`, `yield` and `other`:
+
+- Traversal covers the turf iterator, level selection and skipped levels.
+- Object covers entry validation, hooks, content discovery and variable
+  selection, excluding nested value encoding and scoped stoplag waits.
+- Value covers typed envelopes and list discovery/writes, excluding nested
+  object work and scoped stoplag waits.
+- Index covers the top-level turf-coordinate reference write and tick check.
+- Yield covers the original scoped `stoplag()` wait, including native engine
+  work performed before that sleeping proc resumes.
+- Other covers metadata, level setup and finalization outside those regions.
+
+The JSON also records cumulative visited/selected turfs, object calls including
+reference hits and value calls including recursion. Counts reset per save,
+not per level. A complete two-level map visits its entire turf inventory twice.
+These are source regions, not six independent CPU or storage phases. Immediate
+native savefile encoding belongs to the calling region. Hooks that sleep through
+another API remain in that region; only scoped stoplag waits are excluded.
+Diagnostic and clock/counter overhead is included. The clock has 0.1-second
+resolution, midnight wrap and the existing under-24-hour/nonmonotonic limits.
+Short intervals can measure zero; no per-object latency claim is supported.
+
+The engine owner must separately measure dirty-tick whole-tree JSON encoding,
+formatting and disk writes with a host monotonic stopwatch, recording flush
+counts and bytes. Engine flush measurements can overlap the source `yield`
+region, so never add them to the DM partition as additional exclusive time.
+CPU needs a separate process/thread CPU metric; elapsed wall time is not CPU.
+Compare the small smoke with instrumentation disabled/enabled before interpreting
+overhead, then freeze one source-bound Gaia packet and retain original receipts.
+
+`run-string-path.py --progress --phase-profile` exercises unchanged round-trip
+controls, positive call counts, exact visited/selected counts and the wall-time
+partition. Add `--phase-profile-negative-control` to suppress the value counter;
+it must fail that exact assertion after preserving the successful save marker.
+Add `--phase-profile-clock-contract` in a separate profile run to test known
+exclusive category intervals, actual nested object/value wrapper returns,
+original hook exceptions and inactive delegation with a deterministic clock.
+`--phase-profile-attribution-negative-control` collapses value time into object
+time and must fail the exact category assertion with the save marker preserved.
+The fake clock validates accounting, not actual engine elapsed time or overhead.
+This is a new measurement-contract smoke, not a rerun to recover inaccessible
+original diagnostic cases. Actual OpenDream clock/phase behavior needs the
+runtime owner's distinct small smoke before a full Gaia launch. A partial save
+still rejects recovery; fresh-process VERIFY requires a complete stopped,
+source-bound generation.
+# Full Gaia profiling packet (source only)
+
+`build-gaia-full-packet.py` freezes the original full Gaia compile-save-path
+source closure, retaining all original files and their inventory. It adds the
+existing serialization phase wrappers, the reviewed host-callable SAVE wrapper,
+and narrowly adapted non-atom constructor and composite appearance exclusions.
+The actual Gaia map remains included. Its probe also checks all six recovered
+crate transform coefficients, color and alpha, alongside the original nested
+paid-state and authenticated SAVE/fresh VERIFY checks.
+
+Use explicit `--source-root`, `--wrapper-dir` and a new `--output-dir`. The input
+source must match the pinned legacy saver/functions/loader/tick/probe/DME.
+Then run `audit-gaia-full-packet.py --packet <output> --original-manifest
+<compile-inputs-save-path.json> --receipt <new-receipt.json>` to authenticate the
+complete original inventory, every generated byte, the map and dispatcher probe
+hash. This audit never launches a compiler or runtime.
+
+This legacy full-map packet does not inherit current atomic fixture acceptance.
+The frozen DME includes `tests/world_save/setup_instrumented.dm`, which already
+sets `new_process_dispatch_init_complete` after the original final setup yield.
+Authenticate that actual included file, not the unused `code/setup.dm`. The
+marker observes the foreground setup tail; spawned background work and final
+savefile flushes remain separate acceptance conditions.
+The runtime owner must bind a compatible compiler, engine, host and resources,
+await actual DreamThread completion through original yields, preserve natural
+savefile close/dirty flush behavior, and verify the stopped generation before a
+distinct fresh VERIFY. Logical wrapper return is not disk-flush completion.
+Null-filter profiling includes all resources in the window; cap exclusions and
+instrumentation overhead limit cost claims. No production profiler DM API is
+introduced. Native execution remains exclusive to the runtime owner.
+
 HUD migration coverage in `run-string-path.py` checks that client HUD fields and
 screen/HUD objects do not enter new saves, old saved HUD fields are skipped and
 old HUD entries are suppressed before their owner-dependent constructors run.
