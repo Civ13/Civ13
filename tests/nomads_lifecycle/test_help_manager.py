@@ -4,7 +4,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 SCRIPTS = Path(__file__).resolve().parents[2] / 'scripts/nomads-lifecycle'
 sys.path.insert(0, str(SCRIPTS))
@@ -168,6 +168,37 @@ class HelpManagerTests(unittest.TestCase):
             with self.assertRaises(OSError):
                 with module.exclusive_lock(self.root / 'help-manager.lock'):
                     self.fail('Second owner acquired lock')
+
+    def test_entrypoint_waits_for_optional_files_then_launches_once(self):
+        self.files[1].unlink()
+        self.files[2].unlink()
+        original_manager = module.HelpManager
+        observed = []
+        def construct(*args, **kwargs):
+            self.manager = original_manager(*args, **kwargs,
+                identity=lambda pid: self.identities.get(pid), spawn=self.spawn,
+                clock=lambda: self.now)
+            original_tick = self.manager.tick
+            def tick():
+                result = original_tick()
+                observed.append(result)
+                return result
+            self.manager.tick = tick
+            return self.manager
+        def advance(_):
+            if len(observed) == 1:
+                self.files[1].touch()
+                self.files[2].touch()
+            else:
+                raise InterruptedError('End bounded entrypoint probe')
+        argv = ['help_manager', '--root', str(self.root), '--python', str(self.files[0]),
+                '--bridge', str(self.files[1]), '--config', str(self.files[2])]
+        with patch.object(sys, 'argv', argv), patch.object(module, 'HelpManager', construct):
+            with patch.object(module.signal, 'signal'), patch.object(module.time, 'sleep', advance):
+                with self.assertRaises(InterruptedError):
+                    module.main()
+        self.assertEqual(observed, ['optional_files_unavailable', 'running'])
+        self.spawn.assert_called_once()
 
 
 if __name__ == '__main__':

@@ -162,7 +162,7 @@ def main():
     signal.signal(signal.SIGTERM, request_stop)
     with exclusive_lock(args.root / 'help-manager.lock'):
         manager = HelpManager(args.root, args.python.resolve(strict=True),
-                              args.bridge.resolve(strict=True), args.config.resolve(strict=True))
+                              args.bridge.resolve(), args.config.resolve())
         while True:
             if stopping:
                 manager.stop()
