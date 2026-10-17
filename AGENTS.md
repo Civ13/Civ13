@@ -774,6 +774,19 @@ custom saves enumerate tmp fields. Asia flooding uses season_transition_complete
 inside the same lock. Isolated tests do not establish full-server latency.
 
 <!-- 2026-10-12: finite native probe completion -->
+<!-- 2026-10-17: native fixture gotchas found unblocking #3197/#3199/#3082 -->
+Native BYOND 516.1681 `OpenPort("none")` returns 0 even when it closes the port;
+assert the resulting `port == 0` and a refused reopen, not the return value.
+`new /atom` without a loc raises `bad loc`; use `/atom/movable` for atom-hook
+coverage. `underlays`/`overlays` hold appearances, not `/image` datums, so
+`for (var/image/I in D.underlays)` never matches; iterate untyped and read
+`U:icon_state`. Headless HUD fixtures need `makeDatumRefLists()` (fills
+`HUDdatums`) and an explicit `defaultHUD` (only `check_HUD()` sets it, for a
+client). A runner's "failed outside its intended assertion" can mean an earlier,
+equally valid assertion caught the mutation; `*_assert` procs report their own
+throw line, not the caller's. GitHub job logs are readable via the GitHub MCP
+`get_job_logs` when direct log downloads return 403.
+
 Native del(world) does not immediately stop the current procedure. Accumulate
 probe failures before emitting one final result, and return explicitly after
 world disposal so failure paths cannot continue into a passing receipt.
