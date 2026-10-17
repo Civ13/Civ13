@@ -20,6 +20,25 @@ TOOLS = {
 }
 
 
+def offline_command(name, minimum, maximum):
+    properties = dict(command=dict(const=name), input=dict(type='array', minItems=minimum,
+        maxItems=maximum, items=dict(type='string', minLength=1)))
+    required = ['command', 'input']
+    if name in ('pair', 'bundle'):
+        properties.update({key: dict(type='integer', minimum=0, maximum=8)
+                           for key in ('black_slot', 'visible_slot')})
+    if name == 'pair':
+        required += ['black_slot', 'visible_slot']
+    schema = dict(type='object', additionalProperties=False, required=required, properties=properties)
+    if name == 'bundle':
+        properties.update(screenshot_sha256=dict(type='string', pattern='^[0-9a-f]{64}$'),
+                          screenshot_utc=dict(type='string', pattern=r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'))
+        schema['dependentRequired'] = dict(black_slot=['visible_slot'], visible_slot=['black_slot'],
+            screenshot_sha256=['screenshot_utc'], screenshot_utc=['screenshot_sha256'])
+    return dict(name=name, entrypoint='debug_bundle.py', schema=1, runtime_required=False,
+                min_inputs=minimum, max_inputs=maximum, input_schema=schema)
+
+
 def discover():
     return dict(schema=1, ok=True, read_only=True, tools=[
         dict(name=name, description=description, runtime_required=True,
@@ -30,9 +49,8 @@ def discover():
         for name, description in TOOLS.items()],
         limits=dict(response_bytes=32768, request_seconds=15, tiles=9,
                     atoms_per_tile=64, registry_prefix=256),
-        offline_commands=[dict(name=name, entrypoint='debug_bundle.py', schema=1,
-                               runtime_required=False, max_inputs=8)
-                          for name in ('pair', 'trace', 'bundle')],
+        offline_commands=[offline_command('pair', 1, 1), offline_command('trace', 2, 8),
+                          offline_command('bundle', 1, 8)],
         authorization='Existing loopback token; vision/tiles additionally require the connected Host.',
         unavailable=['arbitrary coordinates', 'raw logs or stack traces', 'save completion percentage',
                      'eval', 'repair', 'other players'],

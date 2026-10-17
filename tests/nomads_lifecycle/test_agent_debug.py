@@ -38,6 +38,25 @@ class AgentTools(unittest.TestCase):
                                ([], self.revision), ({}, self.revision), (None, self.revision)]:
             self.assertEqual(m.run(tool, self.root, revision, transport=forbidden)['error_code'], 'invalid_input')
 
+    def test_offline_discovery_input_schemas_match_command_cardinality_and_required_pairs(self):
+        commands = {item['name']: item for item in m.discover()['offline_commands']}
+        for name, bounds in (('pair', (1, 1)), ('trace', (2, 8)), ('bundle', (1, 8))):
+            command = commands[name]
+            self.assertFalse(command['runtime_required'])
+            self.assertEqual((command['min_inputs'], command['max_inputs']), bounds)
+            schema = command['input_schema']
+            self.assertFalse(schema['additionalProperties'])
+            inputs = schema['properties']['input']
+            self.assertEqual((inputs['minItems'], inputs['maxItems']), bounds)
+            self.assertEqual(schema['properties']['command']['const'], name)
+            self.assertIn('input', schema['required'])
+        self.assertEqual(commands['pair']['input_schema']['required'],
+                         ['command', 'input', 'black_slot', 'visible_slot'])
+        self.assertNotIn('black_slot', commands['trace']['input_schema']['properties'])
+        bundle = commands['bundle']['input_schema']
+        self.assertEqual(bundle['dependentRequired']['screenshot_sha256'], ['screenshot_utc'])
+        self.assertEqual(bundle['dependentRequired']['black_slot'], ['visible_slot'])
+
     def test_held_world_classification_without_client_and_trace_redaction(self):
         result = m.run('recovery', self.root, self.revision, transport=self.query)
         self.assertTrue(result['ok'])
