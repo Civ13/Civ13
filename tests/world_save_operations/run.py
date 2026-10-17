@@ -91,7 +91,7 @@ def main():
     compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     for name, command in [('compile', [str(compiler), '-max_errors', '0', 'probe.dme']),
-                          ('runtime', [str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'])]:
+                          ('runtime', [str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'])]:
         completed = subprocess.run(command, cwd=output, capture_output=True, text=True, timeout=90)
         log = completed.stdout + completed.stderr
         (output / f'{name}.log').write_text(log, encoding='utf-8')

@@ -45,7 +45,7 @@ def main():
             with (out/'daemon.log').open('w') as log:
                 cmd=[str(dd),str(out/files[4].name)]
                 if os.name=='nt': cmd+=['-invisible','-close']
-                cmd+=['-safe','-params',f'size={a.size}&lights={a.lights}','-log','runtime.log']
+                cmd+=['-trusted','-params',f'size={a.size}&lights={a.lights}','-log','runtime.log']
                 result=subprocess.Popen(cmd,cwd=out,stdout=log,stderr=log,creationflags=flags)
                 memory=observe(result,180)
             log=(out/'runtime.log').read_text(errors='replace')

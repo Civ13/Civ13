@@ -184,7 +184,7 @@ def main():
             # Both use the identical compiled two-level DMB. Only disk files
             # survive from the writer to the fresh reader process.
             for mode, minimum_checks in (('write', 3), ('read', 12)):
-                run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-safe',
+                run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-trusted',
                     '-params', f'profile={args.profile};dimension_mode={mode}', '-log', f'{mode}-runtime.log'],
                     cwd=output, capture_output=True, text=True, timeout=120, creationflags=flags)
                 (output / f'{mode}-daemon.log').write_text(run.stdout + run.stderr, encoding='utf-8')
@@ -202,7 +202,7 @@ def main():
                 (output / 'metadata-result.json').unlink()
             print(json.dumps(receipt, indent=2))
             return
-        command = [str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-safe',
+        command = [str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-trusted',
                    '-params', 'profile=' + args.profile, '-log', 'runtime.log']
         if args.lighting:
             run = run_lighting(command, output, flags)

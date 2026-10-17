@@ -86,6 +86,7 @@ def main():
     environment = (fixture / 'string_path_roundtrip.dme').read_text(encoding='utf-8')
     if round_state:
         environment = '#define WORLD_SAVE_MUSIC_ADAPTER\n' + environment
+    environment = '#define WORLD_SAVE_JOBS_PROVIDED\n' + environment
     environment = environment.replace('#define FILE_DIR "../.."', f'#define FILE_DIR "{root.as_posix()}"')
     if not round_state:
         # The ordinary serializer probe has no occupation system. Round-state
@@ -409,7 +410,7 @@ def main():
     build = owned('compile', [str(compiler), '-max_errors', '0', 'probe.dme'])
     if '516.1681' not in build or '0 errors, 0 warnings' not in build:
         raise RuntimeError('Pinned clean compilation required')
-    owned('daemon', [str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'])
+    owned('daemon', [str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'])
     actual = read(output / 'result.txt').strip()
     if args.round_state_negative_control:
         expected = {'setup': 'resumed round reran fresh setup',

@@ -70,7 +70,7 @@ def main():
         daemon_args = [str(daemon), 'probe.dmb']
         if os.name == 'nt':
             daemon_args.append('-invisible')
-        result = subprocess.run(daemon_args + ['-safe', '-log', 'runtime.log'],
+        result = subprocess.run(daemon_args + ['-trusted', '-log', 'runtime.log'],
                                 cwd=work, capture_output=True, text=True, timeout=30, creationflags=flags)
         stdio = result.stdout + result.stderr
         (evidence / 'daemon-stdio.log').write_text(stdio, encoding='utf-8')

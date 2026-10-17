@@ -114,7 +114,7 @@ The small fixture also restores a manually constructed unversioned legacy save,
 including the old empty-list marker and a null `pixloc` field.
 
 For visual evidence, compile the fixture and copy its `.dmb` and `.rsc` to a new
-temporary directory. Start that copy with DreamDaemon/DD using `-invisible -safe
+temporary directory. Start that copy with DreamDaemon/DD using `-invisible -trusted
 -params visual=1`. Connect Dream Seeker to the local port printed in the log. The
 restored fixture and its actual test result remain open for capture. A screenshot
 of this fixture does not prove normal game constructors, lighting, registries,

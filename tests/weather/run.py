@@ -77,7 +77,7 @@ def main():
         shutil.copytree(root / 'config', logs / 'config')
         result = subprocess.run([str(daemon), str(logs / generated[2].name),
                                  *(['-invisible', '-close'] if os.name == 'nt' else []),
-                                 '-safe', '-params', f'tested_commit={commit}', '-log', 'runtime.log'], cwd=logs,
+                                 '-trusted', '-params', f'tested_commit={commit}', '-log', 'runtime.log'], cwd=logs,
                                 capture_output=True, text=True, timeout=60, creationflags=flags)
         runtime = (logs / 'runtime.log').read_text(encoding='utf-8', errors='replace')
         print(f'Daemon exit={result.returncode}; stdout={result.stdout}; stderr={result.stderr}', flush=True)

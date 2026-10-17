@@ -1846,9 +1846,65 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		..()
 		reagents.add_reagent("protein", 1)
 
+	var/leavened = FALSE // yeast has been worked in
+	var/risen = FALSE // finished rising; bakes into a loaf
+	var/rise_ready_at = 0 // world.time; runtime only, restarted after load
+
+#define DOUGH_YEAST_AMOUNT 5
+#define DOUGH_RISE_TIME 3000
+
+/obj/item/weapon/reagent_containers/food/snacks/dough/persistence_runtime_var(key)
+	return key == "rise_ready_at" || ..()
+
+/obj/item/weapon/reagent_containers/food/snacks/dough/after_load()
+	. = ..()
+	if (leavened && !risen)
+		start_rising()
+
+/obj/item/weapon/reagent_containers/food/snacks/dough/proc/start_rising()
+	rise_ready_at = world.time + DOUGH_RISE_TIME
+	spawn(DOUGH_RISE_TIME)
+		if (!QDELETED(src))
+			check_risen()
+
+// Also evaluated lazily, so a lost wait can never leave dough unrisen.
+/obj/item/weapon/reagent_containers/food/snacks/dough/proc/check_risen()
+	if (risen)
+		return TRUE
+	if (!leavened || world.time < rise_ready_at)
+		return FALSE
+	risen = TRUE
+	name = "risen dough"
+	desc = "A puffy piece of yeasted dough, ready to be baked into a loaf of bread."
+	var/matrix/M = matrix()
+	M.Scale(1.25)
+	transform = M
+	visible_message("<span class='notice'>\The [src] has risen.</span>")
+	return TRUE
+
+/obj/item/weapon/reagent_containers/food/snacks/dough/examine(mob/user)
+	..()
+	if (get_dist(user, src) > 1)
+		return
+	if (leavened && !check_risen())
+		to_chat(user, "<span class='notice'>It is still rising.</span>")
+	else if (!leavened)
+		to_chat(user, "<span class='notice'>Without yeast, it will only bake into flatbread.</span>")
+
 // Dough + rolling pin = flat dough
 /obj/item/weapon/reagent_containers/food/snacks/dough/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon/material/kitchen/rollingpin))
+	if (istype(W, /obj/item/weapon/reagent_containers) && W.reagents && W.reagents.has_reagent("enzyme", DOUGH_YEAST_AMOUNT))
+		if (leavened)
+			to_chat(user, "<span class='warning'>\The [src] already has yeast in it.</span>")
+			return TRUE
+		W.reagents.remove_reagent("enzyme", DOUGH_YEAST_AMOUNT)
+		leavened = TRUE
+		name = "yeasted dough"
+		desc = "A piece of dough with yeast worked into it. It needs time to rise."
+		to_chat(user, "<span class='notice'>You knead some yeast into \the [src]. It needs a few minutes to rise.</span>")
+		start_rising()
+		return TRUE
+	else if (istype(W,/obj/item/weapon/material/kitchen/rollingpin))
 		new /obj/item/weapon/reagent_containers/food/snacks/sliceable/flatdough(get_turf(src))
 		to_chat(user, "You flatten the dough.")
 		qdel(src)

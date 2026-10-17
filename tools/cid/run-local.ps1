@@ -23,7 +23,7 @@ $portProbe.Stop()
 $server = $null
 $client = $null
 try {
-    $server = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @('probe.dmb', "$port", '-invisible', '-safe', '-params', "expected=$supplied", '-log', 'runtime.log') -WorkingDirectory $run -WindowStyle Hidden -PassThru
+    $server = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @('probe.dmb', "$port", '-invisible', '-trusted', '-params', "expected=$supplied", '-log', 'runtime.log') -WorkingDirectory $run -WindowStyle Hidden -PassThru
     $deadline = [DateTime]::UtcNow.AddSeconds(15)
     while (!(Test-Path -LiteralPath (Join-Path $run 'ready.txt'))) {
         if ($server.HasExited -or [DateTime]::UtcNow -gt $deadline) { throw 'Server not ready' }
