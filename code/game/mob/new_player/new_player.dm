@@ -444,7 +444,7 @@ var/global/redirect_all_players = null
 		lobby_join_jobs = null
 		throw error
 	lobby_join_validation = FALSE
-	var/available = selected_job in lobby_join_jobs
+	var/available = (selected_job in lobby_join_jobs)
 	lobby_join_jobs = null
 	return available
 

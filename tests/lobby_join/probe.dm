@@ -251,10 +251,10 @@ var/list/failures = list()
 	maxy = 1
 	maxz = 1
 /world/OpenPort(port)
-	if(port) return FALSE
-	return ..()
+	if(port == "none") return ..()
+	return FALSE
 /world/New()
-	world.OpenPort(0)
+	world.OpenPort("none")
 	spawn(1)
 		try
 			run_checks()
