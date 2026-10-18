@@ -13,6 +13,27 @@ class MarkdownOracleTests(unittest.TestCase):
         self.assertGreaterEqual(len(cases), 16)
         for case in cases:
             self.assertLessEqual(len(case['markdown']), 4000)
+            self.assertEqual(case['expected_links'][-2:], [
+                'https://civ13.github.io/civ13-wiki/',
+                'https://civ13.github.io/Civ13/crafting/'])
+
+    def test_footer_does_not_allow_answer_link(self):
+        case = dict(name='footer', contains=[], absent=[],
+                    expected_links=['https://example.org/wiki'])
+        footer = "<a href='https://example.org/wiki'>Wiki</a>"
+        validate(case, '<p>plain answer</p>' + footer)
+        with self.assertRaises(ValueError):
+            validate(case, '<a href="https://example.org/extra">answer</a>' + footer)
+        with self.assertRaises(ValueError):
+            validate(case, "<a href='https://example.org/extra'>answer</a>" + footer)
+
+    def test_decoded_text_accepts_quote_entity_variants(self):
+        case = dict(name='text', contains=[], absent=[], expected_links=[],
+                    contains_text=['"onmouseover=evil'])
+        for quote in ('&quot;', '&#34;'):
+            validate(case, '<p>' + quote + 'onmouseover=evil</p>')
+        with self.assertRaises(ValueError):
+            validate(case, '<p>onmouseover=evil</p>')
 
     def test_rejects_injection_and_bad_structure(self):
         case = dict(name='oracle', contains=[], absent=[])

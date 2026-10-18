@@ -9,6 +9,11 @@ class HelpHTML(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
         self.stack = []
+        self.links = []
+        self.text = []
+
+    def handle_data(self, data):
+        self.text.append(data)
 
     def handle_starttag(self, tag, attrs):
         if tag not in self.allowed:
@@ -21,6 +26,7 @@ class HelpHTML(HTMLParser):
                 raise ValueError('Unsafe link scheme')
             if any(ord(c) <= 32 or ord(c) == 127 or c in '\"\'<>\\' for c in url):
                 raise ValueError('Unsafe link character')
+            self.links.append(url)
         elif attrs:
             raise ValueError(f'Unexpected attributes on {tag}')
         if tag != 'br':
@@ -49,3 +55,9 @@ def validate(case, rendered):
     parser.close()
     if parser.stack:
         raise ValueError(f'Unclosed tags: {parser.stack}')
+    if 'expected_links' in case and parser.links != case['expected_links']:
+        raise ValueError(f"{case['name']}: unexpected rendered links {parser.links!r}")
+    visible_text = ''.join(parser.text)
+    for expected in case.get('contains_text', []):
+        if expected not in visible_text:
+            raise ValueError(f"{case['name']}: missing decoded text {expected!r}")
