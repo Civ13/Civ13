@@ -720,13 +720,14 @@ var/list/seed_list_jungle
 	return user && user.client
 
 /obj/structure/wild/proc/grass_cutting_valid(mob/user, obj/item/tool, turf/site)
-	return !QDELETED(src) && (istype(src, /obj/structure/wild/tallgrass) || istype(src, /obj/structure/wild/tallgrass2)) && isturf(loc) && loc == site && !QDELETED(user) && grass_cutting_actor_connected(user) && user.stat == CONSCIOUS && grass_cutting_tool(tool) && tool.loc == user && get_dist(user, src) <= 1
+	return !QDELETED(src) && (istype(src, /obj/structure/wild/tallgrass) || istype(src, /obj/structure/wild/tallgrass2)) && isturf(loc) && loc == site && !QDELETED(user) && grass_cutting_actor_connected(user) && user.stat == CONSCIOUS && !user.incapacitated() && isturf(user.loc) && grass_cutting_tool(tool) && tool.loc == user && user.get_active_hand() == tool && get_dist(user, src) <= 1
 
 /obj/structure/wild/proc/grass_cutting_wait(mob/user)
 	return do_after(user, 30, src)
 
 /obj/structure/wild/proc/gather_grass_cuttings(mob/user, obj/item/tool)
 	var/turf/site = loc
+	var/turf/actor_site = get_turf(user)
 	if (cutting_grass || !grass_cutting_valid(user, tool, site))
 		return FALSE
 	cutting_grass = TRUE
@@ -735,7 +736,7 @@ var/list/seed_list_jungle
 	var/completed = grass_cutting_wait(user)
 	if (QDELETED(src))
 		return FALSE
-	if (!completed || !grass_cutting_valid(user, tool, site))
+	if (!completed || !grass_cutting_valid(user, tool, site) || user.loc != actor_site)
 		cutting_grass = FALSE
 		return FALSE
 	// Keep the claim until deletion; no wait occurs while constructing the yield.

@@ -32,8 +32,14 @@ The prepared tall-grass cases call each variant's production `attackby`, checkin
 two cuttings, one existing twine, plant retirement, unchanged floor, competing
 and repeated claims, knife versus raw flint, cancellation, tool loss/blunting,
 plant or actor movement, deletion, disconnection and unconsciousness. The lock
-is explicitly excluded from persistence. Client and wait adapters remain
-fixture-only; these added cases have not been compiled or executed yet.
+is explicitly excluded from persistence. Entry and completion also reject
+stunned actors, changed hands, tools left in inventory or nested in a bag, and
+movement to another adjacent tile. Production `do_after` cases additionally
+inject movement, stun and hand switching during a real wait. The substantive
+cases and adapters live in `tall_grass_probe.dm`, included and called by the
+existing fixture; its new executable path selects this registered suite on PRs
+without changing the CI workflow. Client, inventory setup and wait adapters
+remain fixture-only; these added cases have not been compiled or executed yet.
 
 The baseline global controller can emit BYOND `BUG: Bad ref ... globals.dm:16`
 diagnostics at startup before this fixture starts; normal DM exceptions are
