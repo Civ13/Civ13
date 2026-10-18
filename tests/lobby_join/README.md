@@ -33,13 +33,29 @@ not prove its completion, disconnect, hold or cancellation behavior.
 
 ## Offline checks
 
+The private existing lifecycle snapshot now includes a `lobby_join` row only for
+the authenticated Host's current lobby mob. `native_attempts = 0` and phase
+`not_entered` distinguish no observed server entry from a handler denial.
+The saturating attempt count is native-verb entry only; the phase also records
+ordinary lobby-button requests. Last phase/reason/tick and handler result are
+cached without prompt text, roles, account data or history and excluded from
+custom saves. A handler result is the existing handler's return value, not proof
+of a human spawn. Nomads admission and initial spawn guards have fixed reason
+codes; other modes may only identify the last entered stage. Snapshot reads do
+not invoke admission, ban checks, prompts or spawning. A successful transfer
+replaces the lobby mob, so its trace is then unavailable.
+
+The actual 331117df connected-client File-menu attempt left the client in the
+lobby despite correct compiled visibility metadata. Command dispatch was not
+established. These diagnostics do not change routing or bypass admission.
+
 Run with a verified Python interpreter:
 
 ```text
-<python> -m unittest discover -s tests/lobby_join -p test_source.py
+<python> -m unittest discover -s tests/lobby_join -p 'test_*.py'
 ```
 
-Five source checks verify the native File menu command and preserve the admission
+Source checks verify the native File menu command and preserve the admission
 body and the four role-menu filter bodies
 against immutable baseline `41e2d02fe1f9130e0987aee0efd2eba0ca7b3bf1`, normalizing
 only the documented factoring, native title collection and prompt wrappers.

@@ -77,6 +77,10 @@
 		row["mob"] = list("status" = "unavailable: no current mob")
 		return row
 	row["mob"] = list("type" = "[M.type]", "loc_type" = M.loc ? "[M.loc.type]" : null, "stat" = M.stat, "sleeping" = M.sleeping, "resting" = M.resting, "paralysis" = M.paralysis, "blinded" = M.blinded, "sight" = M.sight, "see_in_dark" = M.see_in_dark, "see_invisible" = M.see_invisible, "invisibility" = M.invisibility, "transforming" = blackout_diagnostic_scalar(M.transforming), "status_flags" = M.status_flags, "gcDestroyed" = M.gcDestroyed)
+	if(istype(M, /mob/new_player))
+		var/mob/new_player/N = M
+		// Read cached state only: never invoke admission, ban checks or spawning.
+		row["lobby_join"] = list("native_attempts" = N.lobby_join_attempts, "phase" = blackout_diagnostic_scalar(N.lobby_join_phase), "reason" = blackout_diagnostic_scalar(N.lobby_join_reason), "tick" = N.lobby_join_tick, "handler_result" = N.lobby_join_result, "active" = N.lobby_join_active, "native" = N.lobby_join_native, "spawning" = N.spawning, "verb_present" = (/mob/new_player/verb/Join in N.verbs), "ticker_state" = ticker ? ticker.current_state : null, "players_can_join" = ticker ? ticker.players_can_join : null, "startup_hold" = persistence_restart.startup_hold, "restart_busy" = persistence_restart.busy, "enter_allowed" = GLOB.enter_allowed, "map_nomads" = map ? map.nomads : null, "map_civilizations" = map ? map.civilizations : null)
 	if(istype(M, /mob/living))
 		var/mob/living/L = M
 		row["living"] = list("health" = L.health, "eye_blind" = L.eye_blind, "eye_blurry" = L.eye_blurry, "last_life_tick" = L.last_life_tick)

@@ -48,7 +48,7 @@ def audit(lifecycle, source):
         errors.append('private/unbounded field')
     if re.search(r'\b(?:call|spawn|sleep|Life|reset_view|update_sight|forceMove|shell|world\.Export|locate)\s*\(', source.replace('locate(T.x + dx, T.y + dy, T.z)', '')):
         errors.append('effectful or arbitrary access')
-    if re.search(r'\b(?:C|M|H|L|P|S|T|O|A|K)(?:\.\w+)+\s*(?:=(?!=)|\+=|-=|\+\+|--)', source):
+    if re.search(r'\b(?:C|M|N|H|L|P|S|T|O|A|K)(?:\.\w+)+\s*(?:=(?!=)|\+=|-=|\+\+|--)', source):
         errors.append('gameplay state write')
     for literal in ('row["overlay_luminosity"] = O.luminosity',
                     '"icon" = T.icon ? blackout_diagnostic_scalar("[T.icon]") : null',

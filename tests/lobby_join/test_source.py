@@ -49,6 +49,8 @@ class LobbyJoinSource(unittest.TestCase):
     def test_canonical_admission_and_job_body_preserved(self):
         source = (ROOT / "code/game/mob/new_player/new_player.dm").read_text()
         body = procedure(source, "/mob/new_player/proc/process_lobby_join(")
+        # Cached fixed diagnostic codes do not alter the historical admission body.
+        body = re.sub(r'^\s*lobby_join_trace\("[a-z_]+", "[a-z_]+"\)\n', '', body, flags=re.M)
         body = body[body.index('\tif (href_list["tribes"])'):]
         body = body[:body.index('\n\tif (!lobby_join_native && !href_list["late_join"])')].rstrip()
         body = body.replace("lobby_join_input(", "WWinput(src, ")

@@ -14,6 +14,12 @@
 	var/tmp/lobby_join_validation = FALSE
 	var/tmp/list/lobby_join_jobs
 	var/tmp/lobby_join_selected
+	// Last own-lobby attempt only; never retain prompt text, roles or history.
+	var/tmp/lobby_join_attempts = 0
+	var/tmp/lobby_join_phase = "not_entered"
+	var/tmp/lobby_join_reason = "none"
+	var/tmp/lobby_join_tick
+	var/tmp/lobby_join_result
 	var/ready = FALSE
 	var/spawning = FALSE //Referenced when you want to delete the new_player later on in the code.
 	var/totalPlayers = 0		 //Player counts for the Lobby tab
@@ -323,20 +329,33 @@ var/global/redirect_all_players = null
 	set invisibility = 0
 	set desc = "Join the round using native role selection prompts."
 	set src = usr
+	lobby_join_attempts = min(lobby_join_attempts + 1, 65535)
+	lobby_join_result = null
+	lobby_join_trace("native_entry", "none")
 	var/join_mode = lobby_join_mode()
 	if (!join_mode)
+		lobby_join_trace("native_denied", "round_not_started")
 		to_chat(src, "The game has not started yet.")
 		return
 	var/list/join_request = list()
 	join_request[join_mode] = 1
 	handle_lobby_join(join_request, TRUE)
 
+// Fixed call-site codes only. Bounds also protect future diagnostic callers.
+/mob/new_player/proc/lobby_join_trace(phase, reason)
+	lobby_join_phase = copytext(phase, 1, 65)
+	lobby_join_reason = copytext(reason, 1, 65)
+	lobby_join_tick = world.time
+
 /mob/new_player/proc/lobby_join_current()
 	return src == usr && client && client == lobby_join_client && client.mob == src && !spawning && map == lobby_join_map && game_id == lobby_join_game_id
 
 /mob/new_player/proc/handle_lobby_join(list/href_list, native_choices = FALSE)
 	if (lobby_join_active || src != usr || !client || client.mob != src || spawning)
+		lobby_join_trace("handler_denied", "owner_or_busy")
 		return FALSE
+	lobby_join_trace("handler_entered", "none")
+	lobby_join_result = null
 	lobby_join_active = TRUE
 	lobby_join_client = client
 	lobby_join_map = map
@@ -346,8 +365,10 @@ var/global/redirect_all_players = null
 	try
 		result = process_lobby_join(href_list)
 	catch (var/exception/error)
+		lobby_join_trace("handler_exception", "details_withheld")
 		clear_lobby_join()
 		throw error
+	lobby_join_result = result ? TRUE : FALSE
 	clear_lobby_join()
 	return result
 
@@ -362,7 +383,7 @@ var/global/redirect_all_players = null
 	lobby_join_selected = null
 
 /mob/new_player/persistence_runtime_var(key)
-	return (key in list("lobby_join_active", "lobby_join_client", "lobby_join_native", "lobby_join_selected", "lobby_join_map", "lobby_join_game_id", "lobby_join_validation", "lobby_join_jobs")) || ..()
+	return (key in list("lobby_join_active", "lobby_join_client", "lobby_join_native", "lobby_join_selected", "lobby_join_map", "lobby_join_game_id", "lobby_join_validation", "lobby_join_jobs", "lobby_join_attempts", "lobby_join_phase", "lobby_join_reason", "lobby_join_tick", "lobby_join_result")) || ..()
 
 // Native waits may return after disconnect, transfer or a restart hold.
 /mob/new_player/proc/lobby_join_admission_current()
@@ -451,7 +472,9 @@ var/global/redirect_all_players = null
 	return available
 
 /mob/new_player/proc/process_lobby_join(list/href_list)
+	lobby_join_trace("process_entered", "none")
 	if (!lobby_join_active || !lobby_join_current())
+		lobby_join_trace("process_denied", "stale_owner")
 		return FALSE
 	if (href_list["tribes"])
 
@@ -543,24 +566,30 @@ var/global/redirect_all_players = null
 
 
 	if (href_list["nomads"])
+		lobby_join_trace("nomads_entered", "none")
 
 		if (client && client.quickBan_isbanned("Playing"))
+			lobby_join_trace("nomads_denied", "playing_unavailable")
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
 		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
+			lobby_join_trace("nomads_denied", "join_hold")
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
 		if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
+			lobby_join_trace("nomads_denied", "round_not_playing")
 			WWalert(src,"The round is either not ready, or has already finished.","Error")
 			return
 
 		if (check_trait_points(client.prefs.traits) > 0)
+			lobby_join_trace("nomads_denied", "traits_unbalanced")
 			WWalert(src,"<Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
 			return FALSE
 
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
+			lobby_join_trace("nomads_wait", "respawn_delay")
 			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
 			if (check_rights(R_ADMIN, FALSE, src))
 				if ((lobby_join_input("If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes")
@@ -1134,11 +1163,15 @@ var/global/redirect_all_players = null
 	return FALSE
 
 /mob/new_player/proc/AttemptLateSpawn(rank, var/nomsg = FALSE)
+	lobby_join_trace("spawn_entered", "none")
 	if (lobby_join_active && !lobby_join_admission_current())
+		lobby_join_trace("spawn_denied", "admission_changed")
 		return FALSE
 	if (src != usr)
+		lobby_join_trace("spawn_denied", "actor_changed")
 		return FALSE
 	if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
+		lobby_join_trace("spawn_denied", "round_not_playing")
 		if (!nomsg)
 			WWalert(usr,"The round is either not ready, or has already finished.","Error")
 			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations || map.ID == MAP_FOUR_KINGDOMS)
@@ -1147,6 +1180,7 @@ var/global/redirect_all_players = null
 					WWalert(usr,"The round is either not ready, or has already finished.", "Error")
 		return FALSE
 	if (!GLOB.enter_allowed)
+		lobby_join_trace("spawn_denied", "entry_locked")
 		if (!nomsg)
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations || map.ID == MAP_FOUR_KINGDOMS)
@@ -1155,6 +1189,7 @@ var/global/redirect_all_players = null
 					WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 		return FALSE
 	if (jobBanned(rank))
+		lobby_join_trace("spawn_denied", "role_unavailable")
 		if (!nomsg)
 			WWalert(usr,"You're banned from this role!", "Error")
 			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations || map.ID == MAP_FOUR_KINGDOMS)

@@ -15,6 +15,7 @@ from visibility import visibility_verbs
 
 ROOT = Path(__file__).resolve().parents[2]
 NAMES = (
+    "lobby_join_trace",
     "lobby_join_mode", "lobby_join_current", "handle_lobby_join",
     "clear_lobby_join", "lobby_join_admission_current", "lobby_join_input",
     "lobby_join_confirmation", "lobby_join_campaign_faction",

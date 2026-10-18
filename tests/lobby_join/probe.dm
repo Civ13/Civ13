@@ -74,6 +74,11 @@ var/list/verb_metadata = list()
 	invisibility = 101
 	var/datum/mock_client/test_client
 	var/lobby_join_active = FALSE
+	var/lobby_join_attempts = 0
+	var/lobby_join_phase = "not_entered"
+	var/lobby_join_reason = "none"
+	var/lobby_join_tick
+	var/lobby_join_result
 	var/datum/mock_client/lobby_join_client
 	var/obj/map_metadata/lobby_join_map
 	var/lobby_join_game_id
@@ -200,7 +205,15 @@ var/list/verb_metadata = list()
 	expect("native_join_verb_visible", join_verb:invisibility == -1 && join_verb:invisibility == zero_verb:invisibility)
 	expect("negative_control_invisible_verb_detected", unsafe_verb:invisibility == 101)
 	var/mob/new_player/player = fresh_player()
+	expect("trace_not_entered", player.lobby_join_attempts == 0 && player.lobby_join_phase == "not_entered" && isnull(player.lobby_join_tick))
+	player.lobby_join_trace("native_entry", "none")
+	expect("trace_entry_distinct", player.lobby_join_phase == "native_entry" && player.lobby_join_tick == world.time)
+	player.lobby_join_trace("handler_denied", "owner_or_busy")
+	expect("trace_denial_distinct", player.lobby_join_phase == "handler_denied" && player.lobby_join_reason == "owner_or_busy")
+	player.lobby_join_trace(jointext(new/list(100), "x"), jointext(new/list(100), "y"))
+	expect("trace_bounded", length(player.lobby_join_phase) == 64 && length(player.lobby_join_reason) == 64)
 	expect("native_select_once", player.handle_lobby_join(list("late_join" = 1), TRUE) && player.dispatches == 1 && player.prompts == 1)
+	expect("trace_result_survives_cleanup", player.lobby_join_result == TRUE && player.lobby_join_phase == "handler_entered")
 	expect("normal_cleanup", !player.lobby_join_active && !player.lobby_join_client && !player.lobby_join_map && !player.lobby_join_jobs)
 	for(var/action in list("cancel", "transfer", "disconnect", "reconnect", "map", "round", "hold", "busy", "not_playing", "closed", "banned", "traits", "job", "faction", "quota"))
 		player = fresh_player()

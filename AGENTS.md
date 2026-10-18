@@ -73,6 +73,12 @@ starting extra recurring cycles from the admin command.
 
 ### Player spawning
 
+<!-- 2026-10-17: lobby dispatch diagnosis -->
+The private own-Host snapshot reports bounded current-lobby Join entry/phase
+codes. Compiled verb visibility and a successful client menu action do not prove
+server dispatch; require the entry counter or a real human spawn. The cache is
+excluded from custom saves and disappears when the lobby mob is replaced.
+
 <!-- 2026-10-17: invisible lobby verb accessibility -->
 Lobby mobs have invisibility 101. Native lobby verbs must explicitly use
 `set invisibility = 0`: BYOND otherwise inherits source invisibility for command
