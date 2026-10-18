@@ -133,7 +133,7 @@ var/datum/gameplay_bridge/gameplay_bridge = new
 	var/run_generation = generation
 	audit("assigned")
 	spawn(0)
-		run(run_generation)
+		exchange_loop(run_generation)
 	return TRUE
 
 /datum/gameplay_bridge/proc/valid_id(value)
@@ -271,7 +271,7 @@ var/datum/gameplay_bridge/gameplay_bridge = new
 		entity_ids = list()
 	return snapshot
 
-/datum/gameplay_bridge/proc/run(run_generation)
+/datum/gameplay_bridge/proc/exchange_loop(run_generation)
 	while (active(run_generation))
 		if (actor.stat == DEAD)
 			stop("actor_dead")

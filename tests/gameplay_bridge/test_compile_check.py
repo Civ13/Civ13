@@ -13,6 +13,19 @@ from compile_check import compile_dme, prepare, run, verify_log
 
 
 class CompileCheck(unittest.TestCase):
+    def test_dm_exchange_loop_uses_matching_nonreserved_name(self):
+        source=(ROOT/"code/modules/gameplay_bridge/bridge.dm").read_text(encoding="utf-8")
+        call='\tspawn(0)\n\t\texchange_loop(run_generation)\n'
+        declaration='/datum/gameplay_bridge/proc/exchange_loop(run_generation)\n'
+        def bound(text):
+            return (text.count(call)==1 and text.count(declaration)==1
+                    and '/proc/run(' not in text and '\t\trun(run_generation)' not in text)
+        self.assertTrue(bound(source))
+        for old,new in ((call,call.replace('exchange_loop','run')),
+                        (declaration,declaration.replace('exchange_loop','run')),
+                        (call,call.replace('exchange_loop','wrong_loop'))):
+            self.assertFalse(bound(source.replace(old,new,1)))
+
     def test_ci_compiles_fresh_exact_head_not_generated_workspace(self):
         workflow=(ROOT/".github/workflows/test.yml").read_text(encoding="utf-8")
         step=workflow.split("      - name: Compile disabled gameplay bridge closure without running it\n",1)[1].split("      - name:",1)[0]
