@@ -200,7 +200,10 @@ code markers, preserves code contents and bullet/number prefixes, and expands
 HTTP/HTTPS links as `label (URL)`. Raw HTML remains literal text. Unmatched and
 unsupported syntax is conservatively retained; this is not full CommonMark.
 The raw model answer exists only ephemerally before projection. Only the chosen
-display answer is written to the spool, with the existing 4000-character limit.
+display answer is written to the spool, with at most 4000 Unicode codepoints
+and 4000 UTF-8 bytes. BYOND 516's `length()` measures string bytes, so the byte
+bound is required for both legacy and updated servers. For example, 1300 CJK
+characters (3900 bytes) and 1000 four-byte characters fit; 3900 CJK characters do not.
 The entire ASCII-escaped JSON response, including ID and metadata, must also fit
 24000 bytes. Oversized or malformed Unicode responses return unavailable.
 

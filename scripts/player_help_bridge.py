@@ -507,7 +507,8 @@ class Bridge:
                 raise ValueError('Empty display response')
             result = {'id': request['id'], 'status': 'ok', 'answer': answer,
                       'render_protocol': 1, 'answer_format': selected_format}
-            if len(answer) > 4000 or len(json.dumps(result, ensure_ascii=True).encode('ascii')) > 24000:
+            if (len(answer) > 4000 or len(answer.encode('utf-8')) > 4000 or
+                    len(json.dumps(result, ensure_ascii=True).encode('ascii')) > 24000):
                 raise ValueError('Oversized display response')
             return result
         except Exception:

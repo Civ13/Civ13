@@ -65,8 +65,10 @@ class RenderProtocolTests(unittest.TestCase):
         self.assertEqual(response['answer_format'], 'markdown-basic-v1')
 
     def test_serialized_bound_includes_metadata_id_and_unicode(self):
-        for text, expected in [('a' * 4000, 'ok'), ('\u4e2d' * 3900, 'ok'),
-                               ('\u4e2d' * 4000, 'unavailable'), ('\U0001f600' * 4000, 'unavailable'),
+        for text, expected in [('a' * 4000, 'ok'), ('\u4e2d' * 1300, 'ok'),
+                               ('\u4e2d' * 1334, 'unavailable'), ('\u4e2d' * 3900, 'unavailable'),
+                               ('\U0001f600' * 1000, 'ok'), ('\U0001f600' * 1001, 'unavailable'),
+                               ('\u0001' * 4000, 'unavailable'),
                                ('\ud800', 'unavailable'), ('"\\\n' * 1333, 'ok')]:
             with self.subTest(text=text[:8]):
                 instance = self.make(lambda *args: {'message': {'content': text}})
@@ -74,6 +76,8 @@ class RenderProtocolTests(unittest.TestCase):
                 request['id'] = '9' * 100
                 result = instance.answer(request)
                 self.assertEqual(result['status'], expected)
+                if expected == 'ok':
+                    self.assertLessEqual(len(result['answer'].encode('utf-8')), 4000)
                 bridge.atomic_json(self.root / 'bounded.json', result)
                 self.assertLessEqual((self.root / 'bounded.json').stat().st_size, 24000)
                 instance.close()
