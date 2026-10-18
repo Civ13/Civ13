@@ -110,6 +110,9 @@ unreaped until group cleanup, preventing a reused PID from receiving cleanup.
 Source manifests, generated cases, binary hashes and logs are retained. No
 current host files, full-game startup, external account service or client is
 part of this test. See [CI selection](ci-selection.md) for admission and limits.
+The fixture uses `-trusted` under the repository maintainer policy, with its
+empty hub, closed port, rejected clients and standalone source as the containment
+boundary. It includes no normal game startup, outbound hooks or shell calls.
 
 ## Offline map ABI adapter
 

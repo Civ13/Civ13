@@ -163,7 +163,7 @@ def main():
                 case, 'compile.log', 60, 30, 1024 ** 3, deadline)
             log = (case / 'compile.log').read_text(errors='replace')
             compiler_verdict(log)
-            runtime = run_bounded([str(args.byond_bin / 'DreamDaemon'), 'probe.dmb', '-invisible', '-safe',
+            runtime = run_bounded([str(args.byond_bin / 'DreamDaemon'), 'probe.dmb', '-invisible', '-trusted',
                 '-close', '-log', 'runtime.log'], case, 'console.log', 30, 15, 128 * 1024 ** 2, deadline)
             require(not DIAGNOSTIC.search((case / 'console.log').read_text(errors='replace')),
                     'Runtime console diagnostic invalidates evidence')

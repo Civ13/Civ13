@@ -64,6 +64,10 @@ class RunnerContracts(unittest.TestCase):
             if name == 'compile.log':
                 (folder / name).write_text('DM compiler version 516.1681\n- 0 errors, 0 warnings\n')
             else:
+                self.assertIn('-trusted', command)
+                self.assertNotIn('-safe', command)
+                self.assertIn('-close', command)
+                self.assertEqual(command[-2:], ['-log', 'runtime.log'])
                 (folder / name).write_text('')
                 control = folder.name
                 log = self.positive
