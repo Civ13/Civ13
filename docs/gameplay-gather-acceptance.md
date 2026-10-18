@@ -19,8 +19,8 @@ CPU/wall/memory/log/cleanup limits and residual native account/UDP traffic risk
 are recorded in the manifest. It neither copies credentials/server configuration
 nor launches anything. Each runtime folder contains the public tracked native
 library and exact public name dictionaries required by unconditional global
-preloads in code/names.dm. These157 file2list calls reference146 unique files
-(153247bytes at the reviewed ff8 base). Their double-quoted paths are runtime
+preloads in code/names.dm. These 157 file2list calls reference 146 unique files
+(135796 bytes in the frozen Git blobs at the reviewed ff8 base). Their double-quoted paths are runtime
 reads before world.New, so compiled resources alone do not satisfy them. No
 other direct top-level file reads were found in code; generated startup returns
 before global_init configuration loading and global-controller initialization,
