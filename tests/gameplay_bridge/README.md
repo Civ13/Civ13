@@ -22,7 +22,9 @@ exact clean frozen tracked head, with no server config. Enabled readiness admits
 only timed gather; water/craft waits remain unsupported. Pinned516.1681 compiler
 logs must show0errors/0warnings for the three module and three fixture targets.
 Each compiler is bounded to180sec; CI step ceiling22min. Compile results do not establish
-runtime behavior. The current slice has not run a local compiler or game.
+runtime behavior. Six ff8 CI compiler profiles passed; the separate first ff8
+stock runtime failed missing public global-preload dictionaries before any gather
+oracle was accepted. Those failed results are preserved.
 
 wait_overlay.py prints/validates the current explicit helper diff. It does not
 apply source. do_after.guard.patch matches the actual helper. Disabled full-file
@@ -33,6 +35,8 @@ refuses their obsolete ambient lease/craft profiles. prepare_gather.py builds
 the dedicated concrete typed gather packet without execution. Its human subtype
 New returns without a parent call, so no production human constructor/anatomy/Life
 is tested. Real survival callbacks and canonical grass code are retained, with
-explicit headless client-predicate/active/visible seams. Native results remain
-not_run. See docs/gameplay-gather-acceptance.md for packet validation and the
+explicit headless client-predicate/active/visible seams. Preparation now stages
+the exact frozen public code/names.dm dictionary closure and native library,
+with missing/altered/omitted/extra-config negative controls. Fresh packet compiler
+and runtime states remain not_run. See docs/gameplay-gather-acceptance.md for packet validation and the
 separate required ordinary non-admin consent/bootstrap layer.

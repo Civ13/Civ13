@@ -3,9 +3,10 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import re
 
 from compile_check import compile_dme, prepare as prepare_closure
-from prepare_native import git
+from prepare_native import git, without_comments
 from wait_overlay import unguarded_source
 
 PROFILES = ("stock", "disabled", "enabled_null", "enabled", "omit_entry",
@@ -28,10 +29,42 @@ LIMITS = {"compile_seconds": 120, "runtime_seconds": 90, "cleanup_seconds": 10,
           "compile_private_bytes": 1024**3, "runtime_private_bytes": 512*1024**2, "watcher_private_bytes": 128*1024**2,
           "log_bytes": 2*1024**2, "world_tick_ceiling": 800, "active_processes": 1}
 PORT = 59477
+NAMES_SOURCE = "code/names.dm"
+NAME_FILE_LIMIT = 128*1024
+NAME_TOTAL_LIMIT = 2*1024**2
 
 
 def digest(data):
     return hashlib.sha256(data).hexdigest()
+
+
+def name_dependencies(source):
+    """Restricted audit of unconditional public preload calls, not arbitrary paths."""
+    source = without_comments(source)
+    if re.search(r"\b(file2text|return_file_text|flist|file)\s*\(", source):
+        raise ValueError("unreviewed public preload reader")
+    calls = re.findall(r"\bfile2list\s*\(", source)
+    paths = []
+    for line in source.splitlines():
+        if not re.search(r"\bfile2list\s*\(", line):
+            continue
+        match = re.fullmatch(r'var/list/[a-zA-Z_0-9]+\s*=\s*file2list\s*\(\s*"(config/names/[a-z_]+\.txt)"\s*\)\s*', line)
+        if not match:
+            raise ValueError("public name preload syntax/path drift")
+        paths.append(match[1])
+    if not 1 <= len(calls) == len(paths) <= 192:
+        raise ValueError("public name preload count/bound drift")
+    return tuple(sorted(set(paths)))
+
+
+def runtime_inputs(read, names_source):
+    """Read only exact frozen Git blobs. No working-tree config or credentials."""
+    files = {path: read(path) for path in (*name_dependencies(names_source), "rust_g.dll")}
+    names = [data for path, data in files.items() if path != "rust_g.dll"]
+    if (not all(data.strip() and len(data) <= NAME_FILE_LIMIT for data in names)
+            or sum(map(len, names)) > NAME_TOTAL_LIMIT or not files["rust_g.dll"]):
+        raise ValueError("public runtime dependency empty or exceeds bound")
+    return files
 
 
 def replace_once(source, old, new):
@@ -102,6 +135,7 @@ def prepare(root, output, expected, adapter_dir, contained_repo):
     source = prepare_closure(root, output, expected)
     read = lambda p: git(root, "show", expected+":"+p).decode("utf-8-sig").replace("\r\n", "\n")
     helper, grass, dme = (read(p) for p in ("code/_helpers/mobs.dm", "code/game/turfs/floor_attackby.dm", "civ13.dme"))
+    dependencies = runtime_inputs(lambda p: git(root, "show", expected+":"+p), read(NAMES_SOURCE))
     generated = source / "gather_generated"
     generated.mkdir()
     plans = []
@@ -112,8 +146,11 @@ def prepare(root, output, expected, adapter_dir, contained_repo):
         (source/("gather_"+profile+".dme")).write_text(fixture_dme(dme, profile), encoding="utf-8", newline="\n")
         runtime = output / "runtime" / profile
         runtime.mkdir(parents=True)
-        # Public tracked native library only. No dictionaries/server configuration.
-        (runtime/"rust_g.dll").write_bytes(git(root,"show",expected+":rust_g.dll"))
+        # Global name preloads run before isolated world.New. Exact public blobs only.
+        for relative, data in dependencies.items():
+            target = runtime / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
         plans.append({"name":profile, "status":"not_run", "dme":"source/gather_"+profile+".dme",
                       "runtime_cwd":"runtime/"+profile, "expected_failure":FAILURES.get(profile),
                       "compiler_argv":["<pinned-dm.exe>","-max_errors","0","gather_"+profile+".dme"],
@@ -125,6 +162,7 @@ def prepare(root, output, expected, adapter_dir, contained_repo):
     manifest = {"schema":2, "kind":"typed_gather", "commit":expected, "state":"prepared_not_executed",
                 "native_lease":None, "compiler":"not_run", "runtime":"not_run", "dimensions":[9,9,1],
                 "positive_client_acceptance":False, "profiles":plans, "executor":external, "sha256":files,
+                "runtime_dependencies":{path:digest(data) for path,data in dependencies.items()},
                 "seams":["isolated global/world startup", "original client.New definitions removed in generated copies; one denied fixture entry",
                          "human New returns without parent; no production constructor/anatomy/Life",
                          "generated grass connected-client predicate only", "headless service active/visible identity only",

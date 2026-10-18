@@ -111,10 +111,12 @@ class GatherPacketTests(unittest.TestCase):
         with self.assertRaises(ValueError):verify_result(bad,'enabled','a'*40)
 
     def test_packet_preparation_is_source_only_and_validator_binds_every_file(self):
-        files={p:(ROOT/p).read_text(encoding='utf-8') for p in ('code/_helpers/mobs.dm','code/game/turfs/floor_attackby.dm','civ13.dme')}
+        files={p:(ROOT/p).read_text(encoding='utf-8') for p in ('code/_helpers/mobs.dm','code/game/turfs/floor_attackby.dm','civ13.dme',prep.NAMES_SOURCE)}
+        names=prep.name_dependencies(files[prep.NAMES_SOURCE])
         def git(root,*args):
             if args[0]=='show':
                 path=args[1].split(':',1)[1]
+                if path in names:return b'synthetic public name\n'
                 return b'synthetic-library-never-executed' if path=='rust_g.dll' else files[path].encode()
             if args[0]=='rev-parse':return b'a'*40
             if args[0]=='status':return b''
@@ -124,6 +126,7 @@ class GatherPacketTests(unittest.TestCase):
             def closure(*args):
                 source=out/'source';source.mkdir(parents=True)
                 f=source/'tests/gameplay_bridge/native/gather_probe.dm';f.parent.mkdir(parents=True);f.write_text('inert fixture')
+                f=source/prep.NAMES_SOURCE;f.parent.mkdir(parents=True);f.write_text(files[prep.NAMES_SOURCE])
                 return source
             with patch('prepare_gather.bindings',return_value=external()),patch('prepare_gather.git',side_effect=git),patch('prepare_gather.prepare_closure',side_effect=closure):
                 manifest=prep.prepare(root,out,'a'*40,root,root)
@@ -132,6 +135,35 @@ class GatherPacketTests(unittest.TestCase):
             self.assertEqual([p['name'] for p in manifest['profiles']],list(prep.PROFILES))
             self.assertIsNone(manifest['native_lease'])
             self.assertFalse(any(p.suffix in ('.dmb','.rsc') for p in out.rglob('*')))
+            self.assertEqual(set(manifest['runtime_dependencies']),set(names)|{'rust_g.dll'})
+            key='runtime/stock/'+names[0]
+            dependency=out/key;data=dependency.read_bytes()
+            dependency.unlink()
+            with self.assertRaisesRegex(ValueError,'file binding drift'):verify_packet(out,'a'*40,sha)
+            dependency.write_bytes(data+b'changed')
+            with self.assertRaisesRegex(ValueError,'file binding drift'):verify_packet(out,'a'*40,sha)
+            dependency.write_bytes(data)
+            # A self-consistent manifest cannot omit a required preload and its hash.
+            altered=copy.deepcopy(manifest);del altered['sha256'][key]
+            (out/'manifest.json').write_text(json.dumps(altered))
+            with self.assertRaisesRegex(ValueError,'only exact public name dictionaries'):
+                verify_packet(out,'a'*40,hashlib.sha256((out/'manifest.json').read_bytes()).hexdigest())
+            (out/'manifest.json').write_bytes(raw)
+            unexpected=out/'runtime/stock/config/config.txt';unexpected.write_text('synthetic forbidden config')
+            with self.assertRaisesRegex(ValueError,'unbound or missing runtime config'):verify_packet(out,'a'*40,sha)
+            unexpected.unlink()
+            altered=copy.deepcopy(manifest);del altered['runtime_dependencies'][names[0]]
+            (out/'manifest.json').write_text(json.dumps(altered))
+            with self.assertRaisesRegex(ValueError,'exact public runtime dependency closure'):
+                verify_packet(out,'a'*40,hashlib.sha256((out/'manifest.json').read_bytes()).hexdigest())
+            altered=copy.deepcopy(manifest);del altered['runtime_dependencies']
+            (out/'manifest.json').write_text(json.dumps(altered))
+            with self.assertRaisesRegex(ValueError,'exact public runtime dependency closure'):
+                verify_packet(out,'a'*40,hashlib.sha256((out/'manifest.json').read_bytes()).hexdigest())
+            (out/'manifest.json').write_bytes(raw)
+            unexpected=out/'source/config';unexpected.mkdir()
+            with self.assertRaisesRegex(ValueError,'source server config forbidden'):verify_packet(out,'a'*40,sha)
+            unexpected.rmdir()
             with self.assertRaises(ValueError):verify_packet(out,'a'*40,'0'*64)
             altered=copy.deepcopy(manifest)
             altered['profiles'][0]['daemon_argv_after_separate_grant'][4]='0.0.0.0'
@@ -141,6 +173,32 @@ class GatherPacketTests(unittest.TestCase):
             (out/'manifest.json').write_bytes(raw)
             target=out/'source/gather_enabled.dme';target.write_text('tampered')
             with self.assertRaises(ValueError):verify_packet(out,'a'*40,sha)
+
+    def test_public_preload_closure_is_literal_bounded_complete_and_frozen(self):
+        source=(ROOT/prep.NAMES_SOURCE).read_text(encoding='utf-8')
+        paths=prep.name_dependencies(source)
+        self.assertEqual(len(paths),146)
+        self.assertTrue(all((ROOT/p).is_file() for p in paths))
+        sample='var/list/names = file2list("config/names/first_male.txt")\n'
+        self.assertEqual(prep.name_dependencies(sample+'// file2list("private")\n'),('config/names/first_male.txt',))
+        for bad in (sample.replace('config/names/','config/'),sample.replace('first_male','../private'),
+                    sample.replace('"config/names/first_male.txt"','dynamic_path'),
+                    sample+'var/private = file2text("config/config.txt")\n',sample*193,''):
+            with self.assertRaises(ValueError):prep.name_dependencies(bad)
+        calls=[]
+        def read(path):calls.append(path);return b'synthetic public blob'
+        data=prep.runtime_inputs(read,source)
+        self.assertEqual(set(data),set(paths)|{'rust_g.dll'})
+        self.assertEqual(calls,[*paths,'rust_g.dll'])
+        for missing in (paths[0],'rust_g.dll'):
+            def read(path):
+                if path==missing:raise FileNotFoundError(path)
+                return b'public'
+            with self.assertRaises(FileNotFoundError):prep.runtime_inputs(read,source)
+        for raw in (b'',b' ',b'x'*(prep.NAME_FILE_LIMIT+1)):
+            with self.assertRaises(ValueError):prep.runtime_inputs(lambda p:raw,source)
+        with self.assertRaisesRegex(ValueError,'exceeds bound'):
+            prep.runtime_inputs(lambda p:b'x'*20000,source)
 
     def test_existing_adapter_is_only_hashed_never_imported_or_replaced(self):
         source=(ROOT/'scripts/gameplay_bridge/prepare_gather.py').read_text()

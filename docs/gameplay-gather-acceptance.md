@@ -1,4 +1,4 @@
-# Gather fixtures and next client acceptance (not executed)
+# Gather fixtures and next client acceptance
 
 The executable fixture is tests/gameplay_bridge/native/gather_probe.dm. Its
 human/gather_probe.New returns without the parent human constructor: no normal
@@ -16,8 +16,31 @@ from an exact clean frozen head. It hashes (never imports) the existing reviewed
 Windows Job adapter and guard_config, and verifies the immutable containment
 driver reference blob. Their exact bindings, SDK hashes, sequential process,
 CPU/wall/memory/log/cleanup limits and residual native account/UDP traffic risk
-are recorded in the manifest. It neither copies credentials/config nor launches
-anything. Runtime folders contain only the public tracked native library.
+are recorded in the manifest. It neither copies credentials/server configuration
+nor launches anything. Each runtime folder contains the public tracked native
+library and exact public name dictionaries required by unconditional global
+preloads in code/names.dm. These157 file2list calls reference146 unique files
+(153247bytes at the reviewed ff8 base). Their double-quoted paths are runtime
+reads before world.New, so compiled resources alone do not satisfy them. No
+other direct top-level file reads were found in code; generated startup returns
+before global_init configuration loading and global-controller initialization,
+and renames ordinary world.New. Lazy atlas, help, game setup and client-entry
+readers are not invoked by this fixture.
+
+Preparation derives only literal config/names/[a-z_]+.txt paths from frozen
+code/names.dm, rejects changed reader syntax/dynamic paths, and reads each exact
+Git blob at the requested head. Each dictionary is nonempty and bounded to128KiB,
+with a2MiB aggregate ceiling. No directory-wide config copy or working-tree
+config read occurs. Manifest runtime_dependencies plus per-profile hashes must
+match the complete derived set and public library. Missing/altered/omitted files,
+additional configuration, or a packet without this dependency contract are
+rejected before native execution. The strict engine diagnostic gate is unchanged.
+
+The first ff8 native attempt compiled stock cleanly but failed its first stock
+runtime on157 missing-namefile diagnostics. No gather oracle or parity result
+was accepted. That consumed packet/results/USED are preserved; this staging
+repair requires a fresh never-executed packet, reviewed caller bindings and a new
+execution grant. Preparation/offline checks do not turn that failure into a pass.
 
 ```text
 <python> -B scripts/gameplay_bridge/prepare_gather.py --expected-commit <FULL_SHA> --output <FRESH_EXTERNAL_FOLDER> --adapter-dir <REVIEWED_ADAPTER_FOLDER> --contained-repo <EXISTING_REFERENCE_CHECKOUT>

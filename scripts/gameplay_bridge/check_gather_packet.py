@@ -5,7 +5,8 @@ import json
 from pathlib import Path
 
 from check_native_packet import inside, require
-from prepare_gather import PROFILES, FAILURES, LIMITS, ADAPTER_HASHES, DRIVER_HASH, BINARIES, PORT
+from prepare_gather import (PROFILES, FAILURES, LIMITS, ADAPTER_HASHES, DRIVER_HASH, BINARIES, PORT,
+                            NAMES_SOURCE, NAME_FILE_LIMIT, NAME_TOTAL_LIMIT, name_dependencies)
 
 ORDINARY = {"requested_reopen_denied", "headless_setup", "ordinary_paid_gather", "ordinary_zero_delay",
             "ordinary_false_first_returns", "stock_false_first_early_unlock",
@@ -55,7 +56,30 @@ def verify_packet(root, commit, manifest_sha256):
         path=inside(root,relative)
         require(path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest()==expected,"file binding drift: "+relative)
     require(any(p.endswith("/gather_probe.dm") for p in manifest["sha256"]),"fixture missing")
-    require(not any(p.startswith("source/config/") for p in manifest["sha256"]),"server config forbidden")
+    names_path="source/"+NAMES_SOURCE
+    require(names_path in manifest["sha256"],"public preload source binding missing")
+    names=name_dependencies(inside(root,names_path).read_text(encoding="utf-8-sig"))
+    dependencies=manifest.get("runtime_dependencies",{})
+    require(type(dependencies) is dict and set(dependencies)==set(names)|{"rust_g.dll"},
+            "exact public runtime dependency closure required")
+    allowed_config={"runtime/"+profile+"/"+p for profile in PROFILES for p in names}
+    require(not (root/"source/config").exists(),"source server config forbidden")
+    require({p for p in manifest["sha256"] if p.startswith("source/config/") or "/config/" in p}==allowed_config,
+            "only exact public name dictionaries permitted; server config forbidden")
+    for profile in PROFILES:
+        total=0
+        config=inside(root,"runtime/"+profile+"/config")
+        require({p.relative_to(root).as_posix() for p in config.rglob("*") if p.is_file()}==
+                {"runtime/"+profile+"/"+p for p in names},"unbound or missing runtime config")
+        for relative,expected in dependencies.items():
+            key="runtime/"+profile+"/"+relative
+            require(manifest["sha256"].get(key)==expected,"runtime dependency binding missing/drift: "+key)
+            data=inside(root,key).read_bytes()
+            require(data.strip() and hashlib.sha256(data).hexdigest()==expected,"runtime dependency empty/drift: "+key)
+            if relative!="rust_g.dll":
+                require(len(data)<=NAME_FILE_LIMIT,"public name file byte bound")
+                total+=len(data)
+        require(total<=NAME_TOTAL_LIMIT,"public name closure byte bound")
     return manifest
 
 
