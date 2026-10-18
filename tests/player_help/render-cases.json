@@ -1,7 +1,7 @@
 [
   {"name":"screenshot winter answer", "markdown":"To survive winter:\n\n* **Clothing:** Wear fur and use a *knife*.\n* **Shelter:** Stay in a roofed area.\n* **Fire:** Fuel a **campfire** with wood.\n\nCold can still harm you.", "contains":["<b>Clothing:</b>","<i>knife</i>","&bull; ","<b>Shelter:</b>","<b>campfire</b>","<p>Cold can still harm you.</p>"], "absent":["**","* **","<pre"]},
   {"name":"headings and numbered nested lists", "markdown":"# Survive\n## Shelter\n1. Find wood\n2. Build\n  - Check the roof", "contains":["<h1>Survive</h1>","<h2>Shelter</h2>","<p>1. Find wood</p>","<p>2. Build</p>","&nbsp;&nbsp;&bull; Check the roof"], "absent":["<ul","<ol","<style"]},
-  {"name":"line endings and paragraphs", "markdown":"one\r\ntwo  \r\nthree\\\r\nfour\r\n\r\nfive", "contains":["one<br>two  <br>three<br>four</p><p>five"], "absent":["\r"]},
+  {"name":"line endings and paragraphs", "markdown":"one\r\ntwo  \r\nthree\\\r\nfour\r\n\r\nfive\rsix", "contains":["one<br>two  <br>three<br>four</p><p>five<br>six"], "absent":["\r"]},
   {"name":"fenced code is inert", "markdown":"```html\n<script>alert(1)</script> **literal**\n```", "contains":["<pre>&lt;script&gt;alert(1)&lt;/script&gt; **literal**\n</pre>"], "absent":["<script>","<b>literal</b>","class=","style="]},
   {"name":"unclosed tilde fence", "markdown":"~~~~\n**literal**\n~~~", "contains":["<pre>**literal**\n~~~\n</pre>"], "absent":["<b>"]},
   {"name":"inline code precedence", "markdown":"Use `**literal** <img>` or ``a ` b``.", "contains":["<code>**literal** &lt;img&gt;</code>","<code>a ` b</code>"], "absent":["<img>","<b>literal</b>"]},
