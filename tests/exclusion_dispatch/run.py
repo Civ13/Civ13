@@ -11,8 +11,9 @@ import sys
 import tempfile
 import time
 from resources import Budget, DIAGNOSTIC, binary_info
+from source_contract import validate
 
-BASE = '41e2d02fe1f9130e0987aee0efd2eba0ca7b3bf1'
+BASE = '5a4b911a2ced3700fe19bd524b6c04046755e679'
 PATH = 'code/modules/persistence/functions.dm'
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--byond-bin', type=Path)
@@ -27,14 +28,7 @@ a = p.parse_args()
 repo = Path(__file__).resolve().parents[2]
 old = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=repo, text=True)
 current = (repo / PATH).read_text()
-expected = old
-for kind in ['atom', 'turf', 'mob']:
-    pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n\treturn \(key in list\((.*?)\)\) \|\| \.\.\(\)'
-    m = re.search(pattern, expected, re.M)
-    assert m, kind
-    replacement = f'/{kind}/persistence_runtime_var(key)\n\tswitch(key)\n\t\tif ({m[1]})\n\t\t\treturn TRUE\n\treturn ..()'
-    expected = expected[:m.start()] + replacement + expected[m.end():]
-assert expected == current, 'Only the three approved hook transformations may differ'
+validate(old, current)
 
 def proc(text, path):
     return re.search(r'^' + re.escape(path) + r'\n(?:\t[^\n]*\n)+', text, re.M).group()
@@ -45,7 +39,10 @@ for file, path in [
     ('code/processes/abandoned_items.dm', '/obj/item/persistence_runtime_var(key)'),
     ('code/modules/1713/active_training.dm', '/mob/living/human/persistence_runtime_var(key)'),
 ]:
-    inherited += proc((repo / file).read_text(), path) + '\n'
+    helper = (repo / file).read_text()
+    pinned = subprocess.check_output(['git', 'show', BASE + ':' + file], cwd=repo, text=True)
+    assert helper == pinned, f'Inherited helper drift: {file}'
+    inherited += proc(helper, path) + '\n'
 source = ''
 for variant, text in [('baseline', old), ('candidate', current)]:
     hooks = '\n'.join(proc(text, f'/{kind}/persistence_runtime_var(key)') for kind in ['atom', 'turf', 'mob'])
@@ -71,12 +68,13 @@ probe = Path(__file__).with_name('probe.dm').read_text()
 header = f'#define BENCH_CALLS {a.calls}\n' + ('#define BENCHMARK\n' if a.benchmark else '') + '#include "probe.dm"\n#include "production.dm"\n'
 inputs = {name: hashlib.sha256(content.encode()).hexdigest() for name, content in {
     'production.dm': source, 'probe.dm': probe, 'probe.dme': header,
+    'source_contract.py': Path(__file__).with_name('source_contract.py').read_text(),
     'runner.py': Path(__file__).read_text(), 'resources.py': Path(__file__).with_name('resources.py').read_text(),
 }.items()}
 compiler = a.byond_bin.resolve() / ('dm.exe' if os.name == 'nt' else 'DreamMaker') if a.byond_bin else None
 daemon = a.byond_bin.resolve() / ('dd.exe' if os.name == 'nt' else 'DreamDaemon') if a.byond_bin else None
 compiler_args = ['-max_errors', '0', 'probe.dme']
-daemon_args = ['probe.dmb', '-ip', '127.0.0.1', '-invisible', '-close', '-safe', '-log', 'runtime.log']
+daemon_args = ['probe.dmb', '-ip', '127.0.0.1', '-invisible', '-close', '-trusted', '-log', 'runtime.log']
 binaries = {name: binary_info(path)
             for name, path in [('compiler', compiler), ('daemon', daemon)] if path}
 commands = dict(compiler=compiler_args, daemon=daemon_args)
@@ -91,8 +89,10 @@ if a.source_only:
         head_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(),
         baseline_sha=BASE, compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
         probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), inputs=inputs, binaries=binaries,
-        commands=commands, required_version='516.1681'), indent=2) + '\n')
+        commands=commands, required_version='516.1681', native_execution=False,
+        execution_authorization='HELD: fresh maintainer approval and exact-head review required; old leases invalid'), indent=2) + '\n')
     sys.exit(0)
+raise SystemExit('Native execution held: fresh maintainer approval and exact-head review required; old leases invalid')
 # A lease receipt is recorded only after the core owner explicitly grants a slot.
 # It is an audit guard, not a substitute for that authorization.
 if not a.lease_receipt:

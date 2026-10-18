@@ -114,7 +114,7 @@ The small fixture also restores a manually constructed unversioned legacy save,
 including the old empty-list marker and a null `pixloc` field.
 
 For visual evidence, compile the fixture and copy its `.dmb` and `.rsc` to a new
-temporary directory. Start that copy with DreamDaemon/DD using `-invisible -safe
+temporary directory. Start that copy with DreamDaemon/DD using `-invisible -trusted
 -params visual=1`. Connect Dream Seeker to the local port printed in the log. The
 restored fixture and its actual test result remain open for capture. A screenshot
 of this fixture does not prove normal game constructors, lighting, registries,
@@ -419,3 +419,54 @@ Obstruction caches rebuild after contents/fields/hooks and before source updates
 On this Windows host, even the existing startup-only control exits
 with `0xC0000409` before its entry marker. Clean compilation is separate evidence;
 run the actual assertions on Linux CI rather than treating that exit as a pass.
+
+## Restored input state regression
+
+`run-string-path.py --input-runtime` runs the production saver/loader against
+disk-backed v2 and unversioned legacy entries with old-process click/movement
+deadlines and action locks. It checks export exclusion, import defaults, identity,
+inventory and location preservation, and retention of existing live locks on a
+replacement object. The actual early `ClickOn` gate and modifier dispatch run
+against route counters, including ordinary/shift clicks and a live future
+cooldown. This adapter does not prove rendered client input or gathering.
+
+The input adapter also extracts the production fixed click-counter helper and
+checks saturation, arbitrary-code rejection, no-client rejection, parsed icon
+coordinates, and runtime trace export exclusion. It supplies the exact production
+`isatom` macro and declares unavailable client rights/directory dependencies;
+it creates no real client. Own-host authorization is checked separately by
+`tests/nomads_lifecycle/test_input_trace.py`, including negative controls and
+immutable pre-trace click-source parity with observational calls removed.
+
+The existing authenticated `diagnose` action now arms a transient own-mob click
+trace for 3000 world ticks on the first request for that client/mob. Reads do not
+extend the window. Reconnects bind a fresh session token. Only fixed saturating
+route counts are retained, never click targets or raw parameters. The same
+response samples current click/move deadlines, remaining delays, action locks,
+direction and facing lock. This changes diagnostic bookkeeping only; it does not
+reset gameplay clocks or actions. Connected-client behavior still needs a normal
+functional retest. The ordinary round-metadata fixture's job-limit initializer
+is a pure no-op dependency adapter in shared `stubs.dm`, also used by the direct
+round-trip fixture. Round-state mode defines `WORLD_SAVE_JOB_ADAPTER` and keeps
+its production occupation adapter. This is not production occupation coverage.
+
+Use the runner's required `--byond-bin` and `--expected-saving-sha256` arguments.
+Run `--input-runtime-negative-control export` and `import` separately: each
+removes only the corresponding runtime exclusion in generated temporary source
+and must reproduce its specific failure. The export control bypasses these four
+fields in both changed-variable selection and the final encoder, since either
+guard alone prevents export. `--prepare-only` hashes and generates
+sources without starting a compiler or game. Native execution requires the
+current runtime owner's quiet window.
+
+The standalone lifecycle fixture declares the fixed snapshot's operation/error
+types with no active operation or collector. Its separate diagnose adapter
+returns `fixture_diagnostics_unavailable`. Authentication, status and shutdown
+controls still exercise the production endpoint; this fixture does not verify
+live diagnostic collection.
+
+The dimension and durable-world probes acquire production persistence operation
+identities before bootstrap or import and pass the same identity to the backend.
+They check nested direct-call rejection and final admission release. A manually
+set busy flag does not authorize a positive save/load operation. Explicit busy
+and concurrency rejection controls retain their original guards.

@@ -206,10 +206,6 @@
 	var/list/timers = durable_state["timers"]
 	map.season_loop_scheduled = "season_loop" in timers
 	map.durable_timer_queue().restore(timers)
-	if(processes.time_of_day_change)
-		var/process/time_of_day_change/P = processes.time_of_day_change
-		P.lighting_revision++
-		P.apply_daylight(time_of_day, P.lighting_revision)
 	durable_import = null
 	durable_state = null
 	loading_z = 0

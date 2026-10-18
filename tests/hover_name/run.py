@@ -64,7 +64,7 @@ flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
 with tempfile.TemporaryDirectory(prefix='civ13-hover-name-') as temp:
     root = Path(temp)
     (root / 'production.dm').write_text(production)
-    (root / 'fixture.dm').write_text(Path(__file__).with_name('fixture.dm').read_text())
+    (root / 'fixture.dm').write_text(Path(__file__).with_name('fixture.dm').read_text() + '\n' + Path(__file__).with_name('own_body_probe.dm').read_text())
     (root / 'probe.dme').write_text('#include "fixture.dm"\n#include "production.dm"\n')
     compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
@@ -76,7 +76,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-hover-name-') as temp:
         print('PASS compile only; runtime not run')
         raise SystemExit(0)
     try:
-        run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-safe', '-log', 'runtime.log'], cwd=root, capture_output=True, text=True, timeout=20, creationflags=flags)
+        run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-trusted', '-log', 'runtime.log'], cwd=root, capture_output=True, text=True, timeout=20, creationflags=flags)
     except subprocess.TimeoutExpired:
         print((root / 'runtime.log').read_text(errors='replace'))
         raise

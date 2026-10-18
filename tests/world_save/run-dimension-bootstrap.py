@@ -128,7 +128,7 @@ def main():
         if seed:
             shutil.copytree(seed / 'map_saves', cwd / 'map_saves')
         owned(name, [str(daemon), 'dimension_bootstrap.dmb', '-invisible', '-close',
-                     '-safe', '-params', params, '-log', 'runtime.log'], cwd)
+                     '-trusted', '-params', params, '-log', 'runtime.log'], cwd)
         result = (cwd / 'result.txt').read_text(encoding='utf-8').strip()
         native = json.loads((cwd / 'receipt.json').read_text(encoding='utf-8'))
         receipt['cases'][name] = {'result': result, **native}

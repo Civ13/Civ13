@@ -4,7 +4,7 @@ Candidate: replace the atom, turf and mob runtime-exclusion temporary name lists
 with exact switch cases. Unmatched keys still call the parent once; matched keys
 return without calling it. No cache, partial parsing, saved-variable selection,
 saver/loader, or persistent fields change. Baseline is pinned to
-`41e2d02fe1f9130e0987aee0efd2eba0ca7b3bf1`.
+`5a4b911a2ced3700fe19bd524b6c04046755e679`.
 
 The runner fails closed on source drift. It imports production hooks, representative
 movable/item/human inherited hooks, full get_saved_vars bodies and the dirt override.
@@ -34,11 +34,11 @@ calls for item, mob and human, 200 warmups per variant, five alternating pairs p
 type. Each sample has the same complete call count. Native elapsed deciseconds
 exclude inter-sample sleeps. If resolution is inadequate, report that limitation;
 do not infer equality or improvement. Larger 20000/40000 workloads require a fresh
-explicit resource plan/lease. No native run has yet been authorized or performed.
+explicit resource plan/lease. This successor has not been compiled or run natively.
 No verified opcode, production CPU, server latency, disk-save or client claim.
 
 Native execution currently fails closed before launching any process while the
-corrected frozen packet awaits core review. No override flag bypasses that gate.
+corrected frozen packet awaits core review. An unconditional native hold precedes all lease handling; no flag or old receipt bypasses it.
 `--source-only --output <fresh.json>` validates source extraction and transformations
 without requiring a BYOND installation. CI uses only this mode while native is held.
 The prepared Windows monitor samples each owned process every 25 ms, checks 40 CPU
@@ -83,3 +83,27 @@ temporary cleanup. Three fake-process tests check diagnostic retention, pre-spaw
 deadline rejection and fast-exit final-query failure cleanup. They pass without
 starting BYOND and do not replace native parity or timing. This remains a draft
 candidate without a demonstrated performance benefit.
+
+## Current-master conflict resolution
+
+The baseline is master `5a4b911a2ced3700fe19bd524b6c04046755e679`.
+The three switch hooks retain its 3 atom, 6 turf and 21 mob exclusions, including
+all nine process-local input/trace fields. The datum weak-reference exclusion,
+restored-lighting calls and all other persistence code remain baseline-identical.
+Both variants import the same baseline-checked current inherited helpers.
+Parity keys include the nine new mob fields and `weak_reference`. Offline source
+controls reject each omitted exclusion, altered parent dispatch, unrelated file
+changes and malformed baseline hooks; these are source-contract checks, not DM
+execution or native semantic parity.
+
+The original head `97103c8543ca0eff39deeb6e63ff0f6c5a2a7dc2` is retained at
+`archive/pr3197-97103c8`. Its evidence remains separate. The `world.address` bind
+assertion is deliberately unchanged pending separate review; the prior engine
+diagnostic cause remains unknown. All native execution remains held.
+
+Current repository policy records `-trusted`, never `-safe`, in the proposed
+native argv. This source-only update grants no trusted execution permission.
+Fresh maintainer approval and exact-head review are required before separately
+changing the unconditional hold; all old leases/grants are invalid for this head.
+Source-only generation launches Git for pinned source reads, never a compiler or
+daemon, and records `native_execution: false` and the held authorization state.

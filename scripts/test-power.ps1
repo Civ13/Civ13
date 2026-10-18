@@ -48,7 +48,7 @@ try {
     $compileLog = Get-Content -LiteralPath (Join-Path $temporary 'compile.log') -Raw
     Write-Output $compileLog
     if ($compiler.ExitCode -ne 0 -or $compileLog -notmatch '0 errors, 0 warnings') { throw 'Probe compilation failed.' }
-    $runtime = Start-Process -FilePath (Join-Path $ByondBin $runtimeName) -ArgumentList @('probe.dmb', '0', '-invisible', '-close', '-safe', '-log', 'runtime.log') -WorkingDirectory $temporary -PassThru @processOptions
+    $runtime = Start-Process -FilePath (Join-Path $ByondBin $runtimeName) -ArgumentList @('probe.dmb', '0', '-invisible', '-close', '-trusted', '-log', 'runtime.log') -WorkingDirectory $temporary -PassThru @processOptions
     if (!$runtime.WaitForExit(30000)) {
         Stop-Process -Id $runtime.Id
         $runtime.WaitForExit()

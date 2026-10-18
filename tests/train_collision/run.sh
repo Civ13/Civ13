@@ -10,7 +10,7 @@ DreamMaker "$work/probe.dme" | tee "$work/compile.log"
 grep -q '0 errors, 0 warnings' "$work/compile.log"
 cd "$work"
 # Restrict only the tiny fixture process; never run against a live game.
-(ulimit -v 262144; ulimit -t 5; timeout --kill-after=2s 15s DreamDaemon probe.dmb -invisible -safe -log runtime.log)
+(ulimit -v 262144; ulimit -t 5; timeout --kill-after=2s 15s DreamDaemon probe.dmb -invisible -trusted -log runtime.log)
 cat runtime.log
 grep -q 'RESULT failures=0' runtime.log
 if grep -Eq 'runtime error:|FAIL ' runtime.log; then exit 1; fi

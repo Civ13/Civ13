@@ -1,6 +1,7 @@
 """Optional bounded local spool worker. Never launched by the game; no game admin API."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
+from decimal import Decimal
 import json
 import math
 import hashlib
@@ -18,6 +19,32 @@ import urllib.request
 import uuid
 
 MAX_RESPONSE = 65536
+MAX_REQUEST_ID = 100
+
+
+def valid_request_id(value):
+    # Native DM interpolates large world.realtime values in scientific notation.
+    # IDs are opaque correlation strings, never numbers, paths or model input.
+    return (isinstance(value, str) and 1 <= len(value) <= MAX_REQUEST_ID and
+            re.fullmatch(r'[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?-[0-9]+-[0-9]+', value) is not None)
+
+
+def read_ready_id(path):
+    try:
+        # text2file appends one platform line ending. Preserve every other byte,
+        # including extra/embedded newlines and spaces, so malformed markers fail.
+        with path.open('rb') as source:
+            raw = source.read(MAX_REQUEST_ID + 3)
+        if raw.endswith(b'\r\n'):
+            raw = raw[:-2]
+        elif raw.endswith(b'\n'):
+            raw = raw[:-1]
+        value = raw.decode('ascii')
+        return value if valid_request_id(value) else None
+    except (OSError, UnicodeError):
+        return None
+
+
 LIMIT_DEFAULTS = {'cooldown_seconds': 30, 'burst_requests': 3, 'burst_seconds': 120,
                   'window_requests': 10, 'window_seconds': 600, 'global_requests': 30,
                   'global_seconds': 60, 'max_accounts': 2048, 'queue_slots': 8}
@@ -74,6 +101,47 @@ class RequestLimiter:
             self.active.discard(account)
 
 
+MATERIAL_CONDITIONS = re.compile(
+    r'(?P<gates>Legacy research I/M/M: [0-9]+/[0-9]+/[0-9]+; maximum era ordinal [0-9]+); '
+    r'time (?P<time>[0-9]{1,7}(?:\.[0-9]{1,3})?) deciseconds; '
+    r'(?P<category>category [^;\n]{1,100}); one per turf (?P<one>[01]); floor (?P<floor>[01]); '
+    r'(?P<material>supplied material [^;\n]{1,100}?\.)(?P<extra>.*)', re.DOTALL)
+
+
+def recipe_conditions(recipe):
+    """Interpret only the known legacy Material schema, never arbitrary prose."""
+    raw = recipe.get('conditions', '')
+    if not isinstance(raw, str):
+        return 'Unknown catalog conditions.'
+    raw = raw[:500]
+    kind = recipe.get('kind')
+    if not isinstance(kind, str) or not kind.startswith('Material / '):
+        return raw
+    match = MATERIAL_CONDITIONS.fullmatch(raw)
+    if not match:
+        return ('Catalog conditions (uninterpreted): ' + raw)[:500]
+    fields = match.groupdict()
+    seconds = format(Decimal(fields['time']) / 10, 'f')
+    if '.' in seconds:
+        seconds = seconds.rstrip('0').rstrip('.')
+    if Decimal(fields['time']):
+        duration = (f'base construction time {seconds} simulation seconds; strength/crafting '
+                    'modifiers (crafting squared); rounded and interruptible')
+    else:
+        duration = 'base construction time 0 simulation seconds (no timed wait)'
+    one = ('at most one resulting object per tile' if fields['one'] == '1'
+           else 'no recipe-specific one-per-tile restriction')
+    floor = ('requires a floor-tile surface' if fields['floor'] == '1'
+             else 'no recipe-specific floor-tile surface requirement')
+    formatted = (f"{fields['gates']}; {duration}; {fields['category']}; {one}; {floor}; "
+                 f"{fields['material']}{fields['extra']}")
+    if len(formatted) > 500:
+        # Expansion must not silently discard a research or placement gate.
+        return ('Material recipe conditions exceed the context limit; placement, timing and '
+                'research requirements are unknown here. Consult the Crafting Atlas.')
+    return formatted
+
+
 def recipe_context(path):
     """Project the already player-facing atlas, excluding source/developer fields."""
     atlas = bounded_json(path, 16 * 1024 * 1024)
@@ -89,7 +157,7 @@ def recipe_context(path):
             rows = recipe.get(key, [])
             if isinstance(rows, list):
                 parts.append(key + ': ' + ', '.join(str(row.get('quantity', ''))[:30] + ' x ' + ('softwood' if row.get('id') == '/material/wood/soft' else str(row.get('name', ''))[:100]) for row in rows[:20] if isinstance(row, dict)))
-        parts.append('Conditions: ' + str(recipe.get('conditions', ''))[:500])
+        parts.append('Conditions: ' + recipe_conditions(recipe))
         text = '\n'.join(parts)[:2000]
         result.append({'topic': str(recipe.get('name', ''))[:150].lower(), 'text': text, 'source': 'recipe', 'catalog': str(recipe.get('kind', ''))})
     return result
@@ -185,7 +253,14 @@ def public_game_context(request):
 def atomic_json(path, value):
     temporary = path.with_suffix(path.suffix + '.tmp')
     temporary.write_text(json.dumps(value, ensure_ascii=True), encoding='utf-8')
-    os.replace(temporary, path)
+    for attempt in range(21):
+        try:
+            os.replace(temporary, path)
+            return
+        except PermissionError as error:
+            if getattr(error, 'winerror', None) not in (5, 32, 33) or attempt == 20:
+                raise
+            time.sleep(.05)
 
 
 def bounded_json(path, limit):
@@ -320,20 +395,17 @@ class Bridge:
             # Never expose endpoint, headers, credentials, raw response or exception to player/log.
             return {'id': request['id'], 'status': 'unavailable'}
 
-    def tick(self):
+    def tick(self, admit=True):
         atomic_json(self.root / 'limits.json', self.limiter.limits)
-        atomic_json(self.root / 'health.json', {'enabled': self.config['enabled'], 'sequence': uuid.uuid4().hex, 'request_timeout_seconds': min(600, int(self.config.get('timeout_seconds', 45) * 8 / self.config.get('workers', 1)) + 15)})
+        atomic_json(self.root / 'health.json', {'enabled': self.config['enabled'] and admit, 'sequence': uuid.uuid4().hex, 'request_timeout_seconds': min(600, int(self.config.get('timeout_seconds', 45) * 8 / self.config.get('workers', 1)) + 15)})
         for slot, (request_id, future) in list(self.active.items()):
             ready = self.root / f'{slot}.ready'
-            try:
-                current = ready.read_text(encoding='utf-8')[:101]
-            except OSError:
-                current = None
+            current = read_ready_id(ready)
             if future.done():
                 if current == request_id:
                     atomic_json(self.root / f'{slot}.response.json', future.result())
                 del self.active[slot]
-        if not self.config['enabled']:
+        if not self.config['enabled'] or not admit:
             return
         for slot in range(1, 9):
             if slot in self.active or len(self.active) >= self.config['workers']:
@@ -343,8 +415,8 @@ class Bridge:
             if not ready.exists():
                 continue
             try:
-                marker = ready.read_text(encoding='utf-8')
-                if len(marker) > 100:
+                marker = read_ready_id(ready)
+                if marker is None:
                     continue
                 if response.exists():
                     existing = bounded_json(response, 24000)
@@ -352,7 +424,7 @@ class Bridge:
                         continue
                     response.unlink()
                 request = bounded_json(self.root / f'{slot}.request.json', 16384)
-                if not isinstance(request, dict) or not isinstance(request.get('id'), str) or not re.fullmatch(r'[0-9-]{1,100}', request['id']) or marker != request['id']:
+                if not isinstance(request, dict) or not valid_request_id(request.get('id')) or marker != request['id']:
                     continue
                 if not isinstance(request.get('question'), str) or not 1 <= len(request['question']) <= 500:
                     continue
@@ -374,6 +446,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--game-root', type=Path, required=True)
     parser.add_argument('--config', type=Path, required=True)
+    parser.add_argument('--stop-file', type=Path)
     args = parser.parse_args()
     config = load_config(args.config)
     corpus = bounded_json(args.game_root / 'UI/player-help.json', 32768)
@@ -391,11 +464,17 @@ def main():
     signal.signal(signal.SIGTERM, stop)
     signal.signal(signal.SIGINT, stop)
     try:
-        while bridge.running:
+        while bridge.running and not (args.stop_file and args.stop_file.exists()):
             bridge.tick()
             time.sleep(1)
     finally:
-        bridge.close()
+        try:
+            while bridge.active:
+                bridge.tick(admit=False)
+                if bridge.active:
+                    time.sleep(1)
+        finally:
+            bridge.close()
 
 
 if __name__ == '__main__':

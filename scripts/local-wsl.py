@@ -111,7 +111,7 @@ def main():
             if not (runtime / 'source-sha.txt').exists():
                 raise RuntimeError('Run Build first')
             with (runtime / 'logs/daemon.log').open('ab') as log:
-                process = subprocess.Popen([str(BIN / 'DreamDaemon'), str(runtime / 'civ13.dmb'), str(PORTS[args.server]), '-safe', '-log', 'logs/world.log'], cwd=runtime, env=env, stdin=subprocess.DEVNULL, stdout=log, stderr=log, start_new_session=True)
+                process = subprocess.Popen([str(BIN / 'DreamDaemon'), str(runtime / 'civ13.dmb'), str(PORTS[args.server]), '-trusted', '-log', 'logs/world.log'], cwd=runtime, env=env, stdin=subprocess.DEVNULL, stdout=log, stderr=log, start_new_session=True)
                 try:
                     fields = Path(f'/proc/{process.pid}/stat').read_text().rsplit(')', 1)[1].split()
                     state.write_text(json.dumps({'pid': process.pid, 'started': fields[19]}))

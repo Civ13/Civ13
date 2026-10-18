@@ -1,5 +1,10 @@
 # Nomads TEST1714 lifecycle
 
+For the separate bounded read-only own-host diagnostics and offline sanitized
+pair/trace/bundle commands, see [agent debug tools](../../docs/agent-debug-tools.md).
+Their DM collector requires a reviewed rebuild/restart; discovery and offline
+processing do not install or activate a runtime.
+
 Windows supervisor for the native BYOND test server. It fetches the configured
 branch every 300 seconds by default, stages and compiles a separate Europe build,
 then requests the production authenticated save-and-shutdown operation. It never
@@ -75,3 +80,58 @@ Run offline tests using the verified full Python executable:
 ```text
 python -m unittest discover -s tests/nomads_lifecycle -v
 ```
+
+## Optional player help observer
+
+`help_manager.py` is a separate Windows process. It reads `state.json` every
+five seconds and starts the reviewed `player_help_bridge.py` only for an exact
+ready game PID/creation identity inside this root's `runs` directory. It never
+calls the game API, modifies supervisor state, saves, stops or restarts the game.
+Missing optional files or a failed worker do not prevent game startup.
+
+Use a verified full interpreter path with these explicit arguments:
+
+```text
+<python> help_manager.py --root <runtime-root> --python <python> --bridge <durable-player_help_bridge.py> --config <private-help-config.json>
+```
+
+Copy the reviewed manager, its sibling `supervisor.py` and bridge into a durable
+installation first, retaining hashes. The bridge must support `--stop-file`.
+`install-help.ps1` registers an independent, limited, interactive at-logon task
+with those same four arguments. It refuses to replace an existing task and does
+not start the task. It does not alter the game updater's task. The account must
+remain logged in. Installing or editing source does not update any running
+Python process. Task registration and actual startup need separate verification.
+
+The manager holds `help-manager.lock`. `help-manager.json` records a pre-spawn
+intent, owned worker PID/creation identity, attempt count and status. It allows
+at most three starts per run, with 10/30/90-second backoff after failures.
+Restarting the manager preserves the attempt count. A retained worker or spawn
+intent requires operator reconciliation; it is never automatically adopted.
+`help-worker.log` retains worker diagnostics. It is local, private operational
+material and should follow the installation's log-retention policy.
+
+For graceful observer shutdown on Windows, create `ROOT/help-manager.stop`
+(or the explicit `--stop-file` path). Remove that operator-owned marker before
+starting another observer. This also works without a console; Windows process
+termination does not deliver Python's signal handlers.
+On a run change or requested manager shutdown, the manager creates its unique worker stop file.
+The bridge stops accepting questions and drains its bounded in-flight requests.
+After 150 seconds without exit, the manager records `stop_timeout` and exits
+without forced termination or replacement. Reconcile that exact PID/creation
+identity before another manager start. Stop markers and receipts are retained.
+
+Any external `worker.lock`, including one from an older run observed by this
+manager, blocks new workers. The manager never removes locks or stops external
+processes. A known external worker clears only when its lock is gone and its PID
+is absent; unknown/recycled identities require operator reconciliation. An
+existing manually launched bridge therefore needs a coordinated shutdown before
+automatic future transitions can be claimed. A fresh manager only knows the
+current run and its retained receipt; inventory older manually launched workers
+before its first installation. There is no automatic reboot/crash recovery.
+
+Offline lifecycle tests inject process and clock effects and use temporary
+storage. Bridge tests use mock transports, including publication failure controls.
+These checks do not establish scheduled-task startup, model answer quality or
+in-game delivery. Native game fixtures are unnecessary for this Python-only
+observer and remain a separate acceptance boundary.

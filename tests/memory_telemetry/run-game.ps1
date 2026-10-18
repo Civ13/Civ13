@@ -67,7 +67,7 @@ try {
         New-Item -ItemType Directory -Path (Split-Path $destination -Parent) -Force | Out-Null
         Copy-Item -LiteralPath (Join-Path $repo $relative) -Destination $destination
     }
-    $launch = @{FilePath=(Join-Path $ByondBin 'dd.exe');ArgumentList=@(('"' + (Join-Path $evidence ($prefix + '.dmb')) + '"'),'-invisible','-close','-safe','-params',('tested_commit=' + $commit),'-log','startup.log');WorkingDirectory=$evidence;WindowStyle='Hidden';PassThru=$true;RedirectStandardOutput=(Join-Path $evidence 'daemon-output.log');RedirectStandardError=(Join-Path $evidence 'daemon-error.log')}
+    $launch = @{FilePath=(Join-Path $ByondBin 'dd.exe');ArgumentList=@(('"' + (Join-Path $evidence ($prefix + '.dmb')) + '"'),'-invisible','-close','-trusted','-params',('tested_commit=' + $commit),'-log','startup.log');WorkingDirectory=$evidence;WindowStyle='Hidden';PassThru=$true;RedirectStandardOutput=(Join-Path $evidence 'daemon-output.log');RedirectStandardError=(Join-Path $evidence 'daemon-error.log')}
     $timer.Start()
     $process = Start-Process @launch
     Write-Output "Owned telemetry PID: $($process.Id); evidence: $evidence"

@@ -66,7 +66,7 @@ var/list/network_receipt = list()
 		else D.baseline_saved()
 	return (world.timeofday - start + 864000) % 864000
 /proc/run_probe()
-	var/list/keys = list("appearance","light","light_sources","affecting_lights","lighting_overlay","corners","has_opaque_atom","window_coeff_dirty","next_calculate_window_coeff","hud_used","HUDneed","HUDinventory","HUDfrippery","HUDprocess","HUDtech","hands","pullin","purged","i_select","m_select","zone_sel","persistence_export_frame","corpse_decay_record","abandonment_index","exercise_equipment","name","Appearance","hudneed","",0,1,2.5,null,/obj,list("appearance"),new/datum)
+	var/list/keys = list("appearance","light","light_sources","affecting_lights","lighting_overlay","corners","has_opaque_atom","window_coeff_dirty","next_calculate_window_coeff","hud_used","HUDneed","HUDinventory","HUDfrippery","HUDprocess","HUDtech","hands","pullin","purged","i_select","m_select","zone_sel","persistence_export_frame","next_click","next_move","may_do_after","may_do_mob","blackout_click_owner","blackout_click_client_ref","blackout_click_counts","blackout_click_started","blackout_click_expires","weak_reference","corpse_decay_record","abandonment_index","exercise_equipment","name","Appearance","hudneed","",0,1,2.5,null,/obj,list("appearance"),new/datum)
 	for(var/path in list(/datum,/atom,/obj,/obj/item,/mob,/mob/living/human,/turf/floor/dirt))
 		var/datum/D = ispath(path,/turf) ? new path(locate(2,2,1)) : new path
 		for(var/i = 1 to keys.len)
