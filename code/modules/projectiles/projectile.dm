@@ -507,60 +507,63 @@
 		overcoming_trench = TRUE
 
 	var/T_density = T.density
+	// A moved vehicle can place occupants before its frame in turf.contents.
+	// Resolve frame armor and own-axis routing before touching the interior.
+	for (var/obj/structure/vehicleparts/frame/F in T.contents)
+		if (untouchable.Find(F))
+			continue
+		// Turret axis handling
+		if (fired_from_turret && fired_from_axis && fired_from_axis == F.axis)
+			forceMove(T)
+			permutated += T
+			return TRUE
+
+		// Embrasure handling (flying out)
+		var/back_penloc = F.get_wall_name(opposite_direction(direction))
+		if (F.is_ambrasure(back_penloc) && T == starting)
+			if(!istype(src, /obj/item/projectile/shell/missile))
+				visible_message(SPAN_WARNING("A bullet flies out of the embrasure"))
+			else
+				var/obj/item/projectile/shell/missile/M = src
+				M.initiate(T)
+		else if (T != starting) // Checking for vehicle penetration (flying in)
+			var/penloc = F.get_wall_name(direction)
+			if (!F.CheckPen(src,penloc))
+				F.bullet_act(src,penloc)
+				passthrough = FALSE
+				visible_message(SPAN_WARNING("\The [name] fails to penetrate \the [penloc] wall"))
+				bumped = TRUE
+				if (istype(src, /obj/item/projectile/shell))
+					var/obj/item/projectile/shell/S = src
+					if (!istype(src, /obj/item/projectile/shell/missile))
+						S.initiate(previous_step)
+					else
+						forceMove(T)
+						permutated += T
+						on_impact(T)
+						S.initiate(T)
+				else
+					on_impact(T)
+					loc = null
+					qdel(src)
+				return FALSE
+			else
+				if (istype(src, /obj/item/projectile/shell))
+					var/obj/item/projectile/shell/S = src
+					on_impact(T)
+					if(S.initiated)
+						F.bullet_act(src,penloc)
+						passthrough = TRUE
+						forceMove(T)
+						permutated += T
+						S.initiate(T)
+					else
+						visible_message(SPAN_DANGER("\The [name] penetrates \the [penloc] wall!"))
+
+
 	for (var/atom/movable/AM in T.contents)
 		if (untouchable.Find(AM))
 			continue
-
-		if (istype(AM, /obj/structure/vehicleparts/frame))
-			var/obj/structure/vehicleparts/frame/F = AM
-			// Turret axis handling
-			if (fired_from_turret && fired_from_axis && fired_from_axis == F.axis)
-				forceMove(T)
-				permutated += T
-				return TRUE
-			
-			// Embrasure handling (flying out)
-			var/back_penloc = F.get_wall_name(opposite_direction(direction))
-			if (F.is_ambrasure(back_penloc) && T == starting)
-				if(!istype(src, /obj/item/projectile/shell/missile))
-					visible_message(SPAN_WARNING("A bullet flies out of the embrasure"))
-				else
-					var/obj/item/projectile/shell/missile/M = src
-					M.initiate(T)
-			else if (T != starting) // Checking for vehicle penetration (flying in)
-				var/penloc = F.get_wall_name(direction)
-				if (!F.CheckPen(src,penloc))
-					F.bullet_act(src,penloc)
-					passthrough = FALSE
-					visible_message(SPAN_WARNING("\The [name] fails to penetrate \the [penloc] wall"))
-					bumped = TRUE
-					if (istype(src, /obj/item/projectile/shell))
-						var/obj/item/projectile/shell/S = src
-						if (!istype(src, /obj/item/projectile/shell/missile))
-							S.initiate(previous_step)
-						else
-							forceMove(T)
-							permutated += T
-							on_impact(T)
-							S.initiate(T)
-					else
-						on_impact(T)
-						loc = null
-						qdel(src)
-					return FALSE
-				else
-					if (istype(src, /obj/item/projectile/shell))
-						var/obj/item/projectile/shell/S = src
-						on_impact(T)
-						if(S.initiated)
-							F.bullet_act(src,penloc)
-							passthrough = TRUE
-							forceMove(T)
-							permutated += T
-							S.initiate(T)
-						else
-							visible_message(SPAN_DANGER("\The [name] penetrates \the [penloc] wall!"))
-
 
 		if (isliving(AM) && AM != firer)
 			var/mob/living/L = AM

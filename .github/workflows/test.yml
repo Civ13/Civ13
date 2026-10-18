@@ -399,6 +399,21 @@ jobs:
           python3 tests/npc_cover/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/npc-cover.json"
           python3 tests/npc_cover/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control boundary --output "$RUNNER_TEMP/npc-cover-boundary.json"
           python3 tests/npc_cover/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control tie --output "$RUNNER_TEMP/npc-cover-tie.json"
+      - name: Verify vehicle projectile armor routing and original-order control
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/vehicle_projectile_routing')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/vehicle_projectile_routing/run.py --source-check
+          python3 tests/vehicle_projectile_routing/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/vehicle-projectile-routing/positive"
+          python3 tests/vehicle_projectile_routing/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control ordering --output "$RUNNER_TEMP/vehicle-projectile-routing/ordering-control"
+      - name: Upload vehicle projectile routing evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/vehicle_projectile_routing'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: vehicle-projectile-routing-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/vehicle-projectile-routing/
+          retention-days: 7
       - name: Verify hover HUD production callbacks and negative controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/hover_name')
         shell: bash
