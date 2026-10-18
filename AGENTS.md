@@ -1,5 +1,13 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-18: restored input clocks and action locks -->
+The custom saver includes changed tmp fields. Mob next_click/next_move and
+may_do_after/may_do_mob are process-local deadlines/locks: exclude them on export
+and legacy import through persistence_runtime_var. Do not reset them on every
+Login or click, which would bypass live cooldowns/actions. The world-save
+runner's --input-runtime adapter checks disk-backed migration and the production
+early click gate; connected-client interaction remains separate evidence.
+
 ## Language & toolchain
 NEVER use "—": always use "-" instead.
 - **DM** (DreamMaker) - BYOND's proprietary language. Sources have `.dm` extension.
@@ -72,6 +80,20 @@ all three arguments in season overrides and honor `looping = FALSE` to avoid
 starting extra recurring cycles from the admin command.
 
 ### Player spawning
+
+<!-- 2026-10-17: lobby dispatch diagnosis -->
+The private own-Host snapshot reports bounded own-client and current-lobby Join entry/phase
+codes. Compiled verb visibility and a successful client menu action do not prove
+server dispatch; require the entry counter or a real human spawn. The cache is
+excluded from custom saves. Lobby phase disappears on mob replacement; the small
+client entry cache survives that transfer. The client-owned Join command forwards
+only its own invoking current lobby mob into the existing admission handler.
+
+<!-- 2026-10-17: invisible lobby verb accessibility -->
+Lobby mobs have invisibility 101. Native lobby verbs must explicitly use
+`set invisibility = 0`: BYOND otherwise inherits source invisibility for command
+accessibility, even when a native menu item is visible. Preserve mob invisibility
+and player vision; verify actual connected-client invocation.
 
 <!-- 2026-10-16: restored occupation capacity -->
 Active saved-round restoration skips fresh setup/autobalance. Initialize job
@@ -306,6 +328,13 @@ tests/opendream_shell runs both production branches with counted external-effect
 adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
+
+<!-- 2026-10-17: bounded own-host agent diagnostics -->
+`docs/agent-debug-tools.md` documents schema-1 recovery/vision/3x3 tile reads on
+the existing loopback/token/R_HOST lifecycle transport. Pair/trace/bundle are
+offline and allowlist public summaries; raw query files remain private. Trace
+is bounded cached observations, not an engine event log or rendering evidence.
+The DM collector/status extension requires a rebuilt world restart.
 
 <!-- 2026-10-15: native graceful shutdown boundary -->
 Native BYOND `del(world)` can return before process exit. Yield before declaring

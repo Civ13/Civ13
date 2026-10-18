@@ -183,7 +183,8 @@ def main():
         if args.dimension_bootstrap:
             # Both use the identical compiled two-level DMB. Only disk files
             # survive from the writer to the fresh reader process.
-            for mode, minimum_checks in (('write', 3), ('read', 12)):
+            # Include operation admission, nested-call rejection and release.
+            for mode, minimum_checks in (('write', 6), ('read', 15)):
                 run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-trusted',
                     '-params', f'profile={args.profile};dimension_mode={mode}', '-log', f'{mode}-runtime.log'],
                     cwd=output, capture_output=True, text=True, timeout=120, creationflags=flags)
@@ -268,9 +269,11 @@ def main():
         if args.negative_control:
             if result.get('done') or result.get('error') != expected[args.negative_control]:
                 raise RuntimeError('Negative control failed outside its intended assertion: ' + str(result))
-            if args.negative_control == 'preflight' and result.get('checks') != 7:
+            # Four operation-admission checks precede the malformed-wire guard.
+            if args.negative_control == 'preflight' and result.get('checks') != 11:
                 raise RuntimeError('Preflight control did not reach its first malformed-wire assertion')
-            if args.negative_control == 'reclaim-order' and result.get('checks') != 8:
+            # Includes the export operation-release assertion before recovery.
+            if args.negative_control == 'reclaim-order' and result.get('checks') != 9:
                 raise RuntimeError('Reclaim ordering control did not reach its intended first failure')
             if args.negative_control == 'lighting-legacy':
                 import_error = result.get('import_error') or ''
