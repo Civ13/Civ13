@@ -110,6 +110,22 @@
 	if(istype(M, /mob/living/human))
 		var/mob/living/human/H = M
 		row["human"] = list("life_tick" = H.life_tick, "inducedSSD" = H.inducedSSD, "roofs_removed" = H.roofs_removed, "saved_return_x" = H.lastx, "saved_return_y" = H.lasty, "saved_return_z" = H.lastz, "saved_return_status" = "sleep-return only; may be unset or stale", "eyewear_present" = H.eyes ? TRUE : FALSE, "vision_organ_present" = H.internal_organs_by_name["eyes"] ? TRUE : FALSE)
+		// Fixed own-body scalars only. No temperature getter, heat scan or Life call.
+		var/turf/thermal_turf = blackout_diagnostic_turf(H)
+		var/area/thermal_area = thermal_turf ? thermal_turf.loc : null
+		var/obj/screen/thermal_hud = H.HUDneed ? H.HUDneed["body temperature"] : null
+		var/list/thermal = list("body_kelvin" = H.bodytemperature, "cold_wetness" = H.cold_wetness, "on_fire" = H.on_fire, "transforming" = blackout_diagnostic_scalar(H.transforming), "godmode" = !!(H.status_flags & GODMODE), "wolfman" = H.wolfman, "protection_disabled_timer" = H.cold_protection_disabled_timer, "map_civilizations" = map ? map.civilizations : null, "map_nomads" = map ? map.nomads : null, "global_weather" = weather, "global_weather_intensity" = weather_intensity)
+		thermal["species"] = H.species ? list("type" = "[H.species.type]", "body_kelvin" = H.species.body_temperature, "cold_level_1_kelvin" = H.species.cold_level_1) : null
+		thermal["area"] = thermal_area ? list("climate" = blackout_diagnostic_scalar(thermal_area.climate), "location" = thermal_area.location, "weather" = thermal_area.weather, "intensity" = thermal_area.weather_intensity, "icon_state" = blackout_diagnostic_scalar(thermal_area.icon_state)) : null
+		thermal["hud_icon_state"] = thermal_hud ? blackout_diagnostic_scalar(thermal_hud.icon_state) : null
+		var/list/thermal_slots = list("head" = H.head, "suit" = H.wear_suit, "uniform" = H.w_uniform, "shoes" = H.shoes, "gloves" = H.gloves, "mask" = H.wear_mask)
+		var/list/clothing = list()
+		for(var/thermal_slot in list("head", "suit", "uniform", "shoes", "gloves", "mask"))
+			var/obj/item/clothing/thermal_item = thermal_slots[thermal_slot]
+			clothing[thermal_slot] = istype(thermal_item) ? list("type" = "[thermal_item.type]", "cold_protection" = thermal_item.cold_protection, "body_parts_covered" = thermal_item.body_parts_covered, "min_cold_kelvin" = thermal_item.min_cold_protection_temperature) : null
+		thermal["clothing"] = clothing
+		thermal["scope"] = "raw own-body/area/gear scalars; ambient temperature, heat-source proximity and trait effects not measured"
+		row["thermal"] = thermal
 	var/list/planes = list()
 	for(var/plane_key in list("[GAME_PLANE]", "[LIGHTING_PLANE]", "[HUD_PLANE]"))
 		var/obj/screen/plane_master/P = (M.hud_used && M.hud_used.plane_masters) ? M.hud_used.plane_masters[plane_key] : null

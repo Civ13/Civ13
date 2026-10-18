@@ -95,10 +95,31 @@ def audit(lifecycle, source):
         errors.append('raw hover text or target access')
     if re.search(r'\b(?:resolve|view|get_visible_name|get_hover_name|target_visible|set_target|clear_target|process)\s*\(', source):
         errors.append('effectful hover getter')
+    for literal in ('"body_kelvin" = H.bodytemperature', '"cold_wetness" = H.cold_wetness',
+                    '"cold_level_1_kelvin" = H.species.cold_level_1',
+                    '"map_civilizations" = map ? map.civilizations : null',
+                    'thermal_area.weather', 'thermal_hud.icon_state',
+                    'for(var/thermal_slot in list("head", "suit", "uniform", "shoes", "gloves", "mask"))'):
+        if literal not in source:
+            errors.append('missing bounded thermal diagnostic')
+    if re.search(r'\b(?:get_temp|get_cold_protection|get_cold_coverage|find_trait|handle_environment|stabilize_body_temperature)\s*\(', source):
+        errors.append('derived or effectful thermal access')
     return errors
 
 
 class SourceBoundary(unittest.TestCase):
+    def test_thermal_raw_fields_and_getter_controls(self):
+        lifecycle = (ROOT / 'code/modules/persistence/nomads_lifecycle.dm').read_text()
+        source = (ROOT / 'code/modules/persistence/blackout_diagnostics.dm').read_text()
+        for field in ('H.bodytemperature', 'H.cold_wetness', 'H.species.cold_level_1',
+                      'thermal_area.weather', 'thermal_hud.icon_state'):
+            with self.subTest(field=field):
+                self.assertTrue(audit(lifecycle, source.replace(field, 'null')))
+        for effect in ('get_temp(H)', 'H.get_cold_protection(244)', 'H.find_trait("Cold Tolerance")',
+                       'H.handle_environment()', 'H.stabilize_body_temperature()'):
+            with self.subTest(effect=effect):
+                self.assertTrue(audit(lifecycle, source + '\n/proc/unsafe()\n\t' + effect + '\n'))
+
     def test_hover_observation_privacy_and_effect_controls(self):
         lifecycle = (ROOT / 'code/modules/persistence/nomads_lifecycle.dm').read_text()
         source = (ROOT / 'code/modules/persistence/blackout_diagnostics.dm').read_text()
