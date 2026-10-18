@@ -14,6 +14,11 @@ These checks do not prove native browser layout; verify the actual Help dialog
 separately under an exclusive UI allocation, without contacting a model for the
 deterministic rendering cases.
 
+`run.py --byond-bin <516.1681-bin> --prepare-only --output <new-directory>`
+writes the exact fixture and hashes without compiling or starting BYOND. This
+supports an external coordinator's bounded process supervisor while a native
+resource hold is active. The normal runner retains its existing CLI behavior.
+
 Run Python bridge tests with `python3 -m unittest discover -s tests/player_help -v`.
 `python3 tests/player_help/run-spool-controls.py` requires temporary source
 mutations of the old ID validator, admission marker and completion marker to fail

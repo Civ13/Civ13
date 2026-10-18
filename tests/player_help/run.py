@@ -310,8 +310,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--output', type=Path, help='Retain isolated sources, logs and hashes in a new directory')
+    parser.add_argument('--prepare-only', action='store_true', help='Write the exact isolated fixture without launching any process; requires --output')
     parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity', 'player-context', 'inventory-budget', 'rate-limit', 'prompt-first', 'disconnect'])
     args = parser.parse_args()
+    if args.prepare_only and not args.output:
+        parser.error('--prepare-only requires --output')
     if args.output:
         args.output.mkdir(parents=True, exist_ok=False)
     storage = contextlib.nullcontext(str(args.output)) if args.output else tempfile.TemporaryDirectory(prefix='civ13-player-help-')
@@ -350,6 +353,16 @@ def main():
             production = production.replace('islist(response) && response["id"] == id', 'islist(response)')
         (temp / 'production.dm').write_text(production)
         (temp / 'probe.dme').write_text(PRELUDE + '\n#include "production.dm"\n' + PROBE)
+        if args.prepare_only:
+            (temp / 'prepared.json').write_text(json.dumps({
+                'control': args.negative_control,
+                'production_sha256': hashlib.sha256((ROOT / 'code/game/mob/player_help.dm').read_bytes()).hexdigest(),
+                'files': {name: hashlib.sha256((temp / name).read_bytes()).hexdigest()
+                          for name in ('production.dm', 'probe.dme', 'render-cases.json')},
+                'no_processes_launched': True,
+            }, indent=2))
+            print('Help fixture prepared without compilation or runtime')
+            return
         compiler = args.byond_bin / ('dm.exe' if (args.byond_bin / 'dm.exe').exists() else 'DreamMaker')
         daemon = args.byond_bin / ('dd.exe' if (args.byond_bin / 'dd.exe').exists() else 'DreamDaemon')
         built = subprocess.run([str(compiler), 'probe.dme'], cwd=temp, capture_output=True, text=True, timeout=90)
