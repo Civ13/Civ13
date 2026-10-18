@@ -1,5 +1,13 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-18: inactive reserved lighting -->
+Reserved lighting omission requires the default-FALSE area clearance gate as well
+as reserved turf markers. No map opts in. `tests/reserved_lighting/clearance.py`
+checks declared frozen full-frame geometry only, not map inventory completeness
+or runtime immutability. Offline CI does not launch its proposed native fixture;
+overlay counts, client appearance and net RAM remain unverified. Preserve exact
+frozen helper bytes and require a fresh coordinator grant before native execution.
+
 <!-- 2026-10-18: native help spool format -->
 Native DM can interpolate world.realtime in scientific notation, and text2file
 adds LF/CRLF to ready markers. The help bridge validates bounded opaque IDs and
