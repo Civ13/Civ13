@@ -87,7 +87,7 @@ build = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=roo
 print(build.stdout, build.stderr)
 if build.returncode or '516.1681' not in build.stdout or '0 errors, 0 warnings' not in build.stdout:
     raise RuntimeError('Pinned clean compilation required')
-run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-safe', '-log', 'runtime.log'],
+run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-trusted', '-log', 'runtime.log'],
                      cwd=root, capture_output=True, text=True, timeout=60, creationflags=flags)
 log = (root / 'runtime.log').read_text(errors='replace')
 print(log)

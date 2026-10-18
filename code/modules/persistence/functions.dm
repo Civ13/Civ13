@@ -467,6 +467,7 @@ var/global/persistence_load_recovery_required = FALSE
 		target.minds = list()
 		target.collect_minds()
 		TOD_loop()
+		apply_restored_lighting()
 		return
 	global.game_id = state["game_id"]
 	round_elapsed_offset = state["elapsed"]
@@ -486,6 +487,7 @@ var/global/persistence_load_recovery_required = FALSE
 		target.minds = list()
 		target.collect_minds()
 		TOD_loop()
+		apply_restored_lighting()
 
 /datum/proc/before_save_context(map_storage/exporter, datum/save_export_frame/frame)
 	return before_save()

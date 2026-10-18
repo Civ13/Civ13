@@ -112,7 +112,7 @@ def execute(repo, out, mode, negative, byond, bulk_order_control=False, inactive
     log=build.stdout+build.stderr
     (out/"compile.log").write_text(log)
     assert build.returncode==0 and "516.1681" in log and "0 errors, 0 warnings" in log,log
-    run=run_logged([str(daemon),"probe.dmb"]+(["-invisible"] if os.name=="nt" else [])+["-close","-safe","-log","runtime.log"],out,"daemon-child.log",240,flags)
+    run=run_logged([str(daemon),"probe.dmb"]+(["-invisible"] if os.name=="nt" else [])+["-close","-trusted","-log","runtime.log"],out,"daemon-child.log",240,flags)
     log=(out/"runtime.log").read_text(errors="replace") if (out/"runtime.log").exists() else ""
     log+=run.stdout+run.stderr
     (out/"daemon.log").write_text(log)

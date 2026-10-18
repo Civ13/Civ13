@@ -24,7 +24,7 @@ try {
     Copy-Item -LiteralPath (Join-Path $repo 'config') -Destination $temp -Recurse
     $parameters = 'tested_commit=' + $commit
     if ($Visual) { $parameters += '&visual=1' }
-    $process = Start-Process -RedirectStandardOutput (Join-Path $temp 'daemon-output.log') -RedirectStandardError (Join-Path $temp 'daemon-error.log') -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @((Join-Path $temp '.train_game_probe.dmb'), '-invisible', '-close', '-safe', '-params', $parameters, '-log', 'startup.log') -WorkingDirectory $temp -WindowStyle Hidden -PassThru
+    $process = Start-Process -RedirectStandardOutput (Join-Path $temp 'daemon-output.log') -RedirectStandardError (Join-Path $temp 'daemon-error.log') -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @((Join-Path $temp '.train_game_probe.dmb'), '-invisible', '-close', '-trusted', '-params', $parameters, '-log', 'startup.log') -WorkingDirectory $temp -WindowStyle Hidden -PassThru
     Write-Output "Local game PID: $($process.Id); runtime: $temp"
     $timer = [Diagnostics.Stopwatch]::StartNew()
     while (!$process.WaitForExit(100)) {

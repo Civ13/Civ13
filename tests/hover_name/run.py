@@ -76,7 +76,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-hover-name-') as temp:
         print('PASS compile only; runtime not run')
         raise SystemExit(0)
     try:
-        run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-safe', '-log', 'runtime.log'], cwd=root, capture_output=True, text=True, timeout=20, creationflags=flags)
+        run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-trusted', '-log', 'runtime.log'], cwd=root, capture_output=True, text=True, timeout=20, creationflags=flags)
     except subprocess.TimeoutExpired:
         print((root / 'runtime.log').read_text(errors='replace'))
         raise

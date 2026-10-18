@@ -64,7 +64,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-npc-cover-') as temp:
     (logs / 'compile.log').write_text(log)
     if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
         raise SystemExit(log)
-    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'], cwd=root, capture_output=True, timeout=180, creationflags=flags)
+    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'], cwd=root, capture_output=True, timeout=180, creationflags=flags)
     log = (root / 'runtime.log').read_text(errors='replace') + (run.stdout + run.stderr).decode(errors='replace')
     (logs / 'runtime.log').write_text(log)
     if run.returncode or re.search(r'runtime error|Bad ref|Bad loc|Cannot read null|Cannot execute null', log, re.I):

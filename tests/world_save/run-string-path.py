@@ -483,7 +483,7 @@ def main():
     build = owned('compile', [str(compiler), '-max_errors', '0', 'probe.dme'])
     if '516.1681' not in build or '0 errors, 0 warnings' not in build:
         raise RuntimeError('Pinned clean compilation required')
-    owned('daemon', [str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'])
+    owned('daemon', [str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'])
     actual = read(output / 'result.txt').strip()
     if args.input_runtime_negative_control:
         expected = {'export': 'runtime input field exported: next_click',

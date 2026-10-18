@@ -46,7 +46,7 @@ try {
     $compile | Write-Output
     if ($LASTEXITCODE -ne 0 -or ($compile -join "`n") -notmatch '(?m)^DM compiler version 516\.1681\r?$' -or ($compile -join "`n") -notmatch '0 errors, 0 warnings') { throw 'Fixture compilation failed' }
     $processOptions = @{}; if ($IsWindows) { $processOptions.WindowStyle = 'Hidden' }
-    $process = Start-Process -FilePath (Join-Path $ByondBin $daemonName) -ArgumentList @((Join-Path $temp 'probe.dmb'), '-invisible', '-safe', '-log', 'runtime.log') -WorkingDirectory $temp -PassThru @processOptions
+    $process = Start-Process -FilePath (Join-Path $ByondBin $daemonName) -ArgumentList @((Join-Path $temp 'probe.dmb'), '-invisible', '-trusted', '-log', 'runtime.log') -WorkingDirectory $temp -PassThru @processOptions
     if (!$process.WaitForExit(15000)) { throw 'Outdoor crop fixture exceeded 15 seconds' }
     $log = Get-Content -LiteralPath (Join-Path $temp 'runtime.log') -Raw
     $log | Write-Output

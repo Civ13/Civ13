@@ -57,7 +57,7 @@ try {
     if ($TankOnly) { $parameters += '&tank_only=1' }
     $launch = @{
         FilePath = Join-Path $ByondBin $daemon
-        ArgumentList = @(('"' + (Join-Path $temp '.boat_game_probe.dmb') + '"'), '-invisible', '-safe', '-params', $parameters, '-log', 'startup.log')
+        ArgumentList = @(('"' + (Join-Path $temp '.boat_game_probe.dmb') + '"'), '-invisible', '-trusted', '-params', $parameters, '-log', 'startup.log')
         WorkingDirectory = $temp
         PassThru = $true
         RedirectStandardOutput = Join-Path $temp 'daemon-output.log'

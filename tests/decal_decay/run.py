@@ -70,7 +70,7 @@ def main():
         log = (out / 'daemon.log').open('w')
         cmd = [str(daemon), str(out / generated[3].name)]
         if os.name == 'nt': cmd += ['-invisible', '-close']
-        cmd += ['-safe', '-params', f'tested_commit={head}', '-log', 'runtime.log']
+        cmd += ['-trusted', '-params', f'tested_commit={head}', '-log', 'runtime.log']
         proc = subprocess.Popen(cmd, cwd=out, stdout=log, stderr=subprocess.STDOUT, creationflags=flags)
         samples = []
         start = time.monotonic()

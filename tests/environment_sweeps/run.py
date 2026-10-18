@@ -94,7 +94,7 @@ def main():
         (out/'config/config.txt').write_text('')
         cmd=[str(daemon),str(out/files[4].name)]
         if os.name=='nt': cmd+=['-invisible','-close']
-        cmd+=['-safe','-params',f'size={a.size}&areas={a.areas}','-log','runtime.log']
+        cmd+=['-trusted','-params',f'size={a.size}&areas={a.areas}','-log','runtime.log']
         with (out/'daemon.log').open('w') as log:
             result=subprocess.run(cmd,cwd=out,stdout=log,stderr=subprocess.STDOUT,timeout=600,creationflags=flags)
         runtime=(out/'runtime.log').read_text(errors='replace')

@@ -45,6 +45,9 @@ var/datum/fixture_processes/processes = new
 	var/datum/fixture_ticker_process/ticker = new
 /datum/fixture_ticker_process
 	var/playtime_elapsed = 0
+// Production applies restored daylight in the lighting module; fixtures have no overlays.
+/proc/apply_restored_lighting()
+	return FALSE
 #ifndef WORLD_SAVE_MUSIC_ADAPTER
 /proc/TOD_loop()
 	return

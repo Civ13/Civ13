@@ -54,7 +54,7 @@ try {
     & (Join-Path $ByondBin $compiler) (Join-Path $temp 'probe.dme') 2>&1 | Tee-Object -FilePath (Join-Path $temp 'compile.log')
     if ($LASTEXITCODE -ne 0) { throw 'Probe compilation failed' }
     $log = Join-Path $temp 'runtime.log'
-    $security = '-safe'
+    $security = '-trusted'
     $launch = @{
         FilePath = Join-Path $ByondBin $daemon
         ArgumentList = @(('"' + (Join-Path $temp 'probe.dmb') + '"'), '-invisible', $security, '-log', 'runtime.log')

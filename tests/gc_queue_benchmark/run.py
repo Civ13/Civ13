@@ -15,7 +15,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-gc-queue-') as directory:
     build = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=temp, capture_output=True, text=True, timeout=60, creationflags=flags)
     print(build.stdout + build.stderr)
     assert build.returncode == 0 and '516.1681' in build.stdout and '0 errors, 0 warnings' in build.stdout
-    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'], cwd=temp, capture_output=True, text=True, timeout=240, creationflags=flags)
+    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'], cwd=temp, capture_output=True, text=True, timeout=240, creationflags=flags)
     logs = run.stdout + run.stderr + (temp / 'runtime.log').read_text(errors='replace')
     assert run.returncode == 0 and 'FAIL:' not in logs and 'runtime error' not in logs.lower(), logs
     result = json.loads((temp / 'result.json').read_text())

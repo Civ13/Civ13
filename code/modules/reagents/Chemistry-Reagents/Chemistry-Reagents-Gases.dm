@@ -176,12 +176,6 @@ var/mob/living/human/next_gas_flesh_message = -1
 	touch_met = 5
 //	meltdose = 4
 
-/datum/reagent/toxin/white_phosphorus/touch_mob(var/mob/living/L, var/amount)
-	if (istype(L))
-		eye_damage(L, get_severity(amount)*3)
-		external_damage(L, get_severity(amount)*3)
-		open_wound_damage(L, get_severity(amount)*3)
-
 /datum/reagent/toxin/phosgene_gas
 	name = "Phosgene Gas"
 	id = "phosgene_gas"

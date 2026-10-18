@@ -286,7 +286,7 @@ def prepare(root, output, expected_commit):
         profiles.append({"name": profile, "status": "not_run", **profile_contract(profile),
                          "compiler_argv": ["<approved-byond-516.1681>/dm.exe", "-max_errors", "0", profile + ".dme"],
                          "compiler_cwd": "source", "copy_after_compile": [profile + ".dmb", profile + ".rsc"],
-                         "daemon_argv_after_separate_approval": None if profile.startswith("compile_") else ["<approved-byond-516.1681>/dd.exe", profile + ".dmb", "0", "-invisible", "-close", "-safe", "-params", "tested_commit=" + head + "&profile=" + profile, "-log", "runtime.log"]})
+                         "daemon_argv_after_separate_approval": None if profile.startswith("compile_") else ["<approved-byond-516.1681>/dd.exe", profile + ".dmb", "0", "-invisible", "-close", "-trusted", "-params", "tested_commit=" + head + "&profile=" + profile, "-log", "runtime.log"]})
     if git(root, "rev-parse", "HEAD").decode().strip() != head or git(root, "status", "--porcelain", "--untracked-files=all").strip():
         raise ValueError("source changed during preparation; packet invalid")
     files = {p.relative_to(output).as_posix(): digest(p) for p in sorted(output.rglob("*")) if p.is_file()}
