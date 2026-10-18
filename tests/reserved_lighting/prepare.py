@@ -22,7 +22,7 @@ CONTROLS = {
 }
 
 
-def prepare(repo, output, control=None):
+def prepare(repo, output, control=None, provenance=None):
     output.mkdir(parents=True, exist_ok=False)
     hashes = {}
     for rel in FILES:
@@ -51,6 +51,7 @@ def prepare(repo, output, control=None):
     parent = world.index('\n\t..()', start)
     world = world[:parent] + world[parent:].replace('\n\t..()', '', 1)
     world = world.replace('/world/New()', '/world/proc/unused_reserved_probe_startup()', 1)
+    world = world.replace('/world/Topic(T, addr, master, key)', '/world/proc/unused_reserved_probe_topic(T, addr, master, key)', 1)
     (output / 'world.dm').write_text(world, encoding='utf-8')
     lines = [x.replace((repo / 'code/world.dm').as_posix(), (output / 'world.dm').as_posix()) for x in lines]
     # Inject activation/failure at an actual bulk-startup yield boundary. The
@@ -61,12 +62,23 @@ def prepare(repo, output, control=None):
     sweep_adapter = sweep.replace(anchor, '/proc/reserved_original_environment_sweep_pause(work)', 1)
     (output/'sweep.dm').write_text(sweep_adapter, encoding='utf-8')
     lines = [x.replace((repo/'code/_helpers/game.dm').as_posix(), (output/'sweep.dm').as_posix()) for x in lines]
+    for rel, anchor, replacement in (
+        ('code/modules/client/movement.dm', '/client/New()', '/client/proc/unused_reserved_movement_new()'),
+        ('code/modules/client/client_procs.dm', '/client/New(TopicData)', '/client/proc/unused_reserved_client_new(TopicData)'),
+    ):
+        original = (repo/rel).read_text(encoding='utf-8')
+        assert original.count(anchor) == 1, 'client adapter anchor drift'
+        adapted = output/Path(rel).name
+        adapted.write_text(original.replace(anchor, replacement, 1), encoding='utf-8')
+        lines = [line.replace((repo/rel).as_posix(), adapted.as_posix()) for line in lines]
     # No maps/assets copied; source references retain existing checkout paths.
     lines.append('#include "' + (repo / 'tests/reserved_lighting/probe.dm').as_posix() + '"')
     (output / 'probe.dme').write_text('\n'.join(lines) + '\n', encoding='utf-8')
-    receipt = dict(head=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(),
+    provenance = provenance or dict(head=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(),
+                                    dirty_diff_sha256=hashlib.sha256(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=repo)).hexdigest())
+    receipt = dict(head=provenance['head'],
                    baseline=BASELINE, control=control, files=hashes,
-                   dirty_diff_sha256=hashlib.sha256(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=repo)).hexdigest(),
+                   dirty_diff_sha256=provenance['dirty_diff_sha256'],
                    probe_sha256=hashlib.sha256((repo/'tests/reserved_lighting/probe.dm').read_bytes()).hexdigest(),
                    world_adapter_sha256=hashlib.sha256((output/'world.dm').read_bytes()).hexdigest(),
                    sweep_original_sha256=hashlib.sha256(sweep.encode()).hexdigest(),

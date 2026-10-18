@@ -12,6 +12,11 @@
 	if (port == "none")
 		return ..()
 	return FALSE
+/world/Topic(T, addr, master, key)
+	return null
+/client/New(TopicData)
+	del(src)
+	return
 /turf/reserved_lighting_probe/New()
 	return
 /turf/reserved_lighting_probe/replaced
@@ -41,8 +46,7 @@ var/reserved_startup_waiting_turf = null
 	return reserved_original_environment_sweep_pause(work)
 /proc/reserved_assert(ok, message)
 	if (!ok)
-		text2file("FAIL: [message]", "result.txt")
-		CRASH(message)
+		throw EXCEPTION("assertion: [message]")
 /proc/reserved_drain()
 	var/process/lighting_sources/S = new
 	var/process/lighting_overlays/O = new
@@ -94,6 +98,7 @@ var/reserved_startup_waiting_turf = null
 	OpenPort("none")
 	try
 		reserved_assert(!world.port && !OpenPort(0), "PORT_OPEN")
+		text2file("closed", "port-closed.txt")
 		config = new
 		map = null
 		var/candidate = world.params["reserved"] == "1"
@@ -231,5 +236,5 @@ var/reserved_startup_waiting_turf = null
 		reserved_snapshot("activated")
 		text2file("PASS", "result.txt")
 	catch (var/exception/E)
-		text2file("FAIL: [E]", "result.txt")
+		text2file("FAIL: [E.name]", "result.txt")
 	shutdown()
