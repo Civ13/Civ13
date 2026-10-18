@@ -16,10 +16,7 @@ FILES = (
     'code/modules/persistence/loading.dm',
 )
 CONTROLS = {
-    'compatibility': (FILES[1], '!T.lighting_overlay && !T.omit_reserved_lighting_overlay()', '!T.lighting_overlay'),
     'virtual-master': (FILES[2], 'T.lighting_overlay || T.omit_reserved_lighting_overlay()', 'T.lighting_overlay'),
-    'runtime': (FILES[0], '\tif (omit_reserved_lighting_overlay())\n\t\treturn\n', ''),
-    'import': (FILES[6], '\t\t\told_turf.activate_reserved_lighting()\n', '\t\t\t;\n'),
     'halo': (FILES[0], '\t\tif (!T.lighting_reserved)\n\t\t\treturn FALSE\n', ''),
     'refusal-owner': (FILES[3], '\t\tsrc.loc = null\n', ''),
 }
@@ -56,6 +53,14 @@ def prepare(repo, output, control=None):
     world = world.replace('/world/New()', '/world/proc/unused_reserved_probe_startup()', 1)
     (output / 'world.dm').write_text(world, encoding='utf-8')
     lines = [x.replace((repo / 'code/world.dm').as_posix(), (output / 'world.dm').as_posix()) for x in lines]
+    # Inject activation/failure at an actual bulk-startup yield boundary. The
+    # real sweep implementation still runs; only its symbol is wrapped.
+    sweep = (repo/'code/_helpers/game.dm').read_text(encoding='utf-8')
+    anchor = '/proc/environment_sweep_pause(work)'
+    assert sweep.count(anchor) == 1, 'sweep wrapper anchor drift'
+    sweep_adapter = sweep.replace(anchor, '/proc/reserved_original_environment_sweep_pause(work)', 1)
+    (output/'sweep.dm').write_text(sweep_adapter, encoding='utf-8')
+    lines = [x.replace((repo/'code/_helpers/game.dm').as_posix(), (output/'sweep.dm').as_posix()) for x in lines]
     # No maps/assets copied; source references retain existing checkout paths.
     lines.append('#include "' + (repo / 'tests/reserved_lighting/probe.dm').as_posix() + '"')
     (output / 'probe.dme').write_text('\n'.join(lines) + '\n', encoding='utf-8')
@@ -64,6 +69,8 @@ def prepare(repo, output, control=None):
                    dirty_diff_sha256=hashlib.sha256(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=repo)).hexdigest(),
                    probe_sha256=hashlib.sha256((repo/'tests/reserved_lighting/probe.dm').read_bytes()).hexdigest(),
                    world_adapter_sha256=hashlib.sha256((output/'world.dm').read_bytes()).hexdigest(),
+                   sweep_original_sha256=hashlib.sha256(sweep.encode()).hexdigest(),
+                   sweep_adapter_sha256=hashlib.sha256((output/'sweep.dm').read_bytes()).hexdigest(),
                    verification='SOURCE_PREPARATION_ONLY; compiler/runtime/functional parity UNRUN')
     (output / 'manifest.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
     return receipt

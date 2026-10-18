@@ -29,14 +29,30 @@ are assertions to verify, not results: 256 normal overlays versus 220 for an
 It records normal/halo color, luminosity, ownership and source membership rows,
 torch movement, daylight, opacity, activation, replacement and native entry
 roundtrip. Refusal followed by activation and actual cleanup-body invocation
-must retain the new owner. Simulated startup-barrier activation must return
-without waiting and refresh afterward. Reserved subtype imports must activate
+must retain the new owner. A wrapper around the real production sweep injects
+activation and an intentional exception during startup. Activation must return
+without waiting; only successful startup may refresh afterward. Reserved subtype imports must activate
 the new turf, including when the old turf has a different type.
-Paired runs must compare complete states.jsonl rows. Further native
-controls for pooled constructors, ice repair, carried sources, repeat
-activation/startup, cancellation and startup-yield races remain required.
-The import-only control is a source mutation, not yet an independently proven
-runtime oracle: ChangeTurf also activates as defense in depth.
+Paired runs must compare complete states.jsonl rows.
+The final activated snapshot has a fixed 30-cell interior whitelist shared by
+both variants, plus the original 220 normal/halo rows. Each of those 250 rows
+requires an overlay and four corners before recording the actual production
+color matrix, luminosity, TOD, visibility, RGB channels, ordered master
+coordinates/directions and source-owner memberships. Membership never depends
+on observed overlay presence; only six still-unactivated interior cells are
+excluded. These are proposed assertions pending native execution.
+
+The carried-source case uses production top-atom ownership and checks removal
+from the carrier after release. Pooled refusal uses actual cleanup and pool
+callbacks with explicit offline queue retirement, not a running garbage process.
+Ice daylight repair clears only a cached overlay pointer and requires the
+production repair callback to rediscover its actual owner and retain corners.
+Every proposed behavior is still unrun. `compare.py baseline.jsonl candidate.jsonl`
+requires all six ordered snapshots and exact equality of their complete rows;
+its result cannot establish provenance or replace successful native receipts.
+Controls cover virtual masters, halo boundaries and refused ownership. Redundant
+individual import/runtime/compatibility guard mutations are omitted: another
+production guard can preserve their behavior, making them unsuitable oracles.
 
 Do not launch the fixture until the coordinator releases the native hold and
 reviews the exact candidate and launch plan. Use pinned BYOND 516.1681, temporary
