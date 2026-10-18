@@ -42,7 +42,7 @@ class CompileCheck(unittest.TestCase):
             with self.assertRaises(ValueError): verify_log(text,rc)
 
     def test_compile_preparation_excludes_config_and_rejects_archive_escape(self):
-        files={p:(ROOT/p).read_text() for p in ("civ13.dme","code/_helpers/mobs.dm","code/world.dm","code/controllers/mc/globals.dm")}
+        files={p:(ROOT/p).read_text(encoding="utf-8") for p in ("civ13.dme","code/_helpers/mobs.dm","code/world.dm","code/controllers/mc/globals.dm")}
         files["config/host.txt"]="synthetic-private-config"
         def archive(extra=None):
             stream=io.BytesIO()
@@ -68,7 +68,7 @@ class CompileCheck(unittest.TestCase):
             with patch("compile_check.git",side_effect=fake_git),patch("compile_check.selected_files",return_value=list(files)):
                 source=prepare(root,out,"a"*40)
             self.assertFalse((source/"config").exists())
-            self.assertEqual((source/"code/_helpers/mobs.dm").read_text(),files["code/_helpers/mobs.dm"])
+            self.assertEqual((source/"code/_helpers/mobs.dm").read_text(encoding="utf-8"),files["code/_helpers/mobs.dm"])
             for extra in ("../escape", "config/host.txt"):
                 payload=archive(extra);bad=Path(temp)/("bad-"+str(len(extra)))
                 with patch("compile_check.git",side_effect=fake_git),patch("compile_check.selected_files",return_value=list(files)):
