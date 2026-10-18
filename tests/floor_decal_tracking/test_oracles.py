@@ -2,6 +2,11 @@
 import importlib.util
 from pathlib import Path
 import unittest
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from native_policy import validate_baseline, validate_census, validate_sockets
+from z_budget_evidence import validate_compile
 
 spec = importlib.util.spec_from_file_location('contained_runner', Path(__file__).with_name('run-contained.py'))
 runner = importlib.util.module_from_spec(spec)
@@ -38,9 +43,57 @@ class OracleTests(unittest.TestCase):
                     runner.validate_native(bad, target)
 
     def test_native_diagnostics_never_accepted(self):
-        for message in ('Bad ref','BUG:','RUNTIME:','## ERROR:','fatal error','FAIL diagnostic: native error'):
+        for message in ('Bad ref', 'Bad loc', 'BUG:', 'RUNTIME:', '## ERROR:', 'fatal error',
+                        'FAIL diagnostic: native error', 'assertion failed', 'infinite loop',
+                        'segmentation', 'unexpected runtime', 'OOM', 'out of memory',
+                        'access violation', 'CRASHED', 'invalid file'):
             with self.assertRaisesRegex(RuntimeError, 'diagnostic'):
                 runner.validate_native(positive() + message, None)
+
+    def test_strict_compile_banner_summary_artifact_and_order(self):
+        good = 'DM compiler version 516.1681\nloading probe.dme\nprobe.dmb - 0 errors, 0 warnings\n'
+        validate_compile(0, good)
+        validate_compile(0, good.replace('warnings', 'warnings (10/18/26 1:23 pm)'))
+        for bad in (good + good, good.replace('516.1681', '516.16810'),
+                    good.replace('probe.dmb', 'other.dmb'), good + '1 warning\n',
+                    good.replace('0 errors', '10 errors'), good.replace('warnings', 'warnings extra'),
+                    '\n'.join(reversed(good.splitlines())), good + 'x' * 1024**2):
+            with self.assertRaises(RuntimeError):
+                validate_compile(0, bad)
+        with self.assertRaises(RuntimeError):
+            validate_compile(1, good)
+        for message in ('runtime error:', 'Bad loc', 'OOM', 'access violation', 'invalid file', 'CRASH'):
+            with self.assertRaises(RuntimeError):
+                validate_compile(0, good + message)
+
+    def test_socket_endpoints_and_closure(self):
+        listen = dict(protocol='tcp', state='listen', address='127.0.0.1', port=59474)
+        validate_sockets([listen], 'runtime', False)
+        for state in map(str, range(5, 13)):
+            connection = dict(protocol='tcp', state=state, address='127.0.0.1', port=1234,
+                              remote_address='127.0.0.1', remote_port=59474)
+            validate_sockets([connection], 'runtime', True)
+            for change in ({'remote_address': '192.0.2.1'}, {'address': '0.0.0.0'},
+                           {'remote_port': 0}, {'port': True}, {'state': '4'}, {'protocol': 'udp'}):
+                with self.assertRaises(RuntimeError):
+                    validate_sockets([connection | change], 'runtime', False)
+        for phase, closed, sock in (('compile', False, listen), ('runtime', True, listen),
+                                    ('runtime', False, listen | {'port': 1})):
+            with self.assertRaises(RuntimeError):
+                validate_sockets([sock], phase, closed)
+
+    def test_census_pins_pid_creation_image_and_exclusivity(self):
+        daemon = str(Path(__file__).resolve())
+        row = dict(pid=161088, creation_filetime=134368205457714990, image=daemon)
+        baseline = {key: row[key] for key in ('pid', 'creation_filetime')}
+        validate_baseline([row], baseline, daemon)
+        for rows in ([], [row, row], [row | {'pid': 1}],
+                     [row | {'creation_filetime': 1}], [row | {'image': daemon + '.other'}],
+                     [row | {'pid': True}], [row | {'image': ''}]):
+            with self.assertRaises(RuntimeError):
+                validate_baseline(rows, baseline, daemon)
+        with self.assertRaises(RuntimeError):
+            validate_census({})
 
     def test_assertion_count_matches_authored_fixture(self):
         text = Path(__file__).with_name('probe.dm').read_text()

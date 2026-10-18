@@ -25,7 +25,7 @@ def freeze(output, byond_bin):
     preparation = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(preparation)
     preparation.prepare(output / 'source-packet')
-    for name in ('run-contained.py', 'windows.py', 'guard_config.py'):
+    for name in ('run-contained.py', 'windows.py', 'guard_config.py', 'z_budget_evidence.py', 'native_policy.py'):
         shutil.copyfile(HERE / name, output / name)
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     files = {str(path): hashlib.sha256(path.read_bytes()).hexdigest()
@@ -35,6 +35,7 @@ def freeze(output, byond_bin):
     packet = {'head': head, 'runner_sha256': guard.digest(output / 'run-contained.py'),
               'sources': str(output / 'source-packet'), 'adapter_root': str(output),
               'compiler': str(compiler), 'daemon': str(daemon), 'files': files,
+              'gaia': {'pid': 161088, 'creation_filetime': 134368205457714990},
               'native_executed': False, 'total_seconds': 240, 'native_assertions': 33,
               'cases': ['fixed', 'eager-parity', 'eager-negative', 'missing-lazy', 'shared']}
     path = output / 'packet.json'

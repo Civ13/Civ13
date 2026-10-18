@@ -115,6 +115,7 @@ var/fixture_failures = 0
 /world/New()
 	..()
 	OpenPort("none")
+	text2file("closed", "port-closed.txt")
 	spawn (0)
 		try
 			var/eager = world.params["eager"] == "1"

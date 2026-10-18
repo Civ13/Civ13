@@ -100,8 +100,19 @@ accepted Help packet `contained-7e35bcec-v9` (adapter SHA-256
 config `ee5db97cabe3bcb2d8acb6660d67bbb56ee1f82052f96da00d54b13756615d35`).
 There is no host free-memory admission. Each Job permits one process, kill-on-close,
 1 GiB compiler or 512 MiB daemon private memory, with a 128 MiB watcher bound.
-Owned socket samples permit only the temporary loopback listener on 59474; any
-connection, UDP or other listener aborts. No live-host inspection is performed.
+Compiler evidence uses byte-identical accepted `z_budget_evidence.py`, SHA-256
+`133c130845ab28cfb6f0bfb8b2c63b595d3694afc44a3af398cb1fdf3de584db`.
+It requires one exact pinned banner, one clean result for `probe.dmb`, correct
+ordering and no diagnostics. Runtime logs are capped at 1 MiB before reading.
+Owned sockets permit TCP only: the loopback listener on 59474 before the fixture
+closure marker, and states 5 through 12 with both endpoints exactly 127.0.0.1
+and integer ports 1 through 65535. After closure, no listener is allowed.
+A read-only process census before each phase and after owned cleanup requires
+the sole existing daemon PID 161088, creation FILETIME 134368205457714990 and the
+pinned daemon image path. This checks process identity only; no Topic, status,
+RSC inspection or host control occurs. An altered baseline requires review.
+The aggregate 240-second allowance may stop before all worst-case phases finish;
+there is no automatic extension, retry or fallback.
 Output is retained; the executor deletes no fixture or unrelated files.
 
 ## CI selection proposal (not installed or dispatched)
