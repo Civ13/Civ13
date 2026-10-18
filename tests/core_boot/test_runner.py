@@ -1,5 +1,6 @@
 """Offline runner controls. No compiler, DreamDaemon, game, port or network."""
 import ast
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -104,6 +105,8 @@ class RunnerTests(unittest.TestCase):
             probe = root / 'tests/core_boot/probe.dm'
             probe.parent.mkdir(parents=True)
             probe.write_text('// offline fixture', encoding='utf-8')
+            (root / 'civ13.dme').write_text('// offline fixture', encoding='utf-8')
+            (probe.parent / 'run.py').write_text('# offline fixture', encoding='utf-8')
             daemon = FakeDaemon(runner.EXPECTED, returncode=7)
             build = subprocess.CompletedProcess([], 0, '516.1681: 0 errors, 0 warnings', '')
             argv = ['run.py', '--byond-bin', str(root), '--output', str(output)]
@@ -212,6 +215,8 @@ class CompileOnlyTests(unittest.TestCase):
         probe = root / 'tests/core_boot/probe.dm'
         probe.parent.mkdir(parents=True)
         probe.write_text('// offline probe', encoding='utf-8')
+        (probe.parent / 'run.py').write_text('# offline runner', encoding='utf-8')
+        (probe.parent / 'lighting_load.dm').write_text('// offline lighting', encoding='utf-8')
         path, old, _, _ = runner.CONTROLS['runtime']
         production = root / path
         production.parent.mkdir(parents=True)
@@ -235,6 +240,16 @@ class CompileOnlyTests(unittest.TestCase):
                                           '-max_errors', '0'])
             self.assertEqual(kwargs['cwd'], root)
             self.assertEqual(kwargs['timeout'], 600)
+            # Provenance must already exist if the compiler fails or times out.
+            manifest = json.loads((output / 'compile-inputs.json').read_text())
+            self.assertEqual(manifest['source_sha256'], hashlib.sha256(source.read_bytes()).hexdigest())
+            for path, digest in manifest['inputs_sha256'].items():
+                self.assertEqual(digest, hashlib.sha256((root / path).read_bytes()).hexdigest())
+            for path, digest in manifest['generated_controls_sha256'].items():
+                generated = root / path
+                self.assertEqual(digest, hashlib.sha256(generated.read_bytes()).hexdigest())
+                self.assertIn(runner.RUNTIME_CONTROL_MESSAGE,
+                              generated.read_text().splitlines()[manifest['runtime_control_site']['line'] - 1])
             # No binary is needed for a compile-only receipt. Runtime staging
             # would fail if the early return were removed, even without mocks.
             if isinstance(build, BaseException):
@@ -243,6 +258,8 @@ class CompileOnlyTests(unittest.TestCase):
         def git(*args):
             if args == ('rev-parse', 'HEAD'):
                 return 'a' * 40
+            if args == ('rev-parse', 'HEAD^{tree}'):
+                return 'b' * 40
             if args == ('diff', 'HEAD'):
                 return ''
             self.fail('Compile-only entered runtime config enumeration: ' + repr(args))
@@ -254,7 +271,8 @@ class CompileOnlyTests(unittest.TestCase):
                 mock.patch.object(runner, 'verify_results', side_effect=AssertionError('Runtime assertions forbidden')), \
                 mock.patch.object(runner.tempfile, 'TemporaryDirectory', side_effect=AssertionError('Runtime staging forbidden')), \
                 mock.patch.object(runner.shutil, 'copy2', side_effect=AssertionError('Runtime config/binary copying forbidden')), \
-                mock.patch.object(sys, 'argv', argv):
+                mock.patch.object(sys, 'argv', argv), \
+                mock.patch.dict(runner.os.environ, {'CORE_BOOT_CI_HEAD_SHA': 'c' * 40}):
             runner.main()
         return output, compiler_calls
 
@@ -268,6 +286,11 @@ class CompileOnlyTests(unittest.TestCase):
                 metadata = json.loads((output / 'metadata.json').read_text())
                 summary = json.loads((output / 'compile-summary.json').read_text())
                 self.assertTrue(metadata['compile_only'])
+                self.assertEqual(metadata['checkout_commit_sha'], 'a' * 40)
+                self.assertEqual(metadata['checkout_tree_sha'], 'b' * 40)
+                self.assertEqual(metadata['head_sha'], metadata['checkout_commit_sha'])
+                self.assertEqual(metadata['ci_event_head_sha'], 'c' * 40)
+                self.assertNotEqual(metadata['checkout_commit_sha'], metadata['ci_event_head_sha'])
                 self.assertFalse(summary['runtime_executed'])
                 self.assertEqual(summary['returncode'], 0)
                 self.assertRegex(summary['source_sha256'], r'^[0-9a-f]{64}$')
@@ -281,10 +304,14 @@ class CompileOnlyTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with self.assertRaisesRegex(RuntimeError, 'compilation failed'):
-                self.invoke(root, build=subprocess.CompletedProcess([], 4, '516.1681: 0 errors, 0 warnings', ''))
+                self.invoke(root, ('--negative-control', 'runtime'),
+                            build=subprocess.CompletedProcess([], 4, '516.1681: 0 errors, 0 warnings', ''))
             self.assertIn('0 errors', (root / 'evidence/compile.log').read_text())
             self.assertEqual(json.loads((root / 'evidence/compile-status.json').read_text())['returncode'], 4)
             self.assertFalse((root / 'evidence/compile-summary.json').exists())
+            manifest = json.loads((root / 'evidence/compile-inputs.json').read_text())
+            self.assertIsNotNone(manifest['runtime_control_site'])
+            self.assertEqual(len(manifest['generated_controls_sha256']), 1)
             self.assertFalse(list(root.glob('.core_boot_*')))
 
     def test_wrong_version_errors_warnings_or_missing_summary_reject(self):
@@ -307,6 +334,7 @@ class CompileOnlyTests(unittest.TestCase):
             status = json.loads((root / 'evidence/compile-status.json').read_text())
             self.assertTrue(status['timed_out'])
             self.assertFalse(status['runtime_executed'])
+            self.assertTrue((root / 'evidence/compile-inputs.json').is_file())
             self.assertFalse(list(root.glob('.core_boot_*')))
             self.assertFalse((root / 'evidence/compile-summary.json').exists())
 
@@ -337,6 +365,23 @@ class CompileOnlyTests(unittest.TestCase):
                 suites = selection.introduced_tests('base', 'head', event)
                 selected = selection.needs_extensive(event, opted_in) or 'tests/core_boot' in suites
                 self.assertEqual(selected, expected)
+
+    def test_workflow_retains_only_started_compile_evidence_even_on_failure(self):
+        workflow = (HERE.parents[1] / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        compile_step = workflow.split('      - name: Check core-boot runner offline and compile generated variants\n', 1)[1].split('\n      - name:', 1)[0]
+        self.assertIn('id: core_boot_compile', compile_step)
+        self.assertIn('echo "started=true" >> "$GITHUB_OUTPUT"', compile_step)
+        self.assertIn('git rev-parse HEAD HEAD^{tree}', compile_step)
+        self.assertIn('CORE_BOOT_CI_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}', compile_step)
+        retain = workflow.split('      - name: Retain core-boot compile-only evidence\n', 1)[1].split('\n      - name:', 1)[0]
+        self.assertIn("if: always() && steps.core_boot_compile.outputs.started == 'true'", retain)
+        self.assertIn('uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02', retain)
+        self.assertIn('retention-days: 7', retain)
+        self.assertIn('if-no-files-found: error', retain)
+        paths = [line.strip() for line in retain.split('          path: |\n', 1)[1].split('          if-no-files-found:', 1)[0].splitlines()]
+        self.assertEqual(paths, ['${{ runner.temp }}/core-boot-compile/' + name for name in (
+            'checkout-commit-tree.txt', 'offline-tests.log', '*/metadata.json', '*/compile-inputs.json',
+            '*/compile.log', '*/compile-status.json', '*/compile-summary.json')])
 
 
 class DMList:

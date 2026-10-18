@@ -38,11 +38,20 @@ BYOND 516.1681, exit zero and zero errors/warnings, with a 600-second deadline.
 Compile-only returns before runtime staging, config copying or daemon launch;
 it preserves compile logs, source hash and control location, then removes the
 generated source and binaries. It does not verify an expected runtime failure.
+Input hashes and the runtime-control location are written before compilation,
+including when compilation fails or times out. Metadata distinguishes the actual
+checkout commit/tree from the CI event's head SHA; the latter never relabels the
+checkout. Probe, runner, DME, selected lighting/control inputs and generated
+control sources have SHA256 digests.
 
 The existing CI build job selects the offline checks and these three compile-only
 variants when a PR introduces executable tests/core_boot files, or when the
 existing extensive regressions option is enabled. Later edits alone do not select
 the suite. The step has a 32-minute cap for three sequential 600-second compiles.
+An upload step runs after an actually started check, including failure, and
+retains its offline log, checkout identity and selected compile metadata/logs
+for seven days. Its explicit file allowlist excludes configs, binaries and runtime
+files. Skipped checks do not request an artifact.
 
 Native core-boot and fresh-process lighting runs still need separate authorized
 BYOND 516.1681 execution and graphical acceptance. The runtime exception's native

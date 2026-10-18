@@ -177,7 +177,10 @@ def main():
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     head = git('rev-parse', 'HEAD').strip()
     (args.output / 'metadata.json').write_text(json.dumps({
-        'head_sha': head, 'control': args.negative_control,
+        'head_sha': head,  # Compatibility alias: actual checkout, not a claimed PR head.
+        'checkout_commit_sha': head, 'checkout_tree_sha': git('rev-parse', 'HEAD^{tree}').strip(),
+        'ci_event_head_sha': os.environ.get('CORE_BOOT_CI_HEAD_SHA'),
+        'control': args.negative_control,
         'compile_only': args.compile_only, 'lighting_load': args.lighting_load,
         'lighting_restart': args.lighting_restart,
         'probe_sha256': hashlib.sha256((ROOT / 'tests/core_boot/probe.dm').read_bytes()).hexdigest(),
@@ -187,6 +190,18 @@ def main():
     created = []
     try:
         source, runtime_site = generate(args.negative_control, created, args.lighting_load, args.map, args.lighting_restart, args.diverge_turfs)
+        inputs = ['civ13.dme', 'tests/core_boot/probe.dm', 'tests/core_boot/run.py']
+        if args.lighting_load or args.lighting_restart:
+            inputs.append('tests/core_boot/lighting_load.dm')
+        if args.negative_control:
+            inputs.append(CONTROLS[args.negative_control][0])
+        (args.output / 'compile-inputs.json').write_text(json.dumps({
+            'checkout_commit_sha': head, 'runtime_control_site': runtime_site,
+            'source_sha256': hashlib.sha256(source.read_bytes()).hexdigest(),
+            'inputs_sha256': {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in inputs},
+            'generated_controls_sha256': {path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+                                          for path in created if path.suffix == '.dm'},
+            'scope': 'Input hashes and control location captured before compilation; no runtime assertion'}, indent=2), encoding='utf-8')
         try:
             build = subprocess.run([str(compiler), '-max_errors', '0', str(source)], cwd=ROOT,
                                    capture_output=True, text=True, timeout=600, creationflags=flags)
