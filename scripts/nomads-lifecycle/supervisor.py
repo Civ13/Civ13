@@ -91,6 +91,56 @@ def process_identity(pid):
         kernel.CloseHandle(handle)
 
 
+def startup_session(status):
+    session = status.get('session')
+    if not isinstance(session, str) or len(session) != 32 or any(c not in '0123456789abcdef' for c in session):
+        raise RuntimeError('Startup supplied no valid process session challenge')
+    return session
+
+
+def publish_ready(root, *, revision, expected_map, host, generation, session, status, identity=None):
+    """Publish canonical readiness under the caller's supervisor.lock.
+
+    The caller binds session from its initial lifecycle status for this owned
+    process. A final status cannot replace that challenge or the owned context.
+    This function never queries, starts or stops a process, or records a session.
+    """
+    root = Path(root).resolve(strict=True)
+    state_path = root / 'state.json'
+    state = json.loads(state_path.read_text(encoding='utf-8-sig'))
+    if (not isinstance(revision, str) or len(revision) != 40 or
+            any(c not in '0123456789abcdef' for c in revision) or
+            not isinstance(expected_map, str) or not expected_map or
+            state.get('revision') != revision or
+            state.get('map', 'NOMADS_EUROPE') != expected_map or
+            state.get('host') != host or state.get('generation') != generation):
+        raise RuntimeError('Startup owned context changed')
+    if (not isinstance(host, dict) or type(host.get('pid')) is not int or host['pid'] <= 0 or
+            type(host.get('creation_filetime')) is not int or host['creation_filetime'] <= 0 or
+            not isinstance(host.get('workdir'), str) or
+            Path(host['workdir']).resolve(strict=True).parent != (root / 'runs').resolve(strict=True)):
+        raise RuntimeError('Invalid startup host identity or run path')
+    if (status.get('ok') != 1 or status.get('ready') != 1 or status.get('busy') != 0 or
+            status.get('restart_hold') != 0 or status.get('restart_intent') != 0 or status.get('error')):
+        raise RuntimeError('Running host is not ready')
+    if status.get('revision') != revision or status.get('map') != expected_map:
+        raise RuntimeError('Startup status revision/map differs from owned context')
+    if generation is not None and (not generation or status.get('generation') != generation or
+                                   status.get('restart_import_complete') != 1):
+        raise RuntimeError('Startup did not restore the intended generation')
+    if startup_session({'session': session}) != startup_session(status):
+        raise RuntimeError('Startup process session changed')
+    if (identity or process_identity)(host['pid']) != host['creation_filetime']:
+        raise RuntimeError('Startup host identity changed')
+    # Cooperating writers hold supervisor.lock; detect stale caller state and
+    # changes during the final process check before replacing the state file.
+    if json.loads(state_path.read_text(encoding='utf-8-sig')) != state:
+        raise RuntimeError('Startup owned state changed before publication')
+    state['phase'] = 'ready'
+    write_json(state_path, state)
+    return state
+
+
 def query(port, token, action='status', operation=None, session=None):
     values = {'nomads_lifecycle': '1', 'token': token, 'action': action}
     if operation:
@@ -254,6 +304,11 @@ class Supervisor:
         if generation and (status.get('generation') != generation or status.get('restart_intent') or not status.get('restart_import_complete')):
             raise RuntimeError('Startup did not restore the intended generation')
 
+    def publish_ready(self, status, generation, session):
+        self.state = publish_ready(self.root, revision=self.state['revision'],
+            expected_map=self.state.get('map', 'NOMADS_EUROPE'), host=self.state['host'].copy(),
+            generation=generation, session=session, status=status)
+
     def stop_saved(self, operation):
         before = self.status()
         if not before.get('ready') or before.get('busy') or before.get('error') or before.get('clients') or before.get('restart_hold') or before.get('restart_intent'):
@@ -298,10 +353,11 @@ class Supervisor:
         flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
         child = subprocess.Popen([c['daemon'], 'civ13.dmb', str(c['port']), '-trusted', '-invisible', '-log', 'supervisor-runtime.log'], cwd=run, creationflags=flags)
         previous = {key: self.state.get(key) for key in ('revision', 'host', 'generation', 'backup', 'operation')} if self.state else None
-        self.state = {'revision': build.name, 'binaries': manifest['binaries'], 'phase': 'starting', 'generation': generation, 'backup': str(backup) if backup else None, 'previous': previous, 'host': {'pid': child.pid, 'creation_filetime': process_identity(child.pid), 'workdir': str(run)}, 'operation': operation}
+        self.state = {'revision': build.name, 'map': manifest['map'], 'binaries': manifest['binaries'], 'phase': 'starting', 'generation': generation, 'backup': str(backup) if backup else None, 'previous': previous, 'host': {'pid': child.pid, 'creation_filetime': process_identity(child.pid), 'workdir': str(run)}, 'operation': operation}
         write_json(self.state_path, self.state)
         self.record('started', revision=build.name, pid=child.pid, workdir=str(run), operation=operation)
         deadline = self.clock() + c.get('startup_timeout_seconds', 1800)
+        session = None
         while self.alive():
             try:
                 status = self.status()
@@ -310,10 +366,14 @@ class Supervisor:
             if status:
                 if status.get('error'):
                     raise RuntimeError('Startup recovery failed; preserve this host and matched backup')
+                observed_session = startup_session(status)
+                if session is None:
+                    session = observed_session
+                elif observed_session != session:
+                    raise RuntimeError('Startup process session changed')
                 if status.get('ready'):
                     self.accept_ready(status, generation)
-                    self.state['phase'] = 'ready'
-                    write_json(self.state_path, self.state)
+                    self.publish_ready(status, generation, session)
                     public_status = {key: value for key, value in status.items() if key not in ('session', 'token')}
                     self.record('cycle_complete', revision=build.name, generation=generation, operation=operation, status=public_status)
                     return
@@ -329,9 +389,10 @@ class Supervisor:
         if self.state and not self.alive():
             raise RuntimeError('Previously owned host exited unexpectedly; refusing automatic restart')
         if self.state and self.state.get('phase') != 'ready':
-            self.accept_ready(self.status(), self.state.get('generation'))
-            self.state['phase'] = 'ready'
-            write_json(self.state_path, self.state)
+            initial = self.status()
+            self.accept_ready(initial, self.state.get('generation'))
+            session = startup_session(initial)
+            self.publish_ready(self.status(), self.state.get('generation'), session)
             self.record('reconciled_ready', revision=self.state['revision'], generation=self.state.get('generation'))
         if self.state:
             status = self.status()
