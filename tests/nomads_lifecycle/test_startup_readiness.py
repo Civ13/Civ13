@@ -1,4 +1,5 @@
 """Owned readiness publication and help follow-up; no native process or socket."""
+import copy
 import importlib.util
 import json
 from pathlib import Path
@@ -94,6 +95,22 @@ class StartupReadinessTests(unittest.TestCase):
             with self.subTest(change=change):
                 self.unchanged_rejection(generation=generation, status=dict(restored, **change))
         self.assertEqual(self.publish(generation=generation, status=restored)['phase'], 'ready')
+
+    def test_fresh_startup_rejects_autoload_and_malformed_generation_without_mutation(self):
+        for change in ({'generation': 'round-v2:' + 'a' * 32}, {'restart_import_complete': 1},
+                       {'generation': None}, {'generation': 0}, {'generation': False},
+                       {'generation': []}, {'restart_import_complete': None}):
+            with self.subTest(change=change):
+                status = dict(self.status, **change)
+                before = copy.deepcopy(status)
+                self.unchanged_rejection(status=status)
+                self.assertEqual(status, before)
+        for field in ('generation', 'restart_import_complete'):
+            with self.subTest(missing=field):
+                status = {key: value for key, value in self.status.items() if key != field}
+                before = copy.deepcopy(status)
+                self.unchanged_rejection(status=status)
+                self.assertEqual(status, before)
 
     def test_stale_owned_context_and_invalid_run_never_publish(self):
         for change in ({'revision': 'd' * 40}, {'expected_map': 'NOMADS_EUROPE'},

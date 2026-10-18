@@ -128,6 +128,8 @@ def publish_ready(root, *, revision, expected_map, host, generation, session, st
     if generation is not None and (not generation or status.get('generation') != generation or
                                    status.get('restart_import_complete') != 1):
         raise RuntimeError('Startup did not restore the intended generation')
+    if generation is None and (status.get('generation') != '' or status.get('restart_import_complete') != 0):
+        raise RuntimeError('Fresh startup unexpectedly imported a generation')
     if startup_session({'session': session}) != startup_session(status):
         raise RuntimeError('Startup process session changed')
     if (identity or process_identity)(host['pid']) != host['creation_filetime']:

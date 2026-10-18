@@ -73,7 +73,9 @@ supply its final status as `status`. The function checks success/ready flags,
 revision/map, the stable lowercase-hex session, exact current owned state and
 run directory, and rechecks PID creation before atomic publication. Restored
 startup additionally requires the intended generation, completed import and no
-pending intent; fresh startup does not require import completion. Raw session
+pending intent. Fresh no-import startup requires the lifecycle's exact empty
+string generation marker and `restart_import_complete: 0`; a null, missing or
+other false-like marker is not accepted as an empty generation. Raw session
 challenges are never written to state or events. Other context from state is
 preserved, and any changed context or identity refuses publication. This reuse
 does not enable Gaia build/save automation or authorize a new host, game query,
