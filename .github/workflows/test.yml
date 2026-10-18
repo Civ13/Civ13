@@ -132,6 +132,39 @@ jobs:
         run: sudo bash ./scripts/travis_pre_byond.sh
         shell: bash
 
+      - name: Check core-boot runner offline and compile generated variants
+        id: core_boot_compile
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/core_boot')
+        timeout-minutes: 32
+        shell: bash
+        env:
+          CORE_BOOT_CI_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          echo "started=true" >> "$GITHUB_OUTPUT"
+          mkdir -p "$RUNNER_TEMP/core-boot-compile"
+          git rev-parse HEAD HEAD^{tree} > "$RUNNER_TEMP/core-boot-compile/checkout-commit-tree.txt"
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 -B -m unittest discover -s tests/core_boot -p test_runner.py -v 2>&1 | tee "$RUNNER_TEMP/core-boot-compile/offline-tests.log"
+          /usr/bin/python3 -B tests/core_boot/run.py --byond-bin "$PWD/BYOND/byond/bin" --compile-only --output "$RUNNER_TEMP/core-boot-compile/default"
+          /usr/bin/python3 -B tests/core_boot/run.py --byond-bin "$PWD/BYOND/byond/bin" --compile-only --negative-control runtime --output "$RUNNER_TEMP/core-boot-compile/runtime"
+          /usr/bin/python3 -B tests/core_boot/run.py --byond-bin "$PWD/BYOND/byond/bin" --compile-only --lighting-load --output "$RUNNER_TEMP/core-boot-compile/lighting-load"
+
+      - name: Retain core-boot compile-only evidence
+        if: always() && steps.core_boot_compile.outputs.started == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: core-boot-compile-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/core-boot-compile/checkout-commit-tree.txt
+            ${{ runner.temp }}/core-boot-compile/offline-tests.log
+            ${{ runner.temp }}/core-boot-compile/*/metadata.json
+            ${{ runner.temp }}/core-boot-compile/*/compile-inputs.json
+            ${{ runner.temp }}/core-boot-compile/*/compile.log
+            ${{ runner.temp }}/core-boot-compile/*/compile-status.json
+            ${{ runner.temp }}/core-boot-compile/*/compile-summary.json
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Verify paid rack save and six mutation controls
         if: github.event_name == 'workflow_dispatch' && inputs.rack_save_regressions
         timeout-minutes: 20

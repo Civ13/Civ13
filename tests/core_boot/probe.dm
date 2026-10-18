@@ -20,6 +20,9 @@
 		core_boot_probe.exercise()
 
 /world/Error(exception/error)
+	if (core_boot_probe.record_runtime_control(error))
+		core_boot_probe.fail(error.name)
+		return
 	core_boot_probe.runtime_errors++
 	text2file("CORE BOOT runtime error: [error] at [error.file]:[error.line]", "core-boot-runtime-error.txt")
 	return ..()
@@ -45,8 +48,19 @@ var/global/datum/core_boot_probe/core_boot_probe = new
 	var/list/checks = list()
 	var/list/timings = list()
 	var/list/tick_samples = list()
+	var/current_phase = "startup"
+
+// Only the generated control throws this marker; the runner also binds file,
+// line and phase, and rejects any other diagnostic alongside this receipt.
+/datum/core_boot_probe/proc/record_runtime_control(exception/E)
+	if (E.name != "CORE_BOOT_EXPECTED_RUNTIME_CONTROL")
+		return FALSE
+	text2file(json_encode(list("message" = E.name, "file" = "[E.file]", "line" = E.line, "phase" = current_phase)), "runtime-control.json")
+	world.log << "CORE BOOT runtime control: [E.name] at [E.file]:[E.line]"
+	return TRUE
 
 /datum/core_boot_probe/proc/mark(name)
+	current_phase = name
 	timings[name] = world.timeofday
 	text2file(json_encode(list("phase" = name)), "phase.json")
 
@@ -165,6 +179,7 @@ var/global/datum/core_boot_probe/core_boot_probe = new
 		mark("mob_lifecycle")
 
 		// Chemistry through the ordinary chemistry process.
+		mark("chemistry")
 		beaker = new(site)
 		beaker.reagents.add_reagent("isobutylene", 10)
 		beaker.reagents.add_reagent("aluminumchloride", 1)
@@ -208,6 +223,9 @@ var/global/datum/core_boot_probe/core_boot_probe = new
 		finished = TRUE
 		text2file("PASS: boot, round start, scheduler, mob, chemistry and object lifecycle without world errors", "result.txt")
 	catch (var/exception/E)
+		if (record_runtime_control(E))
+			fail(E.name)
+			return
 		world.log << "CORE BOOT exception: [E] at [E.file]:[E.line]"
 		if (!finished)
 			finished = TRUE
