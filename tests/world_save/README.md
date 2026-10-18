@@ -419,3 +419,20 @@ Obstruction caches rebuild after contents/fields/hooks and before source updates
 On this Windows host, even the existing startup-only control exits
 with `0xC0000409` before its entry marker. Clean compilation is separate evidence;
 run the actual assertions on Linux CI rather than treating that exit as a pass.
+
+## Restored input state regression
+
+`run-string-path.py --input-runtime` runs the production saver/loader against
+disk-backed v2 and unversioned legacy entries with old-process click/movement
+deadlines and action locks. It checks export exclusion, import defaults, identity,
+inventory and location preservation, and retention of existing live locks on a
+replacement object. The actual early `ClickOn` gate and modifier dispatch run
+against route counters, including ordinary/shift clicks and a live future
+cooldown. This adapter does not prove rendered client input or gathering.
+
+Use the runner's required `--byond-bin` and `--expected-saving-sha256` arguments.
+Run `--input-runtime-negative-control export` and `import` separately: each
+removes only the corresponding runtime exclusion in generated temporary source
+and must reproduce its specific failure. `--prepare-only` hashes and generates
+sources without starting a compiler or game. Native execution requires the
+current runtime owner's quiet window.

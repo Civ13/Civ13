@@ -22,6 +22,8 @@ def main():
     parser.add_argument('--hud-negative-control', choices=('export', 'import', 'constructor'))
     parser.add_argument('--player-reclaim-negative-control', choices=('owner', 'state', 'duplicate', 'ready', 'legacy', 'ban', 'guest'))
     parser.add_argument('--player-ui', action='store_true')
+    parser.add_argument('--input-runtime', action='store_true')
+    parser.add_argument('--input-runtime-negative-control', choices=('export', 'import'))
     parser.add_argument('--player-ui-negative-control', choices=('hud', 'registry'))
     parser.add_argument('--player-admission', action='store_true')
     parser.add_argument('--round-state', action='store_true')
@@ -34,6 +36,14 @@ def main():
     parser.add_argument('--progress-clock-probe', action='store_true')
     parser.add_argument('--progress-clock-negative-control', action='store_true')
     args = parser.parse_args()
+    input_runtime = args.input_runtime or bool(args.input_runtime_negative_control)
+    if input_runtime and any((args.negative_control, args.datum_constructor_negative_control,
+                              args.appearance_negative_control, args.hud_negative_control,
+                              args.player_reclaim_negative_control, args.player_ui,
+                              args.player_ui_negative_control, args.player_admission,
+                              args.round_state, args.round_state_negative_control,
+                              args.matrix_trace, args.progress)):
+        parser.error('Keep input-runtime controls separate from other adapters and mutations')
     round_state = args.round_state or bool(args.round_state_negative_control)
     if round_state and any((args.negative_control, args.datum_constructor_negative_control,
                             args.appearance_negative_control, args.hud_negative_control,
@@ -134,6 +144,16 @@ def main():
     def include(match):
         original = (fixture / match.group(1)).resolve(strict=True)
         source = original.read_text(encoding='utf-8')
+        if args.input_runtime_negative_control == 'export' and original.name == 'functions.dm':
+            marker = 'if (persistence_runtime_var(key))'
+            if source.count(marker) != 1:
+                raise RuntimeError('Input export exclusion anchor changed')
+            source = source.replace(marker, 'if (!(key in list("next_click", "next_move", "may_do_after", "may_do_mob")) && persistence_runtime_var(key))', 1)
+        if args.input_runtime_negative_control == 'import' and original.name == 'loading.dm':
+            marker = 'if(object.persistence_runtime_var(v))'
+            if source.count(marker) != 1:
+                raise RuntimeError('Input import exclusion anchor changed')
+            source = source.replace(marker, 'if(!(v in list("next_click", "next_move", "may_do_after", "may_do_mob")) && object.persistence_runtime_var(v))', 1)
         if original.name == 'loading.dm' and round_state:
             marker = '/map_storage/proc/load_world_contents(datum/persistence_world_operation/operation)\n\tif(!operation || !operation.enter_contents(src, "load")) return FALSE\n'
             if source.count(marker) != 1:
@@ -262,6 +282,11 @@ def main():
                 raise RuntimeError('Datum control needs exactly one corrected constructor branch')
             source = source.replace(before, '\t\telse\n\t\t\tobject = new type(starting_loc)\n', 1)
         if original.name == 'roundtrip.dm':
+            if input_runtime:
+                marker = '\t\tcheck_datum_constructor()\n'
+                if source.count(marker) != 1:
+                    raise RuntimeError('Input fixture entry anchor changed')
+                source = source.replace(marker, '\t\tcheck_input_runtime()\n' + marker, 1)
             if round_state:
                 marker = '\t\tworld.log << "PASS: world-save round trip'
                 if source.count(marker) != 1:
@@ -312,6 +337,35 @@ def main():
         return f'#include "{target.as_posix()}"'
 
     environment = re.sub(r'^#include "([^"]+)"', include, environment, flags=re.MULTILINE)
+    if input_runtime:
+        # Execute the unchanged production early click gate and modifier dispatch.
+        # Downstream combat, client camera and UI behavior are outside this adapter.
+        click_path = root / 'code/_onclick/click.dm'
+        click_source = click_path.read_text(encoding='utf-8')
+        start = click_source.index('/mob/proc/ClickOn(')
+        end = click_source.index('\tif (ishuman(src))', start)
+        click_prefix = click_source[start:end] + '\tfixture_clicks++\n'
+        fields = ['/mob/var/next_click = 0\n']
+        definitions = (('code/game/mob/mob_defines.dm', 'next_move'),
+                       ('code/_helpers/mobs.dm', 'may_do_after'),
+                       ('code/_helpers/mobs.dm', 'may_do_mob'))
+        for relative, name in definitions:
+            path = root / relative
+            text = path.read_text(encoding='utf-8')
+            hashes[relative] = hashlib.sha256(path.read_bytes()).hexdigest()
+            match = re.search(rf'^\s*(?:/mob/)?var/{name}\s*=\s*([^\n]+)', text, re.MULTILINE)
+            if not match:
+                raise RuntimeError(f'Production default missing: {name}')
+            fields.append(f'/mob/var/{name} = {match.group(1).strip()}\n')
+        if '/mob/var/next_click = 0\n' not in click_source:
+            raise RuntimeError('Production click default changed')
+        hashes['code/_onclick/click.dm'] = hashlib.sha256(click_path.read_bytes()).hexdigest()
+        probe = fixture / 'input_runtime_probe.dm'
+        hashes[probe.relative_to(root).as_posix()] = hashlib.sha256(probe.read_bytes()).hexdigest()
+        target = output / 'input_runtime_adapter.dm'
+        target.write_text(''.join(fields) + click_prefix + probe.read_text(encoding='utf-8'), encoding='utf-8')
+        generated[target.name] = hashlib.sha256(target.read_bytes()).hexdigest()
+        environment += f'\n#include "{target.as_posix()}"\n'
     if admission:
         original = fixture / 'player_admission_probe.dm'
         target = output / original.name
@@ -411,7 +465,13 @@ def main():
         raise RuntimeError('Pinned clean compilation required')
     owned('daemon', [str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'])
     actual = read(output / 'result.txt').strip()
-    if args.round_state_negative_control:
+    if args.input_runtime_negative_control:
+        expected = {'export': 'runtime input field exported: next_click',
+                    'import': 'legacy input field restored: next_click'}[args.input_runtime_negative_control]
+        failure = read(output / 'failure-name.txt').strip()
+        if failure != expected or not actual.startswith('FAIL:'):
+            raise RuntimeError(f'Wrong input runtime negative failure: {actual!r}, {failure!r}')
+    elif args.round_state_negative_control:
         expected = {'setup': 'resumed round reran fresh setup',
                     'clock': 'round clock reset across process',
                     'generation': 'mismatched round generation accepted',
@@ -485,6 +545,7 @@ def main():
         'hud_negative_control': args.hud_negative_control,
         'player_reclaim_negative_control': args.player_reclaim_negative_control,
         'player_ui': ui, 'player_ui_negative_control': args.player_ui_negative_control,
+        'input_runtime': input_runtime, 'input_runtime_negative_control': args.input_runtime_negative_control,
         'player_admission_adapter': admission,
         'round_state': round_state, 'round_state_negative_control': args.round_state_negative_control,
         'matrix_trace': args.matrix_trace,
@@ -496,7 +557,7 @@ def main():
         'sources_sha256': hashes, 'generated_sha256': generated, 'processes': processes,
         'opendream_verified': False, 'fresh_process_recovery_verified': False,
         'crash_rpo_verified': False, 'clean_shutdown_verified': False}, indent=2), encoding='utf-8')
-    control = (args.round_state_negative_control or args.player_ui_negative_control or args.player_reclaim_negative_control
+    control = (args.input_runtime_negative_control or args.round_state_negative_control or args.player_ui_negative_control or args.player_reclaim_negative_control
                or args.hud_negative_control or args.progress_negative_control
                or args.appearance_negative_control or args.datum_constructor_negative_control
                or args.progress_clock_negative_control or args.negative_control)

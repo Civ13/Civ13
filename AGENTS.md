@@ -1,5 +1,13 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-18: restored input clocks and action locks -->
+The custom saver includes changed tmp fields. Mob next_click/next_move and
+may_do_after/may_do_mob are process-local deadlines/locks: exclude them on export
+and legacy import through persistence_runtime_var. Do not reset them on every
+Login or click, which would bypass live cooldowns/actions. The world-save
+runner's --input-runtime adapter checks disk-backed migration and the production
+early click gate; connected-client interaction remains separate evidence.
+
 ## Language & toolchain
 NEVER use "—": always use "-" instead.
 - **DM** (DreamMaker) - BYOND's proprietary language. Sources have `.dm` extension.

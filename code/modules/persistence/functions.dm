@@ -55,8 +55,11 @@
 
 // HUD objects belong to a client session and are rebuilt by the normal HUD path.
 // The custom saver visits tmp vars too; exclude these on both export and import.
+// Click/move deadlines and in-flight action locks belong to the running process.
+// Ignoring historical values during import leaves new mobs at their defaults,
+// without resetting cooldowns or active actions on an existing live mob.
 /mob/persistence_runtime_var(key)
-	return (key in list("hud_used", "HUDneed", "HUDinventory", "HUDfrippery", "HUDprocess", "HUDtech", "hands", "pullin", "purged", "i_select", "m_select", "zone_sel")) || ..()
+	return (key in list("next_click", "next_move", "may_do_after", "may_do_mob", "hud_used", "HUDneed", "HUDinventory", "HUDfrippery", "HUDprocess", "HUDtech", "hands", "pullin", "purged", "i_select", "m_select", "zone_sel")) || ..()
 
 /obj/screen
 	should_save = FALSE
