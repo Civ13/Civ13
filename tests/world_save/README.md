@@ -436,3 +436,9 @@ removes only the corresponding runtime exclusion in generated temporary source
 and must reproduce its specific failure. `--prepare-only` hashes and generates
 sources without starting a compiler or game. Native execution requires the
 current runtime owner's quiet window.
+
+The standalone lifecycle fixture declares the fixed snapshot's operation/error
+types with no active operation or collector. Its separate diagnose adapter
+returns `fixture_diagnostics_unavailable`. Authentication, status and shutdown
+controls still exercise the production endpoint; this fixture does not verify
+live diagnostic collection.
