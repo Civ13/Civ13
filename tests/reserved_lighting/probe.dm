@@ -106,6 +106,15 @@ var/reserved_startup_waiting_turf = null
 			turfs |= T
 			if (candidate && T.x >= 5 && T.x <= 12 && T.y >= 5 && T.y <= 12)
 				T.lighting_reserved = TRUE
+		// The tiny scene has no appearances before startup. First prove that
+		// markers alone cannot suppress an overlay, then explicitly enable its
+		// fixture-only declared-inert area. No production map enables the gate.
+		var/turf/gate_site = locate(8,8,1)
+		reserved_assert(!gate_site.omit_reserved_lighting_overlay(), "default-off clearance gate")
+		var/area/fixture_area = get_area(gate_site)
+		fixture_area.lighting_reserved_clearance_enabled = "unknown"
+		reserved_assert(!gate_site.omit_reserved_lighting_overlay(), "unknown clearance gate remains active")
+		fixture_area.lighting_reserved_clearance_enabled = TRUE
 		create_lighting("Midday")
 		var/overlays = 0
 		var/list/unique_corners = list()

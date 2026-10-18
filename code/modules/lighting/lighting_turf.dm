@@ -1,3 +1,8 @@
+/area
+	// Pre-startup author switch, not a certificate of source/appearance clearance.
+	// Leave false unless a frozen declared-clearance review covers this region.
+	var/tmp/lighting_reserved_clearance_enabled = FALSE
+
 /turf
 	// Map-authored, pre-startup policy only. Never infer this from empty space or z.
 	// Activation is one-way; imported cells deliberately fail open to ordinary lighting.
@@ -202,7 +207,7 @@
 	if (x == 1 || y == 1 || x == world.maxx || y == world.maxy)
 		return FALSE
 	var/area/A = get_area(src)
-	if (!A || !A.dynamic_lighting)
+	if (!A || !A.dynamic_lighting || A.lighting_reserved_clearance_enabled != TRUE)
 		return FALSE
 	for (var/turf/T in range(1, src))
 		if (!T.lighting_reserved)

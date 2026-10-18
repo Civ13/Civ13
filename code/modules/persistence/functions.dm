@@ -54,6 +54,10 @@
 /turf/persistence_runtime_var(key)
 	return (key in list("lighting_reserved", "affecting_lights", "lighting_overlay", "corners", "has_opaque_atom", "window_coeff_dirty", "next_calculate_window_coeff")) || ..()
 
+// Author policy is not restored from an ordinary or historical area payload.
+/area/persistence_runtime_var(key)
+	return key == "lighting_reserved_clearance_enabled" || ..()
+
 // HUD objects belong to a client session and are rebuilt by the normal HUD path.
 // The custom saver visits tmp vars too; exclude these on both export and import.
 // Click/move deadlines and in-flight action locks belong to the running process.

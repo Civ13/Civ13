@@ -11,7 +11,14 @@ from prepare import prepare
 ROOT = Path(__file__).resolve().parents[2]
 ROOTS = {'code', 'icons', 'sound', 'UI', 'interface'}
 CASES = ('baseline', 'candidate', 'virtual-master', 'halo', 'refusal-owner')
-HELPER_HEAD = '8a2b8810053a09ec9c8ad04ba2da5e51ac35c7a3'
+HELPER_HEAD = 'a8498878544bb37e0c8cbf922bea5d1cd118c7f1'
+HELPER_HASHES = {
+    'windows.py': 'bfe1a3be9556abbcef70b5bfee41bf235d9a5522dd07e94061d89b5f8a25cbc3',
+    'owned_job.py': '1ddbb52ed9b92b9cfe15c9f0b023af71ce0b0217e91d02a7da8a7242411e09b3',
+    'native_policy.py': 'bf3cecc93643a90ba1962db9f083c05eb4f6842e9cfe6dcba8b72f9504dd82a3',
+    'guard_config.py': 'ee5db97cabe3bcb2d8acb6660d67bbb56ee1f82052f96da00d54b13756615d35',
+    'z_budget_evidence.py': '133c130845ab28cfb6f0bfb8b2c63b595d3694afc44a3af398cb1fdf3de584db',
+}
 HELPER_REPO = Path('D:/GitHub/Civ13/.worktrees/lazy-floor-decal-tracking')
 BYOND = Path('C:/Users/valza/.codex/cache/byond/516.1681/byond/bin')
 BINARIES = {'dm.exe': '8ad7537fc1329ada04e8e1e8835ec9cf205f3e5029461a3ead1f8f4ced7b0bb8',
@@ -64,6 +71,8 @@ def freeze(output):
     for name in ('windows.py', 'guard_config.py', 'owned_job.py', 'native_policy.py', 'z_budget_evidence.py'):
         blob = subprocess.check_output(['git', '-c', 'safe.directory='+HELPER_REPO.as_posix(),
                                         'show', HELPER_HEAD+':tests/floor_decal_tracking/'+name], cwd=HELPER_REPO)
+        if hashlib.sha256(blob).hexdigest() != HELPER_HASHES[name]:
+            raise ValueError('Accepted helper hash mismatch: ' + name)
         (adapter/name).write_bytes(blob)
     shutil.copyfile(ROOT/'tests/reserved_lighting/run-contained.py', output/'run-contained.py')
     binaries = {}
@@ -82,7 +91,7 @@ def freeze(output):
               'envelope': {'compile_wall': 75, 'compile_cpu': 30, 'compile_private': 1024**3,
                            'runtime_wall': 30, 'runtime_cpu': 10, 'runtime_private': 512 * 1024**2,
                            'watcher_private': 128 * 1024**2, 'active_processes': 1, 'total_wall': 610},
-              'executor_status': 'Helper source reviewed, native acceptance and exact root grant REQUIRED; no launch authority',
+              'executor_status': 'Exact v7 helper source and eight-phase containment evidence accepted; reserved fixture native unrun, exact root grant REQUIRED',
               'scope': 'Frozen full-source tiny 16x16x1 fixture; no normal config, userdata or maps copied'}
     receipt = output/'packet.json'
     receipt.write_text(json.dumps(packet, indent=2) + '\n', encoding='utf-8')

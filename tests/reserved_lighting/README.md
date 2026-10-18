@@ -4,12 +4,20 @@ Opt-in map policy `lighting_reserved = TRUE` suppresses overlays only in the
 interior of an explicitly reserved region. A one-tile halo retains overlays.
 All original corners, masters, light accumulations and source memberships remain.
 No map opts in. Empty cells, void areas and z levels do not imply reservation.
-OPEN acceptance gap: a one-tile halo does not establish coverage for oversized
-sprites/canopies extending farther from neighboring anchors. Before enabling any
-map, eligibility must have a proven inert boundary margin matched to actual
-appearance bounds, or reject overlapping appearances. The current candidate
-does not establish that contract and must remain inactive pending the asset
-audit and a matching boundary regression. Anchor occupancy alone is insufficient.
+Omission also requires `/area.lighting_reserved_clearance_enabled == TRUE`.
+Its default FALSE and every other value keep overlays active. It is an author
+switch, not a certificate: enabling it requires independent review of a frozen
+map/source/asset inventory and declared inert clearance. No production map enables
+it. The switch is excluded from ordinary area save export/import. Never enable it
+for a region whose appearance inventory, reachable states or future immutability
+are unknown. No new movement/state interception hooks are implemented.
+
+The one-tile halo is only a graph halo. Actual normal/snow pine frames are 64x96;
+constructor offsets x=-24..-8/y=0..16 give a conservative full-frame rectangle
+x=-24..55/y=0..111, touching offsets dx=-1..1/dy=0..3. Empty neighboring anchors
+do not establish that an omitted cell has no overlapping canopy. Preserve masks
+on every overlapping cell or keep the gate off; no global three-tile fix is
+claimed. The reported live canopy composition defect remains unconfirmed.
 
 Only set the marker in map definitions before lighting startup. Never enable a
 reservation on a running tile. `activate_reserved_lighting()` clears it one way,
@@ -71,3 +79,32 @@ Serializer-only world-save, dimension, operations and wall fixtures share the
 minimal `tests/world_save/stubs.dm` adapter. It permits only default-false cells
 and raises an error for reserved ones; full production lighting tests must not
 include that adapter.
+
+## Declared author-clearance schema
+
+`clearance.py declaration.json --repository <frozen-checkout>` accepts exactly
+`schema_version` (1), `bindings` (relative file paths to SHA256), `world` ([x,y,z]),
+`region` ([xmin,ymin,zmin,xmax,ymax,zmax]), `omitted_cells` (unique [x,y,z] rows),
+`appearances` and `unknowns` (must be empty). Bind the actual map, inventory/source
+audit and every relevant resource. The validator verifies supplied bindings; it
+does not discover missing map entries or establish inventory completeness.
+
+Each appearance has exactly `resource`, `states`, `anchor` ([x,y,z]), `pixel_x`
+and `pixel_y` (inclusive min/max pairs), `transform` (`identity`), `lifecycle`
+(`frozen-static`), `overlays` and `underlays` (both empty). DMI frame dimensions
+and declared states come from the bound resource. Complete frame rectangles at
+offset extrema conservatively cover all placements; alpha, collision bounds and
+TILE_BOUND are not clearance oracles. Every intersecting omission is rejected.
+The existing graph halo, world bounds and duplicate coordinates are checked too.
+
+`frozen-static` is a declaration requiring source evidence, not a mechanism that
+freezes a game atom. Ordinary trees can change state; unaudited death/radiation,
+seasonal resources, transforms, nested appearances or map/admin/save overrides
+belong in `unknowns` and refuse approval. Runtime transitions remain unsupported
+for enabled regions. A successful report proves only the supplied frozen static
+geometry; it cannot authorize the area switch or replace independent review.
+
+Offline tests use real normal/snow pine resources and all six live states with
+1,734 offset placements. Full-rectangle controls reject two/three-tile overlap,
+allow a nonintersecting declared scene and reject unknown/death/transform/nested
+appearance, source drift and invalid cells. These are not native renderer tests.

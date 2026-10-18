@@ -59,7 +59,7 @@ def prepare(repo, mode, negative=False, bulk_order_control=False, inactive_corne
         system = system.replace(anchor, "", 1)
     reserved_helper = ""
     if "omit_reserved_lighting_overlay" in originals[TURF]:
-        reserved_helper = "/turf/var/tmp/lighting_reserved = FALSE\n" + re.search(r"^/turf/proc/omit_reserved_lighting_overlay\([\s\S]*?(?=^// Clearing)", originals[TURF], re.M).group()
+        reserved_helper = "/turf/var/tmp/lighting_reserved = FALSE\n/area/var/tmp/lighting_reserved_clearance_enabled = FALSE\n" + re.search(r"^/turf/proc/omit_reserved_lighting_overlay\([\s\S]*?(?=^// Clearing)", originals[TURF], re.M).group()
     production = system + corner + overlay + turf_new + clear_overlay + build_overlay + support + "\n" + reserved_helper
     files = {"production.dm": production, "probe.dm": (repo/"tests/lighting_startup/probe.dm").read_text(),
              "probe.dme": '#define TRUE 1\n#define FALSE 0\n#define ASSERT(x) if (!(x)) CRASH("assertion")\n#define PoolOrNew probe_pool\n#define GAME_STATE_PREGAME 0\n#include "probe.dm"\n#include "production.dm"\n'}
