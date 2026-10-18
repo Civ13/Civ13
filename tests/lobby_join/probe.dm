@@ -29,6 +29,7 @@ var/disable_campaign_whitelist = FALSE
 var/mob/new_player/test_actor
 var/list/checks = list()
 var/list/failures = list()
+var/list/verb_metadata = list()
 
 /datum/mock_ticker
 	var/current_state = GAME_STATE_PLAYING
@@ -93,6 +94,14 @@ var/list/failures = list()
 
 /mob/new_player/proc/jobBanned(title)
 	return test_client.job_banned
+
+// Calibration only: retain the strict production-verb assertion until the
+// engine's raw zero, nonzero and inherited metadata values are recorded.
+/mob/new_player/verb/VisibilityOne()
+	set invisibility = 1
+	return
+/mob/new_player/verb/VisibilityInherited()
+	return
 /mob/new_player/proc/factionBanned(faction)
 	return test_client.faction_banned
 /mob/new_player/proc/LateChoices()
@@ -176,6 +185,9 @@ var/list/failures = list()
 /proc/run_checks()
 	var/join_verb = /mob/new_player/verb/Join
 	var/unsafe_verb = /mob/new_player/verb/UnsafeJoin
+	var/one_verb = /mob/new_player/verb/VisibilityOne
+	var/inherited_verb = /mob/new_player/verb/VisibilityInherited
+	verb_metadata = list("join" = join_verb:invisibility, "join_isnull" = isnull(join_verb:invisibility), "join_isnum" = isnum(join_verb:invisibility), "unsafe" = unsafe_verb:invisibility, "one" = one_verb:invisibility, "inherited" = inherited_verb:invisibility, "inherited_isnull" = isnull(inherited_verb:invisibility), "lobby_invisibility" = initial(/mob/new_player.invisibility))
 	expect("native_join_verb_visible", join_verb:invisibility == 0)
 	expect("negative_control_invisible_verb_detected", unsafe_verb:invisibility == 101)
 	var/mob/new_player/player = fresh_player()
@@ -267,6 +279,6 @@ var/list/failures = list()
 			run_checks()
 		catch(var/exception/error)
 			failures += "unexpected_exception:[error]"
-		text2file(json_encode(list("pass" = !failures.len, "checks" = checks, "failures" = failures, "port" = world.port)), "result.json")
+		text2file(json_encode(list("pass" = !failures.len, "checks" = checks, "failures" = failures, "verb_metadata" = verb_metadata, "port" = world.port)), "result.json")
 		del(world)
 		return
