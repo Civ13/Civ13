@@ -1,5 +1,19 @@
 # Optional gameplay help checks
 
+`run.py` also executes `render-cases.json` through the actual production
+`render_answer()` and Markdown helpers. Cases cover the reported winter-help
+bullet/bold answer, headings, numbered/indented lists, paragraphs and CRLF,
+code-span/fence precedence, unmatched input, raw HTML, encoded injection,
+unsafe/obfuscated link schemes and image suppression. `render-results.json`
+retains the actual HTML. `render_contract.py` independently checks required
+text, forbidden output, balanced allowed tags and HTTP/HTTPS-only attributes.
+`test_markdown.py` proves the oracle rejects injected markup/unsafe links and
+malformed structure. The existing escaping mutation now removes the actual
+Markdown text encoder and must still fail its original escaped-HTML assertion.
+These checks do not prove native browser layout; verify the actual Help dialog
+separately under an exclusive UI allocation, without contacting a model for the
+deterministic rendering cases.
+
 Run Python bridge tests with `python3 -m unittest discover -s tests/player_help -v`.
 `python3 tests/player_help/run-spool-controls.py` requires temporary source
 mutations of the old ID validator, admission marker and completion marker to fail

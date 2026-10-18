@@ -262,7 +262,198 @@ var/global/datum/player_help_service/player_help_service = new
 			clear_slot(i)
 
 /datum/player_help_service/proc/render_answer(answer)
-	return "<html><body><h2>AI gameplay help</h2><p>AI answers can be mistaken. Verify recipes in the Crafting Atlas.</p><pre style='white-space:pre-wrap'>[html_encode(answer)]</pre><p><a href='https://civ13.github.io/civ13-wiki/'>Player wiki</a> | <a href='https://civ13.github.io/Civ13/crafting/'>Crafting Atlas</a></p></body></html>"
+	return "<html><body><h2>AI gameplay help</h2><p>AI answers can be mistaken. Verify recipes in the Crafting Atlas.</p>[markdown_answer(answer)]<p><a href='https://civ13.github.io/civ13-wiki/'>Player wiki</a> | <a href='https://civ13.github.io/Civ13/crafting/'>Crafting Atlas</a></p></body></html>"
+
+// Bounded display subset of CommonMark 0.31.2, not an HTML trust boundary
+// delegated to the model. Only these routines generate answer markup.
+/datum/player_help_service/proc/markdown_text(value)
+	return html_encode(value)
+
+/datum/player_help_service/proc/markdown_blank(value)
+	for (var/i = 1, i <= length(value), i++)
+		var/c = text2ascii(value, i)
+		if (c != 9 && c != 32)
+			return FALSE
+	return TRUE
+
+/datum/player_help_service/proc/markdown_url(value)
+	// Do not decode entities/percent escapes into a different scheme. Reject
+	// controls, whitespace, quotes and backslashes before producing an attribute.
+	if (!istext(value) || !(findtext(value, "https://") == 1 || findtext(value, "http://") == 1))
+		return FALSE
+	var/start = findtext(value, "://") + 3
+	if (start > length(value))
+		return FALSE
+	for (var/i = 1, i <= length(value), i++)
+		var/c = text2ascii(value, i)
+		if (c <= 32 || c == 127 || c == 34 || c == 39 || c == 60 || c == 62 || c == 92)
+			return FALSE
+	return TRUE
+
+/datum/player_help_service/proc/markdown_inline(value, depth = 0, links = TRUE)
+	if (depth >= 8)
+		return markdown_text(value)
+	var/result = ""
+	var/plain = ""
+	var/n = length(value)
+	for (var/i = 1, i <= n, i++)
+		var/c = text2ascii(value, i)
+		// Backslash escapes ASCII punctuation; never turn escaped text into tags.
+		if (c == 92 && i < n)
+			var/next = text2ascii(value, i + 1)
+			if ((next >= 33 && next <= 47) || (next >= 58 && next <= 64) || (next >= 91 && next <= 96) || (next >= 123 && next <= 126))
+				plain += copytext(value, i + 1, i + 2)
+				i++
+				continue
+		if (c == 96)
+			var/run = 1
+			while (i + run <= n && text2ascii(value, i + run) == 96)
+				run++
+			var/end = i + run
+			while (end <= n)
+				if (text2ascii(value, end) != 96)
+					end++
+					continue
+				var/closing = 1
+				while (end + closing <= n && text2ascii(value, end + closing) == 96)
+					closing++
+				if (closing == run)
+					break
+				end += closing
+			if (end <= n)
+				var/code = replacetext(copytext(value, i + run, end), "\n", " ")
+				if (length(code) >= 2 && copytext(code, 1, 2) == " " && copytext(code, length(code)) == " " && !markdown_blank(code))
+					code = copytext(code, 2, length(code))
+				result += "[markdown_text(plain)]<code>[markdown_text(code)]</code>"
+				plain = ""
+				i = end + run - 1
+				continue
+			plain += copytext(value, i, i + run)
+			i += run - 1
+			continue
+		// Balanced inline links. Images are kept as text, with no remote fetch.
+		if (c == 91 && links && !(i > 1 && text2ascii(value, i - 1) == 33))
+			var/end = i + 1
+			var/brackets = 1
+			while (end <= n && brackets)
+				var/b = text2ascii(value, end)
+				if (b == 92)
+					end += 2
+					continue
+				if (b == 91)
+					brackets++
+				if (b == 93)
+					brackets--
+				end++
+			if (!brackets && end <= n && text2ascii(value, end) == 40)
+				var/close = end + 1
+				var/parens = 1
+				while (close <= n && parens)
+					var/b = text2ascii(value, close)
+					if (b == 40)
+						parens++
+					if (b == 41)
+						parens--
+					close++
+				if (!parens)
+					var/url = copytext(value, end + 1, close - 1)
+					if (markdown_url(url))
+						result += "[markdown_text(plain)]<a href=\"[html_encode(url)]\">[markdown_inline(copytext(value, i + 1, end - 1), depth + 1, FALSE)]</a>"
+						plain = ""
+						i = close - 1
+						continue
+		if (c == 42 || c == 95)
+			// Underscores inside names such as crude_twine remain literal.
+			var/previous = i > 1 ? text2ascii(value, i - 1) : 32
+			var/run = 1
+			while (i + run <= n && text2ascii(value, i + run) == c)
+				run++
+			if (run <= 3 && i + run <= n && text2ascii(value, i + run) > 32 && (c != 95 || previous <= 32 || previous == 40))
+				var/mark = copytext(value, i, i + run)
+				var/end = findtext(value, mark, i + run)
+				while (end && (text2ascii(value, end - 1) <= 32 || text2ascii(value, end - 1) == 92))
+					end = findtext(value, mark, end + run)
+				if (end > i + run)
+					var/open = run == 1 ? "<i>" : (run == 2 ? "<b>" : "<b><i>")
+					var/shut = run == 1 ? "</i>" : (run == 2 ? "</b>" : "</i></b>")
+					result += "[markdown_text(plain)][open][markdown_inline(copytext(value, i + run, end), depth + 1, links)][shut]"
+					plain = ""
+					i = end + run - 1
+					continue
+		plain += copytext(value, i, i + 1)
+	return result + markdown_text(plain)
+
+/datum/player_help_service/proc/markdown_answer(answer)
+	if (!istext(answer) || length(answer) > 4000)
+		return "<p>AI gameplay help did not receive a usable response.</p>"
+	answer = replacetext(replacetext(answer, "\r\n", "\n"), "\r", "\n")
+	var/list/lines = splittext(answer, "\n")
+	var/result = ""
+	var/paragraph = FALSE
+	var/fence = ""
+	var/fence_length = 0
+	var/code = ""
+	var/regex/fences = regex("^ {0,3}(`{3,}|~{3,})(.*)$")
+	var/regex/headings = regex("^ {0,3}(#{1,6})( +|$)(.*)$")
+	var/regex/bullets = regex("^( *)(- |\\* |\\+ )(.+)$")
+	var/regex/numbers = regex("^( *)(\[0-9]{1,9})(\\.|\\)) +(.+)$")
+	for (var/line in lines)
+		var/has_fence = fences.Find(line)
+		if (length(fence))
+			if (has_fence && copytext(fences.group[1], 1, 2) == fence && length(fences.group[1]) >= fence_length && markdown_blank(fences.group[2]))
+				result += "<pre>[markdown_text(code)]</pre>"
+				fence = ""
+				code = ""
+			else
+				code += "[line]\n"
+			continue
+		if (has_fence && !(copytext(fences.group[1], 1, 2) == "`" && findtext(fences.group[2], "`")))
+			if (paragraph)
+				result += "</p>"
+				paragraph = FALSE
+			fence = copytext(fences.group[1], 1, 2)
+			fence_length = length(fences.group[1])
+			continue
+		if (markdown_blank(line))
+			if (paragraph)
+				result += "</p>"
+				paragraph = FALSE
+			continue
+		if (headings.Find(line))
+			if (paragraph)
+				result += "</p>"
+				paragraph = FALSE
+			var/level = length(headings.group[1])
+			result += "<h[level]>[markdown_inline(headings.group[3])]</h[level]>"
+			continue
+		var/prefix = ""
+		var/content = line
+		if (bullets.Find(line))
+			prefix = "[replacetext(bullets.group[1], " ", "&nbsp;")]&bull; "
+			content = bullets.group[3]
+		else if (numbers.Find(line))
+			prefix = "[replacetext(numbers.group[1], " ", "&nbsp;")][numbers.group[2]]. "
+			content = numbers.group[4]
+		if (length(prefix))
+			if (paragraph)
+				result += "</p>"
+			paragraph = FALSE
+			result += "<p>[prefix][markdown_inline(content)]</p>"
+			continue
+		if (!paragraph)
+			result += "<p>"
+			paragraph = TRUE
+		else
+			result += "<br>"
+		// Keep explicit line breaks readable, including CommonMark hard breaks.
+		if (length(content) && copytext(content, length(content)) == "\\")
+			content = copytext(content, 1, length(content))
+		result += markdown_inline(content)
+	if (paragraph)
+		result += "</p>"
+	if (length(fence))
+		result += "<pre>[markdown_text(code)]</pre>"
+	return result
 
 /process/player_help/setup()
 	processes.player_help = src

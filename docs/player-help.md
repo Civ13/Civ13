@@ -12,6 +12,34 @@ running-server seconds (including the queue budget) and releases its slot. Faile
 show an explicit notice rather than a blank window. Wait until the bridge has
 published two heartbeats (normally a few seconds) before trying the first question.
 
+## Answer formatting
+
+The game converts the model's Markdown to a bounded display subset based on
+[CommonMark 0.31.2](https://spec.commonmark.org/0.31.2/). It renders ATX headings,
+bulleted and numbered lines (including indentation), bold/italic text, same-line
+code spans, fenced code blocks, inline HTTP/HTTPS links and paragraph breaks.
+Each ordinary source line remains a visible line break. Lists use explicit
+bullets/numbers and paragraphs rather than relying on unsupported terminal list
+tags. The generated markup uses the conservative tags in BYOND's
+[supported HTML reference](https://www.byond.com/docs/guide/app3.html), without
+answer-supplied CSS or JavaScript, for the native browser dialog.
+
+This is not a full CommonMark implementation: reference links, link titles,
+autolinks, setext headings, block quotes, indented code blocks and complex
+delimiter nesting remain literal text. HTML entities also remain literal text.
+Unmatched inline delimiters remain text; an unclosed code fence extends to the
+end of the answer. Code is escaped without interpreting its Markdown contents.
+Raw HTML is escaped, and Markdown images never create images or remote fetches.
+Links require an explicit HTTP or HTTPS scheme and reject whitespace, control
+characters, quotes, angle brackets and backslashes; relative, BYOND, file, data
+and JavaScript destinations remain text. No model-generated HTML is trusted.
+The existing 4,000-character answer limit is also enforced at rendering.
+
+Rendering happens after the bridge's bounded response validation, immediately
+before `browse()`. No prompt change, dependency, model request or bridge reload
+is required for this conversion. A source change does require a game build and
+separately coordinated save/update before affecting a running host.
+
 ## Owner setup
 
 The game never performs model HTTP calls. A separately supervised Python 3.10+

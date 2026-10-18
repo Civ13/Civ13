@@ -7,6 +7,8 @@ from pathlib import Path
 import subprocess
 import tempfile
 
+from render_contract import validate as validate_render
+
 ROOT = Path(__file__).resolve().parents[2]
 PRELUDE = '''
 #define TRUE 1
@@ -272,6 +274,20 @@ var/failures = 0
     var/rendered = H.render_answer("<script>alert('x')</script>")
     check(!findtext(rendered, "<script>"), "escaped HTML")
     check(findtext(rendered, "&lt;script&gt;"), "text retained")
+    var/list/render_cases = json_decode(file2text("render-cases.json"))
+    var/list/render_results = list()
+    for (var/list/render_case in render_cases)
+        var/html = H.render_answer(render_case["markdown"])
+        for (var/expected in render_case["contains"])
+            check(findtextEx(html, expected), "Markdown required text: [render_case["name"]]")
+        for (var/forbidden in render_case["absent"])
+            check(!findtextEx(html, forbidden), "Markdown forbidden text: [render_case["name"]]")
+        render_results += list(list("name" = render_case["name"], "html" = html))
+    text2file(json_encode(render_results), "render-results.json")
+    var/oversized_answer = ""
+    for (var/i = 1, i <= 4001, i++)
+        oversized_answer += "x"
+    check(findtext(H.render_answer(oversized_answer), "usable response"), "renderer enforces answer bound")
     text2file(json_encode(list("id"="old", "status"="ok", "answer"="old answer")), "spool/1.response.json")
     check(isnull(H.matching_response(1, "new")), "wrong response identity rejected")
     check(islist(H.matching_response(1, "old")), "matching response accepted")
@@ -303,6 +319,7 @@ def main():
         temp = Path(directory)
         (temp / 'spool').mkdir()
         production = (ROOT / 'code/game/mob/player_help.dm').read_text()
+        (temp / 'render-cases.json').write_bytes((ROOT / 'tests/player_help/render-cases.json').read_bytes())
         if production.count('/client/verb/ask_player_help()') != 1 or '/mob/verb/ask_player_help()' in production:
             raise SystemExit('Help must have one client-owned verb, matching Adminhelp ownership')
         # Inject only the unavailable native client/input boundary. The actual
@@ -323,7 +340,10 @@ def main():
         elif args.negative_control == 'player-context':
             production = production.replace('round(100 * H.health / max(1, H.maxHealth))', '100')
         elif args.negative_control == 'escaping':
-            production = production.replace('html_encode(answer)', 'answer')
+            target = '/datum/player_help_service/proc/markdown_text(value)\n\treturn html_encode(value)'
+            if production.count(target) != 1:
+                raise SystemExit('Escaping control target changed')
+            production = production.replace(target, '/datum/player_help_service/proc/markdown_text(value)\n\treturn value')
         elif args.negative_control == 'heartbeat':
             production = production.replace('return heartbeat_confirmed && world.time - heartbeat_time < 100', 'return TRUE')
         elif args.negative_control == 'identity':
@@ -335,7 +355,8 @@ def main():
         built = subprocess.run([str(compiler), 'probe.dme'], cwd=temp, capture_output=True, text=True, timeout=90)
         (temp / 'compile.log').write_text(built.stdout + built.stderr)
         print(built.stdout)
-        if built.returncode or '0 errors, 0 warnings' not in built.stdout or '516.1681' not in built.stdout:
+        if (built.returncode or '0 errors, 0 warnings' not in built.stdout or '516.1681' not in built.stdout
+                or 'invalid file' in (built.stdout + built.stderr).lower()):
             raise SystemExit('Fixture compilation failed')
         ran = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-trusted', '-close', '-log', 'probe.log'], cwd=temp, capture_output=True, text=True, timeout=40)
         output = ran.stdout + ran.stderr + (temp / 'probe.log').read_text(errors='replace')
@@ -364,6 +385,12 @@ def main():
             print(output)
             raise SystemExit('Native help probe failed')
         else:
+            cases = json.loads((temp / 'render-cases.json').read_text())
+            results = json.loads((temp / 'render-results.json').read_text())
+            if [row['name'] for row in results] != [case['name'] for case in cases]:
+                raise SystemExit('Native render cases missing or reordered')
+            for case, result in zip(cases, results):
+                validate_render(case, result['html'])
             print('Native help probe PASS')
 
 
