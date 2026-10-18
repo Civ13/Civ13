@@ -58,3 +58,11 @@ Offline tests validate the launcher's evidence oracle without starting a process
 Preparation, unique omission targets and offline success do not establish native
 compilation/assertions, client behavior, production memory headroom or OOM safety.
 See `docs/new-z-budget.md` for the separate calibrated-profile prerequisite.
+
+Compiler evidence requires one exact `DM compiler version 516.1681` line and
+one exact `probe.dmb - 0 errors, 0 warnings` result (with the bounded native
+date/time suffix allowed), in that order, within a 1 MiB log. Prefix/suffix
+bait, longer versions, duplicate banners/results, contaminated summaries,
+nonzero exits and OOM/out-of-memory/access-violation/crash diagnostics reject
+evidence even when a positive or intended-control result exists. Offline tests
+exercise these rejection vectors; they do not execute native binaries.

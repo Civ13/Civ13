@@ -1,6 +1,6 @@
 """Offline oracle checks; these tests never launch a compiler/runtime."""
 import unittest
-from run import validate_native
+from run import MAX_COMPILE_LOG, validate_compile, validate_native
 
 
 class RunnerEvidenceTests(unittest.TestCase):
@@ -9,6 +9,47 @@ class RunnerEvidenceTests(unittest.TestCase):
                       maxz=9, default_refusal=1, existing_plane=1)
         result.update(updates)
         return result
+
+    def compiler_log(self, banner='DM compiler version 516.1681', result='probe.dmb - 0 errors, 0 warnings'):
+        return banner + '\nloading probe.dme\nsaving probe.dmb (DEBUG mode)\n' + result + '\nTotal time: 0:06\n'
+
+    def test_exact_compiler_evidence(self):
+        validate_compile(0, self.compiler_log())
+        validate_compile(0, self.compiler_log(result='probe.dmb - 0 errors, 0 warnings (10/18/26 4:39 pm)').replace('\n', '\r\n'))
+
+    def test_compiler_banner_rejection_vectors(self):
+        for banner in ['DM compiler version 516.1682', 'prefix DM compiler version 516.1681',
+                       'DM compiler version 516.16810', 'DM compiler version 516.1681 suffix',
+                       'DM compiler version 516.1681\nDM compiler version 516.1681',
+                       'DM compiler version 516.1681\nDM compiler version 516.1682', '']:
+            with self.subTest(banner=banner), self.assertRaises(RuntimeError):
+                validate_compile(0, self.compiler_log(banner=banner))
+
+    def test_compiler_summary_rejection_vectors(self):
+        for result in ['prefix probe.dmb - 0 errors, 0 warnings', 'probe.dmb - 0 errors, 0 warnings suffix',
+                       'probe.dmb - 10 errors, 0 warnings', 'probe.dmb - 0 errors, 10 warnings',
+                       'other.dmb - 0 errors, 0 warnings',
+                       'probe.dmb - 0 errors, 0 warnings\nprobe.dmb - 0 errors, 0 warnings',
+                       'probe.dmb - 1 error, 0 warnings\nprobe.dmb - 0 errors, 0 warnings',
+                       'probe.dmb - 0 errors, 0 warnings\nwarning: injected',
+                       'probe.dmb - 0 errors, 0 warnings (unbounded contamination)', '']:
+            with self.subTest(result=result), self.assertRaises(RuntimeError):
+                validate_compile(0, self.compiler_log(result=result))
+        for exit_code, log in [(1, self.compiler_log()), (0, 'x' * (MAX_COMPILE_LOG + 1)),
+                               (0, 'probe.dmb - 0 errors, 0 warnings\nDM compiler version 516.1681')]:
+            with self.subTest(exit_code=exit_code, length=len(log)), self.assertRaises(RuntimeError):
+                validate_compile(exit_code, log)
+
+    def test_fatal_diagnostics_reject_compile_positive_and_expected_control(self):
+        receipt = self.receipt(maxz=2, checks=22, default_refusal=0, existing_plane=0)
+        for diagnostic in ['OOM', 'out of memory', 'Access violation', 'CRASH', 'crashed']:
+            with self.subTest(diagnostic=diagnostic):
+                with self.assertRaises(RuntimeError):
+                    validate_compile(0, self.compiler_log() + diagnostic)
+                with self.assertRaises(RuntimeError):
+                    validate_native(0, diagnostic, 'PASS: new-z budget', self.receipt(), None)
+                with self.assertRaises(RuntimeError):
+                    validate_native(0, diagnostic, 'FAIL: default unmeasured roof preserves paid builder and grid', receipt, 'memory-admission')
 
     def test_complete_positive(self):
         validate_native(0, '', 'PASS: new-z budget', self.receipt(), None)
