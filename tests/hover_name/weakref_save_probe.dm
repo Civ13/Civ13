@@ -55,8 +55,10 @@
 	// Reproduce an old completed v2 save: the cached handle holds another
 	// process's native ref string, not a durable entry reference to its owner.
 	F["[path]/weak_reference"] << list("kind" = "entry", "ref" = 900)
-	F["/entries/900/type"] << /datum/weakref
-	F["/entries/900/reference"] << list("kind" = "value", "value" = REF(H))
+	var/weak_path = map_storage.entry_path(F, 900)
+	F["[weak_path]/type"] << /datum/weakref
+	F["[weak_path]/reference"] << list("kind" = "value", "value" = REF(H))
+	check(F["[weak_path]/type"] == /datum/weakref, "historical weak handle schema invalid")
 	F = null
 	F = new("weakref-runtime.sav")
 	map_storage.clear_bookkeeping()
