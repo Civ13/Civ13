@@ -386,7 +386,8 @@ var/global/datum/player_help_service/player_help_service = new
 /datum/player_help_service/proc/markdown_answer(answer)
 	if (!istext(answer) || length(answer) > 4000)
 		return "<p>AI gameplay help did not receive a usable response.</p>"
-	answer = replacetext(replacetext(answer, "\r\n", "\n"), "\r", "\n")
+	var/carriage_return = ascii2text(13)
+	answer = replacetext(replacetext(answer, "[carriage_return]\n", "\n"), carriage_return, "\n")
 	var/list/lines = splittext(answer, "\n")
 	var/result = ""
 	var/paragraph = FALSE
