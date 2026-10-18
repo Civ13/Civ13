@@ -31,6 +31,10 @@
 			old_turf = saved_turfs["[ind]"]
 			if(!old_turf)
 				throw EXCEPTION("Missing coordinate for turf entry [ind]")
+		// Map reservation policy is never restored from a save. Even same-type
+		// and legacy entries activate their destination before payload construction.
+		if (old_turf)
+			old_turf.activate_reserved_lighting()
 		if(lag_fix)
 			so_far++
 			if(so_far > per_pause)

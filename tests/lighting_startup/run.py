@@ -57,7 +57,10 @@ def prepare(repo, mode, negative=False, bulk_order_control=False, inactive_corne
         anchor = "\t\tactivate_existing_lighting_corners()\n"
         assert system.count(anchor) == 1, "Corner reconciliation anchor changed"
         system = system.replace(anchor, "", 1)
-    production = system + corner + overlay + turf_new + clear_overlay + build_overlay + support
+    reserved_helper = ""
+    if "omit_reserved_lighting_overlay" in originals[TURF]:
+        reserved_helper = "/turf/var/tmp/lighting_reserved = FALSE\n" + re.search(r"^/turf/proc/omit_reserved_lighting_overlay\([\s\S]*?(?=^// Clearing)", originals[TURF], re.M).group()
+    production = system + corner + overlay + turf_new + clear_overlay + build_overlay + support + "\n" + reserved_helper
     files = {"production.dm": production, "probe.dm": (repo/"tests/lighting_startup/probe.dm").read_text(),
              "probe.dme": '#define TRUE 1\n#define FALSE 0\n#define ASSERT(x) if (!(x)) CRASH("assertion")\n#define PoolOrNew probe_pool\n#define GAME_STATE_PREGAME 0\n#include "probe.dm"\n#include "production.dm"\n'}
     if mode == "candidate": files["probe.dme"] = "#define PROBE_CANDIDATE\n" + files["probe.dme"]

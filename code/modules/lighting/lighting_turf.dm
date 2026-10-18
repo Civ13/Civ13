@@ -1,4 +1,7 @@
 /turf
+	// Map-authored, pre-startup policy only. Never infer this from empty space or z.
+	// Activation is one-way; imported cells deliberately fail open to ordinary lighting.
+	var/tmp/lighting_reserved = FALSE
 	var/dynamic_lighting = TRUE
 	luminosity		   = TRUE
 
@@ -60,6 +63,8 @@
 		sleep(world.tick_lag)
 	// An interrupted startup releases its waiters without publishing readiness.
 	if (startup_request && !created_lighting_corners_and_overlays)
+		return
+	if (omit_reserved_lighting_overlay())
 		return
 	if (!lighting_overlay)
 		var/area/A = loc
@@ -188,3 +193,35 @@
 		. = FALSE
 
 	return .
+
+// Keep the ordinary corner graph and a visible one-tile halo. No shared corner
+// is removed. Map authors may opt in only unreachable, not-yet-built interiors.
+/turf/proc/omit_reserved_lighting_overlay()
+	if (!lighting_reserved)
+		return FALSE
+	if (x == 1 || y == 1 || x == world.maxx || y == world.maxy)
+		return FALSE
+	var/area/A = get_area(src)
+	if (!A || !A.dynamic_lighting)
+		return FALSE
+	for (var/turf/T in range(1, src))
+		if (!T.lighting_reserved)
+			return FALSE
+	return TRUE
+
+// Clearing a reservation exposes the neighboring halo as well. Existing corner
+// luminosities and source memberships are current even while overlays are absent.
+/turf/proc/activate_reserved_lighting()
+	if (!lighting_reserved)
+		return
+	lighting_reserved = FALSE
+	if (!created_lighting_corners_and_overlays && !lighting_startup_in_progress)
+		return
+	for (var/turf/T in range(1, src))
+		if (!T.omit_reserved_lighting_overlay())
+			T.lighting_build_overlay()
+			if (T.lighting_overlay)
+				T.lighting_overlay.TOD = time_of_day
+				T.lighting_overlay.update_overlay()
+				if (processes.time_of_day_change && processes.time_of_day_change.setup_lighting)
+					T.lighting_overlay.invisibility = 0

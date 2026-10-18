@@ -1,0 +1,43 @@
+# Reserved lighting overlay candidate
+
+Opt-in map policy `lighting_reserved = TRUE` suppresses overlays only in the
+interior of an explicitly reserved region. A one-tile halo retains overlays.
+All original corners, masters, light accumulations and source memberships remain.
+No map opts in. Empty cells, void areas and z levels do not imply reservation.
+
+Only set the marker in map definitions before lighting startup. Never enable a
+reservation on a running tile. `activate_reserved_lighting()` clears it one way,
+builds newly exposed halo overlays from the existing graph, and applies current
+daylight/TOD/visibility. Construction through `ChangeTurf`, including same-type
+requests, activates. Imports activate before decoding payload and ignore any
+saved reservation value. Saved/restored cells deliberately lose this optional
+allocation optimization; legacy saves fail open to ordinary lighting.
+
+`prepare.py --output <fresh-directory>` writes selected production copies and a
+full-source DME referencing this checkout, with normal startup/maps disabled.
+It does not launch or discover a compiler. `--control` makes an explicit mutation
+in generated copies only. `test_prepare.py` checks extraction and mutation scope,
+not behavior. Existing lighting-startup extraction includes the default-false
+helper; its historical fixture still checks its own unchanged contracts.
+Before eventual compilation, the coordinator's isolated launcher must place the
+prepared DME in the checkout root so existing resource paths resolve; this
+preparer does not compile the DME from the output directory.
+
+The new native fixture is **uncompiled and unrun**. Expected allocation counts
+are assertions to verify, not results: 256 normal overlays versus 220 for an
+8x8 reserved region on a 16x16 world, with 289 shared corners in both modes.
+It records normal/halo color, luminosity, ownership and source membership rows,
+torch movement, daylight, opacity, activation, replacement and native entry
+roundtrip. Paired runs must compare complete states.jsonl rows. Further native
+controls for direct pooled constructors, ice repair, carried sources, repeat
+activation/startup, cancellation and startup-yield races remain required.
+The import-only control is a source mutation, not yet an independently proven
+runtime oracle: ChangeTurf also activates as defense in depth.
+
+Do not launch the fixture until the coordinator releases the native hold and
+reviews the exact candidate and launch plan. Use pinned BYOND 516.1681, temporary
+storage, closed ports and diagnostic scanning. No CI suite has been registered;
+root coordinates shared CI selection after review. Compiler success alone will
+not establish allocation counts or lighting parity. No memory/speed gain measured.
+The marker adds a scalar field to every turf, including ordinary cells. That cost
+is unmeasured. Overlay counts alone cannot establish a net reduction in RAM.

@@ -2,6 +2,8 @@
 /turf/proc/ChangeTurf(var/path, var/tell_universe=1, var/force_lighting_update = FALSE)
 	if (!path)
 		return
+	// Construction/replacement is an explicit activation, including same-type use.
+	activate_reserved_lighting()
 	if(path == type)
 		return src
 

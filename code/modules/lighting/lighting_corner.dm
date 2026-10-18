@@ -81,7 +81,7 @@
 	active = FALSE
 	for (var/TT in masters)
 		var/turf/T = TT
-		if (T.lighting_overlay)
+		if (T.lighting_overlay || T.omit_reserved_lighting_overlay())
 			active = TRUE
 
 // God that was a mess, now to do the rest of the corner code! Hooray!
