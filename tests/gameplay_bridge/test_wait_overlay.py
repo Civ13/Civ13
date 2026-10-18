@@ -2,13 +2,12 @@
 import difflib
 import hashlib
 from pathlib import Path
-import subprocess
 import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts" / "gameplay_bridge"))
-from wait_overlay import BASE_COMMIT, BASE_RAW_SHA256, guarded_source, unguarded_source
+from wait_overlay import PUBLIC_BASE_SHA256, guarded_source, unguarded_source
 
 
 def abstract_wait(source, *, delay=1, entry=True, wake=True, final=True, replace=False,
@@ -37,16 +36,14 @@ def abstract_wait(source, *, delay=1, entry=True, wake=True, final=True, replace
 class WaitOverlayTests(unittest.TestCase):
     def setUp(self):
         self.path = ROOT / "code/_helpers/mobs.dm"
-        # Historical accepted overlay ONLY; successor's shared helper is untouched.
-        self.source = subprocess.check_output(["git", "show", "aeaf00ae77dfca70c24b05ccce46434629469571:code/_helpers/mobs.dm"], cwd=ROOT).decode().replace("\r\n", "\n")
+        # In-memory abstract overlay on PUBLIC source, never applied/accepted.
+        self.source = guarded_source(self.path.read_text(encoding="utf-8"))
         self.baseline = unguarded_source(self.source)
 
-    def test_disabled_path_matches_immutable_owner_baseline_exactly(self):
-        result = subprocess.run(["git", "show", BASE_COMMIT + ":code/_helpers/mobs.dm"],
-                                cwd=ROOT, capture_output=True, timeout=10, check=True)
-        baseline = result.stdout.decode().replace("\r\n", "\n")
+    def test_abstract_disabled_path_matches_unmodified_public_helper(self):
+        baseline = self.path.read_text(encoding="utf-8")
         self.assertEqual(self.baseline, baseline)
-        self.assertEqual(hashlib.sha256(result.stdout).hexdigest(), BASE_RAW_SHA256)
+        self.assertEqual(hashlib.sha256(baseline.encode()).hexdigest(), PUBLIC_BASE_SHA256)
         self.assertEqual(guarded_source(baseline), self.source)
         # All disabled text is exactly preserved, including signature/defaults.
         self.assertEqual(abstract_wait(self.source, enabled=False), (True, True))
@@ -89,15 +86,9 @@ class WaitOverlayTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             guarded_source(self.baseline.replace("\t\tsleep(0.1)\n", "\t\tsleep(1)\n"))
 
-    def test_historical_patch_is_exact_and_current_helper_remains_unmodified(self):
-        patch = ROOT / "code/modules/gameplay_bridge/do_after.guard.patch"
-        relative = "code/_helpers/mobs.dm"
-        expected = "".join(difflib.unified_diff(self.baseline.splitlines(True), self.source.splitlines(True), fromfile="a/" + relative, tofile="b/" + relative))
-        self.assertEqual(patch.read_text(encoding="utf-8"), expected)
-        self.assertNotIn(b"\r\n", patch.read_bytes())
+    def test_current_public_helper_remains_unmodified_and_not_source_patched(self):
         current = self.path.read_text(encoding="utf-8")
-        expected_current = subprocess.check_output(["git", "show", "331117df900476ded8afbc5317c1dedb6b884825:code/_helpers/mobs.dm"], cwd=ROOT).decode().replace("\r\n", "\n")
-        self.assertEqual(current, expected_current)
+        self.assertEqual(hashlib.sha256(current.encode()).hexdigest(), PUBLIC_BASE_SHA256)
         self.assertNotIn("CIV13_GAMEPLAY_WAIT_GUARDS", current)
         self.assertIn("user.survival_action_finished()", current)
         self.assertNotEqual(current, self.source)

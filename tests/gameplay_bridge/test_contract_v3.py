@@ -142,6 +142,22 @@ class ContractV3(unittest.TestCase):
         self.assertEqual(self.b.cancel_id,"request-1")
         self.assertEqual(self.b.inflight,"request-1")
 
+    def test_uncertain_game_receipt_never_acknowledges_quiescence(self):
+        self.b.submit(proposal()); self.exchange(snapshot(2))
+        uncertain={"request_id":"request-1","status":"unknown","reason":"transport_uncertain","detail":""}
+        with self.assertRaisesRegex(Rejected,"receipt"):
+            self.exchange(snapshot(3,2),uncertain)
+        self.assertEqual(self.b.inflight,"request-1")
+        self.now += 1.1
+        self.exchange(snapshot(3,2))
+        with self.assertRaisesRegex(Rejected,"busy"):
+            self.b.submit(proposal(snapshot(3,2),request_id="request-2"))
+        self.now += 31
+        self.assertEqual(self.control()["status"],"unknown")
+        self.exchange(snapshot(4,2),{"request_id":"request-1","status":"completed","reason":"none","detail":""})
+        self.assertEqual(self.control()["status"],"completed")
+        self.assertEqual(self.b.submit(proposal(snapshot(4,2),request_id="request-2"))["status"],"queued")
+
     def test_mutating_caller_proposal_cannot_change_validated_dispatch(self):
         original=proposal(); self.b.submit(original)
         original["action"]["direction"]="/proc/hidden"

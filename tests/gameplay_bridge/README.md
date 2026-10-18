@@ -6,8 +6,8 @@ the original checkout and packet are untouched. See `docs/gameplay-bridge.md`.
 
 The new contract tests exercise the actual Python mailbox/history with inert
 transports/time. DM omission controls are structural, not a DM interpreter.
-Historical wait tests read accepted aeaf source in memory and separately prove
-the actual helper equals331 with NO wait marker. This does not accept current
+Wait tests transform the public helper in memory and pin the public331/ec5
+normalized hash without requiring private Git objects. The helper has NO marker. This does not accept current
 timed actions. Successor native preparation fails before output when guards are
 missing; no successor native packet was prepared or executed.
 

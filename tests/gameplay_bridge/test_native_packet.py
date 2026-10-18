@@ -5,23 +5,23 @@ import json
 from pathlib import Path
 import sys
 import tempfile
-import subprocess
 import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts/gameplay_bridge"))
 from prepare_native import GUARDS, NATIVE, PROFILES, helper_variant, isolated_startup, prepare, profile_contract, resource_literals, selected_files
+from wait_overlay import guarded_source
 from check_native_packet import CONTROL_FAILURE, ORDINARY, inside, verify_prepared, verify_result
 
 
 class NativePacketTests(unittest.TestCase):
     def test_helper_controls_preserve_source_and_omit_only_requested_guard(self):
-        # Historical packet transformation, not successor native integration.
+        # Pure in-memory transform on public source; NOT native integration.
         current = (ROOT / "code/_helpers/mobs.dm").read_text(encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "missing gameplay guards"):
             helper_variant(current, "headless")
-        source = subprocess.check_output(["git", "show", "aeaf00ae77dfca70c24b05ccce46434629469571:code/_helpers/mobs.dm"], cwd=ROOT).decode().replace("\r\n", "\n")
+        source = guarded_source(current)
         self.assertEqual(helper_variant(source,"headless"),source)
         self.assertEqual(helper_variant(source,"baseline"),helper_variant(source,"no_hook"))
         for profile, block in GUARDS.items():

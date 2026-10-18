@@ -2,9 +2,10 @@
 
 This successor selectively carries the existing private bridge from frozen
 `aeaf00ae77dfca70c24b05ccce46434629469571` onto master
-`331117df900476ded8afbc5317c1dedb6b884825`. It is excluded from `civ13.dme`.
-No compiler, daemon, client, listener, model, live query, configuration or
-credential provisioning was performed. No source publication or activation.
+`ec5e2f403a01d6d5ad26e6e5e714aa9d0e9b8419`. It is excluded from `civ13.dme`.
+The feature remains disabled and no world, client, listener, model, live query,
+configuration or credentials are activated. Compile-only CI is separate from
+runtime verification and does not establish connected-client acceptance.
 
 ## Discovery and versioning
 
@@ -121,9 +122,9 @@ percentage or retrospective engine event trace.
 Current331 do_after/do_mob have survival callbacks absent from the historical
 approved helper. The ENTIRE shared helper is unchanged. Without the bridge wait
 marker timed affordances fail closed. The historical patch is retained for review
-ONLY; tests read immutable aeaf source in memory and separately prove actual
-current helper equality with331. Historical tests do not accept current timed
-actions. Overlay CLI rejects current drift; native preparation refuses missing
+ONLY; tests transform the public helper IN MEMORY and pin its normalized public331/ec5
+hash without private Git objects. These abstract source checks do not accept
+current hook integration or timed actions. Overlay CLI rejects current drift; native preparation refuses missing
 guards before creating a packet. Do not apply the historical patch blindly.
 
 Agent Join, containers, general equipment/repair, rest/sleep, combat, respawn,
@@ -135,14 +136,18 @@ Player lawsets remain null; they cannot grant station/admin authority.
 ## Verification and next integration
 
 Offline tests run actual Python schemas/mailbox/history/rate/idempotency/cancel
-with synthetic data and inert transports, historical abstract wait controls and
+with synthetic data and inert transports, public in-memory abstract wait controls and
 structural DM omission checks. They do not compile DM or establish native stable
 IDs/cancellation. Historical native profiles remain not_run; ordinary-client
-bootstrap, adverse fixtures and E2E HTTP driver are still missing. No CI workflow
-or shared source has changed, and this suite has no CI registration yet.
+bootstrap, adverse fixtures and E2E HTTP driver are still missing. CI registers these offline checks and a separate bounded compile-only closure
+using pinned516.1681 with the actual bridge/catalog and NO wait marker. It copies
+tracked source/static assets only, not server config; it never launches a daemon
+or client. Compiler logs and the source manifest are retained, without binaries.
+No shared game source or production DME is changed. Compile-only success must be
+reported from exact-head CI; it does not establish native runtime behavior.
 
 Next is independent immutable checkpoint review, separately allocated shared
-hook/CI/native reconciliation, then ordinary Join->human->visible item->pickup->
+hook/native reconciliation, then ordinary Join->human->visible item->pickup->
 walk->inspect->idempotent result->STOP. Native physical Join/menu acceptance and
 genuine pre-save lighting baseline remain core/UI work. Backend agent Join must
 never substitute for that proof. Broad survival/mode claims need their own evidence.

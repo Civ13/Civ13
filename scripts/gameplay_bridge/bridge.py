@@ -16,7 +16,7 @@ from pathlib import Path
 import re
 import secrets
 import time
-from catalog import (CAPABILITIES, RECIPES, REASONS, STATES, TERMINAL,
+from catalog import (CAPABILITIES, RECIPES, REASONS, STATES, TERMINAL, WIRE_FINAL,
                      CONTROL_FIELDS, QUERY_FIELDS, ENVELOPE_FIELDS, action_error, discovery)
 from observations import ObservationHistory
 
@@ -195,7 +195,7 @@ class Broker:
             modern = obs["version"] == 3
             exact(receipt, {"request_id", "status", "detail", "reason"} if modern else {"request_id", "status", "detail"})
             require(identifier(receipt["request_id"]) and receipt["status"] in
-                    (TERMINAL if modern else ("executed", "blocked", "cancelled", "stale", "unsupported", "invalid")) and text(receipt["detail"], 512), "receipt")
+                    (WIRE_FINAL if modern else ("executed", "blocked", "cancelled", "stale", "unsupported", "invalid")) and text(receipt["detail"], 512), "receipt")
             if modern:
                 require(isinstance(receipt["reason"], str) and receipt["reason"] in REASONS, "receipt")
                 require((receipt["status"] == "completed") == (receipt["reason"] == "none"), "receipt")

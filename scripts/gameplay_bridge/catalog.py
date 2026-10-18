@@ -29,6 +29,8 @@ REASONS = frozenset({"none", "invalid_request", "unsupported_action", "stale_obs
                      "no_verified_state_change", "cancel_requested", "cancelled",
                      "transport_uncertain", "receipt_expired", "stopped"})
 TERMINAL = frozenset({"completed", "denied", "cancelled", "failed", "unknown"})
+# Query uncertainty is not a game acknowledgement of worker quiescence.
+WIRE_FINAL = TERMINAL - {"unknown"}
 STATES = TERMINAL | {"queued", "dispatched", "running", "cancel_requested"}
 CONTROL_FIELDS = frozenset({"version", "operation", "assignment", "epoch", "request_id"})
 QUERY_FIELDS = frozenset({"version", "epoch", "base_seq"})
