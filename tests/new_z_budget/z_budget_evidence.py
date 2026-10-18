@@ -22,4 +22,3 @@ def validate_compile(exit_code, log, artifact="probe.dmb"):
         raise RuntimeError('Exactly one bounded clean compiler result required')
     if lines.index(banners[0]) >= lines.index(results[0]):
         raise RuntimeError('Compiler result preceded its banner')
-
