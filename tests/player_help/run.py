@@ -230,6 +230,10 @@ var/failures = 0
     check(B.enqueue(md5("backend success"), "Question", null) == TRUE, "actual queue publishes request")
     var/list/sent = B.read_json("spool/1.request.json", 16384)
     check(sent["account"] == md5("backend success") && sent["question"] == "Question", "server request includes bounded account and question")
+    var/list/render_contract = sent["render_contract"]
+    check(islist(render_contract) && render_contract.len == 2 && render_contract["version"] == 1, "actual request advertises render protocol")
+    var/list/render_capabilities = islist(render_contract) ? render_contract["capabilities"] : null
+    check(islist(render_capabilities) && render_capabilities.len == 1 && render_capabilities[1] == "markdown-basic-v1", "actual request advertises Markdown capability")
     text2file(json_encode(list("id"=sent["id"], "status"="unavailable")), "spool/1.response.json")
     B.poll()
     check(!B.pending.len && !fexists("spool/1.ready"), "failed response releases queue and removes dispatch marker")

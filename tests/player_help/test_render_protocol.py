@@ -123,4 +123,3 @@ class RenderProtocolTests(unittest.TestCase):
             self.assertEqual(instance.answer(self.request_value(include=False)),
                              {'id': '1-2-3', 'status': 'unavailable'})
             instance.close()
-
