@@ -72,7 +72,7 @@
 	text2file(json_encode(list("corners" = corners.len, "initial_lists" = initial_lists)), "lighting-allocation-initial.json")
 	durable_world_check(corners.len > 2 && initial_lists == 0, "untouched corners allocated affecting lists")
 	var/obj/item/persistence_custom_light/first = new(locate(2,2,2))
-	var/obj/item/persistence_custom_light/second = new(locate(6,6,2))
+	var/obj/item/persistence_custom_light/second = new(locate(8,8,2))
 	first.set_light(2, 1, "#ff0000")
 	second.set_light(2, 1, "#0000ff")
 	var/datum/light_source/A = first.light
