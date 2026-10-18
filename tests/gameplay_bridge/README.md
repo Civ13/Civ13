@@ -97,6 +97,13 @@ gaps; headless or Python results cannot satisfy those acceptance cases.
 2. `gather` grass via its normal 30-tick/tool/busy path. Require the turf change
    and exactly two actual grass cuttings. Drop flint, pick up cuttings, craft
    `grass_twine`; require two paid cuttings and one real twine, no duplication.
+   Repeat the prepared `gather_tools` routine with each exact tall-grass object
+   type on a lit adjacent floor. Require plant retirement and the same two
+   cuttings, twine and axe conservation while the underlying turf stays intact.
+   The ordinary animal-harvest fixture separately prepares interrupted and
+   competing tall-grass cuts. These added DM cases remain unexecuted; offline
+   broker tests only cover advertised entity dispatch and refusal without an
+   affordance, and do not prove DM behavior or client gameplay.
 3. Recover flint; `sharpen_stick` uses the real 80-tick handler, then
    `bind_flint_axe` uses the real 100-tick head/stick/twine path. Require exact
    binding consumption, used head/stick retirement and one real weak-binding

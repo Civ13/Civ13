@@ -11,6 +11,9 @@
 	var/obj/item/weapon/flint/F = actor ? actor.get_active_hand() : null
 	return F && (F.type == /obj/item/weapon/flint || F.type == /obj/item/weapon/flint/sharpened) && F.loc == actor && F.sharpened ? F : null
 
+/datum/gameplay_bridge/proc/grass_target(atom/A)
+	return A && (A.type == /turf/floor/grass || A.type == /obj/structure/wild/tallgrass || A.type == /obj/structure/wild/tallgrass2)
+
 /datum/gameplay_bridge/proc/held_cup()
 	var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/C = actor ? actor.get_active_hand() : null
 	return C && C.type == /obj/item/weapon/reagent_containers/food/drinks/drinkingglass && C.loc == actor && C.is_open_container() && C.reagents && C.reagents.total_volume < C.volume ? C : null
@@ -188,7 +191,7 @@
 	if (!target || target.gcDestroyed || target.gc_destroyed || target.loc != target_loc || !((target.loc == body && (target == body.l_hand || target == body.r_hand)) || (owner.visible(target) && get_dist(body, target) <= 1)))
 		return FALSE
 	if (kind == "gather")
-		return target.type == /turf/floor/grass && owner.sharp_flint() == tool
+		return owner.grass_target(target) && owner.sharp_flint() == tool
 	if (kind == "refill")
 		return owner.wait_guards_ready() && owner.water_target(target) && owner.held_cup() == tool
 	if (kind == "drink")
@@ -261,13 +264,17 @@
 /datum/gameplay_bridge/proc/survival_action(kind, atom/target, recipe)
 	if (!(kind in affordances(target, target.loc == actor)) || !actor.canClick() || world.time <= actor.next_click || !actor.can_use_hands() || actor.in_throw_mode || actor.using_object)
 		return FALSE
-	if (kind == "gather" && wait_guards_ready() && target.type == /turf/floor/grass)
+	if (kind == "gather" && wait_guards_ready() && grass_target(target))
 		var/obj/item/weapon/flint/F = sharp_flint()
 		var/before = stock(/obj/item/stack/grass_cuttings)
 		if (!F || before < 0)
 			return FALSE
-		var/turf/floor/grass/G = target
-		G.attackby(F, actor)
+		if (isturf(target))
+			var/turf/floor/grass/G = target
+			G.attackby(F, actor)
+		else
+			var/obj/structure/wild/G = target
+			G.attackby(F, actor)
 		return active(action_lease.run_generation) && stock(/obj/item/stack/grass_cuttings) == before + 2
 	if (kind == "refill" && wait_guards_ready() && water_target(target))
 		var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/C = held_cup()
