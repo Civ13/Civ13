@@ -22,10 +22,12 @@
 	var/obj/wear_mask
 	var/obj/head
 	var/werewolf = FALSE
-	var/datum/body_build
+	var/datum/hover_body_build/body_build
 	var/title
 	var/religious_title
 /obj/var/flags_inv = 0
+/datum/hover_body_build
+	var/name
 /datum/hover_client
 	var/mob/mob
 	var/list/screen = list()
