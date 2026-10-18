@@ -13,6 +13,25 @@ from compile_check import compile_dme, prepare, run, verify_log
 
 
 class CompileCheck(unittest.TestCase):
+    def test_ci_compiles_fresh_exact_head_not_generated_workspace(self):
+        workflow=(ROOT/".github/workflows/test.yml").read_text(encoding="utf-8")
+        step=workflow.split("      - name: Compile disabled gameplay bridge closure without running it\n",1)[1].split("      - name:",1)[0]
+        required=(
+            'git status --short --untracked-files=no > "$RUNNER_TEMP/gameplay-bridge-source-status.txt"',
+            'compile_source="$RUNNER_TEMP/gameplay-bridge-source"',
+            'test ! -e "$compile_source"',
+            'git worktree add --detach "$compile_source" "$CIV13_EXPECTED_COMMIT"',
+            'test "$(git -C "$compile_source" rev-parse HEAD)" = "$CIV13_EXPECTED_COMMIT"',
+            'python3 -B "$compile_source/scripts/gameplay_bridge/compile_check.py"',
+            '--byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"',
+            '--expected-commit "$CIV13_EXPECTED_COMMIT"')
+        def bound(text): return all(anchor in text for anchor in required)
+        self.assertTrue(bound(step))
+        self.assertLess(step.index(required[3]),step.index(required[5]))
+        for anchor in (required[3],required[4],required[5]):
+            self.assertFalse(bound(step.replace(anchor,"omitted",1)))
+        self.assertNotIn("git reset",step)
+
     def test_actual_dme_closure_is_no_map_no_hook_and_same_production_module(self):
         result=compile_dme((ROOT/"civ13.dme").read_text())
         self.assertIn('#define CIV13_GAMEPLAY_BRIDGE\n',result)
