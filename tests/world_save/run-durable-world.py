@@ -18,6 +18,8 @@ def main():
     parser.add_argument('--prepare-only', action='store_true')
     parser.add_argument('--lighting', action='store_true',
                         help='Run real lighting constructors and legacy runtime graph recovery')
+    parser.add_argument('--wounds', action='store_true',
+                        help='Run production lost-limb wound disk recovery and constructor checks')
     parser.add_argument('--dimension-bootstrap', action='store_true',
                         help='Run fresh expanded round-v2 writer and compiled-size reader processes')
     parser.add_argument('--recovery-reconnect', action='store_true',
@@ -27,8 +29,12 @@ def main():
     parser.add_argument('--startup-only', action='store_true',
                         help='Diagnose production initialization without running any persistence assertions')
     parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
-    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity', 'lighting-view', 'shutdown-return'))
+    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity', 'lighting-view', 'shutdown-return', 'wound-restore'))
     args = parser.parse_args()
+    if args.wounds and (args.lighting or args.dimension_bootstrap or args.recovery_reconnect or args.lifecycle_shutdown or args.startup_only or args.negative_control not in (None, 'wound-restore')):
+        parser.error('Wound recovery runs separately from other fixture modes')
+    if args.negative_control == 'wound-restore' and not args.wounds:
+        parser.error('Wound control requires --wounds')
     lighting_control = bool(args.negative_control and args.negative_control.startswith('lighting-'))
     if args.lighting and (args.dimension_bootstrap or args.recovery_reconnect or args.lifecycle_shutdown or args.startup_only or (args.negative_control and not lighting_control)):
         parser.error('Lighting recovery runs separately from other fixture modes')
@@ -54,6 +60,7 @@ def main():
     dme = root / (prefix + '.dme')
     generated = []
     receipt = {'profile': args.profile, 'negative_control': args.negative_control,
+               'wounds': args.wounds,
                'lighting': args.lighting,
                'dimension_bootstrap': args.dimension_bootstrap, 'recovery_reconnect': args.recovery_reconnect,
                'lifecycle_shutdown': args.lifecycle_shutdown,
@@ -91,7 +98,14 @@ def main():
             'lighting-view': ('code/modules/persistence/functions.dm', '!istype(mob, /mob/new_player) && mob != dview_mob', '!istype(mob, /mob/new_player)'),
             'shutdown-return': ('code/modules/persistence/restart_transaction.dm', '\tdel(world)\n\t// Native deletion can return until the current execution yields. Give BYOND\n\t// that boundary before failure cleanup can consume the valid restart intent.\n\tsleep(1)\n', '\tdel(world)\n'),
         }
-        if args.negative_control:
+        if args.negative_control == 'wound-restore':
+            # Immutable source of the actual failed import, not an invented null model.
+            baseline = 'd0ffbfb2335eb735756b998f3f2ff617c28f144b'
+            for relative in ('code/modules/organs/wound.dm', 'code/modules/persistence/loading.dm'):
+                replacements[relative] = subprocess.check_output(
+                    ['git', 'show', baseline + ':' + relative], cwd=root, text=True)
+            receipt['wound_control_commit'] = baseline
+        elif args.negative_control:
             relative, before, after = mutations[args.negative_control]
             text = (root / relative).read_text(encoding='utf-8')
             if text.count(before) != 1:
@@ -128,7 +142,14 @@ def main():
                 raise RuntimeError('Production include anchor changed')
             source = source.replace(original_include, generated_path.name)
             (output / generated_path.name).write_text(text, encoding='utf-8', newline='\n')
+            if args.negative_control == 'wound-restore' and relative == 'code/modules/organs/wound.dm':
+                receipt['wound_control_source'] = generated_path.name
         probe = (root / 'tests/world_save/durable_world_probe.dm').read_text(encoding='utf-8')
+        if args.wounds:
+            wound_probe = root / 'tests/world_save/wound_restore_probe.dm'
+            probe = probe[:probe.index('/world/New()')] + wound_probe.read_text(encoding='utf-8')
+            receipt['wound_probe_hash'] = hashlib.sha256(wound_probe.read_bytes()).hexdigest()
+            receipt['production_hashes']['code/modules/organs/wound.dm'] = hashlib.sha256((root / 'code/modules/organs/wound.dm').read_bytes()).hexdigest()
         if args.lighting:
             lighting_probe = root / 'tests/world_save/lighting_probe.dm'
             probe = probe[:probe.index('/world/New()')] + lighting_probe.read_text(encoding='utf-8')
@@ -216,8 +237,8 @@ def main():
             raise RuntimeError(f'Native daemon exited with {run.returncode}; see daemon-exit.json')
         log = (output / 'runtime.log').read_text(encoding='utf-8', errors='replace')
         diagnostics = (log + run.stdout + run.stderr).lower()
-        if args.lighting and re.search(r'\bbug:', diagnostics):
-            raise RuntimeError('Native lighting engine diagnostic invalidated fixture')
+        if (args.lighting or args.wounds) and re.search(r'\bbug:', diagnostics):
+            raise RuntimeError('Native lighting/wound engine diagnostic invalidated fixture')
         if (re.search(r'##\s*error\s*:', diagnostics) or
                 any(word in diagnostics for word in ('unexpected runtime', 'bad ref', 'runtime error:', 'infinite loop', 'fatal error', 'segmentation', 'assertion failed'))):
             raise RuntimeError('Native engine diagnostic invalidated fixture')
@@ -233,6 +254,9 @@ def main():
         if not result_path.is_file():
             raise RuntimeError('Native daemon exited without a result; see daemon-exit.json and probe-progress.log')
         result = json.loads(result_path.read_text(encoding='utf-8'))
+        if args.wounds and not args.negative_control:
+            if not result.get('done') or result.get('roundtrips') != 18 or result.get('checks') != 141:
+                raise RuntimeError('Wound disk recovery assertions incomplete: ' + str(result))
         if args.lifecycle_shutdown:
             # The DM receipt is written before native deletion. Acceptance must
             # inspect disk after the process exits, including delayed cleanup.
@@ -267,6 +291,14 @@ def main():
                     'lighting-opacity': 'restored obstruction caches stale',
                     'lighting-view': 'map clearing retired runtime view helper'}
         if args.negative_control:
+            if args.negative_control == 'wound-restore':
+                if result.get('done') or 'Cannot read null.max_damage' not in result.get('error', '') or not result.get('source', '').endswith(receipt['wound_control_source']) or result.get('line') != 394 or result.get('checks') != 4:
+                    raise RuntimeError('Historical wound source did not reproduce the constructor failure: ' + str(result))
+                receipt['result'] = result
+                receipt['expected_failure_caught'] = True
+                (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+                print(json.dumps(receipt, indent=2))
+                return
             if result.get('done') or result.get('error') != expected[args.negative_control]:
                 raise RuntimeError('Negative control failed outside its intended assertion: ' + str(result))
             # Four operation-admission checks precede the malformed-wire guard.

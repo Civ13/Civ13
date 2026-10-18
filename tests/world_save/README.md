@@ -470,3 +470,22 @@ identities before bootstrap or import and pass the same identity to the backend.
 They check nested direct-call rejection and final admission release. A manually
 set busy flag does not authorize a positive save/load operation. Explicit busy
 and concurrency rejection controls retain their original guards.
+
+
+### Lost-limb wound recovery
+
+`run-durable-world.py --wounds --byond-bin <516.1681-bin>` uses the production
+wound constructor, encoder and loader with normal startup disabled and isolated
+native savefiles. It checks 18 disk round trips: edged, blunt and burned wounds,
+clean and unclean, through actual current-format export, explicit typed entries
+and legacy flat entries. Assertions retain injury/stage/bleeding/treatment state,
+helper arrays, embedded item identity and the cyclic organ/wound backlink.
+Missing dynamic stage tables are rejected rather than reconstructed as healing.
+The explicit entries model supported historical encodings; they are not the
+incident Gaia save graph or full-world recovery evidence.
+
+`--wounds --negative-control wound-restore` substitutes immutable wound and loader
+sources from `d0ffbfb2335eb735756b998f3f2ff617c28f144b` in generated copies. Its
+expected result is the original `Cannot read null.max_damage` constructor failure
+at line 394 after the four ordinary-constructor checks. `--prepare-only` generates
+and hashes inputs without compiling or running BYOND.
