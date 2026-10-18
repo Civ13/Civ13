@@ -1,12 +1,15 @@
 # Lobby Join verification
 
-The typed `Join` command is available on lobby mobs in the Lobby verb category.
+The typed `Join` command is owned by the client in the Lobby verb category.
 Enter `Join` in the BYOND command bar or select **File > Join round** from the
 native client menu. Both routes invoke exactly the same server verb.
-The verb explicitly sets `invisibility = 0`: BYOND otherwise inherits the lobby
-mob's invisibility of 101, which can make a menu-bound command inaccessible.
-This changes verb access only; lobby mob invisibility and player vision stay as
-before. The source check rejects omitted or inherited invisible verb settings.
+The client verb explicitly sets `invisibility = 0` and forwards only when its
+current mob is the invoking actor, has this same client and is a lobby mob.
+The mob-owned Join verb is removed so the native command has one owner. The
+forwarder calls the same native request helper and canonical admission handler;
+it never invokes Topic or spawning directly. Lobby invisibility and player
+vision remain unchanged. This is a candidate routing correction following two
+observed menu no-ops, not a confirmed explanation for those failures.
 The native fixture also includes the unmodified production Join verb and reads
 its compiled invisibility metadata, with an invisible-verb negative control.
 Metadata accessibility is separate from real client command dispatch.
@@ -33,13 +36,32 @@ not prove its completion, disconnect, hold or cancellation behavior.
 
 ## Offline checks
 
+The private existing lifecycle snapshot includes `native_join_entry` for the
+authenticated Host's own current client. Its saturating attempts, tick and fixed
+reason distinguish no observed client-verb entry from `not_current_lobby` or
+`forwarded`; this small client cache survives a mob transfer and cannot be saved.
+A `lobby_join` row is present only for that client's current lobby mob.
+Its `native_attempts` count marks the guarded native helper entry; phase records
+ordinary lobby-button requests. Last phase/reason/tick and handler result are
+cached without prompt text, roles, account data or history and excluded from
+custom saves. A handler result is the existing handler's return value, not proof
+of a human spawn. Nomads admission and initial spawn guards have fixed reason
+codes; other modes may only identify the last entered stage. Snapshot reads do
+not invoke admission, ban checks, prompts or spawning. A successful transfer
+replaces the lobby mob, so its trace is then unavailable.
+
+The actual 331117df connected-client File-menu attempt left the client in the
+lobby despite correct compiled visibility metadata. Command dispatch was not
+established. The revised client-owned route still requires connected-client
+verification; the diagnostics do not bypass admission.
+
 Run with a verified Python interpreter:
 
 ```text
-<python> -m unittest discover -s tests/lobby_join -p test_source.py
+<python> -m unittest discover -s tests/lobby_join -p 'test_*.py'
 ```
 
-Five source checks verify the native File menu command and preserve the admission
+Source checks verify the native File menu command and preserve the admission
 body and the four role-menu filter bodies
 against immutable baseline `41e2d02fe1f9130e0987aee0efd2eba0ca7b3bf1`, normalizing
 only the documented factoring, native title collection and prompt wrappers.
