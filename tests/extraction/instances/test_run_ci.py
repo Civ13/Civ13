@@ -141,6 +141,28 @@ class RunnerContracts(unittest.TestCase):
                 runner.native_gate(Path('unused'), Path('unused'))
             spawn.assert_not_called()
 
+    def test_overlap_mutant_skips_rejection_without_discarding_other_use(self):
+        source = (runner.ROOT / runner.SOURCE).read_text(encoding='utf-8')
+        anchor, replacement, target = runner.CONTROLS['overlap']
+        # The overlap condition is the final statement in this loop. Continuing
+        # it removes rejection for overlaps without deleting the native use of
+        # other, which made the previous if(FALSE) mutant produce unused_var.
+        self.assertEqual(replacement, anchor.replace('return null', 'continue'))
+        self.assertEqual(target, 'XY-separated homes cannot share z interval')
+        mutant = runner.mutation(source, 'overlap')
+        self.assertEqual(mutant.replace(replacement, anchor), source)
+        loop_start = '\t\tfor (var/other_id in homes)\n'
+        loop_end = '\t\tvar/datum/extraction_instance_token/token = new\n'
+        original_loop = source.split(loop_start, 1)[1].split(loop_end, 1)[0]
+        mutant_loop = mutant.split(loop_start, 1)[1].split(loop_end, 1)[0]
+        self.assertEqual(mutant_loop, original_loop.replace(anchor, replacement))
+        self.assertIn('var/list/other = homes[other_id]', mutant_loop)
+        self.assertIn('other["top"]', mutant_loop)
+        self.assertIn('other["bottom"]', mutant_loop)
+        self.assertEqual(mutant_loop.splitlines()[-1].strip(), replacement)
+        self.assertNotIn('return null', mutant_loop)
+        self.assertNotIn('if (FALSE)', mutant_loop)
+
     def test_cli_rejects_local_native_before_preparation(self):
         with mock.patch.object(runner.sys, 'platform', 'win32'), \
                 mock.patch.object(runner.sys, 'argv', ['run_ci.py', '--head', 'a' * 40,

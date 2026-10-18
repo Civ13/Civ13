@@ -16,7 +16,8 @@ PROBE = 'tests/extraction/instances/probe.dm'
 INCLUDE = '#include "../../../code/modules/1713/extraction/instances.dm"'
 CONTROLS = {
     'overlap': ('if (origin[3] <= other["top"] && top >= other["bottom"]) return null',
-                'if (FALSE) return null', 'XY-separated homes cannot share z interval'),
+                'if (origin[3] <= other["top"] && top >= other["bottom"]) continue',
+                'XY-separated homes cannot share z interval'),
     'generation': ('generation == scope_generation', 'TRUE', 'wrong scope acquire rejected'),
 }
 DIAGNOSTIC = re.compile(r'runtime error|bad ref|unhandled|traceback|segmentation|fatal|error:|warning:'
