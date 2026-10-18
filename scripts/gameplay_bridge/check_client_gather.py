@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path, PurePosixPath
 import re
 
@@ -65,6 +66,10 @@ def integer(value):
     return type(value) is int and 0 <= value <= 1000000000
 
 
+def clock(value):
+    return type(value) in (int, float) and math.isfinite(value) and 0 <= value <= 1000000000
+
+
 def verify_result(R, expected, run_id, witness):
     """Check passive traces plus externally supplied fresh post-ACK status witness.
 
@@ -76,6 +81,8 @@ def verify_result(R, expected, run_id, witness):
     require(re.fullmatch('[a-zA-Z0-9_-]{1,64}', run_id) is not None, 'bounded run ID required')
     require(R.get('final') == 1 and R.get('cleaned_refs') == 1 and R.get('phase') == 'observation_complete'
             and R.get('failure') == '' and R.get('dimensions') == [9, 9, 1], 'incomplete/failed passive result')
+    require(all(clock(R.get(k)) for k in ('tick', 'bound_tick', 'cancel_tick', 'returned_tick')),
+            'bounded finite world-time fields required')
     rows = R.get('samples')
     require(isinstance(rows, list) and 70 <= len(rows) <= 1201, 'bounded physical samples required')
     keys = {'sequence', 'tick', 'life_tick', 'same_tool', 'cuttings', 'left_grass', 'right_grass',
@@ -83,7 +90,8 @@ def verify_result(R, expected, run_id, witness):
             'survival_actions', 'worker', 'claimed', 'cancelled', 'request_index'}
     flags = keys - {'sequence', 'tick', 'life_tick', 'cuttings', 'survival_actions', 'request_index'}
     for index, row in enumerate(rows):
-        require(isinstance(row, dict) and set(row) == keys and all(integer(v) for v in row.values()),
+        require(isinstance(row, dict) and set(row) == keys and clock(row['tick'])
+                and all(integer(v) for k, v in row.items() if k != 'tick'),
                 'malformed passive sample')
         require(all(row[k] in (0, 1) for k in flags) and row['request_index'] in (0, 1, 2)
                 and row['sequence'] == index + 1, 'sample sequence/flag mismatch')
@@ -92,9 +100,9 @@ def verify_result(R, expected, run_id, witness):
             require(1 <= row['tick'] - previous['tick'] <= 2 and row['life_tick'] >= previous['life_tick']
                     and row['request_index'] >= previous['request_index'], 'sampling gap/clock/actor progression')
     require(rows[-1]['life_tick'] > rows[0]['life_tick'], 'natural Life progression missing')
-    require(R['sequence'] == rows[-1]['sequence'] and integer(R['tick']) and 0 <= R['tick'] - rows[-1]['tick'] <= 2,
+    require(R['sequence'] == rows[-1]['sequence'] and 0 <= R['tick'] - rows[-1]['tick'] <= 2,
             'final sampling/cleanup horizon incomplete')
-    require(rows[-1]['tick'] - R['bound_tick'] >= 1199, 'fixed observation deadline was shortened')
+    require(rows[-1]['tick'] - R['bound_tick'] >= 1198, 'fixed observation deadline was shortened')
     ids = R.get('request_ids')
     require(isinstance(ids, list) and len(ids) == 2 and len(set(ids)) == 2
             and all(isinstance(v, str) and re.fullmatch('[a-zA-Z0-9_-]{1,64}', v) for v in ids),
@@ -109,20 +117,20 @@ def verify_result(R, expected, run_id, witness):
     require(ready, 'natural pickup and normal advertised/lit grass precondition missing')
     paid = [r for r in rows if r['request_index'] == 1 and r['worker'] and r['claimed']
             and not r['may_do_after'] and r['survival_actions'] == 1 and not r['cancelled']]
-    require(len(paid) >= 2 and paid[-1]['tick'] - paid[0]['tick'] >= 28,
+    require(len(paid) >= 2 and paid[-1]['tick'] - paid[0]['tick'] >= 26,
             'canonical paid wait sampled interval missing')
     done = [r for r in rows if r['request_index'] == 1 and not r['worker'] and not r['left_grass']
             and r['right_grass'] and r['cuttings'] == 2 and r['may_do_after'] and not r['survival_actions'] and r['same_tool']]
     require(done and done[0]['tick'] > paid[-1]['tick'], 'two paid cuttings/turf replacement/balanced callbacks missing')
     second = [r for r in rows if r['request_index'] == 2 and r['worker'] and r['claimed']]
     cancelled = [r for r in rows if r['request_index'] == 2 and r['cancelled']]
-    require(second and cancelled and integer(R['cancel_tick']) and integer(R['returned_tick'])
+    require(second and cancelled
             and R['cancel_tick'] == cancelled[0]['tick'] and R['returned_tick'] >= cancelled[0]['tick']
             and R['returned_tick'] > second[0]['tick'],
             'original cancelled worker/revocation and return not observed')
     require(isinstance(witness, dict) and witness.get('commit') == expected and witness.get('run_id') == run_id
             and witness.get('request_id') == ids[1] and witness.get('received_after_cancel_ack') is True
-            and integer(witness.get('sequence')) and integer(witness.get('tick')),
+            and integer(witness.get('sequence')) and clock(witness.get('tick')),
             'separate executor post-ACK fresh status witness required')
     matching = [r for r in rows if r['sequence'] == witness['sequence'] and r['tick'] == witness['tick']]
     require(matching and witness['tick'] >= R['returned_tick'] and rows[-1]['tick'] - witness['tick'] >= 35,

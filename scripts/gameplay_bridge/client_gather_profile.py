@@ -95,6 +95,7 @@ def verify_oracle(source):
         'world.maxx != 9 || world.maxy != 9 || world.maxz != 1',
         '!config.skip_persistence_saving', 'bootstrap_deadline = world.time + 9000',
         'observation_deadline = bound_tick + 1200', 'world.time <= observation_deadline',
+        'next_sample_tick = world.time + 1', 'while (world.time < next_sample_tick)',
         'session.holder', 'session.gameplay_bridge_consent_mob != body',
         'body.type != /mob/living/human', 'body.life_tick < 1',
         '!istype(body.original_job, /datum/job/civilian/civnomad)',

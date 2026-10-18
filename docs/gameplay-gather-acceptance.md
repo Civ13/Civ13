@@ -238,7 +238,8 @@ fixed private JSON files, capped by the offline reader at2MiB.
 projection. Result checking requires two original typed receipts, real advertised
 lit grass, the original held tool, sampled paid wait, two cuttings/turf replacement,
 balanced callbacks, natural Life and no late right-grass/output/new-worker effects.
-One-tick polling gives a sampled paid interval lower bound28ticks; unchanged
+Elapsed-time polling (at least1, at most2deciseconds between accepted samples)
+gives a sampled paid interval lower bound26ticks; unchanged
 canonical source still specifies30. This does not claim exact wait-entry timing.
 Cancel ACK alone cannot establish worker return. A separately reviewed executor
 must record a fresh status sequence received after cancel ACK and supply the
@@ -248,6 +249,13 @@ and the original worker's return, with Life still progressing. The checker canno
 independently prove the executor's ACK ordering, native UI assignment or OS/client
 cleanup; those need separate genuine evidence. It reports fixture-oracle validity,
 not whole-game or graphical acceptance.
+
+Normal configuration uses fractional ticklag. World-time fields therefore admit
+bounded finite fractional values; sequences, flags and Life counters remain
+integers. The observer waits for at least1elapsed decisecond before each new row,
+retaining the1201sample cap without altering the world's clock/ticklag. Missing,
+nonfinite, backward or excessive-gap time fails validation. No runtime clock
+behavior is inferred from these offline controls.
 
 Preparation stages no runtime config, native library, tokens, account, role change,
 controller or grant. Its manifest deliberately says `runtime_ready:false`,

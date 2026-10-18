@@ -287,6 +287,22 @@ class ClientGatherResultTests(unittest.TestCase):
         self.result['cancel_tick'] = 1187
         self.assertTrue(self.validate()['fixture_oracles_valid'])
 
+    def test_fractional_world_clock_is_valid_but_counters_stay_integral(self):
+        for row in self.result['samples']:
+            row['tick'] += 0.25
+        for key in ('tick', 'bound_tick', 'cancel_tick', 'returned_tick'):
+            self.result[key] += 0.25
+        self.witness['tick'] += 0.25
+        self.assertTrue(self.validate()['fixture_oracles_valid'])
+        self.result['samples'][10]['sequence'] = 11.25
+        with self.assertRaises(ValueError): self.validate()
+
+    def test_nonfinite_negative_or_missing_final_clocks_deny(self):
+        for value in (float('inf'), float('nan'), -1, '1000', None, True):
+            result = copy.deepcopy(self.result); result['bound_tick'] = value
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                verify_result(result, HEAD, 'synthetic_only', self.witness)
+
     def test_sampling_gap_shortened_deadline_and_noninteger_fail_closed(self):
         for mutation in ('gap', 'short', 'nan'):
             result = copy.deepcopy(self.result)

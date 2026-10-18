@@ -115,7 +115,9 @@
 				samples += list(list("sequence"=sequence, "tick"=world.time, "life_tick"=body.life_tick, "same_tool"=!!(tool && held == tool && tool.loc == body), "cuttings"=cuttings(), "left_grass"=!!istype(left,/turf/floor/grass), "right_grass"=!!istype(right,/turf/floor/grass), "left_lit"=!!(left.get_lumcount() >= 0.5), "right_lit"=!!(right.get_lumcount() >= 0.5), "left_advertised"=advertised(left), "right_advertised"=advertised(right), "may_do_after"=body.may_do_after, "survival_actions"=body.survival_actions, "worker"=!!L, "claimed"=!!(L && L.wait_claimed), "cancelled"=!!(captured && captured.cancelled), "request_index"=requests.len))
 				if (sequence % 10 == 0)
 					emit()
-				sleep(1)
+				var/next_sample_tick = world.time + 1
+				while (world.time < next_sample_tick)
+					sleep(1) // Ticklag may be fractional; cap samples by elapsed world time.
 			if (!failure && (body.life_tick <= first_life || !cancel_tick || !returned_tick || world.time - returned_tick < 35))
 				failure = "incomplete_life_or_cancel_horizon"
 	phase = failure ? "failed" : "observation_complete"
