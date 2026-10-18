@@ -1,4 +1,11 @@
 // Offline adapters: no game startup, players, network, SQL, or production files.
+// Minimal serializer fixtures do not exercise wounds. Keep the loader's type
+// contract declared, but fail closed if one is introduced into these probes.
+// The --wounds full-source fixture tests actual constructor/state restoration.
+/datum/wound/lost_limb
+/datum/wound/lost_limb/proc/validate_restored_state()
+	throw EXCEPTION("Lost-limb restoration requires the production wound fixture")
+
 #ifndef BUILDING_MAX_Z
 #define BUILDING_MAX_Z 32
 #define BUILDING_EXTRA_LEVELS 8
