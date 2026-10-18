@@ -80,10 +80,41 @@ def audit(lifecycle, source):
             errors.append('missing bounded ownership diagnostic')
     if re.search(r'\b(?:icon|icon_states|fcopy_rsc|update_icon|update_overlay|get_window_coeff)\s*\(', source):
         errors.append('derived appearance access')
+    for literal in ('"mouse_opacity" = M.mouse_opacity', '"alpha" = M.alpha',
+                    'M.HUDneed ? M.HUDneed["hover name"] : null',
+                    'if(!istype(hover_label, /obj/screen/hover_name)) hover_label = null',
+                    'blackout_diagnostic_display(hover_label, C)',
+                    'hover_label ? (hover_label.parentmob == M) : FALSE',
+                    'hover_label ? !!hover_label.hover_target : FALSE',
+                    'hover_label ? !!length(hover_label.maptext) : FALSE'):
+        if literal not in source:
+            errors.append('missing bounded hover diagnostic')
+    hover_checked = source.replace('!!length(hover_label.maptext)', 'FALSE').replace(
+        '!!hover_label.hover_target', 'FALSE')
+    if re.search(r'\b(?:maptext|hover_target)\b', hover_checked):
+        errors.append('raw hover text or target access')
+    if re.search(r'\b(?:resolve|view|get_visible_name|get_hover_name|target_visible|set_target|clear_target|process)\s*\(', source):
+        errors.append('effectful hover getter')
     return errors
 
 
 class SourceBoundary(unittest.TestCase):
+    def test_hover_observation_privacy_and_effect_controls(self):
+        lifecycle = (ROOT / 'code/modules/persistence/nomads_lifecycle.dm').read_text()
+        source = (ROOT / 'code/modules/persistence/blackout_diagnostics.dm').read_text()
+        for field in ('M.mouse_opacity', '"alpha" = M.alpha',
+                      'hover_label.parentmob == M', '!!hover_label.hover_target',
+                      '!!length(hover_label.maptext)'):
+            with self.subTest(field=field):
+                self.assertTrue(audit(lifecycle, source.replace(field, 'null')))
+        for unsafe in ('return hover_label.maptext', 'return hover_label.hover_target',
+                       'return "\\ref[hover_label.hover_target]"',
+                       'hover_label.hover_target.resolve()', 'view(C.view, C.eye)',
+                       'M.get_visible_name()', 'hover_label.process()',
+                       'M.get_hover_name()', 'hover_label.target_visible(M)'):
+            with self.subTest(unsafe=unsafe):
+                self.assertTrue(audit(lifecycle, source + '\n/proc/unsafe()\n\t' + unsafe + '\n'))
+
     def test_bounded_ownership_omission_controls(self):
         lifecycle = (ROOT / 'code/modules/persistence/nomads_lifecycle.dm').read_text()
         source = (ROOT / 'code/modules/persistence/blackout_diagnostics.dm').read_text()

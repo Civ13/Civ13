@@ -98,7 +98,7 @@
 	if(!M)
 		row["mob"] = list("status" = "unavailable: no current mob")
 		return row
-	row["mob"] = list("type" = "[M.type]", "loc_type" = M.loc ? "[M.loc.type]" : null, "stat" = M.stat, "sleeping" = M.sleeping, "resting" = M.resting, "paralysis" = M.paralysis, "blinded" = M.blinded, "sight" = M.sight, "see_in_dark" = M.see_in_dark, "see_invisible" = M.see_invisible, "invisibility" = M.invisibility, "transforming" = blackout_diagnostic_scalar(M.transforming), "status_flags" = M.status_flags, "gcDestroyed" = M.gcDestroyed)
+	row["mob"] = list("type" = "[M.type]", "loc_type" = M.loc ? "[M.loc.type]" : null, "stat" = M.stat, "sleeping" = M.sleeping, "resting" = M.resting, "paralysis" = M.paralysis, "blinded" = M.blinded, "sight" = M.sight, "see_in_dark" = M.see_in_dark, "see_invisible" = M.see_invisible, "invisibility" = M.invisibility, "mouse_opacity" = M.mouse_opacity, "alpha" = M.alpha, "transforming" = blackout_diagnostic_scalar(M.transforming), "status_flags" = M.status_flags, "gcDestroyed" = M.gcDestroyed)
 	row["input"] = list("world_time" = world.time, "next_click" = M.next_click, "click_remaining" = max(0, M.next_click - world.time), "next_move" = M.next_move, "move_remaining" = max(0, M.next_move - world.time), "may_do_after" = M.may_do_after, "may_do_mob" = M.may_do_mob, "direction" = M.dir, "facing_dir" = M.facing_dir, "armed" = world.time < M.blackout_click_expires, "started" = M.blackout_click_started, "expires" = M.blackout_click_expires, "counts" = M.blackout_click_counts ? M.blackout_click_counts.Copy() : null, "scope" = "own current mob; first diagnostic arms 3000 world ticks, subsequent reads never extend; fixed saturating route counts")
 	if(istype(M, /mob/new_player))
 		var/mob/new_player/N = M
@@ -120,6 +120,14 @@
 		var/obj/screen/S = M.HUDtech ? M.HUDtech[hud_key] : null
 		hud[hud_key] = blackout_diagnostic_display(S, C)
 	row["known_hud"] = hud
+	// Observe only the fixed disposable label; never resolve its target or text.
+	var/obj/screen/hover_name/hover_label = M.HUDneed ? M.HUDneed["hover name"] : null
+	if(!istype(hover_label, /obj/screen/hover_name)) hover_label = null
+	var/list/hover = blackout_diagnostic_display(hover_label, C)
+	hover["parent_is_current_mob"] = hover_label ? (hover_label.parentmob == M) : FALSE
+	hover["has_target"] = hover_label ? !!hover_label.hover_target : FALSE
+	hover["has_text"] = hover_label ? !!length(hover_label.maptext) : FALSE
+	row["hover_name"] = hover
 	var/list/nearby = list()
 	var/bounded_sample_partial = FALSE
 	var/turf/T = blackout_diagnostic_turf(M)
