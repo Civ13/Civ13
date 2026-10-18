@@ -23,7 +23,7 @@ def digest(value):
 class LobbyJoinSource(unittest.TestCase):
     def test_join_accessible_from_invisible_lobby(self):
         source = (ROOT / "code/game/mob/new_player/new_player.dm").read_text()
-        verb = procedure(source, "/mob/new_player/verb/Join()")
+        verb = procedure(source, "/client/verb/Join()")
         # BYOND defaults verb invisibility to its source object's invisibility.
         # The lobby remains invisible; only the Join command is exposed.
         lobby = source[:source.index("\n/mob/new_player/")]
@@ -89,9 +89,14 @@ class LobbyJoinSource(unittest.TestCase):
     def test_typed_and_button_share_request_owner(self):
         source = (ROOT / "code/game/mob/new_player/new_player.dm").read_text()
         topic = procedure(source, "/mob/new_player/Topic(")
-        verb = procedure(source, "/mob/new_player/verb/Join()")
+        verb = procedure(source, "/client/verb/Join()")
+        native = procedure(source, "/mob/new_player/proc/native_join_round()")
         self.assertIn("return handle_lobby_join(href_list)", topic)
-        self.assertIn("handle_lobby_join(join_request, TRUE)", verb)
+        self.assertIn("N.native_join_round()", verb)
+        self.assertIn("usr.client != src || mob != usr", verb)
+        self.assertIn("!istype(mob, /mob/new_player)", verb)
+        self.assertNotIn('/mob/new_player/verb/Join()', source)
+        self.assertIn("handle_lobby_join(join_request, TRUE)", native)
         self.assertNotIn("AttemptLateSpawn", verb)
         self.assertNotIn("Topic(", verb)
         owner = procedure(source, "/mob/new_player/proc/handle_lobby_join(")

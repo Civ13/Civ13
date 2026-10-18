@@ -72,6 +72,7 @@
 /proc/blackout_diagnostic_capture(client/C, mob/M)
 	var/list/row = list()
 	var/atom/eye = C.eye
+	row["native_join_entry"] = list("attempts" = C.lobby_native_join_attempts, "tick" = C.lobby_native_join_tick, "reason" = blackout_diagnostic_scalar(C.lobby_native_join_reason), "verb_present" = (/client/verb/Join in C.verbs))
 	row["client"] = list("eye_relation" = eye == M ? "own mob" : (eye ? "other; position withheld" : "absent"), "eye_type" = eye ? "[eye.type]" : null, "perspective" = C.perspective, "view" = blackout_diagnostic_scalar(C.view), "color" = blackout_diagnostic_color(C.color), "pixel_x" = C.pixel_x, "pixel_y" = C.pixel_y, "images_count" = C.images.len, "screen_count" = C.screen.len)
 	if(!M)
 		row["mob"] = list("status" = "unavailable: no current mob")
@@ -80,7 +81,7 @@
 	if(istype(M, /mob/new_player))
 		var/mob/new_player/N = M
 		// Read cached state only: never invoke admission, ban checks or spawning.
-		row["lobby_join"] = list("native_attempts" = N.lobby_join_attempts, "phase" = blackout_diagnostic_scalar(N.lobby_join_phase), "reason" = blackout_diagnostic_scalar(N.lobby_join_reason), "tick" = N.lobby_join_tick, "handler_result" = N.lobby_join_result, "active" = N.lobby_join_active, "native" = N.lobby_join_native, "spawning" = N.spawning, "verb_present" = (/mob/new_player/verb/Join in N.verbs), "ticker_state" = ticker ? ticker.current_state : null, "players_can_join" = ticker ? ticker.players_can_join : null, "startup_hold" = persistence_restart.startup_hold, "restart_busy" = persistence_restart.busy, "enter_allowed" = GLOB.enter_allowed, "map_nomads" = map ? map.nomads : null, "map_civilizations" = map ? map.civilizations : null)
+		row["lobby_join"] = list("native_attempts" = N.lobby_join_attempts, "phase" = blackout_diagnostic_scalar(N.lobby_join_phase), "reason" = blackout_diagnostic_scalar(N.lobby_join_reason), "tick" = N.lobby_join_tick, "handler_result" = N.lobby_join_result, "active" = N.lobby_join_active, "native" = N.lobby_join_native, "spawning" = N.spawning, "ticker_state" = ticker ? ticker.current_state : null, "players_can_join" = ticker ? ticker.players_can_join : null, "startup_hold" = persistence_restart.startup_hold, "restart_busy" = persistence_restart.busy, "enter_allowed" = GLOB.enter_allowed, "map_nomads" = map ? map.nomads : null, "map_civilizations" = map ? map.civilizations : null)
 	if(istype(M, /mob/living))
 		var/mob/living/L = M
 		row["living"] = list("health" = L.health, "eye_blind" = L.eye_blind, "eye_blurry" = L.eye_blurry, "last_life_tick" = L.last_life_tick)

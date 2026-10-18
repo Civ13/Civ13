@@ -322,13 +322,30 @@ var/global/redirect_all_players = null
 		return "nomads"
 	return "late_join"
 
-/mob/new_player/verb/Join()
+/client
+	// Clients are never serialized by the custom saver. This is own-session only.
+	var/lobby_native_join_attempts = 0
+	var/lobby_native_join_tick
+	var/lobby_native_join_reason = "not_entered"
+
+/client/verb/Join()
 	set name = "Join"
 	set category = "Lobby"
-	// Verbs otherwise inherit the invisible lobby mob's accessibility.
 	set invisibility = 0
 	set desc = "Join the round using native role selection prompts."
-	set src = usr
+	lobby_native_join_attempts = min(lobby_native_join_attempts + 1, 65535)
+	lobby_native_join_tick = world.time
+	lobby_native_join_reason = "not_current_lobby"
+	if (!usr || usr.client != src || mob != usr || !istype(mob, /mob/new_player))
+		return
+	var/mob/new_player/N = mob
+	lobby_native_join_reason = "forwarded"
+	N.native_join_round()
+
+/mob/new_player/proc/native_join_round()
+	// The client verb forwards only its own current lobby mob. Keep usr intact.
+	if (src != usr || !client || client.mob != src)
+		return FALSE
 	lobby_join_attempts = min(lobby_join_attempts + 1, 65535)
 	lobby_join_result = null
 	lobby_join_trace("native_entry", "none")

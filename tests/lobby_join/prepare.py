@@ -11,10 +11,11 @@ from pathlib import Path
 import re
 
 from test_source import procedure
-from visibility import visibility_verbs
+from visibility import visibility_verbs, client_route
 
 ROOT = Path(__file__).resolve().parents[2]
 NAMES = (
+    "native_join_round",
     "lobby_join_trace",
     "lobby_join_mode", "lobby_join_current", "handle_lobby_join",
     "clear_lobby_join", "lobby_join_admission_current", "lobby_join_input",
@@ -53,7 +54,7 @@ def stage(output):
     fixture = (Path(__file__).with_name("probe.dm")).read_text()
     # Keep the actual verb metadata unadapted. These checks inspect native
     # metadata only; no connected client or actual command dispatch is claimed.
-    (output / "control.dm").write_text(fixture + "\n" + adapted + "\n" + unsafe_round + "\n" + unsafe_role + "\n" + visibility_verbs(source) + "\n", encoding="utf-8")
+    (output / "control.dm").write_text(fixture + "\n" + adapted + "\n" + unsafe_round + "\n" + unsafe_role + "\n" + visibility_verbs(source) + "\n" + client_route(source) + "\n", encoding="utf-8")
     (output / "control.dme").write_text('#include "control.dm"\n', encoding="utf-8")
     manifest = {
         "schema": 1,

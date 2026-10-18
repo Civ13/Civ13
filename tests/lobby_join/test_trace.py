@@ -12,7 +12,7 @@ FIELDS = ('lobby_join_attempts', 'lobby_join_phase', 'lobby_join_reason',
 
 def audit(source):
     errors = []
-    verb = procedure(source, '/mob/new_player/verb/Join()')
+    verb = procedure(source, '/mob/new_player/proc/native_join_round()')
     trace = procedure(source, '/mob/new_player/proc/lobby_join_trace(')
     exclusions = procedure(source, '/mob/new_player/persistence_runtime_var(')
     for field in FIELDS:
@@ -36,6 +36,20 @@ def audit(source):
 
 
 class JoinTrace(unittest.TestCase):
+    def test_own_client_forwarder_is_bounded_and_has_no_spawn_route(self):
+        source = (ROOT / 'code/game/mob/new_player/new_player.dm').read_text()
+        verb = procedure(source, '/client/verb/Join()')
+        guard = 'if (!usr || usr.client != src || mob != usr || !istype(mob, /mob/new_player))'
+        self.assertIn(guard, verb)
+        self.assertIn('min(lobby_native_join_attempts + 1, 65535)', verb)
+        self.assertLess(verb.index(guard), verb.index('N.native_join_round()'))
+        self.assertEqual(verb.count('N.native_join_round()'), 1)
+        for forbidden in ('Topic(', 'AttemptLateSpawn(', 'locate(', 'directory[', 'spawn(', 'new /mob'):
+            self.assertNotIn(forbidden, verb)
+        diagnostic = (ROOT / 'code/modules/persistence/blackout_diagnostics.dm').read_text()
+        for field in ('attempts', 'tick', 'reason'):
+            self.assertIn('C.lobby_native_join_' + field, diagnostic)
+
     def test_cache_bounds_entry_and_persistence_with_negative_controls(self):
         source = (ROOT / 'code/game/mob/new_player/new_player.dm').read_text()
         self.assertEqual(audit(source), [])

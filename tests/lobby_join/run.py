@@ -46,6 +46,9 @@ def main():
         raise RuntimeError('Native runtime diagnostics invalidate the result')
     result = json.loads((work / 'result.json').read_text())
     required = {'negative_control_stale_round_detected', 'negative_control_stale_role_detected',
+                'client_entry_not_entered', 'client_entry_forwards_own_lobby',
+                'client_entry_rejects_other_mob', 'client_entry_rejects_other_client',
+                'client_entry_no_actor_and_bounded',
                 'trace_not_entered', 'trace_entry_distinct', 'trace_denial_distinct',
                 'trace_bounded', 'trace_result_survives_cleanup',
                 'native_join_verb_visible', 'negative_control_invisible_verb_detected',
