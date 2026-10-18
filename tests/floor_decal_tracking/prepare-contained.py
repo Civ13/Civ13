@@ -11,7 +11,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 
 
-def freeze(output, byond_bin):
+def freeze(output, byond_bin, compiler_diagnostic=False):
     output = output.resolve()
     compiler, daemon = byond_bin / 'dm.exe', byond_bin / 'dd.exe'
     spec = importlib.util.spec_from_file_location('decal_guard', HERE / 'guard_config.py')
@@ -36,8 +36,10 @@ def freeze(output, byond_bin):
               'sources': str(output / 'source-packet'), 'adapter_root': str(output),
               'compiler': str(compiler), 'daemon': str(daemon), 'files': files,
               'gaia': {'pid': 161088, 'creation_filetime': 134368205457714990},
-              'native_executed': False, 'total_seconds': 240, 'native_assertions': 33,
-              'cases': ['fixed', 'eager-parity', 'eager-negative', 'missing-lazy', 'shared']}
+              'native_executed': False, 'total_seconds': 90 if compiler_diagnostic else 240,
+              'mode': 'compiler-diagnostic' if compiler_diagnostic else 'fixture',
+              'native_assertions': 0 if compiler_diagnostic else 33,
+              'cases': ['fixed-compile'] if compiler_diagnostic else ['fixed', 'eager-parity', 'eager-negative', 'missing-lazy', 'shared']}
     path = output / 'packet.json'
     path.write_text(json.dumps(packet, indent=2) + '\n', encoding='utf-8')
     return {'packet': str(path), 'packet_sha256': guard.digest(path), 'head': head,
@@ -48,5 +50,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--byond-bin', type=Path, required=True)
+    parser.add_argument('--compiler-diagnostic', action='store_true')
     args = parser.parse_args()
-    print(json.dumps(freeze(args.output, args.byond_bin.resolve()), indent=2))
+    print(json.dumps(freeze(args.output, args.byond_bin.resolve(), args.compiler_diagnostic), indent=2))

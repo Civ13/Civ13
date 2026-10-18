@@ -2,6 +2,7 @@
 import ctypes as c
 from ctypes import wintypes as w
 import time
+from types import SimpleNamespace
 
 
 class ProcessIds(c.Structure):
@@ -31,6 +32,40 @@ def query_members(adapter):
             and ProcessIds.pids.offset + value.count * c.sizeof(c.c_size_t)
             <= length.value <= c.sizeof(value), 'Truncated owned Job membership')
     return dict(assigned=value.assigned, count=value.count, pids=list(value.pids[:value.count]))
+
+
+def capture_unexpected(adapter, pid):
+    """Read-only query of one observed owned-Job PID; never relax its rejection."""
+    record = {'pid': pid, 'status': 'unavailable'}
+    handle, retained = None, False
+    try:
+        adapter.k.OpenProcess.argtypes = [w.DWORD, w.BOOL, w.DWORD]
+        adapter.k.OpenProcess.restype = w.HANDLE
+        handle = adapter.k.OpenProcess(0x1000 | 0x100000, False, pid)
+        require(bool(handle), 'Observed Job member handle unavailable')
+        def belongs():
+            member = w.BOOL()
+            adapter.check(adapter.k.IsProcessInJob(handle, adapter.job, c.byref(member)))
+            return bool(member.value)
+        require(belongs(), 'Observed PID no longer in exact owned Job')
+        process = SimpleNamespace(process=handle, thread=None, pid=pid)
+        adapter.retained.append(process)
+        retained = True
+        identity = adapter.identity(process)
+        require(belongs(), 'Owned member identity raced Job membership')
+        process.verified_identity = identity
+        code = w.DWORD()
+        adapter.check(adapter.k.GetExitCodeProcess(handle, c.byref(code)))
+        exited = adapter.exited(process)
+        require(belongs(), 'Owned member wait raced Job membership')
+        record.update(status='verified-owned', identity=identity, exit_code=code.value, exited=exited)
+    except Exception as exc:
+        record['error'] = str(exc)
+    finally:
+        record['retained_for_cleanup'] = retained
+        if handle and not retained:
+            adapter.k.CloseHandle(handle)
+    return record
 
 
 def settle(accounting, members, check, record, now=time.monotonic, pause=time.sleep):

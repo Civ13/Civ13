@@ -300,6 +300,7 @@ class Adapter:
             except Exception as error:
                 errors.append(str(error))
             finally:
-                self.k.CloseHandle(retained.thread)
+                if retained.thread:
+                    self.k.CloseHandle(retained.thread)
                 self.k.CloseHandle(retained.process)
         return dict(all_exited=not errors, exits=exits, errors=errors)

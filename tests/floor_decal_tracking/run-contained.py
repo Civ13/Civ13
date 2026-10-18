@@ -11,7 +11,7 @@ import sys
 import time
 from z_budget_evidence import DIAGNOSTIC, validate_compile
 from native_policy import census, validate_baseline, validate_sockets
-from owned_job import query_members, validate_members, settle
+from owned_job import query_members, validate_members, settle, capture_unexpected
 
 RUNS = (('fixed', 'fixed', None), ('eager-parity', 'eager', None),
         ('eager-negative', 'eager', 'bare turf allocation count'),
@@ -51,6 +51,10 @@ def main():
     parser.add_argument('--grant', required=True, type=Path)
     args = parser.parse_args()
     packet = json.loads(args.packet.read_text())
+    diagnostic = packet.get('mode') == 'compiler-diagnostic'
+    require(packet.get('mode', 'fixture') in ('compiler-diagnostic', 'fixture'), 'Unknown packet mode')
+    require(packet['total_seconds'] == (90 if diagnostic else 240), 'Unexpected aggregate cap')
+    work_seconds = packet['total_seconds'] - 10
     grant = json.loads(args.grant.read_text())
     require(digest(args.packet) == grant['packet_sha256'], 'Packet differs from grant')
     require(packet['head'] == grant['head'], 'Head differs from grant')
@@ -59,7 +63,7 @@ def main():
         require(digest(path) == sha, 'Frozen input changed: ' + path)
     now = datetime.now(timezone.utc)
     ends = datetime.fromisoformat(grant['ends_utc'])
-    require(datetime.fromisoformat(grant['starts_utc']) <= now and (ends - now).total_seconds() >= 250,
+    require(datetime.fromisoformat(grant['starts_utc']) <= now and (ends - now).total_seconds() >= packet['total_seconds'] + 10,
             'Invalid single-use lease or cleanup margin')
     out = args.packet.resolve().parent
     (out / 'USED').open('x').close()
@@ -68,14 +72,15 @@ def main():
     import guard_config as guard
     require(Path(w.__file__).resolve() == Path(packet['adapter_root']).resolve() / 'windows.py',
             'Wrong containment adapter')
-    report = {'head': packet['head'], 'pass_result': False, 'runs': [], 'live_actions': False}
+    report = {'head': packet['head'], 'mode': packet.get('mode', 'fixture'),
+              'pass_result': False, 'runs': [], 'live_actions': False}
     started = time.monotonic()
 
     def persist():
         (out / 'receipt.json').write_text(json.dumps(report, indent=2) + '\n')
 
     def bound():
-        require(time.monotonic() - started < 230 and datetime.now(timezone.utc) < ends - timedelta(seconds=10),
+        require(time.monotonic() - started < work_seconds and datetime.now(timezone.utc) < ends - timedelta(seconds=10),
                 'Packet deadline reached')
 
     def accounting(adapter):
@@ -91,7 +96,7 @@ def main():
         bound()
 
     try:
-        for label, case, expected in RUNS:
+        for label, case, expected in (RUNS[:1] if diagnostic else RUNS):
             bound()
             work = out / 'native' / label
             work.mkdir(parents=True, exist_ok=False)
@@ -103,7 +108,7 @@ def main():
             try:
                 adapter.preflight(guard.LIMITS)
                 adapter.open()
-                for phase in ('compile', 'runtime'):
+                for phase in (('compile',) if diagnostic else ('compile', 'runtime')):
                     bound()
                     baseline(label + ':' + phase)
                     memory = 1024**3 if phase == 'compile' else 512 * 1024**2
@@ -142,7 +147,6 @@ def main():
                         receipt['samples'].append(sample)
                         current = accounting(adapter)
                         sample['accounting'] = current
-                        validate_members(sample['membership'], child.pid)
                         adapter.check(adapter.k.QueryInformationJobObject(adapter.job, 9, ctypes.byref(limits), ctypes.sizeof(limits), None))
                         require(limits.basic.flags == 8456 and limits.basic.active == 1 and limits.process_memory == memory,
                                 'Job limits changed')
@@ -154,10 +158,23 @@ def main():
                         validate_sockets(sample['sockets'], phase, (work / 'port-closed.txt').exists())
                         require(sum(p.stat().st_size for p in work.rglob('*') if p.is_file()) <= 16 * 1024**2,
                                 'Generated-output bound')
+                        others = [pid for pid in sample['membership']['pids'] if pid != child.pid]
+                        if others:
+                            sample['unexpected_members'] = []
+                            for pid in others:
+                                bound()
+                                sample['unexpected_members'].append(capture_unexpected(adapter, pid))
+                                persist()
+                        validate_members(sample['membership'], child.pid)
                         time.sleep(.1)
                     receipt['immediate_final'] = adapter.finish(child)
                     receipt['immediate_accounting'] = accounting(adapter)
                     receipt['immediate_membership'] = query_members(adapter)
+                    receipt['unexpected_members'] = []
+                    for pid in receipt['immediate_membership']['pids']:
+                        if pid != child.pid:
+                            bound()
+                            receipt['unexpected_members'].append(capture_unexpected(adapter, pid))
                     persist()
                     validate_members(receipt['immediate_membership'])
                     require(receipt['immediate_final']['exit_code'] == 0, 'Native process exit failure')

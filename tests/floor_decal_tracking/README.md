@@ -78,6 +78,22 @@ and settled observations are retained separately. Unexpected PIDs, truncated
 queries, persistent accounting or resource failures abort without a retry.
 Mocked drain tests exercise these guards; they do not establish the native cause.
 
+`contained-v4` stopped at its first compiler sample with actual Job PIDs
+173080 (retained compiler) and 239248 (unidentified). Accounting reported two
+active processes. No compilation or runtime phase was accepted. The owned Job
+was terminated/closed and the retained compiler exited; the second process had
+no retained handle, so its identity and separate exit were not independently
+attested. The existing daemon's pre/post identity census was unchanged.
+
+The next `--compiler-diagnostic` packet executes only the fixed compiler, with
+60-second wall/30-second CPU/1-GiB private limits and at most 90 seconds aggregate
+(80 work plus 10 cleanup). On an unexpected Job PID it attempts a read-only
+query/synchronize handle to that exact PID, verifies exact owned-Job membership
+before and after identity/exit observations, retains confirmed owned handles
+for cleanup waits, then aborts. Missing/raced identity remains unavailable.
+No command lines, global process lookup, arbitrary termination or launch-flag
+changes are used. Daemon and behavioral cases are excluded from this packet.
+
 After a separate native allocation, use pinned BYOND 516.1681, temporary packet
 storage, no normal game startup and serial runs. Proposed limits: each compiler
 60 seconds, each daemon 15 seconds, complete packet 240 seconds including cleanup.
@@ -115,10 +131,14 @@ construction, seasonal transition, screenshot or deployment acceptance.
 `run-contained.py` is the proposed Windows executor. It requires an exact hashed
 packet and separate time-bounded single-use grant, then owns every compiler and
 daemon through retained native handles and a suspended-before-assignment Windows
-Job. The byte-identical `windows.py`/`guard_config.py` adapters are reused from
+Job. The `windows.py`/`guard_config.py` adapters originate from
 accepted Help packet `contained-7e35bcec-v9` (adapter SHA-256
 `f4ed282efd63a1bcad135878ad0a861c69793d9c0c58ba8300f1778d16e68b0d`,
 config `ee5db97cabe3bcb2d8acb6660d67bbb56ee1f82052f96da00d54b13756615d35`).
+The local Windows adapter now has one cleanup-only correction: query-only
+retained handles have no thread handle, so cleanup skips closing a null thread.
+The original adapter hash above describes its origin; each packet binds the
+actual corrected adapter hash separately. `guard_config.py` is unchanged.
 There is no host free-memory admission. Each Job permits one process, kill-on-close,
 1 GiB compiler or 512 MiB daemon private memory, with a 128 MiB watcher bound.
 Compiler evidence uses byte-identical accepted `z_budget_evidence.py`, SHA-256
