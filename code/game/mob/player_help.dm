@@ -397,7 +397,9 @@ var/global/datum/player_help_service/player_help_service = new
 	var/regex/headings = regex("^ {0,3}(#{1,6})( +|$)(.*)$")
 	var/regex/bullets = regex("^( *)(- |\\* |\\+ )(.+)$")
 	var/regex/numbers = regex("^( *)(\[0-9]{1,9})(\\.|\\)) +(.+)$")
+	var/line_number = 0
 	for (var/line in lines)
+		line_number++
 		var/has_fence = fences.Find(line)
 		if (length(fence))
 			if (has_fence && copytext(fences.group[1], 1, 2) == fence && length(fences.group[1]) >= fence_length && markdown_blank(fences.group[2]))
@@ -446,8 +448,12 @@ var/global/datum/player_help_service/player_help_service = new
 		else
 			result += "<br>"
 		// Keep explicit line breaks readable, including CommonMark hard breaks.
-		if (length(content) && copytext(content, length(content)) == "\\")
-			content = copytext(content, 1, length(content))
+		if (line_number < lines.len)
+			var/slashes = 0
+			for (var/i = length(content), i >= 1 && text2ascii(content, i) == 92, i--)
+				slashes++
+			if (slashes % 2)
+				content = copytext(content, 1, length(content))
 		result += markdown_inline(content)
 	if (paragraph)
 		result += "</p>"

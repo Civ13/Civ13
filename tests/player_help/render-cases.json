@@ -14,5 +14,6 @@
   {"name":"escapes and item identifiers", "markdown":"\\*literal\\* crude_twine **bold** _italic_ ***both***", "contains":["*literal* crude_twine <b>bold</b> <i>italic</i> <b><i>both</i></b>"], "absent":[]},
   {"name":"code spacing", "markdown":"` padded ` `   ` `unclosed", "contains":["<code>padded</code>","<code>   </code>","`unclosed"], "absent":[]},
   {"name":"heading must be delimited", "markdown":"#not heading\n####### too many", "contains":["#not heading<br>####### too many"], "absent":["<h1>","<h6>"]},
-  {"name":"entity text cannot become HTML", "markdown":"&lt;script&gt; &quot; &#60;img&#62;", "contains":["&amp;lt;script&amp;gt;","&amp;#60;img&amp;#62;"], "absent":["<script>","<img"]}
+  {"name":"entity text cannot become HTML", "markdown":"&lt;script&gt; &quot; &#60;img&#62;", "contains":["&amp;lt;script&amp;gt;","&amp;#60;img&amp;#62;"], "absent":["<script>","<img"]},
+  {"name":"backslash text at line ends", "markdown":"paired\\\\\nnext\nfinal\\", "contains":["paired\\<br>next<br>final\\</p>"], "absent":[]}
 ]
