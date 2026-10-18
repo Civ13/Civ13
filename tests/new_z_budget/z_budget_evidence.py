@@ -1,7 +1,7 @@
 """Pure bounded compiler/diagnostic evidence checks; no process execution."""
 import re
 
-DIAGNOSTIC = re.compile(r'runtime error:|bad ref|bad loc|BUG:|##\s*ERROR\s*:|RUNTIME:|assertion failed|infinite loop|segmentation|fatal error|unexpected runtime|\bOOM\b|out of memory|access violation|\bCRASH(?:ED)?\b', re.I)
+DIAGNOSTIC = re.compile(r'runtime error:|bad ref|bad loc|BUG:|##\s*ERROR\s*:|RUNTIME:|assertion failed|infinite loop|segmentation|fatal error|unexpected runtime|\bOOM\b|out of memory|access violation|\bCRASH(?:ED)?\b|invalid file', re.I)
 
 
 MAX_COMPILE_LOG = 1024 * 1024

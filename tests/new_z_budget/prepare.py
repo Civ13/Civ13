@@ -24,6 +24,12 @@ def unique_replace(text, old, new):
     return text.replace(old, new, 1)
 
 
+def omit_headless_interface(source):
+    # This server-only fixture makes no client/UI/rendering claim. Native DM
+    # reports an absolute external DMF as "invalid file" despite a zero summary.
+    return unique_replace(source, '#include "interface\\skin.dmf"', '')
+
+
 def contracts():
     allocator = (ROOT / 'code/game/objects/building_levels.dm').read_text(encoding='utf-8')
     claim = allocator.index('world_z_budget.claim_level(reservation, target_z)')
@@ -78,6 +84,7 @@ def prepare(output, control):
     replacements = {'code/world.dm': output / 'world.dm',
                     'code/controllers/mc/globals.dm': output / 'globals.dm', MODULE: output / 'world_z_budget.dm'}
     source = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+    source = omit_headless_interface(source)
     source = re.sub(r'^#include ".*\.dmm".*$', '', source, flags=re.M)
     source = unique_replace(source, '#define FILE_DIR .', f'#define FILE_DIR "{ROOT.as_posix()}"')
     def include(match):
@@ -96,6 +103,7 @@ def prepare(output, control):
     receipt = {'base_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
                'prepared_only': True, 'native_executed': False, 'control': control,
                'source_root': ROOT.as_posix(), 'fixture_admission': 'isolated test subclass, not calibrated',
+               'interface': 'skin.dmf explicitly omitted from headless fixture', 'ui_rendering_verified': False,
                'expected_control_failure': CONTROLS[control][2] if control else None,
                'contracts': contracts(),
                'source_sha256': {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in paths},

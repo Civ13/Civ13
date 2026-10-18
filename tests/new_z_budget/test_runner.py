@@ -1,5 +1,8 @@
 """Offline oracle checks; these tests never launch a compiler/runtime."""
+import tempfile
 import unittest
+from pathlib import Path
+from prepare import ROOT, omit_headless_interface, prepare
 from run import MAX_COMPILE_LOG, validate_compile, validate_native
 
 
@@ -16,6 +19,29 @@ class RunnerEvidenceTests(unittest.TestCase):
     def test_exact_compiler_evidence(self):
         validate_compile(0, self.compiler_log())
         validate_compile(0, self.compiler_log(result='probe.dmb - 0 errors, 0 warnings (10/18/26 4:39 pm)').replace('\n', '\r\n'))
+
+    def test_invalid_interface_diagnostic_overrides_zero_summary(self):
+        for path in ['D:/GitHub/civ13-z-budget-20261018/interface/skin.dmf', '/tmp/repo/interface/skin.dmf']:
+            log = self.compiler_log().replace('saving probe.dmb', path + ': invalid file\nsaving probe.dmb')
+            with self.subTest(path=path), self.assertRaises(RuntimeError):
+                validate_compile(0, log)
+
+    def test_headless_preparation_omits_exact_interface_and_records_limit(self):
+        source = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        transformed = omit_headless_interface(source)
+        self.assertNotIn('.dmf', transformed)
+        self.assertIn('interface\\skin.dmf', source)
+        for changed in [transformed, source + '\n#include "interface\\skin.dmf"\n']:
+            with self.assertRaises(AssertionError):
+                omit_headless_interface(changed)
+        with tempfile.TemporaryDirectory(prefix='new-z-headless-source-') as temporary:
+            output = Path(temporary) / 'prepared'
+            prepare(output, None)
+            self.assertNotIn('.dmf', (output / 'probe.dme').read_text(encoding='utf-8'))
+            import json
+            receipt = json.loads((output / 'receipt.json').read_text(encoding='utf-8'))
+            self.assertFalse(receipt['ui_rendering_verified'])
+            self.assertEqual(receipt['interface'], 'skin.dmf explicitly omitted from headless fixture')
 
     def test_shared_disk_runner_artifact_names(self):
         for artifact in ['dimension_bootstrap.dmb', '.durable_world_deadbeef.dmb']:

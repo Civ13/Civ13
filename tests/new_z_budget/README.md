@@ -67,3 +67,11 @@ bait, longer versions, duplicate banners/results, contaminated summaries,
 nonzero exits and OOM/out-of-memory/access-violation/crash diagnostics reject
 evidence even when a positive or intended-control result exists. Offline tests
 exercise these rejection vectors; they do not execute native binaries.
+
+The headless new-z preparation explicitly omits the one production skin.dmf
+include before resolving source paths. It makes no UI or client-rendering claim.
+`invalid file` rejects compiler evidence even alongside a zero-error summary.
+The standalone disk DME has no interface include; the full durable runner keeps
+the root-relative skin include and compiles from the repository root. Neither
+uses the external absolute DMF include that caused the new-z diagnostic. This
+source distinction does not replace checking each actual compiler log.
