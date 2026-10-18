@@ -13,7 +13,8 @@
 
 // Custom persistence iterates vars, including tmp. Runtime fields require explicit exclusion.
 /datum/proc/persistence_runtime_var(key)
-	return key == "persistence_export_frame"
+	// Weak handles cache native references from this process, never durable IDs.
+	return key == "persistence_export_frame" || key == "weak_reference"
 
 /datum/proc/get_saved_vars()
 	var/list/to_save = list()

@@ -375,6 +375,9 @@ jobs:
           python3 tests/hover_name/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control exit
           python3 tests/hover_name/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control stale
           python3 tests/hover_name/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control parent
+          python3 tests/hover_name/run-weakref-save.py --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/hover_name/run-weakref-save.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control export
+          python3 tests/hover_name/run-weakref-save.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control import
       - name: Verify bounded winter survival and cold-loss negative control
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/weather')
         shell: bash
