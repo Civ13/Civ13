@@ -175,13 +175,9 @@ var/list/failures = list()
 
 /proc/run_checks()
 	var/join_verb = /mob/new_player/verb/Join
-	var/mob/new_player/unsafe_visibility/control = new
-	var/unsafe_invisibility = null
-	for(var/control_verb in control.verbs)
-		if(control_verb:name == "Join")
-			unsafe_invisibility = control_verb:invisibility
+	var/unsafe_verb = /mob/new_player/verb/UnsafeJoin
 	expect("native_join_verb_visible", join_verb:invisibility == 0)
-	expect("negative_control_invisible_verb_detected", unsafe_invisibility == 101)
+	expect("negative_control_invisible_verb_detected", unsafe_verb:invisibility == 101)
 	var/mob/new_player/player = fresh_player()
 	expect("native_select_once", player.handle_lobby_join(list("late_join" = 1), TRUE) && player.dispatches == 1 && player.prompts == 1)
 	expect("normal_cleanup", !player.lobby_join_active && !player.lobby_join_client && !player.lobby_join_map && !player.lobby_join_jobs)
