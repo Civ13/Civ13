@@ -204,6 +204,17 @@ jobs:
           git worktree add --detach "$compile_source" "$CIV13_EXPECTED_COMMIT"
           test "$(git -C "$compile_source" rev-parse HEAD)" = "$CIV13_EXPECTED_COMMIT"
           python3 -B "$compile_source/scripts/gameplay_bridge/compile_check.py" --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --expected-commit "$CIV13_EXPECTED_COMMIT" --evidence-dir "$RUNNER_TEMP/gameplay-bridge-compile"
+      - name: Compile normal-startup ordinary-client gather fixture only
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gameplay_bridge')
+        timeout-minutes: 8
+        shell: bash
+        env:
+          CIV13_EXPECTED_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          compile_source="$RUNNER_TEMP/gameplay-bridge-source"
+          test "$(git -C "$compile_source" rev-parse HEAD)" = "$CIV13_EXPECTED_COMMIT"
+          python3 -B "$compile_source/scripts/gameplay_bridge/compile_client_gather.py" --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --expected-commit "$CIV13_EXPECTED_COMMIT" --evidence-dir "$RUNNER_TEMP/gameplay-client-gather-compile"
       - name: Retain gameplay bridge compile logs and source manifest
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gameplay_bridge'))
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -214,6 +225,8 @@ jobs:
             ${{ runner.temp }}/gameplay-bridge-compile/compiler-*.log
             ${{ runner.temp }}/gameplay-bridge-compile/manifest.json
             ${{ runner.temp }}/gameplay-bridge-source-status.txt
+            ${{ runner.temp }}/gameplay-client-gather-compile/compiler.log
+            ${{ runner.temp }}/gameplay-client-gather-compile/manifest.json
       - name: Verify scheduler replacement ownership and omission controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/process_replacement')
         shell: bash

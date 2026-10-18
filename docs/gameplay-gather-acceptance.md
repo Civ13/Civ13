@@ -198,3 +198,78 @@ water/craft, containers, broad equipment, repair/rest/combat/death/respawn,
 vehicles/shuttle/party/extraction and whole-game survival remain unsupported or
 unverified. Add subsequent adapters only with explicit context forwarding and
 their own authoritative costs/range/LOS/permission/cooldown/completion evidence.
+
+### Normal-startup ordinary-client candidate (source preparation only)
+
+`prepare_client_gather.py` freezes a separate Testing/Nomad-role9x9 candidate.
+The generated DME preserves every production include and function; its only
+changes are the feature macro, replacement of the single map include, and appended
+bridge/passive-observer includes. Production `civ13.dme` remains disabled. The
+original world/global startup, client constructors/Login, human constructor,
+natural Life, lighting and bridge authority/visibility/execution paths are copied
+unchanged. The six accepted headless compiler profiles and native receipts remain
+separate and unchanged.
+
+The map uses stock Testing metadata, real start/JoinLateCiv landmarks and the
+normal Nomad job admitted on that map. It supplies one ground sharpened flint at
+(5,5,1), grass at(4,5,1)/(6,5,1), and an ordinary emitted-light lamp at(5,7,1).
+Pickup/equipment must use ordinary player mechanics; the observer retains the
+original supplied item but never equips or moves it. Normal clothing may need
+normal UI unequipping to meet the existing pickup adapter's guards. This is a
+Testing/Nomad-role supplied-resource fixture, not a full Nomads world or proof of
+unaided resource acquisition.
+
+The passive startup hook waits at most9000world ticks for genuine consent/native
+assignment, then observes only that exact ordinary human/client/generation and
+three fixed resource cells for1200ticks. It checks the real Nomad role, PLAYING,
+first natural Life service and autosave-disabled configuration before binding.
+No other client is scanned. It reads existing observation rows; it never calls
+`observe`, `active`, `visible`, `execute`, assignment or any mechanic. The two
+grass cells must have real engine lumcount and already advertised gather actions.
+The first gather targets left grass and completes; the second targets right
+grass and is cancelled through the same deterministic existing v3 controller.
+Sampling retains the original worker lease across return, records callback locks,
+natural Life, turf/output/tool state and continues to the fixed observation
+deadline. It never clears locks, resets clocks/sight/health, invokes Life or stops
+the bridge/world. It releases only observer-owned references and writes two
+fixed private JSON files, capped by the offline reader at2MiB.
+
+`check_client_gather.py` checks every frozen source hash and exact normal DME
+projection. Result checking requires two original typed receipts, real advertised
+lit grass, the original held tool, sampled paid wait, two cuttings/turf replacement,
+balanced callbacks, natural Life and no late right-grass/output/new-worker effects.
+One-tick polling gives a sampled paid interval lower bound28ticks; unchanged
+canonical source still specifies30. This does not claim exact wait-entry timing.
+Cancel ACK alone cannot establish worker return. A separately reviewed executor
+must record a fresh status sequence received after cancel ACK and supply the
+matching `{commit,run_id,request_id,received_after_cancel_ack:true,sequence,tick}`
+witness. Result samples must continue at least35world ticks beyond that witness
+and the original worker's return, with Life still progressing. The checker cannot
+independently prove the executor's ACK ordering, native UI assignment or OS/client
+cleanup; those need separate genuine evidence. It reports fixture-oracle validity,
+not whole-game or graphical acceptance.
+
+Preparation stages no runtime config, native library, tokens, account, role change,
+controller or grant. Its manifest deliberately says `runtime_ready:false`,
+`actual_native_geometry:null` and all ordinary/native acceptance `not_run`.
+The9x9x1 map extent is a source declaration; actual native geometry remains unknown
+until tested and is checked rather than repaired by world overrides. Normal public
+runtime dependencies plus authorized run-local server/admin/bridge configuration,
+autosave disabled, two genuine client roles and an isolated execution/cleanup
+allocation are still required. Machine tokens do not substitute for the separate
+local R_ADMIN client. Current player/runtime state is untouched.
+
+Offline preparation/check commands (no native execution):
+
+```text
+<python> -B scripts/gameplay_bridge/prepare_client_gather.py --expected-commit <full-head> --output <fresh-external-packet>
+<python> -B scripts/gameplay_bridge/check_client_gather.py <packet> --expected-commit <full-head>
+```
+
+The separately allocated CI `compile_client_gather.py` invokes only pinned
+516.1681 DreamMaker on this generated normal-startup DME,180seconds maximum,
+requiring0errors/0warnings. Its8minute workflow step follows the unchanged six
+profiles and retains only compiler.log and manifest.json. No daemon, client,
+bootstrap, controller or transport is invoked. New ordinary source compilation
+and real-client execution remain unverified until their own exact-head evidence;
+the earlier462headless native PASS does not satisfy either.

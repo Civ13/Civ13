@@ -54,3 +54,14 @@ No private wrapper/reference files are needed. The offline CLI reads no token
 without --send. Real E2E needs both a consenting ordinary client and a separate
 local R_ADMIN client using the native assignment verb; machine tokens cannot
 assign, create an account or substitute for either client role.
+
+test_client_gather.py exercises the separate normal-startup ordinary-client source
+candidate: fixed9x9 Testing/Nomad-role DMM, unmodified production startup/client/
+human/Life/lighting bindings, passive own-actor observer, frozen source archive,
+strict result/late-effect/cancel-ACK horizon controls and compiler-only CI policy.
+All result/transport examples here are synthetic. prepare_client_gather.py never
+stages runtime config or credentials and leaves runtime_ready false. The separate
+compile_client_gather.py CI target does not alter/run any of the six accepted
+headless profiles. Genuine two-client consent/native assignment, natural pickup,
+full startup geometry and ordinary E2E/cleanup remain not_run. See the normal-
+startup candidate section in docs/gameplay-gather-acceptance.md.
