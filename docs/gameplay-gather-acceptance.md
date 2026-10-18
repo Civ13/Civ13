@@ -3,8 +3,8 @@
 The executable fixture is tests/gameplay_bridge/native/gather_probe.dm. Its
 human/gather_probe.New returns without the parent human constructor: no normal
 constructor, anatomy, natural Life or connected client is tested. The real human
-survival_action_started/finished callbacks and canonical grass handler are retained. This is
-source/preparation evidence, not a runtime receipt.
+survival_action_started/finished callbacks and canonical grass handler are retained.
+Generated sources are preparation artifacts; actual native evidence is separate.
 Production DME stays disabled. Core owns any later native execution; the source
 integrator does not start a compiler, daemon, client, listener or model. The
 historical native packet generator still refuses its obsolete ambient profiles.
@@ -41,6 +41,15 @@ runtime on157 missing-namefile diagnostics. No gather oracle or parity result
 was accepted. That consumed packet/results/USED are preserved; this staging
 repair requires a fresh never-executed packet, reviewed caller bindings and a new
 execution grant. Preparation/offline checks do not turn that failure into a pass.
+
+The repaired `462eae029b5cccf6ced94506f114caf429fc7126` headless matrix subsequently
+passed all 20 serial compile/runtime phases, including the six exact named
+omission oracles, strict checks of 100 logs, and cleanup with Job active count 0.
+This is isolated helper/canonical-gather evidence with the declared headless
+constructor/client/visibility seams. It does not verify normally joined clients,
+natural Life, authenticated end-to-end HTTP or deployment. The deterministic
+HTTP client added afterward has mocked transport evidence only; it does not
+inherit connected-client acceptance from that matrix.
 
 ```text
 <python> -B scripts/gameplay_bridge/prepare_gather.py --expected-commit <FULL_SHA> --output <FRESH_EXTERNAL_FOLDER> --adapter-dir <REVIEWED_ADAPTER_FOLDER> --contained-repo <EXISTING_REFERENCE_CHECKOUT>
@@ -143,8 +152,15 @@ layer. No historical packet/result is reusable as native proof of these changes.
    vision/eye and natural Life service. Backend Join remains unsupported; this
    step cannot count as physical Join/menu proof without actual UI evidence.
 3. That player explicitly toggles existing gameplay consent on its own client.
-   Observe consent bound to that exact current body. The existing R_ADMIN
-   operator assigns only that consenting player and a narrow capability set;
+   Observe consent bound to that exact current body. A separate genuine local
+   administrator client invokes the existing Admin verb, selects only that
+   consenting player and approves a narrow capability set. It must have a holder
+   with R_ADMIN and a null/127.0.0.1/::1 address. Reuse an existing authorized
+   administrator account/session; do not invent one or mutate the actor's rights.
+   The ordinary actor cannot also be the administrator, because any holder is
+   rejected during assignment and ongoing activity. A machine token cannot reach
+   this native assignment verb. If either client role is unavailable, bootstrap
+   is blocked. Configuration/authentication must also be separately allocated;
    operator assignment is a separate authority plane, never a player action.
    No possession, spawn, credentials, public endpoint or new diagnostic API.
 4. Use the existing versioned mailbox with a deterministic inert driver, no
@@ -166,6 +182,16 @@ Screenshots, if separately captured by the UI owner, must identify the exact
 session/time and observed action. Source logs/backend receipts never claim to
 capture pixels. Private refs/identities remain private; any public report is an
 explicit allowlist summary. Fixed output/rate/deadline/audit bounds remain active.
+
+`scripts/gameplay_bridge/deterministic_client.py` can drive the existing v3
+routes without a model after legitimate bootstrap. Its action input is a frozen
+scope/sequence/request-ID envelope; it neither assigns an actor nor rebases a
+stale request. See [the client contract](gameplay-bridge.md#deterministic-http-client).
+The first joined-client fixture may use explicitly supplied sharpened flint and
+lit grass. This does not prove natural starting-resource acquisition: ordinary
+rock search requires grab intent and a 50-tick wait for plain flint, then normal
+rock strikes have a 20% sharpening chance. Current bridge use is flashlight-only
+and gather is grass-only; rock search and flint sharpening have no adapter.
 
 Acceptance stops at this joined-player gather vertical slice. Agent Join, timed
 water/craft, containers, broad equipment, repair/rest/combat/death/respawn,

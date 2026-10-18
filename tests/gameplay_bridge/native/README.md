@@ -21,7 +21,11 @@ Original client.New bodies are removed in generated source; one denied entry is
 compiled instead. Native startup may bind only fixed127.0.0.1:59477 under a strict
 OS socket guard. OpenPort none/port0 is not a never-listen guarantee.
 prepare_native.py continues to refuse its historical profiles. Current CI
-compiles the new fixture without executing it; native results remain not_run.
+compiles the new fixture without executing it; fresh preparation states are
+not_run. The first ff8 runtime failed missing public name preloads. After staging
+repair,462eae029's separately executed headless matrix passed20 phases, six exact
+omission oracles and strict100-log checks with cleanup active0. These receipts do
+not establish normally joined clients, natural Life or end-to-end HTTP transport.
 
 Profiles, packet commands and ordinary non-admin consent/bootstrap steps are
 specified in docs/gameplay-gather-acceptance.md. Only core may execute

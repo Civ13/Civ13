@@ -37,6 +37,18 @@ No real secret or example config was imported. Own-Host diagnostics remain a
 separate admin plane and never supply player authority or hidden observations.
 Names, descriptions, recipe labels and rendered chat are untrusted game data.
 
+Normal bootstrap needs two genuine client roles. The consenting ordinary actor
+must have no holder. A different local administrator client with a holder and
+R_ADMIN invokes `gameplay_bridge_assign` (Admin: **Assign LLM gameplay bridge**),
+selects that actor through native input and approves capabilities through native
+alerts. The verb revalidates requester rights, generation and chosen body after
+those dialogs. Its allowed address is null,127.0.0.1 or ::1. An existing authorized
+administrator account/session can be reused; availability is not assumed.
+There is no one-client bootstrap, rights mutation or machine-token assignment.
+If the two roles or separately authorized configuration/authentication are
+unavailable, E2E is blocked. The game initiates authenticated exchanges only
+after this native assignment; neither HTTP token can invoke the assignment verb.
+
 The14 fixed actions remain narrow ordinary-mechanic adapters: cardinal walk,
 examine/use, pickup/drop/swap, flashlight belt equip, consume, gather, refill/drink,
 fixed craft, plain say, help/grab/walk intent. Movement uses normal client.Move
@@ -175,14 +187,115 @@ Historical headless/client probes used ambient leases and unconverted craft
 adapters. prepare_native.py refuses those profiles even at a clean current head.
 The dedicated prepare_gather.py now builds concrete typed gather fixtures with
 reviewed external executor bindings, named omission profiles and no native start.
-Their runtime results remain not_run. Original evidence is retained in the
-original frozen checkout and cannot accept this revision. See [gather acceptance](gameplay-gather-acceptance.md)
-for packet preparation, the missing native cancellation/parity and ordinary
-consent/bootstrap proof.
+Fresh preparation states remain not_run. First ff8 runtime evidence failed on
+missing public name preloads; the repaired462eae029 headless matrix subsequently
+passed20 phases, six exact omission oracles,100 strict log checks and cleanup
+active0. This proves the isolated typed helper/gather profiles with their declared
+seams, not normally joined clients or HTTP E2E. Original failed/historical
+evidence remains preserved. See [gather acceptance](gameplay-gather-acceptance.md)
+for packet preparation and the separate ordinary consent/bootstrap proof.
 
 Agent Join remains unsupported. Physical native Join/menu acceptance and genuine
 pre-save lighting baseline remain separate core/UI work. Backend actions cannot
 substitute for them. Broad survival/mode claims need their own evidence.
 
+## Deterministic HTTP client
+
+`scripts/gameplay_bridge/deterministic_client.py` uses existing same-directory
+protocol validators and the controller role, with no model. Source availability
+does not enable the bridge or establish a reachable listener. It cannot bootstrap
+clients, assign an actor, change rights, call a proc, bypass normal authority or
+reach game-role exchange. No token or configuration is generated.
+
+Without `--send`, commands validate input offline, read no token and report zero
+requests. Separately authorized execution needs a legitimately assigned ordinary
+actor, the existing role-separated sidecar/game configuration, and the existing
+controller token from fixed environment variable
+`CIV13_GAMEPLAY_CONTROLLER_TOKEN` or an operator-supplied private `--token-file`.
+There is no credential-value argument. Tokens never appear in output. The client
+does not verify file ACLs or provision credentials; their privacy/provenance are
+the operator's responsibility.
+
+```text
+<python> -B scripts/gameplay_bridge/deterministic_client.py observe
+<python> -B scripts/gameplay_bridge/deterministic_client.py action --input <PRIVATE_FROZEN_REQUEST_JSON>
+```
+
+The following interfaces require separate runtime authorization, beyond --send:
+
+```text
+<python> -B scripts/gameplay_bridge/deterministic_client.py observe --send --token-file <EXISTING_PRIVATE_TOKEN_FILE>
+<python> -B scripts/gameplay_bridge/deterministic_client.py action --send --input <PRIVATE_FROZEN_REQUEST_JSON> --seconds 30
+<python> -B scripts/gameplay_bridge/deterministic_client.py action --send --input <SECOND_PRIVATE_REQUEST_JSON> --cancel-after 1 --seconds 30
+<python> -B scripts/gameplay_bridge/deterministic_client.py status --send --input <PRIVATE_STATUS_JSON>
+<python> -B scripts/gameplay_bridge/deterministic_client.py cancel --send --input <PRIVATE_CANCEL_JSON>
+<python> -B scripts/gameplay_bridge/deterministic_client.py stop --send
+```
+
+Only fixed127.0.0.1:9847 and existing POST observation/action/STOP paths are used.
+There is no proxy, configurable URL, redirect, provider or Ollama route. Each
+invocation has an absolute monotonic5..120second budget, including a2second
+reserve for one scoped cancellation. Every socket operation uses remaining time;
+incremental reads cannot renew the deadline. Headers, body, schema and request
+count are bounded. HTTP must have status200, JSON MIME and one exact Content-Length;
+transfer encoding, duplicates, malformed/deep/nonfinite/oversized JSON fail closed.
+
+Observation requests use{} for a full v3 shape; no delta cache is introduced.
+Private output retains current scope/sequences, capabilities, coarse status and
+structural entity/own-hand IDs, relative cells, actions and recipes. It excludes
+names, chat, receipt detail and arbitrary peer text. Opaque IDs and relative cells
+remain private session metadata; raw output is not a sanitized public bug bundle.
+
+An action input is one immutable existing v3 envelope, for example synthetic only:
+
+```json
+{"version":3,"assignment":"synthetic-a","epoch":"synthetic-epoch","observation_seq":1,"action_seq":1,"request_id":"synthetic-request-1","action":{"type":"gather","target":"e1"}}
+```
+
+Supply actual IDs and sequences from that own current observation. Fresh scope,
+observation/action sequence, complete/mobile status, capability and target
+affordance must match before the single submission. Craft recipe/cardinal move
+availability is checked too. The game retains final range, LOS, cost, cooldown and
+permission checks. Stale input is never silently rebased; there is no automatic
+retry, new request ID, invented target or second submission.
+
+Queued/dispatched/running/cancel_requested are not completion. Unknown retains
+the original request's scoped status control; late genuine terminal completion
+can resolve it. Optional cancellation addresses only that ID; completion can win
+the race. Uncertainty/exhaustion makes one bounded scoped cancel attempt and
+reports unresolved `pending_control` if necessary. No unscoped STOP is issued
+automatically after uncertainty or epoch drift. An explicit STOP response is only
+the sidecar latch, with `worker_quiescence_verified:false`.
+
+Status/cancel input uses the existing exact control shape:
+
+```json
+{"version":3,"operation":"status","assignment":"synthetic-a","epoch":"synthetic-epoch","request_id":"synthetic-request-1"}
+```
+
+Change only operation to cancel for that scoped request. Use status to investigate
+an uncertain original submission. A repeated frozen envelope is not rewritten
+to a fresh sequence; existing broker idempotency remains authoritative.
+
+Errors emit fixed redacted JSON, never exception strings, paths, response bodies
+or tokens. CLI exit0 means offline validation or a valid response; action returns0
+only for terminal completed/cancelled,3 for unresolved/denied/unsubmitted work,
+and2 for invalid CLI/transport/control input. A terminal receipt is an adapter
+acknowledgement, not physical UI, natural survival or OS-containment evidence.
+
+The22 client tests use fake sockets/clocks and the pure Python Broker with
+simulated game acknowledgements, including uncertainty, completion/cancel races,
+deadlines, framing, scope/schema/affordance denials and redaction. Same-directory
+module identity is checked; no private reference files or Git objects are needed.
+They provide no real HTTP, client bootstrap, native or gameplay acceptance.
+
+The smallest future ordinary-client fixture may supply declared sharpened flint
+and lit grass, then observe legitimate assignment, natural life_tick progression,
+paid gather/canonical effects and cancellation through the original horizon.
+That passive oracle and normally started enabled profile are not implemented
+by this CLI. Natural rock search/flint sharpening still have no bridge adapter;
+supplied resources do not establish unaided Nomads acquisition.
+
 Restart required: yes for any later activated DM change. Offline discovery needs
-no restart. This source checkpoint authorizes no deployment or native execution.
+no restart. The standalone Python client needs no world restart; this source
+checkpoint authorizes no deployment or native execution.

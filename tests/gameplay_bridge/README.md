@@ -2,7 +2,7 @@
 
 Base: public merged670f415240c1634dcfb6e373da15cd86d84d676a.
 Original aeaf checkout/evidence is preserved separately. Production DME excludes
-this bridge and defines no feature macro. No deployment/native acceptance.
+this bridge and defines no feature macro. No deployment or ordinary-client acceptance.
 
 Run offline only, with a verified Python executable:
 
@@ -25,6 +25,10 @@ Each compiler is bounded to180sec; CI step ceiling22min. Compile results do not 
 runtime behavior. Six ff8 CI compiler profiles passed; the separate first ff8
 stock runtime failed missing public global-preload dictionaries before any gather
 oracle was accepted. Those failed results are preserved.
+The repaired462eae029 headless matrix later passed20 serial phases, six exact
+omission oracles,100 strict log checks and cleanup active0. This isolated native
+evidence retains constructor/client/visibility seams; it does not verify normal
+Join, natural Life, real HTTP transport or ordinary-client E2E.
 
 wait_overlay.py prints/validates the current explicit helper diff. It does not
 apply source. do_after.guard.patch matches the actual helper. Disabled full-file
@@ -40,3 +44,13 @@ the exact frozen public code/names.dm dictionary closure and native library,
 with missing/altered/omitted/extra-config negative controls. Fresh packet compiler
 and runtime states remain not_run. See docs/gameplay-gather-acceptance.md for packet validation and the
 separate required ordinary non-admin consent/bootstrap layer.
+
+test_deterministic_client.py adds22 mocked tests for the no-model controller
+client: one frozen v3 submission, same-ID status/cancel, unknown/late completion,
+cancel/completion races, strict loopback/framing/deadlines, scope/affordance/schema
+denials and credential/error redaction. Tests bind the actual same-directory
+bridge/catalog/observation modules and create no socket, game, client or token.
+No private wrapper/reference files are needed. The offline CLI reads no token
+without --send. Real E2E needs both a consenting ordinary client and a separate
+local R_ADMIN client using the native assignment verb; machine tokens cannot
+assign, create an account or substitute for either client role.
