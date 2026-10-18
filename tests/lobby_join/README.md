@@ -10,6 +10,11 @@ before. The source check rejects omitted or inherited invisible verb settings.
 The native fixture also includes the unmodified production Join verb and reads
 its compiled invisibility metadata, with an invisible-verb negative control.
 Metadata accessibility is separate from real client command dispatch.
+Native BYOND 516.1681 reports explicit `set invisibility = 0` as numeric `-1`
+through the verb metadata getter; an omitted setting reads numeric `0`.
+The fixture calibrates explicit zero, explicit one and omission separately,
+then compares production Join with explicit zero. Copies of the production verb
+with the override omitted or changed to 101 must remain distinguishable.
 Direct-spawn modes use their usual join
 handler; modes with role lists use a native BYOND role prompt. Cancel the prompt
 to remain in the lobby. This source change requires a rebuilt server before use.

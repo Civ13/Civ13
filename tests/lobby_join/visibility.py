@@ -10,4 +10,7 @@ def visibility_verbs(source):
     unsafe = verb.replace("/mob/new_player/verb/Join()", "/mob/new_player/verb/UnsafeJoin()", 1)
     unsafe = unsafe.replace('set name = "Join"', 'set name = "UnsafeJoin"')
     unsafe = unsafe.replace("set invisibility = 0", "set invisibility = 101")
-    return verb + "\n" + unsafe
+    inherited = verb.replace("/mob/new_player/verb/Join()", "/mob/new_player/verb/InheritedJoin()", 1)
+    inherited = inherited.replace('set name = "Join"', 'set name = "InheritedJoin"')
+    inherited = inherited.replace("\tset invisibility = 0\n", "")
+    return verb + "\n" + unsafe + "\n" + inherited

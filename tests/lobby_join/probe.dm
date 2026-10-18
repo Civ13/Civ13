@@ -95,8 +95,11 @@ var/list/verb_metadata = list()
 /mob/new_player/proc/jobBanned(title)
 	return test_client.job_banned
 
-// Calibration only: retain the strict production-verb assertion until the
-// engine's raw zero, nonzero and inherited metadata values are recorded.
+// BYOND 516.1681 reports explicit set invisibility=0 as -1 and omission as 0.
+// Calibrate both distinctly; neither metadata check proves client dispatch.
+/mob/new_player/verb/VisibilityZero()
+	set invisibility = 0
+	return
 /mob/new_player/verb/VisibilityOne()
 	set invisibility = 1
 	return
@@ -185,11 +188,16 @@ var/list/verb_metadata = list()
 /proc/run_checks()
 	var/join_verb = /mob/new_player/verb/Join
 	var/unsafe_verb = /mob/new_player/verb/UnsafeJoin
+	var/zero_verb = /mob/new_player/verb/VisibilityZero
 	var/one_verb = /mob/new_player/verb/VisibilityOne
 	var/inherited_verb = /mob/new_player/verb/VisibilityInherited
+	var/inherited_join = /mob/new_player/verb/InheritedJoin
 	var/mob/new_player/visibility_actor = new
-	verb_metadata = list("join" = join_verb:invisibility, "join_isnull" = isnull(join_verb:invisibility), "join_isnum" = isnum(join_verb:invisibility), "unsafe" = unsafe_verb:invisibility, "one" = one_verb:invisibility, "inherited" = inherited_verb:invisibility, "inherited_isnull" = isnull(inherited_verb:invisibility), "lobby_invisibility" = visibility_actor.invisibility)
-	expect("native_join_verb_visible", join_verb:invisibility == 0)
+	verb_metadata = list("join" = join_verb:invisibility, "join_isnull" = isnull(join_verb:invisibility), "join_isnum" = isnum(join_verb:invisibility), "unsafe" = unsafe_verb:invisibility, "zero" = zero_verb:invisibility, "one" = one_verb:invisibility, "inherited" = inherited_verb:invisibility, "inherited_join" = inherited_join:invisibility, "inherited_isnull" = isnull(inherited_verb:invisibility), "lobby_invisibility" = visibility_actor.invisibility)
+	expect("engine_explicit_zero_metadata", isnum(zero_verb:invisibility) && zero_verb:invisibility == -1)
+	expect("engine_nonzero_metadata", one_verb:invisibility == 1)
+	expect("negative_control_inherited_verb_detected", inherited_verb:invisibility == 0 && inherited_join:invisibility == 0 && inherited_join:invisibility != join_verb:invisibility && visibility_actor.invisibility == 101)
+	expect("native_join_verb_visible", join_verb:invisibility == -1 && join_verb:invisibility == zero_verb:invisibility)
 	expect("negative_control_invisible_verb_detected", unsafe_verb:invisibility == 101)
 	var/mob/new_player/player = fresh_player()
 	expect("native_select_once", player.handle_lobby_join(list("late_join" = 1), TRUE) && player.dispatches == 1 && player.prompts == 1)
