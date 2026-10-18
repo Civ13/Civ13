@@ -1,5 +1,14 @@
 // Fixed production mechanics only. Timed affordances fail closed unless the
 // owner-approved do_after guard is compiled in the approved isolated build.
+#ifdef CIV13_GAMEPLAY_BRIDGE
+/datum/gameplay_bridge/proc/wait_guards_ready(kind)
+#ifdef CIV13_GAMEPLAY_WAIT_GUARDS
+	return kind == "gather"
+#else
+	return FALSE
+#endif
+
+#else
 /datum/gameplay_bridge/proc/wait_guards_ready()
 #ifdef CIV13_GAMEPLAY_WAIT_GUARDS
 	return TRUE
@@ -7,6 +16,7 @@
 	return FALSE
 #endif
 
+#endif
 /datum/gameplay_bridge/proc/sharp_flint()
 	var/obj/item/weapon/flint/F = actor ? actor.get_active_hand() : null
 	return F && (F.type == /obj/item/weapon/flint || F.type == /obj/item/weapon/flint/sharpened) && F.loc == actor && F.sharpened ? F : null
@@ -86,7 +96,11 @@
 	var/list/result = list()
 	if (!A || !actor || !safe_item(A) || A.gcDestroyed || A.gc_destroyed)
 		return result
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	if (wait_guards_ready("craft"))
+#else
 	if (wait_guards_ready())
+#endif
 		if (canopy_recipe(A) && actor.can_build_recipe)
 			result += "leather_canopy"
 		if (A.type == /obj/item/weapon/tent && A == actor.get_active_hand() && canopy_site())
@@ -95,7 +109,11 @@
 		var/obj/item/stack/grass_cuttings/G = A
 		if (G.amount >= 2)
 			result += "grass_twine"
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	if (wait_guards_ready("craft") && (A.type == /obj/item/weapon/branch || A.type == /obj/item/weapon/branch/sharpened) && sharp_flint() && (A.loc == actor || (visible(A) && get_dist(A, actor) <= 1)))
+#else
 	if (wait_guards_ready() && (A.type == /obj/item/weapon/branch || A.type == /obj/item/weapon/branch/sharpened) && sharp_flint() && (A.loc == actor || (visible(A) && get_dist(A, actor) <= 1)))
+#endif
 		var/obj/item/weapon/branch/B = A
 		if (!B.sharpened)
 			result += "sharpen_stick"
@@ -155,6 +173,9 @@
 	var/deadline
 	var/cancelled = FALSE
 	var/request_id
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	var/wait_claimed = FALSE
+#endif
 	var/datum/stack_recipe/canopy_plan
 	var/obj/map_metadata/canopy_map
 	var/canopy_context
@@ -188,22 +209,53 @@
 	if (!target || target.gcDestroyed || target.gc_destroyed || target.loc != target_loc || !((target.loc == body && (target == body.l_hand || target == body.r_hand)) || (owner.visible(target) && get_dist(body, target) <= 1)))
 		return FALSE
 	if (kind == "gather")
+#ifdef CIV13_GAMEPLAY_BRIDGE
+		return owner.wait_guards_ready("gather") && target.type == /turf/floor/grass && owner.sharp_flint() == tool
+#else
 		return target.type == /turf/floor/grass && owner.sharp_flint() == tool
+#endif
 	if (kind == "refill")
+#ifdef CIV13_GAMEPLAY_BRIDGE
+		return owner.wait_guards_ready("refill") && owner.water_target(target) && owner.held_cup() == tool
+#else
 		return owner.wait_guards_ready() && owner.water_target(target) && owner.held_cup() == tool
+#endif
 	if (kind == "drink")
+#ifdef CIV13_GAMEPLAY_BRIDGE
+		return owner.wait_guards_ready("drink") && owner.water_target(target) && !tool && intent == I_GRAB
+#else
 		return owner.wait_guards_ready() && owner.water_target(target) && !tool && intent == I_GRAB
+#endif
 	if (recipe == "bind_flint_axe")
 		var/obj/item/weapon/branch/B = target
 		return binding && binding.type == /obj/item/stack/crude_twine && !binding.gcDestroyed && !binding.gc_destroyed && binding.loc == binding_loc && binding.amount >= 1 && B.axe_binding(body) == binding && ((binding.loc == body && (binding == body.l_hand || binding == body.r_hand)) || (owner.visible(binding) && binding.loc == site)) && owner.sharp_flint() == tool && B.sharpened
 	if (recipe == "leather_canopy")
 		// can_build_recipe is held FALSE by the normal crafting lock during wait.
+#ifdef CIV13_GAMEPLAY_BRIDGE
+		return owner.wait_guards_ready("craft") && map == canopy_map && owner.canopy_context() == canopy_context && owner.canopy_plan_valid(target, canopy_plan)
+#else
 		return owner.wait_guards_ready() && map == canopy_map && owner.canopy_context() == canopy_context && owner.canopy_plan_valid(target, canopy_plan)
+#endif
 	return (recipe in owner.recipes_for(target))
 
+#ifdef CIV13_GAMEPLAY_BRIDGE
+// Explicit first-gather context: never inferred from an actor/global.
+/datum/gameplay_action_lease/proc/matches_gather_wait(mob/user, atom/wait_target)
+	if (!owner || owner != gameplay_bridge || owner.action_lease != src || body != user || target != wait_target || kind != "gather" || !istype(wait_target, /turf/floor/grass) || !owner.valid_id(request_id) || !owner.wait_guards_ready("gather"))
+		return FALSE
+	return valid()
+
+/datum/gameplay_action_lease/proc/claim_gather_wait(mob/user, atom/wait_target)
+	if (wait_claimed || !matches_gather_wait(user, wait_target))
+		return FALSE
+	wait_claimed = TRUE
+	return TRUE
+
+#else
 /datum/gameplay_bridge/proc/wait_lease(mob/user)
 	return action_lease && action_lease.body == user ? action_lease : null
 
+#endif
 /datum/gameplay_bridge/proc/launch_action(list/R, run_generation, old_seq, old_time, list/old_entities)
 	if (!active(run_generation) || action_lease || !islist(R) || !islist(R["action"]))
 		return
@@ -215,7 +267,11 @@
 	spawn(0)
 		var/list/completed
 		try
+#ifdef CIV13_GAMEPLAY_BRIDGE
+			completed = execute(R, run_generation, old_seq, old_time, old_entities, L)
+#else
 			completed = execute(R, run_generation, old_seq, old_time, old_entities)
+#endif
 		catch
 			if (generation == run_generation)
 				stop("action_error")
@@ -258,18 +314,42 @@
 				total++
 	return total
 
+#ifdef CIV13_GAMEPLAY_BRIDGE
+/datum/gameplay_bridge/proc/survival_action(kind, atom/target, recipe, datum/gameplay_action_lease/worker_context)
+#else
 /datum/gameplay_bridge/proc/survival_action(kind, atom/target, recipe)
+#endif
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	if (!istype(worker_context, /datum/gameplay_action_lease) || worker_context.owner != src || action_lease != worker_context)
+		return FALSE
+#endif
 	if (!(kind in affordances(target, target.loc == actor)) || !actor.canClick() || world.time <= actor.next_click || !actor.can_use_hands() || actor.in_throw_mode || actor.using_object)
 		return FALSE
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	if (kind == "gather" && wait_guards_ready("gather") && target.type == /turf/floor/grass)
+#else
 	if (kind == "gather" && wait_guards_ready() && target.type == /turf/floor/grass)
+#endif
 		var/obj/item/weapon/flint/F = sharp_flint()
 		var/before = stock(/obj/item/stack/grass_cuttings)
 		if (!F || before < 0)
 			return FALSE
 		var/turf/floor/grass/G = target
+#ifdef CIV13_GAMEPLAY_BRIDGE
+		if (!worker_context.matches_gather_wait(actor, G) || worker_context.tool != F || worker_context.wait_claimed)
+			return FALSE
+		// Same canonical handler used by ordinary floor.attackby, with explicit owned context.
+		G.gather_grass_cuttings(actor, F, worker_context)
+		return action_lease == worker_context && active(worker_context.run_generation) && worker_context.wait_claimed && stock(/obj/item/stack/grass_cuttings) == before + 2
+#else
 		G.attackby(F, actor)
 		return active(action_lease.run_generation) && stock(/obj/item/stack/grass_cuttings) == before + 2
+#endif
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	if (kind == "refill" && wait_guards_ready("refill") && water_target(target))
+#else
 	if (kind == "refill" && wait_guards_ready() && water_target(target))
+#endif
 		var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/C = held_cup()
 		if (!C)
 			return FALSE
@@ -277,7 +357,11 @@
 		var/turf/floor/W = target
 		W.attackby(C, actor)
 		return active(action_lease.run_generation) && C && C.reagents && C.reagents.total_volume > before
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	if (kind == "drink" && wait_guards_ready("drink") && water_target(target) && actor.a_intent == I_GRAB && !actor.get_active_hand())
+#else
 	if (kind == "drink" && wait_guards_ready() && water_target(target) && actor.a_intent == I_GRAB && !actor.get_active_hand())
+#endif
 		var/before = actor.water
 		var/turf/floor/beach/water/W = target
 		W.attack_hand(actor)
@@ -324,7 +408,11 @@
 		G.attack_self(actor)
 		var/remaining = !G || G.gcDestroyed || G.gc_destroyed || !G.loc ? 0 : G.amount
 		return before_input - remaining == 2 && stock(/obj/item/stack/crude_twine) == before_output + 1
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	if (!wait_guards_ready("craft") || !sharp_flint())
+#else
 	if (!wait_guards_ready() || !sharp_flint())
+#endif
 		return FALSE
 	var/obj/item/weapon/branch/B = target
 	if (recipe == "sharpen_stick")

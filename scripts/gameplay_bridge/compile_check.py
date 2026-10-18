@@ -14,10 +14,15 @@ import tarfile
 import tempfile
 
 from prepare_native import git, isolated_startup, selected_files
+from gather_context import PATHS, verify_disabled
+from wait_overlay import unguarded_source
+
+PROFILES = ("stock", "disabled", "enabled")
 
 
-def compile_dme(source):
-    # Compile the real module with feature macro but WITHOUT any wait marker.
+def compile_dme(source, profile="enabled"):
+    if profile not in PROFILES:
+        raise ValueError("unknown compile profile")
     source = re.sub(r'^#include "[^"\n]+\.dmm"\s*$', "", source, flags=re.M)
     replacements = {"code\\world.dm": "compile_generated/world.dm",
                     "code\\controllers\\mc\\globals.dm": "compile_generated/globals.dm"}
@@ -27,9 +32,10 @@ def compile_dme(source):
         source = source.replace(old, new, 1)
     if "CIV13_GAMEPLAY_BRIDGE" in source or "code/modules/gameplay_bridge/bridge.dm" in source:
         raise ValueError("bridge unexpectedly activated")
-    return ('#define CIV13_GAMEPLAY_BRIDGE\n' + source +
-            '\n#include "code/modules/gameplay_bridge/bridge.dm"\n' +
-            '#include "tests/gameplay_bridge/native/compile_probe.dm"\n')
+    prefix = '#define CIV13_GAMEPLAY_BRIDGE\n' if profile == "enabled" else ""
+    module = '\n#include "code/modules/gameplay_bridge/bridge.dm"\n' if profile != "stock" else ""
+    return prefix + source + module + '#include "tests/gameplay_bridge/native/compile_probe.dm"\n'
+
 
 
 def prepare(root, output, expected):
@@ -44,11 +50,11 @@ def prepare(root, output, expected):
     selected = [p for p in selected_files(root, tracked)
                 if not p.startswith("config/") and p != "rust_g.dll"]
     read = lambda p: git(root, "show", expected + ":" + p).decode("utf-8-sig").replace("\r\n", "\n")
-    helper = read("code/_helpers/mobs.dm")
-    if "CIV13_GAMEPLAY_WAIT_GUARDS" in helper:
-        raise ValueError("compile-only no-hook premise changed; review fixture")
+    files = {path: read(path) for path in PATHS}
+    verify_disabled(files)
+    unguarded_source(files[PATHS[0]])  # Reject omission/reacquisition before copying.
     world, globals_source = isolated_startup(read("code/world.dm"), read("code/controllers/mc/globals.dm"))
-    dme = compile_dme(read("civ13.dme"))
+    dmes = {profile: compile_dme(read("civ13.dme"), profile) for profile in PROFILES}
     # Compress archive arguments without admitting runtime config or private files.
     prefixes = ["code/", "icons/", "sound/", "UI/", "interface/", "scripts/gameplay_bridge/", "tests/gameplay_bridge/native/"]
     archive_paths = [p.rstrip("/") for p in prefixes if any(f.startswith(p) for f in selected)]
@@ -73,9 +79,12 @@ def prepare(root, output, expected):
     generated.mkdir()
     for name, text in (("world.dm", world), ("globals.dm", globals_source)):
         (generated / name).write_text(text, encoding="utf-8", newline="\n")
-    (source_root / "bridge_compile.dme").write_text(dme, encoding="utf-8", newline="\n")
+    for profile, dme in dmes.items():
+        (source_root / ("bridge_" + profile + ".dme")).write_text(dme, encoding="utf-8", newline="\n")
     manifest = {"commit": expected, "compile_only": True, "native_runtime": "not_run",
-                "wait_marker": False, "dimensions": [1, 1, 1],
+                "profiles": {p: {"module": p != "stock", "wait_marker": p == "enabled",
+                                      "timed_actions": ["gather"] if p == "enabled" else []}
+                             for p in PROFILES}, "dimensions": [1, 1, 1],
                 "sha256": {p.relative_to(source_root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                            for p in sorted(source_root.rglob("*")) if p.is_file()}}
     (output / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
@@ -96,15 +105,17 @@ def run(root, output, expected, byond_bin):
     compiler = next((p for p in candidates if p.is_file()), None)
     if compiler is None:
         raise ValueError("pinned compiler executable missing")
-    log = Path(output) / "compiler.log"
-    with log.open("wb") as stream:
-        result = subprocess.run([str(compiler), "-max_errors", "0", "bridge_compile.dme"],
-                                cwd=source, stdout=stream, stderr=subprocess.STDOUT, timeout=180)
-    if log.stat().st_size > 2097152:
-        raise ValueError("compiler log exceeded review bound")
-    verify_log(log.read_text(encoding="utf-8", errors="replace"), result.returncode)
+    for profile in PROFILES:
+        log = Path(output) / ("compiler-" + profile + ".log")
+        with log.open("wb") as stream:
+            result = subprocess.run([str(compiler), "-max_errors", "0", "bridge_" + profile + ".dme"],
+                                    cwd=source, stdout=stream, stderr=subprocess.STDOUT, timeout=180)
+        if log.stat().st_size > 2097152:
+            raise ValueError("compiler log exceeded review bound")
+        verify_log(log.read_text(encoding="utf-8", errors="replace"), result.returncode)
     return {"commit": expected, "compile": "passed", "byond": "516.1681",
-            "errors": 0, "warnings": 0, "runtime": "not_run"}
+            "profiles": list(PROFILES), "errors": 0, "warnings": 0, "runtime": "not_run"}
+
 
 
 def main():

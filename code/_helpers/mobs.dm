@@ -184,9 +184,25 @@ Proc for attack log creation, because really why not
 		qdel(progbar)
 
 /mob/var/may_do_after = TRUE
+#ifdef CIV13_GAMEPLAY_BRIDGE
+#define CIV13_GAMEPLAY_WAIT_GUARDS
+#endif
+#ifdef CIV13_GAMEPLAY_BRIDGE
+/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE, datum/gameplay_action_lease/gameplay_context = null)
+#else
 /proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE)
+#endif
 	if (!user || !user.may_do_after)
 		return FALSE
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	var/datum/gameplay_action_lease/gameplay_lease
+	if (!isnull(gameplay_context))
+		if (!istype(gameplay_context, /datum/gameplay_action_lease))
+			return FALSE
+		gameplay_lease = gameplay_context
+		if (!gameplay_lease.claim_gather_wait(user, target))
+			return FALSE
+#endif
 	user.survival_action_started()
 
 	if (check_for_repeats)
@@ -210,6 +226,11 @@ Proc for attack log creation, because really why not
 	. = TRUE
 	while (world.time < endtime)
 		sleep(0.1)
+#ifdef CIV13_GAMEPLAY_BRIDGE
+		if (gameplay_lease && !gameplay_lease.valid())
+			. = FALSE
+			break
+#endif
 		if (progress)
 			progbar.update(world.time - starttime)
 
@@ -236,6 +257,10 @@ Proc for attack log creation, because really why not
 
 	if (progbar)
 		qdel(progbar)
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	if (gameplay_lease && !gameplay_lease.valid())
+		. = FALSE
+#endif
 
 //Returns a list of all mobs with their name
 /proc/getmobs()

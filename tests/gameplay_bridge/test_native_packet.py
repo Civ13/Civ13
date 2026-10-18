@@ -19,14 +19,12 @@ class NativePacketTests(unittest.TestCase):
     def test_helper_controls_preserve_source_and_omit_only_requested_guard(self):
         # Pure in-memory transform on public source; NOT native integration.
         current = (ROOT / "code/_helpers/mobs.dm").read_text(encoding="utf-8")
-        with self.assertRaisesRegex(ValueError, "missing gameplay guards"):
-            helper_variant(current, "headless")
-        source = guarded_source(current)
+        source = current
         self.assertEqual(helper_variant(source,"headless"),source)
         self.assertEqual(helper_variant(source,"baseline"),helper_variant(source,"no_hook"))
         for profile, block in GUARDS.items():
             self.assertEqual(helper_variant(source,profile),source.replace(block,"",1))
-        self.assertEqual(helper_variant(source,"reacquire").count("gameplay_bridge.wait_lease(user)"),2)
+        self.assertEqual(helper_variant(source,"reacquire").count("gameplay_lease = gameplay_context"),2)
         self.assertEqual((ROOT / "code/_helpers/mobs.dm").read_text(encoding="utf-8"),current)
 
     def test_startup_isolation_uses_fail_closed_drift_anchors(self):
@@ -54,6 +52,14 @@ class NativePacketTests(unittest.TestCase):
                     prepare(ROOT,output,"expected")
             with patch("prepare_native.git",side_effect=[b"expected\n",b" M dirty\n"]):
                 with self.assertRaisesRegex(ValueError,"clean frozen"):
+                    prepare(ROOT,output,"expected")
+            self.assertFalse(output.exists())
+
+    def test_stale_ambient_native_packet_refuses_even_clean_current_head(self):
+        with tempfile.TemporaryDirectory() as temp:
+            output=Path(temp)/"packet"
+            with patch("prepare_native.git",side_effect=[b"expected",b""]):
+                with self.assertRaisesRegex(ValueError,"typed gather native fixture not reconciled"):
                     prepare(ROOT,output,"expected")
             self.assertFalse(output.exists())
 

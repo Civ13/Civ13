@@ -190,9 +190,9 @@ jobs:
           python3 -m unittest discover -s tests/lobby_join -p 'test_*.py'
           python3 tests/lobby_join/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
 
-      - name: Compile disabled gameplay bridge closure without running it
+      - name: Compile stock disabled and gather-enabled bridge closures without running them
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gameplay_bridge')
-        timeout-minutes: 8
+        timeout-minutes: 12
         shell: bash
         env:
           CIV13_EXPECTED_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -211,7 +211,7 @@ jobs:
           name: gameplay-bridge-compile-${{ github.event.pull_request.head.sha || github.sha }}
           if-no-files-found: warn
           path: |
-            ${{ runner.temp }}/gameplay-bridge-compile/compiler.log
+            ${{ runner.temp }}/gameplay-bridge-compile/compiler-*.log
             ${{ runner.temp }}/gameplay-bridge-compile/manifest.json
             ${{ runner.temp }}/gameplay-bridge-source-status.txt
       - name: Verify scheduler replacement ownership and omission controls

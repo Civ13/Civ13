@@ -1,11 +1,10 @@
 # Disabled gameplay bridge contract checkpoint
 
-This successor selectively carries the existing private bridge from frozen
-`aeaf00ae77dfca70c24b05ccce46434629469571` onto master
-`ec5e2f403a01d6d5ad26e6e5e714aa9d0e9b8419`. It is excluded from `civ13.dme`.
-The feature remains disabled and no world, client, listener, model, live query,
-configuration or credentials are activated. Compile-only CI is separate from
-runtime verification and does not establish connected-client acceptance.
+This slice builds on merged contract checkpoint
+`670f415240c1634dcfb6e373da15cd86d84d676a`. The bridge remains excluded from
+`civ13.dme`; the production feature macro is absent. No world, client, listener,
+model, live query, configuration or credentials are activated. Compile-only CI
+is separate from native execution and connected-client acceptance.
 
 ## Discovery and versioning
 
@@ -117,15 +116,35 @@ latches the mailbox but cannot claim the game is quiet. Scoped status stays
 readable after STOP while observations/new actions are unavailable. No invented
 percentage or retrospective engine event trace.
 
-## Shared helper drift and unsupported coverage
+## Explicit first-gather wait context
 
-Current331 do_after/do_mob have survival callbacks absent from the historical
-approved helper. The ENTIRE shared helper is unchanged. Without the bridge wait
-marker timed affordances fail closed. The historical patch is retained for review
-ONLY; tests transform the public helper IN MEMORY and pin its normalized public331/ec5
-hash without private Git objects. These abstract source checks do not accept
-current hook integration or timed actions. Overlay CLI rejects current drift; native preparation refuses missing
-guards before creating a packet. Do not apply the historical patch blindly.
+Only the enabled isolated profile advertises timed gather. Its worker passes the
+original lease directly through execute -> survival_action -> canonical grass
+handler -> grass_cutting_wait -> do_after. Operator JSON cannot supply context.
+The helper accepts ordinary null context. Non-null input must pass an explicit
+runtime type check, current singleton/service/lease/body/target/request/generation
+checks and a one-use claim before survival_action_started. The captured original
+lease is checked after every wake and after cleanup, including zero delay. A new
+lease never substitutes for an old one. Grass checks it again before turf/output
+mutation; completion checks the original worker and two-cutting output afterward.
+
+No ambient actor/global lease lookup exists in enabled code. Ordinary null-context
+waits do not claim or observe the bridge lease. Existing may_do_after and
+check_for_repeats behavior, including FALSE-first overlapping-wait unlock behavior,
+is preserved. Survival callback placement and cleanup are retained. No new mob or
+client loan state is introduced; the lease datum has should_save = FALSE.
+
+Readiness is per action: only gather is converted. Refill, drink, sharpen/bind and
+canopy timed adapters remain unavailable. Immediate grass twine is unchanged.
+Floor water handlers and ordinary attackby dispatch are unchanged. This is source
+integration, not native cancellation, resource conservation or player UI proof.
+
+The restricted conditional projector handles only the two reviewed symbols and
+fails on unsupported conditionals. It is calibrated for nesting/active defines;
+whole disabled file projections for helper, grass and both bridge files are pinned
+to public670 hashes. It is not a general DM preprocessor. wait_overlay.py now
+validates the actual explicit helper and prints its exact diff; the bundled patch
+matches it. Production DME and disabled projection retain stock text/behavior.
 
 Agent Join, containers, general equipment/repair, rest/sleep, combat, respawn,
 vehicles, shuttle, party and extraction are explicitly unsupported. Assignment
@@ -136,21 +155,30 @@ Player lawsets remain null; they cannot grant station/admin authority.
 ## Verification and next integration
 
 Offline tests run actual Python schemas/mailbox/history/rate/idempotency/cancel
-with synthetic data and inert transports, public in-memory abstract wait controls and
-structural DM omission checks. They do not compile DM or establish native stable
-IDs/cancellation. Historical native profiles remain not_run; ordinary-client
-bootstrap, adverse fixtures and E2E HTTP driver are still missing. CI registers these offline checks and a separate bounded compile-only closure
-using pinned516.1681 with the actual bridge/catalog and NO wait marker. It copies
-tracked source/static assets only, not server config; it never launches a daemon
-or client. Compiler logs and the source manifest are retained, without binaries.
-No shared game source or production DME is changed. Compile-only success must be
-reported from exact-head CI; it does not establish native runtime behavior.
+with synthetic data and inert transports. Source omission controls plus abstract
+ownership/callback oracles cover forged context, replay/nesting, cancellation,
+old/new lease isolation, unrelated waits and callback placement. They do not
+execute DM or prove native timing/visibility. No private Git objects are required.
 
-Next is independent immutable checkpoint review, separately allocated shared
-hook/native reconciliation, then ordinary Join->human->visible item->pickup->
-walk->inspect->idempotent result->STOP. Native physical Join/menu acceptance and
-genuine pre-save lighting baseline remain core/UI work. Backend agent Join must
-never substitute for that proof. Broad survival/mode claims need their own evidence.
+CI registers offline checks and three compile-only closures with pinned516.1681:
+stock excludes the module/macro, disabled includes the module without the macro,
+and enabled includes the module with explicit gather context. They share frozen
+tracked source/static assets and isolated1x1 startup, with no server config.
+Each compiler invocation is bounded to180sec; CI step ceiling12min. Per-profile
+logs and a source manifest are retained without binaries. An owned clean detached
+expected-head worktree avoids generated crafting-atlas contamination. Exact-head
+CI must establish0errors/0warnings for each; no compiler has been run locally for
+this slice. Compilation never launches a daemon or client.
+
+Historical headless/client probes used ambient leases and unconverted craft
+adapters. prepare_native.py now refuses even a clean current head before writing
+output. Their original evidence is retained in the original frozen checkout;
+it cannot accept this revision. See [the next gather acceptance design](gameplay-gather-acceptance.md)
+for the missing native cancellation/parity and ordinary consent/bootstrap proof.
+
+Agent Join remains unsupported. Physical native Join/menu acceptance and genuine
+pre-save lighting baseline remain separate core/UI work. Backend actions cannot
+substitute for them. Broad survival/mode claims need their own evidence.
 
 Restart required: yes for any later activated DM change. Offline discovery needs
-no restart. This checkpoint authorizes no deployment or native execution.
+no restart. This source checkpoint authorizes no deployment or native execution.

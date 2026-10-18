@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts/gameplay_bridge"))
-from compile_check import compile_dme, prepare, run, verify_log
+from compile_check import PROFILES, compile_dme, prepare, run, verify_log
 
 
 class CompileCheck(unittest.TestCase):
@@ -28,7 +28,7 @@ class CompileCheck(unittest.TestCase):
 
     def test_ci_compiles_fresh_exact_head_not_generated_workspace(self):
         workflow=(ROOT/".github/workflows/test.yml").read_text(encoding="utf-8")
-        step=workflow.split("      - name: Compile disabled gameplay bridge closure without running it\n",1)[1].split("      - name:",1)[0]
+        step=workflow.split("      - name: Compile stock disabled and gather-enabled bridge closures without running them\n",1)[1].split("      - name:",1)[0]
         required=(
             'git status --short --untracked-files=no > "$RUNNER_TEMP/gameplay-bridge-source-status.txt"',
             'compile_source="$RUNNER_TEMP/gameplay-bridge-source"',
@@ -45,15 +45,20 @@ class CompileCheck(unittest.TestCase):
             self.assertFalse(bound(step.replace(anchor,"omitted",1)))
         self.assertNotIn("git reset",step)
 
-    def test_actual_dme_closure_is_no_map_no_hook_and_same_production_module(self):
-        result=compile_dme((ROOT/"civ13.dme").read_text())
-        self.assertIn('#define CIV13_GAMEPLAY_BRIDGE\n',result)
-        self.assertIn('#include "code/modules/gameplay_bridge/bridge.dm"',result)
-        self.assertNotIn('.dmm"',result)
-        self.assertNotIn('CIV13_GAMEPLAY_WAIT_GUARDS',result)
-        self.assertIn('compile_generated/world.dm',result)
+    def test_three_profiles_use_same_source_and_only_enabled_gather_macro(self):
+        source=(ROOT/"civ13.dme").read_text()
+        self.assertNotIn("gameplay_bridge/bridge.dm",source)
+        for profile in PROFILES:
+            result=compile_dme(source,profile)
+            self.assertEqual('#define CIV13_GAMEPLAY_BRIDGE\n' in result,profile=="enabled")
+            self.assertEqual('#include "code/modules/gameplay_bridge/bridge.dm"' in result,profile!="stock")
+            self.assertNotIn('.dmm"',result)
+            self.assertIn('compile_generated/world.dm',result)
+            self.assertNotIn('CIV13_GAMEPLAY_WAIT_GUARDS',result)
         with self.assertRaisesRegex(ValueError,"anchor drift"):
             compile_dme('missing anchors')
+        with self.assertRaisesRegex(ValueError,"unknown compile"):
+            compile_dme(source,'native')
 
     def test_wrong_head_dirty_tree_and_existing_output_refuse_before_writing(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -74,7 +79,7 @@ class CompileCheck(unittest.TestCase):
             with self.assertRaises(ValueError): verify_log(text,rc)
 
     def test_compile_preparation_excludes_config_and_rejects_archive_escape(self):
-        files={p:(ROOT/p).read_text(encoding="utf-8") for p in ("civ13.dme","code/_helpers/mobs.dm","code/world.dm","code/controllers/mc/globals.dm")}
+        files={p:(ROOT/p).read_text(encoding="utf-8") for p in ("civ13.dme","code/_helpers/mobs.dm","code/game/turfs/floor_attackby.dm","code/modules/gameplay_bridge/bridge.dm","code/modules/gameplay_bridge/mechanics.dm","code/world.dm","code/controllers/mc/globals.dm")}
         files["config/host.txt"]="synthetic-private-config"
         def archive(extra=None):
             stream=io.BytesIO()
@@ -116,14 +121,14 @@ class CompileCheck(unittest.TestCase):
             (binary/"DreamMaker").write_text("inert test placeholder, never executed")
             class Result: returncode=0
             def compiler(command,**options):
-                self.assertEqual(command,[str(binary/"DreamMaker"),"-max_errors","0","bridge_compile.dme"])
+                self.assertEqual(command,[str(binary/"DreamMaker"),"-max_errors","0","bridge_"+PROFILES[calls.call_count-1]+".dme"])
                 self.assertEqual(options["timeout"],180)
                 self.assertEqual(options["cwd"],source)
                 options["stdout"].write(b"DM compiler version 516.1681\n0 errors, 0 warnings\n")
                 return Result()
             with patch("compile_check.prepare",return_value=source),patch("compile_check.subprocess.run",side_effect=compiler) as calls:
                 result=run(root,root,"a"*40,binary)
-            self.assertEqual(calls.call_count,1)
+            self.assertEqual(calls.call_count,3)
             self.assertEqual(result["runtime"],"not_run")
 
 

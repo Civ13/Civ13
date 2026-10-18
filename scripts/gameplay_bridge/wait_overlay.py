@@ -1,60 +1,48 @@
-"""Print the reviewable approved do_after diff; never edit shared source.
-
-Historical aeaf hook only. The successor's shared helper is NOT patched.
-Current-base integration requires separate source allocation and review.
-"""
-import difflib
+"""Print the explicit one-use gather helper diff; never edit shared source."""
 import argparse
+import difflib
 import hashlib
 from pathlib import Path
+from gather_context import FEATURE, MARKER, PATHS, DISABLED_SHA256, project
+PUBLIC_BASE_SHA256 = DISABLED_SHA256[PATHS[0]]
 
-BASE_COMMIT = "e5fca75511a924f180f191f8f9fb15849b5ab2ae"
-BASE_RAW_SHA256 = "f8184110866f2e77589fd8835c7612aee9641f863e9b81389d50f94cfc117163"
-PUBLIC_BASE_SHA256 = "31002a014453dc9240b3dc39933d2d30a012b2769ee8ed704bd2057e2c1b2214"
+def only(text):
+    return '#ifdef '+FEATURE+'\n'+text+'#endif\n'
 
+def choose(old, new):
+    assert old.endswith('\n') and new.endswith('\n')
+    return '#ifdef '+FEATURE+'\n'+new+'#else\n'+old+'#endif\n'
+
+def change(source, old, new):
+    assert source.count(old) == 1, old[:100]
+    return source.replace(old, choose(old, new), 1)
 
 def guarded_source(source):
-    start = source.index("/proc/do_after(")
-    end = source.index("//Returns a list of all mobs", start)
-    body = source[start:end]
-    before_wait = "\tif (check_for_repeats)\n"
-    after_sleep = "\t\tsleep(0.1)\n"
-    final_cleanup = "\tif (progbar)\n\t\tqdel(progbar)\n"
-    if any(body.count(anchor) != 1 for anchor in (before_wait, after_sleep, final_cleanup)):
+    if hashlib.sha256(source.encode()).hexdigest() != PUBLIC_BASE_SHA256:
         raise ValueError("production do_after changed; review integration again")
-    capture = ("#ifdef CIV13_GAMEPLAY_BRIDGE\n"
-               "\tvar/datum/gameplay_action_lease/gameplay_lease = gameplay_bridge.wait_lease(user)\n"
-               "\tif (gameplay_lease && !gameplay_lease.valid())\n\t\treturn FALSE\n#endif\n")
-    wake = ("#ifdef CIV13_GAMEPLAY_BRIDGE\n"
-            "\t\tif (gameplay_lease && !gameplay_lease.valid())\n\t\t\t. = FALSE\n\t\t\tbreak\n#endif\n")
-    finish = ("#ifdef CIV13_GAMEPLAY_BRIDGE\n"
-              "\tif (gameplay_lease && !gameplay_lease.valid())\n\t\t. = FALSE\n#endif\n")
-    body = body.replace(before_wait, capture + before_wait)
-    body = body.replace(after_sleep, after_sleep + wake)
-    body = body.replace(final_cleanup, final_cleanup + finish)
-    marker = "#ifdef CIV13_GAMEPLAY_BRIDGE\n#define CIV13_GAMEPLAY_WAIT_GUARDS\n#endif\n"
-    return source[:start] + marker + body + source[end:]
+    s=source
+    signature=next(line for line in s.splitlines(True) if line.startswith('/proc/do_after('))
+    s=change(s,signature,signature.rstrip()[:-1]+', datum/gameplay_action_lease/gameplay_context = null)\n')
+    # Insert only in do_after, preserving do_mob and all outside text.
+    start=s.index('#ifdef '+FEATURE+'\n/proc/do_after(');end=s.index('//Returns a list of all mobs',start)
+    body=s[start:end]
+    capture=('\tvar/datum/gameplay_action_lease/gameplay_lease\n'
+             '\tif (!isnull(gameplay_context))\n'
+             '\t\tif (!istype(gameplay_context, /datum/gameplay_action_lease))\n\t\t\treturn FALSE\n'
+             '\t\tgameplay_lease = gameplay_context\n'
+             '\t\tif (!gameplay_lease.claim_gather_wait(user, target))\n\t\t\treturn FALSE\n')
+    assert body.count('\tuser.survival_action_started()\n')==1
+    body=body.replace('\tuser.survival_action_started()\n',only(capture)+'\tuser.survival_action_started()\n',1)
+    body=body.replace('\t\tsleep(0.1)\n','\t\tsleep(0.1)\n'+only('\t\tif (gameplay_lease && !gameplay_lease.valid())\n\t\t\t. = FALSE\n\t\t\tbreak\n'),1)
+    body=body.replace('\tif (progbar)\n\t\tqdel(progbar)\n','\tif (progbar)\n\t\tqdel(progbar)\n'+only('\tif (gameplay_lease && !gameplay_lease.valid())\n\t\t. = FALSE\n'),1)
+    return s[:start]+only('#define '+MARKER+'\n')+body+s[end:]
 
 
 def unguarded_source(source):
-    """Strip only our conditional blocks; disabled source must equal baseline."""
-    lines, output, removing, blocks = source.splitlines(True), [], False, 0
-    for line in lines:
-        if line == "#ifdef CIV13_GAMEPLAY_BRIDGE\n":
-            if removing:
-                raise ValueError("nested gameplay guard")
-            removing, blocks = True, blocks + 1
-        elif removing and line == "#endif\n":
-            removing = False
-        elif not removing:
-            output.append(line)
-    if removing or blocks != 4:
-        raise ValueError("missing gameplay guards")
-    if source.count("gameplay_bridge.wait_lease(user)") != 1:
-        raise ValueError("lease must be captured exactly once")
-    baseline = "".join(output)
+    """Verify exact reviewed guards and recover the unchanged disabled helper."""
+    baseline = project(source, set())[0]
     if guarded_source(baseline) != source:
-        raise ValueError("guard implementation drift")
+        raise ValueError("explicit gameplay guards drift")
     return baseline
 
 
@@ -62,21 +50,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    root = Path(__file__).resolve().parents[2]
-    relative = "code/_helpers/mobs.dm"
-    source = (root / relative).read_text(encoding="utf-8")
-    if "#define CIV13_GAMEPLAY_WAIT_GUARDS" in source:
-        source = unguarded_source(source)
-    if hashlib.sha256(source.encode()).hexdigest() != BASE_RAW_SHA256:
-        raise ValueError("historical wait helper drift; current-base integration not allocated")
-    diff = "".join(difflib.unified_diff(source.splitlines(True), guarded_source(source).splitlines(True),
-                                     fromfile="a/" + relative, tofile="b/" + relative))
+    relative = PATHS[0]
+    source = (Path(__file__).resolve().parents[2] / relative).read_text(encoding="utf-8")
+    baseline = unguarded_source(source)
+    diff = "".join(difflib.unified_diff(baseline.splitlines(True), source.splitlines(True),
+                                     fromfile="a/"+relative, tofile="b/"+relative))
     if args.output:
-        with args.output.open("w", encoding="utf-8", newline="\n") as output:
-            output.write(diff)
+        args.output.write_text(diff, encoding="utf-8", newline="\n")
     else:
         print(diff, end="")
-
 
 if __name__ == "__main__":
     main()

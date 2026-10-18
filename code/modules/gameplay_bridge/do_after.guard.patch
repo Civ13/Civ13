@@ -1,25 +1,32 @@
 --- a/code/_helpers/mobs.dm
 +++ b/code/_helpers/mobs.dm
-@@ -177,10 +177,18 @@
+@@ -184,9 +184,25 @@
  		qdel(progbar)
  
  /mob/var/may_do_after = TRUE
 +#ifdef CIV13_GAMEPLAY_BRIDGE
 +#define CIV13_GAMEPLAY_WAIT_GUARDS
 +#endif
++#ifdef CIV13_GAMEPLAY_BRIDGE
++/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE, datum/gameplay_action_lease/gameplay_context = null)
++#else
  /proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE)
++#endif
  	if (!user || !user.may_do_after)
  		return FALSE
- 
 +#ifdef CIV13_GAMEPLAY_BRIDGE
-+	var/datum/gameplay_action_lease/gameplay_lease = gameplay_bridge.wait_lease(user)
-+	if (gameplay_lease && !gameplay_lease.valid())
-+		return FALSE
++	var/datum/gameplay_action_lease/gameplay_lease
++	if (!isnull(gameplay_context))
++		if (!istype(gameplay_context, /datum/gameplay_action_lease))
++			return FALSE
++		gameplay_lease = gameplay_context
++		if (!gameplay_lease.claim_gather_wait(user, target))
++			return FALSE
 +#endif
- 	if (check_for_repeats)
- 		user.may_do_after = FALSE
+ 	user.survival_action_started()
  
-@@ -202,6 +210,11 @@
+ 	if (check_for_repeats)
+@@ -210,6 +226,11 @@
  	. = TRUE
  	while (world.time < endtime)
  		sleep(0.1)
@@ -31,7 +38,7 @@
  		if (progress)
  			progbar.update(world.time - starttime)
  
-@@ -227,6 +240,10 @@
+@@ -236,6 +257,10 @@
  
  	if (progbar)
  		qdel(progbar)
