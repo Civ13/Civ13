@@ -45,6 +45,13 @@ private directory permissions. Do not share a spool across Nomads and TDM.
    Restart clears old spool questions rather than re-sending them. Do not run
    multiple workers against the same spool.
 
+The bridge treats request IDs as bounded opaque correlation strings. Native
+BYOND may format the realtime component in scientific notation. Spool markers
+accept the ID alone or the single LF/CRLF ending appended by `text2file`; other
+whitespace and embedded or repeated line endings are rejected. The same parsing
+applies when admitting a request and committing its answer. Filenames always use
+the eight fixed slot numbers, never the request ID.
+
 ## Request limits
 
 The optional `limits` configuration sets the same policy in the bridge and game

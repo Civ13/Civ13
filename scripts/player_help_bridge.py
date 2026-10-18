@@ -18,6 +18,32 @@ import urllib.request
 import uuid
 
 MAX_RESPONSE = 65536
+MAX_REQUEST_ID = 100
+
+
+def valid_request_id(value):
+    # Native DM interpolates large world.realtime values in scientific notation.
+    # IDs are opaque correlation strings, never numbers, paths or model input.
+    return (isinstance(value, str) and 1 <= len(value) <= MAX_REQUEST_ID and
+            re.fullmatch(r'[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?-[0-9]+-[0-9]+', value) is not None)
+
+
+def read_ready_id(path):
+    try:
+        # text2file appends one platform line ending. Preserve every other byte,
+        # including extra/embedded newlines and spaces, so malformed markers fail.
+        with path.open('rb') as source:
+            raw = source.read(MAX_REQUEST_ID + 3)
+        if raw.endswith(b'\r\n'):
+            raw = raw[:-2]
+        elif raw.endswith(b'\n'):
+            raw = raw[:-1]
+        value = raw.decode('ascii')
+        return value if valid_request_id(value) else None
+    except (OSError, UnicodeError):
+        return None
+
+
 LIMIT_DEFAULTS = {'cooldown_seconds': 30, 'burst_requests': 3, 'burst_seconds': 120,
                   'window_requests': 10, 'window_seconds': 600, 'global_requests': 30,
                   'global_seconds': 60, 'max_accounts': 2048, 'queue_slots': 8}
@@ -332,10 +358,7 @@ class Bridge:
         atomic_json(self.root / 'health.json', {'enabled': self.config['enabled'] and admit, 'sequence': uuid.uuid4().hex, 'request_timeout_seconds': min(600, int(self.config.get('timeout_seconds', 45) * 8 / self.config.get('workers', 1)) + 15)})
         for slot, (request_id, future) in list(self.active.items()):
             ready = self.root / f'{slot}.ready'
-            try:
-                current = ready.read_text(encoding='utf-8')[:101]
-            except OSError:
-                current = None
+            current = read_ready_id(ready)
             if future.done():
                 if current == request_id:
                     atomic_json(self.root / f'{slot}.response.json', future.result())
@@ -350,8 +373,8 @@ class Bridge:
             if not ready.exists():
                 continue
             try:
-                marker = ready.read_text(encoding='utf-8')
-                if len(marker) > 100:
+                marker = read_ready_id(ready)
+                if marker is None:
                     continue
                 if response.exists():
                     existing = bounded_json(response, 24000)
@@ -359,7 +382,7 @@ class Bridge:
                         continue
                     response.unlink()
                 request = bounded_json(self.root / f'{slot}.request.json', 16384)
-                if not isinstance(request, dict) or not isinstance(request.get('id'), str) or not re.fullmatch(r'[0-9-]{1,100}', request['id']) or marker != request['id']:
+                if not isinstance(request, dict) or not valid_request_id(request.get('id')) or marker != request['id']:
                     continue
                 if not isinstance(request.get('question'), str) or not 1 <= len(request['question']) <= 500:
                     continue

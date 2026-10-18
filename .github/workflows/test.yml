@@ -175,6 +175,7 @@ jobs:
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
           python3 -m unittest discover -s tests/player_help -v
           python3 tests/player_help/run-bridge-control.py
+          python3 tests/player_help/run-spool-controls.py
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control escaping
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control heartbeat
