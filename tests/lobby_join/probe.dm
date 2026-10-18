@@ -187,7 +187,8 @@ var/list/verb_metadata = list()
 	var/unsafe_verb = /mob/new_player/verb/UnsafeJoin
 	var/one_verb = /mob/new_player/verb/VisibilityOne
 	var/inherited_verb = /mob/new_player/verb/VisibilityInherited
-	verb_metadata = list("join" = join_verb:invisibility, "join_isnull" = isnull(join_verb:invisibility), "join_isnum" = isnum(join_verb:invisibility), "unsafe" = unsafe_verb:invisibility, "one" = one_verb:invisibility, "inherited" = inherited_verb:invisibility, "inherited_isnull" = isnull(inherited_verb:invisibility), "lobby_invisibility" = initial(/mob/new_player.invisibility))
+	var/mob/new_player/visibility_actor = new
+	verb_metadata = list("join" = join_verb:invisibility, "join_isnull" = isnull(join_verb:invisibility), "join_isnum" = isnum(join_verb:invisibility), "unsafe" = unsafe_verb:invisibility, "one" = one_verb:invisibility, "inherited" = inherited_verb:invisibility, "inherited_isnull" = isnull(inherited_verb:invisibility), "lobby_invisibility" = visibility_actor.invisibility)
 	expect("native_join_verb_visible", join_verb:invisibility == 0)
 	expect("negative_control_invisible_verb_detected", unsafe_verb:invisibility == 101)
 	var/mob/new_player/player = fresh_player()
