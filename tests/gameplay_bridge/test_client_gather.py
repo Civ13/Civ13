@@ -269,6 +269,12 @@ class ClientGatherResultTests(unittest.TestCase):
             for row in result['samples'][start:]: row['life_tick'] = value
             with self.assertRaises(ValueError): verify_result(result, HEAD, 'synthetic_only', self.witness)
 
+    def test_life_progress_before_ack_cannot_replace_progress_after_ack(self):
+        value = self.result['samples'][300]['life_tick']
+        for row in self.result['samples'][300:]: row['life_tick'] = value
+        with self.assertRaisesRegex(ValueError, 'post-ACK physical horizon'):
+            self.validate()
+
     def test_short_wait_missing_advertisement_output_or_revocation_denied(self):
         for mutation in ('paid', 'advertised', 'output', 'cancelled'):
             result = copy.deepcopy(self.result)

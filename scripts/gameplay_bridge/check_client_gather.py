@@ -136,6 +136,9 @@ def verify_result(R, expected, run_id, witness):
     require(matching and witness['tick'] >= R['returned_tick'] and rows[-1]['tick'] - witness['tick'] >= 35,
             'physical horizon must extend at least 35 ticks beyond post-ACK witness')
     tail = [r for r in rows if r['tick'] >= R['returned_tick']]
+    post_ack = [r for r in rows if r['tick'] >= witness['tick']]
+    require(post_ack[-1]['life_tick'] > post_ack[0]['life_tick'],
+            'natural Life must progress during the post-ACK physical horizon')
     require(tail and tail[-1]['life_tick'] > tail[0]['life_tick'] and all(
         r['right_grass'] and not r['left_grass'] and r['cuttings'] == 2 and r['same_tool']
         and not r['worker'] and r['may_do_after'] and r['survival_actions'] == 0 for r in tail),
