@@ -319,6 +319,8 @@ var/global/redirect_all_players = null
 /mob/new_player/verb/Join()
 	set name = "Join"
 	set category = "Lobby"
+	// Verbs otherwise inherit the invisible lobby mob's accessibility.
+	set invisibility = 0
 	set desc = "Join the round using native role selection prompts."
 	set src = usr
 	var/join_mode = lobby_join_mode()

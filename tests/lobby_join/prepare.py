@@ -11,6 +11,7 @@ from pathlib import Path
 import re
 
 from test_source import procedure
+from visibility import visibility_verbs
 
 ROOT = Path(__file__).resolve().parents[2]
 NAMES = (
@@ -49,7 +50,9 @@ def stage(output):
     assert unsafe_role.count(role_guard) == 1
     unsafe_role = unsafe_role.replace(role_guard, "")
     fixture = (Path(__file__).with_name("probe.dm")).read_text()
-    (output / "control.dm").write_text(fixture + "\n" + adapted + "\n" + unsafe_round + "\n" + unsafe_role + "\n", encoding="utf-8")
+    # Keep the actual verb metadata unadapted. These checks inspect native
+    # metadata only; no connected client or actual command dispatch is claimed.
+    (output / "control.dm").write_text(fixture + "\n" + adapted + "\n" + unsafe_round + "\n" + unsafe_role + "\n" + visibility_verbs(source) + "\n", encoding="utf-8")
     (output / "control.dme").write_text('#include "control.dm"\n', encoding="utf-8")
     manifest = {
         "schema": 1,

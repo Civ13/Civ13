@@ -73,6 +73,12 @@ starting extra recurring cycles from the admin command.
 
 ### Player spawning
 
+<!-- 2026-10-17: invisible lobby verb accessibility -->
+Lobby mobs have invisibility 101. Native lobby verbs must explicitly use
+`set invisibility = 0`: BYOND otherwise inherits source invisibility for command
+accessibility, even when a native menu item is visible. Preserve mob invisibility
+and player vision; verify actual connected-client invocation.
+
 <!-- 2026-10-16: restored occupation capacity -->
 Active saved-round restoration skips fresh setup/autobalance. Initialize job
 position limits separately via `job_master.initialize_position_limits()` in

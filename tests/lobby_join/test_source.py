@@ -21,6 +21,20 @@ def digest(value):
 
 
 class LobbyJoinSource(unittest.TestCase):
+    def test_join_accessible_from_invisible_lobby(self):
+        source = (ROOT / "code/game/mob/new_player/new_player.dm").read_text()
+        verb = procedure(source, "/mob/new_player/verb/Join()")
+        # BYOND defaults verb invisibility to its source object's invisibility.
+        # The lobby remains invisible; only the Join command is exposed.
+        lobby = source[:source.index("\n/mob/new_player/")]
+        self.assertRegex(lobby, r"(?m)^\s*invisibility = 101\s*$")
+        def accessible(body):
+            return re.findall(r"(?m)^\s*set invisibility = (\d+)\s*$", body) == ["0"]
+        self.assertTrue(accessible(verb))
+        self.assertFalse(accessible(verb.replace("\tset invisibility = 0\n", "")))
+        self.assertFalse(accessible(verb.replace("set invisibility = 0", "set invisibility = 101")))
+        self.assertNotRegex(verb, r"(?m)^\s*(?:src\.)?(?:invisibility|see_invisible)\s*=")
+
     def test_native_file_menu_invokes_the_same_verb(self):
         skin = (ROOT / "interface/skin.dmf").read_text()
         menu = skin[skin.index('menu "menu"'):]
