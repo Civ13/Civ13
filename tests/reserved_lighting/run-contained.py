@@ -23,6 +23,27 @@ def digest(path):
     return value.hexdigest()
 
 
+def enforce_artifact_bounds(dme, maximum):
+    for suffix in ('.dmb', '.rsc'):
+        path = Path(dme).with_suffix(suffix)
+        if path.exists():
+            require(path.is_file() and path.stat().st_size <= maximum, 'Compiled resource/artifact bound')
+
+
+def preserve_membership(record, adapter, child_pid, persist, capture, validate):
+    """Persist observations and retained-handle capture before strict rejection."""
+    persist()
+    membership = record['membership']
+    for pid in membership['pids']:
+        if pid != child_pid:
+            observation = {'pid': pid, 'status': 'capture-pending'}
+            record.setdefault('unexpected_members', []).append(observation)
+            persist()
+            observation.update(capture(adapter, pid))
+            persist()
+    validate(membership, child_pid)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--packet', type=Path, required=True)
@@ -45,7 +66,7 @@ def main():
     import windows as w
     import guard_config as guard
     from native_policy import census, validate_baseline, validate_sockets
-    from owned_job import query_members, validate_members, settle
+    from owned_job import query_members, validate_members, settle, capture_unexpected
     from z_budget_evidence import DIAGNOSTIC, validate_compile
     sys.path.insert(0, str(out/'source/tests/reserved_lighting'))
     from compare import compare
@@ -105,6 +126,7 @@ def main():
                     if phase == 'compile':
                         command, cwd = [packet['compiler'], '-max_errors', '0', str(dme)], dme.parent
                     else:
+                        enforce_artifact_bounds(dme, packet['compiled_artifact_bound_each'])
                         row['artifacts'] = {}
                         for suffix in ('.dmb', '.rsc'):
                             source = dme.with_suffix(suffix)
@@ -122,6 +144,7 @@ def main():
                     row['phases'].append(receipt)
 
                     def check(current):
+                        enforce_artifact_bounds(dme, packet['compiled_artifact_bound_each'])
                         bound()
                         require(time.monotonic()-phase_start < seconds and
                                 (current['user']+current['kernel']-before['user']-before['kernel'])/1e7 < cpu, 'Phase wall/CPU bound')
@@ -132,31 +155,37 @@ def main():
                         text_bound(work)
 
                     while not adapter.exited(child):
+                        enforce_artifact_bounds(dme, packet['compiled_artifact_bound_each'])
                         sample = adapter.sample(child)
                         sample['membership'] = query_members(adapter)
-                        validate_members(sample['membership'], child.pid)
+                        receipt['samples'].append(sample)
+                        preserve_membership(sample, adapter, child.pid, persist, capture_unexpected, validate_members)
                         sample['sockets'] = adapter.sockets(child)
                         validate_sockets(sample['sockets'], phase, (work/'port-closed.txt').exists())
                         require(sample['private_bytes'] <= memory and sample['watcher_private_bytes'] <= 128 * 1024**2, 'Private memory bound')
-                        receipt['samples'].append(sample)
                         check(accounting(adapter))
                         persist()
                         time.sleep(.1)
+                    enforce_artifact_bounds(dme, packet['compiled_artifact_bound_each'])
                     receipt['immediate_final'] = adapter.finish(child)
                     receipt['immediate_accounting'] = accounting(adapter)
                     receipt['immediate_membership'] = query_members(adapter)
-                    persist()
-                    validate_members(receipt['immediate_membership'])
+                    immediate = {'membership': receipt['immediate_membership']}
+                    receipt['immediate_observation'] = immediate
+                    preserve_membership(immediate, adapter, None, persist, capture_unexpected, validate_members)
                     require(receipt['immediate_final']['exit_code'] == 0, 'Native exit failed')
 
                     def record(value):
                         receipt['drain'].append(value)
-                        persist()
+                        preserve_membership(value, adapter, None, persist, capture_unexpected, validate_members)
+                        enforce_artifact_bounds(dme, packet['compiled_artifact_bound_each'])
 
                     settle(lambda: accounting(adapter), lambda: query_members(adapter), check, record)
                     receipt['final'] = adapter.finish(child)
                     receipt['final_membership'] = query_members(adapter)
-                    validate_members(receipt['final_membership'])
+                    final = {'membership': receipt['final_membership']}
+                    receipt['final_observation'] = final
+                    preserve_membership(final, adapter, None, persist, capture_unexpected, validate_members)
                     check(accounting(adapter))
                     require(receipt['final']['exit_code'] == 0 and receipt['final']['cpu_seconds'] <= cpu, 'Terminal limits')
                     logs = '\n'.join((work/(phase+'.'+suffix+'.log')).read_text(errors='replace') for suffix in ('stdout', 'stderr'))
