@@ -59,7 +59,8 @@ Preparation, unique omission targets and offline success do not establish native
 compilation/assertions, client behavior, production memory headroom or OOM safety.
 See `docs/new-z-budget.md` for the separate calibrated-profile prerequisite.
 
-Compiler evidence requires one exact `DM compiler version 516.1681` line and
+The new-z, standalone dimension and full durable runners share the pure
+`z_budget_evidence.py` compiler parser. Compiler evidence requires one exact `DM compiler version 516.1681` line and
 one exact `probe.dmb - 0 errors, 0 warnings` result (with the bounded native
 date/time suffix allowed), in that order, within a 1 MiB log. Prefix/suffix
 bait, longer versions, duplicate banners/results, contaminated summaries,

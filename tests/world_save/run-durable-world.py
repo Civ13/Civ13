@@ -10,6 +10,10 @@ import subprocess
 import tempfile
 import time
 import uuid
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "new_z_budget"))
+from z_budget_evidence import DIAGNOSTIC, validate_compile
 
 
 def main():
@@ -195,8 +199,7 @@ def main():
                                capture_output=True, text=True, timeout=180, creationflags=flags)
         build_log = build.stdout + build.stderr
         (output / 'compile.log').write_text(build_log, encoding='utf-8')
-        if build.returncode or '0 errors, 0 warnings' not in build_log or '516.1681' not in build_log:
-            raise RuntimeError('Pinned native compilation failed; see compile.log')
+        validate_compile(build.returncode, build_log, dme.with_suffix('.dmb').name)
         for suffix in ('.dmb', '.rsc'):
             shutil.copy2(dme.with_suffix(suffix), output / dme.with_suffix(suffix).name)
         (output / 'config').mkdir()
@@ -215,7 +218,7 @@ def main():
                 (output / f'{mode}-daemon.log').write_text(run.stdout + run.stderr, encoding='utf-8')
                 log = (output / f'{mode}-runtime.log').read_text(encoding='utf-8', errors='replace')
                 diagnostics = log + run.stdout + run.stderr
-                if run.returncode or re.search(r'##\s*error\s*:|unexpected runtime|bad ref|runtime error:|infinite loop|fatal error|segmentation|assertion failed', diagnostics, re.I):
+                if run.returncode or DIAGNOSTIC.search(diagnostics):
                     raise RuntimeError(f'Expanded {mode} native diagnostics invalidated evidence')
                 if mode == 'unmeasured':
                     after_files = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in (output / 'map_saves').iterdir() if p.is_file()}
@@ -248,6 +251,8 @@ def main():
             raise RuntimeError(f'Native daemon exited with {run.returncode}; see daemon-exit.json')
         log = (output / 'runtime.log').read_text(encoding='utf-8', errors='replace')
         diagnostics = (log + run.stdout + run.stderr).lower()
+        if re.search(r'\bOOM\b|out of memory|access violation|\bCRASH(?:ED)?\b', diagnostics, re.I):
+            raise RuntimeError('Fatal native diagnostic invalidated fixture')
         if (args.lighting or args.wounds) and re.search(r'\bbug:', diagnostics):
             raise RuntimeError('Native lighting/wound engine diagnostic invalidated fixture')
         if (re.search(r'##\s*error\s*:', diagnostics) or

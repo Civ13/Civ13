@@ -17,6 +17,13 @@ class RunnerEvidenceTests(unittest.TestCase):
         validate_compile(0, self.compiler_log())
         validate_compile(0, self.compiler_log(result='probe.dmb - 0 errors, 0 warnings (10/18/26 4:39 pm)').replace('\n', '\r\n'))
 
+    def test_shared_disk_runner_artifact_names(self):
+        for artifact in ['dimension_bootstrap.dmb', '.durable_world_deadbeef.dmb']:
+            log = self.compiler_log().replace('probe.dmb', artifact)
+            validate_compile(0, log, artifact)
+            with self.assertRaises(RuntimeError):
+                validate_compile(0, log, 'wrong.dmb')
+
     def test_compiler_banner_rejection_vectors(self):
         for banner in ['DM compiler version 516.1682', 'prefix DM compiler version 516.1681',
                        'DM compiler version 516.16810', 'DM compiler version 516.1681 suffix',

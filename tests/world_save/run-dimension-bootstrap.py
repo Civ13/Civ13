@@ -12,8 +12,12 @@ import re
 import shutil
 import subprocess
 import tempfile
+import sys
 
-DIAGNOSTIC = re.compile(r'runtime error:|bad ref|BUG:|##\s*ERROR\s*:|RUNTIME:|assertion failed|infinite loop|segmentation|fatal error', re.I)
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "new_z_budget"))
+from z_budget_evidence import DIAGNOSTIC, validate_compile
+
+
 CASES = ('positive', 'matching', 'fractional', 'negative', 'text', 'total-cap',
          'growth-cap', 'shrink', 'horizontal', 'missing', 'marker', 'metadata',
          'generation', 'grid', 'reference', 'area', 'json', 'intent',
@@ -125,8 +129,7 @@ def main():
         return text
 
     build = owned('compile', [str(compiler), '-max_errors', '0', 'dimension_bootstrap.dme'], output)
-    if '516.1681' not in build or '0 errors, 0 warnings' not in build:
-        raise RuntimeError(f'Pinned clean compilation required: {build}')
+    validate_compile(0, build, 'dimension_bootstrap.dmb')
 
     def run(name, params, seed=None):
         cwd = output / name
