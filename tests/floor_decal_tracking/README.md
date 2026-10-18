@@ -34,7 +34,7 @@ is no normalization hook, lossy migration or image reconstruction claim here.
 Use a verified Python interpreter:
 
 ```text
-<python> -B -m unittest discover -s tests/floor_decal_tracking -p test_sources.py -v
+<python> -B -m unittest discover -s tests/floor_decal_tracking -p test_*.py -v
 <python> -B tests/floor_decal_tracking/prepare.py --output <new-packet-directory>
 ```
 
@@ -50,6 +50,10 @@ tracking fields and distinct native list identities at fixed checkpoints. Those
 are retained initialized-list counts, not cumulative allocation telemetry, bytes,
 RAM, peak memory or OOM evidence. Comparable before/after process profiling is
 still required for any memory-size or world-load performance claim.
+
+`test_oracles.py` uses synthetic logs to reject incomplete assertions, incorrect
+allocation/list-identity counts and false control passes. Its success is parser
+evidence only. The fixture contains 33 actual DM assertions, all unexecuted.
 
 ## Smallest proposed native packet (NOT RUN)
 
@@ -87,11 +91,24 @@ reopens actual temporary `.sav` files. It is an entry roundtrip with isolated
 constructor/lighting/reboot adapters, not a full world save, ordinary game
 construction, seasonal transition, screenshot or deployment acceptance.
 
+`run-contained.py` is the proposed Windows executor. It requires an exact hashed
+packet and separate time-bounded single-use grant, then owns every compiler and
+daemon through retained native handles and a suspended-before-assignment Windows
+Job. The byte-identical `windows.py`/`guard_config.py` adapters are reused from
+accepted Help packet `contained-7e35bcec-v9` (adapter SHA-256
+`f4ed282efd63a1bcad135878ad0a861c69793d9c0c58ba8300f1778d16e68b0d`,
+config `ee5db97cabe3bcb2d8acb6660d67bbb56ee1f82052f96da00d54b13756615d35`).
+There is no host free-memory admission. Each Job permits one process, kill-on-close,
+1 GiB compiler or 512 MiB daemon private memory, with a 128 MiB watcher bound.
+Owned socket samples permit only the temporary loopback listener on 59474; any
+connection, UDP or other listener aborts. No live-host inspection is performed.
+Output is retained; the executor deletes no fixture or unrelated files.
+
 ## CI selection proposal (not installed or dispatched)
 
 Keep this separate from reserved-cell lighting. Register an offline step guarded
 by extensive opt-in or introduced suite `tests/floor_decal_tracking`. It should
-run `test_sources.py`. Add a similarly guarded isolated native step only after the
+run `test_*.py`. Add a similarly guarded isolated native step only after the
 bounded runner and actual control outcomes have been reviewed. Normal PR CI also
 selects game compilation because production DM changes. Existing regressions
 must remain opt-in; no broad suite, manual workflow, publication or deployment
