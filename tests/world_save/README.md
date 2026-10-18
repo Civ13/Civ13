@@ -453,7 +453,9 @@ its production occupation adapter. This is not production occupation coverage.
 Use the runner's required `--byond-bin` and `--expected-saving-sha256` arguments.
 Run `--input-runtime-negative-control export` and `import` separately: each
 removes only the corresponding runtime exclusion in generated temporary source
-and must reproduce its specific failure. `--prepare-only` hashes and generates
+and must reproduce its specific failure. The export control bypasses these four
+fields in both changed-variable selection and the final encoder, since either
+guard alone prevents export. `--prepare-only` hashes and generates
 sources without starting a compiler or game. Native execution requires the
 current runtime owner's quiet window.
 

@@ -145,6 +145,14 @@ def main():
             if source.count(marker) != 1:
                 raise RuntimeError('Input export exclusion anchor changed')
             source = source.replace(marker, 'if (!(key in list("next_click", "next_move", "may_do_after", "may_do_mob")) && persistence_runtime_var(key))', 1)
+        if args.input_runtime_negative_control == 'export' and original.name == 'saving.dm':
+            # Both changed-var selection and the final encoder defend export.
+            # Disable only these four exclusions at both stages so this control
+            # actually reaches the disk assertion, retaining every other guard.
+            marker = 'if(A.persistence_runtime_var(v))'
+            if source.count(marker) != 1:
+                raise RuntimeError('Input encoder exclusion anchor changed')
+            source = source.replace(marker, 'if(!(v in list("next_click", "next_move", "may_do_after", "may_do_mob")) && A.persistence_runtime_var(v))', 1)
         if args.input_runtime_negative_control == 'import' and original.name == 'loading.dm':
             marker = 'if(object.persistence_runtime_var(v))'
             if source.count(marker) != 1:
