@@ -171,7 +171,7 @@ MCP tools or administration API is exposed.
 There is no conversational memory, command execution or tool calling. Questions
 are temporary spool files, removed when completed, disconnected or timed out;
 the remote service may keep its own logs, so owners should disclose its policy.
-Model text is rendered as escaped text, never executable HTML or links.
+Raw model HTML is escaped; the renderer generates only allowlisted formatting and validated HTTP/HTTPS links.
 
 The worker is separate from the developer MCP server: player requests do not
 receive developer tools. Do not expose MCP credentials to the worker.
