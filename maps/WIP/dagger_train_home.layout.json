@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "template_id": "dagger_home_draft_v4",
+  "template_revision": 1,
   "status": "map study only; runtime integration disabled",
   "coordinates": {
     "local": "zero-based southwest; +x east, +y north, +z up",

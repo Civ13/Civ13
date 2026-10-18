@@ -94,7 +94,26 @@ def extrude(cells, levels):
 
 
 def translated(points, origin):
-    return {tuple(a + b for a, b in zip(point, origin)) for point in points}
+    def xyz(value):
+        require(isinstance(value, (list, tuple)) and len(value) == 3
+                and all(type(component) is int for component in value), "projection requires integer XYZ coordinates")
+        return value
+
+    ox, oy, oz = xyz(origin)
+    result = set()
+    for point in points:
+        x, y, z = xyz(point)
+        result.add((x + ox, y + oy, z + oz))
+    return result
+
+
+def validate_template(layout, template):
+    """Check a separate descriptor against a validated map, not a runtime ABI."""
+    expected = source.template_descriptor(layout)
+    # JSON comparison preserves numeric/boolean distinctions as well as exact
+    # keys and list order, without depending on dictionary insertion order.
+    require(json.dumps(template, sort_keys=True) == json.dumps(expected, sort_keys=True),
+            "template descriptor differs from the map contract")
 
 
 def flood3(start, passable, links=()):
@@ -171,6 +190,7 @@ def check_core_separation(layout, passable, links):
 
 def _validate(layout, dmm_text, root):
     require(layout["schema_version"] == 2, "unsupported schema")
+    source.template_descriptor(layout)  # Revision is explicit, never schema_version.
     require(layout["coordinates"]["rotation_degrees"] == 0, "unsupported rotation")
     world = layout["world"]
     grid = parse_dmm(dmm_text.replace("\r\n", "\n"), world)
@@ -427,9 +447,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--layout", type=Path, default=source.LAYOUT_PATH)
     parser.add_argument("--map", type=Path, default=source.MAP_PATH)
+    parser.add_argument("--template", type=Path, default=source.TEMPLATE_PATH)
     args = parser.parse_args()
     try:
-        result = validate(json.loads(args.layout.read_text(encoding="utf-8")), args.map.read_text(encoding="utf-8"))
+        layout = json.loads(args.layout.read_text(encoding="utf-8"))
+        result = validate(layout, args.map.read_text(encoding="utf-8"))
+        validate_template(layout, json.loads(args.template.read_text(encoding="utf-8")))
     except (ValueError, KeyError, TypeError, IndexError) as error:
         raise SystemExit(f"FAIL: {error}") from error
     print(f"PASS: static Dagger geometry {result}; runtime protection unimplemented")

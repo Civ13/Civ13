@@ -8,6 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 MAP_PATH = ROOT / "maps/WIP/dagger_train_home.dmm"
 LAYOUT_PATH = ROOT / "maps/WIP/dagger_train_home.layout.json"
+TEMPLATE_PATH = ROOT / "maps/WIP/dagger_train_home.template.json"
 SIZE = 256
 WIDTH, LENGTH = 30, 102
 TRAIN_LEVELS = 4
@@ -232,6 +233,7 @@ def manifest():
     layout = {
         "schema_version": 2,
         "template_id": "dagger_home_draft_v4",
+        "template_revision": 1,
         "status": "map study only; runtime integration disabled",
         "coordinates": {"local": "zero-based southwest; +x east, +y north, +z up",
                         "world": "BYOND one-based", "transform": "world = origin + local", "rotation_degrees": 0},
@@ -420,6 +422,23 @@ def manifest():
     return layout
 
 
+def template_descriptor(layout):
+    """Export only the instance ABI v1 fields; never infer a template revision."""
+    revision = layout.get("template_revision")
+    if type(revision) is not int or not 1 <= revision <= 16777215:
+        raise ValueError("explicit positive integer template_revision required")
+    x0, y0, x1, y1 = layout["footprint"]["bounds"]
+    return {
+        "schema": 1,
+        "template_id": layout["template_id"],
+        "revision": revision,
+        "width": x1 - x0 + 1,
+        "height": y1 - y0 + 1,
+        "decks": [{"layer": deck["local_z"] + 1, "id": deck["id"]} for deck in layout["levels"]],
+        "berths": [slot["id"] for slot in layout["slots"] if slot["kind"] == "raid_berth"],
+    }
+
+
 def build():
     layout = manifest()
     grid = {(x, y, z): ("void", "Outside draft") for z in range(1, WORLD_LEVELS + 1) for y in range(1, SIZE + 1) for x in range(1, SIZE + 1)}
@@ -475,7 +494,8 @@ def main():
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     grid, layout = build()
-    outputs = {MAP_PATH: render_dmm(grid), LAYOUT_PATH: json.dumps(layout, indent=2) + "\n"}
+    outputs = {MAP_PATH: render_dmm(grid), LAYOUT_PATH: json.dumps(layout, indent=2) + "\n",
+               TEMPLATE_PATH: json.dumps(template_descriptor(layout), indent=2) + "\n"}
     for path, content in outputs.items():
         if args.check:
             if path.read_text(encoding="utf-8") != content:
@@ -483,7 +503,7 @@ def main():
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content, encoding="utf-8", newline="\n")
-    print("PASS: deterministic Dagger draft outputs" if args.check else "Wrote Dagger draft map and layout")
+    print("PASS: deterministic Dagger draft outputs" if args.check else "Wrote Dagger draft map, layout and template descriptor")
 
 
 if __name__ == "__main__":

@@ -200,6 +200,7 @@ policy.
 - `maps/WIP/dagger_train_home.dmm`: native editable map source, generated from
   `tests/dagger_map/build_map.py`; edit the generator and regenerate together.
 - `maps/WIP/dagger_train_home.layout.json`: versioned, API-neutral static data.
+- `maps/WIP/dagger_train_home.template.json`: generated instance ABI v1 descriptor.
 - `tests/dagger_map/validate_map.py`: DMM and layout validator.
 - `tests/dagger_map/test_layout.py`: focused static checks and mutation controls.
 - `tests/dagger_map/preview.py`: source diagram export; it is not a native render.
@@ -219,6 +220,23 @@ volume, including the hull and the filled corners around coupling passages.
 | `home_east` | (168,48,1) | x162..203, y42..155, z1..4 |
 | `raid_west` | (72,72,5) | x66..107, y66..179, z5..8 |
 | `raid_east` | (130,72,5) | x124..165, y66..179, z5..8 |
+
+The layout's explicit `template_revision: 1` identifies this template. It is
+independent of layout `schema_version: 2` and the historical `_v4` template name.
+The generated descriptor exports exactly seven fields for the core instance ABI:
+`schema: 1`, `template_id: "dagger_home_draft_v4"`, `revision: 1`, `width: 30`,
+`height: 102`, four ordered `decks` (`layer` 1..4 and IDs `ground`, `upper_1`,
+`upper_2`, `roof`), and `berths: ["raid_west", "raid_east"]`. The local geometry
+continues to use z0..3. Template dimensions describe the moved footprint;
+256 x 256 world dimensions and 42 x 114 padded clearances stay in the layout.
+Origins, masks and padding must not be added to the strict seven-field descriptor.
+
+The core private-home allocator reserves whole z intervals. The two side-by-side
+home examples above share z1..4 and therefore cannot both be allocated as private
+homes in one runtime registry. Production homes require separate four-level
+intervals. Destination berth occupancy is a separate contract: the two disjoint
+raid rectangles may share z5..8. A berth token alone does not validate geometry,
+move occupants or reserve a private home. Those operations remain core-owned.
 
 Each named slot supplies its own berth mask and anchor. The two raid reservation
 volumes are disjoint, as are their translated 30 x 102 x 4 arrival footprints.
@@ -309,6 +327,12 @@ crafting, saves, movement or transactions.
 Static route analysis links all 9,993 passable source cells across four levels.
 It does not execute stair interactions or prove native pathfinding, construction
 support or runtime invincibility.
+The descriptor tests also reject missing revisions, schema/revision confusion,
+extra fields, wrong dimensions, reordered decks and changed berth identities.
+Static projection rejects coordinates unless they contain exactly three integer
+components; a two-component point must never silently lose its deck through
+`zip()` truncation. Both raid projections cover 12,240 unique tiles on z5..8,
+with 3,060 per deck, within their separate padded clearances.
 
 The `Dagger map static checks` workflow uses the existing CI suite-selection
 policy: it runs this newly introduced suite on the introducing PR, then becomes
@@ -322,6 +346,17 @@ For each PR map or icon revision:
 - Replace inline PR preview images with that revision's images, then confirm
   they load and visually agree with the current layout.
 - Label source diagrams, static renders and actual gameplay captures accurately.
+
+Descriptor-only changes can retain the existing previews when the DMM, source
+diagram and icon files are unchanged; preserve the original render SHA in the
+caption. This descriptor/test/documentation slice requires **restart: no**:
+the map remains inactive and no runtime consumer is added. Later activation of
+the map and its controllers requires a separately reviewed build and server
+restart. Existing MapDiffBot renders at `855a7ba1e8deaba43b38f1510984630fd308457e`
+and the source diagram show the unchanged geometry. The local review montage
+`data/dagger-map-draft/four-level-native-details.png` contains static sprite-render
+crops, despite its historical filename; it is not a gameplay capture. No new
+icons are introduced.
 
 Native acceptance belongs to the separate mechanics/persistence work: two
 different crews, simultaneous arrivals, occupied destination rejection before
