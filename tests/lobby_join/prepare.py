@@ -11,6 +11,7 @@ from pathlib import Path
 import re
 
 from test_source import procedure
+from visibility import visibility_verbs
 
 ROOT = Path(__file__).resolve().parents[2]
 NAMES = (
@@ -51,11 +52,7 @@ def stage(output):
     fixture = (Path(__file__).with_name("probe.dm")).read_text()
     # Keep the actual verb metadata unadapted. These checks inspect native
     # metadata only; no connected client or actual command dispatch is claimed.
-    verb = procedure(source, "/mob/new_player/verb/Join()")
-    assert verb.count("set invisibility = 0") == 1
-    unsafe_visibility = verb.replace("/mob/new_player/verb/Join()", "/mob/new_player/unsafe_visibility/verb/Join()", 1)
-    unsafe_visibility = unsafe_visibility.replace("set invisibility = 0", "set invisibility = 101")
-    (output / "control.dm").write_text(fixture + "\n" + adapted + "\n" + unsafe_round + "\n" + unsafe_role + "\n" + verb + "\n" + unsafe_visibility + "\n", encoding="utf-8")
+    (output / "control.dm").write_text(fixture + "\n" + adapted + "\n" + unsafe_round + "\n" + unsafe_role + "\n" + visibility_verbs(source) + "\n", encoding="utf-8")
     (output / "control.dme").write_text('#include "control.dm"\n', encoding="utf-8")
     manifest = {
         "schema": 1,
