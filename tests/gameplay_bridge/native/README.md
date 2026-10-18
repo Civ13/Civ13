@@ -17,6 +17,9 @@ It has ordinary stock/disabled/enabled-null parity, real30tick canonical gather,
 explicit lease invalid/replay/cancel/isolation and named omission profiles.
 Generated grass copies change only the headless connected-client predicate;
 identity/visibility/constructor seams are explicit and cannot prove clients.
+Original client.New bodies are removed in generated source; one denied entry is
+compiled instead. Native startup may bind only fixed127.0.0.1:59477 under a strict
+OS socket guard. OpenPort none/port0 is not a never-listen guarantee.
 prepare_native.py continues to refuse its historical profiles. Current CI
 compiles the new fixture without executing it; native results remain not_run.
 

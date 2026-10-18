@@ -80,7 +80,7 @@ class CompileCheck(unittest.TestCase):
             with self.assertRaises(ValueError): verify_log(text,rc)
 
     def test_compile_preparation_excludes_config_and_rejects_archive_escape(self):
-        files={p:(ROOT/p).read_text(encoding="utf-8") for p in ("civ13.dme","code/_helpers/mobs.dm","code/game/turfs/floor_attackby.dm","code/modules/gameplay_bridge/bridge.dm","code/modules/gameplay_bridge/mechanics.dm","code/world.dm","code/controllers/mc/globals.dm")}
+        files={p:(ROOT/p).read_text(encoding="utf-8") for p in ("civ13.dme","code/_helpers/mobs.dm","code/game/turfs/floor_attackby.dm","code/modules/gameplay_bridge/bridge.dm","code/modules/gameplay_bridge/mechanics.dm","code/world.dm","code/controllers/mc/globals.dm","code/modules/client/client_procs.dm","code/modules/client/movement.dm")}
         files["config/host.txt"]="synthetic-private-config"
         def archive(extra=None):
             stream=io.BytesIO()

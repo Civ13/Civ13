@@ -5,9 +5,9 @@ import json
 from pathlib import Path
 
 from check_native_packet import inside, require
-from prepare_gather import PROFILES, FAILURES, LIMITS, ADAPTER_HASHES, DRIVER_HASH, BINARIES
+from prepare_gather import PROFILES, FAILURES, LIMITS, ADAPTER_HASHES, DRIVER_HASH, BINARIES, PORT
 
-ORDINARY = {"closed_port", "headless_setup", "ordinary_paid_gather", "ordinary_zero_delay",
+ORDINARY = {"requested_reopen_denied", "headless_setup", "ordinary_paid_gather", "ordinary_zero_delay",
             "ordinary_false_first_returns", "stock_false_first_early_unlock",
             "stock_overlap_after_early_unlock", "ordinary_overlap_balanced"}
 TYPED = {"typed_gather_setup", "forged_type_denied", "one_use_first_claim", "one_use_replay_denied",
@@ -18,6 +18,15 @@ TYPED = {"typed_gather_setup", "forged_type_denied", "one_use_first_claim", "one
 TYPED |= {"invalid_"+fault+"_denied" for fault in ("body","target","kind","owner","generation","pointer","request")}
 STATE = {"duration_at_least_30":1, "cuttings_added":2, "turf_is_dirt":1,
          "tool_retained":1, "callback_starts":5, "callback_finishes":5, "balanced":1}
+
+
+def verify_sockets(rows, runtime):
+    """Pure gate for the core executor's OS socket samples, not an OS query."""
+    require(type(rows) is list and len(rows)<=64,"socket inventory bound")
+    for row in rows:
+        if row["state"]=="listen":
+            require(runtime and row["address"]=="127.0.0.1" and row["port"]==PORT,
+                    "owned listener violated fixed loopback boundary")
 
 
 def verify_packet(root, commit, manifest_sha256):
@@ -35,6 +44,9 @@ def verify_packet(root, commit, manifest_sha256):
         name=p["name"]
         require(p["status"]=="not_run" and p["expected_failure"]==FAILURES.get(name) and
                 p["dme"]=="source/gather_"+name+".dme" and p["runtime_cwd"]=="runtime/"+name,"profile drift")
+        require(p["compiler_argv"]==["<pinned-dm.exe>","-max_errors","0","gather_"+name+".dme"] and
+                p["daemon_argv_after_separate_grant"]==["<pinned-dd.exe>","gather_"+name+".dmb",str(PORT),"-ip","127.0.0.1","-invisible","-close","-safe","-params","tested_commit="+commit+"&profile="+name,"-log","runtime.log"],
+                "fixed native argument boundary drift")
     executor=manifest["executor"]
     require(executor["limits"]==LIMITS and executor["binaries"]==BINARIES and
             {name:row["sha256"] for name,row in executor["adapter"].items()}==ADAPTER_HASHES and
@@ -52,7 +64,7 @@ def verify_result(result, profile, commit):
     require(all(type(result[key]) in (bool,int) and result[key] in (0,1)
                 for key in ("passed","runtime_error","positive_client_acceptance")),"malformed result flags")
     require(result["byond_version"]==516 and result["byond_build"]==1681 and
-            result["dimensions"]==[9,9,1] and not result["port"] and not result["runtime_error"] and
+            result["dimensions"]==[9,9,1] and result["port"] in (None,0,PORT) and not result["runtime_error"] and
             not result["positive_client_acceptance"],"version/isolation/runtime/client claim")
     rows=result["checks"]
     require(type(rows) is list and 1<=len(rows)<=64,"bounded assertions required")

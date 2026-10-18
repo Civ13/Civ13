@@ -4,6 +4,7 @@ Restricted to two known conditional symbols. Not a general DM preprocessor.
 Pinned whole-file disabled hashes bind the public 670 source without Git objects.
 """
 import hashlib
+import re
 
 FEATURE = "CIV13_GAMEPLAY_BRIDGE"
 MARKER = "CIV13_GAMEPLAY_WAIT_GUARDS"
@@ -15,6 +16,18 @@ DISABLED_SHA256 = {
  PATHS[2]: "0e51dfc52f32c5729cff3a8cb18c4a21746f66968a5f5b9a37838f67e0ac3912",
  PATHS[3]: "d9dcfdf9d56086b86ec8a88db95c9f30bd84099567b9cb7bcefef188857ac73f",
 }
+CLIENT_FILES = ("code/modules/client/client_procs.dm", "code/modules/client/movement.dm")
+
+
+def isolate_client_new(source):
+    """Remove one actual entry method; the fixture supplies one denied New."""
+    pattern = r"(?ms)^/client/New\([^\n]*\)\n.*?(?=^/(?!/)|\Z)"
+    if len(re.findall(r"(?m)^/client/New\(", source)) != 1:
+        raise ValueError("client entry isolation drift")
+    result, count = re.subn(pattern, "", source, count=1)
+    if count != 1 or re.search(r"(?m)^/client/New\(", result):
+        raise ValueError("client entry removal failed")
+    return result
 
 def project(source, symbols):
     """Restricted conditional projector, NOT DM/macro expansion or includes.

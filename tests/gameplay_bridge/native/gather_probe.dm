@@ -1,4 +1,4 @@
-// Closed-port typed gather fixture. NEVER client/consent/LOS/Life acceptance.
+// Fixed-loopback guarded fixture. NEVER client/consent/LOS/Life acceptance.
 // Generated grass copy substitutes ONLY its connected-client predicate.
 // Human New returns without parent; active/visible seams below are headless only.
 /world
@@ -15,7 +15,9 @@
 		return ..()
 	return FALSE
 /world/Topic(T, addr, master, key)
-	return "Closed gather fixture; no operations."
+	return "Isolated gather fixture; no operations."
+/client/New(TopicData)
+	return FALSE // Original entries removed from generated source BEFORE include.
 
 var/global/list/gather_probe_checks = list()
 var/global/list/gather_probe_ordinary_state = list()
@@ -208,7 +210,7 @@ var/global/gather_probe_finished = FALSE
 	spawn(1)
 		nested["ok"] = do_after(H,0,G,progress=FALSE,gameplay_context=L)
 		nested["done"] = TRUE
-	gather_probe_check(do_after(H,5,G,progress=FALSE,gameplay_context=L) && nested["done"] && !nested["ok"] && gather_probe_balanced(H), "one_use_nested_denied")
+	gather_probe_check(do_after(H,5,G,progress=FALSE,check_for_repeats=FALSE,gameplay_context=L) && nested["done"] && !nested["ok"] && gather_probe_balanced(H), "one_use_nested_denied")
 	B.action_lease = null
 
 /proc/gather_probe_isolation(mob/living/human/gather_probe/H, datum/gameplay_bridge/B)
@@ -252,7 +254,7 @@ var/global/gather_probe_finished = FALSE
 		gather_probe_finish(FALSE)
 		return
 	try
-		gather_probe_check(!world.port && !OpenPort(0), "closed_port")
+		gather_probe_check(!OpenPort(0), "requested_reopen_denied")
 		GLOB.all_observable_events = list()
 		GLOB.moved_event = new /decl/observ/moved
 		GLOB.dir_set_event = new /decl/observ/dir_set

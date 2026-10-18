@@ -11,8 +11,8 @@ from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/"scripts/gameplay_bridge"))
 import prepare_gather as prep
-from check_gather_packet import ORDINARY,TYPED,STATE,verify_packet,verify_result,verify_results
-from gather_context import project
+from check_gather_packet import ORDINARY,TYPED,STATE,verify_packet,verify_result,verify_results,verify_sockets
+from gather_context import CLIENT_FILES,isolate_client_new,project
 
 
 def external():
@@ -79,7 +79,7 @@ class GatherPacketTests(unittest.TestCase):
                        'L.cancelled = TRUE'):
             self.assertIn(anchor,source)
         self.assertNotIn('new /obj/item/stack/grass_cuttings',source)
-        self.assertNotIn('/client/New',source)
+        self.assertEqual(source.count('/client/New(TopicData)\n\treturn FALSE'),1)
         self.assertNotIn('.Life(',source)
         self.assertEqual(source.count('starts++\n\t. = ..()'),1)
         self.assertEqual(source.count('finishes++\n\t. = ..()'),1)
@@ -133,6 +133,12 @@ class GatherPacketTests(unittest.TestCase):
             self.assertIsNone(manifest['native_lease'])
             self.assertFalse(any(p.suffix in ('.dmb','.rsc') for p in out.rglob('*')))
             with self.assertRaises(ValueError):verify_packet(out,'a'*40,'0'*64)
+            altered=copy.deepcopy(manifest)
+            altered['profiles'][0]['daemon_argv_after_separate_grant'][4]='0.0.0.0'
+            (out/'manifest.json').write_text(json.dumps(altered))
+            with self.assertRaisesRegex(ValueError,'argument boundary'):
+                verify_packet(out,'a'*40,hashlib.sha256((out/'manifest.json').read_bytes()).hexdigest())
+            (out/'manifest.json').write_bytes(raw)
             target=out/'source/gather_enabled.dme';target.write_text('tampered')
             with self.assertRaises(ValueError):verify_packet(out,'a'*40,sha)
 
@@ -146,6 +152,30 @@ class GatherPacketTests(unittest.TestCase):
             root=Path(temp)
             for name in prep.ADAPTER_HASHES:(root/name).write_bytes(b'drift')
             with self.assertRaisesRegex(ValueError,'adapter drift'):prep.bindings(root,root)
+
+    def test_original_client_entries_removed_without_changing_other_procedures(self):
+        source='/client/Other()\n\treturn 1\n/client/New(TopicData)\n\tunsafe_login()\n/client/Last()\n\treturn 2\n'
+        self.assertEqual(isolate_client_new(source),'/client/Other()\n\treturn 1\n/client/Last()\n\treturn 2\n')
+        for bad in ('missing entry',source+source):
+            with self.assertRaises(ValueError):isolate_client_new(bad)
+        for relative in CLIENT_FILES:
+            result=isolate_client_new((ROOT/relative).read_text(encoding='utf-8'))
+            self.assertNotIn('/client/New(',result)
+        for profile in prep.PROFILES:
+            dme=prep.fixture_dme((ROOT/'civ13.dme').read_text(),profile)
+            for index,relative in enumerate(CLIENT_FILES):
+                self.assertNotIn(relative.replace('/','\\'),dme)
+                self.assertIn('compile_generated/client_'+str(index)+'.dm',dme)
+
+    def test_fixed_loopback_socket_gate_rejects_widened_or_compiler_listeners(self):
+        allowed={'state':'listen','address':'127.0.0.1','port':prep.PORT}
+        verify_sockets([allowed],True)
+        for row,runtime in ((allowed,False),({**allowed,'address':'0.0.0.0'},True),
+                            ({**allowed,'address':'::1'},True),({**allowed,'port':prep.PORT+1},True)):
+            with self.assertRaises(ValueError):verify_sockets([row],runtime)
+        verify_sockets([{'state':'other','address':'remote','port':0}],True) # Recorded residual, not isolation.
+        self.assertEqual(prep.LIMITS['runtime_private_bytes'],512*1024**2)
+        self.assertEqual(prep.LIMITS['compile_private_bytes'],1024**3)
 
 
 if __name__=='__main__':unittest.main()

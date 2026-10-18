@@ -14,7 +14,7 @@ import tarfile
 import tempfile
 
 from prepare_native import git, isolated_startup, selected_files
-from gather_context import PATHS, verify_disabled
+from gather_context import CLIENT_FILES, PATHS, verify_disabled, isolate_client_new
 from wait_overlay import unguarded_source
 
 PROFILES = ("stock", "disabled", "enabled", "gather_stock", "gather_disabled", "gather_enabled")
@@ -34,6 +34,12 @@ def compile_dme(source, profile="enabled"):
         source = source.replace(old, new, 1)
     if "CIV13_GAMEPLAY_BRIDGE" in source or "code/modules/gameplay_bridge/bridge.dm" in source:
         raise ValueError("bridge unexpectedly activated")
+    if fixture:
+        for index, path in enumerate(CLIENT_FILES):
+            old=path.replace("/","\\")
+            if source.count(old)!=1:
+                raise ValueError("client include isolation drift")
+            source=source.replace(old,"compile_generated/client_"+str(index)+".dm",1)
     prefix = '#define CIV13_GAMEPLAY_BRIDGE\n' if profile == "enabled" else ""
     module = '\n#include "code/modules/gameplay_bridge/bridge.dm"\n' if profile != "stock" else ""
     probe = "gather_probe.dm" if fixture else "compile_probe.dm"
@@ -82,6 +88,8 @@ def prepare(root, output, expected):
     generated.mkdir()
     for name, text in (("world.dm", world), ("globals.dm", globals_source)):
         (generated / name).write_text(text, encoding="utf-8", newline="\n")
+    for index, path in enumerate(CLIENT_FILES):
+        (generated/("client_"+str(index)+".dm")).write_text(isolate_client_new(read(path)),encoding="utf-8",newline="\n")
     for profile, dme in dmes.items():
         (source_root / ("bridge_" + profile + ".dme")).write_text(dme, encoding="utf-8", newline="\n")
     manifest = {"commit": expected, "compile_only": True, "native_runtime": "not_run",

@@ -25,8 +25,9 @@ BINARIES = {"dm.exe": "8ad7537fc1329ada04e8e1e8835ec9cf205f3e5029461a3ead1f8f4ce
             "dd.exe": "7b148eceaaae483395b636fab817609b37f8fb852f1d5aad12d29bbcaf1585ae"}
 LIMITS = {"compile_seconds": 120, "runtime_seconds": 90, "cleanup_seconds": 10,
           "total_seconds": 2400, "compile_cpu_seconds": 60, "runtime_cpu_seconds": 30,
-          "process_private_bytes": 1024**3, "watcher_private_bytes": 128*1024**2,
+          "compile_private_bytes": 1024**3, "runtime_private_bytes": 512*1024**2, "watcher_private_bytes": 128*1024**2,
           "log_bytes": 2*1024**2, "world_tick_ceiling": 800, "active_processes": 1}
+PORT = 59477
 
 
 def digest(data):
@@ -65,9 +66,7 @@ def variants(helper, grass, profile):
 
 def fixture_dme(dme, profile):
     mode = profile if profile in ("stock", "disabled") else "enabled"
-    result = compile_dme(dme, mode)
-    result = replace_once(result, 'tests/gameplay_bridge/native/compile_probe.dm',
-                          'tests/gameplay_bridge/native/gather_probe.dm')
+    result = compile_dme(dme, "gather_"+mode)
     result = replace_once(result, "code\\_helpers\\mobs.dm", "gather_generated/"+profile+"_mobs.dm")
     return replace_once(result, "code\\game\\turfs\\floor_attackby.dm", "gather_generated/"+profile+"_grass.dm")
 
@@ -89,7 +88,9 @@ def bindings(adapter_dir, contained_repo):
             "contract": ["core-only separately granted execution", "fresh runtime identity/census before admission",
                          "exact frozen packet and executable hashes", "retained image/creation identity",
                          "create suspended; assign and verify Job before resume", "one-active-process/no-breakaway/kill-on-close",
-                         "no TCP listener; record UDP/account traffic residual risk", "no network isolation claim",
+                         "only owned fixed127.0.0.1:59477 TCP LISTEN permitted; strict OS socket guard throughout",
+                         "deny actual client.New before all production game-entry hooks",
+                         "record UDP/account traffic residual risk", "no network isolation claim",
                          "phase CPU/wall/memory/log budgets and cleanup reserve", "sequential profiles; no child workers",
                          "exit plus settled Job active0; retained-handle cleanup and receipt even on failure",
                          "existing held game is never targeted; no process-name kill or fallback"]}
@@ -117,18 +118,21 @@ def prepare(root, output, expected, adapter_dir, contained_repo):
                       "runtime_cwd":"runtime/"+profile, "expected_failure":FAILURES.get(profile),
                       "compiler_argv":["<pinned-dm.exe>","-max_errors","0","gather_"+profile+".dme"],
                       "copy_after_compile":["gather_"+profile+".dmb","gather_"+profile+".rsc"],
-                      "daemon_argv_after_separate_grant":["<pinned-dd.exe>","gather_"+profile+".dmb","0","-invisible","-close","-safe","-params","tested_commit="+expected+"&profile="+profile,"-log","runtime.log"]})
+                      "daemon_argv_after_separate_grant":["<pinned-dd.exe>","gather_"+profile+".dmb",str(PORT),"-ip","127.0.0.1","-invisible","-close","-safe","-params","tested_commit="+expected+"&profile="+profile,"-log","runtime.log"]})
     if git(root,"rev-parse","HEAD").decode().strip() != expected or git(root,"status","--porcelain","--untracked-files=no").strip():
         raise ValueError("source changed while preparing typed gather packet")
     files = {p.relative_to(output).as_posix():digest(p.read_bytes()) for p in sorted(output.rglob("*")) if p.is_file() and p != output/"manifest.json"}
     manifest = {"schema":2, "kind":"typed_gather", "commit":expected, "state":"prepared_not_executed",
                 "native_lease":None, "compiler":"not_run", "runtime":"not_run", "dimensions":[9,9,1],
                 "positive_client_acceptance":False, "profiles":plans, "executor":external, "sha256":files,
-                "seams":["isolated global/world startup", "human New returns without parent; no production constructor/anatomy/Life",
+                "seams":["isolated global/world startup", "original client.New definitions removed in generated copies; one denied fixture entry",
+                         "human New returns without parent; no production constructor/anatomy/Life",
                          "generated grass connected-client predicate only", "headless service active/visible identity only",
                          "callback observer calls actual parent before final-phase cancellation"],
                 "unsupported":["agent Join", "normal non-admin consent/bootstrap/E2E", "native filtering/LOS", "water/craft waits", "whole-game survival"],
-                "requires_new_grant":["exact packet digest and current held-host PID/creation census", "explicit account/UDP residual-risk disposition", "existing core retained-handle executor contract"]}
+                "budget_status":"2400seconds aggregate proposed only; no prior grant inherited",
+                "requires_new_grant":["exact packet digest and current held-host PID/creation census", "fixed loopback59477 socket guard",
+                                     "explicit account/UDP residual-risk disposition", "existing core retained-handle executor contract"]}
     (output/"manifest.json").write_text(json.dumps(manifest,indent=2),encoding="utf-8")
     return manifest
 

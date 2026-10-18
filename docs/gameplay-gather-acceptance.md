@@ -50,8 +50,14 @@ negative control. Its optional --result-content-only checks oracle contents and
 parity; it does not verify native process containment or grant execution. Core's
 retained-handle/settled-Job/executable/creation/socket/log receipts remain required.
 Native packet limits are compile120sec/runtime90sec/cleanup10sec per phase, total
-2400sec, one active process,1GiB process private/128MiB watcher,2MiB logs and
-800world-time ceiling. Native account traffic is not isolated by a Job/closed port;
+2400sec, one active process,1GiB compiler/512MiB runtime private/128MiB watcher,2MiB logs and
+800world-time ceiling. These are proposed aggregate budgets, not an inherited execution grant. The daemon
+argv binds only fixed127.0.0.1:59477. A strict OS socket guard permits only this
+owned runtime TCP LISTEN and rejects any compiler listener; startup OpenPort none
+or port0 observations cannot prove that the engine never binds later. Both
+original client.New bodies are removed from generated copies; the fixture
+supplies one returnFALSE entry before any production login/account/mob hook.
+Requested dynamic reopen is separately denied. Native account traffic is not isolated by a Job;
 any execution grant must explicitly address that residual risk.
 
 Compile-only CI separately checks the fixture with stock/disabled/enabled source
