@@ -171,7 +171,7 @@ class Adapter:
             block = c.create_unicode_buffer('\0'.join(k + '=' + v for k, v in sorted(environment.items())) + '\0\0')
             command = c.create_unicode_buffer(subprocess.list2cmdline(argv))
             self.check(self.k.CreateProcessW(argv[0], command, None, None, True,
-                       0x4 | 0x400 | 0x08000000 | 0x80000, block, str(cwd),
+                       0x4 | 0x400 | 0x8 | 0x80000, block, str(cwd),
                        c.cast(c.byref(startup), c.POINTER(Startup)), c.byref(process)))
             self.retained.append(process)
             self.check(self.k.AssignProcessToJobObject(self.job, process.process))

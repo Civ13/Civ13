@@ -94,6 +94,20 @@ for cleanup waits, then aborts. Missing/raced identity remains unavailable.
 No command lines, global process lookup, arbitrary termination or launch-flag
 changes are used. Daemon and behavioral cases are excluded from this packet.
 
+The `contained-v5` compiler diagnostic verified a live owned
+`C:/WINDOWS/System32/conhost.exe` member through a retained handle, then stopped
+on the strict unexpected-member gate. Both compiler and console-host handles
+confirmed exit during owned cleanup. This identifies only that run's member;
+the v4 PID remains unidentified. No behavioral assertions have run.
+
+The next five-case packet replaces `CREATE_NO_WINDOW` with `DETACHED_PROCESS`,
+keeping suspended creation, Unicode environment, extended startup information,
+hidden startup settings and the explicit standard-handle allowlist. See the
+[Windows process creation flags](https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags).
+This aims to avoid creating a console host; it does not permit extra Job members.
+There is no visible-console alternative or automatic flag fallback. Compiler
+logs and all process/resource guards remain mandatory.
+
 After a separate native allocation, use pinned BYOND 516.1681, temporary packet
 storage, no normal game startup and serial runs. Proposed limits: each compiler
 60 seconds, each daemon 15 seconds, complete packet 240 seconds including cleanup.
@@ -135,8 +149,8 @@ Job. The `windows.py`/`guard_config.py` adapters originate from
 accepted Help packet `contained-7e35bcec-v9` (adapter SHA-256
 `f4ed282efd63a1bcad135878ad0a861c69793d9c0c58ba8300f1778d16e68b0d`,
 config `ee5db97cabe3bcb2d8acb6660d67bbb56ee1f82052f96da00d54b13756615d35`).
-The local Windows adapter now has one cleanup-only correction: query-only
-retained handles have no thread handle, so cleanup skips closing a null thread.
+The local Windows adapter skips closing null thread handles for query-only
+retained handles and uses `DETACHED_PROCESS` in place of `CREATE_NO_WINDOW`.
 The original adapter hash above describes its origin; each packet binds the
 actual corrected adapter hash separately. `guard_config.py` is unchanged.
 There is no host free-memory admission. Each Job permits one process, kill-on-close,
