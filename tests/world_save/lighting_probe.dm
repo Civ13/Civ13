@@ -116,15 +116,28 @@
 	A.smart_vis_update()
 	lighting_corner_parity(before, lighting_corner_snapshot(corners))
 	// Compare smart occlusion updates with complete remove/apply on the same scene.
-	var/obj/item/persistence_opaque_fixture/blocker = new(locate(5,2,2))
-	blocker.set_opacity(TRUE)
+	// One blocked tile can leave all four corners visible through its neighbors.
+	// A complete column supplies a real occlusion boundary for shared corners.
+	var/list/blockers = list()
+	for(var/y = 1, y <= 8, y++)
+		var/turf/T = locate(5,y,2)
+		var/obj/item/persistence_clear_fixture/blocker = new(T)
+		blockers += blocker
+		blocker.set_opacity(TRUE)
+		// set_opacity queues reconsideration; this production helper rebuilds cache.
+		T.recalc_atom_opacity()
+		durable_world_check(blocker.opacity && T.has_opaque_atom && !T.get_corners(0), "blocker column failed to become opaque")
 	A.smart_vis_update()
 	durable_world_check(json_encode(before) != json_encode(lighting_corner_snapshot(corners)), "opaque blocker did not change corner illumination")
 	before = lighting_corner_snapshot(corners)
 	A.remove_lum()
 	A.apply_lum()
 	lighting_corner_parity(before, lighting_corner_snapshot(corners))
-	blocker.set_opacity(FALSE)
+	for(var/obj/item/persistence_clear_fixture/blocker in blockers)
+		var/turf/T = get_turf(blocker)
+		blocker.set_opacity(FALSE)
+		T.recalc_atom_opacity()
+		durable_world_check(!blocker.opacity && !T.has_opaque_atom && T.get_corners(0), "blocker column failed to reopen")
 	A.smart_vis_update()
 	durable_world_check(json_encode(before) != json_encode(lighting_corner_snapshot(corners)), "cleared blocker did not change corner illumination")
 	before = lighting_corner_snapshot(corners)
@@ -137,7 +150,8 @@
 	second.set_light(0)
 	qdel(first)
 	qdel(second)
-	qdel(blocker)
+	for(var/obj/item/persistence_clear_fixture/blocker in blockers)
+		qdel(blocker)
 	var/list/identities = list()
 	var/allocated = 0
 	for(var/datum/lighting_corner/C in corners)
