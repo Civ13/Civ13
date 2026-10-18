@@ -215,6 +215,12 @@
 		opaque_item.set_opacity(TRUE)
 		var/obj/item/persistence_opaque_fixture/clear_item = new(locate(4,4,1))
 		clear_item.set_opacity(FALSE)
+		// Establish the same obstruction caches that disk recovery reconstructs.
+		var/turf/initial_opaque_turf = get_turf(opaque_item)
+		var/turf/initial_clear_turf = get_turf(clear_item)
+		initial_opaque_turf.recalc_atom_opacity()
+		initial_clear_turf.recalc_atom_opacity()
+		durable_world_check(initial_opaque_turf.has_opaque_atom && !initial_clear_turf.has_opaque_atom, "initial obstruction caches stale")
 		var/datum/light_source/original_source = lamp.light
 		durable_world_check(original_source && original_source.source_atom == lamp && original_source.top_atom == carrier, "real custom light constructor binding failed")
 		durable_world_check(default_lamp.light && default_lamp.light.source_atom == default_lamp, "real default light constructor failed")
