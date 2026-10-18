@@ -1,5 +1,12 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-18: native help spool format -->
+Native DM can interpolate world.realtime in scientific notation, and text2file
+adds LF/CRLF to ready markers. The help bridge validates bounded opaque IDs and
+removes exactly one native line ending at admission and completion. Run
+tests/player_help/run-spool-controls.py for the three old-defect controls;
+all model transports in these spool checks are injected and offline.
+
 <!-- 2026-10-18: restored input clocks and action locks -->
 The custom saver includes changed tmp fields. Mob next_click/next_move and
 may_do_after/may_do_mob are process-local deadlines/locks: exclude them on export

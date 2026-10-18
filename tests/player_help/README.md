@@ -1,6 +1,11 @@
 # Optional gameplay help checks
 
 Run Python bridge tests with `python3 -m unittest discover -s tests/player_help -v`.
+`python3 tests/player_help/run-spool-controls.py` requires temporary source
+mutations of the old ID validator, admission marker and completion marker to fail
+the native scientific-notation ID plus CRLF round trip. The spool tests also
+reject malformed/oversized IDs, path or command characters, embedded/repeated
+line endings and stale completion markers. These use injected model transports.
 All storage is temporary and HTTP is an injected transport; no remote Ollama calls.
 The transport deadline test verifies the child-process timeout contract, not a
 network benchmark. Cases cover identity reuse, no replay, disabled/failure,
