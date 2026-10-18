@@ -19,7 +19,7 @@ HELPER_HASHES = {
     'guard_config.py': 'ee5db97cabe3bcb2d8acb6660d67bbb56ee1f82052f96da00d54b13756615d35',
     'z_budget_evidence.py': '133c130845ab28cfb6f0bfb8b2c63b595d3694afc44a3af398cb1fdf3de584db',
 }
-HELPER_REPO = Path('D:/GitHub/Civ13/.worktrees/lazy-floor-decal-tracking')
+HELPER_FROZEN = Path('D:/GitHub/civ13-preview-evidence/lazy-floor-decal-tracking-20261018/contained-v7')
 BYOND = Path('C:/Users/valza/.codex/cache/byond/516.1681/byond/bin')
 BINARIES = {'dm.exe': '8ad7537fc1329ada04e8e1e8835ec9cf205f3e5029461a3ead1f8f4ced7b0bb8',
             'dd.exe': '7b148eceaaae483395b636fab817609b37f8fb852f1d5aad12d29bbcaf1585ae'}
@@ -69,8 +69,9 @@ def freeze(output):
     adapter = output/'adapter'
     adapter.mkdir()
     for name in ('windows.py', 'guard_config.py', 'owned_job.py', 'native_policy.py', 'z_budget_evidence.py'):
-        blob = subprocess.check_output(['git', '-c', 'safe.directory='+HELPER_REPO.as_posix(),
-                                        'show', HELPER_HEAD+':tests/floor_decal_tracking/'+name], cwd=HELPER_REPO)
+        # Preserve the exact accepted packet bytes, including its line endings.
+        # Git blobs can differ from the Windows frozen copies under autocrlf.
+        blob = (HELPER_FROZEN/name).read_bytes()
         if hashlib.sha256(blob).hexdigest() != HELPER_HASHES[name]:
             raise ValueError('Accepted helper hash mismatch: ' + name)
         (adapter/name).write_bytes(blob)
