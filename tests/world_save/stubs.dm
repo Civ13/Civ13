@@ -33,6 +33,13 @@ var/next_duration_update_days = 0
 var/last_roundduration2text = 0
 var/last_roundduration2text_days = 0
 var/datum/controller/gameticker/ticker
+// Ordinary serializer fixtures exclude occupations. Round-state mode opts out
+// and supplies extracted production job-limit logic instead.
+#ifndef WORLD_SAVE_JOB_ADAPTER
+var/datum/world_save_fixture_jobs/job_master = new
+/datum/world_save_fixture_jobs/proc/initialize_position_limits()
+	return
+#endif
 var/datum/fixture_processes/processes = new
 /datum/fixture_processes
 	var/datum/fixture_ticker_process/ticker = new

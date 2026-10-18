@@ -446,7 +446,9 @@ response samples current click/move deadlines, remaining delays, action locks,
 direction and facing lock. This changes diagnostic bookkeeping only; it does not
 reset gameplay clocks or actions. Connected-client behavior still needs a normal
 functional retest. The ordinary round-metadata fixture's job-limit initializer
-is a pure no-op dependency adapter, not production occupation coverage.
+is a pure no-op dependency adapter in shared `stubs.dm`, also used by the direct
+round-trip fixture. Round-state mode defines `WORLD_SAVE_JOB_ADAPTER` and keeps
+its production occupation adapter. This is not production occupation coverage.
 
 Use the runner's required `--byond-bin` and `--expected-saving-sha256` arguments.
 Run `--input-runtime-negative-control export` and `import` separately: each

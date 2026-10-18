@@ -95,12 +95,8 @@ def main():
         raise RuntimeError('Production saving source hash mismatch')
     environment = (fixture / 'string_path_roundtrip.dme').read_text(encoding='utf-8')
     if round_state:
-        environment = '#define WORLD_SAVE_MUSIC_ADAPTER\n' + environment
+        environment = '#define WORLD_SAVE_MUSIC_ADAPTER\n#define WORLD_SAVE_JOB_ADAPTER\n' + environment
     environment = environment.replace('#define FILE_DIR "../.."', f'#define FILE_DIR "{root.as_posix()}"')
-    if not round_state:
-        # The ordinary serializer probe has no occupation system. Round-state
-        # mode includes the production occupation adapter instead.
-        environment += '\nvar/datum/string_path_jobs/job_master = new\n/datum/string_path_jobs/proc/initialize_position_limits()\n\treturn\n'
     hashes = {}
     generated = {}
     progress_saving = None
