@@ -16,7 +16,7 @@ runner's --input-runtime adapter checks disk-backed migration and the production
 early click gate; connected-client interaction remains separate evidence.
 
 ## Language & toolchain
-NEVER use "â€”": always use "-" instead.
+NEVER use "—": always use "-" instead.
 - **DM** (DreamMaker) - BYOND's proprietary language. Sources have `.dm` extension.
 - **Entry point**: `civ13.dme` - the DM Environment file.
 - **Build**: `dm civ13.dme` (Windows) or `DreamMaker civ13.dme` (Linux). Outputs `civ13.dmb` + `civ13.rsc`.
