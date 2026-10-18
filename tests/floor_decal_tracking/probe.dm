@@ -21,6 +21,8 @@ world
 	return
 /atom/proc/set_dir(value)
 	dir = value
+/atom/movable
+	var/anchored = FALSE
 /turf
 	var/list/decals
 	var/season = "WINTER"

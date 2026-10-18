@@ -14,6 +14,13 @@ spec.loader.exec_module(p)
 
 
 class SourceTests(unittest.TestCase):
+    def test_fixture_anchored_matches_production_owner_and_default(self):
+        production = (p.ROOT / 'code/game/atoms_movable.dm').read_text()
+        fixture = (HERE / 'probe.dm').read_text()
+        self.assertTrue(production.startswith('/atom/movable\n'))
+        self.assertIn('\tvar/anchored = FALSE\n', production.split('\n\n', 1)[0])
+        self.assertIn('/atom/movable\n\tvar/anchored = FALSE\n', fixture)
+
     def test_exact_writer_and_season_reader(self):
         files, _ = p.sources()
         original = (p.ROOT / p.DECAL).read_text().split('/obj/effect/floor_decal/ex_act(severity)\n')[0]

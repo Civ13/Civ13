@@ -57,6 +57,13 @@ evidence only. The fixture contains 33 actual DM assertions, all unexecuted.
 
 ## Smallest proposed native packet (NOT RUN)
 
+The first native attempt (`contained-v2`, head `3ad4e0fb5`) stopped at compilation:
+`decal.dm:13:error: anchored: undefined var`. No runtime assertions ran; owned
+cleanup and the pinned daemon census passed. The corrected fixture declares
+`/atom/movable/var/anchored = FALSE`, matching `code/game/atoms_movable.dm`.
+This supplies an omitted isolated dependency; the production patch is unchanged.
+The failed packet, logs and spent single-use marker remain preserved.
+
 After a separate native allocation, use pinned BYOND 516.1681, temporary packet
 storage, no normal game startup and serial runs. Proposed limits: each compiler
 60 seconds, each daemon 15 seconds, complete packet 240 seconds including cleanup.
