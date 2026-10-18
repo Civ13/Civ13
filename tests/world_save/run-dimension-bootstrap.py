@@ -17,14 +17,14 @@ DIAGNOSTIC = re.compile(r'runtime error:|bad ref|BUG:|##\s*ERROR\s*:|RUNTIME:|as
 CASES = ('positive', 'matching', 'fractional', 'negative', 'text', 'total-cap',
          'growth-cap', 'shrink', 'horizontal', 'missing', 'marker', 'metadata',
          'generation', 'grid', 'reference', 'area', 'json', 'intent',
-         'allocation-failure', 'exact-post')
+         'allocation-failure', 'exact-post', 'budget', 'multi-budget', 'unmeasured', 'multi-unmeasured')
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
-    parser.add_argument('--negative-control', choices=('preflight',))
+    parser.add_argument('--negative-control', choices=('preflight', 'memory-admission', 'budget-hold'))
     args = parser.parse_args()
     if not args.prepare_only and not args.byond_bin:
         parser.error('--byond-bin is required for native execution')
@@ -47,6 +47,16 @@ def main():
             # following gameplay Entered/support/paired-construction procedures
             # are exercised by tests/building_levels instead of re-stubbed here.
             text = text[:text.index('/turf/sky/building/Entered')]
+        if original.name == 'world_z_budget.dm' and args.negative_control == 'memory-admission':
+            before = 'return "UNMEASURED: new levels are disabled until this map has a validated memory/headroom profile. Existing planes remain usable. Preserve saves and request a reviewed profile; no level was allocated."'
+            if text.count(before) != 1:
+                raise RuntimeError('Memory admission control requires a unique production refusal')
+            text = text.replace(before, 'return null', 1)
+        if original.name == 'functions.dm' and args.negative_control == 'budget-hold':
+            before = 'dimension_budget_hold = TRUE'
+            if text.count(before) != 1:
+                raise RuntimeError('Hold control requires one production latch')
+            text = text.replace(before, 'dimension_budget_hold = FALSE', 1)
         if original.name == 'functions.dm' and args.negative_control == 'preflight':
             before = '\t\tvar/valid = validate_world_save()'
             if text.count(before) != 1:
@@ -127,29 +137,38 @@ def main():
                 shutil.copy2(source, cwd / source.name)
         if seed:
             shutil.copytree(seed / 'map_saves', cwd / 'map_saves')
+        seed_hashes = {p.relative_to(cwd / 'map_saves').as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in (cwd / 'map_saves').rglob('*') if p.is_file()} if seed else {}
         owned(name, [str(daemon), 'dimension_bootstrap.dmb', '-invisible', '-close',
                      '-trusted', '-params', params, '-log', 'runtime.log'], cwd)
+        if name in ('budget', 'multi-budget', 'unmeasured', 'multi-unmeasured') and not args.negative_control:
+            after = {p.relative_to(cwd / 'map_saves').as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in (cwd / 'map_saves').rglob('*') if p.is_file()}
+            if any(after.get(path) != digest for path, digest in seed_hashes.items()):
+                raise RuntimeError('Admission refusal modified or removed an original generation file')
         result = (cwd / 'result.txt').read_text(encoding='utf-8').strip()
         native = json.loads((cwd / 'receipt.json').read_text(encoding='utf-8'))
+        if native.get('byond_version') != 516 or native.get('byond_build') != 1681:
+            raise RuntimeError('Pinned runtime required')
         receipt['cases'][name] = {'result': result, **native}
         persist()
         return cwd, result, native
 
     seeds = {}
-    for count in (2, 3):
+    for count in (2, 3, 4):
         cwd, result, native = run(f'write{count}', f'mode=write{count}')
-        if result != 'PASS' or native != {'checks': 2, 'maxz': count, 'allocations': 0}:
+        if result != 'PASS' or native != {'checks': 4, 'maxz': count, 'allocations': 0, 'byond_version': 516, 'byond_build': 1681}:
             raise RuntimeError(f'Writer did not produce the intended generation: {result}, {native}')
         seeds[count] = cwd
-    selected = ('missing',) if args.negative_control else CASES
+    selected = ('missing',) if args.negative_control == 'preflight' else ('unmeasured',) if args.negative_control else CASES
     for case in selected:
-        cwd, result, native = run(case, f'mode=read;case={case}', seeds[2 if case == 'matching' else 3])
-        expected = 'FAIL: rejected save allocated levels' if args.negative_control else 'PASS'
+        cwd, result, native = run(case, f'mode=read;case={case}', seeds[2 if case == 'matching' else 4 if case in ('multi-budget', 'multi-unmeasured') else 3])
+        expected = {'preflight': 'FAIL: rejected save allocated levels', 'memory-admission': 'FAIL: unmeasured saved target accepted', 'budget-hold': 'FAIL: admission denial did not retain non-allocation recovery hold'}.get(args.negative_control, 'PASS')
         if result != expected:
             raise RuntimeError(f'Unexpected {case} result: {result!r}; expected {expected!r}')
         if args.negative_control:
-            if native['allocations'] != 1 or native['maxz'] != 3:
-                raise RuntimeError('Preflight control failed for an unrelated reason')
+            control_allocations = 0 if args.negative_control == 'budget-hold' else 1
+            control_z = 2 if args.negative_control == 'budget-hold' else 3
+            if native['allocations'] != control_allocations or native['maxz'] != control_z:
+                raise RuntimeError('Control failed for an unrelated allocation outcome')
         else:
             expected_allocations = int(case in ('positive', 'allocation-failure', 'exact-post'))
             expected_z = 3 if expected_allocations else 2

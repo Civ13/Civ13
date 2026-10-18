@@ -155,7 +155,9 @@ def main():
             probe = probe[:probe.index('/world/New()')] + lighting_probe.read_text(encoding='utf-8')
             receipt['lighting_probe_hash'] = hashlib.sha256(lighting_probe.read_bytes()).hexdigest()
         if args.dimension_bootstrap:
-            probe = probe[:probe.index('/world/New()')] + (root / 'tests/world_save/durable_dimension_probe.dm').read_text(encoding='utf-8')
+            adapter = root / 'tests/new_z_budget/fixture_admission.dm'
+            probe = adapter.read_text(encoding='utf-8') + '\n' + probe[:probe.index('/world/New()')] + (root / 'tests/world_save/durable_dimension_probe.dm').read_text(encoding='utf-8')
+            receipt['fixture_admission_hash'] = hashlib.sha256(adapter.read_bytes()).hexdigest()
         if args.recovery_reconnect:
             probe = probe[:probe.index('/world/New()')] + (root / 'tests/world_save/recovery_reconnect_probe.dm').read_text(encoding='utf-8')
         if args.lifecycle_shutdown:
@@ -205,7 +207,8 @@ def main():
             # Both use the identical compiled two-level DMB. Only disk files
             # survive from the writer to the fresh reader process.
             # Include operation admission, nested-call rejection and release.
-            for mode, minimum_checks in (('write', 6), ('read', 15)):
+            for mode, minimum_checks in (('write', 6), ('unmeasured', 7), ('read', 15)):
+                before_files = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in (output / 'map_saves').iterdir() if p.is_file()} if mode == 'unmeasured' else {}
                 run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-trusted',
                     '-params', f'profile={args.profile};dimension_mode={mode}', '-log', f'{mode}-runtime.log'],
                     cwd=output, capture_output=True, text=True, timeout=120, creationflags=flags)
@@ -214,6 +217,14 @@ def main():
                 diagnostics = log + run.stdout + run.stderr
                 if run.returncode or re.search(r'##\s*error\s*:|unexpected runtime|bad ref|runtime error:|infinite loop|fatal error|segmentation|assertion failed', diagnostics, re.I):
                     raise RuntimeError(f'Expanded {mode} native diagnostics invalidated evidence')
+                if mode == 'unmeasured':
+                    after_files = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in (output / 'map_saves').iterdir() if p.is_file()}
+                    if any(after_files.get(path) != digest for path, digest in before_files.items()):
+                        raise RuntimeError('Unmeasured recovery modified original generation bytes')
+                    # The next independent reader tests accepted fixture admission.
+                    # Keep the refused intent as evidence and remove only this test copy.
+                    shutil.copy2(output / 'map_saves/restart_intent.json', output / 'held-restart-intent.json')
+                    (output / 'map_saves/restart_intent.json').unlink()
                 result = json.loads((output / 'metadata-result.json').read_text(encoding='utf-8'))
                 (output / f'{mode}-result.json').write_text(json.dumps(result, indent=2), encoding='utf-8')
                 receipt[mode] = result

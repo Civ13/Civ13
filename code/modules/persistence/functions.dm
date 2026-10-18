@@ -242,7 +242,7 @@ var/global/persistence_load_recovery_required = FALSE
 // One admission point for verbs, automatic saves, lifecycle recovery and direct
 // lower-level calls. The identity, not the legacy busy flag, owns release.
 /proc/begin_persistence_operation(map_storage/storage, kind, datum/persistence_restart_transaction/transaction)
-	if(!storage || !(kind in list("save", "load")) || persistence_active_operation || persistence_load_recovery_required || storage.dimension_recovery_required)
+	if(!storage || !(kind in list("save", "load")) || persistence_active_operation || persistence_load_recovery_required || storage.dimension_recovery_required || storage.dimension_budget_hold || world_z_budget.active)
 		return null
 	if(transaction && transaction != persistence_restart) return null
 	var/restart_owner = transaction == persistence_restart && transaction
@@ -280,7 +280,7 @@ var/global/persistence_load_recovery_required = FALSE
 		if(!success && kind == "load" && mutation_started)
 			persistence_load_recovery_required = TRUE
 		persistence_active_operation = null
-		persistence_save_in_progress = persistence_load_recovery_required || storage.dimension_recovery_required || persistence_restart.startup_hold
+		persistence_save_in_progress = persistence_load_recovery_required || storage.dimension_recovery_required || storage.dimension_budget_hold || persistence_restart.startup_hold
 		return TRUE
 
 // Direct calls acquire their own operation. A wrapper explicitly passes its
@@ -320,9 +320,12 @@ var/global/persistence_load_recovery_required = FALSE
 	var/validation_maxz = 0
 	var/dimension_bootstrap_busy = FALSE
 	var/dimension_recovery_required = FALSE
+	var/dimension_budget_hold = FALSE
+	var/datum/new_z_reservation/dimension_reservation
 
 /map_storage/proc/record_compiled_dimensions()
 	if(!compiled_maxz) compiled_maxz = building_base_maxz()
+	world_z_budget.record_compiled_dimensions()
 
 /map_storage/proc/save_validation_maxz()
 	return validation_maxz ? validation_maxz : world.maxz
@@ -644,9 +647,13 @@ var/global/persistence_load_recovery_required = FALSE
 	return z
 
 /map_storage/proc/allocate_saved_level(target_z)
-	return building_allocate_level(target_z, TRUE)
+	return building_allocate_level(target_z, TRUE, dimension_reservation)
 
 /map_storage/proc/prepare_saved_dimensions(list/expected_intent)
+	if(dimension_budget_hold)
+		// Admission failed before native growth. Preserve its original diagnostic;
+		// never let a failed automatic import later overwrite the saved world.
+		return FALSE
 	if(dimension_recovery_required)
 		last_error = "Saved level allocation previously failed; restart from the original map before retrying"
 		return FALSE
@@ -662,6 +669,11 @@ var/global/persistence_load_recovery_required = FALSE
 		if(target_z == world.maxz)
 			dimension_bootstrap_busy = FALSE
 			return TRUE
+		// Reserve the complete target before validation yields or any native growth.
+		dimension_reservation = world_z_budget.reserve(target_z, "restore")
+		if(!dimension_reservation)
+			dimension_budget_hold = TRUE
+			throw EXCEPTION("Saved world held without resizing or modifying files: [world_z_budget.last_error]")
 		validation_maxz = target_z
 		var/valid = validate_world_save()
 		validation_maxz = 0
@@ -674,10 +686,15 @@ var/global/persistence_load_recovery_required = FALSE
 				throw EXCEPTION("Saved level allocation failed; preserve files and restart before retrying")
 		if(!validate_world_save())
 			throw EXCEPTION("Allocated saved world failed exact validation: [last_error]")
+		if(!world_z_budget.finish(dimension_reservation, TRUE))
+			throw EXCEPTION("Saved level reservation could not complete; restart recovery")
+		dimension_reservation = null
 		dimension_recovery_required = FALSE
 		dimension_bootstrap_busy = FALSE
 		return TRUE
 	catch(var/exception/e)
+		world_z_budget.finish(dimension_reservation, FALSE)
+		dimension_reservation = null
 		validation_maxz = 0
 		dimension_bootstrap_busy = FALSE
 		release_durable_world()

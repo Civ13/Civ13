@@ -33,6 +33,7 @@ var/checks = 0
 	return ..("none")
 /proc/dimension_write()
 	if(world.params["mode"] == "write3") world.maxz = 3
+	if(world.params["mode"] == "write4") world.maxz = 4
 	var/turf/upper = locate(8, 6, world.maxz)
 	upper.name = "saved upper corner"
 	var/obj/item/dimension_test/A = new(locate(1, 1, 1))
@@ -76,7 +77,9 @@ var/checks = 0
 		text2file(json_encode(R), "map_saves/round.json")
 /proc/dimension_read()
 	var/case_name = world.params["case"]
-	if(case_name != "positive" && case_name != "matching") dimension_mutate(case_name)
+	if(!(case_name in list("positive", "matching", "budget", "multi-budget", "unmeasured", "multi-unmeasured"))) dimension_mutate(case_name)
+	if(case_name == "budget") world_z_budget.configure("new_z_cell_budget", "100")
+	if(case_name == "multi-budget") world_z_budget.configure("new_z_cell_budget", "150")
 	var/marker = file2text("map_saves/save_complete.txt")
 	var/round_hash = md5(file2text("map_saves/round.json"))
 	var/turf/original = locate(8, 6, 2)
@@ -87,21 +90,35 @@ var/checks = 0
 	check(operation && operation.current(map_storage, "load"), "dimension import admission failed")
 	var/list/intent
 	if(case_name == "intent") intent = list("generation" = "round-v1:other", "metadata" = "wrong", "round" = "wrong")
+	var/intent_snapshot
+	if(case_name in list("budget", "multi-budget", "unmeasured", "multi-unmeasured"))
+		intent = list("version" = 1, "generation" = trim(marker), "metadata" = md5(file2text("map_saves/map.txt")), "round" = round_hash)
+		text2file(json_encode(intent), "map_saves/restart_intent.json")
+		intent_snapshot = file2text("map_saves/restart_intent.json")
 	var/accepted = map_storage.prepare_saved_dimensions(intent)
 	check(!map_storage.validation_maxz && !map_storage.dimension_bootstrap_busy, "validation context leaked")
 	check(file2text("map_saves/save_complete.txt") == marker && md5(file2text("map_saves/round.json")) == round_hash, "bootstrap changed generation files")
 	if(case_name == "allocation-failure" || case_name == "exact-post")
 		check(!accepted && world.maxz == 3 && allocation_calls == 1 && map_storage.dimension_recovery_required, "allocation failure did not impose restart latch")
+		check(world_z_budget.active && world_z_budget.active.failed, "failed allocation released its reservation")
 		check(!map_storage.prepare_saved_dimensions() && allocation_calls == 1, "failed allocation retried in process")
 		check(operation.finish(FALSE) && !persistence_active_operation && persistence_save_in_progress, "failed allocation lost recovery admission latch")
 		check(!map_storage.Save_World() && map_storage.dimension_recovery_required && file2text("map_saves/save_complete.txt") == marker, "failed allocation allowed save overwrite")
 		check(locate(8, 6, 2) == original && sentinel.loc == original && sentinel.number == 77, "allocation failure changed mapped world")
 		return
 	if(case_name != "positive" && case_name != "matching")
-		check(!accepted, "malformed save accepted")
+		if(case_name == "unmeasured" || case_name == "multi-unmeasured")
+			check(!accepted, "unmeasured saved target accepted")
+			check(findtext(map_storage.last_error, "UNMEASURED:") > 0, "unmeasured refusal diagnostic missing")
+		else
+			check(!accepted, "malformed save accepted")
 		check(world.maxz == 2 && allocation_calls == 0, "rejected save allocated levels")
 		check(locate(8, 6, 2) == original && original.name == "live sentinel" && sentinel.loc == original && sentinel.number == 77, "rejected save mutated live world")
 		operation.finish(FALSE)
+		if(case_name in list("budget", "multi-budget", "unmeasured", "multi-unmeasured"))
+			check(file2text("map_saves/restart_intent.json") == intent_snapshot, "admission refusal changed restart intent")
+			check(map_storage.dimension_budget_hold && persistence_save_in_progress && !map_storage.dimension_recovery_required, "admission denial did not retain non-allocation recovery hold")
+			check(!map_storage.Save_World() && file2text("map_saves/save_complete.txt") == marker && md5(file2text("map_saves/round.json")) == round_hash, "admission hold allowed save overwrite")
 		return
 	check(accepted, "bootstrap rejected valid save: [map_storage.last_error]")
 	check(world.maxz == (case_name == "matching" ? 2 : 3), "saved dimensions not allocated")
@@ -122,17 +139,21 @@ var/checks = 0
 /world/New()
 	OpenPort("none")
 	..()
+	if(!(world.params["case"] in list("matching", "budget", "multi-budget", "unmeasured", "multi-unmeasured")))
+		world_z_budget = new /datum/world_z_budget/fixture_admission
 	map_storage = new /map_storage/dimension_fixture("SS13")
 	map_storage.record_compiled_dimensions()
 	map = new /obj/map_metadata(locate(1, 1, 1))
 	ticker = new
 	try
-		if(world.params["mode"] == "write3" || world.params["mode"] == "write2")
+		check(world.byond_version == 516 && world.byond_build == 1681, "pinned native runtime")
+		check(!world.port, "native port closed")
+		if(world.params["mode"] == "write3" || world.params["mode"] == "write2" || world.params["mode"] == "write4")
 			dimension_write()
 		else
 			dimension_read()
 		text2file("PASS", "result.txt")
 	catch(var/exception/e)
 		text2file("FAIL: [e]", "result.txt")
-	text2file(json_encode(list("checks" = checks, "maxz" = world.maxz, "allocations" = allocation_calls)), "receipt.json")
+	text2file(json_encode(list("checks" = checks, "maxz" = world.maxz, "allocations" = allocation_calls, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "receipt.json")
 	shutdown()

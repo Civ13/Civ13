@@ -518,6 +518,30 @@ jobs:
           name: yeast-bread-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/yeast-bread/
           retention-days: 7
+      - name: Verify centralized z admission and unmeasured controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/new_z_budget') || inputs.persistence_integration_regressions == true
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/new-z-budget"
+          export TMPDIR="$RUNNER_TEMP/new-z-budget"
+          python3 -m unittest discover -s tests/new_z_budget -p 'test_*.py' -v
+          python3 tests/new_z_budget/run.py --byond-bin "$PWD/BYOND/byond/bin" --expected-commit "${{ github.event.pull_request.head.sha || github.sha }}" --output "$RUNNER_TEMP/new-z-budget/positive"
+          for control in memory-admission cell-limit roof-ceiling; do
+            python3 tests/new_z_budget/run.py --byond-bin "$PWD/BYOND/byond/bin" --expected-commit "${{ github.event.pull_request.head.sha || github.sha }}" --control "$control" --output "$RUNNER_TEMP/new-z-budget/$control"
+          done
+          python3 tests/world_save/run-dimension-bootstrap.py --byond-bin "$PWD/BYOND/byond/bin"
+          for control in memory-admission budget-hold; do
+            python3 tests/world_save/run-dimension-bootstrap.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
+          python3 tests/world_save/run-durable-world.py --dimension-bootstrap --profile europe --byond-bin "$PWD/BYOND/byond/bin"
+      - name: Upload z admission evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/new_z_budget') || inputs.persistence_integration_regressions == true)
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: new-z-budget-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/new-z-budget/
+          retention-days: 7
       - name: Verify linked building levels and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/building_levels') || inputs.persistence_integration_regressions == true
         shell: bash
