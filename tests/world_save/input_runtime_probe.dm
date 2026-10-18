@@ -67,9 +67,9 @@
 	check(R.next_click == live_deadline && !R.may_do_after && !R.may_do_mob, "replacement import reset live action state")
 	// Unversioned flat entries use the same exclusion, before legacy decoding.
 	var/savefile/L = new("input-legacy.sav")
-	L["/1/type"] << /mob/living/human
+	L["/entries/1/type"] << /mob/living/human
 	for(var/key in fields)
-		L["/1/[key]"] << stale[key]
+		L["/entries/1/[key]"] << stale[key]
 	map_storage.clear_bookkeeping()
 	var/mob/living/human/legacy = map_storage.Load_Entry(L, 1, starting_loc = locate(4,2,1))
 	for(var/key in fields)
