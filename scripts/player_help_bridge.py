@@ -329,6 +329,107 @@ def network(endpoint, payload, headers, timeout):
     return json.loads(result.stdout)
 
 
+def render_format(request):
+    """Snapshot the caller's explicit display contract, never infer from text."""
+    if 'render_contract' not in request:
+        return 'plain-v1'
+    contract = request['render_contract']
+    if (not isinstance(contract, dict) or set(contract) != {'version', 'capabilities'} or
+            type(contract['version']) is not int or contract['version'] != 1):
+        raise ValueError('Unsupported render contract')
+    caps = contract['capabilities']
+    if (not isinstance(caps, list) or len(caps) > 1 or
+            any(type(cap) is not str or cap != 'markdown-basic-v1' for cap in caps)):
+        raise ValueError('Unsupported render capability')
+    return 'markdown-basic-v1' if caps else 'plain-v1'
+
+
+def plain_inline(text, depth=0):
+    """Bounded conservative projection. Unmatched/unsupported syntax is literal."""
+    if depth >= 8:
+        return text
+    output, i = [], 0
+    while i < len(text):
+        if text[i] == '\\' and i + 1 < len(text) and text[i + 1] in r'\`*_{}[]()#+-.!>':
+            output.append(text[i + 1])
+            i += 2
+            continue
+        if text[i] == '`':
+            end_run = i + 1
+            while end_run < len(text) and text[end_run] == '`':
+                end_run += 1
+            marker = text[i:end_run]
+            end = text.find(marker, end_run)
+            while end >= 0 and ((end and text[end - 1] == '`') or
+                                (end + len(marker) < len(text) and text[end + len(marker)] == '`')):
+                end = text.find(marker, end + len(marker))
+            if end >= 0:
+                output.append(text[end_run:end])
+                i = end + len(marker)
+                continue
+        if text[i] == '[' and (i == 0 or text[i - 1] != '!'):
+            label_end = text.find('](', i + 1)
+            if label_end >= 0:
+                start, cursor, balance = label_end + 2, label_end + 2, 1
+                while cursor < len(text) and balance:
+                    balance += (text[cursor] == '(') - (text[cursor] == ')')
+                    cursor += 1
+                url = text[start:cursor - 1]
+                if (not balance and re.match(r'^https?://', url, re.I) and
+                        not any(ord(c) <= 32 or c in '\\"<>\'' for c in url)):
+                    output.append(plain_inline(text[i + 1:label_end], depth + 1) + ' (' + url + ')')
+                    i = cursor
+                    continue
+        matched = False
+        for marker in ('***', '___', '**', '__', '*', '_'):
+            if not text.startswith(marker, i):
+                continue
+            # Underscores inside identifiers are not emphasis.
+            if marker[0] == '_' and i and text[i - 1].isalnum():
+                continue
+            start = i + len(marker)
+            end = text.find(marker, start)
+            while end >= 0:
+                backslashes, cursor = 0, end - 1
+                while cursor >= 0 and text[cursor] == '\\':
+                    backslashes += 1
+                    cursor -= 1
+                if backslashes % 2 == 0:
+                    break
+                end = text.find(marker, end + len(marker))
+            if end > start and not text[start].isspace() and not text[end - 1].isspace():
+                if marker[0] == '_' and end + len(marker) < len(text) and text[end + len(marker)].isalnum():
+                    continue
+                output.append(plain_inline(text[start:end], depth + 1))
+                i = end + len(marker)
+                matched = True
+                break
+        if not matched:
+            output.append(text[i])
+            i += 1
+    return ''.join(output)
+
+
+def plain_answer(answer):
+    lines = answer.replace('\r\n', '\n').replace('\r', '\n').split('\n')
+    output, i = [], 0
+    while i < len(lines):
+        fence = re.fullmatch(r' {0,3}(`{3,}|~{3,})[^`]*', lines[i])
+        if fence:
+            marker = fence[1]
+            end = i + 1
+            while end < len(lines) and not re.fullmatch(r' {0,3}' + re.escape(marker[0]) + '{' + str(len(marker)) + r',}\s*', lines[end]):
+                end += 1
+            if end < len(lines):
+                output.extend(lines[i + 1:end])
+                i = end + 1
+                continue
+        line = re.sub(r'^ {0,3}#{1,6}[ \t]+', '', lines[i])
+        output.append(plain_inline(line))
+        i += 1
+    return '\n'.join(output)
+
+
 class Bridge:
     def __init__(self, root, config, corpus, transport=network):
         self.root, self.config, self.corpus, self.transport = root, config, corpus, transport
@@ -342,6 +443,13 @@ class Bridge:
         (self.lock / 'pid').write_text(str(os.getpid()), encoding='ascii')
 
     def answer(self, request):
+        try:
+            selected_format = render_format(request)
+        except ValueError:
+            return {'id': request.get('id'), 'status': 'unavailable'}
+        return self.answer_selected(request, selected_format)
+
+    def answer_selected(self, request, selected_format):
         # This boundary also protects direct calls, not just spool/UI submissions.
         account, question = request.get('account'), request.get('question')
         if (not self.config['enabled'] or not isinstance(account, str) or
@@ -352,11 +460,11 @@ class Bridge:
         if status:
             return {'id': request['id'], 'status': status, 'retry_seconds': retry}
         try:
-            return self._answer(request)
+            return self._answer(request, selected_format)
         finally:
             self.limiter.release(account)
 
-    def _answer(self, request):
+    def _answer(self, request, selected_format):
         question = request['question']
         words = set(re.findall(r'[a-z]{3,}', question.lower()))
         words -= {'how', 'the', 'get', 'craft', 'can', 'make', 'with', 'and', 'nomads', 'gaia'}
@@ -390,7 +498,18 @@ class Bridge:
             answer = reply.get('message', {}).get('content')
             if not isinstance(answer, str) or not answer.strip():
                 raise ValueError('Missing answer')
-            return {'id': request['id'], 'status': 'ok', 'answer': answer[:4000]}
+            answer.encode('utf-8', errors='strict')
+            # The raw string is ephemeral. Persist only this single display value.
+            answer = answer[:4000]
+            if selected_format == 'plain-v1':
+                answer = plain_answer(answer)
+            if not answer.strip():
+                raise ValueError('Empty display response')
+            result = {'id': request['id'], 'status': 'ok', 'answer': answer,
+                      'render_protocol': 1, 'answer_format': selected_format}
+            if len(answer) > 4000 or len(json.dumps(result, ensure_ascii=True).encode('ascii')) > 24000:
+                raise ValueError('Oversized display response')
+            return result
         except Exception:
             # Never expose endpoint, headers, credentials, raw response or exception to player/log.
             return {'id': request['id'], 'status': 'unavailable'}
@@ -430,7 +549,12 @@ class Bridge:
                     continue
             except (OSError, ValueError):
                 continue
-            self.active[slot] = (request['id'], self.executor.submit(self.answer, request))
+            try:
+                selected_format = render_format(request)
+            except ValueError:
+                atomic_json(response, {'id': request['id'], 'status': 'unavailable'})
+                continue
+            self.active[slot] = (request['id'], self.executor.submit(self.answer_selected, request, selected_format))
 
     def close(self):
         if not self.running and not self.lock.exists():

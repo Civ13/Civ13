@@ -1,5 +1,12 @@
 # Optional gameplay help checks
 
+`test_render_protocol.py` uses injected transports to check old/new/rollback
+capabilities, admission before quota, immutable asynchronous format selection,
+literal plaintext/code/URL preservation and complete serialized response bounds
+(ASCII, CJK, non-BMP and malformed Unicode). The native fixture additionally checks
+response metadata validation and verbatim escaped plaintext. Offline tests do not
+prove a worker was installed or a native Help dialog was opened.
+
 `run.py` also executes `render-cases.json` through the actual production
 `render_answer()` and Markdown helpers. Cases cover the reported winter-help
 bullet/bold answer, headings, numbered/indented lists, paragraphs and CRLF,

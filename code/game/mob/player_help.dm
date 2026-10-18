@@ -223,6 +223,7 @@ var/global/datum/player_help_service/player_help_service = new
 	serial++
 	var/id = "[world.realtime]-[rand(1, 999999)]-[serial]"
 	var/list/request = list("id" = id, "account" = account, "question" = question, "game_context" = game_context(C ? C.mob : null))
+	request["render_contract"] = list("version" = 1, "capabilities" = list("markdown-basic-v1"))
 	fdel("[root][slot].ready")
 	fdel("[root][slot].request.json")
 	fdel("[root][slot].response.json")
@@ -247,8 +248,9 @@ var/global/datum/player_help_service/player_help_service = new
 			C = null
 		var/list/response = matching_response(i, entry["id"])
 		if (islist(response))
-			if (C && response["status"] == "ok" && istext(response["answer"]) && length(response["answer"]) <= 4000)
-				C << browse(render_answer(response["answer"]), "window=player_help;size=600x500")
+			var/answer_format = response_format(response)
+			if (C && answer_format && response["status"] == "ok" && istext(response["answer"]) && length(response["answer"]) <= 4000)
+				C << browse(render_answer(response["answer"], answer_format), "window=player_help;size=600x500")
 			else if (C && response["status"] == "rate_limited")
 				C << "AI gameplay help rate limit reached. Please wait [max(1, min(86400, text2num("[response["retry_seconds"]]")))] seconds and try again."
 			else if (C && (response["status"] == "busy" || response["status"] == "pending"))
@@ -261,8 +263,27 @@ var/global/datum/player_help_service/player_help_service = new
 				C << "AI gameplay help timed out without a response. Please try again later or use the Crafting Atlas."
 			clear_slot(i)
 
-/datum/player_help_service/proc/render_answer(answer)
-	return "<html><body><h2>AI gameplay help</h2><p>AI answers can be mistaken. Verify recipes in the Crafting Atlas.</p>[markdown_answer(answer)]<p><a href='https://civ13.github.io/civ13-wiki/'>Player wiki</a> | <a href='https://civ13.github.io/Civ13/crafting/'>Crafting Atlas</a></p></body></html>"
+/datum/player_help_service/proc/response_format(list/response)
+	// Missing both keys is the old worker protocol. Partial/null metadata fails closed.
+	if (!("render_protocol" in response) && !("answer_format" in response))
+		return "markdown-basic-v1"
+	if (response["render_protocol"] != 1)
+		return null
+	if (response["answer_format"] == "plain-v1" || response["answer_format"] == "markdown-basic-v1")
+		return response["answer_format"]
+	return null
+
+/datum/player_help_service/proc/render_answer(answer, answer_format = "markdown-basic-v1")
+	if (!istext(answer) || length(answer) > 4000)
+		answer = "AI gameplay help did not receive a usable response."
+	var/body
+	if (answer_format == "plain-v1")
+		body = "<pre style='white-space:pre-wrap'>[html_encode(answer)]</pre>"
+	else if (answer_format == "markdown-basic-v1")
+		body = markdown_answer(answer)
+	else
+		return null
+	return "<html><body><h2>AI gameplay help</h2><p>AI answers can be mistaken. Verify recipes in the Crafting Atlas.</p>[body]<p><a href='https://civ13.github.io/civ13-wiki/'>Player wiki</a> | <a href='https://civ13.github.io/Civ13/crafting/'>Crafting Atlas</a></p></body></html>"
 
 // Bounded display subset of CommonMark 0.31.2, not an HTML trust boundary
 // delegated to the model. Only these routines generate answer markup.

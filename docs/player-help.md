@@ -178,6 +178,45 @@ receive developer tools. Do not expose MCP credentials to the worker.
 
 ## Verification
 
+### Worker and renderer compatibility
+
+Updated servers attach `render_contract: {"version":1,"capabilities":["markdown-basic-v1"]}`
+to each question. The worker snapshots this capability before asynchronous dispatch.
+Missing capabilities (older servers), or version 1 with an empty capability list,
+select `plain-v1`. Unsupported versions, unknown/duplicate capabilities and malformed
+contracts return unavailable before consuming model quota or contacting the model.
+There is no inference from server revision, map or answer text.
+
+Successful responses contain one `answer` plus `render_protocol: 1` and
+`answer_format: "plain-v1"` or `"markdown-basic-v1"`. An updated server accepts
+old-worker responses only when both metadata keys are absent. Partial, null or
+unknown metadata fails closed. Plaintext is HTML-escaped verbatim in a preformatted
+block, so literal Markdown is never parsed a second time. Markdown uses the bounded
+renderer described above. An older server ignores the additional metadata and
+displays the worker's readable plaintext through its existing escaped block.
+
+Plaintext cleanup removes matched basic headings, emphasis, inline code and fenced
+code markers, preserves code contents and bullet/number prefixes, and expands
+HTTP/HTTPS links as `label (URL)`. Raw HTML remains literal text. Unmatched and
+unsupported syntax is conservatively retained; this is not full CommonMark.
+The raw model answer exists only ephemerally before projection. Only the chosen
+display answer is written to the spool, with the existing 4000-character limit.
+The entire ASCII-escaped JSON response, including ID and metadata, must also fit
+24000 bytes. Oversized or malformed Unicode responses return unavailable.
+
+A worker-only update can provide this plaintext cleanup without restarting an
+older game host. Full Markdown requires the updated compiled game and a later
+authorized host restart. During a managed worker replacement Help is temporarily
+unavailable: gracefully stop the manager, drain active requests, and preserve
+queued request files until ordinary game consumption or timeout clears all eight
+slots. The worker limiter is in memory, so wait a full maximum configured cooldown,
+burst, account-window and global-window interval after the old worker's final
+completion before replacement. Do not reset manager attempts, replay requests,
+inject spool files or clear queued work. Verify empty slots before startup because
+the current worker clears slots at startup. Preserve the same manager record and
+run identity; the replacement consumes the next existing attempt. This procedure
+does not restart the game or change its credentials or network configuration.
+
 ```sh
 python3 -m unittest discover -s tests/player_help -v
 python3 tests/player_help/run.py --byond-bin /path/to/byond/bin
