@@ -6,7 +6,8 @@ from types import SimpleNamespace
 
 
 class ProcessIds(c.Structure):
-    _fields_ = [('assigned', w.DWORD), ('count', w.DWORD), ('pids', c.c_size_t * 32)]
+    # Win32 DWORD is always 32 bits, including when pure tests run on LP64 Linux.
+    _fields_ = [('assigned', c.c_uint32), ('count', c.c_uint32), ('pids', c.c_size_t * 32)]
 
 
 def require(value, message):
@@ -25,7 +26,7 @@ def validate_members(value, child_pid=None):
 
 
 def query_members(adapter):
-    value, length = ProcessIds(), w.DWORD()
+    value, length = ProcessIds(), c.c_uint32()
     adapter.check(adapter.k.QueryInformationJobObject(adapter.job, 3, c.byref(value),
                                                      c.sizeof(value), c.byref(length)))
     require(value.assigned == value.count and value.count <= 32

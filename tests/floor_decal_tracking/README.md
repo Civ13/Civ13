@@ -107,6 +107,9 @@ hidden startup settings and the explicit standard-handle allowlist. See the
 This aims to avoid creating a console host; it does not permit extra Job members.
 There is no visible-console alternative or automatic flag fallback. Compiler
 logs and all process/resource guards remain mandatory.
+Job PID-list counts use explicit 32-bit integers, preserving the Win32 DWORD
+layout when pure offline checks run on Linux. The pointer-sized PID array keeps
+the host pointer width; tests assert the exact eight-byte counts header.
 
 After a separate native allocation, use pinned BYOND 516.1681, temporary packet
 storage, no normal game startup and serial runs. Proposed limits: each compiler

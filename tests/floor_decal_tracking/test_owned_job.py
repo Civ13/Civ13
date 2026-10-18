@@ -120,6 +120,8 @@ class OwnedJobTests(unittest.TestCase):
 
     def test_query_layout_and_exact_return_length(self):
         self.assertEqual(ProcessIds.pids.offset, 8)
+        self.assertEqual(c.sizeof(ProcessIds._fields_[0][1]), 4)
+        self.assertEqual(c.sizeof(ProcessIds._fields_[1][1]), 4)
         for assigned, count, length, ok in ((0, 0, 8, True), (1, 1, 8 + c.sizeof(c.c_size_t), True),
                                            (33, 33, c.sizeof(ProcessIds), False),
                                            (2, 1, c.sizeof(ProcessIds), False), (1, 1, 8, False)):
@@ -127,7 +129,7 @@ class OwnedJobTests(unittest.TestCase):
                 self.assertEqual(kind, 3)
                 value = c.cast(raw, c.POINTER(ProcessIds)).contents
                 value.assigned, value.count, value.pids[0] = assigned, count, 7
-                c.cast(returned, c.POINTER(w.DWORD)).contents.value = length
+                c.cast(returned, c.POINTER(c.c_uint32)).contents.value = length
                 return True
             adapter = SimpleNamespace(job=1, k=SimpleNamespace(QueryInformationJobObject=query),
                                       check=lambda value: None)
