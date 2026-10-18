@@ -72,7 +72,9 @@ def verdict(log, expected, control):
 
 def compiler_verdict(log):
     require(not DIAGNOSTIC.search(log), 'Compiler diagnostic invalidates evidence')
-    require('DM compiler version 516.1681' in log and '- 0 errors, 0 warnings' in log,
+    banners = re.findall(r'^DM compiler version[^\r\n]*', log, re.M)
+    require(len(banners) == 1 and re.fullmatch(r'DM compiler version 516\.1681[ \t]*', banners[0])
+            and '- 0 errors, 0 warnings' in log,
             'Compiler banner/result mismatch')
 
 

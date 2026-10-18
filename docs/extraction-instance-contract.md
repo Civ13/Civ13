@@ -101,6 +101,8 @@ false. Review the actual complete failure set against the single injected change
 before approving a successor oracle. Diagnostic, compiler, process, timeout and missing-result failures
 invalidate evidence. Synthetic oracle tests verify rejection logic only; they
 do not establish that either mutated DM program has run.
+Compiler admission requires exactly one complete `516.1681` version banner;
+longer version numbers, suffixes and duplicate banners fail closed.
 
 Each compiler has 60 seconds wall time, 30 CPU seconds and 1 GiB address space;
 each daemon has 30 seconds wall time, 15 CPU seconds and 128 MiB address space.
@@ -129,6 +131,8 @@ offline test does not fetch or verify another checkout's present state.
 West origin `[72,72,5]` projects through `[101,173,8]`; east origin `[130,72,5]`
 projects through `[159,173,8]`. Each has four decks and 12,240 cells, fits its
 reserved clearance and world bounds, and does not overlap the other destination.
+Padded clearance rectangles must also be disjoint when their deck-z intervals
+overlap; disjoint footprints alone do not establish berth clearance.
 Template revision 1 remains distinct from manifest schema 2. Malformed revision,
 deck order, coordinates, clearance and overlap fail without changing the inputs.
 The map's example home placements do not define production home privacy.

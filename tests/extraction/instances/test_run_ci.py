@@ -111,6 +111,19 @@ class RunnerContracts(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'banner/result'):
                 runner.compiler_verdict(log)
 
+    def test_compiler_version_banner_is_complete_unique_and_exact(self):
+        summary = '\nprobe.dmb - 0 errors, 0 warnings\n'
+        for version in ('516.16810', '516.16811', '516.1682', '1516.1681',
+                        '516.1681.0', '516.1681-beta', '516.1681extra', ''):
+            with self.subTest(version=version), self.assertRaisesRegex(ValueError, 'banner/result'):
+                runner.compiler_verdict('DM compiler version ' + version + summary)
+        for banner in ('prefix DM compiler version 516.1681',
+                       'DM compiler version 516.1681\nDM compiler version 516.16810',
+                       'DM compiler version 516.1681\nDM compiler version 516.1681'):
+            with self.assertRaisesRegex(ValueError, 'banner/result'):
+                runner.compiler_verdict(banner + summary)
+        runner.compiler_verdict('DM compiler version 516.1681\r\n' + summary)
+
     def test_control_anchors_are_unique_and_source_is_detached(self):
         source = (runner.ROOT / runner.SOURCE).read_text(encoding='utf-8')
         self.assertEqual(runner.mutation(source, 'baseline'), source)

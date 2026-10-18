@@ -57,4 +57,8 @@ def validate(layout, template):
     need(a['end'][0] < b['origin'][0] or b['end'][0] < a['origin'][0] or
          a['end'][1] < b['origin'][1] or b['end'][1] < a['origin'][1] or
          a['end'][2] < b['origin'][2] or b['end'][2] < a['origin'][2], 'Destination footprints overlap')
+    west, east = (slot['reserved_bounds'] for slot in berths)
+    need(a['end'][2] < b['origin'][2] or b['end'][2] < a['origin'][2] or
+         west[2] < east[0] or east[2] < west[0] or
+         west[3] < east[1] or east[3] < west[1], 'Destination reserved clearances overlap')
     return copy.deepcopy({'template': template, 'destination_projections': projections})

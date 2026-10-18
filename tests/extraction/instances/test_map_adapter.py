@@ -66,6 +66,24 @@ class MapABIContract(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'within world'):
             adapter.validate(layout, self.template)
 
+    def test_padded_clearance_overlap_rejected_without_mutating_inputs(self):
+        for right_edge in (124, 130):
+            layout = copy.deepcopy(self.layout)
+            layout['raid_berths'][0]['reserved_bounds'][2] = right_edge
+            before = copy.deepcopy((layout, self.template))
+            with self.subTest(right_edge=right_edge), self.assertRaisesRegex(ValueError, 'reserved clearances overlap'):
+                adapter.validate(layout, self.template)
+            self.assertEqual((layout, self.template), before)
+
+    def test_same_clearance_xy_is_allowed_on_disjoint_deck_intervals(self):
+        layout = copy.deepcopy(self.layout)
+        layout['world']['levels'] = 12
+        layout['raid_berths'][0]['reserved_bounds'][2] = 130
+        layout['raid_berths'][1]['origin'][2] = 9
+        result = adapter.validate(layout, self.template)
+        self.assertEqual([p['deck_z'] for p in result['destination_projections']],
+                         [[5, 6, 7, 8], [9, 10, 11, 12]])
+
 
 if __name__ == '__main__':
     unittest.main()
