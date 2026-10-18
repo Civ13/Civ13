@@ -56,7 +56,9 @@ class CompileCheck(unittest.TestCase):
             return stream.getvalue()
         def fake_git(root,*args):
             if args[0]=="rev-parse": return b"a"*40
-            if args[0]=="status": return b""
+            if args[0]=="status":
+                self.assertIn("--untracked-files=no",args)
+                return b""  # CI BYOND/ tooling is untracked and not an input.
             if args[0]=="ls-files": return "\0".join(files).encode()
             if args[0]=="show": return files[args[1].split(":",1)[1]].encode()
             self.assertEqual(args[0],"archive")
@@ -68,6 +70,7 @@ class CompileCheck(unittest.TestCase):
             with patch("compile_check.git",side_effect=fake_git),patch("compile_check.selected_files",return_value=list(files)):
                 source=prepare(root,out,"a"*40)
             self.assertFalse((source/"config").exists())
+            self.assertFalse((source/"BYOND").exists())
             self.assertEqual((source/"code/_helpers/mobs.dm").read_text(encoding="utf-8"),files["code/_helpers/mobs.dm"])
             for extra in ("../escape", "config/host.txt"):
                 payload=archive(extra);bad=Path(temp)/("bad-"+str(len(extra)))

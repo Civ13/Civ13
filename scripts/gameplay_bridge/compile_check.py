@@ -38,7 +38,7 @@ def prepare(root, output, expected):
         raise ValueError("full expected commit required")
     if output.exists() or output == root or root in output.parents:
         raise ValueError("fresh output outside checkout required")
-    if git(root, "rev-parse", "HEAD").decode().strip() != expected or git(root, "status", "--porcelain", "--untracked-files=all").strip():
+    if git(root, "rev-parse", "HEAD").decode().strip() != expected or git(root, "status", "--porcelain", "--untracked-files=no").strip():
         raise ValueError("exact clean frozen HEAD required")
     tracked = set(git(root, "ls-files", "-z").decode().split("\0")) - {""}
     selected = [p for p in selected_files(root, tracked)
@@ -55,12 +55,13 @@ def prepare(root, output, expected):
     archive_paths += [p for p in selected if not p.startswith(tuple(prefixes))]
     archive = git(root, "archive", "--format=tar", expected, "--", *archive_paths)
     source_root = output / "source"
-    for member in tarfile.open(fileobj=io.BytesIO(archive), mode="r:"):
-        rel = PurePosixPath(member.name)
-        if rel.is_absolute() or ".." in rel.parts or not (member.isfile() or member.isdir()):
-            raise ValueError("unsafe archive entry")
-        if member.isfile() and rel.as_posix() not in selected:
-            raise ValueError("unselected archive file")
+    with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as tar:
+        for member in tar:
+            rel = PurePosixPath(member.name)
+            if rel.is_absolute() or ".." in rel.parts or not (member.isfile() or member.isdir()):
+                raise ValueError("unsafe archive entry")
+            if member.isfile() and rel.as_posix() not in selected:
+                raise ValueError("unselected archive file")
     # Validate the entire archive before creating output.
     with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as tar:
         for member in tar:
