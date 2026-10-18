@@ -177,6 +177,7 @@
 
 	handle_hud_icons()
 	handle_vision()
+	update_lighting_plane()
 
 	return TRUE
 

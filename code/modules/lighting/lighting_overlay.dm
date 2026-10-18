@@ -15,7 +15,7 @@
 	anchored = TRUE
 	flags = NOREACT
 
-	blend_mode	   = BLEND_MULTIPLY
+	blend_mode	   = BLEND_OVERLAY
 
 	var/needs_update = FALSE
 	var/TOD = "Midday"
@@ -89,7 +89,8 @@
 	blend_mode = BLEND_ADD
 	#endif
 	#ifndef OPENDREAM
-	blend_mode = BLEND_MULTIPLY
+	// Tile RGB composes here; the eligible plane master multiplies once.
+	blend_mode = BLEND_OVERLAY
 	#endif
 	var/list/L = color ? copylist(color) : list()
 	#ifdef OPENDREAM
