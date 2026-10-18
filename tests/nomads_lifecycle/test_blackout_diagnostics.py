@@ -48,7 +48,16 @@ def audit(lifecycle, source):
         errors.append('private/unbounded field')
     if re.search(r'\b(?:call|spawn|sleep|Life|reset_view|update_sight|forceMove|shell|world\.Export|locate)\s*\(', source.replace('locate(T.x + dx, T.y + dy, T.z)', '')):
         errors.append('effectful or arbitrary access')
-    if re.search(r'\b(?:C|M|N|H|L|P|S|T|O|A|K)(?:\.\w+)+\s*(?:=(?!=)|\+=|-=|\+\+|--)', source):
+    # Exact diagnostic cache writes are authorized; gameplay writes remain banned.
+    checked = source
+    for permitted in ('if(!C.blackout_click_session) C.blackout_click_session = input["operation"]',
+                      'M.blackout_click_owner = own_host',
+                      'M.blackout_click_client_ref = "\\ref[C]:[C.blackout_click_session]"',
+                      'M.blackout_click_counts = list()',
+                      'M.blackout_click_started = world.time',
+                      'M.blackout_click_expires = world.time + 3000'):
+        checked = checked.replace(permitted, '')
+    if re.search(r'\b(?:C|M|N|H|L|P|S|T|O|A|K)(?:\.\w+)+\s*(?:=(?!=)|\+=|-=|\+\+|--)', checked):
         errors.append('gameplay state write')
     for literal in ('row["overlay_luminosity"] = O.luminosity',
                     '"icon" = T.icon ? blackout_diagnostic_scalar("[T.icon]") : null',

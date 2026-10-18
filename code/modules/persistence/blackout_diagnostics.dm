@@ -1,6 +1,27 @@
 // Private own-host diagnostics on the existing authenticated lifecycle transport.
-// Protocol bookkeeping changes; character, camera, HUD and lighting never do.
+// Diagnostic bookkeeping changes; gameplay clocks, camera, HUD and lighting never do.
 #define BLACKOUT_DIAGNOSTIC_LIMIT 32768
+
+// BEGIN OWN CLICK TRACE: fixed codes only, no target or parameter retention.
+/mob/var/tmp/blackout_click_owner
+/mob/var/tmp/blackout_click_client_ref
+/mob/var/tmp/list/blackout_click_counts
+/mob/var/tmp/blackout_click_started = 0
+/mob/var/tmp/blackout_click_expires = 0
+// Clients are not datums visited by the custom world serializer.
+/client/var/tmp/blackout_click_session
+
+/proc/blackout_click_increment(list/counts, stage)
+	if(!(stage in list("atom_entry", "entry", "invalid_target", "click_clock", "ctrl_shift", "shift_middle", "middle", "shift", "alt", "ctrl", "ordinary", "hanging", "scramble", "incapacitated", "facing_stage", "move_clock", "restrained", "dispatch")))
+		return
+	counts[stage] = min((isnum(counts[stage]) ? counts[stage] : 0) + 1, 65535)
+
+/mob/proc/blackout_click_trace(stage)
+	var/client/C = client
+	if(!blackout_click_counts || world.time >= blackout_click_expires || !C || C.mob != src || C.ckey != blackout_click_owner || directory[blackout_click_owner] != C || "\ref[C]:[C.blackout_click_session]" != blackout_click_client_ref || !C.holder || !(C.holder.rights & R_HOST))
+		return
+	blackout_click_increment(blackout_click_counts, stage)
+// END OWN CLICK TRACE
 
 /datum/nomads_lifecycle_control
 	var/list/diagnostic_nonces = list()
@@ -78,6 +99,7 @@
 		row["mob"] = list("status" = "unavailable: no current mob")
 		return row
 	row["mob"] = list("type" = "[M.type]", "loc_type" = M.loc ? "[M.loc.type]" : null, "stat" = M.stat, "sleeping" = M.sleeping, "resting" = M.resting, "paralysis" = M.paralysis, "blinded" = M.blinded, "sight" = M.sight, "see_in_dark" = M.see_in_dark, "see_invisible" = M.see_invisible, "invisibility" = M.invisibility, "transforming" = blackout_diagnostic_scalar(M.transforming), "status_flags" = M.status_flags, "gcDestroyed" = M.gcDestroyed)
+	row["input"] = list("world_time" = world.time, "next_click" = M.next_click, "click_remaining" = max(0, M.next_click - world.time), "next_move" = M.next_move, "move_remaining" = max(0, M.next_move - world.time), "may_do_after" = M.may_do_after, "may_do_mob" = M.may_do_mob, "direction" = M.dir, "facing_dir" = M.facing_dir, "armed" = world.time < M.blackout_click_expires, "started" = M.blackout_click_started, "expires" = M.blackout_click_expires, "counts" = M.blackout_click_counts ? M.blackout_click_counts.Copy() : null, "scope" = "own current mob; first diagnostic arms 3000 world ticks, subsequent reads never extend; fixed saturating route counts")
 	if(istype(M, /mob/new_player))
 		var/mob/new_player/N = M
 		// Read cached state only: never invoke admission, ban checks or spawning.
@@ -137,6 +159,15 @@
 	if(!C || C.ckey != own_host || !C.holder || !(C.holder.rights & R_HOST))
 		return json_encode(list("ok" = FALSE, "error" = "own_host_unavailable"))
 	var/mob/M = C.mob
+	if(!C.blackout_click_session) C.blackout_click_session = input["operation"]
+	// Arm only this authenticated configured host's current mob. A reconnect or
+	// mob replacement starts a fresh cache; no gameplay deadline/lock is reset.
+	if(M && (M.blackout_click_owner != own_host || M.blackout_click_client_ref != "\ref[C]:[C.blackout_click_session]" || !M.blackout_click_counts))
+		M.blackout_click_owner = own_host
+		M.blackout_click_client_ref = "\ref[C]:[C.blackout_click_session]"
+		M.blackout_click_counts = list()
+		M.blackout_click_started = world.time
+		M.blackout_click_expires = world.time + 3000
 	var/start_tick = world.time
 	var/list/result = list("ok" = TRUE, "schema" = 1, "revision" = read_revision(), "session" = boot_session(), "request" = input["operation"], "utc_start" = time2text(world.realtime, "YYYY-MM-DD hh:mm:ss", 0), "tick_start" = start_tick, "engine" = "[world.byond_version].[world.byond_build]", "game_id" = blackout_diagnostic_scalar(game_id), "map" = map ? blackout_diagnostic_scalar(map.ID) : null, "phase" = blackout_diagnostic_scalar(time_of_day), "target" = list("ckey" = own_host, "client_ref" = "\ref[C]", "mob_ref" = M ? "\ref[M]" : null), "partial" = !M, "partial_reason" = M ? "none" : "no current mob")
 	try

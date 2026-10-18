@@ -430,6 +430,24 @@ replacement object. The actual early `ClickOn` gate and modifier dispatch run
 against route counters, including ordinary/shift clicks and a live future
 cooldown. This adapter does not prove rendered client input or gathering.
 
+The input adapter also extracts the production fixed click-counter helper and
+checks saturation, arbitrary-code rejection, no-client rejection, parsed icon
+coordinates, and runtime trace export exclusion. It supplies the exact production
+`isatom` macro and declares unavailable client rights/directory dependencies;
+it creates no real client. Own-host authorization is checked separately by
+`tests/nomads_lifecycle/test_input_trace.py`, including negative controls and
+immutable pre-trace click-source parity with observational calls removed.
+
+The existing authenticated `diagnose` action now arms a transient own-mob click
+trace for 3000 world ticks on the first request for that client/mob. Reads do not
+extend the window. Reconnects bind a fresh session token. Only fixed saturating
+route counts are retained, never click targets or raw parameters. The same
+response samples current click/move deadlines, remaining delays, action locks,
+direction and facing lock. This changes diagnostic bookkeeping only; it does not
+reset gameplay clocks or actions. Connected-client behavior still needs a normal
+functional retest. The ordinary round-metadata fixture's job-limit initializer
+is a pure no-op dependency adapter, not production occupation coverage.
+
 Use the runner's required `--byond-bin` and `--expected-saving-sha256` arguments.
 Run `--input-runtime-negative-control export` and `import` separately: each
 removes only the corresponding runtime exclusion in generated temporary source

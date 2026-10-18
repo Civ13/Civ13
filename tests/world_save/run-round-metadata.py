@@ -57,6 +57,9 @@ def main():
         return f'#include "{target.as_posix()}"'
 
     environment = re.sub(r'^#include "([^"]+)"', include, environment, flags=re.MULTILINE)
+    # Ordinary metadata fixtures exclude occupations. This dependency is a pure
+    # no-op adapter, not coverage of production job limits or client admission.
+    environment += '\nvar/datum/round_metadata_jobs/job_master = new\n/datum/round_metadata_jobs/proc/initialize_position_limits()\n\treturn\n'
     (output / 'roundtrip.dme').write_text(environment, encoding='utf-8')
     hashes['generated_environment'] = hashlib.sha256(environment.encode()).hexdigest()
     processes = []

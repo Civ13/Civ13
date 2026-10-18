@@ -2,6 +2,7 @@
 // Modifier handlers are route counters, not rendered client/examine acceptance.
 /mob/var/tmp/fixture_clicks = 0
 /mob/var/tmp/fixture_shifts = 0
+/mob/var/tmp/list/fixture_icon_coordinates
 /mob/proc/CtrlShiftClickOn(atom/A)
 	return
 /mob/proc/ShiftMiddleClickOn(atom/A)
@@ -17,11 +18,25 @@
 
 /proc/check_input_runtime()
 	sleep(2) // The unchanged click gate rejects world.time == its zero default.
+	var/list/counts = list()
+	blackout_click_increment(counts, "entry")
+	check(counts["entry"] == 1, "fixed click counter did not increment")
+	counts["entry"] = 65535
+	blackout_click_increment(counts, "entry")
+	blackout_click_increment(counts, "private raw target text")
+	check(counts["entry"] == 65535 && counts.len == 1, "click counter unbounded or accepted arbitrary code")
 	var/list/fields = list("next_click", "next_move", "may_do_after", "may_do_mob")
 	var/list/stale = list("next_click" = 10000000, "next_move" = 10000000, "may_do_after" = FALSE, "may_do_mob" = FALSE)
 	var/mob/living/human/H = new(locate(2,2,1))
 	H.name = "durable identity"
 	H.persistence_owner_ckey = "inputaccount"
+	H.blackout_click_owner = "inputaccount"
+	H.blackout_click_client_ref = "fixture unavailable client"
+	H.blackout_click_counts = list("entry" = 9)
+	H.blackout_click_started = world.time
+	H.blackout_click_expires = world.time + 100
+	H.blackout_click_trace("entry")
+	check(H.blackout_click_counts["entry"] == 9, "trace counted without an authenticated current client")
 	var/obj/item/test/I = new(H)
 	I.number = 731
 	for(var/key in fields)
@@ -33,6 +48,8 @@
 	var/ref = map_storage.BuildVarDirectory(F, H, 1)
 	var/path = map_storage.entry_path(F, ref)
 	F.cd = path
+	for(var/key in list("blackout_click_owner", "blackout_click_client_ref", "blackout_click_counts", "blackout_click_started", "blackout_click_expires"))
+		check(!(key in F.dir), "private runtime click trace exported: [key]")
 	for(var/key in fields)
 		check(!(key in F.dir), "runtime input field exported: [key]")
 		check(H.vars[key] == stale[key], "saving reset live input state: [key]")
@@ -53,8 +70,9 @@
 	R.ClickOn(I, null)
 	check(!R.fixture_clicks, "live one-tick click cooldown bypassed")
 	sleep(2)
-	R.ClickOn(I, null)
+	R.ClickOn(I, "icon-x=7&icon-y=11")
 	check(R.fixture_clicks == 1, "restored ordinary click route blocked")
+	check(R.fixture_icon_coordinates[1] == 7 && R.fixture_icon_coordinates[2] == 11, "ordinary click coordinates not parsed")
 	R.next_click = world.time + 100
 	R.may_do_after = FALSE
 	R.may_do_mob = FALSE

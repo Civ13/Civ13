@@ -344,8 +344,24 @@ def main():
         click_source = click_path.read_text(encoding='utf-8')
         start = click_source.index('/mob/proc/ClickOn(')
         end = click_source.index('\tif (ishuman(src))', start)
-        click_prefix = click_source[start:end] + '\tfixture_clicks++\n'
+        click_prefix = click_source[start:end] + '\tfixture_icon_coordinates = list(icon_x, icon_y)\n\tfixture_clicks++\n'
         fields = ['/mob/var/next_click = 0\n']
+        macro_path = root / 'code/_macros.dm'
+        macro_source = macro_path.read_text(encoding='utf-8')
+        atom_macro = '#define isatom(A) istype(A, /atom)'
+        if atom_macro not in macro_source.splitlines():
+            raise RuntimeError('Production isatom predicate changed')
+        hashes['code/_macros.dm'] = hashlib.sha256(macro_path.read_bytes()).hexdigest()
+        fields.insert(0, atom_macro + '\n')
+        diagnostic_path = root / 'code/modules/persistence/blackout_diagnostics.dm'
+        diagnostic_source = diagnostic_path.read_text(encoding='utf-8')
+        trace_start = diagnostic_source.index('// BEGIN OWN CLICK TRACE:')
+        trace_end = diagnostic_source.index('// END OWN CLICK TRACE', trace_start)
+        fields.append('#define R_HOST 1\nvar/list/directory = list()\n'
+                      '/client/var/datum/input_trace_holder/holder\n'
+                      '/datum/input_trace_holder/var/rights = 0\n')
+        fields.append(diagnostic_source[trace_start:trace_end])
+        hashes['code/modules/persistence/blackout_diagnostics.dm'] = hashlib.sha256(diagnostic_path.read_bytes()).hexdigest()
         definitions = (('code/game/mob/mob_defines.dm', 'next_move'),
                        ('code/_helpers/mobs.dm', 'may_do_after'),
                        ('code/_helpers/mobs.dm', 'may_do_mob'))

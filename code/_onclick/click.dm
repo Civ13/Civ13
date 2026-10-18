@@ -6,6 +6,7 @@
 	Note that this proc can be overridden, and is in the case of screen objects.*/
 /atom/Click(var/location, var/control, var/params)
 	if (src && usr)
+		usr.blackout_click_trace("atom_entry")
 		usr.ClickOn(src, params)
 
 /atom/DblClick(var/location, var/control, var/params)
@@ -23,9 +24,12 @@
 	* item/afterattack(atom,user,adjacent,params) - used both ranged and adjacent
 	* mob/RangedAttack(atom,params) - used only ranged, only used for tk and laser eyes but could be changed */
 /mob/proc/ClickOn(var/atom/A, var/params)
+	blackout_click_trace("entry")
 	if (!isatom(A))
+		blackout_click_trace("invalid_target")
 		return
 	if (world.time <= next_click) // Hard check, before anything else, to avoid crashing
+		blackout_click_trace("click_clock")
 		return
 	next_click = world.time + 1
 	/*if (client.buildmode)  //unused now
@@ -35,23 +39,30 @@
 	var/icon_x = text2num(modifiers["icon-x"])
 	var/icon_y = text2num(modifiers["icon-y"])
 	if (modifiers["shift"] && modifiers["ctrl"])
+		blackout_click_trace("ctrl_shift")
 		CtrlShiftClickOn(A)
 		return
 	if (modifiers["shift"] && modifiers["middle"])
+		blackout_click_trace("shift_middle")
 		ShiftMiddleClickOn(A)
 		return
 	if (modifiers["middle"])
+		blackout_click_trace("middle")
 		MiddleClickOn(A)
 		return
 	if (modifiers["shift"])
+		blackout_click_trace("shift")
 		ShiftClickOn(A)
 		return
 	if (modifiers["alt"])
+		blackout_click_trace("alt")
 		AltClickOn(A)
 		return
 	if (modifiers["ctrl"])
+		blackout_click_trace("ctrl")
 		CtrlClickOn(A)
 		return
+	blackout_click_trace("ordinary")
 	if (ishuman(src)) //src is user who is click and human
 		var/mob/living/human/H = src
 		if (istype(H.shoes, /obj/item/clothing/shoes/football)) //TODO TO DO: move it to football.dm
@@ -126,13 +137,17 @@
 			H.RangedAttack(A)
 	for (var/obj/structure/noose/N in get_turf(src)) // can't click on anything when we're hanged
 		if (N.hanging == src)
+			blackout_click_trace("hanging")
 			return
 	if (lying && istype(A, /turf/floor))
 		if (A.Adjacent(src))
+			blackout_click_trace("scramble")
 			scramble(A)
 			return
 	if (stat || paralysis || stunned || weakened)
+		blackout_click_trace("incapacitated")
 		return
+	blackout_click_trace("facing_stage")
 	if (prone)
 		var/cdir = get_dir(src, A)
 		if (cdir == NORTH || cdir == NORTHWEST || cdir == NORTHEAST || cdir == WEST)
@@ -152,6 +167,7 @@
 			face_atom(A) // change direction to face what you clicked on
 	
 	if (!canClick()) // in the year 2000...
+		blackout_click_trace("move_clock")
 		return
 
 	if(using_object && istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
@@ -171,9 +187,11 @@
 			H.visible_message("<span class = 'notice'>[H] stops looking [H.laddervision_direction()] the ladder.</span>")
 			return
 	if (restrained())
+		blackout_click_trace("restrained")
 		setClickCooldown(10)
 		RestrainedClickOn(A)
 		return
+	blackout_click_trace("dispatch")
 	if (in_throw_mode)
 		if (isturf(A) || isturf(A.loc))
 			throw_item(A)
