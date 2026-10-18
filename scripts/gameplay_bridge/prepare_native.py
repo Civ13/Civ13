@@ -226,7 +226,7 @@ def prepare(root, output, expected_commit):
         raise ValueError("exact clean frozen HEAD required")
     # Historical ambient/craft probes are deliberately not reusable for typed
     # gather. Keep their source for review, never emit executable stale packets.
-    raise ValueError("typed gather native fixture not reconciled; preparation disabled")
+    raise ValueError("historical ambient profiles refused; use prepare_gather.py for typed gather")
 
 
 

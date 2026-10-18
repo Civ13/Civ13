@@ -192,7 +192,7 @@ jobs:
 
       - name: Compile stock disabled and gather-enabled bridge closures without running them
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gameplay_bridge')
-        timeout-minutes: 12
+        timeout-minutes: 22
         shell: bash
         env:
           CIV13_EXPECTED_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}

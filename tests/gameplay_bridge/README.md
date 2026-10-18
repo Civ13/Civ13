@@ -20,7 +20,8 @@ they are not a DM interpreter or native evidence. No private Git object is neede
 CI compile_check.py separately prepares stock/disabled/enabled1x1 closures from an
 exact clean frozen tracked head, with no server config. Enabled readiness admits
 only timed gather; water/craft waits remain unsupported. Pinned516.1681 compiler
-logs must show0errors/0warnings for all three. Compile results do not establish
+logs must show0errors/0warnings for the three module and three fixture targets.
+Each compiler is bounded to180sec; CI step ceiling22min. Compile results do not establish
 runtime behavior. The current slice has not run a local compiler or game.
 
 wait_overlay.py prints/validates the current explicit helper diff. It does not
@@ -28,6 +29,10 @@ apply source. do_after.guard.patch matches the actual helper. Disabled full-file
 projections match public670, including survival callbacks and stock overlap rules.
 
 Historical native probes are retained for provenance only. prepare_native.py
-refuses this revision before creating output because their ambient lease/craft
-assumptions are obsolete. See docs/gameplay-gather-acceptance.md for the required
-replacement native isolation/cancel/parity and ordinary non-admin consent plan.
+refuses their obsolete ambient lease/craft profiles. prepare_gather.py builds
+the dedicated concrete typed gather packet without execution. Its human subtype
+New returns without a parent call, so no production human constructor/anatomy/Life
+is tested. Real survival callbacks and canonical grass code are retained, with
+explicit headless client-predicate/active/visible seams. Native results remain
+not_run. See docs/gameplay-gather-acceptance.md for packet validation and the
+separate required ordinary non-admin consent/bootstrap layer.

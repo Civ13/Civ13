@@ -160,21 +160,25 @@ ownership/callback oracles cover forged context, replay/nesting, cancellation,
 old/new lease isolation, unrelated waits and callback placement. They do not
 execute DM or prove native timing/visibility. No private Git objects are required.
 
-CI registers offline checks and three compile-only closures with pinned516.1681:
+CI registers offline checks and three module compile-only closures with pinned516.1681:
 stock excludes the module/macro, disabled includes the module without the macro,
 and enabled includes the module with explicit gather context. They share frozen
 tracked source/static assets and isolated1x1 startup, with no server config.
-Each compiler invocation is bounded to180sec; CI step ceiling12min. Per-profile
+Three additional stock/disabled/enabled compile-only targets compile the actual
+gather fixture. Each compiler invocation is bounded to180sec; CI step ceiling22min. Per-profile
 logs and a source manifest are retained without binaries. An owned clean detached
 expected-head worktree avoids generated crafting-atlas contamination. Exact-head
 CI must establish0errors/0warnings for each; no compiler has been run locally for
 this slice. Compilation never launches a daemon or client.
 
 Historical headless/client probes used ambient leases and unconverted craft
-adapters. prepare_native.py now refuses even a clean current head before writing
-output. Their original evidence is retained in the original frozen checkout;
-it cannot accept this revision. See [the next gather acceptance design](gameplay-gather-acceptance.md)
-for the missing native cancellation/parity and ordinary consent/bootstrap proof.
+adapters. prepare_native.py refuses those profiles even at a clean current head.
+The dedicated prepare_gather.py now builds concrete typed gather fixtures with
+reviewed external executor bindings, named omission profiles and no native start.
+Their runtime results remain not_run. Original evidence is retained in the
+original frozen checkout and cannot accept this revision. See [gather acceptance](gameplay-gather-acceptance.md)
+for packet preparation, the missing native cancellation/parity and ordinary
+consent/bootstrap proof.
 
 Agent Join remains unsupported. Physical native Join/menu acceptance and genuine
 pre-save lighting baseline remain separate core/UI work. Backend actions cannot

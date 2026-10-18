@@ -45,14 +45,15 @@ class CompileCheck(unittest.TestCase):
             self.assertFalse(bound(step.replace(anchor,"omitted",1)))
         self.assertNotIn("git reset",step)
 
-    def test_three_profiles_use_same_source_and_only_enabled_gather_macro(self):
+    def test_six_profiles_compile_module_and_fixture_without_execution(self):
         source=(ROOT/"civ13.dme").read_text()
         self.assertNotIn("gameplay_bridge/bridge.dm",source)
         for profile in PROFILES:
             result=compile_dme(source,profile)
-            self.assertEqual('#define CIV13_GAMEPLAY_BRIDGE\n' in result,profile=="enabled")
-            self.assertEqual('#include "code/modules/gameplay_bridge/bridge.dm"' in result,profile!="stock")
+            self.assertEqual('#define CIV13_GAMEPLAY_BRIDGE\n' in result,profile.removeprefix("gather_")=="enabled")
+            self.assertEqual('#include "code/modules/gameplay_bridge/bridge.dm"' in result,profile.removeprefix("gather_")!="stock")
             self.assertNotIn('.dmm"',result)
+            self.assertEqual('native/gather_probe.dm' in result,profile.startswith('gather_'))
             self.assertIn('compile_generated/world.dm',result)
             self.assertNotIn('CIV13_GAMEPLAY_WAIT_GUARDS',result)
         with self.assertRaisesRegex(ValueError,"anchor drift"):
@@ -128,7 +129,7 @@ class CompileCheck(unittest.TestCase):
                 return Result()
             with patch("compile_check.prepare",return_value=source),patch("compile_check.subprocess.run",side_effect=compiler) as calls:
                 result=run(root,root,"a"*40,binary)
-            self.assertEqual(calls.call_count,3)
+            self.assertEqual(calls.call_count,len(PROFILES))
             self.assertEqual(result["runtime"],"not_run")
 
 

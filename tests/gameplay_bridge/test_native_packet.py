@@ -59,7 +59,7 @@ class NativePacketTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             output=Path(temp)/"packet"
             with patch("prepare_native.git",side_effect=[b"expected",b""]):
-                with self.assertRaisesRegex(ValueError,"typed gather native fixture not reconciled"):
+                with self.assertRaisesRegex(ValueError,"historical ambient profiles refused"):
                     prepare(ROOT,output,"expected")
             self.assertFalse(output.exists())
 

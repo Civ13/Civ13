@@ -1,13 +1,67 @@
-# Next gather acceptance fixture design (not executed)
+# Gather fixtures and next client acceptance (not executed)
 
-This is the next bounded implementation/acceptance plan, not a runtime receipt.
+The executable fixture is tests/gameplay_bridge/native/gather_probe.dm. Its
+human/gather_probe.New returns without the parent human constructor: no normal
+constructor, anatomy, natural Life or connected client is tested. The real human
+survival_action_started/finished callbacks and canonical grass handler are retained. This is
+source/preparation evidence, not a runtime receipt.
 Production DME stays disabled. Core owns any later native execution; the source
 integrator does not start a compiler, daemon, client, listener or model. The
-historical native packet generator deliberately refuses this context revision.
+historical native packet generator still refuses its obsolete ambient profiles.
+
+## Prepare-only typed packet
+
+The new scripts/gameplay_bridge/prepare_gather.py writes a fresh external packet
+from an exact clean frozen head. It hashes (never imports) the existing reviewed
+Windows Job adapter and guard_config, and verifies the immutable containment
+driver reference blob. Their exact bindings, SDK hashes, sequential process,
+CPU/wall/memory/log/cleanup limits and residual native account/UDP traffic risk
+are recorded in the manifest. It neither copies credentials/config nor launches
+anything. Runtime folders contain only the public tracked native library.
+
+```text
+<python> -B scripts/gameplay_bridge/prepare_gather.py --expected-commit <FULL_SHA> --output <FRESH_EXTERNAL_FOLDER> --adapter-dir <REVIEWED_ADAPTER_FOLDER> --contained-repo <EXISTING_REFERENCE_CHECKOUT>
+<python> -B scripts/gameplay_bridge/check_gather_packet.py <PACKET> --expected-commit <FULL_SHA> --manifest-sha256 <EXACT_MANIFEST_SHA256>
+```
+
+Preparation requires no game SDK invocation. Generated DME files and argument
+lists are for core's separately granted executor. There is no new native runner
+or adapter, no relaxed Job limit or inherited process environment. The existing
+reference driver is a containment contract reference, not an unchanged driver
+which can automatically execute these new profile names. Core must bind its
+reviewed caller to the packet before a fresh grant/current-host census. No live
+game PID is embedded as authority, targeted, retired or queried by these tools.
+
+| Profile | Expected oracle |
+|---|---|
+| stock / disabled / enabled_null | Identical ordinary paid output/callback/lock state |
+| enabled | Full typed gather success, invalid/replay/isolation/cancellation checks |
+| omit_entry | entry_denied_before_callbacks fails |
+| omit_wake | wake_cancel_before_completion fails |
+| omit_final | zero_delay_final_denied fails |
+| reacquire | old_context_stays_revoked fails |
+| ambient | ordinary_wait_isolated fails |
+| omit_forward | cancelled_canonical_gather_stops_early fails |
+
+The checker requires successful ordinary setup and exactly the expected final
+failed assertion for each mutation. Runtime errors, wrong compiler/runtime,
+incomplete assertions, unexpected diagnostics or a timeout never satisfy a
+negative control. Its optional --result-content-only checks oracle contents and
+parity; it does not verify native process containment or grant execution. Core's
+retained-handle/settled-Job/executable/creation/socket/log receipts remain required.
+Native packet limits are compile120sec/runtime90sec/cleanup10sec per phase, total
+2400sec, one active process,1GiB process private/128MiB watcher,2MiB logs and
+800world-time ceiling. Native account traffic is not isolated by a Job/closed port;
+any execution grant must explicitly address that residual risk.
+
+Compile-only CI separately checks the fixture with stock/disabled/enabled source
+alongside the three module closures. It does not run it or inject the headless
+client predicate. Each of six compiler invocations is limited to180sec, with a
+22min step ceiling. All profiles still need exact-head clean compiler evidence.
 
 ## Native source/cancellation profiles
 
-Prepare a new immutable packet only after source review, binding its commit,
+Execute a new immutable packet only after source review and a new grant, binding its commit,
 all source/asset hashes, BYOND516.1681, profile definitions and omission controls.
 Keep compile-only profiles separate from native behavioral profiles. Source must
 contain the real helper, canonical grass handler and survival callbacks; no

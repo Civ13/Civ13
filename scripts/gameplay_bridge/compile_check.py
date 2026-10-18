@@ -17,12 +17,14 @@ from prepare_native import git, isolated_startup, selected_files
 from gather_context import PATHS, verify_disabled
 from wait_overlay import unguarded_source
 
-PROFILES = ("stock", "disabled", "enabled")
+PROFILES = ("stock", "disabled", "enabled", "gather_stock", "gather_disabled", "gather_enabled")
 
 
 def compile_dme(source, profile="enabled"):
     if profile not in PROFILES:
         raise ValueError("unknown compile profile")
+    fixture = profile.startswith("gather_")
+    profile = profile.removeprefix("gather_")
     source = re.sub(r'^#include "[^"\n]+\.dmm"\s*$', "", source, flags=re.M)
     replacements = {"code\\world.dm": "compile_generated/world.dm",
                     "code\\controllers\\mc\\globals.dm": "compile_generated/globals.dm"}
@@ -34,7 +36,8 @@ def compile_dme(source, profile="enabled"):
         raise ValueError("bridge unexpectedly activated")
     prefix = '#define CIV13_GAMEPLAY_BRIDGE\n' if profile == "enabled" else ""
     module = '\n#include "code/modules/gameplay_bridge/bridge.dm"\n' if profile != "stock" else ""
-    return prefix + source + module + '#include "tests/gameplay_bridge/native/compile_probe.dm"\n'
+    probe = "gather_probe.dm" if fixture else "compile_probe.dm"
+    return prefix + source + module + '#include "tests/gameplay_bridge/native/'+probe+'"\n'
 
 
 
@@ -82,9 +85,10 @@ def prepare(root, output, expected):
     for profile, dme in dmes.items():
         (source_root / ("bridge_" + profile + ".dme")).write_text(dme, encoding="utf-8", newline="\n")
     manifest = {"commit": expected, "compile_only": True, "native_runtime": "not_run",
-                "profiles": {p: {"module": p != "stock", "wait_marker": p == "enabled",
-                                      "timed_actions": ["gather"] if p == "enabled" else []}
-                             for p in PROFILES}, "dimensions": [1, 1, 1],
+                "profiles": {p: {"module": p.removeprefix("gather_") != "stock", "wait_marker": p.endswith("enabled"),
+                                      "timed_actions": ["gather"] if p.endswith("enabled") else [],
+                                      "dimensions": [9,9,1] if p.startswith("gather_") else [1,1,1]}
+                             for p in PROFILES},
                 "sha256": {p.relative_to(source_root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                            for p in sorted(source_root.rglob("*")) if p.is_file()}}
     (output / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
