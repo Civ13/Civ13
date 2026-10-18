@@ -525,6 +525,8 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           mkdir -p "$RUNNER_TEMP/new-z-budget"
           export TMPDIR="$RUNNER_TEMP/new-z-budget"
+          git diff --binary -- UI/crafting-atlas.json > "$RUNNER_TEMP/new-z-budget/bootstrap-generated-catalog.patch"
+          git restore --source=HEAD -- UI/crafting-atlas.json
           python3 -m unittest discover -s tests/new_z_budget -p 'test_*.py' -v
           python3 tests/new_z_budget/run.py --byond-bin "$PWD/BYOND/byond/bin" --expected-commit "${{ github.event.pull_request.head.sha || github.sha }}" --output "$RUNNER_TEMP/new-z-budget/positive"
           for control in memory-admission cell-limit roof-ceiling; do
