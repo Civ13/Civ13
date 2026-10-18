@@ -7,6 +7,7 @@ from pathlib import Path, PurePosixPath
 import re
 
 from client_gather_profile import IDENTITIES, MAP, ORACLE, verify_dme, verify_map, verify_oracle
+from prepare_client_gather import blob_id
 
 
 def require(condition, reason):
@@ -44,14 +45,32 @@ def verify_packet(packet, expected):
             'compile-only source packet must not stage runtime configuration/library')
     actual = set(p.relative_to(source).as_posix() for p in source.rglob('*') if p.is_file())
     require(actual == set(hashes), 'source closure extra/missing file')
+    G = M.get('git_source')
+    require(isinstance(G, dict) and G.get('commit') == expected and G.get('copy_policy') == 'exact_raw_git_blobs'
+            and G.get('generated_exceptions') == ['client_gather.dme'] and isinstance(G.get('files'), dict)
+            and set(G['files']) == set(hashes) - {'client_gather.dme'}, 'raw Git source binding set/policy mismatch')
     for relative, digest in hashes.items():
         rel = PurePosixPath(relative)
         require(not rel.is_absolute() and '..' not in rel.parts and '\\' not in relative,
                 'unsafe source binding path')
         path = source.joinpath(*rel.parts)
         require(not path.is_symlink() and source.resolve() in path.resolve().parents, 'source escapes packet')
-        require(re.fullmatch('[0-9a-f]{64}', digest) and hashlib.sha256(path.read_bytes()).hexdigest() == digest,
+        data = path.read_bytes()
+        require(re.fullmatch('[0-9a-f]{64}', digest) and hashlib.sha256(data).hexdigest() == digest,
                 'frozen source hash mismatch: ' + relative)
+        if relative != 'client_gather.dme':
+            binding = G['files'][relative]
+            require(isinstance(binding, dict) and binding.get('raw_sha256') == digest
+                    and type(binding.get('raw_bytes')) is int and binding['raw_bytes'] == len(data)
+                    and binding.get('git_blob_sha1') == blob_id(data)
+                    and binding.get('archive_relation') in ('exact', 'crlf_only_discarded')
+                    and isinstance(binding.get('archive_sha256'), str)
+                    and re.fullmatch('[0-9a-f]{64}', binding['archive_sha256']),
+                    'raw Git bytes/object conservation mismatch: ' + relative)
+            require(binding['archive_relation'] != 'exact' or binding['archive_sha256'] == digest,
+                    'exact archive relation hash mismatch')
+            require(binding['archive_relation'] != 'crlf_only_discarded' or binding['archive_sha256'] != digest,
+                    'discarded archive relation must record different bytes')
     require(set(M['normal_source_sha256']) == set(IDENTITIES), 'normal production identity set drift')
     require(all(hashes[p] == digest for p, digest in M['normal_source_sha256'].items()), 'normal source identity mismatch')
     text = lambda p: (source / p).read_text(encoding='utf-8-sig').replace('\r\n', '\n')

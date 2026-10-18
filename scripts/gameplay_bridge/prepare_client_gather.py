@@ -5,6 +5,7 @@ import io
 import json
 from pathlib import Path, PurePosixPath
 import re
+import subprocess
 import tarfile
 
 from prepare_native import git, selected_files
@@ -13,6 +14,58 @@ from client_gather_profile import IDENTITIES, MAP, ORACLE, normal_dme, verify_ma
 
 def sha(data):
     return hashlib.sha256(data).hexdigest()
+
+
+def blob_id(data):
+    return hashlib.sha1(b'blob ' + str(len(data)).encode('ascii') + b'\0' + data).hexdigest()
+
+
+def raw_blobs(root, expected, selected):
+    """Read exact Git objects, bypassing archive/checkout EOL and export filters."""
+    tree = {}
+    selected = set(selected)
+    for entry in git(root, 'ls-tree', '-r', '-z', expected).split(b'\0'):
+        if not entry:
+            continue
+        metadata, path = entry.split(b'\t', 1)
+        mode, kind, oid = metadata.decode('ascii').split()
+        path = path.decode('utf-8')
+        if path in selected:
+            if mode not in ('100644', '100755') or kind != 'blob' or not re.fullmatch('[0-9a-f]{40}', oid) or path in tree:
+                raise ValueError('nonregular/duplicate frozen Git source')
+            tree[path] = oid
+    if set(tree) != set(selected):
+        raise ValueError('selected path absent from frozen Git tree')
+    ordered = sorted(tree)
+    request = ''.join(tree[p] + '\n' for p in ordered).encode('ascii')
+    result = subprocess.check_output(['git', 'cat-file', '--batch'], cwd=root, input=request, timeout=60)
+    files, position = {}, 0
+    for path in ordered:
+        end = result.find(b'\n', position)
+        header = result[position:end].decode('ascii') if end >= position else ''
+        match = re.fullmatch(r'([0-9a-f]{40}) blob ([0-9]+)', header)
+        if not match or match[1] != tree[path]:
+            raise ValueError('raw Git batch object identity mismatch')
+        size = int(match[2])
+        data = result[end + 1:end + 1 + size]
+        position = end + 1 + size
+        if len(data) != size or result[position:position + 1] != b'\n' or blob_id(data) != tree[path]:
+            raise ValueError('raw Git batch bytes/object hash mismatch')
+        position += 1
+        files[path] = data
+    if position != len(result):
+        raise ValueError('unexpected raw Git batch trailing bytes')
+    return files, tree
+
+
+def archive_relation(raw, archived):
+    if raw == archived:
+        return 'exact'
+    # Classification only: archive bytes are discarded, never staged/normalized.
+    if (b'\0' not in raw and b'\0' not in archived
+            and raw.replace(b'\r\n', b'\n') == archived.replace(b'\r\n', b'\n')):
+        return 'crlf_only_discarded'
+    raise ValueError('archive changed bytes beyond explicit CRLF-only conversion')
 
 
 def prepare(root, output, expected):
@@ -27,11 +80,6 @@ def prepare(root, output, expected):
     frozen()
     tracked = set(git(root, 'ls-files', '-z').decode().split('\0')) - {''}
     selected = sorted(p for p in selected_files(root, tracked) if not p.startswith('config/') and p != 'rust_g.dll')
-    read = lambda p: git(root, 'show', expected + ':' + p)
-    original = read('civ13.dme').decode('utf-8-sig').replace('\r\n', '\n')
-    generated = normal_dme(original)
-    verify_map(read(MAP).decode('utf-8-sig').replace('\r\n', '\n'))
-    verify_oracle(read(ORACLE).decode('utf-8-sig').replace('\r\n', '\n'))
     prefixes = ('code/', 'icons/', 'sound/', 'UI/', 'interface/', 'scripts/gameplay_bridge/', 'tests/gameplay_bridge/native/')
     archive_paths = [p.rstrip('/') for p in prefixes if any(f.startswith(p) for f in selected)]
     archive_paths += [p for p in selected if not p.startswith(prefixes)]
@@ -48,6 +96,15 @@ def prepare(root, output, expected):
                 entries[member.name] = tar.extractfile(member).read()
     if set(entries) != set(selected) or not set(IDENTITIES).issubset(entries):
         raise ValueError('incomplete normal production source closure')
+    raw, object_ids = raw_blobs(root, expected, selected)
+    bindings = {p: {'git_blob_sha1': object_ids[p], 'raw_sha256': sha(raw[p]),
+                    'raw_bytes': len(raw[p]), 'archive_sha256': sha(entries[p]),
+                    'archive_relation': archive_relation(raw[p], entries[p])} for p in selected}
+    entries = raw  # ONLY independently verified raw Git bytes reach the packet.
+    original = entries['civ13.dme'].decode('utf-8-sig').replace('\r\n', '\n')
+    generated = normal_dme(original)
+    verify_map(entries[MAP].decode('utf-8-sig').replace('\r\n', '\n'))
+    verify_oracle(entries[ORACLE].decode('utf-8-sig').replace('\r\n', '\n'))
     frozen()  # Validate everything before writing any packet.
     source = output / 'source'
     for relative, data in entries.items():
@@ -62,6 +119,8 @@ def prepare(root, output, expected):
         'runtime_ready': False, 'native_grant': None, 'actual_native_geometry': None,
         'desired_dimensions': [9, 9, 1], 'scope': 'Testing/Nomad-role supplied-resource fixture',
         'dme': 'source/client_gather.dme', 'source_sha256': hashes,
+        'git_source': {'commit': expected, 'copy_policy': 'exact_raw_git_blobs',
+                       'generated_exceptions': ['client_gather.dme'], 'files': bindings},
         'normal_source_sha256': {p: sha(entries[p]) for p in IDENTITIES},
         'production_dme_sha256': sha(entries['civ13.dme']),
         'two_real_client_roles_required': ['consenting ordinary human', 'separate genuine local R_ADMIN native assignment'],

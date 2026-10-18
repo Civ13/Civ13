@@ -235,7 +235,18 @@ the bridge/world. It releases only observer-owned references and writes two
 fixed private JSON files, capped by the offline reader at2MiB.
 
 `check_client_gather.py` checks every frozen source hash and exact normal DME
-projection. Result checking requires two original typed receipts, real advertised
+projection. The preparer resolves every selected path against the requested
+commit's Git tree, reads raw objects through binary `git cat-file --batch`, checks
+their Git blob object IDs and stages those exact bytes. No checkout/archive EOL
+conversion reaches staged source. Manifest `git_source.files` records each raw
+Git object ID, raw SHA256, byte count and archive SHA256. Archive comparisons are
+explicitly either exact or CRLF-only/discarded; binary-NUL or any other differing
+bytes fail before output creation. The checker verifies staged SHA256, byte count
+and Git blob ID for every nongenerated file; normal-source hashes now bind raw
+Git bytes. The one declared generated exception is `client_gather.dme`, whose
+macro/map/include projection is checked separately. Older9d0 packets recorded
+staged/archive hashes only and are preserved unused; they do not establish raw
+Git byte conservation. Result checking requires two original typed receipts, real advertised
 lit grass, the original held tool, sampled paid wait, two cuttings/turf replacement,
 balanced callbacks, natural Life and no late right-grass/output/new-worker effects.
 Elapsed-time polling (at least1, at most2deciseconds between accepted samples)

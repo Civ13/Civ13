@@ -13,7 +13,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts/gameplay_bridge'))
 from client_gather_profile import IDENTITIES, MAP, ORACLE, normal_dme, verify_dme, verify_map, verify_oracle
-from prepare_client_gather import prepare
+from prepare_client_gather import prepare, blob_id, raw_blobs, archive_relation
 from check_client_gather import read_json, verify_packet, verify_result
 import compile_client_gather
 
@@ -113,12 +113,14 @@ class ClientGatherSourceTests(unittest.TestCase):
                 self.assertFalse(out.exists())
             with self.assertRaises(ValueError): prepare(root, root / 'packet', HEAD)
 
-    def prepare_mock_packet(self, out, archive_extra=None, drift=False):
+    def prepare_mock_packet(self, out, archive_extra=None, drift=False, archive_transform=None):
         files = {p: (ROOT / p).read_bytes() for p in IDENTITIES}
         files.update({MAP: self.map.encode(), ORACLE: self.oracle.encode()})
         archive = io.BytesIO()
         with tarfile.open(fileobj=archive, mode='w') as tar:
             for path, data in files.items():
+                if archive_transform:
+                    data = archive_transform(path, data)
                 info = tarfile.TarInfo(path); info.size = len(data)
                 tar.addfile(info, io.BytesIO(data))
             if archive_extra:
@@ -135,7 +137,7 @@ class ClientGatherSourceTests(unittest.TestCase):
             if args[0] == 'show': return files[args[1].split(':', 1)[1]]
             if args[0] == 'archive': return archive.getvalue()
             raise AssertionError(args)
-        with patch('prepare_client_gather.git', side_effect=git), patch('prepare_client_gather.selected_files', return_value=sorted(files)):
+        with patch('prepare_client_gather.git', side_effect=git), patch('prepare_client_gather.selected_files', return_value=sorted(files)), patch('prepare_client_gather.raw_blobs', return_value=(files, {p: blob_id(data) for p, data in files.items()})):
             return prepare(ROOT, out, HEAD)
 
     def test_self_contained_archive_manifest_no_config_and_all_hashes(self):
@@ -188,6 +190,68 @@ class ClientGatherSourceTests(unittest.TestCase):
             for text in ('{"a":1,"a":2}', '{"a":NaN}'):
                 path.write_text(text)
                 with self.assertRaises(ValueError): read_json(path)
+
+    def test_archive_eol_conversion_is_discarded_and_only_raw_git_bytes_staged(self):
+        with tempfile.TemporaryDirectory() as temp:
+            out = Path(temp) / 'packet'
+            source = self.prepare_mock_packet(out, archive_transform=lambda p, data: data.replace(b'\n', b'\r\n') if p == MAP else data)
+            manifest = verify_packet(out, HEAD)
+            raw = self.map.encode()
+            self.assertEqual((source / MAP).read_bytes(), raw)
+            binding = manifest['git_source']['files'][MAP]
+            self.assertEqual(binding['git_blob_sha1'], blob_id(raw))
+            self.assertEqual(binding['raw_sha256'], hashlib.sha256(raw).hexdigest())
+            self.assertEqual(binding['archive_relation'], 'crlf_only_discarded')
+            self.assertNotEqual(binding['archive_sha256'], binding['raw_sha256'])
+
+    def test_non_eol_archive_transform_is_rejected_before_packet_write(self):
+        with tempfile.TemporaryDirectory() as temp:
+            out = Path(temp) / 'packet'
+            with self.assertRaisesRegex(ValueError, 'beyond explicit CRLF-only'):
+                self.prepare_mock_packet(out, archive_transform=lambda p, data: data + b'changed' if p == MAP else data)
+            self.assertFalse(out.exists())
+        for raw, archived in ((b'a\x00\r\n', b'a\x00\n'), (b'a\r', b'a\n'), (b'a ', b'a'), (b'a\n', b'b\r\n')):
+            with self.assertRaises(ValueError): archive_relation(raw, archived)
+
+    def test_raw_git_batch_binds_frozen_tree_and_binary_object_bytes(self):
+        raw = b'binary\x00\r\nunchanged\xff'
+        oid = blob_id(raw)
+        tree = ('100644 blob ' + oid + '\tfile.bin\0').encode()
+        batch = (oid + ' blob ' + str(len(raw)) + '\n').encode() + raw + b'\n'
+        with patch('prepare_client_gather.git', return_value=tree) as read_tree, patch('prepare_client_gather.subprocess.check_output', return_value=batch) as read_batch:
+            files, ids = raw_blobs(ROOT, HEAD, ['file.bin'])
+        self.assertEqual(files, {'file.bin': raw})
+        self.assertEqual(ids, {'file.bin': oid})
+        read_tree.assert_called_once_with(ROOT, 'ls-tree', '-r', '-z', HEAD)
+        self.assertEqual(read_batch.call_args.args[0], ['git', 'cat-file', '--batch'])
+        self.assertEqual(read_batch.call_args.kwargs['input'], (oid + '\n').encode())
+        for broken in (batch[:-1], batch + b'x', batch.replace(raw, raw[:-1] + b'x'), batch.replace(oid.encode(), b'b' * 40, 1)):
+            with patch('prepare_client_gather.git', return_value=tree), patch('prepare_client_gather.subprocess.check_output', return_value=broken), self.assertRaises(ValueError):
+                raw_blobs(ROOT, HEAD, ['file.bin'])
+        for broken_tree in (b'', tree.replace(b'100644', b'120000'), tree.replace(b'file.bin', b'other.bin')):
+            with patch('prepare_client_gather.git', return_value=broken_tree), self.assertRaises(ValueError):
+                raw_blobs(ROOT, HEAD, ['file.bin'])
+
+    def test_forged_raw_git_binding_or_missing_conservation_proof_refused(self):
+        with tempfile.TemporaryDirectory() as temp:
+            out = Path(temp) / 'packet'; self.prepare_mock_packet(out)
+            path = out / 'manifest.json'; original = json.loads(path.read_text())
+            for field, value in [('git_blob_sha1', 'b' * 40), ('raw_sha256', 'b' * 64),
+                                 ('raw_bytes', -1), ('archive_relation', 'arbitrary_normalization'),
+                                 ('archive_relation', 'crlf_only_discarded')]:
+                M = copy.deepcopy(original); M['git_source']['files'][MAP][field] = value
+                path.write_text(json.dumps(M))
+                with self.subTest(field=field), self.assertRaises(ValueError): verify_packet(out, HEAD)
+            M = copy.deepcopy(original); del M['git_source']; path.write_text(json.dumps(M))
+            with self.assertRaises(ValueError): verify_packet(out, HEAD)
+            M = copy.deepcopy(original)
+            altered = (out / 'source' / MAP).read_bytes() + b'//changed\n'
+            (out / 'source' / MAP).write_bytes(altered)
+            M['source_sha256'][MAP] = hashlib.sha256(altered).hexdigest()
+            M['git_source']['files'][MAP]['raw_sha256'] = M['source_sha256'][MAP]
+            M['git_source']['files'][MAP]['raw_bytes'] = len(altered)
+            path.write_text(json.dumps(M))
+            with self.assertRaisesRegex(ValueError, 'raw Git bytes/object'): verify_packet(out, HEAD)
 
     def test_compile_only_workflow_and_pinned_compiler_binding(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text()
