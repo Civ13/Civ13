@@ -24,6 +24,7 @@ class ExecutorGuards(unittest.TestCase):
                     events.append('persist')
 
                 def capture(actual, pid):
+                    self.assertEqual(events[-1], 'check')
                     self.assertIs(actual, adapter)
                     self.assertEqual(snapshots[-1]['unexpected_members'][-1]['status'], 'capture-pending')
                     self.assertEqual(snapshots[0]['membership']['pids'], [10, 20])
@@ -39,7 +40,7 @@ class ExecutorGuards(unittest.TestCase):
                     raise RuntimeError('Unexpected owned Job PID')
 
                 with self.assertRaisesRegex(RuntimeError, 'Unexpected owned Job PID'):
-                    runner.preserve_membership(record, adapter, child, persist, capture, reject)
+                    runner.preserve_membership(record, adapter, child, persist, lambda: events.append('check'), capture, reject)
                 self.assertEqual(adapter.retained, [20] if child == 10 else [10, 20])
                 self.assertEqual(events[-1], 'reject')
 
@@ -48,8 +49,26 @@ class ExecutorGuards(unittest.TestCase):
             persisted = []
             runner.preserve_membership({'membership': {'pids': pids}}, None, child,
                                        lambda: persisted.append(True),
+                                       lambda: self.fail('Unexpected capture check'),
                                        lambda *_: self.fail('Unexpected capture'), lambda *_: None)
             self.assertEqual(persisted, [True])
+
+    def test_failed_capture_limits_preserve_observation_without_capture(self):
+        for reason in ('lease expired', 'private memory bound', 'artifact bound'):
+            record = {'membership': {'pids': [20]}}
+            snapshots = []
+
+            def check():
+                self.assertEqual(snapshots[-1]['unexpected_members'][0]['status'], 'capture-pending')
+                raise RuntimeError(reason)
+
+            with self.subTest(reason=reason), self.assertRaisesRegex(RuntimeError, reason):
+                runner.preserve_membership(record, None, None,
+                                           lambda: snapshots.append(copy.deepcopy(record)), check,
+                                           lambda *_: self.fail('Capture exceeded limits'),
+                                           lambda *_: self.fail('Validation preceded limit failure'))
+            self.assertEqual(snapshots[0]['membership']['pids'], [20])
+            self.assertEqual(len(snapshots), 2)
 
     def test_compiled_artifacts_rejected_using_stat_before_content_access(self):
         with tempfile.TemporaryDirectory() as directory:
