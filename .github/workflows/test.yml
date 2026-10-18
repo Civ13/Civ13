@@ -527,6 +527,11 @@ jobs:
           for control in pair support removal foundation persistence; do
             python3 tests/building_levels/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/building-levels/$control"
           done
+          python3 tests/building_levels/run.py --lighting-gravity --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/gravity-positive"
+          python3 tests/building_levels/run.py --lighting-gravity --negative-control lighting-gravity --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/gravity-control"
+          python3 tests/building_levels/run.py --lighting-roof --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/roof-positive"
+          python3 tests/building_levels/run.py --lighting-roof --allocation-interleave --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/roof-interleave"
+          python3 tests/building_levels/run.py --lighting-roof --allocation-interleave --negative-control lighting-gravity --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/roof-control"
       - name: Upload linked building evidence
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/building_levels') || inputs.persistence_integration_regressions == true)
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

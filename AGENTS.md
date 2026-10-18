@@ -844,6 +844,13 @@ ordinary prestartup direct calls. tests/lighting_startup checks production
 bodies, shared identity, late replacement and failed waiters against a baseline;
 its adapted rendering does not establish client lighting acceptance.
 
+<!-- 2026-10-18: building renderer gravity -->
+Building-sky entry must exempt /atom/movable/lighting_overlay explicitly; it is
+not an /obj/effect. Runtime level allocation and turf replacement can otherwise
+drop a black renderer onto lit ground. The building lighting probes separate
+replacement callbacks, explicit entry, and an adapted allocation interleave.
+They verify native lighting state, not connected-client rendering.
+
 <!-- 2026-10-12: lighting reinitialization -->
 <!-- 2026-10-17: restored-round lighting -->
 Turf luminosity is always 0; native tile visibility comes from lighting overlay
