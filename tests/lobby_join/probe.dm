@@ -64,10 +64,13 @@ var/list/failures = list()
 	return title == "Scout" ? scout : null
 /proc/check_trait_points(value)
 	return value
+/proc/to_chat(atom/target, message)
+	return
 /proc/check_rights(right, ignored, mob/new_player/player)
 	return right == R_ADMIN && player.test_client.admin
 
 /mob/new_player
+	invisibility = 101
 	var/datum/mock_client/test_client
 	var/lobby_join_active = FALSE
 	var/datum/mock_client/lobby_join_client
@@ -171,6 +174,10 @@ var/list/failures = list()
 	player.lobby_join_native = TRUE
 
 /proc/run_checks()
+	var/join_verb = /mob/new_player/verb/Join
+	var/unsafe_verb = /mob/new_player/unsafe_visibility/verb/Join
+	expect("native_join_verb_visible", join_verb:invisibility == 0)
+	expect("negative_control_invisible_verb_detected", unsafe_verb:invisibility == 101)
 	var/mob/new_player/player = fresh_player()
 	expect("native_select_once", player.handle_lobby_join(list("late_join" = 1), TRUE) && player.dispatches == 1 && player.prompts == 1)
 	expect("normal_cleanup", !player.lobby_join_active && !player.lobby_join_client && !player.lobby_join_map && !player.lobby_join_jobs)

@@ -46,6 +46,7 @@ def main():
         raise RuntimeError('Native runtime diagnostics invalidate the result')
     result = json.loads((work / 'result.json').read_text())
     required = {'negative_control_stale_round_detected', 'negative_control_stale_role_detected',
+                'native_join_verb_visible', 'negative_control_invisible_verb_detected',
                 'normal_cleanup', 'duplicate_locked', 'exception_cleanup'}
     if not result.get('pass') or result.get('failures') or result.get('port') or not required <= set(result['checks']):
         raise RuntimeError(f'Join control assertions failed: {result}')
