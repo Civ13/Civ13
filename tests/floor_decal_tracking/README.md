@@ -129,8 +129,8 @@ Planned serial cases:
 | `fixed` | v7 passed 33 assertions; initialized counts 0, 1, 2 |
 | `eager`, `-params eager=1` | v7 passed 33 assertions; initialized counts 128, 128, 128 |
 | `eager`, no params | v7 rejected `bare turf allocation count` as intended |
-| `missing-lazy` | v7 observed the exact first-union exception below; corrected oracle awaits v8 |
-| `shared` | Unrun; must reject `two turf lists have independent identity` |
+| `missing-lazy` | v8 accepted the exact first-union exception below with sole initial 0/0 metric |
+| `shared` | v8 rejected `two turf lists have independent identity` with matching caught assertion |
 
 `eager` restores the exact old `= list()` declaration while retaining the new
 writer guard for explicit-null migration tests. It is an eager-default comparison,
@@ -151,7 +151,14 @@ was empty and the existing-daemon identity census was unchanged. The shared case
 did not run. The `--remaining-controls` successor runs missing-lazy and shared only,
 within 180 seconds aggregate (170 work plus 10 cleanup), retaining the same phase
 limits. Fixed/eager evidence is reused because those production and probe sources
-are unchanged. Native evidence is Windows-only and uses isolated startup adapters.
+are unchanged. The single v8 invocation at head `e5ee60c15` accepted both causal
+controls in 2.469 seconds including cleanup. All four phases exited zero, terminal
+Job membership was empty and active counts were zero. Both owned cleanups confirmed
+all retained handles exited without errors; six census observations preserved the
+existing daemon's identity. Original v7 failure evidence remains unchanged.
+Native evidence is Windows-only and uses isolated startup adapters. Engine startup
+logs contain account-login text; sampled socket checks establish only their bounded
+observations, not absence of every possible outbound connection.
 
 The prepared fixture uses the real `BuildVarDirectory`/`Load_Entry` and closes and
 reopens actual temporary `.sav` files. It is an entry roundtrip with isolated
