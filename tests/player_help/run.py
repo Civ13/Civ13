@@ -24,6 +24,14 @@ PRELUDE = '''
 #define WEATHER_WET 2
 #define WEATHER_EXTREME 3
 #define WEATHER_SMOG 4
+/world
+    hub = ""
+    visibility = 0
+/world/OpenPort(port)
+    return ..("none")
+/client/New()
+    del(src)
+    return null
 var/season = "WINTER"
 var/time_of_day = "Night"
 /proc/IsGuestKey(key)
@@ -119,7 +127,10 @@ PROBE = '''
         failures++
 var/failures = 0
 /world/New()
-    world.OpenPort(0)
+    world.OpenPort("none")
+    check(!world.port && !world.visibility, "fixture starts offline")
+    world.OpenPort(59474)
+    check(!world.port, "fixture refuses reopening")
     world.log << "BEGIN"
     var/datum/player_help_service/H = player_help_service
     H.root = "spool/"

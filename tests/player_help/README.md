@@ -50,7 +50,9 @@ Run `run.py --byond-bin <516.1681-bin>` and repeat with
 actual production DM help service with minimal process/global adapters and no
 normal world startup. The native fixture verifies heartbeat startup/expiry,
 malformed files, escaped HTML, request identity and disconnected-slot cleanup.
-It closes its port immediately and uses isolated disk files.
+It compiles with hub visibility disabled, refuses port opening and client admission,
+and uses isolated disk files. Native assertions check the closed port and refusal
+to reopen it. The external supervisor separately rejects non-loopback connections.
 
 Client ownership and absence of a duplicate mob verb are source-checked. The
 production verb/helper bodies run relocated to a mob proxy with injected

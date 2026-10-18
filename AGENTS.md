@@ -12,6 +12,11 @@ BYOND 516.1681 rejects the DM string escape `\r`; use `ascii2text(13)` for
 carriage-return normalization. `\n` is supported. JSON-decoded CRLF test data
 must still exercise the actual native renderer, not only a Python equivalent.
 
+<!-- 2026-10-18: isolated fixture ports -->
+`world.OpenPort(0)` opens an available port; `OpenPort("none")` closes it.
+The Help fixture disables compile-time visibility, rejects clients and overrides
+OpenPort to prevent reopening. These controls do not replace external socket monitoring.
+
 <!-- 2026-10-18: restored input clocks and action locks -->
 The custom saver includes changed tmp fields. Mob next_click/next_move and
 may_do_after/may_do_mob are process-local deadlines/locks: exclude them on export
