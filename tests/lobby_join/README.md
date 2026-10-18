@@ -3,6 +3,10 @@
 The typed `Join` command is available on lobby mobs in the Lobby verb category.
 Enter `Join` in the BYOND command bar or select **File > Join round** from the
 native client menu. Both routes invoke exactly the same server verb.
+The verb explicitly sets `invisibility = 0`: BYOND otherwise inherits the lobby
+mob's invisibility of 101, which can make a menu-bound command inaccessible.
+This changes verb access only; lobby mob invisibility and player vision stay as
+before. The source check rejects omitted or inherited invisible verb settings.
 Direct-spawn modes use their usual join
 handler; modes with role lists use a native BYOND role prompt. Cancel the prompt
 to remain in the lobby. This source change requires a rebuilt server before use.
