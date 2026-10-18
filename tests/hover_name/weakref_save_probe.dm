@@ -3,15 +3,15 @@
 #define REF(D) "\ref[D]"
 #define QDEL_HINT_LETMELIVE 1
 /datum
-	var/name
 	var/gc_destroyed = FALSE
 	var/datum/weakref/weak_reference
 /datum/proc/Destroy()
 	return
 /datum/proc/MouseExited(atom/object, location, control, params)
 	return
-/obj/screen
+/obj/screen/hover_name
 	var/mob/living/parentmob
+/obj/screen
 	var/process_flag = FALSE
 /obj/screen/proc/process()
 	return
