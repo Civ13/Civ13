@@ -95,4 +95,13 @@
 	check(!legacy.weak_reference && !("900" in map_storage.existing_references), "flat historical weak cache imported")
 	check(WEAKREF(legacy).resolve() == legacy, "flat restored weak handle fails to resolve")
 	map_storage.clear_bookkeeping()
+	// Leave no duplicate ownership or test inventory for the parent world save.
+	qdel(label)
+	qdel(C)
+	qdel(I)
+	for(var/obj/item/test/restored_item in R)
+		qdel(restored_item)
+	qdel(H)
+	qdel(R)
+	qdel(legacy)
 	world.log << "PASS weak reference save migration and restored own hover"
