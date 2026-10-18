@@ -1,6 +1,7 @@
 """Optional bounded local spool worker. Never launched by the game; no game admin API."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
+from decimal import Decimal
 import json
 import math
 import hashlib
@@ -100,6 +101,47 @@ class RequestLimiter:
             self.active.discard(account)
 
 
+MATERIAL_CONDITIONS = re.compile(
+    r'(?P<gates>Legacy research I/M/M: [0-9]+/[0-9]+/[0-9]+; maximum era ordinal [0-9]+); '
+    r'time (?P<time>[0-9]{1,7}(?:\.[0-9]{1,3})?) deciseconds; '
+    r'(?P<category>category [^;\n]{1,100}); one per turf (?P<one>[01]); floor (?P<floor>[01]); '
+    r'(?P<material>supplied material [^;\n]{1,100}?\.)(?P<extra>.*)', re.DOTALL)
+
+
+def recipe_conditions(recipe):
+    """Interpret only the known legacy Material schema, never arbitrary prose."""
+    raw = recipe.get('conditions', '')
+    if not isinstance(raw, str):
+        return 'Unknown catalog conditions.'
+    raw = raw[:500]
+    kind = recipe.get('kind')
+    if not isinstance(kind, str) or not kind.startswith('Material / '):
+        return raw
+    match = MATERIAL_CONDITIONS.fullmatch(raw)
+    if not match:
+        return ('Catalog conditions (uninterpreted): ' + raw)[:500]
+    fields = match.groupdict()
+    seconds = format(Decimal(fields['time']) / 10, 'f')
+    if '.' in seconds:
+        seconds = seconds.rstrip('0').rstrip('.')
+    if Decimal(fields['time']):
+        duration = (f'base construction time {seconds} simulation seconds; strength/crafting '
+                    'modifiers (crafting squared); rounded and interruptible')
+    else:
+        duration = 'base construction time 0 simulation seconds (no timed wait)'
+    one = ('at most one resulting object per tile' if fields['one'] == '1'
+           else 'no recipe-specific one-per-tile restriction')
+    floor = ('requires a floor-tile surface' if fields['floor'] == '1'
+             else 'no recipe-specific floor-tile surface requirement')
+    formatted = (f"{fields['gates']}; {duration}; {fields['category']}; {one}; {floor}; "
+                 f"{fields['material']}{fields['extra']}")
+    if len(formatted) > 500:
+        # Expansion must not silently discard a research or placement gate.
+        return ('Material recipe conditions exceed the context limit; placement, timing and '
+                'research requirements are unknown here. Consult the Crafting Atlas.')
+    return formatted
+
+
 def recipe_context(path):
     """Project the already player-facing atlas, excluding source/developer fields."""
     atlas = bounded_json(path, 16 * 1024 * 1024)
@@ -115,7 +157,7 @@ def recipe_context(path):
             rows = recipe.get(key, [])
             if isinstance(rows, list):
                 parts.append(key + ': ' + ', '.join(str(row.get('quantity', ''))[:30] + ' x ' + ('softwood' if row.get('id') == '/material/wood/soft' else str(row.get('name', ''))[:100]) for row in rows[:20] if isinstance(row, dict)))
-        parts.append('Conditions: ' + str(recipe.get('conditions', ''))[:500])
+        parts.append('Conditions: ' + recipe_conditions(recipe))
         text = '\n'.join(parts)[:2000]
         result.append({'topic': str(recipe.get('name', ''))[:150].lower(), 'text': text, 'source': 'recipe', 'catalog': str(recipe.get('kind', ''))})
     return result

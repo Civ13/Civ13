@@ -7,6 +7,21 @@ the native scientific-notation ID plus CRLF round trip. The spool tests also
 reject malformed/oversized IDs, path or command characters, embedded/repeated
 line endings and stale completion markers. These use injected model transports.
 All storage is temporary and HTTP is an injected transport; no remote Ollama calls.
+
+`test_recipe_context.py` checks the actual primitive-sawmill legacy catalog row
+against its material recipe and captures the real bridge prompt through an
+injected transport. Exact Material condition grammar maps floor/one-per-tile
+0/1 flags to surface/duplicate rules and labels deciseconds as a base simulation
+duration adjusted by strength and crafting (crafting squared), with rounding and
+interruptions. All recognized installed Material rows retain their research/map
+gate clauses. Unknown, malformed and unrelated conditions are not reinterpreted;
+expansion beyond the existing 500-character budget reports unknown requirements
+instead of silently dropping a gate. Existing recipe/prompt/privacy bounds stay
+in force. These tests generate no model answer and do not establish live answer
+quality. The running helper builds its corpus at startup; source changes need a
+separately reviewed helper reload before they can affect it. No game build or
+catalog regeneration is needed for this legacy-catalog formatting correction.
+
 The transport deadline test verifies the child-process timeout contract, not a
 network benchmark. Cases cover identity reuse, no replay, disabled/failure,
 bounded answers, no source metadata and exclusive worker ownership.
