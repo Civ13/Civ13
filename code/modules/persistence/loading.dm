@@ -46,6 +46,8 @@
 			var/za = old_turf.z
 			old_turf.ChangeTurf(type, FALSE, FALSE)
 			object = locate(xa,ya,za)
+			var/turf/restored_turf = object
+			restored_turf.activate_reserved_lighting()
 		else if(replacement)
 			object = replacement
 		else if(ispath(type, /atom))

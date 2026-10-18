@@ -15,6 +15,8 @@
 /turf/reserved_lighting_probe/New()
 	return
 /turf/reserved_lighting_probe/replaced
+/turf/reserved_lighting_probe/reserved_subtype
+	lighting_reserved = TRUE
 /area/reserved_lighting_probe
 	dynamic_lighting = TRUE
 /area/reserved_lighting_probe/New()
@@ -70,6 +72,27 @@
 				unique_corners |= C
 		reserved_assert(overlays == (candidate ? 220 : 256), "overlay allocation count")
 		reserved_assert(unique_corners.len == 289, "unchanged full corner grid")
+		if (candidate)
+			var/turf/refusal_site = locate(9,9,1)
+			var/atom/movable/lighting_overlay/refused = new(refusal_site)
+			reserved_assert(!refused.loc, "refused constructor detached before deferred deletion")
+			refusal_site.activate_reserved_lighting()
+			var/atom/movable/lighting_overlay/owner = refusal_site.lighting_overlay
+			reserved_assert(owner, "post-refusal activation owner")
+			// Exercise the actual deferred cleanup body after a new owner exists.
+			refused.Destroy()
+			reserved_assert(refusal_site.lighting_overlay == owner, "refused cleanup preserves new owner")
+			// Simulated startup barrier: activation must return in this tick,
+			// and the queued refresh must complete only after successful readiness.
+			lighting_startup_in_progress = TRUE
+			var/turf/during_startup = locate(6,10,1)
+			var/activation_tick = world.time
+			spawn(2)
+				lighting_startup_in_progress = FALSE
+			during_startup.activate_reserved_lighting()
+			reserved_assert(world.time == activation_tick, "startup activation does not block owner")
+			sleep(4)
+			reserved_assert(during_startup.lighting_overlay, "startup activation deferred refresh")
 		var/obj/reserved_lighting_probe/torch = new(locate(3,8,1))
 		torch.light_range = 14
 		torch.light_power = 0.7
@@ -110,6 +133,7 @@
 		// Actual production entry save/import, no live or existing saves.
 		var/map_storage/storage = new
 		var/savefile/F = new("reserved-roundtrip.sav")
+		F["/format_version"] << 2
 		storage.saving_z = 1
 		var/index = storage.BuildVarDirectory(F,center)
 		// Historical/malformed runtime fields cannot restore a reservation.
@@ -119,6 +143,12 @@
 		var/turf/destination = locate(7,7,1)
 		storage.Load_Entry(F,index,destination)
 		reserved_assert(!destination.lighting_reserved && destination.lighting_overlay, "import activates")
+		F.cd = storage.entry_path(F,index)
+		F["type"] << /turf/reserved_lighting_probe/reserved_subtype
+		storage.clear_bookkeeping()
+		var/turf/subtype_destination = locate(7,10,1)
+		storage.Load_Entry(F,index,subtype_destination)
+		reserved_assert(!subtype_destination.lighting_reserved && subtype_destination.lighting_overlay, "reserved replacement subtype imports active")
 		reserved_snapshot("activated")
 		text2file("PASS", "result.txt")
 	catch (var/exception/E)

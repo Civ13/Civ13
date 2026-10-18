@@ -28,8 +28,12 @@ are assertions to verify, not results: 256 normal overlays versus 220 for an
 8x8 reserved region on a 16x16 world, with 289 shared corners in both modes.
 It records normal/halo color, luminosity, ownership and source membership rows,
 torch movement, daylight, opacity, activation, replacement and native entry
-roundtrip. Paired runs must compare complete states.jsonl rows. Further native
-controls for direct pooled constructors, ice repair, carried sources, repeat
+roundtrip. Refusal followed by activation and actual cleanup-body invocation
+must retain the new owner. Simulated startup-barrier activation must return
+without waiting and refresh afterward. Reserved subtype imports must activate
+the new turf, including when the old turf has a different type.
+Paired runs must compare complete states.jsonl rows. Further native
+controls for pooled constructors, ice repair, carried sources, repeat
 activation/startup, cancellation and startup-yield races remain required.
 The import-only control is a source mutation, not yet an independently proven
 runtime oracle: ChangeTurf also activates as defense in depth.
@@ -41,3 +45,7 @@ root coordinates shared CI selection after review. Compiler success alone will
 not establish allocation counts or lighting parity. No memory/speed gain measured.
 The marker adds a scalar field to every turf, including ordinary cells. That cost
 is unmeasured. Overlay counts alone cannot establish a net reduction in RAM.
+Serializer-only world-save, dimension, operations and wall fixtures share the
+minimal `tests/world_save/stubs.dm` adapter. It permits only default-false cells
+and raises an error for reserved ones; full production lighting tests must not
+include that adapter.

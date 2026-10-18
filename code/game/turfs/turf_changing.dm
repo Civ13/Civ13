@@ -23,6 +23,9 @@
 	lighting_overlay = old_lighting_overlay
 	affecting_lights = old_affecting_lights
 	corners = old_lighting_corners
+	// A replacement subtype may itself have a map-authored reservation default.
+	// Restore graph ownership before activation can build any missing overlay.
+	W.activate_reserved_lighting()
 	rad_act(old_radiation)
 
 	for (var/atom/A in contents)

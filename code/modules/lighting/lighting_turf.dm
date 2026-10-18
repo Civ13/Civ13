@@ -215,8 +215,19 @@
 	if (!lighting_reserved)
 		return
 	lighting_reserved = FALSE
-	if (!created_lighting_corners_and_overlays && !lighting_startup_in_progress)
+	if (lighting_startup_in_progress)
+		// Never make a bulk-startup owner wait on its own readiness barrier.
+		spawn()
+			while (lighting_startup_in_progress)
+				sleep(world.tick_lag)
+			if (created_lighting_corners_and_overlays)
+				refresh_reserved_lighting_halo()
 		return
+	if (!created_lighting_corners_and_overlays)
+		return
+	refresh_reserved_lighting_halo()
+
+/turf/proc/refresh_reserved_lighting_halo()
 	for (var/turf/T in range(1, src))
 		if (!T.omit_reserved_lighting_overlay())
 			T.lighting_build_overlay()

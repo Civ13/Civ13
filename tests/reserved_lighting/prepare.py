@@ -21,6 +21,7 @@ CONTROLS = {
     'runtime': (FILES[0], '\tif (omit_reserved_lighting_overlay())\n\t\treturn\n', ''),
     'import': (FILES[6], '\t\t\told_turf.activate_reserved_lighting()\n', '\t\t\t;\n'),
     'halo': (FILES[0], '\t\tif (!T.lighting_reserved)\n\t\t\treturn FALSE\n', ''),
+    'refusal-owner': (FILES[3], '\t\tsrc.loc = null\n', ''),
 }
 
 
