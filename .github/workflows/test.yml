@@ -184,7 +184,7 @@ jobs:
         shell: bash
         run: |
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
-          python3 -m unittest discover -s tests/lobby_join -p test_source.py
+          python3 -m unittest discover -s tests/lobby_join -p 'test_*.py'
           python3 tests/lobby_join/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
 
       - name: Verify scheduler replacement ownership and omission controls
