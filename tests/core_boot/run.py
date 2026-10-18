@@ -159,6 +159,8 @@ def main():
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--negative-control', choices=CONTROLS)
+    parser.add_argument('--compile-only', action='store_true',
+                        help='Generate and strictly compile the selected fixture, then exit without launching DreamDaemon')
     parser.add_argument('--lighting-load', action='store_true',
                         help='Also save and load the world, comparing turf lighting overlays')
     parser.add_argument('--lighting-restart', action='store_true',
@@ -172,23 +174,47 @@ def main():
         parser.error('Preserve existing evidence; use an empty output directory')
     byond = args.byond_bin.resolve()
     compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
-    daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     head = git('rev-parse', 'HEAD').strip()
     (args.output / 'metadata.json').write_text(json.dumps({
         'head_sha': head, 'control': args.negative_control,
+        'compile_only': args.compile_only, 'lighting_load': args.lighting_load,
+        'lighting_restart': args.lighting_restart,
         'probe_sha256': hashlib.sha256((ROOT / 'tests/core_boot/probe.dm').read_bytes()).hexdigest(),
-        'scope': 'Headless full-source boot and round start with processes running; no clients, rendering or long-term memory'}, indent=2), encoding='utf-8')
+        'scope': ('Generated full-source fixture compilation only; no DreamDaemon or runtime assertions' if args.compile_only else
+                  'Headless full-source boot and round start with processes running; no clients, rendering or long-term memory')}, indent=2), encoding='utf-8')
     (args.output / 'tested.patch').write_text(git('diff', 'HEAD'), encoding='utf-8')
     created = []
     try:
         source, runtime_site = generate(args.negative_control, created, args.lighting_load, args.map, args.lighting_restart, args.diverge_turfs)
-        build = subprocess.run([str(compiler), '-max_errors', '0', str(source)], cwd=ROOT,
-                               capture_output=True, text=True, timeout=600, creationflags=flags)
+        try:
+            build = subprocess.run([str(compiler), '-max_errors', '0', str(source)], cwd=ROOT,
+                                   capture_output=True, text=True, timeout=600, creationflags=flags)
+        except subprocess.TimeoutExpired as error:
+            def decoded(value):
+                return value.decode('utf-8', errors='replace') if isinstance(value, bytes) else (value or '')
+            (args.output / 'compile.log').write_text(decoded(error.stdout) + decoded(error.stderr), encoding='utf-8')
+            (args.output / 'compile-status.json').write_text(json.dumps({
+                'returncode': None, 'timed_out': True, 'deadline_seconds': 600,
+                'runtime_executed': False}, indent=2), encoding='utf-8')
+            raise
         compile_log = build.stdout + build.stderr
         (args.output / 'compile.log').write_text(compile_log, encoding='utf-8')
-        if build.returncode or '516.1681' not in compile_log or '0 errors, 0 warnings' not in compile_log:
+        (args.output / 'compile-status.json').write_text(json.dumps({
+            'returncode': build.returncode, 'timed_out': False, 'deadline_seconds': 600,
+            'runtime_executed': False}, indent=2), encoding='utf-8')
+        if (build.returncode or not re.search(r'\b516\.1681\b', compile_log) or
+                not re.search(r'(?<!\d)0 errors, 0 warnings\b', compile_log)):
             raise RuntimeError('Pinned zero-error/zero-warning compilation failed:\n' + compile_log[-4000:])
+        if args.compile_only:
+            (args.output / 'compile-summary.json').write_text(json.dumps({
+                'head_sha': head, 'returncode': build.returncode,
+                'source_sha256': hashlib.sha256(source.read_bytes()).hexdigest(),
+                'runtime_control_site': runtime_site, 'runtime_executed': False,
+                'scope': 'Compilation only; no runtime or negative-control detection verified'}, indent=2), encoding='utf-8')
+            print('PASS: generated core-boot fixture compiled only (no DreamDaemon)')
+            return
+        daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
         with tempfile.TemporaryDirectory(prefix='civ13-core-boot-') as temporary:
             work = Path(temporary)
             for suffix in ('.dmb', '.rsc'):

@@ -132,6 +132,17 @@ jobs:
         run: sudo bash ./scripts/travis_pre_byond.sh
         shell: bash
 
+      - name: Check core-boot runner offline and compile generated variants
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/core_boot')
+        timeout-minutes: 32
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 -B -m unittest discover -s tests/core_boot -p test_runner.py -v
+          /usr/bin/python3 -B tests/core_boot/run.py --byond-bin "$PWD/BYOND/byond/bin" --compile-only --output "$RUNNER_TEMP/core-boot-compile/default"
+          /usr/bin/python3 -B tests/core_boot/run.py --byond-bin "$PWD/BYOND/byond/bin" --compile-only --negative-control runtime --output "$RUNNER_TEMP/core-boot-compile/runtime"
+          /usr/bin/python3 -B tests/core_boot/run.py --byond-bin "$PWD/BYOND/byond/bin" --compile-only --lighting-load --output "$RUNNER_TEMP/core-boot-compile/lighting-load"
+
       - name: Verify paid rack save and six mutation controls
         if: github.event_name == 'workflow_dispatch' && inputs.rack_save_regressions
         timeout-minutes: 20

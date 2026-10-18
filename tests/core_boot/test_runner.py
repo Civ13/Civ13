@@ -207,6 +207,138 @@ class RunnerTests(unittest.TestCase):
             self.assertIn('core_boot_probe.current_phase == "chemistry"', text)
 
 
+class CompileOnlyTests(unittest.TestCase):
+    def invoke(self, root, options=(), build=None):
+        probe = root / 'tests/core_boot/probe.dm'
+        probe.parent.mkdir(parents=True)
+        probe.write_text('// offline probe', encoding='utf-8')
+        path, old, _, _ = runner.CONTROLS['runtime']
+        production = root / path
+        production.parent.mkdir(parents=True)
+        production.write_text(old + '\treturn FALSE\n', encoding='utf-8')
+        (root / 'civ13.dme').write_text('#include "' + path.replace('/', '\\') + '"\n', encoding='utf-8')
+        output = root / 'evidence'
+        compiler_calls = []
+        def compiler(command, **kwargs):
+            compiler_calls.append((command, kwargs))
+            source = Path(command[-1])
+            self.assertTrue(source.is_file())
+            text = source.read_text(encoding='utf-8')
+            self.assertIn('#include "tests\\core_boot\\probe.dm"', text)
+            self.assertEqual('#define CORE_BOOT_LIGHTING_LOAD' in text, '--lighting-load' in options)
+            control_sources = list(root.glob('.core_boot_*_control.dm'))
+            self.assertEqual(bool(control_sources), 'runtime' in options)
+            if control_sources:
+                self.assertIn('throw EXCEPTION("' + runner.RUNTIME_CONTROL_MESSAGE + '")',
+                              control_sources[0].read_text(encoding='utf-8'))
+            self.assertEqual(command[:3], [str(root / ('dm.exe' if runner.os.name == 'nt' else 'DreamMaker')),
+                                          '-max_errors', '0'])
+            self.assertEqual(kwargs['cwd'], root)
+            self.assertEqual(kwargs['timeout'], 600)
+            # No binary is needed for a compile-only receipt. Runtime staging
+            # would fail if the early return were removed, even without mocks.
+            if isinstance(build, BaseException):
+                raise build
+            return build or subprocess.CompletedProcess(command, 0, '516.1681: 0 errors, 0 warnings', '')
+        def git(*args):
+            if args == ('rev-parse', 'HEAD'):
+                return 'a' * 40
+            if args == ('diff', 'HEAD'):
+                return ''
+            self.fail('Compile-only entered runtime config enumeration: ' + repr(args))
+        argv = ['run.py', '--byond-bin', str(root), '--output', str(output), '--compile-only', *options]
+        with mock.patch.object(runner, 'ROOT', root), mock.patch.object(runner, 'git', side_effect=git), \
+                mock.patch.object(runner.subprocess, 'run', side_effect=compiler), \
+                mock.patch.object(runner.subprocess, 'Popen', side_effect=AssertionError('Daemon launch forbidden')), \
+                mock.patch.object(runner, 'run_phases', side_effect=AssertionError('Runtime phases forbidden')), \
+                mock.patch.object(runner, 'verify_results', side_effect=AssertionError('Runtime assertions forbidden')), \
+                mock.patch.object(runner.tempfile, 'TemporaryDirectory', side_effect=AssertionError('Runtime staging forbidden')), \
+                mock.patch.object(runner.shutil, 'copy2', side_effect=AssertionError('Runtime config/binary copying forbidden')), \
+                mock.patch.object(sys, 'argv', argv):
+            runner.main()
+        return output, compiler_calls
+
+    def test_three_variants_generate_compile_and_never_enter_runtime(self):
+        for options, define in [((), None), (('--negative-control', 'runtime'), None),
+                                (('--lighting-load',), '#define CORE_BOOT_LIGHTING_LOAD')]:
+            with self.subTest(options=options), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                output, calls = self.invoke(root, options)
+                self.assertEqual(len(calls), 1)
+                metadata = json.loads((output / 'metadata.json').read_text())
+                summary = json.loads((output / 'compile-summary.json').read_text())
+                self.assertTrue(metadata['compile_only'])
+                self.assertFalse(summary['runtime_executed'])
+                self.assertEqual(summary['returncode'], 0)
+                self.assertRegex(summary['source_sha256'], r'^[0-9a-f]{64}$')
+                self.assertEqual(metadata['lighting_load'], bool(define))
+                self.assertEqual(bool(summary['runtime_control_site']), 'runtime' in options)
+                self.assertFalse((output / 'runtime').exists())
+                self.assertFalse((output / 'summary.json').exists())
+                self.assertFalse(list(root.glob('.core_boot_*')))
+
+    def test_nonzero_compile_rejects_and_preserves_log(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with self.assertRaisesRegex(RuntimeError, 'compilation failed'):
+                self.invoke(root, build=subprocess.CompletedProcess([], 4, '516.1681: 0 errors, 0 warnings', ''))
+            self.assertIn('0 errors', (root / 'evidence/compile.log').read_text())
+            self.assertEqual(json.loads((root / 'evidence/compile-status.json').read_text())['returncode'], 4)
+            self.assertFalse((root / 'evidence/compile-summary.json').exists())
+            self.assertFalse(list(root.glob('.core_boot_*')))
+
+    def test_wrong_version_errors_warnings_or_missing_summary_reject(self):
+        for log in ['516.1680: 0 errors, 0 warnings', '516.16810: 0 errors, 0 warnings',
+                    '516.1681: 10 errors, 0 warnings', '516.1681: 0 errors, 1 warning', '516.1681']:
+            with self.subTest(log=log), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                with self.assertRaisesRegex(RuntimeError, 'compilation failed'):
+                    self.invoke(root, build=subprocess.CompletedProcess([], 0, log, ''))
+                self.assertEqual((root / 'evidence/compile.log').read_text(), log)
+                self.assertFalse(json.loads((root / 'evidence/compile-status.json').read_text())['runtime_executed'])
+                self.assertFalse(list(root.glob('.core_boot_*')))
+
+    def test_compile_timeout_never_falls_through_and_cleans_generated_files(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with self.assertRaises(subprocess.TimeoutExpired):
+                self.invoke(root, build=subprocess.TimeoutExpired('offline compiler', 600, output=b'partial compile', stderr=b' timeout'))
+            self.assertEqual((root / 'evidence/compile.log').read_text(), 'partial compile timeout')
+            status = json.loads((root / 'evidence/compile-status.json').read_text())
+            self.assertTrue(status['timed_out'])
+            self.assertFalse(status['runtime_executed'])
+            self.assertFalse(list(root.glob('.core_boot_*')))
+            self.assertFalse((root / 'evidence/compile-summary.json').exists())
+
+    def test_workflow_compile_argv_and_actual_introduced_suite_selection(self):
+        root = HERE.parents[1]
+        spec = importlib.util.spec_from_file_location('core_boot_ci_selection', root / 'scripts/select-ci.py')
+        selection = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(selection)
+        workflow = (root / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        step = workflow.split('      - name: Check core-boot runner offline and compile generated variants\n', 1)[1].split('\n      - name:', 1)[0]
+        self.assertIn("if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/core_boot')", step)
+        self.assertIn('timeout-minutes: 32', step)
+        commands = [line.strip() for line in step.splitlines() if 'tests/core_boot/run.py ' in line]
+        self.assertEqual(len(commands), 3)
+        self.assertTrue(all('--compile-only' in line for line in commands))
+        self.assertEqual(sum('--negative-control runtime' in line for line in commands), 1)
+        self.assertEqual(sum('--lighting-load' in line for line in commands), 1)
+        self.assertIn('-m unittest discover -s tests/core_boot -p test_runner.py -v', step)
+        for added, event, opted_in, expected in [
+                (b'tests/core_boot/test_runner.py\0', 'pull_request', False, True),
+                (b'tests/unrelated/probe.dm\0', 'pull_request', False, False),
+                (b'', 'pull_request', False, False),
+                (b'', 'workflow_dispatch', True, True),
+                (b'', 'workflow_dispatch', False, False),
+                (b'tests/core_boot/test_runner.py\0', 'push', False, False)]:
+            with self.subTest(added=added, event=event, opted_in=opted_in), \
+                    mock.patch.object(selection.subprocess, 'check_output', return_value=added):
+                suites = selection.introduced_tests('base', 'head', event)
+                selected = selection.needs_extensive(event, opted_in) or 'tests/core_boot' in suites
+                self.assertEqual(selected, expected)
+
+
 class DMList:
     def __init__(self, length):
         self.len = length

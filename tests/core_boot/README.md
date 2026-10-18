@@ -26,7 +26,26 @@ expression through a restricted Boolean/member/comparison syntax adapter. They
 cover the old queue-only false-idle state and exhausted batches, but do not prove
 DM compilation, native scheduling, rendering or heap behavior.
 
+Generate and compile a fixture without starting DreamDaemon:
+
+```powershell
+py -3 -B tests/core_boot/run.py --byond-bin C:/BYOND/bin --compile-only --output C:/evidence/core-boot-default
+```
+
+Use an empty output directory. Add `--negative-control runtime` or
+`--lighting-load` to compile those generated variants. Compilation requires
+BYOND 516.1681, exit zero and zero errors/warnings, with a 600-second deadline.
+Compile-only returns before runtime staging, config copying or daemon launch;
+it preserves compile logs, source hash and control location, then removes the
+generated source and binaries. It does not verify an expected runtime failure.
+
+The existing CI build job selects the offline checks and these three compile-only
+variants when a PR introduces executable tests/core_boot files, or when the
+existing extensive regressions option is enabled. Later edits alone do not select
+the suite. The step has a 32-minute cap for three sequential 600-second compiles.
+
 Native core-boot and fresh-process lighting runs still need separate authorized
 BYOND 516.1681 execution and graphical acceptance. The runtime exception's native
-file/line receipt also needs that verification. This WIP harness is not wired
-into CI; offline success does not establish a native or gameplay pass.
+file/line receipt also needs that verification. Native runtime execution of this
+WIP harness is not wired into CI; offline checks and compile-only success do not
+establish a native runtime or gameplay pass.
