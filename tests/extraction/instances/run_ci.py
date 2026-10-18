@@ -62,9 +62,12 @@ def verdict(log, expected, control):
         require(log.count('INSTANCE PROBE FAILED: ' + str(len(failures))) == 1
                 and 'INSTANCE PROBE COMPLETE' not in log, 'Invalid control terminator')
     target = CONTROLS[control][2] if control != 'baseline' else None
+    collateral = [label for label in failures if label != target]
     return {'assertions': len(rows), 'failures': failures, 'expected_control': control,
-            'expected_target': target, 'collateral_failure_labels': [label for label in failures if label != target],
-            'oracle': 'baseline all pass' if control == 'baseline' else 'named target required; collateral reported'}
+            'expected_target': target, 'target_detected': target in failures if target else None,
+            'collateral_failure_labels': collateral, 'accepted': not collateral,
+            'status': 'needs_review' if collateral else 'accepted',
+            'oracle': 'baseline all pass' if control == 'baseline' else 'only named target failure accepted'}
 
 
 def compiler_verdict(log):
@@ -166,10 +169,11 @@ def main():
                     'Runtime console diagnostic invalidates evidence')
             outcome = verdict((case / 'runtime.log').read_text(errors='replace'), expected, control)
             result['cases'][control] = dict(outcome, compile=compilation, runtime=runtime)
-        result['success'] = True
+        result['success'] = all(case['accepted'] for case in result['cases'].values())
     finally:
         (args.output / 'result.json').write_text(json.dumps(result, indent=2), encoding='utf-8')
     print(json.dumps(result, indent=2))
+    require(result['success'], 'Unreviewed collateral assertion failures require review')
 
 
 if __name__ == '__main__':

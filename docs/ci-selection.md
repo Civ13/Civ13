@@ -36,8 +36,9 @@ game. It runs 35 authored assertions against committed source, then two generate
 mutations: overlapping private-home z intervals and stale allocation generation.
 Each mutation must fail its exact named assertion; compile/runtime errors,
 missing assertions and timeouts are failures, not successful negative controls.
-Additional assertion failures are reported separately as collateral; this is a
-required-target oracle, not a frozen complete set of expected native failures.
+Only the named target may fail for an accepted control. Additional failed
+assertions are retained as collateral with `needs_review`; the overall run fails
+until the complete failure set is causally reviewed and an updated oracle approved.
 The job has a 12-minute limit, five-minute setup and six-minute test steps;
 the runner additionally bounds compiler/runtime CPU, memory, output and wall time.
 Seven-day `extraction-instances-<SHA>` artifacts retain source manifests, binary

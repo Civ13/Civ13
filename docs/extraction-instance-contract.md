@@ -94,9 +94,11 @@ The baseline must report all 35 unique authored assertions and the successful
 terminator. The overlap control must fail `XY-separated homes cannot share z
 interval`; the generation control must fail `wrong scope acquire rejected`.
 Both controls must still report the complete assertion set and their matching
-failure count. Other failed assertions are reported separately as collateral;
-the acceptance oracle requires the named target, rather than claiming a frozen
-complete native failure set. Diagnostic, compiler, process, timeout and missing-result failures
+failure count. Only the named target may fail for acceptance. Other failed
+assertions are retained separately as collateral: `target_detected` may be true,
+but the control has `needs_review`, `accepted=false`, and overall success stays
+false. Review the actual complete failure set against the single injected change
+before approving a successor oracle. Diagnostic, compiler, process, timeout and missing-result failures
 invalidate evidence. Synthetic oracle tests verify rejection logic only; they
 do not establish that either mutated DM program has run.
 

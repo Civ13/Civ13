@@ -22,7 +22,9 @@ class RunnerContracts(unittest.TestCase):
         for control, (_, _, label) in runner.CONTROLS.items():
             log = self.positive.replace('PASS: ' + label, 'FAIL: ' + label).replace(
                 'INSTANCE PROBE COMPLETE', 'INSTANCE PROBE FAILED: 1')
-            self.assertEqual(runner.verdict(log, self.labels, control)['failures'], [label])
+            result = runner.verdict(log, self.labels, control)
+            self.assertEqual(result['failures'], [label])
+            self.assertTrue(result['accepted'])
             with self.assertRaisesRegex(ValueError, 'exact assertion'):
                 runner.verdict(log.replace('FAIL: ' + label, 'PASS: ' + label), self.labels, control)
 
@@ -41,7 +43,7 @@ class RunnerContracts(unittest.TestCase):
         with self.assertRaises(ValueError):
             runner.verdict(self.positive, self.labels, 'overlap')
 
-    def test_control_requires_named_target_and_reports_collateral_separately(self):
+    def test_control_requires_named_target_and_cannot_accept_unreviewed_collateral(self):
         target = runner.CONTROLS['overlap'][2]
         collateral = next(label for label in sorted(self.labels) if label != target)
         log = self.positive.replace('PASS: ' + target, 'FAIL: ' + target).replace(
@@ -50,9 +52,49 @@ class RunnerContracts(unittest.TestCase):
         result = runner.verdict(log, self.labels, 'overlap')
         self.assertEqual(result['expected_target'], target)
         self.assertEqual(result['collateral_failure_labels'], [collateral])
-        self.assertEqual(result['oracle'], 'named target required; collateral reported')
+        self.assertTrue(result['target_detected'])
+        self.assertFalse(result['accepted'])
+        self.assertEqual(result['status'], 'needs_review')
         with self.assertRaisesRegex(ValueError, 'exact assertion'):
             runner.verdict(log.replace('FAIL: ' + target, 'PASS: ' + target), self.labels, 'overlap')
+
+    def test_unreviewed_collateral_leaves_overall_native_collection_unaccepted(self):
+        source = (runner.ROOT / runner.SOURCE).read_bytes()
+        def simulated_process(command, folder, name, *limits):
+            if name == 'compile.log':
+                (folder / name).write_text('DM compiler version 516.1681\n- 0 errors, 0 warnings\n')
+            else:
+                (folder / name).write_text('')
+                control = folder.name
+                log = self.positive
+                if control != 'baseline':
+                    target = runner.CONTROLS[control][2]
+                    log = log.replace('PASS: ' + target, 'FAIL: ' + target)
+                    count = 1
+                    if control == 'overlap':
+                        other = next(label for label in sorted(self.labels) if label != target)
+                        log = log.replace('PASS: ' + other, 'FAIL: ' + other)
+                        count = 2
+                    log = log.replace('INSTANCE PROBE COMPLETE', 'INSTANCE PROBE FAILED: ' + str(count))
+                (folder / 'runtime.log').write_text(log)
+            return {'simulated': True}
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for binary in ('DreamMaker', 'DreamDaemon'):
+                (root / binary).write_bytes(b'offline injected executable placeholder')
+            args = ['run_ci.py', '--head', 'a' * 40, '--output', str(root / 'output'), '--byond-bin', str(root)]
+            with mock.patch.object(runner.sys, 'argv', args), mock.patch.object(runner, 'native_gate'), \
+                    mock.patch.object(runner, 'committed', side_effect=[source, self.probe.encode()]), \
+                    mock.patch.object(runner, 'run_bounded', side_effect=simulated_process), \
+                    mock.patch('builtins.print'), self.assertRaisesRegex(ValueError, 'collateral'):
+                runner.main()
+            import json
+            result = json.loads((root / 'output/result.json').read_text())
+            self.assertFalse(result['success'])
+            self.assertTrue(result['cases']['baseline']['accepted'])
+            self.assertTrue(result['cases']['overlap']['target_detected'])
+            self.assertEqual(result['cases']['overlap']['status'], 'needs_review')
+            self.assertTrue(result['cases']['generation']['accepted'])
 
     def test_compiler_summary_cannot_hide_diagnostics(self):
         clean = 'DM compiler version 516.1681\nprobe.dmb - 0 errors, 0 warnings\n'
