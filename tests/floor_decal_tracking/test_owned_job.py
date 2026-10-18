@@ -1,0 +1,78 @@
+"""Pure mocked Job observations; no process creation or native API calls."""
+import ctypes as c
+from ctypes import wintypes as w
+from types import SimpleNamespace
+import unittest
+from owned_job import ProcessIds, query_members, validate_members, settle
+
+
+EMPTY = dict(assigned=0, count=0, pids=[])
+
+
+class OwnedJobTests(unittest.TestCase):
+    def exercise(self, values, membership=None, check=None):
+        clock, rows = [0.0], []
+        def account():
+            active = values.pop(0) if len(values) > 1 else values[0]
+            return dict(active=active, terminated=0)
+        def pause(seconds):
+            clock[0] += seconds
+        result = settle(account, lambda: EMPTY if membership is None else membership,
+                        check or (lambda value: None), rows.append,
+                        now=lambda: clock[0], pause=pause)
+        return result, rows, clock[0]
+
+    def test_stale_accounting_drains_with_empty_membership(self):
+        result, rows, elapsed = self.exercise([1, 1, 0])
+        self.assertEqual(result['active'], 0)
+        self.assertEqual([row['accounting']['active'] for row in rows], [1, 1, 0])
+        self.assertEqual(elapsed, .1)
+
+    def test_persistent_active_or_unknown_pid_rejects(self):
+        with self.assertRaisesRegex(RuntimeError, 'did not drain'):
+            self.exercise([1])
+        with self.assertRaisesRegex(RuntimeError, 'Unexpected owned Job PID'):
+            self.exercise([0], dict(assigned=1, count=1, pids=[7]))
+        validate_members(dict(assigned=1, count=1, pids=[7]), 7)
+        with self.assertRaises(RuntimeError):
+            validate_members(dict(assigned=1, count=1, pids=[8]), 7)
+
+    def test_resource_cpu_deadline_limit_or_query_errors_reject(self):
+        for message in ('CPU limit', 'wall deadline', 'watcher resource', 'Job limits', 'output bound', 'terminated'):
+            def reject(value):
+                raise RuntimeError(message)
+            with self.assertRaisesRegex(RuntimeError, message):
+                self.exercise([1, 0], check=reject)
+        with self.assertRaises(OSError):
+            settle(lambda: dict(active=0), lambda: (_ for _ in ()).throw(OSError('query failed')),
+                   lambda value: None, lambda value: None)
+
+    def test_membership_shape_overflow_and_truncation_reject(self):
+        for row in (dict(assigned=33, count=33, pids=list(range(1, 34))),
+                    dict(assigned=2, count=1, pids=[7]), dict(assigned=1, count=1, pids=[True]),
+                    dict(assigned=2, count=2, pids=[7, 7])):
+            with self.assertRaises(RuntimeError):
+                validate_members(row, 7)
+
+    def test_query_layout_and_exact_return_length(self):
+        self.assertEqual(ProcessIds.pids.offset, 8)
+        for assigned, count, length, ok in ((0, 0, 8, True), (1, 1, 8 + c.sizeof(c.c_size_t), True),
+                                           (33, 33, c.sizeof(ProcessIds), False),
+                                           (2, 1, c.sizeof(ProcessIds), False), (1, 1, 8, False)):
+            def query(job, kind, raw, size, returned):
+                self.assertEqual(kind, 3)
+                value = c.cast(raw, c.POINTER(ProcessIds)).contents
+                value.assigned, value.count, value.pids[0] = assigned, count, 7
+                c.cast(returned, c.POINTER(w.DWORD)).contents.value = length
+                return True
+            adapter = SimpleNamespace(job=1, k=SimpleNamespace(QueryInformationJobObject=query),
+                                      check=lambda value: None)
+            if ok:
+                self.assertEqual(query_members(adapter)['count'], count)
+            else:
+                with self.assertRaises(RuntimeError):
+                    query_members(adapter)
+
+
+if __name__ == '__main__':
+    unittest.main()

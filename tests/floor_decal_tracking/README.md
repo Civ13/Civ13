@@ -55,7 +55,7 @@ still required for any memory-size or world-load performance claim.
 allocation/list-identity counts and false control passes. Its success is parser
 evidence only. The fixture contains 33 actual DM assertions, all unexecuted.
 
-## Smallest proposed native packet (NOT RUN)
+## Corrected proposed native packet (not run)
 
 The first native attempt (`contained-v2`, head `3ad4e0fb5`) stopped at compilation:
 `decal.dm:13:error: anchored: undefined var`. No runtime assertions ran; owned
@@ -63,6 +63,20 @@ cleanup and the pinned daemon census passed. The corrected fixture declares
 `/atom/movable/var/anchored = FALSE`, matching `code/game/atoms_movable.dm`.
 This supplies an omitted isolated dependency; the production patch is unchanged.
 The failed packet, logs and spent single-use marker remain preserved.
+
+The corrected `contained-v3` compiler reported zero errors and warnings, then
+stopped at the terminal Job gate: retained compiler exit 0, Job active count 1.
+Cleanup and the pinned daemon census passed; no runtime assertions ran.
+The cause is unproven. The next packet records a bounded 32-entry
+[`JOBOBJECT_BASIC_PROCESS_ID_LIST`](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_basic_process_id_list)
+snapshot for every sample and terminal observation. During execution only the
+retained child PID may appear. After its exit the list must be empty; accounting
+may drain for at most two seconds within the original phase/aggregate wall and
+CPU limits. All Job, watcher, output and termination checks remain enforced.
+Acceptance requires both empty membership and active count zero. Immediate exit
+and settled observations are retained separately. Unexpected PIDs, truncated
+queries, persistent accounting or resource failures abort without a retry.
+Mocked drain tests exercise these guards; they do not establish the native cause.
 
 After a separate native allocation, use pinned BYOND 516.1681, temporary packet
 storage, no normal game startup and serial runs. Proposed limits: each compiler

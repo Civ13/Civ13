@@ -25,7 +25,7 @@ def freeze(output, byond_bin):
     preparation = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(preparation)
     preparation.prepare(output / 'source-packet')
-    for name in ('run-contained.py', 'windows.py', 'guard_config.py', 'z_budget_evidence.py', 'native_policy.py'):
+    for name in ('run-contained.py', 'windows.py', 'guard_config.py', 'z_budget_evidence.py', 'native_policy.py', 'owned_job.py'):
         shutil.copyfile(HERE / name, output / name)
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     files = {str(path): hashlib.sha256(path.read_bytes()).hexdigest()

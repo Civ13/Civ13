@@ -11,6 +11,7 @@ import sys
 import time
 from z_budget_evidence import DIAGNOSTIC, validate_compile
 from native_policy import census, validate_baseline, validate_sockets
+from owned_job import query_members, validate_members, settle
 
 RUNS = (('fixed', 'fixed', None), ('eager-parity', 'eager', None),
         ('eager-negative', 'eager', 'bare turf allocation count'),
@@ -137,8 +138,11 @@ def main():
                         bound()
                         sample = adapter.sample(child)
                         sample['sockets'] = adapter.sockets(child)
+                        sample['membership'] = query_members(adapter)
                         receipt['samples'].append(sample)
                         current = accounting(adapter)
+                        sample['accounting'] = current
+                        validate_members(sample['membership'], child.pid)
                         adapter.check(adapter.k.QueryInformationJobObject(adapter.job, 9, ctypes.byref(limits), ctypes.sizeof(limits), None))
                         require(limits.basic.flags == 8456 and limits.basic.active == 1 and limits.process_memory == memory,
                                 'Job limits changed')
@@ -151,7 +155,35 @@ def main():
                         require(sum(p.stat().st_size for p in work.rglob('*') if p.is_file()) <= 16 * 1024**2,
                                 'Generated-output bound')
                         time.sleep(.1)
+                    receipt['immediate_final'] = adapter.finish(child)
+                    receipt['immediate_accounting'] = accounting(adapter)
+                    receipt['immediate_membership'] = query_members(adapter)
+                    persist()
+                    validate_members(receipt['immediate_membership'])
+                    require(receipt['immediate_final']['exit_code'] == 0, 'Native process exit failure')
+                    receipt['accounting_drain'] = []
+
+                    def drain_check(value):
+                        bound()
+                        require(time.monotonic() - phase_start < seconds and
+                                (value['user'] + value['kernel'] - before['user'] - before['kernel']) / 1e7 < cpu,
+                                'Drain phase wall/CPU limit')
+                        adapter.check(adapter.k.QueryInformationJobObject(adapter.job, 9, ctypes.byref(limits), ctypes.sizeof(limits), None))
+                        require(limits.basic.flags == 8456 and limits.basic.active == 1 and limits.process_memory == memory,
+                                'Drain Job limits changed')
+                        require(adapter.memory(adapter.k.GetCurrentProcess()) <= 128 * 1024**2 and
+                                value['terminated'] == before['terminated'], 'Drain resource/termination limit')
+                        require(sum(p.stat().st_size for p in work.rglob('*') if p.is_file()) <= 16 * 1024**2,
+                                'Drain generated-output bound')
+
+                    def drain_record(value):
+                        receipt['accounting_drain'].append(value)
+                        persist()
+
+                    settle(lambda: accounting(adapter), lambda: query_members(adapter), drain_check, drain_record)
                     receipt['final'] = adapter.finish(child)
+                    receipt['final_membership'] = query_members(adapter)
+                    validate_members(receipt['final_membership'])
                     receipt['elapsed'] = time.monotonic() - phase_start
                     after = accounting(adapter)
                     require(receipt['final']['exit_code'] == 0 and after['active'] == 0 and
