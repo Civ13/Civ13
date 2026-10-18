@@ -462,3 +462,9 @@ types with no active operation or collector. Its separate diagnose adapter
 returns `fixture_diagnostics_unavailable`. Authentication, status and shutdown
 controls still exercise the production endpoint; this fixture does not verify
 live diagnostic collection.
+
+The dimension and durable-world probes acquire production persistence operation
+identities before bootstrap or import and pass the same identity to the backend.
+They check nested direct-call rejection and final admission release. A manually
+set busy flag does not authorize a positive save/load operation. Explicit busy
+and concurrency rejection controls retain their original guards.
