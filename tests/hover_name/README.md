@@ -29,6 +29,8 @@ Run with pinned BYOND 516.1681:
 The isolated native fixture executes production widget methods, weakrefs,
 visible-name code and mouse callback bodies with a fake network-client boundary.
 It uses real native view membership, locations, invisibility and screen atoms.
+Own-body enter/move/drag and exit are covered explicitly, including masked
+identity, transparent/invisible rejection and a remote-camera round trip.
 It closes its port at startup, rejects reopening, uses temporary storage and
 exits without normal game startup. Negative controls must fail their intended
 runtime assertion, not compilation. `--compile-only` never launches a daemon.
