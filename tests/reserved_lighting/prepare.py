@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import re
 import subprocess
 
 BASELINE = 'cc03b199128f8afed58713912c551ad7556e6bc4'
@@ -69,7 +70,12 @@ def prepare(repo, output, control=None, provenance=None):
         original = (repo/rel).read_text(encoding='utf-8')
         assert original.count(anchor) == 1, 'client adapter anchor drift'
         adapted = output/Path(rel).name
-        adapted.write_text(original.replace(anchor, replacement, 1), encoding='utf-8')
+        start = original.index(anchor)
+        following = re.search(r'^/', original[start+len(anchor):], re.M)
+        end = start+len(anchor)+following.start() if following else len(original)
+        # Disabled constructors must not retain parent New() calls under a
+        # renamed proc with no matching parent implementation.
+        adapted.write_text(original[:start]+replacement+'\n\treturn\n'+original[end:], encoding='utf-8')
         lines = [line.replace((repo/rel).as_posix(), adapted.as_posix()) for line in lines]
     # No maps/assets copied; source references retain existing checkout paths.
     lines.append('#include "' + (repo / 'tests/reserved_lighting/probe.dm').as_posix() + '"')

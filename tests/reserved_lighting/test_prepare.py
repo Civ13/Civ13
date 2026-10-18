@@ -31,6 +31,11 @@ class SourcePreparation(unittest.TestCase):
             self.assertNotIn('#include "maps\\', dme)
             self.assertIn('tests/reserved_lighting/probe.dm', dme)
             self.assertNotIn('/world/New()', (out/'world.dm').read_text(encoding='utf-8'))
+            for name, signature in (('movement.dm', '/client/proc/unused_reserved_movement_new()'),
+                                    ('client_procs.dm', '/client/proc/unused_reserved_client_new(TopicData)')):
+                adapter = (out/name).read_text(encoding='utf-8')
+                self.assertIn(signature+'\n\treturn\n', adapter)
+                self.assertNotIn('/client/New(', adapter)
             self.assertIn('UNRUN', receipt['verification'])
 
 
