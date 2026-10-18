@@ -4,6 +4,12 @@ Opt-in map policy `lighting_reserved = TRUE` suppresses overlays only in the
 interior of an explicitly reserved region. A one-tile halo retains overlays.
 All original corners, masters, light accumulations and source memberships remain.
 No map opts in. Empty cells, void areas and z levels do not imply reservation.
+OPEN acceptance gap: a one-tile halo does not establish coverage for oversized
+sprites/canopies extending farther from neighboring anchors. Before enabling any
+map, eligibility must have a proven inert boundary margin matched to actual
+appearance bounds, or reject overlapping appearances. The current candidate
+does not establish that contract and must remain inactive pending the asset
+audit and a matching boundary regression. Anchor occupancy alone is insufficient.
 
 Only set the marker in map definitions before lighting startup. Never enable a
 reservation on a running tile. `activate_reserved_lighting()` clears it one way,

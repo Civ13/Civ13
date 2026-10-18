@@ -62,7 +62,8 @@ def freeze(output):
     adapter = output/'adapter'
     adapter.mkdir()
     for name in ('windows.py', 'guard_config.py', 'owned_job.py', 'native_policy.py', 'z_budget_evidence.py'):
-        blob = subprocess.check_output(['git', 'show', HELPER_HEAD+':tests/floor_decal_tracking/'+name], cwd=HELPER_REPO)
+        blob = subprocess.check_output(['git', '-c', 'safe.directory='+HELPER_REPO.as_posix(),
+                                        'show', HELPER_HEAD+':tests/floor_decal_tracking/'+name], cwd=HELPER_REPO)
         (adapter/name).write_bytes(blob)
     shutil.copyfile(ROOT/'tests/reserved_lighting/run-contained.py', output/'run-contained.py')
     binaries = {}
