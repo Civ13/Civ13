@@ -912,3 +912,8 @@ ClearMap must preserve the global dview_mob identity. Retiring this runtime mob
 breaks FOR_DVIEW in post-import lighting processing after GC clears the global.
 The lighting recovery fixture runs production lighting_sources.fire(), not only
 light constructor/registration checks; lighting-view removes the preservation guard.
+<!-- 2026-10-18: lazy floor decal tracking -->
+Native nullable tracking lists do not auto-materialize on `|=`: omitting the
+initializer raises a type-mismatch exception. `tests/floor_decal_tracking` covers
+the writer, seasonal reader and native entry compatibility. Ordinary turf saves
+exclude this derived field through their existing saved-variable allowlist.

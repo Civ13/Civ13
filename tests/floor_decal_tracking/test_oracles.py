@@ -33,7 +33,7 @@ class OracleTests(unittest.TestCase):
 
     def test_exact_failure_required_and_pass_never_counts_as_caught(self):
         for _, _, target in runner.RUNS:
-            if target is None:
+            if target is None or target == runner.MISSING_UNION_FAILURE:
                 continue
             log = f'FAIL {target}\nFAIL exception: assertion: {target}\n'
             runner.validate_native(log, target)
@@ -41,6 +41,18 @@ class OracleTests(unittest.TestCase):
                         log.replace(target, 'wrong target'), log + 'PASS floor decal tracking 33 checks\n'):
                 with self.assertRaises(RuntimeError):
                     runner.validate_native(bad, target)
+
+    def test_only_exact_missing_lazy_union_exception_is_causal(self):
+        log = 'TRACKING initialized_turfs=0 distinct_native_lists=0\nFAIL ' + runner.MISSING_UNION_FAILURE + '\n'
+        runner.validate_native(log, runner.MISSING_UNION_FAILURE, profile='missing-lazy')
+        for bad in (log.replace('type mismatch', 'other exception'), log.replace('corner_white', 'other_key'),
+                    log + 'FAIL unrelated\n', log + 'PASS floor decal tracking 33 checks\n',
+                    log + 'TRACKING initialized_turfs=1 distinct_native_lists=1\n',
+                    log + 'runtime error: native failure\n', log.replace('initialized_turfs=0', 'initialized_turfs=1')):
+            with self.assertRaises(RuntimeError):
+                runner.validate_native(bad, runner.MISSING_UNION_FAILURE, profile='missing-lazy')
+        with self.assertRaises(RuntimeError):
+            runner.validate_native(log, runner.MISSING_UNION_FAILURE, profile='fixed')
 
     def test_native_diagnostics_never_accepted(self):
         for message in ('Bad ref', 'Bad loc', 'BUG:', 'RUNTIME:', '## ERROR:', 'fatal error',

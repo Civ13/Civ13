@@ -13,9 +13,10 @@ from z_budget_evidence import DIAGNOSTIC, validate_compile
 from native_policy import census, validate_baseline, validate_sockets
 from owned_job import query_members, validate_members, settle, capture_unexpected
 
+MISSING_UNION_FAILURE = 'exception: type mismatch: 0 |= "255--2-corner_white-2.2"'
 RUNS = (('fixed', 'fixed', None), ('eager-parity', 'eager', None),
         ('eager-negative', 'eager', 'bare turf allocation count'),
-        ('missing-lazy', 'missing-lazy', 'first decal records key'),
+        ('missing-lazy', 'missing-lazy', MISSING_UNION_FAILURE),
         ('shared', 'shared', 'two turf lists have independent identity'))
 
 
@@ -28,11 +29,17 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def validate_native(log, expected, eager=False):
+def validate_native(log, expected, eager=False, profile=None):
     require(not DIAGNOSTIC.search(log) and 'FAIL diagnostic:' not in log, 'Unexpected engine/runtime diagnostic')
     failures = re.findall(r'^FAIL (.+)$', log, re.M)
     assertions = [line for line in failures if not line.startswith('exception: ')]
-    if expected:
+    if expected == MISSING_UNION_FAILURE:
+        require(profile == 'missing-lazy', 'Union exception is specific to missing-lazy')
+        require(failures == [MISSING_UNION_FAILURE], 'Wrong missing-lazy exception failure list')
+        require('PASS' not in log, 'Control claimed PASS')
+        require(re.findall(r'^TRACKING initialized_turfs=(\d+) distinct_native_lists=(\d+)$', log, re.M)
+                == [('0', '0')], 'Wrong missing-lazy initial tracking counts')
+    elif expected:
         require(assertions == [expected], f'Wrong control failure: {assertions}')
         require('PASS floor decal tracking' not in log, 'Control claimed PASS')
         require(failures == [expected, f'exception: assertion: {expected}'], 'Missing or extra controlled assertion exit')
@@ -52,8 +59,10 @@ def main():
     args = parser.parse_args()
     packet = json.loads(args.packet.read_text())
     diagnostic = packet.get('mode') == 'compiler-diagnostic'
-    require(packet.get('mode', 'fixture') in ('compiler-diagnostic', 'fixture'), 'Unknown packet mode')
-    require(packet['total_seconds'] == (90 if diagnostic else 240), 'Unexpected aggregate cap')
+    remaining = packet.get('mode') == 'remaining-controls'
+    caps = {'compiler-diagnostic': 90, 'fixture': 240, 'remaining-controls': 180}
+    require(packet.get('mode', 'fixture') in caps, 'Unknown packet mode')
+    require(packet['total_seconds'] == caps[packet.get('mode', 'fixture')], 'Unexpected aggregate cap')
     work_seconds = packet['total_seconds'] - 10
     grant = json.loads(args.grant.read_text())
     require(digest(args.packet) == grant['packet_sha256'], 'Packet differs from grant')
@@ -96,7 +105,7 @@ def main():
         bound()
 
     try:
-        for label, case, expected in (RUNS[:1] if diagnostic else RUNS):
+        for label, case, expected in (RUNS[:1] if diagnostic else RUNS[3:] if remaining else RUNS):
             bound()
             work = out / 'native' / label
             work.mkdir(parents=True, exist_ok=False)
@@ -223,7 +232,7 @@ def main():
                         require(marker.read_bytes() in (b'closed\n', b'closed\r\n'),
                                 'Fixture closure marker missing or invalid')
                         validate_native(runtime_log.read_text(errors='replace'), expected,
-                                        eager=label == 'eager-parity')
+                                        eager=label == 'eager-parity', profile=label)
                     persist()
                 row['pass_result'] = True
             finally:

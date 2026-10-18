@@ -53,9 +53,10 @@ still required for any memory-size or world-load performance claim.
 
 `test_oracles.py` uses synthetic logs to reject incomplete assertions, incorrect
 allocation/list-identity counts and false control passes. Its success is parser
-evidence only. The fixture contains 33 actual DM assertions, all unexecuted.
+evidence only. The fixture contains 33 actual DM assertions. Both fixed and
+eager-parity cases passed all 33 in `contained-v7`.
 
-## Corrected proposed native packet (not run)
+## Native packet history and remaining controls
 
 The first native attempt (`contained-v2`, head `3ad4e0fb5`) stopped at compilation:
 `decal.dm:13:error: anchored: undefined var`. No runtime assertions ran; owned
@@ -98,7 +99,7 @@ The `contained-v5` compiler diagnostic verified a live owned
 `C:/WINDOWS/System32/conhost.exe` member through a retained handle, then stopped
 on the strict unexpected-member gate. Both compiler and console-host handles
 confirmed exit during owned cleanup. This identifies only that run's member;
-the v4 PID remains unidentified. No behavioral assertions have run.
+the v4 PID remains unidentified. No behavioral assertions ran in v5.
 
 The next five-case packet replaces `CREATE_NO_WINDOW` with `DETACHED_PROCESS`,
 keeping suspended creation, Unicode environment, extended startup information,
@@ -123,22 +124,34 @@ must be relative. Do not use any live host, Topic, UI, SQL or existing save.
 
 Planned serial cases:
 
-| Case | Intended result, pending native observation |
+| Case | Result or remaining target |
 | --- | --- |
-| `fixed` | All authored DM assertions pass; initialized counts 0, 1, 2 |
-| `eager`, `-params eager=1` | Same semantics pass; initialized counts 128, 128, 128 |
-| `eager`, no params | Reject `bare turf allocation count`, proving the zero-allocation assertion detects eager initialization |
-| `missing-lazy` | Reject `first decal records key` if native null-union behavior loses the list; actual causal outcome must be inspected |
-| `shared` | Reject `two turf lists have independent identity` |
+| `fixed` | v7 passed 33 assertions; initialized counts 0, 1, 2 |
+| `eager`, `-params eager=1` | v7 passed 33 assertions; initialized counts 128, 128, 128 |
+| `eager`, no params | v7 rejected `bare turf allocation count` as intended |
+| `missing-lazy` | v7 observed the exact first-union exception below; corrected oracle awaits v8 |
+| `shared` | Unrun; must reject `two turf lists have independent identity` |
 
 `eager` restores the exact old `= list()` declaration while retaining the new
 writer guard for explicit-null migration tests. It is an eager-default comparison,
 not a claim of executing every byte of the historical program. All other controls
 alter only their named allocation line(s). Assertions stop at first failure to
 avoid invented downstream oracles. No control is accepted until actual native
-output proves its target failure without an engine diagnostic. In particular,
-if native `|=` creates a usable list from null, the omission is not causal and
-must be reported or revised; it must never be counted as caught automatically.
+output proves its target failure without an engine diagnostic. Removing the
+guard in v7 produced exactly `FAIL exception: type mismatch: 0 |= "255--2-corner_white-2.2"`
+after the sole initial metric `TRACKING initialized_turfs=0 distinct_native_lists=0`.
+The old oracle rejected that result; v7 remains recorded as stopped, not passed.
+Only the missing-lazy profile may accept that exact exception, with that exact
+failure list and initial metric, no PASS claim and no diagnostic. Offline tests
+reject wrong exception/key, extra failures, extra metrics and false PASS output.
+
+The v7 invocation completed eight phases in 7.016 seconds, then stopped at the
+missing-lazy oracle. Retained owned handles confirmed exit, terminal Job membership
+was empty and the existing-daemon identity census was unchanged. The shared case
+did not run. The `--remaining-controls` successor runs missing-lazy and shared only,
+within 180 seconds aggregate (170 work plus 10 cleanup), retaining the same phase
+limits. Fixed/eager evidence is reused because those production and probe sources
+are unchanged. Native evidence is Windows-only and uses isolated startup adapters.
 
 The prepared fixture uses the real `BuildVarDirectory`/`Load_Entry` and closes and
 reopens actual temporary `.sav` files. It is an entry roundtrip with isolated
@@ -173,13 +186,11 @@ The aggregate 240-second allowance may stop before all worst-case phases finish;
 there is no automatic extension, retry or fallback.
 Output is retained; the executor deletes no fixture or unrelated files.
 
-## CI selection proposal (not installed or dispatched)
+## CI selection
 
-Keep this separate from reserved-cell lighting. Register an offline step guarded
-by extensive opt-in or introduced suite `tests/floor_decal_tracking`. It should
-run `test_*.py`. Add a similarly guarded isolated native step only after the
-bounded runner and actual control outcomes have been reviewed. Normal PR CI also
-selects game compilation because production DM changes. Existing regressions
-must remain opt-in; no broad suite, manual workflow, publication or deployment
-is authorized by preparation. The current candidate intentionally does not edit
-shared workflows or `AGENTS.md`; coordinate those paths before a later CI commit.
+The evidence-checker has one offline `test_*.py` step guarded by extensive opt-in
+or introduced suite `tests/floor_decal_tracking`. Normal PR CI also selects game
+compilation because production DM changes. No Linux native step was added; local
+Windows native results do not establish Linux execution. CI selection and policy
+tests pass locally. Automatic exact-head PR CI remains pending publication.
+Reserved-cell lighting and other shared workflow behavior are unchanged.
