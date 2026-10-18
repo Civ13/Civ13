@@ -28,6 +28,8 @@ for name, (original, mutation) in controls.items():
         result = subprocess.run([sys.executable, '-B', str(test),
             'SpoolProtocolTests.test_native_scientific_id_crlf_admission_and_completion'],
             cwd=root, capture_output=True, text=True, timeout=15)
-        if result.returncode == 0 or 'AssertionError' not in result.stderr:
+        expected = ('Native completion must publish a response' if name == 'raw-completion-marker'
+                    else 'Native request must be admitted')
+        if result.returncode == 0 or 'AssertionError' not in result.stderr or expected not in result.stderr:
             raise SystemExit('Control did not detect defect: ' + name + '\n' + result.stderr)
         print('PASS detects ' + name)
