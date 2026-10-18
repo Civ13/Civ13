@@ -29,9 +29,21 @@ Run with pinned BYOND 516.1681:
 The isolated native fixture executes production widget methods, weakrefs,
 visible-name code and mouse callback bodies with a fake network-client boundary.
 It uses real native view membership, locations, invisibility and screen atoms.
+Own-body enter/move/drag and exit are covered explicitly, including masked
+identity, transparent/invisible rejection and a remote-camera round trip.
 It closes its port at startup, rejects reopening, uses temporary storage and
 exits without normal game startup. Negative controls must fail their intended
 runtime assertion, not compilation. `--compile-only` never launches a daemon.
 Wiring assertions separately check HUD attachment/life dispatch, logout and
 both existing saver/loader runtime guards. This does not establish real client
 mouse delivery, text rendering or full-game save/load acceptance.
+
+`run-weakref-save.py` adds an actual disk-backed production saver/loader round
+trip using the real weak-reference and widget methods. It injects historical v2
+and flat cache entries carrying an old native ref, checks restored own-name
+hover and durable identity/inventory/location, and preserves a live replacement
+cache. `--negative-control export` removes both export guards for this field;
+`--negative-control import` removes its import guard and must lose the restored
+own-name label. `--prepare-only` generates sources without native execution.
+The same `--byond-bin` argument is required; CI runs all three cases alongside
+the existing hover suite. This remains an injected network-client boundary.

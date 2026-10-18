@@ -1,6 +1,27 @@
 // Private own-host diagnostics on the existing authenticated lifecycle transport.
-// Protocol bookkeeping changes; character, camera, HUD and lighting never do.
+// Diagnostic bookkeeping changes; gameplay clocks, camera, HUD and lighting never do.
 #define BLACKOUT_DIAGNOSTIC_LIMIT 32768
+
+// BEGIN OWN CLICK TRACE: fixed codes only, no target or parameter retention.
+/mob/var/tmp/blackout_click_owner
+/mob/var/tmp/blackout_click_client_ref
+/mob/var/tmp/list/blackout_click_counts
+/mob/var/tmp/blackout_click_started = 0
+/mob/var/tmp/blackout_click_expires = 0
+// Clients are not datums visited by the custom world serializer.
+/client/var/tmp/blackout_click_session
+
+/proc/blackout_click_increment(list/counts, stage)
+	if(!(stage in list("atom_entry", "entry", "invalid_target", "click_clock", "ctrl_shift", "shift_middle", "middle", "shift", "alt", "ctrl", "ordinary", "hanging", "scramble", "incapacitated", "facing_stage", "move_clock", "restrained", "dispatch")))
+		return
+	counts[stage] = min((isnum(counts[stage]) ? counts[stage] : 0) + 1, 65535)
+
+/mob/proc/blackout_click_trace(stage)
+	var/client/C = client
+	if(!blackout_click_counts || world.time >= blackout_click_expires || !C || C.mob != src || C.ckey != blackout_click_owner || directory[blackout_click_owner] != C || "\ref[C]:[C.blackout_click_session]" != blackout_click_client_ref || !C.holder || !(C.holder.rights & R_HOST))
+		return
+	blackout_click_increment(blackout_click_counts, stage)
+// END OWN CLICK TRACE
 
 /datum/nomads_lifecycle_control
 	var/list/diagnostic_nonces = list()
@@ -77,7 +98,8 @@
 	if(!M)
 		row["mob"] = list("status" = "unavailable: no current mob")
 		return row
-	row["mob"] = list("type" = "[M.type]", "loc_type" = M.loc ? "[M.loc.type]" : null, "stat" = M.stat, "sleeping" = M.sleeping, "resting" = M.resting, "paralysis" = M.paralysis, "blinded" = M.blinded, "sight" = M.sight, "see_in_dark" = M.see_in_dark, "see_invisible" = M.see_invisible, "invisibility" = M.invisibility, "transforming" = blackout_diagnostic_scalar(M.transforming), "status_flags" = M.status_flags, "gcDestroyed" = M.gcDestroyed)
+	row["mob"] = list("type" = "[M.type]", "loc_type" = M.loc ? "[M.loc.type]" : null, "stat" = M.stat, "sleeping" = M.sleeping, "resting" = M.resting, "paralysis" = M.paralysis, "blinded" = M.blinded, "sight" = M.sight, "see_in_dark" = M.see_in_dark, "see_invisible" = M.see_invisible, "invisibility" = M.invisibility, "mouse_opacity" = M.mouse_opacity, "alpha" = M.alpha, "transforming" = blackout_diagnostic_scalar(M.transforming), "status_flags" = M.status_flags, "gcDestroyed" = M.gcDestroyed)
+	row["input"] = list("world_time" = world.time, "next_click" = M.next_click, "click_remaining" = max(0, M.next_click - world.time), "next_move" = M.next_move, "move_remaining" = max(0, M.next_move - world.time), "may_do_after" = M.may_do_after, "may_do_mob" = M.may_do_mob, "direction" = M.dir, "facing_dir" = M.facing_dir, "armed" = world.time < M.blackout_click_expires, "started" = M.blackout_click_started, "expires" = M.blackout_click_expires, "counts" = M.blackout_click_counts ? M.blackout_click_counts.Copy() : null, "scope" = "own current mob; first diagnostic arms 3000 world ticks, subsequent reads never extend; fixed saturating route counts")
 	if(istype(M, /mob/new_player))
 		var/mob/new_player/N = M
 		// Read cached state only: never invoke admission, ban checks or spawning.
@@ -88,6 +110,22 @@
 	if(istype(M, /mob/living/human))
 		var/mob/living/human/H = M
 		row["human"] = list("life_tick" = H.life_tick, "inducedSSD" = H.inducedSSD, "roofs_removed" = H.roofs_removed, "saved_return_x" = H.lastx, "saved_return_y" = H.lasty, "saved_return_z" = H.lastz, "saved_return_status" = "sleep-return only; may be unset or stale", "eyewear_present" = H.eyes ? TRUE : FALSE, "vision_organ_present" = H.internal_organs_by_name["eyes"] ? TRUE : FALSE)
+		// Fixed own-body scalars only. No temperature getter, heat scan or Life call.
+		var/turf/thermal_turf = blackout_diagnostic_turf(H)
+		var/area/thermal_area = thermal_turf ? thermal_turf.loc : null
+		var/obj/screen/thermal_hud = H.HUDneed ? H.HUDneed["body temperature"] : null
+		var/list/thermal = list("body_kelvin" = H.bodytemperature, "cold_wetness" = H.cold_wetness, "on_fire" = H.on_fire, "transforming" = blackout_diagnostic_scalar(H.transforming), "godmode" = !!(H.status_flags & GODMODE), "wolfman" = H.wolfman, "protection_disabled_timer" = H.cold_protection_disabled_timer, "map_civilizations" = map ? map.civilizations : null, "map_nomads" = map ? map.nomads : null, "global_weather" = weather, "global_weather_intensity" = weather_intensity)
+		thermal["species"] = H.species ? list("type" = "[H.species.type]", "body_kelvin" = H.species.body_temperature, "cold_level_1_kelvin" = H.species.cold_level_1) : null
+		thermal["area"] = thermal_area ? list("climate" = blackout_diagnostic_scalar(thermal_area.climate), "location" = thermal_area.location, "weather" = thermal_area.weather, "intensity" = thermal_area.weather_intensity, "icon_state" = blackout_diagnostic_scalar(thermal_area.icon_state)) : null
+		thermal["hud_icon_state"] = thermal_hud ? blackout_diagnostic_scalar(thermal_hud.icon_state) : null
+		var/list/thermal_slots = list("head" = H.head, "suit" = H.wear_suit, "uniform" = H.w_uniform, "shoes" = H.shoes, "gloves" = H.gloves, "mask" = H.wear_mask)
+		var/list/clothing = list()
+		for(var/thermal_slot in list("head", "suit", "uniform", "shoes", "gloves", "mask"))
+			var/obj/item/clothing/thermal_item = thermal_slots[thermal_slot]
+			clothing[thermal_slot] = istype(thermal_item) ? list("type" = "[thermal_item.type]", "cold_protection" = thermal_item.cold_protection, "body_parts_covered" = thermal_item.body_parts_covered, "min_cold_kelvin" = thermal_item.min_cold_protection_temperature) : null
+		thermal["clothing"] = clothing
+		thermal["scope"] = "raw own-body/area/gear scalars; ambient temperature, heat-source proximity and trait effects not measured"
+		row["thermal"] = thermal
 	var/list/planes = list()
 	for(var/plane_key in list("[GAME_PLANE]", "[LIGHTING_PLANE]", "[HUD_PLANE]"))
 		var/obj/screen/plane_master/P = (M.hud_used && M.hud_used.plane_masters) ? M.hud_used.plane_masters[plane_key] : null
@@ -98,6 +136,14 @@
 		var/obj/screen/S = M.HUDtech ? M.HUDtech[hud_key] : null
 		hud[hud_key] = blackout_diagnostic_display(S, C)
 	row["known_hud"] = hud
+	// Observe only the fixed disposable label; never resolve its target or text.
+	var/obj/screen/hover_name/hover_label = M.HUDneed ? M.HUDneed["hover name"] : null
+	if(!istype(hover_label, /obj/screen/hover_name)) hover_label = null
+	var/list/hover = blackout_diagnostic_display(hover_label, C)
+	hover["parent_is_current_mob"] = hover_label ? (hover_label.parentmob == M) : FALSE
+	hover["has_target"] = hover_label ? !!hover_label.hover_target : FALSE
+	hover["has_text"] = hover_label ? !!length(hover_label.maptext) : FALSE
+	row["hover_name"] = hover
 	var/list/nearby = list()
 	var/bounded_sample_partial = FALSE
 	var/turf/T = blackout_diagnostic_turf(M)
@@ -137,6 +183,15 @@
 	if(!C || C.ckey != own_host || !C.holder || !(C.holder.rights & R_HOST))
 		return json_encode(list("ok" = FALSE, "error" = "own_host_unavailable"))
 	var/mob/M = C.mob
+	if(!C.blackout_click_session) C.blackout_click_session = input["operation"]
+	// Arm only this authenticated configured host's current mob. A reconnect or
+	// mob replacement starts a fresh cache; no gameplay deadline/lock is reset.
+	if(M && (M.blackout_click_owner != own_host || M.blackout_click_client_ref != "\ref[C]:[C.blackout_click_session]" || !M.blackout_click_counts))
+		M.blackout_click_owner = own_host
+		M.blackout_click_client_ref = "\ref[C]:[C.blackout_click_session]"
+		M.blackout_click_counts = list()
+		M.blackout_click_started = world.time
+		M.blackout_click_expires = world.time + 3000
 	var/start_tick = world.time
 	var/list/result = list("ok" = TRUE, "schema" = 1, "revision" = read_revision(), "session" = boot_session(), "request" = input["operation"], "utc_start" = time2text(world.realtime, "YYYY-MM-DD hh:mm:ss", 0), "tick_start" = start_tick, "engine" = "[world.byond_version].[world.byond_build]", "game_id" = blackout_diagnostic_scalar(game_id), "map" = map ? blackout_diagnostic_scalar(map.ID) : null, "phase" = blackout_diagnostic_scalar(time_of_day), "target" = list("ckey" = own_host, "client_ref" = "\ref[C]", "mob_ref" = M ? "\ref[M]" : null), "partial" = !M, "partial_reason" = M ? "none" : "no current mob")
 	try
