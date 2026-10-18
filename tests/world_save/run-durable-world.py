@@ -270,7 +270,8 @@ def main():
                 raise RuntimeError('Negative control failed outside its intended assertion: ' + str(result))
             if args.negative_control == 'preflight' and result.get('checks') != 7:
                 raise RuntimeError('Preflight control did not reach its first malformed-wire assertion')
-            if args.negative_control == 'reclaim-order' and result.get('checks') != 8:
+            # Includes the export operation-release assertion before recovery.
+            if args.negative_control == 'reclaim-order' and result.get('checks') != 9:
                 raise RuntimeError('Reclaim ordering control did not reach its intended first failure')
             if args.negative_control == 'lighting-legacy':
                 import_error = result.get('import_error') or ''
