@@ -1,5 +1,12 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-19: consumed crafting handles -->
+Consumed wood handles are selected from hands and real equipment slots, including
+shoulder/back, then retained through do_after. Revalidate the exact item and source
+before debit; consume only after successful stack.use and clear its actual slot.
+Do not recurse through storage or recreate handles on cancellation. Existing
+get_equipped_items omits shoulder; use the slot getter with equipment priority.
+
 <!-- 2026-10-18: native help spool format -->
 Native DM can interpolate world.realtime in scientific notation, and text2file
 adds LF/CRLF to ready markers. The help bridge validates bounded opaque IDs and

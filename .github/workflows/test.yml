@@ -543,7 +543,8 @@ jobs:
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/crafting')
         run: |
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
-          python3 scripts/check-recipes.py --report recipe-checks.txt
+          python3 scripts/check-recipes.py --report recipe-checks.txt --evidence-dir "$RUNNER_TEMP/crafting-handles/positive"
+          python3 scripts/check-recipes.py --handle-hands-negative-control --evidence-dir "$RUNNER_TEMP/crafting-handles/hands-only"
           python3 scripts/check-recipes.py --camera-prototype-negative-control
         shell: bash
 
@@ -566,7 +567,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: recipe-validation
-          path: recipe-checks.txt
+          path: |
+            recipe-checks.txt
+            ${{ runner.temp }}/crafting-handles/
+          retention-days: 7
           if-no-files-found: warn
       - name: Isolated save restart transaction regression
         id: restart_transaction
