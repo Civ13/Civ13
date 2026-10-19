@@ -153,7 +153,10 @@ You can set verify to TRUE if you want send() to sleep until the client has the 
 //get a assetdatum or make a new one
 /proc/get_asset_datum(var/type)
 	if (!(type in asset_datums))
-		return new type()
+		var/datum/asset/A = new type()
+		// Restored rounds skip roundstart; first use still needs its resources.
+		A.register()
+		return A
 	return asset_datums[type]
 
 /datum/asset/New()

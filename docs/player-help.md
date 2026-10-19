@@ -12,6 +12,82 @@ running-server seconds (including the queue budget) and releases its slot. Faile
 show an explicit notice rather than a blank window. Wait until the bridge has
 published two heartbeats (normally a few seconds) before trying the first question.
 
+## Private follow-up conversations
+
+With a conversation-capable worker, the answer window offers **Follow up** and
+**New conversation**. Ask for help also continues the current session. New
+conversation clears the context; use Ask for help again to ask a fresh question.
+The normal cooldown and one-pending-request-per-account rules still apply.
+
+The authenticated client owns its completed question/answer pairs. No browser
+parameter selects an account, session or model role. Action tokens belong to
+that client and rotate after accepted responses. Retention is at most three
+completed pairs and 4,096 UTF-8 bytes per session; a retained answer is clipped
+at a Unicode boundary to 3,000 bytes. Oldest pairs are removed first. This is a
+conservative byte budget, not a tokenizer guarantee. The entire serialized
+request, including escaped Unicode, IDs, current question, metadata and context,
+must also fit 16,384 ASCII-JSON bytes; older complete pairs may be omitted to fit.
+The latest game snapshot is authoritative, and prior AI answers may be wrong.
+
+History expires after 15 idle minutes of running-server time, on disconnect,
+reset or server restart. Reconnecting, even to the same account, starts empty.
+At most 128 client sessions retain history; reaching that limit evicts the oldest
+tracked session. Session fields live on clients, not saved player mobs; the
+service explicitly excludes its pending questions and runtime registries from
+custom datum persistence. Reset or expiry invalidates the generation of an
+in-flight request. Its late reply is discarded, and its account lock remains
+until completion or timeout. Failed, timed-out, mismatched and duplicate replies
+never append turns. A worker restart retains no private conversation cache:
+the next request carries the bounded server-owned snapshot. Existing startup
+cleanup discards queued files, so an interrupted request can time out.
+
+Worker health advertises conversation protocol 1. A new game omits conversation
+fields for old workers and permits standalone questions. Follow up requires an
+acknowledged conversation response. If a worker rolls back and fails to acknowledge
+a request containing history, the game discards that answer and clears context
+instead of displaying it as a contextual reply. Old game/new worker and existing
+plain/Markdown response negotiation remain supported.
+
+Conversation snapshots are written to the existing private spool with questions
+and responses. Normal completion/timeout removes them and startup clears old
+slots. Disconnect alone leaves a pending file until completion/timeout. A crash,
+stopped server, filesystem failure or backup can retain residual files. This is
+not encryption or guaranteed immediate erasure. Restrict spool access and avoid
+personal information. The configured inference endpoint can retain data under
+its own policy; the local-first transport selection is unchanged.
+
+**Activation metadata:** both a game/server build restart and a separately
+coordinated worker update/restart are required for full conversation support.
+This source change does not authorize either restart, deployment or live inference.
+
+## Answer formatting
+
+The game converts the model's Markdown to a bounded display subset based on
+[CommonMark 0.31.2](https://spec.commonmark.org/0.31.2/). It renders ATX headings,
+bulleted and numbered lines (including indentation), bold/italic text, same-line
+code spans, fenced code blocks, inline HTTP/HTTPS links and paragraph breaks.
+Each ordinary source line remains a visible line break. Lists use explicit
+bullets/numbers and paragraphs rather than relying on unsupported terminal list
+tags. The generated markup uses the conservative tags in BYOND's
+[supported HTML reference](https://www.byond.com/docs/guide/app3.html), without
+answer-supplied CSS or JavaScript, for the native browser dialog.
+
+This is not a full CommonMark implementation: reference links, link titles,
+autolinks, setext headings, block quotes, indented code blocks and complex
+delimiter nesting remain literal text. HTML entities also remain literal text.
+Unmatched inline delimiters remain text; an unclosed code fence extends to the
+end of the answer. Code is escaped without interpreting its Markdown contents.
+Raw HTML is escaped, and Markdown images never create images or remote fetches.
+Links require an explicit HTTP or HTTPS scheme and reject whitespace, control
+characters, quotes, angle brackets and backslashes; relative, BYOND, file, data
+and JavaScript destinations remain text. No model-generated HTML is trusted.
+The existing 4,000-character answer limit is also enforced at rendering.
+
+Rendering happens after the bridge's bounded response validation, immediately
+before `browse()`. No prompt change, dependency, model request or bridge reload
+is required for this conversion. A source change does require a game build and
+separately coordinated save/update before affecting a running host.
+
 ## Owner setup
 
 The game never performs model HTTP calls. A separately supervised Python 3.10+
@@ -143,12 +219,54 @@ MCP tools or administration API is exposed.
 There is no conversational memory, command execution or tool calling. Questions
 are temporary spool files, removed when completed, disconnected or timed out;
 the remote service may keep its own logs, so owners should disclose its policy.
-Model text is rendered as escaped text, never executable HTML or links.
+Raw model HTML is escaped; the renderer generates only allowlisted formatting and validated HTTP/HTTPS links.
 
 The worker is separate from the developer MCP server: player requests do not
 receive developer tools. Do not expose MCP credentials to the worker.
 
 ## Verification
+
+### Worker and renderer compatibility
+
+Updated servers attach `render_contract: {"version":1,"capabilities":["markdown-basic-v1"]}`
+to each question. The worker snapshots this capability before asynchronous dispatch.
+Missing capabilities (older servers), or version 1 with an empty capability list,
+select `plain-v1`. Unsupported versions, unknown/duplicate capabilities and malformed
+contracts return unavailable before consuming model quota or contacting the model.
+There is no inference from server revision, map or answer text.
+
+Successful responses contain one `answer` plus `render_protocol: 1` and
+`answer_format: "plain-v1"` or `"markdown-basic-v1"`. An updated server accepts
+old-worker responses only when both metadata keys are absent. Partial, null or
+unknown metadata fails closed. Plaintext is HTML-escaped verbatim in a preformatted
+block, so literal Markdown is never parsed a second time. Markdown uses the bounded
+renderer described above. An older server ignores the additional metadata and
+displays the worker's readable plaintext through its existing escaped block.
+
+Plaintext cleanup removes matched basic headings, emphasis, inline code and fenced
+code markers, preserves code contents and bullet/number prefixes, and expands
+HTTP/HTTPS links as `label (URL)`. Raw HTML remains literal text. Unmatched and
+unsupported syntax is conservatively retained; this is not full CommonMark.
+The raw model answer exists only ephemerally before projection. Only the chosen
+display answer is written to the spool, with at most 4000 Unicode codepoints
+and 4000 UTF-8 bytes. BYOND 516's `length()` measures string bytes, so the byte
+bound is required for both legacy and updated servers. For example, 1300 CJK
+characters (3900 bytes) and 1000 four-byte characters fit; 3900 CJK characters do not.
+The entire ASCII-escaped JSON response, including ID and metadata, must also fit
+24000 bytes. Oversized or malformed Unicode responses return unavailable.
+
+A worker-only update can provide this plaintext cleanup without restarting an
+older game host. Full Markdown requires the updated compiled game and a later
+authorized host restart. During a managed worker replacement Help is temporarily
+unavailable: gracefully stop the manager, drain active requests, and preserve
+queued request files until ordinary game consumption or timeout clears all eight
+slots. The worker limiter is in memory, so wait a full maximum configured cooldown,
+burst, account-window and global-window interval after the old worker's final
+completion before replacement. Do not reset manager attempts, replay requests,
+inject spool files or clear queued work. Verify empty slots before startup because
+the current worker clears slots at startup. Preserve the same manager record and
+run identity; the replacement consumes the next existing attempt. This procedure
+does not restart the game or change its credentials or network configuration.
 
 ```sh
 python3 -m unittest discover -s tests/player_help -v
