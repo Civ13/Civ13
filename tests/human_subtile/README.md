@@ -2,8 +2,11 @@
 
 Source-only integration stacked from the separately verified native primitive
 at `c605363a11050dbf67fe4820cc8cc4587c9cf97c` (Civ13 base `cc03b199`).
-No compiler, daemon or client has been launched for this integration during
-preparation. Native, real-client and visual acceptance remain pending.
+The root owner verified42 headless integration assertions at production source
+`805aeac436d911fc5cd53e2c864f1e31b8b5f7bf` using BYOND516.1681. This covered
+actual human movement and the real serializer. Connected-client timing and
+visual acceptance remain separate pending gates. The source preparer does not
+launch local native processes; root owns the reviewed execution envelope.
 
 The opt-in is disabled by default. `set_human_subtile(TRUE)` enables it for an
 eligible ordinary human. Client Move retains its existing admission checks and
@@ -112,6 +115,10 @@ Only public checked-in config/resources are used. The interfaces are:
   Slowness+Gigantism/running cases plus failed-attempt cost/deadline parity. It
   returns twelve bounded result rows and executes39 assertions. It is scripted
   client.Move coverage, not OS key delivery or movementMachine scheduler proof.
+  Rows also append to `client-observations.jsonl` before assertions, retaining
+  bounded admission/end state if a later comparison fails. Fixture deadline
+  waits recheck the actual client deadline each engine tick: one fractional
+  sleep can wake early and correctly trigger the production admission guard.
 - Global `human_subtile_fixture_phase` is bounded caption telemetry updated
   before each client condition/leg; it does not drive movement.
 
@@ -122,3 +129,54 @@ only that wrapper and append its reviewed one-client admission/capture adapter.
 Any compile warning/runtime/incorrect assertion or missing terminal receipt
 rejects native acceptance. Actual game input, timing and visuals must be
 reported separately; no publication or live activation is implied.
+
+## Public staging and CI
+
+The public runner stages exact committed Git objects into a fresh directory.
+It records every original input hash and both startup adaptations, removes map
+includes, and appends the unchanged closed headless probe. It never stages the
+private visual wrapper, tokens, accounts, local configuration or saved worlds.
+Uncommitted source does not enter the snapshot. On Windows, staging is offline:
+
+```powershell
+py -3 tests/human_subtile/run.py --prepare-only --output C:/temp/human-subtile-prepared
+py -3 tests/human_subtile/run.py --suite primitive --prepare-only --output C:/temp/subtile-primitive-prepared
+```
+
+Native execution through this runner is Linux CI only. The PR step runs the
+eleven primitive offline contracts, the human source/runner contracts, both
+primitive native profiles and the separate human headless profile. The new
+executable tests select both `tests/subtile_movement` and `tests/human_subtile`
+through the existing added-test policy. Existing suites remain opt-in. The
+minimal world-save stub declares the new loader hook but rejects owned capsules;
+only the full-source human fixture implements physical offset restoration.
+
+```bash
+python3 tests/human_subtile/run.py --suite primitive --byond-bin "$PWD/BYOND/byond/bin" --output /tmp/subtile-primitive
+python3 tests/human_subtile/run.py --suite primitive --control cosmetic --byond-bin "$PWD/BYOND/byond/bin" --output /tmp/subtile-cosmetic
+python3 tests/human_subtile/run.py --suite human --byond-bin "$PWD/BYOND/byond/bin" --output /tmp/human-subtile
+```
+
+After compilation, the runner copies the DMB and any RSC into one explicit
+`runtime/` directory and runs the daemon there. All marker, save and receipt
+checks use that binary directory, because native BYOND file IO can be rooted
+beside the DMB even when the process has a different working directory. The
+human runtime receives the same staged public config; the primitive is
+resource-free and does not require an RSC.
+
+Each invocation has at most one active native phase, with a180-second compiler
+deadline and120-second daemon deadline. Linux process-group cleanup targets
+only that invocation and also runs after normal exit. Phase output is sampled
+against a4MiB limit, including nested `data/logs/runtime/*.txt`; runtime logs,
+exact LF markers, one unique clean pinned compiler banner/result, engine/build, source
+head and assertion/observation receipts are checked strictly. The primitive
+cosmetic profile must fail precisely at `physical_east_four_pixels`; unrelated
+failures do not qualify as a successful control. Evidence upload retains hashes,
+logs and receipts, excluding the large staged resource tree.
+
+The daemon initially binds loopback127.0.0.1:59474 and the fixture then closes
+the port. The closed marker is an application witness, not OS socket isolation.
+This Linux runner provides process-group cleanup and bounded phase deadlines;
+it does not claim the Windows Job resource limits, process census or socket
+sampling supplied by root's separate local envelope. It does not exercise a
+real connected client or capture video.

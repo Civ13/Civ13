@@ -2,8 +2,10 @@
 
 Prepared against Civ13 `cc03b199128f8afed58713912c551ad7556e6bc4`.
 This is an original, opt-in experiment under the repository's AGPL-3.0
-license. `civ13.dme`, production movement, CI, launchers and gameplay defaults
-are unchanged. Only `prototype.dme` defines `SUBTILE_FEASIBILITY`.
+license. The standalone packet does not include production movement or change
+gameplay defaults. Only `prototype.dme` defines `SUBTILE_FEASIBILITY`. The later
+opt-in human integration and public CI runner are documented separately in
+`tests/human_subtile/README.md`.
 
 Status: the root owner verified the standalone v4 packet at exact source head
 `8b2a40b2a28ed89f60d832180b24824954f8b453` on Windows BYOND **516.1681**.

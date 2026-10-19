@@ -391,6 +391,35 @@ jobs:
           python3 tests/weapon_parry/run.py --byond-bin "$PWD/BYOND/byond/bin"
           python3 tests/weapon_parry/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control sword
           python3 tests/weapon_parry/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control twohanded
+      - name: Verify opt-in human and primitive sub-tile movement
+        id: human_subtile
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/human_subtile') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/subtile_movement')
+        timeout-minutes: 10
+        shell: bash
+        run: |
+          echo "started=true" >> "$GITHUB_OUTPUT"
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 -B -m unittest discover -s tests/human_subtile -p 'test_*.py' -v
+          /usr/bin/python3 -B tests/subtile_movement/test_oracle.py
+          /usr/bin/python3 -B tests/human_subtile/run.py --suite primitive --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/primitive"
+          /usr/bin/python3 -B tests/human_subtile/run.py --suite primitive --control cosmetic --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/cosmetic"
+          /usr/bin/python3 -B tests/human_subtile/run.py --suite human --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/human"
+
+      - name: Retain sub-tile movement evidence
+        if: always() && steps.human_subtile.outputs.started == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: human-subtile-${{ github.event.pull_request.head.sha || github.sha }}
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/human-subtile/**/source-manifest.json
+            ${{ runner.temp }}/human-subtile/**/runner-receipt.json
+            ${{ runner.temp }}/human-subtile/**/*.log
+            ${{ runner.temp }}/human-subtile/**/data/logs/runtime/*.txt
+            ${{ runner.temp }}/human-subtile/**/receipt.json
+            ${{ runner.temp }}/human-subtile/**/result.txt
+            ${{ runner.temp }}/human-subtile/**/port-closed.txt
+
       - name: Verify native NPC cover choices and scores
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/npc_cover')
         shell: bash
