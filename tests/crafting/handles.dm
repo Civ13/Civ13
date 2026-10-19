@@ -29,13 +29,15 @@ var/handle_ci_retired = 0
 	return
 /mob/living/human/handle_ci/update_action_buttons()
 	return
+/mob/living/human/handle_ci/update_icons()
+	return
 
 /obj/item/weapon/material/handle/recipe_ci/Destroy()
 	handle_ci_retired++
 	return ..()
 
-/proc/handle_ci_expect(condition, label)
-	handle_ci_cases += list(list("case"=label,"passed"=!!condition))
+/proc/handle_ci_expect(condition, label, list/details = null)
+	handle_ci_cases += list(list("case"=label,"passed"=!!condition,"details"=details))
 	if (!condition)
 		recipe_ci_fail("handle crafting", label)
 	return condition
@@ -51,6 +53,7 @@ var/handle_ci_retired = 0
 	var/mob/living/human/handle_ci/actor
 	var/obj/item/stack/stock
 	var/obj/item/weapon/material/handle/recipe_ci/handle
+	var/obj/item/weapon/material/handle/spare
 	var/datum/stack_recipe/recipe
 	var/slot
 	var/before_stock
@@ -112,7 +115,7 @@ var/handle_ci_retired = 0
 	GLOB.stat_set_event = new
 	var/turf/T = locate(1,1,1)
 	if (!isfloor(T))
-		T = new /turf/floor/plating(T)
+		throw EXCEPTION("Handle fixture requires the initial world floor")
 	var/datum/handle_ci_case/C = new
 	C.craft()
 	// The hands-only mutation stops here with exactly this named failure.
@@ -170,17 +173,18 @@ var/handle_ci_retired = 0
 	handle_ci_expect(C.stock.amount == 1 && handle_ci_outputs(C.recipe.result_type) == C.before_output && handle_ci_retired == C.before_retired && C.actor.back == C.handle, "failed material debit does not consume handle")
 	for (var/change in list("handle moved", "handle deleted", "stock moved", "stock deleted"))
 		C = new("bone pickaxe", slot_back, 4)
-		spare = null
 		spawn(1)
 			// Introduce the alternative after the exact original was selected.
-			spare = new(C.actor)
-			C.actor.shoulder = spare
+			// A datum field survives spawn's copy of the local variable frame.
+			C.spare = new(C.actor)
+			C.actor.shoulder = C.spare
 			if (change == "handle moved") C.actor.remove_from_mob(C.handle)
 			if (change == "handle deleted") qdel(C.handle)
 			if (change == "stock moved") C.stock.loc = T
 			if (change == "stock deleted") qdel(C.stock)
 		C.craft()
-		handle_ci_expect(handle_ci_outputs(C.recipe.result_type) == C.before_output && !QDELETED(spare) && C.actor.shoulder == spare && (change == "stock deleted" || C.stock.amount == C.before_stock) && (change == "handle deleted" || !QDELETED(C.handle)), "late change cancels without substituting spare: [change]")
+		var/list/details = list("output_delta"=handle_ci_outputs(C.recipe.result_type)-C.before_output,"stock_amount"=QDELETED(C.stock) ? null : C.stock.amount,"selected_deleted"=QDELETED(C.handle),"spare_available"=!QDELETED(C.spare),"spare_equipped"=(C.actor.shoulder == C.spare))
+		handle_ci_expect(details["output_delta"] == 0 && details["spare_available"] && details["spare_equipped"] && (change == "stock deleted" || C.stock.amount == C.before_stock) && (change == "handle deleted" || !QDELETED(C.handle)), "late change cancels without substituting spare: [change]", details)
 	C = new("bone pickaxe", slot_back, 4)
 	var/obj/item/stack/material/bone/second_stock = new(T, 30, FALSE)
 	spawn(0)

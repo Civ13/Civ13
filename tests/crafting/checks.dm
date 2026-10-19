@@ -6,7 +6,7 @@
 	maxx = 1
 	maxy = 1
 	maxz = 1
-	turf = /turf
+	turf = /turf/floor/plating
 	area = /area
 
 /obj/map_metadata/recipe_ci
