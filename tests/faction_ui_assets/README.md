@@ -26,6 +26,11 @@ against creation/editor/basic templates with an injected data/bootstrap boundary
 It verifies a complete 1,024-cell canvas and action hrefs. It does not run a DOM,
 browser resource delivery or native client.
 
+The unique guarded CI step, immediately before the optional player-help step,
+runs these checks and both native profiles only for this introduced suite or
+explicit extensive mode. The selection regression uses real temporary Git
+commits to distinguish an added substantive DM helper from edits and pushes.
+
 The prepared native fixture compiles the full production DME without maps or
 normal startup. It calls actual restored-phase ticker setup, the Create Faction
 verb, wizard data construction, NanoUI constructor/get_html, asset getter,

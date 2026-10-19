@@ -1,5 +1,8 @@
 """Source preparation/acceptance guards only; no BYOND or browser launch."""
 from pathlib import Path
+import importlib.util
+import os
+import subprocess
 import tempfile
 import unittest
 
@@ -7,6 +10,52 @@ from run import ASSETS, CREATION, OMISSION_FAILURES, PREFIX, ROOT, prepare, repl
 
 
 class FactionAssets(unittest.TestCase):
+    def test_workflow_guard_runs_only_registered_suite(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        title = '      - name: Verify restored faction UI assets and registration omission control\n'
+        self.assertEqual(workflow.count(title), 1)
+        step = workflow.split(title, 1)[1].split('      - name:', 1)[0]
+        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/faction_ui_assets')", step)
+        self.assertIn('unittest discover -s tests/faction_ui_assets', step)
+        self.assertIn('node tests/faction_ui_assets/check_templates.mjs', step)
+        self.assertEqual(step.count('tests/faction_ui_assets/run.py'), 2)
+        self.assertEqual(step.count('--omit-registration'), 1)
+        self.assertLess(workflow.index(title), workflow.index('      - name: Verify optional player help bridge'))
+
+    def test_real_git_added_probe_selects_only_this_suite_then_edits_do_not(self):
+        spec = importlib.util.spec_from_file_location('faction_selection', ROOT / 'scripts/select-ci.py')
+        selection = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(selection)
+        with tempfile.TemporaryDirectory() as folder:
+            temp = Path(folder)
+            def git(*args):
+                return subprocess.check_output(['git', '-C', folder, *args], stderr=subprocess.PIPE, text=True).strip()
+            git('init')
+            git('config', 'user.name', 'Faction fixture selection')
+            git('config', 'user.email', 'fixture@example.invalid')
+            (temp / 'README.md').write_text('Fixture base\n', encoding='utf-8')
+            git('add', '.')
+            git('commit', '-m', 'base')
+            base = git('rev-parse', 'HEAD')
+            helper = temp / 'tests/faction_ui_assets/probe.dm'
+            helper.parent.mkdir(parents=True)
+            helper.write_bytes((ROOT / 'tests/faction_ui_assets/probe.dm').read_bytes())
+            git('add', '.')
+            git('commit', '-m', 'add substantive native probe')
+            added = git('rev-parse', 'HEAD')
+            previous = Path.cwd()
+            try:
+                os.chdir(temp)
+                self.assertEqual(selection.introduced_tests(base, added, 'pull_request'), ['tests/faction_ui_assets'])
+                self.assertEqual(selection.introduced_tests(base, added, 'push'), [])
+                self.assertFalse(selection.needs_extensive('pull_request', False))
+                helper.write_text(helper.read_text(encoding='utf-8') + '\n// edit existing probe\n', encoding='utf-8')
+                git('add', '.')
+                git('commit', '-m', 'edit existing probe')
+                self.assertEqual(selection.introduced_tests(added, git('rev-parse', 'HEAD'), 'pull_request'), [])
+            finally:
+                os.chdir(previous)
+
     def test_getter_registers_only_new_assets_before_return(self):
         source = (ROOT / ASSETS).read_text(encoding='utf-8')
         getter = source.split('/proc/get_asset_datum(var/type)\n', 1)[1].split('/datum/asset/New()', 1)[0]
