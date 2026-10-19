@@ -13,11 +13,12 @@ import resources
 from source_contract import transform, validate
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = '5a4b911a2ced3700fe19bd524b6c04046755e679'
+BASE = '75890d883190355e430f9958fd102864ee88429a'
 PATH = 'code/modules/persistence/functions.dm'
 NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
             'blackout_click_owner', 'blackout_click_client_ref', 'blackout_click_counts',
-            'blackout_click_started', 'blackout_click_expires')
+            'blackout_click_started', 'blackout_click_expires',
+            'pickaxe_mining_owner', 'mining_in_progress', 'pickaxe_mining_action')
 
 
 class SourceContractTests(unittest.TestCase):
@@ -28,7 +29,7 @@ class SourceContractTests(unittest.TestCase):
 
     def test_exact_transform_preserves_current_master(self):
         validate(self.baseline, self.candidate)
-        for kind, count in [('atom', 3), ('turf', 6), ('mob', 21)]:
+        for kind, count in [('atom', 3), ('turf', 8), ('mob', 22)]:
             body = re.search(rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+', self.candidate, re.M).group()
             self.assertEqual(len(re.findall(r'"[^"]+"', body)), count)
         self.assertIn('key == "weak_reference"', self.candidate)
@@ -37,7 +38,7 @@ class SourceContractTests(unittest.TestCase):
     def test_each_new_exclusion_omission_is_rejected(self):
         for key in NEW_KEYS:
             with self.subTest(key=key), self.assertRaises(ValueError):
-                validate(self.baseline, self.candidate.replace(f'"{key}", ', '', 1))
+                validate(self.baseline, self.candidate.replace(f'"{key}"', '"omitted_runtime_key"', 1))
 
     def test_parent_dispatch_controls_are_rejected(self):
         for mutated in (self.candidate.replace('\treturn ..()', '\treturn FALSE', 1),
@@ -80,10 +81,27 @@ class SourceContractTests(unittest.TestCase):
             for key in (*NEW_KEYS, 'weak_reference'):
                 self.assertIn(f'"{key}"', probe)
                 for variant in ('baseline', 'candidate'):
-                    kind = 'datum/proc' if key == 'weak_reference' else 'mob'
+                    kind = ('datum/proc' if key == 'weak_reference' else
+                            'turf' if key in ('pickaxe_mining_owner', 'mining_in_progress') else 'mob')
                     body = re.search(rf'^/{kind}/{variant}_runtime\(key\)\n(?:\t[^\n]*\n)+', production, re.M).group()
                     self.assertIn(f'"{key}"', body)
             self.assertIn('source_contract.py', receipt['inputs'])
+
+    def test_native_probe_uses_postclose_state_and_constructible_atom(self):
+        probe = (ROOT / 'tests/exclusion_dispatch/probe.dm').read_text()
+        self.assertNotIn('network_receipt["close_result"] != 1', probe)
+        self.assertIn('network_receipt["closed_port"] != 0', probe)
+        self.assertIn('network_receipt["reopen_result"] != FALSE', probe)
+        self.assertIn('list(/datum,/atom/movable,/obj', probe)
+        self.assertNotIn('list(/datum,/atom,/obj', probe)
+
+    def test_early_mining_exclusions_are_preserved_before_switch(self):
+        for kind, guard in (('turf', 'if (key == "pickaxe_mining_owner" || key == "mining_in_progress")'),
+                            ('mob', 'if (key == "pickaxe_mining_action")')):
+            body = re.search(rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+', self.candidate, re.M).group()
+            self.assertLess(body.index(guard), body.index('switch(key)'))
+            with self.assertRaises(ValueError):
+                validate(self.baseline, self.candidate.replace(guard, 'if (FALSE)'))
 
     def test_native_mode_is_unconditionally_held_even_with_old_receipt(self):
         with tempfile.TemporaryDirectory() as directory:

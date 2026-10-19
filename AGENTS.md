@@ -1,11 +1,41 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-18: private Help conversation boundary -->
+Help history belongs to an authenticated client session, never a saved mob.
+`conversation_probe.dm` is included by the existing isolated Help fixture;
+conversation generation and action-token negative controls check stale replies
+and copied links. The role-free worker contract derives only user/assistant
+turns, bounded by UTF-8 history and complete ASCII-JSON request bytes. Spool
+cleanup is not encryption or guaranteed crash-time erasure. Server and worker
+updates require separately coordinated restarts; offline checks do not prove them.
+<!-- 2026-10-19: consumed crafting handles -->
+Consumed wood handles are selected from hands and real equipment slots, including
+shoulder/back, then retained through do_after. Revalidate the exact item and source
+before debit; consume only after successful stack.use and clear its actual slot.
+Do not recurse through storage or recreate handles on cancellation. Existing
+get_equipped_items omits shoulder; use the slot getter with equipment priority.
+<!-- 2026-10-19: collision mining ownership -->
+Dense mineable underground rock uses one shared click/bump mining action. Its
+explicit optional do_after context owns actor and turf reservations before any
+spawn; never queue mining from deferred living.Bump work or switch the player's
+active hand. The custom saver must exclude both reservation pointers.
+
 <!-- 2026-10-18: native help spool format -->
 Native DM can interpolate world.realtime in scientific notation, and text2file
 adds LF/CRLF to ready markers. The help bridge validates bounded opaque IDs and
 removes exactly one native line ending at admission and completion. Run
 tests/player_help/run-spool-controls.py for the three old-defect controls;
 all model transports in these spool checks are injected and offline.
+
+<!-- 2026-10-18: native Help line endings -->
+BYOND 516.1681 rejects the DM string escape `\r`; use `ascii2text(13)` for
+carriage-return normalization. `\n` is supported. JSON-decoded CRLF test data
+must still exercise the actual native renderer, not only a Python equivalent.
+
+<!-- 2026-10-18: isolated fixture ports -->
+`world.OpenPort(0)` opens an available port; `OpenPort("none")` closes it.
+The Help fixture disables compile-time visibility, rejects clients and overrides
+OpenPort to prevent reopening. These controls do not replace external socket monitoring.
 
 <!-- 2026-10-18: restored input clocks and action locks -->
 The custom saver includes changed tmp fields. Mob next_click/next_move and
@@ -844,6 +874,13 @@ ordinary prestartup direct calls. tests/lighting_startup checks production
 bodies, shared identity, late replacement and failed waiters against a baseline;
 its adapted rendering does not establish client lighting acceptance.
 
+<!-- 2026-10-18: building renderer gravity -->
+Building-sky entry must exempt /atom/movable/lighting_overlay explicitly; it is
+not an /obj/effect. Runtime level allocation and turf replacement can otherwise
+drop a black renderer onto lit ground. The building lighting probes separate
+replacement callbacks, explicit entry, and an adapted allocation interleave.
+They verify native lighting state, not connected-client rendering.
+
 <!-- 2026-10-12: lighting reinitialization -->
 <!-- 2026-10-17: restored-round lighting -->
 Turf luminosity is always 0; native tile visibility comes from lighting overlay
@@ -905,3 +942,14 @@ ClearMap must preserve the global dview_mob identity. Retiring this runtime mob
 breaks FOR_DVIEW in post-import lighting processing after GC clears the global.
 The lighting recovery fixture runs production lighting_sources.fire(), not only
 light constructor/registration checks; lighting-view removes the preservation guard.
+<!-- 2026-10-18: lazy floor decal tracking -->
+Native nullable tracking lists do not auto-materialize on `|=`: omitting the
+initializer raises a type-mismatch exception. `tests/floor_decal_tracking` covers
+the writer, seasonal reader and native entry compatibility. Ordinary turf saves
+exclude this derived field through their existing saved-variable allowlist.
+
+<!-- 2026-10-19: exclusion dispatch source contract -->
+Runtime-exclusion hooks can have early mining ownership guards before their
+terminal list-membership return. Preserve those guards when replacing only the
+list with switch dispatch; source fixtures must pin current inherited helpers
+and include all mining fields. Offline source parity is not native evidence.

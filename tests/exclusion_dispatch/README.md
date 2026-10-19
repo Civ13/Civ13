@@ -4,7 +4,7 @@ Candidate: replace the atom, turf and mob runtime-exclusion temporary name lists
 with exact switch cases. Unmatched keys still call the parent once; matched keys
 return without calling it. No cache, partial parsing, saved-variable selection,
 saver/loader, or persistent fields change. Baseline is pinned to
-`5a4b911a2ced3700fe19bd524b6c04046755e679`.
+`75890d883190355e430f9958fd102864ee88429a`.
 
 The runner fails closed on source drift. It imports production hooks, representative
 movable/item/human inherited hooks, full get_saved_vars bodies and the dirt override.
@@ -64,7 +64,7 @@ final accounting, so later commands cannot reset the budget. Frozen packets also
 contain trusted executable paths, SHA-256 hashes, static file version resources
 and exact compiler/daemon arguments. Both binaries are checked again immediately
 before launch and must match the lease; compiler and daemon banners are required.
-The probe retains pre-close address/port, close success, closed port, reopen
+The probe retains pre-close address/port, close return value, closed port, reopen
 rejection and final closed port, failing with a diagnostic if they differ.
 
 ## First native attempt
@@ -86,9 +86,9 @@ candidate without a demonstrated performance benefit.
 
 ## Current-master conflict resolution
 
-The baseline is master `5a4b911a2ced3700fe19bd524b6c04046755e679`.
-The three switch hooks retain its 3 atom, 6 turf and 21 mob exclusions, including
-all nine process-local input/trace fields. The datum weak-reference exclusion,
+The baseline is master `75890d883190355e430f9958fd102864ee88429a`.
+The three switch hooks retain its 3 atom, 8 turf and 22 mob exclusions, including
+all nine process-local input/trace fields and the three mining ownership fields. The datum weak-reference exclusion,
 restored-lighting calls and all other persistence code remain baseline-identical.
 Both variants import the same baseline-checked current inherited helpers.
 Parity keys include the nine new mob fields and `weak_reference`. Offline source
@@ -107,3 +107,22 @@ Fresh maintainer approval and exact-head review are required before separately
 changing the unconditional hold; all old leases/grants are invalid for this head.
 Source-only generation launches Git for pinned source reads, never a compiler or
 daemon, and records `native_execution: false` and the held authorization state.
+
+## Refreshed source packet (2026-10-19)
+
+The pinned baseline and inherited-helper checks now use master
+`75890d883190355e430f9958fd102864ee88429a`. The transformer preserves leading
+mining guards verbatim and replaces only the terminal list-membership expression.
+The whole-file equality guard still rejects unrelated changes. Offline tests
+individually omit all three mining fields and verify their generated parity keys.
+
+The fixture incorporates the two source fixes reported in PR comment
+https://github.com/Civ13/Civ13/pull/3197#issuecomment-6240496944:
+port closure is checked through the resulting closed state and refused reopen
+(the native close return is not required to be 1), and `/atom/movable` replaces
+nonconstructible bare `/atom`. The pre-close address assertion is unchanged.
+These changes regenerate input hashes; previous packets and leases are invalid.
+The report's old Linux run is historical evidence, not a run of this candidate.
+The unconditional native hold remains in force, with no flag or receipt bypass.
+Native parity, all controls, generated-source compilation and paired benchmarks
+remain acceptance blockers for the refreshed candidate.

@@ -178,11 +178,15 @@
 		sleep(1)
 	check(B.active(B.generation) && H.packet_life_calls > life_calls && H.stat != DEAD && H.water > hydration && H.nutrition > nutrition, "natural_life_real_supplied_survival_improvement")
 
-/datum/gameplay_packet_client/proc/gather_tools(turf/floor/grass/grass, obj/item/weapon/branch/stick)
+/datum/gameplay_packet_client/proc/gather_tools(atom/grass, obj/item/weapon/branch/stick)
 	var/obj/item/weapon/flint/F = B.sharp_flint()
-	check(F && grass.type == /turf/floor/grass && stick.type == /obj/item/weapon/branch && !stick.sharpened && !B.stock(/obj/item/stack/grass_cuttings) && !B.stock(/obj/item/stack/crude_twine) && !B.stock(/obj/item/weapon/material/hatchet/tribal/flint),"gather_tool_fixture_precondition")
+	check(F && B.grass_target(grass) && stick.type == /obj/item/weapon/branch && !stick.sharpened && !B.stock(/obj/item/stack/grass_cuttings) && !B.stock(/obj/item/stack/crude_twine) && !B.stock(/obj/item/weapon/material/hatchet/tribal/flint),"gather_tool_fixture_precondition")
+	var/turf/site = get_turf(grass)
+	var/plant = !isturf(grass)
 	action(list("type"="gather"),grass)
 	check(B.stock(/obj/item/stack/grass_cuttings) == 2,"bridge_real_grass_two_cuttings")
+	if (plant)
+		check((!grass || grass.gcDestroyed || grass.gc_destroyed) && get_turf(H) && locate(site.x,site.y,site.z) == site,"bridge_tall_grass_retired_floor_unchanged")
 	action(list("type"="drop"),F)
 	var/obj/item/stack/grass_cuttings/G = locate() in H.loc
 	check(G && G.amount == 2,"gather_actual_cutting_identity")

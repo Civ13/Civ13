@@ -412,8 +412,21 @@ or rendered illumination. Controls `lighting-export`, `lighting-legacy` and
 `lighting-rebuild`, `lighting-opacity` and `lighting-view` each remove one production safeguard in generated source.
 The legacy control must reproduce the ownerless `light_sources` constructor error.
 
+The fixture also checks lazy corner source-list allocation with actual native
+list identities, independent ownership, both propagation insertion/removal paths,
+retained identity after removal, and nontrivial movement/obstruction changes.
+Smart updates are compared with full recomputation. A coordinate-normalized
+pre-save/post-load graph compares RGB, source membership and falloff strength.
+`lighting-allocation-initial.json` records counts before the null assertion;
+`lighting-allocation.json` records final allocated and distinct list counts.
+These counts do not measure process memory or RAM savings. Controls
+`lighting-eager` and `lighting-shared` change only generated test inputs and must
+fail their specific allocation/ownership assertion. The offline
+`test_lighting_corner_allocation.py` checks preparation and source preservation;
+it does not compile or execute BYOND.
+
 The native CI workflow accepts `lighting_recovery_regressions=true` for these
-six cases. The fixture closes its native port, rejects reopening and checks a
+cases. The fixture closes its native port, rejects reopening and checks a
 live OS socket census; a brief native startup listener can precede its entry.
 Obstruction caches rebuild after contents/fields/hooks and before source updates.
 On this Windows host, even the existing startup-only control exits
@@ -470,3 +483,22 @@ identities before bootstrap or import and pass the same identity to the backend.
 They check nested direct-call rejection and final admission release. A manually
 set busy flag does not authorize a positive save/load operation. Explicit busy
 and concurrency rejection controls retain their original guards.
+
+
+### Lost-limb wound recovery
+
+`run-durable-world.py --wounds --byond-bin <516.1681-bin>` uses the production
+wound constructor, encoder and loader with normal startup disabled and isolated
+native savefiles. It checks 18 disk round trips: edged, blunt and burned wounds,
+clean and unclean, through actual current-format export, explicit typed entries
+and legacy flat entries. Assertions retain injury/stage/bleeding/treatment state,
+helper arrays, embedded item identity and the cyclic organ/wound backlink.
+Missing dynamic stage tables are rejected rather than reconstructed as healing.
+The explicit entries model supported historical encodings; they are not the
+incident Gaia save graph or full-world recovery evidence.
+
+`--wounds --negative-control wound-restore` substitutes immutable wound and loader
+sources from `d0ffbfb2335eb735756b998f3f2ff617c28f144b` in generated copies. Its
+expected result is the original `Cannot read null.max_damage` constructor failure
+at line 394 after the four ordinary-constructor checks. `--prepare-only` generates
+and hashes inputs without compiling or running BYOND.
