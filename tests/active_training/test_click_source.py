@@ -108,6 +108,20 @@ class ClickSourceTests(unittest.TestCase):
             with self.subTest(source=mutant[:50]), self.assertRaises(AssertionError):
                 self.assert_real_round_identity_before_save(mutant)
 
+    def test_actual_runner_keeps_python_options_an_array_before_both_splats(self):
+        def assert_argument_contract(runner):
+            assignments = [line.strip() for line in runner.splitlines() if '$pythonArguments = ' in line]
+            self.assertEqual(assignments, ["[string[]]$pythonArguments = if ($options.Count) { @('-3','-B') } else { @('-B') }"])
+            self.assertIn('& $pythonCommand @pythonArguments @prepareArguments', runner)
+            self.assertIn('& $pythonCommand @pythonArguments @verifyArguments', runner)
+        runner = (prepare.ROOT / 'tests/active_training/run.ps1').read_text(encoding='utf-8')
+        assert_argument_contract(runner)
+        # This immutable predecessor really unwraps Linux '-B' to a string;
+        # pwsh 7.6.7 then splats its chars and Python selects stdin ('-').
+        original = prepare.git('show', '09eb8a1378cda690af682cac9d1034c643f2ff1e:tests/active_training/run.ps1').decode()
+        with self.assertRaises(AssertionError):
+            assert_argument_contract(original)
+
     def test_output_inside_checkout_or_nonempty_is_rejected(self):
         with self.assertRaisesRegex(ValueError, 'outside'):
             self.generate(prepare.ROOT / 'forbidden-training-output')

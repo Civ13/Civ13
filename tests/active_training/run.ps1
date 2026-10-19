@@ -26,7 +26,7 @@ $compilerName = if ($options.Count) { 'dm.exe' } else { 'DreamMaker' }
 $daemonName = if ($options.Count) { 'dd.exe' } else { 'DreamDaemon' }
 if ($ClickFeedback) {
     $pythonCommand = if ($options.Count) { (Get-Command py).Source } else { '/usr/bin/python3' }
-    $pythonArguments = if ($options.Count) { @('-3','-B') } else { @('-B') }
+    [string[]]$pythonArguments = if ($options.Count) { @('-3','-B') } else { @('-B') }
 }
 
 # Used only by the explicit ClickFeedback path. The old accelerated mode below
