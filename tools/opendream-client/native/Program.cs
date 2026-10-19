@@ -91,7 +91,7 @@ public static class Program {
             Console.WriteLine("Sign in to your BYOND account in the BYOND Pager before joining.");
             owner.Dispose();
             while (true) {
-                Console.WriteLine("\nCiv13 - 1: BYOND sign in   2: ValZarGaming servers   3: OpenDream (experimental)   4: Exit");
+                Console.WriteLine("\nCiv13 - 1: BYOND sign in   2: ValZarGaming servers   3: OpenDream (experimental)   4: Exit   9: Civ13.com servers");
                 foreach (var link in CommunityLinks.Items)
                     Console.WriteLine($"{link.Key}: {link.Value.Label} - {link.Value.Url}");
                 Console.Write("Choose a number: ");
@@ -99,17 +99,18 @@ public static class Program {
                 if (choice is null or "4") return 0;
                 if (CommunityLinks.TryOpen(choice, start => { using var browser = Process.Start(start); }, Console.Out)) continue;
                 if (choice == "1") Process.Start(new ProcessStartInfo(Path.Combine(byond, "byond.exe")) { UseShellExecute = false, WorkingDirectory = byond });
-                if (choice == "2") {
-                    Console.WriteLine("ValZarGaming - 1: Nomads   2: TDM   3: Back");
+                if (choice is "2" or "9") {
+                    var serverName = choice == "9" ? "Civ13.com" : "ValZarGaming";
+                    Console.WriteLine($"{serverName} - 1: Nomads   2: TDM   3: Back");
                     var modeChoice = Console.ReadLine();
                     if (modeChoice is not ("1" or "2")) continue;
                     try {
                         if (serverPort != null) throw new IOException("Public server selections use their catalog port; omit --server-port.");
-                        var server = ServerCatalog.Select("ValZarGaming", modeChoice == "1" ? "Nomads" : "TDM");
-                        var addresses = await Connection.Resolve();
+                        var server = ServerCatalog.Select(serverName, modeChoice == "1" ? "Nomads" : "TDM");
+                        var endpoint = await ServerCatalog.NativeEndpoint(server);
                         Console.WriteLine($"Connecting to {server.Name} {server.Mode} using BYOND {RequiredByond().Version} on port {server.Port}.");
                         var desktop = new WindowsByondDesktop();
-                        Process.Start(ServerCatalog.NativeStart(server, byond, addresses.Single(), RequiredByond(), path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond())));
+                        Process.Start(ServerCatalog.NativeStart(server, byond, endpoint, RequiredByond(), path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond())));
                     } catch (IOException e) { Console.WriteLine(e.Message); }
                 }
                 if (choice == "3") {

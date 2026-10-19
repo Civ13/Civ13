@@ -423,6 +423,13 @@ file/line identities are not bounded. `tests/error_history/run.py` checks real
 logging, viewer bodies and retirement in an isolated native world, with an
 immutable historical log_error control. `--prepare-only` runs no native tools.
 
+<!-- 2026-10-19: distinct native launcher catalogs -->
+Official Civ13.com Nomads uses 1715 and TDM 1714 (published website); ValZarGaming
+uses the opposite mapping. Keep these independent. Official BYOND URLs use the
+fixed civ13.com hostname; ValZarGaming retains its existing verified DNS/IP pin.
+The native catalog is in tools/opendream-client/native/ServerCatalog.cs despite
+the legacy directory name. Source merge does not activate the launcher feed.
+
 <!-- 2026-10-14: native launcher packaging -->
 `tools/opendream-client/native/Build.ps1` builds the single-file self-contained
 Windows x64 launcher. Its offline console tests cover mock updates plus actual
@@ -964,3 +971,11 @@ parity, and this lane makes no benchmark or listener-sampling claim.
 Linux BYOND world.address can report the host interface even with -ip 127.0.0.1.
 Isolated exclusion CI verifies the engine's startup bind diagnostic plus closed
 port/refused reopen state; do not use world.address as the socket-bind oracle.
+
+<!-- 2026-10-19: independent typed wait contexts -->
+`do_after` keeps mining_context in its ninth argument; opt-in gameplay_context
+is tenth and forwarded by name. Reject simultaneous contexts before either
+claim. Preserve mining progress/owner cleanup and ordinary null callback order.
+The gather disabled-source hashes project reviewed master; refresh them only
+after verifying all four full-file projections. Idle-metabolism extraction must
+project the disabled helper before finding its conditional proc declaration.
