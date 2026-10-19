@@ -46,7 +46,9 @@ def mutate(source, control):
     before, after = {
         'other-occupant': ('\tif (seat.buckled_mob != src)\n\t\treturn FALSE\n', ''),
         'wake-actor': ('\tforceMove(return_turf)\n', '\tsleep_decoy.forceMove(return_turf)\n'),
-        'move-rollback': ('\tif (!sleep_turf || get_turf(src) != sleep_turf)\n', '\tif (FALSE)\n'),
+        # Keep rollback locals referenced: constant FALSE is optimized away and
+        # correctly rejected by the zero-warning native compiler contract.
+        'move-rollback': ('\tif (!sleep_turf || get_turf(src) != sleep_turf)\n', '\tif (cross_case == "never-selected")\n'),
         'inventory-gate': ('\tif (persistence_save_in_progress || inducedSSD || buckled || !return_turf || !sleep_turf || get_turf(src) != return_turf)\n', '\tif (FALSE)\n'),
     }[control]
     return BASE.replace_once(source, before, after, 'sleep mutation control')

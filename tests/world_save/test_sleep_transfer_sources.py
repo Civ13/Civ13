@@ -83,6 +83,13 @@ class SleepTransferSourceTests(unittest.TestCase):
         self.assertIn('!return_turf || !sleep_turf', changed)
         self.assertIn('inducedSSD || buckled ||', changed)
 
+    def test_rollback_control_keeps_native_locals_used(self):
+        changed = RUNNER.mutate(self.helpers, 'move-rollback')
+        self.assertIn('if (cross_case == "never-selected")', changed)
+        self.assertNotEqual(RUNNER.CONTROLS['move-rollback'][0], 'never-selected')
+        for name in ('lastx', 'lasty', 'lastz', 'sleeping'):
+            self.assertIn(f'{name} = previous_{name}', changed)
+
     def test_helpers_use_source_actor_and_preserve_hook_revalidation(self):
         self.assertNotRegex(self.helpers, r'\busr\b')
         entry = RUNNER.BASE.extract_proc(self.source, RUNNER.HELPERS[1])
