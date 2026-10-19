@@ -38,7 +38,10 @@
 // The composite appearance is not a supported saved datum. Restoring its null
 // envelope resets independently restored fields such as transform and color.
 /atom/persistence_runtime_var(key)
-	return (key in list("appearance", "light", "light_sources")) || ..()
+	switch(key)
+		if ("appearance", "light", "light_sources")
+			return TRUE
+	return ..()
 
 // Lighting graphs belong to the current map/owners and are rebuilt after import.
 // The custom serializer enumerates tmp fields as well as durable fields.
@@ -54,7 +57,10 @@
 /turf/persistence_runtime_var(key)
 	if (key == "pickaxe_mining_owner" || key == "mining_in_progress")
 		return TRUE
-	return (key in list("affecting_lights", "lighting_overlay", "corners", "has_opaque_atom", "window_coeff_dirty", "next_calculate_window_coeff")) || ..()
+	switch(key)
+		if ("affecting_lights", "lighting_overlay", "corners", "has_opaque_atom", "window_coeff_dirty", "next_calculate_window_coeff")
+			return TRUE
+	return ..()
 
 // HUD objects belong to a client session and are rebuilt by the normal HUD path.
 // The custom saver visits tmp vars too; exclude these on both export and import.
@@ -64,7 +70,10 @@
 /mob/persistence_runtime_var(key)
 	if (key == "pickaxe_mining_action")
 		return TRUE
-	return (key in list("next_click", "next_move", "may_do_after", "may_do_mob", "blackout_click_owner", "blackout_click_client_ref", "blackout_click_counts", "blackout_click_started", "blackout_click_expires", "hud_used", "HUDneed", "HUDinventory", "HUDfrippery", "HUDprocess", "HUDtech", "hands", "pullin", "purged", "i_select", "m_select", "zone_sel")) || ..()
+	switch(key)
+		if ("next_click", "next_move", "may_do_after", "may_do_mob", "blackout_click_owner", "blackout_click_client_ref", "blackout_click_counts", "blackout_click_started", "blackout_click_expires", "hud_used", "HUDneed", "HUDinventory", "HUDfrippery", "HUDprocess", "HUDtech", "hands", "pullin", "purged", "i_select", "m_select", "zone_sel")
+			return TRUE
+	return ..()
 
 /obj/screen
 	should_save = FALSE

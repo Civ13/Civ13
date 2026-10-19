@@ -965,6 +965,23 @@ initializer raises a type-mismatch exception. `tests/floor_decal_tracking` cover
 the writer, seasonal reader and native entry compatibility. Ordinary turf saves
 exclude this derived field through their existing saved-variable allowlist.
 
+<!-- 2026-10-19: exclusion dispatch source contract -->
+Runtime-exclusion hooks can have early mining ownership guards before their
+terminal list-membership return. Preserve those guards when replacing only the
+list with switch dispatch; source fixtures must pin current inherited helpers
+and include all mining fields. Offline source parity is not native evidence.
+
+<!-- 2026-10-19: Linux exclusion parity lane -->
+Exclusion dispatch run-ci.py consumes source-only packets for bounded Linux CI
+parity and three controls, retaining receipts. It is separate from run.py's held
+Windows grant runner; neither an offline pass nor workflow addition proves native
+parity, and this lane makes no benchmark or listener-sampling claim.
+
+<!-- 2026-10-19: native bind versus host address -->
+Linux BYOND world.address can report the host interface even with -ip 127.0.0.1.
+Isolated exclusion CI verifies the engine's startup bind diagnostic plus closed
+port/refused reopen state; do not use world.address as the socket-bind oracle.
+
 <!-- 2026-10-19: independent typed wait contexts -->
 `do_after` keeps mining_context in its ninth argument; opt-in gameplay_context
 is tenth and forwarded by name. Reject simultaneous contexts before either
