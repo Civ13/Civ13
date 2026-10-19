@@ -146,7 +146,7 @@ class PublicationTests(unittest.TestCase):
                     with mock.patch.object(bridge.signal, 'signal'), mock.patch.object(bridge.time, 'sleep'):
                         bridge.main()
             response = json.loads((instance.root / '1.response.json').read_text())
-            self.assertEqual(response, {'id': '1-2-1', 'status': 'ok', 'answer': 'Use a bandage.'})
+            self.assertEqual(response, {'id': '1-2-1', 'status': 'ok', 'answer': 'Use a bandage.', 'render_protocol': 1, 'answer_format': 'plain-v1'})
             self.assertFalse((instance.root / '2.response.json').exists())
             self.assertEqual(len(calls), 1)
             self.assertTrue(config['enabled'])

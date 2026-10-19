@@ -52,6 +52,8 @@
 	should_save = FALSE
 
 /turf/persistence_runtime_var(key)
+	if (key == "pickaxe_mining_owner" || key == "mining_in_progress")
+		return TRUE
 	return (key in list("affecting_lights", "lighting_overlay", "corners", "has_opaque_atom", "window_coeff_dirty", "next_calculate_window_coeff")) || ..()
 
 // HUD objects belong to a client session and are rebuilt by the normal HUD path.
@@ -60,6 +62,8 @@
 // Ignoring historical values during import leaves new mobs at their defaults,
 // without resetting cooldowns or active actions on an existing live mob.
 /mob/persistence_runtime_var(key)
+	if (key == "pickaxe_mining_action")
+		return TRUE
 	return (key in list("next_click", "next_move", "may_do_after", "may_do_mob", "blackout_click_owner", "blackout_click_client_ref", "blackout_click_counts", "blackout_click_started", "blackout_click_expires", "hud_used", "HUDneed", "HUDinventory", "HUDfrippery", "HUDprocess", "HUDtech", "hands", "pullin", "purged", "i_select", "m_select", "zone_sel")) || ..()
 
 /obj/screen
