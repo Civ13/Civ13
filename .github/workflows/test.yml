@@ -944,7 +944,14 @@ jobs:
             python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
           # Synthetic writer/reader only. No private save path or staging upload.
-          python3 tests/world_save/partial_save_inspector/inspect-partial-save.py --self-test-only --byond-bin "$PWD/BYOND/byond/bin"
+          if ! python3 tests/world_save/partial_save_inspector/inspect-partial-save.py --self-test-only --byond-bin "$PWD/BYOND/byond/bin"; then
+            # These two compiler logs contain only fixed synthetic source, never
+            # a source save or runtime input. Bound diagnostics; do not upload logs.
+            for log in "$HOME"/civ13-save-inspect-*/{writer,reader}-compile.log; do
+              if [ -f "$log" ]; then head -c 4096 "$log"; fi
+            done
+            exit 1
+          fi
       - name: Retain protected sleep regression evidence
         if: always() && steps.protected_sleep.outcome != 'skipped'
         uses: actions/upload-artifact@v4
