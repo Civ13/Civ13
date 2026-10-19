@@ -202,6 +202,19 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      - name: Verify accessory removal actor and native controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/accessory_removal')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 -B -m unittest discover -s tests/accessory_removal -v
+          /usr/bin/python3 tests/accessory_removal/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/accessory-removal-positive"
+          control_status=0
+          for control in original-usr fork-guard; do
+            /usr/bin/python3 tests/accessory_removal/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/accessory-removal-$control" --negative-control "$control" || control_status=1
+          done
+          test "$control_status" = 0
+
       - name: Verify optional player help bridge and native negative controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/player_help')
         run: |
