@@ -1,3 +1,5 @@
+import hashlib
+import json
 import importlib.util
 from pathlib import Path
 import unittest
@@ -15,6 +17,12 @@ class Preparation(unittest.TestCase):
         for control, replacement in (("bypass", "FALSE"), ("ordinary", "TRUE")):
             self.assertEqual(runner.prepare(control)["production.dm"], expected.replace(
                 "mymob && mymob.see_invisible >= INVISIBILITY_LEVEL_TWO", replacement))
+
+    def test_render_evidence_binds_source(self):
+        evidence = json.loads(Path(__file__).with_name("render-results.json").read_text())
+        self.assertEqual(len(evidence["pairs"]), 15)
+        for name, digest in evidence["canonical_lf_sources_sha256"].items():
+            self.assertEqual(hashlib.sha256((ROOT / name).read_text().encode()).hexdigest(), digest)
 
     def test_mode_refresh_order(self):
         life = (ROOT / "code/game/mob/living/life.dm").read_text()

@@ -172,7 +172,6 @@
   "runtime_seconds": 57.641336100001354,
   "cleanup": true,
   "limits": "Imposed21x21 composition scene, not production shared graph, propagation, mode-lifecycle or persistence roundtrip acceptance",
-  "production_patch_or_deployment": false,
   "production_candidate_prepared": true,
   "capture_receipt_sha256": "0f6ea6192c081f388f3f7c2618272e23a2d93a5885354c37e4b28729616bf953",
   "compiler_receipt_sha256": "8a6c099de6d02bf5a5287e53633182bdd1e089c5ed79c5e1b1ca57bb35371de0",
@@ -182,5 +181,13 @@
     "code/game/mob/living/life.dm": "248cf0e5f870b19f39167cc8c9605b9fb472a67e8d59df84b716528592f6fb63",
     "code/game/mob/observer/ghost/ghost.dm": "af1e9bf489d1909c2f757b55e04e39df03607cb7dcfb0988a7e500ab06f1771e"
   },
-  "source_boundary": "Final native scene uses exact candidate plane source and actual constructor/update source with only pre_bullet_act and Destroy outside the established renderer fixture omitted. Living/ghost hook placement is source-checked, not a full-game lifecycle acceptance."
+  "source_boundary": "Final native scene uses exact candidate plane source and actual constructor/update source with only pre_bullet_act and Destroy outside the established renderer fixture omitted. Living/ghost hook placement is source-checked, not a full-game lifecycle acceptance.",
+  "deployment": false,
+  "canonical_lf_sources_sha256": {
+    "code/_onclick/hud/plane_master.dm": "87231208522de1845a3a22820f793491a574cdc8c1a8a333636e713316f1d4f7",
+    "code/modules/lighting/lighting_overlay.dm": "dae3b3995c235b2ef5740c919cee2c02d4808baf94b6bbba592053416b053b2f",
+    "code/game/mob/living/life.dm": "afb476fc2e2fb2515df9297b193c23ca6080260a2eefbf062615f3b7034cfc2d",
+    "code/game/mob/observer/ghost/ghost.dm": "00e6f2bf76ebe532b06f87770ce4fc814895ba823234d0a362a3e3ac09387595"
+  },
+  "candidate_sources_sha256_format": "Raw Windows staged bytes used by the native fixture. canonical_lf_sources_sha256 binds the Git/CI LF-normalized production source."
 }
