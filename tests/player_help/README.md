@@ -18,6 +18,13 @@ Help CI suite; its two new controls run only in that existing step. Production
 compilation separately checks actual client types and Topic integration. No
 browser clicks, installed-worker restart or live inference are established.
 
+Game CI accepts PRs targeting `master` and the exact `help-markdown-byond-html`
+dependency branch so the focused conversation stack receives automatic native
+checks. Push triggers remain limited to `master`; no wildcard base or privileged
+PR trigger is added. The offline branch-policy test enforces this allowlist.
+The original conversation head `bb35d68e3` had no game CI because it preceded
+this narrow trigger correction; use the successor's actual CI results.
+
 `test_render_protocol.py` uses injected transports to check old/new/rollback
 capabilities, admission before quota, immutable asynchronous format selection,
 literal plaintext/code/URL preservation and complete serialized response bounds

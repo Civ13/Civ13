@@ -1,5 +1,7 @@
 """Offline conversation contract and transport tests; no model or live worker."""
 import json
+from pathlib import Path
+import re
 import unittest
 from unittest import mock
 import test_bridge
@@ -12,6 +14,17 @@ class ConversationTests(unittest.TestCase):
     tearDown = test_bridge.BridgeTests.tearDown
     make = test_bridge.BridgeTests.make
     finish = test_bridge.BridgeTests.finish
+
+    def test_ci_base_branch_allowlist_preserves_focused_stack(self):
+        workflow = (Path(__file__).resolve().parents[2] / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        def branches(event):
+            section = workflow.split('  ' + event + ':\n', 1)[1].split('\n\n', 1)[0]
+            match = re.search(r'^    branches: \[([^\]]+)\]$', section, re.M)
+            self.assertIsNotNone(match, 'Use explicit base branches, never wildcards')
+            return {part.strip().strip('\"\'') for part in match[1].split(',')}
+        self.assertEqual(branches('pull_request'), {'master', 'help-markdown-byond-html'})
+        self.assertEqual(branches('push'), {'master'})
+        self.assertNotIn('pull_request_target:', workflow)
 
     def request(self, pairs=None, account='a', question='What fuel does it need?'):
         return {'id': '1-2-3', 'account': account * 32, 'question': question,
