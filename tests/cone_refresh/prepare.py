@@ -44,6 +44,7 @@ def transform_sources(control=None):
         start = wheels.index('/obj/structure/bed/chair/gunner/update_icon()')
         end = wheels.index('/obj/structure/bed/chair/gunner/post_buckle_mob()', start)
         body = unique_replace(wheels[start:end], '\t\tif (old_facing != buckled_mob.dir)\n\t\t\trefresh_seated_vision()', '')
+        body = unique_replace(body, '\t\tvar/old_facing = buckled_mob.dir\n', '')
         wheels = wheels[:start] + body + wheels[end:]
     cone = (ROOT / CONE).read_text(encoding='utf-8')
     # Only the client I/O transport is adapted. Native view(), cone(), InCone(),

@@ -57,6 +57,10 @@ class EvidenceTests(unittest.TestCase):
         self.assertNotIn('/mob/living/human/forceMove(', transform_sources('forced-move')['human.dm'])
         for control in ('translation', 'rotation'):
             self.assertEqual(transform_sources(control)['axis.dm'].count('\n\trefresh_passenger_vision()'), 1)
+        omitted = transform_sources('seat-facing')['wheels.dm']
+        gunner = omitted[omitted.index('/obj/structure/bed/chair/gunner/update_icon()'):omitted.index('/obj/structure/bed/chair/gunner/post_buckle_mob()')]
+        self.assertNotIn('old_facing', gunner)
+        self.assertIn('\t\tbuckled_mob.dir = dir', gunner)
 
     def test_six_preparations_bound_and_headless(self):
         with tempfile.TemporaryDirectory() as temp:
