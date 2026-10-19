@@ -14,6 +14,22 @@ WHEELS = 'code/modules/1713/machinery/modular_vehicles/wheels.dm'
 RELEASES = ('stopmovingright', 'stopmovingleft')
 ADDITION = '\t\tfor(var/obj/item/turret_controls/C in mob)\n\t\t\tC.stop_rotation()\n'
 
+# Exact reviewed whole-file states, decoded as UTF-8 with universal newlines.
+# The second is pinned3228 movement plus ONLY the two turret release additions.
+# Every Move/SelfMove admission/context/dispatch byte remains covered.
+APPROVED_MOVEMENT_REFERENCES = {
+    'd53614ecf3aa04ca53a1788528959c46d7878f1189674cbec04d6b2bef8a3a62': BASELINE,
+    '62f2c263f16a46558147060ddada9954e701cb95f4208c718dd035b60408f19b': '4b77eab58979ca718faf1aebe9a879a631dcdedf',
+}
+
+
+def movement_reference(source):
+    digest = hashlib.sha256(source.encode()).hexdigest()
+    reference = APPROVED_MOVEMENT_REFERENCES.get(digest)
+    if reference is None:
+        raise ValueError('Movement does not match either exact reviewed release-port state')
+    return reference
+
 
 def proc(source, header):
     lines = source.splitlines(keepends=True)
@@ -31,8 +47,7 @@ def generate(repo, negative_control=False):
     wheels = (repo / WHEELS).read_text(encoding='utf-8')
     baseline = subprocess.check_output(['git', 'show', BASELINE + ':' + MOVEMENT],
                                        cwd=repo, encoding='utf-8')
-    if movement.count(ADDITION) != 2 or movement.replace(ADDITION, '') != baseline:
-        raise ValueError('Movement changed outside the two attributed release additions')
+    reference_sha = movement_reference(movement)
     source = baseline if negative_control else movement
     generated = ''
     for name in RELEASES:
@@ -43,6 +58,7 @@ def generate(repo, negative_control=False):
         callbacks += proc(wheels, '/obj/item/turret_controls/proc/' + name + '(' + args + ')') + '\n'
     generated += callbacks
     return generated, {'baseline_sha': BASELINE, 'negative_control': negative_control,
+        'movement_reference_sha': reference_sha,
         'movement_sha256': hashlib.sha256(movement.encode()).hexdigest(),
         'wheel_callbacks_sha256': hashlib.sha256(callbacks.encode()).hexdigest(),
         'compiled_source_sha256': hashlib.sha256(generated.encode()).hexdigest(),

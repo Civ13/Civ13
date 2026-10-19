@@ -284,6 +284,25 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 BYOND 516.1681 treats catch variable declarations as proc-scoped. Use distinct
 names for separate catch blocks in one proc or compilation fails with duplicate definition.
 
+<!-- 2026-10-19: combined sub-tile mining acceptance -->
+`tests/human_subtile/run.py --suite mining` stages the full merged game and
+exercises native collision dispatch, mining snapshots and physical offset drift.
+Its mining-position control must fail the same-anchor drift oracle, not merely
+some assertion. Headless authority is adapted: only a separately attached real
+client can establish client.moving ownership through the optional client entry.
+Keep the production adapter disabled until that separate acceptance is met.
+
+<!-- 2026-10-19: opt-in physical human movement -->
+The experimental human adapter keeps the living Move third gameplay flag and
+uses one-use context at movable's native offset seam. Runtime ownership fields
+need explicit custom-save exclusion. Owned capsule presence is detected before
+loader assignments; no-capsule legacy humans retain their old offset policy.
+The minimal world-save stub rejects owned capsules instead of faking restoration.
+Use tests/human_subtile/run.py --prepare-only for offline exact-Git staging;
+native integration and connected-client timing are separate acceptance gates.
+DM reserves proc name run, and an if-local variable cannot be read afterward;
+offline text contracts do not replace the pinned native compiler.
+
 - Follow `docs/game-verification.md` for exact-commit build, isolated-fixture,
   graphical, season-memory, and save-round-trip evidence. Reuse probes present in
   the selected checkout; investigation-branch probes may not be on master yet.
