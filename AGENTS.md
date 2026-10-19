@@ -101,6 +101,10 @@ source preparation does not establish native acceptance.
 
 ### DMM format rules
 
+<!-- 2026-10-16: standalone map constants -->
+- Emit literal DMM overrides such as `locked = 1`, not DM macros such as `TRUE`.
+  MapDiffBot's standalone map reader rejects unresolved variables in map values.
+
 - All tile keys within a map **must be the same length** (all 2-char or all 1-char). Mixing breaks BYOND's parser.
 - Every grid row must have exactly `world.maxx` tile keys. Different row widths cause load failures.
 - Grid rows in the file are ordered top-to-bottom (Y=maxy first, Y=1 last).
@@ -625,6 +629,12 @@ Tools under tools/comment-review provide an authenticated-gh local collector and
 Dormant comment-review listeners must be workflow_dispatch-only: GitHub can request approval before evaluating job guards. Keep automatic subscriptions in tools/comment-review/active-events.example.json until a separately reviewed activation.
 
 ## Train verification
+
+<!-- 2026-10-19: inactive Dagger compilation -->
+`tests/dagger_map/compile_map.py` compiles the inactive DMM with production types
+in a disposable root-local DME, plus a missing-type diagnostic control. CI's
+`dagger_map_compile` opt-in retains exact-head logs. No game starts; successful
+compilation is not controller, instancing, protection or gameplay acceptance.
 
 <!-- 2026-10-11: firearm configuration verification -->
 Gun configuration is centralized in `code/modules/1713/gunsmithing/gun_configuration.dm`.
