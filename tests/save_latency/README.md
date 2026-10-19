@@ -2,6 +2,9 @@
 
 `run.py --byond-bin <516.1681-bin>` stages the current admitted production saver,
 loader, player reclaim and export-transfer contracts with isolated adapters.
+The daemon uses repository-required `-trusted` in fresh temporary storage; the
+fixture hides the world and refuses port reopening. No production files or
+servers are used.
 Use `--dense --verify-backup` for 20,000 direct scalar-only children, first and
 backup saves, active restoration and a fresh-process backup restoration. The
 normal fixture uses 1,000 children with typed associative payloads. Heartbeats

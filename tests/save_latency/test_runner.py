@@ -62,6 +62,14 @@ class PreparationTests(unittest.TestCase):
                 self.assertIn('invalidated frame was published', probe)
                 self.assertIn('prior completed generation lost', probe)
 
+    def test_native_launch_preserves_trusted_isolated_contract(self):
+        runner = (ROOT / 'tests/save_latency/run.py').read_text()
+        self.assertIn("['-trusted','-log','runtime.log']", runner)
+        self.assertNotIn("'-safe'", runner)
+        probe = (ROOT / 'tests/save_latency/probe.dm').read_text()
+        self.assertIn('return ..("none")', probe)
+        self.assertIn('visibility = 0', probe)
+
     def test_interrupted_writer_is_staged(self):
         _, metadata = self.stage('--interrupt')
         self.assertTrue(metadata['interrupt'])

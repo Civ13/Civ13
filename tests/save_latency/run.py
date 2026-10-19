@@ -64,7 +64,7 @@ def main():
     print(log,flush=True)
     if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
         raise RuntimeError('Pinned compilation failed')
-    command=[str(daemon),'probe.dmb']+(['-invisible','-close'] if os.name=='nt' else [])+['-safe','-log','runtime.log']
+    command=[str(daemon),'probe.dmb']+(['-invisible','-close'] if os.name=='nt' else [])+['-trusted','-log','runtime.log']
     parameters = ([] if not args.large else ['large=1']) + ([] if not args.scenario else ['scenario='+args.scenario])
     if args.benchmark_only: parameters += ['benchmark=1']
     if args.dense: parameters += ['dense=1']
