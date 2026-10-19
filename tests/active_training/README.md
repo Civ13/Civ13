@@ -77,7 +77,7 @@ has occurred or passed.
 
 `click_game.dm` reuses the existing minimal world/human setup, routes clicks
 through actual ClickOn, checks item versus empty-hand dispatch, and calls parent
-exercise_wait for three real150-tick waits and a hand-switch interruption.
+exercise_wait for three real 150-tick waits and a hand-switch interruption.
 No fake wait/clock is inserted. Ownership guard states and inventory fields are
 seeded; only exercise-source chat calls are observed and forwarded to native chat.
 The no-client fixture uses the same turf to avoid client-only facing code. It

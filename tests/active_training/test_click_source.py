@@ -107,7 +107,7 @@ class ClickSourceTests(unittest.TestCase):
     def test_round_identity_guard_detects_original_omission_literal_and_late_init(self):
         """Reject missing, fabricated or delayed round initialization in source controls."""
         source = (prepare.ROOT / 'tests/active_training/game.dm').read_text(encoding='utf-8')
-        original = prepare.git('show', '250ff2ca00c85302f57c8e1a67764fdb536b5596:tests/active_training/game.dm').decode()
+        original = (HERE / 'fixtures/round_identity_omission.dm.txt').read_text(encoding='utf-8')
         identity = '\tgenerate_gameid()\n'
         mutants = [original,
                    source.replace(identity, '\tglobal.game_id = "fake-round-id"\n'),
@@ -127,9 +127,9 @@ class ClickSourceTests(unittest.TestCase):
             self.assertIn('& $pythonCommand @pythonArguments @verifyArguments', runner)
         runner = (prepare.ROOT / 'tests/active_training/run.ps1').read_text(encoding='utf-8')
         assert_argument_contract(runner)
-        # This immutable predecessor really unwraps Linux '-B' to a string;
+        # This checked-in predecessor excerpt unwraps Linux '-B' to a string;
         # pwsh 7.6.7 then splats its chars and Python selects stdin ('-').
-        original = prepare.git('show', '09eb8a1378cda690af682cac9d1034c643f2ff1e:tests/active_training/run.ps1').decode()
+        original = (HERE / 'fixtures/scalar_python_arguments.ps1.txt').read_text(encoding='utf-8')
         with self.assertRaises(AssertionError):
             assert_argument_contract(original)
 

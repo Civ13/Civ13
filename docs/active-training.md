@@ -62,7 +62,7 @@ graphics. No production-server performance or deployment is established.
 pinned original-silence source overlays, without compiling or launching BYOND.
 The additional fixture calls production ClickOn on the same turf (avoiding
 headless client-facing dependencies), forwards to the real exercise wait and
-measures native150-tick repetitions. Its inventory fields and chat observation
+measures native 150-tick repetitions. Its inventory fields and chat observation
 are fixture adapters; a connected client must still establish adjacent input
 and visible feedback. Prepared source and offline tests are not native passes.
 The existing `run.ps1 -ClickFeedback` mode consumes those overlays, retaining
