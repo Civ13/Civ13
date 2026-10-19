@@ -9,6 +9,10 @@ on:
       - .github/workflows/native-launcher-release.yml
   workflow_dispatch:
     inputs:
+      tls_diagnostic:
+        description: Build and verify standalone Windows TLS diagnostic
+        type: boolean
+        default: false
       published_upgrade_probe:
         description: Verify published 1.0.2 to 1.0.3 upgrade without BYOND
         type: boolean
@@ -47,6 +51,17 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && inputs.published_upgrade_probe
         shell: pwsh
         run: ./tools/opendream-client/native/upgrade-probe/Run.ps1
+      - name: Build and test self-contained TLS diagnostic
+        if: github.event_name == 'workflow_dispatch' && inputs.tls_diagnostic
+        shell: pwsh
+        run: ./tools/opendream-client/native/tls-probe/Build.ps1
+      - name: Upload TLS diagnostic
+        if: github.event_name == 'workflow_dispatch' && inputs.tls_diagnostic
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Civ13-TLS-Diagnostic-Windows
+          path: tools/opendream-client/native/tls-probe/publish/*
+          if-no-files-found: error
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: Civ13-Windows-launcher
