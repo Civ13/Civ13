@@ -49,6 +49,8 @@ var/training_wait_count = 0
 	world.log << "runtime error: [e] [e.file]:[e.line]"
 /world/New()
 	OpenPort("none")
+	// Global startup is bypassed; initialize its real round identity before saving.
+	generate_gameid()
 	GLOB.all_observable_events = list()
 	GLOB.moved_event = new /decl/observ/moved
 	GLOB.dir_set_event = new /decl/observ/dir_set
