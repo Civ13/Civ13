@@ -14,6 +14,7 @@
 	return text2file(text, path)
 #define text2file(text, path) string_path_text2file(text, path)
 #define fdel(path) delete_file_adapter(path)
+#include "../../code/modules/multiz/world_z_budget.dm"
 #include "../../code/modules/persistence/functions.dm"
 #include "../../code/modules/persistence/player_reclaim.dm"
 #include "../../code/modules/persistence/saving.dm"
