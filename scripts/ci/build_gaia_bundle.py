@@ -104,6 +104,13 @@ def package(source, output, compile_log, provenance):
     return manifest
 
 
+def compiler_environment(bindir, existing):
+    env = dict(existing)
+    old = env.get('LD_LIBRARY_PATH', '')
+    env['LD_LIBRARY_PATH'] = str(bindir) + (':' + old if old else '')
+    return env
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', type=Path, required=True)
@@ -128,6 +135,7 @@ def main():
     with log_path.open('xb') as log:
         result = subprocess.run([str(args.byond_bin.resolve(strict=True)/'DreamMaker'),
                                  '-max_errors', '0', 'civ13.dme'], cwd=source,
+                                env=compiler_environment(args.byond_bin.resolve(strict=True), os.environ),
                                 stdout=log, stderr=subprocess.STDOUT, timeout=1200)
     log = log_path.read_text(encoding='utf-8', errors='replace')
     print(log, end='')

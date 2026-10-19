@@ -83,6 +83,14 @@ class BuildTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 m.selected_files(source)
 
+    def test_compiler_library_path_is_explicit(self):
+        original = {'LD_LIBRARY_PATH': '/existing', 'OTHER': 'unchanged'}
+        env = m.compiler_environment(Path('/pinned/bin'), original)
+        self.assertEqual(env['LD_LIBRARY_PATH'], '/pinned/bin:/existing')
+        self.assertEqual(original['LD_LIBRARY_PATH'], '/existing')
+        self.assertEqual(env['OTHER'], 'unchanged')
+        self.assertEqual(m.compiler_environment(Path('/pinned/bin'), {})['LD_LIBRARY_PATH'], '/pinned/bin')
+
     def test_workflow_pins_source_and_never_runs_game(self):
         text = Path(__file__).resolve().parents[2].joinpath('.github/workflows/test.yml').read_text()
         self.assertIn('ref: '+m.REVISION, text)

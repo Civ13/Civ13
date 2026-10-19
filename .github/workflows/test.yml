@@ -32,7 +32,8 @@ jobs:
           mkdir "$RUNNER_TEMP/gaia-byond"
           curl --fail --location --retry 3 https://civ13.com/downloads/516.1681_byond_linux.zip -o "$RUNNER_TEMP/gaia-byond/toolchain.zip"
           unzip -q "$RUNNER_TEMP/gaia-byond/toolchain.zip" -d "$RUNNER_TEMP/gaia-byond"
-          make -C "$RUNNER_TEMP/gaia-byond/byond" here
+          cd "$RUNNER_TEMP/gaia-byond/byond"
+          make here
       - name: Compile exactly Gaia and stage the runtime-only bundle
         shell: bash
         run: |
