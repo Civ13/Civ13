@@ -37,6 +37,32 @@ class SurvivalProtocolTests(unittest.TestCase):
         result = self.b.submit(request(self.obs, {"type": "craft", "target": "cuttings", "recipe": "grass_twine"}))
         self.assertEqual(result["status"], "queued")
 
+    def test_gather_accepts_advertised_scenery_entity_without_a_new_action(self):
+        obs = copy.deepcopy(self.obs)
+        obs["observation_seq"] = 2
+        grass = entity("visible-grass-object", "entity", ["examine", "gather"], dx=1)
+        grass["name"] = "tall grass"
+        obs["entities"] = [grass]
+        self.b.exchange({"observation": obs, "receipt": None})
+        compact = compact_observation(obs)
+        self.assertEqual(compact["entities"][0]["id"], grass["id"])
+        self.assertEqual(compact["entities"][0]["kind"], "entity")
+        action = {"type": "gather", "target": grass["id"]}
+        queued = self.b.submit(request(obs, action))
+        self.assertEqual(queued["status"], "queued")
+        frame = self.b.exchange({"observation": copy.deepcopy(obs), "receipt": None})
+        self.assertEqual(frame["action"]["action"], action)
+
+    def test_tall_grass_name_does_not_grant_unadvertised_gather(self):
+        obs = copy.deepcopy(self.obs)
+        obs["observation_seq"] = 2
+        grass = entity("visible-grass-object", "entity", ["examine"], dx=1)
+        grass["name"] = "tall grass"
+        obs["entities"] = [grass]
+        self.b.exchange({"observation": obs, "receipt": None})
+        with self.assertRaisesRegex(Rejected, "^unsupported_target$"):
+            self.b.submit(request(obs, {"type": "gather", "target": grass["id"]}))
+
     def test_shelter_recipes_require_current_fixed_target_affordance(self):
         self.rejected("unavailable_recipe", {"type": "craft", "target": "cuttings", "recipe": "leather_canopy"})
         self.rejected("unavailable_recipe", {"type": "craft", "target": "cuttings", "recipe": "deploy_canopy"})
