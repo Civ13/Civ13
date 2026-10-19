@@ -1179,6 +1179,8 @@
 	set instant = TRUE
 	if (mob && mob.movement_eastwest == EAST)
 		mob.movement_eastwest = null
+		for(var/obj/item/turret_controls/C in mob)
+			C.stop_rotation()
 		for(var/obj/item/drone_controller/RC in mob.contents)
 			if(mob.using_drone)
 				RC.stop_move_drone()
@@ -1188,6 +1190,8 @@
 	set instant = TRUE
 	if (mob && mob.movement_eastwest == WEST)
 		mob.movement_eastwest = null
+		for(var/obj/item/turret_controls/C in mob)
+			C.stop_rotation()
 		for(var/obj/item/drone_controller/RC in mob.contents)
 			if(mob.using_drone)
 				RC.stop_move_drone()
