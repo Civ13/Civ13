@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 
 namespace Civ13.Launcher;
@@ -41,6 +42,7 @@ public sealed class GameServer {
 public sealed class ServerDirectory {
     public const int MaxBytes = 65536;
     public const int MaxServers = 32;
+    private static readonly UTF8Encoding StrictUtf8 = new(false, true);
     public DateTimeOffset GeneratedAt { get; }
     public DateTimeOffset ExpiresAt { get; }
     public IReadOnlyList<GameServer> Servers { get; }
@@ -51,6 +53,8 @@ public sealed class ServerDirectory {
         var host = ServerCatalog.Host(provider);
         if (json.Length > MaxBytes) throw new IOException("Server directory is too large.");
         try {
+            // Reject malformed wire UTF-8 before JsonDocument lazily decodes any strings.
+            StrictUtf8.GetCharCount(json.Span);
             using var document = JsonDocument.Parse(json, new JsonDocumentOptions { MaxDepth = 8 });
             var root = document.RootElement;
             RejectDuplicateProperties(root);
@@ -80,7 +84,7 @@ public sealed class ServerDirectory {
                     var validUntil = expires < checkedAt.AddSeconds(120) ? expires : checkedAt.AddSeconds(120);
                     server = new GameServer(provider, id, Text(item, "name", 120), host,
                         Number(item, "port", 1, 65535), Number(item, "players", 0, 10000),
-                        Text(item, "map", 160), Text(item, "mode", 80), OptionalText(item, "epoch", 32),
+                        Text(item, "map", 128), Text(item, "mode", 80), OptionalText(item, "epoch", 32),
                         Text(round, "id", 80, allowEmpty: true), OptionalText(round, "state", 40),
                         Number(round, "duration_seconds", 0, int.MaxValue), checkedAt, validUntil);
                     server.Validate(now);
@@ -91,6 +95,8 @@ public sealed class ServerDirectory {
             }
             return new ServerDirectory(generated, expires, servers);
         } catch (JsonException e) { throw new IOException("Invalid server directory JSON.", e); }
+          catch (DecoderFallbackException e) { throw new IOException("Invalid server directory UTF-8.", e); }
+          catch (InvalidOperationException e) { throw new IOException("Invalid server directory Unicode.", e); }
     }
     private static JsonElement Property(JsonElement item, string name) {
         if (item.ValueKind != JsonValueKind.Object || !item.TryGetProperty(name, out var value))
@@ -105,13 +111,26 @@ public sealed class ServerDirectory {
     }
     private static string OptionalText(JsonElement item, string name, int maximum) =>
         item.ValueKind == JsonValueKind.Object && item.TryGetProperty(name, out _) ? Text(item, name, maximum, true) : "";
-    private static string Text(JsonElement item, string name, int maximum, bool allowEmpty = false) {
+    private static string Text(JsonElement item, string name, int maximumUtf8Bytes, bool allowEmpty = false) {
         var value = Property(item, name);
         if (value.ValueKind != JsonValueKind.String) throw new IOException("Invalid directory text.");
-        var text = value.GetString()!;
-        if (text.Length > maximum || (!allowEmpty && string.IsNullOrWhiteSpace(text)) ||
-            text.Any(c => char.IsControl(c) || (char.GetUnicodeCategory(c) is UnicodeCategory.Format or UnicodeCategory.LineSeparator or UnicodeCategory.ParagraphSeparator) || char.IsSurrogate(c)))
+        string text;
+        int byteCount;
+        try {
+            text = value.GetString()!;
+            // The shared contract bounds UTF-8 bytes, not UTF-16 units or graphemes.
+            // Strict encoding also rejects lone/reversed UTF-16 surrogates.
+            byteCount = StrictUtf8.GetByteCount(text);
+        } catch (Exception e) when (e is InvalidOperationException or EncoderFallbackException) {
+            throw new IOException("Invalid directory Unicode.", e);
+        }
+        if (byteCount > maximumUtf8Bytes || (!allowEmpty && string.IsNullOrWhiteSpace(text)))
             throw new IOException("Invalid directory display text.");
+        foreach (var rune in text.EnumerateRunes()) {
+            if (Rune.GetUnicodeCategory(rune) is UnicodeCategory.Control or UnicodeCategory.Format or
+                UnicodeCategory.Surrogate or UnicodeCategory.LineSeparator or UnicodeCategory.ParagraphSeparator)
+                throw new IOException("Invalid directory display text.");
+        }
         return text;
     }
     private static DateTimeOffset Timestamp(JsonElement item, string name) {

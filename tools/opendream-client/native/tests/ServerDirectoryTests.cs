@@ -35,6 +35,16 @@ internal static class ServerDirectoryTests {
             var entry = Entry(); mutate(entry);
             Require(Parse(Document(entry)).Servers.Count == 0, "Invalid server shown: " + message);
         }
+        using var sharedFixture = typeof(ServerDirectoryTests).Assembly.GetManifestResourceStream("server-directory-unicode.json")
+            ?? throw new Exception("Shared Unicode contract fixture missing.");
+        using var sharedBytes = new MemoryStream();
+        sharedFixture.CopyTo(sharedBytes);
+        var sharedDirectory = ServerDirectory.Read("Civ13.com", sharedBytes.ToArray(), now);
+        Require(sharedDirectory.Servers.Count == 1, "shared Unicode fixture did not produce one selectable server");
+        var sharedServer = sharedDirectory.Servers.Single();
+        Require(sharedServer.Name == "Nomads 🌍" && sharedServer.Players == 0 && sharedServer.Map == "Gaia" &&
+            sharedServer.Mode == "Nomads" && sharedServer.Epoch == "1200" && sharedServer.RoundId == "round-42" &&
+            sharedServer.RoundDurationSeconds == 1234 && sharedServer.Port == 1715, "shared Unicode contract fixture changed");
         var directory = Parse(Document(Entry()));
         var server = directory.Servers.Single();
         Require(server.Name == "Nomads Europe" && server.Players == 12 && server.Map == "Europe" && server.Mode == "Nomads" &&
@@ -64,6 +74,30 @@ internal static class ServerDirectoryTests {
         Hidden(e => e["players"] = null, "unknown player count");
         Hidden(e => e["name"] = new string('a', 121), "name bound");
         foreach (var text in new[] { "bad\nname", "\u001b[31m", "bad\u202ename", "bad\u2028name", "\t", "" }) Hidden(e => e["name"] = text, "unsafe display");
+        var unicode = Entry(); unicode["name"] = "Nomads 🌍";
+        Require(Parse(Document(unicode)).Servers.Single().Name == "Nomads 🌍", "valid non-BMP display character rejected");
+        foreach (var (text, expectedBytes) in new[] { (new string('é', 60), 120), (string.Concat(Enumerable.Repeat("🌍", 30)), 120) }) {
+            Require(Encoding.UTF8.GetByteCount(text) == expectedBytes, "UTF-8 boundary fixture changed");
+            var boundary = Entry(); boundary["name"] = text;
+            Require(Parse(Document(boundary)).Servers.Single().Name == text, "UTF-8 byte boundary rejected");
+            Hidden(e => e["name"] = text + "x", "UTF-8 name byte limit");
+        }
+        var mapBoundary = Entry(); mapBoundary["map"] = string.Concat(Enumerable.Repeat("🌍", 32));
+        Require(Parse(Document(mapBoundary)).Servers.Count == 1, "128-byte non-BMP map rejected");
+        Hidden(e => e["map"] = string.Concat(Enumerable.Repeat("🌍", 33)), "128-byte map limit");
+        Hidden(e => e["name"] = "name\U000e0001", "non-BMP formatting character");
+        var template = Encoding.UTF8.GetString(Bytes(Document(Entry())));
+        foreach (var escaped in new[] { @"\ud800", @"\udfff", @"\ud800X", @"\ud800\ud800", @"\udfff\ud800", @"\ud800\n" }) {
+            var malformed = Encoding.UTF8.GetBytes(template.Replace("Nomads Europe", escaped, StringComparison.Ordinal));
+            Require(ServerDirectory.Read("Civ13.com", malformed, now).Servers.Count == 0, "malformed surrogate sequence shown: " + escaped);
+        }
+        var paired = Encoding.UTF8.GetBytes(template.Replace("Nomads Europe", @"Nomads \ud83c\udf0d", StringComparison.Ordinal));
+        Require(ServerDirectory.Read("Civ13.com", paired, now).Servers.Single().Name == "Nomads 🌍", "valid escaped surrogate pair rejected");
+        foreach (var invalidUtf8 in new[] { new byte[] { 0xed, 0xa0, 0x80 }, new byte[] { 0xed, 0xbf, 0xbf }, new byte[] { 0xf0, 0x9f }, new byte[] { 0xff } }) {
+            var parts = template.Split("Nomads Europe", StringSplitOptions.None);
+            var malformed = Encoding.UTF8.GetBytes(parts[0]).Concat(invalidUtf8).Concat(Encoding.UTF8.GetBytes(parts[1])).ToArray();
+            Reject(() => ServerDirectory.Read("Civ13.com", malformed, now), "malformed wire UTF-8");
+        }
         Hidden(e => e["id"] = "../../bad", "unsafe ID");
         Hidden(e => e["round"]!["duration_seconds"] = -1, "negative round duration");
         Hidden(e => e["round"]!["duration_seconds"] = 1.5, "fractional round duration");
@@ -87,6 +121,7 @@ internal static class ServerDirectoryTests {
         Reject(() => Parse(Document(Enumerable.Range(0, 33).Select(i => Entry(port: 30000 + i, id: "n" + i)).ToArray())), "server bound");
         Reject(() => ServerDirectory.Read("Civ13.com", Encoding.UTF8.GetBytes("{\"schema\":1,\"schema\":1}"), now), "duplicate JSON fields");
         Reject(() => ServerDirectory.Read("Civ13.com", Encoding.UTF8.GetBytes("<html>error</html>"), now), "HTML");
+        Reject(() => ServerDirectory.Read("Civ13.com", Encoding.UTF8.GetBytes("{\"\\ud800\":0}"), now), "malformed surrogate in property name");
         Reject(() => ServerDirectory.Read("Civ13.com", new byte[ServerDirectory.MaxBytes + 1], now), "byte bound");
         Reject(() => Parse(Document(), "attacker.test"), "unknown provider");
         Reject(() => server.Validate(now.AddMinutes(1)), "expired selected server");

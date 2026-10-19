@@ -68,16 +68,18 @@ Example only, using an arbitrary directory-supplied port:
 - Host is exactly the selected provider's lowercase hostname, with no trailing
   dot, IP literal, URL, path or subdomain. Engine is exactly `BYOND`. Port is an
   integer from 1 to 65535; there is no compiled allowed-port or mode list.
-- `id` is 1-64 ASCII letters/digits, `-`, `_` or `.`. Name is 1-120 characters;
-  map 1-160; mode 1-80. Players is an integer 0-10000, never missing/unknown
-  coerced to zero. Empty online servers remain selectable.
-- Round ID is a string of at most 80 characters. An empty ID displays as
+- `id` is 1-64 ASCII letters/digits, `-`, `_` or `.`. Name is 1-120 UTF-8 bytes;
+  map 1-128 UTF-8 bytes; mode 1-80 UTF-8 bytes. Players is an integer 0-10000,
+  never missing/unknown coerced to zero. Empty online servers remain selectable.
+- Round ID is a string of at most 80 UTF-8 bytes. An empty ID displays as
   unavailable. Elapsed seconds is an integer 0 through 2147483647. Optional
-  round state is at most 40 characters; omit it if the game does not report it.
-  Optional epoch is at most 32 characters. No player/account names are required.
-- Display strings reject control characters, Unicode formatting/line separators
-  and surrogate code units. Additional fields are ignored for forward-compatible
-  additions; required fields are never inferred. Invalid, offline, incomplete
+  round state is at most 40 UTF-8 bytes; omit it if the game does not report it.
+  Optional epoch is at most 32 UTF-8 bytes. No player/account names are required.
+- Display strings accept valid printable Unicode, including supplementary-plane
+  characters such as emoji. Limits count UTF-8 bytes, not UTF-16 units or displayed
+  graphemes. Malformed UTF-8, unpaired/reversed UTF-16 surrogates, and Unicode
+  control/format/line/paragraph separator characters are rejected. Additional
+  fields are ignored for forward-compatible additions; required fields are never inferred. Invalid, offline, incomplete
   or stale individual entries are hidden. An invalid envelope fails closed.
 
 Civ13's existing `code/datums/world_topic.dm` exposes `players`, `map_name`,
