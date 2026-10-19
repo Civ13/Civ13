@@ -13,6 +13,18 @@ spec.loader.exec_module(runner)
 
 
 class CIAdmission(unittest.TestCase):
+    def test_generated_dme_resolves_checkout_resources(self):
+        with tempfile.TemporaryDirectory() as temp:
+            work = Path(temp)/'fixture'
+            work.mkdir()
+            runner.bind_resources(runner.ROOT, work)
+            for relative in runner.RESOURCE_DIRECTORIES:
+                self.assertEqual((work/relative).resolve(), (runner.ROOT/relative).resolve())
+            self.assertTrue((work/'icons/chattags.dmi').is_file())
+            self.assertTrue((work/'code/js/view_variables.js').is_file())
+            self.assertFalse((work/'config').exists())
+            self.assertFalse((work/'map_saves').exists())
+
     def test_each_control_requires_its_exact_outcome(self):
         with tempfile.TemporaryDirectory() as temp:
             work = Path(temp)

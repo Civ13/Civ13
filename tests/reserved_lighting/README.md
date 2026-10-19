@@ -126,3 +126,9 @@ runner remains a separate explicitly granted workflow. Earlier statements above
 about an unregistered/unrun native fixture describe that original review stage.
 A passing CI run establishes only these native state/parity checks, never client
 pixels, complete map clearance, net memory savings or deployment readiness.
+
+The Linux CI runner binds only `icons`, `sound`, `UI`, `interface` and `code/js`
+from the checked-out revision beside each generated DME. BYOND resolves resource
+literals relative to that DME even when source includes are absolute. No existing
+save or runtime configuration directory is linked into the fixture. This staging
+fix does not change the frozen Windows runner or claim parity before native tests.

@@ -16,6 +16,19 @@ EXPECTED = {'baseline': 'PASS', 'candidate': 'PASS', 'virtual-master': 'PASS',
 DIAGNOSTIC = re.compile(r'runtime error|Runtime in|BUG:|CRASH|Infinite loop|Cannot read null|PORT_OPEN', re.I)
 
 
+# Resource literals in included DM files resolve relative to the generated DME,
+# not the original included source. Bind only immutable checkout resources.
+RESOURCE_DIRECTORIES = ('icons', 'sound', 'UI', 'interface', 'code/js')
+
+
+def bind_resources(repo, work):
+    for relative in RESOURCE_DIRECTORIES:
+        source = (repo/relative).resolve(strict=True)
+        target = work/relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.symlink_to(source, target_is_directory=True)
+
+
 def validate_runtime(result, work, name):
     log = result.stdout + result.stderr + (work/'runtime.log').read_text(errors='replace')
     if result.returncode or DIAGNOSTIC.search(log):
@@ -43,6 +56,7 @@ def main():
     for name in EXPECTED:
         work = out/name
         prepare(ROOT, work, None if name in ('baseline', 'candidate') else name)
+        bind_resources(ROOT, work)
         result = runner.run_logged([str(compiler), '-max_errors', '0', 'probe.dme'], work, 'compile.log', 180, flags)
         log = result.stdout + result.stderr
         if result.returncode or 'DM compiler version 516.1681' not in log or not re.search(r'^probe.dmb - 0 errors, 0 warnings \(.+\)$', log, re.M):
