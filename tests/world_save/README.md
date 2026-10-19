@@ -56,7 +56,10 @@ source hashes, logs and temporary saves for every attempted run.
 
 `run-cross-level.py` is an optional diagnostic scaffold for the broader snapshot
 problem. Its `--expect-current-defects` mode characterizes existing traversal
-defects; those scenarios are not fixed or asserted as passing by this patch.
+defects; without that flag it requires ordinary `PASS` results. Mutation controls
+retain their own exact expected failures. CI checks the ordinary `field-direct`
+case and explicitly characterizes the unchanged `move-direct` defect. That
+characterization is not evidence that the traversal defect was fixed.
 
 `run-dimension-bootstrap.py --byond-bin <bin>` writes a temporary three-level
 generation, then launches fresh two-level readers. It runs the production saver,

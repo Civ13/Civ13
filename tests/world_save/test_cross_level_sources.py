@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('cross_runner_tests', Path(__file__).with_name('run-cross-level.py'))
@@ -13,6 +14,38 @@ SPEC.loader.exec_module(RUNNER)
 
 
 class CrossLevelSourceTests(unittest.TestCase):
+    def test_cli_characterization_expectations_require_explicit_flag(self):
+        for flags, expected, characterization in (
+            ([], {}, False),
+            (['--expect-current-defects'], RUNNER.BASELINE_DEFECTS, True),
+        ):
+            with self.subTest(flags=flags), tempfile.TemporaryDirectory() as directory:
+                argv = ['run-cross-level.py', '--run-native', '--byond-bin', '/synthetic/bin', '--case', 'move-direct', *flags]
+                with patch.object(RUNNER.sys, 'argv', argv), \
+                        patch.object(RUNNER.tempfile, 'mkdtemp', return_value=directory), \
+                        patch.object(RUNNER, 'native') as native, patch('builtins.print'):
+                    RUNNER.main()
+                self.assertEqual(native.call_args.args[4], expected)
+                receipt = json.loads((Path(directory) / 'receipt.json').read_text())
+                self.assertEqual(receipt['expected_results'], expected)
+                self.assertIs(receipt['characterization_only'], characterization)
+
+    def test_cli_mutation_control_retains_its_own_exact_expectation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            argv = ['run-cross-level.py', '--run-native', '--byond-bin', '/synthetic/bin', '--negative-control', 'field-level']
+            with patch.object(RUNNER.sys, 'argv', argv), \
+                    patch.object(RUNNER.tempfile, 'mkdtemp', return_value=directory), \
+                    patch.object(RUNNER, 'native') as native, patch('builtins.print'):
+                RUNNER.main()
+            expected = {'field-direct': RUNNER.CONTROLS['field-level'][4]}
+            self.assertEqual(native.call_args.args[4], expected)
+            self.assertFalse(native.call_args.args[3]['characterization_only'])
+
+    def test_direct_field_case_checks_owning_field_context(self):
+        source = (ROOT / 'tests/world_save/cross_level_probe.dm').read_text()
+        self.assertIn('if(!nested && !backward)', source)
+        self.assertIn('saved_z=1 native_z=2 turf_z=2 source_type=/obj/cross_holder source_field=payload', source)
+
     def test_staging_preserves_all_production_sources_and_is_relocatable(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)

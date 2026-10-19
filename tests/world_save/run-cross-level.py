@@ -224,12 +224,12 @@ def main():
     output = Path(tempfile.mkdtemp(prefix='civ13-cross-level-'))
     receipt = prepare(output, args.negative_control)
     cases = args.case or CASES
-    expected = BASELINE_DEFECTS
+    expected = BASELINE_DEFECTS if args.expect_current_defects else {}
     if args.negative_control:
         _, _, _, case, result = CONTROLS[args.negative_control]
         cases, expected = (case,), {case: result}
     receipt.update(cases=list(cases), expected_results=expected,
-                   characterization_only=True)
+                   characterization_only=args.expect_current_defects)
     refresh_receipt(output, receipt)
     print(f'Retained evidence: {output}', flush=True)
     if not args.prepare_only:

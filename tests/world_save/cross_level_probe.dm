@@ -201,6 +201,8 @@ var/list/cross_observations = list()
 		holder.payload = cross_target
 	var/reason = cross_try_save()
 	cross_assert_failed_save(reason, "Cross-level object reference cannot be represented", "foreign-level saved-variable reference was accepted")
+	if(!nested && !backward)
+		cross_check(findtext(reason, "saved_z=1 native_z=2 turf_z=2 source_type=/obj/cross_holder source_field=payload"), "cross-level diagnostic omitted its source field context")
 
 /proc/cross_check_unplaced()
 	cross_capture_target = FALSE

@@ -943,6 +943,8 @@ jobs:
           for control in old-bed persistence-gate other-occupant wake-actor move-rollback inventory-gate diagnostic-record; do
             python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
+          python3 tests/world_save/run-cross-level.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --case field-direct
+          python3 tests/world_save/run-cross-level.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --case move-direct --expect-current-defects
           # Synthetic writer/reader only. No private save path or staging upload.
           if ! python3 tests/world_save/partial_save_inspector/inspect-partial-save.py --self-test-only --byond-bin "$PWD/BYOND/byond/bin"; then
             # These two compiler logs contain only fixed synthetic source, never
