@@ -412,8 +412,21 @@ or rendered illumination. Controls `lighting-export`, `lighting-legacy` and
 `lighting-rebuild`, `lighting-opacity` and `lighting-view` each remove one production safeguard in generated source.
 The legacy control must reproduce the ownerless `light_sources` constructor error.
 
+The fixture also checks lazy corner source-list allocation with actual native
+list identities, independent ownership, both propagation insertion/removal paths,
+retained identity after removal, and nontrivial movement/obstruction changes.
+Smart updates are compared with full recomputation. A coordinate-normalized
+pre-save/post-load graph compares RGB, source membership and falloff strength.
+`lighting-allocation-initial.json` records counts before the null assertion;
+`lighting-allocation.json` records final allocated and distinct list counts.
+These counts do not measure process memory or RAM savings. Controls
+`lighting-eager` and `lighting-shared` change only generated test inputs and must
+fail their specific allocation/ownership assertion. The offline
+`test_lighting_corner_allocation.py` checks preparation and source preservation;
+it does not compile or execute BYOND.
+
 The native CI workflow accepts `lighting_recovery_regressions=true` for these
-six cases. The fixture closes its native port, rejects reopening and checks a
+cases. The fixture closes its native port, rejects reopening and checks a
 live OS socket census; a brief native startup listener can precede its entry.
 Obstruction caches rebuild after contents/fields/hooks and before source updates.
 On this Windows host, even the existing startup-only control exits

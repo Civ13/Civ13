@@ -47,7 +47,7 @@ class SpoolProtocolTests(unittest.TestCase):
         self.complete()
         self.assertTrue((self.root / '1.response.json').exists(), 'Native completion must publish a response')
         response = bridge.bounded_json(self.root / '1.response.json', 24000)
-        self.assertEqual(response, {'id': NATIVE_ID, 'status': 'ok', 'answer': 'Offline sawmill answer'})
+        self.assertEqual(response, {'id': NATIVE_ID, 'status': 'ok', 'answer': 'Offline sawmill answer', 'render_protocol': 1, 'answer_format': 'plain-v1'})
         self.assertEqual(len(self.calls), 1)
         payload = json.dumps(self.calls[0][1])
         self.assertNotIn(NATIVE_ID, payload)

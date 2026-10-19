@@ -29,7 +29,7 @@ def main():
     parser.add_argument('--startup-only', action='store_true',
                         help='Diagnose production initialization without running any persistence assertions')
     parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
-    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity', 'lighting-view', 'shutdown-return', 'wound-restore'))
+    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity', 'lighting-view', 'lighting-eager', 'lighting-shared', 'shutdown-return', 'wound-restore'))
     args = parser.parse_args()
     if args.wounds and (args.lighting or args.dimension_bootstrap or args.recovery_reconnect or args.lifecycle_shutdown or args.startup_only or args.negative_control not in (None, 'wound-restore')):
         parser.error('Wound recovery runs separately from other fixture modes')
@@ -105,6 +105,19 @@ def main():
                 replacements[relative] = subprocess.check_output(
                     ['git', 'show', baseline + ':' + relative], cwd=root, text=True)
             receipt['wound_control_commit'] = baseline
+        elif args.negative_control == 'lighting-shared':
+            relative = 'code/modules/lighting/lighting_source.dm'
+            text = (root / relative).read_text(encoding='utf-8')
+            if text.count('C.affecting = list()') != 2:
+                raise RuntimeError('Shared-list control must cover both insertion paths')
+            replacements[relative] = text.replace('C.affecting = list()', 'C.affecting = lighting_probe_shared_affecting')
+        elif args.negative_control == 'lighting-eager':
+            relative = 'code/modules/lighting/lighting_corner.dm'
+            text = (root / relative).read_text(encoding='utf-8')
+            before = 'var/list/datum/light_source/affecting //'
+            if text.count(before) != 1:
+                raise RuntimeError('Eager-list control anchor changed')
+            replacements[relative] = text.replace(before, 'var/list/datum/light_source/affecting = list() //', 1)
         elif args.negative_control:
             relative, before, after = mutations[args.negative_control]
             text = (root / relative).read_text(encoding='utf-8')
@@ -154,6 +167,11 @@ def main():
             lighting_probe = root / 'tests/world_save/lighting_probe.dm'
             probe = probe[:probe.index('/world/New()')] + lighting_probe.read_text(encoding='utf-8')
             receipt['lighting_probe_hash'] = hashlib.sha256(lighting_probe.read_bytes()).hexdigest()
+            if args.negative_control == 'lighting-shared':
+                probe += '\nvar/list/lighting_probe_shared_affecting = list()\n'
+            for name in ('lighting_corner.dm', 'lighting_source.dm'):
+                path = root / 'code/modules/lighting' / name
+                receipt['production_hashes'][path.relative_to(root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
         if args.dimension_bootstrap:
             probe = probe[:probe.index('/world/New()')] + (root / 'tests/world_save/durable_dimension_probe.dm').read_text(encoding='utf-8')
         if args.recovery_reconnect:
@@ -289,7 +307,9 @@ def main():
                     'lighting-legacy': 'legacy lighting graph prevented import',
                     'lighting-rebuild': 'restored custom light not rebuilt',
                     'lighting-opacity': 'restored obstruction caches stale',
-                    'lighting-view': 'map clearing retired runtime view helper'}
+                    'lighting-view': 'map clearing retired runtime view helper',
+                    'lighting-eager': 'untouched corners allocated affecting lists',
+                    'lighting-shared': 'corners share mutable affecting list'}
         if args.negative_control:
             if args.negative_control == 'wound-restore':
                 if result.get('done') or 'Cannot read null.max_damage' not in result.get('error', '') or not result.get('source', '').endswith(receipt['wound_control_source']) or result.get('line') != 394 or result.get('checks') != 4:
